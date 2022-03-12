@@ -623,11 +623,10 @@ import javax.persistence.Transient;
             // the card type has a direct access to project
 <span class="nc" id="L624">            return this.cardType.getProject();</span>
 <span class="nc bnc" id="L625" title="All 2 branches missed.">        } else if (this.parent != null) {</span>
-            // should never come here
-            // this card is a sub-card
-<span class="nc" id="L628">            return this.parent.getProject();</span>
+            // nothing easier, so get the one of its parent
+<span class="nc" id="L627">            return this.parent.getProject();</span>
         }
-<span class="nc" id="L630">        return null;</span>
+<span class="nc" id="L629">        return null;</span>
     }
 
     @Override
@@ -637,28 +636,28 @@ import javax.persistence.Transient;
         // any member can read any card of the project
         // if a member lacks the read right on a card, it will not be able to read the deliverable,
         // resources and so on, but it will still be able to view the card &quot;from the outside&quot;
-<span class="nc" id="L640">        return new Conditions.IsCurrentUserMemberOfProject(getProject());</span>
+<span class="nc" id="L639">        return new Conditions.IsCurrentUserMemberOfProject(getProject());</span>
     }
 
     @Override
     public Conditions.Condition getUpdateCondition() {
-<span class="nc" id="L645">        return new Conditions.HasCardWriteRight(this);</span>
+<span class="nc" id="L644">        return new Conditions.HasCardWriteRight(this);</span>
     }
 
     @Override
     public int hashCode() {
-<span class="nc" id="L650">        return EntityHelper.hashCode(this);</span>
+<span class="nc" id="L649">        return EntityHelper.hashCode(this);</span>
     }
 
     @Override
     @SuppressWarnings(&quot;EqualsWhichDoesntCheckParameterClass&quot;)
     public boolean equals(Object obj) {
-<span class="nc" id="L656">        return EntityHelper.equals(this, obj);</span>
+<span class="nc" id="L655">        return EntityHelper.equals(this, obj);</span>
     }
 
     @Override
     public String toString() {
-<span class="nc" id="L661">        return &quot;Card{&quot; + &quot;id=&quot; + id + &quot;, index=&quot; + index + &quot;, color=&quot; + color + &quot;, cardTypeId=&quot;</span>
+<span class="nc" id="L660">        return &quot;Card{&quot; + &quot;id=&quot; + id + &quot;, index=&quot; + index + &quot;, color=&quot; + color + &quot;, cardTypeId=&quot;</span>
             + cardTypeId + &quot;, parentId=&quot; + parentId + &quot;}&quot;;
     }
 

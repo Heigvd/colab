@@ -150,7 +150,7 @@ colab-webapp/colab-api,ch.colabproject.colab.api.controller.document,BlockManage
 colab-webapp/colab-api,ch.colabproject.colab.api.controller.document,ExternalDataManager,211,0,24,0,56,0,18,0,6,0
 colab-webapp/colab-api,ch.colabproject.colab.api.controller.document,FileManager,233,0,18,0,59,0,18,0,9,0
 colab-webapp/colab-api,ch.colabproject.colab.api.controller.document,IndexGeneratorHelper,443,0,46,0,111,0,39,0,16,0
-colab-webapp/colab-api,ch.colabproject.colab.api.controller.document,ResourceReferenceSpreadingHelper,409,0,56,0,109,0,50,0,22,0
+colab-webapp/colab-api,ch.colabproject.colab.api.controller.document,ResourceReferenceSpreadingHelper,412,0,58,0,110,0,51,0,22,0
 colab-webapp/colab-api,ch.colabproject.colab.api.controller.document,ResourceCategoryHelper,308,0,14,0,62,0,30,0,23,0
 colab-webapp/colab-api,ch.colabproject.colab.api.controller.document,DocumentManager,212,0,22,0,66,0,24,0,13,0
 colab-webapp/colab-api,ch.colabproject.colab.api.persistence.jcr,JcrSession,177,0,12,0,50,0,18,0,12,0
@@ -164,9 +164,9 @@ colab-webapp/colab-api,ch.colabproject.colab.api.persistence.jpa.token,TokenDao,
 colab-webapp/colab-api,ch.colabproject.colab.api.security.permissions.card,CardTypeOrRefConditions,7,0,0,0,2,0,1,0,1,0
 colab-webapp/colab-api,ch.colabproject.colab.api.security.permissions.card,CardTypeOrRefConditions.IsCardTypeOrRefReadable,56,0,8,0,18,0,9,0,5,0
 colab-webapp/colab-api,ch.colabproject.colab.api.persistence.jpa.team,TeamDao,119,0,10,0,31,0,13,0,8,0
-colab-webapp/colab-api,ch.colabproject.colab.api.rest.card,CardRestEndpoint,168,0,6,0,35,0,18,0,15,0
+colab-webapp/colab-api,ch.colabproject.colab.api.rest.card,CardRestEndpoint,207,0,12,0,42,0,22,0,16,0
 colab-webapp/colab-api,ch.colabproject.colab.api.rest.card,CardContentRestEndpoint,123,0,0,0,29,0,13,0,13,0
-colab-webapp/colab-api,ch.colabproject.colab.api.rest.card,CardTypeRestEndpoint,94,0,2,0,25,0,10,0,9,0
+colab-webapp/colab-api,ch.colabproject.colab.api.rest.card,CardTypeRestEndpoint,125,0,2,0,32,0,13,0,12,0
 colab-webapp/colab-api,ch.colabproject.colab.api.exceptions,ColabRollbackException,4,0,0,0,2,0,1,0,1,0
 colab-webapp/colab-api,ch.colabproject.colab.api.exceptions,ColabMergeException,15,0,0,0,5,0,2,0,2,0
 colab-webapp/colab-api,ch.colabproject.colab.api.model,WithTrackingData,35,0,4,0,11,0,3,0,1,0
@@ -180,9 +180,9 @@ colab-webapp/colab-api,ch.colabproject.colab.api.security,AuthenticationFailure,
 colab-webapp/colab-api,ch.colabproject.colab.api.security,CookieFilter,161,0,22,0,40,0,15,0,4,0
 colab-webapp/colab-api,ch.colabproject.colab.api.rest.project,ProjectRestEndpoint,123,0,0,0,30,0,15,0,15,0
 colab-webapp/colab-api,ch.colabproject.colab.api.model.project,Project,655,0,68,0,50,0,109,0,75,0
-colab-webapp/colab-api,ch.colabproject.colab.api.controller.card,CardManager,386,0,40,0,113,0,44,0,24,0
+colab-webapp/colab-api,ch.colabproject.colab.api.controller.card,CardManager,393,0,44,0,116,0,46,0,24,0
 colab-webapp/colab-api,ch.colabproject.colab.api.controller.card,CardContentManager,230,0,24,0,65,0,25,0,13,0
-colab-webapp/colab-api,ch.colabproject.colab.api.controller.card,CardTypeManager,348,0,32,0,101,0,40,0,24,0
+colab-webapp/colab-api,ch.colabproject.colab.api.controller.card,CardTypeManager,391,0,34,0,112,0,45,0,28,0
 colab-webapp/colab-api,ch.colabproject.colab.api.microchanges.model,MicroChange,47,0,2,0,16,0,11,0,10,0
 colab-webapp/colab-api,ch.colabproject.colab.api.microchanges.model,Change,75,0,0,0,27,0,19,0,19,0
 colab-webapp/colab-api,ch.colabproject.colab.api.microchanges.model,MicroChange.Type,24,0,0,0,3,0,1,0,1,0

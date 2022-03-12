@@ -100,12 +100,14 @@ public final class ResourceReferenceSpreadingHelper {
 <span class="nc" id="L100">            makeActiveReference(cardToFill, parentResourceOrRef);</span>
 <span class="nc" id="L101">        }</span>
 
-<span class="nc" id="L103">        AbstractCardType type = cardToFill.getCardType();</span>
+<span class="nc bnc" id="L103" title="All 2 branches missed.">        if (cardToFill.hasCardType()) {</span>
+<span class="nc" id="L104">            AbstractCardType type = cardToFill.getCardType();</span>
 
-<span class="nc bnc" id="L105" title="All 2 branches missed.">        for (AbstractResource typeResourceOrRef : type.getDirectAbstractResources()) {</span>
-<span class="nc" id="L106">            makeActiveReference(cardToFill, typeResourceOrRef);</span>
-<span class="nc" id="L107">        }</span>
-<span class="nc" id="L108">    }</span>
+<span class="nc bnc" id="L106" title="All 2 branches missed.">            for (AbstractResource typeResourceOrRef : type.getDirectAbstractResources()) {</span>
+<span class="nc" id="L107">                makeActiveReference(cardToFill, typeResourceOrRef);</span>
+<span class="nc" id="L108">            }</span>
+        }
+<span class="nc" id="L110">    }</span>
 
     /**
      * Create a resource reference for each resource / resource reference of the parent.
@@ -113,12 +115,12 @@ public final class ResourceReferenceSpreadingHelper {
      * @param cardContentToFill A card content that need references to the up stream resources
      */
     public static void extractReferencesFromUp(CardContent cardContentToFill) {
-<span class="nc" id="L116">        Card parent = cardContentToFill.getCard();</span>
+<span class="nc" id="L118">        Card parent = cardContentToFill.getCard();</span>
 
-<span class="nc bnc" id="L118" title="All 2 branches missed.">        for (AbstractResource parentResourceOrRef : parent.getDirectAbstractResources()) {</span>
-<span class="nc" id="L119">            makeActiveReference(cardContentToFill, parentResourceOrRef);</span>
-<span class="nc" id="L120">        }</span>
-<span class="nc" id="L121">    }</span>
+<span class="nc bnc" id="L120" title="All 2 branches missed.">        for (AbstractResource parentResourceOrRef : parent.getDirectAbstractResources()) {</span>
+<span class="nc" id="L121">            makeActiveReference(cardContentToFill, parentResourceOrRef);</span>
+<span class="nc" id="L122">        }</span>
+<span class="nc" id="L123">    }</span>
 
     // *********************************************************************************************
     // do it
@@ -137,18 +139,18 @@ public final class ResourceReferenceSpreadingHelper {
     private static void makeActiveReference(Resourceable owner,
         AbstractResource targetResourceOrRef) {
 
-<span class="nc bnc" id="L140" title="All 2 branches missed.">        if (canHaveReferences(targetResourceOrRef)) {</span>
+<span class="nc bnc" id="L142" title="All 2 branches missed.">        if (canHaveReferences(targetResourceOrRef)) {</span>
 
-<span class="nc" id="L142">            ResourceRef existingMatchingReference = findMatchingResourceRef(owner,</span>
+<span class="nc" id="L144">            ResourceRef existingMatchingReference = findMatchingResourceRef(owner,</span>
                 targetResourceOrRef);
 
-<span class="nc bnc" id="L145" title="All 2 branches missed.">            if (existingMatchingReference != null) {</span>
-<span class="nc" id="L146">                reviveAndRetarget(existingMatchingReference, targetResourceOrRef);</span>
+<span class="nc bnc" id="L147" title="All 2 branches missed.">            if (existingMatchingReference != null) {</span>
+<span class="nc" id="L148">                reviveAndRetarget(existingMatchingReference, targetResourceOrRef);</span>
             } else {
-<span class="nc" id="L148">                makeNewReference(owner, targetResourceOrRef);</span>
+<span class="nc" id="L150">                makeNewReference(owner, targetResourceOrRef);</span>
             }
         }
-<span class="nc" id="L151">    }</span>
+<span class="nc" id="L153">    }</span>
 
     /**
      * Ascertain if we must create resource references down stream for the given target resource (or
@@ -160,18 +162,18 @@ public final class ResourceReferenceSpreadingHelper {
      */
     private static boolean canHaveReferences(AbstractResource targetResourceOrRef) {
         // do not spread references of a type from a card content to its sub cards
-<span class="nc bnc" id="L163" title="All 2 branches missed.">        boolean isResourceOrRefLinkedToACardContent = targetResourceOrRef.getCardContent() != null;</span>
-<span class="nc bnc" id="L164" title="All 2 branches missed.">        if (isResourceOrRefLinkedToACardContent) {</span>
-<span class="nc" id="L165">            Resource concreteTargetResource = targetResourceOrRef.resolve();</span>
+<span class="nc bnc" id="L165" title="All 2 branches missed.">        boolean isResourceOrRefLinkedToACardContent = targetResourceOrRef.getCardContent() != null;</span>
+<span class="nc bnc" id="L166" title="All 2 branches missed.">        if (isResourceOrRefLinkedToACardContent) {</span>
+<span class="nc" id="L167">            Resource concreteTargetResource = targetResourceOrRef.resolve();</span>
 
-<span class="nc bnc" id="L167" title="All 2 branches missed.">            boolean isConcreteResourceLinkedToACardType = concreteTargetResource != null</span>
-<span class="nc bnc" id="L168" title="All 2 branches missed.">                &amp;&amp; concreteTargetResource.getAbstractCardType() != null;</span>
+<span class="nc bnc" id="L169" title="All 2 branches missed.">            boolean isConcreteResourceLinkedToACardType = concreteTargetResource != null</span>
+<span class="nc bnc" id="L170" title="All 2 branches missed.">                &amp;&amp; concreteTargetResource.getAbstractCardType() != null;</span>
 
-<span class="nc bnc" id="L170" title="All 2 branches missed.">            return !isConcreteResourceLinkedToACardType;</span>
+<span class="nc bnc" id="L172" title="All 2 branches missed.">            return !isConcreteResourceLinkedToACardType;</span>
         }
 
         // in all other cases, spread
-<span class="nc" id="L174">        return true;</span>
+<span class="nc" id="L176">        return true;</span>
     }
 
     /**
@@ -187,22 +189,22 @@ public final class ResourceReferenceSpreadingHelper {
      */
     private static ResourceRef findMatchingResourceRef(Resourceable owner,
         AbstractResource targetResourceOrRef) {
-<span class="nc" id="L190">        List&lt;ResourceRef&gt; refsOfOwnerWithSameFinalTarget = owner.getDirectAbstractResources()</span>
-<span class="nc" id="L191">            .stream()</span>
-<span class="nc" id="L192">            .filter(resOrRef -&gt; resOrRef instanceof ResourceRef)</span>
-<span class="nc" id="L193">            .map(resOrRef -&gt; (ResourceRef) resOrRef)</span>
-<span class="nc" id="L194">            .filter(resOrRef -&gt; Objects.equals(resOrRef.resolve(), targetResourceOrRef.resolve()))</span>
-<span class="nc" id="L195">            .collect(Collectors.toList());</span>
+<span class="nc" id="L192">        List&lt;ResourceRef&gt; refsOfOwnerWithSameFinalTarget = owner.getDirectAbstractResources()</span>
+<span class="nc" id="L193">            .stream()</span>
+<span class="nc" id="L194">            .filter(resOrRef -&gt; resOrRef instanceof ResourceRef)</span>
+<span class="nc" id="L195">            .map(resOrRef -&gt; (ResourceRef) resOrRef)</span>
+<span class="nc" id="L196">            .filter(resOrRef -&gt; Objects.equals(resOrRef.resolve(), targetResourceOrRef.resolve()))</span>
+<span class="nc" id="L197">            .collect(Collectors.toList());</span>
 
-<span class="nc bnc" id="L197" title="All 2 branches missed.">        if (refsOfOwnerWithSameFinalTarget.size() == 1) {</span>
-<span class="nc" id="L198">            return refsOfOwnerWithSameFinalTarget.get(0);</span>
+<span class="nc bnc" id="L199" title="All 2 branches missed.">        if (refsOfOwnerWithSameFinalTarget.size() == 1) {</span>
+<span class="nc" id="L200">            return refsOfOwnerWithSameFinalTarget.get(0);</span>
         }
 
-<span class="nc bnc" id="L201" title="All 2 branches missed.">        if (refsOfOwnerWithSameFinalTarget.size() &gt; 1) {</span>
-<span class="nc" id="L202">            throw HttpErrorMessage.dataIntegrityFailure();</span>
+<span class="nc bnc" id="L203" title="All 2 branches missed.">        if (refsOfOwnerWithSameFinalTarget.size() &gt; 1) {</span>
+<span class="nc" id="L204">            throw HttpErrorMessage.dataIntegrityFailure();</span>
         }
 
-<span class="nc" id="L205">        return null;</span>
+<span class="nc" id="L207">        return null;</span>
     }
 
     /**
@@ -217,21 +219,21 @@ public final class ResourceReferenceSpreadingHelper {
      */
     private static void reviveAndRetarget(ResourceRef resourceReference,
         AbstractResource newTarget) {
-<span class="nc bnc" id="L220" title="All 2 branches missed.">        if (!Objects.equals(resourceReference.resolve(), newTarget.resolve())) {</span>
-<span class="nc" id="L221">            throw HttpErrorMessage.dataIntegrityFailure();</span>
+<span class="nc bnc" id="L222" title="All 2 branches missed.">        if (!Objects.equals(resourceReference.resolve(), newTarget.resolve())) {</span>
+<span class="nc" id="L223">            throw HttpErrorMessage.dataIntegrityFailure();</span>
         }
 
-<span class="nc" id="L224">        reviveRecursively(resourceReference);</span>
+<span class="nc" id="L226">        reviveRecursively(resourceReference);</span>
 
-<span class="nc" id="L226">        AbstractResource olderTarget = resourceReference.getTarget();</span>
+<span class="nc" id="L228">        AbstractResource olderTarget = resourceReference.getTarget();</span>
 
-<span class="nc bnc" id="L228" title="All 2 branches missed.">        if (!Objects.equals(olderTarget, newTarget)) {</span>
-<span class="nc" id="L229">            resourceReference.setTarget(newTarget);</span>
-<span class="nc" id="L230">            newTarget.getDirectReferences().add(resourceReference);</span>
+<span class="nc bnc" id="L230" title="All 2 branches missed.">        if (!Objects.equals(olderTarget, newTarget)) {</span>
+<span class="nc" id="L231">            resourceReference.setTarget(newTarget);</span>
+<span class="nc" id="L232">            newTarget.getDirectReferences().add(resourceReference);</span>
 
-<span class="nc" id="L232">            olderTarget.getDirectReferences().remove(resourceReference);</span>
+<span class="nc" id="L234">            olderTarget.getDirectReferences().remove(resourceReference);</span>
         }
-<span class="nc" id="L234">    }</span>
+<span class="nc" id="L236">    }</span>
 
     /**
      * Mark the resource reference as not residual. Do it as well for all its descendants.
@@ -239,12 +241,12 @@ public final class ResourceReferenceSpreadingHelper {
      * @param resourceReference the reference to update
      */
     private static void reviveRecursively(ResourceRef resourceReference) {
-<span class="nc" id="L242">        resourceReference.setResidual(false);</span>
+<span class="nc" id="L244">        resourceReference.setResidual(false);</span>
 
-<span class="nc bnc" id="L244" title="All 2 branches missed.">        for (ResourceRef childRef : resourceReference.getDirectReferences()) {</span>
-<span class="nc" id="L245">            reviveRecursively(childRef);</span>
-<span class="nc" id="L246">        }</span>
-<span class="nc" id="L247">    }</span>
+<span class="nc bnc" id="L246" title="All 2 branches missed.">        for (ResourceRef childRef : resourceReference.getDirectReferences()) {</span>
+<span class="nc" id="L247">            reviveRecursively(childRef);</span>
+<span class="nc" id="L248">        }</span>
+<span class="nc" id="L249">    }</span>
 
     /**
      * Make a new resource reference to link to the given owner, targeting the given resource (or
@@ -254,18 +256,18 @@ public final class ResourceReferenceSpreadingHelper {
      * @param resourceOrRef the resource (or reference) target of the new resource reference
      */
     private static void makeNewReference(Resourceable owner, AbstractResource targetResourceOrRef) {
-<span class="nc" id="L257">        ResourceRef newRef = initNewReferenceFrom(targetResourceOrRef);</span>
+<span class="nc" id="L259">        ResourceRef newRef = initNewReferenceFrom(targetResourceOrRef);</span>
 
-<span class="nc" id="L259">        newRef.setOwner(owner);</span>
-<span class="nc" id="L260">        owner.getDirectAbstractResources().add(newRef);</span>
+<span class="nc" id="L261">        newRef.setOwner(owner);</span>
+<span class="nc" id="L262">        owner.getDirectAbstractResources().add(newRef);</span>
 
-<span class="nc" id="L262">        newRef.setTarget(targetResourceOrRef);</span>
-<span class="nc" id="L263">        targetResourceOrRef.getDirectReferences().add(newRef);</span>
+<span class="nc" id="L264">        newRef.setTarget(targetResourceOrRef);</span>
+<span class="nc" id="L265">        targetResourceOrRef.getDirectReferences().add(newRef);</span>
 
-<span class="nc" id="L265">        spreadNewResourceDown(newRef);</span>
+<span class="nc" id="L267">        spreadNewResourceDown(newRef);</span>
 
         // no need to persist, it will be done at once
-<span class="nc" id="L268">    }</span>
+<span class="nc" id="L270">    }</span>
 
     /**
      * Initialize a new reference which will have the given resource (or reference) as target.
@@ -275,17 +277,17 @@ public final class ResourceReferenceSpreadingHelper {
      * @return the new resource reference
      */
     private static ResourceRef initNewReferenceFrom(AbstractResource targetResourceOrRef) {
-<span class="nc" id="L278">        ResourceRef newRef = new ResourceRef();</span>
+<span class="nc" id="L280">        ResourceRef newRef = new ResourceRef();</span>
 
-<span class="nc" id="L280">        newRef.setCategory(targetResourceOrRef.getCategory());</span>
+<span class="nc" id="L282">        newRef.setCategory(targetResourceOrRef.getCategory());</span>
 
-<span class="nc" id="L282">        newRef.setRefused(isNewReferenceInitiallyRefused(targetResourceOrRef));</span>
+<span class="nc" id="L284">        newRef.setRefused(isNewReferenceInitiallyRefused(targetResourceOrRef));</span>
 
-<span class="nc bnc" id="L284" title="All 2 branches missed.">        if (targetResourceOrRef instanceof ResourceRef) {</span>
-<span class="nc" id="L285">            newRef.setResidual(((ResourceRef) targetResourceOrRef).isResidual());</span>
+<span class="nc bnc" id="L286" title="All 2 branches missed.">        if (targetResourceOrRef instanceof ResourceRef) {</span>
+<span class="nc" id="L287">            newRef.setResidual(((ResourceRef) targetResourceOrRef).isResidual());</span>
         }
 
-<span class="nc" id="L288">        return newRef;</span>
+<span class="nc" id="L290">        return newRef;</span>
     }
 
     /**
@@ -296,20 +298,20 @@ public final class ResourceReferenceSpreadingHelper {
      * @return how the new reference refused field must be initialized
      */
     private static boolean isNewReferenceInitiallyRefused(AbstractResource targetResource) {
-<span class="nc bnc" id="L299" title="All 2 branches missed.">        if (targetResource instanceof ResourceRef) {</span>
+<span class="nc bnc" id="L301" title="All 2 branches missed.">        if (targetResource instanceof ResourceRef) {</span>
             // if it is from a reference, just copy the refused state
-<span class="nc" id="L301">            return ((ResourceRef) targetResource).isRefused();</span>
+<span class="nc" id="L303">            return ((ResourceRef) targetResource).isRefused();</span>
         }
 
-<span class="nc bnc" id="L304" title="All 2 branches missed.">        if (targetResource instanceof Resource) {</span>
+<span class="nc bnc" id="L306" title="All 2 branches missed.">        if (targetResource instanceof Resource) {</span>
             // if it is from a concrete resource, set to true if deprecated
-<span class="nc" id="L306">            Resource targetConcreteResource = (Resource) targetResource;</span>
-<span class="nc bnc" id="L307" title="All 2 branches missed.">            if (targetConcreteResource.isDeprecated()) {</span>
-<span class="nc" id="L308">                return true;</span>
+<span class="nc" id="L308">            Resource targetConcreteResource = (Resource) targetResource;</span>
+<span class="nc bnc" id="L309" title="All 2 branches missed.">            if (targetConcreteResource.isDeprecated()) {</span>
+<span class="nc" id="L310">                return true;</span>
             }
         }
 
-<span class="nc" id="L312">        return false;</span>
+<span class="nc" id="L314">        return false;</span>
     }
 
     // *********************************************************************************************
@@ -324,12 +326,12 @@ public final class ResourceReferenceSpreadingHelper {
      * @param formerRelated the not-any-more-related target of the references
      */
     public static void spreadResidualMark(Resourceable owner, Resourceable formerRelated) {
-<span class="nc" id="L327">        owner.getDirectAbstractResources().stream()</span>
-<span class="nc" id="L328">            .filter(resOrRef -&gt; (resOrRef instanceof ResourceRef))</span>
-<span class="nc" id="L329">            .map(resOrRef -&gt; ((ResourceRef) resOrRef))</span>
-<span class="nc" id="L330">            .filter(ref -&gt; Objects.equals(ref.getTarget().getOwner(), formerRelated))</span>
-<span class="nc" id="L331">            .forEach(ref -&gt; markAsResidualRecursively(ref));</span>
-<span class="nc" id="L332">    }</span>
+<span class="nc" id="L329">        owner.getDirectAbstractResources().stream()</span>
+<span class="nc" id="L330">            .filter(resOrRef -&gt; (resOrRef instanceof ResourceRef))</span>
+<span class="nc" id="L331">            .map(resOrRef -&gt; ((ResourceRef) resOrRef))</span>
+<span class="nc" id="L332">            .filter(ref -&gt; Objects.equals(ref.getTarget().getOwner(), formerRelated))</span>
+<span class="nc" id="L333">            .forEach(ref -&gt; markAsResidualRecursively(ref));</span>
+<span class="nc" id="L334">    }</span>
 
     /**
      * Mark the resource reference as residual. Do it as well for all its descendants.
@@ -337,12 +339,12 @@ public final class ResourceReferenceSpreadingHelper {
      * @param resourceReference the reference to update
      */
     private static void markAsResidualRecursively(ResourceRef resourceReference) {
-<span class="nc" id="L340">        resourceReference.setResidual(true);</span>
+<span class="nc" id="L342">        resourceReference.setResidual(true);</span>
 
-<span class="nc bnc" id="L342" title="All 2 branches missed.">        for (ResourceRef childRef : resourceReference.getDirectReferences()) {</span>
-<span class="nc" id="L343">            markAsResidualRecursively(childRef);</span>
-<span class="nc" id="L344">        }</span>
-<span class="nc" id="L345">    }</span>
+<span class="nc bnc" id="L344" title="All 2 branches missed.">        for (ResourceRef childRef : resourceReference.getDirectReferences()) {</span>
+<span class="nc" id="L345">            markAsResidualRecursively(childRef);</span>
+<span class="nc" id="L346">        }</span>
+<span class="nc" id="L347">    }</span>
 
     // *********************************************************************************************
     //

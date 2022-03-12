@@ -631,46 +631,45 @@
 <a class="jxr_linenumber" name="L623" href="#L623">623</a>             <em class="jxr_comment">// the card type has a direct access to project</em>
 <a class="jxr_linenumber" name="L624" href="#L624">624</a>             <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">this</strong>.cardType.getProject();
 <a class="jxr_linenumber" name="L625" href="#L625">625</a>         } <strong class="jxr_keyword">else</strong> <strong class="jxr_keyword">if</strong> (<strong class="jxr_keyword">this</strong>.parent != <strong class="jxr_keyword">null</strong>) {
-<a class="jxr_linenumber" name="L626" href="#L626">626</a>             <em class="jxr_comment">// should never come here</em>
-<a class="jxr_linenumber" name="L627" href="#L627">627</a>             <em class="jxr_comment">// this card is a sub-card</em>
-<a class="jxr_linenumber" name="L628" href="#L628">628</a>             <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">this</strong>.parent.getProject();
-<a class="jxr_linenumber" name="L629" href="#L629">629</a>         }
-<a class="jxr_linenumber" name="L630" href="#L630">630</a>         <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">null</strong>;
-<a class="jxr_linenumber" name="L631" href="#L631">631</a>     }
-<a class="jxr_linenumber" name="L632" href="#L632">632</a> 
-<a class="jxr_linenumber" name="L633" href="#L633">633</a>     @Override
-<a class="jxr_linenumber" name="L634" href="#L634">634</a>     @JsonbTransient
-<a class="jxr_linenumber" name="L635" href="#L635">635</a>     <strong class="jxr_keyword">public</strong> Conditions.Condition getReadCondition() {
-<a class="jxr_linenumber" name="L636" href="#L636">636</a>         <em class="jxr_comment">// genuine hack inside</em>
-<a class="jxr_linenumber" name="L637" href="#L637">637</a>         <em class="jxr_comment">// any member can read any card of the project</em>
-<a class="jxr_linenumber" name="L638" href="#L638">638</a>         <em class="jxr_comment">// if a member lacks the read right on a card, it will not be able to read the deliverable,</em>
-<a class="jxr_linenumber" name="L639" href="#L639">639</a>         <em class="jxr_comment">// resources and so on, but it will still be able to view the card "from the outside"</em>
-<a class="jxr_linenumber" name="L640" href="#L640">640</a>         <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">new</strong> Conditions.IsCurrentUserMemberOfProject(getProject());
-<a class="jxr_linenumber" name="L641" href="#L641">641</a>     }
-<a class="jxr_linenumber" name="L642" href="#L642">642</a> 
-<a class="jxr_linenumber" name="L643" href="#L643">643</a>     @Override
-<a class="jxr_linenumber" name="L644" href="#L644">644</a>     <strong class="jxr_keyword">public</strong> Conditions.Condition getUpdateCondition() {
-<a class="jxr_linenumber" name="L645" href="#L645">645</a>         <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">new</strong> Conditions.HasCardWriteRight(<strong class="jxr_keyword">this</strong>);
-<a class="jxr_linenumber" name="L646" href="#L646">646</a>     }
-<a class="jxr_linenumber" name="L647" href="#L647">647</a> 
-<a class="jxr_linenumber" name="L648" href="#L648">648</a>     @Override
-<a class="jxr_linenumber" name="L649" href="#L649">649</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">int</strong> hashCode() {
-<a class="jxr_linenumber" name="L650" href="#L650">650</a>         <strong class="jxr_keyword">return</strong> EntityHelper.hashCode(<strong class="jxr_keyword">this</strong>);
-<a class="jxr_linenumber" name="L651" href="#L651">651</a>     }
-<a class="jxr_linenumber" name="L652" href="#L652">652</a> 
-<a class="jxr_linenumber" name="L653" href="#L653">653</a>     @Override
-<a class="jxr_linenumber" name="L654" href="#L654">654</a>     @SuppressWarnings(<span class="jxr_string">"EqualsWhichDoesntCheckParameterClass"</span>)
-<a class="jxr_linenumber" name="L655" href="#L655">655</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">boolean</strong> equals(Object obj) {
-<a class="jxr_linenumber" name="L656" href="#L656">656</a>         <strong class="jxr_keyword">return</strong> EntityHelper.equals(<strong class="jxr_keyword">this</strong>, obj);
-<a class="jxr_linenumber" name="L657" href="#L657">657</a>     }
-<a class="jxr_linenumber" name="L658" href="#L658">658</a> 
-<a class="jxr_linenumber" name="L659" href="#L659">659</a>     @Override
-<a class="jxr_linenumber" name="L660" href="#L660">660</a>     <strong class="jxr_keyword">public</strong> String toString() {
-<a class="jxr_linenumber" name="L661" href="#L661">661</a>         <strong class="jxr_keyword">return</strong> <span class="jxr_string">"Card{"</span> + <span class="jxr_string">"id="</span> + id + <span class="jxr_string">", index="</span> + index + <span class="jxr_string">", color="</span> + color + <span class="jxr_string">", cardTypeId="</span>
-<a class="jxr_linenumber" name="L662" href="#L662">662</a>             + cardTypeId + <span class="jxr_string">", parentId="</span> + parentId + <span class="jxr_string">"}"</span>;
-<a class="jxr_linenumber" name="L663" href="#L663">663</a>     }
-<a class="jxr_linenumber" name="L664" href="#L664">664</a> 
-<a class="jxr_linenumber" name="L665" href="#L665">665</a> }
+<a class="jxr_linenumber" name="L626" href="#L626">626</a>             <em class="jxr_comment">// nothing easier, so get the one of its parent</em>
+<a class="jxr_linenumber" name="L627" href="#L627">627</a>             <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">this</strong>.parent.getProject();
+<a class="jxr_linenumber" name="L628" href="#L628">628</a>         }
+<a class="jxr_linenumber" name="L629" href="#L629">629</a>         <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">null</strong>;
+<a class="jxr_linenumber" name="L630" href="#L630">630</a>     }
+<a class="jxr_linenumber" name="L631" href="#L631">631</a> 
+<a class="jxr_linenumber" name="L632" href="#L632">632</a>     @Override
+<a class="jxr_linenumber" name="L633" href="#L633">633</a>     @JsonbTransient
+<a class="jxr_linenumber" name="L634" href="#L634">634</a>     <strong class="jxr_keyword">public</strong> Conditions.Condition getReadCondition() {
+<a class="jxr_linenumber" name="L635" href="#L635">635</a>         <em class="jxr_comment">// genuine hack inside</em>
+<a class="jxr_linenumber" name="L636" href="#L636">636</a>         <em class="jxr_comment">// any member can read any card of the project</em>
+<a class="jxr_linenumber" name="L637" href="#L637">637</a>         <em class="jxr_comment">// if a member lacks the read right on a card, it will not be able to read the deliverable,</em>
+<a class="jxr_linenumber" name="L638" href="#L638">638</a>         <em class="jxr_comment">// resources and so on, but it will still be able to view the card "from the outside"</em>
+<a class="jxr_linenumber" name="L639" href="#L639">639</a>         <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">new</strong> Conditions.IsCurrentUserMemberOfProject(getProject());
+<a class="jxr_linenumber" name="L640" href="#L640">640</a>     }
+<a class="jxr_linenumber" name="L641" href="#L641">641</a> 
+<a class="jxr_linenumber" name="L642" href="#L642">642</a>     @Override
+<a class="jxr_linenumber" name="L643" href="#L643">643</a>     <strong class="jxr_keyword">public</strong> Conditions.Condition getUpdateCondition() {
+<a class="jxr_linenumber" name="L644" href="#L644">644</a>         <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">new</strong> Conditions.HasCardWriteRight(<strong class="jxr_keyword">this</strong>);
+<a class="jxr_linenumber" name="L645" href="#L645">645</a>     }
+<a class="jxr_linenumber" name="L646" href="#L646">646</a> 
+<a class="jxr_linenumber" name="L647" href="#L647">647</a>     @Override
+<a class="jxr_linenumber" name="L648" href="#L648">648</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">int</strong> hashCode() {
+<a class="jxr_linenumber" name="L649" href="#L649">649</a>         <strong class="jxr_keyword">return</strong> EntityHelper.hashCode(<strong class="jxr_keyword">this</strong>);
+<a class="jxr_linenumber" name="L650" href="#L650">650</a>     }
+<a class="jxr_linenumber" name="L651" href="#L651">651</a> 
+<a class="jxr_linenumber" name="L652" href="#L652">652</a>     @Override
+<a class="jxr_linenumber" name="L653" href="#L653">653</a>     @SuppressWarnings(<span class="jxr_string">"EqualsWhichDoesntCheckParameterClass"</span>)
+<a class="jxr_linenumber" name="L654" href="#L654">654</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">boolean</strong> equals(Object obj) {
+<a class="jxr_linenumber" name="L655" href="#L655">655</a>         <strong class="jxr_keyword">return</strong> EntityHelper.equals(<strong class="jxr_keyword">this</strong>, obj);
+<a class="jxr_linenumber" name="L656" href="#L656">656</a>     }
+<a class="jxr_linenumber" name="L657" href="#L657">657</a> 
+<a class="jxr_linenumber" name="L658" href="#L658">658</a>     @Override
+<a class="jxr_linenumber" name="L659" href="#L659">659</a>     <strong class="jxr_keyword">public</strong> String toString() {
+<a class="jxr_linenumber" name="L660" href="#L660">660</a>         <strong class="jxr_keyword">return</strong> <span class="jxr_string">"Card{"</span> + <span class="jxr_string">"id="</span> + id + <span class="jxr_string">", index="</span> + index + <span class="jxr_string">", color="</span> + color + <span class="jxr_string">", cardTypeId="</span>
+<a class="jxr_linenumber" name="L661" href="#L661">661</a>             + cardTypeId + <span class="jxr_string">", parentId="</span> + parentId + <span class="jxr_string">"}"</span>;
+<a class="jxr_linenumber" name="L662" href="#L662">662</a>     }
+<a class="jxr_linenumber" name="L663" href="#L663">663</a> 
+<a class="jxr_linenumber" name="L664" href="#L664">664</a> }
 </pre>
 <hr/>
 <div id="footer">Copyright &#169; 2022 <a href="https://www.colab-project.ch">AlbaSim, MEI, HEIG-VD, HES-SO</a>. All rights reserved.</div>
