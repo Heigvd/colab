@@ -25,7 +25,7 @@ import ConfirmDeleteModal from '../../common/ConfirmDeleteModal';
 import DropDownMenu from '../../common/DropDownMenu';
 import Flex from '../../common/Flex';
 import { WIPContainer } from '../../common/Tips';
-import { useBlock } from '../../live/LiveTextEditor';
+import DocTextDisplay from '../../documents/DocTextDisplay';
 import {
   borderRadius,
   cardShadow,
@@ -64,7 +64,6 @@ export default function CardTypeItem({
 }: DisplayProps): JSX.Element {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  const purpose = useBlock(cardType.purposeId);
   const { project } = useProjectBeingEdited();
 
   //const allTags = useCardTypeTags();
@@ -152,7 +151,9 @@ export default function CardTypeItem({
             />
           )}
         </Flex>
-        <p className={lightItalicText}>{purpose?.textData || ''}</p>
+        <p className={lightItalicText}>
+          <DocTextDisplay id={cardType.purposeId} />
+        </p>
         <WIPContainer>
           <p className={lightItalicText}>
             <FontAwesomeIcon icon={faFileAlt} /> nb resources

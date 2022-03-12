@@ -10,13 +10,13 @@ import { faCog, faTrash, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
 import * as React from 'react';
 import * as API from '../../API/api';
 import useTranslations from '../../i18n/I18nContext';
+import { useAndLoadTextOfDocument } from '../../selectors/documentSelector';
 import { useAppDispatch } from '../../store/hooks';
 import { Destroyer } from '../common/Destroyer';
 import Flex from '../common/Flex';
 import IconButton from '../common/IconButton';
 import OpenCloseModal from '../common/OpenCloseModal';
 import WithToolbar from '../common/WithToolbar';
-import { useBlock } from '../live/LiveTextEditor';
 import { lightIconButtonStyle, marginAroundStyle, space_M, space_S } from '../styling/style';
 import { getKey, ResourceAndRef, ResourceCallContext } from './ResourceCommonType';
 import ResourceCreator from './ResourceCreator';
@@ -151,11 +151,11 @@ function TocEntry({ resourceAndRef, selectResource }: TocEntryProps) {
   const i18n = useTranslations();
   const dispatch = useAppDispatch();
 
-  const teaser = useBlock(resourceAndRef.targetResource.teaserId);
+  const { text: teaser } = useAndLoadTextOfDocument(resourceAndRef.targetResource.teaserId);
 
   return (
     <Flex
-      title={teaser ? teaser.textData || undefined : i18n.resource.noTeaser}
+      title={teaser || ''}
       className={tocEntryStyle}
       onClick={() => selectResource(resourceAndRef)}
     >

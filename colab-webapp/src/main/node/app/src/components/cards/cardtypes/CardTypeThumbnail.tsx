@@ -10,9 +10,9 @@ import { faFile } from '@fortawesome/free-regular-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { CardType } from 'colab-rest-client';
 import * as React from 'react';
+import { useAndLoadTextOfDocument } from '../../../selectors/documentSelector';
 import Flex from '../../common/Flex';
 import Thumbnail from '../../common/Thumbnail';
-import { useBlock } from '../../live/LiveTextEditor';
 import { borderRadius, cardShadow, space_S } from '../../styling/style';
 
 interface Props {
@@ -54,7 +54,7 @@ const tagStyle = css({
 });
 
 export default function CardTypeThumbnail({ cardType, highlighted, onClick }: Props): JSX.Element {
-  const purpose = useBlock(cardType.purposeId);
+  const { text: purpose } = useAndLoadTextOfDocument(cardType.purposeId);
 
   if (cardType.id == null) {
     return <i>CardType without id is invalid...</i>;
@@ -68,7 +68,7 @@ export default function CardTypeThumbnail({ cardType, highlighted, onClick }: Pr
         }}
         className={highlighted ? selected : defaultStyle}
       >
-        <div title={purpose?.textData || ''}>
+        <div title={purpose || ''}>
           <div>
             <h3>{cardType.title}</h3>
           </div>

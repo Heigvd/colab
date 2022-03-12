@@ -31,7 +31,7 @@ import IconButton from '../../common/IconButton';
 import InlineInput from '../../common/InlineInput';
 import Modal from '../../common/Modal';
 import Tips from '../../common/Tips';
-import { useBlock } from '../../live/LiveTextEditor';
+import DocTextDisplay from '../../documents/DocTextDisplay';
 import { ResourceContextScope } from '../../resources/ResourceCommonType';
 import ResourcesWrapper from '../../resources/ResourcesWrapper';
 import { cardStyle, cardTitle, lightIconButtonStyle, space_M, space_S } from '../../styling/style';
@@ -51,7 +51,6 @@ export default function CardTypeEditor({ className }: Props): JSX.Element {
   const options = allTags.map(tag => ({ label: tag, value: tag }));
   //const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  const purpose = useBlock(cardType?.purposeId);
 
   if (!cardType) {
     return <i>Card type without id is invalid...</i>;
@@ -196,7 +195,7 @@ export default function CardTypeEditor({ className }: Props): JSX.Element {
             </Flex>
             <Flex direction="column" grow={1} align="stretch">
               <div>
-                <b>Purpose:</b> {purpose?.textData}
+                <b>Purpose:</b> <DocTextDisplay id={cardType.purposeId} />
               </div>
               <Flex
                 direction="column"

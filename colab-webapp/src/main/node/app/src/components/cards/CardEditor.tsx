@@ -34,8 +34,8 @@ import InlineInput from '../common/InlineInput';
 import Modal from '../common/Modal';
 import OpenCloseModal from '../common/OpenCloseModal';
 import Tips from '../common/Tips';
+import DocTextDisplay from '../documents/DocTextDisplay';
 import { DocumentEditorWrapper } from '../documents/DocumentEditorWrapper';
-import { useBlock } from '../live/LiveTextEditor';
 import { ResourceContextScope } from '../resources/ResourceCommonType';
 import ResourcesWrapper from '../resources/ResourcesWrapper';
 import StickyNoteWrapper from '../stickynotes/StickyNoteWrapper';
@@ -129,7 +129,6 @@ export default function CardEditor({ card, variant, showSubcards = true }: Props
   const hasVariants = variants.length > 1 && variant != null;
   const variantNumber = hasVariants ? variants.indexOf(variant) + 1 : undefined;
 
-  const purpose = useBlock(cardType?.purposeId);
   const contents = useVariantsOrLoad(card);
   const variantPager = computeNav(contents, variant.id);
   const userAcl = useCardACLForCurrentUser(card.id);
@@ -328,14 +327,16 @@ export default function CardEditor({ card, variant, showSubcards = true }: Props
                       />
                     </Flex>
                   </Flex>
-                  <div className={showTypeDetails ? openDetails : closeDetails}>
-                    <p>
-                      <b>Card type</b>: {cardType?.title || ''}
-                    </p>
-                    <p>
-                      <b>Purpose</b>: {purpose?.textData || ''}
-                    </p>
-                  </div>
+                  {cardType && (
+                    <div className={showTypeDetails ? openDetails : closeDetails}>
+                      <p>
+                        <b>Card type</b>: {cardType.title || ''}
+                      </p>
+                      <p>
+                        <b>Purpose</b>: <DocTextDisplay id={cardType.purposeId} />
+                      </p>
+                    </div>
+                  )}
                 </Flex>
                 <Flex direction="column" grow={1} align="stretch">
                   {userAcl.read ? (

@@ -52,10 +52,9 @@ const documentSlice = createSlice({
         action.payload.documents.updated.forEach(document => updateDocument(state, document));
         action.payload.documents.deleted.forEach(entry => removeDocument(state, entry.id));
       })
-      // TODO sandra work in progress
-      // .addCase(API.getDocument.pending, (state, action) => {
-      //   state.documents[action.meta.arg] = 'LOADING';
-      // })
+      .addCase(API.getDocument.pending, (state, action) => {
+        state.documents[action.meta.arg] = 'LOADING';
+      })
       .addCase(API.getDocument.fulfilled, (state, action) => {
         updateDocument(state, action.payload);
       })

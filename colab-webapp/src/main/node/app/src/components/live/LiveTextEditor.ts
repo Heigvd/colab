@@ -53,34 +53,17 @@ export function useBlock(blockId: number | null | undefined): TextDataBlock | nu
 
   React.useEffect(() => {
     if (blockId != null) {
-      let alive = true;
       const refSubs = subscriptionCounters.current;
       const count = refSubs[blockId];
       if (!count) {
         // subscribe
         refSubs[blockId] = 1;
-        dispatch(API.subscribeToBlockChannel(blockId)).then(() => {
-          if (alive) {
-            // TODO sandra work in progress
-            // 1. do we need to get the doc ?!?
-            // maybe for teaser or purpose, certainly not for deliverables or resources' documents
-            // 2. for the moment, the only block we have is a document
-            // make it more wisely when there will be something else
-            dispatch(API.getDocument(blockId));
-          }
-        });
+        dispatch(API.subscribeToBlockChannel(blockId));
       } else {
         refSubs[blockId] = count + 1;
-        // TODO sandra work in progress
-        // 1. do we need to get the doc ?!?
-        // maybe for teaser or purpose, certainly not for deliverables or resources' documents
-        // 2. for the moment, the only block we have is a document
-        // make it more wisely when there will be something else
-        dispatch(API.getDocument(blockId));
       }
 
       return () => {
-        alive = false;
         const count = refSubs[blockId];
         if (count != null) {
           if (count === 1) {

@@ -22,7 +22,7 @@ type TextAndStatus = {
 };
 
 /** fetch the text / availability status */
-const useTextDataBlock = (id: number | null | undefined): TextAndStatus => {
+const useTextOfDocument = (id: number | null | undefined): TextAndStatus => {
   return useAppSelector(state => {
     const defaultResult = { text: undefined };
 
@@ -47,10 +47,10 @@ const useTextDataBlock = (id: number | null | undefined): TextAndStatus => {
 };
 
 /** fetch (and load if needed) the text / availability status */
-export const useAndLoadTextDataBlock = (id: number | null | undefined): TextAndStatus => {
+export const useAndLoadTextOfDocument = (id: number | null | undefined): TextAndStatus => {
   const dispatch = useAppDispatch();
 
-  const { text, status } = useTextDataBlock(id);
+  const { text, status } = useTextOfDocument(id);
 
   if (status === 'NOT_INITIALIZED' && id) {
     // we have to ask data to the server
