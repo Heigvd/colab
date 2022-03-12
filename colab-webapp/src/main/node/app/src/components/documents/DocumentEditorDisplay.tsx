@@ -49,19 +49,22 @@ const moveBoxStyle = css({
 
 export interface DocumentEditorDisplayProps {
   document: Document;
-  allowEdition?: boolean;
+  allowEdition: boolean;
 }
 
 export function DocumentEditorDisplay({
   document,
-  allowEdition = true,
+  allowEdition,
 }: DocumentEditorDisplayProps): JSX.Element {
   const dispatch = useAppDispatch();
+
   const isTextDataBlock = entityIs(document, 'TextDataBlock');
   const isDocumentFile = entityIs(document, 'DocumentFile');
   const isExternalLink = entityIs(document, 'ExternalLink');
+
   const [state, setState] = React.useState<EditState>('VIEW');
   const [showTree, setShowTree] = React.useState(false);
+
   const downloadUrl = API.getRestClient().DocumentFileRestEndPoint.getFileContentPath(document.id!);
 
   const downloadCb = React.useCallback(() => {

@@ -16,14 +16,14 @@ import { DocumentContext, DocumentType } from './documentCommonType';
 const addButtonStyle = css({ marginRight: space_S });
 
 export type DocumentCreatorButtonProps = {
-  creationContext: DocumentContext;
+  context: DocumentContext;
   docType: DocumentType;
   title: string;
   label: string | React.ReactNode;
 };
 
 export default function DocumentCreatorButton({
-  creationContext,
+  context,
   docType,
   title,
   label,
@@ -50,22 +50,22 @@ export default function DocumentCreatorButton({
       };
     }
 
-    if (creationContext.kind == 'DeliverableOfCardContent') {
+    if (context.kind == 'DeliverableOfCardContent') {
       dispatch(
         API.addDeliverable({
-          cardContentId: creationContext.ownerId,
+          cardContentId: context.ownerId,
           deliverable: document,
         }),
       );
-    } else if (creationContext.kind == 'PartOfResource') {
+    } else if (context.kind == 'PartOfResource') {
       dispatch(
         API.addDocumentToResource({
-          resourceId: creationContext.ownerId,
+          resourceId: context.ownerId,
           document: document,
         }),
       );
     }
-  }, [creationContext, docType, dispatch]);
+  }, [context, docType, dispatch]);
 
   return (
     <Button className={cx(invertedButtonStyle, addButtonStyle)} title={title} onClick={createDoc}>

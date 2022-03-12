@@ -37,12 +37,12 @@ export function DocumentEditorWrapper({
       {documents
         .sort((a, b) => (a.index || 0) - (b.index || 0))
         .map(doc => (
-          <DocumentEditorDisplay key={doc.id} document={doc} allowEdition={allowEdition} />
+          <DocumentEditorDisplay key={doc.id} document={doc} allowEdition={allowEdition || true} />
         ))}
-      <Flex className={css({ paddingTop: space_M })}>
-        {allowEdition && (
+      {allowEdition && (
+        <Flex className={css({ paddingTop: space_M })}>
           <DocumentCreatorButton
-            creationContext={context}
+            context={context}
             docType="TextDataBlock"
             title="add a text block"
             label={
@@ -51,10 +51,8 @@ export function DocumentEditorWrapper({
               </>
             }
           />
-        )}
-        {allowEdition && (
           <DocumentCreatorButton
-            creationContext={context}
+            context={context}
             docType="DocumentFile"
             title="add a file"
             label={
@@ -63,10 +61,8 @@ export function DocumentEditorWrapper({
               </>
             }
           />
-        )}
-        {allowEdition && (
           <DocumentCreatorButton
-            creationContext={context}
+            context={context}
             docType="ExternalLink"
             title="add a link"
             label={
@@ -75,8 +71,8 @@ export function DocumentEditorWrapper({
               </>
             }
           />
-        )}
-      </Flex>
+        </Flex>
+      )}
     </>
   );
 }
