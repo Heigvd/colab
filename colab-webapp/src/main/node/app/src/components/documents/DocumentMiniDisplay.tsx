@@ -15,7 +15,7 @@ import OpenClose from '../common/OpenClose';
 import Overlay from '../common/Overlay';
 import { closeIcon } from '../styling/defaultIcons';
 import { defaultRowContainerStyle, iconStyle } from '../styling/style';
-import { DocumentEditorDisplay } from './DocumentEditorDisplay';
+import DocumentEditor from './DocumentEditor';
 
 export interface DocumentMiniDisplayProps {
   document: Document;
@@ -35,7 +35,7 @@ export default function DocumentMiniDisplay({ document }: DocumentMiniDisplayPro
           <Overlay>
             {document.id && (
               <div>
-                <DocumentEditorDisplay document={document} allowEdition={true} />
+                <DocumentEditor document={document} allowEdition={true} />
               </div>
             )}
             <IconButton

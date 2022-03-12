@@ -35,7 +35,7 @@ import Modal from '../common/Modal';
 import OpenCloseModal from '../common/OpenCloseModal';
 import Tips from '../common/Tips';
 import DocTextDisplay from '../documents/DocTextDisplay';
-import { DocumentEditorWrapper } from '../documents/DocumentEditorWrapper';
+import DocumentList from '../documents/DocumentList';
 import { ResourceContextScope } from '../resources/ResourceCommonType';
 import ResourcesWrapper from '../resources/ResourcesWrapper';
 import StickyNoteWrapper from '../stickynotes/StickyNoteWrapper';
@@ -341,7 +341,7 @@ export default function CardEditor({ card, variant, showSubcards = true }: Props
                 <Flex direction="column" grow={1} align="stretch">
                   {userAcl.read ? (
                     variant.id ? (
-                      <DocumentEditorWrapper
+                      <DocumentList
                         context={{ kind: 'DeliverableOfCardContent', ownerId: variant.id }}
                         allowEdition={!readOnly}
                       />

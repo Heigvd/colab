@@ -21,7 +21,7 @@ export interface DocumentFileProps {
   editingStatus: EditState;
 }
 
-export function DocumentFileEditor({
+export default function DocumentFileEditor({
   document,
   allowEdition,
   editingStatus,

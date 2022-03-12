@@ -16,7 +16,7 @@ import cardReducer from './card';
 import cardTypeReducer from './cardtype';
 import changeReducer from './change';
 import configReducer from './configuration';
-import documentReducer from './document';
+import documentReducer from './documentSlice';
 import externalDataReducer from './externalData';
 import notifReducer from './notification';
 import projectReducer from './project';

@@ -33,7 +33,7 @@ import {
   lightIconButtonStyle,
   space_S,
 } from '../styling/style';
-import { DocumentFileEditor } from './DocumentFileEditor';
+import DocumentFileEditor from './DocumentFileEditor';
 
 const editingStyle = css({
   backgroundColor: 'var(--hoverBgColor)',
@@ -47,15 +47,15 @@ const moveBoxStyle = css({
   },
 });
 
-export interface DocumentEditorDisplayProps {
+export interface DocumentEditorProps {
   document: Document;
   allowEdition: boolean;
 }
 
-export function DocumentEditorDisplay({
+export default function DocumentEditor({
   document,
   allowEdition,
-}: DocumentEditorDisplayProps): JSX.Element {
+}: DocumentEditorProps): JSX.Element {
   const dispatch = useAppDispatch();
 
   const isTextDataBlock = entityIs(document, 'TextDataBlock');

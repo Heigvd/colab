@@ -15,17 +15,14 @@ import Flex from '../common/Flex';
 import { space_M } from '../styling/style';
 import { DocumentContext } from './documentCommonType';
 import DocumentCreatorButton from './DocumentCreatorButton';
-import { DocumentEditorDisplay } from './DocumentEditorDisplay';
+import DocumentEditor from './DocumentEditor';
 
-export interface DocumentEditorWrapperProps {
+export interface DocumentListProps {
   context: DocumentContext;
   allowEdition?: boolean;
 }
 
-export function DocumentEditorWrapper({
-  context,
-  allowEdition,
-}: DocumentEditorWrapperProps): JSX.Element {
+export default function DocumentList({ context, allowEdition }: DocumentListProps): JSX.Element {
   const { documents, status } = useAndLoadDocuments(context);
 
   if (status !== 'READY') {
@@ -37,7 +34,7 @@ export function DocumentEditorWrapper({
       {documents
         .sort((a, b) => (a.index || 0) - (b.index || 0))
         .map(doc => (
-          <DocumentEditorDisplay key={doc.id} document={doc} allowEdition={allowEdition || true} />
+          <DocumentEditor key={doc.id} document={doc} allowEdition={allowEdition || true} />
         ))}
       {allowEdition && (
         <Flex className={css({ paddingTop: space_M })}>

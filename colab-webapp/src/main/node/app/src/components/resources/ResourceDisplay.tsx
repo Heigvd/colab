@@ -10,7 +10,7 @@ import * as React from 'react';
 import useTranslations from '../../i18n/I18nContext';
 import Flex from '../common/Flex';
 import IconButton from '../common/IconButton';
-import { DocumentEditorWrapper } from '../documents/DocumentEditorWrapper';
+import DocumentList from '../documents/DocumentList';
 import { lightIconButtonStyle, paddingAroundStyle, space_M, space_S } from '../styling/style';
 import { ResourceAndRef } from './ResourceCommonType';
 
@@ -45,7 +45,7 @@ export function ResourceDisplay({ resourceAndRef, onClose }: ResourceDisplayProp
         </div>
       </Flex>
       {targetResourceId && (
-        <DocumentEditorWrapper
+        <DocumentList
           context={{ kind: 'PartOfResource', ownerId: targetResourceId }}
           allowEdition={allowEdition}
         />
