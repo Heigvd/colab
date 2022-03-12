@@ -9,11 +9,9 @@ import { css } from '@emotion/css';
 import { faFile, faLink, faParagraph, faPlus } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import * as React from 'react';
-import * as API from '../../API/api';
-import { useDocuments } from '../../selectors/documentSelector';
-import { useAppDispatch } from '../../store/hooks';
+import { useAndLoadDocuments } from '../../selectors/documentSelector';
+import AvailabilityStatusIndicator from '../common/AvailabilityStatusIndicator';
 import Flex from '../common/Flex';
-import InlineLoading from '../common/InlineLoading';
 import { space_M } from '../styling/style';
 import { DocumentContext } from './documentCommonType';
 import DocumentCreatorButton from './DocumentCreatorButton';
@@ -28,25 +26,10 @@ export function DocumentEditorWrapper({
   context,
   allowEdition,
 }: DocumentEditorWrapperProps): JSX.Element {
-  const dispatch = useAppDispatch();
+  const { documents, status } = useAndLoadDocuments(context);
 
-  const { documents, status } = useDocuments(context);
-
-  React.useEffect(() => {
-    if (status == 'NOT_INITIALIZED') {
-      if (context.kind == 'DeliverableOfCardContent' && context.cardContentId != null) {
-        dispatch(API.getDeliverablesOfCardContent(context.cardContentId));
-      }
-      if (context.kind == 'PartOfResource' && context.resourceId != null) {
-        dispatch(API.getDocumentsOfResource(context.resourceId));
-      }
-    }
-  }, [context, status, dispatch]);
-
-  if (status === 'NOT_INITIALIZED') {
-    return <InlineLoading />;
-  } else if (status === 'LOADING') {
-    return <InlineLoading />;
+  if (status !== 'READY') {
+    return <AvailabilityStatusIndicator status={status} />;
   }
 
   return (

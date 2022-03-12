@@ -46,7 +46,7 @@ export function ResourceDisplay({ resourceAndRef, onClose }: ResourceDisplayProp
       </Flex>
       {targetResourceId && (
         <DocumentEditorWrapper
-          context={{ kind: 'PartOfResource', resourceId: targetResourceId }}
+          context={{ kind: 'PartOfResource', ownerId: targetResourceId }}
           allowEdition={allowEdition}
         />
       )}

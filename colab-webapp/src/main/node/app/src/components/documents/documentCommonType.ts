@@ -7,12 +7,12 @@
 
 export type DeliverableOfCardContentContext = {
   kind: 'DeliverableOfCardContent';
-  cardContentId: number;
+  ownerId: number;
 };
 
 export type PartOfResourceContext = {
   kind: 'PartOfResource';
-  resourceId: number;
+  ownerId: number;
 };
 
 export type DocumentContext = DeliverableOfCardContentContext | PartOfResourceContext;

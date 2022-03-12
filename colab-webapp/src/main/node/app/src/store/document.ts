@@ -4,82 +4,45 @@
  *
  * Licensed under the MIT License
  */
-import { createSlice } from '@reduxjs/toolkit';
-import { Document, entityIs } from 'colab-rest-client';
-import * as API from '../API/api';
-//import {mapById} from '../helper';
-import { processMessage } from '../ws/wsThunkActions';
-import { LoadingStatus } from './store';
 
-export interface DocumentState {
-  documents: Record<number, Document | LoadingStatus>;
-  byCardContent: Record<number, { documentIds: number[]; status: LoadingStatus }>;
-  byResource: Record<number, { documentIds: number[]; status: LoadingStatus }>;
+import { createSlice } from '@reduxjs/toolkit';
+import { Document } from 'colab-rest-client';
+import * as API from '../API/api';
+import { mapById } from '../helper';
+import { processMessage } from '../ws/wsThunkActions';
+import { AvailabilityStatus } from './store';
+
+/** what we have in the store */
+interface DocumentState {
+  /** all the documents we got so far */
+  documents: Record<number, Document | AvailabilityStatus>;
+
+  /** did we load the documents for a card content */
+  statusByCardContent: Record<number, AvailabilityStatus>;
+  /** did we load the documents for a resource */
+  statusByResource: Record<number, AvailabilityStatus>;
 }
 
 const initialState: DocumentState = {
   documents: {},
-  byCardContent: {},
-  byResource: {},
+
+  statusByCardContent: {},
+  statusByResource: {},
 };
 
+/** what to do when a document was updated / created */
 const updateDocument = (state: DocumentState, document: Document) => {
   if (document.id != null) {
     state.documents[document.id] = document;
-
-    if (document.owningCardContentId) {
-      const cardContentId = document.owningCardContentId;
-      const stateForCardContent = state.byCardContent[cardContentId];
-      if (stateForCardContent) {
-        if (!stateForCardContent.documentIds.includes(document.id)) {
-          stateForCardContent.documentIds.push(document.id);
-        }
-      }
-    }
-
-    if (document.owningResourceId) {
-      const resourceId = document.owningResourceId;
-      const stateForResource = state.byResource[resourceId];
-      if (stateForResource) {
-        if (!stateForResource.documentIds.includes(document.id)) {
-          stateForResource.documentIds.push(document.id);
-        }
-      }
-    }
   }
 };
 
+/** what to do when a document was deleted */
 const removeDocument = (state: DocumentState, documentId: number) => {
-  const documentState = state.documents[documentId];
-
-  if (documentState && entityIs(documentState, 'Document')) {
-    if (documentState.owningCardContentId) {
-      const cardContentId = documentState.owningCardContentId;
-      const stateForCardContent = state.byCardContent[cardContentId];
-      if (stateForCardContent) {
-        const index = stateForCardContent.documentIds.indexOf(documentId);
-        if (index >= 0) {
-          stateForCardContent.documentIds.splice(index, 1);
-        }
-      }
-    }
-
-    if (documentState.owningResourceId) {
-      const resourceId = documentState.owningResourceId;
-      const stateForResource = state.byResource[resourceId];
-      if (stateForResource) {
-        const index = stateForResource.documentIds.indexOf(documentId);
-        if (index >= 0) {
-          stateForResource.documentIds.splice(index, 1);
-        }
-      }
-    }
-  }
-
   delete state.documents[documentId];
 };
 
-const documentsSlice = createSlice({
+const documentSlice = createSlice({
   name: 'documents',
   initialState,
   reducers: {},
@@ -90,47 +53,34 @@ const documentsSlice = createSlice({
         action.payload.documents.deleted.forEach(entry => removeDocument(state, entry.id));
       })
       // TODO sandra work in progress
-      // for the moment, as the document is loaded once for the cardcontent / resource and once again from livetexteditor
-      // remove the loading state
       // .addCase(API.getDocument.pending, (state, action) => {
       //   state.documents[action.meta.arg] = 'LOADING';
       // })
       .addCase(API.getDocument.fulfilled, (state, action) => {
         updateDocument(state, action.payload);
       })
+      .addCase(API.getDocument.rejected, (state, action) => {
+        state.documents[action.meta.arg] = 'ERROR';
+      })
       .addCase(API.getDeliverablesOfCardContent.pending, (state, action) => {
-        const cardContentId = action.meta.arg;
-        state.byCardContent[cardContentId] = { documentIds: [], status: 'LOADING' };
+        state.statusByCardContent[action.meta.arg] = 'LOADING';
       })
       .addCase(API.getDeliverablesOfCardContent.fulfilled, (state, action) => {
-        const cardContentId = action.meta.arg;
-        state.byCardContent[cardContentId] = {
-          documentIds: action.payload.flatMap(doc => (doc.id ? [doc.id] : [])),
-          status: 'READY',
-        };
-
-        action.payload.forEach(doc => {
-          if (doc && doc.id) {
-            state.documents[doc.id] = doc;
-          }
-        });
+        state.documents = { ...state.documents, ...mapById(action.payload) };
+        state.statusByCardContent[action.meta.arg] = 'READY';
+      })
+      .addCase(API.getDeliverablesOfCardContent.rejected, (state, action) => {
+        state.statusByCardContent[action.meta.arg] = 'ERROR';
       })
       .addCase(API.getDocumentsOfResource.pending, (state, action) => {
-        const resourceId = action.meta.arg;
-        state.byResource[resourceId] = { documentIds: [], status: 'LOADING' };
+        state.statusByResource[action.meta.arg] = 'LOADING';
       })
       .addCase(API.getDocumentsOfResource.fulfilled, (state, action) => {
-        const resourceId = action.meta.arg;
-        state.byResource[resourceId] = {
-          documentIds: action.payload.flatMap(doc => (doc.id ? [doc.id] : [])),
-          status: 'READY',
-        };
-
-        action.payload.forEach(doc => {
-          if (doc && doc.id) {
-            state.documents[doc.id] = doc;
-          }
-        });
+        state.documents = { ...state.documents, ...mapById(action.payload) };
+        state.statusByResource[action.meta.arg] = 'READY';
+      })
+      .addCase(API.getDocumentsOfResource.rejected, (state, action) => {
+        state.statusByResource[action.meta.arg] = 'ERROR';
       })
       .addCase(API.closeCurrentProject.fulfilled, () => {
         return initialState;
@@ -140,4 +90,4 @@ const documentsSlice = createSlice({
       }),
 });
 
-export default documentsSlice.reducer;
+export default documentSlice.reducer;

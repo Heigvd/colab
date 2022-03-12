@@ -53,14 +53,14 @@ export default function DocumentCreatorButton({
     if (creationContext.kind == 'DeliverableOfCardContent') {
       dispatch(
         API.addDeliverable({
-          cardContentId: creationContext.cardContentId,
+          cardContentId: creationContext.ownerId,
           deliverable: document,
         }),
       );
-    } else {
+    } else if (creationContext.kind == 'PartOfResource') {
       dispatch(
         API.addDocumentToResource({
-          resourceId: creationContext.resourceId,
+          resourceId: creationContext.ownerId,
           document: document,
         }),
       );

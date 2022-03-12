@@ -4,6 +4,7 @@
  *
  * Licensed under the MIT License
  */
+
 import { configureStore } from '@reduxjs/toolkit';
 import { combineReducers } from 'redux';
 import thunk from 'redux-thunk';
@@ -57,3 +58,5 @@ export type ColabState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;
 
 export type LoadingStatus = 'NOT_INITIALIZED' | 'LOADING' | 'READY';
+
+export type AvailabilityStatus = 'NOT_INITIALIZED' | 'LOADING' | 'READY' | 'ERROR';

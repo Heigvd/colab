@@ -341,7 +341,7 @@ export default function CardEditor({ card, variant, showSubcards = true }: Props
                   {userAcl.read ? (
                     variant.id ? (
                       <DocumentEditorWrapper
-                        context={{ kind: 'DeliverableOfCardContent', cardContentId: variant.id }}
+                        context={{ kind: 'DeliverableOfCardContent', ownerId: variant.id }}
                         allowEdition={!readOnly}
                       />
                     ) : (

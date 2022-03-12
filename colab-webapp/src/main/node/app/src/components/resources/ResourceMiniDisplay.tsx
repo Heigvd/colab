@@ -9,7 +9,7 @@ import { css } from '@emotion/css';
 import { AbstractResource, entityIs, Resource, ResourceRef } from 'colab-rest-client';
 import * as React from 'react';
 import * as API from '../../API/api';
-import { useDocuments } from '../../selectors/documentSelector';
+import { useAndLoadDocuments } from '../../selectors/documentSelector';
 import { useAppDispatch } from '../../store/hooks';
 import { BlockEditorWrapper } from '../blocks/BlockEditorWrapper';
 import CheckBox from '../common/CheckBox';
@@ -126,19 +126,11 @@ export default function ResourceMiniDisplay({
   cardResourceRef,
   cardContentResourceRef,
 }: ResourceMiniDisplayProps): JSX.Element {
-  const dispatch = useAppDispatch();
-
   const targetResourceId = targetResource.id;
-  const { documents, status } = useDocuments({
+  const { documents, status } = useAndLoadDocuments({
     kind: 'PartOfResource',
-    resourceId: targetResourceId!,
+    ownerId: targetResourceId!,
   });
-
-  React.useEffect(() => {
-    if (status == 'NOT_INITIALIZED' && targetResourceId != null) {
-      dispatch(API.getDocumentsOfResource(targetResourceId));
-    }
-  }, [status, targetResourceId, dispatch]);
 
   // TODO see how the category is resolved
   let effectiveCategory = targetResource.category;
