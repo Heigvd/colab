@@ -7,13 +7,11 @@
 
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import {
-  AbstractCardType,
   AbstractResource,
   ActivityFlowLink,
   AuthInfo,
   Card,
   CardContent,
-  CardType,
   CardTypeCreationBean,
   Change,
   ColabClient,
@@ -39,6 +37,7 @@ import { PasswordScore } from '../components/common/Form/Form';
 import { hashPassword } from '../SecurityHelper';
 import { addNotification } from '../store/notification';
 import { ColabState, getStore } from '../store/store';
+import { CardTypeAllInOne } from '../types/cardTypeDefinition';
 
 const winPath = window.location.pathname;
 
@@ -490,6 +489,10 @@ export const clearRoleInvolvement = createAsyncThunk(
 // Card Types
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
+export const getExpandedCardType = createAsyncThunk('cardType/getExpanded', async (id: number) => {
+  return await restClient.CardTypeRestEndpoint.getExpandedCardType(id);
+});
+
 /**
  * Get project own abstract card types:
  *  - defined specifically for the project
@@ -523,14 +526,6 @@ export const getAvailablePublishedCardTypes = createAsyncThunk(
   },
 );
 
-export const getExpandedCardType = createAsyncThunk('cardType/getExpanded', async (id: number) => {
-  return await restClient.CardTypeRestEndpoint.getExpandedCardType(id);
-});
-
-export const getCardType = createAsyncThunk('cardType/get', async (id: number) => {
-  return await restClient.CardTypeRestEndpoint.getCardType(id);
-});
-
 export const createCardType = createAsyncThunk(
   'cardType/create',
   async (cardType: CardTypeCreationBean) => {
@@ -538,41 +533,102 @@ export const createCardType = createAsyncThunk(
   },
 );
 
-export const updateCardType = createAsyncThunk('cardType/update', async (cardType: CardType) => {
-  await restClient.CardTypeRestEndpoint.updateCardType(cardType);
-});
+export const updateCardTypeTitle = createAsyncThunk(
+  'cardType/update',
+  async ({ cardTypeId, title }: CardTypeAllInOne, thunkApi) => {
+    const state = thunkApi.getState() as ColabState;
+    if (cardTypeId) {
+      const cardTypeServerSide = state.cardtype.cardtypes[cardTypeId];
+      if (entityIs(cardTypeServerSide, 'CardType')) {
+        await restClient.CardTypeRestEndpoint.updateCardType({
+          ...cardTypeServerSide,
+          title: title,
+        });
+      }
+    }
+    // see if we can throw an error
+  },
+);
 
-export const deleteCardType = createAsyncThunk('cardType/delete', async (cardType: CardType) => {
-  if (cardType.id) {
-    await restClient.CardTypeRestEndpoint.deleteCardType(cardType.id);
-  }
-});
+export const updateCardTypeTags = createAsyncThunk(
+  'cardType/update',
+  async ({ cardTypeId, tags }: CardTypeAllInOne, thunkApi) => {
+    const state = thunkApi.getState() as ColabState;
+    if (cardTypeId) {
+      const cardTypeServerSide = state.cardtype.cardtypes[cardTypeId];
+      if (entityIs(cardTypeServerSide, 'CardType')) {
+        await restClient.CardTypeRestEndpoint.updateCardType({
+          ...cardTypeServerSide,
+          tags: tags,
+        });
+      }
+    }
+    // see if we can throw an error
+  },
+);
+
+export const updateCardTypeDeprecated = createAsyncThunk(
+  'cardType/update',
+  async ({ ownId, deprecated }: CardTypeAllInOne, thunkApi) => {
+    const state = thunkApi.getState() as ColabState;
+    if (ownId) {
+      const cardTypeServerSide = state.cardtype.cardtypes[ownId];
+      if (entityIs(cardTypeServerSide, 'AbstractCardType')) {
+        await restClient.CardTypeRestEndpoint.updateCardType({
+          ...cardTypeServerSide,
+          deprecated: deprecated,
+        });
+      }
+    }
+    // see if we can throw an error
+  },
+);
+
+export const updateCardTypePublished = createAsyncThunk(
+  'cardType/update',
+  async ({ ownId, published }: CardTypeAllInOne, thunkApi) => {
+    const state = thunkApi.getState() as ColabState;
+    if (ownId) {
+      const cardTypeServerSide = state.cardtype.cardtypes[ownId];
+      if (entityIs(cardTypeServerSide, 'AbstractCardType')) {
+        await restClient.CardTypeRestEndpoint.updateCardType({
+          ...cardTypeServerSide,
+          published: published,
+        });
+      }
+    }
+    // see if we can throw an error
+  },
+);
 
 /**
  * Use the card type in the project. Concretely that means make a card type reference.
  */
 export const addCardTypeToProject = createAsyncThunk(
   'cardType/addToProject',
-  async ({ cardType, project }: { cardType: AbstractCardType; project: Project }) => {
-    if (cardType.id && project.id) {
-      return await restClient.CardTypeRestEndpoint.useCardTypeInProject(cardType.id, project.id);
-    }
+  async ({ cardType, project }: { cardType: CardTypeAllInOne; project: Project }) => {
+    if (cardType.ownId && project.id)
+      return await restClient.CardTypeRestEndpoint.useCardTypeInProject(cardType.ownId, project.id);
   },
 );
 
+// export const deleteCardType = createAsyncThunk('cardType/delete', async (cardType: CardType) => {
+//   if (cardType.id) {
+//     await restClient.CardTypeRestEndpoint.deleteCardType(cardType.id);
+//   }
+// });
+
 // TODO sandra in progress : sharpened use of delete vs remove from project
 
-// TODO sandra work in progress : not working for the moment (mostly)
 /**
  * Remove the card type from the project. Can be done only if not used.
  */
-// TODO sandra work in progress, can we give cardTypeRef for inherited ?
 export const removeCardTypeFromProject = createAsyncThunk(
   'cardType/removeFromProject',
-  async ({ cardType, project }: { cardType: AbstractCardType; project: Project }) => {
-    if (cardType.id && project.id) {
+  async ({ cardType, project }: { cardType: CardTypeAllInOne; project: Project }) => {
+    if (cardType.ownId && project.id) {
       return await restClient.CardTypeRestEndpoint.removeCardTypeFromProject(
-        cardType.id,
+        cardType.ownId,
         project.id,
       );
     }

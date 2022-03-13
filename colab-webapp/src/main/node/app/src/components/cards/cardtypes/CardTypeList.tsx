@@ -7,17 +7,17 @@
 
 import { css } from '@emotion/css';
 import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
-import { CardType } from 'colab-rest-client';
 import * as React from 'react';
 import { Route, Routes, useNavigate } from 'react-router-dom';
-import * as API from '../../../API/api';
-import { useProjectCardTypes } from '../../../selectors/cardTypeSelector';
+import {
+  useAndLoadAvailableCardTypes,
+  useAndLoadProjectCardTypes,
+} from '../../../selectors/cardTypeSelector';
 import { useProjectBeingEdited } from '../../../selectors/projectSelector';
-import { useAppDispatch } from '../../../store/hooks';
+import AvailabilityStatusIndicator from '../../common/AvailabilityStatusIndicator';
 import Collapsible from '../../common/Collapsible';
 import Flex from '../../common/Flex';
 import IconButton from '../../common/IconButton';
-import InlineLoading from '../../common/InlineLoading';
 import { space_L, space_M } from '../../styling/style';
 import CardTypeCreator from './CardTypeCreator';
 import CardTypeEditor from './CardTypeEditor';
@@ -32,35 +32,19 @@ const flexWrap = css({
 });
 
 export default function CardTypeList(): JSX.Element {
-  const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const { project } = useProjectBeingEdited();
-  const cardTypes = useProjectCardTypes();
-  const unfilteredCardTypes = (): CardType[] => {
-    const cts: CardType[] = [];
-    cardTypes.own.map(ct => cts.push(ct));
-    cardTypes.inherited.map(ct => cts.push(ct));
-    cardTypes.global.map(ct => cts.push(ct));
-    return cts;
-  };
-
-  React.useEffect(() => {
-    if (cardTypes.projectStatus === 'UNSET') {
-      if (project != null) {
-        dispatch(API.getProjectCardTypes(project));
-      }
-    }
-    if (cardTypes.publishedStatus === 'UNSET') {
-      // published type from other project or global types not yet knonw
-      dispatch(API.getAvailablePublishedCardTypes());
-    }
-  }, [project, cardTypes, dispatch]);
+  const { cardTypes: projectCardTypes, status: projectCTStatus } = useAndLoadProjectCardTypes();
+  const { cardTypes: availableCardTypes, status: availableCTStatus } =
+    useAndLoadAvailableCardTypes();
 
   if (project == null) {
     return <i>No project</i>;
   } else {
-    if (cardTypes.projectStatus !== 'READY' || cardTypes.publishedStatus !== 'READY') {
-      return <InlineLoading />;
+    if (projectCTStatus !== 'READY') {
+      return <AvailabilityStatusIndicator status={projectCTStatus} />;
+    } else if (availableCTStatus !== 'READY') {
+      return <AvailabilityStatusIndicator status={availableCTStatus} />;
     } else {
       return (
         <>
@@ -83,8 +67,8 @@ export default function CardTypeList(): JSX.Element {
                   </Flex>
                   <h4>Project types</h4>
                   <div className={flexWrap}>
-                    {unfilteredCardTypes().map(cardType => (
-                      <CardTypeItem key={cardType.id} cardType={cardType} />
+                    {projectCardTypes.map(cardType => (
+                      <CardTypeItem key={cardType.ownId} cardType={cardType} />
                     ))}
                   </div>
                   <Collapsible
@@ -94,27 +78,31 @@ export default function CardTypeList(): JSX.Element {
                     <div>
                       <h4>From your other projects</h4>
                       <div>
-                        {cardTypes.published.map(cardType => (
-                          <CardTypeItem
-                            key={cardType.id}
-                            cardType={cardType}
-                            readOnly
-                            notUsedInProject
-                          />
-                        ))}
+                        {availableCardTypes
+                          .filter(ct => ct.projectIdCT != null)
+                          .map(cardType => (
+                            <CardTypeItem
+                              key={cardType.ownId}
+                              cardType={cardType}
+                              readOnly
+                              notUsedInProject
+                            />
+                          ))}
                       </div>
                     </div>
                     <div>
                       <h4>Global</h4>
                       <div>
-                        {cardTypes.global.map(cardType => (
-                          <CardTypeItem
-                            key={cardType.id}
-                            cardType={cardType}
-                            readOnly
-                            notUsedInProject
-                          />
-                        ))}
+                        {availableCardTypes
+                          .filter(ct => ct.projectIdCT == null)
+                          .map(cardType => (
+                            <CardTypeItem
+                              key={cardType.ownId}
+                              cardType={cardType}
+                              readOnly
+                              notUsedInProject
+                            />
+                          ))}
                       </div>
                     </div>
                   </Collapsible>

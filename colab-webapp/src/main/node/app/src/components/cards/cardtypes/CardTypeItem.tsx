@@ -9,23 +9,22 @@ import { css, cx } from '@emotion/css';
 import {
   faEllipsisV,
   faExchangeAlt,
-  faFileAlt,
   faPaw,
   faPen,
   faTrash,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { CardType } from 'colab-rest-client';
 import * as React from 'react';
 import { useNavigate } from 'react-router-dom';
 import * as API from '../../../API/api';
 import { useProjectBeingEdited } from '../../../selectors/projectSelector';
 import { useAppDispatch } from '../../../store/hooks';
+import { CardTypeAllInOne as CardType } from '../../../types/cardTypeDefinition';
 import ConfirmDeleteModal from '../../common/ConfirmDeleteModal';
 import DropDownMenu from '../../common/DropDownMenu';
 import Flex from '../../common/Flex';
-import { WIPContainer } from '../../common/Tips';
 import DocTextDisplay from '../../documents/DocTextDisplay';
+import ResourceSummary from '../../resources/ResourceSummary';
 import {
   borderRadius,
   cardShadow,
@@ -64,6 +63,7 @@ export default function CardTypeItem({
 }: DisplayProps): JSX.Element {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
+
   const { project } = useProjectBeingEdited();
 
   //const allTags = useCardTypeTags();
@@ -73,7 +73,7 @@ export default function CardTypeItem({
     <>
       <Flex direction="column" align="stretch" className={style}>
         <Flex justify="space-between">
-          <h3>{cardType.title || 'Untitled type'}</h3>
+          <h3>{cardType.title || 'card type'}</h3>
           {project && (
             <DropDownMenu
               icon={faEllipsisV}
@@ -89,7 +89,7 @@ export default function CardTypeItem({
                             <FontAwesomeIcon icon={faPen} /> Edit Type
                           </>
                         ),
-                        action: () => navigate(`./edit/${cardType.id}`),
+                        action: () => navigate(`./edit/${cardType.ownId}`),
                       },
                     ]
                   : []),
@@ -114,7 +114,6 @@ export default function CardTypeItem({
                             <FontAwesomeIcon icon={faExchangeAlt} /> Remove from project
                           </>
                         ),
-                        // TODO sandra work in progress : not working for inherited from other project for the moment (mostly)
                         action: () =>
                           dispatch(API.removeCardTypeFromProject({ cardType, project })),
                       },
@@ -154,11 +153,8 @@ export default function CardTypeItem({
         <p className={lightItalicText}>
           <DocTextDisplay id={cardType.purposeId} />
         </p>
-        <WIPContainer>
-          <p className={lightItalicText}>
-            <FontAwesomeIcon icon={faFileAlt} /> nb resources
-          </p>
-        </WIPContainer>
+        <ResourceSummary />
+        {/* <ResourceSummary kind={'CardType'} accessLevel={'READ'} cardTypeId={cardType.ownId} /> */}
         <Flex grow={1} align="flex-end">
           {cardType.tags.map(tag => {
             return (

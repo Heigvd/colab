@@ -9,10 +9,10 @@ import { css } from '@emotion/css';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import * as React from 'react';
 import * as API from '../../../API/api';
-import { useGlobalTypes } from '../../../selectors/cardTypeSelector';
+import { useAndLoadGlobalTypesForAdmin } from '../../../selectors/cardTypeSelector';
 import { useAppDispatch } from '../../../store/hooks';
+import AvailabilityStatusIndicator from '../../common/AvailabilityStatusIndicator';
 import IconButton from '../../common/IconButton';
-import InlineLoading from '../../common/InlineLoading';
 import CardTypeItem from './CardTypeItem';
 
 const flexWrap = css({
@@ -23,7 +23,7 @@ const flexWrap = css({
 
 export default function GlobalCardTypeList(): JSX.Element {
   const dispatch = useAppDispatch();
-  const cardTypes = useGlobalTypes();
+  const { cardTypes, status } = useAndLoadGlobalTypesForAdmin();
 
   const createNewCb = React.useCallback(() => {
     dispatch(
@@ -34,22 +34,16 @@ export default function GlobalCardTypeList(): JSX.Element {
     );
   }, [dispatch]);
 
-  React.useEffect(() => {
-    if (cardTypes.status === 'UNSET') {
-      dispatch(API.getAllGlobalCardTypes());
-    }
-  }, [cardTypes.status, dispatch]);
-
-  if (cardTypes.status !== 'READY') {
-    return <InlineLoading />;
+  if (status !== 'READY') {
+    return <AvailabilityStatusIndicator status={status} />;
   } else {
     return (
       <div>
         <h3>Global Card Types</h3>
         <IconButton onClick={createNewCb} icon={faPlus} title="Create new" />
         <div className={flexWrap}>
-          {cardTypes.types.map(cardType => (
-            <CardTypeItem key={cardType.id} cardType={cardType} />
+          {cardTypes.map(cardType => (
+            <CardTypeItem key={cardType.cardTypeId} cardType={cardType} />
           ))}
         </div>
       </div>

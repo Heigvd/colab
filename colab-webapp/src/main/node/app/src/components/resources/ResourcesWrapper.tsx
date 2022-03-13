@@ -10,7 +10,7 @@ import * as API from '../../API/api';
 import { useResources } from '../../selectors/resourceSelector';
 import { useAppDispatch } from '../../store/hooks';
 import InlineLoading from '../common/InlineLoading';
-import { ResourceAndRef, ResourceCallContext, ResourceContextScope } from './ResourceCommonType';
+import { ResourceAndRef, ResourceCallContext } from './ResourceCommonType';
 import { ResourceDisplay } from './ResourceDisplay';
 import ResourcesList from './ResourcesList';
 
@@ -28,15 +28,9 @@ export default function ResourcesWrapper(contextInfo: ResourcesWrapperProps): JS
 
   React.useEffect(() => {
     if (status == 'NOT_INITIALIZED' && contextInfo.accessLevel !== 'DENIED') {
-      if (
-        contextInfo.kind === ResourceContextScope.CardOrCardContent &&
-        contextInfo.cardContentId != null
-      ) {
+      if (contextInfo.kind === 'CardOrCardContent' && contextInfo.cardContentId != null) {
         dispatch(API.getResourceChainForCardContentId(contextInfo.cardContentId));
-      } else if (
-        contextInfo.kind === ResourceContextScope.CardType &&
-        contextInfo.cardTypeId != null
-      ) {
+      } else if (contextInfo.kind === 'CardType' && contextInfo.cardTypeId != null) {
         dispatch(API.getResourceChainForAbstractCardTypeId(contextInfo.cardTypeId));
       } else {
         // error

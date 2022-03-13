@@ -19,9 +19,10 @@ import { Route, Routes, useNavigate, useParams } from 'react-router-dom';
 import Creatable from 'react-select/creatable';
 import * as API from '../../../API/api';
 //import logger from '../../../logger';
-import { useCardType, useCardTypeTags } from '../../../selectors/cardTypeSelector';
+import { useAndLoadCardType, useCardTypeTags } from '../../../selectors/cardTypeSelector';
 import { useProjectBeingEdited } from '../../../selectors/projectSelector';
 import { dispatch } from '../../../store/store';
+import AvailabilityStatusIndicator from '../../common/AvailabilityStatusIndicator';
 import Button from '../../common/Button';
 import ConfirmDeleteModal from '../../common/ConfirmDeleteModal';
 import DropDownMenu from '../../common/DropDownMenu';
@@ -32,7 +33,6 @@ import InlineInput from '../../common/InlineInput';
 import Modal from '../../common/Modal';
 import Tips from '../../common/Tips';
 import DocTextDisplay from '../../documents/DocTextDisplay';
-import { ResourceContextScope } from '../../resources/ResourceCommonType';
 import ResourcesWrapper from '../../resources/ResourcesWrapper';
 import { cardStyle, cardTitle, lightIconButtonStyle, space_M, space_S } from '../../styling/style';
 import SideCollapsiblePanel from './../SideCollapsiblePanel';
@@ -42,18 +42,19 @@ interface Props {
 }
 
 export default function CardTypeEditor({ className }: Props): JSX.Element {
-  const { project } = useProjectBeingEdited();
   const id = useParams<'id'>();
   const typeId = +id.id!;
-  const completeCardType = useCardType(typeId);
-  const cardType = completeCardType.cardType;
+  const { cardType, status } = useAndLoadCardType(typeId);
+
+  const { project } = useProjectBeingEdited();
+
   const allTags = useCardTypeTags();
   const options = allTags.map(tag => ({ label: tag, value: tag }));
-  //const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
-  if (!cardType) {
-    return <i>Card type without id is invalid...</i>;
+  if (status !== 'READY' || !cardType) {
+    // TODO UX see what we can do if we couldn't get the card type
+    return <AvailabilityStatusIndicator status={status} />;
   } else {
     return (
       <Flex
@@ -98,10 +99,10 @@ export default function CardTypeEditor({ className }: Props): JSX.Element {
               })}
             >
               <InlineInput
-                placeholder="Untitled type"
+                placeholder="card type"
                 value={cardType.title || ''}
                 onChange={newValue =>
-                  dispatch(API.updateCardType({ ...cardType, title: newValue }))
+                  dispatch(API.updateCardTypeTitle({ ...cardType, title: newValue }))
                 }
                 autosave={false}
                 className={cardTitle}
@@ -120,7 +121,7 @@ export default function CardTypeEditor({ className }: Props): JSX.Element {
                               label="deprecated"
                               onChange={() =>
                                 dispatch(
-                                  API.updateCardType({
+                                  API.updateCardTypeDeprecated({
                                     ...cardType,
                                     deprecated: !cardType.deprecated,
                                   }),
@@ -132,7 +133,7 @@ export default function CardTypeEditor({ className }: Props): JSX.Element {
                               label="published"
                               onChange={() =>
                                 dispatch(
-                                  API.updateCardType({
+                                  API.updateCardTypePublished({
                                     ...cardType,
                                     published: !cardType.published,
                                   }),
@@ -195,7 +196,8 @@ export default function CardTypeEditor({ className }: Props): JSX.Element {
             </Flex>
             <Flex direction="column" grow={1} align="stretch">
               <div>
-                <b>Purpose:</b> <DocTextDisplay id={cardType.purposeId} />
+                <b>Purpose:</b> <DocTextDisplay id={cardType.purposeId} />{' '}
+                {/* TODO sandra work in progress make it editable*/}
               </div>
               <Flex
                 direction="column"
@@ -213,7 +215,7 @@ export default function CardTypeEditor({ className }: Props): JSX.Element {
                   options={options}
                   onChange={tagsOptions => {
                     dispatch(
-                      API.updateCardType({
+                      API.updateCardTypeTags({
                         ...cardType,
                         tags: tagsOptions.map(o => o.value),
                       }),
@@ -226,7 +228,7 @@ export default function CardTypeEditor({ className }: Props): JSX.Element {
                 label="deprecated"
                 onChange={() =>
                   dispatch(
-                    API.updateCardType({
+                    API.updateCardTypeDeprecated({
                       ...cardType,
                       deprecated: !cardType.deprecated,
                     }),
@@ -238,7 +240,7 @@ export default function CardTypeEditor({ className }: Props): JSX.Element {
                 label="published"
                 onChange={() =>
                   dispatch(
-                    API.updateCardType({
+                    API.updateCardTypePublished({
                       ...cardType,
                       published: !cardType.published,
                     }),
@@ -253,13 +255,13 @@ export default function CardTypeEditor({ className }: Props): JSX.Element {
               resources: {
                 children: (
                   <>
-                    {cardType.id && (
+                    {cardType.ownId && (
                       <ResourcesWrapper
-                        kind={ResourceContextScope.CardType}
+                        kind={'CardType'}
                         //accessLevel={ userAcl.write ? 'WRITE' : userAcl.read ? 'READ' : 'DENIED'}
                         // TODO manage the user rights for editing resources
                         accessLevel="WRITE"
-                        cardTypeId={cardType.id}
+                        cardTypeId={cardType.ownId}
                       />
                     )}
                   </>

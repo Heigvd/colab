@@ -12,6 +12,8 @@ interface Props {
   id: number | null | undefined;
 }
 
+// TODO sandra work in progress make it editable
+
 export default function DocTextDisplay({ id }: Props): JSX.Element {
   const { text } = useAndLoadTextOfDocument(id);
 

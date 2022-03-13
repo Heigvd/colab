@@ -19,7 +19,7 @@ import IconButton from '../common/IconButton';
 import OpenCloseModal from '../common/OpenCloseModal';
 import { addIcon } from '../styling/defaultIcons';
 import { space_M, space_S } from '../styling/style';
-import { ResourceCallContext, ResourceContextScope } from './ResourceCommonType';
+import { ResourceCallContext } from './ResourceCommonType';
 
 /**
  * the context in which we create a new resource
@@ -83,7 +83,7 @@ export default function ResourceCreator({
     }),
   ];
 
-  if (contextInfo.kind == ResourceContextScope.CardOrCardContent) {
+  if (contextInfo.kind === 'CardOrCardContent') {
     fields.push({
       key: 'atCardContentLevel',
       label: 'is only for the present version',
@@ -118,10 +118,10 @@ export default function ResourceCreator({
           value={state}
           onSubmit={function (e) {
             setState(e);
-            let cardTypeId: number | null = null;
+            let cardTypeId: number | null | undefined = null;
             let cardId: number | null = null;
             let cardContentId: number | null = null;
-            if (contextInfo.kind == ResourceContextScope.CardType) {
+            if (contextInfo.kind == 'CardType') {
               cardTypeId = contextInfo.cardTypeId;
             } else {
               if (e.atCardContentLevel) {

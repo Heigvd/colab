@@ -16,12 +16,20 @@ export interface ResourceState {
   resources: Record<number, AbstractResource | LoadingStatus>;
   byCardType: Record<number, number[] | LoadingStatus>;
   byCardContent: Record<number, number[] | LoadingStatus>;
+
+  // /** did we load the resources of a card type */
+  // statusByCardType: Record<number, AvailabilityStatus>;
+  // /** did we load the resources of a card content */
+  // statusByCardContent: Record<number, AvailabilityStatus>;
 }
 
 const initialState: ResourceState = {
   resources: {},
   byCardType: {},
   byCardContent: {},
+
+  // statusByCardType: {},
+  // statusByCardContent: {},
 };
 
 const updateResource = (state: ResourceState, resource: AbstractResource) => {
@@ -90,9 +98,16 @@ const resourcesSlice = createSlice({
         action.payload.resources.updated.forEach(resource => updateResource(state, resource));
         action.payload.resources.deleted.forEach(entry => removeResource(state, entry.id));
       })
+      .addCase(API.getAbstractResource.pending, (state, action) => {
+        state.resources[action.meta.arg] = 'LOADING';
+      })
+      .addCase(API.getAbstractResource.fulfilled, (state, action) => {
+        updateResource(state, action.payload);
+      })
       .addCase(API.getResourceChainForCardContentId.pending, (state, action) => {
         const cardContentId = action.meta.arg;
         state.byCardContent[cardContentId] = 'LOADING';
+        // state.statusByCardContent[cardContentId] = 'LOADING';
       })
       .addCase(API.getResourceChainForCardContentId.fulfilled, (state, action) => {
         const cardContentId = action.meta.arg;
@@ -107,10 +122,16 @@ const resourcesSlice = createSlice({
             }
           }
         });
+        // state.statusByCardContent[cardContentId] = 'READY';
       })
+      // .addCase(API.getResourceChainForCardContentId.rejected, (state, action) => {
+      //   const cardContentId = action.meta.arg;
+      //   state.statusByCardContent[cardContentId] = 'ERROR';
+      // })
       .addCase(API.getResourceChainForAbstractCardTypeId.pending, (state, action) => {
         const cardTypeId = action.meta.arg;
         state.byCardType[cardTypeId] = 'LOADING';
+        // state.statusByCardType[cardTypeId] = 'LOADING';
       })
       .addCase(API.getResourceChainForAbstractCardTypeId.fulfilled, (state, action) => {
         const cardTypeId = action.meta.arg;
@@ -125,13 +146,12 @@ const resourcesSlice = createSlice({
             }
           }
         });
+        // state.statusByCardType[cardTypeId] = 'READY';
       })
-      .addCase(API.getAbstractResource.pending, (state, action) => {
-        state.resources[action.meta.arg] = 'LOADING';
-      })
-      .addCase(API.getAbstractResource.fulfilled, (state, action) => {
-        updateResource(state, action.payload);
-      })
+      // .addCase(API.getResourceChainForAbstractCardTypeId.rejected, (state, action) => {
+      //   const cardTypeId = action.meta.arg;
+      //   state.statusByCardType[cardTypeId] = 'ERROR';
+      // })
       .addCase(API.closeCurrentProject.fulfilled, () => {
         return initialState;
       })

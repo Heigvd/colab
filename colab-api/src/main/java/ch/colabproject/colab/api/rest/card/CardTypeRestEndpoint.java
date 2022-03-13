@@ -108,6 +108,7 @@ public class CardTypeRestEndpoint {
         return cardTypeManager.getExpandedCardType(id);
     }
 
+    // TODO sandra work in progress remove when the tests are changed to getExpandedCardType
     /**
      * Get card type identified by the given id
      *

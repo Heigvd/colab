@@ -425,6 +425,7 @@ public class CardTypeRestEndpointTest extends AbstractArquillianTest {
     }
 
     // TODO real test for getExpandedCardType
+    // TODO replace all getCardType by getExpandedCardType
     // TODO sandra work in progress test useCardTypeInProject + removeCardTypeFromProject
 
     @Test

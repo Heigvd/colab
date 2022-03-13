@@ -291,7 +291,7 @@ function SubCardCreator({ divRefs, cRefs, jsPlumb, parent }: SubCardCreatorProps
         setThisNode(ref || undefined);
       }}
     >
-      <CardCreator parent={parent} />
+      <CardCreator parentCardContent={parent} />
     </div>
   );
 }

@@ -7,18 +7,17 @@
 
 import { css, cx } from '@emotion/css';
 import { faCheckSquare, faSquare } from '@fortawesome/free-regular-svg-icons';
-import { faEllipsisV, faPaw, faTrash } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faEllipsisV } from '@fortawesome/free-solid-svg-icons';
 import { CardType } from 'colab-rest-client';
 import * as React from 'react';
-import * as API from '../../../API/api';
 import { useProjectBeingEdited } from '../../../selectors/projectSelector';
-import { dispatch } from '../../../store/store';
 import Button from '../../common/Button';
 import DropDownMenu from '../../common/DropDownMenu';
 import DocTextDisplay from '../../documents/DocTextDisplay';
 import { ProjectName } from '../../projects/ProjectName';
 import { cardShadow, lightIconButtonStyle } from '../../styling/style';
+
+// Note used any longer
 
 interface DisplayProps {
   cardType: CardType;
@@ -52,28 +51,28 @@ export default function CardTypeDisplay({
           entries={[
             ...(notUsedInProject
               ? [
-                  {
-                    value: 'Use this type in the project',
-                    label: (
-                      <>
-                        <FontAwesomeIcon icon={faPaw} /> Use in project
-                      </>
-                    ),
-                    // TODO sandra work in progress : not working for global for the moment (access rights problem)
-                    action: () => dispatch(API.addCardTypeToProject({ cardType, project })),
-                  },
+                  // {
+                  //   value: 'Use this type in the project',
+                  //   label: (
+                  //     <>
+                  //       <FontAwesomeIcon icon={faPaw} /> Use in project
+                  //     </>
+                  //   ),
+                  //   // Note : not working for global for the moment (access rights problem)
+                  //   action: () => dispatch(API.addCardTypeToProject({ cardType, project })),
+                  // },
                 ]
               : [
-                  {
-                    value: 'Remove this type from the project',
-                    label: (
-                      <>
-                        <FontAwesomeIcon icon={faTrash} /> Remove type
-                      </>
-                    ),
-                    // TODO sandra work in progress : not working for inherited from other project for the moment (mostly)
-                    action: () => dispatch(API.removeCardTypeFromProject({ cardType, project })),
-                  },
+                  // {
+                  //   value: 'Remove this type from the project',
+                  //   label: (
+                  //     <>
+                  //       <FontAwesomeIcon icon={faTrash} /> Remove type
+                  //     </>
+                  //   ),
+                  //   // Note : not working for inherited from other project for the moment (mostly)
+                  //   action: () => dispatch(API.removeCardTypeFromProject({ cardType, project })),
+                  // },
                 ]),
           ]}
           onSelect={val => {

@@ -8,9 +8,9 @@
 import { css, cx } from '@emotion/css';
 import { faFile } from '@fortawesome/free-regular-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { CardType } from 'colab-rest-client';
 import * as React from 'react';
 import { useAndLoadTextOfDocument } from '../../../selectors/documentSelector';
+import { CardTypeAllInOne as CardType } from '../../../types/cardTypeDefinition';
 import Flex from '../../common/Flex';
 import Thumbnail from '../../common/Thumbnail';
 import { borderRadius, cardShadow, space_S } from '../../styling/style';
@@ -56,14 +56,14 @@ const tagStyle = css({
 export default function CardTypeThumbnail({ cardType, highlighted, onClick }: Props): JSX.Element {
   const { text: purpose } = useAndLoadTextOfDocument(cardType.purposeId);
 
-  if (cardType.id == null) {
+  if (cardType.cardTypeId == null) {
     return <i>CardType without id is invalid...</i>;
   } else {
     return (
       <Thumbnail
         onClick={() => {
-          if (cardType.id != null) {
-            onClick(cardType.id);
+          if (cardType.cardTypeId != null) {
+            onClick(cardType.cardTypeId);
           }
         }}
         className={highlighted ? selected : defaultStyle}

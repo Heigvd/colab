@@ -53,33 +53,39 @@ const documentSlice = createSlice({
         action.payload.documents.deleted.forEach(entry => removeDocument(state, entry.id));
       })
       .addCase(API.getDocument.pending, (state, action) => {
-        state.documents[action.meta.arg] = 'LOADING';
+        const docId = action.meta.arg;
+        state.documents[docId] = 'LOADING';
       })
       .addCase(API.getDocument.fulfilled, (state, action) => {
         updateDocument(state, action.payload);
       })
       .addCase(API.getDocument.rejected, (state, action) => {
-        state.documents[action.meta.arg] = 'ERROR';
+        const docId = action.meta.arg;
+        state.documents[docId] = 'ERROR';
       })
       .addCase(API.getDeliverablesOfCardContent.pending, (state, action) => {
-        state.statusByCardContent[action.meta.arg] = 'LOADING';
+        const cardContentId = action.meta.arg;
+        state.statusByCardContent[cardContentId] = 'LOADING';
       })
       .addCase(API.getDeliverablesOfCardContent.fulfilled, (state, action) => {
         state.documents = { ...state.documents, ...mapById(action.payload) };
         state.statusByCardContent[action.meta.arg] = 'READY';
       })
       .addCase(API.getDeliverablesOfCardContent.rejected, (state, action) => {
-        state.statusByCardContent[action.meta.arg] = 'ERROR';
+        const cardContentId = action.meta.arg;
+        state.statusByCardContent[cardContentId] = 'ERROR';
       })
       .addCase(API.getDocumentsOfResource.pending, (state, action) => {
-        state.statusByResource[action.meta.arg] = 'LOADING';
+        const resourceId = action.meta.arg;
+        state.statusByResource[resourceId] = 'LOADING';
       })
       .addCase(API.getDocumentsOfResource.fulfilled, (state, action) => {
         state.documents = { ...state.documents, ...mapById(action.payload) };
         state.statusByResource[action.meta.arg] = 'READY';
       })
       .addCase(API.getDocumentsOfResource.rejected, (state, action) => {
-        state.statusByResource[action.meta.arg] = 'ERROR';
+        const resourceId = action.meta.arg;
+        state.statusByResource[resourceId] = 'ERROR';
       })
       .addCase(API.closeCurrentProject.fulfilled, () => {
         return initialState;
