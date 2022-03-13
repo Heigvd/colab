@@ -8,13 +8,13 @@
 import * as React from 'react';
 import { useAndLoadTextOfDocument } from '../../selectors/documentSelector';
 
-interface Props {
+interface DocTextDisplayProps {
   id: number | null | undefined;
 }
 
 // TODO sandra work in progress make it editable
 
-export default function DocTextDisplay({ id }: Props): JSX.Element {
+export default function DocTextDisplay({ id }: DocTextDisplayProps): JSX.Element {
   const { text } = useAndLoadTextOfDocument(id);
 
   return <>{text || ''}</>;

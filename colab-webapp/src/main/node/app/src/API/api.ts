@@ -34,6 +34,7 @@ import {
   WsSessionIdentifier,
 } from 'colab-rest-client';
 import { PasswordScore } from '../components/common/Form/Form';
+import { DocumentKind } from '../components/documents/documentCommonType';
 import { hashPassword } from '../SecurityHelper';
 import { addNotification } from '../store/notification';
 import { ColabState, getStore } from '../store/store';
@@ -775,7 +776,8 @@ export const getDeliverablesOfCardContent = createAsyncThunk(
 
 export const addDeliverable = createAsyncThunk(
   'cardcontent/addDeliverable',
-  async ({ cardContentId, deliverable }: { cardContentId: number; deliverable: Document }) => {
+  async ({ cardContentId, docKind }: { cardContentId: number; docKind: DocumentKind }) => {
+    const deliverable = makeNewDocument(docKind);
     return await restClient.CardContentRestEndpoint.addDeliverable(cardContentId, deliverable);
   },
 );
@@ -860,7 +862,8 @@ export const getDocumentsOfResource = createAsyncThunk(
 
 export const addDocumentToResource = createAsyncThunk(
   'resource/addDocument',
-  async ({ resourceId, document }: { resourceId: number; document: Document }) => {
+  async ({ resourceId, docKind }: { resourceId: number; docKind: DocumentKind }) => {
+    const document = makeNewDocument(docKind);
     return await restClient.ResourceRestEndpoint.addDocument(resourceId, document);
   },
 );
@@ -883,9 +886,9 @@ export const getDocument = createAsyncThunk<Document, number>(
   },
 );
 
-export const updateDocument = createAsyncThunk('document/update', async (document: Document) => {
-  return await restClient.DocumentRestEndpoint.updateDocument(document);
-});
+// export const updateDocument = createAsyncThunk('document/update', async (document: Document) => {
+//   return await restClient.DocumentRestEndpoint.updateDocument(document);
+// });
 
 export const moveDocumentUp = createAsyncThunk('document/moveUp', async (docId: number) => {
   return await restClient.DocumentRestEndpoint.moveDocumentUp(docId);
@@ -894,6 +897,29 @@ export const moveDocumentUp = createAsyncThunk('document/moveUp', async (docId: 
 export const moveDocumentDown = createAsyncThunk('document/moveDown', async (docId: number) => {
   return await restClient.DocumentRestEndpoint.moveDocumentDown(docId);
 });
+
+function makeNewDocument(docKind: DocumentKind) {
+  let document = null;
+  if (docKind == 'DocumentFile') {
+    document = {
+      '@class': docKind,
+      fileSize: 0,
+      mimeType: 'application/octet-stream',
+    };
+  } else if (docKind == 'TextDataBlock') {
+    document = {
+      '@class': docKind,
+      mimeType: 'text/markdown',
+      revision: '0',
+    };
+  } else {
+    document = {
+      '@class': docKind,
+    };
+  }
+
+  return document;
+}
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Blocks
@@ -1055,13 +1081,13 @@ export const uploadFile = createAsyncThunk(
   },
 );
 
-export const getFile = createAsyncThunk('files/GetFile', async (id: number) => {
-  return await restClient.DocumentFileRestEndPoint.getFileContent(id);
-});
+// export const getFile = createAsyncThunk('files/GetFile', async (id: number) => {
+//   return await restClient.DocumentFileRestEndPoint.getFileContent(id);
+// });
 
-export const deleteFile = createAsyncThunk('files/DeleteFile', async (id: number) => {
-  return await restClient.DocumentFileRestEndPoint.deleteFile(id);
-});
+// export const deleteFile = createAsyncThunk('files/DeleteFile', async (id: number) => {
+//   return await restClient.DocumentFileRestEndPoint.deleteFile(id);
+// });
 
 /////////////////////////////////////////////////////////////////////////////
 // External Data API
