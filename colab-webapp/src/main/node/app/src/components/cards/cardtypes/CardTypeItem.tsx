@@ -153,8 +153,7 @@ export default function CardTypeItem({
         <p className={lightItalicText}>
           <DocTextDisplay id={cardType.purposeId} />
         </p>
-        <ResourceSummary />
-        {/* <ResourceSummary kind={'CardType'} accessLevel={'READ'} cardTypeId={cardType.ownId} /> */}
+        <ResourceSummary kind={'CardType'} accessLevel={'READ'} cardTypeId={cardType.ownId} />
         <Flex grow={1} align="flex-end">
           {cardType.tags.map(tag => {
             return (
