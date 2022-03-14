@@ -42,9 +42,10 @@ export default function CardCreator({
   customButton,
   className,
 }: CardCreatorProps): JSX.Element {
+  const blankTypePseudoId = 0;
   const dispatch = useAppDispatch();
 
-  const [selectedType, setSelectedType] = React.useState<number | undefined>(0);
+  const [selectedType, setSelectedType] = React.useState<number>(blankTypePseudoId);
   const [selectAllTags, setSelectAllTags] = React.useState<boolean>(true);
   const [tagState, setTagState] = React.useState<Record<string, boolean> | undefined>(undefined);
 
@@ -69,6 +70,15 @@ export default function CardCreator({
   const onSelect = React.useCallback((id: number) => {
     setSelectedType(id);
   }, []);
+
+  React.useEffect(() => {
+    if (selectedType !== blankTypePseudoId) {
+      if (cardTypeFilteredByTag.find(ct => ct.cardTypeId === selectedType) == null) {
+        setSelectedType(blankTypePseudoId);
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [cardTypeFilteredByTag /* no need to take blankTypePseudoId and selectedType into account */]);
 
   return (
     <OpenCloseModal
@@ -107,7 +117,7 @@ export default function CardCreator({
               dispatch(
                 API.createSubCardWithTextDataBlock({
                   parent: parentCardContent,
-                  cardTypeId: selectedType || null,
+                  cardTypeId: selectedType,
                 }),
               ).then(() => {
                 close();
@@ -127,7 +137,10 @@ export default function CardCreator({
           return (
             <div className={css({ width: '100%', textAlign: 'left' })}>
               <Flex>
-                <EmptyCardTypeThumbnail onClick={onSelect} highlighted={0 === selectedType} />
+                <EmptyCardTypeThumbnail
+                  onClick={onSelect}
+                  highlighted={blankTypePseudoId === selectedType}
+                />
               </Flex>
               <Flex
                 className={css({
