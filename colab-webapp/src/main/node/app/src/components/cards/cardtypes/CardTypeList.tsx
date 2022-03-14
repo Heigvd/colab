@@ -77,7 +77,7 @@ export default function CardTypeList(): JSX.Element {
                   >
                     <div>
                       <h4>From your other projects</h4>
-                      <div>
+                      <div className={flexWrap}>
                         {availableCardTypes
                           .filter(ct => ct.projectIdCT != null)
                           .map(cardType => (
@@ -92,7 +92,7 @@ export default function CardTypeList(): JSX.Element {
                     </div>
                     <div>
                       <h4>Global</h4>
-                      <div>
+                      <div className={flexWrap}>
                         {availableCardTypes
                           .filter(ct => ct.projectIdCT == null)
                           .map(cardType => (

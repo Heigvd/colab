@@ -11,6 +11,7 @@ import {
   faCog,
   faEllipsisV,
   faFileAlt,
+  faInfoCircle,
   faTrash,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -18,12 +19,12 @@ import * as React from 'react';
 import { Route, Routes, useNavigate, useParams } from 'react-router-dom';
 import Creatable from 'react-select/creatable';
 import * as API from '../../../API/api';
+import { updateDocumentText } from '../../../API/api';
 //import logger from '../../../logger';
 import { useAndLoadCardType, useCardTypeTags } from '../../../selectors/cardTypeSelector';
 import { useProjectBeingEdited } from '../../../selectors/projectSelector';
 import { dispatch } from '../../../store/store';
 import AvailabilityStatusIndicator from '../../common/AvailabilityStatusIndicator';
-import Button from '../../common/Button';
 import ConfirmDeleteModal from '../../common/ConfirmDeleteModal';
 import DropDownMenu from '../../common/DropDownMenu';
 import Flex from '../../common/Flex';
@@ -32,9 +33,16 @@ import IconButton from '../../common/IconButton';
 import InlineInput from '../../common/InlineInput';
 import Modal from '../../common/Modal';
 import Tips from '../../common/Tips';
-import DocTextDisplay from '../../documents/DocTextDisplay';
+import DocTextWrapper from '../../documents/DocTextWrapper';
 import ResourcesWrapper from '../../resources/ResourcesWrapper';
-import { cardStyle, cardTitle, lightIconButtonStyle, space_M, space_S } from '../../styling/style';
+import {
+  cardStyle,
+  cardTitle,
+  lightIconButtonStyle,
+  lightItalicText,
+  space_M,
+  space_S,
+} from '../../styling/style';
 import SideCollapsiblePanel from './../SideCollapsiblePanel';
 
 interface Props {
@@ -113,7 +121,11 @@ export default function CardTypeEditor({ className }: Props): JSX.Element {
                   <Route
                     path="settings"
                     element={
-                      <Modal title="Type Settings" onClose={() => navigate('./')} showCloseButton>
+                      <Modal
+                        title="Advanced type settings"
+                        onClose={() => navigate('./')}
+                        showCloseButton
+                      >
                         {() => (
                           <>
                             <Toggler
@@ -128,18 +140,11 @@ export default function CardTypeEditor({ className }: Props): JSX.Element {
                                 )
                               }
                             />
-                            <Toggler
-                              value={cardType.published || undefined}
-                              label="published"
-                              onChange={() =>
-                                dispatch(
-                                  API.updateCardTypePublished({
-                                    ...cardType,
-                                    published: !cardType.published,
-                                  }),
-                                )
-                              }
-                            />
+                            <div className={lightItalicText}>
+                              <FontAwesomeIcon icon={faInfoCircle} /> Make a Card type{' '}
+                              <b>deprecated</b> whether it is obsolete or antoher version should be
+                              used instead.
+                            </div>
                           </>
                         )}
                       </Modal>
@@ -195,10 +200,25 @@ export default function CardTypeEditor({ className }: Props): JSX.Element {
               </Flex>
             </Flex>
             <Flex direction="column" grow={1} align="stretch">
-              <div>
-                <b>Purpose:</b> <DocTextDisplay id={cardType.purposeId} />{' '}
-                {/* TODO sandra work in progress make it editable*/}
-              </div>
+              <Flex className={css({ margin: space_M + ' 0' })}>
+                <b>Purpose: </b>
+                <DocTextWrapper id={cardType.purposeId}>
+                  {text => (
+                    <InlineInput
+                      placeholder={'Empty purpose'}
+                      value={text || 'Empty purpose'}
+                      onChange={(newValue: string) => {
+                        if (cardType.purposeId) {
+                          dispatch(
+                            updateDocumentText({ id: cardType.purposeId, textData: newValue }),
+                          );
+                        }
+                      }}
+                      autosave={false}
+                    />
+                  )}
+                </DocTextWrapper>
+              </Flex>
               <Flex
                 direction="column"
                 align="stretch"
@@ -209,7 +229,6 @@ export default function CardTypeEditor({ className }: Props): JSX.Element {
                 })}
               >
                 <Creatable
-                  //className={cx(css({display: 'flex'}))}
                   isMulti={true}
                   value={cardType.tags.map(tag => ({ label: tag, value: tag }))}
                   options={options}
@@ -223,30 +242,23 @@ export default function CardTypeEditor({ className }: Props): JSX.Element {
                   }}
                 />
               </Flex>
-              <Toggler
-                value={cardType.deprecated || undefined}
-                label="deprecated"
-                onChange={() =>
-                  dispatch(
-                    API.updateCardTypeDeprecated({
-                      ...cardType,
-                      deprecated: !cardType.deprecated,
-                    }),
-                  )
-                }
-              />
-              <Toggler
-                value={cardType.published || undefined}
-                label="published"
-                onChange={() =>
-                  dispatch(
-                    API.updateCardTypePublished({
-                      ...cardType,
-                      published: !cardType.published,
-                    }),
-                  )
-                }
-              />
+              <Flex>
+                <Toggler
+                  value={cardType.published || undefined}
+                  label="published"
+                  onChange={() =>
+                    dispatch(
+                      API.updateCardTypePublished({
+                        ...cardType,
+                        published: !cardType.published,
+                      }),
+                    )
+                  }
+                />
+                <Tips tipsType="TIPS" interactionType="HOVER">
+                  Make a card type published if you want to access it in your other projects.
+                </Tips>
+              </Flex>
             </Flex>
           </Flex>
           <SideCollapsiblePanel
@@ -271,10 +283,6 @@ export default function CardTypeEditor({ className }: Props): JSX.Element {
               },
             }}
           />
-        </Flex>
-        <Flex>
-          <Button>Cancel</Button>
-          <Button>Save</Button>
         </Flex>
       </Flex>
     );

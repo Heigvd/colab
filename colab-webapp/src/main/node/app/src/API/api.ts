@@ -890,6 +890,23 @@ export const updateDocument = createAsyncThunk('document/update', async (documen
   return await restClient.DocumentRestEndpoint.updateDocument(document);
 });
 
+export const updateDocumentText = createAsyncThunk(
+  'document/updateText',
+  async ({ id, textData }: { id: number; textData: string }, thunkApi) => {
+    const state = thunkApi.getState() as ColabState;
+    if (id) {
+      const docServerSide = state.document.documents[id];
+      if (entityIs(docServerSide, 'TextDataBlock')) {
+        await restClient.DocumentRestEndpoint.updateDocument({
+          ...docServerSide,
+          textData: textData,
+        });
+      }
+    }
+    // see if we can throw an error
+  },
+);
+
 export const moveDocumentUp = createAsyncThunk('document/moveUp', async (docId: number) => {
   return await restClient.DocumentRestEndpoint.moveDocumentUp(docId);
 });

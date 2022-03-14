@@ -9,7 +9,7 @@ import { css, cx } from '@emotion/css';
 import {
   faEllipsisV,
   faExchangeAlt,
-  faPaw,
+  faMapPin,
   faPen,
   faTrash,
 } from '@fortawesome/free-solid-svg-icons';
@@ -99,7 +99,7 @@ export default function CardTypeItem({
                         value: 'Use this type in the project',
                         label: (
                           <>
-                            <FontAwesomeIcon icon={faPaw} /> Use in project
+                            <FontAwesomeIcon icon={faMapPin} /> Use in project
                           </>
                         ),
                         // TODO sandra work in progress : not working for global for the moment (access rights problem)
