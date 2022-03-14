@@ -10,15 +10,15 @@ import { AbstractResource, entityIs } from 'colab-rest-client';
 import * as API from '../API/api';
 import { mapById } from '../helper';
 import { processMessage } from '../ws/wsThunkActions';
-import { LoadingStatus } from './store';
+import { AvailabilityStatus, LoadingStatus } from './store';
 
 export interface ResourceState {
   resources: Record<number, AbstractResource | LoadingStatus>;
   byCardType: Record<number, number[] | LoadingStatus>;
   byCardContent: Record<number, number[] | LoadingStatus>;
 
-  // /** did we load the resources of a card type */
-  // statusByCardType: Record<number, AvailabilityStatus>;
+  /** did we load the resources of a card type */
+  statusByCardType: Record<number, AvailabilityStatus>;
   // /** did we load the resources of a card content */
   // statusByCardContent: Record<number, AvailabilityStatus>;
 }
@@ -28,7 +28,7 @@ const initialState: ResourceState = {
   byCardType: {},
   byCardContent: {},
 
-  // statusByCardType: {},
+  statusByCardType: {},
   // statusByCardContent: {},
 };
 
@@ -131,7 +131,7 @@ const resourcesSlice = createSlice({
       .addCase(API.getResourceChainForAbstractCardTypeId.pending, (state, action) => {
         const cardTypeId = action.meta.arg;
         state.byCardType[cardTypeId] = 'LOADING';
-        // state.statusByCardType[cardTypeId] = 'LOADING';
+        state.statusByCardType[cardTypeId] = 'LOADING';
       })
       .addCase(API.getResourceChainForAbstractCardTypeId.fulfilled, (state, action) => {
         const cardTypeId = action.meta.arg;
@@ -146,12 +146,12 @@ const resourcesSlice = createSlice({
             }
           }
         });
-        // state.statusByCardType[cardTypeId] = 'READY';
+        state.statusByCardType[cardTypeId] = 'READY';
       })
-      // .addCase(API.getResourceChainForAbstractCardTypeId.rejected, (state, action) => {
-      //   const cardTypeId = action.meta.arg;
-      //   state.statusByCardType[cardTypeId] = 'ERROR';
-      // })
+      .addCase(API.getResourceChainForAbstractCardTypeId.rejected, (state, action) => {
+        const cardTypeId = action.meta.arg;
+        state.statusByCardType[cardTypeId] = 'ERROR';
+      })
       .addCase(API.closeCurrentProject.fulfilled, () => {
         return initialState;
       })

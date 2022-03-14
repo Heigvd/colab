@@ -8,21 +8,21 @@
 import { faFileAlt } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import * as React from 'react';
-import { WIPContainer } from '../common/Tips';
+import { useAndLoadNbResources } from '../../selectors/resourceSelector';
+import AvailabilityStatusIndicator from '../common/AvailabilityStatusIndicator';
 import { lightItalicText } from '../styling/style';
+import { ResourceCallContext } from './ResourceCommonType';
 
-export default function ResourceSummary(/*context: ResourceCallContext*/): JSX.Element {
-  // const { nb: nbResources, status } = useAndLoadNbResources(context);
+export default function ResourceSummary(context: ResourceCallContext): JSX.Element {
+  const { nb: nbResources, status } = useAndLoadNbResources(context);
 
-  // if (status !== 'READY') {
-  //   return <AvailabilityStatusIndicator status={status} />;
-  // }
+  if (status !== 'READY') {
+    return <AvailabilityStatusIndicator status={status} />;
+  }
 
   return (
-    <WIPContainer>
-      <p className={lightItalicText}>
-        <FontAwesomeIcon icon={faFileAlt} /> nb resources {/* : {nbResources} */}
-      </p>
-    </WIPContainer>
+    <p className={lightItalicText}>
+      <FontAwesomeIcon icon={faFileAlt} /> nb resources : {nbResources}
+    </p>
   );
 }
