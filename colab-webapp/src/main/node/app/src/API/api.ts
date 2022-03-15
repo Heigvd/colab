@@ -539,7 +539,7 @@ export const updateCardTypeTitle = createAsyncThunk(
   async ({ cardTypeId, title }: CardTypeAllInOne, thunkApi) => {
     const state = thunkApi.getState() as ColabState;
     if (cardTypeId) {
-      const cardTypeServerSide = state.cardtype.cardtypes[cardTypeId];
+      const cardTypeServerSide = state.cardType.cardtypes[cardTypeId];
       if (entityIs(cardTypeServerSide, 'CardType')) {
         await restClient.CardTypeRestEndpoint.updateCardType({
           ...cardTypeServerSide,
@@ -556,7 +556,7 @@ export const updateCardTypeTags = createAsyncThunk(
   async ({ cardTypeId, tags }: CardTypeAllInOne, thunkApi) => {
     const state = thunkApi.getState() as ColabState;
     if (cardTypeId) {
-      const cardTypeServerSide = state.cardtype.cardtypes[cardTypeId];
+      const cardTypeServerSide = state.cardType.cardtypes[cardTypeId];
       if (entityIs(cardTypeServerSide, 'CardType')) {
         await restClient.CardTypeRestEndpoint.updateCardType({
           ...cardTypeServerSide,
@@ -573,7 +573,7 @@ export const updateCardTypeDeprecated = createAsyncThunk(
   async ({ ownId, deprecated }: CardTypeAllInOne, thunkApi) => {
     const state = thunkApi.getState() as ColabState;
     if (ownId) {
-      const cardTypeServerSide = state.cardtype.cardtypes[ownId];
+      const cardTypeServerSide = state.cardType.cardtypes[ownId];
       if (entityIs(cardTypeServerSide, 'AbstractCardType')) {
         await restClient.CardTypeRestEndpoint.updateCardType({
           ...cardTypeServerSide,
@@ -590,7 +590,7 @@ export const updateCardTypePublished = createAsyncThunk(
   async ({ ownId, published }: CardTypeAllInOne, thunkApi) => {
     const state = thunkApi.getState() as ColabState;
     if (ownId) {
-      const cardTypeServerSide = state.cardtype.cardtypes[ownId];
+      const cardTypeServerSide = state.cardType.cardtypes[ownId];
       if (entityIs(cardTypeServerSide, 'AbstractCardType')) {
         await restClient.CardTypeRestEndpoint.updateCardType({
           ...cardTypeServerSide,

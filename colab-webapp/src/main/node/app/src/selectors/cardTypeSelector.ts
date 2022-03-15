@@ -144,7 +144,7 @@ function expandRef(state: ColabState, ref: CardTypeRef): ExpandedCardType | Avai
 
   while (current) {
     if (current.targetId) {
-      const targetState = state.cardtype.cardtypes[current.targetId];
+      const targetState = state.cardType.cardtypes[current.targetId];
 
       if (entityIs(targetState, 'CardType')) {
         // we found the card type, return what we got
@@ -181,7 +181,7 @@ function expandRef(state: ColabState, ref: CardTypeRef): ExpandedCardType | Avai
 const useCardType = (id: number | null | undefined): CardTypeAndStatus => {
   return useAppSelector(state => {
     if (id != null) {
-      const directCardTypeOrRef = state.cardtype.cardtypes[id];
+      const directCardTypeOrRef = state.cardType.cardtypes[id];
 
       if (entityIs(directCardTypeOrRef, 'CardType')) {
         // it is directly a card type
@@ -239,7 +239,7 @@ const useProjectCardTypes2 = (): CardTypeAllInOne[] => {
     const currentProjectId = state.projects.editing;
 
     if (currentProjectId) {
-      Object.values(state.cardtype.cardtypes).forEach(act => {
+      Object.values(state.cardType.cardtypes).forEach(act => {
         if (entityIs(act, 'AbstractCardType')) {
           if (act.projectId === currentProjectId) {
             if (entityIs(act, 'CardTypeRef')) {
@@ -268,7 +268,7 @@ export const useAndLoadProjectCardTypes = (): {
   const dispatch = useAppDispatch();
 
   const cardTypes = useProjectCardTypes2();
-  const status = useAppSelector(state => state.cardtype.currentProjectStatus);
+  const status = useAppSelector(state => state.cardType.currentProjectStatus);
   const { project } = useProjectBeingEdited();
 
   if (status === 'NOT_INITIALIZED' && project) {
@@ -284,7 +284,7 @@ export const useAndLoadProjectCardTypes = (): {
 
 const usePublishedCardTypes = (): CardTypeAllInOne[] => {
   return useAppSelector(state => {
-    return Object.values(state.cardtype.cardtypes).flatMap(ct => {
+    return Object.values(state.cardType.cardtypes).flatMap(ct => {
       return entityIs(ct, 'CardType') && ct.published ? [makeCardTypeOnOneSOwn(ct)] : [];
     });
   }, customColabStateEquals);
@@ -304,8 +304,8 @@ export const useAndLoadAvailableCardTypes = (): {
 
   const { project: currentProject } = useProjectBeingEdited();
 
-  const statusPublished = useAppSelector(state => state.cardtype.availablePublishedStatus);
-  const statusCurrentProject = useAppSelector(state => state.cardtype.currentProjectStatus);
+  const statusPublished = useAppSelector(state => state.cardType.availablePublishedStatus);
+  const statusCurrentProject = useAppSelector(state => state.cardType.currentProjectStatus);
 
   const allPublishedCardTypes = usePublishedCardTypes();
   const projectCardTypes = useProjectCardTypes2();
@@ -336,7 +336,7 @@ export const useAndLoadAvailableCardTypes = (): {
 
 const useGlobalTypesForAdmin = (): CardTypeAllInOne[] => {
   return useAppSelector(state => {
-    return Object.values(state.cardtype.cardtypes).flatMap(ct => {
+    return Object.values(state.cardType.cardtypes).flatMap(ct => {
       return entityIs(ct, 'CardType') && ct.projectId == null ? [makeCardTypeOnOneSOwn(ct)] : [];
     });
   }, customColabStateEquals);
@@ -349,7 +349,7 @@ export const useAndLoadGlobalTypesForAdmin = (): {
   const dispatch = useAppDispatch();
 
   const cardTypes = useGlobalTypesForAdmin();
-  const status = useAppSelector(state => state.cardtype.allGlobalForAdminStatus);
+  const status = useAppSelector(state => state.cardType.allGlobalForAdminStatus);
 
   // TODO sandra work in progress see how we can pre load all purposes
 
@@ -374,7 +374,7 @@ export const useAndLoadGlobalTypesForAdmin = (): {
 export function useCardTypeTags() {
   return useAppSelector(state => {
     return uniq(
-      Object.values(state.cardtype.cardtypes).flatMap(ct => {
+      Object.values(state.cardType.cardtypes).flatMap(ct => {
         if (entityIs(ct, 'CardType')) {
           return ct.tags;
         } else {
