@@ -7,7 +7,14 @@
 
 import { css, cx } from '@emotion/css';
 import React from 'react';
-import { borderRadius, lightTheme, noOutlineStyle, space_S } from '../styling/style';
+import {
+  borderRadius,
+  lightLinkStyle,
+  lightTheme,
+  noOutlineStyle,
+  space_M,
+  space_S,
+} from '../styling/style';
 import Flex from './Flex';
 import Checkbox from './Form/Checkbox';
 
@@ -35,14 +42,12 @@ export interface FilterableListProps {
   className?: string;
   tagClassName?: string;
   tags: string[];
-  onChange:  (t:boolean, cat: string) => void;
+  onChange: (t: boolean, cat: string) => void;
   tagState?: Record<string, boolean>;
   stateSelectAll: boolean;
   toggleAllTags: (t: boolean) => void;
-
 }
 
-// TODO finish this component when the issue with multiple re-renderings will be fixed. 
 export default function FilterableList({
   className,
   tagClassName,
@@ -54,41 +59,41 @@ export default function FilterableList({
 }: FilterableListProps): JSX.Element {
   return (
     <Flex className={className} direction="column" align="stretch">
-      <Flex grow={1} justify="flex-end">
+      <Flex justify="space-between" align="center">
+        <Flex wrap="wrap">
+          {tags.map(cat => {
+            return (
+              <div
+                className={cx(
+                  categoryTabStyle,
+                  {
+                    [checkedCategoryTabStyle]: tagState && tagState[cat],
+                  },
+                  tagClassName,
+                )}
+                key={cat}
+              >
+                <Checkbox
+                  key={cat}
+                  label={cat}
+                  value={tagState && tagState[cat]}
+                  onChange={t => onChange(t, cat)}
+                  className={cx(noOutlineStyle, {
+                    [checkedCategoryTabStyle]: tagState && tagState[cat],
+                  })}
+                />
+              </div>
+            );
+          })}
+        </Flex>
         <Checkbox
           key={'toggle all'}
           label={stateSelectAll ? 'Deselect all' : 'Select all'}
           value={stateSelectAll}
           onChange={t => toggleAllTags(t)}
-          className={noOutlineStyle}
-          containerClassName={css({ color: 'var(--darkGray)' })}
+          className={css({ paddingLeft: space_M })}
+          containerClassName={cx(lightLinkStyle, css({ '&:hover': { textDecoration: 'none' } }))}
         />
-      </Flex>
-      <Flex wrap="wrap">
-        {tags.map(cat => {
-          return (
-            <div
-              className={cx(
-                categoryTabStyle,
-                {
-                  [checkedCategoryTabStyle]: tagState && tagState[cat],
-                },
-                tagClassName,
-              )}
-              key={cat}
-            >
-              <Checkbox
-                key={cat}
-                label={cat}
-                value={tagState && tagState[cat]}
-                onChange={t => onChange(t, cat)}
-                className={cx(noOutlineStyle, {
-                  [checkedCategoryTabStyle]: tagState && tagState[cat],
-                })}
-              />
-            </div>
-          );
-        })}
       </Flex>
     </Flex>
   );

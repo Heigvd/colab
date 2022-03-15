@@ -141,8 +141,8 @@ export default function CardTypeEditor({ className }: Props): JSX.Element {
                               }
                             />
                             <div className={lightItalicText}>
-                              <FontAwesomeIcon icon={faInfoCircle} /> Make a Card type{' '}
-                              <b>deprecated</b> whether it is obsolete or antoher version should be
+                              <FontAwesomeIcon icon={faInfoCircle} /> Make a Card type
+                              <b> deprecated</b> whether it is obsolete or antoher version should be
                               used instead.
                             </div>
                           </>

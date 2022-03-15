@@ -13,7 +13,7 @@ import { useAndLoadTextOfDocument } from '../../../selectors/documentSelector';
 import { CardTypeAllInOne as CardType } from '../../../types/cardTypeDefinition';
 import Flex from '../../common/Flex';
 import Thumbnail from '../../common/Thumbnail';
-import { borderRadius, cardShadow, space_S } from '../../styling/style';
+import { borderRadius, cardShadow, space_M, space_S } from '../../styling/style';
 
 interface Props {
   highlighted: boolean;
@@ -93,11 +93,14 @@ export function EmptyCardTypeThumbnail({ highlighted, onClick }: EmptyCardTypePr
       onClick={() => {
         onClick(0);
       }}
-      className={highlighted ? selected : defaultStyle}
+      className={cx(
+        highlighted ? selected : defaultStyle,
+        css({ display: 'flex', alignItems: 'center' }),
+      )}
     >
       <Flex title={'Blank card type'} align="center">
         <FontAwesomeIcon icon={faFile} size="2x" />
-        <div className={css({ paddingLeft: space_S })}>{'Blank card type'}</div>
+        <div className={css({ paddingLeft: space_M })}>{'Blank card type'}</div>
       </Flex>
     </Thumbnail>
   );
