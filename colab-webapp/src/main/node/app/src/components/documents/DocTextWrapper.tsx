@@ -8,14 +8,15 @@
 import * as React from 'react';
 import { useAndLoadTextOfDocument } from '../../selectors/documentSelector';
 
-interface DocTextDisplayProps {
+interface DocTextWrapperProps {
   id: number | null | undefined;
+  children: (text: string | null | undefined) => React.ReactNode;
 }
 
 // TODO sandra work in progress make it editable
 
-export default function DocTextDisplay({ id }: DocTextDisplayProps): JSX.Element {
+export default function DocTextWrapper({ id, children }: DocTextWrapperProps): JSX.Element {
   const { text } = useAndLoadTextOfDocument(id);
 
-  return <>{text || ''}</>;
+  return <>{children(text)}</>;
 }

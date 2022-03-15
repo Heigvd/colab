@@ -8,30 +8,24 @@
 import { css } from '@emotion/css';
 import { ReactJSXElement } from '@emotion/react/types/jsx-namespace';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
-import { CardContent, CardType } from 'colab-rest-client';
+import { CardContent } from 'colab-rest-client';
+import { uniq } from 'lodash';
 import * as React from 'react';
 import * as API from '../../API/api';
-import { useCardTypeTags, useProjectCardTypes } from '../../selectors/cardTypeSelector';
-import { useProjectBeingEdited } from '../../selectors/projectSelector';
+import { useAndLoadProjectCardTypes } from '../../selectors/cardTypeSelector';
 import { useAppDispatch } from '../../store/hooks';
+import AvailabilityStatusIndicator from '../common/AvailabilityStatusIndicator';
 import Button from '../common/Button';
 import FilterableList from '../common/FilterableList';
 //import FilterableList from '../common/FilterableList';
 import Flex from '../common/Flex';
 import IconButton from '../common/IconButton';
-import InlineLoading from '../common/InlineLoading';
 import OpenCloseModal from '../common/OpenCloseModal';
-import Tips from '../common/Tips';
-import {
-  greyIconButtonChipStyle,
-  marginAroundStyle,
-  space_M,
-  space_S,
-} from '../styling/style';
+import { greyIconButtonChipStyle, marginAroundStyle, space_M, space_S } from '../styling/style';
 import CardTypeThumbnail, { EmptyCardTypeThumbnail } from './cardtypes/CardTypeThumbnail';
 
 export interface CardCreatorProps {
-  parent: CardContent;
+  parentCardContent: CardContent;
   customButton?: ReactJSXElement;
   className?: string;
 }
@@ -44,54 +38,24 @@ const listOfTypeStyle = css({
 });
 
 export default function CardCreator({
-  parent,
+  parentCardContent,
   customButton,
   className,
 }: CardCreatorProps): JSX.Element {
+  const blankTypePseudoId = 0;
   const dispatch = useAppDispatch();
-  const [selectedType, setSelectedType] = React.useState<number | undefined>(0);
+
+  const [selectedType, setSelectedType] = React.useState<number>(blankTypePseudoId);
   const [selectAllTags, setSelectAllTags] = React.useState<boolean>(true);
-  const { project } = useProjectBeingEdited();
-  // TODO get all CardTypes referenced in the project
-  const cardTypes = useProjectCardTypes();
-
-  React.useEffect(() => {
-    if (cardTypes.projectStatus === 'UNSET') {
-      if (project != null) {
-        dispatch(API.getProjectCardTypes(project));
-      }
-    }
-    if (cardTypes.publishedStatus === 'UNSET') {
-      // published type from other project or global types not yet knonw
-      dispatch(API.getAvailablePublishedCardTypes());
-    }
-  }, [cardTypes.projectStatus, cardTypes.publishedStatus, project, dispatch]);
-
-  const onSelect = React.useCallback((id: number) => {
-    setSelectedType(id);
-  }, []);
-
-  const allTags = useCardTypeTags();
-
-  const projectTags = [...cardTypes.own, ...cardTypes.inherited].flatMap(cardType => cardType.tags);
-
   const [tagState, setTagState] = React.useState<Record<string, boolean> | undefined>(undefined);
 
-  React.useEffect(() => {
-    if (tagState === undefined && cardTypes.projectStatus === 'READY') {
-      const intialTagState = projectTags.reduce<Record<string, boolean>>((acc, cur) => {
-        acc[cur] = true;
-        return acc;
-      }, {});
-      setTagState(intialTagState);
-    }
-  }, [cardTypes.own, cardTypes.inherited, cardTypes.projectStatus, tagState, projectTags]);
+  const { cardTypes, status } = useAndLoadProjectCardTypes();
+
+  const projectTags = uniq([...cardTypes].flatMap(cardType => (cardType ? cardType.tags : [])));
 
   const eTags = Object.keys(tagState || []).filter(tag => tagState && tagState[tag]);
 
-  const filter = (types: CardType[]) => {
-    return types.filter(ty => ty.tags.find(tag => eTags.includes(tag)));
-  };
+  const cardTypeFilteredByTag = cardTypes.filter(ty => ty.tags.find(tag => eTags.includes(tag)));
 
   const toggleAllTags = (val: boolean) => {
     setSelectAllTags(val);
@@ -103,25 +67,31 @@ export default function CardCreator({
     );
   };
 
-  const filtered = {
-    own: filter(cardTypes.own),
-    inherited: filter(cardTypes.inherited),
-    published: filter(cardTypes.published),
-    global: filter(cardTypes.global),
-  };
+  const onSelect = React.useCallback((id: number) => {
+    setSelectedType(id);
+  }, []);
+
+  React.useEffect(() => {
+    if (selectedType !== blankTypePseudoId) {
+      if (cardTypeFilteredByTag.find(ct => ct.cardTypeId === selectedType) == null) {
+        setSelectedType(blankTypePseudoId);
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [cardTypeFilteredByTag /* no need to take blankTypePseudoId and selectedType into account */]);
 
   return (
     <OpenCloseModal
       title={
         'Create new ' +
-        (parent.title ? 'subcard for ' + parent.title : 'card') +
+        (parentCardContent.title ? 'subcard for ' + parentCardContent.title : 'card') +
         ' - choose the type'
       }
       collapsedChildren={
         customButton ? (
           customButton
         ) : (
-          <IconButton icon={faPlus} className={greyIconButtonChipStyle} title="Add a card" />
+          <IconButton icon={faPlus} className={greyIconButtonChipStyle} title="Add a card" /> // TODO harmonize "Add a card" / "Add Card"
         )
       }
       className={className}
@@ -146,8 +116,8 @@ export default function CardCreator({
             onClick={() => {
               dispatch(
                 API.createSubCardWithTextDataBlock({
-                  parent: parent,
-                  cardTypeId: selectedType || null,
+                  parent: parentCardContent,
+                  cardTypeId: selectedType,
                 }),
               ).then(() => {
                 close();
@@ -161,13 +131,16 @@ export default function CardCreator({
       showCloseButton
     >
       {() => {
-        if (cardTypes.projectStatus !== 'READY' || cardTypes.publishedStatus !== 'READY') {
-          return <InlineLoading />;
+        if (status !== 'READY') {
+          return <AvailabilityStatusIndicator status={status} />;
         } else {
           return (
             <div className={css({ width: '100%', textAlign: 'left' })}>
               <Flex>
-                <EmptyCardTypeThumbnail onClick={onSelect} highlighted={0 === selectedType} />
+                <EmptyCardTypeThumbnail
+                  onClick={onSelect}
+                  highlighted={blankTypePseudoId === selectedType}
+                />
               </Flex>
               <Flex
                 className={css({
@@ -179,7 +152,7 @@ export default function CardCreator({
                 align="stretch"
               >
                 <FilterableList
-                  tags={allTags}
+                  tags={projectTags}
                   onChange={(t, cat) =>
                     setTagState(state => {
                       return { ...state, [cat]: t };
@@ -191,7 +164,7 @@ export default function CardCreator({
                 />
               </Flex>
               <Flex direction="column">
-                {filtered.inherited != null && filtered.inherited.length > 0 && (
+                {/*cardTypeFiltered != null && cardTypeFiltered.length > 0 && (
                   <>
                     <Flex align="flex-end">
                       <h3>Inherited</h3>
@@ -200,25 +173,25 @@ export default function CardCreator({
                       </Tips>
                     </Flex>
                     <div className={listOfTypeStyle}>
-                      {filtered.inherited.map(cardType => (
+                      {cardTypeFiltered.map(cardType => (
                         <CardTypeThumbnail
-                          key={cardType.id}
+                          key={cardType.cardTypeId}
                           onClick={onSelect}
-                          highlighted={cardType.id === selectedType}
+                          highlighted={cardType.cardTypeId === selectedType}
                           cardType={cardType}
                         />
                       ))}
                     </div>
                   </>
-                )}
-                {filtered.own != null && filtered.own.length > 0 ? (
+                )*/}
+                {cardTypeFilteredByTag != null && cardTypeFilteredByTag.length > 0 ? (
                   <div className={listOfTypeStyle}>
-                    {filtered.own.map(cardType => {
+                    {cardTypeFilteredByTag.map(cardType => {
                       return (
                         <CardTypeThumbnail
-                          key={cardType.id}
+                          key={cardType.cardTypeId}
                           onClick={onSelect}
-                          highlighted={cardType.id === selectedType}
+                          highlighted={cardType.cardTypeId === selectedType}
                           cardType={cardType}
                         />
                       );
@@ -227,10 +200,13 @@ export default function CardCreator({
                 ) : (
                   <Flex>
                     <p className={css({ color: 'var(--darkGray)' })}>
-                      <i>You have no custom type in selected categories.</i>
+                      <i>No project type is defined in selected categories.</i>
                     </p>
                   </Flex>
                 )}
+                {/* TODO Think about it : 
+                maybe it would be nice to have an easy way to access the project's card type manager 
+                (sandra) */}
               </Flex>
             </div>
           );

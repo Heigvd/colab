@@ -82,7 +82,7 @@ public class ColabFactory {
         cardTypeToCreate.setTags(new HashSet<>());
 
         Long cardTypeId = client.cardTypeRestEndpoint.createCardType(cardTypeToCreate);
-        return (CardType) client.cardTypeRestEndpoint.getCardType(cardTypeId);
+        return (CardType) client.cardTypeRestEndpoint.getExpandedCardType(cardTypeId).get(0);
     }
 
     /**
@@ -98,7 +98,7 @@ public class ColabFactory {
         CardType cardType = createGlobalCardType(client);
         cardType.setPublished(true);
         client.cardTypeRestEndpoint.updateCardType(cardType);
-        return (CardType) client.cardTypeRestEndpoint.getCardType(cardType.getId());
+        return (CardType) client.cardTypeRestEndpoint.getExpandedCardType(cardType.getId()).get(0);
     }
 
     /**

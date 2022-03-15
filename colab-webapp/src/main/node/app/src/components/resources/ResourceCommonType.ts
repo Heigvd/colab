@@ -34,19 +34,14 @@ export type CreationScope = CreationCardTypeScope | CreationCardScope | Creation
 // it is a temporary proposition until
 // this structure is planned to be used either at a card type level or at a card + card content level
 
-export enum ResourceContextScope {
-  CardType,
-  CardOrCardContent,
-}
-
 export type CardTypeContext = {
-  kind: ResourceContextScope.CardType;
+  kind: 'CardType';
   accessLevel: 'READ' | 'WRITE' | 'DENIED';
-  cardTypeId: number;
+  cardTypeId: number | null | undefined;
 };
 
 export type CardOrCardContentContext = {
-  kind: ResourceContextScope.CardOrCardContent;
+  kind: 'CardOrCardContent';
   accessLevel: 'READ' | 'WRITE' | 'DENIED';
   // TODO see if cardTypeId could be usefull
   cardId: number | undefined;

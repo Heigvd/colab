@@ -6,13 +6,10 @@
  */
 
 import { entityIs, Resource, ResourceRef } from 'colab-rest-client';
-import {
-  ResourceAndRef,
-  ResourceCallContext,
-  ResourceContextScope,
-} from '../components/resources/ResourceCommonType';
-import { useAppSelector } from '../store/hooks';
-import { ColabState, LoadingStatus } from '../store/store';
+import * as API from '../API/api';
+import { ResourceAndRef, ResourceCallContext } from '../components/resources/ResourceCommonType';
+import { useAppDispatch, useAppSelector } from '../store/hooks';
+import { AvailabilityStatus, ColabState, LoadingStatus } from '../store/store';
 
 interface ResourceAndChain {
   /**
@@ -55,14 +52,14 @@ function resolveRef(state: ColabState, ref: ResourceRef): ResourceAndChain {
 }
 
 function isDirect(contextInfo: ResourceCallContext, resource: Resource): boolean {
-  if (contextInfo.kind === ResourceContextScope.CardOrCardContent) {
+  if (contextInfo.kind === 'CardOrCardContent') {
     if (contextInfo.cardContentId != null && contextInfo.cardContentId === resource.cardContentId) {
       return true;
     } else if (contextInfo.cardId != null && contextInfo.cardId === resource.cardId) {
       return true;
     }
   } else if (
-    contextInfo.kind === ResourceContextScope.CardType &&
+    contextInfo.kind === 'CardType' &&
     contextInfo.cardTypeId != null &&
     contextInfo.cardTypeId === resource.abstractCardTypeId
   ) {
@@ -82,7 +79,7 @@ export const useResources = (
     let cardId = 0;
     let cardContentId = 0;
     if (
-      contextInfo.kind === ResourceContextScope.CardOrCardContent &&
+      contextInfo.kind === 'CardOrCardContent' &&
       contextInfo.cardContentId != null &&
       contextInfo.cardId != null
     ) {
@@ -92,10 +89,7 @@ export const useResources = (
       directResourcesOrRefId = state.resources.byCardContent[contextInfo.cardContentId];
       cardContentId = contextInfo.cardContentId;
       cardId = contextInfo.cardId;
-    } else if (
-      contextInfo.kind === ResourceContextScope.CardType &&
-      contextInfo.cardTypeId != null
-    ) {
+    } else if (contextInfo.kind === 'CardType' && contextInfo.cardTypeId != null) {
       directResourcesOrRefId = state.resources.byCardType[contextInfo.cardTypeId];
       cardTypeId = contextInfo.cardTypeId;
     }
@@ -138,6 +132,10 @@ export const useResources = (
   });
 };
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// nb resources
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
 /* export const useNbOfResources = (contextInfo: ResourceCallContext): { nbResources: number } => {
   let result = 0;
   let directResourcesOrRefId = undefined;
@@ -152,3 +150,99 @@ export const useResources = (
     return { nbResources: result };
   });
 }; */
+
+/**
+ * number + availability status
+ */
+export type NbAndStatus = {
+  nb: number | undefined;
+  status: AvailabilityStatus;
+};
+
+/**
+ * fetch the number of resources
+ *
+ * @param context data needed to know what to fetch
+ * @returns the nb of resources + the availability status
+ */
+const useNbResources = (context: ResourceCallContext): NbAndStatus => {
+  return useAppSelector(state => {
+    const defaultResult = { nb: undefined };
+
+    if (context.kind === 'CardType') {
+      const ownerId = context.cardTypeId;
+
+      if (ownerId != null) {
+        const status = state.resources.statusByCardType[ownerId];
+
+        if (status === undefined) {
+          // nothing in store
+          return { ...defaultResult, status: 'NOT_INITIALIZED' };
+        } else if (status !== 'READY') {
+          // we got an availability status
+          return { ...defaultResult, status: status };
+        } else {
+          // great. we can get the data
+          const resources = Object.values(state.resources.resources).flatMap(resource =>
+            entityIs(resource, 'AbstractResource') && resource.abstractCardTypeId === ownerId
+              ? [resource]
+              : [],
+          );
+          return {
+            nb: resources.length,
+            status: 'READY',
+          };
+        }
+      }
+      // } else if (context.kind === 'CardOrCardContent') {
+      //   const ownerId = context.cardContentId;
+
+      //   if (ownerId != null) {
+      //     const status = state.resources.statusByCardContent[ownerId];
+
+      //     if (status === undefined) {
+      //       // nothing in store
+      //       return { ...defaultResult, status: 'NOT_INITIALIZED' };
+      //     } else if (status !== 'READY') {
+      //       // we got an availability status
+      //       return { ...defaultResult, status: status };
+      //     } else {
+      //       // great. we can get the data
+      //       const resources = Object.values(state.resources.resources).flatMap(resource =>
+      //         entityIs(resource, 'AbstractResource') && resource.cardContentId === ownerId
+      //           ? [resource]
+      //           : [],
+      //       );
+      //       return {
+      //         nb: resources.length,
+      //         status: 'READY',
+      //       };
+      //     }
+      //   }
+    }
+
+    return { ...defaultResult, status: 'ERROR' };
+  }); /* refEquals is fine */
+};
+
+/**
+ * fetch and load (if needed) the number of resources
+ *
+ * @param context data needed to know what to fetch
+ * @returns the nb of resources + the availability status
+ */
+export const useAndLoadNbResources = (context: ResourceCallContext): NbAndStatus => {
+  const dispatch = useAppDispatch();
+
+  const { nb, status } = useNbResources(context);
+
+  if (status === 'NOT_INITIALIZED') {
+    if (context.kind === 'CardType' && context.cardTypeId) {
+      dispatch(API.getResourceChainForAbstractCardTypeId(context.cardTypeId));
+      // } else if (context.kind === 'CardOrCardContent' && context.cardContentId) {
+      //   dispatch(API.getResourceChainForCardContentId(context.cardContentId));
+    }
+  }
+
+  return { nb, status };
+};

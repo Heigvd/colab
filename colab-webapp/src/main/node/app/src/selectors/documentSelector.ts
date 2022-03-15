@@ -15,13 +15,20 @@ import { AvailabilityStatus } from '../store/store';
 // fetch a text from a text data block
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-/** text + availability status */
-type TextAndStatus = {
+/**
+ * text + availability status
+ */
+export type TextAndStatus = {
   text: string | null | undefined;
   status: AvailabilityStatus;
 };
 
-/** fetch the text / availability status */
+/**
+ * fetch the text
+ *
+ * @param id the id of the text data block document containing the text
+ * @returns the text (if found) + the availability status
+ */
 const useTextOfDocument = (id: number | null | undefined): TextAndStatus => {
   return useAppSelector(state => {
     const defaultResult = { text: undefined };
@@ -46,7 +53,12 @@ const useTextOfDocument = (id: number | null | undefined): TextAndStatus => {
   });
 };
 
-/** fetch (and load if needed) the text / availability status */
+/**
+ * fetch and load (if needed) the text
+ *
+ * @param id the id of the text data block document containing the text
+ * @returns the text (if found) + the availability status
+ */
 export const useAndLoadTextOfDocument = (id: number | null | undefined): TextAndStatus => {
   const dispatch = useAppDispatch();
 
@@ -64,13 +76,20 @@ export const useAndLoadTextOfDocument = (id: number | null | undefined): TextAnd
 // fetch all the documents of a card content / resource
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-/** matching documents + availability status */
+/**
+ * matching documents + availability status
+ */
 type DocsAndStatus = {
   documents: Document[];
   status: AvailabilityStatus;
 };
 
-/** fetch the matching documents / availability status */
+/**
+ * fetch the matching documents
+ *
+ * @param context all needed data to know what to fetch
+ * @returns the matching documents (if found) + the availability status
+ */
 const useDocuments = ({ kind, ownerId }: DocumentContext): DocsAndStatus => {
   return useAppSelector(state => {
     const defaultResult = { documents: [] };
@@ -114,7 +133,12 @@ const useDocuments = ({ kind, ownerId }: DocumentContext): DocsAndStatus => {
   });
 };
 
-/** fetch (and load if needed) the matching documents / availability status */
+/**
+ * fetch (and load if needed) the matching documents
+ *
+ * @param context all needed data to know what to fetch
+ * @returns the matching documents (if found) + the availability status
+ */
 export const useAndLoadDocuments = (context: DocumentContext): DocsAndStatus => {
   const dispatch = useAppDispatch();
 

@@ -21,7 +21,7 @@ import { Route, Routes, useLocation, useNavigate } from 'react-router-dom';
 import * as API from '../../API/api';
 import useTranslations from '../../i18n/I18nContext';
 import { useCardACLForCurrentUser, useVariantsOrLoad } from '../../selectors/cardSelector';
-import { useCardType } from '../../selectors/cardTypeSelector';
+import { useAndLoadCardType } from '../../selectors/cardTypeSelector';
 import { useAppDispatch } from '../../store/hooks';
 import Collapsible from '../common/Collapsible';
 import ConfirmDeleteModal from '../common/ConfirmDeleteModal';
@@ -36,7 +36,6 @@ import OpenCloseModal from '../common/OpenCloseModal';
 import Tips from '../common/Tips';
 import DocTextDisplay from '../documents/DocTextDisplay';
 import DocumentList from '../documents/DocumentList';
-import { ResourceContextScope } from '../resources/ResourceCommonType';
 import ResourcesWrapper from '../resources/ResourcesWrapper';
 import StickyNoteWrapper from '../stickynotes/StickyNoteWrapper';
 import {
@@ -121,8 +120,7 @@ export default function CardEditor({ card, variant, showSubcards = true }: Props
   const navigate = useNavigate();
   const location = useLocation();
 
-  const cardTypeFull = useCardType(card.cardTypeId);
-  const cardType = cardTypeFull.cardType;
+  const { cardType } = useAndLoadCardType(card.cardTypeId);
   const hasCardType = cardType != null;
 
   const variants = useVariantsOrLoad(card) || [];
@@ -135,26 +133,13 @@ export default function CardEditor({ card, variant, showSubcards = true }: Props
   const readOnly = !userAcl.write || variant.frozen;
   const [showTypeDetails, setShowTypeDetails] = React.useState(false);
 
-  React.useEffect(() => {
-    if (cardType === undefined && card.cardTypeId != null) {
-      if (cardTypeFull.chain.length > 0) {
-        const link = cardTypeFull.chain[cardTypeFull.chain.length - 1];
-
-        if (link != null && link.targetId != null) {
-          dispatch(API.getCardType(link.targetId));
-        }
-      } else if (card.cardTypeId != null) {
-        dispatch(API.getCardType(card.cardTypeId));
-      }
-    }
-  }, [cardTypeFull, cardType, dispatch, card.cardTypeId]);
-
   const closeRouteCb = React.useCallback(
     route => {
       navigate(location.pathname.replace(new RegExp(route + '$'), ''));
     },
     [location.pathname, navigate],
   );
+
   if (card.id == null) {
     return <i>Card without id is invalid...</i>;
   } else {
@@ -408,7 +393,7 @@ export default function CardEditor({ card, variant, showSubcards = true }: Props
                 resources: {
                   children: (
                     <ResourcesWrapper
-                      kind={ResourceContextScope.CardOrCardContent}
+                      kind={'CardOrCardContent'}
                       accessLevel={
                         !readOnly && userAcl.write ? 'WRITE' : userAcl.read ? 'READ' : 'DENIED'
                       }

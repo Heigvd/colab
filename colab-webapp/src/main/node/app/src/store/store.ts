@@ -13,7 +13,7 @@ import activityFlowLinkReducer from './activityflowlink';
 import adminReducer from './admin';
 import authReducer from './auth';
 import cardReducer from './card';
-import cardTypeReducer from './cardtype';
+import cardTypeReducer from './cardTypeSlice';
 import changeReducer from './change';
 import configReducer from './configuration';
 import documentReducer from './documentSlice';
@@ -31,7 +31,7 @@ const rootReducer = combineReducers({
   auth: authReducer,
   admin: adminReducer,
   cards: cardReducer,
-  cardtype: cardTypeReducer,
+  cardType: cardTypeReducer,
   config: configReducer,
   change: changeReducer,
   document: documentReducer,

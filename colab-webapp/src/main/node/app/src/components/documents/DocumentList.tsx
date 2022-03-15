@@ -40,7 +40,7 @@ export default function DocumentList({ context, allowEdition }: DocumentListProp
         <Flex className={css({ paddingTop: space_M })}>
           <DocumentCreatorButton
             context={context}
-            docType="TextDataBlock"
+            docKind="TextDataBlock"
             title="add a text block"
             label={
               <>
@@ -50,7 +50,7 @@ export default function DocumentList({ context, allowEdition }: DocumentListProp
           />
           <DocumentCreatorButton
             context={context}
-            docType="DocumentFile"
+            docKind="DocumentFile"
             title="add a file"
             label={
               <>
@@ -60,7 +60,7 @@ export default function DocumentList({ context, allowEdition }: DocumentListProp
           />
           <DocumentCreatorButton
             context={context}
-            docType="ExternalLink"
+            docKind="ExternalLink"
             title="add a link"
             label={
               <>

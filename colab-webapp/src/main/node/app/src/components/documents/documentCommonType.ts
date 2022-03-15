@@ -5,16 +5,9 @@
  * Licensed under the MIT License
  */
 
-export type DeliverableOfCardContentContext = {
-  kind: 'DeliverableOfCardContent';
+export type DocumentContext = {
+  kind: 'DeliverableOfCardContent' | 'PartOfResource';
   ownerId: number;
 };
 
-export type PartOfResourceContext = {
-  kind: 'PartOfResource';
-  ownerId: number;
-};
-
-export type DocumentContext = DeliverableOfCardContentContext | PartOfResourceContext;
-
-export type DocumentType = 'TextDataBlock' | 'ExternalLink' | 'DocumentFile';
+export type DocumentKind = 'TextDataBlock' | 'ExternalLink' | 'DocumentFile';

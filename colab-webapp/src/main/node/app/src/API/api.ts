@@ -7,13 +7,11 @@
 
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import {
-  AbstractCardType,
   AbstractResource,
   ActivityFlowLink,
   AuthInfo,
   Card,
   CardContent,
-  CardType,
   CardTypeCreationBean,
   Change,
   ColabClient,
@@ -36,9 +34,11 @@ import {
   WsSessionIdentifier,
 } from 'colab-rest-client';
 import { PasswordScore } from '../components/common/Form/Form';
+import { DocumentKind } from '../components/documents/documentCommonType';
 import { hashPassword } from '../SecurityHelper';
 import { addNotification } from '../store/notification';
 import { ColabState, getStore } from '../store/store';
+import { CardTypeAllInOne } from '../types/cardTypeDefinition';
 
 const winPath = window.location.pathname;
 
@@ -490,6 +490,10 @@ export const clearRoleInvolvement = createAsyncThunk(
 // Card Types
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
+export const getExpandedCardType = createAsyncThunk('cardType/getExpanded', async (id: number) => {
+  return await restClient.CardTypeRestEndpoint.getExpandedCardType(id);
+});
+
 /**
  * Get project own abstract card types:
  *  - defined specifically for the project
@@ -523,14 +527,6 @@ export const getAvailablePublishedCardTypes = createAsyncThunk(
   },
 );
 
-export const getExpandedCardType = createAsyncThunk('cardType/getExpanded', async (id: number) => {
-  return await restClient.CardTypeRestEndpoint.getExpandedCardType(id);
-});
-
-export const getCardType = createAsyncThunk('cardType/get', async (id: number) => {
-  return await restClient.CardTypeRestEndpoint.getCardType(id);
-});
-
 export const createCardType = createAsyncThunk(
   'cardType/create',
   async (cardType: CardTypeCreationBean) => {
@@ -538,41 +534,102 @@ export const createCardType = createAsyncThunk(
   },
 );
 
-export const updateCardType = createAsyncThunk('cardType/update', async (cardType: CardType) => {
-  await restClient.CardTypeRestEndpoint.updateCardType(cardType);
-});
+export const updateCardTypeTitle = createAsyncThunk(
+  'cardType/update',
+  async ({ cardTypeId, title }: CardTypeAllInOne, thunkApi) => {
+    const state = thunkApi.getState() as ColabState;
+    if (cardTypeId) {
+      const cardTypeServerSide = state.cardType.cardtypes[cardTypeId];
+      if (entityIs(cardTypeServerSide, 'CardType')) {
+        await restClient.CardTypeRestEndpoint.updateCardType({
+          ...cardTypeServerSide,
+          title: title,
+        });
+      }
+    }
+    // see if we can throw an error
+  },
+);
 
-export const deleteCardType = createAsyncThunk('cardType/delete', async (cardType: CardType) => {
-  if (cardType.id) {
-    await restClient.CardTypeRestEndpoint.deleteCardType(cardType.id);
-  }
-});
+export const updateCardTypeTags = createAsyncThunk(
+  'cardType/update',
+  async ({ cardTypeId, tags }: CardTypeAllInOne, thunkApi) => {
+    const state = thunkApi.getState() as ColabState;
+    if (cardTypeId) {
+      const cardTypeServerSide = state.cardType.cardtypes[cardTypeId];
+      if (entityIs(cardTypeServerSide, 'CardType')) {
+        await restClient.CardTypeRestEndpoint.updateCardType({
+          ...cardTypeServerSide,
+          tags: tags,
+        });
+      }
+    }
+    // see if we can throw an error
+  },
+);
+
+export const updateCardTypeDeprecated = createAsyncThunk(
+  'cardType/update',
+  async ({ ownId, deprecated }: CardTypeAllInOne, thunkApi) => {
+    const state = thunkApi.getState() as ColabState;
+    if (ownId) {
+      const cardTypeServerSide = state.cardType.cardtypes[ownId];
+      if (entityIs(cardTypeServerSide, 'AbstractCardType')) {
+        await restClient.CardTypeRestEndpoint.updateCardType({
+          ...cardTypeServerSide,
+          deprecated: deprecated,
+        });
+      }
+    }
+    // see if we can throw an error
+  },
+);
+
+export const updateCardTypePublished = createAsyncThunk(
+  'cardType/update',
+  async ({ ownId, published }: CardTypeAllInOne, thunkApi) => {
+    const state = thunkApi.getState() as ColabState;
+    if (ownId) {
+      const cardTypeServerSide = state.cardType.cardtypes[ownId];
+      if (entityIs(cardTypeServerSide, 'AbstractCardType')) {
+        await restClient.CardTypeRestEndpoint.updateCardType({
+          ...cardTypeServerSide,
+          published: published,
+        });
+      }
+    }
+    // see if we can throw an error
+  },
+);
 
 /**
  * Use the card type in the project. Concretely that means make a card type reference.
  */
 export const addCardTypeToProject = createAsyncThunk(
   'cardType/addToProject',
-  async ({ cardType, project }: { cardType: AbstractCardType; project: Project }) => {
-    if (cardType.id && project.id) {
-      return await restClient.CardTypeRestEndpoint.useCardTypeInProject(cardType.id, project.id);
-    }
+  async ({ cardType, project }: { cardType: CardTypeAllInOne; project: Project }) => {
+    if (cardType.ownId && project.id)
+      return await restClient.CardTypeRestEndpoint.useCardTypeInProject(cardType.ownId, project.id);
   },
 );
 
+// export const deleteCardType = createAsyncThunk('cardType/delete', async (cardType: CardType) => {
+//   if (cardType.id) {
+//     await restClient.CardTypeRestEndpoint.deleteCardType(cardType.id);
+//   }
+// });
+
 // TODO sandra in progress : sharpened use of delete vs remove from project
 
-// TODO sandra work in progress : not working for the moment (mostly)
 /**
  * Remove the card type from the project. Can be done only if not used.
  */
-// TODO sandra work in progress, can we give cardTypeRef for inherited ?
 export const removeCardTypeFromProject = createAsyncThunk(
   'cardType/removeFromProject',
-  async ({ cardType, project }: { cardType: AbstractCardType; project: Project }) => {
-    if (cardType.id && project.id) {
+  async ({ cardType, project }: { cardType: CardTypeAllInOne; project: Project }) => {
+    if (cardType.ownId && project.id) {
       return await restClient.CardTypeRestEndpoint.removeCardTypeFromProject(
-        cardType.id,
+        cardType.ownId,
         project.id,
       );
     }
@@ -719,7 +776,8 @@ export const getDeliverablesOfCardContent = createAsyncThunk(
 
 export const addDeliverable = createAsyncThunk(
   'cardcontent/addDeliverable',
-  async ({ cardContentId, deliverable }: { cardContentId: number; deliverable: Document }) => {
+  async ({ cardContentId, docKind }: { cardContentId: number; docKind: DocumentKind }) => {
+    const deliverable = makeNewDocument(docKind);
     return await restClient.CardContentRestEndpoint.addDeliverable(cardContentId, deliverable);
   },
 );
@@ -804,7 +862,8 @@ export const getDocumentsOfResource = createAsyncThunk(
 
 export const addDocumentToResource = createAsyncThunk(
   'resource/addDocument',
-  async ({ resourceId, document }: { resourceId: number; document: Document }) => {
+  async ({ resourceId, docKind }: { resourceId: number; docKind: DocumentKind }) => {
+    const document = makeNewDocument(docKind);
     return await restClient.ResourceRestEndpoint.addDocument(resourceId, document);
   },
 );
@@ -831,6 +890,23 @@ export const updateDocument = createAsyncThunk('document/update', async (documen
   return await restClient.DocumentRestEndpoint.updateDocument(document);
 });
 
+export const updateDocumentText = createAsyncThunk(
+  'document/updateText',
+  async ({ id, textData }: { id: number; textData: string }, thunkApi) => {
+    const state = thunkApi.getState() as ColabState;
+    if (id) {
+      const docServerSide = state.document.documents[id];
+      if (entityIs(docServerSide, 'TextDataBlock')) {
+        await restClient.DocumentRestEndpoint.updateDocument({
+          ...docServerSide,
+          textData: textData,
+        });
+      }
+    }
+    // see if we can throw an error
+  },
+);
+
 export const moveDocumentUp = createAsyncThunk('document/moveUp', async (docId: number) => {
   return await restClient.DocumentRestEndpoint.moveDocumentUp(docId);
 });
@@ -838,6 +914,29 @@ export const moveDocumentUp = createAsyncThunk('document/moveUp', async (docId: 
 export const moveDocumentDown = createAsyncThunk('document/moveDown', async (docId: number) => {
   return await restClient.DocumentRestEndpoint.moveDocumentDown(docId);
 });
+
+function makeNewDocument(docKind: DocumentKind) {
+  let document = null;
+  if (docKind == 'DocumentFile') {
+    document = {
+      '@class': docKind,
+      fileSize: 0,
+      mimeType: 'application/octet-stream',
+    };
+  } else if (docKind == 'TextDataBlock') {
+    document = {
+      '@class': docKind,
+      mimeType: 'text/markdown',
+      revision: '0',
+    };
+  } else {
+    document = {
+      '@class': docKind,
+    };
+  }
+
+  return document;
+}
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Blocks
@@ -999,13 +1098,13 @@ export const uploadFile = createAsyncThunk(
   },
 );
 
-export const getFile = createAsyncThunk('files/GetFile', async (id: number) => {
-  return await restClient.DocumentFileRestEndPoint.getFileContent(id);
-});
+// export const getFile = createAsyncThunk('files/GetFile', async (id: number) => {
+//   return await restClient.DocumentFileRestEndPoint.getFileContent(id);
+// });
 
-export const deleteFile = createAsyncThunk('files/DeleteFile', async (id: number) => {
-  return await restClient.DocumentFileRestEndPoint.deleteFile(id);
-});
+// export const deleteFile = createAsyncThunk('files/DeleteFile', async (id: number) => {
+//   return await restClient.DocumentFileRestEndPoint.deleteFile(id);
+// });
 
 /////////////////////////////////////////////////////////////////////////////
 // External Data API

@@ -96,7 +96,7 @@ export default function ContentSubs({
         <div className={voidStyle}>
           <p>This project has no card yet. Add some to begin this co-design journey!</p>
           <CardCreator
-            parent={cardContent}
+            parentCardContent={cardContent}
             customButton={
               <Button icon={faPlus} title="Add first card" clickable>
                 Add the first card
@@ -122,7 +122,7 @@ export default function ContentSubs({
           </Flex>
           <Flex justify="center">
             <CardCreator
-              parent={cardContent}
+              parentCardContent={cardContent}
               customButton={
                 depth === depthMax ? (
                   location.pathname.match(/card\/\d+\/v\/\d+/) ? undefined : (

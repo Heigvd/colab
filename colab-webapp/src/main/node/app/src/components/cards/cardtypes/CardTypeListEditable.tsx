@@ -7,17 +7,16 @@
 
 import { css } from '@emotion/css';
 import { faCheckSquare, faSquare } from '@fortawesome/free-regular-svg-icons';
-import { CardType } from 'colab-rest-client';
 import * as React from 'react';
 import Creatable from 'react-select/creatable';
 import * as API from '../../../API/api';
 import { useCardTypeTags } from '../../../selectors/cardTypeSelector';
 import { useAppDispatch } from '../../../store/hooks';
+import { CardTypeAllInOne as CardType } from '../../../types/cardTypeDefinition';
 import { BlockEditorWrapper } from '../../blocks/BlockEditorWrapper';
 import Button from '../../common/Button';
 import InlineInput from '../../common/InlineInput';
 import OpenClose from '../../common/OpenClose';
-import { ResourceContextScope } from '../../resources/ResourceCommonType';
 import ResourcesWrapper from '../../resources/ResourcesWrapper';
 import {
   cardShadow,
@@ -26,6 +25,8 @@ import {
   inputStyle,
   sideTabButton,
 } from '../../styling/style';
+
+// Note: not used any longer
 
 interface DisplayProps {
   cardType: CardType;
@@ -57,7 +58,7 @@ export default function CardTypeListEditable({ cardType }: DisplayProps): JSX.El
                 placeholder=""
                 value={cardType.title || ''}
                 onChange={newValue =>
-                  dispatch(API.updateCardType({ ...cardType, title: newValue }))
+                  dispatch(API.updateCardTypeTitle({ ...cardType, title: newValue }))
                 }
                 autosave={false}
               />
@@ -68,7 +69,7 @@ export default function CardTypeListEditable({ cardType }: DisplayProps): JSX.El
                 options={options}
                 onChange={tagsOptions => {
                   dispatch(
-                    API.updateCardType({
+                    API.updateCardTypeTags({
                       ...cardType,
                       tags: tagsOptions.map(o => o.value),
                     }),
@@ -81,7 +82,9 @@ export default function CardTypeListEditable({ cardType }: DisplayProps): JSX.El
               <Button
                 icon={cardType.deprecated ? faCheckSquare : faSquare}
                 onClick={() =>
-                  dispatch(API.updateCardType({ ...cardType, deprecated: !cardType.deprecated }))
+                  dispatch(
+                    API.updateCardTypeDeprecated({ ...cardType, deprecated: !cardType.deprecated }),
+                  )
                 }
               >
                 Deprecated
@@ -89,7 +92,9 @@ export default function CardTypeListEditable({ cardType }: DisplayProps): JSX.El
               <Button
                 icon={cardType.published ? faCheckSquare : faSquare}
                 onClick={() =>
-                  dispatch(API.updateCardType({ ...cardType, published: !cardType.published }))
+                  dispatch(
+                    API.updateCardTypePublished({ ...cardType, published: !cardType.published }),
+                  )
                 }
               >
                 Published
@@ -99,11 +104,11 @@ export default function CardTypeListEditable({ cardType }: DisplayProps): JSX.El
           <OpenClose collapsedChildren={<span className={sideTabButton}>Resources</span>}>
             {() => (
               <>
-                {cardType.id && (
+                {cardType.ownId && (
                   <ResourcesWrapper
-                    kind={ResourceContextScope.CardType}
+                    kind={'CardType'}
                     accessLevel="WRITE"
-                    cardTypeId={cardType.id}
+                    cardTypeId={cardType.ownId}
                   />
                 )}
               </>
