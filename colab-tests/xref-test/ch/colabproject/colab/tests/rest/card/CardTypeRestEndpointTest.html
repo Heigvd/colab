@@ -433,34 +433,35 @@
 <a class="jxr_linenumber" name="L425" href="#L425">425</a>     }
 <a class="jxr_linenumber" name="L426" href="#L426">426</a> 
 <a class="jxr_linenumber" name="L427" href="#L427">427</a>     <em class="jxr_comment">// TODO real test for getExpandedCardType</em>
-<a class="jxr_linenumber" name="L428" href="#L428">428</a>     <em class="jxr_comment">// TODO sandra work in progress test useCardTypeInProject + removeCardTypeFromProject</em>
-<a class="jxr_linenumber" name="L429" href="#L429">429</a> 
-<a class="jxr_linenumber" name="L430" href="#L430">430</a>     @Test
-<a class="jxr_linenumber" name="L431" href="#L431">431</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> testProjectAccess() {
-<a class="jxr_linenumber" name="L432" href="#L432">432</a>         String projectName = <span class="jxr_string">"Easy learn german "</span> + ((<strong class="jxr_keyword">int</strong>) (Math.random() * 1000));
-<a class="jxr_linenumber" name="L433" href="#L433">433</a> 
-<a class="jxr_linenumber" name="L434" href="#L434">434</a>         Project project = ColabFactory.createProject(client, projectName);
-<a class="jxr_linenumber" name="L435" href="#L435">435</a>         Long projectId = project.getId();
-<a class="jxr_linenumber" name="L436" href="#L436">436</a> 
-<a class="jxr_linenumber" name="L437" href="#L437">437</a>         CardType cardType = ColabFactory.createCardType(client, projectId);
-<a class="jxr_linenumber" name="L438" href="#L438">438</a>         Long cardTypeId = cardType.getId();
-<a class="jxr_linenumber" name="L439" href="#L439">439</a> 
-<a class="jxr_linenumber" name="L440" href="#L440">440</a>         Assertions.assertEquals(projectId, cardType.getProjectId());
-<a class="jxr_linenumber" name="L441" href="#L441">441</a> 
-<a class="jxr_linenumber" name="L442" href="#L442">442</a>         Set&lt;AbstractCardType&gt; cardTypesOfProject = client.projectRestEndpoint
-<a class="jxr_linenumber" name="L443" href="#L443">443</a>             .getCardTypesOfProject(projectId);
-<a class="jxr_linenumber" name="L444" href="#L444">444</a>         Assertions.assertNotNull(cardTypesOfProject);
-<a class="jxr_linenumber" name="L445" href="#L445">445</a>         Assertions.assertEquals(1, cardTypesOfProject.size());
-<a class="jxr_linenumber" name="L446" href="#L446">446</a>         Assertions.assertEquals(cardTypeId, cardTypesOfProject.iterator().next().getId());
-<a class="jxr_linenumber" name="L447" href="#L447">447</a> 
-<a class="jxr_linenumber" name="L448" href="#L448">448</a>         client.cardTypeRestEndpoint.removeCardTypeFromProject(cardTypeId, projectId);
-<a class="jxr_linenumber" name="L449" href="#L449">449</a> 
-<a class="jxr_linenumber" name="L450" href="#L450">450</a>         cardTypesOfProject = client.projectRestEndpoint.getCardTypesOfProject(projectId);
-<a class="jxr_linenumber" name="L451" href="#L451">451</a>         Assertions.assertNotNull(cardTypesOfProject);
-<a class="jxr_linenumber" name="L452" href="#L452">452</a>         Assertions.assertEquals(0, cardTypesOfProject.size());
-<a class="jxr_linenumber" name="L453" href="#L453">453</a>     }
-<a class="jxr_linenumber" name="L454" href="#L454">454</a> 
-<a class="jxr_linenumber" name="L455" href="#L455">455</a> }
+<a class="jxr_linenumber" name="L428" href="#L428">428</a>     <em class="jxr_comment">// TODO replace all getCardType by getExpandedCardType</em>
+<a class="jxr_linenumber" name="L429" href="#L429">429</a>     <em class="jxr_comment">// TODO sandra work in progress test useCardTypeInProject + removeCardTypeFromProject</em>
+<a class="jxr_linenumber" name="L430" href="#L430">430</a> 
+<a class="jxr_linenumber" name="L431" href="#L431">431</a>     @Test
+<a class="jxr_linenumber" name="L432" href="#L432">432</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> testProjectAccess() {
+<a class="jxr_linenumber" name="L433" href="#L433">433</a>         String projectName = <span class="jxr_string">"Easy learn german "</span> + ((<strong class="jxr_keyword">int</strong>) (Math.random() * 1000));
+<a class="jxr_linenumber" name="L434" href="#L434">434</a> 
+<a class="jxr_linenumber" name="L435" href="#L435">435</a>         Project project = ColabFactory.createProject(client, projectName);
+<a class="jxr_linenumber" name="L436" href="#L436">436</a>         Long projectId = project.getId();
+<a class="jxr_linenumber" name="L437" href="#L437">437</a> 
+<a class="jxr_linenumber" name="L438" href="#L438">438</a>         CardType cardType = ColabFactory.createCardType(client, projectId);
+<a class="jxr_linenumber" name="L439" href="#L439">439</a>         Long cardTypeId = cardType.getId();
+<a class="jxr_linenumber" name="L440" href="#L440">440</a> 
+<a class="jxr_linenumber" name="L441" href="#L441">441</a>         Assertions.assertEquals(projectId, cardType.getProjectId());
+<a class="jxr_linenumber" name="L442" href="#L442">442</a> 
+<a class="jxr_linenumber" name="L443" href="#L443">443</a>         Set&lt;AbstractCardType&gt; cardTypesOfProject = client.projectRestEndpoint
+<a class="jxr_linenumber" name="L444" href="#L444">444</a>             .getCardTypesOfProject(projectId);
+<a class="jxr_linenumber" name="L445" href="#L445">445</a>         Assertions.assertNotNull(cardTypesOfProject);
+<a class="jxr_linenumber" name="L446" href="#L446">446</a>         Assertions.assertEquals(1, cardTypesOfProject.size());
+<a class="jxr_linenumber" name="L447" href="#L447">447</a>         Assertions.assertEquals(cardTypeId, cardTypesOfProject.iterator().next().getId());
+<a class="jxr_linenumber" name="L448" href="#L448">448</a> 
+<a class="jxr_linenumber" name="L449" href="#L449">449</a>         client.cardTypeRestEndpoint.removeCardTypeFromProject(cardTypeId, projectId);
+<a class="jxr_linenumber" name="L450" href="#L450">450</a> 
+<a class="jxr_linenumber" name="L451" href="#L451">451</a>         cardTypesOfProject = client.projectRestEndpoint.getCardTypesOfProject(projectId);
+<a class="jxr_linenumber" name="L452" href="#L452">452</a>         Assertions.assertNotNull(cardTypesOfProject);
+<a class="jxr_linenumber" name="L453" href="#L453">453</a>         Assertions.assertEquals(0, cardTypesOfProject.size());
+<a class="jxr_linenumber" name="L454" href="#L454">454</a>     }
+<a class="jxr_linenumber" name="L455" href="#L455">455</a> 
+<a class="jxr_linenumber" name="L456" href="#L456">456</a> }
 </pre>
 <hr/>
 <div id="footer">Copyright &#169; 2022 <a href="https://www.colab-project.ch">AlbaSim, MEI, HEIG-VD, HES-SO</a>. All rights reserved.</div>

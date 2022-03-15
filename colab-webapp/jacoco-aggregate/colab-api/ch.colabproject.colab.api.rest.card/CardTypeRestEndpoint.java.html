@@ -108,6 +108,7 @@ import org.slf4j.LoggerFactory;
 <span class="nc" id="L108">        return cardTypeManager.getExpandedCardType(id);</span>
     }
 
+    // TODO sandra work in progress remove when the tests are changed to getExpandedCardType
     /**
      * Get card type identified by the given id
      *
@@ -118,8 +119,8 @@ import org.slf4j.LoggerFactory;
     @GET
     @Path(&quot;{id}&quot;)
     public AbstractCardType getCardType(@PathParam(&quot;id&quot;) Long id) {
-<span class="nc" id="L121">        logger.debug(&quot;get card type #{}&quot;, id);</span>
-<span class="nc" id="L122">        return cardTypeDao.findAbstractCardType(id);</span>
+<span class="nc" id="L122">        logger.debug(&quot;get card type #{}&quot;, id);</span>
+<span class="nc" id="L123">        return cardTypeDao.findAbstractCardType(id);</span>
     }
 
     /**
@@ -131,19 +132,19 @@ import org.slf4j.LoggerFactory;
      */
     @POST
     public Long createCardType(CardTypeCreationBean cardTypeCreationBean) {
-<span class="nc" id="L134">        logger.debug(&quot;create card type {}&quot;, cardTypeCreationBean);</span>
+<span class="nc" id="L135">        logger.debug(&quot;create card type {}&quot;, cardTypeCreationBean);</span>
 
-<span class="nc" id="L136">        CardType cardType = new CardType();</span>
-<span class="nc" id="L137">        cardType.setProjectId(cardTypeCreationBean.getProjectId());</span>
-<span class="nc" id="L138">        cardType.setTitle(cardTypeCreationBean.getTitle());</span>
-<span class="nc" id="L139">        cardType.setPurpose(cardTypeCreationBean.getPurpose());</span>
-<span class="nc" id="L140">        cardType.setTags(cardTypeCreationBean.getTags());</span>
+<span class="nc" id="L137">        CardType cardType = new CardType();</span>
+<span class="nc" id="L138">        cardType.setProjectId(cardTypeCreationBean.getProjectId());</span>
+<span class="nc" id="L139">        cardType.setTitle(cardTypeCreationBean.getTitle());</span>
+<span class="nc" id="L140">        cardType.setPurpose(cardTypeCreationBean.getPurpose());</span>
+<span class="nc" id="L141">        cardType.setTags(cardTypeCreationBean.getTags());</span>
 
-<span class="nc bnc" id="L142" title="All 2 branches missed.">        if (cardTypeCreationBean.getPurpose() != null) {</span>
-<span class="nc" id="L143">            cardTypeCreationBean.getPurpose().setPurposingCardType(cardType);</span>
+<span class="nc bnc" id="L143" title="All 2 branches missed.">        if (cardTypeCreationBean.getPurpose() != null) {</span>
+<span class="nc" id="L144">            cardTypeCreationBean.getPurpose().setPurposingCardType(cardType);</span>
         }
 
-<span class="nc" id="L146">        return cardTypeManager.createCardType(cardType).getId();</span>
+<span class="nc" id="L147">        return cardTypeManager.createCardType(cardType).getId();</span>
     }
 
     /**
@@ -155,10 +156,10 @@ import org.slf4j.LoggerFactory;
      */
     @PUT
     public void updateCardType(AbstractCardType cardType) throws ColabMergeException {
-<span class="nc" id="L158">        logger.debug(&quot;update abstract card type {}&quot;, cardType);</span>
+<span class="nc" id="L159">        logger.debug(&quot;update abstract card type {}&quot;, cardType);</span>
 
-<span class="nc" id="L160">        cardTypeDao.updateAbstractCardType(cardType);</span>
-<span class="nc" id="L161">    }</span>
+<span class="nc" id="L161">        cardTypeDao.updateAbstractCardType(cardType);</span>
+<span class="nc" id="L162">    }</span>
 
     /**
      * Permanently delete a card type
@@ -168,9 +169,9 @@ import org.slf4j.LoggerFactory;
     @DELETE
     @Path(&quot;{id}&quot;)
     public void deleteCardType(@PathParam(&quot;id&quot;) Long id) {
-<span class="nc" id="L171">        logger.debug(&quot;delete card type #{}&quot;, id);</span>
-<span class="nc" id="L172">        cardTypeManager.deleteCardType(id);</span>
-<span class="nc" id="L173">    }</span>
+<span class="nc" id="L172">        logger.debug(&quot;delete card type #{}&quot;, id);</span>
+<span class="nc" id="L173">        cardTypeManager.deleteCardType(id);</span>
+<span class="nc" id="L174">    }</span>
 
     /**
      * If the card type is not already in the project, create a reference to it. Else simply return
@@ -185,9 +186,9 @@ import org.slf4j.LoggerFactory;
     @Path(&quot;useCardTypeInProject/{cardTypeId}/{projectId}&quot;)
     public AbstractCardType useCardTypeInProject(@PathParam(&quot;cardTypeId&quot;) Long cardTypeId,
         @PathParam(&quot;projectId&quot;) Long projectId) {
-<span class="nc" id="L188">        logger.debug(&quot;use card type #{} in project #{}&quot;, cardTypeId, projectId);</span>
+<span class="nc" id="L189">        logger.debug(&quot;use card type #{} in project #{}&quot;, cardTypeId, projectId);</span>
 
-<span class="nc" id="L190">        return cardTypeManager.useCardTypeInProject(cardTypeId, projectId);</span>
+<span class="nc" id="L191">        return cardTypeManager.useCardTypeInProject(cardTypeId, projectId);</span>
     }
 
     // TODO sandra work in progress, see what it means exactly to remove a card type from a project
@@ -206,10 +207,10 @@ import org.slf4j.LoggerFactory;
     @Path(&quot;removeCardTypeFromProject/{cardTypeId}/{projectId}&quot;)
     public void removeCardTypeFromProject(@PathParam(&quot;cardTypeId&quot;) Long cardTypeId,
         @PathParam(&quot;projectId&quot;) Long projectId) {
-<span class="nc" id="L209">        logger.debug(&quot;remove card type #{} from project #{}&quot;, cardTypeId, projectId);</span>
+<span class="nc" id="L210">        logger.debug(&quot;remove card type #{} from project #{}&quot;, cardTypeId, projectId);</span>
 
-<span class="nc" id="L211">        cardTypeManager.removeCardTypeFromProject(cardTypeId, projectId);</span>
-<span class="nc" id="L212">    }</span>
+<span class="nc" id="L212">        cardTypeManager.removeCardTypeFromProject(cardTypeId, projectId);</span>
+<span class="nc" id="L213">    }</span>
 
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>
