@@ -13,6 +13,7 @@ import { uniq } from 'lodash';
 import * as React from 'react';
 import { useNavigate } from 'react-router-dom';
 import * as API from '../../API/api';
+import logger from '../../logger';
 import { useAndLoadProjectCardTypes } from '../../selectors/cardTypeSelector';
 import { useAppDispatch } from '../../store/hooks';
 import AvailabilityStatusIndicator from '../common/AvailabilityStatusIndicator';
@@ -51,15 +52,18 @@ export default function CardCreator({
 }: CardCreatorProps): JSX.Element {
   const blankTypePseudoId = 0;
   const dispatch = useAppDispatch();
+  const { cardTypes, status } = useAndLoadProjectCardTypes();
+  const navigate = useNavigate();
+  const projectTags = uniq([...cardTypes].flatMap(cardType => (cardType ? cardType.tags : [])));
+  //DO NOT WORK
+  const objectTags = projectTags.reduce<Record<string, boolean>>((acc, cur) => {
+    acc[cur] = true;
+    return acc;
+  }, {});
 
   const [selectedType, setSelectedType] = React.useState<number>(blankTypePseudoId);
   const [selectAllTags, setSelectAllTags] = React.useState<boolean>(true);
-  const [tagState, setTagState] = React.useState<Record<string, boolean> | undefined>(undefined);
-
-  const { cardTypes, status } = useAndLoadProjectCardTypes();
-  const navigate = useNavigate();
-
-  const projectTags = uniq([...cardTypes].flatMap(cardType => (cardType ? cardType.tags : [])));
+  const [tagState, setTagState] = React.useState<Record<string, boolean> | undefined>(objectTags);
 
   const eTags = Object.keys(tagState || []).filter(tag => tagState && tagState[tag]);
 
@@ -87,6 +91,8 @@ export default function CardCreator({
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [cardTypeFilteredByTag /* no need to take blankTypePseudoId and selectedType into account */]);
+
+  logger.info(tagState);
 
   return (
     <OpenCloseModal
