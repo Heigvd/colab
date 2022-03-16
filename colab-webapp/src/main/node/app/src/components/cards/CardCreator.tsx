@@ -50,7 +50,6 @@ export default function CardCreator({
   customButton,
   className,
 }: CardCreatorProps): JSX.Element {
-  const blankTypePseudoId = 0;
   const dispatch = useAppDispatch();
   const { cardTypes, status } = useAndLoadProjectCardTypes();
   const navigate = useNavigate();
@@ -61,7 +60,7 @@ export default function CardCreator({
     return acc;
   }, {});
 
-  const [selectedType, setSelectedType] = React.useState<number>(blankTypePseudoId);
+  const [selectedType, setSelectedType] = React.useState<number | null>(null);
   const [selectAllTags, setSelectAllTags] = React.useState<boolean>(true);
   const [tagState, setTagState] = React.useState<Record<string, boolean> | undefined>(objectTags);
 
@@ -80,13 +79,16 @@ export default function CardCreator({
   };
 
   const onSelect = React.useCallback((id: number) => {
+    if (!id) {
+      setSelectedType(null);
+    }
     setSelectedType(id);
   }, []);
 
   React.useEffect(() => {
-    if (selectedType !== blankTypePseudoId) {
+    if (selectedType != null) {
       if (cardTypeFilteredByTag.find(ct => ct.cardTypeId === selectedType) == null) {
-        setSelectedType(blankTypePseudoId);
+        setSelectedType(null);
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -182,10 +184,7 @@ export default function CardCreator({
               </Flex>
               <Flex direction="column">
                 <div className={listOfTypeStyle}>
-                  <EmptyCardTypeThumbnail
-                    onClick={onSelect}
-                    highlighted={blankTypePseudoId === selectedType}
-                  />
+                  <EmptyCardTypeThumbnail onClick={onSelect} highlighted={selectedType == null} />
                   {cardTypeFilteredByTag != null && cardTypeFilteredByTag.length > 0 && (
                     <>
                       {cardTypeFilteredByTag.map(cardType => {
@@ -193,7 +192,7 @@ export default function CardCreator({
                           <CardTypeThumbnail
                             key={cardType.cardTypeId}
                             onClick={onSelect}
-                            highlighted={cardType.cardTypeId === selectedType}
+                            highlighted={selectedType === cardType.cardTypeId}
                             cardType={cardType}
                           />
                         );
