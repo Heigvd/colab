@@ -45,29 +45,31 @@ export default function CardTypeList(): JSX.Element {
   const availableTags = uniq(
     [...availableCardTypes].flatMap(cardType => (cardType ? cardType.tags : [])),
   );
-  const allCheckedTypes = projectTags.reduce<Record<string, boolean>>((acc, cur) => {
-    acc[cur] = true;
-    return acc;
-  }, {});
 
   // set all tags on true by default doesn t work
-  const [pTagState, setPTagState] = React.useState<Record<string, boolean> | undefined>(
-    allCheckedTypes,
-  );
-  const [aTagState, setATagState] = React.useState<Record<string, boolean> | undefined>(
-    allCheckedTypes,
-  );
+  const [pTagState, setPTagState] = React.useState<Record<string, boolean> | undefined>();
+
+  const [aTagState, setATagState] = React.useState<Record<string, boolean> | undefined>();
+
   const [selectAllPTags, setSelectAllPTags] = React.useState<boolean>(true);
   const [selectAllATags, setSelectAllATags] = React.useState<boolean>(true);
 
   const ePTags = Object.keys(pTagState || []).filter(tag => pTagState && pTagState[tag]);
   const eATags = Object.keys(aTagState || []).filter(tag => aTagState && aTagState[tag]);
-  const projectCardTypeFilteredByTag = projectCardTypes.filter(ty =>
-    ty.tags.find(tag => ePTags.includes(tag)),
-  );
-  const availableCardTypeFilteredByTag = projectCardTypes.filter(ty =>
-    ty.tags.find(tag => eATags.includes(tag)),
-  );
+
+  const projectCardTypeFilteredByTag = projectCardTypes.filter(ty => {
+    const hasNoTag = ty.tags.length == 0;
+    const hasMatchingTag = ty.tags.find(tag => ePTags.includes(tag));
+
+    return hasNoTag || hasMatchingTag;
+  });
+
+  const availableCardTypeFilteredByTag = availableCardTypes.filter(ty => {
+    const hasNoTag = ty.tags.length == 0;
+    const hasMatchingTag = ty.tags.find(tag => eATags.includes(tag));
+
+    return hasNoTag || hasMatchingTag;
+  });
 
   const toggleAllPTags = (val: boolean) => {
     setSelectAllPTags(val);
@@ -78,15 +80,30 @@ export default function CardTypeList(): JSX.Element {
       }, {}),
     );
   };
+
   const toggleAllATags = (val: boolean) => {
     setSelectAllATags(val);
     setATagState(
-      projectTags.reduce<Record<string, boolean>>((acc, cur) => {
+      availableTags.reduce<Record<string, boolean>>((acc, cur) => {
         acc[cur] = val;
         return acc;
       }, {}),
     );
   };
+
+  React.useEffect(() => {
+    if (projectCTStatus === 'READY') {
+      toggleAllPTags(true);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [projectCTStatus /* no effect when toggleAllPTags changes */]);
+
+  React.useEffect(() => {
+    if (availableCTStatus === 'READY') {
+      toggleAllATags(true);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [availableCTStatus /* no effect when toggleAllTags changes */]);
 
   if (project == null) {
     return <i>No project</i>;
@@ -156,7 +173,7 @@ export default function CardTypeList(): JSX.Element {
                     />
                     <div className={flexWrap}>
                       {availableCardTypeFilteredByTag
-                        .filter(ct => ct.projectIdCT != null)
+                        //.filter(ct => ct.projectIdCT != null)
                         .map(cardType => (
                           <CardTypeItem
                             key={cardType.ownId}

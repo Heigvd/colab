@@ -13,7 +13,6 @@ import { uniq } from 'lodash';
 import * as React from 'react';
 import { useNavigate } from 'react-router-dom';
 import * as API from '../../API/api';
-import logger from '../../logger';
 import { useAndLoadProjectCardTypes } from '../../selectors/cardTypeSelector';
 import { useAppDispatch } from '../../store/hooks';
 import AvailabilityStatusIndicator from '../common/AvailabilityStatusIndicator';
@@ -54,29 +53,35 @@ export default function CardCreator({
   const { cardTypes, status } = useAndLoadProjectCardTypes();
   const navigate = useNavigate();
   const projectTags = uniq([...cardTypes].flatMap(cardType => (cardType ? cardType.tags : [])));
-  //DO NOT WORK
-  const objectTags = projectTags.reduce<Record<string, boolean>>((acc, cur) => {
-    acc[cur] = true;
-    return acc;
-  }, {});
 
   const [selectedType, setSelectedType] = React.useState<number | null>(null);
   const [selectAllTags, setSelectAllTags] = React.useState<boolean>(true);
-  const [tagState, setTagState] = React.useState<Record<string, boolean> | undefined>(objectTags);
+
+  const [tagState, setTagState] = React.useState<Record<string, boolean> | undefined>();
 
   const eTags = Object.keys(tagState || []).filter(tag => tagState && tagState[tag]);
 
   const cardTypeFilteredByTag = cardTypes.filter(ty => ty.tags.find(tag => eTags.includes(tag)));
 
-  const toggleAllTags = (val: boolean) => {
-    setSelectAllTags(val);
-    setTagState(
-      projectTags.reduce<Record<string, boolean>>((acc, cur) => {
-        acc[cur] = val;
-        return acc;
-      }, {}),
-    );
-  };
+  const toggleAllTags = React.useCallback(
+    (val: boolean) => {
+      setSelectAllTags(val);
+      setTagState(
+        projectTags.reduce<Record<string, boolean>>((acc, cur) => {
+          acc[cur] = val;
+          return acc;
+        }, {}),
+      );
+    },
+    [projectTags],
+  );
+
+  React.useEffect(() => {
+    if (status === 'READY') {
+      toggleAllTags(true);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [status /* no effect when toggleAllTags changes */]);
 
   const onSelect = React.useCallback((id: number) => {
     if (!id) {
@@ -93,8 +98,6 @@ export default function CardCreator({
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [cardTypeFilteredByTag /* no need to take blankTypePseudoId and selectedType into account */]);
-
-  logger.info(tagState);
 
   return (
     <OpenCloseModal
@@ -179,7 +182,7 @@ export default function CardCreator({
                   }
                   tagState={tagState}
                   stateSelectAll={selectAllTags}
-                  toggleAllTags={t => toggleAllTags(t)}
+                  toggleAllTags={toggleAllTags}
                 />
               </Flex>
               <Flex direction="column">
