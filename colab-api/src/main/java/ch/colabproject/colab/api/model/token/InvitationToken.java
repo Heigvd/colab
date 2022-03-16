@@ -125,7 +125,7 @@ public class InvitationToken extends Token {
             // as it will lead to an access denied exception
             Project project = getProject();
             if (project != null && project.getId() != null) {
-                return "/project/" + getId();
+                return "/editor/" + project.getId();
             }
         }
         return "";

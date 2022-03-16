@@ -69,7 +69,7 @@ export default function ResourceCreator({
       key: 'teaser',
       type: 'text',
       label: 'teaser',
-      isMandatory: true,
+      isMandatory: false,
     },
     createSelectField({
       key: 'category',

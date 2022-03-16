@@ -94,6 +94,7 @@ export default function OpenGraphLink({
             value={url}
             placeholder="Empty link"
             onChange={newValue => updateDocCb(newValue)}
+            directEdit
           />
         ) : (
           <>
@@ -120,6 +121,7 @@ export default function OpenGraphLink({
                 value={url}
                 placeholder="Empty link"
                 onChange={newValue => updateDocCb(newValue)}
+                directEdit
               />
               <IconButton
                 title="refresh"
@@ -152,6 +154,7 @@ export default function OpenGraphLink({
                 value={url}
                 placeholder="Empty link"
                 onChange={newValue => updateDocCb(newValue)}
+                directEdit
               />
               <IconButton
                 title="refresh"
