@@ -125,7 +125,7 @@ import javax.validation.constraints.NotNull;
             // as it will lead to an access denied exception
 <span class="nc" id="L126">            Project project = getProject();</span>
 <span class="nc bnc" id="L127" title="All 4 branches missed.">            if (project != null &amp;&amp; project.getId() != null) {</span>
-<span class="nc" id="L128">                return &quot;/project/&quot; + getId();</span>
+<span class="nc" id="L128">                return &quot;/editor/&quot; + project.getId();</span>
             }
         }
 <span class="nc" id="L131">        return &quot;&quot;;</span>
