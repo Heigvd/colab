@@ -7,10 +7,11 @@
 
 import { css } from '@emotion/css';
 import { ReactJSXElement } from '@emotion/react/types/jsx-namespace';
-import { faPlus } from '@fortawesome/free-solid-svg-icons';
+import { faCog, faPlus } from '@fortawesome/free-solid-svg-icons';
 import { CardContent } from 'colab-rest-client';
 import { uniq } from 'lodash';
 import * as React from 'react';
+import { useNavigate } from 'react-router-dom';
 import * as API from '../../API/api';
 import { useAndLoadProjectCardTypes } from '../../selectors/cardTypeSelector';
 import { useAppDispatch } from '../../store/hooks';
@@ -21,7 +22,13 @@ import FilterableList from '../common/FilterableList';
 import Flex from '../common/Flex';
 import IconButton from '../common/IconButton';
 import OpenCloseModal from '../common/OpenCloseModal';
-import { greyIconButtonChipStyle, marginAroundStyle, space_M, space_S } from '../styling/style';
+import {
+  greyIconButtonChipStyle,
+  lightIconButtonStyle,
+  marginAroundStyle,
+  space_M,
+  space_S,
+} from '../styling/style';
 import CardTypeThumbnail, { EmptyCardTypeThumbnail } from './cardtypes/CardTypeThumbnail';
 
 export interface CardCreatorProps {
@@ -42,39 +49,51 @@ export default function CardCreator({
   customButton,
   className,
 }: CardCreatorProps): JSX.Element {
-  const blankTypePseudoId = 0;
   const dispatch = useAppDispatch();
-
-  const [selectedType, setSelectedType] = React.useState<number>(blankTypePseudoId);
-  const [selectAllTags, setSelectAllTags] = React.useState<boolean>(true);
-  const [tagState, setTagState] = React.useState<Record<string, boolean> | undefined>(undefined);
-
   const { cardTypes, status } = useAndLoadProjectCardTypes();
-
+  const navigate = useNavigate();
   const projectTags = uniq([...cardTypes].flatMap(cardType => (cardType ? cardType.tags : [])));
+
+  const [selectedType, setSelectedType] = React.useState<number | null>(null);
+  const [selectAllTags, setSelectAllTags] = React.useState<boolean>(true);
+
+  const [tagState, setTagState] = React.useState<Record<string, boolean> | undefined>();
 
   const eTags = Object.keys(tagState || []).filter(tag => tagState && tagState[tag]);
 
   const cardTypeFilteredByTag = cardTypes.filter(ty => ty.tags.find(tag => eTags.includes(tag)));
 
-  const toggleAllTags = (val: boolean) => {
-    setSelectAllTags(val);
-    setTagState(
-      projectTags.reduce<Record<string, boolean>>((acc, cur) => {
-        acc[cur] = val;
-        return acc;
-      }, {}),
-    );
-  };
+  const toggleAllTags = React.useCallback(
+    (val: boolean) => {
+      setSelectAllTags(val);
+      setTagState(
+        projectTags.reduce<Record<string, boolean>>((acc, cur) => {
+          acc[cur] = val;
+          return acc;
+        }, {}),
+      );
+    },
+    [projectTags],
+  );
+
+  React.useEffect(() => {
+    if (status === 'READY') {
+      toggleAllTags(true);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [status /* no effect when toggleAllTags changes */]);
 
   const onSelect = React.useCallback((id: number) => {
+    if (!id) {
+      setSelectedType(null);
+    }
     setSelectedType(id);
   }, []);
 
   React.useEffect(() => {
-    if (selectedType !== blankTypePseudoId) {
+    if (selectedType != null) {
       if (cardTypeFilteredByTag.find(ct => ct.cardTypeId === selectedType) == null) {
-        setSelectedType(blankTypePseudoId);
+        setSelectedType(null);
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -99,9 +118,18 @@ export default function CardCreator({
       footer={close => (
         <Flex
           justify="flex-end"
+          align="center"
           grow={1}
           className={css({ padding: space_M, alignSelf: 'stretch' })}
         >
+          <IconButton
+            onClick={function () {
+              navigate('types');
+            }}
+            title="Manage card types"
+            icon={faCog}
+            className={lightIconButtonStyle}
+          />
           <Button
             title="Cancel"
             onClick={close}
@@ -136,12 +164,6 @@ export default function CardCreator({
         } else {
           return (
             <div className={css({ width: '100%', textAlign: 'left' })}>
-              <Flex>
-                <EmptyCardTypeThumbnail
-                  onClick={onSelect}
-                  highlighted={blankTypePseudoId === selectedType}
-                />
-              </Flex>
               <Flex
                 className={css({
                   paddingBottom: space_S,
@@ -160,53 +182,27 @@ export default function CardCreator({
                   }
                   tagState={tagState}
                   stateSelectAll={selectAllTags}
-                  toggleAllTags={t => toggleAllTags(t)}
+                  toggleAllTags={toggleAllTags}
                 />
               </Flex>
               <Flex direction="column">
-                {/*cardTypeFiltered != null && cardTypeFiltered.length > 0 && (
-                  <>
-                    <Flex align="flex-end">
-                      <h3>Inherited</h3>
-                      <Tips>
-                        Inherited types references either global types or types from others projects
-                      </Tips>
-                    </Flex>
-                    <div className={listOfTypeStyle}>
-                      {cardTypeFiltered.map(cardType => (
-                        <CardTypeThumbnail
-                          key={cardType.cardTypeId}
-                          onClick={onSelect}
-                          highlighted={cardType.cardTypeId === selectedType}
-                          cardType={cardType}
-                        />
-                      ))}
-                    </div>
-                  </>
-                )*/}
-                {cardTypeFilteredByTag != null && cardTypeFilteredByTag.length > 0 ? (
-                  <div className={listOfTypeStyle}>
-                    {cardTypeFilteredByTag.map(cardType => {
-                      return (
-                        <CardTypeThumbnail
-                          key={cardType.cardTypeId}
-                          onClick={onSelect}
-                          highlighted={cardType.cardTypeId === selectedType}
-                          cardType={cardType}
-                        />
-                      );
-                    })}
-                  </div>
-                ) : (
-                  <Flex>
-                    <p className={css({ color: 'var(--darkGray)' })}>
-                      <i>No project type is defined in selected categories.</i>
-                    </p>
-                  </Flex>
-                )}
-                {/* TODO Think about it : 
-                maybe it would be nice to have an easy way to access the project's card type manager 
-                (sandra) */}
+                <div className={listOfTypeStyle}>
+                  <EmptyCardTypeThumbnail onClick={onSelect} highlighted={selectedType == null} />
+                  {cardTypeFilteredByTag != null && cardTypeFilteredByTag.length > 0 && (
+                    <>
+                      {cardTypeFilteredByTag.map(cardType => {
+                        return (
+                          <CardTypeThumbnail
+                            key={cardType.cardTypeId}
+                            onClick={onSelect}
+                            highlighted={selectedType === cardType.cardTypeId}
+                            cardType={cardType}
+                          />
+                        );
+                      })}
+                    </>
+                  )}
+                </div>
               </Flex>
             </div>
           );

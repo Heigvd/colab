@@ -20,14 +20,15 @@ import Flex from './Flex';
 import IconButton from './IconButton';
 
 export interface Props {
-  className?: string;
   label?: string;
+  okButtonLabel?: string;
   value: string;
   readOnly?: boolean;
-  size?: 'SMALL' | 'LARGE';
   onChange: (newValue: string) => void;
   placeholder?: string;
-  okButtonLabel?: string;
+  directEdit?: boolean;
+  size?: 'SMALL' | 'LARGE';
+  className?: string;
   cancelButtonLabel?: string;
   buttonsClassName?: string;
 }
@@ -50,13 +51,14 @@ export default function OnConfirmInput({
   size = 'LARGE',
   placeholder = 'no value',
   readOnly = false,
+  directEdit,
   okButtonLabel = 'Save',
   cancelButtonLabel = 'Cancel',
   buttonsClassName,
 }: Props): JSX.Element {
   const [state, setState] = React.useState<string>(value || '');
 
-  const [mode, setMode] = React.useState<'DISPLAY' | 'EDIT'>('DISPLAY');
+  const [mode, setMode] = React.useState<'DISPLAY' | 'EDIT'>((directEdit && 'EDIT') || 'DISPLAY');
 
   const inputRef = React.useRef<HTMLInputElement>(null);
   const containerRef = React.useRef<HTMLInputElement>(null);
@@ -83,13 +85,17 @@ export default function OnConfirmInput({
     if (inputRef.current) {
       onChange(inputRef.current.value);
     }
-    setMode('DISPLAY');
-  }, [onChange]);
+    if (!directEdit) {
+      setMode('DISPLAY');
+    }
+  }, [onChange, directEdit]);
 
   const cancelCb = React.useCallback(() => {
     setState(defaultValue);
-    setMode('DISPLAY');
-  }, [defaultValue]);
+    if (!directEdit) {
+      setMode('DISPLAY');
+    }
+  }, [defaultValue, directEdit]);
 
   React.useEffect(() => {
     setState(value);

@@ -8,10 +8,17 @@ import { css, cx } from '@emotion/css';
 import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
 import * as React from 'react';
 import useTranslations from '../../i18n/I18nContext';
+import { useAndLoadTextOfDocument } from '../../selectors/documentSelector';
 import Flex from '../common/Flex';
 import IconButton from '../common/IconButton';
 import DocumentList from '../documents/DocumentList';
-import { lightIconButtonStyle, paddingAroundStyle, space_M, space_S } from '../styling/style';
+import {
+  lightIconButtonStyle,
+  paddingAroundStyle,
+  space_M,
+  space_S,
+  textSmall,
+} from '../styling/style';
 import { ResourceAndRef } from './ResourceCommonType';
 
 export interface ResourceDisplayProps {
@@ -25,6 +32,7 @@ export function ResourceDisplay({ resourceAndRef, onClose }: ResourceDisplayProp
   const targetResourceId = resourceAndRef.targetResource.id;
 
   const allowEdition = resourceAndRef.isDirectResource;
+  const { text: teaser } = useAndLoadTextOfDocument(resourceAndRef.targetResource.teaserId);
 
   return (
     <Flex
@@ -42,6 +50,13 @@ export function ResourceDisplay({ resourceAndRef, onClose }: ResourceDisplayProp
         />
         <div>
           <h2>{resourceAndRef.targetResource.title || i18n.resource.untitled}</h2>
+          {teaser && (
+            <div className={textSmall}>
+              <p>
+                <b>Teaser:</b> {teaser}
+              </p>
+            </div>
+          )}
         </div>
       </Flex>
       {targetResourceId && (

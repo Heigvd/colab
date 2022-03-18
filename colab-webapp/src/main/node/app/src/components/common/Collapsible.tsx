@@ -15,7 +15,7 @@ import Flex from './Flex';
 import IconButton from './IconButton';
 
 const openStyle = css({
-  maxHeight: '400px',
+  maxHeight: '40000px',
   transition: 'max-height 500ms ease-in-out',
   overflow: 'hidden',
 });
