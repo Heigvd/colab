@@ -72,6 +72,23 @@ export const useAndLoadTextOfDocument = (id: number | null | undefined): TextAnd
   return { text, status };
 };
 
+// TODO sandra work in progress load all purposes in one call
+export const useAndLoadAllTextOfDocument = (/*cardTypes: CardType[]*/): TextAndStatus[] => {
+  // return useAppSelector(state => {
+  //   const idTextNeeded = cardTypes.flatMap(ct => (ct.purposeId ? [ct.purposeId] : []));
+
+  //   const idTextMissing = idTextNeeded.filter(
+  //     idTxt => state.document.documents[idTxt] === undefined,
+  //   );
+
+  //   dispatch(API.getSeveralDocuments(idTextMissing);)
+
+  // return useAppSelector(state => {
+  const defaultResult = { text: undefined };
+  return [{ ...defaultResult, status: 'ERROR' }];
+  // });
+};
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // fetch all the documents of a card content / resource
 ////////////////////////////////////////////////////////////////////////////////////////////////////
