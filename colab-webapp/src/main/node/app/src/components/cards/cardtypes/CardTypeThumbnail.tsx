@@ -14,6 +14,7 @@ import { CardTypeAllInOne as CardType } from '../../../types/cardTypeDefinition'
 import Flex from '../../common/Flex';
 import Thumbnail from '../../common/Thumbnail';
 import { borderRadius, cardShadow, space_M, space_S } from '../../styling/style';
+import { CardTypeTagsDisplay } from './CardTypeTagItem';
 
 interface Props {
   highlighted: boolean;
@@ -72,15 +73,7 @@ export default function CardTypeThumbnail({ cardType, highlighted, onClick }: Pr
           <div>
             <h3>{cardType.title}</h3>
           </div>
-          <Flex grow={1} align="flex-end">
-            {cardType.tags.map(tag => {
-              return (
-                <div key={tag} className={tagStyle}>
-                  {tag}
-                </div>
-              );
-            })}
-          </Flex>
+          <CardTypeTagsDisplay tags={cardType.tags} className={tagStyle} />
         </div>
       </Thumbnail>
     );
