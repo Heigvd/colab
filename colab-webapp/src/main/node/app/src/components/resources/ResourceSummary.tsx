@@ -14,7 +14,7 @@ import { lightItalicText } from '../styling/style';
 import { ResourceCallContext } from './ResourceCommonType';
 
 export default function ResourceSummary(context: ResourceCallContext): JSX.Element {
-  const { nb: nbResources, status } = useAndLoadNbResources(context);
+  const { nb, status } = useAndLoadNbResources(context);
 
   if (status !== 'READY') {
     return <AvailabilityStatusIndicator status={status} />;
@@ -22,7 +22,7 @@ export default function ResourceSummary(context: ResourceCallContext): JSX.Eleme
 
   return (
     <p className={lightItalicText}>
-      <FontAwesomeIcon icon={faFileAlt} /> nb resources : {nbResources}
+      <FontAwesomeIcon icon={faFileAlt} /> nb resources : {nb}
     </p>
   );
 }
