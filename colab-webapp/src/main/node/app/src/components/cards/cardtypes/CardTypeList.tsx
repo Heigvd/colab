@@ -20,6 +20,7 @@ import IconButton from '../../common/IconButton';
 import { space_L, space_M, space_S } from '../../styling/style';
 import CardTypeCreator from './CardTypeCreator';
 import CardTypeEditor from './CardTypeEditor';
+import CardTypeItem from './CardTypeItem';
 import CardTypeListWithFilter from './CardTypeListWithFilter';
 
 const flexWrap = css({
@@ -70,8 +71,15 @@ export default function CardTypeList(): JSX.Element {
                 <CardTypeListWithFilter
                   cardTypes={projectCardTypes}
                   filterClassName={css({ paddingBottom: space_S })}
-                  cardTypeListClassName={flexWrap}
-                />
+                >
+                  {filteredCardTypes => (
+                    <div className={flexWrap}>
+                      {filteredCardTypes.map(cardType => (
+                        <CardTypeItem key={cardType.ownId} cardType={cardType} />
+                      ))}
+                    </div>
+                  )}
+                </CardTypeListWithFilter>
                 <Collapsible
                   title="Out of project types"
                   contentClassName={css({ flexDirection: 'column', alignItems: 'stretch' })}
@@ -79,8 +87,15 @@ export default function CardTypeList(): JSX.Element {
                   <CardTypeListWithFilter
                     cardTypes={availableCardTypes}
                     filterClassName={css({ paddingBottom: space_S })}
-                    cardTypeListClassName={flexWrap}
-                  />
+                  >
+                    {filteredCardTypes => (
+                      <div className={flexWrap}>
+                        {filteredCardTypes.map(cardType => (
+                          <CardTypeItem key={cardType.ownId} cardType={cardType} />
+                        ))}
+                      </div>
+                    )}
+                  </CardTypeListWithFilter>
                 </Collapsible>
               </Flex>
             }

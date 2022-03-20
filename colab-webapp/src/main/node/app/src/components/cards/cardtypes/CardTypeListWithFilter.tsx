@@ -7,7 +7,6 @@
 
 import * as React from 'react';
 import { CardTypeAllInOne as CardType } from '../../../types/cardTypeDefinition';
-import CardTypeItem from './CardTypeItem';
 import TagsFilter from './TagFilter';
 
 // TODO UI see if we have default classnames
@@ -17,7 +16,7 @@ interface CardTypeListWithFilterProps {
   defaultChecked?: boolean;
   filterClassName?: string;
   tagItemClassName?: string;
-  cardTypeListClassName?: string;
+  children: (cardTypes: CardType[]) => JSX.Element;
 }
 
 export default function CardTypeListFilterable({
@@ -25,7 +24,7 @@ export default function CardTypeListFilterable({
   defaultChecked = true,
   filterClassName, // default : css({ paddingBottom: space_S })
   tagItemClassName,
-  cardTypeListClassName,
+  children,
 }: CardTypeListWithFilterProps): JSX.Element {
   const [tagsState, setTagsState] = React.useState<Record<string, boolean>>({});
 
@@ -62,11 +61,7 @@ export default function CardTypeListFilterable({
         className={filterClassName}
         tagItemClassName={tagItemClassName}
       />
-      <div className={cardTypeListClassName}>
-        {cardTypesFilteredByTag.map(cardType => (
-          <CardTypeItem key={cardType.ownId} cardType={cardType} />
-        ))}
-      </div>
+      {children(cardTypesFilteredByTag)}
     </>
   );
 }
