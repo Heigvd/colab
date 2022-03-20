@@ -99,7 +99,7 @@ export default function TagsFilter({
         <Checkbox
           key={'toggle all'}
           label={selectAllState ? 'Select all' : 'Deselect all'}
-          value={selectAllState}
+          value={!selectAllState}
           onChange={toggleAllTags}
           className={css({ paddingLeft: space_M })}
           containerClassName={cx(lightLinkStyle, css({ '&:hover': { textDecoration: 'none' } }))}
