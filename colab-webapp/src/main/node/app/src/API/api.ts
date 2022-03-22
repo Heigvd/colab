@@ -535,7 +535,7 @@ export const createCardType = createAsyncThunk(
 );
 
 export const updateCardTypeTitle = createAsyncThunk(
-  'cardType/update',
+  'cardType/updateTitle',
   async ({ cardTypeId, title }: CardTypeAllInOne, thunkApi) => {
     const state = thunkApi.getState() as ColabState;
     if (cardTypeId) {
@@ -552,7 +552,7 @@ export const updateCardTypeTitle = createAsyncThunk(
 );
 
 export const updateCardTypeTags = createAsyncThunk(
-  'cardType/update',
+  'cardType/updateTags',
   async ({ cardTypeId, tags }: CardTypeAllInOne, thunkApi) => {
     const state = thunkApi.getState() as ColabState;
     if (cardTypeId) {
@@ -569,7 +569,7 @@ export const updateCardTypeTags = createAsyncThunk(
 );
 
 export const updateCardTypeDeprecated = createAsyncThunk(
-  'cardType/update',
+  'cardType/updateDeprecated',
   async ({ ownId, deprecated }: CardTypeAllInOne, thunkApi) => {
     const state = thunkApi.getState() as ColabState;
     if (ownId) {
@@ -586,7 +586,7 @@ export const updateCardTypeDeprecated = createAsyncThunk(
 );
 
 export const updateCardTypePublished = createAsyncThunk(
-  'cardType/update',
+  'cardType/updatePublished',
   async ({ ownId, published }: CardTypeAllInOne, thunkApi) => {
     const state = thunkApi.getState() as ColabState;
     if (ownId) {

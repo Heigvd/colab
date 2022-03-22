@@ -7,10 +7,10 @@
 
 import { createSlice } from '@reduxjs/toolkit';
 import { AbstractCardType } from 'colab-rest-client';
-import * as API from '../API/api';
-import { mapById } from '../helper';
-import { processMessage } from '../ws/wsThunkActions';
-import { AvailabilityStatus } from './store';
+import * as API from '../../API/api';
+import { mapById } from '../../helper';
+import { processMessage } from '../../ws/wsThunkActions';
+import { AvailabilityStatus } from '../store';
 
 /** what we have in the store */
 interface CardTypeState {
@@ -40,16 +40,16 @@ const initialState: CardTypeState = {
 };
 
 /** what to do when a card type was updated / created */
-const updateCardType = (state: CardTypeState, cardType: AbstractCardType) => {
+function updateCardType(state: CardTypeState, cardType: AbstractCardType) {
   if (cardType.id != null) {
     state.cardtypes[cardType.id] = cardType;
   }
-};
+}
 
 /** what to do when a card type was deleted */
-const removeCardType = (state: CardTypeState, cardTypeId: number) => {
+function removeCardType(state: CardTypeState, cardTypeId: number) {
   delete state.cardtypes[cardTypeId];
-};
+}
 
 const cardTypeSlice = createSlice({
   name: 'cardTypes',

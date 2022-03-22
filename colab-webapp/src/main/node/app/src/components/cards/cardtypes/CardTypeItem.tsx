@@ -33,6 +33,7 @@ import {
   space_M,
   space_S,
 } from '../../styling/style';
+import { CardTypeTagsDisplay } from './CardTypeTagItem';
 
 interface DisplayProps {
   cardType: CardType;
@@ -55,7 +56,6 @@ const tagStyle = css({
   backgroundColor: 'var(--lightGray)',
   fontSize: '0.8em',
 });
-
 export default function CardTypeItem({
   cardType,
   readOnly,
@@ -65,9 +65,6 @@ export default function CardTypeItem({
   const navigate = useNavigate();
 
   const { project } = useProjectBeingEdited();
-
-  //const allTags = useCardTypeTags();
-  //const options = allTags.map(tag => ({ label: tag, value: tag }));
 
   return (
     <>
@@ -154,15 +151,7 @@ export default function CardTypeItem({
           <DocTextDisplay id={cardType.purposeId} />
         </p>
         <ResourceSummary kind={'CardType'} accessLevel={'READ'} cardTypeId={cardType.ownId} />
-        <Flex grow={1} align="flex-end">
-          {cardType.tags.map(tag => {
-            return (
-              <div key={tag} className={tagStyle}>
-                {tag}
-              </div>
-            );
-          })}
-        </Flex>
+        <CardTypeTagsDisplay tags={cardType.tags} className={tagStyle} />
         {/*         <Button
           icon={cardType.deprecated ? faCheckSquare : faSquare}
           onClick={() =>
