@@ -549,31 +549,31 @@ public final class Conditions {
     }
 
     /**
-     * The current user must be, at least, intern to given project team
+     * The current user must be, at least, internal to given project team
      */
-    public static class IsCurrentUserInternToProject extends Condition {
+    public static class IsCurrentUserInternalToProject extends Condition {
 
         /** the project */
         private final Project project;
 
         /**
-         * Create a "Is current user leader of this project" statement
+         * Create a "Is current user internal to this project" statement
          *
          * @param project the project to check if the current user is member of
          */
-        public IsCurrentUserInternToProject(Project project) {
+        public IsCurrentUserInternalToProject(Project project) {
             this.project = project;
         }
 
         @Override
         protected boolean internalEval(RequestManager requestManager,
             SecurityManager securityManager) {
-            return securityManager.isCurrentUserInternToProject(project);
+            return securityManager.isCurrentUserInternalToProject(project);
         }
 
         @Override
         public String toString() {
-            return "IsInternTo(" + project + ")";
+            return "IsInternalTo(" + project + ")";
         }
 
         @Override
@@ -594,7 +594,7 @@ public final class Conditions {
             if (getClass() != obj.getClass()) {
                 return false;
             }
-            final IsCurrentUserInternToProject other = (IsCurrentUserInternToProject) obj;
+            final IsCurrentUserInternalToProject other = (IsCurrentUserInternalToProject) obj;
             if (!Objects.equals(this.project, other.project)) {
                 return false;
             }

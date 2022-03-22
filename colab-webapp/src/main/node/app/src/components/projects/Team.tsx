@@ -41,12 +41,12 @@ function prettyPrint(position: HierarchicalPosition) {
   switch (position) {
     case 'OWNER':
       return 'Owner';
-    case 'LEAD':
+    case 'LEADER':
       return 'Project leader';
-    case 'INTERN':
-      return 'Intern';
-    case 'EXTERN':
-      return 'Extern';
+    case 'INTERNAL':
+      return 'Member';
+    case 'GUEST':
+      return 'Guest';
   }
 }
 
@@ -59,9 +59,9 @@ function buildOption(position: HierarchicalPosition) {
 
 const options = [
   buildOption('OWNER'),
-  buildOption('LEAD'),
-  buildOption('INTERN'),
-  buildOption('EXTERN'),
+  buildOption('LEADER'),
+  buildOption('INTERNAL'),
+  buildOption('GUEST'),
 ];
 
 export function PositionSelector({

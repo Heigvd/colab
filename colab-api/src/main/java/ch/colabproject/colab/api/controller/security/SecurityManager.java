@@ -314,23 +314,23 @@ public class SecurityManager {
         }
         TeamMember member = teamManager.findMemberByUserAndProject(project, currentUser);
         return member != null && (member.getPosition() == HierarchicalPosition.OWNER
-            || member.getPosition() == HierarchicalPosition.LEAD);
+            || member.getPosition() == HierarchicalPosition.LEADER);
     }
 
     /**
-     * Is the current user intern to the project team?
+     * Is the current user internal to the project team?
      *
      * @param project the project
      *
-     * @return true if the current user is intern to the project
+     * @return true if the current user is internal to the project
      */
-    public boolean isCurrentUserInternToProject(Project project) {
+    public boolean isCurrentUserInternalToProject(Project project) {
         User currentUser = requestManager.getCurrentUser();
         if (project == null || currentUser == null) {
             return false;
         }
         TeamMember member = teamManager.findMemberByUserAndProject(project, currentUser);
-        return member != null && member.getPosition() != HierarchicalPosition.EXTERN;
+        return member != null && member.getPosition() != HierarchicalPosition.GUEST;
     }
 
     /**

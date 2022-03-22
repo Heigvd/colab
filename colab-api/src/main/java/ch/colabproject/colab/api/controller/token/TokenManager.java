@@ -271,7 +271,7 @@ public class TokenManager {
             // create a member and link it to the project, but do not link it to any user
             // this link will be set during token consumtion
             TeamMember newMember = teamManager.addMember(project, null,
-                HierarchicalPosition.INTERN);
+                HierarchicalPosition.INTERNAL);
             token = new InvitationToken();
 
             token.setTeamMember(newMember);

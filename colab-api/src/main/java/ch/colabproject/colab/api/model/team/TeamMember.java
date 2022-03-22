@@ -151,7 +151,7 @@ public class TeamMember implements ColabEntity, WithWebsocketChannels {
      */
     @NotNull
     @Enumerated(value = EnumType.STRING)
-    private HierarchicalPosition position = HierarchicalPosition.INTERN;
+    private HierarchicalPosition position = HierarchicalPosition.INTERNAL;
 
     // ---------------------------------------------------------------------------------------------
     // getters and setters
@@ -384,8 +384,8 @@ public class TeamMember implements ColabEntity, WithWebsocketChannels {
     @JsonbTransient
     public Conditions.Condition getCreateCondition() {
         if (this.user != null && this.project != null) {
-            // any "intern" may invite somebody
-            return new Conditions.IsCurrentUserInternToProject(project);
+            // any "internal" may invite somebody
+            return new Conditions.IsCurrentUserInternalToProject(project);
         } else {
             // anyone can read a pending invitation
             return Conditions.alwaysTrue;
