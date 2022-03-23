@@ -19,12 +19,14 @@ export interface DocumentFileProps {
   document: DocumentFile;
   allowEdition?: boolean;
   editingStatus: EditState;
+  setEditingState: React.Dispatch<React.SetStateAction<EditState>>;
 }
 
 export default function DocumentFileEditor({
   document,
   allowEdition,
   editingStatus,
+  setEditingState,
 }: DocumentFileProps): JSX.Element {
   //const i18n = useTranslations();
 
@@ -81,6 +83,7 @@ export default function DocumentFileEditor({
       }
       currentMimetype={document.mimeType}
       editingStatus={editingStatus}
+      setEditingState={setEditingState}
     />
   );
 }

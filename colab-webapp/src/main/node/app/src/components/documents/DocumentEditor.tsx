@@ -20,19 +20,13 @@ import * as React from 'react';
 import * as API from '../../API/api';
 import { useAppDispatch } from '../../store/hooks';
 import { BlockEditorWrapper } from '../blocks/BlockEditorWrapper';
-import Button from '../common/Button';
 import ConfirmDeleteModal from '../common/ConfirmDeleteModal';
 import DropDownMenu from '../common/DropDownMenu';
 import Flex from '../common/Flex';
 import IconButton from '../common/IconButton';
 import OpenGraphLink from '../common/OpenGraphLink';
 import { EditState } from '../live/LiveEditor';
-import {
-  editableBlockStyle,
-  invertedButtonStyle,
-  lightIconButtonStyle,
-  space_S,
-} from '../styling/style';
+import { editableBlockStyle, lightIconButtonStyle, space_S } from '../styling/style';
 import DocumentFileEditor from './DocumentFileEditor';
 
 const editingStyle = css({
@@ -97,15 +91,22 @@ export default function DocumentEditor({
             editingStatus={state}
             showTree={showTree}
             className={css({ flexGrow: 1 })}
+            setEditingState={setState}
           />
         ) : isDocumentFile ? (
           <DocumentFileEditor
             document={document}
             allowEdition={allowEdition}
             editingStatus={state}
+            setEditingState={setState}
           />
         ) : isExternalLink ? (
-          <OpenGraphLink url={document.url || ''} editingStatus={state} document={document} />
+          <OpenGraphLink
+            url={document.url || ''}
+            editingStatus={state}
+            document={document}
+            setEditingState={setState}
+          />
         ) : (
           <div>
             <i>Unknown document</i>
@@ -200,16 +201,6 @@ export default function DocumentEditor({
               val.action && val.action();
             }}
           />
-          {state === 'EDIT' && (
-            <Button
-              className={cx(invertedButtonStyle, css({ margin: space_S + ' 0' }))}
-              onClick={() => {
-                setState('VIEW');
-              }}
-            >
-              Ok
-            </Button>
-          )}
         </Flex>
       </div>
       <Flex direction="column" className={css({ paddingLeft: space_S, opacity: 0 })} id="moveBox">

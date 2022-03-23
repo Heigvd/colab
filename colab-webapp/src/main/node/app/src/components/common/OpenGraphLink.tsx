@@ -24,6 +24,7 @@ export interface OpenGraphProps {
   url: string;
   editCb?: () => void;
   editingStatus: EditState;
+  setEditingState: React.Dispatch<React.SetStateAction<EditState>>;
   document: ExternalLink;
 }
 
@@ -62,6 +63,7 @@ const imageStyle = css({
 export default function OpenGraphLink({
   url,
   editingStatus,
+  setEditingState,
   document,
 }: OpenGraphProps): JSX.Element {
   const dispatch = useAppDispatch();
@@ -83,18 +85,28 @@ export default function OpenGraphLink({
     },
     [dispatch, document],
   );
+  const saveLink = React.useCallback(
+    (newValue: string) => {
+      setEditingState('VIEW');
+      updateDocCb(newValue);
+    },
+    [setEditingState, updateDocCb],
+  );
 
   if (metadata == 'LOADING') {
     return <InlineLoading />;
   } else if (metadata == 'NO_URL') {
     return (
-      <div>
+      <Flex grow={1} className={css({ padding: space_S })}>
         {editingStatus === 'EDIT' ? (
           <OnConfirmInput
             value={url}
             placeholder="Empty link"
-            onChange={newValue => updateDocCb(newValue)}
+            onChange={saveLink}
+            onCancel={() => setEditingState('VIEW')}
             directEdit
+            containerClassName={css({ flexGrow: 1, alignItems: 'stretch' })}
+            className={css({ 'input': { flexGrow: 1 } })}
           />
         ) : (
           <>
@@ -104,7 +116,7 @@ export default function OpenGraphLink({
             </span>
           </>
         )}
-      </div>
+      </Flex>
     );
   } else {
     // fetch most common open graph property
@@ -116,12 +128,15 @@ export default function OpenGraphLink({
       return (
         <>
           {editingStatus === 'EDIT' ? (
-            <Flex className={css({ padding: space_S })}>
+            <Flex grow={1} className={css({ padding: space_S })}>
               <OnConfirmInput
                 value={url}
                 placeholder="Empty link"
-                onChange={newValue => updateDocCb(newValue)}
+                onChange={saveLink}
+                onCancel={() => setEditingState('VIEW')}
                 directEdit
+                containerClassName={css({ flexGrow: 1, alignItems: 'stretch' })}
+                className={css({ input: { flexGrow: 1 } })}
               />
               <IconButton
                 title="refresh"
@@ -149,12 +164,15 @@ export default function OpenGraphLink({
       return (
         <>
           {editingStatus === 'EDIT' ? (
-            <Flex className={css({ padding: space_S })}>
+            <Flex grow={1} className={css({ padding: space_S })}>
               <OnConfirmInput
                 value={url}
                 placeholder="Empty link"
-                onChange={newValue => updateDocCb(newValue)}
+                onChange={saveLink}
+                onCancel={() => setEditingState('VIEW')}
                 directEdit
+                containerClassName={css({ flexGrow: 1, alignItems: 'stretch' })}
+                className={css({ input: { flexGrow: 1 } })}
               />
               <IconButton
                 title="refresh"

@@ -10,12 +10,13 @@ import * as React from 'react';
 import { useAppSelector } from '../../store/hooks';
 import MarkdownViewer from '../blocks/markdown/MarkdownViewer';
 import WysiwygEditor from '../blocks/markdown/WysiwygEditor';
+import Button from '../common/Button';
 import CleverTextarea from '../common/CleverTextarea';
 import ErrorBoundary from '../common/ErrorBoundary';
 import Flex from '../common/Flex';
 import InlineLoading from '../common/InlineLoading';
 import Tabs, { Tab } from '../common/Tabs';
-import { space_M, space_S } from '../styling/style';
+import { invertedButtonStyle, space_M, space_S } from '../styling/style';
 import ChangeTree from './ChangeTree';
 import { useLiveBlock } from './LiveTextEditor';
 
@@ -35,6 +36,7 @@ interface Props {
   editingStatus: EditState;
   showTree?: boolean;
   className?: string;
+  setEditingState?: React.Dispatch<React.SetStateAction<EditState>>;
 }
 
 function Unsupported({ md }: { md: string }) {
@@ -60,6 +62,7 @@ export default function LiveEditor({
   editingStatus,
   showTree,
   className,
+  setEditingState,
 }: Props): JSX.Element {
   const liveSession = useAppSelector(state => state.websockets.sessionId);
 
@@ -148,6 +151,16 @@ export default function LiveEditor({
               </div>
             ) : null}
           </Flex>
+          {editingStatus === 'EDIT' && (
+            <Button
+              className={cx(invertedButtonStyle, css({ margin: space_S + ' 0', alignSelf: 'flex-end' }))}
+              onClick={() => {if(setEditingState)
+                setEditingState('VIEW');
+              }}
+            >
+              Ok
+            </Button>
+          )}
         </Flex>
       );
     }

@@ -17,6 +17,7 @@ export interface BlockEditorProps {
   editingStatus?: EditState;
   showTree?: boolean;
   className?: string;
+  setEditingState?: React.Dispatch<React.SetStateAction<EditState>>;
 }
 
 export function BlockEditorWrapper({
@@ -25,6 +26,7 @@ export function BlockEditorWrapper({
   editingStatus,
   showTree,
   className,
+  setEditingState,
 }: BlockEditorProps): JSX.Element {
   const block = useBlock(blockId);
   if (block == null) {
@@ -43,6 +45,7 @@ export function BlockEditorWrapper({
               editingStatus={editingStatus || 'VIEW'}
               showTree={showTree}
               className={className}
+              setEditingState={setEditingState}
             />
           );
         default:

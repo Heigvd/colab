@@ -25,12 +25,14 @@ export interface Props {
   value: string;
   readOnly?: boolean;
   onChange: (newValue: string) => void;
+  onCancel?:()=>void;
   placeholder?: string;
   directEdit?: boolean;
   size?: 'SMALL' | 'LARGE';
   className?: string;
   cancelButtonLabel?: string;
   buttonsClassName?: string;
+  containerClassName?: string;
 }
 
 function getEffectiveValue(...values: string[]): string {
@@ -48,6 +50,7 @@ export default function OnConfirmInput({
   label,
   value,
   onChange,
+  onCancel,
   size = 'LARGE',
   placeholder = 'no value',
   readOnly = false,
@@ -55,6 +58,7 @@ export default function OnConfirmInput({
   okButtonLabel = 'Save',
   cancelButtonLabel = 'Cancel',
   buttonsClassName,
+  containerClassName,
 }: Props): JSX.Element {
   const [state, setState] = React.useState<string>(value || '');
 
@@ -95,7 +99,10 @@ export default function OnConfirmInput({
     if (!directEdit) {
       setMode('DISPLAY');
     }
-  }, [defaultValue, directEdit]);
+    if(onCancel){
+      onCancel();
+    }
+  }, [defaultValue, directEdit, onCancel]);
 
   React.useEffect(() => {
     setState(value);
@@ -108,7 +115,7 @@ export default function OnConfirmInput({
 
   if (mode === 'EDIT' && !readOnly) {
     return (
-      <div ref={containerRef}>
+      <div ref={containerRef} className={containerClassName}>
         <Flex className={className}>
           <div>{label}</div>
           <input
