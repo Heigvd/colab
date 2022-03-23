@@ -142,20 +142,16 @@ export const getVersionDetails = createAsyncThunk('monitoring/getVersionDetails'
 });
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Authentication
+// Authentication + Users
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-export const requestPasswordReset = createAsyncThunk(
-  'auth/restPassword',
-  async (a: { email: string }) => {
-    await restClient.UserRestEndpoint.requestPasswordReset(a.email);
-  },
-);
 
 export const signInWithLocalAccount = createAsyncThunk(
   'auth/signInLocalAccount',
   async (
-    a: {
+    {
+      identifier,
+      password /*, passwordScore*/,
+    }: {
       identifier: string;
       password: string;
       passwordScore: PasswordScore;
@@ -163,11 +159,11 @@ export const signInWithLocalAccount = createAsyncThunk(
     thunkApi,
   ) => {
     // first, fetch an authenatication method
-    const authMethod = await restClient.UserRestEndpoint.getAuthMethod(a.identifier);
+    const authMethod = await restClient.UserRestEndpoint.getAuthMethod(identifier);
     const authInfo: AuthInfo = {
       '@class': 'AuthInfo',
-      identifier: a.identifier,
-      mandatoryHash: await hashPassword(authMethod.mandatoryMethod, authMethod.salt, a.password),
+      identifier,
+      mandatoryHash: await hashPassword(authMethod.mandatoryMethod, authMethod.salt, password),
     };
 
     await restClient.UserRestEndpoint.signIn(authInfo);
@@ -176,40 +172,15 @@ export const signInWithLocalAccount = createAsyncThunk(
   },
 );
 
-export const getCurrentUserActiveSessions = createAsyncThunk('user/getSessions', async () => {
-  return await restClient.UserRestEndpoint.getActiveSessions();
-});
-
-export const forceLogout = createAsyncThunk('user/forceLogout', async (session: HttpSession) => {
-  return await restClient.UserRestEndpoint.forceLogout(session.id!);
-});
-
-export const updateLocalAccountPassword = createAsyncThunk(
-  'user/updatePassword',
-  async (a: { email: string; password: string; passwordScore: PasswordScore }) => {
-    // first, fetch the authenatication method fot the account
-    const authMethod = await restClient.UserRestEndpoint.getAuthMethod(a.email);
-
-    if (entityIs(authMethod, 'AuthMethod')) {
-      const authInfo: AuthInfo = {
-        '@class': 'AuthInfo',
-        identifier: a.email,
-        mandatoryHash: await hashPassword(authMethod.mandatoryMethod, authMethod.salt, a.password),
-      };
-
-      await restClient.UserRestEndpoint.updateLocalAccountPassword(authInfo);
-    }
-  },
-);
-
-export const signOut = createAsyncThunk('auth/signout', async () => {
-  return await restClient.UserRestEndpoint.signOut();
-});
-
 export const signUp = createAsyncThunk(
   'auth/signup',
   async (
-    a: {
+    {
+      username,
+      email,
+      password,
+      passwordScore,
+    }: {
       username: string;
       email: string;
       password: string;
@@ -218,28 +189,36 @@ export const signUp = createAsyncThunk(
     thunkApi,
   ) => {
     // first, fetch a
-    const authMethod = await restClient.UserRestEndpoint.getAuthMethod(a.email);
+    const authMethod = await restClient.UserRestEndpoint.getAuthMethod(email);
 
     const signUpInfo: SignUpInfo = {
       '@class': 'SignUpInfo',
-      email: a.email,
-      username: a.username,
+      email,
+      username,
       hashMethod: authMethod.mandatoryMethod,
       salt: authMethod.salt,
-      hash: await hashPassword(authMethod.mandatoryMethod, authMethod.salt, a.password),
+      hash: await hashPassword(authMethod.mandatoryMethod, authMethod.salt, password),
     };
     await restClient.UserRestEndpoint.signUp(signUpInfo);
 
     // go back to login page
     thunkApi.dispatch(
       signInWithLocalAccount({
-        identifier: a.email,
-        password: a.password,
-        passwordScore: a.passwordScore,
+        identifier: email,
+        password,
+        passwordScore,
       }),
     );
   },
 );
+
+export const signOut = createAsyncThunk('auth/signout', async () => {
+  return await restClient.UserRestEndpoint.signOut();
+});
+
+export const forceLogout = createAsyncThunk('user/forceLogout', async (session: HttpSession) => {
+  return await restClient.UserRestEndpoint.forceLogout(session.id!);
+});
 
 export const reloadCurrentUser = createAsyncThunk(
   'auth/reload',
@@ -273,18 +252,34 @@ export const reloadCurrentUser = createAsyncThunk(
   },
 );
 
-export const updateUser = createAsyncThunk('user/update', async (user: User) => {
-  await restClient.UserRestEndpoint.updateUser(user);
-  return user;
+export const requestPasswordReset = createAsyncThunk('auth/restPassword', async (email: string) => {
+  await restClient.UserRestEndpoint.requestPasswordReset(email);
 });
 
-export const getUser = createAsyncThunk('user/get', async (id: number) => {
-  return await restClient.UserRestEndpoint.getUserById(id);
-});
+export const updateLocalAccountPassword = createAsyncThunk(
+  'user/updatePassword',
+  async ({
+    email,
+    password,
+  }: {
+    email: string;
+    password: string;
+    passwordScore: PasswordScore;
+  }) => {
+    // first, fetch the authenatication method fot the account
+    const authMethod = await restClient.UserRestEndpoint.getAuthMethod(email);
 
-export const getAllUsers = createAsyncThunk('user/getAll', async () => {
-  return await restClient.UserRestEndpoint.getAllUsers();
-});
+    if (entityIs(authMethod, 'AuthMethod')) {
+      const authInfo: AuthInfo = {
+        '@class': 'AuthInfo',
+        identifier: email,
+        mandatoryHash: await hashPassword(authMethod.mandatoryMethod, authMethod.salt, password),
+      };
+
+      await restClient.UserRestEndpoint.updateLocalAccountPassword(authInfo);
+    }
+  },
+);
 
 export const grantAdminRight = createAsyncThunk('user/grantAdminRight', async (user: User) => {
   if (user.id != null) {
@@ -296,6 +291,23 @@ export const revokeAdminRight = createAsyncThunk('user/revokeAdminRight', async 
   if (user.id != null) {
     return await restClient.UserRestEndpoint.revokeAdminRight(user.id);
   }
+});
+
+export const getCurrentUserActiveSessions = createAsyncThunk('user/getSessions', async () => {
+  return await restClient.UserRestEndpoint.getActiveSessions();
+});
+
+export const updateUser = createAsyncThunk('user/update', async (user: User) => {
+  await restClient.UserRestEndpoint.updateUser(user);
+  return user;
+});
+
+export const getUser = createAsyncThunk('user/get', async (id: number) => {
+  return await restClient.UserRestEndpoint.getUserById(id);
+});
+
+export const getAllUsers = createAsyncThunk('user/getAll', async () => {
+  return await restClient.UserRestEndpoint.getAllUsers();
 });
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
