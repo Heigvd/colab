@@ -6,11 +6,11 @@
  */
 
 import { css, cx } from '@emotion/css';
+import { faQuestionCircle } from '@fortawesome/free-regular-svg-icons';
 import {
   faClone,
   faEllipsisV,
   faEye,
-  faGhost,
   faNetworkWired,
   faProjectDiagram,
 } from '@fortawesome/free-solid-svg-icons';
@@ -42,6 +42,7 @@ import IconButton from '../../common/IconButton';
 import InlineLoading from '../../common/InlineLoading';
 import { invertedThemeMode, space_L, space_M, space_S } from '../../styling/style';
 import { ProjectSettings } from '../ProjectSettings';
+import Team from '../Team';
 import ActivityFlowChart from './ActivityFlowChart';
 import Hierarchy from './Hierarchy';
 
@@ -268,7 +269,7 @@ export default function Editor(): JSX.Element {
           )}
         >
           <IconButton
-            icon={faGhost}
+            icon={faQuestionCircle}
             title="Show project details"
             onClick={() => setShowProjectDetails(showProjectDetails => !showProjectDetails)}
           />
@@ -318,6 +319,7 @@ export default function Editor(): JSX.Element {
             entries={[
               { value: './types', label: 'Card Types' },
               { value: './settings', label: 'Project Settings' },
+              { value: './team', label: 'Team' },
             ]}
             onSelect={val => {
               val.action != null ? val.action() : navigate(val.value);
@@ -347,6 +349,7 @@ export default function Editor(): JSX.Element {
           <Flex direction="column" grow={1}>
             <Routes>
               <Route path="settings" element={<ProjectSettings project={project} />} />
+              <Route path="team" element={<Team project={project}/>} />
               <Route path="hierarchy" element={<Hierarchy rootId={root.id} />} />
               <Route path="flow" element={<ActivityFlowChart />} />
               <Route path="types/*" element={<CardTypeList />} />

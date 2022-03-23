@@ -4,11 +4,11 @@
  *
  * Licensed under the MIT License
  */
-import { css } from '@emotion/css';
+import { css, cx } from '@emotion/css';
 import {
+  faArrowLeft,
   faCheck,
-  faEraser,
-  faHourglassStart,
+  faHourglassHalf,
   faPaperPlane,
   faPen,
   faPlus,
@@ -18,6 +18,7 @@ import {
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { HierarchicalPosition, Project, TeamMember, TeamRole } from 'colab-rest-client';
 import * as React from 'react';
+import { useNavigate } from 'react-router-dom';
 import Select from 'react-select';
 import * as API from '../../API/api';
 import { getDisplayName } from '../../helper';
@@ -28,13 +29,13 @@ import { Destroyer } from '../common/Destroyer';
 import IconButton from '../common/IconButton';
 import InlineInput from '../common/InlineInput';
 import InlineLoading from '../common/InlineLoading';
-import OnConfirmInput from '../common/OnConfirmInput';
 import OpenClose from '../common/OpenClose';
 import WithToolbar from '../common/WithToolbar';
-import { linkStyle } from '../styling/style';
+import { errorColor, inputStyle, lightIconButtonStyle, lightItalicText, linkStyle, space_L, space_M, space_S, successColor, textSmall } from '../styling/style';
 
 const gridNewLine = css({
   gridColumnStart: 1,
+  justifySelf: 'start',
 });
 
 function prettyPrint(position: HierarchicalPosition) {
@@ -124,9 +125,11 @@ const Member = ({ member, roles }: MemberProps) => {
     [dispatch, member],
   );
 
+  /*
+  IS IT USEFUL?
   const clearDisplayName = React.useCallback(() => {
     dispatch(API.updateMember({ ...member, displayName: '' }));
-  }, [dispatch, member]);
+  }, [dispatch, member]); */
 
   let username = <>"n/a"</>;
 
@@ -135,17 +138,21 @@ const Member = ({ member, roles }: MemberProps) => {
     // DN can be edited or cleared
     username = (
       <>
-        <OnConfirmInput value={member.displayName || ''} onChange={updateDisplayName} />
-        <IconButton icon={faEraser} title="Clear" onClick={clearDisplayName} />
+        <InlineInput placeholder='username' value={member.displayName || ''} onChange={updateDisplayName} autosave={false} />
+       {/*  Is it useful? <IconButton icon={faEraser} title="Clear" onClick={clearDisplayName} /> */}
       </>
     );
   } else if (member.displayName && member.userId == null) {
     // display name with DN but no user depict a pending invitation
     // display name is not editable until user accept invitation
     username = (
-      <span title={i18n.pendingInvitation}>
+      <span>
+        <div className={cx(textSmall, lightItalicText)}>
+        <FontAwesomeIcon icon={faHourglassHalf} className={css({marginRight: space_S})} />
+        {i18n.pendingInvitation}...
+        </div>
         {member.displayName}
-        <FontAwesomeIcon icon={faHourglassStart} />
+        
       </span>
     );
   } else if (member.userId == null) {
@@ -180,6 +187,7 @@ const Member = ({ member, roles }: MemberProps) => {
           <IconButton
             key={role.id}
             icon={hasRole ? faCheck : faTimes}
+            iconColor={hasRole ? successColor : errorColor}
             title={hasRole ? 'Remove role' : 'Give role'}
             onClick={() => {
               if (hasRole) {
@@ -204,7 +212,7 @@ function CreateRole({ project }: { project: Project }): JSX.Element {
   }, []);
 
   return (
-    <OpenClose showCloseIcon="NONE" collapsedChildren={<FontAwesomeIcon icon={faPlus} />}>
+    <OpenClose showCloseIcon="NONE" collapsedChildren={<IconButton title='Add role' icon={faPlus} className={lightIconButtonStyle}/>}>
       {collapse => (
         <>
           <input onChange={onChange} value={name} />
@@ -276,26 +284,41 @@ export interface Props {
 
 export default function Team({ project }: Props): JSX.Element {
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
   const projectId = project.id;
 
   const { members, roles, status } = useAndLoadProjectTeam(projectId);
 
   const [invite, setInvite] = React.useState('');
 
-  const title = <h3>Team</h3>;
+  const title = <h1>Team</h1>;
 
   if (status === 'INITIALIZED') {
     return (
       <div>
+        <IconButton
+        icon={faArrowLeft}
+        title={'Back to project'}
+        iconColor="var(--darkGray)"
+        onClick={() => navigate('../')}
+        className={css({ display: 'block', marginBottom: space_M })}
+      />
+
         {title}
         <div
           className={css({
             display: 'grid',
             gridTemplateColumns: `repeat(${roles.length + 3}, max-content)`,
+            justifyItems: 'center',
+            alignItems: 'center',
             '& > div': {
               marginLeft: '5px',
               marginRight: '5px',
             },
+            marginBottom: space_L,
+            paddingBottom: space_M,
+            borderBottom: '1px solid var(--lightGray)',
+            gap: space_S,
           })}
         >
           <div />
@@ -305,19 +328,17 @@ export default function Team({ project }: Props): JSX.Element {
               <RoleDisplay role={role} />
             </div>
           ))}
-          <div className={css({})}>
+          <div>
             <CreateRole project={project} />
           </div>
           {members.map(member => (
             <Member key={member.id} member={member} roles={roles} />
           ))}
         </div>
-
         <div>
-          <label>
-            Invite:
-            <input type="text" onChange={e => setInvite(e.target.value)} value={invite} />
-          </label>
+            <p className={textSmall}>Invite new members</p>
+            <input placeholder='email' type="text" onChange={e => setInvite(e.target.value)} value={invite} className={inputStyle} />
+            {/* <Input onChange={e => setInvite(e)} value={invite} /> */}
           <IconButton
             className={linkStyle}
             icon={faPaperPlane}
@@ -332,6 +353,7 @@ export default function Team({ project }: Props): JSX.Element {
             }
           />
         </div>
+
       </div>
     );
   } else {
