@@ -33,7 +33,8 @@ public class HttpErrorMessage extends HttpException {
         RELATED_OBJECT_NOT_FOUND,
         NOT_FOUND,
         SMTP_ERROR,
-        USERNAME_ALREADY_TAKEN,
+        IDENTIFIER_ALREADY_TAKEN,
+        EMAIL_ADDRESS_INVALID,
         TOO_MANY_REQUESTS,
     }
 
@@ -125,10 +126,17 @@ public class HttpErrorMessage extends HttpException {
     }
 
     /**
-     * @return 400 username already taken
+     * @return 400 identifier (either username or email address) already taken
      */
-    public static HttpErrorMessage userNameAlreadyTaken() {
-        return new HttpErrorMessage(HttpErrorMessage.MessageCode.USERNAME_ALREADY_TAKEN);
+    public static HttpErrorMessage identifierAlreadyTaken() {
+        return new HttpErrorMessage(HttpErrorMessage.MessageCode.IDENTIFIER_ALREADY_TAKEN);
+    }
+
+    /**
+     * @return 400
+     */
+    public static HttpErrorMessage emailAddressInvalid() {
+        return new HttpErrorMessage(HttpErrorMessage.MessageCode.EMAIL_ADDRESS_INVALID);
     }
 
     /**

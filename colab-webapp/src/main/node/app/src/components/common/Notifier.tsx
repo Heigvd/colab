@@ -4,6 +4,7 @@
  *
  * Licensed under the MIT License
  */
+
 import { css } from '@emotion/css';
 import { entityIs, HttpErrorMessage, HttpException } from 'colab-rest-client';
 import * as React from 'react';
@@ -32,8 +33,10 @@ function translateErrorCode(
       return i18n.errors.ACCESS_DENIED;
     case 'NOT_FOUND':
       return i18n.errors.NOT_FOUND;
-    case 'USERNAME_ALREADY_TAKEN':
-      return i18n.errors.USERNAME_ALREADY_TAKEN;
+    case 'IDENTIFIER_ALREADY_TAKEN':
+      return i18n.errors.IDENTIFIER_ALREADY_TAKEN;
+    case 'EMAIL_ADDRESS_INVALID':
+      return i18n.errors.EMAIL_ADDRESS_INVALID;
     case 'SMTP_ERROR':
       return i18n.errors.SMTP_ERROR;
     case 'EMAIL_MESSAGE_ERROR':
@@ -121,10 +124,11 @@ export default function Notifier(): JSX.Element {
         alignItems: 'center',
       })}
     >
-      {notifications.map((notification, index) =>
-        notification.status === 'OPEN' ? (
-          <Notification key={index} notification={notification} index={index} />
-        ) : null,
+      {notifications.map(
+        (notification, index) =>
+          notification.status === 'OPEN' && (
+            <Notification key={index} notification={notification} index={index} />
+          ),
       )}
     </div>
   );
