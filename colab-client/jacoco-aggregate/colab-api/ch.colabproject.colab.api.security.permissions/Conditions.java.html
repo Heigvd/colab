@@ -549,31 +549,31 @@ public final class Conditions {
     }
 
     /**
-     * The current user must be, at least, intern to given project team
+     * The current user must be, at least, internal to given project team
      */
-    public static class IsCurrentUserInternToProject extends Condition {
+    public static class IsCurrentUserInternalToProject extends Condition {
 
         /** the project */
         private final Project project;
 
         /**
-         * Create a &quot;Is current user leader of this project&quot; statement
+         * Create a &quot;Is current user internal to this project&quot; statement
          *
          * @param project the project to check if the current user is member of
          */
-<span class="nc" id="L564">        public IsCurrentUserInternToProject(Project project) {</span>
+<span class="nc" id="L564">        public IsCurrentUserInternalToProject(Project project) {</span>
 <span class="nc" id="L565">            this.project = project;</span>
 <span class="nc" id="L566">        }</span>
 
         @Override
         protected boolean internalEval(RequestManager requestManager,
             SecurityManager securityManager) {
-<span class="nc" id="L571">            return securityManager.isCurrentUserInternToProject(project);</span>
+<span class="nc" id="L571">            return securityManager.isCurrentUserInternalToProject(project);</span>
         }
 
         @Override
         public String toString() {
-<span class="nc" id="L576">            return &quot;IsInternTo(&quot; + project + &quot;)&quot;;</span>
+<span class="nc" id="L576">            return &quot;IsInternalTo(&quot; + project + &quot;)&quot;;</span>
         }
 
         @Override
@@ -594,7 +594,7 @@ public final class Conditions {
 <span class="nc bnc" id="L594" title="All 2 branches missed.">            if (getClass() != obj.getClass()) {</span>
 <span class="nc" id="L595">                return false;</span>
             }
-<span class="nc" id="L597">            final IsCurrentUserInternToProject other = (IsCurrentUserInternToProject) obj;</span>
+<span class="nc" id="L597">            final IsCurrentUserInternalToProject other = (IsCurrentUserInternalToProject) obj;</span>
 <span class="nc bnc" id="L598" title="All 2 branches missed.">            if (!Objects.equals(this.project, other.project)) {</span>
 <span class="nc" id="L599">                return false;</span>
             }

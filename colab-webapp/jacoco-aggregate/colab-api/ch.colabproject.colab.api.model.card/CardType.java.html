@@ -187,7 +187,7 @@ import javax.validation.constraints.NotNull;
     @JsonbTransient
     public Conditions.Condition getCreateCondition() {
 <span class="nc bnc" id="L189" title="All 2 branches missed.">        if (this.getProject() != null) {</span>
-<span class="nc" id="L190">            return new Conditions.IsCurrentUserInternToProject(this.getProject());</span>
+<span class="nc" id="L190">            return new Conditions.IsCurrentUserInternalToProject(this.getProject());</span>
         } else {
             // only admin can edit global types
 <span class="nc" id="L193">            return Conditions.alwaysFalse;</span>

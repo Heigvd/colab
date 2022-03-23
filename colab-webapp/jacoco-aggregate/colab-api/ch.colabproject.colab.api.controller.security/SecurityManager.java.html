@@ -314,23 +314,23 @@ import org.slf4j.LoggerFactory;
         }
 <span class="nc" id="L315">        TeamMember member = teamManager.findMemberByUserAndProject(project, currentUser);</span>
 <span class="nc bnc" id="L316" title="All 4 branches missed.">        return member != null &amp;&amp; (member.getPosition() == HierarchicalPosition.OWNER</span>
-<span class="nc bnc" id="L317" title="All 2 branches missed.">            || member.getPosition() == HierarchicalPosition.LEAD);</span>
+<span class="nc bnc" id="L317" title="All 2 branches missed.">            || member.getPosition() == HierarchicalPosition.LEADER);</span>
     }
 
     /**
-     * Is the current user intern to the project team?
+     * Is the current user internal to the project team?
      *
      * @param project the project
      *
-     * @return true if the current user is intern to the project
+     * @return true if the current user is internal to the project
      */
-    public boolean isCurrentUserInternToProject(Project project) {
+    public boolean isCurrentUserInternalToProject(Project project) {
 <span class="nc" id="L328">        User currentUser = requestManager.getCurrentUser();</span>
 <span class="nc bnc" id="L329" title="All 4 branches missed.">        if (project == null || currentUser == null) {</span>
 <span class="nc" id="L330">            return false;</span>
         }
 <span class="nc" id="L332">        TeamMember member = teamManager.findMemberByUserAndProject(project, currentUser);</span>
-<span class="nc bnc" id="L333" title="All 4 branches missed.">        return member != null &amp;&amp; member.getPosition() != HierarchicalPosition.EXTERN;</span>
+<span class="nc bnc" id="L333" title="All 4 branches missed.">        return member != null &amp;&amp; member.getPosition() != HierarchicalPosition.GUEST;</span>
     }
 
     /**

@@ -557,31 +557,31 @@
 <a class="jxr_linenumber" name="L549" href="#L549">549</a>     }
 <a class="jxr_linenumber" name="L550" href="#L550">550</a> 
 <a class="jxr_linenumber" name="L551" href="#L551">551</a>     <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L552" href="#L552">552</a> <em class="jxr_javadoccomment">     * The current user must be, at least, intern to given project team</em>
+<a class="jxr_linenumber" name="L552" href="#L552">552</a> <em class="jxr_javadoccomment">     * The current user must be, at least, internal to given project team</em>
 <a class="jxr_linenumber" name="L553" href="#L553">553</a> <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="L554" href="#L554">554</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">class</strong> IsCurrentUserInternToProject <strong class="jxr_keyword">extends</strong> Condition {
+<a class="jxr_linenumber" name="L554" href="#L554">554</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">class</strong> IsCurrentUserInternalToProject <strong class="jxr_keyword">extends</strong> Condition {
 <a class="jxr_linenumber" name="L555" href="#L555">555</a> 
 <a class="jxr_linenumber" name="L556" href="#L556">556</a>         <em class="jxr_javadoccomment">/** the project */</em>
 <a class="jxr_linenumber" name="L557" href="#L557">557</a>         <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> Project project;
 <a class="jxr_linenumber" name="L558" href="#L558">558</a> 
 <a class="jxr_linenumber" name="L559" href="#L559">559</a>         <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L560" href="#L560">560</a> <em class="jxr_javadoccomment">         * Create a "Is current user leader of this project" statement</em>
+<a class="jxr_linenumber" name="L560" href="#L560">560</a> <em class="jxr_javadoccomment">         * Create a "Is current user internal to this project" statement</em>
 <a class="jxr_linenumber" name="L561" href="#L561">561</a> <em class="jxr_javadoccomment">         *</em>
 <a class="jxr_linenumber" name="L562" href="#L562">562</a> <em class="jxr_javadoccomment">         * @param project the project to check if the current user is member of</em>
 <a class="jxr_linenumber" name="L563" href="#L563">563</a> <em class="jxr_javadoccomment">         */</em>
-<a class="jxr_linenumber" name="L564" href="#L564">564</a>         <strong class="jxr_keyword">public</strong> IsCurrentUserInternToProject(Project project) {
+<a class="jxr_linenumber" name="L564" href="#L564">564</a>         <strong class="jxr_keyword">public</strong> IsCurrentUserInternalToProject(Project project) {
 <a class="jxr_linenumber" name="L565" href="#L565">565</a>             <strong class="jxr_keyword">this</strong>.project = project;
 <a class="jxr_linenumber" name="L566" href="#L566">566</a>         }
 <a class="jxr_linenumber" name="L567" href="#L567">567</a> 
 <a class="jxr_linenumber" name="L568" href="#L568">568</a>         @Override
 <a class="jxr_linenumber" name="L569" href="#L569">569</a>         <strong class="jxr_keyword">protected</strong> <strong class="jxr_keyword">boolean</strong> internalEval(<a name="RequestManager" href="../../../../../../ch/colabproject/colab/api/controller/RequestManager.html#RequestManager">RequestManager</a> requestManager,
 <a class="jxr_linenumber" name="L570" href="#L570">570</a>             <a name="SecurityManager" href="../../../../../../ch/colabproject/colab/api/controller/security/SecurityManager.html#SecurityManager">SecurityManager</a> securityManager) {
-<a class="jxr_linenumber" name="L571" href="#L571">571</a>             <strong class="jxr_keyword">return</strong> securityManager.isCurrentUserInternToProject(project);
+<a class="jxr_linenumber" name="L571" href="#L571">571</a>             <strong class="jxr_keyword">return</strong> securityManager.isCurrentUserInternalToProject(project);
 <a class="jxr_linenumber" name="L572" href="#L572">572</a>         }
 <a class="jxr_linenumber" name="L573" href="#L573">573</a> 
 <a class="jxr_linenumber" name="L574" href="#L574">574</a>         @Override
 <a class="jxr_linenumber" name="L575" href="#L575">575</a>         <strong class="jxr_keyword">public</strong> String toString() {
-<a class="jxr_linenumber" name="L576" href="#L576">576</a>             <strong class="jxr_keyword">return</strong> <span class="jxr_string">"IsInternTo("</span> + project + <span class="jxr_string">")"</span>;
+<a class="jxr_linenumber" name="L576" href="#L576">576</a>             <strong class="jxr_keyword">return</strong> <span class="jxr_string">"IsInternalTo("</span> + project + <span class="jxr_string">")"</span>;
 <a class="jxr_linenumber" name="L577" href="#L577">577</a>         }
 <a class="jxr_linenumber" name="L578" href="#L578">578</a> 
 <a class="jxr_linenumber" name="L579" href="#L579">579</a>         @Override
@@ -602,7 +602,7 @@
 <a class="jxr_linenumber" name="L594" href="#L594">594</a>             <strong class="jxr_keyword">if</strong> (getClass() != obj.getClass()) {
 <a class="jxr_linenumber" name="L595" href="#L595">595</a>                 <strong class="jxr_keyword">return</strong> false;
 <a class="jxr_linenumber" name="L596" href="#L596">596</a>             }
-<a class="jxr_linenumber" name="L597" href="#L597">597</a>             <strong class="jxr_keyword">final</strong> IsCurrentUserInternToProject other = (IsCurrentUserInternToProject) obj;
+<a class="jxr_linenumber" name="L597" href="#L597">597</a>             <strong class="jxr_keyword">final</strong> IsCurrentUserInternalToProject other = (IsCurrentUserInternalToProject) obj;
 <a class="jxr_linenumber" name="L598" href="#L598">598</a>             <strong class="jxr_keyword">if</strong> (!Objects.equals(<strong class="jxr_keyword">this</strong>.project, other.project)) {
 <a class="jxr_linenumber" name="L599" href="#L599">599</a>                 <strong class="jxr_keyword">return</strong> false;
 <a class="jxr_linenumber" name="L600" href="#L600">600</a>             }

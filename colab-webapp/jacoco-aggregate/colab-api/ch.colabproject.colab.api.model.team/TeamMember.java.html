@@ -151,7 +151,7 @@ import javax.validation.constraints.NotNull;
      */
 <span class="nc" id="L152">    @NotNull</span>
     @Enumerated(value = EnumType.STRING)
-    private HierarchicalPosition position = HierarchicalPosition.INTERN;
+    private HierarchicalPosition position = HierarchicalPosition.INTERNAL;
 
     // ---------------------------------------------------------------------------------------------
     // getters and setters
@@ -384,8 +384,8 @@ import javax.validation.constraints.NotNull;
     @JsonbTransient
     public Conditions.Condition getCreateCondition() {
 <span class="nc bnc" id="L386" title="All 4 branches missed.">        if (this.user != null &amp;&amp; this.project != null) {</span>
-            // any &quot;intern&quot; may invite somebody
-<span class="nc" id="L388">            return new Conditions.IsCurrentUserInternToProject(project);</span>
+            // any &quot;internal&quot; may invite somebody
+<span class="nc" id="L388">            return new Conditions.IsCurrentUserInternalToProject(project);</span>
         } else {
             // anyone can read a pending invitation
 <span class="nc" id="L391">            return Conditions.alwaysTrue;</span>

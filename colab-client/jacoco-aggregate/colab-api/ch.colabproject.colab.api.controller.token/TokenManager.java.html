@@ -271,7 +271,7 @@ import org.slf4j.LoggerFactory;
             // create a member and link it to the project, but do not link it to any user
             // this link will be set during token consumtion
 <span class="nc" id="L273">            TeamMember newMember = teamManager.addMember(project, null,</span>
-                HierarchicalPosition.INTERN);
+                HierarchicalPosition.INTERNAL);
 <span class="nc" id="L275">            token = new InvitationToken();</span>
 
 <span class="nc" id="L277">            token.setTeamMember(newMember);</span>
