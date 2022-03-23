@@ -402,11 +402,11 @@ export default function CardEditor({ card, variant, showSubcards = true }: Props
                     />
                   ),
                   icon: faFileAlt,
-                  title: 'Toggle resources panel',
+                  title: 'Resources',
                 },
                 'Sticky Notes': {
                   icon: faStickyNote,
-                  title: 'Toggle sticky notes panel',
+                  title: 'Sticky notes',
                   children: <StickyNoteWrapper destCardId={card.id} showSrc />,
                 },
               }}

@@ -55,7 +55,6 @@ export default function SideCollapsiblePanel<T extends { [key: string]: Item }>(
         <Flex
           align="stretch"
           className={cx(paddingAroundStyle([1], space_M), itemOpen.className)}
-          title={itemOpen.title}
         >
           {itemOpen.children}
         </Flex>
@@ -92,7 +91,6 @@ export default function SideCollapsiblePanel<T extends { [key: string]: Item }>(
         <Flex
           align="stretch"
           className={cx(paddingAroundStyle([1], space_M), itemOpen.className)}
-          title={itemOpen.title}
         >
           {itemOpen.children}
         </Flex>

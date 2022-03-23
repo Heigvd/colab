@@ -67,7 +67,7 @@ export default function ResourceCreator({
     },
     {
       key: 'teaser',
-      type: 'text',
+      type: 'textarea',
       label: 'teaser',
       isMandatory: false,
     },
