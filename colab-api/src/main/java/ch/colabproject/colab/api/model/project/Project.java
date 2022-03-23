@@ -328,7 +328,7 @@ public class Project implements ColabEntity, WithWebsocketChannels {
 
     @Override
     public Conditions.Condition getUpdateCondition() {
-        return new Conditions.IsCurrentUserInternToProject(this);
+        return new Conditions.IsCurrentUserInternalToProject(this);
     }
 
     @Override

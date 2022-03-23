@@ -279,9 +279,9 @@ public class AccessControlTest extends AbstractArquillianTest {
 //      Assertions.assertTrue(hasTeamRoleReadAccess());
 //      Assertions.assertTrue(hasTeamRoleReadWriteAccess());
 
-        // if the hierarchical position is extern, no access to detail
+        // if the hierarchical position is guest, no access to detail
         client.teamRestEndpoint.changeMemberPosition(aclTestTeamMemberId,
-            HierarchicalPosition.EXTERN);
+            HierarchicalPosition.GUEST);
 
         Assertions.assertFalse(hasUnpublishedGlobalCardTypeReadAccess());
         Assertions.assertFalse(hasUnpublishedGlobalCardTypeReadWriteAccess());
@@ -333,7 +333,7 @@ public class AccessControlTest extends AbstractArquillianTest {
 //      Assertions.assertTrue(hasTeamRoleReadAccess());
 //      Assertions.assertFalse(hasTeamRoleReadWriteAccess());
 
-        // Extern with Informed read only
+        // Guest with Informed read only
         Card card = client.cardRestEndpoint.getCard(data.getCardId());
         card.setDefaultInvolvementLevel(InvolvementLevel.INFORMED_READONLY);
         client.cardRestEndpoint.updateCard(card);
@@ -388,7 +388,7 @@ public class AccessControlTest extends AbstractArquillianTest {
 //      Assertions.assertTrue(hasTeamRoleReadAccess());
 //      Assertions.assertFalse(hasTeamRoleReadWriteAccess());
 
-        // Extern with informed read write
+        // Guest with informed read write
         card = client.cardRestEndpoint.getCard(data.getCardId());
         card.setDefaultInvolvementLevel(InvolvementLevel.INFORMED_READWRITE);
         client.cardRestEndpoint.updateCard(card);
@@ -443,7 +443,7 @@ public class AccessControlTest extends AbstractArquillianTest {
 //      Assertions.assertTrue(hasTeamRoleReadAccess());
 //      Assertions.assertTrue(hasTeamRoleReadWriteAccess());
 
-        // Extern with out of the loop permissions
+        // Guest with out of the loop permissions
         card = client.cardRestEndpoint.getCard(data.getCardId());
         card.setDefaultInvolvementLevel(InvolvementLevel.OUT_OF_THE_LOOP);
         client.cardRestEndpoint.updateCard(card);
@@ -1281,10 +1281,10 @@ public class AccessControlTest extends AbstractArquillianTest {
     private boolean hasTeamMemberReadWriteAccess() {
         try {
             aclTestClient.teamRestEndpoint.changeMemberPosition(data.getSomeTeamMemberId(),
-                HierarchicalPosition.INTERN);
+                HierarchicalPosition.INTERNAL);
 
             aclTestClient.teamRestEndpoint.changeMemberPosition(data.getSomeTeamMemberId(),
-                HierarchicalPosition.EXTERN);
+                HierarchicalPosition.GUEST);
 
             return true;
         } catch (@SuppressWarnings("unused") Exception e) {
