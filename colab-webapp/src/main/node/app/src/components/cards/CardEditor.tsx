@@ -28,12 +28,10 @@ import ConfirmDeleteModal from '../common/ConfirmDeleteModal';
 import DropDownMenu from '../common/DropDownMenu';
 import Flex from '../common/Flex';
 import Input from '../common/Form/Input';
-import SelectInput from '../common/Form/SelectInput';
 import IconButton from '../common/IconButton';
 import InlineInput from '../common/InlineInput';
 import Modal from '../common/Modal';
 import OpenCloseModal from '../common/OpenCloseModal';
-import Tips from '../common/Tips';
 import DocTextDisplay from '../documents/DocTextDisplay';
 import DocumentList from '../documents/DocumentList';
 import ResourcesWrapper from '../resources/ResourcesWrapper';
@@ -247,6 +245,7 @@ export default function CardEditor({ card, variant, showSubcards = true }: Props
                               title="Card Settings"
                               onClose={() => closeRouteCb('settings')}
                               showCloseButton
+                              className={css({height: '580px'})}
                             >
                               {closeModal => (
                                 <CardSettings onClose={closeModal} card={card} variant={variant} />
@@ -365,24 +364,7 @@ export default function CardEditor({ card, variant, showSubcards = true }: Props
                             API.updateCardContent({ ...variant, completionLevel: +newValue }),
                           )
                         }
-                        className={css({ marginBottom: space_M })}
                       />
-                      <Flex>
-                        <SelectInput
-                          value={String(variant.completionMode)}
-                          label="Completion mode"
-                          placeholder={String(variant.completionMode)}
-                          options={[]}
-                          onChange={() => {}}
-                          isMulti={false}
-                        />
-                        <Tips tipsType="TODO">
-                          Select completion mode (MANUAL | AUTO | NO_OP). Manual: input to set
-                          completion; Auto: based on children; No: do not event diplay the bar
-                          <br />
-                          Shall we move all of this to card settings ??
-                        </Tips>
-                      </Flex>
                     </Flex>
                   )}
                 </OpenCloseModal>
