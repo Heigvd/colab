@@ -63,11 +63,19 @@ export default function SignUpForm({ redirectTo }: SignUpFormProps): JSX.Element
       errorMessage: i18n.emailAddressNotValid,
     },
     {
+      key: 'username',
+      label: i18n.model.user.username,
+      type: 'text',
+      isMandatory: true,
+      isErroneous: value => value.username.match(/^[a-zA-Z0-9_\\.\\-]+$/) == null,
+      errorMessage: i18n.usernameNotValid,
+    },
+    {
       key: 'password',
       label: i18n.model.user.password,
       placeholder: 'Min. 6 characters',
       type: 'password',
-      isMandatory: false,
+      isMandatory: true,
       isErroneous: data => data.passwordScore.score < 2,
       errorMessage: data => <PasswordFeedbackDisplay feedback={data.passwordScore.feedback} />,
       showStrenghBar: true,
@@ -81,14 +89,6 @@ export default function SignUpForm({ redirectTo }: SignUpFormProps): JSX.Element
       isErroneous: data => data.password !== data.confirm,
       errorMessage: i18n.passwordsMismatch,
       showStrenghBar: false,
-    },
-    {
-      key: 'username',
-      label: i18n.model.user.username,
-      type: 'text',
-      isMandatory: true,
-      isErroneous: value => value.username.match(/^[a-zA-Z0-9_\\.\\-]+$/) == null,
-      errorMessage: i18n.usernameNotValid,
     },
   ];
 
