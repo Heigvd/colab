@@ -13,33 +13,13 @@ import { AvailabilityStatus, ColabState } from '../store/store';
 import { CardTypeAllInOne, CardTypeAndStatus } from '../types/cardTypeDefinition';
 import { useProjectBeingEdited } from './projectSelector';
 
-// TODO sandra work in progress, check that 'import.*CardType.*colab-rest' is not used in components
-
-/* 
-Besoin d'un hook qui retourne tous les modèles de cartes du projet en cours:
-ProjectCardTypes = cardType[]
-cardType = {
-deprecated: boolean
-id: number
-projectId: number
-published: boolean 
-trackingData?: Trackinig 
-purpose?: string
-tags: string[]
-title: string
-? nbOfResources: number
-? usedBy: Card[] (ou un hook IsUsedBy() qui retournerait un tableau de cartes utilisant ce modèle)
-?(new: tagType: 'global' | 'inherited' | 'own' ?)
-}
-Besoin d'un hook qui retourne tous les modèles de cartes inutilisés dans le projet: (même structure)
- */
-
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // useful stuff to make a convenient card type for the client side
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 /**
- * Turn a card type from a server side model into a convenient model for the client side
+ * Turn a card type from a server side model
+ * into a convenient model for the client side
  *
  * @param cardType the card type, as seen by the server side (it is on it's one, no reference)
  *
@@ -73,6 +53,7 @@ function makeCardTypeOnOneSOwn(cardType: CardTypeOnly): CardTypeAllInOne {
  * @param ref      the starting reference as seen by the server side
  * @param refChain the references chain from the start reference to the concrete card type
  * @param cardType the targeted concrete card type as seen by the server side
+ *
  * @returns the card type, containing needed data from the references,
  *          as convenient for the client side
  */
@@ -135,6 +116,7 @@ interface ExpandedCardType {
  *
  * @param state the colab state
  * @param ref   the card type reference
+ *
  * @returns the targeted card type + references + the availability status
  */
 function expandRef(state: ColabState, ref: CardTypeRef): ExpandedCardType | AvailabilityStatus {
@@ -176,10 +158,13 @@ function expandRef(state: ColabState, ref: CardTypeRef): ExpandedCardType | Avai
  * fetch the card type + target card type + references
  *
  * @param id the id of the card type / reference we want
+ *
  * @returns the requested card type + references (if found) + the availability status
  */
-const useCardType = (id: number | null | undefined): CardTypeAndStatus => {
+function useCardType(id: number | null | undefined): CardTypeAndStatus {
   return useAppSelector(state => {
+    const defaultResult = { cardType: undefined };
+
     if (id != null) {
       const directCardTypeOrRef = state.cardType.cardtypes[id];
 
@@ -190,7 +175,7 @@ const useCardType = (id: number | null | undefined): CardTypeAndStatus => {
         // it is a card type reference, retrieve the targeted card type
         const resolved = expandRef(state, directCardTypeOrRef);
         if (typeof resolved === 'string') {
-          return { cardType: undefined, status: resolved };
+          return { ...defaultResult, status: resolved };
         } else if (resolved.cardType) {
           return {
             cardType: makeCardTypeWithRef(resolved.ref, resolved.refChain, resolved.cardType),
@@ -199,24 +184,26 @@ const useCardType = (id: number | null | undefined): CardTypeAndStatus => {
         }
       } else if (typeof directCardTypeOrRef === 'string') {
         // it is an availability status, just transmit
-        return { cardType: undefined, status: directCardTypeOrRef };
+        return { ...defaultResult, status: directCardTypeOrRef };
       } else {
-        return { cardType: undefined, status: 'NOT_INITIALIZED' };
+        // nothing found
+        return { ...defaultResult, status: 'NOT_INITIALIZED' };
       }
     }
 
     // there was an error / the state is inconsistent
-    return { cardType: undefined, status: 'ERROR' };
+    return { ...defaultResult, status: 'ERROR' };
   }, customColabStateEquals);
-};
+}
 
 /**
  * fetch (and load if needed) the card type + target card type + references
  *
  * @param id the id of the card type / reference we want
+ *
  * @returns the requested card type + references (if found) + the availability status
  */
-export const useAndLoadCardType = (id: number | null | undefined): CardTypeAndStatus => {
+export function useAndLoadCardType(id: number | null | undefined): CardTypeAndStatus {
   const dispatch = useAppDispatch();
 
   const { cardType, status } = useCardType(id);
@@ -226,13 +213,13 @@ export const useAndLoadCardType = (id: number | null | undefined): CardTypeAndSt
   }
 
   return { cardType, status };
-};
+}
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 //
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-const useProjectCardTypes2 = (): CardTypeAllInOne[] => {
+const useProjectCardTypes = (): CardTypeAllInOne[] => {
   return useAppSelector(state => {
     const result: CardTypeAllInOne[] = [];
 
@@ -267,7 +254,7 @@ export const useAndLoadProjectCardTypes = (): {
 } => {
   const dispatch = useAppDispatch();
 
-  const cardTypes = useProjectCardTypes2();
+  const cardTypes = useProjectCardTypes();
   const status = useAppSelector(state => state.cardType.currentProjectStatus);
   const { project } = useProjectBeingEdited();
 
@@ -308,7 +295,7 @@ export const useAndLoadAvailableCardTypes = (): {
   const statusCurrentProject = useAppSelector(state => state.cardType.currentProjectStatus);
 
   const allPublishedCardTypes = usePublishedCardTypes();
-  const projectCardTypes = useProjectCardTypes2();
+  const projectCardTypes = useProjectCardTypes();
 
   if (statusPublished === 'NOT_INITIALIZED') {
     dispatch(API.getAvailablePublishedCardTypes());
@@ -331,7 +318,7 @@ export const useAndLoadAvailableCardTypes = (): {
 };
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-//
+// All global card types (i.e. concrete CardType, no project)
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 const useGlobalTypesForAdmin = (): CardTypeAllInOne[] => {
@@ -348,8 +335,9 @@ export const useAndLoadGlobalTypesForAdmin = (): {
 } => {
   const dispatch = useAppDispatch();
 
-  const cardTypes = useGlobalTypesForAdmin();
   const status = useAppSelector(state => state.cardType.allGlobalForAdminStatus);
+  const cardTypes = useGlobalTypesForAdmin();
+  // useAndLoadAllTextOfDocument(cardTypes);
 
   // TODO sandra work in progress see how we can pre load all purposes
 
@@ -358,9 +346,9 @@ export const useAndLoadGlobalTypesForAdmin = (): {
   }
 
   if (status === 'READY') {
-    return { cardTypes, status: status };
+    return { cardTypes, status };
   } else {
-    return { cardTypes: [], status: status };
+    return { cardTypes: [], status };
   }
 };
 
@@ -384,6 +372,25 @@ export function useCardTypeTags() {
     ).sort();
   });
 }
+
+/* 
+Besoin d'un hook qui retourne tous les modèles de cartes du projet en cours:
+ProjectCardTypes = cardType[]
+cardType = {
+deprecated: boolean
+id: number
+projectId: number
+published: boolean 
+trackingData?: Trackinig 
+purpose?: string
+tags: string[]
+title: string
+? nbOfResources: number
+? usedBy: Card[] (ou un hook IsUsedBy() qui retournerait un tableau de cartes utilisant ce modèle)
+?(new: tagType: 'global' | 'inherited' | 'own' ?)
+}
+Besoin d'un hook qui retourne tous les modèles de cartes inutilisés dans le projet: (même structure)
+ */
 
 ////////////////////
 // old stuff

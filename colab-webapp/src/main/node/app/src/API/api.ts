@@ -676,7 +676,7 @@ export const createSubCardWithTextDataBlock = createAsyncThunk(
         revision: '0',
       };
 
-      if (cardTypeId != null) {
+      if (cardTypeId) {
         return await restClient.CardRestEndpoint.createNewCardWithDeliverable(
           parent.id,
           cardTypeId,

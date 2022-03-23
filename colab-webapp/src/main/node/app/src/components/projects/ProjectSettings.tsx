@@ -26,14 +26,13 @@ interface ProjectSettingsProps {
 // Display one project and allow to edit it
 export function ProjectSettings({ project }: ProjectSettingsProps): JSX.Element {
   const navigate = useNavigate();
-  const projectId = project.id;
   return (
     <Flex align="stretch" direction="column" grow={1} className={css({ alignSelf: 'stretch' })}>
       <IconButton
         icon={faArrowLeft}
         title={'Back to project'}
         iconColor="var(--darkGray)"
-        onClick={() => navigate('./editor/' + projectId)}
+        onClick={() => navigate('../')}
         className={css({ display: 'block', marginBottom: space_M })}
       />
 
