@@ -94,7 +94,7 @@ export default function StickyNoteCreator({
     },
     {
       key: 'explanation',
-      type: 'text',
+      type: 'textarea',
       label: 'explanation',
       isMandatory: true,
     },
