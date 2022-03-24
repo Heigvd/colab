@@ -16,12 +16,18 @@ import useTranslations from '../../i18n/I18nContext';
 import { useAppDispatch } from '../../store/hooks';
 import Flex from '../common/Flex';
 import Checkbox from '../common/Form/Checkbox';
+import SelectInput from '../common/Form/SelectInput';
 import OpenClose from '../common/OpenClose';
 import Tabs, { Tab } from '../common/Tabs';
+import Tips, { WIPContainer } from '../common/Tips';
 import { paddedContainerStyle, space_M } from '../styling/style';
 import CardACL from './CardACL';
 import ContentStatusSelector from './ContentStatusSelector';
 import InvolvementSelector from './InvolvementSelector';
+
+const marginDownSmall = css({
+  marginBottom: 0,
+});
 
 interface Props {
   card: Card;
@@ -44,7 +50,8 @@ export default function CardSettings({ card, variant }: Props): JSX.Element {
     <Tabs>
       <Tab name="settings" label={i18n.card.settings.title}>
         <Flex className={css({ gap: space_M })} direction="column" shrink={1}>
-          <div className={css({ backgroundColor: 'var(--hoverBgColor)' })}>
+          <div>
+            <h3 className={marginDownSmall}>Card color</h3>
             <TwitterPicker
               colors={['#B54BB2', '#B63E3E', '#3DC15C', '#37A8D8', '#DFCA2A', '#9C9C9C', '#FFFFFF']}
               color={card.color || 'white'}
@@ -57,16 +64,34 @@ export default function CardSettings({ card, variant }: Props): JSX.Element {
               }}
             />
           </div>
-          <ContentStatusSelector
-            self={variant.status}
-            onChange={status => dispatch(API.updateCardContent({ ...variant, status: status }))}
-          />
-
-          <Checkbox
-            label="frozen"
-            value={variant.frozen}
-            onChange={value => dispatch(API.updateCardContent({ ...variant, frozen: value }))}
-          />
+          <div>
+            <h3 className={marginDownSmall}>Card content status</h3>
+            <ContentStatusSelector
+              self={variant.status}
+              onChange={status => dispatch(API.updateCardContent({ ...variant, status: status }))}
+            />
+            <Checkbox
+              label="frozen"
+              value={variant.frozen}
+              onChange={value => dispatch(API.updateCardContent({ ...variant, frozen: value }))}
+            />
+          </div>
+          <WIPContainer>
+            <Flex>
+              <h3 className={marginDownSmall}>Completion level mode</h3>
+              <Tips tipsType="TODO">
+                Select completion mode (MANUAL | AUTO | NO_OP). Manual: input to set completion;
+                Auto: based on children; No: do not event diplay the bar
+              </Tips>
+            </Flex>
+            <SelectInput
+              value={String(variant.completionMode)}
+              placeholder={String(variant.completionMode)}
+              options={[]}
+              onChange={() => {}}
+              isMulti={false}
+            />
+          </WIPContainer>
         </Flex>
       </Tab>
       <Tab name="acl" label={i18n.card.settings.acl.title}>

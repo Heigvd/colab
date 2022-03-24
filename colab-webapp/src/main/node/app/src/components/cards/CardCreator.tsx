@@ -103,8 +103,7 @@ export default function CardCreator({
     <OpenCloseModal
       title={
         'Create new ' +
-        (parentCardContent.title ? 'subcard for ' + parentCardContent.title : 'card') +
-        ' - choose the type'
+        (parentCardContent.title ? 'subcard for ' + parentCardContent.title : 'card')
       }
       collapsedChildren={
         customButton ? (
@@ -114,7 +113,7 @@ export default function CardCreator({
         )
       }
       className={className}
-      modalClassName={css({ width: '800px' })}
+      modalClassName={css({ width: '800px', height: '580px' })}
       footer={close => (
         <Flex
           justify="flex-end"

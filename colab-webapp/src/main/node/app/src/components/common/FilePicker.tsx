@@ -27,7 +27,7 @@ import {
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import * as React from 'react';
 import { EditState } from '../live/LiveEditor';
-import { lightIconButtonStyle, space_M, space_S } from '../styling/style';
+import { invertedButtonStyle, lightIconButtonStyle, space_M, space_S } from '../styling/style';
 import Button from './Button';
 import Flex from './Flex';
 import IconButton from './IconButton';
@@ -159,6 +159,7 @@ export interface FilePickerProps {
   currentMimetype?: string;
   currentPreviewImgUrl?: string;
   editingStatus: EditState;
+  setEditingState: React.Dispatch<React.SetStateAction<EditState>>;
 }
 
 export default function FilePicker({
@@ -169,6 +170,7 @@ export default function FilePicker({
   onChange,
   onDownload,
   editingStatus,
+  setEditingState,
 }: FilePickerProps): JSX.Element {
   const [dragging, setDragging] = React.useState(false);
 
@@ -306,17 +308,18 @@ export default function FilePicker({
           <div className={css({ paddingLeft: space_M })} onClick={e => e.stopPropagation()}>
             <label>
               <Button onClick={() => {}}>
-                <FontAwesomeIcon icon={faUpload} /> Upload file
+                <FontAwesomeIcon icon={faUpload} /> {hasNoFile ? 'Upload' : 'Replace'} file
               </Button>
               <input className={inputStyle} type="file" accept={accept} onChange={onInputCb} />
             </label>
+            <Button onClick={()=>setEditingState('VIEW')} className={cx(invertedButtonStyle, css({marginLeft: space_S}))}>Done</Button>
           </div>
         )}
-        {coord && displayed && !isImageToDisplay ? (
+        {coord && displayed && !isImageToDisplay && (
           <div className={overlayStyle(coord)}>
             <img className={previewImageStyle} src={currentPreviewImgUrl} />{' '}
           </div>
-        ) : null}
+        )}
       </Flex>
       {editingStatus === 'VIEW' && !hasNoFile && !isImageToDisplay && (
         <IconButton

@@ -73,7 +73,7 @@ export default function ({ afterCreation, global = false }: Props): JSX.Element 
     },
     {
       key: 'purpose',
-      type: 'text',
+      type: 'textarea',
       label: 'purpose',
       isMandatory: true,
       errorMessage: 'Must have a purpose',

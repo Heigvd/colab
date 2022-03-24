@@ -8,7 +8,7 @@
 import { css, cx } from '@emotion/css';
 import { faTimes } from '@fortawesome/free-solid-svg-icons';
 import * as React from 'react';
-import { cardStyle, space_L } from '../styling/style';
+import { cardStyle, lightIconButtonStyle, space_L, space_M, space_S } from '../styling/style';
 import Flex from './Flex';
 import IconButton from './IconButton';
 import Overlay from './Overlay';
@@ -40,24 +40,24 @@ const modalStyle = cx(
   }),
 );
 
-export const modalSeparatorBorder = 'solid 1px #d7d7d7';
+export const modalSeparatorBorder = 'solid 1px var(--lightGray)';
 
 const modalHeader = css({
   display: 'flex',
-  width: '100%',
   alignItems: 'center',
   borderBottom: modalSeparatorBorder,
+  padding: space_S + ' ' + space_M,
 });
 
 const titleStyle = css({
   fontSize: '24px',
-  paddingLeft: '20px',
   fontWeight: 200,
 });
 
 const closeIconStyle = css({
   width: '64px',
-  textAlign: 'center',
+  textAlign: 'right',
+  padding: 0,
 });
 
 const modalBody = css({
@@ -87,8 +87,8 @@ export default function Modal({
           </Flex>
           {showCloseButton ? (
             <IconButton
-              className={closeIconStyle}
-              iconSize="2x"
+              className={cx(closeIconStyle, lightIconButtonStyle)}
+              iconSize="lg"
               title="Close"
               icon={faTimes}
               onClick={onClose}

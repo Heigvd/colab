@@ -15,9 +15,7 @@ import { dispatch } from '../../store/store';
 import Flex from '../common/Flex';
 import Input from '../common/Form/Input';
 import IconButton from '../common/IconButton';
-import Tabs, { Tab } from '../common/Tabs';
 import { space_M } from '../styling/style';
-import Team from './Team';
 
 interface ProjectSettingsProps {
   project: Project;
@@ -37,8 +35,6 @@ export function ProjectSettings({ project }: ProjectSettingsProps): JSX.Element 
       />
 
       <h1>Project Settings</h1>
-      <Tabs className={css({ flexGrow: 1 })} bodyClassName={css({ flexGrow: 1 })}>
-        <Tab label="General" name="General">
           <Input
             label="Project name"
             placeholder="unnamed"
@@ -53,12 +49,7 @@ export function ProjectSettings({ project }: ProjectSettingsProps): JSX.Element 
             onChange={newValue =>
               dispatch(API.updateProject({ ...project, description: newValue }))
             }
-          />
-        </Tab>
-        <Tab label="Team" name="Team">
-          <Team project={project} />
-        </Tab>
-      </Tabs>
+          />       
     </Flex>
   );
 }
