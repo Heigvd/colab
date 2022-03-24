@@ -35,8 +35,8 @@ public class EffectiveAccessControlTeamRestEndpointTest extends AbstractArquilli
     }
 
     @Test
-    public void testLHierarchicalPosition_lead() throws Exception {
-        doTest(HierarchicalPosition.LEAD,
+    public void testLHierarchicalPosition_leader() throws Exception {
+        doTest(HierarchicalPosition.LEADER,
             null /* role involvement level */,
             true /* can read card */,
             true /* can write card */);
@@ -44,7 +44,7 @@ public class EffectiveAccessControlTeamRestEndpointTest extends AbstractArquilli
 
     @Test
     public void testHierarchicalPosition_intern() throws Exception {
-        doTest(HierarchicalPosition.INTERN,
+        doTest(HierarchicalPosition.INTERNAL,
             null /* role involvement level */,
             true /* can read card */,
             true /* can write card */);
@@ -52,15 +52,15 @@ public class EffectiveAccessControlTeamRestEndpointTest extends AbstractArquilli
 
 //    @Test
 //    public void testRoleInvolvementLevel_O() throws Exception {
-//        doTest(HierarchicalPosition.INTERN,
+//        doTest(HierarchicalPosition.INTERNAL,
 //            InvolvementLevel.OUT_OF_THE_LOOP /* role involvement level */,
 //            false /* can read card */,
 //            false /* can write card */);
 //    }
 
 //    @Test
-//    public void testHierarchicalPosition_extern() throws Exception {
-//        doTest(HierarchicalPosition.EXTERN,
+//    public void testHierarchicalPosition_guest() throws Exception {
+//        doTest(HierarchicalPosition.GUEST,
 //            null /* role involvement level */,
 //            false /* can read card */,
 //            false /* can write card */);
@@ -68,7 +68,7 @@ public class EffectiveAccessControlTeamRestEndpointTest extends AbstractArquilli
 
 //    @Test
 //    public void testRoleInvolvementLevel_R() throws Exception {
-//        doTest(HierarchicalPosition.EXTERN,
+//        doTest(HierarchicalPosition.GUEST,
 //            InvolvementLevel.RESPONSIBLE /* role involvement level */,
 //            true /* can read card */,
 //            true /* can write card */);
@@ -76,7 +76,7 @@ public class EffectiveAccessControlTeamRestEndpointTest extends AbstractArquilli
 //
 //    @Test
 //    public void testRoleInvolvementLevel_A() throws Exception {
-//        doTest(HierarchicalPosition.EXTERN,
+//        doTest(HierarchicalPosition.GUEST,
 //            InvolvementLevel.ACCOUNTABLE /* role involvement level */,
 //            true /* can read card */,
 //            true /* can write card */);
@@ -84,7 +84,7 @@ public class EffectiveAccessControlTeamRestEndpointTest extends AbstractArquilli
 //
 //    @Test
 //    public void testRoleInvolvementLevel_CRW() throws Exception {
-//        doTest(HierarchicalPosition.EXTERN,
+//        doTest(HierarchicalPosition.GUEST,
 //            InvolvementLevel.CONSULTED_READWRITE /* role involvement level */,
 //            true /* can read card */,
 //            true /* can write card */);
@@ -92,7 +92,7 @@ public class EffectiveAccessControlTeamRestEndpointTest extends AbstractArquilli
 //
 //    @Test
 //    public void testRoleInvolvementLevel_CRO() throws Exception {
-//        doTest(HierarchicalPosition.EXTERN,
+//        doTest(HierarchicalPosition.GUEST,
 //            InvolvementLevel.CONSULTED_READONLY /* role involvement level */,
 //            true /* can read card */,
 //            false /* can write card */);
@@ -100,7 +100,7 @@ public class EffectiveAccessControlTeamRestEndpointTest extends AbstractArquilli
 //
 //    @Test
 //    public void testRoleInvolvementLevel_IRW() throws Exception {
-//        doTest(HierarchicalPosition.EXTERN,
+//        doTest(HierarchicalPosition.GUEST,
 //            InvolvementLevel.INFORMED_READWRITE /* role involvement level */,
 //            true /* can read card */,
 //            true /* can write card */);
@@ -108,7 +108,7 @@ public class EffectiveAccessControlTeamRestEndpointTest extends AbstractArquilli
 //
 //    @Test
 //    public void testRoleInvolvementLevel_IRO() throws Exception {
-//        doTest(HierarchicalPosition.EXTERN,
+//        doTest(HierarchicalPosition.GUEST,
 //            InvolvementLevel.INFORMED_READONLY /* role involvement level */,
 //            true /* can read card */,
 //            false /* can write card */);

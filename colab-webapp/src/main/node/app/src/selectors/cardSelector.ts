@@ -320,7 +320,7 @@ const useCardACL = (cardId: number | null | undefined): CardAcl => {
                         const member = team.members[memberId];
                         if (member != null) {
                           switch (member.position) {
-                            case 'EXTERN':
+                            case 'GUEST':
                               result.effective.members[memberId] = ['OUT_OF_THE_LOOP'];
                               break;
                             default:
