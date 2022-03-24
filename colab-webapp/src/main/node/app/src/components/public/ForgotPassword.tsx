@@ -4,6 +4,7 @@
  *
  * Licensed under the MIT License
  */
+
 import { css, cx } from '@emotion/css';
 import * as React from 'react';
 import { requestPasswordReset } from '../../API/api';
@@ -15,7 +16,7 @@ import FormContainer from '../common/FormContainer';
 import { InlineLink } from '../common/Link';
 import { lightLinkStyle, space_M } from '../styling/style';
 
-interface Props {
+interface ForgotPasswordFormProps {
   redirectTo: string | null;
 }
 
@@ -23,13 +24,15 @@ interface Data {
   email: string;
 }
 
-export default function ForgotPassword(props: Props): JSX.Element {
+const defaultData: Data = { email: '' };
+
+export default function ForgotPasswordForm({ redirectTo }: ForgotPasswordFormProps): JSX.Element {
   const dispatch = useAppDispatch();
   const i18n = useTranslations();
 
   const onSubmitCb = React.useCallback(
     (data: Data) => {
-      dispatch(requestPasswordReset(data));
+      dispatch(requestPasswordReset(data.email));
     },
     [dispatch],
   );
@@ -38,25 +41,25 @@ export default function ForgotPassword(props: Props): JSX.Element {
     {
       key: 'email',
       label: i18n.emailAddress,
-      isErroneous: value => value.email.match('.*@.*') == null,
-      errorMessage: i18n.emailAddressNotValid,
       type: 'text',
       isMandatory: true,
+      isErroneous: value => value.email.match('.*@.*') == null,
+      errorMessage: i18n.emailAddressNotValid,
     },
   ];
 
   return (
     <FormContainer>
       <Form
-        onSubmit={onSubmitCb}
-        value={{ email: '' }}
         fields={formFields}
+        value={defaultData}
         submitLabel={i18n.sendMePassword}
+        onSubmit={onSubmitCb}
         buttonClassName={css({ margin: space_M + ' auto' })}
       >
         <InlineLink
           className={cx(lightLinkStyle)}
-          to={buildLinkWithQueryParam('/SignIn', { redirectTo: props.redirectTo })}
+          to={buildLinkWithQueryParam('/SignIn', { redirectTo: redirectTo })}
         >
           {i18n.cancel}
         </InlineLink>

@@ -253,27 +253,27 @@ public class UserManager {
             // no local account with the given email address
 
             if (account == null) {
-                if (!Helper.isEmailAddress(signup.getEmail())) {
-                    throw HttpErrorMessage.dataIntegrityFailure();
-                }
+                    if (!Helper.isEmailAddress(signup.getEmail())) {
+                        throw HttpErrorMessage.emailAddressInvalid();
+                    }
 
-                account = new LocalAccount();
-                account.setClientSalt(signup.getSalt());
-                account.setCurrentClientHashMethod(signup.getHashMethod());
-                account.setEmail(signup.getEmail());
-                account.setVerified(false);
+                    account = new LocalAccount();
+                    account.setClientSalt(signup.getSalt());
+                    account.setCurrentClientHashMethod(signup.getHashMethod());
+                    account.setEmail(signup.getEmail());
+                    account.setVerified(false);
 
-                account.setCurrentDbHashMethod(Helper.getDefaultHashMethod());
-                this.shadowHash(account, signup.getHash());
+                    account.setCurrentDbHashMethod(Helper.getDefaultHashMethod());
+                    this.shadowHash(account, signup.getHash());
 
-                user = new User();
-                user.getAccounts().add((account));
-                account.setUser(user);
+                    user = new User();
+                    user.getAccounts().add((account));
+                    account.setUser(user);
 
-                user.setUsername(signup.getUsername());
+                    user.setUsername(signup.getUsername());
 
-                validationManager.assertValid(user);
-                validationManager.assertValid(account);
+                    validationManager.assertValid(user);
+                    validationManager.assertValid(account);
 
                 em.persist(user);
                 // flush changes to DB to check DB constraint
@@ -284,11 +284,15 @@ public class UserManager {
                 return user;
             } else {
                 // wait.... throwing something else here leaks account existence...
-                throw HttpErrorMessage.userNameAlreadyTaken();
+                // for security reason, give as little useful information as possible
+                // the user must not know if the error concerns the username or the email address
+                throw HttpErrorMessage.identifierAlreadyTaken();
             }
 
         } else {
-            throw HttpErrorMessage.userNameAlreadyTaken();
+            // for security reason, give as little useful information as possible
+            // the user must not know if the error concerns the username or the email address
+            throw HttpErrorMessage.identifierAlreadyTaken();
         }
     }
 
@@ -551,7 +555,7 @@ public class UserManager {
      *
      * @return updated account
      *
-     * @throws HttpErrorMessage if the provided email is not a valid email
+     * @throws HttpErrorMessage    if the provided email is not a valid email
      * @throws ColabMergeException if something went wrong
      */
     public LocalAccount updateLocalAccountEmailAddress(LocalAccount account)
