@@ -33,7 +33,7 @@ colab-webapp/colab-api,ch.colabproject.colab.api.ws.utils,CallableGetChannel,14,
 colab-webapp/colab-api,ch.colabproject.colab.api.ws.utils,JsonWsMessageListDecoder.new GenericType() {...},6,0,0,0,1,0,1,0,1,0
 colab-webapp/colab-api,ch.colabproject.colab.api.ws.utils,JsonDecoder,29,0,0,0,10,0,5,0,5,0
 colab-webapp/colab-api,ch.colabproject.colab.api.ws.utils,JsonWsMessageListDecoder,35,0,0,0,11,0,5,0,5,0
-colab-webapp/colab-api,ch.colabproject.colab.api.rest.utils.exception,AbstractExceptionMapper,95,0,14,0,30,0,11,0,4,0
+colab-webapp/colab-api,ch.colabproject.colab.api.rest.utils.exception,AbstractExceptionMapper,96,0,14,0,30,0,11,0,4,0
 colab-webapp/colab-api,ch.colabproject.colab.api.rest.utils.exception,InternalExceptionMapper,7,0,0,0,2,0,2,0,2,0
 colab-webapp/colab-api,ch.colabproject.colab.api.rest.utils.exception,EjbExceptionMapper,7,0,0,0,2,0,2,0,2,0
 colab-webapp/colab-api,ch.colabproject.colab.api.rest.user,UserRestEndpoint,170,0,2,0,53,0,22,0,21,0

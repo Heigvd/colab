@@ -159,22 +159,22 @@
 <a class="jxr_linenumber" name="L151" href="#L151">151</a>         String password = <span class="jxr_string">"SoSecuredPassword"</span>;
 <a class="jxr_linenumber" name="L152" href="#L152">152</a> 
 <a class="jxr_linenumber" name="L153" href="#L153">153</a>         <em class="jxr_comment">// empty</em>
-<a class="jxr_linenumber" name="L154" href="#L154">154</a>         TestHelper.assertThrows(MessageCode.DATA_INTEGRITY_FAILURE, () -&gt; {
+<a class="jxr_linenumber" name="L154" href="#L154">154</a>         TestHelper.assertThrows(MessageCode.EMAIL_ADDRESS_INVALID, () -&gt; {
 <a class="jxr_linenumber" name="L155" href="#L155">155</a>             <strong class="jxr_keyword">this</strong>.signup(username, <span class="jxr_string">""</span>, password);
 <a class="jxr_linenumber" name="L156" href="#L156">156</a>         });
 <a class="jxr_linenumber" name="L157" href="#L157">157</a> 
 <a class="jxr_linenumber" name="L158" href="#L158">158</a>         <em class="jxr_comment">// accent</em>
-<a class="jxr_linenumber" name="L159" href="#L159">159</a>         TestHelper.assertThrows(MessageCode.DATA_INTEGRITY_FAILURE, () -&gt; {
+<a class="jxr_linenumber" name="L159" href="#L159">159</a>         TestHelper.assertThrows(MessageCode.EMAIL_ADDRESS_INVALID, () -&gt; {
 <a class="jxr_linenumber" name="L160" href="#L160">160</a>             <strong class="jxr_keyword">this</strong>.signup(username, <span class="jxr_string">"léa@test.local"</span>, password);
 <a class="jxr_linenumber" name="L161" href="#L161">161</a>         });
 <a class="jxr_linenumber" name="L162" href="#L162">162</a> 
 <a class="jxr_linenumber" name="L163" href="#L163">163</a>         <em class="jxr_comment">// weird character</em>
-<a class="jxr_linenumber" name="L164" href="#L164">164</a>         TestHelper.assertThrows(MessageCode.DATA_INTEGRITY_FAILURE, () -&gt; {
+<a class="jxr_linenumber" name="L164" href="#L164">164</a>         TestHelper.assertThrows(MessageCode.EMAIL_ADDRESS_INVALID, () -&gt; {
 <a class="jxr_linenumber" name="L165" href="#L165">165</a>             <strong class="jxr_keyword">this</strong>.signup(username, <span class="jxr_string">"le;a@test.local"</span>, password);
 <a class="jxr_linenumber" name="L166" href="#L166">166</a>         });
 <a class="jxr_linenumber" name="L167" href="#L167">167</a> 
 <a class="jxr_linenumber" name="L168" href="#L168">168</a>         <em class="jxr_comment">// upper case</em>
-<a class="jxr_linenumber" name="L169" href="#L169">169</a>         TestHelper.assertThrows(MessageCode.DATA_INTEGRITY_FAILURE, () -&gt; {
+<a class="jxr_linenumber" name="L169" href="#L169">169</a>         TestHelper.assertThrows(MessageCode.EMAIL_ADDRESS_INVALID, () -&gt; {
 <a class="jxr_linenumber" name="L170" href="#L170">170</a>             <strong class="jxr_keyword">this</strong>.signup(username, <span class="jxr_string">"Lea@test.local"</span>, password);
 <a class="jxr_linenumber" name="L171" href="#L171">171</a>         });
 <a class="jxr_linenumber" name="L172" href="#L172">172</a> 
