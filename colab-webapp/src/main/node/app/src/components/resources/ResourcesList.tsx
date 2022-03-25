@@ -132,11 +132,7 @@ export default function ResourcesList({
         <div className={css({ marginRight: '10px' })}> </div>
       </Flex>
       {contextInfo.accessLevel === 'WRITE' ? (
-        <ResourceCreator
-          contextInfo={contextInfo}
-          categories={categories}
-          className={lightIconButtonStyle}
-        />
+        <ResourceCreator contextInfo={contextInfo} className={lightIconButtonStyle} />
       ) : null}
     </Flex>
   );

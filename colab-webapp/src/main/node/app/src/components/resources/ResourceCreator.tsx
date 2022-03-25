@@ -9,6 +9,7 @@ import { css, cx } from '@emotion/css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import * as React from 'react';
 import * as API from '../../API/api';
+import { useResourceCategories } from '../../selectors/resourceSelector';
 import { useAppDispatch } from '../../store/hooks';
 import Button from '../common/Button';
 import Flex from '../common/Flex';
@@ -34,16 +35,16 @@ const defaultData: ResourceType = {
 
 interface ResourceCreatorProps {
   contextInfo: ResourceCallContext;
-  categories: string[];
   className?: string;
 }
 
 export default function ResourceCreator({
   contextInfo,
-  categories,
   className,
 }: ResourceCreatorProps): JSX.Element {
   const dispatch = useAppDispatch();
+
+  const allCategories = useResourceCategories();
 
   const fields: Field<ResourceType>[] = [
     {
@@ -69,7 +70,7 @@ export default function ResourceCreator({
       fieldFooter: 'Made to organize the resources',
       isMulti: false,
       canCreateOption: true,
-      options: categories.map(c => ({ label: c, value: c })),
+      options: allCategories.map(c => ({ label: c, value: c })),
     }),
   ];
 

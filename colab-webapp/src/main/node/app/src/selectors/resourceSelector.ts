@@ -6,6 +6,7 @@
  */
 
 import { entityIs, Resource, ResourceRef } from 'colab-rest-client';
+import { uniq } from 'lodash';
 import * as API from '../API/api';
 import { ResourceAndRef, ResourceCallContext } from '../components/resources/ResourceCommonType';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
@@ -246,3 +247,22 @@ export const useAndLoadNbResources = (context: ResourceCallContext): NbAndStatus
 
   return { nb, status };
 };
+
+// TODO sandra work in progress load all resources before fetching them
+
+/**
+ * Find list of all known categories
+ */
+export function useResourceCategories() {
+  return useAppSelector(state => {
+    return uniq(
+      Object.values(state.resources.resources).flatMap(res => {
+        if (entityIs(res, 'AbstractResource') && res.category) {
+          return res.category;
+        } else {
+          return [];
+        }
+      }),
+    ).sort();
+  });
+}
