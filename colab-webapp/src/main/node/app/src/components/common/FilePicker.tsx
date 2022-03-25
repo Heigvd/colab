@@ -312,7 +312,12 @@ export default function FilePicker({
               </Button>
               <input className={inputStyle} type="file" accept={accept} onChange={onInputCb} />
             </label>
-            <Button onClick={()=>setEditingState('VIEW')} className={cx(invertedButtonStyle, css({marginLeft: space_S}))}>Done</Button>
+            <Button
+              onClick={() => setEditingState('VIEW')}
+              className={cx(invertedButtonStyle, css({ marginLeft: space_S }))}
+            >
+              Done
+            </Button>
           </div>
         )}
         {coord && displayed && !isImageToDisplay && (

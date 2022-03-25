@@ -245,7 +245,7 @@ export default function CardEditor({ card, variant, showSubcards = true }: Props
                               title="Card Settings"
                               onClose={() => closeRouteCb('settings')}
                               showCloseButton
-                              className={css({height: '580px'})}
+                              className={css({ height: '580px' })}
                             >
                               {closeModal => (
                                 <CardSettings onClose={closeModal} card={card} variant={variant} />

@@ -153,9 +153,12 @@ export default function LiveEditor({
           </Flex>
           {editingStatus === 'EDIT' && (
             <Button
-              className={cx(invertedButtonStyle, css({ margin: space_S + ' 0', alignSelf: 'flex-end' }))}
-              onClick={() => {if(setEditingState)
-                setEditingState('VIEW');
+              className={cx(
+                invertedButtonStyle,
+                css({ margin: space_S + ' 0', alignSelf: 'flex-end' }),
+              )}
+              onClick={() => {
+                if (setEditingState) setEditingState('VIEW');
               }}
             >
               Ok

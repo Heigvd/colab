@@ -35,21 +35,19 @@ export function ProjectSettings({ project }: ProjectSettingsProps): JSX.Element 
       />
 
       <h1>Project Settings</h1>
-          <Input
-            label="Project name"
-            placeholder="unnamed"
-            value={project.name || ''}
-            onChange={newValue => dispatch(API.updateProject({ ...project, name: newValue }))}
-          />
-          <Input
-            label="Project description"
-            inputType="textarea"
-            placeholder="Write a description here."
-            value={project.description || ''}
-            onChange={newValue =>
-              dispatch(API.updateProject({ ...project, description: newValue }))
-            }
-          />       
+      <Input
+        label="Project name"
+        placeholder="unnamed"
+        value={project.name || ''}
+        onChange={newValue => dispatch(API.updateProject({ ...project, name: newValue }))}
+      />
+      <Input
+        label="Project description"
+        inputType="textarea"
+        placeholder="Write a description here."
+        value={project.description || ''}
+        onChange={newValue => dispatch(API.updateProject({ ...project, description: newValue }))}
+      />
     </Flex>
   );
 }
