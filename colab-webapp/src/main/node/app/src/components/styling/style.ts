@@ -474,3 +474,13 @@ export const lightItalicText = css({
   color: 'var(--darkGray)',
   fontStyle: 'italic',
 });
+
+export const voidStyle = css({
+  minHeight: '150px',
+  background:
+    'repeating-Linear-gradient(45deg,transparent,transparent 5px,#e4e4e4 5px,#e4e4e4 10px)',
+  display: 'flex',
+  flexDirection: 'column',
+  alignItems: 'center',
+  justifyContent: 'center',
+});

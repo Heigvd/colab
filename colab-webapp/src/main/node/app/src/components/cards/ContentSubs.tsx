@@ -16,7 +16,7 @@ import Button from '../common/Button';
 import Flex from '../common/Flex';
 import InlineLoading from '../common/InlineLoading';
 import { depthMax } from '../projects/edition/Editor';
-import { fixedButtonStyle } from '../styling/style';
+import { fixedButtonStyle, voidStyle } from '../styling/style';
 import CardCreator from './CardCreator';
 import CardThumbWithSelector from './CardThumbWithSelector';
 
@@ -38,16 +38,6 @@ const flexWrap = css({
   display: 'flex',
   justifyContent: 'space-evenly',
   flexWrap: 'wrap',
-});
-
-const voidStyle = css({
-  minHeight: '150px',
-  background:
-    'repeating-Linear-gradient(45deg,transparent,transparent 5px,#e4e4e4 5px,#e4e4e4 10px)',
-  display: 'flex',
-  flexDirection: 'column',
-  alignItems: 'center',
-  justifyContent: 'center',
 });
 
 // Display sub cards of a parent

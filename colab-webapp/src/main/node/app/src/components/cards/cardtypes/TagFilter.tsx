@@ -65,46 +65,53 @@ export default function TagsFilter({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tagsState, onChange /* no need to take selectAllState into account */]);
 
-  // TODO work in progress : auto adapt selectAll if state of all is same
+  // TODO work in progress : auto adapt selectAll if state of all is same (?)
 
   return (
-    <Flex className={className} direction="column" align="stretch">
-      <Flex justify="space-between" align="center">
-        <Flex wrap="wrap">
-          {Object.keys(tagsState).map(tag => {
-            return (
-              <div
-                className={cx(
-                  tagStyle,
-                  {
-                    [checkedTagStyle]: tagsState[tag],
-                  },
-                  tagItemClassName,
-                )}
-                key={tag}
-              >
-                <Checkbox
-                  key={tag}
-                  label={tag}
-                  value={tagsState[tag]}
-                  onChange={value => onChange(tag, value)}
-                  className={cx(noOutlineStyle, {
-                    [checkedTagStyle]: tagsState[tag],
-                  })}
-                />
-              </div>
-            );
-          })}
+    <>
+      {tagsState && Object.keys(tagsState).length > 0 && (
+        <Flex className={className} direction="column" align="stretch">
+          <Flex justify="space-between" align="center">
+            <Flex wrap="wrap">
+              {Object.keys(tagsState).map(tag => {
+                return (
+                  <div
+                    className={cx(
+                      tagStyle,
+                      {
+                        [checkedTagStyle]: tagsState[tag],
+                      },
+                      tagItemClassName,
+                    )}
+                    key={tag}
+                  >
+                    <Checkbox
+                      key={tag}
+                      label={tag}
+                      value={tagsState[tag]}
+                      onChange={value => onChange(tag, value)}
+                      className={cx(noOutlineStyle, {
+                        [checkedTagStyle]: tagsState[tag],
+                      })}
+                    />
+                  </div>
+                );
+              })}
+            </Flex>
+            <Checkbox
+              key={'toggle all'}
+              label={selectAllState ? 'Select all' : 'Deselect all'}
+              value={!selectAllState}
+              onChange={toggleAllTags}
+              className={css({ paddingLeft: space_M })}
+              containerClassName={cx(
+                lightLinkStyle,
+                css({ '&:hover': { textDecoration: 'none' } }),
+              )}
+            />
+          </Flex>
         </Flex>
-        <Checkbox
-          key={'toggle all'}
-          label={selectAllState ? 'Select all' : 'Deselect all'}
-          value={!selectAllState}
-          onChange={toggleAllTags}
-          className={css({ paddingLeft: space_M })}
-          containerClassName={cx(lightLinkStyle, css({ '&:hover': { textDecoration: 'none' } }))}
-        />
-      </Flex>
-    </Flex>
+      )}
+    </>
   );
 }

@@ -6,30 +6,30 @@
  */
 
 import * as React from 'react';
-import { CardTypeAllInOne as CardType } from '../../../types/cardTypeDefinition';
 import TagsFilter from './TagFilter';
 
-// TODO UI see if we have default classnames
+export type DataWithTags = { tags: string[] };
 
-interface CardTypeListWithFilterProps {
-  cardTypes: CardType[];
+interface DataWithTagsListWithFilterProps {
+  dataWithTags: DataWithTags[];
   defaultChecked?: boolean;
   filterClassName?: string;
   tagItemClassName?: string;
-  children: (cardTypes: CardType[]) => JSX.Element;
+  children: (dataWithTags: DataWithTags[]) => JSX.Element;
 }
 
-export default function CardTypeListFilterable({
-  cardTypes,
+export default function DataWithTagsListWithFilter({
+  dataWithTags,
   defaultChecked = true,
   filterClassName, // default : css({ paddingBottom: space_S })
   tagItemClassName,
   children,
-}: CardTypeListWithFilterProps): JSX.Element {
+}: DataWithTagsListWithFilterProps): JSX.Element {
   const [tagsState, setTagsState] = React.useState<Record<string, boolean>>({});
+  const [dataFilteredByTag, setDataFilteredByTag] = React.useState<DataWithTags[]>([]);
 
   React.useEffect(() => {
-    const allTags: string[] = cardTypes.flatMap(ct => ct.tags);
+    const allTags: string[] = dataWithTags.flatMap(ct => ct.tags);
 
     const updatedTagsState = allTags.reduce<Record<string, boolean>>((accTagsState, curTag) => {
       if (accTagsState[curTag] == null) {
@@ -40,14 +40,18 @@ export default function CardTypeListFilterable({
 
     setTagsState(updatedTagsState);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [cardTypes, defaultChecked /* tagsState */]);
+  }, [dataWithTags, defaultChecked /* tagsState */]);
 
-  const cardTypesFilteredByTag = cardTypes.filter(ct => {
-    const hasNoTag = ct.tags.length == 0;
-    const hasMatchingTag = ct.tags.find(tag => tagsState[tag] == true);
+  React.useEffect(() => {
+    setDataFilteredByTag(
+      dataWithTags.filter(ct => {
+        const hasNoTag = ct.tags.length == 0;
+        const hasMatchingTag = ct.tags.find(tag => tagsState[tag] == true);
 
-    return hasNoTag || hasMatchingTag;
-  });
+        return hasNoTag || hasMatchingTag;
+      }),
+    );
+  }, [dataWithTags, tagsState]);
 
   return (
     <>
@@ -61,7 +65,7 @@ export default function CardTypeListFilterable({
         className={filterClassName}
         tagItemClassName={tagItemClassName}
       />
-      {children(cardTypesFilteredByTag)}
+      {children(dataFilteredByTag)}
     </>
   );
 }

@@ -38,7 +38,7 @@ import { DocumentKind } from '../components/documents/documentCommonType';
 import { hashPassword } from '../SecurityHelper';
 import { addNotification } from '../store/notification';
 import { ColabState, getStore } from '../store/store';
-import { CardTypeAllInOne } from '../types/cardTypeDefinition';
+import { CardTypeAllInOne, CardTypeOnOneSOwn } from '../types/cardTypeDefinition';
 
 const winPath = window.location.pathname;
 
@@ -625,13 +625,14 @@ export const addCardTypeToProject = createAsyncThunk(
   },
 );
 
-// export const deleteCardType = createAsyncThunk('cardType/delete', async (cardType: CardType) => {
-//   if (cardType.id) {
-//     await restClient.CardTypeRestEndpoint.deleteCardType(cardType.id);
-//   }
-// });
-
-// TODO sandra in progress : sharpened use of delete vs remove from project
+export const deleteCardType = createAsyncThunk(
+  'cardType/delete',
+  async (cardType: CardTypeOnOneSOwn) => {
+    if (cardType.ownId) {
+      await restClient.CardTypeRestEndpoint.deleteCardType(cardType.ownId);
+    }
+  },
+);
 
 /**
  * Remove the card type from the project. Can be done only if not used.
