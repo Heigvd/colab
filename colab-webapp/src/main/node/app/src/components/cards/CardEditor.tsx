@@ -381,6 +381,7 @@ export default function CardEditor({ card, variant, showSubcards = true }: Props
                       }
                       cardId={card.id}
                       cardContentId={variant.id}
+                      hasSeveralVariants={hasVariants}
                     />
                   ),
                   icon: faFileAlt,
