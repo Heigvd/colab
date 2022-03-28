@@ -14,7 +14,7 @@ import { CardTypeAllInOne as CardType } from '../../../types/cardTypeDefinition'
 import Flex from '../../common/Flex';
 import Thumbnail from '../../common/Thumbnail';
 import { borderRadius, cardShadow, space_M, space_S } from '../../styling/style';
-import { TagsDisplay } from './CardTypeTagItem';
+import { TagsDisplay } from './tags/TagsDisplay';
 
 const defaultStyle = css({
   border: '4px solid transparent',

@@ -7,8 +7,8 @@
 
 import { css, cx } from '@emotion/css';
 import * as React from 'react';
-import Flex from '../../common/Flex';
-import Checkbox from '../../common/Form/Checkbox';
+import Flex from '../../../common/Flex';
+import Checkbox from '../../../common/Form/Checkbox';
 import {
   borderRadius,
   lightLinkStyle,
@@ -16,7 +16,7 @@ import {
   noOutlineStyle,
   space_M,
   space_S,
-} from '../../styling/style';
+} from '../../../styling/style';
 
 const tagStyle = cx(
   lightTheme,

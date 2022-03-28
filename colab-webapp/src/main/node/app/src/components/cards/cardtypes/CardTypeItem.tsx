@@ -33,7 +33,7 @@ import {
   space_M,
   space_S,
 } from '../../styling/style';
-import { TagsDisplay } from './CardTypeTagItem';
+import { TagsDisplay } from './tags/TagsDisplay';
 
 const style = css({
   width: '280px',

@@ -22,7 +22,7 @@ import { space_L, space_M, space_S, voidStyle } from '../../styling/style';
 import CardTypeCreator from './CardTypeCreator';
 import CardTypeEditor from './CardTypeEditor';
 import CardTypeItem from './CardTypeItem';
-import CardTypeListWithFilter from './CardTypeListWithFilter';
+import CardTypeListWithFilter from './tags/DataWithTagsListWithFilter';
 
 const flexWrap = css({
   display: 'flex',

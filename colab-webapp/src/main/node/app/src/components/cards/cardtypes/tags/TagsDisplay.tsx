@@ -7,8 +7,8 @@
 
 import { css, cx } from '@emotion/css';
 import * as React from 'react';
-import Flex from '../../common/Flex';
-import { space_S } from '../../styling/style';
+import Flex from '../../../common/Flex';
+import { space_S } from '../../../styling/style';
 
 // UI could be done : have a nice default :-)
 const tagStyle = css({

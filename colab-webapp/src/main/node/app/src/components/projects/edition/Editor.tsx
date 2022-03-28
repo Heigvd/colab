@@ -33,7 +33,7 @@ import { useProjectBeingEdited } from '../../../selectors/projectSelector';
 import { useAppDispatch, useAppSelector } from '../../../store/hooks';
 import CardEditor from '../../cards/CardEditor';
 import CardThumbWithSelector from '../../cards/CardThumbWithSelector';
-import ProjectCardTypeList from '../../cards/cardtypes/CardTypeList';
+import ProjectCardTypeList from '../../cards/cardtypes/ProjectCardTypeList';
 import ContentSubs from '../../cards/ContentSubs';
 import Clickable from '../../common/Clickable';
 import DropDownMenu from '../../common/DropDownMenu';
