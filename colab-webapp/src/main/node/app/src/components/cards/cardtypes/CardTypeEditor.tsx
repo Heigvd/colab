@@ -33,7 +33,7 @@ import IconButton from '../../common/IconButton';
 import InlineInput from '../../common/InlineInput';
 import Modal from '../../common/Modal';
 import Tips from '../../common/Tips';
-import DocTextWrapper from '../../documents/DocTextWrapper';
+import { DocTextWrapper } from '../../documents/DocTextItem';
 import ResourcesWrapper from '../../resources/ResourcesWrapper';
 import {
   cardStyle,

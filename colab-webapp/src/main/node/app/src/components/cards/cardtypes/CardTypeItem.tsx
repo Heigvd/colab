@@ -23,7 +23,7 @@ import { CardTypeAllInOne as CardType } from '../../../types/cardTypeDefinition'
 import ConfirmDeleteModal from '../../common/ConfirmDeleteModal';
 import DropDownMenu from '../../common/DropDownMenu';
 import Flex from '../../common/Flex';
-import DocTextDisplay from '../../documents/DocTextDisplay';
+import { DocTextDisplay } from '../../documents/DocTextItem';
 import ResourceSummary from '../../resources/ResourceSummary';
 import {
   borderRadius,
