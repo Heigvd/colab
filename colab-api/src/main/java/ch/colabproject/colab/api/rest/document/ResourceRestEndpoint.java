@@ -134,6 +134,23 @@ public class ResourceRestEndpoint {
         return resourceManager.getExpandedResourcesForCardContent(cardContentId);
     }
 
+    /**
+     * Get the resources directly linked to the given project.
+     * <p>
+     * Does not fetch all chain references.
+     *
+     * @param projectId the id of the project ‡
+     *
+     * @return resources directly linked to the given project
+     */
+    @GET
+    @Path("directOfProject/{projectId}")
+    public List<AbstractResource> getDirectResourcesOfProject(
+        @PathParam("projectId") Long projectId) {
+        logger.debug("get all resources of the project #{}", projectId);
+        return resourceManager.getDirectResourcesOfProject(projectId);
+    }
+
     // *********************************************************************************************
     // update
     // *********************************************************************************************

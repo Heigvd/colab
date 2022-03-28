@@ -21,6 +21,9 @@ export interface ResourceState {
   statusByCardType: Record<number, AvailabilityStatus>;
   // /** did we load the resources of a card content */
   // statusByCardContent: Record<number, AvailabilityStatus>;
+
+  /** did we load all the resources of the project */
+  allOfProjectStatus: AvailabilityStatus;
 }
 
 const initialState: ResourceState = {
@@ -30,6 +33,8 @@ const initialState: ResourceState = {
 
   statusByCardType: {},
   // statusByCardContent: {},
+
+  allOfProjectStatus: 'NOT_INITIALIZED',
 };
 
 const updateResource = (state: ResourceState, resource: AbstractResource) => {
@@ -151,6 +156,16 @@ const resourcesSlice = createSlice({
       .addCase(API.getResourceChainForAbstractCardTypeId.rejected, (state, action) => {
         const cardTypeId = action.meta.arg;
         state.statusByCardType[cardTypeId] = 'ERROR';
+      })
+      .addCase(API.getDirectResourcesOfProject.pending, state => {
+        state.allOfProjectStatus = 'LOADING';
+      })
+      .addCase(API.getDirectResourcesOfProject.fulfilled, (state, action) => {
+        state.resources = { ...state.resources, ...mapById(action.payload) };
+        state.allOfProjectStatus = 'READY';
+      })
+      .addCase(API.getDirectResourcesOfProject.rejected, state => {
+        state.allOfProjectStatus = 'ERROR';
       })
       .addCase(API.closeCurrentProject.fulfilled, () => {
         return initialState;

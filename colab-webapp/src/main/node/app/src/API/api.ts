@@ -826,6 +826,17 @@ export const getResourceChainForCardContentId = createAsyncThunk(
   },
 );
 
+export const getDirectResourcesOfProject = createAsyncThunk(
+  'resource/getAllOfProject',
+  async (project: Project) => {
+    if (project.id) {
+      return await restClient.ResourceRestEndpoint.getDirectResourcesOfProject(project.id);
+    } else {
+      return []; // to avoid undefined, return an empty array
+    }
+  },
+);
+
 export const updateResource = createAsyncThunk(
   'resource/updateResource',
   async (resource: Resource) => {

@@ -9,7 +9,7 @@ import { css, cx } from '@emotion/css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import * as React from 'react';
 import * as API from '../../API/api';
-import { useResourceCategories } from '../../selectors/resourceSelector';
+import { useAndLoadResourceCategories } from '../../selectors/resourceSelector';
 import { useAppDispatch } from '../../store/hooks';
 import Button from '../common/Button';
 import Flex from '../common/Flex';
@@ -44,7 +44,7 @@ export default function ResourceCreator({
 }: ResourceCreatorProps): JSX.Element {
   const dispatch = useAppDispatch();
 
-  const allCategories = useResourceCategories();
+  const { categories: allCategories } = useAndLoadResourceCategories();
 
   const fields: Field<ResourceType>[] = [
     {
@@ -52,7 +52,6 @@ export default function ResourceCreator({
       type: 'text',
       label: 'Title',
       isMandatory: true,
-      placeholder: 'Enter the name',
     },
     {
       key: 'teaser',
