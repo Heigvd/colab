@@ -49,6 +49,7 @@ export default function Checkbox({
       <Flex
         className={disabled ? disabledStyle : enabledStyle}
         justify="flex-start"
+        align="center"
         onClick={disabled ? undefined : () => onChange(!value)}
       >
         <FontAwesomeIcon
