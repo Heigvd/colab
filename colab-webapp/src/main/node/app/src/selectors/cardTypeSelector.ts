@@ -42,7 +42,7 @@ function makeCardTypeOnOneSOwn(cardType: CardTypeOnly): CardTypeAllInOne {
 
     trackingDataCT: cardType.trackingData,
 
-    projectIdCT: cardType.projectId,
+    projectId: cardType.projectId,
   };
 }
 
@@ -83,7 +83,7 @@ function makeCardTypeWithRef(
     trackingDataCTRef: ref.trackingData,
     trackingDataCT: cardType.trackingData,
 
-    projectIdCTRef: ref.projectId,
+    projectId: ref.projectId,
     projectIdCT: cardType.projectId,
   };
 }

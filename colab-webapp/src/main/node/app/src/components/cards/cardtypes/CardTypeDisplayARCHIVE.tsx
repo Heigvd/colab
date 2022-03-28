@@ -13,7 +13,7 @@ import * as React from 'react';
 import { useProjectBeingEdited } from '../../../selectors/projectSelector';
 import Button from '../../common/Button';
 import DropDownMenu from '../../common/DropDownMenu';
-import DocTextDisplay from '../../documents/DocTextDisplay';
+import { DocTextDisplay } from '../../documents/DocTextItem';
 import { ProjectName } from '../../projects/ProjectName';
 import { cardShadow, lightIconButtonStyle } from '../../styling/style';
 

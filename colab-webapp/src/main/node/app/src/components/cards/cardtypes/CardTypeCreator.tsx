@@ -19,7 +19,7 @@ import Form, { createSelectField, Field } from '../../common/Form/Form';
 import OpenCloseModal from '../../common/OpenCloseModal';
 import { buttonStyle, marginAroundStyle, space_M } from '../../styling/style';
 
-export interface Props {
+export interface CardTypeCreatorProps {
   global?: boolean;
   afterCreation?: (id: number) => void;
 }
@@ -30,7 +30,10 @@ interface NewType {
   tags: string[];
 }
 
-export default function ({ afterCreation, global = false }: Props): JSX.Element {
+export default function CardTypeCreator({
+  afterCreation,
+  global = false,
+}: CardTypeCreatorProps): JSX.Element {
   const dispatch = useAppDispatch();
   const { project } = useProjectBeingEdited();
 

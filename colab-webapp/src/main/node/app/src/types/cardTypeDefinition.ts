@@ -8,7 +8,7 @@
 import { CardType, CardTypeRef } from 'colab-rest-client';
 import { AvailabilityStatus } from '../store/store';
 
-interface CardTypeOnOneSOwn {
+export interface CardTypeOnOneSOwn {
   kind: 'own';
 
   ownId: CardType['id'];
@@ -23,10 +23,10 @@ interface CardTypeOnOneSOwn {
 
   trackingDataCT: CardType['trackingData'];
 
-  projectIdCT: CardType['projectId'];
+  projectId: CardType['projectId'];
 }
 
-interface CardTypeWithRef {
+export interface CardTypeWithRef {
   kind: 'referenced'; // | 'global'
 
   ownId: CardTypeRef['id'];
@@ -47,7 +47,7 @@ interface CardTypeWithRef {
   trackingDataCTRef: CardTypeRef['trackingData'];
   trackingDataCT: CardType['trackingData'];
 
-  projectIdCTRef: CardTypeRef['projectId'];
+  projectId: CardTypeRef['projectId'];
   projectIdCT: CardType['projectId'];
 }
 

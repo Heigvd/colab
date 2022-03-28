@@ -33,7 +33,7 @@ import { useProjectBeingEdited } from '../../../selectors/projectSelector';
 import { useAppDispatch, useAppSelector } from '../../../store/hooks';
 import CardEditor from '../../cards/CardEditor';
 import CardThumbWithSelector from '../../cards/CardThumbWithSelector';
-import CardTypeList from '../../cards/cardtypes/CardTypeList';
+import ProjectCardTypeList from '../../cards/cardtypes/ProjectCardTypeList';
 import ContentSubs from '../../cards/ContentSubs';
 import Clickable from '../../common/Clickable';
 import DropDownMenu from '../../common/DropDownMenu';
@@ -352,7 +352,7 @@ export default function Editor(): JSX.Element {
               <Route path="team" element={<Team project={project} />} />
               <Route path="hierarchy" element={<Hierarchy rootId={root.id} />} />
               <Route path="flow" element={<ActivityFlowChart />} />
-              <Route path="types/*" element={<CardTypeList />} />
+              <Route path="types/*" element={<ProjectCardTypeList />} />
               <Route path="card/:id" element={<DefaultVariantDetector />} />
               {/* Zooom on a card */}
               <Route
