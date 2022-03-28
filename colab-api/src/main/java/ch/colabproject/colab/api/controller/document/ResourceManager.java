@@ -9,6 +9,7 @@ package ch.colabproject.colab.api.controller.document;
 import ch.colabproject.colab.api.controller.card.CardContentManager;
 import ch.colabproject.colab.api.controller.card.CardManager;
 import ch.colabproject.colab.api.controller.card.CardTypeManager;
+import ch.colabproject.colab.api.controller.project.ProjectManager;
 import ch.colabproject.colab.api.model.card.AbstractCardType;
 import ch.colabproject.colab.api.model.card.Card;
 import ch.colabproject.colab.api.model.card.CardContent;
@@ -19,9 +20,11 @@ import ch.colabproject.colab.api.model.document.ResourceRef;
 import ch.colabproject.colab.api.model.document.Resourceable;
 import ch.colabproject.colab.api.model.document.TextDataBlock;
 import ch.colabproject.colab.api.model.link.StickyNoteLink;
+import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.api.persistence.jpa.document.DocumentDao;
 import ch.colabproject.colab.api.persistence.jpa.document.ResourceDao;
 import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import javax.ejb.LocalBean;
@@ -86,10 +89,16 @@ public class ResourceManager {
     private CardContentManager cardContentManager;
 
     /**
-     * Block logic manager
+     * Block specific logic management
      */
     @Inject
     private BlockManager blockManager;
+
+    /**
+     * Project specific logic management
+     */
+    @Inject
+    private ProjectManager projectManager;
 
     /**
      * Index generation specific logic management
@@ -211,6 +220,39 @@ public class ResourceManager {
             .stream()
             .map(resourceOrRef -> resourceOrRef.expand())
             .collect(Collectors.toList());
+    }
+
+    // *********************************************************************************************
+    // find all direct resources in the project
+    // *********************************************************************************************
+
+    /**
+     * Get the resources directly linked to the given project.
+     * <p>
+     * Does not fetch all chain references.
+     *
+     * @param projectId the id of the project
+     *
+     * @return resources directly linked to the given project
+     */
+    public List<AbstractResource> getDirectResourcesOfProject(Long projectId) {
+        logger.debug("get all the resources directly linked to the project #{}", projectId);
+
+        Project project = projectManager.assertAndGetProject(projectId);
+
+        List<Resourceable> allResourceables = new ArrayList<>();
+
+        allResourceables.addAll(project.getElementsToBeDefined());
+        allResourceables.addAll(projectManager.getCards(projectId));
+        allResourceables.addAll(projectManager.getCardContents(projectId));
+
+        List<AbstractResource> allDirectResources = new ArrayList<>();
+
+        allDirectResources.addAll(allResourceables.stream().flatMap(card -> {
+            return card.getDirectAbstractResources().stream();
+        }).collect(Collectors.toList()));
+
+        return allDirectResources;
     }
 
     // *********************************************************************************************

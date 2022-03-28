@@ -92,6 +92,10 @@ export default function SelectInput<T, IsMulti extends boolean>({
           onChange={onInternalChangeCb}
           isDisabled={readonly}
           menuPortalTarget={document.body}
+          openMenuOnClick
+          openMenuOnFocus
+          isClearable
+          formatCreateLabel={(inputValue: string) => 'create "' + inputValue + '"'}
           styles={{
             menuPortal: base => ({ ...base, zIndex: 9999 }),
             menu: base => ({ ...base, marginTop: '0px' }),

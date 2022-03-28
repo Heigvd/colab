@@ -24,13 +24,13 @@ import Toggler from './Toggler';
 const PasswordStrengthBar = React.lazy(() => import('react-password-strength-bar'));
 
 export interface BaseField<T> {
-  type: 'text' | 'textarea' | 'password' | 'boolean' | 'select' | 'selectnumber';
   key: keyof T;
-  readonly?: boolean;
+  type: 'text' | 'textarea' | 'password' | 'boolean' | 'select' | 'selectnumber';
   label?: React.ReactNode;
-  fieldFooter?: React.ReactNode;
-  placeholder?: string;
   isMandatory: boolean;
+  readonly?: boolean;
+  placeholder?: string;
+  fieldFooter?: React.ReactNode;
   isErroneous?: (entity: T) => boolean;
   errorMessage?: React.ReactNode | ((data: T) => React.ReactNode);
 }
@@ -111,13 +111,13 @@ export interface FormProps<T> {
 export default function Form<T>({
   fields,
   value,
+  autoSubmit = false,
   submitLabel,
   onSubmit,
   children,
   className,
   childrenClassName,
   buttonClassName,
-  autoSubmit = false,
 }: FormProps<T>): JSX.Element {
   const i18n = useTranslations();
   const dispatch = useAppDispatch();
@@ -303,7 +303,7 @@ export default function Form<T>({
         {autoSubmit ? null : (
           <Button
             key="submit"
-            title="Submit"
+            //title="Submit"
             className={cx(
               css({ margin: space_M + ' 0', alignSelf: 'flex-start' }),
               buttonClassName,

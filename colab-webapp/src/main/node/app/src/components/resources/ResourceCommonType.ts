@@ -46,6 +46,7 @@ export type CardOrCardContentContext = {
   // TODO see if cardTypeId could be usefull
   cardId: number | undefined;
   cardContentId: number | null | undefined;
+  hasSeveralVariants: boolean;
 };
 
 export type ResourceCallContext = CardTypeContext | CardOrCardContentContext;

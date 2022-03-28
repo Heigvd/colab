@@ -79,10 +79,10 @@ export default function ResourcesList({
 
   const toDisplay = [...categories];
 
-  // hack to show uncategorized in the "uncategorized" group
+  // hack to show uncategorized in a discreet group at the beginning
   if (categorized.raw.length > 0) {
-    toDisplay.push('uncategorized');
-    categorized.categorized['uncategorized'] = categorized.raw;
+    toDisplay.splice(0, 0, '');
+    categorized.categorized[''] = categorized.raw;
   }
 
   return (
@@ -132,11 +132,7 @@ export default function ResourcesList({
         <div className={css({ marginRight: '10px' })}> </div>
       </Flex>
       {contextInfo.accessLevel === 'WRITE' ? (
-        <ResourceCreator
-          contextInfo={contextInfo}
-          categories={categories}
-          className={lightIconButtonStyle}
-        />
+        <ResourceCreator contextInfo={contextInfo} className={lightIconButtonStyle} />
       ) : null}
     </Flex>
   );

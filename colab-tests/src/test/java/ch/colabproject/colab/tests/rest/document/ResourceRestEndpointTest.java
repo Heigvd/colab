@@ -28,6 +28,7 @@ import org.junit.jupiter.api.Test;
  */
 // TODO refuse stuff
 // TODO publish / requestForGlory / deprecated stuff
+// TODO test getDirectResourcesOfProject
 public class ResourceRestEndpointTest extends AbstractArquillianTest {
 
     private static final String DEFAULT_MIME_TYPE = "text/markdown";
