@@ -124,14 +124,14 @@ public class TeamMember implements ColabEntity, WithWebsocketChannels {
         @Index(columnList = "roles_id"),
     })
     @JsonbTransient
-    private List<TeamRole> roles;
+    private List<TeamRole> roles = new ArrayList<>();
 
     /**
      * List of access control relative to this member
      */
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
     @JsonbTransient
-    private List<AccessControl> accessControlList;
+    private List<AccessControl> accessControlList = new ArrayList<>();
 
     /**
      * Id of the roles. For deserialization only

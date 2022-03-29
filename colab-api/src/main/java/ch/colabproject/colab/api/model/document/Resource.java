@@ -9,6 +9,7 @@ package ch.colabproject.colab.api.model.document;
 import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.model.ColabEntity;
 import ch.colabproject.colab.api.model.tools.EntityHelper;
+import java.util.ArrayList;
 import java.util.List;
 import javax.json.bind.annotation.JsonbTransient;
 import javax.persistence.CascadeType;
@@ -85,7 +86,7 @@ public class Resource extends AbstractResource {
      */
     @OneToMany(mappedBy = "owningResource", cascade = CascadeType.ALL)
     @JsonbTransient
-    private List<Document> documents;
+    private List<Document> documents = new ArrayList<>();
 
     // ---------------------------------------------------------------------------------------------
     // getters and setters

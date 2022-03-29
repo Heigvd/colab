@@ -92,7 +92,7 @@ public class TeamRole implements ColabEntity, WithWebsocketChannels {
      */
     @ManyToMany(mappedBy = "roles")
     @JsonbTransient
-    private List<TeamMember> members;
+    private List<TeamMember> members = new ArrayList<>();
 
     /**
      * List of access control relative to this role
