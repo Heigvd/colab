@@ -17,7 +17,7 @@ import Flex from '../common/Flex';
 import IconButton from '../common/IconButton';
 import InlineInput from '../common/InlineInput';
 import OpenCloseModal from '../common/OpenCloseModal';
-import DocTextWrapper from '../documents/DocTextWrapper';
+import { DocTextWrapper } from '../documents/DocTextItem';
 import DocumentList from '../documents/DocumentList';
 import {
   cardTitle,
