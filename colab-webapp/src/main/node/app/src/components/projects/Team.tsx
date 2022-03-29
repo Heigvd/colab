@@ -31,7 +31,18 @@ import InlineInput from '../common/InlineInput';
 import InlineLoading from '../common/InlineLoading';
 import OpenClose from '../common/OpenClose';
 import WithToolbar from '../common/WithToolbar';
-import { errorColor, inputStyle, lightIconButtonStyle, lightItalicText, linkStyle, space_L, space_M, space_S, successColor, textSmall } from '../styling/style';
+import {
+  errorColor,
+  inputStyle,
+  lightIconButtonStyle,
+  lightItalicText,
+  linkStyle,
+  space_L,
+  space_M,
+  space_S,
+  successColor,
+  textSmall,
+} from '../styling/style';
 
 const gridNewLine = css({
   gridColumnStart: 1,
@@ -138,8 +149,13 @@ const Member = ({ member, roles }: MemberProps) => {
     // DN can be edited or cleared
     username = (
       <>
-        <InlineInput placeholder='username' value={member.displayName || ''} onChange={updateDisplayName} autosave={false} />
-       {/*  Is it useful? <IconButton icon={faEraser} title="Clear" onClick={clearDisplayName} /> */}
+        <InlineInput
+          placeholder="username"
+          value={member.displayName || ''}
+          onChange={updateDisplayName}
+          autosave={false}
+        />
+        {/*  Is it useful? <IconButton icon={faEraser} title="Clear" onClick={clearDisplayName} /> */}
       </>
     );
   } else if (member.displayName && member.userId == null) {
@@ -148,11 +164,10 @@ const Member = ({ member, roles }: MemberProps) => {
     username = (
       <span>
         <div className={cx(textSmall, lightItalicText)}>
-        <FontAwesomeIcon icon={faHourglassHalf} className={css({marginRight: space_S})} />
-        {i18n.pendingInvitation}...
+          <FontAwesomeIcon icon={faHourglassHalf} className={css({ marginRight: space_S })} />
+          {i18n.pendingInvitation}...
         </div>
         {member.displayName}
-        
       </span>
     );
   } else if (member.userId == null) {
@@ -212,7 +227,12 @@ function CreateRole({ project }: { project: Project }): JSX.Element {
   }, []);
 
   return (
-    <OpenClose showCloseIcon="NONE" collapsedChildren={<IconButton title='Add role' icon={faPlus} className={lightIconButtonStyle}/>}>
+    <OpenClose
+      showCloseIcon="NONE"
+      collapsedChildren={
+        <IconButton title="Add role" icon={faPlus} className={lightIconButtonStyle} />
+      }
+    >
       {collapse => (
         <>
           <input onChange={onChange} value={name} />
@@ -297,12 +317,12 @@ export default function Team({ project }: Props): JSX.Element {
     return (
       <div>
         <IconButton
-        icon={faArrowLeft}
-        title={'Back to project'}
-        iconColor="var(--darkGray)"
-        onClick={() => navigate('../')}
-        className={css({ display: 'block', marginBottom: space_M })}
-      />
+          icon={faArrowLeft}
+          title={'Back to project'}
+          iconColor="var(--darkGray)"
+          onClick={() => navigate('../')}
+          className={css({ display: 'block', marginBottom: space_M })}
+        />
 
         {title}
         <div
@@ -336,9 +356,15 @@ export default function Team({ project }: Props): JSX.Element {
           ))}
         </div>
         <div>
-            <p className={textSmall}>Invite new members</p>
-            <input placeholder='email' type="text" onChange={e => setInvite(e.target.value)} value={invite} className={inputStyle} />
-            {/* <Input onChange={e => setInvite(e)} value={invite} /> */}
+          <p className={textSmall}>Invite new members</p>
+          <input
+            placeholder="email"
+            type="text"
+            onChange={e => setInvite(e.target.value)}
+            value={invite}
+            className={inputStyle}
+          />
+          {/* <Input onChange={e => setInvite(e)} value={invite} /> */}
           <IconButton
             className={linkStyle}
             icon={faPaperPlane}
@@ -353,7 +379,6 @@ export default function Team({ project }: Props): JSX.Element {
             }
           />
         </div>
-
       </div>
     );
   } else {

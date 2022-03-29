@@ -6,10 +6,12 @@
  */
 
 import { entityIs, Resource, ResourceRef } from 'colab-rest-client';
+import { uniq } from 'lodash';
 import * as API from '../API/api';
 import { ResourceAndRef, ResourceCallContext } from '../components/resources/ResourceCommonType';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
 import { AvailabilityStatus, ColabState, LoadingStatus } from '../store/store';
+import { useProjectBeingEdited } from './projectSelector';
 
 interface ResourceAndChain {
   /**
@@ -246,3 +248,46 @@ export const useAndLoadNbResources = (context: ResourceCallContext): NbAndStatus
 
   return { nb, status };
 };
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// fetch all categories used in the current project
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+/**
+ * Find list of all known categories
+ */
+function useResourceCategories(): string[] {
+  return useAppSelector(state => {
+    return uniq(
+      Object.values(state.resources.resources).flatMap(res => {
+        if (entityIs(res, 'AbstractResource') && res.category) {
+          // TODO sandra work in progress get only the resources directly linked to the current project
+          return res.category;
+        } else {
+          return [];
+        }
+      }),
+    ).sort();
+  });
+}
+
+export function useAndLoadResourceCategories(): {
+  categories: string[];
+  status: AvailabilityStatus;
+} {
+  const dispatch = useAppDispatch();
+
+  const categories = useResourceCategories();
+  const status = useAppSelector(state => state.resources.allOfProjectStatus);
+  const { project } = useProjectBeingEdited();
+
+  if (status === 'NOT_INITIALIZED' && project) {
+    dispatch(API.getDirectResourcesOfProject(project));
+  }
+
+  if (status === 'READY') {
+    return { categories, status };
+  } else {
+    return { categories: [], status };
+  }
+}

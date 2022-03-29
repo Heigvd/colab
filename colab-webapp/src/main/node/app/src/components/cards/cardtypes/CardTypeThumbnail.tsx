@@ -14,18 +14,7 @@ import { CardTypeAllInOne as CardType } from '../../../types/cardTypeDefinition'
 import Flex from '../../common/Flex';
 import Thumbnail from '../../common/Thumbnail';
 import { borderRadius, cardShadow, space_M, space_S } from '../../styling/style';
-import { CardTypeTagsDisplay } from './CardTypeTagItem';
-
-interface Props {
-  highlighted: boolean;
-  cardType: CardType;
-  onClick: (id: number) => void;
-}
-
-interface EmptyCardTypeProps {
-  highlighted: boolean;
-  onClick: (id: number) => void;
-}
+import { TagsDisplay } from './tags/TagsDisplay';
 
 const defaultStyle = css({
   border: '4px solid transparent',
@@ -54,7 +43,17 @@ const tagStyle = css({
   fontSize: '0.8em',
 });
 
-export default function CardTypeThumbnail({ cardType, highlighted, onClick }: Props): JSX.Element {
+interface CardTypeThumbnailProps {
+  highlighted: boolean;
+  cardType: CardType;
+  onClick: (id: number) => void;
+}
+
+export default function CardTypeThumbnail({
+  cardType,
+  highlighted,
+  onClick,
+}: CardTypeThumbnailProps): JSX.Element {
   const { text: purpose } = useAndLoadTextOfDocument(cardType.purposeId);
 
   if (cardType.cardTypeId == null) {
@@ -73,11 +72,16 @@ export default function CardTypeThumbnail({ cardType, highlighted, onClick }: Pr
           <div>
             <h3>{cardType.title}</h3>
           </div>
-          <CardTypeTagsDisplay tags={cardType.tags} className={tagStyle} />
+          <TagsDisplay tags={cardType.tags} className={tagStyle} />
         </div>
       </Thumbnail>
     );
   }
+}
+
+interface EmptyCardTypeProps {
+  highlighted: boolean;
+  onClick: (id: number) => void;
 }
 
 export function EmptyCardTypeThumbnail({ highlighted, onClick }: EmptyCardTypeProps): JSX.Element {

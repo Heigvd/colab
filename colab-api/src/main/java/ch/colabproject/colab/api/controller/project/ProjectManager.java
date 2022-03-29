@@ -23,6 +23,7 @@ import ch.colabproject.colab.api.persistence.jpa.project.ProjectDao;
 import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import javax.ejb.LocalBean;
@@ -84,7 +85,6 @@ public class ProjectManager {
     @Inject
     private CardTypeManager cardTypeManager;
 
-
     // *********************************************************************************************
     // find projects
     // *********************************************************************************************
@@ -140,13 +140,21 @@ public class ProjectManager {
             return requestManager.sudo(() -> {
                 logger.debug("Create project: {}", project);
 
-                Card rootCard = cardManager.initNewRootCard();
+                if (project.getRootCard() == null) {
+                    Card rootCard = cardManager.initNewRootCard();
 
-                project.setRootCard(rootCard);
-                rootCard.setRootCardProject(project);
+                    project.setRootCard(rootCard);
+                    rootCard.setRootCardProject(project);
+                }
 
                 User user = securityManager.assertAndGetCurrentUser();
-                teamManager.addMember(project, user, HierarchicalPosition.OWNER);
+                Optional<TeamMember> currentUserTeamMember = project.getTeamMembers().stream()
+                    .filter(tm -> tm.getUserId() == user.getId()).findFirst();
+                if (currentUserTeamMember.isPresent()) {
+                    currentUserTeamMember.get().setPosition(HierarchicalPosition.OWNER);
+                } else {
+                    teamManager.addMember(project, user, HierarchicalPosition.OWNER);
+                }
 
                 return projectDao.persistProject(project);
             });

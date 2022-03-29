@@ -37,8 +37,6 @@ public class AbstractExceptionMapper {
     protected Response processException(Exception exception) {
         if (exception == null) {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
-        } else if (exception instanceof EJBException) {
-            return processException(((EJBException) exception).getCausedByException());
         } else if (exception instanceof HttpException) {
             return Response.status(((HttpException) exception).getHttpStatus())
                 .type(MediaType.APPLICATION_JSON)
@@ -46,6 +44,13 @@ public class AbstractExceptionMapper {
                 .build();
         } else if (exception instanceof NotFoundException) {
             return processException(HttpErrorMessage.notFound());
+        } else if (exception instanceof EJBException) {
+            return processException(((EJBException) exception).getCausedByException());
+        } else if (exception instanceof PersistenceException | exception instanceof RollbackException) {
+            Throwable cause = exception.getCause();
+            if (cause instanceof Exception) {
+                return processException((Exception) cause);
+            }
         } else if (exception instanceof ConstraintViolationException) {
             ConstraintViolationException constraintViolation
                 = (ConstraintViolationException) exception;
@@ -56,11 +61,6 @@ public class AbstractExceptionMapper {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
                 .entity(constraintViolation.toString())
                 .build();
-        } else if (exception instanceof PersistenceException | exception instanceof RollbackException) {
-            Throwable cause = exception.getCause();
-            if (cause instanceof Exception) {
-                return processException((Exception) cause);
-            }
         }
 
         logger.error("Unknown Internal Error", exception);

@@ -9,6 +9,7 @@ package ch.colabproject.colab.api.rest.document.bean;
 import ch.colabproject.colab.api.model.document.Document;
 import ch.colabproject.colab.api.model.document.TextDataBlock;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
@@ -59,7 +60,7 @@ public class ResourceCreationBean implements Serializable {
     /**
      * The document
      */
-    private List<Document> documents;
+    private List<Document> documents = new ArrayList<>();
 
     // ---------------------------------------------------------------------------------------------
     // getters and setters

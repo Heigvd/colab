@@ -29,7 +29,7 @@ import Overlay from './common/Overlay';
 import Debugger from './debugger/debugger';
 import Editor from './projects/edition/Editor';
 import { UserProjects } from './projects/ProjectList';
-import ForgotPassword from './public/ForgotPassword';
+import ForgotPasswordForm from './public/ForgotPassword';
 import SignInForm from './public/SignIn';
 import SignUpForm from './public/SignUp';
 import Settings from './settings/Settings';
@@ -141,7 +141,7 @@ export default function MainApp(): JSX.Element {
           <Route path="/SignUp" element={<SignUpForm redirectTo={query.get('redirectTo')} />} />
           <Route
             path="/ForgotPassword"
-            element={<ForgotPassword redirectTo={query.get('redirectTo')} />}
+            element={<ForgotPasswordForm redirectTo={query.get('redirectTo')} />}
           />
           <Route path="/SignIn" element={<SignInForm redirectTo={query.get('redirectTo')} />} />
           <Route path="*" element={<SignInForm redirectTo={query.get('redirectTo')} />} />
@@ -248,9 +248,9 @@ export default function MainApp(): JSX.Element {
               }}
               buttonClassName={cx(invertedThemeMode, css({ marginLeft: space_S }))}
             />
-            {passwordScore != null && passwordScore.score < 2 ? (
+            {passwordScore != null && passwordScore.score < 2 && (
               <FontAwesomeIcon title={'your password is weak'} icon={faExclamationTriangle} />
-            ) : null}
+            )}
           </div>
 
           <div

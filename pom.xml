@@ -67,7 +67,7 @@
         <pmd.failurePriority>2</pmd.failurePriority>
 
         <eclipselink.version>2.7.7</eclipselink.version>
-        <payara.version>5.2021.7</payara.version>
+        <payara.version>5.2021.7</payara.version><!-- !! do not change naively payara version !! -->
         <arquillian.version>1.7.0.Alpha10</arquillian.version>
 
         <jacoco.surefireArgLine></jacoco.surefireArgLine>

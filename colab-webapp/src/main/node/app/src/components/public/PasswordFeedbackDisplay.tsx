@@ -3,7 +3,7 @@
  * Copyright (C) 2021 AlbaSim, MEI, HEIG-VD, HES-SO
  *
  * Licensed under the MIT License
- * */
+ */
 
 import * as React from 'react';
 import { PasswordFeedback } from 'react-password-strength-bar';

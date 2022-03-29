@@ -36,6 +36,7 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import org.apache.commons.collections4.CollectionUtils;
 
 /**
  * A role within the development team. A role is used to group several member sharing same skills or
@@ -92,7 +93,7 @@ public class TeamRole implements ColabEntity, WithWebsocketChannels {
      */
     @ManyToMany(mappedBy = "roles")
     @JsonbTransient
-    private List<TeamMember> members;
+    private List<TeamMember> members = new ArrayList<>();
 
     /**
      * List of access control relative to this role
@@ -206,7 +207,7 @@ public class TeamRole implements ColabEntity, WithWebsocketChannels {
      * @return list of ids
      */
     public List<Long> getMemberIds() {
-        if (this.members != null) {
+        if (!CollectionUtils.isEmpty(this.members)) {
             return members.stream()
                 .map(member -> member.getId())
                 .collect(Collectors.toList());

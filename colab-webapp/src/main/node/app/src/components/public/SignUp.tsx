@@ -4,6 +4,7 @@
  *
  * Licensed under the MIT License
  */
+
 import { css } from '@emotion/css';
 import * as React from 'react';
 import { PasswordFeedback } from 'react-password-strength-bar';
@@ -18,13 +19,13 @@ import { InlineLink } from '../common/Link';
 import { lightLinkStyle, space_M } from '../styling/style';
 import PasswordFeedbackDisplay from './PasswordFeedbackDisplay';
 
-interface Props {
+interface SignUpFormProps {
   redirectTo: string | null;
 }
 
 interface Data {
-  username: string;
   email: string;
+  username: string;
   password: string;
   confirm: string;
   passwordScore: {
@@ -33,9 +34,9 @@ interface Data {
   };
 }
 
-const defData: Data = {
-  username: '',
+const defaultData: Data = {
   email: '',
+  username: '',
   password: '',
   confirm: '',
   passwordScore: {
@@ -47,7 +48,7 @@ const defData: Data = {
   },
 };
 
-export default function SignUp(props: Props): JSX.Element {
+export default function SignUpForm({ redirectTo }: SignUpFormProps): JSX.Element {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const i18n = useTranslations();
@@ -56,30 +57,10 @@ export default function SignUp(props: Props): JSX.Element {
     {
       key: 'email',
       label: i18n.emailAddress,
-      isErroneous: value => value.email.match('.*@.*') == null,
-      errorMessage: i18n.emailAddressNotValid,
       type: 'text',
       isMandatory: true,
-    },
-    {
-      key: 'password',
-      label: i18n.model.user.password,
-      placeholder: 'Min. 6 characters',
-      type: 'password',
-      isMandatory: false,
-      isErroneous: data => data.passwordScore.score < 2,
-      errorMessage: data => <PasswordFeedbackDisplay feedback={data.passwordScore.feedback} />,
-      showStrenghBar: true,
-      strengthProp: 'passwordScore',
-    },
-    {
-      key: 'confirm',
-      type: 'password',
-      label: i18n.password_again,
-      isMandatory: true,
-      isErroneous: data => data.password !== data.confirm,
-      errorMessage: i18n.passwordsMismatch,
-      showStrenghBar: false,
+      isErroneous: value => value.email.match('.*@.*') == null,
+      errorMessage: i18n.emailAddressNotValid,
     },
     {
       key: 'username',
@@ -89,32 +70,52 @@ export default function SignUp(props: Props): JSX.Element {
       isErroneous: value => value.username.match(/^[a-zA-Z0-9_\\.\\-]+$/) == null,
       errorMessage: i18n.usernameNotValid,
     },
+    {
+      key: 'password',
+      label: i18n.model.user.password,
+      placeholder: 'Min. 6 characters',
+      type: 'password',
+      isMandatory: true,
+      isErroneous: data => data.passwordScore.score < 2,
+      errorMessage: data => <PasswordFeedbackDisplay feedback={data.passwordScore.feedback} />,
+      showStrenghBar: true,
+      strengthProp: 'passwordScore',
+    },
+    {
+      type: 'password',
+      key: 'confirm',
+      label: i18n.password_again,
+      isMandatory: true,
+      isErroneous: data => data.password !== data.confirm,
+      errorMessage: i18n.passwordsMismatch,
+      showStrenghBar: false,
+    },
   ];
 
   const signUpCb = React.useCallback(
     credentials => {
       dispatch(signUp(credentials)).then(action => {
         // is that a hack or not ???
-        if (props.redirectTo && action.meta.requestStatus === 'fulfilled') {
-          navigate(props.redirectTo);
+        if (redirectTo && action.meta.requestStatus === 'fulfilled') {
+          navigate(redirectTo);
         }
       });
     },
-    [dispatch, props.redirectTo, navigate],
+    [dispatch, redirectTo, navigate],
   );
 
   return (
     <FormContainer>
       <Form
         fields={fields}
-        value={defData}
+        value={defaultData}
         submitLabel={i18n.createAnAccount}
         onSubmit={signUpCb}
         buttonClassName={css({ margin: space_M + ' auto' })}
       >
         <InlineLink
           className={lightLinkStyle}
-          to={buildLinkWithQueryParam('/SignIn', { redirectTo: props.redirectTo })}
+          to={buildLinkWithQueryParam('/SignIn', { redirectTo: redirectTo })}
         >
           {i18n.cancel}
         </InlineLink>

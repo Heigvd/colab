@@ -4,6 +4,7 @@
  *
  * Licensed under the MIT License
  */
+
 import { css, cx } from '@emotion/css';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -19,7 +20,7 @@ import FormContainer from '../common/FormContainer';
 import { InlineLink } from '../common/Link';
 import { lightLinkStyle, space_M, space_S } from '../styling/style';
 
-interface Props {
+interface SignInFormProps {
   redirectTo: string | null;
 }
 
@@ -29,7 +30,7 @@ interface Credentials {
   passwordScore: PasswordScore;
 }
 
-const defCred: Credentials = {
+const defaultCredentials: Credentials = {
   identifier: '',
   password: '',
   passwordScore: {
@@ -41,7 +42,7 @@ const defCred: Credentials = {
   },
 };
 
-export default function SignInForm({ redirectTo }: Props): JSX.Element {
+export default function SignInForm({ redirectTo }: SignInFormProps): JSX.Element {
   const dispatch = useAppDispatch();
   const i18n = useTranslations();
 
@@ -53,19 +54,19 @@ export default function SignInForm({ redirectTo }: Props): JSX.Element {
     {
       key: 'identifier',
       label: i18n.emailOrUsername,
-      isErroneous: data => data.identifier.length === 0,
-      errorMessage: i18n.pleaseEnterId,
+      //readonly: signWithUsernameOnly,
       type: 'text',
       isMandatory: false,
-      //readonly: signWithUsernameOnly,
+      isErroneous: data => data.identifier.length === 0,
+      errorMessage: i18n.pleaseEnterId,
     },
     {
       key: 'password',
       label: i18n.model.user.password,
       type: 'password',
       isMandatory: false,
-      strengthProp: 'passwordScore',
       showStrenghBar: false,
+      strengthProp: 'passwordScore',
     },
   ];
 
@@ -90,12 +91,12 @@ export default function SignInForm({ redirectTo }: Props): JSX.Element {
   return (
     <FormContainer>
       <Form
-        value={{ ...defCred, identifier: '' }}
-        onSubmit={onSubmitCb}
         fields={formFields}
+        value={defaultCredentials}
         submitLabel={i18n.login}
-        buttonClassName={css({ margin: space_S + ' auto' })}
+        onSubmit={onSubmitCb}
         className={css({ marginBottom: space_M })}
+        buttonClassName={css({ margin: space_S + ' auto' })}
       >
         <InlineLink
           to={buildLinkWithQueryParam('/ForgotPassword', { redirectTo: redirectTo })}
@@ -103,14 +104,14 @@ export default function SignInForm({ redirectTo }: Props): JSX.Element {
         >
           {i18n.forgottenPassword}
         </InlineLink>
-        {accountConfig.showCreateAccountButton ? (
+        {accountConfig.showCreateAccountButton && (
           <InlineLink
             to={buildLinkWithQueryParam('/SignUp', { redirectTo: redirectTo })}
             className={cx(lightLinkStyle)}
           >
             <FontAwesomeIcon icon={faPlus} /> {i18n.createAnAccount}
           </InlineLink>
-        ) : null}
+        )}
       </Form>
     </FormContainer>
   );

@@ -32,7 +32,7 @@ import IconButton from '../common/IconButton';
 import InlineInput from '../common/InlineInput';
 import Modal from '../common/Modal';
 import OpenCloseModal from '../common/OpenCloseModal';
-import DocTextDisplay from '../documents/DocTextDisplay';
+import { DocTextDisplay } from '../documents/DocTextItem';
 import DocumentList from '../documents/DocumentList';
 import ResourcesWrapper from '../resources/ResourcesWrapper';
 import StickyNoteWrapper from '../stickynotes/StickyNoteWrapper';
@@ -245,7 +245,7 @@ export default function CardEditor({ card, variant, showSubcards = true }: Props
                               title="Card Settings"
                               onClose={() => closeRouteCb('settings')}
                               showCloseButton
-                              className={css({height: '580px'})}
+                              className={css({ height: '580px' })}
                             >
                               {closeModal => (
                                 <CardSettings onClose={closeModal} card={card} variant={variant} />
@@ -381,6 +381,7 @@ export default function CardEditor({ card, variant, showSubcards = true }: Props
                       }
                       cardId={card.id}
                       cardContentId={variant.id}
+                      hasSeveralVariants={hasVariants}
                     />
                   ),
                   icon: faFileAlt,

@@ -6,30 +6,18 @@
  */
 
 import { css, cx } from '@emotion/css';
-import { faUndo } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import * as React from 'react';
 import * as API from '../../API/api';
-//import * as API from '../../API/api';
+import { useAndLoadResourceCategories } from '../../selectors/resourceSelector';
 import { useAppDispatch } from '../../store/hooks';
 import Button from '../common/Button';
 import Flex from '../common/Flex';
 import Form, { createSelectField, Field } from '../common/Form/Form';
-import IconButton from '../common/IconButton';
 import OpenCloseModal from '../common/OpenCloseModal';
 import { addIcon } from '../styling/defaultIcons';
 import { space_M, space_S } from '../styling/style';
 import { ResourceCallContext } from './ResourceCommonType';
-
-/**
- * the context in which we create a new resource
- */
-
-export type ResourceCreatorProps = {
-  contextInfo: ResourceCallContext;
-  categories: string[];
-  className?: string;
-};
 
 interface ResourceType {
   title: string;
@@ -38,60 +26,63 @@ interface ResourceType {
   atCardContentLevel: boolean;
 }
 
-const defaultResource: ResourceType = {
+const defaultData: ResourceType = {
   title: '',
   teaser: '',
   category: '',
   atCardContentLevel: false,
 };
 
+interface ResourceCreatorProps {
+  contextInfo: ResourceCallContext;
+  className?: string;
+}
+
 export default function ResourceCreator({
   contextInfo,
-  categories,
   className,
 }: ResourceCreatorProps): JSX.Element {
   const dispatch = useAppDispatch();
 
-  const [state, setState] = React.useState<ResourceType>(defaultResource);
-
-  const resetInputs = React.useCallback(() => {
-    setState(defaultResource);
-  }, []);
+  const { categories: allCategories } = useAndLoadResourceCategories();
 
   const fields: Field<ResourceType>[] = [
     {
       key: 'title',
       type: 'text',
-      label: 'title',
+      label: 'Title',
       isMandatory: true,
     },
     {
       key: 'teaser',
       type: 'textarea',
-      label: 'teaser',
+      label: 'Teaser',
       isMandatory: false,
+      placeholder: 'Summarize the content if the title is not self-explanatory',
     },
     createSelectField({
       key: 'category',
       type: 'select',
       label: 'Category',
+      isMandatory: false,
+      placeholder: 'Select or type to create',
+      fieldFooter: 'Made to organize the resources',
       isMulti: false,
-      options: categories.map(c => ({ label: c, value: c })),
       canCreateOption: true,
-      placeholder: 'Select or create a category',
-      isMandatory: true,
+      options: allCategories.map(c => ({ label: c, value: c })),
     }),
   ];
 
-  if (contextInfo.kind === 'CardOrCardContent') {
+  if (contextInfo.kind === 'CardOrCardContent' && contextInfo.hasSeveralVariants) {
     fields.push({
       key: 'atCardContentLevel',
-      label: 'is only for the present version',
       type: 'boolean',
+      label: 'Is only for the present variant',
       isMandatory: false,
       showAs: 'checkbox',
     });
   }
+
   return (
     <OpenCloseModal
       title="Create a resource"
@@ -107,7 +98,7 @@ export default function ResourceCreator({
             className,
           )}
         >
-          <FontAwesomeIcon title="Add a resource" icon={addIcon} />
+          <FontAwesomeIcon title="Create a resource" icon={addIcon} />
         </Flex>
       }
       className={css({ display: 'block', width: '100%', textAlign: 'center' })}
@@ -115,9 +106,9 @@ export default function ResourceCreator({
       {collapse => (
         <Form
           fields={fields}
-          value={state}
+          value={defaultData}
+          submitLabel="Create"
           onSubmit={function (e) {
-            setState(e);
             let cardTypeId: number | null | undefined = null;
             let cardId: number | null = null;
             let cardContentId: number | null = null;
@@ -146,7 +137,6 @@ export default function ResourceCreator({
                 category: e.category,
               }),
             ).then(() => {
-              resetInputs();
               collapse();
             });
           }}
@@ -158,9 +148,7 @@ export default function ResourceCreator({
           className={css({ alignSelf: 'center' })}
         >
           <Button
-            title="cancel"
             onClick={() => {
-              // see if it is better to reset the values or not
               collapse();
             }}
             invertedButton
@@ -168,7 +156,6 @@ export default function ResourceCreator({
           >
             Cancel
           </Button>
-          <IconButton icon={faUndo} title="reinit fields" onClick={() => resetInputs()} />
         </Form>
       )}
     </OpenCloseModal>

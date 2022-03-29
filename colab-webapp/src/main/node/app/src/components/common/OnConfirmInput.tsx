@@ -25,7 +25,7 @@ export interface Props {
   value: string;
   readOnly?: boolean;
   onChange: (newValue: string) => void;
-  onCancel?:()=>void;
+  onCancel?: () => void;
   placeholder?: string;
   directEdit?: boolean;
   size?: 'SMALL' | 'LARGE';
@@ -99,7 +99,7 @@ export default function OnConfirmInput({
     if (!directEdit) {
       setMode('DISPLAY');
     }
-    if(onCancel){
+    if (onCancel) {
       onCancel();
     }
   }, [defaultValue, directEdit, onCancel]);

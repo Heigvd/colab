@@ -107,7 +107,7 @@ public class Project implements ColabEntity, WithWebsocketChannels {
      */
     @OneToMany(mappedBy = "project", cascade = CascadeType.ALL)
     @JsonbTransient
-    private List<TeamRole> roles;
+    private List<TeamRole> roles = new ArrayList<>();
 
     /**
      * List of team members
