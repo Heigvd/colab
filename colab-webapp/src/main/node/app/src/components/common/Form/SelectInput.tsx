@@ -6,10 +6,19 @@
  */
 
 import { css, cx } from '@emotion/css';
+import { faPlus } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import * as React from 'react';
 import Select, { MultiValue, OnChangeValue, SingleValue } from 'react-select';
 import Creatable from 'react-select/creatable';
-import { errorStyle, labelStyle, space_S, textSmall, warningStyle } from '../../styling/style';
+import {
+  errorStyle,
+  labelStyle,
+  selectCreatorStyle,
+  space_S,
+  textSmall,
+  warningStyle,
+} from '../../styling/style';
 import Flex from '../Flex';
 
 interface Opt<T> {
@@ -95,7 +104,11 @@ export default function SelectInput<T, IsMulti extends boolean>({
           openMenuOnClick
           openMenuOnFocus
           isClearable
-          formatCreateLabel={(inputValue: string) => 'create "' + inputValue + '"'}
+          formatCreateLabel={(inputValue: string) => (
+            <div className={selectCreatorStyle}>
+              <FontAwesomeIcon icon={faPlus} /> {' Create "' + inputValue + '"'}
+            </div>
+          )}
           styles={{
             menuPortal: base => ({ ...base, zIndex: 9999 }),
             menu: base => ({ ...base, marginTop: '0px' }),
