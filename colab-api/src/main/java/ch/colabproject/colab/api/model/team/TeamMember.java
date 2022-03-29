@@ -41,6 +41,7 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
+import org.apache.commons.collections4.CollectionUtils;
 
 /**
  * A member is a {@link User user} which work on a {@link Project project}
@@ -285,7 +286,7 @@ public class TeamMember implements ColabEntity, WithWebsocketChannels {
      * @return list of ids
      */
     public List<Long> getRoleIds() {
-        if (this.roles != null) {
+        if (!CollectionUtils.isEmpty(this.roles)) {
             return roles.stream()
                 .map(role -> role.getId())
                 .collect(Collectors.toList());
