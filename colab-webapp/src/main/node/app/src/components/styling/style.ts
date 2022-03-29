@@ -484,3 +484,10 @@ export const voidStyle = css({
   alignItems: 'center',
   justifyContent: 'center',
 });
+
+export const selectCreatorStyle = css({
+  paddingTop: space_M,
+  borderTopWidth: '1px',
+  borderTopStyle: 'solid',
+  borderTopColor: 'var(--darkGray)',
+});
