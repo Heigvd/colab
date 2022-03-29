@@ -65,7 +65,13 @@ export default function DataWithTagsListWithFilter({
         className={filterClassName}
         tagItemClassName={tagItemClassName}
       />
-      {children(dataFilteredByTag)}
+      {dataWithTags &&
+        dataWithTags.length > 0 &&
+        (dataFilteredByTag && dataFilteredByTag.length > 0 ? (
+          children(dataFilteredByTag)
+        ) : (
+          <p>Nothing matches tag selection</p>
+        ))}
     </>
   );
 }
