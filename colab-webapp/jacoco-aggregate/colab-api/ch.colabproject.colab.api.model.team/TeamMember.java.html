@@ -118,20 +118,20 @@ import javax.validation.constraints.NotNull;
     /**
      * The roles
      */
-    @ManyToMany
+<span class="nc" id="L121">    @ManyToMany</span>
     @JoinTable(indexes = {
         @Index(columnList = &quot;members_id&quot;),
         @Index(columnList = &quot;roles_id&quot;),
     })
     @JsonbTransient
-    private List&lt;TeamRole&gt; roles;
+    private List&lt;TeamRole&gt; roles = new ArrayList&lt;&gt;();
 
     /**
      * List of access control relative to this member
      */
-    @OneToMany(mappedBy = &quot;member&quot;, cascade = CascadeType.ALL)
+<span class="nc" id="L132">    @OneToMany(mappedBy = &quot;member&quot;, cascade = CascadeType.ALL)</span>
     @JsonbTransient
-    private List&lt;AccessControl&gt; accessControlList;
+    private List&lt;AccessControl&gt; accessControlList = new ArrayList&lt;&gt;();
 
     /**
      * Id of the roles. For deserialization only

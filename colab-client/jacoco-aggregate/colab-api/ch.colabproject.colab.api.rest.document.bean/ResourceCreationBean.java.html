@@ -9,6 +9,7 @@ package ch.colabproject.colab.api.rest.document.bean;
 import ch.colabproject.colab.api.model.document.Document;
 import ch.colabproject.colab.api.model.document.TextDataBlock;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
@@ -18,7 +19,7 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
  *
  * @author sandra
  */
-<span class="nc" id="L21">public class ResourceCreationBean implements Serializable {</span>
+<span class="nc" id="L22">public class ResourceCreationBean implements Serializable {</span>
 
     private static final long serialVersionUID = 1L;
 
@@ -59,7 +60,7 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
     /**
      * The document
      */
-    private List&lt;Document&gt; documents;
+<span class="nc" id="L63">    private List&lt;Document&gt; documents = new ArrayList&lt;&gt;();</span>
 
     // ---------------------------------------------------------------------------------------------
     // getters and setters
@@ -69,99 +70,99 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
      * @return the title
      */
     public String getTitle() {
-<span class="nc" id="L72">        return title;</span>
+<span class="nc" id="L73">        return title;</span>
     }
 
     /**
      * @param title the title
      */
     public void setTitle(String title) {
-<span class="nc" id="L79">        this.title = title;</span>
-<span class="nc" id="L80">    }</span>
+<span class="nc" id="L80">        this.title = title;</span>
+<span class="nc" id="L81">    }</span>
 
     /**
      * @return the teaser
      */
     public TextDataBlock getTeaser() {
-<span class="nc" id="L86">        return teaser;</span>
+<span class="nc" id="L87">        return teaser;</span>
     }
 
     /**
      * @param teaser the teaser
      */
     public void setTeaser(TextDataBlock teaser) {
-<span class="nc" id="L93">        this.teaser = teaser;</span>
-<span class="nc" id="L94">    }</span>
+<span class="nc" id="L94">        this.teaser = teaser;</span>
+<span class="nc" id="L95">    }</span>
 
     /**
      * @return the category
      */
     public String getCategory() {
-<span class="nc" id="L100">        return category;</span>
+<span class="nc" id="L101">        return category;</span>
     }
 
     /**
      * @param category the category
      */
     public void setCategory(String category) {
-<span class="nc" id="L107">        this.category = category;</span>
-<span class="nc" id="L108">    }</span>
+<span class="nc" id="L108">        this.category = category;</span>
+<span class="nc" id="L109">    }</span>
 
     /**
      * @return the abstractCardTypeId
      */
     public Long getAbstractCardTypeId() {
-<span class="nc" id="L114">        return abstractCardTypeId;</span>
+<span class="nc" id="L115">        return abstractCardTypeId;</span>
     }
 
     /**
      * @param abstractCardTypeId the abstractCardTypeId
      */
     public void setAbstractCardTypeId(Long abstractCardTypeId) {
-<span class="nc" id="L121">        this.abstractCardTypeId = abstractCardTypeId;</span>
-<span class="nc" id="L122">    }</span>
+<span class="nc" id="L122">        this.abstractCardTypeId = abstractCardTypeId;</span>
+<span class="nc" id="L123">    }</span>
 
     /**
      * @return the cardId
      */
     public Long getCardId() {
-<span class="nc" id="L128">        return cardId;</span>
+<span class="nc" id="L129">        return cardId;</span>
     }
 
     /**
      * @param cardId the cardId
      */
     public void setCardId(Long cardId) {
-<span class="nc" id="L135">        this.cardId = cardId;</span>
-<span class="nc" id="L136">    }</span>
+<span class="nc" id="L136">        this.cardId = cardId;</span>
+<span class="nc" id="L137">    }</span>
 
     /**
      * @return the cardContentId
      */
     public Long getCardContentId() {
-<span class="nc" id="L142">        return cardContentId;</span>
+<span class="nc" id="L143">        return cardContentId;</span>
     }
 
     /**
      * @param cardContentId the cardContentId
      */
     public void setCardContentId(Long cardContentId) {
-<span class="nc" id="L149">        this.cardContentId = cardContentId;</span>
-<span class="nc" id="L150">    }</span>
+<span class="nc" id="L150">        this.cardContentId = cardContentId;</span>
+<span class="nc" id="L151">    }</span>
 
     /**
      * @return the documents
      */
     public List&lt;Document&gt; getDocuments() {
-<span class="nc" id="L156">        return documents;</span>
+<span class="nc" id="L157">        return documents;</span>
     }
 
     /**
      * @param documents the documents
      */
     public void setDocuments(List&lt;Document&gt; documents) {
-<span class="nc" id="L163">        this.documents = documents;</span>
-<span class="nc" id="L164">    }</span>
+<span class="nc" id="L164">        this.documents = documents;</span>
+<span class="nc" id="L165">    }</span>
 
     // ---------------------------------------------------------------------------------------------
     // concerning the whole class
@@ -169,39 +170,39 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 
     @Override
     public int hashCode() {
-<span class="nc" id="L172">        return new HashCodeBuilder()</span>
-<span class="nc" id="L173">            .append(this.title)</span>
-<span class="nc" id="L174">            .append(this.category)</span>
-<span class="nc" id="L175">            .append(this.abstractCardTypeId)</span>
-<span class="nc" id="L176">            .append(this.cardId)</span>
-<span class="nc" id="L177">            .append(this.cardContentId)</span>
-<span class="nc" id="L178">            .toHashCode();</span>
+<span class="nc" id="L173">        return new HashCodeBuilder()</span>
+<span class="nc" id="L174">            .append(this.title)</span>
+<span class="nc" id="L175">            .append(this.category)</span>
+<span class="nc" id="L176">            .append(this.abstractCardTypeId)</span>
+<span class="nc" id="L177">            .append(this.cardId)</span>
+<span class="nc" id="L178">            .append(this.cardContentId)</span>
+<span class="nc" id="L179">            .toHashCode();</span>
     }
 
     @Override
     public boolean equals(Object obj) {
-<span class="nc bnc" id="L183" title="All 2 branches missed.">        if (this == obj) {</span>
-<span class="nc" id="L184">            return true;</span>
+<span class="nc bnc" id="L184" title="All 2 branches missed.">        if (this == obj) {</span>
+<span class="nc" id="L185">            return true;</span>
         }
-<span class="nc bnc" id="L186" title="All 2 branches missed.">        if (obj == null) {</span>
-<span class="nc" id="L187">            return false;</span>
+<span class="nc bnc" id="L187" title="All 2 branches missed.">        if (obj == null) {</span>
+<span class="nc" id="L188">            return false;</span>
         }
-<span class="nc bnc" id="L189" title="All 2 branches missed.">        if (getClass() != obj.getClass()) {</span>
-<span class="nc" id="L190">            return false;</span>
+<span class="nc bnc" id="L190" title="All 2 branches missed.">        if (getClass() != obj.getClass()) {</span>
+<span class="nc" id="L191">            return false;</span>
         }
-<span class="nc" id="L192">        final ResourceCreationBean other = (ResourceCreationBean) obj;</span>
-<span class="nc" id="L193">        return new EqualsBuilder()</span>
-<span class="nc" id="L194">            .append(this.title, other.title)</span>
-<span class="nc" id="L195">            .append(this.category, other.category)</span>
-<span class="nc" id="L196">            .append(this.abstractCardTypeId, other.abstractCardTypeId)</span>
-<span class="nc" id="L197">            .append(this.cardId, other.cardId)</span>
-<span class="nc" id="L198">            .append(this.cardContentId, other.cardContentId)</span>
-<span class="nc" id="L199">            .isEquals();</span>
+<span class="nc" id="L193">        final ResourceCreationBean other = (ResourceCreationBean) obj;</span>
+<span class="nc" id="L194">        return new EqualsBuilder()</span>
+<span class="nc" id="L195">            .append(this.title, other.title)</span>
+<span class="nc" id="L196">            .append(this.category, other.category)</span>
+<span class="nc" id="L197">            .append(this.abstractCardTypeId, other.abstractCardTypeId)</span>
+<span class="nc" id="L198">            .append(this.cardId, other.cardId)</span>
+<span class="nc" id="L199">            .append(this.cardContentId, other.cardContentId)</span>
+<span class="nc" id="L200">            .isEquals();</span>
     }
 
     @Override
     public String toString() {
-<span class="nc" id="L204">        return &quot;ResourceCreationBean{&quot; + &quot;title=&quot; + title + &quot;, category=&quot; + category</span>
+<span class="nc" id="L205">        return &quot;ResourceCreationBean{&quot; + &quot;title=&quot; + title + &quot;, category=&quot; + category</span>
             + &quot;, abstractCardTypeId=&quot; + abstractCardTypeId + &quot;, cardId=&quot; + cardId
             + &quot;, cardContentId=&quot; + cardContentId + &quot;}&quot;;
     }

@@ -90,9 +90,9 @@ import javax.validation.constraints.NotNull;
     /**
      * List of members who are part of this role
      */
-    @ManyToMany(mappedBy = &quot;roles&quot;)
+<span class="nc" id="L93">    @ManyToMany(mappedBy = &quot;roles&quot;)</span>
     @JsonbTransient
-    private List&lt;TeamMember&gt; members;
+    private List&lt;TeamMember&gt; members = new ArrayList&lt;&gt;();
 
     /**
      * List of access control relative to this role

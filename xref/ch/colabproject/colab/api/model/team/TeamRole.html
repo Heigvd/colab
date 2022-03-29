@@ -100,7 +100,7 @@
 <a class="jxr_linenumber" name="L92" href="#L92">92</a>  <em class="jxr_javadoccomment">     */</em>
 <a class="jxr_linenumber" name="L93" href="#L93">93</a>      @ManyToMany(mappedBy = <span class="jxr_string">"roles"</span>)
 <a class="jxr_linenumber" name="L94" href="#L94">94</a>      @JsonbTransient
-<a class="jxr_linenumber" name="L95" href="#L95">95</a>      <strong class="jxr_keyword">private</strong> List&lt;TeamMember&gt; members;
+<a class="jxr_linenumber" name="L95" href="#L95">95</a>      <strong class="jxr_keyword">private</strong> List&lt;TeamMember&gt; members = <strong class="jxr_keyword">new</strong> ArrayList&lt;&gt;();
 <a class="jxr_linenumber" name="L96" href="#L96">96</a>  
 <a class="jxr_linenumber" name="L97" href="#L97">97</a>      <em class="jxr_javadoccomment">/**</em>
 <a class="jxr_linenumber" name="L98" href="#L98">98</a>  <em class="jxr_javadoccomment">     * List of access control relative to this role</em>

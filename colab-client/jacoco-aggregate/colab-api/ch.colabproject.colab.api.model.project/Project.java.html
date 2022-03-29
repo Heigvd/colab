@@ -105,9 +105,9 @@ import javax.persistence.Table;
     /**
      * Roles
      */
-    @OneToMany(mappedBy = &quot;project&quot;, cascade = CascadeType.ALL)
+<span class="nc" id="L108">    @OneToMany(mappedBy = &quot;project&quot;, cascade = CascadeType.ALL)</span>
     @JsonbTransient
-    private List&lt;TeamRole&gt; roles;
+    private List&lt;TeamRole&gt; roles = new ArrayList&lt;&gt;();
 
     /**
      * List of team members
