@@ -344,8 +344,14 @@ public class CardTypeManager {
      * @param project  the reference owner
      *
      * @return a new, initialized card type reference (just the object, no persistence)
+     *
+     * @throws HttpErrorMessage if we try to create a reference in the same project than the target
      */
     private CardTypeRef createNewCardReference(AbstractCardType cardType, Project project) {
+        if (cardType.getProjectId() == project.getId()) {
+            throw HttpErrorMessage.dataIntegrityFailure();
+        }
+
         CardTypeRef ref = initNewCardTypeRef();
 
         ref.setProject(project);
