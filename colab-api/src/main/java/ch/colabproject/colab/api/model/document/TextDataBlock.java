@@ -176,39 +176,18 @@ public class TextDataBlock extends Document {
     // ---------------------------------------------------------------------------------------------
     // concerning the whole class
     // ---------------------------------------------------------------------------------------------
+
     @Override
     public void merge(ColabEntity other) throws ColabMergeException {
+        super.merge(other);
+
         if (other instanceof TextDataBlock) {
             TextDataBlock o = (TextDataBlock) other;
-            super.merge(other);
             this.setMimeType(o.getMimeType());
             this.setTextData(o.getTextData());
             // Note : the revision is handled by the LiveManager
         } else {
             throw new ColabMergeException(this, other);
-        }
-    }
-
-    @Override
-    public Set<WebsocketChannel> getChannels() {
-        if (this.owningCardContent != null) {
-            // The document is a deliverable of a card content
-            return this.owningCardContent.getChannels();
-        } else if (this.owningResource != null) {
-            // The document is part of a resource
-            return this.owningResource.getChannels();
-        } else if (this.purposingCardType != null) {
-            // It is the purpose of a card type
-            return this.purposingCardType.getChannels();
-        } else if (this.teasingResource != null) {
-            // It is the teaser of a resource
-            return this.teasingResource.getChannels();
-        } else if (this.explainingStickyNoteLink != null) {
-            // It is the explanation of a sticky note link
-            return this.explainingStickyNoteLink.getChannels();
-        } else {
-            // such an orphan shouldn't exist...
-            return Set.of();
         }
     }
 
@@ -238,6 +217,29 @@ public class TextDataBlock extends Document {
         } else {
             // such an orphan shouldn't exist...
             return null;
+        }
+    }
+
+    @Override
+    public Set<WebsocketChannel> getChannels() {
+        if (this.owningCardContent != null) {
+            // The document is a deliverable of a card content
+            return this.owningCardContent.getChannels();
+        } else if (this.owningResource != null) {
+            // The document is part of a resource
+            return this.owningResource.getChannels();
+        } else if (this.purposingCardType != null) {
+            // It is the purpose of a card type
+            return this.purposingCardType.getChannels();
+        } else if (this.teasingResource != null) {
+            // It is the teaser of a resource
+            return this.teasingResource.getChannels();
+        } else if (this.explainingStickyNoteLink != null) {
+            // It is the explanation of a sticky note link
+            return this.explainingStickyNoteLink.getChannels();
+        } else {
+            // such an orphan shouldn't exist...
+            return Set.of();
         }
     }
 

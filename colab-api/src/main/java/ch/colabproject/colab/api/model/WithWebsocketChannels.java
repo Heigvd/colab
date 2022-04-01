@@ -39,4 +39,5 @@ public interface WithWebsocketChannels extends WithId, WithJsonDiscriminator {
     default Object getIndexEntryPayload() {
         return null;
     }
+
 }

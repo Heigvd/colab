@@ -36,6 +36,10 @@ public class LocalAccount extends Account {
 
     private static final long serialVersionUID = 1L;
 
+    // ---------------------------------------------------------------------------------------------
+    // fields
+    // ---------------------------------------------------------------------------------------------
+
     /**
      * username-like email address
      */
@@ -118,6 +122,10 @@ public class LocalAccount extends Account {
     @Enumerated(value = EnumType.STRING)
     @JsonbTransient
     private HashMethod nextClientHashMethod;
+
+    // ---------------------------------------------------------------------------------------------
+    // getters and setters
+    // ---------------------------------------------------------------------------------------------
 
     /**
      *
@@ -292,6 +300,10 @@ public class LocalAccount extends Account {
     public void setNextClientHashMethod(HashMethod nextClientHashMethod) {
         this.nextClientHashMethod = nextClientHashMethod;
     }
+
+    // ---------------------------------------------------------------------------------------------
+    // concerning the whole class
+    // ---------------------------------------------------------------------------------------------
 
     @Override
     public void merge(ColabEntity other) throws ColabMergeException {

@@ -17,16 +17,6 @@ import javax.json.bind.annotation.JsonbTransient;
 public interface WithPermission {
 
     /**
-     * Get the condition required to persist this entity
-     *
-     * @return the condition
-     */
-    @JsonbTransient
-    default Condition getCreateCondition() {
-        return getUpdateCondition();
-    }
-
-    /**
      * Get the condition required to read this entity
      *
      * @return the condition
@@ -43,6 +33,16 @@ public interface WithPermission {
     Condition getUpdateCondition();
 
     /**
+     * Get the condition required to persist this entity
+     *
+     * @return the condition
+     */
+    @JsonbTransient
+    default Condition getCreateCondition() {
+        return getUpdateCondition();
+    }
+
+    /**
      * Get the condition required to delete this entity
      *
      * @return the condition
@@ -51,4 +51,5 @@ public interface WithPermission {
     default Condition getDeleteCondition() {
         return getUpdateCondition();
     }
+
 }

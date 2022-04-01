@@ -40,6 +40,10 @@ public class ResetLocalAccountPasswordToken extends Token {
      */
     public static final String EMAIL_SUBJECT = "co.LAB account password reset request";
 
+    // ---------------------------------------------------------------------------------------------
+    // fields
+    // ---------------------------------------------------------------------------------------------
+
     /**
      * The local account the token is linked to
      */
@@ -47,6 +51,10 @@ public class ResetLocalAccountPasswordToken extends Token {
     @OneToOne
     @JsonbTransient
     private LocalAccount localAccount;
+
+    // ---------------------------------------------------------------------------------------------
+    // getters and setters
+    // ---------------------------------------------------------------------------------------------
 
     /**
      * Get the value of localAccount
@@ -65,6 +73,10 @@ public class ResetLocalAccountPasswordToken extends Token {
     public void setLocalAccount(LocalAccount localAccount) {
         this.localAccount = localAccount;
     }
+
+    // ---------------------------------------------------------------------------------------------
+    // helpers
+    // ---------------------------------------------------------------------------------------------
 
     @Override
     public String getRedirectTo() {
@@ -95,9 +107,14 @@ public class ResetLocalAccountPasswordToken extends Token {
             localAccount.getUser().getDisplayName(), link);
     }
 
+    // ---------------------------------------------------------------------------------------------
+    // concerning the whole class
+    // ---------------------------------------------------------------------------------------------
+
     @Override
     public String toString() {
         return "ResetLocalAccountPasswordToken{" + "id=" + getId() + ", localAccount="
             + localAccount + '}';
     }
+
 }

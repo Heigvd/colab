@@ -49,6 +49,10 @@ public class HttpSession implements WithId, WithJsonDiscriminator, WithPermissio
 
     private static final long serialVersionUID = 1L;
 
+    // ---------------------------------------------------------------------------------------------
+    // fields
+    // ---------------------------------------------------------------------------------------------
+
     /**
      * Not so secret id
      */
@@ -74,6 +78,16 @@ public class HttpSession implements WithId, WithJsonDiscriminator, WithPermissio
     private byte[] sessionSecret;
 
     /**
+     * Last activity date
+     */
+    private OffsetDateTime lastSeen;
+
+    /**
+     * User Agent who create the session
+     */
+    private String userAgent;
+
+    /**
      * A HttpSession belongs to an account
      */
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
@@ -81,24 +95,15 @@ public class HttpSession implements WithId, WithJsonDiscriminator, WithPermissio
     private Account account;
 
     /**
-     * Last activity date
-     */
-    private OffsetDateTime lastSeen;
-
-    /**
      * id of the account used for authentication
      */
     @Transient
     private Long accountId;
 
-    /**
-     * User Agent who create the session
-     */
-    private String userAgent;
-
     // ---------------------------------------------------------------------------------------------
     // getters and setters
     // ---------------------------------------------------------------------------------------------
+
     /**
      * @return account id
      */
@@ -167,6 +172,24 @@ public class HttpSession implements WithId, WithJsonDiscriminator, WithPermissio
     }
 
     /**
+     * Get the value of userAgent
+     *
+     * @return the value of userAgent
+     */
+    public String getUserAgent() {
+        return userAgent;
+    }
+
+    /**
+     * Set the value of userAgent
+     *
+     * @param userAgent new value of userAgent
+     */
+    public void setUserAgent(String userAgent) {
+        this.userAgent = userAgent;
+    }
+
+    /**
      * Get the account linked to this session. The only case the account may be null is on logout or
      * when the session is going to be deleted
      *
@@ -205,27 +228,10 @@ public class HttpSession implements WithId, WithJsonDiscriminator, WithPermissio
         this.accountId = accountId;
     }
 
-    /**
-     * Get the value of userAgent
-     *
-     * @return the value of userAgent
-     */
-    public String getUserAgent() {
-        return userAgent;
-    }
-
-    /**
-     * Set the value of userAgent
-     *
-     * @param userAgent new value of userAgent
-     */
-    public void setUserAgent(String userAgent) {
-        this.userAgent = userAgent;
-    }
-
     // ---------------------------------------------------------------------------------------------
     // concerning the whole class
     // ---------------------------------------------------------------------------------------------
+
     @Override
     public Set<WebsocketChannel> getChannels() {
         if (this.account != null) {
@@ -236,19 +242,13 @@ public class HttpSession implements WithId, WithJsonDiscriminator, WithPermissio
     }
 
     @Override
-    public Conditions.Condition getCreateCondition() {
-        // anyone can create a session
-        return Conditions.alwaysTrue;
-    }
-
-    @Override
     public Conditions.Condition getReadCondition() {
         if (this.account != null) {
             // same
             return this.account.getReadCondition();
         } else {
             // not linked to any account, nothing to hide
-            // This case may only exstits when the session is about to be destroed
+            // This case may only exists when the session is about to be destroyed
             return Conditions.alwaysTrue;
         }
     }
@@ -260,9 +260,15 @@ public class HttpSession implements WithId, WithJsonDiscriminator, WithPermissio
             return this.account.getUpdateCondition();
         } else {
             // not linked to any account, nothing to hide
-            // This case may only exstits when the session is about to be destroed
+            // This case may only exists when the session is about to be destroyed
             return Conditions.alwaysTrue;
         }
+    }
+
+    @Override
+    public Conditions.Condition getCreateCondition() {
+        // anyone can create a session
+        return Conditions.alwaysTrue;
     }
 
     @Override
@@ -280,4 +286,5 @@ public class HttpSession implements WithId, WithJsonDiscriminator, WithPermissio
     public String toString() {
         return "HttpSession{" + "id=" + id + ", account=" + account + ", lastSeen=" + lastSeen + '}';
     }
+
 }

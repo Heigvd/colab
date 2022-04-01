@@ -9,8 +9,8 @@ package ch.colabproject.colab.api.model.team;
 import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.model.ColabEntity;
 import ch.colabproject.colab.api.model.WithWebsocketChannels;
-import ch.colabproject.colab.api.model.team.acl.AccessControl;
 import ch.colabproject.colab.api.model.project.Project;
+import ch.colabproject.colab.api.model.team.acl.AccessControl;
 import ch.colabproject.colab.api.model.team.acl.HierarchicalPosition;
 import ch.colabproject.colab.api.model.tools.EntityHelper;
 import ch.colabproject.colab.api.model.tracking.Tracking;
@@ -77,6 +77,7 @@ public class TeamMember implements ColabEntity, WithWebsocketChannels {
     // ---------------------------------------------------------------------------------------------
     // fields
     // ---------------------------------------------------------------------------------------------
+
     /**
      * Member ID
      */
@@ -86,7 +87,7 @@ public class TeamMember implements ColabEntity, WithWebsocketChannels {
     private Long id;
 
     /**
-     * creation &amp; modification tracking data
+     * creation + modification tracking data
      */
     @Embedded
     private Tracking trackingData;
@@ -95,6 +96,13 @@ public class TeamMember implements ColabEntity, WithWebsocketChannels {
      * Optional display name. Such a name will hide user.commonName.
      */
     private String displayName;
+
+    /**
+     * Hierarchical position of the member
+     */
+    @NotNull
+    @Enumerated(value = EnumType.STRING)
+    private HierarchicalPosition position = HierarchicalPosition.INTERNAL;
 
     /**
      * The user
@@ -117,6 +125,12 @@ public class TeamMember implements ColabEntity, WithWebsocketChannels {
     private Project project;
 
     /**
+     * The project ID (serialization sugar)
+     */
+    @Transient
+    private Long projectId;
+
+    /**
      * The roles
      */
     @ManyToMany
@@ -128,13 +142,6 @@ public class TeamMember implements ColabEntity, WithWebsocketChannels {
     private List<TeamRole> roles = new ArrayList<>();
 
     /**
-     * List of access control relative to this member
-     */
-    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
-    @JsonbTransient
-    private List<AccessControl> accessControlList = new ArrayList<>();
-
-    /**
      * Id of the roles. For deserialization only
      */
     @NotNull
@@ -142,21 +149,16 @@ public class TeamMember implements ColabEntity, WithWebsocketChannels {
     private List<Long> roleIds = new ArrayList<>();
 
     /**
-     * The project ID (serialization sugar)
+     * List of access control relative to this member
      */
-    @Transient
-    private Long projectId;
-
-    /**
-     * Hierarchical position of the member
-     */
-    @NotNull
-    @Enumerated(value = EnumType.STRING)
-    private HierarchicalPosition position = HierarchicalPosition.INTERNAL;
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
+    @JsonbTransient
+    private List<AccessControl> accessControlList = new ArrayList<>();
 
     // ---------------------------------------------------------------------------------------------
     // getters and setters
     // ---------------------------------------------------------------------------------------------
+
     /**
      * @return the member ID
      */
@@ -170,6 +172,26 @@ public class TeamMember implements ColabEntity, WithWebsocketChannels {
      */
     public void setId(Long id) {
         this.id = id;
+    }
+
+    /**
+     * Get the tracking data
+     *
+     * @return tracking data
+     */
+    @Override
+    public Tracking getTrackingData() {
+        return trackingData;
+    }
+
+    /**
+     * Set tracking data
+     *
+     * @param trackingData new tracking data
+     */
+    @Override
+    public void setTrackingData(Tracking trackingData) {
+        this.trackingData = trackingData;
     }
 
     /**
@@ -188,6 +210,24 @@ public class TeamMember implements ColabEntity, WithWebsocketChannels {
      */
     public void setDisplayName(String displayName) {
         this.displayName = displayName;
+    }
+
+    /**
+     * Get the hierarchical position of the member
+     *
+     * @return member's position
+     */
+    public HierarchicalPosition getPosition() {
+        return position;
+    }
+
+    /**
+     * Set hierarchical position of member
+     *
+     * @param position new position
+     */
+    public void setPosition(HierarchicalPosition position) {
+        this.position = position;
     }
 
     /**
@@ -321,47 +361,10 @@ public class TeamMember implements ColabEntity, WithWebsocketChannels {
         this.accessControlList = accessControlList;
     }
 
-    /**
-     * Get the hierarchical position of the member
-     *
-     * @return member's position
-     */
-    public HierarchicalPosition getPosition() {
-        return position;
-    }
-
-    /**
-     * Set hierarchical position of member
-     *
-     * @param position new position
-     */
-    public void setPosition(HierarchicalPosition position) {
-        this.position = position;
-    }
-
-    /**
-     * Get the tracking data
-     *
-     * @return tracking data
-     */
-    @Override
-    public Tracking getTrackingData() {
-        return trackingData;
-    }
-
-    /**
-     * Set tracking data
-     *
-     * @param trackingData new tracking data
-     */
-    @Override
-    public void setTrackingData(Tracking trackingData) {
-        this.trackingData = trackingData;
-    }
-
     // ---------------------------------------------------------------------------------------------
     // concerning the whole class
     // ---------------------------------------------------------------------------------------------
+
     @Override
     public void merge(ColabEntity other) throws ColabMergeException {
         if (other instanceof TeamMember) {
@@ -378,18 +381,6 @@ public class TeamMember implements ColabEntity, WithWebsocketChannels {
             return this.project.getChannels();
         } else {
             return Set.of();
-        }
-    }
-
-    @Override
-    @JsonbTransient
-    public Conditions.Condition getCreateCondition() {
-        if (this.user != null && this.project != null) {
-            // any "internal" may invite somebody
-            return new Conditions.IsCurrentUserInternalToProject(project);
-        } else {
-            // anyone can read a pending invitation
-            return Conditions.alwaysTrue;
         }
     }
 
@@ -419,6 +410,18 @@ public class TeamMember implements ColabEntity, WithWebsocketChannels {
     }
 
     @Override
+    @JsonbTransient
+    public Conditions.Condition getCreateCondition() {
+        if (this.user != null && this.project != null) {
+            // any "internal" may invite somebody
+            return new Conditions.IsCurrentUserInternalToProject(project);
+        } else {
+            // anyone can read a pending invitation
+            return Conditions.alwaysTrue;
+        }
+    }
+
+    @Override
     public int hashCode() {
         return EntityHelper.hashCode(this);
     }
@@ -438,4 +441,5 @@ public class TeamMember implements ColabEntity, WithWebsocketChannels {
                 + projectId + "}";
         }
     }
+
 }

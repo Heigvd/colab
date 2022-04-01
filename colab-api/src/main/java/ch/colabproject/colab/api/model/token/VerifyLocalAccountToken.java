@@ -40,6 +40,10 @@ public class VerifyLocalAccountToken extends Token {
      */
     public static final String EMAIL_SUBJECT = "Please validate your co.LAB account";
 
+    // ---------------------------------------------------------------------------------------------
+    // fields
+    // ---------------------------------------------------------------------------------------------
+
     /**
      * The local account the token shall validate
      */
@@ -47,6 +51,10 @@ public class VerifyLocalAccountToken extends Token {
     @OneToOne
     @JsonbTransient
     private LocalAccount localAccount;
+
+    // ---------------------------------------------------------------------------------------------
+    // getters and setters
+    // ---------------------------------------------------------------------------------------------
 
     /**
      * Get the value of localAccount
@@ -65,6 +73,10 @@ public class VerifyLocalAccountToken extends Token {
     public void setLocalAccount(LocalAccount localAccount) {
         this.localAccount = localAccount;
     }
+
+    // ---------------------------------------------------------------------------------------------
+    // helpers
+    // ---------------------------------------------------------------------------------------------
 
     @Override
     public String getRedirectTo() {
@@ -93,9 +105,14 @@ public class VerifyLocalAccountToken extends Token {
             localAccount.getUser().getDisplayName(), link);
     }
 
+    // ---------------------------------------------------------------------------------------------
+    // concerning the whole class
+    // ---------------------------------------------------------------------------------------------
+
     @Override
     public String toString() {
         return "VerifyLocalAccountToken{" + "id=" + getId()
             + ", localAccount=" + localAccount + '}';
     }
+
 }

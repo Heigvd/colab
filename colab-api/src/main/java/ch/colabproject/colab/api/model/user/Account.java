@@ -56,6 +56,7 @@ public abstract class Account implements ColabEntity, WithWebsocketChannels {
     // ---------------------------------------------------------------------------------------------
     // fields
     // ---------------------------------------------------------------------------------------------
+
     /**
      * Account unique ID IDs are unique within all account class hierarchy
      */
@@ -64,7 +65,7 @@ public abstract class Account implements ColabEntity, WithWebsocketChannels {
     private Long id;
 
     /**
-     * creation &amp; modification tracking data
+     * creation + modification tracking data
      */
     @Embedded
     private Tracking trackingData;
@@ -77,21 +78,22 @@ public abstract class Account implements ColabEntity, WithWebsocketChannels {
     private User user;
 
     /**
+     * serialization sugar
+     */
+    @Transient
+    private Long userId;
+
+    /**
      * List of httpSession this account is using
      */
     @OneToMany(mappedBy = "account", cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
     @JsonbTransient
     private List<HttpSession> httpSessions = new ArrayList<>();
 
-    /**
-     * serialization sugar
-     */
-    @Transient
-    private Long userId;
-
     // ---------------------------------------------------------------------------------------------
     // getters and setters
     // ---------------------------------------------------------------------------------------------
+
     /**
      * @return account id
      */
@@ -107,6 +109,26 @@ public abstract class Account implements ColabEntity, WithWebsocketChannels {
      */
     public void setId(Long id) {
         this.id = id;
+    }
+
+    /**
+     * Get the tracking data
+     *
+     * @return tracking data
+     */
+    @Override
+    public Tracking getTrackingData() {
+        return trackingData;
+    }
+
+    /**
+     * Set tracking data
+     *
+     * @param trackingData new tracking data
+     */
+    @Override
+    public void setTrackingData(Tracking trackingData) {
+        this.trackingData = trackingData;
     }
 
     /**
@@ -165,29 +187,10 @@ public abstract class Account implements ColabEntity, WithWebsocketChannels {
         this.httpSessions = httpSessions;
     }
 
-    /**
-     * Get the tracking data
-     *
-     * @return tracking data
-     */
-    @Override
-    public Tracking getTrackingData() {
-        return trackingData;
-    }
-
-    /**
-     * Set tracking data
-     *
-     * @param trackingData new tracking data
-     */
-    @Override
-    public void setTrackingData(Tracking trackingData) {
-        this.trackingData = trackingData;
-    }
-
     // ---------------------------------------------------------------------------------------------
     // concerning the whole class
     // ---------------------------------------------------------------------------------------------
+
     @Override
     public Set<WebsocketChannel> getChannels() {
         if (this.user != null) {
@@ -195,13 +198,6 @@ public abstract class Account implements ColabEntity, WithWebsocketChannels {
         } else {
             return Set.of(new AdminChannel());
         }
-    }
-
-    @Override
-    @JsonbTransient
-    public Conditions.Condition getCreateCondition() {
-        // anyone can create an account
-        return Conditions.alwaysTrue;
     }
 
     @Override
@@ -224,6 +220,13 @@ public abstract class Account implements ColabEntity, WithWebsocketChannels {
     }
 
     @Override
+    @JsonbTransient
+    public Conditions.Condition getCreateCondition() {
+        // anyone can create an account
+        return Conditions.alwaysTrue;
+    }
+
+    @Override
     public int hashCode() {
         return EntityHelper.hashCode(this);
     }
@@ -233,4 +236,5 @@ public abstract class Account implements ColabEntity, WithWebsocketChannels {
     public boolean equals(Object obj) {
         return EntityHelper.equals(this, obj);
     }
+
 }

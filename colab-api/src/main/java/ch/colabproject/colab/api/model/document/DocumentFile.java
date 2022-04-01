@@ -31,12 +31,6 @@ public class DocumentFile extends Document {
     // ---------------------------------------------------------------------------------------------
 
     /**
-     * Size of the file in bytes
-     */
-    @NotNull
-    private Long fileSize = 0L;
-
-    /**
      * Original file name
      */
     private String fileName;
@@ -47,9 +41,45 @@ public class DocumentFile extends Document {
     @NotNull
     private String mimeType = MediaType.APPLICATION_OCTET_STREAM;
 
+    /**
+     * Size of the file in bytes
+     */
+    @NotNull
+    private Long fileSize = 0L;
+
     // ---------------------------------------------------------------------------------------------
     // getters and setters
     // ---------------------------------------------------------------------------------------------
+
+    /**
+     * @return the original name of the uploaded file or null if no file has been set
+     */
+    public String getFileName() {
+        return fileName;
+    }
+
+    /**
+     * @param fileName the original name of the uploaded file or null if no file has been set
+     */
+    public void setFileName(String fileName) {
+        this.fileName = fileName;
+    }
+
+    /**
+     * @return the mime type of the file or MediaType.APPLICATION_OCTET_STREAM if no file has been
+     *         set
+     */
+    public String getMimeType() {
+        return mimeType;
+    }
+
+    /**
+     * @param mimeType the mime type of the file or MediaType.APPLICATION_OCTET_STREAM if no file has been
+     *         set
+     */
+    public void setMimeType(String mimeType) {
+        this.mimeType = mimeType;
+    }
 
     /**
      * @return length in byte or 0 if no file has been set
@@ -58,43 +88,26 @@ public class DocumentFile extends Document {
         return fileSize;
     }
 
+    /**
+     * @param fileSize length in byte or 0 if no file has been set
+     */
     public void setFileSize(Long fileSize) {
         this.fileSize = fileSize;
     }
 
-    /**
-     * @return The original name of the uploaded file or null if no file has been set
-     */
-    public String getFileName() {
-        return fileName;
-    }
-
-    public void setFileName(String fileName) {
-        this.fileName = fileName;
-    }
-
-    /**
-     * @return The mime type of the file or MediaType.APPLICATION_OCTET_STREAM if no file has been set
-     */
-    public String getMimeType() {
-        return mimeType;
-    }
-
-    public void setMimeType(String mimeType) {
-        this.mimeType = mimeType;
-    }
     // ---------------------------------------------------------------------------------------------
     // concerning the whole class
     // ---------------------------------------------------------------------------------------------
 
     @Override
     public void merge(ColabEntity other) throws ColabMergeException {
+        super.merge(other);
+
         if (other instanceof DocumentFile) {
             DocumentFile o = (DocumentFile) other;
-            super.merge(o);
             this.setFileName(o.getFileName());
-            this.setFileSize(o.getFileSize());
             this.setMimeType(o.getMimeType());
+            this.setFileSize(o.getFileSize());
         } else {
             throw new ColabMergeException(this, other);
         }
