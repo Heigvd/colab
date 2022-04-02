@@ -6,7 +6,13 @@
  */
 
 import { css, cx } from '@emotion/css';
-import { faEdit, faEllipsisV, faPlus, faTrash } from '@fortawesome/free-solid-svg-icons';
+import {
+  faEdit,
+  faEllipsisV,
+  faPlus,
+  faTrash,
+  faUmbrella,
+} from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { AsyncThunk } from '@reduxjs/toolkit';
 import { Project } from 'colab-rest-client';
@@ -75,6 +81,16 @@ const ProjectDisplay = ({ project }: Props) => {
           buttonClassName={css({ marginLeft: '40px' })}
           entries={[
             {
+              value: 'Duplicate project',
+              label: (
+                <>
+                  {' '}
+                  <FontAwesomeIcon icon={faUmbrella} /> Duplicate project
+                </>
+              ),
+              action: () => dispatch(API.duplicateProject(project)),
+            },
+            {
               value: 'Delete project',
               label: (
                 <ConfirmDeleteModal
@@ -95,6 +111,9 @@ const ProjectDisplay = ({ project }: Props) => {
               ),
             },
           ]}
+          onSelect={val => {
+            val.action != null ? val.action() : navigate(val.value);
+          }}
         />
       </div>
       <div

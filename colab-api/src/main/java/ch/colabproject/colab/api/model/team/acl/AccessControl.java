@@ -261,6 +261,16 @@ public class AccessControl implements ColabEntity, WithWebsocketChannels {
     }
 
     @Override
+    public void duplicate(ColabEntity other) throws ColabMergeException {
+        if (other instanceof AccessControl) {
+            AccessControl o = (AccessControl) other;
+            this.setCairoLevel(o.getCairoLevel());
+        } else {
+            throw new ColabMergeException(this, other);
+        }
+    }
+
+    @Override
     public Set<WebsocketChannel> getChannels() {
         if (this.getCard() != null) {
             return this.getCard().getChannels();

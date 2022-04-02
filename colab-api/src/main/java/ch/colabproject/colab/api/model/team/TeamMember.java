@@ -376,6 +376,17 @@ public class TeamMember implements ColabEntity, WithWebsocketChannels {
     }
 
     @Override
+    public void duplicate(ColabEntity other) throws ColabMergeException {
+        if (other instanceof TeamMember) {
+            TeamMember t = (TeamMember) other;
+            this.setDisplayName(t.getDisplayName());
+            this.setPosition(t.getPosition());
+        } else {
+            throw new ColabMergeException(this, other);
+        }
+    }
+
+    @Override
     public Set<WebsocketChannel> getChannels() {
         if (this.project != null) {
             return this.project.getChannels();

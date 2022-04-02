@@ -16,6 +16,7 @@ import {
   Change,
   ColabClient,
   Document,
+  DuplicationParam,
   entityIs,
   HierarchicalPosition,
   HttpSession,
@@ -385,6 +386,25 @@ export const closeCurrentProject = createAsyncThunk(
     }
   },
 );
+
+// TODO sandra work in progress
+export const duplicateProject = createAsyncThunk('project/duplicate', async (project: Project) => {
+  if (project.id) {
+    const parameters: DuplicationParam = {
+      '@class': 'DuplicationParam',
+      withRoles: true,
+      withTeamMembers: true,
+      withCardTypes: true,
+      withCardsStructure: true,
+      withDeliverables: true,
+      withStickyNotes: true,
+      withActivityFlow: true,
+      makeOnlyCardTypeReferences: false,
+    };
+
+    return await restClient.ProjectRestEndpoint.duplicateProject(project.id, parameters);
+  }
+});
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Project team

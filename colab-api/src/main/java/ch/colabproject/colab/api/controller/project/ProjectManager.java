@@ -6,11 +6,13 @@
  */
 package ch.colabproject.colab.api.controller.project;
 
+import ch.colabproject.colab.api.controller.DuplicationHelper;
 import ch.colabproject.colab.api.controller.RequestManager;
 import ch.colabproject.colab.api.controller.card.CardManager;
 import ch.colabproject.colab.api.controller.card.CardTypeManager;
 import ch.colabproject.colab.api.controller.security.SecurityManager;
 import ch.colabproject.colab.api.controller.team.TeamManager;
+import ch.colabproject.colab.api.model.DuplicationParam;
 import ch.colabproject.colab.api.model.card.AbstractCardType;
 import ch.colabproject.colab.api.model.card.Card;
 import ch.colabproject.colab.api.model.card.CardContent;
@@ -163,6 +165,24 @@ public class ProjectManager {
         } catch (Exception ex) {
             return null;
         }
+    }
+
+    // *********************************************************************************************
+    // duplication
+    // *********************************************************************************************
+
+    /**
+     * Duplicate the given project with the given parameters to fine tune the duplication
+     * @param projectId the id of the project to duplicate
+     * @param params the parameters to fine tune the duplication
+     * @return the id of the new project
+     */
+    public Long duplicateProject(Long projectId, DuplicationParam params) {
+        Project originalProject = assertAndGetProject(projectId);
+
+        Project newProject = new DuplicationHelper(params).duplicateProject(originalProject);
+
+        return createProject(newProject).getId();
     }
 
     // *********************************************************************************************

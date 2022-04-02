@@ -29,4 +29,15 @@ public interface ColabEntity
      * @throws ColabMergeException if merging is not possible
      */
     void merge(ColabEntity other) throws ColabMergeException;
+
+    /**
+     * Duplicate this object according to values provided by other
+     *
+     * @param other object to take new values from
+     *
+     * @throws ColabMergeException if merging is not possible
+     */
+    default void duplicate(ColabEntity other) throws ColabMergeException {
+        merge(other);
+    }
 }
