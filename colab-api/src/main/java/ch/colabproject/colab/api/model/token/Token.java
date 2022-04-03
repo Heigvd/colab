@@ -56,6 +56,10 @@ public abstract class Token implements ColabEntity {
     /** token sequence name */
     public static final String TOKEN_SEQUENCE_NAME = "token_seq";
 
+    // ---------------------------------------------------------------------------------------------
+    // fields
+    // ---------------------------------------------------------------------------------------------
+
     /**
      * Project ID.
      */
@@ -65,7 +69,7 @@ public abstract class Token implements ColabEntity {
     private Long id;
 
     /**
-     * creation &amp; modification tracking data
+     * creation + modification tracking data
      */
     @Embedded
     private Tracking trackingData;
@@ -91,6 +95,7 @@ public abstract class Token implements ColabEntity {
      */
     @NotNull
     private Boolean authenticationRequired;
+
     /**
      * token expiration date. TODO: schedule deletion of outdated tokens
      */
@@ -98,40 +103,45 @@ public abstract class Token implements ColabEntity {
     @JsonbTypeSerializer(DateSerDe.class)
     private OffsetDateTime expirationDate;
 
+    // ---------------------------------------------------------------------------------------------
+    // getters and setters
+    // ---------------------------------------------------------------------------------------------
+
     /**
-     * Get the value of authenticationRequired
-     *
-     * @return the value of authenticationRequired
+     * @return the project ID
      */
-    public Boolean isAuthenticationRequired() {
-        return authenticationRequired;
+    @Override
+    public Long getId() {
+        return id;
     }
 
     /**
-     * Set the value of authenticationRequired
+     * Set id
      *
-     * @param authenticationRequired new value of authenticationRequired
+     * @param id id
      */
-    public void setAuthenticationRequired(Boolean authenticationRequired) {
-        this.authenticationRequired = authenticationRequired;
+    public void setId(Long id) {
+        this.id = id;
     }
 
     /**
-     * Get the value of hashMethod
+     * Get the tracking data
      *
-     * @return the value of hashMethod
+     * @return tracking data
      */
-    public HashMethod getHashMethod() {
-        return hashMethod;
+    @Override
+    public Tracking getTrackingData() {
+        return trackingData;
     }
 
     /**
-     * Set the value of hashMethod
+     * Set tracking data
      *
-     * @param hashMethod new value of hashMethod
+     * @param trackingData new tracking data
      */
-    public void setHashMethod(HashMethod hashMethod) {
-        this.hashMethod = hashMethod;
+    @Override
+    public void setTrackingData(Tracking trackingData) {
+        this.trackingData = trackingData;
     }
 
     /**
@@ -153,20 +163,39 @@ public abstract class Token implements ColabEntity {
     }
 
     /**
-     * @return the project ID
+     * Get the value of hashMethod
+     *
+     * @return the value of hashMethod
      */
-    @Override
-    public Long getId() {
-        return id;
+    public HashMethod getHashMethod() {
+        return hashMethod;
     }
 
     /**
-     * Set id
+     * Set the value of hashMethod
      *
-     * @param id id
+     * @param hashMethod new value of hashMethod
      */
-    public void setId(Long id) {
-        this.id = id;
+    public void setHashMethod(HashMethod hashMethod) {
+        this.hashMethod = hashMethod;
+    }
+
+    /**
+     * Get the value of authenticationRequired
+     *
+     * @return the value of authenticationRequired
+     */
+    public Boolean isAuthenticationRequired() {
+        return authenticationRequired;
+    }
+
+    /**
+     * Set the value of authenticationRequired
+     *
+     * @param authenticationRequired new value of authenticationRequired
+     */
+    public void setAuthenticationRequired(Boolean authenticationRequired) {
+        this.authenticationRequired = authenticationRequired;
     }
 
     /**
@@ -187,10 +216,9 @@ public abstract class Token implements ColabEntity {
         this.expirationDate = expirationDate;
     }
 
-    @Override
-    public void merge(ColabEntity other) throws ColabMergeException {
-        // nothing to do
-    }
+    // ---------------------------------------------------------------------------------------------
+    // helpers
+    // ---------------------------------------------------------------------------------------------
 
     /**
      * URL to redirect the user to once the token has been consumed.
@@ -225,26 +253,6 @@ public abstract class Token implements ColabEntity {
     public abstract String getSubject();
 
     /**
-     * Get the tracking data
-     *
-     * @return tracking data
-     */
-    @Override
-    public Tracking getTrackingData() {
-        return trackingData;
-    }
-
-    /**
-     * Set tracking data
-     *
-     * @param trackingData new tracking data
-     */
-    @Override
-    public void setTrackingData(Tracking trackingData) {
-        this.trackingData = trackingData;
-    }
-
-    /**
      * Check plain token against hashed persisted one
      *
      * @param plainToken the plain token to check
@@ -257,7 +265,7 @@ public abstract class Token implements ColabEntity {
     }
 
     /**
-     * Check is the token is outdate. A token without exipirationDate is never outdated.
+     * Check is the token is outdated. A token without exipirationDate is never outdated.
      *
      * @return true if the token is outdated.
      */
@@ -267,6 +275,15 @@ public abstract class Token implements ColabEntity {
             return this.expirationDate.isBefore(OffsetDateTime.now());
         }
         return false;
+    }
+
+    // ---------------------------------------------------------------------------------------------
+    // concerning the whole class
+    // ---------------------------------------------------------------------------------------------
+
+    @Override
+    public void merge(ColabEntity other) throws ColabMergeException {
+        // nothing to do
     }
 
     @Override
@@ -290,4 +307,5 @@ public abstract class Token implements ColabEntity {
     public boolean equals(Object obj) {
         return EntityHelper.equals(this, obj);
     }
+
 }

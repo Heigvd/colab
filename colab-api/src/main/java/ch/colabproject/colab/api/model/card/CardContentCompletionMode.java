@@ -22,7 +22,7 @@ public enum CardContentCompletionMode {
      */
     AUTO,
     /**
-     * no completion at all (nop)
+     * no completion at all (no-op)
      */
     NO_OP;
 

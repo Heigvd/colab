@@ -46,6 +46,10 @@ public class InvitationToken extends Token {
      */
     public static final String EMAIL_SUBJECT = "Invitation to collaborate on a co.LAB project";
 
+    // ---------------------------------------------------------------------------------------------
+    // fields
+    // ---------------------------------------------------------------------------------------------
+
     /**
      * The member of the project
      */
@@ -63,6 +67,10 @@ public class InvitationToken extends Token {
      * email address to send the invitation to
      */
     private String recipient;
+
+    // ---------------------------------------------------------------------------------------------
+    // getters and setters
+    // ---------------------------------------------------------------------------------------------
 
     /**
      * Get the teamMemebr for which the invitation is pending.
@@ -118,6 +126,10 @@ public class InvitationToken extends Token {
         this.recipient = recipient;
     }
 
+    // ---------------------------------------------------------------------------------------------
+    // helpers
+    // ---------------------------------------------------------------------------------------------
+
     @Override
     public String getRedirectTo() {
         if (this.teamMember != null && this.teamMember.getUser() != null) {
@@ -146,19 +158,6 @@ public class InvitationToken extends Token {
         }
     }
 
-    /**
-     * If team member is set, return the associated project.
-     *
-     * @return the project
-     */
-    @JsonbTransient
-    private Project getProject() {
-        if (teamMember != null) {
-            return teamMember.getProject();
-        }
-        return null;
-    }
-
     @Override
     public String getSubject() {
         return EMAIL_SUBJECT;
@@ -178,6 +177,23 @@ public class InvitationToken extends Token {
             sender != null ? sender : "Someone", theProject, link);
     }
 
+    // ---------------------------------------------------------------------------------------------
+    // concerning the whole class
+    // ---------------------------------------------------------------------------------------------
+
+    /**
+     * If team member is set, return the associated project.
+     *
+     * @return the project
+     */
+    @JsonbTransient
+    private Project getProject() {
+        if (teamMember != null) {
+            return teamMember.getProject();
+        }
+        return null;
+    }
+
     @Override
     @JsonbTransient
     public Conditions.Condition getCreateCondition() {
@@ -188,4 +204,5 @@ public class InvitationToken extends Token {
     public String toString() {
         return "InvitationToken{" + "id=" + getId() + '}';
     }
+
 }

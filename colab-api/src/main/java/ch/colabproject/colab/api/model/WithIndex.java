@@ -22,4 +22,5 @@ public interface WithIndex {
      * @param index the index to set
      */
     void setIndex(int index);
+
 }

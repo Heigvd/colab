@@ -33,9 +33,6 @@ import javax.persistence.Transient;
     query = "SELECT ctr.target.id FROM CardTypeRef ctr WHERE ctr.id IN :initIds")
 public class CardTypeRef extends AbstractCardType {
 
-    /**
-     * Serial version UID
-     */
     private static final long serialVersionUID = 1L;
 
     // ---------------------------------------------------------------------------------------------
@@ -134,4 +131,5 @@ public class CardTypeRef extends AbstractCardType {
             + "id=" + getId()
             + ", targetId=" + targetId + '}';
     }
+
 }

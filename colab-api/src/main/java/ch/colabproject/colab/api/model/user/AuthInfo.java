@@ -75,11 +75,12 @@ public class AuthInfo implements WithJsonDiscriminator {
     }
 
     /**
-     * set optional hash (hasehd with nextClientMethod and nextHash)
+     * set optional hash (hashed with nextClientMethod and nextHash)
      *
      * @param optionalHash hash
      */
     public void setOptionalHash(String optionalHash) {
         this.optionalHash = optionalHash;
     }
+
 }

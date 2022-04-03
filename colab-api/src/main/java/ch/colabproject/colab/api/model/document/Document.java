@@ -61,10 +61,10 @@ import javax.persistence.Transient;
 public abstract class Document
     implements ColabEntity, WithWebsocketChannels, WithIndex, StickyNoteSourceable {
 
+    private static final long serialVersionUID = 1L;
+
     /** Name of the document/resource sequence */
     public static final String DOCUMENT_SEQUENCE_NAME = "document_seq";
-
-    private static final long serialVersionUID = 1L;
 
     // ---------------------------------------------------------------------------------------------
     // fields
@@ -77,7 +77,7 @@ public abstract class Document
     protected Long id;
 
     /**
-     * creation &amp; modification tracking data
+     * creation + modification tracking data
      */
     @Embedded
     private Tracking trackingData;
@@ -136,6 +136,26 @@ public abstract class Document
      */
     public void setId(Long id) {
         this.id = id;
+    }
+
+    /**
+     * Get the tracking data
+     *
+     * @return tracking data
+     */
+    @Override
+    public Tracking getTrackingData() {
+        return trackingData;
+    }
+
+    /**
+     * Set tracking data
+     *
+     * @param trackingData new tracking data
+     */
+    @Override
+    public void setTrackingData(Tracking trackingData) {
+        this.trackingData = trackingData;
     }
 
     /**
@@ -247,26 +267,6 @@ public abstract class Document
         this.stickyNoteLinksAsSrc = stickyNoteLinksAsSrc;
     }
 
-    /**
-     * Get the tracking data
-     *
-     * @return tracking data
-     */
-    @Override
-    public Tracking getTrackingData() {
-        return trackingData;
-    }
-
-    /**
-     * Set tracking data
-     *
-     * @param trackingData new tracking data
-     */
-    @Override
-    public void setTrackingData(Tracking trackingData) {
-        this.trackingData = trackingData;
-    }
-
     // ---------------------------------------------------------------------------------------------
     // concerning the whole class
     // ---------------------------------------------------------------------------------------------
@@ -301,6 +301,20 @@ public abstract class Document
     }
 
     @Override
+    public Set<WebsocketChannel> getChannels() {
+        if (this.owningCardContent != null) {
+            // The document is a deliverable of a card content
+            return this.owningCardContent.getChannels();
+        } else if (this.owningResource != null) {
+            // The document is part of a resource
+            return this.owningResource.getChannels();
+        } else {
+            // such an orphan shouldn't exist...
+            return Set.of();
+        }
+    }
+
+    @Override
     @JsonbTransient
     public Conditions.Condition getReadCondition() {
         if (this.owningCardContent != null) {
@@ -326,20 +340,6 @@ public abstract class Document
         } else {
             // such an orphan shouldn't exist...
             return Conditions.defaultForOrphan;
-        }
-    }
-
-    @Override
-    public Set<WebsocketChannel> getChannels() {
-        if (this.owningCardContent != null) {
-            // The document is a deliverable of a card content
-            return this.owningCardContent.getChannels();
-        } else if (this.owningResource != null) {
-            // The document is part of a resource
-            return this.owningResource.getChannels();
-        } else {
-            // such an orphan shouldn't exist...
-            return Set.of();
         }
     }
 

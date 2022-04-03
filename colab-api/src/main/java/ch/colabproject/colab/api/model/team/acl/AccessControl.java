@@ -51,6 +51,7 @@ public class AccessControl implements ColabEntity, WithWebsocketChannels {
     // ---------------------------------------------------------------------------------------------
     // fields
     // ---------------------------------------------------------------------------------------------
+
     /**
      * Project ID
      */
@@ -59,24 +60,10 @@ public class AccessControl implements ColabEntity, WithWebsocketChannels {
     private Long id;
 
     /**
-     * creation &amp; modification tracking data
+     * creation + modification tracking data
      */
     @Embedded
     private Tracking trackingData;
-
-    /**
-     * The role this access control is for
-     */
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JsonbTransient
-    private TeamRole role;
-
-    /**
-     * The member this access control is for
-     */
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JsonbTransient
-    private TeamMember member;
 
     /**
      * CAIRO level (RACI + out_of_the_loop)
@@ -93,9 +80,24 @@ public class AccessControl implements ColabEntity, WithWebsocketChannels {
     @JsonbTransient
     private Card card;
 
-// ---------------------------------------------------------------------------------------------
+    /**
+     * The member this access control is for
+     */
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JsonbTransient
+    private TeamMember member;
+
+    /**
+     * The role this access control is for
+     */
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JsonbTransient
+    private TeamRole role;
+
+    // ---------------------------------------------------------------------------------------------
     // getters and setters
     // ---------------------------------------------------------------------------------------------
+
     /**
      * @return the project ID
      */
@@ -109,6 +111,75 @@ public class AccessControl implements ColabEntity, WithWebsocketChannels {
      */
     public void setId(Long id) {
         this.id = id;
+    }
+
+    /**
+     * Get the tracking data
+     *
+     * @return tracking data
+     */
+    @Override
+    public Tracking getTrackingData() {
+        return trackingData;
+    }
+
+    /**
+     * Set tracking data
+     *
+     * @param trackingData new tracking data
+     */
+    @Override
+    public void setTrackingData(Tracking trackingData) {
+        this.trackingData = trackingData;
+    }
+
+    /**
+     * Get the value of InvolvementLevel
+     *
+     * @return the value of InvolvementLevel
+     */
+    public InvolvementLevel getCairoLevel() {
+        return cairoLevel;
+    }
+
+    /**
+     * Set the value of InvolvementLevel
+     *
+     * @param cairoLevel new value of InvolvementLevel
+     */
+    public void setCairoLevel(InvolvementLevel cairoLevel) {
+        this.cairoLevel = cairoLevel;
+    }
+
+    /**
+     * Get the card
+     *
+     * @return the card
+     */
+    public Card getCard() {
+        return card;
+    }
+
+    /**
+     * Set the card
+     *
+     * @param card the card
+     */
+    public void setCard(Card card) {
+        this.card = card;
+    }
+
+    /**
+     * Get id of the card, for serialization only
+     *
+     * @return id of the card
+     */
+    public Long getCardId() {
+        if (this.card != null) {
+            return card.getId();
+        } else {
+            return null;
+        }
     }
 
     /**
@@ -180,81 +251,32 @@ public class AccessControl implements ColabEntity, WithWebsocketChannels {
         }
     }
 
-    /**
-     * Get the value of InvolvementLevel
-     *
-     * @return the value of InvolvementLevel
-     */
-    public InvolvementLevel getCairoLevel() {
-        return cairoLevel;
-    }
-
-    /**
-     * Set the value of InvolvementLevel
-     *
-     * @param cairoLevel new value of InvolvementLevel
-     */
-    public void setCairoLevel(InvolvementLevel cairoLevel) {
-        this.cairoLevel = cairoLevel;
-    }
-
-    /**
-     * Get the card
-     *
-     * @return the card
-     */
-    public Card getCard() {
-        return card;
-    }
-
-    /**
-     * Set the card
-     *
-     * @param card the card
-     */
-    public void setCard(Card card) {
-        this.card = card;
-    }
-
-    /**
-     * Get id of the card, for serialization only
-     *
-     * @return id of the card
-     */
-    public Long getCardId() {
-        if (this.card != null) {
-            return card.getId();
-        } else {
-            return null;
-        }
-    }
-
-    /**
-     * Get the tracking data
-     *
-     * @return tracking data
-     */
-    @Override
-    public Tracking getTrackingData() {
-        return trackingData;
-    }
-
-    /**
-     * Set tracking data
-     *
-     * @param trackingData new tracking data
-     */
-    @Override
-    public void setTrackingData(Tracking trackingData) {
-        this.trackingData = trackingData;
-    }
-
     // ---------------------------------------------------------------------------------------------
     // concerning the whole class
     // ---------------------------------------------------------------------------------------------
+
     @Override
     public void merge(ColabEntity other) throws ColabMergeException {
         // no-op
+    }
+
+    @Override
+    public void duplicate(ColabEntity other) throws ColabMergeException {
+        if (other instanceof AccessControl) {
+            AccessControl o = (AccessControl) other;
+            this.setCairoLevel(o.getCairoLevel());
+        } else {
+            throw new ColabMergeException(this, other);
+        }
+    }
+
+    @Override
+    public Set<WebsocketChannel> getChannels() {
+        if (this.getCard() != null) {
+            return this.getCard().getChannels();
+        } else {
+            return Set.of();
+        }
     }
 
     @Override
@@ -276,12 +298,4 @@ public class AccessControl implements ColabEntity, WithWebsocketChannels {
         }
     }
 
-    @Override
-    public Set<WebsocketChannel> getChannels() {
-        if (this.getCard() != null) {
-            return this.getCard().getChannels();
-        } else {
-            return Set.of();
-        }
-    }
 }

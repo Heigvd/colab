@@ -64,6 +64,7 @@ public class User implements ColabEntity, WithWebsocketChannels {
     // ---------------------------------------------------------------------------------------------
     // fields
     // ---------------------------------------------------------------------------------------------
+
     /**
      * User unique id
      */
@@ -73,7 +74,7 @@ public class User implements ColabEntity, WithWebsocketChannels {
     private Long id;
 
     /**
-     * creation &amp; modification tracking data
+     * creation + modification tracking data
      */
     @Embedded
     private Tracking trackingData;
@@ -82,20 +83,6 @@ public class User implements ColabEntity, WithWebsocketChannels {
      * is the user administrator ?
      */
     private boolean isAdmin;
-
-    /**
-     * List of accounts the user can authenticate with
-     */
-    @OneToMany(mappedBy = "user", cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
-    @JsonbTransient
-    private List<Account> accounts = new ArrayList<>();
-
-    /**
-     * List of teams the user is part of
-     */
-    @OneToMany(mappedBy = "user", cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
-    @JsonbTransient
-    private List<TeamMember> teamMembers = new ArrayList<>();
 
     /**
      * persisted last-activity date
@@ -139,6 +126,24 @@ public class User implements ColabEntity, WithWebsocketChannels {
     private String username;
 
     /**
+     * List of accounts the user can authenticate with
+     */
+    @OneToMany(mappedBy = "user", cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
+    @JsonbTransient
+    private List<Account> accounts = new ArrayList<>();
+
+    /**
+     * List of teams the user is part of
+     */
+    @OneToMany(mappedBy = "user", cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
+    @JsonbTransient
+    private List<TeamMember> teamMembers = new ArrayList<>();
+
+    // ---------------------------------------------------------------------------------------------
+    // getters and setters
+    // ---------------------------------------------------------------------------------------------
+
+    /**
      * @return Id of the user
      */
     @Override
@@ -156,6 +161,26 @@ public class User implements ColabEntity, WithWebsocketChannels {
     }
 
     /**
+     * Get the tracking data
+     *
+     * @return tracking data
+     */
+    @Override
+    public Tracking getTrackingData() {
+        return trackingData;
+    }
+
+    /**
+     * Set tracking data
+     *
+     * @param trackingData new tracking data
+     */
+    @Override
+    public void setTrackingData(Tracking trackingData) {
+        this.trackingData = trackingData;
+    }
+
+    /**
      * @return the isAdmin
      */
     public boolean isAdmin() {
@@ -167,40 +192,6 @@ public class User implements ColabEntity, WithWebsocketChannels {
      */
     public void setAdmin(boolean isAdmin) {
         this.isAdmin = isAdmin;
-    }
-
-    /**
-     * @return user accounts
-     */
-    public List<Account> getAccounts() {
-        return accounts;
-    }
-
-    /**
-     * Set user accounts
-     *
-     * @param accounts account list
-     */
-    public void setAccounts(List<Account> accounts) {
-        this.accounts = accounts;
-    }
-
-    /**
-     * get team members
-     *
-     * @return members
-     */
-    public List<TeamMember> getTeamMembers() {
-        return teamMembers;
-    }
-
-    /**
-     * Set team members
-     *
-     * @param teamMembers list of members
-     */
-    public void setTeamMembers(List<TeamMember> teamMembers) {
-        this.teamMembers = teamMembers;
     }
 
     /**
@@ -329,28 +320,43 @@ public class User implements ColabEntity, WithWebsocketChannels {
     }
 
     /**
-     * Get the tracking data
-     *
-     * @return tracking data
+     * @return user accounts
      */
-    @Override
-    public Tracking getTrackingData() {
-        return trackingData;
+    public List<Account> getAccounts() {
+        return accounts;
     }
 
     /**
-     * Set tracking data
+     * Set user accounts
      *
-     * @param trackingData new tracking data
+     * @param accounts account list
      */
-    @Override
-    public void setTrackingData(Tracking trackingData) {
-        this.trackingData = trackingData;
+    public void setAccounts(List<Account> accounts) {
+        this.accounts = accounts;
+    }
+
+    /**
+     * get team members
+     *
+     * @return members
+     */
+    public List<TeamMember> getTeamMembers() {
+        return teamMembers;
+    }
+
+    /**
+     * Set team members
+     *
+     * @param teamMembers list of members
+     */
+    public void setTeamMembers(List<TeamMember> teamMembers) {
+        this.teamMembers = teamMembers;
     }
 
     // ---------------------------------------------------------------------------------------------
     // helpers
     // ---------------------------------------------------------------------------------------------
+
     /**
      * get most preferred name to display.
      *
@@ -380,6 +386,7 @@ public class User implements ColabEntity, WithWebsocketChannels {
     // ---------------------------------------------------------------------------------------------
     // init
     // ---------------------------------------------------------------------------------------------
+
     /**
      * Set lastSeenAt to now
      */
@@ -390,9 +397,7 @@ public class User implements ColabEntity, WithWebsocketChannels {
     // ---------------------------------------------------------------------------------------------
     // concerning the whole class
     // ---------------------------------------------------------------------------------------------
-    /**
-     * {@inheritDoc }
-     */
+
     @Override
     public void merge(ColabEntity other) throws ColabMergeException {
         if (other instanceof User) {
@@ -404,17 +409,6 @@ public class User implements ColabEntity, WithWebsocketChannels {
         } else {
             throw new ColabMergeException(this, other);
         }
-    }
-
-    @Override
-    public int hashCode() {
-        return EntityHelper.hashCode(this);
-    }
-
-    @Override
-    @SuppressWarnings("EqualsWhichDoesntCheckParameterClass")
-    public boolean equals(Object obj) {
-        return EntityHelper.equals(this, obj);
     }
 
     /**
@@ -442,13 +436,6 @@ public class User implements ColabEntity, WithWebsocketChannels {
 
     @Override
     @JsonbTransient
-    public Conditions.Condition getCreateCondition() {
-        // anyone can create a user
-        return Conditions.alwaysTrue;
-    }
-
-    @Override
-    @JsonbTransient
     public Conditions.Condition getReadCondition() {
         return new Conditions.Or(
             // unauthenticated users shall read user data to authenticate
@@ -464,7 +451,26 @@ public class User implements ColabEntity, WithWebsocketChannels {
     }
 
     @Override
+    @JsonbTransient
+    public Conditions.Condition getCreateCondition() {
+        // anyone can create a user
+        return Conditions.alwaysTrue;
+    }
+
+    @Override
+    public int hashCode() {
+        return EntityHelper.hashCode(this);
+    }
+
+    @Override
+    @SuppressWarnings("EqualsWhichDoesntCheckParameterClass")
+    public boolean equals(Object obj) {
+        return EntityHelper.equals(this, obj);
+    }
+
+    @Override
     public String toString() {
         return "User{" + "id=" + id + ", isAdmin=" + isAdmin + ", username=" + username + '}';
     }
+
 }

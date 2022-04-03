@@ -199,7 +199,7 @@ public class Resource extends AbstractResource {
     }
 
     // ---------------------------------------------------------------------------------------------
-    // concerning the whole class
+    // helpers
     // ---------------------------------------------------------------------------------------------
 
     @Override
@@ -212,11 +212,16 @@ public class Resource extends AbstractResource {
         return List.of(this);
     }
 
+    // ---------------------------------------------------------------------------------------------
+    // concerning the whole class
+    // ---------------------------------------------------------------------------------------------
+
     @Override
     public void merge(ColabEntity other) throws ColabMergeException {
+        super.merge(other);
+
         if (other instanceof Resource) {
             Resource o = (Resource) other;
-            super.merge(o);
             this.setTitle(o.getTitle());
             this.setPublished(o.isPublished());
             this.setRequestingForGlory(o.isRequestingForGlory());

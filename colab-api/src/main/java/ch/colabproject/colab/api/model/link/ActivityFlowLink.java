@@ -42,13 +42,10 @@ import javax.validation.constraints.NotNull;
 )
 public class ActivityFlowLink implements ColabEntity, WithWebsocketChannels {
 
+    private static final long serialVersionUID = 1L;
+
     /** Link sequence name */
     public static final String LINK_SEQUENCE_NAME = "link_seq";
-
-    /**
-     * Serial version UID
-     */
-    private static final long serialVersionUID = 1L;
 
     // ---------------------------------------------------------------------------------------------
     // fields
@@ -62,7 +59,7 @@ public class ActivityFlowLink implements ColabEntity, WithWebsocketChannels {
     private Long id;
 
     /**
-     * creation &amp; modification tracking data
+     * creation + modification tracking data
      */
     @Embedded
     private Tracking trackingData;
@@ -111,6 +108,26 @@ public class ActivityFlowLink implements ColabEntity, WithWebsocketChannels {
      */
     public void setId(Long id) {
         this.id = id;
+    }
+
+    /**
+     * Get the tracking data
+     *
+     * @return tracking data
+     */
+    @Override
+    public Tracking getTrackingData() {
+        return trackingData;
+    }
+
+    /**
+     * Set tracking data
+     *
+     * @param trackingData new tracking data
+     */
+    @Override
+    public void setTrackingData(Tracking trackingData) {
+        this.trackingData = trackingData;
     }
 
     /**
@@ -185,39 +202,12 @@ public class ActivityFlowLink implements ColabEntity, WithWebsocketChannels {
         this.nextCardId = nextCardId;
     }
 
-    /**
-     * Get the tracking data
-     *
-     * @return tracking data
-     */
-    @Override
-    public Tracking getTrackingData() {
-        return trackingData;
-    }
-
-    /**
-     * Set tracking data
-     *
-     * @param trackingData new tracking data
-     */
-    @Override
-    public void setTrackingData(Tracking trackingData) {
-        this.trackingData = trackingData;
-    }
-
     // ---------------------------------------------------------------------------------------------
     // concerning the whole class
     // ---------------------------------------------------------------------------------------------
-    /**
-     * {@inheritDoc }
-     */
+
     @Override
     public void merge(ColabEntity other) throws ColabMergeException {
-//        if (other instanceof ActivityFlowLink) {
-        // ActivityFlowLink o = (ActivityFlowLink) other;
-        // previousCard is managed separately in the Manager
-        // nextCard is managed separately in the Manager
-//        } else {
         if (!(other instanceof ActivityFlowLink)) {
             throw new ColabMergeException(this, other);
         }

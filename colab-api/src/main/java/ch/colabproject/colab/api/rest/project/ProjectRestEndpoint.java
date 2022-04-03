@@ -9,6 +9,7 @@ package ch.colabproject.colab.api.rest.project;
 import ch.colabproject.colab.api.controller.project.ProjectManager;
 import ch.colabproject.colab.api.controller.team.TeamManager;
 import ch.colabproject.colab.api.exceptions.ColabMergeException;
+import ch.colabproject.colab.api.model.DuplicationParam;
 import ch.colabproject.colab.api.model.card.AbstractCardType;
 import ch.colabproject.colab.api.model.card.Card;
 import ch.colabproject.colab.api.model.card.CardContent;
@@ -138,6 +139,27 @@ public class ProjectRestEndpoint {
     public void deleteProject(@PathParam("id") Long id) {
         logger.debug("Delete project #{}", id);
         projectDao.deleteProject(id);
+    }
+
+    /**
+     * Duplicate the given project
+     *
+     * @param projectId the id of the project we want to duplicate
+     * @param params    the parameters to fine tune
+     *
+     * @return the id of the duplicated project
+     */
+    @PUT
+    @Path("copyProject/{id}")
+    public Long duplicateProject(@PathParam("id") Long projectId, DuplicationParam params) {
+        logger.debug("duplicate the project #{} with params {}", projectId, params);
+
+        DuplicationParam effectiveParams = params;
+        if (effectiveParams == null) {
+            effectiveParams = DuplicationParam.getProjectDefaultInstance();
+        }
+
+        return projectManager.duplicateProject(projectId, effectiveParams);
     }
 
     /**

@@ -18,6 +18,7 @@ import java.security.NoSuchAlgorithmException;
  */
 public enum InternalHashMethod {
 
+    /** SHA 256 */
     SHA_256 {
 
         @Override
@@ -27,6 +28,7 @@ public enum InternalHashMethod {
             return md.digest(bytes);
         }
     },
+    /** SHA 512 */
     SHA_512 {
         @Override
         public byte[] hash(String value) throws NoSuchAlgorithmException {
@@ -48,4 +50,5 @@ public enum InternalHashMethod {
      *
      */
     public abstract byte[] hash(String value) throws NoSuchAlgorithmException;
+
 }
