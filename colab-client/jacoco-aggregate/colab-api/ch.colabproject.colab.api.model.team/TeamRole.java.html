@@ -6,12 +6,12 @@
  */
 package ch.colabproject.colab.api.model.team;
 
+import static ch.colabproject.colab.api.model.team.TeamMember.TEAM_SEQUENCE_NAME;
 import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.model.ColabEntity;
 import ch.colabproject.colab.api.model.WithWebsocketChannels;
-import ch.colabproject.colab.api.model.team.acl.AccessControl;
 import ch.colabproject.colab.api.model.project.Project;
-import static ch.colabproject.colab.api.model.team.TeamMember.TEAM_SEQUENCE_NAME;
+import ch.colabproject.colab.api.model.team.acl.AccessControl;
 import ch.colabproject.colab.api.model.tools.EntityHelper;
 import ch.colabproject.colab.api.model.tracking.Tracking;
 import ch.colabproject.colab.api.security.permissions.Conditions;
@@ -47,7 +47,7 @@ import org.apache.commons.collections4.CollectionUtils;
 @Entity
 @Table(
     indexes = {
-        @Index(columnList = &quot;project_id&quot;),}
+        @Index(columnList = &quot;project_id&quot;), }
 )
 <span class="nc" id="L52">public class TeamRole implements ColabEntity, WithWebsocketChannels {</span>
 
@@ -64,7 +64,7 @@ import org.apache.commons.collections4.CollectionUtils;
     private Long id;
 
     /**
-     * creation &amp;amp; modification tracking data
+     * creation + modification tracking data
      */
     @Embedded
     private Tracking trackingData;
@@ -96,18 +96,18 @@ import org.apache.commons.collections4.CollectionUtils;
     private List&lt;TeamMember&gt; members = new ArrayList&lt;&gt;();
 
     /**
-     * List of access control relative to this role
-     */
-<span class="nc" id="L101">    @OneToMany(mappedBy = &quot;role&quot;)</span>
-    @JsonbTransient
-    private List&lt;AccessControl&gt; accessControl = new ArrayList&lt;&gt;();
-
-    /**
      * Id of the members, For deserialization only
      */
-<span class="nc" id="L108">    @NotNull</span>
+<span class="nc" id="L101">    @NotNull</span>
     @Transient
     private List&lt;Long&gt; memberIds = new ArrayList&lt;&gt;();
+
+    /**
+     * List of access control relative to this role
+     */
+<span class="nc" id="L108">    @OneToMany(mappedBy = &quot;role&quot;)</span>
+    @JsonbTransient
+    private List&lt;AccessControl&gt; accessControl = new ArrayList&lt;&gt;();
 
     // ---------------------------------------------------------------------------------------------
     // getters and setters
@@ -130,126 +130,13 @@ import org.apache.commons.collections4.CollectionUtils;
 <span class="nc" id="L130">    }</span>
 
     /**
-     * Get role name
-     *
-     * @return the name
-     */
-    public String getName() {
-<span class="nc" id="L138">        return name;</span>
-    }
-
-    /**
-     * Set the name
-     *
-     * @param name new role name
-     */
-    public void setName(String name) {
-<span class="nc" id="L147">        this.name = name;</span>
-<span class="nc" id="L148">    }</span>
-
-    /**
-     * @return the project
-     */
-    public Project getProject() {
-<span class="nc" id="L154">        return project;</span>
-    }
-
-    /**
-     * @param project the project
-     */
-    public void setProject(Project project) {
-<span class="nc" id="L161">        this.project = project;</span>
-<span class="nc" id="L162">    }</span>
-
-    /**
-     * get the project id. To be sent to client
-     *
-     * @return id of the project or null
-     */
-    public Long getProjectId() {
-<span class="nc bnc" id="L170" title="All 2 branches missed.">        if (this.project != null) {</span>
-<span class="nc" id="L171">            return this.project.getId();</span>
-        } else {
-<span class="nc" id="L173">            return projectId;</span>
-        }
-    }
-
-    /**
-     * set the project id. For serialization only
-     *
-     * @param id the id of the project
-     */
-    public void setProjectId(Long id) {
-<span class="nc" id="L183">        this.projectId = id;</span>
-<span class="nc" id="L184">    }</span>
-
-    /**
-     * Get members
-     *
-     * @return members
-     */
-    public List&lt;TeamMember&gt; getMembers() {
-<span class="nc" id="L192">        return members;</span>
-    }
-
-    /**
-     * Set the list of members
-     *
-     * @param members list of members
-     */
-    public void setMembers(List&lt;TeamMember&gt; members) {
-<span class="nc" id="L201">        this.members = members;</span>
-<span class="nc" id="L202">    }</span>
-
-    /**
-     * Get ids of the teammembers
-     *
-     * @return list of ids
-     */
-    public List&lt;Long&gt; getMemberIds() {
-<span class="nc bnc" id="L210" title="All 2 branches missed.">        if (!CollectionUtils.isEmpty(this.members)) {</span>
-<span class="nc" id="L211">            return members.stream()</span>
-<span class="nc" id="L212">                .map(member -&gt; member.getId())</span>
-<span class="nc" id="L213">                .collect(Collectors.toList());</span>
-        }
-<span class="nc" id="L215">        return memberIds;</span>
-    }
-
-    /**
-     * The the list of memberId
-     *
-     * @param memberIds id of members
-     */
-    public void setMemberIds(List&lt;Long&gt; memberIds) {
-<span class="nc" id="L224">        this.memberIds = memberIds;</span>
-<span class="nc" id="L225">    }</span>
-
-    /**
-     * Get the list of access control
-     *
-     * @return access control list
-     */
-    public List&lt;AccessControl&gt; getAccessControl() {
-<span class="nc" id="L233">        return accessControl;</span>
-    }
-
-    /**
-     * Set the list of access control
-     *
-     * @param accessControl new list of access control
-     */
-    public void setAccessControl(List&lt;AccessControl&gt; accessControl) {
-<span class="nc" id="L242">        this.accessControl = accessControl;</span>
-<span class="nc" id="L243">    }</span>
-
-    /**
      * Get the tracking data
      *
      * @return tracking data
      */
     @Override
     public Tracking getTrackingData() {
-<span class="nc" id="L252">        return trackingData;</span>
+<span class="nc" id="L139">        return trackingData;</span>
     }
 
     /**
@@ -259,7 +146,120 @@ import org.apache.commons.collections4.CollectionUtils;
      */
     @Override
     public void setTrackingData(Tracking trackingData) {
-<span class="nc" id="L262">        this.trackingData = trackingData;</span>
+<span class="nc" id="L149">        this.trackingData = trackingData;</span>
+<span class="nc" id="L150">    }</span>
+
+    /**
+     * Get role name
+     *
+     * @return the name
+     */
+    public String getName() {
+<span class="nc" id="L158">        return name;</span>
+    }
+
+    /**
+     * Set the name
+     *
+     * @param name new role name
+     */
+    public void setName(String name) {
+<span class="nc" id="L167">        this.name = name;</span>
+<span class="nc" id="L168">    }</span>
+
+    /**
+     * @return the project
+     */
+    public Project getProject() {
+<span class="nc" id="L174">        return project;</span>
+    }
+
+    /**
+     * @param project the project
+     */
+    public void setProject(Project project) {
+<span class="nc" id="L181">        this.project = project;</span>
+<span class="nc" id="L182">    }</span>
+
+    /**
+     * get the project id. To be sent to client
+     *
+     * @return id of the project or null
+     */
+    public Long getProjectId() {
+<span class="nc bnc" id="L190" title="All 2 branches missed.">        if (this.project != null) {</span>
+<span class="nc" id="L191">            return this.project.getId();</span>
+        } else {
+<span class="nc" id="L193">            return projectId;</span>
+        }
+    }
+
+    /**
+     * set the project id. For serialization only
+     *
+     * @param id the id of the project
+     */
+    public void setProjectId(Long id) {
+<span class="nc" id="L203">        this.projectId = id;</span>
+<span class="nc" id="L204">    }</span>
+
+    /**
+     * Get members
+     *
+     * @return members
+     */
+    public List&lt;TeamMember&gt; getMembers() {
+<span class="nc" id="L212">        return members;</span>
+    }
+
+    /**
+     * Set the list of members
+     *
+     * @param members list of members
+     */
+    public void setMembers(List&lt;TeamMember&gt; members) {
+<span class="nc" id="L221">        this.members = members;</span>
+<span class="nc" id="L222">    }</span>
+
+    /**
+     * Get ids of the teammembers
+     *
+     * @return list of ids
+     */
+    public List&lt;Long&gt; getMemberIds() {
+<span class="nc bnc" id="L230" title="All 2 branches missed.">        if (!CollectionUtils.isEmpty(this.members)) {</span>
+<span class="nc" id="L231">            return members.stream()</span>
+<span class="nc" id="L232">                .map(member -&gt; member.getId())</span>
+<span class="nc" id="L233">                .collect(Collectors.toList());</span>
+        }
+<span class="nc" id="L235">        return memberIds;</span>
+    }
+
+    /**
+     * The the list of memberId
+     *
+     * @param memberIds id of members
+     */
+    public void setMemberIds(List&lt;Long&gt; memberIds) {
+<span class="nc" id="L244">        this.memberIds = memberIds;</span>
+<span class="nc" id="L245">    }</span>
+
+    /**
+     * Get the list of access control
+     *
+     * @return access control list
+     */
+    public List&lt;AccessControl&gt; getAccessControl() {
+<span class="nc" id="L253">        return accessControl;</span>
+    }
+
+    /**
+     * Set the list of access control
+     *
+     * @param accessControl new list of access control
+     */
+    public void setAccessControl(List&lt;AccessControl&gt; accessControl) {
+<span class="nc" id="L262">        this.accessControl = accessControl;</span>
 <span class="nc" id="L263">    }</span>
 
     // ---------------------------------------------------------------------------------------------
@@ -320,5 +320,6 @@ import org.apache.commons.collections4.CollectionUtils;
     public String toString() {
 <span class="nc" id="L321">        return &quot;Role{&quot; + &quot;id=&quot; + id + &quot;, name=&quot; + name + &quot;, projectId=&quot; + projectId + '}';</span>
     }
+
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

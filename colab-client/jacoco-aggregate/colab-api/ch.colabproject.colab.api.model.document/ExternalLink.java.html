@@ -57,29 +57,30 @@ import javax.persistence.Entity;
 
     @Override
     public void merge(ColabEntity other) throws ColabMergeException {
-<span class="nc bnc" id="L60" title="All 2 branches missed.">        if (other instanceof ExternalLink) {</span>
-<span class="nc" id="L61">            ExternalLink o = (ExternalLink) other;</span>
-<span class="nc" id="L62">            super.merge(o);</span>
-<span class="nc" id="L63">            this.setUrl(o.getUrl());</span>
-<span class="nc" id="L64">        } else {</span>
-<span class="nc" id="L65">            throw new ColabMergeException(this, other);</span>
+<span class="nc" id="L60">        super.merge(other);</span>
+
+<span class="nc bnc" id="L62" title="All 2 branches missed.">        if (other instanceof ExternalLink) {</span>
+<span class="nc" id="L63">            ExternalLink o = (ExternalLink) other;</span>
+<span class="nc" id="L64">            this.setUrl(o.getUrl());</span>
+<span class="nc" id="L65">        } else {</span>
+<span class="nc" id="L66">            throw new ColabMergeException(this, other);</span>
         }
-<span class="nc" id="L67">    }</span>
+<span class="nc" id="L68">    }</span>
 
     @Override
     public int hashCode() {
-<span class="nc" id="L71">        return EntityHelper.hashCode(this);</span>
+<span class="nc" id="L72">        return EntityHelper.hashCode(this);</span>
     }
 
     @Override
     @SuppressWarnings(&quot;EqualsWhichDoesntCheckParameterClass&quot;)
     public boolean equals(Object obj) {
-<span class="nc" id="L77">        return EntityHelper.equals(this, obj);</span>
+<span class="nc" id="L78">        return EntityHelper.equals(this, obj);</span>
     }
 
     @Override
     public String toString() {
-<span class="nc" id="L82">        return &quot;ExternalDocLink{&quot; + super.toPartialString() + &quot;, url=&quot; + url + &quot;}&quot;;</span>
+<span class="nc" id="L83">        return &quot;ExternalDocLink{&quot; + super.toPartialString() + &quot;, url=&quot; + url + &quot;}&quot;;</span>
     }
 
 }

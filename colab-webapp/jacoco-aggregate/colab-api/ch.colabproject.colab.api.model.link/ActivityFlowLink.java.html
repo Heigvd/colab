@@ -42,13 +42,10 @@ import javax.validation.constraints.NotNull;
 )
 <span class="nc" id="L43">public class ActivityFlowLink implements ColabEntity, WithWebsocketChannels {</span>
 
+    private static final long serialVersionUID = 1L;
+
     /** Link sequence name */
     public static final String LINK_SEQUENCE_NAME = &quot;link_seq&quot;;
-
-    /**
-     * Serial version UID
-     */
-    private static final long serialVersionUID = 1L;
 
     // ---------------------------------------------------------------------------------------------
     // fields
@@ -62,7 +59,7 @@ import javax.validation.constraints.NotNull;
     private Long id;
 
     /**
-     * creation &amp;amp; modification tracking data
+     * creation + modification tracking data
      */
     @Embedded
     private Tracking trackingData;
@@ -103,87 +100,15 @@ import javax.validation.constraints.NotNull;
      */
     @Override
     public Long getId() {
-<span class="nc" id="L106">        return id;</span>
+<span class="nc" id="L103">        return id;</span>
     }
 
     /**
      * @param id the link id
      */
     public void setId(Long id) {
-<span class="nc" id="L113">        this.id = id;</span>
-<span class="nc" id="L114">    }</span>
-
-    /**
-     * @return the card to handle before
-     */
-    public Card getPreviousCard() {
-<span class="nc" id="L120">        return previousCard;</span>
-    }
-
-    /**
-     * @param previousCard the card to handle before
-     */
-    public void setPreviousCard(Card previousCard) {
-<span class="nc" id="L127">        this.previousCard = previousCard;</span>
-<span class="nc" id="L128">    }</span>
-
-    /**
-     * get the id of the card to handle before. To be sent to client
-     *
-     * @return the id of the card to handle before
-     */
-    public Long getPreviousCardId() {
-<span class="nc bnc" id="L136" title="All 2 branches missed.">        if (this.previousCard != null) {</span>
-<span class="nc" id="L137">            return this.previousCard.getId();</span>
-        } else {
-<span class="nc" id="L139">            return previousCardId;</span>
-        }
-    }
-
-    /**
-     * set the id of the card to handle before. For serialization only
-     *
-     * @param previousCardId the id of the card to handle before
-     */
-    public void setPreviousCardId(Long previousCardId) {
-<span class="nc" id="L149">        this.previousCardId = previousCardId;</span>
-<span class="nc" id="L150">    }</span>
-
-    /**
-     * @return the card to handle after
-     */
-    public Card getNextCard() {
-<span class="nc" id="L156">        return nextCard;</span>
-    }
-
-    /**
-     * @param nextCard the card to handle after
-     */
-    public void setNextCard(Card nextCard) {
-<span class="nc" id="L163">        this.nextCard = nextCard;</span>
-<span class="nc" id="L164">    }</span>
-
-    /**
-     * get the id of the card to handle after. To be sent to client
-     *
-     * @return the id of the card to handle after
-     */
-    public Long getNextCardId() {
-<span class="nc bnc" id="L172" title="All 2 branches missed.">        if (this.nextCard != null) {</span>
-<span class="nc" id="L173">            return this.nextCard.getId();</span>
-        } else {
-<span class="nc" id="L175">            return nextCardId;</span>
-        }
-    }
-
-    /**
-     * set the id of the card to handle after. For serialization only
-     *
-     * @param nextCardId the id of the card to handle after
-     */
-    public void setNextCardId(Long nextCardId) {
-<span class="nc" id="L185">        this.nextCardId = nextCardId;</span>
-<span class="nc" id="L186">    }</span>
+<span class="nc" id="L110">        this.id = id;</span>
+<span class="nc" id="L111">    }</span>
 
     /**
      * Get the tracking data
@@ -192,7 +117,7 @@ import javax.validation.constraints.NotNull;
      */
     @Override
     public Tracking getTrackingData() {
-<span class="nc" id="L195">        return trackingData;</span>
+<span class="nc" id="L120">        return trackingData;</span>
     }
 
     /**
@@ -202,36 +127,101 @@ import javax.validation.constraints.NotNull;
      */
     @Override
     public void setTrackingData(Tracking trackingData) {
-<span class="nc" id="L205">        this.trackingData = trackingData;</span>
-<span class="nc" id="L206">    }</span>
+<span class="nc" id="L130">        this.trackingData = trackingData;</span>
+<span class="nc" id="L131">    }</span>
+
+    /**
+     * @return the card to handle before
+     */
+    public Card getPreviousCard() {
+<span class="nc" id="L137">        return previousCard;</span>
+    }
+
+    /**
+     * @param previousCard the card to handle before
+     */
+    public void setPreviousCard(Card previousCard) {
+<span class="nc" id="L144">        this.previousCard = previousCard;</span>
+<span class="nc" id="L145">    }</span>
+
+    /**
+     * get the id of the card to handle before. To be sent to client
+     *
+     * @return the id of the card to handle before
+     */
+    public Long getPreviousCardId() {
+<span class="nc bnc" id="L153" title="All 2 branches missed.">        if (this.previousCard != null) {</span>
+<span class="nc" id="L154">            return this.previousCard.getId();</span>
+        } else {
+<span class="nc" id="L156">            return previousCardId;</span>
+        }
+    }
+
+    /**
+     * set the id of the card to handle before. For serialization only
+     *
+     * @param previousCardId the id of the card to handle before
+     */
+    public void setPreviousCardId(Long previousCardId) {
+<span class="nc" id="L166">        this.previousCardId = previousCardId;</span>
+<span class="nc" id="L167">    }</span>
+
+    /**
+     * @return the card to handle after
+     */
+    public Card getNextCard() {
+<span class="nc" id="L173">        return nextCard;</span>
+    }
+
+    /**
+     * @param nextCard the card to handle after
+     */
+    public void setNextCard(Card nextCard) {
+<span class="nc" id="L180">        this.nextCard = nextCard;</span>
+<span class="nc" id="L181">    }</span>
+
+    /**
+     * get the id of the card to handle after. To be sent to client
+     *
+     * @return the id of the card to handle after
+     */
+    public Long getNextCardId() {
+<span class="nc bnc" id="L189" title="All 2 branches missed.">        if (this.nextCard != null) {</span>
+<span class="nc" id="L190">            return this.nextCard.getId();</span>
+        } else {
+<span class="nc" id="L192">            return nextCardId;</span>
+        }
+    }
+
+    /**
+     * set the id of the card to handle after. For serialization only
+     *
+     * @param nextCardId the id of the card to handle after
+     */
+    public void setNextCardId(Long nextCardId) {
+<span class="nc" id="L202">        this.nextCardId = nextCardId;</span>
+<span class="nc" id="L203">    }</span>
 
     // ---------------------------------------------------------------------------------------------
     // concerning the whole class
     // ---------------------------------------------------------------------------------------------
-    /**
-     * {@inheritDoc }
-     */
+
     @Override
     public void merge(ColabEntity other) throws ColabMergeException {
-//        if (other instanceof ActivityFlowLink) {
-        // ActivityFlowLink o = (ActivityFlowLink) other;
-        // previousCard is managed separately in the Manager
-        // nextCard is managed separately in the Manager
-//        } else {
-<span class="nc bnc" id="L221" title="All 2 branches missed.">        if (!(other instanceof ActivityFlowLink)) {</span>
-<span class="nc" id="L222">            throw new ColabMergeException(this, other);</span>
+<span class="nc bnc" id="L211" title="All 2 branches missed.">        if (!(other instanceof ActivityFlowLink)) {</span>
+<span class="nc" id="L212">            throw new ColabMergeException(this, other);</span>
         }
-<span class="nc" id="L224">    }</span>
+<span class="nc" id="L214">    }</span>
 
     @Override
     public Set&lt;WebsocketChannel&gt; getChannels() {
-<span class="nc" id="L228">        return this.nextCard.getChannels();</span>
+<span class="nc" id="L218">        return this.nextCard.getChannels();</span>
     }
 
     @Override
     @JsonbTransient
     public Conditions.Condition getReadCondition() {
-<span class="nc" id="L234">        return new Conditions.Or(</span>
+<span class="nc" id="L224">        return new Conditions.Or(</span>
             new Conditions.HasCardReadRight(this.previousCard),
             new Conditions.HasCardReadRight(this.nextCard)
         );
@@ -240,26 +230,26 @@ import javax.validation.constraints.NotNull;
     // TODO what is best : And / Or ?
     @Override
     public Conditions.Condition getUpdateCondition() {
-<span class="nc" id="L243">        return new Conditions.Or(</span>
-<span class="nc" id="L244">            this.previousCard.getUpdateCondition(),</span>
-<span class="nc" id="L245">            this.nextCard.getUpdateCondition()</span>
+<span class="nc" id="L233">        return new Conditions.Or(</span>
+<span class="nc" id="L234">            this.previousCard.getUpdateCondition(),</span>
+<span class="nc" id="L235">            this.nextCard.getUpdateCondition()</span>
         );
     }
 
     @Override
     public int hashCode() {
-<span class="nc" id="L251">        return EntityHelper.hashCode(this);</span>
+<span class="nc" id="L241">        return EntityHelper.hashCode(this);</span>
     }
 
     @Override
     @SuppressWarnings(&quot;EqualsWhichDoesntCheckParameterClass&quot;)
     public boolean equals(Object obj) {
-<span class="nc" id="L257">        return EntityHelper.equals(this, obj);</span>
+<span class="nc" id="L247">        return EntityHelper.equals(this, obj);</span>
     }
 
     @Override
     public String toString() {
-<span class="nc" id="L262">        return &quot;ActivityFlowLink{&quot; + &quot;id=&quot; + id + &quot;, previousCardId=&quot; + previousCardId</span>
+<span class="nc" id="L252">        return &quot;ActivityFlowLink{&quot; + &quot;id=&quot; + id + &quot;, previousCardId=&quot; + previousCardId</span>
             + &quot;, nextCardId=&quot; + nextCardId + &quot;}&quot;;
     }
 

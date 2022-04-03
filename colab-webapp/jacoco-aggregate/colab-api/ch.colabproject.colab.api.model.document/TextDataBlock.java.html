@@ -176,41 +176,20 @@ import javax.validation.constraints.NotBlank;
     // ---------------------------------------------------------------------------------------------
     // concerning the whole class
     // ---------------------------------------------------------------------------------------------
-    @Override
-    public void merge(ColabEntity other) throws ColabMergeException {
-<span class="nc bnc" id="L181" title="All 2 branches missed.">        if (other instanceof TextDataBlock) {</span>
-<span class="nc" id="L182">            TextDataBlock o = (TextDataBlock) other;</span>
-<span class="nc" id="L183">            super.merge(other);</span>
-<span class="nc" id="L184">            this.setMimeType(o.getMimeType());</span>
-<span class="nc" id="L185">            this.setTextData(o.getTextData());</span>
-            // Note : the revision is handled by the LiveManager
-<span class="nc" id="L187">        } else {</span>
-<span class="nc" id="L188">            throw new ColabMergeException(this, other);</span>
-        }
-<span class="nc" id="L190">    }</span>
 
     @Override
-    public Set&lt;WebsocketChannel&gt; getChannels() {
-<span class="nc bnc" id="L194" title="All 2 branches missed.">        if (this.owningCardContent != null) {</span>
-            // The document is a deliverable of a card content
-<span class="nc" id="L196">            return this.owningCardContent.getChannels();</span>
-<span class="nc bnc" id="L197" title="All 2 branches missed.">        } else if (this.owningResource != null) {</span>
-            // The document is part of a resource
-<span class="nc" id="L199">            return this.owningResource.getChannels();</span>
-<span class="nc bnc" id="L200" title="All 2 branches missed.">        } else if (this.purposingCardType != null) {</span>
-            // It is the purpose of a card type
-<span class="nc" id="L202">            return this.purposingCardType.getChannels();</span>
-<span class="nc bnc" id="L203" title="All 2 branches missed.">        } else if (this.teasingResource != null) {</span>
-            // It is the teaser of a resource
-<span class="nc" id="L205">            return this.teasingResource.getChannels();</span>
-<span class="nc bnc" id="L206" title="All 2 branches missed.">        } else if (this.explainingStickyNoteLink != null) {</span>
-            // It is the explanation of a sticky note link
-<span class="nc" id="L208">            return this.explainingStickyNoteLink.getChannels();</span>
-        } else {
-            // such an orphan shouldn't exist...
-<span class="nc" id="L211">            return Set.of();</span>
+    public void merge(ColabEntity other) throws ColabMergeException {
+<span class="nc" id="L182">        super.merge(other);</span>
+
+<span class="nc bnc" id="L184" title="All 2 branches missed.">        if (other instanceof TextDataBlock) {</span>
+<span class="nc" id="L185">            TextDataBlock o = (TextDataBlock) other;</span>
+<span class="nc" id="L186">            this.setMimeType(o.getMimeType());</span>
+<span class="nc" id="L187">            this.setTextData(o.getTextData());</span>
+            // Note : the revision is handled by the LiveManager
+<span class="nc" id="L189">        } else {</span>
+<span class="nc" id="L190">            throw new ColabMergeException(this, other);</span>
         }
-    }
+<span class="nc" id="L192">    }</span>
 
     /**
      * Get the project it belongs to
@@ -220,24 +199,47 @@ import javax.validation.constraints.NotBlank;
     @Override
     @JsonbTransient
     public Project getProject() {
-<span class="nc bnc" id="L223" title="All 2 branches missed.">        if (this.getOwningCardContent() != null) {</span>
+<span class="nc bnc" id="L202" title="All 2 branches missed.">        if (this.getOwningCardContent() != null) {</span>
             // The document is a deliverable of a card content
-<span class="nc" id="L225">            return this.getOwningCardContent().getProject();</span>
-<span class="nc bnc" id="L226" title="All 2 branches missed.">        } else if (this.getOwningResource() != null) {</span>
+<span class="nc" id="L204">            return this.getOwningCardContent().getProject();</span>
+<span class="nc bnc" id="L205" title="All 2 branches missed.">        } else if (this.getOwningResource() != null) {</span>
             // The document is part of a resource
-<span class="nc" id="L228">            return this.getOwningResource().getProject();</span>
-<span class="nc bnc" id="L229" title="All 2 branches missed.">        } else if (this.purposingCardType != null) {</span>
+<span class="nc" id="L207">            return this.getOwningResource().getProject();</span>
+<span class="nc bnc" id="L208" title="All 2 branches missed.">        } else if (this.purposingCardType != null) {</span>
             // It is the purpose of a card type
-<span class="nc" id="L231">            return this.purposingCardType.getProject();</span>
-<span class="nc bnc" id="L232" title="All 2 branches missed.">        } else if (this.teasingResource != null) {</span>
+<span class="nc" id="L210">            return this.purposingCardType.getProject();</span>
+<span class="nc bnc" id="L211" title="All 2 branches missed.">        } else if (this.teasingResource != null) {</span>
             // It is the teaser of a resource
-<span class="nc" id="L234">            return this.teasingResource.getProject();</span>
-<span class="nc bnc" id="L235" title="All 2 branches missed.">        } else if (this.explainingStickyNoteLink != null) {</span>
+<span class="nc" id="L213">            return this.teasingResource.getProject();</span>
+<span class="nc bnc" id="L214" title="All 2 branches missed.">        } else if (this.explainingStickyNoteLink != null) {</span>
             // It is the explanation of a sticky note link
-<span class="nc" id="L237">            return this.explainingStickyNoteLink.getProject();</span>
+<span class="nc" id="L216">            return this.explainingStickyNoteLink.getProject();</span>
         } else {
             // such an orphan shouldn't exist...
-<span class="nc" id="L240">            return null;</span>
+<span class="nc" id="L219">            return null;</span>
+        }
+    }
+
+    @Override
+    public Set&lt;WebsocketChannel&gt; getChannels() {
+<span class="nc bnc" id="L225" title="All 2 branches missed.">        if (this.owningCardContent != null) {</span>
+            // The document is a deliverable of a card content
+<span class="nc" id="L227">            return this.owningCardContent.getChannels();</span>
+<span class="nc bnc" id="L228" title="All 2 branches missed.">        } else if (this.owningResource != null) {</span>
+            // The document is part of a resource
+<span class="nc" id="L230">            return this.owningResource.getChannels();</span>
+<span class="nc bnc" id="L231" title="All 2 branches missed.">        } else if (this.purposingCardType != null) {</span>
+            // It is the purpose of a card type
+<span class="nc" id="L233">            return this.purposingCardType.getChannels();</span>
+<span class="nc bnc" id="L234" title="All 2 branches missed.">        } else if (this.teasingResource != null) {</span>
+            // It is the teaser of a resource
+<span class="nc" id="L236">            return this.teasingResource.getChannels();</span>
+<span class="nc bnc" id="L237" title="All 2 branches missed.">        } else if (this.explainingStickyNoteLink != null) {</span>
+            // It is the explanation of a sticky note link
+<span class="nc" id="L239">            return this.explainingStickyNoteLink.getChannels();</span>
+        } else {
+            // such an orphan shouldn't exist...
+<span class="nc" id="L242">            return Set.of();</span>
         }
     }
 
@@ -292,18 +294,18 @@ import javax.validation.constraints.NotBlank;
 
     @Override
     public int hashCode() {
-<span class="nc" id="L295">        return EntityHelper.hashCode(this);</span>
+<span class="nc" id="L297">        return EntityHelper.hashCode(this);</span>
     }
 
     @Override
     @SuppressWarnings(&quot;EqualsWhichDoesntCheckParameterClass&quot;)
     public boolean equals(Object obj) {
-<span class="nc" id="L301">        return EntityHelper.equals(this, obj);</span>
+<span class="nc" id="L303">        return EntityHelper.equals(this, obj);</span>
     }
 
     @Override
     public String toString() {
-<span class="nc" id="L306">        return &quot;TextDataBlock{&quot; + super.toPartialString() + &quot;, mimeType=&quot; + mimeType + &quot;}&quot;;</span>
+<span class="nc" id="L308">        return &quot;TextDataBlock{&quot; + super.toPartialString() + &quot;, mimeType=&quot; + mimeType + &quot;}&quot;;</span>
     }
 
 }

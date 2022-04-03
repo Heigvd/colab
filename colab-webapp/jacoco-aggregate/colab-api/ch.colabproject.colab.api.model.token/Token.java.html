@@ -56,6 +56,10 @@ import javax.validation.constraints.NotNull;
     /** token sequence name */
     public static final String TOKEN_SEQUENCE_NAME = &quot;token_seq&quot;;
 
+    // ---------------------------------------------------------------------------------------------
+    // fields
+    // ---------------------------------------------------------------------------------------------
+
     /**
      * Project ID.
      */
@@ -65,7 +69,7 @@ import javax.validation.constraints.NotNull;
     private Long id;
 
     /**
-     * creation &amp;amp; modification tracking data
+     * creation + modification tracking data
      */
     @Embedded
     private Tracking trackingData;
@@ -91,6 +95,7 @@ import javax.validation.constraints.NotNull;
      */
     @NotNull
     private Boolean authenticationRequired;
+
     /**
      * token expiration date. TODO: schedule deletion of outdated tokens
      */
@@ -98,66 +103,16 @@ import javax.validation.constraints.NotNull;
     @JsonbTypeSerializer(DateSerDe.class)
     private OffsetDateTime expirationDate;
 
-    /**
-     * Get the value of authenticationRequired
-     *
-     * @return the value of authenticationRequired
-     */
-    public Boolean isAuthenticationRequired() {
-<span class="nc" id="L107">        return authenticationRequired;</span>
-    }
-
-    /**
-     * Set the value of authenticationRequired
-     *
-     * @param authenticationRequired new value of authenticationRequired
-     */
-    public void setAuthenticationRequired(Boolean authenticationRequired) {
-<span class="nc" id="L116">        this.authenticationRequired = authenticationRequired;</span>
-<span class="nc" id="L117">    }</span>
-
-    /**
-     * Get the value of hashMethod
-     *
-     * @return the value of hashMethod
-     */
-    public HashMethod getHashMethod() {
-<span class="nc" id="L125">        return hashMethod;</span>
-    }
-
-    /**
-     * Set the value of hashMethod
-     *
-     * @param hashMethod new value of hashMethod
-     */
-    public void setHashMethod(HashMethod hashMethod) {
-<span class="nc" id="L134">        this.hashMethod = hashMethod;</span>
-<span class="nc" id="L135">    }</span>
-
-    /**
-     * Get the value of hashedToken
-     *
-     * @return the value of hashedToken
-     */
-    public byte[] getHashedToken() {
-<span class="nc" id="L143">        return hashedToken;</span>
-    }
-
-    /**
-     * Set the value of hashedToken
-     *
-     * @param hashedToken new value of hashedToken
-     */
-    public void setHashedToken(byte[] hashedToken) {
-<span class="nc" id="L152">        this.hashedToken = hashedToken;</span>
-<span class="nc" id="L153">    }</span>
+    // ---------------------------------------------------------------------------------------------
+    // getters and setters
+    // ---------------------------------------------------------------------------------------------
 
     /**
      * @return the project ID
      */
     @Override
     public Long getId() {
-<span class="nc" id="L160">        return id;</span>
+<span class="nc" id="L115">        return id;</span>
     }
 
     /**
@@ -166,8 +121,82 @@ import javax.validation.constraints.NotNull;
      * @param id id
      */
     public void setId(Long id) {
-<span class="nc" id="L169">        this.id = id;</span>
-<span class="nc" id="L170">    }</span>
+<span class="nc" id="L124">        this.id = id;</span>
+<span class="nc" id="L125">    }</span>
+
+    /**
+     * Get the tracking data
+     *
+     * @return tracking data
+     */
+    @Override
+    public Tracking getTrackingData() {
+<span class="nc" id="L134">        return trackingData;</span>
+    }
+
+    /**
+     * Set tracking data
+     *
+     * @param trackingData new tracking data
+     */
+    @Override
+    public void setTrackingData(Tracking trackingData) {
+<span class="nc" id="L144">        this.trackingData = trackingData;</span>
+<span class="nc" id="L145">    }</span>
+
+    /**
+     * Get the value of hashedToken
+     *
+     * @return the value of hashedToken
+     */
+    public byte[] getHashedToken() {
+<span class="nc" id="L153">        return hashedToken;</span>
+    }
+
+    /**
+     * Set the value of hashedToken
+     *
+     * @param hashedToken new value of hashedToken
+     */
+    public void setHashedToken(byte[] hashedToken) {
+<span class="nc" id="L162">        this.hashedToken = hashedToken;</span>
+<span class="nc" id="L163">    }</span>
+
+    /**
+     * Get the value of hashMethod
+     *
+     * @return the value of hashMethod
+     */
+    public HashMethod getHashMethod() {
+<span class="nc" id="L171">        return hashMethod;</span>
+    }
+
+    /**
+     * Set the value of hashMethod
+     *
+     * @param hashMethod new value of hashMethod
+     */
+    public void setHashMethod(HashMethod hashMethod) {
+<span class="nc" id="L180">        this.hashMethod = hashMethod;</span>
+<span class="nc" id="L181">    }</span>
+
+    /**
+     * Get the value of authenticationRequired
+     *
+     * @return the value of authenticationRequired
+     */
+    public Boolean isAuthenticationRequired() {
+<span class="nc" id="L189">        return authenticationRequired;</span>
+    }
+
+    /**
+     * Set the value of authenticationRequired
+     *
+     * @param authenticationRequired new value of authenticationRequired
+     */
+    public void setAuthenticationRequired(Boolean authenticationRequired) {
+<span class="nc" id="L198">        this.authenticationRequired = authenticationRequired;</span>
+<span class="nc" id="L199">    }</span>
 
     /**
      * Get the value of expirationDate
@@ -175,7 +204,7 @@ import javax.validation.constraints.NotNull;
      * @return the value of expirationDate
      */
     public OffsetDateTime getExpirationDate() {
-<span class="nc" id="L178">        return expirationDate;</span>
+<span class="nc" id="L207">        return expirationDate;</span>
     }
 
     /**
@@ -184,13 +213,12 @@ import javax.validation.constraints.NotNull;
      * @param expirationDate new value of expirationDate
      */
     public void setExpirationDate(OffsetDateTime expirationDate) {
-<span class="nc" id="L187">        this.expirationDate = expirationDate;</span>
-<span class="nc" id="L188">    }</span>
+<span class="nc" id="L216">        this.expirationDate = expirationDate;</span>
+<span class="nc" id="L217">    }</span>
 
-    @Override
-    public void merge(ColabEntity other) throws ColabMergeException {
-        // nothing to do
-<span class="nc" id="L193">    }</span>
+    // ---------------------------------------------------------------------------------------------
+    // helpers
+    // ---------------------------------------------------------------------------------------------
 
     /**
      * URL to redirect the user to once the token has been consumed.
@@ -225,26 +253,6 @@ import javax.validation.constraints.NotNull;
     public abstract String getSubject();
 
     /**
-     * Get the tracking data
-     *
-     * @return tracking data
-     */
-    @Override
-    public Tracking getTrackingData() {
-<span class="nc" id="L234">        return trackingData;</span>
-    }
-
-    /**
-     * Set tracking data
-     *
-     * @param trackingData new tracking data
-     */
-    @Override
-    public void setTrackingData(Tracking trackingData) {
-<span class="nc" id="L244">        this.trackingData = trackingData;</span>
-<span class="nc" id="L245">    }</span>
-
-    /**
      * Check plain token against hashed persisted one
      *
      * @param plainToken the plain token to check
@@ -252,43 +260,53 @@ import javax.validation.constraints.NotNull;
      * @return true if there is a match
      */
     public boolean checkHash(String plainToken) {
-<span class="nc" id="L255">        byte[] submited = this.getHashMethod().hash(plainToken, SALT);</span>
-<span class="nc" id="L256">        return Arrays.equals(submited, this.getHashedToken());</span>
+<span class="nc" id="L263">        byte[] submited = this.getHashMethod().hash(plainToken, SALT);</span>
+<span class="nc" id="L264">        return Arrays.equals(submited, this.getHashedToken());</span>
     }
 
     /**
-     * Check is the token is outdate. A token without exipirationDate is never outdated.
+     * Check is the token is outdated. A token without exipirationDate is never outdated.
      *
      * @return true if the token is outdated.
      */
     @JsonbTransient
     public boolean isOutdated() {
-<span class="nc bnc" id="L266" title="All 2 branches missed.">        if (this.expirationDate != null) {</span>
-<span class="nc" id="L267">            return this.expirationDate.isBefore(OffsetDateTime.now());</span>
+<span class="nc bnc" id="L274" title="All 2 branches missed.">        if (this.expirationDate != null) {</span>
+<span class="nc" id="L275">            return this.expirationDate.isBefore(OffsetDateTime.now());</span>
         }
-<span class="nc" id="L269">        return false;</span>
+<span class="nc" id="L277">        return false;</span>
     }
+
+    // ---------------------------------------------------------------------------------------------
+    // concerning the whole class
+    // ---------------------------------------------------------------------------------------------
+
+    @Override
+    public void merge(ColabEntity other) throws ColabMergeException {
+        // nothing to do
+<span class="nc" id="L287">    }</span>
 
     @Override
     public Conditions.Condition getReadCondition() {
-<span class="nc" id="L274">        return Conditions.alwaysTrue;</span>
+<span class="nc" id="L291">        return Conditions.alwaysTrue;</span>
     }
 
     @Override
     public Conditions.Condition getUpdateCondition() {
         //TODO: decide what to do
-<span class="nc" id="L280">        return Conditions.alwaysTrue;</span>
+<span class="nc" id="L297">        return Conditions.alwaysTrue;</span>
     }
 
     @Override
     public int hashCode() {
-<span class="nc" id="L285">        return EntityHelper.hashCode(this);</span>
+<span class="nc" id="L302">        return EntityHelper.hashCode(this);</span>
     }
 
     @Override
     @SuppressWarnings(&quot;EqualsWhichDoesntCheckParameterClass&quot;)
     public boolean equals(Object obj) {
-<span class="nc" id="L291">        return EntityHelper.equals(this, obj);</span>
+<span class="nc" id="L308">        return EntityHelper.equals(this, obj);</span>
     }
+
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

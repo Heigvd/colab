@@ -18,21 +18,23 @@ import java.security.NoSuchAlgorithmException;
  */
 <span class="nc" id="L19">public enum InternalHashMethod {</span>
 
-<span class="nc" id="L21">    SHA_256 {</span>
+    /** SHA 256 */
+<span class="nc" id="L22">    SHA_256 {</span>
 
         @Override
         public byte[] hash(String value) throws NoSuchAlgorithmException {
-<span class="nc" id="L25">            byte[] bytes = value.getBytes(StandardCharsets.UTF_8);</span>
-<span class="nc" id="L26">            MessageDigest md = MessageDigest.getInstance(&quot;SHA-256&quot;);</span>
-<span class="nc" id="L27">            return md.digest(bytes);</span>
+<span class="nc" id="L26">            byte[] bytes = value.getBytes(StandardCharsets.UTF_8);</span>
+<span class="nc" id="L27">            MessageDigest md = MessageDigest.getInstance(&quot;SHA-256&quot;);</span>
+<span class="nc" id="L28">            return md.digest(bytes);</span>
         }
     },
-<span class="nc" id="L30">    SHA_512 {</span>
+    /** SHA 512 */
+<span class="nc" id="L32">    SHA_512 {</span>
         @Override
         public byte[] hash(String value) throws NoSuchAlgorithmException {
-<span class="nc" id="L33">            MessageDigest md = MessageDigest.getInstance(&quot;SHA-512&quot;);</span>
-<span class="nc" id="L34">            byte[] bytes = value.getBytes(StandardCharsets.UTF_8);</span>
-<span class="nc" id="L35">            return md.digest(bytes);</span>
+<span class="nc" id="L35">            MessageDigest md = MessageDigest.getInstance(&quot;SHA-512&quot;);</span>
+<span class="nc" id="L36">            byte[] bytes = value.getBytes(StandardCharsets.UTF_8);</span>
+<span class="nc" id="L37">            return md.digest(bytes);</span>
         }
 
     };
@@ -48,5 +50,6 @@ import java.security.NoSuchAlgorithmException;
      *
      */
     public abstract byte[] hash(String value) throws NoSuchAlgorithmException;
+
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

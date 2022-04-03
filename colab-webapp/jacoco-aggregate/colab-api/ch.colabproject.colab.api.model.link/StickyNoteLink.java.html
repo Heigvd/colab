@@ -63,14 +63,12 @@ import javax.validation.constraints.NotNull;
 )
 <span class="nc" id="L64">public class StickyNoteLink implements ColabEntity, WithWebsocketChannels {</span>
 
-    /**
-     * Serial version UID
-     */
     private static final long serialVersionUID = 1L;
 
     // ---------------------------------------------------------------------------------------------
     // fields
     // ---------------------------------------------------------------------------------------------
+
     /**
      * Link ID
      */
@@ -79,10 +77,29 @@ import javax.validation.constraints.NotNull;
     private Long id;
 
     /**
-     * creation &amp;amp; modification tracking data
+     * creation + modification tracking data
      */
     @Embedded
     private Tracking trackingData;
+
+    /**
+     * The short description
+     */
+    private String teaser;
+
+    /**
+     * The long description
+     */
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @NotNull
+    @JsonbTransient
+    private TextDataBlock explanation;
+
+    /**
+     * The id of the long description (serialization sugar)
+     */
+    @Transient
+    private Long explanationId;
 
     /**
      * The card, source of the sticky note
@@ -149,300 +166,24 @@ import javax.validation.constraints.NotNull;
     @Transient
     private Long destinationCardId;
 
-    /**
-     * The short description
-     */
-    private String teaser;
-
-    /**
-     * The long description
-     */
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @NotNull
-    @JsonbTransient
-    private TextDataBlock explanation;
-
-    /**
-     * The id of the long description (serialization sugar)
-     */
-    @Transient
-    private Long explanationId;
-
     // ---------------------------------------------------------------------------------------------
     // getters and setters
     // ---------------------------------------------------------------------------------------------
+
     /**
      * @return the link id
      */
     @Override
     public Long getId() {
-<span class="nc" id="L179">        return id;</span>
+<span class="nc" id="L178">        return id;</span>
     }
 
     /**
      * @param id the link id
      */
     public void setId(Long id) {
-<span class="nc" id="L186">        this.id = id;</span>
-<span class="nc" id="L187">    }</span>
-
-    /**
-     * @return the card, source of the sticky note
-     */
-    public Card getSrcCard() {
-<span class="nc" id="L193">        return srcCard;</span>
-    }
-
-    /**
-     * @param srcCard the card, source of the sticky note
-     */
-    public void setSrcCard(Card srcCard) {
-<span class="nc" id="L200">        this.srcCard = srcCard;</span>
-<span class="nc" id="L201">    }</span>
-
-    /**
-     * get the id of the source card. To be sent to client
-     *
-     * @return the id of source card
-     */
-    public Long getSrcCardId() {
-<span class="nc bnc" id="L209" title="All 2 branches missed.">        if (this.srcCard != null) {</span>
-<span class="nc" id="L210">            return this.srcCard.getId();</span>
-        } else {
-<span class="nc" id="L212">            return srcCardId;</span>
-        }
-    }
-
-    /**
-     * set the id of the source card. For serialization only
-     *
-     * @param srcCardId the id of the source card
-     */
-    public void setSrcCardId(Long srcCardId) {
-<span class="nc" id="L222">        this.srcCardId = srcCardId;</span>
-<span class="nc" id="L223">    }</span>
-
-    /**
-     * @return True if the source is a card
-     */
-    public boolean isSrcCard() {
-<span class="nc bnc" id="L229" title="All 4 branches missed.">        return this.srcCard != null || this.srcCardId != null;</span>
-    }
-
-    /**
-     * @return the card content, source of the sticky note
-     */
-    public CardContent getSrcCardContent() {
-<span class="nc" id="L236">        return srcCardContent;</span>
-    }
-
-    /**
-     * @param srcCardContent the card content, source of the sticky note
-     */
-    public void setSrcCardContent(CardContent srcCardContent) {
-<span class="nc" id="L243">        this.srcCardContent = srcCardContent;</span>
-<span class="nc" id="L244">    }</span>
-
-    /**
-     * get the id of the source card content. To be sent to client
-     *
-     * @return the id of source card content
-     */
-    public Long getSrcCardContentId() {
-<span class="nc bnc" id="L252" title="All 2 branches missed.">        if (this.srcCardContent != null) {</span>
-<span class="nc" id="L253">            return this.srcCardContent.getId();</span>
-        } else {
-<span class="nc" id="L255">            return srcCardContentId;</span>
-        }
-    }
-
-    /**
-     * set the id of the source card content. For serialization only
-     *
-     * @param srcCardContentId the id of the source card content
-     */
-    public void setSrcCardContentId(Long srcCardContentId) {
-<span class="nc" id="L265">        this.srcCardContentId = srcCardContentId;</span>
-<span class="nc" id="L266">    }</span>
-
-    /**
-     * @return True if the source is a card content
-     */
-    public boolean isSrcCardContent() {
-<span class="nc bnc" id="L272" title="All 4 branches missed.">        return this.srcCardContent != null || this.srcCardContentId != null;</span>
-    }
-
-    /**
-     * @return the resource / resource reference, source of the sticky note
-     */
-    public AbstractResource getSrcResourceOrRef() {
-<span class="nc" id="L279">        return srcResourceOrRef;</span>
-    }
-
-    /**
-     * @param srcResourceOrRef the resource / resource reference, source of the sticky note
-     */
-    public void setSrcResourceOrRef(AbstractResource srcResourceOrRef) {
-<span class="nc" id="L286">        this.srcResourceOrRef = srcResourceOrRef;</span>
-<span class="nc" id="L287">    }</span>
-
-    /**
-     * get the id of the source resource / resource reference. To be sent to client
-     *
-     * @return the id of source resource / resource reference
-     */
-    public Long getSrcResourceOrRefId() {
-<span class="nc bnc" id="L295" title="All 2 branches missed.">        if (this.srcResourceOrRef != null) {</span>
-<span class="nc" id="L296">            return this.srcResourceOrRef.getId();</span>
-        } else {
-<span class="nc" id="L298">            return srcResourceOrRefId;</span>
-        }
-    }
-
-    /**
-     * set the id of the source resource / resource reference. For serialization only
-     *
-     * @param srcResourceOrRefId the id of the source resource / resource reference
-     */
-    public void setSrcResourceOrRefId(Long srcResourceOrRefId) {
-<span class="nc" id="L308">        this.srcResourceOrRefId = srcResourceOrRefId;</span>
-<span class="nc" id="L309">    }</span>
-
-    /**
-     * @return True if the source is a resource / resource reference
-     */
-    public boolean isSrcResourceOrRef() {
-<span class="nc bnc" id="L315" title="All 4 branches missed.">        return this.srcResourceOrRef != null || this.srcResourceOrRefId != null;</span>
-    }
-
-    /**
-     * @return the document, source of the sticky note
-     */
-    public Document getSrcDocument() {
-<span class="nc" id="L322">        return srcDocument;</span>
-    }
-
-    /**
-     * @param srcDocument the Document, source of the sticky note
-     */
-    public void setSrcDocument(Document srcDocument) {
-<span class="nc" id="L329">        this.srcDocument = srcDocument;</span>
-<span class="nc" id="L330">    }</span>
-
-    /**
-     * get the id of the source document. To be sent to client
-     *
-     * @return the id of source document
-     */
-    public Long getSrcDocumentId() {
-<span class="nc bnc" id="L338" title="All 2 branches missed.">        if (this.srcDocument != null) {</span>
-<span class="nc" id="L339">            return this.srcDocument.getId();</span>
-        } else {
-<span class="nc" id="L341">            return srcDocumentId;</span>
-        }
-    }
-
-    /**
-     * set the id of the source document. For serialization only
-     *
-     * @param srcDocumentId the id of the source document
-     */
-    public void setSrcDocumentId(Long srcDocumentId) {
-<span class="nc" id="L351">        this.srcDocumentId = srcDocumentId;</span>
-<span class="nc" id="L352">    }</span>
-
-    /**
-     * @return True if the source is a document
-     */
-    public boolean isSrcDocument() {
-<span class="nc bnc" id="L358" title="All 4 branches missed.">        return this.srcDocument != null || this.srcDocumentId != null;</span>
-    }
-
-    /**
-     * @return the card where the information is useful
-     */
-    public Card getDestinationCard() {
-<span class="nc" id="L365">        return destinationCard;</span>
-    }
-
-    /**
-     * @param destinationCard the card where the information is useful
-     */
-    public void setDestinationCard(Card destinationCard) {
-<span class="nc" id="L372">        this.destinationCard = destinationCard;</span>
-<span class="nc" id="L373">    }</span>
-
-    /**
-     * get the id of the destination card. To be sent to client
-     *
-     * @return the id of destination card
-     */
-    public Long getDestinationCardId() {
-<span class="nc bnc" id="L381" title="All 2 branches missed.">        if (this.destinationCard != null) {</span>
-<span class="nc" id="L382">            return this.destinationCard.getId();</span>
-        } else {
-<span class="nc" id="L384">            return destinationCardId;</span>
-        }
-    }
-
-    /**
-     * set the id of the destination card. For serialization only
-     *
-     * @param destinationCardId the id of the destination card
-     */
-    public void setDestinationCardId(Long destinationCardId) {
-<span class="nc" id="L394">        this.destinationCardId = destinationCardId;</span>
-<span class="nc" id="L395">    }</span>
-
-    /**
-     * @return the short description
-     */
-    public String getTeaser() {
-<span class="nc" id="L401">        return teaser;</span>
-    }
-
-    /**
-     * @param teaser the short description
-     */
-    public void setTeaser(String teaser) {
-<span class="nc" id="L408">        this.teaser = teaser;</span>
-<span class="nc" id="L409">    }</span>
-
-    /**
-     * @return the long description
-     */
-    public TextDataBlock getExplanation() {
-<span class="nc" id="L415">        return explanation;</span>
-    }
-
-    /**
-     * @param explanation the long description
-     */
-    public void setExplanation(TextDataBlock explanation) {
-<span class="nc" id="L422">        this.explanation = explanation;</span>
-<span class="nc" id="L423">    }</span>
-
-    /**
-     * get the id of the explanation. To be sent to client.
-     *
-     * @return the id of the explanation
-     */
-    public Long getExplanationId() {
-<span class="nc bnc" id="L431" title="All 2 branches missed.">        if (explanation != null) {</span>
-<span class="nc" id="L432">            return explanation.getId();</span>
-        } else {
-<span class="nc" id="L434">            return explanationId;</span>
-        }
-    }
-
-    /**
-     * set the id of the explanation. For serialization only.
-     *
-     * @param explanationId the id of the teaser
-     */
-    public void setExplanationId(Long explanationId) {
-<span class="nc" id="L444">        this.explanationId = explanationId;</span>
-<span class="nc" id="L445">    }</span>
+<span class="nc" id="L185">        this.id = id;</span>
+<span class="nc" id="L186">    }</span>
 
     /**
      * Get the tracking data
@@ -451,7 +192,7 @@ import javax.validation.constraints.NotNull;
      */
     @Override
     public Tracking getTrackingData() {
-<span class="nc" id="L454">        return trackingData;</span>
+<span class="nc" id="L195">        return trackingData;</span>
     }
 
     /**
@@ -461,12 +202,271 @@ import javax.validation.constraints.NotNull;
      */
     @Override
     public void setTrackingData(Tracking trackingData) {
-<span class="nc" id="L464">        this.trackingData = trackingData;</span>
-<span class="nc" id="L465">    }</span>
+<span class="nc" id="L205">        this.trackingData = trackingData;</span>
+<span class="nc" id="L206">    }</span>
+
+    /**
+     * @return the short description
+     */
+    public String getTeaser() {
+<span class="nc" id="L212">        return teaser;</span>
+    }
+
+    /**
+     * @param teaser the short description
+     */
+    public void setTeaser(String teaser) {
+<span class="nc" id="L219">        this.teaser = teaser;</span>
+<span class="nc" id="L220">    }</span>
+
+    /**
+     * @return the long description
+     */
+    public TextDataBlock getExplanation() {
+<span class="nc" id="L226">        return explanation;</span>
+    }
+
+    /**
+     * @param explanation the long description
+     */
+    public void setExplanation(TextDataBlock explanation) {
+<span class="nc" id="L233">        this.explanation = explanation;</span>
+<span class="nc" id="L234">    }</span>
+
+    /**
+     * get the id of the explanation. To be sent to client.
+     *
+     * @return the id of the explanation
+     */
+    public Long getExplanationId() {
+<span class="nc bnc" id="L242" title="All 2 branches missed.">        if (explanation != null) {</span>
+<span class="nc" id="L243">            return explanation.getId();</span>
+        } else {
+<span class="nc" id="L245">            return explanationId;</span>
+        }
+    }
+
+    /**
+     * set the id of the explanation. For serialization only.
+     *
+     * @param explanationId the id of the teaser
+     */
+    public void setExplanationId(Long explanationId) {
+<span class="nc" id="L255">        this.explanationId = explanationId;</span>
+<span class="nc" id="L256">    }</span>
+
+    /**
+     * @return the card, source of the sticky note
+     */
+    public Card getSrcCard() {
+<span class="nc" id="L262">        return srcCard;</span>
+    }
+
+    /**
+     * @param srcCard the card, source of the sticky note
+     */
+    public void setSrcCard(Card srcCard) {
+<span class="nc" id="L269">        this.srcCard = srcCard;</span>
+<span class="nc" id="L270">    }</span>
+
+    /**
+     * get the id of the source card. To be sent to client
+     *
+     * @return the id of source card
+     */
+    public Long getSrcCardId() {
+<span class="nc bnc" id="L278" title="All 2 branches missed.">        if (this.srcCard != null) {</span>
+<span class="nc" id="L279">            return this.srcCard.getId();</span>
+        } else {
+<span class="nc" id="L281">            return srcCardId;</span>
+        }
+    }
+
+    /**
+     * set the id of the source card. For serialization only
+     *
+     * @param srcCardId the id of the source card
+     */
+    public void setSrcCardId(Long srcCardId) {
+<span class="nc" id="L291">        this.srcCardId = srcCardId;</span>
+<span class="nc" id="L292">    }</span>
+
+    /**
+     * @return True if the source is a card
+     */
+    public boolean isSrcCard() {
+<span class="nc bnc" id="L298" title="All 4 branches missed.">        return this.srcCard != null || this.srcCardId != null;</span>
+    }
+
+    /**
+     * @return the card content, source of the sticky note
+     */
+    public CardContent getSrcCardContent() {
+<span class="nc" id="L305">        return srcCardContent;</span>
+    }
+
+    /**
+     * @param srcCardContent the card content, source of the sticky note
+     */
+    public void setSrcCardContent(CardContent srcCardContent) {
+<span class="nc" id="L312">        this.srcCardContent = srcCardContent;</span>
+<span class="nc" id="L313">    }</span>
+
+    /**
+     * get the id of the source card content. To be sent to client
+     *
+     * @return the id of source card content
+     */
+    public Long getSrcCardContentId() {
+<span class="nc bnc" id="L321" title="All 2 branches missed.">        if (this.srcCardContent != null) {</span>
+<span class="nc" id="L322">            return this.srcCardContent.getId();</span>
+        } else {
+<span class="nc" id="L324">            return srcCardContentId;</span>
+        }
+    }
+
+    /**
+     * set the id of the source card content. For serialization only
+     *
+     * @param srcCardContentId the id of the source card content
+     */
+    public void setSrcCardContentId(Long srcCardContentId) {
+<span class="nc" id="L334">        this.srcCardContentId = srcCardContentId;</span>
+<span class="nc" id="L335">    }</span>
+
+    /**
+     * @return True if the source is a card content
+     */
+    public boolean isSrcCardContent() {
+<span class="nc bnc" id="L341" title="All 4 branches missed.">        return this.srcCardContent != null || this.srcCardContentId != null;</span>
+    }
+
+    /**
+     * @return the resource / resource reference, source of the sticky note
+     */
+    public AbstractResource getSrcResourceOrRef() {
+<span class="nc" id="L348">        return srcResourceOrRef;</span>
+    }
+
+    /**
+     * @param srcResourceOrRef the resource / resource reference, source of the sticky note
+     */
+    public void setSrcResourceOrRef(AbstractResource srcResourceOrRef) {
+<span class="nc" id="L355">        this.srcResourceOrRef = srcResourceOrRef;</span>
+<span class="nc" id="L356">    }</span>
+
+    /**
+     * get the id of the source resource / resource reference. To be sent to client
+     *
+     * @return the id of source resource / resource reference
+     */
+    public Long getSrcResourceOrRefId() {
+<span class="nc bnc" id="L364" title="All 2 branches missed.">        if (this.srcResourceOrRef != null) {</span>
+<span class="nc" id="L365">            return this.srcResourceOrRef.getId();</span>
+        } else {
+<span class="nc" id="L367">            return srcResourceOrRefId;</span>
+        }
+    }
+
+    /**
+     * set the id of the source resource / resource reference. For serialization only
+     *
+     * @param srcResourceOrRefId the id of the source resource / resource reference
+     */
+    public void setSrcResourceOrRefId(Long srcResourceOrRefId) {
+<span class="nc" id="L377">        this.srcResourceOrRefId = srcResourceOrRefId;</span>
+<span class="nc" id="L378">    }</span>
+
+    /**
+     * @return True if the source is a resource / resource reference
+     */
+    public boolean isSrcResourceOrRef() {
+<span class="nc bnc" id="L384" title="All 4 branches missed.">        return this.srcResourceOrRef != null || this.srcResourceOrRefId != null;</span>
+    }
+
+    /**
+     * @return the document, source of the sticky note
+     */
+    public Document getSrcDocument() {
+<span class="nc" id="L391">        return srcDocument;</span>
+    }
+
+    /**
+     * @param srcDocument the Document, source of the sticky note
+     */
+    public void setSrcDocument(Document srcDocument) {
+<span class="nc" id="L398">        this.srcDocument = srcDocument;</span>
+<span class="nc" id="L399">    }</span>
+
+    /**
+     * get the id of the source document. To be sent to client
+     *
+     * @return the id of source document
+     */
+    public Long getSrcDocumentId() {
+<span class="nc bnc" id="L407" title="All 2 branches missed.">        if (this.srcDocument != null) {</span>
+<span class="nc" id="L408">            return this.srcDocument.getId();</span>
+        } else {
+<span class="nc" id="L410">            return srcDocumentId;</span>
+        }
+    }
+
+    /**
+     * set the id of the source document. For serialization only
+     *
+     * @param srcDocumentId the id of the source document
+     */
+    public void setSrcDocumentId(Long srcDocumentId) {
+<span class="nc" id="L420">        this.srcDocumentId = srcDocumentId;</span>
+<span class="nc" id="L421">    }</span>
+
+    /**
+     * @return True if the source is a document
+     */
+    public boolean isSrcDocument() {
+<span class="nc bnc" id="L427" title="All 4 branches missed.">        return this.srcDocument != null || this.srcDocumentId != null;</span>
+    }
+
+    /**
+     * @return the card where the information is useful
+     */
+    public Card getDestinationCard() {
+<span class="nc" id="L434">        return destinationCard;</span>
+    }
+
+    /**
+     * @param destinationCard the card where the information is useful
+     */
+    public void setDestinationCard(Card destinationCard) {
+<span class="nc" id="L441">        this.destinationCard = destinationCard;</span>
+<span class="nc" id="L442">    }</span>
+
+    /**
+     * get the id of the destination card. To be sent to client
+     *
+     * @return the id of destination card
+     */
+    public Long getDestinationCardId() {
+<span class="nc bnc" id="L450" title="All 2 branches missed.">        if (this.destinationCard != null) {</span>
+<span class="nc" id="L451">            return this.destinationCard.getId();</span>
+        } else {
+<span class="nc" id="L453">            return destinationCardId;</span>
+        }
+    }
+
+    /**
+     * set the id of the destination card. For serialization only
+     *
+     * @param destinationCardId the id of the destination card
+     */
+    public void setDestinationCardId(Long destinationCardId) {
+<span class="nc" id="L463">        this.destinationCardId = destinationCardId;</span>
+<span class="nc" id="L464">    }</span>
 
     // ---------------------------------------------------------------------------------------------
     // helpers
     // ---------------------------------------------------------------------------------------------
+
     /**
      * @return the source of the link
      */
@@ -527,32 +527,16 @@ import javax.validation.constraints.NotNull;
     // ---------------------------------------------------------------------------------------------
     // concerning the whole class
     // ---------------------------------------------------------------------------------------------
-    /**
-     * {@inheritDoc }
-     */
+
     @Override
     public void merge(ColabEntity other) throws ColabMergeException {
-<span class="nc bnc" id="L535" title="All 2 branches missed.">        if (other instanceof StickyNoteLink) {</span>
-<span class="nc" id="L536">            StickyNoteLink o = (StickyNoteLink) other;</span>
-<span class="nc" id="L537">            this.setTeaser(o.getTeaser());</span>
-<span class="nc" id="L538">        } else {</span>
-<span class="nc" id="L539">            throw new ColabMergeException(this, other);</span>
+<span class="nc bnc" id="L533" title="All 2 branches missed.">        if (other instanceof StickyNoteLink) {</span>
+<span class="nc" id="L534">            StickyNoteLink o = (StickyNoteLink) other;</span>
+<span class="nc" id="L535">            this.setTeaser(o.getTeaser());</span>
+<span class="nc" id="L536">        } else {</span>
+<span class="nc" id="L537">            throw new ColabMergeException(this, other);</span>
         }
-<span class="nc" id="L541">    }</span>
-
-    @Override
-    @JsonbTransient
-    public Conditions.Condition getReadCondition() {
-<span class="nc" id="L546">        return new Conditions.Or(</span>
-<span class="nc" id="L547">            this.getSrc().getReadCondition(),</span>
-<span class="nc" id="L548">            this.getDestinationCard().getReadCondition()</span>
-        );
-    }
-
-    @Override
-    public Conditions.Condition getUpdateCondition() {
-<span class="nc" id="L554">        return this.getSrc().getUpdateCondition();</span>
-    }
+<span class="nc" id="L539">    }</span>
 
     /**
      * Get the project it belongs to
@@ -560,38 +544,52 @@ import javax.validation.constraints.NotNull;
      * @return project owner
      */
     public Project getProject() {
-<span class="nc bnc" id="L563" title="All 2 branches missed.">        if (this.destinationCard != null) {</span>
-<span class="nc" id="L564">            return this.destinationCard.getProject();</span>
+<span class="nc bnc" id="L547" title="All 2 branches missed.">        if (this.destinationCard != null) {</span>
+<span class="nc" id="L548">            return this.destinationCard.getProject();</span>
         } else {
             // such an orphan shouldn't exist...
-<span class="nc" id="L567">            return null;</span>
+<span class="nc" id="L551">            return null;</span>
         }
     }
 
     @Override
     public Set&lt;WebsocketChannel&gt; getChannels() {
-<span class="nc bnc" id="L573" title="All 2 branches missed.">        if (this.destinationCard != null) {</span>
-<span class="nc" id="L574">            return this.destinationCard.getChannels();</span>
+<span class="nc bnc" id="L557" title="All 2 branches missed.">        if (this.destinationCard != null) {</span>
+<span class="nc" id="L558">            return this.destinationCard.getChannels();</span>
         } else {
             // such an orphan shouldn't exist...
-<span class="nc" id="L577">            return Set.of();</span>
+<span class="nc" id="L561">            return Set.of();</span>
         }
     }
 
     @Override
+    @JsonbTransient
+    public Conditions.Condition getReadCondition() {
+<span class="nc" id="L568">        return new Conditions.Or(</span>
+<span class="nc" id="L569">            this.getSrc().getReadCondition(),</span>
+<span class="nc" id="L570">            this.getDestinationCard().getReadCondition()</span>
+        );
+    }
+
+    @Override
+    public Conditions.Condition getUpdateCondition() {
+<span class="nc" id="L576">        return this.getSrc().getUpdateCondition();</span>
+    }
+
+    @Override
     public int hashCode() {
-<span class="nc" id="L583">        return EntityHelper.hashCode(this);</span>
+<span class="nc" id="L581">        return EntityHelper.hashCode(this);</span>
     }
 
     @Override
     @SuppressWarnings(&quot;EqualsWhichDoesntCheckParameterClass&quot;)
     public boolean equals(Object obj) {
-<span class="nc" id="L589">        return EntityHelper.equals(this, obj);</span>
+<span class="nc" id="L587">        return EntityHelper.equals(this, obj);</span>
     }
 
     @Override
     public String toString() {
-<span class="nc" id="L594">        return &quot;StickyNoteLink{&quot; + &quot;id=&quot; + id + &quot;, srcCardId=&quot; + srcCardId</span>
+<span class="nc" id="L592">        return &quot;StickyNoteLink{&quot; + &quot;id=&quot; + id + &quot;, srcCardId=&quot; + srcCardId</span>
             + &quot;, srcCardContentId=&quot; + srcCardContentId + &quot;, srcResourceOrRefId=&quot;
             + srcResourceOrRefId + &quot;, srcDocId=&quot; + srcDocumentId + &quot;, destinationCardId=&quot;
             + destinationCardId + &quot;, teaser=&quot; + teaser + &quot;}&quot;;

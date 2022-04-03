@@ -51,6 +51,7 @@ import javax.validation.constraints.NotNull;
     // ---------------------------------------------------------------------------------------------
     // fields
     // ---------------------------------------------------------------------------------------------
+
     /**
      * Project ID
      */
@@ -59,24 +60,10 @@ import javax.validation.constraints.NotNull;
     private Long id;
 
     /**
-     * creation &amp;amp; modification tracking data
+     * creation + modification tracking data
      */
     @Embedded
     private Tracking trackingData;
-
-    /**
-     * The role this access control is for
-     */
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JsonbTransient
-    private TeamRole role;
-
-    /**
-     * The member this access control is for
-     */
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JsonbTransient
-    private TeamMember member;
 
     /**
      * CAIRO level (RACI + out_of_the_loop)
@@ -93,141 +80,38 @@ import javax.validation.constraints.NotNull;
     @JsonbTransient
     private Card card;
 
-// ---------------------------------------------------------------------------------------------
+    /**
+     * The member this access control is for
+     */
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JsonbTransient
+    private TeamMember member;
+
+    /**
+     * The role this access control is for
+     */
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JsonbTransient
+    private TeamRole role;
+
+    // ---------------------------------------------------------------------------------------------
     // getters and setters
     // ---------------------------------------------------------------------------------------------
+
     /**
      * @return the project ID
      */
     @Override
     public Long getId() {
-<span class="nc" id="L104">        return id;</span>
+<span class="nc" id="L106">        return id;</span>
     }
 
     /**
      * @param id the project ID
      */
     public void setId(Long id) {
-<span class="nc" id="L111">        this.id = id;</span>
-<span class="nc" id="L112">    }</span>
-
-    /**
-     * Get the value of member
-     *
-     * @return the value of member
-     */
-    public TeamMember getMember() {
-<span class="nc" id="L120">        return member;</span>
-    }
-
-    /**
-     * Get id of the member, for serialization only
-     *
-     * @return id of the member
-     */
-    public Long getMemberId() {
-<span class="nc bnc" id="L129" title="All 2 branches missed.">        if (this.member != null) {</span>
-<span class="nc" id="L130">            return member.getId();</span>
-        } else {
-<span class="nc" id="L132">            return null;</span>
-        }
-    }
-
-    /**
-     * Set the value of member
-     *
-     * @param member new value of member
-     */
-    public void setMember(TeamMember member) {
-<span class="nc" id="L142">        this.member = member;</span>
-<span class="nc bnc" id="L143" title="All 2 branches missed.">        if (member != null) {</span>
-<span class="nc" id="L144">            this.setRole(null);</span>
-        }
-<span class="nc" id="L146">    }</span>
-
-    /**
-     * Get the value of role
-     *
-     * @return the value of role
-     */
-    public TeamRole getRole() {
-<span class="nc" id="L154">        return role;</span>
-    }
-
-    /**
-     * Set the value of role
-     *
-     * @param role new value of role
-     */
-    public void setRole(TeamRole role) {
-<span class="nc" id="L163">        this.role = role;</span>
-
-<span class="nc bnc" id="L165" title="All 2 branches missed.">        if (role != null) {</span>
-<span class="nc" id="L166">            this.setMember(null);</span>
-        }
-<span class="nc" id="L168">    }</span>
-
-    /**
-     * Get id of the role, for serialization only
-     *
-     * @return id of the role
-     */
-    public Long getRoleId() {
-<span class="nc bnc" id="L176" title="All 2 branches missed.">        if (this.role != null) {</span>
-<span class="nc" id="L177">            return role.getId();</span>
-        } else {
-<span class="nc" id="L179">            return null;</span>
-        }
-    }
-
-    /**
-     * Get the value of InvolvementLevel
-     *
-     * @return the value of InvolvementLevel
-     */
-    public InvolvementLevel getCairoLevel() {
-<span class="nc" id="L189">        return cairoLevel;</span>
-    }
-
-    /**
-     * Set the value of InvolvementLevel
-     *
-     * @param cairoLevel new value of InvolvementLevel
-     */
-    public void setCairoLevel(InvolvementLevel cairoLevel) {
-<span class="nc" id="L198">        this.cairoLevel = cairoLevel;</span>
-<span class="nc" id="L199">    }</span>
-
-    /**
-     * Get the card
-     *
-     * @return the card
-     */
-    public Card getCard() {
-<span class="nc" id="L207">        return card;</span>
-    }
-
-    /**
-     * Set the card
-     *
-     * @param card the card
-     */
-    public void setCard(Card card) {
-<span class="nc" id="L216">        this.card = card;</span>
-<span class="nc" id="L217">    }</span>
-
-    /**
-     * Get id of the card, for serialization only
-     *
-     * @return id of the card
-     */
-    public Long getCardId() {
-<span class="nc bnc" id="L225" title="All 2 branches missed.">        if (this.card != null) {</span>
-<span class="nc" id="L226">            return card.getId();</span>
-        } else {
-<span class="nc" id="L228">            return null;</span>
-        }
-    }
+<span class="nc" id="L113">        this.id = id;</span>
+<span class="nc" id="L114">    }</span>
 
     /**
      * Get the tracking data
@@ -236,7 +120,7 @@ import javax.validation.constraints.NotNull;
      */
     @Override
     public Tracking getTrackingData() {
-<span class="nc" id="L239">        return trackingData;</span>
+<span class="nc" id="L123">        return trackingData;</span>
     }
 
     /**
@@ -246,43 +130,173 @@ import javax.validation.constraints.NotNull;
      */
     @Override
     public void setTrackingData(Tracking trackingData) {
-<span class="nc" id="L249">        this.trackingData = trackingData;</span>
-<span class="nc" id="L250">    }</span>
+<span class="nc" id="L133">        this.trackingData = trackingData;</span>
+<span class="nc" id="L134">    }</span>
+
+    /**
+     * Get the value of InvolvementLevel
+     *
+     * @return the value of InvolvementLevel
+     */
+    public InvolvementLevel getCairoLevel() {
+<span class="nc" id="L142">        return cairoLevel;</span>
+    }
+
+    /**
+     * Set the value of InvolvementLevel
+     *
+     * @param cairoLevel new value of InvolvementLevel
+     */
+    public void setCairoLevel(InvolvementLevel cairoLevel) {
+<span class="nc" id="L151">        this.cairoLevel = cairoLevel;</span>
+<span class="nc" id="L152">    }</span>
+
+    /**
+     * Get the card
+     *
+     * @return the card
+     */
+    public Card getCard() {
+<span class="nc" id="L160">        return card;</span>
+    }
+
+    /**
+     * Set the card
+     *
+     * @param card the card
+     */
+    public void setCard(Card card) {
+<span class="nc" id="L169">        this.card = card;</span>
+<span class="nc" id="L170">    }</span>
+
+    /**
+     * Get id of the card, for serialization only
+     *
+     * @return id of the card
+     */
+    public Long getCardId() {
+<span class="nc bnc" id="L178" title="All 2 branches missed.">        if (this.card != null) {</span>
+<span class="nc" id="L179">            return card.getId();</span>
+        } else {
+<span class="nc" id="L181">            return null;</span>
+        }
+    }
+
+    /**
+     * Get the value of member
+     *
+     * @return the value of member
+     */
+    public TeamMember getMember() {
+<span class="nc" id="L191">        return member;</span>
+    }
+
+    /**
+     * Get id of the member, for serialization only
+     *
+     * @return id of the member
+     */
+    public Long getMemberId() {
+<span class="nc bnc" id="L200" title="All 2 branches missed.">        if (this.member != null) {</span>
+<span class="nc" id="L201">            return member.getId();</span>
+        } else {
+<span class="nc" id="L203">            return null;</span>
+        }
+    }
+
+    /**
+     * Set the value of member
+     *
+     * @param member new value of member
+     */
+    public void setMember(TeamMember member) {
+<span class="nc" id="L213">        this.member = member;</span>
+<span class="nc bnc" id="L214" title="All 2 branches missed.">        if (member != null) {</span>
+<span class="nc" id="L215">            this.setRole(null);</span>
+        }
+<span class="nc" id="L217">    }</span>
+
+    /**
+     * Get the value of role
+     *
+     * @return the value of role
+     */
+    public TeamRole getRole() {
+<span class="nc" id="L225">        return role;</span>
+    }
+
+    /**
+     * Set the value of role
+     *
+     * @param role new value of role
+     */
+    public void setRole(TeamRole role) {
+<span class="nc" id="L234">        this.role = role;</span>
+
+<span class="nc bnc" id="L236" title="All 2 branches missed.">        if (role != null) {</span>
+<span class="nc" id="L237">            this.setMember(null);</span>
+        }
+<span class="nc" id="L239">    }</span>
+
+    /**
+     * Get id of the role, for serialization only
+     *
+     * @return id of the role
+     */
+    public Long getRoleId() {
+<span class="nc bnc" id="L247" title="All 2 branches missed.">        if (this.role != null) {</span>
+<span class="nc" id="L248">            return role.getId();</span>
+        } else {
+<span class="nc" id="L250">            return null;</span>
+        }
+    }
 
     // ---------------------------------------------------------------------------------------------
     // concerning the whole class
     // ---------------------------------------------------------------------------------------------
+
     @Override
     public void merge(ColabEntity other) throws ColabMergeException {
         // no-op
-<span class="nc" id="L258">    }</span>
+<span class="nc" id="L261">    }</span>
+
+    @Override
+    public void duplicate(ColabEntity other) throws ColabMergeException {
+<span class="nc bnc" id="L265" title="All 2 branches missed.">        if (other instanceof AccessControl) {</span>
+<span class="nc" id="L266">            AccessControl o = (AccessControl) other;</span>
+<span class="nc" id="L267">            this.setCairoLevel(o.getCairoLevel());</span>
+<span class="nc" id="L268">        } else {</span>
+<span class="nc" id="L269">            throw new ColabMergeException(this, other);</span>
+        }
+<span class="nc" id="L271">    }</span>
+
+    @Override
+    public Set&lt;WebsocketChannel&gt; getChannels() {
+<span class="nc bnc" id="L275" title="All 2 branches missed.">        if (this.getCard() != null) {</span>
+<span class="nc" id="L276">            return this.getCard().getChannels();</span>
+        } else {
+<span class="nc" id="L278">            return Set.of();</span>
+        }
+    }
 
     @Override
     @JsonbTransient
     public Conditions.Condition getReadCondition() {
-<span class="nc bnc" id="L263" title="All 2 branches missed.">        if (this.getCard() != null) {</span>
-<span class="nc" id="L264">            return this.getCard().getReadCondition();</span>
+<span class="nc bnc" id="L285" title="All 2 branches missed.">        if (this.getCard() != null) {</span>
+<span class="nc" id="L286">            return this.getCard().getReadCondition();</span>
         } else {
-<span class="nc" id="L266">            return Conditions.alwaysTrue;</span>
+<span class="nc" id="L288">            return Conditions.alwaysTrue;</span>
         }
     }
 
     @Override
     public Conditions.Condition getUpdateCondition() {
-<span class="nc bnc" id="L272" title="All 2 branches missed.">        if (this.getCard() != null) {</span>
-<span class="nc" id="L273">            return this.getCard().getUpdateCondition();</span>
+<span class="nc bnc" id="L294" title="All 2 branches missed.">        if (this.getCard() != null) {</span>
+<span class="nc" id="L295">            return this.getCard().getUpdateCondition();</span>
         } else {
-<span class="nc" id="L275">            return Conditions.alwaysTrue;</span>
+<span class="nc" id="L297">            return Conditions.alwaysTrue;</span>
         }
     }
 
-    @Override
-    public Set&lt;WebsocketChannel&gt; getChannels() {
-<span class="nc bnc" id="L281" title="All 2 branches missed.">        if (this.getCard() != null) {</span>
-<span class="nc" id="L282">            return this.getCard().getChannels();</span>
-        } else {
-<span class="nc" id="L284">            return Set.of();</span>
-        }
-    }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

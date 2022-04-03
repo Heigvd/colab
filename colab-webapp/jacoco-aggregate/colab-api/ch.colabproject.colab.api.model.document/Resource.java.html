@@ -199,7 +199,7 @@ import javax.validation.constraints.NotNull;
 <span class="nc" id="L199">    }</span>
 
     // ---------------------------------------------------------------------------------------------
-    // concerning the whole class
+    // helpers
     // ---------------------------------------------------------------------------------------------
 
     @Override
@@ -212,34 +212,39 @@ import javax.validation.constraints.NotNull;
 <span class="nc" id="L212">        return List.of(this);</span>
     }
 
+    // ---------------------------------------------------------------------------------------------
+    // concerning the whole class
+    // ---------------------------------------------------------------------------------------------
+
     @Override
     public void merge(ColabEntity other) throws ColabMergeException {
-<span class="nc bnc" id="L217" title="All 2 branches missed.">        if (other instanceof Resource) {</span>
-<span class="nc" id="L218">            Resource o = (Resource) other;</span>
-<span class="nc" id="L219">            super.merge(o);</span>
-<span class="nc" id="L220">            this.setTitle(o.getTitle());</span>
-<span class="nc" id="L221">            this.setPublished(o.isPublished());</span>
-<span class="nc" id="L222">            this.setRequestingForGlory(o.isRequestingForGlory());</span>
-<span class="nc" id="L223">            this.setDeprecated(o.isDeprecated());</span>
-<span class="nc" id="L224">        } else {</span>
-<span class="nc" id="L225">            throw new ColabMergeException(this, other);</span>
+<span class="nc" id="L221">        super.merge(other);</span>
+
+<span class="nc bnc" id="L223" title="All 2 branches missed.">        if (other instanceof Resource) {</span>
+<span class="nc" id="L224">            Resource o = (Resource) other;</span>
+<span class="nc" id="L225">            this.setTitle(o.getTitle());</span>
+<span class="nc" id="L226">            this.setPublished(o.isPublished());</span>
+<span class="nc" id="L227">            this.setRequestingForGlory(o.isRequestingForGlory());</span>
+<span class="nc" id="L228">            this.setDeprecated(o.isDeprecated());</span>
+<span class="nc" id="L229">        } else {</span>
+<span class="nc" id="L230">            throw new ColabMergeException(this, other);</span>
         }
-<span class="nc" id="L227">    }</span>
+<span class="nc" id="L232">    }</span>
 
     @Override
     public int hashCode() {
-<span class="nc" id="L231">        return EntityHelper.hashCode(this);</span>
+<span class="nc" id="L236">        return EntityHelper.hashCode(this);</span>
     }
 
     @Override
     @SuppressWarnings(&quot;EqualsWhichDoesntCheckParameterClass&quot;)
     public boolean equals(Object obj) {
-<span class="nc" id="L237">        return EntityHelper.equals(this, obj);</span>
+<span class="nc" id="L242">        return EntityHelper.equals(this, obj);</span>
     }
 
     @Override
     public String toString() {
-<span class="nc" id="L242">        return &quot;Resource{&quot; + toPartialString() + &quot;, title=&quot; + title</span>
+<span class="nc" id="L247">        return &quot;Resource{&quot; + toPartialString() + &quot;, title=&quot; + title</span>
             + &quot;, published=&quot; + published + &quot;, requestingForGlory=&quot; + requestingForGlory
             + &quot;, deprecated=&quot; + deprecated + &quot;}&quot;;
     }

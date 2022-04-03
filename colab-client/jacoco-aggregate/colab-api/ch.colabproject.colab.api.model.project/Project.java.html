@@ -67,6 +67,7 @@ import javax.persistence.Table;
     // ---------------------------------------------------------------------------------------------
     // fields
     // ---------------------------------------------------------------------------------------------
+
     /**
      * Project ID
      */
@@ -76,7 +77,7 @@ import javax.persistence.Table;
     private Long id;
 
     /**
-     * creation &amp;amp; modification tracking data
+     * creation + modification tracking data
      */
     @Embedded
     private Tracking trackingData;
@@ -105,47 +106,68 @@ import javax.persistence.Table;
     /**
      * Roles
      */
-<span class="nc" id="L108">    @OneToMany(mappedBy = &quot;project&quot;, cascade = CascadeType.ALL)</span>
+<span class="nc" id="L109">    @OneToMany(mappedBy = &quot;project&quot;, cascade = CascadeType.ALL)</span>
     @JsonbTransient
     private List&lt;TeamRole&gt; roles = new ArrayList&lt;&gt;();
 
     /**
      * List of team members
      */
-<span class="nc" id="L115">    @OneToMany(mappedBy = &quot;project&quot;, cascade = CascadeType.ALL)</span>
+<span class="nc" id="L116">    @OneToMany(mappedBy = &quot;project&quot;, cascade = CascadeType.ALL)</span>
     @JsonbTransient
     private List&lt;TeamMember&gt; teamMembers = new ArrayList&lt;&gt;();
 
     /**
      * List of elements to be defined within the cards
      */
-<span class="nc" id="L122">    @OneToMany(mappedBy = &quot;project&quot;, cascade = CascadeType.ALL)</span>
+<span class="nc" id="L123">    @OneToMany(mappedBy = &quot;project&quot;, cascade = CascadeType.ALL)</span>
     @JsonbTransient
     private List&lt;AbstractCardType&gt; elementsToBeDefined = new ArrayList&lt;&gt;();
 
     // ---------------------------------------------------------------------------------------------
     // getters and setters
     // ---------------------------------------------------------------------------------------------
+
     /**
      * @return the project ID
      */
     @Override
     public Long getId() {
-<span class="nc" id="L134">        return id;</span>
+<span class="nc" id="L136">        return id;</span>
     }
 
     /**
      * @param id the project ID
      */
     public void setId(Long id) {
-<span class="nc" id="L141">        this.id = id;</span>
-<span class="nc" id="L142">    }</span>
+<span class="nc" id="L143">        this.id = id;</span>
+<span class="nc" id="L144">    }</span>
+
+    /**
+     * Get the tracking data
+     *
+     * @return tracking data
+     */
+    @Override
+    public Tracking getTrackingData() {
+<span class="nc" id="L153">        return trackingData;</span>
+    }
+
+    /**
+     * Set tracking data
+     *
+     * @param trackingData new tracking data
+     */
+    @Override
+    public void setTrackingData(Tracking trackingData) {
+<span class="nc" id="L163">        this.trackingData = trackingData;</span>
+<span class="nc" id="L164">    }</span>
 
     /**
      * @return the project name
      */
     public String getName() {
-<span class="nc" id="L148">        return name;</span>
+<span class="nc" id="L170">        return name;</span>
     }
 
     /**
@@ -154,67 +176,36 @@ import javax.persistence.Table;
      * @param name the project name
      */
     public void setName(String name) {
-<span class="nc" id="L157">        this.name = name;</span>
-<span class="nc" id="L158">    }</span>
+<span class="nc" id="L179">        this.name = name;</span>
+<span class="nc" id="L180">    }</span>
 
     /**
      * @return the description
      */
     public String getDescription() {
-<span class="nc" id="L164">        return description;</span>
+<span class="nc" id="L186">        return description;</span>
     }
 
     /**
      * @param description the description to set
      */
     public void setDescription(String description) {
-<span class="nc" id="L171">        this.description = description;</span>
-<span class="nc" id="L172">    }</span>
+<span class="nc" id="L193">        this.description = description;</span>
+<span class="nc" id="L194">    }</span>
 
     /**
      * @return the root card of the project that contains every other cards
      */
     public Card getRootCard() {
-<span class="nc" id="L178">        return rootCard;</span>
+<span class="nc" id="L200">        return rootCard;</span>
     }
 
     /**
      * @param rootCard the root card of the project that contains every other cards
      */
     public void setRootCard(Card rootCard) {
-<span class="nc" id="L185">        this.rootCard = rootCard;</span>
-<span class="nc" id="L186">    }</span>
-
-    /**
-     * get team members
-     *
-     * @return members
-     */
-    public List&lt;TeamMember&gt; getTeamMembers() {
-<span class="nc" id="L194">        return teamMembers;</span>
-    }
-
-    /**
-     * Set team members
-     *
-     * @param teamMembers list of members
-     */
-    public void setTeamMembers(List&lt;TeamMember&gt; teamMembers) {
-<span class="nc" id="L203">        this.teamMembers = teamMembers;</span>
-<span class="nc" id="L204">    }</span>
-
-    /**
-     * Get all members with given position
-     *
-     * @param position the needle
-     *
-     * @return list of team member with the given position
-     */
-    public List&lt;TeamMember&gt; getTeamMembersByPosition(HierarchicalPosition position) {
-<span class="nc" id="L214">        return this.teamMembers.stream()</span>
-<span class="nc bnc" id="L215" title="All 2 branches missed.">            .filter(member -&gt; member.getPosition() == position)</span>
-<span class="nc" id="L216">            .collect(Collectors.toList());</span>
-    }
+<span class="nc" id="L207">        this.rootCard = rootCard;</span>
+<span class="nc" id="L208">    }</span>
 
     /**
      * Get the value of roles
@@ -222,7 +213,7 @@ import javax.persistence.Table;
      * @return the value of roles
      */
     public List&lt;TeamRole&gt; getRoles() {
-<span class="nc" id="L225">        return roles;</span>
+<span class="nc" id="L216">        return roles;</span>
     }
 
     /**
@@ -233,14 +224,14 @@ import javax.persistence.Table;
      * @return the role or null
      */
     public TeamRole getRoleByName(String name) {
-<span class="nc bnc" id="L236" title="All 2 branches missed.">        if (name != null) {</span>
-<span class="nc bnc" id="L237" title="All 2 branches missed.">            for (TeamRole r : this.roles) {</span>
-<span class="nc bnc" id="L238" title="All 2 branches missed.">                if (name.equals(r.getName())) {</span>
-<span class="nc" id="L239">                    return r;</span>
+<span class="nc bnc" id="L227" title="All 2 branches missed.">        if (name != null) {</span>
+<span class="nc bnc" id="L228" title="All 2 branches missed.">            for (TeamRole r : this.roles) {</span>
+<span class="nc bnc" id="L229" title="All 2 branches missed.">                if (name.equals(r.getName())) {</span>
+<span class="nc" id="L230">                    return r;</span>
                 }
-<span class="nc" id="L241">            }</span>
+<span class="nc" id="L232">            }</span>
         }
-<span class="nc" id="L243">        return null;</span>
+<span class="nc" id="L234">        return null;</span>
     }
 
     /**
@@ -249,49 +240,58 @@ import javax.persistence.Table;
      * @param roles new value of roles
      */
     public void setRoles(List&lt;TeamRole&gt; roles) {
-<span class="nc" id="L252">        this.roles = roles;</span>
-<span class="nc" id="L253">    }</span>
+<span class="nc" id="L243">        this.roles = roles;</span>
+<span class="nc" id="L244">    }</span>
+
+    /**
+     * get team members
+     *
+     * @return members
+     */
+    public List&lt;TeamMember&gt; getTeamMembers() {
+<span class="nc" id="L252">        return teamMembers;</span>
+    }
+
+    /**
+     * Get all members with given position
+     *
+     * @param position the needle
+     *
+     * @return list of team member with the given position
+     */
+    public List&lt;TeamMember&gt; getTeamMembersByPosition(HierarchicalPosition position) {
+<span class="nc" id="L263">        return this.teamMembers.stream()</span>
+<span class="nc bnc" id="L264" title="All 2 branches missed.">            .filter(member -&gt; member.getPosition() == position)</span>
+<span class="nc" id="L265">            .collect(Collectors.toList());</span>
+    }
+
+    /**
+     * Set team members
+     *
+     * @param teamMembers list of members
+     */
+    public void setTeamMembers(List&lt;TeamMember&gt; teamMembers) {
+<span class="nc" id="L274">        this.teamMembers = teamMembers;</span>
+<span class="nc" id="L275">    }</span>
 
     /**
      * @return the elementsToDefine
      */
     public List&lt;AbstractCardType&gt; getElementsToBeDefined() {
-<span class="nc" id="L259">        return elementsToBeDefined;</span>
+<span class="nc" id="L281">        return elementsToBeDefined;</span>
     }
 
     /**
      * @param elements the elementsToDefine to set
      */
     public void setElementsToBeDefined(List&lt;AbstractCardType&gt; elements) {
-<span class="nc" id="L266">        this.elementsToBeDefined = elements;</span>
-<span class="nc" id="L267">    }</span>
-
-    /**
-     * Get the tracking data
-     *
-     * @return tracking data
-     */
-    @Override
-    public Tracking getTrackingData() {
-<span class="nc" id="L276">        return trackingData;</span>
-    }
-
-    /**
-     * Set tracking data
-     *
-     * @param trackingData new tracking data
-     */
-    @Override
-    public void setTrackingData(Tracking trackingData) {
-<span class="nc" id="L286">        this.trackingData = trackingData;</span>
-<span class="nc" id="L287">    }</span>
+<span class="nc" id="L288">        this.elementsToBeDefined = elements;</span>
+<span class="nc" id="L289">    }</span>
 
     // ---------------------------------------------------------------------------------------------
     // concerning the whole class
     // ---------------------------------------------------------------------------------------------
-    /**
-     * {@inheritDoc }
-     */
+
     @Override
     public void merge(ColabEntity other) throws ColabMergeException {
 <span class="nc bnc" id="L297" title="All 2 branches missed.">        if (other instanceof Project) {</span>
@@ -315,20 +315,20 @@ import javax.persistence.Table;
 
     @Override
     @JsonbTransient
-    public Conditions.Condition getCreateCondition() {
-        // anybody can create a project
-<span class="nc" id="L320">        return Conditions.alwaysTrue;</span>
-    }
-
-    @Override
-    @JsonbTransient
     public Conditions.Condition getReadCondition() {
-<span class="nc" id="L326">        return new ProjectConditions.IsProjectReadable(this.id);</span>
+<span class="nc" id="L319">        return new ProjectConditions.IsProjectReadable(this.id);</span>
     }
 
     @Override
     public Conditions.Condition getUpdateCondition() {
-<span class="nc" id="L331">        return new Conditions.IsCurrentUserInternalToProject(this);</span>
+<span class="nc" id="L324">        return new Conditions.IsCurrentUserInternalToProject(this);</span>
+    }
+
+    @Override
+    @JsonbTransient
+    public Conditions.Condition getCreateCondition() {
+        // anybody can create a project
+<span class="nc" id="L331">        return Conditions.alwaysTrue;</span>
     }
 
     @Override
@@ -346,5 +346,6 @@ import javax.persistence.Table;
     public String toString() {
 <span class="nc" id="L347">        return &quot;Project{&quot; + &quot;id=&quot; + id + &quot;, name=&quot; + name + &quot;, descr=&quot; + description + '}';</span>
     }
+
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

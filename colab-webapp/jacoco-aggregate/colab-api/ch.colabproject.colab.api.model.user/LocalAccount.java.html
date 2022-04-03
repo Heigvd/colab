@@ -36,6 +36,10 @@ import javax.validation.constraints.NotNull;
 
     private static final long serialVersionUID = 1L;
 
+    // ---------------------------------------------------------------------------------------------
+    // fields
+    // ---------------------------------------------------------------------------------------------
+
     /**
      * username-like email address
      */
@@ -119,12 +123,16 @@ import javax.validation.constraints.NotNull;
     @JsonbTransient
     private HashMethod nextClientHashMethod;
 
+    // ---------------------------------------------------------------------------------------------
+    // getters and setters
+    // ---------------------------------------------------------------------------------------------
+
     /**
      *
      * @return email associated with this account
      */
     public String getEmail() {
-<span class="nc" id="L127">        return email;</span>
+<span class="nc" id="L135">        return email;</span>
     }
 
     /**
@@ -133,14 +141,14 @@ import javax.validation.constraints.NotNull;
      * @param email new email to use.
      */
     public void setEmail(String email) {
-<span class="nc bnc" id="L136" title="All 2 branches missed.">        if (Helper.isEmailAddress(email)) { // FIXME sandra see with Maxence if it is useful to do it here</span>
+<span class="nc bnc" id="L144" title="All 2 branches missed.">        if (Helper.isEmailAddress(email)) { // FIXME sandra see with Maxence if it is useful to do it here</span>
 
-<span class="nc bnc" id="L138" title="All 2 branches missed.">            if (!email.equals(this.email)) {</span>
-<span class="nc" id="L139">                this.verified = false;</span>
+<span class="nc bnc" id="L146" title="All 2 branches missed.">            if (!email.equals(this.email)) {</span>
+<span class="nc" id="L147">                this.verified = false;</span>
             }
-<span class="nc" id="L141">            this.email = email;</span>
+<span class="nc" id="L149">            this.email = email;</span>
         }
-<span class="nc" id="L143">    }</span>
+<span class="nc" id="L151">    }</span>
 
     /**
      * get the stored hashedPassword to challenge authentication against
@@ -148,7 +156,7 @@ import javax.validation.constraints.NotNull;
      * @return hashedPassword hashedPassword to challenge authentication against
      */
     public byte[] getHashedPassword() {
-<span class="nc" id="L151">        return hashedPassword;</span>
+<span class="nc" id="L159">        return hashedPassword;</span>
     }
 
     /**
@@ -157,8 +165,8 @@ import javax.validation.constraints.NotNull;
      * @param hashedPassword new hashedPassword
      */
     public void setHashedPassword(byte[] hashedPassword) {
-<span class="nc" id="L160">        this.hashedPassword = hashedPassword;</span>
-<span class="nc" id="L161">    }</span>
+<span class="nc" id="L168">        this.hashedPassword = hashedPassword;</span>
+<span class="nc" id="L169">    }</span>
 
     /**
      * has the email address been verified ?
@@ -166,7 +174,7 @@ import javax.validation.constraints.NotNull;
      * @return true if the account is verified
      */
     public Boolean isVerified() {
-<span class="nc" id="L169">        return verified;</span>
+<span class="nc" id="L177">        return verified;</span>
     }
 
     /**
@@ -175,14 +183,14 @@ import javax.validation.constraints.NotNull;
      * @param verified yes or no ?
      */
     public void setVerified(Boolean verified) {
-<span class="nc" id="L178">        this.verified = verified;</span>
-<span class="nc" id="L179">    }</span>
+<span class="nc" id="L186">        this.verified = verified;</span>
+<span class="nc" id="L187">    }</span>
 
     /**
      * @return the salt to used server-side
      */
     public byte[] getDbSalt() {
-<span class="nc" id="L185">        return dbSalt;</span>
+<span class="nc" id="L193">        return dbSalt;</span>
     }
 
     /**
@@ -191,15 +199,15 @@ import javax.validation.constraints.NotNull;
      * @param dbSalt new server-side salt
      */
     public void setDbSalt(byte[] dbSalt) {
-<span class="nc" id="L194">        this.dbSalt = dbSalt;</span>
-<span class="nc" id="L195">    }</span>
+<span class="nc" id="L202">        this.dbSalt = dbSalt;</span>
+<span class="nc" id="L203">    }</span>
 
     /**
      *
      * @return the current hashedPassword method to used to hashedPassword provided password
      */
     public HashMethod getCurrentDbHashMethod() {
-<span class="nc" id="L202">        return currentDbHashMethod;</span>
+<span class="nc" id="L210">        return currentDbHashMethod;</span>
     }
 
     /**
@@ -208,15 +216,15 @@ import javax.validation.constraints.NotNull;
      * @param currentDbHashMethod hashedPassword method
      */
     public void setCurrentDbHashMethod(HashMethod currentDbHashMethod) {
-<span class="nc" id="L211">        this.currentDbHashMethod = currentDbHashMethod;</span>
-<span class="nc" id="L212">    }</span>
+<span class="nc" id="L219">        this.currentDbHashMethod = currentDbHashMethod;</span>
+<span class="nc" id="L220">    }</span>
 
     /**
      * @return the next hashedPassword method to use. If not null, hashedPassword methods will be
      *         rotated on next authentication
      */
     public HashMethod getNextDbHashMethod() {
-<span class="nc" id="L219">        return nextDbHashMethod;</span>
+<span class="nc" id="L227">        return nextDbHashMethod;</span>
     }
 
     /**
@@ -225,14 +233,14 @@ import javax.validation.constraints.NotNull;
      * @param nextDbHashMethod next hashedPassword method
      */
     public void setNextDbHashMethod(HashMethod nextDbHashMethod) {
-<span class="nc" id="L228">        this.nextDbHashMethod = nextDbHashMethod;</span>
-<span class="nc" id="L229">    }</span>
+<span class="nc" id="L236">        this.nextDbHashMethod = nextDbHashMethod;</span>
+<span class="nc" id="L237">    }</span>
 
     /**
      * @return the salt the user shall use before client-side plain_password hashedPassword
      */
     public String getClientSalt() {
-<span class="nc" id="L235">        return clientSalt;</span>
+<span class="nc" id="L243">        return clientSalt;</span>
     }
 
     /**
@@ -241,14 +249,14 @@ import javax.validation.constraints.NotNull;
      * @param clientSalt client salt
      */
     public void setClientSalt(String clientSalt) {
-<span class="nc" id="L244">        this.clientSalt = clientSalt;</span>
-<span class="nc" id="L245">    }</span>
+<span class="nc" id="L252">        this.clientSalt = clientSalt;</span>
+<span class="nc" id="L253">    }</span>
 
     /**
      * @return the salt to use to rotate authentication
      */
     public String getNewClientSalt() {
-<span class="nc" id="L251">        return newClientSalt;</span>
+<span class="nc" id="L259">        return newClientSalt;</span>
     }
 
     /**
@@ -257,15 +265,15 @@ import javax.validation.constraints.NotNull;
      * @param newClientSalt new salt we want the client to use
      */
     public void setNewClientSalt(String newClientSalt) {
-<span class="nc" id="L260">        this.newClientSalt = newClientSalt;</span>
-<span class="nc" id="L261">    }</span>
+<span class="nc" id="L268">        this.newClientSalt = newClientSalt;</span>
+<span class="nc" id="L269">    }</span>
 
     /**
      * @return the hashedPassword method the client shall use to hashedPassword its
      *         salt+plain_password
      */
     public HashMethod getCurrentClientHashMethod() {
-<span class="nc" id="L268">        return currentClientHashMethod;</span>
+<span class="nc" id="L276">        return currentClientHashMethod;</span>
     }
 
     /**
@@ -274,14 +282,14 @@ import javax.validation.constraints.NotNull;
      * @param currentClientHashMethod hashedPassword method the client shall use
      */
     public void setCurrentClientHashMethod(HashMethod currentClientHashMethod) {
-<span class="nc" id="L277">        this.currentClientHashMethod = currentClientHashMethod;</span>
-<span class="nc" id="L278">    }</span>
+<span class="nc" id="L285">        this.currentClientHashMethod = currentClientHashMethod;</span>
+<span class="nc" id="L286">    }</span>
 
     /**
      * @return the next hashedPassword method the client shall use
      */
     public HashMethod getNextClientHashMethod() {
-<span class="nc" id="L284">        return nextClientHashMethod;</span>
+<span class="nc" id="L292">        return nextClientHashMethod;</span>
     }
 
     /**
@@ -290,17 +298,21 @@ import javax.validation.constraints.NotNull;
      * @param nextClientHashMethod new next client hashedPassword method
      */
     public void setNextClientHashMethod(HashMethod nextClientHashMethod) {
-<span class="nc" id="L293">        this.nextClientHashMethod = nextClientHashMethod;</span>
-<span class="nc" id="L294">    }</span>
+<span class="nc" id="L301">        this.nextClientHashMethod = nextClientHashMethod;</span>
+<span class="nc" id="L302">    }</span>
+
+    // ---------------------------------------------------------------------------------------------
+    // concerning the whole class
+    // ---------------------------------------------------------------------------------------------
 
     @Override
     public void merge(ColabEntity other) throws ColabMergeException {
         // TODO
-<span class="nc" id="L299">    }</span>
+<span class="nc" id="L311">    }</span>
 
     @Override
     public String toString() {
-<span class="nc" id="L303">        return &quot;LocalAccount{&quot; + &quot;id=&quot; + this.getId() + &quot;, email=&quot; + email</span>
+<span class="nc" id="L315">        return &quot;LocalAccount{&quot; + &quot;id=&quot; + this.getId() + &quot;, email=&quot; + email</span>
             + &quot;, verified=&quot; + verified + '}';
     }
 

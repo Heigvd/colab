@@ -56,6 +56,7 @@ import javax.persistence.Transient;
     // ---------------------------------------------------------------------------------------------
     // fields
     // ---------------------------------------------------------------------------------------------
+
     /**
      * Account unique ID IDs are unique within all account class hierarchy
      */
@@ -64,7 +65,7 @@ import javax.persistence.Transient;
     private Long id;
 
     /**
-     * creation &amp;amp; modification tracking data
+     * creation + modification tracking data
      */
     @Embedded
     private Tracking trackingData;
@@ -77,27 +78,28 @@ import javax.persistence.Transient;
     private User user;
 
     /**
-     * List of httpSession this account is using
-     */
-<span class="nc" id="L82">    @OneToMany(mappedBy = &quot;account&quot;, cascade = {CascadeType.PERSIST, CascadeType.REMOVE})</span>
-    @JsonbTransient
-    private List&lt;HttpSession&gt; httpSessions = new ArrayList&lt;&gt;();
-
-    /**
      * serialization sugar
      */
     @Transient
     private Long userId;
 
+    /**
+     * List of httpSession this account is using
+     */
+<span class="nc" id="L89">    @OneToMany(mappedBy = &quot;account&quot;, cascade = {CascadeType.PERSIST, CascadeType.REMOVE})</span>
+    @JsonbTransient
+    private List&lt;HttpSession&gt; httpSessions = new ArrayList&lt;&gt;();
+
     // ---------------------------------------------------------------------------------------------
     // getters and setters
     // ---------------------------------------------------------------------------------------------
+
     /**
      * @return account id
      */
     @Override
     public Long getId() {
-<span class="nc" id="L100">        return id;</span>
+<span class="nc" id="L102">        return id;</span>
     }
 
     /**
@@ -106,64 +108,8 @@ import javax.persistence.Transient;
      * @param id id
      */
     public void setId(Long id) {
-<span class="nc" id="L109">        this.id = id;</span>
-<span class="nc" id="L110">    }</span>
-
-    /**
-     * @return the user
-     */
-    public User getUser() {
-<span class="nc" id="L116">        return user;</span>
-    }
-
-    /**
-     * Set account owner
-     *
-     * @param user user who owns this account
-     */
-    public void setUser(User user) {
-<span class="nc" id="L125">        this.user = user;</span>
-<span class="nc" id="L126">    }</span>
-
-    /**
-     * Return the id of the account owner
-     *
-     * @return id of the user
-     */
-    public Long getUserId() {
-<span class="nc bnc" id="L134" title="All 2 branches missed.">        if (this.getUser() != null) {</span>
-<span class="nc" id="L135">            return getUser().getId();</span>
-        } else {
-<span class="nc" id="L137">            return userId;</span>
-        }
-    }
-
-    /**
-     * set the id of the account owner. For serialization only
-     *
-     * @param id if of the user
-     */
-    public void setUserId(Long id) {
-<span class="nc" id="L147">        this.userId = id;</span>
-<span class="nc" id="L148">    }</span>
-
-    /**
-     * Get the list of httpSession this account is using
-     *
-     * @return httpSession list
-     */
-    public List&lt;HttpSession&gt; getHttpSessions() {
-<span class="nc" id="L156">        return httpSessions;</span>
-    }
-
-    /**
-     * Set the list of httpSession
-     *
-     * @param httpSessions new httpSessions
-     */
-    public void setHttpSessions(List&lt;HttpSession&gt; httpSessions) {
-<span class="nc" id="L165">        this.httpSessions = httpSessions;</span>
-<span class="nc" id="L166">    }</span>
+<span class="nc" id="L111">        this.id = id;</span>
+<span class="nc" id="L112">    }</span>
 
     /**
      * Get the tracking data
@@ -172,7 +118,7 @@ import javax.persistence.Transient;
      */
     @Override
     public Tracking getTrackingData() {
-<span class="nc" id="L175">        return trackingData;</span>
+<span class="nc" id="L121">        return trackingData;</span>
     }
 
     /**
@@ -182,32 +128,82 @@ import javax.persistence.Transient;
      */
     @Override
     public void setTrackingData(Tracking trackingData) {
-<span class="nc" id="L185">        this.trackingData = trackingData;</span>
-<span class="nc" id="L186">    }</span>
+<span class="nc" id="L131">        this.trackingData = trackingData;</span>
+<span class="nc" id="L132">    }</span>
+
+    /**
+     * @return the user
+     */
+    public User getUser() {
+<span class="nc" id="L138">        return user;</span>
+    }
+
+    /**
+     * Set account owner
+     *
+     * @param user user who owns this account
+     */
+    public void setUser(User user) {
+<span class="nc" id="L147">        this.user = user;</span>
+<span class="nc" id="L148">    }</span>
+
+    /**
+     * Return the id of the account owner
+     *
+     * @return id of the user
+     */
+    public Long getUserId() {
+<span class="nc bnc" id="L156" title="All 2 branches missed.">        if (this.getUser() != null) {</span>
+<span class="nc" id="L157">            return getUser().getId();</span>
+        } else {
+<span class="nc" id="L159">            return userId;</span>
+        }
+    }
+
+    /**
+     * set the id of the account owner. For serialization only
+     *
+     * @param id if of the user
+     */
+    public void setUserId(Long id) {
+<span class="nc" id="L169">        this.userId = id;</span>
+<span class="nc" id="L170">    }</span>
+
+    /**
+     * Get the list of httpSession this account is using
+     *
+     * @return httpSession list
+     */
+    public List&lt;HttpSession&gt; getHttpSessions() {
+<span class="nc" id="L178">        return httpSessions;</span>
+    }
+
+    /**
+     * Set the list of httpSession
+     *
+     * @param httpSessions new httpSessions
+     */
+    public void setHttpSessions(List&lt;HttpSession&gt; httpSessions) {
+<span class="nc" id="L187">        this.httpSessions = httpSessions;</span>
+<span class="nc" id="L188">    }</span>
 
     // ---------------------------------------------------------------------------------------------
     // concerning the whole class
     // ---------------------------------------------------------------------------------------------
+
     @Override
     public Set&lt;WebsocketChannel&gt; getChannels() {
-<span class="nc bnc" id="L193" title="All 2 branches missed.">        if (this.user != null) {</span>
-<span class="nc" id="L194">            return Set.of(this.user.getEffectiveChannel(), new AdminChannel());</span>
+<span class="nc bnc" id="L196" title="All 2 branches missed.">        if (this.user != null) {</span>
+<span class="nc" id="L197">            return Set.of(this.user.getEffectiveChannel(), new AdminChannel());</span>
         } else {
-<span class="nc" id="L196">            return Set.of(new AdminChannel());</span>
+<span class="nc" id="L199">            return Set.of(new AdminChannel());</span>
         }
     }
 
     @Override
     @JsonbTransient
-    public Conditions.Condition getCreateCondition() {
-        // anyone can create an account
-<span class="nc" id="L204">        return Conditions.alwaysTrue;</span>
-    }
-
-    @Override
-    @JsonbTransient
     public Conditions.Condition getReadCondition() {
-<span class="nc" id="L210">        return new Conditions.Or(</span>
+<span class="nc" id="L206">        return new Conditions.Or(</span>
             // unauthenticated users shall read account data to authenticate
             new Conditions.Not(Conditions.authenticated),
             new Conditions.IsCurrentUserThisUser(this.user)
@@ -216,22 +212,30 @@ import javax.persistence.Transient;
 
     @Override
     public Conditions.Condition getUpdateCondition() {
-<span class="nc bnc" id="L219" title="All 2 branches missed.">        if (this.user != null) {</span>
-<span class="nc" id="L220">            return this.user.getUpdateCondition();</span>
+<span class="nc bnc" id="L215" title="All 2 branches missed.">        if (this.user != null) {</span>
+<span class="nc" id="L216">            return this.user.getUpdateCondition();</span>
         } else {
-<span class="nc" id="L222">            return Conditions.alwaysFalse;</span>
+<span class="nc" id="L218">            return Conditions.alwaysFalse;</span>
         }
     }
 
     @Override
+    @JsonbTransient
+    public Conditions.Condition getCreateCondition() {
+        // anyone can create an account
+<span class="nc" id="L226">        return Conditions.alwaysTrue;</span>
+    }
+
+    @Override
     public int hashCode() {
-<span class="nc" id="L228">        return EntityHelper.hashCode(this);</span>
+<span class="nc" id="L231">        return EntityHelper.hashCode(this);</span>
     }
 
     @Override
     @SuppressWarnings(&quot;EqualsWhichDoesntCheckParameterClass&quot;)
     public boolean equals(Object obj) {
-<span class="nc" id="L234">        return EntityHelper.equals(this, obj);</span>
+<span class="nc" id="L237">        return EntityHelper.equals(this, obj);</span>
     }
+
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

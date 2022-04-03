@@ -40,6 +40,10 @@ import javax.validation.constraints.NotNull;
      */
     public static final String EMAIL_SUBJECT = &quot;Please validate your co.LAB account&quot;;
 
+    // ---------------------------------------------------------------------------------------------
+    // fields
+    // ---------------------------------------------------------------------------------------------
+
     /**
      * The local account the token shall validate
      */
@@ -48,13 +52,17 @@ import javax.validation.constraints.NotNull;
     @JsonbTransient
     private LocalAccount localAccount;
 
+    // ---------------------------------------------------------------------------------------------
+    // getters and setters
+    // ---------------------------------------------------------------------------------------------
+
     /**
      * Get the value of localAccount
      *
      * @return the value of localAccount
      */
     public LocalAccount getLocalAccount() {
-<span class="nc" id="L57">        return localAccount;</span>
+<span class="nc" id="L65">        return localAccount;</span>
     }
 
     /**
@@ -63,12 +71,16 @@ import javax.validation.constraints.NotNull;
      * @param localAccount new value of localAccount
      */
     public void setLocalAccount(LocalAccount localAccount) {
-<span class="nc" id="L66">        this.localAccount = localAccount;</span>
-<span class="nc" id="L67">    }</span>
+<span class="nc" id="L74">        this.localAccount = localAccount;</span>
+<span class="nc" id="L75">    }</span>
+
+    // ---------------------------------------------------------------------------------------------
+    // helpers
+    // ---------------------------------------------------------------------------------------------
 
     @Override
     public String getRedirectTo() {
-<span class="nc" id="L71">        return &quot;/&quot;;</span>
+<span class="nc" id="L83">        return &quot;/&quot;;</span>
     }
 
     /**
@@ -78,25 +90,30 @@ import javax.validation.constraints.NotNull;
      */
     @Override
     public void consume(RequestManager reqMan) {
-<span class="nc" id="L81">        this.localAccount.setVerified(Boolean.TRUE);</span>
-<span class="nc" id="L82">    }</span>
+<span class="nc" id="L93">        this.localAccount.setVerified(Boolean.TRUE);</span>
+<span class="nc" id="L94">    }</span>
 
     @Override
     public String getSubject() {
-<span class="nc" id="L86">        return EMAIL_SUBJECT;</span>
+<span class="nc" id="L98">        return EMAIL_SUBJECT;</span>
     }
 
     @Override
     public String getEmailBody(String link) {
-<span class="nc" id="L91">        return MessageFormat.format(&quot;Hi {0},&lt;br /&gt;&lt;br /&gt;&quot;</span>
+<span class="nc" id="L103">        return MessageFormat.format(&quot;Hi {0},&lt;br /&gt;&lt;br /&gt;&quot;</span>
             + &quot;Please verify your email address: &lt;a href=\&quot;{1}\&quot;&gt;verify&lt;/a&gt;&lt;br /&gt;&lt;br /&gt;&quot;,
-<span class="nc" id="L93">            localAccount.getUser().getDisplayName(), link);</span>
+<span class="nc" id="L105">            localAccount.getUser().getDisplayName(), link);</span>
     }
+
+    // ---------------------------------------------------------------------------------------------
+    // concerning the whole class
+    // ---------------------------------------------------------------------------------------------
 
     @Override
     public String toString() {
-<span class="nc" id="L98">        return &quot;VerifyLocalAccountToken{&quot; + &quot;id=&quot; + getId()</span>
+<span class="nc" id="L114">        return &quot;VerifyLocalAccountToken{&quot; + &quot;id=&quot; + getId()</span>
             + &quot;, localAccount=&quot; + localAccount + '}';
     }
+
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>
