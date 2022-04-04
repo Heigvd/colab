@@ -183,7 +183,7 @@ export function VariantPager({ card, current, allowCreation }: PagerProps): JSX.
             <IconButton
               icon={faWindowRestore}
               layer={{ layerIcon: faPlus, transform: 'left-18' }}
-              title="Create a new variant"
+              title="Add a new variant"
               onClick={() => {
                 dispatch(API.createCardContentVariantWithBlockDoc(cardId)).then(payload => {
                   if (payload.meta.requestStatus === 'fulfilled') {

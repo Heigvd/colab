@@ -72,10 +72,9 @@ export default function ProjectCardTypeList(): JSX.Element {
               className={css({ display: 'inline', marginBottom: space_M })}
             />
             <Flex justify="space-between">
-              <h2>Card Types</h2>
+              <h2>Card types</h2>
               <CardTypeCreator />
             </Flex>
-            <h4>Project types</h4>
             {projectCTStatus !== 'READY' ? (
               <AvailabilityStatusIndicator status={projectCTStatus} />
             ) : projectCardTypes.length > 0 ? (
@@ -99,12 +98,12 @@ export default function ProjectCardTypeList(): JSX.Element {
                   <br />
                   You can create an empty type with the button
                   <br />
-                  or add an "out of project types" to the project.
+                  or add a "shared available type" to the project.
                 </p>
               </div>
             )}
             <Collapsible
-              title="Out of project types"
+              title="Shared available types"
               contentClassName={css({ flexDirection: 'column', alignItems: 'stretch' })}
             >
               {availableCTStatus !== 'READY' ? (

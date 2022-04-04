@@ -75,7 +75,7 @@ export const fr /*: ColabTranslations */ = {
   accessKeyIsRequiered: "clé d'accès requise",
   advancedSettings: 'Paramètres avancés',
   langSettings: 'Langues',
-  submit: 'sauver',
+  submit: 'Sauver',
   comments: 'commentaires',
   commentsAreOptional: 'les commentaires sont facultatifs',
 

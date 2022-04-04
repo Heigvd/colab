@@ -118,44 +118,6 @@ export default function DocumentEditor({
             valueComp={{ value: '', label: '' }}
             buttonClassName={cx(lightIconButtonStyle, css({ marginLeft: space_S }))}
             entries={[
-              {
-                value: 'Delete',
-                label: (
-                  <ConfirmDeleteModal
-                    buttonLabel={
-                      <>
-                        <FontAwesomeIcon icon={faTrash} size="xs" /> Delete
-                      </>
-                    }
-                    message={
-                      <p>
-                        Are you <strong>sure</strong> you want to delete this data? This will be
-                        lost forever.
-                      </p>
-                    }
-                    onConfirm={() => {
-                      if (document.id) {
-                        if (document.owningCardContentId != null) {
-                          dispatch(
-                            API.removeDeliverable({
-                              cardContentId: document.owningCardContentId,
-                              documentId: document.id,
-                            }),
-                          );
-                        } else if (document.owningResourceId != null) {
-                          dispatch(
-                            API.removeDocumentOfResource({
-                              resourceId: document.owningResourceId,
-                              documentId: document.id,
-                            }),
-                          );
-                        }
-                      }
-                    }}
-                    confirmButtonLabel={'Delete data'}
-                  />
-                ),
-              },
               ...(state === 'VIEW'
                 ? [
                     {
@@ -196,6 +158,44 @@ export default function DocumentEditor({
                     },
                   ]
                 : []),
+              {
+                value: 'Delete',
+                label: (
+                  <ConfirmDeleteModal
+                    buttonLabel={
+                      <>
+                        <FontAwesomeIcon icon={faTrash} size="xs" /> Delete
+                      </>
+                    }
+                    message={
+                      <p>
+                        Are you <strong>sure</strong> you want to delete this data? This will be
+                        lost forever.
+                      </p>
+                    }
+                    onConfirm={() => {
+                      if (document.id) {
+                        if (document.owningCardContentId != null) {
+                          dispatch(
+                            API.removeDeliverable({
+                              cardContentId: document.owningCardContentId,
+                              documentId: document.id,
+                            }),
+                          );
+                        } else if (document.owningResourceId != null) {
+                          dispatch(
+                            API.removeDocumentOfResource({
+                              resourceId: document.owningResourceId,
+                              documentId: document.id,
+                            }),
+                          );
+                        }
+                      }
+                    }}
+                    confirmButtonLabel={'Delete data'}
+                  />
+                ),
+              },
             ]}
             onSelect={val => {
               val.action && val.action();

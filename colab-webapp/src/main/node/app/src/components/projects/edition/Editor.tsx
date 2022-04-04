@@ -6,11 +6,11 @@
  */
 
 import { css, cx } from '@emotion/css';
-import { faQuestionCircle } from '@fortawesome/free-regular-svg-icons';
 import {
   faClone,
   faEllipsisV,
   faEye,
+  faInfoCircle,
   faNetworkWired,
   faProjectDiagram,
 } from '@fortawesome/free-solid-svg-icons';
@@ -269,14 +269,12 @@ export default function Editor(): JSX.Element {
           )}
         >
           <IconButton
-            icon={faQuestionCircle}
+            icon={faInfoCircle}
             title="Show project details"
             onClick={() => setShowProjectDetails(showProjectDetails => !showProjectDetails)}
           />
           <div className={css({ gridColumn: '2/3', placeSelf: 'center', display: 'flex' })}>
-            <div className={css({ marginRight: space_M })}>
-              {project.name || 'untitled project'}
-            </div>
+            <div className={css({ marginRight: space_M })}>{project.name || 'New project'}</div>
             <DropDownMenu
               icon={faEye}
               valueComp={{ value: '', label: '' }}
@@ -285,7 +283,7 @@ export default function Editor(): JSX.Element {
                   value: './',
                   label: (
                     <>
-                      <FontAwesomeIcon icon={faClone} /> Project
+                      <FontAwesomeIcon icon={faClone} /> Board
                     </>
                   ),
                 },
@@ -317,9 +315,9 @@ export default function Editor(): JSX.Element {
             icon={faEllipsisV}
             valueComp={{ value: '', label: '' }}
             entries={[
-              { value: './types', label: 'Card Types' },
-              { value: './settings', label: 'Project Settings' },
+              { value: './types', label: 'Card types' },
               { value: './team', label: 'Team' },
+              { value: './settings', label: 'Project settings' },
             ]}
             onSelect={val => {
               val.action != null ? val.action() : navigate(val.value);

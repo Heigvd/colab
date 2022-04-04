@@ -14,7 +14,7 @@ import { useProjectBeingEdited } from '../../../selectors/projectSelector';
 import Button from '../../common/Button';
 import DropDownMenu from '../../common/DropDownMenu';
 import { DocTextDisplay } from '../../documents/DocTextItem';
-import { ProjectName } from '../../projects/ProjectName';
+import { ProjectName } from '../../projects/ProjectNameARCHIVE';
 import { cardShadow, lightIconButtonStyle } from '../../styling/style';
 
 // Note used any longer

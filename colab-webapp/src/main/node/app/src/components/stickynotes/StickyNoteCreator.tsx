@@ -110,7 +110,7 @@ export default function StickyNoteCreator({
 
   return (
     <OpenCloseModal
-      title="Create a new sticky note"
+      title="Create a sticky note"
       collapsedChildren={
         <Flex
           justify="center"
@@ -123,7 +123,7 @@ export default function StickyNoteCreator({
             className,
           )}
         >
-          <FontAwesomeIcon title="Add sticky note" icon={addIcon} />
+          <FontAwesomeIcon title="Add a sticky note" icon={addIcon} />
         </Flex>
       }
     >
@@ -158,7 +158,6 @@ export default function StickyNoteCreator({
             className={css({ alignSelf: 'center' })}
           >
             <Button
-              title="cancel"
               onClick={() => {
                 // see if it is better to reset the values or not
                 collapse();
