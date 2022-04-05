@@ -6,7 +6,6 @@
  */
 import { css, cx } from '@emotion/css';
 import {
-  faCog,
   faExclamationTriangle,
   faSignOutAlt,
   faTimes,
@@ -18,7 +17,7 @@ import { Navigate, Route, Routes, useLocation, useNavigate, useParams } from 're
 import * as API from '../API/api';
 import { useProject, useProjectBeingEdited } from '../selectors/projectSelector';
 import { useCurrentUser } from '../selectors/userSelector';
-import { shallowEqual, useAppDispatch, useAppSelector } from '../store/hooks';
+import { useAppDispatch, useAppSelector } from '../store/hooks';
 import Admin from './admin/Admin';
 import DropDownMenu from './common/DropDownMenu';
 import IconButton from './common/IconButton';
@@ -26,7 +25,6 @@ import InlineLoading from './common/InlineLoading';
 import { MainMenuLink } from './common/Link';
 import Loading from './common/Loading';
 import Overlay from './common/Overlay';
-import Debugger from './debugger/debugger';
 import Editor from './projects/edition/Editor';
 import { UserProjects } from './projects/ProjectList';
 import ForgotPasswordForm from './public/ForgotPassword';
@@ -93,10 +91,6 @@ export default function MainApp(): JSX.Element {
   const navigate = useNavigate();
 
   const { currentUser, status: currentUserStatus } = useCurrentUser();
-  const currentAccounts = useAppSelector(
-    state => Object.values(state.users.accounts).filter(a => a.userId == state.auth.currentUserId),
-    shallowEqual,
-  );
 
   const socketId = useAppSelector(state => state.websockets.sessionId);
 
@@ -209,30 +203,11 @@ export default function MainApp(): JSX.Element {
               })}
             ></div>
             <DropDownMenu
-              icon={faCog}
-              valueComp={{ value: '', label: '' }}
-              entries={[
-                { value: '/settings/display', label: 'Display settings' },
-                { value: '/settings', label: 'Other settings' },
-                ...(currentUser.admin ? [{ value: '/debug', label: 'Debug' }] : []),
-                ...(currentUser.admin ? [{ value: '/admin', label: 'Admin' }] : []),
-              ]}
-              onSelect={val => {
-                val.action != null ? val.action() : navigate(val.value);
-              }}
-              buttonClassName={invertedThemeMode}
-            />
-            <DropDownMenu
               icon={faUserCircle}
               valueComp={{ value: '', label: '' }}
               entries={[
-                { value: '/settings/user', label: 'Profile' },
-                ...currentAccounts.map(account => {
-                  return {
-                    value: `/settings/account/${account.id}`,
-                    label: `Edit ${account.email}`,
-                  };
-                }),
+                { value: '/settings', label: 'Settings' },
+                ...(currentUser.admin ? [{ value: '/admin', label: 'Admin' }] : []),
                 {
                   value: 'logout',
                   label: (
@@ -269,7 +244,6 @@ export default function MainApp(): JSX.Element {
               <Route path="/settings/*" element={<Settings />} />
               <Route path="/admin/*" element={<Admin />} />
               <Route path="/editor/:id/*" element={<EditorWrapper />} />
-              <Route path="/debug" element={<Debugger />} />
               <Route
                 element={
                   /* no matching route, redirect to projects */

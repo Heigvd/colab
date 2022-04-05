@@ -7,11 +7,11 @@
 
 import { css, cx } from '@emotion/css';
 import { IconProp } from '@fortawesome/fontawesome-svg-core';
-import { faCircle, faLightbulb, faNewspaper } from '@fortawesome/free-regular-svg-icons';
+import { faNewspaper, faQuestionCircle } from '@fortawesome/free-regular-svg-icons';
 import { faGhost, faTools } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import * as React from 'react';
-import { lightIconButtonStyle, textSmall } from '../styling/style';
+import { lightIconButtonStyle, space_S, textSmall } from '../styling/style';
 import Checkbox from './Form/Checkbox';
 
 export type TipsType = 'TODO' | 'NEWS' | 'TIPS' | 'WIP';
@@ -57,7 +57,7 @@ function getIconProp(tipsType: TipsProps['tipsType']): IconProp {
       return faGhost;
     case 'TIPS':
     default:
-      return faLightbulb;
+      return faQuestionCircle;
   }
 }
 
@@ -93,26 +93,50 @@ export function TipsSettings(): JSX.Element {
 
   return (
     <div>
-      <Checkbox label="Display Todo" value={config.TODO.value} onChange={config.TODO.set} />
-      <Tips tipsType="TODO">
-        <h4>Todo Example</h4> We know what to do, but we do not do
-      </Tips>
-      <Checkbox label="Display Tips" value={config.TIPS.value} onChange={config.TIPS.set} />
-      <Tips tipsType="TIPS">
-        <h4>Tips Example</h4>Some useful info to help users
-      </Tips>
-      <Checkbox label="Display News" value={config.NEWS.value} onChange={config.NEWS.set} />
-      <Tips tipsType="NEWS">
-        <h4>News Example</h4>Some new feature to emphasis.
-      </Tips>
-      <Checkbox
-        label="Display Work in progress elements"
-        value={config.WIP.value}
-        onChange={config.WIP.set}
-      />
-      <Tips tipsType="WIP">
-        <h4>WIP Example</h4>Some features not completely finished yet.
-      </Tips>
+      <div>
+        <Checkbox
+          label="Display Todo"
+          value={config.TODO.value}
+          onChange={config.TODO.set}
+          containerClassName={css({ display: 'inline-block', marginRight: space_S })}
+        />
+        <Tips tipsType="TODO">
+          <h4>Todo Example</h4> We know what to do, but we do not do
+        </Tips>
+      </div>
+      <div>
+        <Checkbox
+          label="Display Tips"
+          value={config.TIPS.value}
+          onChange={config.TIPS.set}
+          containerClassName={css({ display: 'inline-block', marginRight: space_S })}
+        />
+        <Tips tipsType="TIPS">
+          <h4>Tips Example</h4>Some useful info to help users
+        </Tips>
+      </div>
+      <div>
+        <Checkbox
+          label="Display News"
+          value={config.NEWS.value}
+          onChange={config.NEWS.set}
+          containerClassName={css({ display: 'inline-block', marginRight: space_S })}
+        />
+        <Tips tipsType="NEWS">
+          <h4>News Example</h4>Some new feature to emphasis.
+        </Tips>
+      </div>
+      <div>
+        <Checkbox
+          label="Display Work in progress elements"
+          value={config.WIP.value}
+          onChange={config.WIP.set}
+          containerClassName={css({ display: 'inline-block', marginRight: space_S })}
+        />
+        <Tips tipsType="WIP">
+          <h4>WIP Example</h4>Some features not completely finished yet.
+        </Tips>
+      </div>
     </div>
   );
 }
@@ -194,10 +218,7 @@ export default function Tips({
         onMouseMove={onMoveCb}
         onClick={onClickCb}
       >
-        <span className="fa-layers fa-fw fa-2x">
-          <FontAwesomeIcon icon={faCircle} />
-          <FontAwesomeIcon icon={getIconProp(tipsType)} transform="shrink-8" />
-        </span>
+        <FontAwesomeIcon icon={getIconProp(tipsType)} />
         {coord && displayed ? <div className={overlayStyle(coord)}>{children} </div> : null}
       </span>
     );
