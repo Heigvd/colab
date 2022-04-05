@@ -7,8 +7,20 @@
 package ch.colabproject.colab.api.ws.channel;
 
 /**
- *
- * The channel to be used to transmit data to all online users.
+ * The channel to be used to transmit data to all online users. <br>
+ * <p>
+ * Usage:
+ * </p>
+ * <p>
+ * Subscription : as soon as possible on client side + on current user reload<br>
+ * Unsubscription : -<br>
+ * </p>
+ * <p>
+ * Used by :
+ * <ul>
+ * <li>AbstractCardType if global (=without project) and published</li>
+ * </ul>
+ * </p>
  *
  * @author maxence
  */

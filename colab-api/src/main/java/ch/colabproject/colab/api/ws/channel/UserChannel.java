@@ -12,7 +12,23 @@ import java.util.Objects;
 /**
  *
  * The channel to be used to transmit data to a specific user. Eg. its accounts, everything the user
- * sees in its lobby (project index and their teaas, etc)
+ * sees in its lobby (project index and their teams, etc)
+ * <p>
+ * Usage :
+ * </p>
+ * <p>
+ * Subscription : as soon as possible on client side + on current user reload<br>
+ * Unsubscription : -<br>
+ * </p>
+ * <p>
+ * Used by :
+ * <ul>
+ * <li>User</li>
+ * </ul>
+ * </p>
+ * <p>
+ * Can be watched by admin in the Who page
+ * </p>
  *
  * @author maxence
  */

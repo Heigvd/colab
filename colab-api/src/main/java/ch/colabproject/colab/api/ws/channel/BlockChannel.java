@@ -11,6 +11,19 @@ import java.util.Objects;
 
 /**
  * A channel to propagate content of a given blockId.
+ * <p>
+ * Usage :
+ * </p>
+ * <p>
+ * Subscription : when editing a block<br>
+ * Unsubscription : when stopping edition of a block<br>
+ * </p>
+ * <p>
+ * Used by :
+ * <ul>
+ * <li>Change</li>
+ * </ul>
+ * </p>
  *
  * @author maxence
  */
