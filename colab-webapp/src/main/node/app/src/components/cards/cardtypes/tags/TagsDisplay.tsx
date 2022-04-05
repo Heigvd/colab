@@ -23,7 +23,7 @@ interface CardTypeTagsDisplayProps {
 
 export function TagsDisplay({ tags, className }: CardTypeTagsDisplayProps): JSX.Element {
   return (
-    <Flex grow={1} align="flex-end">
+    <Flex grow={1} align="flex-end" wrap='wrap'>
       {tags.map(tag => {
         return (
           <div key={tag} className={cx(tagStyle, className)}>

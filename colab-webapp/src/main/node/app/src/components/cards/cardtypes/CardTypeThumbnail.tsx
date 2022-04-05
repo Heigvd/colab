@@ -13,7 +13,8 @@ import { useAndLoadTextOfDocument } from '../../../selectors/documentSelector';
 import { CardTypeAllInOne as CardType } from '../../../types/cardTypeDefinition';
 import Flex from '../../common/Flex';
 import Thumbnail from '../../common/Thumbnail';
-import { borderRadius, cardShadow, space_M, space_S } from '../../styling/style';
+import ResourceSummary from '../../resources/ResourceSummary';
+import { borderRadius, cardShadow, lightItalicText, space_M, space_S, textSmall } from '../../styling/style';
 import { TagsDisplay } from './tags/TagsDisplay';
 
 const defaultStyle = css({
@@ -21,6 +22,7 @@ const defaultStyle = css({
   cursor: 'pointer',
   boxShadow: cardShadow,
   borderRadius: borderRadius,
+  width: '18%',
   '&:hover': {
     backgroundColor: 'var(--primaryColorContrastShade)',
   },
@@ -41,6 +43,7 @@ const tagStyle = css({
   border: '1px solid var(--darkGray)',
   color: 'var(--darkGray)',
   fontSize: '0.8em',
+  whiteSpace: 'nowrap',
 });
 
 interface CardTypeThumbnailProps {
@@ -71,6 +74,8 @@ export default function CardTypeThumbnail({
         <div title={purpose || ''}>
           <div>
             <h3>{cardType.title}</h3>
+            <p className={cx(lightItalicText, textSmall)}>{purpose}</p>
+            <ResourceSummary kind={'CardType'} accessLevel={'READ'} cardTypeId={cardType.ownId} />
           </div>
           <TagsDisplay tags={cardType.tags} className={tagStyle} />
         </div>

@@ -10,8 +10,8 @@ import { faSnowflake } from '@fortawesome/free-regular-svg-icons';
 import {
   faCog,
   faEllipsisV,
-  faFileAlt,
   faInfoCircle,
+  faPaperclip,
   faStickyNote,
   faTrash,
 } from '@fortawesome/free-solid-svg-icons';
@@ -385,8 +385,8 @@ export default function CardEditor({ card, variant, showSubcards = true }: Props
                       hasSeveralVariants={hasVariants}
                     />
                   ),
-                  icon: faFileAlt,
-                  title: 'Resources',
+                  icon: faPaperclip,
+                  title: 'Documentation',
                 },
                 'Sticky Notes': {
                   icon: faStickyNote,

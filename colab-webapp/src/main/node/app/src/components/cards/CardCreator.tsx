@@ -38,10 +38,10 @@ export interface CardCreatorProps {
 }
 
 const listOfTypeStyle = css({
-  display: 'grid',
-  gridTemplateColumns: '1fr 1fr 1fr 1fr',
+  display: 'flex',
   gap: space_M,
   margin: space_M + ' 0',
+  flexWrap: 'wrap',
 });
 
 export default function CardCreator({

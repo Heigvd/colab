@@ -35,7 +35,7 @@ export default function DocumentMiniDisplay({ document }: DocumentMiniDisplayPro
           <Overlay>
             {document.id && (
               <div>
-                <DocumentEditor document={document} allowEdition={true} />
+                <DocumentEditor doc={document} allowEdition={true} />
               </div>
             )}
             <IconButton
