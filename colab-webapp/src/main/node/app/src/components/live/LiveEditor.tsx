@@ -10,12 +10,11 @@ import * as React from 'react';
 import { useAppSelector } from '../../store/hooks';
 import MarkdownViewer from '../blocks/markdown/MarkdownViewer';
 import WysiwygEditor from '../blocks/markdown/WysiwygEditor';
-import Button from '../common/Button';
 import CleverTextarea from '../common/CleverTextarea';
 import ErrorBoundary from '../common/ErrorBoundary';
 import Flex from '../common/Flex';
 import InlineLoading from '../common/InlineLoading';
-import { invertedButtonStyle, space_S } from '../styling/style';
+import { space_S } from '../styling/style';
 import ChangeTree from './ChangeTree';
 import { useLiveBlock } from './LiveTextEditor';
 
@@ -36,7 +35,6 @@ interface Props {
   showTree?: boolean;
   markDownEditor?: boolean;
   className?: string;
-  setEditingState?: React.Dispatch<React.SetStateAction<EditState>>;
 }
 
 function Unsupported({ md }: { md: string }) {
@@ -63,7 +61,6 @@ export default function LiveEditor({
   showTree,
   markDownEditor,
   className,
-  setEditingState,
 }: Props): JSX.Element {
   const liveSession = useAppSelector(state => state.websockets.sessionId);
 

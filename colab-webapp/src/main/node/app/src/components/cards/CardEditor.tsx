@@ -6,7 +6,7 @@
  */
 
 import { css, cx } from '@emotion/css';
-import { faSnowflake } from '@fortawesome/free-regular-svg-icons';
+import { faSnowflake, faWindowRestore } from '@fortawesome/free-regular-svg-icons';
 import {
   faCog,
   faEllipsisV,
@@ -16,7 +16,7 @@ import {
   faTrash,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { Card, CardContent } from 'colab-rest-client';
+import { Card, CardContent, entityIs } from 'colab-rest-client';
 import * as React from 'react';
 import { Route, Routes, useLocation, useNavigate } from 'react-router-dom';
 import * as API from '../../API/api';
@@ -139,9 +139,17 @@ export default function CardEditor({ card, variant, showSubcards = true }: Props
     [location.pathname, navigate],
   );
 
+  const goto = React.useCallback(
+    (card: Card, variant: CardContent) => {
+      navigate(`../edit/${card.id}/v/${variant.id}`);
+    },
+    [navigate],
+  );
+
   if (card.id == null) {
     return <i>Card without id is invalid...</i>;
   } else {
+    const cardId = card.id;
     return (
       <Flex direction="column" grow={1} align="stretch">
         <Flex
@@ -175,7 +183,7 @@ export default function CardEditor({ card, variant, showSubcards = true }: Props
                 <Flex direction="column" align="stretch">
                   <Flex
                     justify="space-between"
-                    className={css({ 
+                    className={css({
                       paddingBottom: space_S,
                       borderBottom:
                         card.color && card.color != '#ffffff'
@@ -261,6 +269,33 @@ export default function CardEditor({ card, variant, showSubcards = true }: Props
                         buttonClassName={cx(lightIconButtonStyle, css({ marginLeft: space_S }))}
                         entries={[
                           {
+                            value: 'settings',
+                            label: (
+                              <>
+                                <FontAwesomeIcon icon={faCog} title="Card settings" /> Card Settings
+                              </>
+                            ),
+                          },
+                          {
+                            value: 'Add new variant',
+                            action: () => {
+                              dispatch(API.createCardContentVariantWithBlockDoc(cardId)).then(
+                                payload => {
+                                  if (payload.meta.requestStatus === 'fulfilled') {
+                                    if (entityIs(payload.payload, 'CardContent')) {
+                                      goto(card, payload.payload);
+                                    }
+                                  }
+                                },
+                              );
+                            },
+                            label: (
+                              <>
+                                <FontAwesomeIcon icon={faWindowRestore} /> Add variant
+                              </>
+                            ),
+                          },
+                          {
                             value: 'Delete card or variant',
                             action: () => {},
                             label: (
@@ -295,14 +330,6 @@ export default function CardEditor({ card, variant, showSubcards = true }: Props
                                 }}
                                 confirmButtonLabel={hasVariants ? 'Delete variant' : 'Delete card'}
                               />
-                            ),
-                          },
-                          {
-                            value: 'settings',
-                            label: (
-                              <>
-                                <FontAwesomeIcon icon={faCog} title="Card settings" /> Card Settings
-                              </>
                             ),
                           },
                         ]}

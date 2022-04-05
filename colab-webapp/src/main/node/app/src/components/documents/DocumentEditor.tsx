@@ -46,10 +46,7 @@ export interface DocumentEditorProps {
   allowEdition: boolean;
 }
 
-export default function DocumentEditor({
-  doc,
-  allowEdition,
-}: DocumentEditorProps): JSX.Element {
+export default function DocumentEditor({ doc, allowEdition }: DocumentEditorProps): JSX.Element {
   const dispatch = useAppDispatch();
 
   const isTextDataBlock = entityIs(doc, 'TextDataBlock');
@@ -108,7 +105,6 @@ export default function DocumentEditor({
             showTree={showTree}
             markDownEditor={markDownMode}
             className={css({ flexGrow: 1 })}
-            setEditingState={setState}
           />
         ) : isDocumentFile ? (
           <DocumentFileEditor

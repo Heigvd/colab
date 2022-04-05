@@ -6,24 +6,17 @@
  */
 
 import { css } from '@emotion/css';
-import {
-  faCaretLeft,
-  faCaretRight,
-  faPlus,
-  faWindowRestore,
-} from '@fortawesome/free-solid-svg-icons';
-import { Card, CardContent, entityIs } from 'colab-rest-client';
+import { faCaretLeft, faCaretRight } from '@fortawesome/free-solid-svg-icons';
+import { Card, CardContent } from 'colab-rest-client';
 import * as React from 'react';
 import { useNavigate } from 'react-router-dom';
-import * as API from '../../API/api';
 import { useVariantsOrLoad } from '../../selectors/cardSelector';
-import { useAppDispatch } from '../../store/hooks';
 import Flex from '../common/Flex';
 import IconButton from '../common/IconButton';
 import InlineLoading from '../common/InlineLoading';
 //import WithToolbar from '../common/WithToolbar';
 import { useDefaultVariant } from '../projects/edition/Editor';
-import { lightIconButtonStyle, space_S } from '../styling/style';
+import { space_S } from '../styling/style';
 
 interface Props {
   card: Card;
@@ -122,8 +115,7 @@ interface PagerProps {
   //onSelect: (variant: CardContent) => void;
 }
 
-export function VariantPager({ card, current, allowCreation }: PagerProps): JSX.Element {
-  const dispatch = useAppDispatch();
+export function VariantPager({ card, current }: PagerProps): JSX.Element {
   const navigate = useNavigate();
 
   const contents = useVariantsOrLoad(card);
@@ -140,13 +132,8 @@ export function VariantPager({ card, current, allowCreation }: PagerProps): JSX.
   if (card.id == null) {
     return <i>Card without id is invalid...</i>;
   } else {
-    const cardId = card.id;
-
     return (
-      <Flex justify="space-between" className={css({ marginTop: space_S })}>
-        <Flex basis="1px" grow={1}>
-          {' '}
-        </Flex>
+      <Flex justify="center" className={css({ marginTop: space_S })}>
         <Flex basis="1px" grow={1} justify="center" className={css({ fontSize: '0.9em' })}>
           {variantPager != null && variantPager.previous != variantPager.current ? (
             <IconButton
@@ -175,25 +162,6 @@ export function VariantPager({ card, current, allowCreation }: PagerProps): JSX.
                   goto(card, variantPager.next);
                 }
               }}
-            />
-          ) : null}
-        </Flex>
-        <Flex basis="1px" grow={1} justify="flex-end">
-          {allowCreation ? (
-            <IconButton
-              icon={faWindowRestore}
-              layer={{ layerIcon: faPlus, transform: 'left-18' }}
-              title="Create a new variant"
-              onClick={() => {
-                dispatch(API.createCardContentVariantWithBlockDoc(cardId)).then(payload => {
-                  if (payload.meta.requestStatus === 'fulfilled') {
-                    if (entityIs(payload.payload, 'CardContent')) {
-                      goto(card, payload.payload);
-                    }
-                  }
-                });
-              }}
-              className={lightIconButtonStyle}
             />
           ) : null}
         </Flex>

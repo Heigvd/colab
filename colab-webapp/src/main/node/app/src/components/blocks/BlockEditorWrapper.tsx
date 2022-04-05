@@ -18,7 +18,6 @@ export interface BlockEditorProps {
   showTree?: boolean;
   markDownEditor?: boolean;
   className?: string;
-  setEditingState?: React.Dispatch<React.SetStateAction<EditState>>;
 }
 
 export function BlockEditorWrapper({
@@ -28,7 +27,6 @@ export function BlockEditorWrapper({
   showTree,
   markDownEditor,
   className,
-  setEditingState,
 }: BlockEditorProps): JSX.Element {
   const block = useBlock(blockId);
   if (block == null) {
@@ -48,7 +46,6 @@ export function BlockEditorWrapper({
               showTree={showTree}
               markDownEditor={markDownEditor}
               className={className}
-              setEditingState={setEditingState}
             />
           );
         default:
