@@ -6,11 +6,12 @@
  */
 
 import { css, cx } from '@emotion/css';
-import { faQuestionCircle, faSnowflake } from '@fortawesome/free-regular-svg-icons';
+import { faSnowflake } from '@fortawesome/free-regular-svg-icons';
 import {
   faCog,
   faEllipsisV,
   faFileAlt,
+  faInfoCircle,
   faStickyNote,
   faTrash,
 } from '@fortawesome/free-solid-svg-icons';
@@ -174,7 +175,7 @@ export default function CardEditor({ card, variant, showSubcards = true }: Props
                 <Flex direction="column" align="stretch">
                   <Flex
                     justify="space-between"
-                    className={css({
+                    className={css({ 
                       paddingBottom: space_S,
                       borderBottom:
                         card.color && card.color != '#ffffff'
@@ -223,7 +224,7 @@ export default function CardEditor({ card, variant, showSubcards = true }: Props
                         )}
                         {hasCardType && (
                           <IconButton
-                            icon={faQuestionCircle}
+                            icon={faInfoCircle}
                             title="Show card model informations"
                             className={cx(
                               lightIconButtonStyle,

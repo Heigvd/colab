@@ -16,6 +16,7 @@ export interface BlockEditorProps {
   allowEdition?: boolean;
   editingStatus?: EditState;
   showTree?: boolean;
+  markDownEditor?: boolean;
   className?: string;
   setEditingState?: React.Dispatch<React.SetStateAction<EditState>>;
 }
@@ -25,6 +26,7 @@ export function BlockEditorWrapper({
   allowEdition,
   editingStatus,
   showTree,
+  markDownEditor,
   className,
   setEditingState,
 }: BlockEditorProps): JSX.Element {
@@ -44,6 +46,7 @@ export function BlockEditorWrapper({
               revision={block.revision}
               editingStatus={editingStatus || 'VIEW'}
               showTree={showTree}
+              markDownEditor={markDownEditor}
               className={className}
               setEditingState={setEditingState}
             />

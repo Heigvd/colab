@@ -57,7 +57,8 @@ export default function DocumentEditor({
   const isExternalLink = entityIs(document, 'ExternalLink');
 
   const [state, setState] = React.useState<EditState>('VIEW');
-  const [showTree, setShowTree] = React.useState(false);
+  const [showTree, setShowTree] = React.useState(false); 
+  const [markDownMode, setmarkDownMode] = React.useState(false); 
 
   const downloadUrl = API.getRestClient().DocumentFileRestEndPoint.getFileContentPath(document.id!);
 
@@ -90,6 +91,7 @@ export default function DocumentEditor({
             allowEdition={allowEdition}
             editingStatus={state}
             showTree={showTree}
+            markDownEditor={markDownMode}
             className={css({ flexGrow: 1 })}
             setEditingState={setState}
           />
@@ -178,6 +180,18 @@ export default function DocumentEditor({
                         </>
                       ),
                       action: () => setShowTree(showTree => !showTree),
+                    },
+                    {
+                      value: 'markDown',
+                      label: (
+                        <>
+                          {markDownMode && (
+                            <FontAwesomeIcon icon={faCheck} size="xs" color="var(--lightGray)" />
+                          )}{' '}
+                          MarkDown mode
+                        </>
+                      ),
+                      action: () => setmarkDownMode(markDownMode => !markDownMode),
                     },
                   ]
                 : []),
