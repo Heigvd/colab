@@ -82,7 +82,7 @@ export default function ResourcesList({
       <Flex
         className={css({ borderBottom: '1px solid var(--lightGray)', padding: '0 ' + space_M })}
       >
-        <h2>Resources</h2>
+        <h2>Documentation</h2>
       </Flex>
       <Flex
         grow={1}
@@ -146,17 +146,17 @@ function TocEntry({ resourceAndRef, selectResource }: TocEntryProps) {
       className={tocEntryStyle}
       onClick={() => selectResource(resourceAndRef)}
     >
-        <div
-          className={css({
-            maxWidth: '150px',
-            whiteSpace: 'nowrap',
-            overflow: 'hidden',
-            textOverflow: 'ellipsis',
-            flexGrow: 1,
-          })}
-        >
-          {resourceAndRef.targetResource.title || i18n.resource.untitled}
-        </div>
+      <div
+        className={css({
+          maxWidth: '150px',
+          whiteSpace: 'nowrap',
+          overflow: 'hidden',
+          textOverflow: 'ellipsis',
+          flexGrow: 1,
+        })}
+      >
+        {resourceAndRef.targetResource.title || i18n.resource.untitled}
+      </div>
     </Flex>
   );
 }

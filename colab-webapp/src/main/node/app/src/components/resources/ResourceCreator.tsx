@@ -66,7 +66,7 @@ export default function ResourceCreator({
       label: 'Category',
       isMandatory: false,
       placeholder: 'Select or type to create',
-      fieldFooter: 'Made to organize the resources',
+      fieldFooter: 'Made to organize the documentation',
       isMulti: false,
       canCreateOption: true,
       options: allCategories.map(c => ({ label: c, value: c })),
@@ -85,7 +85,7 @@ export default function ResourceCreator({
 
   return (
     <OpenCloseModal
-      title="Create a resource"
+      title="Create a document"
       collapsedChildren={
         <Flex
           justify="center"
@@ -98,7 +98,7 @@ export default function ResourceCreator({
             className,
           )}
         >
-          <FontAwesomeIcon title="Add a resource" icon={addIcon} />
+          <FontAwesomeIcon title="Add a document" icon={addIcon} />
         </Flex>
       }
       className={css({ display: 'block', width: '100%', textAlign: 'center' })}

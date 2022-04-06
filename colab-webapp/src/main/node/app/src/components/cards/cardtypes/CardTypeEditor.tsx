@@ -10,8 +10,8 @@ import {
   faArrowLeft,
   faCog,
   faEllipsisV,
-  faFileAlt,
   faInfoCircle,
+  faPaperclip,
   faTrash,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -278,8 +278,8 @@ export default function CardTypeEditor({ className }: Props): JSX.Element {
                     )}
                   </>
                 ),
-                icon: faFileAlt,
-                title: 'Toggle resources panel',
+                icon: faPaperclip,
+                title: 'Documentation',
               },
             }}
           />
