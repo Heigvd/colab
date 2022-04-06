@@ -12,6 +12,7 @@ import {
   faCheck,
   faDownload,
   faEllipsisV,
+  faPen,
   faTrash,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -135,7 +136,11 @@ export default function DocumentEditor({ doc, allowEdition }: DocumentEditorProp
                 ? [
                     {
                       value: 'EditBlock',
-                      label: <>Edit</>,
+                      label: (
+                        <>
+                          <FontAwesomeIcon icon={faPen} size="xs" /> Edit
+                        </>
+                      ),
                       action: () => setState('EDIT'),
                     },
                   ]

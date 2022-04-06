@@ -272,7 +272,7 @@ export default function CardEditor({ card, variant, showSubcards = true }: Props
                             value: 'settings',
                             label: (
                               <>
-                                <FontAwesomeIcon icon={faCog} title="Card settings" /> Card Settings
+                                <FontAwesomeIcon icon={faCog} /> Card Settings
                               </>
                             ),
                           },

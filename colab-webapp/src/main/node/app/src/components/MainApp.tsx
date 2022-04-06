@@ -6,6 +6,7 @@
  */
 import { css, cx } from '@emotion/css';
 import {
+  faCog,
   faExclamationTriangle,
   faSignOutAlt,
   faTimes,
@@ -206,7 +207,14 @@ export default function MainApp(): JSX.Element {
               icon={faUserCircle}
               valueComp={{ value: '', label: '' }}
               entries={[
-                { value: '/settings', label: 'Settings' },
+                {
+                  value: '/settings',
+                  label: (
+                    <>
+                      <FontAwesomeIcon icon={faCog} /> Settings
+                    </>
+                  ),
+                },
                 ...(currentUser.admin ? [{ value: '/admin', label: 'Admin' }] : []),
                 {
                   value: 'logout',

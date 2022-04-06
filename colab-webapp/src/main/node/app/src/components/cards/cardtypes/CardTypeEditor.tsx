@@ -160,7 +160,7 @@ export default function CardTypeEditor({ className }: Props): JSX.Element {
                       value: 'settings',
                       label: (
                         <>
-                          <FontAwesomeIcon icon={faCog} title="Type settings" /> Type Settings
+                          <FontAwesomeIcon icon={faCog} /> Type Settings
                         </>
                       ),
                     },

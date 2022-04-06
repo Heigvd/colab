@@ -123,7 +123,7 @@ export default function StickyNoteCreator({
             className,
           )}
         >
-          <FontAwesomeIcon title="Add sticky note" icon={addIcon} />
+          <FontAwesomeIcon title="Add a sticky note" icon={addIcon} />
         </Flex>
       }
     >
