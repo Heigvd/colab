@@ -14,7 +14,14 @@ import { CardTypeAllInOne as CardType } from '../../../types/cardTypeDefinition'
 import Flex from '../../common/Flex';
 import Thumbnail from '../../common/Thumbnail';
 import ResourceSummary from '../../resources/ResourceSummary';
-import { borderRadius, cardShadow, lightItalicText, space_M, space_S, textSmall } from '../../styling/style';
+import {
+  borderRadius,
+  cardShadow,
+  lightItalicText,
+  space_M,
+  space_S,
+  textSmall,
+} from '../../styling/style';
 import { TagsDisplay } from './tags/TagsDisplay';
 
 const defaultStyle = css({

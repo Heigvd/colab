@@ -22,12 +22,24 @@ export default function Admin(): JSX.Element {
       <h2>Admin Page</h2>
       <div>
         <Tabs>
-          <Tab name="main" label="Admin"><MainPanel /></Tab>
-          <Tab name="users" label="Users"><AllUsers /></Tab>
-          <Tab name="projects" label="Projects"><AllProjects /></Tab>
-          <Tab name="loggers" label="Loggers"><LoggersConfig /></Tab>
-          <Tab name="onlineusers" label="Online Users"><Who /></Tab>
-          <Tab name="types" label="Card Types"><GlobalCardTypeList /></Tab>
+          <Tab name="main" label="Admin">
+            <MainPanel />
+          </Tab>
+          <Tab name="users" label="Users">
+            <AllUsers />
+          </Tab>
+          <Tab name="projects" label="Projects">
+            <AllProjects />
+          </Tab>
+          <Tab name="loggers" label="Loggers">
+            <LoggersConfig />
+          </Tab>
+          <Tab name="onlineusers" label="Online Users">
+            <Who />
+          </Tab>
+          <Tab name="types" label="Card Types">
+            <GlobalCardTypeList />
+          </Tab>
         </Tabs>
       </div>
     </div>
