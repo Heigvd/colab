@@ -46,23 +46,12 @@ import javax.validation.constraints.NotNull;
     query = "SELECT ct.id FROM CardType ct WHERE ct.project is NULL AND ct.published = TRUE")
 public class CardType extends AbstractCardType {
 
-    /**
-     * Serial version UID
-     */
     private static final long serialVersionUID = 1L;
 
     /**
      * The title
      */
     private String title;
-
-    /**
-     * The purpose
-     */
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @NotNull
-    @JsonbTransient
-    private TextDataBlock purpose;
 
     /**
      * Tags
@@ -73,6 +62,14 @@ public class CardType extends AbstractCardType {
     })
     @NotNull
     private Set<String> tags = new HashSet<>();
+
+    /**
+     * The purpose
+     */
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @NotNull
+    @JsonbTransient
+    private TextDataBlock purpose;
 
     /**
      * The id of the purpose
@@ -96,6 +93,24 @@ public class CardType extends AbstractCardType {
      */
     public void setTitle(String title) {
         this.title = title;
+    }
+
+    /**
+     * Get tags
+     *
+     * @return get the list of tags
+     */
+    public Set<String> getTags() {
+        return tags;
+    }
+
+    /**
+     * Set tags
+     *
+     * @param tags new set of tags
+     */
+    public void setTags(Set<String> tags) {
+        this.tags = tags;
     }
 
     /**
@@ -134,23 +149,9 @@ public class CardType extends AbstractCardType {
         this.purposeId = purposeId;
     }
 
-    /**
-     * Get tags
-     *
-     * @return get the list of tags
-     */
-    public Set<String> getTags() {
-        return tags;
-    }
-
-    /**
-     * Set tags
-     *
-     * @param tags new set of tags
-     */
-    public void setTags(Set<String> tags) {
-        this.tags = tags;
-    }
+    // ---------------------------------------------------------------------------------------------
+    // concerning the whole class
+    // ---------------------------------------------------------------------------------------------
 
     @Override
     public CardType resolve() {
@@ -162,22 +163,14 @@ public class CardType extends AbstractCardType {
         return List.of(this);
     }
 
-    // ---------------------------------------------------------------------------------------------
-    // concerning the whole class
-    // ---------------------------------------------------------------------------------------------
-
-    /**
-     * {@inheritDoc }
-     */
     @Override
     public void merge(ColabEntity other) throws ColabMergeException {
         super.merge(other);
 
         if (other instanceof CardType) {
             CardType o = (CardType) other;
-            // this.setUniqueId(o.getUniqueId());
             this.setTitle(o.getTitle());
-            this.setTags(((CardType) other).getTags());
+            this.setTags(o.getTags());
         } else {
             throw new ColabMergeException(this, other);
         }

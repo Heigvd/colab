@@ -104,7 +104,7 @@ export const en = {
   accessKeyIsRequiered: 'access key is required',
   advancedSettings: 'Advanced parameters',
   langSettings: 'Languages',
-  submit: 'submit',
+  submit: 'Submit',
   comments: 'comments',
   commentsAreOptional: 'Comments are optional',
 
@@ -153,7 +153,7 @@ export const en = {
     TOO_MANY_REQUEST: 'too many request',
   },
   card: {
-    untitled: 'unnamed card',
+    untitled: 'New card',
     settings: {
       title: 'Settings',
       acl: {
@@ -163,10 +163,10 @@ export const en = {
   },
   content: {
     none: 'no version',
-    untitled: 'unnamed version',
+    untitled: 'New version',
   },
   resource: {
-    untitled: 'unnamed document',
+    untitled: 'New document',
     noTeaser: 'no document teaser',
   },
 };

@@ -6,12 +6,12 @@
  */
 package ch.colabproject.colab.api.model.team;
 
+import static ch.colabproject.colab.api.model.team.TeamMember.TEAM_SEQUENCE_NAME;
 import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.model.ColabEntity;
 import ch.colabproject.colab.api.model.WithWebsocketChannels;
-import ch.colabproject.colab.api.model.team.acl.AccessControl;
 import ch.colabproject.colab.api.model.project.Project;
-import static ch.colabproject.colab.api.model.team.TeamMember.TEAM_SEQUENCE_NAME;
+import ch.colabproject.colab.api.model.team.acl.AccessControl;
 import ch.colabproject.colab.api.model.tools.EntityHelper;
 import ch.colabproject.colab.api.model.tracking.Tracking;
 import ch.colabproject.colab.api.security.permissions.Conditions;
@@ -47,7 +47,7 @@ import org.apache.commons.collections4.CollectionUtils;
 @Entity
 @Table(
     indexes = {
-        @Index(columnList = "project_id"),}
+        @Index(columnList = "project_id"), }
 )
 public class TeamRole implements ColabEntity, WithWebsocketChannels {
 
@@ -64,7 +64,7 @@ public class TeamRole implements ColabEntity, WithWebsocketChannels {
     private Long id;
 
     /**
-     * creation &amp; modification tracking data
+     * creation + modification tracking data
      */
     @Embedded
     private Tracking trackingData;
@@ -96,18 +96,18 @@ public class TeamRole implements ColabEntity, WithWebsocketChannels {
     private List<TeamMember> members = new ArrayList<>();
 
     /**
-     * List of access control relative to this role
-     */
-    @OneToMany(mappedBy = "role")
-    @JsonbTransient
-    private List<AccessControl> accessControl = new ArrayList<>();
-
-    /**
      * Id of the members, For deserialization only
      */
     @NotNull
     @Transient
     private List<Long> memberIds = new ArrayList<>();
+
+    /**
+     * List of access control relative to this role
+     */
+    @OneToMany(mappedBy = "role")
+    @JsonbTransient
+    private List<AccessControl> accessControl = new ArrayList<>();
 
     // ---------------------------------------------------------------------------------------------
     // getters and setters
@@ -127,6 +127,26 @@ public class TeamRole implements ColabEntity, WithWebsocketChannels {
      */
     public void setId(Long id) {
         this.id = id;
+    }
+
+    /**
+     * Get the tracking data
+     *
+     * @return tracking data
+     */
+    @Override
+    public Tracking getTrackingData() {
+        return trackingData;
+    }
+
+    /**
+     * Set tracking data
+     *
+     * @param trackingData new tracking data
+     */
+    @Override
+    public void setTrackingData(Tracking trackingData) {
+        this.trackingData = trackingData;
     }
 
     /**
@@ -242,26 +262,6 @@ public class TeamRole implements ColabEntity, WithWebsocketChannels {
         this.accessControl = accessControl;
     }
 
-    /**
-     * Get the tracking data
-     *
-     * @return tracking data
-     */
-    @Override
-    public Tracking getTrackingData() {
-        return trackingData;
-    }
-
-    /**
-     * Set tracking data
-     *
-     * @param trackingData new tracking data
-     */
-    @Override
-    public void setTrackingData(Tracking trackingData) {
-        this.trackingData = trackingData;
-    }
-
     // ---------------------------------------------------------------------------------------------
     // concerning the whole class
     // ---------------------------------------------------------------------------------------------
@@ -320,4 +320,5 @@ public class TeamRole implements ColabEntity, WithWebsocketChannels {
     public String toString() {
         return "Role{" + "id=" + id + ", name=" + name + ", projectId=" + projectId + '}';
     }
+
 }

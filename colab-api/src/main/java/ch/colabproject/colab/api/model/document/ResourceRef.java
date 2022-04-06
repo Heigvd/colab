@@ -147,7 +147,7 @@ public class ResourceRef extends AbstractResource {
     }
 
     // ---------------------------------------------------------------------------------------------
-    // concerning the whole class
+    // helpers
     // ---------------------------------------------------------------------------------------------
 
     @Override
@@ -170,11 +170,16 @@ public class ResourceRef extends AbstractResource {
         return list;
     }
 
+    // ---------------------------------------------------------------------------------------------
+    // concerning the whole class
+    // ---------------------------------------------------------------------------------------------
+
     @Override
     public void merge(ColabEntity other) throws ColabMergeException {
+        super.merge(other);
+
         if (other instanceof ResourceRef) {
             ResourceRef o = (ResourceRef) other;
-            super.merge(o);
             this.setRefused(o.isRefused());
             this.setResidual(o.isResidual());
         } else {

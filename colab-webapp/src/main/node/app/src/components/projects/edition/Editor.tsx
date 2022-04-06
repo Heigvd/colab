@@ -6,12 +6,12 @@
  */
 
 import { css, cx } from '@emotion/css';
-import { faQuestionCircle } from '@fortawesome/free-regular-svg-icons';
 import {
   faClone,
   faCog,
   faEllipsisV,
   faEye,
+  faInfoCircle,
   faMicrochip,
   faNetworkWired,
   faProjectDiagram,
@@ -272,14 +272,12 @@ export default function Editor(): JSX.Element {
           )}
         >
           <IconButton
-            icon={faQuestionCircle}
+            icon={faInfoCircle}
             title="Show project details"
             onClick={() => setShowProjectDetails(showProjectDetails => !showProjectDetails)}
           />
           <div className={css({ gridColumn: '2/3', placeSelf: 'center', display: 'flex' })}>
-            <div className={css({ marginRight: space_M })}>
-              {project.name || 'untitled project'}
-            </div>
+            <div className={css({ marginRight: space_M })}>{project.name || 'New project'}</div>
             <DropDownMenu
               icon={faEye}
               valueComp={{ value: '', label: '' }}
@@ -288,7 +286,7 @@ export default function Editor(): JSX.Element {
                   value: './',
                   label: (
                     <>
-                      <FontAwesomeIcon icon={faClone} /> Project
+                      <FontAwesomeIcon icon={faClone} /> Board
                     </>
                   ),
                 },

@@ -57,9 +57,6 @@ import javax.validation.constraints.NotNull;
 public class CardContent implements ColabEntity, WithWebsocketChannels,
     Resourceable, StickyNoteSourceable {
 
-    /**
-     * Serial version UID
-     */
     private static final long serialVersionUID = 1L;
 
     // ---------------------------------------------------------------------------------------------
@@ -73,7 +70,7 @@ public class CardContent implements ColabEntity, WithWebsocketChannels,
     private Long id;
 
     /**
-     * creation &amp; modification tracking data
+     * creation + modification tracking data
      */
     @Embedded
     private Tracking trackingData;
@@ -99,7 +96,7 @@ public class CardContent implements ColabEntity, WithWebsocketChannels,
     /**
      * Completion level
      */
-    // TODO sandra : vérifier si contrainte 0 - 100 ok
+    // TODO sandra : check if the constraints 0 - 100 are ok
     @Min(0)
     @Max(100)
     @NotNull
@@ -168,6 +165,26 @@ public class CardContent implements ColabEntity, WithWebsocketChannels,
      */
     public void setId(Long id) {
         this.id = id;
+    }
+
+    /**
+     * Get the tracking data
+     *
+     * @return tracking data
+     */
+    @Override
+    public Tracking getTrackingData() {
+        return trackingData;
+    }
+
+    /**
+     * Set tracking data
+     *
+     * @param trackingData new tracking data
+     */
+    @Override
+    public void setTrackingData(Tracking trackingData) {
+        this.trackingData = trackingData;
     }
 
     /**
@@ -339,32 +356,10 @@ public class CardContent implements ColabEntity, WithWebsocketChannels,
         this.stickyNoteLinksAsSrc = stickyNoteLinksAsSrc;
     }
 
-    /**
-     * Get the tracking data
-     *
-     * @return tracking data
-     */
-    @Override
-    public Tracking getTrackingData() {
-        return trackingData;
-    }
-
-    /**
-     * Set tracking data
-     *
-     * @param trackingData new tracking data
-     */
-    @Override
-    public void setTrackingData(Tracking trackingData) {
-        this.trackingData = trackingData;
-    }
-
     // ---------------------------------------------------------------------------------------------
     // concerning the whole class
     // ---------------------------------------------------------------------------------------------
-    /**
-     * {@inheritDoc}
-     */
+
     @Override
     public void merge(ColabEntity other) throws ColabMergeException {
         if (other instanceof CardContent) {
@@ -393,6 +388,15 @@ public class CardContent implements ColabEntity, WithWebsocketChannels,
     }
 
     @Override
+    public Set<WebsocketChannel> getChannels() {
+        if (this.card != null) {
+            return this.card.getChannels();
+        } else {
+            return Set.of();
+        }
+    }
+
+    @Override
     @JsonbTransient
     public Conditions.Condition getReadCondition() {
         // genuine hack inside
@@ -409,15 +413,6 @@ public class CardContent implements ColabEntity, WithWebsocketChannels,
         } else {
             // orphan content should never happen
             return Conditions.defaultForOrphan;
-        }
-    }
-
-    @Override
-    public Set<WebsocketChannel> getChannels() {
-        if (this.card != null) {
-            return this.card.getChannels();
-        } else {
-            return Set.of();
         }
     }
 

@@ -69,18 +69,14 @@ export default function CardTypeCreator({
     {
       key: 'title',
       type: 'text',
-      label: 'title',
+      label: 'name',
       isMandatory: true,
-      errorMessage: 'Must have a title',
-      isErroneous: e => e.title === null || e.title === '',
     },
     {
       key: 'purpose',
       type: 'textarea',
       label: 'purpose',
       isMandatory: true,
-      errorMessage: 'Must have a purpose',
-      isErroneous: e => e.purpose === null || e.purpose === '',
     },
     createSelectField({
       key: 'tags',
@@ -89,10 +85,8 @@ export default function CardTypeCreator({
       isMulti: true,
       options: allTags.map(c => ({ label: c, value: c })),
       canCreateOption: true,
-      placeholder: 'Select or create a category',
+      placeholder: 'Select or type to create',
       isMandatory: true,
-      errorMessage: 'Must have at least one category',
-      isErroneous: e => e.tags.length === 0 || e.tags === null,
     }),
   ];
 
@@ -100,12 +94,13 @@ export default function CardTypeCreator({
     //TODO: global types
     return <i>No project</i>;
   }
+
   return (
     <OpenCloseModal
-      title={'Create new type'}
+      title={'Create a type'}
       collapsedChildren={
         <>
-          <FontAwesomeIcon icon={faPlus} /> Create new type
+          <FontAwesomeIcon icon={faPlus} /> Add a type
         </>
       }
       className={cx(buttonStyle, css({ marginBottom: space_M }))}
@@ -117,6 +112,7 @@ export default function CardTypeCreator({
             fields={fields}
             value={{ title: '', purpose: '', tags: [] }}
             autoSubmit={false}
+            submitLabel="Create"
             onSubmit={function (type) {
               createTypeCb(type);
               close();
@@ -130,7 +126,6 @@ export default function CardTypeCreator({
             buttonClassName={cx(buttonStyle, marginAroundStyle([1], space_M))}
           >
             <Button
-              title="cancel"
               onClick={() => {
                 close();
               }}

@@ -102,7 +102,7 @@ export default function CardCreator({
   return (
     <OpenCloseModal
       title={
-        'Create new ' +
+        'Create a new ' +
         (parentCardContent.title ? 'subcard for ' + parentCardContent.title : 'card')
       }
       collapsedChildren={
@@ -129,12 +129,7 @@ export default function CardCreator({
             icon={faCog}
             className={lightIconButtonStyle}
           />
-          <Button
-            title="Cancel"
-            onClick={close}
-            invertedButton
-            className={marginAroundStyle([2], space_S)}
-          >
+          <Button onClick={close} invertedButton className={marginAroundStyle([2], space_S)}>
             Cancel
           </Button>
 
@@ -151,7 +146,7 @@ export default function CardCreator({
               });
             }}
           >
-            Create card
+            Add a card
           </Button>
         </Flex>
       )}
@@ -163,27 +158,29 @@ export default function CardCreator({
         } else {
           return (
             <div className={css({ width: '100%', textAlign: 'left' })}>
-              <Flex
-                className={css({
-                  paddingBottom: space_S,
-                  marginBottom: space_S,
-                  borderBottom: '1px solid var(--lightGray)',
-                })}
-                direction="column"
-                align="stretch"
-              >
-                <FilterableList
-                  tags={projectTags}
-                  onChange={(t, cat) =>
-                    setTagState(state => {
-                      return { ...state, [cat]: t };
-                    })
-                  }
-                  tagState={tagState}
-                  stateSelectAll={selectAllTags}
-                  toggleAllTags={toggleAllTags}
-                />
-              </Flex>
+              {projectTags && projectTags.length > 0 && (
+                <Flex
+                  className={css({
+                    paddingBottom: space_S,
+                    marginBottom: space_S,
+                    borderBottom: '1px solid var(--lightGray)',
+                  })}
+                  direction="column"
+                  align="stretch"
+                >
+                  <FilterableList
+                    tags={projectTags}
+                    onChange={(t, cat) =>
+                      setTagState(state => {
+                        return { ...state, [cat]: t };
+                      })
+                    }
+                    tagState={tagState}
+                    stateSelectAll={selectAllTags}
+                    toggleAllTags={toggleAllTags}
+                  />
+                </Flex>
+              )}
               <Flex direction="column">
                 <div className={listOfTypeStyle}>
                   <EmptyCardTypeThumbnail onClick={onSelect} highlighted={selectedType == null} />

@@ -63,14 +63,12 @@ import javax.validation.constraints.NotNull;
 )
 public class StickyNoteLink implements ColabEntity, WithWebsocketChannels {
 
-    /**
-     * Serial version UID
-     */
     private static final long serialVersionUID = 1L;
 
     // ---------------------------------------------------------------------------------------------
     // fields
     // ---------------------------------------------------------------------------------------------
+
     /**
      * Link ID
      */
@@ -79,10 +77,29 @@ public class StickyNoteLink implements ColabEntity, WithWebsocketChannels {
     private Long id;
 
     /**
-     * creation &amp; modification tracking data
+     * creation + modification tracking data
      */
     @Embedded
     private Tracking trackingData;
+
+    /**
+     * The short description
+     */
+    private String teaser;
+
+    /**
+     * The long description
+     */
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @NotNull
+    @JsonbTransient
+    private TextDataBlock explanation;
+
+    /**
+     * The id of the long description (serialization sugar)
+     */
+    @Transient
+    private Long explanationId;
 
     /**
      * The card, source of the sticky note
@@ -149,28 +166,10 @@ public class StickyNoteLink implements ColabEntity, WithWebsocketChannels {
     @Transient
     private Long destinationCardId;
 
-    /**
-     * The short description
-     */
-    private String teaser;
-
-    /**
-     * The long description
-     */
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @NotNull
-    @JsonbTransient
-    private TextDataBlock explanation;
-
-    /**
-     * The id of the long description (serialization sugar)
-     */
-    @Transient
-    private Long explanationId;
-
     // ---------------------------------------------------------------------------------------------
     // getters and setters
     // ---------------------------------------------------------------------------------------------
+
     /**
      * @return the link id
      */
@@ -184,6 +183,76 @@ public class StickyNoteLink implements ColabEntity, WithWebsocketChannels {
      */
     public void setId(Long id) {
         this.id = id;
+    }
+
+    /**
+     * Get the tracking data
+     *
+     * @return tracking data
+     */
+    @Override
+    public Tracking getTrackingData() {
+        return trackingData;
+    }
+
+    /**
+     * Set tracking data
+     *
+     * @param trackingData new tracking data
+     */
+    @Override
+    public void setTrackingData(Tracking trackingData) {
+        this.trackingData = trackingData;
+    }
+
+    /**
+     * @return the short description
+     */
+    public String getTeaser() {
+        return teaser;
+    }
+
+    /**
+     * @param teaser the short description
+     */
+    public void setTeaser(String teaser) {
+        this.teaser = teaser;
+    }
+
+    /**
+     * @return the long description
+     */
+    public TextDataBlock getExplanation() {
+        return explanation;
+    }
+
+    /**
+     * @param explanation the long description
+     */
+    public void setExplanation(TextDataBlock explanation) {
+        this.explanation = explanation;
+    }
+
+    /**
+     * get the id of the explanation. To be sent to client.
+     *
+     * @return the id of the explanation
+     */
+    public Long getExplanationId() {
+        if (explanation != null) {
+            return explanation.getId();
+        } else {
+            return explanationId;
+        }
+    }
+
+    /**
+     * set the id of the explanation. For serialization only.
+     *
+     * @param explanationId the id of the teaser
+     */
+    public void setExplanationId(Long explanationId) {
+        this.explanationId = explanationId;
     }
 
     /**
@@ -394,79 +463,10 @@ public class StickyNoteLink implements ColabEntity, WithWebsocketChannels {
         this.destinationCardId = destinationCardId;
     }
 
-    /**
-     * @return the short description
-     */
-    public String getTeaser() {
-        return teaser;
-    }
-
-    /**
-     * @param teaser the short description
-     */
-    public void setTeaser(String teaser) {
-        this.teaser = teaser;
-    }
-
-    /**
-     * @return the long description
-     */
-    public TextDataBlock getExplanation() {
-        return explanation;
-    }
-
-    /**
-     * @param explanation the long description
-     */
-    public void setExplanation(TextDataBlock explanation) {
-        this.explanation = explanation;
-    }
-
-    /**
-     * get the id of the explanation. To be sent to client.
-     *
-     * @return the id of the explanation
-     */
-    public Long getExplanationId() {
-        if (explanation != null) {
-            return explanation.getId();
-        } else {
-            return explanationId;
-        }
-    }
-
-    /**
-     * set the id of the explanation. For serialization only.
-     *
-     * @param explanationId the id of the teaser
-     */
-    public void setExplanationId(Long explanationId) {
-        this.explanationId = explanationId;
-    }
-
-    /**
-     * Get the tracking data
-     *
-     * @return tracking data
-     */
-    @Override
-    public Tracking getTrackingData() {
-        return trackingData;
-    }
-
-    /**
-     * Set tracking data
-     *
-     * @param trackingData new tracking data
-     */
-    @Override
-    public void setTrackingData(Tracking trackingData) {
-        this.trackingData = trackingData;
-    }
-
     // ---------------------------------------------------------------------------------------------
     // helpers
     // ---------------------------------------------------------------------------------------------
+
     /**
      * @return the source of the link
      */
@@ -527,9 +527,7 @@ public class StickyNoteLink implements ColabEntity, WithWebsocketChannels {
     // ---------------------------------------------------------------------------------------------
     // concerning the whole class
     // ---------------------------------------------------------------------------------------------
-    /**
-     * {@inheritDoc }
-     */
+
     @Override
     public void merge(ColabEntity other) throws ColabMergeException {
         if (other instanceof StickyNoteLink) {
@@ -538,20 +536,6 @@ public class StickyNoteLink implements ColabEntity, WithWebsocketChannels {
         } else {
             throw new ColabMergeException(this, other);
         }
-    }
-
-    @Override
-    @JsonbTransient
-    public Conditions.Condition getReadCondition() {
-        return new Conditions.Or(
-            this.getSrc().getReadCondition(),
-            this.getDestinationCard().getReadCondition()
-        );
-    }
-
-    @Override
-    public Conditions.Condition getUpdateCondition() {
-        return this.getSrc().getUpdateCondition();
     }
 
     /**
@@ -576,6 +560,20 @@ public class StickyNoteLink implements ColabEntity, WithWebsocketChannels {
             // such an orphan shouldn't exist...
             return Set.of();
         }
+    }
+
+    @Override
+    @JsonbTransient
+    public Conditions.Condition getReadCondition() {
+        return new Conditions.Or(
+            this.getSrc().getReadCondition(),
+            this.getDestinationCard().getReadCondition()
+        );
+    }
+
+    @Override
+    public Conditions.Condition getUpdateCondition() {
+        return this.getSrc().getUpdateCondition();
     }
 
     @Override

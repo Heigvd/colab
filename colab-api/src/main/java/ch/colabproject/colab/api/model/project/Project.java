@@ -67,6 +67,7 @@ public class Project implements ColabEntity, WithWebsocketChannels {
     // ---------------------------------------------------------------------------------------------
     // fields
     // ---------------------------------------------------------------------------------------------
+
     /**
      * Project ID
      */
@@ -76,7 +77,7 @@ public class Project implements ColabEntity, WithWebsocketChannels {
     private Long id;
 
     /**
-     * creation &amp; modification tracking data
+     * creation + modification tracking data
      */
     @Embedded
     private Tracking trackingData;
@@ -126,6 +127,7 @@ public class Project implements ColabEntity, WithWebsocketChannels {
     // ---------------------------------------------------------------------------------------------
     // getters and setters
     // ---------------------------------------------------------------------------------------------
+
     /**
      * @return the project ID
      */
@@ -139,6 +141,26 @@ public class Project implements ColabEntity, WithWebsocketChannels {
      */
     public void setId(Long id) {
         this.id = id;
+    }
+
+    /**
+     * Get the tracking data
+     *
+     * @return tracking data
+     */
+    @Override
+    public Tracking getTrackingData() {
+        return trackingData;
+    }
+
+    /**
+     * Set tracking data
+     *
+     * @param trackingData new tracking data
+     */
+    @Override
+    public void setTrackingData(Tracking trackingData) {
+        this.trackingData = trackingData;
     }
 
     /**
@@ -186,37 +208,6 @@ public class Project implements ColabEntity, WithWebsocketChannels {
     }
 
     /**
-     * get team members
-     *
-     * @return members
-     */
-    public List<TeamMember> getTeamMembers() {
-        return teamMembers;
-    }
-
-    /**
-     * Set team members
-     *
-     * @param teamMembers list of members
-     */
-    public void setTeamMembers(List<TeamMember> teamMembers) {
-        this.teamMembers = teamMembers;
-    }
-
-    /**
-     * Get all members with given position
-     *
-     * @param position the needle
-     *
-     * @return list of team member with the given position
-     */
-    public List<TeamMember> getTeamMembersByPosition(HierarchicalPosition position) {
-        return this.teamMembers.stream()
-            .filter(member -> member.getPosition() == position)
-            .collect(Collectors.toList());
-    }
-
-    /**
      * Get the value of roles
      *
      * @return the value of roles
@@ -253,6 +244,37 @@ public class Project implements ColabEntity, WithWebsocketChannels {
     }
 
     /**
+     * get team members
+     *
+     * @return members
+     */
+    public List<TeamMember> getTeamMembers() {
+        return teamMembers;
+    }
+
+    /**
+     * Get all members with given position
+     *
+     * @param position the needle
+     *
+     * @return list of team member with the given position
+     */
+    public List<TeamMember> getTeamMembersByPosition(HierarchicalPosition position) {
+        return this.teamMembers.stream()
+            .filter(member -> member.getPosition() == position)
+            .collect(Collectors.toList());
+    }
+
+    /**
+     * Set team members
+     *
+     * @param teamMembers list of members
+     */
+    public void setTeamMembers(List<TeamMember> teamMembers) {
+        this.teamMembers = teamMembers;
+    }
+
+    /**
      * @return the elementsToDefine
      */
     public List<AbstractCardType> getElementsToBeDefined() {
@@ -266,32 +288,10 @@ public class Project implements ColabEntity, WithWebsocketChannels {
         this.elementsToBeDefined = elements;
     }
 
-    /**
-     * Get the tracking data
-     *
-     * @return tracking data
-     */
-    @Override
-    public Tracking getTrackingData() {
-        return trackingData;
-    }
-
-    /**
-     * Set tracking data
-     *
-     * @param trackingData new tracking data
-     */
-    @Override
-    public void setTrackingData(Tracking trackingData) {
-        this.trackingData = trackingData;
-    }
-
     // ---------------------------------------------------------------------------------------------
     // concerning the whole class
     // ---------------------------------------------------------------------------------------------
-    /**
-     * {@inheritDoc }
-     */
+
     @Override
     public void merge(ColabEntity other) throws ColabMergeException {
         if (other instanceof Project) {
@@ -315,13 +315,6 @@ public class Project implements ColabEntity, WithWebsocketChannels {
 
     @Override
     @JsonbTransient
-    public Conditions.Condition getCreateCondition() {
-        // anybody can create a project
-        return Conditions.alwaysTrue;
-    }
-
-    @Override
-    @JsonbTransient
     public Conditions.Condition getReadCondition() {
         return new ProjectConditions.IsProjectReadable(this.id);
     }
@@ -329,6 +322,13 @@ public class Project implements ColabEntity, WithWebsocketChannels {
     @Override
     public Conditions.Condition getUpdateCondition() {
         return new Conditions.IsCurrentUserInternalToProject(this);
+    }
+
+    @Override
+    @JsonbTransient
+    public Conditions.Condition getCreateCondition() {
+        // anybody can create a project
+        return Conditions.alwaysTrue;
     }
 
     @Override
@@ -346,4 +346,5 @@ public class Project implements ColabEntity, WithWebsocketChannels {
     public String toString() {
         return "Project{" + "id=" + id + ", name=" + name + ", descr=" + description + '}';
     }
+
 }

@@ -34,17 +34,17 @@ export function ProjectSettings({ project }: ProjectSettingsProps): JSX.Element 
         className={css({ display: 'block', marginBottom: space_M })}
       />
 
-      <h1>Project Settings</h1>
+      <h1>Project settings</h1>
       <Input
-        label="Project name"
-        placeholder="unnamed"
+        label="Name"
+        placeholder="New project"
         value={project.name || ''}
         onChange={newValue => dispatch(API.updateProject({ ...project, name: newValue }))}
       />
       <Input
-        label="Project description"
+        label="Description"
         inputType="textarea"
-        placeholder="Write a description here."
+        placeholder="Write a description here"
         value={project.description || ''}
         onChange={newValue => dispatch(API.updateProject({ ...project, description: newValue }))}
       />

@@ -42,9 +42,6 @@ import {
   space_S,
 } from './styling/style';
 
-/**
- * To read parameters from hash
- */
 const EditorWrapper = () => {
   const { id: sId } = useParams<'id'>();
 
@@ -87,6 +84,7 @@ const EditorWrapper = () => {
 function useQuery() {
   return new URLSearchParams(useLocation().search);
 }
+
 export default function MainApp(): JSX.Element {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
@@ -100,6 +98,7 @@ export default function MainApp(): JSX.Element {
   const logout = React.useCallback(() => {
     dispatch(API.signOut());
   }, [dispatch]);
+
   React.useEffect(() => {
     if (currentUserStatus == 'UNKNOWN') {
       // user is not known. Reload state from API
@@ -109,19 +108,18 @@ export default function MainApp(): JSX.Element {
 
   const passwordScore = useAppSelector(state => state.auth.localAccountPasswordScore);
 
-  const reconnecting =
-    socketId == null ? (
-      <Overlay>
-        <div
-          className={css({
-            display: 'flex',
-            alignItems: 'center',
-          })}
-        >
-          <InlineLoading colour={true} /> <span>reconnecting...</span>
-        </div>
-      </Overlay>
-    ) : null;
+  const reconnecting = socketId == null && (
+    <Overlay>
+      <div
+        className={css({
+          display: 'flex',
+          alignItems: 'center',
+        })}
+      >
+        <InlineLoading colour={true} /> <span>reconnecting...</span>
+      </div>
+    </Overlay>
+  );
 
   const query = useQuery();
 
@@ -173,9 +171,9 @@ export default function MainApp(): JSX.Element {
             />
             <nav className={flex}>
               <MainMenuLink to="/">Projects</MainMenuLink>
-              {projectBeingEdited != null ? (
+              {projectBeingEdited != null && (
                 <MainMenuLink to={`/editor/${projectBeingEdited.id}`}>
-                  {projectBeingEdited.name}
+                  {projectBeingEdited.name || 'New project'}
                   <IconButton
                     onClick={events => {
                       // make sure to go back to projects page before closing project
@@ -196,7 +194,7 @@ export default function MainApp(): JSX.Element {
                     })}
                   />
                 </MainMenuLink>
-              ) : null}
+              )}
             </nav>
             <div
               className={css({

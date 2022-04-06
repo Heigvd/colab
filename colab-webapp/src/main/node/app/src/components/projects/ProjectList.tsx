@@ -6,7 +6,13 @@
  */
 
 import { css, cx } from '@emotion/css';
-import { faEdit, faEllipsisV, faPlus, faTrash } from '@fortawesome/free-solid-svg-icons';
+import {
+  faEdit,
+  faEllipsisV,
+  faPlus,
+  faTrash,
+  faUmbrella,
+} from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { AsyncThunk } from '@reduxjs/toolkit';
 import { Project } from 'colab-rest-client';
@@ -30,12 +36,13 @@ const projectListStyle = css({
   gridColumnGap: '40px',
   gridRowGap: '40px',
 });
-interface Props {
+
+interface ProjectDisplayProps {
   project: Project;
 }
 
 // Display one project and allow to edit it
-const ProjectDisplay = ({ project }: Props) => {
+const ProjectDisplay = ({ project }: ProjectDisplayProps) => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
@@ -64,7 +71,7 @@ const ProjectDisplay = ({ project }: Props) => {
           className={css({ fontWeight: 'bold' })}
         /> */}
         <InlineInput
-          placeholder="Unnamed project"
+          placeholder="New project"
           value={project.name || ''}
           onChange={newValue => dispatch(API.updateProject({ ...project, name: newValue }))}
           className={css({ fontWeight: 'bold' })}
@@ -75,12 +82,31 @@ const ProjectDisplay = ({ project }: Props) => {
           buttonClassName={css({ marginLeft: '40px' })}
           entries={[
             {
+              value: `/editor/${project.id}`,
+              label: (
+                <>
+                  {' '}
+                  <FontAwesomeIcon icon={faEdit} /> Edit
+                </>
+              ),
+            },
+            {
+              value: 'Duplicate project',
+              label: (
+                <>
+                  {' '}
+                  <FontAwesomeIcon icon={faUmbrella} /> Duplicate
+                </>
+              ),
+              action: () => dispatch(API.duplicateProject(project)),
+            },
+            {
               value: 'Delete project',
               label: (
                 <ConfirmDeleteModal
                   buttonLabel={
                     <>
-                      <FontAwesomeIcon icon={faTrash} /> Delete project
+                      <FontAwesomeIcon icon={faTrash} /> Delete
                     </>
                   }
                   message={
@@ -95,6 +121,9 @@ const ProjectDisplay = ({ project }: Props) => {
               ),
             },
           ]}
+          onSelect={val => {
+            val.action != null ? val.action() : navigate(val.value);
+          }}
         />
       </div>
       <div
@@ -108,7 +137,7 @@ const ProjectDisplay = ({ project }: Props) => {
         })}
       >
         <InlineInput
-          placeholder="Write a description here."
+          placeholder="Write a description here"
           value={project.description || ''}
           onChange={newValue => dispatch(API.updateProject({ ...project, description: newValue }))}
           inputType="textarea"
@@ -140,12 +169,11 @@ const ProjectDisplay = ({ project }: Props) => {
         })}
       >
         <Button
-          title="Edit project"
           icon={faEdit}
           onClick={() => navigate(`/editor/${project.id}`)}
           className={cx(css({ margin: 'auto' }), invertedButtonStyle)}
         >
-          Edit project
+          Edit
         </Button>
       </div>
     </div>
@@ -196,10 +224,9 @@ function ProjectList({ projects, status, reload }: ProjectListProps) {
             );
           }}
           icon={faPlus}
-          title={'Create new project'}
           className={fixedButtonStyle}
         >
-          Create new project
+          Create a project
         </Button>
       </div>
     );

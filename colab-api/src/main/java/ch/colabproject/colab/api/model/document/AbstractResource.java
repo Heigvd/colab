@@ -79,7 +79,7 @@ public abstract class AbstractResource
     protected Long id;
 
     /**
-     * creation &amp; modification tracking data
+     * creation + modification tracking data
      */
     @Embedded
     private Tracking trackingData;
@@ -411,8 +411,9 @@ public abstract class AbstractResource
     }
 
     // ---------------------------------------------------------------------------------------------
-    // concerning the whole class
+    // helpers
     // ---------------------------------------------------------------------------------------------
+
     /**
      * Resolve to concrete Resource
      *
@@ -427,6 +428,10 @@ public abstract class AbstractResource
      */
     public abstract List<AbstractResource> expand();
 
+    // ---------------------------------------------------------------------------------------------
+    // concerning the whole class
+    // ---------------------------------------------------------------------------------------------
+
     @Override
     public void merge(ColabEntity other) throws ColabMergeException {
         if (other instanceof AbstractResource) {
@@ -434,41 +439,6 @@ public abstract class AbstractResource
             this.setCategory(o.getCategory());
         } else {
             throw new ColabMergeException(this, other);
-        }
-    }
-
-    @JsonbTransient
-    @Override
-    public Conditions.Condition getReadCondition() {
-        if (this.abstractCardType != null) {
-            // the abstract resource is linked to a card type / card type reference
-            return this.abstractCardType.getReadCondition();
-        } else if (this.card != null) {
-            // the abstract resource is linked to a card
-            return new Conditions.HasCardReadRight(this.card);
-        } else if (this.cardContent != null) {
-            // the abstract resource is linked to a card content
-            return this.cardContent.getReadCondition();
-        } else {
-            // such an orphan shouldn't exist...
-            return Conditions.defaultForOrphan;
-        }
-    }
-
-    @Override
-    public Conditions.Condition getUpdateCondition() {
-        if (this.abstractCardType != null) {
-            // the abstract resource is linked to a card type / card type reference
-            return this.abstractCardType.getUpdateCondition();
-        } else if (this.card != null) {
-            // the abstract resource is linked to a card
-            return this.card.getUpdateCondition();
-        } else if (this.cardContent != null) {
-            // the abstract resource is linked to a card content
-            return this.cardContent.getUpdateCondition();
-        } else {
-            // such an orphan shouldn't exist...
-            return Conditions.defaultForOrphan;
         }
     }
 
@@ -508,6 +478,41 @@ public abstract class AbstractResource
         } else {
             // such an orphan shouldn't exist...
             return Set.of();
+        }
+    }
+
+    @JsonbTransient
+    @Override
+    public Conditions.Condition getReadCondition() {
+        if (this.abstractCardType != null) {
+            // the abstract resource is linked to a card type / card type reference
+            return this.abstractCardType.getReadCondition();
+        } else if (this.card != null) {
+            // the abstract resource is linked to a card
+            return new Conditions.HasCardReadRight(this.card);
+        } else if (this.cardContent != null) {
+            // the abstract resource is linked to a card content
+            return this.cardContent.getReadCondition();
+        } else {
+            // such an orphan shouldn't exist...
+            return Conditions.defaultForOrphan;
+        }
+    }
+
+    @Override
+    public Conditions.Condition getUpdateCondition() {
+        if (this.abstractCardType != null) {
+            // the abstract resource is linked to a card type / card type reference
+            return this.abstractCardType.getUpdateCondition();
+        } else if (this.card != null) {
+            // the abstract resource is linked to a card
+            return this.card.getUpdateCondition();
+        } else if (this.cardContent != null) {
+            // the abstract resource is linked to a card content
+            return this.cardContent.getUpdateCondition();
+        } else {
+            // such an orphan shouldn't exist...
+            return Conditions.defaultForOrphan;
         }
     }
 

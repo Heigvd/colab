@@ -64,17 +64,15 @@ import javax.persistence.Transient;
 public class Card
     implements ColabEntity, WithWebsocketChannels, Resourceable, StickyNoteSourceable {
 
+    private static final long serialVersionUID = 1L;
+
     /** Name of the project structure sequence */
     public static final String STRUCTURE_SEQUENCE_NAME = "structure_seq";
-
-    /**
-     * Serial version UID
-     */
-    private static final long serialVersionUID = 1L;
 
     // ---------------------------------------------------------------------------------------------
     // fields
     // ---------------------------------------------------------------------------------------------
+
     /**
      * Card ID
      */
@@ -84,15 +82,15 @@ public class Card
     private Long id;
 
     /**
-     * creation &amp; modification tracking data
+     * creation + modification tracking data
      */
     @Embedded
     private Tracking trackingData;
 
     /**
-     * The index of the card within its parent
+     * Card title
      */
-    private int index;
+    private String title;
 
     /**
      * The color of the card
@@ -100,9 +98,15 @@ public class Card
     private String color;
 
     /**
-     * Card title
+     * The index of the card within its parent
      */
-    private String title;
+    private int index;
+
+    /**
+     * CAIRO level (RACI + out_of_the_loop)
+     */
+    @Enumerated(value = EnumType.STRING)
+    private InvolvementLevel defaultInvolvementLevel;
 
     /**
      * The card type defining what is it for
@@ -116,32 +120,6 @@ public class Card
      */
     @Transient
     private Long cardTypeId;
-
-    /**
-     * The project this card is root of. may be null
-     */
-    @OneToOne(mappedBy = "rootCard", fetch = FetchType.LAZY)
-    @JsonbTransient
-    private Project rootCardProject;
-
-    /**
-     * Assignees and other access-control
-     */
-    @OneToMany(mappedBy = "card", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JsonbTransient
-    private List<AccessControl> accessControlList = new ArrayList<>();
-
-    /**
-     * CAIRO level (RACI + out_of_the_loop)
-     */
-    @Enumerated(value = EnumType.STRING)
-    private InvolvementLevel defaultInvolvementLevel;
-
-    /**
-     * The id of the project for root cards (serialization sugar)
-     */
-    @Transient
-    private Long rootCardProjectId;
 
     /**
      * The parent card content
@@ -159,6 +137,19 @@ public class Card
     private Long parentId;
 
     /**
+     * The project this card is root of. may be null
+     */
+    @OneToOne(mappedBy = "rootCard", fetch = FetchType.LAZY)
+    @JsonbTransient
+    private Project rootCardProject;
+
+    /**
+     * The id of the project for root cards (serialization sugar)
+     */
+    @Transient
+    private Long rootCardProjectId;
+
+    /**
      * The list of content variants.
      * <p>
      * There can be several variants of content
@@ -169,6 +160,13 @@ public class Card
     @OneToMany(mappedBy = "card", cascade = CascadeType.ALL) // , fetch = FetchType.LAZY)
     @JsonbTransient
     private List<CardContent> contentVariants = new ArrayList<>();
+
+    /**
+     * Assignees and other access-control
+     */
+    @OneToMany(mappedBy = "card", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JsonbTransient
+    private List<AccessControl> accessControlList = new ArrayList<>();
 
     /**
      * The list of abstract resources directly linked to this card
@@ -208,6 +206,7 @@ public class Card
     // ---------------------------------------------------------------------------------------------
     // getters and setters
     // ---------------------------------------------------------------------------------------------
+
     /**
      * @return the card id
      */
@@ -224,31 +223,23 @@ public class Card
     }
 
     /**
-     * @return the index of the card in its parent
+     * Get the tracking data
+     *
+     * @return tracking data
      */
-    public int getIndex() {
-        return index;
+    @Override
+    public Tracking getTrackingData() {
+        return trackingData;
     }
 
     /**
-     * @param index the new index of the card in its parent
+     * Set tracking data
+     *
+     * @param trackingData new tracking data
      */
-    public void setIndex(int index) {
-        this.index = index;
-    }
-
-    /**
-     * @return the color of the card
-     */
-    public String getColor() {
-        return color;
-    }
-
-    /**
-     * @param color the new color of the card
-     */
-    public void setColor(String color) {
-        this.color = color;
+    @Override
+    public void setTrackingData(Tracking trackingData) {
+        this.trackingData = trackingData;
     }
 
     /**
@@ -270,56 +261,31 @@ public class Card
     }
 
     /**
-     * Get access-control list
-     *
-     * @return ACL
+     * @return the color of the card
      */
-    public List<AccessControl> getAccessControlList() {
-        return accessControlList;
+    public String getColor() {
+        return color;
     }
 
     /**
-     * Set the access-control list
-     *
-     * @param accessControlList new list
+     * @param color the new color of the card
      */
-    public void setAccessControlList(List<AccessControl> accessControlList) {
-        this.accessControlList = accessControlList;
+    public void setColor(String color) {
+        this.color = color;
     }
 
     /**
-     * Get the access control which match the given member
-     *
-     * @param member the member
-     *
-     * @return the access-control which match the member or null
+     * @return the index of the card in its parent
      */
-    public AccessControl getAcByMember(TeamMember member) {
-        if (member != null) {
-            Optional<AccessControl> optAc = this.getAccessControlList().stream()
-                .filter(acl -> member.equals(acl.getMember())).findFirst();
-            return optAc.isPresent() ? optAc.get() : null;
-        } else {
-            return null;
-        }
+    public int getIndex() {
+        return index;
     }
 
     /**
-     * Get the access control which match the given role
-     *
-     * @param role the role
-     *
-     * @return the access-control which match the role or null
+     * @param index the new index of the card in its parent
      */
-    public AccessControl getAcByRole(TeamRole role) {
-        if (role != null) {
-            Optional<AccessControl> optAc = this.getAccessControlList().stream()
-                .filter(acl -> role.equals(acl.getRole())).findFirst();
-
-            return optAc.isPresent() ? optAc.get() : null;
-        } else {
-            return null;
-        }
+    public void setIndex(int index) {
+        this.index = index;
     }
 
     /**
@@ -481,6 +447,59 @@ public class Card
     }
 
     /**
+     * Get access-control list
+     *
+     * @return ACL
+     */
+    public List<AccessControl> getAccessControlList() {
+        return accessControlList;
+    }
+
+    /**
+     * Get the access control which match the given member
+     *
+     * @param member the member
+     *
+     * @return the access-control which match the member or null
+     */
+    public AccessControl getAcByMember(TeamMember member) {
+        if (member != null) {
+            Optional<AccessControl> optAc = this.getAccessControlList().stream()
+                .filter(acl -> member.equals(acl.getMember())).findFirst();
+            return optAc.isPresent() ? optAc.get() : null;
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * Get the access control which match the given role
+     *
+     * @param role the role
+     *
+     * @return the access-control which match the role or null
+     */
+    public AccessControl getAcByRole(TeamRole role) {
+        if (role != null) {
+            Optional<AccessControl> optAc = this.getAccessControlList().stream()
+                .filter(acl -> role.equals(acl.getRole())).findFirst();
+
+            return optAc.isPresent() ? optAc.get() : null;
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * Set the access-control list
+     *
+     * @param accessControlList new list
+     */
+    public void setAccessControlList(List<AccessControl> accessControlList) {
+        this.accessControlList = accessControlList;
+    }
+
+    /**
      * @return the list of abstract resources directly linked to this card
      */
     @Override
@@ -552,60 +571,20 @@ public class Card
         this.activityFlowLinksAsNext = links;
     }
 
-    /**
-     * Get the tracking data
-     *
-     * @return tracking data
-     */
-    @Override
-    public Tracking getTrackingData() {
-        return trackingData;
-    }
-
-    /**
-     * Set tracking data
-     *
-     * @param trackingData new tracking data
-     */
-    @Override
-    public void setTrackingData(Tracking trackingData) {
-        this.trackingData = trackingData;
-    }
-
     // ---------------------------------------------------------------------------------------------
     // concerning the whole class
     // ---------------------------------------------------------------------------------------------
-    /**
-     * {@inheritDoc }
-     */
+
     @Override
     public void merge(ColabEntity other) throws ColabMergeException {
         if (other instanceof Card) {
             Card o = (Card) other;
-            this.setIndex(o.getIndex());
-            this.setColor(o.getColor());
             this.setTitle(o.getTitle());
+            this.setColor(o.getColor());
+            this.setIndex(o.getIndex());
             this.setDefaultInvolvementLevel(o.getDefaultInvolvementLevel());
         } else {
             throw new ColabMergeException(this, other);
-        }
-    }
-
-    @Override
-    public Set<WebsocketChannel> getChannels() {
-        if (this.rootCardProject != null) {
-            // this card is a root card, propagate through the project content channel
-            return Set.of(ProjectContentChannel.build(this.rootCardProject));
-        } else if (this.parent != null) {
-            // this card is a sub-card, propagate through its parent channels
-            return this.parent.getChannels();
-        } else if (this.cardType != null) {
-            // such a card shouldn't exist...
-            // Lorem-ipsum cards for global cardTypes ???
-            return this.cardType.getChannels();
-        } else {
-            // such an orphan card shouldn't exist...
-            return Set.of();
         }
     }
 
@@ -627,6 +606,24 @@ public class Card
             return this.parent.getProject();
         }
         return null;
+    }
+
+    @Override
+    public Set<WebsocketChannel> getChannels() {
+        if (this.rootCardProject != null) {
+            // this card is a root card, propagate through the project content channel
+            return Set.of(ProjectContentChannel.build(this.rootCardProject));
+        } else if (this.parent != null) {
+            // this card is a sub-card, propagate through its parent channels
+            return this.parent.getChannels();
+        } else if (this.cardType != null) {
+            // such a card shouldn't exist...
+            // Lorem-ipsum cards for global cardTypes ???
+            return this.cardType.getChannels();
+        } else {
+            // such an orphan card shouldn't exist...
+            return Set.of();
+        }
     }
 
     @Override
@@ -660,5 +657,4 @@ public class Card
         return "Card{" + "id=" + id + ", index=" + index + ", color=" + color + ", cardTypeId="
             + cardTypeId + ", parentId=" + parentId + "}";
     }
-
 }

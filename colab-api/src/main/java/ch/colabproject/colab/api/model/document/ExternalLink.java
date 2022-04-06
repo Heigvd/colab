@@ -57,9 +57,10 @@ public class ExternalLink extends Document {
 
     @Override
     public void merge(ColabEntity other) throws ColabMergeException {
+        super.merge(other);
+
         if (other instanceof ExternalLink) {
             ExternalLink o = (ExternalLink) other;
-            super.merge(o);
             this.setUrl(o.getUrl());
         } else {
             throw new ColabMergeException(this, other);

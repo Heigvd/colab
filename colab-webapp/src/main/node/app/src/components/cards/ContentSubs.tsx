@@ -88,7 +88,7 @@ export default function ContentSubs({
           <CardCreator
             parentCardContent={cardContent}
             customButton={
-              <Button icon={faPlus} title="Add first card" clickable>
+              <Button icon={faPlus} clickable>
                 Add the first card
               </Button>
             }

@@ -98,7 +98,7 @@ export default function ResourceCreator({
             className,
           )}
         >
-          <FontAwesomeIcon title="Create a resource" icon={addIcon} />
+          <FontAwesomeIcon title="Add a resource" icon={addIcon} />
         </Flex>
       }
       className={css({ display: 'block', width: '100%', textAlign: 'center' })}

@@ -78,6 +78,7 @@ public abstract class AbstractCardType implements ColabEntity, WithWebsocketChan
     // ---------------------------------------------------------------------------------------------
     // fields
     // ---------------------------------------------------------------------------------------------
+
     /**
      * CardType ID
      */
@@ -86,23 +87,10 @@ public abstract class AbstractCardType implements ColabEntity, WithWebsocketChan
     private Long id;
 
     /**
-     * creation &amp; modification tracking data
+     * creation + modification tracking data
      */
     @Embedded
     private Tracking trackingData;
-
-    /**
-     * The project it belongs to. If project is null, it means the type is a global type
-     */
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JsonbTransient
-    private Project project;
-
-    /**
-     * The id of the project (serialization sugar)
-     */
-    @Transient
-    protected Long projectId;
 
     /**
      * Is this type available to other projects?
@@ -119,6 +107,19 @@ public abstract class AbstractCardType implements ColabEntity, WithWebsocketChan
      * Is this type deprecated? A deprecated type should not be used by new projects.
      */
     private boolean deprecated;
+
+    /**
+     * The project it belongs to. If project is null, it means the type is a global type
+     */
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JsonbTransient
+    private Project project;
+
+    /**
+     * The id of the project (serialization sugar)
+     */
+    @Transient
+    protected Long projectId;
 
     /**
      * List of direct references to this type
@@ -144,6 +145,7 @@ public abstract class AbstractCardType implements ColabEntity, WithWebsocketChan
     // ---------------------------------------------------------------------------------------------
     // getters and setters
     // ---------------------------------------------------------------------------------------------
+
     /**
      * @return the cardType ID
      */
@@ -160,39 +162,23 @@ public abstract class AbstractCardType implements ColabEntity, WithWebsocketChan
     }
 
     /**
-     * @return the project it belongs to
-     */
-    public Project getProject() {
-        return project;
-    }
-
-    /**
-     * @param project the project it belongs to
-     */
-    public void setProject(Project project) {
-        this.project = project;
-    }
-
-    /**
-     * get the project id. To be sent to client
+     * Get the tracking data
      *
-     * @return id of the project or null
+     * @return tracking data
      */
-    public Long getProjectId() {
-        if (this.project != null) {
-            return this.project.getId();
-        } else {
-            return projectId;
-        }
+    @Override
+    public Tracking getTrackingData() {
+        return trackingData;
     }
 
     /**
-     * set the project id. For serialization only
+     * Set tracking data
      *
-     * @param id the id of the project
+     * @param trackingData new tracking data
      */
-    public void setProjectId(Long id) {
-        this.projectId = id;
+    @Override
+    public void setTrackingData(Tracking trackingData) {
+        this.trackingData = trackingData;
     }
 
     /**
@@ -232,6 +218,60 @@ public abstract class AbstractCardType implements ColabEntity, WithWebsocketChan
     }
 
     /**
+     * @return the project it belongs to
+     */
+    public Project getProject() {
+        return project;
+    }
+
+    /**
+     * @param project the project it belongs to
+     */
+    public void setProject(Project project) {
+        this.project = project;
+    }
+
+    /**
+     * get the project id. To be sent to client
+     *
+     * @return id of the project or null
+     */
+    public Long getProjectId() {
+        if (this.project != null) {
+            return this.project.getId();
+        } else {
+            return projectId;
+        }
+    }
+
+    /**
+     * set the project id. For serialization only
+     *
+     * @param id the id of the project
+     */
+    public void setProjectId(Long id) {
+        this.projectId = id;
+    }
+
+    /**
+     * Resolve to concrete CardType Get references
+     *
+     * @return list of references
+     */
+    public List<CardTypeRef> getDirectReferences() {
+        return directReferences;
+    }
+
+    /**
+     * Set the list of references
+     *
+     * @param references list of references
+     */
+    public void setDirectReferences(List<CardTypeRef> references) {
+        this.directReferences = references;
+    }
+
+    /**
      * @return the list of all cards implementing this card definition
      */
     public List<Card> getImplementingCards() {
@@ -261,47 +301,10 @@ public abstract class AbstractCardType implements ColabEntity, WithWebsocketChan
         this.directAbstractResources = abstractResources;
     }
 
-    /**
-     * Resolve to concrete CardType Get references
-     *
-     * @return list of references
-     */
-    public List<CardTypeRef> getDirectReferences() {
-        return directReferences;
-    }
-
-    /**
-     * Set the list of references
-     *
-     * @param references list of references
-     */
-    public void setDirectReferences(List<CardTypeRef> references) {
-        this.directReferences = references;
-    }
-
-    /**
-     * Get the tracking data
-     *
-     * @return tracking data
-     */
-    @Override
-    public Tracking getTrackingData() {
-        return trackingData;
-    }
-
-    /**
-     * Set tracking data
-     *
-     * @param trackingData new tracking data
-     */
-    @Override
-    public void setTrackingData(Tracking trackingData) {
-        this.trackingData = trackingData;
-    }
-
     // ---------------------------------------------------------------------------------------------
     // concerning the whole class
     // ---------------------------------------------------------------------------------------------
+
     /**
      * Resolve to concrete CardType
      *
@@ -317,20 +320,6 @@ public abstract class AbstractCardType implements ColabEntity, WithWebsocketChan
     public abstract List<AbstractCardType> expand();
 
     /**
-     * Retrieve the complete transitive set of references to this abstract type.
-     *
-     * @return all references
-     */
-    @JsonbTransient
-    public List<CardTypeRef> getAllReferences() {
-        List<CardTypeRef> all = new ArrayList<>();
-        all.addAll(this.directReferences);
-        this.directReferences.stream().forEach(ref -> all.addAll(ref.getAllReferences()));
-
-        return all;
-    }
-
-    /**
      * JPA post-load callback. Used to keep trace of the initial value of the <code>published</code>
      * field.
      */
@@ -338,6 +327,17 @@ public abstract class AbstractCardType implements ColabEntity, WithWebsocketChan
     public void postLoad() {
         // keep trace of modification
         this.initialPublished = this.published;
+    }
+
+    @Override
+    public void merge(ColabEntity other) throws ColabMergeException {
+        if (other instanceof AbstractCardType) {
+            AbstractCardType o = (AbstractCardType) other;
+            this.setPublished(o.isPublished());
+            this.setDeprecated(o.isDeprecated());
+        } else {
+            throw new ColabMergeException(this, other);
+        }
     }
 
     @Override
@@ -358,7 +358,7 @@ public abstract class AbstractCardType implements ColabEntity, WithWebsocketChan
             });
 
             if (isOrWasPublished) {
-                // eventually, published types are availaible to each project members dependless
+                // eventually, published types are available to each project members independently of
                 // the project they're editing
                 this.getProject().getTeamMembers().forEach(member -> {
                     User user = member.getUser();
@@ -395,17 +395,6 @@ public abstract class AbstractCardType implements ColabEntity, WithWebsocketChan
         } else {
             // only admin can edit global types
             return Conditions.alwaysFalse;
-        }
-    }
-
-    @Override
-    public void merge(ColabEntity other) throws ColabMergeException {
-        if (other instanceof AbstractCardType) {
-            AbstractCardType o = (AbstractCardType) other;
-            this.setDeprecated(o.isDeprecated());
-            this.setPublished(o.isPublished());
-        } else {
-            throw new ColabMergeException(this, other);
         }
     }
 
