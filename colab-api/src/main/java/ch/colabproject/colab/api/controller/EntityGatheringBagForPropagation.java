@@ -9,7 +9,6 @@ package ch.colabproject.colab.api.controller;
 import ch.colabproject.colab.api.model.WithWebsocketChannels;
 import ch.colabproject.colab.api.persistence.jpa.user.UserDao;
 import ch.colabproject.colab.api.ws.WebsocketHelper;
-import ch.colabproject.colab.api.ws.message.IndexEntry;
 import ch.colabproject.colab.api.ws.message.PrecomputedWsMessages;
 import java.io.Serializable;
 import java.util.Collection;
@@ -74,7 +73,7 @@ public class EntityGatheringBagForPropagation implements Serializable {
     /**
      * set of entities which have been deleted during the transaction
      */
-    private Set<IndexEntry> deleted = new HashSet<>();
+    private Set<WithWebsocketChannels> deleted = new HashSet<>();
 
     /**
      * store the prepared messages
@@ -156,9 +155,7 @@ public class EntityGatheringBagForPropagation implements Serializable {
     public void registerDeletion(Collection<? extends WithWebsocketChannels> c) {
         // make sure txManager exists by just touching it
         txManager.touch();
-        c.stream()
-            .map(IndexEntry::build)
-            .forEach(deleted::add);
+        deleted.addAll(c);
         logger.trace("Deleted set: {}", deleted);
     }
 
@@ -170,7 +167,7 @@ public class EntityGatheringBagForPropagation implements Serializable {
     public void registerDeletion(WithWebsocketChannels o) {
         // make sure txManager exists by just touching it
         txManager.touch();
-        deleted.add(IndexEntry.build(o));
+        deleted.add(o);
         logger.trace("Deleted set: {}", deleted);
     }
 
@@ -180,7 +177,7 @@ public class EntityGatheringBagForPropagation implements Serializable {
     private void precomputeMessage() {
         try {
             logger.debug("Precompute messages; Update:{}, Deletes:{}", updated, deleted);
-            // filter updateds to keep only those who haven't been deleted
+            // filter updates to keep only those who haven't been deleted
             Set<WithWebsocketChannels> filtered = updated.stream()
                 .filter(
                     (u) -> !deleted.stream()

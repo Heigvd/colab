@@ -88,7 +88,7 @@ public class WebsocketHelper {
      * @param channel    channel to identify correct set
      * @param entity     entity to add
      */
-    private static void add(Map<WebsocketEffectiveChannel, List<WsMessage>> byChannels,
+    private static void addToUpdated(Map<WebsocketEffectiveChannel, List<WsMessage>> byChannels,
         WebsocketEffectiveChannel channel,
         WithWebsocketChannels entity) {
         Collection<WithWebsocketChannels> set
@@ -111,7 +111,7 @@ public class WebsocketHelper {
      * @param channel    channel to identify correct set
      * @param entry      entry to add
      */
-    private static void add(Map<WebsocketEffectiveChannel, List<WsMessage>> byChannels,
+    private static void addToDeleted(Map<WebsocketEffectiveChannel, List<WsMessage>> byChannels,
         WebsocketEffectiveChannel channel,
         IndexEntry entry) {
         Collection<IndexEntry> set
@@ -127,8 +127,6 @@ public class WebsocketHelper {
      * @param channels list of WebsocketChannel
      * @param userDao  the userDao to resolve meta channels
      * @param action   action to apply of each unique effective channel
-     *
-     * @return stream of unique WebsocketEffectiveChannel
      */
     private static void forEachDistinctEffectiveChannel(Set<WebsocketChannel> channels,
         UserDao userDao,
@@ -174,7 +172,7 @@ public class WebsocketHelper {
         UserDao userDao,
         RequestManager requestManager,
         Set<WithWebsocketChannels> updated,
-        Set<IndexEntry> deleted
+        Set<WithWebsocketChannels> deleted
     ) throws EncodeException {
         Map<WebsocketEffectiveChannel, List<WsMessage>> messagesByChannel = new HashMap<>();
         logger.debug("Prepare WsMessage. Update:{}; Deleted:{}", updated, deleted);
@@ -182,14 +180,14 @@ public class WebsocketHelper {
         updated.forEach(entity -> {
             logger.trace("Process updated entity {}", entity);
             forEachDistinctEffectiveChannel(entity.getChannels(), userDao, requestManager, channel -> {
-                add(messagesByChannel, channel, entity);
+                addToUpdated(messagesByChannel, channel, entity);
             });
         });
 
         deleted.forEach(entity -> {
             logger.trace("Process deleted entry {}", entity);
             forEachDistinctEffectiveChannel(entity.getChannels(), userDao, requestManager, channel -> {
-                add(messagesByChannel, channel, entity);
+                addToDeleted(messagesByChannel, channel, IndexEntry.build(entity));
             });
         });
 
