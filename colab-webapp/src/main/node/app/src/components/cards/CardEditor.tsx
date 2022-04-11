@@ -14,6 +14,7 @@ import {
   faPaperclip,
   faStickyNote,
   faTrash,
+  faUsers,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Card, CardContent, entityIs } from 'colab-rest-client';
@@ -45,6 +46,7 @@ import {
   space_S,
   variantTitle,
 } from '../styling/style';
+import CardInvolvement from './CardInvolvement';
 import CardSettings from './CardSettings';
 import ContentSubs from './ContentSubs';
 import SideCollapsiblePanel from './SideCollapsiblePanel';
@@ -262,6 +264,21 @@ export default function CardEditor({ card, variant, showSubcards = true }: Props
                             </Modal>
                           }
                         />
+                        <Route
+                          path="involvements"
+                          element={
+                            <Modal
+                              title="Involvements"
+                              onClose={() => closeRouteCb('involvements')}
+                              showCloseButton
+                              className={css({ height: '580px' })}
+                            >
+                              {() => (
+                                <CardInvolvement card={card} />
+                              )}
+                            </Modal>
+                          }
+                        />
                       </Routes>
                       <DropDownMenu
                         icon={faEllipsisV}
@@ -273,6 +290,14 @@ export default function CardEditor({ card, variant, showSubcards = true }: Props
                             label: (
                               <>
                                 <FontAwesomeIcon icon={faCog} /> Card Settings
+                              </>
+                            ),
+                          },
+                          {
+                            value: 'involvements',
+                            label: (
+                              <>
+                                <FontAwesomeIcon icon={faUsers} /> Involvements
                               </>
                             ),
                           },
