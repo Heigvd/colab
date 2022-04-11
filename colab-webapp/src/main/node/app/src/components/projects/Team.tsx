@@ -48,6 +48,12 @@ const gridNewLine = css({
   gridColumnStart: 1,
   justifySelf: 'start',
 });
+const titleCellStyle = css({
+  justifySelf: 'stretch',
+  padding: space_S + ' 0',
+  fontWeight: 800,
+  borderBottom: '1px solid var(--lightGray)',
+});
 
 function prettyPrint(position: HierarchicalPosition) {
   switch (position) {
@@ -341,8 +347,12 @@ export default function Team({ project }: Props): JSX.Element {
             gap: space_S,
           })}
         >
+          <div className={titleCellStyle}>Members</div>
+          <div className={titleCellStyle}>Rights</div>
+          <div className={cx(titleCellStyle, css({ gridColumnStart: 3, gridColumnEnd: 'end'}))}>Roles</div> 
           <div />
           <div />
+          
           {roles.map(role => (
             <div key={'role-' + role.id}>
               <RoleDisplay role={role} />
