@@ -18,6 +18,7 @@ import {
   warningStyle,
 } from '../../styling/style';
 import Flex from '../Flex';
+import Tips, { TipsProps } from '../Tips';
 
 export interface Props {
   label?: React.ReactNode;
@@ -29,6 +30,7 @@ export interface Props {
   type?: HTMLInputElement['type'];
   onChange: (newValue: string) => void;
   placeholder?: string;
+  tip?: TipsProps['children'];
   className?: string;
   readonly?: boolean;
   delay?: number;
@@ -45,6 +47,7 @@ export default function Input({
   mandatory,
   className,
   placeholder,
+  tip,
   readonly = false,
   delay = 500,
 }: Props): JSX.Element {
@@ -88,8 +91,9 @@ export default function Input({
       align="normal"
     >
       <Flex justify="space-between">
-        <div className={labelStyle}>
-          {label}
+        <div>
+          <span className={labelStyle}>{label}</span>
+          {tip && <Tips>{tip}</Tips>}
           {mandatory ? ' * ' : null}
         </div>
       </Flex>

@@ -41,7 +41,7 @@ export const TipsCtx = React.createContext<TipsContextType>({
   },
 });
 
-interface TipsProps {
+export interface TipsProps {
   tipsType?: TipsType;
   interactionType?: 'CLICK' | 'HOVER';
   children?: React.ReactNode;
@@ -68,6 +68,8 @@ function getStyle(t: TipsProps['interactionType']) {
     return css({ cursor: 'help' });
   }
 }
+
+const iconStyle = css({ padding: space_S });
 
 const ttWidth = 200;
 const ttPadding = 10;
@@ -143,8 +145,8 @@ export function TipsSettings(): JSX.Element {
 
 export default function Tips({
   tipsType = 'TIPS',
-  children,
   interactionType = 'HOVER',
+  children,
 }: TipsProps): JSX.Element {
   const [coord, setCoord] = React.useState<[number, number] | undefined>(undefined);
 
@@ -212,14 +214,14 @@ export default function Tips({
   if (config[tipsType].value) {
     return (
       <span
-        className={getStyle(interactionType)}
+        className={cx(getStyle(interactionType), iconStyle)}
         onMouseLeave={onLeaveCb}
         onMouseEnter={onEnterCb}
         onMouseMove={onMoveCb}
         onClick={onClickCb}
       >
         <FontAwesomeIcon icon={getIconProp(tipsType)} />
-        {coord && displayed ? <div className={overlayStyle(coord)}>{children} </div> : null}
+        {coord && displayed && <div className={overlayStyle(coord)}>{children} </div>}
       </span>
     );
   } else {

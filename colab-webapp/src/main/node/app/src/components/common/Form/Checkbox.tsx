@@ -11,6 +11,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import * as React from 'react';
 import { errorStyle, space_S, warningStyle } from '../../styling/style';
 import Flex from '../Flex';
+import Tips, { TipsProps } from '../Tips';
 
 export interface Props {
   label?: React.ReactNode;
@@ -20,6 +21,7 @@ export interface Props {
   disabled?: boolean;
   value?: boolean;
   onChange: (newValue: boolean) => void;
+  tip?: TipsProps['children'];
   className?: string;
   containerClassName?: string;
 }
@@ -37,6 +39,7 @@ export default function Checkbox({
   disabled = false,
   value,
   onChange,
+  tip,
   containerClassName,
   className,
 }: Props): JSX.Element {
@@ -58,6 +61,7 @@ export default function Checkbox({
           className={cx(css({ marginRight: space_S }), className)}
         />
         {label}
+        {tip && <Tips>{tip}</Tips>}
       </Flex>
     </Flex>
   );
