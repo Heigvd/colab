@@ -12,6 +12,7 @@ import {
   faEllipsisV,
   faInfoCircle,
   faPaperclip,
+  faPercent,
   faStickyNote,
   faTrash,
 } from '@fortawesome/free-solid-svg-icons';
@@ -110,6 +111,24 @@ function ProgressBar({
       <div className={valueStyle}>{percent}%</div>
       <div className={progressBar(percent)}></div>
     </div>
+  );
+}
+
+function ProgressModifier({ variant }: { variant: CardContent }) {
+  const dispatch = useAppDispatch();
+  return (
+    <Input
+      label="Completion level"
+      value={String(variant.completionLevel || 0)}
+      onChange={newValue =>
+        dispatch(
+          API.updateCardContent({
+            ...variant,
+            completionLevel: +newValue,
+          }),
+        )
+      }
+    />
   );
 }
 
@@ -262,6 +281,24 @@ export default function CardEditor({ card, variant, showSubcards = true }: Props
                             </Modal>
                           }
                         />
+                        <Route
+                          path="completion"
+                          element={
+                            <Modal
+                              title="Completion"
+                              onClose={() => navigate('./')}
+                              showCloseButton
+                            >
+                              {() =>
+                                variant && (
+                                  <Flex direction="column">
+                                    <ProgressModifier variant={variant} />
+                                  </Flex>
+                                )
+                              }
+                            </Modal>
+                          }
+                        />
                       </Routes>
                       <DropDownMenu
                         icon={faEllipsisV}
@@ -273,6 +310,14 @@ export default function CardEditor({ card, variant, showSubcards = true }: Props
                             label: (
                               <>
                                 <FontAwesomeIcon icon={faCog} /> Card Settings
+                              </>
+                            ),
+                          },
+                          {
+                            value: 'completion',
+                            label: (
+                              <>
+                                <FontAwesomeIcon icon={faPercent} /> Completion
                               </>
                             ),
                           },
@@ -382,19 +427,13 @@ export default function CardEditor({ card, variant, showSubcards = true }: Props
                     />
                   }
                 >
-                  {() => (
-                    <Flex direction="column">
-                      <Input
-                        label="Completion level"
-                        value={String(variant.completionLevel || 0)}
-                        onChange={newValue =>
-                          dispatch(
-                            API.updateCardContent({ ...variant, completionLevel: +newValue }),
-                          )
-                        }
-                      />
-                    </Flex>
-                  )}
+                  {() =>
+                    variant && (
+                      <Flex direction="column">
+                        <ProgressModifier variant={variant} />
+                      </Flex>
+                    )
+                  }
                 </OpenCloseModal>
               </Flex>
             </Flex>
