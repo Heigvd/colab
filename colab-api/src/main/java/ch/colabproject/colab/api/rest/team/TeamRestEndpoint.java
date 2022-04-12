@@ -114,6 +114,18 @@ public class TeamRestEndpoint {
         teamManager.updatePosition(memberId, position);
     }
 
+    /**
+     * Delete a team member
+     *
+     * @param memberId id of the member
+     */
+    @DELETE
+    @Path("member/{memberId}")
+    public void deleteTeamMember(@PathParam("memberId") Long memberId) {
+        logger.debug("Delete team member #{}", memberId);
+        teamManager.deleteTeamMember(memberId);
+    }
+
     // *********************************************************************************************
     // Roles
     // *********************************************************************************************
