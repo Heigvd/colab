@@ -246,6 +246,7 @@ export default function CardTypeEditor({ className }: Props): JSX.Element {
                 <Toggler
                   value={cardType.published || undefined}
                   label="published"
+                  tip="Make a card type published if you want to access it in your other projects"
                   onChange={() =>
                     dispatch(
                       API.updateCardTypePublished({
@@ -255,9 +256,6 @@ export default function CardTypeEditor({ className }: Props): JSX.Element {
                     )
                   }
                 />
-                <Tips tipsType="TIPS" interactionType="HOVER">
-                  Make a card type published if you want to access it in your other projects.
-                </Tips>
               </Flex>
             </Flex>
           </Flex>

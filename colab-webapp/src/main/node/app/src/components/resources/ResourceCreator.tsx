@@ -66,7 +66,7 @@ export default function ResourceCreator({
       label: 'Category',
       isMandatory: false,
       placeholder: 'Select or type to create',
-      fieldFooter: 'Made to organize the documentation',
+      tip: 'Like folders to organize the documentation',
       isMulti: false,
       canCreateOption: true,
       options: allCategories.map(c => ({ label: c, value: c })),

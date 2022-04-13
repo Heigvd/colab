@@ -16,6 +16,7 @@ import { space_M } from '../../styling/style';
 import Button from '../Button';
 import Flex from '../Flex';
 import InlineLoading from '../InlineLoading';
+import { TipsProps } from '../Tips';
 import Checkbox from './Checkbox';
 import Input from './Input';
 import SelectInput from './SelectInput';
@@ -31,6 +32,7 @@ export interface BaseField<T> {
   readonly?: boolean;
   placeholder?: string;
   fieldFooter?: React.ReactNode;
+  tip?: TipsProps['children'];
   isErroneous?: (entity: T) => boolean;
   errorMessage?: React.ReactNode | ((data: T) => React.ReactNode);
 }
@@ -185,6 +187,7 @@ export default function Form<T>({
             value={String(state[field.key] || '')}
             label={field.label}
             placeholder={field.placeholder}
+            tip={field.tip}
             warning={errorMessage}
             mandatory={field.isMandatory}
             onChange={value => setFormValue(field.key, value)}
@@ -200,6 +203,7 @@ export default function Form<T>({
             value={String(state[field.key])}
             label={field.label}
             placeholder={field.placeholder}
+            tip={field.tip}
             options={field.options}
             warning={errorMessage}
             mandatory={field.isMandatory}
@@ -218,6 +222,7 @@ export default function Form<T>({
             value={Number(state[field.key])}
             label={field.label}
             placeholder={field.placeholder}
+            tip={field.tip}
             options={field.options}
             warning={errorMessage}
             mandatory={field.isMandatory}
@@ -236,6 +241,7 @@ export default function Form<T>({
             value={String(state[field.key] || '')}
             label={field.label}
             placeholder={field.placeholder}
+            tip={field.tip}
             warning={errorMessage}
             mandatory={field.isMandatory}
             onChange={value => setFormValue(field.key, value)}
@@ -269,6 +275,7 @@ export default function Form<T>({
               value={blnValue}
               label={field.label}
               warning={erroneous && isErroneous ? field.errorMessage : undefined}
+              tip={field.tip}
               onChange={value => setFormValue(field.key, value)}
               disabled={field.readonly}
             />
@@ -277,6 +284,7 @@ export default function Form<T>({
               value={blnValue}
               label={field.label}
               warning={erroneous && isErroneous ? field.errorMessage : undefined}
+              tip={field.tip}
               onChange={value => setFormValue(field.key, value)}
               disabled={field.readonly}
             />

@@ -20,6 +20,7 @@ import {
   warningStyle,
 } from '../../styling/style';
 import Flex from '../Flex';
+import Tips, { TipsProps } from '../Tips';
 
 interface Opt<T> {
   label: string;
@@ -37,6 +38,7 @@ export interface Props<T, IsMulti extends boolean> {
   mandatory?: boolean;
   onChange: (newValue: ValueType<T, IsMulti>) => void;
   placeholder?: string;
+  tip?: TipsProps['children'];
   className?: string;
   readonly?: boolean;
   isMulti: IsMulti;
@@ -54,6 +56,7 @@ export default function SelectInput<T, IsMulti extends boolean>({
   className,
   isMulti,
   placeholder = 'no value',
+  tip,
   readonly = false,
   canCreateOption = false,
 }: Props<T, IsMulti>): JSX.Element {
@@ -87,9 +90,10 @@ export default function SelectInput<T, IsMulti extends boolean>({
       align="stretch"
     >
       <Flex justify="space-between">
-        <div className={labelStyle}>
-          {label}
-          {mandatory ? ' * ' : null}{' '}
+        <div>
+          <span className={labelStyle}>{label}</span>
+          {tip && <Tips>{tip}</Tips>}
+          {mandatory ? ' * ' : null}
         </div>
       </Flex>
       {canCreateOption ? (
