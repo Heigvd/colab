@@ -32,6 +32,7 @@ export interface Props {
   className?: string;
   readonly?: boolean;
   delay?: number;
+  autofocus?: boolean;
 }
 
 export default function Input({
@@ -45,6 +46,7 @@ export default function Input({
   mandatory,
   className,
   placeholder,
+  autofocus,
   readonly = false,
   delay = 500,
 }: Props): JSX.Element {
@@ -102,6 +104,7 @@ export default function Input({
           onChange={onInternalChangeCb}
           onBlur={onBlurCb}
           readOnly={readonly}
+          autoFocus={autofocus}
         />
       ) : (
         <textarea
@@ -111,6 +114,7 @@ export default function Input({
           onChange={onInternalChangeCb}
           onBlur={onBlurCb}
           readOnly={readonly}
+          autoFocus={autofocus}
         />
       )}
       {warning ? <div className={cx(textSmall, warningStyle)}>{warning}</div> : null}
