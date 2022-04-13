@@ -163,9 +163,10 @@ export default function InlineInput({
   );
 
   const onEnterCb = React.useCallback(
-    (e: React.KeyboardEvent<HTMLInputElement>) => {
+    (e) => {
       if(e.key === 'Enter'){
-        cancelCb(); //should also unfocus completely
+        cancelCb();
+        e.target.blur(); //should also unfocus completely
         // + debouncedOnChange(newValue);       
       }     
     },

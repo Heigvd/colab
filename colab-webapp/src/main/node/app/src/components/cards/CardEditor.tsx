@@ -32,7 +32,6 @@ import Flex from '../common/Flex';
 import Input from '../common/Form/Input';
 import IconButton from '../common/IconButton';
 import InlineInput from '../common/InlineInput';
-import InlineInputNew from '../common/InlineInputNew';
 import Modal from '../common/Modal';
 import OpenCloseModal from '../common/OpenCloseModal';
 import { DocTextDisplay } from '../documents/DocTextItem';
@@ -205,7 +204,7 @@ export default function CardEditor({ card, variant, showSubcards = true }: Props
                         </div>
                       )}
                       <Flex align="center">
-                         <InlineInputNew
+                         <InlineInput
                           placeholder={i18n.card.untitled}
                           readOnly={readOnly}
                           value={card.title || ''}
