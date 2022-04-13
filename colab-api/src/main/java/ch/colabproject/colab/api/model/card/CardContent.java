@@ -19,10 +19,10 @@ import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.api.model.tools.EntityHelper;
 import ch.colabproject.colab.api.model.tracking.Tracking;
 import ch.colabproject.colab.api.security.permissions.Conditions;
-import ch.colabproject.colab.api.ws.channel.WebsocketChannel;
+import ch.colabproject.colab.api.ws.channel.ChannelBuilders.ChannelBuilder;
+import ch.colabproject.colab.api.ws.channel.ChannelBuilders.EmptyChannelBuilder;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 import javax.json.bind.annotation.JsonbTransient;
 import javax.persistence.CascadeType;
 import javax.persistence.Embedded;
@@ -388,11 +388,12 @@ public class CardContent implements ColabEntity, WithWebsocketChannels,
     }
 
     @Override
-    public Set<WebsocketChannel> getChannels() {
+    public ChannelBuilder getChannelBuilder() {
         if (this.card != null) {
-            return this.card.getChannels();
+            return this.card.getChannelBuilder();
         } else {
-            return Set.of();
+            // such an orphan shouldn't exist...
+            return new EmptyChannelBuilder();
         }
     }
 

@@ -15,12 +15,10 @@ package ch.colabproject.colab.api.ws.channel;
  * Subscription : as soon as possible on client side + on current user reload<br>
  * Unsubscription : -<br>
  * </p>
- * <p>
  * Used by :
  * <ul>
  * <li>AbstractCardType if global (=without project) and published</li>
  * </ul>
- * </p>
  *
  * @author maxence
  */

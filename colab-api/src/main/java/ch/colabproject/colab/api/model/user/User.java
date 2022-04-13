@@ -13,16 +13,12 @@ import ch.colabproject.colab.api.model.team.TeamMember;
 import ch.colabproject.colab.api.model.tools.EntityHelper;
 import ch.colabproject.colab.api.model.tracking.Tracking;
 import ch.colabproject.colab.api.security.permissions.Conditions;
-import ch.colabproject.colab.api.ws.channel.AdminChannel;
-import ch.colabproject.colab.api.ws.channel.ProjectOverviewChannel;
-import ch.colabproject.colab.api.ws.channel.UserChannel;
-import ch.colabproject.colab.api.ws.channel.WebsocketChannel;
+import ch.colabproject.colab.api.ws.channel.ChannelBuilders.ChannelBuilder;
+import ch.colabproject.colab.api.ws.channel.ChannelBuilders.UserChannelBuilder;
 import ch.colabproject.colab.generator.model.tools.DateSerDe;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import javax.json.bind.annotation.JsonbTransient;
 import javax.json.bind.annotation.JsonbTypeDeserializer;
 import javax.json.bind.annotation.JsonbTypeSerializer;
@@ -48,7 +44,7 @@ import javax.validation.constraints.Pattern;
  */
 @Entity
 @Table(name = "users", indexes = {
-    @Index(columnList = "username", unique = true),})
+    @Index(columnList = "username", unique = true), })
 @NamedQuery(name = "User.findAll", query = "SELECT u from User u")
 @NamedQuery(name = "User.findByUsername",
     query = "SELECT u from User u where u.username = :username")
@@ -128,14 +124,14 @@ public class User implements ColabEntity, WithWebsocketChannels {
     /**
      * List of accounts the user can authenticate with
      */
-    @OneToMany(mappedBy = "user", cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
+    @OneToMany(mappedBy = "user", cascade = { CascadeType.PERSIST, CascadeType.REMOVE })
     @JsonbTransient
     private List<Account> accounts = new ArrayList<>();
 
     /**
      * List of teams the user is part of
      */
-    @OneToMany(mappedBy = "user", cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
+    @OneToMany(mappedBy = "user", cascade = { CascadeType.PERSIST, CascadeType.REMOVE })
     @JsonbTransient
     private List<TeamMember> teamMembers = new ArrayList<>();
 
@@ -250,7 +246,6 @@ public class User implements ColabEntity, WithWebsocketChannels {
     }
 
     /**
-     *
      * @return user last name, may be null or empty
      */
     public String getLastname() {
@@ -258,7 +253,6 @@ public class User implements ColabEntity, WithWebsocketChannels {
     }
 
     /**
-     *
      * @param lastname user last name, may be null or empty
      */
     public void setLastname(String lastname) {
@@ -275,7 +269,6 @@ public class User implements ColabEntity, WithWebsocketChannels {
     }
 
     /**
-     *
      * @param commonname user common name
      */
     public void setCommonname(String commonname) {
@@ -411,27 +404,9 @@ public class User implements ColabEntity, WithWebsocketChannels {
         }
     }
 
-    /**
-     * Get the websocket channel relative to this user.
-     *
-     * @return the websocket channel
-     */
-    @JsonbTransient
-    public UserChannel getEffectiveChannel() {
-        return UserChannel.build(this);
-    }
-
     @Override
-    public Set<WebsocketChannel> getChannels() {
-        Set<WebsocketChannel> channels = new HashSet<>();
-        channels.add(this.getEffectiveChannel());
-        // teammate through ProjectOverview channels
-        this.getTeamMembers().forEach(member -> {
-            channels.add(ProjectOverviewChannel.build(member.getProject()));
-        });
-        // all admin
-        channels.add(new AdminChannel());
-        return channels;
+    public ChannelBuilder getChannelBuilder() {
+        return new UserChannelBuilder(this);
     }
 
     @Override

@@ -18,11 +18,10 @@ import ch.colabproject.colab.api.model.tools.EntityHelper;
 import ch.colabproject.colab.api.model.tracking.Tracking;
 import ch.colabproject.colab.api.security.permissions.Conditions;
 import ch.colabproject.colab.api.security.permissions.project.ProjectConditions;
-import ch.colabproject.colab.api.ws.channel.ProjectOverviewChannel;
-import ch.colabproject.colab.api.ws.channel.WebsocketChannel;
+import ch.colabproject.colab.api.ws.channel.ChannelBuilders.ChannelBuilder;
+import ch.colabproject.colab.api.ws.channel.ChannelBuilders.ProjectOverviewChannelBuilder;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 import javax.json.bind.annotation.JsonbTransient;
 import javax.persistence.CascadeType;
@@ -309,8 +308,8 @@ public class Project implements ColabEntity, WithWebsocketChannels {
      * @return the channel
      */
     @Override
-    public Set<WebsocketChannel> getChannels() {
-        return Set.of(ProjectOverviewChannel.build(this));
+    public ChannelBuilder getChannelBuilder() {
+        return new ProjectOverviewChannelBuilder(this);
     }
 
     @Override

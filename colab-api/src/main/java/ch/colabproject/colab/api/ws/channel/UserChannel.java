@@ -20,12 +20,10 @@ import java.util.Objects;
  * Subscription : as soon as possible on client side + on current user reload<br>
  * Unsubscription : -<br>
  * </p>
- * <p>
  * Used by :
  * <ul>
  * <li>User</li>
  * </ul>
- * </p>
  * <p>
  * Can be watched by admin in the Who page
  * </p>

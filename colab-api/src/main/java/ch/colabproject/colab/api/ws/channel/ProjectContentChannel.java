@@ -18,14 +18,12 @@ import java.util.Objects;
  * subscription when a project is edited<br>
  * unsubscription when a project is closed<br>
  * </p>
- * <p>
  * Used by :
  * <ul>
  * <li>AbstractCardType if in a project</li>
  * <li>Card if root card of a project</li>
  * <li>Team role of a project</li>
  * </ul>
- * </p>
  * <p>
  * Can be watched by admin in the Who page
  * </p>

@@ -22,12 +22,12 @@ import ch.colabproject.colab.api.model.team.acl.InvolvementLevel;
 import ch.colabproject.colab.api.model.tools.EntityHelper;
 import ch.colabproject.colab.api.model.tracking.Tracking;
 import ch.colabproject.colab.api.security.permissions.Conditions;
-import ch.colabproject.colab.api.ws.channel.ProjectContentChannel;
-import ch.colabproject.colab.api.ws.channel.WebsocketChannel;
+import ch.colabproject.colab.api.ws.channel.ChannelBuilders.ChannelBuilder;
+import ch.colabproject.colab.api.ws.channel.ChannelBuilders.EmptyChannelBuilder;
+import ch.colabproject.colab.api.ws.channel.ChannelBuilders.ProjectContentChannelBuilder;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 import javax.json.bind.annotation.JsonbTransient;
 import javax.persistence.CascadeType;
 import javax.persistence.Embedded;
@@ -609,20 +609,20 @@ public class Card
     }
 
     @Override
-    public Set<WebsocketChannel> getChannels() {
+    public ChannelBuilder getChannelBuilder() {
         if (this.rootCardProject != null) {
             // this card is a root card, propagate through the project content channel
-            return Set.of(ProjectContentChannel.build(this.rootCardProject));
+            return new ProjectContentChannelBuilder(this.rootCardProject);
         } else if (this.parent != null) {
             // this card is a sub-card, propagate through its parent channels
-            return this.parent.getChannels();
+            return this.parent.getChannelBuilder();
         } else if (this.cardType != null) {
             // such a card shouldn't exist...
             // Lorem-ipsum cards for global cardTypes ???
-            return this.cardType.getChannels();
+            return this.cardType.getChannelBuilder();
         } else {
-            // such an orphan card shouldn't exist...
-            return Set.of();
+            // such an orphan shouldn't exist...
+            return new EmptyChannelBuilder();
         }
     }
 

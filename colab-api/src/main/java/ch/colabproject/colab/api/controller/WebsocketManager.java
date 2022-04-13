@@ -16,11 +16,11 @@ import ch.colabproject.colab.api.persistence.jpa.user.UserDao;
 import ch.colabproject.colab.api.security.permissions.Conditions;
 import ch.colabproject.colab.api.ws.WebsocketEndpoint;
 import ch.colabproject.colab.api.ws.WebsocketHelper;
-import ch.colabproject.colab.api.ws.channel.AdminChannel;
 import ch.colabproject.colab.api.ws.channel.BlockChannel;
 import ch.colabproject.colab.api.ws.channel.BroadcastChannel;
 import ch.colabproject.colab.api.ws.channel.ChannelOverview;
 import ch.colabproject.colab.api.ws.channel.ProjectContentChannel;
+import ch.colabproject.colab.api.ws.channel.UserChannel;
 import ch.colabproject.colab.api.ws.channel.WebsocketEffectiveChannel;
 import ch.colabproject.colab.api.ws.message.PrecomputedWsMessages;
 import ch.colabproject.colab.api.ws.message.WsChannelUpdate;
@@ -33,8 +33,8 @@ import java.io.IOException;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -500,10 +500,8 @@ public class WebsocketManager {
      */
     private void propagateChannelChange(WebsocketEffectiveChannel channel, int diff) {
         try {
-            PrecomputedWsMessages prepareWsMessage = WebsocketHelper.prepareWsMessage(
+            PrecomputedWsMessages prepareWsMessage = WebsocketHelper.prepareWsMessageForAdmins(
                 userDao,
-                requestManager,
-                new AdminChannel(),
                 WsChannelUpdate.build(channel, diff)
             );
             this.propagate(prepareWsMessage);
@@ -533,7 +531,7 @@ public class WebsocketManager {
         } else if (request.getChannelType() == SubscriptionRequest.ChannelType.USER) {
             User user = userDao.findUser(request.getChannelId());
             if (user != null) {
-                return user.getEffectiveChannel();
+                return UserChannel.build(user);
             }
         } else if (request.getChannelType() == SubscriptionRequest.ChannelType.BROADCAST) {
             return BroadcastChannel.build();

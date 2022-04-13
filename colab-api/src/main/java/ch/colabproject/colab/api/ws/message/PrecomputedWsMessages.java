@@ -65,13 +65,13 @@ public class PrecomputedWsMessages implements Serializable {
         Map<WebsocketEffectiveChannel, List<String>> encoded = m.getMessages();
         if (messages != null) {
             // TODO: is there a way to throw exception from lambda ?
-            for (var entry : messages.entrySet()) {
-                var wsMessages = entry.getValue();
+            for (var messageEntry : messages.entrySet()) {
+                var wsMessages = messageEntry.getValue();
                 var encodedMessages = new ArrayList<String>(wsMessages.size());
                 for (var wsMessage : wsMessages) {
                     encodedMessages.add(JsonEncoder.toJson(wsMessage));
                 }
-                encoded.put(entry.getKey(), encodedMessages);
+                encoded.put(messageEntry.getKey(), encodedMessages);
             }
         }
         return m;

@@ -18,12 +18,10 @@ import java.util.Objects;
  * Subscription : when editing a block<br>
  * Unsubscription : when stopping edition of a block<br>
  * </p>
- * <p>
  * Used by :
  * <ul>
  * <li>Change</li>
  * </ul>
- * </p>
  *
  * @author maxence
  */

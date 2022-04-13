@@ -7,10 +7,7 @@
 package ch.colabproject.colab.api.ws.message;
 
 import ch.colabproject.colab.api.model.WithWebsocketChannels;
-import ch.colabproject.colab.api.ws.channel.WebsocketChannel;
 import ch.colabproject.colab.generator.model.interfaces.WithJsonDiscriminator;
-import java.util.Set;
-import javax.json.bind.annotation.JsonbTransient;
 import javax.validation.constraints.NotNull;
 
 /**
@@ -35,12 +32,6 @@ public class IndexEntry implements WithJsonDiscriminator {
      */
     @NotNull
     private Object payload;
-
-    /**
-     * Get the channels this entity shall be sent through.
-     */
-    @JsonbTransient
-    private Set<WebsocketChannel> channels;
 
     /**
      * @return index entry type
@@ -93,24 +84,6 @@ public class IndexEntry implements WithJsonDiscriminator {
     }
 
     /**
-     * get channels
-     *
-     * @return channels
-     */
-    public Set<WebsocketChannel> getChannels() {
-        return channels;
-    }
-
-    /**
-     * set channels
-     *
-     * @param channels new channels
-     */
-    public void setChannels(Set<WebsocketChannel> channels) {
-        this.channels = channels;
-    }
-
-    /**
      * Create an new index entry based on the given wihId object
      *
      * @param object object to index
@@ -123,7 +96,6 @@ public class IndexEntry implements WithJsonDiscriminator {
         entry.type = object.getJsonDiscriminator();
         entry.id = object.getId();
         entry.payload = object.getIndexEntryPayload();
-        entry.channels = object.getChannels();
 
         return entry;
     }

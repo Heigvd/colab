@@ -6,12 +6,12 @@
  */
 package ch.colabproject.colab.api.ws;
 
-import ch.colabproject.colab.api.controller.RequestManager;
 import ch.colabproject.colab.api.model.WithWebsocketChannels;
+import ch.colabproject.colab.api.persistence.jpa.card.CardTypeDao;
 import ch.colabproject.colab.api.persistence.jpa.user.UserDao;
-import ch.colabproject.colab.api.ws.channel.WebsocketChannel;
+import ch.colabproject.colab.api.ws.channel.ChannelBuilders.ForAdminChannelBuilder;
+import ch.colabproject.colab.api.ws.channel.ChannelBuilders.ChannelBuilder;
 import ch.colabproject.colab.api.ws.channel.WebsocketEffectiveChannel;
-import ch.colabproject.colab.api.ws.channel.WebsocketMetaChannel;
 import ch.colabproject.colab.api.ws.message.IndexEntry;
 import ch.colabproject.colab.api.ws.message.PrecomputedWsMessages;
 import ch.colabproject.colab.api.ws.message.WsMessage;
@@ -22,8 +22,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-import java.util.function.Consumer;
-import java.util.stream.Stream;
 import javax.websocket.EncodeException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,6 +31,7 @@ import org.slf4j.LoggerFactory;
  *
  * @author maxence
  */
+// TODO rename WebsocketMessagePreparer
 public class WebsocketHelper {
 
     /** logger */
@@ -49,22 +48,22 @@ public class WebsocketHelper {
     /**
      * Get the message that will be sent through the given channel.
      *
-     * @param byChannels all messagesByChannels
-     * @param key        key to select to correct message
+     * @param messagesByChannel all messagesByChannels
+     * @param key               key to select to correct message
      *
      * @return the message
      */
     private static WsUpdateMessage getOrCreateWsUpdateMessage(
-        Map<WebsocketEffectiveChannel, List<WsMessage>> byChannels,
+        Map<WebsocketEffectiveChannel, List<WsMessage>> messagesByChannel,
         WebsocketEffectiveChannel key
     ) {
         logger.trace("GetOrCreate WsUpdateMessge for channel {}", key);
-        if (!byChannels.containsKey(key)) {
+        if (!messagesByChannel.containsKey(key)) {
             logger.trace(" -> create channel {}", key);
-            byChannels.put(key, List.of(new WsUpdateMessage()));
-            return (WsUpdateMessage) byChannels.get(key).get(0);
+            messagesByChannel.put(key, List.of(new WsUpdateMessage()));
+            return (WsUpdateMessage) messagesByChannel.get(key).get(0);
         } else {
-            List<WsMessage> get = byChannels.get(key);
+            List<WsMessage> get = messagesByChannel.get(key);
             logger.trace(" -> use existing channel {} := {}", key, get);
             Optional<WsMessage> find = get.stream()
                 .filter(message -> message instanceof WsUpdateMessage)
@@ -84,15 +83,16 @@ public class WebsocketHelper {
     /**
      * Add entity to the set identified by the channel.
      *
-     * @param byChannels all sets
-     * @param channel    channel to identify correct set
-     * @param entity     entity to add
+     * @param messagesByChannel all sets
+     * @param channel           channel to identify correct set
+     * @param entity            entity to add
      */
-    private static void addToUpdated(Map<WebsocketEffectiveChannel, List<WsMessage>> byChannels,
+    private static void addAsUpdated(
+        Map<WebsocketEffectiveChannel, List<WsMessage>> messagesByChannel,
         WebsocketEffectiveChannel channel,
         WithWebsocketChannels entity) {
-        Collection<WithWebsocketChannels> set
-            = WebsocketHelper.getOrCreateWsUpdateMessage(byChannels, channel).getUpdated();
+        Collection<WithWebsocketChannels> set = WebsocketHelper
+            .getOrCreateWsUpdateMessage(messagesByChannel, channel).getUpdated();
         logger.trace("Add {} to updated set {}", entity, set);
         set.add(entity);
         if (logger.isTraceEnabled()) {
@@ -111,58 +111,22 @@ public class WebsocketHelper {
      * @param channel    channel to identify correct set
      * @param entry      entry to add
      */
-    private static void addToDeleted(Map<WebsocketEffectiveChannel, List<WsMessage>> byChannels,
+    private static void addAsDeleted(Map<WebsocketEffectiveChannel, List<WsMessage>> byChannels,
         WebsocketEffectiveChannel channel,
         IndexEntry entry) {
-        Collection<IndexEntry> set
-            = WebsocketHelper.getOrCreateWsUpdateMessage(byChannels, channel).getDeleted();
+        Collection<IndexEntry> set = WebsocketHelper.getOrCreateWsUpdateMessage(byChannels, channel)
+            .getDeleted();
         logger.trace("Add {} to deleted set {}", entry, set);
         set.add(entry);
     }
 
     /**
-     * Resolve all channels to a list of effective channels, then apply then action of each distinct
-     * channel
-     *
-     * @param channels list of WebsocketChannel
-     * @param userDao  the userDao to resolve meta channels
-     * @param action   action to apply of each unique effective channel
-     */
-    private static void forEachDistinctEffectiveChannel(Set<WebsocketChannel> channels,
-        UserDao userDao,
-        RequestManager requestManager,
-        Consumer<WebsocketEffectiveChannel> action
-    ) {
-        logger.trace("Flatten Channels {}", channels);
-        channels.stream().flatMap(channel -> {
-            if (channel instanceof WebsocketEffectiveChannel) {
-                logger.trace(" -> {}", channel);
-                return Stream.of((WebsocketEffectiveChannel) channel);
-            } else if (channel instanceof WebsocketMetaChannel) {
-                Set<WebsocketEffectiveChannel> resolved
-                    = ((WebsocketMetaChannel) channel).resolve(userDao, requestManager);
-                if (logger.isTraceEnabled()) {
-                    logger.trace(" -> {}", resolved);
-                }
-                return resolved.stream();
-            } else {
-                logger.warn(" unknown channel type: {}", channel);
-                return Stream.of();
-            }
-        }).distinct()
-            .forEach(channel -> {
-                logger.trace(" distinct: {}", channel);
-                action.accept(channel);
-            });
-    }
-
-    /**
      * Prepare all WsUpdateMessage.
      *
-     * @param userDao        provide userDao to resolve meta channels
-     * @param requestManager the request manager
-     * @param updated        set of created/updated entities
-     * @param deleted        set of just destroyed-entities index entry
+     * @param userDao     provide userDao to resolve meta channels
+     * @param cardTypeDao provide cardTypeDao to resolve meta channels
+     * @param updated     set of created/updated entities
+     * @param deleted     set of just destroyed-entities index entry
      *
      * @return the precomputed messagesByChannels
      *
@@ -170,62 +134,56 @@ public class WebsocketHelper {
      */
     public static PrecomputedWsMessages prepareWsMessage(
         UserDao userDao,
-        RequestManager requestManager,
+        CardTypeDao cardTypeDao,
         Set<WithWebsocketChannels> updated,
         Set<WithWebsocketChannels> deleted
     ) throws EncodeException {
         Map<WebsocketEffectiveChannel, List<WsMessage>> messagesByChannel = new HashMap<>();
         logger.debug("Prepare WsMessage. Update:{}; Deleted:{}", updated, deleted);
 
-        updated.forEach(entity -> {
-            logger.trace("Process updated entity {}", entity);
-            forEachDistinctEffectiveChannel(entity.getChannels(), userDao, requestManager, channel -> {
-                addToUpdated(messagesByChannel, channel, entity);
-            });
+        updated.forEach(object -> {
+            logger.trace("Process updated entity {}", object);
+            object.getChannelBuilder().computeEffectiveChannels(userDao, cardTypeDao)
+                .forEach(channel -> {
+                    addAsUpdated(messagesByChannel, channel, object);
+                });
         });
 
-        deleted.forEach(entity -> {
-            logger.trace("Process deleted entry {}", entity);
-            forEachDistinctEffectiveChannel(entity.getChannels(), userDao, requestManager, channel -> {
-                addToDeleted(messagesByChannel, channel, IndexEntry.build(entity));
-            });
+        deleted.forEach(object -> {
+            logger.trace("Process deleted entry {}", object);
+            object.getChannelBuilder().computeEffectiveChannels(userDao, cardTypeDao)
+                .forEach(
+                    channel -> {
+                        addAsDeleted(messagesByChannel, channel, IndexEntry.build(object));
+                    });
         });
 
         return PrecomputedWsMessages.build(messagesByChannel);
     }
 
     /**
-     * Prepare one message for one channel
+     * Prepare one message on admin channel
      *
-     * @param userDao        provide userDao to resolve meta channels
-     * @param requestManager the request manager
-     * @param channel        the channel
-     * @param message        the message
+     * @param userDao provide userDao to resolve meta channels
+     * @param message the message
      *
      * @return the precomputedMessage
      *
      * @throws EncodeException if json-encoding failed
      */
-    public static PrecomputedWsMessages prepareWsMessage(
-        UserDao userDao, RequestManager requestManager,
-        WebsocketChannel channel, WsMessage message
+    public static PrecomputedWsMessages prepareWsMessageForAdmins(
+        UserDao userDao,
+        WsMessage message
     ) throws EncodeException {
-
-        Map<WebsocketEffectiveChannel, List<WsMessage>> messagesByChannel = new HashMap<>();
-
-        forEachDistinctEffectiveChannel(Set.of(channel), userDao, requestManager, (effectiveChannel) -> {
-            messagesByChannel.put(effectiveChannel, List.of(message));
-        });
-
-        return PrecomputedWsMessages.build(messagesByChannel);
+        return prepareWsMessage(userDao, null, new ForAdminChannelBuilder(), message);
     }
 
     /**
      * Prepare one message for many channels
      *
      * @param userDao        provide userDao to resolve meta channels
-     * @param requestManager the request manager
-     * @param channels       the channel set
+     * @param cardTypeDao    provide cardTypeDao to resolve meta channels
+     * @param channelBuilder the channel builder that defines which channels must be used
      * @param message        the message
      *
      * @return the precomputedMessage
@@ -233,16 +191,15 @@ public class WebsocketHelper {
      * @throws EncodeException if json-encoding failed
      */
     public static PrecomputedWsMessages prepareWsMessage(
-        UserDao userDao, RequestManager requestManager,
-        Collection<WebsocketChannel> channels, WsMessage message
+        UserDao userDao,
+        CardTypeDao cardTypeDao,
+        ChannelBuilder channelBuilder,
+        WsMessage message
     ) throws EncodeException {
-
         Map<WebsocketEffectiveChannel, List<WsMessage>> messagesByChannel = new HashMap<>();
 
-        channels.forEach(channel -> {
-            forEachDistinctEffectiveChannel(Set.of(channel), userDao, requestManager, (effectiveChannel) -> {
-                messagesByChannel.put(effectiveChannel, List.of(message));
-            });
+        channelBuilder.computeEffectiveChannels(userDao, cardTypeDao).forEach(channel -> {
+            messagesByChannel.put(channel, List.of(message));
         });
 
         return PrecomputedWsMessages.build(messagesByChannel);
