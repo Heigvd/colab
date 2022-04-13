@@ -4,7 +4,7 @@
  *
  * Licensed under the MIT License
  */
-package ch.colabproject.colab.api.ws.channel;
+package ch.colabproject.colab.api.ws.channel.model;
 
 import ch.colabproject.colab.api.model.document.TextDataBlock;
 import java.util.Objects;
@@ -25,7 +25,7 @@ import java.util.Objects;
  *
  * @author maxence
  */
-public class BlockChannel implements WebsocketEffectiveChannel {
+public class BlockChannel implements WebsocketChannel {
 
     private static final long serialVersionUID = 1L;
 

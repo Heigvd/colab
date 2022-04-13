@@ -7,7 +7,7 @@
 package ch.colabproject.colab.api.controller;
 
 import ch.colabproject.colab.api.microchanges.live.LiveManager;
-import ch.colabproject.colab.api.ws.channel.WebsocketEffectiveChannel;
+import ch.colabproject.colab.api.ws.channel.model.WebsocketChannel;
 import java.util.Map;
 import javax.ejb.Singleton;
 import javax.ejb.Startup;
@@ -53,7 +53,7 @@ public class CdiBridgeSingleton {
      *
      * @return the list of channels and the number of sessions subscribed to each of them
      */
-    public Map<WebsocketEffectiveChannel, Integer> getSubscrciptionsCount() {
+    public Map<WebsocketChannel, Integer> getSubscrciptionsCount() {
         logger.debug("Get bridged Subscriptions");
         return websocketManager.getSubscrciptionsCount();
     }

@@ -9,9 +9,9 @@ package ch.colabproject.colab.api.ws;
 import ch.colabproject.colab.api.model.WithWebsocketChannels;
 import ch.colabproject.colab.api.persistence.jpa.card.CardTypeDao;
 import ch.colabproject.colab.api.persistence.jpa.user.UserDao;
-import ch.colabproject.colab.api.ws.channel.ChannelBuilders.ForAdminChannelBuilder;
-import ch.colabproject.colab.api.ws.channel.ChannelBuilders.ChannelBuilder;
-import ch.colabproject.colab.api.ws.channel.WebsocketEffectiveChannel;
+import ch.colabproject.colab.api.ws.channel.model.WebsocketChannel;
+import ch.colabproject.colab.api.ws.channel.tool.ChannelBuilders.ChannelBuilder;
+import ch.colabproject.colab.api.ws.channel.tool.ChannelBuilders.ForAdminChannelBuilder;
 import ch.colabproject.colab.api.ws.message.IndexEntry;
 import ch.colabproject.colab.api.ws.message.PrecomputedWsMessages;
 import ch.colabproject.colab.api.ws.message.WsMessage;
@@ -32,15 +32,15 @@ import org.slf4j.LoggerFactory;
  * @author maxence
  */
 // TODO rename WebsocketMessagePreparer
-public class WebsocketHelper {
+public class WebsocketMessagePreparer {
 
     /** logger */
-    private static final Logger logger = LoggerFactory.getLogger(WebsocketHelper.class);
+    private static final Logger logger = LoggerFactory.getLogger(WebsocketMessagePreparer.class);
 
     /**
      * never-called private constructor
      */
-    private WebsocketHelper() {
+    private WebsocketMessagePreparer() {
         throw new UnsupportedOperationException(
             "This is a utility class and cannot be instantiated");
     }
@@ -54,8 +54,8 @@ public class WebsocketHelper {
      * @return the message
      */
     private static WsUpdateMessage getOrCreateWsUpdateMessage(
-        Map<WebsocketEffectiveChannel, List<WsMessage>> messagesByChannel,
-        WebsocketEffectiveChannel key
+        Map<WebsocketChannel, List<WsMessage>> messagesByChannel,
+        WebsocketChannel key
     ) {
         logger.trace("GetOrCreate WsUpdateMessge for channel {}", key);
         if (!messagesByChannel.containsKey(key)) {
@@ -88,10 +88,10 @@ public class WebsocketHelper {
      * @param entity            entity to add
      */
     private static void addAsUpdated(
-        Map<WebsocketEffectiveChannel, List<WsMessage>> messagesByChannel,
-        WebsocketEffectiveChannel channel,
+        Map<WebsocketChannel, List<WsMessage>> messagesByChannel,
+        WebsocketChannel channel,
         WithWebsocketChannels entity) {
-        Collection<WithWebsocketChannels> set = WebsocketHelper
+        Collection<WithWebsocketChannels> set = WebsocketMessagePreparer
             .getOrCreateWsUpdateMessage(messagesByChannel, channel).getUpdated();
         logger.trace("Add {} to updated set {}", entity, set);
         set.add(entity);
@@ -111,10 +111,10 @@ public class WebsocketHelper {
      * @param channel    channel to identify correct set
      * @param entry      entry to add
      */
-    private static void addAsDeleted(Map<WebsocketEffectiveChannel, List<WsMessage>> byChannels,
-        WebsocketEffectiveChannel channel,
+    private static void addAsDeleted(Map<WebsocketChannel, List<WsMessage>> byChannels,
+        WebsocketChannel channel,
         IndexEntry entry) {
-        Collection<IndexEntry> set = WebsocketHelper.getOrCreateWsUpdateMessage(byChannels, channel)
+        Collection<IndexEntry> set = WebsocketMessagePreparer.getOrCreateWsUpdateMessage(byChannels, channel)
             .getDeleted();
         logger.trace("Add {} to deleted set {}", entry, set);
         set.add(entry);
@@ -138,7 +138,7 @@ public class WebsocketHelper {
         Set<WithWebsocketChannels> updated,
         Set<WithWebsocketChannels> deleted
     ) throws EncodeException {
-        Map<WebsocketEffectiveChannel, List<WsMessage>> messagesByChannel = new HashMap<>();
+        Map<WebsocketChannel, List<WsMessage>> messagesByChannel = new HashMap<>();
         logger.debug("Prepare WsMessage. Update:{}; Deleted:{}", updated, deleted);
 
         updated.forEach(object -> {
@@ -196,7 +196,7 @@ public class WebsocketHelper {
         ChannelBuilder channelBuilder,
         WsMessage message
     ) throws EncodeException {
-        Map<WebsocketEffectiveChannel, List<WsMessage>> messagesByChannel = new HashMap<>();
+        Map<WebsocketChannel, List<WsMessage>> messagesByChannel = new HashMap<>();
 
         channelBuilder.computeEffectiveChannels(userDao, cardTypeDao).forEach(channel -> {
             messagesByChannel.put(channel, List.of(message));

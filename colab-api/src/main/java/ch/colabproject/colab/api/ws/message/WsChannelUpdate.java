@@ -6,7 +6,7 @@
  */
 package ch.colabproject.colab.api.ws.message;
 
-import ch.colabproject.colab.api.ws.channel.WebsocketEffectiveChannel;
+import ch.colabproject.colab.api.ws.channel.model.WebsocketChannel;
 import javax.validation.constraints.NotNull;
 
 /**
@@ -22,7 +22,7 @@ public class WsChannelUpdate extends WsMessage {
      * The channel this message is about
      */
     @NotNull
-    private WebsocketEffectiveChannel channel;
+    private WebsocketChannel channel;
 
     /**
      * number of new (un)subscriptions
@@ -53,7 +53,7 @@ public class WsChannelUpdate extends WsMessage {
      *
      * @return the value of channel
      */
-    public WebsocketEffectiveChannel getChannel() {
+    public WebsocketChannel getChannel() {
         return channel;
     }
 
@@ -62,7 +62,7 @@ public class WsChannelUpdate extends WsMessage {
      *
      * @param channel new value of channel
      */
-    public void setChannel(WebsocketEffectiveChannel channel) {
+    public void setChannel(WebsocketChannel channel) {
         this.channel = channel;
     }
 
@@ -74,7 +74,7 @@ public class WsChannelUpdate extends WsMessage {
      *
      * @return the message
      */
-    public static WsChannelUpdate build(WebsocketEffectiveChannel channel, Integer diff) {
+    public static WsChannelUpdate build(WebsocketChannel channel, Integer diff) {
         WsChannelUpdate message = new WsChannelUpdate();
         message.setChannel(channel);
         message.setDiff(diff);

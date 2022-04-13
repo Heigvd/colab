@@ -6,6 +6,7 @@
  */
 package ch.colabproject.colab.api.ws.channel;
 
+import ch.colabproject.colab.api.ws.channel.model.WebsocketChannel;
 import ch.colabproject.colab.generator.model.interfaces.WithJsonDiscriminator;
 import java.util.Objects;
 import javax.validation.constraints.NotNull;
@@ -23,7 +24,7 @@ public class ChannelOverview implements WithJsonDiscriminator {
      * The channel
      */
     @NotNull
-    private WebsocketEffectiveChannel channel;
+    private WebsocketChannel channel;
 
     /**
      * Number of subscriptions
@@ -54,7 +55,7 @@ public class ChannelOverview implements WithJsonDiscriminator {
      *
      * @return the value of channel
      */
-    public WebsocketEffectiveChannel getChannel() {
+    public WebsocketChannel getChannel() {
         return channel;
     }
 
@@ -63,7 +64,7 @@ public class ChannelOverview implements WithJsonDiscriminator {
      *
      * @param channel new value of channel
      */
-    public void setChannel(WebsocketEffectiveChannel channel) {
+    public void setChannel(WebsocketChannel channel) {
         this.channel = channel;
     }
 

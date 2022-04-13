@@ -7,8 +7,8 @@
 package ch.colabproject.colab.api.microchanges.model;
 
 import ch.colabproject.colab.api.model.WithWebsocketChannels;
-import ch.colabproject.colab.api.ws.channel.ChannelBuilders.BlockChannelBuilder;
-import ch.colabproject.colab.api.ws.channel.ChannelBuilders.ChannelBuilder;
+import ch.colabproject.colab.api.ws.channel.tool.ChannelBuilders.BlockChannelBuilder;
+import ch.colabproject.colab.api.ws.channel.tool.ChannelBuilders.ChannelBuilder;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;

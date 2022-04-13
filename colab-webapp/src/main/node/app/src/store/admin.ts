@@ -10,7 +10,7 @@ import {
   entityIs,
   LevelDescriptor,
   VersionDetails,
-  WebsocketEffectiveChannel,
+  WebsocketChannel,
 } from 'colab-rest-client';
 import * as API from '../API/api';
 import { LoadingStatus } from './store';
@@ -37,7 +37,7 @@ const adminSlice = createSlice({
   reducers: {
     channelUpdate: (
       state,
-      action: PayloadAction<{ channel: WebsocketEffectiveChannel; diff: number }[]>,
+      action: PayloadAction<{ channel: WebsocketChannel; diff: number }[]>,
     ) => {
       const channels = state.occupiedChannels;
       if (typeof channels != 'string') {

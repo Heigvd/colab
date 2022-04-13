@@ -4,7 +4,7 @@
  *
  * Licensed under the MIT License
  */
-package ch.colabproject.colab.api.ws.channel;
+package ch.colabproject.colab.api.ws.channel.model;
 
 import ch.colabproject.colab.api.model.user.User;
 import java.util.Objects;
@@ -30,7 +30,7 @@ import java.util.Objects;
  *
  * @author maxence
  */
-public class UserChannel implements WebsocketEffectiveChannel {
+public class UserChannel implements WebsocketChannel {
 
     private static final long serialVersionUID = 1L;
 

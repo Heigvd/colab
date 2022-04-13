@@ -6,7 +6,7 @@
  */
 package ch.colabproject.colab.api.ws.message;
 
-import ch.colabproject.colab.api.ws.channel.WebsocketEffectiveChannel;
+import ch.colabproject.colab.api.ws.channel.model.WebsocketChannel;
 import ch.colabproject.colab.api.ws.utils.JsonEncoder;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -28,14 +28,14 @@ public class PrecomputedWsMessages implements Serializable {
     /**
      * Each channel has a list of json-encoded messages
      */
-    private Map<WebsocketEffectiveChannel, List<String>> messages;
+    private Map<WebsocketChannel, List<String>> messages;
 
     /**
      * Get messages that should be sent.
      *
      * @return all messages, mapped by channel
      */
-    public Map<WebsocketEffectiveChannel, List<String>> getMessages() {
+    public Map<WebsocketChannel, List<String>> getMessages() {
         return messages;
     }
 
@@ -44,7 +44,7 @@ public class PrecomputedWsMessages implements Serializable {
      *
      * @param messages list of messages, map by their channels
      */
-    public void setMessages(Map<WebsocketEffectiveChannel, List<String>> messages) {
+    public void setMessages(Map<WebsocketChannel, List<String>> messages) {
         this.messages = messages;
     }
 
@@ -58,11 +58,11 @@ public class PrecomputedWsMessages implements Serializable {
      * @throws EncodeException if something is not serializable.
      */
     public static PrecomputedWsMessages build(
-        Map<WebsocketEffectiveChannel, List<WsMessage>> messages
+        Map<WebsocketChannel, List<WsMessage>> messages
     ) throws EncodeException {
         PrecomputedWsMessages m = new PrecomputedWsMessages();
         m.setMessages(new HashMap<>());
-        Map<WebsocketEffectiveChannel, List<String>> encoded = m.getMessages();
+        Map<WebsocketChannel, List<String>> encoded = m.getMessages();
         if (messages != null) {
             // TODO: is there a way to throw exception from lambda ?
             for (var messageEntry : messages.entrySet()) {

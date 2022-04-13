@@ -15,13 +15,13 @@ import ch.colabproject.colab.api.persistence.jpa.project.ProjectDao;
 import ch.colabproject.colab.api.persistence.jpa.user.UserDao;
 import ch.colabproject.colab.api.security.permissions.Conditions;
 import ch.colabproject.colab.api.ws.WebsocketEndpoint;
-import ch.colabproject.colab.api.ws.WebsocketHelper;
-import ch.colabproject.colab.api.ws.channel.BlockChannel;
-import ch.colabproject.colab.api.ws.channel.BroadcastChannel;
+import ch.colabproject.colab.api.ws.WebsocketMessagePreparer;
 import ch.colabproject.colab.api.ws.channel.ChannelOverview;
-import ch.colabproject.colab.api.ws.channel.ProjectContentChannel;
-import ch.colabproject.colab.api.ws.channel.UserChannel;
-import ch.colabproject.colab.api.ws.channel.WebsocketEffectiveChannel;
+import ch.colabproject.colab.api.ws.channel.model.BlockChannel;
+import ch.colabproject.colab.api.ws.channel.model.BroadcastChannel;
+import ch.colabproject.colab.api.ws.channel.model.ProjectContentChannel;
+import ch.colabproject.colab.api.ws.channel.model.UserChannel;
+import ch.colabproject.colab.api.ws.channel.model.WebsocketChannel;
 import ch.colabproject.colab.api.ws.message.PrecomputedWsMessages;
 import ch.colabproject.colab.api.ws.message.WsChannelUpdate;
 import ch.colabproject.colab.api.ws.message.WsSessionIdentifier;
@@ -144,7 +144,7 @@ public class WebsocketManager {
     /**
      * channel subscriptions.
      */
-    private ConcurrentMap<WebsocketEffectiveChannel, Set<Session>> subscriptions = new ConcurrentHashMap<>();
+    private ConcurrentMap<WebsocketChannel, Set<Session>> subscriptions = new ConcurrentHashMap<>();
 
     /**
      * HTTP sessions to websocket sessions registry.
@@ -165,7 +165,7 @@ public class WebsocketManager {
     /**
      * List the channels each websocket session subscribe to.
      */
-    private ConcurrentMap<Session, Set<WebsocketEffectiveChannel>> wsSessionMap = new ConcurrentHashMap<>();
+    private ConcurrentMap<Session, Set<WebsocketChannel>> wsSessionMap = new ConcurrentHashMap<>();
 
     /**
      * Get list of all occupied channels.
@@ -177,10 +177,10 @@ public class WebsocketManager {
      */
     public Set<ChannelOverview> getExistingChannels() {
         IExecutorService executorService = hzInstance.getExecutorService("COLAB_WS");
-        Map<Member, Future<Map<WebsocketEffectiveChannel, Integer>>> results = executorService
+        Map<Member, Future<Map<WebsocketChannel, Integer>>> results = executorService
             .submitToAllMembers(new CallableGetChannel());
 
-        Map<WebsocketEffectiveChannel, Integer> aggregate = new HashMap<>();
+        Map<WebsocketChannel, Integer> aggregate = new HashMap<>();
 
         results.values().stream()
             .flatMap((result) -> {
@@ -211,7 +211,7 @@ public class WebsocketManager {
      *
      * @return the list of channels and the number of sessions subscribed to each of them
      */
-    public Map<WebsocketEffectiveChannel, Integer> getSubscrciptionsCount() {
+    public Map<WebsocketChannel, Integer> getSubscrciptionsCount() {
         return this.subscriptions.entrySet().stream()
             .collect(Collectors.toMap(Entry::getKey, entry -> entry.getValue().size()));
     }
@@ -397,7 +397,7 @@ public class WebsocketManager {
                 logger.debug("Process channel subscription request: {}", request);
 
                 // first determine the effective channel
-                WebsocketEffectiveChannel channel = getChannel(request);
+                WebsocketChannel channel = getChannel(request);
                 if (channel != null) {
                     synchronized (this) {
                         // make sure the http session has its own set of wsSessions
@@ -425,7 +425,7 @@ public class WebsocketManager {
                         } else {
                             // Remove the channel from the set of channel linked to the wsSession
                             if (wsSessionMap.containsKey(session)) {
-                                Set<WebsocketEffectiveChannel> channels = wsSessionMap.get(session);
+                                Set<WebsocketChannel> channels = wsSessionMap.get(session);
                                 channels.remove(channel);
                                 if (channels.isEmpty()) {
                                     wsSessionMap.remove(session);
@@ -450,7 +450,7 @@ public class WebsocketManager {
      * @param keyId   set id
      * @param session session to remove from the set
      */
-    private void subscribe(WebsocketEffectiveChannel channel, Session session) {
+    private void subscribe(WebsocketChannel channel, Session session) {
         if (logger.isDebugEnabled()) {
             String sessionId = WebsocketEndpoint.getSessionId(session);
             logger.debug("Session {} subscribes to {}", sessionId, channel);
@@ -472,7 +472,7 @@ public class WebsocketManager {
      * @param channel  channel to update
      * @param sessions session to remove from channel
      */
-    private void unsubscribe(WebsocketEffectiveChannel channel, Set<Session> sessions) {
+    private void unsubscribe(WebsocketChannel channel, Set<Session> sessions) {
         Set<Session> chSessions = subscriptions.get(channel);
         if (logger.isDebugEnabled()) {
             logger.debug("Sessions {} unsubscribes from {}",
@@ -498,9 +498,9 @@ public class WebsocketManager {
      * @param channel the channel
      * @param diff    diff
      */
-    private void propagateChannelChange(WebsocketEffectiveChannel channel, int diff) {
+    private void propagateChannelChange(WebsocketChannel channel, int diff) {
         try {
-            PrecomputedWsMessages prepareWsMessage = WebsocketHelper.prepareWsMessageForAdmins(
+            PrecomputedWsMessages prepareWsMessage = WebsocketMessagePreparer.prepareWsMessageForAdmins(
                 userDao,
                 WsChannelUpdate.build(channel, diff)
             );
@@ -517,7 +517,7 @@ public class WebsocketManager {
      *
      * @return the channel which match the request
      */
-    private WebsocketEffectiveChannel getChannel(SubscriptionRequest request) {
+    private WebsocketChannel getChannel(SubscriptionRequest request) {
         if (request.getChannelType() == SubscriptionRequest.ChannelType.PROJECT) {
             Project project = projectDao.findProject(request.getChannelId());
             if (project != null) {
@@ -560,7 +560,7 @@ public class WebsocketManager {
     public void onMessagePropagation(
         @Observes @Inbound(eventName = WS_PROPAGATION_CHANNEL) PrecomputedWsMessages payload) {
 
-        Map<WebsocketEffectiveChannel, List<String>> messagesByChannels = payload.getMessages();
+        Map<WebsocketChannel, List<String>> messagesByChannels = payload.getMessages();
         if (messagesByChannels != null) {
 
             Map<Session, List<String>> mappedMessages = new HashMap<>();
@@ -634,7 +634,7 @@ public class WebsocketManager {
      */
     public void unsubscribeFromAll(Session session) {
         synchronized (this) {
-            Set<WebsocketEffectiveChannel> set = this.wsSessionMap.get(session);
+            Set<WebsocketChannel> set = this.wsSessionMap.get(session);
             if (set != null) {
                 Set<Session> setOfSession = Set.of(session);
                 set.forEach(channel -> {

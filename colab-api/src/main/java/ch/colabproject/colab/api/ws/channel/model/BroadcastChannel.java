@@ -4,7 +4,7 @@
  *
  * Licensed under the MIT License
  */
-package ch.colabproject.colab.api.ws.channel;
+package ch.colabproject.colab.api.ws.channel.model;
 
 /**
  * The channel to be used to transmit data to all online users. <br>
@@ -22,7 +22,7 @@ package ch.colabproject.colab.api.ws.channel;
  *
  * @author maxence
  */
-public class BroadcastChannel implements WebsocketEffectiveChannel {
+public class BroadcastChannel implements WebsocketChannel {
 
     private static final long serialVersionUID = 1L;
 

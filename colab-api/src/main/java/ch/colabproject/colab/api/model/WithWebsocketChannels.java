@@ -6,7 +6,7 @@
  */
 package ch.colabproject.colab.api.model;
 
-import ch.colabproject.colab.api.ws.channel.ChannelBuilders.ChannelBuilder;
+import ch.colabproject.colab.api.ws.channel.tool.ChannelBuilders.ChannelBuilder;
 import ch.colabproject.colab.generator.model.interfaces.WithId;
 import ch.colabproject.colab.generator.model.interfaces.WithJsonDiscriminator;
 import ch.colabproject.colab.generator.model.tools.PolymorphicDeserializer;
