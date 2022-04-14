@@ -5,9 +5,9 @@
  * Licensed under the MIT License
  */
 
+import { faCheckSquare, faSquare } from '@fortawesome/free-regular-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import * as React from 'react';
-import { checkedIcon, uncheckedIcon } from '../styling/defaultIcons';
 
 export interface CheckBoxProps {
   label?: string;
@@ -18,7 +18,7 @@ export interface CheckBoxProps {
 export default function CheckBox({ label, value, onChange }: CheckBoxProps): JSX.Element {
   return (
     <>
-      <FontAwesomeIcon icon={value ? checkedIcon : uncheckedIcon} onClick={onChange} />
+      <FontAwesomeIcon icon={value ? faCheckSquare : faSquare} onClick={onChange} />
       {label}
     </>
   );
