@@ -62,7 +62,7 @@ colab-webapp/colab-api,ch.colabproject.colab.api.service.smtp,MessageBuilder,77,
 colab-webapp/colab-api,ch.colabproject.colab.api.service.smtp,Sendmail.new Authenticator() {...},17,0,0,0,2,0,2,0,2,0
 colab-webapp/colab-api,ch.colabproject.colab.api.service.smtp,Message,76,0,0,0,29,0,18,0,18,0
 colab-webapp/colab-api,ch.colabproject.colab.api.service.smtp,Sendmail,171,0,6,0,42,0,6,0,3,0
-colab-webapp/colab-api,ch.colabproject.colab.api.controller.token,TokenManager,342,0,24,0,99,0,24,0,12,0
+colab-webapp/colab-api,ch.colabproject.colab.api.controller.token,TokenManager,358,0,24,0,102,0,26,0,14,0
 colab-webapp/colab-api,ch.colabproject.colab.api.rest.card.bean,CardTypeCreationBean,82,0,6,0,29,0,15,0,12,0
 colab-webapp/colab-api,ch.colabproject.colab.api.controller.setup,ApplicationLifecycleManager,44,0,2,0,17,0,5,0,4,0
 colab-webapp/colab-api,ch.colabproject.colab.api.rest.config.bean,AccountConfig,10,0,0,0,4,0,3,0,3,0
@@ -118,7 +118,7 @@ colab-webapp/colab-api,ch.colabproject.colab.api.controller.monitoring,LevelDesc
 colab-webapp/colab-api,ch.colabproject.colab.api.controller.link,ActivityFlowLinkManager,289,0,40,0,81,0,29,0,9,0
 colab-webapp/colab-api,ch.colabproject.colab.api.controller.link,StickyNoteLinkManager.SrcType,44,0,0,0,5,0,1,0,1,0
 colab-webapp/colab-api,ch.colabproject.colab.api.controller.link,StickyNoteLinkManager,300,0,34,0,90,0,30,0,10,0
-colab-webapp/colab-api,ch.colabproject.colab.api.controller.team,TeamManager,497,0,82,0,143,0,65,0,24,0
+colab-webapp/colab-api,ch.colabproject.colab.api.controller.team,TeamManager,564,0,94,0,162,0,74,0,27,0
 colab-webapp/colab-api,ch.colabproject.colab.api.controller,SubscriptionRequest.SubscriptionType,24,0,0,0,3,0,1,0,1,0
 colab-webapp/colab-api,ch.colabproject.colab.api.controller,DuplicationHelper,753,0,66,0,199,0,44,0,11,0
 colab-webapp/colab-api,ch.colabproject.colab.api.controller,WebsocketTxManager,45,0,4,0,15,0,6,0,4,0
@@ -133,7 +133,7 @@ colab-webapp/colab-api,ch.colabproject.colab.api.controller,CronTab,21,0,0,0,8,0
 colab-webapp/colab-api,ch.colabproject.colab.api.controller,EntityGatheringBagForPropagation,223,0,11,0,63,0,22,0,16,0
 colab-webapp/colab-api,ch.colabproject.colab.api.persistence.jpa.document,ResourceDao,101,0,0,0,29,0,9,0,9,0
 colab-webapp/colab-api,ch.colabproject.colab.api.persistence.jpa.document,DocumentDao,87,0,0,0,25,0,8,0,8,0
-colab-webapp/colab-api,ch.colabproject.colab.api.rest.team,TeamRestEndpoint,137,0,0,0,36,0,17,0,17,0
+colab-webapp/colab-api,ch.colabproject.colab.api.rest.team,TeamRestEndpoint,146,0,0,0,39,0,18,0,18,0
 colab-webapp/colab-api,ch.colabproject.colab.api.model.team.acl,InvolvementLevel,105,0,0,0,14,0,4,0,4,0
 colab-webapp/colab-api,ch.colabproject.colab.api.model.team.acl,AccessControl,737,0,96,0,48,0,118,0,70,0
 colab-webapp/colab-api,ch.colabproject.colab.api.model.team.acl,HierarchicalPosition,59,0,0,0,9,0,3,0,3,0
@@ -161,10 +161,10 @@ colab-webapp/colab-api,ch.colabproject.colab.api.persistence.jcr,JcrSynchronizer
 colab-webapp/colab-api,ch.colabproject.colab.api.persistence.jcr,JcrSessionManager,63,0,2,0,13,0,4,0,3,0
 colab-webapp/colab-api,ch.colabproject.colab.api.microchanges.tools,Debouncer,18,0,0,0,7,0,2,0,2,0
 colab-webapp/colab-api,ch.colabproject.colab.api.microchanges.tools,CancelDebounce,15,0,0,0,5,0,2,0,2,0
-colab-webapp/colab-api,ch.colabproject.colab.api.persistence.jpa.token,TokenDao,81,0,4,0,26,0,9,0,7,0
+colab-webapp/colab-api,ch.colabproject.colab.api.persistence.jpa.token,TokenDao,92,0,4,0,29,0,10,0,8,0
 colab-webapp/colab-api,ch.colabproject.colab.api.security.permissions.card,CardTypeOrRefConditions,7,0,0,0,2,0,1,0,1,0
 colab-webapp/colab-api,ch.colabproject.colab.api.security.permissions.card,CardTypeOrRefConditions.IsCardTypeOrRefReadable,56,0,8,0,18,0,9,0,5,0
-colab-webapp/colab-api,ch.colabproject.colab.api.persistence.jpa.team,TeamDao,119,0,10,0,31,0,13,0,8,0
+colab-webapp/colab-api,ch.colabproject.colab.api.persistence.jpa.team,TeamDao,124,0,10,0,33,0,14,0,9,0
 colab-webapp/colab-api,ch.colabproject.colab.api.rest.card,CardRestEndpoint,207,0,12,0,42,0,22,0,16,0
 colab-webapp/colab-api,ch.colabproject.colab.api.rest.card,CardContentRestEndpoint,123,0,0,0,29,0,13,0,13,0
 colab-webapp/colab-api,ch.colabproject.colab.api.rest.card,CardTypeRestEndpoint,125,0,2,0,32,0,13,0,12,0
