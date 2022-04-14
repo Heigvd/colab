@@ -12,8 +12,8 @@ import ch.colabproject.colab.api.model.WithWebsocketChannels;
 import ch.colabproject.colab.api.model.tools.EntityHelper;
 import ch.colabproject.colab.api.model.tracking.Tracking;
 import ch.colabproject.colab.api.security.permissions.Conditions;
-import ch.colabproject.colab.api.ws.channel.tool.ChannelBuilders.AccountChannelBuilder;
-import ch.colabproject.colab.api.ws.channel.tool.ChannelBuilders.ChannelBuilder;
+import ch.colabproject.colab.api.ws.channel.tool.ChannelsBuilders.AboutAccountChannelsBuilder;
+import ch.colabproject.colab.api.ws.channel.tool.ChannelsBuilders.ChannelsBuilder;
 import ch.colabproject.colab.generator.model.tools.PolymorphicDeserializer;
 import java.util.ArrayList;
 import java.util.List;
@@ -191,8 +191,8 @@ public abstract class Account implements ColabEntity, WithWebsocketChannels {
     // ---------------------------------------------------------------------------------------------
 
     @Override
-    public ChannelBuilder getChannelBuilder() {
-        return new AccountChannelBuilder(this);
+    public ChannelsBuilder getChannelBuilder() {
+        return new AboutAccountChannelsBuilder(this);
     }
 
     @Override

@@ -22,9 +22,9 @@ import ch.colabproject.colab.api.model.team.acl.InvolvementLevel;
 import ch.colabproject.colab.api.model.tools.EntityHelper;
 import ch.colabproject.colab.api.model.tracking.Tracking;
 import ch.colabproject.colab.api.security.permissions.Conditions;
-import ch.colabproject.colab.api.ws.channel.tool.ChannelBuilders.ChannelBuilder;
-import ch.colabproject.colab.api.ws.channel.tool.ChannelBuilders.EmptyChannelBuilder;
-import ch.colabproject.colab.api.ws.channel.tool.ChannelBuilders.ProjectContentChannelBuilder;
+import ch.colabproject.colab.api.ws.channel.tool.ChannelsBuilders.ChannelsBuilder;
+import ch.colabproject.colab.api.ws.channel.tool.ChannelsBuilders.EmptyChannelBuilder;
+import ch.colabproject.colab.api.ws.channel.tool.ChannelsBuilders.ProjectContentChannelBuilder;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -609,7 +609,7 @@ public class Card
     }
 
     @Override
-    public ChannelBuilder getChannelBuilder() {
+    public ChannelsBuilder getChannelBuilder() {
         if (this.rootCardProject != null) {
             // this card is a root card, propagate through the project content channel
             return new ProjectContentChannelBuilder(this.rootCardProject);

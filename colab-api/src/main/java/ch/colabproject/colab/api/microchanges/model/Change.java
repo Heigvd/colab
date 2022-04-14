@@ -7,8 +7,8 @@
 package ch.colabproject.colab.api.microchanges.model;
 
 import ch.colabproject.colab.api.model.WithWebsocketChannels;
-import ch.colabproject.colab.api.ws.channel.tool.ChannelBuilders.BlockChannelBuilder;
-import ch.colabproject.colab.api.ws.channel.tool.ChannelBuilders.ChannelBuilder;
+import ch.colabproject.colab.api.ws.channel.tool.ChannelsBuilders.BlockChannelBuilder;
+import ch.colabproject.colab.api.ws.channel.tool.ChannelsBuilders.ChannelsBuilder;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -205,7 +205,7 @@ public class Change implements Serializable, WithWebsocketChannels {
     }
 
     @Override
-    public ChannelBuilder getChannelBuilder() {
+    public ChannelsBuilder getChannelBuilder() {
         return new BlockChannelBuilder(blockId);
     }
 

@@ -10,8 +10,8 @@ import ch.colabproject.colab.api.model.WithWebsocketChannels;
 import ch.colabproject.colab.api.persistence.jpa.card.CardTypeDao;
 import ch.colabproject.colab.api.persistence.jpa.user.UserDao;
 import ch.colabproject.colab.api.ws.channel.model.WebsocketChannel;
-import ch.colabproject.colab.api.ws.channel.tool.ChannelBuilders.ChannelBuilder;
-import ch.colabproject.colab.api.ws.channel.tool.ChannelBuilders.ForAdminChannelBuilder;
+import ch.colabproject.colab.api.ws.channel.tool.ChannelsBuilders.ChannelsBuilder;
+import ch.colabproject.colab.api.ws.channel.tool.ChannelsBuilders.ForAdminChannelsBuilder;
 import ch.colabproject.colab.api.ws.message.IndexEntry;
 import ch.colabproject.colab.api.ws.message.PrecomputedWsMessages;
 import ch.colabproject.colab.api.ws.message.WsMessage;
@@ -175,7 +175,7 @@ public class WebsocketMessagePreparer {
         UserDao userDao,
         WsMessage message
     ) throws EncodeException {
-        return prepareWsMessage(userDao, null, new ForAdminChannelBuilder(), message);
+        return prepareWsMessage(userDao, null, new ForAdminChannelsBuilder(), message);
     }
 
     /**
@@ -193,7 +193,7 @@ public class WebsocketMessagePreparer {
     public static PrecomputedWsMessages prepareWsMessage(
         UserDao userDao,
         CardTypeDao cardTypeDao,
-        ChannelBuilder channelBuilder,
+        ChannelsBuilder channelBuilder,
         WsMessage message
     ) throws EncodeException {
         Map<WebsocketChannel, List<WsMessage>> messagesByChannel = new HashMap<>();

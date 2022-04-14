@@ -17,8 +17,8 @@ import ch.colabproject.colab.api.model.tools.EntityHelper;
 import ch.colabproject.colab.api.model.tracking.Tracking;
 import ch.colabproject.colab.api.security.permissions.Conditions;
 import ch.colabproject.colab.api.security.permissions.card.CardTypeOrRefConditions;
-import ch.colabproject.colab.api.ws.channel.tool.ChannelBuilders.CardTypeChannelBuilder;
-import ch.colabproject.colab.api.ws.channel.tool.ChannelBuilders.ChannelBuilder;
+import ch.colabproject.colab.api.ws.channel.tool.ChannelsBuilders.AboutCardTypeChannelsBuilder;
+import ch.colabproject.colab.api.ws.channel.tool.ChannelsBuilders.ChannelsBuilder;
 import ch.colabproject.colab.generator.model.tools.PolymorphicDeserializer;
 import java.util.ArrayList;
 import java.util.List;
@@ -347,8 +347,8 @@ public abstract class AbstractCardType implements ColabEntity, WithWebsocketChan
     }
 
     @Override
-    public ChannelBuilder getChannelBuilder() {
-        return new CardTypeChannelBuilder(this);
+    public ChannelsBuilder getChannelBuilder() {
+        return new AboutCardTypeChannelsBuilder(this);
     }
 
     @Override

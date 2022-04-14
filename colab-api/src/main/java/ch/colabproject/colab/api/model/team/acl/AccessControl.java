@@ -15,8 +15,8 @@ import ch.colabproject.colab.api.model.team.TeamMember;
 import ch.colabproject.colab.api.model.team.TeamRole;
 import ch.colabproject.colab.api.model.tracking.Tracking;
 import ch.colabproject.colab.api.security.permissions.Conditions;
-import ch.colabproject.colab.api.ws.channel.tool.ChannelBuilders.ChannelBuilder;
-import ch.colabproject.colab.api.ws.channel.tool.ChannelBuilders.EmptyChannelBuilder;
+import ch.colabproject.colab.api.ws.channel.tool.ChannelsBuilders.ChannelsBuilder;
+import ch.colabproject.colab.api.ws.channel.tool.ChannelsBuilders.EmptyChannelBuilder;
 import javax.json.bind.annotation.JsonbTransient;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
@@ -271,7 +271,7 @@ public class AccessControl implements ColabEntity, WithWebsocketChannels {
     }
 
     @Override
-    public ChannelBuilder getChannelBuilder() {
+    public ChannelsBuilder getChannelBuilder() {
         if (this.getCard() != null) {
             return this.getCard().getChannelBuilder();
         } else {

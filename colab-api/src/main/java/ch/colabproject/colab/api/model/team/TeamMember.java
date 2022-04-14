@@ -16,8 +16,8 @@ import ch.colabproject.colab.api.model.tools.EntityHelper;
 import ch.colabproject.colab.api.model.tracking.Tracking;
 import ch.colabproject.colab.api.model.user.User;
 import ch.colabproject.colab.api.security.permissions.Conditions;
-import ch.colabproject.colab.api.ws.channel.tool.ChannelBuilders.ChannelBuilder;
-import ch.colabproject.colab.api.ws.channel.tool.ChannelBuilders.EmptyChannelBuilder;
+import ch.colabproject.colab.api.ws.channel.tool.ChannelsBuilders.ChannelsBuilder;
+import ch.colabproject.colab.api.ws.channel.tool.ChannelsBuilders.EmptyChannelBuilder;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -387,7 +387,7 @@ public class TeamMember implements ColabEntity, WithWebsocketChannels {
     }
 
     @Override
-    public ChannelBuilder getChannelBuilder() {
+    public ChannelsBuilder getChannelBuilder() {
         if (this.project != null) {
             return this.project.getChannelBuilder();
         } else {

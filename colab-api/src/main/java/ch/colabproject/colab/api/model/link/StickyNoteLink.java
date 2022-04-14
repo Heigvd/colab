@@ -19,8 +19,8 @@ import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.api.model.tools.EntityHelper;
 import ch.colabproject.colab.api.model.tracking.Tracking;
 import ch.colabproject.colab.api.security.permissions.Conditions;
-import ch.colabproject.colab.api.ws.channel.tool.ChannelBuilders.ChannelBuilder;
-import ch.colabproject.colab.api.ws.channel.tool.ChannelBuilders.EmptyChannelBuilder;
+import ch.colabproject.colab.api.ws.channel.tool.ChannelsBuilders.ChannelsBuilder;
+import ch.colabproject.colab.api.ws.channel.tool.ChannelsBuilders.EmptyChannelBuilder;
 import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
 import javax.json.bind.annotation.JsonbTransient;
 import javax.persistence.CascadeType;
@@ -553,7 +553,7 @@ public class StickyNoteLink implements ColabEntity, WithWebsocketChannels {
     }
 
     @Override
-    public ChannelBuilder getChannelBuilder() {
+    public ChannelsBuilder getChannelBuilder() {
         if (this.destinationCard != null) {
             return this.destinationCard.getChannelBuilder();
         } else {

@@ -13,8 +13,8 @@ import ch.colabproject.colab.api.model.team.TeamMember;
 import ch.colabproject.colab.api.model.tools.EntityHelper;
 import ch.colabproject.colab.api.model.tracking.Tracking;
 import ch.colabproject.colab.api.security.permissions.Conditions;
-import ch.colabproject.colab.api.ws.channel.tool.ChannelBuilders.ChannelBuilder;
-import ch.colabproject.colab.api.ws.channel.tool.ChannelBuilders.UserChannelBuilder;
+import ch.colabproject.colab.api.ws.channel.tool.ChannelsBuilders.ChannelsBuilder;
+import ch.colabproject.colab.api.ws.channel.tool.ChannelsBuilders.AboutUserChannelsBuilder;
 import ch.colabproject.colab.generator.model.tools.DateSerDe;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
@@ -405,8 +405,8 @@ public class User implements ColabEntity, WithWebsocketChannels {
     }
 
     @Override
-    public ChannelBuilder getChannelBuilder() {
-        return new UserChannelBuilder(this);
+    public ChannelsBuilder getChannelBuilder() {
+        return new AboutUserChannelsBuilder(this);
     }
 
     @Override

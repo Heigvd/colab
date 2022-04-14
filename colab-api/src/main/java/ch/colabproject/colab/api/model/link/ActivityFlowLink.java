@@ -13,8 +13,8 @@ import ch.colabproject.colab.api.model.card.Card;
 import ch.colabproject.colab.api.model.tools.EntityHelper;
 import ch.colabproject.colab.api.model.tracking.Tracking;
 import ch.colabproject.colab.api.security.permissions.Conditions;
-import ch.colabproject.colab.api.ws.channel.tool.ChannelBuilders.ChannelBuilder;
-import ch.colabproject.colab.api.ws.channel.tool.ChannelBuilders.EmptyChannelBuilder;
+import ch.colabproject.colab.api.ws.channel.tool.ChannelsBuilders.ChannelsBuilder;
+import ch.colabproject.colab.api.ws.channel.tool.ChannelsBuilders.EmptyChannelBuilder;
 import javax.json.bind.annotation.JsonbTransient;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
@@ -214,7 +214,7 @@ public class ActivityFlowLink implements ColabEntity, WithWebsocketChannels {
     }
 
     @Override
-    public ChannelBuilder getChannelBuilder() {
+    public ChannelsBuilder getChannelBuilder() {
         if (this.nextCard != null) {
             return this.nextCard.getChannelBuilder();
         } else {

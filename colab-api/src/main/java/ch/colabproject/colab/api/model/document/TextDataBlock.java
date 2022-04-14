@@ -12,8 +12,8 @@ import ch.colabproject.colab.api.model.card.CardType;
 import ch.colabproject.colab.api.model.link.StickyNoteLink;
 import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.api.model.tools.EntityHelper;
-import ch.colabproject.colab.api.ws.channel.tool.ChannelBuilders.ChannelBuilder;
-import ch.colabproject.colab.api.ws.channel.tool.ChannelBuilders.EmptyChannelBuilder;
+import ch.colabproject.colab.api.ws.channel.tool.ChannelsBuilders.ChannelsBuilder;
+import ch.colabproject.colab.api.ws.channel.tool.ChannelsBuilders.EmptyChannelBuilder;
 import javax.json.bind.annotation.JsonbTransient;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
@@ -223,7 +223,7 @@ public class TextDataBlock extends Document {
     // Note : needed to set JsonbTransient, else it is generated in ColabClient.d.ts
     @JsonbTransient
     @Override
-    public ChannelBuilder getChannelBuilder() {
+    public ChannelsBuilder getChannelBuilder() {
         if (this.owningCardContent != null) {
             // The document is a deliverable of a card content
             return this.owningCardContent.getChannelBuilder();

@@ -27,19 +27,19 @@ import java.util.stream.Collectors;
  *
  * @author sandra
  */
-public final class ChannelBuilders {
+public final class ChannelsBuilders {
 
     /**
      * Private constructor prevents instantiation
      */
-    private ChannelBuilders() {
+    private ChannelsBuilders() {
         throw new UnsupportedOperationException("This is a utility class");
     }
 
     /**
      * To determine the channels to use
      */
-    public static abstract class ChannelBuilder {
+    public static abstract class ChannelsBuilder {
         /**
          * Determine the channels to use
          *
@@ -68,7 +68,7 @@ public final class ChannelBuilders {
     /**
      * When there is no channel
      */
-    public static class EmptyChannelBuilder extends ChannelBuilder {
+    public static class EmptyChannelBuilder extends ChannelsBuilder {
         @Override
         protected Set<WebsocketChannel> build(UserDao userDao, CardTypeDao cardTypeDao) {
             return Set.of();
@@ -78,7 +78,7 @@ public final class ChannelBuilders {
     /**
      * To build a block channel
      */
-    public static class BlockChannelBuilder extends ChannelBuilder {
+    public static class BlockChannelBuilder extends ChannelsBuilder {
         /** the id of the block */
         private final Long blockId;
 
@@ -104,7 +104,7 @@ public final class ChannelBuilders {
     /**
      * To build a project content channel
      */
-    public static class ProjectContentChannelBuilder extends ChannelBuilder {
+    public static class ProjectContentChannelBuilder extends ChannelsBuilder {
         /** the project */
         private final Project project;
 
@@ -130,7 +130,7 @@ public final class ChannelBuilders {
     /**
      * To build all channels needed to propagate a project overview alteration
      */
-    public static class ProjectOverviewChannelBuilder extends ChannelBuilder {
+    public static class AboutProjectOverviewChannelsBuilder extends ChannelsBuilder {
         /** the project */
         private final Project project;
 
@@ -139,7 +139,7 @@ public final class ChannelBuilders {
          *
          * @param project the project
          */
-        public ProjectOverviewChannelBuilder(Project project) {
+        public AboutProjectOverviewChannelsBuilder(Project project) {
             this.project = project;
         }
 
@@ -160,7 +160,7 @@ public final class ChannelBuilders {
     /**
      * To build a channel for each admin
      */
-    public static class ForAdminChannelBuilder extends ChannelBuilder {
+    public static class ForAdminChannelsBuilder extends ChannelsBuilder {
 
         @Override
         protected Set<WebsocketChannel> build(UserDao userDao, CardTypeDao cardTypeDao) {
@@ -171,7 +171,7 @@ public final class ChannelBuilders {
     /**
      * To build all channels needed to propagate a user alteration
      */
-    public static class UserChannelBuilder extends ChannelBuilder {
+    public static class AboutUserChannelsBuilder extends ChannelsBuilder {
         /** the user */
         private final User user;
 
@@ -180,7 +180,7 @@ public final class ChannelBuilders {
          *
          * @param user the user
          */
-        public UserChannelBuilder(User user) {
+        public AboutUserChannelsBuilder(User user) {
             this.user = user;
         }
 
@@ -203,7 +203,7 @@ public final class ChannelBuilders {
     /**
      * To build all channels needed to propagate an account alteration
      */
-    public static class AccountChannelBuilder extends ChannelBuilder {
+    public static class AboutAccountChannelsBuilder extends ChannelsBuilder {
         /** the account */
         private final Account account;
 
@@ -212,7 +212,7 @@ public final class ChannelBuilders {
          *
          * @param account the account
          */
-        public AccountChannelBuilder(Account account) {
+        public AboutAccountChannelsBuilder(Account account) {
             this.account = account;
         }
 
@@ -233,7 +233,7 @@ public final class ChannelBuilders {
     /**
      * To build all channels needed to propagate a http session alteration
      */
-    public static class HttpSessionBuilder extends ChannelBuilder {
+    public static class AboutHttpSessionChannelsBuilder extends ChannelsBuilder {
         /** the http session */
         private final HttpSession httpSession;
 
@@ -242,17 +242,17 @@ public final class ChannelBuilders {
          *
          * @param httpSession the http session
          */
-        public HttpSessionBuilder(HttpSession httpSession) {
+        public AboutHttpSessionChannelsBuilder(HttpSession httpSession) {
             this.httpSession = httpSession;
         }
 
         @Override
         protected Set<WebsocketChannel> build(UserDao userDao, CardTypeDao cardTypeDao) {
             if (httpSession.getAccount() != null) {
-                return new AccountChannelBuilder(httpSession.getAccount())
+                return new AboutAccountChannelsBuilder(httpSession.getAccount())
                     .build(userDao, cardTypeDao);
             } else {
-                return new ForAdminChannelBuilder().build(userDao, cardTypeDao);
+                return new ForAdminChannelsBuilder().build(userDao, cardTypeDao);
             }
         }
     }
@@ -260,7 +260,7 @@ public final class ChannelBuilders {
     /**
      * To build all channels needed for a card type belonging to a project
      */
-    public static class CardTypeChannelBuilder extends ChannelBuilder {
+    public static class AboutCardTypeChannelsBuilder extends ChannelsBuilder {
         /** the card type */
         private final AbstractCardType cardType;
 
@@ -269,7 +269,7 @@ public final class ChannelBuilders {
          *
          * @param cardType the card type
          */
-        public CardTypeChannelBuilder(AbstractCardType cardType) {
+        public AboutCardTypeChannelsBuilder(AbstractCardType cardType) {
             this.cardType = cardType;
         }
 
