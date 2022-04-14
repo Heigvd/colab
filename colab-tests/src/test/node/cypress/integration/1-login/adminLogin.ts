@@ -14,11 +14,11 @@ describe("ch.colabproject.colab.tests.e2e.Login", () => {
     cy.login(Cypress.env("ADMIN_USERNAME"), Cypress.env("ADMIN_PASSWORD"));
 
 
-    cy.get("svg.fa-user-circle")
+    cy.get("svg.fa-circle-user")
       .should("have.length", "1")
       .click();
 
-    cy.get("svg.fa-sign-out-alt")
+    cy.get("svg.fa-right-from-bracket")
       .should("have.length", "1")
       .click();
 
