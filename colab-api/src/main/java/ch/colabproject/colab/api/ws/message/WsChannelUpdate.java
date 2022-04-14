@@ -81,4 +81,9 @@ public class WsChannelUpdate extends WsMessage {
         return message;
     }
 
+    @Override
+    public String toString() {
+        return "WsChannelUpdate{" + "channel=" + channel + ", diff=" + diff + "}";
+    }
+
 }
