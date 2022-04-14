@@ -214,7 +214,7 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="${project.url}/checkstyle.html#ch.colabproject.colab.api.ws.channel.WebsocketMetaChannel.java">ch/colabproject/colab/api/ws/channel/WebsocketMetaChannel.java</a>
+                  <a href="${project.url}/checkstyle.html#ch.colabproject.colab.api.ws.message.IndexEntry.java">ch/colabproject/colab/api/ws/message/IndexEntry.java</a>
                 </td>
                 <td>
                   0
@@ -228,7 +228,7 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="${project.url}/checkstyle.html#ch.colabproject.colab.api.ws.message.IndexEntry.java">ch/colabproject/colab/api/ws/message/IndexEntry.java</a>
+                  <a href="${project.url}/checkstyle.html#ch.colabproject.colab.api.ws.channel.WebsocketMetaChannel.java">ch/colabproject/colab/api/ws/channel/WebsocketMetaChannel.java</a>
                 </td>
                 <td>
                   0
@@ -270,20 +270,6 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="${project.url}/checkstyle.html#ch.colabproject.colab.api.model.tools.JpaCustomizer.java">ch/colabproject/colab/api/model/tools/JpaCustomizer.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  1
-                </td>
-                <td>
-                  0
-                </td>
-              </tr>
-                          <tr>
-                <td>
                   <a href="${project.url}/checkstyle.html#ch.colabproject.colab.api.model.team.acl.InvolvementLevel.java">ch/colabproject/colab/api/model/team/acl/InvolvementLevel.java</a>
                 </td>
                 <td>
@@ -291,6 +277,20 @@ under the License.
                 </td>
                 <td>
                   0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="${project.url}/checkstyle.html#ch.colabproject.colab.api.model.tools.JpaCustomizer.java">ch/colabproject/colab/api/model/tools/JpaCustomizer.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  1
                 </td>
                 <td>
                   0
@@ -984,7 +984,7 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="${project.url}/checkstyle.html#ch.colabproject.colab.api.microchanges.model.Change.java">ch/colabproject/colab/api/microchanges/model/Change.java</a>
+                  <a href="${project.url}/checkstyle.html#ch.colabproject.colab.api.model.tools.EntityHelper.java">ch/colabproject/colab/api/model/tools/EntityHelper.java</a>
                 </td>
                 <td>
                   0
@@ -998,7 +998,7 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="${project.url}/checkstyle.html#ch.colabproject.colab.api.model.tools.EntityHelper.java">ch/colabproject/colab/api/model/tools/EntityHelper.java</a>
+                  <a href="${project.url}/checkstyle.html#ch.colabproject.colab.api.microchanges.model.Change.java">ch/colabproject/colab/api/microchanges/model/Change.java</a>
                 </td>
                 <td>
                   0
@@ -1866,20 +1866,6 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="${project.url}/checkstyle.html#ch.colabproject.colab.api.microchanges.model.MicroChange.java">ch/colabproject/colab/api/microchanges/model/MicroChange.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  4
-                </td>
-                <td>
-                  0
-                </td>
-              </tr>
-                          <tr>
-                <td>
                   <a href="${project.url}/checkstyle.html#ch.colabproject.colab.api.model.token.Token.java">ch/colabproject/colab/api/model/token/Token.java</a>
                 </td>
                 <td>
@@ -1887,6 +1873,20 @@ under the License.
                 </td>
                 <td>
                   0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="${project.url}/checkstyle.html#ch.colabproject.colab.api.microchanges.model.MicroChange.java">ch/colabproject/colab/api/microchanges/model/MicroChange.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  4
                 </td>
                 <td>
                   0
@@ -2440,7 +2440,7 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="${project.url}/checkstyle.html#ch.colabproject.colab.api.security.permissions.project.ProjectConditions.java">ch/colabproject/colab/api/security/permissions/project/ProjectConditions.java</a>
+                  <a href="${project.url}/checkstyle.html#ch.colabproject.colab.api.ws.message.WsMessage.java">ch/colabproject/colab/api/ws/message/WsMessage.java</a>
                 </td>
                 <td>
                   0
@@ -2454,7 +2454,7 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="${project.url}/checkstyle.html#ch.colabproject.colab.api.ws.message.WsMessage.java">ch/colabproject/colab/api/ws/message/WsMessage.java</a>
+                  <a href="${project.url}/checkstyle.html#ch.colabproject.colab.api.security.permissions.project.ProjectConditions.java">ch/colabproject/colab/api/security/permissions/project/ProjectConditions.java</a>
                 </td>
                 <td>
                   0
