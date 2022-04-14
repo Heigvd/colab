@@ -7,12 +7,12 @@
 
 import { css, cx } from '@emotion/css';
 import {
+  faBoxesStacked,
   faClone,
   faCog,
   faEllipsisV,
   faEye,
   faInfoCircle,
-  faMicrochip,
   faNetworkWired,
   faProjectDiagram,
   faUsers,
@@ -322,7 +322,7 @@ export default function Editor(): JSX.Element {
                 value: './types',
                 label: (
                   <>
-                    <FontAwesomeIcon icon={faMicrochip} /> Card types
+                    <FontAwesomeIcon icon={faBoxesStacked} /> Card types
                   </>
                 ),
               },
