@@ -28,6 +28,7 @@ import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
 import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
+import java.util.List;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -175,7 +176,7 @@ public class TokenManager {
             token.setLocalAccount(account);
             tokenDao.persistToken(token);
         }
-        //token.setExpirationDate(OffsetDateTime.now().plus(1, ChronoUnit.WEEKS));
+        // token.setExpirationDate(OffsetDateTime.now().plus(1, ChronoUnit.WEEKS));
         token.setExpirationDate(null);
 
         return token;
@@ -255,6 +256,7 @@ public class TokenManager {
     ////////////////////////////////////////////////////////////////////////////////////////////////
     // Invite a new team member
     ////////////////////////////////////////////////////////////////////////////////////////////////
+
     /**
      * Send invitation to join the project team to the recipient.
      *
@@ -269,7 +271,7 @@ public class TokenManager {
         InvitationToken token = tokenDao.findInvitationByProjectAndRecipient(project, recipient);
         if (token == null) {
             // create a member and link it to the project, but do not link it to any user
-            // this link will be set during token consumtion
+            // this link will be set during token consumption
             TeamMember newMember = teamManager.addMember(project, null,
                 HierarchicalPosition.INTERNAL);
             token = new InvitationToken();
@@ -294,6 +296,20 @@ public class TokenManager {
         }
         return token.getTeamMember();
     }
+
+    /**
+     * Delete all invitations linked to the team member
+     *
+     * @param teamMember the team member for which we delete all invitations
+     */
+    public void deleteInvitationsByTeamMember(TeamMember teamMember) {
+        List<InvitationToken> invitations = tokenDao.findInvitationByTeamMember(teamMember);
+        invitations.stream().forEach(token -> tokenDao.deleteToken(token));
+    }
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+    // for each token
+    ////////////////////////////////////////////////////////////////////////////////////////////////
 
     /**
      * Fetch token with given id from DAO. If it's outdated, it will be destroyed and null will be

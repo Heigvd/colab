@@ -59,6 +59,30 @@ public class TeamManager {
     private TokenManager tokenManager;
 
     // *********************************************************************************************
+    // find team member
+    // *********************************************************************************************
+
+    /**
+     * Retrieve the member. If not found, throw a {@link HttpErrorMessage}.
+     *
+     * @param memberId the id of the card
+     *
+     * @return the card if found
+     *
+     * @throws HttpErrorMessage if the card was not found
+     */
+    public TeamMember assertAndGetMember(Long memberId) {
+        TeamMember member = teamDao.findTeamMember(memberId);
+
+        if (member == null) {
+            logger.error("team member #{} not found", memberId);
+            throw HttpErrorMessage.relatedObjectNotFoundError();
+        }
+
+        return member;
+    }
+
+    // *********************************************************************************************
     // team members
     // *********************************************************************************************
     /**
@@ -457,4 +481,47 @@ public class TeamManager {
         }
     }
 
+    /**
+     * Delete the given team member
+     *
+     * @param teamMemberId the id of the team member
+     */
+    public void deleteTeamMember(Long teamMemberId) {
+        TeamMember teamMember = assertAndGetMember(teamMemberId);
+
+        if (!checkDeletionAcceptability(teamMember)) {
+            throw HttpErrorMessage.dataIntegrityFailure();
+        }
+
+        // acl deleted by cascade
+
+        // delete invitation token
+        tokenManager.deleteInvitationsByTeamMember(teamMember);
+
+        if (teamMember.getUser() != null) {
+            teamMember.getUser().getTeamMembers().remove(teamMember);
+        }
+
+        if (teamMember.getProject() != null) {
+            teamMember.getProject().getTeamMembers().remove(teamMember);
+        }
+
+        teamDao.removeTeamMember(teamMember);
+    }
+
+    /**
+     * Ascertain that the team member can be deleted
+     *
+     * @param teamMember the team member to check for deletion
+     *
+     * @return True iff it can be safely deleted
+     */
+    public boolean checkDeletionAcceptability(TeamMember teamMember) {
+        if (teamMember.getPosition() == HierarchicalPosition.OWNER &&
+            teamMember.getProject().getTeamMembersByPosition(HierarchicalPosition.OWNER).size() > 2) {
+            return false;
+        }
+
+        return true;
+    }
 }
