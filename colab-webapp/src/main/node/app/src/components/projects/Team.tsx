@@ -8,12 +8,14 @@ import { css, cx } from '@emotion/css';
 import {
   faArrowLeft,
   faCheck,
+  faEllipsisV,
   faHourglassHalf,
   faPaperPlane,
   faPen,
   faPlus,
   faSave,
   faTimes,
+  faTrash,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { HierarchicalPosition, Project, TeamMember, TeamRole } from 'colab-rest-client';
@@ -25,7 +27,9 @@ import { getDisplayName } from '../../helper';
 import useTranslations from '../../i18n/I18nContext';
 import { useAndLoadProjectTeam } from '../../selectors/projectSelector';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
+import ConfirmDeleteModal from '../common/ConfirmDeleteModal';
 import { Destroyer } from '../common/Destroyer';
+import DropDownMenu from '../common/DropDownMenu';
 import IconButton from '../common/IconButton';
 import InlineInput from '../common/InlineInput';
 import InlineLoading from '../common/InlineLoading';
@@ -47,6 +51,12 @@ import {
 const gridNewLine = css({
   gridColumnStart: 1,
   justifySelf: 'start',
+});
+const titleCellStyle = css({
+  justifySelf: 'stretch',
+  padding: space_S + ' 0',
+  fontWeight: 800,
+  borderBottom: '1px solid var(--lightGray)',
 });
 
 function prettyPrint(position: HierarchicalPosition) {
@@ -190,6 +200,35 @@ const Member = ({ member, roles }: MemberProps) => {
   return (
     <>
       <div className={gridNewLine}>{username}</div>
+      <DropDownMenu
+        icon={faEllipsisV}
+        valueComp={{ value: '', label: '' }}
+        buttonClassName={cx(lightIconButtonStyle, css({ marginLeft: space_S }))}
+        entries={[
+          {
+            value: 'Delete team member',
+            action: () => {},
+            label: (
+              <ConfirmDeleteModal
+                buttonLabel={
+                  <>
+                    <FontAwesomeIcon icon={faTrash} /> Delete
+                  </>
+                }
+                message={
+                  <p>
+                    Are you <strong>sure</strong> you want to delete this team member ?
+                  </p>
+                }
+                onConfirm={() => {
+                  dispatch(API.deleteMember(member));
+                }}
+                confirmButtonLabel={'Delete team member'}
+              />
+            ),
+          },
+        ]}
+      />
       <PositionSelector
         value={member.position}
         onChange={newPosition => {
@@ -341,8 +380,12 @@ export default function Team({ project }: Props): JSX.Element {
             gap: space_S,
           })}
         >
+          <div className={titleCellStyle}>Members</div>
+          <div className={titleCellStyle}>Rights</div>
+          <div className={cx(titleCellStyle, css({ gridColumnStart: 3, gridColumnEnd: 'end'}))}>Roles</div> 
           <div />
           <div />
+          
           {roles.map(role => (
             <div key={'role-' + role.id}>
               <RoleDisplay role={role} />

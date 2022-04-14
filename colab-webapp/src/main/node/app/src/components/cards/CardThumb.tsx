@@ -154,7 +154,7 @@ export default function CardThumb({
                       value: 'settings',
                       label: (
                         <>
-                          <FontAwesomeIcon icon={faCog} title="Card settings" /> Card Settings
+                          <FontAwesomeIcon icon={faCog} /> Card Settings
                         </>
                       ),
                       action: () => {

@@ -7,13 +7,13 @@
 
 import { cx } from '@emotion/css';
 import { faFileAlt } from '@fortawesome/free-regular-svg-icons';
+import { faTimes } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Document } from 'colab-rest-client';
 import * as React from 'react';
 import IconButton from '../common/IconButton';
 import OpenClose from '../common/OpenClose';
 import Overlay from '../common/Overlay';
-import { closeIcon } from '../styling/defaultIcons';
 import { defaultRowContainerStyle, iconStyle } from '../styling/style';
 import DocumentEditor from './DocumentEditor';
 
@@ -35,11 +35,11 @@ export default function DocumentMiniDisplay({ document }: DocumentMiniDisplayPro
           <Overlay>
             {document.id && (
               <div>
-                <DocumentEditor document={document} allowEdition={true} />
+                <DocumentEditor doc={document} allowEdition={true} />
               </div>
             )}
             <IconButton
-              icon={closeIcon}
+              icon={faTimes}
               title="close"
               onClick={() => {
                 collapse();

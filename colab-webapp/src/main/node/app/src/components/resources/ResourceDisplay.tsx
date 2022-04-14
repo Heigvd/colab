@@ -64,10 +64,10 @@ export function ResourceDisplay({ resourceAndRef, onClose }: ResourceDisplayProp
             className={lightIconButtonStyle}
           />
           <OpenCloseModal
-            title="Resource Settings"
+            title="Document settings"
             showCloseButton={true}
             collapsedChildren={
-              <IconButton icon={faCog} className={lightIconButtonStyle} title="Resource settings" />
+              <IconButton icon={faCog} className={lightIconButtonStyle} title="Document settings" />
             }
           >
             {() => (
@@ -75,7 +75,7 @@ export function ResourceDisplay({ resourceAndRef, onClose }: ResourceDisplayProp
                 <ResourceSettings {...resourceAndRef} />
                 {resourceAndRef.isDirectResource && (
                   <Destroyer
-                    title="Delete this resource"
+                    title="Delete this document"
                     icon={faTrashAlt}
                     onDelete={() => {
                       dispatch(API.deleteResource(resourceAndRef.targetResource));
@@ -124,26 +124,26 @@ export function ResourceDisplay({ resourceAndRef, onClose }: ResourceDisplayProp
             className={cardTitle}
           />
           {teaser && (
-          <DocTextWrapper id={resourceAndRef.targetResource.teaserId}>
-            {text => (
-              <InlineInput
-                placeholder={'Add a teaser'}
-                value={text || 'Add a teaser'}
-                onChange={(newValue: string) => {
-                  if (resourceAndRef.targetResource.teaserId) {
-                    dispatch(
-                      updateDocumentText({
-                        id: resourceAndRef.targetResource.teaserId,
-                        textData: newValue,
-                      }),
-                    );
-                  }
-                }}
-                autosave={false}
-                className={cx(textSmall, css({marginTop: space_S}))}
-              />
-            )}
-          </DocTextWrapper>
+            <DocTextWrapper id={resourceAndRef.targetResource.teaserId}>
+              {text => (
+                <InlineInput
+                  placeholder={'Add a teaser'}
+                  value={text || 'Add a teaser'}
+                  onChange={(newValue: string) => {
+                    if (resourceAndRef.targetResource.teaserId) {
+                      dispatch(
+                        updateDocumentText({
+                          id: resourceAndRef.targetResource.teaserId,
+                          textData: newValue,
+                        }),
+                      );
+                    }
+                  }}
+                  autosave={false}
+                  className={cx(textSmall, css({ marginTop: space_S }))}
+                />
+              )}
+            </DocTextWrapper>
           )}
         </div>
       </Flex>

@@ -467,6 +467,15 @@ export const updateMember = createAsyncThunk(
   },
 );
 
+export const deleteMember = createAsyncThunk(
+  'project/member/delete',
+  async (member: TeamMember) => {
+    if (member && member.id) {
+      await restClient.TeamRestEndpoint.deleteTeamMember(member.id);
+    }
+  },
+);
+
 export const setMemberPosition = createAsyncThunk(
   'project/member/position',
   async ({ memberId, position }: { memberId: number; position: HierarchicalPosition }) => {

@@ -34,7 +34,7 @@ export default function DocumentList({ context, allowEdition }: DocumentListProp
       {documents
         .sort((a, b) => (a.index || 0) - (b.index || 0))
         .map(doc => (
-          <DocumentEditor key={doc.id} document={doc} allowEdition={allowEdition || true} />
+          <DocumentEditor key={doc.id} doc={doc} allowEdition={allowEdition || true} />
         ))}
       {allowEdition && (
         <Flex className={css({ paddingTop: space_M })}>

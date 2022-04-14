@@ -12,6 +12,7 @@ import {
   faCheck,
   faDownload,
   faEllipsisV,
+  faPen,
   faTrash,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -42,24 +43,36 @@ const moveBoxStyle = css({
 });
 
 export interface DocumentEditorProps {
-  document: Document;
+  doc: Document;
   allowEdition: boolean;
 }
 
-export default function DocumentEditor({
-  document,
-  allowEdition,
-}: DocumentEditorProps): JSX.Element {
+export default function DocumentEditor({ doc, allowEdition }: DocumentEditorProps): JSX.Element {
   const dispatch = useAppDispatch();
 
-  const isTextDataBlock = entityIs(document, 'TextDataBlock');
-  const isDocumentFile = entityIs(document, 'DocumentFile');
-  const isExternalLink = entityIs(document, 'ExternalLink');
+  const isTextDataBlock = entityIs(doc, 'TextDataBlock');
+  const isDocumentFile = entityIs(doc, 'DocumentFile');
+  const isExternalLink = entityIs(doc, 'ExternalLink');
 
   const [state, setState] = React.useState<EditState>('VIEW');
   const [showTree, setShowTree] = React.useState(false);
+  const [markDownMode, setmarkDownMode] = React.useState(false);
+  const dropRef = React.useRef<HTMLDivElement>(null);
 
-  const downloadUrl = API.getRestClient().DocumentFileRestEndPoint.getFileContentPath(document.id!);
+  const handleClickOutside = (event: Event) => {
+    if (dropRef.current && !dropRef.current.contains(event.target as Node)) {
+      setState('VIEW');
+    }
+  };
+
+  React.useEffect(() => {
+    document.addEventListener('click', handleClickOutside, true);
+    return () => {
+      document.removeEventListener('click', handleClickOutside, true);
+    };
+  });
+
+  const downloadUrl = API.getRestClient().DocumentFileRestEndPoint.getFileContentPath(doc.id!);
 
   const downloadCb = React.useCallback(() => {
     window.open(downloadUrl);
@@ -68,6 +81,7 @@ export default function DocumentEditor({
   return (
     <Flex className={moveBoxStyle}>
       <div
+        ref={dropRef}
         className={cx(
           css({
             display: 'flex',
@@ -78,7 +92,7 @@ export default function DocumentEditor({
           editableBlockStyle,
           { [editingStyle]: state === 'EDIT' },
         )}
-        onDoubleClick={() => {
+        onClick={() => {
           if (state === 'VIEW') {
             setState('EDIT');
           }
@@ -86,25 +100,25 @@ export default function DocumentEditor({
       >
         {isTextDataBlock ? (
           <BlockEditorWrapper
-            blockId={document.id!}
+            blockId={doc.id!}
             allowEdition={allowEdition}
             editingStatus={state}
             showTree={showTree}
+            markDownEditor={markDownMode}
             className={css({ flexGrow: 1 })}
-            setEditingState={setState}
           />
         ) : isDocumentFile ? (
           <DocumentFileEditor
-            document={document}
+            document={doc}
             allowEdition={allowEdition}
             editingStatus={state}
             setEditingState={setState}
           />
         ) : isExternalLink ? (
           <OpenGraphLink
-            url={document.url || ''}
+            url={doc.url || ''}
             editingStatus={state}
-            document={document}
+            document={doc}
             setEditingState={setState}
           />
         ) : (
@@ -122,7 +136,11 @@ export default function DocumentEditor({
                 ? [
                     {
                       value: 'EditBlock',
-                      label: <>Edit</>,
+                      label: (
+                        <>
+                          <FontAwesomeIcon icon={faPen} size="xs" /> Edit
+                        </>
+                      ),
                       action: () => setState('EDIT'),
                     },
                   ]
@@ -141,10 +159,22 @@ export default function DocumentEditor({
                       ),
                       action: () => setShowTree(showTree => !showTree),
                     },
+                    {
+                      value: 'markDown',
+                      label: (
+                        <>
+                          {markDownMode && (
+                            <FontAwesomeIcon icon={faCheck} size="xs" color="var(--lightGray)" />
+                          )}{' '}
+                          MarkDown mode
+                        </>
+                      ),
+                      action: () => setmarkDownMode(markDownMode => !markDownMode),
+                    },
                   ]
                 : []),
               ...(isDocumentFile &&
-              (document.mimeType === 'image/png' || document.mimeType === 'image/jpeg') &&
+              (doc.mimeType === 'image/png' || doc.mimeType === 'image/jpeg') &&
               state === 'VIEW'
                 ? [
                     {
@@ -174,19 +204,19 @@ export default function DocumentEditor({
                       </p>
                     }
                     onConfirm={() => {
-                      if (document.id) {
-                        if (document.owningCardContentId != null) {
+                      if (doc.id) {
+                        if (doc.owningCardContentId != null) {
                           dispatch(
                             API.removeDeliverable({
-                              cardContentId: document.owningCardContentId,
-                              documentId: document.id,
+                              cardContentId: doc.owningCardContentId,
+                              documentId: doc.id,
                             }),
                           );
-                        } else if (document.owningResourceId != null) {
+                        } else if (doc.owningResourceId != null) {
                           dispatch(
                             API.removeDocumentOfResource({
-                              resourceId: document.owningResourceId,
-                              documentId: document.id,
+                              resourceId: doc.owningResourceId,
+                              documentId: doc.id,
                             }),
                           );
                         }
@@ -210,7 +240,7 @@ export default function DocumentEditor({
           iconSize="xs"
           className={lightIconButtonStyle}
           onClick={() => {
-            dispatch(API.moveDocumentUp(document.id!));
+            dispatch(API.moveDocumentUp(doc.id!));
           }}
         />
         <IconButton
@@ -219,7 +249,7 @@ export default function DocumentEditor({
           iconSize="xs"
           className={lightIconButtonStyle}
           onClick={() => {
-            dispatch(API.moveDocumentDown(document.id!));
+            dispatch(API.moveDocumentDown(doc.id!));
           }}
         />
       </Flex>

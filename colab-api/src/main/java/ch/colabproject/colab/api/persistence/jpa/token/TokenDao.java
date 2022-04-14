@@ -8,11 +8,13 @@ package ch.colabproject.colab.api.persistence.jpa.token;
 
 import ch.colabproject.colab.api.Helper;
 import ch.colabproject.colab.api.model.project.Project;
+import ch.colabproject.colab.api.model.team.TeamMember;
 import ch.colabproject.colab.api.model.token.InvitationToken;
 import ch.colabproject.colab.api.model.token.ResetLocalAccountPasswordToken;
 import ch.colabproject.colab.api.model.token.Token;
 import ch.colabproject.colab.api.model.token.VerifyLocalAccountToken;
 import ch.colabproject.colab.api.model.user.LocalAccount;
+import java.util.List;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -98,6 +100,20 @@ public class TokenDao {
         } catch (NoResultException ex) {
             return null;
         }
+    }
+
+    /**
+     * Find all pending invitation for a teamMember and a project
+     *
+     * @param teamMember the team member linked to the invitation token
+     *
+     * @return invitations for the team member
+     */
+    public List<InvitationToken> findInvitationByTeamMember(TeamMember teamMember) {
+        return em.createNamedQuery("InvitationToken.findByTeamMember",
+            InvitationToken.class)
+            .setParameter("teamMemberId", teamMember.getId())
+            .getResultList();
     }
 
     /**

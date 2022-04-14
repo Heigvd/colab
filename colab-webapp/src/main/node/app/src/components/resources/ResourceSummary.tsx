@@ -5,7 +5,7 @@
  * Licensed under the MIT License
  */
 
-import { faFileAlt } from '@fortawesome/free-solid-svg-icons';
+import { faPaperclip } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import * as React from 'react';
 import { useAndLoadNbResources } from '../../selectors/resourceSelector';
@@ -22,7 +22,7 @@ export default function ResourceSummary(context: ResourceCallContext): JSX.Eleme
 
   return (
     <p className={lightItalicText}>
-      <FontAwesomeIcon icon={faFileAlt} /> nb resources : {nb}
+      <FontAwesomeIcon icon={faPaperclip} /> {nb}
     </p>
   );
 }

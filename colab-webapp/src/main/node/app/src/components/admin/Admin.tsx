@@ -7,9 +7,8 @@
 
 import { css } from '@emotion/css';
 import * as React from 'react';
-import { Navigate, Route, Routes } from 'react-router-dom';
 import GlobalCardTypeList from '../cards/cardtypes/GlobalCardTypeList';
-import { SecondLevelLink } from '../common/Link';
+import Tabs, { Tab } from '../common/Tabs';
 import { AllProjects } from '../projects/ProjectList';
 import { space_L } from '../styling/style';
 import AllUsers from './AllUsers';
@@ -22,25 +21,26 @@ export default function Admin(): JSX.Element {
     <div className={css({ padding: space_L })}>
       <h2>Admin Page</h2>
       <div>
-        <nav>
-          <SecondLevelLink to="">Admin</SecondLevelLink>
-          <SecondLevelLink to="users">Users</SecondLevelLink>
-          <SecondLevelLink to="projects">Projects</SecondLevelLink>
-          <SecondLevelLink to="loggers">Loggers</SecondLevelLink>
-          <SecondLevelLink to="onlineusers">Online Users</SecondLevelLink>
-          <SecondLevelLink to="types">Card Types</SecondLevelLink>
-        </nav>
-        <div>
-          <Routes>
-            <Route path="" element={<MainPanel />} />
-            <Route path="loggers" element={<LoggersConfig />} />
-            <Route path="projects" element={<AllProjects />} />
-            <Route path="users" element={<AllUsers />} />
-            <Route path="onlineusers" element={<Who />} />
-            <Route path="types" element={<GlobalCardTypeList />} />
-            <Route element={<Navigate to="" />} />
-          </Routes>
-        </div>
+        <Tabs>
+          <Tab name="main" label="Admin">
+            <MainPanel />
+          </Tab>
+          <Tab name="users" label="Users">
+            <AllUsers />
+          </Tab>
+          <Tab name="projects" label="Projects">
+            <AllProjects />
+          </Tab>
+          <Tab name="loggers" label="Loggers">
+            <LoggersConfig />
+          </Tab>
+          <Tab name="onlineusers" label="Online Users">
+            <Who />
+          </Tab>
+          <Tab name="types" label="Card Types">
+            <GlobalCardTypeList />
+          </Tab>
+        </Tabs>
       </div>
     </div>
   );

@@ -6,6 +6,7 @@
  */
 
 import { css, cx } from '@emotion/css';
+import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import * as React from 'react';
 import * as API from '../../API/api';
@@ -15,7 +16,6 @@ import Button from '../common/Button';
 import Flex from '../common/Flex';
 import Form, { createSelectField, Field } from '../common/Form/Form';
 import OpenCloseModal from '../common/OpenCloseModal';
-import { addIcon } from '../styling/defaultIcons';
 import { space_M, space_S } from '../styling/style';
 import { ResourceCallContext } from './ResourceCommonType';
 
@@ -66,7 +66,7 @@ export default function ResourceCreator({
       label: 'Category',
       isMandatory: false,
       placeholder: 'Select or type to create',
-      fieldFooter: 'Made to organize the resources',
+      tip: 'Like folders to organize the documentation',
       isMulti: false,
       canCreateOption: true,
       options: allCategories.map(c => ({ label: c, value: c })),
@@ -85,7 +85,7 @@ export default function ResourceCreator({
 
   return (
     <OpenCloseModal
-      title="Create a resource"
+      title="Create a document"
       collapsedChildren={
         <Flex
           justify="center"
@@ -98,7 +98,7 @@ export default function ResourceCreator({
             className,
           )}
         >
-          <FontAwesomeIcon title="Add a resource" icon={addIcon} />
+          <FontAwesomeIcon title="Add a document" icon={faPlus} />
         </Flex>
       }
       className={css({ display: 'block', width: '100%', textAlign: 'center' })}
