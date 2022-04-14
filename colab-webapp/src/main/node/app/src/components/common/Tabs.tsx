@@ -46,7 +46,7 @@ const buttonStyle = css({
   marginRight: space_S,
   fontSize: '0.9em',
   zIndex: 1,
-  marginBottom: '-1px',
+  marginBottom: '-2px',
 });
 
 const notSelectedStyle = cx(

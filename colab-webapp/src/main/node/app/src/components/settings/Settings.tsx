@@ -6,38 +6,18 @@
  */
 
 import { css } from '@emotion/css';
-import { Account, entityIs } from 'colab-rest-client';
 import * as React from 'react';
-import { Route, Routes, useParams } from 'react-router-dom';
 import { useCurrentUser, useCurrentUserAccounts } from '../../selectors/userSelector';
+import Button from '../common/Button';
 import Flex from '../common/Flex';
-import { SecondLevelLink } from '../common/Link';
+import Tabs, { Tab } from '../common/Tabs';
 import Tips from '../common/Tips';
+import Debugger from '../debugger/debugger';
 import { space_L } from '../styling/style';
 import DisplaySettings from './DisplaySettings';
 import LocalAccount from './LocalAccount';
 import UserProfile from './UserProfile';
 import UserSessions from './UserSessions';
-
-function accountTitle(account: Account) {
-  if (entityIs(account, 'LocalAccount')) {
-    return `Edit email Account (${account.email})`;
-  }
-  return '';
-}
-
-/**
- * useParams does not work inline...
- */
-function WrapLocalAccountEditor() {
-  const { id } = useParams<'id'>();
-
-  if (id != null && +id >= 0) {
-    return <LocalAccount accountId={+id} />;
-  } else {
-    return null;
-  }
-}
 
 export default function Settings(): JSX.Element {
   const accounts = useCurrentUserAccounts();
@@ -47,36 +27,39 @@ export default function Settings(): JSX.Element {
     return (
       <div className={css({ padding: space_L })}>
         <h2>Settings</h2>
-        <div>
-          <nav>
-            <SecondLevelLink to="user">User Profile</SecondLevelLink>
-            {accounts.map(account => {
-              return (
-                <SecondLevelLink key={`account-${account.id}`} to={`account/${account.id}`}>
-                  {accountTitle(account)}
-                </SecondLevelLink>
-              );
-            })}
-            <SecondLevelLink to="display">Display Settings</SecondLevelLink>
-            <SecondLevelLink to="sessions">Active Sessions</SecondLevelLink>
-            <span>
-              add account{' '}
-              <Tips tipsType="TODO">
-                One user may have one to many accounts. (AAI, wegas, github, ...)
-              </Tips>
-            </span>
-            <span>...</span>
-          </nav>
-          <Flex>
-            <Routes>
-              <Route path="/" element={<span>select something...</span>} />
-              <Route path="user" element={<UserProfile user={currentUser} />} />
-              <Route path="sessions" element={<UserSessions user={currentUser} />} />
-              <Route path="display" element={<DisplaySettings />} />
-              <Route path="account/:id" element={<WrapLocalAccountEditor />} />
-            </Routes>
-          </Flex>
-        </div>
+        <Tabs>
+          <Tab name="User Profile" label="User">
+            <Flex direction="row" className={css({ gap: space_L })}>
+              <UserProfile user={currentUser} />
+              {accounts.map(account => {
+                if (account.id != null && +account.id >= 0) {
+                  return (
+                    <>
+                      <LocalAccount accountId={account.id} />
+                    </>
+                  );
+                }
+              })}
+              <div>
+                <Button clickable={false} invertedButton>
+                  add account
+                </Button>
+                <Tips tipsType="TODO">
+                  One user may have one to many accounts. (AAI, wegas, github, ...)
+                </Tips>
+              </div>
+            </Flex>
+          </Tab>
+          <Tab name="Display" label="Display">
+            <DisplaySettings />
+          </Tab>
+          <Tab name="activeSess" label="Active Sessions">
+            <UserSessions user={currentUser} />
+          </Tab>
+          <Tab name="debugger" label="Debugger">
+            <Debugger />
+          </Tab>
+        </Tabs>
       </div>
     );
   } else {

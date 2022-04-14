@@ -9,6 +9,7 @@ import { css, cx } from '@emotion/css';
 import * as React from 'react';
 import { errorStyle, space_S, successColor, warningStyle } from '../../styling/style';
 import Flex from '../Flex';
+import Tips, { TipsProps } from '../Tips';
 
 export interface Props {
   label?: React.ReactNode;
@@ -17,6 +18,7 @@ export interface Props {
   title?: string;
   value?: boolean;
   onChange: (newValue: boolean) => void;
+  tip?: TipsProps['children'];
   className?: string;
   disabled?: boolean;
 }
@@ -62,6 +64,7 @@ export default function Toggler({
   title,
   value,
   onChange,
+  tip,
   className,
   disabled = false,
 }: Props): JSX.Element {
@@ -80,6 +83,7 @@ export default function Toggler({
           <div className={value ? onStyle : offStyle}></div>
         </div>
         <div>&nbsp;{label}</div>
+        <div>{tip && <Tips>{tip}</Tips>}</div>
       </Flex>
     </Flex>
   );

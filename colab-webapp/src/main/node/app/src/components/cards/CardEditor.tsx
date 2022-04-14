@@ -6,16 +6,19 @@
  */
 
 import { css, cx } from '@emotion/css';
-import { faQuestionCircle, faSnowflake } from '@fortawesome/free-regular-svg-icons';
+import { faSnowflake, faWindowRestore } from '@fortawesome/free-regular-svg-icons';
 import {
   faCog,
   faEllipsisV,
-  faFileAlt,
+  faInfoCircle,
+  faPaperclip,
+  faPercent,
   faStickyNote,
   faTrash,
+  faUsers,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { Card, CardContent } from 'colab-rest-client';
+import { Card, CardContent, entityIs } from 'colab-rest-client';
 import * as React from 'react';
 import { Route, Routes, useLocation, useNavigate } from 'react-router-dom';
 import * as API from '../../API/api';
@@ -44,6 +47,7 @@ import {
   space_S,
   variantTitle,
 } from '../styling/style';
+import CardInvolvement from './CardInvolvement';
 import CardSettings from './CardSettings';
 import ContentSubs from './ContentSubs';
 import SideCollapsiblePanel from './SideCollapsiblePanel';
@@ -112,6 +116,24 @@ function ProgressBar({
   );
 }
 
+function ProgressModifier({ variant }: { variant: CardContent }) {
+  const dispatch = useAppDispatch();
+  return (
+    <Input
+      label="Completion level"
+      value={String(variant.completionLevel || 0)}
+      onChange={newValue =>
+        dispatch(
+          API.updateCardContent({
+            ...variant,
+            completionLevel: +newValue,
+          }),
+        )
+      }
+    />
+  );
+}
+
 export default function CardEditor({ card, variant, showSubcards = true }: Props): JSX.Element {
   const i18n = useTranslations();
   const dispatch = useAppDispatch();
@@ -138,9 +160,17 @@ export default function CardEditor({ card, variant, showSubcards = true }: Props
     [location.pathname, navigate],
   );
 
+  const goto = React.useCallback(
+    (card: Card, variant: CardContent) => {
+      navigate(`../edit/${card.id}/v/${variant.id}`);
+    },
+    [navigate],
+  );
+
   if (card.id == null) {
     return <i>Card without id is invalid...</i>;
   } else {
+    const cardId = card.id;
     return (
       <Flex direction="column" grow={1} align="stretch">
         <Flex
@@ -193,7 +223,7 @@ export default function CardEditor({ card, variant, showSubcards = true }: Props
                         </div>
                       )}
                       <Flex align="center">
-                        <InlineInput
+                         <InlineInput
                           placeholder={i18n.card.untitled}
                           readOnly={readOnly}
                           value={card.title || ''}
@@ -201,8 +231,8 @@ export default function CardEditor({ card, variant, showSubcards = true }: Props
                             dispatch(API.updateCard({ ...card, title: newValue }))
                           }
                           className={cardTitle}
-                          autosave={false}
-                        />
+                          autosave
+                        />                      
                         {hasVariants && (
                           <>
                             <span className={variantTitle}>&#xFE58;</span>
@@ -223,7 +253,7 @@ export default function CardEditor({ card, variant, showSubcards = true }: Props
                         )}
                         {hasCardType && (
                           <IconButton
-                            icon={faQuestionCircle}
+                            icon={faInfoCircle}
                             title="Show card model informations"
                             className={cx(
                               lightIconButtonStyle,
@@ -253,12 +283,84 @@ export default function CardEditor({ card, variant, showSubcards = true }: Props
                             </Modal>
                           }
                         />
+                        <Route
+                          path="involvements"
+                          element={
+                            <Modal
+                              title="Involvements"
+                              onClose={() => closeRouteCb('involvements')}
+                              showCloseButton
+                              className={css({ height: '580px' })}
+                            >
+                              {() => (
+                                <CardInvolvement card={card} />
+                              )}
+                              </Modal>}
+                          />
+                          <Route
+                          path="completion"
+                          element={
+                            <Modal
+                              title="Completion"
+                              onClose={() => navigate('./')}
+                              showCloseButton
+                            >
+                              {() =>
+                                variant && (
+                                  <Flex direction="column">
+                                    <ProgressModifier variant={variant} />
+                                  </Flex>
+                                )
+                              }
+                            </Modal>
+                          }
+                        />
                       </Routes>
                       <DropDownMenu
                         icon={faEllipsisV}
                         valueComp={{ value: '', label: '' }}
                         buttonClassName={cx(lightIconButtonStyle, css({ marginLeft: space_S }))}
                         entries={[
+                          {
+                            value: 'settings',
+                            label: (
+                              <>
+                                <FontAwesomeIcon icon={faCog} /> Card Settings
+                              </>
+                            ),
+                          },
+                          {
+                            value: 'involvements',
+                            label: (
+                              <>
+                                <FontAwesomeIcon icon={faUsers} /> Involvements</>)},
+                          {
+                            value: 'completion',
+                            label: (
+                              <>
+                                <FontAwesomeIcon icon={faPercent} /> Completion
+                              </>
+                            ),
+                          },
+                          {
+                            value: 'Add new variant',
+                            action: () => {
+                              dispatch(API.createCardContentVariantWithBlockDoc(cardId)).then(
+                                payload => {
+                                  if (payload.meta.requestStatus === 'fulfilled') {
+                                    if (entityIs(payload.payload, 'CardContent')) {
+                                      goto(card, payload.payload);
+                                    }
+                                  }
+                                },
+                              );
+                            },
+                            label: (
+                              <>
+                                <FontAwesomeIcon icon={faWindowRestore} /> Add variant
+                              </>
+                            ),
+                          },
                           {
                             value: 'Delete card or variant',
                             action: () => {},
@@ -294,14 +396,6 @@ export default function CardEditor({ card, variant, showSubcards = true }: Props
                                 }}
                                 confirmButtonLabel={hasVariants ? 'Delete variant' : 'Delete card'}
                               />
-                            ),
-                          },
-                          {
-                            value: 'settings',
-                            label: (
-                              <>
-                                <FontAwesomeIcon icon={faCog} title="Card settings" /> Card Settings
-                              </>
                             ),
                           },
                         ]}
@@ -354,19 +448,13 @@ export default function CardEditor({ card, variant, showSubcards = true }: Props
                     />
                   }
                 >
-                  {() => (
-                    <Flex direction="column">
-                      <Input
-                        label="Completion level"
-                        value={String(variant.completionLevel || 0)}
-                        onChange={newValue =>
-                          dispatch(
-                            API.updateCardContent({ ...variant, completionLevel: +newValue }),
-                          )
-                        }
-                      />
-                    </Flex>
-                  )}
+                  {() =>
+                    variant && (
+                      <Flex direction="column">
+                        <ProgressModifier variant={variant} />
+                      </Flex>
+                    )
+                  }
                 </OpenCloseModal>
               </Flex>
             </Flex>
@@ -384,8 +472,8 @@ export default function CardEditor({ card, variant, showSubcards = true }: Props
                       hasSeveralVariants={hasVariants}
                     />
                   ),
-                  icon: faFileAlt,
-                  title: 'Resources',
+                  icon: faPaperclip,
+                  title: 'Documentation',
                 },
                 'Sticky Notes': {
                   icon: faStickyNote,

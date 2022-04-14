@@ -8,11 +8,14 @@
 import { css, cx } from '@emotion/css';
 import {
   faClone,
+  faCog,
   faEllipsisV,
   faEye,
   faInfoCircle,
+  faMicrochip,
   faNetworkWired,
   faProjectDiagram,
+  faUsers,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Card, CardContent, entityIs } from 'colab-rest-client';
@@ -315,9 +318,30 @@ export default function Editor(): JSX.Element {
             icon={faEllipsisV}
             valueComp={{ value: '', label: '' }}
             entries={[
-              { value: './types', label: 'Card types' },
-              { value: './team', label: 'Team' },
-              { value: './settings', label: 'Project settings' },
+              {
+                value: './types',
+                label: (
+                  <>
+                    <FontAwesomeIcon icon={faMicrochip} /> Card types
+                  </>
+                ),
+              },
+              {
+                value: './team',
+                label: (
+                  <>
+                    <FontAwesomeIcon icon={faUsers} /> Team
+                  </>
+                ),
+              },
+              {
+                value: './settings',
+                label: (
+                  <>
+                    <FontAwesomeIcon icon={faCog} /> Settings
+                  </>
+                ),
+              },
             ]}
             onSelect={val => {
               val.action != null ? val.action() : navigate(val.value);

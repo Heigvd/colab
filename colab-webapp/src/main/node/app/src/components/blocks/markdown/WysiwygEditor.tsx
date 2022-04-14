@@ -61,13 +61,14 @@ const editorStyle = cx(
     border: '1px solid var(--lightGray)',
     borderRadius: borderRadius,
     whiteSpace: 'pre-line',
+    cursor: 'text',
     '& .some-cursor': {
       position: 'absolute',
       pointerEvents: 'none',
       userSelect: 'none',
     },
     ':focus': {
-      border: '1px solid blue',
+      border: '1px solid var(--darkGray)',
     },
   }),
 );
