@@ -32,7 +32,7 @@ import DropDownMenu from '../common/DropDownMenu';
 import Flex from '../common/Flex';
 import Input from '../common/Form/Input';
 import IconButton from '../common/IconButton';
-import InlineInput from '../common/InlineInput';
+import InlineInputNew from '../common/InlineInputNew';
 import Modal from '../common/Modal';
 import OpenCloseModal from '../common/OpenCloseModal';
 import { DocTextDisplay } from '../documents/DocTextItem';
@@ -223,7 +223,7 @@ export default function CardEditor({ card, variant, showSubcards = true }: Props
                         </div>
                       )}
                       <Flex align="center">
-                         <InlineInput
+                         <InlineInputNew
                           placeholder={i18n.card.untitled}
                           readOnly={readOnly}
                           value={card.title || ''}
@@ -236,7 +236,7 @@ export default function CardEditor({ card, variant, showSubcards = true }: Props
                         {hasVariants && (
                           <>
                             <span className={variantTitle}>&#xFE58;</span>
-                            <InlineInput
+                            <InlineInputNew
                               className={variantTitle}
                               value={
                                 variant.title && variant.title.length > 0
@@ -248,6 +248,7 @@ export default function CardEditor({ card, variant, showSubcards = true }: Props
                               onChange={newValue =>
                                 dispatch(API.updateCardContent({ ...variant, title: newValue }))
                               }
+                              autosave={false}
                             />
                           </>
                         )}

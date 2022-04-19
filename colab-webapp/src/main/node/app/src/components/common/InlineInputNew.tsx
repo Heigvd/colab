@@ -25,8 +25,8 @@ const inputEditingStyle = css({
   },
 });
 const textareaEditingStyle = css({
-    border: '1px solid var(--darkGray)',
-    borderRadius: borderRadius,
+  border: '1px solid var(--darkGray)',
+  borderRadius: borderRadius,
   padding: space_S,
   '&:focus': {
     outline: 'none',
@@ -109,20 +109,35 @@ export default function InlineInput({
       document.removeEventListener('click', handleClickOutside, true);
     };
   });
-
+  const updateSize = React.useCallback(() => {
+    if (inputRef.current) {
+      inputRef.current.style.width = 0 + 'px';
+      inputRef.current.style.width = inputRef.current.scrollWidth + 'px';
+      if (inputRef.current.value.length === 0) {
+        inputRef.current.style.width = inputRef.current.placeholder.length + 'ch';
+      }
+    }
+  }, []);
   React.useEffect(() => {
     logger.trace('InlineInput effect');
     if (inputRef.current != null) {
       logger.trace('InlineInput effect set span => ', defaultValue);
       if (inputRef.current.value !== defaultValue) {
         inputRef.current.value = defaultValue;
+        updateSize();
       }
     }
-  }, [inputRef, value, defaultValue]);
+  }, [inputRef, value, defaultValue, updateSize]);
 
+  React.useEffect(() => {
+    return () => {
+      updateSize();
+    };
+  });
   const saveCb = React.useCallback(() => {
     if (inputRef.current) {
       onChange(inputRef.current.value);
+      inputRef.current.blur();
     }
     setMode('DISPLAY');
   }, [onChange, inputRef]);
@@ -130,6 +145,7 @@ export default function InlineInput({
   const cancelCb = React.useCallback(() => {
     if (inputRef.current != null) {
       inputRef.current.value = defaultValue;
+      inputRef.current.blur();
     }
     setMode('DISPLAY');
   }, [defaultValue]);
@@ -163,30 +179,25 @@ export default function InlineInput({
   );
 
   const onEnterCb = React.useCallback(
-    (e) => {
-      if(e.key === 'Enter'){
-        cancelCb();
-        e.target.blur(); //should also unfocus completely
-        // + debouncedOnChange(newValue);       
-      }     
+    e => {
+      if (e.key === 'Enter') {
+        if (!autosave) {
+          saveCb();
+        }
+        else
+        {
+          if (inputRef.current) inputRef.current.blur();
+          setMode('DISPLAY');
+        }  
+      }
     },
-    [cancelCb],
-  );
-//WIP not working atm
-  const updateSize = React.useCallback(
-    (e) => {
-      const newValue = e.target.value;
-      if(containerRef.current)
-       containerRef.current.dataset.value = newValue; 
-      },
-    [],
+    [autosave, saveCb],
   );
 
   return (
     <div
       ref={containerRef}
       className={cx(
-        css({ display: 'inline-grid'}),
         {
           [textareaButtonStyle]: inputType === 'textarea',
         },
