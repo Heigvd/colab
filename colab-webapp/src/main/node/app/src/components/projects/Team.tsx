@@ -12,7 +12,6 @@ import {
   faPaperPlane,
   faPen,
   faPlus,
-  faSave,
   faTimes,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -27,7 +26,7 @@ import { useAndLoadProjectTeam } from '../../selectors/projectSelector';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { Destroyer } from '../common/Destroyer';
 import IconButton from '../common/IconButton';
-import InlineInput from '../common/InlineInput';
+import InlineInputNew from '../common/InlineInputNew';
 import InlineLoading from '../common/InlineLoading';
 import OpenClose from '../common/OpenClose';
 import WithToolbar from '../common/WithToolbar';
@@ -155,7 +154,7 @@ const Member = ({ member, roles }: MemberProps) => {
     // DN can be edited or cleared
     username = (
       <>
-        <InlineInput
+        <InlineInputNew
           placeholder="username"
           value={member.displayName || ''}
           onChange={updateDisplayName}
@@ -228,10 +227,6 @@ function CreateRole({ project }: { project: Project }): JSX.Element {
   const dispatch = useAppDispatch();
   const [name, setName] = React.useState('');
 
-  const onChange = React.useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    setName(e.target.value);
-  }, []);
-
   return (
     <OpenClose
       showCloseIcon="NONE"
@@ -241,29 +236,27 @@ function CreateRole({ project }: { project: Project }): JSX.Element {
     >
       {collapse => (
         <>
-          <input onChange={onChange} value={name} />
-          <IconButton
-            className={linkStyle}
-            icon={faSave}
-            title="Save"
-            onClick={() =>
-              dispatch(
-                API.createRole({
-                  project: project,
-                  role: {
-                    '@class': 'TeamRole',
-                    projectId: project.id,
-                    memberIds: [],
-                    name: name,
-                  },
-                }),
-              ).then(() => {
-                setName('');
-                collapse();
-              })
-            }
-          />
-          <IconButton icon={faTimes} title="Save" onClick={collapse} />
+          <InlineInputNew
+          placeholder="new role"
+          value={name}
+          onChange={(newValue) =>
+            dispatch(
+              API.createRole({
+                project: project,
+                role: {
+                  '@class': 'TeamRole',
+                  projectId: project.id,
+                  memberIds: [],
+                  name: newValue,
+                },
+              }),
+            ).then(() => {
+              setName('');
+              collapse();
+            })}
+          autosave={false}
+          onCancel={collapse}
+        />
         </>
       )}
     </OpenClose>
@@ -299,7 +292,7 @@ const RoleDisplay = ({ role }: RoleProps) => {
         </>
       }
     >
-      <InlineInput value={role.name || ''} onChange={saveCb} placeholder="role" />
+      <InlineInputNew value={role.name || ''} onChange={saveCb} placeholder="role" maxWidth='150px'/>
     </WithToolbar>
   );
 };

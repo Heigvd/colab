@@ -11,48 +11,68 @@ import { debounce } from 'lodash';
 import * as React from 'react';
 import logger from '../../logger';
 import { borderRadius, lightIconButtonStyle, space_S } from '../styling/style';
-import Flex from './Flex';
 import IconButton from './IconButton';
 
-const inputEditingStyle = css({
-  border: '1px solid var(--darkGray)',
+const inlineInputStyle = {
+  maxWidth: '100%',
   borderRadius: borderRadius,
   padding: space_S,
   width: 'auto',
   minWidth: '1em',
+  fontFamily: 'inherit',
+  backgroundColor: 'transparent',
   '&:focus': {
     outline: 'none',
   },
-});
-const textareaEditingStyle = css({
+};
+
+const inputEditingStyle = css({
+  ...inlineInputStyle,
   border: '1px solid var(--darkGray)',
-  borderRadius: borderRadius,
-  padding: space_S,
-  '&:focus': {
-    outline: 'none',
-  },
 });
-const inlineInputStyle = css({
+
+const inputDisplayStyle = css({
+  ...inlineInputStyle,
   border: '1px solid transparent',
-  borderRadius: borderRadius,
-  padding: space_S,
   textOverflow: 'ellipsis',
   whiteSpace: 'nowrap',
   overflow: 'hidden',
-  width: 'auto',
-  minWidth: '1em',
   gridArea: 1 / 2,
   '&:hover': {
     borderColor: 'var(--lightGray)',
   },
+});
+
+const inlineTextAreaStyle = {
+  borderRadius: borderRadius,
+  padding: space_S,
+  width: '100%',
+  fontFamily: 'inherit',
+  backgroundColor: 'transparent',
   '&:focus': {
     outline: 'none',
   },
+};
+const textareaEditingStyle = css({
+  ...inlineTextAreaStyle,
+  border: '1px solid var(--darkGray)',
 });
 
-const textareaButtonStyle = css({
+const textareaStyle = css({
+  ...inlineTextAreaStyle,
+  border: '1px solid transparent',
+  '&:hover': {
+    borderColor: 'var(--lightGray)',
+  },
+});
+
+const textareaContainerStyle = css({
   flexDirection: 'column',
   justifyContent: 'flex-end',
+});
+
+const confirmButtonsStyle = css({
+  display: 'inline-flex',
 });
 
 export interface Props {
@@ -60,12 +80,14 @@ export interface Props {
   value: string;
   readOnly?: boolean;
   onChange: (newValue: string) => void;
+  onCancel?: () => void;
   placeholder: string;
   inputType?: 'input' | 'textarea';
   className?: string;
   containerClassName?: string;
   autosave?: boolean;
   delay?: number;
+  maxWidth?: string;
 }
 
 function getEffectiveValue(...values: string[]): string {
@@ -82,6 +104,7 @@ export default function InlineInput({
   value,
   label,
   onChange,
+  onCancel,
   className,
   containerClassName,
   readOnly = false,
@@ -89,8 +112,10 @@ export default function InlineInput({
   inputType = 'input',
   autosave = true,
   delay = 300,
+  maxWidth = '100%',
 }: Props): JSX.Element {
-  const inputRef = React.useRef<HTMLInputElement>(null);
+  const inputRef = React.useRef<HTMLInputElement>();
+  const textareaRef = React.useRef<HTMLTextAreaElement>(null);
   const containerRef = React.useRef<HTMLDivElement>(null);
   const [mode, setMode] = React.useState<'DISPLAY' | 'EDIT'>('DISPLAY');
   const [state, setState] = React.useState<string>(value || '');
@@ -127,28 +152,37 @@ export default function InlineInput({
         updateSize();
       }
     }
-  }, [inputRef, value, defaultValue, updateSize]);
+    if (textareaRef.current !== null) {
+      if (textareaRef.current.value !== defaultValue) {
+        textareaRef.current.value = defaultValue;
+      }
+    }
+  }, [inputRef, textareaRef, value, defaultValue, updateSize]);
 
-  React.useEffect(() => {
-    return () => {
-      updateSize();
-    };
-  });
   const saveCb = React.useCallback(() => {
-    if (inputRef.current) {
+    if (inputType === 'input' && inputRef.current) {
       onChange(inputRef.current.value);
       inputRef.current.blur();
     }
-    setMode('DISPLAY');
-  }, [onChange, inputRef]);
-
-  const cancelCb = React.useCallback(() => {
-    if (inputRef.current != null) {
-      inputRef.current.value = defaultValue;
-      inputRef.current.blur();
+    if (inputType === 'textarea' && textareaRef.current) {
+      onChange(textareaRef.current.value);
+      textareaRef.current.blur();
     }
     setMode('DISPLAY');
-  }, [defaultValue]);
+  }, [onChange, inputRef, textareaRef, inputType]);
+
+  const cancelCb = React.useCallback(() => {
+    if (inputType === 'input' && inputRef.current != null) {
+      inputRef.current.value = defaultValue;
+      inputRef.current.blur();
+      if (onCancel) onCancel();
+    }
+    if (inputType === 'textarea' && textareaRef.current != null) {
+      textareaRef.current.value = defaultValue;
+      textareaRef.current.blur();
+    }
+    setMode('DISPLAY');
+  }, [defaultValue, textareaRef, inputType, onCancel]);
 
   const editCb = React.useCallback(() => {
     if (!readOnly) {
@@ -183,12 +217,10 @@ export default function InlineInput({
       if (e.key === 'Enter') {
         if (!autosave) {
           saveCb();
-        }
-        else
-        {
+        } else {
           if (inputRef.current) inputRef.current.blur();
           setMode('DISPLAY');
-        }  
+        }
       }
     },
     [autosave, saveCb],
@@ -198,31 +230,54 @@ export default function InlineInput({
     <div
       ref={containerRef}
       className={cx(
+        css({ display: 'flex', alignItems: 'center', position: 'relative' }),
         {
-          [textareaButtonStyle]: inputType === 'textarea',
+          [textareaContainerStyle]: inputType === 'textarea',
         },
         containerClassName,
       )}
+      style={{ maxWidth: maxWidth }}
     >
       {label && label}
-      <input
-        ref={inputRef}
-        placeholder="untitled"
-        value={state}
-        onChange={onInternalChangeCb}
-        onClick={editCb}
-        onKeyDown={onEnterCb}
-        onInput={updateSize}
-        className={cx(
-          mode == 'EDIT'
-            ? inputType === 'textarea'
-              ? cx(textareaEditingStyle, className)
-              : cx(inputEditingStyle, className)
-            : cx(inlineInputStyle, className),
-        )}
-      />
+      {inputType === 'input' ? (
+        <input
+          ref={ref => {
+            if (ref) {
+              inputRef.current = ref;
+              updateSize();
+            }
+          }}
+          placeholder="untitled"
+          value={state}
+          onChange={onInternalChangeCb}
+          onClick={editCb}
+          onKeyDown={onEnterCb}
+          onInput={updateSize}
+          className={cx(
+            mode == 'EDIT' ? cx(inputEditingStyle, className) : cx(inputDisplayStyle, className),
+          )}
+          //style={{maxWidth: maxWidth}}
+        />
+      ) : (
+        <textarea
+          ref={textareaRef}
+          placeholder="untitled"
+          value={state}
+          onChange={onInternalChangeCb}
+          onClick={editCb}
+          className={cx(
+            mode == 'EDIT' ? cx(textareaEditingStyle, className) : cx(textareaStyle, className),
+          )}
+        />
+      )}
+
       {mode === 'EDIT' && !autosave && (
-        <Flex justify="flex-end">
+        <div
+          className={cx(
+            { [css({ alignSelf: 'flex-end' })]: inputType === 'textarea' },
+            confirmButtonsStyle,
+          )}
+        >
           <IconButton
             icon={faTimes}
             title="Cancel"
@@ -235,7 +290,7 @@ export default function InlineInput({
             onClick={saveCb}
             className={lightIconButtonStyle}
           />
-        </Flex>
+        </div>
       )}
     </div>
   );

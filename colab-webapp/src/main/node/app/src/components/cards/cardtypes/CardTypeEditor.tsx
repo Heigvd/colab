@@ -20,7 +20,6 @@ import { Route, Routes, useNavigate, useParams } from 'react-router-dom';
 import Creatable from 'react-select/creatable';
 import * as API from '../../../API/api';
 import { updateDocumentText } from '../../../API/api';
-//import logger from '../../../logger';
 import { useAndLoadCardType, useCardTypeTags } from '../../../selectors/cardTypeSelector';
 import { useProjectBeingEdited } from '../../../selectors/projectSelector';
 import { dispatch } from '../../../store/store';
@@ -30,7 +29,7 @@ import DropDownMenu from '../../common/DropDownMenu';
 import Flex from '../../common/Flex';
 import Toggler from '../../common/Form/Toggler';
 import IconButton from '../../common/IconButton';
-import InlineInput from '../../common/InlineInput';
+import InlineInputNew from '../../common/InlineInputNew';
 import Modal from '../../common/Modal';
 import Tips from '../../common/Tips';
 import { DocTextWrapper } from '../../documents/DocTextItem';
@@ -106,7 +105,7 @@ export default function CardTypeEditor({ className }: Props): JSX.Element {
                 borderBottom: '1px solid var(--lightGray)',
               })}
             >
-              <InlineInput
+              <InlineInputNew
                 placeholder="card type"
                 value={cardType.title || ''}
                 onChange={newValue =>
@@ -204,7 +203,7 @@ export default function CardTypeEditor({ className }: Props): JSX.Element {
                 <b>Purpose: </b>
                 <DocTextWrapper id={cardType.purposeId}>
                   {text => (
-                    <InlineInput
+                    <InlineInputNew
                       placeholder={'Empty purpose'}
                       value={text || 'Empty purpose'}
                       onChange={(newValue: string) => {
