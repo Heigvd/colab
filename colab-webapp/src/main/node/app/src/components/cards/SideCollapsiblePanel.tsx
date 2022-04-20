@@ -6,17 +6,18 @@
  */
 import { css, cx } from '@emotion/css';
 import { IconProp } from '@fortawesome/fontawesome-svg-core';
+import { faTimes } from '@fortawesome/free-solid-svg-icons';
 import * as React from 'react';
 import Flex from '../common/Flex';
 import IconButton from '../common/IconButton';
-import {
-  lightIconButtonStyle,
-  marginAroundStyle,
-  paddingAroundStyle,
-  space_L,
-  space_M,
-  space_S,
-} from '../styling/style';
+import { lightIconButtonStyle, marginAroundStyle, paddingAroundStyle, space_M } from '../styling/style';
+
+const bgActiveStyleRight = css({
+  backgroundImage: 'linear-gradient( to right, transparent 90%, #444 91%, #444 100%)',
+});
+const bgActiveStyleLeft = css({
+  backgroundImage: 'linear-gradient( to left, transparent 90%, #444 91%, #444 100%)',
+});
 
 interface Item {
   icon: IconProp;
@@ -52,8 +53,26 @@ export default function SideCollapsiblePanel<T extends { [key: string]: Item }>(
       )}
     >
       {direction === 'RIGHT' && itemOpen && (
-        <Flex align="stretch" className={cx(paddingAroundStyle([1], space_M), itemOpen.className)}>
-          {itemOpen.children}
+        <Flex align="stretch" justify="stretch" direction="column">
+          <Flex
+            justify="space-between"
+            className={css({ padding: space_M, paddingBottom: 0, borderBottom: '1px solid var(--lightGray)' })}
+          >
+            <h3>{itemOpen.title}</h3>
+            <IconButton
+              title="close"
+              icon={faTimes}
+              onClick={() => setItemKeyOpen(undefined)}
+              className={cx(lightIconButtonStyle, marginAroundStyle([4], space_M))}
+            />
+          </Flex>
+          <Flex
+            align="stretch"
+            grow={1}
+            className={cx(paddingAroundStyle([1], space_M), itemOpen.className)}
+          >
+            {itemOpen.children}
+          </Flex>
         </Flex>
       )}
       <Flex
@@ -65,7 +84,7 @@ export default function SideCollapsiblePanel<T extends { [key: string]: Item }>(
           direction === 'LEFT'
             ? css({ borderRight: '1px solid var(--lightGray)' })
             : css({ borderLeft: '1px solid var(--lightGray)' }),
-          css({ padding: space_M + ' ' + space_S }),
+          css({ padding: space_M + ' 0' }),
         )}
       >
         {Object.entries(items).map(([key, item]) => (
@@ -77,9 +96,10 @@ export default function SideCollapsiblePanel<T extends { [key: string]: Item }>(
             iconColor={itemKeyOpen === key ? 'var(--fgColor)' : undefined}
             iconSize="lg"
             className={cx(
-              marginAroundStyle([3], space_L),
               lightIconButtonStyle,
-              css({ color: 'var(--lightGray)' }),
+              css({ color: 'var(--lightGray)', padding: space_M }),
+              { [bgActiveStyleRight]: itemKeyOpen === key && direction === 'RIGHT' },
+              { [bgActiveStyleLeft]: itemKeyOpen === key && direction === 'LEFT' },
             )}
           />
         ))}

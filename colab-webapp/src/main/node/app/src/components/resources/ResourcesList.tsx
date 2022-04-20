@@ -78,37 +78,35 @@ export default function ResourcesList({
   }
 
   return (
-    <Flex direction="column" align="stretch">
-      <Flex
-        className={css({ borderBottom: '1px solid var(--lightGray)', padding: '0 ' + space_M })}
-      >
-        <h2>Documentation</h2>
-      </Flex>
+    <Flex direction="column" align="stretch" grow={1}>
       <Flex
         grow={1}
         direction="column"
         align="stretch"
-        className={css({ overflow: 'auto', paddingRight: '2px', width: '170px' })}
+        className={css({ overflow: 'auto', paddingRight: '2px' })}
       >
         {contextInfo.accessLevel === 'DENIED' ? (
           <div>ACCESS DENIED</div>
         ) : (
           toDisplay.map(category => (
             <div key={category} className={marginAroundStyle([3], space_S)}>
-              <div className={marginAroundStyle([1, 2, 4], space_M)}>
-                <h3
-                  className={css({
-                    maxWidth: '150px',
-                    whiteSpace: 'nowrap',
-                    overflow: 'hidden',
-                    textOverflow: 'ellipsis',
-                    flexGrow: 1,
-                  })}
-                  title={category}
-                >
-                  {category}
-                </h3>
-              </div>
+              {category && (
+                <div className={marginAroundStyle([1, 2, 4], space_M)}>
+                  <h3
+                    className={css({
+                      maxWidth: '150px',
+                      whiteSpace: 'nowrap',
+                      overflow: 'hidden',
+                      textOverflow: 'ellipsis',
+                      flexGrow: 1,
+                    })}
+                    title={category}
+                  >
+                    {category}
+                  </h3>
+                </div>
+              )}
+
               <Flex direction="column" align="stretch">
                 {categorized.categorized[category]!.sort(sortResources).map(resourceAndRef => (
                   <TocEntry

@@ -256,7 +256,6 @@ export default function InlineInput({
           className={cx(
             mode == 'EDIT' ? cx(inputEditingStyle, className) : cx(inputDisplayStyle, className),
           )}
-          //style={{maxWidth: maxWidth}}
         />
       ) : (
         <textarea
