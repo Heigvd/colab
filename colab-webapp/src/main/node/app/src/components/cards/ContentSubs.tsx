@@ -32,6 +32,7 @@ const tinyCard = css({
   height: '20px',
   borderRadius: '2px',
   boxShadow: '0px 0px 3px 1px rgba(0, 0, 0, 0.1)',
+  margin: '0 2px',
 });
 
 const flexWrap = css({
