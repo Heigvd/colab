@@ -188,6 +188,7 @@ export default function CardEditor({ card, variant, showSubcards = true }: Props
               cardStyle,
               css({
                 backgroundColor: 'white',
+                overflow: 'hidden',
               }),
             )}
           >
@@ -291,7 +292,7 @@ export default function CardEditor({ card, variant, showSubcards = true }: Props
                               title="Involvements"
                               onClose={() => closeRouteCb('involvements')}
                               showCloseButton
-                              className={css({ height: '580px' })}
+                              className={css({ height: '580px', width: '600px' })}
                             >
                               {() => (
                                 <CardInvolvement card={card} />

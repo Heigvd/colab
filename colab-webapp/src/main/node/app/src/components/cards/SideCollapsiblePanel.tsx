@@ -84,7 +84,6 @@ export default function SideCollapsiblePanel<T extends { [key: string]: Item }>(
           direction === 'LEFT'
             ? css({ borderRight: '1px solid var(--lightGray)' })
             : css({ borderLeft: '1px solid var(--lightGray)' }),
-          css({ padding: space_M + ' 0' }),
         )}
       >
         {Object.entries(items).map(([key, item]) => (

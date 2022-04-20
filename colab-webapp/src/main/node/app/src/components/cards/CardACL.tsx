@@ -5,6 +5,7 @@
  * Licensed under the MIT License
  */
 
+import { css, cx } from '@emotion/css';
 import { Card, InvolvementLevel, TeamMember, TeamRole } from 'colab-rest-client';
 import * as React from 'react';
 import * as API from '../../API/api';
@@ -15,7 +16,20 @@ import { useAndLoadProjectTeam, useProjectBeingEdited } from '../../selectors/pr
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import Flex from '../common/Flex';
 import InlineLoading from '../common/InlineLoading';
+import { marginAroundStyle, paddingAroundStyle, space_M, space_S } from '../styling/style';
 import InvolvementSelector from './InvolvementSelector';
+
+const titleSeparationStyle = css({
+margin: space_M + ' 0',
+borderBottom: '1px solid var(--lightGray)',
+width: '100%'
+});
+
+const labelStyle = cx(
+  marginAroundStyle([1, 2, 3], space_S), 
+  paddingAroundStyle([1, 2, 3], space_S),
+  css({
+fontWeight: '500'}));
 
 export function RoleACL({ role, acl }: { role: TeamRole; acl: CardAcl }): JSX.Element {
   const self = acl.self.roles[role.id || -1];
@@ -43,8 +57,8 @@ export function RoleACL({ role, acl }: { role: TeamRole; acl: CardAcl }): JSX.El
   );
 
   return (
-    <Flex>
-      {role.name}:{' '}
+    <Flex align='center'>
+      <div className={labelStyle}>{role.name}:</div>
       <InvolvementSelector
         self={self}
         effectives={effective ? [effective] : []}
@@ -97,8 +111,8 @@ export function MemberACL({ member, acl }: { member: TeamMember; acl: CardAcl })
   }, [member.userId, user, dispatch]);
 
   return (
-    <Flex>
-      {user != null ? getDisplayName(user) : member.id}:{' '}
+    <Flex align='center'>
+      <div className={labelStyle}>{user != null ? getDisplayName(user) : member.id}:</div>
       <InvolvementSelector self={self} effectives={effective} onChange={onChangeCb} />
     </Flex>
   );
@@ -116,9 +130,11 @@ export default function CardACL({ card }: Props): JSX.Element {
   if (teamStatus === 'INITIALIZED') {
     return (
       <>
+        <div className={titleSeparationStyle}><h3>Roles</h3></div>
         {roles.map(role => (
           <RoleACL key={role.id} role={role} acl={acl} />
         ))}
+        <div className={titleSeparationStyle}><h3>Members</h3></div>
         {members.map(member => (
           <MemberACL key={member.id} member={member} acl={acl} />
         ))}
