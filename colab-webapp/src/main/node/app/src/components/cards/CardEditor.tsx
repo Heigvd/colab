@@ -9,7 +9,9 @@ import { css, cx } from '@emotion/css';
 import { faSnowflake, faWindowRestore } from '@fortawesome/free-regular-svg-icons';
 import {
   faCog,
+  faCompressArrowsAlt,
   faEllipsisV,
+  faExpandArrowsAlt,
   faInfoCircle,
   faPaperclip,
   faPercent,
@@ -93,6 +95,15 @@ const valueStyle = css({
   textAlign: 'center',
 });
 
+const fullScreenStyle = css({
+position: 'absolute',
+top: 0,
+left: 0,
+width: '100%',
+height: '100%',
+borderRadius: 0,
+});
+
 const progressBar = (width: number) =>
   css({
     width: `${width}%`,
@@ -152,6 +163,7 @@ export default function CardEditor({ card, variant, showSubcards = true }: Props
   const userAcl = useCardACLForCurrentUser(card.id);
   const readOnly = !userAcl.write || variant.frozen;
   const [showTypeDetails, setShowTypeDetails] = React.useState(false);
+  const [fullScreen, setFullScreen] = React.useState(false);
 
   const closeRouteCb = React.useCallback(
     route => {
@@ -186,6 +198,7 @@ export default function CardEditor({ card, variant, showSubcards = true }: Props
             align="stretch"
             className={cx(
               cardStyle,
+              {[fullScreenStyle]: fullScreen === true},
               css({
                 backgroundColor: 'white',
                 overflow: 'hidden',
@@ -318,6 +331,7 @@ export default function CardEditor({ card, variant, showSubcards = true }: Props
                           }
                         />
                       </Routes>
+                      <IconButton title='Full screen mode' icon={fullScreen ? faCompressArrowsAlt : faExpandArrowsAlt} onClick={()=>setFullScreen(fullScreen => !fullScreen)} className={lightIconButtonStyle}/>
                       <DropDownMenu
                         icon={faEllipsisV}
                         valueComp={{ value: '', label: '' }}

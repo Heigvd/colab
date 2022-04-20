@@ -7,6 +7,8 @@
 
 import { css, cx } from '@emotion/css';
 import {
+  faArrowLeft,
+  faChevronRight,
   faClone,
   faCog,
   faEllipsisV,
@@ -43,7 +45,7 @@ import DropDownMenu from '../../common/DropDownMenu';
 import Flex from '../../common/Flex';
 import IconButton from '../../common/IconButton';
 import InlineLoading from '../../common/InlineLoading';
-import { invertedThemeMode, space_L, space_M, space_S } from '../../styling/style';
+import { invertedThemeMode, linkStyle, space_L, space_M, space_S } from '../../styling/style';
 import { ProjectSettings } from '../ProjectSettings';
 import Team from '../Team';
 import ActivityFlowChart from './ActivityFlowChart';
@@ -69,6 +71,13 @@ const closeDetails = css({
   maxHeight: '0px',
   padding: '0 ' + space_L,
 });
+
+const breadCrumbsStyle = css({
+fontSize: '.8em',
+color: 'var(--darkGray)',
+margin: '0 ' + space_S,
+alignSelf: 'center',
+});
 const Ancestor = ({ card, content }: Ancestor): JSX.Element => {
   const i18n = useTranslations();
   const navigate = useNavigate();
@@ -92,10 +101,11 @@ const Ancestor = ({ card, content }: Ancestor): JSX.Element => {
           onClick={() => {
             navigate('..');
           }}
+          clickableClassName={cx(linkStyle, breadCrumbsStyle)}
         >
           project
         </Clickable>
-        &nbsp;&gt;&nbsp;
+        <FontAwesomeIcon icon={faChevronRight} size="xs" className={breadCrumbsStyle} />
       </>
     );
   } else if (entityIs(card, 'Card') && entityIs(content, 'CardContent')) {
@@ -108,10 +118,11 @@ const Ancestor = ({ card, content }: Ancestor): JSX.Element => {
           onClick={() => {
             navigate(`../${t}/${content.cardId}/v/${content.id}`);
           }}
+          clickableClassName={cx(linkStyle, breadCrumbsStyle)}
         >
           {card.title ? card.title : i18n.card.untitled + ' ' + content.title ? content.title : ''}
         </Clickable>
-        &nbsp;&gt;&nbsp;
+        <FontAwesomeIcon icon={faChevronRight} size="xs" className={breadCrumbsStyle} />
       </>
     );
   } else {
@@ -180,6 +191,7 @@ const CardWrapper = ({ children, grow = 1, align = 'normal' }: CardWrapperProps)
   const { project } = useProjectBeingEdited();
 
   const ancestors = useAncestors(parentId);
+  const navigate = useNavigate();
 
   React.useEffect(() => {
     if (card === undefined && cardId) {
@@ -198,11 +210,18 @@ const CardWrapper = ({ children, grow = 1, align = 'normal' }: CardWrapperProps)
   } else {
     return (
       <>
-        <div className={css({ paddingBottom: space_M })}>
+        <Flex className={css({ paddingBottom: space_M })}>
+        <IconButton
+          icon={faArrowLeft}
+          title={'Back to project root'}
+          iconColor="var(--darkGray)"
+          onClick={() => navigate('../')}
+          className={css({ marginRight: space_M })}
+        />
           {ancestors.map((ancestor, x) => (
             <Ancestor key={x} card={ancestor.card} content={ancestor.content} />
           ))}
-        </div>
+        </Flex>
         <Flex direction="column" grow={grow} align={align} className={css({ width: '100%' })}>
           {children(card, content)}
         </Flex>
