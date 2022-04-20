@@ -117,7 +117,7 @@ export default function ContentSubs({
               customButton={
                 depth === depthMax ? (
                   location.pathname.match(/card\/\d+\/v\/\d+/) ? undefined : (
-                    <Button icon={faPlus} title="Add Card" className={fixedButtonStyle} clickable>
+                    <Button icon={faPlus} className={fixedButtonStyle} clickable>
                       Add Card
                     </Button>
                   )

@@ -17,6 +17,7 @@ import {
   faMicrochip,
   faNetworkWired,
   faProjectDiagram,
+  faTimes,
   faUsers,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -73,10 +74,10 @@ const closeDetails = css({
 });
 
 const breadCrumbsStyle = css({
-fontSize: '.8em',
-color: 'var(--darkGray)',
-margin: '0 ' + space_S,
-alignSelf: 'center',
+  fontSize: '.8em',
+  color: 'var(--darkGray)',
+  margin: '0 ' + space_S,
+  alignSelf: 'center',
 });
 const Ancestor = ({ card, content }: Ancestor): JSX.Element => {
   const i18n = useTranslations();
@@ -211,13 +212,13 @@ const CardWrapper = ({ children, grow = 1, align = 'normal' }: CardWrapperProps)
     return (
       <>
         <Flex className={css({ paddingBottom: space_M })}>
-        <IconButton
-          icon={faArrowLeft}
-          title={'Back to project root'}
-          iconColor="var(--darkGray)"
-          onClick={() => navigate('../')}
-          className={css({ marginRight: space_M })}
-        />
+          <IconButton
+            icon={faArrowLeft}
+            title={'Back to project root'}
+            iconColor="var(--darkGray)"
+            onClick={() => navigate('../')}
+            className={css({ marginRight: space_M })}
+          />
           {ancestors.map((ancestor, x) => (
             <Ancestor key={x} card={ancestor.card} content={ancestor.content} />
           ))}
@@ -368,16 +369,19 @@ export default function Editor(): JSX.Element {
             buttonClassName={css({ textAlign: 'right', alignSelf: 'center', marginLeft: 'auto' })}
           />
         </div>
-        <Flex className={showProjectDetails ? openDetails : closeDetails}>
+        <Flex className={showProjectDetails ? openDetails : closeDetails} justify="space-between">
           <div>
-            <h3>{project.name}</h3>
-            {project.description}
+            <div>
+              <h3>{project.name}</h3>
+              {project.description}
+            </div>
+            <div>
+              <p>Created by: {project.trackingData?.createdBy}</p>
+              <p>Created date: {project.trackingData?.creationDate}</p>
+              {/* more infos? Add project team names */}
+            </div>
           </div>
-          <div>
-            <p>Created by: {project.trackingData?.createdBy}</p>
-            <p>Created date: {project.trackingData?.creationDate}</p>
-            {/* more infos? Add project team names */}
-          </div>
+          <IconButton icon={faTimes} title="Close" onClick={() => setShowProjectDetails(false)} />
         </Flex>
         <div
           className={css({

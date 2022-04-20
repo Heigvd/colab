@@ -16,6 +16,7 @@ import {
   faPaperclip,
   faPercent,
   faStickyNote,
+  faTimes,
   faTrash,
   faUsers,
 } from '@fortawesome/free-solid-svg-icons';
@@ -67,6 +68,8 @@ const descriptionStyle = {
   overflow: 'hidden',
   fontSize: '0.9em',
   flexGrow: 0,
+  display: 'flex',
+  justifyContent: 'space-between',
 };
 const openDetails = css({
   ...descriptionStyle,
@@ -273,7 +276,6 @@ export default function CardEditor({ card, variant, showSubcards = true }: Props
                             className={cx(
                               lightIconButtonStyle,
                               css({ color: 'var(--lightGray)' }),
-                              showTypeDetails ? css({ color: 'var(--linkHoverColor)' }) : '',
                             )}
                             onClick={() => setShowTypeDetails(showTypeDetails => !showTypeDetails)}
                           />
@@ -423,12 +425,15 @@ export default function CardEditor({ card, variant, showSubcards = true }: Props
                   </Flex>
                   {cardType && (
                     <div className={showTypeDetails ? openDetails : closeDetails}>
+                      <div>
                       <p>
                         <b>Card type</b>: {cardType.title || ''}
                       </p>
                       <p>
                         <b>Purpose</b>: <DocTextDisplay id={cardType.purposeId} />
                       </p>
+                      </div>
+                      <IconButton icon={faTimes} title="Close" onClick={()=>setShowTypeDetails(false)}/>
                     </div>
                   )}
                 </Flex>
