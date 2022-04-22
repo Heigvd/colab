@@ -214,9 +214,9 @@ public class ActivityFlowLink implements ColabEntity, WithWebsocketChannels {
     }
 
     @Override
-    public ChannelsBuilder getChannelBuilder() {
+    public ChannelsBuilder getChannelsBuilder() {
         if (this.nextCard != null) {
-            return this.nextCard.getChannelBuilder();
+            return this.nextCard.getChannelsBuilder();
         } else {
             // such an orphan shouldn't exist...
             return new EmptyChannelBuilder();

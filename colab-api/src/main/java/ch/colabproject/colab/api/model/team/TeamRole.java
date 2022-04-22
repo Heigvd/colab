@@ -222,7 +222,7 @@ public class TeamRole implements ColabEntity, WithWebsocketChannels {
     }
 
     /**
-     * Get ids of the teammembers
+     * Get ids of the team members
      *
      * @return list of ids
      */
@@ -276,7 +276,7 @@ public class TeamRole implements ColabEntity, WithWebsocketChannels {
     }
 
     @Override
-    public ChannelsBuilder getChannelBuilder() {
+    public ChannelsBuilder getChannelsBuilder() {
         if (this.getProject() != null) {
             return new ProjectContentChannelBuilder(project);
         } else {

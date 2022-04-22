@@ -301,13 +301,13 @@ public abstract class Document
     }
 
     @Override
-    public ChannelsBuilder getChannelBuilder() {
+    public ChannelsBuilder getChannelsBuilder() {
         if (this.owningCardContent != null) {
             // The document is a deliverable of a card content
-            return this.owningCardContent.getChannelBuilder();
+            return this.owningCardContent.getChannelsBuilder();
         } else if (this.owningResource != null) {
             // The document is part of a resource
-            return this.owningResource.getChannelBuilder();
+            return this.owningResource.getChannelsBuilder();
         } else {
             // such an orphan shouldn't exist...
             return new EmptyChannelBuilder();

@@ -308,7 +308,7 @@ public class Project implements ColabEntity, WithWebsocketChannels {
      * @return the channel
      */
     @Override
-    public ChannelsBuilder getChannelBuilder() {
+    public ChannelsBuilder getChannelsBuilder() {
         return new AboutProjectOverviewChannelsBuilder(this);
     }
 

@@ -347,7 +347,7 @@ public abstract class AbstractCardType implements ColabEntity, WithWebsocketChan
     }
 
     @Override
-    public ChannelsBuilder getChannelBuilder() {
+    public ChannelsBuilder getChannelsBuilder() {
         return new AboutCardTypeChannelsBuilder(this);
     }
 

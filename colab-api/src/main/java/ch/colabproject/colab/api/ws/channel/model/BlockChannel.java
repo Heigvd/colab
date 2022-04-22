@@ -6,11 +6,10 @@
  */
 package ch.colabproject.colab.api.ws.channel.model;
 
-import ch.colabproject.colab.api.model.document.TextDataBlock;
 import java.util.Objects;
 
 /**
- * A channel to propagate content of a given blockId.
+ * A channel to propagate content of a given block.
  * <p>
  * Usage :
  * </p>
@@ -18,10 +17,6 @@ import java.util.Objects;
  * Subscription : when editing a block<br>
  * Unsubscription : when stopping edition of a block<br>
  * </p>
- * Used by :
- * <ul>
- * <li>Change</li>
- * </ul>
  *
  * @author maxence
  */
@@ -54,8 +49,8 @@ public class BlockChannel implements WebsocketChannel {
 
     @Override
     public int hashCode() {
-        int hash = 7;
-        hash = 53 * hash + Objects.hashCode(this.blockId);
+        int hash = 11;
+        hash = 57 * hash + Objects.hashCode(this.blockId);
         return hash;
     }
 
@@ -85,17 +80,6 @@ public class BlockChannel implements WebsocketChannel {
     @Override
     public String toString() {
         return "BlockChannel{" + "blockId=" + this.blockId + '}';
-    }
-
-    /**
-     * get the channel dedicated to the given block.
-     *
-     * @param block the block
-     *
-     * @return the block very own channel
-     */
-    public static BlockChannel build(TextDataBlock block) {
-        return build(block.getId());
     }
 
     /**

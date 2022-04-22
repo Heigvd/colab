@@ -223,22 +223,22 @@ public class TextDataBlock extends Document {
     // Note : needed to set JsonbTransient, else it is generated in ColabClient.d.ts
     @JsonbTransient
     @Override
-    public ChannelsBuilder getChannelBuilder() {
+    public ChannelsBuilder getChannelsBuilder() {
         if (this.owningCardContent != null) {
             // The document is a deliverable of a card content
-            return this.owningCardContent.getChannelBuilder();
+            return this.owningCardContent.getChannelsBuilder();
         } else if (this.owningResource != null) {
             // The document is part of a resource
-            return this.owningResource.getChannelBuilder();
+            return this.owningResource.getChannelsBuilder();
         } else if (this.purposingCardType != null) {
             // It is the purpose of a card type
-            return this.purposingCardType.getChannelBuilder();
+            return this.purposingCardType.getChannelsBuilder();
         } else if (this.teasingResource != null) {
             // It is the teaser of a resource
-            return this.teasingResource.getChannelBuilder();
+            return this.teasingResource.getChannelsBuilder();
         } else if (this.explainingStickyNoteLink != null) {
             // It is the explanation of a sticky note link
-            return this.explainingStickyNoteLink.getChannelBuilder();
+            return this.explainingStickyNoteLink.getChannelsBuilder();
         } else {
             // such an orphan shouldn't exist...
             return new EmptyChannelBuilder();

@@ -271,9 +271,9 @@ public class AccessControl implements ColabEntity, WithWebsocketChannels {
     }
 
     @Override
-    public ChannelsBuilder getChannelBuilder() {
+    public ChannelsBuilder getChannelsBuilder() {
         if (this.getCard() != null) {
-            return this.getCard().getChannelBuilder();
+            return this.getCard().getChannelsBuilder();
         } else {
             // such an orphan shouldn't exist...
             return new EmptyChannelBuilder();

@@ -191,7 +191,7 @@ public abstract class Account implements ColabEntity, WithWebsocketChannels {
     // ---------------------------------------------------------------------------------------------
 
     @Override
-    public ChannelsBuilder getChannelBuilder() {
+    public ChannelsBuilder getChannelsBuilder() {
         return new AboutAccountChannelsBuilder(this);
     }
 

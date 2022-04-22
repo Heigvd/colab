@@ -29,7 +29,7 @@ public class CallableGetChannel
     public Map<WebsocketChannel, Integer> call() throws Exception {
         CdiBridgeSingleton cdiBridge = Helper.lookup(CdiBridgeSingleton.class);
         if (cdiBridge != null) {
-            return cdiBridge.getSubscrciptionsCount();
+            return cdiBridge.getSubscriptionsCount();
         } else {
             return Map.of();
         }

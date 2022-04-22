@@ -553,9 +553,9 @@ public class StickyNoteLink implements ColabEntity, WithWebsocketChannels {
     }
 
     @Override
-    public ChannelsBuilder getChannelBuilder() {
+    public ChannelsBuilder getChannelsBuilder() {
         if (this.destinationCard != null) {
-            return this.destinationCard.getChannelBuilder();
+            return this.destinationCard.getChannelsBuilder();
         } else {
             // such an orphan shouldn't exist...
             return new EmptyChannelBuilder();

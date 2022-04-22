@@ -31,7 +31,6 @@ import org.slf4j.LoggerFactory;
  *
  * @author maxence
  */
-// TODO rename WebsocketMessagePreparer
 public class WebsocketMessagePreparer {
 
     /** logger */
@@ -136,14 +135,14 @@ public class WebsocketMessagePreparer {
         UserDao userDao,
         CardTypeDao cardTypeDao,
         Set<WithWebsocketChannels> updated,
-        Set<WithWebsocketChannels> deleted
+        Set<IndexEntry> deleted
     ) throws EncodeException {
         Map<WebsocketChannel, List<WsMessage>> messagesByChannel = new HashMap<>();
         logger.debug("Prepare WsMessage. Update:{}; Deleted:{}", updated, deleted);
 
         updated.forEach(object -> {
             logger.trace("Process updated entity {}", object);
-            object.getChannelBuilder().computeEffectiveChannels(userDao, cardTypeDao)
+            object.getChannelsBuilder().computeChannels(userDao, cardTypeDao)
                 .forEach(channel -> {
                     addAsUpdated(messagesByChannel, channel, object);
                 });
@@ -151,10 +150,10 @@ public class WebsocketMessagePreparer {
 
         deleted.forEach(object -> {
             logger.trace("Process deleted entry {}", object);
-            object.getChannelBuilder().computeEffectiveChannels(userDao, cardTypeDao)
+            object.getChannelsBuilder().computeChannels(userDao, cardTypeDao)
                 .forEach(
                     channel -> {
-                        addAsDeleted(messagesByChannel, channel, IndexEntry.build(object));
+                        addAsDeleted(messagesByChannel, channel, object);
                     });
         });
 
@@ -198,7 +197,7 @@ public class WebsocketMessagePreparer {
     ) throws EncodeException {
         Map<WebsocketChannel, List<WsMessage>> messagesByChannel = new HashMap<>();
 
-        channelBuilder.computeEffectiveChannels(userDao, cardTypeDao).forEach(channel -> {
+        channelBuilder.computeChannels(userDao, cardTypeDao).forEach(channel -> {
             messagesByChannel.put(channel, List.of(message));
         });
 

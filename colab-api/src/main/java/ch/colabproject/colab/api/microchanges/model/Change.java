@@ -205,7 +205,7 @@ public class Change implements Serializable, WithWebsocketChannels {
     }
 
     @Override
-    public ChannelsBuilder getChannelBuilder() {
+    public ChannelsBuilder getChannelsBuilder() {
         return new BlockChannelBuilder(blockId);
     }
 

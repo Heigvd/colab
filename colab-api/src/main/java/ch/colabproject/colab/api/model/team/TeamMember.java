@@ -387,9 +387,9 @@ public class TeamMember implements ColabEntity, WithWebsocketChannels {
     }
 
     @Override
-    public ChannelsBuilder getChannelBuilder() {
+    public ChannelsBuilder getChannelsBuilder() {
         if (this.project != null) {
-            return this.project.getChannelBuilder();
+            return this.project.getChannelsBuilder();
         } else {
             // such an orphan shouldn't exist...
             return new EmptyChannelBuilder();

@@ -9,7 +9,6 @@ package ch.colabproject.colab.api.ws.channel.tool;
 import ch.colabproject.colab.api.model.card.AbstractCardType;
 import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.api.model.user.Account;
-import ch.colabproject.colab.api.model.user.HttpSession;
 import ch.colabproject.colab.api.model.user.User;
 import ch.colabproject.colab.api.persistence.jpa.card.CardTypeDao;
 import ch.colabproject.colab.api.persistence.jpa.user.UserDao;
@@ -48,21 +47,19 @@ public final class ChannelsBuilders {
          *
          * @return all channels to use for propagation
          */
-        public Set<WebsocketChannel> computeEffectiveChannels(UserDao userDao,
-            CardTypeDao cardTypeDao) {
+        public Set<WebsocketChannel> computeChannels(UserDao userDao, CardTypeDao cardTypeDao) {
             return build(userDao, cardTypeDao);
         }
 
         /**
-         * Determine the channels to use
+         * Determine the channels to use (internal implementation)
          *
          * @param userDao     the dao to fetch users
          * @param cardTypeDao the dao to fetch card type
          *
          * @return all channels to use for propagation
          */
-        abstract protected Set<WebsocketChannel> build(UserDao userDao,
-            CardTypeDao cardTypeDao);
+        abstract protected Set<WebsocketChannel> build(UserDao userDao, CardTypeDao cardTypeDao);
     }
 
     /**
@@ -93,11 +90,7 @@ public final class ChannelsBuilders {
 
         @Override
         protected Set<WebsocketChannel> build(UserDao userDao, CardTypeDao cardTypeDao) {
-            if (blockId != null) {
-                return Set.of(BlockChannel.build(blockId));
-            } else {
-                return Set.of();
-            }
+            return Set.of(BlockChannel.build(blockId));
         }
     }
 
@@ -105,8 +98,8 @@ public final class ChannelsBuilders {
      * To build a project content channel
      */
     public static class ProjectContentChannelBuilder extends ChannelsBuilder {
-        /** the project */
-        private final Project project;
+        /** the id of the project */
+        private final Long projectId;
 
         /**
          * Create a builder for a project content channel
@@ -114,16 +107,12 @@ public final class ChannelsBuilders {
          * @param project the project
          */
         public ProjectContentChannelBuilder(Project project) {
-            this.project = project;
+            projectId = project.getId();
         }
 
         @Override
         protected Set<WebsocketChannel> build(UserDao userDao, CardTypeDao cardTypeDao) {
-            if (project != null) {
-                return Set.of(ProjectContentChannel.build(project));
-            } else {
-                return Set.of();
-            }
+            return Set.of(ProjectContentChannel.build(projectId));
         }
     }
 
@@ -131,8 +120,8 @@ public final class ChannelsBuilders {
      * To build all channels needed to propagate a project overview alteration
      */
     public static class AboutProjectOverviewChannelsBuilder extends ChannelsBuilder {
-        /** the project */
-        private final Project project;
+        /** the id of the users that are team members */
+        private final Set<Long> teamMemberUserIds;
 
         /**
          * Create a builder for the channels to use when a project overview data is changed
@@ -140,18 +129,18 @@ public final class ChannelsBuilders {
          * @param project the project
          */
         public AboutProjectOverviewChannelsBuilder(Project project) {
-            this.project = project;
+            teamMemberUserIds = retrieveTeamMemberUserIds(project);
         }
 
         @Override
         protected Set<WebsocketChannel> build(UserDao userDao, CardTypeDao cardTypeDao) {
             Set<WebsocketChannel> channels = new HashSet<>();
 
-            if (project != null) {
-                channels.addAll(buildTeammemberChannels(this.project));
+            channels.addAll(teamMemberUserIds.stream()
+                .map(userId -> UserChannel.build(userId))
+                .collect(Collectors.toSet()));
 
-                channels.addAll(buildAdminChannels(userDao));
-            }
+            channels.addAll(buildAdminChannels(userDao));
 
             return channels;
         }
@@ -172,8 +161,10 @@ public final class ChannelsBuilders {
      * To build all channels needed to propagate a user alteration
      */
     public static class AboutUserChannelsBuilder extends ChannelsBuilder {
-        /** the user */
-        private final User user;
+        /** the id of the user */
+        private final Long userId;
+        /** the id of the users that are team mates */
+        private final Set<Long> teamMatesUserIds;
 
         /**
          * Create a builder for the channels to use when a user is changed
@@ -181,20 +172,21 @@ public final class ChannelsBuilders {
          * @param user the user
          */
         public AboutUserChannelsBuilder(User user) {
-            this.user = user;
+            userId = user.getId();
+            teamMatesUserIds = retrieveTeamMatesUserId(user);
         }
 
         @Override
         protected Set<WebsocketChannel> build(UserDao userDao, CardTypeDao cardTypeDao) {
             Set<WebsocketChannel> channels = new HashSet<>();
 
-            if (user != null) {
-                channels.add(UserChannel.build(user));
+            channels.add(UserChannel.build(userId));
 
-                channels.addAll(buildTeammatesChannels(user));
+            channels.addAll(teamMatesUserIds.stream()
+                .map(userId -> UserChannel.build(userId))
+                .collect(Collectors.toSet()));
 
-                channels.addAll(buildAdminChannels(userDao));
-            }
+            channels.addAll(buildAdminChannels(userDao));
 
             return channels;
         }
@@ -204,8 +196,8 @@ public final class ChannelsBuilders {
      * To build all channels needed to propagate an account alteration
      */
     public static class AboutAccountChannelsBuilder extends ChannelsBuilder {
-        /** the account */
-        private final Account account;
+        /** the id of the user */
+        private final Long userId;
 
         /**
          * Create a builder for the channels to use when an account is changed
@@ -213,47 +205,20 @@ public final class ChannelsBuilders {
          * @param account the account
          */
         public AboutAccountChannelsBuilder(Account account) {
-            this.account = account;
+            userId = account.getUser().getId();
         }
 
         @Override
         protected Set<WebsocketChannel> build(UserDao userDao, CardTypeDao cardTypeDao) {
             Set<WebsocketChannel> channels = new HashSet<>();
 
-            if (account.getUser() != null) {
-                channels.add(UserChannel.build(account.getUser()));
+            if (userId != null) {
+                channels.add(UserChannel.build(userId));
             }
 
             channels.addAll(buildAdminChannels(userDao));
 
             return channels;
-        }
-    }
-
-    /**
-     * To build all channels needed to propagate a http session alteration
-     */
-    public static class AboutHttpSessionChannelsBuilder extends ChannelsBuilder {
-        /** the http session */
-        private final HttpSession httpSession;
-
-        /**
-         * Create a builder for the channels to user when a http session is changed
-         *
-         * @param httpSession the http session
-         */
-        public AboutHttpSessionChannelsBuilder(HttpSession httpSession) {
-            this.httpSession = httpSession;
-        }
-
-        @Override
-        protected Set<WebsocketChannel> build(UserDao userDao, CardTypeDao cardTypeDao) {
-            if (httpSession.getAccount() != null) {
-                return new AboutAccountChannelsBuilder(httpSession.getAccount())
-                    .build(userDao, cardTypeDao);
-            } else {
-                return new ForAdminChannelsBuilder().build(userDao, cardTypeDao);
-            }
         }
     }
 
@@ -278,6 +243,7 @@ public final class ChannelsBuilders {
             CardTypeDao cardTypeDao) {
             return buildCardTypeInProjectChannel(cardType, userDao, cardTypeDao);
         }
+
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////
@@ -292,25 +258,39 @@ public final class ChannelsBuilders {
      */
     private static Set<WebsocketChannel> buildAdminChannels(UserDao userDao) {
         return userDao.findAllAdmin().stream()
-            .map(user -> UserChannel.build(user))
+            .map(user -> UserChannel.build(user.getId()))
             .collect(Collectors.toSet());
     }
 
     /**
-     * Build a channel for each team mates of the user
+     * Retrieve the id of the users team mates of the given user
      *
      * @param user the user
      *
-     * @return a set of channels : one user channel for each team member of each project
+     * @return the ids of the users team mates
      */
-    private static Set<WebsocketChannel> buildTeammatesChannels(User user) {
-        Set<WebsocketChannel> channels = new HashSet<>();
+    private static Set<Long> retrieveTeamMatesUserId(User user) {
+        return user.getTeamMembers().stream()
+            .map(member -> member.getProject())
+            .flatMap(project -> {
+                return retrieveTeamMemberUserIds(project).stream();
+            })
+            .collect(Collectors.toSet());
+    }
 
-        user.getTeamMembers().forEach(member -> {
-            channels.addAll(buildTeammemberChannels(member.getProject()));
-        });
-
-        return channels;
+    /**
+     * Retrieve the id of the user of the team members of the project
+     *
+     * @param project the project
+     *
+     * @return the project team members user ids
+     */
+    private static Set<Long> retrieveTeamMemberUserIds(Project project) {
+        return project.getTeamMembers().stream()
+            // filter out pending invitation
+            .filter(member -> member.getUser() != null && member.getUser().getId() != null)
+            .map(member -> member.getUser().getId())
+            .collect(Collectors.toSet());
     }
 
     /**
@@ -320,11 +300,11 @@ public final class ChannelsBuilders {
      *
      * @return a set of user channels : one for each team member
      */
-    private static Set<WebsocketChannel> buildTeammemberChannels(Project project) {
+    private static Set<WebsocketChannel> buildTeamMemberChannels(Project project) {
         return project.getTeamMembers().stream()
             // filter out pending invitation
             .filter(member -> member.getUser() != null)
-            .map(member -> UserChannel.build(member.getUser()))
+            .map(member -> UserChannel.build(member.getUser().getId()))
             .collect(Collectors.toSet());
     }
 
@@ -345,12 +325,12 @@ public final class ChannelsBuilders {
         if (cardType.getProject() != null) {
             // this type belongs to a specific project
             // first, everyone who is editing the project shall receive updates
-            channels.add(ProjectContentChannel.build(cardType.getProject()));
+            channels.add(ProjectContentChannel.build(cardType.getProject().getId()));
 
             if (cardType.isOrWasPublished()) {
                 // eventually, published types are available to each project members
                 // independently of the project they're editing
-                channels.addAll(buildTeammemberChannels(cardType.getProject()));
+                channels.addAll(buildTeamMemberChannels(cardType.getProject()));
             }
 
             // then, the type must be propagated to all projects which reference it

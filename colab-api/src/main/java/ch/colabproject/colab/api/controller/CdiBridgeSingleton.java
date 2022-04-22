@@ -49,13 +49,13 @@ public class CdiBridgeSingleton {
     }
 
     /**
-     * Bridge to {@link WebsocketManager#getSubscrciptionsCount() }
+     * Bridge to {@link WebsocketManager#getSubscriptionsCount() }
      *
      * @return the list of channels and the number of sessions subscribed to each of them
      */
-    public Map<WebsocketChannel, Integer> getSubscrciptionsCount() {
+    public Map<WebsocketChannel, Integer> getSubscriptionsCount() {
         logger.debug("Get bridged Subscriptions");
-        return websocketManager.getSubscrciptionsCount();
+        return websocketManager.getSubscriptionsCount();
     }
 
     /**

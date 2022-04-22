@@ -170,7 +170,7 @@ public class WebsocketManager {
     /**
      * Get list of all occupied channels.
      * <p>
-     * This method is cluster-aware. In short, {@link #getSubscrciptionsCount() } will be called for
+     * This method is cluster-aware. In short, {@link #getSubscriptionsCount() } will be called for
      * each instance of the cluster.
      *
      * @return list of all occupied channels mapped to the number of subscribers
@@ -211,7 +211,7 @@ public class WebsocketManager {
      *
      * @return the list of channels and the number of sessions subscribed to each of them
      */
-    public Map<WebsocketChannel, Integer> getSubscrciptionsCount() {
+    public Map<WebsocketChannel, Integer> getSubscriptionsCount() {
         return this.subscriptions.entrySet().stream()
             .collect(Collectors.toMap(Entry::getKey, entry -> entry.getValue().size()));
     }
@@ -521,17 +521,17 @@ public class WebsocketManager {
         if (request.getChannelType() == SubscriptionRequest.ChannelType.PROJECT) {
             Project project = projectDao.findProject(request.getChannelId());
             if (project != null) {
-                return ProjectContentChannel.build(project);
+                return ProjectContentChannel.build(project.getId());
             }
         } else if (request.getChannelType() == SubscriptionRequest.ChannelType.BLOCK) {
             TextDataBlock block = blockManager.findBlock(request.getChannelId());
             if (block != null) {
-                return BlockChannel.build(block);
+                return BlockChannel.build(block.getId());
             }
         } else if (request.getChannelType() == SubscriptionRequest.ChannelType.USER) {
             User user = userDao.findUser(request.getChannelId());
             if (user != null) {
-                return UserChannel.build(user);
+                return UserChannel.build(user.getId());
             }
         } else if (request.getChannelType() == SubscriptionRequest.ChannelType.BROADCAST) {
             return BroadcastChannel.build();

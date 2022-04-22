@@ -405,7 +405,7 @@ public class User implements ColabEntity, WithWebsocketChannels {
     }
 
     @Override
-    public ChannelsBuilder getChannelBuilder() {
+    public ChannelsBuilder getChannelsBuilder() {
         return new AboutUserChannelsBuilder(this);
     }
 

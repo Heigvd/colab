@@ -388,9 +388,9 @@ public class CardContent implements ColabEntity, WithWebsocketChannels,
     }
 
     @Override
-    public ChannelsBuilder getChannelBuilder() {
+    public ChannelsBuilder getChannelsBuilder() {
         if (this.card != null) {
-            return this.card.getChannelBuilder();
+            return this.card.getChannelsBuilder();
         } else {
             // such an orphan shouldn't exist...
             return new EmptyChannelBuilder();

@@ -11,8 +11,9 @@ import ch.colabproject.colab.api.model.WithPermission;
 import ch.colabproject.colab.api.model.WithWebsocketChannels;
 import ch.colabproject.colab.api.model.tools.EntityHelper;
 import ch.colabproject.colab.api.security.permissions.Conditions;
+import ch.colabproject.colab.api.ws.channel.tool.ChannelsBuilders.AboutAccountChannelsBuilder;
 import ch.colabproject.colab.api.ws.channel.tool.ChannelsBuilders.ChannelsBuilder;
-import ch.colabproject.colab.api.ws.channel.tool.ChannelsBuilders.AboutHttpSessionChannelsBuilder;
+import ch.colabproject.colab.api.ws.channel.tool.ChannelsBuilders.ForAdminChannelsBuilder;
 import ch.colabproject.colab.generator.model.interfaces.WithId;
 import ch.colabproject.colab.generator.model.interfaces.WithJsonDiscriminator;
 import java.time.OffsetDateTime;
@@ -232,8 +233,12 @@ public class HttpSession implements WithId, WithJsonDiscriminator, WithPermissio
     // ---------------------------------------------------------------------------------------------
 
     @Override
-    public ChannelsBuilder getChannelBuilder() {
-        return new AboutHttpSessionChannelsBuilder(this);
+    public ChannelsBuilder getChannelsBuilder() {
+        if (this.account != null) {
+            return new AboutAccountChannelsBuilder(this.account);
+        } else {
+            return new ForAdminChannelsBuilder();
+        }
     }
 
     @Override

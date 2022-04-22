@@ -465,16 +465,16 @@ public abstract class AbstractResource
     }
 
     @Override
-    public ChannelsBuilder getChannelBuilder() {
+    public ChannelsBuilder getChannelsBuilder() {
         if (this.abstractCardType != null) {
             // the abstract resource is linked to a card type / card type reference
-            return this.abstractCardType.getChannelBuilder();
+            return this.abstractCardType.getChannelsBuilder();
         } else if (this.card != null) {
             // the abstract resource is linked to a card
-            return this.card.getChannelBuilder();
+            return this.card.getChannelsBuilder();
         } else if (this.cardContent != null) {
             // the abstract resource is linked to a card content
-            return this.cardContent.getChannelBuilder();
+            return this.cardContent.getChannelsBuilder();
         } else {
             // such an orphan shouldn't exist...
             return new EmptyChannelBuilder();

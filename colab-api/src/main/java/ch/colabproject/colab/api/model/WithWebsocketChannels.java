@@ -27,7 +27,7 @@ public interface WithWebsocketChannels extends WithId, WithJsonDiscriminator {
      * @return list of channels
      */
     @JsonbTransient
-    ChannelsBuilder getChannelBuilder();
+    ChannelsBuilder getChannelsBuilder();
 
     /**
      * Get the payload to embed within an IndexEntry

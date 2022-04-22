@@ -609,17 +609,17 @@ public class Card
     }
 
     @Override
-    public ChannelsBuilder getChannelBuilder() {
+    public ChannelsBuilder getChannelsBuilder() {
         if (this.rootCardProject != null) {
             // this card is a root card, propagate through the project content channel
             return new ProjectContentChannelBuilder(this.rootCardProject);
         } else if (this.parent != null) {
             // this card is a sub-card, propagate through its parent channels
-            return this.parent.getChannelBuilder();
+            return this.parent.getChannelsBuilder();
         } else if (this.cardType != null) {
             // such a card shouldn't exist...
             // Lorem-ipsum cards for global cardTypes ???
-            return this.cardType.getChannelBuilder();
+            return this.cardType.getChannelsBuilder();
         } else {
             // such an orphan shouldn't exist...
             return new EmptyChannelBuilder();

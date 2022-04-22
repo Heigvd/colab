@@ -10,6 +10,7 @@ import ch.colabproject.colab.api.model.WithWebsocketChannels;
 import ch.colabproject.colab.api.persistence.jpa.card.CardTypeDao;
 import ch.colabproject.colab.api.persistence.jpa.user.UserDao;
 import ch.colabproject.colab.api.ws.WebsocketMessagePreparer;
+import ch.colabproject.colab.api.ws.message.IndexEntry;
 import ch.colabproject.colab.api.ws.message.PrecomputedWsMessages;
 import java.io.Serializable;
 import java.util.Collection;
@@ -80,7 +81,7 @@ public class EntityGatheringBagForPropagation implements Serializable {
     /**
      * set of entities which have been deleted during the transaction
      */
-    private Set<WithWebsocketChannels> deleted = new HashSet<>();
+    private Set<IndexEntry> deleted = new HashSet<>();
 
     /**
      * store the prepared messages
@@ -162,7 +163,9 @@ public class EntityGatheringBagForPropagation implements Serializable {
     public void registerDeletion(Collection<? extends WithWebsocketChannels> c) {
         // make sure txManager exists by just touching it
         txManager.touch();
-        deleted.addAll(c);
+        c.stream()
+            .map(IndexEntry::build)
+            .forEach(deleted::add);
         logger.trace("Deleted set: {}", deleted);
     }
 
@@ -174,7 +177,7 @@ public class EntityGatheringBagForPropagation implements Serializable {
     public void registerDeletion(WithWebsocketChannels o) {
         // make sure txManager exists by just touching it
         txManager.touch();
-        deleted.add(o);
+        deleted.add(IndexEntry.build(o));
         logger.trace("Deleted set: {}", deleted);
     }
 
