@@ -443,7 +443,7 @@ export const smallInputStyle = cx(
 );
 
 export const cardTitle = css({
-  fontSize: '1.2em',
+  fontSize: '1.1em',
   fontWeight: 'bold',
 });
 

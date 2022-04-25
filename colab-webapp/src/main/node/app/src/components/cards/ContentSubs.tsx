@@ -32,6 +32,7 @@ const tinyCard = css({
   height: '20px',
   borderRadius: '2px',
   boxShadow: '0px 0px 3px 1px rgba(0, 0, 0, 0.1)',
+  margin: '0 2px',
 });
 
 const flexWrap = css({
@@ -116,7 +117,7 @@ export default function ContentSubs({
               customButton={
                 depth === depthMax ? (
                   location.pathname.match(/card\/\d+\/v\/\d+/) ? undefined : (
-                    <Button icon={faPlus} title="Add Card" className={fixedButtonStyle} clickable>
+                    <Button icon={faPlus} className={fixedButtonStyle} clickable>
                       Add Card
                     </Button>
                   )

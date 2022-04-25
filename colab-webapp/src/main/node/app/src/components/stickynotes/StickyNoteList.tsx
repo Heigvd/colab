@@ -34,16 +34,10 @@ export default function StickyNoteList({
 }: StickyNoteListProps): JSX.Element {
   return (
     <Flex direction="column" align="stretch">
-      <Flex
-        align="flex-end"
-        className={css({ borderBottom: '1px solid var(--lightGray)', padding: '0 ' + space_M })}
-      >
-        <h2>sticky notes</h2>
-        <Tips>
-          <h5>List of sticky notes stuck on the card</h5>
-          <div>Sticky notes come from a source (card, card specific version, resource, block)</div>
-        </Tips>
-      </Flex>
+      <Tips>
+        <h5>List of sticky notes stuck on the card</h5>
+        <div>Sticky notes come from a source (card, card specific version, resource, block)</div>
+      </Tips>
       <Flex
         grow={1}
         direction="column"

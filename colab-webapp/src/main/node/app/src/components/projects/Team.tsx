@@ -13,7 +13,6 @@ import {
   faPaperPlane,
   faPen,
   faPlus,
-  faSave,
   faTimes,
   faTrash,
 } from '@fortawesome/free-solid-svg-icons';
@@ -31,7 +30,7 @@ import ConfirmDeleteModal from '../common/ConfirmDeleteModal';
 import { Destroyer } from '../common/Destroyer';
 import DropDownMenu from '../common/DropDownMenu';
 import IconButton from '../common/IconButton';
-import InlineInput from '../common/InlineInput';
+import InlineInputNew from '../common/InlineInputNew';
 import InlineLoading from '../common/InlineLoading';
 import OpenClose from '../common/OpenClose';
 import WithToolbar from '../common/WithToolbar';
@@ -159,7 +158,7 @@ const Member = ({ member, roles }: MemberProps) => {
     // DN can be edited or cleared
     username = (
       <>
-        <InlineInput
+        <InlineInputNew
           placeholder="username"
           value={member.displayName || ''}
           onChange={updateDisplayName}
@@ -261,10 +260,6 @@ function CreateRole({ project }: { project: Project }): JSX.Element {
   const dispatch = useAppDispatch();
   const [name, setName] = React.useState('');
 
-  const onChange = React.useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    setName(e.target.value);
-  }, []);
-
   return (
     <OpenClose
       showCloseIcon="NONE"
@@ -274,12 +269,10 @@ function CreateRole({ project }: { project: Project }): JSX.Element {
     >
       {collapse => (
         <>
-          <input onChange={onChange} value={name} />
-          <IconButton
-            className={linkStyle}
-            icon={faSave}
-            title="Save"
-            onClick={() =>
+          <InlineInputNew
+            placeholder="new role"
+            value={name}
+            onChange={newValue =>
               dispatch(
                 API.createRole({
                   project: project,
@@ -287,7 +280,7 @@ function CreateRole({ project }: { project: Project }): JSX.Element {
                     '@class': 'TeamRole',
                     projectId: project.id,
                     memberIds: [],
-                    name: name,
+                    name: newValue,
                   },
                 }),
               ).then(() => {
@@ -295,8 +288,9 @@ function CreateRole({ project }: { project: Project }): JSX.Element {
                 collapse();
               })
             }
+            autosave={false}
+            onCancel={collapse}
           />
-          <IconButton icon={faTimes} title="Save" onClick={collapse} />
         </>
       )}
     </OpenClose>
@@ -332,7 +326,12 @@ const RoleDisplay = ({ role }: RoleProps) => {
         </>
       }
     >
-      <InlineInput value={role.name || ''} onChange={saveCb} placeholder="role" />
+      <InlineInputNew
+        value={role.name || ''}
+        onChange={saveCb}
+        placeholder="role"
+        maxWidth="150px"
+      />
     </WithToolbar>
   );
 };
@@ -382,10 +381,12 @@ export default function Team({ project }: Props): JSX.Element {
         >
           <div className={titleCellStyle}>Members</div>
           <div className={titleCellStyle}>Rights</div>
-          <div className={cx(titleCellStyle, css({ gridColumnStart: 3, gridColumnEnd: 'end'}))}>Roles</div> 
+          <div className={cx(titleCellStyle, css({ gridColumnStart: 3, gridColumnEnd: 'end' }))}>
+            Roles
+          </div>
           <div />
           <div />
-          
+
           {roles.map(role => (
             <div key={'role-' + role.id}>
               <RoleDisplay role={role} />

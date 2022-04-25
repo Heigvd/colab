@@ -20,7 +20,7 @@ import Button from '../common/Button';
 import ConfirmDeleteModal from '../common/ConfirmDeleteModal';
 import DropDownMenu from '../common/DropDownMenu';
 import Flex from '../common/Flex';
-import InlineInput from '../common/InlineInput';
+import InlineInputNew from '../common/InlineInputNew';
 import { cardStyle, lightIconButtonStyle, space_M, space_S } from '../styling/style';
 
 // TODO replace <CardThumbWithSelector for something easy and without actions
@@ -64,7 +64,7 @@ export default function StickyNoteDisplay({
         justify="space-between"
         className={css({ borderBottom: '1px solid var(--lightGray)', padding: space_S })}
       >
-        <InlineInput
+        <InlineInputNew
           value={stickyNote.teaser || ''}
           placeholder="Add a teaser"
           onChange={newValue => dispatch(API.updateStickyNote({ ...stickyNote, teaser: newValue }))}
