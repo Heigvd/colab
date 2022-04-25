@@ -118,7 +118,7 @@ export default function InlineInput({
   const textareaRef = React.useRef<HTMLTextAreaElement>(null);
   const containerRef = React.useRef<HTMLDivElement>(null);
   const [mode, setMode] = React.useState<'DISPLAY' | 'EDIT'>('DISPLAY');
-  const [state, setState] = React.useState<string>(value || '');
+  const [state, setState] = React.useState<string>(value || placeholder || '');
 
   const defaultValue = getEffectiveValue(value, placeholder);
 
