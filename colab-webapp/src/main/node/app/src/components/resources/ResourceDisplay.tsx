@@ -139,7 +139,7 @@ export function ResourceDisplay({ resourceAndRef, onClose }: ResourceDisplayProp
                     }
                   }}
                   className={cx(textSmall, css({ marginTop: space_S }))}
-                  inputType='textarea'
+                  inputType="textarea"
                 />
               )}
             </DocTextWrapper>

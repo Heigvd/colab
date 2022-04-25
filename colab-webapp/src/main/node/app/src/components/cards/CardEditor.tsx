@@ -99,12 +99,12 @@ const valueStyle = css({
 });
 
 const fullScreenStyle = css({
-position: 'absolute',
-top: 0,
-left: 0,
-width: '100%',
-height: '100%',
-borderRadius: 0,
+  position: 'absolute',
+  top: 0,
+  left: 0,
+  width: '100%',
+  height: '100%',
+  borderRadius: 0,
 });
 
 const progressBar = (width: number) =>
@@ -201,7 +201,7 @@ export default function CardEditor({ card, variant, showSubcards = true }: Props
             align="stretch"
             className={cx(
               cardStyle,
-              {[fullScreenStyle]: fullScreen === true},
+              { [fullScreenStyle]: fullScreen === true },
               css({
                 backgroundColor: 'white',
                 overflow: 'hidden',
@@ -240,7 +240,7 @@ export default function CardEditor({ card, variant, showSubcards = true }: Props
                         </div>
                       )}
                       <Flex align="center">
-                         <InlineInputNew
+                        <InlineInputNew
                           placeholder={i18n.card.untitled}
                           readOnly={readOnly}
                           value={card.title || ''}
@@ -249,7 +249,7 @@ export default function CardEditor({ card, variant, showSubcards = true }: Props
                           }
                           className={cardTitle}
                           autosave
-                        />                      
+                        />
                         {hasVariants && (
                           <>
                             <span className={variantTitle}>&#xFE58;</span>
@@ -273,10 +273,7 @@ export default function CardEditor({ card, variant, showSubcards = true }: Props
                           <IconButton
                             icon={faInfoCircle}
                             title="Show card model informations"
-                            className={cx(
-                              lightIconButtonStyle,
-                              css({ color: 'var(--lightGray)' }),
-                            )}
+                            className={cx(lightIconButtonStyle, css({ color: 'var(--lightGray)' }))}
                             onClick={() => setShowTypeDetails(showTypeDetails => !showTypeDetails)}
                           />
                         )}
@@ -309,12 +306,11 @@ export default function CardEditor({ card, variant, showSubcards = true }: Props
                               showCloseButton
                               className={css({ height: '580px', width: '600px' })}
                             >
-                              {() => (
-                                <CardInvolvement card={card} />
-                              )}
-                              </Modal>}
-                          />
-                          <Route
+                              {() => <CardInvolvement card={card} />}
+                            </Modal>
+                          }
+                        />
+                        <Route
                           path="completion"
                           element={
                             <Modal
@@ -333,7 +329,12 @@ export default function CardEditor({ card, variant, showSubcards = true }: Props
                           }
                         />
                       </Routes>
-                      <IconButton title='Full screen mode' icon={fullScreen ? faCompressArrowsAlt : faExpandArrowsAlt} onClick={()=>setFullScreen(fullScreen => !fullScreen)} className={lightIconButtonStyle}/>
+                      <IconButton
+                        title="Full screen mode"
+                        icon={fullScreen ? faCompressArrowsAlt : faExpandArrowsAlt}
+                        onClick={() => setFullScreen(fullScreen => !fullScreen)}
+                        className={lightIconButtonStyle}
+                      />
                       <DropDownMenu
                         icon={faEllipsisV}
                         valueComp={{ value: '', label: '' }}
@@ -351,7 +352,10 @@ export default function CardEditor({ card, variant, showSubcards = true }: Props
                             value: 'involvements',
                             label: (
                               <>
-                                <FontAwesomeIcon icon={faUsers} /> Involvements</>)},
+                                <FontAwesomeIcon icon={faUsers} /> Involvements
+                              </>
+                            ),
+                          },
                           {
                             value: 'completion',
                             label: (
@@ -426,14 +430,18 @@ export default function CardEditor({ card, variant, showSubcards = true }: Props
                   {cardType && (
                     <div className={showTypeDetails ? openDetails : closeDetails}>
                       <div>
-                      <p>
-                        <b>Card type</b>: {cardType.title || ''}
-                      </p>
-                      <p>
-                        <b>Purpose</b>: <DocTextDisplay id={cardType.purposeId} />
-                      </p>
+                        <p>
+                          <b>Card type</b>: {cardType.title || ''}
+                        </p>
+                        <p>
+                          <b>Purpose</b>: <DocTextDisplay id={cardType.purposeId} />
+                        </p>
                       </div>
-                      <IconButton icon={faTimes} title="Close" onClick={()=>setShowTypeDetails(false)}/>
+                      <IconButton
+                        icon={faTimes}
+                        title="Close"
+                        onClick={() => setShowTypeDetails(false)}
+                      />
                     </div>
                   )}
                 </Flex>

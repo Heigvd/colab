@@ -31,7 +31,11 @@ export default function CardInvolvement({ card }: Props): JSX.Element {
     <>
       <Flex
         align="center"
-        className={css({ marginBottom: space_M, borderBottom: '1px solid var(--lightGray)', alignSelf: 'stretch' })}
+        className={css({
+          marginBottom: space_M,
+          borderBottom: '1px solid var(--lightGray)',
+          alignSelf: 'stretch',
+        })}
       >
         <h2>General involvement</h2>
         <Tips>

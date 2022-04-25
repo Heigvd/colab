@@ -237,26 +237,27 @@ function CreateRole({ project }: { project: Project }): JSX.Element {
       {collapse => (
         <>
           <InlineInputNew
-          placeholder="new role"
-          value={name}
-          onChange={(newValue) =>
-            dispatch(
-              API.createRole({
-                project: project,
-                role: {
-                  '@class': 'TeamRole',
-                  projectId: project.id,
-                  memberIds: [],
-                  name: newValue,
-                },
-              }),
-            ).then(() => {
-              setName('');
-              collapse();
-            })}
-          autosave={false}
-          onCancel={collapse}
-        />
+            placeholder="new role"
+            value={name}
+            onChange={newValue =>
+              dispatch(
+                API.createRole({
+                  project: project,
+                  role: {
+                    '@class': 'TeamRole',
+                    projectId: project.id,
+                    memberIds: [],
+                    name: newValue,
+                  },
+                }),
+              ).then(() => {
+                setName('');
+                collapse();
+              })
+            }
+            autosave={false}
+            onCancel={collapse}
+          />
         </>
       )}
     </OpenClose>
@@ -292,7 +293,12 @@ const RoleDisplay = ({ role }: RoleProps) => {
         </>
       }
     >
-      <InlineInputNew value={role.name || ''} onChange={saveCb} placeholder="role" maxWidth='150px'/>
+      <InlineInputNew
+        value={role.name || ''}
+        onChange={saveCb}
+        placeholder="role"
+        maxWidth="150px"
+      />
     </WithToolbar>
   );
 };
@@ -342,10 +348,12 @@ export default function Team({ project }: Props): JSX.Element {
         >
           <div className={titleCellStyle}>Members</div>
           <div className={titleCellStyle}>Rights</div>
-          <div className={cx(titleCellStyle, css({ gridColumnStart: 3, gridColumnEnd: 'end'}))}>Roles</div> 
+          <div className={cx(titleCellStyle, css({ gridColumnStart: 3, gridColumnEnd: 'end' }))}>
+            Roles
+          </div>
           <div />
           <div />
-          
+
           {roles.map(role => (
             <div key={'role-' + role.id}>
               <RoleDisplay role={role} />

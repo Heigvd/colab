@@ -20,16 +20,18 @@ import { marginAroundStyle, paddingAroundStyle, space_M, space_S } from '../styl
 import InvolvementSelector from './InvolvementSelector';
 
 const titleSeparationStyle = css({
-margin: space_M + ' 0',
-borderBottom: '1px solid var(--lightGray)',
-width: '100%'
+  margin: space_M + ' 0',
+  borderBottom: '1px solid var(--lightGray)',
+  width: '100%',
 });
 
 const labelStyle = cx(
-  marginAroundStyle([1, 2, 3], space_S), 
+  marginAroundStyle([1, 2, 3], space_S),
   paddingAroundStyle([1, 2, 3], space_S),
   css({
-fontWeight: '500'}));
+    fontWeight: '500',
+  }),
+);
 
 export function RoleACL({ role, acl }: { role: TeamRole; acl: CardAcl }): JSX.Element {
   const self = acl.self.roles[role.id || -1];
@@ -57,7 +59,7 @@ export function RoleACL({ role, acl }: { role: TeamRole; acl: CardAcl }): JSX.El
   );
 
   return (
-    <Flex align='center'>
+    <Flex align="center">
       <div className={labelStyle}>{role.name}:</div>
       <InvolvementSelector
         self={self}
@@ -111,7 +113,7 @@ export function MemberACL({ member, acl }: { member: TeamMember; acl: CardAcl })
   }, [member.userId, user, dispatch]);
 
   return (
-    <Flex align='center'>
+    <Flex align="center">
       <div className={labelStyle}>{user != null ? getDisplayName(user) : member.id}:</div>
       <InvolvementSelector self={self} effectives={effective} onChange={onChangeCb} />
     </Flex>
@@ -130,11 +132,15 @@ export default function CardACL({ card }: Props): JSX.Element {
   if (teamStatus === 'INITIALIZED') {
     return (
       <>
-        <div className={titleSeparationStyle}><h3>Roles</h3></div>
+        <div className={titleSeparationStyle}>
+          <h3>Roles</h3>
+        </div>
         {roles.map(role => (
           <RoleACL key={role.id} role={role} acl={acl} />
         ))}
-        <div className={titleSeparationStyle}><h3>Members</h3></div>
+        <div className={titleSeparationStyle}>
+          <h3>Members</h3>
+        </div>
         {members.map(member => (
           <MemberACL key={member.id} member={member} acl={acl} />
         ))}

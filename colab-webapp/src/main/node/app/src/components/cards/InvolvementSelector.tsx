@@ -80,7 +80,7 @@ export default function InvolvementSelector({
 
   if (self != null) {
     return (
-      <Flex align='center'>
+      <Flex align="center">
         <Select
           className={css({ minWidth: '240px' })}
           options={options}
@@ -91,16 +91,28 @@ export default function InvolvementSelector({
       </Flex>
     );
   } else {
-    const creator = <IconButton icon={faPen} title="Edit inv. level" onClick={createCb} className={lightIconButtonStyle}/>;
+    const creator = (
+      <IconButton
+        icon={faPen}
+        title="Edit inv. level"
+        onClick={createCb}
+        className={lightIconButtonStyle}
+      />
+    );
     if (effectives != null && effectives.length > 0) {
       return (
         <Flex>
-          <Flex align='center'>{effectives.map(e => prettyPrint(e))}</Flex>
+          <Flex align="center">{effectives.map(e => prettyPrint(e))}</Flex>
           {creator}
         </Flex>
       );
     } else {
-      return <Flex align='center'><p className={cx(lightItalicText, textSmall)}>Undefined</p>{creator}</Flex>;
+      return (
+        <Flex align="center">
+          <p className={cx(lightItalicText, textSmall)}>Undefined</p>
+          {creator}
+        </Flex>
+      );
     }
   }
 }

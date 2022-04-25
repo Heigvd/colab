@@ -26,7 +26,13 @@ import ConfirmDeleteModal from '../common/ConfirmDeleteModal';
 import DropDownMenu from '../common/DropDownMenu';
 import InlineInputNew from '../common/InlineInputNew';
 import InlineLoading from '../common/InlineLoading';
-import { cardStyle, cardTitle, fixedButtonStyle, invertedButtonStyle, space_M } from '../styling/style';
+import {
+  cardStyle,
+  cardTitle,
+  fixedButtonStyle,
+  invertedButtonStyle,
+  space_M,
+} from '../styling/style';
 
 const projectListStyle = css({
   margin: 'auto',
@@ -69,7 +75,7 @@ const ProjectDisplay = ({ project }: ProjectDisplayProps) => {
           value={project.name || ''}
           onChange={newValue => dispatch(API.updateProject({ ...project, name: newValue }))}
           className={cardTitle}
-          maxWidth='80%'
+          maxWidth="80%"
         />
         <DropDownMenu
           icon={faEllipsisV}
@@ -135,7 +141,7 @@ const ProjectDisplay = ({ project }: ProjectDisplayProps) => {
           placeholder="Write a description here"
           value={project.description || ''}
           onChange={newValue => dispatch(API.updateProject({ ...project, description: newValue }))}
-          inputType='textarea'
+          inputType="textarea"
           autosave={false}
         />
         {/* 
