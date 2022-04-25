@@ -37,6 +37,10 @@ import javax.validation.constraints.NotNull;
     name = "InvitationToken.findByProjectAndRecipient",
     query = "SELECT t from InvitationToken t "
         + "WHERE t.teamMember.project.id = :projectId AND t.recipient =:recipient")
+@NamedQuery(
+    name = "InvitationToken.findByTeamMember",
+    query = "SELECT t from InvitationToken t "
+        + "WHERE t.teamMember.id = :teamMemberId")
 public class InvitationToken extends Token {
 
     private static final long serialVersionUID = 1L;

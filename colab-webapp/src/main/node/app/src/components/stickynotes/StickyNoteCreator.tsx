@@ -6,7 +6,7 @@
  */
 
 import { css, cx } from '@emotion/css';
-import { faUndo } from '@fortawesome/free-solid-svg-icons';
+import { faPlus, faUndo } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import * as React from 'react';
 import * as API from '../../API/api';
@@ -19,7 +19,6 @@ import Flex from '../common/Flex';
 import Form, { Field } from '../common/Form/Form';
 import IconButton from '../common/IconButton';
 import OpenCloseModal from '../common/OpenCloseModal';
-import { addIcon } from '../styling/defaultIcons';
 import { space_M, space_S } from '../styling/style';
 
 interface StickyNoteCreatorProps {
@@ -123,7 +122,7 @@ export default function StickyNoteCreator({
             className,
           )}
         >
-          <FontAwesomeIcon title="Add a sticky note" icon={addIcon} />
+          <FontAwesomeIcon title="Add a sticky note" icon={faPlus} />
         </Flex>
       }
     >

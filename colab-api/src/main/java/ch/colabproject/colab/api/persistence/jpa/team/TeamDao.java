@@ -76,6 +76,15 @@ public class TeamDao {
     }
 
     /**
+     * Remove team member from database
+     *
+     * @param teamMember team member to delete
+     */
+    public void removeTeamMember(TeamMember teamMember) {
+        em.remove(teamMember);
+    }
+
+    /**
      * Remove role from database
      *
      * @param role the role to delete
