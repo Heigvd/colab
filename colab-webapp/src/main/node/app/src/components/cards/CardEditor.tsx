@@ -12,6 +12,7 @@ import {
   faCompressArrowsAlt,
   faEllipsisV,
   faExpandArrowsAlt,
+  faHandSparkles,
   faInfoCircle,
   faPaperclip,
   faPercent,
@@ -50,6 +51,7 @@ import {
   space_S,
   variantTitle,
 } from '../styling/style';
+import CardEditorToolbox from './CardEditorToolbox';
 import CardInvolvement from './CardInvolvement';
 import CardSettings from './CardSettings';
 import ContentSubs from './ContentSubs';
@@ -167,6 +169,7 @@ export default function CardEditor({ card, variant, showSubcards = true }: Props
   const readOnly = !userAcl.write || variant.frozen;
   const [showTypeDetails, setShowTypeDetails] = React.useState(false);
   const [fullScreen, setFullScreen] = React.useState(false);
+  const [openToolbox, setOpenToolbox] = React.useState(true);
 
   const closeRouteCb = React.useCallback(
     route => {
@@ -213,16 +216,16 @@ export default function CardEditor({ card, variant, showSubcards = true }: Props
                 direction="column"
                 grow={1}
                 className={css({
-                  padding: '10px',
                   overflow: 'auto',
                 })}
                 align="stretch"
               >
-                <Flex direction="column" align="stretch">
+                <Flex direction="column" align="stretch" className={'HEADER'}>
                   <Flex
                     justify="space-between"
                     className={css({
-                      paddingBottom: space_S,
+                      alignItems: 'center',
+                      padding: space_S,
                       borderBottom:
                         card.color && card.color != '#ffffff'
                           ? '5px solid ' + card.color
@@ -277,6 +280,12 @@ export default function CardEditor({ card, variant, showSubcards = true }: Props
                             onClick={() => setShowTypeDetails(showTypeDetails => !showTypeDetails)}
                           />
                         )}
+                        {!readOnly && <IconButton
+                          icon={faHandSparkles}
+                          title="Show/hide toolbox"
+                          className={cx(lightIconButtonStyle, css({ color: 'var(--lightGray)' }))}
+                          onClick={() => setOpenToolbox(openToolbox => !openToolbox)}
+                        />}
                       </Flex>
                     </div>
                     <Flex>
@@ -427,6 +436,7 @@ export default function CardEditor({ card, variant, showSubcards = true }: Props
                       />
                     </Flex>
                   </Flex>
+                  {!readOnly && variant.id && <CardEditorToolbox open={openToolbox} context={{ kind: 'DeliverableOfCardContent', ownerId: variant.id }} />}
                   {cardType && (
                     <div className={showTypeDetails ? openDetails : closeDetails}>
                       <div>
@@ -445,7 +455,12 @@ export default function CardEditor({ card, variant, showSubcards = true }: Props
                     </div>
                   )}
                 </Flex>
-                <Flex direction="column" grow={1} align="stretch">
+                <Flex
+                  direction="column"
+                  grow={1}
+                  align="stretch"
+                  className={css({ overflow: 'auto', padding: space_S })}
+                >
                   {userAcl.read ? (
                     variant.id ? (
                       <DocumentList

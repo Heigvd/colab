@@ -6,8 +6,6 @@
  */
 
 import { css } from '@emotion/css';
-import { faFile, faLink, faParagraph, faPlus } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import * as React from 'react';
 import { useAndLoadDocuments } from '../../selectors/documentSelector';
 import AvailabilityStatusIndicator from '../common/AvailabilityStatusIndicator';
@@ -42,31 +40,16 @@ export default function DocumentList({ context, allowEdition }: DocumentListProp
             context={context}
             docKind="TextDataBlock"
             title="add a text block"
-            label={
-              <>
-                <FontAwesomeIcon icon={faPlus} size="sm" /> <FontAwesomeIcon icon={faParagraph} />
-              </>
-            }
           />
           <DocumentCreatorButton
             context={context}
             docKind="DocumentFile"
             title="add a file"
-            label={
-              <>
-                <FontAwesomeIcon icon={faPlus} size="sm" /> <FontAwesomeIcon icon={faFile} />
-              </>
-            }
           />
           <DocumentCreatorButton
             context={context}
             docKind="ExternalLink"
             title="add a link"
-            label={
-              <>
-                <FontAwesomeIcon icon={faPlus} size="sm" /> <FontAwesomeIcon icon={faLink} />
-              </>
-            }
           />
         </Flex>
       )}
