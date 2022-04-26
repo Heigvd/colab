@@ -6,16 +6,15 @@
  */
 
 import { css, cx } from '@emotion/css';
-import {
-  faPen,
-  faTrash,
-} from '@fortawesome/free-solid-svg-icons';
+import { faPen, faTrash } from '@fortawesome/free-solid-svg-icons';
 import * as React from 'react';
+import { useAppSelector } from '../../store/hooks';
 import Flex from '../common/Flex';
 import IconButton from '../common/IconButton';
 import { DocumentContext } from '../documents/documentCommonType';
 import DocumentCreatorButton from '../documents/DocumentCreatorButton';
 import { space_S } from '../styling/style';
+import { CardEditorCTX } from './CardEditor';
 
 const toolboxContainerStyle = css({
   height: 'auto',
@@ -51,28 +50,39 @@ interface Props {
 }
 
 export default function CardEditorToolbox({ open, context, prefixElement }: Props): JSX.Element {
-  const blockSelected = 'Document'; 
+  const { selectedId } = React.useContext(CardEditorCTX);
+  const selectedDocument = useAppSelector(state => {
+    if (selectedId) {
+      return state.document.documents[selectedId];
+    }
+  });
+
   return (
     <Flex align="center" className={cx(toolboxContainerStyle, { [closedToolboxStyle]: !open })}>
       {prefixElement}
-      <BlockCreatorButtons context={context} blockSelected={blockSelected} />
-      <IconButton icon={faPen} title="edit block" className={toolboxButtonStyle} />
-      <IconButton icon={faTrash} title="delete block" className={toolboxButtonStyle} />
+      <BlockCreatorButtons
+        context={context}
+        blockSelected={selectedDocument != (undefined || null)}
+      />
+      {selectedDocument != (undefined || null) && (
+        <>
+          <IconButton icon={faPen} title="edit block" className={toolboxButtonStyle} />
+          <IconButton icon={faTrash} title="delete block" className={toolboxButtonStyle} />
+        </>
+      )}
     </Flex>
   );
 }
 
 interface BlockButtonsProps {
   context: DocumentContext;
-  blockSelected: string;
+  blockSelected: boolean;
 }
 
 export function BlockCreatorButtons({ context, blockSelected }: BlockButtonsProps): JSX.Element {
   return (
     <>
-      <Flex className={
-        cx({[borderRightStyle]: blockSelected != (null || undefined)})
-      }>
+      <Flex className={cx({ [borderRightStyle]: blockSelected })}>
         <DocumentCreatorButton
           context={context}
           docKind="TextDataBlock"

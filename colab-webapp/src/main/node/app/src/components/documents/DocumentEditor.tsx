@@ -21,6 +21,7 @@ import * as React from 'react';
 import * as API from '../../API/api';
 import { useAppDispatch } from '../../store/hooks';
 import { BlockEditorWrapper } from '../blocks/BlockEditorWrapper';
+import { CardEditorCTX } from '../cards/CardEditor';
 import ConfirmDeleteModal from '../common/ConfirmDeleteModal';
 import DropDownMenu from '../common/DropDownMenu';
 import Flex from '../common/Flex';
@@ -59,6 +60,8 @@ export default function DocumentEditor({ doc, allowEdition }: DocumentEditorProp
   const [markDownMode, setmarkDownMode] = React.useState(false);
   const dropRef = React.useRef<HTMLDivElement>(null);
 
+  const {setSelectedId} = React.useContext(CardEditorCTX);
+
   const handleClickOutside = (event: Event) => {
     if (dropRef.current && !dropRef.current.contains(event.target as Node)) {
       setState('VIEW');
@@ -71,6 +74,7 @@ export default function DocumentEditor({ doc, allowEdition }: DocumentEditorProp
       document.removeEventListener('click', handleClickOutside, true);
     };
   });
+
 
   const downloadUrl = API.getRestClient().DocumentFileRestEndPoint.getFileContentPath(doc.id!);
 
@@ -92,11 +96,12 @@ export default function DocumentEditor({ doc, allowEdition }: DocumentEditorProp
           editableBlockStyle,
           { [editingStyle]: state === 'EDIT' },
         )}
-        onClick={() => {
+        onClick={() => setSelectedId(doc.id)}
+        /* onClick={() => {
           if (state === 'VIEW') {
             setState('EDIT');
           }
-        }}
+        }} */
       >
         {isTextDataBlock ? (
           <BlockEditorWrapper

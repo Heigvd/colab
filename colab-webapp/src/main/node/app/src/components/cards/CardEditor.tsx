@@ -150,6 +150,17 @@ function ProgressModifier({ variant }: { variant: CardContent }) {
   );
 }
 
+interface CardEditorContext {
+selectedId?: number | null;
+setSelectedId: (id: number | undefined | null ) => void;
+}
+
+const defaultCardEditorContext: CardEditorContext = {
+  setSelectedId:()=>{}
+}
+
+export const CardEditorCTX = React.createContext<CardEditorContext>(defaultCardEditorContext);
+
 export default function CardEditor({ card, variant, showSubcards = true }: Props): JSX.Element {
   const i18n = useTranslations();
   const dispatch = useAppDispatch();
@@ -170,6 +181,7 @@ export default function CardEditor({ card, variant, showSubcards = true }: Props
   const [showTypeDetails, setShowTypeDetails] = React.useState(false);
   const [fullScreen, setFullScreen] = React.useState(false);
   const [openToolbox, setOpenToolbox] = React.useState(true);
+  const [selectedId, setSelectedId] = React.useState<number | undefined | null>(undefined);
 
   const closeRouteCb = React.useCallback(
     route => {
@@ -190,6 +202,7 @@ export default function CardEditor({ card, variant, showSubcards = true }: Props
   } else {
     const cardId = card.id;
     return (
+      <CardEditorCTX.Provider value={{selectedId, setSelectedId}}>
       <Flex direction="column" grow={1} align="stretch">
         <Flex
           grow={1}
@@ -473,6 +486,7 @@ export default function CardEditor({ card, variant, showSubcards = true }: Props
                   ) : (
                     <span>Access Denied</span>
                   )}
+                  
                 </Flex>
               </Flex>
               <Flex align="center">
@@ -541,6 +555,7 @@ export default function CardEditor({ card, variant, showSubcards = true }: Props
           </Collapsible>
         ) : null}
       </Flex>
+      </ CardEditorCTX.Provider>
     );
   }
 }
