@@ -424,7 +424,6 @@ public class DuplicationHelper {
                 }
 
                 newResourceRef.setTarget(newTarget);
-                newTarget.getDirectReferences().add(newResourceRef);
             }
 
             // and what if the user has not the rights to read the target ?!?

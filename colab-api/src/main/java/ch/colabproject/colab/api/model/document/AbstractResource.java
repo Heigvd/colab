@@ -129,13 +129,6 @@ public abstract class AbstractResource
     private Long cardContentId;
 
     /**
-     * The list of resource references that link to this abstract resource
-     */
-    @OneToMany(mappedBy = "target", cascade = CascadeType.ALL)
-    @JsonbTransient
-    private List<ResourceRef> directReferences = new ArrayList<>();
-
-    /**
      * The list of sticky note links of which the resource is the source
      */
     @OneToMany(mappedBy = "srcResourceOrRef", cascade = CascadeType.ALL)
@@ -325,21 +318,6 @@ public abstract class AbstractResource
      */
     public boolean hasCardContent() {
         return cardContent != null || cardContentId != null;
-    }
-
-    /**
-     * @return the list of resource references that directly link to this abstract resource
-     */
-    public List<ResourceRef> getDirectReferences() {
-        return directReferences;
-    }
-
-    /**
-     * @param directReferences the list of resource references that directly link to this abstract
-     *                         resource
-     */
-    public void setDirectReferences(List<ResourceRef> directReferences) {
-        this.directReferences = directReferences;
     }
 
     /**

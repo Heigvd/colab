@@ -351,7 +351,7 @@ public class ResourceManager {
      * @param resourceOrRef The initial abstract resource to delete
      */
     private void deleteResourceAndRefs(AbstractResource resourceOrRef) {
-        List<ResourceRef> references = resourceOrRef.getDirectReferences();
+        List<ResourceRef> references = resourceAndRefDao.findDirectReferences(resourceOrRef);
         if (references != null) {
             references.stream().forEach(ref -> deleteResourceAndRefs(ref));
         }

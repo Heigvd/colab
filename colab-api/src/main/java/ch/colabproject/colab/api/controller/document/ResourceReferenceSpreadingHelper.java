@@ -15,6 +15,7 @@ import ch.colabproject.colab.api.model.document.Resource;
 import ch.colabproject.colab.api.model.document.ResourceRef;
 import ch.colabproject.colab.api.model.document.Resourceable;
 import ch.colabproject.colab.api.persistence.jpa.card.CardTypeDao;
+import ch.colabproject.colab.api.persistence.jpa.document.ResourceDao;
 import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
 import java.util.List;
 import java.util.Objects;
@@ -31,6 +32,12 @@ public class ResourceReferenceSpreadingHelper {
     // *********************************************************************************************
     // injections
     // *********************************************************************************************
+
+    /**
+     * Resource persistence handler
+     */
+    @Inject
+    private ResourceDao resourceDao;
 
     /**
      * Card type persistence handler
@@ -236,9 +243,6 @@ public class ResourceReferenceSpreadingHelper {
 
         if (!Objects.equals(olderTarget, newTarget)) {
             resourceReference.setTarget(newTarget);
-            newTarget.getDirectReferences().add(resourceReference);
-
-            olderTarget.getDirectReferences().remove(resourceReference);
         }
     }
 
@@ -250,7 +254,7 @@ public class ResourceReferenceSpreadingHelper {
     private void reviveRecursively(ResourceRef resourceReference) {
         resourceReference.setResidual(false);
 
-        for (ResourceRef childRef : resourceReference.getDirectReferences()) {
+        for (ResourceRef childRef : resourceDao.findDirectReferences(resourceReference)) {
             reviveRecursively(childRef);
         }
     }
@@ -269,7 +273,6 @@ public class ResourceReferenceSpreadingHelper {
         owner.getDirectAbstractResources().add(newRef);
 
         newRef.setTarget(targetResourceOrRef);
-        targetResourceOrRef.getDirectReferences().add(newRef);
 
         spreadNewResourceDown(newRef);
 
@@ -348,7 +351,7 @@ public class ResourceReferenceSpreadingHelper {
     private void markAsResidualRecursively(ResourceRef resourceReference) {
         resourceReference.setResidual(true);
 
-        for (ResourceRef childRef : resourceReference.getDirectReferences()) {
+        for (ResourceRef childRef : resourceDao.findDirectReferences(resourceReference)) {
             markAsResidualRecursively(childRef);
         }
     }
