@@ -15,7 +15,7 @@ import { useAppDispatch } from '../../store/hooks';
 import { Destroyer } from '../common/Destroyer';
 import Flex from '../common/Flex';
 import IconButton from '../common/IconButton';
-import InlineInput from '../common/InlineInput';
+import InlineInputNew from '../common/InlineInputNew';
 import OpenCloseModal from '../common/OpenCloseModal';
 import { DocTextWrapper } from '../documents/DocTextItem';
 import DocumentList from '../documents/DocumentList';
@@ -114,19 +114,18 @@ export function ResourceDisplay({ resourceAndRef, onClose }: ResourceDisplayProp
           </OpenCloseModal>
         </Flex>
         <div>
-          <InlineInput
+          <InlineInputNew
             onChange={newValue =>
               dispatch(API.updateResource({ ...resourceAndRef.targetResource, title: newValue }))
             }
             value={resourceAndRef.targetResource.title || i18n.resource.untitled}
             placeholder={i18n.resource.untitled}
-            autosave={false}
             className={cardTitle}
           />
           {teaser && (
             <DocTextWrapper id={resourceAndRef.targetResource.teaserId}>
               {text => (
-                <InlineInput
+                <InlineInputNew
                   placeholder={'Add a teaser'}
                   value={text || 'Add a teaser'}
                   onChange={(newValue: string) => {
@@ -139,8 +138,8 @@ export function ResourceDisplay({ resourceAndRef, onClose }: ResourceDisplayProp
                       );
                     }
                   }}
-                  autosave={false}
                   className={cx(textSmall, css({ marginTop: space_S }))}
+                  inputType="textarea"
                 />
               )}
             </DocTextWrapper>

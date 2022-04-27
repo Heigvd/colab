@@ -24,15 +24,21 @@ import { StateStatus } from '../../store/project';
 import Button from '../common/Button';
 import ConfirmDeleteModal from '../common/ConfirmDeleteModal';
 import DropDownMenu from '../common/DropDownMenu';
-import InlineInput from '../common/InlineInput';
+import InlineInputNew from '../common/InlineInputNew';
 import InlineLoading from '../common/InlineLoading';
-import { cardStyle, fixedButtonStyle, invertedButtonStyle, space_M } from '../styling/style';
+import {
+  cardStyle,
+  cardTitle,
+  fixedButtonStyle,
+  invertedButtonStyle,
+  space_M,
+} from '../styling/style';
 
 const projectListStyle = css({
   margin: 'auto',
   width: '100%',
-  display: 'grid',
-  gridTemplateColumns: 'repeat(3, 1fr)',
+  display: 'inline-grid',
+  gridTemplateColumns: 'repeat(3, minmax(250px, 1fr))',
   gridColumnGap: '40px',
   gridRowGap: '40px',
 });
@@ -64,17 +70,12 @@ const ProjectDisplay = ({ project }: ProjectDisplayProps) => {
           padding: space_M,
         })}
       >
-        {/* <AutoSaveInput
-          placeholder="Unnamed project"
-          value={project.name || ''}
-          onChange={newValue => dispatch(API.updateProject({ ...project, name: newValue }))}
-          className={css({ fontWeight: 'bold' })}
-        /> */}
-        <InlineInput
+        <InlineInputNew
           placeholder="New project"
           value={project.name || ''}
           onChange={newValue => dispatch(API.updateProject({ ...project, name: newValue }))}
-          className={css({ fontWeight: 'bold' })}
+          className={cardTitle}
+          maxWidth="80%"
         />
         <DropDownMenu
           icon={faEllipsisV}
@@ -136,7 +137,7 @@ const ProjectDisplay = ({ project }: ProjectDisplayProps) => {
           flexGrow: 1,
         })}
       >
-        <InlineInput
+        <InlineInputNew
           placeholder="Write a description here"
           value={project.description || ''}
           onChange={newValue => dispatch(API.updateProject({ ...project, description: newValue }))}

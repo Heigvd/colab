@@ -5,13 +5,14 @@
  * Licensed under the MIT License
  */
 
-import { css } from '@emotion/css';
+import { css, cx } from '@emotion/css';
 import { faEraser, faPen } from '@fortawesome/free-solid-svg-icons';
 import { InvolvementLevel } from 'colab-rest-client';
 import * as React from 'react';
 import Select from 'react-select';
 import Flex from '../common/Flex';
 import IconButton from '../common/IconButton';
+import { lightIconButtonStyle, lightItalicText, textSmall } from '../styling/style';
 
 function prettyPrint(level: InvolvementLevel) {
   switch (level) {
@@ -79,7 +80,7 @@ export default function InvolvementSelector({
 
   if (self != null) {
     return (
-      <Flex>
+      <Flex align="center">
         <Select
           className={css({ minWidth: '240px' })}
           options={options}
@@ -90,16 +91,28 @@ export default function InvolvementSelector({
       </Flex>
     );
   } else {
-    const creator = <IconButton icon={faPen} title="Edit" onClick={createCb} />;
+    const creator = (
+      <IconButton
+        icon={faPen}
+        title="Edit inv. level"
+        onClick={createCb}
+        className={lightIconButtonStyle}
+      />
+    );
     if (effectives != null && effectives.length > 0) {
       return (
         <Flex>
-          {effectives.map(e => prettyPrint(e))}
+          <Flex align="center">{effectives.map(e => prettyPrint(e))}</Flex>
           {creator}
         </Flex>
       );
     } else {
-      return <Flex>"n/a" {creator}</Flex>;
+      return (
+        <Flex align="center">
+          <p className={cx(lightItalicText, textSmall)}>Undefined</p>
+          {creator}
+        </Flex>
+      );
     }
   }
 }

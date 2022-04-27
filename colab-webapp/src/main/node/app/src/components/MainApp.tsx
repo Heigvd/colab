@@ -8,6 +8,7 @@ import { css, cx } from '@emotion/css';
 import {
   faCog,
   faExclamationTriangle,
+  faMeteor,
   faSignOutAlt,
   faTimes,
   faUserCircle,
@@ -213,7 +214,18 @@ export default function MainApp(): JSX.Element {
                     </>
                   ),
                 },
-                ...(currentUser.admin ? [{ value: '/admin', label: 'Admin' }] : []),
+                ...(currentUser.admin
+                  ? [
+                      {
+                        value: '/admin',
+                        label: (
+                          <>
+                            <FontAwesomeIcon icon={faMeteor} /> Admin
+                          </>
+                        ),
+                      },
+                    ]
+                  : []),
                 {
                   value: 'logout',
                   label: (
