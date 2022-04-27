@@ -7,8 +7,12 @@
 
 import { css, cx } from '@emotion/css';
 import { faPen, faTrash } from '@fortawesome/free-solid-svg-icons';
+import { entityIs } from 'colab-rest-client';
 import * as React from 'react';
-import { useAppSelector } from '../../store/hooks';
+import * as API from '../../API/api';
+import { useAppDispatch, useAppSelector } from '../../store/hooks';
+import Button from '../common/Button';
+import ConfirmDeleteModal from '../common/ConfirmDeleteModal';
 import Flex from '../common/Flex';
 import IconButton from '../common/IconButton';
 import { DocumentContext } from '../documents/documentCommonType';
@@ -45,29 +49,89 @@ const toolboxButtonStyle = css({
 interface Props {
   open: boolean;
   context: DocumentContext;
-  //selected: Document;
   prefixElement?: React.ReactNode;
 }
 
 export default function CardEditorToolbox({ open, context, prefixElement }: Props): JSX.Element {
-  const { selectedId } = React.useContext(CardEditorCTX);
+  const { setSelectedId, selectedId, editMode, setEditMode } = React.useContext(CardEditorCTX);
+  const dispatch = useAppDispatch();
+
   const selectedDocument = useAppSelector(state => {
+    let document = undefined;
     if (selectedId) {
-      return state.document.documents[selectedId];
+      const doc = state.document.documents[selectedId];
+      if (entityIs(doc, 'Document')) {
+        document = doc;
+      }
+      return document;
     }
   });
+
+  const endEdit = React.useCallback(() => {
+    setEditMode(false);
+    setSelectedId(undefined);
+  }, [setEditMode, setSelectedId]);
 
   return (
     <Flex align="center" className={cx(toolboxContainerStyle, { [closedToolboxStyle]: !open })}>
       {prefixElement}
-      <BlockCreatorButtons
-        context={context}
-        blockSelected={selectedDocument != (undefined || null)}
-      />
+      <BlockCreatorButtons context={context} blockSelected={selectedId != (undefined || null)} />
       {selectedDocument != (undefined || null) && (
         <>
-          <IconButton icon={faPen} title="edit block" className={toolboxButtonStyle} />
-          <IconButton icon={faTrash} title="delete block" className={toolboxButtonStyle} />
+          {editMode ? (
+            <>
+              {entityIs(selectedDocument, 'TextDataBlock') && <div>BUTTONS TEXT</div>}
+              {entityIs(selectedDocument, 'DocumentFile') && <div>BUTTONS Files</div>}
+              {entityIs(selectedDocument, 'ExternalLink') && <div>BUTTONS Links</div>}
+              <Button onClick={endEdit}>OK</Button>
+            </>
+          ) : (
+            <IconButton
+              icon={faPen}
+              title="edit block"
+              className={toolboxButtonStyle}
+              onClick={() => setEditMode(true)}
+            />
+          )}
+          <ConfirmDeleteModal
+            buttonLabel={
+              <>
+                <IconButton
+                  icon={faTrash}
+                  title="Delete block"
+                  onClick={() => {}}
+                  className={toolboxButtonStyle}
+                />
+              </>
+            }
+            message={
+              <p>
+                Are you <strong>sure</strong> you want to delete this whole block? This will be lost
+                forever.
+              </p>
+            }
+            onConfirm={() => {
+              if (selectedId) {
+                if (selectedDocument.owningCardContentId != null) {
+                  dispatch(
+                    API.removeDeliverable({
+                      cardContentId: selectedDocument.owningCardContentId,
+                      documentId: selectedId,
+                    }),
+                  );
+                } else if (selectedDocument.owningResourceId != null) {
+                  dispatch(
+                    API.removeDocumentOfResource({
+                      resourceId: selectedDocument.owningResourceId,
+                      documentId: selectedId,
+                    }),
+                  );
+                }
+              }
+              setSelectedId(undefined);
+            }}
+            confirmButtonLabel={'Delete data'}
+          />
         </>
       )}
     </Flex>

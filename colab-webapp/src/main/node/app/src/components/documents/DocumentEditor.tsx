@@ -12,8 +12,6 @@ import {
   faCheck,
   faDownload,
   faEllipsisV,
-  faPen,
-  faTrash,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Document, entityIs } from 'colab-rest-client';
@@ -22,18 +20,19 @@ import * as API from '../../API/api';
 import { useAppDispatch } from '../../store/hooks';
 import { BlockEditorWrapper } from '../blocks/BlockEditorWrapper';
 import { CardEditorCTX } from '../cards/CardEditor';
-import ConfirmDeleteModal from '../common/ConfirmDeleteModal';
 import DropDownMenu from '../common/DropDownMenu';
 import Flex from '../common/Flex';
 import IconButton from '../common/IconButton';
 import OpenGraphLink from '../common/OpenGraphLink';
-import { EditState } from '../live/LiveEditor';
 import { editableBlockStyle, lightIconButtonStyle, space_S } from '../styling/style';
 import DocumentFileEditor from './DocumentFileEditor';
 
 const editingStyle = css({
   backgroundColor: 'var(--hoverBgColor)',
   border: '1px solid transparent',
+});
+const selectedStyle = css({
+  border: '1px solid var(--darkGray)',
 });
 
 const moveBoxStyle = css({
@@ -55,16 +54,19 @@ export default function DocumentEditor({ doc, allowEdition }: DocumentEditorProp
   const isDocumentFile = entityIs(doc, 'DocumentFile');
   const isExternalLink = entityIs(doc, 'ExternalLink');
 
-  const [state, setState] = React.useState<EditState>('VIEW');
   const [showTree, setShowTree] = React.useState(false);
   const [markDownMode, setmarkDownMode] = React.useState(false);
   const dropRef = React.useRef<HTMLDivElement>(null);
 
-  const {setSelectedId} = React.useContext(CardEditorCTX);
+  const {setSelectedId, selectedId, editMode, setEditMode} = React.useContext(CardEditorCTX);
+
+  const selected = doc.id === selectedId;
+  const editing = editMode && selected;
+  
 
   const handleClickOutside = (event: Event) => {
     if (dropRef.current && !dropRef.current.contains(event.target as Node)) {
-      setState('VIEW');
+      setEditMode(false);
     }
   };
 
@@ -75,12 +77,16 @@ export default function DocumentEditor({ doc, allowEdition }: DocumentEditorProp
     };
   });
 
-
   const downloadUrl = API.getRestClient().DocumentFileRestEndPoint.getFileContentPath(doc.id!);
 
   const downloadCb = React.useCallback(() => {
     window.open(downloadUrl);
   }, [downloadUrl]);
+
+  const onSelect = React.useCallback(() => {
+    setSelectedId(doc.id);
+  }, [doc.id, setSelectedId]);
+
 
   return (
     <Flex className={moveBoxStyle}>
@@ -94,20 +100,17 @@ export default function DocumentEditor({ doc, allowEdition }: DocumentEditorProp
             flexGrow: 1,
           }),
           editableBlockStyle,
-          { [editingStyle]: state === 'EDIT' },
+          { [selectedStyle]: selected },
+          { [editingStyle]: editing },
+          
         )}
-        onClick={() => setSelectedId(doc.id)}
-        /* onClick={() => {
-          if (state === 'VIEW') {
-            setState('EDIT');
-          }
-        }} */
+        onClick={onSelect}
       >
         {isTextDataBlock ? (
           <BlockEditorWrapper
             blockId={doc.id!}
             allowEdition={allowEdition}
-            editingStatus={state}
+            editingStatus={editing}
             showTree={showTree}
             markDownEditor={markDownMode}
             className={css({ flexGrow: 1 })}
@@ -116,15 +119,15 @@ export default function DocumentEditor({ doc, allowEdition }: DocumentEditorProp
           <DocumentFileEditor
             document={doc}
             allowEdition={allowEdition}
-            editingStatus={state}
-            setEditingState={setState}
+            editingStatus={editing}
+            setEditingState={setEditMode}
           />
         ) : isExternalLink ? (
           <OpenGraphLink
             url={doc.url || ''}
-            editingStatus={state}
+            editingStatus={editing}
             document={doc}
-            setEditingState={setState}
+            setEditingState={setEditMode}
           />
         ) : (
           <div>
@@ -137,20 +140,7 @@ export default function DocumentEditor({ doc, allowEdition }: DocumentEditorProp
             valueComp={{ value: '', label: '' }}
             buttonClassName={cx(lightIconButtonStyle, css({ marginLeft: space_S }))}
             entries={[
-              ...(state === 'VIEW'
-                ? [
-                    {
-                      value: 'EditBlock',
-                      label: (
-                        <>
-                          <FontAwesomeIcon icon={faPen} size="xs" /> Edit
-                        </>
-                      ),
-                      action: () => setState('EDIT'),
-                    },
-                  ]
-                : []),
-              ...(isTextDataBlock && state === 'EDIT'
+              ...(isTextDataBlock && editing
                 ? [
                     {
                       value: 'showTree',
@@ -180,7 +170,7 @@ export default function DocumentEditor({ doc, allowEdition }: DocumentEditorProp
                 : []),
               ...(isDocumentFile &&
               (doc.mimeType === 'image/png' || doc.mimeType === 'image/jpeg') &&
-              state === 'VIEW'
+              !editing
                 ? [
                     {
                       value: 'download image',
@@ -193,44 +183,6 @@ export default function DocumentEditor({ doc, allowEdition }: DocumentEditorProp
                     },
                   ]
                 : []),
-              {
-                value: 'Delete',
-                label: (
-                  <ConfirmDeleteModal
-                    buttonLabel={
-                      <>
-                        <FontAwesomeIcon icon={faTrash} size="xs" /> Delete
-                      </>
-                    }
-                    message={
-                      <p>
-                        Are you <strong>sure</strong> you want to delete this data? This will be
-                        lost forever.
-                      </p>
-                    }
-                    onConfirm={() => {
-                      if (doc.id) {
-                        if (doc.owningCardContentId != null) {
-                          dispatch(
-                            API.removeDeliverable({
-                              cardContentId: doc.owningCardContentId,
-                              documentId: doc.id,
-                            }),
-                          );
-                        } else if (doc.owningResourceId != null) {
-                          dispatch(
-                            API.removeDocumentOfResource({
-                              resourceId: doc.owningResourceId,
-                              documentId: doc.id,
-                            }),
-                          );
-                        }
-                      }
-                    }}
-                    confirmButtonLabel={'Delete data'}
-                  />
-                ),
-              },
             ]}
             onSelect={val => {
               val.action && val.action();

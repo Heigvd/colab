@@ -153,10 +153,14 @@ function ProgressModifier({ variant }: { variant: CardContent }) {
 interface CardEditorContext {
 selectedId?: number | null;
 setSelectedId: (id: number | undefined | null ) => void;
+editMode: boolean;
+setEditMode: (editMode : boolean) => void;
 }
 
 const defaultCardEditorContext: CardEditorContext = {
-  setSelectedId:()=>{}
+  setSelectedId:()=>{},
+  editMode: false,
+  setEditMode:()=>{},
 }
 
 export const CardEditorCTX = React.createContext<CardEditorContext>(defaultCardEditorContext);
@@ -182,6 +186,7 @@ export default function CardEditor({ card, variant, showSubcards = true }: Props
   const [fullScreen, setFullScreen] = React.useState(false);
   const [openToolbox, setOpenToolbox] = React.useState(true);
   const [selectedId, setSelectedId] = React.useState<number | undefined | null>(undefined);
+  const [editMode, setEditMode] = React.useState(false);
 
   const closeRouteCb = React.useCallback(
     route => {
@@ -202,7 +207,7 @@ export default function CardEditor({ card, variant, showSubcards = true }: Props
   } else {
     const cardId = card.id;
     return (
-      <CardEditorCTX.Provider value={{selectedId, setSelectedId}}>
+      <CardEditorCTX.Provider value={{selectedId, setSelectedId, editMode, setEditMode}}>
       <Flex direction="column" grow={1} align="stretch">
         <Flex
           grow={1}

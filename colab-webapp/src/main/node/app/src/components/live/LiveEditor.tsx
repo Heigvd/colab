@@ -31,7 +31,7 @@ interface Props {
   value: string;
   revision: string;
   allowEdition?: boolean;
-  editingStatus: EditState;
+  editingStatus?: boolean;
   showTree?: boolean;
   markDownEditor?: boolean;
   className?: string;
@@ -95,7 +95,7 @@ export default function LiveEditor({
       </ErrorBoundary>
     );
   } else {
-    if (editingStatus === 'VIEW') {
+    if (!editingStatus) {
       return (
         <Flex className={className}>
           <ErrorBoundary fallback={<Unsupported md={currentValue} />}>
@@ -103,7 +103,7 @@ export default function LiveEditor({
           </ErrorBoundary>
         </Flex>
       );
-    } else if (editingStatus === 'EDIT') {
+    } else if (editingStatus) {
       return (
         <Flex
           direction="column"

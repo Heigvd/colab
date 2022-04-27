@@ -465,7 +465,6 @@ export const editableBlockStyle = css({
   padding: space_S,
   '&:hover': {
     backgroundColor: 'var(--hoverBgColor)',
-    border: '1px solid transparent',
     cursor: 'pointer',
   },
 });
