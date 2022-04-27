@@ -247,7 +247,6 @@ public class DuplicationHelper {
             if (originalTarget != null) {
                 if (originalTarget.getProjectId() != originalCardTypeRef.getProjectId()) {
                     newCardTypeRef.setTarget(originalTarget);
-                    originalTarget.getDirectReferences().add(newCardTypeRef);
                 } else {
                     throw new IllegalStateException(
                         "the target of a card type reference must be outside the project");

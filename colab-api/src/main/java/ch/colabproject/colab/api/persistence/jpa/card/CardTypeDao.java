@@ -9,6 +9,7 @@ package ch.colabproject.colab.api.persistence.jpa.card;
 import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.model.card.AbstractCardType;
 import ch.colabproject.colab.api.model.card.CardType;
+import ch.colabproject.colab.api.model.card.CardTypeRef;
 import java.util.List;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
@@ -142,6 +143,24 @@ public class CardTypeDao {
         }
         TypedQuery<Long> query = em.createNamedQuery("AbstractCardType.findProjectId", Long.class);
         query.setParameter("listId", cardTypeOrRefIds);
+        return query.getResultList();
+    }
+
+    /**
+     * Retrieve the card type references that have the given target
+     *
+     * @param target the target
+     *
+     * @return the matching references
+     */
+    public List<CardTypeRef> findDirectReferences(AbstractCardType target) {
+        logger.debug("find the direct references of the target {}", target);
+
+        TypedQuery<CardTypeRef> query = em.createNamedQuery("CardTypeRef.findDirectReferences",
+            CardTypeRef.class);
+
+        query.setParameter("targetId", target.getId());
+
         return query.getResultList();
     }
 

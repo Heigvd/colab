@@ -63,6 +63,12 @@ public class CardManager {
     @Inject
     private CardContentManager cardContentManager;
 
+    /**
+     * Resource reference spreading specific logic handling
+     */
+    @Inject
+    private ResourceReferenceSpreadingHelper resourceReferenceSpreadingHelper;
+
     // *********************************************************************************************
     // find cards
     // *********************************************************************************************
@@ -169,7 +175,7 @@ public class CardManager {
 
         Card card = initNewCard(parent, cardType);
 
-        ResourceReferenceSpreadingHelper.extractReferencesFromUp(card);
+        resourceReferenceSpreadingHelper.extractReferencesFromUp(card);
 
         return cardDao.persistCard(card);
     }
@@ -317,7 +323,7 @@ public class CardManager {
 
             CardContent previousParent = card.getParent();
             if (previousParent != null) {
-                ResourceReferenceSpreadingHelper.spreadResidualMark(card, previousParent);
+                resourceReferenceSpreadingHelper.spreadResidualMark(card, previousParent);
 
                 previousParent.getSubCards().remove(card);
             }
@@ -325,7 +331,7 @@ public class CardManager {
             card.setParent(newParent);
             newParent.getSubCards().add(card);
 
-            ResourceReferenceSpreadingHelper.extractReferencesFromUp(card);
+            resourceReferenceSpreadingHelper.extractReferencesFromUp(card);
         }
     }
 

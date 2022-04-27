@@ -328,7 +328,7 @@ public final class ChannelsBuilders {
             }
 
             // then, the type must be propagated to all projects which reference it
-            cardType.getDirectReferences().forEach(ref -> {
+            cardTypeDao.findDirectReferences(cardType).forEach(ref -> {
                 channels.addAll(buildCardTypeInProjectChannel(ref, userDao, cardTypeDao));
             });
         } else {

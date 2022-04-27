@@ -85,6 +85,12 @@ public class CardContentManager {
     @Inject
     private IndexGeneratorHelper<Document> indexGenerator;
 
+    /**
+     * Resource reference spreading specific logic handling
+     */
+    @Inject
+    private ResourceReferenceSpreadingHelper resourceReferenceSpreadingHelper;
+
     // *********************************************************************************************
     // find card contents
     // *********************************************************************************************
@@ -129,7 +135,7 @@ public class CardContentManager {
 
         CardContent cardContent = initNewCardContentForCard(card);
 
-        ResourceReferenceSpreadingHelper.extractReferencesFromUp(cardContent);
+        resourceReferenceSpreadingHelper.extractReferencesFromUp(cardContent);
 
         return cardContentDao.persistCardContent(cardContent);
     }

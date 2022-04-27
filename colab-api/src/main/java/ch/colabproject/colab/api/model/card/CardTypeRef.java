@@ -31,6 +31,9 @@ import javax.persistence.Transient;
 )
 @NamedQuery(name = "CardTypeRef.findTargetIds",
     query = "SELECT ctr.target.id FROM CardTypeRef ctr WHERE ctr.id IN :initIds")
+@NamedQuery(name = "CardTypeRef.findDirectReferences",
+    query = "SELECT ctr FROM CardTypeRef ctr "
+        + "WHERE ctr.target IS NOT NULL AND ctr.target.id = :targetId")
 public class CardTypeRef extends AbstractCardType {
 
     private static final long serialVersionUID = 1L;

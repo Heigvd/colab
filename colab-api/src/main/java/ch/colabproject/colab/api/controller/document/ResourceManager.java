@@ -106,6 +106,12 @@ public class ResourceManager {
     @Inject
     private IndexGeneratorHelper<Document> indexGenerator;
 
+    /**
+     * Resource reference spreading specific logic handling
+     */
+    @Inject
+    private ResourceReferenceSpreadingHelper resourceReferenceSpreadingHelper;
+
     // *********************************************************************************************
     // find resource
     // *********************************************************************************************
@@ -300,7 +306,7 @@ public class ResourceManager {
         resource.setOwner(owner);
         owner.getDirectAbstractResources().add(resource);
 
-        ResourceReferenceSpreadingHelper.spreadNewResourceDown(resource);
+        resourceReferenceSpreadingHelper.spreadNewResourceDown(resource);
 
         return resourceAndRefDao.persistResource(resource);
     }

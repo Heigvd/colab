@@ -14,21 +14,29 @@ import ch.colabproject.colab.api.model.document.AbstractResource;
 import ch.colabproject.colab.api.model.document.Resource;
 import ch.colabproject.colab.api.model.document.ResourceRef;
 import ch.colabproject.colab.api.model.document.Resourceable;
+import ch.colabproject.colab.api.persistence.jpa.card.CardTypeDao;
 import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
+import javax.inject.Inject;
 
 /**
  * Resource and resource reference spread specific logic
  *
  * @author sandra
  */
-public final class ResourceReferenceSpreadingHelper {
+public class ResourceReferenceSpreadingHelper {
 
-    private ResourceReferenceSpreadingHelper() {
-        throw new UnsupportedOperationException("do not instantiate a utility class");
-    }
+    // *********************************************************************************************
+    // injections
+    // *********************************************************************************************
+
+    /**
+     * Card type persistence handler
+     */
+    @Inject
+    private CardTypeDao cardTypeDao;
 
     // *********************************************************************************************
     // when a resource / resource reference is added, spread it down stream with references
@@ -39,11 +47,11 @@ public final class ResourceReferenceSpreadingHelper {
      *
      * @param resourceOrRef the resource to reference
      */
-    public static void spreadNewResourceDown(AbstractResource resourceOrRef) {
+    public void spreadNewResourceDown(AbstractResource resourceOrRef) {
         if (resourceOrRef.getAbstractCardType() != null) {
             AbstractCardType resourceOwner = resourceOrRef.getAbstractCardType();
 
-            for (AbstractCardType cardTypeRef : resourceOwner.getDirectReferences()) {
+            for (AbstractCardType cardTypeRef : cardTypeDao.findDirectReferences(resourceOwner)) {
                 makeActiveReference(cardTypeRef, resourceOrRef);
             }
 
@@ -80,7 +88,7 @@ public final class ResourceReferenceSpreadingHelper {
      * @param cardTypeRefToFill A card type reference that need references to the up stream
      *                          resources
      */
-    public static void extractReferencesFromUp(CardTypeRef cardTypeRefToFill) {
+    public void extractReferencesFromUp(CardTypeRef cardTypeRefToFill) {
         AbstractCardType targetType = cardTypeRefToFill.getTarget();
 
         for (AbstractResource targetResourceOrRef : targetType.getDirectAbstractResources()) {
@@ -93,7 +101,7 @@ public final class ResourceReferenceSpreadingHelper {
      *
      * @param cardToFill A card that need references to the up stream resources
      */
-    public static void extractReferencesFromUp(Card cardToFill) {
+    public void extractReferencesFromUp(Card cardToFill) {
         CardContent parent = cardToFill.getParent();
 
         for (AbstractResource parentResourceOrRef : parent.getDirectAbstractResources()) {
@@ -114,7 +122,7 @@ public final class ResourceReferenceSpreadingHelper {
      *
      * @param cardContentToFill A card content that need references to the up stream resources
      */
-    public static void extractReferencesFromUp(CardContent cardContentToFill) {
+    public void extractReferencesFromUp(CardContent cardContentToFill) {
         Card parent = cardContentToFill.getCard();
 
         for (AbstractResource parentResourceOrRef : parent.getDirectAbstractResources()) {
@@ -136,8 +144,7 @@ public final class ResourceReferenceSpreadingHelper {
      * @param owner               the owner of the wanted reference
      * @param targetResourceOrRef the target of the wanted reference
      */
-    private static void makeActiveReference(Resourceable owner,
-        AbstractResource targetResourceOrRef) {
+    private void makeActiveReference(Resourceable owner, AbstractResource targetResourceOrRef) {
 
         if (canHaveReferences(targetResourceOrRef)) {
 
@@ -160,7 +167,7 @@ public final class ResourceReferenceSpreadingHelper {
      *
      * @return true iff the resource can have references
      */
-    private static boolean canHaveReferences(AbstractResource targetResourceOrRef) {
+    private boolean canHaveReferences(AbstractResource targetResourceOrRef) {
         // do not spread references of a type from a card content to its sub cards
         boolean isResourceOrRefLinkedToACardContent = targetResourceOrRef.getCardContent() != null;
         if (isResourceOrRefLinkedToACardContent) {
@@ -187,7 +194,7 @@ public final class ResourceReferenceSpreadingHelper {
      *
      * @return the matching resource reference
      */
-    private static ResourceRef findMatchingResourceRef(Resourceable owner,
+    private ResourceRef findMatchingResourceRef(Resourceable owner,
         AbstractResource targetResourceOrRef) {
         List<ResourceRef> refsOfOwnerWithSameFinalTarget = owner.getDirectAbstractResources()
             .stream()
@@ -217,7 +224,7 @@ public final class ResourceReferenceSpreadingHelper {
      * @param resourceReference the resource reference to update
      * @param newTarget         the new target of the resource reference
      */
-    private static void reviveAndRetarget(ResourceRef resourceReference,
+    private void reviveAndRetarget(ResourceRef resourceReference,
         AbstractResource newTarget) {
         if (!Objects.equals(resourceReference.resolve(), newTarget.resolve())) {
             throw HttpErrorMessage.dataIntegrityFailure();
@@ -240,7 +247,7 @@ public final class ResourceReferenceSpreadingHelper {
      *
      * @param resourceReference the reference to update
      */
-    private static void reviveRecursively(ResourceRef resourceReference) {
+    private void reviveRecursively(ResourceRef resourceReference) {
         resourceReference.setResidual(false);
 
         for (ResourceRef childRef : resourceReference.getDirectReferences()) {
@@ -255,7 +262,7 @@ public final class ResourceReferenceSpreadingHelper {
      * @param owner         the entity the new resource reference will be linked to
      * @param resourceOrRef the resource (or reference) target of the new resource reference
      */
-    private static void makeNewReference(Resourceable owner, AbstractResource targetResourceOrRef) {
+    private void makeNewReference(Resourceable owner, AbstractResource targetResourceOrRef) {
         ResourceRef newRef = initNewReferenceFrom(targetResourceOrRef);
 
         newRef.setOwner(owner);
@@ -276,7 +283,7 @@ public final class ResourceReferenceSpreadingHelper {
      *
      * @return the new resource reference
      */
-    private static ResourceRef initNewReferenceFrom(AbstractResource targetResourceOrRef) {
+    private ResourceRef initNewReferenceFrom(AbstractResource targetResourceOrRef) {
         ResourceRef newRef = new ResourceRef();
 
         newRef.setCategory(targetResourceOrRef.getCategory());
@@ -297,7 +304,7 @@ public final class ResourceReferenceSpreadingHelper {
      *
      * @return how the new reference refused field must be initialized
      */
-    private static boolean isNewReferenceInitiallyRefused(AbstractResource targetResource) {
+    private boolean isNewReferenceInitiallyRefused(AbstractResource targetResource) {
         if (targetResource instanceof ResourceRef) {
             // if it is from a reference, just copy the refused state
             return ((ResourceRef) targetResource).isRefused();
@@ -325,7 +332,7 @@ public final class ResourceReferenceSpreadingHelper {
      * @param owner         the owner of the resource references to mark
      * @param formerRelated the not-any-more-related target of the references
      */
-    public static void spreadResidualMark(Resourceable owner, Resourceable formerRelated) {
+    public void spreadResidualMark(Resourceable owner, Resourceable formerRelated) {
         owner.getDirectAbstractResources().stream()
             .filter(resOrRef -> (resOrRef instanceof ResourceRef))
             .map(resOrRef -> ((ResourceRef) resOrRef))
@@ -338,7 +345,7 @@ public final class ResourceReferenceSpreadingHelper {
      *
      * @param resourceReference the reference to update
      */
-    private static void markAsResidualRecursively(ResourceRef resourceReference) {
+    private void markAsResidualRecursively(ResourceRef resourceReference) {
         resourceReference.setResidual(true);
 
         for (ResourceRef childRef : resourceReference.getDirectReferences()) {

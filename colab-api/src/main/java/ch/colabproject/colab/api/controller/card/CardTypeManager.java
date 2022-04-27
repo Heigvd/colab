@@ -18,7 +18,6 @@ import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.api.model.user.User;
 import ch.colabproject.colab.api.persistence.jpa.card.CardTypeDao;
 import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
@@ -73,6 +72,12 @@ public class CardTypeManager {
      */
     @Inject
     private BlockManager blockManager;
+
+    /**
+     * Resource reference spreading specific logic handling
+     */
+    @Inject
+    private ResourceReferenceSpreadingHelper resourceReferenceSpreadingHelper;
 
     // *********************************************************************************************
     // find card types and references
@@ -271,31 +276,11 @@ public class CardTypeManager {
             return false;
         }
 
-        if (CollectionUtils.isNotEmpty(cardTypeOrRef.getDirectReferences())) {
+        if (CollectionUtils.isNotEmpty(cardTypeDao.findDirectReferences(cardTypeOrRef))) {
             return false;
         }
 
         return true;
-    }
-
-    // *********************************************************************************************
-    // unused stuff ?!?
-    // *********************************************************************************************
-
-    /**
-     * Retrieve the complete transitive set of references to the given abstract type.
-     *
-     * @param cardTypeOrRef the card type or reference
-     *
-     * @return all references
-     */
-    public List<CardTypeRef> getAllReferences(AbstractCardType cardTypeOrRef) {
-        List<CardTypeRef> all = new ArrayList<>();
-        all.addAll(cardTypeOrRef.getDirectReferences());
-        cardTypeOrRef.getDirectReferences().stream()
-            .forEach(ref -> all.addAll(getAllReferences(ref)));
-
-        return all;
     }
 
     // *********************************************************************************************
@@ -379,9 +364,8 @@ public class CardTypeManager {
         project.getElementsToBeDefined().add(ref);
 
         ref.setTarget(cardType);
-        cardType.getDirectReferences().add(ref);
 
-        ResourceReferenceSpreadingHelper.extractReferencesFromUp(ref);
+        resourceReferenceSpreadingHelper.extractReferencesFromUp(ref);
 
         return cardTypeDao.persistAbstractCardType(ref);
     }
