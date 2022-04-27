@@ -37,19 +37,19 @@ public class SubscriptionRequest implements Serializable {
      */
     public enum ChannelType {
         /**
-         * {@link ch.colabproject.colab.api.ws.channel.BroadcastChannel}
+         * {@link ch.colabproject.colab.api.ws.channel.model.BroadcastChannel}
          */
         BROADCAST,
         /**
-         * {@link ch.colabproject.colab.api.ws.channel.UserChannel user channel}
+         * {@link ch.colabproject.colab.api.ws.channel.model.UserChannel user channel}
          */
         USER,
         /**
-         * {@link ch.colabproject.colab.api.ws.channel.ProjectContentChannel project channel}
+         * {@link ch.colabproject.colab.api.ws.channel.model.ProjectContentChannel project channel}
          */
         PROJECT,
         /**
-         * {@link ch.colabproject.colab.api.ws.channel.BlockChannel block channel}
+         * {@link ch.colabproject.colab.api.ws.channel.model.BlockChannel block channel}
          */
         BLOCK
     }

@@ -6,17 +6,17 @@
  */
 package ch.colabproject.colab.api.model.user;
 
+import static ch.colabproject.colab.api.model.user.User.USER_SEQUENCE_NAME;
 import ch.colabproject.colab.api.model.WithPermission;
 import ch.colabproject.colab.api.model.WithWebsocketChannels;
 import ch.colabproject.colab.api.model.tools.EntityHelper;
-import static ch.colabproject.colab.api.model.user.User.USER_SEQUENCE_NAME;
 import ch.colabproject.colab.api.security.permissions.Conditions;
-import ch.colabproject.colab.api.ws.channel.AdminChannel;
-import ch.colabproject.colab.api.ws.channel.WebsocketChannel;
+import ch.colabproject.colab.api.ws.channel.tool.ChannelsBuilders.AboutAccountChannelsBuilder;
+import ch.colabproject.colab.api.ws.channel.tool.ChannelsBuilders.ChannelsBuilder;
+import ch.colabproject.colab.api.ws.channel.tool.ChannelsBuilders.ForAdminChannelsBuilder;
 import ch.colabproject.colab.generator.model.interfaces.WithId;
 import ch.colabproject.colab.generator.model.interfaces.WithJsonDiscriminator;
 import java.time.OffsetDateTime;
-import java.util.Set;
 import javax.json.bind.annotation.JsonbTransient;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -233,11 +233,11 @@ public class HttpSession implements WithId, WithJsonDiscriminator, WithPermissio
     // ---------------------------------------------------------------------------------------------
 
     @Override
-    public Set<WebsocketChannel> getChannels() {
+    public ChannelsBuilder getChannelsBuilder() {
         if (this.account != null) {
-            return this.account.getChannels();
+            return new AboutAccountChannelsBuilder(this.account);
         } else {
-            return Set.of(new AdminChannel());
+            return new ForAdminChannelsBuilder();
         }
     }
 

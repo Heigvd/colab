@@ -15,11 +15,11 @@ import ch.colabproject.colab.api.model.team.acl.AccessControl;
 import ch.colabproject.colab.api.model.tools.EntityHelper;
 import ch.colabproject.colab.api.model.tracking.Tracking;
 import ch.colabproject.colab.api.security.permissions.Conditions;
-import ch.colabproject.colab.api.ws.channel.ProjectContentChannel;
-import ch.colabproject.colab.api.ws.channel.WebsocketChannel;
+import ch.colabproject.colab.api.ws.channel.tool.ChannelsBuilders.ChannelsBuilder;
+import ch.colabproject.colab.api.ws.channel.tool.ChannelsBuilders.EmptyChannelBuilder;
+import ch.colabproject.colab.api.ws.channel.tool.ChannelsBuilders.ProjectContentChannelBuilder;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 import javax.json.bind.annotation.JsonbTransient;
 import javax.persistence.Embedded;
@@ -222,7 +222,7 @@ public class TeamRole implements ColabEntity, WithWebsocketChannels {
     }
 
     /**
-     * Get ids of the teammembers
+     * Get ids of the team members
      *
      * @return list of ids
      */
@@ -276,11 +276,11 @@ public class TeamRole implements ColabEntity, WithWebsocketChannels {
     }
 
     @Override
-    public Set<WebsocketChannel> getChannels() {
+    public ChannelsBuilder getChannelsBuilder() {
         if (this.getProject() != null) {
-            return Set.of(ProjectContentChannel.build(project));
+            return new ProjectContentChannelBuilder(project);
         } else {
-            return Set.of();
+            return new EmptyChannelBuilder();
         }
     }
 

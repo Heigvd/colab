@@ -4,19 +4,27 @@
  *
  * Licensed under the MIT License
  */
-package ch.colabproject.colab.api.ws.channel;
+package ch.colabproject.colab.api.ws.channel.model;
 
-import ch.colabproject.colab.api.model.user.User;
 import java.util.Objects;
 
 /**
- *
  * The channel to be used to transmit data to a specific user. Eg. its accounts, everything the user
- * sees in its lobby (project index and their teaas, etc)
+ * sees in its lobby (project index and their teams, etc)
+ * <p>
+ * Usage :
+ * </p>
+ * <p>
+ * Subscription : as soon as possible on client side + on current user reload<br>
+ * Unsubscription : none<br>
+ * </p>
+ * <p>
+ * Can be watched by admin in the Who page
+ * </p>
  *
  * @author maxence
  */
-public class UserChannel implements WebsocketEffectiveChannel {
+public class UserChannel implements WebsocketChannel {
 
     private static final long serialVersionUID = 1L;
 
@@ -81,13 +89,13 @@ public class UserChannel implements WebsocketEffectiveChannel {
     /**
      * get the channel dedicated to the given user.
      *
-     * @param user the user
+     * @param userId the id of the user
      *
      * @return the user very own channel
      */
-    public static UserChannel build(User user) {
+    public static UserChannel build(Long userId) {
         UserChannel channel = new UserChannel();
-        channel.setUserId(user.getId());
+        channel.setUserId(userId);
         return channel;
     }
 }

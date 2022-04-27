@@ -6,18 +6,17 @@
  */
 package ch.colabproject.colab.api.model.user;
 
+import static ch.colabproject.colab.api.model.user.User.USER_SEQUENCE_NAME;
 import ch.colabproject.colab.api.model.ColabEntity;
 import ch.colabproject.colab.api.model.WithWebsocketChannels;
 import ch.colabproject.colab.api.model.tools.EntityHelper;
 import ch.colabproject.colab.api.model.tracking.Tracking;
-import static ch.colabproject.colab.api.model.user.User.USER_SEQUENCE_NAME;
 import ch.colabproject.colab.api.security.permissions.Conditions;
-import ch.colabproject.colab.api.ws.channel.AdminChannel;
-import ch.colabproject.colab.api.ws.channel.WebsocketChannel;
+import ch.colabproject.colab.api.ws.channel.tool.ChannelsBuilders.AboutAccountChannelsBuilder;
+import ch.colabproject.colab.api.ws.channel.tool.ChannelsBuilders.ChannelsBuilder;
 import ch.colabproject.colab.generator.model.tools.PolymorphicDeserializer;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 import javax.json.bind.annotation.JsonbTransient;
 import javax.json.bind.annotation.JsonbTypeDeserializer;
 import javax.persistence.CascadeType;
@@ -43,7 +42,7 @@ import javax.persistence.Transient;
 @Entity
 @Table(
     indexes = {
-        @Index(columnList = "user_id"),}
+        @Index(columnList = "user_id"), }
 )
 // JOINED inheritance will generate one "abstract" account table and one table for each subclass.
 // Having one table per subclass allows subclasses to defined their own indexes and constraints
@@ -86,7 +85,7 @@ public abstract class Account implements ColabEntity, WithWebsocketChannels {
     /**
      * List of httpSession this account is using
      */
-    @OneToMany(mappedBy = "account", cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
+    @OneToMany(mappedBy = "account", cascade = { CascadeType.PERSIST, CascadeType.REMOVE })
     @JsonbTransient
     private List<HttpSession> httpSessions = new ArrayList<>();
 
@@ -192,12 +191,8 @@ public abstract class Account implements ColabEntity, WithWebsocketChannels {
     // ---------------------------------------------------------------------------------------------
 
     @Override
-    public Set<WebsocketChannel> getChannels() {
-        if (this.user != null) {
-            return Set.of(this.user.getEffectiveChannel(), new AdminChannel());
-        } else {
-            return Set.of(new AdminChannel());
-        }
+    public ChannelsBuilder getChannelsBuilder() {
+        return new AboutAccountChannelsBuilder(this);
     }
 
     @Override

@@ -12,7 +12,7 @@ import java.util.Set;
 import javax.validation.constraints.NotNull;
 
 /**
- * Websocket update message. Contains list of new or updated object and list of destroyed entities.
+ * Websocket update message. Contains a list of new or updated objects and a list of destroyed objects.
  *
  * @author maxence
  */
@@ -27,7 +27,7 @@ public class WsUpdateMessage extends WsMessage {
     private Set<WithWebsocketChannels> updated;
 
     /**
-     * Set of destroyed entities
+     * Set of destroyed objects
      */
     @NotNull
     private Set<IndexEntry> deleted;
@@ -48,7 +48,7 @@ public class WsUpdateMessage extends WsMessage {
     }
 
     /**
-     * Set paylosd
+     * Set payload
      *
      * @param updated list of updated elements
      */
@@ -57,16 +57,16 @@ public class WsUpdateMessage extends WsMessage {
     }
 
     /**
-     * Get the list of deleted entities
+     * Get the list of deleted objects
      *
-     * @return all deleted entites
+     * @return all deleted objects
      */
     public Set<IndexEntry> getDeleted() {
         return deleted;
     }
 
     /**
-     * Register index of deleted entities;
+     * Register index of deleted objects
      *
      * @param deleted index
      */

@@ -8,7 +8,7 @@ package ch.colabproject.colab.api.rest;
 
 import ch.colabproject.colab.api.controller.WebsocketManager;
 import ch.colabproject.colab.api.ws.channel.ChannelOverview;
-import ch.colabproject.colab.api.ws.channel.WebsocketEffectiveChannel;
+import ch.colabproject.colab.api.ws.channel.model.WebsocketChannel;
 import ch.colabproject.colab.api.ws.message.WsSessionIdentifier;
 import ch.colabproject.colab.generator.model.annotations.AdminResource;
 import ch.colabproject.colab.generator.model.annotations.AuthenticationRequired;
@@ -25,7 +25,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * API to manage subscription to {@link WebsocketEffectiveChannel}.
+ * API to manage subscription to {@link WebsocketChannel}.
  * <p>
  * <u>Note about un/subcriptions protocol:</u> The link between HttpSessionId (cookie) and websocket
  * session id must be known. As the client has no access to its cookie (httpOnly cookie, for

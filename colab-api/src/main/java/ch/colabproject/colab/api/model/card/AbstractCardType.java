@@ -15,18 +15,13 @@ import ch.colabproject.colab.api.model.document.Resourceable;
 import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.api.model.tools.EntityHelper;
 import ch.colabproject.colab.api.model.tracking.Tracking;
-import ch.colabproject.colab.api.model.user.User;
 import ch.colabproject.colab.api.security.permissions.Conditions;
 import ch.colabproject.colab.api.security.permissions.card.CardTypeOrRefConditions;
-import ch.colabproject.colab.api.ws.channel.AdminChannel;
-import ch.colabproject.colab.api.ws.channel.BroadcastChannel;
-import ch.colabproject.colab.api.ws.channel.ProjectContentChannel;
-import ch.colabproject.colab.api.ws.channel.WebsocketChannel;
+import ch.colabproject.colab.api.ws.channel.tool.ChannelsBuilders.AboutCardTypeChannelsBuilder;
+import ch.colabproject.colab.api.ws.channel.tool.ChannelsBuilders.ChannelsBuilder;
 import ch.colabproject.colab.generator.model.tools.PolymorphicDeserializer;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import javax.json.bind.annotation.JsonbTransient;
 import javax.json.bind.annotation.JsonbTypeDeserializer;
 import javax.persistence.CascadeType;
@@ -302,6 +297,17 @@ public abstract class AbstractCardType implements ColabEntity, WithWebsocketChan
     }
 
     // ---------------------------------------------------------------------------------------------
+    // helpers
+    // ---------------------------------------------------------------------------------------------
+
+    /**
+     * @return is now published or was just unpublished
+     */
+    public boolean isOrWasPublished() {
+        return this.isPublished() || this.initialPublished;
+    }
+
+    // ---------------------------------------------------------------------------------------------
     // concerning the whole class
     // ---------------------------------------------------------------------------------------------
 
@@ -341,44 +347,8 @@ public abstract class AbstractCardType implements ColabEntity, WithWebsocketChan
     }
 
     @Override
-    public Set<WebsocketChannel> getChannels() {
-        Set<WebsocketChannel> channels = new HashSet<>();
-
-        // should propagate data if the type is published or if it has just been unpublished
-        boolean isOrWasPublished = this.isPublished() || this.initialPublished;
-
-        if (this.getProject() != null) {
-            // this type belongs to a specific project
-            // first, everyone who is editing the project shall receive updates
-            channels.add(ProjectContentChannel.build(this.getProject()));
-
-            // then, the type must be propagated to all projects which reference it
-            this.directReferences.forEach(ref -> {
-                channels.addAll(ref.getChannels());
-            });
-
-            if (isOrWasPublished) {
-                // eventually, published types are available to each project members independently of
-                // the project they're editing
-                this.getProject().getTeamMembers().forEach(member -> {
-                    User user = member.getUser();
-                    if (user != null) {
-                        channels.add(user.getEffectiveChannel());
-                    }
-                });
-            }
-        } else {
-            // This is a global type
-            if (isOrWasPublished) {
-                // As the type is published, everyone may use this type -> broadcast
-                channels.add(BroadcastChannel.build());
-            } else {
-                // Not published type are only available to admin
-                channels.add(new AdminChannel());
-            }
-        }
-
-        return channels;
+    public ChannelsBuilder getChannelsBuilder() {
+        return new AboutCardTypeChannelsBuilder(this);
     }
 
     @Override

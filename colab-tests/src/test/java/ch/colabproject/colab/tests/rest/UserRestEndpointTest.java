@@ -13,7 +13,7 @@ import ch.colabproject.colab.api.model.user.HttpSession;
 import ch.colabproject.colab.api.model.user.LocalAccount;
 import ch.colabproject.colab.api.model.user.User;
 import ch.colabproject.colab.api.persistence.jpa.user.UserDao;
-import ch.colabproject.colab.api.ws.channel.UserChannel;
+import ch.colabproject.colab.api.ws.channel.model.UserChannel;
 import ch.colabproject.colab.api.ws.message.WsChannelUpdate;
 import ch.colabproject.colab.api.ws.message.WsUpdateMessage;
 import ch.colabproject.colab.client.ColabClient;

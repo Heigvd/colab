@@ -12,8 +12,8 @@ import ch.colabproject.colab.api.model.card.CardType;
 import ch.colabproject.colab.api.model.link.StickyNoteLink;
 import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.api.model.tools.EntityHelper;
-import ch.colabproject.colab.api.ws.channel.WebsocketChannel;
-import java.util.Set;
+import ch.colabproject.colab.api.ws.channel.tool.ChannelsBuilders.ChannelsBuilder;
+import ch.colabproject.colab.api.ws.channel.tool.ChannelsBuilders.EmptyChannelBuilder;
 import javax.json.bind.annotation.JsonbTransient;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
@@ -220,26 +220,28 @@ public class TextDataBlock extends Document {
         }
     }
 
+    // Note : needed to set JsonbTransient, else it is generated in ColabClient.d.ts
+    @JsonbTransient
     @Override
-    public Set<WebsocketChannel> getChannels() {
+    public ChannelsBuilder getChannelsBuilder() {
         if (this.owningCardContent != null) {
             // The document is a deliverable of a card content
-            return this.owningCardContent.getChannels();
+            return this.owningCardContent.getChannelsBuilder();
         } else if (this.owningResource != null) {
             // The document is part of a resource
-            return this.owningResource.getChannels();
+            return this.owningResource.getChannelsBuilder();
         } else if (this.purposingCardType != null) {
             // It is the purpose of a card type
-            return this.purposingCardType.getChannels();
+            return this.purposingCardType.getChannelsBuilder();
         } else if (this.teasingResource != null) {
             // It is the teaser of a resource
-            return this.teasingResource.getChannels();
+            return this.teasingResource.getChannelsBuilder();
         } else if (this.explainingStickyNoteLink != null) {
             // It is the explanation of a sticky note link
-            return this.explainingStickyNoteLink.getChannels();
+            return this.explainingStickyNoteLink.getChannelsBuilder();
         } else {
             // such an orphan shouldn't exist...
-            return Set.of();
+            return new EmptyChannelBuilder();
         }
     }
 

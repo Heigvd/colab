@@ -7,8 +7,9 @@
 package ch.colabproject.colab.api.controller;
 
 import ch.colabproject.colab.api.model.WithWebsocketChannels;
+import ch.colabproject.colab.api.persistence.jpa.card.CardTypeDao;
 import ch.colabproject.colab.api.persistence.jpa.user.UserDao;
-import ch.colabproject.colab.api.ws.WebsocketHelper;
+import ch.colabproject.colab.api.ws.WebsocketMessagePreparer;
 import ch.colabproject.colab.api.ws.message.IndexEntry;
 import ch.colabproject.colab.api.ws.message.PrecomputedWsMessages;
 import java.io.Serializable;
@@ -53,6 +54,12 @@ public class EntityGatheringBagForPropagation implements Serializable {
      */
     @Inject
     private UserDao userDao;
+
+    /**
+     * To resolve meta channels
+     */
+    @Inject
+    private CardTypeDao cardTypeDao;
 
     /**
      * TO sudo
@@ -180,7 +187,7 @@ public class EntityGatheringBagForPropagation implements Serializable {
     private void precomputeMessage() {
         try {
             logger.debug("Precompute messages; Update:{}, Deletes:{}", updated, deleted);
-            // filter updateds to keep only those who haven't been deleted
+            // filter updates to keep only those who haven't been deleted
             Set<WithWebsocketChannels> filtered = updated.stream()
                 .filter(
                     (u) -> !deleted.stream()
@@ -189,7 +196,7 @@ public class EntityGatheringBagForPropagation implements Serializable {
 
             this.precomputed = true;
             requestManager.sudo(() -> {
-                return this.message = WebsocketHelper.prepareWsMessage(userDao, requestManager, filtered, deleted);
+                return this.message = WebsocketMessagePreparer.prepareWsMessage(userDao, cardTypeDao, filtered, deleted);
             });
             logger.debug("Precomputed: {}", message);
         } catch (Exception ex) {
