@@ -8,6 +8,7 @@ package ch.colabproject.colab.api.ws;
 
 import ch.colabproject.colab.api.model.WithWebsocketChannels;
 import ch.colabproject.colab.api.persistence.jpa.card.CardTypeDao;
+import ch.colabproject.colab.api.persistence.jpa.team.TeamDao;
 import ch.colabproject.colab.api.persistence.jpa.user.UserDao;
 import ch.colabproject.colab.api.ws.channel.model.WebsocketChannel;
 import ch.colabproject.colab.api.ws.channel.tool.ChannelsBuilders.ChannelsBuilder;
@@ -122,8 +123,9 @@ public class WebsocketMessagePreparer {
     /**
      * Prepare all WsUpdateMessage.
      *
-     * @param userDao     provide userDao to resolve meta channels
-     * @param cardTypeDao provide cardTypeDao to resolve meta channels
+     * @param userDao     provide userDao to resolve nested channels
+     * @param teamDao        provide teamDao to resolve nested channels
+     * @param cardTypeDao provide cardTypeDao to resolve nested channels
      * @param updated     set of created/updated entities
      * @param deleted     set of just destroyed-entities index entry
      *
@@ -133,6 +135,7 @@ public class WebsocketMessagePreparer {
      */
     public static PrecomputedWsMessages prepareWsMessage(
         UserDao userDao,
+        TeamDao teamDao,
         CardTypeDao cardTypeDao,
         Set<WithWebsocketChannels> updated,
         Set<IndexEntry> deleted
@@ -142,7 +145,7 @@ public class WebsocketMessagePreparer {
 
         updated.forEach(object -> {
             logger.trace("Process updated entity {}", object);
-            object.getChannelsBuilder().computeChannels(userDao, cardTypeDao)
+            object.getChannelsBuilder().computeChannels(userDao, teamDao, cardTypeDao)
                 .forEach(channel -> {
                     addAsUpdated(messagesByChannel, channel, object);
                 });
@@ -150,7 +153,7 @@ public class WebsocketMessagePreparer {
 
         deleted.forEach(object -> {
             logger.trace("Process deleted entry {}", object);
-            object.getChannelsBuilder().computeChannels(userDao, cardTypeDao)
+            object.getChannelsBuilder().computeChannels(userDao, teamDao, cardTypeDao)
                 .forEach(
                     channel -> {
                         addAsDeleted(messagesByChannel, channel, object);
@@ -163,7 +166,7 @@ public class WebsocketMessagePreparer {
     /**
      * Prepare one message on admin channel
      *
-     * @param userDao provide userDao to resolve meta channels
+     * @param userDao provide userDao to resolve nested channels
      * @param message the message
      *
      * @return the precomputedMessage
@@ -174,14 +177,15 @@ public class WebsocketMessagePreparer {
         UserDao userDao,
         WsMessage message
     ) throws EncodeException {
-        return prepareWsMessage(userDao, null, new ForAdminChannelsBuilder(), message);
+        return prepareWsMessage(userDao, null, null, new ForAdminChannelsBuilder(), message);
     }
 
     /**
      * Prepare one message for many channels
      *
-     * @param userDao        provide userDao to resolve meta channels
-     * @param cardTypeDao    provide cardTypeDao to resolve meta channels
+     * @param userDao        provide userDao to resolve nested channels
+     * @param teamDao        provide teamDao to resolve nested channels
+     * @param cardTypeDao    provide cardTypeDao to resolve nested channels
      * @param channelBuilder the channel builder that defines which channels must be used
      * @param message        the message
      *
@@ -191,13 +195,14 @@ public class WebsocketMessagePreparer {
      */
     public static PrecomputedWsMessages prepareWsMessage(
         UserDao userDao,
+        TeamDao teamDao,
         CardTypeDao cardTypeDao,
         ChannelsBuilder channelBuilder,
         WsMessage message
     ) throws EncodeException {
         Map<WebsocketChannel, List<WsMessage>> messagesByChannel = new HashMap<>();
 
-        channelBuilder.computeChannels(userDao, cardTypeDao).forEach(channel -> {
+        channelBuilder.computeChannels(userDao, teamDao, cardTypeDao).forEach(channel -> {
             messagesByChannel.put(channel, List.of(message));
         });
 

@@ -156,7 +156,6 @@ public class InvitationToken extends Token {
         if (user != null) {
             teamMember.setUser(user);
             teamMember.setDisplayName("");
-            user.getTeamMembers().add(teamMember);
         } else {
             throw HttpErrorMessage.authenticationRequired();
         }

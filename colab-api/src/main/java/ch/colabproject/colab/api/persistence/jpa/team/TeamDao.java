@@ -7,12 +7,13 @@
 package ch.colabproject.colab.api.persistence.jpa.team;
 
 import ch.colabproject.colab.api.exceptions.ColabMergeException;
-import ch.colabproject.colab.api.model.team.acl.AccessControl;
 import ch.colabproject.colab.api.model.project.Project;
-import ch.colabproject.colab.api.model.team.TeamRole;
 import ch.colabproject.colab.api.model.team.TeamMember;
+import ch.colabproject.colab.api.model.team.TeamRole;
+import ch.colabproject.colab.api.model.team.acl.AccessControl;
 import ch.colabproject.colab.api.model.user.User;
 import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
+import java.util.List;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -63,6 +64,7 @@ public class TeamDao {
      * @param member new value
      *
      * @return updated managed member
+     *
      * @throws ColabMergeException if update failed
      */
     public TeamMember updateTeamMember(TeamMember member) throws ColabMergeException {
@@ -124,7 +126,8 @@ public class TeamDao {
      */
     public TeamMember findMemberByUserAndProject(Project project, User user) {
         try {
-            TypedQuery<TeamMember> query = em.createNamedQuery("TeamMember.findByUserAndProject", TeamMember.class);
+            TypedQuery<TeamMember> query = em.createNamedQuery("TeamMember.findByUserAndProject",
+                TeamMember.class);
 
             query.setParameter("projectId", project.getId());
             query.setParameter("userId", user.getId());
@@ -133,6 +136,22 @@ public class TeamDao {
         } catch (NoResultException ex) {
             return null;
         }
+    }
+
+    /**
+     * Find the teamMembers related to the given user
+     *
+     * @param user the user
+     *
+     * @return the matching team members
+     */
+    public List<TeamMember> findMemberByUser(User user) {
+        TypedQuery<TeamMember> query = em.createNamedQuery("TeamMember.findByUser",
+            TeamMember.class);
+
+        query.setParameter("userId", user.getId());
+
+        return query.getResultList();
     }
 
     /**
