@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>BroadcastChannel.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">colab-webapp</a> &gt; <a href="../index.html" class="el_bundle">colab-api</a> &gt; <a href="index.source.html" class="el_package">ch.colabproject.colab.api.ws.channel.model</a> &gt; <span class="el_source">BroadcastChannel.java</span></div><h1>BroadcastChannel.java</h1><pre class="source lang-java linenums">/*
+ * The coLAB project
+ * Copyright (C) 2021 AlbaSim, MEI, HEIG-VD, HES-SO
+ *
+ * Licensed under the MIT License
+ */
+package ch.colabproject.colab.api.ws.channel.model;
+
+/**
+ * The channel to be used to transmit data to all online users.&lt;br&gt;
+ * &lt;p&gt;
+ * Usage:
+ * &lt;/p&gt;
+ * &lt;p&gt;
+ * Subscription : as soon as possible on client side + on current user reload&lt;br&gt;
+ * Unsubscription : none&lt;br&gt;
+ * &lt;/p&gt;
+ *
+ * @author maxence
+ */
+<span class="nc" id="L21">public class BroadcastChannel implements WebsocketChannel {</span>
+
+    private static final long serialVersionUID = 1L;
+
+    @Override
+    public int hashCode() {
+<span class="nc" id="L27">        int hash = 23;</span>
+<span class="nc" id="L28">        return hash;</span>
+    }
+
+    /**
+     * Channel equals if they both refer to the same user
+     *
+     * @param obj other channel
+     *
+     * @return true if both refer to the same user
+     */
+    @Override
+    public boolean equals(Object obj) {
+<span class="nc bnc" id="L40" title="All 2 branches missed.">        if (this == obj) {</span>
+<span class="nc" id="L41">            return true;</span>
+        }
+<span class="nc bnc" id="L43" title="All 2 branches missed.">        if (obj == null) {</span>
+<span class="nc" id="L44">            return false;</span>
+        }
+<span class="nc bnc" id="L46" title="All 2 branches missed.">        if (getClass() != obj.getClass()) {</span>
+<span class="nc" id="L47">            return false;</span>
+        }
+<span class="nc" id="L49">        return true;</span>
+    }
+
+    @Override
+    public String toString() {
+<span class="nc" id="L54">        return &quot;BroadcastChannel{}&quot;;</span>
+    }
+
+    /**
+     * get the broadcast channel
+     *
+     * @return the broadcast channel
+     */
+    public static BroadcastChannel build() {
+<span class="nc" id="L63">        return new BroadcastChannel();</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

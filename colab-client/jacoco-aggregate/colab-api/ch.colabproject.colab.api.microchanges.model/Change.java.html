@@ -7,8 +7,8 @@
 package ch.colabproject.colab.api.microchanges.model;
 
 import ch.colabproject.colab.api.model.WithWebsocketChannels;
-import ch.colabproject.colab.api.ws.channel.BlockChannel;
-import ch.colabproject.colab.api.ws.channel.WebsocketChannel;
+import ch.colabproject.colab.api.ws.channel.tool.ChannelsBuilders.BlockChannelBuilder;
+import ch.colabproject.colab.api.ws.channel.tool.ChannelsBuilders.ChannelsBuilder;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -205,8 +205,8 @@ import javax.validation.constraints.NotNull;
 <span class="nc" id="L205">    }</span>
 
     @Override
-    public Set&lt;WebsocketChannel&gt; getChannels() {
-<span class="nc" id="L209">        return Set.of(BlockChannel.build(blockId));</span>
+    public ChannelsBuilder getChannelsBuilder() {
+<span class="nc" id="L209">        return new BlockChannelBuilder(blockId);</span>
     }
 
     @Override

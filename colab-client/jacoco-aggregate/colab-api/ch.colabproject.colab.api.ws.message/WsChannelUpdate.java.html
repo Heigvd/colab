@@ -6,7 +6,7 @@
  */
 package ch.colabproject.colab.api.ws.message;
 
-import ch.colabproject.colab.api.ws.channel.WebsocketEffectiveChannel;
+import ch.colabproject.colab.api.ws.channel.model.WebsocketChannel;
 import javax.validation.constraints.NotNull;
 
 /**
@@ -22,7 +22,7 @@ import javax.validation.constraints.NotNull;
      * The channel this message is about
      */
     @NotNull
-    private WebsocketEffectiveChannel channel;
+    private WebsocketChannel channel;
 
     /**
      * number of new (un)subscriptions
@@ -53,7 +53,7 @@ import javax.validation.constraints.NotNull;
      *
      * @return the value of channel
      */
-    public WebsocketEffectiveChannel getChannel() {
+    public WebsocketChannel getChannel() {
 <span class="nc" id="L57">        return channel;</span>
     }
 
@@ -62,7 +62,7 @@ import javax.validation.constraints.NotNull;
      *
      * @param channel new value of channel
      */
-    public void setChannel(WebsocketEffectiveChannel channel) {
+    public void setChannel(WebsocketChannel channel) {
 <span class="nc" id="L66">        this.channel = channel;</span>
 <span class="nc" id="L67">    }</span>
 
@@ -74,11 +74,16 @@ import javax.validation.constraints.NotNull;
      *
      * @return the message
      */
-    public static WsChannelUpdate build(WebsocketEffectiveChannel channel, Integer diff) {
+    public static WsChannelUpdate build(WebsocketChannel channel, Integer diff) {
 <span class="nc" id="L78">        WsChannelUpdate message = new WsChannelUpdate();</span>
 <span class="nc" id="L79">        message.setChannel(channel);</span>
 <span class="nc" id="L80">        message.setDiff(diff);</span>
 <span class="nc" id="L81">        return message;</span>
+    }
+
+    @Override
+    public String toString() {
+<span class="nc" id="L86">        return &quot;WsChannelUpdate{&quot; + &quot;channel=&quot; + channel + &quot;, diff=&quot; + diff + &quot;}&quot;;</span>
     }
 
 }

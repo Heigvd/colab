@@ -16,10 +16,10 @@ import ch.colabproject.colab.api.model.tools.EntityHelper;
 import ch.colabproject.colab.api.model.tracking.Tracking;
 import ch.colabproject.colab.api.model.user.User;
 import ch.colabproject.colab.api.security.permissions.Conditions;
-import ch.colabproject.colab.api.ws.channel.WebsocketChannel;
+import ch.colabproject.colab.api.ws.channel.tool.ChannelsBuilders.ChannelsBuilder;
+import ch.colabproject.colab.api.ws.channel.tool.ChannelsBuilders.EmptyChannelBuilder;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 import javax.json.bind.annotation.JsonbTransient;
 import javax.persistence.CascadeType;
@@ -387,68 +387,69 @@ import org.apache.commons.collections4.CollectionUtils;
 <span class="nc" id="L387">    }</span>
 
     @Override
-    public Set&lt;WebsocketChannel&gt; getChannels() {
+    public ChannelsBuilder getChannelsBuilder() {
 <span class="nc bnc" id="L391" title="All 2 branches missed.">        if (this.project != null) {</span>
-<span class="nc" id="L392">            return this.project.getChannels();</span>
+<span class="nc" id="L392">            return this.project.getChannelsBuilder();</span>
         } else {
-<span class="nc" id="L394">            return Set.of();</span>
+            // such an orphan shouldn't exist...
+<span class="nc" id="L395">            return new EmptyChannelBuilder();</span>
         }
     }
 
     @Override
     @JsonbTransient
     public Conditions.Condition getReadCondition() {
-<span class="nc bnc" id="L401" title="All 4 branches missed.">        if (this.user != null &amp;&amp; this.project != null) {</span>
-<span class="nc" id="L402">            return new Conditions.IsCurrentUserMemberOfProject(project);</span>
+<span class="nc bnc" id="L402" title="All 4 branches missed.">        if (this.user != null &amp;&amp; this.project != null) {</span>
+<span class="nc" id="L403">            return new Conditions.IsCurrentUserMemberOfProject(project);</span>
         } else {
             // anyone can read a pending invitation
-<span class="nc" id="L405">            return Conditions.alwaysTrue;</span>
+<span class="nc" id="L406">            return Conditions.alwaysTrue;</span>
         }
     }
 
     @Override
     public Conditions.Condition getUpdateCondition() {
-<span class="nc bnc" id="L411" title="All 4 branches missed.">        if (this.user != null &amp;&amp; this.project != null) {</span>
-<span class="nc bnc" id="L412" title="All 2 branches missed.">            if (this.position == HierarchicalPosition.OWNER) {</span>
-<span class="nc" id="L413">                return new Conditions.IsCurrentUserOwnerOfProject(project);</span>
+<span class="nc bnc" id="L412" title="All 4 branches missed.">        if (this.user != null &amp;&amp; this.project != null) {</span>
+<span class="nc bnc" id="L413" title="All 2 branches missed.">            if (this.position == HierarchicalPosition.OWNER) {</span>
+<span class="nc" id="L414">                return new Conditions.IsCurrentUserOwnerOfProject(project);</span>
             } else {
-<span class="nc" id="L415">                return new Conditions.IsCurrentUserLeaderOfProject(project);</span>
+<span class="nc" id="L416">                return new Conditions.IsCurrentUserLeaderOfProject(project);</span>
             }
         } else {
             // anyone can read a pending invitation
-<span class="nc" id="L419">            return Conditions.alwaysTrue;</span>
+<span class="nc" id="L420">            return Conditions.alwaysTrue;</span>
         }
     }
 
     @Override
     @JsonbTransient
     public Conditions.Condition getCreateCondition() {
-<span class="nc bnc" id="L426" title="All 4 branches missed.">        if (this.user != null &amp;&amp; this.project != null) {</span>
+<span class="nc bnc" id="L427" title="All 4 branches missed.">        if (this.user != null &amp;&amp; this.project != null) {</span>
             // any &quot;internal&quot; may invite somebody
-<span class="nc" id="L428">            return new Conditions.IsCurrentUserInternalToProject(project);</span>
+<span class="nc" id="L429">            return new Conditions.IsCurrentUserInternalToProject(project);</span>
         } else {
             // anyone can read a pending invitation
-<span class="nc" id="L431">            return Conditions.alwaysTrue;</span>
+<span class="nc" id="L432">            return Conditions.alwaysTrue;</span>
         }
     }
 
     @Override
     public int hashCode() {
-<span class="nc" id="L437">        return EntityHelper.hashCode(this);</span>
+<span class="nc" id="L438">        return EntityHelper.hashCode(this);</span>
     }
 
     @Override
     @SuppressWarnings(&quot;EqualsWhichDoesntCheckParameterClass&quot;)
     public boolean equals(Object obj) {
-<span class="nc" id="L443">        return EntityHelper.equals(this, obj);</span>
+<span class="nc" id="L444">        return EntityHelper.equals(this, obj);</span>
     }
 
     @Override
     public String toString() {
-<span class="nc bnc" id="L448" title="All 2 branches missed.">        if (user == null) {</span>
-<span class="nc" id="L449">            return &quot;TeamMember{pending}&quot;;</span>
+<span class="nc bnc" id="L449" title="All 2 branches missed.">        if (user == null) {</span>
+<span class="nc" id="L450">            return &quot;TeamMember{pending}&quot;;</span>
         } else {
-<span class="nc" id="L451">            return &quot;TeamMember{&quot; + &quot;id=&quot; + id + &quot;, userId=&quot; + userId + &quot;, projectId=&quot;</span>
+<span class="nc" id="L452">            return &quot;TeamMember{&quot; + &quot;id=&quot; + id + &quot;, userId=&quot; + userId + &quot;, projectId=&quot;</span>
                 + projectId + &quot;}&quot;;
         }
     }

@@ -19,9 +19,9 @@ import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.api.model.tools.EntityHelper;
 import ch.colabproject.colab.api.model.tracking.Tracking;
 import ch.colabproject.colab.api.security.permissions.Conditions;
-import ch.colabproject.colab.api.ws.channel.WebsocketChannel;
+import ch.colabproject.colab.api.ws.channel.tool.ChannelsBuilders.ChannelsBuilder;
+import ch.colabproject.colab.api.ws.channel.tool.ChannelsBuilders.EmptyChannelBuilder;
 import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
-import java.util.Set;
 import javax.json.bind.annotation.JsonbTransient;
 import javax.persistence.CascadeType;
 import javax.persistence.Embedded;
@@ -553,12 +553,12 @@ import javax.validation.constraints.NotNull;
     }
 
     @Override
-    public Set&lt;WebsocketChannel&gt; getChannels() {
+    public ChannelsBuilder getChannelsBuilder() {
 <span class="nc bnc" id="L557" title="All 2 branches missed.">        if (this.destinationCard != null) {</span>
-<span class="nc" id="L558">            return this.destinationCard.getChannels();</span>
+<span class="nc" id="L558">            return this.destinationCard.getChannelsBuilder();</span>
         } else {
             // such an orphan shouldn't exist...
-<span class="nc" id="L561">            return Set.of();</span>
+<span class="nc" id="L561">            return new EmptyChannelBuilder();</span>
         }
     }
 

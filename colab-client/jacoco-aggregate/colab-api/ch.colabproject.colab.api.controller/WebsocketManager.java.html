@@ -15,13 +15,13 @@ import ch.colabproject.colab.api.persistence.jpa.project.ProjectDao;
 import ch.colabproject.colab.api.persistence.jpa.user.UserDao;
 import ch.colabproject.colab.api.security.permissions.Conditions;
 import ch.colabproject.colab.api.ws.WebsocketEndpoint;
-import ch.colabproject.colab.api.ws.WebsocketHelper;
-import ch.colabproject.colab.api.ws.channel.AdminChannel;
-import ch.colabproject.colab.api.ws.channel.BlockChannel;
-import ch.colabproject.colab.api.ws.channel.BroadcastChannel;
+import ch.colabproject.colab.api.ws.WebsocketMessagePreparer;
 import ch.colabproject.colab.api.ws.channel.ChannelOverview;
-import ch.colabproject.colab.api.ws.channel.ProjectContentChannel;
-import ch.colabproject.colab.api.ws.channel.WebsocketEffectiveChannel;
+import ch.colabproject.colab.api.ws.channel.model.BlockChannel;
+import ch.colabproject.colab.api.ws.channel.model.BroadcastChannel;
+import ch.colabproject.colab.api.ws.channel.model.ProjectContentChannel;
+import ch.colabproject.colab.api.ws.channel.model.UserChannel;
+import ch.colabproject.colab.api.ws.channel.model.WebsocketChannel;
 import ch.colabproject.colab.api.ws.message.PrecomputedWsMessages;
 import ch.colabproject.colab.api.ws.message.WsChannelUpdate;
 import ch.colabproject.colab.api.ws.message.WsSessionIdentifier;
@@ -33,8 +33,8 @@ import java.io.IOException;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -144,7 +144,7 @@ import com.hazelcast.core.IExecutorService;
     /**
      * channel subscriptions.
      */
-<span class="nc" id="L147">    private ConcurrentMap&lt;WebsocketEffectiveChannel, Set&lt;Session&gt;&gt; subscriptions = new ConcurrentHashMap&lt;&gt;();</span>
+<span class="nc" id="L147">    private ConcurrentMap&lt;WebsocketChannel, Set&lt;Session&gt;&gt; subscriptions = new ConcurrentHashMap&lt;&gt;();</span>
 
     /**
      * HTTP sessions to websocket sessions registry.
@@ -165,22 +165,22 @@ import com.hazelcast.core.IExecutorService;
     /**
      * List the channels each websocket session subscribe to.
      */
-<span class="nc" id="L168">    private ConcurrentMap&lt;Session, Set&lt;WebsocketEffectiveChannel&gt;&gt; wsSessionMap = new ConcurrentHashMap&lt;&gt;();</span>
+<span class="nc" id="L168">    private ConcurrentMap&lt;Session, Set&lt;WebsocketChannel&gt;&gt; wsSessionMap = new ConcurrentHashMap&lt;&gt;();</span>
 
     /**
      * Get list of all occupied channels.
      * &lt;p&gt;
-     * This method is cluster-aware. In short, {@link #getSubscrciptionsCount() } will be called for
+     * This method is cluster-aware. In short, {@link #getSubscriptionsCount() } will be called for
      * each instance of the cluster.
      *
      * @return list of all occupied channels mapped to the number of subscribers
      */
     public Set&lt;ChannelOverview&gt; getExistingChannels() {
 <span class="nc" id="L179">        IExecutorService executorService = hzInstance.getExecutorService(&quot;COLAB_WS&quot;);</span>
-<span class="nc" id="L180">        Map&lt;Member, Future&lt;Map&lt;WebsocketEffectiveChannel, Integer&gt;&gt;&gt; results = executorService</span>
+<span class="nc" id="L180">        Map&lt;Member, Future&lt;Map&lt;WebsocketChannel, Integer&gt;&gt;&gt; results = executorService</span>
 <span class="nc" id="L181">            .submitToAllMembers(new CallableGetChannel());</span>
 
-<span class="nc" id="L183">        Map&lt;WebsocketEffectiveChannel, Integer&gt; aggregate = new HashMap&lt;&gt;();</span>
+<span class="nc" id="L183">        Map&lt;WebsocketChannel, Integer&gt; aggregate = new HashMap&lt;&gt;();</span>
 
 <span class="nc" id="L185">        results.values().stream()</span>
 <span class="nc" id="L186">            .flatMap((result) -&gt; {</span>
@@ -211,7 +211,7 @@ import com.hazelcast.core.IExecutorService;
      *
      * @return the list of channels and the number of sessions subscribed to each of them
      */
-    public Map&lt;WebsocketEffectiveChannel, Integer&gt; getSubscrciptionsCount() {
+    public Map&lt;WebsocketChannel, Integer&gt; getSubscriptionsCount() {
 <span class="nc" id="L215">        return this.subscriptions.entrySet().stream()</span>
 <span class="nc" id="L216">            .collect(Collectors.toMap(Entry::getKey, entry -&gt; entry.getValue().size()));</span>
     }
@@ -397,7 +397,7 @@ import com.hazelcast.core.IExecutorService;
 <span class="nc" id="L397">                logger.debug(&quot;Process channel subscription request: {}&quot;, request);</span>
 
                 // first determine the effective channel
-<span class="nc" id="L400">                WebsocketEffectiveChannel channel = getChannel(request);</span>
+<span class="nc" id="L400">                WebsocketChannel channel = getChannel(request);</span>
 <span class="nc bnc" id="L401" title="All 2 branches missed.">                if (channel != null) {</span>
 <span class="nc" id="L402">                    synchronized (this) {</span>
                         // make sure the http session has its own set of wsSessions
@@ -425,7 +425,7 @@ import com.hazelcast.core.IExecutorService;
                         } else {
                             // Remove the channel from the set of channel linked to the wsSession
 <span class="nc bnc" id="L427" title="All 2 branches missed.">                            if (wsSessionMap.containsKey(session)) {</span>
-<span class="nc" id="L428">                                Set&lt;WebsocketEffectiveChannel&gt; channels = wsSessionMap.get(session);</span>
+<span class="nc" id="L428">                                Set&lt;WebsocketChannel&gt; channels = wsSessionMap.get(session);</span>
 <span class="nc" id="L429">                                channels.remove(channel);</span>
 <span class="nc bnc" id="L430" title="All 2 branches missed.">                                if (channels.isEmpty()) {</span>
 <span class="nc" id="L431">                                    wsSessionMap.remove(session);</span>
@@ -450,7 +450,7 @@ import com.hazelcast.core.IExecutorService;
      * @param keyId   set id
      * @param session session to remove from the set
      */
-    private void subscribe(WebsocketEffectiveChannel channel, Session session) {
+    private void subscribe(WebsocketChannel channel, Session session) {
 <span class="nc bnc" id="L454" title="All 2 branches missed.">        if (logger.isDebugEnabled()) {</span>
 <span class="nc" id="L455">            String sessionId = WebsocketEndpoint.getSessionId(session);</span>
 <span class="nc" id="L456">            logger.debug(&quot;Session {} subscribes to {}&quot;, sessionId, channel);</span>
@@ -472,7 +472,7 @@ import com.hazelcast.core.IExecutorService;
      * @param channel  channel to update
      * @param sessions session to remove from channel
      */
-    private void unsubscribe(WebsocketEffectiveChannel channel, Set&lt;Session&gt; sessions) {
+    private void unsubscribe(WebsocketChannel channel, Set&lt;Session&gt; sessions) {
 <span class="nc" id="L476">        Set&lt;Session&gt; chSessions = subscriptions.get(channel);</span>
 <span class="nc bnc" id="L477" title="All 2 branches missed.">        if (logger.isDebugEnabled()) {</span>
 <span class="nc" id="L478">            logger.debug(&quot;Sessions {} unsubscribes from {}&quot;,</span>
@@ -498,19 +498,17 @@ import com.hazelcast.core.IExecutorService;
      * @param channel the channel
      * @param diff    diff
      */
-    private void propagateChannelChange(WebsocketEffectiveChannel channel, int diff) {
+    private void propagateChannelChange(WebsocketChannel channel, int diff) {
         try {
-<span class="nc" id="L503">            PrecomputedWsMessages prepareWsMessage = WebsocketHelper.prepareWsMessage(</span>
+<span class="nc" id="L503">            PrecomputedWsMessages prepareWsMessage = WebsocketMessagePreparer.prepareWsMessageForAdmins(</span>
                 userDao,
-                requestManager,
-                new AdminChannel(),
-<span class="nc" id="L507">                WsChannelUpdate.build(channel, diff)</span>
+<span class="nc" id="L505">                WsChannelUpdate.build(channel, diff)</span>
             );
-<span class="nc" id="L509">            this.propagate(prepareWsMessage);</span>
-<span class="nc" id="L510">        } catch (EncodeException ex) {</span>
-<span class="nc" id="L511">            logger.error(&quot;Faild to propagate channel change :{}&quot;, channel);</span>
-<span class="nc" id="L512">        }</span>
-<span class="nc" id="L513">    }</span>
+<span class="nc" id="L507">            this.propagate(prepareWsMessage);</span>
+<span class="nc" id="L508">        } catch (EncodeException ex) {</span>
+<span class="nc" id="L509">            logger.error(&quot;Faild to propagate channel change :{}&quot;, channel);</span>
+<span class="nc" id="L510">        }</span>
+<span class="nc" id="L511">    }</span>
 
     /**
      * Determine the EffectiveChannel
@@ -519,28 +517,28 @@ import com.hazelcast.core.IExecutorService;
      *
      * @return the channel which match the request
      */
-    private WebsocketEffectiveChannel getChannel(SubscriptionRequest request) {
-<span class="nc bnc" id="L523" title="All 2 branches missed.">        if (request.getChannelType() == SubscriptionRequest.ChannelType.PROJECT) {</span>
-<span class="nc" id="L524">            Project project = projectDao.findProject(request.getChannelId());</span>
-<span class="nc bnc" id="L525" title="All 2 branches missed.">            if (project != null) {</span>
-<span class="nc" id="L526">                return ProjectContentChannel.build(project);</span>
+    private WebsocketChannel getChannel(SubscriptionRequest request) {
+<span class="nc bnc" id="L521" title="All 2 branches missed.">        if (request.getChannelType() == SubscriptionRequest.ChannelType.PROJECT) {</span>
+<span class="nc" id="L522">            Project project = projectDao.findProject(request.getChannelId());</span>
+<span class="nc bnc" id="L523" title="All 2 branches missed.">            if (project != null) {</span>
+<span class="nc" id="L524">                return ProjectContentChannel.build(project.getId());</span>
             }
-<span class="nc bnc" id="L528" title="All 2 branches missed.">        } else if (request.getChannelType() == SubscriptionRequest.ChannelType.BLOCK) {</span>
-<span class="nc" id="L529">            TextDataBlock block = blockManager.findBlock(request.getChannelId());</span>
-<span class="nc bnc" id="L530" title="All 2 branches missed.">            if (block != null) {</span>
-<span class="nc" id="L531">                return BlockChannel.build(block);</span>
+<span class="nc bnc" id="L526" title="All 2 branches missed.">        } else if (request.getChannelType() == SubscriptionRequest.ChannelType.BLOCK) {</span>
+<span class="nc" id="L527">            TextDataBlock block = blockManager.findBlock(request.getChannelId());</span>
+<span class="nc bnc" id="L528" title="All 2 branches missed.">            if (block != null) {</span>
+<span class="nc" id="L529">                return BlockChannel.build(block.getId());</span>
             }
-<span class="nc bnc" id="L533" title="All 2 branches missed.">        } else if (request.getChannelType() == SubscriptionRequest.ChannelType.USER) {</span>
-<span class="nc" id="L534">            User user = userDao.findUser(request.getChannelId());</span>
-<span class="nc bnc" id="L535" title="All 2 branches missed.">            if (user != null) {</span>
-<span class="nc" id="L536">                return user.getEffectiveChannel();</span>
+<span class="nc bnc" id="L531" title="All 2 branches missed.">        } else if (request.getChannelType() == SubscriptionRequest.ChannelType.USER) {</span>
+<span class="nc" id="L532">            User user = userDao.findUser(request.getChannelId());</span>
+<span class="nc bnc" id="L533" title="All 2 branches missed.">            if (user != null) {</span>
+<span class="nc" id="L534">                return UserChannel.build(user.getId());</span>
             }
-<span class="nc bnc" id="L538" title="All 2 branches missed.">        } else if (request.getChannelType() == SubscriptionRequest.ChannelType.BROADCAST) {</span>
-<span class="nc" id="L539">            return BroadcastChannel.build();</span>
+<span class="nc bnc" id="L536" title="All 2 branches missed.">        } else if (request.getChannelType() == SubscriptionRequest.ChannelType.BROADCAST) {</span>
+<span class="nc" id="L537">            return BroadcastChannel.build();</span>
         }
 
         // not found...
-<span class="nc" id="L543">        return null;</span>
+<span class="nc" id="L541">        return null;</span>
     }
 
     /**
@@ -551,8 +549,8 @@ import com.hazelcast.core.IExecutorService;
      * @param message precomputed message to propagate.
      */
     public void propagate(PrecomputedWsMessages message) {
-<span class="nc" id="L554">        this.messagePropagation.fire(message);</span>
-<span class="nc" id="L555">    }</span>
+<span class="nc" id="L552">        this.messagePropagation.fire(message);</span>
+<span class="nc" id="L553">    }</span>
 
     /**
      * On Hazelcast event. Each instance receive precomputed message.
@@ -562,38 +560,38 @@ import com.hazelcast.core.IExecutorService;
     public void onMessagePropagation(
         @Observes @Inbound(eventName = WS_PROPAGATION_CHANNEL) PrecomputedWsMessages payload) {
 
-<span class="nc" id="L565">        Map&lt;WebsocketEffectiveChannel, List&lt;String&gt;&gt; messagesByChannels = payload.getMessages();</span>
-<span class="nc bnc" id="L566" title="All 2 branches missed.">        if (messagesByChannels != null) {</span>
+<span class="nc" id="L563">        Map&lt;WebsocketChannel, List&lt;String&gt;&gt; messagesByChannels = payload.getMessages();</span>
+<span class="nc bnc" id="L564" title="All 2 branches missed.">        if (messagesByChannels != null) {</span>
 
-<span class="nc" id="L568">            Map&lt;Session, List&lt;String&gt;&gt; mappedMessages = new HashMap&lt;&gt;();</span>
+<span class="nc" id="L566">            Map&lt;Session, List&lt;String&gt;&gt; mappedMessages = new HashMap&lt;&gt;();</span>
 
             // Group messages by effective websocket session
-<span class="nc" id="L571">            messagesByChannels.forEach((channel, messages) -&gt; {</span>
-<span class="nc" id="L572">                Set&lt;Session&gt; subscribers = this.subscriptions.get(channel);</span>
-<span class="nc bnc" id="L573" title="All 2 branches missed.">                if (subscribers != null) {</span>
-<span class="nc" id="L574">                    subscribers.forEach(session -&gt; {</span>
-<span class="nc" id="L575">                        List&lt;String&gt; list = mappedMessages.computeIfAbsent(session, (k) -&gt; new LinkedList&lt;&gt;());</span>
-<span class="nc" id="L576">                        list.addAll(messages);</span>
-<span class="nc" id="L577">                    });</span>
+<span class="nc" id="L569">            messagesByChannels.forEach((channel, messages) -&gt; {</span>
+<span class="nc" id="L570">                Set&lt;Session&gt; subscribers = this.subscriptions.get(channel);</span>
+<span class="nc bnc" id="L571" title="All 2 branches missed.">                if (subscribers != null) {</span>
+<span class="nc" id="L572">                    subscribers.forEach(session -&gt; {</span>
+<span class="nc" id="L573">                        List&lt;String&gt; list = mappedMessages.computeIfAbsent(session, (k) -&gt; new LinkedList&lt;&gt;());</span>
+<span class="nc" id="L574">                        list.addAll(messages);</span>
+<span class="nc" id="L575">                    });</span>
                 }
-<span class="nc" id="L579">            });</span>
+<span class="nc" id="L577">            });</span>
 
             // send one big message to each session
-<span class="nc" id="L582">            mappedMessages.entrySet().forEach(entry -&gt; {</span>
-<span class="nc" id="L583">                Session session = entry.getKey();</span>
-<span class="nc" id="L584">                String jsonArray = entry.getValue().stream().collect(Collectors.joining(&quot;, &quot;, &quot;[&quot;, &quot;]&quot;));</span>
+<span class="nc" id="L580">            mappedMessages.entrySet().forEach(entry -&gt; {</span>
+<span class="nc" id="L581">                Session session = entry.getKey();</span>
+<span class="nc" id="L582">                String jsonArray = entry.getValue().stream().collect(Collectors.joining(&quot;, &quot;, &quot;[&quot;, &quot;]&quot;));</span>
                 try {
-<span class="nc" id="L586">                    logger.debug(&quot;Send {} to {} ({})&quot;, jsonArray, session.getId());</span>
-<span class="nc bnc" id="L587" title="All 2 branches missed.">                    if (session.isOpen()) {</span>
-<span class="nc" id="L588">                        session.getBasicRemote().sendText(jsonArray);</span>
+<span class="nc" id="L584">                    logger.debug(&quot;Send {} to {} ({})&quot;, jsonArray, session.getId());</span>
+<span class="nc bnc" id="L585" title="All 2 branches missed.">                    if (session.isOpen()) {</span>
+<span class="nc" id="L586">                        session.getBasicRemote().sendText(jsonArray);</span>
                     }
-<span class="nc" id="L590">                } catch (IOException ex) {</span>
-<span class="nc" id="L591">                    logger.error(&quot;Failed to send websocket message {} to {}&quot;,</span>
+<span class="nc" id="L588">                } catch (IOException ex) {</span>
+<span class="nc" id="L589">                    logger.error(&quot;Failed to send websocket message {} to {}&quot;,</span>
                         jsonArray, session);
-<span class="nc" id="L593">                }</span>
-<span class="nc" id="L594">            });</span>
+<span class="nc" id="L591">                }</span>
+<span class="nc" id="L592">            });</span>
         }
-<span class="nc" id="L596">    }</span>
+<span class="nc" id="L594">    }</span>
 
     /**
      * Unsubscribe all channel linked to the given httpSessionId. This is required after the user
@@ -602,32 +600,32 @@ import com.hazelcast.core.IExecutorService;
      * @param httpSessionId httpSessionId which just sign out
      */
     public void signoutAndUnsubscribeFromAll(Long httpSessionId) {
-<span class="nc" id="L605">        synchronized (this) {</span>
+<span class="nc" id="L603">        synchronized (this) {</span>
             // TODO send logout event, so each client (each browser tab) knows it has been
             // disconnected
-<span class="nc" id="L608">            Set&lt;Session&gt; wsSessions = this.httpSessionToWsSessions.get(httpSessionId);</span>
-<span class="nc bnc" id="L609" title="All 2 branches missed.">            if (wsSessions != null) {</span>
+<span class="nc" id="L606">            Set&lt;Session&gt; wsSessions = this.httpSessionToWsSessions.get(httpSessionId);</span>
+<span class="nc bnc" id="L607" title="All 2 branches missed.">            if (wsSessions != null) {</span>
                 // the http session is linked to one or more websocket session, let's cancel all
                 // their
                 // subscriptions
-<span class="nc" id="L613">                wsSessions.stream()</span>
+<span class="nc" id="L611">                wsSessions.stream()</span>
                     // get channels from each wsSession
-<span class="nc" id="L615">                    .map(wsSession -&gt; this.wsSessionMap.get(wsSession))</span>
+<span class="nc" id="L613">                    .map(wsSession -&gt; this.wsSessionMap.get(wsSession))</span>
                     // filter out null channels set
-<span class="nc bnc" id="L617" title="All 2 branches missed.">                    .filter(channels -&gt; channels != null)</span>
+<span class="nc bnc" id="L615" title="All 2 branches missed.">                    .filter(channels -&gt; channels != null)</span>
                     // convert &quot;stream of set of channels&quot; to &quot;stream of channels&quot;
-<span class="nc" id="L619">                    .flatMap(Collection::stream)</span>
+<span class="nc" id="L617">                    .flatMap(Collection::stream)</span>
                     // no need to list same channel twice
-<span class="nc" id="L621">                    .distinct()</span>
+<span class="nc" id="L619">                    .distinct()</span>
                     // clean subscriptions
-<span class="nc" id="L623">                    .forEach(channel -&gt; {</span>
-<span class="nc" id="L624">                        this.unsubscribe(channel, wsSessions);</span>
-<span class="nc" id="L625">                    });</span>
+<span class="nc" id="L621">                    .forEach(channel -&gt; {</span>
+<span class="nc" id="L622">                        this.unsubscribe(channel, wsSessions);</span>
+<span class="nc" id="L623">                    });</span>
             }
 
-<span class="nc" id="L628">            this.httpSessionToWsSessions.remove(httpSessionId);</span>
-<span class="nc" id="L629">        }</span>
-<span class="nc" id="L630">    }</span>
+<span class="nc" id="L626">            this.httpSessionToWsSessions.remove(httpSessionId);</span>
+<span class="nc" id="L627">        }</span>
+<span class="nc" id="L628">    }</span>
 
     /**
      * Clean subscription on session close
@@ -635,16 +633,16 @@ import com.hazelcast.core.IExecutorService;
      * @param session websocket session to clean subscription for
      */
     public void unsubscribeFromAll(Session session) {
-<span class="nc" id="L638">        synchronized (this) {</span>
-<span class="nc" id="L639">            Set&lt;WebsocketEffectiveChannel&gt; set = this.wsSessionMap.get(session);</span>
-<span class="nc bnc" id="L640" title="All 2 branches missed.">            if (set != null) {</span>
-<span class="nc" id="L641">                Set&lt;Session&gt; setOfSession = Set.of(session);</span>
-<span class="nc" id="L642">                set.forEach(channel -&gt; {</span>
-<span class="nc" id="L643">                    unsubscribe(channel, setOfSession);</span>
-<span class="nc" id="L644">                });</span>
-<span class="nc" id="L645">                this.wsSessionMap.remove(session);</span>
+<span class="nc" id="L636">        synchronized (this) {</span>
+<span class="nc" id="L637">            Set&lt;WebsocketChannel&gt; set = this.wsSessionMap.get(session);</span>
+<span class="nc bnc" id="L638" title="All 2 branches missed.">            if (set != null) {</span>
+<span class="nc" id="L639">                Set&lt;Session&gt; setOfSession = Set.of(session);</span>
+<span class="nc" id="L640">                set.forEach(channel -&gt; {</span>
+<span class="nc" id="L641">                    unsubscribe(channel, setOfSession);</span>
+<span class="nc" id="L642">                });</span>
+<span class="nc" id="L643">                this.wsSessionMap.remove(session);</span>
             }
-<span class="nc" id="L647">        }</span>
-<span class="nc" id="L648">    }</span>
+<span class="nc" id="L645">        }</span>
+<span class="nc" id="L646">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

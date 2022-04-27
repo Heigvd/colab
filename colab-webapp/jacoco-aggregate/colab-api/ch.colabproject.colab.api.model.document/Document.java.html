@@ -17,11 +17,11 @@ import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.api.model.tools.EntityHelper;
 import ch.colabproject.colab.api.model.tracking.Tracking;
 import ch.colabproject.colab.api.security.permissions.Conditions;
-import ch.colabproject.colab.api.ws.channel.WebsocketChannel;
+import ch.colabproject.colab.api.ws.channel.tool.ChannelsBuilders.ChannelsBuilder;
+import ch.colabproject.colab.api.ws.channel.tool.ChannelsBuilders.EmptyChannelBuilder;
 import ch.colabproject.colab.generator.model.tools.PolymorphicDeserializer;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 import javax.json.bind.annotation.JsonbTransient;
 import javax.json.bind.annotation.JsonbTypeDeserializer;
 import javax.persistence.CascadeType;
@@ -301,16 +301,16 @@ import javax.persistence.Transient;
     }
 
     @Override
-    public Set&lt;WebsocketChannel&gt; getChannels() {
+    public ChannelsBuilder getChannelsBuilder() {
 <span class="nc bnc" id="L305" title="All 2 branches missed.">        if (this.owningCardContent != null) {</span>
             // The document is a deliverable of a card content
-<span class="nc" id="L307">            return this.owningCardContent.getChannels();</span>
+<span class="nc" id="L307">            return this.owningCardContent.getChannelsBuilder();</span>
 <span class="nc bnc" id="L308" title="All 2 branches missed.">        } else if (this.owningResource != null) {</span>
             // The document is part of a resource
-<span class="nc" id="L310">            return this.owningResource.getChannels();</span>
+<span class="nc" id="L310">            return this.owningResource.getChannelsBuilder();</span>
         } else {
             // such an orphan shouldn't exist...
-<span class="nc" id="L313">            return Set.of();</span>
+<span class="nc" id="L313">            return new EmptyChannelBuilder();</span>
         }
     }
 

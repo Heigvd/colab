@@ -12,8 +12,8 @@ import ch.colabproject.colab.api.model.card.CardType;
 import ch.colabproject.colab.api.model.link.StickyNoteLink;
 import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.api.model.tools.EntityHelper;
-import ch.colabproject.colab.api.ws.channel.WebsocketChannel;
-import java.util.Set;
+import ch.colabproject.colab.api.ws.channel.tool.ChannelsBuilders.ChannelsBuilder;
+import ch.colabproject.colab.api.ws.channel.tool.ChannelsBuilders.EmptyChannelBuilder;
 import javax.json.bind.annotation.JsonbTransient;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
@@ -220,26 +220,28 @@ import javax.validation.constraints.NotBlank;
         }
     }
 
+    // Note : needed to set JsonbTransient, else it is generated in ColabClient.d.ts
+    @JsonbTransient
     @Override
-    public Set&lt;WebsocketChannel&gt; getChannels() {
-<span class="nc bnc" id="L225" title="All 2 branches missed.">        if (this.owningCardContent != null) {</span>
+    public ChannelsBuilder getChannelsBuilder() {
+<span class="nc bnc" id="L227" title="All 2 branches missed.">        if (this.owningCardContent != null) {</span>
             // The document is a deliverable of a card content
-<span class="nc" id="L227">            return this.owningCardContent.getChannels();</span>
-<span class="nc bnc" id="L228" title="All 2 branches missed.">        } else if (this.owningResource != null) {</span>
+<span class="nc" id="L229">            return this.owningCardContent.getChannelsBuilder();</span>
+<span class="nc bnc" id="L230" title="All 2 branches missed.">        } else if (this.owningResource != null) {</span>
             // The document is part of a resource
-<span class="nc" id="L230">            return this.owningResource.getChannels();</span>
-<span class="nc bnc" id="L231" title="All 2 branches missed.">        } else if (this.purposingCardType != null) {</span>
+<span class="nc" id="L232">            return this.owningResource.getChannelsBuilder();</span>
+<span class="nc bnc" id="L233" title="All 2 branches missed.">        } else if (this.purposingCardType != null) {</span>
             // It is the purpose of a card type
-<span class="nc" id="L233">            return this.purposingCardType.getChannels();</span>
-<span class="nc bnc" id="L234" title="All 2 branches missed.">        } else if (this.teasingResource != null) {</span>
+<span class="nc" id="L235">            return this.purposingCardType.getChannelsBuilder();</span>
+<span class="nc bnc" id="L236" title="All 2 branches missed.">        } else if (this.teasingResource != null) {</span>
             // It is the teaser of a resource
-<span class="nc" id="L236">            return this.teasingResource.getChannels();</span>
-<span class="nc bnc" id="L237" title="All 2 branches missed.">        } else if (this.explainingStickyNoteLink != null) {</span>
+<span class="nc" id="L238">            return this.teasingResource.getChannelsBuilder();</span>
+<span class="nc bnc" id="L239" title="All 2 branches missed.">        } else if (this.explainingStickyNoteLink != null) {</span>
             // It is the explanation of a sticky note link
-<span class="nc" id="L239">            return this.explainingStickyNoteLink.getChannels();</span>
+<span class="nc" id="L241">            return this.explainingStickyNoteLink.getChannelsBuilder();</span>
         } else {
             // such an orphan shouldn't exist...
-<span class="nc" id="L242">            return Set.of();</span>
+<span class="nc" id="L244">            return new EmptyChannelBuilder();</span>
         }
     }
 
@@ -294,18 +296,18 @@ import javax.validation.constraints.NotBlank;
 
     @Override
     public int hashCode() {
-<span class="nc" id="L297">        return EntityHelper.hashCode(this);</span>
+<span class="nc" id="L299">        return EntityHelper.hashCode(this);</span>
     }
 
     @Override
     @SuppressWarnings(&quot;EqualsWhichDoesntCheckParameterClass&quot;)
     public boolean equals(Object obj) {
-<span class="nc" id="L303">        return EntityHelper.equals(this, obj);</span>
+<span class="nc" id="L305">        return EntityHelper.equals(this, obj);</span>
     }
 
     @Override
     public String toString() {
-<span class="nc" id="L308">        return &quot;TextDataBlock{&quot; + super.toPartialString() + &quot;, mimeType=&quot; + mimeType + &quot;}&quot;;</span>
+<span class="nc" id="L310">        return &quot;TextDataBlock{&quot; + super.toPartialString() + &quot;, mimeType=&quot; + mimeType + &quot;}&quot;;</span>
     }
 
 }

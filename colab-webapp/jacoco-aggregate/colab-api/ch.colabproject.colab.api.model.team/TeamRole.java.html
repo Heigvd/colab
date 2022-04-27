@@ -15,11 +15,11 @@ import ch.colabproject.colab.api.model.team.acl.AccessControl;
 import ch.colabproject.colab.api.model.tools.EntityHelper;
 import ch.colabproject.colab.api.model.tracking.Tracking;
 import ch.colabproject.colab.api.security.permissions.Conditions;
-import ch.colabproject.colab.api.ws.channel.ProjectContentChannel;
-import ch.colabproject.colab.api.ws.channel.WebsocketChannel;
+import ch.colabproject.colab.api.ws.channel.tool.ChannelsBuilders.ChannelsBuilder;
+import ch.colabproject.colab.api.ws.channel.tool.ChannelsBuilders.EmptyChannelBuilder;
+import ch.colabproject.colab.api.ws.channel.tool.ChannelsBuilders.ProjectContentChannelBuilder;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 import javax.json.bind.annotation.JsonbTransient;
 import javax.persistence.Embedded;
@@ -222,7 +222,7 @@ import org.apache.commons.collections4.CollectionUtils;
 <span class="nc" id="L222">    }</span>
 
     /**
-     * Get ids of the teammembers
+     * Get ids of the team members
      *
      * @return list of ids
      */
@@ -276,11 +276,11 @@ import org.apache.commons.collections4.CollectionUtils;
 <span class="nc" id="L276">    }</span>
 
     @Override
-    public Set&lt;WebsocketChannel&gt; getChannels() {
+    public ChannelsBuilder getChannelsBuilder() {
 <span class="nc bnc" id="L280" title="All 2 branches missed.">        if (this.getProject() != null) {</span>
-<span class="nc" id="L281">            return Set.of(ProjectContentChannel.build(project));</span>
+<span class="nc" id="L281">            return new ProjectContentChannelBuilder(project);</span>
         } else {
-<span class="nc" id="L283">            return Set.of();</span>
+<span class="nc" id="L283">            return new EmptyChannelBuilder();</span>
         }
     }
 

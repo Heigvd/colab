@@ -14,7 +14,7 @@
 <a class="jxr_linenumber" name="L6" href="#L6">6</a>   <em class="jxr_comment"> */</em>
 <a class="jxr_linenumber" name="L7" href="#L7">7</a>   <strong class="jxr_keyword">package</strong> ch.colabproject.colab.api.ws.message;
 <a class="jxr_linenumber" name="L8" href="#L8">8</a>   
-<a class="jxr_linenumber" name="L9" href="#L9">9</a>   <strong class="jxr_keyword">import</strong> ch.colabproject.colab.api.ws.channel.WebsocketEffectiveChannel;
+<a class="jxr_linenumber" name="L9" href="#L9">9</a>   <strong class="jxr_keyword">import</strong> ch.colabproject.colab.api.ws.channel.model.WebsocketChannel;
 <a class="jxr_linenumber" name="L10" href="#L10">10</a>  <strong class="jxr_keyword">import</strong> ch.colabproject.colab.api.ws.utils.JsonEncoder;
 <a class="jxr_linenumber" name="L11" href="#L11">11</a>  <strong class="jxr_keyword">import</strong> java.io.Serializable;
 <a class="jxr_linenumber" name="L12" href="#L12">12</a>  <strong class="jxr_keyword">import</strong> java.util.ArrayList;
@@ -36,14 +36,14 @@
 <a class="jxr_linenumber" name="L28" href="#L28">28</a>      <em class="jxr_javadoccomment">/**</em>
 <a class="jxr_linenumber" name="L29" href="#L29">29</a>  <em class="jxr_javadoccomment">     * Each channel has a list of json-encoded messages</em>
 <a class="jxr_linenumber" name="L30" href="#L30">30</a>  <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="L31" href="#L31">31</a>      <strong class="jxr_keyword">private</strong> Map&lt;WebsocketEffectiveChannel, List&lt;String&gt;&gt; messages;
+<a class="jxr_linenumber" name="L31" href="#L31">31</a>      <strong class="jxr_keyword">private</strong> Map&lt;WebsocketChannel, List&lt;String&gt;&gt; messages;
 <a class="jxr_linenumber" name="L32" href="#L32">32</a>  
 <a class="jxr_linenumber" name="L33" href="#L33">33</a>      <em class="jxr_javadoccomment">/**</em>
 <a class="jxr_linenumber" name="L34" href="#L34">34</a>  <em class="jxr_javadoccomment">     * Get messages that should be sent.</em>
 <a class="jxr_linenumber" name="L35" href="#L35">35</a>  <em class="jxr_javadoccomment">     *</em>
 <a class="jxr_linenumber" name="L36" href="#L36">36</a>  <em class="jxr_javadoccomment">     * @return all messages, mapped by channel</em>
 <a class="jxr_linenumber" name="L37" href="#L37">37</a>  <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="L38" href="#L38">38</a>      <strong class="jxr_keyword">public</strong> Map&lt;WebsocketEffectiveChannel, List&lt;String&gt;&gt; getMessages() {
+<a class="jxr_linenumber" name="L38" href="#L38">38</a>      <strong class="jxr_keyword">public</strong> Map&lt;WebsocketChannel, List&lt;String&gt;&gt; getMessages() {
 <a class="jxr_linenumber" name="L39" href="#L39">39</a>          <strong class="jxr_keyword">return</strong> messages;
 <a class="jxr_linenumber" name="L40" href="#L40">40</a>      }
 <a class="jxr_linenumber" name="L41" href="#L41">41</a>  
@@ -52,7 +52,7 @@
 <a class="jxr_linenumber" name="L44" href="#L44">44</a>  <em class="jxr_javadoccomment">     *</em>
 <a class="jxr_linenumber" name="L45" href="#L45">45</a>  <em class="jxr_javadoccomment">     * @param messages list of messages, map by their channels</em>
 <a class="jxr_linenumber" name="L46" href="#L46">46</a>  <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="L47" href="#L47">47</a>      <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> setMessages(Map&lt;WebsocketEffectiveChannel, List&lt;String&gt;&gt; messages) {
+<a class="jxr_linenumber" name="L47" href="#L47">47</a>      <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> setMessages(Map&lt;WebsocketChannel, List&lt;String&gt;&gt; messages) {
 <a class="jxr_linenumber" name="L48" href="#L48">48</a>          <strong class="jxr_keyword">this</strong>.messages = messages;
 <a class="jxr_linenumber" name="L49" href="#L49">49</a>      }
 <a class="jxr_linenumber" name="L50" href="#L50">50</a>  
@@ -66,20 +66,20 @@
 <a class="jxr_linenumber" name="L58" href="#L58">58</a>  <em class="jxr_javadoccomment">     * @throws EncodeException if something is not serializable.</em>
 <a class="jxr_linenumber" name="L59" href="#L59">59</a>  <em class="jxr_javadoccomment">     */</em>
 <a class="jxr_linenumber" name="L60" href="#L60">60</a>      <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> <a name="PrecomputedWsMessages" href="../../../../../../ch/colabproject/colab/api/ws/message/PrecomputedWsMessages.html#PrecomputedWsMessages">PrecomputedWsMessages</a> build(
-<a class="jxr_linenumber" name="L61" href="#L61">61</a>          Map&lt;WebsocketEffectiveChannel, List&lt;WsMessage&gt;&gt; messages
+<a class="jxr_linenumber" name="L61" href="#L61">61</a>          Map&lt;WebsocketChannel, List&lt;WsMessage&gt;&gt; messages
 <a class="jxr_linenumber" name="L62" href="#L62">62</a>      ) <strong class="jxr_keyword">throws</strong> EncodeException {
 <a class="jxr_linenumber" name="L63" href="#L63">63</a>          <a name="PrecomputedWsMessages" href="../../../../../../ch/colabproject/colab/api/ws/message/PrecomputedWsMessages.html#PrecomputedWsMessages">PrecomputedWsMessages</a> m = <strong class="jxr_keyword">new</strong> <a name="PrecomputedWsMessages" href="../../../../../../ch/colabproject/colab/api/ws/message/PrecomputedWsMessages.html#PrecomputedWsMessages">PrecomputedWsMessages</a>();
 <a class="jxr_linenumber" name="L64" href="#L64">64</a>          m.setMessages(<strong class="jxr_keyword">new</strong> HashMap&lt;&gt;());
-<a class="jxr_linenumber" name="L65" href="#L65">65</a>          Map&lt;WebsocketEffectiveChannel, List&lt;String&gt;&gt; encoded = m.getMessages();
+<a class="jxr_linenumber" name="L65" href="#L65">65</a>          Map&lt;WebsocketChannel, List&lt;String&gt;&gt; encoded = m.getMessages();
 <a class="jxr_linenumber" name="L66" href="#L66">66</a>          <strong class="jxr_keyword">if</strong> (messages != <strong class="jxr_keyword">null</strong>) {
 <a class="jxr_linenumber" name="L67" href="#L67">67</a>              <em class="jxr_comment">// TODO: is there a way to throw exception from lambda ?</em>
-<a class="jxr_linenumber" name="L68" href="#L68">68</a>              <strong class="jxr_keyword">for</strong> (<strong class="jxr_keyword">var</strong> entry : messages.entrySet()) {
-<a class="jxr_linenumber" name="L69" href="#L69">69</a>                  <strong class="jxr_keyword">var</strong> wsMessages = entry.getValue();
+<a class="jxr_linenumber" name="L68" href="#L68">68</a>              <strong class="jxr_keyword">for</strong> (<strong class="jxr_keyword">var</strong> messageEntry : messages.entrySet()) {
+<a class="jxr_linenumber" name="L69" href="#L69">69</a>                  <strong class="jxr_keyword">var</strong> wsMessages = messageEntry.getValue();
 <a class="jxr_linenumber" name="L70" href="#L70">70</a>                  <strong class="jxr_keyword">var</strong> encodedMessages = <strong class="jxr_keyword">new</strong> ArrayList&lt;String&gt;(wsMessages.size());
 <a class="jxr_linenumber" name="L71" href="#L71">71</a>                  <strong class="jxr_keyword">for</strong> (<strong class="jxr_keyword">var</strong> wsMessage : wsMessages) {
 <a class="jxr_linenumber" name="L72" href="#L72">72</a>                      encodedMessages.add(JsonEncoder.toJson(wsMessage));
 <a class="jxr_linenumber" name="L73" href="#L73">73</a>                  }
-<a class="jxr_linenumber" name="L74" href="#L74">74</a>                  encoded.put(entry.getKey(), encodedMessages);
+<a class="jxr_linenumber" name="L74" href="#L74">74</a>                  encoded.put(messageEntry.getKey(), encodedMessages);
 <a class="jxr_linenumber" name="L75" href="#L75">75</a>              }
 <a class="jxr_linenumber" name="L76" href="#L76">76</a>          }
 <a class="jxr_linenumber" name="L77" href="#L77">77</a>          <strong class="jxr_keyword">return</strong> m;

@@ -19,12 +19,12 @@ import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.api.model.tools.EntityHelper;
 import ch.colabproject.colab.api.model.tracking.Tracking;
 import ch.colabproject.colab.api.security.permissions.Conditions;
-import ch.colabproject.colab.api.ws.channel.WebsocketChannel;
+import ch.colabproject.colab.api.ws.channel.tool.ChannelsBuilders.ChannelsBuilder;
+import ch.colabproject.colab.api.ws.channel.tool.ChannelsBuilders.EmptyChannelBuilder;
 import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
 import ch.colabproject.colab.generator.model.tools.PolymorphicDeserializer;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 import javax.json.bind.annotation.JsonbTransient;
 import javax.json.bind.annotation.JsonbTypeDeserializer;
 import javax.persistence.CascadeType;
@@ -465,19 +465,19 @@ import javax.persistence.Transient;
     }
 
     @Override
-    public Set&lt;WebsocketChannel&gt; getChannels() {
+    public ChannelsBuilder getChannelsBuilder() {
 <span class="nc bnc" id="L469" title="All 2 branches missed.">        if (this.abstractCardType != null) {</span>
             // the abstract resource is linked to a card type / card type reference
-<span class="nc" id="L471">            return this.abstractCardType.getChannels();</span>
+<span class="nc" id="L471">            return this.abstractCardType.getChannelsBuilder();</span>
 <span class="nc bnc" id="L472" title="All 2 branches missed.">        } else if (this.card != null) {</span>
             // the abstract resource is linked to a card
-<span class="nc" id="L474">            return this.card.getChannels();</span>
+<span class="nc" id="L474">            return this.card.getChannelsBuilder();</span>
 <span class="nc bnc" id="L475" title="All 2 branches missed.">        } else if (this.cardContent != null) {</span>
             // the abstract resource is linked to a card content
-<span class="nc" id="L477">            return this.cardContent.getChannels();</span>
+<span class="nc" id="L477">            return this.cardContent.getChannelsBuilder();</span>
         } else {
             // such an orphan shouldn't exist...
-<span class="nc" id="L480">            return Set.of();</span>
+<span class="nc" id="L480">            return new EmptyChannelBuilder();</span>
         }
     }
 

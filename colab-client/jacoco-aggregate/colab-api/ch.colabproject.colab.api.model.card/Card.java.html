@@ -22,12 +22,12 @@ import ch.colabproject.colab.api.model.team.acl.InvolvementLevel;
 import ch.colabproject.colab.api.model.tools.EntityHelper;
 import ch.colabproject.colab.api.model.tracking.Tracking;
 import ch.colabproject.colab.api.security.permissions.Conditions;
-import ch.colabproject.colab.api.ws.channel.ProjectContentChannel;
-import ch.colabproject.colab.api.ws.channel.WebsocketChannel;
+import ch.colabproject.colab.api.ws.channel.tool.ChannelsBuilders.ChannelsBuilder;
+import ch.colabproject.colab.api.ws.channel.tool.ChannelsBuilders.EmptyChannelBuilder;
+import ch.colabproject.colab.api.ws.channel.tool.ChannelsBuilders.ProjectContentChannelBuilder;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 import javax.json.bind.annotation.JsonbTransient;
 import javax.persistence.CascadeType;
 import javax.persistence.Embedded;
@@ -609,20 +609,20 @@ import javax.persistence.Transient;
     }
 
     @Override
-    public Set&lt;WebsocketChannel&gt; getChannels() {
+    public ChannelsBuilder getChannelsBuilder() {
 <span class="nc bnc" id="L613" title="All 2 branches missed.">        if (this.rootCardProject != null) {</span>
             // this card is a root card, propagate through the project content channel
-<span class="nc" id="L615">            return Set.of(ProjectContentChannel.build(this.rootCardProject));</span>
+<span class="nc" id="L615">            return new ProjectContentChannelBuilder(this.rootCardProject);</span>
 <span class="nc bnc" id="L616" title="All 2 branches missed.">        } else if (this.parent != null) {</span>
             // this card is a sub-card, propagate through its parent channels
-<span class="nc" id="L618">            return this.parent.getChannels();</span>
+<span class="nc" id="L618">            return this.parent.getChannelsBuilder();</span>
 <span class="nc bnc" id="L619" title="All 2 branches missed.">        } else if (this.cardType != null) {</span>
             // such a card shouldn't exist...
             // Lorem-ipsum cards for global cardTypes ???
-<span class="nc" id="L622">            return this.cardType.getChannels();</span>
+<span class="nc" id="L622">            return this.cardType.getChannelsBuilder();</span>
         } else {
-            // such an orphan card shouldn't exist...
-<span class="nc" id="L625">            return Set.of();</span>
+            // such an orphan shouldn't exist...
+<span class="nc" id="L625">            return new EmptyChannelBuilder();</span>
         }
     }
 

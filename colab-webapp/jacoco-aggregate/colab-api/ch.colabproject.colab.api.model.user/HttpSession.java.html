@@ -6,17 +6,17 @@
  */
 package ch.colabproject.colab.api.model.user;
 
+import static ch.colabproject.colab.api.model.user.User.USER_SEQUENCE_NAME;
 import ch.colabproject.colab.api.model.WithPermission;
 import ch.colabproject.colab.api.model.WithWebsocketChannels;
 import ch.colabproject.colab.api.model.tools.EntityHelper;
-import static ch.colabproject.colab.api.model.user.User.USER_SEQUENCE_NAME;
 import ch.colabproject.colab.api.security.permissions.Conditions;
-import ch.colabproject.colab.api.ws.channel.AdminChannel;
-import ch.colabproject.colab.api.ws.channel.WebsocketChannel;
+import ch.colabproject.colab.api.ws.channel.tool.ChannelsBuilders.AboutAccountChannelsBuilder;
+import ch.colabproject.colab.api.ws.channel.tool.ChannelsBuilders.ChannelsBuilder;
+import ch.colabproject.colab.api.ws.channel.tool.ChannelsBuilders.ForAdminChannelsBuilder;
 import ch.colabproject.colab.generator.model.interfaces.WithId;
 import ch.colabproject.colab.generator.model.interfaces.WithJsonDiscriminator;
 import java.time.OffsetDateTime;
-import java.util.Set;
 import javax.json.bind.annotation.JsonbTransient;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -233,11 +233,11 @@ import javax.validation.constraints.NotEmpty;
     // ---------------------------------------------------------------------------------------------
 
     @Override
-    public Set&lt;WebsocketChannel&gt; getChannels() {
+    public ChannelsBuilder getChannelsBuilder() {
 <span class="nc bnc" id="L237" title="All 2 branches missed.">        if (this.account != null) {</span>
-<span class="nc" id="L238">            return this.account.getChannels();</span>
+<span class="nc" id="L238">            return new AboutAccountChannelsBuilder(this.account);</span>
         } else {
-<span class="nc" id="L240">            return Set.of(new AdminChannel());</span>
+<span class="nc" id="L240">            return new ForAdminChannelsBuilder();</span>
         }
     }
 

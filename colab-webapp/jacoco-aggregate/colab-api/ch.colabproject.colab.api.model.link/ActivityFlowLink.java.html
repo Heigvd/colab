@@ -13,8 +13,8 @@ import ch.colabproject.colab.api.model.card.Card;
 import ch.colabproject.colab.api.model.tools.EntityHelper;
 import ch.colabproject.colab.api.model.tracking.Tracking;
 import ch.colabproject.colab.api.security.permissions.Conditions;
-import ch.colabproject.colab.api.ws.channel.WebsocketChannel;
-import java.util.Set;
+import ch.colabproject.colab.api.ws.channel.tool.ChannelsBuilders.ChannelsBuilder;
+import ch.colabproject.colab.api.ws.channel.tool.ChannelsBuilders.EmptyChannelBuilder;
 import javax.json.bind.annotation.JsonbTransient;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
@@ -38,7 +38,7 @@ import javax.validation.constraints.NotNull;
 @Table(
     indexes = {
         @Index(columnList = &quot;nextcard_id&quot;),
-        @Index(columnList = &quot;previouscard_id&quot;),}
+        @Index(columnList = &quot;previouscard_id&quot;), }
 )
 <span class="nc" id="L43">public class ActivityFlowLink implements ColabEntity, WithWebsocketChannels {</span>
 
@@ -214,14 +214,19 @@ import javax.validation.constraints.NotNull;
 <span class="nc" id="L214">    }</span>
 
     @Override
-    public Set&lt;WebsocketChannel&gt; getChannels() {
-<span class="nc" id="L218">        return this.nextCard.getChannels();</span>
+    public ChannelsBuilder getChannelsBuilder() {
+<span class="nc bnc" id="L218" title="All 2 branches missed.">        if (this.nextCard != null) {</span>
+<span class="nc" id="L219">            return this.nextCard.getChannelsBuilder();</span>
+        } else {
+            // such an orphan shouldn't exist...
+<span class="nc" id="L222">            return new EmptyChannelBuilder();</span>
+        }
     }
 
     @Override
     @JsonbTransient
     public Conditions.Condition getReadCondition() {
-<span class="nc" id="L224">        return new Conditions.Or(</span>
+<span class="nc" id="L229">        return new Conditions.Or(</span>
             new Conditions.HasCardReadRight(this.previousCard),
             new Conditions.HasCardReadRight(this.nextCard)
         );
@@ -230,26 +235,26 @@ import javax.validation.constraints.NotNull;
     // TODO what is best : And / Or ?
     @Override
     public Conditions.Condition getUpdateCondition() {
-<span class="nc" id="L233">        return new Conditions.Or(</span>
-<span class="nc" id="L234">            this.previousCard.getUpdateCondition(),</span>
-<span class="nc" id="L235">            this.nextCard.getUpdateCondition()</span>
+<span class="nc" id="L238">        return new Conditions.Or(</span>
+<span class="nc" id="L239">            this.previousCard.getUpdateCondition(),</span>
+<span class="nc" id="L240">            this.nextCard.getUpdateCondition()</span>
         );
     }
 
     @Override
     public int hashCode() {
-<span class="nc" id="L241">        return EntityHelper.hashCode(this);</span>
+<span class="nc" id="L246">        return EntityHelper.hashCode(this);</span>
     }
 
     @Override
     @SuppressWarnings(&quot;EqualsWhichDoesntCheckParameterClass&quot;)
     public boolean equals(Object obj) {
-<span class="nc" id="L247">        return EntityHelper.equals(this, obj);</span>
+<span class="nc" id="L252">        return EntityHelper.equals(this, obj);</span>
     }
 
     @Override
     public String toString() {
-<span class="nc" id="L252">        return &quot;ActivityFlowLink{&quot; + &quot;id=&quot; + id + &quot;, previousCardId=&quot; + previousCardId</span>
+<span class="nc" id="L257">        return &quot;ActivityFlowLink{&quot; + &quot;id=&quot; + id + &quot;, previousCardId=&quot; + previousCardId</span>
             + &quot;, nextCardId=&quot; + nextCardId + &quot;}&quot;;
     }
 

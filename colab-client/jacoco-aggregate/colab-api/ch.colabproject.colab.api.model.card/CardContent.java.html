@@ -19,10 +19,10 @@ import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.api.model.tools.EntityHelper;
 import ch.colabproject.colab.api.model.tracking.Tracking;
 import ch.colabproject.colab.api.security.permissions.Conditions;
-import ch.colabproject.colab.api.ws.channel.WebsocketChannel;
+import ch.colabproject.colab.api.ws.channel.tool.ChannelsBuilders.ChannelsBuilder;
+import ch.colabproject.colab.api.ws.channel.tool.ChannelsBuilders.EmptyChannelBuilder;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 import javax.json.bind.annotation.JsonbTransient;
 import javax.persistence.CascadeType;
 import javax.persistence.Embedded;
@@ -388,11 +388,12 @@ import javax.validation.constraints.NotNull;
     }
 
     @Override
-    public Set&lt;WebsocketChannel&gt; getChannels() {
+    public ChannelsBuilder getChannelsBuilder() {
 <span class="nc bnc" id="L392" title="All 2 branches missed.">        if (this.card != null) {</span>
-<span class="nc" id="L393">            return this.card.getChannels();</span>
+<span class="nc" id="L393">            return this.card.getChannelsBuilder();</span>
         } else {
-<span class="nc" id="L395">            return Set.of();</span>
+            // such an orphan shouldn't exist...
+<span class="nc" id="L396">            return new EmptyChannelBuilder();</span>
         }
     }
 
@@ -403,33 +404,33 @@ import javax.validation.constraints.NotNull;
         // any member can read any card and card content of the project
         // if a member lacks the read right on a card, it will not be able to read the deliverables,
         // resources and so on, but it will still be able to view the card &quot;from the outside&quot;
-<span class="nc" id="L406">        return new Conditions.IsCurrentUserMemberOfProject(getProject());</span>
+<span class="nc" id="L407">        return new Conditions.IsCurrentUserMemberOfProject(getProject());</span>
     }
 
     @Override
     public Conditions.Condition getUpdateCondition() {
-<span class="nc bnc" id="L411" title="All 2 branches missed.">        if (this.card != null) {</span>
-<span class="nc" id="L412">            return this.card.getUpdateCondition();</span>
+<span class="nc bnc" id="L412" title="All 2 branches missed.">        if (this.card != null) {</span>
+<span class="nc" id="L413">            return this.card.getUpdateCondition();</span>
         } else {
             // orphan content should never happen
-<span class="nc" id="L415">            return Conditions.defaultForOrphan;</span>
+<span class="nc" id="L416">            return Conditions.defaultForOrphan;</span>
         }
     }
 
     @Override
     public int hashCode() {
-<span class="nc" id="L421">        return EntityHelper.hashCode(this);</span>
+<span class="nc" id="L422">        return EntityHelper.hashCode(this);</span>
     }
 
     @Override
     @SuppressWarnings(&quot;EqualsWhichDoesntCheckParameterClass&quot;)
     public boolean equals(Object obj) {
-<span class="nc" id="L427">        return EntityHelper.equals(this, obj);</span>
+<span class="nc" id="L428">        return EntityHelper.equals(this, obj);</span>
     }
 
     @Override
     public String toString() {
-<span class="nc" id="L432">        return &quot;CardContent{&quot; + &quot;id=&quot; + id + &quot;, title=&quot; + title + &quot;, status=&quot; + status</span>
+<span class="nc" id="L433">        return &quot;CardContent{&quot; + &quot;id=&quot; + id + &quot;, title=&quot; + title + &quot;, status=&quot; + status</span>
             + &quot;, completion=&quot; + completionLevel + &quot;, completionMode=&quot; + completionMode
             + &quot;, frozen=&quot; + frozen + &quot;, cardId=&quot; + cardId + &quot;}&quot;;
     }

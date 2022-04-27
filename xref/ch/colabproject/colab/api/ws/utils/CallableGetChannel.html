@@ -16,7 +16,7 @@
 <a class="jxr_linenumber" name="L8" href="#L8">8</a>   
 <a class="jxr_linenumber" name="L9" href="#L9">9</a>   <strong class="jxr_keyword">import</strong> ch.colabproject.colab.api.Helper;
 <a class="jxr_linenumber" name="L10" href="#L10">10</a>  <strong class="jxr_keyword">import</strong> ch.colabproject.colab.api.controller.CdiBridgeSingleton;
-<a class="jxr_linenumber" name="L11" href="#L11">11</a>  <strong class="jxr_keyword">import</strong> ch.colabproject.colab.api.ws.channel.WebsocketEffectiveChannel;
+<a class="jxr_linenumber" name="L11" href="#L11">11</a>  <strong class="jxr_keyword">import</strong> ch.colabproject.colab.api.ws.channel.model.WebsocketChannel;
 <a class="jxr_linenumber" name="L12" href="#L12">12</a>  <strong class="jxr_keyword">import</strong> java.io.Serializable;
 <a class="jxr_linenumber" name="L13" href="#L13">13</a>  <strong class="jxr_keyword">import</strong> java.util.Map;
 <a class="jxr_linenumber" name="L14" href="#L14">14</a>  <strong class="jxr_keyword">import</strong> java.util.concurrent.Callable;
@@ -29,15 +29,15 @@
 <a class="jxr_linenumber" name="L21" href="#L21">21</a>  <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">class</strong> <a name="CallableGetChannel" href="../../../../../../ch/colabproject/colab/api/ws/utils/CallableGetChannel.html#CallableGetChannel">CallableGetChannel</a>
 <a class="jxr_linenumber" name="L22" href="#L22">22</a>      <strong class="jxr_keyword">implements</strong>
 <a class="jxr_linenumber" name="L23" href="#L23">23</a>      Serializable,
-<a class="jxr_linenumber" name="L24" href="#L24">24</a>      Callable&lt;Map&lt;WebsocketEffectiveChannel, Integer&gt;&gt; {
+<a class="jxr_linenumber" name="L24" href="#L24">24</a>      Callable&lt;Map&lt;WebsocketChannel, Integer&gt;&gt; {
 <a class="jxr_linenumber" name="L25" href="#L25">25</a>  
 <a class="jxr_linenumber" name="L26" href="#L26">26</a>      <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">final</strong> <strong class="jxr_keyword">long</strong> serialVersionUID = 1L;
 <a class="jxr_linenumber" name="L27" href="#L27">27</a>  
 <a class="jxr_linenumber" name="L28" href="#L28">28</a>      @Override
-<a class="jxr_linenumber" name="L29" href="#L29">29</a>      <strong class="jxr_keyword">public</strong> Map&lt;WebsocketEffectiveChannel, Integer&gt; call() <strong class="jxr_keyword">throws</strong> Exception {
+<a class="jxr_linenumber" name="L29" href="#L29">29</a>      <strong class="jxr_keyword">public</strong> Map&lt;WebsocketChannel, Integer&gt; call() <strong class="jxr_keyword">throws</strong> Exception {
 <a class="jxr_linenumber" name="L30" href="#L30">30</a>          <a name="CdiBridgeSingleton" href="../../../../../../ch/colabproject/colab/api/controller/CdiBridgeSingleton.html#CdiBridgeSingleton">CdiBridgeSingleton</a> cdiBridge = Helper.lookup(CdiBridgeSingleton.<strong class="jxr_keyword">class</strong>);
 <a class="jxr_linenumber" name="L31" href="#L31">31</a>          <strong class="jxr_keyword">if</strong> (cdiBridge != <strong class="jxr_keyword">null</strong>) {
-<a class="jxr_linenumber" name="L32" href="#L32">32</a>              <strong class="jxr_keyword">return</strong> cdiBridge.getSubscrciptionsCount();
+<a class="jxr_linenumber" name="L32" href="#L32">32</a>              <strong class="jxr_keyword">return</strong> cdiBridge.getSubscriptionsCount();
 <a class="jxr_linenumber" name="L33" href="#L33">33</a>          } <strong class="jxr_keyword">else</strong> {
 <a class="jxr_linenumber" name="L34" href="#L34">34</a>              <strong class="jxr_keyword">return</strong> Map.of();
 <a class="jxr_linenumber" name="L35" href="#L35">35</a>          }

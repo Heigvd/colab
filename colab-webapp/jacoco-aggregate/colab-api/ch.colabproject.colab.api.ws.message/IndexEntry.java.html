@@ -7,16 +7,15 @@
 package ch.colabproject.colab.api.ws.message;
 
 import ch.colabproject.colab.api.model.WithWebsocketChannels;
-import ch.colabproject.colab.api.ws.channel.WebsocketChannel;
+import ch.colabproject.colab.api.ws.channel.tool.ChannelsBuilders.ChannelsBuilder;
 import ch.colabproject.colab.generator.model.interfaces.WithJsonDiscriminator;
-import java.util.Set;
 import javax.json.bind.annotation.JsonbTransient;
 import javax.validation.constraints.NotNull;
 
 /**
  * No need to send full object details, @class + id is way sufficient
  */
-<span class="nc" id="L19">public class IndexEntry implements WithJsonDiscriminator {</span>
+<span class="nc" id="L18">public class IndexEntry implements WithJsonDiscriminator {</span>
 
     private static final long serialVersionUID = 1L;
     /**
@@ -40,13 +39,13 @@ import javax.validation.constraints.NotNull;
      * Get the channels this entity shall be sent through.
      */
     @JsonbTransient
-    private Set&lt;WebsocketChannel&gt; channels;
+    private ChannelsBuilder channelsBuilder;
 
     /**
      * @return index entry type
      */
     public String getType() {
-<span class="nc" id="L49">        return type;</span>
+<span class="nc" id="L48">        return type;</span>
     }
 
     /**
@@ -55,14 +54,14 @@ import javax.validation.constraints.NotNull;
      * @param type type of the indexed object
      */
     public void setType(String type) {
-<span class="nc" id="L58">        this.type = type;</span>
-<span class="nc" id="L59">    }</span>
+<span class="nc" id="L57">        this.type = type;</span>
+<span class="nc" id="L58">    }</span>
 
     /**
      * @return object id
      */
     public Long getId() {
-<span class="nc" id="L65">        return id;</span>
+<span class="nc" id="L64">        return id;</span>
     }
 
     /**
@@ -71,8 +70,8 @@ import javax.validation.constraints.NotNull;
      * @param id id of object
      */
     public void setId(Long id) {
-<span class="nc" id="L74">        this.id = id;</span>
-<span class="nc" id="L75">    }</span>
+<span class="nc" id="L73">        this.id = id;</span>
+<span class="nc" id="L74">    }</span>
 
     /**
      * Get payload
@@ -80,7 +79,7 @@ import javax.validation.constraints.NotNull;
      * @return the payload
      */
     public Object getPayload() {
-<span class="nc" id="L83">        return payload;</span>
+<span class="nc" id="L82">        return payload;</span>
     }
 
     /**
@@ -89,26 +88,26 @@ import javax.validation.constraints.NotNull;
      * @param payload set extra data
      */
     public void setPayload(Object payload) {
-<span class="nc" id="L92">        this.payload = payload;</span>
-<span class="nc" id="L93">    }</span>
+<span class="nc" id="L91">        this.payload = payload;</span>
+<span class="nc" id="L92">    }</span>
 
     /**
-     * get channels
+     * get the channels builder
      *
-     * @return channels
+     * @return channels builder
      */
-    public Set&lt;WebsocketChannel&gt; getChannels() {
-<span class="nc" id="L101">        return channels;</span>
+    public ChannelsBuilder getChannelsBuilder() {
+<span class="nc" id="L100">        return channelsBuilder;</span>
     }
 
     /**
-     * set channels
+     * set the channels builder
      *
-     * @param channels new channels
+     * @param channelsBuilder the channels builder
      */
-    public void setChannels(Set&lt;WebsocketChannel&gt; channels) {
-<span class="nc" id="L110">        this.channels = channels;</span>
-<span class="nc" id="L111">    }</span>
+    public void setChannelsBuilder(ChannelsBuilder channelsBuilder) {
+<span class="nc" id="L109">        this.channelsBuilder = channelsBuilder;</span>
+<span class="nc" id="L110">    }</span>
 
     /**
      * Create an new index entry based on the given wihId object
@@ -118,12 +117,13 @@ import javax.validation.constraints.NotNull;
      * @return index entry which represent the object
      */
     public static IndexEntry build(WithWebsocketChannels object) {
-<span class="nc" id="L121">        IndexEntry entry = new IndexEntry();</span>
+<span class="nc" id="L120">        IndexEntry entry = new IndexEntry();</span>
 
-<span class="nc" id="L123">        entry.type = object.getJsonDiscriminator();</span>
-<span class="nc" id="L124">        entry.id = object.getId();</span>
-<span class="nc" id="L125">        entry.payload = object.getIndexEntryPayload();</span>
-<span class="nc" id="L126">        entry.channels = object.getChannels();</span>
+<span class="nc" id="L122">        entry.type = object.getJsonDiscriminator();</span>
+<span class="nc" id="L123">        entry.id = object.getId();</span>
+<span class="nc" id="L124">        entry.payload = object.getIndexEntryPayload();</span>
+
+<span class="nc" id="L126">        entry.channelsBuilder = object.getChannelsBuilder();</span>
 
 <span class="nc" id="L128">        return entry;</span>
     }

@@ -6,17 +6,17 @@
  */
 package ch.colabproject.colab.api.model.team.acl;
 
+import static ch.colabproject.colab.api.model.team.TeamMember.TEAM_SEQUENCE_NAME;
 import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.model.ColabEntity;
 import ch.colabproject.colab.api.model.WithWebsocketChannels;
 import ch.colabproject.colab.api.model.card.Card;
-import ch.colabproject.colab.api.model.team.TeamRole;
 import ch.colabproject.colab.api.model.team.TeamMember;
-import static ch.colabproject.colab.api.model.team.TeamMember.TEAM_SEQUENCE_NAME;
+import ch.colabproject.colab.api.model.team.TeamRole;
 import ch.colabproject.colab.api.model.tracking.Tracking;
 import ch.colabproject.colab.api.security.permissions.Conditions;
-import ch.colabproject.colab.api.ws.channel.WebsocketChannel;
-import java.util.Set;
+import ch.colabproject.colab.api.ws.channel.tool.ChannelsBuilders.ChannelsBuilder;
+import ch.colabproject.colab.api.ws.channel.tool.ChannelsBuilders.EmptyChannelBuilder;
 import javax.json.bind.annotation.JsonbTransient;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
@@ -271,30 +271,31 @@ import javax.validation.constraints.NotNull;
 <span class="nc" id="L271">    }</span>
 
     @Override
-    public Set&lt;WebsocketChannel&gt; getChannels() {
+    public ChannelsBuilder getChannelsBuilder() {
 <span class="nc bnc" id="L275" title="All 2 branches missed.">        if (this.getCard() != null) {</span>
-<span class="nc" id="L276">            return this.getCard().getChannels();</span>
+<span class="nc" id="L276">            return this.getCard().getChannelsBuilder();</span>
         } else {
-<span class="nc" id="L278">            return Set.of();</span>
+            // such an orphan shouldn't exist...
+<span class="nc" id="L279">            return new EmptyChannelBuilder();</span>
         }
     }
 
     @Override
     @JsonbTransient
     public Conditions.Condition getReadCondition() {
-<span class="nc bnc" id="L285" title="All 2 branches missed.">        if (this.getCard() != null) {</span>
-<span class="nc" id="L286">            return this.getCard().getReadCondition();</span>
+<span class="nc bnc" id="L286" title="All 2 branches missed.">        if (this.getCard() != null) {</span>
+<span class="nc" id="L287">            return this.getCard().getReadCondition();</span>
         } else {
-<span class="nc" id="L288">            return Conditions.alwaysTrue;</span>
+<span class="nc" id="L289">            return Conditions.alwaysTrue;</span>
         }
     }
 
     @Override
     public Conditions.Condition getUpdateCondition() {
-<span class="nc bnc" id="L294" title="All 2 branches missed.">        if (this.getCard() != null) {</span>
-<span class="nc" id="L295">            return this.getCard().getUpdateCondition();</span>
+<span class="nc bnc" id="L295" title="All 2 branches missed.">        if (this.getCard() != null) {</span>
+<span class="nc" id="L296">            return this.getCard().getUpdateCondition();</span>
         } else {
-<span class="nc" id="L297">            return Conditions.alwaysTrue;</span>
+<span class="nc" id="L298">            return Conditions.alwaysTrue;</span>
         }
     }
 
