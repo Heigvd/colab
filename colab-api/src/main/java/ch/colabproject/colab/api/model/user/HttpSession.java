@@ -29,6 +29,7 @@ import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Size;
 
 /**
  * store session related information
@@ -64,6 +65,7 @@ public class HttpSession implements WithId, WithJsonDiscriminator, WithPermissio
      * raw secret, never persisted, never serialized to client. This is just a temporary field to
      * store the raw value to put in SET-COOKIE
      */
+    @Size(max = 255)
     @JsonbTransient
     @Transient
     private String rawSessionSecret;
@@ -85,6 +87,7 @@ public class HttpSession implements WithId, WithJsonDiscriminator, WithPermissio
     /**
      * User Agent who create the session
      */
+    @Size(max = 255)
     private String userAgent;
 
     /**

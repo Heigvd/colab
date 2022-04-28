@@ -21,13 +21,13 @@ import javax.persistence.FetchType;
 import javax.persistence.Lob;
 import javax.persistence.OneToOne;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
 
 /**
  * Container of text data
  *
  * @author sandra
  */
-// TODO adjust the constraints / indexes
 @Entity
 @DiscriminatorValue("TEXT_DATA_BLOCK")
 public class TextDataBlock extends Document {
@@ -41,11 +41,13 @@ public class TextDataBlock extends Document {
     /**
      * The mime type of the information
      */
+    @Size(max = 255)
     private String mimeType;
 
     /**
      * The information contained
      */
+    @Size(max = 255)
     @Lob
     private String textData;
 
@@ -53,6 +55,7 @@ public class TextDataBlock extends Document {
      * Current revision hash
      */
     @NotBlank
+    @Size(max = 255)
     private String revision = "0";
 
     /**

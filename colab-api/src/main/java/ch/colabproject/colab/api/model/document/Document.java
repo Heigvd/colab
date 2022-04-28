@@ -48,7 +48,6 @@ import javax.persistence.Transient;
  *
  * @author sandra
  */
-//TODO adjust the constraints / indexes / cascade / fetch
 @Entity
 @Table(
     indexes = {

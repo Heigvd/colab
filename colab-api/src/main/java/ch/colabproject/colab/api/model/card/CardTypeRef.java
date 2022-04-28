@@ -16,6 +16,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.persistence.Transient;
+import javax.validation.constraints.NotNull;
 
 /**
  * Reference to another existing abstract card type.
@@ -46,6 +47,7 @@ public class CardTypeRef extends AbstractCardType {
      * The abstract card type this reference aims at
      */
     @ManyToOne(fetch = FetchType.LAZY)
+    @NotNull
     @JsonbTransient
     private AbstractCardType target;
 

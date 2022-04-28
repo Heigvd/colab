@@ -47,8 +47,8 @@ public class ResetLocalAccountPasswordToken extends Token {
     /**
      * The local account the token is linked to
      */
+    @OneToOne // FetchType.EAGER is fine
     @NotNull
-    @OneToOne
     @JsonbTransient
     private LocalAccount localAccount;
 

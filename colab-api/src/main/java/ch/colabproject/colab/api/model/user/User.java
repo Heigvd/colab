@@ -35,6 +35,7 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
 
 /**
  * Represents a registered user. A user may authenticate by several means (accounts).
@@ -96,27 +97,32 @@ public class User implements ColabEntity, WithWebsocketChannels {
     /**
      * Firstname
      */
+    @Size(max = 255)
     private String firstname;
 
     /**
      * Lastname
      */
+    @Size(max = 255)
     private String lastname;
 
     /**
      * short name to be displayed
      */
+    @Size(max = 255)
     private String commonname;
 
     /**
      * User affiliation
      */
+    @Size(max = 255)
     private String affiliation;
 
     /**
      * System-wide unique name. Alphanumeric only
      */
     @Pattern(regexp = "[a-zA-Z0-9_\\-\\.]+")
+    @Size(max = 255)
     @NotNull
     private String username;
 
@@ -126,6 +132,9 @@ public class User implements ColabEntity, WithWebsocketChannels {
     @OneToMany(mappedBy = "user", cascade = { CascadeType.PERSIST, CascadeType.REMOVE })
     @JsonbTransient
     private List<Account> accounts = new ArrayList<>();
+
+    // Note : the TeamMember list must be retrieved with a DAO
+    // because the user must not be seen as changed when a team member is added or removed
 
     // ---------------------------------------------------------------------------------------------
     // getters and setters

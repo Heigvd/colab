@@ -22,13 +22,13 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 /**
  * A resource is a document provided to help the users to fulfill their goals.
  *
  * @author sandra
  */
-// TODO check if a constraint is needed for uniqueness link between a document and a resource
 @Entity
 @Table(
     indexes = {
@@ -47,6 +47,7 @@ public class Resource extends AbstractResource {
     /**
      * The title
      */
+    @Size(max = 255)
     private String title;
 
     /**

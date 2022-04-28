@@ -47,8 +47,8 @@ public class VerifyLocalAccountToken extends Token {
     /**
      * The local account the token shall validate
      */
+    @OneToOne // FetchType.EAGER is fine
     @NotNull
-    @OneToOne
     @JsonbTransient
     private LocalAccount localAccount;
 

@@ -41,6 +41,7 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import org.apache.commons.collections4.CollectionUtils;
 
 /**
@@ -52,7 +53,8 @@ import org.apache.commons.collections4.CollectionUtils;
 @Table(
     indexes = {
         @Index(columnList = "project_id"),
-        @Index(columnList = "user_id")
+        @Index(columnList = "user_id"),
+        @Index(columnList = "project_id, user_id", unique = true),
     }
 )
 @NamedQuery(
@@ -99,6 +101,7 @@ public class TeamMember implements ColabEntity, WithWebsocketChannels {
     /**
      * Optional display name. Such a name will hide user.commonName.
      */
+    @Size(max = 255)
     private String displayName;
 
     /**
@@ -125,6 +128,7 @@ public class TeamMember implements ColabEntity, WithWebsocketChannels {
      * The project
      */
     @ManyToOne(fetch = FetchType.LAZY)
+    @NotNull
     @JsonbTransient
     private Project project;
 

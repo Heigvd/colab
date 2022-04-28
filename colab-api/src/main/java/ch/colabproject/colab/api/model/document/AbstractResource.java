@@ -41,6 +41,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
+import javax.validation.constraints.Size;
 
 /**
  * A resource is a document provided to help the users to fulfill their goals.
@@ -87,6 +88,7 @@ public abstract class AbstractResource
     /**
      * The category to classify the resource
      */
+    @Size(max = 255)
     private String category;
 
     /**
