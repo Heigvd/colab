@@ -53,8 +53,7 @@ import org.apache.commons.collections4.CollectionUtils;
 @Table(
     indexes = {
         @Index(columnList = "project_id"),
-        @Index(columnList = "user_id"),
-        @Index(columnList = "project_id, user_id", unique = true),
+        @Index(columnList = "user_id")
     }
 )
 @NamedQuery(
