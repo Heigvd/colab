@@ -137,6 +137,9 @@ public abstract class AbstractResource
     @JsonbTransient
     private List<StickyNoteLink> stickyNoteLinksAsSrc = new ArrayList<>();
 
+    // Note : the List<ResourceRef> of direct references must be retrieved with a DAO
+    // because the abstract resource must not be seen as changed when a reference is added or removed
+
     // ---------------------------------------------------------------------------------------------
     // getters and setters
     // ---------------------------------------------------------------------------------------------

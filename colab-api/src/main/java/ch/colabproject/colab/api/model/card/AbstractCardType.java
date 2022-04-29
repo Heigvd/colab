@@ -130,6 +130,9 @@ public abstract class AbstractCardType implements ColabEntity, WithWebsocketChan
     @JsonbTransient
     private List<AbstractResource> directAbstractResources = new ArrayList<>();
 
+    // Note : the List<CardTypeRef> of direct references must be retrieved with a DAO
+    // because the abstract card type must not be seen as changed when a reference is added or removed
+
     // ---------------------------------------------------------------------------------------------
     // getters and setters
     // ---------------------------------------------------------------------------------------------
