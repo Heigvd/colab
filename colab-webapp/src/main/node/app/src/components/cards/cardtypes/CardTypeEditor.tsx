@@ -20,7 +20,10 @@ import { Route, Routes, useNavigate, useParams } from 'react-router-dom';
 import Creatable from 'react-select/creatable';
 import * as API from '../../../API/api';
 import { updateDocumentText } from '../../../API/api';
-import { useAndLoadCardType, useCardTypeTags } from '../../../selectors/cardTypeSelector';
+import {
+  useAndLoadCardType,
+  useCurrentProjectCardTypeTags,
+} from '../../../selectors/cardTypeSelector';
 import { useProjectBeingEdited } from '../../../selectors/projectSelector';
 import { dispatch } from '../../../store/store';
 import AvailabilityStatusIndicator from '../../common/AvailabilityStatusIndicator';
@@ -55,7 +58,7 @@ export default function CardTypeEditor({ className }: Props): JSX.Element {
 
   const { project } = useProjectBeingEdited();
 
-  const allTags = useCardTypeTags();
+  const allTags = useCurrentProjectCardTypeTags();
   const options = allTags.map(tag => ({ label: tag, value: tag }));
   const navigate = useNavigate();
 

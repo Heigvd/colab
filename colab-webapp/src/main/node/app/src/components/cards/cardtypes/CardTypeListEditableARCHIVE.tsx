@@ -10,7 +10,7 @@ import { faCheckSquare, faSquare } from '@fortawesome/free-regular-svg-icons';
 import * as React from 'react';
 import Creatable from 'react-select/creatable';
 import * as API from '../../../API/api';
-import { useCardTypeTags } from '../../../selectors/cardTypeSelector';
+import { useCurrentProjectCardTypeTags } from '../../../selectors/cardTypeSelector';
 import { useAppDispatch } from '../../../store/hooks';
 import { CardTypeAllInOne as CardType } from '../../../types/cardTypeDefinition';
 import { BlockEditorWrapper } from '../../blocks/BlockEditorWrapper';
@@ -44,7 +44,7 @@ const style = css({
 export default function CardTypeListEditable({ cardType }: DisplayProps): JSX.Element {
   const dispatch = useAppDispatch();
 
-  const allTags = useCardTypeTags();
+  const allTags = useCurrentProjectCardTypeTags();
   const options = allTags.map(tag => ({ label: tag, value: tag }));
 
   return (

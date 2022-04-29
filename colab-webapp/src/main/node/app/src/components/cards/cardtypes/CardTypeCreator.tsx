@@ -11,7 +11,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { entityIs } from 'colab-rest-client';
 import * as React from 'react';
 import * as API from '../../../API/api';
-import { useCardTypeTags } from '../../../selectors/cardTypeSelector';
+import { useCurrentProjectCardTypeTags } from '../../../selectors/cardTypeSelector';
 import { useProjectBeingEdited } from '../../../selectors/projectSelector';
 import { useAppDispatch } from '../../../store/hooks';
 import Button from '../../common/Button';
@@ -64,7 +64,7 @@ export default function CardTypeCreator({
     [dispatch, afterCreation, global, project],
   );
 
-  const allTags = useCardTypeTags();
+  const allTags = useCurrentProjectCardTypeTags();
   const fields: Field<NewType>[] = [
     {
       key: 'title',

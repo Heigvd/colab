@@ -98,7 +98,6 @@ export default function CardTypeItem({
                           <FontAwesomeIcon icon={faMapPin} /> Use in project
                         </>
                       ),
-                      // TODO sandra work in progress : not working for global for the moment (access rights problem)
                       action: () =>
                         dispatch(API.addCardTypeToProject({ cardType, project: editedProject })),
                     },
