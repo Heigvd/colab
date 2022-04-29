@@ -39,7 +39,7 @@ import { DocumentKind } from '../components/documents/documentCommonType';
 import { hashPassword } from '../SecurityHelper';
 import { addNotification } from '../store/notification';
 import { ColabState, getStore } from '../store/store';
-import { CardTypeAllInOne, CardTypeOnOneSOwn } from '../types/cardTypeDefinition';
+import { CardTypeAllInOne, CardTypeOnOneSOwn, CardTypeWithRef } from '../types/cardTypeDefinition';
 
 const winPath = window.location.pathname;
 
@@ -666,11 +666,11 @@ export const deleteCardType = createAsyncThunk(
 /**
  * Remove the card type from the project. Can be done only if not used.
  */
-export const removeCardTypeFromProject = createAsyncThunk(
+export const removeCardTypeRefFromProject = createAsyncThunk(
   'cardType/removeFromProject',
-  async ({ cardType, project }: { cardType: CardTypeAllInOne; project: Project }) => {
+  async ({ cardType, project }: { cardType: CardTypeWithRef; project: Project }) => {
     if (cardType.ownId && project.id) {
-      return await restClient.CardTypeRestEndpoint.removeCardTypeFromProject(
+      return await restClient.CardTypeRestEndpoint.removeCardTypeRefFromProject(
         cardType.ownId,
         project.id,
       );

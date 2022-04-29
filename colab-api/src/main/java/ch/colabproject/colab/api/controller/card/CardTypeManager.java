@@ -104,6 +104,46 @@ public class CardTypeManager {
     }
 
     /**
+     * Retrieve the card type. If not found, throw a {@link HttpErrorMessage}.
+     *
+     * @param cardTypeId the id of the card type
+     *
+     * @return the card type if found
+     *
+     * @throws HttpErrorMessage if the card type was not found
+     */
+    public CardType assertAndGetCardType(Long cardTypeId) {
+        AbstractCardType cardTypeOrRef = assertAndGetCardTypeOrRef(cardTypeId);
+
+        if (!(cardTypeOrRef instanceof CardType)) {
+            logger.error("#{} is not a card type", cardTypeId);
+            throw HttpErrorMessage.relatedObjectNotFoundError();
+        }
+
+        return (CardType) cardTypeOrRef;
+    }
+
+    /**
+     * Retrieve the card type reference. If not found, throw a {@link HttpErrorMessage}.
+     *
+     * @param cardTypeRefId the id of the card type reference
+     *
+     * @return the card type reference if found
+     *
+     * @throws HttpErrorMessage if the card type reference was not found
+     */
+    public CardTypeRef assertAndGetCardTypeRef(Long cardTypeRefId) {
+        AbstractCardType cardTypeOrRef = assertAndGetCardTypeOrRef(cardTypeRefId);
+
+        if (!(cardTypeOrRef instanceof CardTypeRef)) {
+            logger.error("#{} is not a card type reference", cardTypeRefId);
+            throw HttpErrorMessage.relatedObjectNotFoundError();
+        }
+
+        return (CardTypeRef) cardTypeOrRef;
+    }
+
+    /**
      * Expand project own types.
      *
      * @param project type owner
@@ -208,20 +248,15 @@ public class CardTypeManager {
         return computeEffectiveCardTypeOrRef(cardTypeOrRef, project);
     }
 
-    // TODO sandra work in progress - still need to be sharpened
     /**
-     * Remove the card type use of the project. That means :
-     * <ul>
-     * <li>either delete the card type if it belongs to the project and has no use</li>
-     * <li>or delete the reference in the project if it has no usage</li>
-     * </ul>
-     * If the abstract card type is used, throws an error.
+     * Remove the card type use of the project. That means delete the reference in the project if it
+     * has no usage. If the abstract card type is used, throws an error.
      *
-     * @param cardTypeId the id of the abstract card type no more useful for the project
+     * @param cardTypeId the id of the card type reference no more useful for the project
      * @param projectId  the id of the project in which we don't want to use the card type anymore
      */
-    public void removeCardTypeFromProject(Long cardTypeId, Long projectId) {
-        AbstractCardType cardTypeOrRef = assertAndGetCardTypeOrRef(cardTypeId);
+    public void removeCardTypeRefFromProject(Long cardTypeId, Long projectId) {
+        CardTypeRef cardTypeOrRef = assertAndGetCardTypeRef(cardTypeId);
         Project project = projectManager.assertAndGetProject(projectId);
 
         if (!(project.getElementsToBeDefined().contains(cardTypeOrRef))) {
@@ -229,20 +264,20 @@ public class CardTypeManager {
             return;
         }
 
-        deleteCardType(cardTypeOrRef);
+        deleteCardTypeOrRef(cardTypeOrRef);
     }
 
     /**
      * Delete the given card type
      *
-     * @param cardTypeOrRefId the id of the card type to delete
+     * @param cardTypeId the id of the card type to delete
      *
-     * @return the freshly deleted card
+     * @return the freshly deleted card type
      */
-    public CardType deleteCardType(Long cardTypeOrRefId) {
-        AbstractCardType cardTypeOrRef = assertAndGetCardTypeOrRef(cardTypeOrRefId);
+    public CardType deleteCardType(Long cardTypeId) {
+        CardType cardType = assertAndGetCardType(cardTypeId);
 
-        return deleteCardType(cardTypeOrRef);
+        return (CardType) deleteCardTypeOrRef(cardType);
     }
 
     /**
@@ -252,7 +287,7 @@ public class CardTypeManager {
      *
      * @return the freshly deleted card
      */
-    private CardType deleteCardType(AbstractCardType cardTypeOrRef) {
+    private AbstractCardType deleteCardTypeOrRef(AbstractCardType cardTypeOrRef) {
         if (!checkDeletionAcceptability(cardTypeOrRef)) {
             throw HttpErrorMessage.dataIntegrityFailure();
         }
@@ -261,7 +296,7 @@ public class CardTypeManager {
             cardTypeOrRef.getProject().getElementsToBeDefined().remove(cardTypeOrRef);
         }
 
-        return cardTypeDao.deleteCardType(cardTypeOrRef.getId());
+        return cardTypeDao.deleteAbstractCardType(cardTypeOrRef.getId());
     }
 
     /**

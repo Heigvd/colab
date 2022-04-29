@@ -182,8 +182,8 @@ export default function CardTypeEditor({ className }: Props): JSX.Element {
                             </p>
                           }
                           onConfirm={() => {
-                            if (project) {
-                              dispatch(API.removeCardTypeFromProject({ cardType, project }));
+                            if (project && cardType.kind === 'own') {
+                              dispatch(API.deleteCardType(cardType));
                               navigate('../');
                             }
                           }}

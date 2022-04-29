@@ -175,16 +175,6 @@ public class CardTypeDao {
     }
 
     /**
-     * @param id id of the card type to fetch
-     *
-     * @return the card type with the given id or null if such a card type does not exists
-     */
-    private CardType findCardType(Long id) {
-        logger.debug("get card type #{}", id);
-        return em.find(CardType.class, id);
-    }
-
-    /**
      * Update card type
      *
      * @param <T>           a sub type of AbstractCardType
@@ -224,10 +214,10 @@ public class CardTypeDao {
      *
      * @return just deleted card type
      */
-    public CardType deleteCardType(Long id) {
+    public AbstractCardType deleteAbstractCardType(Long id) {
         logger.debug("delete card type #{}", id);
         // TODO: move to recycle bin first
-        CardType cardType = this.findCardType(id);
+        AbstractCardType cardType = this.findAbstractCardType(id);
         em.remove(cardType);
         return cardType;
     }

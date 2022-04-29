@@ -71,7 +71,7 @@ export default function CardTypeDisplay({
                   //     </>
                   //   ),
                   //   // Note : not working for inherited from other project for the moment (mostly)
-                  //   action: () => dispatch(API.removeCardTypeFromProject({ cardType, project })),
+                  //   action: () => dispatch(API.removeCardTypeRefFromProject({ cardType, project })),
                   // },
                 ]),
           ]}
