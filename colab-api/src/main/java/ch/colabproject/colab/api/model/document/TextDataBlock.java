@@ -47,7 +47,6 @@ public class TextDataBlock extends Document {
     /**
      * The information contained
      */
-    @Size(max = 255)
     @Lob
     private String textData;
 
