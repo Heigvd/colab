@@ -281,6 +281,7 @@ public abstract class AbstractCardType implements ColabEntity, WithWebsocketChan
     /**
      * @return is now published or was just unpublished
      */
+    @JsonbTransient
     public boolean isOrWasPublished() {
         return this.isPublished() || this.initialPublished;
     }

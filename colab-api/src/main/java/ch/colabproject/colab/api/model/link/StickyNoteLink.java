@@ -546,6 +546,7 @@ public class StickyNoteLink implements ColabEntity, WithWebsocketChannels {
      *
      * @return project owner
      */
+    @JsonbTransient
     public Project getProject() {
         if (this.destinationCard != null) {
             return this.destinationCard.getProject();
