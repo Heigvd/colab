@@ -53,13 +53,10 @@ const tagStyle = css({
 
 interface CardTypeItemProps {
   cardType: CardType;
-  transferContext?: boolean;
+  usage: 'currentProject' | 'available' | 'global';
 }
 
-export default function CardTypeItem({
-  cardType,
-  transferContext = false,
-}: CardTypeItemProps): JSX.Element {
+export default function CardTypeItem({ cardType, usage }: CardTypeItemProps): JSX.Element {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
@@ -67,113 +64,99 @@ export default function CardTypeItem({
   const editedProjectId = editedProject?.id;
 
   return (
-    <>
-      <Flex direction="column" align="stretch" className={style}>
-        <Flex justify="space-between">
-          <h3>{cardType.title || 'card type'}</h3>
-          <DropDownMenu
-            icon={faEllipsisV}
-            valueComp={{ value: '', label: '' }}
-            buttonClassName={cx(lightIconButtonStyle, css({ marginLeft: '40px' }))}
-            entries={[
-              ...(cardType.projectId === editedProjectId
-                ? [
-                    {
-                      value: 'Edit type',
-                      label: (
-                        <>
-                          <FontAwesomeIcon icon={faPen} /> Edit Type
-                        </>
+    <Flex direction="column" align="stretch" className={style}>
+      <Flex justify="space-between">
+        <h3>{cardType.title || 'card type'}</h3>
+        <DropDownMenu
+          icon={faEllipsisV}
+          valueComp={{ value: '', label: '' }}
+          buttonClassName={cx(lightIconButtonStyle, css({ marginLeft: '40px' }))}
+          entries={[
+            ...((usage === 'currentProject' && cardType.projectId === editedProjectId) ||
+            usage === 'global'
+              ? [
+                  {
+                    value: 'Edit type',
+                    label: (
+                      <>
+                        <FontAwesomeIcon icon={faPen} /> Edit Type
+                      </>
+                    ),
+                    action: () => navigate(`./edit/${cardType.ownId}`),
+                  },
+                ]
+              : []),
+            ...(usage === 'available' && editedProject && cardType.projectId !== editedProjectId
+              ? [
+                  {
+                    value: 'Use this type in the project',
+                    label: (
+                      <>
+                        <FontAwesomeIcon icon={faMapPin} /> Use in project
+                      </>
+                    ),
+                    action: () =>
+                      dispatch(API.addCardTypeToProject({ cardType, project: editedProject })),
+                  },
+                ]
+              : []),
+            .../*!readOnly &&*/
+            (usage === 'currentProject' &&
+            editedProject &&
+            cardType.projectId === editedProjectId &&
+            cardType.kind === 'referenced'
+              ? [
+                  {
+                    value: 'Remove this type from the project',
+                    label: (
+                      <>
+                        <FontAwesomeIcon icon={faExchangeAlt} /> Remove from project
+                      </>
+                    ),
+                    action: () =>
+                      dispatch(
+                        API.removeCardTypeRefFromProject({ cardType, project: editedProject }),
                       ),
-                      action: () => navigate(`./edit/${cardType.ownId}`),
-                    },
-                  ]
-                : []),
-              ...(transferContext && editedProject && cardType.projectId !== editedProjectId
-                ? [
-                    {
-                      value: 'Use this type in the project',
-                      label: (
-                        <>
-                          <FontAwesomeIcon icon={faMapPin} /> Use in project
-                        </>
-                      ),
-                      action: () =>
-                        dispatch(API.addCardTypeToProject({ cardType, project: editedProject })),
-                    },
-                  ]
-                : []),
-              .../*!readOnly &&*/
-              (editedProject &&
-              cardType.projectId === editedProjectId &&
-              cardType.kind === 'referenced'
-                ? [
-                    {
-                      value: 'Remove this type from the project',
-                      label: (
-                        <>
-                          <FontAwesomeIcon icon={faExchangeAlt} /> Remove from project
-                        </>
-                      ),
-                      action: () =>
-                        dispatch(
-                          API.removeCardTypeRefFromProject({ cardType, project: editedProject }),
-                        ),
-                    },
-                  ]
-                : []),
-              .../*!readOnly &&*/
-              (editedProject && cardType.projectId === editedProjectId && cardType.kind === 'own'
-                ? [
-                    {
-                      value: 'Delete type',
-                      label: (
-                        <ConfirmDeleteModal
-                          buttonLabel={
-                            <>
-                              <FontAwesomeIcon icon={faTrash} /> Delete type
-                            </>
-                          }
-                          message={
-                            <p>
-                              Are you <strong>sure</strong> you want to delete this card type?
-                            </p>
-                          }
-                          onConfirm={() => dispatch(API.deleteCardType(cardType))}
-                          confirmButtonLabel="Delete type"
-                        />
-                      ),
-                    },
-                  ]
-                : []),
-            ]}
-            onSelect={val => {
-              val.action != null ? val.action() : navigate(val.value);
-            }}
-          />
-        </Flex>
-        <p className={lightItalicText}>
-          <DocTextDisplay id={cardType.purposeId} />
-        </p>
-        <ResourceSummary kind={'CardType'} accessLevel={'READ'} cardTypeId={cardType.ownId} />
-        <TagsDisplay tags={cardType.tags} className={tagStyle} />
-        {/*         <Button
-          icon={cardType.deprecated ? faCheckSquare : faSquare}
-          onClick={() =>
-            dispatch(API.updateCardType({ ...cardType, deprecated: !cardType.deprecated }))
-          }
-        >
-          Deprecated
-        </Button>
-        <Button
-          icon={cardType.published ? faCheckSquare : faSquare}
-          onClick={() =>
-            dispatch(API.updateCardType({ ...cardType, published: !cardType.published }))
-          }
-        >
-          Published
-        </Button> */}
+                  },
+                ]
+              : []),
+            .../*!readOnly &&*/
+            (cardType.kind === 'own' &&
+            ((usage === 'currentProject' && cardType.projectId === editedProjectId) ||
+              usage === 'global')
+              ? [
+                  {
+                    value: 'Delete type',
+                    label: (
+                      <ConfirmDeleteModal
+                        buttonLabel={
+                          <>
+                            <FontAwesomeIcon icon={faTrash} /> Delete type
+                          </>
+                        }
+                        message={
+                          <p>
+                            Are you <strong>sure</strong> you want to delete this card type?
+                          </p>
+                        }
+                        onConfirm={() => dispatch(API.deleteCardType(cardType))}
+                        confirmButtonLabel="Delete type"
+                      />
+                    ),
+                  },
+                ]
+              : []),
+          ]}
+          onSelect={val => {
+            val.action != null ? val.action() : navigate(val.value);
+          }}
+        />
       </Flex>
-    </>
+      <p className={lightItalicText}>
+        <DocTextDisplay id={cardType.purposeId} />
+      </p>
+      <ResourceSummary kind={'CardType'} accessLevel={'READ'} cardTypeId={cardType.ownId} />
+      <TagsDisplay tags={cardType.tags} className={tagStyle} />
+    </Flex>
   );
 }

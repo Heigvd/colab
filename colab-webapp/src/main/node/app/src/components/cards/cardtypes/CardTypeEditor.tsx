@@ -23,6 +23,7 @@ import { updateDocumentText } from '../../../API/api';
 import {
   useAndLoadCardType,
   useCurrentProjectCardTypeTags,
+  useGlobalCardTypeTags,
 } from '../../../selectors/cardTypeSelector';
 import { useProjectBeingEdited } from '../../../selectors/projectSelector';
 import { dispatch } from '../../../store/store';
@@ -49,21 +50,26 @@ import SideCollapsiblePanel from './../SideCollapsiblePanel';
 
 interface Props {
   className?: string;
+  usage: 'currentProject' | 'global';
 }
 
-export default function CardTypeEditor({ className }: Props): JSX.Element {
-  const id = useParams<'id'>();
-  const typeId = +id.id!;
-  const { cardType, status } = useAndLoadCardType(typeId);
-
-  const { project } = useProjectBeingEdited();
-
-  const allTags = useCurrentProjectCardTypeTags();
-  const options = allTags.map(tag => ({ label: tag, value: tag }));
+export default function CardTypeEditor({ className, usage }: Props): JSX.Element {
   const navigate = useNavigate();
 
+  const id = useParams<'id'>();
+  const typeId = +id.id!;
+
+  const { cardType, status } = useAndLoadCardType(typeId);
+  const { project } = useProjectBeingEdited();
+
+  const allCurrentProjectTags = useCurrentProjectCardTypeTags();
+  const allGlobalTags = useGlobalCardTypeTags();
+  const options = (usage === 'currentProject' ? allCurrentProjectTags : allGlobalTags).map(tag => ({
+    label: tag,
+    value: tag,
+  }));
+
   if (status !== 'READY' || !cardType) {
-    // TODO UX see what we can do if we couldn't get the card type
     return <AvailabilityStatusIndicator status={status} />;
   } else {
     return (
@@ -144,7 +150,7 @@ export default function CardTypeEditor({ className }: Props): JSX.Element {
                             />
                             <div className={lightItalicText}>
                               <FontAwesomeIcon icon={faInfoCircle} /> Make a Card type
-                              <b> deprecated</b> whether it is obsolete or antoher version should be
+                              <b> deprecated</b> whether it is obsolete or another version should be
                               used instead.
                             </div>
                           </>

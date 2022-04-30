@@ -62,10 +62,9 @@ export default function TagsFilter({
         onChange(tag, selectAllState);
       }
     });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [tagsState, onChange /* no need to take selectAllState into account */]);
+  }, [tagsState, onChange, selectAllState]);
 
-  // TODO work in progress : auto adapt selectAll if state of all is same (?)
+  // TODO auto adapt selectAll if state of all is same (?)
 
   return (
     <>
@@ -86,7 +85,6 @@ export default function TagsFilter({
                     key={tag}
                   >
                     <Checkbox
-                      key={tag}
                       label={tag}
                       value={tagsState[tag]}
                       onChange={value => onChange(tag, value)}
@@ -99,7 +97,6 @@ export default function TagsFilter({
               })}
             </Flex>
             <Checkbox
-              key={'toggle all'}
               label={selectAllState ? 'Select all' : 'Deselect all'}
               value={!selectAllState}
               onChange={toggleAllTags}

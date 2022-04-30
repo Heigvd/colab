@@ -388,3 +388,9 @@ export function useCurrentProjectCardTypeTags(): string[] {
 
   return uniq(currentProjectCardTypes.flatMap(ct => ct.tags).sort());
 }
+
+export function useGlobalCardTypeTags(): string[] {
+  const globalCardTypes = useGlobalTypesForAdmin();
+
+  return uniq(globalCardTypes.flatMap(ct => ct.tags).sort());
+}
