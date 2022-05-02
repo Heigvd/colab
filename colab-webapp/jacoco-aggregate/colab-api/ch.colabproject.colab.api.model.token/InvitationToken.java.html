@@ -66,12 +66,14 @@ import javax.validation.constraints.Size;
      * Invitation sender
      */
     @Size(max = 255)
+    @JsonbTransient
     private String sender;
 
     /**
      * email address to send the invitation to
      */
     @Size(max = 255)
+    @JsonbTransient
     private String recipient;
 
     // ---------------------------------------------------------------------------------------------
@@ -84,7 +86,7 @@ import javax.validation.constraints.Size;
      * @return team member
      */
     public TeamMember getTeamMember() {
-<span class="nc" id="L87">        return teamMember;</span>
+<span class="nc" id="L89">        return teamMember;</span>
     }
 
     /**
@@ -93,8 +95,8 @@ import javax.validation.constraints.Size;
      * @param teamMember the team member for which this invitation is pending
      */
     public void setTeamMember(TeamMember teamMember) {
-<span class="nc" id="L96">        this.teamMember = teamMember;</span>
-<span class="nc" id="L97">    }</span>
+<span class="nc" id="L98">        this.teamMember = teamMember;</span>
+<span class="nc" id="L99">    }</span>
 
     /**
      * Get sender name
@@ -102,7 +104,7 @@ import javax.validation.constraints.Size;
      * @return name of sender
      */
     public String getSender() {
-<span class="nc" id="L105">        return sender;</span>
+<span class="nc" id="L107">        return sender;</span>
     }
 
     /**
@@ -111,8 +113,8 @@ import javax.validation.constraints.Size;
      * @param sender name of the sender
      */
     public void setSender(String sender) {
-<span class="nc" id="L114">        this.sender = sender;</span>
-<span class="nc" id="L115">    }</span>
+<span class="nc" id="L116">        this.sender = sender;</span>
+<span class="nc" id="L117">    }</span>
 
     /**
      * Email address to send the invitation to
@@ -120,7 +122,7 @@ import javax.validation.constraints.Size;
      * @return email address
      */
     public String getRecipient() {
-<span class="nc" id="L123">        return recipient;</span>
+<span class="nc" id="L125">        return recipient;</span>
     }
 
     /**
@@ -129,8 +131,8 @@ import javax.validation.constraints.Size;
      * @param recipient recipient email address
      */
     public void setRecipient(String recipient) {
-<span class="nc" id="L132">        this.recipient = recipient;</span>
-<span class="nc" id="L133">    }</span>
+<span class="nc" id="L134">        this.recipient = recipient;</span>
+<span class="nc" id="L135">    }</span>
 
     // ---------------------------------------------------------------------------------------------
     // helpers
@@ -138,15 +140,15 @@ import javax.validation.constraints.Size;
 
     @Override
     public String getRedirectTo() {
-<span class="nc bnc" id="L141" title="All 4 branches missed.">        if (this.teamMember != null &amp;&amp; this.teamMember.getUser() != null) {</span>
+<span class="nc bnc" id="L143" title="All 4 branches missed.">        if (this.teamMember != null &amp;&amp; this.teamMember.getUser() != null) {</span>
             // if link from user to project is not set, do not even try to read the project
             // as it will lead to an access denied exception
-<span class="nc" id="L144">            Project project = getProject();</span>
-<span class="nc bnc" id="L145" title="All 4 branches missed.">            if (project != null &amp;&amp; project.getId() != null) {</span>
-<span class="nc" id="L146">                return &quot;/editor/&quot; + project.getId();</span>
+<span class="nc" id="L146">            Project project = getProject();</span>
+<span class="nc bnc" id="L147" title="All 4 branches missed.">            if (project != null &amp;&amp; project.getId() != null) {</span>
+<span class="nc" id="L148">                return &quot;/editor/&quot; + project.getId();</span>
             }
         }
-<span class="nc" id="L149">        return &quot;&quot;;</span>
+<span class="nc" id="L151">        return &quot;&quot;;</span>
     }
 
     /**
@@ -154,32 +156,33 @@ import javax.validation.constraints.Size;
      */
     @Override
     public void consume(RequestManager requestManager) {
-<span class="nc" id="L157">        User user = requestManager.getCurrentUser();</span>
-<span class="nc bnc" id="L158" title="All 2 branches missed.">        if (user != null) {</span>
-<span class="nc" id="L159">            teamMember.setUser(user);</span>
-<span class="nc" id="L160">            teamMember.setDisplayName(&quot;&quot;);</span>
+<span class="nc" id="L159">        User user = requestManager.getCurrentUser();</span>
+<span class="nc bnc" id="L160" title="All 2 branches missed.">        if (user != null) {</span>
+<span class="nc" id="L161">            teamMember.setUser(user);</span>
+<span class="nc" id="L162">            teamMember.setDisplayName(&quot;&quot;);</span>
         } else {
-<span class="nc" id="L162">            throw HttpErrorMessage.authenticationRequired();</span>
+<span class="nc" id="L164">            throw HttpErrorMessage.authenticationRequired();</span>
         }
-<span class="nc" id="L164">    }</span>
+<span class="nc" id="L166">    }</span>
 
+    @JsonbTransient
     @Override
     public String getSubject() {
-<span class="nc" id="L168">        return EMAIL_SUBJECT;</span>
+<span class="nc" id="L171">        return EMAIL_SUBJECT;</span>
     }
 
     @Override
     public String getEmailBody(String link) {
-<span class="nc" id="L173">        Project project = getProject();</span>
+<span class="nc" id="L176">        Project project = getProject();</span>
 
-<span class="nc bnc" id="L175" title="All 2 branches missed.">        String theProject = project != null</span>
-<span class="nc" id="L176">            ? &quot;the \&quot;&quot; + project.getName() + &quot;\&quot; project&quot;</span>
-<span class="nc" id="L177">            : &quot;a co.LAB project&quot;;</span>
+<span class="nc bnc" id="L178" title="All 2 branches missed.">        String theProject = project != null</span>
+<span class="nc" id="L179">            ? &quot;the \&quot;&quot; + project.getName() + &quot;\&quot; project&quot;</span>
+<span class="nc" id="L180">            : &quot;a co.LAB project&quot;;</span>
 
-<span class="nc" id="L179">        return MessageFormat.format(&quot;Hi,&lt;br /&gt;&lt;br /&gt;&quot;</span>
+<span class="nc" id="L182">        return MessageFormat.format(&quot;Hi,&lt;br /&gt;&lt;br /&gt;&quot;</span>
             + &quot;{0} invites you to collaborate on {1}.&lt;br /&gt;&lt;br /&gt;&quot;
             + &quot;Click &lt;a href=\&quot;{2}\&quot;&gt;here&lt;/a&gt; to join the team.&lt;br /&gt;&lt;br /&gt;&quot;,
-<span class="nc bnc" id="L182" title="All 2 branches missed.">            sender != null ? sender : &quot;Someone&quot;, theProject, link);</span>
+<span class="nc bnc" id="L185" title="All 2 branches missed.">            sender != null ? sender : &quot;Someone&quot;, theProject, link);</span>
     }
 
     // ---------------------------------------------------------------------------------------------
@@ -193,21 +196,21 @@ import javax.validation.constraints.Size;
      */
     @JsonbTransient
     private Project getProject() {
-<span class="nc bnc" id="L196" title="All 2 branches missed.">        if (teamMember != null) {</span>
-<span class="nc" id="L197">            return teamMember.getProject();</span>
+<span class="nc bnc" id="L199" title="All 2 branches missed.">        if (teamMember != null) {</span>
+<span class="nc" id="L200">            return teamMember.getProject();</span>
         }
-<span class="nc" id="L199">        return null;</span>
+<span class="nc" id="L202">        return null;</span>
     }
 
     @Override
     @JsonbTransient
     public Conditions.Condition getCreateCondition() {
-<span class="nc" id="L205">        return new Conditions.IsCurrentUserMemberOfProject(getProject());</span>
+<span class="nc" id="L208">        return new Conditions.IsCurrentUserMemberOfProject(getProject());</span>
     }
 
     @Override
     public String toString() {
-<span class="nc" id="L210">        return &quot;InvitationToken{&quot; + &quot;id=&quot; + getId() + '}';</span>
+<span class="nc" id="L213">        return &quot;InvitationToken{&quot; + &quot;id=&quot; + getId() + '}';</span>
     }
 
 }
