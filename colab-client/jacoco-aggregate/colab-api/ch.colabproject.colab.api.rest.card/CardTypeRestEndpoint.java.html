@@ -164,7 +164,7 @@ import org.slf4j.LoggerFactory;
     /**
      * Permanently delete a card type
      *
-     * @param id id of the card type to delete
+     * @param id the id of the card type to delete
      */
     @DELETE
     @Path(&quot;{id}&quot;)
@@ -191,26 +191,21 @@ import org.slf4j.LoggerFactory;
 <span class="nc" id="L191">        return cardTypeManager.useCardTypeInProject(cardTypeId, projectId);</span>
     }
 
-    // TODO sandra work in progress, see what it means exactly to remove a card type from a project
     /**
-     * Remove the card type use of the project. That means :
-     * &lt;ul&gt;
-     * &lt;li&gt;either delete the card type if it belongs to the project and has no use&lt;/li&gt;
-     * &lt;li&gt;or delete the reference in the project if it has no use&lt;/li&gt;
-     * &lt;/ul&gt;
-     * If the abstract card type is used, throws an error.
+     * Remove the card type use of the project. That means delete the reference in the project if it
+     * has no use. If the abstract card type is used, throws an error.
      *
-     * @param cardTypeId the id of the abstract card type no more useful for the project
+     * @param cardTypeRefId the id of the card type reference no more useful for the project
      * @param projectId  the id of the project in which we don't want to use the card type anymore
      */
     @PUT
     @Path(&quot;removeCardTypeFromProject/{cardTypeId}/{projectId}&quot;)
-    public void removeCardTypeFromProject(@PathParam(&quot;cardTypeId&quot;) Long cardTypeId,
+    public void removeCardTypeRefFromProject(@PathParam(&quot;cardTypeId&quot;) Long cardTypeRefId,
         @PathParam(&quot;projectId&quot;) Long projectId) {
-<span class="nc" id="L210">        logger.debug(&quot;remove card type #{} from project #{}&quot;, cardTypeId, projectId);</span>
+<span class="nc" id="L205">        logger.debug(&quot;remove card type reference #{} from project #{}&quot;, cardTypeRefId, projectId);</span>
 
-<span class="nc" id="L212">        cardTypeManager.removeCardTypeFromProject(cardTypeId, projectId);</span>
-<span class="nc" id="L213">    }</span>
+<span class="nc" id="L207">        cardTypeManager.removeCardTypeRefFromProject(cardTypeRefId, projectId);</span>
+<span class="nc" id="L208">    }</span>
 
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

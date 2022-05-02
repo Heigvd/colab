@@ -77,7 +77,7 @@ colab-webapp/colab-api,ch.colabproject.colab.api.rest.document,ExternalDataRestE
 colab-webapp/colab-api,ch.colabproject.colab.api.rest.document,ResourceRestEndpoint,308,0,6,0,67,0,25,0,22,0
 colab-webapp/colab-api,ch.colabproject.colab.api.persistence.jpa.card,CardDao,56,0,0,0,15,0,6,0,6,0
 colab-webapp/colab-api,ch.colabproject.colab.api.persistence.jpa.card,CardContentDao,56,0,0,0,15,0,6,0,6,0
-colab-webapp/colab-api,ch.colabproject.colab.api.persistence.jpa.card,CardTypeDao,200,0,4,0,52,0,17,0,15,0
+colab-webapp/colab-api,ch.colabproject.colab.api.persistence.jpa.card,CardTypeDao,189,0,4,0,50,0,16,0,14,0
 colab-webapp/colab-api,ch.colabproject.colab.api.rest,WebsocketRestEndpoint,94,0,0,0,28,0,11,0,11,0
 colab-webapp/colab-api,ch.colabproject.colab.api.model.tools,EntityListener,113,0,26,0,27,0,20,0,7,0
 colab-webapp/colab-api,ch.colabproject.colab.api.model.tools,JpaCustomizer,44,0,2,0,13,0,7,0,6,0
@@ -193,7 +193,7 @@ colab-webapp/colab-api,ch.colabproject.colab.api.ws.channel.tool,ChannelsBuilder
 colab-webapp/colab-api,ch.colabproject.colab.api.model.project,Project,661,0,68,0,51,0,109,0,75,0
 colab-webapp/colab-api,ch.colabproject.colab.api.controller.card,CardManager,399,0,44,0,116,0,46,0,24,0
 colab-webapp/colab-api,ch.colabproject.colab.api.controller.card,CardContentManager,232,0,24,0,65,0,25,0,13,0
-colab-webapp/colab-api,ch.colabproject.colab.api.controller.card,CardTypeManager,397,0,36,0,113,0,46,0,28,0
+colab-webapp/colab-api,ch.colabproject.colab.api.controller.card,CardTypeManager,430,0,40,0,123,0,50,0,30,0
 colab-webapp/colab-api,ch.colabproject.colab.api.microchanges.model,MicroChange,47,0,2,0,16,0,11,0,10,0
 colab-webapp/colab-api,ch.colabproject.colab.api.microchanges.model,Change,76,0,0,0,27,0,19,0,19,0
 colab-webapp/colab-api,ch.colabproject.colab.api.microchanges.model,MicroChange.Type,24,0,0,0,3,0,1,0,1,0

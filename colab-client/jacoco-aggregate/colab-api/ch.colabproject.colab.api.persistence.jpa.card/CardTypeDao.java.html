@@ -175,16 +175,6 @@ import com.google.common.collect.Lists;
     }
 
     /**
-     * @param id id of the card type to fetch
-     *
-     * @return the card type with the given id or null if such a card type does not exists
-     */
-    private CardType findCardType(Long id) {
-<span class="nc" id="L183">        logger.debug(&quot;get card type #{}&quot;, id);</span>
-<span class="nc" id="L184">        return em.find(CardType.class, id);</span>
-    }
-
-    /**
      * Update card type
      *
      * @param &lt;T&gt;           a sub type of AbstractCardType
@@ -196,11 +186,11 @@ import com.google.common.collect.Lists;
      */
     public &lt;T extends AbstractCardType&gt; T updateAbstractCardType(T cardTypeOrRef)
         throws ColabMergeException {
-<span class="nc" id="L199">        logger.debug(&quot;update card type {}&quot;, cardTypeOrRef);</span>
+<span class="nc" id="L189">        logger.debug(&quot;update card type {}&quot;, cardTypeOrRef);</span>
         @SuppressWarnings(&quot;unchecked&quot;)
-<span class="nc" id="L201">        T mCardType = (T) this.findAbstractCardType(cardTypeOrRef.getId());</span>
-<span class="nc" id="L202">        mCardType.merge(cardTypeOrRef);</span>
-<span class="nc" id="L203">        return mCardType;</span>
+<span class="nc" id="L191">        T mCardType = (T) this.findAbstractCardType(cardTypeOrRef.getId());</span>
+<span class="nc" id="L192">        mCardType.merge(cardTypeOrRef);</span>
+<span class="nc" id="L193">        return mCardType;</span>
     }
 
     /**
@@ -212,9 +202,9 @@ import com.google.common.collect.Lists;
      * @return the new persisted card type
      */
     public &lt;T extends AbstractCardType&gt; T persistAbstractCardType(T cardTypeOrRef) {
-<span class="nc" id="L215">        logger.debug(&quot;persist card type {}&quot;, cardTypeOrRef);</span>
-<span class="nc" id="L216">        em.persist(cardTypeOrRef);</span>
-<span class="nc" id="L217">        return cardTypeOrRef;</span>
+<span class="nc" id="L205">        logger.debug(&quot;persist card type {}&quot;, cardTypeOrRef);</span>
+<span class="nc" id="L206">        em.persist(cardTypeOrRef);</span>
+<span class="nc" id="L207">        return cardTypeOrRef;</span>
     }
 
     /**
@@ -224,12 +214,12 @@ import com.google.common.collect.Lists;
      *
      * @return just deleted card type
      */
-    public CardType deleteCardType(Long id) {
-<span class="nc" id="L228">        logger.debug(&quot;delete card type #{}&quot;, id);</span>
+    public AbstractCardType deleteAbstractCardType(Long id) {
+<span class="nc" id="L218">        logger.debug(&quot;delete card type #{}&quot;, id);</span>
         // TODO: move to recycle bin first
-<span class="nc" id="L230">        CardType cardType = this.findCardType(id);</span>
-<span class="nc" id="L231">        em.remove(cardType);</span>
-<span class="nc" id="L232">        return cardType;</span>
+<span class="nc" id="L220">        AbstractCardType cardType = this.findAbstractCardType(id);</span>
+<span class="nc" id="L221">        em.remove(cardType);</span>
+<span class="nc" id="L222">        return cardType;</span>
     }
 
 }
