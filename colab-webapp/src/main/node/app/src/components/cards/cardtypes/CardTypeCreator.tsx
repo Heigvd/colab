@@ -11,7 +11,10 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { entityIs } from 'colab-rest-client';
 import * as React from 'react';
 import * as API from '../../../API/api';
-import { useCardTypeTags } from '../../../selectors/cardTypeSelector';
+import {
+  useCurrentProjectCardTypeTags,
+  useGlobalCardTypeTags,
+} from '../../../selectors/cardTypeSelector';
 import { useProjectBeingEdited } from '../../../selectors/projectSelector';
 import { useAppDispatch } from '../../../store/hooks';
 import Button from '../../common/Button';
@@ -19,9 +22,9 @@ import Form, { createSelectField, Field } from '../../common/Form/Form';
 import OpenCloseModal from '../../common/OpenCloseModal';
 import { buttonStyle, marginAroundStyle, space_M } from '../../styling/style';
 
-export interface CardTypeCreatorProps {
-  global?: boolean;
+interface CardTypeCreatorProps {
   afterCreation?: (id: number) => void;
+  usage: 'currentProject' | 'global';
 }
 
 interface NewType {
@@ -32,16 +35,17 @@ interface NewType {
 
 export default function CardTypeCreator({
   afterCreation,
-  global = false,
+  usage,
 }: CardTypeCreatorProps): JSX.Element {
   const dispatch = useAppDispatch();
+
   const { project } = useProjectBeingEdited();
 
   const createTypeCb = React.useCallback(
     (typeToCreate: NewType) => {
       dispatch(
         API.createCardType({
-          projectId: project && !global ? project.id! : null,
+          projectId: usage === 'currentProject' && project ? project.id! : null,
           title: typeToCreate.title,
           tags: typeToCreate.tags,
           purpose: {
@@ -61,10 +65,11 @@ export default function CardTypeCreator({
         }
       });
     },
-    [dispatch, afterCreation, global, project],
+    [dispatch, afterCreation, usage, project],
   );
 
-  const allTags = useCardTypeTags();
+  const allCurrentProjectTags = useCurrentProjectCardTypeTags();
+  const allGlobalTags = useGlobalCardTypeTags();
   const fields: Field<NewType>[] = [
     {
       key: 'title',
@@ -83,16 +88,18 @@ export default function CardTypeCreator({
       type: 'select',
       label: 'category',
       isMulti: true,
-      options: allTags.map(c => ({ label: c, value: c })),
+      options: (usage === 'currentProject' ? allCurrentProjectTags : allGlobalTags).map(c => ({
+        label: c,
+        value: c,
+      })),
       canCreateOption: true,
       placeholder: 'Select or type to create',
       isMandatory: true,
     }),
   ];
 
-  if (project == null && !global) {
-    //TODO: global types
-    return <i>No project</i>;
+  if (project == null && usage === 'currentProject') {
+    return <i>No project selected</i>;
   }
 
   return (

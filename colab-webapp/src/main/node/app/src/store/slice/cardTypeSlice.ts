@@ -24,9 +24,11 @@ interface CardTypeState {
   //   + defined by other projects and already referenced by the current project
   //     (CardTypeRef chain + CardType)
   currentProjectStatus: AvailabilityStatus;
+
   // are all types visible by the current user known ?
   //  -> published type from other projects + global published
   availablePublishedStatus: AvailabilityStatus;
+
   // are all global types known (admin ony) ?
   allGlobalForAdminStatus: AvailabilityStatus;
 }

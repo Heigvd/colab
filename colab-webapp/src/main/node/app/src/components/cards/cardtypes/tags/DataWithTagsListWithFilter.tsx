@@ -28,6 +28,8 @@ export default function DataWithTagsListWithFilter({
   const [tagsState, setTagsState] = React.useState<Record<string, boolean>>({});
   const [dataFilteredByTag, setDataFilteredByTag] = React.useState<DataWithTags[]>([]);
 
+  // TODO find how we can remove a tag from tagsState when it is not any more in any dataWithTags
+
   React.useEffect(() => {
     const allTags: string[] = dataWithTags.flatMap(ct => ct.tags);
 
@@ -39,8 +41,7 @@ export default function DataWithTagsListWithFilter({
     }, tagsState);
 
     setTagsState(updatedTagsState);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [dataWithTags, defaultChecked /* tagsState */]);
+  }, [dataWithTags, defaultChecked, tagsState]);
 
   React.useEffect(() => {
     setDataFilteredByTag(
