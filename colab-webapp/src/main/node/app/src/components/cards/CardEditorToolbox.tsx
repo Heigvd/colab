@@ -6,18 +6,20 @@
  */
 
 import { css, cx } from '@emotion/css';
-import { faPen, faTrash } from '@fortawesome/free-solid-svg-icons';
+import { faCheck, faCog, faDownload, faPen, faTrash } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { entityIs } from 'colab-rest-client';
 import * as React from 'react';
 import * as API from '../../API/api';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import Button from '../common/Button';
 import ConfirmDeleteModal from '../common/ConfirmDeleteModal';
+import DropDownMenu from '../common/DropDownMenu';
 import Flex from '../common/Flex';
 import IconButton from '../common/IconButton';
 import { DocumentContext } from '../documents/documentCommonType';
 import DocumentCreatorButton from '../documents/DocumentCreatorButton';
-import { space_S } from '../styling/style';
+import { lightIconButtonStyle, space_S } from '../styling/style';
 import { CardEditorCTX } from './CardEditor';
 
 const toolboxContainerStyle = css({
@@ -41,10 +43,13 @@ const borderRightStyle = css({
   borderRight: '1px solid var(--lightGray)',
 });
 
-const toolboxButtonStyle = css({
-  paddingRight: space_S,
-  margin: space_S,
-});
+const toolboxButtonStyle = cx(
+  lightIconButtonStyle,
+  css({
+    paddingRight: space_S,
+    margin: space_S,
+  }),
+);
 
 interface Props {
   open: boolean;
@@ -53,7 +58,9 @@ interface Props {
 }
 
 export default function CardEditorToolbox({ open, context, prefixElement }: Props): JSX.Element {
-  const { setSelectedId, selectedId, editMode, setEditMode } = React.useContext(CardEditorCTX);
+  const { setSelectedId, selectedId, editMode, setEditMode, TXToptions } =
+    React.useContext(CardEditorCTX);
+  const showTree = TXToptions?.showTree || false;
   const dispatch = useAppDispatch();
 
   const selectedDocument = useAppSelector(state => {
@@ -66,6 +73,12 @@ export default function CardEditorToolbox({ open, context, prefixElement }: Prop
       return document;
     }
   });
+
+  const downloadUrl = API.getRestClient().DocumentFileRestEndPoint.getFileContentPath(selectedId!);
+  
+  const downloadCb = React.useCallback(() => {
+    window.open(downloadUrl);
+  }, [downloadUrl]);
 
   const endEdit = React.useCallback(() => {
     setEditMode(false);
@@ -80,8 +93,46 @@ export default function CardEditorToolbox({ open, context, prefixElement }: Prop
         <>
           {editMode ? (
             <>
-              {entityIs(selectedDocument, 'TextDataBlock') && <div>BUTTONS TEXT</div>}
-              {entityIs(selectedDocument, 'DocumentFile') && <div>BUTTONS Files</div>}
+              {entityIs(selectedDocument, 'TextDataBlock') && (
+                <>
+                  {/* <TXTFormatToolbar toolbarState={} toolbarFormatFeatures={} /> */}
+                  <DropDownMenu
+                    icon={faCog}
+                    valueComp={{ value: '', label: '' }}
+                    buttonClassName={cx(lightIconButtonStyle, css({ marginLeft: space_S }))}
+                    entries={[
+                      {
+                        value: 'showTree',
+                        label: (
+                          <>
+                            {showTree && (
+                              <FontAwesomeIcon icon={faCheck} size="xs" color="var(--lightGray)" />
+                            )}{' '}
+                            Show tree
+                          </>
+                        ),
+                        action: () => TXToptions?.setShowTree(showTree => !showTree),
+                      },
+                      {
+                        value: 'markDown',
+                        label: (
+                          <>
+                            {TXToptions?.markDownMode && (
+                              <FontAwesomeIcon icon={faCheck} size="xs" color="var(--lightGray)" />
+                            )}{' '}
+                            MarkDown mode
+                          </>
+                        ),
+                        action: () => TXToptions?.setMarkDownMode(markDownMode => !markDownMode),
+                      },
+                    ]}
+                    onSelect={val => {
+                      val.action && val.action();
+                    }}
+                  />
+                </>
+              )}
+              {entityIs(selectedDocument, 'DocumentFile') && <IconButton icon={faDownload} title={"Download file"} className={lightIconButtonStyle} onClick={() => downloadCb()} /> }
               {entityIs(selectedDocument, 'ExternalLink') && <div>BUTTONS Links</div>}
               <Button onClick={endEdit}>OK</Button>
             </>

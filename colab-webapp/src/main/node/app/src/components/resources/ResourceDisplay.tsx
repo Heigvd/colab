@@ -5,13 +5,21 @@
  * Licensed under the MIT License
  */
 import { css, cx } from '@emotion/css';
-import { faArrowLeft, faCog, faTrash, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
+import {
+  faArrowLeft,
+  faCog,
+  faHandSparkles,
+  faSlash,
+  faTrash,
+  faTrashAlt,
+} from '@fortawesome/free-solid-svg-icons';
 import * as React from 'react';
 import * as API from '../../API/api';
 import { updateDocumentText } from '../../API/api';
 import useTranslations from '../../i18n/I18nContext';
 import { useAndLoadTextOfDocument } from '../../selectors/documentSelector';
 import { useAppDispatch } from '../../store/hooks';
+import CardEditorToolbox from '../cards/CardEditorToolbox';
 import { Destroyer } from '../common/Destroyer';
 import Flex from '../common/Flex';
 import IconButton from '../common/IconButton';
@@ -41,6 +49,7 @@ export function ResourceDisplay({ resourceAndRef, onClose }: ResourceDisplayProp
   const targetResourceId = resourceAndRef.targetResource.id;
 
   const allowEdition = resourceAndRef.isDirectResource;
+  const [openToolbox, setOpenToolbox] = React.useState(true);
   const { text: teaser } = useAndLoadTextOfDocument(resourceAndRef.targetResource.teaserId);
   const dispatch = useAppDispatch();
   return (
@@ -63,57 +72,6 @@ export function ResourceDisplay({ resourceAndRef, onClose }: ResourceDisplayProp
             onClick={onClose}
             className={lightIconButtonStyle}
           />
-          <OpenCloseModal
-            title="Document settings"
-            showCloseButton={true}
-            collapsedChildren={
-              <IconButton icon={faCog} className={lightIconButtonStyle} title="Document settings" />
-            }
-          >
-            {() => (
-              <>
-                <ResourceSettings {...resourceAndRef} />
-                {resourceAndRef.isDirectResource && (
-                  <Destroyer
-                    title="Delete this document"
-                    icon={faTrashAlt}
-                    onDelete={() => {
-                      dispatch(API.deleteResource(resourceAndRef.targetResource));
-                    }}
-                  />
-                )}
-                {!resourceAndRef.isDirectResource && resourceAndRef.cardTypeResourceRef && (
-                  <Destroyer
-                    title="Refuse at card type level"
-                    icon={faTrash}
-                    onDelete={() => {
-                      dispatch(API.removeAccessToResource(resourceAndRef.cardTypeResourceRef!));
-                    }}
-                  />
-                )}
-                {!resourceAndRef.isDirectResource && resourceAndRef.cardResourceRef && (
-                  <Destroyer
-                    title="Refuse at card level"
-                    icon={faTrash}
-                    onDelete={() => {
-                      dispatch(API.removeAccessToResource(resourceAndRef.cardResourceRef!));
-                    }}
-                  />
-                )}
-                {!resourceAndRef.isDirectResource && resourceAndRef.cardContentResourceRef && (
-                  <Destroyer
-                    title="Refuse at variant level"
-                    icon={faTrash}
-                    onDelete={() => {
-                      dispatch(API.removeAccessToResource(resourceAndRef.cardContentResourceRef!));
-                    }}
-                  />
-                )}
-              </>
-            )}
-          </OpenCloseModal>
-        </Flex>
-        <div>
           <InlineInputNew
             onChange={newValue =>
               dispatch(API.updateResource({ ...resourceAndRef.targetResource, title: newValue }))
@@ -122,6 +80,72 @@ export function ResourceDisplay({ resourceAndRef, onClose }: ResourceDisplayProp
             placeholder={i18n.resource.untitled}
             className={cardTitle}
           />
+          <div>
+            <IconButton
+              icon={faHandSparkles}
+              layer={openToolbox ? { layerIcon: faSlash, transform: 'grow-1' } : undefined}
+              title={'Toggle toolbox'}
+              className={lightIconButtonStyle}
+              onClick={() => setOpenToolbox(openToolbox => !openToolbox)}
+            />
+            <OpenCloseModal
+              title="Document settings"
+              showCloseButton={true}
+              collapsedChildren={
+                <IconButton
+                  icon={faCog}
+                  className={lightIconButtonStyle}
+                  title="Document settings"
+                />
+              }
+            >
+              {() => (
+                <>
+                  <ResourceSettings {...resourceAndRef} />
+                  {resourceAndRef.isDirectResource && (
+                    <Destroyer
+                      title="Delete this document"
+                      icon={faTrashAlt}
+                      onDelete={() => {
+                        dispatch(API.deleteResource(resourceAndRef.targetResource));
+                      }}
+                    />
+                  )}
+                  {!resourceAndRef.isDirectResource && resourceAndRef.cardTypeResourceRef && (
+                    <Destroyer
+                      title="Refuse at card type level"
+                      icon={faTrash}
+                      onDelete={() => {
+                        dispatch(API.removeAccessToResource(resourceAndRef.cardTypeResourceRef!));
+                      }}
+                    />
+                  )}
+                  {!resourceAndRef.isDirectResource && resourceAndRef.cardResourceRef && (
+                    <Destroyer
+                      title="Refuse at card level"
+                      icon={faTrash}
+                      onDelete={() => {
+                        dispatch(API.removeAccessToResource(resourceAndRef.cardResourceRef!));
+                      }}
+                    />
+                  )}
+                  {!resourceAndRef.isDirectResource && resourceAndRef.cardContentResourceRef && (
+                    <Destroyer
+                      title="Refuse at variant level"
+                      icon={faTrash}
+                      onDelete={() => {
+                        dispatch(
+                          API.removeAccessToResource(resourceAndRef.cardContentResourceRef!),
+                        );
+                      }}
+                    />
+                  )}
+                </>
+              )}
+            </OpenCloseModal>
+          </div>
+        </Flex>
+        <div>
           {teaser && (
             <DocTextWrapper id={resourceAndRef.targetResource.teaserId}>
               {text => (
@@ -146,6 +170,13 @@ export function ResourceDisplay({ resourceAndRef, onClose }: ResourceDisplayProp
           )}
         </div>
       </Flex>
+      {allowEdition && targetResourceId && (
+        <CardEditorToolbox
+          open={openToolbox}
+          context={{ kind: 'PartOfResource', ownerId: targetResourceId }}
+          //prefixElement={<IconButton icon={faTimes} title={"Close toolbox"} onClick={() => setOpenToolbox(openToolbox => !openToolbox)} />}
+        />
+      )}
       {targetResourceId && (
         <DocumentList
           context={{ kind: 'PartOfResource', ownerId: targetResourceId }}

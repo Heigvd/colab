@@ -16,6 +16,7 @@ import {
   faInfoCircle,
   faPaperclip,
   faPercent,
+  faSlash,
   faStickyNote,
   faTimes,
   faTrash,
@@ -149,19 +150,41 @@ function ProgressModifier({ variant }: { variant: CardContent }) {
     />
   );
 }
+interface TXToptionsType {
+    //type: 'TXT';
+    showTree: boolean;
+    setShowTree: React.Dispatch<React.SetStateAction<boolean>>;
+    markDownMode: boolean;
+    setMarkDownMode: React.Dispatch<React.SetStateAction<boolean>>;
+    //formatButtonState?: ToolbarState;
+    //formatButtonFeatures?: ToolbarFeatures;
+}
+
+/* interface LKoptionsType {
+  type: 'LK';
+}
+
+interface DocFoptionsType {
+   type: 'DocF';
+} */
 
 interface CardEditorContext {
-selectedId?: number | null;
-setSelectedId: (id: number | undefined | null ) => void;
-editMode: boolean;
-setEditMode: (editMode : boolean) => void;
+  selectedId?: number | null;
+  setSelectedId: (id: number | undefined | null) => void;
+  editMode: boolean;
+  setEditMode: (editMode: boolean) => void;
+  TXToptions?: TXToptionsType;
+  editToolbar: JSX.Element;
+  setEditToolbar: React.Dispatch<React.SetStateAction<JSX.Element>>;
 }
 
 const defaultCardEditorContext: CardEditorContext = {
-  setSelectedId:()=>{},
+  setSelectedId: () => {},
   editMode: false,
-  setEditMode:()=>{},
-}
+  setEditMode: () => {},
+  editToolbar: <></>,
+  setEditToolbar: () => {},
+};
 
 export const CardEditorCTX = React.createContext<CardEditorContext>(defaultCardEditorContext);
 
@@ -186,7 +209,16 @@ export default function CardEditor({ card, variant, showSubcards = true }: Props
   const [fullScreen, setFullScreen] = React.useState(false);
   const [openToolbox, setOpenToolbox] = React.useState(true);
   const [selectedId, setSelectedId] = React.useState<number | undefined | null>(undefined);
-  const [editMode, setEditMode] = React.useState(false);
+  const [editMode, setEditMode] = React.useState(defaultCardEditorContext.editMode);
+  const [showTree, setShowTree] = React.useState(false);
+  const [markDownMode, setMarkDownMode] = React.useState(false); 
+  const [editToolbar, setEditToolbar] = React.useState(defaultCardEditorContext.editToolbar); 
+  const TXToptions = {
+    showTree: showTree,
+    setShowTree: setShowTree,
+    markDownMode: markDownMode,
+    setMarkDownMode: setMarkDownMode,
+  };
 
   const closeRouteCb = React.useCallback(
     route => {
@@ -207,360 +239,385 @@ export default function CardEditor({ card, variant, showSubcards = true }: Props
   } else {
     const cardId = card.id;
     return (
-      <CardEditorCTX.Provider value={{selectedId, setSelectedId, editMode, setEditMode}}>
-      <Flex direction="column" grow={1} align="stretch">
-        <Flex
-          grow={1}
-          direction="row"
-          align="stretch"
-          className={css({ paddingBottom: space_S, height: '50vh' })}
-        >
+      <CardEditorCTX.Provider value={{ selectedId, setSelectedId, editMode, setEditMode, editToolbar, setEditToolbar, TXToptions }}>
+        <Flex direction="column" grow={1} align="stretch">
           <Flex
             grow={1}
             direction="row"
-            justify="space-between"
             align="stretch"
-            className={cx(
-              cardStyle,
-              { [fullScreenStyle]: fullScreen === true },
-              css({
-                backgroundColor: 'white',
-                overflow: 'hidden',
-              }),
-            )}
+            className={css({ paddingBottom: space_S, height: '50vh' })}
           >
-            <Flex direction="column" grow={1} align="stretch">
-              <Flex
-                direction="column"
-                grow={1}
-                className={css({
-                  overflow: 'auto',
-                })}
-                align="stretch"
-              >
-                <Flex direction="column" align="stretch" className={'HEADER'}>
-                  <Flex
-                    justify="space-between"
-                    className={css({
-                      alignItems: 'center',
-                      padding: space_S,
-                      borderBottom:
-                        card.color && card.color != '#ffffff'
-                          ? '5px solid ' + card.color
-                          : '1px solid var(--lightGray)',
-                    })}
-                  >
-                    <div>
-                      {variant.frozen && (
-                        <div
-                          className={css({ color: '#71D9FF' })}
-                          title='Card is frozen (locked). To unfreeze go to Card settings and uncheck "frozen".'
-                        >
-                          <FontAwesomeIcon icon={faSnowflake} />
-                          <i> frozen</i>
-                        </div>
-                      )}
-                      <Flex align="center">
-                        <InlineInputNew
-                          placeholder={i18n.card.untitled}
-                          readOnly={readOnly}
-                          value={card.title || ''}
-                          onChange={newValue =>
-                            dispatch(API.updateCard({ ...card, title: newValue }))
-                          }
-                          className={cardTitle}
-                          autosave
-                        />
-                        {hasVariants && (
-                          <>
-                            <span className={variantTitle}>&#xFE58;</span>
-                            <InlineInputNew
-                              className={variantTitle}
-                              value={
-                                variant.title && variant.title.length > 0
-                                  ? variant.title
-                                  : `Variant ${variantNumber}`
-                              }
-                              readOnly={readOnly}
-                              placeholder={i18n.content.untitled}
-                              onChange={newValue =>
-                                dispatch(API.updateCardContent({ ...variant, title: newValue }))
-                              }
-                              autosave={false}
-                            />
-                          </>
-                        )}
-                        {hasCardType && (
-                          <IconButton
-                            icon={faInfoCircle}
-                            title="Show card model informations"
-                            className={cx(lightIconButtonStyle, css({ color: 'var(--lightGray)' }))}
-                            onClick={() => setShowTypeDetails(showTypeDetails => !showTypeDetails)}
-                          />
-                        )}
-                        {!readOnly && <IconButton
-                          icon={faHandSparkles}
-                          title="Show/hide toolbox"
-                          className={cx(lightIconButtonStyle, css({ color: 'var(--lightGray)' }))}
-                          onClick={() => setOpenToolbox(openToolbox => !openToolbox)}
-                        />}
-                      </Flex>
-                    </div>
-                    <Flex>
-                      {/* handle modal routes*/}
-                      <Routes>
-                        <Route
-                          path="settings"
-                          element={
-                            <Modal
-                              title="Card Settings"
-                              onClose={() => closeRouteCb('settings')}
-                              showCloseButton
-                              className={css({ height: '580px' })}
-                            >
-                              {closeModal => (
-                                <CardSettings onClose={closeModal} card={card} variant={variant} />
-                              )}
-                            </Modal>
-                          }
-                        />
-                        <Route
-                          path="involvements"
-                          element={
-                            <Modal
-                              title="Involvements"
-                              onClose={() => closeRouteCb('involvements')}
-                              showCloseButton
-                              className={css({ height: '580px', width: '600px' })}
-                            >
-                              {() => <CardInvolvement card={card} />}
-                            </Modal>
-                          }
-                        />
-                        <Route
-                          path="completion"
-                          element={
-                            <Modal
-                              title="Completion"
-                              onClose={() => navigate('./')}
-                              showCloseButton
-                            >
-                              {() =>
-                                variant && (
-                                  <Flex direction="column">
-                                    <ProgressModifier variant={variant} />
-                                  </Flex>
-                                )
-                              }
-                            </Modal>
-                          }
-                        />
-                      </Routes>
-                      <IconButton
-                        title="Full screen mode"
-                        icon={fullScreen ? faCompressArrowsAlt : faExpandArrowsAlt}
-                        onClick={() => setFullScreen(fullScreen => !fullScreen)}
-                        className={lightIconButtonStyle}
-                      />
-                      <DropDownMenu
-                        icon={faEllipsisV}
-                        valueComp={{ value: '', label: '' }}
-                        buttonClassName={cx(lightIconButtonStyle, css({ marginLeft: space_S }))}
-                        entries={[
-                          {
-                            value: 'settings',
-                            label: (
-                              <>
-                                <FontAwesomeIcon icon={faCog} /> Card Settings
-                              </>
-                            ),
-                          },
-                          {
-                            value: 'involvements',
-                            label: (
-                              <>
-                                <FontAwesomeIcon icon={faUsers} /> Involvements
-                              </>
-                            ),
-                          },
-                          {
-                            value: 'completion',
-                            label: (
-                              <>
-                                <FontAwesomeIcon icon={faPercent} /> Completion
-                              </>
-                            ),
-                          },
-                          {
-                            value: 'Add new variant',
-                            action: () => {
-                              dispatch(API.createCardContentVariantWithBlockDoc(cardId)).then(
-                                payload => {
-                                  if (payload.meta.requestStatus === 'fulfilled') {
-                                    if (entityIs(payload.payload, 'CardContent')) {
-                                      goto(card, payload.payload);
-                                    }
-                                  }
-                                },
-                              );
-                            },
-                            label: (
-                              <>
-                                <FontAwesomeIcon icon={faWindowRestore} /> Add variant
-                              </>
-                            ),
-                          },
-                          {
-                            value: 'Delete card or variant',
-                            action: () => {},
-                            label: (
-                              <ConfirmDeleteModal
-                                buttonLabel={
-                                  <>
-                                    <FontAwesomeIcon icon={faTrash} />
-                                    {hasVariants ? ' Delete variant' : ' Delete card'}
-                                  </>
-                                }
-                                message={
-                                  hasVariants ? (
-                                    <p>
-                                      Are you <strong>sure</strong> you want to delete this whole
-                                      variant? This will delete all subcards inside.
-                                    </p>
-                                  ) : (
-                                    <p>
-                                      Are you <strong>sure</strong> you want to delete this whole
-                                      card? This will delete all subcards inside.
-                                    </p>
-                                  )
-                                }
-                                onConfirm={() => {
-                                  if (hasVariants) {
-                                    dispatch(API.deleteCardContent(variant));
-                                    navigate(`../edit/${card.id}/v/${variantPager?.next.id}`);
-                                  } else {
-                                    dispatch(API.deleteCard(card));
-                                    navigate('../');
-                                  }
-                                }}
-                                confirmButtonLabel={hasVariants ? 'Delete variant' : 'Delete card'}
-                              />
-                            ),
-                          },
-                        ]}
-                        onSelect={val => {
-                          val.action != null ? val.action() : navigate(val.value);
-                        }}
-                      />
-                    </Flex>
-                  </Flex>
-                  {!readOnly && variant.id && <CardEditorToolbox open={openToolbox} context={{ kind: 'DeliverableOfCardContent', ownerId: variant.id }} />}
-                  {cardType && (
-                    <div className={showTypeDetails ? openDetails : closeDetails}>
-                      <div>
-                        <p>
-                          <b>Card type</b>: {cardType.title || ''}
-                        </p>
-                        <p>
-                          <b>Purpose</b>: <DocTextDisplay id={cardType.purposeId} />
-                        </p>
-                      </div>
-                      <IconButton
-                        icon={faTimes}
-                        title="Close"
-                        onClick={() => setShowTypeDetails(false)}
-                      />
-                    </div>
-                  )}
-                </Flex>
+            <Flex
+              grow={1}
+              direction="row"
+              justify="space-between"
+              align="stretch"
+              className={cx(
+                cardStyle,
+                { [fullScreenStyle]: fullScreen === true },
+                css({
+                  backgroundColor: 'white',
+                  overflow: 'hidden',
+                }),
+              )}
+            >
+              <Flex direction="column" grow={1} align="stretch">
                 <Flex
                   direction="column"
                   grow={1}
+                  className={css({
+                    overflow: 'auto',
+                  })}
                   align="stretch"
-                  className={css({ overflow: 'auto', padding: space_S })}
                 >
-                  {userAcl.read ? (
-                    variant.id ? (
-                      <DocumentList
+                  <Flex direction="column" align="stretch" className={'HEADER'}>
+                    <Flex
+                      justify="space-between"
+                      className={css({
+                        alignItems: 'center',
+                        padding: space_S,
+                        borderBottom:
+                          card.color && card.color != '#ffffff'
+                            ? '5px solid ' + card.color
+                            : '1px solid var(--lightGray)',
+                      })}
+                    >
+                      <div>
+                        {variant.frozen && (
+                          <div
+                            className={css({ color: '#71D9FF' })}
+                            title='Card is frozen (locked). To unfreeze go to Card settings and uncheck "frozen".'
+                          >
+                            <FontAwesomeIcon icon={faSnowflake} />
+                            <i> frozen</i>
+                          </div>
+                        )}
+                        <Flex align="center">
+                          <InlineInputNew
+                            placeholder={i18n.card.untitled}
+                            readOnly={readOnly}
+                            value={card.title || ''}
+                            onChange={newValue =>
+                              dispatch(API.updateCard({ ...card, title: newValue }))
+                            }
+                            className={cardTitle}
+                            autosave
+                          />
+                          {hasVariants && (
+                            <>
+                              <span className={variantTitle}>&#xFE58;</span>
+                              <InlineInputNew
+                                className={variantTitle}
+                                value={
+                                  variant.title && variant.title.length > 0
+                                    ? variant.title
+                                    : `Variant ${variantNumber}`
+                                }
+                                readOnly={readOnly}
+                                placeholder={i18n.content.untitled}
+                                onChange={newValue =>
+                                  dispatch(API.updateCardContent({ ...variant, title: newValue }))
+                                }
+                                autosave={false}
+                              />
+                            </>
+                          )}
+                          {hasCardType && (
+                            <IconButton
+                              icon={faInfoCircle}
+                              title="Show card model informations"
+                              className={cx(
+                                lightIconButtonStyle,
+                                css({ color: 'var(--lightGray)' }),
+                              )}
+                              onClick={() =>
+                                setShowTypeDetails(showTypeDetails => !showTypeDetails)
+                              }
+                            />
+                          )}
+                          {!readOnly && (
+                            <IconButton
+                              icon={faHandSparkles}
+                              layer={openToolbox ? { layerIcon: faSlash, transform: 'grow-1' } : undefined}
+                              title="Show/hide toolbox"
+                              className={cx(
+                                lightIconButtonStyle,
+                                css({ color: 'var(--lightGray)' }),
+                              )}
+                              onClick={() => setOpenToolbox(openToolbox => !openToolbox)}
+                            />
+                          )}
+                        </Flex>
+                      </div>
+                      <Flex>
+                        {/* handle modal routes*/}
+                        <Routes>
+                          <Route
+                            path="settings"
+                            element={
+                              <Modal
+                                title="Card Settings"
+                                onClose={() => closeRouteCb('settings')}
+                                showCloseButton
+                                className={css({ height: '580px' })}
+                              >
+                                {closeModal => (
+                                  <CardSettings
+                                    onClose={closeModal}
+                                    card={card}
+                                    variant={variant}
+                                  />
+                                )}
+                              </Modal>
+                            }
+                          />
+                          <Route
+                            path="involvements"
+                            element={
+                              <Modal
+                                title="Involvements"
+                                onClose={() => closeRouteCb('involvements')}
+                                showCloseButton
+                                className={css({ height: '580px', width: '600px' })}
+                              >
+                                {() => <CardInvolvement card={card} />}
+                              </Modal>
+                            }
+                          />
+                          <Route
+                            path="completion"
+                            element={
+                              <Modal
+                                title="Completion"
+                                onClose={() => navigate('./')}
+                                showCloseButton
+                              >
+                                {() =>
+                                  variant && (
+                                    <Flex direction="column">
+                                      <ProgressModifier variant={variant} />
+                                    </Flex>
+                                  )
+                                }
+                              </Modal>
+                            }
+                          />
+                        </Routes>
+                        <IconButton
+                          title="Full screen mode"
+                          icon={fullScreen ? faCompressArrowsAlt : faExpandArrowsAlt}
+                          onClick={() => setFullScreen(fullScreen => !fullScreen)}
+                          className={lightIconButtonStyle}
+                        />
+                        <DropDownMenu
+                          icon={faEllipsisV}
+                          valueComp={{ value: '', label: '' }}
+                          buttonClassName={cx(lightIconButtonStyle, css({ marginLeft: space_S }))}
+                          entries={[
+                            {
+                              value: 'settings',
+                              label: (
+                                <>
+                                  <FontAwesomeIcon icon={faCog} /> Card Settings
+                                </>
+                              ),
+                            },
+                            {
+                              value: 'involvements',
+                              label: (
+                                <>
+                                  <FontAwesomeIcon icon={faUsers} /> Involvements
+                                </>
+                              ),
+                            },
+                            {
+                              value: 'completion',
+                              label: (
+                                <>
+                                  <FontAwesomeIcon icon={faPercent} /> Completion
+                                </>
+                              ),
+                            },
+                            {
+                              value: 'Add new variant',
+                              action: () => {
+                                dispatch(API.createCardContentVariantWithBlockDoc(cardId)).then(
+                                  payload => {
+                                    if (payload.meta.requestStatus === 'fulfilled') {
+                                      if (entityIs(payload.payload, 'CardContent')) {
+                                        goto(card, payload.payload);
+                                      }
+                                    }
+                                  },
+                                );
+                              },
+                              label: (
+                                <>
+                                  <FontAwesomeIcon icon={faWindowRestore} /> Add variant
+                                </>
+                              ),
+                            },
+                            {
+                              value: 'Delete card or variant',
+                              action: () => {},
+                              label: (
+                                <ConfirmDeleteModal
+                                  buttonLabel={
+                                    <>
+                                      <FontAwesomeIcon icon={faTrash} />
+                                      {hasVariants ? ' Delete variant' : ' Delete card'}
+                                    </>
+                                  }
+                                  message={
+                                    hasVariants ? (
+                                      <p>
+                                        Are you <strong>sure</strong> you want to delete this whole
+                                        variant? This will delete all subcards inside.
+                                      </p>
+                                    ) : (
+                                      <p>
+                                        Are you <strong>sure</strong> you want to delete this whole
+                                        card? This will delete all subcards inside.
+                                      </p>
+                                    )
+                                  }
+                                  onConfirm={() => {
+                                    if (hasVariants) {
+                                      dispatch(API.deleteCardContent(variant));
+                                      navigate(`../edit/${card.id}/v/${variantPager?.next.id}`);
+                                    } else {
+                                      dispatch(API.deleteCard(card));
+                                      navigate('../');
+                                    }
+                                  }}
+                                  confirmButtonLabel={
+                                    hasVariants ? 'Delete variant' : 'Delete card'
+                                  }
+                                />
+                              ),
+                            },
+                          ]}
+                          onSelect={val => {
+                            val.action != null ? val.action() : navigate(val.value);
+                          }}
+                        />
+                      </Flex>
+                    </Flex>
+                    {!readOnly && variant.id && (
+                      <CardEditorToolbox
+                        open={openToolbox}
                         context={{ kind: 'DeliverableOfCardContent', ownerId: variant.id }}
-                        allowEdition={!readOnly}
                       />
+                    )}
+                    {cardType && (
+                      <div className={showTypeDetails ? openDetails : closeDetails}>
+                        <div>
+                          <p>
+                            <b>Card type</b>: {cardType.title || ''}
+                          </p>
+                          <p>
+                            <b>Purpose</b>: <DocTextDisplay id={cardType.purposeId} />
+                          </p>
+                        </div>
+                        <IconButton
+                          icon={faTimes}
+                          title="Close"
+                          onClick={() => setShowTypeDetails(false)}
+                        />
+                      </div>
+                    )}
+                  </Flex>
+                  <Flex
+                    direction="column"
+                    grow={1}
+                    align="stretch"
+                    className={css({ overflow: 'auto', padding: space_S })}
+                  >
+                    {userAcl.read ? (
+                      variant.id ? (
+                        <DocumentList
+                          context={{ kind: 'DeliverableOfCardContent', ownerId: variant.id }}
+                          allowEdition={!readOnly}
+                        />
+                      ) : (
+                        <span>no deliverable available</span>
+                      )
                     ) : (
-                      <span>no deliverable available</span>
-                    )
-                  ) : (
-                    <span>Access Denied</span>
-                  )}
-                  
+                      <span>Access Denied</span>
+                    )}
+                  </Flex>
+                </Flex>
+                <Flex align="center">
+                  <OpenCloseModal
+                    title="Edit card completion"
+                    className={css({ width: '100%' })}
+                    showCloseButton={true}
+                    collapsedChildren={
+                      <ProgressBar
+                        variant={variant}
+                        className={css({
+                          '&:hover': {
+                            cursor: 'pointer',
+                            opacity: 0.6,
+                          },
+                        })}
+                      />
+                    }
+                  >
+                    {() =>
+                      variant && (
+                        <Flex direction="column">
+                          <ProgressModifier variant={variant} />
+                        </Flex>
+                      )
+                    }
+                  </OpenCloseModal>
                 </Flex>
               </Flex>
-              <Flex align="center">
-                <OpenCloseModal
-                  title="Edit card completion"
-                  className={css({ width: '100%' })}
-                  showCloseButton={true}
-                  collapsedChildren={
-                    <ProgressBar
-                      variant={variant}
-                      className={css({
-                        '&:hover': {
-                          cursor: 'pointer',
-                          opacity: 0.6,
-                        },
-                      })}
-                    />
-                  }
-                >
-                  {() =>
-                    variant && (
-                      <Flex direction="column">
-                        <ProgressModifier variant={variant} />
-                      </Flex>
-                    )
-                  }
-                </OpenCloseModal>
-              </Flex>
+              <SideCollapsiblePanel
+                items={{
+                  resources: {
+                    children: (
+                      <ResourcesWrapper
+                        kind={'CardOrCardContent'}
+                        accessLevel={
+                          !readOnly && userAcl.write ? 'WRITE' : userAcl.read ? 'READ' : 'DENIED'
+                        }
+                        cardId={card.id}
+                        cardContentId={variant.id}
+                        hasSeveralVariants={hasVariants}
+                      />
+                    ),
+                    icon: faPaperclip,
+                    title: 'Documentation',
+                  },
+                  'Sticky Notes': {
+                    icon: faStickyNote,
+                    title: 'Sticky notes',
+                    children: <StickyNoteWrapper destCardId={card.id} showSrc />,
+                  },
+                }}
+                direction="RIGHT"
+              />
             </Flex>
-            <SideCollapsiblePanel
-              items={{
-                resources: {
-                  children: (
-                    <ResourcesWrapper
-                      kind={'CardOrCardContent'}
-                      accessLevel={
-                        !readOnly && userAcl.write ? 'WRITE' : userAcl.read ? 'READ' : 'DENIED'
-                      }
-                      cardId={card.id}
-                      cardContentId={variant.id}
-                      hasSeveralVariants={hasVariants}
-                    />
-                  ),
-                  icon: faPaperclip,
-                  title: 'Documentation',
-                },
-                'Sticky Notes': {
-                  icon: faStickyNote,
-                  title: 'Sticky notes',
-                  children: <StickyNoteWrapper destCardId={card.id} showSrc />,
-                },
-              }}
-              direction="RIGHT"
-            />
           </Flex>
+          <VariantPager allowCreation={userAcl.write} card={card} current={variant} />
+          {showSubcards ? (
+            <Collapsible title="Subcards">
+              <ContentSubs
+                depth={1}
+                cardContent={variant}
+                className={css({ alignItems: 'flex-start', overflow: 'auto', width: '100%' })}
+                subcardsContainerStyle={css({
+                  overflow: 'auto',
+                  width: '100%',
+                  flexWrap: 'nowrap',
+                })}
+              />
+            </Collapsible>
+          ) : null}
         </Flex>
-        <VariantPager allowCreation={userAcl.write} card={card} current={variant} />
-        {showSubcards ? (
-          <Collapsible title="Subcards">
-            <ContentSubs
-              depth={1}
-              cardContent={variant}
-              className={css({ alignItems: 'flex-start', overflow: 'auto', width: '100%' })}
-              subcardsContainerStyle={css({ overflow: 'auto', width: '100%', flexWrap: 'nowrap' })}
-            />
-          </Collapsible>
-        ) : null}
-      </Flex>
-      </ CardEditorCTX.Provider>
+      </CardEditorCTX.Provider>
     );
   }
 }

@@ -12,6 +12,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import * as React from 'react';
 import * as LiveHelper from '../../../LiveHelper';
 import { getLogger } from '../../../logger';
+import { CardEditorCTX } from '../../cards/CardEditor';
 import Flex from '../../common/Flex';
 import Tips from '../../common/Tips';
 import { borderRadius } from '../../styling/style';
@@ -196,6 +197,7 @@ export default function WysiwygEditor({
 }: WysiwygEditorProps): JSX.Element {
   // use a ref to manage editor content
   const divRef = React.useRef<HTMLDivElement>(null);
+  const { TXToptions } = React.useContext(CardEditorCTX);
 
   // to detect is composition in on going
   const compositionRef = React.useRef(false);
@@ -456,6 +458,16 @@ export default function WysiwygEditor({
     },
     [onInternalChangeCb],
   );
+
+  const maToolbar = React.useMemo(() => {
+    return (<TXTFormatToolbar toolbarState={toolbarState} toolbarFormatFeatures={{
+      toggleBold:toggleBold,
+      toggleItalic: toggleItalic,
+      toggleUnderline: toggleUnderline,
+      toggleStrike: toggleStrike,
+    }} />)
+  }, [toggleBold, toggleItalic, toggleStrike, toggleUnderline, toolbarState]);
+
   
   return (
     <Flex className={className} direction="column" grow={1} align="stretch">
