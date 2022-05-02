@@ -320,7 +320,7 @@
 <a class="jxr_linenumber" name="L312" href="#L312">312</a>         Long projectTwoRootContentId = ColabFactory.getRootContent(client, projectTwo).getId();
 <a class="jxr_linenumber" name="L313" href="#L313">313</a>         ColabFactory.createNewCard(client, projectTwoRootContentId, projectOneType.getId());
 <a class="jxr_linenumber" name="L314" href="#L314">314</a>         <em class="jxr_comment">// consume websocket messages (overview update; project 1 update; project 2 update)</em>
-<a class="jxr_linenumber" name="L315" href="#L315">315</a>         TestHelper.waitForMessagesAndAssert(wsClient, 3, 5, WsUpdateMessage.<strong class="jxr_keyword">class</strong>).get(0);
+<a class="jxr_linenumber" name="L315" href="#L315">315</a>         TestHelper.waitForMessagesAndAssert(wsClient, 2, 5, WsUpdateMessage.<strong class="jxr_keyword">class</strong>).get(0);
 <a class="jxr_linenumber" name="L316" href="#L316">316</a>         <em class="jxr_comment">// consume websocket messages (overview update; project 2 update)</em>
 <a class="jxr_linenumber" name="L317" href="#L317">317</a>         TestHelper.waitForMessagesAndAssert(pizzaWsClient, 2, 5, WsUpdateMessage.<strong class="jxr_keyword">class</strong>).get(0);
 <a class="jxr_linenumber" name="L318" href="#L318">318</a> 

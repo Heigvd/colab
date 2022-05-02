@@ -10,10 +10,12 @@ import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.model.document.AbstractResource;
 import ch.colabproject.colab.api.model.document.Resource;
 import ch.colabproject.colab.api.model.document.ResourceRef;
+import java.util.List;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.TypedQuery;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -24,10 +26,10 @@ import org.slf4j.LoggerFactory;
  */
 @Stateless
 @LocalBean
-<span class="nc" id="L27">public class ResourceDao {</span>
+<span class="nc" id="L29">public class ResourceDao {</span>
 
     /** logger */
-<span class="nc" id="L30">    private static final Logger logger = LoggerFactory.getLogger(ResourceDao.class);</span>
+<span class="nc" id="L32">    private static final Logger logger = LoggerFactory.getLogger(ResourceDao.class);</span>
 
     /**
      * Access to the persistence unit
@@ -43,11 +45,29 @@ import org.slf4j.LoggerFactory;
      */
     public AbstractResource findResourceOrRef(Long id) {
         try {
-<span class="nc" id="L46">            logger.debug(&quot;find abstract resource #{}&quot;, id);</span>
-<span class="nc" id="L47">            return em.find(AbstractResource.class, id);</span>
-<span class="nc" id="L48">        } catch (IllegalArgumentException ex) {</span>
-<span class="nc" id="L49">            return null;</span>
+<span class="nc" id="L48">            logger.debug(&quot;find abstract resource #{}&quot;, id);</span>
+<span class="nc" id="L49">            return em.find(AbstractResource.class, id);</span>
+<span class="nc" id="L50">        } catch (IllegalArgumentException ex) {</span>
+<span class="nc" id="L51">            return null;</span>
         }
+    }
+
+    /**
+     * Retrieve the card type references that have the given target
+     *
+     * @param target the target
+     *
+     * @return the matching references
+     */
+    public List&lt;ResourceRef&gt; findDirectReferences(AbstractResource target) {
+<span class="nc" id="L63">        logger.debug(&quot;find the direct references of the target {}&quot;, target);</span>
+
+<span class="nc" id="L65">        TypedQuery&lt;ResourceRef&gt; query = em.createNamedQuery(&quot;ResourceRef.findDirectReferences&quot;,</span>
+            ResourceRef.class);
+
+<span class="nc" id="L68">        query.setParameter(&quot;targetId&quot;, target.getId());</span>
+
+<span class="nc" id="L70">        return query.getResultList();</span>
     }
 
     /**
@@ -57,10 +77,10 @@ import org.slf4j.LoggerFactory;
      */
     private Resource findResource(Long id) {
         try {
-<span class="nc" id="L60">            logger.debug(&quot;find resource #{}&quot;, id);</span>
-<span class="nc" id="L61">            return em.find(Resource.class, id);</span>
-<span class="nc" id="L62">        } catch (IllegalArgumentException ex) {</span>
-<span class="nc" id="L63">            return null;</span>
+<span class="nc" id="L80">            logger.debug(&quot;find resource #{}&quot;, id);</span>
+<span class="nc" id="L81">            return em.find(Resource.class, id);</span>
+<span class="nc" id="L82">        } catch (IllegalArgumentException ex) {</span>
+<span class="nc" id="L83">            return null;</span>
         }
     }
 
@@ -72,10 +92,10 @@ import org.slf4j.LoggerFactory;
      */
     private ResourceRef findResourceRef(Long id) {
         try {
-<span class="nc" id="L75">            logger.debug(&quot;find resource reference #{}&quot;, id);</span>
-<span class="nc" id="L76">            return em.find(ResourceRef.class, id);</span>
-<span class="nc" id="L77">        } catch (IllegalArgumentException ex) {</span>
-<span class="nc" id="L78">            return null;</span>
+<span class="nc" id="L95">            logger.debug(&quot;find resource reference #{}&quot;, id);</span>
+<span class="nc" id="L96">            return em.find(ResourceRef.class, id);</span>
+<span class="nc" id="L97">        } catch (IllegalArgumentException ex) {</span>
+<span class="nc" id="L98">            return null;</span>
         }
     }
 
@@ -89,10 +109,10 @@ import org.slf4j.LoggerFactory;
      * @throws ColabMergeException if updating the resource failed
      */
     public Resource updateResource(Resource resource) throws ColabMergeException {
-<span class="nc" id="L92">        logger.debug(&quot;update resource {}&quot;, resource);</span>
-<span class="nc" id="L93">        Resource mResource = this.findResource(resource.getId());</span>
-<span class="nc" id="L94">        mResource.merge(resource);</span>
-<span class="nc" id="L95">        return mResource;</span>
+<span class="nc" id="L112">        logger.debug(&quot;update resource {}&quot;, resource);</span>
+<span class="nc" id="L113">        Resource mResource = this.findResource(resource.getId());</span>
+<span class="nc" id="L114">        mResource.merge(resource);</span>
+<span class="nc" id="L115">        return mResource;</span>
     }
 
     /**
@@ -105,10 +125,10 @@ import org.slf4j.LoggerFactory;
      * @throws ColabMergeException if updating the resource reference failed
      */
     public ResourceRef updateResourceRef(ResourceRef resourceRef) throws ColabMergeException {
-<span class="nc" id="L108">        logger.debug(&quot;update resource reference {}&quot;, resourceRef);</span>
-<span class="nc" id="L109">        ResourceRef mResourceRef = this.findResourceRef(resourceRef.getId());</span>
-<span class="nc" id="L110">        mResourceRef.merge(resourceRef);</span>
-<span class="nc" id="L111">        return mResourceRef;</span>
+<span class="nc" id="L128">        logger.debug(&quot;update resource reference {}&quot;, resourceRef);</span>
+<span class="nc" id="L129">        ResourceRef mResourceRef = this.findResourceRef(resourceRef.getId());</span>
+<span class="nc" id="L130">        mResourceRef.merge(resourceRef);</span>
+<span class="nc" id="L131">        return mResourceRef;</span>
     }
 
     /**
@@ -119,9 +139,9 @@ import org.slf4j.LoggerFactory;
      * @return the new persisted resource
      */
     public Resource persistResource(Resource resource) {
-<span class="nc" id="L122">        logger.debug(&quot;persist resource {}&quot;, resource);</span>
-<span class="nc" id="L123">        em.persist(resource);</span>
-<span class="nc" id="L124">        return resource;</span>
+<span class="nc" id="L142">        logger.debug(&quot;persist resource {}&quot;, resource);</span>
+<span class="nc" id="L143">        em.persist(resource);</span>
+<span class="nc" id="L144">        return resource;</span>
     }
 
     /**
@@ -132,11 +152,11 @@ import org.slf4j.LoggerFactory;
      * @return just deleted resource / resource reference
      */
     public AbstractResource deleteResourceOrRef(Long id) {
-<span class="nc" id="L135">        logger.debug(&quot;delete abstract resource reference #{}&quot;, id);</span>
+<span class="nc" id="L155">        logger.debug(&quot;delete abstract resource reference #{}&quot;, id);</span>
         // TODO: move to recycle bin first
-<span class="nc" id="L137">        AbstractResource resourceRef = this.findResourceOrRef(id);</span>
-<span class="nc" id="L138">        em.remove(resourceRef);</span>
-<span class="nc" id="L139">        return resourceRef;</span>
+<span class="nc" id="L157">        AbstractResource resourceRef = this.findResourceOrRef(id);</span>
+<span class="nc" id="L158">        em.remove(resourceRef);</span>
+<span class="nc" id="L159">        return resourceRef;</span>
     }
 
 }

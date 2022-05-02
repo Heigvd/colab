@@ -45,6 +45,7 @@ import javax.persistence.OneToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Transient;
+import javax.validation.constraints.Size;
 
 /**
  * Card
@@ -53,7 +54,6 @@ import javax.persistence.Transient;
  *
  * @author sandra
  */
-// TODO review accurate constraints when stabilized
 @Entity
 @Table(
     indexes = {
@@ -90,11 +90,13 @@ import javax.persistence.Transient;
     /**
      * Card title
      */
+    @Size(max = 255)
     private String title;
 
     /**
      * The color of the card
      */
+    @Size(max = 255)
     private String color;
 
     /**
@@ -154,52 +156,49 @@ import javax.persistence.Transient;
      * &lt;p&gt;
      * There can be several variants of content
      */
-    // TODO sandra - see where it is suitable to order it
-    // TODO sandra - challenge cascade
-    // TODO sandra - challenge ArrayList
-<span class="nc" id="L160">    @OneToMany(mappedBy = &quot;card&quot;, cascade = CascadeType.ALL) // , fetch = FetchType.LAZY)</span>
+<span class="nc" id="L159">    @OneToMany(mappedBy = &quot;card&quot;, cascade = CascadeType.ALL)</span>
     @JsonbTransient
     private List&lt;CardContent&gt; contentVariants = new ArrayList&lt;&gt;();
 
     /**
      * Assignees and other access-control
      */
-<span class="nc" id="L167">    @OneToMany(mappedBy = &quot;card&quot;, fetch = FetchType.LAZY, cascade = CascadeType.ALL)</span>
+<span class="nc" id="L166">    @OneToMany(mappedBy = &quot;card&quot;, cascade = CascadeType.ALL)</span>
     @JsonbTransient
     private List&lt;AccessControl&gt; accessControlList = new ArrayList&lt;&gt;();
 
     /**
      * The list of abstract resources directly linked to this card
      */
-<span class="nc" id="L174">    @OneToMany(mappedBy = &quot;card&quot;, cascade = CascadeType.ALL)</span>
+<span class="nc" id="L173">    @OneToMany(mappedBy = &quot;card&quot;, cascade = CascadeType.ALL)</span>
     @JsonbTransient
     private List&lt;AbstractResource&gt; directAbstractResources = new ArrayList&lt;&gt;();
 
     /**
      * The list of sticky note links of which the card is the source
      */
-<span class="nc" id="L181">    @OneToMany(mappedBy = &quot;srcCard&quot;, cascade = CascadeType.ALL)</span>
+<span class="nc" id="L180">    @OneToMany(mappedBy = &quot;srcCard&quot;, cascade = CascadeType.ALL)</span>
     @JsonbTransient
     private List&lt;StickyNoteLink&gt; stickyNoteLinksAsSrc = new ArrayList&lt;&gt;();
 
     /**
      * The list of sticky note links of which the card is the destination
      */
-<span class="nc" id="L188">    @OneToMany(mappedBy = &quot;destinationCard&quot;, cascade = CascadeType.ALL)</span>
+<span class="nc" id="L187">    @OneToMany(mappedBy = &quot;destinationCard&quot;, cascade = CascadeType.ALL)</span>
     @JsonbTransient
     private List&lt;StickyNoteLink&gt; stickyNoteLinksAsDest = new ArrayList&lt;&gt;();
 
     /**
      * The list of activity flow links of which the card is the previous one
      */
-<span class="nc" id="L195">    @OneToMany(mappedBy = &quot;previousCard&quot;, cascade = CascadeType.ALL)</span>
+<span class="nc" id="L194">    @OneToMany(mappedBy = &quot;previousCard&quot;, cascade = CascadeType.ALL)</span>
     @JsonbTransient
     private List&lt;ActivityFlowLink&gt; activityFlowLinksAsPrevious = new ArrayList&lt;&gt;();
 
     /**
      * The list of activity flow links of which the card is the next one
      */
-<span class="nc" id="L202">    @OneToMany(mappedBy = &quot;nextCard&quot;, cascade = CascadeType.ALL)</span>
+<span class="nc" id="L201">    @OneToMany(mappedBy = &quot;nextCard&quot;, cascade = CascadeType.ALL)</span>
     @JsonbTransient
     private List&lt;ActivityFlowLink&gt; activityFlowLinksAsNext = new ArrayList&lt;&gt;();
 
@@ -212,15 +211,15 @@ import javax.persistence.Transient;
      */
     @Override
     public Long getId() {
-<span class="nc" id="L215">        return id;</span>
+<span class="nc" id="L214">        return id;</span>
     }
 
     /**
      * @param id the card id
      */
     public void setId(Long id) {
-<span class="nc" id="L222">        this.id = id;</span>
-<span class="nc" id="L223">    }</span>
+<span class="nc" id="L221">        this.id = id;</span>
+<span class="nc" id="L222">    }</span>
 
     /**
      * Get the tracking data
@@ -229,7 +228,7 @@ import javax.persistence.Transient;
      */
     @Override
     public Tracking getTrackingData() {
-<span class="nc" id="L232">        return trackingData;</span>
+<span class="nc" id="L231">        return trackingData;</span>
     }
 
     /**
@@ -239,8 +238,8 @@ import javax.persistence.Transient;
      */
     @Override
     public void setTrackingData(Tracking trackingData) {
-<span class="nc" id="L242">        this.trackingData = trackingData;</span>
-<span class="nc" id="L243">    }</span>
+<span class="nc" id="L241">        this.trackingData = trackingData;</span>
+<span class="nc" id="L242">    }</span>
 
     /**
      * Get the value of title
@@ -248,7 +247,7 @@ import javax.persistence.Transient;
      * @return the value of title
      */
     public String getTitle() {
-<span class="nc" id="L251">        return title;</span>
+<span class="nc" id="L250">        return title;</span>
     }
 
     /**
@@ -257,36 +256,36 @@ import javax.persistence.Transient;
      * @param title new value of title
      */
     public void setTitle(String title) {
-<span class="nc" id="L260">        this.title = title;</span>
-<span class="nc" id="L261">    }</span>
+<span class="nc" id="L259">        this.title = title;</span>
+<span class="nc" id="L260">    }</span>
 
     /**
      * @return the color of the card
      */
     public String getColor() {
-<span class="nc" id="L267">        return color;</span>
+<span class="nc" id="L266">        return color;</span>
     }
 
     /**
      * @param color the new color of the card
      */
     public void setColor(String color) {
-<span class="nc" id="L274">        this.color = color;</span>
-<span class="nc" id="L275">    }</span>
+<span class="nc" id="L273">        this.color = color;</span>
+<span class="nc" id="L274">    }</span>
 
     /**
      * @return the index of the card in its parent
      */
     public int getIndex() {
-<span class="nc" id="L281">        return index;</span>
+<span class="nc" id="L280">        return index;</span>
     }
 
     /**
      * @param index the new index of the card in its parent
      */
     public void setIndex(int index) {
-<span class="nc" id="L288">        this.index = index;</span>
-<span class="nc" id="L289">    }</span>
+<span class="nc" id="L287">        this.index = index;</span>
+<span class="nc" id="L288">    }</span>
 
     /**
      * Get default involvement level.
@@ -294,7 +293,7 @@ import javax.persistence.Transient;
      * @return the default involvement level
      */
     public InvolvementLevel getDefaultInvolvementLevel() {
-<span class="nc" id="L297">        return defaultInvolvementLevel;</span>
+<span class="nc" id="L296">        return defaultInvolvementLevel;</span>
     }
 
     /**
@@ -303,22 +302,22 @@ import javax.persistence.Transient;
      * @param defaultInvolvementLevel default level to set
      */
     public void setDefaultInvolvementLevel(InvolvementLevel defaultInvolvementLevel) {
-<span class="nc" id="L306">        this.defaultInvolvementLevel = defaultInvolvementLevel;</span>
-<span class="nc" id="L307">    }</span>
+<span class="nc" id="L305">        this.defaultInvolvementLevel = defaultInvolvementLevel;</span>
+<span class="nc" id="L306">    }</span>
 
     /**
      * @return the card type defining what is it for
      */
     public AbstractCardType getCardType() {
-<span class="nc" id="L313">        return cardType;</span>
+<span class="nc" id="L312">        return cardType;</span>
     }
 
     /**
      * @param cardType the card type defining what is it for
      */
     public void setCardType(AbstractCardType cardType) {
-<span class="nc" id="L320">        this.cardType = cardType;</span>
-<span class="nc" id="L321">    }</span>
+<span class="nc" id="L319">        this.cardType = cardType;</span>
+<span class="nc" id="L320">    }</span>
 
     /**
      * get the id of the card type. To be sent to client
@@ -326,10 +325,10 @@ import javax.persistence.Transient;
      * @return the id of the card type
      */
     public Long getCardTypeId() {
-<span class="nc bnc" id="L329" title="All 2 branches missed.">        if (this.cardType != null) {</span>
-<span class="nc" id="L330">            return this.cardType.getId();</span>
+<span class="nc bnc" id="L328" title="All 2 branches missed.">        if (this.cardType != null) {</span>
+<span class="nc" id="L329">            return this.cardType.getId();</span>
         } else {
-<span class="nc" id="L332">            return cardTypeId;</span>
+<span class="nc" id="L331">            return cardTypeId;</span>
         }
     }
 
@@ -337,14 +336,14 @@ import javax.persistence.Transient;
      * @param cardTypeId the card type id to set
      */
     public void setCardTypeId(Long cardTypeId) {
-<span class="nc" id="L340">        this.cardTypeId = cardTypeId;</span>
-<span class="nc" id="L341">    }</span>
+<span class="nc" id="L339">        this.cardTypeId = cardTypeId;</span>
+<span class="nc" id="L340">    }</span>
 
     /**
      * @return True if it has a card type
      */
     public boolean hasCardType() {
-<span class="nc bnc" id="L347" title="All 4 branches missed.">        return cardType != null || cardTypeId != null;</span>
+<span class="nc bnc" id="L346" title="All 4 branches missed.">        return cardType != null || cardTypeId != null;</span>
     }
 
     /**
@@ -353,15 +352,15 @@ import javax.persistence.Transient;
      *         A card can either be the root card of a project or be within a card content
      */
     public CardContent getParent() {
-<span class="nc" id="L356">        return parent;</span>
+<span class="nc" id="L355">        return parent;</span>
     }
 
     /**
      * @param parent the parent card content
      */
     public void setParent(CardContent parent) {
-<span class="nc" id="L363">        this.parent = parent;</span>
-<span class="nc" id="L364">    }</span>
+<span class="nc" id="L362">        this.parent = parent;</span>
+<span class="nc" id="L363">    }</span>
 
     /**
      * get the id of the parent card content. To be sent to client
@@ -369,10 +368,10 @@ import javax.persistence.Transient;
      * @return the id of the parent card content
      */
     public Long getParentId() {
-<span class="nc bnc" id="L372" title="All 2 branches missed.">        if (this.parent != null) {</span>
-<span class="nc" id="L373">            return parent.getId();</span>
+<span class="nc bnc" id="L371" title="All 2 branches missed.">        if (this.parent != null) {</span>
+<span class="nc" id="L372">            return parent.getId();</span>
         } else {
-<span class="nc" id="L375">            return parentId;</span>
+<span class="nc" id="L374">            return parentId;</span>
         }
     }
 
@@ -382,8 +381,8 @@ import javax.persistence.Transient;
      * @param parentId the id of the parent card content
      */
     public void setParentId(Long parentId) {
-<span class="nc" id="L385">        this.parentId = parentId;</span>
-<span class="nc" id="L386">    }</span>
+<span class="nc" id="L384">        this.parentId = parentId;</span>
+<span class="nc" id="L385">    }</span>
 
     /**
      * Get the project this card is root of.
@@ -391,7 +390,7 @@ import javax.persistence.Transient;
      * @return the project
      */
     public Project getRootCardProject() {
-<span class="nc" id="L394">        return rootCardProject;</span>
+<span class="nc" id="L393">        return rootCardProject;</span>
     }
 
     /**
@@ -400,8 +399,8 @@ import javax.persistence.Transient;
      * @param rootCardProject the project
      */
     public void setRootCardProject(Project rootCardProject) {
-<span class="nc" id="L403">        this.rootCardProject = rootCardProject;</span>
-<span class="nc" id="L404">    }</span>
+<span class="nc" id="L402">        this.rootCardProject = rootCardProject;</span>
+<span class="nc" id="L403">    }</span>
 
     /**
      * get the id of the rootCardProject. To be sent to client.
@@ -409,10 +408,10 @@ import javax.persistence.Transient;
      * @return the id of the rootCardProject
      */
     public Long getRootCardProjectId() {
-<span class="nc bnc" id="L412" title="All 2 branches missed.">        if (this.rootCardProject != null) {</span>
-<span class="nc" id="L413">            return rootCardProject.getId();</span>
+<span class="nc bnc" id="L411" title="All 2 branches missed.">        if (this.rootCardProject != null) {</span>
+<span class="nc" id="L412">            return rootCardProject.getId();</span>
         } else {
-<span class="nc" id="L415">            return rootCardProjectId;</span>
+<span class="nc" id="L414">            return rootCardProjectId;</span>
         }
     }
 
@@ -422,29 +421,29 @@ import javax.persistence.Transient;
      * @param rootCardProjectId the id of the root-card project
      */
     public void setRootCardProjectId(Long rootCardProjectId) {
-<span class="nc" id="L425">        this.rootCardProjectId = rootCardProjectId;</span>
-<span class="nc" id="L426">    }</span>
+<span class="nc" id="L424">        this.rootCardProjectId = rootCardProjectId;</span>
+<span class="nc" id="L425">    }</span>
 
     /**
      * @return True if there is a project whose root card is this one
      */
     public boolean hasRootCardProject() {
-<span class="nc bnc" id="L432" title="All 4 branches missed.">        return rootCardProject != null || rootCardProjectId != null;</span>
+<span class="nc bnc" id="L431" title="All 4 branches missed.">        return rootCardProject != null || rootCardProjectId != null;</span>
     }
 
     /**
      * @return the list of variants of card content
      */
     public List&lt;CardContent&gt; getContentVariants() {
-<span class="nc" id="L439">        return contentVariants;</span>
+<span class="nc" id="L438">        return contentVariants;</span>
     }
 
     /**
      * @param contentVariantList the list of variants of card content
      */
     public void setContentVariants(List&lt;CardContent&gt; contentVariantList) {
-<span class="nc" id="L446">        this.contentVariants = contentVariantList;</span>
-<span class="nc" id="L447">    }</span>
+<span class="nc" id="L445">        this.contentVariants = contentVariantList;</span>
+<span class="nc" id="L446">    }</span>
 
     /**
      * Get access-control list
@@ -452,7 +451,7 @@ import javax.persistence.Transient;
      * @return ACL
      */
     public List&lt;AccessControl&gt; getAccessControlList() {
-<span class="nc" id="L455">        return accessControlList;</span>
+<span class="nc" id="L454">        return accessControlList;</span>
     }
 
     /**
@@ -463,12 +462,12 @@ import javax.persistence.Transient;
      * @return the access-control which match the member or null
      */
     public AccessControl getAcByMember(TeamMember member) {
-<span class="nc bnc" id="L466" title="All 2 branches missed.">        if (member != null) {</span>
-<span class="nc" id="L467">            Optional&lt;AccessControl&gt; optAc = this.getAccessControlList().stream()</span>
-<span class="nc" id="L468">                .filter(acl -&gt; member.equals(acl.getMember())).findFirst();</span>
-<span class="nc bnc" id="L469" title="All 2 branches missed.">            return optAc.isPresent() ? optAc.get() : null;</span>
+<span class="nc bnc" id="L465" title="All 2 branches missed.">        if (member != null) {</span>
+<span class="nc" id="L466">            Optional&lt;AccessControl&gt; optAc = this.getAccessControlList().stream()</span>
+<span class="nc" id="L467">                .filter(acl -&gt; member.equals(acl.getMember())).findFirst();</span>
+<span class="nc bnc" id="L468" title="All 2 branches missed.">            return optAc.isPresent() ? optAc.get() : null;</span>
         } else {
-<span class="nc" id="L471">            return null;</span>
+<span class="nc" id="L470">            return null;</span>
         }
     }
 
@@ -480,13 +479,13 @@ import javax.persistence.Transient;
      * @return the access-control which match the role or null
      */
     public AccessControl getAcByRole(TeamRole role) {
-<span class="nc bnc" id="L483" title="All 2 branches missed.">        if (role != null) {</span>
-<span class="nc" id="L484">            Optional&lt;AccessControl&gt; optAc = this.getAccessControlList().stream()</span>
-<span class="nc" id="L485">                .filter(acl -&gt; role.equals(acl.getRole())).findFirst();</span>
+<span class="nc bnc" id="L482" title="All 2 branches missed.">        if (role != null) {</span>
+<span class="nc" id="L483">            Optional&lt;AccessControl&gt; optAc = this.getAccessControlList().stream()</span>
+<span class="nc" id="L484">                .filter(acl -&gt; role.equals(acl.getRole())).findFirst();</span>
 
-<span class="nc bnc" id="L487" title="All 2 branches missed.">            return optAc.isPresent() ? optAc.get() : null;</span>
+<span class="nc bnc" id="L486" title="All 2 branches missed.">            return optAc.isPresent() ? optAc.get() : null;</span>
         } else {
-<span class="nc" id="L489">            return null;</span>
+<span class="nc" id="L488">            return null;</span>
         }
     }
 
@@ -496,80 +495,80 @@ import javax.persistence.Transient;
      * @param accessControlList new list
      */
     public void setAccessControlList(List&lt;AccessControl&gt; accessControlList) {
-<span class="nc" id="L499">        this.accessControlList = accessControlList;</span>
-<span class="nc" id="L500">    }</span>
+<span class="nc" id="L498">        this.accessControlList = accessControlList;</span>
+<span class="nc" id="L499">    }</span>
 
     /**
      * @return the list of abstract resources directly linked to this card
      */
     @Override
     public List&lt;AbstractResource&gt; getDirectAbstractResources() {
-<span class="nc" id="L507">        return directAbstractResources;</span>
+<span class="nc" id="L506">        return directAbstractResources;</span>
     }
 
     /**
      * @param abstractResources the list of abstract resources directly linked to this card
      */
     public void setDirectAbstractResources(List&lt;AbstractResource&gt; abstractResources) {
-<span class="nc" id="L514">        this.directAbstractResources = abstractResources;</span>
-<span class="nc" id="L515">    }</span>
+<span class="nc" id="L513">        this.directAbstractResources = abstractResources;</span>
+<span class="nc" id="L514">    }</span>
 
     /**
      * @return the list of sticky note links of which the card is the source
      */
     @Override
     public List&lt;StickyNoteLink&gt; getStickyNoteLinksAsSrc() {
-<span class="nc" id="L522">        return stickyNoteLinksAsSrc;</span>
+<span class="nc" id="L521">        return stickyNoteLinksAsSrc;</span>
     }
 
     /**
      * @param links the list of sticky note links of which the card is the source
      */
     public void setStickyNoteLinksAsSrc(List&lt;StickyNoteLink&gt; links) {
-<span class="nc" id="L529">        this.stickyNoteLinksAsSrc = links;</span>
-<span class="nc" id="L530">    }</span>
+<span class="nc" id="L528">        this.stickyNoteLinksAsSrc = links;</span>
+<span class="nc" id="L529">    }</span>
 
     /**
      * @return the list of sticky note links of which the card is the destination
      */
     public List&lt;StickyNoteLink&gt; getStickyNoteLinksAsDest() {
-<span class="nc" id="L536">        return stickyNoteLinksAsDest;</span>
+<span class="nc" id="L535">        return stickyNoteLinksAsDest;</span>
     }
 
     /**
      * @param links the list of sticky note links of which the card is the destination
      */
     public void setStickyNoteLinksAsDest(List&lt;StickyNoteLink&gt; links) {
-<span class="nc" id="L543">        this.stickyNoteLinksAsDest = links;</span>
-<span class="nc" id="L544">    }</span>
+<span class="nc" id="L542">        this.stickyNoteLinksAsDest = links;</span>
+<span class="nc" id="L543">    }</span>
 
     /**
      * @return the list of activity flow links of which the card is the previous one
      */
     public List&lt;ActivityFlowLink&gt; getActivityFlowLinksAsPrevious() {
-<span class="nc" id="L550">        return activityFlowLinksAsPrevious;</span>
+<span class="nc" id="L549">        return activityFlowLinksAsPrevious;</span>
     }
 
     /**
      * @param links list of activity flow links of which the card is the previous one
      */
     public void setActivityFlowLinksAsPrevious(List&lt;ActivityFlowLink&gt; links) {
-<span class="nc" id="L557">        this.activityFlowLinksAsPrevious = links;</span>
-<span class="nc" id="L558">    }</span>
+<span class="nc" id="L556">        this.activityFlowLinksAsPrevious = links;</span>
+<span class="nc" id="L557">    }</span>
 
     /**
      * @return the list of activity flow links of which the card is the next one
      */
     public List&lt;ActivityFlowLink&gt; getActivityFlowLinksAsNext() {
-<span class="nc" id="L564">        return activityFlowLinksAsNext;</span>
+<span class="nc" id="L563">        return activityFlowLinksAsNext;</span>
     }
 
     /**
      * @param links the list of activity flow links of which the card is the next one
      */
     public void setActivityFlowLinksAsNext(List&lt;ActivityFlowLink&gt; links) {
-<span class="nc" id="L571">        this.activityFlowLinksAsNext = links;</span>
-<span class="nc" id="L572">    }</span>
+<span class="nc" id="L570">        this.activityFlowLinksAsNext = links;</span>
+<span class="nc" id="L571">    }</span>
 
     // ---------------------------------------------------------------------------------------------
     // concerning the whole class
@@ -577,16 +576,16 @@ import javax.persistence.Transient;
 
     @Override
     public void merge(ColabEntity other) throws ColabMergeException {
-<span class="nc bnc" id="L580" title="All 2 branches missed.">        if (other instanceof Card) {</span>
-<span class="nc" id="L581">            Card o = (Card) other;</span>
-<span class="nc" id="L582">            this.setTitle(o.getTitle());</span>
-<span class="nc" id="L583">            this.setColor(o.getColor());</span>
-<span class="nc" id="L584">            this.setIndex(o.getIndex());</span>
-<span class="nc" id="L585">            this.setDefaultInvolvementLevel(o.getDefaultInvolvementLevel());</span>
-<span class="nc" id="L586">        } else {</span>
-<span class="nc" id="L587">            throw new ColabMergeException(this, other);</span>
+<span class="nc bnc" id="L579" title="All 2 branches missed.">        if (other instanceof Card) {</span>
+<span class="nc" id="L580">            Card o = (Card) other;</span>
+<span class="nc" id="L581">            this.setTitle(o.getTitle());</span>
+<span class="nc" id="L582">            this.setColor(o.getColor());</span>
+<span class="nc" id="L583">            this.setIndex(o.getIndex());</span>
+<span class="nc" id="L584">            this.setDefaultInvolvementLevel(o.getDefaultInvolvementLevel());</span>
+<span class="nc" id="L585">        } else {</span>
+<span class="nc" id="L586">            throw new ColabMergeException(this, other);</span>
         }
-<span class="nc" id="L589">    }</span>
+<span class="nc" id="L588">    }</span>
 
     /**
      * Get the project this card belongs to.
@@ -595,34 +594,34 @@ import javax.persistence.Transient;
      */
     @JsonbTransient
     public Project getProject() {
-<span class="nc bnc" id="L598" title="All 2 branches missed.">        if (this.rootCardProject != null) {</span>
+<span class="nc bnc" id="L597" title="All 2 branches missed.">        if (this.rootCardProject != null) {</span>
             // this card is a root card
-<span class="nc" id="L600">            return this.rootCardProject;</span>
-<span class="nc bnc" id="L601" title="All 2 branches missed.">        } else if (this.cardType != null) {</span>
+<span class="nc" id="L599">            return this.rootCardProject;</span>
+<span class="nc bnc" id="L600" title="All 2 branches missed.">        } else if (this.cardType != null) {</span>
             // the card type has a direct access to project
-<span class="nc" id="L603">            return this.cardType.getProject();</span>
-<span class="nc bnc" id="L604" title="All 2 branches missed.">        } else if (this.parent != null) {</span>
+<span class="nc" id="L602">            return this.cardType.getProject();</span>
+<span class="nc bnc" id="L603" title="All 2 branches missed.">        } else if (this.parent != null) {</span>
             // nothing easier, so get the one of its parent
-<span class="nc" id="L606">            return this.parent.getProject();</span>
+<span class="nc" id="L605">            return this.parent.getProject();</span>
         }
-<span class="nc" id="L608">        return null;</span>
+<span class="nc" id="L607">        return null;</span>
     }
 
     @Override
     public ChannelsBuilder getChannelsBuilder() {
-<span class="nc bnc" id="L613" title="All 2 branches missed.">        if (this.rootCardProject != null) {</span>
+<span class="nc bnc" id="L612" title="All 2 branches missed.">        if (this.rootCardProject != null) {</span>
             // this card is a root card, propagate through the project content channel
-<span class="nc" id="L615">            return new ProjectContentChannelBuilder(this.rootCardProject);</span>
-<span class="nc bnc" id="L616" title="All 2 branches missed.">        } else if (this.parent != null) {</span>
+<span class="nc" id="L614">            return new ProjectContentChannelBuilder(this.rootCardProject);</span>
+<span class="nc bnc" id="L615" title="All 2 branches missed.">        } else if (this.parent != null) {</span>
             // this card is a sub-card, propagate through its parent channels
-<span class="nc" id="L618">            return this.parent.getChannelsBuilder();</span>
-<span class="nc bnc" id="L619" title="All 2 branches missed.">        } else if (this.cardType != null) {</span>
+<span class="nc" id="L617">            return this.parent.getChannelsBuilder();</span>
+<span class="nc bnc" id="L618" title="All 2 branches missed.">        } else if (this.cardType != null) {</span>
             // such a card shouldn't exist...
             // Lorem-ipsum cards for global cardTypes ???
-<span class="nc" id="L622">            return this.cardType.getChannelsBuilder();</span>
+<span class="nc" id="L621">            return this.cardType.getChannelsBuilder();</span>
         } else {
             // such an orphan shouldn't exist...
-<span class="nc" id="L625">            return new EmptyChannelBuilder();</span>
+<span class="nc" id="L624">            return new EmptyChannelBuilder();</span>
         }
     }
 
@@ -633,28 +632,28 @@ import javax.persistence.Transient;
         // any member can read any card of the project
         // if a member lacks the read right on a card, it will not be able to read the deliverable,
         // resources and so on, but it will still be able to view the card &quot;from the outside&quot;
-<span class="nc" id="L636">        return new Conditions.IsCurrentUserMemberOfProject(getProject());</span>
+<span class="nc" id="L635">        return new Conditions.IsCurrentUserMemberOfProject(getProject());</span>
     }
 
     @Override
     public Conditions.Condition getUpdateCondition() {
-<span class="nc" id="L641">        return new Conditions.HasCardWriteRight(this);</span>
+<span class="nc" id="L640">        return new Conditions.HasCardWriteRight(this);</span>
     }
 
     @Override
     public int hashCode() {
-<span class="nc" id="L646">        return EntityHelper.hashCode(this);</span>
+<span class="nc" id="L645">        return EntityHelper.hashCode(this);</span>
     }
 
     @Override
     @SuppressWarnings(&quot;EqualsWhichDoesntCheckParameterClass&quot;)
     public boolean equals(Object obj) {
-<span class="nc" id="L652">        return EntityHelper.equals(this, obj);</span>
+<span class="nc" id="L651">        return EntityHelper.equals(this, obj);</span>
     }
 
     @Override
     public String toString() {
-<span class="nc" id="L657">        return &quot;Card{&quot; + &quot;id=&quot; + id + &quot;, index=&quot; + index + &quot;, color=&quot; + color + &quot;, cardTypeId=&quot;</span>
+<span class="nc" id="L656">        return &quot;Card{&quot; + &quot;id=&quot; + id + &quot;, index=&quot; + index + &quot;, color=&quot; + color + &quot;, cardTypeId=&quot;</span>
             + cardTypeId + &quot;, parentId=&quot; + parentId + &quot;}&quot;;
     }
 }

@@ -9,12 +9,11 @@ package ch.colabproject.colab.api.model.user;
 import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.model.ColabEntity;
 import ch.colabproject.colab.api.model.WithWebsocketChannels;
-import ch.colabproject.colab.api.model.team.TeamMember;
 import ch.colabproject.colab.api.model.tools.EntityHelper;
 import ch.colabproject.colab.api.model.tracking.Tracking;
 import ch.colabproject.colab.api.security.permissions.Conditions;
-import ch.colabproject.colab.api.ws.channel.tool.ChannelsBuilders.ChannelsBuilder;
 import ch.colabproject.colab.api.ws.channel.tool.ChannelsBuilders.AboutUserChannelsBuilder;
+import ch.colabproject.colab.api.ws.channel.tool.ChannelsBuilders.ChannelsBuilder;
 import ch.colabproject.colab.generator.model.tools.DateSerDe;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
@@ -36,6 +35,7 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
 
 /**
  * Represents a registered user. A user may authenticate by several means (accounts).
@@ -97,43 +97,44 @@ import javax.validation.constraints.Pattern;
     /**
      * Firstname
      */
+    @Size(max = 255)
     private String firstname;
 
     /**
      * Lastname
      */
+    @Size(max = 255)
     private String lastname;
 
     /**
      * short name to be displayed
      */
+    @Size(max = 255)
     private String commonname;
 
     /**
      * User affiliation
      */
+    @Size(max = 255)
     private String affiliation;
 
     /**
      * System-wide unique name. Alphanumeric only
      */
     @Pattern(regexp = &quot;[a-zA-Z0-9_\\-\\.]+&quot;)
+    @Size(max = 255)
     @NotNull
     private String username;
 
     /**
      * List of accounts the user can authenticate with
      */
-<span class="nc" id="L127">    @OneToMany(mappedBy = &quot;user&quot;, cascade = { CascadeType.PERSIST, CascadeType.REMOVE })</span>
+<span class="nc" id="L132">    @OneToMany(mappedBy = &quot;user&quot;, cascade = { CascadeType.PERSIST, CascadeType.REMOVE })</span>
     @JsonbTransient
     private List&lt;Account&gt; accounts = new ArrayList&lt;&gt;();
 
-    /**
-     * List of teams the user is part of
-     */
-<span class="nc" id="L134">    @OneToMany(mappedBy = &quot;user&quot;, cascade = { CascadeType.PERSIST, CascadeType.REMOVE })</span>
-    @JsonbTransient
-    private List&lt;TeamMember&gt; teamMembers = new ArrayList&lt;&gt;();
+    // Note : the TeamMember list must be retrieved with a DAO
+    // because the user must not be seen as changed when a team member is added or removed
 
     // ---------------------------------------------------------------------------------------------
     // getters and setters
@@ -144,7 +145,7 @@ import javax.validation.constraints.Pattern;
      */
     @Override
     public Long getId() {
-<span class="nc" id="L147">        return id;</span>
+<span class="nc" id="L148">        return id;</span>
     }
 
     /**
@@ -153,8 +154,8 @@ import javax.validation.constraints.Pattern;
      * @param id id of the user
      */
     public void setId(Long id) {
-<span class="nc" id="L156">        this.id = id;</span>
-<span class="nc" id="L157">    }</span>
+<span class="nc" id="L157">        this.id = id;</span>
+<span class="nc" id="L158">    }</span>
 
     /**
      * Get the tracking data
@@ -163,7 +164,7 @@ import javax.validation.constraints.Pattern;
      */
     @Override
     public Tracking getTrackingData() {
-<span class="nc" id="L166">        return trackingData;</span>
+<span class="nc" id="L167">        return trackingData;</span>
     }
 
     /**
@@ -173,28 +174,28 @@ import javax.validation.constraints.Pattern;
      */
     @Override
     public void setTrackingData(Tracking trackingData) {
-<span class="nc" id="L176">        this.trackingData = trackingData;</span>
-<span class="nc" id="L177">    }</span>
+<span class="nc" id="L177">        this.trackingData = trackingData;</span>
+<span class="nc" id="L178">    }</span>
 
     /**
      * @return the isAdmin
      */
     public boolean isAdmin() {
-<span class="nc" id="L183">        return isAdmin;</span>
+<span class="nc" id="L184">        return isAdmin;</span>
     }
 
     /**
      * @param isAdmin the isAdmin to set
      */
     public void setAdmin(boolean isAdmin) {
-<span class="nc" id="L190">        this.isAdmin = isAdmin;</span>
-<span class="nc" id="L191">    }</span>
+<span class="nc" id="L191">        this.isAdmin = isAdmin;</span>
+<span class="nc" id="L192">    }</span>
 
     /**
      * @return last seen at
      */
     public OffsetDateTime getLastSeenAt() {
-<span class="nc" id="L197">        return lastSeenAt;</span>
+<span class="nc" id="L198">        return lastSeenAt;</span>
     }
 
     /**
@@ -203,8 +204,8 @@ import javax.validation.constraints.Pattern;
      * @param lastSeenAt the lastSeenAt date
      */
     public void setLastSeenAt(OffsetDateTime lastSeenAt) {
-<span class="nc" id="L206">        this.lastSeenAt = lastSeenAt;</span>
-<span class="nc" id="L207">    }</span>
+<span class="nc" id="L207">        this.lastSeenAt = lastSeenAt;</span>
+<span class="nc" id="L208">    }</span>
 
     /**
      * Get last known activity date.
@@ -213,10 +214,10 @@ import javax.validation.constraints.Pattern;
      *         &lt;code&gt;this.lastSeenAt&lt;/code&gt; otherwise
      */
     public OffsetDateTime getActivityDate() {
-<span class="nc bnc" id="L216" title="All 2 branches missed.">        if (activityDate != null) {</span>
-<span class="nc" id="L217">            return activityDate;</span>
+<span class="nc bnc" id="L217" title="All 2 branches missed.">        if (activityDate != null) {</span>
+<span class="nc" id="L218">            return activityDate;</span>
         } else {
-<span class="nc" id="L219">            return lastSeenAt;</span>
+<span class="nc" id="L220">            return lastSeenAt;</span>
         }
     }
 
@@ -226,14 +227,14 @@ import javax.validation.constraints.Pattern;
      * @param activityDate new activityDate
      */
     public void setActivityDate(OffsetDateTime activityDate) {
-<span class="nc" id="L229">        this.activityDate = activityDate;</span>
-<span class="nc" id="L230">    }</span>
+<span class="nc" id="L230">        this.activityDate = activityDate;</span>
+<span class="nc" id="L231">    }</span>
 
     /**
      * @return user first name, may be null or empty
      */
     public String getFirstname() {
-<span class="nc" id="L236">        return firstname;</span>
+<span class="nc" id="L237">        return firstname;</span>
     }
 
     /**
@@ -242,22 +243,22 @@ import javax.validation.constraints.Pattern;
      * @param firstname user first name, may be null or empty
      */
     public void setFirstname(String firstname) {
-<span class="nc" id="L245">        this.firstname = firstname;</span>
-<span class="nc" id="L246">    }</span>
+<span class="nc" id="L246">        this.firstname = firstname;</span>
+<span class="nc" id="L247">    }</span>
 
     /**
      * @return user last name, may be null or empty
      */
     public String getLastname() {
-<span class="nc" id="L252">        return lastname;</span>
+<span class="nc" id="L253">        return lastname;</span>
     }
 
     /**
      * @param lastname user last name, may be null or empty
      */
     public void setLastname(String lastname) {
-<span class="nc" id="L259">        this.lastname = lastname;</span>
-<span class="nc" id="L260">    }</span>
+<span class="nc" id="L260">        this.lastname = lastname;</span>
+<span class="nc" id="L261">    }</span>
 
     /**
      * Short display name to use
@@ -265,15 +266,15 @@ import javax.validation.constraints.Pattern;
      * @return user common name
      */
     public String getCommonname() {
-<span class="nc" id="L268">        return commonname;</span>
+<span class="nc" id="L269">        return commonname;</span>
     }
 
     /**
      * @param commonname user common name
      */
     public void setCommonname(String commonname) {
-<span class="nc" id="L275">        this.commonname = commonname;</span>
-<span class="nc" id="L276">    }</span>
+<span class="nc" id="L276">        this.commonname = commonname;</span>
+<span class="nc" id="L277">    }</span>
 
     /**
      * Get the value of affiliation
@@ -281,7 +282,7 @@ import javax.validation.constraints.Pattern;
      * @return the value of affiliation
      */
     public String getAffiliation() {
-<span class="nc" id="L284">        return affiliation;</span>
+<span class="nc" id="L285">        return affiliation;</span>
     }
 
     /**
@@ -290,8 +291,8 @@ import javax.validation.constraints.Pattern;
      * @param affiliation new value of affiliation
      */
     public void setAffiliation(String affiliation) {
-<span class="nc" id="L293">        this.affiliation = affiliation;</span>
-<span class="nc" id="L294">    }</span>
+<span class="nc" id="L294">        this.affiliation = affiliation;</span>
+<span class="nc" id="L295">    }</span>
 
     /**
      * Get user's username. This name is unique system-wide
@@ -299,7 +300,7 @@ import javax.validation.constraints.Pattern;
      * @return username
      */
     public String getUsername() {
-<span class="nc" id="L302">        return username;</span>
+<span class="nc" id="L303">        return username;</span>
     }
 
     /**
@@ -309,14 +310,14 @@ import javax.validation.constraints.Pattern;
      * @param username new username
      */
     public void setUsername(String username) {
-<span class="nc" id="L312">        this.username = username;</span>
-<span class="nc" id="L313">    }</span>
+<span class="nc" id="L313">        this.username = username;</span>
+<span class="nc" id="L314">    }</span>
 
     /**
      * @return user accounts
      */
     public List&lt;Account&gt; getAccounts() {
-<span class="nc" id="L319">        return accounts;</span>
+<span class="nc" id="L320">        return accounts;</span>
     }
 
     /**
@@ -325,26 +326,8 @@ import javax.validation.constraints.Pattern;
      * @param accounts account list
      */
     public void setAccounts(List&lt;Account&gt; accounts) {
-<span class="nc" id="L328">        this.accounts = accounts;</span>
-<span class="nc" id="L329">    }</span>
-
-    /**
-     * get team members
-     *
-     * @return members
-     */
-    public List&lt;TeamMember&gt; getTeamMembers() {
-<span class="nc" id="L337">        return teamMembers;</span>
-    }
-
-    /**
-     * Set team members
-     *
-     * @param teamMembers list of members
-     */
-    public void setTeamMembers(List&lt;TeamMember&gt; teamMembers) {
-<span class="nc" id="L346">        this.teamMembers = teamMembers;</span>
-<span class="nc" id="L347">    }</span>
+<span class="nc" id="L329">        this.accounts = accounts;</span>
+<span class="nc" id="L330">    }</span>
 
     // ---------------------------------------------------------------------------------------------
     // helpers
@@ -357,23 +340,23 @@ import javax.validation.constraints.Pattern;
      */
     @JsonbTransient
     public String getDisplayName() {
-<span class="nc bnc" id="L360" title="All 4 branches missed.">        if (this.commonname != null &amp;&amp; !this.commonname.isBlank()) {</span>
-<span class="nc" id="L361">            return this.commonname;</span>
+<span class="nc bnc" id="L343" title="All 4 branches missed.">        if (this.commonname != null &amp;&amp; !this.commonname.isBlank()) {</span>
+<span class="nc" id="L344">            return this.commonname;</span>
         } else {
-<span class="nc" id="L363">            StringBuilder sb = new StringBuilder();</span>
+<span class="nc" id="L346">            StringBuilder sb = new StringBuilder();</span>
 
-<span class="nc bnc" id="L365" title="All 2 branches missed.">            if (this.firstname != null) {</span>
-<span class="nc" id="L366">                sb.append(this.firstname).append(&quot; &quot;);</span>
+<span class="nc bnc" id="L348" title="All 2 branches missed.">            if (this.firstname != null) {</span>
+<span class="nc" id="L349">                sb.append(this.firstname).append(&quot; &quot;);</span>
             }
-<span class="nc bnc" id="L368" title="All 2 branches missed.">            if (this.firstname != null) {</span>
-<span class="nc" id="L369">                sb.append(this.firstname);</span>
+<span class="nc bnc" id="L351" title="All 2 branches missed.">            if (this.firstname != null) {</span>
+<span class="nc" id="L352">                sb.append(this.firstname);</span>
             }
-<span class="nc" id="L371">            String toString = sb.toString();</span>
-<span class="nc bnc" id="L372" title="All 2 branches missed.">            if (!toString.isBlank()) {</span>
-<span class="nc" id="L373">                return toString;</span>
+<span class="nc" id="L354">            String toString = sb.toString();</span>
+<span class="nc bnc" id="L355" title="All 2 branches missed.">            if (!toString.isBlank()) {</span>
+<span class="nc" id="L356">                return toString;</span>
             }
         }
-<span class="nc" id="L376">        return this.username;</span>
+<span class="nc" id="L359">        return this.username;</span>
     }
 
     // ---------------------------------------------------------------------------------------------
@@ -384,8 +367,8 @@ import javax.validation.constraints.Pattern;
      * Set lastSeenAt to now
      */
     public void touchLastSeenAt() {
-<span class="nc" id="L387">        this.setLastSeenAt(OffsetDateTime.now());</span>
-<span class="nc" id="L388">    }</span>
+<span class="nc" id="L370">        this.setLastSeenAt(OffsetDateTime.now());</span>
+<span class="nc" id="L371">    }</span>
 
     // ---------------------------------------------------------------------------------------------
     // concerning the whole class
@@ -393,26 +376,26 @@ import javax.validation.constraints.Pattern;
 
     @Override
     public void merge(ColabEntity other) throws ColabMergeException {
-<span class="nc bnc" id="L396" title="All 2 branches missed.">        if (other instanceof User) {</span>
-<span class="nc" id="L397">            User o = (User) other;</span>
-<span class="nc" id="L398">            this.setFirstname(o.getFirstname());</span>
-<span class="nc" id="L399">            this.setLastname(o.getLastname());</span>
-<span class="nc" id="L400">            this.setCommonname(o.getCommonname());</span>
-<span class="nc" id="L401">            this.setAffiliation(o.getAffiliation());</span>
-<span class="nc" id="L402">        } else {</span>
-<span class="nc" id="L403">            throw new ColabMergeException(this, other);</span>
+<span class="nc bnc" id="L379" title="All 2 branches missed.">        if (other instanceof User) {</span>
+<span class="nc" id="L380">            User o = (User) other;</span>
+<span class="nc" id="L381">            this.setFirstname(o.getFirstname());</span>
+<span class="nc" id="L382">            this.setLastname(o.getLastname());</span>
+<span class="nc" id="L383">            this.setCommonname(o.getCommonname());</span>
+<span class="nc" id="L384">            this.setAffiliation(o.getAffiliation());</span>
+<span class="nc" id="L385">        } else {</span>
+<span class="nc" id="L386">            throw new ColabMergeException(this, other);</span>
         }
-<span class="nc" id="L405">    }</span>
+<span class="nc" id="L388">    }</span>
 
     @Override
     public ChannelsBuilder getChannelsBuilder() {
-<span class="nc" id="L409">        return new AboutUserChannelsBuilder(this);</span>
+<span class="nc" id="L392">        return new AboutUserChannelsBuilder(this);</span>
     }
 
     @Override
     @JsonbTransient
     public Conditions.Condition getReadCondition() {
-<span class="nc" id="L415">        return new Conditions.Or(</span>
+<span class="nc" id="L398">        return new Conditions.Or(</span>
             // unauthenticated users shall read user data to authenticate
             new Conditions.Not(Conditions.authenticated),
             new Conditions.IsCurrentUserThisUser(this),
@@ -422,30 +405,30 @@ import javax.validation.constraints.Pattern;
 
     @Override
     public Conditions.Condition getUpdateCondition() {
-<span class="nc" id="L425">        return new Conditions.IsCurrentUserThisUser(this);</span>
+<span class="nc" id="L408">        return new Conditions.IsCurrentUserThisUser(this);</span>
     }
 
     @Override
     @JsonbTransient
     public Conditions.Condition getCreateCondition() {
         // anyone can create a user
-<span class="nc" id="L432">        return Conditions.alwaysTrue;</span>
+<span class="nc" id="L415">        return Conditions.alwaysTrue;</span>
     }
 
     @Override
     public int hashCode() {
-<span class="nc" id="L437">        return EntityHelper.hashCode(this);</span>
+<span class="nc" id="L420">        return EntityHelper.hashCode(this);</span>
     }
 
     @Override
     @SuppressWarnings(&quot;EqualsWhichDoesntCheckParameterClass&quot;)
     public boolean equals(Object obj) {
-<span class="nc" id="L443">        return EntityHelper.equals(this, obj);</span>
+<span class="nc" id="L426">        return EntityHelper.equals(this, obj);</span>
     }
 
     @Override
     public String toString() {
-<span class="nc" id="L448">        return &quot;User{&quot; + &quot;id=&quot; + id + &quot;, isAdmin=&quot; + isAdmin + &quot;, username=&quot; + username + '}';</span>
+<span class="nc" id="L431">        return &quot;User{&quot; + &quot;id=&quot; + id + &quot;, isAdmin=&quot; + isAdmin + &quot;, username=&quot; + username + '}';</span>
     }
 
 }

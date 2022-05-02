@@ -16,7 +16,8 @@ import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Index;
-import javax.persistence.OneToOne;
+import javax.persistence.ManyToOne;
+import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
@@ -40,7 +41,10 @@ import javax.validation.constraints.NotNull;
     }
 )
 @DiscriminatorValue(&quot;RESOURCE_REF&quot;)
-<span class="nc" id="L43">public class ResourceRef extends AbstractResource {</span>
+@NamedQuery(name = &quot;ResourceRef.findDirectReferences&quot;,
+query = &quot;SELECT ref FROM ResourceRef ref &quot;
+    + &quot;WHERE ref.target IS NOT NULL AND ref.target.id = :targetId&quot;)
+<span class="nc" id="L47">public class ResourceRef extends AbstractResource {</span>
 
     private static final long serialVersionUID = 1L;
 
@@ -65,9 +69,9 @@ import javax.validation.constraints.NotNull;
     /**
      * The abstract resource this reference aims at
      */
-    @OneToOne(fetch = FetchType.LAZY)
-    @JsonbTransient
+    @ManyToOne(fetch = FetchType.LAZY)
     @NotNull
+    @JsonbTransient
     private AbstractResource target;
 
     /**
@@ -84,43 +88,43 @@ import javax.validation.constraints.NotNull;
      * @return if the targeted resource is not useful for that card/cardDef/cardContent
      */
     public boolean isRefused() {
-<span class="nc" id="L87">        return refused;</span>
+<span class="nc" id="L91">        return refused;</span>
     }
 
     /**
      * @param refused if the targeted resource is not useful for that card/cardDef/cardContent
      */
     public void setRefused(boolean refused) {
-<span class="nc" id="L94">        this.refused = refused;</span>
-<span class="nc" id="L95">    }</span>
+<span class="nc" id="L98">        this.refused = refused;</span>
+<span class="nc" id="L99">    }</span>
 
     /**
      * @return if it is a rest of a former ancestor
      */
     public boolean isResidual() {
-<span class="nc" id="L101">        return residual;</span>
+<span class="nc" id="L105">        return residual;</span>
     }
 
     /**
      * @param residual if it is a rest of a former ancestor
      */
     public void setResidual(boolean residual) {
-<span class="nc" id="L108">        this.residual = residual;</span>
-<span class="nc" id="L109">    }</span>
+<span class="nc" id="L112">        this.residual = residual;</span>
+<span class="nc" id="L113">    }</span>
 
     /**
      * @return the resource (or resource reference) this reference aims at
      */
     public AbstractResource getTarget() {
-<span class="nc" id="L115">        return target;</span>
+<span class="nc" id="L119">        return target;</span>
     }
 
     /**
      * @param target the resource (or resource reference) this reference aims at
      */
     public void setTarget(AbstractResource target) {
-<span class="nc" id="L122">        this.target = target;</span>
-<span class="nc" id="L123">    }</span>
+<span class="nc" id="L126">        this.target = target;</span>
+<span class="nc" id="L127">    }</span>
 
     /**
      * get the id of the resource (or resource reference) this reference aims at. To be sent to
@@ -129,10 +133,10 @@ import javax.validation.constraints.NotNull;
      * @return id of the abstract resource or null
      */
     public Long getTargetId() {
-<span class="nc bnc" id="L132" title="All 2 branches missed.">        if (target != null) {</span>
-<span class="nc" id="L133">            return target.getId();</span>
+<span class="nc bnc" id="L136" title="All 2 branches missed.">        if (target != null) {</span>
+<span class="nc" id="L137">            return target.getId();</span>
         } else {
-<span class="nc" id="L135">            return targetId;</span>
+<span class="nc" id="L139">            return targetId;</span>
         }
     }
 
@@ -143,8 +147,8 @@ import javax.validation.constraints.NotNull;
      * @param targetId the id of the resource or resource reference
      */
     public void setTargetId(Long targetId) {
-<span class="nc" id="L146">        this.targetId = targetId;</span>
-<span class="nc" id="L147">    }</span>
+<span class="nc" id="L150">        this.targetId = targetId;</span>
+<span class="nc" id="L151">    }</span>
 
     // ---------------------------------------------------------------------------------------------
     // helpers
@@ -152,22 +156,22 @@ import javax.validation.constraints.NotNull;
 
     @Override
     public Resource resolve() {
-<span class="nc bnc" id="L155" title="All 2 branches missed.">        if (this.target != null) {</span>
-<span class="nc" id="L156">            return this.target.resolve();</span>
+<span class="nc bnc" id="L159" title="All 2 branches missed.">        if (this.target != null) {</span>
+<span class="nc" id="L160">            return this.target.resolve();</span>
         }
 
-<span class="nc" id="L159">        return null;</span>
+<span class="nc" id="L163">        return null;</span>
     }
 
     @Override
     public List&lt;AbstractResource&gt; expand() {
-<span class="nc" id="L164">        List&lt;AbstractResource&gt; list = new ArrayList&lt;&gt;();</span>
+<span class="nc" id="L168">        List&lt;AbstractResource&gt; list = new ArrayList&lt;&gt;();</span>
 
-<span class="nc" id="L166">        list.add(this);</span>
-<span class="nc bnc" id="L167" title="All 2 branches missed.">        if (this.target != null) {</span>
-<span class="nc" id="L168">            list.addAll(this.target.expand());</span>
+<span class="nc" id="L170">        list.add(this);</span>
+<span class="nc bnc" id="L171" title="All 2 branches missed.">        if (this.target != null) {</span>
+<span class="nc" id="L172">            list.addAll(this.target.expand());</span>
         }
-<span class="nc" id="L170">        return list;</span>
+<span class="nc" id="L174">        return list;</span>
     }
 
     // ---------------------------------------------------------------------------------------------
@@ -176,31 +180,31 @@ import javax.validation.constraints.NotNull;
 
     @Override
     public void merge(ColabEntity other) throws ColabMergeException {
-<span class="nc" id="L179">        super.merge(other);</span>
+<span class="nc" id="L183">        super.merge(other);</span>
 
-<span class="nc bnc" id="L181" title="All 2 branches missed.">        if (other instanceof ResourceRef) {</span>
-<span class="nc" id="L182">            ResourceRef o = (ResourceRef) other;</span>
-<span class="nc" id="L183">            this.setRefused(o.isRefused());</span>
-<span class="nc" id="L184">            this.setResidual(o.isResidual());</span>
-<span class="nc" id="L185">        } else {</span>
-<span class="nc" id="L186">            throw new ColabMergeException(this, other);</span>
+<span class="nc bnc" id="L185" title="All 2 branches missed.">        if (other instanceof ResourceRef) {</span>
+<span class="nc" id="L186">            ResourceRef o = (ResourceRef) other;</span>
+<span class="nc" id="L187">            this.setRefused(o.isRefused());</span>
+<span class="nc" id="L188">            this.setResidual(o.isResidual());</span>
+<span class="nc" id="L189">        } else {</span>
+<span class="nc" id="L190">            throw new ColabMergeException(this, other);</span>
         }
-<span class="nc" id="L188">    }</span>
+<span class="nc" id="L192">    }</span>
 
     @Override
     public int hashCode() {
-<span class="nc" id="L192">        return EntityHelper.hashCode(this);</span>
+<span class="nc" id="L196">        return EntityHelper.hashCode(this);</span>
     }
 
     @Override
     @SuppressWarnings(&quot;EqualsWhichDoesntCheckParameterClass&quot;)
     public boolean equals(Object obj) {
-<span class="nc" id="L198">        return EntityHelper.equals(this, obj);</span>
+<span class="nc" id="L202">        return EntityHelper.equals(this, obj);</span>
     }
 
     @Override
     public String toString() {
-<span class="nc" id="L203">        return &quot;ResourceRef{&quot; + toPartialString() + &quot;, refused=&quot; + refused</span>
+<span class="nc" id="L207">        return &quot;ResourceRef{&quot; + toPartialString() + &quot;, refused=&quot; + refused</span>
             + &quot;, residual=&quot; + residual + &quot;, targetId=&quot; + targetId + &quot;}&quot;;
     }
 

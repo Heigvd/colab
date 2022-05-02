@@ -255,197 +255,195 @@
 <a class="jxr_linenumber" name="L247" href="#L247">247</a>             <strong class="jxr_keyword">if</strong> (originalTarget != <strong class="jxr_keyword">null</strong>) {
 <a class="jxr_linenumber" name="L248" href="#L248">248</a>                 <strong class="jxr_keyword">if</strong> (originalTarget.getProjectId() != originalCardTypeRef.getProjectId()) {
 <a class="jxr_linenumber" name="L249" href="#L249">249</a>                     newCardTypeRef.setTarget(originalTarget);
-<a class="jxr_linenumber" name="L250" href="#L250">250</a>                     originalTarget.getDirectReferences().add(newCardTypeRef);
-<a class="jxr_linenumber" name="L251" href="#L251">251</a>                 } <strong class="jxr_keyword">else</strong> {
-<a class="jxr_linenumber" name="L252" href="#L252">252</a>                     <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> IllegalStateException(
-<a class="jxr_linenumber" name="L253" href="#L253">253</a>                         <span class="jxr_string">"the target of a card type reference must be outside the project"</span>);
-<a class="jxr_linenumber" name="L254" href="#L254">254</a>                     <em class="jxr_comment">// Note for an hypothetical future evolution :</em>
-<a class="jxr_linenumber" name="L255" href="#L255">255</a>                     <em class="jxr_comment">// if we break the condition that, in a project,</em>
-<a class="jxr_linenumber" name="L256" href="#L256">256</a>                     <em class="jxr_comment">// there is only one reference per target type outside the project</em>
-<a class="jxr_linenumber" name="L257" href="#L257">257</a>                     <em class="jxr_comment">// we must process the card types in the appropriate order</em>
-<a class="jxr_linenumber" name="L258" href="#L258">258</a>                 }
-<a class="jxr_linenumber" name="L259" href="#L259">259</a>             }
-<a class="jxr_linenumber" name="L260" href="#L260">260</a> 
-<a class="jxr_linenumber" name="L261" href="#L261">261</a>             newAbstractCardType = newCardTypeRef;
-<a class="jxr_linenumber" name="L262" href="#L262">262</a>         } <strong class="jxr_keyword">else</strong> {
-<a class="jxr_linenumber" name="L263" href="#L263">263</a>             <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> IllegalStateException(<span class="jxr_string">"abstract card type implementation not handled"</span>);
-<a class="jxr_linenumber" name="L264" href="#L264">264</a>         }
-<a class="jxr_linenumber" name="L265" href="#L265">265</a> 
-<a class="jxr_linenumber" name="L266" href="#L266">266</a>         List&lt;AbstractResource&gt; originalResources = original.getDirectAbstractResources();
-<a class="jxr_linenumber" name="L267" href="#L267">267</a>         originalResources.sort(ID_COMPARATOR);
-<a class="jxr_linenumber" name="L268" href="#L268">268</a> 
-<a class="jxr_linenumber" name="L269" href="#L269">269</a>         <strong class="jxr_keyword">for</strong> (AbstractResource originalResource : originalResources) {
-<a class="jxr_linenumber" name="L270" href="#L270">270</a>             AbstractResource newResource = duplicateResource(originalResource);
-<a class="jxr_linenumber" name="L271" href="#L271">271</a> 
-<a class="jxr_linenumber" name="L272" href="#L272">272</a>             newResource.setAbstractCardType(newAbstractCardType);
-<a class="jxr_linenumber" name="L273" href="#L273">273</a>             newAbstractCardType.getDirectAbstractResources().add(newResource);
-<a class="jxr_linenumber" name="L274" href="#L274">274</a>         }
-<a class="jxr_linenumber" name="L275" href="#L275">275</a> 
-<a class="jxr_linenumber" name="L276" href="#L276">276</a>         <strong class="jxr_keyword">return</strong> newAbstractCardType;
-<a class="jxr_linenumber" name="L277" href="#L277">277</a>     }
-<a class="jxr_linenumber" name="L278" href="#L278">278</a> 
-<a class="jxr_linenumber" name="L279" href="#L279">279</a>     <strong class="jxr_keyword">private</strong> Card duplicateCard(Card original)
-<a class="jxr_linenumber" name="L280" href="#L280">280</a>         <strong class="jxr_keyword">throws</strong> <a name="ColabMergeException" href="../../../../../ch/colabproject/colab/api/exceptions/ColabMergeException.html#ColabMergeException">ColabMergeException</a> {
-<a class="jxr_linenumber" name="L281" href="#L281">281</a>         Card newCard = <strong class="jxr_keyword">new</strong> Card();
-<a class="jxr_linenumber" name="L282" href="#L282">282</a>         newCard.duplicate(original);
-<a class="jxr_linenumber" name="L283" href="#L283">283</a> 
-<a class="jxr_linenumber" name="L284" href="#L284">284</a>         cardMatching.put(original.getId(), newCard);
-<a class="jxr_linenumber" name="L285" href="#L285">285</a> 
-<a class="jxr_linenumber" name="L286" href="#L286">286</a>         AbstractCardType originalCardType = original.getCardType();
-<a class="jxr_linenumber" name="L287" href="#L287">287</a>         <strong class="jxr_keyword">if</strong> (originalCardType != <strong class="jxr_keyword">null</strong>) {
-<a class="jxr_linenumber" name="L288" href="#L288">288</a>             AbstractCardType newCardType = cardTypeMatching.get(originalCardType.getId());
-<a class="jxr_linenumber" name="L289" href="#L289">289</a>             newCard.setCardType(newCardType);
-<a class="jxr_linenumber" name="L290" href="#L290">290</a>         }
-<a class="jxr_linenumber" name="L291" href="#L291">291</a> 
-<a class="jxr_linenumber" name="L292" href="#L292">292</a>         List&lt;AbstractResource&gt; originalResources = original.getDirectAbstractResources();
-<a class="jxr_linenumber" name="L293" href="#L293">293</a>         originalResources.sort(ID_COMPARATOR);
-<a class="jxr_linenumber" name="L294" href="#L294">294</a> 
-<a class="jxr_linenumber" name="L295" href="#L295">295</a>         <strong class="jxr_keyword">for</strong> (AbstractResource originalResource : originalResources) {
-<a class="jxr_linenumber" name="L296" href="#L296">296</a>             AbstractResource newResource = duplicateResource(originalResource);
-<a class="jxr_linenumber" name="L297" href="#L297">297</a> 
-<a class="jxr_linenumber" name="L298" href="#L298">298</a>             newResource.setCard(newCard);
-<a class="jxr_linenumber" name="L299" href="#L299">299</a>             newCard.getDirectAbstractResources().add(newResource);
-<a class="jxr_linenumber" name="L300" href="#L300">300</a>         }
-<a class="jxr_linenumber" name="L301" href="#L301">301</a> 
-<a class="jxr_linenumber" name="L302" href="#L302">302</a>         List&lt;CardContent&gt; originalContents = original.getContentVariants();
-<a class="jxr_linenumber" name="L303" href="#L303">303</a>         originalContents.sort(ID_COMPARATOR);
-<a class="jxr_linenumber" name="L304" href="#L304">304</a> 
-<a class="jxr_linenumber" name="L305" href="#L305">305</a>         <strong class="jxr_keyword">for</strong> (CardContent originalCardContent : originalContents) {
-<a class="jxr_linenumber" name="L306" href="#L306">306</a>             CardContent newCardContent = duplicateCardContent(originalCardContent);
-<a class="jxr_linenumber" name="L307" href="#L307">307</a> 
-<a class="jxr_linenumber" name="L308" href="#L308">308</a>             newCardContent.setCard(newCard);
-<a class="jxr_linenumber" name="L309" href="#L309">309</a>             newCard.getContentVariants().add(newCardContent);
-<a class="jxr_linenumber" name="L310" href="#L310">310</a>         }
-<a class="jxr_linenumber" name="L311" href="#L311">311</a> 
-<a class="jxr_linenumber" name="L312" href="#L312">312</a>         <em class="jxr_comment">////////////////////////////////////////////////////////////////////////////////////////////</em>
-<a class="jxr_linenumber" name="L313" href="#L313">313</a>         <em class="jxr_comment">// TODO Access control</em>
-<a class="jxr_linenumber" name="L314" href="#L314">314</a> 
-<a class="jxr_linenumber" name="L315" href="#L315">315</a>         <strong class="jxr_keyword">return</strong> newCard;
-<a class="jxr_linenumber" name="L316" href="#L316">316</a>     }
-<a class="jxr_linenumber" name="L317" href="#L317">317</a> 
-<a class="jxr_linenumber" name="L318" href="#L318">318</a>     <strong class="jxr_keyword">private</strong> CardContent duplicateCardContent(CardContent original)
-<a class="jxr_linenumber" name="L319" href="#L319">319</a>         <strong class="jxr_keyword">throws</strong> <a name="ColabMergeException" href="../../../../../ch/colabproject/colab/api/exceptions/ColabMergeException.html#ColabMergeException">ColabMergeException</a> {
-<a class="jxr_linenumber" name="L320" href="#L320">320</a>         CardContent newCardContent = <strong class="jxr_keyword">new</strong> CardContent();
-<a class="jxr_linenumber" name="L321" href="#L321">321</a>         newCardContent.duplicate(original);
-<a class="jxr_linenumber" name="L322" href="#L322">322</a> 
-<a class="jxr_linenumber" name="L323" href="#L323">323</a>         cardContentMatching.put(original.getId(), newCardContent);
-<a class="jxr_linenumber" name="L324" href="#L324">324</a> 
-<a class="jxr_linenumber" name="L325" href="#L325">325</a>         List&lt;Card&gt; originalSubCards = original.getSubCards();
-<a class="jxr_linenumber" name="L326" href="#L326">326</a>         originalSubCards.sort(ID_COMPARATOR);
-<a class="jxr_linenumber" name="L327" href="#L327">327</a> 
-<a class="jxr_linenumber" name="L328" href="#L328">328</a>         List&lt;AbstractResource&gt; originalResources = original.getDirectAbstractResources();
-<a class="jxr_linenumber" name="L329" href="#L329">329</a>         originalResources.sort(ID_COMPARATOR);
-<a class="jxr_linenumber" name="L330" href="#L330">330</a> 
-<a class="jxr_linenumber" name="L331" href="#L331">331</a>         <strong class="jxr_keyword">for</strong> (AbstractResource originalResource : originalResources) {
-<a class="jxr_linenumber" name="L332" href="#L332">332</a>             AbstractResource newResource = duplicateResource(originalResource);
-<a class="jxr_linenumber" name="L333" href="#L333">333</a> 
-<a class="jxr_linenumber" name="L334" href="#L334">334</a>             newResource.setCardContent(newCardContent);
-<a class="jxr_linenumber" name="L335" href="#L335">335</a>             newCardContent.getDirectAbstractResources().add(newResource);
-<a class="jxr_linenumber" name="L336" href="#L336">336</a>         }
-<a class="jxr_linenumber" name="L337" href="#L337">337</a> 
-<a class="jxr_linenumber" name="L338" href="#L338">338</a>         <strong class="jxr_keyword">for</strong> (Card originalSubCard : originalSubCards) {
-<a class="jxr_linenumber" name="L339" href="#L339">339</a>             Card newSubCard = duplicateCard(originalSubCard);
-<a class="jxr_linenumber" name="L340" href="#L340">340</a> 
-<a class="jxr_linenumber" name="L341" href="#L341">341</a>             newSubCard.setParent(newCardContent);
-<a class="jxr_linenumber" name="L342" href="#L342">342</a>             newCardContent.getSubCards().add(newSubCard);
-<a class="jxr_linenumber" name="L343" href="#L343">343</a>         }
-<a class="jxr_linenumber" name="L344" href="#L344">344</a> 
-<a class="jxr_linenumber" name="L345" href="#L345">345</a>         <strong class="jxr_keyword">if</strong> (params.isWithDeliverables()) {
-<a class="jxr_linenumber" name="L346" href="#L346">346</a>             List&lt;Document&gt; originalDeliverables = original.getDeliverables();
-<a class="jxr_linenumber" name="L347" href="#L347">347</a>             originalDeliverables.sort(ID_COMPARATOR);
-<a class="jxr_linenumber" name="L348" href="#L348">348</a> 
-<a class="jxr_linenumber" name="L349" href="#L349">349</a>             <strong class="jxr_keyword">for</strong> (Document originalDoc : originalDeliverables) {
-<a class="jxr_linenumber" name="L350" href="#L350">350</a>                 Document newDoc = duplicateDocument(originalDoc);
-<a class="jxr_linenumber" name="L351" href="#L351">351</a> 
-<a class="jxr_linenumber" name="L352" href="#L352">352</a>                 newDoc.setOwningCardContent(newCardContent);
-<a class="jxr_linenumber" name="L353" href="#L353">353</a>                 newCardContent.getDeliverables().add(newDoc);
-<a class="jxr_linenumber" name="L354" href="#L354">354</a>             }
-<a class="jxr_linenumber" name="L355" href="#L355">355</a>         }
-<a class="jxr_linenumber" name="L356" href="#L356">356</a> 
-<a class="jxr_linenumber" name="L357" href="#L357">357</a>         <strong class="jxr_keyword">return</strong> newCardContent;
-<a class="jxr_linenumber" name="L358" href="#L358">358</a>     }
-<a class="jxr_linenumber" name="L359" href="#L359">359</a> 
-<a class="jxr_linenumber" name="L360" href="#L360">360</a>     <strong class="jxr_keyword">private</strong> Document duplicateDocument(Document original) <strong class="jxr_keyword">throws</strong> <a name="ColabMergeException" href="../../../../../ch/colabproject/colab/api/exceptions/ColabMergeException.html#ColabMergeException">ColabMergeException</a> {
-<a class="jxr_linenumber" name="L361" href="#L361">361</a>         <strong class="jxr_keyword">if</strong> (original instanceof <a name="DocumentFile" href="../../../../../ch/colabproject/colab/api/model/document/DocumentFile.html#DocumentFile">DocumentFile</a>) {
-<a class="jxr_linenumber" name="L362" href="#L362">362</a>             <em class="jxr_comment">// TODO sandra work in progress : copy also the file</em>
-<a class="jxr_linenumber" name="L363" href="#L363">363</a>             <a name="DocumentFile" href="../../../../../ch/colabproject/colab/api/model/document/DocumentFile.html#DocumentFile">DocumentFile</a> originalDocumentFile = (<a name="DocumentFile" href="../../../../../ch/colabproject/colab/api/model/document/DocumentFile.html#DocumentFile">DocumentFile</a>) original;
-<a class="jxr_linenumber" name="L364" href="#L364">364</a>             <a name="DocumentFile" href="../../../../../ch/colabproject/colab/api/model/document/DocumentFile.html#DocumentFile">DocumentFile</a> newDocumentFile = <strong class="jxr_keyword">new</strong> <a name="DocumentFile" href="../../../../../ch/colabproject/colab/api/model/document/DocumentFile.html#DocumentFile">DocumentFile</a>();
-<a class="jxr_linenumber" name="L365" href="#L365">365</a>             newDocumentFile.duplicate(originalDocumentFile);
-<a class="jxr_linenumber" name="L366" href="#L366">366</a>             <strong class="jxr_keyword">return</strong> newDocumentFile;
-<a class="jxr_linenumber" name="L367" href="#L367">367</a>         } <strong class="jxr_keyword">else</strong> <strong class="jxr_keyword">if</strong> (original instanceof <a name="ExternalLink" href="../../../../../ch/colabproject/colab/api/model/document/ExternalLink.html#ExternalLink">ExternalLink</a>) {
-<a class="jxr_linenumber" name="L368" href="#L368">368</a>             <a name="ExternalLink" href="../../../../../ch/colabproject/colab/api/model/document/ExternalLink.html#ExternalLink">ExternalLink</a> originalExternalLink = (<a name="ExternalLink" href="../../../../../ch/colabproject/colab/api/model/document/ExternalLink.html#ExternalLink">ExternalLink</a>) original;
-<a class="jxr_linenumber" name="L369" href="#L369">369</a>             <a name="ExternalLink" href="../../../../../ch/colabproject/colab/api/model/document/ExternalLink.html#ExternalLink">ExternalLink</a> newExternalLink = <strong class="jxr_keyword">new</strong> <a name="ExternalLink" href="../../../../../ch/colabproject/colab/api/model/document/ExternalLink.html#ExternalLink">ExternalLink</a>();
-<a class="jxr_linenumber" name="L370" href="#L370">370</a>             newExternalLink.duplicate(originalExternalLink);
-<a class="jxr_linenumber" name="L371" href="#L371">371</a>             <strong class="jxr_keyword">return</strong> newExternalLink;
-<a class="jxr_linenumber" name="L372" href="#L372">372</a>         } <strong class="jxr_keyword">else</strong> <strong class="jxr_keyword">if</strong> (original instanceof <a name="TextDataBlock" href="../../../../../ch/colabproject/colab/api/model/document/TextDataBlock.html#TextDataBlock">TextDataBlock</a>) {
-<a class="jxr_linenumber" name="L373" href="#L373">373</a>             <a name="TextDataBlock" href="../../../../../ch/colabproject/colab/api/model/document/TextDataBlock.html#TextDataBlock">TextDataBlock</a> originalTextDataBlock = (<a name="TextDataBlock" href="../../../../../ch/colabproject/colab/api/model/document/TextDataBlock.html#TextDataBlock">TextDataBlock</a>) original;
-<a class="jxr_linenumber" name="L374" href="#L374">374</a>             <a name="TextDataBlock" href="../../../../../ch/colabproject/colab/api/model/document/TextDataBlock.html#TextDataBlock">TextDataBlock</a> newTextDataBlock = <strong class="jxr_keyword">new</strong> <a name="TextDataBlock" href="../../../../../ch/colabproject/colab/api/model/document/TextDataBlock.html#TextDataBlock">TextDataBlock</a>();
-<a class="jxr_linenumber" name="L375" href="#L375">375</a>             newTextDataBlock.duplicate(originalTextDataBlock);
-<a class="jxr_linenumber" name="L376" href="#L376">376</a>             <strong class="jxr_keyword">return</strong> newTextDataBlock;
-<a class="jxr_linenumber" name="L377" href="#L377">377</a>         } <strong class="jxr_keyword">else</strong> {
-<a class="jxr_linenumber" name="L378" href="#L378">378</a>             <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> IllegalStateException(<span class="jxr_string">"abstract card type implementation not handled"</span>);
-<a class="jxr_linenumber" name="L379" href="#L379">379</a>         }
-<a class="jxr_linenumber" name="L380" href="#L380">380</a>     }
-<a class="jxr_linenumber" name="L381" href="#L381">381</a> 
-<a class="jxr_linenumber" name="L382" href="#L382">382</a>     <strong class="jxr_keyword">private</strong> AbstractResource duplicateResource(AbstractResource original)
-<a class="jxr_linenumber" name="L383" href="#L383">383</a>         <strong class="jxr_keyword">throws</strong> <a name="ColabMergeException" href="../../../../../ch/colabproject/colab/api/exceptions/ColabMergeException.html#ColabMergeException">ColabMergeException</a> {
-<a class="jxr_linenumber" name="L384" href="#L384">384</a>         <strong class="jxr_keyword">if</strong> (original instanceof Resource) {
-<a class="jxr_linenumber" name="L385" href="#L385">385</a>             Resource originalResource = (Resource) original;
-<a class="jxr_linenumber" name="L386" href="#L386">386</a> 
-<a class="jxr_linenumber" name="L387" href="#L387">387</a>             Resource newResource = <strong class="jxr_keyword">new</strong> Resource();
-<a class="jxr_linenumber" name="L388" href="#L388">388</a>             newResource.duplicate(originalResource);
-<a class="jxr_linenumber" name="L389" href="#L389">389</a> 
-<a class="jxr_linenumber" name="L390" href="#L390">390</a>             resourceMatching.put(originalResource.getId(), newResource);
-<a class="jxr_linenumber" name="L391" href="#L391">391</a> 
-<a class="jxr_linenumber" name="L392" href="#L392">392</a>             List&lt;Document&gt; originalDocuments = originalResource.getDocuments();
-<a class="jxr_linenumber" name="L393" href="#L393">393</a>             originalDocuments.sort(ID_COMPARATOR);
-<a class="jxr_linenumber" name="L394" href="#L394">394</a> 
-<a class="jxr_linenumber" name="L395" href="#L395">395</a>             <strong class="jxr_keyword">for</strong> (Document originalDocument : originalDocuments) {
-<a class="jxr_linenumber" name="L396" href="#L396">396</a>                 Document newDocument = duplicateDocument(originalDocument);
-<a class="jxr_linenumber" name="L397" href="#L397">397</a> 
-<a class="jxr_linenumber" name="L398" href="#L398">398</a>                 newDocument.setOwningResource(newResource);
-<a class="jxr_linenumber" name="L399" href="#L399">399</a>                 newResource.getDocuments().add(newDocument);
-<a class="jxr_linenumber" name="L400" href="#L400">400</a>             }
-<a class="jxr_linenumber" name="L401" href="#L401">401</a> 
-<a class="jxr_linenumber" name="L402" href="#L402">402</a>             <a name="TextDataBlock" href="../../../../../ch/colabproject/colab/api/model/document/TextDataBlock.html#TextDataBlock">TextDataBlock</a> teaser = originalResource.getTeaser();
-<a class="jxr_linenumber" name="L403" href="#L403">403</a>             <strong class="jxr_keyword">if</strong> (teaser != <strong class="jxr_keyword">null</strong>) {
-<a class="jxr_linenumber" name="L404" href="#L404">404</a>                 <a name="TextDataBlock" href="../../../../../ch/colabproject/colab/api/model/document/TextDataBlock.html#TextDataBlock">TextDataBlock</a> newTeaser = (<a name="TextDataBlock" href="../../../../../ch/colabproject/colab/api/model/document/TextDataBlock.html#TextDataBlock">TextDataBlock</a>) duplicateDocument(teaser);
-<a class="jxr_linenumber" name="L405" href="#L405">405</a> 
-<a class="jxr_linenumber" name="L406" href="#L406">406</a>                 newTeaser.setTeasingResource(newResource);
-<a class="jxr_linenumber" name="L407" href="#L407">407</a>                 newResource.setTeaser(newTeaser);
-<a class="jxr_linenumber" name="L408" href="#L408">408</a>             }
-<a class="jxr_linenumber" name="L409" href="#L409">409</a> 
-<a class="jxr_linenumber" name="L410" href="#L410">410</a>             <strong class="jxr_keyword">return</strong> newResource;
-<a class="jxr_linenumber" name="L411" href="#L411">411</a>         } <strong class="jxr_keyword">else</strong> <strong class="jxr_keyword">if</strong> (original instanceof ResourceRef) {
-<a class="jxr_linenumber" name="L412" href="#L412">412</a>             ResourceRef originalResourceRef = (ResourceRef) original;
-<a class="jxr_linenumber" name="L413" href="#L413">413</a> 
-<a class="jxr_linenumber" name="L414" href="#L414">414</a>             ResourceRef newResourceRef = <strong class="jxr_keyword">new</strong> ResourceRef();
-<a class="jxr_linenumber" name="L415" href="#L415">415</a>             newResourceRef.duplicate(originalResourceRef);
-<a class="jxr_linenumber" name="L416" href="#L416">416</a> 
-<a class="jxr_linenumber" name="L417" href="#L417">417</a>             resourceMatching.put(originalResourceRef.getId(), newResourceRef);
-<a class="jxr_linenumber" name="L418" href="#L418">418</a> 
-<a class="jxr_linenumber" name="L419" href="#L419">419</a>             AbstractResource originalTarget = originalResourceRef.getTarget();
-<a class="jxr_linenumber" name="L420" href="#L420">420</a>             <strong class="jxr_keyword">if</strong> (originalTarget != <strong class="jxr_keyword">null</strong>) {
-<a class="jxr_linenumber" name="L421" href="#L421">421</a>                 AbstractResource newTarget = originalTarget;
-<a class="jxr_linenumber" name="L422" href="#L422">422</a> 
-<a class="jxr_linenumber" name="L423" href="#L423">423</a>                 <strong class="jxr_keyword">if</strong> (resourceMatching.containsKey(originalTarget.getId())) {
-<a class="jxr_linenumber" name="L424" href="#L424">424</a>                     newTarget = resourceMatching.get(originalTarget.getId());
-<a class="jxr_linenumber" name="L425" href="#L425">425</a>                 }
-<a class="jxr_linenumber" name="L426" href="#L426">426</a> 
-<a class="jxr_linenumber" name="L427" href="#L427">427</a>                 newResourceRef.setTarget(newTarget);
-<a class="jxr_linenumber" name="L428" href="#L428">428</a>                 newTarget.getDirectReferences().add(newResourceRef);
-<a class="jxr_linenumber" name="L429" href="#L429">429</a>             }
+<a class="jxr_linenumber" name="L250" href="#L250">250</a>                 } <strong class="jxr_keyword">else</strong> {
+<a class="jxr_linenumber" name="L251" href="#L251">251</a>                     <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> IllegalStateException(
+<a class="jxr_linenumber" name="L252" href="#L252">252</a>                         <span class="jxr_string">"the target of a card type reference must be outside the project"</span>);
+<a class="jxr_linenumber" name="L253" href="#L253">253</a>                     <em class="jxr_comment">// Note for an hypothetical future evolution :</em>
+<a class="jxr_linenumber" name="L254" href="#L254">254</a>                     <em class="jxr_comment">// if we break the condition that, in a project,</em>
+<a class="jxr_linenumber" name="L255" href="#L255">255</a>                     <em class="jxr_comment">// there is only one reference per target type outside the project</em>
+<a class="jxr_linenumber" name="L256" href="#L256">256</a>                     <em class="jxr_comment">// we must process the card types in the appropriate order</em>
+<a class="jxr_linenumber" name="L257" href="#L257">257</a>                 }
+<a class="jxr_linenumber" name="L258" href="#L258">258</a>             }
+<a class="jxr_linenumber" name="L259" href="#L259">259</a> 
+<a class="jxr_linenumber" name="L260" href="#L260">260</a>             newAbstractCardType = newCardTypeRef;
+<a class="jxr_linenumber" name="L261" href="#L261">261</a>         } <strong class="jxr_keyword">else</strong> {
+<a class="jxr_linenumber" name="L262" href="#L262">262</a>             <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> IllegalStateException(<span class="jxr_string">"abstract card type implementation not handled"</span>);
+<a class="jxr_linenumber" name="L263" href="#L263">263</a>         }
+<a class="jxr_linenumber" name="L264" href="#L264">264</a> 
+<a class="jxr_linenumber" name="L265" href="#L265">265</a>         List&lt;AbstractResource&gt; originalResources = original.getDirectAbstractResources();
+<a class="jxr_linenumber" name="L266" href="#L266">266</a>         originalResources.sort(ID_COMPARATOR);
+<a class="jxr_linenumber" name="L267" href="#L267">267</a> 
+<a class="jxr_linenumber" name="L268" href="#L268">268</a>         <strong class="jxr_keyword">for</strong> (AbstractResource originalResource : originalResources) {
+<a class="jxr_linenumber" name="L269" href="#L269">269</a>             AbstractResource newResource = duplicateResource(originalResource);
+<a class="jxr_linenumber" name="L270" href="#L270">270</a> 
+<a class="jxr_linenumber" name="L271" href="#L271">271</a>             newResource.setAbstractCardType(newAbstractCardType);
+<a class="jxr_linenumber" name="L272" href="#L272">272</a>             newAbstractCardType.getDirectAbstractResources().add(newResource);
+<a class="jxr_linenumber" name="L273" href="#L273">273</a>         }
+<a class="jxr_linenumber" name="L274" href="#L274">274</a> 
+<a class="jxr_linenumber" name="L275" href="#L275">275</a>         <strong class="jxr_keyword">return</strong> newAbstractCardType;
+<a class="jxr_linenumber" name="L276" href="#L276">276</a>     }
+<a class="jxr_linenumber" name="L277" href="#L277">277</a> 
+<a class="jxr_linenumber" name="L278" href="#L278">278</a>     <strong class="jxr_keyword">private</strong> Card duplicateCard(Card original)
+<a class="jxr_linenumber" name="L279" href="#L279">279</a>         <strong class="jxr_keyword">throws</strong> <a name="ColabMergeException" href="../../../../../ch/colabproject/colab/api/exceptions/ColabMergeException.html#ColabMergeException">ColabMergeException</a> {
+<a class="jxr_linenumber" name="L280" href="#L280">280</a>         Card newCard = <strong class="jxr_keyword">new</strong> Card();
+<a class="jxr_linenumber" name="L281" href="#L281">281</a>         newCard.duplicate(original);
+<a class="jxr_linenumber" name="L282" href="#L282">282</a> 
+<a class="jxr_linenumber" name="L283" href="#L283">283</a>         cardMatching.put(original.getId(), newCard);
+<a class="jxr_linenumber" name="L284" href="#L284">284</a> 
+<a class="jxr_linenumber" name="L285" href="#L285">285</a>         AbstractCardType originalCardType = original.getCardType();
+<a class="jxr_linenumber" name="L286" href="#L286">286</a>         <strong class="jxr_keyword">if</strong> (originalCardType != <strong class="jxr_keyword">null</strong>) {
+<a class="jxr_linenumber" name="L287" href="#L287">287</a>             AbstractCardType newCardType = cardTypeMatching.get(originalCardType.getId());
+<a class="jxr_linenumber" name="L288" href="#L288">288</a>             newCard.setCardType(newCardType);
+<a class="jxr_linenumber" name="L289" href="#L289">289</a>         }
+<a class="jxr_linenumber" name="L290" href="#L290">290</a> 
+<a class="jxr_linenumber" name="L291" href="#L291">291</a>         List&lt;AbstractResource&gt; originalResources = original.getDirectAbstractResources();
+<a class="jxr_linenumber" name="L292" href="#L292">292</a>         originalResources.sort(ID_COMPARATOR);
+<a class="jxr_linenumber" name="L293" href="#L293">293</a> 
+<a class="jxr_linenumber" name="L294" href="#L294">294</a>         <strong class="jxr_keyword">for</strong> (AbstractResource originalResource : originalResources) {
+<a class="jxr_linenumber" name="L295" href="#L295">295</a>             AbstractResource newResource = duplicateResource(originalResource);
+<a class="jxr_linenumber" name="L296" href="#L296">296</a> 
+<a class="jxr_linenumber" name="L297" href="#L297">297</a>             newResource.setCard(newCard);
+<a class="jxr_linenumber" name="L298" href="#L298">298</a>             newCard.getDirectAbstractResources().add(newResource);
+<a class="jxr_linenumber" name="L299" href="#L299">299</a>         }
+<a class="jxr_linenumber" name="L300" href="#L300">300</a> 
+<a class="jxr_linenumber" name="L301" href="#L301">301</a>         List&lt;CardContent&gt; originalContents = original.getContentVariants();
+<a class="jxr_linenumber" name="L302" href="#L302">302</a>         originalContents.sort(ID_COMPARATOR);
+<a class="jxr_linenumber" name="L303" href="#L303">303</a> 
+<a class="jxr_linenumber" name="L304" href="#L304">304</a>         <strong class="jxr_keyword">for</strong> (CardContent originalCardContent : originalContents) {
+<a class="jxr_linenumber" name="L305" href="#L305">305</a>             CardContent newCardContent = duplicateCardContent(originalCardContent);
+<a class="jxr_linenumber" name="L306" href="#L306">306</a> 
+<a class="jxr_linenumber" name="L307" href="#L307">307</a>             newCardContent.setCard(newCard);
+<a class="jxr_linenumber" name="L308" href="#L308">308</a>             newCard.getContentVariants().add(newCardContent);
+<a class="jxr_linenumber" name="L309" href="#L309">309</a>         }
+<a class="jxr_linenumber" name="L310" href="#L310">310</a> 
+<a class="jxr_linenumber" name="L311" href="#L311">311</a>         <em class="jxr_comment">////////////////////////////////////////////////////////////////////////////////////////////</em>
+<a class="jxr_linenumber" name="L312" href="#L312">312</a>         <em class="jxr_comment">// TODO Access control</em>
+<a class="jxr_linenumber" name="L313" href="#L313">313</a> 
+<a class="jxr_linenumber" name="L314" href="#L314">314</a>         <strong class="jxr_keyword">return</strong> newCard;
+<a class="jxr_linenumber" name="L315" href="#L315">315</a>     }
+<a class="jxr_linenumber" name="L316" href="#L316">316</a> 
+<a class="jxr_linenumber" name="L317" href="#L317">317</a>     <strong class="jxr_keyword">private</strong> CardContent duplicateCardContent(CardContent original)
+<a class="jxr_linenumber" name="L318" href="#L318">318</a>         <strong class="jxr_keyword">throws</strong> <a name="ColabMergeException" href="../../../../../ch/colabproject/colab/api/exceptions/ColabMergeException.html#ColabMergeException">ColabMergeException</a> {
+<a class="jxr_linenumber" name="L319" href="#L319">319</a>         CardContent newCardContent = <strong class="jxr_keyword">new</strong> CardContent();
+<a class="jxr_linenumber" name="L320" href="#L320">320</a>         newCardContent.duplicate(original);
+<a class="jxr_linenumber" name="L321" href="#L321">321</a> 
+<a class="jxr_linenumber" name="L322" href="#L322">322</a>         cardContentMatching.put(original.getId(), newCardContent);
+<a class="jxr_linenumber" name="L323" href="#L323">323</a> 
+<a class="jxr_linenumber" name="L324" href="#L324">324</a>         List&lt;Card&gt; originalSubCards = original.getSubCards();
+<a class="jxr_linenumber" name="L325" href="#L325">325</a>         originalSubCards.sort(ID_COMPARATOR);
+<a class="jxr_linenumber" name="L326" href="#L326">326</a> 
+<a class="jxr_linenumber" name="L327" href="#L327">327</a>         List&lt;AbstractResource&gt; originalResources = original.getDirectAbstractResources();
+<a class="jxr_linenumber" name="L328" href="#L328">328</a>         originalResources.sort(ID_COMPARATOR);
+<a class="jxr_linenumber" name="L329" href="#L329">329</a> 
+<a class="jxr_linenumber" name="L330" href="#L330">330</a>         <strong class="jxr_keyword">for</strong> (AbstractResource originalResource : originalResources) {
+<a class="jxr_linenumber" name="L331" href="#L331">331</a>             AbstractResource newResource = duplicateResource(originalResource);
+<a class="jxr_linenumber" name="L332" href="#L332">332</a> 
+<a class="jxr_linenumber" name="L333" href="#L333">333</a>             newResource.setCardContent(newCardContent);
+<a class="jxr_linenumber" name="L334" href="#L334">334</a>             newCardContent.getDirectAbstractResources().add(newResource);
+<a class="jxr_linenumber" name="L335" href="#L335">335</a>         }
+<a class="jxr_linenumber" name="L336" href="#L336">336</a> 
+<a class="jxr_linenumber" name="L337" href="#L337">337</a>         <strong class="jxr_keyword">for</strong> (Card originalSubCard : originalSubCards) {
+<a class="jxr_linenumber" name="L338" href="#L338">338</a>             Card newSubCard = duplicateCard(originalSubCard);
+<a class="jxr_linenumber" name="L339" href="#L339">339</a> 
+<a class="jxr_linenumber" name="L340" href="#L340">340</a>             newSubCard.setParent(newCardContent);
+<a class="jxr_linenumber" name="L341" href="#L341">341</a>             newCardContent.getSubCards().add(newSubCard);
+<a class="jxr_linenumber" name="L342" href="#L342">342</a>         }
+<a class="jxr_linenumber" name="L343" href="#L343">343</a> 
+<a class="jxr_linenumber" name="L344" href="#L344">344</a>         <strong class="jxr_keyword">if</strong> (params.isWithDeliverables()) {
+<a class="jxr_linenumber" name="L345" href="#L345">345</a>             List&lt;Document&gt; originalDeliverables = original.getDeliverables();
+<a class="jxr_linenumber" name="L346" href="#L346">346</a>             originalDeliverables.sort(ID_COMPARATOR);
+<a class="jxr_linenumber" name="L347" href="#L347">347</a> 
+<a class="jxr_linenumber" name="L348" href="#L348">348</a>             <strong class="jxr_keyword">for</strong> (Document originalDoc : originalDeliverables) {
+<a class="jxr_linenumber" name="L349" href="#L349">349</a>                 Document newDoc = duplicateDocument(originalDoc);
+<a class="jxr_linenumber" name="L350" href="#L350">350</a> 
+<a class="jxr_linenumber" name="L351" href="#L351">351</a>                 newDoc.setOwningCardContent(newCardContent);
+<a class="jxr_linenumber" name="L352" href="#L352">352</a>                 newCardContent.getDeliverables().add(newDoc);
+<a class="jxr_linenumber" name="L353" href="#L353">353</a>             }
+<a class="jxr_linenumber" name="L354" href="#L354">354</a>         }
+<a class="jxr_linenumber" name="L355" href="#L355">355</a> 
+<a class="jxr_linenumber" name="L356" href="#L356">356</a>         <strong class="jxr_keyword">return</strong> newCardContent;
+<a class="jxr_linenumber" name="L357" href="#L357">357</a>     }
+<a class="jxr_linenumber" name="L358" href="#L358">358</a> 
+<a class="jxr_linenumber" name="L359" href="#L359">359</a>     <strong class="jxr_keyword">private</strong> Document duplicateDocument(Document original) <strong class="jxr_keyword">throws</strong> <a name="ColabMergeException" href="../../../../../ch/colabproject/colab/api/exceptions/ColabMergeException.html#ColabMergeException">ColabMergeException</a> {
+<a class="jxr_linenumber" name="L360" href="#L360">360</a>         <strong class="jxr_keyword">if</strong> (original instanceof <a name="DocumentFile" href="../../../../../ch/colabproject/colab/api/model/document/DocumentFile.html#DocumentFile">DocumentFile</a>) {
+<a class="jxr_linenumber" name="L361" href="#L361">361</a>             <em class="jxr_comment">// TODO sandra work in progress : copy also the file</em>
+<a class="jxr_linenumber" name="L362" href="#L362">362</a>             <a name="DocumentFile" href="../../../../../ch/colabproject/colab/api/model/document/DocumentFile.html#DocumentFile">DocumentFile</a> originalDocumentFile = (<a name="DocumentFile" href="../../../../../ch/colabproject/colab/api/model/document/DocumentFile.html#DocumentFile">DocumentFile</a>) original;
+<a class="jxr_linenumber" name="L363" href="#L363">363</a>             <a name="DocumentFile" href="../../../../../ch/colabproject/colab/api/model/document/DocumentFile.html#DocumentFile">DocumentFile</a> newDocumentFile = <strong class="jxr_keyword">new</strong> <a name="DocumentFile" href="../../../../../ch/colabproject/colab/api/model/document/DocumentFile.html#DocumentFile">DocumentFile</a>();
+<a class="jxr_linenumber" name="L364" href="#L364">364</a>             newDocumentFile.duplicate(originalDocumentFile);
+<a class="jxr_linenumber" name="L365" href="#L365">365</a>             <strong class="jxr_keyword">return</strong> newDocumentFile;
+<a class="jxr_linenumber" name="L366" href="#L366">366</a>         } <strong class="jxr_keyword">else</strong> <strong class="jxr_keyword">if</strong> (original instanceof <a name="ExternalLink" href="../../../../../ch/colabproject/colab/api/model/document/ExternalLink.html#ExternalLink">ExternalLink</a>) {
+<a class="jxr_linenumber" name="L367" href="#L367">367</a>             <a name="ExternalLink" href="../../../../../ch/colabproject/colab/api/model/document/ExternalLink.html#ExternalLink">ExternalLink</a> originalExternalLink = (<a name="ExternalLink" href="../../../../../ch/colabproject/colab/api/model/document/ExternalLink.html#ExternalLink">ExternalLink</a>) original;
+<a class="jxr_linenumber" name="L368" href="#L368">368</a>             <a name="ExternalLink" href="../../../../../ch/colabproject/colab/api/model/document/ExternalLink.html#ExternalLink">ExternalLink</a> newExternalLink = <strong class="jxr_keyword">new</strong> <a name="ExternalLink" href="../../../../../ch/colabproject/colab/api/model/document/ExternalLink.html#ExternalLink">ExternalLink</a>();
+<a class="jxr_linenumber" name="L369" href="#L369">369</a>             newExternalLink.duplicate(originalExternalLink);
+<a class="jxr_linenumber" name="L370" href="#L370">370</a>             <strong class="jxr_keyword">return</strong> newExternalLink;
+<a class="jxr_linenumber" name="L371" href="#L371">371</a>         } <strong class="jxr_keyword">else</strong> <strong class="jxr_keyword">if</strong> (original instanceof <a name="TextDataBlock" href="../../../../../ch/colabproject/colab/api/model/document/TextDataBlock.html#TextDataBlock">TextDataBlock</a>) {
+<a class="jxr_linenumber" name="L372" href="#L372">372</a>             <a name="TextDataBlock" href="../../../../../ch/colabproject/colab/api/model/document/TextDataBlock.html#TextDataBlock">TextDataBlock</a> originalTextDataBlock = (<a name="TextDataBlock" href="../../../../../ch/colabproject/colab/api/model/document/TextDataBlock.html#TextDataBlock">TextDataBlock</a>) original;
+<a class="jxr_linenumber" name="L373" href="#L373">373</a>             <a name="TextDataBlock" href="../../../../../ch/colabproject/colab/api/model/document/TextDataBlock.html#TextDataBlock">TextDataBlock</a> newTextDataBlock = <strong class="jxr_keyword">new</strong> <a name="TextDataBlock" href="../../../../../ch/colabproject/colab/api/model/document/TextDataBlock.html#TextDataBlock">TextDataBlock</a>();
+<a class="jxr_linenumber" name="L374" href="#L374">374</a>             newTextDataBlock.duplicate(originalTextDataBlock);
+<a class="jxr_linenumber" name="L375" href="#L375">375</a>             <strong class="jxr_keyword">return</strong> newTextDataBlock;
+<a class="jxr_linenumber" name="L376" href="#L376">376</a>         } <strong class="jxr_keyword">else</strong> {
+<a class="jxr_linenumber" name="L377" href="#L377">377</a>             <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> IllegalStateException(<span class="jxr_string">"abstract card type implementation not handled"</span>);
+<a class="jxr_linenumber" name="L378" href="#L378">378</a>         }
+<a class="jxr_linenumber" name="L379" href="#L379">379</a>     }
+<a class="jxr_linenumber" name="L380" href="#L380">380</a> 
+<a class="jxr_linenumber" name="L381" href="#L381">381</a>     <strong class="jxr_keyword">private</strong> AbstractResource duplicateResource(AbstractResource original)
+<a class="jxr_linenumber" name="L382" href="#L382">382</a>         <strong class="jxr_keyword">throws</strong> <a name="ColabMergeException" href="../../../../../ch/colabproject/colab/api/exceptions/ColabMergeException.html#ColabMergeException">ColabMergeException</a> {
+<a class="jxr_linenumber" name="L383" href="#L383">383</a>         <strong class="jxr_keyword">if</strong> (original instanceof Resource) {
+<a class="jxr_linenumber" name="L384" href="#L384">384</a>             Resource originalResource = (Resource) original;
+<a class="jxr_linenumber" name="L385" href="#L385">385</a> 
+<a class="jxr_linenumber" name="L386" href="#L386">386</a>             Resource newResource = <strong class="jxr_keyword">new</strong> Resource();
+<a class="jxr_linenumber" name="L387" href="#L387">387</a>             newResource.duplicate(originalResource);
+<a class="jxr_linenumber" name="L388" href="#L388">388</a> 
+<a class="jxr_linenumber" name="L389" href="#L389">389</a>             resourceMatching.put(originalResource.getId(), newResource);
+<a class="jxr_linenumber" name="L390" href="#L390">390</a> 
+<a class="jxr_linenumber" name="L391" href="#L391">391</a>             List&lt;Document&gt; originalDocuments = originalResource.getDocuments();
+<a class="jxr_linenumber" name="L392" href="#L392">392</a>             originalDocuments.sort(ID_COMPARATOR);
+<a class="jxr_linenumber" name="L393" href="#L393">393</a> 
+<a class="jxr_linenumber" name="L394" href="#L394">394</a>             <strong class="jxr_keyword">for</strong> (Document originalDocument : originalDocuments) {
+<a class="jxr_linenumber" name="L395" href="#L395">395</a>                 Document newDocument = duplicateDocument(originalDocument);
+<a class="jxr_linenumber" name="L396" href="#L396">396</a> 
+<a class="jxr_linenumber" name="L397" href="#L397">397</a>                 newDocument.setOwningResource(newResource);
+<a class="jxr_linenumber" name="L398" href="#L398">398</a>                 newResource.getDocuments().add(newDocument);
+<a class="jxr_linenumber" name="L399" href="#L399">399</a>             }
+<a class="jxr_linenumber" name="L400" href="#L400">400</a> 
+<a class="jxr_linenumber" name="L401" href="#L401">401</a>             <a name="TextDataBlock" href="../../../../../ch/colabproject/colab/api/model/document/TextDataBlock.html#TextDataBlock">TextDataBlock</a> teaser = originalResource.getTeaser();
+<a class="jxr_linenumber" name="L402" href="#L402">402</a>             <strong class="jxr_keyword">if</strong> (teaser != <strong class="jxr_keyword">null</strong>) {
+<a class="jxr_linenumber" name="L403" href="#L403">403</a>                 <a name="TextDataBlock" href="../../../../../ch/colabproject/colab/api/model/document/TextDataBlock.html#TextDataBlock">TextDataBlock</a> newTeaser = (<a name="TextDataBlock" href="../../../../../ch/colabproject/colab/api/model/document/TextDataBlock.html#TextDataBlock">TextDataBlock</a>) duplicateDocument(teaser);
+<a class="jxr_linenumber" name="L404" href="#L404">404</a> 
+<a class="jxr_linenumber" name="L405" href="#L405">405</a>                 newTeaser.setTeasingResource(newResource);
+<a class="jxr_linenumber" name="L406" href="#L406">406</a>                 newResource.setTeaser(newTeaser);
+<a class="jxr_linenumber" name="L407" href="#L407">407</a>             }
+<a class="jxr_linenumber" name="L408" href="#L408">408</a> 
+<a class="jxr_linenumber" name="L409" href="#L409">409</a>             <strong class="jxr_keyword">return</strong> newResource;
+<a class="jxr_linenumber" name="L410" href="#L410">410</a>         } <strong class="jxr_keyword">else</strong> <strong class="jxr_keyword">if</strong> (original instanceof ResourceRef) {
+<a class="jxr_linenumber" name="L411" href="#L411">411</a>             ResourceRef originalResourceRef = (ResourceRef) original;
+<a class="jxr_linenumber" name="L412" href="#L412">412</a> 
+<a class="jxr_linenumber" name="L413" href="#L413">413</a>             ResourceRef newResourceRef = <strong class="jxr_keyword">new</strong> ResourceRef();
+<a class="jxr_linenumber" name="L414" href="#L414">414</a>             newResourceRef.duplicate(originalResourceRef);
+<a class="jxr_linenumber" name="L415" href="#L415">415</a> 
+<a class="jxr_linenumber" name="L416" href="#L416">416</a>             resourceMatching.put(originalResourceRef.getId(), newResourceRef);
+<a class="jxr_linenumber" name="L417" href="#L417">417</a> 
+<a class="jxr_linenumber" name="L418" href="#L418">418</a>             AbstractResource originalTarget = originalResourceRef.getTarget();
+<a class="jxr_linenumber" name="L419" href="#L419">419</a>             <strong class="jxr_keyword">if</strong> (originalTarget != <strong class="jxr_keyword">null</strong>) {
+<a class="jxr_linenumber" name="L420" href="#L420">420</a>                 AbstractResource newTarget = originalTarget;
+<a class="jxr_linenumber" name="L421" href="#L421">421</a> 
+<a class="jxr_linenumber" name="L422" href="#L422">422</a>                 <strong class="jxr_keyword">if</strong> (resourceMatching.containsKey(originalTarget.getId())) {
+<a class="jxr_linenumber" name="L423" href="#L423">423</a>                     newTarget = resourceMatching.get(originalTarget.getId());
+<a class="jxr_linenumber" name="L424" href="#L424">424</a>                 }
+<a class="jxr_linenumber" name="L425" href="#L425">425</a> 
+<a class="jxr_linenumber" name="L426" href="#L426">426</a>                 newResourceRef.setTarget(newTarget);
+<a class="jxr_linenumber" name="L427" href="#L427">427</a>             }
+<a class="jxr_linenumber" name="L428" href="#L428">428</a> 
+<a class="jxr_linenumber" name="L429" href="#L429">429</a>             <em class="jxr_comment">// and what if the user has not the rights to read the target ?!?</em>
 <a class="jxr_linenumber" name="L430" href="#L430">430</a> 
-<a class="jxr_linenumber" name="L431" href="#L431">431</a>             <em class="jxr_comment">// and what if the user has not the rights to read the target ?!?</em>
+<a class="jxr_linenumber" name="L431" href="#L431">431</a>             <strong class="jxr_keyword">return</strong> newResourceRef;
 <a class="jxr_linenumber" name="L432" href="#L432">432</a> 
-<a class="jxr_linenumber" name="L433" href="#L433">433</a>             <strong class="jxr_keyword">return</strong> newResourceRef;
-<a class="jxr_linenumber" name="L434" href="#L434">434</a> 
-<a class="jxr_linenumber" name="L435" href="#L435">435</a>         } <strong class="jxr_keyword">else</strong> {
-<a class="jxr_linenumber" name="L436" href="#L436">436</a>             <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> IllegalStateException(<span class="jxr_string">"abstract card type implementation not handled"</span>);
-<a class="jxr_linenumber" name="L437" href="#L437">437</a>         }
-<a class="jxr_linenumber" name="L438" href="#L438">438</a>     }
-<a class="jxr_linenumber" name="L439" href="#L439">439</a> 
-<a class="jxr_linenumber" name="L440" href="#L440">440</a> }
+<a class="jxr_linenumber" name="L433" href="#L433">433</a>         } <strong class="jxr_keyword">else</strong> {
+<a class="jxr_linenumber" name="L434" href="#L434">434</a>             <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> IllegalStateException(<span class="jxr_string">"abstract card type implementation not handled"</span>);
+<a class="jxr_linenumber" name="L435" href="#L435">435</a>         }
+<a class="jxr_linenumber" name="L436" href="#L436">436</a>     }
+<a class="jxr_linenumber" name="L437" href="#L437">437</a> 
+<a class="jxr_linenumber" name="L438" href="#L438">438</a> }
 </pre>
 <hr/>
 <div id="footer">Copyright &#169; 2022 <a href="https://www.colab-project.ch">AlbaSim, MEI, HEIG-VD, HES-SO</a>. All rights reserved.</div>

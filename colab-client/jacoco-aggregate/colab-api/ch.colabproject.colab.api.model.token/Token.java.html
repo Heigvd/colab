@@ -86,8 +86,8 @@ import javax.validation.constraints.NotNull;
      */
     @Column(length = 100)
     @Enumerated(value = EnumType.STRING)
-    @JsonbTransient
     @NotNull
+    @JsonbTransient
     private HashMethod hashMethod;
 
     /**

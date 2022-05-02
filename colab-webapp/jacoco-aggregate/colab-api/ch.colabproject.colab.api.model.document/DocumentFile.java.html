@@ -12,6 +12,7 @@ import ch.colabproject.colab.api.model.tools.EntityHelper;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import javax.ws.rs.core.MediaType;
 
 /**
@@ -19,7 +20,6 @@ import javax.ws.rs.core.MediaType;
  *
  * @author sandra
  */
-//TODO adjust the constraints / indexes
 @Entity
 @DiscriminatorValue(&quot;DOCUMENT_FILE&quot;)
 <span class="nc" id="L25">public class DocumentFile extends Document {</span>
@@ -33,19 +33,21 @@ import javax.ws.rs.core.MediaType;
     /**
      * Original file name
      */
+    @Size(max = 255)
     private String fileName;
 
     /**
      * Mime type of file
      */
-<span class="nc" id="L41">    @NotNull</span>
+<span class="nc" id="L42">    @Size(max = 255)</span>
+    @NotNull
     private String mimeType = MediaType.APPLICATION_OCTET_STREAM;
 
     /**
      * Size of the file in bytes
      */
-<span class="nc" id="L47">    @NotNull</span>
-<span class="nc" id="L48">    private Long fileSize = 0L;</span>
+<span class="nc" id="L49">    @NotNull</span>
+<span class="nc" id="L50">    private Long fileSize = 0L;</span>
 
     // ---------------------------------------------------------------------------------------------
     // getters and setters
@@ -55,22 +57,22 @@ import javax.ws.rs.core.MediaType;
      * @return the original name of the uploaded file or null if no file has been set
      */
     public String getFileName() {
-<span class="nc" id="L58">        return fileName;</span>
+<span class="nc" id="L60">        return fileName;</span>
     }
 
     /**
      * @param fileName the original name of the uploaded file or null if no file has been set
      */
     public void setFileName(String fileName) {
-<span class="nc" id="L65">        this.fileName = fileName;</span>
-<span class="nc" id="L66">    }</span>
+<span class="nc" id="L67">        this.fileName = fileName;</span>
+<span class="nc" id="L68">    }</span>
 
     /**
      * @return the mime type of the file or MediaType.APPLICATION_OCTET_STREAM if no file has been
      *         set
      */
     public String getMimeType() {
-<span class="nc" id="L73">        return mimeType;</span>
+<span class="nc" id="L75">        return mimeType;</span>
     }
 
     /**
@@ -78,22 +80,22 @@ import javax.ws.rs.core.MediaType;
      *         set
      */
     public void setMimeType(String mimeType) {
-<span class="nc" id="L81">        this.mimeType = mimeType;</span>
-<span class="nc" id="L82">    }</span>
+<span class="nc" id="L83">        this.mimeType = mimeType;</span>
+<span class="nc" id="L84">    }</span>
 
     /**
      * @return length in byte or 0 if no file has been set
      */
     public Long getFileSize() {
-<span class="nc" id="L88">        return fileSize;</span>
+<span class="nc" id="L90">        return fileSize;</span>
     }
 
     /**
      * @param fileSize length in byte or 0 if no file has been set
      */
     public void setFileSize(Long fileSize) {
-<span class="nc" id="L95">        this.fileSize = fileSize;</span>
-<span class="nc" id="L96">    }</span>
+<span class="nc" id="L97">        this.fileSize = fileSize;</span>
+<span class="nc" id="L98">    }</span>
 
     // ---------------------------------------------------------------------------------------------
     // concerning the whole class
@@ -101,32 +103,32 @@ import javax.ws.rs.core.MediaType;
 
     @Override
     public void merge(ColabEntity other) throws ColabMergeException {
-<span class="nc" id="L104">        super.merge(other);</span>
+<span class="nc" id="L106">        super.merge(other);</span>
 
-<span class="nc bnc" id="L106" title="All 2 branches missed.">        if (other instanceof DocumentFile) {</span>
-<span class="nc" id="L107">            DocumentFile o = (DocumentFile) other;</span>
-<span class="nc" id="L108">            this.setFileName(o.getFileName());</span>
-<span class="nc" id="L109">            this.setMimeType(o.getMimeType());</span>
-<span class="nc" id="L110">            this.setFileSize(o.getFileSize());</span>
-<span class="nc" id="L111">        } else {</span>
-<span class="nc" id="L112">            throw new ColabMergeException(this, other);</span>
+<span class="nc bnc" id="L108" title="All 2 branches missed.">        if (other instanceof DocumentFile) {</span>
+<span class="nc" id="L109">            DocumentFile o = (DocumentFile) other;</span>
+<span class="nc" id="L110">            this.setFileName(o.getFileName());</span>
+<span class="nc" id="L111">            this.setMimeType(o.getMimeType());</span>
+<span class="nc" id="L112">            this.setFileSize(o.getFileSize());</span>
+<span class="nc" id="L113">        } else {</span>
+<span class="nc" id="L114">            throw new ColabMergeException(this, other);</span>
         }
-<span class="nc" id="L114">    }</span>
+<span class="nc" id="L116">    }</span>
 
     @Override
     public int hashCode() {
-<span class="nc" id="L118">        return EntityHelper.hashCode(this);</span>
+<span class="nc" id="L120">        return EntityHelper.hashCode(this);</span>
     }
 
     @Override
     @SuppressWarnings(&quot;EqualsWhichDoesntCheckParameterClass&quot;)
     public boolean equals(Object obj) {
-<span class="nc" id="L124">        return EntityHelper.equals(this, obj);</span>
+<span class="nc" id="L126">        return EntityHelper.equals(this, obj);</span>
     }
 
     @Override
     public String toString() {
-<span class="nc" id="L129">        return &quot;DocumentFile{&quot; + super.toPartialString() + &quot;, fileName=&quot; + fileName + &quot;}&quot;;</span>
+<span class="nc" id="L131">        return &quot;DocumentFile{&quot; + super.toPartialString() + &quot;, fileName=&quot; + fileName + &quot;}&quot;;</span>
     }
 
 }

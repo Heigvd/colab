@@ -41,6 +41,7 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import org.apache.commons.collections4.CollectionUtils;
 
 /**
@@ -59,15 +60,19 @@ import org.apache.commons.collections4.CollectionUtils;
     name = &quot;TeamMember.areUserTeammate&quot;,
     // SELECT true FROM TeamMember a, TeamMember b WHERE ...
     query = &quot;SELECT true FROM TeamMember a &quot;
-    + &quot;JOIN TeamMember b ON a.project.id = b.project.id &quot;
-    + &quot;WHERE a.user.id = :aUserId AND b.user.id = :bUserId&quot;)
+        + &quot;JOIN TeamMember b ON a.project.id = b.project.id &quot;
+        + &quot;WHERE a.user.id = :aUserId AND b.user.id = :bUserId&quot;)
 @NamedQuery(
     name = &quot;TeamMember.findByUserAndProject&quot;,
     query = &quot;SELECT m FROM TeamMember m &quot;
-    + &quot;WHERE m.project.id = :projectId &quot;
-    + &quot;AND m.user IS NOT NULL AND m.user.id = :userId&quot;
+        + &quot;WHERE m.project.id = :projectId &quot;
+        + &quot;AND m.user IS NOT NULL AND m.user.id = :userId&quot;
 )
-<span class="nc" id="L70">public class TeamMember implements ColabEntity, WithWebsocketChannels {</span>
+@NamedQuery(
+    name = &quot;TeamMember.findByUser&quot;,
+    query = &quot;SELECT m FROM TeamMember m &quot;
+        + &quot;WHERE m.user IS NOT NULL AND m.user.id = :userId&quot;)
+<span class="nc" id="L75">public class TeamMember implements ColabEntity, WithWebsocketChannels {</span>
 
     private static final long serialVersionUID = 1L;
 
@@ -95,12 +100,13 @@ import org.apache.commons.collections4.CollectionUtils;
     /**
      * Optional display name. Such a name will hide user.commonName.
      */
+    @Size(max = 255)
     private String displayName;
 
     /**
      * Hierarchical position of the member
      */
-<span class="nc" id="L103">    @NotNull</span>
+<span class="nc" id="L109">    @NotNull</span>
     @Enumerated(value = EnumType.STRING)
     private HierarchicalPosition position = HierarchicalPosition.INTERNAL;
 
@@ -121,6 +127,7 @@ import org.apache.commons.collections4.CollectionUtils;
      * The project
      */
     @ManyToOne(fetch = FetchType.LAZY)
+    @NotNull
     @JsonbTransient
     private Project project;
 
@@ -133,7 +140,7 @@ import org.apache.commons.collections4.CollectionUtils;
     /**
      * The roles
      */
-<span class="nc" id="L136">    @ManyToMany</span>
+<span class="nc" id="L143">    @ManyToMany</span>
     @JoinTable(indexes = {
         @Index(columnList = &quot;members_id&quot;),
         @Index(columnList = &quot;roles_id&quot;),
@@ -144,14 +151,14 @@ import org.apache.commons.collections4.CollectionUtils;
     /**
      * Id of the roles. For deserialization only
      */
-<span class="nc" id="L147">    @NotNull</span>
+<span class="nc" id="L154">    @NotNull</span>
     @Transient
     private List&lt;Long&gt; roleIds = new ArrayList&lt;&gt;();
 
     /**
      * List of access control relative to this member
      */
-<span class="nc" id="L154">    @OneToMany(mappedBy = &quot;member&quot;, cascade = CascadeType.ALL)</span>
+<span class="nc" id="L161">    @OneToMany(mappedBy = &quot;member&quot;, cascade = CascadeType.ALL)</span>
     @JsonbTransient
     private List&lt;AccessControl&gt; accessControlList = new ArrayList&lt;&gt;();
 
@@ -164,15 +171,15 @@ import org.apache.commons.collections4.CollectionUtils;
      */
     @Override
     public Long getId() {
-<span class="nc" id="L167">        return id;</span>
+<span class="nc" id="L174">        return id;</span>
     }
 
     /**
      * @param id the member ID
      */
     public void setId(Long id) {
-<span class="nc" id="L174">        this.id = id;</span>
-<span class="nc" id="L175">    }</span>
+<span class="nc" id="L181">        this.id = id;</span>
+<span class="nc" id="L182">    }</span>
 
     /**
      * Get the tracking data
@@ -181,7 +188,7 @@ import org.apache.commons.collections4.CollectionUtils;
      */
     @Override
     public Tracking getTrackingData() {
-<span class="nc" id="L184">        return trackingData;</span>
+<span class="nc" id="L191">        return trackingData;</span>
     }
 
     /**
@@ -191,8 +198,8 @@ import org.apache.commons.collections4.CollectionUtils;
      */
     @Override
     public void setTrackingData(Tracking trackingData) {
-<span class="nc" id="L194">        this.trackingData = trackingData;</span>
-<span class="nc" id="L195">    }</span>
+<span class="nc" id="L201">        this.trackingData = trackingData;</span>
+<span class="nc" id="L202">    }</span>
 
     /**
      * Get the value of displayName
@@ -200,7 +207,7 @@ import org.apache.commons.collections4.CollectionUtils;
      * @return the value of displayName
      */
     public String getDisplayName() {
-<span class="nc" id="L203">        return displayName;</span>
+<span class="nc" id="L210">        return displayName;</span>
     }
 
     /**
@@ -209,8 +216,8 @@ import org.apache.commons.collections4.CollectionUtils;
      * @param displayName new value of displayName
      */
     public void setDisplayName(String displayName) {
-<span class="nc" id="L212">        this.displayName = displayName;</span>
-<span class="nc" id="L213">    }</span>
+<span class="nc" id="L219">        this.displayName = displayName;</span>
+<span class="nc" id="L220">    }</span>
 
     /**
      * Get the hierarchical position of the member
@@ -218,7 +225,7 @@ import org.apache.commons.collections4.CollectionUtils;
      * @return member's position
      */
     public HierarchicalPosition getPosition() {
-<span class="nc" id="L221">        return position;</span>
+<span class="nc" id="L228">        return position;</span>
     }
 
     /**
@@ -227,22 +234,22 @@ import org.apache.commons.collections4.CollectionUtils;
      * @param position new position
      */
     public void setPosition(HierarchicalPosition position) {
-<span class="nc" id="L230">        this.position = position;</span>
-<span class="nc" id="L231">    }</span>
+<span class="nc" id="L237">        this.position = position;</span>
+<span class="nc" id="L238">    }</span>
 
     /**
      * @return the user
      */
     public User getUser() {
-<span class="nc" id="L237">        return user;</span>
+<span class="nc" id="L244">        return user;</span>
     }
 
     /**
      * @param user the user
      */
     public void setUser(User user) {
-<span class="nc" id="L244">        this.user = user;</span>
-<span class="nc" id="L245">    }</span>
+<span class="nc" id="L251">        this.user = user;</span>
+<span class="nc" id="L252">    }</span>
 
     /**
      * get the user id. To be sent to client
@@ -250,10 +257,10 @@ import org.apache.commons.collections4.CollectionUtils;
      * @return id of the user or null
      */
     public Long getUserId() {
-<span class="nc bnc" id="L253" title="All 2 branches missed.">        if (this.user != null) {</span>
-<span class="nc" id="L254">            return this.user.getId();</span>
+<span class="nc bnc" id="L260" title="All 2 branches missed.">        if (this.user != null) {</span>
+<span class="nc" id="L261">            return this.user.getId();</span>
         } else {
-<span class="nc" id="L256">            return userId;</span>
+<span class="nc" id="L263">            return userId;</span>
         }
     }
 
@@ -263,22 +270,22 @@ import org.apache.commons.collections4.CollectionUtils;
      * @param id the id of the user
      */
     public void setUserId(Long id) {
-<span class="nc" id="L266">        this.userId = id;</span>
-<span class="nc" id="L267">    }</span>
+<span class="nc" id="L273">        this.userId = id;</span>
+<span class="nc" id="L274">    }</span>
 
     /**
      * @return the project
      */
     public Project getProject() {
-<span class="nc" id="L273">        return project;</span>
+<span class="nc" id="L280">        return project;</span>
     }
 
     /**
      * @param project the project
      */
     public void setProject(Project project) {
-<span class="nc" id="L280">        this.project = project;</span>
-<span class="nc" id="L281">    }</span>
+<span class="nc" id="L287">        this.project = project;</span>
+<span class="nc" id="L288">    }</span>
 
     /**
      * get the project id. To be sent to client
@@ -286,10 +293,10 @@ import org.apache.commons.collections4.CollectionUtils;
      * @return id of the project or null
      */
     public Long getProjectId() {
-<span class="nc bnc" id="L289" title="All 2 branches missed.">        if (this.project != null) {</span>
-<span class="nc" id="L290">            return this.project.getId();</span>
+<span class="nc bnc" id="L296" title="All 2 branches missed.">        if (this.project != null) {</span>
+<span class="nc" id="L297">            return this.project.getId();</span>
         } else {
-<span class="nc" id="L292">            return projectId;</span>
+<span class="nc" id="L299">            return projectId;</span>
         }
     }
 
@@ -299,8 +306,8 @@ import org.apache.commons.collections4.CollectionUtils;
      * @param id the id of the project
      */
     public void setProjectId(Long id) {
-<span class="nc" id="L302">        this.projectId = id;</span>
-<span class="nc" id="L303">    }</span>
+<span class="nc" id="L309">        this.projectId = id;</span>
+<span class="nc" id="L310">    }</span>
 
     /**
      * Get roles
@@ -308,7 +315,7 @@ import org.apache.commons.collections4.CollectionUtils;
      * @return roles
      */
     public List&lt;TeamRole&gt; getRoles() {
-<span class="nc" id="L311">        return roles;</span>
+<span class="nc" id="L318">        return roles;</span>
     }
 
     /**
@@ -317,8 +324,8 @@ import org.apache.commons.collections4.CollectionUtils;
      * @param roles list of roles
      */
     public void setRoles(List&lt;TeamRole&gt; roles) {
-<span class="nc" id="L320">        this.roles = roles;</span>
-<span class="nc" id="L321">    }</span>
+<span class="nc" id="L327">        this.roles = roles;</span>
+<span class="nc" id="L328">    }</span>
 
     /**
      * Get ids of the roles.
@@ -326,12 +333,12 @@ import org.apache.commons.collections4.CollectionUtils;
      * @return list of ids
      */
     public List&lt;Long&gt; getRoleIds() {
-<span class="nc bnc" id="L329" title="All 2 branches missed.">        if (!CollectionUtils.isEmpty(this.roles)) {</span>
-<span class="nc" id="L330">            return roles.stream()</span>
-<span class="nc" id="L331">                .map(role -&gt; role.getId())</span>
-<span class="nc" id="L332">                .collect(Collectors.toList());</span>
+<span class="nc bnc" id="L336" title="All 2 branches missed.">        if (!CollectionUtils.isEmpty(this.roles)) {</span>
+<span class="nc" id="L337">            return roles.stream()</span>
+<span class="nc" id="L338">                .map(role -&gt; role.getId())</span>
+<span class="nc" id="L339">                .collect(Collectors.toList());</span>
         }
-<span class="nc" id="L334">        return roleIds;</span>
+<span class="nc" id="L341">        return roleIds;</span>
     }
 
     /**
@@ -340,8 +347,8 @@ import org.apache.commons.collections4.CollectionUtils;
      * @param roleIds id of roles
      */
     public void setRoleIds(List&lt;Long&gt; roleIds) {
-<span class="nc" id="L343">        this.roleIds = roleIds;</span>
-<span class="nc" id="L344">    }</span>
+<span class="nc" id="L350">        this.roleIds = roleIds;</span>
+<span class="nc" id="L351">    }</span>
 
     /**
      * Get the list of access control
@@ -349,7 +356,7 @@ import org.apache.commons.collections4.CollectionUtils;
      * @return access control list
      */
     public List&lt;AccessControl&gt; getAccessControlList() {
-<span class="nc" id="L352">        return accessControlList;</span>
+<span class="nc" id="L359">        return accessControlList;</span>
     }
 
     /**
@@ -358,8 +365,8 @@ import org.apache.commons.collections4.CollectionUtils;
      * @param accessControlList new list of access control
      */
     public void setAccessControlList(List&lt;AccessControl&gt; accessControlList) {
-<span class="nc" id="L361">        this.accessControlList = accessControlList;</span>
-<span class="nc" id="L362">    }</span>
+<span class="nc" id="L368">        this.accessControlList = accessControlList;</span>
+<span class="nc" id="L369">    }</span>
 
     // ---------------------------------------------------------------------------------------------
     // concerning the whole class
@@ -367,89 +374,89 @@ import org.apache.commons.collections4.CollectionUtils;
 
     @Override
     public void merge(ColabEntity other) throws ColabMergeException {
-<span class="nc bnc" id="L370" title="All 2 branches missed.">        if (other instanceof TeamMember) {</span>
-<span class="nc" id="L371">            TeamMember t = (TeamMember) other;</span>
-<span class="nc" id="L372">            this.setDisplayName(t.getDisplayName());</span>
-<span class="nc" id="L373">        } else {</span>
-<span class="nc" id="L374">            throw new ColabMergeException(this, other);</span>
+<span class="nc bnc" id="L377" title="All 2 branches missed.">        if (other instanceof TeamMember) {</span>
+<span class="nc" id="L378">            TeamMember t = (TeamMember) other;</span>
+<span class="nc" id="L379">            this.setDisplayName(t.getDisplayName());</span>
+<span class="nc" id="L380">        } else {</span>
+<span class="nc" id="L381">            throw new ColabMergeException(this, other);</span>
         }
-<span class="nc" id="L376">    }</span>
+<span class="nc" id="L383">    }</span>
 
     @Override
     public void duplicate(ColabEntity other) throws ColabMergeException {
-<span class="nc bnc" id="L380" title="All 2 branches missed.">        if (other instanceof TeamMember) {</span>
-<span class="nc" id="L381">            TeamMember t = (TeamMember) other;</span>
-<span class="nc" id="L382">            this.setDisplayName(t.getDisplayName());</span>
-<span class="nc" id="L383">            this.setPosition(t.getPosition());</span>
-<span class="nc" id="L384">        } else {</span>
-<span class="nc" id="L385">            throw new ColabMergeException(this, other);</span>
+<span class="nc bnc" id="L387" title="All 2 branches missed.">        if (other instanceof TeamMember) {</span>
+<span class="nc" id="L388">            TeamMember t = (TeamMember) other;</span>
+<span class="nc" id="L389">            this.setDisplayName(t.getDisplayName());</span>
+<span class="nc" id="L390">            this.setPosition(t.getPosition());</span>
+<span class="nc" id="L391">        } else {</span>
+<span class="nc" id="L392">            throw new ColabMergeException(this, other);</span>
         }
-<span class="nc" id="L387">    }</span>
+<span class="nc" id="L394">    }</span>
 
     @Override
     public ChannelsBuilder getChannelsBuilder() {
-<span class="nc bnc" id="L391" title="All 2 branches missed.">        if (this.project != null) {</span>
-<span class="nc" id="L392">            return this.project.getChannelsBuilder();</span>
+<span class="nc bnc" id="L398" title="All 2 branches missed.">        if (this.project != null) {</span>
+<span class="nc" id="L399">            return this.project.getChannelsBuilder();</span>
         } else {
             // such an orphan shouldn't exist...
-<span class="nc" id="L395">            return new EmptyChannelBuilder();</span>
+<span class="nc" id="L402">            return new EmptyChannelBuilder();</span>
         }
     }
 
     @Override
     @JsonbTransient
     public Conditions.Condition getReadCondition() {
-<span class="nc bnc" id="L402" title="All 4 branches missed.">        if (this.user != null &amp;&amp; this.project != null) {</span>
-<span class="nc" id="L403">            return new Conditions.IsCurrentUserMemberOfProject(project);</span>
+<span class="nc bnc" id="L409" title="All 4 branches missed.">        if (this.user != null &amp;&amp; this.project != null) {</span>
+<span class="nc" id="L410">            return new Conditions.IsCurrentUserMemberOfProject(project);</span>
         } else {
             // anyone can read a pending invitation
-<span class="nc" id="L406">            return Conditions.alwaysTrue;</span>
+<span class="nc" id="L413">            return Conditions.alwaysTrue;</span>
         }
     }
 
     @Override
     public Conditions.Condition getUpdateCondition() {
-<span class="nc bnc" id="L412" title="All 4 branches missed.">        if (this.user != null &amp;&amp; this.project != null) {</span>
-<span class="nc bnc" id="L413" title="All 2 branches missed.">            if (this.position == HierarchicalPosition.OWNER) {</span>
-<span class="nc" id="L414">                return new Conditions.IsCurrentUserOwnerOfProject(project);</span>
+<span class="nc bnc" id="L419" title="All 4 branches missed.">        if (this.user != null &amp;&amp; this.project != null) {</span>
+<span class="nc bnc" id="L420" title="All 2 branches missed.">            if (this.position == HierarchicalPosition.OWNER) {</span>
+<span class="nc" id="L421">                return new Conditions.IsCurrentUserOwnerOfProject(project);</span>
             } else {
-<span class="nc" id="L416">                return new Conditions.IsCurrentUserLeaderOfProject(project);</span>
+<span class="nc" id="L423">                return new Conditions.IsCurrentUserLeaderOfProject(project);</span>
             }
         } else {
             // anyone can read a pending invitation
-<span class="nc" id="L420">            return Conditions.alwaysTrue;</span>
+<span class="nc" id="L427">            return Conditions.alwaysTrue;</span>
         }
     }
 
     @Override
     @JsonbTransient
     public Conditions.Condition getCreateCondition() {
-<span class="nc bnc" id="L427" title="All 4 branches missed.">        if (this.user != null &amp;&amp; this.project != null) {</span>
+<span class="nc bnc" id="L434" title="All 4 branches missed.">        if (this.user != null &amp;&amp; this.project != null) {</span>
             // any &quot;internal&quot; may invite somebody
-<span class="nc" id="L429">            return new Conditions.IsCurrentUserInternalToProject(project);</span>
+<span class="nc" id="L436">            return new Conditions.IsCurrentUserInternalToProject(project);</span>
         } else {
             // anyone can read a pending invitation
-<span class="nc" id="L432">            return Conditions.alwaysTrue;</span>
+<span class="nc" id="L439">            return Conditions.alwaysTrue;</span>
         }
     }
 
     @Override
     public int hashCode() {
-<span class="nc" id="L438">        return EntityHelper.hashCode(this);</span>
+<span class="nc" id="L445">        return EntityHelper.hashCode(this);</span>
     }
 
     @Override
     @SuppressWarnings(&quot;EqualsWhichDoesntCheckParameterClass&quot;)
     public boolean equals(Object obj) {
-<span class="nc" id="L444">        return EntityHelper.equals(this, obj);</span>
+<span class="nc" id="L451">        return EntityHelper.equals(this, obj);</span>
     }
 
     @Override
     public String toString() {
-<span class="nc bnc" id="L449" title="All 2 branches missed.">        if (user == null) {</span>
-<span class="nc" id="L450">            return &quot;TeamMember{pending}&quot;;</span>
+<span class="nc bnc" id="L456" title="All 2 branches missed.">        if (user == null) {</span>
+<span class="nc" id="L457">            return &quot;TeamMember{pending}&quot;;</span>
         } else {
-<span class="nc" id="L452">            return &quot;TeamMember{&quot; + &quot;id=&quot; + id + &quot;, userId=&quot; + userId + &quot;, projectId=&quot;</span>
+<span class="nc" id="L459">            return &quot;TeamMember{&quot; + &quot;id=&quot; + id + &quot;, userId=&quot; + userId + &quot;, projectId=&quot;</span>
                 + projectId + &quot;}&quot;;
         }
     }

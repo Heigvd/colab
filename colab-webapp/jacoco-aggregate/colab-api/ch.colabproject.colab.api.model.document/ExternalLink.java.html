@@ -11,13 +11,13 @@ import ch.colabproject.colab.api.model.ColabEntity;
 import ch.colabproject.colab.api.model.tools.EntityHelper;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
+import javax.validation.constraints.Size;
 
 /**
  * Document referenced by a link to an external system
  *
  * @author sandra
  */
-//TODO adjust the constraints / indexes
 @Entity
 @DiscriminatorValue(&quot;EXT_LINK&quot;)
 <span class="nc" id="L23">public class ExternalLink extends Document {</span>
@@ -31,6 +31,7 @@ import javax.persistence.Entity;
     /**
      * The link to access the document
      */
+    @Size(max = 255)
     private String url;
 
     // ---------------------------------------------------------------------------------------------
@@ -41,15 +42,15 @@ import javax.persistence.Entity;
      * @return the link to access the document
      */
     public String getUrl() {
-<span class="nc" id="L44">        return url;</span>
+<span class="nc" id="L45">        return url;</span>
     }
 
     /**
      * @param url the link to access the document to set
      */
     public void setUrl(String url) {
-<span class="nc" id="L51">        this.url = url;</span>
-<span class="nc" id="L52">    }</span>
+<span class="nc" id="L52">        this.url = url;</span>
+<span class="nc" id="L53">    }</span>
 
     // ---------------------------------------------------------------------------------------------
     // concerning the whole class
@@ -57,30 +58,30 @@ import javax.persistence.Entity;
 
     @Override
     public void merge(ColabEntity other) throws ColabMergeException {
-<span class="nc" id="L60">        super.merge(other);</span>
+<span class="nc" id="L61">        super.merge(other);</span>
 
-<span class="nc bnc" id="L62" title="All 2 branches missed.">        if (other instanceof ExternalLink) {</span>
-<span class="nc" id="L63">            ExternalLink o = (ExternalLink) other;</span>
-<span class="nc" id="L64">            this.setUrl(o.getUrl());</span>
-<span class="nc" id="L65">        } else {</span>
-<span class="nc" id="L66">            throw new ColabMergeException(this, other);</span>
+<span class="nc bnc" id="L63" title="All 2 branches missed.">        if (other instanceof ExternalLink) {</span>
+<span class="nc" id="L64">            ExternalLink o = (ExternalLink) other;</span>
+<span class="nc" id="L65">            this.setUrl(o.getUrl());</span>
+<span class="nc" id="L66">        } else {</span>
+<span class="nc" id="L67">            throw new ColabMergeException(this, other);</span>
         }
-<span class="nc" id="L68">    }</span>
+<span class="nc" id="L69">    }</span>
 
     @Override
     public int hashCode() {
-<span class="nc" id="L72">        return EntityHelper.hashCode(this);</span>
+<span class="nc" id="L73">        return EntityHelper.hashCode(this);</span>
     }
 
     @Override
     @SuppressWarnings(&quot;EqualsWhichDoesntCheckParameterClass&quot;)
     public boolean equals(Object obj) {
-<span class="nc" id="L78">        return EntityHelper.equals(this, obj);</span>
+<span class="nc" id="L79">        return EntityHelper.equals(this, obj);</span>
     }
 
     @Override
     public String toString() {
-<span class="nc" id="L83">        return &quot;ExternalDocLink{&quot; + super.toPartialString() + &quot;, url=&quot; + url + &quot;}&quot;;</span>
+<span class="nc" id="L84">        return &quot;ExternalDocLink{&quot; + super.toPartialString() + &quot;, url=&quot; + url + &quot;}&quot;;</span>
     }
 
 }

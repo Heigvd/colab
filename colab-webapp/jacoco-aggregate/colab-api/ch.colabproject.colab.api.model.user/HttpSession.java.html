@@ -29,6 +29,7 @@ import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Size;
 
 /**
  * store session related information
@@ -45,7 +46,7 @@ import javax.validation.constraints.NotEmpty;
     name = &quot;HttpSession.getOlderThan&quot;,
     query = &quot;SELECT session FROM HttpSession session WHERE session.lastSeen &lt; :time&quot;
 )
-<span class="nc" id="L48">public class HttpSession implements WithId, WithJsonDiscriminator, WithPermission, WithWebsocketChannels {</span>
+<span class="nc" id="L49">public class HttpSession implements WithId, WithJsonDiscriminator, WithPermission, WithWebsocketChannels {</span>
 
     private static final long serialVersionUID = 1L;
 
@@ -64,6 +65,7 @@ import javax.validation.constraints.NotEmpty;
      * raw secret, never persisted, never serialized to client. This is just a temporary field to
      * store the raw value to put in SET-COOKIE
      */
+    @Size(max = 255)
     @JsonbTransient
     @Transient
     private String rawSessionSecret;
@@ -85,6 +87,7 @@ import javax.validation.constraints.NotEmpty;
     /**
      * User Agent who create the session
      */
+    @Size(max = 255)
     private String userAgent;
 
     /**
@@ -109,7 +112,7 @@ import javax.validation.constraints.NotEmpty;
      */
     @Override
     public Long getId() {
-<span class="nc" id="L112">        return id;</span>
+<span class="nc" id="L115">        return id;</span>
     }
 
     /**
@@ -118,8 +121,8 @@ import javax.validation.constraints.NotEmpty;
      * @param id id
      */
     public void setId(Long id) {
-<span class="nc" id="L121">        this.id = id;</span>
-<span class="nc" id="L122">    }</span>
+<span class="nc" id="L124">        this.id = id;</span>
+<span class="nc" id="L125">    }</span>
 
     /**
      * Get the raw secret. This will almost always return null
@@ -127,7 +130,7 @@ import javax.validation.constraints.NotEmpty;
      * @return the raw secret or null
      */
     public String getRawSessionSecret() {
-<span class="nc" id="L130">        return rawSessionSecret;</span>
+<span class="nc" id="L133">        return rawSessionSecret;</span>
     }
 
     /**
@@ -136,14 +139,14 @@ import javax.validation.constraints.NotEmpty;
      * @param rawSessionSecret the raw secret
      */
     public void setRawSessionSecret(String rawSessionSecret) {
-<span class="nc" id="L139">        this.rawSessionSecret = rawSessionSecret;</span>
-<span class="nc" id="L140">    }</span>
+<span class="nc" id="L142">        this.rawSessionSecret = rawSessionSecret;</span>
+<span class="nc" id="L143">    }</span>
 
     /**
      * @return Get the session id
      */
     public byte[] getSessionSecret() {
-<span class="nc" id="L146">        return sessionSecret;</span>
+<span class="nc" id="L149">        return sessionSecret;</span>
     }
 
     /**
@@ -152,14 +155,14 @@ import javax.validation.constraints.NotEmpty;
      * @param sessionSecret id of the session
      */
     public void setSessionSecret(byte[] sessionSecret) {
-<span class="nc" id="L155">        this.sessionSecret = sessionSecret;</span>
-<span class="nc" id="L156">    }</span>
+<span class="nc" id="L158">        this.sessionSecret = sessionSecret;</span>
+<span class="nc" id="L159">    }</span>
 
     /**
      * @return Get last activity date
      */
     public OffsetDateTime getLastSeen() {
-<span class="nc" id="L162">        return lastSeen;</span>
+<span class="nc" id="L165">        return lastSeen;</span>
     }
 
     /**
@@ -168,8 +171,8 @@ import javax.validation.constraints.NotEmpty;
      * @param lastSeen lastSeen
      */
     public void setLastSeen(OffsetDateTime lastSeen) {
-<span class="nc" id="L171">        this.lastSeen = lastSeen;</span>
-<span class="nc" id="L172">    }</span>
+<span class="nc" id="L174">        this.lastSeen = lastSeen;</span>
+<span class="nc" id="L175">    }</span>
 
     /**
      * Get the value of userAgent
@@ -177,7 +180,7 @@ import javax.validation.constraints.NotEmpty;
      * @return the value of userAgent
      */
     public String getUserAgent() {
-<span class="nc" id="L180">        return userAgent;</span>
+<span class="nc" id="L183">        return userAgent;</span>
     }
 
     /**
@@ -186,8 +189,8 @@ import javax.validation.constraints.NotEmpty;
      * @param userAgent new value of userAgent
      */
     public void setUserAgent(String userAgent) {
-<span class="nc" id="L189">        this.userAgent = userAgent;</span>
-<span class="nc" id="L190">    }</span>
+<span class="nc" id="L192">        this.userAgent = userAgent;</span>
+<span class="nc" id="L193">    }</span>
 
     /**
      * Get the account linked to this session. The only case the account may be null is on logout or
@@ -196,7 +199,7 @@ import javax.validation.constraints.NotEmpty;
      * @return authenticated account
      */
     public Account getAccount() {
-<span class="nc" id="L199">        return account;</span>
+<span class="nc" id="L202">        return account;</span>
     }
 
     /**
@@ -205,17 +208,17 @@ import javax.validation.constraints.NotEmpty;
      * @param account authenticated account
      */
     public void setAccount(Account account) {
-<span class="nc" id="L208">        this.account = account;</span>
-<span class="nc" id="L209">    }</span>
+<span class="nc" id="L211">        this.account = account;</span>
+<span class="nc" id="L212">    }</span>
 
     /**
      * @return authenticated account, null if not authenticated
      */
     public Long getAccountId() {
-<span class="nc bnc" id="L215" title="All 2 branches missed.">        if (account != null) {</span>
-<span class="nc" id="L216">            return account.getId();</span>
+<span class="nc bnc" id="L218" title="All 2 branches missed.">        if (account != null) {</span>
+<span class="nc" id="L219">            return account.getId();</span>
         } else {
-<span class="nc" id="L218">            return accountId;</span>
+<span class="nc" id="L221">            return accountId;</span>
         }
     }
 
@@ -225,8 +228,8 @@ import javax.validation.constraints.NotEmpty;
      * @param accountId id of the account account
      */
     public void setAccountId(Long accountId) {
-<span class="nc" id="L228">        this.accountId = accountId;</span>
-<span class="nc" id="L229">    }</span>
+<span class="nc" id="L231">        this.accountId = accountId;</span>
+<span class="nc" id="L232">    }</span>
 
     // ---------------------------------------------------------------------------------------------
     // concerning the whole class
@@ -234,57 +237,57 @@ import javax.validation.constraints.NotEmpty;
 
     @Override
     public ChannelsBuilder getChannelsBuilder() {
-<span class="nc bnc" id="L237" title="All 2 branches missed.">        if (this.account != null) {</span>
-<span class="nc" id="L238">            return new AboutAccountChannelsBuilder(this.account);</span>
+<span class="nc bnc" id="L240" title="All 2 branches missed.">        if (this.account != null) {</span>
+<span class="nc" id="L241">            return new AboutAccountChannelsBuilder(this.account);</span>
         } else {
-<span class="nc" id="L240">            return new ForAdminChannelsBuilder();</span>
+<span class="nc" id="L243">            return new ForAdminChannelsBuilder();</span>
         }
     }
 
     @Override
     public Conditions.Condition getReadCondition() {
-<span class="nc bnc" id="L246" title="All 2 branches missed.">        if (this.account != null) {</span>
+<span class="nc bnc" id="L249" title="All 2 branches missed.">        if (this.account != null) {</span>
             // same
-<span class="nc" id="L248">            return this.account.getReadCondition();</span>
+<span class="nc" id="L251">            return this.account.getReadCondition();</span>
         } else {
             // not linked to any account, nothing to hide
             // This case may only exists when the session is about to be destroyed
-<span class="nc" id="L252">            return Conditions.alwaysTrue;</span>
+<span class="nc" id="L255">            return Conditions.alwaysTrue;</span>
         }
     }
 
     @Override
     public Conditions.Condition getUpdateCondition() {
-<span class="nc bnc" id="L258" title="All 2 branches missed.">        if (this.account != null) {</span>
+<span class="nc bnc" id="L261" title="All 2 branches missed.">        if (this.account != null) {</span>
             // same
-<span class="nc" id="L260">            return this.account.getUpdateCondition();</span>
+<span class="nc" id="L263">            return this.account.getUpdateCondition();</span>
         } else {
             // not linked to any account, nothing to hide
             // This case may only exists when the session is about to be destroyed
-<span class="nc" id="L264">            return Conditions.alwaysTrue;</span>
+<span class="nc" id="L267">            return Conditions.alwaysTrue;</span>
         }
     }
 
     @Override
     public Conditions.Condition getCreateCondition() {
         // anyone can create a session
-<span class="nc" id="L271">        return Conditions.alwaysTrue;</span>
+<span class="nc" id="L274">        return Conditions.alwaysTrue;</span>
     }
 
     @Override
     public int hashCode() {
-<span class="nc" id="L276">        return EntityHelper.hashCode(this);</span>
+<span class="nc" id="L279">        return EntityHelper.hashCode(this);</span>
     }
 
     @Override
     @SuppressWarnings(&quot;EqualsWhichDoesntCheckParameterClass&quot;)
     public boolean equals(Object obj) {
-<span class="nc" id="L282">        return EntityHelper.equals(this, obj);</span>
+<span class="nc" id="L285">        return EntityHelper.equals(this, obj);</span>
     }
 
     @Override
     public String toString() {
-<span class="nc" id="L287">        return &quot;HttpSession{&quot; + &quot;id=&quot; + id + &quot;, account=&quot; + account + &quot;, lastSeen=&quot; + lastSeen + '}';</span>
+<span class="nc" id="L290">        return &quot;HttpSession{&quot; + &quot;id=&quot; + id + &quot;, account=&quot; + account + &quot;, lastSeen=&quot; + lastSeen + '}';</span>
     }
 
 }

@@ -531,7 +531,7 @@ import com.hazelcast.core.IExecutorService;
 <span class="nc bnc" id="L531" title="All 2 branches missed.">        } else if (request.getChannelType() == SubscriptionRequest.ChannelType.USER) {</span>
 <span class="nc" id="L532">            User user = userDao.findUser(request.getChannelId());</span>
 <span class="nc bnc" id="L533" title="All 2 branches missed.">            if (user != null) {</span>
-<span class="nc" id="L534">                return UserChannel.build(user.getId());</span>
+<span class="nc" id="L534">                return UserChannel.build(user);</span>
             }
 <span class="nc bnc" id="L536" title="All 2 branches missed.">        } else if (request.getChannelType() == SubscriptionRequest.ChannelType.BROADCAST) {</span>
 <span class="nc" id="L537">            return BroadcastChannel.build();</span>

@@ -11,6 +11,7 @@ import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.api.model.user.Account;
 import ch.colabproject.colab.api.model.user.User;
 import ch.colabproject.colab.api.persistence.jpa.card.CardTypeDao;
+import ch.colabproject.colab.api.persistence.jpa.team.TeamDao;
 import ch.colabproject.colab.api.persistence.jpa.user.UserDao;
 import ch.colabproject.colab.api.ws.channel.model.BlockChannel;
 import ch.colabproject.colab.api.ws.channel.model.BroadcastChannel;
@@ -31,44 +32,49 @@ public final class ChannelsBuilders {
     /**
      * Private constructor prevents instantiation
      */
-<span class="nc" id="L34">    private ChannelsBuilders() {</span>
-<span class="nc" id="L35">        throw new UnsupportedOperationException(&quot;This is a utility class&quot;);</span>
+<span class="nc" id="L35">    private ChannelsBuilders() {</span>
+<span class="nc" id="L36">        throw new UnsupportedOperationException(&quot;This is a utility class&quot;);</span>
     }
 
     /**
      * To determine the channels to use
      */
-<span class="nc" id="L41">    public static abstract class ChannelsBuilder {</span>
+<span class="nc" id="L42">    public static abstract class ChannelsBuilder {</span>
         /**
          * Determine the channels to use
          *
          * @param userDao     the dao to fetch users
+         * @param teamDao     the dao to fetch team members
          * @param cardTypeDao the dao to fetch card type
          *
          * @return all channels to use for propagation
          */
-        public Set&lt;WebsocketChannel&gt; computeChannels(UserDao userDao, CardTypeDao cardTypeDao) {
-<span class="nc" id="L51">            return build(userDao, cardTypeDao);</span>
+        public Set&lt;WebsocketChannel&gt; computeChannels(UserDao userDao, TeamDao teamDao,
+            CardTypeDao cardTypeDao) {
+<span class="nc" id="L54">            return build(userDao, teamDao, cardTypeDao);</span>
         }
 
         /**
          * Determine the channels to use (internal implementation)
          *
          * @param userDao     the dao to fetch users
+         * @param teamDao     the dao to fetch the team members
          * @param cardTypeDao the dao to fetch card type
          *
          * @return all channels to use for propagation
          */
-        abstract protected Set&lt;WebsocketChannel&gt; build(UserDao userDao, CardTypeDao cardTypeDao);
+        abstract protected Set&lt;WebsocketChannel&gt; build(UserDao userDao, TeamDao teamDao,
+            CardTypeDao cardTypeDao);
     }
 
     /**
      * When there is no channel
      */
-<span class="nc" id="L68">    public static class EmptyChannelBuilder extends ChannelsBuilder {</span>
+<span class="nc" id="L73">    public static class EmptyChannelBuilder extends ChannelsBuilder {</span>
         @Override
-        protected Set&lt;WebsocketChannel&gt; build(UserDao userDao, CardTypeDao cardTypeDao) {
-<span class="nc" id="L71">            return Set.of();</span>
+        protected Set&lt;WebsocketChannel&gt; build(UserDao userDao, TeamDao teamDao,
+            CardTypeDao cardTypeDao) {
+<span class="nc" id="L77">            return Set.of();</span>
         }
     }
 
@@ -84,13 +90,14 @@ public final class ChannelsBuilders {
          *
          * @param blockId the id of the block
          */
-<span class="nc" id="L87">        public BlockChannelBuilder(Long blockId) {</span>
-<span class="nc" id="L88">            this.blockId = blockId;</span>
-<span class="nc" id="L89">        }</span>
+<span class="nc" id="L93">        public BlockChannelBuilder(Long blockId) {</span>
+<span class="nc" id="L94">            this.blockId = blockId;</span>
+<span class="nc" id="L95">        }</span>
 
         @Override
-        protected Set&lt;WebsocketChannel&gt; build(UserDao userDao, CardTypeDao cardTypeDao) {
-<span class="nc" id="L93">            return Set.of(BlockChannel.build(blockId));</span>
+        protected Set&lt;WebsocketChannel&gt; build(UserDao userDao, TeamDao teamDao,
+            CardTypeDao cardTypeDao) {
+<span class="nc" id="L100">            return Set.of(BlockChannel.build(blockId));</span>
         }
     }
 
@@ -106,13 +113,14 @@ public final class ChannelsBuilders {
          *
          * @param project the project
          */
-<span class="nc" id="L109">        public ProjectContentChannelBuilder(Project project) {</span>
-<span class="nc" id="L110">            projectId = project.getId();</span>
-<span class="nc" id="L111">        }</span>
+<span class="nc" id="L116">        public ProjectContentChannelBuilder(Project project) {</span>
+<span class="nc" id="L117">            projectId = project.getId();</span>
+<span class="nc" id="L118">        }</span>
 
         @Override
-        protected Set&lt;WebsocketChannel&gt; build(UserDao userDao, CardTypeDao cardTypeDao) {
-<span class="nc" id="L115">            return Set.of(ProjectContentChannel.build(projectId));</span>
+        protected Set&lt;WebsocketChannel&gt; build(UserDao userDao, TeamDao teamDao,
+            CardTypeDao cardTypeDao) {
+<span class="nc" id="L123">            return Set.of(ProjectContentChannel.build(projectId));</span>
         }
     }
 
@@ -120,40 +128,42 @@ public final class ChannelsBuilders {
      * To build all channels needed to propagate a project overview alteration
      */
     public static class AboutProjectOverviewChannelsBuilder extends ChannelsBuilder {
-        /** the id of the users that are team members */
-        private final Set&lt;Long&gt; teamMemberUserIds;
+        /** the project */
+        private final Project project;
 
         /**
          * Create a builder for the channels to use when a project overview data is changed
          *
          * @param project the project
          */
-<span class="nc" id="L131">        public AboutProjectOverviewChannelsBuilder(Project project) {</span>
-<span class="nc" id="L132">            teamMemberUserIds = retrieveTeamMemberUserIds(project);</span>
-<span class="nc" id="L133">        }</span>
+<span class="nc" id="L139">        public AboutProjectOverviewChannelsBuilder(Project project) {</span>
+<span class="nc" id="L140">            this.project = project;</span>
+<span class="nc" id="L141">        }</span>
 
         @Override
-        protected Set&lt;WebsocketChannel&gt; build(UserDao userDao, CardTypeDao cardTypeDao) {
-<span class="nc" id="L137">            Set&lt;WebsocketChannel&gt; channels = new HashSet&lt;&gt;();</span>
+        protected Set&lt;WebsocketChannel&gt; build(UserDao userDao, TeamDao teamDao,
+            CardTypeDao cardTypeDao) {
+<span class="nc" id="L146">            Set&lt;WebsocketChannel&gt; channels = new HashSet&lt;&gt;();</span>
 
-<span class="nc" id="L139">            channels.addAll(teamMemberUserIds.stream()</span>
-<span class="nc" id="L140">                .map(userId -&gt; UserChannel.build(userId))</span>
-<span class="nc" id="L141">                .collect(Collectors.toSet()));</span>
+<span class="nc bnc" id="L148" title="All 2 branches missed.">            if (project != null) {</span>
+<span class="nc" id="L149">                channels.addAll(buildTeammemberChannels(this.project));</span>
 
-<span class="nc" id="L143">            channels.addAll(buildAdminChannels(userDao));</span>
+<span class="nc" id="L151">                channels.addAll(buildAdminChannels(userDao));</span>
+            }
 
-<span class="nc" id="L145">            return channels;</span>
+<span class="nc" id="L154">            return channels;</span>
         }
     }
 
     /**
      * To build a channel for each admin
      */
-<span class="nc" id="L152">    public static class ForAdminChannelsBuilder extends ChannelsBuilder {</span>
+<span class="nc" id="L161">    public static class ForAdminChannelsBuilder extends ChannelsBuilder {</span>
 
         @Override
-        protected Set&lt;WebsocketChannel&gt; build(UserDao userDao, CardTypeDao cardTypeDao) {
-<span class="nc" id="L156">            return buildAdminChannels(userDao);</span>
+        protected Set&lt;WebsocketChannel&gt; build(UserDao userDao, TeamDao teamDao,
+            CardTypeDao cardTypeDao) {
+<span class="nc" id="L166">            return buildAdminChannels(userDao);</span>
         }
     }
 
@@ -161,34 +171,32 @@ public final class ChannelsBuilders {
      * To build all channels needed to propagate a user alteration
      */
     public static class AboutUserChannelsBuilder extends ChannelsBuilder {
-        /** the id of the user */
-        private final Long userId;
-        /** the id of the users that are team mates */
-        private final Set&lt;Long&gt; teamMatesUserIds;
+        /** the user */
+        private final User user;
 
         /**
          * Create a builder for the channels to use when a user is changed
          *
          * @param user the user
          */
-<span class="nc" id="L174">        public AboutUserChannelsBuilder(User user) {</span>
-<span class="nc" id="L175">            userId = user.getId();</span>
-<span class="nc" id="L176">            teamMatesUserIds = retrieveTeamMatesUserId(user);</span>
-<span class="nc" id="L177">        }</span>
+<span class="nc" id="L182">        public AboutUserChannelsBuilder(User user) {</span>
+<span class="nc" id="L183">            this.user = user;</span>
+<span class="nc" id="L184">        }</span>
 
         @Override
-        protected Set&lt;WebsocketChannel&gt; build(UserDao userDao, CardTypeDao cardTypeDao) {
-<span class="nc" id="L181">            Set&lt;WebsocketChannel&gt; channels = new HashSet&lt;&gt;();</span>
+        protected Set&lt;WebsocketChannel&gt; build(UserDao userDao, TeamDao teamDao,
+            CardTypeDao cardTypeDao) {
+<span class="nc" id="L189">            Set&lt;WebsocketChannel&gt; channels = new HashSet&lt;&gt;();</span>
 
-<span class="nc" id="L183">            channels.add(UserChannel.build(userId));</span>
+<span class="nc bnc" id="L191" title="All 2 branches missed.">            if (user != null) {</span>
+<span class="nc" id="L192">                channels.add(UserChannel.build(user));</span>
 
-<span class="nc" id="L185">            channels.addAll(teamMatesUserIds.stream()</span>
-<span class="nc" id="L186">                .map(userId -&gt; UserChannel.build(userId))</span>
-<span class="nc" id="L187">                .collect(Collectors.toSet()));</span>
+<span class="nc" id="L194">                channels.addAll(buildTeammatesChannels(user, teamDao));</span>
 
-<span class="nc" id="L189">            channels.addAll(buildAdminChannels(userDao));</span>
+<span class="nc" id="L196">                channels.addAll(buildAdminChannels(userDao));</span>
+            }
 
-<span class="nc" id="L191">            return channels;</span>
+<span class="nc" id="L199">            return channels;</span>
         }
     }
 
@@ -196,29 +204,30 @@ public final class ChannelsBuilders {
      * To build all channels needed to propagate an account alteration
      */
     public static class AboutAccountChannelsBuilder extends ChannelsBuilder {
-        /** the id of the user */
-        private final Long userId;
+        /** the account */
+        private final Account account;
 
         /**
          * Create a builder for the channels to use when an account is changed
          *
          * @param account the account
          */
-<span class="nc" id="L207">        public AboutAccountChannelsBuilder(Account account) {</span>
-<span class="nc" id="L208">            userId = account.getUser().getId();</span>
-<span class="nc" id="L209">        }</span>
+<span class="nc" id="L215">        public AboutAccountChannelsBuilder(Account account) {</span>
+<span class="nc" id="L216">            this.account = account;</span>
+<span class="nc" id="L217">        }</span>
 
         @Override
-        protected Set&lt;WebsocketChannel&gt; build(UserDao userDao, CardTypeDao cardTypeDao) {
-<span class="nc" id="L213">            Set&lt;WebsocketChannel&gt; channels = new HashSet&lt;&gt;();</span>
+        protected Set&lt;WebsocketChannel&gt; build(UserDao userDao, TeamDao teamDao,
+            CardTypeDao cardTypeDao) {
+<span class="nc" id="L222">            Set&lt;WebsocketChannel&gt; channels = new HashSet&lt;&gt;();</span>
 
-<span class="nc bnc" id="L215" title="All 2 branches missed.">            if (userId != null) {</span>
-<span class="nc" id="L216">                channels.add(UserChannel.build(userId));</span>
+<span class="nc bnc" id="L224" title="All 2 branches missed.">            if (account.getUser() != null) {</span>
+<span class="nc" id="L225">                channels.add(UserChannel.build(account.getUser()));</span>
             }
 
-<span class="nc" id="L219">            channels.addAll(buildAdminChannels(userDao));</span>
+<span class="nc" id="L228">            channels.addAll(buildAdminChannels(userDao));</span>
 
-<span class="nc" id="L221">            return channels;</span>
+<span class="nc" id="L230">            return channels;</span>
         }
     }
 
@@ -234,16 +243,15 @@ public final class ChannelsBuilders {
          *
          * @param cardType the card type
          */
-<span class="nc" id="L237">        public AboutCardTypeChannelsBuilder(AbstractCardType cardType) {</span>
-<span class="nc" id="L238">            this.cardType = cardType;</span>
-<span class="nc" id="L239">        }</span>
+<span class="nc" id="L246">        public AboutCardTypeChannelsBuilder(AbstractCardType cardType) {</span>
+<span class="nc" id="L247">            this.cardType = cardType;</span>
+<span class="nc" id="L248">        }</span>
 
         @Override
-        protected Set&lt;WebsocketChannel&gt; build(UserDao userDao,
+        protected Set&lt;WebsocketChannel&gt; build(UserDao userDao, TeamDao teamDao,
             CardTypeDao cardTypeDao) {
-<span class="nc" id="L244">            return buildCardTypeInProjectChannel(cardType, userDao, cardTypeDao);</span>
+<span class="nc" id="L253">            return buildCardTypeInProjectChannel(cardType, userDao, cardTypeDao);</span>
         }
-
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////
@@ -257,40 +265,26 @@ public final class ChannelsBuilders {
      * @return a set of channels : one user channel for each admin
      */
     private static Set&lt;WebsocketChannel&gt; buildAdminChannels(UserDao userDao) {
-<span class="nc" id="L260">        return userDao.findAllAdmin().stream()</span>
-<span class="nc" id="L261">            .map(user -&gt; UserChannel.build(user.getId()))</span>
-<span class="nc" id="L262">            .collect(Collectors.toSet());</span>
+<span class="nc" id="L268">        return userDao.findAllAdmin().stream()</span>
+<span class="nc" id="L269">            .map(user -&gt; UserChannel.build(user))</span>
+<span class="nc" id="L270">            .collect(Collectors.toSet());</span>
     }
 
     /**
-     * Retrieve the id of the users team mates of the given user
+     * Build a channel for each team mates of the user
      *
      * @param user the user
      *
-     * @return the ids of the users team mates
+     * @return a set of channels : one user channel for each team member of each project
      */
-    private static Set&lt;Long&gt; retrieveTeamMatesUserId(User user) {
-<span class="nc" id="L273">        return user.getTeamMembers().stream()</span>
-<span class="nc" id="L274">            .map(member -&gt; member.getProject())</span>
-<span class="nc" id="L275">            .flatMap(project -&gt; {</span>
-<span class="nc" id="L276">                return retrieveTeamMemberUserIds(project).stream();</span>
-            })
-<span class="nc" id="L278">            .collect(Collectors.toSet());</span>
-    }
+    private static Set&lt;WebsocketChannel&gt; buildTeammatesChannels(User user, TeamDao teamDao) {
+<span class="nc" id="L281">        Set&lt;WebsocketChannel&gt; channels = new HashSet&lt;&gt;();</span>
 
-    /**
-     * Retrieve the id of the user of the team members of the project
-     *
-     * @param project the project
-     *
-     * @return the project team members user ids
-     */
-    private static Set&lt;Long&gt; retrieveTeamMemberUserIds(Project project) {
-<span class="nc" id="L289">        return project.getTeamMembers().stream()</span>
-            // filter out pending invitation
-<span class="nc bnc" id="L291" title="All 4 branches missed.">            .filter(member -&gt; member.getUser() != null &amp;&amp; member.getUser().getId() != null)</span>
-<span class="nc" id="L292">            .map(member -&gt; member.getUser().getId())</span>
-<span class="nc" id="L293">            .collect(Collectors.toSet());</span>
+<span class="nc" id="L283">        teamDao.findMemberByUser(user).forEach(member -&gt; {</span>
+<span class="nc" id="L284">            channels.addAll(buildTeammemberChannels(member.getProject()));</span>
+<span class="nc" id="L285">        });</span>
+
+<span class="nc" id="L287">        return channels;</span>
     }
 
     /**
@@ -300,12 +294,12 @@ public final class ChannelsBuilders {
      *
      * @return a set of user channels : one for each team member
      */
-    private static Set&lt;WebsocketChannel&gt; buildTeamMemberChannels(Project project) {
-<span class="nc" id="L304">        return project.getTeamMembers().stream()</span>
+    private static Set&lt;WebsocketChannel&gt; buildTeammemberChannels(Project project) {
+<span class="nc" id="L298">        return project.getTeamMembers().stream()</span>
             // filter out pending invitation
-<span class="nc bnc" id="L306" title="All 2 branches missed.">            .filter(member -&gt; member.getUser() != null)</span>
-<span class="nc" id="L307">            .map(member -&gt; UserChannel.build(member.getUser().getId()))</span>
-<span class="nc" id="L308">            .collect(Collectors.toSet());</span>
+<span class="nc bnc" id="L300" title="All 2 branches missed.">            .filter(member -&gt; member.getUser() != null)</span>
+<span class="nc" id="L301">            .map(member -&gt; UserChannel.build(member.getUser()))</span>
+<span class="nc" id="L302">            .collect(Collectors.toSet());</span>
     }
 
     /**
@@ -320,35 +314,35 @@ public final class ChannelsBuilders {
     private static Set&lt;WebsocketChannel&gt; buildCardTypeInProjectChannel(
         AbstractCardType cardType, UserDao userDao,
         CardTypeDao cardTypeDao) {
-<span class="nc" id="L323">        Set&lt;WebsocketChannel&gt; channels = new HashSet&lt;&gt;();</span>
+<span class="nc" id="L317">        Set&lt;WebsocketChannel&gt; channels = new HashSet&lt;&gt;();</span>
 
-<span class="nc bnc" id="L325" title="All 2 branches missed.">        if (cardType.getProject() != null) {</span>
+<span class="nc bnc" id="L319" title="All 2 branches missed.">        if (cardType.getProject() != null) {</span>
             // this type belongs to a specific project
             // first, everyone who is editing the project shall receive updates
-<span class="nc" id="L328">            channels.add(ProjectContentChannel.build(cardType.getProject().getId()));</span>
+<span class="nc" id="L322">            channels.add(ProjectContentChannel.build(cardType.getProject()));</span>
 
-<span class="nc bnc" id="L330" title="All 2 branches missed.">            if (cardType.isOrWasPublished()) {</span>
+<span class="nc bnc" id="L324" title="All 2 branches missed.">            if (cardType.isOrWasPublished()) {</span>
                 // eventually, published types are available to each project members
                 // independently of the project they're editing
-<span class="nc" id="L333">                channels.addAll(buildTeamMemberChannels(cardType.getProject()));</span>
+<span class="nc" id="L327">                channels.addAll(buildTeammemberChannels(cardType.getProject()));</span>
             }
 
             // then, the type must be propagated to all projects which reference it
-<span class="nc" id="L337">            cardType.getDirectReferences().forEach(ref -&gt; {</span>
-<span class="nc" id="L338">                channels.addAll(buildCardTypeInProjectChannel(ref, userDao, cardTypeDao));</span>
-<span class="nc" id="L339">            });</span>
+<span class="nc" id="L331">            cardTypeDao.findDirectReferences(cardType).forEach(ref -&gt; {</span>
+<span class="nc" id="L332">                channels.addAll(buildCardTypeInProjectChannel(ref, userDao, cardTypeDao));</span>
+<span class="nc" id="L333">            });</span>
         } else {
             // This is a global type
-<span class="nc bnc" id="L342" title="All 2 branches missed.">            if (cardType.isOrWasPublished()) {</span>
+<span class="nc bnc" id="L336" title="All 2 branches missed.">            if (cardType.isOrWasPublished()) {</span>
                 // As the type is published, everyone may use this type -&gt; broadcast
-<span class="nc" id="L344">                channels.add(BroadcastChannel.build());</span>
+<span class="nc" id="L338">                channels.add(BroadcastChannel.build());</span>
             } else {
                 // Not published type are only available to admin
-<span class="nc" id="L347">                channels.addAll(buildAdminChannels(userDao));</span>
+<span class="nc" id="L341">                channels.addAll(buildAdminChannels(userDao));</span>
             }
         }
 
-<span class="nc" id="L351">        return channels;</span>
+<span class="nc" id="L345">        return channels;</span>
     }
 
 }

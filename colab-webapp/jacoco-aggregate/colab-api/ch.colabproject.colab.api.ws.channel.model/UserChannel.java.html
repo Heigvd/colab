@@ -6,6 +6,7 @@
  */
 package ch.colabproject.colab.api.ws.channel.model;
 
+import ch.colabproject.colab.api.model.user.User;
 import java.util.Objects;
 
 /**
@@ -24,7 +25,7 @@ import java.util.Objects;
  *
  * @author maxence
  */
-<span class="nc" id="L27">public class UserChannel implements WebsocketChannel {</span>
+<span class="nc" id="L28">public class UserChannel implements WebsocketChannel {</span>
 
     private static final long serialVersionUID = 1L;
 
@@ -39,7 +40,7 @@ import java.util.Objects;
      * @return the value of userId
      */
     public Long getUserId() {
-<span class="nc" id="L42">        return userId;</span>
+<span class="nc" id="L43">        return userId;</span>
     }
 
     /**
@@ -48,14 +49,14 @@ import java.util.Objects;
      * @param userId new value of userId
      */
     public void setUserId(Long userId) {
-<span class="nc" id="L51">        this.userId = userId;</span>
-<span class="nc" id="L52">    }</span>
+<span class="nc" id="L52">        this.userId = userId;</span>
+<span class="nc" id="L53">    }</span>
 
     @Override
     public int hashCode() {
-<span class="nc" id="L56">        int hash = 5;</span>
-<span class="nc" id="L57">        hash = 17 * hash + Objects.hashCode(this.userId);</span>
-<span class="nc" id="L58">        return hash;</span>
+<span class="nc" id="L57">        int hash = 5;</span>
+<span class="nc" id="L58">        hash = 17 * hash + Objects.hashCode(this.userId);</span>
+<span class="nc" id="L59">        return hash;</span>
     }
 
     /**
@@ -67,36 +68,36 @@ import java.util.Objects;
      */
     @Override
     public boolean equals(Object obj) {
-<span class="nc bnc" id="L70" title="All 2 branches missed.">        if (this == obj) {</span>
-<span class="nc" id="L71">            return true;</span>
+<span class="nc bnc" id="L71" title="All 2 branches missed.">        if (this == obj) {</span>
+<span class="nc" id="L72">            return true;</span>
         }
-<span class="nc bnc" id="L73" title="All 2 branches missed.">        if (obj == null) {</span>
-<span class="nc" id="L74">            return false;</span>
+<span class="nc bnc" id="L74" title="All 2 branches missed.">        if (obj == null) {</span>
+<span class="nc" id="L75">            return false;</span>
         }
-<span class="nc bnc" id="L76" title="All 2 branches missed.">        if (getClass() != obj.getClass()) {</span>
-<span class="nc" id="L77">            return false;</span>
+<span class="nc bnc" id="L77" title="All 2 branches missed.">        if (getClass() != obj.getClass()) {</span>
+<span class="nc" id="L78">            return false;</span>
         }
-<span class="nc" id="L79">        final UserChannel other = (UserChannel) obj;</span>
+<span class="nc" id="L80">        final UserChannel other = (UserChannel) obj;</span>
 
-<span class="nc" id="L81">        return Objects.equals(this.userId, other.userId);</span>
+<span class="nc" id="L82">        return Objects.equals(this.userId, other.userId);</span>
     }
 
     @Override
     public String toString() {
-<span class="nc" id="L86">        return &quot;UserChannel{&quot; + &quot;userId=&quot; + userId + '}';</span>
+<span class="nc" id="L87">        return &quot;UserChannel{&quot; + &quot;userId=&quot; + userId + '}';</span>
     }
 
     /**
      * get the channel dedicated to the given user.
      *
-     * @param userId the id of the user
+     * @param user the user
      *
      * @return the user very own channel
      */
-    public static UserChannel build(Long userId) {
-<span class="nc" id="L97">        UserChannel channel = new UserChannel();</span>
-<span class="nc" id="L98">        channel.setUserId(userId);</span>
-<span class="nc" id="L99">        return channel;</span>
+    public static UserChannel build(User user) {
+<span class="nc" id="L98">        UserChannel channel = new UserChannel();</span>
+<span class="nc" id="L99">        channel.setUserId(user.getId());</span>
+<span class="nc" id="L100">        return channel;</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

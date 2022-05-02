@@ -539,7 +539,7 @@
 <a class="jxr_linenumber" name="L531" href="#L531">531</a>         } <strong class="jxr_keyword">else</strong> <strong class="jxr_keyword">if</strong> (request.getChannelType() == SubscriptionRequest.ChannelType.USER) {
 <a class="jxr_linenumber" name="L532" href="#L532">532</a>             User user = userDao.findUser(request.getChannelId());
 <a class="jxr_linenumber" name="L533" href="#L533">533</a>             <strong class="jxr_keyword">if</strong> (user != <strong class="jxr_keyword">null</strong>) {
-<a class="jxr_linenumber" name="L534" href="#L534">534</a>                 <strong class="jxr_keyword">return</strong> UserChannel.build(user.getId());
+<a class="jxr_linenumber" name="L534" href="#L534">534</a>                 <strong class="jxr_keyword">return</strong> UserChannel.build(user);
 <a class="jxr_linenumber" name="L535" href="#L535">535</a>             }
 <a class="jxr_linenumber" name="L536" href="#L536">536</a>         } <strong class="jxr_keyword">else</strong> <strong class="jxr_keyword">if</strong> (request.getChannelType() == SubscriptionRequest.ChannelType.BROADCAST) {
 <a class="jxr_linenumber" name="L537" href="#L537">537</a>             <strong class="jxr_keyword">return</strong> BroadcastChannel.build();
