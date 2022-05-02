@@ -312,7 +312,7 @@ public class CardTypeRestEndpointTest extends AbstractArquillianTest {
         Long projectTwoRootContentId = ColabFactory.getRootContent(client, projectTwo).getId();
         ColabFactory.createNewCard(client, projectTwoRootContentId, projectOneType.getId());
         // consume websocket messages (overview update; project 1 update; project 2 update)
-        TestHelper.waitForMessagesAndAssert(wsClient, 3, 5, WsUpdateMessage.class).get(0);
+        TestHelper.waitForMessagesAndAssert(wsClient, 2, 5, WsUpdateMessage.class).get(0);
         // consume websocket messages (overview update; project 2 update)
         TestHelper.waitForMessagesAndAssert(pizzaWsClient, 2, 5, WsUpdateMessage.class).get(0);
 

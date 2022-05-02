@@ -37,6 +37,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
+import javax.validation.constraints.Size;
 
 /**
  * A project as persisted in database
@@ -84,17 +85,19 @@ public class Project implements ColabEntity, WithWebsocketChannels {
     /**
      * The name
      */
+    @Size(max = 255)
     private String name;
 
     /**
      * The description
      */
+    @Size(max = 255)
     private String description;
 
     /**
      * The root card of the project containing all other cards
      */
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY) // , optional=false)
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JsonbTransient
     private Card rootCard;
 

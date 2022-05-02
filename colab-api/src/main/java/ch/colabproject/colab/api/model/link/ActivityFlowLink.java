@@ -67,8 +67,8 @@ public class ActivityFlowLink implements ColabEntity, WithWebsocketChannels {
     /**
      * The card to handle before
      */
-    @NotNull
     @ManyToOne(fetch = FetchType.LAZY)
+    @NotNull
     @JsonbTransient
     private Card previousCard;
 
@@ -81,8 +81,8 @@ public class ActivityFlowLink implements ColabEntity, WithWebsocketChannels {
     /**
      * The card to handle after
      */
-    @NotNull
     @ManyToOne(fetch = FetchType.LAZY)
+    @NotNull
     @JsonbTransient
     private Card nextCard;
 

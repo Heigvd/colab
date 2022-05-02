@@ -41,13 +41,13 @@ import javax.persistence.Transient;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 /**
  * Card content
  *
  * @author sandra
  */
-//TODO review accurate constraints when stabilized
 @Entity
 @Table(
     indexes = {
@@ -78,6 +78,7 @@ public class CardContent implements ColabEntity, WithWebsocketChannels,
     /**
      * Title
      */
+    @Size(max = 255)
     private String title;
 
     /**
@@ -96,7 +97,6 @@ public class CardContent implements ColabEntity, WithWebsocketChannels,
     /**
      * Completion level
      */
-    // TODO sandra : check if the constraints 0 - 100 are ok
     @Min(0)
     @Max(100)
     @NotNull
@@ -112,6 +112,7 @@ public class CardContent implements ColabEntity, WithWebsocketChannels,
      * The card to which this content belongs
      */
     @ManyToOne(fetch = FetchType.LAZY)
+    @NotNull
     @JsonbTransient
     private Card card;
 

@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import javax.json.bind.annotation.JsonbTransient;
+import javax.persistence.CascadeType;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -36,6 +37,7 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import org.apache.commons.collections4.CollectionUtils;
 
 /**
@@ -72,6 +74,7 @@ public class TeamRole implements ColabEntity, WithWebsocketChannels {
     /**
      * Name of the role. Can not be null or blank
      */
+    @Size(max = 255)
     @NotBlank
     private String name;
 
@@ -79,6 +82,7 @@ public class TeamRole implements ColabEntity, WithWebsocketChannels {
      * The project
      */
     @ManyToOne(fetch = FetchType.LAZY)
+    @NotNull
     @JsonbTransient
     private Project project;
 
@@ -105,7 +109,7 @@ public class TeamRole implements ColabEntity, WithWebsocketChannels {
     /**
      * List of access control relative to this role
      */
-    @OneToMany(mappedBy = "role")
+    @OneToMany(mappedBy = "role", cascade = CascadeType.ALL)
     @JsonbTransient
     private List<AccessControl> accessControl = new ArrayList<>();
 

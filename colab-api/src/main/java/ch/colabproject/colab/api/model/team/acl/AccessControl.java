@@ -75,8 +75,8 @@ public class AccessControl implements ColabEntity, WithWebsocketChannels {
     /**
      * the card this access control is related to
      */
-    @NotNull
     @ManyToOne(fetch = FetchType.LAZY)
+    @NotNull
     @JsonbTransient
     private Card card;
 

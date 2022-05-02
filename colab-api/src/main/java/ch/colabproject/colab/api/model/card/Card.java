@@ -45,6 +45,7 @@ import javax.persistence.OneToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Transient;
+import javax.validation.constraints.Size;
 
 /**
  * Card
@@ -53,7 +54,6 @@ import javax.persistence.Transient;
  *
  * @author sandra
  */
-// TODO review accurate constraints when stabilized
 @Entity
 @Table(
     indexes = {
@@ -90,11 +90,13 @@ public class Card
     /**
      * Card title
      */
+    @Size(max = 255)
     private String title;
 
     /**
      * The color of the card
      */
+    @Size(max = 255)
     private String color;
 
     /**
@@ -154,17 +156,14 @@ public class Card
      * <p>
      * There can be several variants of content
      */
-    // TODO sandra - see where it is suitable to order it
-    // TODO sandra - challenge cascade
-    // TODO sandra - challenge ArrayList
-    @OneToMany(mappedBy = "card", cascade = CascadeType.ALL) // , fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "card", cascade = CascadeType.ALL)
     @JsonbTransient
     private List<CardContent> contentVariants = new ArrayList<>();
 
     /**
      * Assignees and other access-control
      */
-    @OneToMany(mappedBy = "card", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "card", cascade = CascadeType.ALL)
     @JsonbTransient
     private List<AccessControl> accessControlList = new ArrayList<>();
 

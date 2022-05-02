@@ -531,7 +531,7 @@ public class WebsocketManager {
         } else if (request.getChannelType() == SubscriptionRequest.ChannelType.USER) {
             User user = userDao.findUser(request.getChannelId());
             if (user != null) {
-                return UserChannel.build(user.getId());
+                return UserChannel.build(user);
             }
         } else if (request.getChannelType() == SubscriptionRequest.ChannelType.BROADCAST) {
             return BroadcastChannel.build();

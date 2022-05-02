@@ -25,13 +25,13 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 /**
  * Card type, defining what is it for
  *
  * @author sandra
  */
-//TODO review accurate constraints when stabilized
 @Entity
 @Table(
     indexes = {
@@ -51,6 +51,7 @@ public class CardType extends AbstractCardType {
     /**
      * The title
      */
+    @Size(max = 255)
     private String title;
 
     /**

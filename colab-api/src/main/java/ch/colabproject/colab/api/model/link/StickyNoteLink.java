@@ -36,6 +36,7 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 /**
  * Link to make an information accessible within a card.
@@ -85,6 +86,7 @@ public class StickyNoteLink implements ColabEntity, WithWebsocketChannels {
     /**
      * The short description
      */
+    @Size(max = 255)
     private String teaser;
 
     /**
@@ -157,6 +159,7 @@ public class StickyNoteLink implements ColabEntity, WithWebsocketChannels {
      * The card where the information is useful
      */
     @ManyToOne(fetch = FetchType.LAZY)
+    @NotNull
     @JsonbTransient
     private Card destinationCard;
 

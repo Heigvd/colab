@@ -6,6 +6,7 @@
  */
 package ch.colabproject.colab.api.ws.channel.model;
 
+import ch.colabproject.colab.api.model.user.User;
 import java.util.Objects;
 
 /**
@@ -89,13 +90,13 @@ public class UserChannel implements WebsocketChannel {
     /**
      * get the channel dedicated to the given user.
      *
-     * @param userId the id of the user
+     * @param user the user
      *
      * @return the user very own channel
      */
-    public static UserChannel build(Long userId) {
+    public static UserChannel build(User user) {
         UserChannel channel = new UserChannel();
-        channel.setUserId(userId);
+        channel.setUserId(user.getId());
         return channel;
     }
 }

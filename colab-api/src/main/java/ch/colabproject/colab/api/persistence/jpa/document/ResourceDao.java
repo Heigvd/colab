@@ -10,10 +10,12 @@ import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.model.document.AbstractResource;
 import ch.colabproject.colab.api.model.document.Resource;
 import ch.colabproject.colab.api.model.document.ResourceRef;
+import java.util.List;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.TypedQuery;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -48,6 +50,24 @@ public class ResourceDao {
         } catch (IllegalArgumentException ex) {
             return null;
         }
+    }
+
+    /**
+     * Retrieve the card type references that have the given target
+     *
+     * @param target the target
+     *
+     * @return the matching references
+     */
+    public List<ResourceRef> findDirectReferences(AbstractResource target) {
+        logger.debug("find the direct references of the target {}", target);
+
+        TypedQuery<ResourceRef> query = em.createNamedQuery("ResourceRef.findDirectReferences",
+            ResourceRef.class);
+
+        query.setParameter("targetId", target.getId());
+
+        return query.getResultList();
     }
 
     /**

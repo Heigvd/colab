@@ -117,13 +117,6 @@ public abstract class AbstractCardType implements ColabEntity, WithWebsocketChan
     protected Long projectId;
 
     /**
-     * List of direct references to this type
-     */
-    @OneToMany(mappedBy = "target", cascade = CascadeType.ALL)
-    @JsonbTransient
-    private List<CardTypeRef> directReferences = new ArrayList<>();
-
-    /**
      * The list of all cards implementing this card definition
      */
     @OneToMany(mappedBy = "cardType", cascade = CascadeType.ALL)
@@ -136,6 +129,9 @@ public abstract class AbstractCardType implements ColabEntity, WithWebsocketChan
     @OneToMany(mappedBy = "abstractCardType", cascade = CascadeType.ALL)
     @JsonbTransient
     private List<AbstractResource> directAbstractResources = new ArrayList<>();
+
+    // Note : the List<CardTypeRef> of direct references must be retrieved with a DAO
+    // because the abstract card type must not be seen as changed when a reference is added or removed
 
     // ---------------------------------------------------------------------------------------------
     // getters and setters
@@ -246,24 +242,6 @@ public abstract class AbstractCardType implements ColabEntity, WithWebsocketChan
      */
     public void setProjectId(Long id) {
         this.projectId = id;
-    }
-
-    /**
-     * Resolve to concrete CardType Get references
-     *
-     * @return list of references
-     */
-    public List<CardTypeRef> getDirectReferences() {
-        return directReferences;
-    }
-
-    /**
-     * Set the list of references
-     *
-     * @param references list of references
-     */
-    public void setDirectReferences(List<CardTypeRef> references) {
-        this.directReferences = references;
     }
 
     /**

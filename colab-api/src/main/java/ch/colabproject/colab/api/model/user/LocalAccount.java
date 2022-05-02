@@ -17,7 +17,9 @@ import javax.persistence.Enumerated;
 import javax.persistence.Index;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
+import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 /**
  * Password based authentication.
@@ -43,6 +45,8 @@ public class LocalAccount extends Account {
     /**
      * username-like email address
      */
+    @Size(max = 255)
+    @Email
     @NotNull
     private String email;
 
@@ -87,6 +91,7 @@ public class LocalAccount extends Account {
     /**
      * Salt the client shall use to before hashing its password. Salt is hex-encoded byte array
      */
+    @Size(max = 255)
     @NotNull
     @JsonbTransient
     private String clientSalt;
@@ -99,6 +104,7 @@ public class LocalAccount extends Account {
      * its password prefixed with this new salt and hashed with nextClientHashMethod if set, current
      * otherwise. successful authentication (to rotate salt and/or method)
      */
+    @Size(max = 255)
     @JsonbTransient
     private String newClientSalt;
 

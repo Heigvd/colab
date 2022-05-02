@@ -9,12 +9,11 @@ package ch.colabproject.colab.api.model.user;
 import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.model.ColabEntity;
 import ch.colabproject.colab.api.model.WithWebsocketChannels;
-import ch.colabproject.colab.api.model.team.TeamMember;
 import ch.colabproject.colab.api.model.tools.EntityHelper;
 import ch.colabproject.colab.api.model.tracking.Tracking;
 import ch.colabproject.colab.api.security.permissions.Conditions;
-import ch.colabproject.colab.api.ws.channel.tool.ChannelsBuilders.ChannelsBuilder;
 import ch.colabproject.colab.api.ws.channel.tool.ChannelsBuilders.AboutUserChannelsBuilder;
+import ch.colabproject.colab.api.ws.channel.tool.ChannelsBuilders.ChannelsBuilder;
 import ch.colabproject.colab.generator.model.tools.DateSerDe;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
@@ -36,6 +35,7 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
 
 /**
  * Represents a registered user. A user may authenticate by several means (accounts).
@@ -97,27 +97,32 @@ public class User implements ColabEntity, WithWebsocketChannels {
     /**
      * Firstname
      */
+    @Size(max = 255)
     private String firstname;
 
     /**
      * Lastname
      */
+    @Size(max = 255)
     private String lastname;
 
     /**
      * short name to be displayed
      */
+    @Size(max = 255)
     private String commonname;
 
     /**
      * User affiliation
      */
+    @Size(max = 255)
     private String affiliation;
 
     /**
      * System-wide unique name. Alphanumeric only
      */
     @Pattern(regexp = "[a-zA-Z0-9_\\-\\.]+")
+    @Size(max = 255)
     @NotNull
     private String username;
 
@@ -128,12 +133,8 @@ public class User implements ColabEntity, WithWebsocketChannels {
     @JsonbTransient
     private List<Account> accounts = new ArrayList<>();
 
-    /**
-     * List of teams the user is part of
-     */
-    @OneToMany(mappedBy = "user", cascade = { CascadeType.PERSIST, CascadeType.REMOVE })
-    @JsonbTransient
-    private List<TeamMember> teamMembers = new ArrayList<>();
+    // Note : the TeamMember list must be retrieved with a DAO
+    // because the user must not be seen as changed when a team member is added or removed
 
     // ---------------------------------------------------------------------------------------------
     // getters and setters
@@ -326,24 +327,6 @@ public class User implements ColabEntity, WithWebsocketChannels {
      */
     public void setAccounts(List<Account> accounts) {
         this.accounts = accounts;
-    }
-
-    /**
-     * get team members
-     *
-     * @return members
-     */
-    public List<TeamMember> getTeamMembers() {
-        return teamMembers;
-    }
-
-    /**
-     * Set team members
-     *
-     * @param teamMembers list of members
-     */
-    public void setTeamMembers(List<TeamMember> teamMembers) {
-        this.teamMembers = teamMembers;
     }
 
     // ---------------------------------------------------------------------------------------------
