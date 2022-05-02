@@ -93,6 +93,7 @@ public class VerifyLocalAccountToken extends Token {
         this.localAccount.setVerified(Boolean.TRUE);
     }
 
+    @JsonbTransient
     @Override
     public String getSubject() {
         return EMAIL_SUBJECT;

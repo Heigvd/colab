@@ -66,12 +66,14 @@ public class InvitationToken extends Token {
      * Invitation sender
      */
     @Size(max = 255)
+    @JsonbTransient
     private String sender;
 
     /**
      * email address to send the invitation to
      */
     @Size(max = 255)
+    @JsonbTransient
     private String recipient;
 
     // ---------------------------------------------------------------------------------------------
@@ -163,6 +165,7 @@ public class InvitationToken extends Token {
         }
     }
 
+    @JsonbTransient
     @Override
     public String getSubject() {
         return EMAIL_SUBJECT;
