@@ -77,8 +77,8 @@ public abstract class Token implements ColabEntity {
     /**
      * token hashed with the hashMethod
      */
-    @JsonbTransient
     @NotNull
+    @JsonbTransient
     private byte[] hashedToken;
 
     /**

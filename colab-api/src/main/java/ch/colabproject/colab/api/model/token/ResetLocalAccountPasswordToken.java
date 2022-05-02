@@ -95,6 +95,7 @@ public class ResetLocalAccountPasswordToken extends Token {
         requestManager.login(localAccount);
     }
 
+    @JsonbTransient
     @Override
     public String getSubject() {
         return EMAIL_SUBJECT;
