@@ -33,6 +33,7 @@ import {
   invertedButtonStyle,
   space_M,
 } from '../styling/style';
+import ProjectCreator from './ProjectCreator';
 
 const projectListStyle = css({
   margin: 'auto',
@@ -215,10 +216,11 @@ function ProjectList({ projects, status, reload }: ProjectListProps) {
               }
             })}
         </div>
+        <ProjectCreator />
         <Button
           onClick={() => {
             dispatch(
-              API.createProject({
+              API.createSimpleProject({
                 '@class': 'Project',
                 name: '',
               }),

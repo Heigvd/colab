@@ -323,12 +323,22 @@ export const getAllProjects = createAsyncThunk('project/all', async () => {
   return await restClient.ProjectRestEndpoint.getAllProjects();
 });
 
-export const createProject = createAsyncThunk('project/create', async (project: Project) => {
+// TODO sandra work in progress : voué à disparaître
+export const createSimpleProject = createAsyncThunk('project/create', async (project: Project) => {
   return await restClient.ProjectRestEndpoint.createProject({
     ...project,
     id: undefined,
   });
 });
+
+export const createProject = createAsyncThunk(
+  'project/create',
+  async (/*_project: InitialProjectData*/) => {
+    // TODO sandra work in progress : ProjectCreationBean
+    // TODO sandra work in progress : call the right thing !
+    return await restClient.ProjectRestEndpoint.createProject({ '@class': 'Project' });
+  },
+);
 
 export const updateProject = createAsyncThunk('project/update', async (project: Project) => {
   await restClient.ProjectRestEndpoint.updateProject(project);
