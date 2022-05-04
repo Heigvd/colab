@@ -14,7 +14,7 @@ import IconButton from './IconButton';
 import Overlay from './Overlay';
 
 interface Props {
-  title: string;
+  title: React.ReactNode;
   children: (collapse: () => void) => React.ReactNode;
   footer?: (collapse: () => void) => React.ReactNode;
   showCloseButton?: boolean;
