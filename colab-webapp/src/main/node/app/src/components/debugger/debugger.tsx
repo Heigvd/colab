@@ -113,7 +113,7 @@ function ProjectCreatorDebugger(): JSX.Element {
 export default function Debugger(): JSX.Element {
   return (
     <div className={css({ padding: space_L })}>
-      <ProjectCreatorDebugger />
+      <ProjectCreatorDebugger /> {/* TODO sandra work in progress : remove when ok */}
       <PlayJsPlumb />
       <div>
         <Tips tipsType="TODO" interactionType="HOVER">

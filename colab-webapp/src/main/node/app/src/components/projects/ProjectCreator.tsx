@@ -34,9 +34,9 @@ export default function ProjectCreator(/*{ className }: ProjectCreatorProps)*/):
 
   React.useEffect(() => {
     if (status === 'chooseModel') {
-      setTitle('Create new project - choose a model');
+      setTitle('Create new project - step 1 : choose a model');
     } else if (status === 'fillBasisData' && projectModel) {
-      setTitle('Create ' + projectModel.name);
+      setTitle('Create new project from ' + projectModel.name);
     } else {
       setTitle('Create new project');
     }

@@ -15,6 +15,7 @@ import {
   useAppSelector,
 } from '../store/hooks';
 import { StateStatus } from '../store/project';
+import { AvailabilityStatus } from '../store/store';
 
 export interface UsedProject {
   project: Project | null | undefined;
@@ -123,4 +124,32 @@ export function useMyMember(
     return Object.values(team.members || {}).find(m => m.userId === userId);
   }
   return undefined;
+}
+
+interface ProjectsAndStatus {
+  projects: Project[];
+  status: AvailabilityStatus;
+}
+
+// TODO sandra work in progress : do what is needed
+function useModelProjects(): ProjectsAndStatus {
+  const p3 = useProject(3).project;
+  const p4 = useProject(4).project;
+  const p6 = useProject(6).project;
+
+  return { projects: [p3!, p4!, p6!], status: 'READY' };
+}
+
+// TODO sandra work in progress
+// TODO really fetch the project models
+export function useAndLoadProjectModels(): ProjectsAndStatus {
+  const dispatch = useAppDispatch();
+
+  const { projects, status } = useModelProjects();
+
+  if (status === 'NOT_INITIALIZED') {
+    dispatch(API.getUserProjects());
+  }
+
+  return { projects, status };
 }
