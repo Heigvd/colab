@@ -63,7 +63,7 @@ export default function ProjectModelSelector({
             ) : (
               <>
                 <Flex>Empty project</Flex>
-                <Flex>Everything is free to create a whole new world</Flex>
+                <Flex>Free to create a whole new world</Flex>
               </>
             )}
           </Flex>

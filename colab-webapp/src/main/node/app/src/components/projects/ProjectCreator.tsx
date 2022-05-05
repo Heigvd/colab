@@ -5,28 +5,49 @@
  * Licensed under the MIT License
  */
 
+import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import { Project } from 'colab-rest-client';
 import * as React from 'react';
 import * as API from '../../API/api';
 import { useAppDispatch } from '../../store/hooks';
 import Button from '../common/Button';
 import OpenCloseModal from '../common/OpenCloseModal';
+import Tips from '../common/Tips';
 import ProjectDataInitialization from './ProjectDataInitialization';
 import ProjectModelSelector from './ProjectModelSelector';
 
 // TODO stabilise modal size
 
-// interface ProjectCreatorProps {
-//   className?: string;
-// }
+// TODO see if a click outside the modal must reset the data
+
+export interface ProjectBasisData {
+  name: string;
+  description: string;
+  guests: string[];
+  projectModel: Project | null;
+}
+
+const defaultData: ProjectBasisData = {
+  name: '',
+  description: '',
+  guests: [],
+  projectModel: null,
+};
 
 type ProgressionStatus = 'chooseModel' | 'fillBasisData';
 
-export default function ProjectCreator(/*{ className }: ProjectCreatorProps)*/): JSX.Element {
+interface ProjectCreatorProps {
+  collapsedButtonClassName?: string;
+}
+
+export default function ProjectCreator({
+  collapsedButtonClassName,
+}: ProjectCreatorProps): JSX.Element {
   const dispatch = useAppDispatch();
 
   const [status, setStatus] = React.useState<ProgressionStatus>('chooseModel');
-  const [projectModel, setProjectModel] = React.useState<Project | null>(null);
+
+  const [data, setData] = React.useState<ProjectBasisData>({ ...defaultData });
 
   const [title, setTitle] = React.useState<React.ReactNode>();
 
@@ -37,12 +58,12 @@ export default function ProjectCreator(/*{ className }: ProjectCreatorProps)*/):
   React.useEffect(() => {
     if (status === 'chooseModel') {
       setTitle('Create new project - step 1 : choose a model');
-    } else if (status === 'fillBasisData' && projectModel) {
-      setTitle('Create new project from ' + projectModel.name);
+    } else if (status === 'fillBasisData' && data.projectModel) {
+      setTitle('Create new project from ' + data.projectModel.name);
     } else {
       setTitle('Create new project');
     }
-  }, [status, projectModel]);
+  }, [status, data.projectModel]);
 
   React.useEffect(() => {
     if (status === 'chooseModel') {
@@ -60,11 +81,12 @@ export default function ProjectCreator(/*{ className }: ProjectCreatorProps)*/):
     }
   }, [status]);
 
-  //TODO work in progress : see if better function reset() {
   const resetCb = React.useCallback(() => {
     setStatus('chooseModel');
-    setProjectModel(null);
-  }, []);
+
+    data.guests.splice(0, data.guests.length);
+    setData({ ...defaultData });
+  }, [data.guests]);
 
   const oneStepBackCb = React.useCallback(() => {
     if (status === 'fillBasisData') {
@@ -79,18 +101,24 @@ export default function ProjectCreator(/*{ className }: ProjectCreatorProps)*/):
   }, [status]);
 
   const createProjectCb = React.useCallback(() => {
-    dispatch(API.createProject());
+    dispatch(
+      API
+        .createProject
+        /* data */
+        (),
+    );
   }, [dispatch]);
-
-  // TODO sandra work in progres : see if click outside must reset data
 
   return (
     <OpenCloseModal
       title={title}
       //className={}
-      collapsedChildren={<Button>Create a project</Button>}
-      //showCloseButton = {false}
-      status="EXPANDED" // TODO remove. it is there temporary for debug
+      collapsedChildren={
+        <Button className={collapsedButtonClassName} icon={faPlus}>
+          Create a project
+        </Button>
+      }
+      status="EXPANDED" // TODO sandra work in progress : remove. it is there temporary for debug
       // modalClassName=''
       footer={close => (
         <>
@@ -110,9 +138,10 @@ export default function ProjectCreator(/*{ className }: ProjectCreatorProps)*/):
                 createProjectCb();
                 resetCb();
                 close();
+                // TODO navigate to brand new project
               }}
             >
-              Create
+              Create project
             </Button>
           )}
         </>
@@ -121,15 +150,38 @@ export default function ProjectCreator(/*{ className }: ProjectCreatorProps)*/):
       {() => {
         return (
           <>
+            <Tips tipsType="TODO">work in progress</Tips>
             {status === 'chooseModel' ? (
               <ProjectModelSelector
-                defaultSelection={projectModel}
-                onSelect={selectedModel => setProjectModel(selectedModel)}
+                defaultSelection={data.projectModel}
+                onSelect={selectedModel => setData({ ...data, projectModel: selectedModel })}
                 whenDone={oneStepForwardCb}
               />
             ) : (
-              <ProjectDataInitialization projectModel={projectModel} />
+              <ProjectDataInitialization
+                data={data}
+                setName={name => setData({ ...data, name: name })}
+                setDescription={description => setData({ ...data, description: description })}
+                addGuest={guestEmailAddress => {
+                  const guests = data.guests;
+                  guests.push(guestEmailAddress);
+                  setData({ ...data, guests: guests });
+                }}
+                removeGuest={guestEmailAddress => {
+                  const guests = data.guests;
+                  const index = guests.indexOf(guestEmailAddress);
+                  guests.splice(index, 1);
+                  setData({ ...data, guests: guests });
+                }}
+              />
             )}
+            {/* debug mode */}
+            {/* <Flex direction="column">
+              <Flex>{data.name || 'no name'}</Flex>
+              <Flex>{data.description || 'no description'}</Flex>
+              <Flex>{data.guests.length}</Flex>
+              <Flex>{data.projectModel?.name || 'no project model'}</Flex>
+            </Flex> */}
           </>
         );
       }}

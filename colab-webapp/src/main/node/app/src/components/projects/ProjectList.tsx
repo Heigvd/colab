@@ -216,6 +216,8 @@ function ProjectList({ projects, status, reload }: ProjectListProps) {
               }
             })}
         </div>
+        {/* TODO work in progress : replace the Create a project Button by the ProjectCreator */}
+        {/* <ProjectCreator collapsedButtonClassName={fixedButtonStyle} /> */}
         <ProjectCreator />
         <Button
           onClick={() => {

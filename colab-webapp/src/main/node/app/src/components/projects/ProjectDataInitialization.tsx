@@ -5,87 +5,115 @@
  * Licensed under the MIT License
  */
 
-import { Project } from 'colab-rest-client';
+import { css } from '@emotion/css';
+import { faTrash } from '@fortawesome/free-solid-svg-icons';
 import * as React from 'react';
-import * as API from '../../API/api';
-import { useAppDispatch } from '../../store/hooks';
+import useTranslations from '../../i18n/I18nContext';
+import { ConfirmIconButton } from '../common/ConfirmIconButton';
 import Flex from '../common/Flex';
-import Form, { Field } from '../common/Form/Form';
-import ProjectModelThumbnail from './ProjectModelThumbnail';
+import Form from '../common/Form/Form';
+import Input from '../common/Form/Input';
+import { ProjectBasisData } from './ProjectCreator';
 
-{
-  /* TODO work in progress UI */
-}
+// TODO UI
 
 interface ProjectDataInitializationProps {
-  projectModel: Project | null;
+  data: ProjectBasisData;
+  setName: (value: string) => void;
+  setDescription: (value: string) => void;
+  addGuest: (emailAddress: string) => void;
+  removeGuest: (emailAddress: string) => void;
 }
-
-// TODO work in progress : see if we use directly ProjectCreationBean
-export interface InitialProjectData {
-  name: string;
-  description: string;
-  guests: string[];
-}
-
-const defaultValue: InitialProjectData = {
-  name: '',
-  description: '',
-  guests: [],
-};
 
 export default function ProjectDataInitialization({
-  projectModel,
+  data,
+  setName,
+  setDescription,
+  addGuest,
+  removeGuest,
 }: ProjectDataInitializationProps): JSX.Element {
-  const dispatch = useAppDispatch();
-
-  const formFields: Field<InitialProjectData>[] = [
-    {
-      key: 'name',
-      type: 'text',
-      label: 'Project name',
-      isMandatory: true,
-      readonly: false,
-    },
-    {
-      key: 'description',
-      type: 'text',
-      label: 'Description',
-      isMandatory: false,
-      readonly: false,
-    },
-    // {key: 'description', type: 'textarea', label: 'description',},
-    // {
-    // readonly:true,
-    // },
-  ];
-
-  const onSubmitCb = React.useCallback(
-    (_data: InitialProjectData) => {
-      dispatch(API.createProject(/* TODO data */));
-      // TODO
-    },
-    [dispatch],
-  );
+  const i18n = useTranslations();
 
   return (
     <Flex>
-      <Flex>
+      <Flex direction="column">
+        <Input label="Project name" value={data.name} onChange={name => setName(name)} mandatory />
+        <Input
+          label="Project description"
+          inputType="textarea"
+          value={data.description}
+          onChange={description => {
+            setDescription(description);
+          }}
+        />
         <Form
-          fields={formFields}
-          value={defaultValue}
-          autoSubmit={false}
-          submitLabel="Create project"
-          onSubmit={onSubmitCb}
-        ></Form>
-      </Flex>
-      {projectModel ? (
-        <Flex>
-          <ProjectModelThumbnail projectModel={projectModel} />
+          fields={[
+            {
+              key: 'email',
+              type: 'text',
+              label: 'Invite members',
+              isMandatory: false,
+              placeholder: 'email',
+              isErroneous: value => value.email.match('.*@.*') == null,
+              errorMessage: i18n.emailAddressNotValid,
+            },
+          ]}
+          value={{ email: '' }}
+          submitLabel="Add"
+          className={css({ flexDirection: 'row' })}
+          onSubmit={fields => {
+            addGuest(fields.email);
+          }}
+        />
+        <Flex direction="column">
+          {data.guests.map(guest => (
+            <Flex key={guest}>
+              <Flex>{guest}</Flex>
+              <ConfirmIconButton
+                icon={faTrash}
+                title="Remove guest"
+                onConfirm={() => removeGuest(guest)}
+              />
+            </Flex>
+          ))}
         </Flex>
-      ) : (
-        <div>no model</div>
+      </Flex>
+      {data.projectModel && (
+        <Flex direction="column">
+          <Flex>{data.projectModel.name}</Flex>
+          <Flex>{data.projectModel.description}</Flex>
+        </Flex>
       )}
     </Flex>
   );
 }
+
+// another way to handle guest list :
+
+//const [waitingGuest, setWaitingGuest] = React.useState<string | null>();
+
+/* 
+        <Flex>
+          <Input
+            label="Invite members"
+            placeholder="email"
+            value={waitingGuest || undefined}
+            onChange={value => {
+              setWaitingGuest(value);
+            }}
+          />
+          {
+            // TODO check that it is an email
+            }
+          <Button
+            onClick={() => {
+              if (waitingGuest) {
+                addGuest(waitingGuest);
+              }
+              setWaitingGuest(null);
+            }}
+          >
+            Add
+          </Button>
+        </Flex>
+         */
