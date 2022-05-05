@@ -11,13 +11,15 @@ import * as React from 'react';
 import { useAndLoadProjectModels } from '../../selectors/projectSelector';
 import AvailabilityStatusIndicator from '../common/AvailabilityStatusIndicator';
 import Flex from '../common/Flex';
-import SelectionAmongItems from '../common/SelectionAmongItems';
+import ItemThumbnailsSelection from '../common/ItemThumbnailsSelection';
 import { workInProgressStyle } from '../styling/style';
 
 const selectedStyle = workInProgressStyle;
 
 interface ProjectModelSelectorProps {
+  defaultSelection?: Project | null;
   onSelect: (value: Project | null) => void;
+  whenDone?: () => void;
 }
 
 // TODO UI
@@ -26,19 +28,31 @@ interface ProjectModelSelectorProps {
 
 // TODO see if a project model has a "picture" / icon + color
 
-// TODO would be nice if double click => next
-
-export default function ProjectModelSelector({ onSelect }: ProjectModelSelectorProps): JSX.Element {
+export default function ProjectModelSelector({
+  defaultSelection = null,
+  onSelect,
+  whenDone,
+}: ProjectModelSelectorProps): JSX.Element {
   const { projects, status } = useAndLoadProjectModels();
 
   if (status !== 'READY') {
     return <AvailabilityStatusIndicator status={status} />;
   } else {
     return (
-      <SelectionAmongItems<Project>
+      <ItemThumbnailsSelection<Project>
         items={projects}
-        withEmptyItem
-        onSelect={onSelect}
+        addEmptyItem
+        defaultSelectedValue={defaultSelection}
+        onItemClick={item => {
+          onSelect(item);
+        }}
+        onItemDblClick={item => {
+          onSelect(item);
+
+          if (whenDone) {
+            whenDone();
+          }
+        }}
         fillThumbnail={(item, highlighted) => (
           <Flex direction="column" className={cx(highlighted && selectedStyle)}>
             {item ? (

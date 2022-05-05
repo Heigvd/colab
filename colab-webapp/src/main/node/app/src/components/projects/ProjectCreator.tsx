@@ -14,6 +14,8 @@ import OpenCloseModal from '../common/OpenCloseModal';
 import ProjectDataInitialization from './ProjectDataInitialization';
 import ProjectModelSelector from './ProjectModelSelector';
 
+// TODO stabilise modal size
+
 // interface ProjectCreatorProps {
 //   className?: string;
 // }
@@ -120,7 +122,11 @@ export default function ProjectCreator(/*{ className }: ProjectCreatorProps)*/):
         return (
           <>
             {status === 'chooseModel' ? (
-              <ProjectModelSelector onSelect={selectedModel => setProjectModel(selectedModel)} />
+              <ProjectModelSelector
+                defaultSelection={projectModel}
+                onSelect={selectedModel => setProjectModel(selectedModel)}
+                whenDone={oneStepForwardCb}
+              />
             ) : (
               <ProjectDataInitialization projectModel={projectModel} />
             )}
