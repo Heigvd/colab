@@ -63,6 +63,7 @@ export default function ProjectDataInitialization({
           className={css({ flexDirection: 'row' })}
           onSubmit={fields => {
             addGuest(fields.email);
+            fields.email = '';
           }}
         />
         <Flex direction="column">

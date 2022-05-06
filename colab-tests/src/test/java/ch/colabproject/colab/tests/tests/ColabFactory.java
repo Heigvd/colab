@@ -181,7 +181,7 @@ public class ColabFactory {
     public static Project createProject(ColabClient client, String name) {
         Project p = new Project();
         p.setName(name);
-        Long id = client.projectRestEndpoint.createProject(p);
+        Long id = client.projectRestEndpoint.createEmptyProject(p);
         return client.projectRestEndpoint.getProject(id);
     }
 

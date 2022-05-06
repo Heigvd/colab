@@ -22,6 +22,7 @@ import {
   HttpSession,
   InvolvementLevel,
   Project,
+  ProjectCreationBean,
   Resource,
   ResourceCreationBean,
   ResourceRef,
@@ -324,8 +325,8 @@ export const getAllProjects = createAsyncThunk('project/all', async () => {
 });
 
 // TODO sandra work in progress : voué à disparaître
-export const createSimpleProject = createAsyncThunk('project/create', async (project: Project) => {
-  return await restClient.ProjectRestEndpoint.createProject({
+export const createEmptyProject = createAsyncThunk('project/create', async (project: Project) => {
+  return await restClient.ProjectRestEndpoint.createEmptyProject({
     ...project,
     id: undefined,
   });
@@ -333,10 +334,8 @@ export const createSimpleProject = createAsyncThunk('project/create', async (pro
 
 export const createProject = createAsyncThunk(
   'project/create',
-  async (/*_project: InitialProjectData*/) => {
-    // TODO sandra work in progress : ProjectCreationBean
-    // TODO sandra work in progress : call the right thing !
-    return await restClient.ProjectRestEndpoint.createProject({ '@class': 'Project' });
+  async (creationData: ProjectCreationBean) => {
+    return await restClient.ProjectRestEndpoint.createProject(creationData);
   },
 );
 

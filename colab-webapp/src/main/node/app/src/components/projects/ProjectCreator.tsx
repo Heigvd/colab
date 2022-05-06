@@ -6,7 +6,7 @@
  */
 
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
-import { Project } from 'colab-rest-client';
+import { Project, ProjectCreationBean } from 'colab-rest-client';
 import * as React from 'react';
 import * as API from '../../API/api';
 import { useAppDispatch } from '../../store/hooks';
@@ -100,15 +100,6 @@ export default function ProjectCreator({
     }
   }, [status]);
 
-  const createProjectCb = React.useCallback(() => {
-    dispatch(
-      API
-        .createProject
-        /* data */
-        (),
-    );
-  }, [dispatch]);
-
   return (
     <OpenCloseModal
       title={title}
@@ -118,7 +109,6 @@ export default function ProjectCreator({
           Create a project
         </Button>
       }
-      status="EXPANDED" // TODO sandra work in progress : remove. it is there temporary for debug
       // modalClassName=''
       footer={close => (
         <>
@@ -135,7 +125,13 @@ export default function ProjectCreator({
           {showCreateButton && (
             <Button
               onClick={() => {
-                createProjectCb();
+                const creationData: ProjectCreationBean = {
+                  name: data.name,
+                  description: data.description,
+                  guestsEmail: data.guests,
+                  modelId: data.projectModel?.id || null,
+                };
+                dispatch(API.createProject(creationData));
                 resetCb();
                 close();
                 // TODO navigate to brand new project

@@ -222,7 +222,7 @@ function ProjectList({ projects, status, reload }: ProjectListProps) {
         <Button
           onClick={() => {
             dispatch(
-              API.createSimpleProject({
+              API.createEmptyProject({
                 '@class': 'Project',
                 name: '',
               }),
