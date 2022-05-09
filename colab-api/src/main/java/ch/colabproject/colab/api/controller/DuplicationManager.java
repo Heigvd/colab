@@ -25,6 +25,7 @@ import ch.colabproject.colab.api.model.document.TextDataBlock;
 import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.api.model.team.TeamMember;
 import ch.colabproject.colab.api.model.team.TeamRole;
+import ch.colabproject.colab.api.model.team.acl.AccessControl;
 import ch.colabproject.colab.api.model.user.User;
 import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
 import java.util.Comparator;
@@ -203,6 +204,10 @@ public class DuplicationManager {
             for (TeamRole linkedRole : linkedRoles) {
                 TeamRole newRole = teamRoleMatching.get(linkedRole.getId());
 
+                if (newRole == null) {
+                    throw HttpErrorMessage.dataIntegrityFailure();
+                }
+
                 newRole.getMembers().add(newTeamMember);
                 newTeamMember.getRoles().add(newRole);
             }
@@ -284,8 +289,7 @@ public class DuplicationManager {
         }
     }
 
-    private Card duplicateCard(Card original)
-        throws ColabMergeException {
+    private Card duplicateCard(Card original) throws ColabMergeException {
         Card newCard = new Card();
         newCard.duplicate(original);
 
@@ -294,6 +298,11 @@ public class DuplicationManager {
         AbstractCardType originalCardType = original.getCardType();
         if (originalCardType != null) {
             AbstractCardType newCardType = cardTypeMatching.get(originalCardType.getId());
+
+            if (newCardType == null) {
+                throw HttpErrorMessage.dataIntegrityFailure();
+            }
+
             newCard.setCardType(newCardType);
         }
 
@@ -318,13 +327,29 @@ public class DuplicationManager {
         }
 
         ////////////////////////////////////////////////////////////////////////////////////////////
-        // TODO Access control
+        // Access control
+
+        List<AccessControl> originalACL = original.getAccessControlList();
+        originalACL.sort(ID_COMPARATOR);
+
+        for (AccessControl originalAccessControl : originalACL) {
+            if ((params.isWithTeamMembers() || originalAccessControl.getMember() == null)
+                && (params.isWithRoles() || originalAccessControl.getRole() == null)) {
+
+                AccessControl newAccessControl = duplicateAccessControl(originalAccessControl);
+
+                if (newAccessControl != null) { // if we got a null, no need to duplicate
+                    newAccessControl.setCard(newCard);
+                    newCard.getAccessControlList().add(newAccessControl);
+                }
+            }
+
+        }
 
         return newCard;
     }
 
-    private CardContent duplicateCardContent(CardContent original)
-        throws ColabMergeException {
+    private CardContent duplicateCardContent(CardContent original) throws ColabMergeException {
         CardContent newCardContent = new CardContent();
         newCardContent.duplicate(original);
 
@@ -428,8 +453,10 @@ public class DuplicationManager {
             if (originalTarget != null) {
                 AbstractResource newTarget = originalTarget;
 
-                if (resourceMatching.containsKey(originalTarget.getId())) {
-                    newTarget = resourceMatching.get(originalTarget.getId());
+                newTarget = resourceMatching.get(originalTarget.getId());
+
+                if (newTarget == null) {
+                    throw HttpErrorMessage.dataIntegrityFailure();
                 }
 
                 newResourceRef.setTarget(newTarget);
@@ -440,6 +467,36 @@ public class DuplicationManager {
         } else {
             throw new IllegalStateException("abstract card type implementation not handled");
         }
+    }
+
+    private AccessControl duplicateAccessControl(AccessControl original)
+        throws ColabMergeException {
+        AccessControl newAccessControl = new AccessControl();
+        newAccessControl.duplicate(original);
+
+        if (original.getMember() != null) {
+            TeamMember member = teamMemberMatching.get(original.getMember().getId());
+
+            if (member == null) {
+                throw HttpErrorMessage.dataIntegrityFailure();
+            }
+
+            member.getAccessControlList().add(newAccessControl);
+            newAccessControl.setMember(member);
+        }
+
+        if (original.getRole() != null) {
+            TeamRole role = teamRoleMatching.get(original.getRole().getId());
+
+            if (role == null) {
+                throw HttpErrorMessage.dataIntegrityFailure();
+            }
+
+            role.getAccessControl().add(newAccessControl);
+            newAccessControl.setRole(role);
+        }
+
+        return newAccessControl;
     }
 
 }
