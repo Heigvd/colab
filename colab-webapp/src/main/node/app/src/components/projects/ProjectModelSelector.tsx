@@ -16,6 +16,10 @@ import { workInProgressStyle } from '../styling/style';
 
 const selectedStyle = workInProgressStyle;
 
+function sortResources(a: Project, b: Project): number {
+  return (a.id || 0) - (b.id || 0);
+}
+
 interface ProjectModelSelectorProps {
   defaultSelection?: Project | null;
   onSelect: (value: Project | null) => void;
@@ -35,12 +39,14 @@ export default function ProjectModelSelector({
 }: ProjectModelSelectorProps): JSX.Element {
   const { projects, status } = useAndLoadProjectModels();
 
+  const sortedProjects = projects.sort(sortResources);
+
   if (status !== 'READY') {
     return <AvailabilityStatusIndicator status={status} />;
   } else {
     return (
       <ItemThumbnailsSelection<Project>
-        items={projects}
+        items={sortedProjects}
         addEmptyItem
         defaultSelectedValue={defaultSelection}
         onItemClick={item => {

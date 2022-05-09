@@ -133,15 +133,25 @@ interface ProjectsAndStatus {
 
 // TODO sandra work in progress : do what is needed
 function useModelProjects(): ProjectsAndStatus {
-  const p3 = useProject(3).project;
-  const p4 = useProject(4).project;
-  const p6 = useProject(6).project;
+  const projects = useAppSelector(state => {
+    return Object.values(
+      state.projects.mine.flatMap(id => {
+        const proj = state.projects.projects[id];
+        return proj ? [proj] : [];
+      }),
+    );
+  }, shallowEqual);
 
-  return { projects: [p3!, p4!, p6!], status: 'READY' };
+  return { projects, status: 'READY' };
+
+  // const p3 = useProject(3).project;
+  // const p4 = useProject(4).project;
+  // const p6 = useProject(6).project;
+
+  // return { projects: [p3!, p4!, p6!], status: 'READY' };
 }
 
-// TODO sandra work in progress
-// TODO really fetch the project models
+// TODO sandra work in progress : really fetch the project models
 export function useAndLoadProjectModels(): ProjectsAndStatus {
   const dispatch = useAppDispatch();
 
