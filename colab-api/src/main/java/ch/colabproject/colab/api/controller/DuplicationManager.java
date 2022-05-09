@@ -6,6 +6,7 @@
  */
 package ch.colabproject.colab.api.controller;
 
+import ch.colabproject.colab.api.controller.document.ResourceReferenceSpreadingHelper;
 import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.model.ColabEntity;
 import ch.colabproject.colab.api.model.DuplicationParam;
@@ -80,13 +81,15 @@ public class DuplicationManager {
     // *********************************************************************************************
 
     /**
-     * Duplicate the given project.
+     * Duplicate the given project. No database action is provided.
      *
-     * @param originalProject the project we want to duplicate
+     * @param originalProject  the project we want to duplicate
+     * @param resourceSpreader helper for resource references
      *
      * @return the duplicated project
      */
-    public Project duplicateProject(Project originalProject) {
+    public Project duplicateProject(Project originalProject,
+        ResourceReferenceSpreadingHelper resourceSpreader) {
         try {
             Project newProject = new Project();
             newProject.duplicate(originalProject);
@@ -130,7 +133,7 @@ public class DuplicationManager {
                 cardTypes.sort(ID_COMPARATOR);
 
                 for (AbstractCardType original : cardTypes) {
-                    AbstractCardType newCardType = duplicateCardType(original);
+                    AbstractCardType newCardType = duplicateCardType(original, resourceSpreader);
 
                     newCardType.setProject(newProject);
                     newProject.getElementsToBeDefined().add(newCardType);
@@ -189,16 +192,10 @@ public class DuplicationManager {
         User user = original.getUser();
         if (user != null) {
             newTeamMember.setUser(user);
-
-//            try {
-//                requestManager.sudo(() -> {
-//                    user.getTeamMembers().add(newTeamMember);
-//                });
-//            } catch (Exception ex) {
-//                throw ex;
-//            }
         }
 
+        ////////////////////////////////////////////////////////////////////////////////////////////
+        // Team members's roles
         if (params.isWithRoles()) {
             List<TeamRole> linkedRoles = original.getRoles();
             linkedRoles.sort(ID_COMPARATOR);
@@ -214,65 +211,77 @@ public class DuplicationManager {
         return newTeamMember;
     }
 
-    private AbstractCardType duplicateCardType(AbstractCardType original)
-        throws ColabMergeException {
-        // params.isMakeOnlyCardTypeReferences()
+    private AbstractCardType duplicateCardType(AbstractCardType original,
+        ResourceReferenceSpreadingHelper resourceSpreader) throws ColabMergeException {
 
-        AbstractCardType newAbstractCardType;
-        if (original instanceof CardType) {
-            CardType originalCardType = (CardType) original;
-
-            CardType newCardType = new CardType();
-            newCardType.duplicate(originalCardType);
-
-            cardTypeMatching.put(originalCardType.getId(), newCardType);
-
-            TextDataBlock purpose = originalCardType.getPurpose();
-            if (purpose != null) {
-                TextDataBlock newPurpose = (TextDataBlock) duplicateDocument(purpose);
-                newPurpose.setPurposingCardType(newCardType);
-                newCardType.setPurpose(newPurpose);
-            }
-
-            newAbstractCardType = newCardType;
-        } else if (original instanceof CardTypeRef) {
-            CardTypeRef originalCardTypeRef = (CardTypeRef) original;
-
+        if (params.isMakeOnlyCardTypeReferences()) {
             CardTypeRef newCardTypeRef = new CardTypeRef();
-            newCardTypeRef.duplicate(original);
+            newCardTypeRef.setTarget(original);
+            newCardTypeRef.setDeprecated(original.isDeprecated());
+            newCardTypeRef.setPublished(false);
 
-            cardTypeMatching.put(originalCardTypeRef.getId(), newCardTypeRef);
+            cardTypeMatching.put(original.getId(), newCardTypeRef);
 
-            AbstractCardType originalTarget = originalCardTypeRef.getTarget();
-            if (originalTarget != null) {
-                if (originalTarget.getProjectId() != originalCardTypeRef.getProjectId()) {
-                    newCardTypeRef.setTarget(originalTarget);
-                } else {
-                    throw new IllegalStateException(
-                        "the target of a card type reference must be outside the project");
-                    // Note for an hypothetical future evolution :
-                    // if we break the condition that, in a project,
-                    // there is only one reference per target type outside the project
-                    // we must process the card types in the appropriate order
+            resourceSpreader.extractReferencesFromUp(newCardTypeRef);
+
+            return newCardTypeRef;
+        } else {
+            AbstractCardType newAbstractCardType;
+            if (original instanceof CardType) {
+                CardType originalCardType = (CardType) original;
+
+                CardType newCardType = new CardType();
+                newCardType.duplicate(originalCardType);
+
+                cardTypeMatching.put(originalCardType.getId(), newCardType);
+
+                TextDataBlock purpose = originalCardType.getPurpose();
+                if (purpose != null) {
+                    TextDataBlock newPurpose = (TextDataBlock) duplicateDocument(purpose);
+                    newPurpose.setPurposingCardType(newCardType);
+                    newCardType.setPurpose(newPurpose);
                 }
+
+                newAbstractCardType = newCardType;
+            } else if (original instanceof CardTypeRef) {
+                CardTypeRef originalCardTypeRef = (CardTypeRef) original;
+
+                CardTypeRef newCardTypeRef = new CardTypeRef();
+                newCardTypeRef.duplicate(originalCardTypeRef);
+
+                cardTypeMatching.put(originalCardTypeRef.getId(), newCardTypeRef);
+
+                AbstractCardType originalTarget = originalCardTypeRef.getTarget();
+                if (originalTarget != null) {
+                    if (originalTarget.getProjectId() != originalCardTypeRef.getProjectId()) {
+                        newCardTypeRef.setTarget(originalTarget);
+                    } else {
+                        throw new IllegalStateException(
+                            "the target of a card type reference must be outside the project");
+                        // Note for an hypothetical future evolution :
+                        // if we break the condition that, in a project,
+                        // there is only one reference per target type outside the project
+                        // we must process the card types in the appropriate order
+                    }
+                }
+
+                newAbstractCardType = newCardTypeRef;
+            } else {
+                throw new IllegalStateException("abstract card type implementation not handled");
             }
 
-            newAbstractCardType = newCardTypeRef;
-        } else {
-            throw new IllegalStateException("abstract card type implementation not handled");
+            List<AbstractResource> originalResources = original.getDirectAbstractResources();
+            originalResources.sort(ID_COMPARATOR);
+
+            for (AbstractResource originalResource : originalResources) {
+                AbstractResource newResource = duplicateResource(originalResource);
+
+                newResource.setAbstractCardType(newAbstractCardType);
+                newAbstractCardType.getDirectAbstractResources().add(newResource);
+            }
+
+            return newAbstractCardType;
         }
-
-        List<AbstractResource> originalResources = original.getDirectAbstractResources();
-        originalResources.sort(ID_COMPARATOR);
-
-        for (AbstractResource originalResource : originalResources) {
-            AbstractResource newResource = duplicateResource(originalResource);
-
-            newResource.setAbstractCardType(newAbstractCardType);
-            newAbstractCardType.getDirectAbstractResources().add(newResource);
-        }
-
-        return newAbstractCardType;
     }
 
     private Card duplicateCard(Card original)
@@ -425,8 +434,6 @@ public class DuplicationManager {
 
                 newResourceRef.setTarget(newTarget);
             }
-
-            // and what if the user has not the rights to read the target ?!?
 
             return newResourceRef;
 

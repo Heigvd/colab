@@ -10,6 +10,7 @@ import ch.colabproject.colab.api.controller.DuplicationManager;
 import ch.colabproject.colab.api.controller.RequestManager;
 import ch.colabproject.colab.api.controller.card.CardManager;
 import ch.colabproject.colab.api.controller.card.CardTypeManager;
+import ch.colabproject.colab.api.controller.document.ResourceReferenceSpreadingHelper;
 import ch.colabproject.colab.api.controller.security.SecurityManager;
 import ch.colabproject.colab.api.controller.team.TeamManager;
 import ch.colabproject.colab.api.model.DuplicationParam;
@@ -86,6 +87,12 @@ public class ProjectManager {
      */
     @Inject
     private CardTypeManager cardTypeManager;
+
+    /**
+     * Resource reference spreading specific logic handling
+     */
+    @Inject
+    private ResourceReferenceSpreadingHelper resourceReferenceSpreadingHelper;
 
     // *********************************************************************************************
     // find projects
@@ -219,7 +226,8 @@ public class ProjectManager {
     public Project duplicateProject(Long projectId, DuplicationParam params) {
         Project originalProject = assertAndGetProject(projectId);
 
-        Project newProject = new DuplicationManager(params).duplicateProject(originalProject);
+        Project newProject = new DuplicationManager(params).duplicateProject(originalProject,
+            resourceReferenceSpreadingHelper);
 
         return createProject(newProject);
     }
