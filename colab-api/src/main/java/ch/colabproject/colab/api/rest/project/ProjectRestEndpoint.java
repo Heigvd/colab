@@ -18,7 +18,7 @@ import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.api.model.team.TeamMember;
 import ch.colabproject.colab.api.model.team.TeamRole;
 import ch.colabproject.colab.api.persistence.jpa.project.ProjectDao;
-import ch.colabproject.colab.api.rest.project.bean.ProjectCreationBean;
+import ch.colabproject.colab.api.rest.project.bean.ProjectCreationData;
 import ch.colabproject.colab.generator.model.annotations.AdminResource;
 import ch.colabproject.colab.generator.model.annotations.AuthenticationRequired;
 import java.util.List;
@@ -127,7 +127,7 @@ public class ProjectRestEndpoint {
      */
     @POST
     @Path("createWithModel")
-    public Long createProject(ProjectCreationBean creationData) {
+    public Long createProject(ProjectCreationData creationData) {
         logger.debug("Create a project with {}", creationData);
 
         Project project;

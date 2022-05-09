@@ -12,7 +12,7 @@ import {
   AuthInfo,
   Card,
   CardContent,
-  CardTypeCreationBean,
+  CardTypeCreationData,
   Change,
   ColabClient,
   Document,
@@ -22,13 +22,13 @@ import {
   HttpSession,
   InvolvementLevel,
   Project,
-  ProjectCreationBean,
+  ProjectCreationData,
   Resource,
-  ResourceCreationBean,
+  ResourceCreationData,
   ResourceRef,
   SignUpInfo,
   StickyNoteLink,
-  StickyNoteLinkCreationBean,
+  StickyNoteLinkCreationData,
   TeamMember,
   TeamRole,
   TextDataBlock,
@@ -334,7 +334,7 @@ export const createEmptyProject = createAsyncThunk('project/create', async (proj
 
 export const createProject = createAsyncThunk(
   'project/create',
-  async (creationData: ProjectCreationBean) => {
+  async (creationData: ProjectCreationData) => {
     return await restClient.ProjectRestEndpoint.createProject(creationData);
   },
 );
@@ -579,7 +579,7 @@ export const getAvailablePublishedCardTypes = createAsyncThunk(
 
 export const createCardType = createAsyncThunk(
   'cardType/create',
-  async (cardType: CardTypeCreationBean) => {
+  async (cardType: CardTypeCreationData) => {
     return await restClient.CardTypeRestEndpoint.createCardType(cardType);
   },
 );
@@ -892,7 +892,7 @@ export const updateResourceRef = createAsyncThunk(
 
 export const createResource = createAsyncThunk(
   'resource/create',
-  async (resource: ResourceCreationBean) => {
+  async (resource: ResourceCreationData) => {
     return await restClient.ResourceRestEndpoint.createResource(resource);
   },
 );
@@ -1070,7 +1070,7 @@ export const getStickyNoteLinkAsDest = createAsyncThunk(
 
 export const createStickyNote = createAsyncThunk(
   'stickyNoteLinks/create',
-  async (stickyNote: StickyNoteLinkCreationBean) => {
+  async (stickyNote: StickyNoteLinkCreationData) => {
     return await restClient.StickyNoteLinkRestEndpoint.createLink(stickyNote);
   },
 );

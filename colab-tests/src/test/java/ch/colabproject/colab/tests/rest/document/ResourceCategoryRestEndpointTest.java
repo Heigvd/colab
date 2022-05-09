@@ -11,7 +11,7 @@ import ch.colabproject.colab.api.model.document.Resource;
 import ch.colabproject.colab.api.model.document.ResourceRef;
 import ch.colabproject.colab.api.model.document.TextDataBlock;
 import ch.colabproject.colab.api.model.project.Project;
-import ch.colabproject.colab.api.rest.document.bean.ResourceCreationBean;
+import ch.colabproject.colab.api.rest.document.bean.ResourceCreationData;
 import ch.colabproject.colab.tests.tests.AbstractArquillianTest;
 import ch.colabproject.colab.tests.tests.ColabFactory;
 import java.util.List;
@@ -354,13 +354,13 @@ public class ResourceCategoryRestEndpointTest extends AbstractArquillianTest {
         ExternalLink document = new ExternalLink();
         document.setUrl(url);
 
-        ResourceCreationBean resourceCreationBean = new ResourceCreationBean();
-        resourceCreationBean.setTitle(title);
-        resourceCreationBean.setTeaser(teaserBlock);
-        resourceCreationBean.setDocuments(List.of(document));
-        resourceCreationBean.setAbstractCardTypeId(cardTypeId);
+        ResourceCreationData resourceCreationData = new ResourceCreationData();
+        resourceCreationData.setTitle(title);
+        resourceCreationData.setTeaser(teaserBlock);
+        resourceCreationData.setDocuments(List.of(document));
+        resourceCreationData.setAbstractCardTypeId(cardTypeId);
 
-        Long persistedResourceId = client.resourceRestEndpoint.createResource(resourceCreationBean);
+        Long persistedResourceId = client.resourceRestEndpoint.createResource(resourceCreationData);
 
         return (Resource) client.resourceRestEndpoint.getAbstractResource(persistedResourceId);
     }

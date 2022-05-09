@@ -6,7 +6,7 @@
  */
 
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
-import { Project, ProjectCreationBean } from 'colab-rest-client';
+import { Project } from 'colab-rest-client';
 import * as React from 'react';
 import * as API from '../../API/api';
 import { useAppDispatch } from '../../store/hooks';
@@ -125,7 +125,7 @@ export default function ProjectCreator({
           {showCreateButton && (
             <Button
               onClick={() => {
-                const creationData: ProjectCreationBean = {
+                const creationData = {
                   name: data.name,
                   description: data.description,
                   guestsEmail: data.guests,

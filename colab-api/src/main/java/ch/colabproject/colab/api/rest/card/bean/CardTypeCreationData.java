@@ -17,7 +17,7 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
  *
  * @author sandra
  */
-public class CardTypeCreationBean implements Serializable {
+public class CardTypeCreationData implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -129,7 +129,7 @@ public class CardTypeCreationBean implements Serializable {
         if (getClass() != obj.getClass()) {
             return false;
         }
-        final CardTypeCreationBean other = (CardTypeCreationBean) obj;
+        final CardTypeCreationData other = (CardTypeCreationData) obj;
         return new EqualsBuilder()
             .append(this.projectId, other.projectId)
             .append(this.title, other.title)
@@ -138,7 +138,7 @@ public class CardTypeCreationBean implements Serializable {
 
     @Override
     public String toString() {
-        return "CardTypeCreationBean{" + ", projectId=" + projectId + "title=" + title + "}";
+        return "CardTypeCreationData{" + ", projectId=" + projectId + "title=" + title + "}";
     }
 
 }

@@ -12,7 +12,7 @@ import ch.colabproject.colab.api.model.document.Resource;
 import ch.colabproject.colab.api.model.document.ResourceRef;
 import ch.colabproject.colab.api.model.document.TextDataBlock;
 import ch.colabproject.colab.api.model.project.Project;
-import ch.colabproject.colab.api.rest.document.bean.ResourceCreationBean;
+import ch.colabproject.colab.api.rest.document.bean.ResourceCreationData;
 import ch.colabproject.colab.tests.tests.AbstractArquillianTest;
 import ch.colabproject.colab.tests.tests.ColabFactory;
 import java.util.List;
@@ -121,7 +121,7 @@ public class ResourceAndReference1Test extends AbstractArquillianTest {
         tea.setMimeType(mimeType);
         tea.setTextData(teaser);
 
-        ResourceCreationBean toCreate = new ResourceCreationBean();
+        ResourceCreationData toCreate = new ResourceCreationData();
         toCreate.setTitle(title);
         toCreate.setTeaser(tea);
         toCreate.setDocuments(List.of(doc));

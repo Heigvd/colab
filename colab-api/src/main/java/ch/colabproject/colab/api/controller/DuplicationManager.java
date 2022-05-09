@@ -38,10 +38,10 @@ import org.slf4j.LoggerFactory;
  *
  * @author sandra
  */
-public class DuplicationHelper {
+public class DuplicationManager {
 
     /** logger */
-    private static final Logger logger = LoggerFactory.getLogger(DuplicationHelper.class);
+    private static final Logger logger = LoggerFactory.getLogger(DuplicationManager.class);
 
     /** Comparator for sorting data to create objects in the same order */
     private static final Comparator<ColabEntity> ID_COMPARATOR = Comparator
@@ -71,7 +71,7 @@ public class DuplicationHelper {
     /**
      * @param params Parameters to fine tune duplication
      */
-    public DuplicationHelper(DuplicationParam params) {
+    public DuplicationManager(DuplicationParam params) {
         this.params = params;
     }
 

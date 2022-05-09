@@ -16,7 +16,7 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
  *
  * @author sandra
  */
-public class ProjectCreationBean  implements Serializable {
+public class ProjectCreationData  implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -128,7 +128,7 @@ public class ProjectCreationBean  implements Serializable {
         if (getClass() != obj.getClass()) {
             return false;
         }
-        final ProjectCreationBean other = (ProjectCreationBean) obj;
+        final ProjectCreationData other = (ProjectCreationData) obj;
         return new EqualsBuilder()
             .append(this.name, other.name)
             .append(this.description, other.description)
@@ -138,7 +138,7 @@ public class ProjectCreationBean  implements Serializable {
 
     @Override
     public String toString() {
-        return "ProjectCreationBean{" + " name=" + name + ", description=" + description
+        return "ProjectCreationData{" + " name=" + name + ", description=" + description
             + ", modelId=" + modelId + ", guestsEmail=" + guestsEmail + "}";
     }
 

@@ -6,7 +6,7 @@
  */
 package ch.colabproject.colab.api.controller.project;
 
-import ch.colabproject.colab.api.controller.DuplicationHelper;
+import ch.colabproject.colab.api.controller.DuplicationManager;
 import ch.colabproject.colab.api.controller.RequestManager;
 import ch.colabproject.colab.api.controller.card.CardManager;
 import ch.colabproject.colab.api.controller.card.CardTypeManager;
@@ -219,7 +219,7 @@ public class ProjectManager {
     public Project duplicateProject(Long projectId, DuplicationParam params) {
         Project originalProject = assertAndGetProject(projectId);
 
-        Project newProject = new DuplicationHelper(params).duplicateProject(originalProject);
+        Project newProject = new DuplicationManager(params).duplicateProject(originalProject);
 
         return createProject(newProject);
     }

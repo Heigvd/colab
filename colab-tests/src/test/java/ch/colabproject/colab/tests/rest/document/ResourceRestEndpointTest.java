@@ -14,7 +14,7 @@ import ch.colabproject.colab.api.model.document.Resource;
 import ch.colabproject.colab.api.model.document.ResourceRef;
 import ch.colabproject.colab.api.model.document.TextDataBlock;
 import ch.colabproject.colab.api.model.project.Project;
-import ch.colabproject.colab.api.rest.document.bean.ResourceCreationBean;
+import ch.colabproject.colab.api.rest.document.bean.ResourceCreationData;
 import ch.colabproject.colab.tests.tests.AbstractArquillianTest;
 import ch.colabproject.colab.tests.tests.ColabFactory;
 import java.util.List;
@@ -54,15 +54,15 @@ public class ResourceRestEndpointTest extends AbstractArquillianTest {
         teaserBlock.setMimeType(DEFAULT_MIME_TYPE);
         teaserBlock.setTextData(teaser);
 
-        ResourceCreationBean resourceCreationBean = new ResourceCreationBean();
+        ResourceCreationData resourceCreationData = new ResourceCreationData();
 
-        resourceCreationBean.setTitle(title);
-        resourceCreationBean.setTeaser(teaserBlock);
-        resourceCreationBean.setDocuments(List.of(doc));
-        resourceCreationBean.setCategory(category);
-        resourceCreationBean.setAbstractCardTypeId(globalCardTypeId);
+        resourceCreationData.setTitle(title);
+        resourceCreationData.setTeaser(teaserBlock);
+        resourceCreationData.setDocuments(List.of(doc));
+        resourceCreationData.setCategory(category);
+        resourceCreationData.setAbstractCardTypeId(globalCardTypeId);
 
-        Long resourceId = client.resourceRestEndpoint.createResource(resourceCreationBean);
+        Long resourceId = client.resourceRestEndpoint.createResource(resourceCreationData);
 
         Resource persistedResource = (Resource) client.resourceRestEndpoint
             .getAbstractResource(resourceId);
@@ -107,11 +107,11 @@ public class ResourceRestEndpointTest extends AbstractArquillianTest {
         ExternalLink doc = new ExternalLink();
         doc.setUrl(url);
 
-        ResourceCreationBean resourceCreationBean = new ResourceCreationBean();
-        resourceCreationBean.setAbstractCardTypeId(globalCardTypeId);
-        resourceCreationBean.setDocuments(List.of(doc));
+        ResourceCreationData resourceCreationData = new ResourceCreationData();
+        resourceCreationData.setAbstractCardTypeId(globalCardTypeId);
+        resourceCreationData.setDocuments(List.of(doc));
 
-        Long resourceId = client.resourceRestEndpoint.createResource(resourceCreationBean);
+        Long resourceId = client.resourceRestEndpoint.createResource(resourceCreationData);
 
         Resource persistedResource = (Resource) client.resourceRestEndpoint
             .getAbstractResource(resourceId);
@@ -196,11 +196,11 @@ public class ResourceRestEndpointTest extends AbstractArquillianTest {
         ExternalLink doc = new ExternalLink();
         doc.setUrl(url);
 
-        ResourceCreationBean resourceCreationBean = new ResourceCreationBean();
-        resourceCreationBean.setAbstractCardTypeId(globalCardTypeId);
-        resourceCreationBean.setDocuments(List.of(doc));
+        ResourceCreationData resourceCreationData = new ResourceCreationData();
+        resourceCreationData.setAbstractCardTypeId(globalCardTypeId);
+        resourceCreationData.setDocuments(List.of(doc));
 
-        Long resourceId = client.resourceRestEndpoint.createResource(resourceCreationBean);
+        Long resourceId = client.resourceRestEndpoint.createResource(resourceCreationData);
 
         Resource persistedResource = (Resource) client.resourceRestEndpoint
             .getAbstractResource(resourceId);
@@ -251,11 +251,11 @@ public class ResourceRestEndpointTest extends AbstractArquillianTest {
         TextDataBlock doc2 = new TextDataBlock();
         doc2.setTextData(doc2TextData);
 
-        ResourceCreationBean resourceCreationBean = new ResourceCreationBean();
-        resourceCreationBean.setAbstractCardTypeId(globalCardTypeId);
-        resourceCreationBean.setDocuments(List.of(doc1, doc2));
+        ResourceCreationData resourceCreationData = new ResourceCreationData();
+        resourceCreationData.setAbstractCardTypeId(globalCardTypeId);
+        resourceCreationData.setDocuments(List.of(doc1, doc2));
 
-        Long resourceId = client.resourceRestEndpoint.createResource(resourceCreationBean);
+        Long resourceId = client.resourceRestEndpoint.createResource(resourceCreationData);
 
         Resource persistedResource = (Resource) client.resourceRestEndpoint
             .getAbstractResource(resourceId);
@@ -380,11 +380,11 @@ public class ResourceRestEndpointTest extends AbstractArquillianTest {
         ExternalLink doc = new ExternalLink();
         doc.setUrl(url);
 
-        ResourceCreationBean resourceCreationBean = new ResourceCreationBean();
-        resourceCreationBean.setAbstractCardTypeId(globalCardTypeId);
-        resourceCreationBean.setDocuments(List.of(doc));
+        ResourceCreationData resourceCreationData = new ResourceCreationData();
+        resourceCreationData.setAbstractCardTypeId(globalCardTypeId);
+        resourceCreationData.setDocuments(List.of(doc));
 
-        client.resourceRestEndpoint.createResource(resourceCreationBean);
+        client.resourceRestEndpoint.createResource(resourceCreationData);
 
         List<List<AbstractResource>> persistedCardResources = client.resourceRestEndpoint
             .getResourceChainForCard(cardId);

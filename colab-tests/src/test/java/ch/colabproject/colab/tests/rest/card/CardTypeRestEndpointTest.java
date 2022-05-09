@@ -12,7 +12,7 @@ import ch.colabproject.colab.api.model.card.CardType;
 import ch.colabproject.colab.api.model.card.CardTypeRef;
 import ch.colabproject.colab.api.model.document.TextDataBlock;
 import ch.colabproject.colab.api.model.project.Project;
-import ch.colabproject.colab.api.rest.card.bean.CardTypeCreationBean;
+import ch.colabproject.colab.api.rest.card.bean.CardTypeCreationData;
 import ch.colabproject.colab.api.ws.message.WsChannelUpdate;
 import ch.colabproject.colab.api.ws.message.WsUpdateMessage;
 import ch.colabproject.colab.client.ColabClient;
@@ -54,7 +54,7 @@ public class CardTypeRestEndpointTest extends AbstractArquillianTest {
         purposeBlock.setMimeType(DEFAULT_MIME_TYPE);
         purposeBlock.setTextData(purpose);
 
-        CardTypeCreationBean cardTypeToCreate = new CardTypeCreationBean();
+        CardTypeCreationData cardTypeToCreate = new CardTypeCreationData();
         cardTypeToCreate.setProjectId(projectId);
         cardTypeToCreate.setTitle(title);
         cardTypeToCreate.setPurpose(purposeBlock);
@@ -355,7 +355,7 @@ public class CardTypeRestEndpointTest extends AbstractArquillianTest {
     public void testUpdateCardType() {
         Long projectId = ColabFactory.createProject(client, "testUpdateCardType").getId();
 
-        CardTypeCreationBean cardTypeToCreate = new CardTypeCreationBean();
+        CardTypeCreationData cardTypeToCreate = new CardTypeCreationData();
         cardTypeToCreate.setProjectId(projectId);
         cardTypeToCreate.setTags(new HashSet<>());
 
