@@ -10,6 +10,7 @@ import * as React from 'react';
 import InlineLoading from '../common/InlineLoading';
 import LiveEditor from '../live/LiveEditor';
 import { useBlock } from '../live/LiveTextEditor';
+import { TXTFormatToolbarProps } from './markdown/WysiwygEditorCustom';
 
 export interface BlockEditorProps {
   blockId: number;
@@ -18,6 +19,9 @@ export interface BlockEditorProps {
   showTree?: boolean;
   markDownEditor?: boolean;
   className?: string;
+  selected?: boolean;
+  flyingToolBar?: boolean;
+  toolBar?: React.FunctionComponent<TXTFormatToolbarProps>;
 }
 
 export function BlockEditorWrapper({
@@ -27,6 +31,9 @@ export function BlockEditorWrapper({
   showTree,
   markDownEditor,
   className,
+  selected,
+  flyingToolBar,
+  toolBar,
 }: BlockEditorProps): JSX.Element {
   const block = useBlock(blockId);
   if (block == null) {
@@ -46,6 +53,9 @@ export function BlockEditorWrapper({
               showTree={showTree}
               markDownEditor={markDownEditor}
               className={className}
+              selected={selected}
+              flyingToolBar={flyingToolBar}
+              toolBar = {toolBar}
             />
           );
         default:

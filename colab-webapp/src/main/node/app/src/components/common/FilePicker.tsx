@@ -19,17 +19,15 @@ import {
   faFileWord,
 } from '@fortawesome/free-regular-svg-icons';
 import {
-  faDownload,
   faFileCsv,
   faSkullCrossbones,
   faUpload,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import * as React from 'react';
-import { invertedButtonStyle, lightIconButtonStyle, space_M, space_S } from '../styling/style';
+import { invertedButtonStyle, space_M, space_S } from '../styling/style';
 import Button from './Button';
 import Flex from './Flex';
-import IconButton from './IconButton';
 
 const contains = (value: string, ...values: string[]): boolean => {
   return !!values.find(needle => value.includes(needle));
@@ -325,18 +323,6 @@ export default function FilePicker({
           </div>
         )}
       </Flex>
-      {!editingStatus && !hasNoFile && !isImageToDisplay && (
-        <IconButton
-          icon={faDownload}
-          iconSize={'sm'}
-          title="Download file"
-          className={cx(
-            lightIconButtonStyle,
-            css({ color: 'var(--lightGray)', marginLeft: space_S }),
-          )}
-          onClick={onDownload}
-        />
-      )}
     </Flex>
   );
   return <input type="file" accept={accept} />;

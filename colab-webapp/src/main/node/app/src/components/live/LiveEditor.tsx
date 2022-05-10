@@ -5,16 +5,15 @@
  * Licensed under the MIT License
  */
 
-import { css, cx } from '@emotion/css';
+import { css } from '@emotion/css';
 import * as React from 'react';
 import { useAppSelector } from '../../store/hooks';
 import MarkdownViewer from '../blocks/markdown/MarkdownViewer';
-import WysiwygEditor from '../blocks/markdown/WysiwygEditor';
+import WysiwygEditorCustom,{ TXTFormatToolbarProps } from '../blocks/markdown/WysiwygEditorCustom';
 import CleverTextarea from '../common/CleverTextarea';
 import ErrorBoundary from '../common/ErrorBoundary';
 import Flex from '../common/Flex';
 import InlineLoading from '../common/InlineLoading';
-import { space_S } from '../styling/style';
 import ChangeTree from './ChangeTree';
 import { useLiveBlock } from './LiveTextEditor';
 
@@ -35,6 +34,9 @@ interface Props {
   showTree?: boolean;
   markDownEditor?: boolean;
   className?: string;
+  selected?: boolean;
+  flyingToolBar?: boolean;
+  toolBar?: React.FunctionComponent<TXTFormatToolbarProps>;
 }
 
 function Unsupported({ md }: { md: string }) {
@@ -61,6 +63,9 @@ export default function LiveEditor({
   showTree,
   markDownEditor,
   className,
+  selected,
+  flyingToolBar,
+  toolBar,
 }: Props): JSX.Element {
   const liveSession = useAppSelector(state => state.websockets.sessionId);
 
@@ -108,10 +113,7 @@ export default function LiveEditor({
         <Flex
           direction="column"
           align="stretch"
-          className={cx(
-            css({ backgroundColor: 'var(--hoverBgColor)', padding: space_S }),
-            className,
-          )}
+          className={className}
         >
           <Flex>
             {markDownEditor ? (
@@ -130,10 +132,13 @@ export default function LiveEditor({
               </Flex>
             ) : (
               <ErrorBoundary fallback={<Unsupported md={currentValue} />}>
-                <WysiwygEditor
+                <WysiwygEditorCustom
                   className={css({ alignItems: 'stretch' })}
                   value={currentValue}
                   onChange={onChange}
+                  selected={selected}
+                  flyingToolBar={flyingToolBar}
+                  ToolBar={toolBar}
                 />
               </ErrorBoundary>
             )}

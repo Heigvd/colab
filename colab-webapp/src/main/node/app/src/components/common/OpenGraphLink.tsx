@@ -148,8 +148,10 @@ export default function OpenGraphLink({
             <div title={url} className={css({ padding: space_S })}>
               <FontAwesomeIcon icon={faLink} size="lg" className={css({ marginRight: space_S })} />
               {url}
-              <FontAwesomeIcon
+              <IconButton
+                title='Open in new tab'
                 icon={faExternalLinkAlt}
+                onClick={openUrl}
                 className={cx(
                   lightIconButtonStyle,
                   css({ marginLeft: space_S, color: 'var(--lightGray)' }),

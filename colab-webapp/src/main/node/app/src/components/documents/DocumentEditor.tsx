@@ -19,12 +19,18 @@ import OpenGraphLink from '../common/OpenGraphLink';
 import { editableBlockStyle, lightIconButtonStyle, space_S } from '../styling/style';
 import DocumentFileEditor from './DocumentFileEditor';
 
-const editingStyle = css({
-  backgroundColor: 'var(--hoverBgColor)',
-  border: '1px solid transparent',
-});
 const selectedStyle = css({
   border: '1px solid var(--darkGray)',
+  '&:hover': {
+    border: '1px solid var(--darkGray)',
+  }
+});
+
+const noBorderStyle = css({
+  border: '1px solid transparent',
+  '&:hover': {
+    border: '1px solid transparent',
+  }
 });
 
 const moveBoxStyle = css({
@@ -69,23 +75,27 @@ export default function DocumentEditor({ doc, allowEdition }: DocumentEditorProp
   }); */
 
   const onSelect = React.useCallback(() => {
+    if(doc.id != selectedId){
+      setEditMode(false);
+    }
     setSelectedId(doc.id);
-  }, [doc.id, setSelectedId]);
+  }, [doc.id, selectedId, setEditMode, setSelectedId]);
 
   return (
     <Flex className={moveBoxStyle}>
       <div
         ref={dropRef}
         className={cx(
+          editableBlockStyle,
           css({
             display: 'flex',
             flexDirection: 'row',
             justifyContent: 'space-between',
             flexGrow: 1,
+            padding: 0,
           }),
-          editableBlockStyle,
-          { [selectedStyle]: selected },
-          { [editingStyle]: editing },
+          { [selectedStyle]: selected && !isTextDataBlock },
+          { [noBorderStyle] : isTextDataBlock }
         )}
         onClick={onSelect}
       >
@@ -93,10 +103,12 @@ export default function DocumentEditor({ doc, allowEdition }: DocumentEditorProp
           <BlockEditorWrapper
             blockId={doc.id!}
             allowEdition={allowEdition}
-            editingStatus={editing}
+            editingStatus={true}
             showTree={TXToptions?.showTree}
             markDownEditor={TXToptions?.markDownMode}
             className={css({ flexGrow: 1 })}
+            selected={selected}
+            flyingToolBar
           />
         ) : isDocumentFile ? (
           <DocumentFileEditor
