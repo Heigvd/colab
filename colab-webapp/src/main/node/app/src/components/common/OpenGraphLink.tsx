@@ -12,7 +12,6 @@ import * as React from 'react';
 import { refreshUrlMetadata, updateDocument } from '../../API/api';
 import { useUrlMetadata } from '../../selectors/externalDataSelector';
 import { useAppDispatch } from '../../store/hooks';
-import { EditState } from '../live/LiveEditor';
 import { lightIconButtonStyle, space_M, space_S } from '../styling/style';
 import { emptyLightTextStyle } from './FilePicker';
 import Flex from './Flex';
@@ -23,8 +22,8 @@ import OnConfirmInput from './OnConfirmInput';
 export interface OpenGraphProps {
   url: string;
   editCb?: () => void;
-  editingStatus: EditState;
-  setEditingState: React.Dispatch<React.SetStateAction<EditState>>;
+  editingStatus: boolean;
+  setEditingState: (editMode: boolean)=> void;
   document: ExternalLink;
 }
 
@@ -87,7 +86,7 @@ export default function OpenGraphLink({
   );
   const saveLink = React.useCallback(
     (newValue: string) => {
-      setEditingState('VIEW');
+      setEditingState(false);
       updateDocCb(newValue);
     },
     [setEditingState, updateDocCb],
@@ -98,15 +97,15 @@ export default function OpenGraphLink({
   } else if (metadata == 'NO_URL') {
     return (
       <Flex grow={1} className={css({ padding: space_S })}>
-        {editingStatus === 'EDIT' ? (
+        {editingStatus ? (
           <OnConfirmInput
             value={url}
             placeholder="Empty link"
             onChange={saveLink}
-            onCancel={() => setEditingState('VIEW')}
+            onCancel={() => setEditingState(false)}
             directEdit
-            containerClassName={css({ flexGrow: 1, alignItems: 'stretch' })}
-            className={css({ input: { flexGrow: 1 } })}
+            containerClassName={css({ display: 'flex', flexGrow: 1, alignItems: 'center' })}
+            className={css({ flexGrow: 1, input : { flexGrow: 1, marginRight: space_S} })}
           />
         ) : (
           <>
@@ -127,13 +126,13 @@ export default function OpenGraphLink({
     if (metadata.broken) {
       return (
         <>
-          {editingStatus === 'EDIT' ? (
+          {editingStatus ? (
             <Flex grow={1} className={css({ padding: space_S })}>
               <OnConfirmInput
                 value={url}
                 placeholder="Empty link"
                 onChange={saveLink}
-                onCancel={() => setEditingState('VIEW')}
+                onCancel={() => setEditingState(false)}
                 directEdit
                 containerClassName={css({ flexGrow: 1, alignItems: 'stretch' })}
                 className={css({ input: { flexGrow: 1 } })}
@@ -149,8 +148,10 @@ export default function OpenGraphLink({
             <div title={url} className={css({ padding: space_S })}>
               <FontAwesomeIcon icon={faLink} size="lg" className={css({ marginRight: space_S })} />
               {url}
-              <FontAwesomeIcon
+              <IconButton
+                title='Open in new tab'
                 icon={faExternalLinkAlt}
+                onClick={openUrl}
                 className={cx(
                   lightIconButtonStyle,
                   css({ marginLeft: space_S, color: 'var(--lightGray)' }),
@@ -163,13 +164,13 @@ export default function OpenGraphLink({
     } else {
       return (
         <>
-          {editingStatus === 'EDIT' ? (
+          {editingStatus ? (
             <Flex grow={1} className={css({ padding: space_S })}>
               <OnConfirmInput
                 value={url}
                 placeholder="Empty link"
                 onChange={saveLink}
-                onCancel={() => setEditingState('VIEW')}
+                onCancel={() => setEditingState(false)}
                 directEdit
                 containerClassName={css({ flexGrow: 1, alignItems: 'stretch' })}
                 className={css({ input: { flexGrow: 1 } })}

@@ -45,6 +45,7 @@ export const lightTheme = cx(
     '--secondaryColorContrast': '#FFF',
     '--secondaryColorContrastShade': '#FFF',
 
+    '--superLightGray': 'rgb(240, 240, 240)',
     '--lightDisabledGray': '#ddd',
     '--darkDisabledGray': '#999',
     '--themeSuccessColor': successColor,
@@ -64,6 +65,7 @@ export const normalThemeMode = css({
   '--linkBgColor': 'var(--secondaryColorContrast)',
   '--linkHoverBgColor': 'var(--secondaryColorContrastShade)',
 
+  '--lighterGray': 'var(--superLightGray)',
   '--darkGray': 'var(--darkDisabledGray)',
   '--lightGray': 'var(--lightDisabledGray)',
   '--focusColor': 'var(--secondaryColor)',
@@ -103,6 +105,7 @@ export const invertedThemeMode = cx(
     '--linkColor': 'var(--primaryColorContrast)',
     '--linkHoverColor': 'var(--primaryColorContrastShade)',
 
+    '--superLightGray': 'rgb(15, 15, 15)',
     '--darkGray': 'var(--lightDisabledGray)',
     '--lightGray': 'var(--darkDisabledGray)',
   }),
@@ -460,13 +463,13 @@ export const workInProgressStyle = cx(
 );
 
 export const editableBlockStyle = css({
-  border: '1px solid rgb(240, 240, 240)',
+  border: '1px solid var(--superLightGray)',
   margin: '3px 0',
   padding: space_S,
+  borderRadius: borderRadius,
   '&:hover': {
-    backgroundColor: 'var(--hoverBgColor)',
-    border: '1px solid transparent',
     cursor: 'pointer',
+    border: '1px solid var(--lightGray)',
   },
 });
 

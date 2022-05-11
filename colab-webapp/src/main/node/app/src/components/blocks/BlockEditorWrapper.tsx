@@ -8,16 +8,20 @@
 import { entityIs } from 'colab-rest-client';
 import * as React from 'react';
 import InlineLoading from '../common/InlineLoading';
-import LiveEditor, { EditState } from '../live/LiveEditor';
+import LiveEditor from '../live/LiveEditor';
 import { useBlock } from '../live/LiveTextEditor';
+import { TXTFormatToolbarProps } from './markdown/WysiwygEditorCustom';
 
 export interface BlockEditorProps {
   blockId: number;
   allowEdition?: boolean;
-  editingStatus?: EditState;
+  editingStatus?: boolean;
   showTree?: boolean;
   markDownEditor?: boolean;
   className?: string;
+  selected?: boolean;
+  flyingToolBar?: boolean;
+  toolBar?: React.FunctionComponent<TXTFormatToolbarProps>;
 }
 
 export function BlockEditorWrapper({
@@ -27,6 +31,9 @@ export function BlockEditorWrapper({
   showTree,
   markDownEditor,
   className,
+  selected,
+  flyingToolBar,
+  toolBar,
 }: BlockEditorProps): JSX.Element {
   const block = useBlock(blockId);
   if (block == null) {
@@ -42,10 +49,13 @@ export function BlockEditorWrapper({
               atId={blockId}
               value={block.textData || ''}
               revision={block.revision}
-              editingStatus={editingStatus || 'VIEW'}
+              editingStatus={editingStatus}
               showTree={showTree}
               markDownEditor={markDownEditor}
               className={className}
+              selected={selected}
+              flyingToolBar={flyingToolBar}
+              toolBar = {toolBar}
             />
           );
         default:

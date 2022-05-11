@@ -5,11 +5,11 @@
  * Licensed under the MIT License
  */
 
-import { css, cx } from '@emotion/css';
+import { css } from '@emotion/css';
 import * as React from 'react';
 import { useAppSelector } from '../../store/hooks';
 import MarkdownViewer from '../blocks/markdown/MarkdownViewer';
-import WysiwygEditor from '../blocks/markdown/WysiwygEditor';
+import WysiwygEditorCustom,{ TXTFormatToolbarProps } from '../blocks/markdown/WysiwygEditorCustom';
 import CleverTextarea from '../common/CleverTextarea';
 import ErrorBoundary from '../common/ErrorBoundary';
 import Flex from '../common/Flex';
@@ -31,10 +31,13 @@ interface Props {
   value: string;
   revision: string;
   allowEdition?: boolean;
-  editingStatus: EditState;
+  editingStatus?: boolean;
   showTree?: boolean;
   markDownEditor?: boolean;
   className?: string;
+  selected?: boolean;
+  flyingToolBar?: boolean;
+  toolBar?: React.FunctionComponent<TXTFormatToolbarProps>;
 }
 
 function Unsupported({ md }: { md: string }) {
@@ -61,6 +64,9 @@ export default function LiveEditor({
   showTree,
   markDownEditor,
   className,
+  selected,
+  flyingToolBar,
+  toolBar,
 }: Props): JSX.Element {
   const liveSession = useAppSelector(state => state.websockets.sessionId);
 
@@ -95,7 +101,7 @@ export default function LiveEditor({
       </ErrorBoundary>
     );
   } else {
-    if (editingStatus === 'VIEW') {
+    if (!editingStatus) {
       return (
         <Flex className={className}>
           <ErrorBoundary fallback={<Unsupported md={currentValue} />}>
@@ -103,37 +109,37 @@ export default function LiveEditor({
           </ErrorBoundary>
         </Flex>
       );
-    } else if (editingStatus === 'EDIT') {
+    } else if (editingStatus) {
       return (
         <Flex
           direction="column"
           align="stretch"
-          className={cx(
-            css({ backgroundColor: 'var(--hoverBgColor)', padding: space_S }),
-            className,
-          )}
+          className={className}
         >
           <Flex>
             {markDownEditor ? (
               <Flex grow={1} align="stretch">
                 <CleverTextarea
-                  className={css({ minHeight: '100px', flexGrow: 1, flexBasis: '1px' })}
+                  className={css({ minHeight: '50px', flexGrow: 1, flexBasis: '1px', padding: space_S })}
                   value={currentValue}
                   onChange={onChange}
                 />
                 <ErrorBoundary fallback={<Unsupported md={currentValue} />}>
                   <MarkdownViewer
-                    className={css({ padding: '3px', flexGrow: 1, flexBasis: '1px' })}
+                    className={css({ padding: space_S, flexGrow: 1, flexBasis: '1px' })}
                     md={currentValue}
                   />
                 </ErrorBoundary>
               </Flex>
             ) : (
               <ErrorBoundary fallback={<Unsupported md={currentValue} />}>
-                <WysiwygEditor
+                <WysiwygEditorCustom
                   className={css({ alignItems: 'stretch' })}
                   value={currentValue}
                   onChange={onChange}
+                  selected={selected}
+                  flyingToolBar={flyingToolBar}
+                  ToolBar={toolBar}
                 />
               </ErrorBoundary>
             )}

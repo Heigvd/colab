@@ -5,28 +5,25 @@
  * Licensed under the MIT License
  */
 
-import { css, cx } from '@emotion/css';
+import { faFile, faLink, faParagraph, faPlus } from '@fortawesome/free-solid-svg-icons';
 import * as React from 'react';
 import * as API from '../../API/api';
 import { useAppDispatch } from '../../store/hooks';
-import Button from '../common/Button';
-import { invertedButtonStyle, space_S } from '../styling/style';
+import IconButton from '../common/IconButton';
 import { DocumentContext, DocumentKind } from './documentCommonType';
-
-const addButtonStyle = css({ marginRight: space_S });
 
 export type DocumentCreatorButtonProps = {
   context: DocumentContext;
   docKind: DocumentKind;
   title: string;
-  label: string | React.ReactNode;
+  className?: string;
 };
 
 export default function DocumentCreatorButton({
   context,
   docKind,
   title,
-  label,
+  className,
 }: DocumentCreatorButtonProps): JSX.Element {
   const dispatch = useAppDispatch();
 
@@ -49,8 +46,34 @@ export default function DocumentCreatorButton({
   }, [context, docKind, dispatch]);
 
   return (
-    <Button className={cx(invertedButtonStyle, addButtonStyle)} title={title} onClick={createDoc}>
-      {label}
-    </Button>
+    <>
+      {docKind === 'DocumentFile' && (
+        <IconButton
+          icon={faFile}
+          title={title}
+          layer={{ layerIcon: faPlus, transform: 'shrink-3 left-12 down-2' }}
+          onClick={createDoc}
+          className={className}
+        />
+      )}
+      {docKind === 'ExternalLink' && (
+        <IconButton
+          icon={faLink}
+          title={title}
+          layer={{ layerIcon: faPlus, transform: 'shrink-3 left-14 down-3' }}
+          onClick={createDoc}
+          className={className}
+        />
+      )}
+      {docKind === 'TextDataBlock' && (
+        <IconButton
+          icon={faParagraph}
+          title={title}
+          layer={{ layerIcon: faPlus, transform: 'shrink-3 left-9 down-5' }}
+          onClick={createDoc}
+          className={className}
+        />
+      )}
+    </>
   );
 }
