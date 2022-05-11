@@ -22,7 +22,7 @@
 <a class="jxr_linenumber" name="L14" href="#L14">14</a>  <strong class="jxr_keyword">import</strong> ch.colabproject.colab.api.model.document.ResourceRef;
 <a class="jxr_linenumber" name="L15" href="#L15">15</a>  <strong class="jxr_keyword">import</strong> ch.colabproject.colab.api.model.document.TextDataBlock;
 <a class="jxr_linenumber" name="L16" href="#L16">16</a>  <strong class="jxr_keyword">import</strong> ch.colabproject.colab.api.model.project.Project;
-<a class="jxr_linenumber" name="L17" href="#L17">17</a>  <strong class="jxr_keyword">import</strong> ch.colabproject.colab.api.<strong class="jxr_keyword">rest</strong>.document.bean.ResourceCreationBean;
+<a class="jxr_linenumber" name="L17" href="#L17">17</a>  <strong class="jxr_keyword">import</strong> ch.colabproject.colab.api.<strong class="jxr_keyword">rest</strong>.document.bean.ResourceCreationData;
 <a class="jxr_linenumber" name="L18" href="#L18">18</a>  <strong class="jxr_keyword">import</strong> ch.colabproject.colab.tests.tests.AbstractArquillianTest;
 <a class="jxr_linenumber" name="L19" href="#L19">19</a>  <strong class="jxr_keyword">import</strong> ch.colabproject.colab.tests.tests.ColabFactory;
 <a class="jxr_linenumber" name="L20" href="#L20">20</a>  <strong class="jxr_keyword">import</strong> java.util.List;
@@ -62,15 +62,15 @@
 <a class="jxr_linenumber" name="L54" href="#L54">54</a>          teaserBlock.setMimeType(DEFAULT_MIME_TYPE);
 <a class="jxr_linenumber" name="L55" href="#L55">55</a>          teaserBlock.setTextData(teaser);
 <a class="jxr_linenumber" name="L56" href="#L56">56</a>  
-<a class="jxr_linenumber" name="L57" href="#L57">57</a>          ResourceCreationBean resourceCreationBean = <strong class="jxr_keyword">new</strong> ResourceCreationBean();
+<a class="jxr_linenumber" name="L57" href="#L57">57</a>          ResourceCreationData resourceCreationData = <strong class="jxr_keyword">new</strong> ResourceCreationData();
 <a class="jxr_linenumber" name="L58" href="#L58">58</a>  
-<a class="jxr_linenumber" name="L59" href="#L59">59</a>          resourceCreationBean.setTitle(title);
-<a class="jxr_linenumber" name="L60" href="#L60">60</a>          resourceCreationBean.setTeaser(teaserBlock);
-<a class="jxr_linenumber" name="L61" href="#L61">61</a>          resourceCreationBean.setDocuments(List.of(doc));
-<a class="jxr_linenumber" name="L62" href="#L62">62</a>          resourceCreationBean.setCategory(category);
-<a class="jxr_linenumber" name="L63" href="#L63">63</a>          resourceCreationBean.setAbstractCardTypeId(globalCardTypeId);
+<a class="jxr_linenumber" name="L59" href="#L59">59</a>          resourceCreationData.setTitle(title);
+<a class="jxr_linenumber" name="L60" href="#L60">60</a>          resourceCreationData.setTeaser(teaserBlock);
+<a class="jxr_linenumber" name="L61" href="#L61">61</a>          resourceCreationData.setDocuments(List.of(doc));
+<a class="jxr_linenumber" name="L62" href="#L62">62</a>          resourceCreationData.setCategory(category);
+<a class="jxr_linenumber" name="L63" href="#L63">63</a>          resourceCreationData.setAbstractCardTypeId(globalCardTypeId);
 <a class="jxr_linenumber" name="L64" href="#L64">64</a>  
-<a class="jxr_linenumber" name="L65" href="#L65">65</a>          Long resourceId = client.resourceRestEndpoint.createResource(resourceCreationBean);
+<a class="jxr_linenumber" name="L65" href="#L65">65</a>          Long resourceId = client.resourceRestEndpoint.createResource(resourceCreationData);
 <a class="jxr_linenumber" name="L66" href="#L66">66</a>  
 <a class="jxr_linenumber" name="L67" href="#L67">67</a>          Resource persistedResource = (Resource) client.resourceRestEndpoint
 <a class="jxr_linenumber" name="L68" href="#L68">68</a>              .getAbstractResource(resourceId);
@@ -115,11 +115,11 @@
 <a class="jxr_linenumber" name="L107" href="#L107">107</a>         ExternalLink doc = <strong class="jxr_keyword">new</strong> ExternalLink();
 <a class="jxr_linenumber" name="L108" href="#L108">108</a>         doc.setUrl(url);
 <a class="jxr_linenumber" name="L109" href="#L109">109</a> 
-<a class="jxr_linenumber" name="L110" href="#L110">110</a>         ResourceCreationBean resourceCreationBean = <strong class="jxr_keyword">new</strong> ResourceCreationBean();
-<a class="jxr_linenumber" name="L111" href="#L111">111</a>         resourceCreationBean.setAbstractCardTypeId(globalCardTypeId);
-<a class="jxr_linenumber" name="L112" href="#L112">112</a>         resourceCreationBean.setDocuments(List.of(doc));
+<a class="jxr_linenumber" name="L110" href="#L110">110</a>         ResourceCreationData resourceCreationData = <strong class="jxr_keyword">new</strong> ResourceCreationData();
+<a class="jxr_linenumber" name="L111" href="#L111">111</a>         resourceCreationData.setAbstractCardTypeId(globalCardTypeId);
+<a class="jxr_linenumber" name="L112" href="#L112">112</a>         resourceCreationData.setDocuments(List.of(doc));
 <a class="jxr_linenumber" name="L113" href="#L113">113</a> 
-<a class="jxr_linenumber" name="L114" href="#L114">114</a>         Long resourceId = client.resourceRestEndpoint.createResource(resourceCreationBean);
+<a class="jxr_linenumber" name="L114" href="#L114">114</a>         Long resourceId = client.resourceRestEndpoint.createResource(resourceCreationData);
 <a class="jxr_linenumber" name="L115" href="#L115">115</a> 
 <a class="jxr_linenumber" name="L116" href="#L116">116</a>         Resource persistedResource = (Resource) client.resourceRestEndpoint
 <a class="jxr_linenumber" name="L117" href="#L117">117</a>             .getAbstractResource(resourceId);
@@ -204,11 +204,11 @@
 <a class="jxr_linenumber" name="L196" href="#L196">196</a>         ExternalLink doc = <strong class="jxr_keyword">new</strong> ExternalLink();
 <a class="jxr_linenumber" name="L197" href="#L197">197</a>         doc.setUrl(url);
 <a class="jxr_linenumber" name="L198" href="#L198">198</a> 
-<a class="jxr_linenumber" name="L199" href="#L199">199</a>         ResourceCreationBean resourceCreationBean = <strong class="jxr_keyword">new</strong> ResourceCreationBean();
-<a class="jxr_linenumber" name="L200" href="#L200">200</a>         resourceCreationBean.setAbstractCardTypeId(globalCardTypeId);
-<a class="jxr_linenumber" name="L201" href="#L201">201</a>         resourceCreationBean.setDocuments(List.of(doc));
+<a class="jxr_linenumber" name="L199" href="#L199">199</a>         ResourceCreationData resourceCreationData = <strong class="jxr_keyword">new</strong> ResourceCreationData();
+<a class="jxr_linenumber" name="L200" href="#L200">200</a>         resourceCreationData.setAbstractCardTypeId(globalCardTypeId);
+<a class="jxr_linenumber" name="L201" href="#L201">201</a>         resourceCreationData.setDocuments(List.of(doc));
 <a class="jxr_linenumber" name="L202" href="#L202">202</a> 
-<a class="jxr_linenumber" name="L203" href="#L203">203</a>         Long resourceId = client.resourceRestEndpoint.createResource(resourceCreationBean);
+<a class="jxr_linenumber" name="L203" href="#L203">203</a>         Long resourceId = client.resourceRestEndpoint.createResource(resourceCreationData);
 <a class="jxr_linenumber" name="L204" href="#L204">204</a> 
 <a class="jxr_linenumber" name="L205" href="#L205">205</a>         Resource persistedResource = (Resource) client.resourceRestEndpoint
 <a class="jxr_linenumber" name="L206" href="#L206">206</a>             .getAbstractResource(resourceId);
@@ -259,11 +259,11 @@
 <a class="jxr_linenumber" name="L251" href="#L251">251</a>         TextDataBlock doc2 = <strong class="jxr_keyword">new</strong> TextDataBlock();
 <a class="jxr_linenumber" name="L252" href="#L252">252</a>         doc2.setTextData(doc2TextData);
 <a class="jxr_linenumber" name="L253" href="#L253">253</a> 
-<a class="jxr_linenumber" name="L254" href="#L254">254</a>         ResourceCreationBean resourceCreationBean = <strong class="jxr_keyword">new</strong> ResourceCreationBean();
-<a class="jxr_linenumber" name="L255" href="#L255">255</a>         resourceCreationBean.setAbstractCardTypeId(globalCardTypeId);
-<a class="jxr_linenumber" name="L256" href="#L256">256</a>         resourceCreationBean.setDocuments(List.of(doc1, doc2));
+<a class="jxr_linenumber" name="L254" href="#L254">254</a>         ResourceCreationData resourceCreationData = <strong class="jxr_keyword">new</strong> ResourceCreationData();
+<a class="jxr_linenumber" name="L255" href="#L255">255</a>         resourceCreationData.setAbstractCardTypeId(globalCardTypeId);
+<a class="jxr_linenumber" name="L256" href="#L256">256</a>         resourceCreationData.setDocuments(List.of(doc1, doc2));
 <a class="jxr_linenumber" name="L257" href="#L257">257</a> 
-<a class="jxr_linenumber" name="L258" href="#L258">258</a>         Long resourceId = client.resourceRestEndpoint.createResource(resourceCreationBean);
+<a class="jxr_linenumber" name="L258" href="#L258">258</a>         Long resourceId = client.resourceRestEndpoint.createResource(resourceCreationData);
 <a class="jxr_linenumber" name="L259" href="#L259">259</a> 
 <a class="jxr_linenumber" name="L260" href="#L260">260</a>         Resource persistedResource = (Resource) client.resourceRestEndpoint
 <a class="jxr_linenumber" name="L261" href="#L261">261</a>             .getAbstractResource(resourceId);
@@ -388,11 +388,11 @@
 <a class="jxr_linenumber" name="L380" href="#L380">380</a>         ExternalLink doc = <strong class="jxr_keyword">new</strong> ExternalLink();
 <a class="jxr_linenumber" name="L381" href="#L381">381</a>         doc.setUrl(url);
 <a class="jxr_linenumber" name="L382" href="#L382">382</a> 
-<a class="jxr_linenumber" name="L383" href="#L383">383</a>         ResourceCreationBean resourceCreationBean = <strong class="jxr_keyword">new</strong> ResourceCreationBean();
-<a class="jxr_linenumber" name="L384" href="#L384">384</a>         resourceCreationBean.setAbstractCardTypeId(globalCardTypeId);
-<a class="jxr_linenumber" name="L385" href="#L385">385</a>         resourceCreationBean.setDocuments(List.of(doc));
+<a class="jxr_linenumber" name="L383" href="#L383">383</a>         ResourceCreationData resourceCreationData = <strong class="jxr_keyword">new</strong> ResourceCreationData();
+<a class="jxr_linenumber" name="L384" href="#L384">384</a>         resourceCreationData.setAbstractCardTypeId(globalCardTypeId);
+<a class="jxr_linenumber" name="L385" href="#L385">385</a>         resourceCreationData.setDocuments(List.of(doc));
 <a class="jxr_linenumber" name="L386" href="#L386">386</a> 
-<a class="jxr_linenumber" name="L387" href="#L387">387</a>         client.resourceRestEndpoint.createResource(resourceCreationBean);
+<a class="jxr_linenumber" name="L387" href="#L387">387</a>         client.resourceRestEndpoint.createResource(resourceCreationData);
 <a class="jxr_linenumber" name="L388" href="#L388">388</a> 
 <a class="jxr_linenumber" name="L389" href="#L389">389</a>         List&lt;List&lt;AbstractResource&gt;&gt; persistedCardResources = client.resourceRestEndpoint
 <a class="jxr_linenumber" name="L390" href="#L390">390</a>             .getResourceChainForCard(cardId);

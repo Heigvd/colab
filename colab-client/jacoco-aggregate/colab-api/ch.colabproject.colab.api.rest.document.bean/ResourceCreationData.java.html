@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>ResourceCreationData.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">colab-client</a> &gt; <a href="../index.html" class="el_bundle">colab-api</a> &gt; <a href="index.source.html" class="el_package">ch.colabproject.colab.api.rest.document.bean</a> &gt; <span class="el_source">ResourceCreationData.java</span></div><h1>ResourceCreationData.java</h1><pre class="source lang-java linenums">/*
+ * The coLAB project
+ * Copyright (C) 2021 AlbaSim, MEI, HEIG-VD, HES-SO
+ *
+ * Licensed under the MIT License
+ */
+package ch.colabproject.colab.api.rest.document.bean;
+
+import ch.colabproject.colab.api.model.document.Document;
+import ch.colabproject.colab.api.model.document.TextDataBlock;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+
+/**
+ * Bean with everything needed to create a resource
+ *
+ * @author sandra
+ */
+<span class="nc" id="L22">public class ResourceCreationData implements Serializable {</span>
+
+    private static final long serialVersionUID = 1L;
+
+    // ---------------------------------------------------------------------------------------------
+    // fields
+    // ---------------------------------------------------------------------------------------------
+
+    /**
+     * The title of the resource
+     */
+    private String title;
+
+    /**
+     * The teaser of the resource
+     */
+    private TextDataBlock teaser;
+
+    /**
+     * The category of the resource
+     */
+    private String category;
+
+    /**
+     * The abstract card type id
+     */
+    private Long abstractCardTypeId;
+
+    /**
+     * The card id
+     */
+    private Long cardId;
+
+    /**
+     * The card content id
+     */
+    private Long cardContentId;
+
+    /**
+     * The document
+     */
+<span class="nc" id="L63">    private List&lt;Document&gt; documents = new ArrayList&lt;&gt;();</span>
+
+    // ---------------------------------------------------------------------------------------------
+    // getters and setters
+    // ---------------------------------------------------------------------------------------------
+
+    /**
+     * @return the title
+     */
+    public String getTitle() {
+<span class="nc" id="L73">        return title;</span>
+    }
+
+    /**
+     * @param title the title
+     */
+    public void setTitle(String title) {
+<span class="nc" id="L80">        this.title = title;</span>
+<span class="nc" id="L81">    }</span>
+
+    /**
+     * @return the teaser
+     */
+    public TextDataBlock getTeaser() {
+<span class="nc" id="L87">        return teaser;</span>
+    }
+
+    /**
+     * @param teaser the teaser
+     */
+    public void setTeaser(TextDataBlock teaser) {
+<span class="nc" id="L94">        this.teaser = teaser;</span>
+<span class="nc" id="L95">    }</span>
+
+    /**
+     * @return the category
+     */
+    public String getCategory() {
+<span class="nc" id="L101">        return category;</span>
+    }
+
+    /**
+     * @param category the category
+     */
+    public void setCategory(String category) {
+<span class="nc" id="L108">        this.category = category;</span>
+<span class="nc" id="L109">    }</span>
+
+    /**
+     * @return the abstractCardTypeId
+     */
+    public Long getAbstractCardTypeId() {
+<span class="nc" id="L115">        return abstractCardTypeId;</span>
+    }
+
+    /**
+     * @param abstractCardTypeId the abstractCardTypeId
+     */
+    public void setAbstractCardTypeId(Long abstractCardTypeId) {
+<span class="nc" id="L122">        this.abstractCardTypeId = abstractCardTypeId;</span>
+<span class="nc" id="L123">    }</span>
+
+    /**
+     * @return the cardId
+     */
+    public Long getCardId() {
+<span class="nc" id="L129">        return cardId;</span>
+    }
+
+    /**
+     * @param cardId the cardId
+     */
+    public void setCardId(Long cardId) {
+<span class="nc" id="L136">        this.cardId = cardId;</span>
+<span class="nc" id="L137">    }</span>
+
+    /**
+     * @return the cardContentId
+     */
+    public Long getCardContentId() {
+<span class="nc" id="L143">        return cardContentId;</span>
+    }
+
+    /**
+     * @param cardContentId the cardContentId
+     */
+    public void setCardContentId(Long cardContentId) {
+<span class="nc" id="L150">        this.cardContentId = cardContentId;</span>
+<span class="nc" id="L151">    }</span>
+
+    /**
+     * @return the documents
+     */
+    public List&lt;Document&gt; getDocuments() {
+<span class="nc" id="L157">        return documents;</span>
+    }
+
+    /**
+     * @param documents the documents
+     */
+    public void setDocuments(List&lt;Document&gt; documents) {
+<span class="nc" id="L164">        this.documents = documents;</span>
+<span class="nc" id="L165">    }</span>
+
+    // ---------------------------------------------------------------------------------------------
+    // concerning the whole class
+    // ---------------------------------------------------------------------------------------------
+
+    @Override
+    public int hashCode() {
+<span class="nc" id="L173">        return new HashCodeBuilder()</span>
+<span class="nc" id="L174">            .append(this.title)</span>
+<span class="nc" id="L175">            .append(this.category)</span>
+<span class="nc" id="L176">            .append(this.abstractCardTypeId)</span>
+<span class="nc" id="L177">            .append(this.cardId)</span>
+<span class="nc" id="L178">            .append(this.cardContentId)</span>
+<span class="nc" id="L179">            .toHashCode();</span>
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+<span class="nc bnc" id="L184" title="All 2 branches missed.">        if (this == obj) {</span>
+<span class="nc" id="L185">            return true;</span>
+        }
+<span class="nc bnc" id="L187" title="All 2 branches missed.">        if (obj == null) {</span>
+<span class="nc" id="L188">            return false;</span>
+        }
+<span class="nc bnc" id="L190" title="All 2 branches missed.">        if (getClass() != obj.getClass()) {</span>
+<span class="nc" id="L191">            return false;</span>
+        }
+<span class="nc" id="L193">        final ResourceCreationData other = (ResourceCreationData) obj;</span>
+<span class="nc" id="L194">        return new EqualsBuilder()</span>
+<span class="nc" id="L195">            .append(this.title, other.title)</span>
+<span class="nc" id="L196">            .append(this.category, other.category)</span>
+<span class="nc" id="L197">            .append(this.abstractCardTypeId, other.abstractCardTypeId)</span>
+<span class="nc" id="L198">            .append(this.cardId, other.cardId)</span>
+<span class="nc" id="L199">            .append(this.cardContentId, other.cardContentId)</span>
+<span class="nc" id="L200">            .isEquals();</span>
+    }
+
+    @Override
+    public String toString() {
+<span class="nc" id="L205">        return &quot;ResourceCreationData{&quot; + &quot;title=&quot; + title + &quot;, category=&quot; + category</span>
+            + &quot;, abstractCardTypeId=&quot; + abstractCardTypeId + &quot;, cardId=&quot; + cardId
+            + &quot;, cardContentId=&quot; + cardContentId + &quot;}&quot;;
+    }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

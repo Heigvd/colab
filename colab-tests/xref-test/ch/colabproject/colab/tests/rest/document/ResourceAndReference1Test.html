@@ -20,7 +20,7 @@
 <a class="jxr_linenumber" name="L12" href="#L12">12</a>  <strong class="jxr_keyword">import</strong> ch.colabproject.colab.api.model.document.ResourceRef;
 <a class="jxr_linenumber" name="L13" href="#L13">13</a>  <strong class="jxr_keyword">import</strong> ch.colabproject.colab.api.model.document.TextDataBlock;
 <a class="jxr_linenumber" name="L14" href="#L14">14</a>  <strong class="jxr_keyword">import</strong> ch.colabproject.colab.api.model.project.Project;
-<a class="jxr_linenumber" name="L15" href="#L15">15</a>  <strong class="jxr_keyword">import</strong> ch.colabproject.colab.api.<strong class="jxr_keyword">rest</strong>.document.bean.ResourceCreationBean;
+<a class="jxr_linenumber" name="L15" href="#L15">15</a>  <strong class="jxr_keyword">import</strong> ch.colabproject.colab.api.<strong class="jxr_keyword">rest</strong>.document.bean.ResourceCreationData;
 <a class="jxr_linenumber" name="L16" href="#L16">16</a>  <strong class="jxr_keyword">import</strong> ch.colabproject.colab.tests.tests.AbstractArquillianTest;
 <a class="jxr_linenumber" name="L17" href="#L17">17</a>  <strong class="jxr_keyword">import</strong> ch.colabproject.colab.tests.tests.ColabFactory;
 <a class="jxr_linenumber" name="L18" href="#L18">18</a>  <strong class="jxr_keyword">import</strong> java.util.List;
@@ -129,7 +129,7 @@
 <a class="jxr_linenumber" name="L121" href="#L121">121</a>         tea.setMimeType(mimeType);
 <a class="jxr_linenumber" name="L122" href="#L122">122</a>         tea.setTextData(teaser);
 <a class="jxr_linenumber" name="L123" href="#L123">123</a> 
-<a class="jxr_linenumber" name="L124" href="#L124">124</a>         ResourceCreationBean toCreate = <strong class="jxr_keyword">new</strong> ResourceCreationBean();
+<a class="jxr_linenumber" name="L124" href="#L124">124</a>         ResourceCreationData toCreate = <strong class="jxr_keyword">new</strong> ResourceCreationData();
 <a class="jxr_linenumber" name="L125" href="#L125">125</a>         toCreate.setTitle(title);
 <a class="jxr_linenumber" name="L126" href="#L126">126</a>         toCreate.setTeaser(tea);
 <a class="jxr_linenumber" name="L127" href="#L127">127</a>         toCreate.setDocuments(List.of(doc));

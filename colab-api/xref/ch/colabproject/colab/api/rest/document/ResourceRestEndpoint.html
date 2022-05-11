@@ -23,7 +23,7 @@
 <a class="jxr_linenumber" name="L15" href="#L15">15</a>  <strong class="jxr_keyword">import</strong> ch.colabproject.colab.api.model.document.ResourceRef;
 <a class="jxr_linenumber" name="L16" href="#L16">16</a>  <strong class="jxr_keyword">import</strong> ch.colabproject.colab.api.model.link.StickyNoteLink;
 <a class="jxr_linenumber" name="L17" href="#L17">17</a>  <strong class="jxr_keyword">import</strong> ch.colabproject.colab.api.persistence.jpa.document.ResourceDao;
-<a class="jxr_linenumber" name="L18" href="#L18">18</a>  <strong class="jxr_keyword">import</strong> ch.colabproject.colab.api.<strong class="jxr_keyword">rest</strong>.document.bean.ResourceCreationBean;
+<a class="jxr_linenumber" name="L18" href="#L18">18</a>  <strong class="jxr_keyword">import</strong> ch.colabproject.colab.api.<strong class="jxr_keyword">rest</strong>.document.bean.ResourceCreationData;
 <a class="jxr_linenumber" name="L19" href="#L19">19</a>  <strong class="jxr_keyword">import</strong> ch.colabproject.colab.generator.model.annotations.AuthenticationRequired;
 <a class="jxr_linenumber" name="L20" href="#L20">20</a>  <strong class="jxr_keyword">import</strong> java.util.List;
 <a class="jxr_linenumber" name="L21" href="#L21">21</a>  <strong class="jxr_keyword">import</strong> javax.inject.Inject;
@@ -199,30 +199,30 @@
 <a class="jxr_linenumber" name="L191" href="#L191">191</a>     <em class="jxr_javadoccomment">/**</em>
 <a class="jxr_linenumber" name="L192" href="#L192">192</a> <em class="jxr_javadoccomment">     * Create a resource</em>
 <a class="jxr_linenumber" name="L193" href="#L193">193</a> <em class="jxr_javadoccomment">     *</em>
-<a class="jxr_linenumber" name="L194" href="#L194">194</a> <em class="jxr_javadoccomment">     * @param resourceCreationBean Everything needed to create a resource</em>
+<a class="jxr_linenumber" name="L194" href="#L194">194</a> <em class="jxr_javadoccomment">     * @param resourceCreationData Everything needed to create a resource</em>
 <a class="jxr_linenumber" name="L195" href="#L195">195</a> <em class="jxr_javadoccomment">     *</em>
 <a class="jxr_linenumber" name="L196" href="#L196">196</a> <em class="jxr_javadoccomment">     * @return the brand new resource id</em>
 <a class="jxr_linenumber" name="L197" href="#L197">197</a> <em class="jxr_javadoccomment">     */</em>
 <a class="jxr_linenumber" name="L198" href="#L198">198</a>     @POST
 <a class="jxr_linenumber" name="L199" href="#L199">199</a>     @Path(<span class="jxr_string">"create"</span>)
-<a class="jxr_linenumber" name="L200" href="#L200">200</a>     <strong class="jxr_keyword">public</strong> Long createResource(<a name="ResourceCreationBean" href="../../../../../../ch/colabproject/colab/api/rest/document/bean/ResourceCreationBean.html#ResourceCreationBean">ResourceCreationBean</a> resourceCreationBean) {
-<a class="jxr_linenumber" name="L201" href="#L201">201</a>         logger.debug(<span class="jxr_string">"create resource {}"</span>, resourceCreationBean);
+<a class="jxr_linenumber" name="L200" href="#L200">200</a>     <strong class="jxr_keyword">public</strong> Long createResource(<a name="ResourceCreationData" href="../../../../../../ch/colabproject/colab/api/rest/document/bean/ResourceCreationData.html#ResourceCreationData">ResourceCreationData</a> resourceCreationData) {
+<a class="jxr_linenumber" name="L201" href="#L201">201</a>         logger.debug(<span class="jxr_string">"create resource {}"</span>, resourceCreationData);
 <a class="jxr_linenumber" name="L202" href="#L202">202</a> 
 <a class="jxr_linenumber" name="L203" href="#L203">203</a>         Resource resource = <strong class="jxr_keyword">new</strong> Resource();
-<a class="jxr_linenumber" name="L204" href="#L204">204</a>         resource.setTitle(resourceCreationBean.getTitle());
-<a class="jxr_linenumber" name="L205" href="#L205">205</a>         resource.setTeaser(resourceCreationBean.getTeaser());
+<a class="jxr_linenumber" name="L204" href="#L204">204</a>         resource.setTitle(resourceCreationData.getTitle());
+<a class="jxr_linenumber" name="L205" href="#L205">205</a>         resource.setTeaser(resourceCreationData.getTeaser());
 <a class="jxr_linenumber" name="L206" href="#L206">206</a>         <strong class="jxr_keyword">if</strong> (resource.getTeaser() != <strong class="jxr_keyword">null</strong>) {
 <a class="jxr_linenumber" name="L207" href="#L207">207</a>             resource.getTeaser().setTeasingResource(resource);
 <a class="jxr_linenumber" name="L208" href="#L208">208</a>         }
-<a class="jxr_linenumber" name="L209" href="#L209">209</a>         resource.setCategory(resourceCreationBean.getCategory());
-<a class="jxr_linenumber" name="L210" href="#L210">210</a>         resource.setAbstractCardTypeId(resourceCreationBean.getAbstractCardTypeId());
-<a class="jxr_linenumber" name="L211" href="#L211">211</a>         resource.setCardId(resourceCreationBean.getCardId());
-<a class="jxr_linenumber" name="L212" href="#L212">212</a>         resource.setCardContentId(resourceCreationBean.getCardContentId());
+<a class="jxr_linenumber" name="L209" href="#L209">209</a>         resource.setCategory(resourceCreationData.getCategory());
+<a class="jxr_linenumber" name="L210" href="#L210">210</a>         resource.setAbstractCardTypeId(resourceCreationData.getAbstractCardTypeId());
+<a class="jxr_linenumber" name="L211" href="#L211">211</a>         resource.setCardId(resourceCreationData.getCardId());
+<a class="jxr_linenumber" name="L212" href="#L212">212</a>         resource.setCardContentId(resourceCreationData.getCardContentId());
 <a class="jxr_linenumber" name="L213" href="#L213">213</a> 
 <a class="jxr_linenumber" name="L214" href="#L214">214</a>         Resource newResource = resourceManager.createResource(resource);
 <a class="jxr_linenumber" name="L215" href="#L215">215</a> 
-<a class="jxr_linenumber" name="L216" href="#L216">216</a>         <strong class="jxr_keyword">if</strong> (CollectionUtils.isNotEmpty(resourceCreationBean.getDocuments())) {
-<a class="jxr_linenumber" name="L217" href="#L217">217</a>             <strong class="jxr_keyword">for</strong> (Document document : resourceCreationBean.getDocuments()) {
+<a class="jxr_linenumber" name="L216" href="#L216">216</a>         <strong class="jxr_keyword">if</strong> (CollectionUtils.isNotEmpty(resourceCreationData.getDocuments())) {
+<a class="jxr_linenumber" name="L217" href="#L217">217</a>             <strong class="jxr_keyword">for</strong> (Document document : resourceCreationData.getDocuments()) {
 <a class="jxr_linenumber" name="L218" href="#L218">218</a>                 resourceManager.addDocument(newResource.getId(), document);
 <a class="jxr_linenumber" name="L219" href="#L219">219</a>             }
 <a class="jxr_linenumber" name="L220" href="#L220">220</a>         }

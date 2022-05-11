@@ -17,7 +17,7 @@
 <a class="jxr_linenumber" name="L9" href="#L9">9</a>   <strong class="jxr_keyword">import</strong> ch.colabproject.colab.api.model.document.AbstractResource;
 <a class="jxr_linenumber" name="L10" href="#L10">10</a>  <strong class="jxr_keyword">import</strong> ch.colabproject.colab.api.model.document.ExternalLink;
 <a class="jxr_linenumber" name="L11" href="#L11">11</a>  <strong class="jxr_keyword">import</strong> ch.colabproject.colab.api.model.project.Project;
-<a class="jxr_linenumber" name="L12" href="#L12">12</a>  <strong class="jxr_keyword">import</strong> ch.colabproject.colab.api.<strong class="jxr_keyword">rest</strong>.document.bean.ResourceCreationBean;
+<a class="jxr_linenumber" name="L12" href="#L12">12</a>  <strong class="jxr_keyword">import</strong> ch.colabproject.colab.api.<strong class="jxr_keyword">rest</strong>.document.bean.ResourceCreationData;
 <a class="jxr_linenumber" name="L13" href="#L13">13</a>  <strong class="jxr_keyword">import</strong> ch.colabproject.colab.tests.tests.AbstractArquillianTest;
 <a class="jxr_linenumber" name="L14" href="#L14">14</a>  <strong class="jxr_keyword">import</strong> ch.colabproject.colab.tests.tests.ColabFactory;
 <a class="jxr_linenumber" name="L15" href="#L15">15</a>  <strong class="jxr_keyword">import</strong> java.util.List;
@@ -43,27 +43,27 @@
 <a class="jxr_linenumber" name="L35" href="#L35">35</a>          Long projectId = project.getId();
 <a class="jxr_linenumber" name="L36" href="#L36">36</a>  
 <a class="jxr_linenumber" name="L37" href="#L37">37</a>          Long rootCardId = ColabFactory.getRootCard(client, project).getId();
-<a class="jxr_linenumber" name="L38" href="#L38">38</a>          ResourceCreationBean rootCardResource = <strong class="jxr_keyword">new</strong> ResourceCreationBean();
+<a class="jxr_linenumber" name="L38" href="#L38">38</a>          ResourceCreationData rootCardResource = <strong class="jxr_keyword">new</strong> ResourceCreationData();
 <a class="jxr_linenumber" name="L39" href="#L39">39</a>          rootCardResource.setDocuments(List.of(<strong class="jxr_keyword">new</strong> ExternalLink()));
 <a class="jxr_linenumber" name="L40" href="#L40">40</a>          rootCardResource.setCardId(rootCardId);
 <a class="jxr_linenumber" name="L41" href="#L41">41</a>          Long rootCardResourceId = client.resourceRestEndpoint.createResource(rootCardResource);
 <a class="jxr_linenumber" name="L42" href="#L42">42</a>  
 <a class="jxr_linenumber" name="L43" href="#L43">43</a>          Long rootCardContentId = ColabFactory.getRootContent(client, project).getId();
-<a class="jxr_linenumber" name="L44" href="#L44">44</a>          ResourceCreationBean rootCardContentResource = <strong class="jxr_keyword">new</strong> ResourceCreationBean();
+<a class="jxr_linenumber" name="L44" href="#L44">44</a>          ResourceCreationData rootCardContentResource = <strong class="jxr_keyword">new</strong> ResourceCreationData();
 <a class="jxr_linenumber" name="L45" href="#L45">45</a>          rootCardContentResource.setDocuments(List.of(<strong class="jxr_keyword">new</strong> ExternalLink()));
 <a class="jxr_linenumber" name="L46" href="#L46">46</a>          rootCardContentResource.setCardContentId(rootCardContentId);
 <a class="jxr_linenumber" name="L47" href="#L47">47</a>          Long rootCardContentResourceId = client.resourceRestEndpoint
 <a class="jxr_linenumber" name="L48" href="#L48">48</a>              .createResource(rootCardContentResource);
 <a class="jxr_linenumber" name="L49" href="#L49">49</a>  
 <a class="jxr_linenumber" name="L50" href="#L50">50</a>          Long rootCardVariantId = ColabFactory.createNewCardContent(client, rootCardId).getId();
-<a class="jxr_linenumber" name="L51" href="#L51">51</a>          ResourceCreationBean rootCardVariantResource = <strong class="jxr_keyword">new</strong> ResourceCreationBean();
+<a class="jxr_linenumber" name="L51" href="#L51">51</a>          ResourceCreationData rootCardVariantResource = <strong class="jxr_keyword">new</strong> ResourceCreationData();
 <a class="jxr_linenumber" name="L52" href="#L52">52</a>          rootCardVariantResource.setDocuments(List.of(<strong class="jxr_keyword">new</strong> ExternalLink()));
 <a class="jxr_linenumber" name="L53" href="#L53">53</a>          rootCardVariantResource.setCardContentId(rootCardVariantId);
 <a class="jxr_linenumber" name="L54" href="#L54">54</a>          client.resourceRestEndpoint.createResource(rootCardVariantResource);
 <a class="jxr_linenumber" name="L55" href="#L55">55</a>          <em class="jxr_comment">// referenced by nothing</em>
 <a class="jxr_linenumber" name="L56" href="#L56">56</a>  
 <a class="jxr_linenumber" name="L57" href="#L57">57</a>          Long globalCardTypeId = ColabFactory.createGlobalCardType(client).getId();
-<a class="jxr_linenumber" name="L58" href="#L58">58</a>          ResourceCreationBean globalCardTypeResource = <strong class="jxr_keyword">new</strong> ResourceCreationBean();
+<a class="jxr_linenumber" name="L58" href="#L58">58</a>          ResourceCreationData globalCardTypeResource = <strong class="jxr_keyword">new</strong> ResourceCreationData();
 <a class="jxr_linenumber" name="L59" href="#L59">59</a>          globalCardTypeResource.setDocuments(List.of(<strong class="jxr_keyword">new</strong> ExternalLink()));
 <a class="jxr_linenumber" name="L60" href="#L60">60</a>          globalCardTypeResource.setAbstractCardTypeId(globalCardTypeId);
 <a class="jxr_linenumber" name="L61" href="#L61">61</a>          Long globalCardTypeResourceId = client.resourceRestEndpoint
@@ -71,27 +71,27 @@
 <a class="jxr_linenumber" name="L63" href="#L63">63</a>  
 <a class="jxr_linenumber" name="L64" href="#L64">64</a>          Long card1Id = ColabFactory.createNewCard(client, rootCardContentId, globalCardTypeId)
 <a class="jxr_linenumber" name="L65" href="#L65">65</a>              .getId();
-<a class="jxr_linenumber" name="L66" href="#L66">66</a>          ResourceCreationBean card1Resource = <strong class="jxr_keyword">new</strong> ResourceCreationBean();
+<a class="jxr_linenumber" name="L66" href="#L66">66</a>          ResourceCreationData card1Resource = <strong class="jxr_keyword">new</strong> ResourceCreationData();
 <a class="jxr_linenumber" name="L67" href="#L67">67</a>          card1Resource.setDocuments(List.of(<strong class="jxr_keyword">new</strong> ExternalLink()));
 <a class="jxr_linenumber" name="L68" href="#L68">68</a>          card1Resource.setCardId(card1Id);
 <a class="jxr_linenumber" name="L69" href="#L69">69</a>          Long card1ResourceId = client.resourceRestEndpoint.createResource(card1Resource);
 <a class="jxr_linenumber" name="L70" href="#L70">70</a>  
 <a class="jxr_linenumber" name="L71" href="#L71">71</a>          Long card1GlobalTypeRefId = client.cardRestEndpoint.getCard(card1Id).getCardTypeId();
-<a class="jxr_linenumber" name="L72" href="#L72">72</a>          ResourceCreationBean card1GlobalTypeRefResource = <strong class="jxr_keyword">new</strong> ResourceCreationBean();
+<a class="jxr_linenumber" name="L72" href="#L72">72</a>          ResourceCreationData card1GlobalTypeRefResource = <strong class="jxr_keyword">new</strong> ResourceCreationData();
 <a class="jxr_linenumber" name="L73" href="#L73">73</a>          card1GlobalTypeRefResource.setDocuments(List.of(<strong class="jxr_keyword">new</strong> ExternalLink()));
 <a class="jxr_linenumber" name="L74" href="#L74">74</a>          card1GlobalTypeRefResource.setAbstractCardTypeId(card1GlobalTypeRefId);
 <a class="jxr_linenumber" name="L75" href="#L75">75</a>          Long card1GlobalTypeRefResourceId = client.resourceRestEndpoint
 <a class="jxr_linenumber" name="L76" href="#L76">76</a>              .createResource(card1GlobalTypeRefResource);
 <a class="jxr_linenumber" name="L77" href="#L77">77</a>  
 <a class="jxr_linenumber" name="L78" href="#L78">78</a>          Long card1ContentId = ColabFactory.getCardContent(client, card1Id).getId();
-<a class="jxr_linenumber" name="L79" href="#L79">79</a>          ResourceCreationBean card1ContentResource = <strong class="jxr_keyword">new</strong> ResourceCreationBean();
+<a class="jxr_linenumber" name="L79" href="#L79">79</a>          ResourceCreationData card1ContentResource = <strong class="jxr_keyword">new</strong> ResourceCreationData();
 <a class="jxr_linenumber" name="L80" href="#L80">80</a>          card1ContentResource.setDocuments(List.of(<strong class="jxr_keyword">new</strong> ExternalLink()));
 <a class="jxr_linenumber" name="L81" href="#L81">81</a>          card1ContentResource.setCardContentId(card1ContentId);
 <a class="jxr_linenumber" name="L82" href="#L82">82</a>          Long card1ContentResourceId = client.resourceRestEndpoint
 <a class="jxr_linenumber" name="L83" href="#L83">83</a>              .createResource(card1ContentResource);
 <a class="jxr_linenumber" name="L84" href="#L84">84</a>  
 <a class="jxr_linenumber" name="L85" href="#L85">85</a>          Long card2LocalTypeId = ColabFactory.createCardType(client, projectId).getId();
-<a class="jxr_linenumber" name="L86" href="#L86">86</a>          ResourceCreationBean card2LocalTypeResource = <strong class="jxr_keyword">new</strong> ResourceCreationBean();
+<a class="jxr_linenumber" name="L86" href="#L86">86</a>          ResourceCreationData card2LocalTypeResource = <strong class="jxr_keyword">new</strong> ResourceCreationData();
 <a class="jxr_linenumber" name="L87" href="#L87">87</a>          card2LocalTypeResource.setDocuments(List.of(<strong class="jxr_keyword">new</strong> ExternalLink()));
 <a class="jxr_linenumber" name="L88" href="#L88">88</a>          card2LocalTypeResource.setAbstractCardTypeId(card2LocalTypeId);
 <a class="jxr_linenumber" name="L89" href="#L89">89</a>          Long card2LocalTypeResourceId = client.resourceRestEndpoint
@@ -99,13 +99,13 @@
 <a class="jxr_linenumber" name="L91" href="#L91">91</a>  
 <a class="jxr_linenumber" name="L92" href="#L92">92</a>          Long card2Id = ColabFactory.createNewCard(client, rootCardContentId, card2LocalTypeId)
 <a class="jxr_linenumber" name="L93" href="#L93">93</a>              .getId();
-<a class="jxr_linenumber" name="L94" href="#L94">94</a>          ResourceCreationBean card2Resource = <strong class="jxr_keyword">new</strong> ResourceCreationBean();
+<a class="jxr_linenumber" name="L94" href="#L94">94</a>          ResourceCreationData card2Resource = <strong class="jxr_keyword">new</strong> ResourceCreationData();
 <a class="jxr_linenumber" name="L95" href="#L95">95</a>          card2Resource.setDocuments(List.of(<strong class="jxr_keyword">new</strong> ExternalLink()));
 <a class="jxr_linenumber" name="L96" href="#L96">96</a>          card2Resource.setCardId(card2Id);
 <a class="jxr_linenumber" name="L97" href="#L97">97</a>          Long card2ResourceId = client.resourceRestEndpoint.createResource(card2Resource);
 <a class="jxr_linenumber" name="L98" href="#L98">98</a>  
 <a class="jxr_linenumber" name="L99" href="#L99">99</a>          Long card2ContentId = ColabFactory.getCardContent(client, card2Id).getId();
-<a class="jxr_linenumber" name="L100" href="#L100">100</a>         ResourceCreationBean card2ContentResource = <strong class="jxr_keyword">new</strong> ResourceCreationBean();
+<a class="jxr_linenumber" name="L100" href="#L100">100</a>         ResourceCreationData card2ContentResource = <strong class="jxr_keyword">new</strong> ResourceCreationData();
 <a class="jxr_linenumber" name="L101" href="#L101">101</a>         card2ContentResource.setDocuments(List.of(<strong class="jxr_keyword">new</strong> ExternalLink()));
 <a class="jxr_linenumber" name="L102" href="#L102">102</a>         card2ContentResource.setCardContentId(card2ContentId);
 <a class="jxr_linenumber" name="L103" href="#L103">103</a>         Long card2ContentResourceId = client.resourceRestEndpoint
@@ -114,14 +114,14 @@
 <a class="jxr_linenumber" name="L106" href="#L106">106</a>         <em class="jxr_comment">// now add variants and cards and check that all resources are spread</em>
 <a class="jxr_linenumber" name="L107" href="#L107">107</a> 
 <a class="jxr_linenumber" name="L108" href="#L108">108</a>         Long anotherGlobalCardTypeId = ColabFactory.createGlobalCardType(client).getId();
-<a class="jxr_linenumber" name="L109" href="#L109">109</a>         ResourceCreationBean anotherGlobalCardTypeResource = <strong class="jxr_keyword">new</strong> ResourceCreationBean();
+<a class="jxr_linenumber" name="L109" href="#L109">109</a>         ResourceCreationData anotherGlobalCardTypeResource = <strong class="jxr_keyword">new</strong> ResourceCreationData();
 <a class="jxr_linenumber" name="L110" href="#L110">110</a>         anotherGlobalCardTypeResource.setDocuments(List.of(<strong class="jxr_keyword">new</strong> ExternalLink()));
 <a class="jxr_linenumber" name="L111" href="#L111">111</a>         anotherGlobalCardTypeResource.setAbstractCardTypeId(anotherGlobalCardTypeId);
 <a class="jxr_linenumber" name="L112" href="#L112">112</a>         Long anotherGlobalCardTypeResourceId = client.resourceRestEndpoint
 <a class="jxr_linenumber" name="L113" href="#L113">113</a>             .createResource(anotherGlobalCardTypeResource);
 <a class="jxr_linenumber" name="L114" href="#L114">114</a> 
 <a class="jxr_linenumber" name="L115" href="#L115">115</a>         Long anotherLocalCardTypeId = ColabFactory.createCardType(client, projectId).getId();
-<a class="jxr_linenumber" name="L116" href="#L116">116</a>         ResourceCreationBean anotherLocalCardTypeResource = <strong class="jxr_keyword">new</strong> ResourceCreationBean();
+<a class="jxr_linenumber" name="L116" href="#L116">116</a>         ResourceCreationData anotherLocalCardTypeResource = <strong class="jxr_keyword">new</strong> ResourceCreationData();
 <a class="jxr_linenumber" name="L117" href="#L117">117</a>         anotherLocalCardTypeResource.setDocuments(List.of(<strong class="jxr_keyword">new</strong> ExternalLink()));
 <a class="jxr_linenumber" name="L118" href="#L118">118</a>         anotherLocalCardTypeResource.setAbstractCardTypeId(anotherLocalCardTypeId);
 <a class="jxr_linenumber" name="L119" href="#L119">119</a>         Long anotherLocalCardTypeResourceId = client.resourceRestEndpoint
@@ -267,69 +267,69 @@
 <a class="jxr_linenumber" name="L259" href="#L259">259</a>         Long newCard2lContentId = ColabFactory.getCardContent(client, newCard2lId).getId();
 <a class="jxr_linenumber" name="L260" href="#L260">260</a> 
 <a class="jxr_linenumber" name="L261" href="#L261">261</a>         <em class="jxr_comment">// now add resources</em>
-<a class="jxr_linenumber" name="L262" href="#L262">262</a>         ResourceCreationBean rootCardResource = <strong class="jxr_keyword">new</strong> ResourceCreationBean();
+<a class="jxr_linenumber" name="L262" href="#L262">262</a>         ResourceCreationData rootCardResource = <strong class="jxr_keyword">new</strong> ResourceCreationData();
 <a class="jxr_linenumber" name="L263" href="#L263">263</a>         rootCardResource.setDocuments(List.of(<strong class="jxr_keyword">new</strong> ExternalLink()));
 <a class="jxr_linenumber" name="L264" href="#L264">264</a>         rootCardResource.setCardId(rootCardId);
 <a class="jxr_linenumber" name="L265" href="#L265">265</a>         Long rootCardResourceId = client.resourceRestEndpoint.createResource(rootCardResource);
 <a class="jxr_linenumber" name="L266" href="#L266">266</a> 
-<a class="jxr_linenumber" name="L267" href="#L267">267</a>         ResourceCreationBean rootCardContentResource = <strong class="jxr_keyword">new</strong> ResourceCreationBean();
+<a class="jxr_linenumber" name="L267" href="#L267">267</a>         ResourceCreationData rootCardContentResource = <strong class="jxr_keyword">new</strong> ResourceCreationData();
 <a class="jxr_linenumber" name="L268" href="#L268">268</a>         rootCardContentResource.setDocuments(List.of(<strong class="jxr_keyword">new</strong> ExternalLink()));
 <a class="jxr_linenumber" name="L269" href="#L269">269</a>         rootCardContentResource.setCardContentId(rootCardContentId);
 <a class="jxr_linenumber" name="L270" href="#L270">270</a>         Long rootCardContentResourceId = client.resourceRestEndpoint
 <a class="jxr_linenumber" name="L271" href="#L271">271</a>             .createResource(rootCardContentResource);
 <a class="jxr_linenumber" name="L272" href="#L272">272</a> 
-<a class="jxr_linenumber" name="L273" href="#L273">273</a>         ResourceCreationBean rootCardVariantResource = <strong class="jxr_keyword">new</strong> ResourceCreationBean();
+<a class="jxr_linenumber" name="L273" href="#L273">273</a>         ResourceCreationData rootCardVariantResource = <strong class="jxr_keyword">new</strong> ResourceCreationData();
 <a class="jxr_linenumber" name="L274" href="#L274">274</a>         rootCardVariantResource.setDocuments(List.of(<strong class="jxr_keyword">new</strong> ExternalLink()));
 <a class="jxr_linenumber" name="L275" href="#L275">275</a>         rootCardVariantResource.setCardContentId(rootCardVariantId);
 <a class="jxr_linenumber" name="L276" href="#L276">276</a>         client.resourceRestEndpoint.createResource(rootCardVariantResource);
 <a class="jxr_linenumber" name="L277" href="#L277">277</a> 
-<a class="jxr_linenumber" name="L278" href="#L278">278</a>         ResourceCreationBean globalCardTypeResource = <strong class="jxr_keyword">new</strong> ResourceCreationBean();
+<a class="jxr_linenumber" name="L278" href="#L278">278</a>         ResourceCreationData globalCardTypeResource = <strong class="jxr_keyword">new</strong> ResourceCreationData();
 <a class="jxr_linenumber" name="L279" href="#L279">279</a>         globalCardTypeResource.setDocuments(List.of(<strong class="jxr_keyword">new</strong> ExternalLink()));
 <a class="jxr_linenumber" name="L280" href="#L280">280</a>         globalCardTypeResource.setAbstractCardTypeId(globalCardTypeId);
 <a class="jxr_linenumber" name="L281" href="#L281">281</a>         Long globalCardTypeResourceId = client.resourceRestEndpoint
 <a class="jxr_linenumber" name="L282" href="#L282">282</a>             .createResource(globalCardTypeResource);
 <a class="jxr_linenumber" name="L283" href="#L283">283</a> 
-<a class="jxr_linenumber" name="L284" href="#L284">284</a>         ResourceCreationBean card1Resource = <strong class="jxr_keyword">new</strong> ResourceCreationBean();
+<a class="jxr_linenumber" name="L284" href="#L284">284</a>         ResourceCreationData card1Resource = <strong class="jxr_keyword">new</strong> ResourceCreationData();
 <a class="jxr_linenumber" name="L285" href="#L285">285</a>         card1Resource.setDocuments(List.of(<strong class="jxr_keyword">new</strong> ExternalLink()));
 <a class="jxr_linenumber" name="L286" href="#L286">286</a>         card1Resource.setCardId(card1Id);
 <a class="jxr_linenumber" name="L287" href="#L287">287</a>         Long card1ResourceId = client.resourceRestEndpoint.createResource(card1Resource);
 <a class="jxr_linenumber" name="L288" href="#L288">288</a> 
-<a class="jxr_linenumber" name="L289" href="#L289">289</a>         ResourceCreationBean card1GlobalTypeRefResource = <strong class="jxr_keyword">new</strong> ResourceCreationBean();
+<a class="jxr_linenumber" name="L289" href="#L289">289</a>         ResourceCreationData card1GlobalTypeRefResource = <strong class="jxr_keyword">new</strong> ResourceCreationData();
 <a class="jxr_linenumber" name="L290" href="#L290">290</a>         card1GlobalTypeRefResource.setDocuments(List.of(<strong class="jxr_keyword">new</strong> ExternalLink()));
 <a class="jxr_linenumber" name="L291" href="#L291">291</a>         card1GlobalTypeRefResource.setAbstractCardTypeId(card1GlobalTypeRefId);
 <a class="jxr_linenumber" name="L292" href="#L292">292</a>         Long card1GlobalTypeRefResourceId = client.resourceRestEndpoint
 <a class="jxr_linenumber" name="L293" href="#L293">293</a>             .createResource(card1GlobalTypeRefResource);
 <a class="jxr_linenumber" name="L294" href="#L294">294</a> 
-<a class="jxr_linenumber" name="L295" href="#L295">295</a>         ResourceCreationBean card1ContentResource = <strong class="jxr_keyword">new</strong> ResourceCreationBean();
+<a class="jxr_linenumber" name="L295" href="#L295">295</a>         ResourceCreationData card1ContentResource = <strong class="jxr_keyword">new</strong> ResourceCreationData();
 <a class="jxr_linenumber" name="L296" href="#L296">296</a>         card1ContentResource.setDocuments(List.of(<strong class="jxr_keyword">new</strong> ExternalLink()));
 <a class="jxr_linenumber" name="L297" href="#L297">297</a>         card1ContentResource.setCardContentId(card1ContentId);
 <a class="jxr_linenumber" name="L298" href="#L298">298</a>         Long card1ContentResourceId = client.resourceRestEndpoint
 <a class="jxr_linenumber" name="L299" href="#L299">299</a>             .createResource(card1ContentResource);
 <a class="jxr_linenumber" name="L300" href="#L300">300</a> 
-<a class="jxr_linenumber" name="L301" href="#L301">301</a>         ResourceCreationBean card2LocalTypeResource = <strong class="jxr_keyword">new</strong> ResourceCreationBean();
+<a class="jxr_linenumber" name="L301" href="#L301">301</a>         ResourceCreationData card2LocalTypeResource = <strong class="jxr_keyword">new</strong> ResourceCreationData();
 <a class="jxr_linenumber" name="L302" href="#L302">302</a>         card2LocalTypeResource.setDocuments(List.of(<strong class="jxr_keyword">new</strong> ExternalLink()));
 <a class="jxr_linenumber" name="L303" href="#L303">303</a>         card2LocalTypeResource.setAbstractCardTypeId(card2LocalTypeId);
 <a class="jxr_linenumber" name="L304" href="#L304">304</a>         Long card2LocalTypeResourceId = client.resourceRestEndpoint
 <a class="jxr_linenumber" name="L305" href="#L305">305</a>             .createResource(card2LocalTypeResource);
 <a class="jxr_linenumber" name="L306" href="#L306">306</a> 
-<a class="jxr_linenumber" name="L307" href="#L307">307</a>         ResourceCreationBean card2Resource = <strong class="jxr_keyword">new</strong> ResourceCreationBean();
+<a class="jxr_linenumber" name="L307" href="#L307">307</a>         ResourceCreationData card2Resource = <strong class="jxr_keyword">new</strong> ResourceCreationData();
 <a class="jxr_linenumber" name="L308" href="#L308">308</a>         card2Resource.setDocuments(List.of(<strong class="jxr_keyword">new</strong> ExternalLink()));
 <a class="jxr_linenumber" name="L309" href="#L309">309</a>         card2Resource.setCardId(card2Id);
 <a class="jxr_linenumber" name="L310" href="#L310">310</a>         Long card2ResourceId = client.resourceRestEndpoint.createResource(card2Resource);
 <a class="jxr_linenumber" name="L311" href="#L311">311</a> 
-<a class="jxr_linenumber" name="L312" href="#L312">312</a>         ResourceCreationBean card2ContentResource = <strong class="jxr_keyword">new</strong> ResourceCreationBean();
+<a class="jxr_linenumber" name="L312" href="#L312">312</a>         ResourceCreationData card2ContentResource = <strong class="jxr_keyword">new</strong> ResourceCreationData();
 <a class="jxr_linenumber" name="L313" href="#L313">313</a>         card2ContentResource.setDocuments(List.of(<strong class="jxr_keyword">new</strong> ExternalLink()));
 <a class="jxr_linenumber" name="L314" href="#L314">314</a>         card2ContentResource.setCardContentId(card2ContentId);
 <a class="jxr_linenumber" name="L315" href="#L315">315</a>         Long card2ContentResourceId = client.resourceRestEndpoint
 <a class="jxr_linenumber" name="L316" href="#L316">316</a>             .createResource(card2ContentResource);
 <a class="jxr_linenumber" name="L317" href="#L317">317</a> 
-<a class="jxr_linenumber" name="L318" href="#L318">318</a>         ResourceCreationBean anotherGlobalCardTypeResource = <strong class="jxr_keyword">new</strong> ResourceCreationBean();
+<a class="jxr_linenumber" name="L318" href="#L318">318</a>         ResourceCreationData anotherGlobalCardTypeResource = <strong class="jxr_keyword">new</strong> ResourceCreationData();
 <a class="jxr_linenumber" name="L319" href="#L319">319</a>         anotherGlobalCardTypeResource.setDocuments(List.of(<strong class="jxr_keyword">new</strong> ExternalLink()));
 <a class="jxr_linenumber" name="L320" href="#L320">320</a>         anotherGlobalCardTypeResource.setAbstractCardTypeId(anotherGlobalCardTypeId);
 <a class="jxr_linenumber" name="L321" href="#L321">321</a>         Long anotherGlobalCardTypeResourceId = client.resourceRestEndpoint
 <a class="jxr_linenumber" name="L322" href="#L322">322</a>             .createResource(anotherGlobalCardTypeResource);
 <a class="jxr_linenumber" name="L323" href="#L323">323</a> 
-<a class="jxr_linenumber" name="L324" href="#L324">324</a>         ResourceCreationBean anotherLocalCardTypeResource = <strong class="jxr_keyword">new</strong> ResourceCreationBean();
+<a class="jxr_linenumber" name="L324" href="#L324">324</a>         ResourceCreationData anotherLocalCardTypeResource = <strong class="jxr_keyword">new</strong> ResourceCreationData();
 <a class="jxr_linenumber" name="L325" href="#L325">325</a>         anotherLocalCardTypeResource.setDocuments(List.of(<strong class="jxr_keyword">new</strong> ExternalLink()));
 <a class="jxr_linenumber" name="L326" href="#L326">326</a>         anotherLocalCardTypeResource.setAbstractCardTypeId(anotherLocalCardTypeId);
 <a class="jxr_linenumber" name="L327" href="#L327">327</a>         Long anotherLocalCardTypeResourceId = client.resourceRestEndpoint

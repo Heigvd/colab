@@ -19,7 +19,7 @@
 <a class="jxr_linenumber" name="L11" href="#L11">11</a>  <strong class="jxr_keyword">import</strong> ch.colabproject.colab.api.model.document.ResourceRef;
 <a class="jxr_linenumber" name="L12" href="#L12">12</a>  <strong class="jxr_keyword">import</strong> ch.colabproject.colab.api.model.document.TextDataBlock;
 <a class="jxr_linenumber" name="L13" href="#L13">13</a>  <strong class="jxr_keyword">import</strong> ch.colabproject.colab.api.model.project.Project;
-<a class="jxr_linenumber" name="L14" href="#L14">14</a>  <strong class="jxr_keyword">import</strong> ch.colabproject.colab.api.<strong class="jxr_keyword">rest</strong>.document.bean.ResourceCreationBean;
+<a class="jxr_linenumber" name="L14" href="#L14">14</a>  <strong class="jxr_keyword">import</strong> ch.colabproject.colab.api.<strong class="jxr_keyword">rest</strong>.document.bean.ResourceCreationData;
 <a class="jxr_linenumber" name="L15" href="#L15">15</a>  <strong class="jxr_keyword">import</strong> ch.colabproject.colab.tests.tests.AbstractArquillianTest;
 <a class="jxr_linenumber" name="L16" href="#L16">16</a>  <strong class="jxr_keyword">import</strong> ch.colabproject.colab.tests.tests.ColabFactory;
 <a class="jxr_linenumber" name="L17" href="#L17">17</a>  <strong class="jxr_keyword">import</strong> java.util.List;
@@ -362,13 +362,13 @@
 <a class="jxr_linenumber" name="L354" href="#L354">354</a>         ExternalLink document = <strong class="jxr_keyword">new</strong> ExternalLink();
 <a class="jxr_linenumber" name="L355" href="#L355">355</a>         document.setUrl(url);
 <a class="jxr_linenumber" name="L356" href="#L356">356</a> 
-<a class="jxr_linenumber" name="L357" href="#L357">357</a>         ResourceCreationBean resourceCreationBean = <strong class="jxr_keyword">new</strong> ResourceCreationBean();
-<a class="jxr_linenumber" name="L358" href="#L358">358</a>         resourceCreationBean.setTitle(title);
-<a class="jxr_linenumber" name="L359" href="#L359">359</a>         resourceCreationBean.setTeaser(teaserBlock);
-<a class="jxr_linenumber" name="L360" href="#L360">360</a>         resourceCreationBean.setDocuments(List.of(document));
-<a class="jxr_linenumber" name="L361" href="#L361">361</a>         resourceCreationBean.setAbstractCardTypeId(cardTypeId);
+<a class="jxr_linenumber" name="L357" href="#L357">357</a>         ResourceCreationData resourceCreationData = <strong class="jxr_keyword">new</strong> ResourceCreationData();
+<a class="jxr_linenumber" name="L358" href="#L358">358</a>         resourceCreationData.setTitle(title);
+<a class="jxr_linenumber" name="L359" href="#L359">359</a>         resourceCreationData.setTeaser(teaserBlock);
+<a class="jxr_linenumber" name="L360" href="#L360">360</a>         resourceCreationData.setDocuments(List.of(document));
+<a class="jxr_linenumber" name="L361" href="#L361">361</a>         resourceCreationData.setAbstractCardTypeId(cardTypeId);
 <a class="jxr_linenumber" name="L362" href="#L362">362</a> 
-<a class="jxr_linenumber" name="L363" href="#L363">363</a>         Long persistedResourceId = client.resourceRestEndpoint.createResource(resourceCreationBean);
+<a class="jxr_linenumber" name="L363" href="#L363">363</a>         Long persistedResourceId = client.resourceRestEndpoint.createResource(resourceCreationData);
 <a class="jxr_linenumber" name="L364" href="#L364">364</a> 
 <a class="jxr_linenumber" name="L365" href="#L365">365</a>         <strong class="jxr_keyword">return</strong> (Resource) client.resourceRestEndpoint.getAbstractResource(persistedResourceId);
 <a class="jxr_linenumber" name="L366" href="#L366">366</a>     }

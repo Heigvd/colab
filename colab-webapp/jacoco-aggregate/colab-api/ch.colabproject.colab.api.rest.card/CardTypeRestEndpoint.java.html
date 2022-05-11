@@ -11,7 +11,7 @@ import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.model.card.AbstractCardType;
 import ch.colabproject.colab.api.model.card.CardType;
 import ch.colabproject.colab.api.persistence.jpa.card.CardTypeDao;
-import ch.colabproject.colab.api.rest.card.bean.CardTypeCreationBean;
+import ch.colabproject.colab.api.rest.card.bean.CardTypeCreationData;
 import ch.colabproject.colab.generator.model.annotations.AdminResource;
 import ch.colabproject.colab.generator.model.annotations.AuthenticationRequired;
 import java.util.List;
@@ -126,22 +126,22 @@ import org.slf4j.LoggerFactory;
     /**
      * Persist a card type.
      *
-     * @param cardTypeCreationBean Everything need to create the card type
+     * @param cardTypeCreationData Everything need to create the card type
      *
      * @return id of the persisted new card type
      */
     @POST
-    public Long createCardType(CardTypeCreationBean cardTypeCreationBean) {
-<span class="nc" id="L135">        logger.debug(&quot;create card type {}&quot;, cardTypeCreationBean);</span>
+    public Long createCardType(CardTypeCreationData cardTypeCreationData) {
+<span class="nc" id="L135">        logger.debug(&quot;create card type {}&quot;, cardTypeCreationData);</span>
 
 <span class="nc" id="L137">        CardType cardType = new CardType();</span>
-<span class="nc" id="L138">        cardType.setProjectId(cardTypeCreationBean.getProjectId());</span>
-<span class="nc" id="L139">        cardType.setTitle(cardTypeCreationBean.getTitle());</span>
-<span class="nc" id="L140">        cardType.setPurpose(cardTypeCreationBean.getPurpose());</span>
-<span class="nc" id="L141">        cardType.setTags(cardTypeCreationBean.getTags());</span>
+<span class="nc" id="L138">        cardType.setProjectId(cardTypeCreationData.getProjectId());</span>
+<span class="nc" id="L139">        cardType.setTitle(cardTypeCreationData.getTitle());</span>
+<span class="nc" id="L140">        cardType.setPurpose(cardTypeCreationData.getPurpose());</span>
+<span class="nc" id="L141">        cardType.setTags(cardTypeCreationData.getTags());</span>
 
-<span class="nc bnc" id="L143" title="All 2 branches missed.">        if (cardTypeCreationBean.getPurpose() != null) {</span>
-<span class="nc" id="L144">            cardTypeCreationBean.getPurpose().setPurposingCardType(cardType);</span>
+<span class="nc bnc" id="L143" title="All 2 branches missed.">        if (cardTypeCreationData.getPurpose() != null) {</span>
+<span class="nc" id="L144">            cardTypeCreationData.getPurpose().setPurposingCardType(cardType);</span>
         }
 
 <span class="nc" id="L147">        return cardTypeManager.createCardType(cardType).getId();</span>

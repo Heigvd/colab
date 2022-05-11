@@ -11,7 +11,7 @@ import ch.colabproject.colab.api.controller.link.StickyNoteLinkManager.SrcType;
 import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.model.link.StickyNoteLink;
 import ch.colabproject.colab.api.persistence.jpa.link.StickyNoteLinkDao;
-import ch.colabproject.colab.api.rest.link.bean.StickyNoteLinkCreationBean;
+import ch.colabproject.colab.api.rest.link.bean.StickyNoteLinkCreationData;
 import ch.colabproject.colab.generator.model.annotations.AuthenticationRequired;
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
@@ -90,25 +90,25 @@ import org.slf4j.LoggerFactory;
     /**
      * Persist the link
      *
-     * @param linkCreationBean Everything needed to create a link
+     * @param linkCreationData Everything needed to create a link
      *
      * @return id of the persisted new link
      */
     @POST
-    public Long createLink(StickyNoteLinkCreationBean linkCreationBean) {
-<span class="nc" id="L99">        logger.debug(&quot;create link {}&quot;, linkCreationBean);</span>
+    public Long createLink(StickyNoteLinkCreationData linkCreationData) {
+<span class="nc" id="L99">        logger.debug(&quot;create link {}&quot;, linkCreationData);</span>
 
 <span class="nc" id="L101">        StickyNoteLink link = new StickyNoteLink();</span>
-<span class="nc" id="L102">        link.setSrcCardId(linkCreationBean.getSrcCardId());</span>
-<span class="nc" id="L103">        link.setSrcCardContentId(linkCreationBean.getSrcCardContentId());</span>
-<span class="nc" id="L104">        link.setSrcResourceOrRefId(linkCreationBean.getSrcResourceOrRefId());</span>
-<span class="nc" id="L105">        link.setSrcDocumentId(linkCreationBean.getSrcDocumentId());</span>
-<span class="nc" id="L106">        link.setDestinationCardId(linkCreationBean.getDestinationCardId());</span>
-<span class="nc" id="L107">        link.setTeaser(linkCreationBean.getTeaser());</span>
-<span class="nc" id="L108">        link.setExplanation(linkCreationBean.getExplanation());</span>
+<span class="nc" id="L102">        link.setSrcCardId(linkCreationData.getSrcCardId());</span>
+<span class="nc" id="L103">        link.setSrcCardContentId(linkCreationData.getSrcCardContentId());</span>
+<span class="nc" id="L104">        link.setSrcResourceOrRefId(linkCreationData.getSrcResourceOrRefId());</span>
+<span class="nc" id="L105">        link.setSrcDocumentId(linkCreationData.getSrcDocumentId());</span>
+<span class="nc" id="L106">        link.setDestinationCardId(linkCreationData.getDestinationCardId());</span>
+<span class="nc" id="L107">        link.setTeaser(linkCreationData.getTeaser());</span>
+<span class="nc" id="L108">        link.setExplanation(linkCreationData.getExplanation());</span>
 
-<span class="nc bnc" id="L110" title="All 2 branches missed.">        if (linkCreationBean.getExplanation() != null) {</span>
-<span class="nc" id="L111">            linkCreationBean.getExplanation().setExplainingStickyNoteLink(link);</span>
+<span class="nc bnc" id="L110" title="All 2 branches missed.">        if (linkCreationData.getExplanation() != null) {</span>
+<span class="nc" id="L111">            linkCreationData.getExplanation().setExplainingStickyNoteLink(link);</span>
         }
 
 <span class="nc" id="L114">        return linkManager.createStickyNoteLink(link).getId();</span>

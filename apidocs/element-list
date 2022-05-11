@@ -46,6 +46,7 @@ ch.colabproject.colab.api.rest.link
 ch.colabproject.colab.api.rest.link.bean
 ch.colabproject.colab.api.rest.monitoring
 ch.colabproject.colab.api.rest.project
+ch.colabproject.colab.api.rest.project.bean
 ch.colabproject.colab.api.rest.team
 ch.colabproject.colab.api.rest.token
 ch.colabproject.colab.api.rest.user

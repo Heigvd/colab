@@ -19,7 +19,7 @@
 <a class="jxr_linenumber" name="L11" href="#L11">11</a>  <strong class="jxr_keyword">import</strong> ch.colabproject.colab.api.model.document.TextDataBlock;
 <a class="jxr_linenumber" name="L12" href="#L12">12</a>  <strong class="jxr_keyword">import</strong> ch.colabproject.colab.api.model.link.StickyNoteLink;
 <a class="jxr_linenumber" name="L13" href="#L13">13</a>  <strong class="jxr_keyword">import</strong> ch.colabproject.colab.api.model.project.Project;
-<a class="jxr_linenumber" name="L14" href="#L14">14</a>  <strong class="jxr_keyword">import</strong> ch.colabproject.colab.api.<strong class="jxr_keyword">rest</strong>.link.bean.StickyNoteLinkCreationBean;
+<a class="jxr_linenumber" name="L14" href="#L14">14</a>  <strong class="jxr_keyword">import</strong> ch.colabproject.colab.api.<strong class="jxr_keyword">rest</strong>.link.bean.StickyNoteLinkCreationData;
 <a class="jxr_linenumber" name="L15" href="#L15">15</a>  <strong class="jxr_keyword">import</strong> ch.colabproject.colab.tests.tests.AbstractArquillianTest;
 <a class="jxr_linenumber" name="L16" href="#L16">16</a>  <strong class="jxr_keyword">import</strong> ch.colabproject.colab.tests.tests.ColabFactory;
 <a class="jxr_linenumber" name="L17" href="#L17">17</a>  <strong class="jxr_keyword">import</strong> java.util.List;
@@ -51,7 +51,7 @@
 <a class="jxr_linenumber" name="L43" href="#L43">43</a>          explanationBlock.setMimeType(DEFAULT_MIME_TYPE);
 <a class="jxr_linenumber" name="L44" href="#L44">44</a>          explanationBlock.setTextData(explanation);
 <a class="jxr_linenumber" name="L45" href="#L45">45</a>  
-<a class="jxr_linenumber" name="L46" href="#L46">46</a>          StickyNoteLinkCreationBean linkToCreate = <strong class="jxr_keyword">new</strong> StickyNoteLinkCreationBean();
+<a class="jxr_linenumber" name="L46" href="#L46">46</a>          StickyNoteLinkCreationData linkToCreate = <strong class="jxr_keyword">new</strong> StickyNoteLinkCreationData();
 <a class="jxr_linenumber" name="L47" href="#L47">47</a>          linkToCreate.setSrcCardId(cardId);
 <a class="jxr_linenumber" name="L48" href="#L48">48</a>          linkToCreate.setDestinationCardId(workCardId);
 <a class="jxr_linenumber" name="L49" href="#L49">49</a>          linkToCreate.setTeaser(teaser);
@@ -105,7 +105,7 @@
 <a class="jxr_linenumber" name="L97" href="#L97">97</a>          explanationBlock.setMimeType(DEFAULT_MIME_TYPE);
 <a class="jxr_linenumber" name="L98" href="#L98">98</a>          explanationBlock.setTextData(explanation);
 <a class="jxr_linenumber" name="L99" href="#L99">99</a>  
-<a class="jxr_linenumber" name="L100" href="#L100">100</a>         StickyNoteLinkCreationBean linkToCreate = <strong class="jxr_keyword">new</strong> StickyNoteLinkCreationBean();
+<a class="jxr_linenumber" name="L100" href="#L100">100</a>         StickyNoteLinkCreationData linkToCreate = <strong class="jxr_keyword">new</strong> StickyNoteLinkCreationData();
 <a class="jxr_linenumber" name="L101" href="#L101">101</a>         linkToCreate.setSrcCardContentId(cardContentId);
 <a class="jxr_linenumber" name="L102" href="#L102">102</a>         linkToCreate.setDestinationCardId(workCardId);
 <a class="jxr_linenumber" name="L103" href="#L103">103</a>         linkToCreate.setTeaser(teaser);
@@ -154,7 +154,7 @@
 <a class="jxr_linenumber" name="L146" href="#L146">146</a>         explanationBlock.setMimeType(DEFAULT_MIME_TYPE);
 <a class="jxr_linenumber" name="L147" href="#L147">147</a>         explanationBlock.setTextData(explanation);
 <a class="jxr_linenumber" name="L148" href="#L148">148</a> 
-<a class="jxr_linenumber" name="L149" href="#L149">149</a>         StickyNoteLinkCreationBean linkToCreate = <strong class="jxr_keyword">new</strong> StickyNoteLinkCreationBean();
+<a class="jxr_linenumber" name="L149" href="#L149">149</a>         StickyNoteLinkCreationData linkToCreate = <strong class="jxr_keyword">new</strong> StickyNoteLinkCreationData();
 <a class="jxr_linenumber" name="L150" href="#L150">150</a>         linkToCreate.setSrcResourceOrRefId(resourceId);
 <a class="jxr_linenumber" name="L151" href="#L151">151</a>         linkToCreate.setDestinationCardId(workCardId);
 <a class="jxr_linenumber" name="L152" href="#L152">152</a>         linkToCreate.setTeaser(teaser);
@@ -209,7 +209,7 @@
 <a class="jxr_linenumber" name="L201" href="#L201">201</a>         explanationBlock.setMimeType(DEFAULT_MIME_TYPE);
 <a class="jxr_linenumber" name="L202" href="#L202">202</a>         explanationBlock.setTextData(explanation);
 <a class="jxr_linenumber" name="L203" href="#L203">203</a> 
-<a class="jxr_linenumber" name="L204" href="#L204">204</a>         StickyNoteLinkCreationBean linkToCreate = <strong class="jxr_keyword">new</strong> StickyNoteLinkCreationBean();
+<a class="jxr_linenumber" name="L204" href="#L204">204</a>         StickyNoteLinkCreationData linkToCreate = <strong class="jxr_keyword">new</strong> StickyNoteLinkCreationData();
 <a class="jxr_linenumber" name="L205" href="#L205">205</a>         linkToCreate.setSrcResourceOrRefId(resourceRefId);
 <a class="jxr_linenumber" name="L206" href="#L206">206</a>         linkToCreate.setDestinationCardId(workCardId);
 <a class="jxr_linenumber" name="L207" href="#L207">207</a>         linkToCreate.setTeaser(teaser);
@@ -262,7 +262,7 @@
 <a class="jxr_linenumber" name="L254" href="#L254">254</a>         explanationBlock.setMimeType(DEFAULT_MIME_TYPE);
 <a class="jxr_linenumber" name="L255" href="#L255">255</a>         explanationBlock.setTextData(explanation);
 <a class="jxr_linenumber" name="L256" href="#L256">256</a> 
-<a class="jxr_linenumber" name="L257" href="#L257">257</a>         StickyNoteLinkCreationBean linkToCreate = <strong class="jxr_keyword">new</strong> StickyNoteLinkCreationBean();
+<a class="jxr_linenumber" name="L257" href="#L257">257</a>         StickyNoteLinkCreationData linkToCreate = <strong class="jxr_keyword">new</strong> StickyNoteLinkCreationData();
 <a class="jxr_linenumber" name="L258" href="#L258">258</a>         linkToCreate.setSrcDocumentId(docId);
 <a class="jxr_linenumber" name="L259" href="#L259">259</a>         linkToCreate.setDestinationCardId(workCardId);
 <a class="jxr_linenumber" name="L260" href="#L260">260</a>         linkToCreate.setTeaser(teaser);
@@ -300,7 +300,7 @@
 <a class="jxr_linenumber" name="L292" href="#L292">292</a> 
 <a class="jxr_linenumber" name="L293" href="#L293">293</a>         Long cardId = ColabFactory.createNewCard(client, project).getId();
 <a class="jxr_linenumber" name="L294" href="#L294">294</a> 
-<a class="jxr_linenumber" name="L295" href="#L295">295</a>         StickyNoteLinkCreationBean linkToCreate = <strong class="jxr_keyword">new</strong> StickyNoteLinkCreationBean();
+<a class="jxr_linenumber" name="L295" href="#L295">295</a>         StickyNoteLinkCreationData linkToCreate = <strong class="jxr_keyword">new</strong> StickyNoteLinkCreationData();
 <a class="jxr_linenumber" name="L296" href="#L296">296</a>         linkToCreate.setSrcCardId(cardId);
 <a class="jxr_linenumber" name="L297" href="#L297">297</a>         linkToCreate.setDestinationCardId(workCardId);
 <a class="jxr_linenumber" name="L298" href="#L298">298</a> 
@@ -328,7 +328,7 @@
 <a class="jxr_linenumber" name="L320" href="#L320">320</a> 
 <a class="jxr_linenumber" name="L321" href="#L321">321</a>         Long cardId = ColabFactory.createNewCard(client, project).getId();
 <a class="jxr_linenumber" name="L322" href="#L322">322</a> 
-<a class="jxr_linenumber" name="L323" href="#L323">323</a>         StickyNoteLinkCreationBean linkToCreate = <strong class="jxr_keyword">new</strong> StickyNoteLinkCreationBean();
+<a class="jxr_linenumber" name="L323" href="#L323">323</a>         StickyNoteLinkCreationData linkToCreate = <strong class="jxr_keyword">new</strong> StickyNoteLinkCreationData();
 <a class="jxr_linenumber" name="L324" href="#L324">324</a>         linkToCreate.setSrcCardId(cardId);
 <a class="jxr_linenumber" name="L325" href="#L325">325</a>         linkToCreate.setDestinationCardId(workCardId);
 <a class="jxr_linenumber" name="L326" href="#L326">326</a> 
@@ -388,7 +388,7 @@
 <a class="jxr_linenumber" name="L380" href="#L380">380</a> 
 <a class="jxr_linenumber" name="L381" href="#L381">381</a>         Long cardContentId = ColabFactory.getCardContent(client, cardId).getId();
 <a class="jxr_linenumber" name="L382" href="#L382">382</a> 
-<a class="jxr_linenumber" name="L383" href="#L383">383</a>         StickyNoteLinkCreationBean linkToCreate = <strong class="jxr_keyword">new</strong> StickyNoteLinkCreationBean();
+<a class="jxr_linenumber" name="L383" href="#L383">383</a>         StickyNoteLinkCreationData linkToCreate = <strong class="jxr_keyword">new</strong> StickyNoteLinkCreationData();
 <a class="jxr_linenumber" name="L384" href="#L384">384</a>         linkToCreate.setSrcCardId(cardId);
 <a class="jxr_linenumber" name="L385" href="#L385">385</a>         linkToCreate.setDestinationCardId(workCardId);
 <a class="jxr_linenumber" name="L386" href="#L386">386</a> 
@@ -443,7 +443,7 @@
 <a class="jxr_linenumber" name="L435" href="#L435">435</a> 
 <a class="jxr_linenumber" name="L436" href="#L436">436</a>         Long cardContentId = ColabFactory.getCardContent(client, cardId).getId();
 <a class="jxr_linenumber" name="L437" href="#L437">437</a> 
-<a class="jxr_linenumber" name="L438" href="#L438">438</a>         StickyNoteLinkCreationBean linkToCreate = <strong class="jxr_keyword">new</strong> StickyNoteLinkCreationBean();
+<a class="jxr_linenumber" name="L438" href="#L438">438</a>         StickyNoteLinkCreationData linkToCreate = <strong class="jxr_keyword">new</strong> StickyNoteLinkCreationData();
 <a class="jxr_linenumber" name="L439" href="#L439">439</a>         linkToCreate.setSrcCardContentId(cardContentId);
 <a class="jxr_linenumber" name="L440" href="#L440">440</a>         linkToCreate.setDestinationCardId(workCardId);
 <a class="jxr_linenumber" name="L441" href="#L441">441</a> 
@@ -501,7 +501,7 @@
 <a class="jxr_linenumber" name="L493" href="#L493">493</a>         List&lt;Document&gt; docs = client.resourceRestEndpoint.getDocumentsOfResource(resourceId);
 <a class="jxr_linenumber" name="L494" href="#L494">494</a>         Long documentId = docs.get(0).getId();
 <a class="jxr_linenumber" name="L495" href="#L495">495</a> 
-<a class="jxr_linenumber" name="L496" href="#L496">496</a>         StickyNoteLinkCreationBean linkToCreate = <strong class="jxr_keyword">new</strong> StickyNoteLinkCreationBean();
+<a class="jxr_linenumber" name="L496" href="#L496">496</a>         StickyNoteLinkCreationData linkToCreate = <strong class="jxr_keyword">new</strong> StickyNoteLinkCreationData();
 <a class="jxr_linenumber" name="L497" href="#L497">497</a>         linkToCreate.setSrcResourceOrRefId(resourceId);
 <a class="jxr_linenumber" name="L498" href="#L498">498</a>         linkToCreate.setDestinationCardId(workCardId);
 <a class="jxr_linenumber" name="L499" href="#L499">499</a> 
@@ -559,7 +559,7 @@
 <a class="jxr_linenumber" name="L551" href="#L551">551</a>         TextDataBlock document = (TextDataBlock) docs.get(0);
 <a class="jxr_linenumber" name="L552" href="#L552">552</a>         Long docId = document.getId();
 <a class="jxr_linenumber" name="L553" href="#L553">553</a> 
-<a class="jxr_linenumber" name="L554" href="#L554">554</a>         StickyNoteLinkCreationBean linkToCreate = <strong class="jxr_keyword">new</strong> StickyNoteLinkCreationBean();
+<a class="jxr_linenumber" name="L554" href="#L554">554</a>         StickyNoteLinkCreationData linkToCreate = <strong class="jxr_keyword">new</strong> StickyNoteLinkCreationData();
 <a class="jxr_linenumber" name="L555" href="#L555">555</a>         linkToCreate.setSrcDocumentId(docId);
 <a class="jxr_linenumber" name="L556" href="#L556">556</a>         linkToCreate.setDestinationCardId(workCardId);
 <a class="jxr_linenumber" name="L557" href="#L557">557</a> 
@@ -611,7 +611,7 @@
 <a class="jxr_linenumber" name="L603" href="#L603">603</a> 
 <a class="jxr_linenumber" name="L604" href="#L604">604</a>         Long cardId = ColabFactory.createNewCard(client, project).getId();
 <a class="jxr_linenumber" name="L605" href="#L605">605</a> 
-<a class="jxr_linenumber" name="L606" href="#L606">606</a>         StickyNoteLinkCreationBean linkToCreate = <strong class="jxr_keyword">new</strong> StickyNoteLinkCreationBean();
+<a class="jxr_linenumber" name="L606" href="#L606">606</a>         StickyNoteLinkCreationData linkToCreate = <strong class="jxr_keyword">new</strong> StickyNoteLinkCreationData();
 <a class="jxr_linenumber" name="L607" href="#L607">607</a>         linkToCreate.setSrcCardId(cardId);
 <a class="jxr_linenumber" name="L608" href="#L608">608</a>         linkToCreate.setDestinationCardId(workCardId);
 <a class="jxr_linenumber" name="L609" href="#L609">609</a> 

@@ -15,7 +15,7 @@ import ch.colabproject.colab.api.model.document.Resource;
 import ch.colabproject.colab.api.model.document.ResourceRef;
 import ch.colabproject.colab.api.model.link.StickyNoteLink;
 import ch.colabproject.colab.api.persistence.jpa.document.ResourceDao;
-import ch.colabproject.colab.api.rest.document.bean.ResourceCreationBean;
+import ch.colabproject.colab.api.rest.document.bean.ResourceCreationData;
 import ch.colabproject.colab.generator.model.annotations.AuthenticationRequired;
 import java.util.List;
 import javax.inject.Inject;
@@ -191,30 +191,30 @@ import org.slf4j.LoggerFactory;
     /**
      * Create a resource
      *
-     * @param resourceCreationBean Everything needed to create a resource
+     * @param resourceCreationData Everything needed to create a resource
      *
      * @return the brand new resource id
      */
     @POST
     @Path(&quot;create&quot;)
-    public Long createResource(ResourceCreationBean resourceCreationBean) {
-<span class="nc" id="L201">        logger.debug(&quot;create resource {}&quot;, resourceCreationBean);</span>
+    public Long createResource(ResourceCreationData resourceCreationData) {
+<span class="nc" id="L201">        logger.debug(&quot;create resource {}&quot;, resourceCreationData);</span>
 
 <span class="nc" id="L203">        Resource resource = new Resource();</span>
-<span class="nc" id="L204">        resource.setTitle(resourceCreationBean.getTitle());</span>
-<span class="nc" id="L205">        resource.setTeaser(resourceCreationBean.getTeaser());</span>
+<span class="nc" id="L204">        resource.setTitle(resourceCreationData.getTitle());</span>
+<span class="nc" id="L205">        resource.setTeaser(resourceCreationData.getTeaser());</span>
 <span class="nc bnc" id="L206" title="All 2 branches missed.">        if (resource.getTeaser() != null) {</span>
 <span class="nc" id="L207">            resource.getTeaser().setTeasingResource(resource);</span>
         }
-<span class="nc" id="L209">        resource.setCategory(resourceCreationBean.getCategory());</span>
-<span class="nc" id="L210">        resource.setAbstractCardTypeId(resourceCreationBean.getAbstractCardTypeId());</span>
-<span class="nc" id="L211">        resource.setCardId(resourceCreationBean.getCardId());</span>
-<span class="nc" id="L212">        resource.setCardContentId(resourceCreationBean.getCardContentId());</span>
+<span class="nc" id="L209">        resource.setCategory(resourceCreationData.getCategory());</span>
+<span class="nc" id="L210">        resource.setAbstractCardTypeId(resourceCreationData.getAbstractCardTypeId());</span>
+<span class="nc" id="L211">        resource.setCardId(resourceCreationData.getCardId());</span>
+<span class="nc" id="L212">        resource.setCardContentId(resourceCreationData.getCardContentId());</span>
 
 <span class="nc" id="L214">        Resource newResource = resourceManager.createResource(resource);</span>
 
-<span class="nc bnc" id="L216" title="All 2 branches missed.">        if (CollectionUtils.isNotEmpty(resourceCreationBean.getDocuments())) {</span>
-<span class="nc bnc" id="L217" title="All 2 branches missed.">            for (Document document : resourceCreationBean.getDocuments()) {</span>
+<span class="nc bnc" id="L216" title="All 2 branches missed.">        if (CollectionUtils.isNotEmpty(resourceCreationData.getDocuments())) {</span>
+<span class="nc bnc" id="L217" title="All 2 branches missed.">            for (Document document : resourceCreationData.getDocuments()) {</span>
 <span class="nc" id="L218">                resourceManager.addDocument(newResource.getId(), document);</span>
 <span class="nc" id="L219">            }</span>
         }
