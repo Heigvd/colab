@@ -14,7 +14,7 @@ import ch.colabproject.colab.api.model.document.ExternalLink;
 import ch.colabproject.colab.api.model.document.Resource;
 import ch.colabproject.colab.api.model.document.ResourceRef;
 import ch.colabproject.colab.api.model.project.Project;
-import ch.colabproject.colab.api.rest.document.bean.ResourceCreationBean;
+import ch.colabproject.colab.api.rest.document.bean.ResourceCreationData;
 import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage.MessageCode;
 import ch.colabproject.colab.tests.tests.AbstractArquillianTest;
 import ch.colabproject.colab.tests.tests.ColabFactory;
@@ -47,7 +47,7 @@ public class ResourceAndReferenceMoveTest extends AbstractArquillianTest {
 
         // local type one
         CardType localTypeOne = ColabFactory.createCardType(client, project);
-        ResourceCreationBean localTypeOneResourceCreation = new ResourceCreationBean();
+        ResourceCreationData localTypeOneResourceCreation = new ResourceCreationData();
         localTypeOneResourceCreation.setTitle("local type one resource");
         localTypeOneResourceCreation.setDocuments(List.of(new ExternalLink()));
         localTypeOneResourceCreation.setAbstractCardTypeId(localTypeOne.getId());
@@ -58,7 +58,7 @@ public class ResourceAndReferenceMoveTest extends AbstractArquillianTest {
 
         // local type two
         CardType localTypeTwo = ColabFactory.createCardType(client, project);
-        ResourceCreationBean localTypeTwoResourceCreation = new ResourceCreationBean();
+        ResourceCreationData localTypeTwoResourceCreation = new ResourceCreationData();
         localTypeTwoResourceCreation.setTitle("local type two resource");
         localTypeTwoResourceCreation.setDocuments(List.of(new ExternalLink()));
         localTypeTwoResourceCreation.setAbstractCardTypeId(localTypeTwo.getId());
@@ -70,7 +70,7 @@ public class ResourceAndReferenceMoveTest extends AbstractArquillianTest {
         // root card
         Card rootCard = ColabFactory.getRootCard(client, project);
         CardContent rootCardContent = ColabFactory.getRootContent(client, project);
-        ResourceCreationBean rootCardResourceCreation = new ResourceCreationBean();
+        ResourceCreationData rootCardResourceCreation = new ResourceCreationData();
         rootCardResourceCreation.setTitle("root card resource");
         rootCardResourceCreation.setDocuments(List.of(new ExternalLink()));
         rootCardResourceCreation.setCardId(rootCard.getId());
@@ -82,7 +82,7 @@ public class ResourceAndReferenceMoveTest extends AbstractArquillianTest {
         // card 1 (first level)
         Card card1 = ColabFactory.createNewCard(client, rootCardContent, localTypeOne);
         CardContent cardContent1 = ColabFactory.getCardContent(client, card1.getId());
-        ResourceCreationBean card1ResourceCreation = new ResourceCreationBean();
+        ResourceCreationData card1ResourceCreation = new ResourceCreationData();
         card1ResourceCreation.setTitle("card 1 resource");
         card1ResourceCreation.setDocuments(List.of(new ExternalLink()));
         card1ResourceCreation.setCardId(card1.getId());
@@ -93,7 +93,7 @@ public class ResourceAndReferenceMoveTest extends AbstractArquillianTest {
         // card 2 (first level)
         Card card2 = ColabFactory.createNewCard(client, rootCardContent, localTypeOne);
         CardContent cardContent2 = ColabFactory.getCardContent(client, card2.getId());
-        ResourceCreationBean card2ResourceCreation = new ResourceCreationBean();
+        ResourceCreationData card2ResourceCreation = new ResourceCreationData();
         card2ResourceCreation.setTitle("card 2 resource");
         card2ResourceCreation.setDocuments(List.of(new ExternalLink()));
         card2ResourceCreation.setCardId(card2.getId());
@@ -104,7 +104,7 @@ public class ResourceAndReferenceMoveTest extends AbstractArquillianTest {
         // sub card 2 (second level)
         Card subCard22 = ColabFactory.createNewCard(client, cardContent2, localTypeOne);
         CardContent subCardContent22 = ColabFactory.getCardContent(client, subCard22.getId());
-        ResourceCreationBean subCard22ResourceCreation = new ResourceCreationBean();
+        ResourceCreationData subCard22ResourceCreation = new ResourceCreationData();
         subCard22ResourceCreation.setTitle("sub card 22 resource");
         subCard22ResourceCreation.setDocuments(List.of(new ExternalLink()));
         subCard22ResourceCreation.setCardId(subCard22.getId());
@@ -117,7 +117,7 @@ public class ResourceAndReferenceMoveTest extends AbstractArquillianTest {
         Card wanderingCard = ColabFactory.createNewCard(client, cardContent2, localTypeTwo);
         CardContent wanderingCardContent = ColabFactory.getCardContent(client,
             wanderingCard.getId());
-        ResourceCreationBean wanderingCardResourceCreation = new ResourceCreationBean();
+        ResourceCreationData wanderingCardResourceCreation = new ResourceCreationData();
         wanderingCardResourceCreation.setTitle("wandering card title");
         wanderingCardResourceCreation.setDocuments(List.of(new ExternalLink()));
         wanderingCardResourceCreation.setCardId(wanderingCard.getId());
@@ -131,7 +131,7 @@ public class ResourceAndReferenceMoveTest extends AbstractArquillianTest {
             .createNewCard(client, wanderingCardContent, localTypeTwo);
         CardContent subWanderingCardContent = ColabFactory.getCardContent(client,
             subWanderingCard.getId());
-        ResourceCreationBean subWanderingCardResourceCreation = new ResourceCreationBean();
+        ResourceCreationData subWanderingCardResourceCreation = new ResourceCreationData();
         subWanderingCardResourceCreation.setTitle("sub wandering card resource");
         subWanderingCardResourceCreation.setDocuments(List.of(new ExternalLink()));
         subWanderingCardResourceCreation.setCardId(subWanderingCard.getId());

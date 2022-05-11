@@ -18,6 +18,7 @@ import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.api.model.team.TeamMember;
 import ch.colabproject.colab.api.model.team.TeamRole;
 import ch.colabproject.colab.api.persistence.jpa.project.ProjectDao;
+import ch.colabproject.colab.api.rest.project.bean.ProjectCreationData;
 import ch.colabproject.colab.generator.model.annotations.AdminResource;
 import ch.colabproject.colab.generator.model.annotations.AuthenticationRequired;
 import java.util.List;
@@ -111,9 +112,41 @@ public class ProjectRestEndpoint {
      * @return id of the persisted new project
      */
     @POST
-    public Long createProject(Project project) {
+    @Path("createEmpty")
+    public Long createEmptyProject(Project project) {
         logger.debug("Create project {}", project);
         return projectManager.createProject(project).getId();
+    }
+
+    /**
+     * Create a new project with the provided data and register current user as a member.
+     *
+     * @param creationData the data needed to fill the project
+     *
+     * @return id of the persisted new project
+     */
+    @POST
+    @Path("createWithModel")
+    public Long createProject(ProjectCreationData creationData) {
+        logger.debug("Create a project with {}", creationData);
+
+        Project project;
+
+        if (creationData.getModelId() == null) {
+            project = new Project();
+            project.setName(creationData.getName());
+            project.setDescription(creationData.getDescription());
+            createEmptyProject(project);
+        } else {
+            project = projectManager.createProjectFromModel(creationData.getName(),
+                creationData.getDescription(), creationData.getModelId());
+        }
+
+        creationData.getGuestsEmail().stream().forEach(email -> {
+            teamManager.invite(project.getId(), email);
+        });
+
+        return project.getId();
     }
 
     /**
@@ -156,10 +189,10 @@ public class ProjectRestEndpoint {
 
         DuplicationParam effectiveParams = params;
         if (effectiveParams == null) {
-            effectiveParams = DuplicationParam.getProjectDefaultInstance();
+            effectiveParams = DuplicationParam.buildDefaultForCopyOfProject();
         }
 
-        return projectManager.duplicateProject(projectId, effectiveParams);
+        return projectManager.duplicateProject(projectId, effectiveParams).getId();
     }
 
     /**

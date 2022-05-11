@@ -33,6 +33,7 @@ import {
   invertedButtonStyle,
   space_M,
 } from '../styling/style';
+import ProjectCreator from './ProjectCreator';
 
 const projectListStyle = css({
   margin: 'auto',
@@ -215,10 +216,13 @@ function ProjectList({ projects, status, reload }: ProjectListProps) {
               }
             })}
         </div>
+        {/* TODO work in progress : replace the Create a project Button by the ProjectCreator */}
+        {/* <ProjectCreator collapsedButtonClassName={fixedButtonStyle} /> */}
+        <ProjectCreator />
         <Button
           onClick={() => {
             dispatch(
-              API.createProject({
+              API.createEmptyProject({
                 '@class': 'Project',
                 name: '',
               }),

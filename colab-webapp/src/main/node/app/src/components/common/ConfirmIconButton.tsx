@@ -124,7 +124,7 @@ export function InlineConfirmIconButton({
   );
 }
 
-export interface BubbledProps {
+export interface ConfirmIconButtonProps {
   icon: IconProp;
   title: string;
   className?: string;
@@ -144,7 +144,7 @@ export function ConfirmIconButton({
   cancelInvite,
   confirmInvite,
   position = 'CENTER',
-}: BubbledProps): JSX.Element {
+}: ConfirmIconButtonProps): JSX.Element {
   const [waitConfirm, setConfirm] = React.useState(false);
   const i18n = useTranslations();
 

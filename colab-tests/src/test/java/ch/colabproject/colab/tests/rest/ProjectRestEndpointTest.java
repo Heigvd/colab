@@ -47,7 +47,7 @@ public class ProjectRestEndpointTest extends AbstractArquillianTest {
 
         Project project = new Project();
 
-        Long projectId = client.projectRestEndpoint.createProject(project);
+        Long projectId = client.projectRestEndpoint.createEmptyProject(project);
 
         Project persistedProject = client.projectRestEndpoint.getProject(projectId);
         Assertions.assertNotNull(persistedProject);
@@ -121,7 +121,7 @@ public class ProjectRestEndpointTest extends AbstractArquillianTest {
     public void testUpdateProject() {
         Project project = new Project();
 
-        Long projectId = client.projectRestEndpoint.createProject(project);
+        Long projectId = client.projectRestEndpoint.createEmptyProject(project);
         project = client.projectRestEndpoint.getProject(projectId);
         project.setName("The Hitchhiker's Guide to the Serious-Game");
         project.setDescription("So Long, and Thanks for All the Games");
@@ -137,11 +137,11 @@ public class ProjectRestEndpointTest extends AbstractArquillianTest {
     public void testGetAllProjects() {
         Project project = new Project();
         project.setName("The Hitchhiker's Guide to the Serious-Game");
-        client.projectRestEndpoint.createProject(project);
+        client.projectRestEndpoint.createEmptyProject(project);
 
         project = new Project();
         project.setName("Don't Panic");
-        client.projectRestEndpoint.createProject(project);
+        client.projectRestEndpoint.createEmptyProject(project);
 
         List<Project> projects = client.projectRestEndpoint.getAllProjects();
         Assertions.assertEquals(2, projects.size());
@@ -171,7 +171,7 @@ public class ProjectRestEndpointTest extends AbstractArquillianTest {
         Project p = new Project();
         p.setName("The Hitchhiker's Guide to the Serious-Game");
 
-        Long projectId = client.projectRestEndpoint.createProject(p);
+        Long projectId = client.projectRestEndpoint.createEmptyProject(p);
 
         // Goulash receives the project and the teamMember which link the project to the user
         WsUpdateMessage wsProjectUpdate = TestHelper

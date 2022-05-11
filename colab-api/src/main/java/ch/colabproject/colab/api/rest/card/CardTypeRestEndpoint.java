@@ -11,7 +11,7 @@ import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.model.card.AbstractCardType;
 import ch.colabproject.colab.api.model.card.CardType;
 import ch.colabproject.colab.api.persistence.jpa.card.CardTypeDao;
-import ch.colabproject.colab.api.rest.card.bean.CardTypeCreationBean;
+import ch.colabproject.colab.api.rest.card.bean.CardTypeCreationData;
 import ch.colabproject.colab.generator.model.annotations.AdminResource;
 import ch.colabproject.colab.generator.model.annotations.AuthenticationRequired;
 import java.util.List;
@@ -126,22 +126,22 @@ public class CardTypeRestEndpoint {
     /**
      * Persist a card type.
      *
-     * @param cardTypeCreationBean Everything need to create the card type
+     * @param cardTypeCreationData Everything need to create the card type
      *
      * @return id of the persisted new card type
      */
     @POST
-    public Long createCardType(CardTypeCreationBean cardTypeCreationBean) {
-        logger.debug("create card type {}", cardTypeCreationBean);
+    public Long createCardType(CardTypeCreationData cardTypeCreationData) {
+        logger.debug("create card type {}", cardTypeCreationData);
 
         CardType cardType = new CardType();
-        cardType.setProjectId(cardTypeCreationBean.getProjectId());
-        cardType.setTitle(cardTypeCreationBean.getTitle());
-        cardType.setPurpose(cardTypeCreationBean.getPurpose());
-        cardType.setTags(cardTypeCreationBean.getTags());
+        cardType.setProjectId(cardTypeCreationData.getProjectId());
+        cardType.setTitle(cardTypeCreationData.getTitle());
+        cardType.setPurpose(cardTypeCreationData.getPurpose());
+        cardType.setTags(cardTypeCreationData.getTags());
 
-        if (cardTypeCreationBean.getPurpose() != null) {
-            cardTypeCreationBean.getPurpose().setPurposingCardType(cardType);
+        if (cardTypeCreationData.getPurpose() != null) {
+            cardTypeCreationData.getPurpose().setPurposingCardType(cardType);
         }
 
         return cardTypeManager.createCardType(cardType).getId();

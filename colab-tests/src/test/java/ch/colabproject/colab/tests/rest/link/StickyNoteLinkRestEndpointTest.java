@@ -11,7 +11,7 @@ import ch.colabproject.colab.api.model.document.Document;
 import ch.colabproject.colab.api.model.document.TextDataBlock;
 import ch.colabproject.colab.api.model.link.StickyNoteLink;
 import ch.colabproject.colab.api.model.project.Project;
-import ch.colabproject.colab.api.rest.link.bean.StickyNoteLinkCreationBean;
+import ch.colabproject.colab.api.rest.link.bean.StickyNoteLinkCreationData;
 import ch.colabproject.colab.tests.tests.AbstractArquillianTest;
 import ch.colabproject.colab.tests.tests.ColabFactory;
 import java.util.List;
@@ -43,7 +43,7 @@ public class StickyNoteLinkRestEndpointTest extends AbstractArquillianTest {
         explanationBlock.setMimeType(DEFAULT_MIME_TYPE);
         explanationBlock.setTextData(explanation);
 
-        StickyNoteLinkCreationBean linkToCreate = new StickyNoteLinkCreationBean();
+        StickyNoteLinkCreationData linkToCreate = new StickyNoteLinkCreationData();
         linkToCreate.setSrcCardId(cardId);
         linkToCreate.setDestinationCardId(workCardId);
         linkToCreate.setTeaser(teaser);
@@ -97,7 +97,7 @@ public class StickyNoteLinkRestEndpointTest extends AbstractArquillianTest {
         explanationBlock.setMimeType(DEFAULT_MIME_TYPE);
         explanationBlock.setTextData(explanation);
 
-        StickyNoteLinkCreationBean linkToCreate = new StickyNoteLinkCreationBean();
+        StickyNoteLinkCreationData linkToCreate = new StickyNoteLinkCreationData();
         linkToCreate.setSrcCardContentId(cardContentId);
         linkToCreate.setDestinationCardId(workCardId);
         linkToCreate.setTeaser(teaser);
@@ -146,7 +146,7 @@ public class StickyNoteLinkRestEndpointTest extends AbstractArquillianTest {
         explanationBlock.setMimeType(DEFAULT_MIME_TYPE);
         explanationBlock.setTextData(explanation);
 
-        StickyNoteLinkCreationBean linkToCreate = new StickyNoteLinkCreationBean();
+        StickyNoteLinkCreationData linkToCreate = new StickyNoteLinkCreationData();
         linkToCreate.setSrcResourceOrRefId(resourceId);
         linkToCreate.setDestinationCardId(workCardId);
         linkToCreate.setTeaser(teaser);
@@ -201,7 +201,7 @@ public class StickyNoteLinkRestEndpointTest extends AbstractArquillianTest {
         explanationBlock.setMimeType(DEFAULT_MIME_TYPE);
         explanationBlock.setTextData(explanation);
 
-        StickyNoteLinkCreationBean linkToCreate = new StickyNoteLinkCreationBean();
+        StickyNoteLinkCreationData linkToCreate = new StickyNoteLinkCreationData();
         linkToCreate.setSrcResourceOrRefId(resourceRefId);
         linkToCreate.setDestinationCardId(workCardId);
         linkToCreate.setTeaser(teaser);
@@ -254,7 +254,7 @@ public class StickyNoteLinkRestEndpointTest extends AbstractArquillianTest {
         explanationBlock.setMimeType(DEFAULT_MIME_TYPE);
         explanationBlock.setTextData(explanation);
 
-        StickyNoteLinkCreationBean linkToCreate = new StickyNoteLinkCreationBean();
+        StickyNoteLinkCreationData linkToCreate = new StickyNoteLinkCreationData();
         linkToCreate.setSrcDocumentId(docId);
         linkToCreate.setDestinationCardId(workCardId);
         linkToCreate.setTeaser(teaser);
@@ -292,7 +292,7 @@ public class StickyNoteLinkRestEndpointTest extends AbstractArquillianTest {
 
         Long cardId = ColabFactory.createNewCard(client, project).getId();
 
-        StickyNoteLinkCreationBean linkToCreate = new StickyNoteLinkCreationBean();
+        StickyNoteLinkCreationData linkToCreate = new StickyNoteLinkCreationData();
         linkToCreate.setSrcCardId(cardId);
         linkToCreate.setDestinationCardId(workCardId);
 
@@ -320,7 +320,7 @@ public class StickyNoteLinkRestEndpointTest extends AbstractArquillianTest {
 
         Long cardId = ColabFactory.createNewCard(client, project).getId();
 
-        StickyNoteLinkCreationBean linkToCreate = new StickyNoteLinkCreationBean();
+        StickyNoteLinkCreationData linkToCreate = new StickyNoteLinkCreationData();
         linkToCreate.setSrcCardId(cardId);
         linkToCreate.setDestinationCardId(workCardId);
 
@@ -380,7 +380,7 @@ public class StickyNoteLinkRestEndpointTest extends AbstractArquillianTest {
 
         Long cardContentId = ColabFactory.getCardContent(client, cardId).getId();
 
-        StickyNoteLinkCreationBean linkToCreate = new StickyNoteLinkCreationBean();
+        StickyNoteLinkCreationData linkToCreate = new StickyNoteLinkCreationData();
         linkToCreate.setSrcCardId(cardId);
         linkToCreate.setDestinationCardId(workCardId);
 
@@ -435,7 +435,7 @@ public class StickyNoteLinkRestEndpointTest extends AbstractArquillianTest {
 
         Long cardContentId = ColabFactory.getCardContent(client, cardId).getId();
 
-        StickyNoteLinkCreationBean linkToCreate = new StickyNoteLinkCreationBean();
+        StickyNoteLinkCreationData linkToCreate = new StickyNoteLinkCreationData();
         linkToCreate.setSrcCardContentId(cardContentId);
         linkToCreate.setDestinationCardId(workCardId);
 
@@ -493,7 +493,7 @@ public class StickyNoteLinkRestEndpointTest extends AbstractArquillianTest {
         List<Document> docs = client.resourceRestEndpoint.getDocumentsOfResource(resourceId);
         Long documentId = docs.get(0).getId();
 
-        StickyNoteLinkCreationBean linkToCreate = new StickyNoteLinkCreationBean();
+        StickyNoteLinkCreationData linkToCreate = new StickyNoteLinkCreationData();
         linkToCreate.setSrcResourceOrRefId(resourceId);
         linkToCreate.setDestinationCardId(workCardId);
 
@@ -551,7 +551,7 @@ public class StickyNoteLinkRestEndpointTest extends AbstractArquillianTest {
         TextDataBlock document = (TextDataBlock) docs.get(0);
         Long docId = document.getId();
 
-        StickyNoteLinkCreationBean linkToCreate = new StickyNoteLinkCreationBean();
+        StickyNoteLinkCreationData linkToCreate = new StickyNoteLinkCreationData();
         linkToCreate.setSrcDocumentId(docId);
         linkToCreate.setDestinationCardId(workCardId);
 
@@ -603,7 +603,7 @@ public class StickyNoteLinkRestEndpointTest extends AbstractArquillianTest {
 
         Long cardId = ColabFactory.createNewCard(client, project).getId();
 
-        StickyNoteLinkCreationBean linkToCreate = new StickyNoteLinkCreationBean();
+        StickyNoteLinkCreationData linkToCreate = new StickyNoteLinkCreationData();
         linkToCreate.setSrcCardId(cardId);
         linkToCreate.setDestinationCardId(workCardId);
 

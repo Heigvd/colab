@@ -11,7 +11,7 @@ import ch.colabproject.colab.api.controller.link.StickyNoteLinkManager.SrcType;
 import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.model.link.StickyNoteLink;
 import ch.colabproject.colab.api.persistence.jpa.link.StickyNoteLinkDao;
-import ch.colabproject.colab.api.rest.link.bean.StickyNoteLinkCreationBean;
+import ch.colabproject.colab.api.rest.link.bean.StickyNoteLinkCreationData;
 import ch.colabproject.colab.generator.model.annotations.AuthenticationRequired;
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
@@ -90,25 +90,25 @@ public class StickyNoteLinkRestEndpoint {
     /**
      * Persist the link
      *
-     * @param linkCreationBean Everything needed to create a link
+     * @param linkCreationData Everything needed to create a link
      *
      * @return id of the persisted new link
      */
     @POST
-    public Long createLink(StickyNoteLinkCreationBean linkCreationBean) {
-        logger.debug("create link {}", linkCreationBean);
+    public Long createLink(StickyNoteLinkCreationData linkCreationData) {
+        logger.debug("create link {}", linkCreationData);
 
         StickyNoteLink link = new StickyNoteLink();
-        link.setSrcCardId(linkCreationBean.getSrcCardId());
-        link.setSrcCardContentId(linkCreationBean.getSrcCardContentId());
-        link.setSrcResourceOrRefId(linkCreationBean.getSrcResourceOrRefId());
-        link.setSrcDocumentId(linkCreationBean.getSrcDocumentId());
-        link.setDestinationCardId(linkCreationBean.getDestinationCardId());
-        link.setTeaser(linkCreationBean.getTeaser());
-        link.setExplanation(linkCreationBean.getExplanation());
+        link.setSrcCardId(linkCreationData.getSrcCardId());
+        link.setSrcCardContentId(linkCreationData.getSrcCardContentId());
+        link.setSrcResourceOrRefId(linkCreationData.getSrcResourceOrRefId());
+        link.setSrcDocumentId(linkCreationData.getSrcDocumentId());
+        link.setDestinationCardId(linkCreationData.getDestinationCardId());
+        link.setTeaser(linkCreationData.getTeaser());
+        link.setExplanation(linkCreationData.getExplanation());
 
-        if (linkCreationBean.getExplanation() != null) {
-            linkCreationBean.getExplanation().setExplainingStickyNoteLink(link);
+        if (linkCreationData.getExplanation() != null) {
+            linkCreationData.getExplanation().setExplainingStickyNoteLink(link);
         }
 
         return linkManager.createStickyNoteLink(link).getId();

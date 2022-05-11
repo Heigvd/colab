@@ -15,7 +15,7 @@ import ch.colabproject.colab.api.model.document.Resource;
 import ch.colabproject.colab.api.model.document.ResourceRef;
 import ch.colabproject.colab.api.model.link.StickyNoteLink;
 import ch.colabproject.colab.api.persistence.jpa.document.ResourceDao;
-import ch.colabproject.colab.api.rest.document.bean.ResourceCreationBean;
+import ch.colabproject.colab.api.rest.document.bean.ResourceCreationData;
 import ch.colabproject.colab.generator.model.annotations.AuthenticationRequired;
 import java.util.List;
 import javax.inject.Inject;
@@ -191,30 +191,30 @@ public class ResourceRestEndpoint {
     /**
      * Create a resource
      *
-     * @param resourceCreationBean Everything needed to create a resource
+     * @param resourceCreationData Everything needed to create a resource
      *
      * @return the brand new resource id
      */
     @POST
     @Path("create")
-    public Long createResource(ResourceCreationBean resourceCreationBean) {
-        logger.debug("create resource {}", resourceCreationBean);
+    public Long createResource(ResourceCreationData resourceCreationData) {
+        logger.debug("create resource {}", resourceCreationData);
 
         Resource resource = new Resource();
-        resource.setTitle(resourceCreationBean.getTitle());
-        resource.setTeaser(resourceCreationBean.getTeaser());
+        resource.setTitle(resourceCreationData.getTitle());
+        resource.setTeaser(resourceCreationData.getTeaser());
         if (resource.getTeaser() != null) {
             resource.getTeaser().setTeasingResource(resource);
         }
-        resource.setCategory(resourceCreationBean.getCategory());
-        resource.setAbstractCardTypeId(resourceCreationBean.getAbstractCardTypeId());
-        resource.setCardId(resourceCreationBean.getCardId());
-        resource.setCardContentId(resourceCreationBean.getCardContentId());
+        resource.setCategory(resourceCreationData.getCategory());
+        resource.setAbstractCardTypeId(resourceCreationData.getAbstractCardTypeId());
+        resource.setCardId(resourceCreationData.getCardId());
+        resource.setCardContentId(resourceCreationData.getCardContentId());
 
         Resource newResource = resourceManager.createResource(resource);
 
-        if (CollectionUtils.isNotEmpty(resourceCreationBean.getDocuments())) {
-            for (Document document : resourceCreationBean.getDocuments()) {
+        if (CollectionUtils.isNotEmpty(resourceCreationData.getDocuments())) {
+            for (Document document : resourceCreationData.getDocuments()) {
                 resourceManager.addDocument(newResource.getId(), document);
             }
         }

@@ -13,7 +13,7 @@ import Modal from './Modal';
 import OpenClose from './OpenClose';
 
 interface Props {
-  title: string;
+  title: React.ReactNode;
   className?: string;
   collapsedChildren: React.ReactNode;
   children: (collapse: () => void) => React.ReactNode;
