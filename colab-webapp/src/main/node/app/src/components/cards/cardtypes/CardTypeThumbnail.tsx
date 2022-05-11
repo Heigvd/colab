@@ -59,6 +59,8 @@ interface CardTypeThumbnailProps {
   onClick: (id: number) => void;
 }
 
+// TODO : make functional Flex/div
+
 export default function CardTypeThumbnail({
   cardType,
   highlighted,

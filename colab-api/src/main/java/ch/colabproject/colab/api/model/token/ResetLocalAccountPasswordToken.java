@@ -47,8 +47,8 @@ public class ResetLocalAccountPasswordToken extends Token {
     /**
      * The local account the token is linked to
      */
+    @OneToOne // FetchType.EAGER is fine
     @NotNull
-    @OneToOne
     @JsonbTransient
     private LocalAccount localAccount;
 
@@ -95,6 +95,7 @@ public class ResetLocalAccountPasswordToken extends Token {
         requestManager.login(localAccount);
     }
 
+    @JsonbTransient
     @Override
     public String getSubject() {
         return EMAIL_SUBJECT;

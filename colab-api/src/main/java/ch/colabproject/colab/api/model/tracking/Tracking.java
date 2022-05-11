@@ -12,6 +12,7 @@ import java.time.OffsetDateTime;
 import javax.json.bind.annotation.JsonbTypeDeserializer;
 import javax.json.bind.annotation.JsonbTypeSerializer;
 import javax.persistence.Embeddable;
+import javax.validation.constraints.Size;
 
 /**
  * To store the creation and modification dates as well as the user who initiate the action
@@ -33,6 +34,7 @@ public class Tracking implements WithJsonDiscriminator {
     /**
      * Create by "username"
      */
+    @Size(max = 255)
     private String createdBy;
 
     /**
@@ -45,6 +47,7 @@ public class Tracking implements WithJsonDiscriminator {
     /**
      * Modified by
      */
+    @Size(max = 255)
     private String modifiedBy;
 
     /**

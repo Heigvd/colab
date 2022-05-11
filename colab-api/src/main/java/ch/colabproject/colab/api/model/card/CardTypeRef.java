@@ -16,6 +16,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.persistence.Transient;
+import javax.validation.constraints.NotNull;
 
 /**
  * Reference to another existing abstract card type.
@@ -31,6 +32,9 @@ import javax.persistence.Transient;
 )
 @NamedQuery(name = "CardTypeRef.findTargetIds",
     query = "SELECT ctr.target.id FROM CardTypeRef ctr WHERE ctr.id IN :initIds")
+@NamedQuery(name = "CardTypeRef.findDirectReferences",
+    query = "SELECT ctr FROM CardTypeRef ctr "
+        + "WHERE ctr.target IS NOT NULL AND ctr.target.id = :targetId")
 public class CardTypeRef extends AbstractCardType {
 
     private static final long serialVersionUID = 1L;
@@ -43,6 +47,7 @@ public class CardTypeRef extends AbstractCardType {
      * The abstract card type this reference aims at
      */
     @ManyToOne(fetch = FetchType.LAZY)
+    @NotNull
     @JsonbTransient
     private AbstractCardType target;
 

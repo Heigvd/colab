@@ -13,8 +13,8 @@ import ch.colabproject.colab.api.model.card.Card;
 import ch.colabproject.colab.api.model.tools.EntityHelper;
 import ch.colabproject.colab.api.model.tracking.Tracking;
 import ch.colabproject.colab.api.security.permissions.Conditions;
-import ch.colabproject.colab.api.ws.channel.WebsocketChannel;
-import java.util.Set;
+import ch.colabproject.colab.api.ws.channel.tool.ChannelsBuilders.ChannelsBuilder;
+import ch.colabproject.colab.api.ws.channel.tool.ChannelsBuilders.EmptyChannelBuilder;
 import javax.json.bind.annotation.JsonbTransient;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
@@ -38,7 +38,7 @@ import javax.validation.constraints.NotNull;
 @Table(
     indexes = {
         @Index(columnList = "nextcard_id"),
-        @Index(columnList = "previouscard_id"),}
+        @Index(columnList = "previouscard_id"), }
 )
 public class ActivityFlowLink implements ColabEntity, WithWebsocketChannels {
 
@@ -67,8 +67,8 @@ public class ActivityFlowLink implements ColabEntity, WithWebsocketChannels {
     /**
      * The card to handle before
      */
-    @NotNull
     @ManyToOne(fetch = FetchType.LAZY)
+    @NotNull
     @JsonbTransient
     private Card previousCard;
 
@@ -81,8 +81,8 @@ public class ActivityFlowLink implements ColabEntity, WithWebsocketChannels {
     /**
      * The card to handle after
      */
-    @NotNull
     @ManyToOne(fetch = FetchType.LAZY)
+    @NotNull
     @JsonbTransient
     private Card nextCard;
 
@@ -214,8 +214,13 @@ public class ActivityFlowLink implements ColabEntity, WithWebsocketChannels {
     }
 
     @Override
-    public Set<WebsocketChannel> getChannels() {
-        return this.nextCard.getChannels();
+    public ChannelsBuilder getChannelsBuilder() {
+        if (this.nextCard != null) {
+            return this.nextCard.getChannelsBuilder();
+        } else {
+            // such an orphan shouldn't exist...
+            return new EmptyChannelBuilder();
+        }
     }
 
     @Override

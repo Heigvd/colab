@@ -77,8 +77,8 @@ public abstract class Token implements ColabEntity {
     /**
      * token hashed with the hashMethod
      */
-    @JsonbTransient
     @NotNull
+    @JsonbTransient
     private byte[] hashedToken;
 
     /**
@@ -86,8 +86,8 @@ public abstract class Token implements ColabEntity {
      */
     @Column(length = 100)
     @Enumerated(value = EnumType.STRING)
-    @JsonbTransient
     @NotNull
+    @JsonbTransient
     private HashMethod hashMethod;
 
     /**

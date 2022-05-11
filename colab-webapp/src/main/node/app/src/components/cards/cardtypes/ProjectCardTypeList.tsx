@@ -38,8 +38,8 @@ const flexWrap = css({
  * - see what exists, filtered by tag
  * - edit a card type
  * - create a new card type
- * - reference existing in other projects
- * - reference existing outside projects
+ * - reference existing published in other projects
+ * - reference existing published outside projects
  * - remove referenced card type from project
  * - delete card type owned by project
  *
@@ -54,7 +54,7 @@ export default function ProjectCardTypeList(): JSX.Element {
 
   return (
     <Routes>
-      <Route path="edit/:id/*" element={<CardTypeEditor />} />
+      <Route path="edit/:id/*" element={<CardTypeEditor usage="currentProject" />} />
       <Route
         path="*"
         element={
@@ -73,7 +73,7 @@ export default function ProjectCardTypeList(): JSX.Element {
             />
             <Flex justify="space-between">
               <h2>Card types</h2>
-              <CardTypeCreator />
+              <CardTypeCreator usage="currentProject" />
             </Flex>
             {projectCTStatus !== 'READY' ? (
               <AvailabilityStatusIndicator status={projectCTStatus} />
@@ -85,7 +85,11 @@ export default function ProjectCardTypeList(): JSX.Element {
                 {filteredCardTypes => (
                   <div className={flexWrap}>
                     {(filteredCardTypes as CardTypeAllInOne[]).map(cardType => (
-                      <CardTypeItem key={cardType.ownId} cardType={cardType} />
+                      <CardTypeItem
+                        key={cardType.ownId}
+                        cardType={cardType}
+                        usage="currentProject"
+                      />
                     ))}
                   </div>
                 )}
@@ -116,7 +120,7 @@ export default function ProjectCardTypeList(): JSX.Element {
                   {filteredCardTypes => (
                     <div className={flexWrap}>
                       {(filteredCardTypes as CardTypeAllInOne[]).map(cardType => (
-                        <CardTypeItem key={cardType.ownId} cardType={cardType} transferContext />
+                        <CardTypeItem key={cardType.ownId} cardType={cardType} usage="available" />
                       ))}
                     </div>
                   )}

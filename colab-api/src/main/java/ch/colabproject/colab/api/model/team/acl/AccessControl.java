@@ -6,17 +6,17 @@
  */
 package ch.colabproject.colab.api.model.team.acl;
 
+import static ch.colabproject.colab.api.model.team.TeamMember.TEAM_SEQUENCE_NAME;
 import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.model.ColabEntity;
 import ch.colabproject.colab.api.model.WithWebsocketChannels;
 import ch.colabproject.colab.api.model.card.Card;
-import ch.colabproject.colab.api.model.team.TeamRole;
 import ch.colabproject.colab.api.model.team.TeamMember;
-import static ch.colabproject.colab.api.model.team.TeamMember.TEAM_SEQUENCE_NAME;
+import ch.colabproject.colab.api.model.team.TeamRole;
 import ch.colabproject.colab.api.model.tracking.Tracking;
 import ch.colabproject.colab.api.security.permissions.Conditions;
-import ch.colabproject.colab.api.ws.channel.WebsocketChannel;
-import java.util.Set;
+import ch.colabproject.colab.api.ws.channel.tool.ChannelsBuilders.ChannelsBuilder;
+import ch.colabproject.colab.api.ws.channel.tool.ChannelsBuilders.EmptyChannelBuilder;
 import javax.json.bind.annotation.JsonbTransient;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
@@ -75,8 +75,8 @@ public class AccessControl implements ColabEntity, WithWebsocketChannels {
     /**
      * the card this access control is related to
      */
-    @NotNull
     @ManyToOne(fetch = FetchType.LAZY)
+    @NotNull
     @JsonbTransient
     private Card card;
 
@@ -271,11 +271,12 @@ public class AccessControl implements ColabEntity, WithWebsocketChannels {
     }
 
     @Override
-    public Set<WebsocketChannel> getChannels() {
+    public ChannelsBuilder getChannelsBuilder() {
         if (this.getCard() != null) {
-            return this.getCard().getChannels();
+            return this.getCard().getChannelsBuilder();
         } else {
-            return Set.of();
+            // such an orphan shouldn't exist...
+            return new EmptyChannelBuilder();
         }
     }
 

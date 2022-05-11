@@ -15,18 +15,13 @@ import ch.colabproject.colab.api.model.document.Resourceable;
 import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.api.model.tools.EntityHelper;
 import ch.colabproject.colab.api.model.tracking.Tracking;
-import ch.colabproject.colab.api.model.user.User;
 import ch.colabproject.colab.api.security.permissions.Conditions;
 import ch.colabproject.colab.api.security.permissions.card.CardTypeOrRefConditions;
-import ch.colabproject.colab.api.ws.channel.AdminChannel;
-import ch.colabproject.colab.api.ws.channel.BroadcastChannel;
-import ch.colabproject.colab.api.ws.channel.ProjectContentChannel;
-import ch.colabproject.colab.api.ws.channel.WebsocketChannel;
+import ch.colabproject.colab.api.ws.channel.tool.ChannelsBuilders.AboutCardTypeChannelsBuilder;
+import ch.colabproject.colab.api.ws.channel.tool.ChannelsBuilders.ChannelsBuilder;
 import ch.colabproject.colab.generator.model.tools.PolymorphicDeserializer;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import javax.json.bind.annotation.JsonbTransient;
 import javax.json.bind.annotation.JsonbTypeDeserializer;
 import javax.persistence.CascadeType;
@@ -122,13 +117,6 @@ public abstract class AbstractCardType implements ColabEntity, WithWebsocketChan
     protected Long projectId;
 
     /**
-     * List of direct references to this type
-     */
-    @OneToMany(mappedBy = "target", cascade = CascadeType.ALL)
-    @JsonbTransient
-    private List<CardTypeRef> directReferences = new ArrayList<>();
-
-    /**
      * The list of all cards implementing this card definition
      */
     @OneToMany(mappedBy = "cardType", cascade = CascadeType.ALL)
@@ -141,6 +129,9 @@ public abstract class AbstractCardType implements ColabEntity, WithWebsocketChan
     @OneToMany(mappedBy = "abstractCardType", cascade = CascadeType.ALL)
     @JsonbTransient
     private List<AbstractResource> directAbstractResources = new ArrayList<>();
+
+    // Note : the List<CardTypeRef> of direct references must be retrieved with a DAO
+    // because the abstract card type must not be seen as changed when a reference is added or removed
 
     // ---------------------------------------------------------------------------------------------
     // getters and setters
@@ -254,24 +245,6 @@ public abstract class AbstractCardType implements ColabEntity, WithWebsocketChan
     }
 
     /**
-     * Resolve to concrete CardType Get references
-     *
-     * @return list of references
-     */
-    public List<CardTypeRef> getDirectReferences() {
-        return directReferences;
-    }
-
-    /**
-     * Set the list of references
-     *
-     * @param references list of references
-     */
-    public void setDirectReferences(List<CardTypeRef> references) {
-        this.directReferences = references;
-    }
-
-    /**
      * @return the list of all cards implementing this card definition
      */
     public List<Card> getImplementingCards() {
@@ -299,6 +272,18 @@ public abstract class AbstractCardType implements ColabEntity, WithWebsocketChan
      */
     public void setDirectAbstractResources(List<AbstractResource> abstractResources) {
         this.directAbstractResources = abstractResources;
+    }
+
+    // ---------------------------------------------------------------------------------------------
+    // helpers
+    // ---------------------------------------------------------------------------------------------
+
+    /**
+     * @return is now published or was just unpublished
+     */
+    @JsonbTransient
+    public boolean isOrWasPublished() {
+        return this.isPublished() || this.initialPublished;
     }
 
     // ---------------------------------------------------------------------------------------------
@@ -341,44 +326,8 @@ public abstract class AbstractCardType implements ColabEntity, WithWebsocketChan
     }
 
     @Override
-    public Set<WebsocketChannel> getChannels() {
-        Set<WebsocketChannel> channels = new HashSet<>();
-
-        // should propagate data if the type is published or if it has just been unpublished
-        boolean isOrWasPublished = this.isPublished() || this.initialPublished;
-
-        if (this.getProject() != null) {
-            // this type belongs to a specific project
-            // first, everyone who is editing the project shall receive updates
-            channels.add(ProjectContentChannel.build(this.getProject()));
-
-            // then, the type must be propagated to all projects which reference it
-            this.directReferences.forEach(ref -> {
-                channels.addAll(ref.getChannels());
-            });
-
-            if (isOrWasPublished) {
-                // eventually, published types are available to each project members independently of
-                // the project they're editing
-                this.getProject().getTeamMembers().forEach(member -> {
-                    User user = member.getUser();
-                    if (user != null) {
-                        channels.add(user.getEffectiveChannel());
-                    }
-                });
-            }
-        } else {
-            // This is a global type
-            if (isOrWasPublished) {
-                // As the type is published, everyone may use this type -> broadcast
-                channels.add(BroadcastChannel.build());
-            } else {
-                // Not published type are only available to admin
-                channels.add(new AdminChannel());
-            }
-        }
-
-        return channels;
+    public ChannelsBuilder getChannelsBuilder() {
+        return new AboutCardTypeChannelsBuilder(this);
     }
 
     @Override

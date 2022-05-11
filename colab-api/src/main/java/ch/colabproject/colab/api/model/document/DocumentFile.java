@@ -12,6 +12,7 @@ import ch.colabproject.colab.api.model.tools.EntityHelper;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import javax.ws.rs.core.MediaType;
 
 /**
@@ -19,7 +20,6 @@ import javax.ws.rs.core.MediaType;
  *
  * @author sandra
  */
-//TODO adjust the constraints / indexes
 @Entity
 @DiscriminatorValue("DOCUMENT_FILE")
 public class DocumentFile extends Document {
@@ -33,11 +33,13 @@ public class DocumentFile extends Document {
     /**
      * Original file name
      */
+    @Size(max = 255)
     private String fileName;
 
     /**
      * Mime type of file
      */
+    @Size(max = 255)
     @NotNull
     private String mimeType = MediaType.APPLICATION_OCTET_STREAM;
 

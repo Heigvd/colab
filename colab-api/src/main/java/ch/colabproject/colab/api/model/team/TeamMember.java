@@ -16,10 +16,10 @@ import ch.colabproject.colab.api.model.tools.EntityHelper;
 import ch.colabproject.colab.api.model.tracking.Tracking;
 import ch.colabproject.colab.api.model.user.User;
 import ch.colabproject.colab.api.security.permissions.Conditions;
-import ch.colabproject.colab.api.ws.channel.WebsocketChannel;
+import ch.colabproject.colab.api.ws.channel.tool.ChannelsBuilders.ChannelsBuilder;
+import ch.colabproject.colab.api.ws.channel.tool.ChannelsBuilders.EmptyChannelBuilder;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 import javax.json.bind.annotation.JsonbTransient;
 import javax.persistence.CascadeType;
@@ -41,6 +41,7 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import org.apache.commons.collections4.CollectionUtils;
 
 /**
@@ -59,14 +60,18 @@ import org.apache.commons.collections4.CollectionUtils;
     name = "TeamMember.areUserTeammate",
     // SELECT true FROM TeamMember a, TeamMember b WHERE ...
     query = "SELECT true FROM TeamMember a "
-    + "JOIN TeamMember b ON a.project.id = b.project.id "
-    + "WHERE a.user.id = :aUserId AND b.user.id = :bUserId")
+        + "JOIN TeamMember b ON a.project.id = b.project.id "
+        + "WHERE a.user.id = :aUserId AND b.user.id = :bUserId")
 @NamedQuery(
     name = "TeamMember.findByUserAndProject",
     query = "SELECT m FROM TeamMember m "
-    + "WHERE m.project.id = :projectId "
-    + "AND m.user IS NOT NULL AND m.user.id = :userId"
+        + "WHERE m.project.id = :projectId "
+        + "AND m.user IS NOT NULL AND m.user.id = :userId"
 )
+@NamedQuery(
+    name = "TeamMember.findByUser",
+    query = "SELECT m FROM TeamMember m "
+        + "WHERE m.user IS NOT NULL AND m.user.id = :userId")
 public class TeamMember implements ColabEntity, WithWebsocketChannels {
 
     private static final long serialVersionUID = 1L;
@@ -95,6 +100,7 @@ public class TeamMember implements ColabEntity, WithWebsocketChannels {
     /**
      * Optional display name. Such a name will hide user.commonName.
      */
+    @Size(max = 255)
     private String displayName;
 
     /**
@@ -121,6 +127,7 @@ public class TeamMember implements ColabEntity, WithWebsocketChannels {
      * The project
      */
     @ManyToOne(fetch = FetchType.LAZY)
+    @NotNull
     @JsonbTransient
     private Project project;
 
@@ -387,11 +394,12 @@ public class TeamMember implements ColabEntity, WithWebsocketChannels {
     }
 
     @Override
-    public Set<WebsocketChannel> getChannels() {
+    public ChannelsBuilder getChannelsBuilder() {
         if (this.project != null) {
-            return this.project.getChannels();
+            return this.project.getChannelsBuilder();
         } else {
-            return Set.of();
+            // such an orphan shouldn't exist...
+            return new EmptyChannelBuilder();
         }
     }
 

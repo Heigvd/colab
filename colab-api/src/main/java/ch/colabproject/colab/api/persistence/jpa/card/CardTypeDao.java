@@ -9,6 +9,7 @@ package ch.colabproject.colab.api.persistence.jpa.card;
 import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.model.card.AbstractCardType;
 import ch.colabproject.colab.api.model.card.CardType;
+import ch.colabproject.colab.api.model.card.CardTypeRef;
 import java.util.List;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
@@ -146,13 +147,21 @@ public class CardTypeDao {
     }
 
     /**
-     * @param id id of the card type to fetch
+     * Retrieve the card type references that have the given target
      *
-     * @return the card type with the given id or null if such a card type does not exists
+     * @param target the target
+     *
+     * @return the matching references
      */
-    public AbstractCardType findAbstractCardType(Long id) {
-        logger.debug("get abstract card type #{}", id);
-        return em.find(AbstractCardType.class, id);
+    public List<CardTypeRef> findDirectReferences(AbstractCardType target) {
+        logger.debug("find the direct references of the target {}", target);
+
+        TypedQuery<CardTypeRef> query = em.createNamedQuery("CardTypeRef.findDirectReferences",
+            CardTypeRef.class);
+
+        query.setParameter("targetId", target.getId());
+
+        return query.getResultList();
     }
 
     /**
@@ -160,9 +169,9 @@ public class CardTypeDao {
      *
      * @return the card type with the given id or null if such a card type does not exists
      */
-    private CardType findCardType(Long id) {
-        logger.debug("get card type #{}", id);
-        return em.find(CardType.class, id);
+    public AbstractCardType findAbstractCardType(Long id) {
+        logger.debug("get abstract card type #{}", id);
+        return em.find(AbstractCardType.class, id);
     }
 
     /**
@@ -205,10 +214,10 @@ public class CardTypeDao {
      *
      * @return just deleted card type
      */
-    public CardType deleteCardType(Long id) {
+    public AbstractCardType deleteAbstractCardType(Long id) {
         logger.debug("delete card type #{}", id);
         // TODO: move to recycle bin first
-        CardType cardType = this.findCardType(id);
+        AbstractCardType cardType = this.findAbstractCardType(id);
         em.remove(cardType);
         return cardType;
     }

@@ -15,12 +15,12 @@ import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
 import java.text.MessageFormat;
 import javax.json.bind.annotation.JsonbTransient;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.Index;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 /**
  * A token to validate the email address of a local account
@@ -57,19 +57,23 @@ public class InvitationToken extends Token {
     /**
      * The member of the project
      */
+    @OneToOne // FetchType.EAGER is fine
     @NotNull
-    @OneToOne(fetch = FetchType.LAZY)
     @JsonbTransient
     private TeamMember teamMember;
 
     /**
      * Invitation sender
      */
+    @Size(max = 255)
+    @JsonbTransient
     private String sender;
 
     /**
      * email address to send the invitation to
      */
+    @Size(max = 255)
+    @JsonbTransient
     private String recipient;
 
     // ---------------------------------------------------------------------------------------------
@@ -156,12 +160,12 @@ public class InvitationToken extends Token {
         if (user != null) {
             teamMember.setUser(user);
             teamMember.setDisplayName("");
-            user.getTeamMembers().add(teamMember);
         } else {
             throw HttpErrorMessage.authenticationRequired();
         }
     }
 
+    @JsonbTransient
     @Override
     public String getSubject() {
         return EMAIL_SUBJECT;

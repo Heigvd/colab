@@ -15,13 +15,14 @@ import ch.colabproject.colab.api.model.team.acl.AccessControl;
 import ch.colabproject.colab.api.model.tools.EntityHelper;
 import ch.colabproject.colab.api.model.tracking.Tracking;
 import ch.colabproject.colab.api.security.permissions.Conditions;
-import ch.colabproject.colab.api.ws.channel.ProjectContentChannel;
-import ch.colabproject.colab.api.ws.channel.WebsocketChannel;
+import ch.colabproject.colab.api.ws.channel.tool.ChannelsBuilders.ChannelsBuilder;
+import ch.colabproject.colab.api.ws.channel.tool.ChannelsBuilders.EmptyChannelBuilder;
+import ch.colabproject.colab.api.ws.channel.tool.ChannelsBuilders.ProjectContentChannelBuilder;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 import javax.json.bind.annotation.JsonbTransient;
+import javax.persistence.CascadeType;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -36,6 +37,7 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import org.apache.commons.collections4.CollectionUtils;
 
 /**
@@ -72,6 +74,7 @@ public class TeamRole implements ColabEntity, WithWebsocketChannels {
     /**
      * Name of the role. Can not be null or blank
      */
+    @Size(max = 255)
     @NotBlank
     private String name;
 
@@ -79,6 +82,7 @@ public class TeamRole implements ColabEntity, WithWebsocketChannels {
      * The project
      */
     @ManyToOne(fetch = FetchType.LAZY)
+    @NotNull
     @JsonbTransient
     private Project project;
 
@@ -105,7 +109,7 @@ public class TeamRole implements ColabEntity, WithWebsocketChannels {
     /**
      * List of access control relative to this role
      */
-    @OneToMany(mappedBy = "role")
+    @OneToMany(mappedBy = "role", cascade = CascadeType.ALL)
     @JsonbTransient
     private List<AccessControl> accessControl = new ArrayList<>();
 
@@ -222,7 +226,7 @@ public class TeamRole implements ColabEntity, WithWebsocketChannels {
     }
 
     /**
-     * Get ids of the teammembers
+     * Get ids of the team members
      *
      * @return list of ids
      */
@@ -276,11 +280,11 @@ public class TeamRole implements ColabEntity, WithWebsocketChannels {
     }
 
     @Override
-    public Set<WebsocketChannel> getChannels() {
+    public ChannelsBuilder getChannelsBuilder() {
         if (this.getProject() != null) {
-            return Set.of(ProjectContentChannel.build(project));
+            return new ProjectContentChannelBuilder(project);
         } else {
-            return Set.of();
+            return new EmptyChannelBuilder();
         }
     }
 

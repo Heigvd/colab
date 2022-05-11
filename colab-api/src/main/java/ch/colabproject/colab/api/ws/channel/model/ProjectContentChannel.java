@@ -4,17 +4,27 @@
  *
  * Licensed under the MIT License
  */
-package ch.colabproject.colab.api.ws.channel;
+package ch.colabproject.colab.api.ws.channel.model;
 
 import ch.colabproject.colab.api.model.project.Project;
 import java.util.Objects;
 
 /**
  * A channel to propagate content of a given projectId.
+ * <p>
+ * Usage :
+ * </p>
+ * <p>
+ * subscription when a project is edited<br>
+ * unsubscription when a project is closed<br>
+ * </p>
+ * <p>
+ * Can be watched by admin in the Who page
+ * </p>
  *
  * @author maxence
  */
-public class ProjectContentChannel implements WebsocketEffectiveChannel {
+public class ProjectContentChannel implements WebsocketChannel {
 
     private static final long serialVersionUID = 1L;
 
@@ -86,7 +96,6 @@ public class ProjectContentChannel implements WebsocketEffectiveChannel {
     public static ProjectContentChannel build(Project project) {
         return build(project.getId());
     }
-
 
     /**
      * get the channel dedicated to the project having the given id.

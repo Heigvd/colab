@@ -19,12 +19,12 @@ import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.api.model.tools.EntityHelper;
 import ch.colabproject.colab.api.model.tracking.Tracking;
 import ch.colabproject.colab.api.security.permissions.Conditions;
-import ch.colabproject.colab.api.ws.channel.WebsocketChannel;
+import ch.colabproject.colab.api.ws.channel.tool.ChannelsBuilders.ChannelsBuilder;
+import ch.colabproject.colab.api.ws.channel.tool.ChannelsBuilders.EmptyChannelBuilder;
 import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
 import ch.colabproject.colab.generator.model.tools.PolymorphicDeserializer;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 import javax.json.bind.annotation.JsonbTransient;
 import javax.json.bind.annotation.JsonbTypeDeserializer;
 import javax.persistence.CascadeType;
@@ -41,6 +41,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
+import javax.validation.constraints.Size;
 
 /**
  * A resource is a document provided to help the users to fulfill their goals.
@@ -87,6 +88,7 @@ public abstract class AbstractResource
     /**
      * The category to classify the resource
      */
+    @Size(max = 255)
     private String category;
 
     /**
@@ -129,18 +131,14 @@ public abstract class AbstractResource
     private Long cardContentId;
 
     /**
-     * The list of resource references that link to this abstract resource
-     */
-    @OneToMany(mappedBy = "target", cascade = CascadeType.ALL)
-    @JsonbTransient
-    private List<ResourceRef> directReferences = new ArrayList<>();
-
-    /**
      * The list of sticky note links of which the resource is the source
      */
     @OneToMany(mappedBy = "srcResourceOrRef", cascade = CascadeType.ALL)
     @JsonbTransient
     private List<StickyNoteLink> stickyNoteLinksAsSrc = new ArrayList<>();
+
+    // Note : the List<ResourceRef> of direct references must be retrieved with a DAO
+    // because the abstract resource must not be seen as changed when a reference is added or removed
 
     // ---------------------------------------------------------------------------------------------
     // getters and setters
@@ -328,21 +326,6 @@ public abstract class AbstractResource
     }
 
     /**
-     * @return the list of resource references that directly link to this abstract resource
-     */
-    public List<ResourceRef> getDirectReferences() {
-        return directReferences;
-    }
-
-    /**
-     * @param directReferences the list of resource references that directly link to this abstract
-     *                         resource
-     */
-    public void setDirectReferences(List<ResourceRef> directReferences) {
-        this.directReferences = directReferences;
-    }
-
-    /**
      * @return the list of sticky note links of which the resource is the source
      */
     @Override
@@ -465,19 +448,19 @@ public abstract class AbstractResource
     }
 
     @Override
-    public Set<WebsocketChannel> getChannels() {
+    public ChannelsBuilder getChannelsBuilder() {
         if (this.abstractCardType != null) {
             // the abstract resource is linked to a card type / card type reference
-            return this.abstractCardType.getChannels();
+            return this.abstractCardType.getChannelsBuilder();
         } else if (this.card != null) {
             // the abstract resource is linked to a card
-            return this.card.getChannels();
+            return this.card.getChannelsBuilder();
         } else if (this.cardContent != null) {
             // the abstract resource is linked to a card content
-            return this.cardContent.getChannels();
+            return this.cardContent.getChannelsBuilder();
         } else {
             // such an orphan shouldn't exist...
-            return Set.of();
+            return new EmptyChannelBuilder();
         }
     }
 

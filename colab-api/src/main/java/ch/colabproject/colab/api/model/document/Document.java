@@ -17,11 +17,11 @@ import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.api.model.tools.EntityHelper;
 import ch.colabproject.colab.api.model.tracking.Tracking;
 import ch.colabproject.colab.api.security.permissions.Conditions;
-import ch.colabproject.colab.api.ws.channel.WebsocketChannel;
+import ch.colabproject.colab.api.ws.channel.tool.ChannelsBuilders.ChannelsBuilder;
+import ch.colabproject.colab.api.ws.channel.tool.ChannelsBuilders.EmptyChannelBuilder;
 import ch.colabproject.colab.generator.model.tools.PolymorphicDeserializer;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 import javax.json.bind.annotation.JsonbTransient;
 import javax.json.bind.annotation.JsonbTypeDeserializer;
 import javax.persistence.CascadeType;
@@ -48,7 +48,6 @@ import javax.persistence.Transient;
  *
  * @author sandra
  */
-//TODO adjust the constraints / indexes / cascade / fetch
 @Entity
 @Table(
     indexes = {
@@ -301,16 +300,16 @@ public abstract class Document
     }
 
     @Override
-    public Set<WebsocketChannel> getChannels() {
+    public ChannelsBuilder getChannelsBuilder() {
         if (this.owningCardContent != null) {
             // The document is a deliverable of a card content
-            return this.owningCardContent.getChannels();
+            return this.owningCardContent.getChannelsBuilder();
         } else if (this.owningResource != null) {
             // The document is part of a resource
-            return this.owningResource.getChannels();
+            return this.owningResource.getChannelsBuilder();
         } else {
             // such an orphan shouldn't exist...
-            return Set.of();
+            return new EmptyChannelBuilder();
         }
     }
 

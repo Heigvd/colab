@@ -6,17 +6,17 @@
  */
 package ch.colabproject.colab.api.model.user;
 
+import static ch.colabproject.colab.api.model.user.User.USER_SEQUENCE_NAME;
 import ch.colabproject.colab.api.model.WithPermission;
 import ch.colabproject.colab.api.model.WithWebsocketChannels;
 import ch.colabproject.colab.api.model.tools.EntityHelper;
-import static ch.colabproject.colab.api.model.user.User.USER_SEQUENCE_NAME;
 import ch.colabproject.colab.api.security.permissions.Conditions;
-import ch.colabproject.colab.api.ws.channel.AdminChannel;
-import ch.colabproject.colab.api.ws.channel.WebsocketChannel;
+import ch.colabproject.colab.api.ws.channel.tool.ChannelsBuilders.AboutAccountChannelsBuilder;
+import ch.colabproject.colab.api.ws.channel.tool.ChannelsBuilders.ChannelsBuilder;
+import ch.colabproject.colab.api.ws.channel.tool.ChannelsBuilders.ForAdminChannelsBuilder;
 import ch.colabproject.colab.generator.model.interfaces.WithId;
 import ch.colabproject.colab.generator.model.interfaces.WithJsonDiscriminator;
 import java.time.OffsetDateTime;
-import java.util.Set;
 import javax.json.bind.annotation.JsonbTransient;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -29,6 +29,7 @@ import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Size;
 
 /**
  * store session related information
@@ -64,6 +65,7 @@ public class HttpSession implements WithId, WithJsonDiscriminator, WithPermissio
      * raw secret, never persisted, never serialized to client. This is just a temporary field to
      * store the raw value to put in SET-COOKIE
      */
+    @Size(max = 255)
     @JsonbTransient
     @Transient
     private String rawSessionSecret;
@@ -85,6 +87,7 @@ public class HttpSession implements WithId, WithJsonDiscriminator, WithPermissio
     /**
      * User Agent who create the session
      */
+    @Size(max = 255)
     private String userAgent;
 
     /**
@@ -233,11 +236,11 @@ public class HttpSession implements WithId, WithJsonDiscriminator, WithPermissio
     // ---------------------------------------------------------------------------------------------
 
     @Override
-    public Set<WebsocketChannel> getChannels() {
+    public ChannelsBuilder getChannelsBuilder() {
         if (this.account != null) {
-            return this.account.getChannels();
+            return new AboutAccountChannelsBuilder(this.account);
         } else {
-            return Set.of(new AdminChannel());
+            return new ForAdminChannelsBuilder();
         }
     }
 
