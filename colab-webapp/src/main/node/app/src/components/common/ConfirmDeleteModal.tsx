@@ -50,25 +50,24 @@ export default function ConfirmDeleteModal({
           </Flex>
           <Flex justify="flex-end">
             <Button
+              title={cancelButtonLabel ? cancelButtonLabel : 'Cancel delete'}
+              onClick={() => collapse()}
+              invertedButton
+            >
+              {cancelButtonLabel ? cancelButtonLabel : 'Cancel'}
+            </Button>
+            <Button
               title={confirmButtonLabel ? confirmButtonLabel : 'Delete'}
               onClick={() => {
                 onConfirm();
                 collapse();
               }}
-              invertedButton
               className={css({
-                borderColor: errorColor,
-                color: errorColor,
-                marginRight: space_M,
+                backgroundColor: errorColor,
+                marginLeft: space_M,
               })}
             >
               {confirmButtonLabel ? confirmButtonLabel : 'Delete'}
-            </Button>
-            <Button
-              title={cancelButtonLabel ? cancelButtonLabel : 'Cancel delete'}
-              onClick={() => collapse()}
-            >
-              {cancelButtonLabel ? cancelButtonLabel : 'Cancel'}
             </Button>
           </Flex>
         </Flex>

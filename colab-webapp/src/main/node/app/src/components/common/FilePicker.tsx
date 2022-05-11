@@ -19,18 +19,15 @@ import {
   faFileWord,
 } from '@fortawesome/free-regular-svg-icons';
 import {
-  faDownload,
   faFileCsv,
   faSkullCrossbones,
   faUpload,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import * as React from 'react';
-import { EditState } from '../live/LiveEditor';
-import { invertedButtonStyle, lightIconButtonStyle, space_M, space_S } from '../styling/style';
+import { invertedButtonStyle, space_M, space_S } from '../styling/style';
 import Button from './Button';
 import Flex from './Flex';
-import IconButton from './IconButton';
 
 const contains = (value: string, ...values: string[]): boolean => {
   return !!values.find(needle => value.includes(needle));
@@ -158,8 +155,8 @@ export interface FilePickerProps {
   currentFilename?: React.ReactNode;
   currentMimetype?: string;
   currentPreviewImgUrl?: string;
-  editingStatus: EditState;
-  setEditingState: React.Dispatch<React.SetStateAction<EditState>>;
+  editingStatus: boolean;
+  setEditingState: (editMode: boolean)=> void;
 }
 
 export default function FilePicker({
@@ -290,7 +287,7 @@ export default function FilePicker({
         onMouseEnter={onEnterCb}
         onMouseMove={onMoveCb}
       >
-        {isImageToDisplay && editingStatus === 'VIEW' ? (
+        {isImageToDisplay && !editingStatus ? (
           <img className={displayImageStyle} src={currentPreviewImgUrl} />
         ) : (
           <>
@@ -304,7 +301,7 @@ export default function FilePicker({
             </div>
           </>
         )}
-        {onChange && editingStatus === 'EDIT' && (
+        {onChange && editingStatus && (
           <div className={css({ paddingLeft: space_M })} onClick={e => e.stopPropagation()}>
             <label>
               <Button onClick={() => {}}>
@@ -313,7 +310,7 @@ export default function FilePicker({
               <input className={inputStyle} type="file" accept={accept} onChange={onInputCb} />
             </label>
             <Button
-              onClick={() => setEditingState('VIEW')}
+              onClick={() => setEditingState(false)}
               className={cx(invertedButtonStyle, css({ marginLeft: space_S }))}
             >
               Done
@@ -326,18 +323,6 @@ export default function FilePicker({
           </div>
         )}
       </Flex>
-      {editingStatus === 'VIEW' && !hasNoFile && !isImageToDisplay && (
-        <IconButton
-          icon={faDownload}
-          iconSize={'sm'}
-          title="Download file"
-          className={cx(
-            lightIconButtonStyle,
-            css({ color: 'var(--lightGray)', marginLeft: space_S }),
-          )}
-          onClick={onDownload}
-        />
-      )}
     </Flex>
   );
   return <input type="file" accept={accept} />;

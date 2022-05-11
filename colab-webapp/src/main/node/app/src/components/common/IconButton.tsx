@@ -15,6 +15,7 @@ import Clickable from './Clickable';
 export interface IconButtonProps {
   icon: IconProp;
   mask?: IconProp;
+  transform?: string | Transform;
   layer?: { layerIcon: IconProp; transform: string | Transform };
   iconSize?: SizeProp;
   iconColor?: string;
@@ -28,6 +29,7 @@ export default function IconButton({
   onClick,
   icon,
   mask,
+  transform,
   layer,
   title,
   className,
@@ -49,7 +51,7 @@ export default function IconButton({
             size={iconSize}
             transform={layer.transform}
           />
-          <FontAwesomeIcon icon={icon} color={iconColor} size={iconSize} mask={mask} />
+          <FontAwesomeIcon icon={icon} color={iconColor} size={iconSize} transform={transform} mask={mask} />
         </span>
       ) : (
         <FontAwesomeIcon icon={icon} color={iconColor} size={iconSize} mask={mask} />

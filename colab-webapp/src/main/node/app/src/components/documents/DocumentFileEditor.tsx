@@ -13,13 +13,12 @@ import * as API from '../../API/api';
 import { useAppDispatch } from '../../store/hooks';
 import FilePicker from '../common/FilePicker';
 import InlineLoading from '../common/InlineLoading';
-import { EditState } from '../live/LiveEditor';
 
 export interface DocumentFileProps {
   document: DocumentFile;
   allowEdition?: boolean;
-  editingStatus: EditState;
-  setEditingState: React.Dispatch<React.SetStateAction<EditState>>;
+  editingStatus: boolean;
+  setEditingState: (editMode: boolean)=> void;
 }
 
 export default function DocumentFileEditor({

@@ -6,33 +6,31 @@
  */
 
 import { css, cx } from '@emotion/css';
-import {
-  faArrowDown,
-  faArrowUp,
-  faCheck,
-  faDownload,
-  faEllipsisV,
-  faPen,
-  faTrash,
-} from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faArrowDown, faArrowUp } from '@fortawesome/free-solid-svg-icons';
 import { Document, entityIs } from 'colab-rest-client';
 import * as React from 'react';
 import * as API from '../../API/api';
 import { useAppDispatch } from '../../store/hooks';
 import { BlockEditorWrapper } from '../blocks/BlockEditorWrapper';
-import ConfirmDeleteModal from '../common/ConfirmDeleteModal';
-import DropDownMenu from '../common/DropDownMenu';
+import { CardEditorCTX } from '../cards/CardEditor';
 import Flex from '../common/Flex';
 import IconButton from '../common/IconButton';
 import OpenGraphLink from '../common/OpenGraphLink';
-import { EditState } from '../live/LiveEditor';
 import { editableBlockStyle, lightIconButtonStyle, space_S } from '../styling/style';
 import DocumentFileEditor from './DocumentFileEditor';
 
-const editingStyle = css({
-  backgroundColor: 'var(--hoverBgColor)',
+const selectedStyle = css({
+  border: '1px solid var(--darkGray)',
+  '&:hover': {
+    border: '1px solid var(--darkGray)',
+  }
+});
+
+const noBorderStyle = css({
   border: '1px solid transparent',
+  '&:hover': {
+    border: '1px solid transparent',
+  }
 });
 
 const moveBoxStyle = css({
@@ -54,14 +52,18 @@ export default function DocumentEditor({ doc, allowEdition }: DocumentEditorProp
   const isDocumentFile = entityIs(doc, 'DocumentFile');
   const isExternalLink = entityIs(doc, 'ExternalLink');
 
-  const [state, setState] = React.useState<EditState>('VIEW');
-  const [showTree, setShowTree] = React.useState(false);
-  const [markDownMode, setmarkDownMode] = React.useState(false);
   const dropRef = React.useRef<HTMLDivElement>(null);
 
-  const handleClickOutside = (event: Event) => {
+  const { setSelectedId, selectedId, editMode, setEditMode, TXToptions } =
+    React.useContext(CardEditorCTX);
+
+  const selected = doc.id === selectedId;
+  const editing = editMode && selected;
+
+  /*   const handleClickOutside = (event: Event) => {
     if (dropRef.current && !dropRef.current.contains(event.target as Node)) {
-      setState('VIEW');
+      //WHY DOESN T WORK?
+      //setEditMode(false);
     }
   };
 
@@ -70,168 +72,63 @@ export default function DocumentEditor({ doc, allowEdition }: DocumentEditorProp
     return () => {
       document.removeEventListener('click', handleClickOutside, true);
     };
-  });
+  }); */
 
-  const downloadUrl = API.getRestClient().DocumentFileRestEndPoint.getFileContentPath(doc.id!);
-
-  const downloadCb = React.useCallback(() => {
-    window.open(downloadUrl);
-  }, [downloadUrl]);
+  const onSelect = React.useCallback(() => {
+    if(doc.id != selectedId){
+      setEditMode(false);
+    }
+    setSelectedId(doc.id);
+  }, [doc.id, selectedId, setEditMode, setSelectedId]);
 
   return (
     <Flex className={moveBoxStyle}>
       <div
         ref={dropRef}
         className={cx(
+          editableBlockStyle,
           css({
             display: 'flex',
             flexDirection: 'row',
             justifyContent: 'space-between',
             flexGrow: 1,
+            padding: 0,
           }),
-          editableBlockStyle,
-          { [editingStyle]: state === 'EDIT' },
+          { [selectedStyle]: selected && !isTextDataBlock },
+          { [noBorderStyle] : isTextDataBlock }
         )}
-        onClick={() => {
-          if (state === 'VIEW') {
-            setState('EDIT');
-          }
-        }}
+        onClick={onSelect}
       >
         {isTextDataBlock ? (
           <BlockEditorWrapper
             blockId={doc.id!}
             allowEdition={allowEdition}
-            editingStatus={state}
-            showTree={showTree}
-            markDownEditor={markDownMode}
+            editingStatus={true}
+            showTree={TXToptions?.showTree}
+            markDownEditor={TXToptions?.markDownMode}
             className={css({ flexGrow: 1 })}
+            selected={selected}
+            flyingToolBar
           />
         ) : isDocumentFile ? (
           <DocumentFileEditor
             document={doc}
             allowEdition={allowEdition}
-            editingStatus={state}
-            setEditingState={setState}
+            editingStatus={editing}
+            setEditingState={setEditMode}
           />
         ) : isExternalLink ? (
           <OpenGraphLink
             url={doc.url || ''}
-            editingStatus={state}
+            editingStatus={editing}
             document={doc}
-            setEditingState={setState}
+            setEditingState={setEditMode}
           />
         ) : (
           <div>
             <i>Unknown document</i>
           </div>
         )}
-        <Flex direction="column" align="flex-end" justify="space-between">
-          <DropDownMenu
-            icon={faEllipsisV}
-            valueComp={{ value: '', label: '' }}
-            buttonClassName={cx(lightIconButtonStyle, css({ marginLeft: space_S }))}
-            entries={[
-              ...(state === 'VIEW'
-                ? [
-                    {
-                      value: 'EditBlock',
-                      label: (
-                        <>
-                          <FontAwesomeIcon icon={faPen} size="xs" /> Edit
-                        </>
-                      ),
-                      action: () => setState('EDIT'),
-                    },
-                  ]
-                : []),
-              ...(isTextDataBlock && state === 'EDIT'
-                ? [
-                    {
-                      value: 'showTree',
-                      label: (
-                        <>
-                          {showTree && (
-                            <FontAwesomeIcon icon={faCheck} size="xs" color="var(--lightGray)" />
-                          )}{' '}
-                          Show tree
-                        </>
-                      ),
-                      action: () => setShowTree(showTree => !showTree),
-                    },
-                    {
-                      value: 'markDown',
-                      label: (
-                        <>
-                          {markDownMode && (
-                            <FontAwesomeIcon icon={faCheck} size="xs" color="var(--lightGray)" />
-                          )}{' '}
-                          MarkDown mode
-                        </>
-                      ),
-                      action: () => setmarkDownMode(markDownMode => !markDownMode),
-                    },
-                  ]
-                : []),
-              ...(isDocumentFile &&
-              (doc.mimeType === 'image/png' || doc.mimeType === 'image/jpeg') &&
-              state === 'VIEW'
-                ? [
-                    {
-                      value: 'download image',
-                      label: (
-                        <>
-                          <FontAwesomeIcon icon={faDownload} size="xs" /> Download image
-                        </>
-                      ),
-                      action: () => downloadCb(),
-                    },
-                  ]
-                : []),
-              {
-                value: 'Delete',
-                label: (
-                  <ConfirmDeleteModal
-                    buttonLabel={
-                      <>
-                        <FontAwesomeIcon icon={faTrash} size="xs" /> Delete
-                      </>
-                    }
-                    message={
-                      <p>
-                        Are you <strong>sure</strong> you want to delete this data? This will be
-                        lost forever.
-                      </p>
-                    }
-                    onConfirm={() => {
-                      if (doc.id) {
-                        if (doc.owningCardContentId != null) {
-                          dispatch(
-                            API.removeDeliverable({
-                              cardContentId: doc.owningCardContentId,
-                              documentId: doc.id,
-                            }),
-                          );
-                        } else if (doc.owningResourceId != null) {
-                          dispatch(
-                            API.removeDocumentOfResource({
-                              resourceId: doc.owningResourceId,
-                              documentId: doc.id,
-                            }),
-                          );
-                        }
-                      }
-                    }}
-                    confirmButtonLabel={'Delete data'}
-                  />
-                ),
-              },
-            ]}
-            onSelect={val => {
-              val.action && val.action();
-            }}
-          />
-        </Flex>
       </div>
       <Flex direction="column" className={css({ paddingLeft: space_S, opacity: 0 })} id="moveBox">
         <IconButton
