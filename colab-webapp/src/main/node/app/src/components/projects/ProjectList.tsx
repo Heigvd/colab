@@ -84,13 +84,14 @@ const ProjectDisplay = ({ project }: ProjectDisplayProps) => {
           buttonClassName={css({ marginLeft: '40px' })}
           entries={[
             {
-              value: `/editor/${project.id}`,
+              value: 'edit',
               label: (
                 <>
                   {' '}
                   <FontAwesomeIcon icon={faEdit} /> Edit
                 </>
               ),
+              action: () => navigate(`/editor/${project.id}`),
             },
             {
               value: 'Duplicate project',
@@ -123,9 +124,6 @@ const ProjectDisplay = ({ project }: ProjectDisplayProps) => {
               ),
             },
           ]}
-          onSelect={val => {
-            val.action != null ? val.action() : navigate(val.value);
-          }}
         />
       </div>
       <div

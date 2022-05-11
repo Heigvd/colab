@@ -100,9 +100,6 @@ export default function StickyNoteDisplay({
               ),
             },
           ]}
-          onSelect={val => {
-            val.action != null ? val.action() : null;
-          }}
         />
       </Flex>
       <Flex direction="column" align="stretch">

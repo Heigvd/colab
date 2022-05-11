@@ -141,9 +141,6 @@ export default function CardEditorToolbox({ open, context, prefixElement }: Prop
                     action: () => TXToptions?.setShowTree(showTree => !showTree),
                   },
                 ]}
-                onSelect={val => {
-                  val.action && val.action();
-                }}
               />
             </>
           )}
@@ -155,16 +152,14 @@ export default function CardEditorToolbox({ open, context, prefixElement }: Prop
               onClick={() => downloadCb()}
             />
           )}
-          {isLink &&
-            selectedDocument.url &&
-            selectedDocument.url.length > 0 && (
-              <IconButton
-                icon={faExternalLinkAlt}
-                title={'Open url in new tab'}
-                className={lightIconButtonStyle}
-                onClick={() => openUrl(selectedDocument.url)}
-              />
-            )}
+          {isLink && selectedDocument.url && selectedDocument.url.length > 0 && (
+            <IconButton
+              icon={faExternalLinkAlt}
+              title={'Open url in new tab'}
+              className={lightIconButtonStyle}
+              onClick={() => openUrl(selectedDocument.url)}
+            />
+          )}
           <IconButton
             icon={faPen}
             title="edit block"

@@ -151,13 +151,13 @@ function ProgressModifier({ variant }: { variant: CardContent }) {
   );
 }
 interface TXToptionsType {
-    //type: 'TXT';
-    showTree: boolean;
-    setShowTree: React.Dispatch<React.SetStateAction<boolean>>;
-    markDownMode: boolean;
-    setMarkDownMode: React.Dispatch<React.SetStateAction<boolean>>;
-    //formatButtonState?: ToolbarState;
-    //formatButtonFeatures?: ToolbarFeatures;
+  //type: 'TXT';
+  showTree: boolean;
+  setShowTree: React.Dispatch<React.SetStateAction<boolean>>;
+  markDownMode: boolean;
+  setMarkDownMode: React.Dispatch<React.SetStateAction<boolean>>;
+  //formatButtonState?: ToolbarState;
+  //formatButtonFeatures?: ToolbarFeatures;
 }
 
 /* interface LKoptionsType {
@@ -211,8 +211,8 @@ export default function CardEditor({ card, variant, showSubcards = true }: Props
   const [selectedId, setSelectedId] = React.useState<number | undefined | null>(undefined);
   const [editMode, setEditMode] = React.useState(defaultCardEditorContext.editMode);
   const [showTree, setShowTree] = React.useState(false);
-  const [markDownMode, setMarkDownMode] = React.useState(false); 
-  const [editToolbar, setEditToolbar] = React.useState(defaultCardEditorContext.editToolbar); 
+  const [markDownMode, setMarkDownMode] = React.useState(false);
+  const [editToolbar, setEditToolbar] = React.useState(defaultCardEditorContext.editToolbar);
   const TXToptions = {
     showTree: showTree,
     setShowTree: setShowTree,
@@ -239,7 +239,17 @@ export default function CardEditor({ card, variant, showSubcards = true }: Props
   } else {
     const cardId = card.id;
     return (
-      <CardEditorCTX.Provider value={{ selectedId, setSelectedId, editMode, setEditMode, editToolbar, setEditToolbar, TXToptions }}>
+      <CardEditorCTX.Provider
+        value={{
+          selectedId,
+          setSelectedId,
+          editMode,
+          setEditMode,
+          editToolbar,
+          setEditToolbar,
+          TXToptions,
+        }}
+      >
         <Flex direction="column" grow={1} align="stretch">
           <Flex
             grow={1}
@@ -392,17 +402,16 @@ export default function CardEditor({ card, variant, showSubcards = true }: Props
                           />
                         </Routes>
                         {!readOnly && (
-                            <IconButton
-                              icon={faTools}
-                              layer={openToolbox ? { layerIcon: faSlash, transform: 'grow-1' } : undefined}
-                              title="Show/hide toolbox"
-                              className={cx(
-                                lightIconButtonStyle,
-                                css({ color: 'var(--lightGray)' }),
-                              )}
-                              onClick={() => setOpenToolbox(openToolbox => !openToolbox)}
-                            />
-                          )}
+                          <IconButton
+                            icon={faTools}
+                            layer={
+                              openToolbox ? { layerIcon: faSlash, transform: 'grow-1' } : undefined
+                            }
+                            title="Show/hide toolbox"
+                            className={cx(lightIconButtonStyle, css({ color: 'var(--lightGray)' }))}
+                            onClick={() => setOpenToolbox(openToolbox => !openToolbox)}
+                          />
+                        )}
                         <IconButton
                           title="Full screen mode"
                           icon={fullScreen ? faCompressArrowsAlt : faExpandArrowsAlt}
@@ -421,6 +430,7 @@ export default function CardEditor({ card, variant, showSubcards = true }: Props
                                   <FontAwesomeIcon icon={faCog} /> Card Settings
                                 </>
                               ),
+                              action: () => navigate('settings'),
                             },
                             {
                               value: 'involvements',
@@ -429,6 +439,7 @@ export default function CardEditor({ card, variant, showSubcards = true }: Props
                                   <FontAwesomeIcon icon={faUsers} /> Involvements
                                 </>
                               ),
+                              action: () => navigate('involvements'),
                             },
                             {
                               value: 'completion',
@@ -437,9 +448,15 @@ export default function CardEditor({ card, variant, showSubcards = true }: Props
                                   <FontAwesomeIcon icon={faPercent} /> Completion
                                 </>
                               ),
+                              action: () => navigate('completion'),
                             },
                             {
                               value: 'Add new variant',
+                              label: (
+                                <>
+                                  <FontAwesomeIcon icon={faWindowRestore} /> Add variant
+                                </>
+                              ),
                               action: () => {
                                 dispatch(API.createCardContentVariantWithBlockDoc(cardId)).then(
                                   payload => {
@@ -451,15 +468,9 @@ export default function CardEditor({ card, variant, showSubcards = true }: Props
                                   },
                                 );
                               },
-                              label: (
-                                <>
-                                  <FontAwesomeIcon icon={faWindowRestore} /> Add variant
-                                </>
-                              ),
                             },
                             {
                               value: 'Delete card or variant',
-                              action: () => {},
                               label: (
                                 <ConfirmDeleteModal
                                   buttonLabel={
@@ -497,9 +508,6 @@ export default function CardEditor({ card, variant, showSubcards = true }: Props
                               ),
                             },
                           ]}
-                          onSelect={val => {
-                            val.action != null ? val.action() : navigate(val.value);
-                          }}
                         />
                       </Flex>
                     </Flex>
