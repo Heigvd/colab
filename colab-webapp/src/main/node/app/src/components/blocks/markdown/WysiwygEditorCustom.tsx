@@ -15,7 +15,7 @@ import { getLogger } from '../../../logger';
 import { CardEditorCTX } from '../../cards/CardEditor';
 import Flex from '../../common/Flex';
 import Tips from '../../common/Tips';
-import { borderRadius } from '../../styling/style';
+import { borderRadius, lightIconButtonStyle } from '../../styling/style';
 import {
   areAllLeafsWrappedByTag,
   boundedClosest,
@@ -34,23 +34,22 @@ const logger = getLogger('WysiwygEditor');
  *    STYLES
  *************************************************/
 
-const whiteIcon = css({
-  stroke: 'white',
-  strokeWidth: '40%',
-});
-
-const idleStyle = css({
-  border: '1px solid black',
-  borderRadius: '1px',
-  color: 'black',
+const idleStyle = cx(
+  lightIconButtonStyle,
+  css({
+  borderRadius: borderRadius,
   padding: '5px',
   margin: '2px',
-});
+  '&:hover': {
+    cursor: 'pointer',
+  }
+}));
 
 const toggledStyle = cx(
   idleStyle,
   css({
-    backgroundColor: 'darkGrey',
+    backgroundColor: 'var(--lightGray)',
+    color: 'var(--primaryColor)',
   }),
 );
 
@@ -138,7 +137,7 @@ function ToolbarButton({ toggled, onClick, icon }: ToolbarButtonProps) {
       className={cx('fa-layers', toggled ? toggledStyle : idleStyle)}
       onMouseDownCapture={onClick}
     >
-      <FontAwesomeIcon className={whiteIcon} icon={icon} />
+      <FontAwesomeIcon icon={icon} />
       <FontAwesomeIcon icon={icon} />
     </span>
   );
@@ -167,7 +166,7 @@ export function TXTFormatToolbar({ toolbarState, toolbarFormatFeatures }: TXTFor
         toggled={toolbarState.strike}
         onClick={toolbarFormatFeatures.toggleStrike}
       />
-      <Tips tipsType="TODO">TODO: add more styling options (headings level, lists, ...</Tips>
+      <Tips tipsType="TODO" className={lightIconButtonStyle}>TODO: add more styling options (headings level, lists, ...</Tips>
     </Flex>
   );
 }

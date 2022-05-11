@@ -25,13 +25,13 @@ import Flex from '../common/Flex';
 import IconButton from '../common/IconButton';
 import { DocumentContext } from '../documents/documentCommonType';
 import DocumentCreatorButton from '../documents/DocumentCreatorButton';
-import { lightIconButtonStyle, space_S } from '../styling/style';
+import { lightIconButtonStyle, space_M, space_S } from '../styling/style';
 import { CardEditorCTX } from './CardEditor';
 
 const toolboxContainerStyle = css({
   height: 'auto',
   maxHeight: '400px',
-  minHeight: '40px',
+  //minHeight: '30px',
   overflow: 'hidden',
   padding: space_S,
   transition: 'all .5s ease',
@@ -65,7 +65,7 @@ interface Props {
 }
 
 export default function CardEditorToolbox({ open, context, prefixElement }: Props): JSX.Element {
-  const { setSelectedId, selectedId, editMode, setEditMode, TXToptions, editToolbar } =
+  const { setSelectedId, selectedId, setEditMode, TXToptions, editToolbar } =
     React.useContext(CardEditorCTX);
   const showTree = TXToptions?.showTree || false;
   const dispatch = useAppDispatch();
@@ -80,6 +80,10 @@ export default function CardEditorToolbox({ open, context, prefixElement }: Prop
       return document;
     }
   });
+
+  const isText = entityIs(selectedDocument, 'TextDataBlock');
+  const isLink = entityIs(selectedDocument, 'ExternalLink');
+  const isDoc = entityIs(selectedDocument, 'DocumentFile');
 
   const downloadUrl = API.getRestClient().DocumentFileRestEndPoint.getFileContentPath(selectedId!);
 
@@ -97,26 +101,21 @@ export default function CardEditorToolbox({ open, context, prefixElement }: Prop
       <BlockCreatorButtons context={context} blockSelected={selectedId != (undefined || null)} />
       {selectedDocument != (undefined || null) && (
         <>
-          {entityIs(selectedDocument, 'TextDataBlock') && (
+          {isText && (
             <>
               {editToolbar}
               <DropDownMenu
                 icon={faCog}
                 valueComp={{ value: '', label: '' }}
-                buttonClassName={cx(lightIconButtonStyle, css({ marginLeft: space_S }))}
+                buttonClassName={cx(
+                  lightIconButtonStyle,
+                  css({
+                    paddingLeft: space_M,
+                    marginLeft: space_M,
+                    borderLeft: '1px solid var(--lightGray)',
+                  }),
+                )}
                 entries={[
-                  {
-                    value: 'showTree',
-                    label: (
-                      <>
-                        {showTree && (
-                          <FontAwesomeIcon icon={faCheck} size="xs" color="var(--lightGray)" />
-                        )}{' '}
-                        Show tree
-                      </>
-                    ),
-                    action: () => TXToptions?.setShowTree(showTree => !showTree),
-                  },
                   {
                     value: 'markDown',
                     label: (
@@ -129,6 +128,18 @@ export default function CardEditorToolbox({ open, context, prefixElement }: Prop
                     ),
                     action: () => TXToptions?.setMarkDownMode(markDownMode => !markDownMode),
                   },
+                  {
+                    value: 'showTree',
+                    label: (
+                      <>
+                        {showTree && (
+                          <FontAwesomeIcon icon={faCheck} size="xs" color="var(--lightGray)" />
+                        )}{' '}
+                        Show tree
+                      </>
+                    ),
+                    action: () => TXToptions?.setShowTree(showTree => !showTree),
+                  },
                 ]}
                 onSelect={val => {
                   val.action && val.action();
@@ -136,7 +147,7 @@ export default function CardEditorToolbox({ open, context, prefixElement }: Prop
               />
             </>
           )}
-          {entityIs(selectedDocument, 'DocumentFile') && selectedDocument.fileName && (
+          {isDoc && selectedDocument.fileName && (
             <IconButton
               icon={faDownload}
               title={'Download file'}
@@ -144,7 +155,7 @@ export default function CardEditorToolbox({ open, context, prefixElement }: Prop
               onClick={() => downloadCb()}
             />
           )}
-          {entityIs(selectedDocument, 'ExternalLink') &&
+          {isLink &&
             selectedDocument.url &&
             selectedDocument.url.length > 0 && (
               <IconButton
@@ -154,17 +165,14 @@ export default function CardEditorToolbox({ open, context, prefixElement }: Prop
                 onClick={() => openUrl(selectedDocument.url)}
               />
             )}
-          {editMode ? (
-            <>{entityIs(selectedDocument, 'ExternalLink') && <div>BUTTONS Links</div>}</>
-          ) : (
-            <IconButton
-              icon={faPen}
-              title="edit block"
-              className={toolboxButtonStyle}
-              onClick={() => setEditMode(true)}
-            />
-          )}
+          <IconButton
+            icon={faPen}
+            title="edit block"
+            className={toolboxButtonStyle}
+            onClick={() => setEditMode(true)}
+          />
           <ConfirmDeleteModal
+            confirmButtonLabel={'Delete ' + (isText ? 'text' : isLink ? 'link' : 'doc')}
             buttonLabel={
               <>
                 <IconButton
@@ -201,7 +209,6 @@ export default function CardEditorToolbox({ open, context, prefixElement }: Prop
               }
               setSelectedId(undefined);
             }}
-            confirmButtonLabel={'Delete data'}
           />
         </>
       )}

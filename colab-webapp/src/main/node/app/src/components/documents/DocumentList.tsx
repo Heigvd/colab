@@ -5,14 +5,10 @@
  * Licensed under the MIT License
  */
 
-import { css } from '@emotion/css';
 import * as React from 'react';
 import { useAndLoadDocuments } from '../../selectors/documentSelector';
 import AvailabilityStatusIndicator from '../common/AvailabilityStatusIndicator';
-import Flex from '../common/Flex';
-import { space_M } from '../styling/style';
 import { DocumentContext } from './documentCommonType';
-import DocumentCreatorButton from './DocumentCreatorButton';
 import DocumentEditor from './DocumentEditor';
 
 export interface DocumentListProps {
@@ -34,25 +30,6 @@ export default function DocumentList({ context, allowEdition }: DocumentListProp
         .map(doc => (
           <DocumentEditor key={doc.id} doc={doc} allowEdition={allowEdition || true} />
         ))}
-      {allowEdition && (
-        <Flex className={css({ paddingTop: space_M })}>
-          <DocumentCreatorButton
-            context={context}
-            docKind="TextDataBlock"
-            title="add a text block"
-          />
-          <DocumentCreatorButton
-            context={context}
-            docKind="DocumentFile"
-            title="add a file"
-          />
-          <DocumentCreatorButton
-            context={context}
-            docKind="ExternalLink"
-            title="add a link"
-          />
-        </Flex>
-      )}
     </>
   );
 }

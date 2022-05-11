@@ -45,6 +45,7 @@ export interface TipsProps {
   tipsType?: TipsType;
   interactionType?: 'CLICK' | 'HOVER';
   children?: React.ReactNode;
+  className?: string;
 }
 
 function getIconProp(tipsType: TipsProps['tipsType']): IconProp {
@@ -147,6 +148,7 @@ export default function Tips({
   tipsType = 'TIPS',
   interactionType = 'HOVER',
   children,
+  className,
 }: TipsProps): JSX.Element {
   const [coord, setCoord] = React.useState<[number, number] | undefined>(undefined);
 
@@ -214,7 +216,7 @@ export default function Tips({
   if (config[tipsType].value) {
     return (
       <span
-        className={cx(getStyle(interactionType), iconStyle)}
+        className={cx(getStyle(interactionType), iconStyle, className)}
         onMouseLeave={onLeaveCb}
         onMouseEnter={onEnterCb}
         onMouseMove={onMoveCb}

@@ -104,8 +104,8 @@ export default function OpenGraphLink({
             onChange={saveLink}
             onCancel={() => setEditingState(false)}
             directEdit
-            containerClassName={css({ flexGrow: 1, alignItems: 'stretch' })}
-            className={css({ input: { flexGrow: 1 } })}
+            containerClassName={css({ display: 'flex', flexGrow: 1, alignItems: 'center' })}
+            className={css({ flexGrow: 1, input : { flexGrow: 1, marginRight: space_S} })}
           />
         ) : (
           <>
