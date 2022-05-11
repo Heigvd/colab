@@ -7,6 +7,8 @@
 
 import { css, cx } from '@emotion/css';
 import {
+  faArrowDown,
+  faArrowUp,
   faCheck,
   faCog,
   faDownload,
@@ -155,22 +157,22 @@ export default function CardEditorToolbox({ open, context, prefixElement }: Prop
               onClick={() => downloadCb()}
             />
           )}
-          {isLink &&
-            selectedDocument.url &&
-            selectedDocument.url.length > 0 && (
-              <IconButton
-                icon={faExternalLinkAlt}
-                title={'Open url in new tab'}
-                className={lightIconButtonStyle}
-                onClick={() => openUrl(selectedDocument.url)}
-              />
-            )}
-          <IconButton
-            icon={faPen}
-            title="edit block"
-            className={toolboxButtonStyle}
-            onClick={() => setEditMode(true)}
-          />
+          {isLink && selectedDocument.url && selectedDocument.url.length > 0 && (
+            <IconButton
+              icon={faExternalLinkAlt}
+              title={'Open url in new tab'}
+              className={lightIconButtonStyle}
+              onClick={() => openUrl(selectedDocument.url)}
+            />
+          )}
+          {!isText && (
+            <IconButton
+              icon={faPen}
+              title="edit block"
+              className={toolboxButtonStyle}
+              onClick={() => setEditMode(true)}
+            />
+          )}
           <ConfirmDeleteModal
             confirmButtonLabel={'Delete ' + (isText ? 'text' : isLink ? 'link' : 'doc')}
             buttonLabel={
@@ -210,6 +212,24 @@ export default function CardEditorToolbox({ open, context, prefixElement }: Prop
               setSelectedId(undefined);
             }}
           />
+          <div className={css({marginLeft: space_S, paddingLeft: space_S, borderLeft: '1px solid var(--lightGray)'})}>
+          <IconButton
+            icon={faArrowUp}
+            title={'Move block up'}
+            className={lightIconButtonStyle}
+            onClick={() => {
+              dispatch(API.moveDocumentUp(selectedId!));
+            }}
+          />
+          <IconButton
+            icon={faArrowDown}
+            title={'Move block down'}
+            className={lightIconButtonStyle}
+            onClick={() => {
+              dispatch(API.moveDocumentDown(selectedId!));
+            }}
+          />
+          </div>
         </>
       )}
     </Flex>
