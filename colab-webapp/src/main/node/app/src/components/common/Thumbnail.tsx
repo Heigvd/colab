@@ -12,6 +12,7 @@ import Clickable from './Clickable';
 
 interface Props {
   onClick?: () => void;
+  onDoubleClick?: () => void;
   className?: string;
   children: React.ReactNode;
 }
@@ -21,9 +22,19 @@ const thumbStyle = css({
   padding: space_M,
 });
 
-export default function Thumbnail({ children, onClick, className }: Props): JSX.Element {
+export default function Thumbnail({
+  onClick,
+  onDoubleClick,
+  className,
+  children,
+}: Props): JSX.Element {
   return (
-    <Clickable onClick={onClick} clickableClassName={cx(thumbStyle, className)}>
+    <Clickable
+      onClick={onClick}
+      onDoubleClick={onDoubleClick}
+      enterKeyBehaviour="DBL_CLICK"
+      clickableClassName={cx(thumbStyle, className)}
+    >
       {children}
     </Clickable>
   );

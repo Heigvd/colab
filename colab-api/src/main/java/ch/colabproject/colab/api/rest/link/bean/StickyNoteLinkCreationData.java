@@ -16,7 +16,7 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
  *
  * @author sandra
  */
-public class StickyNoteLinkCreationBean implements Serializable {
+public class StickyNoteLinkCreationData implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -188,7 +188,7 @@ public class StickyNoteLinkCreationBean implements Serializable {
         if (getClass() != obj.getClass()) {
             return false;
         }
-        final StickyNoteLinkCreationBean other = (StickyNoteLinkCreationBean) obj;
+        final StickyNoteLinkCreationData other = (StickyNoteLinkCreationData) obj;
         return new EqualsBuilder()
             .append(this.srcCardId, other.srcCardId)
             .append(this.srcCardContentId, other.srcCardContentId)
@@ -201,7 +201,7 @@ public class StickyNoteLinkCreationBean implements Serializable {
 
     @Override
     public String toString() {
-        return "StickyNoteLinkCreationBean{" + "srcCardId=" + srcCardId
+        return "StickyNoteLinkCreationData{" + "srcCardId=" + srcCardId
             + ", srcCardContentId=" + srcCardContentId
             + ", srcResourceOrRefId=" + srcResourceOrRefId + ", srcDocumentId=" + srcDocumentId
             + ", destinationCardId=" + destinationCardId + ", teaser=" + teaser + "}";

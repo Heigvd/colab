@@ -379,11 +379,14 @@ export default function Team({ project }: Props): JSX.Element {
             gap: space_S,
           })}
         >
-          <div className={titleCellStyle}>Members</div>
+          <div className={cx(titleCellStyle, css({ gridColumnStart: 1, gridColumnEnd: 3 }))}>
+            Members
+          </div>
           <div className={titleCellStyle}>Rights</div>
-          <div className={cx(titleCellStyle, css({ gridColumnStart: 3, gridColumnEnd: 'end' }))}>
+          <div className={cx(titleCellStyle, css({ gridColumnStart: 4, gridColumnEnd: 'end' }))}>
             Roles
           </div>
+          <div />
           <div />
           <div />
 

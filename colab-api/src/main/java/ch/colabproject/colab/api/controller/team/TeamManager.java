@@ -103,9 +103,6 @@ public class TeamManager {
         teamMember.setProject(project);
         teamMember.setPosition(position);
         project.getTeamMembers().add(teamMember);
-        if (user != null) {
-            user.getTeamMembers().add(teamMember);
-        }
         return teamMember;
     }
 
@@ -497,10 +494,6 @@ public class TeamManager {
 
         // delete invitation token
         tokenManager.deleteInvitationsByTeamMember(teamMember);
-
-        if (teamMember.getUser() != null) {
-            teamMember.getUser().getTeamMembers().remove(teamMember);
-        }
 
         if (teamMember.getProject() != null) {
             teamMember.getProject().getTeamMembers().remove(teamMember);

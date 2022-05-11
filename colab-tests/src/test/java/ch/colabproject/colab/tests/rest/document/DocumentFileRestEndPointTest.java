@@ -26,7 +26,7 @@ package ch.colabproject.colab.tests.rest.document;
 import ch.colabproject.colab.api.model.document.Document;
 import ch.colabproject.colab.api.model.document.DocumentFile;
 import ch.colabproject.colab.api.model.project.Project;
-import ch.colabproject.colab.api.rest.document.bean.ResourceCreationBean;
+import ch.colabproject.colab.api.rest.document.bean.ResourceCreationData;
 import ch.colabproject.colab.api.setup.ColabConfiguration;
 import ch.colabproject.colab.generator.plugin.rest.FormField;
 import ch.colabproject.colab.tests.tests.AbstractArquillianTest;
@@ -227,7 +227,7 @@ public class DocumentFileRestEndPointTest extends AbstractArquillianTest {
      */
     private ImmutablePair<Document, Long> createHostedDocResource() {
 
-        ResourceCreationBean toCreate = new ResourceCreationBean();
+        ResourceCreationData toCreate = new ResourceCreationData();
         String title = "The game encyclopedia #" + ((int) (Math.random() * 1000));
         toCreate.setTitle(title);
         var doc = new DocumentFile();// rename to DocumentFile

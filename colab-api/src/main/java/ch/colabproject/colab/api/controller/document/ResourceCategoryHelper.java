@@ -13,6 +13,7 @@ import ch.colabproject.colab.api.model.card.AbstractCardType;
 import ch.colabproject.colab.api.model.card.Card;
 import ch.colabproject.colab.api.model.card.CardContent;
 import ch.colabproject.colab.api.model.document.AbstractResource;
+import ch.colabproject.colab.api.persistence.jpa.card.CardTypeDao;
 import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
 import java.util.List;
 import java.util.Objects;
@@ -37,6 +38,12 @@ public class ResourceCategoryHelper {
 
     // *********************************************************************************************
     // injections
+
+    /**
+     * Card type persistence handler
+     */
+    @Inject
+    private CardTypeDao cardTypeDao;
 
     /**
      * Resource / resource reference related logic
@@ -200,8 +207,8 @@ public class ResourceCategoryHelper {
      * @param oldName       the old name of the category
      * @param newName       the new name of the category
      */
-    private void renameCategory(AbstractCardType cardTypeOrRef, Long projectId, String oldName,
-        String newName) {
+    private void renameCategory(AbstractCardType cardTypeOrRef,
+        Long projectId, String oldName, String newName) {
         cardTypeOrRef.getDirectAbstractResources().stream()
             .forEach(resourceOrRef -> renameCategoryIfMatch(resourceOrRef, oldName, newName));
 
@@ -209,7 +216,7 @@ public class ResourceCategoryHelper {
             .filter(card -> Objects.equals(projectId, card.getProject().getId()))
             .forEach(card -> renameCategory(card, oldName, newName));
 
-        cardTypeOrRef.getDirectReferences().stream()
+        cardTypeDao.findDirectReferences(cardTypeOrRef).stream()
             .forEach(cardRef -> renameCategory(cardRef, projectId, oldName, newName));
     }
 

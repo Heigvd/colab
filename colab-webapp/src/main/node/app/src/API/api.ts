@@ -12,7 +12,7 @@ import {
   AuthInfo,
   Card,
   CardContent,
-  CardTypeCreationBean,
+  CardTypeCreationData,
   Change,
   ColabClient,
   Document,
@@ -22,12 +22,13 @@ import {
   HttpSession,
   InvolvementLevel,
   Project,
+  ProjectCreationData,
   Resource,
-  ResourceCreationBean,
+  ResourceCreationData,
   ResourceRef,
   SignUpInfo,
   StickyNoteLink,
-  StickyNoteLinkCreationBean,
+  StickyNoteLinkCreationData,
   TeamMember,
   TeamRole,
   TextDataBlock,
@@ -39,7 +40,7 @@ import { DocumentKind } from '../components/documents/documentCommonType';
 import { hashPassword } from '../SecurityHelper';
 import { addNotification } from '../store/notification';
 import { ColabState, getStore } from '../store/store';
-import { CardTypeAllInOne, CardTypeOnOneSOwn } from '../types/cardTypeDefinition';
+import { CardTypeAllInOne, CardTypeOnOneSOwn, CardTypeWithRef } from '../types/cardTypeDefinition';
 
 const winPath = window.location.pathname;
 
@@ -323,12 +324,20 @@ export const getAllProjects = createAsyncThunk('project/all', async () => {
   return await restClient.ProjectRestEndpoint.getAllProjects();
 });
 
-export const createProject = createAsyncThunk('project/create', async (project: Project) => {
-  return await restClient.ProjectRestEndpoint.createProject({
+// TODO sandra work in progress : voué à disparaître
+export const createEmptyProject = createAsyncThunk('project/create', async (project: Project) => {
+  return await restClient.ProjectRestEndpoint.createEmptyProject({
     ...project,
     id: undefined,
   });
 });
+
+export const createProject = createAsyncThunk(
+  'project/create',
+  async (creationData: ProjectCreationData) => {
+    return await restClient.ProjectRestEndpoint.createProject(creationData);
+  },
+);
 
 export const updateProject = createAsyncThunk('project/update', async (project: Project) => {
   await restClient.ProjectRestEndpoint.updateProject(project);
@@ -570,7 +579,7 @@ export const getAvailablePublishedCardTypes = createAsyncThunk(
 
 export const createCardType = createAsyncThunk(
   'cardType/create',
-  async (cardType: CardTypeCreationBean) => {
+  async (cardType: CardTypeCreationData) => {
     return await restClient.CardTypeRestEndpoint.createCardType(cardType);
   },
 );
@@ -666,11 +675,11 @@ export const deleteCardType = createAsyncThunk(
 /**
  * Remove the card type from the project. Can be done only if not used.
  */
-export const removeCardTypeFromProject = createAsyncThunk(
+export const removeCardTypeRefFromProject = createAsyncThunk(
   'cardType/removeFromProject',
-  async ({ cardType, project }: { cardType: CardTypeAllInOne; project: Project }) => {
+  async ({ cardType, project }: { cardType: CardTypeWithRef; project: Project }) => {
     if (cardType.ownId && project.id) {
-      return await restClient.CardTypeRestEndpoint.removeCardTypeFromProject(
+      return await restClient.CardTypeRestEndpoint.removeCardTypeRefFromProject(
         cardType.ownId,
         project.id,
       );
@@ -883,7 +892,7 @@ export const updateResourceRef = createAsyncThunk(
 
 export const createResource = createAsyncThunk(
   'resource/create',
-  async (resource: ResourceCreationBean) => {
+  async (resource: ResourceCreationData) => {
     return await restClient.ResourceRestEndpoint.createResource(resource);
   },
 );
@@ -1061,7 +1070,7 @@ export const getStickyNoteLinkAsDest = createAsyncThunk(
 
 export const createStickyNote = createAsyncThunk(
   'stickyNoteLinks/create',
-  async (stickyNote: StickyNoteLinkCreationBean) => {
+  async (stickyNote: StickyNoteLinkCreationData) => {
     return await restClient.StickyNoteLinkRestEndpoint.createLink(stickyNote);
   },
 );

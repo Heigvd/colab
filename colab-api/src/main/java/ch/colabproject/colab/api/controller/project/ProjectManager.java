@@ -6,10 +6,11 @@
  */
 package ch.colabproject.colab.api.controller.project;
 
-import ch.colabproject.colab.api.controller.DuplicationHelper;
+import ch.colabproject.colab.api.controller.DuplicationManager;
 import ch.colabproject.colab.api.controller.RequestManager;
 import ch.colabproject.colab.api.controller.card.CardManager;
 import ch.colabproject.colab.api.controller.card.CardTypeManager;
+import ch.colabproject.colab.api.controller.document.ResourceReferenceSpreadingHelper;
 import ch.colabproject.colab.api.controller.security.SecurityManager;
 import ch.colabproject.colab.api.controller.team.TeamManager;
 import ch.colabproject.colab.api.model.DuplicationParam;
@@ -87,6 +88,12 @@ public class ProjectManager {
     @Inject
     private CardTypeManager cardTypeManager;
 
+    /**
+     * Resource reference spreading specific logic handling
+     */
+    @Inject
+    private ResourceReferenceSpreadingHelper resourceReferenceSpreadingHelper;
+
     // *********************************************************************************************
     // find projects
     // *********************************************************************************************
@@ -142,23 +149,60 @@ public class ProjectManager {
             return requestManager.sudo(() -> {
                 logger.debug("Create project: {}", project);
 
-                if (project.getRootCard() == null) {
-                    Card rootCard = cardManager.initNewRootCard();
-
-                    project.setRootCard(rootCard);
-                    rootCard.setRootCardProject(project);
-                }
-
-                User user = securityManager.assertAndGetCurrentUser();
-                Optional<TeamMember> currentUserTeamMember = project.getTeamMembers().stream()
-                    .filter(tm -> tm.getUserId() == user.getId()).findFirst();
-                if (currentUserTeamMember.isPresent()) {
-                    currentUserTeamMember.get().setPosition(HierarchicalPosition.OWNER);
-                } else {
-                    teamManager.addMember(project, user, HierarchicalPosition.OWNER);
-                }
+                initProject(project);
 
                 return projectDao.persistProject(project);
+            });
+        } catch (RuntimeException ex) {
+            throw ex;
+        } catch (Exception ex) {
+            return null;
+        }
+    }
+
+    /**
+     * Initialize the project with a root card (if it does not have already one) and set the current
+     * user as a team member owner of the project
+     *
+     * @param project the project to fill
+     */
+    private void initProject(Project project) {
+        if (project.getRootCard() == null) {
+            Card rootCard = cardManager.initNewRootCard();
+
+            project.setRootCard(rootCard);
+            rootCard.setRootCardProject(project);
+        }
+
+        User user = securityManager.assertAndGetCurrentUser();
+        Optional<TeamMember> currentUserTeamMember = project.getTeamMembers().stream()
+            .filter(tm -> tm.getUserId() == user.getId()).findFirst();
+        if (currentUserTeamMember.isPresent()) {
+            currentUserTeamMember.get().setPosition(HierarchicalPosition.OWNER);
+        } else {
+            teamManager.addMember(project, user, HierarchicalPosition.OWNER);
+        }
+    }
+
+    /**
+     * Create a new project based on a model
+     *
+     * @param name        the name of the new project
+     * @param description the description of the new project
+     * @param modelId     the id of the model the new project is based on
+     *
+     * @return the new project
+     */
+    public Project createProjectFromModel(String name, String description, Long modelId) {
+        try {
+            return requestManager.sudo(() -> {
+                Project project = duplicateProject(modelId,
+                    DuplicationParam.buildForCreationFromModel());
+
+                project.setName(name);
+                project.setDescription(description);
+
+                return project;
             });
         } catch (RuntimeException ex) {
             throw ex;
@@ -173,16 +217,19 @@ public class ProjectManager {
 
     /**
      * Duplicate the given project with the given parameters to fine tune the duplication
+     *
      * @param projectId the id of the project to duplicate
-     * @param params the parameters to fine tune the duplication
-     * @return the id of the new project
+     * @param params    the parameters to fine tune the duplication
+     *
+     * @return the new project
      */
-    public Long duplicateProject(Long projectId, DuplicationParam params) {
+    public Project duplicateProject(Long projectId, DuplicationParam params) {
         Project originalProject = assertAndGetProject(projectId);
 
-        Project newProject = new DuplicationHelper(params).duplicateProject(originalProject);
+        Project newProject = new DuplicationManager(params).duplicateProject(originalProject,
+            resourceReferenceSpreadingHelper);
 
-        return createProject(newProject).getId();
+        return createProject(newProject);
     }
 
     // *********************************************************************************************

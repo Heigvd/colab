@@ -70,7 +70,7 @@ public class DuplicationParam implements WithJsonDiscriminator {
     /**
      * @return Default instance for a project duplication
      */
-    public static DuplicationParam getProjectDefaultInstance() {
+    public static DuplicationParam buildDefaultForCopyOfProject() {
         DuplicationParam defaultInstance = new DuplicationParam();
 
         defaultInstance.setWithRoles(true);
@@ -80,7 +80,27 @@ public class DuplicationParam implements WithJsonDiscriminator {
         defaultInstance.setWithDeliverables(true);
         defaultInstance.setWithStickyNotes(true);
         defaultInstance.setWithActivityFlow(true);
+
+        defaultInstance.setMakeOnlyCardTypeReferences(false);
+
+        return defaultInstance;
+    }
+
+    /**
+     * @return Default instance for a project created from a project model
+     */
+    public static DuplicationParam buildForCreationFromModel() {
+        DuplicationParam defaultInstance = new DuplicationParam();
+
+        defaultInstance.setWithRoles(true);
+        defaultInstance.setWithCardTypes(true);
+        defaultInstance.setWithCardsStructure(true);
+        defaultInstance.setWithDeliverables(true);
+        defaultInstance.setWithStickyNotes(true);
+        defaultInstance.setWithActivityFlow(true);
         defaultInstance.setMakeOnlyCardTypeReferences(true);
+
+        defaultInstance.setWithTeamMembers(false);
 
         return defaultInstance;
     }

@@ -19,10 +19,10 @@ import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.api.model.tools.EntityHelper;
 import ch.colabproject.colab.api.model.tracking.Tracking;
 import ch.colabproject.colab.api.security.permissions.Conditions;
-import ch.colabproject.colab.api.ws.channel.WebsocketChannel;
+import ch.colabproject.colab.api.ws.channel.tool.ChannelsBuilders.ChannelsBuilder;
+import ch.colabproject.colab.api.ws.channel.tool.ChannelsBuilders.EmptyChannelBuilder;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 import javax.json.bind.annotation.JsonbTransient;
 import javax.persistence.CascadeType;
 import javax.persistence.Embedded;
@@ -41,13 +41,13 @@ import javax.persistence.Transient;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 /**
  * Card content
  *
  * @author sandra
  */
-//TODO review accurate constraints when stabilized
 @Entity
 @Table(
     indexes = {
@@ -78,6 +78,7 @@ public class CardContent implements ColabEntity, WithWebsocketChannels,
     /**
      * Title
      */
+    @Size(max = 255)
     private String title;
 
     /**
@@ -96,7 +97,6 @@ public class CardContent implements ColabEntity, WithWebsocketChannels,
     /**
      * Completion level
      */
-    // TODO sandra : check if the constraints 0 - 100 are ok
     @Min(0)
     @Max(100)
     @NotNull
@@ -112,6 +112,7 @@ public class CardContent implements ColabEntity, WithWebsocketChannels,
      * The card to which this content belongs
      */
     @ManyToOne(fetch = FetchType.LAZY)
+    @NotNull
     @JsonbTransient
     private Card card;
 
@@ -388,11 +389,12 @@ public class CardContent implements ColabEntity, WithWebsocketChannels,
     }
 
     @Override
-    public Set<WebsocketChannel> getChannels() {
+    public ChannelsBuilder getChannelsBuilder() {
         if (this.card != null) {
-            return this.card.getChannels();
+            return this.card.getChannelsBuilder();
         } else {
-            return Set.of();
+            // such an orphan shouldn't exist...
+            return new EmptyChannelBuilder();
         }
     }
 

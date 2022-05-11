@@ -10,6 +10,7 @@ import { Change } from 'colab-rest-client';
 import * as React from 'react';
 import Tips from '../common/Tips';
 import { ChangeTreeRaw } from '../live/ChangeTree';
+import ProjectCreator from '../projects/ProjectCreator';
 import { space_L } from '../styling/style';
 import PlayJsPlumb from './PlayJsPlumb';
 
@@ -105,9 +106,14 @@ export function DebugChangeTree(): JSX.Element {
   );
 }
 
+function ProjectCreatorDebugger(): JSX.Element {
+  return <ProjectCreator />;
+}
+
 export default function Debugger(): JSX.Element {
   return (
     <div className={css({ padding: space_L })}>
+      <ProjectCreatorDebugger /> {/* TODO sandra work in progress : remove when ok */}
       <PlayJsPlumb />
       <div>
         <Tips tipsType="TODO" interactionType="HOVER">

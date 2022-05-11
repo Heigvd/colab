@@ -22,12 +22,12 @@ import ch.colabproject.colab.api.model.team.acl.InvolvementLevel;
 import ch.colabproject.colab.api.model.tools.EntityHelper;
 import ch.colabproject.colab.api.model.tracking.Tracking;
 import ch.colabproject.colab.api.security.permissions.Conditions;
-import ch.colabproject.colab.api.ws.channel.ProjectContentChannel;
-import ch.colabproject.colab.api.ws.channel.WebsocketChannel;
+import ch.colabproject.colab.api.ws.channel.tool.ChannelsBuilders.ChannelsBuilder;
+import ch.colabproject.colab.api.ws.channel.tool.ChannelsBuilders.EmptyChannelBuilder;
+import ch.colabproject.colab.api.ws.channel.tool.ChannelsBuilders.ProjectContentChannelBuilder;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 import javax.json.bind.annotation.JsonbTransient;
 import javax.persistence.CascadeType;
 import javax.persistence.Embedded;
@@ -45,6 +45,7 @@ import javax.persistence.OneToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Transient;
+import javax.validation.constraints.Size;
 
 /**
  * Card
@@ -53,7 +54,6 @@ import javax.persistence.Transient;
  *
  * @author sandra
  */
-// TODO review accurate constraints when stabilized
 @Entity
 @Table(
     indexes = {
@@ -90,11 +90,13 @@ public class Card
     /**
      * Card title
      */
+    @Size(max = 255)
     private String title;
 
     /**
      * The color of the card
      */
+    @Size(max = 255)
     private String color;
 
     /**
@@ -154,17 +156,14 @@ public class Card
      * <p>
      * There can be several variants of content
      */
-    // TODO sandra - see where it is suitable to order it
-    // TODO sandra - challenge cascade
-    // TODO sandra - challenge ArrayList
-    @OneToMany(mappedBy = "card", cascade = CascadeType.ALL) // , fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "card", cascade = CascadeType.ALL)
     @JsonbTransient
     private List<CardContent> contentVariants = new ArrayList<>();
 
     /**
      * Assignees and other access-control
      */
-    @OneToMany(mappedBy = "card", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "card", cascade = CascadeType.ALL)
     @JsonbTransient
     private List<AccessControl> accessControlList = new ArrayList<>();
 
@@ -609,20 +608,20 @@ public class Card
     }
 
     @Override
-    public Set<WebsocketChannel> getChannels() {
+    public ChannelsBuilder getChannelsBuilder() {
         if (this.rootCardProject != null) {
             // this card is a root card, propagate through the project content channel
-            return Set.of(ProjectContentChannel.build(this.rootCardProject));
+            return new ProjectContentChannelBuilder(this.rootCardProject);
         } else if (this.parent != null) {
             // this card is a sub-card, propagate through its parent channels
-            return this.parent.getChannels();
+            return this.parent.getChannelsBuilder();
         } else if (this.cardType != null) {
             // such a card shouldn't exist...
             // Lorem-ipsum cards for global cardTypes ???
-            return this.cardType.getChannels();
+            return this.cardType.getChannelsBuilder();
         } else {
-            // such an orphan card shouldn't exist...
-            return Set.of();
+            // such an orphan shouldn't exist...
+            return new EmptyChannelBuilder();
         }
     }
 

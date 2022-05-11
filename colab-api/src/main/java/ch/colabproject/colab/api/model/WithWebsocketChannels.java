@@ -6,11 +6,10 @@
  */
 package ch.colabproject.colab.api.model;
 
-import ch.colabproject.colab.api.ws.channel.WebsocketChannel;
+import ch.colabproject.colab.api.ws.channel.tool.ChannelsBuilders.ChannelsBuilder;
 import ch.colabproject.colab.generator.model.interfaces.WithId;
 import ch.colabproject.colab.generator.model.interfaces.WithJsonDiscriminator;
 import ch.colabproject.colab.generator.model.tools.PolymorphicDeserializer;
-import java.util.Set;
 import javax.json.bind.annotation.JsonbTransient;
 import javax.json.bind.annotation.JsonbTypeDeserializer;
 
@@ -28,7 +27,7 @@ public interface WithWebsocketChannels extends WithId, WithJsonDiscriminator {
      * @return list of channels
      */
     @JsonbTransient
-    Set<WebsocketChannel> getChannels();
+    ChannelsBuilder getChannelsBuilder();
 
     /**
      * Get the payload to embed within an IndexEntry

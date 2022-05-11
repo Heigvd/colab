@@ -7,9 +7,8 @@
 package ch.colabproject.colab.api.ws.message;
 
 import ch.colabproject.colab.api.model.WithWebsocketChannels;
-import ch.colabproject.colab.api.ws.channel.WebsocketChannel;
+import ch.colabproject.colab.api.ws.channel.tool.ChannelsBuilders.ChannelsBuilder;
 import ch.colabproject.colab.generator.model.interfaces.WithJsonDiscriminator;
-import java.util.Set;
 import javax.json.bind.annotation.JsonbTransient;
 import javax.validation.constraints.NotNull;
 
@@ -40,7 +39,7 @@ public class IndexEntry implements WithJsonDiscriminator {
      * Get the channels this entity shall be sent through.
      */
     @JsonbTransient
-    private Set<WebsocketChannel> channels;
+    private ChannelsBuilder channelsBuilder;
 
     /**
      * @return index entry type
@@ -93,21 +92,21 @@ public class IndexEntry implements WithJsonDiscriminator {
     }
 
     /**
-     * get channels
+     * get the channels builder
      *
-     * @return channels
+     * @return channels builder
      */
-    public Set<WebsocketChannel> getChannels() {
-        return channels;
+    public ChannelsBuilder getChannelsBuilder() {
+        return channelsBuilder;
     }
 
     /**
-     * set channels
+     * set the channels builder
      *
-     * @param channels new channels
+     * @param channelsBuilder the channels builder
      */
-    public void setChannels(Set<WebsocketChannel> channels) {
-        this.channels = channels;
+    public void setChannelsBuilder(ChannelsBuilder channelsBuilder) {
+        this.channelsBuilder = channelsBuilder;
     }
 
     /**
@@ -123,7 +122,8 @@ public class IndexEntry implements WithJsonDiscriminator {
         entry.type = object.getJsonDiscriminator();
         entry.id = object.getId();
         entry.payload = object.getIndexEntryPayload();
-        entry.channels = object.getChannels();
+
+        entry.channelsBuilder = object.getChannelsBuilder();
 
         return entry;
     }

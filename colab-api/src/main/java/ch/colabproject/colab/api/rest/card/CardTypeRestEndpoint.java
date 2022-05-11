@@ -11,7 +11,7 @@ import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.model.card.AbstractCardType;
 import ch.colabproject.colab.api.model.card.CardType;
 import ch.colabproject.colab.api.persistence.jpa.card.CardTypeDao;
-import ch.colabproject.colab.api.rest.card.bean.CardTypeCreationBean;
+import ch.colabproject.colab.api.rest.card.bean.CardTypeCreationData;
 import ch.colabproject.colab.generator.model.annotations.AdminResource;
 import ch.colabproject.colab.generator.model.annotations.AuthenticationRequired;
 import java.util.List;
@@ -126,22 +126,22 @@ public class CardTypeRestEndpoint {
     /**
      * Persist a card type.
      *
-     * @param cardTypeCreationBean Everything need to create the card type
+     * @param cardTypeCreationData Everything need to create the card type
      *
      * @return id of the persisted new card type
      */
     @POST
-    public Long createCardType(CardTypeCreationBean cardTypeCreationBean) {
-        logger.debug("create card type {}", cardTypeCreationBean);
+    public Long createCardType(CardTypeCreationData cardTypeCreationData) {
+        logger.debug("create card type {}", cardTypeCreationData);
 
         CardType cardType = new CardType();
-        cardType.setProjectId(cardTypeCreationBean.getProjectId());
-        cardType.setTitle(cardTypeCreationBean.getTitle());
-        cardType.setPurpose(cardTypeCreationBean.getPurpose());
-        cardType.setTags(cardTypeCreationBean.getTags());
+        cardType.setProjectId(cardTypeCreationData.getProjectId());
+        cardType.setTitle(cardTypeCreationData.getTitle());
+        cardType.setPurpose(cardTypeCreationData.getPurpose());
+        cardType.setTags(cardTypeCreationData.getTags());
 
-        if (cardTypeCreationBean.getPurpose() != null) {
-            cardTypeCreationBean.getPurpose().setPurposingCardType(cardType);
+        if (cardTypeCreationData.getPurpose() != null) {
+            cardTypeCreationData.getPurpose().setPurposingCardType(cardType);
         }
 
         return cardTypeManager.createCardType(cardType).getId();
@@ -164,7 +164,7 @@ public class CardTypeRestEndpoint {
     /**
      * Permanently delete a card type
      *
-     * @param id id of the card type to delete
+     * @param id the id of the card type to delete
      */
     @DELETE
     @Path("{id}")
@@ -191,25 +191,20 @@ public class CardTypeRestEndpoint {
         return cardTypeManager.useCardTypeInProject(cardTypeId, projectId);
     }
 
-    // TODO sandra work in progress, see what it means exactly to remove a card type from a project
     /**
-     * Remove the card type use of the project. That means :
-     * <ul>
-     * <li>either delete the card type if it belongs to the project and has no use</li>
-     * <li>or delete the reference in the project if it has no use</li>
-     * </ul>
-     * If the abstract card type is used, throws an error.
+     * Remove the card type use of the project. That means delete the reference in the project if it
+     * has no use. If the abstract card type is used, throws an error.
      *
-     * @param cardTypeId the id of the abstract card type no more useful for the project
+     * @param cardTypeRefId the id of the card type reference no more useful for the project
      * @param projectId  the id of the project in which we don't want to use the card type anymore
      */
     @PUT
     @Path("removeCardTypeFromProject/{cardTypeId}/{projectId}")
-    public void removeCardTypeFromProject(@PathParam("cardTypeId") Long cardTypeId,
+    public void removeCardTypeRefFromProject(@PathParam("cardTypeId") Long cardTypeRefId,
         @PathParam("projectId") Long projectId) {
-        logger.debug("remove card type #{} from project #{}", cardTypeId, projectId);
+        logger.debug("remove card type reference #{} from project #{}", cardTypeRefId, projectId);
 
-        cardTypeManager.removeCardTypeFromProject(cardTypeId, projectId);
+        cardTypeManager.removeCardTypeRefFromProject(cardTypeRefId, projectId);
     }
 
 }

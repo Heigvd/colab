@@ -47,7 +47,7 @@ public class ProjectRestEndpointTest extends AbstractArquillianTest {
 
         Project project = new Project();
 
-        Long projectId = client.projectRestEndpoint.createProject(project);
+        Long projectId = client.projectRestEndpoint.createEmptyProject(project);
 
         Project persistedProject = client.projectRestEndpoint.getProject(projectId);
         Assertions.assertNotNull(persistedProject);
@@ -80,7 +80,7 @@ public class ProjectRestEndpointTest extends AbstractArquillianTest {
         boolean wasError = false;
         try {
             rootCard = client.projectRestEndpoint.getRootCardOfProject(projectId);
-        } catch(HttpErrorMessage hem) {
+        } catch (HttpErrorMessage hem) {
             Assertions.assertEquals(HttpErrorMessage.MessageCode.RELATED_OBJECT_NOT_FOUND,
                 hem.getMessageCode());
             wasError = true;
@@ -121,7 +121,7 @@ public class ProjectRestEndpointTest extends AbstractArquillianTest {
     public void testUpdateProject() {
         Project project = new Project();
 
-        Long projectId = client.projectRestEndpoint.createProject(project);
+        Long projectId = client.projectRestEndpoint.createEmptyProject(project);
         project = client.projectRestEndpoint.getProject(projectId);
         project.setName("The Hitchhiker's Guide to the Serious-Game");
         project.setDescription("So Long, and Thanks for All the Games");
@@ -137,11 +137,11 @@ public class ProjectRestEndpointTest extends AbstractArquillianTest {
     public void testGetAllProjects() {
         Project project = new Project();
         project.setName("The Hitchhiker's Guide to the Serious-Game");
-        client.projectRestEndpoint.createProject(project);
+        client.projectRestEndpoint.createEmptyProject(project);
 
         project = new Project();
         project.setName("Don't Panic");
-        client.projectRestEndpoint.createProject(project);
+        client.projectRestEndpoint.createEmptyProject(project);
 
         List<Project> projects = client.projectRestEndpoint.getAllProjects();
         Assertions.assertEquals(2, projects.size());
@@ -171,23 +171,20 @@ public class ProjectRestEndpointTest extends AbstractArquillianTest {
         Project p = new Project();
         p.setName("The Hitchhiker's Guide to the Serious-Game");
 
-        Long projectId = client.projectRestEndpoint.createProject(p);
+        Long projectId = client.projectRestEndpoint.createEmptyProject(p);
 
-        // Goulash receives the project, the user (ie himself) and the teamMember which link the
-        // project to the user
+        // Goulash receives the project and the teamMember which link the project to the user
         WsUpdateMessage wsProjectUpdate = TestHelper
             .waitForMessagesAndAssert(wsGoulashClient, 1, 5, WsUpdateMessage.class).get(0);
-        // project, teamMember, user
-        Assertions.assertEquals(3, wsProjectUpdate.getUpdated().size(),
+        // project, teamMember
+        Assertions.assertEquals(2, wsProjectUpdate.getUpdated().size(),
             "Got " + wsProjectUpdate.getUpdated());
 
         Project project = TestHelper.findFirst(wsProjectUpdate.getUpdated(), Project.class);
         TeamMember member = TestHelper.findFirst(wsProjectUpdate.getUpdated(), TeamMember.class);
-        User wsUpdatedUser = TestHelper.findFirst(wsProjectUpdate.getUpdated(), User.class);
 
         Assertions.assertEquals(projectId, project.getId());
         Assertions.assertEquals(projectId, member.getProjectId());
-        Assertions.assertEquals(member.getUserId(), wsUpdatedUser.getId());
 
         // user is a lonely team member
         List<TeamMember> members = client.projectRestEndpoint.getMembers(project.getId());
@@ -231,7 +228,7 @@ public class ProjectRestEndpointTest extends AbstractArquillianTest {
 
         Assertions.assertTrue(token.isAuthenticationRequired());
 
-        // an try to consume the token being unauthenticated
+        // a try to consume the token being unauthenticated
         TestHelper.assertThrows(HttpErrorMessage.MessageCode.AUTHENTICATION_REQUIRED, () -> {
             // consuming the token without being authenticated is not possible
             borschClient.tokenRestEndpoint.consumeToken(tokenId, plainToken);
@@ -246,8 +243,8 @@ public class ProjectRestEndpointTest extends AbstractArquillianTest {
         borschClient.websocketRestEndpoint.subscribeToUserChannel(wsBorschClient.getSessionId());
 
         ////////////////////////////////////////////////////////////////////////////////////////////
-        // Borsch consumes the tokens amd, thus, join the team.
-        // Borsch and Goulash both receive the temmMember and borsch's user update.
+        // Borsch consumes the invitation tokens and, thus, join the team.
+        // Borsch and Goulash both receive the temmMember update.
         ////////////////////////////////////////////////////////////////////////////////////////////
         borschClient.tokenRestEndpoint.consumeToken(tokenId, plainToken);
 
@@ -256,13 +253,11 @@ public class ProjectRestEndpointTest extends AbstractArquillianTest {
         WsUpdateMessage borschTeamUpdate = TestHelper
             .waitForMessagesAndAssert(wsBorschClient, 1, 5, WsUpdateMessage.class).get(0);
 
-        Assertions.assertEquals(2, goulashTeamUpdate.getUpdated().size());
-        Assertions.assertEquals(2, borschTeamUpdate.getUpdated().size());
+        Assertions.assertEquals(1, goulashTeamUpdate.getUpdated().size());
+        Assertions.assertEquals(1, borschTeamUpdate.getUpdated().size());
 
-        TeamMember gTeamMemeber = TestHelper.findFirst(goulashTeamUpdate.getUpdated(),
-            TeamMember.class);
-        TeamMember bTeamMember = TestHelper.findFirst(borschTeamUpdate.getUpdated(),
-            TeamMember.class);
+        TestHelper.findFirst(goulashTeamUpdate.getUpdated(), TeamMember.class);
+        TestHelper.findFirst(borschTeamUpdate.getUpdated(), TeamMember.class);
 
         ////////////////////////////////////////////////////////////////////////////////////////////
         // They both reload the team from REST method

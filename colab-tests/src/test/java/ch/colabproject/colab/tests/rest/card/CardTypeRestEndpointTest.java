@@ -12,7 +12,7 @@ import ch.colabproject.colab.api.model.card.CardType;
 import ch.colabproject.colab.api.model.card.CardTypeRef;
 import ch.colabproject.colab.api.model.document.TextDataBlock;
 import ch.colabproject.colab.api.model.project.Project;
-import ch.colabproject.colab.api.rest.card.bean.CardTypeCreationBean;
+import ch.colabproject.colab.api.rest.card.bean.CardTypeCreationData;
 import ch.colabproject.colab.api.ws.message.WsChannelUpdate;
 import ch.colabproject.colab.api.ws.message.WsUpdateMessage;
 import ch.colabproject.colab.client.ColabClient;
@@ -54,7 +54,7 @@ public class CardTypeRestEndpointTest extends AbstractArquillianTest {
         purposeBlock.setMimeType(DEFAULT_MIME_TYPE);
         purposeBlock.setTextData(purpose);
 
-        CardTypeCreationBean cardTypeToCreate = new CardTypeCreationBean();
+        CardTypeCreationData cardTypeToCreate = new CardTypeCreationData();
         cardTypeToCreate.setProjectId(projectId);
         cardTypeToCreate.setTitle(title);
         cardTypeToCreate.setPurpose(purposeBlock);
@@ -312,7 +312,7 @@ public class CardTypeRestEndpointTest extends AbstractArquillianTest {
         Long projectTwoRootContentId = ColabFactory.getRootContent(client, projectTwo).getId();
         ColabFactory.createNewCard(client, projectTwoRootContentId, projectOneType.getId());
         // consume websocket messages (overview update; project 1 update; project 2 update)
-        TestHelper.waitForMessagesAndAssert(wsClient, 3, 5, WsUpdateMessage.class).get(0);
+        TestHelper.waitForMessagesAndAssert(wsClient, 2, 5, WsUpdateMessage.class).get(0);
         // consume websocket messages (overview update; project 2 update)
         TestHelper.waitForMessagesAndAssert(pizzaWsClient, 2, 5, WsUpdateMessage.class).get(0);
 
@@ -355,7 +355,7 @@ public class CardTypeRestEndpointTest extends AbstractArquillianTest {
     public void testUpdateCardType() {
         Long projectId = ColabFactory.createProject(client, "testUpdateCardType").getId();
 
-        CardTypeCreationBean cardTypeToCreate = new CardTypeCreationBean();
+        CardTypeCreationData cardTypeToCreate = new CardTypeCreationData();
         cardTypeToCreate.setProjectId(projectId);
         cardTypeToCreate.setTags(new HashSet<>());
 
@@ -415,7 +415,7 @@ public class CardTypeRestEndpointTest extends AbstractArquillianTest {
             .getDocument(purposeId);
         Assertions.assertNotNull(persistedPurposeBlock);
 
-        client.cardTypeRestEndpoint.removeCardTypeFromProject(cardTypeId, projectId);
+        client.cardTypeRestEndpoint.deleteCardType(cardTypeId);
 
         persistedCardType = (CardType) client.cardTypeRestEndpoint.getCardType(cardTypeId);
         Assertions.assertNull(persistedCardType);
@@ -446,7 +446,7 @@ public class CardTypeRestEndpointTest extends AbstractArquillianTest {
         Assertions.assertEquals(1, cardTypesOfProject.size());
         Assertions.assertEquals(cardTypeId, cardTypesOfProject.iterator().next().getId());
 
-        client.cardTypeRestEndpoint.removeCardTypeFromProject(cardTypeId, projectId);
+        client.cardTypeRestEndpoint.deleteCardType(cardTypeId);
 
         cardTypesOfProject = client.projectRestEndpoint.getCardTypesOfProject(projectId);
         Assertions.assertNotNull(cardTypesOfProject);

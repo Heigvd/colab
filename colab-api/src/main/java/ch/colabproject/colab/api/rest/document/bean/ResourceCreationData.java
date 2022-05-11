@@ -19,7 +19,7 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
  *
  * @author sandra
  */
-public class ResourceCreationBean implements Serializable {
+public class ResourceCreationData implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -190,7 +190,7 @@ public class ResourceCreationBean implements Serializable {
         if (getClass() != obj.getClass()) {
             return false;
         }
-        final ResourceCreationBean other = (ResourceCreationBean) obj;
+        final ResourceCreationData other = (ResourceCreationData) obj;
         return new EqualsBuilder()
             .append(this.title, other.title)
             .append(this.category, other.category)
@@ -202,7 +202,7 @@ public class ResourceCreationBean implements Serializable {
 
     @Override
     public String toString() {
-        return "ResourceCreationBean{" + "title=" + title + ", category=" + category
+        return "ResourceCreationData{" + "title=" + title + ", category=" + category
             + ", abstractCardTypeId=" + abstractCardTypeId + ", cardId=" + cardId
             + ", cardContentId=" + cardContentId + "}";
     }

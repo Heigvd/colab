@@ -6,57 +6,68 @@
  */
 
 import { css } from '@emotion/css';
-import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import * as React from 'react';
 import { Route, Routes } from 'react-router-dom';
-import * as API from '../../../API/api';
 import { useAndLoadGlobalTypesForAdmin } from '../../../selectors/cardTypeSelector';
-import { useAppDispatch } from '../../../store/hooks';
+import { CardTypeAllInOne } from '../../../types/cardTypeDefinition';
 import AvailabilityStatusIndicator from '../../common/AvailabilityStatusIndicator';
-import IconButton from '../../common/IconButton';
+import Flex from '../../common/Flex';
+import { space_L, space_S, voidStyle } from '../../styling/style';
+import CardTypeCreator from './CardTypeCreator';
 import CardTypeEditor from './CardTypeEditor';
 import CardTypeItem from './CardTypeItem';
+import CardTypeListWithFilter from './tags/DataWithTagsListWithFilter';
 
 const flexWrap = css({
   display: 'flex',
   flexDirecion: 'row',
   flexWrap: 'wrap',
+  gap: space_L,
+  marginBottom: space_L,
 });
 
 export default function GlobalCardTypeList(): JSX.Element {
-  const dispatch = useAppDispatch();
   const { cardTypes, status } = useAndLoadGlobalTypesForAdmin();
 
-  const createNewCb = React.useCallback(() => {
-    dispatch(
-      API.createCardType({
-        projectId: null,
-        tags: [],
-      }),
-    );
-  }, [dispatch]);
-
-  if (status !== 'READY') {
-    return <AvailabilityStatusIndicator status={status} />;
-  } else {
-    return (
-      <Routes>
-        <Route path="edit/:id/*" element={<CardTypeEditor />} />
-        <Route
-          path="*"
-          element={
-            <div>
-              <h3>Global Card Types</h3>
-              <IconButton onClick={createNewCb} icon={faPlus} title="Add a type" />
-              <div className={flexWrap}>
-                {cardTypes.map(cardType => (
-                  <CardTypeItem key={cardType.cardTypeId} cardType={cardType} />
-                ))}
+  return (
+    <Routes>
+      <Route path="edit/:id/*" element={<CardTypeEditor usage="global" />} />
+      <Route
+        path="*"
+        element={
+          <Flex
+            direction="column"
+            grow={1}
+            align="stretch"
+            className={css({ alignSelf: 'stretch' })}
+          >
+            <Flex justify="space-between">
+              <h3>Global card types</h3>
+              <CardTypeCreator usage="global" />
+            </Flex>
+            {status !== 'READY' ? (
+              <AvailabilityStatusIndicator status={status} />
+            ) : cardTypes.length > 0 ? (
+              <CardTypeListWithFilter
+                dataWithTags={cardTypes}
+                filterClassName={css({ paddingBottom: space_S })}
+              >
+                {filteredCardTypes => (
+                  <div className={flexWrap}>
+                    {(filteredCardTypes as CardTypeAllInOne[]).map(cardType => (
+                      <CardTypeItem key={cardType.ownId} cardType={cardType} usage="global" />
+                    ))}
+                  </div>
+                )}
+              </CardTypeListWithFilter>
+            ) : (
+              <div className={voidStyle}>
+                <p>Add the first global card type</p>
               </div>
-            </div>
-          }
-        />
-      </Routes>
-    );
-  }
+            )}
+          </Flex>
+        }
+      />
+    </Routes>
+  );
 }

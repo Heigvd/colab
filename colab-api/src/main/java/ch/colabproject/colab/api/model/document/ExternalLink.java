@@ -11,13 +11,13 @@ import ch.colabproject.colab.api.model.ColabEntity;
 import ch.colabproject.colab.api.model.tools.EntityHelper;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
+import javax.validation.constraints.Size;
 
 /**
  * Document referenced by a link to an external system
  *
  * @author sandra
  */
-//TODO adjust the constraints / indexes
 @Entity
 @DiscriminatorValue("EXT_LINK")
 public class ExternalLink extends Document {
@@ -31,6 +31,7 @@ public class ExternalLink extends Document {
     /**
      * The link to access the document
      */
+    @Size(max = 255)
     private String url;
 
     // ---------------------------------------------------------------------------------------------

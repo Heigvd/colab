@@ -7,6 +7,7 @@
 
 import { CardType as CardTypeOnly, CardTypeRef, entityIs } from 'colab-rest-client';
 import { uniq } from 'lodash';
+import * as React from 'react';
 import * as API from '../API/api';
 import { customColabStateEquals, useAppDispatch, useAppSelector } from '../store/hooks';
 import { AvailabilityStatus, ColabState } from '../store/store';
@@ -21,7 +22,7 @@ import { useProjectBeingEdited } from './projectSelector';
  * Turn a card type from a server side model
  * into a convenient model for the client side
  *
- * @param cardType the card type, as seen by the server side (it is on it's one, no reference)
+ * @param cardType the card type, as seen by the server side (it is on it's own, no reference)
  *
  * @returns the card type, as conveninent for the client side
  */
@@ -101,7 +102,6 @@ interface ExpandedCardType {
    * references chain
    * the first is the deepest (i.e. the starting reference)
    */
-  // TODO sandra work in progress see if useful or not
   refChain: CardTypeRef[];
 
   /**
@@ -216,10 +216,10 @@ export function useAndLoadCardType(id: number | null | undefined): CardTypeAndSt
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-//
+// All card types defined in the current project
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-const useProjectCardTypes = (): CardTypeAllInOne[] => {
+function useProjectCardTypes(): CardTypeAllInOne[] {
   return useAppSelector(state => {
     const result: CardTypeAllInOne[] = [];
 
@@ -246,12 +246,12 @@ const useProjectCardTypes = (): CardTypeAllInOne[] => {
 
     return result;
   }, customColabStateEquals);
-};
+}
 
-export const useAndLoadProjectCardTypes = (): {
+export function useAndLoadProjectCardTypes(): {
   cardTypes: CardTypeAllInOne[];
   status: AvailabilityStatus;
-} => {
+} {
   const dispatch = useAppDispatch();
 
   const cardTypes = useProjectCardTypes();
@@ -267,26 +267,24 @@ export const useAndLoadProjectCardTypes = (): {
   } else {
     return { cardTypes: [], status: status };
   }
-};
+}
 
-const usePublishedCardTypes = (): CardTypeAllInOne[] => {
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// All available card types that could be used in the current project
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+function usePublishedCardTypes(): CardTypeAllInOne[] {
   return useAppSelector(state => {
     return Object.values(state.cardType.cardtypes).flatMap(ct => {
       return entityIs(ct, 'CardType') && ct.published ? [makeCardTypeOnOneSOwn(ct)] : [];
     });
   }, customColabStateEquals);
-};
+}
 
-////////////////////////////////////////////////////////////////////////////////////////////////////
-//
-////////////////////////////////////////////////////////////////////////////////////////////////////
-
-// TODO sandra work in progress - do not return the same as in project
-
-export const useAndLoadAvailableCardTypes = (): {
+export function useAndLoadAvailableCardTypes(): {
   cardTypes: CardTypeAllInOne[];
   status: AvailabilityStatus;
-} => {
+} {
   const dispatch = useAppDispatch();
 
   const { project: currentProject } = useProjectBeingEdited();
@@ -295,7 +293,16 @@ export const useAndLoadAvailableCardTypes = (): {
   const statusCurrentProject = useAppSelector(state => state.cardType.currentProjectStatus);
 
   const allPublishedCardTypes = usePublishedCardTypes();
-  const projectCardTypes = useProjectCardTypes();
+  const currentProjectCardTypes = useProjectCardTypes();
+  const currentProjectReferencedCardType = React.useMemo(
+    () =>
+      currentProjectCardTypes
+        .filter(pct => pct.kind === 'referenced')
+        .flatMap(pct => {
+          return pct.cardTypeId ? [pct.cardTypeId] : [];
+        }),
+    [currentProjectCardTypes],
+  );
 
   if (statusPublished === 'NOT_INITIALIZED') {
     dispatch(API.getAvailablePublishedCardTypes());
@@ -307,7 +314,9 @@ export const useAndLoadAvailableCardTypes = (): {
 
   if (statusPublished === 'READY' && statusCurrentProject === 'READY') {
     return {
-      cardTypes: allPublishedCardTypes.filter(ct => !projectCardTypes.includes(ct)),
+      cardTypes: allPublishedCardTypes.filter(
+        ct => ct.cardTypeId && !currentProjectReferencedCardType.includes(ct.cardTypeId),
+      ),
       status: 'READY',
     };
   } else if (statusCurrentProject !== 'READY') {
@@ -315,31 +324,31 @@ export const useAndLoadAvailableCardTypes = (): {
   } else {
     return { cardTypes: [], status: statusPublished };
   }
-};
+}
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // All global card types (i.e. concrete CardType, no project)
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-const useGlobalTypesForAdmin = (): CardTypeAllInOne[] => {
+function useGlobalTypesForAdmin(): CardTypeAllInOne[] {
   return useAppSelector(state => {
     return Object.values(state.cardType.cardtypes).flatMap(ct => {
       return entityIs(ct, 'CardType') && ct.projectId == null ? [makeCardTypeOnOneSOwn(ct)] : [];
     });
   }, customColabStateEquals);
-};
+}
 
-export const useAndLoadGlobalTypesForAdmin = (): {
+export function useAndLoadGlobalTypesForAdmin(): {
   cardTypes: CardTypeAllInOne[];
   status: AvailabilityStatus;
-} => {
+} {
   const dispatch = useAppDispatch();
 
   const status = useAppSelector(state => state.cardType.allGlobalForAdminStatus);
   const cardTypes = useGlobalTypesForAdmin();
   // useAndLoadAllTextOfDocument(cardTypes);
 
-  // TODO sandra work in progress see how we can pre load all purposes
+  // TODO see how we can pre load all purposes
 
   if (status === 'NOT_INITIALIZED') {
     dispatch(API.getAllGlobalCardTypes());
@@ -350,15 +359,16 @@ export const useAndLoadGlobalTypesForAdmin = (): {
   } else {
     return { cardTypes: [], status };
   }
-};
+}
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-//
+// card type tags
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 /**
  * Find list of all known tags
  */
+// TODO see if useful or if can be discarded
 export function useCardTypeTags() {
   return useAppSelector(state => {
     return uniq(
@@ -373,176 +383,14 @@ export function useCardTypeTags() {
   });
 }
 
-/* 
-Besoin d'un hook qui retourne tous les modèles de cartes du projet en cours:
-ProjectCardTypes = cardType[]
-cardType = {
-deprecated: boolean
-id: number
-projectId: number
-published: boolean 
-trackingData?: Trackinig 
-purpose?: string
-tags: string[]
-title: string
-? nbOfResources: number
-? usedBy: Card[] (ou un hook IsUsedBy() qui retournerait un tableau de cartes utilisant ce modèle)
-?(new: tagType: 'global' | 'inherited' | 'own' ?)
+export function useCurrentProjectCardTypeTags(): string[] {
+  const currentProjectCardTypes = useProjectCardTypes();
+
+  return uniq(currentProjectCardTypes.flatMap(ct => ct.tags).sort());
 }
-Besoin d'un hook qui retourne tous les modèles de cartes inutilisés dans le projet: (même structure)
- */
 
-////////////////////
-// old stuff
+export function useGlobalCardTypeTags(): string[] {
+  const globalCardTypes = useGlobalTypesForAdmin();
 
-// TODO sandra work in progress, remove everything that is not used any more
-
-// export interface CardTypeState {
-//   /**
-//    * UNSET means there is not guarantee all items are known.
-//    * User may want to refresh cardTypes.
-//    * READY means all cardtypes are known.
-//    * LOADING indicates cardtypes loading is in progress
-//    */
-//   projectStatus: AvailabilityStatus;
-//   publishedStatus: AvailabilityStatus;
-//   globalStatus: AvailabilityStatus;
-//   /**
-//    * the cardType; undefined means does not exists if status is READY
-//    */
-//   cardType: CardTypeOnly | null | undefined;
-//   /**
-//    * references chain; first is the deepest
-//    */
-//   chain: CardTypeRef[];
-// }
-
-// export interface CardTypesState {
-//   /**
-//    * UNSET means there is not guarantee all items are known.
-//    * User may want to refresh cardTypes.
-//    * READY means all cardtypes are known.
-//    * LOADING indicates cardtypes loading is in progress
-//    */
-//   projectStatus: AvailabilityStatus;
-//   publishedStatus: AvailabilityStatus;
-//   globalStatus: AvailabilityStatus;
-//   /**
-//    * Card types defined specifically for this project.
-//    * Own cardtypes are editable
-//    */
-//   own: CardTypeOnly[];
-//   /**
-//    * Card types of outside referenced in the project.
-//    * Inherited card type are readonly
-//    */
-//   inherited: CardTypeOnly[];
-//   /**
-//    * Published card types defined in another project. Not (yet) used in the project.
-//    */
-//   published: CardTypeOnly[];
-//   /**
-//    * Global (without project) published card types. Not (yet) used in the project.
-//    */
-//   global: CardTypeOnly[];
-// }
-
-// function resolveRef(state: ColabState, ref: CardTypeRef): CardTypeState {
-//   const result: CardTypeState = {
-//     projectStatus: state.cardtype.currentProjectStatus,
-//     publishedStatus: state.cardtype.availablePublishedStatus,
-//     globalStatus: state.cardtype.allGlobalForAdminStatus,
-//     chain: [ref],
-//     cardType: undefined,
-//   };
-
-//   let current = ref;
-
-//   while (current != null) {
-//     if (current.targetId != null && current.targetId >= 0) {
-//       const target = state.cardtype.cardtypes[current.targetId];
-//       if (entityIs(target, 'CardType')) {
-//         result.cardType = target;
-//         return result;
-//       } else if (entityIs(target, 'CardTypeRef')) {
-//         result.chain.push(target);
-//         current = target;
-//       } else if (typeof target !== 'string') {
-//         result.cardType = target;
-//         return result;
-//       }
-//     } else {
-//       return result;
-//     }
-//   }
-//   return result;
-// }
-
-// export const useProjectCardTypes = (): CardTypesState => {
-//   return useAppSelector(state => {
-//     const cds: CardTypesState = {
-//       projectStatus: state.cardtype.currentProjectStatus,
-//       publishedStatus: state.cardtype.availablePublishedStatus,
-//       globalStatus: state.cardtype.allGlobalForAdminStatus,
-//       // own card types
-//       own: [],
-//       inherited: [],
-//       published: [],
-//       global: [],
-//     };
-
-//     const currentProjectId = state.projects.editing;
-
-//     const processed: CardTypeOnly[] = [];
-
-//     if (currentProjectId) {
-//       // first pass: extract own and inherited types
-//       Object.values(state.cardtype.cardtypes).forEach(cd => {
-//         if (cd != null && entityIs(cd, 'AbstractCardType')) {
-//           if (cd.projectId === currentProjectId) {
-//             if (entityIs(cd, 'CardTypeRef')) {
-//               const resolved = resolveRef(state, cd);
-//               if (resolved.cardType != null) {
-//                 processed.push(resolved.cardType);
-//                 cds.inherited.push(resolved.cardType);
-//               }
-//             } else {
-//               processed.push(cd);
-//               cds.own.push(cd);
-//             }
-//           }
-//         }
-//       });
-
-//       // second pass: not-yet-used published types
-//       Object.values(state.cardtype.cardtypes).forEach(cd => {
-//         if (cd != null && entityIs(cd, 'AbstractCardType')) {
-//           const t = entityIs(cd, 'CardType') ? cd : resolveRef(state, cd).cardType;
-//           if (t != null && processed.indexOf(t) === -1 && cd.published) {
-//             if (cd.projectId == null) {
-//               cds.global.push(t);
-//             } else {
-//               cds.published.push(t);
-//             }
-//           }
-//         }
-//       });
-//     }
-
-//     return cds;
-//   }, customColabStateEquals);
-// };
-
-// export const useGlobalTypes = (): {
-//   status: AvailabilityStatus;
-//   types: CardTypeOnly[];
-// } => {
-//   return useAppSelector(state => {
-//     return {
-//       status: state.cardtype.allGlobalForAdminStatus,
-//       types: Object.values(state.cardtype.cardtypes).flatMap(cd => {
-//         return entityIs(cd, 'CardType') && cd.projectId == null ? [cd] : [];
-//       }),
-//     };
-//   }, customColabStateEquals);
-// };
+  return uniq(globalCardTypes.flatMap(ct => ct.tags).sort());
+}

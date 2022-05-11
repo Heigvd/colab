@@ -8,8 +8,12 @@
 import * as React from 'react';
 import { linkStyle } from '../styling/style';
 
-export interface ClickablenProps {
+export interface ClickableProps {
   onClick?: (e: React.MouseEvent<HTMLSpanElement> | React.KeyboardEvent<HTMLSpanElement>) => void;
+  onDoubleClick?: (
+    e: React.MouseEvent<HTMLSpanElement> | React.KeyboardEvent<HTMLSpanElement>,
+  ) => void;
+  enterKeyBehaviour?: 'CLICK' | 'DBL_CLICK';
   clickable?: boolean;
   title?: string;
   children?: React.ReactNode;
@@ -19,24 +23,37 @@ export interface ClickablenProps {
 
 export default function Clickable({
   onClick,
+  onDoubleClick,
+  enterKeyBehaviour = 'CLICK',
   clickable,
   title,
   children,
   className = '',
   clickableClassName = linkStyle,
-}: ClickablenProps): JSX.Element {
+}: ClickableProps): JSX.Element {
   /**
-   * Pressing enter or space simulates click
+   * Pressing space simulates click.<br/>
+   * Pressing enter simulates click or double click
    */
   const keyDownCb = React.useCallback(
     (event: React.KeyboardEvent<HTMLSpanElement>) => {
-      if (onClick != null) {
-        if (event.code === 'Space' || event.key === 'Enter') {
+      if (event.code === 'Space') {
+        if (onClick != null) {
           onClick(event);
+        }
+      } else if (event.key === 'Enter') {
+        if (enterKeyBehaviour === 'CLICK') {
+          if (onClick != null) {
+            onClick(event);
+          }
+        } else if (enterKeyBehaviour === 'DBL_CLICK') {
+          if (onDoubleClick != null) {
+            onDoubleClick(event);
+          }
         }
       }
     },
-    [onClick],
+    [onClick, onDoubleClick, enterKeyBehaviour],
   );
 
   const onClickCb = React.useCallback(
@@ -48,11 +65,21 @@ export default function Clickable({
     [onClick],
   );
 
+  const onDoubleClickCb = React.useCallback(
+    (e: React.MouseEvent<HTMLSpanElement>) => {
+      if (onDoubleClick != null) {
+        onDoubleClick(e);
+      }
+    },
+    [onDoubleClick],
+  );
+
   return (
     <span
       tabIndex={0}
       className={onClick != null || clickable ? clickableClassName : className}
       onClick={onClickCb}
+      onDoubleClick={onDoubleClickCb}
       onKeyDown={keyDownCb}
       title={title}
     >

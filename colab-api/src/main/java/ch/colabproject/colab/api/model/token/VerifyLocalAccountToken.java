@@ -47,8 +47,8 @@ public class VerifyLocalAccountToken extends Token {
     /**
      * The local account the token shall validate
      */
+    @OneToOne // FetchType.EAGER is fine
     @NotNull
-    @OneToOne
     @JsonbTransient
     private LocalAccount localAccount;
 
@@ -93,6 +93,7 @@ public class VerifyLocalAccountToken extends Token {
         this.localAccount.setVerified(Boolean.TRUE);
     }
 
+    @JsonbTransient
     @Override
     public String getSubject() {
         return EMAIL_SUBJECT;

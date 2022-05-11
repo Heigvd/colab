@@ -20,9 +20,9 @@ import ch.colabproject.colab.api.model.team.TeamMember;
 import ch.colabproject.colab.api.model.team.TeamRole;
 import ch.colabproject.colab.api.model.token.InvitationToken;
 import ch.colabproject.colab.api.model.token.Token;
-import ch.colabproject.colab.api.rest.card.bean.CardTypeCreationBean;
-import ch.colabproject.colab.api.rest.document.bean.ResourceCreationBean;
-import ch.colabproject.colab.api.rest.link.bean.StickyNoteLinkCreationBean;
+import ch.colabproject.colab.api.rest.card.bean.CardTypeCreationData;
+import ch.colabproject.colab.api.rest.document.bean.ResourceCreationData;
+import ch.colabproject.colab.api.rest.link.bean.StickyNoteLinkCreationData;
 import ch.colabproject.colab.client.ColabClient;
 import ch.colabproject.colab.tests.mailhog.MailhogClient;
 import ch.colabproject.colab.tests.mailhog.model.Message;
@@ -77,7 +77,7 @@ public class ColabFactory {
      * @return the CardType
      */
     public static CardType createCardType(ColabClient client, Long projectId) {
-        CardTypeCreationBean cardTypeToCreate = new CardTypeCreationBean();
+        CardTypeCreationData cardTypeToCreate = new CardTypeCreationData();
         cardTypeToCreate.setProjectId(projectId);
         cardTypeToCreate.setTags(new HashSet<>());
 
@@ -181,7 +181,7 @@ public class ColabFactory {
     public static Project createProject(ColabClient client, String name) {
         Project p = new Project();
         p.setName(name);
-        Long id = client.projectRestEndpoint.createProject(p);
+        Long id = client.projectRestEndpoint.createEmptyProject(p);
         return client.projectRestEndpoint.getProject(id);
     }
 
@@ -305,7 +305,7 @@ public class ColabFactory {
 //     */
 //    public static Resource createCardTypeResourceBlockDoc(ColabClient client, Long cardTypeId,
 //        String title) {
-//        ResourceCreationBean resourceToCreate = new ResourceCreationBean();
+//        ResourceCreationData resourceToCreate = new ResourceCreationData();
 //        resourceToCreate.setTitle(title);
 //        resourceToCreate.setDocuments(List.of(new BlockDocument()));
 //        resourceToCreate.setAbstractCardTypeId(cardTypeId);
@@ -325,7 +325,7 @@ public class ColabFactory {
      * @return the freshly created document
      */
     public static Resource createCardResource(ColabClient client, Long cardId, String title) {
-        ResourceCreationBean resourceToCreate = new ResourceCreationBean();
+        ResourceCreationData resourceToCreate = new ResourceCreationData();
         resourceToCreate.setTitle(title);
         resourceToCreate.setDocuments(List.of(new ExternalLink()));
         resourceToCreate.setCardId(cardId);
@@ -345,7 +345,7 @@ public class ColabFactory {
      * @return the freshly created document
      */
     public static Resource createTextDataBlockCardResource(ColabClient client, Long cardId, String title) {
-        ResourceCreationBean resourceToCreate = new ResourceCreationBean();
+        ResourceCreationData resourceToCreate = new ResourceCreationData();
         resourceToCreate.setTitle(title);
         resourceToCreate.setDocuments(List.of(new TextDataBlock()));
         resourceToCreate.setCardId(cardId);
@@ -364,12 +364,12 @@ public class ColabFactory {
     public static Document createADocument(ColabClient client, Document doc) {
         Long globalCardTypeId = ColabFactory.createGlobalCardType(client).getId();
 
-        ResourceCreationBean resourceCreationBean = new ResourceCreationBean();
+        ResourceCreationData resourceCreationData = new ResourceCreationData();
 
-        resourceCreationBean.setDocuments(List.of(doc));
-        resourceCreationBean.setAbstractCardTypeId(globalCardTypeId);
+        resourceCreationData.setDocuments(List.of(doc));
+        resourceCreationData.setAbstractCardTypeId(globalCardTypeId);
 
-        Long resourceId = client.resourceRestEndpoint.createResource(resourceCreationBean);
+        Long resourceId = client.resourceRestEndpoint.createResource(resourceCreationData);
 
         List<Document> persistedDocs = client.resourceRestEndpoint
             .getDocumentsOfResource(resourceId);
@@ -387,7 +387,7 @@ public class ColabFactory {
      */
     public static Long createStickyNoteLink(ColabClient client, Long srcCardId,
         Long destinationCardId) {
-        StickyNoteLinkCreationBean linkToCreate = new StickyNoteLinkCreationBean();
+        StickyNoteLinkCreationData linkToCreate = new StickyNoteLinkCreationData();
         linkToCreate.setSrcCardId(srcCardId);
         linkToCreate.setDestinationCardId(destinationCardId);
 
