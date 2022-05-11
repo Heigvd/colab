@@ -226,9 +226,9 @@ public class ProjectManager {
     public void deleteProject(Long projectId) {
         Project project = assertAndGetProject(projectId);
 
-        if (!checkDeletionAcceptability(project)) {
-            throw HttpErrorMessage.dataIntegrityFailure();
-        }
+//        if (!checkDeletionAcceptability(project)) {
+//            throw HttpErrorMessage.dataIntegrityFailure();
+//        }
 
         project.getTeamMembers().stream()
             .forEach(member -> tokenManager.deleteInvitationsByTeamMember(member));
@@ -238,16 +238,16 @@ public class ProjectManager {
         projectDao.deleteProject(projectId);
     }
 
-    /**
-     * Ascertain that the project can be deleted
-     *
-     * @param project the project to check for deletion
-     *
-     * @return True iff it can be safely deleted
-     */
-    private boolean checkDeletionAcceptability(Project project) {
-        return true;
-    }
+//    /**
+//     * Ascertain that the project can be deleted
+//     *
+//     * @param project the project to check for deletion
+//     *
+//     * @return True iff it can be safely deleted
+//     */
+//    private boolean checkDeletionAcceptability(Project project) {
+//        return true;
+//    }
 
     // *********************************************************************************************
     // duplication
