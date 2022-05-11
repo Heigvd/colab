@@ -8,8 +8,8 @@ import { css, cx } from '@emotion/css';
 import {
   faArrowLeft,
   faCog,
-  faHandSparkles,
   faSlash,
+  faTools,
   faTrash,
   faTrashAlt,
 } from '@fortawesome/free-solid-svg-icons';
@@ -82,7 +82,7 @@ export function ResourceDisplay({ resourceAndRef, onClose }: ResourceDisplayProp
           />
           <div>
             <IconButton
-              icon={faHandSparkles}
+              icon={faTools}
               layer={openToolbox ? { layerIcon: faSlash, transform: 'grow-1' } : undefined}
               title={'Toggle toolbox'}
               className={lightIconButtonStyle}

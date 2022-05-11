@@ -39,7 +39,7 @@ const idleStyle = cx(
   css({
   borderRadius: borderRadius,
   padding: '5px',
-  margin: '2px',
+  margin: '0 2px',
   '&:hover': {
     cursor: 'pointer',
   }

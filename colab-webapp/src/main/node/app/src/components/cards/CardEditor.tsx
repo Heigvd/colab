@@ -12,13 +12,13 @@ import {
   faCompressArrowsAlt,
   faEllipsisV,
   faExpandArrowsAlt,
-  faHandSparkles,
   faInfoCircle,
   faPaperclip,
   faPercent,
   faSlash,
   faStickyNote,
   faTimes,
+  faTools,
   faTrash,
   faUsers,
 } from '@fortawesome/free-solid-svg-icons';
@@ -270,7 +270,7 @@ export default function CardEditor({ card, variant, showSubcards = true }: Props
                   })}
                   align="stretch"
                 >
-                  <Flex direction="column" align="stretch" className={'HEADER'}>
+                  <Flex direction="column" align="stretch">
                     <Flex
                       justify="space-between"
                       className={css({
@@ -335,18 +335,6 @@ export default function CardEditor({ card, variant, showSubcards = true }: Props
                               }
                             />
                           )}
-                          {!readOnly && (
-                            <IconButton
-                              icon={faHandSparkles}
-                              layer={openToolbox ? { layerIcon: faSlash, transform: 'grow-1' } : undefined}
-                              title="Show/hide toolbox"
-                              className={cx(
-                                lightIconButtonStyle,
-                                css({ color: 'var(--lightGray)' }),
-                              )}
-                              onClick={() => setOpenToolbox(openToolbox => !openToolbox)}
-                            />
-                          )}
                         </Flex>
                       </div>
                       <Flex>
@@ -403,6 +391,18 @@ export default function CardEditor({ card, variant, showSubcards = true }: Props
                             }
                           />
                         </Routes>
+                        {!readOnly && (
+                            <IconButton
+                              icon={faTools}
+                              layer={openToolbox ? { layerIcon: faSlash, transform: 'grow-1' } : undefined}
+                              title="Show/hide toolbox"
+                              className={cx(
+                                lightIconButtonStyle,
+                                css({ color: 'var(--lightGray)' }),
+                              )}
+                              onClick={() => setOpenToolbox(openToolbox => !openToolbox)}
+                            />
+                          )}
                         <IconButton
                           title="Full screen mode"
                           icon={fullScreen ? faCompressArrowsAlt : faExpandArrowsAlt}
