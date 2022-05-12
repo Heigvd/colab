@@ -171,7 +171,7 @@ import org.slf4j.LoggerFactory;
     @Path(&quot;/{id}&quot;)
     public void deleteProject(@PathParam(&quot;id&quot;) Long id) {
 <span class="nc" id="L173">        logger.debug(&quot;Delete project #{}&quot;, id);</span>
-<span class="nc" id="L174">        projectDao.deleteProject(id);</span>
+<span class="nc" id="L174">        projectManager.deleteProject(id);</span>
 <span class="nc" id="L175">    }</span>
 
     /**

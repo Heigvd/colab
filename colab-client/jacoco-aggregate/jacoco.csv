@@ -96,7 +96,7 @@ colab-client/colab-api,ch.colabproject.colab.api.model.link,ActivityFlowLink,586
 colab-client/colab-api,ch.colabproject.colab.api.rest.token,TokenRestEndpoint,14,0,0,0,3,0,3,0,3,0
 colab-client/colab-api,ch.colabproject.colab.api.rest.utils.filter,RequestFilter,83,0,2,0,20,0,5,0,4,0
 colab-client/colab-api,ch.colabproject.colab.api.rest.utils.filter,CacheControlFilter,28,0,4,0,7,0,5,0,3,0
-colab-client/colab-api,ch.colabproject.colab.api.controller.project,ProjectManager,303,0,16,0,78,0,29,0,21,0
+colab-client/colab-api,ch.colabproject.colab.api.controller.project,ProjectManager,324,0,16,0,83,0,31,0,23,0
 colab-client/colab-api,ch.colabproject.colab.api.persistence.jpa.user,UserDao,181,0,10,0,55,0,20,0,15,0
 colab-client/colab-api,ch.colabproject.colab.api.security.permissions.project,ProjectConditions.IsProjectReadable,56,0,8,0,18,0,9,0,5,0
 colab-client/colab-api,ch.colabproject.colab.api.security.permissions.project,ProjectConditions,7,0,0,0,2,0,1,0,1,0
@@ -180,7 +180,7 @@ colab-client/colab-api,ch.colabproject.colab.api.security,CookieFilter.ParsedCoo
 colab-client/colab-api,ch.colabproject.colab.api.security,SessionManager,423,0,46,0,121,0,40,0,17,0
 colab-client/colab-api,ch.colabproject.colab.api.security,AuthenticationFailure,35,0,0,0,9,0,4,0,4,0
 colab-client/colab-api,ch.colabproject.colab.api.security,CookieFilter,161,0,22,0,40,0,15,0,4,0
-colab-client/colab-api,ch.colabproject.colab.api.rest.project,ProjectRestEndpoint,193,0,4,0,47,0,20,0,18,0
+colab-client/colab-api,ch.colabproject.colab.api.rest.project,ProjectRestEndpoint,192,0,4,0,47,0,20,0,18,0
 colab-client/colab-api,ch.colabproject.colab.api.ws.channel.tool,ChannelsBuilders,114,0,8,0,26,0,14,0,10,0
 colab-client/colab-api,ch.colabproject.colab.api.ws.channel.tool,ChannelsBuilders.AboutCardTypeChannelsBuilder,12,0,0,0,4,0,2,0,2,0
 colab-client/colab-api,ch.colabproject.colab.api.ws.channel.tool,ChannelsBuilders.AboutUserChannelsBuilder,33,0,2,0,9,0,3,0,2,0
