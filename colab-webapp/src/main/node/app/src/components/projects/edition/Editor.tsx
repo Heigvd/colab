@@ -233,6 +233,7 @@ const CardWrapper = ({ children, grow = 1, align = 'normal' }: CardWrapperProps)
 
 export default function Editor(): JSX.Element {
   const dispatch = useAppDispatch();
+  const i18n = useTranslations();
 
   const { project, status } = useProjectBeingEdited();
   const navigate = useNavigate();
@@ -377,7 +378,7 @@ export default function Editor(): JSX.Element {
             </div>
             <div>
               <p>Created by: {project.trackingData?.createdBy}</p>
-              <p>Created date: {project.trackingData?.creationDate}</p>
+              <p>Created date: {i18n.common.datetime(project.trackingData?.creationDate)}</p>
               {/* more infos? Add project team names */}
             </div>
           </div>
