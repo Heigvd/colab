@@ -171,7 +171,7 @@ public class ProjectRestEndpoint {
     @Path("/{id}")
     public void deleteProject(@PathParam("id") Long id) {
         logger.debug("Delete project #{}", id);
-        projectDao.deleteProject(id);
+        projectManager.deleteProject(id);
     }
 
     /**

@@ -410,6 +410,9 @@ export default function DropDownMenu<T extends string | number | symbol>({
                   className={entryStyle}
                   key={String(entry.value)}
                   onClick={() => {
+                    if (entry.action) {
+                      entry.action();
+                    }
                     if (onSelect != null) {
                       onSelect(entry);
                     }

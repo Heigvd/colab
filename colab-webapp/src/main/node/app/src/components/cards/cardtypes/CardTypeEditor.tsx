@@ -171,6 +171,7 @@ export default function CardTypeEditor({ className, usage }: Props): JSX.Element
                           <FontAwesomeIcon icon={faCog} /> Type Settings
                         </>
                       ),
+                      action: () => navigate('settings'),
                     },
                     {
                       value: 'Delete type',
@@ -201,9 +202,6 @@ export default function CardTypeEditor({ className, usage }: Props): JSX.Element
                       ),
                     },
                   ]}
-                  onSelect={val => {
-                    navigate(val.value);
-                  }}
                 />
               </Flex>
             </Flex>

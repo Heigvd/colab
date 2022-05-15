@@ -206,7 +206,6 @@ const Member = ({ member, roles }: MemberProps) => {
         entries={[
           {
             value: 'Delete team member',
-            action: () => {},
             label: (
               <ConfirmDeleteModal
                 buttonLabel={

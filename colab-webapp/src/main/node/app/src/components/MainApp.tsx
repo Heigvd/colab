@@ -207,22 +207,24 @@ export default function MainApp(): JSX.Element {
               valueComp={{ value: '', label: '' }}
               entries={[
                 {
-                  value: '/settings',
+                  value: 'settings',
                   label: (
                     <>
                       <FontAwesomeIcon icon={faCog} /> Settings
                     </>
                   ),
+                  action: () => navigate('/settings'),
                 },
                 ...(currentUser.admin
                   ? [
                       {
-                        value: '/admin',
+                        value: 'admin',
                         label: (
                           <>
                             <FontAwesomeIcon icon={faMeteor} /> Admin
                           </>
                         ),
+                        action: () => navigate('/admin'),
                       },
                     ]
                   : []),
@@ -236,9 +238,6 @@ export default function MainApp(): JSX.Element {
                   action: logout,
                 },
               ]}
-              onSelect={val => {
-                val.action != null ? val.action() : navigate(val.value);
-              }}
               buttonClassName={cx(invertedThemeMode, css({ marginLeft: space_S }))}
             />
             {passwordScore != null && passwordScore.score < 2 && (

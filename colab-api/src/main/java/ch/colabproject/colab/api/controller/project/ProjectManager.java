@@ -13,6 +13,7 @@ import ch.colabproject.colab.api.controller.card.CardTypeManager;
 import ch.colabproject.colab.api.controller.document.ResourceReferenceSpreadingHelper;
 import ch.colabproject.colab.api.controller.security.SecurityManager;
 import ch.colabproject.colab.api.controller.team.TeamManager;
+import ch.colabproject.colab.api.controller.token.TokenManager;
 import ch.colabproject.colab.api.model.DuplicationParam;
 import ch.colabproject.colab.api.model.card.AbstractCardType;
 import ch.colabproject.colab.api.model.card.Card;
@@ -87,6 +88,12 @@ public class ProjectManager {
      */
     @Inject
     private CardTypeManager cardTypeManager;
+
+    /**
+     * Token specific logic management
+     */
+    @Inject
+    private TokenManager tokenManager;
 
     /**
      * Resource reference spreading specific logic handling
@@ -210,6 +217,37 @@ public class ProjectManager {
             return null;
         }
     }
+
+    /**
+     * Delete the given project
+     *
+     * @param projectId the id of the project to delete
+     */
+    public void deleteProject(Long projectId) {
+        Project project = assertAndGetProject(projectId);
+
+//        if (!checkDeletionAcceptability(project)) {
+//            throw HttpErrorMessage.dataIntegrityFailure();
+//        }
+
+        project.getTeamMembers().stream()
+            .forEach(member -> tokenManager.deleteInvitationsByTeamMember(member));
+
+        // everything else is deleted by cascade
+
+        projectDao.deleteProject(projectId);
+    }
+
+//    /**
+//     * Ascertain that the project can be deleted
+//     *
+//     * @param project the project to check for deletion
+//     *
+//     * @return True iff it can be safely deleted
+//     */
+//    private boolean checkDeletionAcceptability(Project project) {
+//        return true;
+//    }
 
     // *********************************************************************************************
     // duplication

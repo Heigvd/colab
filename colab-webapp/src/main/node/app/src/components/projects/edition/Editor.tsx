@@ -233,6 +233,7 @@ const CardWrapper = ({ children, grow = 1, align = 'normal' }: CardWrapperProps)
 
 export default function Editor(): JSX.Element {
   const dispatch = useAppDispatch();
+  const i18n = useTranslations();
 
   const { project, status } = useProjectBeingEdited();
   const navigate = useNavigate();
@@ -303,33 +304,33 @@ export default function Editor(): JSX.Element {
               valueComp={{ value: '', label: '' }}
               entries={[
                 {
-                  value: './',
+                  value: 'board',
                   label: (
                     <>
                       <FontAwesomeIcon icon={faClone} /> Board
                     </>
                   ),
+                  action: () => navigate('./'),
                 },
                 {
-                  value: './hierarchy',
+                  value: 'hierarchy',
                   label: (
                     <>
                       <FontAwesomeIcon icon={faNetworkWired} /> Hierarchy
                     </>
                   ),
+                  action: () => navigate('./hierarchy'),
                 },
                 {
-                  value: './flow',
+                  value: 'flow',
                   label: (
                     <>
                       <FontAwesomeIcon icon={faProjectDiagram} /> Activity Flow
                     </>
                   ),
+                  action: () => navigate('./flow'),
                 },
               ]}
-              onSelect={val => {
-                val.action != null ? val.action() : navigate(val.value);
-              }}
               buttonClassName={css({ textAlign: 'right', alignSelf: 'center', marginLeft: 'auto' })}
               menuIcon="CARET"
             />
@@ -339,33 +340,33 @@ export default function Editor(): JSX.Element {
             valueComp={{ value: '', label: '' }}
             entries={[
               {
-                value: './types',
+                value: 'types',
                 label: (
                   <>
                     <FontAwesomeIcon icon={faBoxesStacked} /> Card types
                   </>
                 ),
+                action: () => navigate('./types'),
               },
               {
-                value: './team',
+                value: 'team',
                 label: (
                   <>
                     <FontAwesomeIcon icon={faUsers} /> Team
                   </>
                 ),
+                action: () => navigate('./team'),
               },
               {
-                value: './settings',
+                value: 'settings',
                 label: (
                   <>
                     <FontAwesomeIcon icon={faCog} /> Settings
                   </>
                 ),
+                action: () => navigate('./settings'),
               },
             ]}
-            onSelect={val => {
-              val.action != null ? val.action() : navigate(val.value);
-            }}
             buttonClassName={css({ textAlign: 'right', alignSelf: 'center', marginLeft: 'auto' })}
           />
         </div>
@@ -377,7 +378,7 @@ export default function Editor(): JSX.Element {
             </div>
             <div>
               <p>Created by: {project.trackingData?.createdBy}</p>
-              <p>Created date: {project.trackingData?.creationDate}</p>
+              <p>Created date: {i18n.common.datetime(project.trackingData?.creationDate)}</p>
               {/* more infos? Add project team names */}
             </div>
           </div>

@@ -147,9 +147,6 @@ export default function CardTypeItem({ cardType, usage }: CardTypeItemProps): JS
                 ]
               : []),
           ]}
-          onSelect={val => {
-            val.action != null ? val.action() : navigate(val.value);
-          }}
         />
       </Flex>
       <p className={lightItalicText}>

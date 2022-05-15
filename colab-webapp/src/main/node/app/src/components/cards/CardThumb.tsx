@@ -197,9 +197,6 @@ export default function CardThumb({
                       ),
                     },
                   ]}
-                  onSelect={val => {
-                    val.action != null ? val.action() : navigate(val.value);
-                  }}
                 />
               </div>
               {/* 
