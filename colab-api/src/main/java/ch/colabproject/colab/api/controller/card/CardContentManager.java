@@ -8,6 +8,7 @@ package ch.colabproject.colab.api.controller.card;
 
 import ch.colabproject.colab.api.controller.document.DocumentManager;
 import ch.colabproject.colab.api.controller.document.IndexGeneratorHelper;
+import ch.colabproject.colab.api.controller.document.RelatedPosition;
 import ch.colabproject.colab.api.controller.document.ResourceReferenceSpreadingHelper;
 import ch.colabproject.colab.api.model.card.Card;
 import ch.colabproject.colab.api.model.card.CardContent;
@@ -209,6 +210,44 @@ public class CardContentManager {
     public Document addDeliverable(Long cardContentId, Document document) {
         logger.debug("add deliverable {} to card content #{}", document, cardContentId);
 
+        return addDeliverable(cardContentId, document, RelatedPosition.AT_END);
+    }
+
+    /**
+     * Add the deliverable to the card content. It will be placed on the given relatedPosition.
+     *
+     * @param cardContentId   the id of the card content
+     * @param document        the document to use as deliverable. It must be a new document
+     * @param relatedPosition to define the place where the deliverable will be added in the card
+     *                        content
+     *
+     * @return the newly created document
+     */
+    public Document addDeliverable(Long cardContentId, Document document,
+        RelatedPosition relatedPosition) {
+        logger.debug("add deliverable {} {} to card content #{}", document, relatedPosition,
+            cardContentId);
+
+        return addDeliverable(cardContentId, document, relatedPosition, null);
+    }
+
+    /**
+     * Add the deliverable to the card content.
+     *
+     * @param cardContentId   the id of the card content
+     * @param document        the document to use as deliverable. It must be a new document
+     * @param relatedPosition to define the place where the deliverable will be added in the card
+     *                        content
+     * @param neighbourDocId  the existing document which defines where the new document will be
+     *                        set. If relatedPosition is BEFOR or AFTER, it must be not null
+     *
+     * @return the newly created document
+     */
+    public Document addDeliverable(Long cardContentId, Document document,
+        RelatedPosition relatedPosition, Long neighbourDocId) {
+        logger.debug("add deliverable {} to card content #{} {} doc #{}", document, cardContentId,
+            relatedPosition, neighbourDocId);
+
         CardContent cardContent = assertAndGetCardContent(cardContentId);
 
         if (document == null) {
@@ -223,8 +262,25 @@ public class CardContentManager {
             throw HttpErrorMessage.dataIntegrityFailure();
         }
 
-        // the index is auto generated. It cannot be send from the client side
-        indexGenerator.moveItemToEnd(document, cardContent.getDeliverables());
+        switch (relatedPosition) {
+            case BEFORE:
+                Document neighbourBDocument = documentManager.assertAndGetDocument(neighbourDocId);
+                indexGenerator.moveItemBefore(document, neighbourBDocument,
+                    cardContent.getDeliverables());
+                break;
+            case AFTER:
+                Document neighbourADocument = documentManager.assertAndGetDocument(neighbourDocId);
+                indexGenerator.moveItemAfter(document, neighbourADocument,
+                    cardContent.getDeliverables());
+                break;
+            case AT_BEGINNING:
+                indexGenerator.moveItemToBeginning(document, cardContent.getDeliverables());
+                break;
+            case AT_END:
+            default:
+                indexGenerator.moveItemToEnd(document, cardContent.getDeliverables());
+                break;
+        }
 
         cardContent.getDeliverables().add(document);
         document.setOwningCardContent(cardContent);

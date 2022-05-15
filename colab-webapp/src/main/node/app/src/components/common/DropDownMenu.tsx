@@ -6,7 +6,7 @@
  */
 
 import { css, cx } from '@emotion/css';
-import { IconProp } from '@fortawesome/fontawesome-svg-core';
+import { IconProp, Transform } from '@fortawesome/fontawesome-svg-core';
 import { faCaretDown } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import * as React from 'react';
@@ -290,6 +290,8 @@ interface Entry<T> {
 
 interface Props<T> {
   icon?: IconProp;
+  layerForIcon?: { layerIcon: IconProp; transform: string | Transform };
+  title?: string;
   menuIcon?: 'BURGER' | 'CARET';
   idleHoverStyle?: 'BACKGROUND' | 'FOREGROUND';
   entries: Entry<T>[];
@@ -302,11 +304,13 @@ interface Props<T> {
   dropClassName?: string;
 }
 export default function DropDownMenu<T extends string | number | symbol>({
+  icon,
+  layerForIcon,
+  title,
   entries,
   value,
   valueComp,
   onSelect,
-  icon,
   direction = 'down',
   menuIcon,
   buttonClassName,
@@ -378,6 +382,7 @@ export default function DropDownMenu<T extends string | number | symbol>({
         <Flex direction="column" className={css({ overflow: 'visible' })}>
           <Flex
             align="center"
+            title={title}
             onClick={toggle}
             className={
               cx(idleHoverStyle === 'BACKGROUND' ? linkStyle : iconButton, buttonClassName || '') +
@@ -392,7 +397,18 @@ export default function DropDownMenu<T extends string | number | symbol>({
                 {current.label}
               </>
             )}
-            {icon ? <FontAwesomeIcon icon={icon} className={css({ fontSize: '16px' })} /> : null}
+            {icon &&
+              (layerForIcon ? (
+                <span className="fa-layers fa-fw">
+                  <FontAwesomeIcon
+                    icon={layerForIcon.layerIcon}
+                    transform={layerForIcon.transform}
+                  />
+                  <FontAwesomeIcon icon={icon} className={css({ fontSize: '16px' })} />
+                </span>
+              ) : (
+                <FontAwesomeIcon icon={icon} className={css({ fontSize: '16px' })} />
+              ))}
             {current.label}
             {menuIcon === 'CARET' ? (
               <FontAwesomeIcon icon={faCaretDown} className={css({ marginLeft: space_S })} />

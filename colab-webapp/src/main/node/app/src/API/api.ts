@@ -825,11 +825,62 @@ export const getDeliverablesOfCardContent = createAsyncThunk(
   },
 );
 
-export const addDeliverable = createAsyncThunk(
-  'cardcontent/addDeliverable',
+export const addDeliverableAtBeginning = createAsyncThunk(
+  'cardcontent/addDeliverableAtBeginning',
   async ({ cardContentId, docKind }: { cardContentId: number; docKind: DocumentKind }) => {
     const deliverable = makeNewDocument(docKind);
-    return await restClient.CardContentRestEndpoint.addDeliverable(cardContentId, deliverable);
+    return await restClient.CardContentRestEndpoint.addDeliverableAtBeginning(
+      cardContentId,
+      deliverable,
+    );
+  },
+);
+
+export const addDeliverableAtEnd = createAsyncThunk(
+  'cardcontent/addDeliverableAtEnd',
+  async ({ cardContentId, docKind }: { cardContentId: number; docKind: DocumentKind }) => {
+    const deliverable = makeNewDocument(docKind);
+    return await restClient.CardContentRestEndpoint.addDeliverableAtEnd(cardContentId, deliverable);
+  },
+);
+
+export const addDeliverableBefore = createAsyncThunk(
+  'cardcontent/addDeliverableBefore',
+  async ({
+    cardContentId,
+    neighbourDocId,
+    docKind,
+  }: {
+    cardContentId: number;
+    neighbourDocId: number;
+    docKind: DocumentKind;
+  }) => {
+    const deliverable = makeNewDocument(docKind);
+    return await restClient.CardContentRestEndpoint.addDeliverableBefore(
+      cardContentId,
+      neighbourDocId,
+      deliverable,
+    );
+  },
+);
+
+export const addDeliverableAfter = createAsyncThunk(
+  'cardcontent/addDeliverableAfter',
+  async ({
+    cardContentId,
+    neighbourDocId,
+    docKind,
+  }: {
+    cardContentId: number;
+    neighbourDocId: number;
+    docKind: DocumentKind;
+  }) => {
+    const deliverable = makeNewDocument(docKind);
+    return await restClient.CardContentRestEndpoint.addDeliverableAfter(
+      cardContentId,
+      neighbourDocId,
+      deliverable,
+    );
   },
 );
 
@@ -922,11 +973,59 @@ export const getDocumentsOfResource = createAsyncThunk(
   },
 );
 
-export const addDocumentToResource = createAsyncThunk(
-  'resource/addDocument',
+export const addDocumentToResourceAtBeginning = createAsyncThunk(
+  'resource/addDocumentAtBeginning',
   async ({ resourceId, docKind }: { resourceId: number; docKind: DocumentKind }) => {
     const document = makeNewDocument(docKind);
-    return await restClient.ResourceRestEndpoint.addDocument(resourceId, document);
+    return await restClient.ResourceRestEndpoint.addDocumentAtBeginning(resourceId, document);
+  },
+);
+
+export const addDocumentToResourceAtEnd = createAsyncThunk(
+  'resource/addDocumentAtEnd',
+  async ({ resourceId, docKind }: { resourceId: number; docKind: DocumentKind }) => {
+    const document = makeNewDocument(docKind);
+    return await restClient.ResourceRestEndpoint.addDocumentAtEnd(resourceId, document);
+  },
+);
+
+export const addDocumentToResourceBefore = createAsyncThunk(
+  'resource/addDocumentBefore',
+  async ({
+    resourceId,
+    neighbourDocId,
+    docKind,
+  }: {
+    resourceId: number;
+    neighbourDocId: number;
+    docKind: DocumentKind;
+  }) => {
+    const document = makeNewDocument(docKind);
+    return await restClient.ResourceRestEndpoint.addDocumentBefore(
+      resourceId,
+      neighbourDocId,
+      document,
+    );
+  },
+);
+
+export const addDocumentToResourceAfter = createAsyncThunk(
+  'resource/addDocumentAfter',
+  async ({
+    resourceId,
+    neighbourDocId,
+    docKind,
+  }: {
+    resourceId: number;
+    neighbourDocId: number;
+    docKind: DocumentKind;
+  }) => {
+    const document = makeNewDocument(docKind);
+    return await restClient.ResourceRestEndpoint.addDocumentAfter(
+      resourceId,
+      neighbourDocId,
+      document,
+    );
   },
 );
 

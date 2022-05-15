@@ -6,6 +6,7 @@
  */
 package ch.colabproject.colab.api.rest.document;
 
+import ch.colabproject.colab.api.controller.document.RelatedPosition;
 import ch.colabproject.colab.api.controller.document.ResourceCategoryHelper;
 import ch.colabproject.colab.api.controller.document.ResourceManager;
 import ch.colabproject.colab.api.exceptions.ColabMergeException;
@@ -223,7 +224,7 @@ public class ResourceRestEndpoint {
     }
 
     /**
-     * Add the document to the resource.
+     * Add the document at the beginning of the resource.
      *
      * @param resourceId the id of the resource
      * @param document   the document to use in the resource. It must be a new document
@@ -231,10 +232,66 @@ public class ResourceRestEndpoint {
      * @return the document newly created
      */
     @POST
-    @Path("{id}/addDocument")
-    public Document addDocument(@PathParam("id") Long resourceId, Document document) {
-        logger.debug("add the document {} for the resource #{}", document, resourceId);
-        return resourceManager.addDocument(resourceId, document);
+    @Path("{id}/addDocumentAtBeginning")
+    public Document addDocumentAtBeginning(@PathParam("id") Long resourceId, Document document) {
+        logger.debug("add the document {} at the beginning of the resource #{}", document,
+            resourceId);
+        return resourceManager.addDocument(resourceId, document,
+            RelatedPosition.AT_BEGINNING, null);
+    }
+
+    /**
+     * Add the document at the end of the resource.
+     *
+     * @param resourceId the id of the resource
+     * @param document   the document to use in the resource. It must be a new document
+     *
+     * @return the document newly created
+     */
+    @POST
+    @Path("{id}/addDocumentAtEnd")
+    public Document addDocumentAtEnd(@PathParam("id") Long resourceId, Document document) {
+        logger.debug("add the document {} at the end of the resource #{}", document, resourceId);
+        return resourceManager.addDocument(resourceId, document,
+            RelatedPosition.AT_END, null);
+    }
+
+    /**
+     * Add the document to the resource just before the given document.
+     *
+     * @param resourceId     the id of the resource
+     * @param neighbourDocId the id of the document which will be just after the new document
+     * @param document       the document to use in the resource. It must be a new document
+     *
+     * @return the document newly created
+     */
+    @POST
+    @Path("{id}/addDocumentBefore/{neighbourDocId}")
+    public Document addDocumentBefore(@PathParam("id") Long resourceId,
+        @PathParam("neighbourDocId") Long neighbourDocId, Document document) {
+        logger.debug("add the document {} before #{} in the resource #{}", document,
+            neighbourDocId, resourceId);
+        return resourceManager.addDocument(resourceId, document, RelatedPosition.BEFORE,
+            neighbourDocId);
+    }
+
+    /**
+     * Add the document to the resource just after the given document.
+     *
+     * @param resourceId     the id of the resource
+     * @param neighbourDocId the id of the document which will be just before the new document
+     * @param document       the document to use in the resource. It must be a new document
+     *
+     * @return the document newly created
+     */
+    @POST
+    @Path("{id}/addDocumentAfter/{neighbourDocId}")
+    public Document addDocumentAfter(@PathParam("id") Long resourceId,
+        @PathParam("neighbourDocId") Long neighbourDocId, Document document) {
+        logger.debug("add the document {} after #{} in the resource #{}", document,
+            neighbourDocId, resourceId);
+        return resourceManager.addDocument(resourceId, document, RelatedPosition.AFTER,
+            neighbourDocId);
     }
 
     /**

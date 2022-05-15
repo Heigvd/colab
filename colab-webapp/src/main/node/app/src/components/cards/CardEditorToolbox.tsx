@@ -30,6 +30,8 @@ import DocumentCreatorButton from '../documents/DocumentCreatorButton';
 import { lightIconButtonStyle, space_M, space_S } from '../styling/style';
 import { CardEditorCTX } from './CardEditor';
 
+// TODO : do not change height when a bloc is selected
+
 const toolboxContainerStyle = css({
   height: 'auto',
   maxHeight: '400px',
@@ -100,7 +102,7 @@ export default function CardEditorToolbox({ open, context, prefixElement }: Prop
   return (
     <Flex align="center" className={cx(toolboxContainerStyle, { [closedToolboxStyle]: !open })}>
       {prefixElement}
-      <BlockCreatorButtons context={context} blockSelected={selectedId != (undefined || null)} />
+      <BlockCreatorButtons context={context} selectedBlockId={selectedId || null} />
       {selectedDocument != (undefined || null) && (
         <>
           {isText && (
@@ -241,27 +243,30 @@ export default function CardEditorToolbox({ open, context, prefixElement }: Prop
 
 interface BlockButtonsProps {
   context: DocumentContext;
-  blockSelected: boolean;
+  selectedBlockId: number | null;
 }
 
-export function BlockCreatorButtons({ context, blockSelected }: BlockButtonsProps): JSX.Element {
+export function BlockCreatorButtons({ context, selectedBlockId }: BlockButtonsProps): JSX.Element {
   return (
     <>
-      <Flex className={cx({ [borderRightStyle]: blockSelected })}>
+      <Flex className={cx({ [borderRightStyle]: !!selectedBlockId })}>
         <DocumentCreatorButton
           context={context}
+          selectedBlockId={selectedBlockId}
           docKind="TextDataBlock"
           title="add a text block"
           className={toolboxButtonStyle}
         />
         <DocumentCreatorButton
           context={context}
+          selectedBlockId={selectedBlockId}
           docKind="DocumentFile"
           title="add a file"
           className={toolboxButtonStyle}
         />
         <DocumentCreatorButton
           context={context}
+          selectedBlockId={selectedBlockId}
           docKind="ExternalLink"
           title="add a link"
           className={toolboxButtonStyle}

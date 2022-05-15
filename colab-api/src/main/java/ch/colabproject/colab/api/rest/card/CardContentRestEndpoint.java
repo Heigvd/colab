@@ -7,6 +7,7 @@
 package ch.colabproject.colab.api.rest.card;
 
 import ch.colabproject.colab.api.controller.card.CardContentManager;
+import ch.colabproject.colab.api.controller.document.RelatedPosition;
 import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.model.card.Card;
 import ch.colabproject.colab.api.model.card.CardContent;
@@ -146,7 +147,7 @@ public class CardContentRestEndpoint {
     }
 
     /**
-     * Add the deliverable to the card content.
+     * Add the deliverable at the beginning of the card content.
      *
      * @param cardContentId the id of the card content
      * @param document      the document to use as deliverable. It must be a new document
@@ -154,17 +155,75 @@ public class CardContentRestEndpoint {
      * @return the document newly created
      */
     @POST
-    @Path("{id}/addDeliverable")
-    public Document addDeliverable(@PathParam("id") Long cardContentId, Document document) {
-        logger.debug("add the deliverable {} for the card content #{}", document, cardContentId);
-        return cardContentManager.addDeliverable(cardContentId, document);
+    @Path("{id}/addDeliverableAtBeginning")
+    public Document addDeliverableAtBeginning(@PathParam("id") Long cardContentId,
+        Document document) {
+        logger.debug("add the deliverable {} at the beginning of the card content #{}", document,
+            cardContentId);
+        return cardContentManager.addDeliverable(cardContentId, document,
+            RelatedPosition.AT_BEGINNING, null);
+    }
+
+    /**
+     * Add the deliverable at the end of the card content.
+     *
+     * @param cardContentId the id of the card content
+     * @param document      the document to use as deliverable. It must be a new document
+     *
+     * @return the document newly created
+     */
+    @POST
+    @Path("{id}/addDeliverableAtEnd")
+    public Document addDeliverableAtEnd(@PathParam("id") Long cardContentId, Document document) {
+        logger.debug("add the deliverable {} at the end of the card content #{}", document,
+            cardContentId);
+        return cardContentManager.addDeliverable(cardContentId, document,
+            RelatedPosition.AT_END, null);
+    }
+
+    /**
+     * Add the deliverable to the card content just before the given document.
+     *
+     * @param cardContentId  the id of the card content
+     * @param neighbourDocId the id of the document which will be just after the new document
+     * @param document       the document to use as deliverable. It must be a new document
+     *
+     * @return the document newly created
+     */
+    @POST
+    @Path("{id}/addDeliverableBefore/{neighbourDocId}")
+    public Document addDeliverableBefore(@PathParam("id") Long cardContentId,
+        @PathParam("neighbourDocId") Long neighbourDocId, Document document) {
+        logger.debug("add the deliverable {} before #{} in the card content #{}", document,
+            neighbourDocId, cardContentId);
+        return cardContentManager.addDeliverable(cardContentId, document, RelatedPosition.BEFORE,
+            neighbourDocId);
+    }
+
+    /**
+     * Add the deliverable to the card content just after the given document.
+     *
+     * @param cardContentId  the id of the card content
+     * @param neighbourDocId the id of the document which will be just before the new document
+     * @param document       the document to use as deliverable. It must be a new document
+     *
+     * @return the document newly created
+     */
+    @POST
+    @Path("{id}/addDeliverableAfter/{neighbourDocId}")
+    public Document addDeliverableAfter(@PathParam("id") Long cardContentId,
+        @PathParam("neighbourDocId") Long neighbourDocId, Document document) {
+        logger.debug("add the deliverable {} after #{} in the card content #{}", document,
+            neighbourDocId, cardContentId);
+        return cardContentManager.addDeliverable(cardContentId, document, RelatedPosition.AFTER,
+            neighbourDocId);
     }
 
     /**
      * Remove the deliverable of the card content.
      *
      * @param cardContentId the id of the card content
-     * @param documentId the id of the document to remove from the card content
+     * @param documentId    the id of the document to remove from the card content
      */
     @POST
     @Path("{id}/removeDeliverable")
