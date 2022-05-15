@@ -264,8 +264,8 @@ import org.slf4j.LoggerFactory;
     public Project duplicateProject(Long projectId, DuplicationParam params) {
 <span class="nc" id="L265">        Project originalProject = assertAndGetProject(projectId);</span>
 
-<span class="nc" id="L267">        Project newProject = new DuplicationManager(params).duplicateProject(originalProject,</span>
-            resourceReferenceSpreadingHelper);
+<span class="nc" id="L267">        Project newProject = new DuplicationManager(params, resourceReferenceSpreadingHelper)</span>
+<span class="nc" id="L268">            .duplicateProject(originalProject);</span>
 
 <span class="nc" id="L270">        return createProject(newProject);</span>
     }

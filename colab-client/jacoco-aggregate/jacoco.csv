@@ -96,7 +96,7 @@ colab-client/colab-api,ch.colabproject.colab.api.model.link,ActivityFlowLink,586
 colab-client/colab-api,ch.colabproject.colab.api.rest.token,TokenRestEndpoint,14,0,0,0,3,0,3,0,3,0
 colab-client/colab-api,ch.colabproject.colab.api.rest.utils.filter,RequestFilter,83,0,2,0,20,0,5,0,4,0
 colab-client/colab-api,ch.colabproject.colab.api.rest.utils.filter,CacheControlFilter,28,0,4,0,7,0,5,0,3,0
-colab-client/colab-api,ch.colabproject.colab.api.controller.project,ProjectManager,324,0,16,0,83,0,31,0,23,0
+colab-client/colab-api,ch.colabproject.colab.api.controller.project,ProjectManager,324,0,16,0,84,0,31,0,23,0
 colab-client/colab-api,ch.colabproject.colab.api.persistence.jpa.user,UserDao,181,0,10,0,55,0,20,0,15,0
 colab-client/colab-api,ch.colabproject.colab.api.security.permissions.project,ProjectConditions.IsProjectReadable,56,0,8,0,18,0,9,0,5,0
 colab-client/colab-api,ch.colabproject.colab.api.security.permissions.project,ProjectConditions,7,0,0,0,2,0,1,0,1,0
@@ -131,7 +131,7 @@ colab-client/colab-api,ch.colabproject.colab.api.controller,RequestManager,308,0
 colab-client/colab-api,ch.colabproject.colab.api.controller,WebsocketTxSync,45,0,4,0,16,0,6,0,4,0
 colab-client/colab-api,ch.colabproject.colab.api.controller,SubscriptionRequest.ChannelType,44,0,0,0,5,0,1,0,1,0
 colab-client/colab-api,ch.colabproject.colab.api.controller,SubscriptionRequest,71,0,0,0,24,0,13,0,13,0
-colab-client/colab-api,ch.colabproject.colab.api.controller,DuplicationManager,880,0,92,0,235,0,58,0,12,0
+colab-client/colab-api,ch.colabproject.colab.api.controller,DuplicationManager,1186,0,132,0,310,0,81,0,15,0
 colab-client/colab-api,ch.colabproject.colab.api.controller,WebsocketManager,794,0,52,0,217,0,64,0,38,0
 colab-client/colab-api,ch.colabproject.colab.api.controller,CdiBridgeSingleton,26,0,0,0,8,0,6,0,6,0
 colab-client/colab-api,ch.colabproject.colab.api.controller,CronTab,21,0,0,0,8,0,4,0,4,0
@@ -150,7 +150,7 @@ colab-client/colab-api,ch.colabproject.colab.api.controller.document,ExternalDat
 colab-client/colab-api,ch.colabproject.colab.api.controller.document,FileManager,233,0,18,0,59,0,18,0,9,0
 colab-client/colab-api,ch.colabproject.colab.api.controller.document,IndexGeneratorHelper,443,0,46,0,111,0,39,0,16,0
 colab-client/colab-api,ch.colabproject.colab.api.controller.document,RelatedPosition,44,0,0,0,5,0,1,0,1,0
-colab-client/colab-api,ch.colabproject.colab.api.controller.document,ResourceReferenceSpreadingHelper,419,0,58,0,106,0,51,0,22,0
+colab-client/colab-api,ch.colabproject.colab.api.controller.document,ResourceReferenceSpreadingHelper,442,0,60,0,109,0,52,0,22,0
 colab-client/colab-api,ch.colabproject.colab.api.controller.document,ResourceCategoryHelper,310,0,14,0,62,0,30,0,23,0
 colab-client/colab-api,ch.colabproject.colab.api.controller.document,DocumentManager,212,0,22,0,66,0,24,0,13,0
 colab-client/colab-api,ch.colabproject.colab.api.ws.channel,ChannelOverview,72,0,10,0,23,0,13,0,8,0
@@ -195,7 +195,7 @@ colab-client/colab-api,ch.colabproject.colab.api.ws.channel.tool,ChannelsBuilder
 colab-client/colab-api,ch.colabproject.colab.api.model.project,Project,661,0,68,0,51,0,109,0,75,0
 colab-client/colab-api,ch.colabproject.colab.api.controller.card,CardManager,399,0,44,0,116,0,46,0,24,0
 colab-client/colab-api,ch.colabproject.colab.api.controller.card,CardContentManager,321,0,28,0,80,0,30,0,15,0
-colab-client/colab-api,ch.colabproject.colab.api.controller.card,CardTypeManager,430,0,40,0,123,0,50,0,30,0
+colab-client/colab-api,ch.colabproject.colab.api.controller.card,CardTypeManager,431,0,40,0,123,0,50,0,30,0
 colab-client/colab-api,ch.colabproject.colab.api.microchanges.model,MicroChange,47,0,2,0,16,0,11,0,10,0
 colab-client/colab-api,ch.colabproject.colab.api.microchanges.model,Change,76,0,0,0,27,0,19,0,19,0
 colab-client/colab-api,ch.colabproject.colab.api.microchanges.model,MicroChange.Type,24,0,0,0,3,0,1,0,1,0

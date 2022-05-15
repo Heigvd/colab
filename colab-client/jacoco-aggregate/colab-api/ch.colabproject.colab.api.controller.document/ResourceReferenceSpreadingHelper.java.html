@@ -17,6 +17,7 @@ import ch.colabproject.colab.api.model.document.Resourceable;
 import ch.colabproject.colab.api.persistence.jpa.card.CardTypeDao;
 import ch.colabproject.colab.api.persistence.jpa.document.ResourceDao;
 import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -27,7 +28,7 @@ import javax.inject.Inject;
  *
  * @author sandra
  */
-<span class="nc" id="L30">public class ResourceReferenceSpreadingHelper {</span>
+<span class="nc" id="L31">public class ResourceReferenceSpreadingHelper {</span>
 
     // *********************************************************************************************
     // injections
@@ -55,34 +56,34 @@ import javax.inject.Inject;
      * @param resourceOrRef the resource to reference
      */
     public void spreadNewResourceDown(AbstractResource resourceOrRef) {
-<span class="nc bnc" id="L58" title="All 2 branches missed.">        if (resourceOrRef.getAbstractCardType() != null) {</span>
-<span class="nc" id="L59">            AbstractCardType resourceOwner = resourceOrRef.getAbstractCardType();</span>
+<span class="nc bnc" id="L59" title="All 2 branches missed.">        if (resourceOrRef.getAbstractCardType() != null) {</span>
+<span class="nc" id="L60">            AbstractCardType resourceOwner = resourceOrRef.getAbstractCardType();</span>
 
-<span class="nc bnc" id="L61" title="All 2 branches missed.">            for (AbstractCardType cardTypeRef : cardTypeDao.findDirectReferences(resourceOwner)) {</span>
-<span class="nc" id="L62">                makeActiveReference(cardTypeRef, resourceOrRef);</span>
-<span class="nc" id="L63">            }</span>
+<span class="nc bnc" id="L62" title="All 2 branches missed.">            for (AbstractCardType cardTypeRef : cardTypeDao.findDirectReferences(resourceOwner)) {</span>
+<span class="nc" id="L63">                makeActiveReference(cardTypeRef, resourceOrRef);</span>
+<span class="nc" id="L64">            }</span>
 
-<span class="nc bnc" id="L65" title="All 2 branches missed.">            for (Card implementingCard : resourceOwner.getImplementingCards()) {</span>
-<span class="nc" id="L66">                makeActiveReference(implementingCard, resourceOrRef);</span>
-<span class="nc" id="L67">            }</span>
+<span class="nc bnc" id="L66" title="All 2 branches missed.">            for (Card implementingCard : resourceOwner.getImplementingCards()) {</span>
+<span class="nc" id="L67">                makeActiveReference(implementingCard, resourceOrRef);</span>
+<span class="nc" id="L68">            }</span>
         }
 
-<span class="nc bnc" id="L70" title="All 2 branches missed.">        if (resourceOrRef.getCard() != null) {</span>
-<span class="nc" id="L71">            Card resourceOwner = resourceOrRef.getCard();</span>
+<span class="nc bnc" id="L71" title="All 2 branches missed.">        if (resourceOrRef.getCard() != null) {</span>
+<span class="nc" id="L72">            Card resourceOwner = resourceOrRef.getCard();</span>
 
-<span class="nc bnc" id="L73" title="All 2 branches missed.">            for (CardContent variant : resourceOwner.getContentVariants()) {</span>
-<span class="nc" id="L74">                makeActiveReference(variant, resourceOrRef);</span>
-<span class="nc" id="L75">            }</span>
+<span class="nc bnc" id="L74" title="All 2 branches missed.">            for (CardContent variant : resourceOwner.getContentVariants()) {</span>
+<span class="nc" id="L75">                makeActiveReference(variant, resourceOrRef);</span>
+<span class="nc" id="L76">            }</span>
         }
 
-<span class="nc bnc" id="L78" title="All 2 branches missed.">        if (resourceOrRef.getCardContent() != null) {</span>
-<span class="nc" id="L79">            CardContent resourceOwner = resourceOrRef.getCardContent();</span>
+<span class="nc bnc" id="L79" title="All 2 branches missed.">        if (resourceOrRef.getCardContent() != null) {</span>
+<span class="nc" id="L80">            CardContent resourceOwner = resourceOrRef.getCardContent();</span>
 
-<span class="nc bnc" id="L81" title="All 2 branches missed.">            for (Card subCard : resourceOwner.getSubCards()) {</span>
-<span class="nc" id="L82">                makeActiveReference(subCard, resourceOrRef);</span>
-<span class="nc" id="L83">            }</span>
+<span class="nc bnc" id="L82" title="All 2 branches missed.">            for (Card subCard : resourceOwner.getSubCards()) {</span>
+<span class="nc" id="L83">                makeActiveReference(subCard, resourceOrRef);</span>
+<span class="nc" id="L84">            }</span>
         }
-<span class="nc" id="L85">    }</span>
+<span class="nc" id="L86">    }</span>
 
     // *********************************************************************************************
     // when a card type reference / card / card content is added,
@@ -94,14 +95,23 @@ import javax.inject.Inject;
      *
      * @param cardTypeRefToFill A card type reference that need references to the up stream
      *                          resources
+     *
+     * @return the resource references that have been created or revived (or let as it is if nothing
+     *         is needed)
      */
-    public void extractReferencesFromUp(CardTypeRef cardTypeRefToFill) {
-<span class="nc" id="L99">        AbstractCardType targetType = cardTypeRefToFill.getTarget();</span>
+    public List&lt;ResourceRef&gt; extractReferencesFromUp(CardTypeRef cardTypeRefToFill) {
+<span class="nc" id="L103">        AbstractCardType targetType = cardTypeRefToFill.getTarget();</span>
+<span class="nc" id="L104">        List&lt;ResourceRef&gt; refs = new ArrayList&lt;&gt;();</span>
 
-<span class="nc bnc" id="L101" title="All 2 branches missed.">        for (AbstractResource targetResourceOrRef : targetType.getDirectAbstractResources()) {</span>
-<span class="nc" id="L102">            makeActiveReference(cardTypeRefToFill, targetResourceOrRef);</span>
-<span class="nc" id="L103">        }</span>
-<span class="nc" id="L104">    }</span>
+<span class="nc bnc" id="L106" title="All 2 branches missed.">        for (AbstractResource targetResourceOrRef : targetType.getDirectAbstractResources()) {</span>
+<span class="nc" id="L107">            ResourceRef ref = makeActiveReference(cardTypeRefToFill, targetResourceOrRef);</span>
+<span class="nc bnc" id="L108" title="All 2 branches missed.">            if (ref != null) {</span>
+<span class="nc" id="L109">                refs.add(ref);</span>
+            }
+<span class="nc" id="L111">        }</span>
+
+<span class="nc" id="L113">        return refs;</span>
+    }
 
     /**
      * Create a resource reference for each resource / resource reference of the parent.
@@ -109,20 +119,20 @@ import javax.inject.Inject;
      * @param cardToFill A card that need references to the up stream resources
      */
     public void extractReferencesFromUp(Card cardToFill) {
-<span class="nc" id="L112">        CardContent parent = cardToFill.getParent();</span>
+<span class="nc" id="L122">        CardContent parent = cardToFill.getParent();</span>
 
-<span class="nc bnc" id="L114" title="All 2 branches missed.">        for (AbstractResource parentResourceOrRef : parent.getDirectAbstractResources()) {</span>
-<span class="nc" id="L115">            makeActiveReference(cardToFill, parentResourceOrRef);</span>
-<span class="nc" id="L116">        }</span>
+<span class="nc bnc" id="L124" title="All 2 branches missed.">        for (AbstractResource parentResourceOrRef : parent.getDirectAbstractResources()) {</span>
+<span class="nc" id="L125">            makeActiveReference(cardToFill, parentResourceOrRef);</span>
+<span class="nc" id="L126">        }</span>
 
-<span class="nc bnc" id="L118" title="All 2 branches missed.">        if (cardToFill.hasCardType()) {</span>
-<span class="nc" id="L119">            AbstractCardType type = cardToFill.getCardType();</span>
+<span class="nc bnc" id="L128" title="All 2 branches missed.">        if (cardToFill.hasCardType()) {</span>
+<span class="nc" id="L129">            AbstractCardType type = cardToFill.getCardType();</span>
 
-<span class="nc bnc" id="L121" title="All 2 branches missed.">            for (AbstractResource typeResourceOrRef : type.getDirectAbstractResources()) {</span>
-<span class="nc" id="L122">                makeActiveReference(cardToFill, typeResourceOrRef);</span>
-<span class="nc" id="L123">            }</span>
+<span class="nc bnc" id="L131" title="All 2 branches missed.">            for (AbstractResource typeResourceOrRef : type.getDirectAbstractResources()) {</span>
+<span class="nc" id="L132">                makeActiveReference(cardToFill, typeResourceOrRef);</span>
+<span class="nc" id="L133">            }</span>
         }
-<span class="nc" id="L125">    }</span>
+<span class="nc" id="L135">    }</span>
 
     /**
      * Create a resource reference for each resource / resource reference of the parent.
@@ -130,12 +140,12 @@ import javax.inject.Inject;
      * @param cardContentToFill A card content that need references to the up stream resources
      */
     public void extractReferencesFromUp(CardContent cardContentToFill) {
-<span class="nc" id="L133">        Card parent = cardContentToFill.getCard();</span>
+<span class="nc" id="L143">        Card parent = cardContentToFill.getCard();</span>
 
-<span class="nc bnc" id="L135" title="All 2 branches missed.">        for (AbstractResource parentResourceOrRef : parent.getDirectAbstractResources()) {</span>
-<span class="nc" id="L136">            makeActiveReference(cardContentToFill, parentResourceOrRef);</span>
-<span class="nc" id="L137">        }</span>
-<span class="nc" id="L138">    }</span>
+<span class="nc bnc" id="L145" title="All 2 branches missed.">        for (AbstractResource parentResourceOrRef : parent.getDirectAbstractResources()) {</span>
+<span class="nc" id="L146">            makeActiveReference(cardContentToFill, parentResourceOrRef);</span>
+<span class="nc" id="L147">        }</span>
+<span class="nc" id="L148">    }</span>
 
     // *********************************************************************************************
     // do it
@@ -150,21 +160,27 @@ import javax.inject.Inject;
      *
      * @param owner               the owner of the wanted reference
      * @param targetResourceOrRef the target of the wanted reference
+     *
+     * @return the resource reference that has been created or revived (or let as it is if nothing
+     *         is needed)
      */
-    private void makeActiveReference(Resourceable owner, AbstractResource targetResourceOrRef) {
+    private ResourceRef makeActiveReference(Resourceable owner,
+        AbstractResource targetResourceOrRef) {
 
-<span class="nc bnc" id="L156" title="All 2 branches missed.">        if (canHaveReferences(targetResourceOrRef)) {</span>
+<span class="nc bnc" id="L170" title="All 2 branches missed.">        if (canHaveReferences(targetResourceOrRef)) {</span>
 
-<span class="nc" id="L158">            ResourceRef existingMatchingReference = findMatchingResourceRef(owner,</span>
+<span class="nc" id="L172">            ResourceRef existingMatchingReference = findMatchingResourceRef(owner,</span>
                 targetResourceOrRef);
 
-<span class="nc bnc" id="L161" title="All 2 branches missed.">            if (existingMatchingReference != null) {</span>
-<span class="nc" id="L162">                reviveAndRetarget(existingMatchingReference, targetResourceOrRef);</span>
+<span class="nc bnc" id="L175" title="All 2 branches missed.">            if (existingMatchingReference != null) {</span>
+<span class="nc" id="L176">                return reviveAndRetarget(existingMatchingReference, targetResourceOrRef);</span>
             } else {
-<span class="nc" id="L164">                makeNewReference(owner, targetResourceOrRef);</span>
+<span class="nc" id="L178">                return makeNewReference(owner, targetResourceOrRef);</span>
             }
         }
-<span class="nc" id="L167">    }</span>
+
+<span class="nc" id="L182">        return null;</span>
+    }
 
     /**
      * Ascertain if we must create resource references down stream for the given target resource (or
@@ -176,18 +192,18 @@ import javax.inject.Inject;
      */
     private boolean canHaveReferences(AbstractResource targetResourceOrRef) {
         // do not spread references of a type from a card content to its sub cards
-<span class="nc bnc" id="L179" title="All 2 branches missed.">        boolean isResourceOrRefLinkedToACardContent = targetResourceOrRef.getCardContent() != null;</span>
-<span class="nc bnc" id="L180" title="All 2 branches missed.">        if (isResourceOrRefLinkedToACardContent) {</span>
-<span class="nc" id="L181">            Resource concreteTargetResource = targetResourceOrRef.resolve();</span>
+<span class="nc bnc" id="L195" title="All 2 branches missed.">        boolean isResourceOrRefLinkedToACardContent = targetResourceOrRef.getCardContent() != null;</span>
+<span class="nc bnc" id="L196" title="All 2 branches missed.">        if (isResourceOrRefLinkedToACardContent) {</span>
+<span class="nc" id="L197">            Resource concreteTargetResource = targetResourceOrRef.resolve();</span>
 
-<span class="nc bnc" id="L183" title="All 2 branches missed.">            boolean isConcreteResourceLinkedToACardType = concreteTargetResource != null</span>
-<span class="nc bnc" id="L184" title="All 2 branches missed.">                &amp;&amp; concreteTargetResource.getAbstractCardType() != null;</span>
+<span class="nc bnc" id="L199" title="All 2 branches missed.">            boolean isConcreteResourceLinkedToACardType = concreteTargetResource != null</span>
+<span class="nc bnc" id="L200" title="All 2 branches missed.">                &amp;&amp; concreteTargetResource.getAbstractCardType() != null;</span>
 
-<span class="nc bnc" id="L186" title="All 2 branches missed.">            return !isConcreteResourceLinkedToACardType;</span>
+<span class="nc bnc" id="L202" title="All 2 branches missed.">            return !isConcreteResourceLinkedToACardType;</span>
         }
 
         // in all other cases, spread
-<span class="nc" id="L190">        return true;</span>
+<span class="nc" id="L206">        return true;</span>
     }
 
     /**
@@ -203,22 +219,22 @@ import javax.inject.Inject;
      */
     private ResourceRef findMatchingResourceRef(Resourceable owner,
         AbstractResource targetResourceOrRef) {
-<span class="nc" id="L206">        List&lt;ResourceRef&gt; refsOfOwnerWithSameFinalTarget = owner.getDirectAbstractResources()</span>
-<span class="nc" id="L207">            .stream()</span>
-<span class="nc" id="L208">            .filter(resOrRef -&gt; resOrRef instanceof ResourceRef)</span>
-<span class="nc" id="L209">            .map(resOrRef -&gt; (ResourceRef) resOrRef)</span>
-<span class="nc" id="L210">            .filter(resOrRef -&gt; Objects.equals(resOrRef.resolve(), targetResourceOrRef.resolve()))</span>
-<span class="nc" id="L211">            .collect(Collectors.toList());</span>
+<span class="nc" id="L222">        List&lt;ResourceRef&gt; refsOfOwnerWithSameFinalTarget = owner.getDirectAbstractResources()</span>
+<span class="nc" id="L223">            .stream()</span>
+<span class="nc" id="L224">            .filter(resOrRef -&gt; resOrRef instanceof ResourceRef)</span>
+<span class="nc" id="L225">            .map(resOrRef -&gt; (ResourceRef) resOrRef)</span>
+<span class="nc" id="L226">            .filter(resOrRef -&gt; Objects.equals(resOrRef.resolve(), targetResourceOrRef.resolve()))</span>
+<span class="nc" id="L227">            .collect(Collectors.toList());</span>
 
-<span class="nc bnc" id="L213" title="All 2 branches missed.">        if (refsOfOwnerWithSameFinalTarget.size() == 1) {</span>
-<span class="nc" id="L214">            return refsOfOwnerWithSameFinalTarget.get(0);</span>
+<span class="nc bnc" id="L229" title="All 2 branches missed.">        if (refsOfOwnerWithSameFinalTarget.size() == 1) {</span>
+<span class="nc" id="L230">            return refsOfOwnerWithSameFinalTarget.get(0);</span>
         }
 
-<span class="nc bnc" id="L217" title="All 2 branches missed.">        if (refsOfOwnerWithSameFinalTarget.size() &gt; 1) {</span>
-<span class="nc" id="L218">            throw HttpErrorMessage.dataIntegrityFailure();</span>
+<span class="nc bnc" id="L233" title="All 2 branches missed.">        if (refsOfOwnerWithSameFinalTarget.size() &gt; 1) {</span>
+<span class="nc" id="L234">            throw HttpErrorMessage.dataIntegrityFailure();</span>
         }
 
-<span class="nc" id="L221">        return null;</span>
+<span class="nc" id="L237">        return null;</span>
     }
 
     /**
@@ -230,21 +246,25 @@ import javax.inject.Inject;
      *
      * @param resourceReference the resource reference to update
      * @param newTarget         the new target of the resource reference
+     *
+     * @return the resource reference that has been revived (or let as it is if nothing is needed)
      */
-    private void reviveAndRetarget(ResourceRef resourceReference,
+    private ResourceRef reviveAndRetarget(ResourceRef resourceReference,
         AbstractResource newTarget) {
-<span class="nc bnc" id="L236" title="All 2 branches missed.">        if (!Objects.equals(resourceReference.resolve(), newTarget.resolve())) {</span>
-<span class="nc" id="L237">            throw HttpErrorMessage.dataIntegrityFailure();</span>
+<span class="nc bnc" id="L254" title="All 2 branches missed.">        if (!Objects.equals(resourceReference.resolve(), newTarget.resolve())) {</span>
+<span class="nc" id="L255">            throw HttpErrorMessage.dataIntegrityFailure();</span>
         }
 
-<span class="nc" id="L240">        reviveRecursively(resourceReference);</span>
+<span class="nc" id="L258">        reviveRecursively(resourceReference);</span>
 
-<span class="nc" id="L242">        AbstractResource olderTarget = resourceReference.getTarget();</span>
+<span class="nc" id="L260">        AbstractResource olderTarget = resourceReference.getTarget();</span>
 
-<span class="nc bnc" id="L244" title="All 2 branches missed.">        if (!Objects.equals(olderTarget, newTarget)) {</span>
-<span class="nc" id="L245">            resourceReference.setTarget(newTarget);</span>
+<span class="nc bnc" id="L262" title="All 2 branches missed.">        if (!Objects.equals(olderTarget, newTarget)) {</span>
+<span class="nc" id="L263">            resourceReference.setTarget(newTarget);</span>
         }
-<span class="nc" id="L247">    }</span>
+
+<span class="nc" id="L266">        return resourceReference;</span>
+    }
 
     /**
      * Mark the resource reference as not residual. Do it as well for all its descendants.
@@ -252,12 +272,12 @@ import javax.inject.Inject;
      * @param resourceReference the reference to update
      */
     private void reviveRecursively(ResourceRef resourceReference) {
-<span class="nc" id="L255">        resourceReference.setResidual(false);</span>
+<span class="nc" id="L275">        resourceReference.setResidual(false);</span>
 
-<span class="nc bnc" id="L257" title="All 2 branches missed.">        for (ResourceRef childRef : resourceDao.findDirectReferences(resourceReference)) {</span>
-<span class="nc" id="L258">            reviveRecursively(childRef);</span>
-<span class="nc" id="L259">        }</span>
-<span class="nc" id="L260">    }</span>
+<span class="nc bnc" id="L277" title="All 2 branches missed.">        for (ResourceRef childRef : resourceDao.findDirectReferences(resourceReference)) {</span>
+<span class="nc" id="L278">            reviveRecursively(childRef);</span>
+<span class="nc" id="L279">        }</span>
+<span class="nc" id="L280">    }</span>
 
     /**
      * Make a new resource reference to link to the given owner, targeting the given resource (or
@@ -265,19 +285,23 @@ import javax.inject.Inject;
      *
      * @param owner         the entity the new resource reference will be linked to
      * @param resourceOrRef the resource (or reference) target of the new resource reference
+     *
+     * @return the resource reference that has been created
      */
-    private void makeNewReference(Resourceable owner, AbstractResource targetResourceOrRef) {
-<span class="nc" id="L270">        ResourceRef newRef = initNewReferenceFrom(targetResourceOrRef);</span>
+    private ResourceRef makeNewReference(Resourceable owner, AbstractResource targetResourceOrRef) {
+<span class="nc" id="L292">        ResourceRef newRef = initNewReferenceFrom(targetResourceOrRef);</span>
 
-<span class="nc" id="L272">        newRef.setOwner(owner);</span>
-<span class="nc" id="L273">        owner.getDirectAbstractResources().add(newRef);</span>
+<span class="nc" id="L294">        newRef.setOwner(owner);</span>
+<span class="nc" id="L295">        owner.getDirectAbstractResources().add(newRef);</span>
 
-<span class="nc" id="L275">        newRef.setTarget(targetResourceOrRef);</span>
+<span class="nc" id="L297">        newRef.setTarget(targetResourceOrRef);</span>
 
-<span class="nc" id="L277">        spreadNewResourceDown(newRef);</span>
+<span class="nc" id="L299">        spreadNewResourceDown(newRef);</span>
+
+<span class="nc" id="L301">        return newRef;</span>
 
         // no need to persist, it will be done at once
-<span class="nc" id="L280">    }</span>
+    }
 
     /**
      * Initialize a new reference which will have the given resource (or reference) as target.
@@ -287,17 +311,17 @@ import javax.inject.Inject;
      * @return the new resource reference
      */
     private ResourceRef initNewReferenceFrom(AbstractResource targetResourceOrRef) {
-<span class="nc" id="L290">        ResourceRef newRef = new ResourceRef();</span>
+<span class="nc" id="L314">        ResourceRef newRef = new ResourceRef();</span>
 
-<span class="nc" id="L292">        newRef.setCategory(targetResourceOrRef.getCategory());</span>
+<span class="nc" id="L316">        newRef.setCategory(targetResourceOrRef.getCategory());</span>
 
-<span class="nc" id="L294">        newRef.setRefused(isNewReferenceInitiallyRefused(targetResourceOrRef));</span>
+<span class="nc" id="L318">        newRef.setRefused(isNewReferenceInitiallyRefused(targetResourceOrRef));</span>
 
-<span class="nc bnc" id="L296" title="All 2 branches missed.">        if (targetResourceOrRef instanceof ResourceRef) {</span>
-<span class="nc" id="L297">            newRef.setResidual(((ResourceRef) targetResourceOrRef).isResidual());</span>
+<span class="nc bnc" id="L320" title="All 2 branches missed.">        if (targetResourceOrRef instanceof ResourceRef) {</span>
+<span class="nc" id="L321">            newRef.setResidual(((ResourceRef) targetResourceOrRef).isResidual());</span>
         }
 
-<span class="nc" id="L300">        return newRef;</span>
+<span class="nc" id="L324">        return newRef;</span>
     }
 
     /**
@@ -308,20 +332,20 @@ import javax.inject.Inject;
      * @return how the new reference refused field must be initialized
      */
     private boolean isNewReferenceInitiallyRefused(AbstractResource targetResource) {
-<span class="nc bnc" id="L311" title="All 2 branches missed.">        if (targetResource instanceof ResourceRef) {</span>
+<span class="nc bnc" id="L335" title="All 2 branches missed.">        if (targetResource instanceof ResourceRef) {</span>
             // if it is from a reference, just copy the refused state
-<span class="nc" id="L313">            return ((ResourceRef) targetResource).isRefused();</span>
+<span class="nc" id="L337">            return ((ResourceRef) targetResource).isRefused();</span>
         }
 
-<span class="nc bnc" id="L316" title="All 2 branches missed.">        if (targetResource instanceof Resource) {</span>
+<span class="nc bnc" id="L340" title="All 2 branches missed.">        if (targetResource instanceof Resource) {</span>
             // if it is from a concrete resource, set to true if deprecated
-<span class="nc" id="L318">            Resource targetConcreteResource = (Resource) targetResource;</span>
-<span class="nc bnc" id="L319" title="All 2 branches missed.">            if (targetConcreteResource.isDeprecated()) {</span>
-<span class="nc" id="L320">                return true;</span>
+<span class="nc" id="L342">            Resource targetConcreteResource = (Resource) targetResource;</span>
+<span class="nc bnc" id="L343" title="All 2 branches missed.">            if (targetConcreteResource.isDeprecated()) {</span>
+<span class="nc" id="L344">                return true;</span>
             }
         }
 
-<span class="nc" id="L324">        return false;</span>
+<span class="nc" id="L348">        return false;</span>
     }
 
     // *********************************************************************************************
@@ -336,12 +360,12 @@ import javax.inject.Inject;
      * @param formerRelated the not-any-more-related target of the references
      */
     public void spreadResidualMark(Resourceable owner, Resourceable formerRelated) {
-<span class="nc" id="L339">        owner.getDirectAbstractResources().stream()</span>
-<span class="nc" id="L340">            .filter(resOrRef -&gt; (resOrRef instanceof ResourceRef))</span>
-<span class="nc" id="L341">            .map(resOrRef -&gt; ((ResourceRef) resOrRef))</span>
-<span class="nc" id="L342">            .filter(ref -&gt; Objects.equals(ref.getTarget().getOwner(), formerRelated))</span>
-<span class="nc" id="L343">            .forEach(ref -&gt; markAsResidualRecursively(ref));</span>
-<span class="nc" id="L344">    }</span>
+<span class="nc" id="L363">        owner.getDirectAbstractResources().stream()</span>
+<span class="nc" id="L364">            .filter(resOrRef -&gt; (resOrRef instanceof ResourceRef))</span>
+<span class="nc" id="L365">            .map(resOrRef -&gt; ((ResourceRef) resOrRef))</span>
+<span class="nc" id="L366">            .filter(ref -&gt; Objects.equals(ref.getTarget().getOwner(), formerRelated))</span>
+<span class="nc" id="L367">            .forEach(ref -&gt; markAsResidualRecursively(ref));</span>
+<span class="nc" id="L368">    }</span>
 
     /**
      * Mark the resource reference as residual. Do it as well for all its descendants.
@@ -349,12 +373,12 @@ import javax.inject.Inject;
      * @param resourceReference the reference to update
      */
     private void markAsResidualRecursively(ResourceRef resourceReference) {
-<span class="nc" id="L352">        resourceReference.setResidual(true);</span>
+<span class="nc" id="L376">        resourceReference.setResidual(true);</span>
 
-<span class="nc bnc" id="L354" title="All 2 branches missed.">        for (ResourceRef childRef : resourceDao.findDirectReferences(resourceReference)) {</span>
-<span class="nc" id="L355">            markAsResidualRecursively(childRef);</span>
-<span class="nc" id="L356">        }</span>
-<span class="nc" id="L357">    }</span>
+<span class="nc bnc" id="L378" title="All 2 branches missed.">        for (ResourceRef childRef : resourceDao.findDirectReferences(resourceReference)) {</span>
+<span class="nc" id="L379">            markAsResidualRecursively(childRef);</span>
+<span class="nc" id="L380">        }</span>
+<span class="nc" id="L381">    }</span>
 
     // *********************************************************************************************
     //
