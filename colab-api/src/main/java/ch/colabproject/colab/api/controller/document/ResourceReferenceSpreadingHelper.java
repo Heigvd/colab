@@ -17,6 +17,7 @@ import ch.colabproject.colab.api.model.document.Resourceable;
 import ch.colabproject.colab.api.persistence.jpa.card.CardTypeDao;
 import ch.colabproject.colab.api.persistence.jpa.document.ResourceDao;
 import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -94,13 +95,22 @@ public class ResourceReferenceSpreadingHelper {
      *
      * @param cardTypeRefToFill A card type reference that need references to the up stream
      *                          resources
+     *
+     * @return the resource references that have been created or revived (or let as it is if nothing
+     *         is needed)
      */
-    public void extractReferencesFromUp(CardTypeRef cardTypeRefToFill) {
+    public List<ResourceRef> extractReferencesFromUp(CardTypeRef cardTypeRefToFill) {
         AbstractCardType targetType = cardTypeRefToFill.getTarget();
+        List<ResourceRef> refs = new ArrayList<>();
 
         for (AbstractResource targetResourceOrRef : targetType.getDirectAbstractResources()) {
-            makeActiveReference(cardTypeRefToFill, targetResourceOrRef);
+            ResourceRef ref = makeActiveReference(cardTypeRefToFill, targetResourceOrRef);
+            if (ref != null) {
+                refs.add(ref);
+            }
         }
+
+        return refs;
     }
 
     /**
@@ -150,8 +160,12 @@ public class ResourceReferenceSpreadingHelper {
      *
      * @param owner               the owner of the wanted reference
      * @param targetResourceOrRef the target of the wanted reference
+     *
+     * @return the resource reference that has been created or revived (or let as it is if nothing
+     *         is needed)
      */
-    private void makeActiveReference(Resourceable owner, AbstractResource targetResourceOrRef) {
+    private ResourceRef makeActiveReference(Resourceable owner,
+        AbstractResource targetResourceOrRef) {
 
         if (canHaveReferences(targetResourceOrRef)) {
 
@@ -159,11 +173,13 @@ public class ResourceReferenceSpreadingHelper {
                 targetResourceOrRef);
 
             if (existingMatchingReference != null) {
-                reviveAndRetarget(existingMatchingReference, targetResourceOrRef);
+                return reviveAndRetarget(existingMatchingReference, targetResourceOrRef);
             } else {
-                makeNewReference(owner, targetResourceOrRef);
+                return makeNewReference(owner, targetResourceOrRef);
             }
         }
+
+        return null;
     }
 
     /**
@@ -230,8 +246,10 @@ public class ResourceReferenceSpreadingHelper {
      *
      * @param resourceReference the resource reference to update
      * @param newTarget         the new target of the resource reference
+     *
+     * @return the resource reference that has been revived (or let as it is if nothing is needed)
      */
-    private void reviveAndRetarget(ResourceRef resourceReference,
+    private ResourceRef reviveAndRetarget(ResourceRef resourceReference,
         AbstractResource newTarget) {
         if (!Objects.equals(resourceReference.resolve(), newTarget.resolve())) {
             throw HttpErrorMessage.dataIntegrityFailure();
@@ -244,6 +262,8 @@ public class ResourceReferenceSpreadingHelper {
         if (!Objects.equals(olderTarget, newTarget)) {
             resourceReference.setTarget(newTarget);
         }
+
+        return resourceReference;
     }
 
     /**
@@ -265,8 +285,10 @@ public class ResourceReferenceSpreadingHelper {
      *
      * @param owner         the entity the new resource reference will be linked to
      * @param resourceOrRef the resource (or reference) target of the new resource reference
+     *
+     * @return the resource reference that has been created
      */
-    private void makeNewReference(Resourceable owner, AbstractResource targetResourceOrRef) {
+    private ResourceRef makeNewReference(Resourceable owner, AbstractResource targetResourceOrRef) {
         ResourceRef newRef = initNewReferenceFrom(targetResourceOrRef);
 
         newRef.setOwner(owner);
@@ -275,6 +297,8 @@ public class ResourceReferenceSpreadingHelper {
         newRef.setTarget(targetResourceOrRef);
 
         spreadNewResourceDown(newRef);
+
+        return newRef;
 
         // no need to persist, it will be done at once
     }

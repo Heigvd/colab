@@ -264,8 +264,8 @@ public class ProjectManager {
     public Project duplicateProject(Long projectId, DuplicationParam params) {
         Project originalProject = assertAndGetProject(projectId);
 
-        Project newProject = new DuplicationManager(params).duplicateProject(originalProject,
-            resourceReferenceSpreadingHelper);
+        Project newProject = new DuplicationManager(params, resourceReferenceSpreadingHelper)
+            .duplicateProject(originalProject);
 
         return createProject(newProject);
     }

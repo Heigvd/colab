@@ -22,12 +22,15 @@ import ch.colabproject.colab.api.model.document.ExternalLink;
 import ch.colabproject.colab.api.model.document.Resource;
 import ch.colabproject.colab.api.model.document.ResourceRef;
 import ch.colabproject.colab.api.model.document.TextDataBlock;
+import ch.colabproject.colab.api.model.link.ActivityFlowLink;
+import ch.colabproject.colab.api.model.link.StickyNoteLink;
 import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.api.model.team.TeamMember;
 import ch.colabproject.colab.api.model.team.TeamRole;
 import ch.colabproject.colab.api.model.team.acl.AccessControl;
 import ch.colabproject.colab.api.model.user.User;
 import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
@@ -52,6 +55,9 @@ public class DuplicationManager {
     /** parameters to fine tune a duplication */
     private final DuplicationParam params;
 
+    /** helper for resource references */
+    private final ResourceReferenceSpreadingHelper resourceSpreader;
+
     /** Matching between the old id and the new team roles */
     private Map<Long, TeamRole> teamRoleMatching = new HashMap<>();
 
@@ -70,11 +76,23 @@ public class DuplicationManager {
     /** Matching between the old id and the new resources */
     private Map<Long, AbstractResource> resourceMatching = new HashMap<>();
 
+    /** Matching between the old id and the new document */
+    private Map<Long, Document> documentMatching = new HashMap<>();
+
+    /** the sticky note links to duplicate. They are filled when handling cards */
+    private List<StickyNoteLink> stickyNoteLinksToDuplicate = new ArrayList<>();
+
+    /** the activity flow links to duplicate. They are filled when handling cards */
+    private List<ActivityFlowLink> activityFlowLinksToDuplicate = new ArrayList<>();
+
     /**
-     * @param params Parameters to fine tune duplication
+     * @param params           Parameters to fine tune duplication
+     * @param resourceSpreader Helper for resource references
      */
-    public DuplicationManager(DuplicationParam params) {
+    public DuplicationManager(DuplicationParam params,
+        ResourceReferenceSpreadingHelper resourceSpreader) {
         this.params = params;
+        this.resourceSpreader = resourceSpreader;
     }
 
     // *********************************************************************************************
@@ -84,13 +102,11 @@ public class DuplicationManager {
     /**
      * Duplicate the given project. No database action is provided.
      *
-     * @param originalProject  the project we want to duplicate
-     * @param resourceSpreader helper for resource references
+     * @param originalProject the project to duplicate
      *
      * @return the duplicated project
      */
-    public Project duplicateProject(Project originalProject,
-        ResourceReferenceSpreadingHelper resourceSpreader) {
+    public Project duplicateProject(Project originalProject) {
         try {
             Project newProject = new Project();
             newProject.duplicate(originalProject);
@@ -134,7 +150,7 @@ public class DuplicationManager {
                 cardTypes.sort(ID_COMPARATOR);
 
                 for (AbstractCardType original : cardTypes) {
-                    AbstractCardType newCardType = duplicateCardType(original, resourceSpreader);
+                    AbstractCardType newCardType = duplicateCardType(original);
 
                     newCardType.setProject(newProject);
                     newProject.getElementsToBeDefined().add(newCardType);
@@ -155,16 +171,24 @@ public class DuplicationManager {
             }
 
             ////////////////////////////////////////////////////////////////////////////////////////
-            // TODO sticky notes
-//            if (params.isWithStickyNotes()) {
-//
-//            }
+            // sticky notes
+            if (params.isWithStickyNotes()) {
+                stickyNoteLinksToDuplicate.sort(ID_COMPARATOR);
+
+                for (StickyNoteLink original : stickyNoteLinksToDuplicate) {
+                    duplicateStickyNoteLink(original);
+                }
+            }
 
             ////////////////////////////////////////////////////////////////////////////////////////
-            // TODO activity flow
-//            if (params.isWithActivityFlow()) {
-//
-//            }
+            // activity flow
+            if (params.isWithActivityFlow()) {
+                activityFlowLinksToDuplicate.sort(ID_COMPARATOR);
+
+                for (ActivityFlowLink original : activityFlowLinksToDuplicate) {
+                    duplicateActivityFlowLink(original);
+                }
+            }
 
             return newProject;
         } catch (ColabMergeException e) {
@@ -216,8 +240,8 @@ public class DuplicationManager {
         return newTeamMember;
     }
 
-    private AbstractCardType duplicateCardType(AbstractCardType original,
-        ResourceReferenceSpreadingHelper resourceSpreader) throws ColabMergeException {
+    private AbstractCardType duplicateCardType(AbstractCardType original)
+        throws ColabMergeException {
 
         if (params.isMakeOnlyCardTypeReferences()) {
             CardTypeRef newCardTypeRef = new CardTypeRef();
@@ -227,7 +251,9 @@ public class DuplicationManager {
 
             cardTypeMatching.put(original.getId(), newCardTypeRef);
 
-            resourceSpreader.extractReferencesFromUp(newCardTypeRef);
+            List<ResourceRef> createdRefs = resourceSpreader
+                .extractReferencesFromUp(newCardTypeRef);
+            createdRefs.stream().forEach(ref -> resourceMatching.put(ref.getTarget().getId(), ref));
 
             return newCardTypeRef;
         } else {
@@ -346,6 +372,18 @@ public class DuplicationManager {
 
         }
 
+        ////////////////////////////////////////////////////////////////////////////////////////
+        // sticky notes
+        if (params.isWithStickyNotes()) {
+            stickyNoteLinksToDuplicate.addAll(original.getStickyNoteLinksAsDest());
+        }
+
+        ////////////////////////////////////////////////////////////////////////////////////////
+        // activity flow
+        if (params.isWithActivityFlow()) {
+            activityFlowLinksToDuplicate.addAll(original.getActivityFlowLinksAsPrevious());
+        }
+
         return newCard;
     }
 
@@ -354,26 +392,6 @@ public class DuplicationManager {
         newCardContent.duplicate(original);
 
         cardContentMatching.put(original.getId(), newCardContent);
-
-        List<Card> originalSubCards = original.getSubCards();
-        originalSubCards.sort(ID_COMPARATOR);
-
-        List<AbstractResource> originalResources = original.getDirectAbstractResources();
-        originalResources.sort(ID_COMPARATOR);
-
-        for (AbstractResource originalResource : originalResources) {
-            AbstractResource newResource = duplicateResource(originalResource);
-
-            newResource.setCardContent(newCardContent);
-            newCardContent.getDirectAbstractResources().add(newResource);
-        }
-
-        for (Card originalSubCard : originalSubCards) {
-            Card newSubCard = duplicateCard(originalSubCard);
-
-            newSubCard.setParent(newCardContent);
-            newCardContent.getSubCards().add(newSubCard);
-        }
 
         if (params.isWithDeliverables()) {
             List<Document> originalDeliverables = original.getDeliverables();
@@ -387,6 +405,26 @@ public class DuplicationManager {
             }
         }
 
+        List<AbstractResource> originalResources = original.getDirectAbstractResources();
+        originalResources.sort(ID_COMPARATOR);
+
+        for (AbstractResource originalResource : originalResources) {
+            AbstractResource newResource = duplicateResource(originalResource);
+
+            newResource.setCardContent(newCardContent);
+            newCardContent.getDirectAbstractResources().add(newResource);
+        }
+
+        List<Card> originalSubCards = original.getSubCards();
+        originalSubCards.sort(ID_COMPARATOR);
+
+        for (Card originalSubCard : originalSubCards) {
+            Card newSubCard = duplicateCard(originalSubCard);
+
+            newSubCard.setParent(newCardContent);
+            newCardContent.getSubCards().add(newSubCard);
+        }
+
         return newCardContent;
     }
 
@@ -394,18 +432,30 @@ public class DuplicationManager {
         if (original instanceof DocumentFile) {
             // TODO sandra work in progress : copy also the file
             DocumentFile originalDocumentFile = (DocumentFile) original;
+
             DocumentFile newDocumentFile = new DocumentFile();
             newDocumentFile.duplicate(originalDocumentFile);
+
+            documentMatching.put(originalDocumentFile.getId(), newDocumentFile);
+
             return newDocumentFile;
         } else if (original instanceof ExternalLink) {
             ExternalLink originalExternalLink = (ExternalLink) original;
+
             ExternalLink newExternalLink = new ExternalLink();
             newExternalLink.duplicate(originalExternalLink);
+
+            documentMatching.put(originalExternalLink.getId(), newExternalLink);
+
             return newExternalLink;
         } else if (original instanceof TextDataBlock) {
             TextDataBlock originalTextDataBlock = (TextDataBlock) original;
+
             TextDataBlock newTextDataBlock = new TextDataBlock();
             newTextDataBlock.duplicate(originalTextDataBlock);
+
+            documentMatching.put(originalTextDataBlock.getId(), newTextDataBlock);
+
             return newTextDataBlock;
         } else {
             throw new IllegalStateException("abstract card type implementation not handled");
@@ -453,12 +503,6 @@ public class DuplicationManager {
             if (originalTarget != null) {
                 AbstractResource newTarget = originalTarget;
 
-                newTarget = resourceMatching.get(originalTarget.getId());
-
-                if (newTarget == null) {
-                    throw HttpErrorMessage.dataIntegrityFailure();
-                }
-
                 newResourceRef.setTarget(newTarget);
             }
 
@@ -497,6 +541,108 @@ public class DuplicationManager {
         }
 
         return newAccessControl;
+    }
+
+    private StickyNoteLink duplicateStickyNoteLink(StickyNoteLink original)
+        throws ColabMergeException {
+        StickyNoteLink newLink = new StickyNoteLink();
+        newLink.duplicate(original);
+
+        TextDataBlock explanation = original.getExplanation();
+        if (explanation != null) {
+            TextDataBlock newExplanation = (TextDataBlock) duplicateDocument(explanation);
+            newExplanation.setExplainingStickyNoteLink(newLink);
+            newLink.setExplanation(newExplanation);
+        }
+
+        if (original.getDestinationCard() != null) {
+            Card destinationCard = cardMatching.get(original.getDestinationCard().getId());
+
+            if (destinationCard == null) {
+                throw HttpErrorMessage.dataIntegrityFailure();
+            }
+
+            destinationCard.getStickyNoteLinksAsDest().add(newLink);
+            newLink.setDestinationCard(destinationCard);
+        }
+
+        if (original.getSrcCard() != null) {
+            Card srcCard = cardMatching.get(original.getSrcCard().getId());
+
+            if (srcCard == null) {
+                throw HttpErrorMessage.dataIntegrityFailure();
+            }
+
+            srcCard.getStickyNoteLinksAsSrc().add(newLink);
+            newLink.setSrcCard(srcCard);
+        }
+
+        if (original.getSrcCardContent() != null) {
+            CardContent srcCardContent = cardContentMatching
+                .get(original.getSrcCardContent().getId());
+
+            if (srcCardContent == null) {
+                throw HttpErrorMessage.dataIntegrityFailure();
+            }
+
+            srcCardContent.getStickyNoteLinksAsSrc().add(newLink);
+            newLink.setSrcCardContent(srcCardContent);
+        }
+
+        if (original.getSrcResourceOrRef() != null) {
+            AbstractResource srcResourceOrRef = resourceMatching
+                .get(original.getSrcResourceOrRef().getId());
+
+            if (srcResourceOrRef == null) {
+                throw HttpErrorMessage.dataIntegrityFailure();
+            }
+
+            srcResourceOrRef.getStickyNoteLinksAsSrc().add(newLink);
+            newLink.setSrcResourceOrRef(srcResourceOrRef);
+        }
+
+        if (original.getSrcDocument() != null) {
+            Document srcDocument = documentMatching.get(original.getSrcDocument().getId());
+
+            if (srcDocument == null) {
+                throw HttpErrorMessage.dataIntegrityFailure();
+            }
+
+            srcDocument.getStickyNoteLinksAsSrc().add(newLink);
+            newLink.setSrcDocument(srcDocument);
+        }
+
+        return newLink;
+    }
+
+    private ActivityFlowLink duplicateActivityFlowLink(ActivityFlowLink original)
+        throws ColabMergeException {
+        ActivityFlowLink newLink = new ActivityFlowLink();
+        newLink.duplicate(newLink);
+
+        if (original.getPreviousCard() != null) {
+            Card previousCard = cardMatching.get(original.getPreviousCard().getId());
+
+            if (previousCard == null) {
+                throw HttpErrorMessage.dataIntegrityFailure();
+            }
+
+            previousCard.getActivityFlowLinksAsPrevious().add(newLink);
+            newLink.setPreviousCard(previousCard);
+        }
+
+        if (original.getNextCard() != null) {
+            Card nextCard = cardMatching.get(original.getNextCard().getId());
+
+            if (nextCard == null) {
+                throw HttpErrorMessage.dataIntegrityFailure();
+            }
+
+            nextCard.getActivityFlowLinksAsNext().add(newLink);
+            newLink.setNextCard(nextCard);
+        }
+
+        return newLink;
     }
 
 }
