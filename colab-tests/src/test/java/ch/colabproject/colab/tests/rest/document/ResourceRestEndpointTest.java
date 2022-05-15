@@ -331,7 +331,7 @@ public class ResourceRestEndpointTest extends AbstractArquillianTest {
         DocumentFile doc3 = new DocumentFile();
         doc3.setFileName(doc3FileName);
 
-        Document createdDoc3 = client.resourceRestEndpoint.addDocument(resourceId, doc3);
+        Document createdDoc3 = client.resourceRestEndpoint.addDocumentAtEnd(resourceId, doc3);
         Long doc3Id = persistedDoc2.getId();
         Assertions.assertNotNull(createdDoc3);
         Assertions.assertNotNull(createdDoc3.getId());

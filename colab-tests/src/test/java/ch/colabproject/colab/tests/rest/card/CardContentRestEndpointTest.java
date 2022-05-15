@@ -202,7 +202,7 @@ public class CardContentRestEndpointTest extends AbstractArquillianTest {
         DocumentFile doc2 = new DocumentFile();
         doc2.setFileName(doc2FileName);
 
-        Document deliverable2 = client.cardContentRestEndpoint.addDeliverable(cardContentId, doc2);
+        Document deliverable2 = client.cardContentRestEndpoint.addDeliverableAtEnd(cardContentId, doc2);
         Assertions.assertNotNull(deliverable2);
         Assertions.assertNotNull(deliverable2.getId());
         Assertions.assertEquals(1000, deliverable2.getIndex());
@@ -216,7 +216,7 @@ public class CardContentRestEndpointTest extends AbstractArquillianTest {
         TextDataBlock doc3 = new TextDataBlock();
         doc3.setTextData(doc3TextData);
 
-        Document deliverable3 = client.cardContentRestEndpoint.addDeliverable(cardContentId, doc3);
+        Document deliverable3 = client.cardContentRestEndpoint.addDeliverableAtEnd(cardContentId, doc3);
         Assertions.assertNotNull(deliverable3);
         Assertions.assertNotNull(deliverable3.getId());
         Assertions.assertEquals(2000, deliverable3.getIndex());
