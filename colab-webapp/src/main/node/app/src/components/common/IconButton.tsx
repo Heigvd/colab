@@ -51,7 +51,13 @@ export default function IconButton({
             size={iconSize}
             transform={layer.transform}
           />
-          <FontAwesomeIcon icon={icon} color={iconColor} size={iconSize} transform={transform} mask={mask} />
+          <FontAwesomeIcon
+            icon={icon}
+            color={iconColor}
+            size={iconSize}
+            transform={transform}
+            mask={mask}
+          />
         </span>
       ) : (
         <FontAwesomeIcon icon={icon} color={iconColor} size={iconSize} mask={mask} />

@@ -86,7 +86,7 @@ export interface ToolbarState {
 }
 
 export interface ToolbarFeatures {
-  toggleBold:  (e: React.MouseEvent | React.KeyboardEvent) => void;
+  toggleBold: (e: React.MouseEvent | React.KeyboardEvent) => void;
   toggleItalic: (e: React.MouseEvent | React.KeyboardEvent) => void;
   toggleUnderline: (e: React.MouseEvent | React.KeyboardEvent) => void;
   toggleStrike: (e: React.MouseEvent | React.KeyboardEvent) => void;
@@ -135,28 +135,34 @@ function ToolbarButton({ toggled, onClick, icon }: ToolbarButtonProps) {
   );
 }
 
-
 export function TXTFormatToolbar({ toolbarState, toolbarFormatFeatures }: TXTFormatToolbarProps) {
   return (
     <Flex>
-        {/* Listening to onMouseDownCapture is very important !*/}
-        <ToolbarButton icon={faBold} toggled={toolbarState.bold} onClick={toolbarFormatFeatures.toggleBold} />
-        <ToolbarButton icon={faItalic} toggled={toolbarState.italic} onClick={toolbarFormatFeatures.toggleItalic} />
-        <ToolbarButton
-          icon={faUnderline}
-          toggled={toolbarState.underline}
-          onClick={toolbarFormatFeatures.toggleUnderline}
-        />
-        <ToolbarButton
-          icon={faStrikethrough}
-          toggled={toolbarState.strike}
-          onClick={toolbarFormatFeatures.toggleStrike}
-        />
-        <Tips tipsType="TODO">TODO: add more styling options (headings level, lists, ...</Tips>
-      </Flex>
+      {/* Listening to onMouseDownCapture is very important !*/}
+      <ToolbarButton
+        icon={faBold}
+        toggled={toolbarState.bold}
+        onClick={toolbarFormatFeatures.toggleBold}
+      />
+      <ToolbarButton
+        icon={faItalic}
+        toggled={toolbarState.italic}
+        onClick={toolbarFormatFeatures.toggleItalic}
+      />
+      <ToolbarButton
+        icon={faUnderline}
+        toggled={toolbarState.underline}
+        onClick={toolbarFormatFeatures.toggleUnderline}
+      />
+      <ToolbarButton
+        icon={faStrikethrough}
+        toggled={toolbarState.strike}
+        onClick={toolbarFormatFeatures.toggleStrike}
+      />
+      <Tips tipsType="TODO">TODO: add more styling options (headings level, lists, ...</Tips>
+    </Flex>
   );
 }
-
 
 /**
  * Get new selection range by applying offsets to current selection
@@ -388,7 +394,6 @@ export default function WysiwygEditor({
     [onInternalChangeCb],
   );
 
-  
   const toggleBold = React.useCallback(
     (e: React.MouseEvent | React.KeyboardEvent) => {
       toggleTagCb('STRONG');
@@ -456,15 +461,18 @@ export default function WysiwygEditor({
     },
     [onInternalChangeCb],
   );
-  
+
   return (
     <Flex className={className} direction="column" grow={1} align="stretch">
-      <TXTFormatToolbar toolbarState={toolbarState} toolbarFormatFeatures={{
-        toggleBold:toggleBold,
-        toggleItalic: toggleItalic,
-        toggleUnderline: toggleUnderline,
-        toggleStrike: toggleStrike,
-      }} />
+      <TXTFormatToolbar
+        toolbarState={toolbarState}
+        toolbarFormatFeatures={{
+          toggleBold: toggleBold,
+          toggleItalic: toggleItalic,
+          toggleUnderline: toggleUnderline,
+          toggleStrike: toggleStrike,
+        }}
+      />
       <Flex direction="column" align="stretch">
         <div
           onClick={interceptClick}

@@ -18,11 +18,7 @@ import {
   faFileVideo,
   faFileWord,
 } from '@fortawesome/free-regular-svg-icons';
-import {
-  faFileCsv,
-  faSkullCrossbones,
-  faUpload,
-} from '@fortawesome/free-solid-svg-icons';
+import { faFileCsv, faSkullCrossbones, faUpload } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import * as React from 'react';
 import { invertedButtonStyle, space_M, space_S } from '../styling/style';
@@ -156,7 +152,7 @@ export interface FilePickerProps {
   currentMimetype?: string;
   currentPreviewImgUrl?: string;
   editingStatus: boolean;
-  setEditingState: (editMode: boolean)=> void;
+  setEditingState: (editMode: boolean) => void;
 }
 
 export default function FilePicker({
