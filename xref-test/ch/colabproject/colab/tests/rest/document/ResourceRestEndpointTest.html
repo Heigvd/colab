@@ -339,7 +339,7 @@
 <a class="jxr_linenumber" name="L331" href="#L331">331</a>         DocumentFile doc3 = <strong class="jxr_keyword">new</strong> DocumentFile();
 <a class="jxr_linenumber" name="L332" href="#L332">332</a>         doc3.setFileName(doc3FileName);
 <a class="jxr_linenumber" name="L333" href="#L333">333</a> 
-<a class="jxr_linenumber" name="L334" href="#L334">334</a>         Document createdDoc3 = client.resourceRestEndpoint.addDocument(resourceId, doc3);
+<a class="jxr_linenumber" name="L334" href="#L334">334</a>         Document createdDoc3 = client.resourceRestEndpoint.addDocumentAtEnd(resourceId, doc3);
 <a class="jxr_linenumber" name="L335" href="#L335">335</a>         Long doc3Id = persistedDoc2.getId();
 <a class="jxr_linenumber" name="L336" href="#L336">336</a>         Assertions.assertNotNull(createdDoc3);
 <a class="jxr_linenumber" name="L337" href="#L337">337</a>         Assertions.assertNotNull(createdDoc3.getId());

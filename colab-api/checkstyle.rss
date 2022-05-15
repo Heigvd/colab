@@ -25,7 +25,7 @@ under the License.
     <language>en-us</language>
     <copyright>&#169;2022 AlbaSim, MEI, HEIG-VD, HES-SO</copyright>
     <item>
-      <title>File: 169,
+      <title>File: 170,
              Errors: 0,
              Warnings: 179,
              Infos: 0
@@ -1755,6 +1755,20 @@ under the License.
                           <tr>
                 <td>
                   <a href="${project.url}/checkstyle.html#ch.colabproject.colab.api.model.document.Resourceable.java">ch/colabproject/colab/api/model/document/Resourceable.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="${project.url}/checkstyle.html#ch.colabproject.colab.api.controller.document.RelatedPosition.java">ch/colabproject/colab/api/controller/document/RelatedPosition.java</a>
                 </td>
                 <td>
                   0

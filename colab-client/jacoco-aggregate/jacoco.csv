@@ -75,7 +75,7 @@ colab-client/colab-api,ch.colabproject.colab.api.rest.document,ChangeRestEndpoin
 colab-client/colab-api,ch.colabproject.colab.api.rest.document,DocumentRestEndpoint,93,0,0,0,27,0,11,0,11,0
 colab-client/colab-api,ch.colabproject.colab.api.rest.document,DocumentFileRestEndPoint,109,0,0,0,35,0,6,0,6,0
 colab-client/colab-api,ch.colabproject.colab.api.rest.document,ExternalDataRestEndpoint,25,0,0,0,5,0,3,0,3,0
-colab-client/colab-api,ch.colabproject.colab.api.rest.document,ResourceRestEndpoint,308,0,6,0,67,0,25,0,22,0
+colab-client/colab-api,ch.colabproject.colab.api.rest.document,ResourceRestEndpoint,373,0,6,0,73,0,28,0,25,0
 colab-client/colab-api,ch.colabproject.colab.api.persistence.jpa.card,CardDao,56,0,0,0,15,0,6,0,6,0
 colab-client/colab-api,ch.colabproject.colab.api.persistence.jpa.card,CardContentDao,56,0,0,0,15,0,6,0,6,0
 colab-client/colab-api,ch.colabproject.colab.api.persistence.jpa.card,CardTypeDao,189,0,4,0,50,0,16,0,14,0
@@ -144,11 +144,12 @@ colab-client/colab-api,ch.colabproject.colab.api.model.team.acl,AccessControl,73
 colab-client/colab-api,ch.colabproject.colab.api.model.team.acl,HierarchicalPosition,59,0,0,0,9,0,3,0,3,0
 colab-client/colab-api,ch.colabproject.colab.api.model.team,TeamRole,590,0,62,0,52,0,99,0,68,0
 colab-client/colab-api,ch.colabproject.colab.api.model.team,TeamMember,834,0,100,0,78,0,133,0,83,0
-colab-client/colab-api,ch.colabproject.colab.api.controller.document,ResourceManager,433,0,48,0,114,0,45,0,21,0
+colab-client/colab-api,ch.colabproject.colab.api.controller.document,ResourceManager,522,0,52,0,129,0,50,0,23,0
 colab-client/colab-api,ch.colabproject.colab.api.controller.document,BlockManager,80,0,10,0,25,0,13,0,8,0
 colab-client/colab-api,ch.colabproject.colab.api.controller.document,ExternalDataManager,211,0,24,0,56,0,18,0,6,0
 colab-client/colab-api,ch.colabproject.colab.api.controller.document,FileManager,233,0,18,0,59,0,18,0,9,0
 colab-client/colab-api,ch.colabproject.colab.api.controller.document,IndexGeneratorHelper,443,0,46,0,111,0,39,0,16,0
+colab-client/colab-api,ch.colabproject.colab.api.controller.document,RelatedPosition,44,0,0,0,5,0,1,0,1,0
 colab-client/colab-api,ch.colabproject.colab.api.controller.document,ResourceReferenceSpreadingHelper,419,0,58,0,106,0,51,0,22,0
 colab-client/colab-api,ch.colabproject.colab.api.controller.document,ResourceCategoryHelper,310,0,14,0,62,0,30,0,23,0
 colab-client/colab-api,ch.colabproject.colab.api.controller.document,DocumentManager,212,0,22,0,66,0,24,0,13,0
@@ -165,7 +166,7 @@ colab-client/colab-api,ch.colabproject.colab.api.security.permissions.card,CardT
 colab-client/colab-api,ch.colabproject.colab.api.security.permissions.card,CardTypeOrRefConditions.IsCardTypeOrRefReadable,56,0,8,0,18,0,9,0,5,0
 colab-client/colab-api,ch.colabproject.colab.api.persistence.jpa.team,TeamDao,139,0,10,0,36,0,15,0,10,0
 colab-client/colab-api,ch.colabproject.colab.api.rest.card,CardRestEndpoint,207,0,12,0,42,0,22,0,16,0
-colab-client/colab-api,ch.colabproject.colab.api.rest.card,CardContentRestEndpoint,123,0,0,0,29,0,13,0,13,0
+colab-client/colab-api,ch.colabproject.colab.api.rest.card,CardContentRestEndpoint,188,0,0,0,35,0,16,0,16,0
 colab-client/colab-api,ch.colabproject.colab.api.rest.card,CardTypeRestEndpoint,125,0,2,0,32,0,13,0,12,0
 colab-client/colab-api,ch.colabproject.colab.api.exceptions,ColabRollbackException,4,0,0,0,2,0,1,0,1,0
 colab-client/colab-api,ch.colabproject.colab.api.exceptions,ColabMergeException,15,0,0,0,5,0,2,0,2,0
@@ -193,7 +194,7 @@ colab-client/colab-api,ch.colabproject.colab.api.ws.channel.tool,ChannelsBuilder
 colab-client/colab-api,ch.colabproject.colab.api.ws.channel.tool,ChannelsBuilders.AboutProjectOverviewChannelsBuilder,26,0,2,0,8,0,3,0,2,0
 colab-client/colab-api,ch.colabproject.colab.api.model.project,Project,661,0,68,0,51,0,109,0,75,0
 colab-client/colab-api,ch.colabproject.colab.api.controller.card,CardManager,399,0,44,0,116,0,46,0,24,0
-colab-client/colab-api,ch.colabproject.colab.api.controller.card,CardContentManager,232,0,24,0,65,0,25,0,13,0
+colab-client/colab-api,ch.colabproject.colab.api.controller.card,CardContentManager,321,0,28,0,80,0,30,0,15,0
 colab-client/colab-api,ch.colabproject.colab.api.controller.card,CardTypeManager,430,0,40,0,123,0,50,0,30,0
 colab-client/colab-api,ch.colabproject.colab.api.microchanges.model,MicroChange,47,0,2,0,16,0,11,0,10,0
 colab-client/colab-api,ch.colabproject.colab.api.microchanges.model,Change,76,0,0,0,27,0,19,0,19,0

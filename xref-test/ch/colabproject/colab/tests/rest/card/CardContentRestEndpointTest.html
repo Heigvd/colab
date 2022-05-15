@@ -210,7 +210,7 @@
 <a class="jxr_linenumber" name="L202" href="#L202">202</a>         DocumentFile doc2 = <strong class="jxr_keyword">new</strong> DocumentFile();
 <a class="jxr_linenumber" name="L203" href="#L203">203</a>         doc2.setFileName(doc2FileName);
 <a class="jxr_linenumber" name="L204" href="#L204">204</a> 
-<a class="jxr_linenumber" name="L205" href="#L205">205</a>         Document deliverable2 = client.cardContentRestEndpoint.addDeliverable(cardContentId, doc2);
+<a class="jxr_linenumber" name="L205" href="#L205">205</a>         Document deliverable2 = client.cardContentRestEndpoint.addDeliverableAtEnd(cardContentId, doc2);
 <a class="jxr_linenumber" name="L206" href="#L206">206</a>         Assertions.assertNotNull(deliverable2);
 <a class="jxr_linenumber" name="L207" href="#L207">207</a>         Assertions.assertNotNull(deliverable2.getId());
 <a class="jxr_linenumber" name="L208" href="#L208">208</a>         Assertions.assertEquals(1000, deliverable2.getIndex());
@@ -224,7 +224,7 @@
 <a class="jxr_linenumber" name="L216" href="#L216">216</a>         TextDataBlock doc3 = <strong class="jxr_keyword">new</strong> TextDataBlock();
 <a class="jxr_linenumber" name="L217" href="#L217">217</a>         doc3.setTextData(doc3TextData);
 <a class="jxr_linenumber" name="L218" href="#L218">218</a> 
-<a class="jxr_linenumber" name="L219" href="#L219">219</a>         Document deliverable3 = client.cardContentRestEndpoint.addDeliverable(cardContentId, doc3);
+<a class="jxr_linenumber" name="L219" href="#L219">219</a>         Document deliverable3 = client.cardContentRestEndpoint.addDeliverableAtEnd(cardContentId, doc3);
 <a class="jxr_linenumber" name="L220" href="#L220">220</a>         Assertions.assertNotNull(deliverable3);
 <a class="jxr_linenumber" name="L221" href="#L221">221</a>         Assertions.assertNotNull(deliverable3.getId());
 <a class="jxr_linenumber" name="L222" href="#L222">222</a>         Assertions.assertEquals(2000, deliverable3.getIndex());
