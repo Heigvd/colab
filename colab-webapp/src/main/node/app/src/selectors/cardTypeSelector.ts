@@ -294,13 +294,11 @@ export function useAndLoadAvailableCardTypes(): {
 
   const allPublishedCardTypes = usePublishedCardTypes();
   const currentProjectCardTypes = useProjectCardTypes();
-  const currentProjectReferencedCardType = React.useMemo(
+  const currentProjectDirectAndReferencedCardType = React.useMemo(
     () =>
-      currentProjectCardTypes
-        .filter(pct => pct.kind === 'referenced')
-        .flatMap(pct => {
-          return pct.cardTypeId ? [pct.cardTypeId] : [];
-        }),
+      currentProjectCardTypes.flatMap(pct => {
+        return pct.cardTypeId ? [pct.cardTypeId] : [];
+      }),
     [currentProjectCardTypes],
   );
 
@@ -315,7 +313,7 @@ export function useAndLoadAvailableCardTypes(): {
   if (statusPublished === 'READY' && statusCurrentProject === 'READY') {
     return {
       cardTypes: allPublishedCardTypes.filter(
-        ct => ct.cardTypeId && !currentProjectReferencedCardType.includes(ct.cardTypeId),
+        ct => ct.cardTypeId && !currentProjectDirectAndReferencedCardType.includes(ct.cardTypeId),
       ),
       status: 'READY',
     };
