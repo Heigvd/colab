@@ -13,7 +13,7 @@ import { useAndLoadTextOfDocument } from '../../../selectors/documentSelector';
 import { CardTypeAllInOne as CardType } from '../../../types/cardTypeDefinition';
 import Flex from '../../common/Flex';
 import Thumbnail from '../../common/Thumbnail';
-import ResourceSummary from '../../resources/ResourceSummary';
+import ResourcesListSummary from '../../resources/summary/ResourcesListSummary';
 import {
   borderRadius,
   cardShadow,
@@ -84,7 +84,13 @@ export default function CardTypeThumbnail({
           <div>
             <h3>{cardType.title}</h3>
             <p className={cx(lightItalicText, textSmall)}>{purpose}</p>
-            <ResourceSummary kind={'CardType'} accessLevel={'READ'} cardTypeId={cardType.ownId} />
+            <p className={cx(lightItalicText, textSmall)}>
+              <ResourcesListSummary
+                kind={'CardType'}
+                accessLevel={'READ'}
+                cardTypeId={cardType.ownId}
+              />
+            </p>
           </div>
           <TagsDisplay tags={cardType.tags} className={tagStyle} />
         </div>

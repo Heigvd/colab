@@ -24,7 +24,6 @@ import ConfirmDeleteModal from '../../common/ConfirmDeleteModal';
 import DropDownMenu from '../../common/DropDownMenu';
 import Flex from '../../common/Flex';
 import { DocTextDisplay } from '../../documents/DocTextItem';
-import ResourceSummary from '../../resources/ResourceSummary';
 import {
   borderRadius,
   cardShadow,
@@ -33,6 +32,7 @@ import {
   space_M,
   space_S,
 } from '../../styling/style';
+import CardTypeRelativesSummary from './summary/CardTypeRelativesSummary';
 import { TagsDisplay } from './tags/TagsDisplay';
 
 const style = css({
@@ -149,11 +149,17 @@ export default function CardTypeItem({ cardType, usage }: CardTypeItemProps): JS
           ]}
         />
       </Flex>
-      <p className={lightItalicText}>
-        <DocTextDisplay id={cardType.purposeId} />
-      </p>
-      <ResourceSummary kind={'CardType'} accessLevel={'READ'} cardTypeId={cardType.ownId} />
-      <TagsDisplay tags={cardType.tags} className={tagStyle} />
+      <Flex grow={1}>
+        <p className={lightItalicText}>
+          <DocTextDisplay id={cardType.purposeId} />
+        </p>
+      </Flex>
+      <Flex>
+        <CardTypeRelativesSummary cardType={cardType} />
+      </Flex>
+      <Flex>
+        <TagsDisplay tags={cardType.tags} className={tagStyle} />
+      </Flex>
     </Flex>
   );
 }
