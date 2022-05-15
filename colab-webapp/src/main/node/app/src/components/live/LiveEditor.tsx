@@ -9,7 +9,7 @@ import { css } from '@emotion/css';
 import * as React from 'react';
 import { useAppSelector } from '../../store/hooks';
 import MarkdownViewer from '../blocks/markdown/MarkdownViewer';
-import WysiwygEditorCustom,{ TXTFormatToolbarProps } from '../blocks/markdown/WysiwygEditorCustom';
+import WysiwygEditorCustom, { TXTFormatToolbarProps } from '../blocks/markdown/WysiwygEditorCustom';
 import CleverTextarea from '../common/CleverTextarea';
 import ErrorBoundary from '../common/ErrorBoundary';
 import Flex from '../common/Flex';
@@ -111,16 +111,17 @@ export default function LiveEditor({
       );
     } else if (editingStatus) {
       return (
-        <Flex
-          direction="column"
-          align="stretch"
-          className={className}
-        >
+        <Flex direction="column" align="stretch" className={className}>
           <Flex>
             {markDownEditor ? (
               <Flex grow={1} align="stretch">
                 <CleverTextarea
-                  className={css({ minHeight: '50px', flexGrow: 1, flexBasis: '1px', padding: space_S })}
+                  className={css({
+                    minHeight: '50px',
+                    flexGrow: 1,
+                    flexBasis: '1px',
+                    padding: space_S,
+                  })}
                   value={currentValue}
                   onChange={onChange}
                 />

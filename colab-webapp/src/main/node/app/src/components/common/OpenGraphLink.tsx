@@ -23,7 +23,7 @@ export interface OpenGraphProps {
   url: string;
   editCb?: () => void;
   editingStatus: boolean;
-  setEditingState: (editMode: boolean)=> void;
+  setEditingState: (editMode: boolean) => void;
   document: ExternalLink;
 }
 
@@ -105,7 +105,7 @@ export default function OpenGraphLink({
             onCancel={() => setEditingState(false)}
             directEdit
             containerClassName={css({ display: 'flex', flexGrow: 1, alignItems: 'center' })}
-            className={css({ flexGrow: 1, input : { flexGrow: 1, marginRight: space_S} })}
+            className={css({ flexGrow: 1, input: { flexGrow: 1, marginRight: space_S } })}
           />
         ) : (
           <>
@@ -149,7 +149,7 @@ export default function OpenGraphLink({
               <FontAwesomeIcon icon={faLink} size="lg" className={css({ marginRight: space_S })} />
               {url}
               <IconButton
-                title='Open in new tab'
+                title="Open in new tab"
                 icon={faExternalLinkAlt}
                 onClick={openUrl}
                 className={cx(

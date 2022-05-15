@@ -55,7 +55,7 @@ export function BlockEditorWrapper({
               className={className}
               selected={selected}
               flyingToolBar={flyingToolBar}
-              toolBar = {toolBar}
+              toolBar={toolBar}
             />
           );
         default:

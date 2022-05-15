@@ -37,13 +37,14 @@ const logger = getLogger('WysiwygEditor');
 const idleStyle = cx(
   lightIconButtonStyle,
   css({
-  borderRadius: borderRadius,
-  padding: '5px',
-  margin: '0 2px',
-  '&:hover': {
-    cursor: 'pointer',
-  }
-}));
+    borderRadius: borderRadius,
+    padding: '5px',
+    margin: '0 2px',
+    '&:hover': {
+      cursor: 'pointer',
+    },
+  }),
+);
 
 const toggledStyle = cx(
   idleStyle,
@@ -166,7 +167,9 @@ export function TXTFormatToolbar({ toolbarState, toolbarFormatFeatures }: TXTFor
         toggled={toolbarState.strike}
         onClick={toolbarFormatFeatures.toggleStrike}
       />
-      <Tips tipsType="TODO" className={lightIconButtonStyle}>TODO: add more styling options (headings level, lists, ...</Tips>
+      <Tips tipsType="TODO" className={lightIconButtonStyle}>
+        TODO: add more styling options (headings level, lists, ...
+      </Tips>
     </Flex>
   );
 }

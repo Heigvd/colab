@@ -16,21 +16,21 @@ import { CardEditorCTX } from '../cards/CardEditor';
 import Flex from '../common/Flex';
 import IconButton from '../common/IconButton';
 import OpenGraphLink from '../common/OpenGraphLink';
-import { editableBlockStyle, lightIconButtonStyle, space_S } from '../styling/style';
+import { editableBlockStyle, lightIconButtonStyle } from '../styling/style';
 import DocumentFileEditor from './DocumentFileEditor';
 
 const selectedStyle = css({
   border: '1px solid var(--darkGray)',
   '&:hover': {
     border: '1px solid var(--darkGray)',
-  }
+  },
 });
 
 const noBorderStyle = css({
   border: '1px solid transparent',
   '&:hover': {
     border: '1px solid transparent',
-  }
+  },
 });
 
 const moveBoxStyle = css({
@@ -60,22 +60,8 @@ export default function DocumentEditor({ doc, allowEdition }: DocumentEditorProp
   const selected = doc.id === selectedId;
   const editing = editMode && selected;
 
-  /*   const handleClickOutside = (event: Event) => {
-    if (dropRef.current && !dropRef.current.contains(event.target as Node)) {
-      //WHY DOESN T WORK?
-      //setEditMode(false);
-    }
-  };
-
-  React.useEffect(() => {
-    document.addEventListener('click', handleClickOutside, true);
-    return () => {
-      document.removeEventListener('click', handleClickOutside, true);
-    };
-  }); */
-
   const onSelect = React.useCallback(() => {
-    if(doc.id != selectedId){
+    if (doc.id != selectedId) {
       setEditMode(false);
     }
     setSelectedId(doc.id);
@@ -95,7 +81,7 @@ export default function DocumentEditor({ doc, allowEdition }: DocumentEditorProp
             padding: 0,
           }),
           { [selectedStyle]: selected && !isTextDataBlock },
-          { [noBorderStyle] : isTextDataBlock }
+          { [noBorderStyle]: isTextDataBlock },
         )}
         onClick={onSelect}
       >
@@ -130,7 +116,7 @@ export default function DocumentEditor({ doc, allowEdition }: DocumentEditorProp
           </div>
         )}
       </div>
-      <Flex direction="column" className={css({ paddingLeft: space_S, opacity: 0 })} id="moveBox">
+      <Flex direction="column" className={css({ opacity: 0 })} id="moveBox">
         <IconButton
           icon={faArrowUp}
           title="Move block up"

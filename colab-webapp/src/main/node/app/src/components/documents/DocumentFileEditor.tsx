@@ -18,7 +18,7 @@ export interface DocumentFileProps {
   document: DocumentFile;
   allowEdition?: boolean;
   editingStatus: boolean;
-  setEditingState: (editMode: boolean)=> void;
+  setEditingState: (editMode: boolean) => void;
 }
 
 export default function DocumentFileEditor({
