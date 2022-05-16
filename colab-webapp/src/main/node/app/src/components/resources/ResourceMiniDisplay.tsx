@@ -169,7 +169,13 @@ export default function ResourceMiniDisplay({
               {entityIs(doc, 'Document') && (
                 <>
                   <span>*** Document #{doc.id} ***</span>
-                  <DocumentMiniDisplay document={doc} />
+                  <DocumentMiniDisplay
+                    document={doc}
+                    docOwnership={{
+                      kind: 'PartOfResource',
+                      ownerId: targetResourceId!,
+                    }}
+                  />
                 </>
               )}
             </div>

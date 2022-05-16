@@ -25,7 +25,7 @@ import ConfirmDeleteModal from '../common/ConfirmDeleteModal';
 import DropDownMenu from '../common/DropDownMenu';
 import Flex from '../common/Flex';
 import IconButton from '../common/IconButton';
-import { DocumentContext } from '../documents/documentCommonType';
+import { DocumentOwnership } from '../documents/documentCommonType';
 import DocumentCreatorButton from '../documents/DocumentCreatorButton';
 import { lightIconButtonStyle, space_M, space_S } from '../styling/style';
 import { CardEditorCTX } from './CardEditor';
@@ -64,11 +64,15 @@ const toolboxButtonStyle = cx(
 
 interface Props {
   open: boolean;
-  context: DocumentContext;
+  docOwnership: DocumentOwnership;
   prefixElement?: React.ReactNode;
 }
 
-export default function CardEditorToolbox({ open, context, prefixElement }: Props): JSX.Element {
+export default function CardEditorToolbox({
+  open,
+  docOwnership,
+  prefixElement,
+}: Props): JSX.Element {
   const { setSelectedId, selectedId, setEditMode, TXToptions, editToolbar } =
     React.useContext(CardEditorCTX);
   const showTree = TXToptions?.showTree || false;
@@ -102,7 +106,7 @@ export default function CardEditorToolbox({ open, context, prefixElement }: Prop
   return (
     <Flex align="center" className={cx(toolboxContainerStyle, { [closedToolboxStyle]: !open })}>
       {prefixElement}
-      <BlockCreatorButtons context={context} selectedBlockId={selectedId || null} />
+      <BlockCreatorButtons docOwnership={docOwnership} selectedBlockId={selectedId || null} />
       {selectedDocument != (undefined || null) && (
         <>
           {isText && (
@@ -242,30 +246,33 @@ export default function CardEditorToolbox({ open, context, prefixElement }: Prop
 }
 
 interface BlockButtonsProps {
-  context: DocumentContext;
+  docOwnership: DocumentOwnership;
   selectedBlockId: number | null;
 }
 
-export function BlockCreatorButtons({ context, selectedBlockId }: BlockButtonsProps): JSX.Element {
+export function BlockCreatorButtons({
+  docOwnership,
+  selectedBlockId,
+}: BlockButtonsProps): JSX.Element {
   return (
     <>
       <Flex className={cx({ [borderRightStyle]: !!selectedBlockId })}>
         <DocumentCreatorButton
-          context={context}
+          docOwnership={docOwnership}
           selectedBlockId={selectedBlockId}
           docKind="TextDataBlock"
           title="add a text block"
           className={toolboxButtonStyle}
         />
         <DocumentCreatorButton
-          context={context}
+          docOwnership={docOwnership}
           selectedBlockId={selectedBlockId}
           docKind="DocumentFile"
           title="add a file"
           className={toolboxButtonStyle}
         />
         <DocumentCreatorButton
-          context={context}
+          docOwnership={docOwnership}
           selectedBlockId={selectedBlockId}
           docKind="ExternalLink"
           title="add a link"

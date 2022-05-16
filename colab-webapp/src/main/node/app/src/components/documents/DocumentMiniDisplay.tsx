@@ -15,13 +15,18 @@ import IconButton from '../common/IconButton';
 import OpenClose from '../common/OpenClose';
 import Overlay from '../common/Overlay';
 import { defaultRowContainerStyle, iconStyle } from '../styling/style';
+import { DocumentOwnership } from './documentCommonType';
 import DocumentEditor from './DocumentEditor';
 
 export interface DocumentMiniDisplayProps {
   document: Document;
+  docOwnership: DocumentOwnership;
 }
 
-export default function DocumentMiniDisplay({ document }: DocumentMiniDisplayProps): JSX.Element {
+export default function DocumentMiniDisplay({
+  document,
+  docOwnership,
+}: DocumentMiniDisplayProps): JSX.Element {
   return (
     <>
       <OpenClose
@@ -35,7 +40,7 @@ export default function DocumentMiniDisplay({ document }: DocumentMiniDisplayPro
           <Overlay>
             {document.id && (
               <div>
-                <DocumentEditor doc={document} allowEdition={true} />
+                <DocumentEditor doc={document} allowEdition={true} docOwnership={docOwnership} />
               </div>
             )}
             <IconButton
