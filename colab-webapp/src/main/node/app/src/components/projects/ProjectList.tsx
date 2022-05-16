@@ -9,7 +9,6 @@ import { css, cx } from '@emotion/css';
 import {
   faEdit,
   faEllipsisV,
-  faPlus,
   faTrash,
   faUmbrella,
 } from '@fortawesome/free-solid-svg-icons';
@@ -129,7 +128,7 @@ const ProjectDisplay = ({ project }: ProjectDisplayProps) => {
       <div
         className={css({
           padding: space_M,
-          paddingRight: '40px',
+          paddingTop: 0,
           borderBottom: '1px solid #ddd',
           display: 'flex',
           flexDirection: 'column',
@@ -141,7 +140,7 @@ const ProjectDisplay = ({ project }: ProjectDisplayProps) => {
           value={project.description || ''}
           onChange={newValue => dispatch(API.updateProject({ ...project, description: newValue }))}
           inputType="textarea"
-          autosave={false}
+          className={css({maxWidth: '100%', minWidth: '100%', minHeight: '100px', maxHeight: '100px'})}
         />
         {/* 
         //FUTURE block of infos on the project
@@ -214,23 +213,8 @@ function ProjectList({ projects, status, reload }: ProjectListProps) {
               }
             })}
         </div>
-        {/* TODO work in progress : replace the Create a project Button by the ProjectCreator */}
-        {/* <ProjectCreator collapsedButtonClassName={fixedButtonStyle} /> */}
-        <ProjectCreator />
-        <Button
-          onClick={() => {
-            dispatch(
-              API.createEmptyProject({
-                '@class': 'Project',
-                name: '',
-              }),
-            );
-          }}
-          icon={faPlus}
-          className={fixedButtonStyle}
-        >
-          Create a project
-        </Button>
+        {/* Is there any right checks for creating a project? */}
+        <ProjectCreator collapsedButtonClassName={fixedButtonStyle} />
       </div>
     );
   }

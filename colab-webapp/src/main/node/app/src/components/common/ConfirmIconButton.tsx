@@ -180,9 +180,13 @@ export function ConfirmIconButton({
   return (
     <div className={relative} title={title} onClick={clickIn}>
       <div>
-        <Button className={className} icon={icon} onClick={() => setConfirm(true)}>
-          {children}
-        </Button>
+        {children ? (
+          <Button className={className} icon={icon} onClick={() => setConfirm(true)}>
+            {children}
+          </Button>
+        ) : (
+          <IconButton icon={icon} title={title} onClick={() => setConfirm(true)} className={className} />
+        )}
       </div>
       {waitConfirm ? (
         <div className={bubbleStyle(position)}>

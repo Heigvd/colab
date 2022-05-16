@@ -22,6 +22,7 @@ interface Props {
   route?: string;
   status?: 'COLLAPSED' | 'EXPANDED';
   modalClassName?: string;
+  widthMax?: boolean;
 }
 
 export const defaultIconClassName = css({
@@ -42,6 +43,7 @@ export default function OpenCloseModal({
   showCloseButton = false,
   status = 'COLLAPSED',
   modalClassName,
+  widthMax,
 }: Props): JSX.Element {
   const navigate = useNavigate();
   const location = useLocation();
@@ -101,7 +103,7 @@ export default function OpenCloseModal({
             title={title}
             onClose={onClose}
             showCloseButton={showCloseButton}
-            className={modalClassName}
+            className={cx(modalClassName, widthMax && css({width: '800px'}))}
             footer={footer}
           >
             {onCloseModal => children(onCloseModal)}

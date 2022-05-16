@@ -82,7 +82,7 @@ export default function Modal({
     <Overlay backgroundStyle={backgroundStyle} clickOutside={onClose}>
       <div className={cx(modalStyle, className || '')}>
         <div className={modalHeader}>
-          <Flex grow={1} direction="column" className={titleStyle}>
+          <Flex grow={1} align={'center'} className={titleStyle}>
             {title}
           </Flex>
           {showCloseButton ? (
