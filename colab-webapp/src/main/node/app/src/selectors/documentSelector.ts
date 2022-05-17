@@ -7,7 +7,7 @@
 
 import { Document, entityIs } from 'colab-rest-client';
 import * as API from '../API/api';
-import { DocumentContext } from '../components/documents/documentCommonType';
+import { DocumentOwnership } from '../components/documents/documentCommonType';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
 import { AvailabilityStatus } from '../store/store';
 
@@ -107,7 +107,7 @@ type DocsAndStatus = {
  * @param context all needed data to know what to fetch
  * @returns the matching documents (if found) + the availability status
  */
-const useDocuments = ({ kind, ownerId }: DocumentContext): DocsAndStatus => {
+const useDocuments = ({ kind, ownerId }: DocumentOwnership): DocsAndStatus => {
   return useAppSelector(state => {
     const defaultResult = { documents: [] };
 
@@ -156,7 +156,7 @@ const useDocuments = ({ kind, ownerId }: DocumentContext): DocsAndStatus => {
  * @param context all needed data to know what to fetch
  * @returns the matching documents (if found) + the availability status
  */
-export const useAndLoadDocuments = (context: DocumentContext): DocsAndStatus => {
+export const useAndLoadDocuments = (context: DocumentOwnership): DocsAndStatus => {
   const dispatch = useAppDispatch();
 
   const { documents, status } = useDocuments(context);
@@ -170,4 +170,23 @@ export const useAndLoadDocuments = (context: DocumentContext): DocsAndStatus => 
   }
 
   return { documents, status };
+};
+
+/**
+ * fetch the id of the last document that was inserted
+ *
+ * @param context all needed data to know what to fetch
+ * @returns the last inserted document id
+ */
+export const useLastInsertedDocId = (context: DocumentOwnership): number | null => {
+  return useAppSelector(state => {
+    if (context.kind === 'DeliverableOfCardContent') {
+      return state.document.lastInsertedByCardContent[context.ownerId] || null;
+    } else if (context.kind === 'PartOfResource') {
+      return state.document.lastInsertedByResource[context.ownerId] || null;
+    } else {
+      // error
+      return null;
+    }
+  });
 };

@@ -514,7 +514,10 @@ export default function CardEditor({ card, variant, showSubcards = true }: Props
                     {!readOnly && variant.id && (
                       <CardEditorToolbox
                         open={openToolbox}
-                        context={{ kind: 'DeliverableOfCardContent', ownerId: variant.id }}
+                        docOwnership={{
+                          kind: 'DeliverableOfCardContent',
+                          ownerId: variant.id,
+                        }}
                       />
                     )}
                     {cardType && (
@@ -544,7 +547,10 @@ export default function CardEditor({ card, variant, showSubcards = true }: Props
                     {userAcl.read ? (
                       variant.id ? (
                         <DocumentList
-                          context={{ kind: 'DeliverableOfCardContent', ownerId: variant.id }}
+                          docOwnership={{
+                            kind: 'DeliverableOfCardContent',
+                            ownerId: variant.id,
+                          }}
                           allowEdition={!readOnly}
                         />
                       ) : (

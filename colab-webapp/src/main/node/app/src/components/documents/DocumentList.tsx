@@ -8,16 +8,19 @@
 import * as React from 'react';
 import { useAndLoadDocuments } from '../../selectors/documentSelector';
 import AvailabilityStatusIndicator from '../common/AvailabilityStatusIndicator';
-import { DocumentContext } from './documentCommonType';
+import { DocumentOwnership } from './documentCommonType';
 import DocumentEditor from './DocumentEditor';
 
 export interface DocumentListProps {
-  context: DocumentContext;
+  docOwnership: DocumentOwnership;
   allowEdition?: boolean;
 }
 
-export default function DocumentList({ context, allowEdition }: DocumentListProps): JSX.Element {
-  const { documents, status } = useAndLoadDocuments(context);
+export default function DocumentList({
+  docOwnership,
+  allowEdition,
+}: DocumentListProps): JSX.Element {
+  const { documents, status } = useAndLoadDocuments(docOwnership);
 
   if (status !== 'READY') {
     return <AvailabilityStatusIndicator status={status} />;
@@ -28,7 +31,12 @@ export default function DocumentList({ context, allowEdition }: DocumentListProp
       {documents
         .sort((a, b) => (a.index || 0) - (b.index || 0))
         .map(doc => (
-          <DocumentEditor key={doc.id} doc={doc} allowEdition={allowEdition || true} />
+          <DocumentEditor
+            key={doc.id}
+            doc={doc}
+            allowEdition={allowEdition || true}
+            docOwnership={docOwnership}
+          />
         ))}
     </>
   );

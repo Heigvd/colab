@@ -173,13 +173,13 @@ export function ResourceDisplay({ resourceAndRef, onClose }: ResourceDisplayProp
       {allowEdition && targetResourceId && (
         <CardEditorToolbox
           open={openToolbox}
-          context={{ kind: 'PartOfResource', ownerId: targetResourceId }}
+          docOwnership={{ kind: 'PartOfResource', ownerId: targetResourceId }}
           //prefixElement={<IconButton icon={faTimes} title={"Close toolbox"} onClick={() => setOpenToolbox(openToolbox => !openToolbox)} />}
         />
       )}
       {targetResourceId && (
         <DocumentList
-          context={{ kind: 'PartOfResource', ownerId: targetResourceId }}
+          docOwnership={{ kind: 'PartOfResource', ownerId: targetResourceId }}
           allowEdition={allowEdition}
         />
       )}

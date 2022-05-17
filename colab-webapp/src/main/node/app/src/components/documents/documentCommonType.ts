@@ -5,7 +5,8 @@
  * Licensed under the MIT License
  */
 
-export type DocumentContext = {
+/** a document is owned either by a deliverable of a card content or by a resource */
+export type DocumentOwnership = {
   kind: 'DeliverableOfCardContent' | 'PartOfResource';
   ownerId: number;
 };
