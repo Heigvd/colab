@@ -14,6 +14,7 @@ import ch.colabproject.colab.api.model.team.TeamRole;
 import ch.colabproject.colab.api.model.token.InvitationToken;
 import ch.colabproject.colab.api.model.token.Token;
 import ch.colabproject.colab.api.model.user.User;
+import ch.colabproject.colab.api.rest.project.bean.ProjectCreationData;
 import ch.colabproject.colab.api.ws.message.WsUpdateMessage;
 import ch.colabproject.colab.client.ColabClient;
 import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
@@ -45,9 +46,9 @@ public class ProjectRestEndpointTest extends AbstractArquillianTest {
 
         User currentUser = client.userRestEndpoint.getCurrentUser();
 
-        Project project = new Project();
+        ProjectCreationData project = new ProjectCreationData();
 
-        Long projectId = client.projectRestEndpoint.createEmptyProject(project);
+        Long projectId = client.projectRestEndpoint.createProject(project);
 
         Project persistedProject = client.projectRestEndpoint.getProject(projectId);
         Assertions.assertNotNull(persistedProject);
@@ -119,10 +120,10 @@ public class ProjectRestEndpointTest extends AbstractArquillianTest {
 
     @Test
     public void testUpdateProject() {
-        Project project = new Project();
+        ProjectCreationData projectCreationData = new ProjectCreationData();
 
-        Long projectId = client.projectRestEndpoint.createEmptyProject(project);
-        project = client.projectRestEndpoint.getProject(projectId);
+        Long projectId = client.projectRestEndpoint.createProject(projectCreationData);
+        Project project = client.projectRestEndpoint.getProject(projectId);
         project.setName("The Hitchhiker's Guide to the Serious-Game");
         project.setDescription("So Long, and Thanks for All the Games");
 
@@ -135,13 +136,13 @@ public class ProjectRestEndpointTest extends AbstractArquillianTest {
 
     @Test
     public void testGetAllProjects() {
-        Project project = new Project();
+        ProjectCreationData project = new ProjectCreationData();
         project.setName("The Hitchhiker's Guide to the Serious-Game");
-        client.projectRestEndpoint.createEmptyProject(project);
+        client.projectRestEndpoint.createProject(project);
 
-        project = new Project();
+        project = new ProjectCreationData();
         project.setName("Don't Panic");
-        client.projectRestEndpoint.createEmptyProject(project);
+        client.projectRestEndpoint.createProject(project);
 
         List<Project> projects = client.projectRestEndpoint.getAllProjects();
         Assertions.assertEquals(2, projects.size());
@@ -168,10 +169,10 @@ public class ProjectRestEndpointTest extends AbstractArquillianTest {
         ////////////////////////////////////////////////////////////////////////////////////////////
         // Goulash creates a projects
         ////////////////////////////////////////////////////////////////////////////////////////////
-        Project p = new Project();
+        ProjectCreationData p = new ProjectCreationData();
         p.setName("The Hitchhiker's Guide to the Serious-Game");
 
-        Long projectId = client.projectRestEndpoint.createEmptyProject(p);
+        Long projectId = client.projectRestEndpoint.createProject(p);
 
         // Goulash receives the project and the teamMember which link the project to the user
         WsUpdateMessage wsProjectUpdate = TestHelper

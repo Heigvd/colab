@@ -23,6 +23,7 @@ import ch.colabproject.colab.api.model.token.Token;
 import ch.colabproject.colab.api.rest.card.bean.CardTypeCreationData;
 import ch.colabproject.colab.api.rest.document.bean.ResourceCreationData;
 import ch.colabproject.colab.api.rest.link.bean.StickyNoteLinkCreationData;
+import ch.colabproject.colab.api.rest.project.bean.ProjectCreationData;
 import ch.colabproject.colab.client.ColabClient;
 import ch.colabproject.colab.tests.mailhog.MailhogClient;
 import ch.colabproject.colab.tests.mailhog.model.Message;
@@ -179,9 +180,9 @@ public class ColabFactory {
      * @return the new project
      */
     public static Project createProject(ColabClient client, String name) {
-        Project p = new Project();
+        ProjectCreationData p = new ProjectCreationData();
         p.setName(name);
-        Long id = client.projectRestEndpoint.createEmptyProject(p);
+        Long id = client.projectRestEndpoint.createProject(p);
         return client.projectRestEndpoint.getProject(id);
     }
 
