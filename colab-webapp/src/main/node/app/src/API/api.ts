@@ -324,14 +324,6 @@ export const getAllProjects = createAsyncThunk('project/all', async () => {
   return await restClient.ProjectRestEndpoint.getAllProjects();
 });
 
-// TODO sandra work in progress : voué à disparaître
-export const createEmptyProject = createAsyncThunk('project/create', async (project: Project) => {
-  return await restClient.ProjectRestEndpoint.createEmptyProject({
-    ...project,
-    id: undefined,
-  });
-});
-
 export const createProject = createAsyncThunk(
   'project/create',
   async (creationData: ProjectCreationData) => {

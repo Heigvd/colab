@@ -5,6 +5,7 @@
  * Licensed under the MIT License
  */
 
+import { css, cx } from '@emotion/css';
 import * as React from 'react';
 import Flex from './Flex';
 import Thumbnail from './Thumbnail';
@@ -14,6 +15,9 @@ interface ItemThumbnailsSelectionProps<T> {
   addEmptyItem?: boolean;
   defaultSelectedValue?: T | null;
   fillThumbnail: (item: T | null, highlighted: boolean) => React.ReactNode;
+  thumbnailClassName?: string;
+  selectedThumbnailClassName?: string;
+  className?: string;
   onItemClick?: (value: T | null) => void;
   onItemDblClick?: (value: T | null) => void;
 }
@@ -26,6 +30,9 @@ export default function ItemThumbnailsSelection<T extends { id?: number | undefi
   addEmptyItem,
   defaultSelectedValue = null,
   fillThumbnail,
+  thumbnailClassName,
+  selectedThumbnailClassName,
+  className,
   onItemClick,
   onItemDblClick,
 }: ItemThumbnailsSelectionProps<T>): JSX.Element {
@@ -42,10 +49,10 @@ export default function ItemThumbnailsSelection<T extends { id?: number | undefi
   }, [items, addEmptyItem]);
 
   return (
-    <Flex>
+    <Flex wrap='wrap' className={cx(css({width: '100%', overflow: 'auto'}), className)}>
       {effectiveItemList.map(item => (
-        <Flex key={item?.id || 0}>
           <Thumbnail
+            key={item?.id || 0}
             onClick={() => {
               select(item);
 
@@ -60,10 +67,10 @@ export default function ItemThumbnailsSelection<T extends { id?: number | undefi
                 onItemDblClick(item);
               }
             }}
+            className={cx(thumbnailClassName, selected === item && selectedThumbnailClassName)}
           >
             {fillThumbnail(item, selected === item)}
           </Thumbnail>
-        </Flex>
       ))}
     </Flex>
   );

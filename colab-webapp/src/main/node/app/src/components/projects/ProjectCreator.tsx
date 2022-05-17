@@ -5,14 +5,17 @@
  * Licensed under the MIT License
  */
 
+import { css } from '@emotion/css';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import { Project } from 'colab-rest-client';
 import * as React from 'react';
 import * as API from '../../API/api';
 import { useAppDispatch } from '../../store/hooks';
 import Button from '../common/Button';
+import Flex from '../common/Flex';
 import OpenCloseModal from '../common/OpenCloseModal';
 import Tips from '../common/Tips';
+import { space_M, space_S } from '../styling/style';
 import ProjectDataInitialization from './ProjectDataInitialization';
 import ProjectModelSelector from './ProjectModelSelector';
 
@@ -38,10 +41,12 @@ type ProgressionStatus = 'chooseModel' | 'fillBasisData';
 
 interface ProjectCreatorProps {
   collapsedButtonClassName?: string;
+  disabled?: boolean;
 }
 
 export default function ProjectCreator({
   collapsedButtonClassName,
+  disabled,
 }: ProjectCreatorProps): JSX.Element {
   const dispatch = useAppDispatch();
 
@@ -102,25 +107,36 @@ export default function ProjectCreator({
 
   return (
     <OpenCloseModal
-      title={title}
-      //className={}
+      title={
+        <>
+          {title} <Tips tipsType="TODO">work in progress</Tips>
+        </>
+      }
       collapsedChildren={
-        <Button className={collapsedButtonClassName} icon={faPlus}>
-          Create a project
+        <Button className={collapsedButtonClassName} icon={faPlus} clickable={!disabled}>
+          New project
         </Button>
       }
-      // modalClassName=''
       footer={close => (
-        <>
+        <Flex
+          justify={'flex-end'}
+          grow={1}
+          className={css({ padding: space_M, columnGap: space_S })}
+        >
           <Button
             onClick={() => {
               resetCb();
               close();
             }}
+            invertedButton
           >
             Cancel
           </Button>
-          {showBackButton && <Button onClick={oneStepBackCb}>Back</Button>}
+          {showBackButton && (
+            <Button onClick={oneStepBackCb} invertedButton>
+              Back
+            </Button>
+          )}
           {showNextButton && <Button onClick={oneStepForwardCb}>Next</Button>}
           {showCreateButton && (
             <Button
@@ -134,19 +150,20 @@ export default function ProjectCreator({
                 dispatch(API.createProject(creationData));
                 resetCb();
                 close();
+                // TODO maybe have a loading info
                 // TODO navigate to brand new project
               }}
             >
               Create project
             </Button>
           )}
-        </>
+        </Flex>
       )}
+      widthMax
     >
       {() => {
         return (
           <>
-            <Tips tipsType="TODO">work in progress</Tips>
             {status === 'chooseModel' ? (
               <ProjectModelSelector
                 defaultSelection={data.projectModel}

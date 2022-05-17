@@ -143,12 +143,6 @@ function useModelProjects(): ProjectsAndStatus {
   }, shallowEqual);
 
   return { projects, status: 'READY' };
-
-  // const p3 = useProject(3).project;
-  // const p4 = useProject(4).project;
-  // const p6 = useProject(6).project;
-
-  // return { projects: [p3!, p4!, p6!], status: 'READY' };
 }
 
 // TODO sandra work in progress : really fetch the project models

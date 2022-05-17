@@ -127,7 +127,8 @@ export const space_S = '5px';
 export const space_M = '15px';
 export const space_L = '1.5rem';
 export const flex = css({ display: 'flex' });
-export const textSmall = css({ fontSize: '0.85rem' });
+export const smallFontSize = '0.85rem';
+export const textSmall = css({ fontSize: smallFontSize });
 
 type blockSide = 1 | 2 | 3 | 4;
 const blockMargin = {
@@ -396,10 +397,12 @@ export const textareaStyle = css({
   borderRadius: '6px',
   boxSizing: 'border-box',
   transition: '.8s',
-  padding: '0 15px',
+  padding: space_S + ' ' + space_M,
   lineHeight: '1.6em',
   height: '100px',
   fontFamily: 'inherit',
+  fontSize: smallFontSize,
+  maxWidth: '100%',
 });
 export const invisibleTextareaStyle = cx(
   textareaStyle,
@@ -423,6 +426,7 @@ export const inputStyle = css({
   padding: '0 ' + space_M,
   lineHeight: '2.5em',
   fontFamily: 'inherit',
+  fontSize: smallFontSize,
 });
 export const invisibleInputStyle = cx(
   inputStyle,
@@ -476,6 +480,21 @@ export const editableBlockStyle = css({
 export const lightItalicText = css({
   color: 'var(--darkGray)',
   fontStyle: 'italic',
+});
+export const lightText = css({
+  color: 'var(--darkGray)',
+});
+
+export const multiLineEllipsis = css({ 
+    display: '-webkit-box',
+    //textOverflow: 'ellipsis',
+    '-webkit-line-clamp': '2',
+    '-webkit-box-orient': 'vertical',
+    overflow: 'hidden',
+  });
+export const ellipsis = css({ 
+overflow: 'hidden',
+textOverflow: 'ellipsis',
 });
 
 export const voidStyle = css({
