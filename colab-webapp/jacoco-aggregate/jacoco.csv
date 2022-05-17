@@ -53,7 +53,7 @@ colab-webapp/colab-api,ch.colabproject.colab.api.model.token,VerifyLocalAccountT
 colab-webapp/colab-api,ch.colabproject.colab.api.model.token,ResetLocalAccountPasswordToken,111,0,6,0,13,0,17,0,14,0
 colab-webapp/colab-api,ch.colabproject.colab.api.model.token,InvitationToken,245,0,28,0,33,0,38,0,24,0
 colab-webapp/colab-api,ch.colabproject.colab.api.model.token,Token,411,0,38,0,29,0,79,0,60,0
-colab-webapp/colab-api,ch.colabproject.colab.api.rest.project.bean,ProjectCreationData,94,0,6,0,31,0,15,0,12,0
+colab-webapp/colab-api,ch.colabproject.colab.api.rest.project.bean,ProjectCreationData,99,0,6,0,32,0,15,0,12,0
 colab-webapp/colab-api,ch.colabproject.colab.api.model.document,ExternalLink,106,0,6,0,14,0,16,0,13,0
 colab-webapp/colab-api,ch.colabproject.colab.api.model.document,AbstractResource,981,0,140,0,105,0,156,0,86,0
 colab-webapp/colab-api,ch.colabproject.colab.api.model.document,Resource,464,0,42,0,40,0,61,0,40,0
@@ -181,7 +181,7 @@ colab-webapp/colab-api,ch.colabproject.colab.api.security,CookieFilter.ParsedCoo
 colab-webapp/colab-api,ch.colabproject.colab.api.security,SessionManager,423,0,46,0,121,0,40,0,17,0
 colab-webapp/colab-api,ch.colabproject.colab.api.security,AuthenticationFailure,35,0,0,0,9,0,4,0,4,0
 colab-webapp/colab-api,ch.colabproject.colab.api.security,CookieFilter,161,0,22,0,40,0,15,0,4,0
-colab-webapp/colab-api,ch.colabproject.colab.api.rest.project,ProjectRestEndpoint,192,0,4,0,47,0,20,0,18,0
+colab-webapp/colab-api,ch.colabproject.colab.api.rest.project,ProjectRestEndpoint,183,0,4,0,45,0,19,0,17,0
 colab-webapp/colab-api,ch.colabproject.colab.api.ws.channel.tool,ChannelsBuilders,114,0,8,0,26,0,14,0,10,0
 colab-webapp/colab-api,ch.colabproject.colab.api.ws.channel.tool,ChannelsBuilders.AboutCardTypeChannelsBuilder,12,0,0,0,4,0,2,0,2,0
 colab-webapp/colab-api,ch.colabproject.colab.api.ws.channel.tool,ChannelsBuilders.AboutUserChannelsBuilder,33,0,2,0,9,0,3,0,2,0
