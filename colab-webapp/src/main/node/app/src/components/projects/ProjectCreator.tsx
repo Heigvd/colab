@@ -107,14 +107,22 @@ export default function ProjectCreator({
 
   return (
     <OpenCloseModal
-      title={<>{title}{' '}<Tips tipsType="TODO">work in progress</Tips></>}
+      title={
+        <>
+          {title} <Tips tipsType="TODO">work in progress</Tips>
+        </>
+      }
       collapsedChildren={
-        <Button className={collapsedButtonClassName} icon={faPlus} clickable={!disabled} >
+        <Button className={collapsedButtonClassName} icon={faPlus} clickable={!disabled}>
           New project
         </Button>
       }
       footer={close => (
-        <Flex justify={'flex-end'} grow={1} className={css({padding: space_M, columnGap: space_S})}>
+        <Flex
+          justify={'flex-end'}
+          grow={1}
+          className={css({ padding: space_M, columnGap: space_S })}
+        >
           <Button
             onClick={() => {
               resetCb();
@@ -124,7 +132,11 @@ export default function ProjectCreator({
           >
             Cancel
           </Button>
-          {showBackButton && <Button onClick={oneStepBackCb} invertedButton>Back</Button>}
+          {showBackButton && (
+            <Button onClick={oneStepBackCb} invertedButton>
+              Back
+            </Button>
+          )}
           {showNextButton && <Button onClick={oneStepForwardCb}>Next</Button>}
           {showCreateButton && (
             <Button
@@ -138,6 +150,7 @@ export default function ProjectCreator({
                 dispatch(API.createProject(creationData));
                 resetCb();
                 close();
+                // TODO maybe have a loading info
                 // TODO navigate to brand new project
               }}
             >

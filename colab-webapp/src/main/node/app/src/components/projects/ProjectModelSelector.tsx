@@ -53,11 +53,7 @@ interface ProjectModelSelectorProps {
   whenDone?: () => void;
 }
 
-// TODO UI
-
-// TODO project filter
-
-// TODO see if a project model has a "picture" / icon + color
+// TODO once needed : project filter / sort
 
 export default function ProjectModelSelector({
   defaultSelection = null,
@@ -109,24 +105,12 @@ export default function ProjectModelSelector({
                 </h3>
                 <p className={cx(textSmall, lightText, multiLineEllipsis)}>
                   {!isEmptyProject
-                    ? (item.description ? item.description : 'No description')
+                    ? item.description
+                      ? item.description
+                      : 'No description'
                     : "Use this empty project and you'll be free to create a whole new world"}
                 </p>
               </div>
-
-              {/* <Flex direction="column" className={cx(highlighted && selectedStyle)}>
-            {item ? (
-              <>
-                <Flex><h1>{item.name}</h1></Flex>
-                <Flex>{item.description}</Flex>
-              </>
-            ) : (
-              <>
-                <Flex>Empty project</Flex>
-                <Flex>Free to create a whole new world</Flex>
-              </>
-            )}
-          </Flex> */}
             </>
           );
         }}
