@@ -7,6 +7,7 @@
 package ch.colabproject.colab.api.rest.project.bean;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
@@ -42,7 +43,7 @@ public class ProjectCreationData  implements Serializable {
     /**
      * The email address of the people we want to invite
      */
-    private List<String> guestsEmail;
+    private List<String> guestsEmail = new ArrayList<>();
 
     // ---------------------------------------------------------------------------------------------
     // getters and setters
