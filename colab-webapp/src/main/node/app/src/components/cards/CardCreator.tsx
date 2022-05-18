@@ -5,7 +5,7 @@
  * Licensed under the MIT License
  */
 
-import { css } from '@emotion/css';
+import { css, cx } from '@emotion/css';
 import { ReactJSXElement } from '@emotion/react/types/jsx-namespace';
 import { faCog, faPlus } from '@fortawesome/free-solid-svg-icons';
 import { CardContent } from 'colab-rest-client';
@@ -15,14 +15,12 @@ import { useNavigate } from 'react-router-dom';
 import * as API from '../../API/api';
 import { useAndLoadProjectCardTypes } from '../../selectors/cardTypeSelector';
 import { useAppDispatch } from '../../store/hooks';
-import { CardTypeAllInOne } from '../../types/cardTypeDefinition';
 import AvailabilityStatusIndicator from '../common/AvailabilityStatusIndicator';
 import Button from '../common/Button';
-import FilterableList from '../common/FilterableList';
+import CustomElementsList from '../common/CustomElementsList';
 //import FilterableList from '../common/FilterableList';
 import Flex from '../common/Flex';
 import IconButton from '../common/IconButton';
-import ItemThumbnailsSelection from '../common/ItemThumbnailsSelection';
 import OpenCloseModal from '../common/OpenCloseModal';
 import {
   greyIconButtonChipStyle,
@@ -33,7 +31,7 @@ import {
 } from '../styling/style';
 import CardTypeThumbnail from './cardtypes/CardTypeThumbnail';
 
-const projectThumbnailStyle = css({
+export const cardTypeThumbnailStyle = css({
   padding: space_M,
   width: `calc(50% - 8px - 4*${space_S} - ${space_M})`,
   minHeight: '85px',
@@ -58,49 +56,8 @@ export default function CardCreator({
   const projectTags = uniq([...cardTypes].flatMap(cardType => (cardType ? cardType.tags : [])));
 
   const [selectedType, setSelectedType] = React.useState<number | null>(null);
-  const [selectAllTags, setSelectAllTags] = React.useState<boolean>(true);
 
-  const [tagState, setTagState] = React.useState<Record<string, boolean> | undefined>();
 
-  const eTags = Object.keys(tagState || []).filter(tag => tagState && tagState[tag]);
-
-  const cardTypeFilteredByTag = cardTypes.filter(ty => ty.tags.find(tag => eTags.includes(tag)));
-
-  const toggleAllTags = React.useCallback(
-    (val: boolean) => {
-      setSelectAllTags(val);
-      setTagState(
-        projectTags.reduce<Record<string, boolean>>((acc, cur) => {
-          acc[cur] = val;
-          return acc;
-        }, {}),
-      );
-    },
-    [projectTags],
-  );
-
-  React.useEffect(() => {
-    if (status === 'READY') {
-      toggleAllTags(true);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [status /* no effect when toggleAllTags changes */]);
-
-  const onSelect = React.useCallback((value: CardTypeAllInOne | null) => {
-    if (!value || !value.id) {
-      setSelectedType(null);
-    }
-    else setSelectedType(value.id);
-  }, []);
-
-  React.useEffect(() => {
-    if (selectedType != null) {
-      if (cardTypeFilteredByTag.find(ct => ct.cardTypeId === selectedType) == null) {
-        setSelectedType(null);
-      }
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [cardTypeFilteredByTag /* no need to take blankTypePseudoId and selectedType into account */]);
 
   return (
     <OpenCloseModal
@@ -163,8 +120,8 @@ export default function CardCreator({
         } else {
           return (
             <div className={css({ width: '100%', textAlign: 'left' })}>
-              {projectTags && projectTags.length > 0 && (
-                <FilterableList
+              {projectTags && projectTags.length > 0 && (<>
+                {/* <FilterableList
                   tags={projectTags}
                   onChange={(t, cat) =>
                     setTagState(state => {
@@ -191,35 +148,31 @@ export default function CardCreator({
                     <>
                         <CardTypeThumbnail
                           cardType={item}
+                          usage='currentProject'
                         />
                     </>
                   );
                 }}
-                thumbnailClassName={projectThumbnailStyle}
+                thumbnailClassName={cardTypeThumbnailStyle}
+              /> */}
+              <CustomElementsList
+                    items={cardTypes}
+                    loadingStatus={status}
+                    thumbnailContent={item => {
+                      return (
+                        <>
+                          <CardTypeThumbnail cardType={item} usage="currentProject" />
+                        </>
+                      );
+                    }}
+                    customThumbnailStyle={cx(cardTypeThumbnailStyle)}
+                    customOnSelect={(item) => setSelectedType(item?.id ? item.id : null)}
+                    addEmptyItem
               />
-              {/* <Flex direction="column">
-                <div className={listOfTypeStyle}>
-                  <EmptyCardTypeThumbnail onClick={onSelect} highlighted={selectedType == null} />
-                  {cardTypeFilteredByTag != null && cardTypeFilteredByTag.length > 0 && (
-                    <>
-                      {cardTypeFilteredByTag.map(cardType => {
-                        return (
-                          <CardTypeThumbnail
-                            key={cardType.cardTypeId}
-                            onClick={onSelect}
-                            highlighted={selectedType === cardType.cardTypeId}
-                            cardType={cardType}
-                          />
-                        );
-                      })}
-                    </>
-                  )}
-                </div>
-              </Flex> */}
-            </div>
-          );
-        }
-      }}
+            </>
+            
+          )}
+        </div>)}}}
     </OpenCloseModal>
   );
 }

@@ -5,7 +5,7 @@
  * Licensed under the MIT License
  */
 
-import { css } from '@emotion/css';
+import { css, cx } from '@emotion/css';
 import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
 import * as React from 'react';
 import { Route, Routes, useNavigate } from 'react-router-dom';
@@ -13,24 +13,21 @@ import {
   useAndLoadAvailableCardTypes,
   useAndLoadProjectCardTypes,
 } from '../../../selectors/cardTypeSelector';
-import { CardTypeAllInOne } from '../../../types/cardTypeDefinition';
 import AvailabilityStatusIndicator from '../../common/AvailabilityStatusIndicator';
 import Collapsible from '../../common/Collapsible';
+import CustomElementsList from '../../common/CustomElementsList';
 import Flex from '../../common/Flex';
 import IconButton from '../../common/IconButton';
-import { space_L, space_M, space_S, voidStyle } from '../../styling/style';
+import { space_M, voidStyle } from '../../styling/style';
+import { cardTypeThumbnailStyle } from '../CardCreator';
 import CardTypeCreator from './CardTypeCreator';
 import CardTypeEditor from './CardTypeEditor';
-import CardTypeItem from './CardTypeItem';
-import CardTypeListWithFilter from './tags/DataWithTagsListWithFilter';
+import CardTypeThumbnail from './CardTypeThumbnail';
 
-const flexWrap = css({
-  display: 'flex',
-  flexDirecion: 'row',
-  flexWrap: 'wrap',
-  gap: space_L,
-  marginBottom: space_L,
+const customThumbStyle = css({
+  backgroundColor: 'var(--bgColor)',
 });
+
 
 /**
  * Allow to handle card types of a project :
@@ -64,36 +61,34 @@ export default function ProjectCardTypeList(): JSX.Element {
             align="stretch"
             className={css({ alignSelf: 'stretch' })}
           >
-            <IconButton
-              icon={faArrowLeft}
-              title={'Back'}
-              iconColor="var(--darkGray)"
-              onClick={() => navigate('../')}
-              className={css({ display: 'inline', marginBottom: space_M })}
-            />
             <Flex justify="space-between">
-              <h2>Card types</h2>
+              <Flex align="flex-start">
+                <IconButton
+                  icon={faArrowLeft}
+                  title={'Back'}
+                  iconColor="var(--darkGray)"
+                  onClick={() => navigate('../')}
+                  className={css({ marginRight: space_M })}
+                />
+                <h2>Card types</h2>
+              </Flex>
               <CardTypeCreator usage="currentProject" />
             </Flex>
             {projectCTStatus !== 'READY' ? (
               <AvailabilityStatusIndicator status={projectCTStatus} />
             ) : projectCardTypes.length > 0 ? (
-              <CardTypeListWithFilter
-                dataWithTags={projectCardTypes}
-                filterClassName={css({ paddingBottom: space_S })}
-              >
-                {filteredCardTypes => (
-                  <div className={flexWrap}>
-                    {(filteredCardTypes as CardTypeAllInOne[]).map(cardType => (
-                      <CardTypeItem
-                        key={cardType.ownId}
-                        cardType={cardType}
-                        usage="currentProject"
-                      />
-                    ))}
-                  </div>
-                )}
-              </CardTypeListWithFilter>
+              <CustomElementsList
+                items={projectCardTypes}
+                loadingStatus={projectCTStatus}
+                thumbnailContent={item => {
+                  return (
+                    <>
+                      <CardTypeThumbnail cardType={item} usage="currentProject" editable />
+                    </>
+                  );
+                }}
+                customThumbnailStyle={cx(cardTypeThumbnailStyle, customThumbStyle)}
+              />
             ) : (
               <div className={voidStyle}>
                 <p>
@@ -113,7 +108,20 @@ export default function ProjectCardTypeList(): JSX.Element {
               {availableCTStatus !== 'READY' ? (
                 <AvailabilityStatusIndicator status={availableCTStatus} />
               ) : availableCardTypes.length > 0 ? (
-                <CardTypeListWithFilter
+                <>
+                  <CustomElementsList
+                    items={availableCardTypes}
+                    loadingStatus={availableCTStatus}
+                    thumbnailContent={item => {
+                      return (
+                        <>
+                          <CardTypeThumbnail cardType={item} usage="currentProject" />
+                        </>
+                      );
+                    }}
+                    customThumbnailStyle={cx(cardTypeThumbnailStyle, customThumbStyle)}
+                  />
+                  {/* <CardTypeListWithFilter
                   dataWithTags={availableCardTypes}
                   filterClassName={css({ paddingBottom: space_S })}
                 >
@@ -124,7 +132,8 @@ export default function ProjectCardTypeList(): JSX.Element {
                       ))}
                     </div>
                   )}
-                </CardTypeListWithFilter>
+                </CardTypeListWithFilter> */}
+                </>
               ) : (
                 <div className={voidStyle}>
                   <p>There are no available external card types</p>

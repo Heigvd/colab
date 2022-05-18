@@ -41,6 +41,7 @@ interface ItemThumbnailsSelectionProps<T> {
   className?: string;
   onItemClick?: (value: T | null ) => void;
   onItemDblClick?: (value: T | null) => void;
+  selectionnable?: boolean;
 }
 
 /**
@@ -56,6 +57,7 @@ export default function ItemThumbnailsSelection<T extends { id?: number | undefi
   className,
   onItemClick,
   onItemDblClick,
+  selectionnable = true,
 }: ItemThumbnailsSelectionProps<T>): JSX.Element {
   const [selected, select] = React.useState<number | undefined>(defaultSelectedValue?.id ? defaultSelectedValue.id : undefined);
 
@@ -75,7 +77,9 @@ export default function ItemThumbnailsSelection<T extends { id?: number | undefi
           <Thumbnail
             key={item?.id || 0}
             onClick={() => {
+              if(selectionnable){
               select(item?.id || undefined);
+              }
 
               if (onItemClick) {
                 onItemClick(item);
