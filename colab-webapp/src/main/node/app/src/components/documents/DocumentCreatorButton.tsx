@@ -12,7 +12,7 @@ import * as API from '../../API/api';
 import { useAppDispatch } from '../../store/hooks';
 import DropDownMenu from '../common/DropDownMenu';
 import { IconButtonProps } from '../common/IconButton';
-import { DocumentContext, DocumentKind } from './documentCommonType';
+import { DocumentKind, DocumentOwnership } from './documentCommonType';
 
 function iconByType(docKind: DocumentKind): IconProp {
   if (docKind === 'DocumentFile') {
@@ -45,7 +45,7 @@ function iconLayerByType(docKind: DocumentKind): IconButtonProps['layer'] {
 }
 
 export type DocumentCreatorButtonProps = {
-  context: DocumentContext;
+  docOwnership: DocumentOwnership;
   title: string;
   // isFirstDoc?: boolean;
   docKind: DocumentKind;
@@ -54,7 +54,7 @@ export type DocumentCreatorButtonProps = {
 };
 
 export default function DocumentCreatorButton({
-  context,
+  docOwnership,
   title,
   // isFirstDoc,
   selectedBlockId,
@@ -67,36 +67,36 @@ export default function DocumentCreatorButton({
     (place?: 'BEFORE' | 'AFTER') => {
       if (selectedBlockId) {
         if (place === 'BEFORE') {
-          if (context.kind == 'DeliverableOfCardContent') {
+          if (docOwnership.kind == 'DeliverableOfCardContent') {
             dispatch(
               API.addDeliverableBefore({
-                cardContentId: context.ownerId,
+                cardContentId: docOwnership.ownerId,
                 neighbourDocId: selectedBlockId,
                 docKind: docKind,
               }),
             );
-          } else if (context.kind == 'PartOfResource') {
+          } else if (docOwnership.kind == 'PartOfResource') {
             dispatch(
               API.addDocumentToResourceBefore({
-                resourceId: context.ownerId,
+                resourceId: docOwnership.ownerId,
                 neighbourDocId: selectedBlockId,
                 docKind: docKind,
               }),
             );
           }
         } else if (place === 'AFTER') {
-          if (context.kind == 'DeliverableOfCardContent') {
+          if (docOwnership.kind == 'DeliverableOfCardContent') {
             dispatch(
               API.addDeliverableAfter({
-                cardContentId: context.ownerId,
+                cardContentId: docOwnership.ownerId,
                 neighbourDocId: selectedBlockId,
                 docKind: docKind,
               }),
             );
-          } else if (context.kind == 'PartOfResource') {
+          } else if (docOwnership.kind == 'PartOfResource') {
             dispatch(
               API.addDocumentToResourceAfter({
-                resourceId: context.ownerId,
+                resourceId: docOwnership.ownerId,
                 neighbourDocId: selectedBlockId,
                 docKind: docKind,
               }),
@@ -105,33 +105,33 @@ export default function DocumentCreatorButton({
         }
       } else {
         if (place === 'BEFORE') {
-          if (context.kind == 'DeliverableOfCardContent') {
+          if (docOwnership.kind == 'DeliverableOfCardContent') {
             dispatch(
               API.addDeliverableAtBeginning({
-                cardContentId: context.ownerId,
+                cardContentId: docOwnership.ownerId,
                 docKind: docKind,
               }),
             );
-          } else if (context.kind == 'PartOfResource') {
+          } else if (docOwnership.kind == 'PartOfResource') {
             dispatch(
               API.addDocumentToResourceAtBeginning({
-                resourceId: context.ownerId,
+                resourceId: docOwnership.ownerId,
                 docKind: docKind,
               }),
             );
           }
         } else {
-          if (context.kind == 'DeliverableOfCardContent') {
+          if (docOwnership.kind == 'DeliverableOfCardContent') {
             dispatch(
               API.addDeliverableAtEnd({
-                cardContentId: context.ownerId,
+                cardContentId: docOwnership.ownerId,
                 docKind: docKind,
               }),
             );
-          } else if (context.kind == 'PartOfResource') {
+          } else if (docOwnership.kind == 'PartOfResource') {
             dispatch(
               API.addDocumentToResourceAtEnd({
-                resourceId: context.ownerId,
+                resourceId: docOwnership.ownerId,
                 docKind: docKind,
               }),
             );
@@ -139,7 +139,7 @@ export default function DocumentCreatorButton({
         }
       }
     },
-    [context.kind, context.ownerId, selectedBlockId, dispatch, docKind],
+    [docOwnership.kind, docOwnership.ownerId, selectedBlockId, dispatch, docKind],
   );
 
   return (

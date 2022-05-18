@@ -10,6 +10,8 @@ import { faArrowDown, faArrowUp } from '@fortawesome/free-solid-svg-icons';
 import { Document, entityIs } from 'colab-rest-client';
 import * as React from 'react';
 import * as API from '../../API/api';
+import { useLastInsertedDocId } from '../../selectors/documentSelector';
+import * as DocumentActions from '../../store/documentSlice';
 import { useAppDispatch } from '../../store/hooks';
 import { BlockEditorWrapper } from '../blocks/BlockEditorWrapper';
 import { CardEditorCTX } from '../cards/CardEditor';
@@ -17,6 +19,7 @@ import Flex from '../common/Flex';
 import IconButton from '../common/IconButton';
 import OpenGraphLink from '../common/OpenGraphLink';
 import { editableBlockStyle, lightIconButtonStyle } from '../styling/style';
+import { DocumentOwnership } from './documentCommonType';
 import DocumentFileEditor from './DocumentFileEditor';
 
 const selectedStyle = css({
@@ -43,10 +46,17 @@ const moveBoxStyle = css({
 export interface DocumentEditorProps {
   doc: Document;
   allowEdition: boolean;
+  docOwnership: DocumentOwnership;
 }
 
-export default function DocumentEditor({ doc, allowEdition }: DocumentEditorProps): JSX.Element {
+export default function DocumentEditor({
+  doc,
+  allowEdition,
+  docOwnership,
+}: DocumentEditorProps): JSX.Element {
   const dispatch = useAppDispatch();
+
+  const lastInsertedDocId = useLastInsertedDocId(docOwnership);
 
   const isTextDataBlock = entityIs(doc, 'TextDataBlock');
   const isDocumentFile = entityIs(doc, 'DocumentFile');
@@ -66,6 +76,14 @@ export default function DocumentEditor({ doc, allowEdition }: DocumentEditorProp
     }
     setSelectedId(doc.id);
   }, [doc.id, selectedId, setEditMode, setSelectedId]);
+
+  React.useEffect(() => {
+    if (lastInsertedDocId === doc.id) {
+      setSelectedId(lastInsertedDocId);
+      setEditMode(true);
+      dispatch(DocumentActions.resetLastInsertedDocId({ docOwnership }));
+    }
+  }, [dispatch, doc.id, docOwnership, lastInsertedDocId, setEditMode, setSelectedId]);
 
   return (
     <Flex className={moveBoxStyle}>

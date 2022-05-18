@@ -105,20 +105,6 @@ public class ProjectRestEndpoint {
     }
 
     /**
-     * Create a new project and register current user as a member.
-     *
-     * @param project the project to persist
-     *
-     * @return id of the persisted new project
-     */
-    @POST
-    @Path("createEmpty")
-    public Long createEmptyProject(Project project) {
-        logger.debug("Create project {}", project);
-        return projectManager.createProject(project).getId();
-    }
-
-    /**
      * Create a new project with the provided data and register current user as a member.
      *
      * @param creationData the data needed to fill the project
@@ -136,7 +122,7 @@ public class ProjectRestEndpoint {
             project = new Project();
             project.setName(creationData.getName());
             project.setDescription(creationData.getDescription());
-            createEmptyProject(project);
+            projectManager.createProject(project);
         } else {
             project = projectManager.createProjectFromModel(creationData.getName(),
                 creationData.getDescription(), creationData.getModelId());

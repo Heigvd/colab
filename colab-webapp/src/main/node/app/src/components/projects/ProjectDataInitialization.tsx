@@ -42,7 +42,7 @@ export default function ProjectDataInitialization({
   const i18n = useTranslations();
 
   return (
-    <Flex className={css({alignSelf: 'stretch'})}>
+    <Flex className={css({ alignSelf: 'stretch' })}>
       <Flex
         direction="column"
         align="stretch"
@@ -125,33 +125,3 @@ export default function ProjectDataInitialization({
     </Flex>
   );
 }
-
-// another way to handle guest list :
-
-//const [waitingGuest, setWaitingGuest] = React.useState<string | null>();
-
-/* 
-        <Flex>
-          <Input
-            label="Invite members"
-            placeholder="email"
-            value={waitingGuest || undefined}
-            onChange={value => {
-              setWaitingGuest(value);
-            }}
-          />
-          {
-            // TODO check that it is an email
-            }
-          <Button
-            onClick={() => {
-              if (waitingGuest) {
-                addGuest(waitingGuest);
-              }
-              setWaitingGuest(null);
-            }}
-          >
-            Add
-          </Button>
-        </Flex>
-         */
