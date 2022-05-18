@@ -15,33 +15,15 @@ import { useAndLoadProjectModels } from '../../selectors/projectSelector';
 import AvailabilityStatusIndicator from '../common/AvailabilityStatusIndicator';
 import Flex from '../common/Flex';
 import ItemThumbnailsSelection from '../common/ItemThumbnailsSelection';
-import { borderRadius, lightText, multiLineEllipsis, space_S, textSmall } from '../styling/style';
+import { lightText, multiLineEllipsis, space_S, textSmall } from '../styling/style';
 
 const projectThumbnailStyle = css({
-  display: 'flex',
-  outline: '4px solid transparent',
-  outlineOffset: '-1px',
-  border: '1px solid var(--lightGray)',
-  borderRadius: borderRadius,
-  margin: space_S,
   padding: 0,
   width: `calc(50% - 8px - 2*${space_S})`,
   minHeight: '80px',
   maxHeight: '80px',
-  columnGap: space_S,
-  transition: 'outline .3s ease',
-  overflow: 'hidden',
-  '&:hover': {
-    border: '1px solid var(--darkGray)',
-  },
+  margin: space_S,
 });
-
-const selectedStyle = cx(
-  projectThumbnailStyle,
-  css({
-    outline: '4px solid var(--primaryColor)',
-  }),
-);
 
 function sortResources(a: Project, b: Project): number {
   return (a.id || 0) - (b.id || 0);
@@ -131,7 +113,6 @@ export default function ProjectModelSelector({
           );
         }}
         thumbnailClassName={projectThumbnailStyle}
-        selectedThumbnailClassName={selectedStyle}
       />
     );
   }

@@ -15,12 +15,14 @@ import { useNavigate } from 'react-router-dom';
 import * as API from '../../API/api';
 import { useAndLoadProjectCardTypes } from '../../selectors/cardTypeSelector';
 import { useAppDispatch } from '../../store/hooks';
+import { CardTypeAllInOne } from '../../types/cardTypeDefinition';
 import AvailabilityStatusIndicator from '../common/AvailabilityStatusIndicator';
 import Button from '../common/Button';
 import FilterableList from '../common/FilterableList';
 //import FilterableList from '../common/FilterableList';
 import Flex from '../common/Flex';
 import IconButton from '../common/IconButton';
+import ItemThumbnailsSelection from '../common/ItemThumbnailsSelection';
 import OpenCloseModal from '../common/OpenCloseModal';
 import {
   greyIconButtonChipStyle,
@@ -29,20 +31,21 @@ import {
   space_M,
   space_S,
 } from '../styling/style';
-import CardTypeThumbnail, { EmptyCardTypeThumbnail } from './cardtypes/CardTypeThumbnail';
+import CardTypeThumbnail from './cardtypes/CardTypeThumbnail';
+
+const projectThumbnailStyle = css({
+  padding: space_M,
+  width: `calc(50% - 8px - 4*${space_S} - ${space_M})`,
+  minHeight: '85px',
+  maxHeight: '85px',
+  margin: space_S,
+});
 
 export interface CardCreatorProps {
   parentCardContent: CardContent;
   customButton?: ReactJSXElement;
   className?: string;
 }
-
-const listOfTypeStyle = css({
-  display: 'flex',
-  gap: space_M,
-  margin: space_M + ' 0',
-  flexWrap: 'wrap',
-});
 
 export default function CardCreator({
   parentCardContent,
@@ -83,11 +86,11 @@ export default function CardCreator({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [status /* no effect when toggleAllTags changes */]);
 
-  const onSelect = React.useCallback((id: number) => {
-    if (!id) {
+  const onSelect = React.useCallback((value: CardTypeAllInOne | null) => {
+    if (!value || !value.id) {
       setSelectedType(null);
     }
-    setSelectedType(id);
+    else setSelectedType(value.id);
   }, []);
 
   React.useEffect(() => {
@@ -113,7 +116,9 @@ export default function CardCreator({
         )
       }
       className={className}
-      modalClassName={css({ width: '800px', height: '580px' })}
+      modalClassName={css({ height: '580px' })}
+      modalBodyClassName={css({ paddingTop: space_S })}
+      widthMax
       footer={close => (
         <Flex
           justify="flex-end"
@@ -159,29 +164,40 @@ export default function CardCreator({
           return (
             <div className={css({ width: '100%', textAlign: 'left' })}>
               {projectTags && projectTags.length > 0 && (
-                <Flex
+                <FilterableList
+                  tags={projectTags}
+                  onChange={(t, cat) =>
+                    setTagState(state => {
+                      return { ...state, [cat]: t };
+                    })
+                  }
+                  tagState={tagState}
+                  stateSelectAll={selectAllTags}
+                  toggleAllTags={toggleAllTags}
                   className={css({
-                    paddingBottom: space_S,
-                    marginBottom: space_S,
-                    borderBottom: '1px solid var(--lightGray)',
+                    displax: 'flex',
+                    alignItems: 'stretch',
+                    flexDirection: 'column',
                   })}
-                  direction="column"
-                  align="stretch"
-                >
-                  <FilterableList
-                    tags={projectTags}
-                    onChange={(t, cat) =>
-                      setTagState(state => {
-                        return { ...state, [cat]: t };
-                      })
-                    }
-                    tagState={tagState}
-                    stateSelectAll={selectAllTags}
-                    toggleAllTags={toggleAllTags}
-                  />
-                </Flex>
+                />
               )}
-              <Flex direction="column">
+              <ItemThumbnailsSelection<CardTypeAllInOne>
+                items={cardTypeFilteredByTag}
+                onItemClick={(item) => onSelect(item)}
+                addEmptyItem
+                defaultSelectedValue={null}
+                fillThumbnail={item => {
+                  return (
+                    <>
+                        <CardTypeThumbnail
+                          cardType={item}
+                        />
+                    </>
+                  );
+                }}
+                thumbnailClassName={projectThumbnailStyle}
+              />
+              {/* <Flex direction="column">
                 <div className={listOfTypeStyle}>
                   <EmptyCardTypeThumbnail onClick={onSelect} highlighted={selectedType == null} />
                   {cardTypeFilteredByTag != null && cardTypeFilteredByTag.length > 0 && (
@@ -199,7 +215,7 @@ export default function CardCreator({
                     </>
                   )}
                 </div>
-              </Flex>
+              </Flex> */}
             </div>
           );
         }

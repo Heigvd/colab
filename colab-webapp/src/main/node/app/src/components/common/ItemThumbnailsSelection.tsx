@@ -7,8 +7,29 @@
 
 import { css, cx } from '@emotion/css';
 import * as React from 'react';
+import { borderRadius, space_S } from '../styling/style';
 import Flex from './Flex';
 import Thumbnail from './Thumbnail';
+
+const defaultThumbnailStyle = css({
+  display: 'flex',
+  outline: '4px solid transparent',
+  outlineOffset: '-1px',
+  border: '1px solid var(--lightGray)',
+  borderRadius: borderRadius,
+  padding: space_S,
+  columnGap: space_S,
+  transition: 'outline .3s ease',
+  overflow: 'hidden',
+  '&:hover': {
+    border: '1px solid var(--darkGray)',
+  },
+});
+
+const selectedStyle =
+  css({
+    outline: '4px solid var(--primaryColor)',
+  });
 
 interface ItemThumbnailsSelectionProps<T> {
   items: T[];
@@ -18,7 +39,7 @@ interface ItemThumbnailsSelectionProps<T> {
   thumbnailClassName?: string;
   selectedThumbnailClassName?: string;
   className?: string;
-  onItemClick?: (value: T | null) => void;
+  onItemClick?: (value: T | null ) => void;
   onItemDblClick?: (value: T | null) => void;
 }
 
@@ -28,15 +49,15 @@ interface ItemThumbnailsSelectionProps<T> {
 export default function ItemThumbnailsSelection<T extends { id?: number | undefined | null }>({
   items,
   addEmptyItem,
-  defaultSelectedValue = null,
+  defaultSelectedValue = undefined,
   fillThumbnail,
   thumbnailClassName,
-  selectedThumbnailClassName,
+  selectedThumbnailClassName = selectedStyle,
   className,
   onItemClick,
   onItemDblClick,
 }: ItemThumbnailsSelectionProps<T>): JSX.Element {
-  const [selected, select] = React.useState<T | null>(defaultSelectedValue);
+  const [selected, select] = React.useState<number | undefined>(defaultSelectedValue?.id ? defaultSelectedValue.id : undefined);
 
   const [effectiveItemList, setEffectiveItemList] = React.useState<(T | null)[]>([]);
 
@@ -54,22 +75,22 @@ export default function ItemThumbnailsSelection<T extends { id?: number | undefi
           <Thumbnail
             key={item?.id || 0}
             onClick={() => {
-              select(item);
+              select(item?.id || undefined);
 
               if (onItemClick) {
                 onItemClick(item);
               }
             }}
             onDoubleClick={() => {
-              select(item);
+              select(item?.id || undefined);
 
               if (onItemDblClick) {
                 onItemDblClick(item);
               }
             }}
-            className={cx(thumbnailClassName, selected === item && selectedThumbnailClassName)}
+            className={cx(defaultThumbnailStyle, thumbnailClassName, {[selectedThumbnailClassName]: selected === item?.id})}
           >
-            {fillThumbnail(item, selected === item)}
+            {fillThumbnail(item, selected === item?.id)}
           </Thumbnail>
       ))}
     </Flex>

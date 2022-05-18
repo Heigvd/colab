@@ -20,6 +20,7 @@ interface Props {
   showCloseButton?: boolean;
   onClose: () => void;
   className?: string;
+  modalBodyClassName?: string;
 }
 const backgroundStyle = css({
   backgroundColor: 'rgba(0,0,0, 0.6)',
@@ -77,6 +78,7 @@ export default function Modal({
   footer,
   showCloseButton = false,
   className,
+  modalBodyClassName,
 }: Props): JSX.Element {
   return (
     <Overlay backgroundStyle={backgroundStyle} clickOutside={onClose}>
@@ -95,7 +97,7 @@ export default function Modal({
             />
           ) : null}
         </div>
-        <Flex grow={1} direction="column" overflow="auto" className={modalBody}>
+        <Flex grow={1} direction="column" overflow="auto" className={cx(modalBody, modalBodyClassName)}>
           {children(onClose)}
         </Flex>
         {footer && <div className={modalFooter}>{footer(onClose)}</div>}
