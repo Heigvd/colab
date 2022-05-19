@@ -59,7 +59,7 @@ export default function ResourcesWrapper(contextInfo: ResourcesWrapperProps): JS
 
   if (selectedResource != null) {
     // show selected resource
-    return <ResourceDisplay resourceAndRef={selectedResource} onClose={showTOC} />;
+    return <ResourceDisplay resource={selectedResource} goBackToList={showTOC} />;
   } else {
     // no selected resource : show table of content
     return (

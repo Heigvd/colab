@@ -40,9 +40,9 @@ import { DocTextWrapper } from '../../documents/DocTextItem';
 import ResourcesWrapper from '../../resources/ResourcesWrapper';
 import {
   cardStyle,
-  cardTitle,
   lightIconButtonStyle,
   lightItalicText,
+  localTitleStyle,
   space_M,
   space_S,
 } from '../../styling/style';
@@ -115,13 +115,13 @@ export default function CardTypeEditor({ className, usage }: Props): JSX.Element
               })}
             >
               <InlineInputNew
-                placeholder="card type"
                 value={cardType.title || ''}
+                placeholder="card type"
                 onChange={newValue =>
                   dispatch(API.updateCardTypeTitle({ ...cardType, title: newValue }))
                 }
                 autosave={false}
-                className={cardTitle}
+                className={localTitleStyle}
               />
               <Flex>
                 {/* handle modal routes*/}
@@ -211,8 +211,8 @@ export default function CardTypeEditor({ className, usage }: Props): JSX.Element
                 <DocTextWrapper id={cardType.purposeId}>
                   {text => (
                     <InlineInputNew
-                      placeholder={'Empty purpose'}
-                      value={text || 'Empty purpose'}
+                      value={text || ''}
+                      placeholder={'Explain the purpose'}
                       onChange={(newValue: string) => {
                         if (cardType.purposeId) {
                           dispatch(
@@ -276,6 +276,7 @@ export default function CardTypeEditor({ className, usage }: Props): JSX.Element
                         kind={'CardType'}
                         //accessLevel={ userAcl.write ? 'WRITE' : userAcl.read ? 'READ' : 'DENIED'}
                         // TODO manage the user rights for editing resources
+                        // TODO work in progress
                         accessLevel="WRITE"
                         cardTypeId={cardType.ownId}
                       />

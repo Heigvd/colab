@@ -66,7 +66,7 @@ export default function StickyNoteDisplay({
       >
         <InlineInputNew
           value={stickyNote.teaser || ''}
-          placeholder="Add a teaser"
+          placeholder="Fill the teaser"
           onChange={newValue => dispatch(API.updateStickyNote({ ...stickyNote, teaser: newValue }))}
           className={css({ fontWeight: 'bold' })}
           autosave={false}

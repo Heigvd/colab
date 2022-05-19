@@ -90,16 +90,6 @@ export interface Props {
   maxWidth?: string;
 }
 
-function getEffectiveValue(...values: string[]): string {
-  for (const i in values) {
-    const v = values[i];
-    if (v) {
-      return v;
-    }
-  }
-  return 'no value';
-}
-
 export default function InlineInput({
   value,
   label,
@@ -117,10 +107,11 @@ export default function InlineInput({
   const inputRef = React.useRef<HTMLInputElement>();
   const textareaRef = React.useRef<HTMLTextAreaElement>(null);
   const containerRef = React.useRef<HTMLDivElement>(null);
-  const [mode, setMode] = React.useState<'DISPLAY' | 'EDIT'>('DISPLAY');
-  const [state, setState] = React.useState<string>(value || placeholder || '');
 
-  const defaultValue = getEffectiveValue(value, placeholder);
+  const [mode, setMode] = React.useState<'DISPLAY' | 'EDIT'>('DISPLAY');
+  const [state, setState] = React.useState<string>(value || '');
+
+  const defaultValue = value;
 
   const handleClickOutside = (event: Event) => {
     if (containerRef.current && !containerRef.current.contains(event.target as Node)) {
@@ -134,6 +125,7 @@ export default function InlineInput({
       document.removeEventListener('click', handleClickOutside, true);
     };
   });
+
   const updateSize = React.useCallback(() => {
     if (inputRef.current) {
       inputRef.current.style.width = 0 + 'px';
@@ -143,6 +135,7 @@ export default function InlineInput({
       }
     }
   }, []);
+
   React.useEffect(() => {
     logger.trace('InlineInput effect');
     if (inputRef.current != null) {
@@ -247,8 +240,9 @@ export default function InlineInput({
               updateSize();
             }
           }}
-          placeholder="untitled"
+          placeholder={placeholder}
           value={state}
+          readOnly={readOnly}
           onChange={onInternalChangeCb}
           onClick={editCb}
           onKeyDown={onEnterCb}
@@ -260,8 +254,9 @@ export default function InlineInput({
       ) : (
         <textarea
           ref={textareaRef}
-          placeholder="untitled"
+          placeholder={placeholder}
           value={state}
+          readOnly={readOnly}
           onChange={onInternalChangeCb}
           onClick={editCb}
           className={cx(

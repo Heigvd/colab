@@ -449,7 +449,7 @@ export const smallInputStyle = cx(
   }),
 );
 
-export const cardTitle = css({
+export const localTitleStyle = css({
   fontSize: '1.1em',
   fontWeight: 'bold',
 });
@@ -485,16 +485,16 @@ export const lightText = css({
   color: 'var(--darkGray)',
 });
 
-export const multiLineEllipsis = css({ 
-    display: '-webkit-box',
-    //textOverflow: 'ellipsis',
-    '-webkit-line-clamp': '2',
-    '-webkit-box-orient': 'vertical',
-    overflow: 'hidden',
-  });
-export const ellipsis = css({ 
-overflow: 'hidden',
-textOverflow: 'ellipsis',
+export const multiLineEllipsis = css({
+  display: '-webkit-box',
+  //textOverflow: 'ellipsis',
+  '-webkit-line-clamp': '2',
+  '-webkit-box-orient': 'vertical',
+  overflow: 'hidden',
+});
+export const ellipsis = css({
+  overflow: 'hidden',
+  textOverflow: 'ellipsis',
 });
 
 export const voidStyle = css({

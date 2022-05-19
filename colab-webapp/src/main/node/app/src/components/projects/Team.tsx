@@ -159,8 +159,8 @@ const Member = ({ member, roles }: MemberProps) => {
     username = (
       <>
         <InlineInputNew
-          placeholder="username"
           value={member.displayName || ''}
+          placeholder="username"
           onChange={updateDisplayName}
           autosave={false}
         />
@@ -269,8 +269,8 @@ function CreateRole({ project }: { project: Project }): JSX.Element {
       {collapse => (
         <>
           <InlineInputNew
-            placeholder="new role"
             value={name}
+            placeholder="Fill the role name"
             onChange={newValue =>
               dispatch(
                 API.createRole({
@@ -327,8 +327,8 @@ const RoleDisplay = ({ role }: RoleProps) => {
     >
       <InlineInputNew
         value={role.name || ''}
+        placeholder="Fill the role name"
         onChange={saveCb}
-        placeholder="role"
         maxWidth="150px"
       />
     </WithToolbar>

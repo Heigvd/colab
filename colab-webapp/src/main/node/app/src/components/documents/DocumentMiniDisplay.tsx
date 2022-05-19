@@ -40,7 +40,7 @@ export default function DocumentMiniDisplay({
           <Overlay>
             {document.id && (
               <div>
-                <DocumentEditor doc={document} allowEdition={true} docOwnership={docOwnership} />
+                <DocumentEditor doc={document} allowEdition={false} docOwnership={docOwnership} />
               </div>
             )}
             <IconButton

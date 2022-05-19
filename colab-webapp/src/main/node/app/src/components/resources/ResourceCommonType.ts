@@ -7,32 +7,9 @@
 
 import { Resource, ResourceRef } from 'colab-rest-client';
 
-export enum CreationScopeKind {
-  CardType,
-  Card,
-  CardContent,
-}
+export type accessLevel = 'READ' | 'WRITE' | 'DENIED' | 'UNKNOWN';
 
-export type CreationCardTypeScope = {
-  kind: CreationScopeKind.CardType;
-  cardTypeId: number;
-};
-
-export type CreationCardScope = {
-  kind: CreationScopeKind.Card;
-  cardId: number;
-};
-
-export type CreationCardContentScope = {
-  kind: CreationScopeKind.CardContent;
-  cardContentId: number;
-};
-
-export type CreationScope = CreationCardTypeScope | CreationCardScope | CreationCardContentScope;
-
-// Context for resource creation
-// it is a temporary proposition until
-// this structure is planned to be used either at a card type level or at a card + card content level
+export type ResourceOwnership = CardTypeContext | CardOrCardContentContext;
 
 export type CardTypeContext = {
   kind: 'CardType';
@@ -50,6 +27,8 @@ export type CardOrCardContentContext = {
 };
 
 export type ResourceCallContext = CardTypeContext | CardOrCardContentContext;
+
+// TODO see if rename and see what is really useful
 
 /**
  * contains the resource and an eventual chain of references to it
