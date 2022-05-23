@@ -12,7 +12,7 @@ import useTranslations from '../../../i18n/I18nContext';
 import logger from '../../../logger';
 import { useAppDispatch } from '../../../store/hooks';
 import { addNotification } from '../../../store/notification';
-import { space_M } from '../../styling/style';
+import { space_M, textSmall } from '../../styling/style';
 import Button from '../Button';
 import Flex from '../Flex';
 import InlineLoading from '../InlineLoading';
@@ -211,6 +211,7 @@ export default function Form<T>({
             onChange={value => setFormValue(field.key, value)}
             readonly={field.readonly}
             canCreateOption={field.canCreateOption}
+            className={textSmall}
           />
           {field.fieldFooter != null ? field.fieldFooter : null}
         </div>

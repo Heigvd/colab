@@ -36,7 +36,7 @@ import { CardEditorCTX } from './CardEditor';
 const toolboxContainerStyle = css({
   height: 'auto',
   maxHeight: '400px',
-  //minHeight: '30px',
+  minHeight: '30px',
   overflow: 'hidden',
   padding: space_S,
   transition: 'all .5s ease',
