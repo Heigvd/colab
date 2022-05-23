@@ -63,7 +63,7 @@ export default function SideCollapsiblePanel<T extends { [key: string]: Item }>(
             justify="space-between"
             className={css({
               padding: space_M,
-              paddingBottom: 0,
+              paddingBottom: '3px',
               borderBottom: '1px solid var(--lightGray)',
             })}
           >
@@ -78,7 +78,7 @@ export default function SideCollapsiblePanel<T extends { [key: string]: Item }>(
           <Flex
             align="stretch"
             grow={1}
-            className={cx(paddingAroundStyle([1], space_M), itemOpen.className)}
+            className={itemOpen.className}
           >
             {itemOpen.children}
           </Flex>

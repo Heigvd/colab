@@ -614,6 +614,7 @@ export default function CardEditor({ card, variant, showSubcards = true }: Props
                     ),
                     icon: faPaperclip,
                     title: 'Documentation',
+                    className: css({overflow: 'auto'}),
                   },
                   'Sticky Notes': {
                     icon: faStickyNote,

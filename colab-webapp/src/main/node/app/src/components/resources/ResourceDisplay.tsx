@@ -57,9 +57,8 @@ export function ResourceDisplay({ resourceAndRef, onClose }: ResourceDisplayProp
       align="stretch"
       direction="column"
       grow={1}
-      className={paddingAroundStyle([2, 3, 4], space_M)}
     >
-      <Flex direction="column" align="normal">
+      <Flex direction="column" align="normal" className={paddingAroundStyle([1, 2, 4], space_M)}>
         <Flex
           justify="space-between"
           align="center"
@@ -80,7 +79,7 @@ export function ResourceDisplay({ resourceAndRef, onClose }: ResourceDisplayProp
             placeholder={i18n.resource.untitled}
             className={cardTitle}
           />
-          <div>
+          <Flex wrap='nowrap'>
             <IconButton
               icon={faTools}
               layer={openToolbox ? { layerIcon: faSlash, transform: 'grow-1' } : undefined}
@@ -143,7 +142,7 @@ export function ResourceDisplay({ resourceAndRef, onClose }: ResourceDisplayProp
                 </>
               )}
             </OpenCloseModal>
-          </div>
+          </Flex>
         </Flex>
         <div>
           {teaser && (
@@ -178,10 +177,12 @@ export function ResourceDisplay({ resourceAndRef, onClose }: ResourceDisplayProp
         />
       )}
       {targetResourceId && (
+        <div className={cx(paddingAroundStyle([2, 4], space_M), css({overflow: 'auto'}))}>
         <DocumentList
           docOwnership={{ kind: 'PartOfResource', ownerId: targetResourceId }}
           allowEdition={allowEdition}
         />
+        </div>
       )}
     </Flex>
   );
