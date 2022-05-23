@@ -73,7 +73,7 @@ export default function CardEditorToolbox({
   docOwnership,
   prefixElement,
 }: Props): JSX.Element {
-  const { setSelectedId, selectedId, setEditMode, TXToptions, editToolbar } =
+  const { setSelectedId, selectedId, selectedOwnKind, setEditMode, TXToptions, editToolbar } =
     React.useContext(CardEditorCTX);
   const showTree = TXToptions?.showTree || false;
   const dispatch = useAppDispatch();
@@ -107,7 +107,7 @@ export default function CardEditorToolbox({
     <Flex align="center" className={cx(toolboxContainerStyle, { [closedToolboxStyle]: !open })}>
       {prefixElement}
       <BlockCreatorButtons docOwnership={docOwnership} selectedBlockId={selectedId || null} />
-      {selectedDocument != (undefined || null) && (
+      {selectedDocument != (undefined || null) && docOwnership.kind === selectedOwnKind && (
         <>
           {isText && (
             <>

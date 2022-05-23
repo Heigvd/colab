@@ -64,7 +64,7 @@ export default function DocumentEditor({
 
   const dropRef = React.useRef<HTMLDivElement>(null);
 
-  const { setSelectedId, selectedId, editMode, setEditMode, TXToptions } =
+  const { setSelectedId, selectedId, setSelectedOwnKind, editMode, setEditMode, TXToptions } =
     React.useContext(CardEditorCTX);
 
   const selected = doc.id === selectedId;
@@ -75,7 +75,8 @@ export default function DocumentEditor({
       setEditMode(false);
     }
     setSelectedId(doc.id);
-  }, [doc.id, selectedId, setEditMode, setSelectedId]);
+    setSelectedOwnKind(docOwnership.kind);
+  }, [doc.id, docOwnership.kind, selectedId, setEditMode, setSelectedId, setSelectedOwnKind]);
 
   React.useEffect(() => {
     if (lastInsertedDocId === doc.id) {
