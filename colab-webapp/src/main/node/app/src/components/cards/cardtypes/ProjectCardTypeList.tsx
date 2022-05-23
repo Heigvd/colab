@@ -87,7 +87,9 @@ export default function ProjectCardTypeList(): JSX.Element {
                     </>
                   );
                 }}
+                customOnDblClick={(item) => {if(item) {navigate(`./edit/${item.ownId}`)}}}
                 customThumbnailStyle={cx(cardTypeThumbnailStyle, customThumbStyle)}
+                selectionnable={false}
               />
             ) : (
               <div className={voidStyle}>
@@ -120,6 +122,7 @@ export default function ProjectCardTypeList(): JSX.Element {
                       );
                     }}
                     customThumbnailStyle={cx(cardTypeThumbnailStyle, customThumbStyle)}
+                    selectionnable={false}
                   />
                   {/* <CardTypeListWithFilter
                   dataWithTags={availableCardTypes}

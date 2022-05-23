@@ -57,7 +57,16 @@ export default function CardCreator({
 
   const [selectedType, setSelectedType] = React.useState<number | null>(null);
 
-
+ const createCard = () => {
+  dispatch(
+    API.createSubCardWithTextDataBlock({
+      parent: parentCardContent,
+      cardTypeId: selectedType,
+    }),
+  ).then(() => {
+    close();
+  });
+}
 
   return (
     <OpenCloseModal
@@ -98,14 +107,8 @@ export default function CardCreator({
           <Button
             title="Create card"
             onClick={() => {
-              dispatch(
-                API.createSubCardWithTextDataBlock({
-                  parent: parentCardContent,
-                  cardTypeId: selectedType,
-                }),
-              ).then(() => {
-                close();
-              });
+              createCard();
+              close();
             }}
           >
             Add a card
@@ -114,7 +117,7 @@ export default function CardCreator({
       )}
       showCloseButton
     >
-      {() => {
+      {(close) => {
         if (status !== 'READY') {
           return <AvailabilityStatusIndicator status={status} />;
         } else {
@@ -166,8 +169,13 @@ export default function CardCreator({
                       );
                     }}
                     customThumbnailStyle={cx(cardTypeThumbnailStyle)}
-                    customOnSelect={(item) => setSelectedType(item?.id ? item.id : null)}
+                    customOnClick={(item) => setSelectedType(item?.id ? item.id : null)}
+                    customOnDblClick={() => {
+                      createCard();
+                      close();
+                    }}
                     addEmptyItem
+                    selectionnable
               />
             </>
             

@@ -21,7 +21,9 @@ interface CustomElementsListProps<T> {
   customListClassName?: string;
   customTagClassName?: string;
   addEmptyItem?: boolean;
-  customOnSelect?: (value: T | null) => void;
+  customOnClick?: (value: T | null) => void;
+  customOnDblClick?: (value: T | null) => void;
+  selectionnable?: boolean;
 }
 
 /**
@@ -38,7 +40,9 @@ export default function CustomElementsList<
   customListClassName,
   customTagClassName,
   addEmptyItem,
-  customOnSelect,
+  customOnClick,
+  customOnDblClick,
+  selectionnable=true,
 }: CustomElementsListProps<T>): JSX.Element {
   const tags = uniq([...items].flatMap(it => (it ? it.tags : [])));
   const [tagState, setTagState] = React.useState<Record<string, boolean> | undefined>();
@@ -69,14 +73,26 @@ export default function CustomElementsList<
 
   const onSelect = React.useCallback(
     (value: T | null) => {
-      if (customOnSelect) {
-        customOnSelect(value);
+      if (customOnClick) {
+        customOnClick(value);
       }
-      if (!value || !value.id) {
+      if (!value || !value.id || !selectionnable) {
         setSelectedElement(null);
       } else setSelectedElement(value.id);
     },
-    [customOnSelect],
+    [customOnClick, selectionnable],
+  );
+
+  const onDblClick = React.useCallback(
+    (value: T | null) => {
+      if (customOnDblClick) {
+        customOnDblClick(value);
+      }
+      if (!value || !value.id || !selectionnable) {
+        setSelectedElement(null);
+      } else setSelectedElement(value.id);
+    },
+    [customOnDblClick, selectionnable],
   );
 
   React.useEffect(() => {
@@ -110,11 +126,11 @@ export default function CustomElementsList<
       <ItemThumbnailsSelection<T>
         addEmptyItem={addEmptyItem}
         items={elementsFilteredByTag}
-        onItemClick={item => onSelect(item)}
-        onItemDblClick={item => onSelect(item)}
+        onItemClick={item => {onSelect(item)}}
+        onItemDblClick={item => {onDblClick(item)}}
         defaultSelectedValue={null}
         fillThumbnail={thumbnailContent}
-        selectionnable={false}
+        selectionnable={selectionnable}
         thumbnailClassName={customThumbnailStyle}
         selectedThumbnailClassName={customSelectedClassName}
         className={customListClassName}
