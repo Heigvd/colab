@@ -103,6 +103,7 @@ export default function DocumentEditor({
           { [noBorderStyle]: isTextDataBlock },
         )}
         onClick={onSelect}
+        onDoubleClick={() => setEditMode(true)}
       >
         {isTextDataBlock ? (
           <BlockEditorWrapper

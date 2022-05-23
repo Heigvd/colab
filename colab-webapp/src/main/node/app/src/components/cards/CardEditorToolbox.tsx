@@ -20,6 +20,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { entityIs } from 'colab-rest-client';
 import * as React from 'react';
 import * as API from '../../API/api';
+import { useUrlMetadata } from '../../selectors/externalDataSelector';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import ConfirmDeleteModal from '../common/ConfirmDeleteModal';
 import DropDownMenu from '../common/DropDownMenu';
@@ -161,12 +162,7 @@ export default function CardEditorToolbox({
             />
           )}
           {isLink && selectedDocument.url && selectedDocument.url.length > 0 && (
-            <IconButton
-              icon={faExternalLinkAlt}
-              title={'Open url in new tab'}
-              className={lightIconButtonStyle}
-              onClick={() => openUrl(selectedDocument.url)}
-            />
+            <OpenLinkButton url={selectedDocument.url} openUrl={() => openUrl(selectedDocument.url)}/>
           )}
           {!isText && (
             <IconButton
@@ -279,6 +275,29 @@ export function BlockCreatorButtons({
           className={toolboxButtonStyle}
         />
       </Flex>
+    </>
+  );
+}
+
+interface OpenLinkButtonProps {
+  url: string;
+  openUrl: (
+    e: React.MouseEvent<HTMLSpanElement, MouseEvent> | React.KeyboardEvent<HTMLSpanElement>,
+  ) => void;
+}
+
+function OpenLinkButton({ url, openUrl }: OpenLinkButtonProps): JSX.Element {
+  const metadata = useUrlMetadata(url);
+  return (
+    <>
+      {metadata != 'LOADING' && metadata != 'NO_URL' && !metadata.broken && (
+        <IconButton
+          icon={faExternalLinkAlt}
+          title={'Open url in new tab'}
+          className={lightIconButtonStyle}
+          onClick={openUrl}
+        />
+      )}
     </>
   );
 }

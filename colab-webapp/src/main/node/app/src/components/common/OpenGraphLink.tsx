@@ -5,7 +5,7 @@
  * Licensed under the MIT License
  */
 import { css, cx } from '@emotion/css';
-import { faExternalLinkAlt, faLink, faSync } from '@fortawesome/free-solid-svg-icons';
+import { faChainBroken, faExternalLinkAlt, faLink, faSync } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { ExternalLink } from 'colab-rest-client';
 import * as React from 'react';
@@ -42,6 +42,12 @@ const urlStyle = css({
   //whiteSpace: 'nowrap',
   overflow: 'hidden',
   textOverflow: 'ellipsis',
+});
+
+const oneLineLinkEditionStyle = css({ display: 'flex', flexGrow: 1, alignItems: 'center' });
+const fullWidthLinkEditionStyle = css({
+  flexGrow: 1,
+  input: { flexGrow: 1, marginRight: space_S },
 });
 
 const legendStyle = css({
@@ -96,17 +102,9 @@ export default function OpenGraphLink({
     return <InlineLoading />;
   } else if (metadata == 'NO_URL') {
     return (
-      <Flex grow={1} className={css({ padding: space_S })}>
+      <Flex grow={1} className={css({ padding: space_S })} align="center">
         {editingStatus ? (
-          <OnConfirmInput
-            value={url}
-            placeholder="Empty link"
-            onChange={saveLink}
-            onCancel={() => setEditingState(false)}
-            directEdit
-            containerClassName={css({ display: 'flex', flexGrow: 1, alignItems: 'center' })}
-            className={css({ flexGrow: 1, input: { flexGrow: 1, marginRight: space_S } })}
-          />
+          <EditLink onChange={saveLink} url={url} onCancel={() => setEditingState(false)} />
         ) : (
           <>
             <FontAwesomeIcon icon={faLink} size="lg" color="var(--lightGray)" />
@@ -127,36 +125,13 @@ export default function OpenGraphLink({
       return (
         <>
           {editingStatus ? (
-            <Flex grow={1} className={css({ padding: space_S })}>
-              <OnConfirmInput
-                value={url}
-                placeholder="Empty link"
-                onChange={saveLink}
-                onCancel={() => setEditingState(false)}
-                directEdit
-                containerClassName={css({ flexGrow: 1, alignItems: 'stretch' })}
-                className={css({ input: { flexGrow: 1 } })}
-              />
-              <IconButton
-                title="refresh"
-                onClick={refreshCb}
-                icon={faSync}
-                className={lightIconButtonStyle}
-              />
+            <Flex grow={1} align="center" className={css({ padding: space_S })}>
+              <EditLink onChange={saveLink} url={url} onCancel={() => setEditingState(false)} refreshCb={refreshCb} />
             </Flex>
           ) : (
             <div title={url} className={css({ padding: space_S })}>
-              <FontAwesomeIcon icon={faLink} size="lg" className={css({ marginRight: space_S })} />
+              <FontAwesomeIcon icon={faChainBroken} size="lg" className={css({ marginRight: space_S })} />
               {url}
-              <IconButton
-                title="Open in new tab"
-                icon={faExternalLinkAlt}
-                onClick={openUrl}
-                className={cx(
-                  lightIconButtonStyle,
-                  css({ marginLeft: space_S, color: 'var(--lightGray)' }),
-                )}
-              />
             </div>
           )}
         </>
@@ -165,22 +140,8 @@ export default function OpenGraphLink({
       return (
         <>
           {editingStatus ? (
-            <Flex grow={1} className={css({ padding: space_S })}>
-              <OnConfirmInput
-                value={url}
-                placeholder="Empty link"
-                onChange={saveLink}
-                onCancel={() => setEditingState(false)}
-                directEdit
-                containerClassName={css({ flexGrow: 1, alignItems: 'stretch' })}
-                className={css({ input: { flexGrow: 1 } })}
-              />
-              <IconButton
-                title="refresh"
-                onClick={refreshCb}
-                icon={faSync}
-                className={lightIconButtonStyle}
-              />
+            <Flex grow={1} className={css({ padding: space_S })} align="center">
+              <EditLink onChange={saveLink} url={url} onCancel={() => setEditingState(false)} refreshCb={refreshCb} />
             </Flex>
           ) : (
             <Flex className={cardStyle} title={url} align="center">
@@ -213,4 +174,37 @@ export default function OpenGraphLink({
       );
     }
   }
+}
+
+interface EditLinkProps {
+  url: string;
+  onChange: (newValue: string) => void;
+  onCancel: () => void;
+  refreshCb?: (
+    e: React.MouseEvent<HTMLSpanElement, MouseEvent> | React.KeyboardEvent<HTMLSpanElement>,
+  ) => void;
+}
+
+function EditLink({ url, onChange, refreshCb, onCancel }: EditLinkProps): JSX.Element {
+  return (
+    <>
+      <OnConfirmInput
+        value={url}
+        placeholder="Empty link"
+        onChange={onChange}
+        onCancel={onCancel}
+        directEdit
+        containerClassName={oneLineLinkEditionStyle}
+        className={fullWidthLinkEditionStyle}
+      />
+      {refreshCb && (
+        <IconButton
+          title="refresh"
+          onClick={refreshCb}
+          icon={faSync}
+          className={lightIconButtonStyle}
+        />
+      )}
+    </>
+  );
 }
