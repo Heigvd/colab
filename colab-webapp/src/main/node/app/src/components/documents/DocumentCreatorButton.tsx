@@ -10,6 +10,7 @@ import { faFile, faFrog, faLink, faParagraph, faPlus } from '@fortawesome/free-s
 import * as React from 'react';
 import * as API from '../../API/api';
 import { useAppDispatch } from '../../store/hooks';
+import { CardEditorCTX } from '../cards/CardEditor';
 import DropDownMenu from '../common/DropDownMenu';
 import { IconButtonProps } from '../common/IconButton';
 import { DocumentKind, DocumentOwnership } from './documentCommonType';
@@ -49,7 +50,6 @@ export type DocumentCreatorButtonProps = {
   title: string;
   // isFirstDoc?: boolean;
   docKind: DocumentKind;
-  selectedBlockId: number | null;
   className?: string;
 };
 
@@ -57,21 +57,22 @@ export default function DocumentCreatorButton({
   docOwnership,
   title,
   // isFirstDoc,
-  selectedBlockId,
   docKind,
   className,
 }: DocumentCreatorButtonProps): JSX.Element {
   const dispatch = useAppDispatch();
+  const { selectedId, selectedOwnKind} = React.useContext(CardEditorCTX);
+  const IsSelectedInKind = selectedId && docOwnership.kind === selectedOwnKind;
 
   const createDoc = React.useCallback(
     (place?: 'BEFORE' | 'AFTER') => {
-      if (selectedBlockId) {
+      if (IsSelectedInKind) {
         if (place === 'BEFORE') {
           if (docOwnership.kind == 'DeliverableOfCardContent') {
             dispatch(
               API.addDeliverableBefore({
                 cardContentId: docOwnership.ownerId,
-                neighbourDocId: selectedBlockId,
+                neighbourDocId: selectedId,
                 docKind: docKind,
               }),
             );
@@ -79,7 +80,7 @@ export default function DocumentCreatorButton({
             dispatch(
               API.addDocumentToResourceBefore({
                 resourceId: docOwnership.ownerId,
-                neighbourDocId: selectedBlockId,
+                neighbourDocId: selectedId,
                 docKind: docKind,
               }),
             );
@@ -89,7 +90,7 @@ export default function DocumentCreatorButton({
             dispatch(
               API.addDeliverableAfter({
                 cardContentId: docOwnership.ownerId,
-                neighbourDocId: selectedBlockId,
+                neighbourDocId: selectedId,
                 docKind: docKind,
               }),
             );
@@ -97,7 +98,7 @@ export default function DocumentCreatorButton({
             dispatch(
               API.addDocumentToResourceAfter({
                 resourceId: docOwnership.ownerId,
-                neighbourDocId: selectedBlockId,
+                neighbourDocId: selectedId,
                 docKind: docKind,
               }),
             );
@@ -139,7 +140,7 @@ export default function DocumentCreatorButton({
         }
       }
     },
-    [docOwnership.kind, docOwnership.ownerId, selectedBlockId, dispatch, docKind],
+    [IsSelectedInKind, docOwnership.kind, docOwnership.ownerId, dispatch, selectedId, docKind],
   );
 
   return (
@@ -161,13 +162,13 @@ export default function DocumentCreatorButton({
       buttonClassName={className}
       entries={[
         {
-          value: 'before',
-          label: 'Before',
+          value: IsSelectedInKind ? 'before' : 'begin',
+          label: IsSelectedInKind ? 'Before' : 'On top',
           action: () => createDoc('BEFORE'),
         },
         {
-          value: 'after',
-          label: 'After',
+          value: IsSelectedInKind ? 'after' : 'end',
+          label: IsSelectedInKind ? 'After' : 'At the end',
           action: () => createDoc('AFTER'),
         },
       ]}

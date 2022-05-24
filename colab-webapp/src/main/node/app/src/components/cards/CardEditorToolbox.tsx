@@ -255,21 +255,18 @@ export function BlockCreatorButtons({
       <Flex className={cx({ [borderRightStyle]: !!selectedBlockId })}>
         <DocumentCreatorButton
           docOwnership={docOwnership}
-          selectedBlockId={selectedBlockId}
           docKind="TextDataBlock"
           title="add a text block"
           className={toolboxButtonStyle}
         />
         <DocumentCreatorButton
           docOwnership={docOwnership}
-          selectedBlockId={selectedBlockId}
           docKind="DocumentFile"
           title="add a file"
           className={toolboxButtonStyle}
         />
         <DocumentCreatorButton
           docOwnership={docOwnership}
-          selectedBlockId={selectedBlockId}
           docKind="ExternalLink"
           title="add a link"
           className={toolboxButtonStyle}
