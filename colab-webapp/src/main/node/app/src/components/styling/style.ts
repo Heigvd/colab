@@ -200,6 +200,19 @@ export const pulseEase = css`
   animation: ${pulseKeyframes} 2s ease 10;
 `;
 
+const spinning = keyframes({
+  from: {
+    transform: 'rotate(0deg)',
+  },
+  to: {
+    transform: 'rotate(360deg)',
+  },
+});
+
+export const spinningStyle = css({
+  animation: `${spinning} 1s linear 0s infinite`,
+});
+
 /**BUTTONS */
 
 export const linkStyle = css({

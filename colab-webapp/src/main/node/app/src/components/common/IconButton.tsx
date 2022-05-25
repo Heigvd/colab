@@ -23,6 +23,7 @@ export interface IconButtonProps {
   clickable?: boolean;
   title: string;
   className?: string;
+  IconClassName?: string;
 }
 
 export default function IconButton({
@@ -33,6 +34,7 @@ export default function IconButton({
   layer,
   title,
   className,
+  IconClassName,
   iconColor,
   iconSize,
 }: IconButtonProps): JSX.Element {
@@ -60,7 +62,7 @@ export default function IconButton({
           />
         </span>
       ) : (
-        <FontAwesomeIcon icon={icon} color={iconColor} size={iconSize} mask={mask} />
+        <FontAwesomeIcon icon={icon} color={iconColor} size={iconSize} mask={mask} className={IconClassName} />
       )}
     </Clickable>
   );

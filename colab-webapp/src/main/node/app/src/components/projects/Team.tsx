@@ -352,7 +352,7 @@ export default function Team({ project }: Props): JSX.Element {
 
   if (status === 'INITIALIZED') {
     return (
-      <div>
+      <>
         <IconButton
           icon={faArrowLeft}
           title={'Back to project'}
@@ -410,7 +410,6 @@ export default function Team({ project }: Props): JSX.Element {
             value={invite}
             className={inputStyle}
           />
-          {/* <Input onChange={e => setInvite(e)} value={invite} /> */}
           <IconButton
             className={linkStyle}
             icon={faPaperPlane}
@@ -425,7 +424,7 @@ export default function Team({ project }: Props): JSX.Element {
             }
           />
         </div>
-      </div>
+      </>
     );
   } else {
     return (
