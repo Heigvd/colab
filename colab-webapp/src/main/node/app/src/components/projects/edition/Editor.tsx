@@ -46,7 +46,14 @@ import DropDownMenu from '../../common/DropDownMenu';
 import Flex from '../../common/Flex';
 import IconButton from '../../common/IconButton';
 import InlineLoading from '../../common/InlineLoading';
-import { invertedThemeMode, linkStyle, space_L, space_M, space_S } from '../../styling/style';
+import {
+  fullPageStyle,
+  invertedThemeMode,
+  linkStyle,
+  space_L,
+  space_M,
+  space_S,
+} from '../../styling/style';
 import { ProjectSettings } from '../ProjectSettings';
 import Team from '../Team';
 import ActivityFlowChart from './ActivityFlowChart';
@@ -231,12 +238,124 @@ const CardWrapper = ({ children, grow = 1, align = 'normal' }: CardWrapperProps)
   }
 };
 
+interface EditorNavProps {
+  projectName: string;
+  setShowProjectDetails: (value: React.SetStateAction<boolean>) => void;
+}
+
+function EditorNav({ projectName, setShowProjectDetails }: EditorNavProps): JSX.Element {
+  const navigate = useNavigate();
+  const dispatch = useAppDispatch();
+  return (
+    <>
+      <div
+        className={cx(
+          invertedThemeMode,
+          css({
+            display: 'inline-grid',
+            gridTemplateColumns: '1fr 3fr 1fr',
+            flexGrow: 0,
+            padding: `${space_S} ${space_M}`,
+            backgroundColor: 'var(--hoverBgColor)',
+          }),
+        )}
+      >
+        <IconButton
+          icon={faArrowLeft}
+          title="Back to projects"
+          onClick={events => {
+            events.preventDefault();
+            navigate('../../');
+            dispatch(API.closeCurrentProject());
+          }}
+        />
+        <div className={css({ gridColumn: '2/3', placeSelf: 'center', display: 'flex' })}>
+          <IconButton
+            icon={faInfoCircle}
+            title="Show project details"
+            onClick={() => setShowProjectDetails(showProjectDetails => !showProjectDetails)}
+          />
+          <div className={css({ marginRight: space_M })}>{projectName}</div>
+          <DropDownMenu
+            icon={faEye}
+            valueComp={{ value: '', label: '' }}
+            entries={[
+              {
+                value: 'board',
+                label: (
+                  <>
+                    <FontAwesomeIcon icon={faClone} /> Board
+                  </>
+                ),
+                action: () => navigate('./'),
+              },
+              {
+                value: 'hierarchy',
+                label: (
+                  <>
+                    <FontAwesomeIcon icon={faNetworkWired} /> Hierarchy
+                  </>
+                ),
+                action: () => navigate('./hierarchy'),
+              },
+              {
+                value: 'flow',
+                label: (
+                  <>
+                    <FontAwesomeIcon icon={faProjectDiagram} /> Activity Flow
+                  </>
+                ),
+                action: () => navigate('./flow'),
+              },
+            ]}
+            buttonClassName={css({ textAlign: 'right', alignSelf: 'center', marginLeft: 'auto' })}
+            menuIcon="CARET"
+          />
+        </div>
+        <DropDownMenu
+          icon={faEllipsisV}
+          valueComp={{ value: '', label: '' }}
+          entries={[
+            {
+              value: 'types',
+              label: (
+                <>
+                  <FontAwesomeIcon icon={faBoxesStacked} /> Card types
+                </>
+              ),
+              action: () => navigate('./types'),
+            },
+            {
+              value: 'team',
+              label: (
+                <>
+                  <FontAwesomeIcon icon={faUsers} /> Team
+                </>
+              ),
+              action: () => navigate('./team'),
+            },
+            {
+              value: 'settings',
+              label: (
+                <>
+                  <FontAwesomeIcon icon={faCog} /> Settings
+                </>
+              ),
+              action: () => navigate('./settings'),
+            },
+          ]}
+          buttonClassName={css({ textAlign: 'right', alignSelf: 'center', marginLeft: 'auto' })}
+        />
+      </div>
+    </>
+  );
+}
+
 export default function Editor(): JSX.Element {
   const dispatch = useAppDispatch();
   const i18n = useTranslations();
 
   const { project, status } = useProjectBeingEdited();
-  const navigate = useNavigate();
 
   const root = useProjectRootCard(project);
   const [showProjectDetails, setShowProjectDetails] = React.useState(false);
@@ -279,97 +398,11 @@ export default function Editor(): JSX.Element {
     return <InlineLoading />;
   } else {
     return (
-      <>
-        <div
-          className={cx(
-            invertedThemeMode,
-            css({
-              display: 'inline-grid',
-              gridTemplateColumns: '1fr 3fr 1fr',
-              flexGrow: 0,
-              padding: `${space_S} ${space_M}`,
-              backgroundColor: 'var(--hoverBgColor)',
-            }),
-          )}
-        >
-          <IconButton
-            icon={faInfoCircle}
-            title="Show project details"
-            onClick={() => setShowProjectDetails(showProjectDetails => !showProjectDetails)}
-          />
-          <div className={css({ gridColumn: '2/3', placeSelf: 'center', display: 'flex' })}>
-            <div className={css({ marginRight: space_M })}>{project.name || 'New project'}</div>
-            <DropDownMenu
-              icon={faEye}
-              valueComp={{ value: '', label: '' }}
-              entries={[
-                {
-                  value: 'board',
-                  label: (
-                    <>
-                      <FontAwesomeIcon icon={faClone} /> Board
-                    </>
-                  ),
-                  action: () => navigate('./'),
-                },
-                {
-                  value: 'hierarchy',
-                  label: (
-                    <>
-                      <FontAwesomeIcon icon={faNetworkWired} /> Hierarchy
-                    </>
-                  ),
-                  action: () => navigate('./hierarchy'),
-                },
-                {
-                  value: 'flow',
-                  label: (
-                    <>
-                      <FontAwesomeIcon icon={faProjectDiagram} /> Activity Flow
-                    </>
-                  ),
-                  action: () => navigate('./flow'),
-                },
-              ]}
-              buttonClassName={css({ textAlign: 'right', alignSelf: 'center', marginLeft: 'auto' })}
-              menuIcon="CARET"
-            />
-          </div>
-          <DropDownMenu
-            icon={faEllipsisV}
-            valueComp={{ value: '', label: '' }}
-            entries={[
-              {
-                value: 'types',
-                label: (
-                  <>
-                    <FontAwesomeIcon icon={faBoxesStacked} /> Card types
-                  </>
-                ),
-                action: () => navigate('./types'),
-              },
-              {
-                value: 'team',
-                label: (
-                  <>
-                    <FontAwesomeIcon icon={faUsers} /> Team
-                  </>
-                ),
-                action: () => navigate('./team'),
-              },
-              {
-                value: 'settings',
-                label: (
-                  <>
-                    <FontAwesomeIcon icon={faCog} /> Settings
-                  </>
-                ),
-                action: () => navigate('./settings'),
-              },
-            ]}
-            buttonClassName={css({ textAlign: 'right', alignSelf: 'center', marginLeft: 'auto' })}
-          />
-        </div>
+      <Flex direction="column" align="stretch" grow={1} className={fullPageStyle}>
+        <EditorNav
+          projectName={project.name || 'New project'}
+          setShowProjectDetails={setShowProjectDetails}
+        />
         <Flex className={showProjectDetails ? openDetails : closeDetails} justify="space-between">
           <div>
             <div>
@@ -384,10 +417,11 @@ export default function Editor(): JSX.Element {
           </div>
           <IconButton icon={faTimes} title="Close" onClick={() => setShowProjectDetails(false)} />
         </Flex>
-        <div
+        <Flex
+          direction="column"
+          grow={1}
+          align="stretch"
           className={css({
-            display: 'flex',
-            flexDirection: 'column',
             padding: space_L,
             overflow: 'auto',
           })}
@@ -439,8 +473,8 @@ export default function Editor(): JSX.Element {
               />
             </Routes>
           </Flex>
-        </div>
-      </>
+        </Flex>
+      </Flex>
     );
   }
 }

@@ -16,7 +16,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { AsyncThunk } from '@reduxjs/toolkit';
 import { Project } from 'colab-rest-client';
 import * as React from 'react';
-import { useNavigate } from 'react-router-dom';
+//import { useNavigate } from 'react-router-dom';
 import * as API from '../../API/api';
 import { shallowEqual, useAppDispatch, useAppSelector } from '../../store/hooks';
 import { StateStatus } from '../../store/project';
@@ -50,7 +50,7 @@ interface ProjectDisplayProps {
 // Display one project and allow to edit it
 const ProjectDisplay = ({ project }: ProjectDisplayProps) => {
   const dispatch = useAppDispatch();
-  const navigate = useNavigate();
+  //const navigate = useNavigate();
 
   return (
     <div
@@ -90,7 +90,8 @@ const ProjectDisplay = ({ project }: ProjectDisplayProps) => {
                   <FontAwesomeIcon icon={faEdit} /> Edit
                 </>
               ),
-              action: () => navigate(`/editor/${project.id}`),
+              //action: () => navigate(`/editor/${project.id}`),
+              action: () => window.open(`#/editor/${project.id}`,'_blank'),
             },
             {
               value: 'Duplicate project',
@@ -169,7 +170,8 @@ const ProjectDisplay = ({ project }: ProjectDisplayProps) => {
       >
         <Button
           icon={faEdit}
-          onClick={() => navigate(`/editor/${project.id}`)}
+          //onClick={() => navigate(`/editor/${project.id}`)}
+          onClick={() => window.open(`#/editor/${project.id}`,'_blank')}
           className={cx(css({ margin: 'auto' }), invertedButtonStyle)}
         >
           Edit
