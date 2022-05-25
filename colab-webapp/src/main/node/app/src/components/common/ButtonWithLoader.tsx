@@ -42,6 +42,7 @@ export interface ButtonWithLoaderProps extends Omit<ClickableProps, 'clickableCl
   iconSize?: SizeProp;
   reverseOrder?: boolean;
   iconColor?: string;
+  isLoading?: boolean;
 }
 
 export default function ButtonWithLoader({
@@ -55,13 +56,14 @@ export default function ButtonWithLoader({
   iconColor,
   iconSize,
   reverseOrder,
+  isLoading = true,
 }: ButtonWithLoaderProps): JSX.Element {
   const [loading, setLoading] = React.useState<boolean>(false);
   return (
     <Clickable
       onClick={e => {
         if (onClick) {
-          setLoading(true);
+          setLoading(isLoading);
           onClick(e);
         }
       }}

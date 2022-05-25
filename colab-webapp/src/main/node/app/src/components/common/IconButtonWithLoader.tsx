@@ -25,6 +25,7 @@ export interface IconButtonWithLoaderProps {
   title: string;
   className?: string;
   IconClassName?: string;
+  isLoading?: boolean;
 }
 
 export default function IconButtonWithLoader({
@@ -38,13 +39,14 @@ export default function IconButtonWithLoader({
   IconClassName,
   iconColor,
   iconSize,
+  isLoading = true,
 }: IconButtonWithLoaderProps): JSX.Element {
   const [loading, setLoading] = React.useState<boolean>(false);
   return (
     <Clickable
-      onClick={e => {
+      onClick={(e) => {
         if (onClick) {
-          setLoading(true);
+          setLoading(isLoading);
           onClick(e);
         }
       }}

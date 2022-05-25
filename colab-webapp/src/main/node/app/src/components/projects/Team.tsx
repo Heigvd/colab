@@ -30,6 +30,7 @@ import ConfirmDeleteModal from '../common/ConfirmDeleteModal';
 import { Destroyer } from '../common/Destroyer';
 import DropDownMenu from '../common/DropDownMenu';
 import IconButton from '../common/IconButton';
+import IconButtonWithLoader from '../common/IconButtonWithLoader';
 import InlineInputNew from '../common/InlineInputNew';
 import InlineLoading from '../common/InlineLoading';
 import OpenClose from '../common/OpenClose';
@@ -410,18 +411,19 @@ export default function Team({ project }: Props): JSX.Element {
             value={invite}
             className={inputStyle}
           />
-          <IconButton
+          <IconButtonWithLoader
             className={linkStyle}
             icon={faPaperPlane}
             title="Send"
-            onClick={() =>
+            isLoading={invite.length > 0}
+            onClick={() => {
+              
               dispatch(
                 API.sendInvitation({
                   projectId: project.id!,
                   recipient: invite,
                 }),
-              ).then(() => setInvite(''))
-            }
+              ).then(() => setInvite(''))}}
           />
         </div>
       </>
