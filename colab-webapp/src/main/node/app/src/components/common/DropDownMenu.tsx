@@ -11,11 +11,24 @@ import { faCaretDown } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import * as React from 'react';
 import { useEffect, useRef } from 'react';
-import { iconButton, linkStyle, normalThemeMode, space_S } from '../styling/style';
+import { disabledStyle, iconButton, linkStyle, normalThemeMode, space_S } from '../styling/style';
 import Flex from './Flex';
 
 export const itemStyle = css({
   padding: '5px 8px',
+});
+
+const entryStyle = css({
+  textDecoration: 'none',
+  color: 'var(--fgColor)',
+  padding: space_S,
+  ':focus': {
+    outlineStyle: 'inset',
+  },
+  ':hover': {
+    backgroundColor: '#e6e6e6',
+    color: 'var(--fgColor)',
+  },
 });
 
 const commonStyle = cx(
@@ -286,6 +299,7 @@ interface Entry<T> {
   value: T;
   label: React.ReactNode;
   action?: () => void;
+  disabled?: boolean;
 }
 
 interface Props<T> {
@@ -344,18 +358,7 @@ export default function DropDownMenu<T extends string | number | symbol>({
     }
   }, []);
 
-  const entryStyle = css({
-    textDecoration: 'none',
-    color: 'var(--fgColor)',
-    padding: space_S,
-    ':focus': {
-      outlineStyle: 'inset',
-    },
-    ':hover': {
-      backgroundColor: '#e6e6e6',
-      color: 'var(--fgColor)',
-    },
-  });
+
 
   /* const selectedEntryStyle = cx(
     invertedThemeMode,
@@ -423,7 +426,7 @@ export default function DropDownMenu<T extends string | number | symbol>({
             >
               {entries.map(entry => (
                 <div
-                  className={entryStyle}
+                  className={cx(entryStyle, {[disabledStyle]: entry.disabled})}
                   key={String(entry.value)}
                   onClick={() => {
                     if (entry.action) {

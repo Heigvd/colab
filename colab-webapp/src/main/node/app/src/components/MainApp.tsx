@@ -10,6 +10,7 @@ import {
   faExclamationTriangle,
   faMeteor,
   faSignOutAlt,
+  faUser,
   faUserCircle,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -209,8 +210,28 @@ export default function MainApp(): JSX.Element {
                   ></div>
                   <DropDownMenu
                     icon={faUserCircle}
+                    title={currentUser.username}
                     valueComp={{ value: '', label: '' }}
                     entries={[
+                      {
+                        value: 'username',
+                        label: (
+                          <>
+                            <div
+                              className={css({
+                                borderBottom: '1px solid var(--darkGray)',
+                                padding: space_S,
+                              })}
+                            >
+                              <FontAwesomeIcon icon={faUser} />{' '}
+                              {currentUser.firstname && currentUser.lastname
+                                ? currentUser.firstname + ' ' + currentUser.lastname
+                                : currentUser.username}
+                            </div>
+                          </>
+                        ),
+                        disabled: true,
+                      },
                       {
                         value: 'settings',
                         label: (

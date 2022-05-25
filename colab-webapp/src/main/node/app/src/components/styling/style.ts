@@ -513,3 +513,8 @@ export const selectCreatorStyle = css({
   borderTopStyle: 'solid',
   borderTopColor: 'var(--darkGray)',
 });
+
+export const disabledStyle = css({
+  opacity: .5,
+  pointerEvents: 'none',
+});
