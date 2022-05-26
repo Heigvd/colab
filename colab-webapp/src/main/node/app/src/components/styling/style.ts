@@ -449,7 +449,7 @@ export const smallInputStyle = cx(
   }),
 );
 
-export const cardTitle = css({
+export const localTitleStyle = css({
   fontSize: '1.1em',
   fontWeight: 'bold',
 });

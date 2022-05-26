@@ -6,16 +6,13 @@
  */
 
 import { css } from '@emotion/css';
-import { AbstractResource, entityIs, Resource, ResourceRef } from 'colab-rest-client';
+import { AbstractResource, Resource, ResourceRef } from 'colab-rest-client';
 import * as React from 'react';
 import * as API from '../../API/api';
-import { useAndLoadDocuments } from '../../selectors/documentSelector';
 import { useAppDispatch } from '../../store/hooks';
 import { BlockEditorWrapper } from '../blocks/BlockEditorWrapper';
 import CheckBox from '../common/CheckBox';
-import InlineLoading from '../common/InlineLoading';
 import OnConfirmInput from '../common/OnConfirmInput';
-import DocumentMiniDisplay from '../documents/DocumentMiniDisplay';
 import { defaultColumnContainerStyle, defaultRowContainerStyle } from '../styling/style';
 import { ResourceAndRef } from './ResourceCommonType';
 
@@ -117,81 +114,6 @@ function ResourceRefMiniDisplay({ resourceRef }: { resourceRef: ResourceRef }): 
   );
 }
 
-export type ResourceMiniDisplayProps = ResourceAndRef;
-
-export default function ResourceMiniDisplay({
-  targetResource,
-  isDirectResource,
-  cardTypeResourceRef,
-  cardResourceRef,
-  cardContentResourceRef,
-}: ResourceMiniDisplayProps): JSX.Element {
-  const targetResourceId = targetResource.id;
-  const { documents, status } = useAndLoadDocuments({
-    kind: 'PartOfResource',
-    ownerId: targetResourceId!,
-  });
-
-  // TODO see how the category is resolved
-  let effectiveCategory = targetResource.category;
-  if (cardContentResourceRef?.category != null) {
-    effectiveCategory = cardContentResourceRef.category;
-  } else if (cardResourceRef?.category != null) {
-    effectiveCategory = cardResourceRef.category;
-  } else if (cardTypeResourceRef?.category != null) {
-    effectiveCategory = cardTypeResourceRef.category;
-  }
-
-  if (status === 'NOT_INITIALIZED') {
-    return <InlineLoading />;
-  } else if (status === 'LOADING') {
-    return <InlineLoading />;
-  } else if (documents == null || documents.length < 1) {
-    return <div>no document at disposal</div>;
-  }
-
-  // TODO improve the iteration UX :-)
-
-  return (
-    <div>
-      {documents.map(doc => (
-        <div key={doc.id}>
-          <div className={defaultRowContainerStyle}>
-            <div className={defaultColumnContainerStyle}>
-              {isDirectResource ? (
-                <span className={css({ color: 'blue' })}>direct resource</span>
-              ) : (
-                'transitive resource'
-              )}
-              <span>Title : {targetResource.title}</span>
-              {targetResource.teaserId && <BlockEditorWrapper blockId={targetResource.teaserId} />}
-              <span> Category : {effectiveCategory}</span>
-              {entityIs(doc, 'Document') && (
-                <>
-                  <span>*** Document #{doc.id} ***</span>
-                  <DocumentMiniDisplay
-                    document={doc}
-                    docOwnership={{
-                      kind: 'PartOfResource',
-                      ownerId: targetResourceId!,
-                    }}
-                  />
-                </>
-              )}
-            </div>
-            <TargetResourceMiniDisplay resource={targetResource} />
-            {cardTypeResourceRef && <ResourceRefMiniDisplay resourceRef={cardTypeResourceRef} />}
-            {cardResourceRef && <ResourceRefMiniDisplay resourceRef={cardResourceRef} />}
-            {cardContentResourceRef && (
-              <ResourceRefMiniDisplay resourceRef={cardContentResourceRef} />
-            )}
-          </div>
-        </div>
-      ))}
-    </div>
-  );
-}
-
 export function ResourceSettings({
   targetResource,
   isDirectResource,
@@ -245,3 +167,78 @@ export function ResourceSettings({
     </div>
   );
 }
+
+// export type ResourceMiniDisplayProps = ResourceAndRef;
+
+// export default function ResourceMiniDisplay({
+//   targetResource,
+//   isDirectResource,
+//   cardTypeResourceRef,
+//   cardResourceRef,
+//   cardContentResourceRef,
+// }: ResourceMiniDisplayProps): JSX.Element {
+//   const targetResourceId = targetResource.id;
+//   const { documents, status } = useAndLoadDocuments({
+//     kind: 'PartOfResource',
+//     ownerId: targetResourceId!,
+//   });
+
+//   // TODO see how the category is resolved
+//   let effectiveCategory = targetResource.category;
+//   if (cardContentResourceRef?.category != null) {
+//     effectiveCategory = cardContentResourceRef.category;
+//   } else if (cardResourceRef?.category != null) {
+//     effectiveCategory = cardResourceRef.category;
+//   } else if (cardTypeResourceRef?.category != null) {
+//     effectiveCategory = cardTypeResourceRef.category;
+//   }
+
+//   if (status === 'NOT_INITIALIZED') {
+//     return <InlineLoading />;
+//   } else if (status === 'LOADING') {
+//     return <InlineLoading />;
+//   } else if (documents == null || documents.length < 1) {
+//     return <div>no document at disposal</div>;
+//   }
+
+//   // TODO improve the iteration UX :-)
+
+//   return (
+//     <div>
+//       {documents.map(doc => (
+//         <div key={doc.id}>
+//           <div className={defaultRowContainerStyle}>
+//             <div className={defaultColumnContainerStyle}>
+//               {isDirectResource ? (
+//                 <span className={css({ color: 'blue' })}>direct resource</span>
+//               ) : (
+//                 'transitive resource'
+//               )}
+//               <span>Title : {targetResource.title}</span>
+//               {targetResource.teaserId && <BlockEditorWrapper blockId={targetResource.teaserId} />}
+//               <span> Category : {effectiveCategory}</span>
+//               {entityIs(doc, 'Document') && (
+//                 <>
+//                   <span>*** Document #{doc.id} ***</span>
+//                   <DocumentMiniDisplay
+//                     document={doc}
+//                     docOwnership={{
+//                       kind: 'PartOfResource',
+//                       ownerId: targetResourceId!,
+//                     }}
+//                   />
+//                 </>
+//               )}
+//             </div>
+//             <TargetResourceMiniDisplay resource={targetResource} />
+//             {cardTypeResourceRef && <ResourceRefMiniDisplay resourceRef={cardTypeResourceRef} />}
+//             {cardResourceRef && <ResourceRefMiniDisplay resourceRef={cardResourceRef} />}
+//             {cardContentResourceRef && (
+//               <ResourceRefMiniDisplay resourceRef={cardContentResourceRef} />
+//             )}
+//           </div>
+//         </div>
+//       ))}
+//     </div>
+//   );
+// }
