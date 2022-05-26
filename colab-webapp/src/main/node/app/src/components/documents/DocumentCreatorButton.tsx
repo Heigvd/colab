@@ -61,8 +61,8 @@ export default function DocumentCreatorButton({
   className,
 }: DocumentCreatorButtonProps): JSX.Element {
   const dispatch = useAppDispatch();
-  const { selectedId, selectedOwnKind} = React.useContext(CardEditorCTX);
-  const IsSelectedInKind = selectedId && docOwnership.kind === selectedOwnKind;
+  const { selectedDocId, selectedOwnKind } = React.useContext(CardEditorCTX);
+  const IsSelectedInKind = selectedDocId && docOwnership.kind === selectedOwnKind;
 
   const createDoc = React.useCallback(
     (place?: 'BEFORE' | 'AFTER') => {
@@ -72,7 +72,7 @@ export default function DocumentCreatorButton({
             dispatch(
               API.addDeliverableBefore({
                 cardContentId: docOwnership.ownerId,
-                neighbourDocId: selectedId,
+                neighbourDocId: selectedDocId,
                 docKind: docKind,
               }),
             );
@@ -80,7 +80,7 @@ export default function DocumentCreatorButton({
             dispatch(
               API.addDocumentToResourceBefore({
                 resourceId: docOwnership.ownerId,
-                neighbourDocId: selectedId,
+                neighbourDocId: selectedDocId,
                 docKind: docKind,
               }),
             );
@@ -90,7 +90,7 @@ export default function DocumentCreatorButton({
             dispatch(
               API.addDeliverableAfter({
                 cardContentId: docOwnership.ownerId,
-                neighbourDocId: selectedId,
+                neighbourDocId: selectedDocId,
                 docKind: docKind,
               }),
             );
@@ -98,7 +98,7 @@ export default function DocumentCreatorButton({
             dispatch(
               API.addDocumentToResourceAfter({
                 resourceId: docOwnership.ownerId,
-                neighbourDocId: selectedId,
+                neighbourDocId: selectedDocId,
                 docKind: docKind,
               }),
             );
@@ -140,7 +140,7 @@ export default function DocumentCreatorButton({
         }
       }
     },
-    [IsSelectedInKind, docOwnership.kind, docOwnership.ownerId, dispatch, selectedId, docKind],
+    [IsSelectedInKind, docOwnership.kind, docOwnership.ownerId, dispatch, selectedDocId, docKind],
   );
 
   return (

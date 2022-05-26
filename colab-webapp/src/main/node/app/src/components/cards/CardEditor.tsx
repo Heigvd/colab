@@ -169,8 +169,8 @@ interface DocFoptionsType {
 } */
 
 interface CardEditorContext {
-  selectedId?: number | null;
-  setSelectedId: (id: number | undefined | null) => void;
+  selectedDocId?: number | null;
+  setSelectedDocId: (id: number | undefined | null) => void;
   selectedOwnKind?: 'DeliverableOfCardContent' | 'PartOfResource';
   setSelectedOwnKind: React.Dispatch<
     React.SetStateAction<'DeliverableOfCardContent' | 'PartOfResource' | undefined>
@@ -183,7 +183,7 @@ interface CardEditorContext {
 }
 
 const defaultCardEditorContext: CardEditorContext = {
-  setSelectedId: () => {},
+  setSelectedDocId: () => {},
   setSelectedOwnKind: () => {},
   editMode: false,
   setEditMode: () => {},
@@ -213,7 +213,7 @@ export default function CardEditor({ card, variant, showSubcards = true }: Props
   const [showTypeDetails, setShowTypeDetails] = React.useState(false);
   const [fullScreen, setFullScreen] = React.useState(false);
   const [openToolbox, setOpenToolbox] = React.useState(true);
-  const [selectedId, setSelectedId] = React.useState<number | undefined | null>(undefined);
+  const [selectedDocId, setSelectedDocId] = React.useState<number | undefined | null>(undefined);
   const [selectedOwnKind, setSelectedOwnKind] = React.useState<
     'DeliverableOfCardContent' | 'PartOfResource' | undefined
   >(undefined);
@@ -249,8 +249,8 @@ export default function CardEditor({ card, variant, showSubcards = true }: Props
     return (
       <CardEditorCTX.Provider
         value={{
-          selectedId,
-          setSelectedId,
+          selectedDocId,
+          setSelectedDocId,
           selectedOwnKind,
           setSelectedOwnKind,
           editMode,
@@ -614,7 +614,7 @@ export default function CardEditor({ card, variant, showSubcards = true }: Props
                     ),
                     icon: faPaperclip,
                     title: 'Documentation',
-                    className: css({overflow: 'auto'}),
+                    className: css({ overflow: 'auto' }),
                   },
                   'Sticky Notes': {
                     icon: faStickyNote,

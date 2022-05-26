@@ -64,27 +64,27 @@ export default function DocumentEditor({
 
   const dropRef = React.useRef<HTMLDivElement>(null);
 
-  const { setSelectedId, selectedId, setSelectedOwnKind, editMode, setEditMode, TXToptions } =
+  const { setSelectedDocId, selectedDocId, setSelectedOwnKind, editMode, setEditMode, TXToptions } =
     React.useContext(CardEditorCTX);
 
-  const selected = doc.id === selectedId;
+  const selected = doc.id === selectedDocId;
   const editing = editMode && selected;
 
   const onSelect = React.useCallback(() => {
-    if (doc.id != selectedId) {
+    if (doc.id != selectedDocId) {
       setEditMode(false);
     }
-    setSelectedId(doc.id);
+    setSelectedDocId(doc.id);
     setSelectedOwnKind(docOwnership.kind);
-  }, [doc.id, docOwnership.kind, selectedId, setEditMode, setSelectedId, setSelectedOwnKind]);
+  }, [doc.id, docOwnership.kind, selectedDocId, setEditMode, setSelectedDocId, setSelectedOwnKind]);
 
   React.useEffect(() => {
     if (lastInsertedDocId === doc.id) {
-      setSelectedId(lastInsertedDocId);
+      setSelectedDocId(lastInsertedDocId);
       setEditMode(true);
       dispatch(DocumentActions.resetLastInsertedDocId({ docOwnership }));
     }
-  }, [dispatch, doc.id, docOwnership, lastInsertedDocId, setEditMode, setSelectedId]);
+  }, [dispatch, doc.id, docOwnership, lastInsertedDocId, setEditMode, setSelectedDocId]);
 
   return (
     <Flex className={moveBoxStyle}>

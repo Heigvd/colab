@@ -74,15 +74,15 @@ export default function CardEditorToolbox({
   docOwnership,
   prefixElement,
 }: Props): JSX.Element {
-  const { setSelectedId, selectedId, selectedOwnKind, setEditMode, TXToptions, editToolbar } =
+  const { setSelectedDocId, selectedDocId, selectedOwnKind, setEditMode, TXToptions, editToolbar } =
     React.useContext(CardEditorCTX);
   const showTree = TXToptions?.showTree || false;
   const dispatch = useAppDispatch();
 
   const selectedDocument = useAppSelector(state => {
     let document = undefined;
-    if (selectedId) {
-      const doc = state.document.documents[selectedId];
+    if (selectedDocId) {
+      const doc = state.document.documents[selectedDocId];
       if (entityIs(doc, 'Document')) {
         document = doc;
       }
@@ -94,7 +94,9 @@ export default function CardEditorToolbox({
   const isLink = entityIs(selectedDocument, 'ExternalLink');
   const isDoc = entityIs(selectedDocument, 'DocumentFile');
 
-  const downloadUrl = API.getRestClient().DocumentFileRestEndPoint.getFileContentPath(selectedId!);
+  const downloadUrl = API.getRestClient().DocumentFileRestEndPoint.getFileContentPath(
+    selectedDocId!,
+  );
 
   const downloadCb = React.useCallback(() => {
     window.open(downloadUrl);
@@ -107,7 +109,7 @@ export default function CardEditorToolbox({
   return (
     <Flex align="center" className={cx(toolboxContainerStyle, { [closedToolboxStyle]: !open })}>
       {prefixElement}
-      <BlockCreatorButtons docOwnership={docOwnership} selectedBlockId={selectedId || null} />
+      <BlockCreatorButtons docOwnership={docOwnership} selectedBlockId={selectedDocId || null} />
       {selectedDocument != (undefined || null) && docOwnership.kind === selectedOwnKind && (
         <>
           {isText && (
@@ -162,7 +164,10 @@ export default function CardEditorToolbox({
             />
           )}
           {isLink && selectedDocument.url && selectedDocument.url.length > 0 && (
-            <OpenLinkButton url={selectedDocument.url} openUrl={() => openUrl(selectedDocument.url)}/>
+            <OpenLinkButton
+              url={selectedDocument.url}
+              openUrl={() => openUrl(selectedDocument.url)}
+            />
           )}
           {!isText && (
             <IconButton
@@ -191,24 +196,24 @@ export default function CardEditorToolbox({
               </p>
             }
             onConfirm={() => {
-              if (selectedId) {
+              if (selectedDocId) {
                 if (selectedDocument.owningCardContentId != null) {
                   dispatch(
                     API.removeDeliverable({
                       cardContentId: selectedDocument.owningCardContentId,
-                      documentId: selectedId,
+                      documentId: selectedDocId,
                     }),
                   );
                 } else if (selectedDocument.owningResourceId != null) {
                   dispatch(
                     API.removeDocumentOfResource({
                       resourceId: selectedDocument.owningResourceId,
-                      documentId: selectedId,
+                      documentId: selectedDocId,
                     }),
                   );
                 }
               }
-              setSelectedId(undefined);
+              setSelectedDocId(undefined);
             }}
           />
           <div
@@ -223,7 +228,7 @@ export default function CardEditorToolbox({
               title={'Move block up'}
               className={lightIconButtonStyle}
               onClick={() => {
-                dispatch(API.moveDocumentUp(selectedId!));
+                dispatch(API.moveDocumentUp(selectedDocId!));
               }}
             />
             <IconButton
@@ -231,7 +236,7 @@ export default function CardEditorToolbox({
               title={'Move block down'}
               className={lightIconButtonStyle}
               onClick={() => {
-                dispatch(API.moveDocumentDown(selectedId!));
+                dispatch(API.moveDocumentDown(selectedDocId!));
               }}
             />
           </div>
