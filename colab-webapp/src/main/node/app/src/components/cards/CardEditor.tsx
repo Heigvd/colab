@@ -46,8 +46,8 @@ import ResourcesWrapper from '../resources/ResourcesWrapper';
 import StickyNoteWrapper from '../stickynotes/StickyNoteWrapper';
 import {
   cardStyle,
-  cardTitle,
   lightIconButtonStyle,
+  localTitleStyle,
   space_M,
   space_S,
   variantTitle,
@@ -314,31 +314,31 @@ export default function CardEditor({ card, variant, showSubcards = true }: Props
                         )}
                         <Flex align="center">
                           <InlineInputNew
+                            value={card.title || ''}
                             placeholder={i18n.card.untitled}
                             readOnly={readOnly}
-                            value={card.title || ''}
                             onChange={newValue =>
                               dispatch(API.updateCard({ ...card, title: newValue }))
                             }
-                            className={cardTitle}
+                            className={localTitleStyle}
                             autosave
                           />
                           {hasVariants && (
                             <>
                               <span className={variantTitle}>&#xFE58;</span>
                               <InlineInputNew
-                                className={variantTitle}
                                 value={
                                   variant.title && variant.title.length > 0
                                     ? variant.title
                                     : `Variant ${variantNumber}`
                                 }
-                                readOnly={readOnly}
                                 placeholder={i18n.content.untitled}
+                                readOnly={readOnly}
                                 onChange={newValue =>
                                   dispatch(API.updateCardContent({ ...variant, title: newValue }))
                                 }
                                 autosave={false}
+                                className={variantTitle}
                               />
                             </>
                           )}

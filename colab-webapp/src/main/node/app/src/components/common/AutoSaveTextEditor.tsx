@@ -10,6 +10,8 @@ import { debounce } from 'lodash';
 import * as React from 'react';
 import IconButton from './IconButton';
 
+// not used anymore
+
 type State = {
   status: 'EDIT' | 'DISPLAY';
   currentValue: string;

@@ -6,15 +6,19 @@
  */
 
 import { css, cx } from '@emotion/css';
+import { faCaretDown, faCaretUp, faFilter } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React from 'react';
 import {
   borderRadius,
+  lightIconButtonStyle,
   lightLinkStyle,
   lightTheme,
   noOutlineStyle,
   space_M,
   space_S,
 } from '../styling/style';
+import Clickable from './Clickable';
 import Flex from './Flex';
 import Checkbox from './Form/Checkbox';
 
@@ -23,7 +27,7 @@ const categoryTabStyle = cx(
   css({
     padding: '0 ' + space_S,
     color: 'var(--darkGray)',
-    margin: space_S,
+    marginRight: space_S,
     borderRadius: borderRadius,
     border: '1px solid var(--darkGray)',
     userSelect: 'none',
@@ -57,43 +61,60 @@ export default function FilterableList({
   stateSelectAll,
   toggleAllTags,
 }: FilterableListProps): JSX.Element {
+  const [filterOpen, setFilterOpen] = React.useState<boolean>(false);
   return (
     <Flex className={className} direction="column" align="stretch">
-      <Flex justify="space-between" align="center">
-        <Flex wrap="wrap">
-          {tags.map(cat => {
-            return (
-              <div
-                className={cx(
-                  categoryTabStyle,
-                  {
-                    [checkedCategoryTabStyle]: tagState && tagState[cat],
-                  },
-                  tagClassName,
-                )}
-                key={cat}
-              >
-                <Checkbox
-                  key={cat}
-                  label={cat}
-                  value={tagState && tagState[cat]}
-                  onChange={t => onChange(t, cat)}
-                  className={cx(noOutlineStyle, {
-                    [checkedCategoryTabStyle]: tagState && tagState[cat],
-                  })}
-                />
-              </div>
-            );
-          })}
-        </Flex>
-        <Checkbox
-          key={'toggle all'}
-          label={stateSelectAll ? 'Deselect all' : 'Select all'}
-          value={stateSelectAll}
-          onChange={t => toggleAllTags(t)}
-          className={css({ paddingLeft: space_M })}
-          containerClassName={cx(lightLinkStyle, css({ '&:hover': { textDecoration: 'none' } }))}
+      <Clickable clickableClassName={cx(lightIconButtonStyle, css({ alignSelf: 'flex-end', '&:hover': {cursor: 'pointer'} }))} onClick={() => setFilterOpen(filterOpen => !filterOpen)}>
+        <FontAwesomeIcon
+          icon={faFilter}
+          size='sm'
         />
+        {' Filter '}
+        <FontAwesomeIcon icon={filterOpen ? faCaretUp : faCaretDown} />
+      </Clickable>
+
+      <Flex justify={filterOpen ? 'space-between' : 'flex-end'} align="center">
+        {filterOpen && (
+          <>
+            <Flex wrap="wrap">
+              {tags.map(cat => {
+                return (
+                  <div
+                    className={cx(
+                      categoryTabStyle,
+                      {
+                        [checkedCategoryTabStyle]: tagState && tagState[cat],
+                      },
+                      tagClassName,
+                    )}
+                    key={cat}
+                  >
+                    <Checkbox
+                      key={cat}
+                      label={cat}
+                      value={tagState && tagState[cat]}
+                      onChange={t => onChange(t, cat)}
+                      className={cx(noOutlineStyle, {
+                        [checkedCategoryTabStyle]: tagState && tagState[cat],
+                      })}
+                    />
+                  </div>
+                );
+              })}
+            </Flex>
+            <Checkbox
+              key={'toggle all'}
+              label={stateSelectAll ? 'Deselect all' : 'Select all'}
+              value={stateSelectAll}
+              onChange={t => toggleAllTags(t)}
+              className={css({ paddingLeft: space_M })}
+              containerClassName={cx(
+                lightLinkStyle,
+                css({ '&:hover': { textDecoration: 'none' } }),
+              )}
+            />
+          </>
+        )}
       </Flex>
     </Flex>
   );
