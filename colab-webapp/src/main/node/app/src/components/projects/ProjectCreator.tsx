@@ -160,6 +160,7 @@ export default function ProjectCreator({
         </Flex>
       )}
       widthMax
+      heightMax
     >
       {() => {
         return (
