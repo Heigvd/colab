@@ -12,7 +12,7 @@ import * as API from '../../API/api';
 import { useAppDispatch } from '../../store/hooks';
 import { CardEditorCTX } from '../cards/CardEditor';
 import DropDownMenu from '../common/DropDownMenu';
-import { IconButtonProps } from '../common/IconButton';
+import IconButton, { IconButtonProps } from '../common/IconButton';
 import { DocumentKind, DocumentOwnership } from './documentCommonType';
 
 function iconByType(docKind: DocumentKind): IconProp {
@@ -48,7 +48,7 @@ function iconLayerByType(docKind: DocumentKind): IconButtonProps['layer'] {
 export type DocumentCreatorButtonProps = {
   docOwnership: DocumentOwnership;
   title: string;
-  // isFirstDoc?: boolean;
+  isAdditionAlwaysAtEnd?: boolean;
   docKind: DocumentKind;
   className?: string;
 };
@@ -56,7 +56,7 @@ export type DocumentCreatorButtonProps = {
 export default function DocumentCreatorButton({
   docOwnership,
   title,
-  // isFirstDoc,
+  isAdditionAlwaysAtEnd,
   docKind,
   className,
 }: DocumentCreatorButtonProps): JSX.Element {
@@ -144,36 +144,36 @@ export default function DocumentCreatorButton({
   );
 
   return (
-    // <>
-    //   {isFirstDoc ? (
-    //     <IconButton
-    //       icon={iconByType(docKind)}
-    //       layer={iconLayerByType(docKind)}
-    //       title={title}
-    //       onClick={() => createDoc('AFTER')}
-    //       className={className}
-    //     />
-    //   ) : (
-    <DropDownMenu
-      icon={iconByType(docKind)}
-      layerForIcon={iconLayerByType(docKind)}
-      title={title}
-      valueComp={{ value: '', label: '' }}
-      buttonClassName={className}
-      entries={[
-        {
-          value: IsSelectedInKind ? 'before' : 'begin',
-          label: IsSelectedInKind ? 'Before' : 'On top',
-          action: () => createDoc('BEFORE'),
-        },
-        {
-          value: IsSelectedInKind ? 'after' : 'end',
-          label: IsSelectedInKind ? 'After' : 'At the end',
-          action: () => createDoc('AFTER'),
-        },
-      ]}
-    />
-    //   )}
-    // </>
+    <>
+      {isAdditionAlwaysAtEnd ? (
+        <IconButton
+          icon={iconByType(docKind)}
+          layer={iconLayerByType(docKind)}
+          title={title}
+          onClick={() => createDoc('AFTER')}
+          className={className}
+        />
+      ) : (
+        <DropDownMenu
+          icon={iconByType(docKind)}
+          layerForIcon={iconLayerByType(docKind)}
+          title={title}
+          valueComp={{ value: '', label: '' }}
+          buttonClassName={className}
+          entries={[
+            {
+              value: IsSelectedInKind ? 'before' : 'begin',
+              label: IsSelectedInKind ? 'Before' : 'On top',
+              action: () => createDoc('BEFORE'),
+            },
+            {
+              value: IsSelectedInKind ? 'after' : 'end',
+              label: IsSelectedInKind ? 'After' : 'At the end',
+              action: () => createDoc('AFTER'),
+            },
+          ]}
+        />
+      )}
+    </>
   );
 }

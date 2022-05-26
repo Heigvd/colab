@@ -20,6 +20,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { entityIs } from 'colab-rest-client';
 import * as React from 'react';
 import * as API from '../../API/api';
+import { useAndLoadNbDocuments } from '../../selectors/documentSelector';
 import { useUrlMetadata } from '../../selectors/externalDataSelector';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import ConfirmDeleteModal from '../common/ConfirmDeleteModal';
@@ -255,6 +256,8 @@ export function BlockCreatorButtons({
   docOwnership,
   selectedBlockId,
 }: BlockButtonsProps): JSX.Element {
+  const { nb } = useAndLoadNbDocuments(docOwnership);
+
   return (
     <>
       <Flex className={cx({ [borderRightStyle]: !!selectedBlockId })}>
@@ -263,18 +266,21 @@ export function BlockCreatorButtons({
           docKind="TextDataBlock"
           title="add a text block"
           className={toolboxButtonStyle}
+          isAdditionAlwaysAtEnd={nb < 1}
         />
         <DocumentCreatorButton
           docOwnership={docOwnership}
           docKind="DocumentFile"
           title="add a file"
           className={toolboxButtonStyle}
+          isAdditionAlwaysAtEnd={nb < 1}
         />
         <DocumentCreatorButton
           docOwnership={docOwnership}
           docKind="ExternalLink"
           title="add a link"
           className={toolboxButtonStyle}
+          isAdditionAlwaysAtEnd={nb < 1}
         />
       </Flex>
     </>
