@@ -30,6 +30,7 @@ function makeCardTypeOnOneSOwn(cardType: CardTypeOnly): CardTypeAllInOne {
   return {
     kind: 'own',
 
+    id: cardType.id,
     ownId: cardType.id,
     cardTypeId: cardType.id,
 
@@ -66,6 +67,7 @@ function makeCardTypeWithRef(
   return {
     kind: 'referenced',
 
+    id: ref.id,
     ownId: ref.id,
     cardTypeId: cardType.id,
 

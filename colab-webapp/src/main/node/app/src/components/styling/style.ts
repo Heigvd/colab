@@ -76,7 +76,7 @@ export const normalThemeMode = css({
   backgroundColor: 'var(--bgColor)',
   color: 'var(--fgColor)',
   p: {
-    margin: '5px 0',
+    margin: '0 0 5px 0',
   },
   'h1, h2, h3, h4': {
     margin: '0 0 5px 0',
@@ -487,14 +487,20 @@ export const lightText = css({
 
 export const multiLineEllipsis = css({
   display: '-webkit-box',
-  //textOverflow: 'ellipsis',
-  '-webkit-line-clamp': '2',
-  '-webkit-box-orient': 'vertical',
+  WebkitLineClamp: '2',
+  WebkitBoxOrient: 'vertical',
+  overflow: 'hidden',
+});
+export const oneLineEllipsis = css({
+  display: '-webkit-box',
+  WebkitLineClamp: '1',
+  WebkitBoxOrient: 'vertical',
   overflow: 'hidden',
 });
 export const ellipsis = css({
   overflow: 'hidden',
   textOverflow: 'ellipsis',
+  whiteSpace: 'nowrap',
 });
 
 export const voidStyle = css({
