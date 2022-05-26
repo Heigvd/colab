@@ -381,6 +381,18 @@ export default function Editor(): JSX.Element {
   });
 
   React.useEffect(() => {
+    if (window && window.top && window.top.document) {
+      if (project) {
+        if (project.name) {
+          window.top.document.title = 'co.LAB - ' + project?.name;
+        }
+      } else {
+        window.top.document.title = 'co.LAB';
+      }
+    }
+  }, [project, project?.name]);
+
+  React.useEffect(() => {
     if (entityIs(root, 'Card') && root.id != null && rootContent === undefined) {
       dispatch(API.getCardContents(root.id));
     }

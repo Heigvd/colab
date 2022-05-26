@@ -86,7 +86,7 @@ const ProjectDisplay = ({ project }: ProjectDisplayProps) => {
                 </>
               ),
               //action: () => navigate(`/editor/${project.id}`),
-              action: () => window.open(`#/editor/${project.id}`,'_blank'),
+              action: () => window.open(`#/editor/${project.id}`, '_blank'),
             },
             {
               value: 'Duplicate project',
@@ -171,7 +171,7 @@ const ProjectDisplay = ({ project }: ProjectDisplayProps) => {
         <Button
           icon={faEdit}
           //onClick={() => navigate(`/editor/${project.id}`)}
-          onClick={() => window.open(`#/editor/${project.id}`,'_blank')}
+          onClick={() => window.open(`#/editor/${project.id}`, '_blank')}
           className={cx(css({ margin: 'auto' }), invertedButtonStyle)}
         >
           Edit
@@ -237,6 +237,10 @@ export const UserProjects = (): JSX.Element => {
   );
 
   const status = useAppSelector(state => state.projects.status);
+
+  if (window && window.top && window.top.document) {
+    window.top.document.title = 'co.LAB';
+  }
 
   return <ProjectList projects={projects} status={status} reload={API.getUserProjects} />;
 };
