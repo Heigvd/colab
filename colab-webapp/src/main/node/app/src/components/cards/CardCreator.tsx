@@ -57,16 +57,14 @@ export default function CardCreator({
 
   const [selectedType, setSelectedType] = React.useState<number | null>(null);
 
- const createCard = () => {
-  dispatch(
-    API.createSubCardWithTextDataBlock({
-      parent: parentCardContent,
-      cardTypeId: selectedType,
-    }),
-  ).then(() => {
-    close();
-  });
-}
+  const createCard = () => {
+    dispatch(
+      API.createSubCardWithTextDataBlock({
+        parent: parentCardContent,
+        cardTypeId: selectedType,
+      }),
+    );
+  };
 
   return (
     <OpenCloseModal
@@ -117,14 +115,15 @@ export default function CardCreator({
       )}
       showCloseButton
     >
-      {(close) => {
+      {close => {
         if (status !== 'READY') {
           return <AvailabilityStatusIndicator status={status} />;
         } else {
           return (
             <div className={css({ width: '100%', textAlign: 'left' })}>
-              {projectTags && projectTags.length > 0 && (<>
-                {/* <FilterableList
+              {projectTags && projectTags.length > 0 && (
+                <>
+                  {/* <FilterableList
                   tags={projectTags}
                   onChange={(t, cat) =>
                     setTagState(state => {
@@ -158,7 +157,7 @@ export default function CardCreator({
                 }}
                 thumbnailClassName={cardTypeThumbnailStyle}
               /> */}
-              <CustomElementsList
+                  <CustomElementsList
                     items={cardTypes}
                     loadingStatus={status}
                     thumbnailContent={item => {
@@ -169,18 +168,20 @@ export default function CardCreator({
                       );
                     }}
                     customThumbnailStyle={cx(cardTypeThumbnailStyle)}
-                    customOnClick={(item) => setSelectedType(item?.id ? item.id : null)}
+                    customOnClick={item => setSelectedType(item?.id ? item.id : null)}
                     customOnDblClick={() => {
                       createCard();
                       close();
                     }}
                     addEmptyItem
                     selectionnable
-              />
-            </>
-            
-          )}
-        </div>)}}}
+                  />
+                </>
+              )}
+            </div>
+          );
+        }
+      }}
     </OpenCloseModal>
   );
 }
