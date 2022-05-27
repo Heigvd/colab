@@ -64,7 +64,7 @@ export default function ProjectCreator({
     if (status === 'chooseModel') {
       setTitle('Create new project : choose a model');
     } else if (status === 'fillBasisData' && data.projectModel) {
-      setTitle('Create new project from ' + data.projectModel.name);
+      setTitle('Create new project : ' + data.projectModel.name);
     } else {
       setTitle('Create new project');
     }
