@@ -403,7 +403,7 @@ export default function Team({ project }: Props): JSX.Element {
           ))}
         </div>
         <div>
-          <p className={textSmall}>Invite new members</p>
+          <p className={textSmall}>Invite new member</p>
           <input
             placeholder="email"
             type="text"
@@ -417,13 +417,13 @@ export default function Team({ project }: Props): JSX.Element {
             title="Send"
             isLoading={invite.length > 0}
             onClick={() => {
-              
               dispatch(
                 API.sendInvitation({
                   projectId: project.id!,
                   recipient: invite,
                 }),
-              ).then(() => setInvite(''))}}
+              ).then(() => setInvite(''));
+            }}
           />
         </div>
       </>
