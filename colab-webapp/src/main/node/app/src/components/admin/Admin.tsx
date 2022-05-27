@@ -17,9 +17,11 @@ import MainPanel from './MainPanel';
 import Who from './Who';
 
 export default function Admin(): JSX.Element {
-  if (window && window.top && window.top.document) {
-    window.top.document.title = 'co.LAB';
-  }
+  React.useEffect(() => {
+    if (window && window.top && window.top.document) {
+      window.top.document.title = 'co.LAB';
+    }
+  }, []);
 
   return (
     <div className={css({ padding: space_L })}>

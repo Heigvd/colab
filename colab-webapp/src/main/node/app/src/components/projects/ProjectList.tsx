@@ -238,9 +238,11 @@ export const UserProjects = (): JSX.Element => {
 
   const status = useAppSelector(state => state.projects.status);
 
-  if (window && window.top && window.top.document) {
-    window.top.document.title = 'co.LAB';
-  }
+  React.useEffect(() => {
+    if (window && window.top && window.top.document) {
+      window.top.document.title = 'co.LAB';
+    }
+  }, []);
 
   return <ProjectList projects={projects} status={status} reload={API.getUserProjects} />;
 };

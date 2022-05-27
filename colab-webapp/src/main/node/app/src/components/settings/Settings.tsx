@@ -23,9 +23,11 @@ export default function Settings(): JSX.Element {
   const accounts = useCurrentUserAccounts();
   const { currentUser } = useCurrentUser();
 
-  if (window && window.top && window.top.document) {
-    window.top.document.title = 'co.LAB';
-  }
+  React.useEffect(() => {
+    if (window && window.top && window.top.document) {
+      window.top.document.title = 'co.LAB';
+    }
+  }, []);
 
   if (currentUser && accounts != 'LOADING') {
     return (
