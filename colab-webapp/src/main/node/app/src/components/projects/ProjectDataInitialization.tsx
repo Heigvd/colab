@@ -22,10 +22,11 @@ import {
   space_S,
   textSmall,
 } from '../styling/style';
-import { ProjectBasisData } from './ProjectCreator';
+import { ProjectCreationData } from './ProjectCreator';
 
 interface ProjectDataInitializationProps {
-  data: ProjectBasisData;
+  data: ProjectCreationData;
+  readOnly?: boolean;
   setName: (value: string) => void;
   setDescription: (value: string) => void;
   addGuest: (emailAddress: string) => void;
@@ -34,6 +35,7 @@ interface ProjectDataInitializationProps {
 
 export default function ProjectDataInitialization({
   data,
+  readOnly,
   setName,
   setDescription,
   addGuest,
@@ -48,11 +50,17 @@ export default function ProjectDataInitialization({
         align="stretch"
         className={css({ width: '50%', minWidth: '50%', marginRight: space_L })}
       >
-        <Input label="Project name" value={data.name} onChange={name => setName(name)} mandatory />
+        <Input
+          label="Project name"
+          value={data.name}
+          readonly={readOnly}
+          onChange={name => setName(name)}
+        />
         <Input
           label="Project description"
           inputType="textarea"
           value={data.description}
+          readonly={readOnly}
           onChange={description => {
             setDescription(description);
           }}
@@ -64,6 +72,7 @@ export default function ProjectDataInitialization({
               type: 'text',
               label: 'Invite members',
               isMandatory: false,
+              readonly: readOnly,
               placeholder: 'email',
               isErroneous: value => value.email.match('.*@.*') == null,
               errorMessage: i18n.emailAddressNotValid,
@@ -74,8 +83,10 @@ export default function ProjectDataInitialization({
           className={css({ flexDirection: 'row', alignItems: 'flex-end' })}
           buttonClassName={cx(css({ alignSelf: 'flex-end', margin: space_S }), invertedButtonStyle)}
           onSubmit={fields => {
-            addGuest(fields.email);
-            fields.email = '';
+            if (!readOnly) {
+              addGuest(fields.email);
+              fields.email = '';
+            }
           }}
         />
 
@@ -83,12 +94,14 @@ export default function ProjectDataInitialization({
           {data.guests.map(guest => (
             <Flex align="center" key={guest} className={css({ marginTop: space_S })}>
               <Flex className={textSmall}>{guest}</Flex>
-              <ConfirmIconButton
-                icon={faTrash}
-                title="Remove guest"
-                onConfirm={() => removeGuest(guest)}
-                className={lightIconButtonStyle}
-              />
+              {!readOnly && (
+                <ConfirmIconButton
+                  icon={faTrash}
+                  title="Remove guest"
+                  onConfirm={() => removeGuest(guest)}
+                  className={lightIconButtonStyle}
+                />
+              )}
             </Flex>
           ))}
         </Flex>

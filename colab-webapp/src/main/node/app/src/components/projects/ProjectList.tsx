@@ -215,7 +215,7 @@ function ProjectList({ projects, status, reload }: ProjectListProps) {
               }
             })}
         </div>
-        {/* Is there any right checks for creating a project? */}
+        {/* Note : any authenticated user can create a project */}
         <ProjectCreator collapsedButtonClassName={fixedButtonStyle} />
       </div>
     );
