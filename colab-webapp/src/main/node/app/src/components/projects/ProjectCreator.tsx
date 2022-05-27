@@ -185,9 +185,11 @@ export default function ProjectCreator({
                 setName={name => setData({ ...data, name: name })}
                 setDescription={description => setData({ ...data, description: description })}
                 addGuest={guestEmailAddress => {
-                  const guests = data.guests;
-                  guests.push(guestEmailAddress);
-                  setData({ ...data, guests: guests });
+                  if (guestEmailAddress != null && guestEmailAddress.length > 0) {
+                    const guests = data.guests;
+                    guests.push(guestEmailAddress);
+                    setData({ ...data, guests: guests });
+                  }
                 }}
                 removeGuest={guestEmailAddress => {
                   const guests = data.guests;
