@@ -168,7 +168,7 @@ export function ResourceDisplay({ resource, goBackToList }: ResourceDisplayProps
               {text => (
                 <InlineInputNew
                   value={text || ''}
-                  placeholder={'Fill the teaser'}
+                  placeholder="There is no teaser for the moment. Feel free to fill it."
                   readOnly={readOnly}
                   onChange={(newValue: string) => {
                     if (targetResource.teaserId) {
