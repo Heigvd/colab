@@ -64,6 +64,10 @@ export default function CardCreator({
     );
   };
 
+  const resetData = React.useCallback(() => {
+    setSelectedType(null);
+  }, []);
+
   return (
     <OpenCloseModal
       title={
@@ -104,6 +108,7 @@ export default function CardCreator({
             title="Create card"
             onClick={() => {
               createCard();
+              resetData();
               close();
             }}
           >
@@ -123,16 +128,13 @@ export default function CardCreator({
                 items={cardTypes}
                 loadingStatus={status}
                 thumbnailContent={item => {
-                  return (
-                    <>
-                      <CardTypeThumbnail cardType={item} usage="currentProject" />
-                    </>
-                  );
+                  return <CardTypeThumbnail cardType={item} usage="currentProject" />;
                 }}
                 customThumbnailStyle={cx(cardTypeThumbnailStyle)}
                 customOnClick={item => setSelectedType(item?.id ? item.id : null)}
                 customOnDblClick={() => {
                   createCard();
+                  resetData();
                   close();
                 }}
                 addEmptyItem
