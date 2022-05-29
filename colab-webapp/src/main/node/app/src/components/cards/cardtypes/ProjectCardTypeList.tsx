@@ -28,7 +28,6 @@ const customThumbStyle = css({
   backgroundColor: 'var(--bgColor)',
 });
 
-
 /**
  * Allow to handle card types of a project :
  *
@@ -81,13 +80,13 @@ export default function ProjectCardTypeList(): JSX.Element {
                 items={projectCardTypes}
                 loadingStatus={projectCTStatus}
                 thumbnailContent={item => {
-                  return (
-                    <>
-                      <CardTypeThumbnail cardType={item} usage="currentProject" editable />
-                    </>
-                  );
+                  return <CardTypeThumbnail cardType={item} usage="currentProject" editable />;
                 }}
-                customOnDblClick={(item) => {if(item) {navigate(`./edit/${item.ownId}`)}}}
+                customOnDblClick={item => {
+                  if (item) {
+                    navigate(`./edit/${item.ownId}`);
+                  }
+                }}
                 customThumbnailStyle={cx(cardTypeThumbnailStyle, customThumbStyle)}
                 selectionnable={false}
               />
@@ -110,33 +109,15 @@ export default function ProjectCardTypeList(): JSX.Element {
               {availableCTStatus !== 'READY' ? (
                 <AvailabilityStatusIndicator status={availableCTStatus} />
               ) : availableCardTypes.length > 0 ? (
-                <>
-                  <CustomElementsList
-                    items={availableCardTypes}
-                    loadingStatus={availableCTStatus}
-                    thumbnailContent={item => {
-                      return (
-                        <>
-                          <CardTypeThumbnail cardType={item} usage="currentProject" />
-                        </>
-                      );
-                    }}
-                    customThumbnailStyle={cx(cardTypeThumbnailStyle, customThumbStyle)}
-                    selectionnable={false}
-                  />
-                  {/* <CardTypeListWithFilter
-                  dataWithTags={availableCardTypes}
-                  filterClassName={css({ paddingBottom: space_S })}
-                >
-                  {filteredCardTypes => (
-                    <div className={flexWrap}>
-                      {(filteredCardTypes as CardTypeAllInOne[]).map(cardType => (
-                        <CardTypeItem key={cardType.ownId} cardType={cardType} usage="available" />
-                      ))}
-                    </div>
-                  )}
-                </CardTypeListWithFilter> */}
-                </>
+                <CustomElementsList
+                  items={availableCardTypes}
+                  loadingStatus={availableCTStatus}
+                  thumbnailContent={item => {
+                    return <CardTypeThumbnail cardType={item} usage="available" />;
+                  }}
+                  customThumbnailStyle={cx(cardTypeThumbnailStyle, customThumbStyle)}
+                  selectionnable={false}
+                />
               ) : (
                 <div className={voidStyle}>
                   <p>There are no available external card types</p>
