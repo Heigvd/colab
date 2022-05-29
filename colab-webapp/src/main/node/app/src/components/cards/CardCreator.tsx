@@ -9,7 +9,6 @@ import { css, cx } from '@emotion/css';
 import { ReactJSXElement } from '@emotion/react/types/jsx-namespace';
 import { faCog, faPlus } from '@fortawesome/free-solid-svg-icons';
 import { CardContent } from 'colab-rest-client';
-import { uniq } from 'lodash';
 import * as React from 'react';
 import { useNavigate } from 'react-router-dom';
 import * as API from '../../API/api';
@@ -53,7 +52,6 @@ export default function CardCreator({
   const dispatch = useAppDispatch();
   const { cardTypes, status } = useAndLoadProjectCardTypes();
   const navigate = useNavigate();
-  const projectTags = uniq([...cardTypes].flatMap(cardType => (cardType ? cardType.tags : [])));
 
   const [selectedType, setSelectedType] = React.useState<number | null>(null);
 
@@ -121,63 +119,25 @@ export default function CardCreator({
         } else {
           return (
             <div className={css({ width: '100%', textAlign: 'left' })}>
-              {projectTags && projectTags.length > 0 && (
-                <>
-                  {/* <FilterableList
-                  tags={projectTags}
-                  onChange={(t, cat) =>
-                    setTagState(state => {
-                      return { ...state, [cat]: t };
-                    })
-                  }
-                  tagState={tagState}
-                  stateSelectAll={selectAllTags}
-                  toggleAllTags={toggleAllTags}
-                  className={css({
-                    displax: 'flex',
-                    alignItems: 'stretch',
-                    flexDirection: 'column',
-                  })}
-                />
-              )}
-              <ItemThumbnailsSelection<CardTypeAllInOne>
-                items={cardTypeFilteredByTag}
-                onItemClick={(item) => onSelect(item)}
-                addEmptyItem
-                defaultSelectedValue={null}
-                fillThumbnail={item => {
+              <CustomElementsList
+                items={cardTypes}
+                loadingStatus={status}
+                thumbnailContent={item => {
                   return (
                     <>
-                        <CardTypeThumbnail
-                          cardType={item}
-                          usage='currentProject'
-                        />
+                      <CardTypeThumbnail cardType={item} usage="currentProject" />
                     </>
                   );
                 }}
-                thumbnailClassName={cardTypeThumbnailStyle}
-              /> */}
-                  <CustomElementsList
-                    items={cardTypes}
-                    loadingStatus={status}
-                    thumbnailContent={item => {
-                      return (
-                        <>
-                          <CardTypeThumbnail cardType={item} usage="currentProject" />
-                        </>
-                      );
-                    }}
-                    customThumbnailStyle={cx(cardTypeThumbnailStyle)}
-                    customOnClick={item => setSelectedType(item?.id ? item.id : null)}
-                    customOnDblClick={() => {
-                      createCard();
-                      close();
-                    }}
-                    addEmptyItem
-                    selectionnable
-                  />
-                </>
-              )}
+                customThumbnailStyle={cx(cardTypeThumbnailStyle)}
+                customOnClick={item => setSelectedType(item?.id ? item.id : null)}
+                customOnDblClick={() => {
+                  createCard();
+                  close();
+                }}
+                addEmptyItem
+                selectionnable
+              />
             </div>
           );
         }
