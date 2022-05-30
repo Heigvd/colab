@@ -6,12 +6,7 @@
  */
 
 import { css, cx } from '@emotion/css';
-import {
-  faEdit,
-  faEllipsisV,
-  faTrash,
-  faUmbrella,
-} from '@fortawesome/free-solid-svg-icons';
+import { faEdit, faEllipsisV, faTrash, faUmbrella } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { AsyncThunk } from '@reduxjs/toolkit';
 import { Project } from 'colab-rest-client';
@@ -27,9 +22,9 @@ import InlineInputNew from '../common/InlineInputNew';
 import InlineLoading from '../common/InlineLoading';
 import {
   cardStyle,
-  cardTitle,
   fixedButtonStyle,
   invertedButtonStyle,
+  localTitleStyle,
   space_M,
 } from '../styling/style';
 import ProjectCreator from './ProjectCreator';
@@ -71,10 +66,10 @@ const ProjectDisplay = ({ project }: ProjectDisplayProps) => {
         })}
       >
         <InlineInputNew
-          placeholder="New project"
           value={project.name || ''}
+          placeholder="New project"
           onChange={newValue => dispatch(API.updateProject({ ...project, name: newValue }))}
-          className={cardTitle}
+          className={localTitleStyle}
           maxWidth="80%"
         />
         <DropDownMenu
@@ -137,11 +132,16 @@ const ProjectDisplay = ({ project }: ProjectDisplayProps) => {
         })}
       >
         <InlineInputNew
-          placeholder="Write a description here"
           value={project.description || ''}
+          placeholder="Fill the description"
           onChange={newValue => dispatch(API.updateProject({ ...project, description: newValue }))}
           inputType="textarea"
-          className={css({maxWidth: '100%', minWidth: '100%', minHeight: '100px', maxHeight: '100px'})}
+          className={css({
+            maxWidth: '100%',
+            minWidth: '100%',
+            minHeight: '100px',
+            maxHeight: '100px',
+          })}
         />
         {/* 
         //FUTURE block of infos on the project

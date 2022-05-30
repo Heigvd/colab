@@ -45,13 +45,13 @@ const moveBoxStyle = css({
 
 export interface DocumentEditorProps {
   doc: Document;
-  allowEdition: boolean;
+  allowEdition?: boolean;
   docOwnership: DocumentOwnership;
 }
 
 export default function DocumentEditor({
   doc,
-  allowEdition,
+  allowEdition = true,
   docOwnership,
 }: DocumentEditorProps): JSX.Element {
   const dispatch = useAppDispatch();

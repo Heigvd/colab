@@ -12,6 +12,7 @@ export interface CardTypeOnOneSOwn {
   kind: 'own';
 
   ownId: CardType['id'];
+  id: CardType['id'];
   cardTypeId: CardType['id'];
 
   deprecated: CardType['deprecated'];
@@ -30,6 +31,7 @@ export interface CardTypeWithRef {
   kind: 'referenced'; // | 'global'
 
   ownId: CardTypeRef['id'];
+  id: CardTypeRef['id'];
   cardTypeId: CardType['id'];
 
   refChain: CardTypeRef[];

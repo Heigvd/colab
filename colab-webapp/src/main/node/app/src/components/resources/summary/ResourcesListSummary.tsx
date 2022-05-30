@@ -20,16 +20,14 @@ export default function ResourcesListSummary(context: ResourceCallContext): JSX.
   }
 
   return (
-    <div
-      title={
+    <>
+      <FontAwesomeIcon icon={faPaperclip} title={
         !nb
           ? 'It does not contain any resource'
           : nb == 1
           ? 'It contains 1 resource'
           : 'It contains ' + nb + ' resources'
-      }
-    >
-      <FontAwesomeIcon icon={faPaperclip} /> {nb}
-    </div>
+      } /> {nb}
+    </>
   );
 }

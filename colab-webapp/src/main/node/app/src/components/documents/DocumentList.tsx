@@ -34,7 +34,7 @@ export default function DocumentList({
           <DocumentEditor
             key={doc.id}
             doc={doc}
-            allowEdition={allowEdition || true}
+            allowEdition={allowEdition}
             docOwnership={docOwnership}
           />
         ))}

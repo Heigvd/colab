@@ -4,9 +4,11 @@
  *
  * Licensed under the MIT License
  */
+
 import { css, cx } from '@emotion/css';
 import {
   faArrowLeft,
+  faCircleInfo,
   faCog,
   faSlash,
   faTools,
@@ -28,8 +30,8 @@ import OpenCloseModal from '../common/OpenCloseModal';
 import { DocTextWrapper } from '../documents/DocTextItem';
 import DocumentList from '../documents/DocumentList';
 import {
-  cardTitle,
   lightIconButtonStyle,
+  localTitleStyle,
   paddingAroundStyle,
   space_M,
   space_S,
@@ -37,27 +39,27 @@ import {
 } from '../styling/style';
 import { ResourceAndRef } from './ResourceCommonType';
 import { ResourceSettings } from './ResourceMiniDisplay';
+import TargetResourceSummary from './summary/TargetResourceSummary';
 
 export interface ResourceDisplayProps {
-  resourceAndRef: ResourceAndRef;
-  onClose: () => void;
+  resource: ResourceAndRef;
+  goBackToList: () => void;
 }
 
-export function ResourceDisplay({ resourceAndRef, onClose }: ResourceDisplayProps): JSX.Element {
+export function ResourceDisplay({ resource, goBackToList }: ResourceDisplayProps): JSX.Element {
+  const dispatch = useAppDispatch();
   const i18n = useTranslations();
 
-  const targetResourceId = resourceAndRef.targetResource.id;
-
-  const allowEdition = resourceAndRef.isDirectResource;
+  const [showTeaser, setShowTeaser] = React.useState(false);
   const [openToolbox, setOpenToolbox] = React.useState(true);
-  const { text: teaser } = useAndLoadTextOfDocument(resourceAndRef.targetResource.teaserId);
-  const dispatch = useAppDispatch();
+
+  const targetResource = resource.targetResource;
+  const readOnly = !resource.isDirectResource;
+
+  const { text: teaser } = useAndLoadTextOfDocument(targetResource.teaserId);
+
   return (
-    <Flex
-      align="stretch"
-      direction="column"
-      grow={1}
-    >
+    <Flex align="stretch" direction="column" grow={1}>
       <Flex direction="column" align="normal" className={paddingAroundStyle([1, 2, 4], space_M)}>
         <Flex
           justify="space-between"
@@ -68,25 +70,43 @@ export function ResourceDisplay({ resourceAndRef, onClose }: ResourceDisplayProp
           <IconButton
             icon={faArrowLeft}
             title="Back"
-            onClick={onClose}
+            onClick={goBackToList}
             className={lightIconButtonStyle}
           />
+
           <InlineInputNew
-            onChange={newValue =>
-              dispatch(API.updateResource({ ...resourceAndRef.targetResource, title: newValue }))
-            }
-            value={resourceAndRef.targetResource.title || i18n.resource.untitled}
+            value={targetResource.title || ''}
             placeholder={i18n.resource.untitled}
-            className={cardTitle}
+            readOnly={readOnly}
+            onChange={newValue =>
+              dispatch(API.updateResource({ ...targetResource, title: newValue }))
+            }
+            className={localTitleStyle}
           />
-          <Flex wrap='nowrap'>
-            <IconButton
-              icon={faTools}
-              layer={openToolbox ? { layerIcon: faSlash, transform: 'grow-1' } : undefined}
-              title={'Toggle toolbox'}
-              className={lightIconButtonStyle}
-              onClick={() => setOpenToolbox(openToolbox => !openToolbox)}
-            />
+
+          <Flex wrap="nowrap">
+            {(!readOnly || teaser) && (
+              <IconButton
+                icon={faCircleInfo}
+                title={showTeaser ? 'Hide teaser' : 'Show teaser'}
+                layer={showTeaser ? { layerIcon: faSlash, transform: 'grow-1' } : undefined}
+                className={lightIconButtonStyle}
+                onClick={() => setShowTeaser(showTeaser => !showTeaser)}
+              />
+            )}
+
+            {!readOnly && (
+              <IconButton
+                icon={faTools}
+                layer={openToolbox ? { layerIcon: faSlash, transform: 'grow-1' } : undefined}
+                title={openToolbox ? 'Hide toolbox' : 'Show toolbox'}
+                className={lightIconButtonStyle}
+                onClick={() => setOpenToolbox(openToolbox => !openToolbox)}
+              />
+            )}
+
+            <TargetResourceSummary resource={targetResource} iconClassName={lightIconButtonStyle} />
+
             <OpenCloseModal
               title="Document settings"
               showCloseButton={true}
@@ -100,42 +120,40 @@ export function ResourceDisplay({ resourceAndRef, onClose }: ResourceDisplayProp
             >
               {() => (
                 <>
-                  <ResourceSettings {...resourceAndRef} />
-                  {resourceAndRef.isDirectResource && (
+                  <ResourceSettings {...resource} />
+                  {resource.isDirectResource && (
                     <Destroyer
                       title="Delete this document"
                       icon={faTrashAlt}
                       onDelete={() => {
-                        dispatch(API.deleteResource(resourceAndRef.targetResource));
+                        dispatch(API.deleteResource(targetResource));
                       }}
                     />
                   )}
-                  {!resourceAndRef.isDirectResource && resourceAndRef.cardTypeResourceRef && (
+                  {!resource.isDirectResource && resource.cardTypeResourceRef && (
                     <Destroyer
                       title="Refuse at card type level"
                       icon={faTrash}
                       onDelete={() => {
-                        dispatch(API.removeAccessToResource(resourceAndRef.cardTypeResourceRef!));
+                        dispatch(API.removeAccessToResource(resource.cardTypeResourceRef!));
                       }}
                     />
                   )}
-                  {!resourceAndRef.isDirectResource && resourceAndRef.cardResourceRef && (
+                  {!resource.isDirectResource && resource.cardResourceRef && (
                     <Destroyer
                       title="Refuse at card level"
                       icon={faTrash}
                       onDelete={() => {
-                        dispatch(API.removeAccessToResource(resourceAndRef.cardResourceRef!));
+                        dispatch(API.removeAccessToResource(resource.cardResourceRef!));
                       }}
                     />
                   )}
-                  {!resourceAndRef.isDirectResource && resourceAndRef.cardContentResourceRef && (
+                  {!resource.isDirectResource && resource.cardContentResourceRef && (
                     <Destroyer
                       title="Refuse at variant level"
                       icon={faTrash}
                       onDelete={() => {
-                        dispatch(
-                          API.removeAccessToResource(resourceAndRef.cardContentResourceRef!),
-                        );
+                        dispatch(API.removeAccessToResource(resource.cardContentResourceRef!));
                       }}
                     />
                   )}
@@ -145,17 +163,18 @@ export function ResourceDisplay({ resourceAndRef, onClose }: ResourceDisplayProp
           </Flex>
         </Flex>
         <div>
-          {teaser && (
-            <DocTextWrapper id={resourceAndRef.targetResource.teaserId}>
+          {showTeaser && (
+            <DocTextWrapper id={targetResource.teaserId}>
               {text => (
                 <InlineInputNew
-                  placeholder={'Add a teaser'}
-                  value={text || 'Add a teaser'}
+                  value={text || ''}
+                  placeholder={'Fill the teaser'}
+                  readOnly={readOnly}
                   onChange={(newValue: string) => {
-                    if (resourceAndRef.targetResource.teaserId) {
+                    if (targetResource.teaserId) {
                       dispatch(
                         updateDocumentText({
-                          id: resourceAndRef.targetResource.teaserId,
+                          id: targetResource.teaserId,
                           textData: newValue,
                         }),
                       );
@@ -169,20 +188,23 @@ export function ResourceDisplay({ resourceAndRef, onClose }: ResourceDisplayProp
           )}
         </div>
       </Flex>
-      {allowEdition && targetResourceId && (
-        <CardEditorToolbox
-          open={openToolbox}
-          docOwnership={{ kind: 'PartOfResource', ownerId: targetResourceId }}
-          //prefixElement={<IconButton icon={faTimes} title={"Close toolbox"} onClick={() => setOpenToolbox(openToolbox => !openToolbox)} />}
-        />
-      )}
-      {targetResourceId && (
-        <div className={cx(paddingAroundStyle([2, 4], space_M), css({overflow: 'auto'}))}>
-        <DocumentList
-          docOwnership={{ kind: 'PartOfResource', ownerId: targetResourceId }}
-          allowEdition={allowEdition}
-        />
-        </div>
+
+      {targetResource.id && (
+        <>
+          {!readOnly && (
+            <CardEditorToolbox
+              open={openToolbox}
+              docOwnership={{ kind: 'PartOfResource', ownerId: targetResource.id }}
+              //prefixElement={<IconButton icon={faTimes} title={"Close toolbox"} onClick={() => setOpenToolbox(openToolbox => !openToolbox)} />}
+            />
+          )}
+          <div className={cx(paddingAroundStyle([2, 4], space_M), css({ overflow: 'auto' }))}>
+            <DocumentList
+              docOwnership={{ kind: 'PartOfResource', ownerId: targetResource.id }}
+              allowEdition={!readOnly}
+            />
+          </div>
+        </>
       )}
     </Flex>
   );

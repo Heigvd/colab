@@ -5,7 +5,7 @@
  * Licensed under the MIT License
  */
 
-import { css } from '@emotion/css';
+import { css, cx } from '@emotion/css';
 import { ReactJSXElement } from '@emotion/react/types/jsx-namespace';
 import { faCog, faPlus } from '@fortawesome/free-solid-svg-icons';
 import { CardContent } from 'colab-rest-client';
@@ -17,7 +17,7 @@ import { useAndLoadProjectCardTypes } from '../../selectors/cardTypeSelector';
 import { useAppDispatch } from '../../store/hooks';
 import AvailabilityStatusIndicator from '../common/AvailabilityStatusIndicator';
 import Button from '../common/Button';
-import FilterableList from '../common/FilterableList';
+import CustomElementsList from '../common/CustomElementsList';
 //import FilterableList from '../common/FilterableList';
 import Flex from '../common/Flex';
 import IconButton from '../common/IconButton';
@@ -29,20 +29,21 @@ import {
   space_M,
   space_S,
 } from '../styling/style';
-import CardTypeThumbnail, { EmptyCardTypeThumbnail } from './cardtypes/CardTypeThumbnail';
+import CardTypeThumbnail from './cardtypes/CardTypeThumbnail';
+
+export const cardTypeThumbnailStyle = css({
+  padding: space_M,
+  width: `calc(50% - 8px - 4*${space_S} - ${space_M})`,
+  minHeight: '85px',
+  maxHeight: '85px',
+  margin: space_S,
+});
 
 export interface CardCreatorProps {
   parentCardContent: CardContent;
   customButton?: ReactJSXElement;
   className?: string;
 }
-
-const listOfTypeStyle = css({
-  display: 'flex',
-  gap: space_M,
-  margin: space_M + ' 0',
-  flexWrap: 'wrap',
-});
 
 export default function CardCreator({
   parentCardContent,
@@ -55,49 +56,17 @@ export default function CardCreator({
   const projectTags = uniq([...cardTypes].flatMap(cardType => (cardType ? cardType.tags : [])));
 
   const [selectedType, setSelectedType] = React.useState<number | null>(null);
-  const [selectAllTags, setSelectAllTags] = React.useState<boolean>(true);
 
-  const [tagState, setTagState] = React.useState<Record<string, boolean> | undefined>();
-
-  const eTags = Object.keys(tagState || []).filter(tag => tagState && tagState[tag]);
-
-  const cardTypeFilteredByTag = cardTypes.filter(ty => ty.tags.find(tag => eTags.includes(tag)));
-
-  const toggleAllTags = React.useCallback(
-    (val: boolean) => {
-      setSelectAllTags(val);
-      setTagState(
-        projectTags.reduce<Record<string, boolean>>((acc, cur) => {
-          acc[cur] = val;
-          return acc;
-        }, {}),
-      );
-    },
-    [projectTags],
-  );
-
-  React.useEffect(() => {
-    if (status === 'READY') {
-      toggleAllTags(true);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [status /* no effect when toggleAllTags changes */]);
-
-  const onSelect = React.useCallback((id: number) => {
-    if (!id) {
-      setSelectedType(null);
-    }
-    setSelectedType(id);
-  }, []);
-
-  React.useEffect(() => {
-    if (selectedType != null) {
-      if (cardTypeFilteredByTag.find(ct => ct.cardTypeId === selectedType) == null) {
-        setSelectedType(null);
-      }
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [cardTypeFilteredByTag /* no need to take blankTypePseudoId and selectedType into account */]);
+ const createCard = () => {
+  dispatch(
+    API.createSubCardWithTextDataBlock({
+      parent: parentCardContent,
+      cardTypeId: selectedType,
+    }),
+  ).then(() => {
+    close();
+  });
+}
 
   return (
     <OpenCloseModal
@@ -113,7 +82,9 @@ export default function CardCreator({
         )
       }
       className={className}
-      modalClassName={css({ width: '800px', height: '580px' })}
+      modalClassName={css({ height: '580px' })}
+      modalBodyClassName={css({ paddingTop: space_S })}
+      widthMax
       footer={close => (
         <Flex
           justify="flex-end"
@@ -136,14 +107,8 @@ export default function CardCreator({
           <Button
             title="Create card"
             onClick={() => {
-              dispatch(
-                API.createSubCardWithTextDataBlock({
-                  parent: parentCardContent,
-                  cardTypeId: selectedType,
-                }),
-              ).then(() => {
-                close();
-              });
+              createCard();
+              close();
             }}
           >
             Add a card
@@ -152,58 +117,70 @@ export default function CardCreator({
       )}
       showCloseButton
     >
-      {() => {
+      {(close) => {
         if (status !== 'READY') {
           return <AvailabilityStatusIndicator status={status} />;
         } else {
           return (
             <div className={css({ width: '100%', textAlign: 'left' })}>
-              {projectTags && projectTags.length > 0 && (
-                <Flex
+              {projectTags && projectTags.length > 0 && (<>
+                {/* <FilterableList
+                  tags={projectTags}
+                  onChange={(t, cat) =>
+                    setTagState(state => {
+                      return { ...state, [cat]: t };
+                    })
+                  }
+                  tagState={tagState}
+                  stateSelectAll={selectAllTags}
+                  toggleAllTags={toggleAllTags}
                   className={css({
-                    paddingBottom: space_S,
-                    marginBottom: space_S,
-                    borderBottom: '1px solid var(--lightGray)',
+                    displax: 'flex',
+                    alignItems: 'stretch',
+                    flexDirection: 'column',
                   })}
-                  direction="column"
-                  align="stretch"
-                >
-                  <FilterableList
-                    tags={projectTags}
-                    onChange={(t, cat) =>
-                      setTagState(state => {
-                        return { ...state, [cat]: t };
-                      })
-                    }
-                    tagState={tagState}
-                    stateSelectAll={selectAllTags}
-                    toggleAllTags={toggleAllTags}
-                  />
-                </Flex>
+                />
               )}
-              <Flex direction="column">
-                <div className={listOfTypeStyle}>
-                  <EmptyCardTypeThumbnail onClick={onSelect} highlighted={selectedType == null} />
-                  {cardTypeFilteredByTag != null && cardTypeFilteredByTag.length > 0 && (
+              <ItemThumbnailsSelection<CardTypeAllInOne>
+                items={cardTypeFilteredByTag}
+                onItemClick={(item) => onSelect(item)}
+                addEmptyItem
+                defaultSelectedValue={null}
+                fillThumbnail={item => {
+                  return (
                     <>
-                      {cardTypeFilteredByTag.map(cardType => {
-                        return (
-                          <CardTypeThumbnail
-                            key={cardType.cardTypeId}
-                            onClick={onSelect}
-                            highlighted={selectedType === cardType.cardTypeId}
-                            cardType={cardType}
-                          />
-                        );
-                      })}
+                        <CardTypeThumbnail
+                          cardType={item}
+                          usage='currentProject'
+                        />
                     </>
-                  )}
-                </div>
-              </Flex>
-            </div>
-          );
-        }
-      }}
+                  );
+                }}
+                thumbnailClassName={cardTypeThumbnailStyle}
+              /> */}
+              <CustomElementsList
+                    items={cardTypes}
+                    loadingStatus={status}
+                    thumbnailContent={item => {
+                      return (
+                        <>
+                          <CardTypeThumbnail cardType={item} usage="currentProject" />
+                        </>
+                      );
+                    }}
+                    customThumbnailStyle={cx(cardTypeThumbnailStyle)}
+                    customOnClick={(item) => setSelectedType(item?.id ? item.id : null)}
+                    customOnDblClick={() => {
+                      createCard();
+                      close();
+                    }}
+                    addEmptyItem
+                    selectionnable
+              />
+            </>
+            
+          )}
+        </div>)}}}
     </OpenCloseModal>
   );
 }
