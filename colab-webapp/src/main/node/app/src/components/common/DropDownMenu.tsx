@@ -358,8 +358,6 @@ export default function DropDownMenu<T extends string | number | symbol>({
     }
   }, []);
 
-
-
   /* const selectedEntryStyle = cx(
     invertedThemeMode,
     css({
@@ -426,7 +424,7 @@ export default function DropDownMenu<T extends string | number | symbol>({
             >
               {entries.map(entry => (
                 <div
-                  className={cx(entryStyle, {[disabledStyle]: entry.disabled})}
+                  className={cx(entryStyle, { [disabledStyle]: entry.disabled })}
                   key={String(entry.value)}
                   onClick={() => {
                     if (entry.action) {
@@ -447,6 +445,6 @@ export default function DropDownMenu<T extends string | number | symbol>({
       </div>
     );
   } else {
-    return <>n/a</>;
+    return <></>;
   }
 }

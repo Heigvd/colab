@@ -107,93 +107,96 @@ export default function CardTypeThumbnail({
                 {purpose}
               </p>
             </Flex>
-            <DropDownMenu
-              icon={faEllipsisV}
-              valueComp={{ value: '', label: '' }}
-              buttonClassName={cx(lightIconButtonStyle, css({ marginLeft: '40px' }))}
-              entries={[
-                ...(editable &&
-                ((usage === 'currentProject' && cardType.projectId === editedProjectId) ||
-                  usage === 'global')
-                  ? [
-                      {
-                        value: 'Edit type',
-                        label: (
-                          <>
-                            <FontAwesomeIcon icon={faPen} /> Edit Type
-                          </>
-                        ),
-                        action: () => navigate(`./edit/${cardType.ownId}`),
-                      },
-                    ]
-                  : []),
-                ...(usage === 'available' && editedProject && cardType.projectId !== editedProjectId
-                  ? [
-                      {
-                        value: 'Use this type in the project',
-                        label: (
-                          <>
-                            <FontAwesomeIcon icon={faMapPin} /> Use in project
-                          </>
-                        ),
-                        action: () =>
-                          dispatch(API.addCardTypeToProject({ cardType, project: editedProject })),
-                      },
-                    ]
-                  : []),
-                .../*!readOnly &&*/
-                (editable &&
-                usage === 'currentProject' &&
-                editedProject &&
-                cardType.projectId === editedProjectId &&
-                cardType.kind === 'referenced'
-                  ? [
-                      {
-                        value: 'Remove this type from the project',
-                        label: (
-                          <>
-                            <FontAwesomeIcon icon={faExchangeAlt} /> Remove from project
-                          </>
-                        ),
-                        action: () =>
-                          dispatch(
-                            API.removeCardTypeRefFromProject({
-                              cardType,
-                              project: editedProject,
-                            }),
+            {editable && (
+              <DropDownMenu
+                icon={faEllipsisV}
+                valueComp={{ value: '', label: '' }}
+                buttonClassName={cx(lightIconButtonStyle, css({ marginLeft: '40px' }))}
+                entries={[
+                  ...((usage === 'currentProject' && cardType.projectId === editedProjectId) ||
+                  usage === 'global'
+                    ? [
+                        {
+                          value: 'Edit type',
+                          label: (
+                            <>
+                              <FontAwesomeIcon icon={faPen} /> Edit Type
+                            </>
                           ),
-                      },
-                    ]
-                  : []),
-                .../*!readOnly &&*/
-                (editable &&
-                cardType.kind === 'own' &&
-                ((usage === 'currentProject' && cardType.projectId === editedProjectId) ||
-                  usage === 'global')
-                  ? [
-                      {
-                        value: 'Delete type',
-                        label: (
-                          <ConfirmDeleteModal
-                            buttonLabel={
-                              <>
-                                <FontAwesomeIcon icon={faTrash} /> Delete type
-                              </>
-                            }
-                            message={
-                              <p>
-                                Are you <strong>sure</strong> you want to delete this card type?
-                              </p>
-                            }
-                            onConfirm={() => dispatch(API.deleteCardType(cardType))}
-                            confirmButtonLabel="Delete type"
-                          />
-                        ),
-                      },
-                    ]
-                  : []),
-              ]}
-            />
+                          action: () => navigate(`./edit/${cardType.ownId}`),
+                        },
+                      ]
+                    : []),
+                  ...(usage === 'available' &&
+                  editedProject &&
+                  cardType.projectId !== editedProjectId
+                    ? [
+                        {
+                          value: 'Use this type in the project',
+                          label: (
+                            <>
+                              <FontAwesomeIcon icon={faMapPin} /> Use in project
+                            </>
+                          ),
+                          action: () =>
+                            dispatch(
+                              API.addCardTypeToProject({ cardType, project: editedProject }),
+                            ),
+                        },
+                      ]
+                    : []),
+                  .../*!readOnly &&*/
+                  (usage === 'currentProject' &&
+                  editedProject &&
+                  cardType.projectId === editedProjectId &&
+                  cardType.kind === 'referenced'
+                    ? [
+                        {
+                          value: 'Remove this type from the project',
+                          label: (
+                            <>
+                              <FontAwesomeIcon icon={faExchangeAlt} /> Remove from project
+                            </>
+                          ),
+                          action: () =>
+                            dispatch(
+                              API.removeCardTypeRefFromProject({
+                                cardType,
+                                project: editedProject,
+                              }),
+                            ),
+                        },
+                      ]
+                    : []),
+                  .../*!readOnly &&*/
+                  (cardType.kind === 'own' &&
+                  ((usage === 'currentProject' && cardType.projectId === editedProjectId) ||
+                    usage === 'global')
+                    ? [
+                        {
+                          value: 'Delete type',
+                          label: (
+                            <ConfirmDeleteModal
+                              buttonLabel={
+                                <>
+                                  <FontAwesomeIcon icon={faTrash} /> Delete type
+                                </>
+                              }
+                              message={
+                                <p>
+                                  Are you <strong>sure</strong> you want to delete this card type?
+                                </p>
+                              }
+                              onConfirm={() => dispatch(API.deleteCardType(cardType))}
+                              confirmButtonLabel="Delete type"
+                            />
+                          ),
+                        },
+                      ]
+                    : []),
+                ]}
+              />
+            )}
           </Flex>
           <TagsDisplay tags={cardType.tags} className={tagStyle} />
         </Flex>

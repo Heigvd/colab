@@ -113,7 +113,7 @@ export default function ProjectCardTypeList(): JSX.Element {
                   items={availableCardTypes}
                   loadingStatus={availableCTStatus}
                   thumbnailContent={item => {
-                    return <CardTypeThumbnail cardType={item} usage="available" />;
+                    return <CardTypeThumbnail cardType={item} usage="available" editable />;
                   }}
                   customThumbnailStyle={cx(cardTypeThumbnailStyle, customThumbStyle)}
                   selectionnable={false}
