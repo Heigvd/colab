@@ -35,11 +35,13 @@ const defaultData: ResourceType = {
 
 interface ResourceCreatorProps {
   contextInfo: ResourceCallContext;
+  onCreated: (newId: number) => void;
   className?: string;
 }
 
 export default function ResourceCreator({
   contextInfo,
+  onCreated,
   className,
 }: ResourceCreatorProps): JSX.Element {
   const dispatch = useAppDispatch();
@@ -136,7 +138,12 @@ export default function ResourceCreator({
                 },
                 category: e.category,
               }),
-            ).then(() => {
+            ).then(payload => {
+              if (payload.meta.requestStatus === 'fulfilled') {
+                if (typeof payload.payload === 'number') {
+                  onCreated(payload.payload);
+                }
+              }
               collapse();
             });
           }}
