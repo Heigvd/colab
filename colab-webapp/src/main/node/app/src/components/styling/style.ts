@@ -363,6 +363,39 @@ export const cardStyle = cx(
   }),
 );
 
+export function rootViewCardsStyle(depth: number, inRootView: boolean) {
+  if(inRootView){
+    if(depth === 1) {
+      return css`
+      width: calc(33.3% - 20px);
+      `;
+    }
+    if(depth === 0) {
+      return css`
+      width: calc(50% - 20px);
+      `;
+    }
+  }
+  else {
+    if(depth === 2) {
+      return css`
+      flex-grow: 1;
+      `;
+    }
+    if(depth === 1) {
+      return css`
+      width: calc(33.3% - 20px);
+      `;
+    }
+    if(depth === 0) {
+      return css`
+      width: auto;
+      flex-grow: 1;
+      `;
+    }
+  }  
+}
+
 export const paddedContainerStyle = css({
   padding: space_M,
 });
