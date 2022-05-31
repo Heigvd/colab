@@ -44,7 +44,7 @@ export default function IconButtonWithLoader({
   const [loading, setLoading] = React.useState<boolean>(false);
   return (
     <Clickable
-      onClick={(e) => {
+      onClick={e => {
         if (onClick) {
           setLoading(isLoading);
           onClick(e);

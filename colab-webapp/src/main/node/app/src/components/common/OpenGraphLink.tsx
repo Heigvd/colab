@@ -5,7 +5,12 @@
  * Licensed under the MIT License
  */
 import { css, cx } from '@emotion/css';
-import { faChainBroken, faExternalLinkAlt, faLink, faSync } from '@fortawesome/free-solid-svg-icons';
+import {
+  faChainBroken,
+  faExternalLinkAlt,
+  faLink,
+  faSync,
+} from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { ExternalLink } from 'colab-rest-client';
 import * as React from 'react';
@@ -126,11 +131,20 @@ export default function OpenGraphLink({
         <>
           {editingStatus ? (
             <Flex grow={1} align="center" className={css({ padding: space_S })}>
-              <EditLink onChange={saveLink} url={url} onCancel={() => setEditingState(false)} refreshCb={refreshCb} />
+              <EditLink
+                onChange={saveLink}
+                url={url}
+                onCancel={() => setEditingState(false)}
+                refreshCb={refreshCb}
+              />
             </Flex>
           ) : (
             <div title={url} className={css({ padding: space_S })}>
-              <FontAwesomeIcon icon={faChainBroken} size="lg" className={css({ marginRight: space_S })} />
+              <FontAwesomeIcon
+                icon={faChainBroken}
+                size="lg"
+                className={css({ marginRight: space_S })}
+              />
               {url}
             </div>
           )}
@@ -141,7 +155,12 @@ export default function OpenGraphLink({
         <>
           {editingStatus ? (
             <Flex grow={1} className={css({ padding: space_S })} align="center">
-              <EditLink onChange={saveLink} url={url} onCancel={() => setEditingState(false)} refreshCb={refreshCb} />
+              <EditLink
+                onChange={saveLink}
+                url={url}
+                onCancel={() => setEditingState(false)}
+                refreshCb={refreshCb}
+              />
             </Flex>
           ) : (
             <Flex className={cardStyle} title={url} align="center">

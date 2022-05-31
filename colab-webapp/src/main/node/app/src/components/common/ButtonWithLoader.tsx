@@ -80,7 +80,7 @@ export default function ButtonWithLoader({
       )}
       clickable={clickable}
     >
-      <Flex align="center" className={loading ? css({opacity: 0}) : undefined}>
+      <Flex align="center" className={loading ? css({ opacity: 0 }) : undefined}>
         {reverseOrder ? children : null}
         {icon && (
           <FontAwesomeIcon

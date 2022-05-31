@@ -230,7 +230,12 @@ const CardWrapper = ({ children, grow = 1, align = 'normal' }: CardWrapperProps)
             <Ancestor key={x} card={ancestor.card} content={ancestor.content} />
           ))}
         </Flex>
-        <Flex direction="column" grow={grow} align={align} className={css({ width: '100%', alignItems: 'stretch' })}>
+        <Flex
+          direction="column"
+          grow={grow}
+          align={align}
+          className={css({ width: '100%', alignItems: 'stretch' })}
+        >
           {children(card, content)}
         </Flex>
       </>

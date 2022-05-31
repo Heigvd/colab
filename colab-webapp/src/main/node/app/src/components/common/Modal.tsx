@@ -97,7 +97,12 @@ export default function Modal({
             />
           ) : null}
         </div>
-        <Flex grow={1} direction="column" overflow="auto" className={cx(modalBody, modalBodyClassName)}>
+        <Flex
+          grow={1}
+          direction="column"
+          overflow="auto"
+          className={cx(modalBody, modalBodyClassName)}
+        >
           {children(onClose)}
         </Flex>
         {footer && <div className={modalFooter}>{footer(onClose)}</div>}

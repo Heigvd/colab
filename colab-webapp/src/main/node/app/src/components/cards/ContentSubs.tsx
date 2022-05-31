@@ -128,7 +128,7 @@ export default function ContentSubs({
         </div>
       ) : (
         <>
-        {/* <div className={flexWrap}>
+          {/* <div className={flexWrap}>
           {subCards.map(sub => (
             <div
               key={sub.id}

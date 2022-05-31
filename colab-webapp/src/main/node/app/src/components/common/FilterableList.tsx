@@ -64,11 +64,14 @@ export default function FilterableList({
   const [filterOpen, setFilterOpen] = React.useState<boolean>(false);
   return (
     <Flex className={className} direction="column" align="stretch">
-      <Clickable clickableClassName={cx(lightIconButtonStyle, css({ alignSelf: 'flex-end', '&:hover': {cursor: 'pointer'} }))} onClick={() => setFilterOpen(filterOpen => !filterOpen)}>
-        <FontAwesomeIcon
-          icon={faFilter}
-          size='sm'
-        />
+      <Clickable
+        clickableClassName={cx(
+          lightIconButtonStyle,
+          css({ alignSelf: 'flex-end', '&:hover': { cursor: 'pointer' } }),
+        )}
+        onClick={() => setFilterOpen(filterOpen => !filterOpen)}
+      >
+        <FontAwesomeIcon icon={faFilter} size="sm" />
         {' Filter '}
         <FontAwesomeIcon icon={filterOpen ? faCaretUp : faCaretDown} />
       </Clickable>

@@ -56,7 +56,7 @@ export default function VariantSelector({ card, children, depth }: Props): JSX.E
   const defaultVariant = useDefaultVariant(card.id!);
   const location = useLocation();
   //const path = `card/${card.id}`;
-  const isInRootView =  !location.pathname.match(/card\/\d+\/v\/\d+/);
+  const isInRootView = !location.pathname.match(/card\/\d+\/v\/\d+/);
 
   if (card.id == null) {
     return <i>Card without id is invalid...</i>;
@@ -68,13 +68,16 @@ export default function VariantSelector({ card, children, depth }: Props): JSX.E
 
     return (
       <div
-        className={cx(rootViewCardsStyle(depth, isInRootView), css({
-          margin: '10px',
-          display: 'flex',
-          '& > div': {
-            flexGrow: 1,
-          },
-        }))}
+        className={cx(
+          rootViewCardsStyle(depth, isInRootView),
+          css({
+            margin: '10px',
+            display: 'flex',
+            '& > div': {
+              flexGrow: 1,
+            },
+          }),
+        )}
       >
         {variantPager != null && variantPager.previous != variantPager.current ? (
           <IconButton

@@ -21,15 +21,17 @@ export default function CardThumbWithSelector({ card, depth = 1 }: Props): JSX.E
   } else {
     return (
       <VariantSelector card={card} depth={depth}>
-        {(variant, list) => (<>
-          <CardThumb
-            card={card}
-            variant={variant}
-            variants={list}
-            showSubcards={true}
-            depth={depth}
-          />
-        </>)}
+        {(variant, list) => (
+          <>
+            <CardThumb
+              card={card}
+              variant={variant}
+              variants={list}
+              showSubcards={true}
+              depth={depth}
+            />
+          </>
+        )}
       </VariantSelector>
     );
   }

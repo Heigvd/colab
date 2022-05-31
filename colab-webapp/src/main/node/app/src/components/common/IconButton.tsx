@@ -62,7 +62,13 @@ export default function IconButton({
           />
         </span>
       ) : (
-        <FontAwesomeIcon icon={icon} color={iconColor} size={iconSize} mask={mask} className={IconClassName} />
+        <FontAwesomeIcon
+          icon={icon}
+          color={iconColor}
+          size={iconSize}
+          mask={mask}
+          className={IconClassName}
+        />
       )}
     </Clickable>
   );
