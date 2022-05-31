@@ -7,7 +7,7 @@
 
 import { css } from '@emotion/css';
 import * as React from 'react';
-import { Route, Routes } from 'react-router-dom';
+import { Route, Routes, useNavigate } from 'react-router-dom';
 import { useAndLoadGlobalTypesForAdmin } from '../../../selectors/cardTypeSelector';
 import { CardTypeAllInOne } from '../../../types/cardTypeDefinition';
 import AvailabilityStatusIndicator from '../../common/AvailabilityStatusIndicator';
@@ -27,7 +27,22 @@ const flexWrap = css({
 });
 
 export default function GlobalCardTypeList(): JSX.Element {
+  const navigate = useNavigate();
+
+  const [lastCreated, setLastCreated] = React.useState<number | null>(null);
+
   const { cardTypes, status } = useAndLoadGlobalTypesForAdmin();
+
+  React.useEffect(() => {
+    if (lastCreated) {
+      cardTypes.forEach(cardType => {
+        if (cardType.id === lastCreated) {
+          navigate(`./edit/${cardType.id}`);
+          navigate(`./edit/${cardType.ownId}`), setLastCreated(null);
+        }
+      });
+    }
+  }, [lastCreated, cardTypes, navigate, setLastCreated]);
 
   return (
     <Routes>
@@ -43,7 +58,7 @@ export default function GlobalCardTypeList(): JSX.Element {
           >
             <Flex justify="space-between">
               <h3>Global card types</h3>
-              <CardTypeCreator usage="global" />
+              <CardTypeCreator usage="global" onCreated={setLastCreated} />
             </Flex>
             {status !== 'READY' ? (
               <AvailabilityStatusIndicator status={status} />

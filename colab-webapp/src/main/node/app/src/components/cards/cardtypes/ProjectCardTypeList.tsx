@@ -44,9 +44,22 @@ const customThumbStyle = css({
 export default function ProjectCardTypeList(): JSX.Element {
   const navigate = useNavigate();
 
+  const [lastCreated, setLastCreated] = React.useState<number | null>(null);
+
   const { cardTypes: projectCardTypes, status: projectCTStatus } = useAndLoadProjectCardTypes();
   const { cardTypes: availableCardTypes, status: availableCTStatus } =
     useAndLoadAvailableCardTypes();
+
+  React.useEffect(() => {
+    if (lastCreated) {
+      projectCardTypes.forEach(cardType => {
+        if (cardType.id === lastCreated) {
+          navigate(`./edit/${cardType.id}`);
+          setLastCreated(null);
+        }
+      });
+    }
+  }, [lastCreated, projectCardTypes, navigate, setLastCreated]);
 
   return (
     <Routes>
@@ -71,7 +84,7 @@ export default function ProjectCardTypeList(): JSX.Element {
                 />
                 <h2>Card types</h2>
               </Flex>
-              <CardTypeCreator usage="currentProject" />
+              <CardTypeCreator usage="currentProject" onCreated={setLastCreated} />
             </Flex>
             {projectCTStatus !== 'READY' ? (
               <AvailabilityStatusIndicator status={projectCTStatus} />

@@ -138,10 +138,12 @@ export default function ResourceCreator({
                 },
                 category: e.category,
               }),
-            ).then(payload => {
-              if (payload.meta.requestStatus === 'fulfilled') {
-                if (typeof payload.payload === 'number') {
-                  onCreated(payload.payload);
+            ).then(action => {
+              if (onCreated != null) {
+                if (action.meta.requestStatus === 'fulfilled') {
+                  if (typeof action.payload === 'number') {
+                    onCreated(action.payload);
+                  }
                 }
               }
               collapse();
