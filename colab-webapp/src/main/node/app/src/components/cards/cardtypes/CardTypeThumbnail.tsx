@@ -18,13 +18,13 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import * as React from 'react';
 import { useNavigate } from 'react-router-dom';
 import * as API from '../../../API/api';
-import { useAndLoadTextOfDocument } from '../../../selectors/documentSelector';
 import { useProjectBeingEdited } from '../../../selectors/projectSelector';
 import { useAppDispatch } from '../../../store/hooks';
 import { CardTypeAllInOne as CardType } from '../../../types/cardTypeDefinition';
 import ConfirmDeleteModal from '../../common/ConfirmDeleteModal';
 import DropDownMenu from '../../common/DropDownMenu';
 import Flex from '../../common/Flex';
+import { DocTextDisplay } from '../../documents/DocTextItem';
 import {
   borderRadius,
   lightIconButtonStyle,
@@ -62,7 +62,6 @@ export default function CardTypeThumbnail({
   usage,
 }: CardTypeThumbnailProps): JSX.Element {
   const isEmpty = cardType === null || cardType === undefined;
-  const { text: purpose } = useAndLoadTextOfDocument(cardType ? cardType.purposeId : null);
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const editedProject = useProjectBeingEdited().project;
@@ -100,7 +99,7 @@ export default function CardTypeThumbnail({
                   css({ maxWidth: '100%' }),
                 )}
               >
-                {purpose}
+                <DocTextDisplay id={cardType.purposeId} />
               </p>
             </Flex>
             {editable && (
