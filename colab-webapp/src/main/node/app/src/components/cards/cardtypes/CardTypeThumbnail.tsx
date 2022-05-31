@@ -25,7 +25,6 @@ import { CardTypeAllInOne as CardType } from '../../../types/cardTypeDefinition'
 import ConfirmDeleteModal from '../../common/ConfirmDeleteModal';
 import DropDownMenu from '../../common/DropDownMenu';
 import Flex from '../../common/Flex';
-import ResourcesListSummary from '../../resources/summary/ResourcesListSummary';
 import {
   borderRadius,
   lightIconButtonStyle,
@@ -36,6 +35,7 @@ import {
   space_S,
   textSmall,
 } from '../../styling/style';
+import CardTypeRelativesSummary from './summary/CardTypeRelativesSummary';
 import { TagsDisplay } from './tags/TagsDisplay';
 
 const tagStyle = css({
@@ -89,11 +89,7 @@ export default function CardTypeThumbnail({
                     css({ whiteSpace: 'nowrap', marginLeft: space_M }),
                   )}
                 >
-                  <ResourcesListSummary
-                    kind={'CardType'}
-                    accessLevel={'READ'}
-                    cardTypeId={cardType.ownId}
-                  />
+                  <CardTypeRelativesSummary cardType={cardType} />
                 </div>
               </Flex>
               <p
