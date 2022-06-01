@@ -47,6 +47,8 @@ export default function ResourcesList({
   contextInfo,
   selectResource,
 }: ResourcesListProps): JSX.Element {
+  const [lastCreated, setLastCreated] = React.useState<number | null>(null);
+
   const categorized = resourcesAndRefs.reduce<Categorized>(
     (acc, current) => {
       const cat =
@@ -76,6 +78,17 @@ export default function ResourcesList({
     toDisplay.splice(0, 0, '');
     categorized.categorized[''] = categorized.raw;
   }
+
+  React.useEffect(() => {
+    if (lastCreated) {
+      resourcesAndRefs.forEach(resource => {
+        if (resource.targetResource.id === lastCreated) {
+          selectResource(resource);
+          setLastCreated(null);
+        }
+      });
+    }
+  }, [lastCreated, resourcesAndRefs, selectResource, setLastCreated]);
 
   return (
     <Flex direction="column" align="stretch" grow={1}>
@@ -121,9 +134,13 @@ export default function ResourcesList({
         )}
         <div className={css({ marginRight: '10px' })}> </div>
       </Flex>
-      {contextInfo.accessLevel === 'WRITE' ? (
-        <ResourceCreator contextInfo={contextInfo} className={lightIconButtonStyle} />
-      ) : null}
+      {contextInfo.accessLevel === 'WRITE' && (
+        <ResourceCreator
+          contextInfo={contextInfo}
+          className={lightIconButtonStyle}
+          onCreated={setLastCreated}
+        />
+      )}
     </Flex>
   );
 }

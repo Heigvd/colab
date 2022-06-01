@@ -15,10 +15,6 @@ import ResourcesListSummary from '../../../resources/summary/ResourcesListSummar
 import { space_M } from '../../../styling/style';
 import TargetCardTypeSummary from './TargetCardTypeSummary';
 
-const containerStyle = css({
-  padding: space_M + ' 0px',
-});
-
 const itemStyle = css({
   marginRight: space_M,
 });
@@ -43,7 +39,7 @@ export default function CardTypeRelativesSummary({
   },
 }: CardTypeRelativesSummaryProps): JSX.Element {
   return (
-    <Flex align="center" className={containerStyle}>
+    <Flex>
       {/* resources on the type */}
       {displayChoices.showResources && (
         <Flex className={itemStyle}>

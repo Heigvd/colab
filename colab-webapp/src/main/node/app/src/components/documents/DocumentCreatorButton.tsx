@@ -10,8 +10,9 @@ import { faFile, faFrog, faLink, faParagraph, faPlus } from '@fortawesome/free-s
 import * as React from 'react';
 import * as API from '../../API/api';
 import { useAppDispatch } from '../../store/hooks';
+import { CardEditorCTX } from '../cards/CardEditor';
 import DropDownMenu from '../common/DropDownMenu';
-import { IconButtonProps } from '../common/IconButton';
+import IconButton, { IconButtonProps } from '../common/IconButton';
 import { DocumentKind, DocumentOwnership } from './documentCommonType';
 
 function iconByType(docKind: DocumentKind): IconProp {
@@ -47,31 +48,31 @@ function iconLayerByType(docKind: DocumentKind): IconButtonProps['layer'] {
 export type DocumentCreatorButtonProps = {
   docOwnership: DocumentOwnership;
   title: string;
-  // isFirstDoc?: boolean;
+  isAdditionAlwaysAtEnd?: boolean;
   docKind: DocumentKind;
-  selectedBlockId: number | null;
   className?: string;
 };
 
 export default function DocumentCreatorButton({
   docOwnership,
   title,
-  // isFirstDoc,
-  selectedBlockId,
+  isAdditionAlwaysAtEnd,
   docKind,
   className,
 }: DocumentCreatorButtonProps): JSX.Element {
   const dispatch = useAppDispatch();
+  const { selectedDocId, selectedOwnKind } = React.useContext(CardEditorCTX);
+  const IsSelectedInKind = selectedDocId && docOwnership.kind === selectedOwnKind;
 
   const createDoc = React.useCallback(
     (place?: 'BEFORE' | 'AFTER') => {
-      if (selectedBlockId) {
+      if (IsSelectedInKind) {
         if (place === 'BEFORE') {
           if (docOwnership.kind == 'DeliverableOfCardContent') {
             dispatch(
               API.addDeliverableBefore({
                 cardContentId: docOwnership.ownerId,
-                neighbourDocId: selectedBlockId,
+                neighbourDocId: selectedDocId,
                 docKind: docKind,
               }),
             );
@@ -79,7 +80,7 @@ export default function DocumentCreatorButton({
             dispatch(
               API.addDocumentToResourceBefore({
                 resourceId: docOwnership.ownerId,
-                neighbourDocId: selectedBlockId,
+                neighbourDocId: selectedDocId,
                 docKind: docKind,
               }),
             );
@@ -89,7 +90,7 @@ export default function DocumentCreatorButton({
             dispatch(
               API.addDeliverableAfter({
                 cardContentId: docOwnership.ownerId,
-                neighbourDocId: selectedBlockId,
+                neighbourDocId: selectedDocId,
                 docKind: docKind,
               }),
             );
@@ -97,7 +98,7 @@ export default function DocumentCreatorButton({
             dispatch(
               API.addDocumentToResourceAfter({
                 resourceId: docOwnership.ownerId,
-                neighbourDocId: selectedBlockId,
+                neighbourDocId: selectedDocId,
                 docKind: docKind,
               }),
             );
@@ -139,40 +140,40 @@ export default function DocumentCreatorButton({
         }
       }
     },
-    [docOwnership.kind, docOwnership.ownerId, selectedBlockId, dispatch, docKind],
+    [IsSelectedInKind, docOwnership.kind, docOwnership.ownerId, dispatch, selectedDocId, docKind],
   );
 
   return (
-    // <>
-    //   {isFirstDoc ? (
-    //     <IconButton
-    //       icon={iconByType(docKind)}
-    //       layer={iconLayerByType(docKind)}
-    //       title={title}
-    //       onClick={() => createDoc('AFTER')}
-    //       className={className}
-    //     />
-    //   ) : (
-    <DropDownMenu
-      icon={iconByType(docKind)}
-      layerForIcon={iconLayerByType(docKind)}
-      title={title}
-      valueComp={{ value: '', label: '' }}
-      buttonClassName={className}
-      entries={[
-        {
-          value: 'before',
-          label: 'Before',
-          action: () => createDoc('BEFORE'),
-        },
-        {
-          value: 'after',
-          label: 'After',
-          action: () => createDoc('AFTER'),
-        },
-      ]}
-    />
-    //   )}
-    // </>
+    <>
+      {isAdditionAlwaysAtEnd ? (
+        <IconButton
+          icon={iconByType(docKind)}
+          layer={iconLayerByType(docKind)}
+          title={title}
+          onClick={() => createDoc('AFTER')}
+          className={className}
+        />
+      ) : (
+        <DropDownMenu
+          icon={iconByType(docKind)}
+          layerForIcon={iconLayerByType(docKind)}
+          title={title}
+          valueComp={{ value: '', label: '' }}
+          buttonClassName={className}
+          entries={[
+            {
+              value: IsSelectedInKind ? 'before' : 'begin',
+              label: IsSelectedInKind ? 'Before' : 'On top',
+              action: () => createDoc('BEFORE'),
+            },
+            {
+              value: IsSelectedInKind ? 'after' : 'end',
+              label: IsSelectedInKind ? 'After' : 'At the end',
+              action: () => createDoc('AFTER'),
+            },
+          ]}
+        />
+      )}
+    </>
   );
 }

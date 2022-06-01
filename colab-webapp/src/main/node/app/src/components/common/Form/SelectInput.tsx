@@ -109,7 +109,7 @@ export default function SelectInput<T, IsMulti extends boolean>({
           openMenuOnFocus
           isClearable
           formatCreateLabel={(inputValue: string) => (
-            <div className={selectCreatorStyle}>
+            <div className={cx(selectCreatorStyle, textSmall)}>
               <FontAwesomeIcon icon={faPlus} /> {' Create "' + inputValue + '"'}
             </div>
           )}
@@ -117,6 +117,7 @@ export default function SelectInput<T, IsMulti extends boolean>({
             menuPortal: base => ({ ...base, zIndex: 9999 }),
             menu: base => ({ ...base, marginTop: '0px' }),
             container: base => ({ ...base, textAlign: 'initial' }),
+            option: base => ({ ...base, fontSize: '.9em' }),
           }}
         />
       ) : (

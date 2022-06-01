@@ -8,7 +8,6 @@
 import { css, cx } from '@emotion/css';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { entityIs } from 'colab-rest-client';
 import * as React from 'react';
 import * as API from '../../../API/api';
 import {
@@ -23,7 +22,7 @@ import OpenCloseModal from '../../common/OpenCloseModal';
 import { buttonStyle, marginAroundStyle, space_M } from '../../styling/style';
 
 interface CardTypeCreatorProps {
-  afterCreation?: (id: number) => void;
+  onCreated?: (id: number) => void;
   usage: 'currentProject' | 'global';
 }
 
@@ -33,10 +32,7 @@ interface NewType {
   tags: string[];
 }
 
-export default function CardTypeCreator({
-  afterCreation,
-  usage,
-}: CardTypeCreatorProps): JSX.Element {
+export default function CardTypeCreator({ onCreated, usage }: CardTypeCreatorProps): JSX.Element {
   const dispatch = useAppDispatch();
 
   const { project } = useProjectBeingEdited();
@@ -56,16 +52,16 @@ export default function CardTypeCreator({
           },
         }),
       ).then(action => {
-        if (action.meta.requestStatus === 'fulfilled') {
-          if (afterCreation != null) {
-            if (entityIs(action.payload, 'CardType')) {
-              afterCreation(action.payload.id!);
+        if (onCreated != null) {
+          if (action.meta.requestStatus === 'fulfilled') {
+            if (typeof action.payload === 'number') {
+              onCreated(action.payload);
             }
           }
         }
       });
     },
-    [dispatch, afterCreation, usage, project],
+    [dispatch, onCreated, usage, project],
   );
 
   const allCurrentProjectTags = useCurrentProjectCardTypeTags();

@@ -5,22 +5,23 @@
  * Licensed under the MIT License
  */
 
-import { css } from '@emotion/css';
+import { css, cx } from '@emotion/css';
 import { faCaretLeft, faCaretRight } from '@fortawesome/free-solid-svg-icons';
 import { Card, CardContent } from 'colab-rest-client';
 import * as React from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { useVariantsOrLoad } from '../../selectors/cardSelector';
 import Flex from '../common/Flex';
 import IconButton from '../common/IconButton';
 import InlineLoading from '../common/InlineLoading';
 //import WithToolbar from '../common/WithToolbar';
 import { useDefaultVariant } from '../projects/edition/Editor';
-import { space_S } from '../styling/style';
+import { rootViewCardsStyle, space_S } from '../styling/style';
 
 interface Props {
   card: Card;
   children: (variant: CardContent | undefined, list: CardContent[]) => JSX.Element;
+  depth: number;
 }
 
 export const computeNav = (
@@ -45,7 +46,7 @@ export const computeNav = (
   }
 };
 
-export default function VariantSelector({ card, children }: Props): JSX.Element {
+export default function VariantSelector({ card, children, depth }: Props): JSX.Element {
   //  const dispatch = useAppDispatch();
 
   const [displayedVariantId, setDisplayedVariantId] = React.useState<number | undefined>();
@@ -53,6 +54,9 @@ export default function VariantSelector({ card, children }: Props): JSX.Element 
   const contents = useVariantsOrLoad(card);
 
   const defaultVariant = useDefaultVariant(card.id!);
+  const location = useLocation();
+  //const path = `card/${card.id}`;
+  const isInRootView = !location.pathname.match(/card\/\d+\/v\/\d+/);
 
   if (card.id == null) {
     return <i>Card without id is invalid...</i>;
@@ -64,15 +68,16 @@ export default function VariantSelector({ card, children }: Props): JSX.Element 
 
     return (
       <div
-        className={css({
-          margin: '10px',
-          //          flexGrow: 1,
-          display: 'flex',
-          //          alignItems: 'center',
-          '& > div': {
-            flexGrow: 1,
-          },
-        })}
+        className={cx(
+          rootViewCardsStyle(depth, isInRootView),
+          css({
+            margin: '10px',
+            display: 'flex',
+            '& > div': {
+              flexGrow: 1,
+            },
+          }),
+        )}
       >
         {variantPager != null && variantPager.previous != variantPager.current ? (
           <IconButton
@@ -87,7 +92,6 @@ export default function VariantSelector({ card, children }: Props): JSX.Element 
             }}
           />
         ) : null}
-
         {children(variantPager?.current, contents || [])}
 
         {variantPager != null && variantPager.next != variantPager.current ? (

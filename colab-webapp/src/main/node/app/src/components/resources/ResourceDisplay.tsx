@@ -59,13 +59,8 @@ export function ResourceDisplay({ resource, goBackToList }: ResourceDisplayProps
   const { text: teaser } = useAndLoadTextOfDocument(targetResource.teaserId);
 
   return (
-    <Flex
-      align="stretch"
-      direction="column"
-      grow={1}
-      className={paddingAroundStyle([2, 3, 4], space_M)}
-    >
-      <Flex direction="column" align="normal">
+    <Flex align="stretch" direction="column" grow={1}>
+      <Flex direction="column" align="normal" className={paddingAroundStyle([1, 2, 4], space_M)}>
         <Flex
           justify="space-between"
           align="center"
@@ -89,7 +84,7 @@ export function ResourceDisplay({ resource, goBackToList }: ResourceDisplayProps
             className={localTitleStyle}
           />
 
-          <div>
+          <Flex wrap="nowrap">
             {(!readOnly || teaser) && (
               <IconButton
                 icon={faCircleInfo}
@@ -165,7 +160,7 @@ export function ResourceDisplay({ resource, goBackToList }: ResourceDisplayProps
                 </>
               )}
             </OpenCloseModal>
-          </div>
+          </Flex>
         </Flex>
         <div>
           {showTeaser && (
@@ -173,7 +168,7 @@ export function ResourceDisplay({ resource, goBackToList }: ResourceDisplayProps
               {text => (
                 <InlineInputNew
                   value={text || ''}
-                  placeholder={'Fill the teaser'}
+                  placeholder="There is no teaser for the moment. Feel free to fill it."
                   readOnly={readOnly}
                   onChange={(newValue: string) => {
                     if (targetResource.teaserId) {
@@ -203,11 +198,12 @@ export function ResourceDisplay({ resource, goBackToList }: ResourceDisplayProps
               //prefixElement={<IconButton icon={faTimes} title={"Close toolbox"} onClick={() => setOpenToolbox(openToolbox => !openToolbox)} />}
             />
           )}
-
-          <DocumentList
-            docOwnership={{ kind: 'PartOfResource', ownerId: targetResource.id }}
-            allowEdition={!readOnly}
-          />
+          <div className={cx(paddingAroundStyle([2, 4], space_M), css({ overflow: 'auto' }))}>
+            <DocumentList
+              docOwnership={{ kind: 'PartOfResource', ownerId: targetResource.id }}
+              allowEdition={!readOnly}
+            />
+          </div>
         </>
       )}
     </Flex>

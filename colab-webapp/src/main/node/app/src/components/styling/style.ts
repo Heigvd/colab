@@ -200,6 +200,19 @@ export const pulseEase = css`
   animation: ${pulseKeyframes} 2s ease 10;
 `;
 
+const spinning = keyframes({
+  from: {
+    transform: 'rotate(0deg)',
+  },
+  to: {
+    transform: 'rotate(360deg)',
+  },
+});
+
+export const spinningStyle = css({
+  animation: `${spinning} 1s linear 0s infinite`,
+});
+
 /**BUTTONS */
 
 export const linkStyle = css({
@@ -349,6 +362,38 @@ export const cardStyle = cx(
     },
   }),
 );
+
+export function rootViewCardsStyle(depth: number, inRootView: boolean) {
+  if (inRootView) {
+    if (depth === 1) {
+      return css`
+        width: calc(33.3% - 20px);
+      `;
+    }
+    if (depth === 0) {
+      return css`
+        width: calc(50% - 20px);
+      `;
+    }
+  } else {
+    if (depth === 2) {
+      return css`
+        flex-grow: 1;
+      `;
+    }
+    if (depth === 1) {
+      return css`
+        width: calc(33.3% - 20px);
+      `;
+    }
+    if (depth === 0) {
+      return css`
+        width: auto;
+        flex-grow: 1;
+      `;
+    }
+  }
+}
 
 export const paddedContainerStyle = css({
   padding: space_M,
@@ -518,4 +563,9 @@ export const selectCreatorStyle = css({
   borderTopWidth: '1px',
   borderTopStyle: 'solid',
   borderTopColor: 'var(--darkGray)',
+});
+
+export const disabledStyle = css({
+  opacity: 0.5,
+  pointerEvents: 'none',
 });

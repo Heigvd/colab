@@ -20,6 +20,8 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { entityIs } from 'colab-rest-client';
 import * as React from 'react';
 import * as API from '../../API/api';
+import { useAndLoadNbDocuments } from '../../selectors/documentSelector';
+import { useUrlMetadata } from '../../selectors/externalDataSelector';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import ConfirmDeleteModal from '../common/ConfirmDeleteModal';
 import DropDownMenu from '../common/DropDownMenu';
@@ -35,7 +37,7 @@ import { CardEditorCTX } from './CardEditor';
 const toolboxContainerStyle = css({
   height: 'auto',
   maxHeight: '400px',
-  //minHeight: '30px',
+  minHeight: '30px',
   overflow: 'hidden',
   padding: space_S,
   transition: 'all .5s ease',
@@ -73,15 +75,15 @@ export default function CardEditorToolbox({
   docOwnership,
   prefixElement,
 }: Props): JSX.Element {
-  const { setSelectedId, selectedId, setEditMode, TXToptions, editToolbar } =
+  const { setSelectedDocId, selectedDocId, selectedOwnKind, setEditMode, TXToptions, editToolbar } =
     React.useContext(CardEditorCTX);
   const showTree = TXToptions?.showTree || false;
   const dispatch = useAppDispatch();
 
   const selectedDocument = useAppSelector(state => {
     let document = undefined;
-    if (selectedId) {
-      const doc = state.document.documents[selectedId];
+    if (selectedDocId) {
+      const doc = state.document.documents[selectedDocId];
       if (entityIs(doc, 'Document')) {
         document = doc;
       }
@@ -93,7 +95,9 @@ export default function CardEditorToolbox({
   const isLink = entityIs(selectedDocument, 'ExternalLink');
   const isDoc = entityIs(selectedDocument, 'DocumentFile');
 
-  const downloadUrl = API.getRestClient().DocumentFileRestEndPoint.getFileContentPath(selectedId!);
+  const downloadUrl = API.getRestClient().DocumentFileRestEndPoint.getFileContentPath(
+    selectedDocId!,
+  );
 
   const downloadCb = React.useCallback(() => {
     window.open(downloadUrl);
@@ -106,8 +110,8 @@ export default function CardEditorToolbox({
   return (
     <Flex align="center" className={cx(toolboxContainerStyle, { [closedToolboxStyle]: !open })}>
       {prefixElement}
-      <BlockCreatorButtons docOwnership={docOwnership} selectedBlockId={selectedId || null} />
-      {selectedDocument != (undefined || null) && (
+      <BlockCreatorButtons docOwnership={docOwnership} selectedBlockId={selectedDocId || null} />
+      {selectedDocument != (undefined || null) && docOwnership.kind === selectedOwnKind && (
         <>
           {isText && (
             <>
@@ -161,11 +165,9 @@ export default function CardEditorToolbox({
             />
           )}
           {isLink && selectedDocument.url && selectedDocument.url.length > 0 && (
-            <IconButton
-              icon={faExternalLinkAlt}
-              title={'Open url in new tab'}
-              className={lightIconButtonStyle}
-              onClick={() => openUrl(selectedDocument.url)}
+            <OpenLinkButton
+              url={selectedDocument.url}
+              openUrl={() => openUrl(selectedDocument.url)}
             />
           )}
           {!isText && (
@@ -195,24 +197,24 @@ export default function CardEditorToolbox({
               </p>
             }
             onConfirm={() => {
-              if (selectedId) {
+              if (selectedDocId) {
                 if (selectedDocument.owningCardContentId != null) {
                   dispatch(
                     API.removeDeliverable({
                       cardContentId: selectedDocument.owningCardContentId,
-                      documentId: selectedId,
+                      documentId: selectedDocId,
                     }),
                   );
                 } else if (selectedDocument.owningResourceId != null) {
                   dispatch(
                     API.removeDocumentOfResource({
                       resourceId: selectedDocument.owningResourceId,
-                      documentId: selectedId,
+                      documentId: selectedDocId,
                     }),
                   );
                 }
               }
-              setSelectedId(undefined);
+              setSelectedDocId(undefined);
             }}
           />
           <div
@@ -227,7 +229,7 @@ export default function CardEditorToolbox({
               title={'Move block up'}
               className={lightIconButtonStyle}
               onClick={() => {
-                dispatch(API.moveDocumentUp(selectedId!));
+                dispatch(API.moveDocumentUp(selectedDocId!));
               }}
             />
             <IconButton
@@ -235,7 +237,7 @@ export default function CardEditorToolbox({
               title={'Move block down'}
               className={lightIconButtonStyle}
               onClick={() => {
-                dispatch(API.moveDocumentDown(selectedId!));
+                dispatch(API.moveDocumentDown(selectedDocId!));
               }}
             />
           </div>
@@ -254,31 +256,56 @@ export function BlockCreatorButtons({
   docOwnership,
   selectedBlockId,
 }: BlockButtonsProps): JSX.Element {
+  const { nb } = useAndLoadNbDocuments(docOwnership);
+
   return (
     <>
       <Flex className={cx({ [borderRightStyle]: !!selectedBlockId })}>
         <DocumentCreatorButton
           docOwnership={docOwnership}
-          selectedBlockId={selectedBlockId}
           docKind="TextDataBlock"
           title="add a text block"
           className={toolboxButtonStyle}
+          isAdditionAlwaysAtEnd={nb < 1}
         />
         <DocumentCreatorButton
           docOwnership={docOwnership}
-          selectedBlockId={selectedBlockId}
           docKind="DocumentFile"
           title="add a file"
           className={toolboxButtonStyle}
+          isAdditionAlwaysAtEnd={nb < 1}
         />
         <DocumentCreatorButton
           docOwnership={docOwnership}
-          selectedBlockId={selectedBlockId}
           docKind="ExternalLink"
           title="add a link"
           className={toolboxButtonStyle}
+          isAdditionAlwaysAtEnd={nb < 1}
         />
       </Flex>
+    </>
+  );
+}
+
+interface OpenLinkButtonProps {
+  url: string;
+  openUrl: (
+    e: React.MouseEvent<HTMLSpanElement, MouseEvent> | React.KeyboardEvent<HTMLSpanElement>,
+  ) => void;
+}
+
+function OpenLinkButton({ url, openUrl }: OpenLinkButtonProps): JSX.Element {
+  const metadata = useUrlMetadata(url);
+  return (
+    <>
+      {metadata != 'LOADING' && metadata != 'NO_URL' && !metadata.broken && (
+        <IconButton
+          icon={faExternalLinkAlt}
+          title={'Open url in new tab'}
+          className={lightIconButtonStyle}
+          onClick={openUrl}
+        />
+      )}
     </>
   );
 }

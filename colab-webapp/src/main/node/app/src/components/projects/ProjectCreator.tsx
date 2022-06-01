@@ -12,25 +12,23 @@ import * as React from 'react';
 import * as API from '../../API/api';
 import { useAppDispatch } from '../../store/hooks';
 import Button from '../common/Button';
+import ButtonWithLoader from '../common/ButtonWithLoader';
 import Flex from '../common/Flex';
 import OpenCloseModal from '../common/OpenCloseModal';
-import Tips from '../common/Tips';
 import { space_M, space_S } from '../styling/style';
 import ProjectDataInitialization from './ProjectDataInitialization';
 import ProjectModelSelector from './ProjectModelSelector';
 
-// TODO stabilise modal size
+// Note : when we click outside the modal, the data are kept
 
-// TODO see if a click outside the modal must reset the data
-
-export interface ProjectBasisData {
+export interface ProjectCreationData {
   name: string;
   description: string;
   guests: string[];
   projectModel: Project | null;
 }
 
-const defaultData: ProjectBasisData = {
+const defaultData: ProjectCreationData = {
   name: '',
   description: '',
   guests: [],
@@ -52,7 +50,7 @@ export default function ProjectCreator({
 
   const [status, setStatus] = React.useState<ProgressionStatus>('chooseModel');
 
-  const [data, setData] = React.useState<ProjectBasisData>({ ...defaultData });
+  const [data, setData] = React.useState<ProjectCreationData>({ ...defaultData });
 
   const [title, setTitle] = React.useState<React.ReactNode>();
 
@@ -60,11 +58,13 @@ export default function ProjectCreator({
   const [showNextButton, setShowNextButton] = React.useState<boolean>(false);
   const [showCreateButton, setShowCreateButton] = React.useState<boolean>(false);
 
+  const [readOnly, setReadOnly] = React.useState<boolean>(false);
+
   React.useEffect(() => {
     if (status === 'chooseModel') {
-      setTitle('Create new project - step 1 : choose a model');
+      setTitle('Create new project : choose a model');
     } else if (status === 'fillBasisData' && data.projectModel) {
-      setTitle('Create new project from ' + data.projectModel.name);
+      setTitle('Create new project : ' + data.projectModel.name);
     } else {
       setTitle('Create new project');
     }
@@ -89,29 +89,29 @@ export default function ProjectCreator({
   const resetCb = React.useCallback(() => {
     setStatus('chooseModel');
 
+    setReadOnly(false);
+
     data.guests.splice(0, data.guests.length);
     setData({ ...defaultData });
   }, [data.guests]);
 
   const oneStepBackCb = React.useCallback(() => {
-    if (status === 'fillBasisData') {
+    if (!readOnly && status === 'fillBasisData') {
       setStatus('chooseModel');
     }
-  }, [status]);
+  }, [readOnly, status]);
 
   const oneStepForwardCb = React.useCallback(() => {
-    if (status === 'chooseModel') {
+    if (!readOnly && status === 'chooseModel') {
       setStatus('fillBasisData');
     }
-  }, [status]);
+  }, [readOnly, status]);
 
   return (
     <OpenCloseModal
-      title={
-        <>
-          {title} <Tips tipsType="TODO">work in progress</Tips>
-        </>
-      }
+      title={title}
+      widthMax
+      heightMax
       collapsedChildren={
         <Button className={collapsedButtonClassName} icon={faPlus} clickable={!disabled}>
           New project
@@ -124,43 +124,50 @@ export default function ProjectCreator({
           className={css({ padding: space_M, columnGap: space_S })}
         >
           <Button
-            onClick={() => {
-              resetCb();
-              close();
-            }}
             invertedButton
+            onClick={() => {
+              if (!readOnly) {
+                resetCb();
+                close();
+              }
+            }}
           >
             Cancel
           </Button>
+
           {showBackButton && (
-            <Button onClick={oneStepBackCb} invertedButton>
+            <Button invertedButton onClick={oneStepBackCb}>
               Back
             </Button>
           )}
+
           {showNextButton && <Button onClick={oneStepForwardCb}>Next</Button>}
+
           {showCreateButton && (
-            <Button
+            <ButtonWithLoader
               onClick={() => {
-                const creationData = {
-                  name: data.name,
-                  description: data.description,
-                  guestsEmail: data.guests,
-                  modelId: data.projectModel?.id || null,
-                };
-                dispatch(API.createProject(creationData));
-                resetCb();
-                close();
-                // TODO maybe have a loading info
-                // TODO navigate to brand new project
+                if (!readOnly) {
+                  setReadOnly(true);
+
+                  const creationData = {
+                    name: data.name,
+                    description: data.description,
+                    guestsEmail: data.guests,
+                    modelId: data.projectModel?.id || null,
+                  };
+                  dispatch(API.createProject(creationData)).then(payload => {
+                    resetCb();
+                    close();
+                    window.open(`#/editor/${payload.payload}`, '_blank');
+                  });
+                }
               }}
             >
               Create project
-            </Button>
+            </ButtonWithLoader>
           )}
         </Flex>
       )}
-      widthMax
-      heightMax
     >
       {() => {
         return (
@@ -174,12 +181,15 @@ export default function ProjectCreator({
             ) : (
               <ProjectDataInitialization
                 data={data}
+                readOnly={readOnly}
                 setName={name => setData({ ...data, name: name })}
                 setDescription={description => setData({ ...data, description: description })}
                 addGuest={guestEmailAddress => {
-                  const guests = data.guests;
-                  guests.push(guestEmailAddress);
-                  setData({ ...data, guests: guests });
+                  if (guestEmailAddress != null && guestEmailAddress.length > 0) {
+                    const guests = data.guests;
+                    guests.push(guestEmailAddress);
+                    setData({ ...data, guests: guests });
+                  }
                 }}
                 removeGuest={guestEmailAddress => {
                   const guests = data.guests;

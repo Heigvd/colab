@@ -42,7 +42,7 @@ export default function CustomElementsList<
   addEmptyItem,
   customOnClick,
   customOnDblClick,
-  selectionnable=true,
+  selectionnable = true,
 }: CustomElementsListProps<T>): JSX.Element {
   const tags = uniq([...items].flatMap(it => (it ? it.tags : [])));
   const [tagState, setTagState] = React.useState<Record<string, boolean> | undefined>();
@@ -106,28 +106,34 @@ export default function CustomElementsList<
 
   return (
     <>
-      <FilterableList
-        tags={tags}
-        onChange={(t, cat) =>
-          setTagState(state => {
-            return { ...state, [cat]: t };
-          })
-        }
-        tagState={tagState}
-        stateSelectAll={selectAllTags}
-        toggleAllTags={toggleAllTags}
-        tagClassName={customTagClassName}
-        className={css({
-          displax: 'flex',
-          alignItems: 'stretch',
-          flexDirection: 'column',
-        })}
-      />
+      {tags && tags.length > 0 && (
+        <FilterableList
+          tags={tags}
+          onChange={(t, cat) =>
+            setTagState(state => {
+              return { ...state, [cat]: t };
+            })
+          }
+          tagState={tagState}
+          stateSelectAll={selectAllTags}
+          toggleAllTags={toggleAllTags}
+          tagClassName={customTagClassName}
+          className={css({
+            displax: 'flex',
+            alignItems: 'stretch',
+            flexDirection: 'column',
+          })}
+        />
+      )}
       <ItemThumbnailsSelection<T>
         addEmptyItem={addEmptyItem}
         items={elementsFilteredByTag}
-        onItemClick={item => {onSelect(item)}}
-        onItemDblClick={item => {onDblClick(item)}}
+        onItemClick={item => {
+          onSelect(item);
+        }}
+        onItemDblClick={item => {
+          onDblClick(item);
+        }}
         defaultSelectedValue={null}
         fillThumbnail={thumbnailContent}
         selectionnable={selectionnable}

@@ -185,7 +185,12 @@ export function ConfirmIconButton({
             {children}
           </Button>
         ) : (
-          <IconButton icon={icon} title={title} onClick={() => setConfirm(true)} className={className} />
+          <IconButton
+            icon={icon}
+            title={title}
+            onClick={() => setConfirm(true)}
+            className={className}
+          />
         )}
       </div>
       {waitConfirm ? (

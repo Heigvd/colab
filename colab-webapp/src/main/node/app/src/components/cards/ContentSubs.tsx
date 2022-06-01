@@ -27,13 +27,13 @@ interface Props {
   className?: string;
   subcardsContainerStyle?: string;
 }
-const tinyCard = css({
+/* const tinyCard = css({
   width: '30px',
   height: '20px',
   borderRadius: '2px',
   boxShadow: '0px 0px 3px 1px rgba(0, 0, 0, 0.1)',
   margin: '0 2px',
-});
+}); */
 
 const flexWrap = css({
   display: 'flex',
@@ -102,11 +102,11 @@ export default function ContentSubs({
         <div
           className={cx(
             flexWrap,
-            css({ flexDirection: 'column', alignItems: 'stretch' }),
+            css({ flexDirection: 'column', alignItems: 'stretch', flexGrow: 1 }),
             className,
           )}
         >
-          <Flex wrap="wrap" align="flex-start" className={subcardsContainerStyle}>
+          <Flex wrap="wrap" align="stretch" className={subcardsContainerStyle}>
             {subCards.map(sub => (
               <CardThumbWithSelector depth={depth - 1} key={sub.id} card={sub} />
             ))}
@@ -127,14 +127,17 @@ export default function ContentSubs({
           </Flex>
         </div>
       ) : (
-        <div className={flexWrap}>
+        <>
+          {/* <div className={flexWrap}>
           {subCards.map(sub => (
             <div
               key={sub.id}
               className={cx(tinyCard, css({ backgroundColor: sub.color || 'var(--pictoGrey)' }))}
-            ></div>
+            >
+            </div>
           ))}
-        </div>
+        </div> */}
+        </>
       );
     }
   }

@@ -173,6 +173,22 @@ export const useAndLoadDocuments = (context: DocumentOwnership): DocsAndStatus =
 };
 
 /**
+ * fetch (and load if needed) the number of matching documents
+ *
+ * @param context all needed data to know what to fetch
+ * @returns the number of matching documents (if found) + the availability status
+ */
+export const useAndLoadNbDocuments = (
+  context: DocumentOwnership,
+): { nb: number; status: AvailabilityStatus } => {
+  // no optimization here, as (for the time being)
+  // we always have the documents already loaded when we call that
+  const { documents, status }: DocsAndStatus = useAndLoadDocuments(context);
+
+  return { nb: documents.length, status };
+};
+
+/**
  * fetch the id of the last document that was inserted
  *
  * @param context all needed data to know what to fetch

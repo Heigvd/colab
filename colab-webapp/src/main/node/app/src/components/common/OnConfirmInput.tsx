@@ -113,6 +113,15 @@ export default function OnConfirmInput({
     setState(newValue);
   }, []);
 
+  const onEnterCb = React.useCallback(
+    e => {
+      if (e.key === 'Enter') {
+        saveCb();
+      }
+    },
+    [saveCb],
+  );
+
   if (mode === 'EDIT' && !readOnly) {
     return (
       <div ref={containerRef} className={containerClassName}>
@@ -123,6 +132,7 @@ export default function OnConfirmInput({
             placeholder={placeholder}
             value={state}
             onChange={onInternalChangeCb}
+            onKeyDown={onEnterCb}
             ref={inputRef}
           />
         </Flex>

@@ -223,9 +223,13 @@ export default function CardThumb({
           <Flex
             grow={1}
             align="stretch"
-            className={css({
-              padding: space_M,
-            })}
+            className={
+              depth > 0
+                ? css({
+                    padding: space_M,
+                  })
+                : ''
+            }
             justify="center"
           >
             {showSubcards ? (

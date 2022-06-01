@@ -23,6 +23,12 @@ export default function Settings(): JSX.Element {
   const accounts = useCurrentUserAccounts();
   const { currentUser } = useCurrentUser();
 
+  React.useEffect(() => {
+    if (window && window.top && window.top.document) {
+      window.top.document.title = 'co.LAB';
+    }
+  }, []);
+
   if (currentUser && accounts != 'LOADING') {
     return (
       <div className={css({ padding: space_L })}>

@@ -30,6 +30,7 @@ import ConfirmDeleteModal from '../common/ConfirmDeleteModal';
 import { Destroyer } from '../common/Destroyer';
 import DropDownMenu from '../common/DropDownMenu';
 import IconButton from '../common/IconButton';
+import IconButtonWithLoader from '../common/IconButtonWithLoader';
 import InlineInputNew from '../common/InlineInputNew';
 import InlineLoading from '../common/InlineLoading';
 import OpenClose from '../common/OpenClose';
@@ -352,7 +353,7 @@ export default function Team({ project }: Props): JSX.Element {
 
   if (status === 'INITIALIZED') {
     return (
-      <div>
+      <>
         <IconButton
           icon={faArrowLeft}
           title={'Back to project'}
@@ -402,7 +403,7 @@ export default function Team({ project }: Props): JSX.Element {
           ))}
         </div>
         <div>
-          <p className={textSmall}>Invite new members</p>
+          <p className={textSmall}>Invite new member</p>
           <input
             placeholder="email"
             type="text"
@@ -410,22 +411,22 @@ export default function Team({ project }: Props): JSX.Element {
             value={invite}
             className={inputStyle}
           />
-          {/* <Input onChange={e => setInvite(e)} value={invite} /> */}
-          <IconButton
+          <IconButtonWithLoader
             className={linkStyle}
             icon={faPaperPlane}
             title="Send"
-            onClick={() =>
+            isLoading={invite.length > 0}
+            onClick={() => {
               dispatch(
                 API.sendInvitation({
                   projectId: project.id!,
                   recipient: invite,
                 }),
-              ).then(() => setInvite(''))
-            }
+              ).then(() => setInvite(''));
+            }}
           />
         </div>
-      </div>
+      </>
     );
   } else {
     return (

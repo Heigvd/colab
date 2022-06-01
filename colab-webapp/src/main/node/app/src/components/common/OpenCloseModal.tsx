@@ -107,7 +107,10 @@ export default function OpenCloseModal({
             title={title}
             onClose={onClose}
             showCloseButton={showCloseButton}
-            className={cx(modalClassName, widthMax && css({width: '800px'}, heightMax && css({height: '580px'})))}
+            className={cx(
+              modalClassName,
+              widthMax && css({ width: '800px' }, heightMax && css({ height: '580px' })),
+            )}
             modalBodyClassName={modalBodyClassName}
             footer={footer}
           >

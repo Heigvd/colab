@@ -287,6 +287,7 @@ export default function CardTypeEditor({ className, usage }: Props): JSX.Element
                 title: 'Documentation',
               },
             }}
+            openKey={'resources'}
           />
         </Flex>
       </Flex>
