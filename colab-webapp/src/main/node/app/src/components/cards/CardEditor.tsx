@@ -35,7 +35,6 @@ import Collapsible from '../common/Collapsible';
 import ConfirmDeleteModal from '../common/ConfirmDeleteModal';
 import DropDownMenu from '../common/DropDownMenu';
 import Flex from '../common/Flex';
-import Input from '../common/Form/Input';
 import IconButton from '../common/IconButton';
 import InlineInputNew from '../common/InlineInputNew';
 import Modal from '../common/Modal';
@@ -55,6 +54,7 @@ import {
 import CardEditorToolbox from './CardEditorToolbox';
 import CardInvolvement from './CardInvolvement';
 import CardSettings from './CardSettings';
+import CompletionEditor from './CompletionEditor';
 import ContentSubs from './ContentSubs';
 import SideCollapsiblePanel from './SideCollapsiblePanel';
 import { computeNav, VariantPager } from './VariantSelector';
@@ -133,23 +133,6 @@ function ProgressBar({
   );
 }
 
-function ProgressModifier({ variant }: { variant: CardContent }) {
-  const dispatch = useAppDispatch();
-  return (
-    <Input
-      label="Completion level"
-      value={String(variant.completionLevel || 0)}
-      onChange={newValue =>
-        dispatch(
-          API.updateCardContent({
-            ...variant,
-            completionLevel: +newValue,
-          }),
-        )
-      }
-    />
-  );
-}
 interface TXToptionsType {
   //type: 'TXT';
   showTree: boolean;
@@ -397,13 +380,13 @@ export default function CardEditor({ card, variant, showSubcards = true }: Props
                             element={
                               <Modal
                                 title="Completion"
-                                onClose={() => navigate('./')}
+                                onClose={() => closeRouteCb('completion')}
                                 showCloseButton
                               >
                                 {() =>
                                   variant && (
                                     <Flex direction="column">
-                                      <ProgressModifier variant={variant} />
+                                      <CompletionEditor variant={variant} />
                                     </Flex>
                                   )
                                 }
@@ -591,7 +574,7 @@ export default function CardEditor({ card, variant, showSubcards = true }: Props
                     {() =>
                       variant && (
                         <Flex direction="column">
-                          <ProgressModifier variant={variant} />
+                          <CompletionEditor variant={variant} />
                         </Flex>
                       )
                     }

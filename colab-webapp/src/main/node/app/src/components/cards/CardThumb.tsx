@@ -6,7 +6,7 @@
  */
 
 import { css, cx } from '@emotion/css';
-import { faCog, faEllipsisV, faPen, faTrash } from '@fortawesome/free-solid-svg-icons';
+import { faCog, faEllipsisV, faPen, faPercent, faTrash } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Card, CardContent } from 'colab-rest-client';
 import * as React from 'react';
@@ -22,6 +22,7 @@ import Modal from '../common/Modal';
 import { lightIconButtonStyle, space_M, space_S, variantTitle } from '../styling/style';
 import CardLayout from './CardLayout';
 import CardSettings from './CardSettings';
+import CompletionEditor from './CompletionEditor';
 import ContentSubs from './ContentSubs';
 
 interface Props {
@@ -115,7 +116,7 @@ export default function CardThumb({
                     element={
                       <Modal
                         title="Card Settings"
-                        onClose={() => closeRouteCb('settings')}
+                        onClose={() => closeRouteCb(`${cardId}/settings`)}
                         showCloseButton
                       >
                         {closeModal =>
@@ -125,6 +126,18 @@ export default function CardThumb({
                             <InlineLoading />
                           )
                         }
+                      </Modal>
+                    }
+                  />
+                  <Route
+                    path={`${cardId}/v/${variant?.id}/completion`}
+                    element={
+                      <Modal
+                        title="Card completion"
+                        onClose={() => closeRouteCb(`${cardId}/v/${variant?.id}/completion`)}
+                        showCloseButton
+                      >
+                        {() => variant && <CompletionEditor variant={variant} />}
                       </Modal>
                     }
                   />
@@ -159,6 +172,17 @@ export default function CardThumb({
                       ),
                       action: () => {
                         navigate(`${cardId}/settings`);
+                      },
+                    },
+                    {
+                      value: 'completion',
+                      label: (
+                        <>
+                          <FontAwesomeIcon icon={faPercent} /> Completion
+                        </>
+                      ),
+                      action: () => {
+                        navigate(`${cardId}/v/${variant!.id}/completion`);
                       },
                     },
                     {
