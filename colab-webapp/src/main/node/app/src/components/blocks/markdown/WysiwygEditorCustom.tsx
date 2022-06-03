@@ -510,6 +510,12 @@ export default function WysiwygEditor({
     }
   }, [ToolBar, flyingToolBar, setEditToolbar, toolbarFormatFeatures, toolbarState, selected]);
 
+  React.useEffect(() => {
+    if (selected) {
+      divRef.current?.focus();
+    }
+  }, [selected, divRef]);
+
   return (
     <Flex className={className} direction="column" grow={1} align="stretch">
       {!flyingToolBar && (

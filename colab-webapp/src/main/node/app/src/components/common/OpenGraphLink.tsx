@@ -4,6 +4,7 @@
  *
  * Licensed under the MIT License
  */
+
 import { css, cx } from '@emotion/css';
 import {
   faChainBroken,
@@ -24,14 +25,6 @@ import IconButton from './IconButton';
 import InlineLoading from './InlineLoading';
 import OnConfirmInput from './OnConfirmInput';
 
-export interface OpenGraphProps {
-  url: string;
-  editCb?: () => void;
-  editingStatus: boolean;
-  setEditingState: (editMode: boolean) => void;
-  document: ExternalLink;
-}
-
 const cardStyle = css({
   flexWrap: 'nowrap',
   boxShadow: '0px 0px 5px 2px var(--lightGray)',
@@ -40,6 +33,7 @@ const cardStyle = css({
   margin: space_S,
   cursor: 'initial',
 });
+
 const urlStyle = css({
   fontStyle: 'italic',
   textDecoration: 'underline',
@@ -69,6 +63,14 @@ const imageStyle = css({
   minWidth: 0,
   flexShrink: 0,
 });
+
+export interface OpenGraphProps {
+  url: string;
+  editCb?: () => void;
+  editingStatus: boolean;
+  setEditingState: (editMode: boolean) => void;
+  document: ExternalLink;
+}
 
 export default function OpenGraphLink({
   url,
@@ -213,6 +215,7 @@ function EditLink({ url, onChange, refreshCb, onCancel }: EditLinkProps): JSX.El
         onChange={onChange}
         onCancel={onCancel}
         directEdit
+        enableAutoFocus
         containerClassName={oneLineLinkEditionStyle}
         className={fullWidthLinkEditionStyle}
       />

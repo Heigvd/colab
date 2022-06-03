@@ -28,6 +28,7 @@ export interface Props {
   onCancel?: () => void;
   placeholder?: string;
   directEdit?: boolean;
+  enableAutoFocus?: boolean;
   size?: 'SMALL' | 'LARGE';
   className?: string;
   cancelButtonLabel?: string;
@@ -55,6 +56,7 @@ export default function OnConfirmInput({
   placeholder = 'no value',
   readOnly = false,
   directEdit,
+  enableAutoFocus = false,
   okButtonLabel = 'Save',
   cancelButtonLabel = 'Cancel',
   buttonsClassName,
@@ -63,6 +65,7 @@ export default function OnConfirmInput({
   const [state, setState] = React.useState<string>(value || '');
 
   const [mode, setMode] = React.useState<'DISPLAY' | 'EDIT'>((directEdit && 'EDIT') || 'DISPLAY');
+  const [autoFocus, setAutoFocus] = React.useState<boolean>(enableAutoFocus && mode === 'EDIT');
 
   const inputRef = React.useRef<HTMLInputElement>(null);
   const containerRef = React.useRef<HTMLInputElement>(null);
@@ -122,6 +125,16 @@ export default function OnConfirmInput({
     [saveCb],
   );
 
+  React.useEffect(() => {
+    if (enableAutoFocus) {
+      if (mode === 'EDIT' && !autoFocus) {
+        setAutoFocus(true);
+      } else if (mode !== 'EDIT' && autoFocus) {
+        setAutoFocus(false);
+      }
+    }
+  }, [enableAutoFocus, mode, autoFocus, setAutoFocus]);
+
   if (mode === 'EDIT' && !readOnly) {
     return (
       <div ref={containerRef} className={containerClassName}>
@@ -134,6 +147,7 @@ export default function OnConfirmInput({
             onChange={onInternalChangeCb}
             onKeyDown={onEnterCb}
             ref={inputRef}
+            autoFocus={autoFocus}
           />
         </Flex>
         <Flex justify="flex-end" align="center">
