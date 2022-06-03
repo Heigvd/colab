@@ -60,6 +60,20 @@ under the License.
               </tr>
                           <tr>
                 <td>
+                  <a href="${project.url}/checkstyle.html#ch.colabproject.colab.generator.model.exceptions.HttpException.java">ch/colabproject/colab/generator/model/exceptions/HttpException.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
                   <a href="${project.url}/checkstyle.html#ch.colabproject.colab.generator.model.tools.PolymorphicDeserializer.java">ch/colabproject/colab/generator/model/tools/PolymorphicDeserializer.java</a>
                 </td>
                 <td>
@@ -75,20 +89,6 @@ under the License.
                           <tr>
                 <td>
                   <a href="${project.url}/checkstyle.html#ch.colabproject.colab.generator.model.annotations.AdminResource.java">ch/colabproject/colab/generator/model/annotations/AdminResource.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="${project.url}/checkstyle.html#ch.colabproject.colab.generator.model.exceptions.HttpException.java">ch/colabproject/colab/generator/model/exceptions/HttpException.java</a>
                 </td>
                 <td>
                   0
@@ -186,20 +186,6 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="${project.url}/checkstyle.html#ch.colabproject.colab.generator.model.tools.ClassDoc.java">ch/colabproject/colab/generator/model/tools/ClassDoc.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-              </tr>
-                          <tr>
-                <td>
                   <a href="${project.url}/checkstyle.html#ch.colabproject.colab.generator.model.tools.JsonbProvider.java">ch/colabproject/colab/generator/model/tools/JsonbProvider.java</a>
                 </td>
                 <td>
@@ -207,6 +193,20 @@ under the License.
                 </td>
                 <td>
                   1
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="${project.url}/checkstyle.html#ch.colabproject.colab.generator.model.tools.ClassDoc.java">ch/colabproject/colab/generator/model/tools/ClassDoc.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
                 </td>
                 <td>
                   0
