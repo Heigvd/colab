@@ -509,10 +509,9 @@ import com.google.common.collect.Lists;
 <span class="nc" id="L509">        alreadyDone.addAll(remainsToProcess);</span>
 
 <span class="nc" id="L511">        List&lt;Long&gt; directTargets = findDirectTargets(remainsToProcess);</span>
-<span class="nc" id="L512">        alreadyDone.addAll(directTargets);</span>
-<span class="nc" id="L513">        retrieveDirectAndTransitiveCardTypesOrRefs(directTargets, alreadyDone);</span>
+<span class="nc" id="L512">        retrieveDirectAndTransitiveCardTypesOrRefs(directTargets, alreadyDone);</span>
 
-<span class="nc" id="L515">        return alreadyDone;</span>
+<span class="nc" id="L514">        return alreadyDone;</span>
     }
 
     /**
@@ -523,9 +522,9 @@ import com.google.common.collect.Lists;
      * @return the ids of the matching card types or references
      */
     private List&lt;Long&gt; findDirectTargets(List&lt;Long&gt; cardTypeOrRefIds) {
-<span class="nc" id="L526">        List&lt;Long&gt; result = cardTypeDao.findTargetIdsOf(cardTypeOrRefIds);</span>
-<span class="nc" id="L527">        logger.debug(&quot;found targets : {} &quot;, result);</span>
-<span class="nc" id="L528">        return result;</span>
+<span class="nc" id="L525">        List&lt;Long&gt; result = cardTypeDao.findTargetIdsOf(cardTypeOrRefIds);</span>
+<span class="nc" id="L526">        logger.debug(&quot;found targets : {} &quot;, result);</span>
+<span class="nc" id="L527">        return result;</span>
     }
 
     /**
@@ -536,7 +535,7 @@ import com.google.common.collect.Lists;
      * @return the ids of the matching projects
      */
     public List&lt;Long&gt; findProjectIdsFromCardTypeIds(List&lt;Long&gt; cardTypeOrRefIds) {
-<span class="nc" id="L539">        return cardTypeDao.findProjectIdsOf(cardTypeOrRefIds);</span>
+<span class="nc" id="L538">        return cardTypeDao.findProjectIdsOf(cardTypeOrRefIds);</span>
     }
 
     // *********************************************************************************************
@@ -551,21 +550,21 @@ import com.google.common.collect.Lists;
      * @return true iff the project is complete and safe
      */
     public boolean checkIntegrity(AbstractCardType cardTypeOrRef) {
-<span class="nc bnc" id="L554" title="All 2 branches missed.">        if (cardTypeOrRef == null) {</span>
-<span class="nc" id="L555">            return false;</span>
+<span class="nc bnc" id="L553" title="All 2 branches missed.">        if (cardTypeOrRef == null) {</span>
+<span class="nc" id="L554">            return false;</span>
         }
 
-<span class="nc bnc" id="L558" title="All 2 branches missed.">        if (cardTypeOrRef instanceof CardTypeRef) {</span>
-<span class="nc" id="L559">            CardTypeRef reference = (CardTypeRef) cardTypeOrRef;</span>
-<span class="nc" id="L560">            CardType finalTarget = reference.resolve();</span>
-<span class="nc bnc" id="L561" title="All 2 branches missed.">            if (finalTarget == null) {</span>
-<span class="nc" id="L562">                return false;</span>
+<span class="nc bnc" id="L557" title="All 2 branches missed.">        if (cardTypeOrRef instanceof CardTypeRef) {</span>
+<span class="nc" id="L558">            CardTypeRef reference = (CardTypeRef) cardTypeOrRef;</span>
+<span class="nc" id="L559">            CardType finalTarget = reference.resolve();</span>
+<span class="nc bnc" id="L560" title="All 2 branches missed.">            if (finalTarget == null) {</span>
+<span class="nc" id="L561">                return false;</span>
             }
         }
 
         // just one ref by target/project
 
-<span class="nc" id="L568">        return true;</span>
+<span class="nc" id="L567">        return true;</span>
     }
 
     // *********************************************************************************************
