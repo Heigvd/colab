@@ -509,7 +509,6 @@ public class CardTypeManager {
         alreadyDone.addAll(remainsToProcess);
 
         List<Long> directTargets = findDirectTargets(remainsToProcess);
-        alreadyDone.addAll(directTargets);
         retrieveDirectAndTransitiveCardTypesOrRefs(directTargets, alreadyDone);
 
         return alreadyDone;
