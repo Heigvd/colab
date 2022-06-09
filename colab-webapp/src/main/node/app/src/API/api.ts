@@ -739,6 +739,14 @@ export const updateCard = createAsyncThunk('card/update', async (card: Card) => 
   await restClient.CardRestEndpoint.updateCard(card);
 });
 
+export const changeCardIndex = createAsyncThunk(
+  'card/changecardindex',
+  async ({ cardId, newIndex }: { cardId: number; newIndex: number }) => {
+    // change the index and review other cards index
+    await restClient.CardRestEndpoint.changeCardIndex(cardId, newIndex);
+  },
+);
+
 export const moveCard = createAsyncThunk(
   'card/move',
   async ({ cardId, newParentId }: { cardId: number; newParentId: number }) => {

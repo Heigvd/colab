@@ -81,7 +81,7 @@ public class CardRestEndpoint {
     /**
      * Create and persist a new card
      *
-     * @param parentId   id of the new card's parent
+     * @param parentId id of the new card's parent
      *
      * @return the persisted new card
      */
@@ -112,8 +112,8 @@ public class CardRestEndpoint {
     /**
      * Create and persist a new card
      *
-     * @param parentId   id of the new card's parent
-     * @param document   deliverable of the new card content
+     * @param parentId id of the new card's parent
+     * @param document deliverable of the new card content
      *
      * @return the persisted new card
      */
@@ -173,6 +173,20 @@ public class CardRestEndpoint {
     public void updateCard(Card card) throws ColabMergeException {
         logger.debug("update card {}", card);
         cardDao.updateCard(card);
+    }
+
+    /**
+     * Change the position of the card (stay in the same parent, change the index)<p>
+     * Recompute the indexes of all the sister cards
+     *
+     * @param cardId the id of the card
+     * @param index  the new index to set
+     */
+    @PUT
+    @Path("{cardId}/changeIndex/{newIndex}")
+    public void changeCardIndex(@PathParam("cardId") Long cardId,
+        @PathParam("newIndex") Integer index) {
+        cardManager.changeCardIndex(cardId, index);
     }
 
     /**
