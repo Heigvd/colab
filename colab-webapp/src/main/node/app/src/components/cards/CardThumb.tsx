@@ -6,7 +6,14 @@
  */
 
 import { css, cx } from '@emotion/css';
-import { faCog, faEllipsisV, faPen, faPercent, faTrash } from '@fortawesome/free-solid-svg-icons';
+import {
+  faCog,
+  faEllipsisV,
+  faFrog,
+  faPen,
+  faPercent,
+  faTrash,
+} from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Card, CardContent } from 'colab-rest-client';
 import * as React from 'react';
@@ -24,6 +31,7 @@ import CardLayout from './CardLayout';
 import CardSettings from './CardSettings';
 import CompletionEditor from './CompletionEditor';
 import ContentSubs from './ContentSubs';
+import PositionEditor from './PositionEditor';
 
 interface Props {
   card: Card;
@@ -141,6 +149,18 @@ export default function CardThumb({
                       </Modal>
                     }
                   />
+                  <Route
+                    path={`${cardId}/position`}
+                    element={
+                      <Modal
+                        title="Card position"
+                        onClose={() => closeRouteCb(`${cardId}/position`)}
+                        showCloseButton
+                      >
+                        {() => <PositionEditor card={card} />}
+                      </Modal>
+                    }
+                  />
                 </Routes>
                 <DropDownMenu
                   icon={faEllipsisV}
@@ -183,6 +203,17 @@ export default function CardThumb({
                       ),
                       action: () => {
                         navigate(`${cardId}/v/${variant!.id}/completion`);
+                      },
+                    },
+                    {
+                      value: 'position',
+                      label: (
+                        <>
+                          <FontAwesomeIcon icon={faFrog} /> Position
+                        </>
+                      ),
+                      action: () => {
+                        navigate(`${cardId}/position`);
                       },
                     },
                     {

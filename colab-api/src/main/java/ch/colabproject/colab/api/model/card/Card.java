@@ -8,6 +8,7 @@ package ch.colabproject.colab.api.model.card;
 
 import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.model.ColabEntity;
+import ch.colabproject.colab.api.model.WithIndex;
 import ch.colabproject.colab.api.model.WithWebsocketChannels;
 import ch.colabproject.colab.api.model.document.AbstractResource;
 import ch.colabproject.colab.api.model.document.Resourceable;
@@ -62,7 +63,7 @@ import javax.validation.constraints.Size;
     }
 )
 public class Card
-    implements ColabEntity, WithWebsocketChannels, Resourceable, StickyNoteSourceable {
+    implements ColabEntity, WithWebsocketChannels, Resourceable, StickyNoteSourceable, WithIndex {
 
     private static final long serialVersionUID = 1L;
 
@@ -276,6 +277,7 @@ public class Card
     /**
      * @return the index of the card in its parent
      */
+    @Override
     public int getIndex() {
         return index;
     }
@@ -283,6 +285,7 @@ public class Card
     /**
      * @param index the new index of the card in its parent
      */
+    @Override
     public void setIndex(int index) {
         this.index = index;
     }

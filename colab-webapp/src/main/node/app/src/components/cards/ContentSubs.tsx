@@ -7,7 +7,7 @@
 
 import { css, cx } from '@emotion/css';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
-import { CardContent } from 'colab-rest-client';
+import { Card, CardContent } from 'colab-rest-client';
 import * as React from 'react';
 import { useLocation } from 'react-router-dom';
 import { getSubCards } from '../../API/api';
@@ -16,9 +16,11 @@ import Button from '../common/Button';
 import Flex from '../common/Flex';
 import InlineLoading from '../common/InlineLoading';
 import { depthMax } from '../projects/edition/Editor';
-import { fixedButtonStyle, voidStyle } from '../styling/style';
+import { fixedButtonStyle, rootViewCardsStyle, voidStyle } from '../styling/style';
 import CardCreator from './CardCreator';
 import CardThumbWithSelector from './CardThumbWithSelector';
+
+// TODO : nice className for div for empty slot (blank card)
 
 interface Props {
   cardContent: CardContent;
@@ -51,6 +53,7 @@ export default function ContentSubs({
 }: Props): JSX.Element {
   const dispatch = useAppDispatch();
   const location = useLocation();
+  const isInRootView = !location.pathname.match(/card/);
 
   const subCards = useAppSelector(state => {
     if (cardContent.id) {
@@ -69,6 +72,40 @@ export default function ContentSubs({
       return [];
     }
   }, shallowEqual);
+
+  const orderAndFillSubCards = React.useMemo(() => {
+    const orderedSubCards: (Card | null)[] = [];
+
+    if (subCards != null) {
+      // sort by index, and if no index, by id
+      // cards without index appear after those with index, ordered by id
+      const sortedSubCards = subCards.sort((a, b) => {
+        if ((a.index || 0) === 0 && (b.index || 0) === 0) {
+          return (a.id || 0) - (b.id || 0);
+        }
+
+        return (a.index || 1000) - (b.index || 1000);
+      });
+
+      // fill empty cards where needed
+      let lastSeenIndex: number = 0;
+
+      sortedSubCards.forEach(card => {
+        lastSeenIndex++;
+
+        if (card.index && card.index > 0) {
+          while (lastSeenIndex < card.index) {
+            orderedSubCards.push(null);
+            lastSeenIndex++;
+          }
+        }
+
+        orderedSubCards.push(card);
+      });
+    }
+
+    return orderedSubCards;
+  }, [subCards]);
 
   React.useEffect(() => {
     if (subCards === undefined) {
@@ -107,8 +144,22 @@ export default function ContentSubs({
           )}
         >
           <Flex wrap="wrap" align="stretch" className={subcardsContainerStyle}>
-            {subCards.map(sub => (
-              <CardThumbWithSelector depth={depth - 1} key={sub.id} card={sub} />
+            {orderAndFillSubCards.map(sub => (
+              <>
+                {sub == null ? (
+                  <div
+                    className={cx(
+                      rootViewCardsStyle(depth - 1, isInRootView),
+                      css({
+                        margin: '10px',
+                        minHeight: '100px',
+                      }),
+                    )}
+                  />
+                ) : (
+                  <CardThumbWithSelector depth={depth - 1} key={sub.id} card={sub} />
+                )}
+              </>
             ))}
           </Flex>
           <Flex justify="center">

@@ -6,6 +6,7 @@
  */
 package ch.colabproject.colab.api.controller.card;
 
+import ch.colabproject.colab.api.controller.common.IndexWithEmptySlotManager;
 import ch.colabproject.colab.api.controller.document.ResourceReferenceSpreadingHelper;
 import ch.colabproject.colab.api.model.card.AbstractCardType;
 import ch.colabproject.colab.api.model.card.Card;
@@ -68,6 +69,12 @@ public class CardManager {
      */
     @Inject
     private ResourceReferenceSpreadingHelper resourceReferenceSpreadingHelper;
+
+    /**
+     * Index handling specific logic management
+     */
+    @Inject
+    private IndexWithEmptySlotManager<Card> indexManager;
 
     // *********************************************************************************************
     // find cards
@@ -286,6 +293,19 @@ public class CardManager {
         }
 
         return true;
+    }
+
+    /**
+     * Change the position of the card (stay in the same parent, change the index)<p>
+     * Recompute the indexes of all the sister cards
+     *
+     * @param cardId the id of the card
+     * @param index  the new index to set
+     */
+    public void changeCardIndex(Long cardId, int index) {
+        Card card = this.assertAndGetCard(cardId);
+
+        indexManager.changeItemPosition(card, index, card.getParent().getSubCards());
     }
 
     /**
