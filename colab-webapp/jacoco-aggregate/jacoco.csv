@@ -100,6 +100,7 @@ colab-webapp/colab-api,ch.colabproject.colab.api.controller.project,ProjectManag
 colab-webapp/colab-api,ch.colabproject.colab.api.persistence.jpa.user,UserDao,181,0,10,0,55,0,20,0,15,0
 colab-webapp/colab-api,ch.colabproject.colab.api.security.permissions.project,ProjectConditions.IsProjectReadable,56,0,8,0,18,0,9,0,5,0
 colab-webapp/colab-api,ch.colabproject.colab.api.security.permissions.project,ProjectConditions,7,0,0,0,2,0,1,0,1,0
+colab-webapp/colab-api,ch.colabproject.colab.api.controller.common,IndexWithEmptySlotManager,229,0,40,0,56,0,28,0,8,0
 colab-webapp/colab-api,ch.colabproject.colab.api.model.user,InternalHashMethod,24,0,0,0,3,0,1,0,1,0
 colab-webapp/colab-api,ch.colabproject.colab.api.model.user,HashMethod.new HashMethod() {...},25,0,0,0,6,0,2,0,2,0
 colab-webapp/colab-api,ch.colabproject.colab.api.model.user,HttpSession,499,0,54,0,37,0,90,0,63,0
@@ -165,7 +166,7 @@ colab-webapp/colab-api,ch.colabproject.colab.api.persistence.jpa.token,TokenDao,
 colab-webapp/colab-api,ch.colabproject.colab.api.security.permissions.card,CardTypeOrRefConditions,7,0,0,0,2,0,1,0,1,0
 colab-webapp/colab-api,ch.colabproject.colab.api.security.permissions.card,CardTypeOrRefConditions.IsCardTypeOrRefReadable,56,0,8,0,18,0,9,0,5,0
 colab-webapp/colab-api,ch.colabproject.colab.api.persistence.jpa.team,TeamDao,139,0,10,0,36,0,15,0,10,0
-colab-webapp/colab-api,ch.colabproject.colab.api.rest.card,CardRestEndpoint,207,0,12,0,42,0,22,0,16,0
+colab-webapp/colab-api,ch.colabproject.colab.api.rest.card,CardRestEndpoint,214,0,12,0,44,0,23,0,17,0
 colab-webapp/colab-api,ch.colabproject.colab.api.rest.card,CardContentRestEndpoint,188,0,0,0,35,0,16,0,16,0
 colab-webapp/colab-api,ch.colabproject.colab.api.rest.card,CardTypeRestEndpoint,125,0,2,0,32,0,13,0,12,0
 colab-webapp/colab-api,ch.colabproject.colab.api.exceptions,ColabRollbackException,4,0,0,0,2,0,1,0,1,0
@@ -193,7 +194,7 @@ colab-webapp/colab-api,ch.colabproject.colab.api.ws.channel.tool,ChannelsBuilder
 colab-webapp/colab-api,ch.colabproject.colab.api.ws.channel.tool,ChannelsBuilders.AboutAccountChannelsBuilder,28,0,2,0,8,0,3,0,2,0
 colab-webapp/colab-api,ch.colabproject.colab.api.ws.channel.tool,ChannelsBuilders.AboutProjectOverviewChannelsBuilder,26,0,2,0,8,0,3,0,2,0
 colab-webapp/colab-api,ch.colabproject.colab.api.model.project,Project,661,0,68,0,51,0,109,0,75,0
-colab-webapp/colab-api,ch.colabproject.colab.api.controller.card,CardManager,399,0,44,0,116,0,46,0,24,0
+colab-webapp/colab-api,ch.colabproject.colab.api.controller.card,CardManager,412,0,44,0,119,0,47,0,25,0
 colab-webapp/colab-api,ch.colabproject.colab.api.controller.card,CardContentManager,321,0,28,0,80,0,30,0,15,0
 colab-webapp/colab-api,ch.colabproject.colab.api.controller.card,CardTypeManager,427,0,40,0,122,0,50,0,30,0
 colab-webapp/colab-api,ch.colabproject.colab.api.microchanges.model,MicroChange,47,0,2,0,16,0,11,0,10,0

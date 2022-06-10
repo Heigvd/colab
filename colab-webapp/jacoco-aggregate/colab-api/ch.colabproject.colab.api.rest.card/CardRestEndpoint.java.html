@@ -81,7 +81,7 @@ import org.slf4j.LoggerFactory;
     /**
      * Create and persist a new card
      *
-     * @param parentId   id of the new card's parent
+     * @param parentId id of the new card's parent
      *
      * @return the persisted new card
      */
@@ -112,8 +112,8 @@ import org.slf4j.LoggerFactory;
     /**
      * Create and persist a new card
      *
-     * @param parentId   id of the new card's parent
-     * @param document   deliverable of the new card content
+     * @param parentId id of the new card's parent
+     * @param document deliverable of the new card content
      *
      * @return the persisted new card
      */
@@ -176,6 +176,20 @@ import org.slf4j.LoggerFactory;
 <span class="nc" id="L176">    }</span>
 
     /**
+     * Change the position of the card (stay in the same parent, change the index)&lt;p&gt;
+     * Recompute the indexes of all the sister cards
+     *
+     * @param cardId the id of the card
+     * @param index  the new index to set
+     */
+    @PUT
+    @Path(&quot;{cardId}/changeIndex/{newIndex}&quot;)
+    public void changeCardIndex(@PathParam(&quot;cardId&quot;) Long cardId,
+        @PathParam(&quot;newIndex&quot;) Integer index) {
+<span class="nc" id="L189">        cardManager.changeCardIndex(cardId, index);</span>
+<span class="nc" id="L190">    }</span>
+
+    /**
      * Move a card to a new parent
      *
      * @param cardId      id of the card to move
@@ -188,8 +202,8 @@ import org.slf4j.LoggerFactory;
     public void moveCard(
         @PathParam(&quot;cardId&quot;) Long cardId,
         @PathParam(&quot;newParentId&quot;) Long newParentId) {
-<span class="nc" id="L191">        cardManager.moveCard(cardId, newParentId);</span>
-<span class="nc" id="L192">    }</span>
+<span class="nc" id="L205">        cardManager.moveCard(cardId, newParentId);</span>
+<span class="nc" id="L206">    }</span>
 
     /**
      * Permanently delete a card
@@ -199,9 +213,9 @@ import org.slf4j.LoggerFactory;
     @DELETE
     @Path(&quot;{id}&quot;)
     public void deleteCard(@PathParam(&quot;id&quot;) Long id) {
-<span class="nc" id="L202">        logger.debug(&quot;delete card #{}&quot;, id);</span>
-<span class="nc" id="L203">        cardManager.deleteCard(id);</span>
-<span class="nc" id="L204">    }</span>
+<span class="nc" id="L216">        logger.debug(&quot;delete card #{}&quot;, id);</span>
+<span class="nc" id="L217">        cardManager.deleteCard(id);</span>
+<span class="nc" id="L218">    }</span>
 
     /**
      * Get all card content variants of a card
@@ -213,8 +227,8 @@ import org.slf4j.LoggerFactory;
     @GET
     @Path(&quot;{id}/CardContents&quot;)
     public List&lt;CardContent&gt; getContentVariantsOfCard(@PathParam(&quot;id&quot;) Long cardId) {
-<span class="nc" id="L216">        logger.debug(&quot;Get card #{} content variants&quot;, cardId);</span>
-<span class="nc" id="L217">        return cardManager.getContentVariants(cardId);</span>
+<span class="nc" id="L230">        logger.debug(&quot;Get card #{} content variants&quot;, cardId);</span>
+<span class="nc" id="L231">        return cardManager.getContentVariants(cardId);</span>
     }
 
     /**
@@ -227,8 +241,8 @@ import org.slf4j.LoggerFactory;
     @GET
     @Path(&quot;{id}/StickyNoteLinksDestinationCard&quot;)
     public List&lt;StickyNoteLink&gt; getStickyNoteLinksAsDest(@PathParam(&quot;id&quot;) Long cardId) {
-<span class="nc" id="L230">        logger.debug(&quot;Get sticky note links to card #{} as destination&quot;, cardId);</span>
-<span class="nc" id="L231">        return cardManager.getStickyNoteLinkAsDest(cardId);</span>
+<span class="nc" id="L244">        logger.debug(&quot;Get sticky note links to card #{} as destination&quot;, cardId);</span>
+<span class="nc" id="L245">        return cardManager.getStickyNoteLinkAsDest(cardId);</span>
     }
 
     /**
@@ -241,8 +255,8 @@ import org.slf4j.LoggerFactory;
     @GET
     @Path(&quot;{id}/StickyNoteLinksSrcCard&quot;)
     public List&lt;StickyNoteLink&gt; getStickyNoteLinksAsSrc(@PathParam(&quot;id&quot;) Long cardId) {
-<span class="nc" id="L244">        logger.debug(&quot;Get sticky note links to card #{} as source&quot;, cardId);</span>
-<span class="nc" id="L245">        return cardManager.getStickyNoteLinkAsSrcCard(cardId);</span>
+<span class="nc" id="L258">        logger.debug(&quot;Get sticky note links to card #{} as source&quot;, cardId);</span>
+<span class="nc" id="L259">        return cardManager.getStickyNoteLinkAsSrcCard(cardId);</span>
     }
 
     /**
@@ -255,8 +269,8 @@ import org.slf4j.LoggerFactory;
     @GET
     @Path(&quot;{id}/ActivityFlowLinksPreviousCard&quot;)
     public List&lt;ActivityFlowLink&gt; getActivityFlowLinksAsPrevious(@PathParam(&quot;id&quot;) Long cardId) {
-<span class="nc" id="L258">        logger.debug(&quot;Get activity flow links to card #{} as previous&quot;, cardId);</span>
-<span class="nc" id="L259">        return cardManager.getActivityFlowLinkAsPrevious(cardId);</span>
+<span class="nc" id="L272">        logger.debug(&quot;Get activity flow links to card #{} as previous&quot;, cardId);</span>
+<span class="nc" id="L273">        return cardManager.getActivityFlowLinkAsPrevious(cardId);</span>
     }
 
     /**
@@ -269,8 +283,8 @@ import org.slf4j.LoggerFactory;
     @GET
     @Path(&quot;{id}/ActivityFlowLinksNextCard&quot;)
     public List&lt;ActivityFlowLink&gt; getActivityFlowLinksAsNext(@PathParam(&quot;id&quot;) Long cardId) {
-<span class="nc" id="L272">        logger.debug(&quot;Get activity flow links to card #{} as next&quot;, cardId);</span>
-<span class="nc" id="L273">        return cardManager.getActivityFlowLinkAsNext(cardId);</span>
+<span class="nc" id="L286">        logger.debug(&quot;Get activity flow links to card #{} as next&quot;, cardId);</span>
+<span class="nc" id="L287">        return cardManager.getActivityFlowLinkAsNext(cardId);</span>
     }
 
     /**
@@ -283,8 +297,8 @@ import org.slf4j.LoggerFactory;
     @GET
     @Path(&quot;{cardId}/ACLs&quot;)
     public List&lt;AccessControl&gt; getAcls(@PathParam(&quot;cardId&quot;) Long cardId) {
-<span class="nc" id="L286">        logger.debug(&quot;Get Card #{} access-control list&quot;, cardId);</span>
-<span class="nc" id="L287">        return cardManager.getAcls(cardId);</span>
+<span class="nc" id="L300">        logger.debug(&quot;Get Card #{} access-control list&quot;, cardId);</span>
+<span class="nc" id="L301">        return cardManager.getAcls(cardId);</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>IndexWithEmptySlotManager.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">colab-client</a> &gt; <a href="../index.html" class="el_bundle">colab-api</a> &gt; <a href="index.source.html" class="el_package">ch.colabproject.colab.api.controller.common</a> &gt; <span class="el_source">IndexWithEmptySlotManager.java</span></div><h1>IndexWithEmptySlotManager.java</h1><pre class="source lang-java linenums">/*
+ * The coLAB project
+ * Copyright (C) 2021 AlbaSim, MEI, HEIG-VD, HES-SO
+ *
+ * Licensed under the MIT License
+ */
+package ch.colabproject.colab.api.controller.common;
+
+import ch.colabproject.colab.api.model.WithIndex;
+import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
+import ch.colabproject.colab.generator.model.interfaces.WithId;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Comparator;
+import java.util.List;
+import javax.ejb.LocalBean;
+import javax.ejb.Stateless;
+import org.apache.commons.collections4.CollectionUtils;
+
+/**
+ * Deal with changing index in a collection. The indexes are from 1 to ..., usually with a step of 1
+ * between two items. There can be more than an increment of 1 between two items : it means there is
+ * one (or more) empty slot(s) between the items.
+ *
+ * @author sandra
+ *
+ * @param &lt;T&gt; Type of the items
+ */
+// TODO smart deal with empty slots addition / moving
+@Stateless
+@LocalBean
+<span class="nc" id="L32">public class IndexWithEmptySlotManager&lt;T extends WithIndex &amp; WithId&gt; {</span>
+
+    /**
+     * The default value of the biggest index that is suitable
+     */
+    private static final int DEFAULT_MAX_INDEX = Integer.MAX_VALUE;
+
+    /** sort by id */
+<span class="nc" id="L40">    private final Comparator&lt;T&gt; idComparator = Comparator</span>
+<span class="nc" id="L41">        .comparingLong(entity -&gt; entity.getId());</span>
+
+    /** sort by index - if null or 0, at the end */
+<span class="nc" id="L44">    private final Comparator&lt;T&gt; indexComparator = Comparator</span>
+<span class="nc bnc" id="L45" title="All 2 branches missed.">        .comparingLong(entity -&gt; entity.getIndex() != 0 ? entity.getIndex() : DEFAULT_MAX_INDEX);</span>
+
+    // *********************************************************************************************
+    // change the position of an item
+    // *********************************************************************************************
+
+    /**
+     * Set the new position of the item. If needed, initialize the indexes of the collection first
+     * to ensure that the indexes are unique inside the collection.
+     * &lt;p&gt;
+     * If we move the item where there is already a card, all cards between the old and the new
+     * position are moved to let space.
+     * &lt;p&gt;
+     * If we move the item to an empty slot, it is just a swap between the card and the empty place.
+     * No other card change.
+     *
+     * @param itemToMove the item to change
+     * @param newIndex   the new index to set
+     * @param collection the collection of items
+     */
+    public void changeItemPosition(T itemToMove, int newIndex, Collection&lt;T&gt; collection) {
+<span class="nc bnc" id="L66" title="All 2 branches missed.">        if (CollectionUtils.isEmpty(collection)) {</span>
+<span class="nc" id="L67">            throw HttpErrorMessage.dataIntegrityFailure();</span>
+        }
+
+<span class="nc bnc" id="L70" title="All 2 branches missed.">        if (!collection.contains(itemToMove)) {</span>
+<span class="nc" id="L71">            throw HttpErrorMessage.dataIntegrityFailure();</span>
+        }
+
+<span class="nc" id="L74">        List&lt;T&gt; sortedList = sort(collection);</span>
+
+<span class="nc" id="L76">        harmonizeIndexes(sortedList);</span>
+
+<span class="nc" id="L78">        int oldIndex = itemToMove.getIndex();</span>
+
+<span class="nc bnc" id="L80" title="All 2 branches missed.">        if (oldIndex != newIndex) {</span>
+<span class="nc" id="L81">            boolean isMovingToEmptySlot = sortedList.stream()</span>
+<span class="nc bnc" id="L82" title="All 2 branches missed.">                .filter(anItem -&gt; anItem.getIndex() == newIndex).findAny().isEmpty();</span>
+
+<span class="nc bnc" id="L84" title="All 2 branches missed.">            if (isMovingToEmptySlot) {</span>
+                // just a swap between the card and the blank
+                // as soon as we have a way to add an empty slot where we want, we can change this
+                // behaviour
+<span class="nc" id="L88">                itemToMove.setIndex(newIndex);</span>
+            } else {
+<span class="nc" id="L90">                List&lt;Integer&gt; fixedEmptySlots = listEmptySlots(sortedList);</span>
+
+<span class="nc bnc" id="L92" title="All 2 branches missed.">                boolean isMovingToBiggerIndex = newIndex &gt; oldIndex;</span>
+
+                // move items between old and new index
+<span class="nc bnc" id="L95" title="All 2 branches missed.">                if (isMovingToBiggerIndex) {</span>
+<span class="nc bnc" id="L96" title="All 2 branches missed.">                    for (T anItem : sortedList) {</span>
+<span class="nc bnc" id="L97" title="All 4 branches missed.">                        if (anItem.getIndex() &gt; oldIndex &amp;&amp; anItem.getIndex() &lt;= newIndex) {</span>
+<span class="nc" id="L98">                            int anItemIndex = anItem.getIndex() - 1;</span>
+
+<span class="nc bnc" id="L100" title="All 2 branches missed.">                            while (fixedEmptySlots.contains(anItemIndex)) {</span>
+<span class="nc" id="L101">                                anItemIndex--;</span>
+                            }
+<span class="nc" id="L103">                            anItem.setIndex(anItemIndex);</span>
+                        }
+<span class="nc" id="L105">                    }</span>
+                } else {
+<span class="nc bnc" id="L107" title="All 2 branches missed.">                    for (T anItem : sortedList) {</span>
+<span class="nc bnc" id="L108" title="All 4 branches missed.">                        if (anItem.getIndex() &gt;= newIndex &amp;&amp; anItem.getIndex() &lt; oldIndex) {</span>
+<span class="nc" id="L109">                            int anItemIndex = anItem.getIndex() + 1;</span>
+
+<span class="nc bnc" id="L111" title="All 2 branches missed.">                            while (fixedEmptySlots.contains(anItemIndex)) {</span>
+<span class="nc" id="L112">                                anItemIndex++;</span>
+                            }
+<span class="nc" id="L114">                            anItem.setIndex(anItemIndex);</span>
+                        }
+<span class="nc" id="L116">                    }</span>
+                }
+
+<span class="nc" id="L119">                itemToMove.setIndex(newIndex);</span>
+            }
+        }
+<span class="nc" id="L122">    }</span>
+
+    // *********************************************************************************************
+    // sort
+    // *********************************************************************************************
+
+    /**
+     * Sort by index and id.
+     *
+     * @param collection the collection to sort
+     *
+     * @return an ordered by index and id list
+     */
+    private List&lt;T&gt; sort(Collection&lt;T&gt; collection) {
+<span class="nc" id="L136">        List&lt;T&gt; sortedList = new ArrayList&lt;&gt;(collection);</span>
+
+<span class="nc" id="L138">        sortedList.sort(idComparator);</span>
+
+<span class="nc" id="L140">        sortedList.sort(indexComparator);</span>
+
+<span class="nc" id="L142">        return sortedList;</span>
+    }
+
+    // *********************************************************************************************
+    // prepare
+    // *********************************************************************************************
+
+    /**
+     * Make sure that
+     * &lt;ul&gt;
+     * &lt;li&gt;no index is 0&lt;/li&gt;
+     * &lt;li&gt;each index is unique&lt;/li&gt;
+     * &lt;/ul&gt;
+     *
+     * @param sortedList
+     */
+    private void harmonizeIndexes(List&lt;T&gt; sortedList) {
+<span class="nc" id="L159">        int lastIndex = 0;</span>
+
+        // a priori, this simple algorithm is functional enough
+
+<span class="nc bnc" id="L163" title="All 2 branches missed.">        for (T item : sortedList) {</span>
+<span class="nc bnc" id="L164" title="All 2 branches missed.">            if (item.getIndex() &lt;= lastIndex) {</span>
+<span class="nc" id="L165">                item.setIndex(lastIndex + 1);</span>
+            }
+
+<span class="nc" id="L168">            lastIndex = item.getIndex();</span>
+<span class="nc" id="L169">        }</span>
+<span class="nc" id="L170">    }</span>
+
+    // *********************************************************************************************
+    // deal with empty slots
+    // *********************************************************************************************
+
+    /**
+     * List the indexes where there is an empty slot.
+     *
+     * @param sortedList
+     *
+     * @return the indexes of the empty slots
+     */
+    private List&lt;Integer&gt; listEmptySlots(List&lt;T&gt; sortedList) {
+<span class="nc" id="L184">        List&lt;Integer&gt; emptySlots = new ArrayList&lt;&gt;();</span>
+
+<span class="nc" id="L186">        int lastIndex = 0;</span>
+
+<span class="nc bnc" id="L188" title="All 2 branches missed.">        for (T item : sortedList) {</span>
+<span class="nc" id="L189">            lastIndex++;</span>
+
+<span class="nc bnc" id="L191" title="All 2 branches missed.">            while (lastIndex &lt; item.getIndex()) {</span>
+<span class="nc" id="L192">                emptySlots.add(lastIndex);</span>
+<span class="nc" id="L193">                lastIndex++;</span>
+            }
+<span class="nc" id="L195">        }</span>
+
+<span class="nc" id="L197">        return emptySlots;</span>
+    }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>
