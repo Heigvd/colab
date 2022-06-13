@@ -443,7 +443,7 @@ export default function Editor(): JSX.Element {
             overflow: 'auto',
           })}
         >
-          <Flex direction="column" grow={1}>
+          <Flex direction="column" grow={1} align="stretch">
             <Routes>
               <Route path="settings" element={<ProjectSettings project={project} />} />
               <Route path="team" element={<Team project={project} />} />
