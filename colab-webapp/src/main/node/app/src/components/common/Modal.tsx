@@ -21,6 +21,7 @@ interface Props {
   onClose: () => void;
   className?: string;
   modalBodyClassName?: string;
+  onEnter?: (collapse: () => void) => void;
 }
 const backgroundStyle = css({
   backgroundColor: 'rgba(0,0,0, 0.6)',
@@ -65,9 +66,6 @@ const modalBody = css({
   padding: space_L,
 });
 const modalFooter = css({
-  display: 'flex',
-  width: '100%',
-  alignItems: 'center',
   borderTop: modalSeparatorBorder,
 });
 
@@ -79,7 +77,23 @@ export default function Modal({
   showCloseButton = false,
   className,
   modalBodyClassName,
+  onEnter,
 }: Props): JSX.Element {
+  
+  const handleEnter = (event: KeyboardEvent) => {
+    if (event.key === 'Enter') {
+      if(onEnter){
+        onEnter(() => onClose());
+      }     
+     }
+  };
+
+  React.useEffect(() => {
+    document.addEventListener('keydown', handleEnter, true);
+    return () => {
+      document.removeEventListener('keydown', handleEnter, true);
+    };
+  });
   return (
     <Overlay backgroundStyle={backgroundStyle} clickOutside={onClose}>
       <div className={cx(modalStyle, className || '')}>
@@ -105,7 +119,7 @@ export default function Modal({
         >
           {children(onClose)}
         </Flex>
-        {footer && <div className={modalFooter}>{footer(onClose)}</div>}
+        {footer && <Flex align='stretch' className={modalFooter}>{footer(onClose)}</Flex>}
       </div>
     </Overlay>
   );
