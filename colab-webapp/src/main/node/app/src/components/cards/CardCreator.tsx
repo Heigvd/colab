@@ -54,6 +54,7 @@ export default function CardCreator({
   const navigate = useNavigate();
 
   const [selectedType, setSelectedType] = React.useState<number | null>(null);
+  //const mainButtonRef = React.useRef<HTMLDivElement>(null);
 
   const createCard = () => {
     dispatch(
@@ -117,6 +118,11 @@ export default function CardCreator({
         </Flex>
       )}
       showCloseButton
+      onEnter={close => {
+        createCard();
+        resetData();
+        close();
+      }}
     >
       {close => {
         if (status !== 'READY') {

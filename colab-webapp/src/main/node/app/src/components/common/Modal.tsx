@@ -8,6 +8,7 @@
 import { css, cx } from '@emotion/css';
 import { faTimes } from '@fortawesome/free-solid-svg-icons';
 import * as React from 'react';
+import logger from '../../logger';
 import { cardStyle, lightIconButtonStyle, space_L, space_M, space_S } from '../styling/style';
 import Flex from './Flex';
 import IconButton from './IconButton';
@@ -82,6 +83,8 @@ export default function Modal({
   
   const handleEnter = (event: KeyboardEvent) => {
     if (event.key === 'Enter') {
+      const focusedElement = document.activeElement;
+    logger.info(focusedElement);
       if(onEnter){
         onEnter(() => onClose());
       }     
