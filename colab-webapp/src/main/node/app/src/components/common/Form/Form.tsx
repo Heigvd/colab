@@ -13,7 +13,7 @@ import logger from '../../../logger';
 import { useAppDispatch } from '../../../store/hooks';
 import { addNotification } from '../../../store/notification';
 import { space_M, textSmall } from '../../styling/style';
-import Button from '../Button';
+import ButtonWithLoader from '../ButtonWithLoader';
 import Flex from '../Flex';
 import InlineLoading from '../InlineLoading';
 import { TipsProps } from '../Tips';
@@ -310,17 +310,17 @@ export default function Form<T>({
       {fieldComps}
       <Flex direction="column" justify="center" align="center" className={childrenClassName}>
         {autoSubmit ? null : (
-          <Button
+          <ButtonWithLoader
             key="submit"
-            //title="Submit"
             className={cx(
               css({ margin: space_M + ' 0', alignSelf: 'flex-start' }),
               buttonClassName,
             )}
             onClick={submitCb}
+            isLoading={globalErroneous ? false : true}
           >
             {submitLabel || i18n.submit}
-          </Button>
+          </ButtonWithLoader>
         )}
         {children}
       </Flex>
