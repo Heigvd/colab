@@ -210,9 +210,9 @@ const Member = ({ member, roles }: MemberProps) => {
             label: (
               <ConfirmDeleteModal
                 buttonLabel={
-                  <>
+                  <div className={css({ color: errorColor })}>
                     <FontAwesomeIcon icon={faTrash} /> Delete
-                  </>
+                  </div>
                 }
                 message={
                   <p>

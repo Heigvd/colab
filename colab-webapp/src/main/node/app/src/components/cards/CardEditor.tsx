@@ -45,6 +45,7 @@ import ResourcesWrapper from '../resources/ResourcesWrapper';
 import StickyNoteWrapper from '../stickynotes/StickyNoteWrapper';
 import {
   cardStyle,
+  errorColor,
   lightIconButtonStyle,
   localTitleStyle,
   space_M,
@@ -467,10 +468,10 @@ export default function CardEditor({ card, variant, showSubcards = true }: Props
                               label: (
                                 <ConfirmDeleteModal
                                   buttonLabel={
-                                    <>
+                                    <div className={css({ color: errorColor })}>
                                       <FontAwesomeIcon icon={faTrash} />
                                       {hasVariants ? ' Delete variant' : ' Delete card'}
-                                    </>
+                                    </div>
                                   }
                                   message={
                                     hasVariants ? (

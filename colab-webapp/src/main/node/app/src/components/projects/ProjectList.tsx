@@ -22,6 +22,7 @@ import InlineInputNew from '../common/InlineInputNew';
 import InlineLoading from '../common/InlineLoading';
 import {
   cardStyle,
+  errorColor,
   fixedButtonStyle,
   invertedButtonStyle,
   localTitleStyle,
@@ -103,9 +104,9 @@ const ProjectDisplay = ({ project }: ProjectDisplayProps) => {
               label: (
                 <ConfirmDeleteModal
                   buttonLabel={
-                    <>
-                      <FontAwesomeIcon icon={faTrash} /> Delete
-                    </>
+                    <div className={css({color: errorColor })}>
+                      <FontAwesomeIcon icon={faTrash}/> Delete
+                    </div>
                   }
                   message={
                     <p>
