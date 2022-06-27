@@ -381,13 +381,24 @@ export default function CardEditor({ card, variant, showSubcards = true }: Props
                             path="completion"
                             element={
                               <Modal
-                                title="Completion"
+                                title="Edit card completion"
                                 onClose={() => closeRouteCb('completion')}
                                 showCloseButton
+                                modalBodyClassName={css({ alignItems: 'center' })}
+                                onEnter={close => close()}
+                                footer={close => (
+                                  <Flex
+                                    grow={1}
+                                    justify="center"
+                                    className={css({ margin: space_S })}
+                                  >
+                                    <Button onClick={close}>OK</Button>
+                                  </Flex>
+                                )}
                               >
                                 {() =>
                                   variant && (
-                                    <Flex direction="column">
+                                    <Flex direction="column" justify="center" align="center">
                                       <CompletionEditor variant={variant} />
                                     </Flex>
                                   )

@@ -32,6 +32,11 @@ export default function ConfirmDeleteModal({
   title,
   className,
 }: ConfirmDeleteModalProps): JSX.Element {
+  const mainButtonRef = React.useRef<HTMLSpanElement>(null);
+  React.useEffect(()=>{
+    mainButtonRef.current?.focus();
+  }, []);
+
   return (
     <OpenCloseModal
       title={title ? title : ''}
@@ -57,6 +62,7 @@ export default function ConfirmDeleteModal({
               {cancelButtonLabel ? cancelButtonLabel : 'Cancel'}
             </Button>
             <Button
+              ref={mainButtonRef}
               title={confirmButtonLabel ? confirmButtonLabel : 'Delete'}
               onClick={() => {
                 onConfirm();

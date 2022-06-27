@@ -17,7 +17,6 @@ import { useAppDispatch } from '../../store/hooks';
 import AvailabilityStatusIndicator from '../common/AvailabilityStatusIndicator';
 import Button from '../common/Button';
 import CustomElementsList from '../common/CustomElementsList';
-//import FilterableList from '../common/FilterableList';
 import Flex from '../common/Flex';
 import IconButton from '../common/IconButton';
 import OpenCloseModal from '../common/OpenCloseModal';
@@ -118,11 +117,12 @@ export default function CardCreator({
         </Flex>
       )}
       showCloseButton
-      onEnter={close => {
+      /* onEnter={close => {
+        if(document.activeElement)
         createCard();
         resetData();
         close();
-      }}
+      }} */
     >
       {close => {
         if (status !== 'READY') {
