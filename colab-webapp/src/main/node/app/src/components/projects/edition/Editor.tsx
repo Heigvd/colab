@@ -8,17 +8,14 @@
 import { css, cx } from '@emotion/css';
 import {
   faArrowLeft,
-  faBoxesStacked,
   faChevronRight,
   faClone,
   faCog,
-  faEllipsisV,
   faEye,
   faInfoCircle,
   faNetworkWired,
   faProjectDiagram,
   faTimes,
-  faUsers,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Card, CardContent, entityIs } from 'colab-rest-client';
@@ -317,40 +314,7 @@ function EditorNav({ projectName, setShowProjectDetails }: EditorNavProps): JSX.
             menuIcon="CARET"
           />
         </div>
-        <DropDownMenu
-          icon={faEllipsisV}
-          valueComp={{ value: '', label: '' }}
-          entries={[
-            {
-              value: 'types',
-              label: (
-                <>
-                  <FontAwesomeIcon icon={faBoxesStacked} /> Card types
-                </>
-              ),
-              action: () => navigate('./types'),
-            },
-            {
-              value: 'team',
-              label: (
-                <>
-                  <FontAwesomeIcon icon={faUsers} /> Team
-                </>
-              ),
-              action: () => navigate('./team'),
-            },
-            {
-              value: 'settings',
-              label: (
-                <>
-                  <FontAwesomeIcon icon={faCog} /> Settings
-                </>
-              ),
-              action: () => navigate('./settings'),
-            },
-          ]}
-          buttonClassName={css({ textAlign: 'right', alignSelf: 'center', marginLeft: 'auto' })}
-        />
+        <IconButton onClick={()  => navigate('./project-settings')} title='Settings' icon={faCog} className={css({ textAlign: 'right', alignSelf: 'center', marginLeft: 'auto' })}/>
       </div>
     </>
   );
@@ -446,6 +410,7 @@ export default function Editor(): JSX.Element {
           <Flex direction="column" grow={1}>
             <Routes>
               <Route path="settings" element={<ProjectSettings project={project} />} />
+              <Route path="project-settings" element={<ProjectSettings project={project} />} />
               <Route path="team" element={<Team project={project} />} />
               <Route path="hierarchy" element={<Hierarchy rootId={root.id} />} />
               <Route path="flow" element={<ActivityFlowChart />} />
