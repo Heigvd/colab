@@ -5,15 +5,15 @@
  * Licensed under the MIT License
  */
 
-import { css, cx } from '@emotion/css';
-import { faEraser, faPen } from '@fortawesome/free-solid-svg-icons';
+import { css } from '@emotion/css';
+import { faRotateLeft } from '@fortawesome/free-solid-svg-icons';
 import { InvolvementLevel } from 'colab-rest-client';
 import * as React from 'react';
 import Select from 'react-select';
 import Flex from '../common/Flex';
 import IconButton from '../common/IconButton';
-import { lightIconButtonStyle, lightItalicText, textSmall } from '../styling/style';
 
+const DEFAULT_RIGHT = 'INFORMED_READWRITE';
 function prettyPrint(level: InvolvementLevel) {
   switch (level) {
     case 'RESPONSIBLE':
@@ -33,10 +33,10 @@ function prettyPrint(level: InvolvementLevel) {
   }
 }
 
-function buildOption(level: InvolvementLevel) {
+function buildOption(level?: InvolvementLevel) {
   return {
-    value: level,
-    label: prettyPrint(level),
+    value: level ? level : DEFAULT_RIGHT,
+    label: level ? prettyPrint(level) : prettyPrint(DEFAULT_RIGHT),
   };
 }
 
@@ -70,15 +70,11 @@ export default function InvolvementSelector({
     [onChange],
   );
 
-  const createCb = React.useCallback(() => {
-    onChange('INFORMED_READWRITE');
-  }, [onChange]);
-
   const clearCb = React.useCallback(() => {
     onChange(null);
   }, [onChange]);
 
-  if (self != null) {
+  /* if (self != null) {
     return (
       <Flex align="center">
         <Select
@@ -114,5 +110,32 @@ export default function InvolvementSelector({
         </Flex>
       );
     }
-  }
+  } */
+  return (
+    <Flex align="center">
+      {self == null && effectives != null && effectives.length > 0 ? (
+        <Flex align="center">
+          {effectives.map(e => (
+            <Select
+              key={e}
+              className={css({ minWidth: '240px' })}
+              options={options}
+              value={buildOption(e)}
+              onChange={onChangeCb}
+            />
+          ))}
+        </Flex>
+      ) : (
+        <>
+          <Select
+            className={css({ minWidth: '240px' })}
+            options={options}
+            value={self != null ? buildOption(self) : null}
+            onChange={onChangeCb}
+          />
+          {self != null && <IconButton icon={faRotateLeft} title="Reset involvement" onClick={clearCb} />}
+        </>
+      )}
+    </Flex>
+  );
 }

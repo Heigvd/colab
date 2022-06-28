@@ -314,7 +314,12 @@ function EditorNav({ projectName, setShowProjectDetails }: EditorNavProps): JSX.
             menuIcon="CARET"
           />
         </div>
-        <IconButton onClick={()  => navigate('./project-settings')} title='Settings' icon={faCog} className={css({ textAlign: 'right', alignSelf: 'center', marginLeft: 'auto' })}/>
+        <IconButton
+          onClick={() => navigate('./project-settings')}
+          title="Settings"
+          icon={faCog}
+          className={css({ textAlign: 'right', alignSelf: 'center', marginLeft: 'auto' })}
+        />
       </div>
     </>
   );
@@ -407,54 +412,48 @@ export default function Editor(): JSX.Element {
             overflow: 'auto',
           })}
         >
-          <Flex direction="column" grow={1}>
-            <Routes>
-              <Route path="settings" element={<ProjectSettings project={project} />} />
-              <Route path="project-settings" element={<ProjectSettings project={project} />} />
-              <Route path="team" element={<Team project={project} />} />
-              <Route path="hierarchy" element={<Hierarchy rootId={root.id} />} />
-              <Route path="flow" element={<ActivityFlowChart />} />
-              <Route path="types/*" element={<ProjectCardTypeList />} />
-              <Route path="card/:id" element={<DefaultVariantDetector />} />
-              {/* Zooom on a card */}
-              <Route
-                path="card/:id/v/:vId/*"
-                element={
-                  <CardWrapper grow={0} align="center">
-                    {card => <CardThumbWithSelector depth={2} card={card} />}
-                  </CardWrapper>
-                }
-              />
-              {/* Edit cart, send to default variant */}
-              <Route path="edit/:id" element={<DefaultVariantDetector />} />
-              {/* Edit card */}
-              <Route
-                path="edit/:id/v/:vId/*"
-                element={
-                  <CardWrapper>
-                    {(card, variant) => <CardEditor card={card} variant={variant} showSubcards />}
-                  </CardWrapper>
-                }
-              />
-              {/* All cards. Root route */}
-              <Route
-                path="*"
-                element={
-                  <div>
-                    {rootContent != null ? (
-                      <ContentSubs
-                        showEmptiness={true}
-                        depth={depthMax}
-                        cardContent={rootContent}
-                      />
-                    ) : (
-                      <InlineLoading />
-                    )}
-                  </div>
-                }
-              />
-            </Routes>
-          </Flex>
+          <Routes>
+            <Route path="settings" element={<ProjectSettings project={project} />} />
+            <Route path="project-settings" element={<ProjectSettings project={project} />} />
+            <Route path="team" element={<Team project={project} />} />
+            <Route path="hierarchy" element={<Hierarchy rootId={root.id} />} />
+            <Route path="flow" element={<ActivityFlowChart />} />
+            <Route path="types/*" element={<ProjectCardTypeList />} />
+            <Route path="card/:id" element={<DefaultVariantDetector />} />
+            {/* Zooom on a card */}
+            <Route
+              path="card/:id/v/:vId/*"
+              element={
+                <CardWrapper grow={0} align="center">
+                  {card => <CardThumbWithSelector depth={2} card={card} />}
+                </CardWrapper>
+              }
+            />
+            {/* Edit cart, send to default variant */}
+            <Route path="edit/:id" element={<DefaultVariantDetector />} />
+            {/* Edit card */}
+            <Route
+              path="edit/:id/v/:vId/*"
+              element={
+                <CardWrapper>
+                  {(card, variant) => <CardEditor card={card} variant={variant} showSubcards />}
+                </CardWrapper>
+              }
+            />
+            {/* All cards. Root route */}
+            <Route
+              path="*"
+              element={
+                <div>
+                  {rootContent != null ? (
+                    <ContentSubs showEmptiness={true} depth={depthMax} cardContent={rootContent} />
+                  ) : (
+                    <InlineLoading />
+                  )}
+                </div>
+              }
+            />
+          </Routes>
         </Flex>
       </Flex>
     );
