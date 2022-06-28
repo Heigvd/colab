@@ -61,10 +61,10 @@ export default function SideCollapsiblePanel<T extends { [key: string]: Item }>(
       {direction === 'RIGHT' && itemOpen && (
         <Resizable
           defaultSize={{
-            width: 250,
+            width: 'auto',
             height: 'auto',
           }}
-          minWidth={250}
+          minWidth={280}
           maxWidth={'100%'}
           bounds={'parent'}
           enable={{
@@ -132,10 +132,10 @@ export default function SideCollapsiblePanel<T extends { [key: string]: Item }>(
       {direction === 'LEFT' && itemOpen && (
         <Resizable
         defaultSize={{
-          width: 250,
+          width: 'auto',
           height: 'auto',
         }}
-        minWidth={250}
+        minWidth={280}
         maxWidth={'100%'}
         bounds={'parent'}
         enable={{
