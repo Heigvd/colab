@@ -167,7 +167,7 @@ export default function Form<T>({
       ? String(state[field.key]).length === 0 || state[field.key] === null
       : false;
     globalErroneous = globalErroneous || isErroneous || isEmptyError;
-    const fieldKey = `field-${field.key}`;
+    const fieldKey = `field-${String(field.key)}`;
 
     const errorMessage =
       erroneous && isEmptyError
