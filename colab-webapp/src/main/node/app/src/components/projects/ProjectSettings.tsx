@@ -5,7 +5,7 @@
  * Licensed under the MIT License
  */
 
-import { css } from '@emotion/css';
+import { css, cx } from '@emotion/css';
 import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
 import { Project } from 'colab-rest-client/dist/ColabClient';
 import * as React from 'react';
@@ -17,6 +17,7 @@ import Flex from '../common/Flex';
 import Input from '../common/Form/Input';
 import IconButton from '../common/IconButton';
 import Tabs, { Tab } from '../common/Tabs';
+import { lightIconButtonStyle } from '../styling/style';
 import Team from './Team';
 
 interface ProjectSettingsProps {
@@ -32,9 +33,8 @@ export function ProjectSettings({ project }: ProjectSettingsProps): JSX.Element 
       <IconButton
         icon={faArrowLeft}
         title={'Back to project'}
-        iconColor="var(--darkGray)"
         onClick={() => navigate('../')}
-        className={css({ display: 'block' })}
+        className={cx(css({ display: 'block' }), lightIconButtonStyle)}
       />
       <h2>Project settings</h2>
 
