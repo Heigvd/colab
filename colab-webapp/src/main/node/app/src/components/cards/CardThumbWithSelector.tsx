@@ -20,7 +20,7 @@ export default function CardThumbWithSelector({ card, depth = 1 }: Props): JSX.E
     return <i>Card without id is invalid...</i>;
   } else {
     return (
-      <VariantSelector card={card} depth={depth}>
+      <VariantSelector card={card}>
         {(variant, list) => (
           <>
             <CardThumb

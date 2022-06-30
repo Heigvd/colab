@@ -25,6 +25,7 @@ interface Props {
   modalBodyClassName?: string;
   widthMax?: boolean;
   heightMax?: boolean;
+  onEnter?: (collapse: () => void) => void;
 }
 
 export const defaultIconClassName = css({
@@ -48,6 +49,7 @@ export default function OpenCloseModal({
   modalBodyClassName,
   widthMax,
   heightMax,
+  onEnter,
 }: Props): JSX.Element {
   const navigate = useNavigate();
   const location = useLocation();
@@ -58,6 +60,21 @@ export default function OpenCloseModal({
       navigate(location.pathname.replace(new RegExp(route + '$'), ''));
     }
   }, [navigate, location, route]);
+
+  /* const handleEnter = (event: KeyboardEvent) => {
+    if (event.key === 'Enter') {
+      if(onEnter){
+        onEnter(() => onClose());
+      }     
+     }
+  };
+
+  React.useEffect(() => {
+    document.addEventListener('keydown', handleEnter, true);
+    return () => {
+      document.removeEventListener('keydown', handleEnter, true);
+    };
+  }); */
 
   if (route != null) {
     return (
@@ -113,6 +130,7 @@ export default function OpenCloseModal({
             )}
             modalBodyClassName={modalBodyClassName}
             footer={footer}
+            onEnter={onEnter}
           >
             {onCloseModal => children(onCloseModal)}
           </Modal>

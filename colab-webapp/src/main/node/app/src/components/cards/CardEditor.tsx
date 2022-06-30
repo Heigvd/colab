@@ -31,6 +31,7 @@ import useTranslations from '../../i18n/I18nContext';
 import { useCardACLForCurrentUser, useVariantsOrLoad } from '../../selectors/cardSelector';
 import { useAndLoadCardType } from '../../selectors/cardTypeSelector';
 import { useAppDispatch } from '../../store/hooks';
+import Button from '../common/Button';
 import Collapsible from '../common/Collapsible';
 import ConfirmDeleteModal from '../common/ConfirmDeleteModal';
 import DropDownMenu from '../common/DropDownMenu';
@@ -45,6 +46,7 @@ import ResourcesWrapper from '../resources/ResourcesWrapper';
 import StickyNoteWrapper from '../stickynotes/StickyNoteWrapper';
 import {
   cardStyle,
+  errorColor,
   lightIconButtonStyle,
   localTitleStyle,
   space_M,
@@ -379,13 +381,24 @@ export default function CardEditor({ card, variant, showSubcards = true }: Props
                             path="completion"
                             element={
                               <Modal
-                                title="Completion"
+                                title="Edit card completion"
                                 onClose={() => closeRouteCb('completion')}
                                 showCloseButton
+                                modalBodyClassName={css({ alignItems: 'center' })}
+                                onEnter={close => close()}
+                                footer={close => (
+                                  <Flex
+                                    grow={1}
+                                    justify="center"
+                                    className={css({ margin: space_S })}
+                                  >
+                                    <Button onClick={close}>OK</Button>
+                                  </Flex>
+                                )}
                               >
                                 {() =>
                                   variant && (
-                                    <Flex direction="column">
+                                    <Flex direction="column" justify="center" align="center">
                                       <CompletionEditor variant={variant} />
                                     </Flex>
                                   )
@@ -467,10 +480,10 @@ export default function CardEditor({ card, variant, showSubcards = true }: Props
                               label: (
                                 <ConfirmDeleteModal
                                   buttonLabel={
-                                    <>
+                                    <div className={css({ color: errorColor })}>
                                       <FontAwesomeIcon icon={faTrash} />
                                       {hasVariants ? ' Delete variant' : ' Delete card'}
-                                    </>
+                                    </div>
                                   }
                                   message={
                                     hasVariants ? (
@@ -558,7 +571,7 @@ export default function CardEditor({ card, variant, showSubcards = true }: Props
                   <OpenCloseModal
                     title="Edit card completion"
                     className={css({ width: '100%' })}
-                    showCloseButton={true}
+                    modalBodyClassName={css({ alignItems: 'center' })}
                     collapsedChildren={
                       <ProgressBar
                         variant={variant}
@@ -570,10 +583,16 @@ export default function CardEditor({ card, variant, showSubcards = true }: Props
                         })}
                       />
                     }
+                    footer={close => (
+                      <Flex grow={1} justify="center" className={css({ margin: space_S })}>
+                        <Button onClick={close}>OK</Button>
+                      </Flex>
+                    )}
+                    onEnter={close => close()}
                   >
                     {() =>
                       variant && (
-                        <Flex direction="column">
+                        <Flex direction="column" justify="center" align="center">
                           <CompletionEditor variant={variant} />
                         </Flex>
                       )

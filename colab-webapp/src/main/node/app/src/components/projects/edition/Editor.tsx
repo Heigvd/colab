@@ -14,6 +14,7 @@ import {
   faCog,
   faEllipsisV,
   faEye,
+  faGrip,
   faInfoCircle,
   faNetworkWired,
   faProjectDiagram,
@@ -266,7 +267,7 @@ function EditorNav({ projectName, setShowProjectDetails }: EditorNavProps): JSX.
         )}
       >
         <IconButton
-          icon={faArrowLeft}
+          icon={faGrip}
           title="Back to projects"
           onClick={events => {
             events.preventDefault();
@@ -443,7 +444,7 @@ export default function Editor(): JSX.Element {
             overflow: 'auto',
           })}
         >
-          <Flex direction="column" grow={1}>
+          <Flex direction="column" grow={1} align="stretch">
             <Routes>
               <Route path="settings" element={<ProjectSettings project={project} />} />
               <Route path="team" element={<Team project={project} />} />

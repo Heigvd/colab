@@ -27,6 +27,7 @@ import { DocTextDisplay } from '../../documents/DocTextItem';
 import {
   borderRadius,
   cardShadow,
+  errorColor,
   lightIconButtonStyle,
   lightItalicText,
   space_M,
@@ -130,9 +131,9 @@ export default function CardTypeItem({ cardType, usage }: CardTypeItemProps): JS
                     label: (
                       <ConfirmDeleteModal
                         buttonLabel={
-                          <>
+                          <div className={css({ color: errorColor })}>
                             <FontAwesomeIcon icon={faTrash} /> Delete type
-                          </>
+                          </div>
                         }
                         message={
                           <p>

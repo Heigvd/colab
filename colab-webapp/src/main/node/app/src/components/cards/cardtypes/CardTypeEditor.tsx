@@ -40,6 +40,7 @@ import { DocTextWrapper } from '../../documents/DocTextItem';
 import ResourcesWrapper from '../../resources/ResourcesWrapper';
 import {
   cardStyle,
+  errorColor,
   lightIconButtonStyle,
   lightItalicText,
   localTitleStyle,
@@ -178,9 +179,9 @@ export default function CardTypeEditor({ className, usage }: Props): JSX.Element
                       label: (
                         <ConfirmDeleteModal
                           buttonLabel={
-                            <>
+                            <div className={css({ color: errorColor })}>
                               <FontAwesomeIcon icon={faTrash} /> Delete type
-                            </>
+                            </div>
                           }
                           message={
                             <p>

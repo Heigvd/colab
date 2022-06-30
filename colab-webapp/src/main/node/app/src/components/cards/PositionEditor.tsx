@@ -8,6 +8,7 @@
 import { css } from '@emotion/css';
 import { Card } from 'colab-rest-client';
 import * as React from 'react';
+import { useNavigate } from 'react-router-dom';
 import * as API from '../../API/api';
 import { useAppDispatch } from '../../store/hooks';
 import Flex from '../common/Flex';
@@ -23,7 +24,7 @@ interface PositionEditorProps {
 
 export default function PositionEditor({ card }: PositionEditorProps): JSX.Element {
   const dispatch = useAppDispatch();
-
+  const navigate = useNavigate();
   return (
     <Form
       fields={[
@@ -134,6 +135,7 @@ export default function PositionEditor({ card }: PositionEditorProps): JSX.Eleme
       onSubmit={fields => {
         if (card && card.id && fields.index != null && fields.index > 0) {
           dispatch(API.changeCardIndex({ cardId: card.id, newIndex: fields.index }));
+          navigate('../');
         }
       }}
     />

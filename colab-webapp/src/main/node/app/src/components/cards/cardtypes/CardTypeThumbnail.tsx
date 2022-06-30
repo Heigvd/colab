@@ -27,6 +27,7 @@ import Flex from '../../common/Flex';
 import { DocTextDisplay } from '../../documents/DocTextItem';
 import {
   borderRadius,
+  errorColor,
   lightIconButtonStyle,
   lightItalicText,
   multiLineEllipsis,
@@ -173,9 +174,9 @@ export default function CardTypeThumbnail({
                           label: (
                             <ConfirmDeleteModal
                               buttonLabel={
-                                <>
+                                <div className={css({ color: errorColor })}>
                                   <FontAwesomeIcon icon={faTrash} /> Delete type
-                                </>
+                                </div>
                               }
                               message={
                                 <p>

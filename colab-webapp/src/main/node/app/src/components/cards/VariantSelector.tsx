@@ -9,19 +9,18 @@ import { css, cx } from '@emotion/css';
 import { faCaretLeft, faCaretRight } from '@fortawesome/free-solid-svg-icons';
 import { Card, CardContent } from 'colab-rest-client';
 import * as React from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useVariantsOrLoad } from '../../selectors/cardSelector';
 import Flex from '../common/Flex';
 import IconButton from '../common/IconButton';
 import InlineLoading from '../common/InlineLoading';
 //import WithToolbar from '../common/WithToolbar';
 import { useDefaultVariant } from '../projects/edition/Editor';
-import { rootViewCardsStyle, space_S } from '../styling/style';
+import { space_S } from '../styling/style';
 
 interface Props {
   card: Card;
   children: (variant: CardContent | undefined, list: CardContent[]) => JSX.Element;
-  depth: number;
 }
 
 export const computeNav = (
@@ -46,17 +45,13 @@ export const computeNav = (
   }
 };
 
-export default function VariantSelector({ card, children, depth }: Props): JSX.Element {
-  //  const dispatch = useAppDispatch();
+export default function VariantSelector({ card, children }: Props): JSX.Element {
 
   const [displayedVariantId, setDisplayedVariantId] = React.useState<number | undefined>();
 
   const contents = useVariantsOrLoad(card);
 
   const defaultVariant = useDefaultVariant(card.id!);
-  const location = useLocation();
-  //const path = `card/${card.id}`;
-  const isInRootView = !location.pathname.match(/card\/\d+\/v\/\d+/);
 
   if (card.id == null) {
     return <i>Card without id is invalid...</i>;
@@ -69,10 +64,11 @@ export default function VariantSelector({ card, children, depth }: Props): JSX.E
     return (
       <div
         className={cx(
-          rootViewCardsStyle(depth, isInRootView),
           css({
             margin: '10px',
             display: 'flex',
+            flexGrow: 1,
+            minWidth: '120px',
             '& > div': {
               flexGrow: 1,
             },

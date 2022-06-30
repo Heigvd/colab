@@ -45,7 +45,7 @@ Cypress.Commands.add("login", (identifier, password) => {
     .should("have.length", "1")
     .type(password);
 
-  cy.react("Button").should("have.length", "1").click();
+  cy.react("ButtonWithLoader").should("have.length", "1").click();
 });
 
 Cypress.Commands.add("logout", (identifier, password) => {

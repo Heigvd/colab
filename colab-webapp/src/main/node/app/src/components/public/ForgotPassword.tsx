@@ -7,6 +7,7 @@
 
 import { css, cx } from '@emotion/css';
 import * as React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { requestPasswordReset } from '../../API/api';
 import { buildLinkWithQueryParam } from '../../helper';
 import useTranslations from '../../i18n/I18nContext';
@@ -29,12 +30,13 @@ const defaultData: Data = { email: '' };
 export default function ForgotPasswordForm({ redirectTo }: ForgotPasswordFormProps): JSX.Element {
   const dispatch = useAppDispatch();
   const i18n = useTranslations();
+  const navigate = useNavigate();
 
   const onSubmitCb = React.useCallback(
     (data: Data) => {
-      dispatch(requestPasswordReset(data.email));
+      dispatch(requestPasswordReset(data.email)).then(() => navigate('../NewPasswordEmailSend'));
     },
-    [dispatch],
+    [dispatch, navigate],
   );
 
   const formFields: Field<Data>[] = [
@@ -43,6 +45,7 @@ export default function ForgotPasswordForm({ redirectTo }: ForgotPasswordFormPro
       label: i18n.emailAddress,
       type: 'text',
       isMandatory: true,
+      // add validation if email exists in db
       isErroneous: value => value.email.match('.*@.*') == null,
       errorMessage: i18n.emailAddressNotValid,
     },
