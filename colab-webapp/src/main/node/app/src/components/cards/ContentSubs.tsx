@@ -16,7 +16,7 @@ import Button from '../common/Button';
 import Flex from '../common/Flex';
 import InlineLoading from '../common/InlineLoading';
 import { depthMax } from '../projects/edition/Editor';
-import { fixedButtonStyle, rootViewCardsStyle, voidStyle } from '../styling/style';
+import { fixedButtonStyle, voidStyle } from '../styling/style';
 import CardCreator from './CardCreator';
 import CardThumbWithSelector from './CardThumbWithSelector';
 
@@ -42,6 +42,61 @@ const flexWrap = css({
   justifyContent: 'space-evenly',
   flexWrap: 'wrap',
 });
+
+/* const gridCardsStyle = css({
+  display: 'grid', 
+  gridTemplateColumns: 'repeat(3, minmax(min-content, 1fr))', 
+  justifyContent: 'stretch', 
+  alignContent: 'stretch',
+  justifyItems: 'stretch', 
+  alignItems: 'stretch'}); */
+
+  export function gridCardsStyle(depth: number, inRootView: boolean) {
+    if (inRootView) {
+      if (depth === 1) {
+        return css`
+          display: grid; 
+          grid-template-columns: repeat(3, minmax(min-content, 1fr)); 
+          justify-content: stretch; 
+          align-content: stretch;
+          justify-items: stretch; 
+          align-items: stretch;
+        `;
+      }
+      if (depth === 0) {
+        return css`
+        display: grid; 
+        grid-template-columns: repeat(2, minmax(min-content, 1fr));
+        justify-content: stretch; 
+          align-content: stretch;
+          justify-items: stretch; 
+          align-items: stretch;
+        `;
+      }
+    } else {
+      if (depth === 2) {
+        return css`
+          flex-grow: 1;
+        `;
+      }
+      if (depth === 1) {
+        return css`
+        display: grid; 
+        grid-template-columns: repeat(3, minmax(min-content, 1fr)); 
+        justify-content: stretch; 
+        align-content: stretch;
+        justify-items: stretch; 
+        align-items: stretch;
+        `;
+      }
+      if (depth === 0) {
+        return css`
+          width: auto;
+          flex-grow: 1;
+        `;
+      }
+    }
+  }
 
 // Display sub cards of a parent
 export default function ContentSubs({
@@ -143,13 +198,13 @@ export default function ContentSubs({
             className,
           )}
         >
-          <Flex wrap="wrap" align="stretch" className={subcardsContainerStyle}>
+          <div className={cx(gridCardsStyle(depth - 1, isInRootView),subcardsContainerStyle)}>
             {orderAndFillSubCards.map(sub => (
               <>
                 {sub == null ? (
                   <div
                     className={cx(
-                      rootViewCardsStyle(depth - 1, isInRootView),
+                      //rootViewCardsStyle(depth - 1, isInRootView),
                       css({
                         margin: '10px',
                         minHeight: '100px',
@@ -161,7 +216,7 @@ export default function ContentSubs({
                 )}
               </>
             ))}
-          </Flex>
+          </div>
           <Flex justify="center">
             <CardCreator
               parentCardContent={cardContent}

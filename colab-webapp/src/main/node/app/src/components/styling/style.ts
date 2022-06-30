@@ -367,12 +367,13 @@ export function rootViewCardsStyle(depth: number, inRootView: boolean) {
   if (inRootView) {
     if (depth === 1) {
       return css`
-        width: calc(33.3% - 20px);
+        min-width: fit-content;
       `;
     }
     if (depth === 0) {
       return css`
         width: calc(50% - 20px);
+        max-width: 150px;
       `;
     }
   } else {

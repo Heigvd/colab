@@ -225,12 +225,11 @@ function ProjectList({ projects, status, reload }: ProjectListProps) {
           items={projects.sort((a, b) => (a.id || 0) - (b.id || 0))}
           className={projectListStyle}
           thumbnailClassName={css({
-              padding: 0,
-              margin: '4px',
-              display: 'block',
-              backgroundColor: 'var(--bgColor)',
-            })}
-
+            padding: 0,
+            margin: '4px',
+            display: 'block',
+            backgroundColor: 'var(--bgColor)',
+          })}
           onItemDblClick={item => {
             if (item) {
               window.open(`#/editor/${item.id}`, '_blank');

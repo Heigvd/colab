@@ -12,6 +12,7 @@ import {
   faClone,
   faCog,
   faEye,
+  faGrip,
   faInfoCircle,
   faNetworkWired,
   faProjectDiagram,
@@ -263,7 +264,7 @@ function EditorNav({ projectName, setShowProjectDetails }: EditorNavProps): JSX.
         )}
       >
         <IconButton
-          icon={faArrowLeft}
+          icon={faGrip}
           title="Back to projects"
           onClick={events => {
             events.preventDefault();

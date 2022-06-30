@@ -19,6 +19,7 @@ export interface ClickableProps {
   children?: React.ReactNode;
   className?: string;
   clickableClassName?: string;
+  ref?: React.RefObject<HTMLSpanElement>;
 }
 
 export default function Clickable({
@@ -30,6 +31,7 @@ export default function Clickable({
   children,
   className = '',
   clickableClassName = linkStyle,
+  ref,
 }: ClickableProps): JSX.Element {
   /**
    * Pressing space simulates click.<br/>
@@ -82,6 +84,7 @@ export default function Clickable({
       onDoubleClick={onDoubleClickCb}
       onKeyDown={keyDownCb}
       title={title}
+      ref={ref}
     >
       {children}
     </span>
