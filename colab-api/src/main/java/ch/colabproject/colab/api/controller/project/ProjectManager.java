@@ -18,6 +18,7 @@ import ch.colabproject.colab.api.model.DuplicationParam;
 import ch.colabproject.colab.api.model.card.AbstractCardType;
 import ch.colabproject.colab.api.model.card.Card;
 import ch.colabproject.colab.api.model.card.CardContent;
+import ch.colabproject.colab.api.model.common.Illustration;
 import ch.colabproject.colab.api.model.link.ActivityFlowLink;
 import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.api.model.team.TeamMember;
@@ -194,13 +195,15 @@ public class ProjectManager {
     /**
      * Create a new project based on a model
      *
-     * @param name        the name of the new project
-     * @param description the description of the new project
-     * @param modelId     the id of the model the new project is based on
+     * @param name         the name of the new project
+     * @param description  the description of the new project
+     * @param illustration the illustration of the new project
+     * @param modelId      the id of the model the new project is based on
      *
      * @return the new project
      */
-    public Project createProjectFromModel(String name, String description, Long modelId) {
+    public Project createProjectFromModel(String name, String description,
+        Illustration illustration, Long modelId) {
         try {
             return requestManager.sudo(() -> {
                 Project project = duplicateProject(modelId,
@@ -208,6 +211,7 @@ public class ProjectManager {
 
                 project.setName(name);
                 project.setDescription(description);
+                project.setIllustration(illustration);
 
                 return project;
             });

@@ -8,6 +8,8 @@ package ch.colabproject.colab.tests.rest;
 
 import ch.colabproject.colab.api.model.card.Card;
 import ch.colabproject.colab.api.model.card.CardContent;
+import ch.colabproject.colab.api.model.common.IconLibrary;
+import ch.colabproject.colab.api.model.common.Illustration;
 import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.api.model.team.TeamMember;
 import ch.colabproject.colab.api.model.team.TeamRole;
@@ -41,19 +43,38 @@ public class ProjectRestEndpointTest extends AbstractArquillianTest {
 
     @Test
     public void testCreateDeleteProject() {
+        String name = "my first new project";
+        String description = "everything is awesome";
+        IconLibrary iconLibrary = IconLibrary.FONT_AWESOME;
+        String iconKey = "faOtter";
+        String iconBkgdColor = "#936";
+
         TestUser user = this.signup("goulashsensei", "goulash@test.local", "SoSecure");
         this.signIn(user);
 
         User currentUser = client.userRestEndpoint.getCurrentUser();
 
         ProjectCreationData project = new ProjectCreationData();
+        project.setName(name);
+        project.setDescription(description);
+        Illustration illustration = new Illustration();
+        illustration.setIconLibrary(iconLibrary);
+        illustration.setIconKey(iconKey);
+        illustration.setIconBkgdColor(iconBkgdColor);
+        project.setIllustration(illustration);
 
         Long projectId = client.projectRestEndpoint.createProject(project);
 
         Project persistedProject = client.projectRestEndpoint.getProject(projectId);
         Assertions.assertNotNull(persistedProject);
         Assertions.assertNotNull(persistedProject.getId());
-        Assertions.assertEquals(persistedProject.getId(), projectId);
+        Assertions.assertEquals(projectId, persistedProject.getId());
+        Assertions.assertEquals(name, persistedProject.getName());
+        Assertions.assertEquals(description, persistedProject.getDescription());
+        Assertions.assertNotNull(persistedProject.getIllustration());
+        Assertions.assertEquals(iconLibrary, persistedProject.getIllustration().getIconLibrary());
+        Assertions.assertEquals(iconKey, persistedProject.getIllustration().getIconKey());
+        Assertions.assertEquals(iconBkgdColor, persistedProject.getIllustration().getIconBkgdColor());
 
         Card rootCard = client.projectRestEndpoint.getRootCardOfProject(projectId);
         Assertions.assertNotNull(rootCard);
@@ -123,15 +144,30 @@ public class ProjectRestEndpointTest extends AbstractArquillianTest {
         ProjectCreationData projectCreationData = new ProjectCreationData();
 
         Long projectId = client.projectRestEndpoint.createProject(projectCreationData);
+
         Project project = client.projectRestEndpoint.getProject(projectId);
+
+        Assertions.assertNull(project.getName());
+        Assertions.assertNull(project.getDescription());
+        Assertions.assertNull(project.getIllustration());
+
         project.setName("The Hitchhiker's Guide to the Serious-Game");
         project.setDescription("So Long, and Thanks for All the Games");
+        Illustration illustration = new Illustration();
+        illustration.setIconLibrary(IconLibrary.FONT_AWESOME);
+        illustration.setIconKey("faPaw");
+        illustration.setIconBkgdColor("purple");
+        project.setIllustration(illustration);
 
         client.projectRestEndpoint.updateProject(project);
 
         Project project2 = client.projectRestEndpoint.getProject(projectId);
         Assertions.assertEquals(project.getName(), project2.getName());
         Assertions.assertEquals(project.getDescription(), project2.getDescription());
+        Assertions.assertNotNull(project.getIllustration());
+        Assertions.assertEquals(project.getIllustration().getIconLibrary(), project2.getIllustration().getIconLibrary());
+        Assertions.assertEquals(project.getIllustration().getIconKey(), project2.getIllustration().getIconKey());
+        Assertions.assertEquals(project.getIllustration().getIconBkgdColor(), project2.getIllustration().getIconBkgdColor());
     }
 
     @Test
