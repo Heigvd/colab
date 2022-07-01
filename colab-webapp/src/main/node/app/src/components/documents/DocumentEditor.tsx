@@ -6,19 +6,16 @@
  */
 
 import { css, cx } from '@emotion/css';
-import { faArrowDown, faArrowUp } from '@fortawesome/free-solid-svg-icons';
 import { Document, entityIs } from 'colab-rest-client';
 import * as React from 'react';
-import * as API from '../../API/api';
 import { useLastInsertedDocId } from '../../selectors/documentSelector';
 import * as DocumentActions from '../../store/documentSlice';
 import { useAppDispatch } from '../../store/hooks';
 import { BlockEditorWrapper } from '../blocks/BlockEditorWrapper';
 import { CardEditorCTX } from '../cards/CardEditor';
 import Flex from '../common/Flex';
-import IconButton from '../common/IconButton';
 import OpenGraphLink from '../common/OpenGraphLink';
-import { editableBlockStyle, lightIconButtonStyle } from '../styling/style';
+import { editableBlockStyle } from '../styling/style';
 import { DocumentOwnership } from './documentCommonType';
 import DocumentFileEditor from './DocumentFileEditor';
 
@@ -33,13 +30,6 @@ const noBorderStyle = css({
   border: '1px solid transparent',
   '&:hover': {
     border: '1px solid transparent',
-  },
-});
-
-const moveBoxStyle = css({
-  '&:hover #moveBox': {
-    opacity: 1,
-    transition: 'opacity .8s ease',
   },
 });
 
@@ -87,7 +77,7 @@ export default function DocumentEditor({
   }, [dispatch, doc.id, docOwnership, lastInsertedDocId, setEditMode, setSelectedDocId]);
 
   return (
-    <Flex className={moveBoxStyle}>
+    <Flex>
       <div
         ref={dropRef}
         className={cx(
@@ -136,26 +126,6 @@ export default function DocumentEditor({
           </div>
         )}
       </div>
-      <Flex direction="column" className={css({ opacity: 0 })} id="moveBox">
-        <IconButton
-          icon={faArrowUp}
-          title="Move block up"
-          iconSize="xs"
-          className={lightIconButtonStyle}
-          onClick={() => {
-            dispatch(API.moveDocumentUp(doc.id!));
-          }}
-        />
-        <IconButton
-          icon={faArrowDown}
-          title="Move block down"
-          iconSize="xs"
-          className={lightIconButtonStyle}
-          onClick={() => {
-            dispatch(API.moveDocumentDown(doc.id!));
-          }}
-        />
-      </Flex>
     </Flex>
   );
 }
