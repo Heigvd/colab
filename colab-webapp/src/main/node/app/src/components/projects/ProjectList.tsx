@@ -6,7 +6,14 @@
  */
 
 import { css, cx } from '@emotion/css';
-import { faEdit, faEllipsisV, faTrash, faUmbrella } from '@fortawesome/free-solid-svg-icons';
+import {
+  faCog,
+  faCopy,
+  faEdit,
+  faEllipsisV,
+  faGamepad,
+  faTrash,
+} from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { AsyncThunk } from '@reduxjs/toolkit';
 import { Project } from 'colab-rest-client';
@@ -15,26 +22,29 @@ import * as React from 'react';
 import * as API from '../../API/api';
 import { shallowEqual, useAppDispatch, useAppSelector } from '../../store/hooks';
 import { StateStatus } from '../../store/project';
-import Button from '../common/Button';
 import ConfirmDeleteModal from '../common/ConfirmDeleteModal';
 import DropDownMenu from '../common/DropDownMenu';
-import InlineInputNew from '../common/InlineInputNew';
+import Flex from '../common/Flex';
 import InlineLoading from '../common/InlineLoading';
+import ItemThumbnailsSelection from '../common/ItemThumbnailsSelection';
+import OpenCloseModal from '../common/OpenCloseModal';
 import {
-  cardStyle,
-  errorColor,
+  ellipsis,
   fixedButtonStyle,
-  invertedButtonStyle,
-  localTitleStyle,
+  lightIconButtonStyle,
+  multiLineEllipsis,
   space_M,
+  space_S,
+  textSmall,
 } from '../styling/style';
 import ProjectCreator from './ProjectCreator';
+import { ProjectDisplaySettings } from './ProjectDisplaySettings';
 
 const projectListStyle = css({
   margin: 'auto',
   width: '100%',
   display: 'inline-grid',
-  gridTemplateColumns: 'repeat(3, minmax(250px, 1fr))',
+  gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))',
   gridColumnGap: '40px',
   gridRowGap: '40px',
 });
@@ -46,105 +56,118 @@ interface ProjectDisplayProps {
 // Display one project and allow to edit it
 const ProjectDisplay = ({ project }: ProjectDisplayProps) => {
   const dispatch = useAppDispatch();
-  //const navigate = useNavigate();
-
   return (
-    <div
-      className={cx(
-        cardStyle,
-        css({
-          display: 'flex',
-          flexDirection: 'column',
-        }),
-      )}
-    >
-      <div
+    <Flex direction="column" align="stretch">
+      <Flex
+        align="center"
+        justify="center"
         className={css({
-          display: 'flex',
-          flexDirection: 'row',
-          justifyContent: 'space-between',
-          padding: space_M,
+          //backgroundColor: `${project.color ? project.color : 'var(--secondaryColor)'}`,
+          backgroundColor: 'var(--secondaryColor)',
+          height: '80px',
         })}
       >
-        <InlineInputNew
-          value={project.name || ''}
-          placeholder="New project"
-          onChange={newValue => dispatch(API.updateProject({ ...project, name: newValue }))}
-          className={localTitleStyle}
-          maxWidth="80%"
-        />
-        <DropDownMenu
-          icon={faEllipsisV}
-          valueComp={{ value: '', label: '' }}
-          buttonClassName={css({ marginLeft: '40px' })}
-          entries={[
-            {
-              value: 'edit',
-              label: (
-                <>
-                  {' '}
-                  <FontAwesomeIcon icon={faEdit} /> Edit
-                </>
-              ),
-              //action: () => navigate(`/editor/${project.id}`),
-              action: () => window.open(`#/editor/${project.id}`, '_blank'),
-            },
-            {
-              value: 'Duplicate project',
-              label: (
-                <>
-                  {' '}
-                  <FontAwesomeIcon icon={faUmbrella} /> Duplicate
-                </>
-              ),
-              action: () => dispatch(API.duplicateProject(project)),
-            },
-            {
-              value: 'Delete project',
-              label: (
-                <ConfirmDeleteModal
-                  buttonLabel={
-                    <div className={css({color: errorColor })}>
-                      <FontAwesomeIcon icon={faTrash}/> Delete
-                    </div>
-                  }
-                  message={
-                    <p>
-                      Are you <strong>sure</strong> you want to delete the whole project? This will
-                      delete all cards inside.
-                    </p>
-                  }
-                  onConfirm={() => dispatch(API.deleteProject(project))}
-                  confirmButtonLabel="Delete project"
-                />
-              ),
-            },
-          ]}
-        />
-      </div>
+        <FontAwesomeIcon size="3x" icon={faGamepad} color={'#fff'} />
+      </Flex>
       <div
-        className={css({
-          padding: space_M,
-          paddingTop: 0,
-          borderBottom: '1px solid #ddd',
-          display: 'flex',
-          flexDirection: 'column',
-          flexGrow: 1,
-        })}
+        className={cx(
+          css({
+            display: 'flex',
+            flexDirection: 'column',
+            height: '100px',
+          }),
+        )}
       >
-        <InlineInputNew
-          value={project.description || ''}
-          placeholder="Fill the description"
-          onChange={newValue => dispatch(API.updateProject({ ...project, description: newValue }))}
-          inputType="textarea"
+        <div
           className={css({
-            maxWidth: '100%',
-            minWidth: '100%',
-            minHeight: '100px',
-            maxHeight: '100px',
+            display: 'flex',
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+            paddingLeft: space_M,
+            paddingRight: space_M,
+            paddingTop: space_M,
+            paddingBottom: space_S,
           })}
-        />
-        {/* 
+        >
+          <h3 className={ellipsis} title={project.name ? project.name : 'Project name'}>
+            {project.name}
+          </h3>
+          <DropDownMenu
+            icon={faEllipsisV}
+            valueComp={{ value: '', label: '' }}
+            buttonClassName={cx(css({ marginLeft: '40px' }), lightIconButtonStyle)}
+            entries={[
+              {
+                value: 'open',
+                label: (
+                  <>
+                    <FontAwesomeIcon icon={faEdit} /> Open
+                  </>
+                ),
+                action: () => window.open(`#/editor/${project.id}`, '_blank'),
+              },
+              {
+                value: 'display settings',
+                label: (
+                  <OpenCloseModal
+                    title="Project display settings"
+                    showCloseButton
+                    className={css({ '&:hover': { textDecoration: 'none' } })}
+                    collapsedChildren={
+                      <>
+                        <FontAwesomeIcon icon={faCog} /> Settings
+                      </>
+                    }
+                  >
+                    {() => <ProjectDisplaySettings project={project} key={project.id} />}
+                  </OpenCloseModal>
+                ),
+              },
+              {
+                value: 'Duplicate project',
+                label: (
+                  <>
+                    <FontAwesomeIcon icon={faCopy} /> Duplicate
+                  </>
+                ),
+                action: () => dispatch(API.duplicateProject(project)),
+              },
+              {
+                value: 'Delete project',
+                label: (
+                  <ConfirmDeleteModal
+                    buttonLabel={
+                      <>
+                        <FontAwesomeIcon icon={faTrash} /> Delete
+                      </>
+                    }
+                    message={
+                      <p>
+                        Are you <strong>sure</strong> you want to delete the whole project? This
+                        will delete all cards inside.
+                      </p>
+                    }
+                    onConfirm={() => dispatch(API.deleteProject(project))}
+                    confirmButtonLabel="Delete project"
+                  />
+                ),
+              },
+            ]}
+          />
+        </div>
+        <div
+          className={css({
+            padding: space_M,
+            paddingTop: 0,
+            display: 'flex',
+            flexDirection: 'column',
+            flexGrow: 1,
+          })}
+        >
+          <div title={project.description || ''} className={cx(multiLineEllipsis, textSmall)}>
+            {project.description}
+          </div>
+          {/* 
         //FUTURE block of infos on the project
         <div
           className={css({
@@ -160,25 +183,9 @@ const ProjectDisplay = ({ project }: ProjectDisplayProps) => {
           <p className={cardInfoStyle}>Number of people involved?</p>
           <p className={cardInfoStyle}>Last update: {project.trackingData?.modificationDate}</p>
         </div> */}
+        </div>
       </div>
-      <div
-        className={css({
-          display: 'flex',
-          flexDirection: 'row',
-          justifyContent: 'space-between',
-          padding: space_M,
-        })}
-      >
-        <Button
-          icon={faEdit}
-          //onClick={() => navigate(`/editor/${project.id}`)}
-          onClick={() => window.open(`#/editor/${project.id}`, '_blank')}
-          className={cx(css({ margin: 'auto' }), invertedButtonStyle)}
-        >
-          Edit
-        </Button>
-      </div>
-    </div>
+    </Flex>
   );
 };
 
@@ -205,8 +212,7 @@ function ProjectList({ projects, status, reload }: ProjectListProps) {
   } else {
     return (
       <div className={css({ padding: '4vw' })}>
-        <div className={projectListStyle}>
-          {projects
+        {/* {projects
             .sort((a, b) => (a.id || 0) - (b.id || 0))
             .map(project => {
               if (project != null) {
@@ -214,8 +220,26 @@ function ProjectList({ projects, status, reload }: ProjectListProps) {
               } else {
                 return <InlineLoading />;
               }
-            })}
-        </div>
+            })} */}
+        <ItemThumbnailsSelection<Project>
+          items={projects.sort((a, b) => (a.id || 0) - (b.id || 0))}
+          className={projectListStyle}
+          thumbnailClassName={css({
+            padding: 0,
+            margin: '4px',
+            display: 'block',
+            backgroundColor: 'var(--bgColor)',
+          })}
+          onItemDblClick={item => {
+            if (item) {
+              window.open(`#/editor/${item.id}`, '_blank');
+            }
+          }}
+          fillThumbnail={item => {
+            if (item === null) return <></>;
+            else return <ProjectDisplay project={item} />;
+          }}
+        />
         {/* Note : any authenticated user can create a project */}
         <ProjectCreator collapsedButtonClassName={fixedButtonStyle} />
       </div>
