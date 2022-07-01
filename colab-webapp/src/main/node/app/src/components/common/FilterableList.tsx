@@ -107,7 +107,7 @@ export default function FilterableList({
             </Flex>
             <Checkbox
               key={'toggle all'}
-              label={stateSelectAll ? 'Deselect all' : 'Select all'}
+              label={'Select all'}
               value={stateSelectAll}
               onChange={t => toggleAllTags(t)}
               className={css({ paddingLeft: space_M })}

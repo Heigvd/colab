@@ -6,6 +6,8 @@
  */
 
 import { css } from '@emotion/css';
+import { faLock } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Card, CardContent } from 'colab-rest-client';
 import * as React from 'react';
 import { TwitterPicker } from 'react-color';
@@ -15,7 +17,7 @@ import Flex from '../common/Flex';
 import Checkbox from '../common/Form/Checkbox';
 import SelectInput from '../common/Form/SelectInput';
 import Tips, { WIPContainer } from '../common/Tips';
-import { space_M } from '../styling/style';
+import { iconStyle, space_M } from '../styling/style';
 import ContentStatusSelector from './ContentStatusSelector';
 
 const marginDownSmall = css({
@@ -33,6 +35,21 @@ export default function CardSettings({ card, variant }: Props): JSX.Element {
 
   return (
     <Flex className={css({ gap: space_M })} direction="column" shrink={1}>
+      <Flex align='center'>
+        <Checkbox
+          label={
+            <>
+              <FontAwesomeIcon icon={faLock} className={iconStyle} /> Locked
+            </>
+          }
+          value={variant.frozen}
+          onChange={value => dispatch(API.updateCardContent({ ...variant, frozen: value }))}
+        />
+        <Tips>
+          Locking the variant (card if only one variant) will artificially set it as read-only and prevent
+          the edition.
+        </Tips>
+      </Flex>
       <div>
         <h3 className={marginDownSmall}>Card color</h3>
         <TwitterPicker
@@ -52,11 +69,6 @@ export default function CardSettings({ card, variant }: Props): JSX.Element {
         <ContentStatusSelector
           self={variant.status}
           onChange={status => dispatch(API.updateCardContent({ ...variant, status: status }))}
-        />
-        <Checkbox
-          label="frozen"
-          value={variant.frozen}
-          onChange={value => dispatch(API.updateCardContent({ ...variant, frozen: value }))}
         />
       </div>
       <WIPContainer>

@@ -6,7 +6,7 @@
  */
 
 import { css } from '@emotion/css';
-import { faBroom, faRadio } from '@fortawesome/free-solid-svg-icons';
+import { faBullhorn, faTriangleExclamation } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import * as React from 'react';
 import { CardTypeAllInOne as CardType } from '../../../../types/cardTypeDefinition';
@@ -35,7 +35,7 @@ export default function CardTypeRelativesSummary({
     showResources: true,
     showPublished: false,
     showDeprecated: false,
-    showTargetCardType: true,
+    showTargetCardType: false,
   },
 }: CardTypeRelativesSummaryProps): JSX.Element {
   return (
@@ -55,7 +55,7 @@ export default function CardTypeRelativesSummary({
       {displayChoices.showPublished && cardType.published && (
         <Flex className={itemStyle}>
           <FontAwesomeIcon
-            icon={faRadio}
+            icon={faBullhorn}
             title="It can be referenced by other projects (with regards to access rights)"
           />
         </Flex>
@@ -64,7 +64,7 @@ export default function CardTypeRelativesSummary({
       {/* is deprecated */}
       {displayChoices.showDeprecated && cardType.deprecated && (
         <Flex className={itemStyle}>
-          <FontAwesomeIcon icon={faBroom} title="It should not be used anymore" />
+          <FontAwesomeIcon icon={faTriangleExclamation} title="It should not be used anymore" />
         </Flex>
       )}
 

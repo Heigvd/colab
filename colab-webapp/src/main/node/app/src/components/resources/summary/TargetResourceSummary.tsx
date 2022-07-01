@@ -5,12 +5,10 @@
  * Licensed under the MIT License
  */
 
-import { cx } from '@emotion/css';
-import { faBook, faLocationPin } from '@fortawesome/free-solid-svg-icons';
+import { faCircle, faCircleDot } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Resource } from 'colab-rest-client';
 import * as React from 'react';
-import { iconStyle } from '../../styling/style';
 
 interface TargetResourceSummaryProps {
   resource: Resource;
@@ -32,9 +30,10 @@ export default function TargetResourceSummary({
 function ResourceOfCardContentSummary({ className }: { className?: string }): JSX.Element {
   return (
     <FontAwesomeIcon
-      icon={faLocationPin}
-      title={'It is available just for this card content'}
-      className={cx(iconStyle, className)}
+      icon={faCircle}
+      size='xs'
+      title={'Available only for this variant'}
+      className={className}
     />
   );
 }
@@ -42,9 +41,9 @@ function ResourceOfCardContentSummary({ className }: { className?: string }): JS
 function ResourceOfCardTypeSummary({ className }: { className?: string }): JSX.Element {
   return (
     <FontAwesomeIcon
-      icon={faBook}
-      title={'It is provided by the card type'}
-      className={cx(iconStyle, className)}
+      icon={faCircleDot}
+      title={'Provided by the card type'}
+      className={className}
     />
   );
 }

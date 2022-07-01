@@ -45,6 +45,7 @@ const toolboxContainerStyle = css({
 });
 
 const closedToolboxStyle = css({
+  minHeight: '0px',
   maxHeight: '0px',
   paddingTop: '0px',
   paddingBottom: '0px',

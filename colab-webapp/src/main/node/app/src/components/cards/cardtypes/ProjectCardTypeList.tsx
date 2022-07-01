@@ -6,7 +6,6 @@
  */
 
 import { css, cx } from '@emotion/css';
-import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
 import * as React from 'react';
 import { Route, Routes, useNavigate } from 'react-router-dom';
 import {
@@ -17,8 +16,7 @@ import AvailabilityStatusIndicator from '../../common/AvailabilityStatusIndicato
 import Collapsible from '../../common/Collapsible';
 import CustomElementsList from '../../common/CustomElementsList';
 import Flex from '../../common/Flex';
-import IconButton from '../../common/IconButton';
-import { space_M, voidStyle } from '../../styling/style';
+import { voidStyle } from '../../styling/style';
 import { cardTypeThumbnailStyle } from '../CardCreator';
 import CardTypeCreator from './CardTypeCreator';
 import CardTypeEditor from './CardTypeEditor';
@@ -73,17 +71,7 @@ export default function ProjectCardTypeList(): JSX.Element {
             align="stretch"
             className={css({ alignSelf: 'stretch' })}
           >
-            <Flex justify="space-between">
-              <Flex align="flex-start">
-                <IconButton
-                  icon={faArrowLeft}
-                  title={'Back'}
-                  iconColor="var(--darkGray)"
-                  onClick={() => navigate('../')}
-                  className={css({ marginRight: space_M })}
-                />
-                <h2>Card types</h2>
-              </Flex>
+            <Flex justify="flex-end">
               <CardTypeCreator usage="currentProject" onCreated={setLastCreated} />
             </Flex>
             {projectCTStatus !== 'READY' ? (

@@ -27,6 +27,7 @@ import Flex from '../../common/Flex';
 import { DocTextDisplay } from '../../documents/DocTextItem';
 import {
   borderRadius,
+  errorColor,
   lightIconButtonStyle,
   lightItalicText,
   multiLineEllipsis,
@@ -36,6 +37,7 @@ import {
   textSmall,
 } from '../../styling/style';
 import CardTypeRelativesSummary from './summary/CardTypeRelativesSummary';
+import TargetCardTypeSummary from './summary/TargetCardTypeSummary';
 import { TagsDisplay } from './tags/TagsDisplay';
 
 const tagStyle = css({
@@ -79,7 +81,8 @@ export default function CardTypeThumbnail({
         <Flex direction="column" align="stretch" grow={1}>
           <Flex justify="space-between">
             <Flex direction="column" grow={1} align="stretch">
-              <Flex justify={editable ? 'flex-start' : 'space-between'}>
+              <Flex justify={editable ? 'flex-start' : 'space-between'} align='center'>
+                <TargetCardTypeSummary cardType={cardType} />
                 <h3 className={oneLineEllipsis}>{cardType.title || 'Card type'}</h3>
                 <div
                   className={cx(
@@ -173,9 +176,9 @@ export default function CardTypeThumbnail({
                           label: (
                             <ConfirmDeleteModal
                               buttonLabel={
-                                <>
+                                <div className={css({ color: errorColor })}>
                                   <FontAwesomeIcon icon={faTrash} /> Delete type
-                                </>
+                                </div>
                               }
                               message={
                                 <p>

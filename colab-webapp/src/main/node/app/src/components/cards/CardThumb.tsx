@@ -21,12 +21,13 @@ import { Route, Routes, useLocation, useNavigate } from 'react-router-dom';
 import * as API from '../../API/api';
 import useTranslations from '../../i18n/I18nContext';
 import { useAppDispatch } from '../../store/hooks';
+import Button from '../common/Button';
 import ConfirmDeleteModal from '../common/ConfirmDeleteModal';
 import DropDownMenu from '../common/DropDownMenu';
 import Flex from '../common/Flex';
 import InlineLoading from '../common/InlineLoading';
 import Modal from '../common/Modal';
-import { lightIconButtonStyle, space_M, space_S, variantTitle } from '../styling/style';
+import { errorColor, lightIconButtonStyle, space_M, space_S, variantTitle } from '../styling/style';
 import CardLayout from './CardLayout';
 import CardSettings from './CardSettings';
 import CompletionEditor from './CompletionEditor';
@@ -141,11 +142,24 @@ export default function CardThumb({
                     path={`${cardId}/v/${variant?.id}/completion`}
                     element={
                       <Modal
-                        title="Card completion"
+                        title="Edit card completion"
                         onClose={() => closeRouteCb(`${cardId}/v/${variant?.id}/completion`)}
                         showCloseButton
+                        modalBodyClassName={css({ alignItems: 'center' })}
+                        onEnter={close => close()}
+                        footer={close => (
+                          <Flex grow={1} justify="center" className={css({ margin: space_S })}>
+                            <Button onClick={close}>OK</Button>
+                          </Flex>
+                        )}
                       >
-                        {() => variant && <CompletionEditor variant={variant} />}
+                        {() =>
+                          variant && (
+                            <Flex direction="column" justify="center" align="center">
+                              <CompletionEditor variant={variant} />
+                            </Flex>
+                          )
+                        }
                       </Modal>
                     }
                   />
@@ -221,10 +235,10 @@ export default function CardThumb({
                       label: (
                         <ConfirmDeleteModal
                           buttonLabel={
-                            <>
+                            <div className={css({ color: errorColor })}>
                               <FontAwesomeIcon icon={faTrash} />
                               {hasVariants ? ' Delete variant' : ' Delete card'}
-                            </>
+                            </div>
                           }
                           message={
                             hasVariants ? (

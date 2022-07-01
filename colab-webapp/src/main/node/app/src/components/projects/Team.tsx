@@ -6,7 +6,6 @@
  */
 import { css, cx } from '@emotion/css';
 import {
-  faArrowLeft,
   faCheck,
   faEllipsisV,
   faHourglassHalf,
@@ -19,7 +18,6 @@ import {
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { HierarchicalPosition, Project, TeamMember, TeamRole } from 'colab-rest-client';
 import * as React from 'react';
-import { useNavigate } from 'react-router-dom';
 import Select from 'react-select';
 import * as API from '../../API/api';
 import { getDisplayName } from '../../helper';
@@ -210,9 +208,9 @@ const Member = ({ member, roles }: MemberProps) => {
             label: (
               <ConfirmDeleteModal
                 buttonLabel={
-                  <>
+                  <div className={css({ color: errorColor })}>
                     <FontAwesomeIcon icon={faTrash} /> Delete
-                  </>
+                  </div>
                 }
                 message={
                   <p>
@@ -342,27 +340,15 @@ export interface Props {
 
 export default function Team({ project }: Props): JSX.Element {
   const dispatch = useAppDispatch();
-  const navigate = useNavigate();
   const projectId = project.id;
 
   const { members, roles, status } = useAndLoadProjectTeam(projectId);
 
   const [invite, setInvite] = React.useState('');
 
-  const title = <h1>Team</h1>;
-
   if (status === 'INITIALIZED') {
     return (
       <>
-        <IconButton
-          icon={faArrowLeft}
-          title={'Back to project'}
-          iconColor="var(--darkGray)"
-          onClick={() => navigate('../')}
-          className={css({ display: 'block', marginBottom: space_M })}
-        />
-
-        {title}
         <div
           className={css({
             display: 'grid',
@@ -431,7 +417,6 @@ export default function Team({ project }: Props): JSX.Element {
   } else {
     return (
       <div>
-        {title}
         <InlineLoading />;
       </div>
     );

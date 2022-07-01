@@ -7,6 +7,7 @@
 import { css, cx } from '@emotion/css';
 import { IconProp } from '@fortawesome/fontawesome-svg-core';
 import { faTimes } from '@fortawesome/free-solid-svg-icons';
+import { Resizable } from 're-resizable';
 import * as React from 'react';
 import Flex from '../common/Flex';
 import IconButton from '../common/IconButton';
@@ -58,27 +59,47 @@ export default function SideCollapsiblePanel<T extends { [key: string]: Item }>(
       )}
     >
       {direction === 'RIGHT' && itemOpen && (
-        <Flex align="stretch" justify="stretch" direction="column">
-          <Flex
-            justify="space-between"
-            className={css({
-              padding: space_M,
-              paddingBottom: '3px',
-              borderBottom: '1px solid var(--lightGray)',
-            })}
-          >
-            <h3>{itemOpen.title}</h3>
-            <IconButton
-              title="close"
-              icon={faTimes}
-              onClick={() => setItemKeyOpen(undefined)}
-              className={cx(lightIconButtonStyle, marginAroundStyle([4], space_M))}
-            />
+        <Resizable
+          defaultSize={{
+            width: 'auto',
+            height: 'auto',
+          }}
+          minWidth={280}
+          maxWidth={'100%'}
+          bounds={'parent'}
+          enable={{
+            top: false,
+            right: false,
+            bottom: false,
+            left: true,
+            topRight: false,
+            bottomRight: false,
+            bottomLeft: false,
+            topLeft: false,
+          }}
+        >
+          <Flex align="stretch" justify="stretch" direction="column">
+            <Flex
+              justify="space-between"
+              className={css({
+                padding: space_M,
+                paddingBottom: '3px',
+                borderBottom: '1px solid var(--lightGray)',
+              })}
+            >
+              <h3>{itemOpen.title}</h3>
+              <IconButton
+                title="close"
+                icon={faTimes}
+                onClick={() => setItemKeyOpen(undefined)}
+                className={cx(lightIconButtonStyle, marginAroundStyle([4], space_M))}
+              />
+            </Flex>
+            <Flex align="stretch" grow={1} className={itemOpen.className}>
+              {itemOpen.children}
+            </Flex>
           </Flex>
-          <Flex align="stretch" grow={1} className={itemOpen.className}>
-            {itemOpen.children}
-          </Flex>
-        </Flex>
+        </Resizable>
       )}
       <Flex
         direction="column"
@@ -109,9 +130,32 @@ export default function SideCollapsiblePanel<T extends { [key: string]: Item }>(
         ))}
       </Flex>
       {direction === 'LEFT' && itemOpen && (
-        <Flex align="stretch" className={cx(paddingAroundStyle([1], space_M), itemOpen.className)}>
-          {itemOpen.children}
-        </Flex>
+        <Resizable
+        defaultSize={{
+          width: 'auto',
+          height: 'auto',
+        }}
+        minWidth={280}
+        maxWidth={'100%'}
+        bounds={'parent'}
+        enable={{
+          top: false,
+          right: true,
+          bottom: false,
+          left: false,
+          topRight: false,
+          bottomRight: false,
+          bottomLeft: false,
+          topLeft: false,
+        }}
+        >
+          <Flex
+            align="stretch"
+            className={cx(paddingAroundStyle([1], space_M), itemOpen.className)}
+          >
+            {itemOpen.children}
+          </Flex>
+        </Resizable>
       )}
     </Flex>
   );

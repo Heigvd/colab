@@ -6,13 +6,14 @@
  */
 
 import { css, cx } from '@emotion/css';
-import { faSnowflake, faWindowRestore } from '@fortawesome/free-regular-svg-icons';
+import { faWindowRestore } from '@fortawesome/free-regular-svg-icons';
 import {
   faCog,
   faCompressArrowsAlt,
   faEllipsisV,
   faExpandArrowsAlt,
   faInfoCircle,
+  faLock,
   faPaperclip,
   faPercent,
   faSlash,
@@ -31,6 +32,7 @@ import useTranslations from '../../i18n/I18nContext';
 import { useCardACLForCurrentUser, useVariantsOrLoad } from '../../selectors/cardSelector';
 import { useAndLoadCardType } from '../../selectors/cardTypeSelector';
 import { useAppDispatch } from '../../store/hooks';
+import Button from '../common/Button';
 import Collapsible from '../common/Collapsible';
 import ConfirmDeleteModal from '../common/ConfirmDeleteModal';
 import DropDownMenu from '../common/DropDownMenu';
@@ -45,6 +47,7 @@ import ResourcesWrapper from '../resources/ResourcesWrapper';
 import StickyNoteWrapper from '../stickynotes/StickyNoteWrapper';
 import {
   cardStyle,
+  errorColor,
   lightIconButtonStyle,
   localTitleStyle,
   space_M,
@@ -285,61 +288,52 @@ export default function CardEditor({ card, variant, showSubcards = true }: Props
                             : '1px solid var(--lightGray)',
                       })}
                     >
-                      <div>
+                      <Flex align="center">
                         {variant.frozen && (
-                          <div
-                            className={css({ color: '#71D9FF' })}
-                            title='Card is frozen (locked). To unfreeze go to Card settings and uncheck "frozen".'
-                          >
-                            <FontAwesomeIcon icon={faSnowflake} />
-                            <i> frozen</i>
-                          </div>
-                        )}
-                        <Flex align="center">
-                          <InlineInputNew
-                            value={card.title || ''}
-                            placeholder={i18n.card.untitled}
-                            readOnly={readOnly}
-                            onChange={newValue =>
-                              dispatch(API.updateCard({ ...card, title: newValue }))
-                            }
-                            className={localTitleStyle}
-                            autosave
+                          <FontAwesomeIcon
+                            icon={faLock}
+                            title='Card is locked. To unlock it go to Card settings and uncheck "locked".'
+                            color={'var(--darkGray)'}
                           />
-                          {hasVariants && (
-                            <>
-                              <span className={variantTitle}>&#xFE58;</span>
-                              <InlineInputNew
-                                value={
-                                  variant.title && variant.title.length > 0
-                                    ? variant.title
-                                    : `Variant ${variantNumber}`
-                                }
-                                placeholder={i18n.content.untitled}
-                                readOnly={readOnly}
-                                onChange={newValue =>
-                                  dispatch(API.updateCardContent({ ...variant, title: newValue }))
-                                }
-                                autosave={false}
-                                className={variantTitle}
-                              />
-                            </>
-                          )}
-                          {hasCardType && (
-                            <IconButton
-                              icon={faInfoCircle}
-                              title="Show card model informations"
-                              className={cx(
-                                lightIconButtonStyle,
-                                css({ color: 'var(--lightGray)' }),
-                              )}
-                              onClick={() =>
-                                setShowTypeDetails(showTypeDetails => !showTypeDetails)
+                        )}
+                        <InlineInputNew
+                          value={card.title || ''}
+                          placeholder={i18n.card.untitled}
+                          readOnly={readOnly}
+                          onChange={newValue =>
+                            dispatch(API.updateCard({ ...card, title: newValue }))
+                          }
+                          className={localTitleStyle}
+                          autosave
+                        />
+                        {hasVariants && (
+                          <>
+                            <span className={variantTitle}>&#xFE58;</span>
+                            <InlineInputNew
+                              value={
+                                variant.title && variant.title.length > 0
+                                  ? variant.title
+                                  : `Variant ${variantNumber}`
                               }
+                              placeholder={i18n.content.untitled}
+                              readOnly={readOnly}
+                              onChange={newValue =>
+                                dispatch(API.updateCardContent({ ...variant, title: newValue }))
+                              }
+                              autosave={false}
+                              className={variantTitle}
                             />
-                          )}
-                        </Flex>
-                      </div>
+                          </>
+                        )}
+                        {hasCardType && (
+                          <IconButton
+                            icon={faInfoCircle}
+                            title="Show card model informations"
+                            className={cx(lightIconButtonStyle, css({ color: 'var(--lightGray)' }))}
+                            onClick={() => setShowTypeDetails(showTypeDetails => !showTypeDetails)}
+                          />
+                        )}
+                      </Flex>
                       <Flex>
                         {/* handle modal routes*/}
                         <Routes>
@@ -379,13 +373,24 @@ export default function CardEditor({ card, variant, showSubcards = true }: Props
                             path="completion"
                             element={
                               <Modal
-                                title="Completion"
+                                title="Edit card completion"
                                 onClose={() => closeRouteCb('completion')}
                                 showCloseButton
+                                modalBodyClassName={css({ alignItems: 'center' })}
+                                onEnter={close => close()}
+                                footer={close => (
+                                  <Flex
+                                    grow={1}
+                                    justify="center"
+                                    className={css({ margin: space_S })}
+                                  >
+                                    <Button onClick={close}>OK</Button>
+                                  </Flex>
+                                )}
                               >
                                 {() =>
                                   variant && (
-                                    <Flex direction="column">
+                                    <Flex direction="column" justify="center" align="center">
                                       <CompletionEditor variant={variant} />
                                     </Flex>
                                   )
@@ -467,10 +472,10 @@ export default function CardEditor({ card, variant, showSubcards = true }: Props
                               label: (
                                 <ConfirmDeleteModal
                                   buttonLabel={
-                                    <>
+                                    <div className={css({ color: errorColor })}>
                                       <FontAwesomeIcon icon={faTrash} />
                                       {hasVariants ? ' Delete variant' : ' Delete card'}
-                                    </>
+                                    </div>
                                   }
                                   message={
                                     hasVariants ? (
@@ -558,7 +563,7 @@ export default function CardEditor({ card, variant, showSubcards = true }: Props
                   <OpenCloseModal
                     title="Edit card completion"
                     className={css({ width: '100%' })}
-                    showCloseButton={true}
+                    modalBodyClassName={css({ alignItems: 'center' })}
                     collapsedChildren={
                       <ProgressBar
                         variant={variant}
@@ -570,10 +575,16 @@ export default function CardEditor({ card, variant, showSubcards = true }: Props
                         })}
                       />
                     }
+                    footer={close => (
+                      <Flex grow={1} justify="center" className={css({ margin: space_S })}>
+                        <Button onClick={close}>OK</Button>
+                      </Flex>
+                    )}
+                    onEnter={close => close()}
                   >
                     {() =>
                       variant && (
-                        <Flex direction="column">
+                        <Flex direction="column" justify="center" align="center">
                           <CompletionEditor variant={variant} />
                         </Flex>
                       )
