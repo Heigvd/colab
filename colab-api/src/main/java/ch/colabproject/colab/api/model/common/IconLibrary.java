@@ -13,10 +13,16 @@ package ch.colabproject.colab.api.model.common;
  */
 //WARNING ! DO NOT CHANGE THE ENUM NAMES, THEY ARE USED AS KEYS IN DB !!
 public enum IconLibrary {
+
     /**
-     * Font Awesome
+     * Font Awesome solid
      */
-    FONT_AWESOME;
+    FONT_AWESOME_SOLID,
+
+    /**
+     * Font Awesome regular
+     */
+    FONT_AWESOME_REGULAR;
 
     // WARNING ! DO NOT CHANGE THE ENUM NAMES, THEY ARE USED AS KEYS IN DB !!
 }

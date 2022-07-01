@@ -45,8 +45,8 @@ public class ProjectRestEndpointTest extends AbstractArquillianTest {
     public void testCreateDeleteProject() {
         String name = "my first new project";
         String description = "everything is awesome";
-        IconLibrary iconLibrary = IconLibrary.FONT_AWESOME;
-        String iconKey = "faOtter";
+        IconLibrary iconLibrary = IconLibrary.FONT_AWESOME_SOLID;
+        String iconKey = "otter";
         String iconBkgdColor = "#936";
 
         TestUser user = this.signup("goulashsensei", "goulash@test.local", "SoSecure");
@@ -154,7 +154,7 @@ public class ProjectRestEndpointTest extends AbstractArquillianTest {
         project.setName("The Hitchhiker's Guide to the Serious-Game");
         project.setDescription("So Long, and Thanks for All the Games");
         Illustration illustration = new Illustration();
-        illustration.setIconLibrary(IconLibrary.FONT_AWESOME);
+        illustration.setIconLibrary(IconLibrary.FONT_AWESOME_SOLID);
         illustration.setIconKey("faPaw");
         illustration.setIconBkgdColor("purple");
         project.setIllustration(illustration);
