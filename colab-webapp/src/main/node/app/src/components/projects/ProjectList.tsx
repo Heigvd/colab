@@ -30,6 +30,7 @@ import ItemThumbnailsSelection from '../common/ItemThumbnailsSelection';
 import OpenCloseModal from '../common/OpenCloseModal';
 import {
   ellipsis,
+  errorColor,
   fixedButtonStyle,
   lightIconButtonStyle,
   multiLineEllipsis,
@@ -137,9 +138,9 @@ const ProjectDisplay = ({ project }: ProjectDisplayProps) => {
                 label: (
                   <ConfirmDeleteModal
                     buttonLabel={
-                      <>
-                        <FontAwesomeIcon icon={faTrash} /> Delete
-                      </>
+                      <div className={css({ color: errorColor })}>
+                        <FontAwesomeIcon icon={faTrash} /> Delete variant
+                      </div>
                     }
                     message={
                       <p>

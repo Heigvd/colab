@@ -88,6 +88,7 @@ export interface Props {
   autosave?: boolean;
   delay?: number;
   maxWidth?: string;
+  autofocus?: boolean;
 }
 
 export default function InlineInput({
@@ -103,6 +104,7 @@ export default function InlineInput({
   autosave = true,
   delay = 300,
   maxWidth = '100%',
+  autofocus,
 }: Props): JSX.Element {
   const inputRef = React.useRef<HTMLInputElement>();
   const textareaRef = React.useRef<HTMLTextAreaElement>(null);
@@ -250,6 +252,7 @@ export default function InlineInput({
           className={cx(
             mode == 'EDIT' ? cx(inputEditingStyle, className) : cx(inputDisplayStyle, className),
           )}
+          autoFocus={autofocus}
         />
       ) : (
         <textarea
@@ -262,6 +265,7 @@ export default function InlineInput({
           className={cx(
             mode == 'EDIT' ? cx(textareaEditingStyle, className) : cx(textareaStyle, className),
           )}
+          autoFocus={autofocus}
         />
       )}
 

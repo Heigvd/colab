@@ -12,7 +12,6 @@ import * as API from '../../API/api';
 import { useAppDispatch } from '../../store/hooks';
 import Flex from '../common/Flex';
 import Input from '../common/Form/Input';
-import InlineInputNew from '../common/InlineInputNew';
 
 interface CompletionEditorProps {
   variant: CardContent;
@@ -38,20 +37,26 @@ export default function CompletionEditor({ variant }: CompletionEditorProps): JS
         }
         autofocus={true}
       />
-      <Flex align='center'>
-      <InlineInputNew
-        value={String(variant.completionLevel) == '0' ? '0' : String(variant.completionLevel)}
-        placeholder="0"
-        onChange={newValue =>
-          dispatch(
-            API.updateCardContent({
-              ...variant,
-              completionLevel: +newValue,
-            }),
-          )
-        }
-        className={css({border: '1px solid var(--lightGray)'})}
-      /> %</Flex>
+      <Flex align="center">
+        <Input
+          type="number"
+          value={variant.completionLevel == 0 ? 0 : variant.completionLevel}
+          onChange={newValue =>
+            dispatch(
+              API.updateCardContent({
+                ...variant,
+                completionLevel: +newValue,
+              }),
+            )
+          }
+          placeholder={'0'}
+          autofocus
+          className={css({ width: '90px' })}
+          min={0}
+          max={100}
+        />{' '}
+        %
+      </Flex>
     </>
   );
 }
