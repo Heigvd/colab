@@ -6,14 +6,15 @@
  */
 
 import { css, cx } from '@emotion/css';
-import { faFile, faGamepad, faTrash } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faTrash } from '@fortawesome/free-solid-svg-icons';
+import { Illustration } from 'colab-rest-client';
 import * as React from 'react';
 import useTranslations from '../../i18n/I18nContext';
 import { ConfirmIconButton } from '../common/ConfirmIconButton';
 import Flex from '../common/Flex';
 import Form from '../common/Form/Form';
 import Input from '../common/Form/Input';
+import IllustrationDisplay from '../common/IllustrationDisplay';
 import {
   invertedButtonStyle,
   lightIconButtonStyle,
@@ -22,6 +23,7 @@ import {
   space_S,
   textSmall,
 } from '../styling/style';
+import { defaultProjectIllustration } from './ProjectCommon';
 import { ProjectCreationData } from './ProjectCreator';
 
 interface ProjectDataInitializationProps {
@@ -29,6 +31,7 @@ interface ProjectDataInitializationProps {
   readOnly?: boolean;
   setName: (value: string) => void;
   setDescription: (value: string) => void;
+  setIllustration: (value: Illustration) => void;
   addGuest: (emailAddress: string) => void;
   removeGuest: (emailAddress: string) => void;
 }
@@ -38,6 +41,7 @@ export default function ProjectDataInitialization({
   readOnly,
   setName,
   setDescription,
+  //setIllustration,
   addGuest,
   removeGuest,
 }: ProjectDataInitializationProps): JSX.Element {
@@ -65,6 +69,9 @@ export default function ProjectDataInitialization({
             setDescription(description);
           }}
         />
+
+        {/* <IllustrationPicker data={data.illustration} onChange={setIllustration} /> */}
+
         <Form
           fields={[
             {
@@ -108,17 +115,23 @@ export default function ProjectDataInitialization({
       </Flex>
       <Flex direction="column" className={css({ width: '50%' })}>
         <Flex
-          align="center"
-          justify="center"
           className={css({
-            backgroundColor: 'var(--secondaryColor)',
             minWidth: '100%',
-            minHeight: '70px',
+            height: '80px',
             marginBottom: space_M,
           })}
         >
-          {/* TODO <FontAwesomeIcon icon={isEmptyProject ? faFile : data.projectModel?.icon || faGamepad} /> */}
-          <FontAwesomeIcon color="white" icon={!data.projectModel ? faFile : faGamepad} size="3x" />
+          <IllustrationDisplay
+            illustration={
+              !data.projectModel
+                ? {
+                    '@class': 'Illustration',
+                    iconLibrary: 'FONT_AWESOME_REGULAR',
+                    iconKey: 'file',
+                  }
+                : data.projectModel.illustration || { ...defaultProjectIllustration }
+            }
+          />
         </Flex>
         <h2>
           {data.projectModel

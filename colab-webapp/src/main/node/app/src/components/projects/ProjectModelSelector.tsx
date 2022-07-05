@@ -6,16 +6,15 @@
  */
 
 import { css, cx } from '@emotion/css';
-import { faFile } from '@fortawesome/free-regular-svg-icons';
-import { faGamepad } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Project } from 'colab-rest-client';
 import * as React from 'react';
 import { useAndLoadProjectModels } from '../../selectors/projectSelector';
 import AvailabilityStatusIndicator from '../common/AvailabilityStatusIndicator';
 import Flex from '../common/Flex';
+import IllustrationDisplay from '../common/IllustrationDisplay';
 import ItemThumbnailsSelection from '../common/ItemThumbnailsSelection';
 import { lightText, multiLineEllipsis, space_S, textSmall } from '../styling/style';
+import { defaultProjectIllustration } from './ProjectCommon';
 
 const projectThumbnailStyle = css({
   padding: 0,
@@ -68,19 +67,21 @@ export default function ProjectModelSelector({
           const isEmptyProject = item === null;
           return (
             <>
-              {/* TODO <div className={css({backgroundColor: item?.color})}> */}
-              <Flex
-                align="center"
-                justify="center"
-                className={css({ backgroundColor: 'var(--secondaryColor)', minWidth: '70px' })}
-              >
-                {/* TODO <FontAwesomeIcon icon={isEmptyProject ? faFile : item?.icon || faGamepad} /> */}
-                <FontAwesomeIcon
-                  color="white"
-                  icon={isEmptyProject ? faFile : faGamepad}
-                  size="2x"
+              <Flex className={css({ minWidth: '70px' })}>
+                <IllustrationDisplay
+                  iconSize="2x"
+                  illustration={
+                    isEmptyProject
+                      ? {
+                          '@class': 'Illustration',
+                          iconLibrary: 'FONT_AWESOME_REGULAR',
+                          iconKey: 'file',
+                        }
+                      : item.illustration || { ...defaultProjectIllustration }
+                  }
                 />
               </Flex>
+
               <div className={css({ padding: '10px' })}>
                 <h3 className={css({ marginTop: space_S })}>
                   {!isEmptyProject ? (item.name ? item.name : 'New project') : 'Empty project'}

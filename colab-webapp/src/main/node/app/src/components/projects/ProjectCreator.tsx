@@ -7,7 +7,7 @@
 
 import { css } from '@emotion/css';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
-import { Project } from 'colab-rest-client';
+import { Illustration, Project } from 'colab-rest-client';
 import * as React from 'react';
 import * as API from '../../API/api';
 import { useAppDispatch } from '../../store/hooks';
@@ -16,6 +16,7 @@ import ButtonWithLoader from '../common/ButtonWithLoader';
 import Flex from '../common/Flex';
 import OpenCloseModal from '../common/OpenCloseModal';
 import { space_M, space_S } from '../styling/style';
+import { defaultProjectIllustration } from './ProjectCommon';
 import ProjectDataInitialization from './ProjectDataInitialization';
 import ProjectModelSelector from './ProjectModelSelector';
 
@@ -24,6 +25,7 @@ import ProjectModelSelector from './ProjectModelSelector';
 export interface ProjectCreationData {
   name: string;
   description: string;
+  illustration: Illustration;
   guests: string[];
   projectModel: Project | null;
 }
@@ -31,6 +33,7 @@ export interface ProjectCreationData {
 const defaultData: ProjectCreationData = {
   name: '',
   description: '',
+  illustration: { ...defaultProjectIllustration },
   guests: [],
   projectModel: null,
 };
@@ -149,13 +152,15 @@ export default function ProjectCreator({
                 if (!readOnly) {
                   setReadOnly(true);
 
-                  const creationData = {
-                    name: data.name,
-                    description: data.description,
-                    guestsEmail: data.guests,
-                    modelId: data.projectModel?.id || null,
-                  };
-                  dispatch(API.createProject(creationData)).then(payload => {
+                  dispatch(
+                    API.createProject({
+                      name: data.name,
+                      description: data.description,
+                      illustration: data.illustration,
+                      guestsEmail: data.guests,
+                      modelId: data.projectModel?.id || null,
+                    }),
+                  ).then(payload => {
                     resetCb();
                     close();
                     window.open(`#/editor/${payload.payload}`, '_blank');
@@ -175,7 +180,15 @@ export default function ProjectCreator({
             {status === 'chooseModel' ? (
               <ProjectModelSelector
                 defaultSelection={data.projectModel}
-                onSelect={selectedModel => setData({ ...data, projectModel: selectedModel })}
+                onSelect={selectedModel =>
+                  setData({
+                    ...data,
+                    projectModel: selectedModel,
+                    illustration: {
+                      ...(selectedModel?.illustration || defaultData.illustration),
+                    },
+                  })
+                }
                 whenDone={oneStepForwardCb}
               />
             ) : (
@@ -184,6 +197,7 @@ export default function ProjectCreator({
                 readOnly={readOnly}
                 setName={name => setData({ ...data, name: name })}
                 setDescription={description => setData({ ...data, description: description })}
+                setIllustration={illustration => setData({ ...data, illustration: illustration })}
                 addGuest={guestEmailAddress => {
                   if (guestEmailAddress != null && guestEmailAddress.length > 0) {
                     const guests = data.guests;
@@ -200,9 +214,12 @@ export default function ProjectCreator({
               />
             )}
             {/* debug mode */}
-            {/* <Flex direction="column">
+            {/* <Flex direction="column" className={workInProgressStyle}>
               <Flex>{data.name || 'no name'}</Flex>
               <Flex>{data.description || 'no description'}</Flex>
+              <Flex>
+                <IllustrationDisplay illustration={data.illustration} />
+              </Flex>
               <Flex>{data.guests.length}</Flex>
               <Flex>{data.projectModel?.name || 'no project model'}</Flex>
             </Flex> */}
