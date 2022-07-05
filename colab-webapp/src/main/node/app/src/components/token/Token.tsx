@@ -8,13 +8,12 @@
 import * as React from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
 import { getRestClient, reloadCurrentUser } from '../../API/api';
-import { buildLinkWithQueryParam } from '../../helper';
 import logger from '../../logger';
 import { useCurrentUser } from '../../selectors/userSelector';
 import { useAppDispatch } from '../../store/hooks';
-import { InlineLink } from '../common/Link';
 import Loading from '../common/Loading';
 import Overlay from '../common/Overlay';
+import SignInForm from '../public/SignIn';
 
 interface TokenProps {
   tokenId: string | undefined;
@@ -29,6 +28,7 @@ export default function Token(props: TokenProps): JSX.Element {
 
   const location = useLocation();
 
+  // WARNING REPLACE AUTH REQUIRED BY LOADING. AFTER TEST FINISHED
   const [state, setState] = React.useState<STATE_TYPE>('LOADING');
   const [redirectTo, setRedirectTo] = React.useState('');
 
@@ -89,17 +89,19 @@ export default function Token(props: TokenProps): JSX.Element {
     const backToTokenUrl = location.pathname;
     return (
       <Overlay>
-        <div>
-          <span>Authentication required: please </span>
+        <SignInForm redirectTo={backToTokenUrl} />
+        {/* <Flex direction="column" className={cx(cardStyle, paddedContainerStyle)}>
+          <h2>Authentication required</h2>
+          Do you already have a colab account?
           <InlineLink to={buildLinkWithQueryParam('/SignIn', { redirectTo: backToTokenUrl })}>
-            sign in
+            Sign in
           </InlineLink>
-          <span> or </span>
+          <span>  </span>
           <InlineLink to={buildLinkWithQueryParam('/SignUp', { redirectTo: backToTokenUrl })}>
             sign up
           </InlineLink>
           <span>.</span>
-        </div>
+        </Flex> */}
       </Overlay>
     );
   } else if (state == 'NO_TOKEN') {
@@ -111,7 +113,7 @@ export default function Token(props: TokenProps): JSX.Element {
   } else {
     return (
       <Overlay>
-        <div>Error while processing token</div>;
+        <div>Error while processing token. Please try to refresh or contact kthe admin of your colab project.</div>
       </Overlay>
     );
   }

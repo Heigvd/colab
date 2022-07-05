@@ -13,7 +13,6 @@ import { useNavigate } from 'react-router-dom';
 import { signInWithLocalAccount } from '../../API/api';
 import { buildLinkWithQueryParam } from '../../helper';
 import useTranslations from '../../i18n/I18nContext';
-import logger from '../../logger';
 import { useAccountConfig } from '../../selectors/configSelector';
 import { useAppDispatch } from '../../store/hooks';
 import Form, { Field, PasswordScore } from '../common/Form/Form';
@@ -73,8 +72,6 @@ export default function SignInForm({ redirectTo }: SignInFormProps): JSX.Element
 
   const onSubmitCb = React.useCallback(
     (credentials: Credentials) => {
-      logger.info('ONSUBMIT');
-      logger.info(credentials.identifier + ' ' + credentials.password + ' ' + credentials.passwordScore );
       dispatch(
         signInWithLocalAccount({
           identifier: credentials.identifier,
