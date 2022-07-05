@@ -126,6 +126,7 @@ export default function Form<T>({
 
   const [state, setState] = React.useState<T>(value);
   const [erroneous, setErroneous] = React.useState(false);
+  //const submitRef = React.useRef<HTMLElement>(null);
 
   let globalErroneous = false;
 
@@ -144,18 +145,20 @@ export default function Form<T>({
   );
 
   const submitCb = React.useCallback(() => {
+    logger.info(state);
     if (!globalErroneous) {
       onSubmit(state);
     } else {
       setErroneous(true);
       dispatch(addNotification({ status: 'OPEN', type: 'WARN', message: i18n.pleaseProvideData }));
     }
-  }, [state, onSubmit, dispatch, i18n.pleaseProvideData, globalErroneous]);
+  }, [globalErroneous, state, onSubmit, dispatch, i18n.pleaseProvideData]);
 
   const onEnterCb = React.useCallback(
     (event: React.KeyboardEvent<HTMLElement>) => {
       if (event.key === 'Enter') {
         submitCb();
+        //submitRef.current?.click();
       }
     },
     [submitCb],
@@ -177,7 +180,6 @@ export default function Form<T>({
           ? field.errorMessage(state)
           : field.errorMessage
         : undefined;
-    logger.info(state[field.key] === null);
     if (field.type == 'text' || field.type === 'textarea') {
       return (
         <div key={fieldKey}>
@@ -192,6 +194,7 @@ export default function Form<T>({
             mandatory={field.isMandatory}
             onChange={value => setFormValue(field.key, value)}
             readonly={field.readonly}
+            onKeyDown={onEnterCb}
           />
           {field.fieldFooter != null ? field.fieldFooter : null}
         </div>
@@ -247,6 +250,7 @@ export default function Form<T>({
             mandatory={field.isMandatory}
             onChange={value => setFormValue(field.key, value)}
             readonly={field.readonly}
+            onKeyDown={onEnterCb}
           />
           {field.fieldFooter != null ? field.fieldFooter : null}
           {field.strengthProp != null ? (
@@ -312,6 +316,7 @@ export default function Form<T>({
         {autoSubmit ? null : (
           <ButtonWithLoader
             key="submit"
+            //ref={submitRef}
             className={cx(
               css({ margin: space_M + ' 0', alignSelf: 'flex-start' }),
               buttonClassName,

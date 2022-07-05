@@ -35,7 +35,7 @@ export default function CompletionEditor({ variant }: CompletionEditorProps): JS
             }),
           )
         }
-        autofocus={true}
+        autoFocus={true}
       />
       <Flex align="center">
         <Input
@@ -50,7 +50,7 @@ export default function CompletionEditor({ variant }: CompletionEditorProps): JS
             )
           }
           placeholder={'0'}
-          autofocus
+          autoFocus
           className={css({ width: '90px' })}
           min={0}
           max={100}

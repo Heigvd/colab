@@ -20,7 +20,7 @@ import {
 import Flex from '../Flex';
 import Tips, { TipsProps } from '../Tips';
 
-export interface Props{
+export interface Props extends Omit<React.HTMLProps<HTMLInputElement>, 'label' | 'onChange'>{
   label?: React.ReactNode;
   inputType?: 'input' | 'textarea';
   warning?: React.ReactNode;
@@ -34,9 +34,6 @@ export interface Props{
   className?: string;
   readonly?: boolean;
   delay?: number;
-  autofocus?: boolean;
-  max?: number;
-  min?: number;
 }
 
 export default function Input({
@@ -50,12 +47,13 @@ export default function Input({
   mandatory,
   className,
   placeholder,
-  autofocus,
+  autoFocus,
   tip,
   readonly = false,
   delay = 500,
   min,
   max,
+  onKeyDown,
 }: Props): JSX.Element {
   const [state, setState] = React.useState<string | number>(value || '');
 
@@ -112,9 +110,10 @@ export default function Input({
           onChange={onInternalChangeCb}
           onBlur={onBlurCb}
           readOnly={readonly}
-          autoFocus={autofocus}
+          autoFocus={autoFocus}
           max={max}
           min={min}
+          onKeyDown={onKeyDown}
         />
       ) : (
         <textarea
@@ -124,7 +123,7 @@ export default function Input({
           onChange={onInternalChangeCb}
           onBlur={onBlurCb}
           readOnly={readonly}
-          autoFocus={autofocus}
+          autoFocus={autoFocus}
         />
       )}
       {warning ? <div className={cx(textSmall, warningStyle)}>{warning}</div> : null}
