@@ -41,6 +41,7 @@ import IconButton from '../common/IconButton';
 import InlineInputNew from '../common/InlineInputNew';
 import Modal from '../common/Modal';
 import OpenCloseModal from '../common/OpenCloseModal';
+import Tips from '../common/Tips';
 import { DocTextDisplay } from '../documents/DocTextItem';
 import DocumentList from '../documents/DocumentList';
 import ResourcesWrapper from '../resources/ResourcesWrapper';
@@ -608,12 +609,28 @@ export default function CardEditor({ card, variant, showSubcards = true }: Props
                     ),
                     icon: faPaperclip,
                     title: 'Documentation',
+                    nextToTitleElement: (
+                      <Tips>
+                        Use documentation panel to add pieces of (meta)information related to the
+                        card or variant. Pieces of documentation can come from card type.
+                      </Tips>
+                    ),
                     className: css({ overflow: 'auto' }),
                   },
                   'Sticky Notes': {
                     icon: faStickyNote,
                     title: 'Sticky notes',
                     children: <StickyNoteWrapper destCardId={card.id} showSrc />,
+                    nextToTitleElement: (
+                      <Tips>
+                        <h5>List of sticky notes stuck on the card</h5>
+                        <div>
+                          Sticky notes come from a source (card, card specific version, resource,
+                          block)
+                        </div>
+                      </Tips>
+                    ),
+                    className: css({ overflow: 'auto' }),
                   },
                 }}
                 direction="RIGHT"
