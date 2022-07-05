@@ -6,7 +6,7 @@
  */
 package ch.colabproject.colab.api.model;
 
-import ch.colabproject.colab.api.model.tracking.Tracking;
+import ch.colabproject.colab.api.model.common.Tracking;
 import ch.colabproject.colab.api.model.user.User;
 import java.time.OffsetDateTime;
 

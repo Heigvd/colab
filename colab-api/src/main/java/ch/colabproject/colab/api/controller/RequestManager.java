@@ -6,7 +6,7 @@
  */
 package ch.colabproject.colab.api.controller;
 
-import ch.colabproject.colab.api.model.tracking.Tracking;
+import ch.colabproject.colab.api.model.common.Tracking;
 import ch.colabproject.colab.api.model.user.Account;
 import ch.colabproject.colab.api.model.user.User;
 import ch.colabproject.colab.api.persistence.jpa.user.UserDao;

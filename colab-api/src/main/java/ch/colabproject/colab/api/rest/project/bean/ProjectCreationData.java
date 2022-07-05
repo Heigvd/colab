@@ -6,6 +6,7 @@
  */
 package ch.colabproject.colab.api.rest.project.bean;
 
+import ch.colabproject.colab.api.model.common.Illustration;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -17,7 +18,7 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
  *
  * @author sandra
  */
-public class ProjectCreationData  implements Serializable {
+public class ProjectCreationData implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -34,6 +35,11 @@ public class ProjectCreationData  implements Serializable {
      * The description of the project
      */
     private String description;
+
+    /**
+     * The icon to illustrate the project
+     */
+    private Illustration illustration;
 
     /**
      * The model used to create the project (optional)
@@ -78,6 +84,20 @@ public class ProjectCreationData  implements Serializable {
     }
 
     /**
+     * @return the icon to illustrate the project
+     */
+    public Illustration getIllustration() {
+        return illustration;
+    }
+
+    /**
+     * @param illustration the icon to illustrate the project
+     */
+    public void setIllustration(Illustration illustration) {
+        this.illustration = illustration;
+    }
+
+    /**
      * @return the model used to create the project (optional)
      */
     public Long getModelId() {
@@ -114,6 +134,7 @@ public class ProjectCreationData  implements Serializable {
         return new HashCodeBuilder()
             .append(this.name)
             .append(this.description)
+            .append(this.illustration)
             .append(this.modelId)
             .toHashCode();
     }
@@ -133,6 +154,7 @@ public class ProjectCreationData  implements Serializable {
         return new EqualsBuilder()
             .append(this.name, other.name)
             .append(this.description, other.description)
+            .append(this.illustration, other.illustration)
             .append(this.modelId, other.modelId)
             .isEquals();
     }
@@ -140,7 +162,8 @@ public class ProjectCreationData  implements Serializable {
     @Override
     public String toString() {
         return "ProjectCreationData{" + " name=" + name + ", description=" + description
-            + ", modelId=" + modelId + ", guestsEmail=" + guestsEmail + "}";
+            + ", illustration=" + illustration + ", modelId=" + modelId
+            + ", guestsEmail=" + guestsEmail + "}";
     }
 
 }
