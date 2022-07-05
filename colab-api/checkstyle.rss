@@ -25,9 +25,9 @@ under the License.
     <language>en-us</language>
     <copyright>&#169;2022 AlbaSim, MEI, HEIG-VD, HES-SO</copyright>
     <item>
-      <title>File: 171,
+      <title>File: 173,
              Errors: 0,
-             Warnings: 179,
+             Warnings: 178,
              Infos: 0
       </title>
             <link>${project.url}/checkstyle.html</link>
@@ -410,6 +410,20 @@ under the License.
               </tr>
                           <tr>
                 <td>
+                  <a href="${project.url}/checkstyle.html#ch.colabproject.colab.api.model.common.Illustration.java">ch/colabproject/colab/api/model/common/Illustration.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
                   <a href="${project.url}/checkstyle.html#ch.colabproject.colab.api.persistence.jpa.link.ActivityFlowLinkDao.java">ch/colabproject/colab/api/persistence/jpa/link/ActivityFlowLinkDao.java</a>
                 </td>
                 <td>
@@ -480,6 +494,20 @@ under the License.
               </tr>
                           <tr>
                 <td>
+                  <a href="${project.url}/checkstyle.html#ch.colabproject.colab.api.model.common.IconLibrary.java">ch/colabproject/colab/api/model/common/IconLibrary.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
                   <a href="${project.url}/checkstyle.html#ch.colabproject.colab.api.model.WithIndex.java">ch/colabproject/colab/api/model/WithIndex.java</a>
                 </td>
                 <td>
@@ -537,20 +565,6 @@ under the License.
                           <tr>
                 <td>
                   <a href="${project.url}/checkstyle.html#ch.colabproject.colab.api.controller.document.BlockManager.java">ch/colabproject/colab/api/controller/document/BlockManager.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="${project.url}/checkstyle.html#ch.colabproject.colab.api.model.tracking.Tracking.java">ch/colabproject/colab/api/model/tracking/Tracking.java</a>
                 </td>
                 <td>
                   0
@@ -1200,7 +1214,7 @@ under the License.
                   0
                 </td>
                 <td>
-                  1
+                  0
                 </td>
                 <td>
                   0
@@ -2035,6 +2049,20 @@ under the License.
                           <tr>
                 <td>
                   <a href="${project.url}/checkstyle.html#ch.colabproject.colab.api.ws.utils.CallableGetChannel.java">ch/colabproject/colab/api/ws/utils/CallableGetChannel.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="${project.url}/checkstyle.html#ch.colabproject.colab.api.model.common.Tracking.java">ch/colabproject/colab/api/model/common/Tracking.java</a>
                 </td>
                 <td>
                   0

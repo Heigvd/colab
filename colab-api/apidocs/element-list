@@ -18,6 +18,7 @@ ch.colabproject.colab.api.microchanges.model
 ch.colabproject.colab.api.microchanges.tools
 ch.colabproject.colab.api.model
 ch.colabproject.colab.api.model.card
+ch.colabproject.colab.api.model.common
 ch.colabproject.colab.api.model.document
 ch.colabproject.colab.api.model.link
 ch.colabproject.colab.api.model.project
@@ -25,7 +26,6 @@ ch.colabproject.colab.api.model.team
 ch.colabproject.colab.api.model.team.acl
 ch.colabproject.colab.api.model.token
 ch.colabproject.colab.api.model.tools
-ch.colabproject.colab.api.model.tracking
 ch.colabproject.colab.api.model.user
 ch.colabproject.colab.api.persistence.jcr
 ch.colabproject.colab.api.persistence.jpa.card

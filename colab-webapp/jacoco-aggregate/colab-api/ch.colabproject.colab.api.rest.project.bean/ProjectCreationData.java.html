@@ -6,6 +6,7 @@
  */
 package ch.colabproject.colab.api.rest.project.bean;
 
+import ch.colabproject.colab.api.model.common.Illustration;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -17,7 +18,7 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
  *
  * @author sandra
  */
-<span class="nc" id="L20">public class ProjectCreationData  implements Serializable {</span>
+<span class="nc" id="L21">public class ProjectCreationData implements Serializable {</span>
 
     private static final long serialVersionUID = 1L;
 
@@ -36,6 +37,11 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
     private String description;
 
     /**
+     * The icon to illustrate the project
+     */
+    private Illustration illustration;
+
+    /**
      * The model used to create the project (optional)
      */
     private Long modelId;
@@ -43,7 +49,7 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
     /**
      * The email address of the people we want to invite
      */
-<span class="nc" id="L46">    private List&lt;String&gt; guestsEmail = new ArrayList&lt;&gt;();</span>
+<span class="nc" id="L52">    private List&lt;String&gt; guestsEmail = new ArrayList&lt;&gt;();</span>
 
     // ---------------------------------------------------------------------------------------------
     // getters and setters
@@ -53,57 +59,71 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
      * @return the name of the project
      */
     public String getName() {
-<span class="nc" id="L56">        return name;</span>
+<span class="nc" id="L62">        return name;</span>
     }
 
     /**
      * @param name the name of the project
      */
     public void setName(String name) {
-<span class="nc" id="L63">        this.name = name;</span>
-<span class="nc" id="L64">    }</span>
+<span class="nc" id="L69">        this.name = name;</span>
+<span class="nc" id="L70">    }</span>
 
     /**
      * @return the description of the project
      */
     public String getDescription() {
-<span class="nc" id="L70">        return description;</span>
+<span class="nc" id="L76">        return description;</span>
     }
 
     /**
      * @param description the description of the project
      */
     public void setDescription(String description) {
-<span class="nc" id="L77">        this.description = description;</span>
-<span class="nc" id="L78">    }</span>
+<span class="nc" id="L83">        this.description = description;</span>
+<span class="nc" id="L84">    }</span>
+
+    /**
+     * @return the icon to illustrate the project
+     */
+    public Illustration getIllustration() {
+<span class="nc" id="L90">        return illustration;</span>
+    }
+
+    /**
+     * @param illustration the icon to illustrate the project
+     */
+    public void setIllustration(Illustration illustration) {
+<span class="nc" id="L97">        this.illustration = illustration;</span>
+<span class="nc" id="L98">    }</span>
 
     /**
      * @return the model used to create the project (optional)
      */
     public Long getModelId() {
-<span class="nc" id="L84">        return modelId;</span>
+<span class="nc" id="L104">        return modelId;</span>
     }
 
     /**
      * @param modelId the model used to create the project (optional)
      */
     public void setModelId(Long modelId) {
-<span class="nc" id="L91">        this.modelId = modelId;</span>
-<span class="nc" id="L92">    }</span>
+<span class="nc" id="L111">        this.modelId = modelId;</span>
+<span class="nc" id="L112">    }</span>
 
     /**
      * @return the email address of the people we want to invite
      */
     public List&lt;String&gt; getGuestsEmail() {
-<span class="nc" id="L98">        return guestsEmail;</span>
+<span class="nc" id="L118">        return guestsEmail;</span>
     }
 
     /**
      * @param guestsEmail the email address of the people we want to invite
      */
     public void setGuestsEmail(List&lt;String&gt; guestsEmail) {
-<span class="nc" id="L105">        this.guestsEmail = guestsEmail;</span>
-<span class="nc" id="L106">    }</span>
+<span class="nc" id="L125">        this.guestsEmail = guestsEmail;</span>
+<span class="nc" id="L126">    }</span>
 
     // ---------------------------------------------------------------------------------------------
     // concerning the whole class
@@ -111,36 +131,39 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 
     @Override
     public int hashCode() {
-<span class="nc" id="L114">        return new HashCodeBuilder()</span>
-<span class="nc" id="L115">            .append(this.name)</span>
-<span class="nc" id="L116">            .append(this.description)</span>
-<span class="nc" id="L117">            .append(this.modelId)</span>
-<span class="nc" id="L118">            .toHashCode();</span>
+<span class="nc" id="L134">        return new HashCodeBuilder()</span>
+<span class="nc" id="L135">            .append(this.name)</span>
+<span class="nc" id="L136">            .append(this.description)</span>
+<span class="nc" id="L137">            .append(this.illustration)</span>
+<span class="nc" id="L138">            .append(this.modelId)</span>
+<span class="nc" id="L139">            .toHashCode();</span>
     }
 
     @Override
     public boolean equals(Object obj) {
-<span class="nc bnc" id="L123" title="All 2 branches missed.">        if (this == obj) {</span>
-<span class="nc" id="L124">            return true;</span>
+<span class="nc bnc" id="L144" title="All 2 branches missed.">        if (this == obj) {</span>
+<span class="nc" id="L145">            return true;</span>
         }
-<span class="nc bnc" id="L126" title="All 2 branches missed.">        if (obj == null) {</span>
-<span class="nc" id="L127">            return false;</span>
+<span class="nc bnc" id="L147" title="All 2 branches missed.">        if (obj == null) {</span>
+<span class="nc" id="L148">            return false;</span>
         }
-<span class="nc bnc" id="L129" title="All 2 branches missed.">        if (getClass() != obj.getClass()) {</span>
-<span class="nc" id="L130">            return false;</span>
+<span class="nc bnc" id="L150" title="All 2 branches missed.">        if (getClass() != obj.getClass()) {</span>
+<span class="nc" id="L151">            return false;</span>
         }
-<span class="nc" id="L132">        final ProjectCreationData other = (ProjectCreationData) obj;</span>
-<span class="nc" id="L133">        return new EqualsBuilder()</span>
-<span class="nc" id="L134">            .append(this.name, other.name)</span>
-<span class="nc" id="L135">            .append(this.description, other.description)</span>
-<span class="nc" id="L136">            .append(this.modelId, other.modelId)</span>
-<span class="nc" id="L137">            .isEquals();</span>
+<span class="nc" id="L153">        final ProjectCreationData other = (ProjectCreationData) obj;</span>
+<span class="nc" id="L154">        return new EqualsBuilder()</span>
+<span class="nc" id="L155">            .append(this.name, other.name)</span>
+<span class="nc" id="L156">            .append(this.description, other.description)</span>
+<span class="nc" id="L157">            .append(this.illustration, other.illustration)</span>
+<span class="nc" id="L158">            .append(this.modelId, other.modelId)</span>
+<span class="nc" id="L159">            .isEquals();</span>
     }
 
     @Override
     public String toString() {
-<span class="nc" id="L142">        return &quot;ProjectCreationData{&quot; + &quot; name=&quot; + name + &quot;, description=&quot; + description</span>
-            + &quot;, modelId=&quot; + modelId + &quot;, guestsEmail=&quot; + guestsEmail + &quot;}&quot;;
+<span class="nc" id="L164">        return &quot;ProjectCreationData{&quot; + &quot; name=&quot; + name + &quot;, description=&quot; + description</span>
+            + &quot;, illustration=&quot; + illustration + &quot;, modelId=&quot; + modelId
+            + &quot;, guestsEmail=&quot; + guestsEmail + &quot;}&quot;;
     }
 
 }

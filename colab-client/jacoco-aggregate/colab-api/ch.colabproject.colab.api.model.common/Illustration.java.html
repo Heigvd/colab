@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>Illustration.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">colab-client</a> &gt; <a href="../index.html" class="el_bundle">colab-api</a> &gt; <a href="index.source.html" class="el_package">ch.colabproject.colab.api.model.common</a> &gt; <span class="el_source">Illustration.java</span></div><h1>Illustration.java</h1><pre class="source lang-java linenums">/*
+ * The coLAB project
+ * Copyright (C) 2021 AlbaSim, MEI, HEIG-VD, HES-SO
+ *
+ * Licensed under the MIT License
+ */
+package ch.colabproject.colab.api.model.common;
+
+import ch.colabproject.colab.generator.model.interfaces.WithJsonDiscriminator;
+import javax.persistence.Column;
+import javax.persistence.Embeddable;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+
+/**
+ * To store data of the illustration of some item.
+ * &lt;p&gt;
+ * It is a simple picture that illustrate a project or a card type.
+ *
+ * @author sandra
+ */
+@Embeddable
+<span class="nc" id="L27">public class Illustration implements WithJsonDiscriminator {</span>
+
+    private static final long serialVersionUID = 1L;
+
+    // ---------------------------------------------------------------------------------------------
+    // fields
+    // ---------------------------------------------------------------------------------------------
+
+    /**
+     * Which library of icons contains the key
+     */
+<span class="nc" id="L38">    @Column(length = 128)</span>
+    @Enumerated(value = EnumType.STRING)
+    @NotNull
+    private IconLibrary iconLibrary = IconLibrary.FONT_AWESOME_SOLID;
+
+    /**
+     * The key of the icon within the library of icons
+     */
+    @Size(max = 128)
+    @NotNull
+    private String iconKey;
+
+    /**
+     * The background color to set behind the icon
+     */
+    @Size(max = 64)
+    private String iconBkgdColor;
+
+    // ---------------------------------------------------------------------------------------------
+    // getters and setters
+    // ---------------------------------------------------------------------------------------------
+
+    /**
+     * @return which library of icons contains the key
+     */
+    public IconLibrary getIconLibrary() {
+<span class="nc" id="L64">        return iconLibrary;</span>
+    }
+
+    /**
+     * @param iconLibrary which library of icons contains the key
+     */
+    public void setIconLibrary(IconLibrary iconLibrary) {
+<span class="nc" id="L71">        this.iconLibrary = iconLibrary;</span>
+<span class="nc" id="L72">    }</span>
+
+    /**
+     * @return the key of the icon within the library of icons
+     */
+    public String getIconKey() {
+<span class="nc" id="L78">        return iconKey;</span>
+    }
+
+    /**
+     * @param iconKey the key of the icon within the library of icons
+     */
+    public void setIconKey(String iconKey) {
+<span class="nc" id="L85">        this.iconKey = iconKey;</span>
+<span class="nc" id="L86">    }</span>
+
+    /**
+     * @return the background color to set behind the icon
+     */
+    public String getIconBkgdColor() {
+<span class="nc" id="L92">        return iconBkgdColor;</span>
+    }
+
+    /**
+     * @param iconBkgdColor the background color to set behind the icon
+     */
+    public void setIconBkgdColor(String iconBkgdColor) {
+<span class="nc" id="L99">        this.iconBkgdColor = iconBkgdColor;</span>
+<span class="nc" id="L100">    }</span>
+
+    // ---------------------------------------------------------------------------------------------
+    // concerning the whole class
+    // ---------------------------------------------------------------------------------------------
+
+    @Override
+    public int hashCode() {
+<span class="nc" id="L108">        return new HashCodeBuilder()</span>
+<span class="nc" id="L109">            .append(this.iconLibrary)</span>
+<span class="nc" id="L110">            .append(this.iconKey)</span>
+<span class="nc" id="L111">            .append(this.iconBkgdColor)</span>
+<span class="nc" id="L112">            .toHashCode();</span>
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+<span class="nc bnc" id="L117" title="All 2 branches missed.">        if (this == obj) {</span>
+<span class="nc" id="L118">            return true;</span>
+        }
+<span class="nc bnc" id="L120" title="All 2 branches missed.">        if (obj == null) {</span>
+<span class="nc" id="L121">            return false;</span>
+        }
+<span class="nc bnc" id="L123" title="All 2 branches missed.">        if (getClass() != obj.getClass()) {</span>
+<span class="nc" id="L124">            return false;</span>
+        }
+<span class="nc" id="L126">        final Illustration other = (Illustration) obj;</span>
+<span class="nc" id="L127">        return new EqualsBuilder()</span>
+<span class="nc" id="L128">            .append(this.iconLibrary, other.iconLibrary)</span>
+<span class="nc" id="L129">            .append(this.iconKey, other.iconKey)</span>
+<span class="nc" id="L130">            .append(this.iconBkgdColor, other.iconBkgdColor)</span>
+<span class="nc" id="L131">            .isEquals();</span>
+    }
+
+    @Override
+    public String toString() {
+<span class="nc" id="L136">        return &quot;Illustration{&quot; + &quot; iconLibrary=&quot; + iconLibrary + &quot;, iconKey=&quot; + iconKey</span>
+            + &quot;, iconBkgdColor=&quot; + iconBkgdColor + &quot; }&quot;;
+    }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>
