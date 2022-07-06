@@ -35,12 +35,13 @@ import { useAppDispatch } from '../../store/hooks';
 import Button from '../common/Button';
 import Collapsible from '../common/Collapsible';
 import ConfirmDeleteModal from '../common/ConfirmDeleteModal';
-import DropDownMenu from '../common/DropDownMenu';
+import DropDownMenu, { modalEntryStyle } from '../common/DropDownMenu';
 import Flex from '../common/Flex';
 import IconButton from '../common/IconButton';
 import InlineInputNew from '../common/InlineInputNew';
 import Modal from '../common/Modal';
 import OpenCloseModal from '../common/OpenCloseModal';
+import Tips from '../common/Tips';
 import { DocTextDisplay } from '../documents/DocTextItem';
 import DocumentList from '../documents/DocumentList';
 import ResourcesWrapper from '../resources/ResourcesWrapper';
@@ -472,11 +473,12 @@ export default function CardEditor({ card, variant, showSubcards = true }: Props
                               label: (
                                 <ConfirmDeleteModal
                                   buttonLabel={
-                                    <div className={css({ color: errorColor })}>
+                                    <div className={cx(css({ color: errorColor }), modalEntryStyle)}>
                                       <FontAwesomeIcon icon={faTrash} />
                                       {hasVariants ? ' Delete variant' : ' Delete card'}
                                     </div>
                                   }
+                                  className={css({ '&:hover': { textDecoration: 'none' }, display: 'flex', alignItems: 'center'})}
                                   message={
                                     hasVariants ? (
                                       <p>
@@ -504,6 +506,7 @@ export default function CardEditor({ card, variant, showSubcards = true }: Props
                                   }
                                 />
                               ),
+                              modal: true,
                             },
                           ]}
                         />
@@ -608,12 +611,28 @@ export default function CardEditor({ card, variant, showSubcards = true }: Props
                     ),
                     icon: faPaperclip,
                     title: 'Documentation',
+                    nextToTitleElement: (
+                      <Tips>
+                        Use documentation panel to add pieces of (meta)information related to the
+                        card or variant. Pieces of documentation can come from card type.
+                      </Tips>
+                    ),
                     className: css({ overflow: 'auto' }),
                   },
                   'Sticky Notes': {
                     icon: faStickyNote,
                     title: 'Sticky notes',
                     children: <StickyNoteWrapper destCardId={card.id} showSrc />,
+                    nextToTitleElement: (
+                      <Tips>
+                        <h5>List of sticky notes stuck on the card</h5>
+                        <div>
+                          Sticky notes come from a source (card, card specific version, resource,
+                          block)
+                        </div>
+                      </Tips>
+                    ),
+                    className: css({ overflow: 'auto' }),
                   },
                 }}
                 direction="RIGHT"

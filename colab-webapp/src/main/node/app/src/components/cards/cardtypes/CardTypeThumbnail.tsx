@@ -18,12 +18,15 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import * as React from 'react';
 import { useNavigate } from 'react-router-dom';
 import * as API from '../../../API/api';
+import { useAllProjectCardTypes } from '../../../selectors/cardSelector';
 import { useProjectBeingEdited } from '../../../selectors/projectSelector';
 import { useAppDispatch } from '../../../store/hooks';
 import { CardTypeAllInOne as CardType } from '../../../types/cardTypeDefinition';
+import Button from '../../common/Button';
 import ConfirmDeleteModal from '../../common/ConfirmDeleteModal';
-import DropDownMenu from '../../common/DropDownMenu';
+import DropDownMenu, { modalEntryStyle } from '../../common/DropDownMenu';
 import Flex from '../../common/Flex';
+import OpenCloseModal from '../../common/OpenCloseModal';
 import { DocTextDisplay } from '../../documents/DocTextItem';
 import {
   borderRadius,
@@ -68,6 +71,12 @@ export default function CardTypeThumbnail({
   const navigate = useNavigate();
   const editedProject = useProjectBeingEdited().project;
   const editedProjectId = editedProject?.id;
+  const cardTypesId = useAllProjectCardTypes();
+  const isUsedInProject = (cardTypeID?: number | null) => {
+    if (cardTypeID) {
+      return cardTypesId.includes(cardTypeID);
+    }
+  };
   return (
     <>
       {isEmpty ? (
@@ -81,7 +90,7 @@ export default function CardTypeThumbnail({
         <Flex direction="column" align="stretch" grow={1}>
           <Flex justify="space-between">
             <Flex direction="column" grow={1} align="stretch">
-              <Flex justify={editable ? 'flex-start' : 'space-between'} align='center'>
+              <Flex justify={editable ? 'flex-start' : 'space-between'} align="center">
                 <TargetCardTypeSummary cardType={cardType} />
                 <h3 className={oneLineEllipsis}>{cardType.title || 'Card type'}</h3>
                 <div
@@ -174,21 +183,69 @@ export default function CardTypeThumbnail({
                         {
                           value: 'Delete type',
                           label: (
-                            <ConfirmDeleteModal
-                              buttonLabel={
-                                <div className={css({ color: errorColor })}>
-                                  <FontAwesomeIcon icon={faTrash} /> Delete type
-                                </div>
-                              }
-                              message={
-                                <p>
-                                  Are you <strong>sure</strong> you want to delete this card type?
-                                </p>
-                              }
-                              onConfirm={() => dispatch(API.deleteCardType(cardType))}
-                              confirmButtonLabel="Delete type"
-                            />
+                            <>
+                              {!isUsedInProject(cardType.id) ? (
+                                <ConfirmDeleteModal
+                                  buttonLabel={
+                                    <div
+                                      className={cx(css({ color: errorColor }), modalEntryStyle)}
+                                    >
+                                      <FontAwesomeIcon icon={faTrash} /> Delete type
+                                    </div>
+                                  }
+                                  className={css({
+                                    '&:hover': { textDecoration: 'none' },
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                  })}
+                                  message={
+                                    <p>
+                                      Are you <strong>sure</strong> you want to delete this card
+                                      type?
+                                    </p>
+                                  }
+                                  onConfirm={() => dispatch(API.deleteCardType(cardType))}
+                                  confirmButtonLabel="Delete type"
+                                />
+                              ) : (
+                                <OpenCloseModal
+                                  title="Cannot delete Card Type"
+                                  className={css({
+                                    '&:hover': { textDecoration: 'none' },
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                  })}
+                                  collapsedChildren={
+                                    <div
+                                      className={cx(css({ color: errorColor }), modalEntryStyle)}
+                                    >
+                                      <FontAwesomeIcon icon={faTrash} />
+                                      Delete Type
+                                    </div>
+                                  }
+                                  footer={collapse => (
+                                    <Flex
+                                      justify={'center'}
+                                      grow={1}
+                                      className={css({ padding: space_M, columnGap: space_S })}
+                                    >
+                                      <Button onClick={collapse}>
+                                        OK
+                                      </Button>
+                                    </Flex>
+                                  )}
+                                >
+                                  {() => (
+                                    <div>
+                                      Impossible to delete this card type. It is used in
+                                      this project.
+                                    </div>
+                                  )}
+                                </OpenCloseModal>
+                              )}
+                            </>
                           ),
+                          modal: true,
                         },
                       ]
                     : []),

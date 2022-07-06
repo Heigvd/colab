@@ -118,6 +118,7 @@ export function ResourceDisplay({ resource, goBackToList }: ResourceDisplayProps
                 {
                   value: 'Settings',
                   label: <ResourceSettingsModal resource={resource} />,
+                  modal: true,
                 },
               ]}
             />

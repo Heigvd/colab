@@ -62,10 +62,10 @@ export default function Settings(): JSX.Element {
           <Tab name="activeSess" label="Active Sessions">
             <UserSessions user={currentUser} />
           </Tab>
-          <Tab name="debugger" label="Debugger">
+          <Tab name="debugger" label="Debugger" invisible={!currentUser.admin}>
             <Debugger />
           </Tab>
-        </Tabs>
+          </Tabs>
       </div>
     );
   } else {

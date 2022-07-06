@@ -29,7 +29,7 @@ import { useProjectBeingEdited } from '../../../selectors/projectSelector';
 import { dispatch } from '../../../store/store';
 import AvailabilityStatusIndicator from '../../common/AvailabilityStatusIndicator';
 import ConfirmDeleteModal from '../../common/ConfirmDeleteModal';
-import DropDownMenu from '../../common/DropDownMenu';
+import DropDownMenu, { modalEntryStyle } from '../../common/DropDownMenu';
 import Flex from '../../common/Flex';
 import Toggler from '../../common/Form/Toggler';
 import IconButton from '../../common/IconButton';
@@ -179,10 +179,11 @@ export default function CardTypeEditor({ className, usage }: Props): JSX.Element
                       label: (
                         <ConfirmDeleteModal
                           buttonLabel={
-                            <div className={css({ color: errorColor })}>
+                            <div className={cx(css({ color: errorColor }), modalEntryStyle)}>
                               <FontAwesomeIcon icon={faTrash} /> Delete type
                             </div>
                           }
+                          className={css({ '&:hover': { textDecoration: 'none' }, display: 'flex', alignItems: 'center'})}
                           message={
                             <p>
                               <Tips tipsType="TODO">
@@ -201,19 +202,21 @@ export default function CardTypeEditor({ className, usage }: Props): JSX.Element
                           confirmButtonLabel={'Delete card type'}
                         />
                       ),
+                      modal: true,
                     },
                   ]}
                 />
               </Flex>
             </Flex>
             <Flex direction="column" grow={1} align="stretch">
-              <Flex className={css({ margin: space_M + ' 0' })}>
-                <b>Purpose: </b>
+              <Flex className={css({ margin: space_M + ' 0' })} direction='column' align='stretch'>
+                <h3>Purpose: </h3>
                 <DocTextWrapper id={cardType.purposeId}>
                   {text => (
                     <InlineInputNew
                       value={text || ''}
                       placeholder={'Explain the purpose'}
+                      inputType='textarea'
                       onChange={(newValue: string) => {
                         if (cardType.purposeId) {
                           dispatch(
@@ -222,6 +225,8 @@ export default function CardTypeEditor({ className, usage }: Props): JSX.Element
                         }
                       }}
                       autosave={false}
+                      rows={4}
+                      className={css({minWidth: '100%'})}
                     />
                   )}
                 </DocTextWrapper>

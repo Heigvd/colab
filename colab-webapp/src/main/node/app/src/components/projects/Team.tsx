@@ -26,7 +26,8 @@ import { useAndLoadProjectTeam } from '../../selectors/projectSelector';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import ConfirmDeleteModal from '../common/ConfirmDeleteModal';
 import { Destroyer } from '../common/Destroyer';
-import DropDownMenu from '../common/DropDownMenu';
+import DropDownMenu, { modalEntryStyle } from '../common/DropDownMenu';
+import { mailformat } from '../common/Form/Form';
 import IconButton from '../common/IconButton';
 import IconButtonWithLoader from '../common/IconButtonWithLoader';
 import InlineInputNew from '../common/InlineInputNew';
@@ -44,6 +45,7 @@ import {
   space_S,
   successColor,
   textSmall,
+  warningColor,
 } from '../styling/style';
 
 const gridNewLine = css({
@@ -208,10 +210,11 @@ const Member = ({ member, roles }: MemberProps) => {
             label: (
               <ConfirmDeleteModal
                 buttonLabel={
-                  <div className={css({ color: errorColor })}>
+                  <div className={cx(css({ color: errorColor }), modalEntryStyle)}>
                     <FontAwesomeIcon icon={faTrash} /> Delete
                   </div>
                 }
+                className={css({ '&:hover': { textDecoration: 'none' }, display: 'flex', alignItems: 'center'})}
                 message={
                   <p>
                     Are you <strong>sure</strong> you want to delete this team member ?
@@ -223,6 +226,7 @@ const Member = ({ member, roles }: MemberProps) => {
                 confirmButtonLabel={'Delete team member'}
               />
             ),
+            modal: true,
           },
         ]}
       />
@@ -345,6 +349,7 @@ export default function Team({ project }: Props): JSX.Element {
   const { members, roles, status } = useAndLoadProjectTeam(projectId);
 
   const [invite, setInvite] = React.useState('');
+  const [error, setError] = React.useState<boolean>(false);
 
   if (status === 'INITIALIZED') {
     return (
@@ -401,16 +406,23 @@ export default function Team({ project }: Props): JSX.Element {
             className={linkStyle}
             icon={faPaperPlane}
             title="Send"
-            isLoading={invite.length > 0}
+            isLoading={invite.length > 0 && invite.match(mailformat) != null}
             onClick={() => {
+              if(invite.match(mailformat)){
+              setError(false);
               dispatch(
                 API.sendInvitation({
                   projectId: project.id!,
                   recipient: invite,
                 }),
               ).then(() => setInvite(''));
+              }
+              else {
+                setError(true);
+              }
             }}
           />
+          {error && <div className={cx(css({color: warningColor}), textSmall)}>Not an email adress</div>}
         </div>
       </>
     );

@@ -11,6 +11,7 @@ import Clickable from './Clickable';
 import Flex from './Flex';
 
 export interface TabProps {
+  invisible?: boolean;
   name: string;
   label: string;
   children: React.ReactNode;
@@ -83,11 +84,18 @@ export default function Tabs({
   children,
   onSelect,
 }: TabsProps): JSX.Element {
-  const mappedChildren: Record<string, { label: string; child: React.ReactElement<TabProps> }> = {};
+  const mappedChildren: Record<
+    string,
+    { label: string; child: React.ReactElement<TabProps>; invisible?: boolean }
+  > = {};
   const names: string[] = [];
 
   React.Children.forEach(children, child => {
-    mappedChildren[child.props.name] = { label: child.props.label, child: child };
+    mappedChildren[child.props.name] = {
+      label: child.props.label,
+      child: child,
+      invisible: child.props.invisible,
+    };
     names.push(child.props.name);
   });
 
@@ -113,21 +121,24 @@ export default function Tabs({
       overflow="auto"
     >
       <Flex justify="space-evenly" className={headerStyle}>
-        {names.map(name => (
-          <Clickable
-            key={name}
-            clickableClassName={
-              name === selectedTab
-                ? cx(selectedStyle, tabsClassName, selectedLabelClassName)
-                : cx(notSelectedStyle, tabsClassName, notselectedLabelClassName)
-            }
-            onClick={() => onSelectTab(name)}
-          >
-            {mappedChildren[name]!.label}
-          </Clickable>
-        ))}
+        {names.map(name => {
+          if (!mappedChildren[name]!.invisible) {
+            return (
+              <Clickable
+                key={name}
+                clickableClassName={
+                  name === selectedTab
+                    ? cx(selectedStyle, tabsClassName, selectedLabelClassName)
+                    : cx(notSelectedStyle, tabsClassName, notselectedLabelClassName)
+                }
+                onClick={() => onSelectTab(name)}
+              >
+                {mappedChildren[name]!.label}
+              </Clickable>
+            );
+          }
+        })}
       </Flex>
-
       <Flex grow={1} direction="column" overflow="auto" className={cx(bodyStyle, bodyClassName)}>
         {child != null ? child : <i>whoops</i>}
       </Flex>

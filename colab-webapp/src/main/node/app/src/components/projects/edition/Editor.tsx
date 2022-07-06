@@ -126,7 +126,7 @@ const Ancestor = ({ card, content }: Ancestor): JSX.Element => {
           }}
           clickableClassName={cx(linkStyle, breadCrumbsStyle)}
         >
-          {card.title ? card.title : i18n.card.untitled + ' ' + content.title ? content.title : ''}
+          {card.title ? card.title : i18n.card.untitled}
         </Clickable>
         <FontAwesomeIcon icon={faChevronRight} size="xs" className={breadCrumbsStyle} />
       </>
@@ -417,7 +417,7 @@ export default function Editor(): JSX.Element {
         >
           <Routes>
             <Route path="settings" element={<ProjectSettings project={project} />} />
-            <Route path="project-settings" element={<ProjectSettings project={project} />} />
+            <Route path="project-settings/*" element={<ProjectSettings project={project} />} />
             <Route path="team" element={<Team project={project} />} />
             <Route path="hierarchy" element={<Hierarchy rootId={root.id} />} />
             <Route path="flow" element={<ActivityFlowChart />} />
