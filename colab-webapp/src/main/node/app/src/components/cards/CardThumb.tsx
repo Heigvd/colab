@@ -23,7 +23,7 @@ import useTranslations from '../../i18n/I18nContext';
 import { useAppDispatch } from '../../store/hooks';
 import Button from '../common/Button';
 import ConfirmDeleteModal from '../common/ConfirmDeleteModal';
-import DropDownMenu from '../common/DropDownMenu';
+import DropDownMenu, { modalEntryStyle } from '../common/DropDownMenu';
 import Flex from '../common/Flex';
 import InlineLoading from '../common/InlineLoading';
 import Modal from '../common/Modal';
@@ -235,11 +235,12 @@ export default function CardThumb({
                       label: (
                         <ConfirmDeleteModal
                           buttonLabel={
-                            <div className={css({ color: errorColor })}>
+                            <div className={cx(css({ color: errorColor }), modalEntryStyle)}>
                               <FontAwesomeIcon icon={faTrash} />
                               {hasVariants ? ' Delete variant' : ' Delete card'}
                             </div>
                           }
+                          className={css({ '&:hover': { textDecoration: 'none' }, display: 'flex', alignItems: 'center'})}
                           message={
                             hasVariants ? (
                               <p>
@@ -264,6 +265,7 @@ export default function CardThumb({
                           confirmButtonLabel={hasVariants ? 'Delete variant' : 'Delete card'}
                         />
                       ),
+                      modal: true,
                     },
                   ]}
                 />

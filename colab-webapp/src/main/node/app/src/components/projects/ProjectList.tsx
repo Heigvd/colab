@@ -23,7 +23,7 @@ import * as API from '../../API/api';
 import { shallowEqual, useAppDispatch, useAppSelector } from '../../store/hooks';
 import { StateStatus } from '../../store/project';
 import ConfirmDeleteModal from '../common/ConfirmDeleteModal';
-import DropDownMenu from '../common/DropDownMenu';
+import DropDownMenu, { modalEntryStyle } from '../common/DropDownMenu';
 import Flex from '../common/Flex';
 import InlineLoading from '../common/InlineLoading';
 import ItemThumbnailsSelection from '../common/ItemThumbnailsSelection';
@@ -113,16 +113,17 @@ const ProjectDisplay = ({ project }: ProjectDisplayProps) => {
                   <OpenCloseModal
                     title="Project display settings"
                     showCloseButton
-                    className={css({ '&:hover': { textDecoration: 'none' } })}
+                    className={css({ '&:hover': { textDecoration: 'none' }, display: 'flex', alignItems: 'center'})}
                     collapsedChildren={
-                      <>
-                        <FontAwesomeIcon icon={faCog} /> Settings
-                      </>
+                      <div className={modalEntryStyle}>
+                        <FontAwesomeIcon icon={faCog} />Settings
+                      </div>
                     }
                   >
                     {() => <ProjectDisplaySettings project={project} key={project.id} />}
                   </OpenCloseModal>
                 ),
+                modal: true,
               },
               {
                 value: 'Duplicate project',
@@ -138,10 +139,11 @@ const ProjectDisplay = ({ project }: ProjectDisplayProps) => {
                 label: (
                   <ConfirmDeleteModal
                     buttonLabel={
-                      <div className={css({ color: errorColor })}>
+                      <div className={cx(css({ color: errorColor }), modalEntryStyle)}>
                         <FontAwesomeIcon icon={faTrash} /> Delete variant
                       </div>
                     }
+                    className={css({ '&:hover': { textDecoration: 'none' }, display: 'flex', alignItems: 'center'})}
                     message={
                       <p>
                         Are you <strong>sure</strong> you want to delete the whole project? This
@@ -152,6 +154,7 @@ const ProjectDisplay = ({ project }: ProjectDisplayProps) => {
                     confirmButtonLabel="Delete project"
                   />
                 ),
+                modal: true,
               },
             ]}
           />

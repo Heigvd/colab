@@ -26,7 +26,7 @@ import { useAndLoadProjectTeam } from '../../selectors/projectSelector';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import ConfirmDeleteModal from '../common/ConfirmDeleteModal';
 import { Destroyer } from '../common/Destroyer';
-import DropDownMenu from '../common/DropDownMenu';
+import DropDownMenu, { modalEntryStyle } from '../common/DropDownMenu';
 import IconButton from '../common/IconButton';
 import IconButtonWithLoader from '../common/IconButtonWithLoader';
 import InlineInputNew from '../common/InlineInputNew';
@@ -208,10 +208,11 @@ const Member = ({ member, roles }: MemberProps) => {
             label: (
               <ConfirmDeleteModal
                 buttonLabel={
-                  <div className={css({ color: errorColor })}>
+                  <div className={cx(css({ color: errorColor }), modalEntryStyle)}>
                     <FontAwesomeIcon icon={faTrash} /> Delete
                   </div>
                 }
+                className={css({ '&:hover': { textDecoration: 'none' }, display: 'flex', alignItems: 'center'})}
                 message={
                   <p>
                     Are you <strong>sure</strong> you want to delete this team member ?
@@ -223,6 +224,7 @@ const Member = ({ member, roles }: MemberProps) => {
                 confirmButtonLabel={'Delete team member'}
               />
             ),
+            modal: true,
           },
         ]}
       />
