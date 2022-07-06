@@ -60,6 +60,15 @@ export const useAllProjectCards = (): Card[] => {
   });
 };
 
+export const useAllProjectCardTypes = (): number[] => {
+  return useAppSelector(state => {
+    const cardTypes = Object.values(state.cards.cards)
+      .map(cd => cd.card?.cardTypeId)
+      .flatMap(c => (c != null ? [c] : []));
+    return cardTypes;
+  });
+};
+
 export function useVariantsOrLoad(card?: Card): CardContent[] | null | undefined {
   const dispatch = useAppDispatch();
 
