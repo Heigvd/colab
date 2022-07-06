@@ -126,7 +126,7 @@ const Ancestor = ({ card, content }: Ancestor): JSX.Element => {
           }}
           clickableClassName={cx(linkStyle, breadCrumbsStyle)}
         >
-          {card.title ? card.title : i18n.card.untitled + ' ' + content.title ? content.title : ''}
+          {card.title ? card.title : i18n.card.untitled}
         </Clickable>
         <FontAwesomeIcon icon={faChevronRight} size="xs" className={breadCrumbsStyle} />
       </>
