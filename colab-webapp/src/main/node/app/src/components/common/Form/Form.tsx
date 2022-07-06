@@ -126,7 +126,6 @@ export default function Form<T>({
 
   const [state, setState] = React.useState<T>(value);
   const [erroneous, setErroneous] = React.useState(false);
-  //const submitRef = React.useRef<HTMLElement>(null);
 
   let globalErroneous = false;
 
@@ -158,7 +157,6 @@ export default function Form<T>({
     (event: React.KeyboardEvent<HTMLElement>) => {
       if (event.key === 'Enter') {
         submitCb();
-        //submitRef.current?.click();
       }
     },
     [submitCb],
@@ -194,7 +192,6 @@ export default function Form<T>({
             mandatory={field.isMandatory}
             onChange={value => setFormValue(field.key, value)}
             readonly={field.readonly}
-            onKeyDown={onEnterCb}
           />
           {field.fieldFooter != null ? field.fieldFooter : null}
         </div>
@@ -250,7 +247,6 @@ export default function Form<T>({
             mandatory={field.isMandatory}
             onChange={value => setFormValue(field.key, value)}
             readonly={field.readonly}
-            onKeyDown={onEnterCb}
           />
           {field.fieldFooter != null ? field.fieldFooter : null}
           {field.strengthProp != null ? (
@@ -316,7 +312,6 @@ export default function Form<T>({
         {autoSubmit ? null : (
           <ButtonWithLoader
             key="submit"
-            //ref={submitRef}
             className={cx(
               css({ margin: space_M + ' 0', alignSelf: 'flex-start' }),
               buttonClassName,
