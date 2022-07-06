@@ -15,10 +15,11 @@ import { buildLinkWithQueryParam } from '../../helper';
 import useTranslations from '../../i18n/I18nContext';
 import { useAccountConfig } from '../../selectors/configSelector';
 import { useAppDispatch } from '../../store/hooks';
+import Flex from '../common/Flex';
 import Form, { Field, PasswordScore } from '../common/Form/Form';
-import FormContainer from '../common/FormContainer';
 import { InlineLink } from '../common/Link';
 import { lightLinkStyle, space_M, space_S } from '../styling/style';
+import PublicEntranceContainer from './PublicEntranceContainer';
 
 interface SignInFormProps {
   redirectTo: string | null;
@@ -44,9 +45,8 @@ const defaultCredentials: Credentials = {
 
 export default function SignInForm({ redirectTo }: SignInFormProps): JSX.Element {
   const dispatch = useAppDispatch();
-  const i18n = useTranslations();
-
   const navigate = useNavigate();
+  const i18n = useTranslations();
 
   const accountConfig = useAccountConfig();
 
@@ -54,11 +54,8 @@ export default function SignInForm({ redirectTo }: SignInFormProps): JSX.Element
     {
       key: 'identifier',
       label: i18n.emailOrUsername,
-      //readonly: signWithUsernameOnly,
       type: 'text',
       isMandatory: true,
-      isErroneous: data => data.identifier.length === 0,
-      errorMessage: i18n.pleaseEnterId,
     },
     {
       key: 'password',
@@ -70,7 +67,7 @@ export default function SignInForm({ redirectTo }: SignInFormProps): JSX.Element
     },
   ];
 
-  const onSubmitCb = React.useCallback(
+  const signIn = React.useCallback(
     (credentials: Credentials) => {
       dispatch(
         signInWithLocalAccount({
@@ -89,30 +86,31 @@ export default function SignInForm({ redirectTo }: SignInFormProps): JSX.Element
   );
 
   return (
-    <FormContainer>
+    <PublicEntranceContainer>
       <Form
         fields={formFields}
         value={defaultCredentials}
         submitLabel={i18n.login}
-        onSubmit={onSubmitCb}
+        onSubmit={signIn}
         className={css({ marginBottom: space_M })}
         buttonClassName={css({ margin: space_S + ' auto' })}
-      >
+      />
+      <Flex direction="column" justify="center" align="center">
         <InlineLink
           to={buildLinkWithQueryParam('/ForgotPassword', { redirectTo: redirectTo })}
-          className={cx(lightLinkStyle, css({ margin: space_M }))}
+          className={cx(lightLinkStyle, css({ padding: space_S }))}
         >
           {i18n.forgottenPassword}
         </InlineLink>
         {accountConfig.showCreateAccountButton && (
           <InlineLink
             to={buildLinkWithQueryParam('/SignUp', { redirectTo: redirectTo })}
-            className={cx(lightLinkStyle)}
+            className={cx(lightLinkStyle, css({ padding: space_S }))}
           >
             <FontAwesomeIcon icon={faPlus} /> {i18n.createAnAccount}
           </InlineLink>
         )}
-      </Form>
-    </FormContainer>
+      </Flex>
+    </PublicEntranceContainer>
   );
 }

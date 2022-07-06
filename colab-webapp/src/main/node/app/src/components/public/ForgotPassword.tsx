@@ -13,51 +13,50 @@ import { buildLinkWithQueryParam } from '../../helper';
 import useTranslations from '../../i18n/I18nContext';
 import { useAppDispatch } from '../../store/hooks';
 import Form, { Field } from '../common/Form/Form';
-import FormContainer from '../common/FormContainer';
 import { InlineLink } from '../common/Link';
 import { lightLinkStyle, space_M } from '../styling/style';
+import PublicEntranceContainer from './PublicEntranceContainer';
 
-interface ForgotPasswordFormProps {
+interface ResetPasswordFormProps {
   redirectTo: string | null;
 }
 
-interface Data {
+interface FormData {
   email: string;
 }
 
-const defaultData: Data = { email: '' };
+const defaultFormData: FormData = { email: '' };
 
-export default function ForgotPasswordForm({ redirectTo }: ForgotPasswordFormProps): JSX.Element {
+export default function ResetPasswordForm({ redirectTo }: ResetPasswordFormProps): JSX.Element {
   const dispatch = useAppDispatch();
-  const i18n = useTranslations();
   const navigate = useNavigate();
+  const i18n = useTranslations();
 
-  const onSubmitCb = React.useCallback(
-    (data: Data) => {
-      dispatch(requestPasswordReset(data.email)).then(() => navigate('../NewPasswordEmailSend'));
-    },
-    [dispatch, navigate],
-  );
-
-  const formFields: Field<Data>[] = [
+  const formFields: Field<FormData>[] = [
     {
       key: 'email',
       label: i18n.emailAddress,
       type: 'text',
       isMandatory: true,
-      // add validation if email exists in db
       isErroneous: value => value.email.match('.*@.*') == null,
       errorMessage: i18n.emailAddressNotValid,
     },
   ];
 
+  const doRequestPasswordReset = React.useCallback(
+    (data: FormData) => {
+      dispatch(requestPasswordReset(data.email)).then(() => navigate('../NewPasswordEmailSend'));
+    },
+    [dispatch, navigate],
+  );
+
   return (
-    <FormContainer>
+    <PublicEntranceContainer>
       <Form
         fields={formFields}
-        value={defaultData}
+        value={defaultFormData}
         submitLabel={i18n.sendMePassword}
-        onSubmit={onSubmitCb}
+        onSubmit={doRequestPasswordReset}
         buttonClassName={css({ margin: space_M + ' auto' })}
       >
         <InlineLink
@@ -67,6 +66,6 @@ export default function ForgotPasswordForm({ redirectTo }: ForgotPasswordFormPro
           {i18n.cancel}
         </InlineLink>
       </Form>
-    </FormContainer>
+    </PublicEntranceContainer>
   );
 }

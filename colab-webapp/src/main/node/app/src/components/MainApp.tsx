@@ -28,7 +28,7 @@ import Loading from './common/Loading';
 import Overlay from './common/Overlay';
 import Editor from './projects/edition/Editor';
 import { UserProjects } from './projects/ProjectList';
-import ForgotPasswordForm from './public/ForgotPassword';
+import ResetPasswordForm from './public/ForgotPassword';
 import NewPasswordSent from './public/NewPasswordSent';
 import SignInForm from './public/SignIn';
 import SignUpForm from './public/SignUp';
@@ -135,7 +135,7 @@ export default function MainApp(): JSX.Element {
           <Route path="/SignUp" element={<SignUpForm redirectTo={query.get('redirectTo')} />} />
           <Route
             path="/ForgotPassword"
-            element={<ForgotPasswordForm redirectTo={query.get('redirectTo')} />}
+            element={<ResetPasswordForm redirectTo={query.get('redirectTo')} />}
           />
           <Route path="/NewPasswordEmailSend" element={<NewPasswordSent />} />
           <Route path="/SignIn" element={<SignInForm redirectTo={query.get('redirectTo')} />} />

@@ -9,13 +9,13 @@ import * as React from 'react';
 import { useNavigate } from 'react-router-dom';
 import Button from '../common/Button';
 import Flex from '../common/Flex';
-import FormContainer from '../common/FormContainer';
+import PublicEntranceContainer from './PublicEntranceContainer';
 
 export default function NewPasswordSent(): JSX.Element {
   const navigate = useNavigate();
 
   return (
-    <FormContainer>
+    <PublicEntranceContainer>
       <Flex direction="column">
         <h3>Check your mailbox!</h3>
         <p>
@@ -25,6 +25,6 @@ export default function NewPasswordSent(): JSX.Element {
         </p>
         <Button onClick={() => navigate('/SignIn')}>Back to login</Button>
       </Flex>
-    </FormContainer>
+    </PublicEntranceContainer>
   );
 }

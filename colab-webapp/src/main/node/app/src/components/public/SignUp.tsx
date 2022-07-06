@@ -14,16 +14,16 @@ import { buildLinkWithQueryParam } from '../../helper';
 import useTranslations from '../../i18n/I18nContext';
 import { useAppDispatch } from '../../store/hooks';
 import Form, { Field } from '../common/Form/Form';
-import FormContainer from '../common/FormContainer';
 import { InlineLink } from '../common/Link';
 import { lightLinkStyle, space_M } from '../styling/style';
 import PasswordFeedbackDisplay from './PasswordFeedbackDisplay';
+import PublicEntranceContainer from './PublicEntranceContainer';
 
 interface SignUpFormProps {
   redirectTo: string | null;
 }
 
-interface Data {
+interface FormData {
   email: string;
   username: string;
   password: string;
@@ -34,7 +34,7 @@ interface Data {
   };
 }
 
-const defaultData: Data = {
+const defaultFormData: FormData = {
   email: '',
   username: '',
   password: '',
@@ -53,7 +53,7 @@ export default function SignUpForm({ redirectTo }: SignUpFormProps): JSX.Element
   const navigate = useNavigate();
   const i18n = useTranslations();
 
-  const fields: Field<Data>[] = [
+  const formFields: Field<FormData>[] = [
     {
       key: 'email',
       label: i18n.emailAddress,
@@ -92,34 +92,34 @@ export default function SignUpForm({ redirectTo }: SignUpFormProps): JSX.Element
     },
   ];
 
-  const signUpCb = React.useCallback(
-    credentials => {
-      dispatch(signUp(credentials)).then(action => {
+  const doSignUp = React.useCallback(
+    data => {
+      dispatch(signUp(data)).then(action => {
         // is that a hack or not ???
         if (redirectTo && action.meta.requestStatus === 'fulfilled') {
           navigate(redirectTo);
         }
       });
     },
-    [dispatch, redirectTo, navigate],
+    [dispatch, navigate, redirectTo],
   );
 
   return (
-    <FormContainer>
+    <PublicEntranceContainer>
       <Form
-        fields={fields}
-        value={defaultData}
+        fields={formFields}
+        value={defaultFormData}
         submitLabel={i18n.createAnAccount}
-        onSubmit={signUpCb}
+        onSubmit={doSignUp}
         buttonClassName={css({ margin: space_M + ' auto' })}
       >
         <InlineLink
-          className={lightLinkStyle}
           to={buildLinkWithQueryParam('/SignIn', { redirectTo: redirectTo })}
+          className={lightLinkStyle}
         >
           {i18n.cancel}
         </InlineLink>
       </Form>
-    </FormContainer>
+    </PublicEntranceContainer>
   );
 }
