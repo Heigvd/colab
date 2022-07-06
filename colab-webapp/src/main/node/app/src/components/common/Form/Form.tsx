@@ -23,6 +23,7 @@ import SelectInput from './SelectInput';
 import Toggler from './Toggler';
 
 const PasswordStrengthBar = React.lazy(() => import('react-password-strength-bar'));
+export const mailformat = /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
 
 export interface BaseField<T> {
   key: keyof T;

@@ -27,6 +27,7 @@ import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import ConfirmDeleteModal from '../common/ConfirmDeleteModal';
 import { Destroyer } from '../common/Destroyer';
 import DropDownMenu, { modalEntryStyle } from '../common/DropDownMenu';
+import { mailformat } from '../common/Form/Form';
 import IconButton from '../common/IconButton';
 import IconButtonWithLoader from '../common/IconButtonWithLoader';
 import InlineInputNew from '../common/InlineInputNew';
@@ -44,6 +45,7 @@ import {
   space_S,
   successColor,
   textSmall,
+  warningColor,
 } from '../styling/style';
 
 const gridNewLine = css({
@@ -347,6 +349,7 @@ export default function Team({ project }: Props): JSX.Element {
   const { members, roles, status } = useAndLoadProjectTeam(projectId);
 
   const [invite, setInvite] = React.useState('');
+  const [error, setError] = React.useState<boolean>(false);
 
   if (status === 'INITIALIZED') {
     return (
@@ -403,16 +406,23 @@ export default function Team({ project }: Props): JSX.Element {
             className={linkStyle}
             icon={faPaperPlane}
             title="Send"
-            isLoading={invite.length > 0}
+            isLoading={invite.length > 0 && invite.match(mailformat) != null}
             onClick={() => {
+              if(invite.match(mailformat)){
+              setError(false);
               dispatch(
                 API.sendInvitation({
                   projectId: project.id!,
                   recipient: invite,
                 }),
               ).then(() => setInvite(''));
+              }
+              else {
+                setError(true);
+              }
             }}
           />
+          {error && <div className={cx(css({color: warningColor}), textSmall)}>Not an email adress</div>}
         </div>
       </>
     );
