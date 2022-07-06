@@ -7,8 +7,13 @@
 
 import { entityIs, Resource, ResourceRef } from 'colab-rest-client';
 import { uniq } from 'lodash';
+import React from 'react';
 import * as API from '../API/api';
-import { ResourceAndRef, ResourceCallContext } from '../components/resources/ResourceCommonType';
+import {
+  CardTypeContext,
+  ResourceAndRef,
+  ResourceCallContext,
+} from '../components/resources/ResourceCommonType';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
 import { AvailabilityStatus, ColabState, LoadingStatus } from '../store/store';
 import { useProjectBeingEdited } from './projectSelector';
@@ -237,7 +242,6 @@ export const useAndLoadNbResources = (context: ResourceCallContext): NbAndStatus
   const dispatch = useAppDispatch();
 
   const { nb, status } = useNbResources(context);
-
   if (status === 'NOT_INITIALIZED') {
     if (context.kind === 'CardType' && context.cardTypeId) {
       dispatch(API.getResourceChainForAbstractCardTypeId(context.cardTypeId));
@@ -245,6 +249,28 @@ export const useAndLoadNbResources = (context: ResourceCallContext): NbAndStatus
       //   dispatch(API.getResourceChainForCardContentId(context.cardContentId));
     }
   }
+
+  return { nb, status };
+};
+/**
+ * fetch and load (if needed) the number of resources for card type
+ *
+ * @param context data needed to know what to fetch
+ * @returns the nb of resources + the availability status
+ */
+export const useAndLoadCardTypeNbResources = (context: CardTypeContext): NbAndStatus => {
+  const dispatch = useAppDispatch();
+
+  const { nb, status } = useNbResources(context);
+  React.useEffect(() => {
+    if (status === 'NOT_INITIALIZED') {
+      if (context.kind === 'CardType' && context.cardTypeId) {
+        dispatch(API.getResourceChainForAbstractCardTypeId(context.cardTypeId));
+        // } else if (context.kind === 'CardOrCardContent' && context.cardContentId) {
+        //   dispatch(API.getResourceChainForCardContentId(context.cardContentId));
+      }
+    }
+  }, [context.cardTypeId, context.kind, dispatch, status]);
 
   return { nb, status };
 };
@@ -280,10 +306,11 @@ export function useAndLoadResourceCategories(): {
   const categories = useResourceCategories();
   const status = useAppSelector(state => state.resources.allOfProjectStatus);
   const { project } = useProjectBeingEdited();
-
-  if (status === 'NOT_INITIALIZED' && project) {
-    dispatch(API.getDirectResourcesOfProject(project));
-  }
+  React.useEffect(() => {
+    if (status === 'NOT_INITIALIZED' && project) {
+      dispatch(API.getDirectResourcesOfProject(project));
+    }
+  }, [dispatch, project, status]);
 
   if (status === 'READY') {
     return { categories, status };

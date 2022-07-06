@@ -6,6 +6,7 @@
  */
 
 import { Document, entityIs } from 'colab-rest-client';
+import React from 'react';
 import * as API from '../API/api';
 import { DocumentOwnership } from '../components/documents/documentCommonType';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
@@ -63,12 +64,11 @@ export const useAndLoadTextOfDocument = (id: number | null | undefined): TextAnd
   const dispatch = useAppDispatch();
 
   const { text, status } = useTextOfDocument(id);
-
-  if (status === 'NOT_INITIALIZED' && id) {
+  React.useEffect(()=> {if (status === 'NOT_INITIALIZED' && id) {
     // we have to ask data to the server
     dispatch(API.getDocument(id));
-  }
-
+  }}, [dispatch, id, status])
+  
   return { text, status };
 };
 

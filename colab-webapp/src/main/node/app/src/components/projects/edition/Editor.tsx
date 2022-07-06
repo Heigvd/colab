@@ -417,7 +417,6 @@ export default function Editor(): JSX.Element {
         >
           <Routes>
             <Route path="settings" element={<ProjectSettings project={project} />} />
-            <Route path="project-settings" element={<ProjectSettings project={project} />} />
             <Route path="project-settings/*" element={<ProjectSettings project={project} />} />
             <Route path="team" element={<Team project={project} />} />
             <Route path="hierarchy" element={<Hierarchy rootId={root.id} />} />
