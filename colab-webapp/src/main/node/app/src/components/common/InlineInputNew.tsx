@@ -47,6 +47,7 @@ const inlineTextAreaStyle = {
   borderRadius: borderRadius,
   padding: space_S,
   width: '100%',
+  maxWidth: '100%',
   fontFamily: 'inherit',
   backgroundColor: 'transparent',
   '&:focus': {
@@ -89,6 +90,7 @@ export interface Props {
   delay?: number;
   maxWidth?: string;
   autofocus?: boolean;
+  rows?: number;
 }
 
 export default function InlineInput({
@@ -105,6 +107,7 @@ export default function InlineInput({
   delay = 300,
   maxWidth = '100%',
   autofocus,
+  rows,
 }: Props): JSX.Element {
   const inputRef = React.useRef<HTMLInputElement>();
   const textareaRef = React.useRef<HTMLTextAreaElement>(null);
@@ -266,6 +269,7 @@ export default function InlineInput({
             mode == 'EDIT' ? cx(textareaEditingStyle, className) : cx(textareaStyle, className),
           )}
           autoFocus={autofocus}
+          rows={rows}
         />
       )}
 

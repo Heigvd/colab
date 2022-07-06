@@ -52,7 +52,7 @@ export default function ProjectCardTypeList(): JSX.Element {
     if (lastCreated) {
       projectCardTypes.forEach(cardType => {
         if (cardType.id === lastCreated) {
-          navigate(`./edit/${cardType.id}`);
+          navigate(`./editt/${cardType.id}`);
           setLastCreated(null);
         }
       });
@@ -61,7 +61,7 @@ export default function ProjectCardTypeList(): JSX.Element {
 
   return (
     <Routes>
-      <Route path="edit/:id/*" element={<CardTypeEditor usage="currentProject" />} />
+      <Route path="/edit/:id/*" element={<CardTypeEditor usage="currentProject" />} />
       <Route
         path="*"
         element={

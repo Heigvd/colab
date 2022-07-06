@@ -207,13 +207,14 @@ export default function CardTypeEditor({ className, usage }: Props): JSX.Element
               </Flex>
             </Flex>
             <Flex direction="column" grow={1} align="stretch">
-              <Flex className={css({ margin: space_M + ' 0' })}>
-                <b>Purpose: </b>
+              <Flex className={css({ margin: space_M + ' 0' })} direction='column' align='stretch'>
+                <h3>Purpose: </h3>
                 <DocTextWrapper id={cardType.purposeId}>
                   {text => (
                     <InlineInputNew
                       value={text || ''}
                       placeholder={'Explain the purpose'}
+                      inputType='textarea'
                       onChange={(newValue: string) => {
                         if (cardType.purposeId) {
                           dispatch(
@@ -222,6 +223,8 @@ export default function CardTypeEditor({ className, usage }: Props): JSX.Element
                         }
                       }}
                       autosave={false}
+                      rows={4}
+                      className={css({minWidth: '100%'})}
                     />
                   )}
                 </DocTextWrapper>
