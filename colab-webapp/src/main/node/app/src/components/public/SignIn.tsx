@@ -10,7 +10,7 @@ import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import * as React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { signInWithLocalAccount } from '../../API/api';
+import * as API from '../../API/api';
 import { buildLinkWithQueryParam } from '../../helper';
 import useTranslations from '../../i18n/I18nContext';
 import { useAccountConfig } from '../../selectors/configSelector';
@@ -53,13 +53,13 @@ export default function SignInForm({ redirectTo }: SignInFormProps): JSX.Element
   const formFields: Field<Credentials>[] = [
     {
       key: 'identifier',
-      label: i18n.emailOrUsername,
+      label: i18n.authentication.field.emailOrUsername,
       type: 'text',
       isMandatory: true,
     },
     {
       key: 'password',
-      label: i18n.model.user.password,
+      label: i18n.authentication.field.password,
       type: 'password',
       isMandatory: true,
       showStrenghBar: false,
@@ -70,7 +70,7 @@ export default function SignInForm({ redirectTo }: SignInFormProps): JSX.Element
   const signIn = React.useCallback(
     (credentials: Credentials) => {
       dispatch(
-        signInWithLocalAccount({
+        API.signInWithLocalAccount({
           identifier: credentials.identifier,
           password: credentials.password,
           passwordScore: credentials.passwordScore,
@@ -90,24 +90,23 @@ export default function SignInForm({ redirectTo }: SignInFormProps): JSX.Element
       <Form
         fields={formFields}
         value={defaultCredentials}
-        submitLabel={i18n.login}
+        submitLabel={i18n.authentication.action.login}
         onSubmit={signIn}
-        className={css({ marginBottom: space_M })}
-        buttonClassName={css({ margin: space_S + ' auto' })}
+        buttonClassName={css({ margin: space_M + ' auto' })}
       />
       <Flex direction="column" justify="center" align="center">
         <InlineLink
           to={buildLinkWithQueryParam('/ForgotPassword', { redirectTo: redirectTo })}
           className={cx(lightLinkStyle, css({ padding: space_S }))}
         >
-          {i18n.forgottenPassword}
+          {i18n.authentication.action.resetPassword}
         </InlineLink>
         {accountConfig.showCreateAccountButton && (
           <InlineLink
             to={buildLinkWithQueryParam('/SignUp', { redirectTo: redirectTo })}
             className={cx(lightLinkStyle, css({ padding: space_S }))}
           >
-            <FontAwesomeIcon icon={faPlus} /> {i18n.createAnAccount}
+            <FontAwesomeIcon icon={faPlus} /> {i18n.authentication.action.createAnAccount}
           </InlineLink>
         )}
       </Flex>

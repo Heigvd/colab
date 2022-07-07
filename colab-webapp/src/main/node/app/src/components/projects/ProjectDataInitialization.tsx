@@ -75,7 +75,7 @@ export default function ProjectDataInitialization({
               readonly: readOnly,
               placeholder: 'email',
               isErroneous: value => value.email.length > 0 && value.email.match('.+@.+') == null,
-              errorMessage: i18n.emailAddressNotValid,
+              errorMessage: i18n.authentication.error.emailAddressNotValid,
             },
           ]}
           value={{ email: '' }}

@@ -6,7 +6,10 @@
  */
 
 export const en = {
+  //////////////////////////////////////////////////////////////////////////////////////////////////
+  // Common
   common: {
+    cancel: 'cancel',
     date: (timestamp: number | null | undefined) => {
       if (timestamp != null) {
         return new Date(timestamp).toLocaleDateString('EN');
@@ -28,12 +31,58 @@ export const en = {
         return 'never';
       }
     },
+    info: {
+      checkYourMailbox: 'Check your mailbox!',
+    },
   },
+
+  //////////////////////////////////////////////////////////////////////////////////////////////////
+  // Form
+  form: {
+    missingMandatory: 'please fill in data',
+  },
+
+  //////////////////////////////////////////////////////////////////////////////////////////////////
+  // Authentication
+  authentication: {
+    field: {
+      emailOrUsername: 'e-mail or username',
+      emailAddress: 'e-mail address',
+      username: 'username',
+      password: 'password',
+      passwordConfirmation: 'password again',
+    },
+    placeholder: {
+      min7Char: 'Min. 7 characters',
+    },
+    action: {
+      login: 'Login',
+      resetPassword: 'Forgot your password ?',
+      createAnAccount: 'Create an account',
+      sendMePassword: 'Send me a new password',
+    },
+    info: {
+      resetPasswordSent:
+        'We sent you a link to change your password. Change it, make it safe, and enjoy colabbing !',
+      pendingInvitation: 'pending invitation',
+    },
+    error: {
+      emailAddressNotValid: 'e-mail address is not valid',
+      usernameNotValid:
+        'username can only contain letters without accent, numbers, dots, underscores and dashes',
+      passwordTooWeak: 'password is not strong enough',
+      passwordsMismatch: 'passwords do not match',
+    },
+  },
+
+  //////////////////////////////////////////////////////////////////////////////////////////////////
+  // the remaining is to be done ....
+
   model: {
     user: {
       username: 'username',
       commonName: 'common name',
-      password: 'password',
+
       firstname: 'firstname',
       missingFirstname: 'please enter your firstname',
       lastname: 'lastname',
@@ -42,30 +91,17 @@ export const en = {
     },
   },
 
-  pendingInvitation: 'pending invitation',
-
-  pleaseProvideData: 'Some data are missing',
-  cancel: 'cancel',
-  agree: 'agree',
+  // common
   confirm: 'confirm',
-  emailAddress: 'e-mail address',
-  emailAddressNotValid: 'e-mail address is not valid',
-  emailShort: 'E-Mail',
-  pleaseEnterId: 'Please enter an identifier',
-  emailOrUsername: 'e-mail or username',
-  weakPassword: 'password is too weak',
-  password_again: 'password again',
-  passwordsMismatch: 'passwords do not match',
-  login: 'login',
-  forgottenPassword: 'Forgot your password?',
-  createAnAccount: 'create an account',
-  sendMePassword: 'send me a new password',
-  unverifiedEmail: 'unverified e-mail',
-  usernameNotValid:
-    'the user name can contains only letters without accent, numbers, dots, underlines and hyphens',
+  cancel: 'cancel',
 
+  // form
+  pleaseProvideData: 'Some data are missing',
+
+  // Terms of use + data management policy
   agreementDisclaimer: 'The use of this service implies that you agree to',
   iAccept: 'I accept',
+  agree: 'agree',
   termOfUse: 'the general terms of use',
   and: 'and',
   dataPolicy: 'the data management policy',

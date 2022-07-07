@@ -8,7 +8,7 @@
 import { css, cx } from '@emotion/css';
 import * as React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { requestPasswordReset } from '../../API/api';
+import * as API from '../../API/api';
 import { buildLinkWithQueryParam } from '../../helper';
 import useTranslations from '../../i18n/I18nContext';
 import { useAppDispatch } from '../../store/hooks';
@@ -35,17 +35,17 @@ export default function ResetPasswordForm({ redirectTo }: ResetPasswordFormProps
   const formFields: Field<FormData>[] = [
     {
       key: 'email',
-      label: i18n.emailAddress,
+      label: i18n.authentication.field.emailAddress,
       type: 'text',
       isMandatory: true,
-      isErroneous: value => value.email.match('.*@.*') == null,
-      errorMessage: i18n.emailAddressNotValid,
+      isErroneous: value => value.email.match('.+@.+') == null,
+      errorMessage: i18n.authentication.error.emailAddressNotValid,
     },
   ];
 
-  const doRequestPasswordReset = React.useCallback(
-    (data: FormData) => {
-      dispatch(requestPasswordReset(data.email)).then(() => navigate('../NewPasswordEmailSend'));
+  const requestPasswordReset = React.useCallback(
+    ({ email }: FormData) => {
+      dispatch(API.requestPasswordReset(email)).then(() => navigate('../ResetPasswordEmailSent'));
     },
     [dispatch, navigate],
   );
@@ -55,8 +55,8 @@ export default function ResetPasswordForm({ redirectTo }: ResetPasswordFormProps
       <Form
         fields={formFields}
         value={defaultFormData}
-        submitLabel={i18n.sendMePassword}
-        onSubmit={doRequestPasswordReset}
+        submitLabel={i18n.authentication.action.sendMePassword}
+        onSubmit={requestPasswordReset}
         buttonClassName={css({ margin: space_M + ' auto' })}
       >
         <InlineLink

@@ -7,6 +7,7 @@
 
 import * as React from 'react';
 import { PasswordFeedback } from 'react-password-strength-bar';
+import useTranslations from '../../i18n/I18nContext';
 import Tips from '../common/Tips';
 
 interface PasswordFeedbackDisplayProps {
@@ -16,11 +17,13 @@ interface PasswordFeedbackDisplayProps {
 export default function PasswordFeedbackDisplay({
   feedback,
 }: PasswordFeedbackDisplayProps): JSX.Element {
+  const i18n = useTranslations();
   // TODO translate feedbacks (https://github.com/dropbox/zxcvbn/blob/master/src/feedback.coffee)
+
   return (
     <div>
-      <span>{feedback.warning}</span>
-      {feedback.suggestions && feedback.suggestions.length > 0 ? (
+      <span>{feedback.warning || i18n.authentication.error.passwordTooWeak}</span>
+      {feedback.suggestions && feedback.suggestions.length > 0 && (
         <Tips>
           <ul>
             {feedback.suggestions.map((s, i) => (
@@ -28,7 +31,7 @@ export default function PasswordFeedbackDisplay({
             ))}
           </ul>
         </Tips>
-      ) : null}
+      )}
     </div>
   );
 }

@@ -9,7 +9,7 @@ import { css } from '@emotion/css';
 import * as React from 'react';
 import { PasswordFeedback } from 'react-password-strength-bar';
 import { useNavigate } from 'react-router-dom';
-import { signUp } from '../../API/api';
+import * as API from '../../API/api';
 import { buildLinkWithQueryParam } from '../../helper';
 import useTranslations from '../../i18n/I18nContext';
 import { useAppDispatch } from '../../store/hooks';
@@ -56,24 +56,24 @@ export default function SignUpForm({ redirectTo }: SignUpFormProps): JSX.Element
   const formFields: Field<FormData>[] = [
     {
       key: 'email',
-      label: i18n.emailAddress,
+      label: i18n.authentication.field.emailAddress,
       type: 'text',
       isMandatory: true,
-      isErroneous: value => value.email.match('.*@.*') == null,
-      errorMessage: i18n.emailAddressNotValid,
+      isErroneous: value => value.email.match('.+@.+') == null,
+      errorMessage: i18n.authentication.error.emailAddressNotValid,
     },
     {
       key: 'username',
-      label: i18n.model.user.username,
+      label: i18n.authentication.field.username,
       type: 'text',
       isMandatory: true,
       isErroneous: value => value.username.match(/^[a-zA-Z0-9_\\.\\-]+$/) == null,
-      errorMessage: i18n.usernameNotValid,
+      errorMessage: i18n.authentication.error.usernameNotValid,
     },
     {
       key: 'password',
-      label: i18n.model.user.password,
-      placeholder: 'Min. 6 characters',
+      label: i18n.authentication.field.password,
+      placeholder: i18n.authentication.placeholder.min7Char,
       type: 'password',
       isMandatory: true,
       isErroneous: data => data.passwordScore.score < 2,
@@ -82,19 +82,19 @@ export default function SignUpForm({ redirectTo }: SignUpFormProps): JSX.Element
       strengthProp: 'passwordScore',
     },
     {
-      type: 'password',
       key: 'confirm',
-      label: i18n.password_again,
+      label: i18n.authentication.field.passwordConfirmation,
+      type: 'password',
       isMandatory: true,
       isErroneous: data => data.password !== data.confirm,
-      errorMessage: i18n.passwordsMismatch,
+      errorMessage: i18n.authentication.error.passwordsMismatch,
       showStrenghBar: false,
     },
   ];
 
-  const doSignUp = React.useCallback(
+  const signUp = React.useCallback(
     data => {
-      dispatch(signUp(data)).then(action => {
+      dispatch(API.signUp(data)).then(action => {
         // is that a hack or not ???
         if (redirectTo && action.meta.requestStatus === 'fulfilled') {
           navigate(redirectTo);
@@ -109,15 +109,15 @@ export default function SignUpForm({ redirectTo }: SignUpFormProps): JSX.Element
       <Form
         fields={formFields}
         value={defaultFormData}
-        submitLabel={i18n.createAnAccount}
-        onSubmit={doSignUp}
+        submitLabel={i18n.authentication.action.createAnAccount}
+        onSubmit={signUp}
         buttonClassName={css({ margin: space_M + ' auto' })}
       >
         <InlineLink
           to={buildLinkWithQueryParam('/SignIn', { redirectTo: redirectTo })}
           className={lightLinkStyle}
         >
-          {i18n.cancel}
+          {i18n.common.cancel}
         </InlineLink>
       </Form>
     </PublicEntranceContainer>

@@ -175,14 +175,14 @@ const Member = ({ member, roles }: MemberProps) => {
       <span>
         <div className={cx(textSmall, lightItalicText)}>
           <FontAwesomeIcon icon={faHourglassHalf} className={css({ marginRight: space_S })} />
-          {i18n.pendingInvitation}...
+          {i18n.authentication.info.pendingInvitation}...
         </div>
         {member.displayName}
       </span>
     );
   } else if (member.userId == null) {
     // no user, no dn
-    username = <span>{i18n.pendingInvitation}</span>;
+    username = <span>{i18n.authentication.info.pendingInvitation}</span>;
   } else if (user == null) {
     username = <InlineLoading />;
   } else {
@@ -214,7 +214,11 @@ const Member = ({ member, roles }: MemberProps) => {
                     <FontAwesomeIcon icon={faTrash} /> Delete
                   </div>
                 }
-                className={css({ '&:hover': { textDecoration: 'none' }, display: 'flex', alignItems: 'center'})}
+                className={css({
+                  '&:hover': { textDecoration: 'none' },
+                  display: 'flex',
+                  alignItems: 'center',
+                })}
                 message={
                   <p>
                     Are you <strong>sure</strong> you want to delete this team member ?
@@ -408,21 +412,22 @@ export default function Team({ project }: Props): JSX.Element {
             title="Send"
             isLoading={invite.length > 0 && invite.match(mailformat) != null}
             onClick={() => {
-              if(invite.match(mailformat)){
-              setError(false);
-              dispatch(
-                API.sendInvitation({
-                  projectId: project.id!,
-                  recipient: invite,
-                }),
-              ).then(() => setInvite(''));
-              }
-              else {
+              if (invite.match(mailformat)) {
+                setError(false);
+                dispatch(
+                  API.sendInvitation({
+                    projectId: project.id!,
+                    recipient: invite,
+                  }),
+                ).then(() => setInvite(''));
+              } else {
                 setError(true);
               }
             }}
           />
-          {error && <div className={cx(css({color: warningColor}), textSmall)}>Not an email adress</div>}
+          {error && (
+            <div className={cx(css({ color: warningColor }), textSmall)}>Not an email adress</div>
+          )}
         </div>
       </>
     );

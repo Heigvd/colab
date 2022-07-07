@@ -122,8 +122,8 @@ export default function Form<T>({
   childrenClassName,
   buttonClassName,
 }: FormProps<T>): JSX.Element {
-  const i18n = useTranslations();
   const dispatch = useAppDispatch();
+  const i18n = useTranslations();
 
   const [state, setState] = React.useState<T>(value);
   const [erroneous, setErroneous] = React.useState(false);
@@ -173,7 +173,7 @@ export default function Form<T>({
 
     const errorMessage =
       erroneous && isEmptyError
-        ? 'This input is mandatory'
+        ? i18n.form.missingMandatory
         : erroneous && isErroneous && field.errorMessage != null
         ? typeof field.errorMessage === 'function'
           ? field.errorMessage(state)
