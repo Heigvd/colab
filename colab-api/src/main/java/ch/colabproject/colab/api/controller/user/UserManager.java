@@ -331,7 +331,7 @@ public class UserManager {
                             logger.warn(
                                 "Account {} reached the max number of failed authentication",
                                 account);
-                            throw HttpErrorMessage.tooManyRequest();
+                            throw HttpErrorMessage.tooManyAttempts();
                         }
                     }
                 }

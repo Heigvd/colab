@@ -22,7 +22,6 @@ public class HttpErrorMessage extends HttpException {
      */
     public enum MessageCode {
         ACCESS_DENIED,
-        AUTHENTICATION_FAILED,
         AUTHENTICATION_REQUIRED,
         BAD_REQUEST,
         DATA_INTEGRITY_FAILURE,
@@ -35,7 +34,10 @@ public class HttpErrorMessage extends HttpException {
         SMTP_ERROR,
         IDENTIFIER_ALREADY_TAKEN,
         EMAIL_ADDRESS_INVALID,
-        TOO_MANY_REQUESTS,
+        /** Impossible to login */
+        AUTHENTICATION_FAILED,
+        /** Wait before trying again */
+        TOO_MANY_ATTEMPTS,
     }
 
     /**
@@ -118,14 +120,6 @@ public class HttpErrorMessage extends HttpException {
     }
 
     /**
-     * @return 429 too many requests
-     */
-    public static HttpErrorMessage tooManyRequest() {
-        return new HttpErrorMessage(Response.Status.TOO_MANY_REQUESTS,
-            HttpErrorMessage.MessageCode.TOO_MANY_REQUESTS);
-    }
-
-    /**
      * @return 400 identifier (either username or email address) already taken
      */
     public static HttpErrorMessage identifierAlreadyTaken() {
@@ -144,6 +138,14 @@ public class HttpErrorMessage extends HttpException {
      */
     public static HttpErrorMessage authenticationFailed() {
         return new HttpErrorMessage(HttpErrorMessage.MessageCode.AUTHENTICATION_FAILED);
+    }
+
+    /**
+     * @return 429 too many requests
+     */
+    public static HttpErrorMessage tooManyAttempts() {
+        return new HttpErrorMessage(Response.Status.TOO_MANY_REQUESTS,
+            HttpErrorMessage.MessageCode.TOO_MANY_ATTEMPTS);
     }
 
     /**

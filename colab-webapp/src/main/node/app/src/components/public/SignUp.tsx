@@ -67,7 +67,7 @@ export default function SignUpForm({ redirectTo }: SignUpFormProps): JSX.Element
       label: i18n.authentication.field.username,
       type: 'text',
       isMandatory: true,
-      isErroneous: value => value.username.match(/^[a-zA-Z0-9_\\.\\-]+$/) == null,
+      isErroneous: value => value.username.match(/^[a-zA-Z0-9_\\-\\.]+$/) == null,
       errorMessage: i18n.authentication.error.usernameNotValid,
     },
     {

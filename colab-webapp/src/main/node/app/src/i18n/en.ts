@@ -176,7 +176,7 @@ export const en = {
   aaiAffiliation: 'Affiliation',
   aaiNotEditable: ' Personal data are not editable',
 
-  errors: {
+  httpErrorMessage: {
     AUTHENTICATION_FAILED: 'Authentication failed',
     AUTHENTICATION_REQUIRED: 'Please authenticate',
     ACCESS_DENIED: 'Access denied',
@@ -186,8 +186,9 @@ export const en = {
     SMTP_ERROR: 'e-mail server error',
     EMAIL_MESSAGE_ERROR: 'e-mail not sent',
     BAD_REQUEST: 'Bad request',
-    TOO_MANY_REQUEST: 'too many request',
+    TOO_MANY_ATTEMPTS: 'Too many attempts, please wait a moment before trying again',
   },
+
   card: {
     untitled: 'New card',
     settings: {

@@ -26,26 +26,26 @@ function translateErrorCode(
 ): string {
   switch (code) {
     case 'AUTHENTICATION_FAILED':
-      return i18n.errors.AUTHENTICATION_FAILED;
+      return i18n.httpErrorMessage.AUTHENTICATION_FAILED;
     case 'AUTHENTICATION_REQUIRED':
-      return i18n.errors.AUTHENTICATION_REQUIRED;
+      return i18n.httpErrorMessage.AUTHENTICATION_REQUIRED;
     case 'ACCESS_DENIED':
-      return i18n.errors.ACCESS_DENIED;
+      return i18n.httpErrorMessage.ACCESS_DENIED;
     case 'NOT_FOUND':
-      return i18n.errors.NOT_FOUND;
+      return i18n.httpErrorMessage.NOT_FOUND;
     case 'IDENTIFIER_ALREADY_TAKEN':
-      return i18n.errors.IDENTIFIER_ALREADY_TAKEN;
+      return i18n.httpErrorMessage.IDENTIFIER_ALREADY_TAKEN;
     case 'EMAIL_ADDRESS_INVALID':
-      return i18n.errors.EMAIL_ADDRESS_INVALID;
+      return i18n.httpErrorMessage.EMAIL_ADDRESS_INVALID;
     case 'SMTP_ERROR':
-      return i18n.errors.SMTP_ERROR;
+      return i18n.httpErrorMessage.SMTP_ERROR;
     case 'EMAIL_MESSAGE_ERROR':
-      return i18n.errors.EMAIL_MESSAGE_ERROR;
-    case 'TOO_MANY_REQUESTS':
-      return i18n.errors.TOO_MANY_REQUEST;
+      return i18n.httpErrorMessage.EMAIL_MESSAGE_ERROR;
+    case 'TOO_MANY_ATTEMPTS':
+      return i18n.httpErrorMessage.TOO_MANY_ATTEMPTS;
     case 'BAD_REQUEST':
     default:
-      return i18n.errors.BAD_REQUEST;
+      return i18n.httpErrorMessage.BAD_REQUEST;
   }
 }
 
