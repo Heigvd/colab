@@ -14,16 +14,21 @@ import { closeNotification, ColabNotification } from '../../store/notification';
 
 function prettyPrint(error: HttpException | string, i18n: ColabTranslations): string {
   if (entityIs<'HttpErrorMessage'>(error, 'HttpErrorMessage')) {
-    return translateErrorCode(error.messageCode, i18n);
+    return translateHttpErrorMessage(error.messageCode, error.messageI18nKey, i18n);
   } else {
     return error;
   }
 }
 
-function translateErrorCode(
+function translateHttpErrorMessage(
   code: HttpErrorMessage['messageCode'],
+  i18nKey: HttpErrorMessage['messageI18nKey'],
   i18n: ColabTranslations,
 ): string {
+  if (i18nKey != null) {
+    return i18n.keyFromServer(i18nKey);
+  }
+
   switch (code) {
     case 'AUTHENTICATION_FAILED':
       return i18n.httpErrorMessage.AUTHENTICATION_FAILED;
@@ -33,10 +38,6 @@ function translateErrorCode(
       return i18n.httpErrorMessage.ACCESS_DENIED;
     case 'NOT_FOUND':
       return i18n.httpErrorMessage.NOT_FOUND;
-    case 'IDENTIFIER_ALREADY_TAKEN':
-      return i18n.httpErrorMessage.IDENTIFIER_ALREADY_TAKEN;
-    case 'EMAIL_ADDRESS_INVALID':
-      return i18n.httpErrorMessage.EMAIL_ADDRESS_INVALID;
     case 'SMTP_ERROR':
       return i18n.httpErrorMessage.SMTP_ERROR;
     case 'EMAIL_MESSAGE_ERROR':

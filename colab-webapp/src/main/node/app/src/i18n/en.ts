@@ -5,6 +5,8 @@
  * Licensed under the MIT License
  */
 
+import { MessageI18nKey } from 'colab-rest-client';
+
 export const en = {
   //////////////////////////////////////////////////////////////////////////////////////////////////
   // Common
@@ -73,6 +75,32 @@ export const en = {
       passwordTooWeak: 'password is not strong enough',
       passwordsMismatch: 'passwords do not match',
     },
+  },
+
+  //////////////////////////////////////////////////////////////////////////////////////////////////
+  // keys direct from server side
+
+  keyFromServer: (i18nKey: MessageI18nKey): string => {
+    // NB : If this method does not compile any more,
+    // it means that the MessageI18nKey do not exactly match the case entries
+    // Dear developer, please make them match
+    switch (i18nKey) {
+      case 'EMAIL_NOT_VALID':
+        return 'E-mail address is not valid 123 soliek';
+      case 'IDENTIFIER_ALREADY_TAKEN':
+        return 'Please choose another identifier id id i';
+    }
+  },
+
+  httpErrorMessage: {
+    AUTHENTICATION_FAILED: 'Authentication failed',
+    AUTHENTICATION_REQUIRED: 'Please authenticate',
+    ACCESS_DENIED: 'Access denied',
+    NOT_FOUND: 'Not found',
+    SMTP_ERROR: 'e-mail server error',
+    EMAIL_MESSAGE_ERROR: 'e-mail not sent',
+    BAD_REQUEST: 'Bad request',
+    TOO_MANY_ATTEMPTS: 'Too many attempts, please wait a moment before trying again',
   },
 
   //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -175,19 +203,6 @@ export const en = {
   aaiAccount: 'AAI Account',
   aaiAffiliation: 'Affiliation',
   aaiNotEditable: ' Personal data are not editable',
-
-  httpErrorMessage: {
-    AUTHENTICATION_FAILED: 'Authentication failed',
-    AUTHENTICATION_REQUIRED: 'Please authenticate',
-    ACCESS_DENIED: 'Access denied',
-    NOT_FOUND: 'Not found',
-    IDENTIFIER_ALREADY_TAKEN: 'Please choose another identifier',
-    EMAIL_ADDRESS_INVALID: 'E-mail address is not valid',
-    SMTP_ERROR: 'e-mail server error',
-    EMAIL_MESSAGE_ERROR: 'e-mail not sent',
-    BAD_REQUEST: 'Bad request',
-    TOO_MANY_ATTEMPTS: 'Too many attempts, please wait a moment before trying again',
-  },
 
   card: {
     untitled: 'New card',
