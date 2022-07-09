@@ -11,9 +11,9 @@ import { getRestClient, reloadCurrentUser } from '../../API/api';
 import logger from '../../logger';
 import { useCurrentUser } from '../../selectors/userSelector';
 import { useAppDispatch } from '../../store/hooks';
+import SignInForm from '../authentication/SignIn';
 import Loading from '../common/Loading';
 import Overlay from '../common/Overlay';
-import SignInForm from '../public/SignIn';
 
 interface TokenProps {
   tokenId: string | undefined;
@@ -113,7 +113,10 @@ export default function Token(props: TokenProps): JSX.Element {
   } else {
     return (
       <Overlay>
-        <div>Error while processing token. Please try to refresh or contact kthe admin of your colab project.</div>
+        <div>
+          Error while processing token. Please try to refresh or contact kthe admin of your colab
+          project.
+        </div>
       </Overlay>
     );
   }

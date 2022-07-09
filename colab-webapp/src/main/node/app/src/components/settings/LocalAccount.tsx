@@ -11,9 +11,9 @@ import * as React from 'react';
 import PasswordStrengthBar from 'react-password-strength-bar';
 import { updateLocalAccountPassword } from '../../API/api';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
+import PasswordFeedbackDisplay from '../authentication/PasswordFeedbackDisplay';
 import { PasswordScore } from '../common/Form/Form';
 import IconButton from '../common/IconButton';
-import PasswordFeedbackDisplay from '../public/PasswordFeedbackDisplay';
 import { linkStyle } from '../styling/style';
 
 export interface Props {

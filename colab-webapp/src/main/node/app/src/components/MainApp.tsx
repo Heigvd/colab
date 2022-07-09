@@ -21,6 +21,10 @@ import { useProject, useProjectBeingEdited } from '../selectors/projectSelector'
 import { useCurrentUser } from '../selectors/userSelector';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
 import Admin from './admin/Admin';
+import ResetPasswordForm from './authentication/ForgotPassword';
+import ResetPasswordSent from './authentication/ResetPasswordSent';
+import SignInForm from './authentication/SignIn';
+import SignUpForm from './authentication/SignUp';
 import DropDownMenu from './common/DropDownMenu';
 import InlineLoading from './common/InlineLoading';
 import { MainMenuLink } from './common/Link';
@@ -28,10 +32,6 @@ import Loading from './common/Loading';
 import Overlay from './common/Overlay';
 import Editor from './projects/edition/Editor';
 import { UserProjects } from './projects/ProjectList';
-import ResetPasswordForm from './public/ForgotPassword';
-import ResetPasswordSent from './public/ResetPasswordSent';
-import SignInForm from './public/SignIn';
-import SignUpForm from './public/SignUp';
 import Settings from './settings/Settings';
 import Picto from './styling/Picto';
 import {
