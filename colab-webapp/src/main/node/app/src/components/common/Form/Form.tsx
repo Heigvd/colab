@@ -9,8 +9,6 @@ import { css, cx } from '@emotion/css';
 import * as React from 'react';
 import { PasswordFeedback } from 'react-password-strength-bar';
 import useTranslations from '../../../i18n/I18nContext';
-import { useAppDispatch } from '../../../store/hooks';
-import { addNotification } from '../../../store/notification';
 import { space_M } from '../../styling/style';
 import ButtonWithLoader from '../ButtonWithLoader';
 import Flex from '../Flex';
@@ -126,7 +124,6 @@ export default function Form<T>({
   childrenClassName,
   buttonClassName,
 }: FormProps<T>): JSX.Element {
-  const dispatch = useAppDispatch();
   const i18n = useTranslations();
 
   const [state, setState] = React.useState<T>(value);
@@ -153,9 +150,8 @@ export default function Form<T>({
       onSubmit(state);
     } else {
       setShowErrors(true);
-      dispatch(addNotification({ status: 'OPEN', type: 'WARN', message: i18n.pleaseProvideData }));
     }
-  }, [globalErroneous, onSubmit, state, dispatch, i18n.pleaseProvideData]);
+  }, [globalErroneous, onSubmit, state]);
 
   const onEnter = React.useCallback(
     (event: React.KeyboardEvent<HTMLElement>) => {
