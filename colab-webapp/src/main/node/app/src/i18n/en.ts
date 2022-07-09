@@ -86,9 +86,9 @@ export const en = {
     // Dear developer, please make them match
     switch (i18nKey) {
       case 'EMAIL_NOT_VALID':
-        return 'E-mail address is not valid 123 soliek';
+        return 'E-mail address is not valid';
       case 'IDENTIFIER_ALREADY_TAKEN':
-        return 'Please choose another identifier id id i';
+        return 'Please choose another identifier';
     }
   },
 
