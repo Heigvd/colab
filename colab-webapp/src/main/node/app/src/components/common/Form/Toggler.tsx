@@ -48,9 +48,10 @@ const onStyle = cx(
 interface TogglerProps {
   label?: React.ReactNode;
   value?: boolean;
-  disabled?: boolean;
+  readOnly?: boolean;
   onChange: (newValue: boolean) => void;
   tip?: TipsProps['children'];
+  fieldFooter?: React.ReactNode;
   warning?: React.ReactNode;
   error?: React.ReactNode;
   className?: string;
@@ -59,9 +60,10 @@ interface TogglerProps {
 export default function Toggler({
   label,
   value,
-  disabled = false,
+  readOnly = false,
   onChange,
   tip,
+  fieldFooter,
   warning,
   error,
   className,
@@ -70,7 +72,7 @@ export default function Toggler({
     <Flex direction="column" className={cx(css({ padding: space_S + ' 0' }), className)}>
       <Flex align="center" justify="flex-start">
         <Flex
-          onClick={disabled ? undefined : () => onChange(!value)}
+          onClick={readOnly ? undefined : () => onChange(!value)}
           className={cx(containerStyle, className)}
         >
           <div className={value ? onStyle : offStyle}></div>
@@ -78,10 +80,9 @@ export default function Toggler({
         <div>&nbsp;{label}</div>
         {tip != null && <Tips>{tip}</Tips>}
       </Flex>
-      <Flex justify="space-between">
-        {warning != null && <div className={cx(textSmall, warningStyle)}>{warning}</div>}
-        {error != null && <div className={cx(textSmall, errorStyle)}>{error}</div>}
-      </Flex>
+      {fieldFooter != null && <div className={cx(textSmall)}>{fieldFooter}</div>}
+      {warning != null && <div className={cx(textSmall, warningStyle)}>{warning}</div>}
+      {error != null && <div className={cx(textSmall, errorStyle)}>{error}</div>}
     </Flex>
   );
 }

@@ -34,12 +34,13 @@ interface SelectInputProps<T, IsMulti extends boolean> {
   value?: T;
   placeholder?: string;
   mandatory?: boolean;
-  readonly?: boolean;
+  readOnly?: boolean;
   isMulti: IsMulti;
   canCreateOption?: boolean;
   options: Opt<T>[];
   onChange: (newValue: ValueType<T, IsMulti>) => void;
   tip?: TipsProps['children'];
+  fieldFooter?: React.ReactNode;
   warning?: React.ReactNode;
   error?: React.ReactNode;
   className?: string;
@@ -50,12 +51,13 @@ export default function SelectInput<T, IsMulti extends boolean>({
   value,
   placeholder = 'no value',
   mandatory,
-  readonly = false,
+  readOnly = false,
   isMulti,
   canCreateOption = false,
   options,
   onChange,
   tip,
+  fieldFooter,
   warning,
   error,
   className,
@@ -100,7 +102,7 @@ export default function SelectInput<T, IsMulti extends boolean>({
         <Creatable
           value={currentValue}
           placeholder={placeholder}
-          isDisabled={readonly}
+          isDisabled={readOnly}
           isMulti={isMulti}
           options={options}
           isClearable
@@ -124,7 +126,7 @@ export default function SelectInput<T, IsMulti extends boolean>({
         <Select
           value={currentValue}
           placeholder={placeholder}
-          isDisabled={readonly}
+          isDisabled={readOnly}
           isMulti={isMulti}
           options={options}
           onChange={onInternalChange}
@@ -136,6 +138,7 @@ export default function SelectInput<T, IsMulti extends boolean>({
           }}
         />
       )}
+      {fieldFooter != null && <div className={cx(textSmall)}>{fieldFooter}</div>}
       {warning != null && <div className={cx(textSmall, warningStyle)}>{warning}</div>}
       {error != null && <div className={cx(textSmall, errorStyle)}>{error}</div>}
     </Flex>

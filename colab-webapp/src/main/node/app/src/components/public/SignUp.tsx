@@ -78,7 +78,7 @@ export default function SignUpForm({ redirectTo }: SignUpFormProps): JSX.Element
       isMandatory: true,
       isErroneous: data => data.passwordScore.score < 2,
       errorMessage: data => <PasswordFeedbackDisplay feedback={data.passwordScore.feedback} />,
-      showStrenghBar: true,
+      showStrengthBar: true,
       strengthProp: 'passwordScore',
     },
     {
@@ -88,7 +88,7 @@ export default function SignUpForm({ redirectTo }: SignUpFormProps): JSX.Element
       isMandatory: true,
       isErroneous: data => data.password !== data.confirm,
       errorMessage: i18n.authentication.error.passwordsMismatch,
-      showStrenghBar: false,
+      showStrengthBar: false,
     },
   ];
 

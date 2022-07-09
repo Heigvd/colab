@@ -28,9 +28,10 @@ interface InputProps extends Omit<React.HTMLProps<HTMLInputElement>, 'label' | '
   inputType?: 'input' | 'textarea';
   delay?: number;
   mandatory?: boolean;
-  readonly?: boolean;
+  readOnly?: boolean;
   onChange: (newValue: string) => void;
   tip?: TipsProps['children'];
+  fieldFooter?: React.ReactNode;
   warning?: React.ReactNode;
   error?: React.ReactNode;
   className?: string;
@@ -44,13 +45,14 @@ export default function Input({
   inputType = 'input',
   delay = 500,
   mandatory,
-  readonly = false,
+  readOnly = false,
   autoFocus,
   onChange,
   onKeyDown,
   min,
   max,
   tip,
+  fieldFooter,
   warning,
   error,
   className,
@@ -107,7 +109,7 @@ export default function Input({
           value={state || ''}
           placeholder={placeholder}
           type={type}
-          readOnly={readonly}
+          readOnly={readOnly}
           autoFocus={autoFocus}
           onChange={onInternalChange}
           onKeyDown={onKeyDown}
@@ -120,13 +122,14 @@ export default function Input({
         <textarea
           value={state || ''}
           placeholder={placeholder}
-          readOnly={readonly}
+          readOnly={readOnly}
           autoFocus={autoFocus}
           onChange={onInternalChange}
           onBlur={onBlur}
           className={textareaStyle}
         />
       )}
+      {fieldFooter != null && <div className={cx(textSmall)}>{fieldFooter}</div>}
       {warning != null && <div className={cx(textSmall, warningStyle)}>{warning}</div>}
       {error != null && <div className={cx(textSmall, errorStyle)}>{error}</div>}
     </Flex>

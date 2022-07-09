@@ -21,9 +21,10 @@ const enabledStyle = css({ cursor: 'pointer' });
 interface CheckboxProps {
   label?: React.ReactNode;
   value?: boolean;
-  disabled?: boolean;
+  readOnly?: boolean;
   onChange: (newValue: boolean) => void;
   tip?: TipsProps['children'];
+  fieldFooter?: React.ReactNode;
   warning?: React.ReactNode;
   error?: React.ReactNode;
   className?: string;
@@ -32,9 +33,10 @@ interface CheckboxProps {
 export default function Checkbox({
   label,
   value,
-  disabled = false,
+  readOnly = false,
   onChange,
   tip,
+  fieldFooter,
   warning,
   error,
   className,
@@ -47,8 +49,8 @@ export default function Checkbox({
     >
       <Flex align="center" justify="flex-start">
         <Flex
-          onClick={disabled ? undefined : () => onChange(!value)}
-          className={disabled ? disabledStyle : enabledStyle}
+          onClick={readOnly ? undefined : () => onChange(!value)}
+          className={readOnly ? disabledStyle : enabledStyle}
         >
           <FontAwesomeIcon
             icon={value ? faCheckSquare : faSquare}
@@ -58,10 +60,9 @@ export default function Checkbox({
         </Flex>
         {tip != null && <Tips>{tip}</Tips>}
       </Flex>
-      <Flex justify="space-between">
-        {warning != null && <div className={cx(textSmall, warningStyle)}>{warning}</div>}
-        {error != null && <div className={cx(textSmall, errorStyle)}>{error}</div>}
-      </Flex>
+      {fieldFooter != null && <div className={cx(textSmall)}>{fieldFooter}</div>}
+      {warning != null && <div className={cx(textSmall, warningStyle)}>{warning}</div>}
+      {error != null && <div className={cx(textSmall, errorStyle)}>{error}</div>}
     </Flex>
   );
 }

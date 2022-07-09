@@ -11,7 +11,7 @@ import { PasswordFeedback } from 'react-password-strength-bar';
 import useTranslations from '../../../i18n/I18nContext';
 import { useAppDispatch } from '../../../store/hooks';
 import { addNotification } from '../../../store/notification';
-import { space_M, textSmall } from '../../styling/style';
+import { space_M } from '../../styling/style';
 import ButtonWithLoader from '../ButtonWithLoader';
 import Flex from '../Flex';
 import InlineLoading from '../InlineLoading';
@@ -34,10 +34,10 @@ interface BaseField<T> {
   placeholder?: string;
   type: 'text' | 'textarea' | 'password' | 'boolean' | 'select' | 'selectnumber';
   isMandatory: boolean;
-  readonly?: boolean;
+  readOnly?: boolean;
   tip?: TipsProps['children'];
-  fieldFooter?: React.ReactNode;
-  isErroneous?: (entity: T) => boolean;
+  fieldFooter?: React.ReactNode | ((data: T) => React.ReactNode);
+  isErroneous?: (data: T) => boolean;
   errorMessage?: React.ReactNode | ((data: T) => React.ReactNode);
 }
 
@@ -52,7 +52,7 @@ export interface PasswordScore {
 
 interface PasswordField<T> extends BaseField<T> {
   type: 'password';
-  showStrenghBar: boolean;
+  showStrengthBar: boolean;
   strengthProp?: keyof T;
 }
 
@@ -186,6 +186,9 @@ export default function Form<T>({
           : i18n.form.defaultFieldError
         : null;
 
+    const effectiveFieldFooter =
+      typeof field.fieldFooter === 'function' ? field.fieldFooter(state) : field.fieldFooter;
+
     if (field.type === 'text' || field.type === 'textarea') {
       return (
         <div key={fieldKey}>
@@ -196,50 +199,12 @@ export default function Form<T>({
             type="text"
             inputType={field.type === 'text' ? 'input' : 'textarea'}
             mandatory={field.isMandatory}
-            readonly={field.readonly}
+            readOnly={field.readOnly}
             onChange={value => setFormValue(field.key, value)}
             tip={field.tip}
+            fieldFooter={effectiveFieldFooter}
             error={errorMessage}
           />
-          {field.fieldFooter != null && field.fieldFooter}
-        </div>
-      );
-    } else if (field.type === 'select') {
-      return (
-        <div key={fieldKey}>
-          <SelectInput
-            value={String(state[field.key])}
-            label={field.label}
-            placeholder={field.placeholder}
-            tip={field.tip}
-            options={field.options}
-            warning={errorMessage}
-            mandatory={field.isMandatory}
-            isMulti={field.isMulti}
-            onChange={value => setFormValue(field.key, value)}
-            readonly={field.readonly}
-            canCreateOption={field.canCreateOption}
-            className={textSmall}
-          />
-          {field.fieldFooter != null && field.fieldFooter}
-        </div>
-      );
-    } else if (field.type === 'selectnumber') {
-      return (
-        <div key={fieldKey}>
-          <SelectInput
-            value={Number(state[field.key])}
-            label={field.label}
-            placeholder={field.placeholder}
-            tip={field.tip}
-            options={field.options}
-            warning={errorMessage}
-            mandatory={field.isMandatory}
-            isMulti={false}
-            onChange={value => setFormValue(field.key, value)}
-            readonly={field.readonly}
-          />
-          {field.fieldFooter != null && field.fieldFooter}
         </div>
       );
     } else if (field.type === 'password') {
@@ -251,14 +216,14 @@ export default function Form<T>({
             placeholder={field.placeholder}
             type="password"
             mandatory={field.isMandatory}
-            readonly={field.readonly}
+            readOnly={field.readOnly}
             onChange={value => setFormValue(field.key, value)}
             tip={field.tip}
+            fieldFooter={effectiveFieldFooter}
             error={errorMessage}
           />
-          {field.fieldFooter != null && field.fieldFooter}
           {field.strengthProp != null && (
-            <div className={cx({ [css({ display: 'none' })]: !field.showStrenghBar })}>
+            <div className={cx({ [css({ display: 'none' })]: !field.showStrengthBar })}>
               <React.Suspense fallback={<InlineLoading />}>
                 <PasswordStrengthBar
                   barColors={['#ddd', '#ef4836', 'rgb(118, 176, 232)', '#2b90ef', '#01f590']}
@@ -283,22 +248,60 @@ export default function Form<T>({
             <Toggler
               label={field.label}
               value={blnValue}
-              disabled={field.readonly}
+              readOnly={field.readOnly}
               onChange={value => setFormValue(field.key, value)}
               tip={field.tip}
+              fieldFooter={effectiveFieldFooter}
               error={errorMessage}
             />
           ) : (
             <Checkbox
               label={field.label}
               value={blnValue}
-              disabled={field.readonly}
+              readOnly={field.readOnly}
               onChange={value => setFormValue(field.key, value)}
               tip={field.tip}
+              fieldFooter={effectiveFieldFooter}
               error={errorMessage}
             />
           )}
-          {field.fieldFooter != null && field.fieldFooter}
+        </div>
+      );
+    } else if (field.type === 'select') {
+      return (
+        <div key={fieldKey}>
+          <SelectInput
+            label={field.label}
+            value={String(state[field.key])}
+            placeholder={field.placeholder}
+            mandatory={field.isMandatory}
+            readOnly={field.readOnly}
+            isMulti={field.isMulti}
+            canCreateOption={field.canCreateOption}
+            options={field.options}
+            onChange={value => setFormValue(field.key, value)}
+            tip={field.tip}
+            fieldFooter={effectiveFieldFooter}
+            warning={errorMessage}
+          />
+        </div>
+      );
+    } else if (field.type === 'selectnumber') {
+      return (
+        <div key={fieldKey}>
+          <SelectInput
+            label={field.label}
+            value={Number(state[field.key])}
+            placeholder={field.placeholder}
+            mandatory={field.isMandatory}
+            readOnly={field.readOnly}
+            isMulti={false}
+            options={field.options}
+            onChange={value => setFormValue(field.key, value)}
+            tip={field.tip}
+            fieldFooter={effectiveFieldFooter}
+            warning={errorMessage}
+          />
         </div>
       );
     }

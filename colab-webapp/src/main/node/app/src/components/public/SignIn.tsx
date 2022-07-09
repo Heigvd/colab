@@ -62,7 +62,7 @@ export default function SignInForm({ redirectTo }: SignInFormProps): JSX.Element
       label: i18n.authentication.field.password,
       type: 'password',
       isMandatory: true,
-      showStrenghBar: false,
+      showStrengthBar: false,
       strengthProp: 'passwordScore',
     },
   ];

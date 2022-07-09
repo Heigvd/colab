@@ -53,14 +53,14 @@ export default function ProjectDataInitialization({
         <Input
           label="Name"
           value={data.name}
-          readonly={readOnly}
+          readOnly={readOnly}
           onChange={name => setName(name)}
         />
         <Input
           label="Description"
           inputType="textarea"
           value={data.description}
-          readonly={readOnly}
+          readOnly={readOnly}
           onChange={description => {
             setDescription(description);
           }}
@@ -72,7 +72,7 @@ export default function ProjectDataInitialization({
               type: 'text',
               label: 'Invite members',
               isMandatory: false,
-              readonly: readOnly,
+              readOnly: readOnly,
               placeholder: 'email',
               isErroneous: value => value.email.length > 0 && value.email.match('.+@.+') == null,
               errorMessage: i18n.authentication.error.emailAddressNotValid,
