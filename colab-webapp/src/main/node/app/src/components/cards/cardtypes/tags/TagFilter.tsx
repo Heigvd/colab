@@ -14,7 +14,6 @@ import {
   lightLinkStyle,
   lightTheme,
   noOutlineStyle,
-  space_M,
   space_S,
 } from '../../../styling/style';
 
@@ -100,11 +99,7 @@ export default function TagsFilter({
               label={selectAllState ? 'Select all' : 'Deselect all'}
               value={!selectAllState}
               onChange={toggleAllTags}
-              className={css({ paddingLeft: space_M })}
-              containerClassName={cx(
-                lightLinkStyle,
-                css({ '&:hover': { textDecoration: 'none' } }),
-              )}
+              className={cx(lightLinkStyle, css({ '&:hover': { textDecoration: 'none' } }))}
             />
           </Flex>
         </Flex>

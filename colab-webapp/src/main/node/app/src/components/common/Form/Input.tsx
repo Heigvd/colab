@@ -20,41 +20,41 @@ import {
 import Flex from '../Flex';
 import Tips, { TipsProps } from '../Tips';
 
-export interface Props extends Omit<React.HTMLProps<HTMLInputElement>, 'label' | 'onChange'>{
+interface InputProps extends Omit<React.HTMLProps<HTMLInputElement>, 'label' | 'onChange'> {
   label?: React.ReactNode;
+  value?: string | number;
+  placeholder?: string;
+  type?: HTMLInputElement['type'];
   inputType?: 'input' | 'textarea';
+  delay?: number;
+  mandatory?: boolean;
+  readonly?: boolean;
+  onChange: (newValue: string) => void;
+  tip?: TipsProps['children'];
   warning?: React.ReactNode;
   error?: React.ReactNode;
-  value?: string | number;
-  mandatory?: boolean;
-  type?: HTMLInputElement['type'];
-  onChange: (newValue: string) => void;
-  placeholder?: string;
-  tip?: TipsProps['children'];
   className?: string;
-  readonly?: boolean;
-  delay?: number;
 }
 
 export default function Input({
-  type = 'text',
   label,
-  inputType = 'input',
-  warning,
-  error,
   value = '',
-  onChange,
-  mandatory,
-  className,
   placeholder,
-  autoFocus,
-  tip,
-  readonly = false,
+  type = 'text',
+  inputType = 'input',
   delay = 500,
+  mandatory,
+  readonly = false,
+  autoFocus,
+  onChange,
+  onKeyDown,
   min,
   max,
-  onKeyDown,
-}: Props): JSX.Element {
+  tip,
+  warning,
+  error,
+  className,
+}: InputProps): JSX.Element {
   const [state, setState] = React.useState<string | number>(value || '');
 
   React.useEffect(() => {
@@ -71,7 +71,8 @@ export default function Input({
       }, delay),
     [delay],
   );
-  const onInternalChangeCb = React.useCallback(
+
+  const onInternalChange = React.useCallback(
     (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
       const newValue = e.target.value;
       debouncedOnChange(newValue);
@@ -84,50 +85,50 @@ export default function Input({
    * Send change immediatly.
    * No need to wait debounced delay
    */
-  const onBlurCb = React.useCallback(() => {
+  const onBlur = React.useCallback(() => {
     debouncedOnChange.flush();
   }, [debouncedOnChange]);
 
   return (
     <Flex
-      className={cx(css({ padding: space_S + ' 0' }), className)}
       direction="column"
       align="normal"
+      className={cx(css({ padding: space_S + ' 0' }), className)}
     >
       <Flex justify="space-between">
         <div>
           <span className={labelStyle}>{label}</span>
-          {tip && <Tips>{tip}</Tips>}
-          {mandatory ? ' * ' : null}
+          {tip != null && <Tips>{tip}</Tips>}
+          {mandatory && ' * '}
         </div>
       </Flex>
       {inputType === 'input' ? (
         <input
-          type={type}
-          className={inputStyle}
-          placeholder={placeholder}
           value={state || ''}
-          onChange={onInternalChangeCb}
-          onBlur={onBlurCb}
+          placeholder={placeholder}
+          type={type}
           readOnly={readonly}
           autoFocus={autoFocus}
-          max={max}
-          min={min}
+          onChange={onInternalChange}
           onKeyDown={onKeyDown}
+          onBlur={onBlur}
+          min={min}
+          max={max}
+          className={inputStyle}
         />
       ) : (
         <textarea
-          className={textareaStyle}
-          placeholder={placeholder}
           value={state || ''}
-          onChange={onInternalChangeCb}
-          onBlur={onBlurCb}
+          placeholder={placeholder}
           readOnly={readonly}
           autoFocus={autoFocus}
+          onChange={onInternalChange}
+          onBlur={onBlur}
+          className={textareaStyle}
         />
       )}
-      {warning ? <div className={cx(textSmall, warningStyle)}>{warning}</div> : null}
-      {error ? <div className={cx(textSmall, errorStyle)}>{error}</div> : null}
+      {warning != null && <div className={cx(textSmall, warningStyle)}>{warning}</div>}
+      {error != null && <div className={cx(textSmall, errorStyle)}>{error}</div>}
     </Flex>
   );
 }

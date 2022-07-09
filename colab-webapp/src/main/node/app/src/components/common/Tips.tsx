@@ -101,7 +101,7 @@ export function TipsSettings(): JSX.Element {
           label="Display Todo"
           value={config.TODO.value}
           onChange={config.TODO.set}
-          containerClassName={css({ display: 'inline-block', marginRight: space_S })}
+          className={css({ display: 'inline-block', marginRight: space_S })}
         />
         <Tips tipsType="TODO">
           <h4>Todo Example</h4> We know what to do, but we do not do
@@ -112,7 +112,7 @@ export function TipsSettings(): JSX.Element {
           label="Display Tips"
           value={config.TIPS.value}
           onChange={config.TIPS.set}
-          containerClassName={css({ display: 'inline-block', marginRight: space_S })}
+          className={css({ display: 'inline-block', marginRight: space_S })}
         />
         <Tips tipsType="TIPS">
           <h4>Tips Example</h4>Some useful info to help users
@@ -123,7 +123,7 @@ export function TipsSettings(): JSX.Element {
           label="Display News"
           value={config.NEWS.value}
           onChange={config.NEWS.set}
-          containerClassName={css({ display: 'inline-block', marginRight: space_S })}
+          className={css({ display: 'inline-block', marginRight: space_S })}
         />
         <Tips tipsType="NEWS">
           <h4>News Example</h4>Some new feature to emphasis.
@@ -134,7 +134,7 @@ export function TipsSettings(): JSX.Element {
           label="Display Work in progress elements"
           value={config.WIP.value}
           onChange={config.WIP.set}
-          containerClassName={css({ display: 'inline-block', marginRight: space_S })}
+          className={css({ display: 'inline-block', marginRight: space_S })}
         />
         <Tips tipsType="WIP">
           <h4>WIP Example</h4>Some features not completely finished yet.

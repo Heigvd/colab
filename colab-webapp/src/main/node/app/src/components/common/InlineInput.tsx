@@ -9,6 +9,7 @@ import { css, cx } from '@emotion/css';
 import { faCheck, faTimes } from '@fortawesome/free-solid-svg-icons';
 import { debounce } from 'lodash';
 import * as React from 'react';
+import useTranslations from '../../i18n/I18nContext';
 import logger from '../../logger';
 import { lightIconButtonStyle, space_S } from '../styling/style';
 import Flex from './Flex';
@@ -77,6 +78,8 @@ export default function InlineInput({
   autosave = true,
   delay = 300,
 }: Props): JSX.Element {
+  const i18n = useTranslations();
+
   const spanRef = React.useRef<HTMLSpanElement>(null);
   const containerRef = React.useRef<HTMLDivElement>(null);
 
@@ -174,7 +177,7 @@ export default function InlineInput({
         <Flex justify="flex-end">
           <IconButton
             icon={faTimes}
-            title="Cancel"
+            title={i18n.common.cancel}
             onClick={cancelCb}
             className={lightIconButtonStyle}
           />

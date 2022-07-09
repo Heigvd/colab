@@ -15,7 +15,6 @@ import {
   lightLinkStyle,
   lightTheme,
   noOutlineStyle,
-  space_M,
   space_S,
 } from '../styling/style';
 import Clickable from './Clickable';
@@ -110,11 +109,7 @@ export default function FilterableList({
               label={'Select all'}
               value={stateSelectAll}
               onChange={t => toggleAllTags(t)}
-              className={css({ paddingLeft: space_M })}
-              containerClassName={cx(
-                lightLinkStyle,
-                css({ '&:hover': { textDecoration: 'none' } }),
-              )}
+              className={cx(lightLinkStyle, css({ '&:hover': { textDecoration: 'none' } }))}
             />
           </>
         )}

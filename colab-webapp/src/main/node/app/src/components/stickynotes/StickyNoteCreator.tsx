@@ -50,8 +50,8 @@ export default function StickyNoteCreator({
   destCardId,
   className,
 }: StickyNoteCreatorProps): JSX.Element {
-  const i18n = useTranslations();
   const dispatch = useAppDispatch();
+  const i18n = useTranslations();
 
   const { project } = useProjectBeingEdited();
   const cards = useAllProjectCards();
@@ -87,14 +87,14 @@ export default function StickyNoteCreator({
   const fields: Field<StickyNoteLinkType>[] = [
     {
       key: 'teaser',
-      type: 'text',
       label: 'teaser',
+      type: 'text',
       isMandatory: true,
     },
     {
       key: 'explanation',
-      type: 'textarea',
       label: 'explanation',
+      type: 'textarea',
       isMandatory: true,
     },
     {
@@ -102,8 +102,8 @@ export default function StickyNoteCreator({
       label: 'Source',
       placeholder: 'Select source',
       type: 'selectnumber',
-      options: cardOptions,
       isMandatory: true,
+      options: cardOptions,
     },
   ];
 
@@ -149,12 +149,12 @@ export default function StickyNoteCreator({
                 collapse();
               });
             }}
+            className={css({ alignSelf: 'center' })}
             childrenClassName={css({
               flexDirection: 'row-reverse',
               alignItems: 'center',
               justifyContent: 'end',
             })}
-            className={css({ alignSelf: 'center' })}
           >
             <Button
               onClick={() => {
@@ -164,7 +164,7 @@ export default function StickyNoteCreator({
               invertedButton
               className={css({ margin: space_M })}
             >
-              Cancel
+              {i18n.common.cancel}
             </Button>
             <IconButton icon={faUndo} title="reinit fields" onClick={() => resetInputs()} />
           </Form>

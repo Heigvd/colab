@@ -90,8 +90,8 @@ export default function SignInForm({ redirectTo }: SignInFormProps): JSX.Element
       <Form
         fields={formFields}
         value={defaultCredentials}
-        submitLabel={i18n.authentication.action.login}
         onSubmit={signIn}
+        submitLabel={i18n.authentication.action.login}
         buttonClassName={css({ margin: space_M + ' auto' })}
       />
       <Flex direction="column" justify="center" align="center">

@@ -10,6 +10,7 @@ import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import * as React from 'react';
 import * as API from '../../../API/api';
+import useTranslations from '../../../i18n/I18nContext';
 import {
   useCurrentProjectCardTypeTags,
   useGlobalCardTypeTags,
@@ -34,6 +35,7 @@ interface NewType {
 
 export default function CardTypeCreator({ onCreated, usage }: CardTypeCreatorProps): JSX.Element {
   const dispatch = useAppDispatch();
+  const i18n = useTranslations();
 
   const { project } = useProjectBeingEdited();
 
@@ -69,28 +71,28 @@ export default function CardTypeCreator({ onCreated, usage }: CardTypeCreatorPro
   const fields: Field<NewType>[] = [
     {
       key: 'title',
-      type: 'text',
       label: 'name',
+      type: 'text',
       isMandatory: true,
     },
     {
       key: 'purpose',
-      type: 'textarea',
       label: 'purpose',
+      type: 'textarea',
       isMandatory: true,
     },
     createSelectField({
       key: 'tags',
-      type: 'select',
       label: 'category',
+      placeholder: 'Select or type to create',
+      type: 'select',
+      isMandatory: true,
       isMulti: true,
+      canCreateOption: true,
       options: (usage === 'currentProject' ? allCurrentProjectTags : allGlobalTags).map(c => ({
         label: c,
         value: c,
       })),
-      canCreateOption: true,
-      placeholder: 'Select or type to create',
-      isMandatory: true,
     }),
   ];
 
@@ -115,11 +117,11 @@ export default function CardTypeCreator({ onCreated, usage }: CardTypeCreatorPro
             fields={fields}
             value={{ title: '', purpose: '', tags: [] }}
             autoSubmit={false}
-            submitLabel="Create"
             onSubmit={function (type) {
               createTypeCb(type);
               close();
             }}
+            submitLabel={i18n.common.create}
             className={css({ alignSelf: 'center' })}
             childrenClassName={css({
               flexDirection: 'row-reverse',
@@ -135,7 +137,7 @@ export default function CardTypeCreator({ onCreated, usage }: CardTypeCreatorPro
               invertedButton
               className={css({ margin: space_M })}
             >
-              Cancel
+              {i18n.common.cancel}
             </Button>
           </Form>
         );

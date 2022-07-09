@@ -79,15 +79,15 @@ export default function ProjectDataInitialization({
             },
           ]}
           value={{ email: '' }}
-          submitLabel="Add"
-          className={css({ flexDirection: 'row', alignItems: 'flex-end' })}
-          buttonClassName={cx(css({ alignSelf: 'flex-end', margin: space_S }), invertedButtonStyle)}
           onSubmit={fields => {
             if (!readOnly) {
               addGuest(fields.email);
               fields.email = '';
             }
           }}
+          submitLabel={i18n.common.add}
+          className={css({ flexDirection: 'row', alignItems: 'flex-end' })}
+          buttonClassName={cx(css({ alignSelf: 'flex-end', margin: space_S }), invertedButtonStyle)}
         />
 
         <Flex direction="column">

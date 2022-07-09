@@ -7,21 +7,9 @@
 
 import { css, cx } from '@emotion/css';
 import * as React from 'react';
-import { errorStyle, space_S, successColor, warningStyle } from '../../styling/style';
+import { errorStyle, space_S, successColor, textSmall, warningStyle } from '../../styling/style';
 import Flex from '../Flex';
 import Tips, { TipsProps } from '../Tips';
-
-export interface Props {
-  label?: React.ReactNode;
-  warning?: React.ReactNode;
-  error?: React.ReactNode;
-  title?: string;
-  value?: boolean;
-  onChange: (newValue: boolean) => void;
-  tip?: TipsProps['children'];
-  className?: string;
-  disabled?: boolean;
-}
 
 const containerStyle = css({
   width: '28px',
@@ -57,33 +45,42 @@ const onStyle = cx(
   }),
 );
 
+interface TogglerProps {
+  label?: React.ReactNode;
+  value?: boolean;
+  disabled?: boolean;
+  onChange: (newValue: boolean) => void;
+  tip?: TipsProps['children'];
+  warning?: React.ReactNode;
+  error?: React.ReactNode;
+  className?: string;
+}
+
 export default function Toggler({
   label,
-  warning,
-  error,
-  title,
   value,
+  disabled = false,
   onChange,
   tip,
+  warning,
+  error,
   className,
-  disabled = false,
-}: Props): JSX.Element {
+}: TogglerProps): JSX.Element {
   return (
-    <Flex className={cx(css({ padding: space_S + ' 0' }), className)} direction="column">
-      <Flex justify="space-between">
-        {warning ? <div className={warningStyle}>{warning}</div> : null}
-        {error ? <div className={errorStyle}>{error}</div> : null}
-      </Flex>
-      <Flex justify="space-between">
-        <div
-          title={title}
+    <Flex direction="column" className={cx(css({ padding: space_S + ' 0' }), className)}>
+      <Flex align="center" justify="flex-start">
+        <Flex
           onClick={disabled ? undefined : () => onChange(!value)}
           className={cx(containerStyle, className)}
         >
           <div className={value ? onStyle : offStyle}></div>
-        </div>
+        </Flex>
         <div>&nbsp;{label}</div>
-        <div>{tip && <Tips>{tip}</Tips>}</div>
+        {tip != null && <Tips>{tip}</Tips>}
+      </Flex>
+      <Flex justify="space-between">
+        {warning != null && <div className={cx(textSmall, warningStyle)}>{warning}</div>}
+        {error != null && <div className={cx(textSmall, errorStyle)}>{error}</div>}
       </Flex>
     </Flex>
   );

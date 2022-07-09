@@ -71,12 +71,15 @@ export function ResourceDisplay({ resource, goBackToList }: ResourceDisplayProps
         >
           <IconButton
             icon={faArrowLeft}
-            title="Back"
+            title={i18n.common.back}
             onClick={goBackToList}
             className={lightIconButtonStyle}
           />
-          <Flex wrap="nowrap" align='center'>
-            <TargetResourceSummary resource={targetResource} iconClassName={css({color: 'var(--lightGray)'})} />
+          <Flex wrap="nowrap" align="center">
+            <TargetResourceSummary
+              resource={targetResource}
+              iconClassName={css({ color: 'var(--lightGray)' })}
+            />
             <InlineInputNew
               value={targetResource.title || ''}
               placeholder={i18n.resource.untitled}

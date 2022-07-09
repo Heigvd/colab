@@ -10,6 +10,7 @@ import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import * as React from 'react';
 import * as API from '../../API/api';
+import useTranslations from '../../i18n/I18nContext';
 import { useAndLoadResourceCategories } from '../../selectors/resourceSelector';
 import { useAppDispatch } from '../../store/hooks';
 import Button from '../common/Button';
@@ -45,29 +46,30 @@ export default function ResourceCreator({
   className,
 }: ResourceCreatorProps): JSX.Element {
   const dispatch = useAppDispatch();
+  const i18n = useTranslations();
 
   const { categories: allCategories } = useAndLoadResourceCategories();
 
   const fields: Field<ResourceType>[] = [
     {
       key: 'title',
-      type: 'text',
       label: 'Title',
+      type: 'text',
       isMandatory: true,
     },
     {
       key: 'teaser',
-      type: 'textarea',
       label: 'Teaser',
+      type: 'textarea',
       isMandatory: false,
       placeholder: 'Summarize the content if the title is not self-explanatory',
     },
     createSelectField({
       key: 'category',
-      type: 'select',
       label: 'Category',
-      isMandatory: false,
       placeholder: 'Select or type to create',
+      type: 'select',
+      isMandatory: false,
       tip: 'Like folders to organize the documentation',
       isMulti: false,
       canCreateOption: true,
@@ -78,8 +80,8 @@ export default function ResourceCreator({
   if (contextInfo.kind === 'CardOrCardContent' && contextInfo.hasSeveralVariants) {
     fields.push({
       key: 'atCardContentLevel',
-      type: 'boolean',
       label: 'Is only for the present variant',
+      type: 'boolean',
       isMandatory: false,
       showAs: 'checkbox',
     });
@@ -109,7 +111,6 @@ export default function ResourceCreator({
         <Form
           fields={fields}
           value={defaultData}
-          submitLabel="Create"
           onSubmit={function (e) {
             let cardTypeId: number | null | undefined = null;
             let cardId: number | null = null;
@@ -149,12 +150,13 @@ export default function ResourceCreator({
               collapse();
             });
           }}
+          submitLabel={i18n.common.create}
+          className={css({ alignSelf: 'center' })}
           childrenClassName={css({
             flexDirection: 'row-reverse',
             alignItems: 'center',
             justifyContent: 'end',
           })}
-          className={css({ alignSelf: 'center' })}
         >
           <Button
             onClick={() => {
@@ -163,7 +165,7 @@ export default function ResourceCreator({
             invertedButton
             className={css({ margin: space_M })}
           >
-            Cancel
+            {i18n.common.cancel}
           </Button>
         </Form>
       )}

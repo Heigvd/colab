@@ -9,6 +9,7 @@ import { css, cx } from '@emotion/css';
 import { faCheck, faTimes } from '@fortawesome/free-solid-svg-icons';
 import { debounce } from 'lodash';
 import * as React from 'react';
+import useTranslations from '../../i18n/I18nContext';
 import logger from '../../logger';
 import { borderRadius, lightIconButtonStyle, space_S } from '../styling/style';
 import IconButton from './IconButton';
@@ -109,6 +110,8 @@ export default function InlineInput({
   autofocus,
   rows,
 }: Props): JSX.Element {
+  const i18n = useTranslations();
+
   const inputRef = React.useRef<HTMLInputElement>();
   const textareaRef = React.useRef<HTMLTextAreaElement>(null);
   const containerRef = React.useRef<HTMLDivElement>(null);
@@ -282,7 +285,7 @@ export default function InlineInput({
         >
           <IconButton
             icon={faTimes}
-            title="Cancel"
+            title={i18n.common.cancel}
             onClick={cancelCb}
             className={lightIconButtonStyle}
           />

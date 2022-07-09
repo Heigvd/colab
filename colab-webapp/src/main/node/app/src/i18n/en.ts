@@ -11,7 +11,11 @@ export const en = {
   //////////////////////////////////////////////////////////////////////////////////////////////////
   // Common
   common: {
-    cancel: 'cancel',
+    cancel: 'Cancel',
+    create: 'Create',
+    add: 'Add',
+    next: 'Next',
+    back: 'Back',
     date: (timestamp: number | null | undefined) => {
       if (timestamp != null) {
         return new Date(timestamp).toLocaleDateString('EN');
@@ -42,6 +46,8 @@ export const en = {
   // Form
   form: {
     missingMandatory: 'please fill in data',
+    defaultFieldError: 'please correct data',
+    submit: 'Submit',
   },
 
   //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -121,7 +127,6 @@ export const en = {
 
   // common
   confirm: 'confirm',
-  cancel: 'cancel',
 
   // form
   pleaseProvideData: 'Some data are missing',
@@ -168,7 +173,6 @@ export const en = {
   accessKeyIsRequiered: 'access key is required',
   advancedSettings: 'Advanced parameters',
   langSettings: 'Languages',
-  submit: 'Submit',
   comments: 'comments',
   commentsAreOptional: 'Comments are optional',
 

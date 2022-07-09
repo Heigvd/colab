@@ -55,15 +55,15 @@ export default function ResetPasswordForm({ redirectTo }: ResetPasswordFormProps
       <Form
         fields={formFields}
         value={defaultFormData}
-        submitLabel={i18n.authentication.action.sendMePassword}
         onSubmit={requestPasswordReset}
+        submitLabel={i18n.authentication.action.sendMePassword}
         buttonClassName={css({ margin: space_M + ' auto' })}
       >
         <InlineLink
           className={cx(lightLinkStyle)}
           to={buildLinkWithQueryParam('/SignIn', { redirectTo: redirectTo })}
         >
-          {i18n.cancel}
+          {i18n.common.cancel}
         </InlineLink>
       </Form>
     </PublicEntranceContainer>

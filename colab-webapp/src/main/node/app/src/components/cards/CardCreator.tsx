@@ -12,6 +12,7 @@ import { CardContent } from 'colab-rest-client';
 import * as React from 'react';
 import { useNavigate } from 'react-router-dom';
 import * as API from '../../API/api';
+import useTranslations from '../../i18n/I18nContext';
 import { useAndLoadProjectCardTypes } from '../../selectors/cardTypeSelector';
 import { useAppDispatch } from '../../store/hooks';
 import AvailabilityStatusIndicator from '../common/AvailabilityStatusIndicator';
@@ -49,8 +50,10 @@ export default function CardCreator({
   className,
 }: CardCreatorProps): JSX.Element {
   const dispatch = useAppDispatch();
-  const { cardTypes, status } = useAndLoadProjectCardTypes();
   const navigate = useNavigate();
+  const i18n = useTranslations();
+
+  const { cardTypes, status } = useAndLoadProjectCardTypes();
 
   const [selectedType, setSelectedType] = React.useState<number | null>(null);
   //const mainButtonRef = React.useRef<HTMLDivElement>(null);
@@ -101,7 +104,7 @@ export default function CardCreator({
             className={lightIconButtonStyle}
           />
           <Button onClick={close} invertedButton className={marginAroundStyle([2], space_S)}>
-            Cancel
+            {i18n.common.cancel}
           </Button>
 
           <Button

@@ -8,6 +8,7 @@ import { css, cx } from '@emotion/css';
 import { faExclamationTriangle } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import * as React from 'react';
+import useTranslations from '../../i18n/I18nContext';
 import { errorColor, space_M } from '../styling/style';
 import Button from './Button';
 import Flex from './Flex';
@@ -33,9 +34,11 @@ export default function ConfirmDeleteModal({
   className,
 }: ConfirmDeleteModalProps): JSX.Element {
   const mainButtonRef = React.useRef<HTMLSpanElement>(null);
-  React.useEffect(()=>{
+  React.useEffect(() => {
     mainButtonRef.current?.focus();
   }, []);
+
+  const i18n = useTranslations();
 
   return (
     <OpenCloseModal
@@ -59,7 +62,7 @@ export default function ConfirmDeleteModal({
               onClick={() => collapse()}
               invertedButton
             >
-              {cancelButtonLabel ? cancelButtonLabel : 'Cancel'}
+              {cancelButtonLabel ? cancelButtonLabel : i18n.common.cancel}
             </Button>
             <Button
               ref={mainButtonRef}
