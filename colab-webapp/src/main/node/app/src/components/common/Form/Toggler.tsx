@@ -55,6 +55,7 @@ interface TogglerProps {
   warning?: React.ReactNode;
   error?: React.ReactNode;
   className?: string;
+  bottomClassName?: string;
 }
 
 export default function Toggler({
@@ -67,9 +68,14 @@ export default function Toggler({
   warning,
   error,
   className,
+  bottomClassName,
 }: TogglerProps): JSX.Element {
   return (
-    <Flex direction="column" className={cx(css({ padding: space_S + ' 0' }), className)}>
+    <Flex
+      direction="column"
+      align="normal"
+      className={cx(css({ padding: space_S + ' 0' }), className)}
+    >
       <Flex align="center" justify="flex-start">
         <Flex
           onClick={readOnly ? undefined : () => onChange(!value)}
@@ -80,9 +86,11 @@ export default function Toggler({
         <div>&nbsp;{label}</div>
         {tip != null && <Tips>{tip}</Tips>}
       </Flex>
-      {fieldFooter != null && <div className={cx(textSmall)}>{fieldFooter}</div>}
-      {warning != null && <div className={cx(textSmall, warningStyle)}>{warning}</div>}
-      {error != null && <div className={cx(textSmall, errorStyle)}>{error}</div>}
+      {fieldFooter != null && <div className={textSmall}>{fieldFooter}</div>}
+      <Flex direction="column" align="center" className={cx(textSmall, bottomClassName)}>
+        {warning != null && <div className={warningStyle}>{warning}</div>}
+        {error != null && <div className={errorStyle}>{error}</div>}
+      </Flex>
     </Flex>
   );
 }

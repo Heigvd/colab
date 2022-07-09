@@ -30,10 +30,10 @@ export default function PositionEditor({ card }: PositionEditorProps): JSX.Eleme
       fields={[
         {
           key: 'index',
-          type: 'text',
           label: 'Position index',
-          isMandatory: false,
           placeholder: '0',
+          type: 'text',
+          isMandatory: false,
           tip: (
             <Flex direction="row">
               <Flex grow={1} className={css({ padding: space_S })}>

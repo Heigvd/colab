@@ -44,6 +44,7 @@ interface SelectInputProps<T, IsMulti extends boolean> {
   warning?: React.ReactNode;
   error?: React.ReactNode;
   className?: string;
+  bottomClassName?: string;
 }
 
 export default function SelectInput<T, IsMulti extends boolean>({
@@ -61,6 +62,7 @@ export default function SelectInput<T, IsMulti extends boolean>({
   warning,
   error,
   className,
+  bottomClassName,
 }: SelectInputProps<T, IsMulti>): JSX.Element {
   const [state, setState] = React.useState<T | undefined>(value);
   const currentValue = options.find(o => o.value === state);
@@ -98,49 +100,53 @@ export default function SelectInput<T, IsMulti extends boolean>({
           {mandatory && ' * '}
         </div>
       </Flex>
-      {canCreateOption ? (
-        <Creatable
-          value={currentValue}
-          placeholder={placeholder}
-          isDisabled={readOnly}
-          isMulti={isMulti}
-          options={options}
-          isClearable
-          menuPortalTarget={document.body}
-          openMenuOnClick
-          openMenuOnFocus
-          onChange={onInternalChange}
-          formatCreateLabel={(inputValue: string) => (
-            <div className={cx(selectCreatorStyle, textSmall)}>
-              <FontAwesomeIcon icon={faPlus} /> {' Create "' + inputValue + '"'}
-            </div>
-          )}
-          styles={{
-            menuPortal: base => ({ ...base, zIndex: 9999 }),
-            menu: base => ({ ...base, marginTop: '0px' }),
-            container: base => ({ ...base, textAlign: 'initial' }),
-            option: base => ({ ...base, fontSize: '.9em' }),
-          }}
-        />
-      ) : (
-        <Select
-          value={currentValue}
-          placeholder={placeholder}
-          isDisabled={readOnly}
-          isMulti={isMulti}
-          options={options}
-          onChange={onInternalChange}
-          menuPortalTarget={document.body}
-          styles={{
-            menuPortal: base => ({ ...base, zIndex: 9999 }),
-            menu: base => ({ ...base, marginTop: '0px' }),
-            container: base => ({ ...base, textAlign: 'initial' }),
-          }}
-        />
-      )}
-      {fieldFooter != null && <div className={cx(textSmall)}>{fieldFooter}</div>}
-      {warning != null && <div className={cx(textSmall, warningStyle)}>{warning}</div>}
-      {error != null && <div className={cx(textSmall, errorStyle)}>{error}</div>}
+      <Flex direction="column" className={textSmall} align="stretch">
+        {canCreateOption ? (
+          <Creatable
+            value={currentValue}
+            placeholder={placeholder}
+            isDisabled={readOnly}
+            isMulti={isMulti}
+            options={options}
+            isClearable
+            menuPortalTarget={document.body}
+            openMenuOnClick
+            openMenuOnFocus
+            onChange={onInternalChange}
+            formatCreateLabel={(inputValue: string) => (
+              <div className={cx(selectCreatorStyle, textSmall)}>
+                <FontAwesomeIcon icon={faPlus} /> {' Create "' + inputValue + '"'}
+              </div>
+            )}
+            styles={{
+              menuPortal: base => ({ ...base, zIndex: 9999 }),
+              menu: base => ({ ...base, marginTop: '0px' }),
+              container: base => ({ ...base, textAlign: 'initial' }),
+              option: base => ({ ...base, fontSize: '.9em' }),
+            }}
+          />
+        ) : (
+          <Select
+            value={currentValue}
+            placeholder={placeholder}
+            isDisabled={readOnly}
+            isMulti={isMulti}
+            options={options}
+            onChange={onInternalChange}
+            menuPortalTarget={document.body}
+            styles={{
+              menuPortal: base => ({ ...base, zIndex: 9999 }),
+              menu: base => ({ ...base, marginTop: '0px' }),
+              container: base => ({ ...base, textAlign: 'initial' }),
+            }}
+          />
+        )}
+      </Flex>
+      {fieldFooter != null && <div className={textSmall}>{fieldFooter}</div>}
+      <Flex direction="column" align="center" className={cx(textSmall, bottomClassName)}>
+        {warning != null && <div className={warningStyle}>{warning}</div>}
+        {error != null && <div className={errorStyle}>{error}</div>}
+      </Flex>
     </Flex>
   );
 }

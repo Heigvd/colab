@@ -70,10 +70,10 @@ export default function ResourceCreator({
       placeholder: 'Select or type to create',
       type: 'select',
       isMandatory: false,
-      tip: 'Like folders to organize the documentation',
       isMulti: false,
       canCreateOption: true,
       options: allCategories.map(c => ({ label: c, value: c })),
+      tip: 'Like folders to organize the documentation',
     }),
   ];
 

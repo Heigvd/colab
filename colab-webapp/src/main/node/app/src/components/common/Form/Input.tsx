@@ -35,6 +35,7 @@ interface InputProps extends Omit<React.HTMLProps<HTMLInputElement>, 'label' | '
   warning?: React.ReactNode;
   error?: React.ReactNode;
   className?: string;
+  bottomClassName?: string;
 }
 
 export default function Input({
@@ -56,6 +57,7 @@ export default function Input({
   warning,
   error,
   className,
+  bottomClassName,
 }: InputProps): JSX.Element {
   const [state, setState] = React.useState<string | number>(value || '');
 
@@ -129,9 +131,11 @@ export default function Input({
           className={textareaStyle}
         />
       )}
-      {fieldFooter != null && <div className={cx(textSmall)}>{fieldFooter}</div>}
-      {warning != null && <div className={cx(textSmall, warningStyle)}>{warning}</div>}
-      {error != null && <div className={cx(textSmall, errorStyle)}>{error}</div>}
+      {fieldFooter != null && <div className={textSmall}>{fieldFooter}</div>}
+      <Flex direction="column" align="center" className={cx(textSmall, bottomClassName)}>
+        {warning != null && <div className={warningStyle}>{warning}</div>}
+        {error != null && <div className={errorStyle}>{error}</div>}
+      </Flex>
     </Flex>
   );
 }

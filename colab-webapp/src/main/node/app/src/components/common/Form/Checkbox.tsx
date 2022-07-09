@@ -28,6 +28,7 @@ interface CheckboxProps {
   warning?: React.ReactNode;
   error?: React.ReactNode;
   className?: string;
+  bottomClassName?: string;
 }
 
 export default function Checkbox({
@@ -40,6 +41,7 @@ export default function Checkbox({
   warning,
   error,
   className,
+  bottomClassName,
 }: CheckboxProps): JSX.Element {
   return (
     <Flex
@@ -60,9 +62,11 @@ export default function Checkbox({
         </Flex>
         {tip != null && <Tips>{tip}</Tips>}
       </Flex>
-      {fieldFooter != null && <div className={cx(textSmall)}>{fieldFooter}</div>}
-      {warning != null && <div className={cx(textSmall, warningStyle)}>{warning}</div>}
-      {error != null && <div className={cx(textSmall, errorStyle)}>{error}</div>}
+      {fieldFooter != null && <div className={textSmall}>{fieldFooter}</div>}
+      <Flex direction="column" align="center" className={cx(textSmall, bottomClassName)}>
+        {warning != null && <div className={warningStyle}>{warning}</div>}
+        {error != null && <div className={errorStyle}>{error}</div>}
+      </Flex>
     </Flex>
   );
 }

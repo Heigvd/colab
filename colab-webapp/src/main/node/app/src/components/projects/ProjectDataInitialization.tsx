@@ -69,11 +69,11 @@ export default function ProjectDataInitialization({
           fields={[
             {
               key: 'email',
-              type: 'text',
               label: 'Invite members',
+              placeholder: 'email',
+              type: 'text',
               isMandatory: false,
               readOnly: readOnly,
-              placeholder: 'email',
               isErroneous: value => value.email.length > 0 && value.email.match('.+@.+') == null,
               errorMessage: i18n.authentication.error.emailAddressNotValid,
             },
