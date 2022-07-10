@@ -49,12 +49,12 @@ import {
 } from '../../styling/style';
 import SideCollapsiblePanel from './../SideCollapsiblePanel';
 
-interface Props {
+interface CardTypeEditorProps {
   className?: string;
   usage: 'currentProject' | 'global';
 }
 
-export default function CardTypeEditor({ className, usage }: Props): JSX.Element {
+export default function CardTypeEditor({ className, usage }: CardTypeEditorProps): JSX.Element {
   const navigate = useNavigate();
 
   const id = useParams<'id'>();

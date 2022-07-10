@@ -9,7 +9,7 @@ import * as React from 'react';
 import * as LiveHelper from '../../../LiveHelper';
 import logger from '../../../logger';
 
-export interface Props {
+export interface CleverTextareaProps {
   value: string;
   onChange: (newValue: string) => void;
   className?: string;
@@ -46,7 +46,11 @@ function computeSelectionOffsets(offsets: LiveHelper.Offsets, node: HTMLTextArea
 /**
  * Managed textarea which try to keep selected text accros updates
  */
-export default function CleverTextarea({ value, onChange, className }: Props): JSX.Element {
+export default function CleverTextarea({
+  value,
+  onChange,
+  className,
+}: CleverTextareaProps): JSX.Element {
   // use a ref to manage the input directly
   const inputRef = React.useRef<HTMLTextAreaElement>(null);
 

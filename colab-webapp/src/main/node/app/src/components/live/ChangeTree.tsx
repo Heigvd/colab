@@ -70,14 +70,14 @@ function ChangeDisplay({
   );
 }
 
-interface Props {
+interface ChangeTreeProps {
   atClass: string;
   atId: number;
   value: string;
   revision: string;
 }
 
-export interface ChangeTreeProps {
+export interface ChangeTreeRawProps {
   value: string;
   changes: Change[];
   revision: string;
@@ -89,7 +89,7 @@ export function ChangeTreeRaw({
   changes,
   revision,
   onDelete,
-}: ChangeTreeProps): JSX.Element {
+}: ChangeTreeRawProps): JSX.Element {
   const divRefs = React.useRef<DivRefType>({});
 
   const toProcess = [...changes];
@@ -232,7 +232,12 @@ export function ChangeTreeRaw({
   );
 }
 
-export default function ChangeTree({ atClass, atId, value, revision }: Props): JSX.Element {
+export default function ChangeTree({
+  atClass,
+  atId,
+  value,
+  revision,
+}: ChangeTreeProps): JSX.Element {
   const changesState = useChanges(atClass, atId);
   const dispatch = useAppDispatch();
 

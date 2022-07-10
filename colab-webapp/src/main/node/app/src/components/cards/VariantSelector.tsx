@@ -17,7 +17,7 @@ import Flex from '../common/layout/Flex';
 import { useDefaultVariant } from '../projects/edition/Editor';
 import { space_S } from '../styling/style';
 
-interface Props {
+interface VariantSelectorProps {
   card: Card;
   children: (variant: CardContent | undefined, list: CardContent[]) => JSX.Element;
 }
@@ -44,7 +44,7 @@ export const computeNav = (
   }
 };
 
-export default function VariantSelector({ card, children }: Props): JSX.Element {
+export default function VariantSelector({ card, children }: VariantSelectorProps): JSX.Element {
   const [displayedVariantId, setDisplayedVariantId] = React.useState<number | undefined>();
 
   const contents = useVariantsOrLoad(card);

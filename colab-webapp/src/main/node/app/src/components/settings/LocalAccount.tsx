@@ -16,11 +16,11 @@ import IconButton from '../common/element/IconButton';
 import { PasswordScore } from '../common/Form/Form';
 import { linkStyle } from '../styling/style';
 
-export interface Props {
+export interface LocalAccountProps {
   accountId: number;
 }
 
-export default function LocalAccount(props: Props): JSX.Element {
+export default function LocalAccount(props: LocalAccountProps): JSX.Element {
   const dispatch = useAppDispatch();
   const [pwState, setPwState] = React.useState<'SET' | 'CHANGE_PASSWORD'>('SET');
   const [newPassword, setNewPassword] = React.useState('');

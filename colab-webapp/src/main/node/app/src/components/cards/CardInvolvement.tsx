@@ -15,11 +15,11 @@ import { space_M } from '../styling/style';
 import CardACL from './CardACL';
 import InvolvementSelector from './InvolvementSelector';
 
-interface Props {
+interface CardInvolvementProps {
   card: Card;
 }
 
-export default function CardInvolvement({ card }: Props): JSX.Element {
+export default function CardInvolvement({ card }: CardInvolvementProps): JSX.Element {
   const dispatch = useAppDispatch();
   const updateDefInvolvementLevel = React.useCallback(
     (value: InvolvementLevel | null) => {

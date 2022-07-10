@@ -342,11 +342,11 @@ const RoleDisplay = ({ role }: RoleProps) => {
   );
 };
 
-export interface Props {
+export interface TeamProps {
   project: Project;
 }
 
-export default function Team({ project }: Props): JSX.Element {
+export default function Team({ project }: TeamProps): JSX.Element {
   const dispatch = useAppDispatch();
   const projectId = project.id;
 

@@ -318,7 +318,7 @@ interface Entry<T> {
   modal?: boolean;
 }
 
-interface Props<T> {
+interface DropDownMenuProps<T> {
   icon?: IconProp;
   layerForIcon?: { layerIcon: IconProp; transform: string | Transform };
   title?: string;
@@ -346,7 +346,7 @@ export default function DropDownMenu<T extends string | number | symbol>({
   buttonClassName,
   dropClassName,
   idleHoverStyle = 'FOREGROUND',
-}: Props<T>): JSX.Element {
+}: DropDownMenuProps<T>): JSX.Element {
   const [open, setOpen] = React.useState<boolean>(false);
 
   const dropRef = useRef<HTMLDivElement>(null);

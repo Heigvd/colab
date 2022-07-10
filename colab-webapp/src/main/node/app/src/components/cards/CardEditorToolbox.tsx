@@ -65,7 +65,7 @@ const toolboxButtonStyle = cx(
   }),
 );
 
-interface Props {
+interface CardEditorToolboxProps {
   open: boolean;
   docOwnership: DocumentOwnership;
   prefixElement?: React.ReactNode;
@@ -75,7 +75,7 @@ export default function CardEditorToolbox({
   open,
   docOwnership,
   prefixElement,
-}: Props): JSX.Element {
+}: CardEditorToolboxProps): JSX.Element {
   const { setSelectedDocId, selectedDocId, selectedOwnKind, setEditMode, TXToptions, editToolbar } =
     React.useContext(CardEditorCTX);
   const showTree = TXToptions?.showTree || false;

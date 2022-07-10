@@ -14,7 +14,7 @@ import Clickable from '../layout/Clickable';
 import Button from './Button';
 import IconButton from './IconButton';
 
-export interface Props {
+export interface InlineConfirmIconButtonProps {
   icon: IconProp;
   title: string;
   className?: string;
@@ -93,7 +93,7 @@ export function InlineConfirmIconButton({
   icon,
   onConfirm,
   title,
-}: Props): JSX.Element {
+}: InlineConfirmIconButtonProps): JSX.Element {
   const [waitConfirm, setConfirm] = React.useState(false);
   const i18n = useTranslations();
 

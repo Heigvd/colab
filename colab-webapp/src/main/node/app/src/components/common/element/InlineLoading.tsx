@@ -10,7 +10,7 @@ import Picto from '../../styling/Picto';
 import PictoBw from '../../styling/PictoBw';
 import { pulseEase } from '../../styling/style';
 
-interface Props {
+interface InlineLoadingProps {
   size?: string;
   maxWidth?: string;
   margin?: string;
@@ -22,7 +22,7 @@ export default function InlineLoading({
   maxWidth = '',
   margin = '',
   colour = false,
-}: Props): JSX.Element {
+}: InlineLoadingProps): JSX.Element {
   const EffectivePicto = colour ? Picto : PictoBw;
   return (
     <div

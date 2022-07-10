@@ -45,7 +45,7 @@ const textareaButtonStyle = css({
   justifyContent: 'flex-end',
 });
 
-export interface Props {
+export interface InlineInputProps {
   label?: string;
   value: string;
   readOnly?: boolean;
@@ -79,7 +79,7 @@ export default function InlineInput({
   inputType = 'input',
   autosave = true,
   delay = 300,
-}: Props): JSX.Element {
+}: InlineInputProps): JSX.Element {
   const i18n = useTranslations();
 
   const spanRef = React.useRef<HTMLSpanElement>(null);

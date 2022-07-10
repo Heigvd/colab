@@ -10,7 +10,7 @@ import * as React from 'react';
 
 // will soon not be used anymore
 
-interface Props {
+interface WithToolbarProps {
   children: JSX.Element;
   toolbar?: React.ReactNode;
   toolbarPosition?:
@@ -37,7 +37,7 @@ interface Props {
 }
 
 const cssPos = (
-  pos: Props['toolbarPosition'],
+  pos: WithToolbarProps['toolbarPosition'],
   deltaX: string,
   deltaY: string,
 ): {
@@ -160,7 +160,7 @@ export default function WithToolbar({
   offsetX = 0,
   offsetY = 0,
   grow = 1,
-}: Props): JSX.Element {
+}: WithToolbarProps): JSX.Element {
   const toolbarRef = React.useRef<HTMLDivElement>(null);
 
   const [offsets, setOffsets] = React.useState({ x: '0px', y: '0px' });

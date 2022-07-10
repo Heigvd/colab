@@ -12,7 +12,7 @@ import { linkStyle, space_M } from '../../styling/style';
 import Modal from './Modal';
 import OpenClose from './OpenClose';
 
-interface Props {
+interface OpenCloseModalProps {
   title: React.ReactNode;
   className?: string;
   collapsedChildren: React.ReactNode;
@@ -50,7 +50,7 @@ export default function OpenCloseModal({
   widthMax,
   heightMax,
   onEnter,
-}: Props): JSX.Element {
+}: OpenCloseModalProps): JSX.Element {
   const navigate = useNavigate();
   const location = useLocation();
   //const match = useRouteMatch();

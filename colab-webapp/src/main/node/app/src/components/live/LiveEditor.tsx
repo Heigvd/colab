@@ -25,7 +25,7 @@ const shrink = css({
 
 export type EditState = 'VIEW' | 'EDIT';
 
-interface Props {
+interface LiveEditorProps {
   atClass: string;
   atId: number;
   value: string;
@@ -67,7 +67,7 @@ export default function LiveEditor({
   selected,
   flyingToolBar,
   toolBar,
-}: Props): JSX.Element {
+}: LiveEditorProps): JSX.Element {
   const liveSession = useAppSelector(state => state.websockets.sessionId);
 
   const { currentValue, onChange, status } = useLiveBlock({

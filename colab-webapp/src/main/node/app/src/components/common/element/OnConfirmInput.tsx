@@ -19,7 +19,7 @@ import Flex from '../layout/Flex';
 import Button from './Button';
 import IconButton from './IconButton';
 
-export interface Props {
+export interface OnConfirmInputProps {
   label?: string;
   okButtonLabel?: string;
   value: string;
@@ -61,7 +61,7 @@ export default function OnConfirmInput({
   cancelButtonLabel = 'Cancel',
   buttonsClassName,
   containerClassName,
-}: Props): JSX.Element {
+}: OnConfirmInputProps): JSX.Element {
   const [state, setState] = React.useState<string>(value || '');
 
   const [mode, setMode] = React.useState<'DISPLAY' | 'EDIT'>((directEdit && 'EDIT') || 'DISPLAY');

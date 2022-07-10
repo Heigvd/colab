@@ -12,11 +12,11 @@ import { ConfirmIconButton } from './element/ConfirmIconButton';
 
 // soon not used anymore
 
-export interface Props {
+export interface DestroyerProps {
   title?: string;
   icon?: IconDefinition;
   onDelete: () => void;
 }
-export function Destroyer({ onDelete, title, icon = faTrashAlt }: Props): JSX.Element {
+export function Destroyer({ onDelete, title, icon = faTrashAlt }: DestroyerProps): JSX.Element {
   return <ConfirmIconButton icon={icon} title={title || 'destroy'} onConfirm={onDelete} />;
 }

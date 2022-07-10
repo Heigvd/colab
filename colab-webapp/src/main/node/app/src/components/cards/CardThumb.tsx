@@ -34,7 +34,7 @@ import CompletionEditor from './CompletionEditor';
 import ContentSubs from './ContentSubs';
 import PositionEditor from './PositionEditor';
 
-interface Props {
+interface CardThumbProps {
   card: Card;
   variant: CardContent | undefined;
   variants: CardContent[];
@@ -48,7 +48,7 @@ export default function CardThumb({
   showSubcards = true,
   variant,
   variants,
-}: Props): JSX.Element {
+}: CardThumbProps): JSX.Element {
   const i18n = useTranslations();
   const dispatch = useAppDispatch();
   const navigate = useNavigate();

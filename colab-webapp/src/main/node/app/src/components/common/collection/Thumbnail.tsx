@@ -10,7 +10,7 @@ import * as React from 'react';
 import { space_M } from '../../styling/style';
 import Clickable from '../layout/Clickable';
 
-interface Props {
+interface ThumbnailProps {
   onClick?: () => void;
   onDoubleClick?: () => void;
   className?: string;
@@ -27,7 +27,7 @@ export default function Thumbnail({
   onDoubleClick,
   className,
   children,
-}: Props): JSX.Element {
+}: ThumbnailProps): JSX.Element {
   return (
     <Clickable
       onClick={onClick}

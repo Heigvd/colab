@@ -22,7 +22,7 @@ import CardThumbWithSelector from './CardThumbWithSelector';
 
 // TODO : nice className for div for empty slot (blank card)
 
-interface Props {
+interface ContentSubsProps {
   cardContent: CardContent;
   depth?: number;
   showEmptiness?: boolean;
@@ -105,7 +105,7 @@ export default function ContentSubs({
   showEmptiness = false,
   className,
   subcardsContainerStyle,
-}: Props): JSX.Element {
+}: ContentSubsProps): JSX.Element {
   const dispatch = useAppDispatch();
   const location = useLocation();
   const isInRootView = !location.pathname.match(/card/);

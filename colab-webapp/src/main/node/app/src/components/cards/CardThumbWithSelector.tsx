@@ -10,12 +10,15 @@ import * as React from 'react';
 import CardThumb from './CardThumb';
 import VariantSelector from './VariantSelector';
 
-interface Props {
+interface CardThumbWithSelectorProps {
   card: Card;
   depth?: number;
 }
 
-export default function CardThumbWithSelector({ card, depth = 1 }: Props): JSX.Element {
+export default function CardThumbWithSelector({
+  card,
+  depth = 1,
+}: CardThumbWithSelectorProps): JSX.Element {
   if (card.id == null) {
     return <i>Card without id is invalid...</i>;
   } else {

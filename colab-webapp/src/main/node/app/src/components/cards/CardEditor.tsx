@@ -63,7 +63,7 @@ import ContentSubs from './ContentSubs';
 import SideCollapsiblePanel from './SideCollapsiblePanel';
 import { computeNav, VariantPager } from './VariantSelector';
 
-interface Props {
+interface CardEditorProps {
   card: Card;
   variant: CardContent;
   showSubcards?: boolean;
@@ -180,7 +180,11 @@ const defaultCardEditorContext: CardEditorContext = {
 
 export const CardEditorCTX = React.createContext<CardEditorContext>(defaultCardEditorContext);
 
-export default function CardEditor({ card, variant, showSubcards = true }: Props): JSX.Element {
+export default function CardEditor({
+  card,
+  variant,
+  showSubcards = true,
+}: CardEditorProps): JSX.Element {
   const i18n = useTranslations();
   const dispatch = useAppDispatch();
   const navigate = useNavigate();

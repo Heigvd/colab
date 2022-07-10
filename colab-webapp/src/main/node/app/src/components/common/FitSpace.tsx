@@ -10,12 +10,12 @@ import * as React from 'react';
 
 // not used anymore
 
-export interface Props {
+export interface FitSpaceProps {
   children: JSX.Element;
   direction?: 'row' | 'column';
 }
 
-export default function FitSpace({ children, direction = 'column' }: Props): JSX.Element {
+export default function FitSpace({ children, direction = 'column' }: FitSpaceProps): JSX.Element {
   return (
     <div className={css({ flexGrow: 1, display: 'flex', flexDirection: direction })}>
       {children}

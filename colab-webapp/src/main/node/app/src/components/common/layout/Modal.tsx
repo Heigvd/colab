@@ -13,7 +13,7 @@ import IconButton from '../element/IconButton';
 import Flex from './Flex';
 import Overlay from './Overlay';
 
-interface Props {
+interface ModalProps {
   title: React.ReactNode;
   children: (collapse: () => void) => React.ReactNode;
   footer?: (collapse: () => void) => React.ReactNode;
@@ -78,7 +78,7 @@ export default function Modal({
   className,
   modalBodyClassName,
   onEnter,
-}: Props): JSX.Element {
+}: ModalProps): JSX.Element {
   const handleEnter = (event: KeyboardEvent) => {
     if (event.key === 'Enter') {
       if (onEnter) {

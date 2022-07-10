@@ -77,7 +77,7 @@ const confirmButtonsStyle = css({
   display: 'inline-flex',
 });
 
-export interface Props {
+export interface InlineInputProps {
   label?: string;
   value: string;
   readOnly?: boolean;
@@ -109,7 +109,7 @@ export default function InlineInput({
   maxWidth = '100%',
   autofocus,
   rows,
-}: Props): JSX.Element {
+}: InlineInputProps): JSX.Element {
   const i18n = useTranslations();
 
   const inputRef = React.useRef<HTMLInputElement>();

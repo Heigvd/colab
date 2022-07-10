@@ -24,13 +24,13 @@ const marginDownSmall = css({
   marginBottom: 0,
 });
 
-interface Props {
+interface CardSettingsProps {
   card: Card;
   variant: CardContent;
   onClose: () => void;
 }
 
-export default function CardSettings({ card, variant }: Props): JSX.Element {
+export default function CardSettings({ card, variant }: CardSettingsProps): JSX.Element {
   const dispatch = useAppDispatch();
 
   return (

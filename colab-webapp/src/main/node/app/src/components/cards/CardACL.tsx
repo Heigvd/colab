@@ -120,11 +120,11 @@ export function MemberACL({ member, acl }: { member: TeamMember; acl: CardAcl })
   );
 }
 
-interface Props {
+interface CardACLProps {
   card: Card;
 }
 
-export default function CardACL({ card }: Props): JSX.Element {
+export default function CardACL({ card }: CardACLProps): JSX.Element {
   const { project } = useProjectBeingEdited();
   const { members, roles, status: teamStatus } = useAndLoadProjectTeam(project?.id);
   const acl = useAndLoadCardACL(card.id);
