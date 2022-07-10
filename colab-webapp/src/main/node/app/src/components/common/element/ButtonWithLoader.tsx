@@ -81,7 +81,7 @@ export default function ButtonWithLoader({
       clickable={clickable}
     >
       <Flex align="center" className={loading ? css({ opacity: 0 }) : undefined}>
-        {reverseOrder ? children : null}
+        {reverseOrder && children}
         {icon && (
           <FontAwesomeIcon
             icon={icon}
@@ -90,7 +90,7 @@ export default function ButtonWithLoader({
             className={reverseOrder ? css({ marginLeft: space_S }) : css({ marginRight: space_S })}
           />
         )}
-        {!reverseOrder ? children : null}
+        {!reverseOrder && children}
       </Flex>
       {loading && (
         <div className={cx({ [overlayIconStyle]: loading })}>

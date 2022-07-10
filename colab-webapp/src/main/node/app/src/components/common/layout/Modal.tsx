@@ -100,7 +100,7 @@ export default function Modal({
           <Flex grow={1} align={'center'} className={titleStyle}>
             {title}
           </Flex>
-          {showCloseButton ? (
+          {showCloseButton && (
             <IconButton
               className={cx(closeIconStyle, lightIconButtonStyle)}
               iconSize="lg"
@@ -108,7 +108,7 @@ export default function Modal({
               icon={faTimes}
               onClick={onClose}
             />
-          ) : null}
+          )}
         </div>
         <Flex
           grow={1}

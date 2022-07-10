@@ -408,9 +408,9 @@ export default function DropDownMenu<T extends string | number | symbol>({
           >
             {current.label && (
               <>
-                {menuIcon === 'BURGER' ? (
+                {menuIcon === 'BURGER' && (
                   <span className={open ? openButtonStyle : buttonStyle}></span>
-                ) : null}
+                )}
                 {current.label}
               </>
             )}
@@ -427,9 +427,9 @@ export default function DropDownMenu<T extends string | number | symbol>({
                 <FontAwesomeIcon icon={icon} className={css({ fontSize: '16px' })} />
               ))}
             {current.label}
-            {menuIcon === 'CARET' ? (
+            {menuIcon === 'CARET' && (
               <FontAwesomeIcon icon={faCaretDown} className={css({ marginLeft: space_S })} />
-            ) : null}
+            )}
           </Flex>
           {open && (
             <div

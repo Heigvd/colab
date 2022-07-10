@@ -197,7 +197,7 @@ export function ConfirmIconButton({
           />
         )}
       </div>
-      {waitConfirm ? (
+      {waitConfirm && (
         <div className={bubbleStyle(position)}>
           <Clickable title={`${i18n.common.cancel} ${title}`} onClick={askConfirm}>
             <span className={bubbleItem}>{cancelInvite || i18n.common.cancel}</span>
@@ -207,7 +207,7 @@ export function ConfirmIconButton({
             <span className={bubbleItem}>{confirmInvite || i18n.confirm}</span>
           </Clickable>
         </div>
-      ) : null}
+      )}
     </div>
   );
 }

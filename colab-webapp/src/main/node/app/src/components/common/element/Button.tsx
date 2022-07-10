@@ -46,7 +46,7 @@ export default function Button({
       clickableClassName={cx(invertedButton ? invertedButtonStyle : buttonStyle, className)}
       clickable={clickable}
     >
-      {reverseOrder ? children : null}
+      {reverseOrder && children}
       {icon && (
         <FontAwesomeIcon
           icon={icon}
@@ -55,7 +55,7 @@ export default function Button({
           className={reverseOrder ? css({ marginLeft: space_S }) : css({ marginRight: space_S })}
         />
       )}
-      {!reverseOrder ? children : null}
+      {!reverseOrder && children}
     </Clickable>
   );
 }
