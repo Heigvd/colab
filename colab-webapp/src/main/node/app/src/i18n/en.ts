@@ -40,6 +40,9 @@ export const en = {
     label: {
       checkYourMailbox: 'Check your mailbox!',
     },
+    error: {
+      missingContent: 'oh there is nothing to display, dear developer please fix it',
+    },
   },
 
   //////////////////////////////////////////////////////////////////////////////////////////////////
