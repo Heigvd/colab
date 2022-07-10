@@ -11,10 +11,10 @@ import { fullPageOverlayStyle } from '../styling/style';
 interface Props {
   children: React.ReactNode;
   backgroundStyle?: string;
-  clickOutside?: () => void;
+  onClickOutside?: () => void;
 }
 
-export default function Overlay({ children, backgroundStyle, clickOutside }: Props): JSX.Element {
+export default function Overlay({ children, backgroundStyle, onClickOutside }: Props): JSX.Element {
   const clickIn = React.useCallback((event: React.MouseEvent<HTMLDivElement> | undefined) => {
     if (event != null) {
       event.stopPropagation();
@@ -22,10 +22,10 @@ export default function Overlay({ children, backgroundStyle, clickOutside }: Pro
   }, []);
 
   const clickOut = React.useCallback(() => {
-    if (clickOutside) {
-      clickOutside();
+    if (onClickOutside) {
+      onClickOutside();
     }
-  }, [clickOutside]);
+  }, [onClickOutside]);
 
   //  /**
   //   * Pressing escape simulate clickOutside()

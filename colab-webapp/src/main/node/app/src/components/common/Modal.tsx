@@ -79,13 +79,12 @@ export default function Modal({
   modalBodyClassName,
   onEnter,
 }: Props): JSX.Element {
-  
   const handleEnter = (event: KeyboardEvent) => {
     if (event.key === 'Enter') {
-      if(onEnter){
+      if (onEnter) {
         onEnter(() => onClose());
-      }     
-     }
+      }
+    }
   };
 
   React.useEffect(() => {
@@ -95,7 +94,7 @@ export default function Modal({
     };
   });
   return (
-    <Overlay backgroundStyle={backgroundStyle} clickOutside={onClose}>
+    <Overlay backgroundStyle={backgroundStyle} onClickOutside={onClose}>
       <div className={cx(modalStyle, className || '')}>
         <div className={modalHeader}>
           <Flex grow={1} align={'center'} className={titleStyle}>
@@ -119,7 +118,11 @@ export default function Modal({
         >
           {children(onClose)}
         </Flex>
-        {footer && <Flex align='stretch' className={modalFooter}>{footer(onClose)}</Flex>}
+        {footer && (
+          <Flex align="stretch" className={modalFooter}>
+            {footer(onClose)}
+          </Flex>
+        )}
       </div>
     </Overlay>
   );
