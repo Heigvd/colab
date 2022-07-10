@@ -12,7 +12,7 @@ import * as React from 'react';
 import useTranslations from '../../i18n/I18nContext';
 import { ConfirmIconButton } from '../common/ConfirmIconButton';
 import Flex from '../common/Flex';
-import Form from '../common/Form/Form';
+import Form, { emailFormat } from '../common/Form/Form';
 import Input from '../common/Form/Input';
 import {
   invertedButtonStyle,
@@ -74,7 +74,8 @@ export default function ProjectDataInitialization({
               type: 'text',
               isMandatory: false,
               readOnly: readOnly,
-              isErroneous: value => value.email.length > 0 && value.email.match('.+@.+') == null,
+              isErroneous: value =>
+                value.email.length > 0 && value.email.match(emailFormat) == null,
               errorMessage: i18n.authentication.error.emailAddressNotValid,
             },
           ]}

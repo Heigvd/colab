@@ -27,7 +27,7 @@ import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import ConfirmDeleteModal from '../common/ConfirmDeleteModal';
 import { Destroyer } from '../common/Destroyer';
 import DropDownMenu, { modalEntryStyle } from '../common/DropDownMenu';
-import { mailformat } from '../common/Form/Form';
+import { emailFormat } from '../common/Form/Form';
 import IconButton from '../common/IconButton';
 import IconButtonWithLoader from '../common/IconButtonWithLoader';
 import InlineInputNew from '../common/InlineInputNew';
@@ -410,9 +410,9 @@ export default function Team({ project }: Props): JSX.Element {
             className={linkStyle}
             icon={faPaperPlane}
             title="Send"
-            isLoading={invite.length > 0 && invite.match(mailformat) != null}
+            isLoading={invite.length > 0 && invite.match(emailFormat) != null}
             onClick={() => {
-              if (invite.match(mailformat)) {
+              if (invite.match(emailFormat)) {
                 setError(false);
                 dispatch(
                   API.sendInvitation({

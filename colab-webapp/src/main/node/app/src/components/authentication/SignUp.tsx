@@ -13,7 +13,7 @@ import * as API from '../../API/api';
 import { buildLinkWithQueryParam } from '../../helper';
 import useTranslations from '../../i18n/I18nContext';
 import { useAppDispatch } from '../../store/hooks';
-import Form, { Field } from '../common/Form/Form';
+import Form, { emailFormat, Field } from '../common/Form/Form';
 import { InlineLink } from '../common/Link';
 import { lightLinkStyle, space_M } from '../styling/style';
 import PasswordFeedbackDisplay from './PasswordFeedbackDisplay';
@@ -59,7 +59,7 @@ export default function SignUpForm({ redirectTo }: SignUpFormProps): JSX.Element
       label: i18n.authentication.field.emailAddress,
       type: 'text',
       isMandatory: true,
-      isErroneous: value => value.email.match('.+@.+') == null,
+      isErroneous: value => value.email.match(emailFormat) == null,
       errorMessage: i18n.authentication.error.emailAddressNotValid,
     },
     {
