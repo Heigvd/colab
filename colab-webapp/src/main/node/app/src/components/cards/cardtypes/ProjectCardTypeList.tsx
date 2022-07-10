@@ -104,7 +104,7 @@ export default function ProjectCardTypeList(): JSX.Element {
               </div>
             )}
             <Collapsible
-              title="Shared available types"
+              label="Shared available types"
               contentClassName={css({ flexDirection: 'column', alignItems: 'stretch' })}
             >
               {availableCTStatus !== 'READY' ? (

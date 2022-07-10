@@ -647,7 +647,7 @@ export default function CardEditor({ card, variant, showSubcards = true }: Props
           </Flex>
           <VariantPager allowCreation={userAcl.write} card={card} current={variant} />
           {showSubcards ? (
-            <Collapsible title="Subcards">
+            <Collapsible label="Subcards">
               <ContentSubs
                 depth={1}
                 cardContent={variant}

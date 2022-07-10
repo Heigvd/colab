@@ -19,12 +19,14 @@ const openStyle = css({
   transition: 'max-height 500ms ease-in-out',
   overflow: 'hidden',
 });
+
 const closeStyle = css({
   maxHeight: '0px',
   transition: 'max-height 500ms ease-in-out',
   overflow: 'hidden',
 });
-const collapseTitleStyle = cx(
+
+const defaultLabelStyle = cx(
   css({
     padding: space_S,
     marginTop: space_S,
@@ -40,39 +42,39 @@ const collapseTitleStyle = cx(
 
 export interface CollapsibleProps {
   icon?: IconProp;
+  label: string | React.ReactNode;
   open?: boolean;
-  children: React.ReactNode;
-  titleClassName?: string;
-  contentClassName?: string;
-  title: string | React.ReactNode;
   tooltip?: string;
+  children: React.ReactNode;
+  labelClassName?: string;
+  contentClassName?: string;
 }
 
 export default function Collapsible({
   icon,
+  label,
   open,
-  children,
-  titleClassName,
-  contentClassName,
-  title,
   tooltip,
+  children,
+  labelClassName,
+  contentClassName,
 }: CollapsibleProps): JSX.Element {
   const [showContent, setShowContent] = React.useState<boolean>(open || false);
   return (
     <>
       <Flex
         align="center"
-        className={cx(collapseTitleStyle, titleClassName)}
         onClick={() => setShowContent(showContent => !showContent)}
+        className={cx(defaultLabelStyle, labelClassName)}
       >
         {icon && (
           <FontAwesomeIcon
             icon={icon}
-            className={paddingAroundStyle([1, 3], space_S)}
             title={tooltip}
+            className={paddingAroundStyle([1, 3], space_S)}
           />
         )}
-        {title}
+        {label}
         <IconButton
           icon={showContent ? faChevronUp : faChevronDown}
           title={
