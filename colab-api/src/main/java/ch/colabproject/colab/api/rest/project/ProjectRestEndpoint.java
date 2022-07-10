@@ -122,10 +122,13 @@ public class ProjectRestEndpoint {
             project = new Project();
             project.setName(creationData.getName());
             project.setDescription(creationData.getDescription());
+            project.setIllustration(creationData.getIllustration());
+
             projectManager.createProject(project);
         } else {
             project = projectManager.createProjectFromModel(creationData.getName(),
-                creationData.getDescription(), creationData.getModelId());
+                creationData.getDescription(), creationData.getIllustration(),
+                creationData.getModelId());
         }
 
         creationData.getGuestsEmail().stream().forEach(email -> {

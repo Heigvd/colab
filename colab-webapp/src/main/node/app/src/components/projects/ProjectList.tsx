@@ -6,14 +6,7 @@
  */
 
 import { css, cx } from '@emotion/css';
-import {
-  faCog,
-  faCopy,
-  faEdit,
-  faEllipsisV,
-  faGamepad,
-  faTrash,
-} from '@fortawesome/free-solid-svg-icons';
+import { faCog, faCopy, faEdit, faEllipsisV, faTrash } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { AsyncThunk } from '@reduxjs/toolkit';
 import { Project } from 'colab-rest-client';
@@ -23,6 +16,7 @@ import * as API from '../../API/api';
 import { shallowEqual, useAppDispatch, useAppSelector } from '../../store/hooks';
 import { StateStatus } from '../../store/project';
 import ItemThumbnailsSelection from '../common/collection/ItemThumbnailsSelection';
+import IllustrationDisplay from '../common/element/IllustrationDisplay';
 import InlineLoading from '../common/element/InlineLoading';
 import ConfirmDeleteModal from '../common/layout/ConfirmDeleteModal';
 import DropDownMenu, { modalEntryStyle } from '../common/layout/DropDownMenu';
@@ -38,6 +32,7 @@ import {
   space_S,
   textSmall,
 } from '../styling/style';
+import { defaultProjectIllustration } from './ProjectCommon';
 import ProjectCreator from './ProjectCreator';
 import { ProjectDisplaySettings } from './ProjectDisplaySettings';
 
@@ -57,18 +52,17 @@ interface ProjectDisplayProps {
 // Display one project and allow to edit it
 const ProjectDisplay = ({ project }: ProjectDisplayProps) => {
   const dispatch = useAppDispatch();
+
   return (
     <Flex direction="column" align="stretch">
       <Flex
-        align="center"
-        justify="center"
         className={css({
-          //backgroundColor: `${project.color ? project.color : 'var(--secondaryColor)'}`,
-          backgroundColor: 'var(--secondaryColor)',
           height: '80px',
         })}
       >
-        <FontAwesomeIcon size="3x" icon={faGamepad} color={'#fff'} />
+        <IllustrationDisplay
+          illustration={project.illustration || { ...defaultProjectIllustration }}
+        />
       </Flex>
       <div
         className={cx(

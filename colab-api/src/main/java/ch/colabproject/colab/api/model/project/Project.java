@@ -11,15 +11,16 @@ import ch.colabproject.colab.api.model.ColabEntity;
 import ch.colabproject.colab.api.model.WithWebsocketChannels;
 import ch.colabproject.colab.api.model.card.AbstractCardType;
 import ch.colabproject.colab.api.model.card.Card;
+import ch.colabproject.colab.api.model.common.Illustration;
+import ch.colabproject.colab.api.model.common.Tracking;
 import ch.colabproject.colab.api.model.team.TeamMember;
 import ch.colabproject.colab.api.model.team.TeamRole;
 import ch.colabproject.colab.api.model.team.acl.HierarchicalPosition;
 import ch.colabproject.colab.api.model.tools.EntityHelper;
-import ch.colabproject.colab.api.model.tracking.Tracking;
 import ch.colabproject.colab.api.security.permissions.Conditions;
 import ch.colabproject.colab.api.security.permissions.project.ProjectConditions;
-import ch.colabproject.colab.api.ws.channel.tool.ChannelsBuilders.ChannelsBuilder;
 import ch.colabproject.colab.api.ws.channel.tool.ChannelsBuilders.AboutProjectOverviewChannelsBuilder;
+import ch.colabproject.colab.api.ws.channel.tool.ChannelsBuilders.ChannelsBuilder;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -93,6 +94,12 @@ public class Project implements ColabEntity, WithWebsocketChannels {
      */
     @Size(max = 255)
     private String description;
+
+    /**
+     * The icon to illustrate the project
+     */
+    @Embedded
+    private Illustration illustration;
 
     /**
      * The root card of the project containing all other cards
@@ -193,6 +200,20 @@ public class Project implements ColabEntity, WithWebsocketChannels {
      */
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    /**
+     * @return the icon to illustrate the project
+     */
+    public Illustration getIllustration() {
+        return illustration;
+    }
+
+    /**
+     * @param illustration the icon to illustrate the project
+     */
+    public void setIllustration(Illustration illustration) {
+        this.illustration = illustration;
     }
 
     /**
@@ -300,6 +321,7 @@ public class Project implements ColabEntity, WithWebsocketChannels {
             Project o = (Project) other;
             this.setName(o.getName());
             this.setDescription(o.getDescription());
+            this.setIllustration(o.getIllustration());
         } else {
             throw new ColabMergeException(this, other);
         }
