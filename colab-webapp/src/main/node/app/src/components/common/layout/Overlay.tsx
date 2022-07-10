@@ -8,13 +8,17 @@ import { css, cx } from '@emotion/css';
 import * as React from 'react';
 import { fullPageOverlayStyle } from '../../styling/style';
 
-interface Props {
+interface OverlayProps {
   children: React.ReactNode;
   backgroundStyle?: string;
   onClickOutside?: () => void;
 }
 
-export default function Overlay({ children, backgroundStyle, onClickOutside }: Props): JSX.Element {
+export default function Overlay({
+  children,
+  backgroundStyle,
+  onClickOutside,
+}: OverlayProps): JSX.Element {
   const clickIn = React.useCallback((event: React.MouseEvent<HTMLDivElement> | undefined) => {
     if (event != null) {
       event.stopPropagation();
