@@ -13,11 +13,6 @@ type DivProps = React.HTMLAttributes<HTMLDivElement>;
 export type FlexProps = DivProps & {
   theRef?: React.Ref<HTMLDivElement>;
   direction?: 'row' | 'column';
-  shrink?: CSSObject['flexShrink'];
-  grow?: CSSObject['flexGrow'];
-  basis?: CSSObject['flexBasis'];
-  overflow?: 'clip' | 'auto' | 'visible' | 'scroll' | 'unset' | 'hidden';
-  wrap?: 'nowrap' | 'wrap' | 'wrap-reverse';
   justify?:
     | 'center'
     | 'flex-start'
@@ -39,24 +34,29 @@ export type FlexProps = DivProps & {
     | 'first'
     | 'first baseline'
     | 'last baseline';
+  shrink?: CSSObject['flexShrink'];
+  grow?: CSSObject['flexGrow'];
+  basis?: CSSObject['flexBasis'];
+  wrap?: 'nowrap' | 'wrap' | 'wrap-reverse';
+  overflow?: 'clip' | 'auto' | 'visible' | 'scroll' | 'unset' | 'hidden';
   children: React.ReactNode;
 };
 
 export default function Flex(props: FlexProps): JSX.Element {
   const {
     theRef,
-    children,
-    onClick,
-    overflow,
-    className,
-    title,
-    wrap,
-    shrink,
-    grow,
-    basis,
     direction = 'row',
     justify = 'normal',
     align = 'flex-start',
+    shrink,
+    grow,
+    basis,
+    wrap,
+    overflow,
+    children,
+    onClick,
+    title,
+    className,
     ...restProps
   } = props;
   return (
