@@ -119,7 +119,7 @@ export default function MainApp(): JSX.Element {
           alignItems: 'center',
         })}
       >
-        <InlineLoading colour={true} /> <span>reconnecting...</span>
+        <InlineLoading colour={true} /> <span>{i18n.authentication.info.reconnecting}</span>
       </div>
     </Overlay>
   );
@@ -149,38 +149,39 @@ export default function MainApp(): JSX.Element {
   } else if (currentUser != null) {
     // user is authenticated
     return (
-      <Routes>
-        <Route path="/editor/:id/*" element={<EditorWrapper />} />
-        <Route
-          path="*"
-          element={
-            <>
-              <div className={fullPageStyle}>
-                <div
-                  className={cx(
-                    invertedThemeMode,
-                    css({
-                      display: 'flex',
-                      flexDirection: 'row',
-                      alignItems: 'center',
-                      boxSizing: 'border-box',
-                      padding: '0 ' + space_M,
-                    }),
-                  )}
-                >
-                  <Picto
+      <>
+        <Routes>
+          <Route path="/editor/:id/*" element={<EditorWrapper />} />
+          <Route
+            path="*"
+            element={
+              <>
+                <div className={fullPageStyle}>
+                  <div
                     className={cx(
+                      invertedThemeMode,
                       css({
-                        height: '30px',
-                        width: 'auto',
-                        paddingRight: space_M,
+                        display: 'flex',
+                        flexDirection: 'row',
+                        alignItems: 'center',
+                        boxSizing: 'border-box',
+                        padding: '0 ' + space_M,
                       }),
-                      paddingAroundStyle([1, 3, 4], space_S),
                     )}
-                  />
-                  <nav className={flex}>
-                    <MainMenuLink to="/">Projects</MainMenuLink>
-                    {/*
+                  >
+                    <Picto
+                      className={cx(
+                        css({
+                          height: '30px',
+                          width: 'auto',
+                          paddingRight: space_M,
+                        }),
+                        paddingAroundStyle([1, 3, 4], space_S),
+                      )}
+                    />
+                    <nav className={flex}>
+                      <MainMenuLink to="/">Projects</MainMenuLink>
+                      {/*
                     
                     {projectBeingEdited != null && (
                       <MainMenuLink to={`/editor/${projectBeingEdited.id}`}>
@@ -206,108 +207,109 @@ export default function MainApp(): JSX.Element {
                         />
                       </MainMenuLink>
                     )} */}
-                  </nav>
+                    </nav>
+                    <div
+                      className={css({
+                        flexGrow: 1,
+                      })}
+                    ></div>
+                    <DropDownMenu
+                      icon={faUserCircle}
+                      title={currentUser.username}
+                      valueComp={{ value: '', label: '' }}
+                      entries={[
+                        {
+                          value: 'username',
+                          label: (
+                            <>
+                              <div
+                                className={css({
+                                  borderBottom: '1px solid var(--darkGray)',
+                                  padding: space_S,
+                                })}
+                              >
+                                <FontAwesomeIcon icon={faUser} />{' '}
+                                {currentUser.firstname && currentUser.lastname
+                                  ? currentUser.firstname + ' ' + currentUser.lastname
+                                  : currentUser.username}
+                              </div>
+                            </>
+                          ),
+                          disabled: true,
+                        },
+                        {
+                          value: 'settings',
+                          label: (
+                            <>
+                              <FontAwesomeIcon icon={faCog} /> Settings
+                            </>
+                          ),
+                          action: () => navigate('/settings'),
+                        },
+                        ...(currentUser.admin
+                          ? [
+                              {
+                                value: 'admin',
+                                label: (
+                                  <>
+                                    <FontAwesomeIcon icon={faMeteor} /> Admin
+                                  </>
+                                ),
+                                action: () => navigate('/admin'),
+                              },
+                            ]
+                          : []),
+                        {
+                          value: 'logout',
+                          label: (
+                            <>
+                              Logout <FontAwesomeIcon icon={faSignOutAlt} />
+                            </>
+                          ),
+                          action: logout,
+                        },
+                      ]}
+                      buttonClassName={cx(invertedThemeMode, css({ marginLeft: space_S }))}
+                    />
+                    {passwordScore != null && passwordScore.score < 2 && (
+                      <FontAwesomeIcon
+                        title={i18n.authentication.error.yourPasswordIsWeak}
+                        icon={faExclamationTriangle}
+                      />
+                    )}
+                  </div>
+
                   <div
                     className={css({
                       flexGrow: 1,
+                      overflowY: 'auto',
+                      display: 'flex',
+                      flexDirection: 'column',
+                      '& > *': {
+                        flexGrow: 1,
+                      },
                     })}
-                  ></div>
-                  <DropDownMenu
-                    icon={faUserCircle}
-                    title={currentUser.username}
-                    valueComp={{ value: '', label: '' }}
-                    entries={[
-                      {
-                        value: 'username',
-                        label: (
-                          <>
-                            <div
-                              className={css({
-                                borderBottom: '1px solid var(--darkGray)',
-                                padding: space_S,
-                              })}
-                            >
-                              <FontAwesomeIcon icon={faUser} />{' '}
-                              {currentUser.firstname && currentUser.lastname
-                                ? currentUser.firstname + ' ' + currentUser.lastname
-                                : currentUser.username}
-                            </div>
-                          </>
-                        ),
-                        disabled: true,
-                      },
-                      {
-                        value: 'settings',
-                        label: (
-                          <>
-                            <FontAwesomeIcon icon={faCog} /> Settings
-                          </>
-                        ),
-                        action: () => navigate('/settings'),
-                      },
-                      ...(currentUser.admin
-                        ? [
-                            {
-                              value: 'admin',
-                              label: (
-                                <>
-                                  <FontAwesomeIcon icon={faMeteor} /> Admin
-                                </>
-                              ),
-                              action: () => navigate('/admin'),
-                            },
-                          ]
-                        : []),
-                      {
-                        value: 'logout',
-                        label: (
-                          <>
-                            Logout <FontAwesomeIcon icon={faSignOutAlt} />
-                          </>
-                        ),
-                        action: logout,
-                      },
-                    ]}
-                    buttonClassName={cx(invertedThemeMode, css({ marginLeft: space_S }))}
-                  />
-                  {passwordScore != null && passwordScore.score < 2 && (
-                    <FontAwesomeIcon
-                      title={i18n.authentication.error.yourPasswordIsWeak}
-                      icon={faExclamationTriangle}
-                    />
-                  )}
+                  >
+                    <Routes>
+                      <Route path="/*" element={<UserProjects />} />
+                      <Route path="/settings/*" element={<Settings />} />
+                      <Route path="/admin/*" element={<Admin />} />
+                      <Route path="/editor/:id/*" element={<EditorWrapper />} />
+                      <Route
+                        element={
+                          /* no matching route, redirect to projects */
+                          <Navigate to="/" />
+                        }
+                      />
+                    </Routes>
+                  </div>
                 </div>
-
-                <div
-                  className={css({
-                    flexGrow: 1,
-                    overflowY: 'auto',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    '& > *': {
-                      flexGrow: 1,
-                    },
-                  })}
-                >
-                  <Routes>
-                    <Route path="/*" element={<UserProjects />} />
-                    <Route path="/settings/*" element={<Settings />} />
-                    <Route path="/admin/*" element={<Admin />} />
-                    <Route path="/editor/:id/*" element={<EditorWrapper />} />
-                    <Route
-                      element={
-                        /* no matching route, redirect to projects */
-                        <Navigate to="/" />
-                      }
-                    />
-                  </Routes>
-                </div>
-              </div>
-              {reconnecting}
-            </>
-          }
-        />
-      </Routes>
+              </>
+            }
+          />
+        </Routes>
+        {reconnecting}
+      </>
     );
   } else {
     return (

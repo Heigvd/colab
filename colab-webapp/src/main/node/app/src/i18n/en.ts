@@ -73,6 +73,7 @@ export const en = {
       resetPasswordSent:
         'We sent you a link to change your password. Change it, make it safe, and enjoy colabbing !',
       pendingInvitation: 'pending invitation',
+      reconnecting: 'reconnecting...',
     },
     error: {
       emailAddressNotValid: 'e-mail address is not valid',
