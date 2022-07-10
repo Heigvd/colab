@@ -114,10 +114,10 @@ export default function OpenCloseModal({
   } else {
     return (
       <OpenClose
-        className={className}
-        collapsedChildren={collapsedChildren}
-        showCloseIcon="KEEP_CHILD"
         status={status}
+        showCollapsedChildrenWhenOpened
+        collapsedChildren={collapsedChildren}
+        className={className}
       >
         {onClose => (
           <Modal

@@ -13,6 +13,7 @@ export const en = {
   common: {
     cancel: 'Cancel',
     create: 'Create',
+    close: 'Close',
     add: 'Add',
     next: 'Next',
     back: 'Back',

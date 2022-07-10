@@ -268,7 +268,6 @@ function CreateRole({ project }: { project: Project }): JSX.Element {
 
   return (
     <OpenClose
-      showCloseIcon="NONE"
       collapsedChildren={
         <IconButton title="Add role" icon={faPlus} className={lightIconButtonStyle} />
       }
