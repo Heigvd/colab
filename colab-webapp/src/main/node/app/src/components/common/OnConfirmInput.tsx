@@ -16,8 +16,8 @@ import {
   space_S,
 } from '../styling/style';
 import Button from './Button';
-import Flex from './Flex';
 import IconButton from './IconButton';
+import Flex from './layout/Flex';
 
 export interface Props {
   label?: string;

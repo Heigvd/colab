@@ -10,8 +10,8 @@ import { CardContent } from 'colab-rest-client';
 import * as React from 'react';
 import * as API from '../../API/api';
 import { useAppDispatch } from '../../store/hooks';
-import Flex from '../common/Flex';
 import Input from '../common/Form/Input';
+import Flex from '../common/layout/Flex';
 
 interface CompletionEditorProps {
   variant: CardContent;

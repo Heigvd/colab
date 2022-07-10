@@ -12,8 +12,8 @@ import * as React from 'react';
 import useTranslations from '../../i18n/I18nContext';
 import logger from '../../logger';
 import { lightIconButtonStyle, space_S } from '../styling/style';
-import Flex from './Flex';
 import IconButton from './IconButton';
+import Flex from './layout/Flex';
 
 // not used anymore
 

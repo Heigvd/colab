@@ -33,14 +33,14 @@ import { useCardACLForCurrentUser, useVariantsOrLoad } from '../../selectors/car
 import { useAndLoadCardType } from '../../selectors/cardTypeSelector';
 import { useAppDispatch } from '../../store/hooks';
 import Button from '../common/Button';
-import Collapsible from '../common/Collapsible';
-import ConfirmDeleteModal from '../common/ConfirmDeleteModal';
-import DropDownMenu, { modalEntryStyle } from '../common/DropDownMenu';
-import Flex from '../common/Flex';
 import IconButton from '../common/IconButton';
 import InlineInputNew from '../common/InlineInputNew';
-import Modal from '../common/Modal';
-import OpenCloseModal from '../common/OpenCloseModal';
+import Collapsible from '../common/layout/Collapsible';
+import ConfirmDeleteModal from '../common/layout/ConfirmDeleteModal';
+import DropDownMenu, { modalEntryStyle } from '../common/layout/DropDownMenu';
+import Flex from '../common/layout/Flex';
+import Modal from '../common/layout/Modal';
+import OpenCloseModal from '../common/layout/OpenCloseModal';
 import Tips from '../common/Tips';
 import { DocTextDisplay } from '../documents/DocTextItem';
 import DocumentList from '../documents/DocumentList';
@@ -473,12 +473,18 @@ export default function CardEditor({ card, variant, showSubcards = true }: Props
                               label: (
                                 <ConfirmDeleteModal
                                   buttonLabel={
-                                    <div className={cx(css({ color: errorColor }), modalEntryStyle)}>
+                                    <div
+                                      className={cx(css({ color: errorColor }), modalEntryStyle)}
+                                    >
                                       <FontAwesomeIcon icon={faTrash} />
                                       {hasVariants ? ' Delete variant' : ' Delete card'}
                                     </div>
                                   }
-                                  className={css({ '&:hover': { textDecoration: 'none' }, display: 'flex', alignItems: 'center'})}
+                                  className={css({
+                                    '&:hover': { textDecoration: 'none' },
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                  })}
                                   message={
                                     hasVariants ? (
                                       <p>

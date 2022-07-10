@@ -9,7 +9,7 @@ import { css } from '@emotion/css';
 import * as React from 'react';
 import useTranslations from '../../i18n/I18nContext';
 import { useAndLoadTextOfDocument } from '../../selectors/documentSelector';
-import Flex from '../common/Flex';
+import Flex from '../common/layout/Flex';
 import { lightIconButtonStyle, marginAroundStyle, space_M, space_S } from '../styling/style';
 import { getKey, ResourceAndRef, ResourceCallContext } from './ResourceCommonType';
 import ResourceCreator from './ResourceCreator';

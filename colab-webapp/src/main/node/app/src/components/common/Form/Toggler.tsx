@@ -8,7 +8,7 @@
 import { css, cx } from '@emotion/css';
 import * as React from 'react';
 import { errorStyle, space_S, successColor, textSmall, warningStyle } from '../../styling/style';
-import Flex from '../Flex';
+import Flex from '../layout/Flex';
 import Tips, { TipsProps } from '../Tips';
 
 const containerStyle = css({

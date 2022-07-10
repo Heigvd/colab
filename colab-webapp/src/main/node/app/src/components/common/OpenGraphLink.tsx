@@ -20,9 +20,9 @@ import { useUrlMetadata } from '../../selectors/externalDataSelector';
 import { useAppDispatch } from '../../store/hooks';
 import { lightIconButtonStyle, space_M, space_S } from '../styling/style';
 import { emptyLightTextStyle } from './FilePicker';
-import Flex from './Flex';
 import IconButton from './IconButton';
 import InlineLoading from './InlineLoading';
+import Flex from './layout/Flex';
 import OnConfirmInput from './OnConfirmInput';
 
 const cardStyle = css({

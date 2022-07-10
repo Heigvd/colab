@@ -9,8 +9,8 @@ import { css, cx } from '@emotion/css';
 import { IconProp } from '@fortawesome/fontawesome-svg-core';
 import { faTimes } from '@fortawesome/free-solid-svg-icons';
 import * as React from 'react';
-import Clickable from './Clickable';
-import IconButton from './IconButton';
+import Clickable from '../Clickable';
+import IconButton from '../IconButton';
 
 /*  type State = {
   status: 'COLLAPSED' | 'EXPANDED';

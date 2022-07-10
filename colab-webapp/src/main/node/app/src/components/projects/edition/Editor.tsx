@@ -40,10 +40,10 @@ import CardThumbWithSelector from '../../cards/CardThumbWithSelector';
 import ProjectCardTypeList from '../../cards/cardtypes/ProjectCardTypeList';
 import ContentSubs from '../../cards/ContentSubs';
 import Clickable from '../../common/Clickable';
-import DropDownMenu from '../../common/DropDownMenu';
-import Flex from '../../common/Flex';
 import IconButton from '../../common/IconButton';
 import InlineLoading from '../../common/InlineLoading';
+import DropDownMenu from '../../common/layout/DropDownMenu';
+import Flex from '../../common/layout/Flex';
 import {
   fullPageStyle,
   invertedThemeMode,
@@ -184,7 +184,13 @@ interface CardWrapperProps {
   align?: 'center' | 'normal';
 }
 
-const CardWrapper = ({ children, grow = 1, align = 'normal', backButtonPath, backButtonTitle }: CardWrapperProps): JSX.Element => {
+const CardWrapper = ({
+  children,
+  grow = 1,
+  align = 'normal',
+  backButtonPath,
+  backButtonTitle,
+}: CardWrapperProps): JSX.Element => {
   const { id, vId } = useParams<'id' | 'vId'>();
   const cardId = +id!;
   const cardContentId = +vId!;
@@ -427,7 +433,12 @@ export default function Editor(): JSX.Element {
             <Route
               path="card/:id/v/:vId/*"
               element={
-                <CardWrapper grow={0} align="center" backButtonPath={()=>'../'} backButtonTitle='Back to root project'>
+                <CardWrapper
+                  grow={0}
+                  align="center"
+                  backButtonPath={() => '../'}
+                  backButtonTitle="Back to root project"
+                >
                   {card => <CardThumbWithSelector depth={2} card={card} />}
                 </CardWrapper>
               }
@@ -438,8 +449,11 @@ export default function Editor(): JSX.Element {
             <Route
               path="edit/:id/v/:vId/*"
               element={
-                <CardWrapper backButtonPath={(card, variant)=>`../card/${card.id}/v/${variant.id}`} backButtonTitle='Back to card view' >
-                    {(card, variant) => <CardEditor card={card} variant={variant} showSubcards />}
+                <CardWrapper
+                  backButtonPath={(card, variant) => `../card/${card.id}/v/${variant.id}`}
+                  backButtonTitle="Back to card view"
+                >
+                  {(card, variant) => <CardEditor card={card} variant={variant} showSubcards />}
                 </CardWrapper>
               }
             />

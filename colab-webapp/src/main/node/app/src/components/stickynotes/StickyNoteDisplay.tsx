@@ -17,10 +17,10 @@ import { useAppDispatch } from '../../store/hooks';
 import { BlockEditorWrapper } from '../blocks/BlockEditorWrapper';
 import CardThumbWithSelector from '../cards/CardThumbWithSelector';
 import Button from '../common/Button';
-import ConfirmDeleteModal from '../common/ConfirmDeleteModal';
-import DropDownMenu, { modalEntryStyle } from '../common/DropDownMenu';
-import Flex from '../common/Flex';
 import InlineInputNew from '../common/InlineInputNew';
+import ConfirmDeleteModal from '../common/layout/ConfirmDeleteModal';
+import DropDownMenu, { modalEntryStyle } from '../common/layout/DropDownMenu';
+import Flex from '../common/layout/Flex';
 import { cardStyle, errorColor, lightIconButtonStyle, space_M, space_S } from '../styling/style';
 
 // TODO replace <CardThumbWithSelector for something easy and without actions
@@ -81,12 +81,16 @@ export default function StickyNoteDisplay({
               label: (
                 <ConfirmDeleteModal
                   buttonLabel={
-                    <div className={cx(css({color: errorColor}), modalEntryStyle)}>
+                    <div className={cx(css({ color: errorColor }), modalEntryStyle)}>
                       <FontAwesomeIcon icon={faTrash} />
                       {' Delete sticky note'}
                     </div>
                   }
-                  className={css({ '&:hover': { textDecoration: 'none' }, display: 'flex', alignItems: 'center'})}
+                  className={css({
+                    '&:hover': { textDecoration: 'none' },
+                    display: 'flex',
+                    alignItems: 'center',
+                  })}
                   message={
                     <p>
                       Are you <strong>sure</strong> you want to delete this sticky note? This will

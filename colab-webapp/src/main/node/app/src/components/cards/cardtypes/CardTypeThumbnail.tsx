@@ -23,10 +23,10 @@ import { useProjectBeingEdited } from '../../../selectors/projectSelector';
 import { useAppDispatch } from '../../../store/hooks';
 import { CardTypeAllInOne as CardType } from '../../../types/cardTypeDefinition';
 import Button from '../../common/Button';
-import ConfirmDeleteModal from '../../common/ConfirmDeleteModal';
-import DropDownMenu, { modalEntryStyle } from '../../common/DropDownMenu';
-import Flex from '../../common/Flex';
-import OpenCloseModal from '../../common/OpenCloseModal';
+import ConfirmDeleteModal from '../../common/layout/ConfirmDeleteModal';
+import DropDownMenu, { modalEntryStyle } from '../../common/layout/DropDownMenu';
+import Flex from '../../common/layout/Flex';
+import OpenCloseModal from '../../common/layout/OpenCloseModal';
 import { DocTextDisplay } from '../../documents/DocTextItem';
 import {
   borderRadius,
@@ -229,16 +229,14 @@ export default function CardTypeThumbnail({
                                       grow={1}
                                       className={css({ padding: space_M, columnGap: space_S })}
                                     >
-                                      <Button onClick={collapse}>
-                                        OK
-                                      </Button>
+                                      <Button onClick={collapse}>OK</Button>
                                     </Flex>
                                   )}
                                 >
                                   {() => (
                                     <div>
-                                      Impossible to delete this card type. It is used in
-                                      this project.
+                                      Impossible to delete this card type. It is used in this
+                                      project.
                                     </div>
                                   )}
                                 </OpenCloseModal>

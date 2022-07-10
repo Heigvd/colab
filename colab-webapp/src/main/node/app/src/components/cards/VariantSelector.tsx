@@ -11,9 +11,9 @@ import { Card, CardContent } from 'colab-rest-client';
 import * as React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useVariantsOrLoad } from '../../selectors/cardSelector';
-import Flex from '../common/Flex';
 import IconButton from '../common/IconButton';
 import InlineLoading from '../common/InlineLoading';
+import Flex from '../common/layout/Flex';
 import { useDefaultVariant } from '../projects/edition/Editor';
 import { space_S } from '../styling/style';
 

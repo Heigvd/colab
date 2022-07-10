@@ -9,8 +9,8 @@ import { css } from '@emotion/css';
 import * as React from 'react';
 import { useCurrentUser, useCurrentUserAccounts } from '../../selectors/userSelector';
 import Button from '../common/Button';
-import Flex from '../common/Flex';
-import Tabs, { Tab } from '../common/Tabs';
+import Flex from '../common/layout/Flex';
+import Tabs, { Tab } from '../common/layout/Tabs';
 import Tips from '../common/Tips';
 import Debugger from '../debugger/debugger';
 import { space_L } from '../styling/style';
@@ -65,7 +65,7 @@ export default function Settings(): JSX.Element {
           <Tab name="debugger" label="Debugger" invisible={!currentUser.admin}>
             <Debugger />
           </Tab>
-          </Tabs>
+        </Tabs>
       </div>
     );
   } else {

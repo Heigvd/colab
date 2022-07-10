@@ -24,15 +24,15 @@ import { getDisplayName } from '../../helper';
 import useTranslations from '../../i18n/I18nContext';
 import { useAndLoadProjectTeam } from '../../selectors/projectSelector';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
-import ConfirmDeleteModal from '../common/ConfirmDeleteModal';
 import { Destroyer } from '../common/Destroyer';
-import DropDownMenu, { modalEntryStyle } from '../common/DropDownMenu';
 import { emailFormat } from '../common/Form/Form';
 import IconButton from '../common/IconButton';
 import IconButtonWithLoader from '../common/IconButtonWithLoader';
 import InlineInputNew from '../common/InlineInputNew';
 import InlineLoading from '../common/InlineLoading';
-import OpenClose from '../common/OpenClose';
+import ConfirmDeleteModal from '../common/layout/ConfirmDeleteModal';
+import DropDownMenu, { modalEntryStyle } from '../common/layout/DropDownMenu';
+import OpenClose from '../common/layout/OpenClose';
 import WithToolbar from '../common/WithToolbar';
 import {
   errorColor,

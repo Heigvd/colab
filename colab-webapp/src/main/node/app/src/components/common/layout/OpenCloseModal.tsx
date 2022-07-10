@@ -8,7 +8,7 @@
 import { css, cx } from '@emotion/css';
 import * as React from 'react';
 import { NavLink, Route, Routes, useLocation, useNavigate } from 'react-router-dom';
-import { linkStyle, space_M } from '../styling/style';
+import { linkStyle, space_M } from '../../styling/style';
 import Modal from './Modal';
 import OpenClose from './OpenClose';
 

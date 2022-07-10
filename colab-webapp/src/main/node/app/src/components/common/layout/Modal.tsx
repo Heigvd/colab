@@ -8,9 +8,9 @@
 import { css, cx } from '@emotion/css';
 import { faTimes } from '@fortawesome/free-solid-svg-icons';
 import * as React from 'react';
-import { cardStyle, lightIconButtonStyle, space_L, space_M, space_S } from '../styling/style';
+import { cardStyle, lightIconButtonStyle, space_L, space_M, space_S } from '../../styling/style';
+import IconButton from '../IconButton';
 import Flex from './Flex';
-import IconButton from './IconButton';
 import Overlay from './Overlay';
 
 interface Props {

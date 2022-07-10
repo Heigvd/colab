@@ -7,7 +7,7 @@
 
 import * as React from 'react';
 import useTranslations from '../../i18n/I18nContext';
-import Flex from '../common/Flex';
+import Flex from '../common/layout/Flex';
 import PublicEntranceContainer from './PublicEntranceContainer';
 
 export default function ResetPasswordSent(): JSX.Element {

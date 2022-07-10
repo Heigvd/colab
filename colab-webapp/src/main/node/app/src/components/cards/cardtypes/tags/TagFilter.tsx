@@ -7,8 +7,8 @@
 
 import { css, cx } from '@emotion/css';
 import * as React from 'react';
-import Flex from '../../../common/Flex';
 import Checkbox from '../../../common/Form/Checkbox';
+import Flex from '../../../common/layout/Flex';
 import {
   borderRadius,
   lightLinkStyle,

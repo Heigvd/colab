@@ -10,7 +10,7 @@ import { faBullhorn, faTriangleExclamation } from '@fortawesome/free-solid-svg-i
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import * as React from 'react';
 import { CardTypeAllInOne as CardType } from '../../../../types/cardTypeDefinition';
-import Flex from '../../../common/Flex';
+import Flex from '../../../common/layout/Flex';
 import ResourcesListSummary from '../../../resources/summary/ResourcesListSummary';
 import { space_M } from '../../../styling/style';
 import TargetCardTypeSummary from './TargetCardTypeSummary';

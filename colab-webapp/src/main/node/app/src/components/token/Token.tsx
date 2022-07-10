@@ -12,8 +12,8 @@ import logger from '../../logger';
 import { useCurrentUser } from '../../selectors/userSelector';
 import { useAppDispatch } from '../../store/hooks';
 import SignInForm from '../authentication/SignIn';
+import Overlay from '../common/layout/Overlay';
 import Loading from '../common/Loading';
-import Overlay from '../common/Overlay';
 
 interface TokenProps {
   tokenId: string | undefined;

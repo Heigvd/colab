@@ -8,9 +8,9 @@ import { css, cx } from '@emotion/css';
 import { faExclamationTriangle } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import * as React from 'react';
-import useTranslations from '../../i18n/I18nContext';
-import { errorColor, space_M } from '../styling/style';
-import Button from './Button';
+import useTranslations from '../../../i18n/I18nContext';
+import { errorColor, space_M } from '../../styling/style';
+import Button from '../Button';
 import Flex from './Flex';
 import OpenCloseModal from './OpenCloseModal';
 

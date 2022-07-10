@@ -19,7 +19,7 @@ import {
   spinningStyle,
 } from '../styling/style';
 import Clickable, { ClickableProps } from './Clickable';
-import Flex from './Flex';
+import Flex from './layout/Flex';
 
 const relative = css({
   position: 'relative',

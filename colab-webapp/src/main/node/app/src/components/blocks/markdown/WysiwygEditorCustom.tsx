@@ -13,7 +13,7 @@ import * as React from 'react';
 import * as LiveHelper from '../../../LiveHelper';
 import { getLogger } from '../../../logger';
 import { CardEditorCTX } from '../../cards/CardEditor';
-import Flex from '../../common/Flex';
+import Flex from '../../common/layout/Flex';
 import Tips from '../../common/Tips';
 import { borderRadius, lightIconButtonStyle } from '../../styling/style';
 import {

@@ -13,9 +13,9 @@ import * as React from 'react';
 import { TwitterPicker } from 'react-color';
 import * as API from '../../API/api';
 import { useAppDispatch } from '../../store/hooks';
-import Flex from '../common/Flex';
 import Checkbox from '../common/Form/Checkbox';
 import SelectInput from '../common/Form/SelectInput';
+import Flex from '../common/layout/Flex';
 import Tips, { WIPContainer } from '../common/Tips';
 import { iconStyle, space_M } from '../styling/style';
 import ContentStatusSelector from './ContentStatusSelector';
@@ -35,7 +35,7 @@ export default function CardSettings({ card, variant }: Props): JSX.Element {
 
   return (
     <Flex className={css({ gap: space_M })} direction="column" shrink={1}>
-      <Flex align='center'>
+      <Flex align="center">
         <Checkbox
           label={
             <>
@@ -46,8 +46,8 @@ export default function CardSettings({ card, variant }: Props): JSX.Element {
           onChange={value => dispatch(API.updateCardContent({ ...variant, frozen: value }))}
         />
         <Tips>
-          Locking the variant (card if only one variant) will artificially set it as read-only and prevent
-          the edition.
+          Locking the variant (card if only one variant) will artificially set it as read-only and
+          prevent the edition.
         </Tips>
       </Flex>
       <div>

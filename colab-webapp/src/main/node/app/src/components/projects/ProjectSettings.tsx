@@ -13,10 +13,10 @@ import { useNavigate } from 'react-router-dom';
 import * as API from '../../API/api';
 import { dispatch } from '../../store/store';
 import ProjectCardTypeList from '../cards/cardtypes/ProjectCardTypeList';
-import Flex from '../common/Flex';
 import Input from '../common/Form/Input';
 import IconButton from '../common/IconButton';
-import Tabs, { Tab } from '../common/Tabs';
+import Flex from '../common/layout/Flex';
+import Tabs, { Tab } from '../common/layout/Tabs';
 import { lightIconButtonStyle } from '../styling/style';
 import Team from './Team';
 
@@ -29,15 +29,14 @@ export function ProjectSettings({ project }: ProjectSettingsProps): JSX.Element 
   const navigate = useNavigate();
   return (
     <Flex align="stretch" direction="column" grow={1} className={css({ alignSelf: 'stretch' })}>
-      <Flex align='center'>
-      <IconButton
-        icon={faArrowLeft}
-        title={'Back to project'}
-        onClick={() => navigate('../')}
-        className={cx(css({ display: 'block' }), lightIconButtonStyle)}
-      />
-      <h2>Project settings</h2>
-
+      <Flex align="center">
+        <IconButton
+          icon={faArrowLeft}
+          title={'Back to project'}
+          onClick={() => navigate('../')}
+          className={cx(css({ display: 'block' }), lightIconButtonStyle)}
+        />
+        <h2>Project settings</h2>
       </Flex>
       <Tabs>
         <Tab name="General" label="General">

@@ -8,7 +8,7 @@
 import { css, cx } from '@emotion/css';
 import * as React from 'react';
 import { borderRadius, space_S } from '../styling/style';
-import Flex from './Flex';
+import Flex from './layout/Flex';
 import Thumbnail from './Thumbnail';
 
 const defaultThumbnailStyle = css({

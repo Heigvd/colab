@@ -18,8 +18,8 @@ import {
   space_S,
 } from '../styling/style';
 import Clickable from './Clickable';
-import Flex from './Flex';
 import Checkbox from './Form/Checkbox';
+import Flex from './layout/Flex';
 
 const categoryTabStyle = cx(
   lightTheme,

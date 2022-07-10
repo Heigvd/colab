@@ -11,7 +11,7 @@ import { Route, Routes, useNavigate } from 'react-router-dom';
 import { useAndLoadGlobalTypesForAdmin } from '../../../selectors/cardTypeSelector';
 import { CardTypeAllInOne } from '../../../types/cardTypeDefinition';
 import AvailabilityStatusIndicator from '../../common/AvailabilityStatusIndicator';
-import Flex from '../../common/Flex';
+import Flex from '../../common/layout/Flex';
 import { space_L, space_S, voidStyle } from '../../styling/style';
 import CardTypeCreator from './CardTypeCreator';
 import CardTypeEditor from './CardTypeEditor';

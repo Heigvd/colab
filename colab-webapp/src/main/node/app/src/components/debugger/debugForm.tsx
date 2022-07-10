@@ -8,8 +8,8 @@
 import { css, cx } from '@emotion/css';
 import * as React from 'react';
 import Button from '../common/Button';
-import Flex from '../common/Flex';
 import Form from '../common/Form/Form';
+import Flex from '../common/layout/Flex';
 import { space_M, textSmall } from '../styling/style';
 
 export default function DebugForm(): JSX.Element {

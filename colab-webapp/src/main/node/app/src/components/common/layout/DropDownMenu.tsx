@@ -11,7 +11,13 @@ import { faCaretDown } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import * as React from 'react';
 import { useEffect, useRef } from 'react';
-import { disabledStyle, iconButton, linkStyle, normalThemeMode, space_S } from '../styling/style';
+import {
+  disabledStyle,
+  iconButton,
+  linkStyle,
+  normalThemeMode,
+  space_S,
+} from '../../styling/style';
 import Flex from './Flex';
 
 export const itemStyle = css({
@@ -32,13 +38,13 @@ const entryStyle = css({
 
 const dropDownEntryPadding = css({
   padding: space_S,
-})
+});
 export const modalEntryStyle = css({
   margin: space_S,
   display: 'flex',
   alignItems: 'center',
-  gap: '5px'
-})
+  gap: '5px',
+});
 
 const commonStyle = cx(
   normalThemeMode,
@@ -434,7 +440,11 @@ export default function DropDownMenu<T extends string | number | symbol>({
             >
               {entries.map(entry => (
                 <div
-                  className={cx(entryStyle, { [disabledStyle]: entry.disabled }, {[dropDownEntryPadding]: !entry.modal})}
+                  className={cx(
+                    entryStyle,
+                    { [disabledStyle]: entry.disabled },
+                    { [dropDownEntryPadding]: !entry.modal },
+                  )}
                   key={String(entry.value)}
                   onClick={() => {
                     if (entry.action) {
@@ -446,7 +456,7 @@ export default function DropDownMenu<T extends string | number | symbol>({
                     setOpen(false);
                   }}
                 >
-                    {entry.label}
+                  {entry.label}
                 </div>
               ))}
             </div>

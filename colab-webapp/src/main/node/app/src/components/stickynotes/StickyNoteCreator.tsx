@@ -15,10 +15,10 @@ import { useAllProjectCards } from '../../selectors/cardSelector';
 import { useProjectBeingEdited } from '../../selectors/projectSelector';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import Button from '../common/Button';
-import Flex from '../common/Flex';
 import Form, { Field } from '../common/Form/Form';
 import IconButton from '../common/IconButton';
-import OpenCloseModal from '../common/OpenCloseModal';
+import Flex from '../common/layout/Flex';
+import OpenCloseModal from '../common/layout/OpenCloseModal';
 import { space_M, space_S } from '../styling/style';
 
 interface StickyNoteCreatorProps {

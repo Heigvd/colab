@@ -9,7 +9,7 @@ import { Card, InvolvementLevel } from 'colab-rest-client';
 import * as React from 'react';
 import * as API from '../../API/api';
 import { useAppDispatch } from '../../store/hooks';
-import Flex from '../common/Flex';
+import Flex from '../common/layout/Flex';
 import Tips from '../common/Tips';
 import { space_M } from '../styling/style';
 import CardACL from './CardACL';

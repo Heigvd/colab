@@ -22,11 +22,11 @@ import * as API from '../../API/api';
 import useTranslations from '../../i18n/I18nContext';
 import { useAppDispatch } from '../../store/hooks';
 import Button from '../common/Button';
-import ConfirmDeleteModal from '../common/ConfirmDeleteModal';
-import DropDownMenu, { modalEntryStyle } from '../common/DropDownMenu';
-import Flex from '../common/Flex';
 import InlineLoading from '../common/InlineLoading';
-import Modal from '../common/Modal';
+import ConfirmDeleteModal from '../common/layout/ConfirmDeleteModal';
+import DropDownMenu, { modalEntryStyle } from '../common/layout/DropDownMenu';
+import Flex from '../common/layout/Flex';
+import Modal from '../common/layout/Modal';
 import { errorColor, lightIconButtonStyle, space_M, space_S, variantTitle } from '../styling/style';
 import CardLayout from './CardLayout';
 import CardSettings from './CardSettings';
@@ -240,7 +240,11 @@ export default function CardThumb({
                               {hasVariants ? ' Delete variant' : ' Delete card'}
                             </div>
                           }
-                          className={css({ '&:hover': { textDecoration: 'none' }, display: 'flex', alignItems: 'center'})}
+                          className={css({
+                            '&:hover': { textDecoration: 'none' },
+                            display: 'flex',
+                            alignItems: 'center',
+                          })}
                           message={
                             hasVariants ? (
                               <p>

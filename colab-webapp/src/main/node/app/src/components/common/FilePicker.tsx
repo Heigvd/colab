@@ -23,7 +23,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import * as React from 'react';
 import { invertedButtonStyle, space_M, space_S } from '../styling/style';
 import Button from './Button';
-import Flex from './Flex';
+import Flex from './layout/Flex';
 
 const contains = (value: string, ...values: string[]): boolean => {
   return !!values.find(needle => value.includes(needle));

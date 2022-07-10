@@ -8,9 +8,9 @@
 import { css } from '@emotion/css';
 import { entityIs, HttpErrorMessage, HttpException } from 'colab-rest-client';
 import * as React from 'react';
-import useTranslations, { ColabTranslations } from '../../i18n/I18nContext';
-import { shallowEqual, useAppDispatch, useAppSelector } from '../../store/hooks';
-import { closeNotification, ColabNotification } from '../../store/notification';
+import useTranslations, { ColabTranslations } from '../../../i18n/I18nContext';
+import { shallowEqual, useAppDispatch, useAppSelector } from '../../../store/hooks';
+import { closeNotification, ColabNotification } from '../../../store/notification';
 
 function prettyPrint(error: HttpException | string, i18n: ColabTranslations): string {
   if (entityIs<'HttpErrorMessage'>(error, 'HttpErrorMessage')) {

@@ -19,7 +19,7 @@ import { useProjectBeingEdited } from '../../../selectors/projectSelector';
 import { useAppDispatch } from '../../../store/hooks';
 import Button from '../../common/Button';
 import Form, { createSelectField, Field } from '../../common/Form/Form';
-import OpenCloseModal from '../../common/OpenCloseModal';
+import OpenCloseModal from '../../common/layout/OpenCloseModal';
 import { buttonStyle, marginAroundStyle, space_M } from '../../styling/style';
 
 interface CardTypeCreatorProps {

@@ -24,11 +24,11 @@ import { useAndLoadTextOfDocument } from '../../selectors/documentSelector';
 import { useAppDispatch } from '../../store/hooks';
 import CardEditorToolbox from '../cards/CardEditorToolbox';
 import { Destroyer } from '../common/Destroyer';
-import DropDownMenu from '../common/DropDownMenu';
-import Flex from '../common/Flex';
 import IconButton from '../common/IconButton';
 import InlineInputNew from '../common/InlineInputNew';
-import OpenCloseModal from '../common/OpenCloseModal';
+import DropDownMenu from '../common/layout/DropDownMenu';
+import Flex from '../common/layout/Flex';
+import OpenCloseModal from '../common/layout/OpenCloseModal';
 import { DocTextWrapper } from '../documents/DocTextItem';
 import DocumentList from '../documents/DocumentList';
 import {

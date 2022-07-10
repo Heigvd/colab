@@ -28,13 +28,13 @@ import {
 import { useProjectBeingEdited } from '../../../selectors/projectSelector';
 import { dispatch } from '../../../store/store';
 import AvailabilityStatusIndicator from '../../common/AvailabilityStatusIndicator';
-import ConfirmDeleteModal from '../../common/ConfirmDeleteModal';
-import DropDownMenu, { modalEntryStyle } from '../../common/DropDownMenu';
-import Flex from '../../common/Flex';
 import Toggler from '../../common/Form/Toggler';
 import IconButton from '../../common/IconButton';
 import InlineInputNew from '../../common/InlineInputNew';
-import Modal from '../../common/Modal';
+import ConfirmDeleteModal from '../../common/layout/ConfirmDeleteModal';
+import DropDownMenu, { modalEntryStyle } from '../../common/layout/DropDownMenu';
+import Flex from '../../common/layout/Flex';
+import Modal from '../../common/layout/Modal';
 import Tips from '../../common/Tips';
 import { DocTextWrapper } from '../../documents/DocTextItem';
 import ResourcesWrapper from '../../resources/ResourcesWrapper';
@@ -183,7 +183,11 @@ export default function CardTypeEditor({ className, usage }: Props): JSX.Element
                               <FontAwesomeIcon icon={faTrash} /> Delete type
                             </div>
                           }
-                          className={css({ '&:hover': { textDecoration: 'none' }, display: 'flex', alignItems: 'center'})}
+                          className={css({
+                            '&:hover': { textDecoration: 'none' },
+                            display: 'flex',
+                            alignItems: 'center',
+                          })}
                           message={
                             <p>
                               <Tips tipsType="TODO">
@@ -209,14 +213,14 @@ export default function CardTypeEditor({ className, usage }: Props): JSX.Element
               </Flex>
             </Flex>
             <Flex direction="column" grow={1} align="stretch">
-              <Flex className={css({ margin: space_M + ' 0' })} direction='column' align='stretch'>
+              <Flex className={css({ margin: space_M + ' 0' })} direction="column" align="stretch">
                 <h3>Purpose: </h3>
                 <DocTextWrapper id={cardType.purposeId}>
                   {text => (
                     <InlineInputNew
                       value={text || ''}
                       placeholder={'Explain the purpose'}
-                      inputType='textarea'
+                      inputType="textarea"
                       onChange={(newValue: string) => {
                         if (cardType.purposeId) {
                           dispatch(
@@ -226,7 +230,7 @@ export default function CardTypeEditor({ className, usage }: Props): JSX.Element
                       }}
                       autosave={false}
                       rows={4}
-                      className={css({minWidth: '100%'})}
+                      className={css({ minWidth: '100%' })}
                     />
                   )}
                 </DocTextWrapper>

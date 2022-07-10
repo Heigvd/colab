@@ -8,7 +8,7 @@
 import { css } from '@emotion/css';
 import * as React from 'react';
 import GlobalCardTypeList from '../cards/cardtypes/GlobalCardTypeList';
-import Tabs, { Tab } from '../common/Tabs';
+import Tabs, { Tab } from '../common/layout/Tabs';
 import { AllProjects } from '../projects/ProjectList';
 import { space_L } from '../styling/style';
 import AllUsers from './AllUsers';
