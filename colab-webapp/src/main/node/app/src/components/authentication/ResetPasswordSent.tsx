@@ -16,7 +16,7 @@ export default function ResetPasswordSent(): JSX.Element {
   return (
     <PublicEntranceContainer>
       <Flex direction="column">
-        <h3>{i18n.common.info.checkYourMailbox}</h3>
+        <h3>{i18n.common.label.checkYourMailbox}</h3>
         <p>{i18n.authentication.info.resetPasswordSent}</p>
       </Flex>
     </PublicEntranceContainer>

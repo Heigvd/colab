@@ -37,7 +37,7 @@ export const en = {
         return 'never';
       }
     },
-    info: {
+    label: {
       checkYourMailbox: 'Check your mailbox!',
     },
   },
@@ -82,6 +82,36 @@ export const en = {
       passwordsMismatch: 'passwords do not match',
       yourPasswordIsWeak: 'your password is weak',
     },
+  },
+
+  //////////////////////////////////////////////////////////////////////////////////////////////////
+  // Tips
+  tips: {
+    label: {
+      todo: 'Display Todo',
+      tips: 'Display Tips',
+      news: 'Display News',
+      wip: 'Display work in progress elements',
+    },
+    example: {
+      todo: {
+        title: 'Todo example',
+        content: 'We know what to do, but we have not done it yet',
+      },
+      tips: {
+        title: 'Tips example',
+        content: 'Some useful info to help users',
+      },
+      news: {
+        title: 'News example',
+        content: 'Some new feature to emphasis',
+      },
+      wip: {
+        title: 'WIP Example',
+        content: 'Some features not completely finished yet',
+      },
+    },
+    info: { wip: 'Work in progress feature below' },
   },
 
   //////////////////////////////////////////////////////////////////////////////////////////////////

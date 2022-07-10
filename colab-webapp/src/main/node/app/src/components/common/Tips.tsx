@@ -11,6 +11,7 @@ import { faNewspaper, faQuestionCircle } from '@fortawesome/free-regular-svg-ico
 import { faGhost, faTools } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import * as React from 'react';
+import useTranslations from '../../i18n/I18nContext';
 import { lightIconButtonStyle, space_S, textSmall } from '../styling/style';
 import Checkbox from './Form/Checkbox';
 
@@ -92,52 +93,58 @@ function overlayStyle(coord: [number, number]) {
 }
 
 export function TipsSettings(): JSX.Element {
+  const i18n = useTranslations();
+
   const config = React.useContext(TipsCtx);
 
   return (
     <div>
       <div>
         <Checkbox
-          label="Display Todo"
+          label={i18n.tips.label.todo}
           value={config.TODO.value}
           onChange={config.TODO.set}
           className={css({ display: 'inline-block', marginRight: space_S })}
         />
         <Tips tipsType="TODO">
-          <h4>Todo Example</h4> We know what to do, but we do not do
+          <h4>{i18n.tips.example.todo.title}</h4>
+          {i18n.tips.example.todo.content}
         </Tips>
       </div>
       <div>
         <Checkbox
-          label="Display Tips"
+          label={i18n.tips.label.tips}
           value={config.TIPS.value}
           onChange={config.TIPS.set}
           className={css({ display: 'inline-block', marginRight: space_S })}
         />
         <Tips tipsType="TIPS">
-          <h4>Tips Example</h4>Some useful info to help users
+          <h4>{i18n.tips.example.tips.title}</h4>
+          {i18n.tips.example.tips.content}
         </Tips>
       </div>
       <div>
         <Checkbox
-          label="Display News"
+          label={i18n.tips.label.news}
           value={config.NEWS.value}
           onChange={config.NEWS.set}
           className={css({ display: 'inline-block', marginRight: space_S })}
         />
         <Tips tipsType="NEWS">
-          <h4>News Example</h4>Some new feature to emphasis.
+          <h4>{i18n.tips.example.news.title}</h4>
+          {i18n.tips.example.news.content}
         </Tips>
       </div>
       <div>
         <Checkbox
-          label="Display Work in progress elements"
+          label={i18n.tips.label.wip}
           value={config.WIP.value}
           onChange={config.WIP.set}
           className={css({ display: 'inline-block', marginRight: space_S })}
         />
         <Tips tipsType="WIP">
-          <h4>WIP Example</h4>Some features not completely finished yet.
+          <h4>{i18n.tips.example.wip.title}</h4>
+          {i18n.tips.example.wip.content}
         </Tips>
       </div>
     </div>
@@ -223,7 +230,7 @@ export default function Tips({
         onClick={onClickCb}
       >
         <FontAwesomeIcon icon={getIconProp(tipsType)} />
-        {coord && displayed && <div className={overlayStyle(coord)}>{children} </div>}
+        {coord && displayed && <div className={overlayStyle(coord)}>{children}</div>}
       </span>
     );
   } else {
@@ -232,13 +239,14 @@ export default function Tips({
 }
 
 export function WIPContainer({ children }: TipsProps): JSX.Element {
+  const i18n = useTranslations();
+
   const config = React.useContext(TipsCtx);
+
   if (config['WIP'].value) {
     return (
       <>
-        <p className={cx(textSmall, lightIconButtonStyle)}>
-          --- Work in progress feature below ---
-        </p>
+        <p className={cx(textSmall, lightIconButtonStyle)}>--- {i18n.tips.info.wip} ---</p>
         {children}
       </>
     );
