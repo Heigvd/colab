@@ -14,7 +14,6 @@ import { useVariantsOrLoad } from '../../selectors/cardSelector';
 import Flex from '../common/Flex';
 import IconButton from '../common/IconButton';
 import InlineLoading from '../common/InlineLoading';
-//import WithToolbar from '../common/WithToolbar';
 import { useDefaultVariant } from '../projects/edition/Editor';
 import { space_S } from '../styling/style';
 
@@ -46,7 +45,6 @@ export const computeNav = (
 };
 
 export default function VariantSelector({ card, children }: Props): JSX.Element {
-
   const [displayedVariantId, setDisplayedVariantId] = React.useState<number | undefined>();
 
   const contents = useVariantsOrLoad(card);

@@ -8,6 +8,8 @@
 import { css, cx } from '@emotion/css';
 import * as React from 'react';
 
+// will soon not be used anymore
+
 interface Props {
   children: JSX.Element;
   toolbar?: React.ReactNode;
