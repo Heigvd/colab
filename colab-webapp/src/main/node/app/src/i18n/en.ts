@@ -80,6 +80,7 @@ export const en = {
         'username can only contain letters without accent, numbers, dots, underscores and dashes',
       passwordTooWeak: 'password is not strong enough',
       passwordsMismatch: 'passwords do not match',
+      yourPasswordIsWeak: 'your password is weak',
     },
   },
 

@@ -9,16 +9,16 @@ import * as API from '../API/api';
 import { PasswordScore } from '../components/common/Form/Form';
 
 export interface AuthState {
-  status: 'UNKNOWN' | 'LOADING' | 'NOT_AUTHENTICATED' | 'AUTHENTICATED';
+  status: 'NOT_INITIALIZED' | 'LOADING' | 'NOT_AUTHENTICATED' | 'AUTHENTICATED';
   currentUserId: number | null;
   currentAccountId: number | null;
   localAccountPasswordScore: PasswordScore | undefined;
 }
 
 const initialState: AuthState = {
+  status: 'NOT_INITIALIZED',
   currentUserId: null,
   currentAccountId: null,
-  status: 'UNKNOWN',
   localAccountPasswordScore: undefined,
 };
 

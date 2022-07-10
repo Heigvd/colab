@@ -17,6 +17,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import * as React from 'react';
 import { Navigate, Route, Routes, useLocation, useNavigate, useParams } from 'react-router-dom';
 import * as API from '../API/api';
+import useTranslations from '../i18n/I18nContext';
 import { useProject, useProjectBeingEdited } from '../selectors/projectSelector';
 import { useCurrentUser } from '../selectors/userSelector';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
@@ -89,6 +90,7 @@ function useQuery() {
 export default function MainApp(): JSX.Element {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
+  const i18n = useTranslations();
 
   const { currentUser, status: currentUserStatus } = useCurrentUser();
 
@@ -101,7 +103,7 @@ export default function MainApp(): JSX.Element {
   }, [dispatch]);
 
   React.useEffect(() => {
-    if (currentUserStatus == 'UNKNOWN') {
+    if (currentUserStatus == 'NOT_INITIALIZED') {
       // user is not known. Reload state from API
       dispatch(API.reloadCurrentUser());
     }
@@ -124,21 +126,21 @@ export default function MainApp(): JSX.Element {
 
   const query = useQuery();
 
-  if (currentUserStatus == 'UNKNOWN') {
+  if (currentUserStatus === 'NOT_INITIALIZED') {
     return <Loading />;
   } else if (currentUserStatus == 'LOADING') {
     return <Loading />;
-  } else if (currentUserStatus == 'NOT_AUTHENTICATED') {
+  } else if (currentUserStatus === 'NOT_AUTHENTICATED') {
     return (
       <>
         <Routes>
+          <Route path="/SignIn" element={<SignInForm redirectTo={query.get('redirectTo')} />} />
           <Route path="/SignUp" element={<SignUpForm redirectTo={query.get('redirectTo')} />} />
           <Route
             path="/ForgotPassword"
             element={<ResetPasswordForm redirectTo={query.get('redirectTo')} />}
           />
           <Route path="/ResetPasswordEmailSent" element={<ResetPasswordSent />} />
-          <Route path="/SignIn" element={<SignInForm redirectTo={query.get('redirectTo')} />} />
           <Route path="*" element={<SignInForm redirectTo={query.get('redirectTo')} />} />
         </Routes>
         {reconnecting}
@@ -269,7 +271,10 @@ export default function MainApp(): JSX.Element {
                     buttonClassName={cx(invertedThemeMode, css({ marginLeft: space_S }))}
                   />
                   {passwordScore != null && passwordScore.score < 2 && (
-                    <FontAwesomeIcon title={'your password is weak'} icon={faExclamationTriangle} />
+                    <FontAwesomeIcon
+                      title={i18n.authentication.error.yourPasswordIsWeak}
+                      icon={faExclamationTriangle}
+                    />
                   )}
                 </div>
 

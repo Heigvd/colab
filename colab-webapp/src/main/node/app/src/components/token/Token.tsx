@@ -37,8 +37,8 @@ export default function Token(props: TokenProps): JSX.Element {
       const tokenId = props.tokenId;
       const tokenHash = props.token;
       // hack: nest API calls within this hook to avoid setting full token slice
-      if (user.status === 'UNKNOWN') {
-        // authenticate state not known-> reload
+      if (user.status === 'NOT_INITIALIZED') {
+        // authenticate state not initialized -> reload
         dispatch(reloadCurrentUser());
         logger.debug('reload current user');
       } else if (user.status !== 'LOADING') {
@@ -81,11 +81,11 @@ export default function Token(props: TokenProps): JSX.Element {
     }
   }, [dispatch, user, props.tokenId, props.token]);
 
-  if (state == 'LOADING') {
+  if (state === 'LOADING') {
     return <Loading />;
-  } else if (state == 'DONE') {
+  } else if (state === 'DONE') {
     return <Navigate to={redirectTo} />;
-  } else if (state == 'AUTH_REQUIRED') {
+  } else if (state === 'AUTH_REQUIRED') {
     const backToTokenUrl = location.pathname;
     return (
       <Overlay>
@@ -104,7 +104,7 @@ export default function Token(props: TokenProps): JSX.Element {
         </Flex> */}
       </Overlay>
     );
-  } else if (state == 'NO_TOKEN') {
+  } else if (state === 'NO_TOKEN') {
     return (
       <Overlay>
         <div>Token does not exist</div>
