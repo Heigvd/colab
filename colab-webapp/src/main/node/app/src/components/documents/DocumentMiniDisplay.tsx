@@ -18,6 +18,8 @@ import { defaultRowContainerStyle, iconStyle } from '../styling/style';
 import { DocumentOwnership } from './documentCommonType';
 import DocumentEditor from './DocumentEditor';
 
+// not used anymore
+
 export interface DocumentMiniDisplayProps {
   document: Document;
   docOwnership: DocumentOwnership;
