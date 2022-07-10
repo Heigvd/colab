@@ -5,7 +5,7 @@
  * Licensed under the MIT License
  */
 import * as React from 'react';
-import Button from './Button';
+import Button from './element/Button';
 
 // not used anymore
 

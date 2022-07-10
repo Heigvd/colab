@@ -8,8 +8,8 @@
 import { css, cx } from '@emotion/css';
 import * as React from 'react';
 import { errorStyle, space_S, successColor, textSmall, warningStyle } from '../../styling/style';
+import Tips, { TipsProps } from '../element/Tips';
 import Flex from '../layout/Flex';
-import Tips, { TipsProps } from '../Tips';
 
 const containerStyle = css({
   width: '28px',

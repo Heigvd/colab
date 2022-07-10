@@ -14,7 +14,7 @@ import logger from '../../logger';
 import { CardAcl, useAndLoadCardACL } from '../../selectors/cardSelector';
 import { useAndLoadProjectTeam, useProjectBeingEdited } from '../../selectors/projectSelector';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
-import InlineLoading from '../common/InlineLoading';
+import InlineLoading from '../common/element/InlineLoading';
 import Flex from '../common/layout/Flex';
 import { marginAroundStyle, paddingAroundStyle, space_M, space_S } from '../styling/style';
 import InvolvementSelector from './InvolvementSelector';

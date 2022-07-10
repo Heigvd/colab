@@ -8,10 +8,10 @@
 import { css } from '@emotion/css';
 import * as React from 'react';
 import { useCurrentUser, useCurrentUserAccounts } from '../../selectors/userSelector';
-import Button from '../common/Button';
+import Button from '../common/element/Button';
+import Tips from '../common/element/Tips';
 import Flex from '../common/layout/Flex';
 import Tabs, { Tab } from '../common/layout/Tabs';
-import Tips from '../common/Tips';
 import Debugger from '../debugger/debugger';
 import { space_L } from '../styling/style';
 import DisplaySettings from './DisplaySettings';

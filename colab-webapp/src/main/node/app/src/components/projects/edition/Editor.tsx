@@ -39,9 +39,9 @@ import CardEditor from '../../cards/CardEditor';
 import CardThumbWithSelector from '../../cards/CardThumbWithSelector';
 import ProjectCardTypeList from '../../cards/cardtypes/ProjectCardTypeList';
 import ContentSubs from '../../cards/ContentSubs';
-import Clickable from '../../common/Clickable';
-import IconButton from '../../common/IconButton';
-import InlineLoading from '../../common/InlineLoading';
+import IconButton from '../../common/element/IconButton';
+import InlineLoading from '../../common/element/InlineLoading';
+import Clickable from '../../common/layout/Clickable';
 import DropDownMenu from '../../common/layout/DropDownMenu';
 import Flex from '../../common/layout/Flex';
 import {

@@ -27,15 +27,15 @@ import {
 } from '../../../selectors/cardTypeSelector';
 import { useProjectBeingEdited } from '../../../selectors/projectSelector';
 import { dispatch } from '../../../store/store';
-import AvailabilityStatusIndicator from '../../common/AvailabilityStatusIndicator';
+import AvailabilityStatusIndicator from '../../common/element/AvailabilityStatusIndicator';
+import IconButton from '../../common/element/IconButton';
+import InlineInputNew from '../../common/element/InlineInputNew';
+import Tips from '../../common/element/Tips';
 import Toggler from '../../common/Form/Toggler';
-import IconButton from '../../common/IconButton';
-import InlineInputNew from '../../common/InlineInputNew';
 import ConfirmDeleteModal from '../../common/layout/ConfirmDeleteModal';
 import DropDownMenu, { modalEntryStyle } from '../../common/layout/DropDownMenu';
 import Flex from '../../common/layout/Flex';
 import Modal from '../../common/layout/Modal';
-import Tips from '../../common/Tips';
 import { DocTextWrapper } from '../../documents/DocTextItem';
 import ResourcesWrapper from '../../resources/ResourcesWrapper';
 import {

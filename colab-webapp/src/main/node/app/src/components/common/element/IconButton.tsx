@@ -9,8 +9,8 @@ import { cx } from '@emotion/css';
 import { IconProp, SizeProp, Transform } from '@fortawesome/fontawesome-svg-core';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import * as React from 'react';
-import { iconButton, linkStyle } from '../styling/style';
-import Clickable from './Clickable';
+import { iconButton, linkStyle } from '../../styling/style';
+import Clickable from '../layout/Clickable';
 
 export interface IconButtonProps {
   icon: IconProp;

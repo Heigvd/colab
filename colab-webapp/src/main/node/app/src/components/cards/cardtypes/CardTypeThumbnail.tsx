@@ -22,7 +22,7 @@ import { useAllProjectCardTypes } from '../../../selectors/cardSelector';
 import { useProjectBeingEdited } from '../../../selectors/projectSelector';
 import { useAppDispatch } from '../../../store/hooks';
 import { CardTypeAllInOne as CardType } from '../../../types/cardTypeDefinition';
-import Button from '../../common/Button';
+import Button from '../../common/element/Button';
 import ConfirmDeleteModal from '../../common/layout/ConfirmDeleteModal';
 import DropDownMenu, { modalEntryStyle } from '../../common/layout/DropDownMenu';
 import Flex from '../../common/layout/Flex';

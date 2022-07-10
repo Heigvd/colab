@@ -12,8 +12,8 @@ import * as React from 'react';
 import { changeLoggerLevel, getLoggerLevels } from '../../API/api';
 import { getLogger, LoggerLevel, loggers as clientLoggers } from '../../logger';
 import { shallowEqual, useAppDispatch, useAppSelector } from '../../store/hooks';
-import IconButton from '../common/IconButton';
-import InlineLoading from '../common/InlineLoading';
+import IconButton from '../common/element/IconButton';
+import InlineLoading from '../common/element/InlineLoading';
 import { linkStyle } from '../styling/style';
 
 const LEVELS = ['OFF', 'ERROR', 'WARN', 'INFO', 'DEBUG', 'TRACE'];

@@ -7,8 +7,8 @@
 
 import { faGlobeAmericas } from '@fortawesome/free-solid-svg-icons';
 import * as React from 'react';
+import { mainMenuLink } from '../components/common/element/Link';
 import DropDownMenu from '../components/common/layout/DropDownMenu';
-import { mainMenuLink } from '../components/common/Link';
 import { mainHeaderHeight } from '../components/styling/style';
 import { I18nCtx, Language } from './I18nContext';
 

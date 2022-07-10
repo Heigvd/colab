@@ -23,7 +23,7 @@ import * as API from '../../API/api';
 import { useAndLoadNbDocuments } from '../../selectors/documentSelector';
 import { useUrlMetadata } from '../../selectors/externalDataSelector';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
-import IconButton from '../common/IconButton';
+import IconButton from '../common/element/IconButton';
 import ConfirmDeleteModal from '../common/layout/ConfirmDeleteModal';
 import DropDownMenu from '../common/layout/DropDownMenu';
 import Flex from '../common/layout/Flex';

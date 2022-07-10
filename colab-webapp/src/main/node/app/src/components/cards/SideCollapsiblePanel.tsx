@@ -9,7 +9,7 @@ import { IconProp } from '@fortawesome/fontawesome-svg-core';
 import { faTimes } from '@fortawesome/free-solid-svg-icons';
 import { Resizable } from 're-resizable';
 import * as React from 'react';
-import IconButton from '../common/IconButton';
+import IconButton from '../common/element/IconButton';
 import Flex from '../common/layout/Flex';
 import {
   lightIconButtonStyle,

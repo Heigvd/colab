@@ -10,7 +10,7 @@ import { faFile, faGamepad, faTrash } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import * as React from 'react';
 import useTranslations from '../../i18n/I18nContext';
-import { ConfirmIconButton } from '../common/ConfirmIconButton';
+import { ConfirmIconButton } from '../common/element/ConfirmIconButton';
 import Form, { emailFormat } from '../common/Form/Form';
 import Input from '../common/Form/Input';
 import Flex from '../common/layout/Flex';

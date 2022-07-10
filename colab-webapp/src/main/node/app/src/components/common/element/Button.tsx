@@ -15,8 +15,8 @@ import {
   inactiveInvertedButtonStyle,
   invertedButtonStyle,
   space_S,
-} from '../styling/style';
-import Clickable, { ClickableProps } from './Clickable';
+} from '../../styling/style';
+import Clickable, { ClickableProps } from '../layout/Clickable';
 
 export interface ButtonProps extends Omit<ClickableProps, 'clickableClassName'> {
   invertedButton?: boolean;

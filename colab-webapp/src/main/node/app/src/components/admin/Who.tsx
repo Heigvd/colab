@@ -10,8 +10,8 @@ import { entityIs, ProjectContentChannel, UserChannel } from 'colab-rest-client'
 import * as React from 'react';
 import { getAllUsers, getOccupiedChannels } from '../../API/api';
 import { shallowEqual, useAppDispatch, useAppSelector } from '../../store/hooks';
-import IconButton from '../common/IconButton';
-import InlineLoading from '../common/InlineLoading';
+import IconButton from '../common/element/IconButton';
+import InlineLoading from '../common/element/InlineLoading';
 import UserList from './UserList';
 
 export default function Who(): JSX.Element {

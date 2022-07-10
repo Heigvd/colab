@@ -8,7 +8,7 @@
 import { IconDefinition } from '@fortawesome/fontawesome-common-types';
 import { faTrashAlt } from '@fortawesome/free-solid-svg-icons';
 import * as React from 'react';
-import { ConfirmIconButton } from './ConfirmIconButton';
+import { ConfirmIconButton } from './element/ConfirmIconButton';
 
 // soon not used anymore
 

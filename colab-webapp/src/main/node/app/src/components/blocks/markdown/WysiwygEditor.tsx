@@ -12,8 +12,8 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import * as React from 'react';
 import * as LiveHelper from '../../../LiveHelper';
 import { getLogger } from '../../../logger';
+import Tips from '../../common/element/Tips';
 import Flex from '../../common/layout/Flex';
-import Tips from '../../common/Tips';
 import { borderRadius } from '../../styling/style';
 import {
   areAllLeafsWrappedByTag,

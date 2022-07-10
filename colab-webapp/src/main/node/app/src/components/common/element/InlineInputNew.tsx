@@ -9,9 +9,9 @@ import { css, cx } from '@emotion/css';
 import { faCheck, faTimes } from '@fortawesome/free-solid-svg-icons';
 import { debounce } from 'lodash';
 import * as React from 'react';
-import useTranslations from '../../i18n/I18nContext';
-import logger from '../../logger';
-import { borderRadius, lightIconButtonStyle, space_S } from '../styling/style';
+import useTranslations from '../../../i18n/I18nContext';
+import logger from '../../../logger';
+import { borderRadius, lightIconButtonStyle, space_S } from '../../styling/style';
 import IconButton from './IconButton';
 
 const inlineInputStyle = {

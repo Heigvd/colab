@@ -10,7 +10,7 @@ import { faRotateLeft } from '@fortawesome/free-solid-svg-icons';
 import { InvolvementLevel } from 'colab-rest-client';
 import * as React from 'react';
 import Select from 'react-select';
-import IconButton from '../common/IconButton';
+import IconButton from '../common/element/IconButton';
 import Flex from '../common/layout/Flex';
 
 const DEFAULT_RIGHT = 'INFORMED_READWRITE';

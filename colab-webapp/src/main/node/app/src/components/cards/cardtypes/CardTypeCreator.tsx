@@ -17,7 +17,7 @@ import {
 } from '../../../selectors/cardTypeSelector';
 import { useProjectBeingEdited } from '../../../selectors/projectSelector';
 import { useAppDispatch } from '../../../store/hooks';
-import Button from '../../common/Button';
+import Button from '../../common/element/Button';
 import Form, { createSelectField, Field } from '../../common/Form/Form';
 import OpenCloseModal from '../../common/layout/OpenCloseModal';
 import { buttonStyle, marginAroundStyle, space_M } from '../../styling/style';

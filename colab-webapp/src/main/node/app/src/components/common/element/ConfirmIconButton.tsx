@@ -9,9 +9,9 @@ import { css } from '@emotion/css';
 import { IconProp } from '@fortawesome/fontawesome-svg-core';
 import { faCheck, faTimes } from '@fortawesome/free-solid-svg-icons';
 import * as React from 'react';
-import useTranslations from '../../i18n/I18nContext';
+import useTranslations from '../../../i18n/I18nContext';
+import Clickable from '../layout/Clickable';
 import Button from './Button';
-import Clickable from './Clickable';
 import IconButton from './IconButton';
 
 export interface Props {

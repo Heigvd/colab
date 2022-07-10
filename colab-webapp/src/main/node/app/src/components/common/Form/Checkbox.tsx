@@ -10,8 +10,8 @@ import { faCheckSquare, faSquare } from '@fortawesome/free-regular-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import * as React from 'react';
 import { errorStyle, space_S, textSmall, warningStyle } from '../../styling/style';
+import Tips, { TipsProps } from '../element/Tips';
 import Flex from '../layout/Flex';
-import Tips, { TipsProps } from '../Tips';
 
 const disabledStyle = css({
   color: 'var(--disabledFgColor)',

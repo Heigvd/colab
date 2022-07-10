@@ -16,10 +16,10 @@ import {
   lightTheme,
   noOutlineStyle,
   space_S,
-} from '../styling/style';
-import Clickable from './Clickable';
-import Checkbox from './Form/Checkbox';
-import Flex from './layout/Flex';
+} from '../../styling/style';
+import Checkbox from '../Form/Checkbox';
+import Clickable from '../layout/Clickable';
+import Flex from '../layout/Flex';
 
 const categoryTabStyle = cx(
   lightTheme,

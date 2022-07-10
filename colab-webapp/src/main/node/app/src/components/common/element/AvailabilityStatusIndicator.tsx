@@ -7,7 +7,7 @@
 import { faConciergeBell, faKiwiBird, faSkullCrossbones } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import * as React from 'react';
-import { AvailabilityStatus } from '../../store/store';
+import { AvailabilityStatus } from '../../../store/store';
 import InlineLoading from './InlineLoading';
 
 interface AvailabilityStatusIndicatorProps {

@@ -12,8 +12,8 @@ import * as API from '../../API/api';
 import useTranslations from '../../i18n/I18nContext';
 import { useUserSession } from '../../selectors/userSelector';
 import { useAppDispatch } from '../../store/hooks';
-import Button from '../common/Button';
-import InlineLoading from '../common/InlineLoading';
+import Button from '../common/element/Button';
+import InlineLoading from '../common/element/InlineLoading';
 
 interface UserProfileProps {
   user: User;

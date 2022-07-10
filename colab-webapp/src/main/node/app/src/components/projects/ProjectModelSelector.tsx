@@ -12,8 +12,8 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Project } from 'colab-rest-client';
 import * as React from 'react';
 import { useAndLoadProjectModels } from '../../selectors/projectSelector';
-import AvailabilityStatusIndicator from '../common/AvailabilityStatusIndicator';
-import ItemThumbnailsSelection from '../common/ItemThumbnailsSelection';
+import ItemThumbnailsSelection from '../common/collection/ItemThumbnailsSelection';
+import AvailabilityStatusIndicator from '../common/element/AvailabilityStatusIndicator';
 import Flex from '../common/layout/Flex';
 import { lightText, multiLineEllipsis, space_S, textSmall } from '../styling/style';
 

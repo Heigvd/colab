@@ -15,14 +15,14 @@ import {
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { ExternalLink } from 'colab-rest-client';
 import * as React from 'react';
-import { refreshUrlMetadata, updateDocument } from '../../API/api';
-import { useUrlMetadata } from '../../selectors/externalDataSelector';
-import { useAppDispatch } from '../../store/hooks';
-import { lightIconButtonStyle, space_M, space_S } from '../styling/style';
+import { refreshUrlMetadata, updateDocument } from '../../../API/api';
+import { useUrlMetadata } from '../../../selectors/externalDataSelector';
+import { useAppDispatch } from '../../../store/hooks';
+import { lightIconButtonStyle, space_M, space_S } from '../../styling/style';
+import Flex from '../layout/Flex';
 import { emptyLightTextStyle } from './FilePicker';
 import IconButton from './IconButton';
 import InlineLoading from './InlineLoading';
-import Flex from './layout/Flex';
 import OnConfirmInput from './OnConfirmInput';
 
 const cardStyle = css({

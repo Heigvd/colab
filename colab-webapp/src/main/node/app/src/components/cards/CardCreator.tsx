@@ -15,10 +15,10 @@ import * as API from '../../API/api';
 import useTranslations from '../../i18n/I18nContext';
 import { useAndLoadProjectCardTypes } from '../../selectors/cardTypeSelector';
 import { useAppDispatch } from '../../store/hooks';
-import AvailabilityStatusIndicator from '../common/AvailabilityStatusIndicator';
-import Button from '../common/Button';
-import CustomElementsList from '../common/CustomElementsList';
-import IconButton from '../common/IconButton';
+import CustomElementsList from '../common/collection/CustomElementsList';
+import AvailabilityStatusIndicator from '../common/element/AvailabilityStatusIndicator';
+import Button from '../common/element/Button';
+import IconButton from '../common/element/IconButton';
 import Flex from '../common/layout/Flex';
 import OpenCloseModal from '../common/layout/OpenCloseModal';
 import {

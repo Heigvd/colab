@@ -10,7 +10,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import * as React from 'react';
 import useTranslations from '../../../i18n/I18nContext';
 import { errorColor, space_M } from '../../styling/style';
-import Button from '../Button';
+import Button from '../element/Button';
 import Flex from './Flex';
 import OpenCloseModal from './OpenCloseModal';
 

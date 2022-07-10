@@ -8,7 +8,7 @@
 import * as React from 'react';
 import { getAllUsers } from '../../API/api';
 import { shallowEqual, useAppDispatch, useAppSelector } from '../../store/hooks';
-import InlineLoading from '../common/InlineLoading';
+import InlineLoading from '../common/element/InlineLoading';
 import UserList from './UserList';
 
 export default function AllUsers(): JSX.Element {

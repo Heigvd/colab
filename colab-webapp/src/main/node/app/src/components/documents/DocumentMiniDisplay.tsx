@@ -11,7 +11,7 @@ import { faTimes } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Document } from 'colab-rest-client';
 import * as React from 'react';
-import IconButton from '../common/IconButton';
+import IconButton from '../common/element/IconButton';
 import OpenClose from '../common/layout/OpenClose';
 import Overlay from '../common/layout/Overlay';
 import { defaultRowContainerStyle, iconStyle } from '../styling/style';

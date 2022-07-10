@@ -17,8 +17,8 @@ import {
   textSmall,
   warningStyle,
 } from '../../styling/style';
+import Tips, { TipsProps } from '../element/Tips';
 import Flex from '../layout/Flex';
-import Tips, { TipsProps } from '../Tips';
 
 interface InputProps extends Omit<React.HTMLProps<HTMLInputElement>, 'label' | 'onChange'> {
   label?: React.ReactNode;

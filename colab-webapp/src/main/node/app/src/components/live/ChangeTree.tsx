@@ -17,8 +17,8 @@ import { removeAllItems } from '../../helper';
 import * as LiveHelper from '../../LiveHelper';
 import { useChanges } from '../../selectors/changeSelector';
 import { useAppDispatch } from '../../store/hooks';
-import IconButton from '../common/IconButton';
-import InlineLoading from '../common/InlineLoading';
+import IconButton from '../common/element/IconButton';
+import InlineLoading from '../common/element/InlineLoading';
 
 function truncateRevision(revisionTag: string) {
   return '...' + revisionTag.substring(revisionTag.indexOf('::') - 3);

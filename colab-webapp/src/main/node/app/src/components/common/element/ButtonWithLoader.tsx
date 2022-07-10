@@ -17,9 +17,9 @@ import {
   invertedButtonStyle,
   space_S,
   spinningStyle,
-} from '../styling/style';
-import Clickable, { ClickableProps } from './Clickable';
-import Flex from './layout/Flex';
+} from '../../styling/style';
+import Clickable, { ClickableProps } from '../layout/Clickable';
+import Flex from '../layout/Flex';
 
 const relative = css({
   position: 'relative',

@@ -8,7 +8,7 @@ import { css, cx } from '@emotion/css';
 import * as React from 'react';
 import useTranslations from '../../../i18n/I18nContext';
 import { space_L, space_M, space_S } from '../../styling/style';
-import Clickable from '../Clickable';
+import Clickable from './Clickable';
 import Flex from './Flex';
 
 interface TabProps {

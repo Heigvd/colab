@@ -12,8 +12,8 @@ import {
   useAndLoadAvailableCardTypes,
   useAndLoadProjectCardTypes,
 } from '../../../selectors/cardTypeSelector';
-import AvailabilityStatusIndicator from '../../common/AvailabilityStatusIndicator';
-import CustomElementsList from '../../common/CustomElementsList';
+import CustomElementsList from '../../common/collection/CustomElementsList';
+import AvailabilityStatusIndicator from '../../common/element/AvailabilityStatusIndicator';
 import Collapsible from '../../common/layout/Collapsible';
 import Flex from '../../common/layout/Flex';
 import { voidStyle } from '../../styling/style';

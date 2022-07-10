@@ -21,9 +21,9 @@ import {
 import { faFileCsv, faSkullCrossbones, faUpload } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import * as React from 'react';
-import { invertedButtonStyle, space_M, space_S } from '../styling/style';
+import { invertedButtonStyle, space_M, space_S } from '../../styling/style';
+import Flex from '../layout/Flex';
 import Button from './Button';
-import Flex from './layout/Flex';
 
 const contains = (value: string, ...values: string[]): boolean => {
   return !!values.find(needle => value.includes(needle));

@@ -8,7 +8,7 @@
 import { css } from '@emotion/css';
 import { uniq } from 'lodash';
 import * as React from 'react';
-import { AvailabilityStatus } from '../../store/store';
+import { AvailabilityStatus } from '../../../store/store';
 import FilterableList from './FilterableList';
 import ItemThumbnailsSelection from './ItemThumbnailsSelection';
 

@@ -14,10 +14,10 @@ import {
   lightIconButtonStyle,
   smallInputStyle,
   space_S,
-} from '../styling/style';
+} from '../../styling/style';
+import Flex from '../layout/Flex';
 import Button from './Button';
 import IconButton from './IconButton';
-import Flex from './layout/Flex';
 
 export interface Props {
   label?: string;

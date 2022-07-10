@@ -13,7 +13,7 @@ import * as API from '../../API/api';
 import useTranslations from '../../i18n/I18nContext';
 import { useAndLoadResourceCategories } from '../../selectors/resourceSelector';
 import { useAppDispatch } from '../../store/hooks';
-import Button from '../common/Button';
+import Button from '../common/element/Button';
 import Form, { createSelectField, Field } from '../common/Form/Form';
 import Flex from '../common/layout/Flex';
 import OpenCloseModal from '../common/layout/OpenCloseModal';

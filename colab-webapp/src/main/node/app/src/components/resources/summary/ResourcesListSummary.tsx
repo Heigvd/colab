@@ -12,7 +12,7 @@ import {
   useAndLoadCardTypeNbResources,
   useAndLoadNbResources,
 } from '../../../selectors/resourceSelector';
-import AvailabilityStatusIndicator from '../../common/AvailabilityStatusIndicator';
+import AvailabilityStatusIndicator from '../../common/element/AvailabilityStatusIndicator';
 import {
   CardOrCardContentContext,
   CardTypeContext,
@@ -28,7 +28,7 @@ export default function ResourcesListSummary(context: ResourceCallContext): JSX.
 interface cardResourceList {
   context: CardOrCardContentContext;
 }
-function CardResourcesListSummary({context}: cardResourceList): JSX.Element {
+function CardResourcesListSummary({ context }: cardResourceList): JSX.Element {
   const { nb, status } = useAndLoadNbResources(context);
 
   if (status !== 'READY') {
@@ -54,7 +54,7 @@ function CardResourcesListSummary({context}: cardResourceList): JSX.Element {
 interface CTResourceList {
   context: CardTypeContext;
 }
-function CTResourcesListSummary({context}: CTResourceList): JSX.Element {
+function CTResourcesListSummary({ context }: CTResourceList): JSX.Element {
   const { nb, status } = useAndLoadCardTypeNbResources(context);
 
   if (status !== 'READY') {

@@ -7,8 +7,8 @@
 
 import { css, cx } from '@emotion/css';
 import * as React from 'react';
-import { space_M } from '../styling/style';
-import Clickable from './Clickable';
+import { space_M } from '../../styling/style';
+import Clickable from '../layout/Clickable';
 
 interface Props {
   onClick?: () => void;

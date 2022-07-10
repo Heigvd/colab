@@ -24,7 +24,7 @@ import {
   useAppSelector,
 } from '../../../store/hooks';
 import CardCreator from '../../cards/CardCreator';
-import InlineLoading from '../../common/InlineLoading';
+import InlineLoading from '../../common/element/InlineLoading';
 import Flex from '../../common/layout/Flex';
 import { cardShadow } from '../../styling/style';
 

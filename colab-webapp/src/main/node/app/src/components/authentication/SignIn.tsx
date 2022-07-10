@@ -15,9 +15,9 @@ import { buildLinkWithQueryParam } from '../../helper';
 import useTranslations from '../../i18n/I18nContext';
 import { useAccountConfig } from '../../selectors/configSelector';
 import { useAppDispatch } from '../../store/hooks';
+import { InlineLink } from '../common/element/Link';
 import Form, { Field, PasswordScore } from '../common/Form/Form';
 import Flex from '../common/layout/Flex';
-import { InlineLink } from '../common/Link';
 import { lightLinkStyle, space_M, space_S } from '../styling/style';
 import PublicEntranceContainer from './PublicEntranceContainer';
 

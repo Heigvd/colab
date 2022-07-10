@@ -20,8 +20,8 @@ import { grantAdminRight, revokeAdminRight } from '../../API/api';
 import useTranslations from '../../i18n/I18nContext';
 import { useCurrentUser } from '../../selectors/userSelector';
 import { useAppDispatch } from '../../store/hooks';
-import Button from '../common/Button';
-import IconButton from '../common/IconButton';
+import Button from '../common/element/Button';
+import IconButton from '../common/element/IconButton';
 
 const UserComp = ({ user }: { user: User }) => {
   const i18n = useTranslations();

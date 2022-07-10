@@ -7,7 +7,7 @@
 
 import { entityIs } from 'colab-rest-client';
 import * as React from 'react';
-import InlineLoading from '../common/InlineLoading';
+import InlineLoading from '../common/element/InlineLoading';
 import LiveEditor from '../live/LiveEditor';
 import { useBlock } from '../live/LiveTextEditor';
 import { TXTFormatToolbarProps } from './markdown/WysiwygEditorCustom';

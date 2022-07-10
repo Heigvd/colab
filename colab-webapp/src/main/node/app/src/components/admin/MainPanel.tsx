@@ -10,8 +10,8 @@ import * as React from 'react';
 import { getVersionDetails } from '../../API/api';
 import { useVersionDetails } from '../../selectors/configSelector';
 import { useAppDispatch } from '../../store/hooks';
-import Button from '../common/Button';
-import InlineLoading from '../common/InlineLoading';
+import Button from '../common/element/Button';
+import InlineLoading from '../common/element/InlineLoading';
 
 export default function MainPanel(): JSX.Element {
   const version = useVersionDetails();

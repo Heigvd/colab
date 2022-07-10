@@ -6,7 +6,7 @@
  */
 
 import * as React from 'react';
-import { linkStyle } from '../styling/style';
+import { linkStyle } from '../../styling/style';
 
 export interface ClickableProps {
   onClick?: (e: React.MouseEvent<HTMLSpanElement> | React.KeyboardEvent<HTMLSpanElement>) => void;

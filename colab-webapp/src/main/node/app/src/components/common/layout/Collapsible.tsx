@@ -11,8 +11,8 @@ import { faChevronDown, faChevronUp } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import * as React from 'react';
 import { paddingAroundStyle, space_M, space_S } from '../../styling/style';
+import IconButton from '../element/IconButton';
 import Flex from './Flex';
-import IconButton from '../IconButton';
 
 const openStyle = css({
   maxHeight: '40000px',

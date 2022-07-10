@@ -13,10 +13,10 @@ import * as React from 'react';
 import { TwitterPicker } from 'react-color';
 import * as API from '../../API/api';
 import { useAppDispatch } from '../../store/hooks';
+import Tips, { WIPContainer } from '../common/element/Tips';
 import Checkbox from '../common/Form/Checkbox';
 import SelectInput from '../common/Form/SelectInput';
 import Flex from '../common/layout/Flex';
-import Tips, { WIPContainer } from '../common/Tips';
 import { iconStyle, space_M } from '../styling/style';
 import ContentStatusSelector from './ContentStatusSelector';
 
