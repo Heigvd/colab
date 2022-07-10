@@ -10,6 +10,8 @@ import { faTrashAlt } from '@fortawesome/free-solid-svg-icons';
 import * as React from 'react';
 import { ConfirmIconButton } from './ConfirmIconButton';
 
+// soon not used anymore
+
 export interface Props {
   title?: string;
   icon?: IconDefinition;

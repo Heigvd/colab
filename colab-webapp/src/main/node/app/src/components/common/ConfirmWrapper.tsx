@@ -6,6 +6,9 @@
  */
 import * as React from 'react';
 import Button from './Button';
+
+// not used anymore
+
 interface ConfirmWrapperProps {
   onConfirm: () => void;
   message: string;

@@ -8,6 +8,8 @@
 import { css } from '@emotion/css';
 import * as React from 'react';
 
+// not used anymore
+
 export interface Props {
   children: JSX.Element;
   direction?: 'row' | 'column';

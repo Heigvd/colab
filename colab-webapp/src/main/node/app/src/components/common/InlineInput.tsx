@@ -15,6 +15,8 @@ import { lightIconButtonStyle, space_S } from '../styling/style';
 import Flex from './Flex';
 import IconButton from './IconButton';
 
+// not used anymore
+
 const inputEditingStyle = css({
   borderBottom: '2px solid var(--darkGray)',
   '&:focus': {
