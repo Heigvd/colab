@@ -410,7 +410,11 @@ export default function Editor(): JSX.Element {
               {/* more infos? Add project team names */}
             </div>
           </div>
-          <IconButton icon={faTimes} title="Close" onClick={() => setShowProjectDetails(false)} />
+          <IconButton
+            icon={faTimes}
+            title={i18n.common.close}
+            onClick={() => setShowProjectDetails(false)}
+          />
         </Flex>
         <Flex
           direction="column"

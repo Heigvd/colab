@@ -14,6 +14,7 @@ export const en = {
     cancel: 'Cancel',
     create: 'Create',
     close: 'Close',
+    open: 'Open',
     add: 'Add',
     next: 'Next',
     back: 'Back',

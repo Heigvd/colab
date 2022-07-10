@@ -10,6 +10,7 @@ import { IconProp } from '@fortawesome/fontawesome-svg-core';
 import { faChevronDown, faChevronUp } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import * as React from 'react';
+import useTranslations from '../../../i18n/I18nContext';
 import { paddingAroundStyle, space_M, space_S } from '../../styling/style';
 import IconButton from '../element/IconButton';
 import Flex from './Flex';
@@ -59,7 +60,10 @@ export default function Collapsible({
   labelClassName,
   contentClassName,
 }: CollapsibleProps): JSX.Element {
+  const i18n = useTranslations();
+
   const [showContent, setShowContent] = React.useState<boolean>(open || false);
+
   return (
     <>
       <Flex
@@ -80,11 +84,11 @@ export default function Collapsible({
           title={
             tooltip
               ? showContent
-                ? 'Close ' + tooltip
-                : 'Open ' + tooltip
+                ? i18n.common.close + ' ' + tooltip
+                : i18n.common.open + ' ' + tooltip
               : showContent
-              ? 'Close'
-              : 'Open'
+              ? i18n.common.close
+              : i18n.common.open
           }
           className={css({ marginLeft: space_M })}
         />

@@ -113,7 +113,7 @@ export function ResourceDisplay({ resource, goBackToList }: ResourceDisplayProps
                   label: (
                     <>
                       <FontAwesomeIcon icon={faTools} />{' '}
-                      {`${openToolbox ? 'Close' : 'Open'} toolbox`}
+                      {`${openToolbox ? i18n.common.close : i18n.common.open} toolbox`}
                     </>
                   ),
                   action: () => setOpenToolbox(openToolbox => !openToolbox),

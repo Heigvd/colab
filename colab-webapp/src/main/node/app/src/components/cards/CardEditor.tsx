@@ -543,7 +543,7 @@ export default function CardEditor({
                         </div>
                         <IconButton
                           icon={faTimes}
-                          title="Close"
+                          title={i18n.common.close}
                           onClick={() => setShowTypeDetails(false)}
                         />
                       </div>

@@ -8,6 +8,7 @@
 import { css, cx } from '@emotion/css';
 import { faTimes } from '@fortawesome/free-solid-svg-icons';
 import * as React from 'react';
+import useTranslations from '../../../i18n/I18nContext';
 import { cardStyle, lightIconButtonStyle, space_L, space_M, space_S } from '../../styling/style';
 import IconButton from '../element/IconButton';
 import Flex from './Flex';
@@ -79,6 +80,8 @@ export default function Modal({
   modalBodyClassName,
   onEnter,
 }: ModalProps): JSX.Element {
+  const i18n = useTranslations();
+
   const handleEnter = (event: KeyboardEvent) => {
     if (event.key === 'Enter') {
       if (onEnter) {
@@ -102,11 +105,11 @@ export default function Modal({
           </Flex>
           {showCloseButton && (
             <IconButton
-              className={cx(closeIconStyle, lightIconButtonStyle)}
-              iconSize="lg"
-              title="Close"
               icon={faTimes}
+              title={i18n.common.close}
+              iconSize="lg"
               onClick={onClose}
+              className={cx(closeIconStyle, lightIconButtonStyle)}
             />
           )}
         </div>

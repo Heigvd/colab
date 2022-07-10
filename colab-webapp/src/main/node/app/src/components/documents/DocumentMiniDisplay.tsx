@@ -11,6 +11,7 @@ import { faTimes } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Document } from 'colab-rest-client';
 import * as React from 'react';
+import useTranslations from '../../i18n/I18nContext';
 import IconButton from '../common/element/IconButton';
 import OpenClose from '../common/layout/OpenClose';
 import Overlay from '../common/layout/Overlay';
@@ -29,6 +30,7 @@ export default function DocumentMiniDisplay({
   document,
   docOwnership,
 }: DocumentMiniDisplayProps): JSX.Element {
+  const i18n = useTranslations();
   return (
     <>
       <OpenClose
@@ -47,7 +49,7 @@ export default function DocumentMiniDisplay({
             )}
             <IconButton
               icon={faTimes}
-              title="close"
+              title={i18n.common.close}
               onClick={() => {
                 collapse();
               }}
