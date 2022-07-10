@@ -62,12 +62,12 @@ function getBgColor(notification: ColabNotification): string {
   }
 }
 
-interface NotifProps {
+interface NotificationProps {
   notification: ColabNotification;
   index: number;
 }
 
-function Notification({ notification, index }: NotifProps) {
+function Notification({ notification, index }: NotificationProps) {
   const dispatch = useAppDispatch();
   const i18n = useTranslations();
 
