@@ -13,7 +13,6 @@ import Flex from '../common/layout/Flex';
 import { space_M, textSmall } from '../styling/style';
 
 export default function DebugForm(): JSX.Element {
-  const [autosubmit, setAutosubmit] = React.useState<boolean>(false);
   const [mandatory, setMandatory] = React.useState<boolean>(false);
   const [readOnly, setReadOnly] = React.useState<boolean>(false);
   const [allInvalid, setAllInvalid] = React.useState<boolean>(false);
@@ -147,28 +146,16 @@ export default function DebugForm(): JSX.Element {
           choice: '',
           rate: '',
         }}
-        autoSubmit={autosubmit}
         onSubmit={_fields => {
           // eslint-disable-next-line no-alert
           alert('yo');
         }}
         submitLabel="Go"
-        className={css({ border: '1px dotted #3d3' })}
         childrenClassName={css({ backgroundColor: 'var(--lightGray)' })}
       >
         <span>something to add after submit button</span>
       </Form>
       <Flex direction="column" className={css({ padding: space_M })}>
-        <h4>Form</h4>
-        <Button
-          title="autosubmit"
-          onClick={() => {
-            setAutosubmit(!autosubmit);
-          }}
-          className={cx(textSmall, css({ margin: '5px' }))}
-        >
-          autosubmit = {autosubmit ? 'true' : 'false'}
-        </Button>
         <h4>each field</h4>
         <Button
           title="mandatory"

@@ -116,7 +116,6 @@ export default function CardTypeCreator({ onCreated, usage }: CardTypeCreatorPro
           <Form
             fields={fields}
             value={{ title: '', purpose: '', tags: [] }}
-            autoSubmit={false}
             onSubmit={function (type) {
               createTypeCb(type);
               close();

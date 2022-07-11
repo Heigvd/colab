@@ -104,7 +104,6 @@ export type Field<T> =
 export interface FormProps<T> {
   fields: Field<T>[];
   value: T;
-  autoSubmit?: boolean;
   onSubmit: (entity: T) => void;
   submitLabel?: string;
   children?: React.ReactNode;
@@ -116,7 +115,6 @@ export interface FormProps<T> {
 export default function Form<T>({
   fields,
   value,
-  autoSubmit = false,
   onSubmit,
   submitLabel,
   children,
@@ -131,19 +129,13 @@ export default function Form<T>({
 
   let globalErroneous = false;
 
-  const setFormValue = React.useCallback(
-    (key: keyof T, value: unknown) => {
-      // genuine hack inside: use setState as getter
-      setState(s => {
-        const newState = { ...s, [key]: value };
-        if (autoSubmit) {
-          onSubmit(newState);
-        }
-        return newState;
-      });
-    },
-    [autoSubmit, onSubmit],
-  );
+  const setFormValue = React.useCallback((key: keyof T, value: unknown) => {
+    // genuine hack inside: use setState as getter
+    setState(s => {
+      const newState = { ...s, [key]: value };
+      return newState;
+    });
+  }, []);
 
   const submit = React.useCallback(() => {
     if (!globalErroneous) {
@@ -316,19 +308,15 @@ export default function Form<T>({
     >
       {fieldComps}
       <Flex direction="column" justify="center" align="center" className={childrenClassName}>
-        {!autoSubmit && (
-          <ButtonWithLoader
-            key="submit"
-            onClick={submit}
-            isLoading={globalErroneous ? false : true}
-            className={cx(
-              css({ margin: space_M + ' 0', alignSelf: 'flex-start' }),
-              buttonClassName,
-            )}
-          >
-            {submitLabel || i18n.form.submit}
-          </ButtonWithLoader>
-        )}
+        <ButtonWithLoader
+          key="submit"
+          onClick={submit}
+          isLoading={globalErroneous ? false : true}
+          className={cx(css({ margin: space_M + ' 0', alignSelf: 'flex-start' }), buttonClassName)}
+        >
+          {submitLabel || i18n.form.submit}
+        </ButtonWithLoader>
+
         {children}
       </Flex>
     </div>
