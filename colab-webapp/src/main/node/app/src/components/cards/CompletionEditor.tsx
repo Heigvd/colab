@@ -10,9 +10,8 @@ import { CardContent } from 'colab-rest-client';
 import * as React from 'react';
 import * as API from '../../API/api';
 import { useAppDispatch } from '../../store/hooks';
-import Flex from '../common/Flex';
 import Input from '../common/Form/Input';
-import InlineInputNew from '../common/InlineInputNew';
+import Flex from '../common/layout/Flex';
 
 interface CompletionEditorProps {
   variant: CardContent;
@@ -36,22 +35,28 @@ export default function CompletionEditor({ variant }: CompletionEditorProps): JS
             }),
           )
         }
-        autofocus={true}
+        autoFocus={true}
       />
-      <Flex align='center'>
-      <InlineInputNew
-        value={String(variant.completionLevel) == '0' ? '0' : String(variant.completionLevel)}
-        placeholder="0"
-        onChange={newValue =>
-          dispatch(
-            API.updateCardContent({
-              ...variant,
-              completionLevel: +newValue,
-            }),
-          )
-        }
-        className={css({border: '1px solid var(--lightGray)'})}
-      /> %</Flex>
+      <Flex align="center">
+        <Input
+          type="number"
+          value={variant.completionLevel == 0 ? 0 : variant.completionLevel}
+          onChange={newValue =>
+            dispatch(
+              API.updateCardContent({
+                ...variant,
+                completionLevel: +newValue,
+              }),
+            )
+          }
+          placeholder={'0'}
+          autoFocus
+          className={css({ width: '90px' })}
+          min={0}
+          max={100}
+        />{' '}
+        %
+      </Flex>
     </>
   );
 }

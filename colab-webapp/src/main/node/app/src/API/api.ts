@@ -74,7 +74,7 @@ const restClient = ColabClient(getApplicationPath(), error => {
       addNotification({
         status: 'OPEN',
         type: 'ERROR',
-        message: 'Something went wrong',
+        message: 'Something went wrong', // TODO i18n
       }),
     );
   }
@@ -144,7 +144,7 @@ export const getVersionDetails = createAsyncThunk('monitoring/getVersionDetails'
 });
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Authentication + Users
+// Authentication
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 export const signInWithLocalAccount = createAsyncThunk(
@@ -160,8 +160,9 @@ export const signInWithLocalAccount = createAsyncThunk(
     },
     thunkApi,
   ) => {
-    // first, fetch an authenatication method
+    // first, fetch an authentication method
     const authMethod = await restClient.UserRestEndpoint.getAuthMethod(identifier);
+
     const authInfo: AuthInfo = {
       '@class': 'AuthInfo',
       identifier,
@@ -190,7 +191,7 @@ export const signUp = createAsyncThunk(
     },
     thunkApi,
   ) => {
-    // first, fetch a
+    // first, fetch an authentication method
     const authMethod = await restClient.UserRestEndpoint.getAuthMethod(email);
 
     const signUpInfo: SignUpInfo = {
@@ -201,9 +202,10 @@ export const signUp = createAsyncThunk(
       salt: authMethod.salt,
       hash: await hashPassword(authMethod.mandatoryMethod, authMethod.salt, password),
     };
+
     await restClient.UserRestEndpoint.signUp(signUpInfo);
 
-    // go back to login page
+    // go back to sign in page
     thunkApi.dispatch(
       signInWithLocalAccount({
         identifier: email,
@@ -214,13 +216,20 @@ export const signUp = createAsyncThunk(
   },
 );
 
+export const requestPasswordReset = createAsyncThunk(
+  'auth/resetPassword',
+  async (email: string) => {
+    await restClient.UserRestEndpoint.requestPasswordReset(email);
+  },
+);
+
 export const signOut = createAsyncThunk('auth/signout', async () => {
   return await restClient.UserRestEndpoint.signOut();
 });
 
-export const forceLogout = createAsyncThunk('user/forceLogout', async (session: HttpSession) => {
-  return await restClient.UserRestEndpoint.forceLogout(session.id!);
-});
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Users
+////////////////////////////////////////////////////////////////////////////////////////////////////
 
 export const reloadCurrentUser = createAsyncThunk(
   'auth/reload',
@@ -253,10 +262,6 @@ export const reloadCurrentUser = createAsyncThunk(
     return { currentUser: currentUser, currentAccount: currentAccount, accounts: allAccounts };
   },
 );
-
-export const requestPasswordReset = createAsyncThunk('auth/restPassword', async (email: string) => {
-  await restClient.UserRestEndpoint.requestPasswordReset(email);
-});
 
 export const updateLocalAccountPassword = createAsyncThunk(
   'user/updatePassword',
@@ -310,6 +315,10 @@ export const getUser = createAsyncThunk('user/get', async (id: number) => {
 
 export const getAllUsers = createAsyncThunk('user/getAll', async () => {
   return await restClient.UserRestEndpoint.getAllUsers();
+});
+
+export const forceLogout = createAsyncThunk('user/forceLogout', async (session: HttpSession) => {
+  return await restClient.UserRestEndpoint.forceLogout(session.id!);
 });
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////

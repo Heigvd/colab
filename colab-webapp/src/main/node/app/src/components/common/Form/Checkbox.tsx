@@ -9,59 +9,63 @@ import { css, cx } from '@emotion/css';
 import { faCheckSquare, faSquare } from '@fortawesome/free-regular-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import * as React from 'react';
-import { errorStyle, space_S, warningStyle } from '../../styling/style';
-import Flex from '../Flex';
-import Tips, { TipsProps } from '../Tips';
-
-export interface Props {
-  label?: React.ReactNode;
-  warning?: React.ReactNode;
-  error?: React.ReactNode;
-  title?: string;
-  disabled?: boolean;
-  value?: boolean;
-  onChange: (newValue: boolean) => void;
-  tip?: TipsProps['children'];
-  className?: string;
-  containerClassName?: string;
-}
+import { errorStyle, space_S, textSmall, warningStyle } from '../../styling/style';
+import Tips, { TipsProps } from '../element/Tips';
+import Flex from '../layout/Flex';
 
 const disabledStyle = css({
   color: 'var(--disabledFgColor)',
 });
 const enabledStyle = css({ cursor: 'pointer' });
 
+interface CheckboxProps {
+  label?: React.ReactNode;
+  value?: boolean;
+  readOnly?: boolean;
+  onChange: (newValue: boolean) => void;
+  tip?: TipsProps['children'];
+  fieldFooter?: React.ReactNode;
+  warning?: React.ReactNode;
+  error?: React.ReactNode;
+  className?: string;
+  bottomClassName?: string;
+}
+
 export default function Checkbox({
   label,
-  warning,
-  error,
-  title,
-  disabled = false,
   value,
+  readOnly = false,
   onChange,
   tip,
-  containerClassName,
+  fieldFooter,
+  warning,
+  error,
   className,
-}: Props): JSX.Element {
+  bottomClassName,
+}: CheckboxProps): JSX.Element {
   return (
-    <Flex className={cx(css({ padding: space_S + ' 0' }), containerClassName)} direction="column">
-      <Flex justify="space-between">
-        {warning ? <div className={warningStyle}>{warning}</div> : null}
-        {error ? <div className={errorStyle}>{error}</div> : null}
+    <Flex
+      direction="column"
+      align="normal"
+      className={cx(css({ padding: space_S + ' 0' }), className)}
+    >
+      <Flex align="center" justify="flex-start">
+        <Flex
+          onClick={readOnly ? undefined : () => onChange(!value)}
+          className={readOnly ? disabledStyle : enabledStyle}
+        >
+          <FontAwesomeIcon
+            icon={value ? faCheckSquare : faSquare}
+            className={css({ marginRight: space_S })}
+          />
+          {label}
+        </Flex>
+        {tip != null && <Tips>{tip}</Tips>}
       </Flex>
-      <Flex
-        className={disabled ? disabledStyle : enabledStyle}
-        justify="flex-start"
-        align="center"
-        onClick={disabled ? undefined : () => onChange(!value)}
-      >
-        <FontAwesomeIcon
-          title={title}
-          icon={value ? faCheckSquare : faSquare}
-          className={cx(css({ marginRight: space_S }), className)}
-        />
-        {label}
-        {tip && <Tips>{tip}</Tips>}
+      {fieldFooter != null && <div className={textSmall}>{fieldFooter}</div>}
+      <Flex direction="column" align="center" className={cx(textSmall, bottomClassName)}>
+        {warning != null && <div className={warningStyle}>{warning}</div>}
+        {error != null && <div className={errorStyle}>{error}</div>}
       </Flex>
     </Flex>
   );

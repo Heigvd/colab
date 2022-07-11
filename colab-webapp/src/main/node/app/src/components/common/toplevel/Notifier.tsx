@@ -1,0 +1,136 @@
+/*
+ * The coLAB project
+ * Copyright (C) 2021 AlbaSim, MEI, HEIG-VD, HES-SO
+ *
+ * Licensed under the MIT License
+ */
+
+import { css } from '@emotion/css';
+import { entityIs, HttpErrorMessage, HttpException } from 'colab-rest-client';
+import * as React from 'react';
+import useTranslations, { ColabTranslations } from '../../../i18n/I18nContext';
+import { shallowEqual, useAppDispatch, useAppSelector } from '../../../store/hooks';
+import { closeNotification, ColabNotification } from '../../../store/notification';
+
+function prettyPrint(error: HttpException | string, i18n: ColabTranslations): string {
+  if (entityIs<'HttpErrorMessage'>(error, 'HttpErrorMessage')) {
+    return translateHttpErrorMessage(error.messageCode, error.messageI18nKey, i18n);
+  } else {
+    return error;
+  }
+}
+
+function translateHttpErrorMessage(
+  code: HttpErrorMessage['messageCode'],
+  i18nKey: HttpErrorMessage['messageI18nKey'],
+  i18n: ColabTranslations,
+): string {
+  if (i18nKey != null) {
+    return i18n.keyFromServer(i18nKey);
+  }
+
+  switch (code) {
+    case 'AUTHENTICATION_FAILED':
+      return i18n.httpErrorMessage.AUTHENTICATION_FAILED;
+    case 'AUTHENTICATION_REQUIRED':
+      return i18n.httpErrorMessage.AUTHENTICATION_REQUIRED;
+    case 'ACCESS_DENIED':
+      return i18n.httpErrorMessage.ACCESS_DENIED;
+    case 'NOT_FOUND':
+      return i18n.httpErrorMessage.NOT_FOUND;
+    case 'SMTP_ERROR':
+      return i18n.httpErrorMessage.SMTP_ERROR;
+    case 'EMAIL_MESSAGE_ERROR':
+      return i18n.httpErrorMessage.EMAIL_MESSAGE_ERROR;
+    case 'TOO_MANY_ATTEMPTS':
+      return i18n.httpErrorMessage.TOO_MANY_ATTEMPTS;
+    case 'BAD_REQUEST':
+    default:
+      return i18n.httpErrorMessage.BAD_REQUEST;
+  }
+}
+
+function getBgColor(notification: ColabNotification): string {
+  switch (notification.type) {
+    case 'INFO':
+      return 'var(--successColor)';
+    case 'WARN':
+      return 'var(--warningColor)';
+    case 'ERROR':
+    default:
+      return 'var(--errorColor)';
+  }
+}
+
+interface NotificationProps {
+  notification: ColabNotification;
+  index: number;
+}
+
+function Notification({ notification, index }: NotificationProps) {
+  const dispatch = useAppDispatch();
+  const i18n = useTranslations();
+
+  const closeCb = React.useCallback(() => {
+    dispatch(closeNotification(index));
+  }, [index, dispatch]);
+
+  React.useEffect(() => {
+    let abort = false;
+    globalThis.setTimeout(() => {
+      if (!abort) {
+        closeCb();
+      }
+    }, 10000);
+    return () => {
+      abort = true;
+    };
+  }, [closeCb]);
+
+  return (
+    <div
+      className={css({
+        backgroundColor: getBgColor(notification),
+        borderRadius: '5px',
+        color: 'white',
+        padding: '10px 100px',
+        margin: '10px',
+        boxShadow: '0px 1px 3px rgba(0, 0, 0, 0.12)',
+        fontSize: '1.3em',
+        fontWeight: 300,
+        ':hover': {
+          boxShadow: '0 3px 6px rgba(0,0,0,.16)',
+        },
+      })}
+      onClick={() => closeCb()}
+    >
+      {prettyPrint(notification.message, i18n)}
+    </div>
+  );
+}
+
+export default function Notifier(): JSX.Element {
+  const notifications = useAppSelector(state => state.notifications, shallowEqual);
+
+  return (
+    <div
+      className={css({
+        position: 'fixed',
+        zIndex: 999,
+        top: 0,
+        left: 0,
+        right: 0,
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+      })}
+    >
+      {notifications.map(
+        (notification, index) =>
+          notification.status === 'OPEN' && (
+            <Notification key={index} notification={notification} index={index} />
+          ),
+      )}
+    </div>
+  );
+}

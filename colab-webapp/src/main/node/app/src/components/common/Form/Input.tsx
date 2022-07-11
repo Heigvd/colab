@@ -17,43 +17,49 @@ import {
   textSmall,
   warningStyle,
 } from '../../styling/style';
-import Flex from '../Flex';
-import Tips, { TipsProps } from '../Tips';
+import Tips, { TipsProps } from '../element/Tips';
+import Flex from '../layout/Flex';
 
-export interface Props {
+interface InputProps extends Omit<React.HTMLProps<HTMLInputElement>, 'label' | 'onChange'> {
   label?: React.ReactNode;
+  value?: string | number;
+  placeholder?: string;
+  type?: HTMLInputElement['type'];
   inputType?: 'input' | 'textarea';
+  delay?: number;
+  mandatory?: boolean;
+  readOnly?: boolean;
+  onChange: (newValue: string) => void;
+  tip?: TipsProps['children'];
+  fieldFooter?: React.ReactNode;
   warning?: React.ReactNode;
   error?: React.ReactNode;
-  value?: string;
-  mandatory?: boolean;
-  type?: HTMLInputElement['type'];
-  onChange: (newValue: string) => void;
-  placeholder?: string;
-  tip?: TipsProps['children'];
   className?: string;
-  readonly?: boolean;
-  delay?: number;
-  autofocus?: boolean;
+  bottomClassName?: string;
 }
 
 export default function Input({
-  type = 'text',
   label,
+  value = '',
+  placeholder,
+  type = 'text',
   inputType = 'input',
+  delay = 500,
+  mandatory,
+  readOnly = false,
+  autoFocus,
+  onChange,
+  onKeyDown,
+  min,
+  max,
+  tip,
+  fieldFooter,
   warning,
   error,
-  value = '',
-  onChange,
-  mandatory,
   className,
-  placeholder,
-  autofocus,
-  tip,
-  readonly = false,
-  delay = 500,
-}: Props): JSX.Element {
-  const [state, setState] = React.useState<string>(value || '');
+  bottomClassName,
+}: InputProps): JSX.Element {
+  const [state, setState] = React.useState<string | number>(value || '');
 
   React.useEffect(() => {
     setState(value);
@@ -69,7 +75,8 @@ export default function Input({
       }, delay),
     [delay],
   );
-  const onInternalChangeCb = React.useCallback(
+
+  const onInternalChange = React.useCallback(
     (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
       const newValue = e.target.value;
       debouncedOnChange(newValue);
@@ -82,47 +89,53 @@ export default function Input({
    * Send change immediatly.
    * No need to wait debounced delay
    */
-  const onBlurCb = React.useCallback(() => {
+  const onBlur = React.useCallback(() => {
     debouncedOnChange.flush();
   }, [debouncedOnChange]);
 
   return (
     <Flex
-      className={cx(css({ padding: space_S + ' 0' }), className)}
       direction="column"
       align="normal"
+      className={cx(css({ padding: space_S + ' 0' }), className)}
     >
       <Flex justify="space-between">
         <div>
           <span className={labelStyle}>{label}</span>
-          {tip && <Tips>{tip}</Tips>}
-          {mandatory ? ' * ' : null}
+          {tip != null && <Tips>{tip}</Tips>}
+          {mandatory && ' * '}
         </div>
       </Flex>
       {inputType === 'input' ? (
         <input
-          type={type}
-          className={inputStyle}
-          placeholder={placeholder}
           value={state || ''}
-          onChange={onInternalChangeCb}
-          onBlur={onBlurCb}
-          readOnly={readonly}
-          autoFocus={autofocus}
+          placeholder={placeholder}
+          type={type}
+          readOnly={readOnly}
+          autoFocus={autoFocus}
+          onChange={onInternalChange}
+          onKeyDown={onKeyDown}
+          onBlur={onBlur}
+          min={min}
+          max={max}
+          className={inputStyle}
         />
       ) : (
         <textarea
-          className={textareaStyle}
-          placeholder={placeholder}
           value={state || ''}
-          onChange={onInternalChangeCb}
-          onBlur={onBlurCb}
-          readOnly={readonly}
-          autoFocus={autofocus}
+          placeholder={placeholder}
+          readOnly={readOnly}
+          autoFocus={autoFocus}
+          onChange={onInternalChange}
+          onBlur={onBlur}
+          className={textareaStyle}
         />
       )}
-      {warning ? <div className={cx(textSmall, warningStyle)}>{warning}</div> : null}
-      {error ? <div className={cx(textSmall, errorStyle)}>{error}</div> : null}
+      {fieldFooter != null && <div className={textSmall}>{fieldFooter}</div>}
+      <Flex direction="column" align="center" className={cx(textSmall, bottomClassName)}>
+        {warning != null && <div className={warningStyle}>{warning}</div>}
+        {error != null && <div className={errorStyle}>{error}</div>}
+      </Flex>
     </Flex>
   );
 }

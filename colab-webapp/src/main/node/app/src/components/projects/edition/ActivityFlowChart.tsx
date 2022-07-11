@@ -25,8 +25,8 @@ import { getLogger } from '../../../logger';
 import { useProjectBeingEdited } from '../../../selectors/projectSelector';
 import { shallowEqual, useAppDispatch, useAppSelector } from '../../../store/hooks';
 import { ProgressBar } from '../../cards/CardLayout';
-import Flex from '../../common/Flex';
-import InlineLoading from '../../common/InlineLoading';
+import InlineLoading from '../../common/element/InlineLoading';
+import Flex from '../../common/layout/Flex';
 
 const logger = getLogger('ActivityFlow');
 logger.setLevel(4);

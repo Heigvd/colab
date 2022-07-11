@@ -8,7 +8,7 @@
 import { faCheck, faPen } from '@fortawesome/free-solid-svg-icons';
 import { debounce } from 'lodash';
 import * as React from 'react';
-import IconButton from './IconButton';
+import IconButton from './element/IconButton';
 
 // not used anymore
 

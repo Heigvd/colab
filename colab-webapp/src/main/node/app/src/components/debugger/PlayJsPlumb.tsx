@@ -15,7 +15,7 @@ import * as API from '../../API/api';
 import { useAllProjectCards } from '../../selectors/cardSelector';
 import { useProjectBeingEdited } from '../../selectors/projectSelector';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
-import InlineLoading from '../common/InlineLoading';
+import InlineLoading from '../common/element/InlineLoading';
 
 const getCardKey = (c: Card) => `Card-${c.id}`;
 

@@ -17,21 +17,22 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import * as React from 'react';
 import { Navigate, Route, Routes, useLocation, useNavigate, useParams } from 'react-router-dom';
 import * as API from '../API/api';
+import useTranslations from '../i18n/I18nContext';
 import { useProject, useProjectBeingEdited } from '../selectors/projectSelector';
 import { useCurrentUser } from '../selectors/userSelector';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
 import Admin from './admin/Admin';
-import DropDownMenu from './common/DropDownMenu';
-import InlineLoading from './common/InlineLoading';
-import { MainMenuLink } from './common/Link';
-import Loading from './common/Loading';
-import Overlay from './common/Overlay';
+import ResetPasswordForm from './authentication/ForgotPassword';
+import ResetPasswordSent from './authentication/ResetPasswordSent';
+import SignInForm from './authentication/SignIn';
+import SignUpForm from './authentication/SignUp';
+import InlineLoading from './common/element/InlineLoading';
+import { MainMenuLink } from './common/element/Link';
+import DropDownMenu from './common/layout/DropDownMenu';
+import Loading from './common/layout/Loading';
+import Overlay from './common/layout/Overlay';
 import Editor from './projects/edition/Editor';
 import { UserProjects } from './projects/ProjectList';
-import ForgotPasswordForm from './public/ForgotPassword';
-import NewPasswordSent from './public/NewPasswordSent';
-import SignInForm from './public/SignIn';
-import SignUpForm from './public/SignUp';
 import Settings from './settings/Settings';
 import Picto from './styling/Picto';
 import {
@@ -89,6 +90,7 @@ function useQuery() {
 export default function MainApp(): JSX.Element {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
+  const i18n = useTranslations();
 
   const { currentUser, status: currentUserStatus } = useCurrentUser();
 
@@ -101,7 +103,7 @@ export default function MainApp(): JSX.Element {
   }, [dispatch]);
 
   React.useEffect(() => {
-    if (currentUserStatus == 'UNKNOWN') {
+    if (currentUserStatus == 'NOT_INITIALIZED') {
       // user is not known. Reload state from API
       dispatch(API.reloadCurrentUser());
     }
@@ -117,28 +119,28 @@ export default function MainApp(): JSX.Element {
           alignItems: 'center',
         })}
       >
-        <InlineLoading colour={true} /> <span>reconnecting...</span>
+        <InlineLoading colour={true} /> <span>{i18n.authentication.info.reconnecting}</span>
       </div>
     </Overlay>
   );
 
   const query = useQuery();
 
-  if (currentUserStatus == 'UNKNOWN') {
+  if (currentUserStatus === 'NOT_INITIALIZED') {
     return <Loading />;
   } else if (currentUserStatus == 'LOADING') {
     return <Loading />;
-  } else if (currentUserStatus == 'NOT_AUTHENTICATED') {
+  } else if (currentUserStatus === 'NOT_AUTHENTICATED') {
     return (
       <>
         <Routes>
+          <Route path="/SignIn" element={<SignInForm redirectTo={query.get('redirectTo')} />} />
           <Route path="/SignUp" element={<SignUpForm redirectTo={query.get('redirectTo')} />} />
           <Route
             path="/ForgotPassword"
-            element={<ForgotPasswordForm redirectTo={query.get('redirectTo')} />}
+            element={<ResetPasswordForm redirectTo={query.get('redirectTo')} />}
           />
-          <Route path="/NewPasswordEmailSend" element={<NewPasswordSent />} />
-          <Route path="/SignIn" element={<SignInForm redirectTo={query.get('redirectTo')} />} />
+          <Route path="/ResetPasswordEmailSent" element={<ResetPasswordSent />} />
           <Route path="*" element={<SignInForm redirectTo={query.get('redirectTo')} />} />
         </Routes>
         {reconnecting}
@@ -147,38 +149,39 @@ export default function MainApp(): JSX.Element {
   } else if (currentUser != null) {
     // user is authenticated
     return (
-      <Routes>
-        <Route path="/editor/:id/*" element={<EditorWrapper />} />
-        <Route
-          path="*"
-          element={
-            <>
-              <div className={fullPageStyle}>
-                <div
-                  className={cx(
-                    invertedThemeMode,
-                    css({
-                      display: 'flex',
-                      flexDirection: 'row',
-                      alignItems: 'center',
-                      boxSizing: 'border-box',
-                      padding: '0 ' + space_M,
-                    }),
-                  )}
-                >
-                  <Picto
+      <>
+        <Routes>
+          <Route path="/editor/:id/*" element={<EditorWrapper />} />
+          <Route
+            path="*"
+            element={
+              <>
+                <div className={fullPageStyle}>
+                  <div
                     className={cx(
+                      invertedThemeMode,
                       css({
-                        height: '30px',
-                        width: 'auto',
-                        paddingRight: space_M,
+                        display: 'flex',
+                        flexDirection: 'row',
+                        alignItems: 'center',
+                        boxSizing: 'border-box',
+                        padding: '0 ' + space_M,
                       }),
-                      paddingAroundStyle([1, 3, 4], space_S),
                     )}
-                  />
-                  <nav className={flex}>
-                    <MainMenuLink to="/">Projects</MainMenuLink>
-                    {/*
+                  >
+                    <Picto
+                      className={cx(
+                        css({
+                          height: '30px',
+                          width: 'auto',
+                          paddingRight: space_M,
+                        }),
+                        paddingAroundStyle([1, 3, 4], space_S),
+                      )}
+                    />
+                    <nav className={flex}>
+                      <MainMenuLink to="/">Projects</MainMenuLink>
+                      {/*
                     
                     {projectBeingEdited != null && (
                       <MainMenuLink to={`/editor/${projectBeingEdited.id}`}>
@@ -204,105 +207,109 @@ export default function MainApp(): JSX.Element {
                         />
                       </MainMenuLink>
                     )} */}
-                  </nav>
+                    </nav>
+                    <div
+                      className={css({
+                        flexGrow: 1,
+                      })}
+                    ></div>
+                    <DropDownMenu
+                      icon={faUserCircle}
+                      title={currentUser.username}
+                      valueComp={{ value: '', label: '' }}
+                      entries={[
+                        {
+                          value: 'username',
+                          label: (
+                            <>
+                              <div
+                                className={css({
+                                  borderBottom: '1px solid var(--darkGray)',
+                                  padding: space_S,
+                                })}
+                              >
+                                <FontAwesomeIcon icon={faUser} />{' '}
+                                {currentUser.firstname && currentUser.lastname
+                                  ? currentUser.firstname + ' ' + currentUser.lastname
+                                  : currentUser.username}
+                              </div>
+                            </>
+                          ),
+                          disabled: true,
+                        },
+                        {
+                          value: 'settings',
+                          label: (
+                            <>
+                              <FontAwesomeIcon icon={faCog} /> Settings
+                            </>
+                          ),
+                          action: () => navigate('/settings'),
+                        },
+                        ...(currentUser.admin
+                          ? [
+                              {
+                                value: 'admin',
+                                label: (
+                                  <>
+                                    <FontAwesomeIcon icon={faMeteor} /> Admin
+                                  </>
+                                ),
+                                action: () => navigate('/admin'),
+                              },
+                            ]
+                          : []),
+                        {
+                          value: 'logout',
+                          label: (
+                            <>
+                              Logout <FontAwesomeIcon icon={faSignOutAlt} />
+                            </>
+                          ),
+                          action: logout,
+                        },
+                      ]}
+                      buttonClassName={cx(invertedThemeMode, css({ marginLeft: space_S }))}
+                    />
+                    {passwordScore != null && passwordScore.score < 2 && (
+                      <FontAwesomeIcon
+                        title={i18n.authentication.error.yourPasswordIsWeak}
+                        icon={faExclamationTriangle}
+                      />
+                    )}
+                  </div>
+
                   <div
                     className={css({
                       flexGrow: 1,
+                      overflowY: 'auto',
+                      display: 'flex',
+                      flexDirection: 'column',
+                      '& > *': {
+                        flexGrow: 1,
+                      },
                     })}
-                  ></div>
-                  <DropDownMenu
-                    icon={faUserCircle}
-                    title={currentUser.username}
-                    valueComp={{ value: '', label: '' }}
-                    entries={[
-                      {
-                        value: 'username',
-                        label: (
-                          <>
-                            <div
-                              className={css({
-                                borderBottom: '1px solid var(--darkGray)',
-                                padding: space_S,
-                              })}
-                            >
-                              <FontAwesomeIcon icon={faUser} />{' '}
-                              {currentUser.firstname && currentUser.lastname
-                                ? currentUser.firstname + ' ' + currentUser.lastname
-                                : currentUser.username}
-                            </div>
-                          </>
-                        ),
-                        disabled: true,
-                      },
-                      {
-                        value: 'settings',
-                        label: (
-                          <>
-                            <FontAwesomeIcon icon={faCog} /> Settings
-                          </>
-                        ),
-                        action: () => navigate('/settings'),
-                      },
-                      ...(currentUser.admin
-                        ? [
-                            {
-                              value: 'admin',
-                              label: (
-                                <>
-                                  <FontAwesomeIcon icon={faMeteor} /> Admin
-                                </>
-                              ),
-                              action: () => navigate('/admin'),
-                            },
-                          ]
-                        : []),
-                      {
-                        value: 'logout',
-                        label: (
-                          <>
-                            Logout <FontAwesomeIcon icon={faSignOutAlt} />
-                          </>
-                        ),
-                        action: logout,
-                      },
-                    ]}
-                    buttonClassName={cx(invertedThemeMode, css({ marginLeft: space_S }))}
-                  />
-                  {passwordScore != null && passwordScore.score < 2 && (
-                    <FontAwesomeIcon title={'your password is weak'} icon={faExclamationTriangle} />
-                  )}
+                  >
+                    <Routes>
+                      <Route path="/*" element={<UserProjects />} />
+                      <Route path="/settings/*" element={<Settings />} />
+                      <Route path="/admin/*" element={<Admin />} />
+                      <Route path="/editor/:id/*" element={<EditorWrapper />} />
+                      <Route
+                        element={
+                          /* no matching route, redirect to projects */
+                          <Navigate to="/" />
+                        }
+                      />
+                    </Routes>
+                  </div>
                 </div>
-
-                <div
-                  className={css({
-                    flexGrow: 1,
-                    overflowY: 'auto',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    '& > *': {
-                      flexGrow: 1,
-                    },
-                  })}
-                >
-                  <Routes>
-                    <Route path="/*" element={<UserProjects />} />
-                    <Route path="/settings/*" element={<Settings />} />
-                    <Route path="/admin/*" element={<Admin />} />
-                    <Route path="/editor/:id/*" element={<EditorWrapper />} />
-                    <Route
-                      element={
-                        /* no matching route, redirect to projects */
-                        <Navigate to="/" />
-                      }
-                    />
-                  </Routes>
-                </div>
-              </div>
-              {reconnecting}
-            </>
-          }
-        />
-      </Routes>
+              </>
+            }
+          />
+        </Routes>
+        {reconnecting}
+      </>
     );
   } else {
     return (

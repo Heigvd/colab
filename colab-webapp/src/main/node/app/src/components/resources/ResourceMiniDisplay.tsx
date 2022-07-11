@@ -12,7 +12,7 @@ import * as API from '../../API/api';
 import { useAppDispatch } from '../../store/hooks';
 import { BlockEditorWrapper } from '../blocks/BlockEditorWrapper';
 import CheckBox from '../common/CheckBox';
-import OnConfirmInput from '../common/OnConfirmInput';
+import OnConfirmInput from '../common/element/OnConfirmInput';
 import { defaultColumnContainerStyle, defaultRowContainerStyle } from '../styling/style';
 import { ResourceAndRef } from './ResourceCommonType';
 

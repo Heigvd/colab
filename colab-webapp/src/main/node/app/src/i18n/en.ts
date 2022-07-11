@@ -5,8 +5,19 @@
  * Licensed under the MIT License
  */
 
+import { MessageI18nKey } from 'colab-rest-client';
+
 export const en = {
+  //////////////////////////////////////////////////////////////////////////////////////////////////
+  // Common
   common: {
+    cancel: 'Cancel',
+    create: 'Create',
+    close: 'Close',
+    open: 'Open',
+    add: 'Add',
+    next: 'Next',
+    back: 'Back',
     date: (timestamp: number | null | undefined) => {
       if (timestamp != null) {
         return new Date(timestamp).toLocaleDateString('EN');
@@ -28,12 +39,121 @@ export const en = {
         return 'never';
       }
     },
+    label: {
+      checkYourMailbox: 'Check your mailbox!',
+    },
+    error: {
+      missingContent: 'oh there is nothing to display, dear developer please fix it',
+    },
   },
+
+  //////////////////////////////////////////////////////////////////////////////////////////////////
+  // Form
+  form: {
+    missingMandatory: 'please fill in data',
+    defaultFieldError: 'please correct data',
+    submit: 'Submit',
+  },
+
+  //////////////////////////////////////////////////////////////////////////////////////////////////
+  // Authentication
+  authentication: {
+    field: {
+      emailOrUsername: 'e-mail or username',
+      emailAddress: 'e-mail address',
+      username: 'username',
+      password: 'password',
+      passwordConfirmation: 'password again',
+    },
+    placeholder: {
+      min7Char: 'Min. 7 characters',
+    },
+    action: {
+      login: 'Login',
+      resetPassword: 'Forgot your password ?',
+      createAnAccount: 'Create an account',
+      sendMePassword: 'Send me a new password',
+    },
+    info: {
+      resetPasswordSent:
+        'We sent you a link to change your password. Change it, make it safe, and enjoy colabbing !',
+      pendingInvitation: 'pending invitation',
+      reconnecting: 'reconnecting...',
+    },
+    error: {
+      emailAddressNotValid: 'e-mail address is not valid',
+      usernameNotValid:
+        'username can only contain letters without accent, numbers, dots, underscores and dashes',
+      passwordTooWeak: 'password is not strong enough',
+      passwordsMismatch: 'passwords do not match',
+      yourPasswordIsWeak: 'your password is weak',
+    },
+  },
+
+  //////////////////////////////////////////////////////////////////////////////////////////////////
+  // Tips
+  tips: {
+    label: {
+      todo: 'Display Todo',
+      tips: 'Display Tips',
+      news: 'Display News',
+      wip: 'Display work in progress elements',
+    },
+    example: {
+      todo: {
+        title: 'Todo example',
+        content: 'We know what to do, but we have not done it yet',
+      },
+      tips: {
+        title: 'Tips example',
+        content: 'Some useful info to help users',
+      },
+      news: {
+        title: 'News example',
+        content: 'Some new feature to emphasis',
+      },
+      wip: {
+        title: 'WIP Example',
+        content: 'Some features not completely finished yet',
+      },
+    },
+    info: { wip: 'Work in progress feature below' },
+  },
+
+  //////////////////////////////////////////////////////////////////////////////////////////////////
+  // keys direct from server side
+
+  keyFromServer: (i18nKey: MessageI18nKey): string => {
+    // NB : If this method does not compile any more,
+    // it means that the MessageI18nKey do not exactly match the case entries
+    // Dear developer, please make them match
+    switch (i18nKey) {
+      case 'EMAIL_NOT_VALID':
+        return 'E-mail address is not valid';
+      case 'IDENTIFIER_ALREADY_TAKEN':
+        return 'Please choose another identifier';
+    }
+  },
+
+  httpErrorMessage: {
+    AUTHENTICATION_FAILED: 'Authentication failed',
+    AUTHENTICATION_REQUIRED: 'Please authenticate',
+    ACCESS_DENIED: 'Access denied',
+    NOT_FOUND: 'Not found',
+    SMTP_ERROR: 'e-mail server error',
+    EMAIL_MESSAGE_ERROR: 'e-mail not sent',
+    BAD_REQUEST: 'Bad request',
+    TOO_MANY_ATTEMPTS: 'Too many attempts, please wait a moment before trying again',
+  },
+
+  //////////////////////////////////////////////////////////////////////////////////////////////////
+  // the remaining is to be done ....
+
   model: {
     user: {
       username: 'username',
       commonName: 'common name',
-      password: 'password',
+
       firstname: 'firstname',
       missingFirstname: 'please enter your firstname',
       lastname: 'lastname',
@@ -42,30 +162,16 @@ export const en = {
     },
   },
 
-  pendingInvitation: 'pending invitation',
-
-  pleaseProvideData: 'Some data are missing',
-  cancel: 'cancel',
-  agree: 'agree',
+  // common
   confirm: 'confirm',
-  emailAddress: 'e-mail address',
-  emailAddressNotValid: 'e-mail address is not valid',
-  emailShort: 'E-Mail',
-  pleaseEnterId: 'Please enter an identifier',
-  emailOrUsername: 'e-mail or username',
-  weakPassword: 'password is too weak',
-  password_again: 'password again',
-  passwordsMismatch: 'passwords do not match',
-  login: 'login',
-  forgottenPassword: 'Forgot your password?',
-  createAnAccount: 'create an account',
-  sendMePassword: 'send me a new password',
-  unverifiedEmail: 'unverified e-mail',
-  usernameNotValid:
-    'the user name can contains only letters without accent, numbers, dots, underlines and hyphens',
 
+  // form
+  pleaseProvideData: 'Some data are missing',
+
+  // Terms of use + data management policy
   agreementDisclaimer: 'The use of this service implies that you agree to',
   iAccept: 'I accept',
+  agree: 'agree',
   termOfUse: 'the general terms of use',
   and: 'and',
   dataPolicy: 'the data management policy',
@@ -104,7 +210,6 @@ export const en = {
   accessKeyIsRequiered: 'access key is required',
   advancedSettings: 'Advanced parameters',
   langSettings: 'Languages',
-  submit: 'Submit',
   comments: 'comments',
   commentsAreOptional: 'Comments are optional',
 
@@ -140,18 +245,6 @@ export const en = {
   aaiAffiliation: 'Affiliation',
   aaiNotEditable: ' Personal data are not editable',
 
-  errors: {
-    AUTHENTICATION_FAILED: 'Authentication failed',
-    AUTHENTICATION_REQUIRED: 'Please authenticate',
-    ACCESS_DENIED: 'Access denied',
-    NOT_FOUND: 'Not found',
-    IDENTIFIER_ALREADY_TAKEN: 'Please choose another identifier',
-    EMAIL_ADDRESS_INVALID: 'E-mail address is not valid',
-    SMTP_ERROR: 'e-mail server error',
-    EMAIL_MESSAGE_ERROR: 'e-mail not sent',
-    BAD_REQUEST: 'Bad request',
-    TOO_MANY_REQUEST: 'too many request',
-  },
   card: {
     untitled: 'New card',
     settings: {

@@ -8,13 +8,12 @@
 import * as React from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
 import { getRestClient, reloadCurrentUser } from '../../API/api';
-import { buildLinkWithQueryParam } from '../../helper';
 import logger from '../../logger';
 import { useCurrentUser } from '../../selectors/userSelector';
 import { useAppDispatch } from '../../store/hooks';
-import { InlineLink } from '../common/Link';
-import Loading from '../common/Loading';
-import Overlay from '../common/Overlay';
+import SignInForm from '../authentication/SignIn';
+import Loading from '../common/layout/Loading';
+import Overlay from '../common/layout/Overlay';
 
 interface TokenProps {
   tokenId: string | undefined;
@@ -29,6 +28,7 @@ export default function Token(props: TokenProps): JSX.Element {
 
   const location = useLocation();
 
+  // WARNING REPLACE AUTH REQUIRED BY LOADING. AFTER TEST FINISHED
   const [state, setState] = React.useState<STATE_TYPE>('LOADING');
   const [redirectTo, setRedirectTo] = React.useState('');
 
@@ -37,8 +37,8 @@ export default function Token(props: TokenProps): JSX.Element {
       const tokenId = props.tokenId;
       const tokenHash = props.token;
       // hack: nest API calls within this hook to avoid setting full token slice
-      if (user.status === 'UNKNOWN') {
-        // authenticate state not known-> reload
+      if (user.status === 'NOT_INITIALIZED') {
+        // authenticate state not initialized -> reload
         dispatch(reloadCurrentUser());
         logger.debug('reload current user');
       } else if (user.status !== 'LOADING') {
@@ -81,28 +81,30 @@ export default function Token(props: TokenProps): JSX.Element {
     }
   }, [dispatch, user, props.tokenId, props.token]);
 
-  if (state == 'LOADING') {
+  if (state === 'LOADING') {
     return <Loading />;
-  } else if (state == 'DONE') {
+  } else if (state === 'DONE') {
     return <Navigate to={redirectTo} />;
-  } else if (state == 'AUTH_REQUIRED') {
+  } else if (state === 'AUTH_REQUIRED') {
     const backToTokenUrl = location.pathname;
     return (
       <Overlay>
-        <div>
-          <span>Authentication required: please </span>
+        <SignInForm redirectTo={backToTokenUrl} />
+        {/* <Flex direction="column" className={cx(cardStyle, paddedContainerStyle)}>
+          <h2>Authentication required</h2>
+          Do you already have a colab account?
           <InlineLink to={buildLinkWithQueryParam('/SignIn', { redirectTo: backToTokenUrl })}>
-            sign in
+            Sign in
           </InlineLink>
-          <span> or </span>
+          <span>  </span>
           <InlineLink to={buildLinkWithQueryParam('/SignUp', { redirectTo: backToTokenUrl })}>
             sign up
           </InlineLink>
           <span>.</span>
-        </div>
+        </Flex> */}
       </Overlay>
     );
-  } else if (state == 'NO_TOKEN') {
+  } else if (state === 'NO_TOKEN') {
     return (
       <Overlay>
         <div>Token does not exist</div>
@@ -111,7 +113,10 @@ export default function Token(props: TokenProps): JSX.Element {
   } else {
     return (
       <Overlay>
-        <div>Error while processing token</div>;
+        <div>
+          Error while processing token. Please try to refresh or contact kthe admin of your colab
+          project.
+        </div>
       </Overlay>
     );
   }

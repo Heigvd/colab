@@ -12,10 +12,10 @@ import {
   useAndLoadAvailableCardTypes,
   useAndLoadProjectCardTypes,
 } from '../../../selectors/cardTypeSelector';
-import AvailabilityStatusIndicator from '../../common/AvailabilityStatusIndicator';
-import Collapsible from '../../common/Collapsible';
-import CustomElementsList from '../../common/CustomElementsList';
-import Flex from '../../common/Flex';
+import CustomElementsList from '../../common/collection/CustomElementsList';
+import AvailabilityStatusIndicator from '../../common/element/AvailabilityStatusIndicator';
+import Collapsible from '../../common/layout/Collapsible';
+import Flex from '../../common/layout/Flex';
 import { voidStyle } from '../../styling/style';
 import { cardTypeThumbnailStyle } from '../CardCreator';
 import CardTypeCreator from './CardTypeCreator';
@@ -52,7 +52,7 @@ export default function ProjectCardTypeList(): JSX.Element {
     if (lastCreated) {
       projectCardTypes.forEach(cardType => {
         if (cardType.id === lastCreated) {
-          navigate(`./edit/${cardType.id}`);
+          navigate(`./editt/${cardType.id}`);
           setLastCreated(null);
         }
       });
@@ -61,7 +61,7 @@ export default function ProjectCardTypeList(): JSX.Element {
 
   return (
     <Routes>
-      <Route path="edit/:id/*" element={<CardTypeEditor usage="currentProject" />} />
+      <Route path="/edit/:id/*" element={<CardTypeEditor usage="currentProject" />} />
       <Route
         path="*"
         element={
@@ -104,7 +104,7 @@ export default function ProjectCardTypeList(): JSX.Element {
               </div>
             )}
             <Collapsible
-              title="Shared available types"
+              label="Shared available types"
               contentClassName={css({ flexDirection: 'column', alignItems: 'stretch' })}
             >
               {availableCTStatus !== 'READY' ? (

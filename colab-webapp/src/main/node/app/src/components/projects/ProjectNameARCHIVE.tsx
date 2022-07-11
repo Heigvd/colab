@@ -8,12 +8,12 @@
 import * as React from 'react';
 import { useProject } from '../../selectors/projectSelector';
 
-interface Props {
+interface ProjectNameProps {
   projectId: number;
 }
 
 // Display one project and allow to edit it
-export function ProjectName({ projectId }: Props): JSX.Element {
+export function ProjectName({ projectId }: ProjectNameProps): JSX.Element {
   const project = useProject(projectId);
 
   if (project.project != null) {

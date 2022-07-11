@@ -14,8 +14,8 @@ import logger from '../../logger';
 import { CardAcl, useAndLoadCardACL } from '../../selectors/cardSelector';
 import { useAndLoadProjectTeam, useProjectBeingEdited } from '../../selectors/projectSelector';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
-import Flex from '../common/Flex';
-import InlineLoading from '../common/InlineLoading';
+import InlineLoading from '../common/element/InlineLoading';
+import Flex from '../common/layout/Flex';
 import { marginAroundStyle, paddingAroundStyle, space_M, space_S } from '../styling/style';
 import InvolvementSelector from './InvolvementSelector';
 
@@ -120,11 +120,11 @@ export function MemberACL({ member, acl }: { member: TeamMember; acl: CardAcl })
   );
 }
 
-interface Props {
+interface CardACLProps {
   card: Card;
 }
 
-export default function CardACL({ card }: Props): JSX.Element {
+export default function CardACL({ card }: CardACLProps): JSX.Element {
   const { project } = useProjectBeingEdited();
   const { members, roles, status: teamStatus } = useAndLoadProjectTeam(project?.id);
   const acl = useAndLoadCardACL(card.id);

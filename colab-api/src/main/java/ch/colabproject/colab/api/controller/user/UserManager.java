@@ -23,6 +23,7 @@ import ch.colabproject.colab.api.persistence.jpa.user.UserDao;
 import ch.colabproject.colab.api.security.AuthenticationFailure;
 import ch.colabproject.colab.api.security.SessionManager;
 import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
+import ch.colabproject.colab.generator.model.exceptions.MessageI18nKey;
 import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -254,7 +255,7 @@ public class UserManager {
 
             if (account == null) {
                     if (!Helper.isEmailAddress(signup.getEmail())) {
-                        throw HttpErrorMessage.emailAddressInvalid();
+                        throw HttpErrorMessage.signUpFailed(MessageI18nKey.EMAIL_NOT_VALID);
                     }
 
                     account = new LocalAccount();
@@ -285,14 +286,14 @@ public class UserManager {
             } else {
                 // wait.... throwing something else here leaks account existence...
                 // for security reason, give as little useful information as possible
-                // the user must not know if the error concerns the username or the email address
-                throw HttpErrorMessage.identifierAlreadyTaken();
+                // the user is not allowed to know if the error concerns the username or the email address
+                throw HttpErrorMessage.signUpFailed(MessageI18nKey.IDENTIFIER_ALREADY_TAKEN);
             }
 
         } else {
             // for security reason, give as little useful information as possible
-            // the user must not know if the error concerns the username or the email address
-            throw HttpErrorMessage.identifierAlreadyTaken();
+            // the user is not allowed to know if the error concerns the username or the email address
+            throw HttpErrorMessage.signUpFailed(MessageI18nKey.IDENTIFIER_ALREADY_TAKEN);
         }
     }
 
@@ -331,7 +332,7 @@ public class UserManager {
                             logger.warn(
                                 "Account {} reached the max number of failed authentication",
                                 account);
-                            throw HttpErrorMessage.tooManyRequest();
+                            throw HttpErrorMessage.tooManyAttempts();
                         }
                     }
                 }

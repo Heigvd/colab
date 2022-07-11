@@ -39,11 +39,11 @@ import CardEditor from '../../cards/CardEditor';
 import CardThumbWithSelector from '../../cards/CardThumbWithSelector';
 import ProjectCardTypeList from '../../cards/cardtypes/ProjectCardTypeList';
 import ContentSubs from '../../cards/ContentSubs';
-import Clickable from '../../common/Clickable';
-import DropDownMenu from '../../common/DropDownMenu';
-import Flex from '../../common/Flex';
-import IconButton from '../../common/IconButton';
-import InlineLoading from '../../common/InlineLoading';
+import IconButton from '../../common/element/IconButton';
+import InlineLoading from '../../common/element/InlineLoading';
+import Clickable from '../../common/layout/Clickable';
+import DropDownMenu from '../../common/layout/DropDownMenu';
+import Flex from '../../common/layout/Flex';
 import {
   fullPageStyle,
   invertedThemeMode,
@@ -126,7 +126,7 @@ const Ancestor = ({ card, content }: Ancestor): JSX.Element => {
           }}
           clickableClassName={cx(linkStyle, breadCrumbsStyle)}
         >
-          {card.title ? card.title : i18n.card.untitled + ' ' + content.title ? content.title : ''}
+          {card.title ? card.title : i18n.card.untitled}
         </Clickable>
         <FontAwesomeIcon icon={faChevronRight} size="xs" className={breadCrumbsStyle} />
       </>
@@ -178,11 +178,19 @@ const DefaultVariantDetector = (): JSX.Element => {
 
 interface CardWrapperProps {
   children: (card: Card, variant: CardContent) => JSX.Element;
+  backButtonPath: (card: Card, variant: CardContent) => string;
+  backButtonTitle: string;
   grow?: number;
   align?: 'center' | 'normal';
 }
 
-const CardWrapper = ({ children, grow = 1, align = 'normal' }: CardWrapperProps): JSX.Element => {
+const CardWrapper = ({
+  children,
+  grow = 1,
+  align = 'normal',
+  backButtonPath,
+  backButtonTitle,
+}: CardWrapperProps): JSX.Element => {
   const { id, vId } = useParams<'id' | 'vId'>();
   const cardId = +id!;
   const cardContentId = +vId!;
@@ -219,9 +227,9 @@ const CardWrapper = ({ children, grow = 1, align = 'normal' }: CardWrapperProps)
         <Flex className={css({ paddingBottom: space_M })}>
           <IconButton
             icon={faArrowLeft}
-            title={'Back to project root'}
+            title={backButtonTitle}
             iconColor="var(--darkGray)"
-            onClick={() => navigate('../')}
+            onClick={() => navigate(backButtonPath(card, content))}
             className={css({ marginRight: space_M })}
           />
           {ancestors.map((ancestor, x) => (
@@ -402,7 +410,11 @@ export default function Editor(): JSX.Element {
               {/* more infos? Add project team names */}
             </div>
           </div>
-          <IconButton icon={faTimes} title="Close" onClick={() => setShowProjectDetails(false)} />
+          <IconButton
+            icon={faTimes}
+            title={i18n.common.close}
+            onClick={() => setShowProjectDetails(false)}
+          />
         </Flex>
         <Flex
           direction="column"
@@ -415,7 +427,7 @@ export default function Editor(): JSX.Element {
         >
           <Routes>
             <Route path="settings" element={<ProjectSettings project={project} />} />
-            <Route path="project-settings" element={<ProjectSettings project={project} />} />
+            <Route path="project-settings/*" element={<ProjectSettings project={project} />} />
             <Route path="team" element={<Team project={project} />} />
             <Route path="hierarchy" element={<Hierarchy rootId={root.id} />} />
             <Route path="flow" element={<ActivityFlowChart />} />
@@ -425,7 +437,12 @@ export default function Editor(): JSX.Element {
             <Route
               path="card/:id/v/:vId/*"
               element={
-                <CardWrapper grow={0} align="center">
+                <CardWrapper
+                  grow={0}
+                  align="center"
+                  backButtonPath={() => '../'}
+                  backButtonTitle="Back to root project"
+                >
                   {card => <CardThumbWithSelector depth={2} card={card} />}
                 </CardWrapper>
               }
@@ -436,7 +453,10 @@ export default function Editor(): JSX.Element {
             <Route
               path="edit/:id/v/:vId/*"
               element={
-                <CardWrapper>
+                <CardWrapper
+                  backButtonPath={(card, variant) => `../card/${card.id}/v/${variant.id}`}
+                  backButtonTitle="Back to card view"
+                >
                   {(card, variant) => <CardEditor card={card} variant={variant} showSubcards />}
                 </CardWrapper>
               }

@@ -10,10 +10,10 @@ import * as React from 'react';
 import { useAppSelector } from '../../store/hooks';
 import MarkdownViewer from '../blocks/markdown/MarkdownViewer';
 import WysiwygEditorCustom, { TXTFormatToolbarProps } from '../blocks/markdown/WysiwygEditorCustom';
-import CleverTextarea from '../common/CleverTextarea';
-import ErrorBoundary from '../common/ErrorBoundary';
-import Flex from '../common/Flex';
-import InlineLoading from '../common/InlineLoading';
+import CleverTextarea from '../common/element/CleverTextarea';
+import InlineLoading from '../common/element/InlineLoading';
+import Flex from '../common/layout/Flex';
+import ErrorBoundary from '../common/toplevel/ErrorBoundary';
 import { space_S } from '../styling/style';
 import ChangeTree from './ChangeTree';
 import { useLiveBlock } from './LiveTextEditor';
@@ -25,7 +25,7 @@ const shrink = css({
 
 export type EditState = 'VIEW' | 'EDIT';
 
-interface Props {
+interface LiveEditorProps {
   atClass: string;
   atId: number;
   value: string;
@@ -67,7 +67,7 @@ export default function LiveEditor({
   selected,
   flyingToolBar,
   toolBar,
-}: Props): JSX.Element {
+}: LiveEditorProps): JSX.Element {
   const liveSession = useAppSelector(state => state.websockets.sessionId);
 
   const { currentValue, onChange, status } = useLiveBlock({

@@ -13,15 +13,15 @@ import * as API from '../../API/api';
 import { useAllProjectCards } from '../../selectors/cardSelector';
 import { useProjectBeingEdited } from '../../selectors/projectSelector';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
-import InlineLoading from '../common/InlineLoading';
+import InlineLoading from '../common/element/InlineLoading';
 
-interface Props {
+interface CardSelectorProps {
   // cardId or card or none
   value: number | Card | undefined;
   onSelect: (card: Card | undefined) => void;
 }
 
-export default function CardSelector({ value, onSelect }: Props): JSX.Element {
+export default function CardSelector({ value, onSelect }: CardSelectorProps): JSX.Element {
   const { project } = useProjectBeingEdited();
   const dispatch = useAppDispatch();
   const cards = useAllProjectCards();

@@ -10,18 +10,21 @@ import { faTimes } from '@fortawesome/free-solid-svg-icons';
 import * as React from 'react';
 import PasswordStrengthBar from 'react-password-strength-bar';
 import { updateLocalAccountPassword } from '../../API/api';
+import useTranslations from '../../i18n/I18nContext';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
+import PasswordFeedbackDisplay from '../authentication/PasswordFeedbackDisplay';
+import IconButton from '../common/element/IconButton';
 import { PasswordScore } from '../common/Form/Form';
-import IconButton from '../common/IconButton';
-import PasswordFeedbackDisplay from '../public/PasswordFeedbackDisplay';
 import { linkStyle } from '../styling/style';
 
-export interface Props {
+export interface LocalAccountProps {
   accountId: number;
 }
 
-export default function LocalAccount(props: Props): JSX.Element {
+export default function LocalAccount(props: LocalAccountProps): JSX.Element {
   const dispatch = useAppDispatch();
+  const i18n = useTranslations();
+
   const [pwState, setPwState] = React.useState<'SET' | 'CHANGE_PASSWORD'>('SET');
   const [newPassword, setNewPassword] = React.useState('');
 
@@ -77,11 +80,11 @@ export default function LocalAccount(props: Props): JSX.Element {
 
               <IconButton
                 icon={faTimes}
+                title={i18n.common.close}
                 onClick={() => {
                   setPwState('SET');
                   setNewPassword('');
                 }}
-                title="Close"
               />
 
               <IconButton

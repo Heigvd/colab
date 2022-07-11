@@ -7,21 +7,9 @@
 
 import { css, cx } from '@emotion/css';
 import * as React from 'react';
-import { errorStyle, space_S, successColor, warningStyle } from '../../styling/style';
-import Flex from '../Flex';
-import Tips, { TipsProps } from '../Tips';
-
-export interface Props {
-  label?: React.ReactNode;
-  warning?: React.ReactNode;
-  error?: React.ReactNode;
-  title?: string;
-  value?: boolean;
-  onChange: (newValue: boolean) => void;
-  tip?: TipsProps['children'];
-  className?: string;
-  disabled?: boolean;
-}
+import { errorStyle, space_S, successColor, textSmall, warningStyle } from '../../styling/style';
+import Tips, { TipsProps } from '../element/Tips';
+import Flex from '../layout/Flex';
 
 const containerStyle = css({
   width: '28px',
@@ -57,33 +45,51 @@ const onStyle = cx(
   }),
 );
 
+interface TogglerProps {
+  label?: React.ReactNode;
+  value?: boolean;
+  readOnly?: boolean;
+  onChange: (newValue: boolean) => void;
+  tip?: TipsProps['children'];
+  fieldFooter?: React.ReactNode;
+  warning?: React.ReactNode;
+  error?: React.ReactNode;
+  className?: string;
+  bottomClassName?: string;
+}
+
 export default function Toggler({
   label,
-  warning,
-  error,
-  title,
   value,
+  readOnly = false,
   onChange,
   tip,
+  fieldFooter,
+  warning,
+  error,
   className,
-  disabled = false,
-}: Props): JSX.Element {
+  bottomClassName,
+}: TogglerProps): JSX.Element {
   return (
-    <Flex className={cx(css({ padding: space_S + ' 0' }), className)} direction="column">
-      <Flex justify="space-between">
-        {warning ? <div className={warningStyle}>{warning}</div> : null}
-        {error ? <div className={errorStyle}>{error}</div> : null}
-      </Flex>
-      <Flex justify="space-between">
-        <div
-          title={title}
-          onClick={disabled ? undefined : () => onChange(!value)}
+    <Flex
+      direction="column"
+      align="normal"
+      className={cx(css({ padding: space_S + ' 0' }), className)}
+    >
+      <Flex align="center" justify="flex-start">
+        <Flex
+          onClick={readOnly ? undefined : () => onChange(!value)}
           className={cx(containerStyle, className)}
         >
           <div className={value ? onStyle : offStyle}></div>
-        </div>
+        </Flex>
         <div>&nbsp;{label}</div>
-        <div>{tip && <Tips>{tip}</Tips>}</div>
+        {tip != null && <Tips>{tip}</Tips>}
+      </Flex>
+      {fieldFooter != null && <div className={textSmall}>{fieldFooter}</div>}
+      <Flex direction="column" align="center" className={cx(textSmall, bottomClassName)}>
+        {warning != null && <div className={warningStyle}>{warning}</div>}
+        {error != null && <div className={errorStyle}>{error}</div>}
       </Flex>
     </Flex>
   );

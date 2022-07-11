@@ -32,15 +32,16 @@ import useTranslations from '../../i18n/I18nContext';
 import { useCardACLForCurrentUser, useVariantsOrLoad } from '../../selectors/cardSelector';
 import { useAndLoadCardType } from '../../selectors/cardTypeSelector';
 import { useAppDispatch } from '../../store/hooks';
-import Button from '../common/Button';
-import Collapsible from '../common/Collapsible';
-import ConfirmDeleteModal from '../common/ConfirmDeleteModal';
-import DropDownMenu from '../common/DropDownMenu';
-import Flex from '../common/Flex';
-import IconButton from '../common/IconButton';
-import InlineInputNew from '../common/InlineInputNew';
-import Modal from '../common/Modal';
-import OpenCloseModal from '../common/OpenCloseModal';
+import Button from '../common/element/Button';
+import IconButton from '../common/element/IconButton';
+import InlineInputNew from '../common/element/InlineInputNew';
+import Tips from '../common/element/Tips';
+import Collapsible from '../common/layout/Collapsible';
+import ConfirmDeleteModal from '../common/layout/ConfirmDeleteModal';
+import DropDownMenu, { modalEntryStyle } from '../common/layout/DropDownMenu';
+import Flex from '../common/layout/Flex';
+import Modal from '../common/layout/Modal';
+import OpenCloseModal from '../common/layout/OpenCloseModal';
 import { DocTextDisplay } from '../documents/DocTextItem';
 import DocumentList from '../documents/DocumentList';
 import ResourcesWrapper from '../resources/ResourcesWrapper';
@@ -62,7 +63,7 @@ import ContentSubs from './ContentSubs';
 import SideCollapsiblePanel from './SideCollapsiblePanel';
 import { computeNav, VariantPager } from './VariantSelector';
 
-interface Props {
+interface CardEditorProps {
   card: Card;
   variant: CardContent;
   showSubcards?: boolean;
@@ -179,7 +180,11 @@ const defaultCardEditorContext: CardEditorContext = {
 
 export const CardEditorCTX = React.createContext<CardEditorContext>(defaultCardEditorContext);
 
-export default function CardEditor({ card, variant, showSubcards = true }: Props): JSX.Element {
+export default function CardEditor({
+  card,
+  variant,
+  showSubcards = true,
+}: CardEditorProps): JSX.Element {
   const i18n = useTranslations();
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
@@ -472,11 +477,18 @@ export default function CardEditor({ card, variant, showSubcards = true }: Props
                               label: (
                                 <ConfirmDeleteModal
                                   buttonLabel={
-                                    <div className={css({ color: errorColor })}>
+                                    <div
+                                      className={cx(css({ color: errorColor }), modalEntryStyle)}
+                                    >
                                       <FontAwesomeIcon icon={faTrash} />
                                       {hasVariants ? ' Delete variant' : ' Delete card'}
                                     </div>
                                   }
+                                  className={css({
+                                    '&:hover': { textDecoration: 'none' },
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                  })}
                                   message={
                                     hasVariants ? (
                                       <p>
@@ -504,6 +516,7 @@ export default function CardEditor({ card, variant, showSubcards = true }: Props
                                   }
                                 />
                               ),
+                              modal: true,
                             },
                           ]}
                         />
@@ -530,7 +543,7 @@ export default function CardEditor({ card, variant, showSubcards = true }: Props
                         </div>
                         <IconButton
                           icon={faTimes}
-                          title="Close"
+                          title={i18n.common.close}
                           onClick={() => setShowTypeDetails(false)}
                         />
                       </div>
@@ -608,12 +621,28 @@ export default function CardEditor({ card, variant, showSubcards = true }: Props
                     ),
                     icon: faPaperclip,
                     title: 'Documentation',
+                    nextToTitleElement: (
+                      <Tips>
+                        Use documentation panel to add pieces of (meta)information related to the
+                        card or variant. Pieces of documentation can come from card type.
+                      </Tips>
+                    ),
                     className: css({ overflow: 'auto' }),
                   },
                   'Sticky Notes': {
                     icon: faStickyNote,
                     title: 'Sticky notes',
                     children: <StickyNoteWrapper destCardId={card.id} showSrc />,
+                    nextToTitleElement: (
+                      <Tips>
+                        <h5>List of sticky notes stuck on the card</h5>
+                        <div>
+                          Sticky notes come from a source (card, card specific version, resource,
+                          block)
+                        </div>
+                      </Tips>
+                    ),
+                    className: css({ overflow: 'auto' }),
                   },
                 }}
                 direction="RIGHT"
@@ -622,7 +651,7 @@ export default function CardEditor({ card, variant, showSubcards = true }: Props
           </Flex>
           <VariantPager allowCreation={userAcl.write} card={card} current={variant} />
           {showSubcards ? (
-            <Collapsible title="Subcards">
+            <Collapsible label="Subcards">
               <ContentSubs
                 depth={1}
                 cardContent={variant}

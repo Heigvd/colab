@@ -24,9 +24,9 @@ export default function UserProfile({ user }: UserProfileProps): JSX.Element {
     {
       key: 'username',
       label: i18n.model.user.username,
-      readonly: true,
       type: 'text',
       isMandatory: false,
+      readOnly: true,
     },
     {
       key: 'commonname',

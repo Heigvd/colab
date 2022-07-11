@@ -22,7 +22,6 @@ public class HttpErrorMessage extends HttpException {
      */
     public enum MessageCode {
         ACCESS_DENIED,
-        AUTHENTICATION_FAILED,
         AUTHENTICATION_REQUIRED,
         BAD_REQUEST,
         DATA_INTEGRITY_FAILURE,
@@ -33,15 +32,23 @@ public class HttpErrorMessage extends HttpException {
         RELATED_OBJECT_NOT_FOUND,
         NOT_FOUND,
         SMTP_ERROR,
-        IDENTIFIER_ALREADY_TAKEN,
-        EMAIL_ADDRESS_INVALID,
-        TOO_MANY_REQUESTS,
+        /** Impossible to login */
+        AUTHENTICATION_FAILED,
+        /** Wait before trying again */
+        TOO_MANY_ATTEMPTS,
+        /** Sign up failure */
+        SIGNUP_FAILURE,
     }
 
     /**
      * Error message
      */
     private MessageCode messageCode;
+
+    /**
+     * The key of the translation to display
+     */
+    private MessageI18nKey messageI18nKey;
 
     /**
      * Default bad request error
@@ -71,6 +78,30 @@ public class HttpErrorMessage extends HttpException {
     }
 
     /**
+     * Create a new error message
+     *
+     * @param status         custom HTTP status
+     * @param messageCode    error message code
+     * @param messageI18nKey error message translation key
+     */
+    private HttpErrorMessage(Response.Status status, MessageCode messageCode,
+        MessageI18nKey messageI18nKey) {
+        this(status, messageCode);
+        this.messageI18nKey = messageI18nKey;
+    }
+
+    /**
+     * Create a new error message
+     *
+     * @param messageCode    error message code
+     * @param messageI18nKey error message translation key
+     */
+    private HttpErrorMessage(MessageCode messageCode, MessageI18nKey messageI18nKey) {
+        this(messageCode);
+        this.messageI18nKey = messageI18nKey;
+    }
+
+    /**
      * @return message code
      */
     public MessageCode getMessageCode() {
@@ -84,6 +115,20 @@ public class HttpErrorMessage extends HttpException {
      */
     public void setMessageCode(MessageCode messageCode) {
         this.messageCode = messageCode;
+    }
+
+    /**
+     * @return the key of the translation to display
+     */
+    public MessageI18nKey getMessageI18nKey() {
+        return this.messageI18nKey;
+    }
+
+    /**
+     * @param messageI18nKey the key of the translation to display
+     */
+    public void setMessageI18nKey(MessageI18nKey messageI18nKey) {
+        this.messageI18nKey = messageI18nKey;
     }
 
     /**
@@ -118,35 +163,6 @@ public class HttpErrorMessage extends HttpException {
     }
 
     /**
-     * @return 429 too many requests
-     */
-    public static HttpErrorMessage tooManyRequest() {
-        return new HttpErrorMessage(Response.Status.TOO_MANY_REQUESTS,
-            HttpErrorMessage.MessageCode.TOO_MANY_REQUESTS);
-    }
-
-    /**
-     * @return 400 identifier (either username or email address) already taken
-     */
-    public static HttpErrorMessage identifierAlreadyTaken() {
-        return new HttpErrorMessage(HttpErrorMessage.MessageCode.IDENTIFIER_ALREADY_TAKEN);
-    }
-
-    /**
-     * @return 400
-     */
-    public static HttpErrorMessage emailAddressInvalid() {
-        return new HttpErrorMessage(HttpErrorMessage.MessageCode.EMAIL_ADDRESS_INVALID);
-    }
-
-    /**
-     * @return 400 authentication failed
-     */
-    public static HttpErrorMessage authenticationFailed() {
-        return new HttpErrorMessage(HttpErrorMessage.MessageCode.AUTHENTICATION_FAILED);
-    }
-
-    /**
      * @return 400 SMTP error
      */
     public static HttpErrorMessage smtpError() {
@@ -178,20 +194,50 @@ public class HttpErrorMessage extends HttpException {
      * @return 500 internal server error
      */
     public static HttpErrorMessage internalServerError() {
-        return new HttpErrorMessage(Response.Status.INTERNAL_SERVER_ERROR,HttpErrorMessage.MessageCode.INTERNAL_SERVER_ERROR);
+        return new HttpErrorMessage(Response.Status.INTERNAL_SERVER_ERROR,
+            HttpErrorMessage.MessageCode.INTERNAL_SERVER_ERROR);
     }
 
     /**
      * @return 413 project quota exceeded
      */
     public static HttpErrorMessage projectQuotaExceededError() {
-        return new HttpErrorMessage(Response.Status.REQUEST_ENTITY_TOO_LARGE,HttpErrorMessage.MessageCode.PROJECT_QUOTA_EXCEEDED);
+        return new HttpErrorMessage(Response.Status.REQUEST_ENTITY_TOO_LARGE,
+            HttpErrorMessage.MessageCode.PROJECT_QUOTA_EXCEEDED);
     }
+
     /**
      * @return 413 file size limit exceeded
      */
     public static HttpErrorMessage fileSizeLimitExceededError() {
-        return new HttpErrorMessage(Response.Status.REQUEST_ENTITY_TOO_LARGE,HttpErrorMessage.MessageCode.FILE_TOO_BIG);
+        return new HttpErrorMessage(Response.Status.REQUEST_ENTITY_TOO_LARGE,
+            HttpErrorMessage.MessageCode.FILE_TOO_BIG);
+    }
+
+    //
+
+    /**
+     * @return 400 authentication failed
+     */
+    public static HttpErrorMessage authenticationFailed() {
+        return new HttpErrorMessage(HttpErrorMessage.MessageCode.AUTHENTICATION_FAILED);
+    }
+
+    /**
+     * @return 429 too many requests
+     */
+    public static HttpErrorMessage tooManyAttempts() {
+        return new HttpErrorMessage(Response.Status.TOO_MANY_REQUESTS,
+            HttpErrorMessage.MessageCode.TOO_MANY_ATTEMPTS);
+    }
+
+    /**
+     * @param i18nKey translation key of the message
+     *
+     * @return 400 signup failure
+     */
+    public static HttpErrorMessage signUpFailed(MessageI18nKey i18nKey) {
+        return new HttpErrorMessage(MessageCode.SIGNUP_FAILURE, i18nKey);
     }
 
 }

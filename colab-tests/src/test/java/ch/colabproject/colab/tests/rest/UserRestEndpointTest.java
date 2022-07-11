@@ -151,22 +151,22 @@ public class UserRestEndpointTest extends AbstractArquillianTest {
         String password = "SoSecuredPassword";
 
         // empty
-        TestHelper.assertThrows(MessageCode.EMAIL_ADDRESS_INVALID, () -> {
+        TestHelper.assertThrows(MessageCode.SIGNUP_FAILURE, () -> {
             this.signup(username, "", password);
         });
 
         // accent
-        TestHelper.assertThrows(MessageCode.EMAIL_ADDRESS_INVALID, () -> {
+        TestHelper.assertThrows(MessageCode.SIGNUP_FAILURE, () -> {
             this.signup(username, "léa@test.local", password);
         });
 
         // weird character
-        TestHelper.assertThrows(MessageCode.EMAIL_ADDRESS_INVALID, () -> {
+        TestHelper.assertThrows(MessageCode.SIGNUP_FAILURE, () -> {
             this.signup(username, "le;a@test.local", password);
         });
 
         // upper case
-        TestHelper.assertThrows(MessageCode.EMAIL_ADDRESS_INVALID, () -> {
+        TestHelper.assertThrows(MessageCode.SIGNUP_FAILURE, () -> {
             this.signup(username, "Lea@test.local", password);
         });
 

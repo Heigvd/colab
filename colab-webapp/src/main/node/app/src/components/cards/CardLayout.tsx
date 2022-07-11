@@ -34,7 +34,7 @@ export function ProgressBar({ variant }: { variant: CardContent | undefined }): 
   );
 }
 
-interface Props {
+interface CardLayoutProps {
   card: Card;
   variant: CardContent | undefined;
   variants: CardContent[];
@@ -50,7 +50,7 @@ export default function CardLayout({
   children,
   extraTools,
   showProgressBar = true,
-}: Props): JSX.Element {
+}: CardLayoutProps): JSX.Element {
   const navigate = useNavigate();
   const location = useLocation();
 

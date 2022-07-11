@@ -20,9 +20,9 @@ import * as API from '../../../API/api';
 import { useProjectBeingEdited } from '../../../selectors/projectSelector';
 import { useAppDispatch } from '../../../store/hooks';
 import { CardTypeAllInOne as CardType } from '../../../types/cardTypeDefinition';
-import ConfirmDeleteModal from '../../common/ConfirmDeleteModal';
-import DropDownMenu from '../../common/DropDownMenu';
-import Flex from '../../common/Flex';
+import ConfirmDeleteModal from '../../common/layout/ConfirmDeleteModal';
+import DropDownMenu, { modalEntryStyle } from '../../common/layout/DropDownMenu';
+import Flex from '../../common/layout/Flex';
 import { DocTextDisplay } from '../../documents/DocTextItem';
 import {
   borderRadius,
@@ -131,10 +131,15 @@ export default function CardTypeItem({ cardType, usage }: CardTypeItemProps): JS
                     label: (
                       <ConfirmDeleteModal
                         buttonLabel={
-                          <div className={css({ color: errorColor })}>
+                          <div className={cx(css({ color: errorColor }), modalEntryStyle)}>
                             <FontAwesomeIcon icon={faTrash} /> Delete type
                           </div>
                         }
+                        className={css({
+                          '&:hover': { textDecoration: 'none' },
+                          display: 'flex',
+                          alignItems: 'center',
+                        })}
                         message={
                           <p>
                             Are you <strong>sure</strong> you want to delete this card type?
@@ -144,6 +149,7 @@ export default function CardTypeItem({ cardType, usage }: CardTypeItemProps): JS
                         confirmButtonLabel="Delete type"
                       />
                     ),
+                    modal: true,
                   },
                 ]
               : []),

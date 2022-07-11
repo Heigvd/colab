@@ -12,9 +12,9 @@ import * as React from 'react';
 import { useLocation } from 'react-router-dom';
 import { getSubCards } from '../../API/api';
 import { shallowEqual, useAppDispatch, useAppSelector } from '../../store/hooks';
-import Button from '../common/Button';
-import Flex from '../common/Flex';
-import InlineLoading from '../common/InlineLoading';
+import Button from '../common/element/Button';
+import InlineLoading from '../common/element/InlineLoading';
+import Flex from '../common/layout/Flex';
 import { depthMax } from '../projects/edition/Editor';
 import { fixedButtonStyle, voidStyle } from '../styling/style';
 import CardCreator from './CardCreator';
@@ -22,7 +22,7 @@ import CardThumbWithSelector from './CardThumbWithSelector';
 
 // TODO : nice className for div for empty slot (blank card)
 
-interface Props {
+interface ContentSubsProps {
   cardContent: CardContent;
   depth?: number;
   showEmptiness?: boolean;
@@ -51,52 +51,52 @@ const flexWrap = css({
   justifyItems: 'stretch', 
   alignItems: 'stretch'}); */
 
-  export function gridCardsStyle(depth: number, inRootView: boolean) {
-    if (inRootView) {
-      if (depth === 1) {
-        return css`
-          display: grid; 
-          grid-template-columns: repeat(3, minmax(min-content, 1fr)); 
-          justify-content: stretch; 
-          align-content: stretch;
-          justify-items: stretch; 
-          align-items: stretch;
-        `;
-      }
-      if (depth === 0) {
-        return css`
-        display: grid; 
-        grid-template-columns: repeat(2, minmax(min-content, 1fr));
-        justify-content: stretch; 
-          align-content: stretch;
-          justify-items: stretch; 
-          align-items: stretch;
-        `;
-      }
-    } else {
-      if (depth === 2) {
-        return css`
-          flex-grow: 1;
-        `;
-      }
-      if (depth === 1) {
-        return css`
-        display: grid; 
-        grid-template-columns: repeat(3, minmax(min-content, 1fr)); 
-        justify-content: stretch; 
+export function gridCardsStyle(depth: number, inRootView: boolean) {
+  if (inRootView) {
+    if (depth === 1) {
+      return css`
+        display: grid;
+        grid-template-columns: repeat(3, minmax(min-content, 1fr));
+        justify-content: stretch;
         align-content: stretch;
-        justify-items: stretch; 
+        justify-items: stretch;
         align-items: stretch;
-        `;
-      }
-      if (depth === 0) {
-        return css`
-          width: auto;
-          flex-grow: 1;
-        `;
-      }
+      `;
+    }
+    if (depth === 0) {
+      return css`
+        display: grid;
+        grid-template-columns: repeat(2, minmax(min-content, 1fr));
+        justify-content: stretch;
+        align-content: stretch;
+        justify-items: stretch;
+        align-items: stretch;
+      `;
+    }
+  } else {
+    if (depth === 2) {
+      return css`
+        flex-grow: 1;
+      `;
+    }
+    if (depth === 1) {
+      return css`
+        display: grid;
+        grid-template-columns: repeat(3, minmax(min-content, 1fr));
+        justify-content: stretch;
+        align-content: stretch;
+        justify-items: stretch;
+        align-items: stretch;
+      `;
+    }
+    if (depth === 0) {
+      return css`
+        width: auto;
+        flex-grow: 1;
+      `;
     }
   }
+}
 
 // Display sub cards of a parent
 export default function ContentSubs({
@@ -105,7 +105,7 @@ export default function ContentSubs({
   showEmptiness = false,
   className,
   subcardsContainerStyle,
-}: Props): JSX.Element {
+}: ContentSubsProps): JSX.Element {
   const dispatch = useAppDispatch();
   const location = useLocation();
   const isInRootView = !location.pathname.match(/card/);
@@ -198,7 +198,7 @@ export default function ContentSubs({
             className,
           )}
         >
-          <div className={cx(gridCardsStyle(depth - 1, isInRootView),subcardsContainerStyle)}>
+          <div className={cx(gridCardsStyle(depth - 1, isInRootView), subcardsContainerStyle)}>
             {orderAndFillSubCards.map(sub => (
               <>
                 {sub == null ? (

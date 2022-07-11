@@ -23,10 +23,10 @@ import * as API from '../../API/api';
 import { useAndLoadNbDocuments } from '../../selectors/documentSelector';
 import { useUrlMetadata } from '../../selectors/externalDataSelector';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
-import ConfirmDeleteModal from '../common/ConfirmDeleteModal';
-import DropDownMenu from '../common/DropDownMenu';
-import Flex from '../common/Flex';
-import IconButton from '../common/IconButton';
+import IconButton from '../common/element/IconButton';
+import ConfirmDeleteModal from '../common/layout/ConfirmDeleteModal';
+import DropDownMenu from '../common/layout/DropDownMenu';
+import Flex from '../common/layout/Flex';
 import { DocumentOwnership } from '../documents/documentCommonType';
 import DocumentCreatorButton from '../documents/DocumentCreatorButton';
 import { lightIconButtonStyle, space_M, space_S } from '../styling/style';
@@ -65,7 +65,7 @@ const toolboxButtonStyle = cx(
   }),
 );
 
-interface Props {
+interface CardEditorToolboxProps {
   open: boolean;
   docOwnership: DocumentOwnership;
   prefixElement?: React.ReactNode;
@@ -75,7 +75,7 @@ export default function CardEditorToolbox({
   open,
   docOwnership,
   prefixElement,
-}: Props): JSX.Element {
+}: CardEditorToolboxProps): JSX.Element {
   const { setSelectedDocId, selectedDocId, selectedOwnKind, setEditMode, TXToptions, editToolbar } =
     React.useContext(CardEditorCTX);
   const showTree = TXToptions?.showTree || false;

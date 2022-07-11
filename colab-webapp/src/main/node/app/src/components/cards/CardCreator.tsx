@@ -12,14 +12,15 @@ import { CardContent } from 'colab-rest-client';
 import * as React from 'react';
 import { useNavigate } from 'react-router-dom';
 import * as API from '../../API/api';
+import useTranslations from '../../i18n/I18nContext';
 import { useAndLoadProjectCardTypes } from '../../selectors/cardTypeSelector';
 import { useAppDispatch } from '../../store/hooks';
-import AvailabilityStatusIndicator from '../common/AvailabilityStatusIndicator';
-import Button from '../common/Button';
-import CustomElementsList from '../common/CustomElementsList';
-import Flex from '../common/Flex';
-import IconButton from '../common/IconButton';
-import OpenCloseModal from '../common/OpenCloseModal';
+import CustomElementsList from '../common/collection/CustomElementsList';
+import AvailabilityStatusIndicator from '../common/element/AvailabilityStatusIndicator';
+import Button from '../common/element/Button';
+import IconButton from '../common/element/IconButton';
+import Flex from '../common/layout/Flex';
+import OpenCloseModal from '../common/layout/OpenCloseModal';
 import {
   greyIconButtonChipStyle,
   lightIconButtonStyle,
@@ -49,8 +50,10 @@ export default function CardCreator({
   className,
 }: CardCreatorProps): JSX.Element {
   const dispatch = useAppDispatch();
-  const { cardTypes, status } = useAndLoadProjectCardTypes();
   const navigate = useNavigate();
+  const i18n = useTranslations();
+
+  const { cardTypes, status } = useAndLoadProjectCardTypes();
 
   const [selectedType, setSelectedType] = React.useState<number | null>(null);
   //const mainButtonRef = React.useRef<HTMLDivElement>(null);
@@ -101,7 +104,7 @@ export default function CardCreator({
             className={lightIconButtonStyle}
           />
           <Button onClick={close} invertedButton className={marginAroundStyle([2], space_S)}>
-            Cancel
+            {i18n.common.cancel}
           </Button>
 
           <Button

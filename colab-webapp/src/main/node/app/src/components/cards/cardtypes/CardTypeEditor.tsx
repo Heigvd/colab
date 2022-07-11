@@ -27,15 +27,15 @@ import {
 } from '../../../selectors/cardTypeSelector';
 import { useProjectBeingEdited } from '../../../selectors/projectSelector';
 import { dispatch } from '../../../store/store';
-import AvailabilityStatusIndicator from '../../common/AvailabilityStatusIndicator';
-import ConfirmDeleteModal from '../../common/ConfirmDeleteModal';
-import DropDownMenu from '../../common/DropDownMenu';
-import Flex from '../../common/Flex';
+import AvailabilityStatusIndicator from '../../common/element/AvailabilityStatusIndicator';
+import IconButton from '../../common/element/IconButton';
+import InlineInputNew from '../../common/element/InlineInputNew';
+import Tips from '../../common/element/Tips';
 import Toggler from '../../common/Form/Toggler';
-import IconButton from '../../common/IconButton';
-import InlineInputNew from '../../common/InlineInputNew';
-import Modal from '../../common/Modal';
-import Tips from '../../common/Tips';
+import ConfirmDeleteModal from '../../common/layout/ConfirmDeleteModal';
+import DropDownMenu, { modalEntryStyle } from '../../common/layout/DropDownMenu';
+import Flex from '../../common/layout/Flex';
+import Modal from '../../common/layout/Modal';
 import { DocTextWrapper } from '../../documents/DocTextItem';
 import ResourcesWrapper from '../../resources/ResourcesWrapper';
 import {
@@ -49,12 +49,12 @@ import {
 } from '../../styling/style';
 import SideCollapsiblePanel from './../SideCollapsiblePanel';
 
-interface Props {
+interface CardTypeEditorProps {
   className?: string;
   usage: 'currentProject' | 'global';
 }
 
-export default function CardTypeEditor({ className, usage }: Props): JSX.Element {
+export default function CardTypeEditor({ className, usage }: CardTypeEditorProps): JSX.Element {
   const navigate = useNavigate();
 
   const id = useParams<'id'>();
@@ -179,10 +179,15 @@ export default function CardTypeEditor({ className, usage }: Props): JSX.Element
                       label: (
                         <ConfirmDeleteModal
                           buttonLabel={
-                            <div className={css({ color: errorColor })}>
+                            <div className={cx(css({ color: errorColor }), modalEntryStyle)}>
                               <FontAwesomeIcon icon={faTrash} /> Delete type
                             </div>
                           }
+                          className={css({
+                            '&:hover': { textDecoration: 'none' },
+                            display: 'flex',
+                            alignItems: 'center',
+                          })}
                           message={
                             <p>
                               <Tips tipsType="TODO">
@@ -201,19 +206,21 @@ export default function CardTypeEditor({ className, usage }: Props): JSX.Element
                           confirmButtonLabel={'Delete card type'}
                         />
                       ),
+                      modal: true,
                     },
                   ]}
                 />
               </Flex>
             </Flex>
             <Flex direction="column" grow={1} align="stretch">
-              <Flex className={css({ margin: space_M + ' 0' })}>
-                <b>Purpose: </b>
+              <Flex className={css({ margin: space_M + ' 0' })} direction="column" align="stretch">
+                <h3>Purpose: </h3>
                 <DocTextWrapper id={cardType.purposeId}>
                   {text => (
                     <InlineInputNew
                       value={text || ''}
                       placeholder={'Explain the purpose'}
+                      inputType="textarea"
                       onChange={(newValue: string) => {
                         if (cardType.purposeId) {
                           dispatch(
@@ -222,6 +229,8 @@ export default function CardTypeEditor({ className, usage }: Props): JSX.Element
                         }
                       }}
                       autosave={false}
+                      rows={4}
+                      className={css({ minWidth: '100%' })}
                     />
                   )}
                 </DocTextWrapper>

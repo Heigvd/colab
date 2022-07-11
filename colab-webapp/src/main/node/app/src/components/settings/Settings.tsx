@@ -8,10 +8,10 @@
 import { css } from '@emotion/css';
 import * as React from 'react';
 import { useCurrentUser, useCurrentUserAccounts } from '../../selectors/userSelector';
-import Button from '../common/Button';
-import Flex from '../common/Flex';
-import Tabs, { Tab } from '../common/Tabs';
-import Tips from '../common/Tips';
+import Button from '../common/element/Button';
+import Tips from '../common/element/Tips';
+import Flex from '../common/layout/Flex';
+import Tabs, { Tab } from '../common/layout/Tabs';
 import Debugger from '../debugger/debugger';
 import { space_L } from '../styling/style';
 import DisplaySettings from './DisplaySettings';
@@ -62,7 +62,7 @@ export default function Settings(): JSX.Element {
           <Tab name="activeSess" label="Active Sessions">
             <UserSessions user={currentUser} />
           </Tab>
-          <Tab name="debugger" label="Debugger">
+          <Tab name="debugger" label="Debugger" invisible={!currentUser.admin}>
             <Debugger />
           </Tab>
         </Tabs>

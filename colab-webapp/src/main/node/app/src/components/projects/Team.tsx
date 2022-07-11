@@ -24,14 +24,15 @@ import { getDisplayName } from '../../helper';
 import useTranslations from '../../i18n/I18nContext';
 import { useAndLoadProjectTeam } from '../../selectors/projectSelector';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
-import ConfirmDeleteModal from '../common/ConfirmDeleteModal';
 import { Destroyer } from '../common/Destroyer';
-import DropDownMenu from '../common/DropDownMenu';
-import IconButton from '../common/IconButton';
-import IconButtonWithLoader from '../common/IconButtonWithLoader';
-import InlineInputNew from '../common/InlineInputNew';
-import InlineLoading from '../common/InlineLoading';
-import OpenClose from '../common/OpenClose';
+import IconButton from '../common/element/IconButton';
+import IconButtonWithLoader from '../common/element/IconButtonWithLoader';
+import InlineInputNew from '../common/element/InlineInputNew';
+import InlineLoading from '../common/element/InlineLoading';
+import { emailFormat } from '../common/Form/Form';
+import ConfirmDeleteModal from '../common/layout/ConfirmDeleteModal';
+import DropDownMenu, { modalEntryStyle } from '../common/layout/DropDownMenu';
+import OpenClose from '../common/layout/OpenClose';
 import WithToolbar from '../common/WithToolbar';
 import {
   errorColor,
@@ -44,6 +45,7 @@ import {
   space_S,
   successColor,
   textSmall,
+  warningColor,
 } from '../styling/style';
 
 const gridNewLine = css({
@@ -173,14 +175,14 @@ const Member = ({ member, roles }: MemberProps) => {
       <span>
         <div className={cx(textSmall, lightItalicText)}>
           <FontAwesomeIcon icon={faHourglassHalf} className={css({ marginRight: space_S })} />
-          {i18n.pendingInvitation}...
+          {i18n.authentication.info.pendingInvitation}...
         </div>
         {member.displayName}
       </span>
     );
   } else if (member.userId == null) {
     // no user, no dn
-    username = <span>{i18n.pendingInvitation}</span>;
+    username = <span>{i18n.authentication.info.pendingInvitation}</span>;
   } else if (user == null) {
     username = <InlineLoading />;
   } else {
@@ -208,10 +210,15 @@ const Member = ({ member, roles }: MemberProps) => {
             label: (
               <ConfirmDeleteModal
                 buttonLabel={
-                  <div className={css({ color: errorColor })}>
+                  <div className={cx(css({ color: errorColor }), modalEntryStyle)}>
                     <FontAwesomeIcon icon={faTrash} /> Delete
                   </div>
                 }
+                className={css({
+                  '&:hover': { textDecoration: 'none' },
+                  display: 'flex',
+                  alignItems: 'center',
+                })}
                 message={
                   <p>
                     Are you <strong>sure</strong> you want to delete this team member ?
@@ -223,6 +230,7 @@ const Member = ({ member, roles }: MemberProps) => {
                 confirmButtonLabel={'Delete team member'}
               />
             ),
+            modal: true,
           },
         ]}
       />
@@ -260,7 +268,6 @@ function CreateRole({ project }: { project: Project }): JSX.Element {
 
   return (
     <OpenClose
-      showCloseIcon="NONE"
       collapsedChildren={
         <IconButton title="Add role" icon={faPlus} className={lightIconButtonStyle} />
       }
@@ -334,17 +341,18 @@ const RoleDisplay = ({ role }: RoleProps) => {
   );
 };
 
-export interface Props {
+export interface TeamProps {
   project: Project;
 }
 
-export default function Team({ project }: Props): JSX.Element {
+export default function Team({ project }: TeamProps): JSX.Element {
   const dispatch = useAppDispatch();
   const projectId = project.id;
 
   const { members, roles, status } = useAndLoadProjectTeam(projectId);
 
   const [invite, setInvite] = React.useState('');
+  const [error, setError] = React.useState<boolean>(false);
 
   if (status === 'INITIALIZED') {
     return (
@@ -401,16 +409,24 @@ export default function Team({ project }: Props): JSX.Element {
             className={linkStyle}
             icon={faPaperPlane}
             title="Send"
-            isLoading={invite.length > 0}
+            isLoading={invite.length > 0 && invite.match(emailFormat) != null}
             onClick={() => {
-              dispatch(
-                API.sendInvitation({
-                  projectId: project.id!,
-                  recipient: invite,
-                }),
-              ).then(() => setInvite(''));
+              if (invite.match(emailFormat)) {
+                setError(false);
+                dispatch(
+                  API.sendInvitation({
+                    projectId: project.id!,
+                    recipient: invite,
+                  }),
+                ).then(() => setInvite(''));
+              } else {
+                setError(true);
+              }
             }}
           />
+          {error && (
+            <div className={cx(css({ color: warningColor }), textSmall)}>Not an email adress</div>
+          )}
         </div>
       </>
     );

@@ -11,8 +11,8 @@ import * as React from 'react';
 import * as API from '../../API/api';
 import { useAppDispatch } from '../../store/hooks';
 import { CardEditorCTX } from '../cards/CardEditor';
-import DropDownMenu from '../common/DropDownMenu';
-import IconButton, { IconButtonProps } from '../common/IconButton';
+import IconButton, { IconButtonProps } from '../common/element/IconButton';
+import DropDownMenu from '../common/layout/DropDownMenu';
 import { DocumentKind, DocumentOwnership } from './documentCommonType';
 
 function iconByType(docKind: DocumentKind): IconProp {

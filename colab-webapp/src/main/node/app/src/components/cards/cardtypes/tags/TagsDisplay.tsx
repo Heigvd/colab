@@ -7,7 +7,7 @@
 
 import { css, cx } from '@emotion/css';
 import * as React from 'react';
-import Flex from '../../../common/Flex';
+import Flex from '../../../common/layout/Flex';
 import { space_S } from '../../../styling/style';
 
 // UI could be done : have a nice default :-)

@@ -6,7 +6,7 @@
  */
 
 import * as React from 'react';
-import { TipsSettings } from '../common/Tips';
+import { TipsSettings } from '../common/element/Tips';
 
 export default function DisplaySettings(): JSX.Element {
   return (

@@ -11,14 +11,13 @@ import { Card, CardContent } from 'colab-rest-client';
 import * as React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useVariantsOrLoad } from '../../selectors/cardSelector';
-import Flex from '../common/Flex';
-import IconButton from '../common/IconButton';
-import InlineLoading from '../common/InlineLoading';
-//import WithToolbar from '../common/WithToolbar';
+import IconButton from '../common/element/IconButton';
+import InlineLoading from '../common/element/InlineLoading';
+import Flex from '../common/layout/Flex';
 import { useDefaultVariant } from '../projects/edition/Editor';
 import { space_S } from '../styling/style';
 
-interface Props {
+interface VariantSelectorProps {
   card: Card;
   children: (variant: CardContent | undefined, list: CardContent[]) => JSX.Element;
 }
@@ -45,8 +44,7 @@ export const computeNav = (
   }
 };
 
-export default function VariantSelector({ card, children }: Props): JSX.Element {
-
+export default function VariantSelector({ card, children }: VariantSelectorProps): JSX.Element {
   const [displayedVariantId, setDisplayedVariantId] = React.useState<number | undefined>();
 
   const contents = useVariantsOrLoad(card);

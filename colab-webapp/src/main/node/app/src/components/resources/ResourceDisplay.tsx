@@ -24,11 +24,11 @@ import { useAndLoadTextOfDocument } from '../../selectors/documentSelector';
 import { useAppDispatch } from '../../store/hooks';
 import CardEditorToolbox from '../cards/CardEditorToolbox';
 import { Destroyer } from '../common/Destroyer';
-import DropDownMenu from '../common/DropDownMenu';
-import Flex from '../common/Flex';
-import IconButton from '../common/IconButton';
-import InlineInputNew from '../common/InlineInputNew';
-import OpenCloseModal from '../common/OpenCloseModal';
+import IconButton from '../common/element/IconButton';
+import InlineInputNew from '../common/element/InlineInputNew';
+import DropDownMenu from '../common/layout/DropDownMenu';
+import Flex from '../common/layout/Flex';
+import OpenCloseModal from '../common/layout/OpenCloseModal';
 import { DocTextWrapper } from '../documents/DocTextItem';
 import DocumentList from '../documents/DocumentList';
 import {
@@ -71,12 +71,15 @@ export function ResourceDisplay({ resource, goBackToList }: ResourceDisplayProps
         >
           <IconButton
             icon={faArrowLeft}
-            title="Back"
+            title={i18n.common.back}
             onClick={goBackToList}
             className={lightIconButtonStyle}
           />
-          <Flex wrap="nowrap" align='center'>
-            <TargetResourceSummary resource={targetResource} iconClassName={css({color: 'var(--lightGray)'})} />
+          <Flex wrap="nowrap" align="center">
+            <TargetResourceSummary
+              resource={targetResource}
+              iconClassName={css({ color: 'var(--lightGray)' })}
+            />
             <InlineInputNew
               value={targetResource.title || ''}
               placeholder={i18n.resource.untitled}
@@ -110,7 +113,7 @@ export function ResourceDisplay({ resource, goBackToList }: ResourceDisplayProps
                   label: (
                     <>
                       <FontAwesomeIcon icon={faTools} />{' '}
-                      {`${openToolbox ? 'Close' : 'Open'} toolbox`}
+                      {`${openToolbox ? i18n.common.close : i18n.common.open} toolbox`}
                     </>
                   ),
                   action: () => setOpenToolbox(openToolbox => !openToolbox),
@@ -118,6 +121,7 @@ export function ResourceDisplay({ resource, goBackToList }: ResourceDisplayProps
                 {
                   value: 'Settings',
                   label: <ResourceSettingsModal resource={resource} />,
+                  modal: true,
                 },
               ]}
             />

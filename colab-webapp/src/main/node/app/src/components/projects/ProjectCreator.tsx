@@ -10,11 +10,12 @@ import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import { Illustration, Project } from 'colab-rest-client';
 import * as React from 'react';
 import * as API from '../../API/api';
+import useTranslations from '../../i18n/I18nContext';
 import { useAppDispatch } from '../../store/hooks';
-import Button from '../common/Button';
-import ButtonWithLoader from '../common/ButtonWithLoader';
-import Flex from '../common/Flex';
-import OpenCloseModal from '../common/OpenCloseModal';
+import Button from '../common/element/Button';
+import ButtonWithLoader from '../common/element/ButtonWithLoader';
+import Flex from '../common/layout/Flex';
+import OpenCloseModal from '../common/layout/OpenCloseModal';
 import { space_M, space_S } from '../styling/style';
 import { defaultProjectIllustration } from './ProjectCommon';
 import ProjectDataInitialization from './ProjectDataInitialization';
@@ -50,6 +51,7 @@ export default function ProjectCreator({
   disabled,
 }: ProjectCreatorProps): JSX.Element {
   const dispatch = useAppDispatch();
+  const i18n = useTranslations();
 
   const [status, setStatus] = React.useState<ProgressionStatus>('chooseModel');
 
@@ -135,16 +137,16 @@ export default function ProjectCreator({
               }
             }}
           >
-            Cancel
+            {i18n.common.cancel}
           </Button>
 
           {showBackButton && (
             <Button invertedButton onClick={oneStepBackCb}>
-              Back
+              {i18n.common.back}
             </Button>
           )}
 
-          {showNextButton && <Button onClick={oneStepForwardCb}>Next</Button>}
+          {showNextButton && <Button onClick={oneStepForwardCb}>{i18n.common.next}</Button>}
 
           {showCreateButton && (
             <ButtonWithLoader

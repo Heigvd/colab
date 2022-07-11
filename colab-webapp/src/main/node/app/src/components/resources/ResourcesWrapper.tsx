@@ -9,7 +9,7 @@ import * as React from 'react';
 import * as API from '../../API/api';
 import { useResources } from '../../selectors/resourceSelector';
 import { useAppDispatch } from '../../store/hooks';
-import InlineLoading from '../common/InlineLoading';
+import InlineLoading from '../common/element/InlineLoading';
 import { ResourceAndRef, ResourceCallContext } from './ResourceCommonType';
 import { ResourceDisplay } from './ResourceDisplay';
 import ResourcesList from './ResourcesList';

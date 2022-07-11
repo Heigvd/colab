@@ -9,17 +9,17 @@ import { Card, InvolvementLevel } from 'colab-rest-client';
 import * as React from 'react';
 import * as API from '../../API/api';
 import { useAppDispatch } from '../../store/hooks';
-import Flex from '../common/Flex';
-import Tips from '../common/Tips';
+import Tips from '../common/element/Tips';
+import Flex from '../common/layout/Flex';
 import { space_M } from '../styling/style';
 import CardACL from './CardACL';
 import InvolvementSelector from './InvolvementSelector';
 
-interface Props {
+interface CardInvolvementProps {
   card: Card;
 }
 
-export default function CardInvolvement({ card }: Props): JSX.Element {
+export default function CardInvolvement({ card }: CardInvolvementProps): JSX.Element {
   const dispatch = useAppDispatch();
   const updateDefInvolvementLevel = React.useCallback(
     (value: InvolvementLevel | null) => {

@@ -10,8 +10,8 @@ import { faRotateLeft } from '@fortawesome/free-solid-svg-icons';
 import { InvolvementLevel } from 'colab-rest-client';
 import * as React from 'react';
 import Select from 'react-select';
-import Flex from '../common/Flex';
-import IconButton from '../common/IconButton';
+import IconButton from '../common/element/IconButton';
+import Flex from '../common/layout/Flex';
 
 const DEFAULT_RIGHT = 'INFORMED_READWRITE';
 function prettyPrint(level: InvolvementLevel) {
@@ -133,7 +133,9 @@ export default function InvolvementSelector({
             value={self != null ? buildOption(self) : null}
             onChange={onChangeCb}
           />
-          {self != null && <IconButton icon={faRotateLeft} title="Reset involvement" onClick={clearCb} />}
+          {self != null && (
+            <IconButton icon={faRotateLeft} title="Reset involvement" onClick={clearCb} />
+          )}
         </>
       )}
     </Flex>

@@ -8,8 +8,7 @@
 import { css } from '@emotion/css';
 import { StickyNoteLink } from 'colab-rest-client';
 import * as React from 'react';
-import Flex from '../common/Flex';
-import Tips from '../common/Tips';
+import Flex from '../common/layout/Flex';
 import { lightIconButtonStyle, space_M } from '../styling/style';
 import StickyNoteCreator from './StickyNoteCreator';
 import StickyNoteDisplay from './StickyNoteDisplay';
@@ -33,11 +32,7 @@ export default function StickyNoteList({
   showDest = false,
 }: StickyNoteListProps): JSX.Element {
   return (
-    <Flex direction="column" align="stretch">
-      <Tips>
-        <h5>List of sticky notes stuck on the card</h5>
-        <div>Sticky notes come from a source (card, card specific version, resource, block)</div>
-      </Tips>
+    <Flex direction="column" align="stretch" grow={1}>
       <Flex
         grow={1}
         direction="column"

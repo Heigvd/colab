@@ -11,8 +11,8 @@ import * as React from 'react';
 import { useNavigate } from 'react-router-dom';
 import * as API from '../../API/api';
 import { useAppDispatch } from '../../store/hooks';
-import Flex from '../common/Flex';
 import Form from '../common/Form/Form';
+import Flex from '../common/layout/Flex';
 import { space_L, space_S } from '../styling/style';
 
 // TODO : affiner tips
@@ -30,10 +30,10 @@ export default function PositionEditor({ card }: PositionEditorProps): JSX.Eleme
       fields={[
         {
           key: 'index',
-          type: 'text',
           label: 'Position index',
-          isMandatory: false,
           placeholder: '0',
+          type: 'text',
+          isMandatory: false,
           tip: (
             <Flex direction="row">
               <Flex grow={1} className={css({ padding: space_S })}>

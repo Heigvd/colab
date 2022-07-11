@@ -8,13 +8,15 @@
 import { IconDefinition } from '@fortawesome/fontawesome-common-types';
 import { faTrashAlt } from '@fortawesome/free-solid-svg-icons';
 import * as React from 'react';
-import { ConfirmIconButton } from './ConfirmIconButton';
+import { ConfirmIconButton } from './element/ConfirmIconButton';
 
-export interface Props {
+// soon not used anymore
+
+export interface DestroyerProps {
   title?: string;
   icon?: IconDefinition;
   onDelete: () => void;
 }
-export function Destroyer({ onDelete, title, icon = faTrashAlt }: Props): JSX.Element {
+export function Destroyer({ onDelete, title, icon = faTrashAlt }: DestroyerProps): JSX.Element {
   return <ConfirmIconButton icon={icon} title={title || 'destroy'} onConfirm={onDelete} />;
 }

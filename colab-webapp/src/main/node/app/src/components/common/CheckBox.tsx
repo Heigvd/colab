@@ -9,6 +9,8 @@ import { faCheckSquare, faSquare } from '@fortawesome/free-regular-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import * as React from 'react';
 
+// soon not used anymore
+
 export interface CheckBoxProps {
   label?: string;
   value: boolean | null | undefined;
