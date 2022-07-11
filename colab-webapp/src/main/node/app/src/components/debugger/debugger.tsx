@@ -6,8 +6,8 @@
  */
 
 import * as React from 'react';
-import DebugForm from './debugForm';
+import DebugNotif from './debugNotif';
 
 export default function Debugger(): JSX.Element {
-  return <DebugForm />;
+  return <DebugNotif />;
 }
