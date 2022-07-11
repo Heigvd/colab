@@ -244,6 +244,11 @@ export const en = {
   aaiAccount: 'AAI Account',
   aaiAffiliation: 'Affiliation',
   aaiNotEditable: ' Personal data are not editable',
+  notification: {
+    error: 'Oops! An error',
+    warning: 'Warning!',
+    information: 'Information',
+  },
 
   card: {
     untitled: 'New card',
