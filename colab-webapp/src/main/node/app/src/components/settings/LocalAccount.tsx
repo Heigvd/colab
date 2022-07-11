@@ -5,6 +5,7 @@
  * Licensed under the MIT License
  */
 
+import { css } from '@emotion/css';
 import { faSave } from '@fortawesome/free-regular-svg-icons';
 import { faTimes } from '@fortawesome/free-solid-svg-icons';
 import * as React from 'react';
@@ -13,9 +14,10 @@ import { updateLocalAccountPassword } from '../../API/api';
 import useTranslations from '../../i18n/I18nContext';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import PasswordFeedbackDisplay from '../authentication/PasswordFeedbackDisplay';
+import Button from '../common/element/Button';
 import IconButton from '../common/element/IconButton';
 import { PasswordScore } from '../common/Form/Form';
-import { linkStyle } from '../styling/style';
+import { space_S } from '../styling/style';
 
 export interface LocalAccountProps {
   accountId: number;
@@ -38,24 +40,20 @@ export default function LocalAccount(props: LocalAccountProps): JSX.Element {
   if (account) {
     return (
       <div>
-        <h3>Edit account</h3>
+        <h3>Account</h3>
         <div>
-          <div>
-            <span>email:</span>
             <span>{account.email} </span>
-          </div>
-          <IconButton icon={faSave} title="Save" />
         </div>
         <div>
           {pwState === 'SET' ? (
-            <span
-              className={linkStyle}
+            <Button invertedButton
+            className={css({display: 'block', marginTop: space_S})}
               onClick={() => {
                 setPwState('CHANGE_PASSWORD');
               }}
             >
               Change password
-            </span>
+            </Button>
           ) : (
             <div>
               <label>
