@@ -7,6 +7,7 @@
 
 import { css, cx } from '@emotion/css';
 import * as React from 'react';
+import useTranslations from '../../../../i18n/I18nContext';
 import Checkbox from '../../../common/Form/Checkbox';
 import Flex from '../../../common/layout/Flex';
 import {
@@ -52,6 +53,7 @@ export default function TagsFilter({
   tagItemClassName,
 }: TagsFilterProps): JSX.Element {
   const [selectAllState, setSelectAllState] = React.useState<boolean>(false);
+  const i18n = useTranslations();
 
   const toggleAllTags = React.useCallback(() => {
     setSelectAllState(!selectAllState);
@@ -96,7 +98,7 @@ export default function TagsFilter({
               })}
             </Flex>
             <Checkbox
-              label={selectAllState ? 'Select all' : 'Deselect all'}
+              label={i18n.common.selectAll}
               value={!selectAllState}
               onChange={toggleAllTags}
               className={cx(lightLinkStyle, css({ '&:hover': { textDecoration: 'none' } }))}

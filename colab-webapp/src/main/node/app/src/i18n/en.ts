@@ -16,6 +16,8 @@ export const en = {
     close: 'Close',
     open: 'Open',
     add: 'Add',
+    select: 'Select',
+    selectAll: 'Select all',
     next: 'Next',
     back: 'Back',
     date: (timestamp: number | null | undefined) => {
@@ -44,6 +46,7 @@ export const en = {
     },
     error: {
       missingContent: 'oh there is nothing to display, dear developer please fix it',
+      unknown: 'Unknown',
     },
   },
 
@@ -262,9 +265,19 @@ export const en = {
   content: {
     none: 'no version',
     untitled: 'New version',
+    mimeType: 'MIME type',
+    document: 'document'
   },
   resource: {
     untitled: 'New document',
     noTeaser: 'no document teaser',
   },
+  cardType: {
+    referencedByOther: 'It can be referenced by other projects (with regards to access rights)',
+    shouldNotBeUsed: "It should not be used anymore",
+    globalType: "It is a global type",
+    fromProject: 'It comes from the project',
+    fromAProject: 'It comes from a project',
+    nothingMatchTag: 'Nothing matches tag selection'
+  }
 };

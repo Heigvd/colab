@@ -9,6 +9,7 @@ import { css } from '@emotion/css';
 import { faCircleDot } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import * as React from 'react';
+import useTranslations from '../../../../i18n/I18nContext';
 import { useProject } from '../../../../selectors/projectSelector';
 import { CardTypeAllInOne as CardType } from '../../../../types/cardTypeDefinition';
 import { space_S } from '../../../styling/style';
@@ -27,13 +28,14 @@ interface TargetCardTypeSummaryProps {
 export default function TargetCardTypeSummary({
   cardType,
 }: TargetCardTypeSummaryProps): JSX.Element {
+  const i18n = useTranslations();
   return (
     <>
       {cardType.kind === 'referenced' &&
         (cardType.projectIdCT ? (
           <TargetProjectSummary projectId={cardType.projectIdCT} />
         ) : (
-          <FontAwesomeIcon icon={referenceIcon} color={'var(--secondaryColor)'} title="It is a global type" className={targetProjectIconStyle} />
+          <FontAwesomeIcon icon={referenceIcon} color={'var(--secondaryColor)'} title={i18n.cardType.globalType} className={targetProjectIconStyle} />
         ))}
     </>
   );
@@ -45,7 +47,7 @@ interface TargetProjectSummaryProps {
 
 function TargetProjectSummary({ projectId }: TargetProjectSummaryProps): JSX.Element {
   const { project, status } = useProject(projectId);
-
+const i18n = useTranslations();
   return (
     <FontAwesomeIcon
       icon={referenceIcon}
@@ -53,8 +55,8 @@ function TargetProjectSummary({ projectId }: TargetProjectSummaryProps): JSX.Ele
       color={'var(--lightGray)'}
       title={
         status === 'INITIALIZED' && project?.name
-          ? 'It comes from the project "' + project.name + '"'
-          : 'It comes from a project'
+          ? `${i18n.cardType.fromProject} ` + project.name + '"'
+          : `${i18n.cardType.fromAProject}`
       }
     />
   );

@@ -9,6 +9,7 @@ import { css } from '@emotion/css';
 import { faBullhorn, faTriangleExclamation } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import * as React from 'react';
+import useTranslations from '../../../../i18n/I18nContext';
 import { CardTypeAllInOne as CardType } from '../../../../types/cardTypeDefinition';
 import Flex from '../../../common/layout/Flex';
 import ResourcesListSummary from '../../../resources/summary/ResourcesListSummary';
@@ -38,6 +39,7 @@ export default function CardTypeRelativesSummary({
     showTargetCardType: false,
   },
 }: CardTypeRelativesSummaryProps): JSX.Element {
+  const i18n = useTranslations();
   return (
     <Flex>
       {/* resources on the type */}
@@ -56,7 +58,7 @@ export default function CardTypeRelativesSummary({
         <Flex className={itemStyle}>
           <FontAwesomeIcon
             icon={faBullhorn}
-            title="It can be referenced by other projects (with regards to access rights)"
+            title={i18n.cardType.referencedByOther}
           />
         </Flex>
       )}
@@ -64,7 +66,7 @@ export default function CardTypeRelativesSummary({
       {/* is deprecated */}
       {displayChoices.showDeprecated && cardType.deprecated && (
         <Flex className={itemStyle}>
-          <FontAwesomeIcon icon={faTriangleExclamation} title="It should not be used anymore" />
+          <FontAwesomeIcon icon={faTriangleExclamation} title={i18n.cardType.shouldNotBeUsed} />
         </Flex>
       )}
 
