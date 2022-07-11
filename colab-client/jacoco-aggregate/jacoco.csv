@@ -83,7 +83,7 @@ colab-client/colab-api,ch.colabproject.colab.api.rest,WebsocketRestEndpoint,94,0
 colab-client/colab-api,ch.colabproject.colab.api.model.tools,EntityListener,113,0,26,0,27,0,20,0,7,0
 colab-client/colab-api,ch.colabproject.colab.api.model.tools,JpaCustomizer,44,0,2,0,13,0,7,0,6,0
 colab-client/colab-api,ch.colabproject.colab.api.model.tools,EntityHelper,54,0,12,0,15,0,9,0,3,0
-colab-client/colab-api,ch.colabproject.colab.api.controller.user,UserManager,605,0,58,0,175,0,54,0,25,0
+colab-client/colab-api,ch.colabproject.colab.api.controller.user,UserManager,608,0,58,0,175,0,54,0,25,0
 colab-client/colab-api,ch.colabproject.colab.api.ws.message,WsMessage,3,0,0,0,1,0,1,0,1,0
 colab-client/colab-api,ch.colabproject.colab.api.ws.message,WsSessionIdentifier,20,0,0,0,9,0,5,0,5,0
 colab-client/colab-api,ch.colabproject.colab.api.ws.message,WsUpdateMessage,33,0,0,0,11,0,6,0,6,0

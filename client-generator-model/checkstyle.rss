@@ -25,9 +25,9 @@ under the License.
     <language>en-us</language>
     <copyright>&#169;2022 AlbaSim, MEI, HEIG-VD, HES-SO</copyright>
     <item>
-      <title>File: 12,
+      <title>File: 13,
              Errors: 0,
-             Warnings: 8,
+             Warnings: 4,
              Infos: 0
       </title>
             <link>${project.url}/checkstyle.html</link>
@@ -102,6 +102,62 @@ under the License.
               </tr>
                           <tr>
                 <td>
+                  <a href="${project.url}/checkstyle.html#ch.colabproject.colab.generator.model.tools.DateSerDe.java">ch/colabproject/colab/generator/model/tools/DateSerDe.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  3
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="${project.url}/checkstyle.html#ch.colabproject.colab.generator.model.interfaces.WithJsonDiscriminator.java">ch/colabproject/colab/generator/model/interfaces/WithJsonDiscriminator.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="${project.url}/checkstyle.html#ch.colabproject.colab.generator.model.exceptions.MessageI18nKey.java">ch/colabproject/colab/generator/model/exceptions/MessageI18nKey.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="${project.url}/checkstyle.html#ch.colabproject.colab.generator.model.tools.JsonbProvider.java">ch/colabproject/colab/generator/model/tools/JsonbProvider.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  1
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
                   <a href="${project.url}/checkstyle.html#ch.colabproject.colab.generator.model.interfaces.WithId.java">ch/colabproject/colab/generator/model/interfaces/WithId.java</a>
                 </td>
                 <td>
@@ -122,21 +178,7 @@ under the License.
                   0
                 </td>
                 <td>
-                  4
-                </td>
-                <td>
                   0
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="${project.url}/checkstyle.html#ch.colabproject.colab.generator.model.tools.DateSerDe.java">ch/colabproject/colab/generator/model/tools/DateSerDe.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  3
                 </td>
                 <td>
                   0
@@ -172,20 +214,6 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="${project.url}/checkstyle.html#ch.colabproject.colab.generator.model.interfaces.WithJsonDiscriminator.java">ch/colabproject/colab/generator/model/interfaces/WithJsonDiscriminator.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-              </tr>
-                          <tr>
-                <td>
                   <a href="${project.url}/checkstyle.html#ch.colabproject.colab.generator.model.tools.ClassDoc.java">ch/colabproject/colab/generator/model/tools/ClassDoc.java</a>
                 </td>
                 <td>
@@ -193,20 +221,6 @@ under the License.
                 </td>
                 <td>
                   0
-                </td>
-                <td>
-                  0
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="${project.url}/checkstyle.html#ch.colabproject.colab.generator.model.tools.JsonbProvider.java">ch/colabproject/colab/generator/model/tools/JsonbProvider.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  1
                 </td>
                 <td>
                   0
