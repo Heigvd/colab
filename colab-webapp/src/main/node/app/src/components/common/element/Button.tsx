@@ -19,32 +19,32 @@ import {
 import Clickable, { ClickableProps } from '../layout/Clickable';
 
 export interface ButtonProps extends Omit<ClickableProps, 'clickableClassName'> {
-  invertedButton?: boolean;
   icon?: IconProp;
+  iconColor?: string;
   iconSize?: SizeProp;
   reverseOrder?: boolean;
-  iconColor?: string;
+  invertedButton?: boolean;
 }
 
 export default function Button({
-  onClick,
-  clickable,
-  children,
   title,
-  className,
-  invertedButton,
   icon,
   iconColor,
   iconSize,
   reverseOrder,
+  clickable,
+  onClick,
+  children,
+  invertedButton,
+  className,
 }: ButtonProps): JSX.Element {
   return (
     <Clickable
-      onClick={onClick}
       title={title}
+      clickable={clickable}
+      onClick={onClick}
       className={cx(invertedButton ? inactiveInvertedButtonStyle : inactiveButtonStyle, className)}
       clickableClassName={cx(invertedButton ? invertedButtonStyle : buttonStyle, className)}
-      clickable={clickable}
     >
       {reverseOrder && children}
       {icon && (
