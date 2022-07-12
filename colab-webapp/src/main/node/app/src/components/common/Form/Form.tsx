@@ -12,10 +12,10 @@ import useTranslations from '../../../i18n/I18nContext';
 import { space_M } from '../../styling/style';
 import ButtonWithLoader from '../element/ButtonWithLoader';
 import InlineLoading from '../element/InlineLoading';
+import { BlockInput } from '../element/Input';
 import { TipsProps } from '../element/Tips';
 import Flex from '../layout/Flex';
 import Checkbox from './Checkbox';
-import Input from './Input';
 import SelectInput from './SelectInput';
 import Toggler from './Toggler';
 
@@ -180,7 +180,7 @@ export default function Form<T>({
     if (field.type === 'text' || field.type === 'textarea') {
       return (
         <div key={fieldKey}>
-          <Input
+          <BlockInput
             label={field.label}
             value={String(state[field.key] || '')}
             placeholder={field.placeholder}
@@ -198,7 +198,7 @@ export default function Form<T>({
     } else if (field.type === 'password') {
       return (
         <div key={fieldKey}>
-          <Input
+          <BlockInput
             label={field.label}
             value={String(state[field.key] || '')}
             placeholder={field.placeholder}

@@ -10,7 +10,7 @@ import { Project } from 'colab-rest-client/dist/ColabClient';
 import * as React from 'react';
 import * as API from '../../API/api';
 import { dispatch } from '../../store/store';
-import Input from '../common/Form/Input';
+import { BlockInput } from '../common/element/Input';
 import Flex from '../common/layout/Flex';
 
 interface ProjectDisplaySettingsProps {
@@ -22,13 +22,13 @@ export function ProjectDisplaySettings({ project }: ProjectDisplaySettingsProps)
   //const navigate = useNavigate();
   return (
     <Flex align="stretch" direction="column" grow={1} className={css({ alignSelf: 'stretch' })}>
-      <Input
+      <BlockInput
         label="Name"
         placeholder="New project"
         value={project.name || ''}
         onChange={newValue => dispatch(API.updateProject({ ...project, name: newValue }))}
       />
-      <Input
+      <BlockInput
         label="Description"
         inputType="textarea"
         placeholder="Write a description here"

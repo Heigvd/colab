@@ -10,7 +10,7 @@ import { CardContent } from 'colab-rest-client';
 import * as React from 'react';
 import * as API from '../../API/api';
 import { useAppDispatch } from '../../store/hooks';
-import Input from '../common/Form/Input';
+import { BlockInput } from '../common/element/Input';
 import Flex from '../common/layout/Flex';
 
 interface CompletionEditorProps {
@@ -22,7 +22,7 @@ export default function CompletionEditor({ variant }: CompletionEditorProps): JS
 
   return (
     <>
-      <Input
+      <BlockInput
         type="range"
         label="Completion level"
         value={String(variant.completionLevel) == '0' ? '0' : String(variant.completionLevel)}
@@ -38,9 +38,9 @@ export default function CompletionEditor({ variant }: CompletionEditorProps): JS
         autoFocus={true}
       />
       <Flex align="center">
-        <Input
+        <BlockInput
           type="number"
-          value={variant.completionLevel == 0 ? 0 : variant.completionLevel}
+          value={variant.completionLevel == 0 ? undefined : variant.completionLevel}
           onChange={newValue =>
             dispatch(
               API.updateCardContent({
@@ -51,9 +51,9 @@ export default function CompletionEditor({ variant }: CompletionEditorProps): JS
           }
           placeholder={'0'}
           autoFocus
-          className={css({ width: '90px' })}
-          min={0}
-          max={100}
+          inputClassName={css({ width: '90px' })}
+          min="0"
+          max="100"
         />{' '}
         %
       </Flex>
