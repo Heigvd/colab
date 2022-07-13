@@ -98,7 +98,7 @@ export default function Input({
     <Flex
       direction="column"
       align="normal"
-      className={cx(css({ padding: space_S + ' 0' }), className)}
+      className={cx(css({ padding: space_S + ' 0', width: 'min-content' }), className)}
     >
       <Flex justify="space-between">
         <div>
