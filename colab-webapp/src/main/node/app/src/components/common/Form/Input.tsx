@@ -58,6 +58,7 @@ export default function Input({
   error,
   className,
   bottomClassName,
+  autoComplete,
 }: InputProps): JSX.Element {
   const [state, setState] = React.useState<string | number>(value || '');
 
@@ -119,6 +120,7 @@ export default function Input({
           min={min}
           max={max}
           className={inputStyle}
+          autoComplete={autoComplete}
         />
       ) : (
         <textarea
@@ -129,6 +131,7 @@ export default function Input({
           onChange={onInternalChange}
           onBlur={onBlur}
           className={textareaStyle}
+          autoComplete={autoComplete}
         />
       )}
       {fieldFooter != null && <div className={textSmall}>{fieldFooter}</div>}

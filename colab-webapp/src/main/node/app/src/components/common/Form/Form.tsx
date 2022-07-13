@@ -111,6 +111,7 @@ export interface FormProps<T> {
   className?: string;
   childrenClassName?: string;
   buttonClassName?: string;
+  autoComplete?: string;
 }
 
 export default function Form<T>({
@@ -123,6 +124,7 @@ export default function Form<T>({
   className,
   childrenClassName,
   buttonClassName,
+  autoComplete,
 }: FormProps<T>): JSX.Element {
   const i18n = useTranslations();
 
@@ -200,6 +202,7 @@ export default function Form<T>({
             tip={field.tip}
             fieldFooter={effectiveFieldFooter}
             error={errorMessage}
+            autoComplete={autoComplete}
           />
         </div>
       );
@@ -217,6 +220,7 @@ export default function Form<T>({
             tip={field.tip}
             fieldFooter={effectiveFieldFooter}
             error={errorMessage}
+            autoComplete={autoComplete}
           />
           {field.strengthProp != null && (
             <div className={cx({ [css({ display: 'none' })]: !field.showStrengthBar })}>

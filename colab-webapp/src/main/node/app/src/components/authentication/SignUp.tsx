@@ -112,6 +112,7 @@ export default function SignUpForm({ redirectTo }: SignUpFormProps): JSX.Element
         onSubmit={signUp}
         submitLabel={i18n.authentication.action.createAnAccount}
         buttonClassName={css({ margin: space_M + ' auto' })}
+        autoComplete="off"
       >
         <InlineLink
           to={buildLinkWithQueryParam('/SignIn', { redirectTo: redirectTo })}
