@@ -97,7 +97,7 @@ export default function Input({
   return (
     <Flex
       direction="column"
-      align="normal"
+      align="flex-start"
       className={cx(css({ padding: space_S + ' 0', width: 'min-content' }), className)}
     >
       <Flex justify="space-between">
@@ -135,7 +135,7 @@ export default function Input({
         />
       )}
       {fieldFooter != null && <div className={textSmall}>{fieldFooter}</div>}
-      <Flex direction="column" align="center" className={cx(textSmall, bottomClassName)}>
+      <Flex direction="column" align="flex-start" className={cx(textSmall, bottomClassName)}>
         {warning != null && <div className={warningStyle}>{warning}</div>}
         {error != null && <div className={errorStyle}>{error}</div>}
       </Flex>
