@@ -162,9 +162,48 @@ export default function CardTypeThumbnail({
                           value: 'Remove this type from the project',
                           label: (
                             <>
-                              <FontAwesomeIcon icon={faExchangeAlt} /> Remove from project
+                              {!isUsedInProject(cardType.id) ? (
+                                <div
+                                className={cx(css({ color: errorColor }), modalEntryStyle)}
+                              >
+                                <FontAwesomeIcon icon={faExchangeAlt} /> Remove from project
+                              </div>
+                              ) : (
+                                <OpenCloseModal
+                                  title="Cannot remove card type"
+                                  className={css({
+                                    '&:hover': { textDecoration: 'none' },
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                  })}
+                                  collapsedChildren={
+                                    <div
+                                      className={cx(css({ color: errorColor }), modalEntryStyle)}
+                                    >
+                                      <FontAwesomeIcon icon={faExchangeAlt} /> Remove from project
+                                    </div>
+                                  }
+                                  footer={collapse => (
+                                    <Flex
+                                      justify={'center'}
+                                      grow={1}
+                                      className={css({ padding: space_M, columnGap: space_S })}
+                                    >
+                                      <Button onClick={collapse}>OK</Button>
+                                    </Flex>
+                                  )}
+                                >
+                                  {() => (
+                                    <div>
+                                      Impossible to remove this card type. It is used in this
+                                      project.
+                                    </div>
+                                  )}
+                                </OpenCloseModal>
+                              )}
                             </>
                           ),
+                          modal: true,
                           action: () =>
                             dispatch(
                               API.removeCardTypeRefFromProject({
