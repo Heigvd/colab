@@ -23,6 +23,7 @@ export default function PublicEntranceContainer({
         className={cx(
           css({
             margin: 'auto',
+            width: 'min-content',
           }),
         )}
       >

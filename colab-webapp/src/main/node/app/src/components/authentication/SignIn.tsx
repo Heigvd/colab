@@ -18,7 +18,7 @@ import { useAppDispatch } from '../../store/hooks';
 import { InlineLink } from '../common/element/Link';
 import Form, { Field, PasswordScore } from '../common/Form/Form';
 import Flex from '../common/layout/Flex';
-import { lightLinkStyle, space_M, space_S } from '../styling/style';
+import { errorColor, lightLinkStyle, space_M, space_S, textSmall } from '../styling/style';
 import PublicEntranceContainer from './PublicEntranceContainer';
 
 interface SignInFormProps {
@@ -47,6 +47,7 @@ export default function SignInForm({ redirectTo }: SignInFormProps): JSX.Element
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const i18n = useTranslations();
+  const [loginFailed, setLoginFailed] = React.useState<boolean>(false);
 
   const accountConfig = useAccountConfig();
 
@@ -69,24 +70,30 @@ export default function SignInForm({ redirectTo }: SignInFormProps): JSX.Element
 
   const signIn = React.useCallback(
     (credentials: Credentials) => {
-      dispatch(
-        API.signInWithLocalAccount({
-          identifier: credentials.identifier,
-          password: credentials.password,
-          passwordScore: credentials.passwordScore,
-        }),
-      ).then(action => {
-        // is that a hack or not ???
-        if (redirectTo && action.meta.requestStatus === 'fulfilled') {
-          navigate(redirectTo);
-        }
-      });
+        dispatch(
+          API.signInWithLocalAccount({
+            identifier: credentials.identifier,
+            password: credentials.password,
+            passwordScore: credentials.passwordScore,
+          }),
+        ).then(action => {
+          // is that a hack or not ???
+          if (redirectTo && action.meta.requestStatus === 'fulfilled') {
+            navigate(redirectTo);
+          }
+          //not working. Help needed.
+        }).catch(() => setLoginFailed(true));
     },
     [dispatch, navigate, redirectTo],
   );
 
   return (
     <PublicEntranceContainer>
+      {loginFailed && (
+        <Flex className={cx(css({ color: errorColor, textAlign: 'left' }), textSmall)}>
+          The username/email or password is invalid. Please try again.{' '}
+        </Flex>
+      )}
       <Form
         fields={formFields}
         value={defaultCredentials}
