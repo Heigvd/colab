@@ -245,6 +245,7 @@ export default function DebugInput(): JSX.Element {
             placeholder="i t c"
             mandatory={mandatory}
             readOnly={readOnly}
+            autoWidth
             saveMode="ON_CONFIRM"
             onChange={newValue => {
               // eslint-disable-next-line no-alert

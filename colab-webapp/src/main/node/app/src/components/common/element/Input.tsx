@@ -29,7 +29,6 @@ import Tips, { TipsProps } from './Tips';
 
 // TODO autoSave
 // TODO rows
-// TODO auto fit width
 
 // TODO see what happens in saveMode === 'ON_CONFIRM' when click outside. do we lose ?
 
@@ -45,6 +44,7 @@ interface InputProps {
   min?: HTMLInputElement['min'];
   max?: HTMLInputElement['max'];
   //rows?: HTMLTextAreaElement['rows'];
+  autoWidth?: boolean;
   saveMode: 'FLOWING' | 'ON_CONFIRM'; //| 'DEBOUNCED' | 'ON_CONFIRM';
   onChange: (newValue: string) => void; //  | number
   onCancel?: () => void;
@@ -77,6 +77,7 @@ function Input({
   min,
   max,
   //rows, // doesn't work ?!?
+  autoWidth,
   saveMode,
   onChange,
   onCancel,
@@ -103,6 +104,18 @@ function Input({
   const [currentInternalValue, setCurrentInternalValue] = React.useState<string | number>();
   const [mode, setMode] = React.useState<'DISPLAY' | 'EDIT'>('DISPLAY');
 
+  const updateSize = React.useCallback(() => {
+    if (autoWidth) {
+      if (inputRef.current) {
+        inputRef.current.style.width = 0 + 'px';
+        inputRef.current.style.width = inputRef.current.scrollWidth + 'px'; //.value.length + 'ch'; //
+        if (inputRef.current.value.length === 0) {
+          inputRef.current.style.width = inputRef.current.placeholder.length + 'ch';
+        }
+      }
+    }
+  }, [autoWidth]);
+
   React.useEffect(() => {
     if (inputType === 'input' && inputRef.current != null) {
       inputRef.current.value = String(value);
@@ -112,7 +125,9 @@ function Input({
     }
 
     setCurrentInternalValue(value);
-  }, [inputType, value]);
+
+    updateSize();
+  }, [inputType, value, updateSize]);
 
   // const handleClickOutside = (event: Event) => {
   //   if (containerRef.current != null && !containerRef.current.contains(event.target as Node)) {
@@ -150,10 +165,12 @@ function Input({
 
     setCurrentInternalValue(value);
 
+    updateSize();
+
     if (onCancel) {
       onCancel();
     }
-  }, [inputType, inputRef, textareaRef, value, onCancel]);
+  }, [inputType, inputRef, textareaRef, value, updateSize, onCancel]);
 
   const setDisplayMode = React.useCallback(() => {
     setMode('DISPLAY');
@@ -220,6 +237,7 @@ function Input({
             min={min}
             max={max}
             onFocus={setEditMode}
+            onInput={updateSize}
             onChange={changeInternal}
             onKeyDown={pressEnterKey}
             onBlur={setDisplayMode}
