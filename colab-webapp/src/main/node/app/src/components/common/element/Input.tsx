@@ -224,7 +224,6 @@ function Input({
             onKeyDown={pressEnterKey}
             onBlur={setDisplayMode}
             className={cx(
-              inputStyle,
               inputEditClassName && mode === 'EDIT' ? inputEditClassName : inputDisplayClassName,
             )}
           />
@@ -241,7 +240,6 @@ function Input({
             onBlur={setDisplayMode}
             // no onKeyDown here, or it will be a problem to put any end of line in the text
             className={cx(
-              textareaStyle,
               inputEditClassName && mode === 'EDIT' ? inputEditClassName : inputDisplayClassName,
             )}
           />
@@ -299,6 +297,10 @@ export function BlockInput(props: InputProps): JSX.Element {
           padding: space_S + ' 0',
         }),
         props.containerClassName,
+      )}
+      inputDisplayClassName={cx(
+        props.inputType === 'textarea' ? textareaStyle : inputStyle,
+        props.inputDisplayClassName,
       )}
       footerClassName={cx(
         css({
