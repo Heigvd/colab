@@ -13,6 +13,8 @@ import { useAppDispatch } from '../../store/hooks';
 import { BlockInput } from '../common/element/Input';
 import Flex from '../common/layout/Flex';
 
+// TODO : make it become a form
+
 interface CompletionEditorProps {
   variant: CardContent;
 }
