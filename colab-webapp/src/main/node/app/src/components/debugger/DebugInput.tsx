@@ -49,6 +49,8 @@ export default function DebugInput(): JSX.Element {
           footer={showFooter && 'and if I would like to add something'}
           warning={showWarning && 'ah a warning'}
           error={showError && 'oh an error'}
+          inputDisplayClassName={css({ border: '2px solid lightblue' })}
+          inputEditClassName={css({ border: '2px solid #66f' })}
         />
         <BlockInput
           label="text area"
@@ -70,6 +72,8 @@ export default function DebugInput(): JSX.Element {
           footer={showFooter && 'and if I would like to add something'}
           warning={showWarning && 'ah a warning'}
           error={showError && 'oh an error'}
+          inputDisplayClassName={css({ border: '2px solid lightblue' })}
+          inputEditClassName={css({ border: '2px solid #66f' })}
         />
         <BlockInput
           label="input number"
@@ -91,6 +95,8 @@ export default function DebugInput(): JSX.Element {
           footer={showFooter && 'and if I would like to add something'}
           warning={showWarning && 'ah a warning'}
           error={showError && 'oh an error'}
+          inputDisplayClassName={css({ border: '2px solid lightblue' })}
+          inputEditClassName={css({ border: '2px solid #66f' })}
         />
         <h3>results</h3>
         <Flex>{val11}</Flex>
@@ -116,6 +122,8 @@ export default function DebugInput(): JSX.Element {
           footer={showFooter && 'and if I would like to add something'}
           warning={showWarning && 'ah a warning'}
           error={showError && 'oh an error'}
+          inputDisplayClassName={css({ border: '2px solid lightblue' })}
+          inputEditClassName={css({ border: '2px solid #66f' })}
         />
         <BlockInput
           value={val22}
@@ -135,6 +143,8 @@ export default function DebugInput(): JSX.Element {
           footer={showFooter && 'and if I would like to add something'}
           warning={showWarning && 'ah a warning'}
           error={showError && 'oh an error'}
+          inputDisplayClassName={css({ border: '2px solid lightblue' })}
+          inputEditClassName={css({ border: '2px solid #66f' })}
         />
         <BlockInput
           label="input number"
@@ -156,6 +166,8 @@ export default function DebugInput(): JSX.Element {
           footer={showFooter && 'and if I would like to add something'}
           warning={showWarning && 'ah a warning'}
           error={showError && 'oh an error'}
+          inputDisplayClassName={css({ border: '2px solid lightblue' })}
+          inputEditClassName={css({ border: '2px solid #66f' })}
         />
         <h3>results</h3>
         <Flex>{val21}</Flex>

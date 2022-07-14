@@ -27,9 +27,7 @@ import Tips, { TipsProps } from './Tips';
 // TODO autoSave
 // TODO rows
 // TODO inline design
-// TODO mode edit / display
 // TODO auto fit width
-// TODO enter when on confirm
 
 // TODO see what happens in saveMode === 'ON_CONFIRM' when click outside. do we lose ?
 
@@ -54,7 +52,8 @@ interface InputProps {
   error?: React.ReactNode;
   containerClassName?: string;
   labelClassName?: string;
-  inputClassName?: string;
+  inputDisplayClassName?: string;
+  inputEditClassName?: string;
   footerClassName?: string;
   validationClassName?: string;
 }
@@ -84,7 +83,8 @@ function Input({
   error,
   containerClassName,
   labelClassName,
-  inputClassName,
+  inputDisplayClassName,
+  inputEditClassName,
   footerClassName,
   validationClassName,
 }: InputProps): JSX.Element {
@@ -97,6 +97,7 @@ function Input({
   // const containerRef = React.useRef<HTMLDivElement>(null);
 
   const [currentInternalValue, setCurrentInternalValue] = React.useState<string | number>();
+  const [mode, setMode] = React.useState<'DISPLAY' | 'EDIT'>('DISPLAY');
 
   React.useEffect(() => {
     setCurrentInternalValue(value);
@@ -143,6 +144,14 @@ function Input({
     }
   }, [inputType, inputRef, textareaRef, value, onCancel]);
 
+  const setDisplayMode = React.useCallback(() => {
+    setMode('DISPLAY');
+  }, []);
+
+  const setEditMode = React.useCallback(() => {
+    setMode('EDIT');
+  }, []);
+
   const changeInternal = React.useCallback(
     (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
       const newValue = e.target.value;
@@ -172,6 +181,8 @@ function Input({
     [saveMode, save, inputType],
   );
 
+  const updated = currentInternalValue !== value;
+
   return (
     <Flex /*theRef={containerRef}*/ className={containerClassName}>
       <Flex justify="space-between">
@@ -179,7 +190,7 @@ function Input({
           <span className={cx(labelStyle, labelClassName)}>{label}</span>
           {tip && <Tips>{tip}</Tips>}
           {mandatory && ' * '}
-          {currentInternalValue !== value && (
+          {updated && (
             <span className={cx(textSmall, warningStyle, css({ paddingLeft: space_S }))}>
               {i18n.common.updated}
             </span>
@@ -196,9 +207,14 @@ function Input({
           autoFocus={autoFocus}
           min={min}
           max={max}
+          onFocus={setEditMode}
           onChange={changeInternal}
           onKeyDown={pressEnterKey}
-          className={cx(inputStyle, inputClassName)}
+          onBlur={setDisplayMode}
+          className={cx(
+            inputStyle,
+            inputEditClassName && mode === 'EDIT' ? inputEditClassName : inputDisplayClassName,
+          )}
         />
       ) : (
         <textarea
@@ -208,12 +224,17 @@ function Input({
           readOnly={readOnly}
           autoFocus={autoFocus}
           //rows={rows}
+          onFocus={setEditMode}
           onChange={changeInternal}
+          onBlur={setDisplayMode}
           // no onKeyDown here, or it will be a problem to put any end of line in the text
-          className={cx(textareaStyle, inputClassName)}
+          className={cx(
+            textareaStyle,
+            inputEditClassName && mode === 'EDIT' ? inputEditClassName : inputDisplayClassName,
+          )}
         />
       )}
-      {saveMode === 'ON_CONFIRM' && (
+      {saveMode === 'ON_CONFIRM' && (mode === 'EDIT' || updated) && (
         <Flex className={confirmButtonsStyle}>
           <IconButton
             icon={faTimes}

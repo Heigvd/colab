@@ -53,7 +53,7 @@ export default function CompletionEditor({ variant }: CompletionEditorProps): JS
           }
           placeholder={'0'}
           autoFocus
-          inputClassName={css({ width: '90px' })}
+          inputDisplayClassName={css({ width: '90px' })}
           min="0"
           max="100"
         />{' '}
