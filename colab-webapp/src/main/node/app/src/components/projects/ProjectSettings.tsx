@@ -44,6 +44,7 @@ export function ProjectSettings({ project }: ProjectSettingsProps): JSX.Element 
             label="Name"
             placeholder="New project"
             value={project.name || ''}
+            saveMode="ON_CONFIRM"
             onChange={newValue => dispatch(API.updateProject({ ...project, name: newValue }))}
           />
           <BlockInput
@@ -51,6 +52,7 @@ export function ProjectSettings({ project }: ProjectSettingsProps): JSX.Element 
             inputType="textarea"
             placeholder="Write a description here"
             value={project.description || ''}
+            saveMode="ON_CONFIRM"
             onChange={newValue =>
               dispatch(API.updateProject({ ...project, description: newValue }))
             }

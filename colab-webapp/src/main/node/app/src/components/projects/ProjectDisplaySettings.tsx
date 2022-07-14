@@ -26,6 +26,7 @@ export function ProjectDisplaySettings({ project }: ProjectDisplaySettingsProps)
         label="Name"
         placeholder="New project"
         value={project.name || ''}
+        saveMode="ON_CONFIRM"
         onChange={newValue => dispatch(API.updateProject({ ...project, name: newValue }))}
       />
       <BlockInput
@@ -33,6 +34,7 @@ export function ProjectDisplaySettings({ project }: ProjectDisplaySettingsProps)
         inputType="textarea"
         placeholder="Write a description here"
         value={project.description || ''}
+        saveMode="ON_CONFIRM"
         onChange={newValue => dispatch(API.updateProject({ ...project, description: newValue }))}
       />
     </Flex>

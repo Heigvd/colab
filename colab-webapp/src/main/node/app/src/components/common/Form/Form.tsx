@@ -188,9 +188,10 @@ export default function Form<T>({
             inputType={field.type === 'text' ? 'input' : 'textarea'}
             mandatory={field.isMandatory}
             readOnly={field.readOnly}
+            saveMode="FLOWING"
             onChange={value => setFormValue(field.key, value)}
             tip={field.tip}
-            fieldFooter={effectiveFieldFooter}
+            footer={effectiveFieldFooter}
             error={errorMessage}
           />
         </div>
@@ -205,9 +206,10 @@ export default function Form<T>({
             type="password"
             mandatory={field.isMandatory}
             readOnly={field.readOnly}
+            saveMode="FLOWING"
             onChange={value => setFormValue(field.key, value)}
             tip={field.tip}
-            fieldFooter={effectiveFieldFooter}
+            footer={effectiveFieldFooter}
             error={errorMessage}
           />
           {field.strengthProp != null && (

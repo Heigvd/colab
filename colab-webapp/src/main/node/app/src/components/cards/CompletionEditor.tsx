@@ -27,6 +27,7 @@ export default function CompletionEditor({ variant }: CompletionEditorProps): JS
         label="Completion level"
         value={String(variant.completionLevel) == '0' ? '0' : String(variant.completionLevel)}
         placeholder="0"
+        saveMode="ON_CONFIRM"
         onChange={newValue =>
           dispatch(
             API.updateCardContent({
@@ -41,6 +42,7 @@ export default function CompletionEditor({ variant }: CompletionEditorProps): JS
         <BlockInput
           type="number"
           value={variant.completionLevel == 0 ? undefined : variant.completionLevel}
+          saveMode="ON_CONFIRM"
           onChange={newValue =>
             dispatch(
               API.updateCardContent({

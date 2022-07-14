@@ -6,25 +6,33 @@
  */
 
 import { css, cx } from '@emotion/css';
+import { faCheck, faTimes } from '@fortawesome/free-solid-svg-icons';
 import * as React from 'react';
+import useTranslations from '../../../i18n/I18nContext';
 import {
   errorStyle,
   inputStyle,
   labelStyle,
+  lightIconButtonStyle,
   space_S,
   textareaStyle,
   textSmall,
   warningStyle,
 } from '../../styling/style';
 import Flex from '../layout/Flex';
+import IconButton from './IconButton';
 import Tips, { TipsProps } from './Tips';
 
 // TODO type="number"
 // TODO type="range"
 // TODO autoSave
 // TODO rows
-// inline design
-// confirm / cancel design
+// TODO inline design
+// TODO mode edit / display
+// TODO confirm / cancel design
+// TODO auto fit width
+
+// TODO see what happens in saveMode === 'ON_CONFIRM' when click outside. do we lose ?
 
 interface InputProps {
   label?: React.ReactNode;
@@ -38,9 +46,11 @@ interface InputProps {
   min?: HTMLInputElement['min'];
   max?: HTMLInputElement['max'];
   //rows?: HTMLTextAreaElement['rows'];
+  saveMode: 'FLOWING' | 'ON_CONFIRM'; //| 'DEBOUNCED' | 'ON_CONFIRM';
   onChange: (newValue: string) => void; //  | number
+  onCancel?: () => void;
   tip?: TipsProps['children'];
-  fieldFooter?: React.ReactNode;
+  footer?: React.ReactNode;
   warning?: React.ReactNode;
   error?: React.ReactNode;
   containerClassName?: string;
@@ -49,6 +59,10 @@ interface InputProps {
   footerClassName?: string;
   validationClassName?: string;
 }
+
+const confirmButtonsStyle = css({
+  display: 'inline-flex',
+});
 
 function Input({
   label,
@@ -62,9 +76,11 @@ function Input({
   min,
   max,
   //rows, // doesn't work ?!?
+  saveMode,
   onChange,
+  onCancel,
   tip,
-  fieldFooter,
+  footer,
   warning,
   error,
   containerClassName,
@@ -73,60 +89,139 @@ function Input({
   footerClassName,
   validationClassName,
 }: InputProps): JSX.Element {
-  const [state, setState] = React.useState<string | number>(value);
+  const i18n = useTranslations();
+
+  const inputRef = React.useRef<HTMLInputElement>(null);
+  const textareaRef = React.useRef<HTMLTextAreaElement>(null);
+  // Note : we use the references to have direct access the last up-to-date value
+
+  // const containerRef = React.useRef<HTMLDivElement>(null);
+
+  const [currentInternalValue, setCurrentInternalValue] = React.useState<string | number>();
 
   React.useEffect(() => {
-    setState(value);
+    setCurrentInternalValue(value);
   }, [value]);
 
-  const onInternalChange = React.useCallback(
+  // const handleClickOutside = (event: Event) => {
+  //   if (containerRef.current != null && !containerRef.current.contains(event.target as Node)) {
+  //     cancel();
+  //   }
+  // };
+
+  // React.useEffect(() => {
+  //   document.addEventListener('click', handleClickOutside, true);
+  //   return () => {
+  //     document.removeEventListener('click', handleClickOutside, true);
+  //   };
+  // });
+
+  const save = React.useCallback(() => {
+    if (inputType === 'input' && inputRef.current != null) {
+      onChange(inputRef.current.value);
+      inputRef.current.blur();
+    }
+    if (inputType === 'textarea' && textareaRef.current != null) {
+      onChange(textareaRef.current.value);
+      textareaRef.current.blur();
+    }
+  }, [inputType, inputRef, textareaRef, onChange]);
+
+  const cancel = React.useCallback(() => {
+    if (inputType === 'input' && inputRef.current != null) {
+      inputRef.current.value = String(value);
+      inputRef.current.blur();
+    }
+    if (inputType === 'textarea' && textareaRef.current != null) {
+      textareaRef.current.value = String(value);
+      textareaRef.current.blur();
+    }
+
+    setCurrentInternalValue(value);
+
+    if (onCancel) {
+      onCancel();
+    }
+  }, [inputType, inputRef, textareaRef, value, onCancel]);
+
+  const changeInternal = React.useCallback(
     (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
       const newValue = e.target.value;
-      onChange(newValue);
-      setState(newValue);
+      setCurrentInternalValue(newValue);
+
+      if (saveMode === 'FLOWING') {
+        onChange(newValue);
+      }
     },
-    [onChange],
+    [saveMode, onChange],
   );
 
   return (
-    <Flex className={containerClassName}>
+    <Flex /*theRef={containerRef}*/ className={containerClassName}>
       <Flex justify="space-between">
         <div>
           <span className={cx(labelStyle, labelClassName)}>{label}</span>
-          {tip != null && <Tips>{tip}</Tips>}
+          {tip && <Tips>{tip}</Tips>}
           {mandatory && ' * '}
+          {currentInternalValue !== value && (
+            <span className={cx(textSmall, warningStyle, css({ paddingLeft: space_S }))}>
+              {i18n.common.updated}
+            </span>
+          )}
         </div>
       </Flex>
       {inputType === 'input' ? (
         <input
-          value={state}
+          ref={inputRef}
+          value={currentInternalValue}
           placeholder={placeholder}
           type={type}
           readOnly={readOnly}
           autoFocus={autoFocus}
           min={min}
           max={max}
-          onChange={onInternalChange}
+          onChange={changeInternal}
           className={cx(inputStyle, inputClassName)}
         />
       ) : (
         <textarea
-          value={state}
+          ref={textareaRef}
+          value={currentInternalValue}
           placeholder={placeholder}
           readOnly={readOnly}
           autoFocus={autoFocus}
           //rows={rows}
-          onChange={onInternalChange}
+          onChange={changeInternal}
           className={cx(textareaStyle, inputClassName)}
         />
       )}
-      <Flex className={cx(textSmall, footerClassName)}>
-        {fieldFooter != null && <div>{fieldFooter}</div>}
-      </Flex>
-      <Flex className={cx(textSmall, validationClassName)}>
-        {warning != null && <div className={warningStyle}>{warning}</div>}
-        {error != null && <div className={errorStyle}>{error}</div>}
-      </Flex>
+      {saveMode === 'ON_CONFIRM' && (
+        <Flex className={confirmButtonsStyle}>
+          <IconButton
+            icon={faTimes}
+            title={i18n.common.cancel}
+            onClick={cancel}
+            className={lightIconButtonStyle}
+          />
+          <IconButton
+            icon={faCheck}
+            title={i18n.common.save}
+            onClick={save}
+            className={lightIconButtonStyle}
+          />
+        </Flex>
+      )}
+      {footer != null && (
+        <Flex className={cx(textSmall, footerClassName)}>
+          <div>{footer}</div>
+        </Flex>
+      )}
+      {(warning != null || error != null) && (
+        <Flex className={cx(textSmall, validationClassName)}>
+          {warning != null && <div className={warningStyle}>{warning}</div>}
+          {error != null && <div className={errorStyle}>{error}</div>}
+        </Flex>
+      )}
     </Flex>
   );
 }

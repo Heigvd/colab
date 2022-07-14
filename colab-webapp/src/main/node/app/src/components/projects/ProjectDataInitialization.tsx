@@ -58,6 +58,7 @@ export default function ProjectDataInitialization({
           label="Name"
           value={data.name}
           readOnly={readOnly}
+          saveMode="ON_CONFIRM"
           onChange={name => setName(name)}
         />
         <BlockInput
@@ -65,6 +66,7 @@ export default function ProjectDataInitialization({
           inputType="textarea"
           value={data.description}
           readOnly={readOnly}
+          saveMode="ON_CONFIRM"
           onChange={description => {
             setDescription(description);
           }}
