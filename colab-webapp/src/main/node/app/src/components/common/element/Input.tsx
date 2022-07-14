@@ -108,7 +108,7 @@ function Input({
     if (autoWidth) {
       if (inputRef.current) {
         inputRef.current.style.width = 0 + 'px';
-        inputRef.current.style.width = inputRef.current.scrollWidth + 'px'; //.value.length + 'ch'; //
+        inputRef.current.style.width = inputRef.current.scrollWidth + 'px';
         if (inputRef.current.value.length === 0) {
           inputRef.current.style.width = inputRef.current.placeholder.length + 'ch';
         }
@@ -128,19 +128,6 @@ function Input({
 
     updateSize();
   }, [inputType, value, updateSize]);
-
-  // const handleClickOutside = (event: Event) => {
-  //   if (containerRef.current != null && !containerRef.current.contains(event.target as Node)) {
-  //     cancel();
-  //   }
-  // };
-
-  // React.useEffect(() => {
-  //   document.addEventListener('click', handleClickOutside, true);
-  //   return () => {
-  //     document.removeEventListener('click', handleClickOutside, true);
-  //   };
-  // });
 
   const save = React.useCallback(() => {
     if (inputType === 'input' && inputRef.current != null) {
@@ -172,13 +159,28 @@ function Input({
     }
   }, [inputType, inputRef, textareaRef, value, updateSize, onCancel]);
 
+  // const handleClickOutside = (event: Event) => {
+  //   if (containerRef.current != null && !containerRef.current.contains(event.target as Node)) {
+  //     cancel();
+  //   }
+  // };
+
+  // React.useEffect(() => {
+  //   document.addEventListener('click', handleClickOutside, true);
+  //   return () => {
+  //     document.removeEventListener('click', handleClickOutside, true);
+  //   };
+  // });
+
   const setDisplayMode = React.useCallback(() => {
     setMode('DISPLAY');
   }, []);
 
   const setEditMode = React.useCallback(() => {
-    setMode('EDIT');
-  }, []);
+    if (!readOnly) {
+      setMode('EDIT');
+    }
+  }, [readOnly]);
 
   const changeInternal = React.useCallback(
     (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -340,43 +342,6 @@ export function BlockInput(props: InputProps): JSX.Element {
 
 // InlineInput **************************************************************************************
 
-export function InlineInput(props: InputProps): JSX.Element {
-  return (
-    <Input
-      {...props}
-      containerClassName={cx(
-        css({ display: 'flex', alignItems: 'center', position: 'relative' }),
-        {
-          [inlineTextareaContainerStyle]: props.inputType === 'textarea',
-        },
-        props.containerClassName,
-      )}
-      inputDisplayClassName={cx(
-        props.inputType === 'input' ? inlineInputDisplayStyle : inlineTextareaDisplayStyle,
-        props.inputDisplayClassName,
-      )}
-      inputEditClassName={cx(
-        props.inputType === 'input' ? inlineInputEditingStyle : inlineTextareaEditingStyle,
-        props.inputEditClassName,
-      )}
-      footerClassName={cx(
-        css({
-          flexDirection: 'column',
-          alignItems: 'normal',
-        }),
-        props.footerClassName,
-      )}
-      validationClassName={cx(
-        css({
-          flexDirection: 'column',
-          alignItems: 'center',
-        }),
-        props.validationClassName,
-      )}
-    />
-  );
-}
-
 const inlineTextareaContainerStyle = css({
   flexDirection: 'column',
   justifyContent: 'flex-end',
@@ -436,3 +401,40 @@ const inlineTextareaDisplayStyle = css({
     borderColor: 'var(--lightGray)',
   },
 });
+
+export function InlineInput(props: InputProps): JSX.Element {
+  return (
+    <Input
+      {...props}
+      containerClassName={cx(
+        css({ display: 'flex', alignItems: 'center', position: 'relative' }),
+        {
+          [inlineTextareaContainerStyle]: props.inputType === 'textarea',
+        },
+        props.containerClassName,
+      )}
+      inputDisplayClassName={cx(
+        props.inputType === 'input' ? inlineInputDisplayStyle : inlineTextareaDisplayStyle,
+        props.inputDisplayClassName,
+      )}
+      inputEditClassName={cx(
+        props.inputType === 'input' ? inlineInputEditingStyle : inlineTextareaEditingStyle,
+        props.inputEditClassName,
+      )}
+      footerClassName={cx(
+        css({
+          flexDirection: 'column',
+          alignItems: 'normal',
+        }),
+        props.footerClassName,
+      )}
+      validationClassName={cx(
+        css({
+          flexDirection: 'column',
+          alignItems: 'center',
+        }),
+        props.validationClassName,
+      )}
+    />
+  );
+}
