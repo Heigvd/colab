@@ -23,14 +23,13 @@ import Flex from '../layout/Flex';
 import IconButton from './IconButton';
 import Tips, { TipsProps } from './Tips';
 
-// TODO type="number"
 // TODO type="range"
 // TODO autoSave
 // TODO rows
 // TODO inline design
 // TODO mode edit / display
-// TODO confirm / cancel design
 // TODO auto fit width
+// TODO enter when on confirm
 
 // TODO see what happens in saveMode === 'ON_CONFIRM' when click outside. do we lose ?
 
@@ -156,6 +155,23 @@ function Input({
     [saveMode, onChange],
   );
 
+  const pressEnterKey = React.useCallback(
+    (event: React.KeyboardEvent<HTMLElement>) => {
+      if (saveMode === 'ON_CONFIRM') {
+        if (event.key === 'Enter') {
+          save();
+          if (inputType === 'input' && inputRef.current != null) {
+            inputRef.current.blur();
+          }
+          if (inputType === 'textarea' && textareaRef.current != null) {
+            textareaRef.current.blur();
+          }
+        }
+      }
+    },
+    [saveMode, save, inputType],
+  );
+
   return (
     <Flex /*theRef={containerRef}*/ className={containerClassName}>
       <Flex justify="space-between">
@@ -181,6 +197,7 @@ function Input({
           min={min}
           max={max}
           onChange={changeInternal}
+          onKeyDown={pressEnterKey}
           className={cx(inputStyle, inputClassName)}
         />
       ) : (
@@ -192,6 +209,7 @@ function Input({
           autoFocus={autoFocus}
           //rows={rows}
           onChange={changeInternal}
+          // no onKeyDown here, or it will be a problem to put any end of line in the text
           className={cx(textareaStyle, inputClassName)}
         />
       )}
