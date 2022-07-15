@@ -29,7 +29,7 @@ import { useProjectBeingEdited } from '../../../selectors/projectSelector';
 import { dispatch } from '../../../store/store';
 import AvailabilityStatusIndicator from '../../common/element/AvailabilityStatusIndicator';
 import IconButton from '../../common/element/IconButton';
-import InlineInputNew from '../../common/element/InlineInputNew';
+import { InlineInput } from '../../common/element/Input';
 import Tips from '../../common/element/Tips';
 import Toggler from '../../common/Form/Toggler';
 import ConfirmDeleteModal from '../../common/layout/ConfirmDeleteModal';
@@ -115,14 +115,15 @@ export default function CardTypeEditor({ className, usage }: CardTypeEditorProps
                 borderBottom: '1px solid var(--lightGray)',
               })}
             >
-              <InlineInputNew
+              <InlineInput
                 value={cardType.title || ''}
                 placeholder="card type"
+                autoWidth
+                saveMode="ON_CONFIRM"
                 onChange={newValue =>
                   dispatch(API.updateCardTypeTitle({ ...cardType, title: newValue }))
                 }
-                autosave={false}
-                className={localTitleStyle}
+                inputDisplayClassName={localTitleStyle}
               />
               <Flex>
                 {/* handle modal routes*/}
@@ -217,10 +218,11 @@ export default function CardTypeEditor({ className, usage }: CardTypeEditorProps
                 <h3>Purpose: </h3>
                 <DocTextWrapper id={cardType.purposeId}>
                   {text => (
-                    <InlineInputNew
+                    <InlineInput
                       value={text || ''}
                       placeholder={'Explain the purpose'}
                       inputType="textarea"
+                      saveMode="ON_CONFIRM"
                       onChange={(newValue: string) => {
                         if (cardType.purposeId) {
                           dispatch(
@@ -228,9 +230,8 @@ export default function CardTypeEditor({ className, usage }: CardTypeEditorProps
                           );
                         }
                       }}
-                      autosave={false}
-                      rows={4}
-                      className={css({ minWidth: '100%' })}
+                      rows={8}
+                      inputDisplayClassName={css({ minWidth: '100%' })}
                     />
                   )}
                 </DocTextWrapper>

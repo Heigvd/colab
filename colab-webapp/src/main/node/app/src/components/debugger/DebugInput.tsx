@@ -126,8 +126,8 @@ export default function DebugInput(): JSX.Element {
             error={showError && 'oh an error'}
           />
           <BlockInput
-            value={val22}
             label="text area confirm"
+            value={val22}
             placeholder="t a c"
             inputType="textarea"
             mandatory={mandatory}
@@ -240,8 +240,144 @@ export default function DebugInput(): JSX.Element {
         <Flex direction="column" className={css({ margin: space_M })}>
           <h2>on confirm inline input</h2>
           <InlineInput
-            value={val21}
             label="input text confirm"
+            value={val21}
+            placeholder="i t c"
+            mandatory={mandatory}
+            readOnly={readOnly}
+            autoWidth
+            saveMode="ON_CONFIRM"
+            onChange={newValue => {
+              // eslint-disable-next-line no-alert
+              //alert('changed');
+              logger.info('changed');
+              setVal21(newValue);
+            }}
+            tip={showTip && 'a wonderful advice'}
+            footer={showFooter && 'and if I would like to add something'}
+            warning={showWarning && 'ah a warning'}
+            error={showError && 'oh an error'}
+            // containerClassName={css({ border: '2px solid yellow' })}
+            // labelClassName={css({ border: '2px solid orange' })}
+            // inputDisplayClassName={css({ border: '2px solid red' })}
+            // inputEditClassName={css({ border: '2px solid purple' })}
+            // bottomClassName={css({ border: '2px solid blue' })}
+            // footerClassName={css({ border: '2px solid green' })}
+            // validationClassName={css({ border: '2px solid brown' })}
+          />
+          <InlineInput
+            label="text area confirm"
+            value={val22}
+            placeholder="t a c"
+            inputType="textarea"
+            mandatory={mandatory}
+            readOnly={readOnly}
+            saveMode="ON_CONFIRM"
+            onChange={newValue => {
+              // eslint-disable-next-line no-alert
+              //alert('changed');
+              logger.info('changed');
+              setVal22(newValue);
+            }}
+            tip={showTip && 'a wonderful advice'}
+            footer={showFooter && 'and if I would like to add something'}
+            warning={showWarning && 'ah a warning'}
+            error={showError && 'oh an error'}
+          />
+          <InlineInput
+            label="input number"
+            value={val23}
+            placeholder="i n c"
+            type="number"
+            mandatory={mandatory}
+            readOnly={readOnly}
+            min="0"
+            max="5"
+            saveMode="ON_CONFIRM"
+            onChange={newValue => {
+              // eslint-disable-next-line no-alert
+              //alert('changed');
+              logger.info('changed');
+              setVal23(parseInt(newValue));
+            }}
+            tip={showTip && 'a wonderful advice'}
+            footer={showFooter && 'and if I would like to add something'}
+            warning={showWarning && 'ah a warning'}
+            error={showError && 'oh an error'}
+          />
+          <h3>results</h3>
+          <Flex>{val21}</Flex>
+          <Flex>{val22}</Flex>
+          <Flex>{val23}</Flex>
+        </Flex>
+        <Flex direction="column" className={css({ margin: space_M })}>
+          <h2>flowing inline input</h2>
+          <InlineInput
+            value={val11}
+            placeholder="i t"
+            mandatory={mandatory}
+            readOnly={readOnly}
+            saveMode="FLOWING"
+            onChange={newValue => {
+              // eslint-disable-next-line no-alert
+              //alert('changed');
+              logger.info('changed');
+              setVal11(newValue);
+            }}
+            tip={showTip && 'a wonderful advice'}
+            footer={showFooter && 'and if I would like to add something'}
+            warning={showWarning && 'ah a warning'}
+            error={showError && 'oh an error'}
+          />
+          <InlineInput
+            value={val12}
+            placeholder="t a"
+            inputType="textarea"
+            mandatory={mandatory}
+            readOnly={readOnly}
+            autoFocus
+            //rows={5}
+            saveMode="FLOWING"
+            onChange={newValue => {
+              // eslint-disable-next-line no-alert
+              //alert('changed');
+              logger.info('changed');
+              setVal12(newValue);
+            }}
+            tip={showTip && 'a wonderful advice'}
+            footer={showFooter && 'and if I would like to add something'}
+            warning={showWarning && 'ah a warning'}
+            error={showError && 'oh an error'}
+          />
+          <InlineInput
+            value={val13}
+            placeholder="i n"
+            type="number"
+            mandatory={mandatory}
+            readOnly={readOnly}
+            min="0"
+            max="5"
+            saveMode="FLOWING"
+            onChange={newValue => {
+              // eslint-disable-next-line no-alert
+              //alert('changed');
+              logger.info('changed');
+              setVal13(parseInt(newValue));
+            }}
+            tip={showTip && 'a wonderful advice'}
+            footer={showFooter && 'and if I would like to add something'}
+            warning={showWarning && 'ah a warning'}
+            error={showError && 'oh an error'}
+          />
+          <h3>results</h3>
+          <Flex>{val11}</Flex>
+          <Flex>{val12}</Flex>
+          <Flex>{val13}</Flex>
+        </Flex>
+        <Flex direction="column" className={css({ margin: space_M })}>
+          <h2>on confirm inline input</h2>
+          <InlineInput
+            value={val21}
             placeholder="i t c"
             mandatory={mandatory}
             readOnly={readOnly}
@@ -267,7 +403,6 @@ export default function DebugInput(): JSX.Element {
           />
           <InlineInput
             value={val22}
-            label="text area confirm"
             placeholder="t a c"
             inputType="textarea"
             mandatory={mandatory}
@@ -285,7 +420,6 @@ export default function DebugInput(): JSX.Element {
             error={showError && 'oh an error'}
           />
           <InlineInput
-            label="input number"
             value={val23}
             placeholder="i n c"
             type="number"

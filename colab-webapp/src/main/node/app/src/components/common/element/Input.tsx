@@ -24,13 +24,15 @@ import Flex from '../layout/Flex';
 import IconButton from './IconButton';
 import Tips, { TipsProps } from './Tips';
 
-// Note : still need some UI improvements for some combinations
-// Just add what is needed when we need it
+// bug longueur des champs dans sign in
+// bug longueur champ purpose dans card type
 
 // TODO autoSave
-// TODO rows
 
 // TODO see what happens in saveMode === 'ON_CONFIRM' when click outside. do we lose ?
+
+// Note : still need some UI improvements for some combinations
+// Just add what is needed when we need it
 
 interface InputProps {
   label?: React.ReactNode;
@@ -43,8 +45,9 @@ interface InputProps {
   autoFocus?: HTMLInputElement['autofocus'] | HTMLTextAreaElement['autofocus'];
   min?: HTMLInputElement['min'];
   max?: HTMLInputElement['max'];
-  //rows?: HTMLTextAreaElement['rows'];
+  rows?: HTMLTextAreaElement['rows'];
   autoWidth?: boolean;
+  maxWidth?: string;
   saveMode: 'FLOWING' | 'ON_CONFIRM'; //| 'DEBOUNCED' | 'ON_CONFIRM';
   onChange: (newValue: string) => void; //  | number
   onCancel?: () => void;
@@ -76,8 +79,9 @@ function Input({
   autoFocus,
   min,
   max,
-  //rows, // doesn't work ?!?
+  rows,
   autoWidth,
+  maxWidth = '100%',
   saveMode,
   onChange,
   onCancel,
@@ -214,20 +218,22 @@ function Input({
   const updated = currentInternalValue !== value;
 
   return (
-    <Flex direction="column">
-      <Flex /*theRef={containerRef}*/ className={containerClassName}>
-        <Flex justify="space-between">
-          <div>
-            <span className={cx(labelStyle, labelClassName)}>{label}</span>
-            {tip && <Tips>{tip}</Tips>}
-            {mandatory && ' * '}
-            {/* {updated && (
+    <Flex direction="column" className={containerClassName} style={{ maxWidth: maxWidth }}>
+      <Flex /*theRef={containerRef}*/>
+        {label && (
+          <Flex justify="space-between">
+            <div>
+              {label && <span className={cx(labelStyle, labelClassName)}>{label}</span>}
+              {tip && <Tips>{tip}</Tips>}
+              {mandatory && ' * '}
+              {/* {updated && (
               <span className={cx(textSmall, warningStyle, css({ paddingLeft: space_S }))}>
                 {i18n.common.updated}
               </span>
             )} */}
-          </div>
-        </Flex>
+            </div>
+          </Flex>
+        )}
         {inputType === 'input' ? (
           <input
             ref={inputRef}
@@ -254,7 +260,7 @@ function Input({
             placeholder={placeholder}
             readOnly={readOnly}
             autoFocus={autoFocus}
-            //rows={rows}
+            rows={rows}
             onFocus={setEditMode}
             onChange={changeInternal}
             onBlur={setDisplayMode}
@@ -278,6 +284,14 @@ function Input({
               onClick={save}
               className={lightIconButtonStyle}
             />
+          </Flex>
+        )}
+        {!label && (
+          <Flex justify="space-between">
+            <div>
+              {tip && <Tips>{tip}</Tips>}
+              {mandatory && ' * '}
+            </div>
           </Flex>
         )}
       </Flex>
@@ -419,7 +433,7 @@ export function InlineInput(props: InputProps): JSX.Element {
       )}
       inputEditClassName={cx(
         props.inputType === 'input' ? inlineInputEditingStyle : inlineTextareaEditingStyle,
-        props.inputEditClassName,
+        props.inputEditClassName ? props.inputEditClassName : props.inputDisplayClassName,
       )}
       footerClassName={cx(
         css({
