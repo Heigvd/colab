@@ -16,6 +16,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import * as React from 'react';
+import { ReflexContainer, ReflexElement, ReflexSplitter } from 'react-reflex';
 import { Route, Routes, useNavigate, useParams } from 'react-router-dom';
 import Creatable from 'react-select/creatable';
 import * as API from '../../../API/api';
@@ -69,7 +70,7 @@ export default function CardTypeEditor({ className, usage }: CardTypeEditorProps
     label: tag,
     value: tag,
   }));
-
+  const [openKey, setOpenKey] = React.useState<string | undefined>(undefined);
   if (status !== 'READY' || !cardType) {
     return <AvailabilityStatusIndicator status={status} />;
   } else {
@@ -99,207 +100,230 @@ export default function CardTypeEditor({ className, usage }: CardTypeEditorProps
             }),
           )}
         >
-          <Flex
-            direction="column"
-            grow={1}
-            className={css({
-              padding: '10px',
-              overflow: 'auto',
-            })}
-            align="stretch"
-          >
-            <Flex
-              justify="space-between"
-              className={css({
-                paddingBottom: space_S,
-                borderBottom: '1px solid var(--lightGray)',
-              })}
+          <ReflexContainer orientation={'vertical'}>
+            <ReflexElement
+              className={'left-pane ' + css({ display: 'flex' })}
+              resizeHeight={false}
+              minSize={150}
             >
-              <InlineInput
-                value={cardType.title || ''}
-                placeholder="card type"
-                autoWidth
-                saveMode="ON_CONFIRM"
-                onChange={newValue =>
-                  dispatch(API.updateCardTypeTitle({ ...cardType, title: newValue }))
-                }
-                inputDisplayClassName={localTitleStyle}
-              />
-              <Flex>
-                {/* handle modal routes*/}
-                <Routes>
-                  <Route
-                    path="settings"
-                    element={
-                      <Modal
-                        title="Advanced type settings"
-                        onClose={() => navigate('./')}
-                        showCloseButton
-                      >
-                        {() => (
-                          <>
-                            <Toggler
-                              value={cardType.deprecated || undefined}
-                              label="deprecated"
-                              onChange={() =>
-                                dispatch(
-                                  API.updateCardTypeDeprecated({
-                                    ...cardType,
-                                    deprecated: !cardType.deprecated,
-                                  }),
-                                )
-                              }
-                            />
-                            <div className={lightItalicText}>
-                              <FontAwesomeIcon icon={faInfoCircle} /> Make a Card type
-                              <b> deprecated</b> whether it is obsolete or another version should be
-                              used instead.
-                            </div>
-                          </>
-                        )}
-                      </Modal>
-                    }
-                  />
-                </Routes>
-                <DropDownMenu
-                  icon={faEllipsisV}
-                  valueComp={{ value: '', label: '' }}
-                  buttonClassName={cx(lightIconButtonStyle, css({ marginLeft: space_S }))}
-                  entries={[
-                    {
-                      value: 'settings',
-                      label: (
-                        <>
-                          <FontAwesomeIcon icon={faCog} /> Type Settings
-                        </>
-                      ),
-                      action: () => navigate('settings'),
-                    },
-                    {
-                      value: 'Delete type',
-                      label: (
-                        <ConfirmDeleteModal
-                          buttonLabel={
-                            <div className={cx(css({ color: errorColor }), modalEntryStyle)}>
-                              <FontAwesomeIcon icon={faTrash} /> Delete type
-                            </div>
-                          }
-                          className={css({
-                            '&:hover': { textDecoration: 'none' },
-                            display: 'flex',
-                            alignItems: 'center',
-                          })}
-                          message={
-                            <p>
-                              <Tips tipsType="TODO">
-                                Make test if type is used in card(s). Disable or hide this delete
-                                option if used.
-                              </Tips>
-                              Are you <strong>sure</strong> you want to delete this card type?
-                            </p>
-                          }
-                          onConfirm={() => {
-                            if (project && cardType.kind === 'own') {
-                              dispatch(API.deleteCardType(cardType));
-                              navigate('../');
-                            }
-                          }}
-                          confirmButtonLabel={'Delete card type'}
-                        />
-                      ),
-                      modal: true,
-                    },
-                  ]}
-                />
-              </Flex>
-            </Flex>
-            <Flex direction="column" grow={1} align="stretch">
-              <Flex className={css({ margin: space_M + ' 0' })} direction="column" align="stretch">
-                <h3>Purpose: </h3>
-                <DocTextWrapper id={cardType.purposeId}>
-                  {text => (
-                    <InlineInput
-                      value={text || ''}
-                      placeholder={'Explain the purpose'}
-                      inputType="textarea"
-                      saveMode="ON_CONFIRM"
-                      onChange={(newValue: string) => {
-                        if (cardType.purposeId) {
-                          dispatch(
-                            updateDocumentText({ id: cardType.purposeId, textData: newValue }),
-                          );
-                        }
-                      }}
-                      rows={8}
-                      inputDisplayClassName={css({ minWidth: '100%' })}
-                    />
-                  )}
-                </DocTextWrapper>
-              </Flex>
               <Flex
                 direction="column"
-                align="stretch"
+                grow={1}
                 className={css({
-                  alignSelf: 'flex-start',
-                  minWidth: '40%',
-                  margin: space_S + ' 0',
+                  padding: '10px',
+                  overflow: 'auto',
                 })}
+                align="stretch"
               >
-                <Creatable
-                  isMulti={true}
-                  value={cardType.tags.map(tag => ({ label: tag, value: tag }))}
-                  options={options}
-                  onChange={tagsOptions => {
-                    dispatch(
-                      API.updateCardTypeTags({
-                        ...cardType,
-                        tags: tagsOptions.map(o => o.value),
-                      }),
-                    );
-                  }}
-                />
-              </Flex>
-              <Flex>
-                <Toggler
-                  value={cardType.published || undefined}
-                  label="published"
-                  tip="Make a card type published if you want to access it in your other projects"
-                  onChange={() =>
-                    dispatch(
-                      API.updateCardTypePublished({
-                        ...cardType,
-                        published: !cardType.published,
-                      }),
-                    )
-                  }
-                />
-              </Flex>
-            </Flex>
-          </Flex>
-          <SideCollapsiblePanel
-            direction="RIGHT"
-            items={{
-              resources: {
-                children: (
-                  <>
-                    {cardType.ownId && (
-                      <ResourcesWrapper
-                        kind={'CardType'}
-                        //accessLevel={ userAcl.write ? 'WRITE' : userAcl.read ? 'READ' : 'DENIED'}
-                        // TODO manage the user rights for editing resources
-                        // TODO work in progress
-                        accessLevel="WRITE"
-                        cardTypeId={cardType.ownId}
+                <Flex
+                  justify="space-between"
+                  className={css({
+                    paddingBottom: space_S,
+                    borderBottom: '1px solid var(--lightGray)',
+                  })}
+                >
+                  <InlineInput
+                    value={cardType.title || ''}
+                    placeholder="card type"
+                    autoWidth
+                    saveMode="ON_CONFIRM"
+                    onChange={newValue =>
+                      dispatch(API.updateCardTypeTitle({ ...cardType, title: newValue }))
+                    }
+                    inputDisplayClassName={localTitleStyle}
+                  />
+                  <Flex>
+                    {/* handle modal routes*/}
+                    <Routes>
+                      <Route
+                        path="settings"
+                        element={
+                          <Modal
+                            title="Advanced type settings"
+                            onClose={() => navigate('./')}
+                            showCloseButton
+                          >
+                            {() => (
+                              <>
+                                <Toggler
+                                  value={cardType.deprecated || undefined}
+                                  label="deprecated"
+                                  onChange={() =>
+                                    dispatch(
+                                      API.updateCardTypeDeprecated({
+                                        ...cardType,
+                                        deprecated: !cardType.deprecated,
+                                      }),
+                                    )
+                                  }
+                                />
+                                <div className={lightItalicText}>
+                                  <FontAwesomeIcon icon={faInfoCircle} /> Make a Card type
+                                  <b> deprecated</b> whether it is obsolete or another version
+                                  should be used instead.
+                                </div>
+                              </>
+                            )}
+                          </Modal>
+                        }
                       />
-                    )}
-                  </>
-                ),
-                icon: faPaperclip,
-                title: 'Documentation',
-              },
-            }}
-            openKey={'resources'}
-          />
+                    </Routes>
+                    <DropDownMenu
+                      icon={faEllipsisV}
+                      valueComp={{ value: '', label: '' }}
+                      buttonClassName={cx(lightIconButtonStyle, css({ marginLeft: space_S }))}
+                      entries={[
+                        {
+                          value: 'settings',
+                          label: (
+                            <>
+                              <FontAwesomeIcon icon={faCog} /> Type Settings
+                            </>
+                          ),
+                          action: () => navigate('settings'),
+                        },
+                        {
+                          value: 'Delete type',
+                          label: (
+                            <ConfirmDeleteModal
+                              buttonLabel={
+                                <div className={cx(css({ color: errorColor }), modalEntryStyle)}>
+                                  <FontAwesomeIcon icon={faTrash} /> Delete type
+                                </div>
+                              }
+                              className={css({
+                                '&:hover': { textDecoration: 'none' },
+                                display: 'flex',
+                                alignItems: 'center',
+                              })}
+                              message={
+                                <p>
+                                  <Tips tipsType="TODO">
+                                    Make test if type is used in card(s). Disable or hide this
+                                    delete option if used.
+                                  </Tips>
+                                  Are you <strong>sure</strong> you want to delete this card type?
+                                </p>
+                              }
+                              onConfirm={() => {
+                                if (project && cardType.kind === 'own') {
+                                  dispatch(API.deleteCardType(cardType));
+                                  navigate('../');
+                                }
+                              }}
+                              confirmButtonLabel={'Delete card type'}
+                            />
+                          ),
+                          modal: true,
+                        },
+                      ]}
+                    />
+                  </Flex>
+                </Flex>
+                <Flex direction="column" grow={1} align="stretch">
+                  <Flex
+                    className={css({ margin: space_M + ' 0' })}
+                    direction="column"
+                    align="stretch"
+                  >
+                    <h3>Purpose: </h3>
+                    <DocTextWrapper id={cardType.purposeId}>
+                      {text => (
+                        <InlineInput
+                          value={text || ''}
+                          placeholder={'Explain the purpose'}
+                          inputType="textarea"
+                          saveMode="ON_CONFIRM"
+                          onChange={(newValue: string) => {
+                            if (cardType.purposeId) {
+                              dispatch(
+                                updateDocumentText({ id: cardType.purposeId, textData: newValue }),
+                              );
+                            }
+                          }}
+                          rows={8}
+                          inputDisplayClassName={css({ minWidth: '100%' })}
+                        />
+                      )}
+                    </DocTextWrapper>
+                  </Flex>
+                  <Flex
+                    direction="column"
+                    align="stretch"
+                    className={css({
+                      alignSelf: 'flex-start',
+                      minWidth: '40%',
+                      margin: space_S + ' 0',
+                    })}
+                  >
+                    <Creatable
+                      isMulti={true}
+                      value={cardType.tags.map(tag => ({ label: tag, value: tag }))}
+                      options={options}
+                      onChange={tagsOptions => {
+                        if(tagsOptions.length > 0){
+                        dispatch(
+                          API.updateCardTypeTags({
+                            ...cardType,
+                            tags: tagsOptions.map(o => o.value),
+                          }),
+                        );} 
+                      }}
+                    />
+                  </Flex>
+                  <Flex>
+                    <Toggler
+                      value={cardType.published || undefined}
+                      label="published"
+                      tip="Make a card type published if you want to access it in your other projects"
+                      onChange={() =>
+                        dispatch(
+                          API.updateCardTypePublished({
+                            ...cardType,
+                            published: !cardType.published,
+                          }),
+                        )
+                      }
+                    />
+                  </Flex>
+                </Flex>
+              </Flex>
+            </ReflexElement>
+            {openKey && <ReflexSplitter />}
+            <ReflexElement
+              className={'right-pane ' + css({ display: 'flex', minWidth: 'min-content' })}
+              resizeHeight={false}
+              maxSize={openKey ? undefined : 40}
+            >
+              <SideCollapsiblePanel
+                direction="RIGHT"
+                openKey={openKey}
+                setOpenKey={setOpenKey}
+                items={{
+                  resources: {
+                    children: (
+                      <>
+                        {cardType.ownId && (
+                          <ResourcesWrapper
+                            kind={'CardType'}
+                            //accessLevel={ userAcl.write ? 'WRITE' : userAcl.read ? 'READ' : 'DENIED'}
+                            // TODO manage the user rights for editing resources
+                            // TODO work in progress
+                            accessLevel="WRITE"
+                            cardTypeId={cardType.ownId}
+                          />
+                        )}
+                      </>
+                    ),
+                    icon: faPaperclip,
+                    title: 'Documentation',
+                  },
+                }}
+                defaultOpenKey={'resources'}
+                className={css({flexGrow: 1})}
+              />
+            </ReflexElement>
+          </ReflexContainer>
         </Flex>
       </Flex>
     );

@@ -72,24 +72,6 @@ export default function SideCollapsiblePanel<T extends { [key: string]: Item }>(
       )}
     >
       {direction === 'RIGHT' && itemOpen && (
-        /*      <Resizable
-          defaultSize={{
-            width: 'auto',
-            height: 'auto',
-          }}
-          minWidth={280}
-          maxWidth={'100%'}
-          enable={{
-            top: false,
-            right: false,
-            bottom: false,
-            left: true,
-            topRight: false,
-            bottomRight: false,
-            bottomLeft: false,
-            topLeft: false,
-          }}
-        > */
         <Flex
           align="stretch"
           justify="stretch"
@@ -126,7 +108,6 @@ export default function SideCollapsiblePanel<T extends { [key: string]: Item }>(
             {itemOpen.children}
           </Flex>
         </Flex>
-        /*  </Resizable> */
       )}
       <Flex
         direction="column"
