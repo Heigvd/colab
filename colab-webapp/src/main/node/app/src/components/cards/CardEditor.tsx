@@ -34,7 +34,7 @@ import { useAndLoadCardType } from '../../selectors/cardTypeSelector';
 import { useAppDispatch } from '../../store/hooks';
 import Button from '../common/element/Button';
 import IconButton from '../common/element/IconButton';
-import InlineInputNew from '../common/element/InlineInputNew';
+import { InlineInput } from '../common/element/Input';
 import Tips from '../common/element/Tips';
 import Collapsible from '../common/layout/Collapsible';
 import ConfirmDeleteModal from '../common/layout/ConfirmDeleteModal';
@@ -301,20 +301,21 @@ export default function CardEditor({
                             color={'var(--darkGray)'}
                           />
                         )}
-                        <InlineInputNew
+                        <InlineInput
                           value={card.title || ''}
                           placeholder={i18n.card.untitled}
                           readOnly={readOnly}
+                          autoWidth
+                          saveMode="ON_CONFIRM"
                           onChange={newValue =>
                             dispatch(API.updateCard({ ...card, title: newValue }))
                           }
-                          className={localTitleStyle}
-                          autosave
+                          inputDisplayClassName={localTitleStyle}
                         />
                         {hasVariants && (
                           <>
                             <span className={variantTitle}>&#xFE58;</span>
-                            <InlineInputNew
+                            <InlineInput
                               value={
                                 variant.title && variant.title.length > 0
                                   ? variant.title
@@ -322,11 +323,12 @@ export default function CardEditor({
                               }
                               placeholder={i18n.content.untitled}
                               readOnly={readOnly}
+                              autoWidth
+                              saveMode="ON_CONFIRM"
                               onChange={newValue =>
                                 dispatch(API.updateCardContent({ ...variant, title: newValue }))
                               }
-                              autosave={false}
-                              className={variantTitle}
+                              inputDisplayClassName={variantTitle}
                             />
                           </>
                         )}

@@ -27,8 +27,8 @@ import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { Destroyer } from '../common/Destroyer';
 import IconButton from '../common/element/IconButton';
 import IconButtonWithLoader from '../common/element/IconButtonWithLoader';
-import InlineInputNew from '../common/element/InlineInputNew';
 import InlineLoading from '../common/element/InlineLoading';
+import { InlineInput } from '../common/element/Input';
 import { emailFormat } from '../common/Form/Form';
 import ConfirmDeleteModal from '../common/layout/ConfirmDeleteModal';
 import DropDownMenu, { modalEntryStyle } from '../common/layout/DropDownMenu';
@@ -159,11 +159,12 @@ const Member = ({ member, roles }: MemberProps) => {
     // DN can be edited or cleared
     username = (
       <>
-        <InlineInputNew
+        <InlineInput
           value={member.displayName || ''}
           placeholder="username"
+          autoWidth
+          saveMode="ON_CONFIRM"
           onChange={updateDisplayName}
-          autosave={false}
         />
         {/*  Is it useful? <IconButton icon={faEraser} title="Clear" onClick={clearDisplayName} /> */}
       </>
@@ -274,9 +275,11 @@ function CreateRole({ project }: { project: Project }): JSX.Element {
     >
       {collapse => (
         <>
-          <InlineInputNew
+          <InlineInput
             value={name}
             placeholder="Fill the role name"
+            autoWidth
+            saveMode="ON_CONFIRM"
             onChange={newValue =>
               dispatch(
                 API.createRole({
@@ -293,7 +296,6 @@ function CreateRole({ project }: { project: Project }): JSX.Element {
                 collapse();
               })
             }
-            autosave={false}
             onCancel={collapse}
           />
         </>
@@ -331,9 +333,10 @@ const RoleDisplay = ({ role }: RoleProps) => {
         </>
       }
     >
-      <InlineInputNew
+      <InlineInput
         value={role.name || ''}
         placeholder="Fill the role name"
+        saveMode="ON_CONFIRM"
         onChange={saveCb}
         maxWidth="150px"
       />

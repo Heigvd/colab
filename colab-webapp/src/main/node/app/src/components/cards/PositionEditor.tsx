@@ -131,7 +131,6 @@ export default function PositionEditor({ card }: PositionEditorProps): JSX.Eleme
         },
       ]}
       value={{ index: card.index == 0 ? undefined : card.index }}
-      // no autoSubmit => does not take partially entered numbers
       onSubmit={fields => {
         if (card && card.id && fields.index != null && fields.index > 0) {
           dispatch(API.changeCardIndex({ cardId: card.id, newIndex: fields.index }));

@@ -37,37 +37,39 @@ const overlayIconStyle = css({
 });
 
 export interface ButtonWithLoaderProps extends Omit<ClickableProps, 'clickableClassName'> {
-  invertedButton?: boolean;
   icon?: IconProp;
+  iconColor?: string;
   iconSize?: SizeProp;
   reverseOrder?: boolean;
-  iconColor?: string;
   isLoading?: boolean;
+  invertedButton?: boolean;
 }
 
 export default function ButtonWithLoader({
-  onClick,
-  clickable,
-  children,
   title,
-  className,
-  invertedButton,
   icon,
   iconColor,
   iconSize,
   reverseOrder,
+  clickable,
   isLoading = true,
+  onClick,
+  children,
+  invertedButton,
+  className,
 }: ButtonWithLoaderProps): JSX.Element {
-  const [loading, setLoading] = React.useState<boolean>(false);
+  const [processing, setProcessing] = React.useState<boolean>(false);
+
   return (
     <Clickable
+      title={title}
+      clickable={clickable}
       onClick={e => {
         if (onClick) {
-          setLoading(isLoading);
+          setProcessing(isLoading);
           onClick(e);
         }
       }}
-      title={title}
       className={cx(
         invertedButton ? inactiveInvertedButtonStyle : inactiveButtonStyle,
         relative,
@@ -78,9 +80,8 @@ export default function ButtonWithLoader({
         relative,
         className,
       )}
-      clickable={clickable}
     >
-      <Flex align="center" className={loading ? css({ opacity: 0 }) : undefined}>
+      <Flex align="center" className={cx({ [css({ opacity: 0 })]: processing })}>
         {reverseOrder && children}
         {icon && (
           <FontAwesomeIcon
@@ -92,8 +93,8 @@ export default function ButtonWithLoader({
         )}
         {!reverseOrder && children}
       </Flex>
-      {loading && (
-        <div className={cx({ [overlayIconStyle]: loading })}>
+      {processing && (
+        <div className={cx({ [overlayIconStyle]: processing })}>
           <FontAwesomeIcon
             icon={faSpinner}
             color={iconColor}

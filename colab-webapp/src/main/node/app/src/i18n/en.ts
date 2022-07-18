@@ -13,6 +13,7 @@ export const en = {
   common: {
     cancel: 'Cancel',
     create: 'Create',
+    save: 'Save',
     close: 'Close',
     open: 'Open',
     add: 'Add',
@@ -20,6 +21,7 @@ export const en = {
     selectAll: 'Select all',
     next: 'Next',
     back: 'Back',
+    updated: 'updated',
     date: (timestamp: number | null | undefined) => {
       if (timestamp != null) {
         return new Date(timestamp).toLocaleDateString('EN');

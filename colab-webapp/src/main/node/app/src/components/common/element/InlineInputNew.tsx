@@ -55,6 +55,7 @@ const inlineTextAreaStyle = {
     outline: 'none',
   },
 };
+
 const textareaEditingStyle = css({
   ...inlineTextAreaStyle,
   border: '1px solid var(--darkGray)',
@@ -80,35 +81,35 @@ const confirmButtonsStyle = css({
 export interface InlineInputProps {
   label?: string;
   value: string;
-  readOnly?: boolean;
-  onChange: (newValue: string) => void;
-  onCancel?: () => void;
   placeholder: string;
   inputType?: 'input' | 'textarea';
+  delay?: number;
+  readOnly?: boolean;
+  autofocus?: boolean;
+  rows?: number;
+  onChange: (newValue: string) => void;
+  onCancel?: () => void;
   className?: string;
   containerClassName?: string;
   autosave?: boolean;
-  delay?: number;
   maxWidth?: string;
-  autofocus?: boolean;
-  rows?: number;
 }
 
 export default function InlineInput({
-  value,
   label,
+  value,
+  placeholder,
+  inputType = 'input',
+  delay = 300,
+  readOnly = false,
+  autofocus,
+  rows,
   onChange,
   onCancel,
   className,
   containerClassName,
-  readOnly = false,
-  placeholder,
-  inputType = 'input',
   autosave = true,
-  delay = 300,
   maxWidth = '100%',
-  autofocus,
-  rows,
 }: InlineInputProps): JSX.Element {
   const i18n = useTranslations();
 
@@ -248,9 +249,10 @@ export default function InlineInput({
               updateSize();
             }
           }}
-          placeholder={placeholder}
           value={state}
+          placeholder={placeholder}
           readOnly={readOnly}
+          autoFocus={autofocus}
           onChange={onInternalChangeCb}
           onClick={editCb}
           onKeyDown={onEnterCb}
@@ -258,21 +260,20 @@ export default function InlineInput({
           className={cx(
             mode == 'EDIT' ? cx(inputEditingStyle, className) : cx(inputDisplayStyle, className),
           )}
-          autoFocus={autofocus}
         />
       ) : (
         <textarea
           ref={textareaRef}
-          placeholder={placeholder}
           value={state}
+          placeholder={placeholder}
           readOnly={readOnly}
+          autoFocus={autofocus}
+          rows={rows}
           onChange={onInternalChangeCb}
           onClick={editCb}
           className={cx(
             mode == 'EDIT' ? cx(textareaEditingStyle, className) : cx(textareaStyle, className),
           )}
-          autoFocus={autofocus}
-          rows={rows}
         />
       )}
 

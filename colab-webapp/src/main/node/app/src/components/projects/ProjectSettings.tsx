@@ -14,7 +14,7 @@ import * as API from '../../API/api';
 import { dispatch } from '../../store/store';
 import ProjectCardTypeList from '../cards/cardtypes/ProjectCardTypeList';
 import IconButton from '../common/element/IconButton';
-import Input from '../common/Form/Input';
+import { BlockInput } from '../common/element/Input';
 import Flex from '../common/layout/Flex';
 import Tabs, { Tab } from '../common/layout/Tabs';
 import { lightIconButtonStyle } from '../styling/style';
@@ -40,17 +40,19 @@ export function ProjectSettings({ project }: ProjectSettingsProps): JSX.Element 
       </Flex>
       <Tabs>
         <Tab name="General" label="General">
-          <Input
+          <BlockInput
             label="Name"
             placeholder="New project"
             value={project.name || ''}
+            saveMode="ON_CONFIRM"
             onChange={newValue => dispatch(API.updateProject({ ...project, name: newValue }))}
           />
-          <Input
+          <BlockInput
             label="Description"
             inputType="textarea"
             placeholder="Write a description here"
             value={project.description || ''}
+            saveMode="ON_CONFIRM"
             onChange={newValue =>
               dispatch(API.updateProject({ ...project, description: newValue }))
             }

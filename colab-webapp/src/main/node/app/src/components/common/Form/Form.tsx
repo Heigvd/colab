@@ -12,10 +12,10 @@ import useTranslations from '../../../i18n/I18nContext';
 import { space_M } from '../../styling/style';
 import ButtonWithLoader from '../element/ButtonWithLoader';
 import InlineLoading from '../element/InlineLoading';
+import { BlockInput } from '../element/Input';
 import { TipsProps } from '../element/Tips';
 import Flex from '../layout/Flex';
 import Checkbox from './Checkbox';
-import Input from './Input';
 import SelectInput from './SelectInput';
 import Toggler from './Toggler';
 
@@ -104,7 +104,6 @@ export type Field<T> =
 export interface FormProps<T> {
   fields: Field<T>[];
   value: T;
-  autoSubmit?: boolean;
   onSubmit: (entity: T) => void;
   submitLabel?: string;
   children?: React.ReactNode;
@@ -117,7 +116,6 @@ export interface FormProps<T> {
 export default function Form<T>({
   fields,
   value,
-  autoSubmit = false,
   onSubmit,
   submitLabel,
   children,
@@ -133,19 +131,13 @@ export default function Form<T>({
 
   let globalErroneous = false;
 
-  const setFormValue = React.useCallback(
-    (key: keyof T, value: unknown) => {
-      // genuine hack inside: use setState as getter
-      setState(s => {
-        const newState = { ...s, [key]: value };
-        if (autoSubmit) {
-          onSubmit(newState);
-        }
-        return newState;
-      });
-    },
-    [autoSubmit, onSubmit],
-  );
+  const setFormValue = React.useCallback((key: keyof T, value: unknown) => {
+    // genuine hack inside: use setState as getter
+    setState(s => {
+      const newState = { ...s, [key]: value };
+      return newState;
+    });
+  }, []);
 
   const submit = React.useCallback(() => {
     if (!globalErroneous) {
@@ -190,7 +182,7 @@ export default function Form<T>({
     if (field.type === 'text' || field.type === 'textarea') {
       return (
         <div key={fieldKey}>
-          <Input
+          <BlockInput
             label={field.label}
             value={String(state[field.key] || '')}
             placeholder={field.placeholder}
@@ -198,9 +190,10 @@ export default function Form<T>({
             inputType={field.type === 'text' ? 'input' : 'textarea'}
             mandatory={field.isMandatory}
             readOnly={field.readOnly}
+            saveMode="FLOWING"
             onChange={value => setFormValue(field.key, value)}
             tip={field.tip}
-            fieldFooter={effectiveFieldFooter}
+            footer={effectiveFieldFooter}
             error={errorMessage}
             autoComplete={autoComplete}
           />
@@ -209,16 +202,17 @@ export default function Form<T>({
     } else if (field.type === 'password') {
       return (
         <div key={fieldKey}>
-          <Input
+          <BlockInput
             label={field.label}
             value={String(state[field.key] || '')}
             placeholder={field.placeholder}
             type="password"
             mandatory={field.isMandatory}
             readOnly={field.readOnly}
+            saveMode="FLOWING"
             onChange={value => setFormValue(field.key, value)}
             tip={field.tip}
-            fieldFooter={effectiveFieldFooter}
+            footer={effectiveFieldFooter}
             error={errorMessage}
             autoComplete={autoComplete}
           />
@@ -320,19 +314,15 @@ export default function Form<T>({
     >
       {fieldComps}
       <Flex direction="column" justify="center" align="center" className={childrenClassName}>
-        {!autoSubmit && (
-          <ButtonWithLoader
-            key="submit"
-            onClick={submit}
-            isLoading={globalErroneous ? false : true}
-            className={cx(
-              css({ margin: space_M + ' 0', alignSelf: 'flex-start' }),
-              buttonClassName,
-            )}
-          >
-            {submitLabel || i18n.form.submit}
-          </ButtonWithLoader>
-        )}
+        <ButtonWithLoader
+          key="submit"
+          onClick={submit}
+          isLoading={globalErroneous ? false : true}
+          className={cx(css({ margin: space_M + ' 0', alignSelf: 'flex-start' }), buttonClassName)}
+        >
+          {submitLabel || i18n.form.submit}
+        </ButtonWithLoader>
+
         {children}
       </Flex>
     </div>

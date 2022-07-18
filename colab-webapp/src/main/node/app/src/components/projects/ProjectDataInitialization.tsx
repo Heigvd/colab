@@ -12,8 +12,8 @@ import * as React from 'react';
 import useTranslations from '../../i18n/I18nContext';
 import { ConfirmIconButton } from '../common/element/ConfirmIconButton';
 import IllustrationDisplay from '../common/element/IllustrationDisplay';
+import { BlockInput } from '../common/element/Input';
 import Form, { emailFormat } from '../common/Form/Form';
-import Input from '../common/Form/Input';
 import Flex from '../common/layout/Flex';
 import {
   invertedButtonStyle,
@@ -54,17 +54,19 @@ export default function ProjectDataInitialization({
         align="stretch"
         className={css({ width: '50%', minWidth: '50%', marginRight: space_L })}
       >
-        <Input
+        <BlockInput
           label="Name"
           value={data.name}
           readOnly={readOnly}
+          saveMode="ON_CONFIRM"
           onChange={name => setName(name)}
         />
-        <Input
+        <BlockInput
           label="Description"
           inputType="textarea"
           value={data.description}
           readOnly={readOnly}
+          saveMode="ON_CONFIRM"
           onChange={description => {
             setDescription(description);
           }}

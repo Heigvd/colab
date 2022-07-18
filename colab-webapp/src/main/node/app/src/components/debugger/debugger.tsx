@@ -6,8 +6,19 @@
  */
 
 import * as React from 'react';
-import DebugNotif from './debugNotif';
+import Tabs, { Tab } from '../common/layout/Tabs';
+import DebugForm from './debugForm';
+import DebugInput from './DebugInput';
 
 export default function Debugger(): JSX.Element {
-  return <DebugNotif />;
+  return (
+    <Tabs>
+      <Tab name="input" label="input">
+        <DebugInput />
+      </Tab>
+      <Tab name="form" label="form">
+        <DebugForm />
+      </Tab>
+    </Tabs>
+  );
 }
