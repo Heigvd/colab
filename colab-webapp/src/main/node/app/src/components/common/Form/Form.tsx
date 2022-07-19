@@ -308,6 +308,7 @@ export default function Form<T>({
         css({
           display: 'flex',
           flexDirection: 'column',
+          width: 'min-content'
         }),
         className,
       )}
