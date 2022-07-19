@@ -111,6 +111,7 @@ export interface FormProps<T> {
   childrenClassName?: string;
   buttonClassName?: string;
   autoComplete?: string;
+  submitFailed?: boolean;
 }
 
 export default function Form<T>({
@@ -123,12 +124,12 @@ export default function Form<T>({
   childrenClassName,
   buttonClassName,
   autoComplete,
+  submitFailed,
 }: FormProps<T>): JSX.Element {
   const i18n = useTranslations();
 
   const [state, setState] = React.useState<T>(value);
   const [showErrors, setShowErrors] = React.useState(false);
-
   let globalErroneous = false;
 
   const setFormValue = React.useCallback((key: keyof T, value: unknown) => {
@@ -318,12 +319,11 @@ export default function Form<T>({
         <ButtonWithLoader
           key="submit"
           onClick={submit}
-          isLoading={globalErroneous ? false : true}
+          isLoading={(globalErroneous || submitFailed === true) ? false : true}
           className={cx(css({ margin: space_M + ' 0', alignSelf: 'flex-start' }), buttonClassName)}
         >
           {submitLabel || i18n.form.submit}
         </ButtonWithLoader>
-
         {children}
       </Flex>
     </div>

@@ -77,12 +77,12 @@ export default function SignInForm({ redirectTo }: SignInFormProps): JSX.Element
             passwordScore: credentials.passwordScore,
           }),
         ).then(action => {
-          // is that a hack or not ???
           if (redirectTo && action.meta.requestStatus === 'fulfilled') {
             navigate(redirectTo);
+          } else if (action.meta.requestStatus === 'rejected') {
+            setLoginFailed(true);
           }
-          //not working. Help needed.
-        }).catch(() => setLoginFailed(true));
+        })
     },
     [dispatch, navigate, redirectTo],
   );
@@ -91,7 +91,7 @@ export default function SignInForm({ redirectTo }: SignInFormProps): JSX.Element
     <PublicEntranceContainer>
       {loginFailed && (
         <Flex className={cx(css({ color: errorColor, textAlign: 'left' }), textSmall)}>
-          The username/email or password is invalid. Please try again.{' '}
+          The username/email or password is invalid. Please try again.
         </Flex>
       )}
       <Form
@@ -100,6 +100,7 @@ export default function SignInForm({ redirectTo }: SignInFormProps): JSX.Element
         onSubmit={signIn}
         submitLabel={i18n.authentication.action.login}
         buttonClassName={css({ margin: space_M + ' auto' })}
+        submitFailed={loginFailed}
       />
       <Flex direction="column" justify="center" align="center">
         <InlineLink

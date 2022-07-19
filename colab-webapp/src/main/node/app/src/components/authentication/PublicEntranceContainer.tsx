@@ -7,6 +7,7 @@
 
 import { css, cx } from '@emotion/css';
 import * as React from 'react';
+import Flex from '../common/layout/Flex';
 import Logo from '../styling/Logo';
 import { fullPageStyle } from '../styling/style';
 
@@ -23,6 +24,9 @@ export default function PublicEntranceContainer({
         className={cx(
           css({
             margin: 'auto',
+            display: 'flex',
+            alignItems: 'center',
+            flexDirection: 'column',
           }),
         )}
       >
@@ -42,14 +46,15 @@ export default function PublicEntranceContainer({
             })}
           />
         </div>
-        <div
+        <Flex
+          direction="column"
+          align="center"
           className={css({
-            textAlign: 'center',
             padding: '10px',
           })}
         >
           {children}
-        </div>
+        </Flex>
       </div>
     </div>
   );
