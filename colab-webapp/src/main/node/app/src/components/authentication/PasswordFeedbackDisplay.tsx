@@ -26,7 +26,7 @@ export default function PasswordFeedbackDisplay({
     <div className={css({textAlign: 'left'})}>
       <span>{feedback.warning || i18n.authentication.error.passwordTooWeak}</span>
       {feedback.suggestions && feedback.suggestions.length > 0 && (
-        <Tips interactionType='CLICK'  className={css({textAlign: 'left'})}>
+        <Tips className={css({textAlign: 'left'})}>
           <ul className={css({paddingLeft: space_M})}>
             {feedback.suggestions.map((s, i) => (
               <li key={i} className={css({marginBottom: space_S})}>{s}</li>

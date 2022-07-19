@@ -220,10 +220,9 @@ function Input({
 
   return (
     <Flex direction="column" className={containerClassName} style={{ maxWidth: maxWidth }}>
-      <Flex /*theRef={containerRef}*/>
+      <Flex /*theRef={containerRef}*/ direction='column'>
         {label && (
-          <Flex justify="space-between">
-            <div>
+          <Flex align='center'>
               {label && <span className={cx(labelStyle, labelClassName)}>{label}</span>}
               {tip && <Tips>{tip}</Tips>}
               {mandatory && ' * '}
@@ -232,7 +231,6 @@ function Input({
                 {i18n.common.updated}
               </span>
             )} */}
-            </div>
           </Flex>
         )}
         {inputType === 'input' ? (
@@ -297,17 +295,17 @@ function Input({
         )}
       </Flex>
       {(footer || warning || error) && (
-        <Flex direction="column" grow="1" className={cx(css({ width: '100%' }), bottomClassName)}>
+        <Flex direction="column" grow="1" align='flex-start' className={bottomClassName}>
           {footer && (
             <Flex className={cx(textSmall, footerClassName)}>
-              <div>{footer}</div>
+              {footer}
             </Flex>
           )}
           {(warning || error) && (
             <Flex
               direction="column"
               grow="1"
-              className={cx(textSmall, css({ width: '100%' }), validationClassName)}
+              className={cx(textSmall, validationClassName)}
             >
               {warning != null && <div className={warningStyle}>{warning}</div>}
               {error != null && <div className={errorStyle}>{error}</div>}

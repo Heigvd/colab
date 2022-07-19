@@ -39,7 +39,7 @@ export default function Settings(): JSX.Element {
                 if (account.id != null && +account.id >= 0) {
                   return (
                     <>
-                      <LocalAccount accountId={account.id} />
+                      <LocalAccount key={account.id} accountId={account.id} />
                     </>
                   );
                 }
