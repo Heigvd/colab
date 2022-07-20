@@ -220,7 +220,7 @@ function Input({
 
   return (
     <Flex direction="column" className={containerClassName} style={{ maxWidth: maxWidth }}>
-      <Flex /*theRef={containerRef}*/ direction='column'>
+       { /* //</Flex> <Flex theRef={containerRef} direction='column'> */}
         {label && (
           <Flex align='center'>
               {label && <span className={cx(labelStyle, labelClassName)}>{label}</span>}
@@ -285,15 +285,15 @@ function Input({
             />
           </Flex>
         )}
-        {!label && (
+        {/* {!label && (
           <Flex justify="space-between">
             <div>
               {tip && <Tips>{tip}</Tips>}
               {mandatory && ' * '}
             </div>
           </Flex>
-        )}
-      </Flex>
+        )} 
+      </Flex> */}
       {(footer || warning || error) && (
         <Flex direction="column" grow="1" align='flex-start' className={bottomClassName}>
           {footer && (

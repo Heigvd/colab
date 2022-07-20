@@ -5,10 +5,12 @@
  * Licensed under the MIT License
  */
 
+import { IconName } from '@fortawesome/fontawesome-svg-core';
 import { Illustration } from 'colab-rest-client';
 
 export const defaultProjectIllustration: Illustration = {
   '@class': 'Illustration',
   iconLibrary: 'FONT_AWESOME_SOLID',
-  iconKey: 'gamepad',
+  iconKey: 'gamepad' as IconName,
+  iconBkgdColor: '#68A8C3'
 };

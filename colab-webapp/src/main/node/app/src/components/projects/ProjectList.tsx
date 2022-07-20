@@ -52,7 +52,6 @@ interface ProjectDisplayProps {
 // Display one project and allow to edit it
 const ProjectDisplay = ({ project }: ProjectDisplayProps) => {
   const dispatch = useAppDispatch();
-
   return (
     <Flex direction="column" align="stretch">
       <Flex
@@ -61,7 +60,7 @@ const ProjectDisplay = ({ project }: ProjectDisplayProps) => {
         })}
       >
         <IllustrationDisplay
-          illustration={project.illustration || { ...defaultProjectIllustration }}
+          illustration={project.illustration || defaultProjectIllustration}
         />
       </Flex>
       <div
@@ -118,8 +117,10 @@ const ProjectDisplay = ({ project }: ProjectDisplayProps) => {
                         Settings
                       </div>
                     }
+                    widthMax
+                    heightMax
                   >
-                    {() => <ProjectDisplaySettings project={project} key={project.id} />}
+                    {(close) => <ProjectDisplaySettings project={project} key={project.id} onClose={close} />}
                   </OpenCloseModal>
                 ),
                 modal: true,
@@ -139,7 +140,7 @@ const ProjectDisplay = ({ project }: ProjectDisplayProps) => {
                   <ConfirmDeleteModal
                     buttonLabel={
                       <div className={cx(css({ color: errorColor }), modalEntryStyle)}>
-                        <FontAwesomeIcon icon={faTrash} /> Delete variant
+                        <FontAwesomeIcon icon={faTrash} /> Delete project
                       </div>
                     }
                     className={css({

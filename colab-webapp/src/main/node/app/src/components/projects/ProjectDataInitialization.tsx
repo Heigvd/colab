@@ -131,6 +131,7 @@ export default function ProjectDataInitialization({
                     '@class': 'Illustration',
                     iconLibrary: 'FONT_AWESOME_REGULAR',
                     iconKey: 'file',
+                    iconBkgdColor: '#68A8C3'
                   }
                 : data.projectModel.illustration || { ...defaultProjectIllustration }
             }
