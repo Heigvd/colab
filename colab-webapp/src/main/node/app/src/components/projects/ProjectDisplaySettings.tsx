@@ -14,6 +14,8 @@ import Button from '../common/element/Button';
 import ButtonWithLoader from '../common/element/ButtonWithLoader';
 import { BlockInput } from '../common/element/Input';
 import Flex from '../common/layout/Flex';
+import { space_S } from '../styling/style';
+import { defaultProjectIllustration } from './ProjectCommon';
 import { ProjectIllustrationMaker } from './ProjectIllustrationMaker';
 
 interface ProjectDisplaySettingsProps {
@@ -25,8 +27,8 @@ export function ProjectDisplaySettings({
   project,
   onClose,
 }: ProjectDisplaySettingsProps): JSX.Element {
-  const [illustration, setIllustration] = React.useState<Illustration | undefined | null>(
-    project.illustration,
+  const [illustration, setIllustration] = React.useState<Illustration>(
+    project.illustration || defaultProjectIllustration
   );
   const onConfirm = React.useCallback(() => {
     if (illustration) {
@@ -56,7 +58,7 @@ export function ProjectDisplaySettings({
         onChange={newValue => dispatch(API.updateProject({ ...project, description: newValue }))}
       />
       <ProjectIllustrationMaker illustration={illustration} setIllustration={setIllustration} />
-      <Flex align='center'>
+      <Flex justify="flex-end" className={css({ gap: space_S, marginTop: space_S })} align='center'>
         <Button onClick={onClose} invertedButton>Cancel</Button>
         <ButtonWithLoader
           onClick={onConfirm}

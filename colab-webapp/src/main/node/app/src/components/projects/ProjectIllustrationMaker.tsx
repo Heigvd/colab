@@ -5,13 +5,14 @@
  * Licensed under the MIT License
  */
 
-import { css } from '@emotion/css';
+import { css, cx } from '@emotion/css';
 import { IconName } from '@fortawesome/free-solid-svg-icons';
 import { Illustration } from 'colab-rest-client/dist/ColabClient';
 import * as React from 'react';
 import { CirclePicker } from 'react-color';
 import logger from '../../logger';
 import IconButton from '../common/element/IconButton';
+import Flex from '../common/layout/Flex';
 import { borderRadius, labelStyle, space_M, space_S } from '../styling/style';
 
 const defaultProjectIllustration: Illustration = {
@@ -23,7 +24,10 @@ const defaultProjectIllustration: Illustration = {
 
 interface ProjectIllustrationMakerProps {
   illustration: Illustration | undefined | null;
-  setIllustration: React.Dispatch<React.SetStateAction<Illustration | undefined | null>>;
+  setIllustration: React.Dispatch<React.SetStateAction<Illustration>>;
+  iconContainerClassName?: string;
+  colorContainerClassName?: string;
+  className?: string;
 }
 
 const projectIconsSolid: IconName[] = [
@@ -74,11 +78,14 @@ const projectColors = [
 export function ProjectIllustrationMaker({
   illustration,
   setIllustration,
+  iconContainerClassName,
+  colorContainerClassName,
+  className,
 }: ProjectIllustrationMakerProps): JSX.Element {
   const illustrationCurrent = illustration ? illustration : defaultProjectIllustration;
   return (
-    <>
-      <div className={css({marginTop: space_S})}>
+    <Flex direction='column' align='stretch' className={className}>
+      <div className={cx(css({marginTop: space_S}), colorContainerClassName)}>
         <label className={labelStyle}>Color</label>
         <CirclePicker
           colors={projectColors}
@@ -88,15 +95,16 @@ export function ProjectIllustrationMaker({
           className={css({ marginTop: space_S, padding: space_S })}
         />
       </div>
-      <div className={css({marginTop: space_S})}>
+      <div className={cx(css({marginTop: space_S}))}>
         <label className={labelStyle}>Icon</label>
         <ProjectIconPicker
           bgColor={illustrationCurrent.iconBkgdColor}
           iconActive={illustrationCurrent.iconKey}
           onChange={i => setIllustration({ ...illustrationCurrent, iconKey: i })}
+          className={iconContainerClassName}
         />
       </div>
-    </>
+    </ Flex>
   );
 }
 
@@ -104,13 +112,14 @@ interface ProjectIconPickerProps {
   bgColor: string;
   iconActive: string;
   onChange: (icon: IconName) => void;
+  className?: string;
 }
-function ProjectIconPicker({ bgColor, iconActive, onChange }: ProjectIconPickerProps): JSX.Element {
+function ProjectIconPicker({ bgColor, iconActive, onChange, className }: ProjectIconPickerProps): JSX.Element {
   logger.info(bgColor);
   return (
     <>
       <div
-        className={css({
+        className={cx(css({
           display: 'grid',
           gridGap: space_M,
           gridTemplateColumns: 'repeat(auto-fit, 50px)',
@@ -124,7 +133,7 @@ function ProjectIconPicker({ bgColor, iconActive, onChange }: ProjectIconPickerP
           marginTop: space_S,
           borderRadius: borderRadius,
           minWidth: '200px',
-        })}
+        }), className)}
       >
         {projectIconsSolid.map(i => (
           <IconButton
