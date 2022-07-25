@@ -7,17 +7,19 @@
 
 import { css, cx } from '@emotion/css';
 import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
-import { Project } from 'colab-rest-client/dist/ColabClient';
+import { Illustration, Project } from 'colab-rest-client/dist/ColabClient';
 import * as React from 'react';
 import { useNavigate } from 'react-router-dom';
 import * as API from '../../API/api';
 import { dispatch } from '../../store/store';
 import ProjectCardTypeList from '../cards/cardtypes/ProjectCardTypeList';
+import ButtonWithLoader from '../common/element/ButtonWithLoader';
 import IconButton from '../common/element/IconButton';
 import { BlockInput } from '../common/element/Input';
 import Flex from '../common/layout/Flex';
 import Tabs, { Tab } from '../common/layout/Tabs';
 import { lightIconButtonStyle } from '../styling/style';
+import { ProjectIllustrationMaker } from './ProjectIllustrationMaker';
 import Team from './Team';
 
 interface ProjectSettingsProps {
@@ -27,6 +29,19 @@ interface ProjectSettingsProps {
 // Display one project and allow to edit it
 export function ProjectSettings({ project }: ProjectSettingsProps): JSX.Element {
   const navigate = useNavigate();
+  const [illustration, setIllustration] = React.useState<Illustration | undefined | null>(
+    project.illustration,
+  );
+  const onConfirm = React.useCallback(() => {
+    if (illustration) {
+      dispatch(
+        API.updateProject({
+          ...project,
+          illustration: illustration,
+        }),
+      );
+    }
+  }, [illustration, project]);
   return (
     <Flex align="stretch" direction="column" grow={1} className={css({ alignSelf: 'stretch' })}>
       <Flex align="center">
@@ -57,6 +72,10 @@ export function ProjectSettings({ project }: ProjectSettingsProps): JSX.Element 
               dispatch(API.updateProject({ ...project, description: newValue }))
             }
           />
+          <ProjectIllustrationMaker illustration={illustration} setIllustration={setIllustration} />
+          <Flex align="center">
+            <ButtonWithLoader onClick={onConfirm}>Save illustration</ButtonWithLoader>
+          </Flex>
         </Tab>
         <Tab name="Team" label="Team">
           <Team project={project} />

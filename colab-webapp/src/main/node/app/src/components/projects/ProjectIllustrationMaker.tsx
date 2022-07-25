@@ -123,16 +123,14 @@ function ProjectIconPicker({ bgColor, iconActive, onChange }: ProjectIconPickerP
           cursor: 'default',
           marginTop: space_S,
           borderRadius: borderRadius,
+          minWidth: '200px',
         })}
       >
         {projectIconsSolid.map(i => (
           <IconButton
             key={i}
             title={i}
-            icon={{
-              iconName: i,
-              prefix: 'fas',
-            }}
+            icon={{prefix: "fas", iconName: i}}
             iconSize={'2x'}
             onClick={() => onChange(i)}
             className={css({

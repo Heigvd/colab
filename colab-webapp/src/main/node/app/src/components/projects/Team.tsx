@@ -355,7 +355,19 @@ export default function Team({ project }: TeamProps): JSX.Element {
   const { members, roles, status } = useAndLoadProjectTeam(projectId);
 
   const [invite, setInvite] = React.useState('');
-  const [error, setError] = React.useState<boolean>(false);
+  const [error, setError] = React.useState<boolean | string>(false);
+
+  const isNewMember = (newMail: string) => {
+    let isNew = true;
+    members.forEach(m => {
+      if (m.displayName === newMail) {
+        isNew = false;
+      }
+    });
+    return isNew;
+  };
+
+  const isValidNewMember = invite.length > 0 && invite.match(emailFormat) != null && isNewMember(invite);
 
   if (status === 'INITIALIZED') {
     return (
@@ -412,9 +424,9 @@ export default function Team({ project }: TeamProps): JSX.Element {
             className={linkStyle}
             icon={faPaperPlane}
             title="Send"
-            isLoading={invite.length > 0 && invite.match(emailFormat) != null}
+            isLoading={isValidNewMember}
             onClick={() => {
-              if (invite.match(emailFormat)) {
+              if (isValidNewMember) {
                 setError(false);
                 dispatch(
                   API.sendInvitation({
@@ -422,13 +434,15 @@ export default function Team({ project }: TeamProps): JSX.Element {
                     recipient: invite,
                   }),
                 ).then(() => setInvite(''));
+              } else if(!isNewMember(invite)) {
+                setError('Member with same email already in team');
               } else {
-                setError(true);
+                setError('Not an email adress');
               }
             }}
           />
           {error && (
-            <div className={cx(css({ color: warningColor }), textSmall)}>Not an email adress</div>
+            <div className={cx(css({ color: warningColor }), textSmall)}>{error}</div>
           )}
         </div>
       </>
