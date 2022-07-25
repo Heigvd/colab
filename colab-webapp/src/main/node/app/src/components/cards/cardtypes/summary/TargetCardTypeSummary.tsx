@@ -6,6 +6,7 @@
  */
 
 import { css } from '@emotion/css';
+import { IconName, IconPrefix } from '@fortawesome/fontawesome-svg-core';
 import { faCircleDot } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import * as React from 'react';
@@ -50,9 +51,9 @@ function TargetProjectSummary({ projectId }: TargetProjectSummaryProps): JSX.Ele
 const i18n = useTranslations();
   return (
     <FontAwesomeIcon
-      icon={referenceIcon}
+      icon={project?.illustration ? {prefix: project.illustration.iconLibrary as IconPrefix, iconName: project.illustration.iconKey as IconName} : referenceIcon}
       className={targetProjectIconStyle}
-      color={'var(--lightGray)'}
+      color={project?.illustration ? project.illustration.iconBkgdColor : 'var(--lightGray)'}
       title={
         status === 'INITIALIZED' && project?.name
           ? `${i18n.cardType.fromProject} ` + project.name + '"'

@@ -6,6 +6,8 @@
  */
 
 import { css, cx } from '@emotion/css';
+import { library } from '@fortawesome/fontawesome-svg-core';
+import { far } from '@fortawesome/free-regular-svg-icons';
 import {
   faArrowLeft,
   faChevronRight,
@@ -13,13 +15,13 @@ import {
   faCog,
   faEye,
   faGrip,
-  faInfoCircle,
   faNetworkWired,
   faProjectDiagram,
+  fas,
   faTimes,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { Card, CardContent, entityIs } from 'colab-rest-client';
+import { Card, CardContent, entityIs, Project } from 'colab-rest-client';
 import * as React from 'react';
 import { Navigate, Route, Routes, useLocation, useNavigate, useParams } from 'react-router-dom';
 import * as API from '../../../API/api';
@@ -39,7 +41,11 @@ import CardEditor from '../../cards/CardEditor';
 import CardThumbWithSelector from '../../cards/CardThumbWithSelector';
 import ProjectCardTypeList from '../../cards/cardtypes/ProjectCardTypeList';
 import ContentSubs from '../../cards/ContentSubs';
+import Button from '../../common/element/Button';
 import IconButton from '../../common/element/IconButton';
+import IllustrationDisplay, {
+  IllustrationIconDisplay,
+} from '../../common/element/IllustrationDisplay';
 import InlineLoading from '../../common/element/InlineLoading';
 import Clickable from '../../common/layout/Clickable';
 import DropDownMenu from '../../common/layout/DropDownMenu';
@@ -52,6 +58,7 @@ import {
   space_M,
   space_S,
 } from '../../styling/style';
+import { defaultProjectIllustration } from '../ProjectCommon';
 import { ProjectSettings } from '../ProjectSettings';
 import Team from '../Team';
 import ActivityFlowChart from './ActivityFlowChart';
@@ -63,19 +70,20 @@ const descriptionStyle = {
   color: 'var(--bgColor)',
   gap: space_L,
   transition: 'all 1s ease',
-  overflow: 'hidden',
+  overflow: 'visible',
   fontSize: '0.9em',
   flexGrow: 0,
 };
 const openDetails = css({
   ...descriptionStyle,
-  maxHeight: '300px',
+  maxHeight: '1000px',
   padding: space_L,
 });
 const closeDetails = css({
   ...descriptionStyle,
   maxHeight: '0px',
   padding: '0 ' + space_L,
+  overflow: 'hidden',
 });
 
 const breadCrumbsStyle = css({
@@ -250,13 +258,14 @@ const CardWrapper = ({
 };
 
 interface EditorNavProps {
-  projectName: string;
+  project: Project;
   setShowProjectDetails: (value: React.SetStateAction<boolean>) => void;
 }
 
-function EditorNav({ projectName, setShowProjectDetails }: EditorNavProps): JSX.Element {
+function EditorNav({ project, setShowProjectDetails }: EditorNavProps): JSX.Element {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
+  library.add(fas, far);
   return (
     <>
       <div
@@ -279,14 +288,40 @@ function EditorNav({ projectName, setShowProjectDetails }: EditorNavProps): JSX.
             navigate('../../');
             dispatch(API.closeCurrentProject());
           }}
+          className={css({ display: 'flex', alignItems: 'center' })}
         />
-        <div className={css({ gridColumn: '2/3', placeSelf: 'center', display: 'flex' })}>
-          <IconButton
-            icon={faInfoCircle}
-            title="Show project details"
+        <div
+          className={css({
+            gridColumn: '2/3',
+            placeSelf: 'center',
+            display: 'flex',
+            alignItems: 'center',
+          })}
+        >
+          <Button
             onClick={() => setShowProjectDetails(showProjectDetails => !showProjectDetails)}
-          />
-          <div className={css({ marginRight: space_M })}>{projectName}</div>
+            title="Show project details"
+            className={css({ padding: '2px'})}
+          >
+            <Flex align="stretch">
+              <Flex
+                align="center"
+                className={css({
+                  backgroundColor: project.illustration?.iconBkgdColor,
+                  padding: '2px 5px',
+                  borderRadius: '3px 0 0 3px'
+                })}
+              >
+                <IllustrationIconDisplay
+                  illustration={
+                    project.illustration ? project.illustration : defaultProjectIllustration
+                  }
+                  iconColor="#fff"
+                />
+              </Flex>
+              <div className={css({ padding: '0 ' + space_S })}>{project.name || 'New project'}</div>
+            </Flex>
+          </Button>
           <DropDownMenu
             icon={faEye}
             valueComp={{ value: '', label: '' }}
@@ -394,27 +429,34 @@ export default function Editor(): JSX.Element {
   } else {
     return (
       <Flex direction="column" align="stretch" grow={1} className={fullPageStyle}>
-        <EditorNav
-          projectName={project.name || 'New project'}
-          setShowProjectDetails={setShowProjectDetails}
-        />
-        <Flex className={showProjectDetails ? openDetails : closeDetails} justify="space-between">
-          <div>
-            <div>
-              <h3>{project.name}</h3>
-              {project.description}
-            </div>
-            <div>
-              <p>Created by: {project.trackingData?.createdBy}</p>
-              <p>Created date: {i18n.common.datetime(project.trackingData?.creationDate)}</p>
-              {/* more infos? Add project team names */}
-            </div>
-          </div>
-          <IconButton
-            icon={faTimes}
-            title={i18n.common.close}
-            onClick={() => setShowProjectDetails(false)}
-          />
+        <EditorNav project={project} setShowProjectDetails={setShowProjectDetails} />
+        <Flex className={showProjectDetails ? openDetails : closeDetails}>
+          <Flex justify="space-between" grow={1}>
+            <Flex gap={space_M}>
+              <IllustrationDisplay
+                illustration={
+                  project.illustration ? project.illustration : defaultProjectIllustration
+                }
+                className={css({ width: 'auto', padding: space_L, borderRadius: '50%' })}
+              />
+              <div>
+                <div>
+                  <h3>{project.name}</h3>
+                  {project.description}
+                </div>
+                <div>
+                  <p>Created by: {project.trackingData?.createdBy}</p>
+                  <p>Created date: {i18n.common.datetime(project.trackingData?.creationDate)}</p>
+                  {/* more infos? Add project team names */}
+                </div>
+              </div>
+            </Flex>
+            <IconButton
+              icon={faTimes}
+              title={i18n.common.close}
+              onClick={() => setShowProjectDetails(false)}
+            />
+          </Flex>
         </Flex>
         <Flex
           direction="column"
