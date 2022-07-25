@@ -5,17 +5,8 @@
  * Licensed under the MIT License
  */
 import { css, cx } from '@emotion/css';
-import {
-  faCog,
-  faExclamationTriangle,
-  faMeteor,
-  faSignOutAlt,
-  faUser,
-  faUserCircle,
-} from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import * as React from 'react';
-import { Navigate, Route, Routes, useLocation, useNavigate, useParams } from 'react-router-dom';
+import { Navigate, Route, Routes, useLocation, useParams } from 'react-router-dom';
 import * as API from '../API/api';
 import useTranslations from '../i18n/I18nContext';
 import { useProject, useProjectBeingEdited } from '../selectors/projectSelector';
@@ -27,21 +18,16 @@ import ResetPasswordSent from './authentication/ResetPasswordSent';
 import SignInForm from './authentication/SignIn';
 import SignUpForm from './authentication/SignUp';
 import InlineLoading from './common/element/InlineLoading';
-import { MainMenuLink } from './common/element/Link';
-import DropDownMenu from './common/layout/DropDownMenu';
 import Loading from './common/layout/Loading';
 import Overlay from './common/layout/Overlay';
+import MainNav from './MainNav';
 import Editor from './projects/edition/Editor';
 import { UserProjects } from './projects/ProjectList';
 import Settings from './settings/Settings';
-import Picto from './styling/Picto';
 import {
-  flex,
   fullPageStyle,
   invertedThemeMode,
-  paddingAroundStyle,
   space_M,
-  space_S,
 } from './styling/style';
 
 const EditorWrapper = () => {
@@ -89,7 +75,6 @@ function useQuery() {
 
 export default function MainApp(): JSX.Element {
   const dispatch = useAppDispatch();
-  const navigate = useNavigate();
   const i18n = useTranslations();
 
   const { currentUser, status: currentUserStatus } = useCurrentUser();
@@ -98,10 +83,6 @@ export default function MainApp(): JSX.Element {
 
   //const { project: projectBeingEdited } = useProjectBeingEdited();
 
-  const logout = React.useCallback(() => {
-    dispatch(API.signOut());
-  }, [dispatch]);
-
   React.useEffect(() => {
     if (currentUserStatus == 'NOT_INITIALIZED') {
       // user is not known. Reload state from API
@@ -109,7 +90,6 @@ export default function MainApp(): JSX.Element {
     }
   }, [currentUserStatus, dispatch]);
 
-  const passwordScore = useAppSelector(state => state.auth.localAccountPasswordScore);
 
   const reconnecting = socketId == null && (
     <Overlay>
@@ -169,114 +149,7 @@ export default function MainApp(): JSX.Element {
                       }),
                     )}
                   >
-                    <Picto
-                      className={cx(
-                        css({
-                          height: '30px',
-                          width: 'auto',
-                          paddingRight: space_M,
-                        }),
-                        paddingAroundStyle([1, 3, 4], space_S),
-                      )}
-                    />
-                    <nav className={flex}>
-                      <MainMenuLink to="/">Projects</MainMenuLink>
-                      {/*
-                    
-                    {projectBeingEdited != null && (
-                      <MainMenuLink to={`/editor/${projectBeingEdited.id}`}>
-                        {projectBeingEdited.name || 'New project'}
-                        <IconButton
-                          onClick={events => {
-                            // make sure to go back to projects page before closing project
-                            // to avoid infinite loop
-                            events.preventDefault();
-                            navigate('/');
-                            dispatch(API.closeCurrentProject());
-                          }}
-                          icon={faTimes}
-                          title="Close current project"
-                          className={css({
-                            pointerEvents: 'auto',
-                            marginLeft: space_M,
-                            padding: 0,
-                            ':hover': {
-                              backgroundColor: 'transparent',
-                            },
-                          })}
-                        />
-                      </MainMenuLink>
-                    )} */}
-                    </nav>
-                    <div
-                      className={css({
-                        flexGrow: 1,
-                      })}
-                    ></div>
-                    <DropDownMenu
-                      icon={faUserCircle}
-                      title={currentUser.username}
-                      valueComp={{ value: '', label: '' }}
-                      entries={[
-                        {
-                          value: 'username',
-                          label: (
-                            <>
-                              <div
-                                className={css({
-                                  borderBottom: '1px solid var(--darkGray)',
-                                  padding: space_S,
-                                })}
-                              >
-                                <FontAwesomeIcon icon={faUser} />{' '}
-                                {currentUser.firstname && currentUser.lastname
-                                  ? currentUser.firstname + ' ' + currentUser.lastname
-                                  : currentUser.username}
-                              </div>
-                            </>
-                          ),
-                          disabled: true,
-                        },
-                        {
-                          value: 'settings',
-                          label: (
-                            <>
-                              <FontAwesomeIcon icon={faCog} /> Settings
-                            </>
-                          ),
-                          action: () => navigate('/settings'),
-                        },
-                        ...(currentUser.admin
-                          ? [
-                              {
-                                value: 'admin',
-                                label: (
-                                  <>
-                                    <FontAwesomeIcon icon={faMeteor} /> Admin
-                                  </>
-                                ),
-                                action: () => navigate('/admin'),
-                              },
-                            ]
-                          : []),
-                        {
-                          value: 'logout',
-                          label: (
-                            <>
-                              Logout <FontAwesomeIcon icon={faSignOutAlt} />
-                            </>
-                          ),
-                          action: logout,
-                        },
-                      ]}
-                      buttonClassName={cx(invertedThemeMode, css({ marginLeft: space_S }))}
-                    />
-                    {passwordScore != null && passwordScore.score < 2 && (
-                      <FontAwesomeIcon
-                        title={i18n.authentication.error.yourPasswordIsWeak}
-                        icon={faExclamationTriangle}
-                      />
-                    )}
+                    <MainNav />
                   </div>
 
                   <div

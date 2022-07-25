@@ -6,8 +6,6 @@
  */
 
 import { css, cx } from '@emotion/css';
-import { library } from '@fortawesome/fontawesome-svg-core';
-import { far } from '@fortawesome/free-regular-svg-icons';
 import {
   faArrowLeft,
   faChevronRight,
@@ -17,7 +15,6 @@ import {
   faGrip,
   faNetworkWired,
   faProjectDiagram,
-  fas,
   faTimes,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -50,6 +47,7 @@ import InlineLoading from '../../common/element/InlineLoading';
 import Clickable from '../../common/layout/Clickable';
 import DropDownMenu from '../../common/layout/DropDownMenu';
 import Flex from '../../common/layout/Flex';
+import { UserDropDown } from '../../MainNav';
 import {
   fullPageStyle,
   invertedThemeMode,
@@ -265,7 +263,6 @@ interface EditorNavProps {
 function EditorNav({ project, setShowProjectDetails }: EditorNavProps): JSX.Element {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
-  library.add(fas, far);
   return (
     <>
       <div
@@ -276,7 +273,7 @@ function EditorNav({ project, setShowProjectDetails }: EditorNavProps): JSX.Elem
             gridTemplateColumns: '1fr 3fr 1fr',
             flexGrow: 0,
             padding: `${space_S} ${space_M}`,
-            backgroundColor: 'var(--hoverBgColor)',
+            //backgroundColor: 'var(--hoverBgColor)',
           }),
         )}
       >
@@ -301,15 +298,15 @@ function EditorNav({ project, setShowProjectDetails }: EditorNavProps): JSX.Elem
           <Button
             onClick={() => setShowProjectDetails(showProjectDetails => !showProjectDetails)}
             title="Show project details"
-            className={css({ padding: '2px'})}
+            className={css({ padding: '2px' })}
           >
             <Flex align="stretch">
               <Flex
                 align="center"
                 className={css({
                   backgroundColor: project.illustration?.iconBkgdColor,
-                  padding: '2px 5px',
-                  borderRadius: '3px 0 0 3px'
+                  padding: '3px 5px',
+                  borderRadius: '3px',
                 })}
               >
                 <IllustrationIconDisplay
@@ -319,7 +316,9 @@ function EditorNav({ project, setShowProjectDetails }: EditorNavProps): JSX.Elem
                   iconColor="#fff"
                 />
               </Flex>
-              <div className={css({ padding: '0 ' + space_S })}>{project.name || 'New project'}</div>
+              <div className={css({ padding: '0 ' + space_S })}>
+                {project.name || 'New project'}
+              </div>
             </Flex>
           </Button>
           <DropDownMenu
@@ -358,12 +357,15 @@ function EditorNav({ project, setShowProjectDetails }: EditorNavProps): JSX.Elem
             menuIcon="CARET"
           />
         </div>
-        <IconButton
-          onClick={() => navigate('./project-settings')}
-          title="Settings"
-          icon={faCog}
-          className={css({ textAlign: 'right', alignSelf: 'center', marginLeft: 'auto' })}
-        />
+        <Flex align='center'>
+          <IconButton
+            onClick={() => navigate('./project-settings')}
+            title="Settings"
+            icon={faCog}
+            className={css({ textAlign: 'right', alignSelf: 'center', marginLeft: 'auto' })}
+          />{' '}
+          <UserDropDown />{' '}
+        </Flex>
       </div>
     </>
   );
