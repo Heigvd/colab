@@ -5,8 +5,9 @@
  * Licensed under the MIT License
  */
 
+import { css } from '@emotion/css';
 import * as React from 'react';
-import { Navigate, useLocation } from 'react-router-dom';
+import { Link, Navigate, useLocation } from 'react-router-dom';
 import { getRestClient, reloadCurrentUser } from '../../API/api';
 import logger from '../../logger';
 import { useCurrentUser } from '../../selectors/userSelector';
@@ -20,8 +21,9 @@ interface TokenProps {
   token: string | undefined;
 }
 
-type STATE_TYPE = 'LOADING' | 'AUTH_REQUIRED' | 'NO_TOKEN' | 'ERROR' | 'DONE';
+type STATE_TYPE = 'LOADING' | 'AUTH_REQUIRED' | 'NO_TOKEN' | 'ERROR' | 'DONE' | 'UNCOMPLETE_URL';
 
+// When user follows link in invitation mail.
 export default function Token(props: TokenProps): JSX.Element {
   const user = useCurrentUser();
   const dispatch = useAppDispatch();
@@ -78,6 +80,8 @@ export default function Token(props: TokenProps): JSX.Element {
       return () => {
         //clean}
       };
+    } else {
+      setState('UNCOMPLETE_URL');
     }
   }, [dispatch, user, props.tokenId, props.token]);
 
@@ -89,7 +93,12 @@ export default function Token(props: TokenProps): JSX.Element {
     const backToTokenUrl = location.pathname;
     return (
       <Overlay>
-        <SignInForm redirectTo={backToTokenUrl} />
+        <SignInForm
+          redirectTo={backToTokenUrl}
+          message={
+            "Hi! You have been invited to collaborate on a project in co.LAB. Sign in or create your very own account. Happy colabbin'!"
+          }
+        />
         {/* <Flex direction="column" className={cx(cardStyle, paddedContainerStyle)}>
           <h2>Authentication required</h2>
           Do you already have a colab account?
@@ -107,16 +116,26 @@ export default function Token(props: TokenProps): JSX.Element {
   } else if (state === 'NO_TOKEN') {
     return (
       <Overlay>
-        <div>Token does not exist</div>
+        <div><b>Oops! The link you got is uncomplete.</b></div>
+        <Link to={'../'}>Back to colab home</Link>
       </Overlay>
     );
+
   } else {
     return (
       <Overlay>
-        <div>
-          Error while processing token. Please try to refresh or contact kthe admin of your colab
-          project.
-        </div>
+        {state === 'UNCOMPLETE_URL' ? <div>
+          {/* Error while processing token. Please try to refresh or contact the admin of your colab
+          project. */}
+          <b>Oops! The link you got is uncomplete.</b> 
+          <p>Please check again your mail or contact the person who sent you the invitation.</p>
+          <Link to={'../'} className={css({display: 'block'})}>Back to colab home</Link>
+        </div> : <div>
+         <b> Oops! There was an error. </b>
+         <p>Invalid or deprecated link. Please try to refresh. If not working, maybe your
+          invitation has been deleted by the host.</p>
+          <Link to={'../'} className={css({display: 'block'})}>Back to colab home</Link>
+        </div>}
       </Overlay>
     );
   }

@@ -319,7 +319,7 @@ export default function Form<T>({
         <ButtonWithLoader
           key="submit"
           onClick={submit}
-          isLoading={(globalErroneous || submitFailed === true) ? false : true}
+          isLoading={(submitFailed || globalErroneous) ? false : true}
           className={cx(css({ margin: space_M + ' 0', alignSelf: 'flex-start' }), buttonClassName)}
         >
           {submitLabel || i18n.form.submit}

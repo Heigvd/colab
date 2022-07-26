@@ -121,6 +121,7 @@ function App(): JSX.Element {
                   <HashRouter>
                     <Routes>
                       <Route path="/token/:id/:token" element={<TokenWrapper />} />
+                      <Route path="/token/*" element={<TokenWrapper />} />
                       <Route path="*" element={<MainApp />} />
                     </Routes>
                   </HashRouter>

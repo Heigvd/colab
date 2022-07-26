@@ -52,7 +52,7 @@ export default function ButtonWithLoader({
   iconSize,
   reverseOrder,
   clickable,
-  isLoading = true,
+  isLoading = false,
   onClick,
   children,
   invertedButton,
@@ -60,16 +60,22 @@ export default function ButtonWithLoader({
 }: ButtonWithLoaderProps): JSX.Element {
   const [processing, setProcessing] = React.useState<boolean>(false);
 
+  const onClicked = React.useCallback(
+    (event: React.MouseEvent<HTMLSpanElement, MouseEvent> | React.KeyboardEvent<HTMLSpanElement>) => {
+      if (isLoading) {
+        setProcessing(isLoading);
+      }
+      if (onClick) {
+        onClick(event);
+      }
+    },
+    [isLoading, onClick],
+  );
   return (
     <Clickable
       title={title}
       clickable={clickable}
-      onClick={e => {
-        if (onClick) {
-          setProcessing(isLoading);
-          onClick(e);
-        }
-      }}
+      onClick={onClicked}
       className={cx(
         invertedButton ? inactiveInvertedButtonStyle : inactiveButtonStyle,
         relative,

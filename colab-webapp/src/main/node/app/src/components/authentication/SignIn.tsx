@@ -23,6 +23,7 @@ import PublicEntranceContainer from './PublicEntranceContainer';
 
 interface SignInFormProps {
   redirectTo: string | null;
+  message?: string | React.ReactNode;
 }
 
 interface Credentials {
@@ -43,7 +44,7 @@ const defaultCredentials: Credentials = {
   },
 };
 
-export default function SignInForm({ redirectTo }: SignInFormProps): JSX.Element {
+export default function SignInForm({ redirectTo, message }: SignInFormProps): JSX.Element {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const i18n = useTranslations();
@@ -70,19 +71,19 @@ export default function SignInForm({ redirectTo }: SignInFormProps): JSX.Element
 
   const signIn = React.useCallback(
     (credentials: Credentials) => {
-        dispatch(
-          API.signInWithLocalAccount({
-            identifier: credentials.identifier,
-            password: credentials.password,
-            passwordScore: credentials.passwordScore,
-          }),
-        ).then(action => {
-          if (redirectTo && action.meta.requestStatus === 'fulfilled') {
-            navigate(redirectTo);
-          } else if (action.meta.requestStatus === 'rejected') {
-            setLoginFailed(true);
-          }
-        })
+      dispatch(
+        API.signInWithLocalAccount({
+          identifier: credentials.identifier,
+          password: credentials.password,
+          passwordScore: credentials.passwordScore,
+        }),
+      ).then(action => {
+        if (redirectTo && action.meta.requestStatus === 'fulfilled') {
+          navigate(redirectTo);
+        } else if (action.meta.requestStatus === 'rejected') {
+          setLoginFailed(true);
+        }
+      });
     },
     [dispatch, navigate, redirectTo],
   );
@@ -94,6 +95,7 @@ export default function SignInForm({ redirectTo }: SignInFormProps): JSX.Element
           The username/email or password is invalid. Please try again.
         </Flex>
       )}
+      {message && <div>{message}</div>}
       <Form
         fields={formFields}
         value={defaultCredentials}
