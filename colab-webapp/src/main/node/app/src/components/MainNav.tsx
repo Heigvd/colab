@@ -104,7 +104,7 @@ export function UserDropDown(): JSX.Element {
                       padding: space_S,
                     })}
                   >
-                    <FontAwesomeIcon icon={faUser} />{' '}
+                    <FontAwesomeIcon icon={faUser} />
                     {currentUser.firstname && currentUser.lastname
                       ? currentUser.firstname + ' ' + currentUser.lastname
                       : currentUser.username}
