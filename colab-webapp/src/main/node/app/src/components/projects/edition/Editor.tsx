@@ -364,7 +364,7 @@ function EditorNav({ project, setShowProjectDetails }: EditorNavProps): JSX.Elem
             icon={faCog}
             className={css({ textAlign: 'right', alignSelf: 'center', marginLeft: 'auto' })}
           />{' '}
-          <UserDropDown />{' '}
+          <UserDropDown onlyLogout />{' '}
         </Flex>
       </div>
     </>

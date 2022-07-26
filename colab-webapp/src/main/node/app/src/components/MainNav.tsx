@@ -70,7 +70,7 @@ export default function MainNav(): JSX.Element {
   );
 }
 
-export function UserDropDown(): JSX.Element {
+export function UserDropDown({ onlyLogout }: { onlyLogout?: boolean }): JSX.Element {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const i18n = useTranslations();
@@ -113,16 +113,20 @@ export function UserDropDown(): JSX.Element {
               ),
               disabled: true,
             },
-            {
-              value: 'settings',
-              label: (
-                <>
-                  <FontAwesomeIcon icon={faCog} /> Settings
-                </>
-              ),
-              action: () => navigate('/settings'),
-            },
-            ...(currentUser.admin
+            ...(!onlyLogout
+              ? [
+                  {
+                    value: 'settings',
+                    label: (
+                      <>
+                        <FontAwesomeIcon icon={faCog} /> Settings
+                      </>
+                    ),
+                    action: () => navigate('/settings'),
+                  },
+                ]
+              : []),
+            ...(currentUser.admin && !onlyLogout
               ? [
                   {
                     value: 'admin',
