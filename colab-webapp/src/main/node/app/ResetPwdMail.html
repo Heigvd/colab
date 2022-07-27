@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <!-- utf-8 works for most cases -->
+    <meta name="viewport" content="width=device-width" />
+    <!-- Forcing initial-scale shouldn't be necessary -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <!-- Use the latest (edge) version of IE rendering engine -->
+    <meta name="x-apple-disable-message-reformatting" />
+    <!-- Disable auto-scale in iOS 10 Mail entirely -->
+    <title>co.LAB: reset your password</title>
+    <!-- The title tag shows in email notifications, like Android 4.4. -->
+    <style>
+      h2,
+      h3 {
+        font-family: sans-serif;
+        color: #000000;
+        margin-top: 0;
+      }
+      /* What it does: Stops email clients resizing small text. */
+      * {
+        -ms-text-size-adjust: 100%;
+        -webkit-text-size-adjust: 100%;
+      }
+      /* What it does: Prevents Windows 10 Mail from underlining links despite inline CSS. Styles for underlined links should be inline. */
+      a {
+        text-decoration: none;
+      }
+      /* What it does: Removes right gutter in Gmail iOS app: https://github.com/TedGoas/Cerberus/issues/89  */
+      /* Create one of these media queries for each additional viewport size you'd like to fix */
+
+      /* iPhone 4, 4S, 5, 5S, 5C, and 5SE */
+      @media only screen and (min-device-width: 320px) and (max-device-width: 374px) {
+        u ~ div .email-container {
+          min-width: 320px !important;
+        }
+      }
+      /* iPhone 6, 6S, 7, 8, and X */
+      @media only screen and (min-device-width: 375px) and (max-device-width: 413px) {
+        u ~ div .email-container {
+          min-width: 375px !important;
+        }
+      }
+      /* iPhone 6+, 7+, and 8+ */
+      @media only screen and (min-device-width: 414px) {
+        u ~ div .email-container {
+          min-width: 414px !important;
+        }
+      }
+    </style>
+  </head>
+
+  <body
+    width="100%"
+    style="
+      margin: 0;
+      padding: 0 !important;
+      mso-line-height-rule: exactly;
+      background-color: #f1f1f1;
+      font-family: sans-serif;
+      font-size: 15px;
+      line-height: 1.8;
+      color: rgba(0, 0, 0, 0.4);
+    "
+  >
+    <div style="max-width: 600px; margin: 0 auto" class="email-container">
+      <div
+        align="center"
+        role="presentation"
+        cellspacing="0"
+        cellpadding="0"
+        border="0"
+        width="100%"
+        style="margin: auto"
+      >
+        <div valign="middle" class="hero" style="padding: 3em 0 2em 0; background: #ffffff">
+          <svg width="240" height="240" id="Layer_1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 370 376.4">
+            <g>
+              <path
+                d="M370,188.2c0,103.9-82.8,188.2-185,188.2S0,292.2,0,188.2,82.8,0,185,0s185,84.2,185,188.2h0Z"
+                style="fill: #e05d11"
+              />
+              <g>
+                <polygon
+                  points="204.4 187 157.4 187 157.4 186.9 43.5 267.5 318.2 267.5 204.4 187"
+                  style="fill: #edc51d"
+                />
+                <polygon
+                  points="43.5 106.5 157.4 187 43.5 267.5 43.5 106.5"
+                  style="fill: #d6b90d"
+                />
+                <polygon
+                  points="318.2 106.5 204.3 187 318.2 267.5 318.2 106.5"
+                  style="fill: #d6b90d"
+                />
+                <polygon
+                  points="43.5 106.5 180.8 220.4 318.2 106.5 43.5 106.5"
+                  style="fill: #ffe20f"
+                />
+              </g>
+            </g>
+            <circle cx="289.6" cy="296.2" r="79.4" style="fill: #50bfd5" />
+            <rect x="237.2" y="259.1" width="121.8" height="106.5" style="fill: none" />
+            <polygon
+              points="271.7 343.4 234.8 306.5 248 293.2 271.7 316.8 331.4 257.1 344.7 270.4 271.7 343.4"
+              style="fill: #fff"
+            />
+          </svg>
+          <div class="text" style="padding: 0 2.5em; text-align: center">
+            <h2 style="font-size: 30px; margin-bottom: 0">Reset your password</h2>
+            <h3>We received a request to reset the password for {0}. </h3>
+            <p>Click on the link below to reset your password.</p>
+            <p>
+              <a
+                href="{1}"
+                style="
+                  padding: 10px 15px;
+                  display: inline-block;
+                  border-radius: 5px;
+                  background: #50bfd5;
+                  color: #ffffff;
+                "
+                >Reset password</a
+              >
+            </p>
+            <p>This link can be used until {2} GMT. If you did not make this request, you can safely ignore this email.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
