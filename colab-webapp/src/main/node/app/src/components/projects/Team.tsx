@@ -28,6 +28,7 @@ import { useCurrentUser } from '../../selectors/userSelector';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { addNotification } from '../../store/notification';
 import { Destroyer } from '../common/Destroyer';
+import Button from '../common/element/Button';
 import IconButton from '../common/element/IconButton';
 import IconButtonWithLoader from '../common/element/IconButtonWithLoader';
 import InlineLoading from '../common/element/InlineLoading';
@@ -35,7 +36,9 @@ import { InlineInput } from '../common/element/Input';
 import { emailFormat } from '../common/Form/Form';
 import ConfirmDeleteModal from '../common/layout/ConfirmDeleteModal';
 import DropDownMenu, { modalEntryStyle } from '../common/layout/DropDownMenu';
+import Flex from '../common/layout/Flex';
 import OpenClose from '../common/layout/OpenClose';
+import OpenCloseModal from '../common/layout/OpenCloseModal';
 import WithToolbar from '../common/WithToolbar';
 import {
   errorColor,
@@ -92,26 +95,74 @@ const options = [
 export function PositionSelector({
   value,
   onChange,
+  isMyRights,
 }: {
   value: HierarchicalPosition;
   onChange: (value: HierarchicalPosition) => void;
+  isMyRights: boolean;
 }): JSX.Element {
+  const i18n = useTranslations();
+  const [open, setOpen] = React.useState<boolean>(false);
   const onChangeCb = React.useCallback(
     (option: { value: HierarchicalPosition } | null) => {
       if (option != null) {
         onChange(option.value);
+        setOpen(false);
       }
     },
     [onChange],
   );
   const currentValue = buildOption(value);
+
   return (
-    <Select
-      className={css({ minWidth: '160px' })}
-      options={options}
-      value={currentValue}
-      onChange={onChangeCb}
-    />
+    <div>
+      {isMyRights && (
+        <OpenCloseModal
+          title={'Change my own rights'}
+          collapsedChildren={<></>}
+          status={open ? 'EXPANDED' : 'COLLAPSED'}
+        >
+          {collapse => (
+            <Flex direction="column" align="stretch" grow={1}>
+              <Flex grow={1} direction="column">
+                Are you sure you want to change your own rights?
+              </Flex>
+              <Flex justify="flex-end">
+                <Button
+                  title={'Cancel'}
+                  onClick={() => {
+                    collapse();
+                    setOpen(false);
+                  }}
+                  invertedButton
+                >
+                  {i18n.common.cancel}
+                </Button>
+                <Button
+                  title={'Change'}
+                  onClick={() => {
+                    collapse();
+                  }}
+                  className={css({
+                    backgroundColor: errorColor,
+                    marginLeft: space_M,
+                  })}
+                >
+                  {'Change'}
+                </Button>
+              </Flex>
+            </Flex>
+          )}
+        </OpenCloseModal>
+      )}
+      <Select
+        className={css({ minWidth: '160px' })}
+        options={options}
+        value={currentValue}
+        onChange={onChangeCb}
+        onMenuOpen={() => setOpen(true)}
+      />
+    </div>
   );
 }
 
@@ -165,16 +216,13 @@ const Member = ({ member, roles, isTheOnlyOwner }: MemberProps) => {
           addNotification({
             status: 'OPEN',
             type: 'WARN',
-            message: 'You cannot change this right. There must be at least one Owner of the project.',
+            message:
+              'You cannot change this right. There must be at least one Owner of the project.',
           }),
         );
       } else {
         dispatch(API.setMemberPosition({ memberId: member.id!, position: newPosition }));
       }
-      //
-      /* if(member.userId === currentUser?.id){
-        setOpen('EXPANDED');
-      } */
     },
     [dispatch, isTheOnlyOwner, member.id],
   );
@@ -284,6 +332,7 @@ const Member = ({ member, roles, isTheOnlyOwner }: MemberProps) => {
       <PositionSelector
         value={member.position}
         onChange={newPosition => changeRights(newPosition)}
+        isMyRights={currentUser?.id === member.userId}
       />
       {roles.map(role => {
         const hasRole = roleIds.indexOf(role.id || -1) >= 0;
@@ -455,8 +504,14 @@ export default function Team({ project }: TeamProps): JSX.Element {
           </div>
           {members.map(member => {
             return (
-            <Member key={member.id} member={member} roles={roles} isTheOnlyOwner={projectOwners.length < 2 && projectOwners.includes(member)} />
-          )})}
+              <Member
+                key={member.id}
+                member={member}
+                roles={roles}
+                isTheOnlyOwner={projectOwners.length < 2 && projectOwners.includes(member)}
+              />
+            );
+          })}
         </div>
         <div>
           <p className={textSmall}>Invite new member</p>
