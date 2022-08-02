@@ -38,13 +38,18 @@ export default function PublicEntranceContainer({
             }),
           )}
         >
-          <Logo
-            className={css({
-              height: '110px',
-              width: '200px',
-              padding: '10px',
-            })}
-          />
+          <a
+            onClick={() => window.open(`#/about-colab`, '_blank')}
+            className={css({ '&:hover': { cursor: 'pointer' } })}
+          >
+            <Logo
+              className={css({
+                height: '110px',
+                width: '200px',
+                margin: '10px',
+              })}
+            />
+          </a>
         </div>
         <Flex
           direction="column"

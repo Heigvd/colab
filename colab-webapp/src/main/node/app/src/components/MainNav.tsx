@@ -1,3 +1,10 @@
+/*
+ * The coLAB project
+ * Copyright (C) 2021 AlbaSim, MEI, HEIG-VD, HES-SO
+ *
+ * Licensed under the MIT License
+ */
+
 import { css, cx } from '@emotion/css';
 import {
   faCog,
@@ -16,6 +23,7 @@ import { useCurrentUser } from '../selectors/userSelector';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
 import InlineLoading from './common/element/InlineLoading';
 import { MainMenuLink } from './common/element/Link';
+import Clickable from './common/layout/Clickable';
 import DropDownMenu from './common/layout/DropDownMenu';
 import Picto from './styling/Picto';
 import { flex, invertedThemeMode, paddingAroundStyle, space_M, space_S } from './styling/style';
@@ -23,6 +31,7 @@ import { flex, invertedThemeMode, paddingAroundStyle, space_M, space_S } from '.
 export default function MainNav(): JSX.Element {
   return (
     <>
+    <Clickable onClick={() => window.open(`#/about-colab`, '_blank')}>
       <Picto
         className={cx(
           css({
@@ -33,6 +42,7 @@ export default function MainNav(): JSX.Element {
           paddingAroundStyle([1, 3, 4], space_S),
         )}
       />
+      </Clickable>
       <nav className={flex}>
         <MainMenuLink to="/">Projects</MainMenuLink>
         {/* {projectBeingEdited != null && (

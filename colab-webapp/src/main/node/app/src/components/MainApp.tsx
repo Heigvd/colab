@@ -12,6 +12,7 @@ import useTranslations from '../i18n/I18nContext';
 import { useProject, useProjectBeingEdited } from '../selectors/projectSelector';
 import { useCurrentUser } from '../selectors/userSelector';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
+import AboutColab from './AboutColab';
 import Admin from './admin/Admin';
 import ResetPasswordForm from './authentication/ForgotPassword';
 import ResetPasswordSent from './authentication/ResetPasswordSent';
@@ -122,6 +123,7 @@ export default function MainApp(): JSX.Element {
           />
           <Route path="/ResetPasswordEmailSent" element={<ResetPasswordSent />} />
           <Route path="*" element={<SignInForm redirectTo={query.get('redirectTo')} />} />
+          <Route path="/about-colab" element={<AboutColab />} />
         </Routes>
         {reconnecting}
       </>
@@ -180,6 +182,7 @@ export default function MainApp(): JSX.Element {
               </>
             }
           />
+          <Route path="/about-colab" element={<AboutColab />} />
         </Routes>
         {reconnecting}
       </>

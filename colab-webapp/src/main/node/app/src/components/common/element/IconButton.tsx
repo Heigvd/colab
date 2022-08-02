@@ -44,6 +44,7 @@ export default function IconButton({
       onClick={onClick}
       className={className}
       clickableClassName={cx(linkStyle, iconButton, className)}
+      clickable
     >
       {layer ? (
         <span className="fa-layers fa-fw">
