@@ -10,7 +10,6 @@ import { IconName } from '@fortawesome/free-solid-svg-icons';
 import { Illustration } from 'colab-rest-client/dist/ColabClient';
 import * as React from 'react';
 import { CirclePicker } from 'react-color';
-import logger from '../../logger';
 import IconButton from '../common/element/IconButton';
 import Flex from '../common/layout/Flex';
 import { borderRadius, labelStyle, space_M, space_S } from '../styling/style';
@@ -115,7 +114,6 @@ interface ProjectIconPickerProps {
   className?: string;
 }
 function ProjectIconPicker({ bgColor, iconActive, onChange, className }: ProjectIconPickerProps): JSX.Element {
-  logger.info(bgColor);
   return (
     <>
       <div

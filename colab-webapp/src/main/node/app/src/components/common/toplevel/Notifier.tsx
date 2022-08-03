@@ -69,12 +69,12 @@ function getBgColor(notification: ColabNotification): string {
 function getTitle(notification: ColabNotification, i18n: ColabTranslations): React.ReactNode {
   switch (notification.type) {
     case 'INFO':
-      return <>{i18n.notification.information}</>;
+      return <>{i18n.activity.notifications.information}</>;
     case 'WARN':
-      return <>{i18n.notification.warning}</>;
+      return <>{i18n.activity.notifications.warning}</>;
     case 'ERROR':
     default:
-      return <>{i18n.notification.error}</>;
+      return <>{i18n.activity.notifications.error}</>;
   }
 }
 

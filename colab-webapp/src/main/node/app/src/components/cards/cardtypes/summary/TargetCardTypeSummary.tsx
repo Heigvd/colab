@@ -36,7 +36,7 @@ export default function TargetCardTypeSummary({
         (cardType.projectIdCT ? (
           <TargetProjectSummary projectId={cardType.projectIdCT} />
         ) : (
-          <FontAwesomeIcon icon={referenceIcon} color={'var(--secondaryColor)'} title={i18n.cardType.globalType} className={targetProjectIconStyle} />
+          <FontAwesomeIcon icon={referenceIcon} color={'var(--secondaryColor)'} title={i18n.modules.cardType.globalType} className={targetProjectIconStyle} />
         ))}
     </>
   );
@@ -56,8 +56,8 @@ const i18n = useTranslations();
       color={project?.illustration ? project.illustration.iconBkgdColor : 'var(--lightGray)'}
       title={
         status === 'INITIALIZED' && project?.name
-          ? `${i18n.cardType.fromProject} ` + project.name + '"'
-          : `${i18n.cardType.fromAProject}`
+          ? `${i18n.modules.cardType.fromProject} ` + project.name + '"'
+          : `${i18n.modules.cardType.fromAProject}`
       }
     />
   );

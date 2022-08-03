@@ -10,6 +10,7 @@ import { Card, InvolvementLevel, TeamMember, TeamRole } from 'colab-rest-client'
 import * as React from 'react';
 import * as API from '../../API/api';
 import { getDisplayName } from '../../helper';
+import useTranslations from '../../i18n/I18nContext';
 import logger from '../../logger';
 import { CardAcl, useAndLoadCardACL } from '../../selectors/cardSelector';
 import { useAndLoadProjectTeam, useProjectBeingEdited } from '../../selectors/projectSelector';
@@ -128,18 +129,19 @@ export default function CardACL({ card }: CardACLProps): JSX.Element {
   const { project } = useProjectBeingEdited();
   const { members, roles, status: teamStatus } = useAndLoadProjectTeam(project?.id);
   const acl = useAndLoadCardACL(card.id);
+const i18n = useTranslations();
 
   if (teamStatus === 'INITIALIZED') {
     return (
       <>
         <div className={titleSeparationStyle}>
-          <h3>Roles</h3>
+          <h3>{i18n.team.roles}</h3>
         </div>
         {roles.map(role => (
           <RoleACL key={role.id} role={role} acl={acl} />
         ))}
         <div className={titleSeparationStyle}>
-          <h3>Members</h3>
+          <h3>{i18n.team.members}</h3>
         </div>
         {members.map(member => (
           <MemberACL key={member.id} member={member} acl={acl} />

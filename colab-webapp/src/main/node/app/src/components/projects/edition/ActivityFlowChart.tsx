@@ -103,7 +103,7 @@ export function Card({
   return (
     <div ref={refCb} data-cardid={card.id} className={`CardSource CardTarget ${cardStyle(color)}`}>
       <Flex justify="space-between">
-        <div className={padding}>{card.title || i18n.card.untitled}</div>
+        <div className={padding}>{card.title || i18n.modules.card.untitled}</div>
         <FontAwesomeIcon className="CardSourceHandle" icon={faProjectDiagram} />
       </Flex>
       <Flex className={css({ width: '100%' })}>
@@ -115,7 +115,7 @@ export function Card({
             className={css({ width: '100%' })}
           >
             {variants.length > 1 ? (
-              <div className={padding}>{variant.title || i18n.content.untitled}</div>
+              <div className={padding}>{variant.title || i18n.modules.content.untitled}</div>
             ) : null}
             {showProgressBar ? <ProgressBar variant={variant} /> : null}
           </Flex>

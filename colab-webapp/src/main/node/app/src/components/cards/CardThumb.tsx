@@ -107,7 +107,7 @@ export default function CardThumb({
               >
                 <div>
                   <span className={css({ fontWeight: 'bold' })}>
-                    {card.title || i18n.card.untitled}
+                    {card.title || i18n.modules.card.untitled}
                   </span>
                   {hasVariants && (
                     <span className={variantTitle}>
@@ -311,7 +311,7 @@ export default function CardThumb({
               variant != null ? (
                 <ContentSubs depth={depth} cardContent={variant} />
               ) : (
-                <i>{i18n.content.none}</i>
+                <i>{i18n.modules.content.none}</i>
               )
             ) : null}
           </Flex>

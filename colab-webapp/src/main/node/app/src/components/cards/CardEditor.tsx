@@ -306,7 +306,7 @@ export default function CardEditor({
                             )}
                             <InlineInput
                               value={card.title || ''}
-                              placeholder={i18n.card.untitled}
+                              placeholder={i18n.modules.card.untitled}
                               readOnly={readOnly}
                               autoWidth
                               saveMode="ON_CONFIRM"
@@ -324,7 +324,7 @@ export default function CardEditor({
                                       ? variant.title
                                       : `Variant ${variantNumber}`
                                   }
-                                  placeholder={i18n.content.untitled}
+                                  placeholder={i18n.modules.content.untitled}
                                   readOnly={readOnly}
                                   autoWidth
                                   saveMode="ON_CONFIRM"

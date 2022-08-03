@@ -82,7 +82,7 @@ export function ResourceDisplay({ resource, goBackToList }: ResourceDisplayProps
             />
             <InlineInput
               value={targetResource.title || ''}
-              placeholder={i18n.resource.untitled}
+              placeholder={i18n.modules.resource.untitled}
               readOnly={readOnly}
               saveMode="ON_CONFIRM"
               onChange={newValue =>
