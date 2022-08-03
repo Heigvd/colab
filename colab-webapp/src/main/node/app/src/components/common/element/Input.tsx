@@ -42,6 +42,7 @@ interface InputProps {
   type?: HTMLInputElement['type'];
   mandatory?: boolean;
   readOnly?: HTMLInputElement['readOnly'] | HTMLTextAreaElement['readOnly'];
+  autoComplete?: string;
   autoFocus?: HTMLInputElement['autofocus'] | HTMLTextAreaElement['autofocus'];
   min?: HTMLInputElement['min'];
   max?: HTMLInputElement['max'];
@@ -62,7 +63,6 @@ interface InputProps {
   bottomClassName?: string;
   footerClassName?: string;
   validationClassName?: string;
-  autoComplete?: string;
 }
 
 const confirmButtonsStyle = css({
@@ -77,6 +77,7 @@ function Input({
   type = 'text',
   mandatory,
   readOnly,
+  autoComplete,
   autoFocus,
   min,
   max,
@@ -220,72 +221,74 @@ function Input({
 
   return (
     <Flex direction="column" className={containerClassName} style={{ maxWidth: maxWidth }}>
-       { /* //</Flex> <Flex theRef={containerRef} direction='column'> */}
-        {label && (
-          <Flex align='center'>
-              {label && <span className={cx(labelStyle, labelClassName)}>{label}</span>}
-              {tip && <Tips>{tip}</Tips>}
-              {mandatory && ' * '}
-              {/* {updated && (
+      {/* //</Flex> <Flex theRef={containerRef} direction='column'> */}
+      {label && (
+        <Flex align="center">
+          {label && <span className={cx(labelStyle, labelClassName)}>{label}</span>}
+          {tip && <Tips>{tip}</Tips>}
+          {mandatory && ' * '}
+          {/* {updated && (
               <span className={cx(textSmall, warningStyle, css({ paddingLeft: space_S }))}>
                 {i18n.common.updated}
               </span>
             )} */}
-          </Flex>
-        )}
-        {inputType === 'input' ? (
-          <input
-            ref={inputRef}
-            value={currentInternalValue}
-            placeholder={placeholder}
-            type={type}
-            readOnly={readOnly}
-            autoFocus={autoFocus}
-            min={min}
-            max={max}
-            onFocus={setEditMode}
-            onInput={updateSize}
-            onChange={changeInternal}
-            onKeyDown={pressEnterKey}
-            onBlur={setDisplayMode}
-            className={cx(
-              inputEditClassName && mode === 'EDIT' ? inputEditClassName : inputDisplayClassName,
-            )}
+        </Flex>
+      )}
+      {inputType === 'input' ? (
+        <input
+          ref={inputRef}
+          value={currentInternalValue}
+          placeholder={placeholder}
+          type={type}
+          readOnly={readOnly}
+          autoComplete={autoComplete}
+          autoFocus={autoFocus}
+          min={min}
+          max={max}
+          onFocus={setEditMode}
+          onInput={updateSize}
+          onChange={changeInternal}
+          onKeyDown={pressEnterKey}
+          onBlur={setDisplayMode}
+          className={cx(
+            inputEditClassName && mode === 'EDIT' ? inputEditClassName : inputDisplayClassName,
+          )}
+        />
+      ) : (
+        <textarea
+          ref={textareaRef}
+          value={currentInternalValue}
+          placeholder={placeholder}
+          readOnly={readOnly}
+          autoComplete={autoComplete}
+          autoFocus={autoFocus}
+          rows={rows}
+          onFocus={setEditMode}
+          onChange={changeInternal}
+          onBlur={setDisplayMode}
+          // no onKeyDown here, or it will be a problem to put any end of line in the text
+          className={cx(
+            inputEditClassName && mode === 'EDIT' ? inputEditClassName : inputDisplayClassName,
+          )}
+        />
+      )}
+      {saveMode === 'ON_CONFIRM' && (mode === 'EDIT' || updated) && (
+        <Flex className={confirmButtonsStyle}>
+          <IconButton
+            icon={faTimes}
+            title={i18n.common.cancel}
+            onClick={cancel}
+            className={lightIconButtonStyle}
           />
-        ) : (
-          <textarea
-            ref={textareaRef}
-            value={currentInternalValue}
-            placeholder={placeholder}
-            readOnly={readOnly}
-            autoFocus={autoFocus}
-            rows={rows}
-            onFocus={setEditMode}
-            onChange={changeInternal}
-            onBlur={setDisplayMode}
-            // no onKeyDown here, or it will be a problem to put any end of line in the text
-            className={cx(
-              inputEditClassName && mode === 'EDIT' ? inputEditClassName : inputDisplayClassName,
-            )}
+          <IconButton
+            icon={faCheck}
+            title={i18n.common.save}
+            onClick={save}
+            className={lightIconButtonStyle}
           />
-        )}
-        {saveMode === 'ON_CONFIRM' && (mode === 'EDIT' || updated) && (
-          <Flex className={confirmButtonsStyle}>
-            <IconButton
-              icon={faTimes}
-              title={i18n.common.cancel}
-              onClick={cancel}
-              className={lightIconButtonStyle}
-            />
-            <IconButton
-              icon={faCheck}
-              title={i18n.common.save}
-              onClick={save}
-              className={lightIconButtonStyle}
-            />
-          </Flex>
-        )}
-        {/* {!label && (
+        </Flex>
+      )}
+      {/* {!label && (
           <Flex justify="space-between">
             <div>
               {tip && <Tips>{tip}</Tips>}
@@ -295,18 +298,10 @@ function Input({
         )} 
       </Flex> */}
       {(footer || warning || error) && (
-        <Flex direction="column" grow="1" align='flex-start' className={bottomClassName}>
-          {footer && (
-            <Flex className={cx(textSmall, footerClassName)}>
-              {footer}
-            </Flex>
-          )}
+        <Flex direction="column" grow="1" align="flex-start" className={bottomClassName}>
+          {footer && <Flex className={cx(textSmall, footerClassName)}>{footer}</Flex>}
           {(warning || error) && (
-            <Flex
-              direction="column"
-              grow="1"
-              className={cx(textSmall, validationClassName)}
-            >
+            <Flex direction="column" grow="1" className={cx(textSmall, validationClassName)}>
               {warning != null && <div className={warningStyle}>{warning}</div>}
               {error != null && <div className={errorStyle}>{error}</div>}
             </Flex>
