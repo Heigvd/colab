@@ -170,7 +170,7 @@ function TocEntry({ resourceAndRef, selectResource }: TocEntryProps) {
           flexGrow: 1,
         })}
       >
-        {resourceAndRef.targetResource.title || i18n.resource.untitled}
+        {resourceAndRef.targetResource.title || i18n.modules.resource.untitled}
       </div>
     </Flex>
   );

@@ -61,12 +61,12 @@ export function BlockEditorWrapper({
             />
           );
         default:
-          return <span>{`${i18n.common.error.unknown} ${i18n.content.mimeType}:`} {block.mimeType}</span>;
+          return <span>{`${i18n.common.error.unknown} ${i18n.modules.content.mimeType}:`} {block.mimeType}</span>;
       }
     } else {
       return (
         <div>
-          <i>{`${i18n.common.error.unknown} ${i18n.content.document}`}</i>
+          <i>{`${i18n.common.error.unknown} ${i18n.modules.content.document}`}</i>
         </div>
       );
     }

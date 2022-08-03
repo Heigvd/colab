@@ -92,7 +92,7 @@ export default function SignInForm({ redirectTo, message }: SignInFormProps): JS
     <PublicEntranceContainer>
       {loginFailed && (
         <Flex className={cx(css({ color: errorColor, textAlign: 'left' }), textSmall)}>
-          The username/email or password is invalid. Please try again.
+          {i18n.authentication.error.emailOrUserNotValid}
         </Flex>
       )}
       {message && <div>{message}</div>}

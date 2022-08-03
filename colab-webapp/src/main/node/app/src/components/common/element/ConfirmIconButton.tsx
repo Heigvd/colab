@@ -107,7 +107,7 @@ export function InlineConfirmIconButton({
   }, [onConfirm]);
 
   return (
-    <div title={title || i18n.confirm}>
+    <div title={title || i18n.common.confirm}>
       {waitConfirm ? (
         <Button className={className} icon={icon}>
           <IconButton
@@ -115,7 +115,7 @@ export function InlineConfirmIconButton({
             icon={faTimes}
             onClick={askConfirm}
           />
-          <IconButton title={`${i18n.confirm} ${title}`} icon={faCheck} onClick={confirmedCb} />
+          <IconButton title={`${i18n.common.confirm} ${title}`} icon={faCheck} onClick={confirmedCb} />
         </Button>
       ) : (
         <div>
@@ -203,8 +203,8 @@ export function ConfirmIconButton({
             <span className={bubbleItem}>{cancelInvite || i18n.common.cancel}</span>
           </Clickable>
           <span>|</span>
-          <Clickable title={`${i18n.confirm} ${title}`} onClick={confirmedCb}>
-            <span className={bubbleItem}>{confirmInvite || i18n.confirm}</span>
+          <Clickable title={`${i18n.common.confirm} ${title}`} onClick={confirmedCb}>
+            <span className={bubbleItem}>{confirmInvite || i18n.common.confirm}</span>
           </Clickable>
         </div>
       )}

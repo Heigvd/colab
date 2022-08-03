@@ -23,32 +23,32 @@ export default function UserProfile({ user }: UserProfileProps): JSX.Element {
   const fields: Field<User>[] = [
     {
       key: 'username',
-      label: i18n.model.user.username,
+      label: i18n.user.model.username,
       type: 'text',
       isMandatory: false,
       readOnly: true,
     },
     {
       key: 'commonname',
-      label: i18n.model.user.commonName,
+      label: i18n.user.model.commonName,
       type: 'text',
       isMandatory: false,
     },
     {
       key: 'firstname',
-      label: i18n.model.user.firstname,
+      label: i18n.user.model.firstname,
       type: 'text',
       isMandatory: false,
     },
     {
       key: 'lastname',
-      label: i18n.model.user.lastname,
+      label: i18n.user.model.lastname,
       type: 'text',
       isMandatory: false,
     },
     {
       key: 'affiliation',
-      label: i18n.model.user.affiliation,
+      label: i18n.user.model.affiliation,
       type: 'text',
       isMandatory: false,
     },

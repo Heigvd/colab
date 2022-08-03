@@ -73,7 +73,7 @@ export default function DataWithTagsListWithFilter({
         (dataFilteredByTag && dataFilteredByTag.length > 0 ? (
           children(dataFilteredByTag)
         ) : (
-          <p>{i18n.cardType.nothingMatchTag}</p>
+          <p>{i18n.modules.cardType.infos.nothingMatchTag}</p>
         ))}
     </>
   );

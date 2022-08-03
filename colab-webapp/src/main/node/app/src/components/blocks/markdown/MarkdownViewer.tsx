@@ -6,6 +6,7 @@
  */
 import { css, cx } from '@emotion/css';
 import * as React from 'react';
+import useTranslations from '../../../i18n/I18nContext';
 import logger from '../../../logger';
 import { space_S } from '../../styling/style';
 import markdownToDom from './parser/markdownToDom';
@@ -34,6 +35,7 @@ export interface MarkdownViewerProps {
 
 export default function MarkdownViewer({ md, className }: MarkdownViewerProps): JSX.Element {
   const divRef = React.useRef<HTMLDivElement>(null);
+  const i18n = useTranslations();
 
   React.useEffect(() => {
     // TODO: Maybe useLayoutEffect ?
@@ -54,7 +56,7 @@ export default function MarkdownViewer({ md, className }: MarkdownViewerProps): 
     <div className={cx(css({ p: { margin: space_S + ' 0' } }), colabFlavouredMarkdown, className)}>
       {md === '' ? (
         <p className={css({ color: 'var(--lightGray)' })}>
-          <i>empty</i>
+          <i>{i18n.common.empty}</i>
         </p>
       ) : null}
       <div ref={divRef} />

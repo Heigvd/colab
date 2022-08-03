@@ -24,8 +24,14 @@ import Flex from '../layout/Flex';
 import IconButton from './IconButton';
 import Tips, { TipsProps } from './Tips';
 
-// bug longueur des champs dans sign in
-// bug longueur champ purpose dans card type
+// bug card completion
+
+// bug quand édite description au niveau de la liste des projets : quand appuie sur enter, ouvre le projet
+
+// see with Audrey where to put the save and cancel buttons for an "inline input on confirm"
+// see with Audrey max size of a resource title
+
+// TODO space around * (when mandatory)
 
 // TODO autoSave
 

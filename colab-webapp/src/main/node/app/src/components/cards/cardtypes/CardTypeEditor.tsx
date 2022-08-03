@@ -21,6 +21,7 @@ import { Route, Routes, useNavigate, useParams } from 'react-router-dom';
 import Creatable from 'react-select/creatable';
 import * as API from '../../../API/api';
 import { updateDocumentText } from '../../../API/api';
+import useTranslations from '../../../i18n/I18nContext';
 import {
   useAndLoadCardType,
   useCurrentProjectCardTypeTags,
@@ -57,6 +58,7 @@ interface CardTypeEditorProps {
 
 export default function CardTypeEditor({ className, usage }: CardTypeEditorProps): JSX.Element {
   const navigate = useNavigate();
+  const i18n = useTranslations();
 
   const id = useParams<'id'>();
   const typeId = +id.id!;
@@ -124,7 +126,7 @@ export default function CardTypeEditor({ className, usage }: CardTypeEditorProps
                 >
                   <InlineInput
                     value={cardType.title || ''}
-                    placeholder="card type"
+                    placeholder={i18n.modules.cardType.cardType}
                     autoWidth
                     saveMode="ON_CONFIRM"
                     onChange={newValue =>
@@ -139,7 +141,7 @@ export default function CardTypeEditor({ className, usage }: CardTypeEditorProps
                         path="settings"
                         element={
                           <Modal
-                            title="Advanced type settings"
+                            title={i18n.modules.cardType.advancedTypeSettings}
                             onClose={() => navigate('./')}
                             showCloseButton
                           >
@@ -147,7 +149,7 @@ export default function CardTypeEditor({ className, usage }: CardTypeEditorProps
                               <>
                                 <Toggler
                                   value={cardType.deprecated || undefined}
-                                  label="deprecated"
+                                  label= {i18n.common.deprecated}
                                   onChange={() =>
                                     dispatch(
                                       API.updateCardTypeDeprecated({
@@ -158,9 +160,7 @@ export default function CardTypeEditor({ className, usage }: CardTypeEditorProps
                                   }
                                 />
                                 <div className={lightItalicText}>
-                                  <FontAwesomeIcon icon={faInfoCircle} /> Make a Card type
-                                  <b> deprecated</b> whether it is obsolete or another version
-                                  should be used instead.
+                                  <FontAwesomeIcon icon={faInfoCircle} />{i18n.modules.cardType.infos.infoDeprecated}
                                 </div>
                               </>
                             )}
@@ -177,7 +177,7 @@ export default function CardTypeEditor({ className, usage }: CardTypeEditorProps
                           value: 'settings',
                           label: (
                             <>
-                              <FontAwesomeIcon icon={faCog} /> Type Settings
+                              <FontAwesomeIcon icon={faCog} />{i18n.modules.cardType.typeSettings}
                             </>
                           ),
                           action: () => navigate('settings'),
@@ -188,7 +188,7 @@ export default function CardTypeEditor({ className, usage }: CardTypeEditorProps
                             <ConfirmDeleteModal
                               buttonLabel={
                                 <div className={cx(css({ color: errorColor }), modalEntryStyle)}>
-                                  <FontAwesomeIcon icon={faTrash} /> Delete type
+                                  <FontAwesomeIcon icon={faTrash} /> {i18n.modules.cardType.deleteType}
                                 </div>
                               }
                               className={css({
@@ -202,7 +202,7 @@ export default function CardTypeEditor({ className, usage }: CardTypeEditorProps
                                     Make test if type is used in card(s). Disable or hide this
                                     delete option if used.
                                   </Tips>
-                                  Are you <strong>sure</strong> you want to delete this card type?
+                                  {i18n.modules.cardType.confirmDeleteType}
                                 </p>
                               }
                               onConfirm={() => {
@@ -211,7 +211,7 @@ export default function CardTypeEditor({ className, usage }: CardTypeEditorProps
                                   navigate('../');
                                 }
                               }}
-                              confirmButtonLabel={'Delete card type'}
+                              confirmButtonLabel={i18n.modules.cardType.deleteType}
                             />
                           ),
                           modal: true,
@@ -226,12 +226,12 @@ export default function CardTypeEditor({ className, usage }: CardTypeEditorProps
                     direction="column"
                     align="stretch"
                   >
-                    <h3>Purpose: </h3>
+                    <h3>{i18n.modules.cardType.purpose}: </h3>
                     <DocTextWrapper id={cardType.purposeId}>
                       {text => (
                         <InlineInput
                           value={text || ''}
-                          placeholder={'Explain the purpose'}
+                          placeholder={i18n.modules.cardType.explainPurpose}
                           inputType="textarea"
                           saveMode="ON_CONFIRM"
                           onChange={(newValue: string) => {
@@ -274,8 +274,8 @@ export default function CardTypeEditor({ className, usage }: CardTypeEditorProps
                   <Flex>
                     <Toggler
                       value={cardType.published || undefined}
-                      label="published"
-                      tip="Make a card type published if you want to access it in your other projects"
+                      label={i18n.common.published}
+                      tip={i18n.modules.cardType.infos.infoPublished}
                       onChange={() =>
                         dispatch(
                           API.updateCardTypePublished({
@@ -316,7 +316,7 @@ export default function CardTypeEditor({ className, usage }: CardTypeEditorProps
                       </>
                     ),
                     icon: faPaperclip,
-                    title: 'Documentation',
+                    title: i18n.modules.resource.documentation,
                   },
                 }}
                 defaultOpenKey={'resources'}
