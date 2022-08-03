@@ -35,6 +35,9 @@ import Tips, { TipsProps } from './Tips';
 
 // TODO autoSave
 
+// TODO replace OnConfirmInput
+// TODO replace input in invite member in Team.tsx
+
 // TODO see with Audrey what happens in saveMode === 'ON_CONFIRM' when click outside. do we lose ?
 // TODO see with Audrey updated status => edit mode
 // TODO see with Audrey if in a form, errors are centered or not
