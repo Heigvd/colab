@@ -140,22 +140,11 @@ function ProgressBar({
 }
 
 interface TXToptionsType {
-  //type: 'TXT';
   showTree: boolean;
   setShowTree: React.Dispatch<React.SetStateAction<boolean>>;
   markDownMode: boolean;
   setMarkDownMode: React.Dispatch<React.SetStateAction<boolean>>;
-  //formatButtonState?: ToolbarState;
-  //formatButtonFeatures?: ToolbarFeatures;
 }
-
-/* interface LKoptionsType {
-  type: 'LK';
-}
-
-interface DocFoptionsType {
-   type: 'DocF';
-} */
 
 interface CardEditorContext {
   selectedDocId?: number | null;
@@ -235,7 +224,7 @@ export default function CardEditor({
   );
 
   if (card.id == null) {
-    return <i>Card without id is invalid...</i>;
+    return <i>{i18n.modules.card.error.withoutId}</i>;
   } else {
     const cardId = card.id;
     return (
@@ -274,7 +263,11 @@ export default function CardEditor({
               )}
             >
               <ReflexContainer orientation={'vertical'}>
-                <ReflexElement className={"left-pane " + css({display: 'flex'})} resizeHeight={false} minSize={150}>
+                <ReflexElement
+                  className={'left-pane ' + css({ display: 'flex' })}
+                  resizeHeight={false}
+                  minSize={150}
+                >
                   <Flex direction="column" grow={1} align="stretch">
                     <Flex
                       direction="column"
@@ -300,7 +293,7 @@ export default function CardEditor({
                             {variant.frozen && (
                               <FontAwesomeIcon
                                 icon={faLock}
-                                title='Card is locked. To unlock it go to Card settings and uncheck "locked".'
+                                title={i18n.modules.card.infos.cardLocked}
                                 color={'var(--darkGray)'}
                               />
                             )}
@@ -322,7 +315,7 @@ export default function CardEditor({
                                   value={
                                     variant.title && variant.title.length > 0
                                       ? variant.title
-                                      : `Variant ${variantNumber}`
+                                      : i18n.modules.card.variant + `${variantNumber}`
                                   }
                                   placeholder={i18n.modules.content.untitled}
                                   readOnly={readOnly}
@@ -338,7 +331,7 @@ export default function CardEditor({
                             {hasCardType && (
                               <IconButton
                                 icon={faInfoCircle}
-                                title="Show card model informations"
+                                title={i18n.modules.card.showCardType}
                                 className={cx(
                                   lightIconButtonStyle,
                                   css({ color: 'var(--lightGray)' }),
@@ -356,7 +349,7 @@ export default function CardEditor({
                                 path="settings"
                                 element={
                                   <Modal
-                                    title="Card Settings"
+                                    title={i18n.modules.card.settings.title}
                                     onClose={() => closeRouteCb('settings')}
                                     showCloseButton
                                     className={css({ height: '580px' })}
@@ -375,7 +368,7 @@ export default function CardEditor({
                                 path="involvements"
                                 element={
                                   <Modal
-                                    title="Involvements"
+                                    title={i18n.modules.card.involvements}
                                     onClose={() => closeRouteCb('involvements')}
                                     showCloseButton
                                     className={css({ height: '580px', width: '600px' })}
@@ -388,7 +381,7 @@ export default function CardEditor({
                                 path="completion"
                                 element={
                                   <Modal
-                                    title="Edit card completion"
+                                    title={i18n.modules.card.editCompletion}
                                     onClose={() => closeRouteCb('completion')}
                                     showCloseButton
                                     modalBodyClassName={css({ alignItems: 'center' })}
@@ -399,7 +392,7 @@ export default function CardEditor({
                                         justify="center"
                                         className={css({ margin: space_S })}
                                       >
-                                        <Button onClick={close}>OK</Button>
+                                        <Button onClick={close}>{i18n.common.ok}</Button>
                                       </Flex>
                                     )}
                                   >
@@ -422,7 +415,7 @@ export default function CardEditor({
                                     ? { layerIcon: faSlash, transform: 'grow-1' }
                                     : undefined
                                 }
-                                title="Show/hide toolbox"
+                                title={i18n.modules.card.editor.toggleToolbox}
                                 className={cx(
                                   lightIconButtonStyle,
                                   css({ color: 'var(--lightGray)' }),
@@ -431,7 +424,7 @@ export default function CardEditor({
                               />
                             )}
                             <IconButton
-                              title="Full screen mode"
+                              title={i18n.modules.card.editor.fullScreen}
                               icon={fullScreen ? faCompressArrowsAlt : faExpandArrowsAlt}
                               onClick={() => setFullScreen(fullScreen => !fullScreen)}
                               className={lightIconButtonStyle}
@@ -448,7 +441,8 @@ export default function CardEditor({
                                   value: 'settings',
                                   label: (
                                     <>
-                                      <FontAwesomeIcon icon={faCog} /> Card Settings
+                                      <FontAwesomeIcon icon={faCog} />{' '}
+                                      {i18n.modules.card.settings.title}
                                     </>
                                   ),
                                   action: () => navigate('settings'),
@@ -457,7 +451,8 @@ export default function CardEditor({
                                   value: 'involvements',
                                   label: (
                                     <>
-                                      <FontAwesomeIcon icon={faUsers} /> Involvements
+                                      <FontAwesomeIcon icon={faUsers} />
+                                      {i18n.modules.card.involvements}
                                     </>
                                   ),
                                   action: () => navigate('involvements'),
@@ -466,7 +461,8 @@ export default function CardEditor({
                                   value: 'completion',
                                   label: (
                                     <>
-                                      <FontAwesomeIcon icon={faPercent} /> Completion
+                                      <FontAwesomeIcon icon={faPercent} />
+                                      {i18n.modules.card.completion}
                                     </>
                                   ),
                                   action: () => navigate('completion'),
@@ -475,7 +471,8 @@ export default function CardEditor({
                                   value: 'Add new variant',
                                   label: (
                                     <>
-                                      <FontAwesomeIcon icon={faWindowRestore} /> Add variant
+                                      <FontAwesomeIcon icon={faWindowRestore} />{' '}
+                                      {i18n.modules.card.addVariant}
                                     </>
                                   ),
                                   action: () => {
@@ -502,7 +499,7 @@ export default function CardEditor({
                                           )}
                                         >
                                           <FontAwesomeIcon icon={faTrash} />
-                                          {hasVariants ? ' Delete variant' : ' Delete card'}
+                                          {i18n.modules.card.deleteCardVariant(hasVariants)}
                                         </div>
                                       }
                                       className={css({
@@ -511,17 +508,9 @@ export default function CardEditor({
                                         alignItems: 'center',
                                       })}
                                       message={
-                                        hasVariants ? (
-                                          <p>
-                                            Are you <strong>sure</strong> you want to delete this
-                                            whole variant? This will delete all subcards inside.
-                                          </p>
-                                        ) : (
-                                          <p>
-                                            Are you <strong>sure</strong> you want to delete this
-                                            whole card? This will delete all subcards inside.
-                                          </p>
-                                        )
+                                        <p>
+                                          {i18n.modules.card.confirmDeleteCardVariant(hasVariants)}
+                                        </p>
                                       }
                                       onConfirm={() => {
                                         if (hasVariants) {
@@ -532,9 +521,9 @@ export default function CardEditor({
                                           navigate('../');
                                         }
                                       }}
-                                      confirmButtonLabel={
-                                        hasVariants ? 'Delete variant' : 'Delete card'
-                                      }
+                                      confirmButtonLabel={i18n.modules.card.deleteCardVariant(
+                                        hasVariants,
+                                      )}
                                     />
                                   ),
                                   modal: true,
@@ -556,10 +545,10 @@ export default function CardEditor({
                           <div className={showTypeDetails ? openDetails : closeDetails}>
                             <div>
                               <p>
-                                <b>Card type</b>: {cardType.title || ''}
+                                <b>{i18n.modules.cardType.cardType}</b>: {cardType.title || ''}
                               </p>
                               <p>
-                                <b>Purpose</b>: <DocTextDisplay id={cardType.purposeId} />
+                                <b>{i18n.modules.cardType.purpose}</b>: <DocTextDisplay id={cardType.purposeId} />
                               </p>
                             </div>
                             <IconButton
@@ -586,17 +575,17 @@ export default function CardEditor({
                               allowEdition={!readOnly}
                             />
                           ) : (
-                            <span>no deliverable available</span>
+                            <span>{i18n.modules.card.infos.noDeliverable}</span>
                           )
                         ) : (
-                          <span>Access Denied</span>
+                          <span>{i18n.httpErrorMessage.ACCESS_DENIED}</span>
                         )}
                       </Flex>
                     </Flex>
 
                     <Flex align="center">
                       <OpenCloseModal
-                        title="Edit card completion"
+                        title={i18n.modules.card.editCompletion}
                         className={css({ width: '100%' })}
                         modalBodyClassName={css({ alignItems: 'center' })}
                         collapsedChildren={
@@ -612,7 +601,7 @@ export default function CardEditor({
                         }
                         footer={close => (
                           <Flex grow={1} justify="center" className={css({ margin: space_S })}>
-                            <Button onClick={close}>OK</Button>
+                            <Button onClick={close}>{i18n.common.ok}</Button>
                           </Flex>
                         )}
                         onEnter={close => close()}
@@ -629,7 +618,11 @@ export default function CardEditor({
                   </Flex>
                 </ReflexElement>
                 {openKey && <ReflexSplitter />}
-                <ReflexElement className={"right-pane " + css({display: 'flex', minWidth: 'min-content'})} resizeHeight={false} maxSize={openKey ? undefined : 40}>
+                <ReflexElement
+                  className={'right-pane ' + css({ display: 'flex', minWidth: 'min-content' })}
+                  resizeHeight={false}
+                  maxSize={openKey ? undefined : 40}
+                >
                   <SideCollapsiblePanel
                     openKey={openKey}
                     setOpenKey={setOpenKey}
@@ -651,25 +644,23 @@ export default function CardEditor({
                           />
                         ),
                         icon: faPaperclip,
-                        title: 'Documentation',
+                        title: i18n.modules.resource.documentation,
                         nextToTitleElement: (
                           <Tips>
-                            Use documentation panel to add pieces of (meta)information related to
-                            the card or variant. Pieces of documentation can come from card type.
+                            {i18n.modules.resource.docDescription}
                           </Tips>
                         ),
                         className: css({ overflow: 'auto' }),
                       },
                       'Sticky Notes': {
                         icon: faStickyNote,
-                        title: 'Sticky notes',
+                        title: i18n.modules.stickyNotes.stickyNotes,
                         children: <StickyNoteWrapper destCardId={card.id} showSrc />,
                         nextToTitleElement: (
                           <Tips>
-                            <h5>List of sticky notes stuck on the card</h5>
+                            <h5>{i18n.modules.stickyNotes.listStickyNotes}</h5>
                             <div>
-                              Sticky notes come from a source (card, card specific version,
-                              resource, block)
+                            {i18n.modules.stickyNotes.snDescription}
                             </div>
                           </Tips>
                         ),
@@ -677,7 +668,7 @@ export default function CardEditor({
                       },
                     }}
                     direction="RIGHT"
-                    className={css({flexGrow: 1})}
+                    className={css({ flexGrow: 1 })}
                   />
                 </ReflexElement>
               </ReflexContainer>
@@ -685,7 +676,7 @@ export default function CardEditor({
           </Flex>
           <VariantPager allowCreation={userAcl.write} card={card} current={variant} />
           {showSubcards ? (
-            <Collapsible label="Subcards">
+            <Collapsible label={i18n.modules.card.subcards}>
               <ContentSubs
                 depth={1}
                 cardContent={variant}

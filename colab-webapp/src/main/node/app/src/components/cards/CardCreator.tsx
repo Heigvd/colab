@@ -74,14 +74,13 @@ export default function CardCreator({
   return (
     <OpenCloseModal
       title={
-        'Create a new ' +
-        (parentCardContent.title ? 'subcard for ' + parentCardContent.title : 'card')
+        i18n.modules.card.createNew(parentCardContent.title)
       }
       collapsedChildren={
         customButton ? (
           customButton
         ) : (
-          <IconButton icon={faPlus} className={greyIconButtonChipStyle} title="Add a card" /> // TODO harmonize "Add a card" / "Add Card"
+          <IconButton icon={faPlus} className={greyIconButtonChipStyle} title={i18n.modules.card.addCard} />
         )
       }
       className={className}
@@ -99,7 +98,7 @@ export default function CardCreator({
             onClick={function () {
               navigate('types');
             }}
-            title="Manage card types"
+            title={i18n.modules.cardType.manageTypes}
             icon={faCog}
             className={lightIconButtonStyle}
           />
@@ -108,24 +107,17 @@ export default function CardCreator({
           </Button>
 
           <Button
-            title="Create card"
             onClick={() => {
               createCard();
               resetData();
               close();
             }}
           >
-            Add a card
+            {i18n.modules.card.addCard}
           </Button>
         </Flex>
       )}
       showCloseButton
-      /* onEnter={close => {
-        if(document.activeElement)
-        createCard();
-        resetData();
-        close();
-      }} */
     >
       {close => {
         if (status !== 'READY') {

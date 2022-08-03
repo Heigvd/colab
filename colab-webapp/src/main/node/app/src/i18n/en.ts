@@ -101,6 +101,9 @@ export const en = {
   team: {
     roles: 'Roles',
     members: 'Members',
+    generalInvolvement: 'General involvement',
+    involvementHelper:
+      'Add or select an involvement level for all members and roles. You can fine-tune it below by choosing indiviually a different level.  When undefined, the involvement level is calculated based on parent(s) card(s), and then on your rights in the project.',
   },
   //////////////////////////////////////////////////////////////////////////////////////////////////
   // ACTIVITY
@@ -188,12 +191,40 @@ export const en = {
   // MODULES
   modules: {
     card: {
+      card: 'Card',
+      variant: 'Variant',
+      subcards: 'Subcards',
       untitled: 'New card',
+      addCard: 'Add a card',
+      addVariant: 'Add a variant',
+      createNew: (parentTitle?: string | null): string =>
+        `Create a new ${parentTitle ? 'subcard for ' + parentTitle : 'card'}"`,
+      deleteCardVariant: (hasVariant?: boolean): string =>
+        `Delete ${hasVariant ? 'variant' : 'card'}`,
+      confirmDeleteCardVariant: (hasVariant?: boolean): string =>
+        `Are you sure you want to delete this whole ${
+          hasVariant ? 'variant' : 'card'
+        }? This will delete all subcards inside.`,
+      involvements: 'Involvements',
+      completion: 'Completion',
+      showCardType: 'Show card type information',
+      editCompletion: 'Edit card completion',
+      editor: {
+        toggleToolbox: 'Toggle toolbox',
+        fullScreen: 'Full screen mode',
+      },
       settings: {
-        title: 'Settings',
+        title: 'Card settings',
         acl: {
           title: 'Access Control',
         },
+      },
+      infos: {
+        cardLocked: 'Card is locked. To unlock it go to Card settings and uncheck "locked".',
+        noDeliverable: 'No deliverable available',
+      },
+      error: {
+        withoutId: 'Card without id is invalid...',
       },
     },
     content: {
@@ -201,12 +232,35 @@ export const en = {
       untitled: 'New version',
       mimeType: 'MIME type',
       document: 'document',
+      mdMode: 'Markdown mode',
+      showTree: 'Show tree',
+      dlFile: 'Download file',
+      editBlock: 'Edit block',
+      deleteBlock: 'Delete block',
+      addText: 'Add a text block',
+      addFile: 'Add a file',
+      addLink: 'Add a link',
+      moveBlockUpDown: (direction: string): string =>
+        `Move block ${direction === 'up' ? 'up' : 'down'}`,
+      deleteBlockType: (isText: boolean, isLink: boolean): string =>
+        `Delete ${isText ? 'text' : isLink ? 'link' : 'doc'}"`,
+      confirmDeleteBlock:
+        'Are you sure you want to delete this whole block? This will be lost forever.',
+      openUrlNewTab: 'Open URL in new tab',
     },
     resource: {
       untitled: 'New document',
       noTeaser: 'no document teaser',
       category: 'category',
-      documentation: 'documentation',
+      documentation: 'Documentation',
+      docDescription:
+        'Use documentation panel to add pieces of (meta)information related to the card or variant. Pieces of documentation can come from card type.',
+    },
+    stickyNotes: {
+      stickyNotes: 'Sticky notes',
+      listStickyNotes: 'List of sticky notes stuck on the card',
+      snDescription:
+        'Sticky notes come from a source (card, card specific version, resource, block)',
     },
     cardType: {
       cardType: 'Card type',
@@ -215,6 +269,7 @@ export const en = {
       addType: 'Add a type',
       editType: 'Edit type',
       deleteType: 'Delete card type',
+      manageTypes: 'Manage card types',
       useInProject: 'Use in project',
       RmFromProject: 'Remove from project',
       typeSettings: 'Type Settings',
