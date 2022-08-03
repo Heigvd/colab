@@ -71,20 +71,20 @@ export default function CardTypeCreator({ onCreated, usage }: CardTypeCreatorPro
   const fields: Field<NewType>[] = [
     {
       key: 'title',
-      label: 'name',
+      label: i18n.common.name,
       type: 'text',
       isMandatory: true,
     },
     {
       key: 'purpose',
-      label: 'purpose',
+      label: i18n.modules.cardType.purpose,
       type: 'textarea',
       isMandatory: true,
     },
     createSelectField({
       key: 'tags',
-      label: 'category',
-      placeholder: 'Select or type to create',
+      label: i18n.modules.resource.category,
+      placeholder: i18n.form.selectOrCreate,
       type: 'select',
       isMandatory: true,
       isMulti: true,
@@ -97,7 +97,7 @@ export default function CardTypeCreator({ onCreated, usage }: CardTypeCreatorPro
   ];
 
   if (project == null && usage === 'currentProject') {
-    return <i>No project selected</i>;
+    return <i>{i18n.modules.cardType.infos.noProjectSelected}</i>;
   }
 
   return (
@@ -105,7 +105,7 @@ export default function CardTypeCreator({ onCreated, usage }: CardTypeCreatorPro
       title={'Create a type'}
       collapsedChildren={
         <>
-          <FontAwesomeIcon icon={faPlus} /> Add a type
+          <FontAwesomeIcon icon={faPlus} /> {i18n.modules.cardType.addType}
         </>
       }
       className={cx(buttonStyle, css({ marginBottom: space_M }))}

@@ -8,6 +8,7 @@
 import { css } from '@emotion/css';
 import * as React from 'react';
 import { Route, Routes, useNavigate } from 'react-router-dom';
+import useTranslations from '../../../i18n/I18nContext';
 import { useAndLoadGlobalTypesForAdmin } from '../../../selectors/cardTypeSelector';
 import { CardTypeAllInOne } from '../../../types/cardTypeDefinition';
 import AvailabilityStatusIndicator from '../../common/element/AvailabilityStatusIndicator';
@@ -28,6 +29,7 @@ const flexWrap = css({
 
 export default function GlobalCardTypeList(): JSX.Element {
   const navigate = useNavigate();
+  const i18n = useTranslations();
 
   const [lastCreated, setLastCreated] = React.useState<number | null>(null);
 
@@ -57,7 +59,7 @@ export default function GlobalCardTypeList(): JSX.Element {
             className={css({ alignSelf: 'stretch' })}
           >
             <Flex justify="space-between">
-              <h3>Global card types</h3>
+              <h3> {i18n.modules.cardType.globalTypes}</h3>
               <CardTypeCreator usage="global" onCreated={setLastCreated} />
             </Flex>
             {status !== 'READY' ? (
@@ -77,7 +79,7 @@ export default function GlobalCardTypeList(): JSX.Element {
               </CardTypeListWithFilter>
             ) : (
               <div className={voidStyle}>
-                <p>Add the first global card type</p>
+                <p>{i18n.modules.cardType.infos.addFirstGlobalTypes}</p>
               </div>
             )}
           </Flex>

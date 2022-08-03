@@ -8,6 +8,7 @@
 import { css, cx } from '@emotion/css';
 import * as React from 'react';
 import { Route, Routes, useNavigate } from 'react-router-dom';
+import useTranslations from '../../../i18n/I18nContext';
 import {
   useAndLoadAvailableCardTypes,
   useAndLoadProjectCardTypes,
@@ -41,6 +42,7 @@ const customThumbStyle = css({
  */
 export default function ProjectCardTypeList(): JSX.Element {
   const navigate = useNavigate();
+  const i18n = useTranslations();
 
   const [lastCreated, setLastCreated] = React.useState<number | null>(null);
 
@@ -94,12 +96,12 @@ export default function ProjectCardTypeList(): JSX.Element {
             ) : (
               <div className={voidStyle}>
                 <p>
-                  Add the first card type to the project.
+                {i18n.modules.cardType.infos.addFirstProjectType}
                   <br />
                   <br />
-                  You can create an empty type with the button
+                  {i18n.modules.cardType.infos.createEmptyType}
                   <br />
-                  or add a "shared available type" to the project.
+                  {i18n.modules.cardType.infos.orAddSharedType}
                 </p>
               </div>
             )}
@@ -121,7 +123,7 @@ export default function ProjectCardTypeList(): JSX.Element {
                 />
               ) : (
                 <div className={voidStyle}>
-                  <p>There are no available external card types</p>
+                  <p>{i18n.modules.cardType.infos.noExternalType}</p>
                 </div>
               )}
             </Collapsible>
