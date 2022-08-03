@@ -29,7 +29,9 @@ import Tips, { TipsProps } from './Tips';
 
 // TODO autoSave
 
-// TODO see what happens in saveMode === 'ON_CONFIRM' when click outside. do we lose ?
+// TODO see with Audrey what happens in saveMode === 'ON_CONFIRM' when click outside. do we lose ?
+// TODO see with Audrey updated status => edit mode
+// TODO see with Audrey if in a form, errors are centered or not
 
 // Note : still need some UI improvements for some combinations
 // Just add what is needed when we need it
@@ -49,8 +51,8 @@ interface InputProps {
   rows?: HTMLTextAreaElement['rows'];
   autoWidth?: boolean;
   maxWidth?: string;
-  saveMode: 'FLOWING' | 'ON_CONFIRM'; //| 'DEBOUNCED' | 'ON_CONFIRM';
-  onChange: (newValue: string) => void; //  | number
+  saveMode: 'FLOWING' | 'ON_CONFIRM'; // | 'DEBOUNCED';
+  onChange: (newValue: string) => void;
   onCancel?: () => void;
   tip?: TipsProps['children'];
   footer?: React.ReactNode;
@@ -71,7 +73,7 @@ const confirmButtonsStyle = css({
 
 function Input({
   label,
-  value = '',
+  value: initialValue = '',
   placeholder,
   inputType = 'input',
   type = 'text',
@@ -110,6 +112,7 @@ function Input({
   const [currentInternalValue, setCurrentInternalValue] = React.useState<string | number>();
   const [mode, setMode] = React.useState<'DISPLAY' | 'EDIT'>('DISPLAY');
 
+  // the field can resize itself automatically
   const updateSize = React.useCallback(() => {
     if (autoWidth) {
       if (inputRef.current) {
@@ -122,18 +125,19 @@ function Input({
     }
   }, [autoWidth]);
 
+  // when value changes, use it as current value
   React.useEffect(() => {
     if (inputType === 'input' && inputRef.current != null) {
-      inputRef.current.value = String(value);
+      inputRef.current.value = String(initialValue);
     }
     if (inputType === 'textarea' && textareaRef.current != null) {
-      textareaRef.current.value = String(value);
+      textareaRef.current.value = String(initialValue);
     }
 
-    setCurrentInternalValue(value);
+    setCurrentInternalValue(initialValue);
 
     updateSize();
-  }, [inputType, value, updateSize]);
+  }, [inputType, initialValue, updateSize]);
 
   const save = React.useCallback(() => {
     if (inputType === 'input' && inputRef.current != null) {
@@ -148,22 +152,22 @@ function Input({
 
   const cancel = React.useCallback(() => {
     if (inputType === 'input' && inputRef.current != null) {
-      inputRef.current.value = String(value);
+      inputRef.current.value = String(initialValue);
       inputRef.current.blur();
     }
     if (inputType === 'textarea' && textareaRef.current != null) {
-      textareaRef.current.value = String(value);
+      textareaRef.current.value = String(initialValue);
       textareaRef.current.blur();
     }
 
-    setCurrentInternalValue(value);
+    setCurrentInternalValue(initialValue);
 
     updateSize();
 
     if (onCancel) {
       onCancel();
     }
-  }, [inputType, inputRef, textareaRef, value, updateSize, onCancel]);
+  }, [inputType, inputRef, textareaRef, initialValue, updateSize, onCancel]);
 
   // const handleClickOutside = (event: Event) => {
   //   if (containerRef.current != null && !containerRef.current.contains(event.target as Node)) {
@@ -206,6 +210,7 @@ function Input({
         if (saveMode === 'ON_CONFIRM') {
           save();
         }
+
         if (inputType === 'input' && inputRef.current != null) {
           inputRef.current.blur();
         }
@@ -217,14 +222,14 @@ function Input({
     [saveMode, save, inputType],
   );
 
-  const updated = currentInternalValue !== value;
+  const updated = currentInternalValue !== initialValue;
 
   return (
     <Flex direction="column" className={containerClassName} style={{ maxWidth: maxWidth }}>
       {/* //</Flex> <Flex theRef={containerRef} direction='column'> */}
       {label && (
         <Flex align="center">
-          {label && <span className={cx(labelStyle, labelClassName)}>{label}</span>}
+          <span className={cx(labelStyle, labelClassName)}>{label}</span>
           {tip && <Tips>{tip}</Tips>}
           {mandatory && ' * '}
           {/* {updated && (
