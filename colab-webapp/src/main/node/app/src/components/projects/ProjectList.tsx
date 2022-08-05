@@ -31,6 +31,7 @@ import {
   space_M,
   space_S,
   textSmall,
+  voidStyle,
 } from '../styling/style';
 import { defaultProjectIllustration } from './ProjectCommon';
 import ProjectCreator from './ProjectCreator';
@@ -219,6 +220,12 @@ function ProjectList({ projects, status, reload }: ProjectListProps) {
   } else {
     return (
       <div className={css({ padding: '4vw' })}>
+        {(!projects || projects.length === 0) && (
+          <div className={voidStyle}>
+            <h2>Welcome ! </h2>
+            <h3>You don't have any project yet</h3>
+          </div>
+        )}
         {/* {projects
             .sort((a, b) => (a.id || 0) - (b.id || 0))
             .map(project => {
