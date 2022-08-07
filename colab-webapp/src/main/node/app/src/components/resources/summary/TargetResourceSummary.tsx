@@ -31,7 +31,7 @@ function ResourceOfCardContentSummary({ className }: { className?: string }): JS
   return (
     <FontAwesomeIcon
       icon={faCircle}
-      size='xs'
+      size="xs"
       title={'Available only for this variant'}
       className={className}
     />
@@ -40,10 +40,6 @@ function ResourceOfCardContentSummary({ className }: { className?: string }): JS
 
 function ResourceOfCardTypeSummary({ className }: { className?: string }): JSX.Element {
   return (
-    <FontAwesomeIcon
-      icon={faCircleDot}
-      title={'Provided by the card type'}
-      className={className}
-    />
+    <FontAwesomeIcon icon={faCircleDot} title={'Provided by the card type'} className={className} />
   );
 }

@@ -40,9 +40,7 @@ export default function CardInvolvement({ card }: CardInvolvementProps): JSX.Ele
         })}
       >
         <h2>{i18n.team.generalInvolvement}</h2>
-        <Tips>
-        {i18n.team.involvementHelper}
-        </Tips>
+        <Tips>{i18n.team.involvementHelper}</Tips>
       </Flex>
       <InvolvementSelector
         self={card.defaultInvolvementLevel}

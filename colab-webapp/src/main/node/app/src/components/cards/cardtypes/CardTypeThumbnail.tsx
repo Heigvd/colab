@@ -94,7 +94,9 @@ export default function CardTypeThumbnail({
             <Flex direction="column" grow={1} align="stretch">
               <Flex justify={editable ? 'flex-start' : 'space-between'} align="center">
                 <TargetCardTypeSummary cardType={cardType} />
-                <h3 className={oneLineEllipsis}>{cardType.title || i18n.modules.cardType.cardType}</h3>
+                <h3 className={oneLineEllipsis}>
+                  {cardType.title || i18n.modules.cardType.cardType}
+                </h3>
                 <div
                   className={cx(
                     lightItalicText,
@@ -129,7 +131,8 @@ export default function CardTypeThumbnail({
                           value: 'Edit type',
                           label: (
                             <>
-                              <FontAwesomeIcon icon={faPen} />{i18n.modules.cardType.editType}
+                              <FontAwesomeIcon icon={faPen} />
+                              {i18n.modules.cardType.editType}
                             </>
                           ),
                           action: () => navigate(`./edit/${cardType.ownId}`),
@@ -144,7 +147,8 @@ export default function CardTypeThumbnail({
                           value: 'Use this type in the project',
                           label: (
                             <>
-                              <FontAwesomeIcon icon={faMapPin} />{i18n.modules.cardType.useInProject}
+                              <FontAwesomeIcon icon={faMapPin} />
+                              {i18n.modules.cardType.useInProject}
                             </>
                           ),
                           action: () =>
@@ -165,11 +169,10 @@ export default function CardTypeThumbnail({
                           label: (
                             <>
                               {!isUsedInProject(cardType.id) ? (
-                                <div
-                                className={cx(css({ color: errorColor }), modalEntryStyle)}
-                              >
-                                <FontAwesomeIcon icon={faExchangeAlt} />{i18n.modules.cardType.RmFromProject}
-                              </div>
+                                <div className={cx(css({ color: errorColor }), modalEntryStyle)}>
+                                  <FontAwesomeIcon icon={faExchangeAlt} />
+                                  {i18n.modules.cardType.RmFromProject}
+                                </div>
                               ) : (
                                 <OpenCloseModal
                                   title="Cannot remove card type"
@@ -182,7 +185,8 @@ export default function CardTypeThumbnail({
                                     <div
                                       className={cx(css({ color: errorColor }), modalEntryStyle)}
                                     >
-                                      <FontAwesomeIcon icon={faExchangeAlt} /> {i18n.modules.cardType.RmFromProject}
+                                      <FontAwesomeIcon icon={faExchangeAlt} />{' '}
+                                      {i18n.modules.cardType.RmFromProject}
                                     </div>
                                   }
                                   footer={collapse => (
@@ -195,11 +199,7 @@ export default function CardTypeThumbnail({
                                     </Flex>
                                   )}
                                 >
-                                  {() => (
-                                    <div>
-                                       {i18n.modules.cardType.infos.cannotRemoveType}
-                                    </div>
-                                  )}
+                                  {() => <div>{i18n.modules.cardType.infos.cannotRemoveType}</div>}
                                 </OpenCloseModal>
                               )}
                             </>
@@ -230,7 +230,8 @@ export default function CardTypeThumbnail({
                                     <div
                                       className={cx(css({ color: errorColor }), modalEntryStyle)}
                                     >
-                                      <FontAwesomeIcon icon={faTrash} /> {i18n.modules.cardType.deleteType}
+                                      <FontAwesomeIcon icon={faTrash} />{' '}
+                                      {i18n.modules.cardType.deleteType}
                                     </div>
                                   }
                                   className={css({
@@ -238,17 +239,13 @@ export default function CardTypeThumbnail({
                                     display: 'flex',
                                     alignItems: 'center',
                                   })}
-                                  message={
-                                    <p>
-                                       {i18n.modules.cardType.confirmDeleteType}
-                                    </p>
-                                  }
+                                  message={<p>{i18n.modules.cardType.confirmDeleteType}</p>}
                                   onConfirm={() => dispatch(API.deleteCardType(cardType))}
                                   confirmButtonLabel="Delete type"
                                 />
                               ) : (
                                 <OpenCloseModal
-                                  title= {i18n.modules.cardType.deleteType}
+                                  title={i18n.modules.cardType.deleteType}
                                   className={css({
                                     '&:hover': { textDecoration: 'none' },
                                     display: 'flex',
@@ -272,11 +269,7 @@ export default function CardTypeThumbnail({
                                     </Flex>
                                   )}
                                 >
-                                  {() => (
-                                    <div>
-                                       {i18n.modules.cardType.infos.cannotDeleteType}
-                                    </div>
-                                  )}
+                                  {() => <div>{i18n.modules.cardType.infos.cannotDeleteType}</div>}
                                 </OpenCloseModal>
                               )}
                             </>

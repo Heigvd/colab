@@ -96,7 +96,7 @@ export default function ProjectCardTypeList(): JSX.Element {
             ) : (
               <div className={voidStyle}>
                 <p>
-                {i18n.modules.cardType.infos.addFirstProjectType}
+                  {i18n.modules.cardType.infos.addFirstProjectType}
                   <br />
                   <br />
                   {i18n.modules.cardType.infos.createEmptyType}

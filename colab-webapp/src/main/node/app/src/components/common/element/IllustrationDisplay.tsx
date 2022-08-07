@@ -30,7 +30,7 @@ export default function IllustrationDisplay({
   iconColor,
   align,
   justify,
-  className
+  className,
 }: IllustrationDisplayProps): JSX.Element {
   library.add(fas, far); // TODO sandra work in progress // or just the icon we need
 
@@ -38,14 +38,17 @@ export default function IllustrationDisplay({
     <Flex
       align={align != null ? align : 'center'}
       justify={justify != null ? justify : 'center'}
-      className={cx(css({
-        backgroundColor: `${
-          illustration.iconBkgdColor ? illustration.iconBkgdColor : 'var(--secondaryColor)'
-        }`,
-        height: `calc(100% - 2*${space_S})`,
-        width: `calc(100% - 2*${space_S})`,
-        padding: space_S,
-      }), className)}
+      className={cx(
+        css({
+          backgroundColor: `${
+            illustration.iconBkgdColor ? illustration.iconBkgdColor : 'var(--secondaryColor)'
+          }`,
+          height: `calc(100% - 2*${space_S})`,
+          width: `calc(100% - 2*${space_S})`,
+          padding: space_S,
+        }),
+        className,
+      )}
     >
       {illustration.iconLibrary === 'FONT_AWESOME_SOLID' ||
       illustration.iconLibrary === 'FONT_AWESOME_REGULAR' ? (
@@ -71,7 +74,7 @@ export function IllustrationIconDisplay({
   illustration,
   iconSize,
   iconColor,
-  className
+  className,
 }: IllustrationDisplayProps): JSX.Element {
   library.add(fas, far); // TODO sandra work in progress // or just the icon we need
 
@@ -94,11 +97,9 @@ export function IllustrationIconDisplay({
           {illustration.iconKey} of library {illustration.iconLibrary}
         </p>
       )}
-      </>
+    </>
   );
 }
-
-
 
 {
   /* TODO sandra work in progress : remove tries */

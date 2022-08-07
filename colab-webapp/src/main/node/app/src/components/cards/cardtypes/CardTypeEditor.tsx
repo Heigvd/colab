@@ -149,7 +149,7 @@ export default function CardTypeEditor({ className, usage }: CardTypeEditorProps
                               <>
                                 <Toggler
                                   value={cardType.deprecated || undefined}
-                                  label= {i18n.common.deprecated}
+                                  label={i18n.common.deprecated}
                                   onChange={() =>
                                     dispatch(
                                       API.updateCardTypeDeprecated({
@@ -160,7 +160,8 @@ export default function CardTypeEditor({ className, usage }: CardTypeEditorProps
                                   }
                                 />
                                 <div className={lightItalicText}>
-                                  <FontAwesomeIcon icon={faInfoCircle} />{i18n.modules.cardType.infos.infoDeprecated}
+                                  <FontAwesomeIcon icon={faInfoCircle} />
+                                  {i18n.modules.cardType.infos.infoDeprecated}
                                 </div>
                               </>
                             )}
@@ -177,7 +178,8 @@ export default function CardTypeEditor({ className, usage }: CardTypeEditorProps
                           value: 'settings',
                           label: (
                             <>
-                              <FontAwesomeIcon icon={faCog} />{i18n.modules.cardType.typeSettings}
+                              <FontAwesomeIcon icon={faCog} />
+                              {i18n.modules.cardType.typeSettings}
                             </>
                           ),
                           action: () => navigate('settings'),
@@ -188,7 +190,8 @@ export default function CardTypeEditor({ className, usage }: CardTypeEditorProps
                             <ConfirmDeleteModal
                               buttonLabel={
                                 <div className={cx(css({ color: errorColor }), modalEntryStyle)}>
-                                  <FontAwesomeIcon icon={faTrash} /> {i18n.modules.cardType.deleteType}
+                                  <FontAwesomeIcon icon={faTrash} />{' '}
+                                  {i18n.modules.cardType.deleteType}
                                 </div>
                               }
                               className={css({
@@ -261,13 +264,14 @@ export default function CardTypeEditor({ className, usage }: CardTypeEditorProps
                       value={cardType.tags.map(tag => ({ label: tag, value: tag }))}
                       options={options}
                       onChange={tagsOptions => {
-                        if(tagsOptions.length > 0){
-                        dispatch(
-                          API.updateCardTypeTags({
-                            ...cardType,
-                            tags: tagsOptions.map(o => o.value),
-                          }),
-                        );} 
+                        if (tagsOptions.length > 0) {
+                          dispatch(
+                            API.updateCardTypeTags({
+                              ...cardType,
+                              tags: tagsOptions.map(o => o.value),
+                            }),
+                          );
+                        }
                       }}
                     />
                   </Flex>
@@ -320,7 +324,7 @@ export default function CardTypeEditor({ className, usage }: CardTypeEditorProps
                   },
                 }}
                 defaultOpenKey={'resources'}
-                className={css({flexGrow: 1})}
+                className={css({ flexGrow: 1 })}
               />
             </ReflexElement>
           </ReflexContainer>

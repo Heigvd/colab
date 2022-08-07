@@ -83,8 +83,8 @@ export function ProjectIllustrationMaker({
 }: ProjectIllustrationMakerProps): JSX.Element {
   const illustrationCurrent = illustration ? illustration : defaultProjectIllustration;
   return (
-    <Flex direction='column' align='stretch' className={className}>
-      <div className={cx(css({marginTop: space_S}), colorContainerClassName)}>
+    <Flex direction="column" align="stretch" className={className}>
+      <div className={cx(css({ marginTop: space_S }), colorContainerClassName)}>
         <label className={labelStyle}>Color</label>
         <CirclePicker
           colors={projectColors}
@@ -94,7 +94,7 @@ export function ProjectIllustrationMaker({
           className={css({ marginTop: space_S, padding: space_S })}
         />
       </div>
-      <div className={cx(css({marginTop: space_S}))}>
+      <div className={cx(css({ marginTop: space_S }))}>
         <label className={labelStyle}>Icon</label>
         <ProjectIconPicker
           bgColor={illustrationCurrent.iconBkgdColor}
@@ -103,7 +103,7 @@ export function ProjectIllustrationMaker({
           className={iconContainerClassName}
         />
       </div>
-    </ Flex>
+    </Flex>
   );
 }
 
@@ -113,31 +113,39 @@ interface ProjectIconPickerProps {
   onChange: (icon: IconName) => void;
   className?: string;
 }
-function ProjectIconPicker({ bgColor, iconActive, onChange, className }: ProjectIconPickerProps): JSX.Element {
+function ProjectIconPicker({
+  bgColor,
+  iconActive,
+  onChange,
+  className,
+}: ProjectIconPickerProps): JSX.Element {
   return (
     <>
       <div
-        className={cx(css({
-          display: 'grid',
-          gridGap: space_M,
-          gridTemplateColumns: 'repeat(auto-fit, 50px)',
-          gap: space_M,
-          flexWrap: 'wrap',
-          backgroundColor: bgColor,
-          padding: space_M,
-          maxHeight: '140px',
-          overflow: 'auto',
-          cursor: 'default',
-          marginTop: space_S,
-          borderRadius: borderRadius,
-          minWidth: '200px',
-        }), className)}
+        className={cx(
+          css({
+            display: 'grid',
+            gridGap: space_M,
+            gridTemplateColumns: 'repeat(auto-fit, 50px)',
+            gap: space_M,
+            flexWrap: 'wrap',
+            backgroundColor: bgColor,
+            padding: space_M,
+            maxHeight: '140px',
+            overflow: 'auto',
+            cursor: 'default',
+            marginTop: space_S,
+            borderRadius: borderRadius,
+            minWidth: '200px',
+          }),
+          className,
+        )}
       >
         {projectIconsSolid.map(i => (
           <IconButton
             key={i}
             title={i}
-            icon={{prefix: "fas", iconName: i}}
+            icon={{ prefix: 'fas', iconName: i }}
             iconSize={'2x'}
             onClick={() => onChange(i)}
             className={css({

@@ -61,7 +61,11 @@ export function BlockEditorWrapper({
             />
           );
         default:
-          return <span>{`${i18n.common.error.unknown} ${i18n.modules.content.mimeType}:`} {block.mimeType}</span>;
+          return (
+            <span>
+              {`${i18n.common.error.unknown} ${i18n.modules.content.mimeType}:`} {block.mimeType}
+            </span>
+          );
       }
     } else {
       return (

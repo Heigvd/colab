@@ -131,13 +131,29 @@ export default function SideCollapsiblePanel<T extends { [key: string]: Item }>(
                 setItemKeyOpen(itemKey => (itemKey === key ? undefined : key));
               }
             }}
-            iconColor={setOpenKey ? (openKey === key ? 'var(--fgColor)' : undefined) : (itemKeyOpen === key ? 'var(--fgColor)' : undefined)}
+            iconColor={
+              setOpenKey
+                ? openKey === key
+                  ? 'var(--fgColor)'
+                  : undefined
+                : itemKeyOpen === key
+                ? 'var(--fgColor)'
+                : undefined
+            }
             iconSize="lg"
             className={cx(
               lightIconButtonStyle,
               css({ color: 'var(--lightGray)', padding: space_M }),
-              { [bgActiveStyleRight]: setOpenKey ? (openKey === key && direction === 'RIGHT') : (itemKeyOpen === key && direction === 'RIGHT')},
-              { [bgActiveStyleLeft]: setOpenKey ? (openKey === key && direction === 'LEFT') : (itemKeyOpen === key && direction === 'LEFT') },
+              {
+                [bgActiveStyleRight]: setOpenKey
+                  ? openKey === key && direction === 'RIGHT'
+                  : itemKeyOpen === key && direction === 'RIGHT',
+              },
+              {
+                [bgActiveStyleLeft]: setOpenKey
+                  ? openKey === key && direction === 'LEFT'
+                  : itemKeyOpen === key && direction === 'LEFT',
+              },
             )}
           />
         ))}

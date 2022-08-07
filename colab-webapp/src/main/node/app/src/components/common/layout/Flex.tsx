@@ -77,7 +77,7 @@ export default function Flex(props: FlexProps): JSX.Element {
           flexGrow: grow,
           flexBasis: basis,
           flexWrap: wrap,
-          gap: gap
+          gap: gap,
         }),
         className,
       )}

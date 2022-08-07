@@ -31,17 +31,17 @@ import { flex, invertedThemeMode, paddingAroundStyle, space_M, space_S } from '.
 export default function MainNav(): JSX.Element {
   return (
     <>
-    <Clickable onClick={() => window.open(`#/about-colab`, '_blank')}>
-      <Picto
-        className={cx(
-          css({
-            height: '30px',
-            width: 'auto',
-            paddingRight: space_M,
-          }),
-          paddingAroundStyle([1, 3, 4], space_S),
-        )}
-      />
+      <Clickable onClick={() => window.open(`#/about-colab`, '_blank')}>
+        <Picto
+          className={cx(
+            css({
+              height: '30px',
+              width: 'auto',
+              paddingRight: space_M,
+            }),
+            paddingAroundStyle([1, 3, 4], space_S),
+          )}
+        />
       </Clickable>
       <nav className={flex}>
         <MainMenuLink to="/">Projects</MainMenuLink>

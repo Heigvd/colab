@@ -21,7 +21,7 @@ const targetProjectIconStyle = css({
   fontSize: '.8rem',
   marginRight: space_S,
   marginBottom: space_S,
-})
+});
 interface TargetCardTypeSummaryProps {
   cardType: CardType;
 }
@@ -36,7 +36,12 @@ export default function TargetCardTypeSummary({
         (cardType.projectIdCT ? (
           <TargetProjectSummary projectId={cardType.projectIdCT} />
         ) : (
-          <FontAwesomeIcon icon={referenceIcon} color={'var(--secondaryColor)'} title={i18n.modules.cardType.infos.isIsglobalType} className={targetProjectIconStyle} />
+          <FontAwesomeIcon
+            icon={referenceIcon}
+            color={'var(--secondaryColor)'}
+            title={i18n.modules.cardType.infos.isIsglobalType}
+            className={targetProjectIconStyle}
+          />
         ))}
     </>
   );
@@ -48,10 +53,17 @@ interface TargetProjectSummaryProps {
 
 function TargetProjectSummary({ projectId }: TargetProjectSummaryProps): JSX.Element {
   const { project, status } = useProject(projectId);
-const i18n = useTranslations();
+  const i18n = useTranslations();
   return (
     <FontAwesomeIcon
-      icon={project?.illustration ? {prefix: project.illustration.iconLibrary as IconPrefix, iconName: project.illustration.iconKey as IconName} : referenceIcon}
+      icon={
+        project?.illustration
+          ? {
+              prefix: project.illustration.iconLibrary as IconPrefix,
+              iconName: project.illustration.iconKey as IconName,
+            }
+          : referenceIcon
+      }
       className={targetProjectIconStyle}
       color={project?.illustration ? project.illustration.iconBkgdColor : 'var(--lightGray)'}
       title={

@@ -81,13 +81,24 @@ export function ProjectSettings({ project }: ProjectSettingsProps): JSX.Element 
                 }
               />
             </Flex>
-            <Flex direction="column" align="stretch" justify='flex-end' className={css({ width: '55%'})}>
+            <Flex
+              direction="column"
+              align="stretch"
+              justify="flex-end"
+              className={css({ width: '55%' })}
+            >
               <IllustrationDisplay illustration={illustration} />
               <ProjectIllustrationMaker
                 illustration={illustration}
                 setIllustration={setIllustration}
               />
-              <ButtonWithLoader onClick={onConfirm} className={css({marginTop: space_S, alignSelf: 'flex-end'})} isLoading={false}>Save illustration</ButtonWithLoader>
+              <ButtonWithLoader
+                onClick={onConfirm}
+                className={css({ marginTop: space_S, alignSelf: 'flex-end' })}
+                isLoading={false}
+              >
+                Save illustration
+              </ButtonWithLoader>
             </Flex>
           </Flex>
         </Tab>

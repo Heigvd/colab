@@ -43,15 +43,13 @@ export default function OpenClose({
 
   const [state, setState] = React.useState<'COLLAPSED' | 'EXPANDED'>(status || 'COLLAPSED');
 
-
-
   const collapse = React.useCallback(() => {
     setState('COLLAPSED');
   }, []);
 
-    React.useEffect(() => {
+  React.useEffect(() => {
     setState(status);
-  }, [status]); 
+  }, [status]);
 
   if (state === 'COLLAPSED') {
     return (

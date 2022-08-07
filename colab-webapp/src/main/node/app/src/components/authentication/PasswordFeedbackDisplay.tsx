@@ -23,13 +23,15 @@ export default function PasswordFeedbackDisplay({
   // TODO translate feedbacks (https://github.com/dropbox/zxcvbn/blob/master/src/feedback.coffee)
 
   return (
-    <div className={css({textAlign: 'left'})}>
+    <div className={css({ textAlign: 'left' })}>
       <span>{feedback.warning || i18n.authentication.error.passwordTooWeak}</span>
       {feedback.suggestions && feedback.suggestions.length > 0 && (
-        <Tips className={css({textAlign: 'left'})}>
-          <ul className={css({paddingLeft: space_M})}>
+        <Tips className={css({ textAlign: 'left' })}>
+          <ul className={css({ paddingLeft: space_M })}>
             {feedback.suggestions.map((s, i) => (
-              <li key={i} className={css({marginBottom: space_S})}>{s}</li>
+              <li key={i} className={css({ marginBottom: space_S })}>
+                {s}
+              </li>
             ))}
           </ul>
         </Tips>

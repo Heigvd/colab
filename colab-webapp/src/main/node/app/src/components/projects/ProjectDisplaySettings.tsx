@@ -28,7 +28,7 @@ export function ProjectDisplaySettings({
   onClose,
 }: ProjectDisplaySettingsProps): JSX.Element {
   const [illustration, setIllustration] = React.useState<Illustration>(
-    project.illustration || defaultProjectIllustration
+    project.illustration || defaultProjectIllustration,
   );
   const onConfirm = React.useCallback(() => {
     if (illustration) {
@@ -58,13 +58,11 @@ export function ProjectDisplaySettings({
         onChange={newValue => dispatch(API.updateProject({ ...project, description: newValue }))}
       />
       <ProjectIllustrationMaker illustration={illustration} setIllustration={setIllustration} />
-      <Flex justify="flex-end" className={css({ gap: space_S, marginTop: space_S })} align='center'>
-        <Button onClick={onClose} invertedButton>Cancel</Button>
-        <ButtonWithLoader
-          onClick={onConfirm}
-        >
-          Save illustration
-        </ButtonWithLoader>
+      <Flex justify="flex-end" className={css({ gap: space_S, marginTop: space_S })} align="center">
+        <Button onClick={onClose} invertedButton>
+          Cancel
+        </Button>
+        <ButtonWithLoader onClick={onConfirm}>Save illustration</ButtonWithLoader>
       </Flex>
     </Flex>
   );

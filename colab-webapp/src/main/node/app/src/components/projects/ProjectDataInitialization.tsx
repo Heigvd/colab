@@ -149,11 +149,13 @@ export default function ProjectDataInitialization({
           onClick={() => setEditIllustration(true)}
         >
           <IllustrationDisplay illustration={currentIllustration} />
-          <Flex align="flex-end" justify="flex-end" className={projectIllustrationOverlay} title='Edit project illustration'>
-            <FontAwesomeIcon
-              icon={faPen}
-              color={'var(--bgColor)'}
-            />
+          <Flex
+            align="flex-end"
+            justify="flex-end"
+            className={projectIllustrationOverlay}
+            title="Edit project illustration"
+          >
+            <FontAwesomeIcon icon={faPen} color={'var(--bgColor)'} />
           </Flex>
         </Flex>
         {editIllustration && (

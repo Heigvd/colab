@@ -59,9 +59,7 @@ const ProjectDisplay = ({ project }: ProjectDisplayProps) => {
           height: '80px',
         })}
       >
-        <IllustrationDisplay
-          illustration={project.illustration || defaultProjectIllustration}
-        />
+        <IllustrationDisplay illustration={project.illustration || defaultProjectIllustration} />
       </Flex>
       <div
         className={cx(
@@ -120,7 +118,9 @@ const ProjectDisplay = ({ project }: ProjectDisplayProps) => {
                     widthMax
                     heightMax
                   >
-                    {(close) => <ProjectDisplaySettings project={project} key={project.id} onClose={close} />}
+                    {close => (
+                      <ProjectDisplaySettings project={project} key={project.id} onClose={close} />
+                    )}
                   </OpenCloseModal>
                 ),
                 modal: true,

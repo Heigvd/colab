@@ -149,7 +149,8 @@ export default function CardEditorToolbox({
                       <>
                         {showTree && (
                           <FontAwesomeIcon icon={faCheck} size="xs" color="var(--lightGray)" />
-                        )}{i18n.modules.content.showTree}
+                        )}
+                        {i18n.modules.content.showTree}
                       </>
                     ),
                     action: () => TXToptions?.setShowTree(showTree => !showTree),
@@ -192,11 +193,7 @@ export default function CardEditorToolbox({
                 />
               </>
             }
-            message={
-              <p>
-                {i18n.modules.content.confirmDeleteBlock}
-              </p>
-            }
+            message={<p>{i18n.modules.content.confirmDeleteBlock}</p>}
             onConfirm={() => {
               if (selectedDocId) {
                 if (selectedDocument.owningCardContentId != null) {
