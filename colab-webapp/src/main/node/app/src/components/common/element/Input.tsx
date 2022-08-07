@@ -24,12 +24,23 @@ import Flex from '../layout/Flex';
 import IconButton from './IconButton';
 import Tips, { TipsProps } from './Tips';
 
-// bug longueur des champs dans sign in
-// bug longueur champ purpose dans card type
+// bug card completion
+
+// bug quand édite description au niveau de la liste des projets : quand appuie sur enter, ouvre le projet
+
+// see with Audrey where to put the save and cancel buttons for an "inline input on confirm"
+// see with Audrey max size of a resource title
+
+// TODO space around * (when mandatory)
 
 // TODO autoSave
 
-// TODO see what happens in saveMode === 'ON_CONFIRM' when click outside. do we lose ?
+// TODO replace OnConfirmInput
+// TODO replace input in invite member in Team.tsx
+
+// TODO see with Audrey what happens in saveMode === 'ON_CONFIRM' when click outside. do we lose ?
+// TODO see with Audrey updated status => edit mode
+// TODO see with Audrey if in a form, errors are centered or not
 
 // Note : still need some UI improvements for some combinations
 // Just add what is needed when we need it
@@ -42,14 +53,15 @@ interface InputProps {
   type?: HTMLInputElement['type'];
   mandatory?: boolean;
   readOnly?: HTMLInputElement['readOnly'] | HTMLTextAreaElement['readOnly'];
+  autoComplete?: string;
   autoFocus?: HTMLInputElement['autofocus'] | HTMLTextAreaElement['autofocus'];
   min?: HTMLInputElement['min'];
   max?: HTMLInputElement['max'];
   rows?: HTMLTextAreaElement['rows'];
   autoWidth?: boolean;
   maxWidth?: string;
-  saveMode: 'FLOWING' | 'ON_CONFIRM'; //| 'DEBOUNCED' | 'ON_CONFIRM';
-  onChange: (newValue: string) => void; //  | number
+  saveMode: 'FLOWING' | 'ON_CONFIRM'; // | 'DEBOUNCED';
+  onChange: (newValue: string) => void;
   onCancel?: () => void;
   tip?: TipsProps['children'];
   footer?: React.ReactNode;
@@ -62,7 +74,6 @@ interface InputProps {
   bottomClassName?: string;
   footerClassName?: string;
   validationClassName?: string;
-  autoComplete?: string;
 }
 
 const confirmButtonsStyle = css({
@@ -71,12 +82,13 @@ const confirmButtonsStyle = css({
 
 function Input({
   label,
-  value = '',
+  value: initialValue = '',
   placeholder,
   inputType = 'input',
   type = 'text',
   mandatory,
   readOnly,
+  autoComplete,
   autoFocus,
   min,
   max,
@@ -109,6 +121,7 @@ function Input({
   const [currentInternalValue, setCurrentInternalValue] = React.useState<string | number>();
   const [mode, setMode] = React.useState<'DISPLAY' | 'EDIT'>('DISPLAY');
 
+  // the field can resize itself automatically
   const updateSize = React.useCallback(() => {
     if (autoWidth) {
       if (inputRef.current) {
@@ -121,18 +134,19 @@ function Input({
     }
   }, [autoWidth]);
 
+  // when value changes, use it as current value
   React.useEffect(() => {
     if (inputType === 'input' && inputRef.current != null) {
-      inputRef.current.value = String(value);
+      inputRef.current.value = String(initialValue);
     }
     if (inputType === 'textarea' && textareaRef.current != null) {
-      textareaRef.current.value = String(value);
+      textareaRef.current.value = String(initialValue);
     }
 
-    setCurrentInternalValue(value);
+    setCurrentInternalValue(initialValue);
 
     updateSize();
-  }, [inputType, value, updateSize]);
+  }, [inputType, initialValue, updateSize]);
 
   const save = React.useCallback(() => {
     if (inputType === 'input' && inputRef.current != null) {
@@ -147,22 +161,22 @@ function Input({
 
   const cancel = React.useCallback(() => {
     if (inputType === 'input' && inputRef.current != null) {
-      inputRef.current.value = String(value);
+      inputRef.current.value = String(initialValue);
       inputRef.current.blur();
     }
     if (inputType === 'textarea' && textareaRef.current != null) {
-      textareaRef.current.value = String(value);
+      textareaRef.current.value = String(initialValue);
       textareaRef.current.blur();
     }
 
-    setCurrentInternalValue(value);
+    setCurrentInternalValue(initialValue);
 
     updateSize();
 
     if (onCancel) {
       onCancel();
     }
-  }, [inputType, inputRef, textareaRef, value, updateSize, onCancel]);
+  }, [inputType, inputRef, textareaRef, initialValue, updateSize, onCancel]);
 
   // const handleClickOutside = (event: Event) => {
   //   if (containerRef.current != null && !containerRef.current.contains(event.target as Node)) {
@@ -205,6 +219,7 @@ function Input({
         if (saveMode === 'ON_CONFIRM') {
           save();
         }
+
         if (inputType === 'input' && inputRef.current != null) {
           inputRef.current.blur();
         }
@@ -216,76 +231,78 @@ function Input({
     [saveMode, save, inputType],
   );
 
-  const updated = currentInternalValue !== value;
+  const updated = currentInternalValue !== initialValue;
 
   return (
     <Flex direction="column" className={containerClassName} style={{ maxWidth: maxWidth }}>
-       { /* //</Flex> <Flex theRef={containerRef} direction='column'> */}
-        {label && (
-          <Flex align='center'>
-              {label && <span className={cx(labelStyle, labelClassName)}>{label}</span>}
-              {tip && <Tips>{tip}</Tips>}
-              {mandatory && ' * '}
-              {/* {updated && (
+      {/* //</Flex> <Flex theRef={containerRef} direction='column'> */}
+      {label && (
+        <Flex align="center">
+          <span className={cx(labelStyle, labelClassName)}>{label}</span>
+          {tip && <Tips>{tip}</Tips>}
+          {mandatory && ' * '}
+          {/* {updated && (
               <span className={cx(textSmall, warningStyle, css({ paddingLeft: space_S }))}>
                 {i18n.common.updated}
               </span>
             )} */}
-          </Flex>
-        )}
-        {inputType === 'input' ? (
-          <input
-            ref={inputRef}
-            value={currentInternalValue}
-            placeholder={placeholder}
-            type={type}
-            readOnly={readOnly}
-            autoFocus={autoFocus}
-            min={min}
-            max={max}
-            onFocus={setEditMode}
-            onInput={updateSize}
-            onChange={changeInternal}
-            onKeyDown={pressEnterKey}
-            onBlur={setDisplayMode}
-            className={cx(
-              inputEditClassName && mode === 'EDIT' ? inputEditClassName : inputDisplayClassName,
-            )}
+        </Flex>
+      )}
+      {inputType === 'input' ? (
+        <input
+          ref={inputRef}
+          value={currentInternalValue}
+          placeholder={placeholder}
+          type={type}
+          readOnly={readOnly}
+          autoComplete={autoComplete}
+          autoFocus={autoFocus}
+          min={min}
+          max={max}
+          onFocus={setEditMode}
+          onInput={updateSize}
+          onChange={changeInternal}
+          onKeyDown={pressEnterKey}
+          onBlur={setDisplayMode}
+          className={cx(
+            inputEditClassName && mode === 'EDIT' ? inputEditClassName : inputDisplayClassName,
+          )}
+        />
+      ) : (
+        <textarea
+          ref={textareaRef}
+          value={currentInternalValue}
+          placeholder={placeholder}
+          readOnly={readOnly}
+          autoComplete={autoComplete}
+          autoFocus={autoFocus}
+          rows={rows}
+          onFocus={setEditMode}
+          onChange={changeInternal}
+          onBlur={setDisplayMode}
+          // no onKeyDown here, or it will be a problem to put any end of line in the text
+          className={cx(
+            inputEditClassName && mode === 'EDIT' ? inputEditClassName : inputDisplayClassName,
+          )}
+        />
+      )}
+      {saveMode === 'ON_CONFIRM' && (mode === 'EDIT' || updated) && (
+        <Flex className={confirmButtonsStyle}>
+          <IconButton
+            icon={faTimes}
+            title={i18n.common.cancel}
+            onClick={cancel}
+            className={lightIconButtonStyle}
           />
-        ) : (
-          <textarea
-            ref={textareaRef}
-            value={currentInternalValue}
-            placeholder={placeholder}
-            readOnly={readOnly}
-            autoFocus={autoFocus}
-            rows={rows}
-            onFocus={setEditMode}
-            onChange={changeInternal}
-            onBlur={setDisplayMode}
-            // no onKeyDown here, or it will be a problem to put any end of line in the text
-            className={cx(
-              inputEditClassName && mode === 'EDIT' ? inputEditClassName : inputDisplayClassName,
-            )}
+          <IconButton
+            icon={faCheck}
+            title={i18n.common.save}
+            onClick={save}
+            className={lightIconButtonStyle}
           />
-        )}
-        {saveMode === 'ON_CONFIRM' && (mode === 'EDIT' || updated) && (
-          <Flex className={confirmButtonsStyle}>
-            <IconButton
-              icon={faTimes}
-              title={i18n.common.cancel}
-              onClick={cancel}
-              className={lightIconButtonStyle}
-            />
-            <IconButton
-              icon={faCheck}
-              title={i18n.common.save}
-              onClick={save}
-              className={lightIconButtonStyle}
-            />
-          </Flex>
-        )}
-        {/* {!label && (
+        </Flex>
+      )}
+      {/* {!label && (
           <Flex justify="space-between">
             <div>
               {tip && <Tips>{tip}</Tips>}
@@ -295,18 +312,10 @@ function Input({
         )} 
       </Flex> */}
       {(footer || warning || error) && (
-        <Flex direction="column" grow="1" align='flex-start' className={bottomClassName}>
-          {footer && (
-            <Flex className={cx(textSmall, footerClassName)}>
-              {footer}
-            </Flex>
-          )}
+        <Flex direction="column" grow="1" align="flex-start" className={bottomClassName}>
+          {footer && <Flex className={cx(textSmall, footerClassName)}>{footer}</Flex>}
           {(warning || error) && (
-            <Flex
-              direction="column"
-              grow="1"
-              className={cx(textSmall, validationClassName)}
-            >
+            <Flex direction="column" grow="1" className={cx(textSmall, validationClassName)}>
               {warning != null && <div className={warningStyle}>{warning}</div>}
               {error != null && <div className={errorStyle}>{error}</div>}
             </Flex>
