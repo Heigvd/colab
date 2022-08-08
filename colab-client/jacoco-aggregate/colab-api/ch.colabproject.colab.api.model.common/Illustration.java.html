@@ -51,6 +51,7 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
      * The background color to set behind the icon
      */
     @Size(max = 64)
+    @NotNull
     private String iconBkgdColor;
 
     // ---------------------------------------------------------------------------------------------
@@ -61,43 +62,43 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
      * @return which library of icons contains the key
      */
     public IconLibrary getIconLibrary() {
-<span class="nc" id="L64">        return iconLibrary;</span>
+<span class="nc" id="L65">        return iconLibrary;</span>
     }
 
     /**
      * @param iconLibrary which library of icons contains the key
      */
     public void setIconLibrary(IconLibrary iconLibrary) {
-<span class="nc" id="L71">        this.iconLibrary = iconLibrary;</span>
-<span class="nc" id="L72">    }</span>
+<span class="nc" id="L72">        this.iconLibrary = iconLibrary;</span>
+<span class="nc" id="L73">    }</span>
 
     /**
      * @return the key of the icon within the library of icons
      */
     public String getIconKey() {
-<span class="nc" id="L78">        return iconKey;</span>
+<span class="nc" id="L79">        return iconKey;</span>
     }
 
     /**
      * @param iconKey the key of the icon within the library of icons
      */
     public void setIconKey(String iconKey) {
-<span class="nc" id="L85">        this.iconKey = iconKey;</span>
-<span class="nc" id="L86">    }</span>
+<span class="nc" id="L86">        this.iconKey = iconKey;</span>
+<span class="nc" id="L87">    }</span>
 
     /**
      * @return the background color to set behind the icon
      */
     public String getIconBkgdColor() {
-<span class="nc" id="L92">        return iconBkgdColor;</span>
+<span class="nc" id="L93">        return iconBkgdColor;</span>
     }
 
     /**
      * @param iconBkgdColor the background color to set behind the icon
      */
     public void setIconBkgdColor(String iconBkgdColor) {
-<span class="nc" id="L99">        this.iconBkgdColor = iconBkgdColor;</span>
-<span class="nc" id="L100">    }</span>
+<span class="nc" id="L100">        this.iconBkgdColor = iconBkgdColor;</span>
+<span class="nc" id="L101">    }</span>
 
     // ---------------------------------------------------------------------------------------------
     // concerning the whole class
@@ -105,35 +106,35 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 
     @Override
     public int hashCode() {
-<span class="nc" id="L108">        return new HashCodeBuilder()</span>
-<span class="nc" id="L109">            .append(this.iconLibrary)</span>
-<span class="nc" id="L110">            .append(this.iconKey)</span>
-<span class="nc" id="L111">            .append(this.iconBkgdColor)</span>
-<span class="nc" id="L112">            .toHashCode();</span>
+<span class="nc" id="L109">        return new HashCodeBuilder()</span>
+<span class="nc" id="L110">            .append(this.iconLibrary)</span>
+<span class="nc" id="L111">            .append(this.iconKey)</span>
+<span class="nc" id="L112">            .append(this.iconBkgdColor)</span>
+<span class="nc" id="L113">            .toHashCode();</span>
     }
 
     @Override
     public boolean equals(Object obj) {
-<span class="nc bnc" id="L117" title="All 2 branches missed.">        if (this == obj) {</span>
-<span class="nc" id="L118">            return true;</span>
+<span class="nc bnc" id="L118" title="All 2 branches missed.">        if (this == obj) {</span>
+<span class="nc" id="L119">            return true;</span>
         }
-<span class="nc bnc" id="L120" title="All 2 branches missed.">        if (obj == null) {</span>
-<span class="nc" id="L121">            return false;</span>
+<span class="nc bnc" id="L121" title="All 2 branches missed.">        if (obj == null) {</span>
+<span class="nc" id="L122">            return false;</span>
         }
-<span class="nc bnc" id="L123" title="All 2 branches missed.">        if (getClass() != obj.getClass()) {</span>
-<span class="nc" id="L124">            return false;</span>
+<span class="nc bnc" id="L124" title="All 2 branches missed.">        if (getClass() != obj.getClass()) {</span>
+<span class="nc" id="L125">            return false;</span>
         }
-<span class="nc" id="L126">        final Illustration other = (Illustration) obj;</span>
-<span class="nc" id="L127">        return new EqualsBuilder()</span>
-<span class="nc" id="L128">            .append(this.iconLibrary, other.iconLibrary)</span>
-<span class="nc" id="L129">            .append(this.iconKey, other.iconKey)</span>
-<span class="nc" id="L130">            .append(this.iconBkgdColor, other.iconBkgdColor)</span>
-<span class="nc" id="L131">            .isEquals();</span>
+<span class="nc" id="L127">        final Illustration other = (Illustration) obj;</span>
+<span class="nc" id="L128">        return new EqualsBuilder()</span>
+<span class="nc" id="L129">            .append(this.iconLibrary, other.iconLibrary)</span>
+<span class="nc" id="L130">            .append(this.iconKey, other.iconKey)</span>
+<span class="nc" id="L131">            .append(this.iconBkgdColor, other.iconBkgdColor)</span>
+<span class="nc" id="L132">            .isEquals();</span>
     }
 
     @Override
     public String toString() {
-<span class="nc" id="L136">        return &quot;Illustration{&quot; + &quot; iconLibrary=&quot; + iconLibrary + &quot;, iconKey=&quot; + iconKey</span>
+<span class="nc" id="L137">        return &quot;Illustration{&quot; + &quot; iconLibrary=&quot; + iconLibrary + &quot;, iconKey=&quot; + iconKey</span>
             + &quot;, iconBkgdColor=&quot; + iconBkgdColor + &quot; }&quot;;
     }
 
