@@ -8,8 +8,6 @@
 import { css } from '@emotion/css';
 import * as React from 'react';
 import { useCurrentUser, useCurrentUserAccounts } from '../../selectors/userSelector';
-import Button from '../common/element/Button';
-import Tips from '../common/element/Tips';
 import Flex from '../common/layout/Flex';
 import Tabs, { Tab } from '../common/layout/Tabs';
 import Debugger from '../debugger/debugger';
@@ -41,19 +39,11 @@ export default function Settings(): JSX.Element {
                 if (account.id != null && +account.id >= 0) {
                   return (
                     <>
-                      <LocalAccount accountId={account.id} />
+                      <LocalAccount key={account.id} accountId={account.id} />
                     </>
                   );
                 }
               })}
-              <div>
-                <Button clickable={false} invertedButton>
-                  add account
-                </Button>
-                <Tips tipsType="TODO">
-                  One user may have one to many accounts. (AAI, wegas, github, ...)
-                </Tips>
-              </div>
             </Flex>
           </Tab>
           <Tab name="Display" label="Display">

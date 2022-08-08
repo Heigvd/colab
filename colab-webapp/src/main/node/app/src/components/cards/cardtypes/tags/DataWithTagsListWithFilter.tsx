@@ -6,6 +6,7 @@
  */
 
 import * as React from 'react';
+import useTranslations from '../../../../i18n/I18nContext';
 import TagsFilter from './TagFilter';
 
 export type DataWithTags = { tags: string[] };
@@ -27,6 +28,7 @@ export default function DataWithTagsListWithFilter({
 }: DataWithTagsListWithFilterProps): JSX.Element {
   const [tagsState, setTagsState] = React.useState<Record<string, boolean>>({});
   const [dataFilteredByTag, setDataFilteredByTag] = React.useState<DataWithTags[]>([]);
+  const i18n = useTranslations();
 
   // TODO find how we can remove a tag from tagsState when it is not any more in any dataWithTags
 
@@ -71,7 +73,7 @@ export default function DataWithTagsListWithFilter({
         (dataFilteredByTag && dataFilteredByTag.length > 0 ? (
           children(dataFilteredByTag)
         ) : (
-          <p>Nothing matches tag selection</p>
+          <p>{i18n.modules.cardType.infos.nothingMatchTag}</p>
         ))}
     </>
   );

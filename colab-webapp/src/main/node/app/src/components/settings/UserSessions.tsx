@@ -5,6 +5,7 @@
  * Licensed under the MIT License
  */
 
+import { css, cx } from '@emotion/css';
 import { faTrash } from '@fortawesome/free-solid-svg-icons';
 import { User } from 'colab-rest-client';
 import * as React from 'react';
@@ -12,8 +13,10 @@ import * as API from '../../API/api';
 import useTranslations from '../../i18n/I18nContext';
 import { useUserSession } from '../../selectors/userSelector';
 import { useAppDispatch } from '../../store/hooks';
+import { categoryTabStyle } from '../common/collection/FilterableList';
 import Button from '../common/element/Button';
 import InlineLoading from '../common/element/InlineLoading';
+import { space_S } from '../styling/style';
 
 interface UserProfileProps {
   user: User;
@@ -36,7 +39,18 @@ export default function UserProfile({ user }: UserProfileProps): JSX.Element {
                   <span>
                     #{s.id} ({i18n.common.datetime(s.lastSeen)})
                   </span>
-                  <Button icon={faTrash} onClick={() => dispatch(API.forceLogout(s))} />
+                  {s.userAgent != navigator.userAgent ? (
+                    <Button icon={faTrash} onClick={() => dispatch(API.forceLogout(s))} />
+                  ) : (
+                    <div
+                      className={cx(
+                        categoryTabStyle,
+                        css({ display: 'inline-block', marginLeft: space_S }),
+                      )}
+                    >
+                      Current
+                    </div>
+                  )}
                 </div>
               );
             })}

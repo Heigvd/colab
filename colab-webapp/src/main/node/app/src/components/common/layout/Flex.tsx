@@ -40,6 +40,7 @@ export type FlexProps = DivProps & {
   wrap?: 'nowrap' | 'wrap' | 'wrap-reverse';
   overflow?: 'clip' | 'auto' | 'visible' | 'scroll' | 'unset' | 'hidden';
   children: React.ReactNode;
+  gap?: CSSObject['gap'];
 };
 
 export default function Flex(props: FlexProps): JSX.Element {
@@ -52,6 +53,7 @@ export default function Flex(props: FlexProps): JSX.Element {
     grow,
     basis,
     wrap,
+    gap,
     overflow,
     children,
     onClick,
@@ -75,6 +77,7 @@ export default function Flex(props: FlexProps): JSX.Element {
           flexGrow: grow,
           flexBasis: basis,
           flexWrap: wrap,
+          gap: gap,
         }),
         className,
       )}

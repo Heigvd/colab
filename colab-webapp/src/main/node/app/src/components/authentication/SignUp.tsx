@@ -111,6 +111,7 @@ export default function SignUpForm({ redirectTo }: SignUpFormProps): JSX.Element
         value={defaultFormData}
         onSubmit={signUp}
         submitLabel={i18n.authentication.action.createAnAccount}
+        autoComplete="off"
         buttonClassName={css({ margin: space_M + ' auto' })}
       >
         <InlineLink

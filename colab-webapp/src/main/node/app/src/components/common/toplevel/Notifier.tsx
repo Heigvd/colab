@@ -6,11 +6,20 @@
  */
 
 import { css } from '@emotion/css';
+import {
+  faInfoCircle,
+  faTimes,
+  faWarning,
+  IconDefinition,
+} from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { entityIs, HttpErrorMessage, HttpException } from 'colab-rest-client';
 import * as React from 'react';
 import useTranslations, { ColabTranslations } from '../../../i18n/I18nContext';
 import { shallowEqual, useAppDispatch, useAppSelector } from '../../../store/hooks';
 import { closeNotification, ColabNotification } from '../../../store/notification';
+import { space_M, space_S } from '../../styling/style';
+import Flex from '../layout/Flex';
 
 function prettyPrint(error: HttpException | string, i18n: ColabTranslations): string {
   if (entityIs<'HttpErrorMessage'>(error, 'HttpErrorMessage')) {
@@ -62,6 +71,30 @@ function getBgColor(notification: ColabNotification): string {
   }
 }
 
+function getTitle(notification: ColabNotification, i18n: ColabTranslations): React.ReactNode {
+  switch (notification.type) {
+    case 'INFO':
+      return <>{i18n.activity.notifications.information}</>;
+    case 'WARN':
+      return <>{i18n.activity.notifications.warning}</>;
+    case 'ERROR':
+    default:
+      return <>{i18n.activity.notifications.error}</>;
+  }
+}
+
+function getIcon(notification: ColabNotification): IconDefinition {
+  switch (notification.type) {
+    case 'INFO':
+      return faInfoCircle;
+    case 'WARN':
+      return faWarning;
+    case 'ERROR':
+    default:
+      return faTimes;
+  }
+}
+
 interface NotificationProps {
   notification: ColabNotification;
   index: number;
@@ -88,24 +121,39 @@ function Notification({ notification, index }: NotificationProps) {
   }, [closeCb]);
 
   return (
-    <div
+    <Flex
       className={css({
-        backgroundColor: getBgColor(notification),
+        backgroundColor: 'white',
         borderRadius: '5px',
-        color: 'white',
-        padding: '10px 100px',
-        margin: '10px',
+        overflow: 'hidden',
+        margin: space_S,
+        minWidth: '30vw',
+        maxWidth: '70vw',
         boxShadow: '0px 1px 3px rgba(0, 0, 0, 0.12)',
-        fontSize: '1.3em',
-        fontWeight: 300,
         ':hover': {
           boxShadow: '0 3px 6px rgba(0,0,0,.16)',
+          cursor: 'pointer',
         },
       })}
       onClick={() => closeCb()}
+      align={'stretch'}
     >
-      {prettyPrint(notification.message, i18n)}
-    </div>
+      <Flex
+        justify="center"
+        align="center"
+        className={css({
+          backgroundColor: getBgColor(notification),
+          color: 'white',
+          padding: space_M,
+        })}
+      >
+        <FontAwesomeIcon icon={getIcon(notification)} size={'2x'} />
+      </Flex>
+      <div className={css({ padding: space_M })}>
+        <h3>{getTitle(notification, i18n)}</h3>
+        {prettyPrint(notification.message, i18n)}
+      </div>
+    </Flex>
   );
 }
 

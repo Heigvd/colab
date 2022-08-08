@@ -6,16 +6,19 @@
  */
 
 import { css, cx } from '@emotion/css';
-import { faTrash } from '@fortawesome/free-solid-svg-icons';
+import { faPen, faTrash } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Illustration } from 'colab-rest-client';
 import * as React from 'react';
 import useTranslations from '../../i18n/I18nContext';
+import Button from '../common/element/Button';
 import { ConfirmIconButton } from '../common/element/ConfirmIconButton';
 import IllustrationDisplay from '../common/element/IllustrationDisplay';
+import { BlockInput } from '../common/element/Input';
 import Form, { emailFormat } from '../common/Form/Form';
-import Input from '../common/Form/Input';
 import Flex from '../common/layout/Flex';
 import {
+  borderRadius,
   invertedButtonStyle,
   lightIconButtonStyle,
   space_L,
@@ -25,6 +28,22 @@ import {
 } from '../styling/style';
 import { defaultProjectIllustration } from './ProjectCommon';
 import { ProjectCreationData } from './ProjectCreator';
+import { ProjectIllustrationMaker } from './ProjectIllustrationMaker';
+
+const projectIllustrationOverlay = css({
+  position: 'absolute',
+  top: 0,
+  left: 0,
+  bottom: 0,
+  right: 0,
+  opacity: 0,
+  padding: space_S,
+  '&:hover': {
+    backgroundColor: 'rgba(256, 256, 256, 0.4)',
+    opacity: 1,
+    cursor: 'pointer',
+  },
+});
 
 interface ProjectDataInitializationProps {
   data: ProjectCreationData;
@@ -41,30 +60,35 @@ export default function ProjectDataInitialization({
   readOnly,
   setName,
   setDescription,
-  //setIllustration,
+  setIllustration,
   addGuest,
   removeGuest,
 }: ProjectDataInitializationProps): JSX.Element {
   const i18n = useTranslations();
-
+  const [editIllustration, setEditIllustration] = React.useState<boolean>(false);
+  const [currentIllustration, setCurrentIllustration] = React.useState<Illustration>(
+    data.projectModel?.illustration || defaultProjectIllustration,
+  );
   return (
     <Flex className={css({ alignSelf: 'stretch' })}>
       <Flex
         direction="column"
         align="stretch"
-        className={css({ width: '50%', minWidth: '50%', marginRight: space_L })}
+        className={css({ width: '45%', minWidth: '45%', marginRight: space_L })}
       >
-        <Input
+        <BlockInput
           label="Name"
           value={data.name}
           readOnly={readOnly}
+          saveMode="ON_CONFIRM"
           onChange={name => setName(name)}
         />
-        <Input
+        <BlockInput
           label="Description"
           inputType="textarea"
           value={data.description}
           readOnly={readOnly}
+          saveMode="ON_CONFIRM"
           onChange={description => {
             setDescription(description);
           }}
@@ -114,26 +138,59 @@ export default function ProjectDataInitialization({
           ))}
         </Flex>
       </Flex>
-      <Flex direction="column" className={css({ width: '50%' })}>
+      <Flex direction="column" align="stretch" className={css({ width: '55%' })}>
         <Flex
           className={css({
             minWidth: '100%',
             height: '80px',
             marginBottom: space_M,
+            position: 'relative',
           })}
+          onClick={() => setEditIllustration(true)}
         >
-          <IllustrationDisplay
-            illustration={
-              !data.projectModel
-                ? {
-                    '@class': 'Illustration',
-                    iconLibrary: 'FONT_AWESOME_REGULAR',
-                    iconKey: 'file',
-                  }
-                : data.projectModel.illustration || { ...defaultProjectIllustration }
-            }
-          />
+          <IllustrationDisplay illustration={currentIllustration} />
+          <Flex
+            align="flex-end"
+            justify="flex-end"
+            className={projectIllustrationOverlay}
+            title="Edit project illustration"
+          >
+            <FontAwesomeIcon icon={faPen} color={'var(--bgColor)'} />
+          </Flex>
         </Flex>
+        {editIllustration && (
+          <Flex
+            direction="column"
+            align="stretch"
+            className={css({
+              padding: space_M,
+              border: '1px solid var(--lightGray)',
+              borderRadius: borderRadius,
+              marginBottom: space_M,
+            })}
+          >
+            <ProjectIllustrationMaker
+              illustration={
+                currentIllustration || data.projectModel?.illustration || defaultProjectIllustration
+              }
+              setIllustration={setCurrentIllustration}
+              iconContainerClassName={css({ marginBottom: space_S, maxHeight: '100px' })}
+            />
+            <Flex justify="flex-end" className={css({ gap: space_S })}>
+              <Button onClick={() => setEditIllustration(false)} invertedButton>
+                cancel
+              </Button>
+              <Button
+                onClick={() => {
+                  setIllustration(currentIllustration);
+                  setEditIllustration(false);
+                }}
+              >
+                OK
+              </Button>
+            </Flex>
+          </Flex>
+        )}
         <h2>
           {data.projectModel
             ? data.projectModel.name

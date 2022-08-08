@@ -14,32 +14,32 @@ import { iconButton, linkStyle, spinningStyle } from '../../styling/style';
 import Clickable from '../layout/Clickable';
 
 export interface IconButtonWithLoaderProps {
+  title: string;
   icon: IconProp;
+  iconColor?: string;
+  iconSize?: SizeProp;
   mask?: IconProp;
   transform?: string | Transform;
   layer?: { layerIcon: IconProp; transform: string | Transform };
-  iconSize?: SizeProp;
-  iconColor?: string;
+  //clickable?: boolean;
+  isLoading?: boolean;
   onClick?: (e: React.MouseEvent<HTMLSpanElement> | React.KeyboardEvent<HTMLSpanElement>) => void;
-  clickable?: boolean;
-  title: string;
   className?: string;
   IconClassName?: string;
-  isLoading?: boolean;
 }
 
 export default function IconButtonWithLoader({
-  onClick,
+  title,
   icon,
+  iconColor,
+  iconSize,
   mask,
   transform,
   layer,
-  title,
+  isLoading = true,
+  onClick,
   className,
   IconClassName,
-  iconColor,
-  iconSize,
-  isLoading = true,
 }: IconButtonWithLoaderProps): JSX.Element {
   const [loading, setLoading] = React.useState<boolean>(false);
   return (

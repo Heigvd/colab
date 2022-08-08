@@ -20,6 +20,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { entityIs } from 'colab-rest-client';
 import * as React from 'react';
 import * as API from '../../API/api';
+import useTranslations from '../../i18n/I18nContext';
 import { useAndLoadNbDocuments } from '../../selectors/documentSelector';
 import { useUrlMetadata } from '../../selectors/externalDataSelector';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
@@ -80,6 +81,7 @@ export default function CardEditorToolbox({
     React.useContext(CardEditorCTX);
   const showTree = TXToptions?.showTree || false;
   const dispatch = useAppDispatch();
+  const i18n = useTranslations();
 
   const selectedDocument = useAppSelector(state => {
     let document = undefined;
@@ -136,7 +138,7 @@ export default function CardEditorToolbox({
                         {TXToptions?.markDownMode && (
                           <FontAwesomeIcon icon={faCheck} size="xs" color="var(--lightGray)" />
                         )}{' '}
-                        MarkDown mode
+                        {i18n.modules.content.mdMode}
                       </>
                     ),
                     action: () => TXToptions?.setMarkDownMode(markDownMode => !markDownMode),
@@ -147,8 +149,8 @@ export default function CardEditorToolbox({
                       <>
                         {showTree && (
                           <FontAwesomeIcon icon={faCheck} size="xs" color="var(--lightGray)" />
-                        )}{' '}
-                        Show tree
+                        )}
+                        {i18n.modules.content.showTree}
                       </>
                     ),
                     action: () => TXToptions?.setShowTree(showTree => !showTree),
@@ -160,7 +162,7 @@ export default function CardEditorToolbox({
           {isDoc && selectedDocument.fileName && (
             <IconButton
               icon={faDownload}
-              title={'Download file'}
+              title={i18n.modules.content.dlFile}
               className={lightIconButtonStyle}
               onClick={() => downloadCb()}
             />
@@ -174,29 +176,24 @@ export default function CardEditorToolbox({
           {!isText && (
             <IconButton
               icon={faPen}
-              title="edit block"
+              title={i18n.modules.content.editBlock}
               className={toolboxButtonStyle}
               onClick={() => setEditMode(true)}
             />
           )}
           <ConfirmDeleteModal
-            confirmButtonLabel={'Delete ' + (isText ? 'text' : isLink ? 'link' : 'doc')}
+            confirmButtonLabel={i18n.modules.content.deleteBlockType(isText, isLink)}
             buttonLabel={
               <>
                 <IconButton
                   icon={faTrash}
-                  title="Delete block"
+                  title={i18n.modules.content.deleteBlock}
                   onClick={() => {}}
                   className={toolboxButtonStyle}
                 />
               </>
             }
-            message={
-              <p>
-                Are you <strong>sure</strong> you want to delete this whole block? This will be lost
-                forever.
-              </p>
-            }
+            message={<p>{i18n.modules.content.confirmDeleteBlock}</p>}
             onConfirm={() => {
               if (selectedDocId) {
                 if (selectedDocument.owningCardContentId != null) {
@@ -227,7 +224,7 @@ export default function CardEditorToolbox({
           >
             <IconButton
               icon={faArrowUp}
-              title={'Move block up'}
+              title={i18n.modules.content.moveBlockUpDown('up')}
               className={lightIconButtonStyle}
               onClick={() => {
                 dispatch(API.moveDocumentUp(selectedDocId!));
@@ -235,7 +232,7 @@ export default function CardEditorToolbox({
             />
             <IconButton
               icon={faArrowDown}
-              title={'Move block down'}
+              title={i18n.modules.content.moveBlockUpDown('down')}
               className={lightIconButtonStyle}
               onClick={() => {
                 dispatch(API.moveDocumentDown(selectedDocId!));
@@ -258,6 +255,7 @@ export function BlockCreatorButtons({
   selectedBlockId,
 }: BlockButtonsProps): JSX.Element {
   const { nb } = useAndLoadNbDocuments(docOwnership);
+  const i18n = useTranslations();
 
   return (
     <>
@@ -265,21 +263,21 @@ export function BlockCreatorButtons({
         <DocumentCreatorButton
           docOwnership={docOwnership}
           docKind="TextDataBlock"
-          title="add a text block"
+          title={i18n.modules.content.addText}
           className={toolboxButtonStyle}
           isAdditionAlwaysAtEnd={nb < 1}
         />
         <DocumentCreatorButton
           docOwnership={docOwnership}
           docKind="DocumentFile"
-          title="add a file"
+          title={i18n.modules.content.addFile}
           className={toolboxButtonStyle}
           isAdditionAlwaysAtEnd={nb < 1}
         />
         <DocumentCreatorButton
           docOwnership={docOwnership}
           docKind="ExternalLink"
-          title="add a link"
+          title={i18n.modules.content.addLink}
           className={toolboxButtonStyle}
           isAdditionAlwaysAtEnd={nb < 1}
         />
@@ -297,12 +295,13 @@ interface OpenLinkButtonProps {
 
 function OpenLinkButton({ url, openUrl }: OpenLinkButtonProps): JSX.Element {
   const metadata = useUrlMetadata(url);
+  const i18n = useTranslations();
   return (
     <>
       {metadata != 'LOADING' && metadata != 'NO_URL' && !metadata.broken && (
         <IconButton
           icon={faExternalLinkAlt}
-          title={'Open url in new tab'}
+          title={i18n.modules.content.openUrlNewTab}
           className={lightIconButtonStyle}
           onClick={openUrl}
         />

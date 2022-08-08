@@ -25,7 +25,7 @@ import { useAppDispatch } from '../../store/hooks';
 import CardEditorToolbox from '../cards/CardEditorToolbox';
 import { Destroyer } from '../common/Destroyer';
 import IconButton from '../common/element/IconButton';
-import InlineInputNew from '../common/element/InlineInputNew';
+import { InlineInput } from '../common/element/Input';
 import DropDownMenu from '../common/layout/DropDownMenu';
 import Flex from '../common/layout/Flex';
 import OpenCloseModal from '../common/layout/OpenCloseModal';
@@ -80,14 +80,15 @@ export function ResourceDisplay({ resource, goBackToList }: ResourceDisplayProps
               resource={targetResource}
               iconClassName={css({ color: 'var(--lightGray)' })}
             />
-            <InlineInputNew
+            <InlineInput
               value={targetResource.title || ''}
-              placeholder={i18n.resource.untitled}
+              placeholder={i18n.modules.resource.untitled}
               readOnly={readOnly}
+              saveMode="ON_CONFIRM"
               onChange={newValue =>
                 dispatch(API.updateResource({ ...targetResource, title: newValue }))
               }
-              className={localTitleStyle}
+              inputDisplayClassName={localTitleStyle}
             />
           </Flex>
           {readOnly && !teaser ? (
@@ -131,10 +132,11 @@ export function ResourceDisplay({ resource, goBackToList }: ResourceDisplayProps
           {showTeaser && (
             <DocTextWrapper id={targetResource.teaserId}>
               {text => (
-                <InlineInputNew
+                <InlineInput
                   value={text || ''}
                   placeholder="There is no teaser for the moment. Feel free to fill it."
                   readOnly={readOnly}
+                  saveMode="ON_CONFIRM"
                   onChange={(newValue: string) => {
                     if (targetResource.teaserId) {
                       dispatch(
@@ -145,7 +147,7 @@ export function ResourceDisplay({ resource, goBackToList }: ResourceDisplayProps
                       );
                     }
                   }}
-                  className={cx(textSmall, css({ marginTop: space_S }))}
+                  inputDisplayClassName={cx(textSmall, css({ marginTop: space_S }))}
                   inputType="textarea"
                 />
               )}

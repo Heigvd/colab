@@ -7,7 +7,6 @@
 import { css, cx } from '@emotion/css';
 import { IconProp } from '@fortawesome/fontawesome-svg-core';
 import { faTimes } from '@fortawesome/free-solid-svg-icons';
-import { Resizable } from 're-resizable';
 import * as React from 'react';
 import useTranslations from '../../i18n/I18nContext';
 import IconButton from '../common/element/IconButton';
@@ -26,7 +25,7 @@ const bgActiveStyleLeft = css({
   backgroundImage: 'linear-gradient( to left, transparent 90%, #444 91%, #444 100%)',
 });
 
-interface Item {
+export interface Item {
   icon: IconProp;
   children: React.ReactNode;
   className?: string;
@@ -36,21 +35,31 @@ interface Item {
 
 export interface SideCollapsiblePanelProps<T extends { [key: string]: Item }> {
   items: T;
-  openKey?: keyof T;
+  openKey?: keyof T | string;
+  defaultOpenKey?: keyof T | string;
+  setOpenKey?: React.Dispatch<React.SetStateAction<keyof T | string | undefined>>;
   className?: string;
   direction?: 'LEFT' | 'RIGHT';
 }
 
 export default function SideCollapsiblePanel<T extends { [key: string]: Item }>({
   openKey,
+  defaultOpenKey,
+  setOpenKey,
   items,
   className,
   direction = 'LEFT',
 }: SideCollapsiblePanelProps<T>): JSX.Element {
   const i18n = useTranslations();
 
-  const [itemKeyOpen, setItemKeyOpen] = React.useState<keyof T | undefined>(openKey);
-  const itemOpen = itemKeyOpen == null ? null : items[itemKeyOpen];
+  const [itemKeyOpen, setItemKeyOpen] = React.useState<keyof T | undefined>(defaultOpenKey);
+  const itemOpen = setOpenKey
+    ? openKey == null
+      ? null
+      : items[openKey]
+    : itemKeyOpen == null
+    ? null
+    : items[itemKeyOpen];
   return (
     <Flex
       direction="row"
@@ -63,61 +72,47 @@ export default function SideCollapsiblePanel<T extends { [key: string]: Item }>(
       )}
     >
       {direction === 'RIGHT' && itemOpen && (
-        <Resizable
-          defaultSize={{
-            width: 'auto',
-            height: 'auto',
-          }}
-          minWidth={280}
-          maxWidth={'100%'}
-          bounds={'parent'}
-          enable={{
-            top: false,
-            right: false,
-            bottom: false,
-            left: true,
-            topRight: false,
-            bottomRight: false,
-            bottomLeft: false,
-            topLeft: false,
-          }}
+        <Flex
+          align="stretch"
+          justify="stretch"
+          direction="column"
+          grow={1}
+          className={css({ height: '100%' })}
         >
           <Flex
-            align="stretch"
-            justify="stretch"
-            direction="column"
-            className={css({ height: '100%' })}
+            justify="space-between"
+            className={css({
+              padding: space_M,
+              paddingBottom: '3px',
+              borderBottom: '1px solid var(--lightGray)',
+            })}
           >
-            <Flex
-              justify="space-between"
-              className={css({
-                padding: space_M,
-                paddingBottom: '3px',
-                borderBottom: '1px solid var(--lightGray)',
-              })}
-            >
-              <Flex align="center">
-                <h3>{itemOpen.title}</h3>
-                {itemOpen.nextToTitleElement}
-              </Flex>
-              <IconButton
-                icon={faTimes}
-                title={i18n.common.close}
-                onClick={() => setItemKeyOpen(undefined)}
-                className={cx(lightIconButtonStyle, marginAroundStyle([4], space_M))}
-              />
+            <Flex align="center">
+              <h3>{itemOpen.title}</h3>
+              {itemOpen.nextToTitleElement}
             </Flex>
-            <Flex align="stretch" grow={1} className={itemOpen.className}>
-              {itemOpen.children}
-            </Flex>
+            <IconButton
+              icon={faTimes}
+              title={i18n.common.close}
+              onClick={() => {
+                if (setOpenKey) {
+                  setOpenKey(undefined);
+                } else {
+                  setItemKeyOpen(undefined);
+                }
+              }}
+              className={cx(lightIconButtonStyle, marginAroundStyle([4], space_M))}
+            />
           </Flex>
-        </Resizable>
+          <Flex align="stretch" grow={1} className={itemOpen.className}>
+            {itemOpen.children}
+          </Flex>
+        </Flex>
       )}
       <Flex
         direction="column"
         justify="flex-start"
         align="center"
-        grow={1}
         className={cx(
           direction === 'LEFT'
             ? css({ borderRight: '1px solid var(--lightGray)' })
@@ -129,20 +124,42 @@ export default function SideCollapsiblePanel<T extends { [key: string]: Item }>(
             key={key}
             icon={item.icon}
             title={item.title}
-            onClick={() => setItemKeyOpen(itemKey => (itemKey === key ? undefined : key))}
-            iconColor={itemKeyOpen === key ? 'var(--fgColor)' : undefined}
+            onClick={() => {
+              if (setOpenKey) {
+                setOpenKey(itemKey => (itemKey === key ? undefined : key));
+              } else {
+                setItemKeyOpen(itemKey => (itemKey === key ? undefined : key));
+              }
+            }}
+            iconColor={
+              setOpenKey
+                ? openKey === key
+                  ? 'var(--fgColor)'
+                  : undefined
+                : itemKeyOpen === key
+                ? 'var(--fgColor)'
+                : undefined
+            }
             iconSize="lg"
             className={cx(
               lightIconButtonStyle,
               css({ color: 'var(--lightGray)', padding: space_M }),
-              { [bgActiveStyleRight]: itemKeyOpen === key && direction === 'RIGHT' },
-              { [bgActiveStyleLeft]: itemKeyOpen === key && direction === 'LEFT' },
+              {
+                [bgActiveStyleRight]: setOpenKey
+                  ? openKey === key && direction === 'RIGHT'
+                  : itemKeyOpen === key && direction === 'RIGHT',
+              },
+              {
+                [bgActiveStyleLeft]: setOpenKey
+                  ? openKey === key && direction === 'LEFT'
+                  : itemKeyOpen === key && direction === 'LEFT',
+              },
             )}
           />
         ))}
       </Flex>
       {direction === 'LEFT' && itemOpen && (
-        <Resizable
+        /*         <Resizable
           defaultSize={{
             width: 'auto',
             height: 'auto',
@@ -160,14 +177,11 @@ export default function SideCollapsiblePanel<T extends { [key: string]: Item }>(
             bottomLeft: false,
             topLeft: false,
           }}
-        >
-          <Flex
-            align="stretch"
-            className={cx(paddingAroundStyle([1], space_M), itemOpen.className)}
-          >
-            {itemOpen.children}
-          </Flex>
-        </Resizable>
+        > */
+        <Flex align="stretch" className={cx(paddingAroundStyle([1], space_M), itemOpen.className)}>
+          {itemOpen.children}
+        </Flex>
+        /*         </Resizable> */
       )}
     </Flex>
   );

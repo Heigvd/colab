@@ -17,7 +17,7 @@ import StickyNoteList from './StickyNoteList';
  */
 
 export interface StickyNoteWrapperProps {
-  destCardId: number;
+  destCardId: number | undefined;
   showSrc?: boolean;
   showDest?: boolean;
   // TODO complete with srcCardId, srcCardContentId, srcResourceId, srcBlockId
@@ -45,6 +45,8 @@ export default function StickyNoteWrapper({
     return <InlineLoading />;
   } else if (allStickyNotes == null) {
     return <div>no sticky notes list, no display</div>;
+  } else if (!destCardId) {
+    return <div>No destination card set.</div>;
   } else {
     return (
       <StickyNoteList

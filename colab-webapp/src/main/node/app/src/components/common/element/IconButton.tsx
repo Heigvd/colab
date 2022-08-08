@@ -13,37 +13,38 @@ import { iconButton, linkStyle } from '../../styling/style';
 import Clickable from '../layout/Clickable';
 
 export interface IconButtonProps {
+  title: string;
   icon: IconProp;
+  iconColor?: string;
+  iconSize?: SizeProp;
   mask?: IconProp;
   transform?: string | Transform;
   layer?: { layerIcon: IconProp; transform: string | Transform };
-  iconSize?: SizeProp;
-  iconColor?: string;
-  onClick?: (e: React.MouseEvent<HTMLSpanElement> | React.KeyboardEvent<HTMLSpanElement>) => void;
   clickable?: boolean;
-  title: string;
+  onClick?: (e: React.MouseEvent<HTMLSpanElement> | React.KeyboardEvent<HTMLSpanElement>) => void;
   className?: string;
   IconClassName?: string;
 }
 
 export default function IconButton({
-  onClick,
+  title,
   icon,
+  iconColor,
+  iconSize,
   mask,
   transform,
   layer,
-  title,
+  onClick,
   className,
   IconClassName,
-  iconColor,
-  iconSize,
 }: IconButtonProps): JSX.Element {
   return (
     <Clickable
-      onClick={onClick}
       title={title}
+      onClick={onClick}
       className={className}
       clickableClassName={cx(linkStyle, iconButton, className)}
+      clickable
     >
       {layer ? (
         <span className="fa-layers fa-fw">

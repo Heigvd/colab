@@ -41,21 +41,23 @@ export default function OpenClose({
 }: OpenCloseProps): JSX.Element {
   const i18n = useTranslations();
 
-  const [state, setState] = React.useState({ status: status || 'COLLAPSED' });
+  const [state, setState] = React.useState<'COLLAPSED' | 'EXPANDED'>(status || 'COLLAPSED');
 
   const collapse = React.useCallback(() => {
-    setState({ status: 'COLLAPSED' });
+    setState('COLLAPSED');
   }, []);
 
-  if (state.status === 'COLLAPSED') {
+  React.useEffect(() => {
+    setState(status);
+  }, [status]);
+
+  if (state === 'COLLAPSED') {
     return (
       <Clickable
         clickableClassName={className}
         onClick={e => {
           e.stopPropagation();
-          setState({
-            status: 'EXPANDED',
-          });
+          setState('EXPANDED');
         }}
       >
         {collapsedChildren}
@@ -72,9 +74,7 @@ export default function OpenClose({
             title={i18n.common.close}
             className={topRightAbs}
             onClick={() => {
-              setState({
-                status: 'COLLAPSED',
-              });
+              setState('COLLAPSED');
             }}
           />
         )}

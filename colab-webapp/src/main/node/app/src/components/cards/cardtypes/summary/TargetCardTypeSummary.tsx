@@ -6,9 +6,11 @@
  */
 
 import { css } from '@emotion/css';
+import { IconName, IconPrefix } from '@fortawesome/fontawesome-svg-core';
 import { faCircleDot } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import * as React from 'react';
+import useTranslations from '../../../../i18n/I18nContext';
 import { useProject } from '../../../../selectors/projectSelector';
 import { CardTypeAllInOne as CardType } from '../../../../types/cardTypeDefinition';
 import { space_S } from '../../../styling/style';
@@ -19,7 +21,7 @@ const targetProjectIconStyle = css({
   fontSize: '.8rem',
   marginRight: space_S,
   marginBottom: space_S,
-})
+});
 interface TargetCardTypeSummaryProps {
   cardType: CardType;
 }
@@ -27,13 +29,19 @@ interface TargetCardTypeSummaryProps {
 export default function TargetCardTypeSummary({
   cardType,
 }: TargetCardTypeSummaryProps): JSX.Element {
+  const i18n = useTranslations();
   return (
     <>
       {cardType.kind === 'referenced' &&
         (cardType.projectIdCT ? (
           <TargetProjectSummary projectId={cardType.projectIdCT} />
         ) : (
-          <FontAwesomeIcon icon={referenceIcon} color={'var(--secondaryColor)'} title="It is a global type" className={targetProjectIconStyle} />
+          <FontAwesomeIcon
+            icon={referenceIcon}
+            color={'var(--secondaryColor)'}
+            title={i18n.modules.cardType.infos.isIsglobalType}
+            className={targetProjectIconStyle}
+          />
         ))}
     </>
   );
@@ -45,16 +53,23 @@ interface TargetProjectSummaryProps {
 
 function TargetProjectSummary({ projectId }: TargetProjectSummaryProps): JSX.Element {
   const { project, status } = useProject(projectId);
-
+  const i18n = useTranslations();
   return (
     <FontAwesomeIcon
-      icon={referenceIcon}
+      icon={
+        project?.illustration
+          ? {
+              prefix: project.illustration.iconLibrary as IconPrefix,
+              iconName: project.illustration.iconKey as IconName,
+            }
+          : referenceIcon
+      }
       className={targetProjectIconStyle}
-      color={'var(--lightGray)'}
+      color={project?.illustration ? project.illustration.iconBkgdColor : 'var(--lightGray)'}
       title={
         status === 'INITIALIZED' && project?.name
-          ? 'It comes from the project "' + project.name + '"'
-          : 'It comes from a project'
+          ? `${i18n.modules.cardType.infos.fromProject} ` + project.name + '"'
+          : `${i18n.modules.cardType.infos.fromAProject}`
       }
     />
   );

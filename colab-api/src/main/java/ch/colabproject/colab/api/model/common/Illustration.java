@@ -51,6 +51,7 @@ public class Illustration implements WithJsonDiscriminator {
      * The background color to set behind the icon
      */
     @Size(max = 64)
+    @NotNull
     private String iconBkgdColor;
 
     // ---------------------------------------------------------------------------------------------

@@ -18,11 +18,12 @@ import { useAppDispatch } from '../../store/hooks';
 import { InlineLink } from '../common/element/Link';
 import Form, { Field, PasswordScore } from '../common/Form/Form';
 import Flex from '../common/layout/Flex';
-import { lightLinkStyle, space_M, space_S } from '../styling/style';
+import { errorColor, lightLinkStyle, space_M, space_S, textSmall } from '../styling/style';
 import PublicEntranceContainer from './PublicEntranceContainer';
 
 interface SignInFormProps {
   redirectTo: string | null;
+  message?: string | React.ReactNode;
 }
 
 interface Credentials {
@@ -43,10 +44,11 @@ const defaultCredentials: Credentials = {
   },
 };
 
-export default function SignInForm({ redirectTo }: SignInFormProps): JSX.Element {
+export default function SignInForm({ redirectTo, message }: SignInFormProps): JSX.Element {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const i18n = useTranslations();
+  const [loginFailed, setLoginFailed] = React.useState<boolean>(false);
 
   const accountConfig = useAccountConfig();
 
@@ -76,9 +78,10 @@ export default function SignInForm({ redirectTo }: SignInFormProps): JSX.Element
           passwordScore: credentials.passwordScore,
         }),
       ).then(action => {
-        // is that a hack or not ???
         if (redirectTo && action.meta.requestStatus === 'fulfilled') {
           navigate(redirectTo);
+        } else if (action.meta.requestStatus === 'rejected') {
+          setLoginFailed(true);
         }
       });
     },
@@ -87,12 +90,19 @@ export default function SignInForm({ redirectTo }: SignInFormProps): JSX.Element
 
   return (
     <PublicEntranceContainer>
+      {loginFailed && (
+        <Flex className={cx(css({ color: errorColor, textAlign: 'left' }), textSmall)}>
+          {i18n.authentication.error.emailOrUserNotValid}
+        </Flex>
+      )}
+      {message && <div>{message}</div>}
       <Form
         fields={formFields}
         value={defaultCredentials}
         onSubmit={signIn}
         submitLabel={i18n.authentication.action.login}
         buttonClassName={css({ margin: space_M + ' auto' })}
+        submitFailed={loginFailed}
       />
       <Flex direction="column" justify="center" align="center">
         <InlineLink

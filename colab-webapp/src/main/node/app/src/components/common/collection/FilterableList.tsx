@@ -21,7 +21,7 @@ import Checkbox from '../Form/Checkbox';
 import Clickable from '../layout/Clickable';
 import Flex from '../layout/Flex';
 
-const categoryTabStyle = cx(
+export const categoryTabStyle = cx(
   lightTheme,
   css({
     padding: '0 ' + space_S,

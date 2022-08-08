@@ -7,6 +7,7 @@
 
 import { css, cx } from '@emotion/css';
 import * as React from 'react';
+import Flex from '../common/layout/Flex';
 import Logo from '../styling/Logo';
 import { fullPageStyle } from '../styling/style';
 
@@ -23,6 +24,9 @@ export default function PublicEntranceContainer({
         className={cx(
           css({
             margin: 'auto',
+            display: 'flex',
+            alignItems: 'center',
+            flexDirection: 'column',
           }),
         )}
       >
@@ -34,22 +38,28 @@ export default function PublicEntranceContainer({
             }),
           )}
         >
-          <Logo
-            className={css({
-              height: '110px',
-              width: '200px',
-              padding: '10px',
-            })}
-          />
+          <a
+            onClick={() => window.open(`#/about-colab`, '_blank')}
+            className={css({ '&:hover': { cursor: 'pointer' } })}
+          >
+            <Logo
+              className={css({
+                height: '110px',
+                width: '200px',
+                margin: '10px',
+              })}
+            />
+          </a>
         </div>
-        <div
+        <Flex
+          direction="column"
+          align="center"
           className={css({
-            textAlign: 'center',
             padding: '10px',
           })}
         >
           {children}
-        </div>
+        </Flex>
       </div>
     </div>
   );

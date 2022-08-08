@@ -75,7 +75,7 @@ export default function StickyNoteCreator({
     if (card.parentId != null) {
       return [
         {
-          label: `${card.title || i18n.card.untitled} (${card.id})`,
+          label: `${card.title || i18n.modules.card.untitled} (${card.id})`,
           value: card.id!,
         },
       ];

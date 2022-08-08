@@ -69,16 +69,16 @@ function getEffectiveValue(...values: string[]): string {
 }
 
 export default function InlineInput({
-  value,
   label,
+  value,
+  placeholder,
   onChange,
+  inputType = 'input',
+  delay = 300,
   className,
   textClassName,
   readOnly = false,
-  placeholder,
-  inputType = 'input',
   autosave = true,
-  delay = 300,
 }: InlineInputProps): JSX.Element {
   const i18n = useTranslations();
 

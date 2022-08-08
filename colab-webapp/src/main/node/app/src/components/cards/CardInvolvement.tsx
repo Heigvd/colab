@@ -8,6 +8,7 @@ import { css } from '@emotion/css';
 import { Card, InvolvementLevel } from 'colab-rest-client';
 import * as React from 'react';
 import * as API from '../../API/api';
+import useTranslations from '../../i18n/I18nContext';
 import { useAppDispatch } from '../../store/hooks';
 import Tips from '../common/element/Tips';
 import Flex from '../common/layout/Flex';
@@ -21,6 +22,7 @@ interface CardInvolvementProps {
 
 export default function CardInvolvement({ card }: CardInvolvementProps): JSX.Element {
   const dispatch = useAppDispatch();
+  const i18n = useTranslations();
   const updateDefInvolvementLevel = React.useCallback(
     (value: InvolvementLevel | null) => {
       dispatch(API.updateCard({ ...card, defaultInvolvementLevel: value }));
@@ -37,15 +39,8 @@ export default function CardInvolvement({ card }: CardInvolvementProps): JSX.Ele
           alignSelf: 'stretch',
         })}
       >
-        <h2>General involvement</h2>
-        <Tips>
-          Add or select an involvement level for all members and roles. You can fine-tune it below
-          by choosing indiviually a different level.
-          <br />
-          <br />
-          When undefined, the involvement level is calculated based on parent(s) card(s), and then
-          on your rights in the project.
-        </Tips>
+        <h2>{i18n.team.generalInvolvement}</h2>
+        <Tips>{i18n.team.involvementHelper}</Tips>
       </Flex>
       <InvolvementSelector
         self={card.defaultInvolvementLevel}

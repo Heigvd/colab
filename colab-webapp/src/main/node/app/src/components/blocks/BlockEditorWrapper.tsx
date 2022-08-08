@@ -7,6 +7,7 @@
 
 import { entityIs } from 'colab-rest-client';
 import * as React from 'react';
+import useTranslations from '../../i18n/I18nContext';
 import InlineLoading from '../common/element/InlineLoading';
 import LiveEditor from '../live/LiveEditor';
 import { useBlock } from '../live/LiveTextEditor';
@@ -36,6 +37,7 @@ export function BlockEditorWrapper({
   toolBar,
 }: BlockEditorProps): JSX.Element {
   const block = useBlock(blockId);
+  const i18n = useTranslations();
   if (block == null) {
     return <InlineLoading />;
   } else {
@@ -59,12 +61,16 @@ export function BlockEditorWrapper({
             />
           );
         default:
-          return <span>unkwnon MIME type: {block.mimeType}</span>;
+          return (
+            <span>
+              {`${i18n.common.error.unknown} ${i18n.modules.content.mimeType}:`} {block.mimeType}
+            </span>
+          );
       }
     } else {
       return (
         <div>
-          <i>Unknown document</i>
+          <i>{`${i18n.common.error.unknown} ${i18n.modules.content.document}`}</i>
         </div>
       );
     }
