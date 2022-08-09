@@ -169,7 +169,7 @@ export default function Tabs({
       >
         {routed ? (
           <Routes>
-            <Route path={`/`} element={child} />
+            <Route path={`/*`} element={child} />
             {mappedChildren &&
               Object.entries(mappedChildren).map(([key, value]) => {
                 return <Route key={key} path={`${key}`} element={value.child} />;

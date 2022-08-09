@@ -33,6 +33,8 @@ import * as API from '../../API/api';
 import useTranslations from '../../i18n/I18nContext';
 import { useCardACLForCurrentUser, useVariantsOrLoad } from '../../selectors/cardSelector';
 import { useAndLoadCardType } from '../../selectors/cardTypeSelector';
+import { useResources } from '../../selectors/resourceSelector';
+import { useStickyNoteLinksForDest } from '../../selectors/stickyNoteLinkSelector';
 import { useAppDispatch } from '../../store/hooks';
 import Button from '../common/element/Button';
 import IconButton from '../common/element/IconButton';
@@ -55,6 +57,7 @@ import {
   localTitleStyle,
   space_M,
   space_S,
+  textSmall,
   variantTitle,
 } from '../styling/style';
 import CardEditorToolbox from './CardEditorToolbox';
@@ -208,7 +211,14 @@ export default function CardEditor({
     markDownMode: markDownMode,
     setMarkDownMode: setMarkDownMode,
   };
-
+  const { resourcesAndRefs } = useResources({
+    kind: 'CardOrCardContent',
+    accessLevel: !readOnly && userAcl.write ? 'WRITE' : userAcl.read ? 'READ' : 'DENIED',
+    cardId: card.id || undefined,
+    cardContentId: variant.id,
+    hasSeveralVariants: hasVariants,
+  });
+  const { stickyNotesForDest } = useStickyNoteLinksForDest(card.id);
   const closeRouteCb = React.useCallback(
     route => {
       navigate(location.pathname.replace(new RegExp(route + '$'), ''));
@@ -645,12 +655,14 @@ export default function CardEditor({
                           />
                         ),
                         icon: faPaperclip,
+                        nextToIconElement: <div className={textSmall}> ({resourcesAndRefs.length})</div>,
                         title: i18n.modules.resource.documentation,
                         nextToTitleElement: <Tips>{i18n.modules.resource.docDescription}</Tips>,
                         className: css({ overflow: 'auto' }),
                       },
                       'Sticky Notes': {
                         icon: faStickyNote,
+                        nextToIconElement: <div className={textSmall}> ({stickyNotesForDest.length})</div>,
                         title: i18n.modules.stickyNotes.stickyNotes,
                         children: <StickyNoteWrapper destCardId={card.id} showSrc />,
                         nextToTitleElement: (
