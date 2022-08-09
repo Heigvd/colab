@@ -106,12 +106,12 @@ export interface FormProps<T> {
   value: T;
   onSubmit: (entity: T) => void;
   submitLabel?: string;
+  autoComplete?: string;
   children?: React.ReactNode;
+  submitFailed?: boolean;
   className?: string;
   childrenClassName?: string;
   buttonClassName?: string;
-  autoComplete?: string;
-  submitFailed?: boolean;
 }
 
 export default function Form<T>({
@@ -119,12 +119,12 @@ export default function Form<T>({
   value,
   onSubmit,
   submitLabel,
+  autoComplete,
   children,
+  submitFailed,
   className,
   childrenClassName,
   buttonClassName,
-  autoComplete,
-  submitFailed,
 }: FormProps<T>): JSX.Element {
   const i18n = useTranslations();
 
@@ -191,12 +191,12 @@ export default function Form<T>({
             inputType={field.type === 'text' ? 'input' : 'textarea'}
             mandatory={field.isMandatory}
             readOnly={field.readOnly}
+            autoComplete={autoComplete}
             saveMode="FLOWING"
             onChange={value => setFormValue(field.key, value)}
             tip={field.tip}
             footer={effectiveFieldFooter}
             error={errorMessage}
-            autoComplete={autoComplete}
           />
         </div>
       );
@@ -210,12 +210,12 @@ export default function Form<T>({
             type="password"
             mandatory={field.isMandatory}
             readOnly={field.readOnly}
+            autoComplete={autoComplete}
             saveMode="FLOWING"
             onChange={value => setFormValue(field.key, value)}
             tip={field.tip}
             footer={effectiveFieldFooter}
             error={errorMessage}
-            autoComplete={autoComplete}
           />
           {field.strengthProp != null && (
             <div className={cx({ [css({ display: 'none' })]: !field.showStrengthBar })}>
@@ -309,7 +309,7 @@ export default function Form<T>({
         css({
           display: 'flex',
           flexDirection: 'column',
-          width: 'min-content'
+          width: 'min-content',
         }),
         className,
       )}
@@ -319,7 +319,7 @@ export default function Form<T>({
         <ButtonWithLoader
           key="submit"
           onClick={submit}
-          isLoading={(submitFailed || globalErroneous) ? false : true}
+          isLoading={submitFailed || globalErroneous ? false : true}
           className={cx(css({ margin: space_M + ' 0', alignSelf: 'flex-start' }), buttonClassName)}
         >
           {submitLabel || i18n.form.submit}

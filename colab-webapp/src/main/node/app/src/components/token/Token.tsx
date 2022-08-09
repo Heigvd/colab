@@ -116,26 +116,37 @@ export default function Token(props: TokenProps): JSX.Element {
   } else if (state === 'NO_TOKEN') {
     return (
       <Overlay>
-        <div><b>Oops! The link you got is uncomplete.</b></div>
+        <div>
+          <b>Oops! The link you got is uncomplete.</b>
+        </div>
         <Link to={'../'}>Back to colab home</Link>
       </Overlay>
     );
-
   } else {
     return (
       <Overlay>
-        {state === 'UNCOMPLETE_URL' ? <div>
-          {/* Error while processing token. Please try to refresh or contact the admin of your colab
+        {state === 'UNCOMPLETE_URL' ? (
+          <div>
+            {/* Error while processing token. Please try to refresh or contact the admin of your colab
           project. */}
-          <b>Oops! The link you got is uncomplete.</b> 
-          <p>Please check again your mail or contact the person who sent you the invitation.</p>
-          <Link to={'../'} className={css({display: 'block'})}>Back to colab home</Link>
-        </div> : <div>
-         <b> Oops! There was an error. </b>
-         <p>Invalid or deprecated link. Please try to refresh. If not working, maybe your
-          invitation has been deleted by the host.</p>
-          <Link to={'../'} className={css({display: 'block'})}>Back to colab home</Link>
-        </div>}
+            <b>Oops! The link you got is uncomplete.</b>
+            <p>Please check again your mail or contact the person who sent you the invitation.</p>
+            <Link to={'../'} className={css({ display: 'block' })}>
+              Back to colab home
+            </Link>
+          </div>
+        ) : (
+          <div>
+            <b> Oops! There was an error. </b>
+            <p>
+              Invalid or deprecated link. Please try to refresh. If not working, maybe your
+              invitation has been deleted by the host.
+            </p>
+            <Link to={'../'} className={css({ display: 'block' })}>
+              Back to colab home
+            </Link>
+          </div>
+        )}
       </Overlay>
     );
   }

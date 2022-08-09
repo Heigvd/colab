@@ -64,11 +64,13 @@ export const useAndLoadTextOfDocument = (id: number | null | undefined): TextAnd
   const dispatch = useAppDispatch();
 
   const { text, status } = useTextOfDocument(id);
-  React.useEffect(()=> {if (status === 'NOT_INITIALIZED' && id) {
-    // we have to ask data to the server
-    dispatch(API.getDocument(id));
-  }}, [dispatch, id, status])
-  
+  React.useEffect(() => {
+    if (status === 'NOT_INITIALIZED' && id) {
+      // we have to ask data to the server
+      dispatch(API.getDocument(id));
+    }
+  }, [dispatch, id, status]);
+
   return { text, status };
 };
 

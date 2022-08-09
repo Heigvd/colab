@@ -387,7 +387,7 @@ public class UserManager {
         // authentication fails
         // OR client did not provide required hash
         // OR account not found
-        //throw HttpErrorMessage.authenticationFailed();
+        throw HttpErrorMessage.authenticationFailed();
     }
 
     /**

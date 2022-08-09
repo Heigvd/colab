@@ -6,7 +6,12 @@
  */
 
 import { css } from '@emotion/css';
-import { faInfoCircle, faTimes, faWarning, IconDefinition } from '@fortawesome/free-solid-svg-icons';
+import {
+  faInfoCircle,
+  faTimes,
+  faWarning,
+  IconDefinition,
+} from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { entityIs, HttpErrorMessage, HttpException } from 'colab-rest-client';
 import * as React from 'react';
@@ -123,7 +128,7 @@ function Notification({ notification, index }: NotificationProps) {
         overflow: 'hidden',
         margin: space_S,
         minWidth: '30vw',
-        maxWidth:'70vw',
+        maxWidth: '70vw',
         boxShadow: '0px 1px 3px rgba(0, 0, 0, 0.12)',
         ':hover': {
           boxShadow: '0 3px 6px rgba(0,0,0,.16)',
@@ -132,13 +137,21 @@ function Notification({ notification, index }: NotificationProps) {
       })}
       onClick={() => closeCb()}
       align={'stretch'}
-    > 
-    <Flex justify='center' align='center' className={css({ backgroundColor: getBgColor(notification), color: 'white', padding: space_M})}>
-      <FontAwesomeIcon icon={getIcon(notification)} size={'2x'} />
-    </Flex>
-    <div className={css({ padding: space_M})}>
-     <h3>{getTitle(notification, i18n)}</h3>
-      {prettyPrint(notification.message, i18n)}
+    >
+      <Flex
+        justify="center"
+        align="center"
+        className={css({
+          backgroundColor: getBgColor(notification),
+          color: 'white',
+          padding: space_M,
+        })}
+      >
+        <FontAwesomeIcon icon={getIcon(notification)} size={'2x'} />
+      </Flex>
+      <div className={css({ padding: space_M })}>
+        <h3>{getTitle(notification, i18n)}</h3>
+        {prettyPrint(notification.message, i18n)}
       </div>
     </Flex>
   );

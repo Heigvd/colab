@@ -548,7 +548,8 @@ export default function CardEditor({
                                 <b>{i18n.modules.cardType.cardType}</b>: {cardType.title || ''}
                               </p>
                               <p>
-                                <b>{i18n.modules.cardType.purpose}</b>: <DocTextDisplay id={cardType.purposeId} />
+                                <b>{i18n.modules.cardType.purpose}</b>:{' '}
+                                <DocTextDisplay id={cardType.purposeId} />
                               </p>
                             </div>
                             <IconButton
@@ -645,11 +646,7 @@ export default function CardEditor({
                         ),
                         icon: faPaperclip,
                         title: i18n.modules.resource.documentation,
-                        nextToTitleElement: (
-                          <Tips>
-                            {i18n.modules.resource.docDescription}
-                          </Tips>
-                        ),
+                        nextToTitleElement: <Tips>{i18n.modules.resource.docDescription}</Tips>,
                         className: css({ overflow: 'auto' }),
                       },
                       'Sticky Notes': {
@@ -659,9 +656,7 @@ export default function CardEditor({
                         nextToTitleElement: (
                           <Tips>
                             <h5>{i18n.modules.stickyNotes.listStickyNotes}</h5>
-                            <div>
-                            {i18n.modules.stickyNotes.snDescription}
-                            </div>
+                            <div>{i18n.modules.stickyNotes.snDescription}</div>
                           </Tips>
                         ),
                         className: css({ overflow: 'auto' }),

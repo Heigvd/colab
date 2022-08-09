@@ -73,14 +73,16 @@ export default function CardCreator({
 
   return (
     <OpenCloseModal
-      title={
-        i18n.modules.card.createNew(parentCardContent.title)
-      }
+      title={i18n.modules.card.createNew(parentCardContent.title)}
       collapsedChildren={
         customButton ? (
           customButton
         ) : (
-          <IconButton icon={faPlus} className={greyIconButtonChipStyle} title={i18n.modules.card.addCard} />
+          <IconButton
+            icon={faPlus}
+            className={greyIconButtonChipStyle}
+            title={i18n.modules.card.addCard}
+          />
         )
       }
       className={className}

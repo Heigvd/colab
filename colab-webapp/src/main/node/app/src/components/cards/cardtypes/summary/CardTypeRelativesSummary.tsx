@@ -66,7 +66,10 @@ export default function CardTypeRelativesSummary({
       {/* is deprecated */}
       {displayChoices.showDeprecated && cardType.deprecated && (
         <Flex className={itemStyle}>
-          <FontAwesomeIcon icon={faTriangleExclamation} title={i18n.modules.cardType.infos.shouldNotBeUsed} />
+          <FontAwesomeIcon
+            icon={faTriangleExclamation}
+            title={i18n.modules.cardType.infos.shouldNotBeUsed}
+          />
         </Flex>
       )}
 

@@ -61,7 +61,9 @@ export default function ButtonWithLoader({
   const [processing, setProcessing] = React.useState<boolean>(false);
 
   const onClicked = React.useCallback(
-    (event: React.MouseEvent<HTMLSpanElement, MouseEvent> | React.KeyboardEvent<HTMLSpanElement>) => {
+    (
+      event: React.MouseEvent<HTMLSpanElement, MouseEvent> | React.KeyboardEvent<HTMLSpanElement>,
+    ) => {
       if (isLoading) {
         setProcessing(isLoading);
       }

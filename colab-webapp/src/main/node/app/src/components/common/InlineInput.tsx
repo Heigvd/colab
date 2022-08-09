@@ -193,5 +193,4 @@ export default function InlineInput({
       )}
     </div>
   );
-  
 }

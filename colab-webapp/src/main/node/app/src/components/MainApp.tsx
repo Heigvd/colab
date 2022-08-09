@@ -25,11 +25,7 @@ import MainNav from './MainNav';
 import Editor from './projects/edition/Editor';
 import { UserProjects } from './projects/ProjectList';
 import Settings from './settings/Settings';
-import {
-  fullPageStyle,
-  invertedThemeMode,
-  space_M,
-} from './styling/style';
+import { fullPageStyle, invertedThemeMode, space_M } from './styling/style';
 
 const EditorWrapper = () => {
   const { id: sId } = useParams<'id'>();
@@ -90,7 +86,6 @@ export default function MainApp(): JSX.Element {
       dispatch(API.reloadCurrentUser());
     }
   }, [currentUserStatus, dispatch]);
-
 
   const reconnecting = socketId == null && (
     <Overlay>

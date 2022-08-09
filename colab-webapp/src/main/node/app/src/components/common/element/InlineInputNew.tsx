@@ -14,6 +14,8 @@ import logger from '../../../logger';
 import { borderRadius, lightIconButtonStyle, space_S } from '../../styling/style';
 import IconButton from './IconButton';
 
+// not used anymore
+
 const inlineInputStyle = {
   maxWidth: '100%',
   borderRadius: borderRadius,

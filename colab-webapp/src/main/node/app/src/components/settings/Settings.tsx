@@ -44,7 +44,6 @@ export default function Settings(): JSX.Element {
                   );
                 }
               })}
-
             </Flex>
           </Tab>
           <Tab name="Display" label="Display">

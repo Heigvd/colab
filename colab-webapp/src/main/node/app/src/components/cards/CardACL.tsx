@@ -129,7 +129,7 @@ export default function CardACL({ card }: CardACLProps): JSX.Element {
   const { project } = useProjectBeingEdited();
   const { members, roles, status: teamStatus } = useAndLoadProjectTeam(project?.id);
   const acl = useAndLoadCardACL(card.id);
-const i18n = useTranslations();
+  const i18n = useTranslations();
 
   if (teamStatus === 'INITIALIZED') {
     return (

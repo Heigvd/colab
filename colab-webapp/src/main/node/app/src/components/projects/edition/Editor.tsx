@@ -357,7 +357,7 @@ function EditorNav({ project, setShowProjectDetails }: EditorNavProps): JSX.Elem
             menuIcon="CARET"
           />
         </div>
-        <Flex align='center'>
+        <Flex align="center">
           <IconButton
             onClick={() => navigate('./project-settings')}
             title="Settings"

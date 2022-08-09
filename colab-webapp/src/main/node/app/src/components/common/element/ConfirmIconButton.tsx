@@ -115,7 +115,11 @@ export function InlineConfirmIconButton({
             icon={faTimes}
             onClick={askConfirm}
           />
-          <IconButton title={`${i18n.common.confirm} ${title}`} icon={faCheck} onClick={confirmedCb} />
+          <IconButton
+            title={`${i18n.common.confirm} ${title}`}
+            icon={faCheck}
+            onClick={confirmedCb}
+          />
         </Button>
       ) : (
         <div>

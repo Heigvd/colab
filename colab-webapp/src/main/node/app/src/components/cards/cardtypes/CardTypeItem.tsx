@@ -82,7 +82,8 @@ export default function CardTypeItem({ cardType, usage }: CardTypeItemProps): JS
                     value: 'Edit type',
                     label: (
                       <>
-                        <FontAwesomeIcon icon={faPen} />{i18n.modules.cardType.editType}
+                        <FontAwesomeIcon icon={faPen} />
+                        {i18n.modules.cardType.editType}
                       </>
                     ),
                     action: () => navigate(`./edit/${cardType.ownId}`),
@@ -113,7 +114,8 @@ export default function CardTypeItem({ cardType, usage }: CardTypeItemProps): JS
                     value: 'Remove this type from the project',
                     label: (
                       <>
-                        <FontAwesomeIcon icon={faExchangeAlt} />{i18n.modules.cardType.RmFromProject}
+                        <FontAwesomeIcon icon={faExchangeAlt} />
+                        {i18n.modules.cardType.RmFromProject}
                       </>
                     ),
                     action: () =>
@@ -134,7 +136,8 @@ export default function CardTypeItem({ cardType, usage }: CardTypeItemProps): JS
                       <ConfirmDeleteModal
                         buttonLabel={
                           <div className={cx(css({ color: errorColor }), modalEntryStyle)}>
-                            <FontAwesomeIcon icon={faTrash} />{i18n.modules.cardType.deleteType}
+                            <FontAwesomeIcon icon={faTrash} />
+                            {i18n.modules.cardType.deleteType}
                           </div>
                         }
                         className={css({
@@ -142,11 +145,7 @@ export default function CardTypeItem({ cardType, usage }: CardTypeItemProps): JS
                           display: 'flex',
                           alignItems: 'center',
                         })}
-                        message={
-                          <p>
-                            {i18n.modules.cardType.confirmDeleteType}
-                          </p>
-                        }
+                        message={<p>{i18n.modules.cardType.confirmDeleteType}</p>}
                         onConfirm={() => dispatch(API.deleteCardType(cardType))}
                         confirmButtonLabel={i18n.modules.cardType.deleteType}
                       />
