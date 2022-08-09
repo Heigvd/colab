@@ -13,6 +13,7 @@ import {
   faCog,
   faDownload,
   faExternalLinkAlt,
+  faFlag,
   faPen,
   faTrash,
 } from '@fortawesome/free-solid-svg-icons';
@@ -180,6 +181,41 @@ export default function CardEditorToolbox({
               onClick={() => setEditMode(true)}
             />
           )}
+          <DropDownMenu
+                icon={faFlag}
+                buttonClassName={cx(
+                  lightIconButtonStyle,
+                  css({
+                    paddingLeft: space_M,
+                    marginLeft: space_M,
+                    borderLeft: '1px solid var(--lightGray)',
+                  }),
+                )}
+                valueComp={{ value: '', label: '' }}
+                menuIcon='CARET'
+                entries={[
+                  {
+                    value: 'decision',
+                    label: (
+                      <>
+                          <FontAwesomeIcon icon={faCheck} size="xs" color="var(--lightGray)" />
+                          Decision
+                      </>
+                    ),
+                    action: () => {},
+                  },
+                  {
+                    value: 'validation',
+                    label: (
+                      <>
+                          <FontAwesomeIcon icon={faCheck} size="xs" color="var(--lightGray)" />
+                          Validation
+                      </>
+                    ),
+                    action: () => {},
+                  },
+                ]}
+              />
           <ConfirmDeleteModal
             confirmButtonLabel={i18n.modules.content.deleteBlockType(isText, isLink)}
             buttonLabel={

@@ -96,7 +96,7 @@ export default function CardCreator({
         >
           <IconButton
             onClick={function () {
-              navigate('types');
+              navigate('project-settings/card-types');
             }}
             title={i18n.modules.cardType.manageTypes}
             icon={faCog}

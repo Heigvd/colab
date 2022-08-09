@@ -6,6 +6,7 @@
  */
 import { css, cx } from '@emotion/css';
 import * as React from 'react';
+import { Route, Routes, useNavigate } from 'react-router-dom';
 import useTranslations from '../../../i18n/I18nContext';
 import { space_L, space_M, space_S } from '../../styling/style';
 import Clickable from './Clickable';
@@ -30,6 +31,8 @@ interface TabsProps {
   bodyClassName?: string;
   children: React.ReactElement<TabProps>[] | React.ReactElement<TabProps>;
   onSelect?: (name: string) => void;
+  defaultTab?: string;
+  routed?: boolean;
 }
 
 const headerStyle = css({
@@ -84,9 +87,12 @@ export default function Tabs({
   bodyClassName,
   children,
   onSelect,
+  defaultTab,
+  routed,
 }: TabsProps): JSX.Element {
   const i18n = useTranslations();
-
+  const navigate = useNavigate();
+  //const location = useLocation();
   const mappedChildren: Record<
     string,
     { label: string; child: React.ReactElement<TabProps>; invisible?: boolean }
@@ -102,19 +108,32 @@ export default function Tabs({
     names.push(child.props.name);
   });
 
-  const [selectedTab, setTab] = React.useState<string>(names[0] || '');
+  const [selectedTab, setTab] = React.useState<string>(defaultTab || names[0] || '');
 
   const onSelectTab = React.useCallback(
     (name: string) => {
       setTab(name);
+      if (routed) {
+        navigate(name);
+      }
       if (onSelect) {
         onSelect(name);
       }
     },
-    [onSelect],
+    [navigate, onSelect, routed],
   );
 
   const child = mappedChildren[selectedTab]?.child;
+ /*  React.useEffect(() => {
+    if (routed) {
+      const path = location.pathname.split('/');
+      const tabName = path[path.length - 1] || '';
+      if (names.includes(tabName)) {
+        logger.info(path[path.length - 1]);
+        setTab(tabName);
+      }
+    }
+  }, [names, routed]); */
 
   return (
     <Flex
@@ -148,7 +167,19 @@ export default function Tabs({
         overflow="auto"
         className={cx(defaultBodyStyle, bodyClassName)}
       >
-        {child != null ? child : <i>{i18n.common.error.missingContent}</i>}
+        {routed ? (
+          <Routes>
+            <Route path={`/`} element={child} />
+            {mappedChildren &&
+              Object.entries(mappedChildren).map(([key, value]) => {
+                return <Route key={key} path={`${key}`} element={value.child} />;
+              })}
+          </Routes>
+        ) : child != null ? (
+          child
+        ) : (
+          <i>{i18n.common.error.missingContent}</i>
+        )}
       </Flex>
     </Flex>
   );
