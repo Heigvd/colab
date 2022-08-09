@@ -39,8 +39,14 @@ import Tips, { TipsProps } from './Tips';
 // TODO replace input in invite member in Team.tsx
 
 // TODO see with Audrey what happens in saveMode === 'ON_CONFIRM' when click outside. do we lose ?
-// TODO see with Audrey updated status => edit mode
+// TODO see with Audrey is updated => edit mode
 // TODO see with Audrey if in a form, errors are centered or not
+
+// saveMode explanation
+// - FLOWING : call "onChange" on every input change. the data must not be updatable from the outside
+// - ON_BLUR : call "onChange" only when leaving the field
+// - ON_CONFIRM : call "onChange" only when press Enter or confirm button
+// - DEBOUNCED : call "onChange" on every input change, but deal with update of values from the outside. See if needed to implement it
 
 // Note : still need some UI improvements for some combinations
 // Just add what is needed when we need it
@@ -60,7 +66,7 @@ interface InputProps {
   rows?: HTMLTextAreaElement['rows'];
   autoWidth?: boolean;
   maxWidth?: string;
-  saveMode: 'FLOWING' | 'ON_CONFIRM'; // | 'DEBOUNCED';
+  saveMode: 'FLOWING' | 'ON_BLUR' | 'ON_CONFIRM'; // | 'DEBOUNCED';
   onChange: (newValue: string) => void;
   onCancel?: () => void;
   tip?: TipsProps['children'];
@@ -263,7 +269,12 @@ function Input({
           onInput={updateSize}
           onChange={changeInternal}
           onKeyDown={pressEnterKey}
-          onBlur={setDisplayMode}
+          onBlur={() => {
+            setDisplayMode();
+            if (saveMode === 'ON_BLUR') {
+              save();
+            }
+          }}
           className={cx(
             inputEditClassName && mode === 'EDIT' ? inputEditClassName : inputDisplayClassName,
           )}
@@ -279,7 +290,12 @@ function Input({
           rows={rows}
           onFocus={setEditMode}
           onChange={changeInternal}
-          onBlur={setDisplayMode}
+          onBlur={() => {
+            setDisplayMode();
+            if (saveMode === 'ON_BLUR') {
+              save();
+            }
+          }}
           // no onKeyDown here, or it will be a problem to put any end of line in the text
           className={cx(
             inputEditClassName && mode === 'EDIT' ? inputEditClassName : inputDisplayClassName,
