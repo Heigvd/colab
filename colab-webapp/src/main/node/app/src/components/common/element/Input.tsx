@@ -490,3 +490,7 @@ export function DiscreetTextArea(props: Omit<InputProps, 'saveMode' | 'inputType
 export function LabeledTextArea(props: Omit<InputProps, 'saveMode' | 'inputType'>): JSX.Element {
   return <BlockInput {...props} inputType="textarea" saveMode="ON_CONFIRM" />;
 }
+
+export function FormInput(props: Omit<InputProps, 'saveMode'>): JSX.Element {
+  return <BlockInput {...props} saveMode="SIMPLE_FLOWING" />;
+}
