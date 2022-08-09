@@ -16,7 +16,7 @@ import ProjectCardTypeList from '../cards/cardtypes/ProjectCardTypeList';
 import ButtonWithLoader from '../common/element/ButtonWithLoader';
 import IconButton from '../common/element/IconButton';
 import IllustrationDisplay from '../common/element/IllustrationDisplay';
-import { BlockInput, LabeledTextArea } from '../common/element/Input';
+import { LabeledInput, LabeledTextArea } from '../common/element/Input';
 import Flex from '../common/layout/Flex';
 import Tabs, { Tab } from '../common/layout/Tabs';
 import { lightIconButtonStyle, space_L, space_S } from '../styling/style';
@@ -63,11 +63,10 @@ export function ProjectSettings({ project }: ProjectSettingsProps): JSX.Element 
               align="stretch"
               className={css({ width: '45%', minWidth: '45%', marginRight: space_L })}
             >
-              <BlockInput
+              <LabeledInput
                 label="Name"
                 placeholder="New project"
                 value={project.name || ''}
-                saveMode="ON_CONFIRM"
                 onChange={newValue => dispatch(API.updateProject({ ...project, name: newValue }))}
               />
               <LabeledTextArea

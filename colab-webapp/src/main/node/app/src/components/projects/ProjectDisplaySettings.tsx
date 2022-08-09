@@ -12,7 +12,7 @@ import * as API from '../../API/api';
 import { dispatch } from '../../store/store';
 import Button from '../common/element/Button';
 import ButtonWithLoader from '../common/element/ButtonWithLoader';
-import { BlockInput, LabeledTextArea } from '../common/element/Input';
+import { LabeledInput, LabeledTextArea } from '../common/element/Input';
 import Flex from '../common/layout/Flex';
 import { space_S } from '../styling/style';
 import { defaultProjectIllustration } from './ProjectCommon';
@@ -42,11 +42,10 @@ export function ProjectDisplaySettings({
   }, [illustration, onClose, project]);
   return (
     <Flex align="stretch" direction="column" className={css({ alignSelf: 'stretch' })}>
-      <BlockInput
+      <LabeledInput
         label="Name"
         placeholder="New project"
         value={project.name || ''}
-        saveMode="ON_CONFIRM"
         onChange={newValue => dispatch(API.updateProject({ ...project, name: newValue }))}
       />
       <LabeledTextArea
