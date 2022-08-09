@@ -25,7 +25,7 @@ import { useAppDispatch } from '../../store/hooks';
 import CardEditorToolbox from '../cards/CardEditorToolbox';
 import { Destroyer } from '../common/Destroyer';
 import IconButton from '../common/element/IconButton';
-import { InlineInput } from '../common/element/Input';
+import { DiscreetTextArea, InlineInput } from '../common/element/Input';
 import DropDownMenu from '../common/layout/DropDownMenu';
 import Flex from '../common/layout/Flex';
 import OpenCloseModal from '../common/layout/OpenCloseModal';
@@ -132,11 +132,10 @@ export function ResourceDisplay({ resource, goBackToList }: ResourceDisplayProps
           {showTeaser && (
             <DocTextWrapper id={targetResource.teaserId}>
               {text => (
-                <InlineInput
+                <DiscreetTextArea
                   value={text || ''}
                   placeholder="There is no teaser for the moment. Feel free to fill it."
                   readOnly={readOnly}
-                  saveMode="ON_CONFIRM"
                   onChange={(newValue: string) => {
                     if (targetResource.teaserId) {
                       dispatch(
@@ -148,7 +147,6 @@ export function ResourceDisplay({ resource, goBackToList }: ResourceDisplayProps
                     }
                   }}
                   inputDisplayClassName={cx(textSmall, css({ marginTop: space_S }))}
-                  inputType="textarea"
                 />
               )}
             </DocTextWrapper>

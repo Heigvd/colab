@@ -482,3 +482,7 @@ export function InlineInput(props: InputProps): JSX.Element {
 export function DiscreetInput(props: Omit<InputProps, 'saveMode' | 'autoWidth'>): JSX.Element {
   return <InlineInput {...props} autoWidth saveMode="ON_CONFIRM" />;
 }
+
+export function DiscreetTextArea(props: Omit<InputProps, 'saveMode' | 'inputType'>): JSX.Element {
+  return <InlineInput {...props} inputType="textarea" saveMode="ON_CONFIRM" />;
+}
