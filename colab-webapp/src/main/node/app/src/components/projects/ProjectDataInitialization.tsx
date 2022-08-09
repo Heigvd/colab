@@ -80,7 +80,7 @@ export default function ProjectDataInitialization({
           label="Name"
           value={data.name}
           readOnly={readOnly}
-          saveMode="FLOWING"
+          saveMode="SIMPLE_FLOWING"
           onChange={name => setName(name)}
         />
         <BlockInput
@@ -88,7 +88,7 @@ export default function ProjectDataInitialization({
           inputType="textarea"
           value={data.description}
           readOnly={readOnly}
-          saveMode="FLOWING"
+          saveMode="SIMPLE_FLOWING"
           onChange={description => {
             setDescription(description);
           }}

@@ -43,7 +43,7 @@ import Tips, { TipsProps } from './Tips';
 // TODO see with Audrey if in a form, errors are centered or not
 
 // saveMode explanation
-// - FLOWING : call "onChange" on every input change. the data must not be updatable from the outside
+// - SIMPLE_FLOWING : call "onChange" on every input change. the data must not be updatable from the outside
 // - ON_BLUR : call "onChange" only when leaving the field
 // - ON_CONFIRM : call "onChange" only when press Enter or confirm button
 // - DEBOUNCED : call "onChange" on every input change, but deal with update of values from the outside. See if needed to implement it
@@ -66,7 +66,7 @@ interface InputProps {
   rows?: HTMLTextAreaElement['rows'];
   autoWidth?: boolean;
   maxWidth?: string;
-  saveMode: 'FLOWING' | 'ON_BLUR' | 'ON_CONFIRM'; // | 'DEBOUNCED';
+  saveMode: 'SIMPLE_FLOWING' | 'ON_BLUR' | 'ON_CONFIRM'; // | 'DEBOUNCED';
   onChange: (newValue: string) => void;
   onCancel?: () => void;
   tip?: TipsProps['children'];
@@ -212,7 +212,7 @@ function Input({
       const newValue = e.target.value;
       setCurrentInternalValue(newValue);
 
-      if (saveMode === 'FLOWING') {
+      if (saveMode === 'SIMPLE_FLOWING') {
         onChange(newValue);
       }
     },

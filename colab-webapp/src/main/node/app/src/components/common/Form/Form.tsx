@@ -192,7 +192,7 @@ export default function Form<T>({
             mandatory={field.isMandatory}
             readOnly={field.readOnly}
             autoComplete={autoComplete}
-            saveMode="FLOWING"
+            saveMode="SIMPLE_FLOWING"
             onChange={value => setFormValue(field.key, value)}
             tip={field.tip}
             footer={effectiveFieldFooter}
@@ -211,7 +211,7 @@ export default function Form<T>({
             mandatory={field.isMandatory}
             readOnly={field.readOnly}
             autoComplete={autoComplete}
-            saveMode="FLOWING"
+            saveMode="SIMPLE_FLOWING"
             onChange={value => setFormValue(field.key, value)}
             tip={field.tip}
             footer={effectiveFieldFooter}
