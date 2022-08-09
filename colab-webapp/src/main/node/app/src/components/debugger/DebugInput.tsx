@@ -489,10 +489,10 @@ export default function DebugInput(): JSX.Element {
               label="input text confirm"
               value={val11}
               placeholder="i t c"
-              mandatory={mandatory}
-              readOnly={readOnly}
               autoWidth
               saveMode="ON_CONFIRM"
+              mandatory={mandatory}
+              readOnly={readOnly}
               onChange={newValue => {
                 // eslint-disable-next-line no-alert
                 //alert('changed');

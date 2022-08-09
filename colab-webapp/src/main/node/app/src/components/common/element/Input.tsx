@@ -476,3 +476,9 @@ export function InlineInput(props: InputProps): JSX.Element {
     />
   );
 }
+
+// Fine tuned inputs *******************************************************************************
+
+export function DiscreetInput(props: Omit<InputProps, 'saveMode' | 'autoWidth'>): JSX.Element {
+  return <InlineInput {...props} autoWidth saveMode="ON_CONFIRM" />;
+}

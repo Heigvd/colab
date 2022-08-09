@@ -32,7 +32,7 @@ import Button from '../common/element/Button';
 import IconButton from '../common/element/IconButton';
 import IconButtonWithLoader from '../common/element/IconButtonWithLoader';
 import InlineLoading from '../common/element/InlineLoading';
-import { InlineInput } from '../common/element/Input';
+import { DiscreetInput, InlineInput } from '../common/element/Input';
 import { emailFormat } from '../common/Form/Form';
 import ConfirmDeleteModal from '../common/layout/ConfirmDeleteModal';
 import DropDownMenu, { modalEntryStyle } from '../common/layout/DropDownMenu';
@@ -241,11 +241,9 @@ const Member = ({ member, roles, isTheOnlyOwner }: MemberProps) => {
     username = (
       <>
         {/* Do we really want to be able to edit all names here? */}
-        <InlineInput
+        <DiscreetInput
           value={member.displayName || ''}
           placeholder="username"
-          autoWidth
-          saveMode="ON_CONFIRM"
           onChange={updateDisplayName}
           readOnly={currentUser?.id === member.userId}
         />

@@ -31,7 +31,7 @@ import { useProjectBeingEdited } from '../../../selectors/projectSelector';
 import { dispatch } from '../../../store/store';
 import AvailabilityStatusIndicator from '../../common/element/AvailabilityStatusIndicator';
 import IconButton from '../../common/element/IconButton';
-import { InlineInput } from '../../common/element/Input';
+import { DiscreetInput, InlineInput } from '../../common/element/Input';
 import Tips from '../../common/element/Tips';
 import Toggler from '../../common/Form/Toggler';
 import ConfirmDeleteModal from '../../common/layout/ConfirmDeleteModal';
@@ -124,11 +124,9 @@ export default function CardTypeEditor({ className, usage }: CardTypeEditorProps
                     borderBottom: '1px solid var(--lightGray)',
                   })}
                 >
-                  <InlineInput
+                  <DiscreetInput
                     value={cardType.title || ''}
                     placeholder={i18n.modules.cardType.cardType}
-                    autoWidth
-                    saveMode="ON_CONFIRM"
                     onChange={newValue =>
                       dispatch(API.updateCardTypeTitle({ ...cardType, title: newValue }))
                     }
