@@ -16,7 +16,7 @@ import ProjectCardTypeList from '../cards/cardtypes/ProjectCardTypeList';
 import ButtonWithLoader from '../common/element/ButtonWithLoader';
 import IconButton from '../common/element/IconButton';
 import IllustrationDisplay from '../common/element/IllustrationDisplay';
-import { BlockInput } from '../common/element/Input';
+import { BlockInput, LabeledTextArea } from '../common/element/Input';
 import Flex from '../common/layout/Flex';
 import Tabs, { Tab } from '../common/layout/Tabs';
 import { lightIconButtonStyle, space_L, space_S } from '../styling/style';
@@ -70,12 +70,10 @@ export function ProjectSettings({ project }: ProjectSettingsProps): JSX.Element 
                 saveMode="ON_CONFIRM"
                 onChange={newValue => dispatch(API.updateProject({ ...project, name: newValue }))}
               />
-              <BlockInput
+              <LabeledTextArea
                 label="Description"
-                inputType="textarea"
                 placeholder="Write a description here"
                 value={project.description || ''}
-                saveMode="ON_CONFIRM"
                 onChange={newValue =>
                   dispatch(API.updateProject({ ...project, description: newValue }))
                 }

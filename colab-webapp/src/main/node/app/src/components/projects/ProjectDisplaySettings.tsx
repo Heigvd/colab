@@ -12,7 +12,7 @@ import * as API from '../../API/api';
 import { dispatch } from '../../store/store';
 import Button from '../common/element/Button';
 import ButtonWithLoader from '../common/element/ButtonWithLoader';
-import { BlockInput } from '../common/element/Input';
+import { BlockInput, LabeledTextArea } from '../common/element/Input';
 import Flex from '../common/layout/Flex';
 import { space_S } from '../styling/style';
 import { defaultProjectIllustration } from './ProjectCommon';
@@ -49,12 +49,10 @@ export function ProjectDisplaySettings({
         saveMode="ON_CONFIRM"
         onChange={newValue => dispatch(API.updateProject({ ...project, name: newValue }))}
       />
-      <BlockInput
+      <LabeledTextArea
         label="Description"
-        inputType="textarea"
         placeholder="Write a description here"
         value={project.description || ''}
-        saveMode="ON_CONFIRM"
         onChange={newValue => dispatch(API.updateProject({ ...project, description: newValue }))}
       />
       <ProjectIllustrationMaker illustration={illustration} setIllustration={setIllustration} />
