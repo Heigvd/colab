@@ -119,8 +119,8 @@ const ProjectDisplay = ({ project }: ProjectDisplayProps) => {
                     widthMax
                     heightMax
                   >
-                    {close => (
-                      <ProjectDisplaySettings project={project} key={project.id} onClose={close} />
+                    {() => (
+                      <ProjectDisplaySettings project={project} key={project.id} />
                     )}
                   </OpenCloseModal>
                 ),
@@ -254,6 +254,7 @@ function ProjectList({ projects, status, reload }: ProjectListProps) {
             if (item === null) return <></>;
             else return <ProjectDisplay project={item} />;
           }}
+          disableOnEnter
         />
         {/* Note : any authenticated user can create a project */}
         <ProjectCreator collapsedButtonClassName={fixedButtonStyle} />

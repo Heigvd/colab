@@ -68,9 +68,10 @@ export default function SignInForm({ redirectTo, message }: SignInFormProps): JS
       strengthProp: 'passwordScore',
     },
   ];
-
+const [isSubmitting, setIsSubmitting] = React.useState<boolean>(false);
   const signIn = React.useCallback(
     (credentials: Credentials) => {
+      setIsSubmitting(true);
       dispatch(
         API.signInWithLocalAccount({
           identifier: credentials.identifier,
@@ -78,12 +79,13 @@ export default function SignInForm({ redirectTo, message }: SignInFormProps): JS
           passwordScore: credentials.passwordScore,
         }),
       ).then(action => {
+        setIsSubmitting(false);
         if (redirectTo && action.meta.requestStatus === 'fulfilled') {
           navigate(redirectTo);
         } else if (action.meta.requestStatus === 'rejected') {
           setLoginFailed(true);
         }
-      });
+      })
     },
     [dispatch, navigate, redirectTo],
   );
@@ -102,7 +104,7 @@ export default function SignInForm({ redirectTo, message }: SignInFormProps): JS
         onSubmit={signIn}
         submitLabel={i18n.authentication.action.login}
         buttonClassName={css({ margin: space_M + ' auto' })}
-        submitFailed={loginFailed}
+        submitFailed={isSubmitting}
       />
       <Flex direction="column" justify="center" align="center">
         <InlineLink

@@ -41,6 +41,7 @@ interface ItemThumbnailsSelectionProps<T> {
   onItemClick?: (value: T | null) => void;
   onItemDblClick?: (value: T | null) => void;
   selectionnable?: boolean;
+  disableOnEnter?: boolean;
 }
 
 /**
@@ -57,6 +58,7 @@ export default function ItemThumbnailsSelection<T extends { id?: number | undefi
   onItemClick,
   onItemDblClick,
   selectionnable = true,
+  disableOnEnter = false,
 }: ItemThumbnailsSelectionProps<T>): JSX.Element {
   const [selected, select] = React.useState<number | undefined>(
     defaultSelectedValue?.id ? defaultSelectedValue.id : undefined,
@@ -98,6 +100,7 @@ export default function ItemThumbnailsSelection<T extends { id?: number | undefi
           className={cx(defaultThumbnailStyle, thumbnailClassName, {
             [selectedThumbnailClassName]: selected === item?.id,
           })}
+          disableOnEnter={disableOnEnter}
         >
           {fillThumbnail(item, selected === item?.id)}
         </Thumbnail>

@@ -210,10 +210,11 @@ function Input({
   const changeInternal = React.useCallback(
     (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
       const newValue = e.target.value;
-      setCurrentInternalValue(newValue);
-
       if (saveMode === 'SIMPLE_FLOWING') {
         onChange(newValue);
+      }
+      else {
+        setCurrentInternalValue(newValue);
       }
     },
     [saveMode, onChange],
@@ -480,19 +481,19 @@ export function InlineInput(props: InputProps): JSX.Element {
 // Fine tuned inputs *******************************************************************************
 
 export function DiscreetInput(props: Omit<InputProps, 'saveMode' | 'autoWidth'>): JSX.Element {
-  return <InlineInput {...props} autoWidth saveMode="ON_CONFIRM" />;
+  return <InlineInput {...props} autoWidth saveMode="ON_BLUR" />;
 }
 
 export function DiscreetTextArea(props: Omit<InputProps, 'saveMode' | 'inputType'>): JSX.Element {
-  return <InlineInput {...props} inputType="textarea" saveMode="ON_CONFIRM" />;
+  return <InlineInput {...props} inputType="textarea" saveMode="ON_BLUR" />;
 }
 
 export function LabeledInput(props: Omit<InputProps, 'saveMode' | 'inputType'>): JSX.Element {
-  return <BlockInput {...props} inputType="input" saveMode="ON_CONFIRM" />;
+  return <BlockInput {...props} inputType="input" saveMode="ON_BLUR" />;
 }
 
 export function LabeledTextArea(props: Omit<InputProps, 'saveMode' | 'inputType'>): JSX.Element {
-  return <BlockInput {...props} inputType="textarea" saveMode="ON_CONFIRM" />;
+  return <BlockInput {...props} inputType="textarea" saveMode="ON_BLUR" />;
 }
 
 export function FormInput(props: Omit<InputProps, 'saveMode'>): JSX.Element {

@@ -13,7 +13,7 @@ export interface ClickableProps {
   onDoubleClick?: (
     e: React.MouseEvent<HTMLSpanElement> | React.KeyboardEvent<HTMLSpanElement>,
   ) => void;
-  enterKeyBehaviour?: 'CLICK' | 'DBL_CLICK';
+  enterKeyBehaviour?: 'CLICK' | 'DBL_CLICK' | 'NONE';
   clickable?: boolean;
   title?: string;
   children?: React.ReactNode;

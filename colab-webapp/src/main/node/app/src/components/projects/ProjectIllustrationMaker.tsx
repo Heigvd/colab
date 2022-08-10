@@ -23,7 +23,7 @@ const defaultProjectIllustration: Illustration = {
 
 interface ProjectIllustrationMakerProps {
   illustration: Illustration | undefined | null;
-  setIllustration: React.Dispatch<React.SetStateAction<Illustration>>;
+  setIllustration: (i: Illustration) => void;
   iconContainerClassName?: string;
   colorContainerClassName?: string;
   className?: string;

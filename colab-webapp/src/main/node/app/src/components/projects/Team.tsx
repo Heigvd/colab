@@ -240,12 +240,11 @@ const Member = ({ member, roles, isTheOnlyOwner }: MemberProps) => {
     // DN can be edited or cleared
     username = (
       <>
-        {/* Do we really want to be able to edit all names here? */}
+        {/* TODO: Can edit only our name if not owner or PL. */}
         <DiscreetInput
           value={member.displayName || ''}
           placeholder="username"
           onChange={updateDisplayName}
-          readOnly={currentUser?.id === member.userId}
         />
       </>
     );
@@ -424,10 +423,9 @@ const RoleDisplay = ({ role }: RoleProps) => {
         </>
       }
     >
-      <InlineInput
+      <DiscreetInput
         value={role.name || ''}
         placeholder="Fill the role name"
-        saveMode="ON_CONFIRM"
         onChange={saveCb}
         maxWidth="150px"
       />

@@ -12,11 +12,12 @@ import { fas } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Illustration } from 'colab-rest-client';
 import React from 'react';
+import { defaultProjectIllustration } from '../../projects/ProjectCommon';
 import { space_S } from '../../styling/style';
 import Flex, { FlexProps } from '../layout/Flex';
 
 interface IllustrationDisplayProps {
-  illustration: Illustration;
+  illustration: Illustration | undefined | null;
   iconSize?: string;
   iconColor?: string;
   align?: FlexProps['align'];
@@ -33,7 +34,7 @@ export default function IllustrationDisplay({
   className,
 }: IllustrationDisplayProps): JSX.Element {
   library.add(fas, far); // TODO sandra work in progress // or just the icon we need
-
+  const currentIllustration = illustration || defaultProjectIllustration;
   return (
     <Flex
       align={align != null ? align : 'center'}
@@ -41,7 +42,7 @@ export default function IllustrationDisplay({
       className={cx(
         css({
           backgroundColor: `${
-            illustration.iconBkgdColor ? illustration.iconBkgdColor : 'var(--secondaryColor)'
+            currentIllustration.iconBkgdColor ? currentIllustration.iconBkgdColor : 'var(--secondaryColor)'
           }`,
           height: `calc(100% - 2*${space_S})`,
           width: `calc(100% - 2*${space_S})`,
@@ -50,12 +51,12 @@ export default function IllustrationDisplay({
         className,
       )}
     >
-      {illustration.iconLibrary === 'FONT_AWESOME_SOLID' ||
-      illustration.iconLibrary === 'FONT_AWESOME_REGULAR' ? (
+      {currentIllustration.iconLibrary === 'FONT_AWESOME_SOLID' ||
+      currentIllustration.iconLibrary === 'FONT_AWESOME_REGULAR' ? (
         <FontAwesomeIcon
           icon={{
-            prefix: illustration.iconLibrary === 'FONT_AWESOME_REGULAR' ? 'far' : 'fas',
-            iconName: illustration.iconKey as IconName,
+            prefix: currentIllustration.iconLibrary === 'FONT_AWESOME_REGULAR' ? 'far' : 'fas',
+            iconName: currentIllustration.iconKey as IconName,
           }}
           color={iconColor || '#fff'}
           size={iconSize ? (iconSize as SizeProp) : '3x'}
@@ -63,7 +64,7 @@ export default function IllustrationDisplay({
       ) : (
         <p>
           Oh a new icon library, dear developer please make what is needed to display the icon{' '}
-          {illustration.iconKey} of library {illustration.iconLibrary}
+          {currentIllustration.iconKey} of library {currentIllustration.iconLibrary}
         </p>
       )}
     </Flex>
@@ -77,24 +78,24 @@ export function IllustrationIconDisplay({
   className,
 }: IllustrationDisplayProps): JSX.Element {
   library.add(fas, far); // TODO sandra work in progress // or just the icon we need
-
+  const currentIllustration = illustration || defaultProjectIllustration;
   return (
     <>
-      {illustration.iconLibrary === 'FONT_AWESOME_SOLID' ||
-      illustration.iconLibrary === 'FONT_AWESOME_REGULAR' ? (
+      {currentIllustration.iconLibrary === 'FONT_AWESOME_SOLID' ||
+      currentIllustration.iconLibrary === 'FONT_AWESOME_REGULAR' ? (
         <FontAwesomeIcon
           icon={{
-            prefix: illustration.iconLibrary === 'FONT_AWESOME_REGULAR' ? 'far' : 'fas',
-            iconName: illustration.iconKey as IconName,
+            prefix: currentIllustration.iconLibrary === 'FONT_AWESOME_REGULAR' ? 'far' : 'fas',
+            iconName: currentIllustration.iconKey as IconName,
           }}
-          color={iconColor || illustration.iconBkgdColor}
+          color={iconColor || currentIllustration.iconBkgdColor}
           size={iconSize ? (iconSize as SizeProp) : '1x'}
           className={className}
         />
       ) : (
         <p>
           Oh a new icon library, dear developer please make what is needed to display the icon{' '}
-          {illustration.iconKey} of library {illustration.iconLibrary}
+          {currentIllustration.iconKey} of library {currentIllustration.iconLibrary}
         </p>
       )}
     </>

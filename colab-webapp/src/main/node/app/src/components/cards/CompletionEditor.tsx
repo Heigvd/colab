@@ -29,7 +29,7 @@ export default function CompletionEditor({ variant }: CompletionEditorProps): JS
         label="Completion level"
         value={String(variant.completionLevel) == '0' ? '0' : String(variant.completionLevel)}
         placeholder="0"
-        saveMode="ON_CONFIRM"
+        saveMode="ON_BLUR"
         onChange={newValue =>
           dispatch(
             API.updateCardContent({
@@ -44,7 +44,7 @@ export default function CompletionEditor({ variant }: CompletionEditorProps): JS
         <BlockInput
           type="number"
           value={variant.completionLevel == 0 ? undefined : variant.completionLevel}
-          saveMode="ON_CONFIRM"
+          saveMode="SIMPLE_FLOWING"
           onChange={newValue =>
             dispatch(
               API.updateCardContent({
@@ -58,7 +58,7 @@ export default function CompletionEditor({ variant }: CompletionEditorProps): JS
           inputDisplayClassName={css({ width: '90px' })}
           min="0"
           max="100"
-        />{' '}
+        />
         %
       </Flex>
     </>

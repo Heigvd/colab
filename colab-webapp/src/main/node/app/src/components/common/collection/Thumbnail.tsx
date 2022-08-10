@@ -15,6 +15,7 @@ interface ThumbnailProps {
   onDoubleClick?: () => void;
   className?: string;
   children: React.ReactNode;
+  disableOnEnter?: boolean;
 }
 
 const thumbStyle = css({
@@ -27,12 +28,13 @@ export default function Thumbnail({
   onDoubleClick,
   className,
   children,
+  disableOnEnter,
 }: ThumbnailProps): JSX.Element {
   return (
     <Clickable
       onClick={onClick}
       onDoubleClick={onDoubleClick}
-      enterKeyBehaviour="DBL_CLICK"
+      enterKeyBehaviour={disableOnEnter ? "NONE" : "DBL_CLICK"}
       clickableClassName={cx(thumbStyle, className)}
     >
       {children}

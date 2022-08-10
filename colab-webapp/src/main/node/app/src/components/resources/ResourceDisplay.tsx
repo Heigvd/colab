@@ -25,7 +25,7 @@ import { useAppDispatch } from '../../store/hooks';
 import CardEditorToolbox from '../cards/CardEditorToolbox';
 import { Destroyer } from '../common/Destroyer';
 import IconButton from '../common/element/IconButton';
-import { DiscreetTextArea, InlineInput } from '../common/element/Input';
+import { DiscreetInput, DiscreetTextArea } from '../common/element/Input';
 import DropDownMenu from '../common/layout/DropDownMenu';
 import Flex from '../common/layout/Flex';
 import OpenCloseModal from '../common/layout/OpenCloseModal';
@@ -80,11 +80,10 @@ export function ResourceDisplay({ resource, goBackToList }: ResourceDisplayProps
               resource={targetResource}
               iconClassName={css({ color: 'var(--lightGray)' })}
             />
-            <InlineInput
+            <DiscreetInput
               value={targetResource.title || ''}
               placeholder={i18n.modules.resource.untitled}
               readOnly={readOnly}
-              saveMode="ON_CONFIRM"
               onChange={newValue =>
                 dispatch(API.updateResource({ ...targetResource, title: newValue }))
               }
