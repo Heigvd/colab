@@ -196,6 +196,7 @@ export const en = {
       subcards: 'Subcards',
       untitled: 'New card',
       addCard: 'Add a card',
+      editCard: 'Edit card',
       addVariant: 'Add a variant',
       createNew: (parentTitle?: string | null): string =>
         `Create a new ${parentTitle ? 'subcard for ' + parentTitle : 'card'}"`,
@@ -207,6 +208,7 @@ export const en = {
         }? This will delete all subcards inside.`,
       involvements: 'Involvements',
       completion: 'Completion',
+      position: 'position',
       showCardType: 'Show card type information',
       editCompletion: 'Edit card completion',
       editor: {
@@ -218,10 +220,18 @@ export const en = {
         acl: {
           title: 'Access Control',
         },
+        locked: 'Locked',
+        cardColor: 'Card color',
+        contentStatus: 'Card content status',
+        completionLevelMode: 'Completion level mode',
+        cardPosition: 'Card position',
       },
       infos: {
         cardLocked: 'Card is locked. To unlock it go to Card settings and uncheck "locked".',
+        lockingCard:
+          'Locking the variant (card if only one variant) will artificially set it as read-only and prevent the edition.',
         noDeliverable: 'No deliverable available',
+        completionModeInfo: 'Select completion mode (MANUAL | AUTO | NO_OP). Manual: input to set completion; Auto: based on children; No: do not event diplay the bar',
       },
       error: {
         withoutId: 'Card without id is invalid...',
