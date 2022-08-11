@@ -296,7 +296,8 @@ public class CardManager {
     }
 
     /**
-     * Change the position of the card (stay in the same parent, change the index)<p>
+     * Change the position of the card (stay in the same parent, change the index)
+     * <p>
      * Recompute the indexes of all the sister cards
      *
      * @param cardId the id of the card
@@ -343,7 +344,7 @@ public class CardManager {
 
             CardContent previousParent = card.getParent();
             if (previousParent != null) {
-                resourceReferenceSpreadingHelper.spreadResidualMark(card, previousParent);
+                resourceReferenceSpreadingHelper.spreadDisableResourceDown(card, previousParent);
 
                 previousParent.getSubCards().remove(card);
             }

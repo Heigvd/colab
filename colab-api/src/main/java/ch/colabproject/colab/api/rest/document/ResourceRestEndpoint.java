@@ -54,7 +54,7 @@ public class ResourceRestEndpoint {
      * The resource / resource reference persistence manager
      */
     @Inject
-    private ResourceDao resourceAndRefDao;
+    private ResourceDao resourceDao;
 
     /**
      * The resource and resource reference related logic
@@ -83,7 +83,7 @@ public class ResourceRestEndpoint {
     @Path("{id}")
     public AbstractResource getAbstractResource(@PathParam("id") Long id) {
         logger.debug("get abstract resource #{}", id);
-        return resourceAndRefDao.findResourceOrRef(id);
+        return resourceDao.findResourceOrRef(id);
     }
 
     /**
@@ -146,10 +146,10 @@ public class ResourceRestEndpoint {
      */
     @GET
     @Path("directOfProject/{projectId}")
-    public List<AbstractResource> getDirectResourcesOfProject(
+    public List<AbstractResource> getDirectAbstractResourcesOfProject(
         @PathParam("projectId") Long projectId) {
         logger.debug("get all resources of the project #{}", projectId);
-        return resourceManager.getDirectResourcesOfProject(projectId);
+        return resourceManager.getDirectAbstractResourcesOfProject(projectId);
     }
 
     // *********************************************************************************************
@@ -166,10 +166,8 @@ public class ResourceRestEndpoint {
     @PUT
     public void updateResource(Resource resource) throws ColabMergeException {
         logger.debug("update resource {}", resource);
-        resourceAndRefDao.updateResource(resource);
+        resourceDao.updateResource(resource);
     }
-
-    // TODO see if updateResourceOrRef(AbstractResource resource)
 
     /**
      * Save changes to database
@@ -182,7 +180,65 @@ public class ResourceRestEndpoint {
     @Path("ref")
     public void updateResourceRef(ResourceRef resourceRef) throws ColabMergeException {
         logger.debug("update resource reference {}", resourceRef);
-        resourceAndRefDao.updateResourceRef(resourceRef);
+        resourceDao.updateResourceRef(resourceRef);
+    }
+
+    // *********************************************************************************************
+    // change state of a resource
+    // *********************************************************************************************
+
+    /**
+     * Make a resource (or reference) not active = not visible anymore
+     *
+     * @param resourceOrRefId the resource (or reference) to discard
+     *
+     * @throws ColabMergeException if the merge is impossible
+     */
+    @PUT
+    @Path("discard")
+    public void discardResourceOrRef(Long resourceOrRefId)
+        throws ColabMergeException {
+        logger.debug("discard resource or ref #{}", resourceOrRefId);
+        resourceManager.discardResourceOrRef(resourceOrRefId);
+    }
+
+    /**
+     * Make a resource (or reference) active again
+     *
+     * @param resourceOrRefId the resource (or reference) to restore
+     *
+     * @throws ColabMergeException if the merge is impossible
+     */
+    @PUT
+    @Path("restore")
+    public void restoreResourceOrRef(Long resourceOrRefId)
+        throws ColabMergeException {
+        logger.debug("restore resource or ref #{} ", resourceOrRefId);
+        resourceManager.restoreResourceOrRef(resourceOrRefId);
+    }
+
+    /**
+     * Publish a resource.
+     *
+     * @param resourceId the id of the resource
+     */
+    @PUT
+    @Path("publish")
+    public void publishResource(Long resourceId) {
+        logger.debug("Publish resource #{}", resourceId);
+        resourceManager.changeResourcePublication(resourceId, true);
+    }
+
+    /**
+     * Un-publish a resource.
+     *
+     * @param resourceId the id of the resource
+     */
+    @PUT
+    @Path("unpublish")
+    public void unpublishResource(Long resourceId) {
+        logger.debug("Unpublish resource #{}", resourceId);
+        resourceManager.changeResourcePublication(resourceId, false);
     }
 
     // *********************************************************************************************

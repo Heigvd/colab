@@ -42,8 +42,8 @@ import javax.validation.constraints.NotNull;
 )
 @DiscriminatorValue("RESOURCE_REF")
 @NamedQuery(name = "ResourceRef.findDirectReferences",
-query = "SELECT ref FROM ResourceRef ref "
-    + "WHERE ref.target IS NOT NULL AND ref.target.id = :targetId")
+    query = "SELECT ref FROM ResourceRef ref "
+        + "WHERE ref.target IS NOT NULL AND ref.target.id = :targetId")
 public class ResourceRef extends AbstractResource {
 
     private static final long serialVersionUID = 1L;
@@ -53,15 +53,20 @@ public class ResourceRef extends AbstractResource {
     // ---------------------------------------------------------------------------------------------
 
     /**
-     * If the target resource is not useful for that card/cardDef/cardContent
+     * Manually discard the resource = say that the target resource must not be displayed as an
+     * active resource at this reference level.
      */
     @NotNull
     private boolean refused;
 
     /**
-     * The reference is a rest of a former ancestor.
+     * Automatically discard the resource = say that the target resource must not be displayed as an
+     * active resource at this reference level.
      * <p>
-     * It is always kept for a possible rollback without loss of data
+     * It can be because it is not published anymore or the reference is a rest of a former
+     * ancestor. The resource can be manually "revived".
+     * <p>
+     * The reference is not destroyed so that a rollback without loss of data is possible.
      */
     @NotNull
     private boolean residual;
@@ -85,28 +90,32 @@ public class ResourceRef extends AbstractResource {
     // ---------------------------------------------------------------------------------------------
 
     /**
-     * @return if the targeted resource is not useful for that card/cardDef/cardContent
+     * @return if the targeted resource was manually marked as to be not displayed as active at this
+     *         reference level
      */
     public boolean isRefused() {
         return refused;
     }
 
     /**
-     * @param refused if the targeted resource is not useful for that card/cardDef/cardContent
+     * @param refused if the targeted resource was manually marked as to be not displayed as active
+     *                at this reference level
      */
     public void setRefused(boolean refused) {
         this.refused = refused;
     }
 
     /**
-     * @return if it is a rest of a former ancestor
+     * @return if the targeted resource was automatically marked as to be not displayed as active at
+     *         this reference level.
      */
     public boolean isResidual() {
         return residual;
     }
 
     /**
-     * @param residual if it is a rest of a former ancestor
+     * @param residual if the targeted resource was automatically marked as to be not displayed as
+     *                 active at this reference level.
      */
     public void setResidual(boolean residual) {
         this.residual = residual;
@@ -181,6 +190,18 @@ public class ResourceRef extends AbstractResource {
     @Override
     public void merge(ColabEntity other) throws ColabMergeException {
         super.merge(other);
+
+        // residual cannot be changed alone manually. It is handled by ResourceManager
+        // refused cannot be changed alone manually. It is handled by ResourceManager
+
+        if (!(other instanceof ResourceRef)) {
+            throw new ColabMergeException(this, other);
+        }
+    }
+
+    @Override
+    public void duplicate(ColabEntity other) throws ColabMergeException {
+        super.duplicate(other);
 
         if (other instanceof ResourceRef) {
             ResourceRef o = (ResourceRef) other;

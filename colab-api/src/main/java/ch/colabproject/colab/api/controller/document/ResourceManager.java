@@ -39,7 +39,6 @@ import org.slf4j.LoggerFactory;
  *
  * @author sandra
  */
-// TODO refine the publish / deprecated / refused effect
 // TODO requestingForGlory handling
 @Stateless
 @LocalBean
@@ -56,7 +55,7 @@ public class ResourceManager {
      * Resource / resource reference persistence handling
      */
     @Inject
-    private ResourceDao resourceAndRefDao;
+    private ResourceDao resourceDao;
 
     /**
      * Document persistence handling
@@ -126,7 +125,7 @@ public class ResourceManager {
      * @throws HttpErrorMessage if the resource or reference was not found
      */
     public AbstractResource assertAndGetResourceOrRef(Long resourceOrRefId) {
-        AbstractResource resourceOrRef = resourceAndRefDao.findResourceOrRef(resourceOrRefId);
+        AbstractResource resourceOrRef = resourceDao.findResourceOrRef(resourceOrRefId);
 
         if (resourceOrRef == null) {
             logger.error("resource or reference #{} not found", resourceOrRefId);
@@ -153,6 +152,26 @@ public class ResourceManager {
         }
 
         return (Resource) abstractResource;
+    }
+
+    /**
+     * Retrieve the resource reference. If not found, throw a {@link HttpErrorMessage}.
+     *
+     * @param resourceRefId the id of the resource reference
+     *
+     * @return the resource reference if found
+     *
+     * @throws HttpErrorMessage if the resource reference was not found
+     */
+    public ResourceRef assertAndGetResourceRef(Long resourceRefId) {
+        AbstractResource abstractResource = assertAndGetResourceOrRef(resourceRefId);
+
+        if (!(abstractResource instanceof ResourceRef)) {
+            throw HttpErrorMessage.relatedObjectNotFoundError();
+        }
+
+        return (ResourceRef) abstractResource;
+
     }
 
     // *********************************************************************************************
@@ -241,7 +260,7 @@ public class ResourceManager {
      *
      * @return resources directly linked to the given project
      */
-    public List<AbstractResource> getDirectResourcesOfProject(Long projectId) {
+    public List<AbstractResource> getDirectAbstractResourcesOfProject(Long projectId) {
         logger.debug("get all the resources directly linked to the project #{}", projectId);
 
         Project project = projectManager.assertAndGetProject(projectId);
@@ -306,9 +325,9 @@ public class ResourceManager {
         resource.setOwner(owner);
         owner.getDirectAbstractResources().add(resource);
 
-        resourceReferenceSpreadingHelper.spreadNewResourceDown(resource);
+        resourceReferenceSpreadingHelper.spreadAvailableResourceDown(resource);
 
-        return resourceAndRefDao.persistResource(resource);
+        return resourceDao.persistResource(resource);
     }
 
     /**
@@ -351,7 +370,7 @@ public class ResourceManager {
      * @param resourceOrRef The initial abstract resource to delete
      */
     private void deleteResourceAndRefs(AbstractResource resourceOrRef) {
-        List<ResourceRef> references = resourceAndRefDao.findDirectReferences(resourceOrRef);
+        List<ResourceRef> references = resourceDao.findDirectReferences(resourceOrRef);
         if (references != null) {
             references.stream().forEach(ref -> deleteResourceAndRefs(ref));
         }
@@ -361,9 +380,77 @@ public class ResourceManager {
             owner.getDirectAbstractResources().remove(resourceOrRef);
         }
 
-        resourceAndRefDao.deleteResourceOrRef(resourceOrRef.getId());
+        resourceDao.deleteResourceOrRef(resourceOrRef.getId());
 
         // Note : the document is deleted by cascade
+    }
+
+    // *********************************************************************************************
+    // state cycle
+    // *********************************************************************************************
+
+    /**
+     * Discard the resource (or reference) so that it cannot be visible anymore
+     *
+     * @param resourceOrRefId the id of the resource or reference
+     */
+    public void discardResourceOrRef(Long resourceOrRefId) {
+        AbstractResource resourceOrRef = assertAndGetResourceOrRef(resourceOrRefId);
+
+        if (resourceOrRef instanceof Resource) {
+            Resource resource = (Resource) resourceOrRef;
+            resource.setDeprecated(true);
+
+        } else if (resourceOrRef instanceof ResourceRef) {
+            ResourceRef resourceRef = (ResourceRef) resourceOrRef;
+            resourceReferenceSpreadingHelper.refuseRecursively(resourceRef);
+        }
+    }
+
+    /**
+     * Restore the resource (or reference) so that it can be visible again
+     *
+     * @param resourceOrRefId the id of the resource or reference
+     */
+    public void restoreResourceOrRef(Long resourceOrRefId) {
+        AbstractResource resourceOrRef = assertAndGetResourceOrRef(resourceOrRefId);
+
+        if (resourceOrRef instanceof Resource) {
+            Resource resource = (Resource) resourceOrRef;
+            if (resource.isDeprecated()) {
+                resource.setDeprecated(false);
+            }
+
+        } else if (resourceOrRef instanceof ResourceRef) {
+            ResourceRef resourceRef = (ResourceRef) resourceOrRef;
+            if (resourceRef.isRefused()) {
+                resourceReferenceSpreadingHelper.unRefuseRecursively(resourceRef);
+
+            }
+
+            if (resourceRef.isResidual()) {
+                resourceReferenceSpreadingHelper.reviveRecursively(resourceRef);
+
+            }
+        }
+    }
+
+    /**
+     * Set the resource as published or not
+     *
+     * @param resourceId        the id of the resource
+     * @param newPublishedValue if it is published or not
+     */
+    public void changeResourcePublication(Long resourceId, boolean newPublishedValue) {
+        Resource resource = assertAndGetResource(resourceId);
+
+        resource.setPublished(newPublishedValue);
+
+        if (newPublishedValue) {
+            resourceReferenceSpreadingHelper.spreadAvailableResourceDown(resource);
+        } else {
+            resourceReferenceSpreadingHelper.spreadDisableResourceDown(resource);
+        }
     }
 
     // *********************************************************************************************

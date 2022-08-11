@@ -37,6 +37,7 @@ import {
 } from 'colab-rest-client';
 import { PasswordScore } from '../components/common/Form/Form';
 import { DocumentKind } from '../components/documents/documentCommonType';
+import { ResourceAndRef } from '../components/resources/ResourceCommonType';
 import { hashPassword } from '../SecurityHelper';
 import { addNotification } from '../store/notification';
 import { ColabState, getStore } from '../store/store';
@@ -929,7 +930,7 @@ export const getDirectResourcesOfProject = createAsyncThunk(
   'resource/getAllOfProject',
   async (project: Project) => {
     if (project.id) {
-      return await restClient.ResourceRestEndpoint.getDirectResourcesOfProject(project.id);
+      return await restClient.ResourceRestEndpoint.getDirectAbstractResourcesOfProject(project.id);
     } else {
       return []; // to avoid undefined, return an empty array
     }
@@ -963,14 +964,37 @@ export const deleteResource = createAsyncThunk('resource/delete', async (resourc
   }
 });
 
+function getResourceToEdit(resource: ResourceAndRef): ResourceRef | Resource {
+  if (resource.isDirectResource) {
+    return resource.targetResource;
+  }
+
+  return (
+    resource.cardResourceRef || // if we can, we change at card level
+    resource.cardContentResourceRef ||
+    resource.cardTypeResourceRef ||
+    resource.targetResource
+  );
+}
+
+export const giveAccessToResource = createAsyncThunk(
+  'resourceOrRef/revive',
+  async (resourceAndRef: ResourceAndRef) => {
+    if (resourceAndRef) {
+      const resourceToActivate = getResourceToEdit(resourceAndRef);
+      if (resourceToActivate.id != null) {
+        return await restClient.ResourceRestEndpoint.restoreResourceOrRef(resourceToActivate.id);
+      }
+    }
+  },
+);
+
 export const removeAccessToResource = createAsyncThunk(
-  'resourceOrRef/refuse',
-  async (resourceRef: ResourceRef) => {
-    if (resourceRef) {
-      return await restClient.ResourceRestEndpoint.updateResourceRef({
-        ...resourceRef,
-        refused: true,
-      });
+  'resourceOrRef/disable',
+  async (resource: ResourceAndRef) => {
+    const resourceToDisable = getResourceToEdit(resource);
+    if (resourceToDisable.id != null) {
+      return await restClient.ResourceRestEndpoint.discardResourceOrRef(resourceToDisable.id);
     }
   },
 );

@@ -144,6 +144,9 @@ public class ResourceDao {
         return resource;
     }
 
+    // Note : there is no persistResourceRef because they are automatically generated
+    // and are persisted by cascade
+
     /**
      * Delete a resource / resource reference from database. This can't be undone
      *

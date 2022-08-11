@@ -12,7 +12,6 @@ import {
   faEllipsisV,
   faInfoCircle,
   faTools,
-  faTrash,
   faTrashAlt,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -215,7 +214,7 @@ function ResourceSettingsModal({
                 }}
               />
             )}
-            {!resource.isDirectResource && resource.cardTypeResourceRef && (
+            {/* {!resource.isDirectResource && resource.cardTypeResourceRef && (
               <Destroyer
                 title="Refuse at card type level"
                 icon={faTrash}
@@ -241,7 +240,7 @@ function ResourceSettingsModal({
                   dispatch(API.removeAccessToResource(resource.cardContentResourceRef!));
                 }}
               />
-            )}
+            )} */}
           </>
         )}
       </OpenCloseModal>
