@@ -944,6 +944,17 @@ export const updateResource = createAsyncThunk(
   },
 );
 
+export const publishResource = createAsyncThunk('resource/publish', async (resourceId: number) => {
+  return await restClient.ResourceRestEndpoint.publishResource(resourceId);
+});
+
+export const unpublishResource = createAsyncThunk(
+  'resource/unpublish',
+  async (resourceId: number) => {
+    return await restClient.ResourceRestEndpoint.unpublishResource(resourceId);
+  },
+);
+
 export const updateResourceRef = createAsyncThunk(
   'resource/updateResourceRef',
   async (resourceRef: ResourceRef) => {

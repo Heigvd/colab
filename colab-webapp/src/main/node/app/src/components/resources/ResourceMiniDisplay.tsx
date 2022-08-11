@@ -11,8 +11,8 @@ import * as React from 'react';
 import * as API from '../../API/api';
 import { useAppDispatch } from '../../store/hooks';
 import { BlockEditorWrapper } from '../blocks/BlockEditorWrapper';
-import CheckBox from '../common/CheckBox';
 import OnConfirmInput from '../common/element/OnConfirmInput';
+import Checkbox from '../common/Form/Checkbox';
 import { defaultColumnContainerStyle, defaultRowContainerStyle } from '../styling/style';
 import { ResourceAndRef } from './ResourceCommonType';
 
@@ -42,19 +42,18 @@ function TargetResourceMiniDisplay({ resource }: { resource: Resource }): JSX.El
         value={resource.category || ''}
         onChange={newValue => dispatch(API.updateResource({ ...resource, category: newValue }))}
       />
-      <CheckBox
+      <Checkbox
         label="Published"
         value={resource.published}
-        onChange={() =>
-          dispatch(
-            API.updateResource({
-              ...resource,
-              published: !resource.published,
-            }),
-          )
-        }
+        onChange={() => {
+          if (!resource.published) {
+            dispatch(API.publishResource(resource.id || 0));
+          } else {
+            dispatch(API.unpublishResource(resource.id || 0));
+          }
+        }}
       />
-      <CheckBox
+      <Checkbox
         label="Deprecated"
         value={resource.deprecated}
         onChange={() =>
@@ -66,7 +65,7 @@ function TargetResourceMiniDisplay({ resource }: { resource: Resource }): JSX.El
           )
         }
       />
-      <CheckBox
+      <Checkbox
         label="Requesting for glory"
         value={resource.requestingForGlory}
         onChange={() =>
@@ -98,7 +97,7 @@ function ResourceRefMiniDisplay({ resourceRef }: { resourceRef: ResourceRef }): 
           dispatch(API.updateResourceRef({ ...resourceRef, category: newValue }))
         }
       />
-      <CheckBox
+      <Checkbox
         label="Refused"
         value={resourceRef.refused}
         onChange={() =>
