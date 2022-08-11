@@ -12,7 +12,7 @@ import useTranslations from '../../../i18n/I18nContext';
 import { space_M } from '../../styling/style';
 import ButtonWithLoader from '../element/ButtonWithLoader';
 import InlineLoading from '../element/InlineLoading';
-import { BlockInput } from '../element/Input';
+import { FormInput } from '../element/Input';
 import { TipsProps } from '../element/Tips';
 import Flex from '../layout/Flex';
 import Checkbox from './Checkbox';
@@ -108,7 +108,7 @@ export interface FormProps<T> {
   submitLabel?: string;
   autoComplete?: string;
   children?: React.ReactNode;
-  submitFailed?: boolean;
+  isSubmitInProcess?: boolean;
   className?: string;
   childrenClassName?: string;
   buttonClassName?: string;
@@ -121,7 +121,7 @@ export default function Form<T>({
   submitLabel,
   autoComplete,
   children,
-  submitFailed,
+  isSubmitInProcess,
   className,
   childrenClassName,
   buttonClassName,
@@ -183,7 +183,7 @@ export default function Form<T>({
     if (field.type === 'text' || field.type === 'textarea') {
       return (
         <div key={fieldKey}>
-          <BlockInput
+          <FormInput
             label={field.label}
             value={String(state[field.key] || '')}
             placeholder={field.placeholder}
@@ -192,7 +192,6 @@ export default function Form<T>({
             mandatory={field.isMandatory}
             readOnly={field.readOnly}
             autoComplete={autoComplete}
-            saveMode="FLOWING"
             onChange={value => setFormValue(field.key, value)}
             tip={field.tip}
             footer={effectiveFieldFooter}
@@ -203,7 +202,7 @@ export default function Form<T>({
     } else if (field.type === 'password') {
       return (
         <div key={fieldKey}>
-          <BlockInput
+          <FormInput
             label={field.label}
             value={String(state[field.key] || '')}
             placeholder={field.placeholder}
@@ -211,7 +210,6 @@ export default function Form<T>({
             mandatory={field.isMandatory}
             readOnly={field.readOnly}
             autoComplete={autoComplete}
-            saveMode="FLOWING"
             onChange={value => setFormValue(field.key, value)}
             tip={field.tip}
             footer={effectiveFieldFooter}
@@ -319,7 +317,7 @@ export default function Form<T>({
         <ButtonWithLoader
           key="submit"
           onClick={submit}
-          isLoading={submitFailed || globalErroneous ? false : true}
+          isLoading={isSubmitInProcess}
           className={cx(css({ margin: space_M + ' 0', alignSelf: 'flex-start' }), buttonClassName)}
         >
           {submitLabel || i18n.form.submit}

@@ -24,7 +24,7 @@ import { useAppDispatch } from '../../store/hooks';
 import CardEditorToolbox from '../cards/CardEditorToolbox';
 import { Destroyer } from '../common/Destroyer';
 import IconButton from '../common/element/IconButton';
-import { InlineInput } from '../common/element/Input';
+import { DiscreetInput, DiscreetTextArea } from '../common/element/Input';
 import DropDownMenu from '../common/layout/DropDownMenu';
 import Flex from '../common/layout/Flex';
 import OpenCloseModal from '../common/layout/OpenCloseModal';
@@ -79,11 +79,10 @@ export function ResourceDisplay({ resource, goBackToList }: ResourceDisplayProps
               resource={targetResource}
               iconClassName={css({ color: 'var(--lightGray)' })}
             />
-            <InlineInput
+            <DiscreetInput
               value={targetResource.title || ''}
               placeholder={i18n.modules.resource.untitled}
               readOnly={readOnly}
-              saveMode="ON_CONFIRM"
               onChange={newValue =>
                 dispatch(API.updateResource({ ...targetResource, title: newValue }))
               }
@@ -131,11 +130,10 @@ export function ResourceDisplay({ resource, goBackToList }: ResourceDisplayProps
           {showTeaser && (
             <DocTextWrapper id={targetResource.teaserId}>
               {text => (
-                <InlineInput
+                <DiscreetTextArea
                   value={text || ''}
                   placeholder="There is no teaser for the moment. Feel free to fill it."
                   readOnly={readOnly}
-                  saveMode="ON_CONFIRM"
                   onChange={(newValue: string) => {
                     if (targetResource.teaserId) {
                       dispatch(
@@ -147,7 +145,6 @@ export function ResourceDisplay({ resource, goBackToList }: ResourceDisplayProps
                     }
                   }}
                   inputDisplayClassName={cx(textSmall, css({ marginTop: space_S }))}
-                  inputType="textarea"
                 />
               )}
             </DocTextWrapper>

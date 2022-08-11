@@ -14,7 +14,7 @@ import useTranslations from '../../i18n/I18nContext';
 import Button from '../common/element/Button';
 import { ConfirmIconButton } from '../common/element/ConfirmIconButton';
 import IllustrationDisplay from '../common/element/IllustrationDisplay';
-import { BlockInput } from '../common/element/Input';
+import { FormInput } from '../common/element/Input';
 import Form, { emailFormat } from '../common/Form/Form';
 import Flex from '../common/layout/Flex';
 import {
@@ -76,19 +76,17 @@ export default function ProjectDataInitialization({
         align="stretch"
         className={css({ width: '45%', minWidth: '45%', marginRight: space_L })}
       >
-        <BlockInput
+        <FormInput
           label="Name"
           value={data.name}
           readOnly={readOnly}
-          saveMode="FLOWING"
           onChange={name => setName(name)}
         />
-        <BlockInput
+        <FormInput
           label="Description"
           inputType="textarea"
           value={data.description}
           readOnly={readOnly}
-          saveMode="FLOWING"
           onChange={description => {
             setDescription(description);
           }}

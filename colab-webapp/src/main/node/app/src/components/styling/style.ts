@@ -449,6 +449,8 @@ export const textareaStyle = css({
   fontFamily: 'inherit',
   fontSize: smallFontSize,
   maxWidth: '100%',
+  '&:focus': { border: 'solid 1px var(--darkGray)', outline: 'solid 1px var(--darkGray)' },
+  '&:hover': { border: 'solid 1px var(--darkGray)' },
 });
 export const invisibleTextareaStyle = cx(
   textareaStyle,
@@ -463,16 +465,18 @@ export const invisibleTextareaStyle = cx(
 
 export const inputStyle = css({
   outline: 'none',
-  border: 'solid 1px #d7d7d7',
+  border: 'solid 1px var(--lightGray)',
   color: 'var(--secFgColor)',
   backgroundColor: 'var(--secBgColor)',
   borderRadius: '6px',
   boxSizing: 'border-box',
-  transition: '.8s',
+  transition: '.2s',
   padding: '0 ' + space_M,
   lineHeight: '2.5em',
   fontFamily: 'inherit',
   fontSize: smallFontSize,
+  '&:focus': { border: 'solid 1px var(--darkGray)', outline: 'solid 1px var(--darkGray)' },
+  '&:hover': { border: 'solid 1px var(--darkGray)' },
 });
 export const invisibleInputStyle = cx(
   inputStyle,

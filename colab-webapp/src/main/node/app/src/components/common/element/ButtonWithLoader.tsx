@@ -58,26 +58,12 @@ export default function ButtonWithLoader({
   invertedButton,
   className,
 }: ButtonWithLoaderProps): JSX.Element {
-  const [processing, setProcessing] = React.useState<boolean>(false);
 
-  const onClicked = React.useCallback(
-    (
-      event: React.MouseEvent<HTMLSpanElement, MouseEvent> | React.KeyboardEvent<HTMLSpanElement>,
-    ) => {
-      if (isLoading) {
-        setProcessing(isLoading);
-      }
-      if (onClick) {
-        onClick(event);
-      }
-    },
-    [isLoading, onClick],
-  );
   return (
     <Clickable
       title={title}
       clickable={clickable}
-      onClick={onClicked}
+      onClick={onClick}
       className={cx(
         invertedButton ? inactiveInvertedButtonStyle : inactiveButtonStyle,
         relative,
@@ -89,7 +75,7 @@ export default function ButtonWithLoader({
         className,
       )}
     >
-      <Flex align="center" className={cx({ [css({ opacity: 0 })]: processing })}>
+      <Flex align="center" className={cx({ [css({ opacity: 0 })]: isLoading })}>
         {reverseOrder && children}
         {icon && (
           <FontAwesomeIcon
@@ -101,8 +87,8 @@ export default function ButtonWithLoader({
         )}
         {!reverseOrder && children}
       </Flex>
-      {processing && (
-        <div className={cx({ [overlayIconStyle]: processing })}>
+      {isLoading && (
+        <div className={cx({ [overlayIconStyle]: isLoading })}>
           <FontAwesomeIcon
             icon={faSpinner}
             color={iconColor}

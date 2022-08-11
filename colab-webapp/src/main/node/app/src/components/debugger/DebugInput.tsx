@@ -24,426 +24,609 @@ export default function DebugInput(): JSX.Element {
   const [val11, setVal11] = React.useState<string>();
   const [val12, setVal12] = React.useState<string>();
   const [val13, setVal13] = React.useState<number>();
-  const [val21, setVal21] = React.useState<string>();
-  const [val22, setVal22] = React.useState<string>();
-  const [val23, setVal23] = React.useState<number>();
 
   return (
-    <Flex direction="column">
+    <Flex direction="row">
+      <Flex direction="column">
+        <Flex direction="row">
+          <Flex direction="column" className={css({ margin: space_M })}>
+            <h2>flowing block input</h2>
+            <BlockInput
+              label="input text"
+              value={val11}
+              placeholder="i t"
+              mandatory={mandatory}
+              readOnly={readOnly}
+              saveMode="SILLY_FLOWING"
+              onChange={newValue => {
+                // eslint-disable-next-line no-alert
+                //alert('changed');
+                logger.info('changed');
+                setVal11(newValue);
+              }}
+              tip={showTip && 'a wonderful advice'}
+              footer={showFooter && 'and if I would like to add something'}
+              warning={showWarning && 'ah a warning'}
+              error={showError && 'oh an error'}
+              // containerClassName={css({ border: '2px solid yellow' })}
+              // labelClassName={css({ border: '2px solid orange' })}
+              // inputDisplayClassName={css({ border: '2px solid red' })}
+              // inputEditClassName={css({ border: '2px solid purple' })}
+              // bottomClassName={css({ border: '2px solid blue' })}
+              // footerClassName={css({ border: '2px solid green' })}
+              // validationClassName={css({ border: '2px solid brown' })}
+            />
+            <BlockInput
+              label="text area"
+              value={val12}
+              placeholder="t a"
+              inputType="textarea"
+              mandatory={mandatory}
+              readOnly={readOnly}
+              autoFocus
+              //rows={5}
+              saveMode="SILLY_FLOWING"
+              onChange={newValue => {
+                // eslint-disable-next-line no-alert
+                //alert('changed');
+                logger.info('changed');
+                setVal12(newValue);
+              }}
+              tip={showTip && 'a wonderful advice'}
+              footer={showFooter && 'and if I would like to add something'}
+              warning={showWarning && 'ah a warning'}
+              error={showError && 'oh an error'}
+            />
+            <BlockInput
+              label="input number"
+              value={val13}
+              placeholder="i n"
+              type="number"
+              mandatory={mandatory}
+              readOnly={readOnly}
+              min="0"
+              max="5"
+              saveMode="SILLY_FLOWING"
+              onChange={newValue => {
+                // eslint-disable-next-line no-alert
+                //alert('changed');
+                logger.info('changed');
+                setVal13(parseInt(newValue));
+              }}
+              tip={showTip && 'a wonderful advice'}
+              footer={showFooter && 'and if I would like to add something'}
+              warning={showWarning && 'ah a warning'}
+              error={showError && 'oh an error'}
+            />
+          </Flex>
+          <Flex direction="column" className={css({ margin: space_M })}>
+            <h2>flowing inline input</h2>
+            <InlineInput
+              label="input text"
+              value={val11}
+              placeholder="i t"
+              mandatory={mandatory}
+              readOnly={readOnly}
+              saveMode="SILLY_FLOWING"
+              onChange={newValue => {
+                // eslint-disable-next-line no-alert
+                //alert('changed');
+                logger.info('changed');
+                setVal11(newValue);
+              }}
+              tip={showTip && 'a wonderful advice'}
+              footer={showFooter && 'and if I would like to add something'}
+              warning={showWarning && 'ah a warning'}
+              error={showError && 'oh an error'}
+            />
+            <InlineInput
+              label="text area"
+              value={val12}
+              placeholder="t a"
+              inputType="textarea"
+              mandatory={mandatory}
+              readOnly={readOnly}
+              autoFocus
+              //rows={5}
+              saveMode="SILLY_FLOWING"
+              onChange={newValue => {
+                // eslint-disable-next-line no-alert
+                //alert('changed');
+                logger.info('changed');
+                setVal12(newValue);
+              }}
+              tip={showTip && 'a wonderful advice'}
+              footer={showFooter && 'and if I would like to add something'}
+              warning={showWarning && 'ah a warning'}
+              error={showError && 'oh an error'}
+            />
+            <InlineInput
+              label="input number"
+              value={val13}
+              placeholder="i n"
+              type="number"
+              mandatory={mandatory}
+              readOnly={readOnly}
+              min="0"
+              max="5"
+              saveMode="SILLY_FLOWING"
+              onChange={newValue => {
+                // eslint-disable-next-line no-alert
+                //alert('changed');
+                logger.info('changed');
+                setVal13(parseInt(newValue));
+              }}
+              tip={showTip && 'a wonderful advice'}
+              footer={showFooter && 'and if I would like to add something'}
+              warning={showWarning && 'ah a warning'}
+              error={showError && 'oh an error'}
+            />
+          </Flex>
+          <Flex direction="column" className={css({ margin: space_M })}>
+            <h2>flowing inline input</h2>
+            <InlineInput
+              value={val11}
+              placeholder="i t"
+              mandatory={mandatory}
+              readOnly={readOnly}
+              saveMode="SILLY_FLOWING"
+              onChange={newValue => {
+                // eslint-disable-next-line no-alert
+                //alert('changed');
+                logger.info('changed');
+                setVal11(newValue);
+              }}
+              tip={showTip && 'a wonderful advice'}
+              footer={showFooter && 'and if I would like to add something'}
+              warning={showWarning && 'ah a warning'}
+              error={showError && 'oh an error'}
+            />
+            <InlineInput
+              value={val12}
+              placeholder="t a"
+              inputType="textarea"
+              mandatory={mandatory}
+              readOnly={readOnly}
+              autoFocus
+              //rows={5}
+              saveMode="SILLY_FLOWING"
+              onChange={newValue => {
+                // eslint-disable-next-line no-alert
+                //alert('changed');
+                logger.info('changed');
+                setVal12(newValue);
+              }}
+              tip={showTip && 'a wonderful advice'}
+              footer={showFooter && 'and if I would like to add something'}
+              warning={showWarning && 'ah a warning'}
+              error={showError && 'oh an error'}
+            />
+            <InlineInput
+              value={val13}
+              placeholder="i n"
+              type="number"
+              mandatory={mandatory}
+              readOnly={readOnly}
+              min="0"
+              max="5"
+              saveMode="SILLY_FLOWING"
+              onChange={newValue => {
+                // eslint-disable-next-line no-alert
+                //alert('changed');
+                logger.info('changed');
+                setVal13(parseInt(newValue));
+              }}
+              tip={showTip && 'a wonderful advice'}
+              footer={showFooter && 'and if I would like to add something'}
+              warning={showWarning && 'ah a warning'}
+              error={showError && 'oh an error'}
+            />
+          </Flex>
+        </Flex>
+        <Flex direction="row">
+          <Flex direction="column" className={css({ margin: space_M })}>
+            <h2>on blur block input</h2>
+            <BlockInput
+              value={val11}
+              label="input text confirm"
+              placeholder="i t b"
+              mandatory={mandatory}
+              readOnly={readOnly}
+              saveMode="ON_BLUR"
+              onChange={newValue => {
+                // eslint-disable-next-line no-alert
+                //alert('changed');
+                logger.info('changed');
+                setVal11(newValue);
+              }}
+              tip={showTip && 'a wonderful advice'}
+              footer={showFooter && 'and if I would like to add something'}
+              warning={showWarning && 'ah a warning'}
+              error={showError && 'oh an error'}
+            />
+            <BlockInput
+              label="text area confirm"
+              value={val12}
+              placeholder="t a b"
+              inputType="textarea"
+              mandatory={mandatory}
+              readOnly={readOnly}
+              saveMode="ON_BLUR"
+              onChange={newValue => {
+                // eslint-disable-next-line no-alert
+                //alert('changed');
+                logger.info('changed');
+                setVal12(newValue);
+              }}
+              tip={showTip && 'a wonderful advice'}
+              footer={showFooter && 'and if I would like to add something'}
+              warning={showWarning && 'ah a warning'}
+              error={showError && 'oh an error'}
+            />
+            <BlockInput
+              label="input number"
+              value={val13}
+              placeholder="i n b"
+              type="number"
+              mandatory={mandatory}
+              readOnly={readOnly}
+              min="0"
+              max="5"
+              saveMode="ON_BLUR"
+              onChange={newValue => {
+                // eslint-disable-next-line no-alert
+                //alert('changed');
+                logger.info('changed');
+                setVal13(parseInt(newValue));
+              }}
+              tip={showTip && 'a wonderful advice'}
+              footer={showFooter && 'and if I would like to add something'}
+              warning={showWarning && 'ah a warning'}
+              error={showError && 'oh an error'}
+            />
+          </Flex>
+          <Flex direction="column" className={css({ margin: space_M })}>
+            <h2>on blur inline input</h2>
+            <InlineInput
+              label="input text confirm"
+              value={val11}
+              placeholder="i t b"
+              mandatory={mandatory}
+              readOnly={readOnly}
+              autoWidth
+              saveMode="ON_BLUR"
+              onChange={newValue => {
+                // eslint-disable-next-line no-alert
+                //alert('changed');
+                logger.info('changed');
+                setVal11(newValue);
+              }}
+              tip={showTip && 'a wonderful advice'}
+              footer={showFooter && 'and if I would like to add something'}
+              warning={showWarning && 'ah a warning'}
+              error={showError && 'oh an error'}
+              // containerClassName={css({ border: '2px solid yellow' })}
+              // labelClassName={css({ border: '2px solid orange' })}
+              // inputDisplayClassName={css({ border: '2px solid red' })}
+              // inputEditClassName={css({ border: '2px solid purple' })}
+              // bottomClassName={css({ border: '2px solid blue' })}
+              // footerClassName={css({ border: '2px solid green' })}
+              // validationClassName={css({ border: '2px solid brown' })}
+            />
+            <InlineInput
+              label="text area confirm"
+              value={val12}
+              placeholder="t a b"
+              inputType="textarea"
+              mandatory={mandatory}
+              readOnly={readOnly}
+              saveMode="ON_BLUR"
+              onChange={newValue => {
+                // eslint-disable-next-line no-alert
+                //alert('changed');
+                logger.info('changed');
+                setVal12(newValue);
+              }}
+              tip={showTip && 'a wonderful advice'}
+              footer={showFooter && 'and if I would like to add something'}
+              warning={showWarning && 'ah a warning'}
+              error={showError && 'oh an error'}
+            />
+            <InlineInput
+              label="input number"
+              value={val13}
+              placeholder="i n b"
+              type="number"
+              mandatory={mandatory}
+              readOnly={readOnly}
+              min="0"
+              max="5"
+              saveMode="ON_BLUR"
+              onChange={newValue => {
+                // eslint-disable-next-line no-alert
+                //alert('changed');
+                logger.info('changed');
+                setVal13(parseInt(newValue));
+              }}
+              tip={showTip && 'a wonderful advice'}
+              footer={showFooter && 'and if I would like to add something'}
+              warning={showWarning && 'ah a warning'}
+              error={showError && 'oh an error'}
+            />
+          </Flex>
+          <Flex direction="column" className={css({ margin: space_M })}>
+            <h2>on blur inline input</h2>
+            <InlineInput
+              value={val11}
+              placeholder="i t b"
+              mandatory={mandatory}
+              readOnly={readOnly}
+              autoWidth
+              saveMode="ON_BLUR"
+              onChange={newValue => {
+                // eslint-disable-next-line no-alert
+                //alert('changed');
+                logger.info('changed');
+                setVal11(newValue);
+              }}
+              tip={showTip && 'a wonderful advice'}
+              footer={showFooter && 'and if I would like to add something'}
+              warning={showWarning && 'ah a warning'}
+              error={showError && 'oh an error'}
+              // containerClassName={css({ border: '2px solid yellow' })}
+              // labelClassName={css({ border: '2px solid orange' })}
+              // inputDisplayClassName={css({ border: '2px solid red' })}
+              // inputEditClassName={css({ border: '2px solid purple' })}
+              // bottomClassName={css({ border: '2px solid blue' })}
+              // footerClassName={css({ border: '2px solid green' })}
+              // validationClassName={css({ border: '2px solid brown' })}
+            />
+            <InlineInput
+              value={val12}
+              placeholder="t a b"
+              inputType="textarea"
+              mandatory={mandatory}
+              readOnly={readOnly}
+              saveMode="ON_BLUR"
+              onChange={newValue => {
+                // eslint-disable-next-line no-alert
+                //alert('changed');
+                logger.info('changed');
+                setVal12(newValue);
+              }}
+              tip={showTip && 'a wonderful advice'}
+              footer={showFooter && 'and if I would like to add something'}
+              warning={showWarning && 'ah a warning'}
+              error={showError && 'oh an error'}
+            />
+            <InlineInput
+              value={val13}
+              placeholder="i n b"
+              type="number"
+              mandatory={mandatory}
+              readOnly={readOnly}
+              min="0"
+              max="5"
+              saveMode="ON_BLUR"
+              onChange={newValue => {
+                // eslint-disable-next-line no-alert
+                //alert('changed');
+                logger.info('changed');
+                setVal13(parseInt(newValue));
+              }}
+              tip={showTip && 'a wonderful advice'}
+              footer={showFooter && 'and if I would like to add something'}
+              warning={showWarning && 'ah a warning'}
+              error={showError && 'oh an error'}
+            />
+          </Flex>
+        </Flex>
+        <Flex direction="row">
+          <Flex direction="column" className={css({ margin: space_M })}>
+            <h2>on confirm block input</h2>
+            <BlockInput
+              value={val11}
+              label="input text confirm"
+              placeholder="i t c"
+              mandatory={mandatory}
+              readOnly={readOnly}
+              saveMode="ON_CONFIRM"
+              onChange={newValue => {
+                // eslint-disable-next-line no-alert
+                //alert('changed');
+                logger.info('changed');
+                setVal11(newValue);
+              }}
+              tip={showTip && 'a wonderful advice'}
+              footer={showFooter && 'and if I would like to add something'}
+              warning={showWarning && 'ah a warning'}
+              error={showError && 'oh an error'}
+            />
+            <BlockInput
+              label="text area confirm"
+              value={val12}
+              placeholder="t a c"
+              inputType="textarea"
+              mandatory={mandatory}
+              readOnly={readOnly}
+              saveMode="ON_CONFIRM"
+              onChange={newValue => {
+                // eslint-disable-next-line no-alert
+                //alert('changed');
+                logger.info('changed');
+                setVal12(newValue);
+              }}
+              tip={showTip && 'a wonderful advice'}
+              footer={showFooter && 'and if I would like to add something'}
+              warning={showWarning && 'ah a warning'}
+              error={showError && 'oh an error'}
+            />
+            <BlockInput
+              label="input number"
+              value={val13}
+              placeholder="i n c"
+              type="number"
+              mandatory={mandatory}
+              readOnly={readOnly}
+              min="0"
+              max="5"
+              saveMode="ON_CONFIRM"
+              onChange={newValue => {
+                // eslint-disable-next-line no-alert
+                //alert('changed');
+                logger.info('changed');
+                setVal13(parseInt(newValue));
+              }}
+              tip={showTip && 'a wonderful advice'}
+              footer={showFooter && 'and if I would like to add something'}
+              warning={showWarning && 'ah a warning'}
+              error={showError && 'oh an error'}
+            />
+          </Flex>
+          <Flex direction="column" className={css({ margin: space_M })}>
+            <h2>on confirm inline input</h2>
+            <InlineInput
+              label="input text confirm"
+              value={val11}
+              placeholder="i t c"
+              autoWidth
+              saveMode="ON_CONFIRM"
+              mandatory={mandatory}
+              readOnly={readOnly}
+              onChange={newValue => {
+                // eslint-disable-next-line no-alert
+                //alert('changed');
+                logger.info('changed');
+                setVal11(newValue);
+              }}
+              tip={showTip && 'a wonderful advice'}
+              footer={showFooter && 'and if I would like to add something'}
+              warning={showWarning && 'ah a warning'}
+              error={showError && 'oh an error'}
+              // containerClassName={css({ border: '2px solid yellow' })}
+              // labelClassName={css({ border: '2px solid orange' })}
+              // inputDisplayClassName={css({ border: '2px solid red' })}
+              // inputEditClassName={css({ border: '2px solid purple' })}
+              // bottomClassName={css({ border: '2px solid blue' })}
+              // footerClassName={css({ border: '2px solid green' })}
+              // validationClassName={css({ border: '2px solid brown' })}
+            />
+            <InlineInput
+              label="text area confirm"
+              value={val12}
+              placeholder="t a c"
+              inputType="textarea"
+              mandatory={mandatory}
+              readOnly={readOnly}
+              saveMode="ON_CONFIRM"
+              onChange={newValue => {
+                // eslint-disable-next-line no-alert
+                //alert('changed');
+                logger.info('changed');
+                setVal12(newValue);
+              }}
+              tip={showTip && 'a wonderful advice'}
+              footer={showFooter && 'and if I would like to add something'}
+              warning={showWarning && 'ah a warning'}
+              error={showError && 'oh an error'}
+            />
+            <InlineInput
+              label="input number"
+              value={val13}
+              placeholder="i n c"
+              type="number"
+              mandatory={mandatory}
+              readOnly={readOnly}
+              min="0"
+              max="5"
+              saveMode="ON_CONFIRM"
+              onChange={newValue => {
+                // eslint-disable-next-line no-alert
+                //alert('changed');
+                logger.info('changed');
+                setVal13(parseInt(newValue));
+              }}
+              tip={showTip && 'a wonderful advice'}
+              footer={showFooter && 'and if I would like to add something'}
+              warning={showWarning && 'ah a warning'}
+              error={showError && 'oh an error'}
+            />
+          </Flex>
+          <Flex direction="column" className={css({ margin: space_M })}>
+            <h2>on confirm inline input</h2>
+            <InlineInput
+              value={val11}
+              placeholder="i t c"
+              mandatory={mandatory}
+              readOnly={readOnly}
+              autoWidth
+              saveMode="ON_CONFIRM"
+              onChange={newValue => {
+                // eslint-disable-next-line no-alert
+                //alert('changed');
+                logger.info('changed');
+                setVal11(newValue);
+              }}
+              tip={showTip && 'a wonderful advice'}
+              footer={showFooter && 'and if I would like to add something'}
+              warning={showWarning && 'ah a warning'}
+              error={showError && 'oh an error'}
+              // containerClassName={css({ border: '2px solid yellow' })}
+              // labelClassName={css({ border: '2px solid orange' })}
+              // inputDisplayClassName={css({ border: '2px solid red' })}
+              // inputEditClassName={css({ border: '2px solid purple' })}
+              // bottomClassName={css({ border: '2px solid blue' })}
+              // footerClassName={css({ border: '2px solid green' })}
+              // validationClassName={css({ border: '2px solid brown' })}
+            />
+            <InlineInput
+              value={val12}
+              placeholder="t a c"
+              inputType="textarea"
+              mandatory={mandatory}
+              readOnly={readOnly}
+              saveMode="ON_CONFIRM"
+              onChange={newValue => {
+                // eslint-disable-next-line no-alert
+                //alert('changed');
+                logger.info('changed');
+                setVal12(newValue);
+              }}
+              tip={showTip && 'a wonderful advice'}
+              footer={showFooter && 'and if I would like to add something'}
+              warning={showWarning && 'ah a warning'}
+              error={showError && 'oh an error'}
+            />
+            <InlineInput
+              value={val13}
+              placeholder="i n c"
+              type="number"
+              mandatory={mandatory}
+              readOnly={readOnly}
+              min="0"
+              max="5"
+              saveMode="ON_CONFIRM"
+              onChange={newValue => {
+                // eslint-disable-next-line no-alert
+                //alert('changed');
+                logger.info('changed');
+                setVal13(parseInt(newValue));
+              }}
+              tip={showTip && 'a wonderful advice'}
+              footer={showFooter && 'and if I would like to add something'}
+              warning={showWarning && 'ah a warning'}
+              error={showError && 'oh an error'}
+            />
+          </Flex>
+        </Flex>
+        <Flex className={css({ margin: space_M })} direction="column">
+          <h1>results</h1>
+          <Flex>{val11}</Flex>
+          <Flex>{val12}</Flex>
+          <Flex>{val13}</Flex>
+        </Flex>
+      </Flex>
       <Flex direction="row">
-        <Flex direction="column" className={css({ margin: space_M })}>
-          <h2>flowing block input</h2>
-          <BlockInput
-            label="input text"
-            value={val11}
-            placeholder="i t"
-            mandatory={mandatory}
-            readOnly={readOnly}
-            saveMode="FLOWING"
-            onChange={newValue => {
-              // eslint-disable-next-line no-alert
-              //alert('changed');
-              logger.info('changed');
-              setVal11(newValue);
-            }}
-            tip={showTip && 'a wonderful advice'}
-            footer={showFooter && 'and if I would like to add something'}
-            warning={showWarning && 'ah a warning'}
-            error={showError && 'oh an error'}
-            // containerClassName={css({ border: '2px solid yellow' })}
-            // labelClassName={css({ border: '2px solid orange' })}
-            // inputDisplayClassName={css({ border: '2px solid red' })}
-            // inputEditClassName={css({ border: '2px solid purple' })}
-            // bottomClassName={css({ border: '2px solid blue' })}
-            // footerClassName={css({ border: '2px solid green' })}
-            // validationClassName={css({ border: '2px solid brown' })}
-          />
-          <BlockInput
-            label="text area"
-            value={val12}
-            placeholder="t a"
-            inputType="textarea"
-            mandatory={mandatory}
-            readOnly={readOnly}
-            autoFocus
-            //rows={5}
-            saveMode="FLOWING"
-            onChange={newValue => {
-              // eslint-disable-next-line no-alert
-              //alert('changed');
-              logger.info('changed');
-              setVal12(newValue);
-            }}
-            tip={showTip && 'a wonderful advice'}
-            footer={showFooter && 'and if I would like to add something'}
-            warning={showWarning && 'ah a warning'}
-            error={showError && 'oh an error'}
-          />
-          <BlockInput
-            label="input number"
-            value={val13}
-            placeholder="i n"
-            type="number"
-            mandatory={mandatory}
-            readOnly={readOnly}
-            min="0"
-            max="5"
-            saveMode="FLOWING"
-            onChange={newValue => {
-              // eslint-disable-next-line no-alert
-              //alert('changed');
-              logger.info('changed');
-              setVal13(parseInt(newValue));
-            }}
-            tip={showTip && 'a wonderful advice'}
-            footer={showFooter && 'and if I would like to add something'}
-            warning={showWarning && 'ah a warning'}
-            error={showError && 'oh an error'}
-          />
-          <h3>results</h3>
-          <Flex>{val11}</Flex>
-          <Flex>{val12}</Flex>
-          <Flex>{val13}</Flex>
-        </Flex>
-        <Flex direction="column" className={css({ margin: space_M })}>
-          <h2>on confirm block input</h2>
-          <BlockInput
-            value={val21}
-            label="input text confirm"
-            placeholder="i t c"
-            mandatory={mandatory}
-            readOnly={readOnly}
-            saveMode="ON_CONFIRM"
-            onChange={newValue => {
-              // eslint-disable-next-line no-alert
-              //alert('changed');
-              logger.info('changed');
-              setVal21(newValue);
-            }}
-            tip={showTip && 'a wonderful advice'}
-            footer={showFooter && 'and if I would like to add something'}
-            warning={showWarning && 'ah a warning'}
-            error={showError && 'oh an error'}
-          />
-          <BlockInput
-            label="text area confirm"
-            value={val22}
-            placeholder="t a c"
-            inputType="textarea"
-            mandatory={mandatory}
-            readOnly={readOnly}
-            saveMode="ON_CONFIRM"
-            onChange={newValue => {
-              // eslint-disable-next-line no-alert
-              //alert('changed');
-              logger.info('changed');
-              setVal22(newValue);
-            }}
-            tip={showTip && 'a wonderful advice'}
-            footer={showFooter && 'and if I would like to add something'}
-            warning={showWarning && 'ah a warning'}
-            error={showError && 'oh an error'}
-          />
-          <BlockInput
-            label="input number"
-            value={val23}
-            placeholder="i n c"
-            type="number"
-            mandatory={mandatory}
-            readOnly={readOnly}
-            min="0"
-            max="5"
-            saveMode="ON_CONFIRM"
-            onChange={newValue => {
-              // eslint-disable-next-line no-alert
-              //alert('changed');
-              logger.info('changed');
-              setVal23(parseInt(newValue));
-            }}
-            tip={showTip && 'a wonderful advice'}
-            footer={showFooter && 'and if I would like to add something'}
-            warning={showWarning && 'ah a warning'}
-            error={showError && 'oh an error'}
-          />
-          <h3>results</h3>
-          <Flex>{val21}</Flex>
-          <Flex>{val22}</Flex>
-          <Flex>{val23}</Flex>
-        </Flex>
-        <Flex direction="column" className={css({ margin: space_M })}>
-          <h2>flowing inline input</h2>
-          <InlineInput
-            label="input text"
-            value={val11}
-            placeholder="i t"
-            mandatory={mandatory}
-            readOnly={readOnly}
-            saveMode="FLOWING"
-            onChange={newValue => {
-              // eslint-disable-next-line no-alert
-              //alert('changed');
-              logger.info('changed');
-              setVal11(newValue);
-            }}
-            tip={showTip && 'a wonderful advice'}
-            footer={showFooter && 'and if I would like to add something'}
-            warning={showWarning && 'ah a warning'}
-            error={showError && 'oh an error'}
-          />
-          <InlineInput
-            label="text area"
-            value={val12}
-            placeholder="t a"
-            inputType="textarea"
-            mandatory={mandatory}
-            readOnly={readOnly}
-            autoFocus
-            //rows={5}
-            saveMode="FLOWING"
-            onChange={newValue => {
-              // eslint-disable-next-line no-alert
-              //alert('changed');
-              logger.info('changed');
-              setVal12(newValue);
-            }}
-            tip={showTip && 'a wonderful advice'}
-            footer={showFooter && 'and if I would like to add something'}
-            warning={showWarning && 'ah a warning'}
-            error={showError && 'oh an error'}
-          />
-          <InlineInput
-            label="input number"
-            value={val13}
-            placeholder="i n"
-            type="number"
-            mandatory={mandatory}
-            readOnly={readOnly}
-            min="0"
-            max="5"
-            saveMode="FLOWING"
-            onChange={newValue => {
-              // eslint-disable-next-line no-alert
-              //alert('changed');
-              logger.info('changed');
-              setVal13(parseInt(newValue));
-            }}
-            tip={showTip && 'a wonderful advice'}
-            footer={showFooter && 'and if I would like to add something'}
-            warning={showWarning && 'ah a warning'}
-            error={showError && 'oh an error'}
-          />
-          <h3>results</h3>
-          <Flex>{val11}</Flex>
-          <Flex>{val12}</Flex>
-          <Flex>{val13}</Flex>
-        </Flex>
-        <Flex direction="column" className={css({ margin: space_M })}>
-          <h2>on confirm inline input</h2>
-          <InlineInput
-            label="input text confirm"
-            value={val21}
-            placeholder="i t c"
-            mandatory={mandatory}
-            readOnly={readOnly}
-            autoWidth
-            saveMode="ON_CONFIRM"
-            onChange={newValue => {
-              // eslint-disable-next-line no-alert
-              //alert('changed');
-              logger.info('changed');
-              setVal21(newValue);
-            }}
-            tip={showTip && 'a wonderful advice'}
-            footer={showFooter && 'and if I would like to add something'}
-            warning={showWarning && 'ah a warning'}
-            error={showError && 'oh an error'}
-            // containerClassName={css({ border: '2px solid yellow' })}
-            // labelClassName={css({ border: '2px solid orange' })}
-            // inputDisplayClassName={css({ border: '2px solid red' })}
-            // inputEditClassName={css({ border: '2px solid purple' })}
-            // bottomClassName={css({ border: '2px solid blue' })}
-            // footerClassName={css({ border: '2px solid green' })}
-            // validationClassName={css({ border: '2px solid brown' })}
-          />
-          <InlineInput
-            label="text area confirm"
-            value={val22}
-            placeholder="t a c"
-            inputType="textarea"
-            mandatory={mandatory}
-            readOnly={readOnly}
-            saveMode="ON_CONFIRM"
-            onChange={newValue => {
-              // eslint-disable-next-line no-alert
-              //alert('changed');
-              logger.info('changed');
-              setVal22(newValue);
-            }}
-            tip={showTip && 'a wonderful advice'}
-            footer={showFooter && 'and if I would like to add something'}
-            warning={showWarning && 'ah a warning'}
-            error={showError && 'oh an error'}
-          />
-          <InlineInput
-            label="input number"
-            value={val23}
-            placeholder="i n c"
-            type="number"
-            mandatory={mandatory}
-            readOnly={readOnly}
-            min="0"
-            max="5"
-            saveMode="ON_CONFIRM"
-            onChange={newValue => {
-              // eslint-disable-next-line no-alert
-              //alert('changed');
-              logger.info('changed');
-              setVal23(parseInt(newValue));
-            }}
-            tip={showTip && 'a wonderful advice'}
-            footer={showFooter && 'and if I would like to add something'}
-            warning={showWarning && 'ah a warning'}
-            error={showError && 'oh an error'}
-          />
-          <h3>results</h3>
-          <Flex>{val21}</Flex>
-          <Flex>{val22}</Flex>
-          <Flex>{val23}</Flex>
-        </Flex>
-        <Flex direction="column" className={css({ margin: space_M })}>
-          <h2>flowing inline input</h2>
-          <InlineInput
-            value={val11}
-            placeholder="i t"
-            mandatory={mandatory}
-            readOnly={readOnly}
-            saveMode="FLOWING"
-            onChange={newValue => {
-              // eslint-disable-next-line no-alert
-              //alert('changed');
-              logger.info('changed');
-              setVal11(newValue);
-            }}
-            tip={showTip && 'a wonderful advice'}
-            footer={showFooter && 'and if I would like to add something'}
-            warning={showWarning && 'ah a warning'}
-            error={showError && 'oh an error'}
-          />
-          <InlineInput
-            value={val12}
-            placeholder="t a"
-            inputType="textarea"
-            mandatory={mandatory}
-            readOnly={readOnly}
-            autoFocus
-            //rows={5}
-            saveMode="FLOWING"
-            onChange={newValue => {
-              // eslint-disable-next-line no-alert
-              //alert('changed');
-              logger.info('changed');
-              setVal12(newValue);
-            }}
-            tip={showTip && 'a wonderful advice'}
-            footer={showFooter && 'and if I would like to add something'}
-            warning={showWarning && 'ah a warning'}
-            error={showError && 'oh an error'}
-          />
-          <InlineInput
-            value={val13}
-            placeholder="i n"
-            type="number"
-            mandatory={mandatory}
-            readOnly={readOnly}
-            min="0"
-            max="5"
-            saveMode="FLOWING"
-            onChange={newValue => {
-              // eslint-disable-next-line no-alert
-              //alert('changed');
-              logger.info('changed');
-              setVal13(parseInt(newValue));
-            }}
-            tip={showTip && 'a wonderful advice'}
-            footer={showFooter && 'and if I would like to add something'}
-            warning={showWarning && 'ah a warning'}
-            error={showError && 'oh an error'}
-          />
-          <h3>results</h3>
-          <Flex>{val11}</Flex>
-          <Flex>{val12}</Flex>
-          <Flex>{val13}</Flex>
-        </Flex>
-        <Flex direction="column" className={css({ margin: space_M })}>
-          <h2>on confirm inline input</h2>
-          <InlineInput
-            value={val21}
-            placeholder="i t c"
-            mandatory={mandatory}
-            readOnly={readOnly}
-            autoWidth
-            saveMode="ON_CONFIRM"
-            onChange={newValue => {
-              // eslint-disable-next-line no-alert
-              //alert('changed');
-              logger.info('changed');
-              setVal21(newValue);
-            }}
-            tip={showTip && 'a wonderful advice'}
-            footer={showFooter && 'and if I would like to add something'}
-            warning={showWarning && 'ah a warning'}
-            error={showError && 'oh an error'}
-            // containerClassName={css({ border: '2px solid yellow' })}
-            // labelClassName={css({ border: '2px solid orange' })}
-            // inputDisplayClassName={css({ border: '2px solid red' })}
-            // inputEditClassName={css({ border: '2px solid purple' })}
-            // bottomClassName={css({ border: '2px solid blue' })}
-            // footerClassName={css({ border: '2px solid green' })}
-            // validationClassName={css({ border: '2px solid brown' })}
-          />
-          <InlineInput
-            value={val22}
-            placeholder="t a c"
-            inputType="textarea"
-            mandatory={mandatory}
-            readOnly={readOnly}
-            saveMode="ON_CONFIRM"
-            onChange={newValue => {
-              // eslint-disable-next-line no-alert
-              //alert('changed');
-              logger.info('changed');
-              setVal22(newValue);
-            }}
-            tip={showTip && 'a wonderful advice'}
-            footer={showFooter && 'and if I would like to add something'}
-            warning={showWarning && 'ah a warning'}
-            error={showError && 'oh an error'}
-          />
-          <InlineInput
-            value={val23}
-            placeholder="i n c"
-            type="number"
-            mandatory={mandatory}
-            readOnly={readOnly}
-            min="0"
-            max="5"
-            saveMode="ON_CONFIRM"
-            onChange={newValue => {
-              // eslint-disable-next-line no-alert
-              //alert('changed');
-              logger.info('changed');
-              setVal23(parseInt(newValue));
-            }}
-            tip={showTip && 'a wonderful advice'}
-            footer={showFooter && 'and if I would like to add something'}
-            warning={showWarning && 'ah a warning'}
-            error={showError && 'oh an error'}
-          />
-          <h3>results</h3>
-          <Flex>{val21}</Flex>
-          <Flex>{val22}</Flex>
-          <Flex>{val23}</Flex>
-        </Flex>
         <Flex direction="column" className={css({ padding: space_M })}>
           <Button
             title="mandatory"
