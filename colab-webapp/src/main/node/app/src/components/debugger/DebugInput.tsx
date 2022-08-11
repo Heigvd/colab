@@ -37,7 +37,7 @@ export default function DebugInput(): JSX.Element {
               placeholder="i t"
               mandatory={mandatory}
               readOnly={readOnly}
-              saveMode="SIMPLE_FLOWING"
+              saveMode="SILLY_FLOWING"
               onChange={newValue => {
                 // eslint-disable-next-line no-alert
                 //alert('changed');
@@ -65,7 +65,7 @@ export default function DebugInput(): JSX.Element {
               readOnly={readOnly}
               autoFocus
               //rows={5}
-              saveMode="SIMPLE_FLOWING"
+              saveMode="SILLY_FLOWING"
               onChange={newValue => {
                 // eslint-disable-next-line no-alert
                 //alert('changed');
@@ -86,7 +86,7 @@ export default function DebugInput(): JSX.Element {
               readOnly={readOnly}
               min="0"
               max="5"
-              saveMode="SIMPLE_FLOWING"
+              saveMode="SILLY_FLOWING"
               onChange={newValue => {
                 // eslint-disable-next-line no-alert
                 //alert('changed');
@@ -107,7 +107,7 @@ export default function DebugInput(): JSX.Element {
               placeholder="i t"
               mandatory={mandatory}
               readOnly={readOnly}
-              saveMode="SIMPLE_FLOWING"
+              saveMode="SILLY_FLOWING"
               onChange={newValue => {
                 // eslint-disable-next-line no-alert
                 //alert('changed');
@@ -128,7 +128,7 @@ export default function DebugInput(): JSX.Element {
               readOnly={readOnly}
               autoFocus
               //rows={5}
-              saveMode="SIMPLE_FLOWING"
+              saveMode="SILLY_FLOWING"
               onChange={newValue => {
                 // eslint-disable-next-line no-alert
                 //alert('changed');
@@ -149,7 +149,7 @@ export default function DebugInput(): JSX.Element {
               readOnly={readOnly}
               min="0"
               max="5"
-              saveMode="SIMPLE_FLOWING"
+              saveMode="SILLY_FLOWING"
               onChange={newValue => {
                 // eslint-disable-next-line no-alert
                 //alert('changed');
@@ -169,7 +169,7 @@ export default function DebugInput(): JSX.Element {
               placeholder="i t"
               mandatory={mandatory}
               readOnly={readOnly}
-              saveMode="SIMPLE_FLOWING"
+              saveMode="SILLY_FLOWING"
               onChange={newValue => {
                 // eslint-disable-next-line no-alert
                 //alert('changed');
@@ -189,7 +189,7 @@ export default function DebugInput(): JSX.Element {
               readOnly={readOnly}
               autoFocus
               //rows={5}
-              saveMode="SIMPLE_FLOWING"
+              saveMode="SILLY_FLOWING"
               onChange={newValue => {
                 // eslint-disable-next-line no-alert
                 //alert('changed');
@@ -209,7 +209,7 @@ export default function DebugInput(): JSX.Element {
               readOnly={readOnly}
               min="0"
               max="5"
-              saveMode="SIMPLE_FLOWING"
+              saveMode="SILLY_FLOWING"
               onChange={newValue => {
                 // eslint-disable-next-line no-alert
                 //alert('changed');

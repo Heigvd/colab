@@ -7,7 +7,7 @@
 
 import { css, cx } from '@emotion/css';
 import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
-import { Project } from 'colab-rest-client/dist/ColabClient';
+import { Project } from 'colab-rest-client';
 import * as React from 'react';
 import { useNavigate } from 'react-router-dom';
 import * as API from '../../API/api';
@@ -72,12 +72,14 @@ export function ProjectSettings({ project }: ProjectSettingsProps): JSX.Element 
               <IllustrationDisplay illustration={project.illustration} />
               <ProjectIllustrationMaker
                 illustration={project.illustration}
-                setIllustration={i => dispatch(
-                  API.updateProject({
-                    ...project,
-                    illustration: i,
-                  }),
-                )}
+                setIllustration={i =>
+                  dispatch(
+                    API.updateProject({
+                      ...project,
+                      illustration: i,
+                    }),
+                  )
+                }
               />
             </Flex>
           </Flex>

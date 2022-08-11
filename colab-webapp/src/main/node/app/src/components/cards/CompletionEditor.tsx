@@ -44,7 +44,7 @@ export default function CompletionEditor({ variant }: CompletionEditorProps): JS
         <BlockInput
           type="number"
           value={variant.completionLevel == 0 ? undefined : variant.completionLevel}
-          saveMode="SIMPLE_FLOWING"
+          saveMode="SILLY_FLOWING"
           onChange={newValue =>
             dispatch(
               API.updateCardContent({
