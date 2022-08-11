@@ -140,8 +140,8 @@
 <a class="jxr_linenumber" name="L132" href="#L132">132</a>     <em class="jxr_javadoccomment">/**</em>
 <a class="jxr_linenumber" name="L133" href="#L133">133</a> <em class="jxr_javadoccomment">     * Create a brand new card in the given parent with the given type</em>
 <a class="jxr_linenumber" name="L134" href="#L134">134</a> <em class="jxr_javadoccomment">     *</em>
-<a class="jxr_linenumber" name="L135" href="#L135">135</a> <em class="jxr_javadoccomment">     * @param client     rest client to execute HTTP requests</em>
-<a class="jxr_linenumber" name="L136" href="#L136">136</a> <em class="jxr_javadoccomment">     * @param parentId   id of the card content the card will belong to</em>
+<a class="jxr_linenumber" name="L135" href="#L135">135</a> <em class="jxr_javadoccomment">     * @param client   rest client to execute HTTP requests</em>
+<a class="jxr_linenumber" name="L136" href="#L136">136</a> <em class="jxr_javadoccomment">     * @param parentId id of the card content the card will belong to</em>
 <a class="jxr_linenumber" name="L137" href="#L137">137</a> <em class="jxr_javadoccomment">     *</em>
 <a class="jxr_linenumber" name="L138" href="#L138">138</a> <em class="jxr_javadoccomment">     * @return the newly created card</em>
 <a class="jxr_linenumber" name="L139" href="#L139">139</a> <em class="jxr_javadoccomment">     */</em>
@@ -340,88 +340,92 @@
 <a class="jxr_linenumber" name="L332" href="#L332">332</a>         resourceToCreate.setCardId(cardId);
 <a class="jxr_linenumber" name="L333" href="#L333">333</a> 
 <a class="jxr_linenumber" name="L334" href="#L334">334</a>         Long id = client.resourceRestEndpoint.createResource(resourceToCreate);
-<a class="jxr_linenumber" name="L335" href="#L335">335</a> 
-<a class="jxr_linenumber" name="L336" href="#L336">336</a>         <strong class="jxr_keyword">return</strong> (Resource) client.resourceRestEndpoint.getAbstractResource(id);
-<a class="jxr_linenumber" name="L337" href="#L337">337</a>     }
-<a class="jxr_linenumber" name="L338" href="#L338">338</a> 
-<a class="jxr_linenumber" name="L339" href="#L339">339</a>     <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L340" href="#L340">340</a> <em class="jxr_javadoccomment">     * Create a resource with a text data block document for test purpose</em>
-<a class="jxr_linenumber" name="L341" href="#L341">341</a> <em class="jxr_javadoccomment">     *</em>
-<a class="jxr_linenumber" name="L342" href="#L342">342</a> <em class="jxr_javadoccomment">     * @param client rest client to execute HTTP requests</em>
-<a class="jxr_linenumber" name="L343" href="#L343">343</a> <em class="jxr_javadoccomment">     * @param cardId the id of the card the resource belongs to</em>
-<a class="jxr_linenumber" name="L344" href="#L344">344</a> <em class="jxr_javadoccomment">     * @param title  title of the document</em>
-<a class="jxr_linenumber" name="L345" href="#L345">345</a> <em class="jxr_javadoccomment">     *</em>
-<a class="jxr_linenumber" name="L346" href="#L346">346</a> <em class="jxr_javadoccomment">     * @return the freshly created document</em>
-<a class="jxr_linenumber" name="L347" href="#L347">347</a> <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="L348" href="#L348">348</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> Resource createTextDataBlockCardResource(ColabClient client, Long cardId, String title) {
-<a class="jxr_linenumber" name="L349" href="#L349">349</a>         ResourceCreationData resourceToCreate = <strong class="jxr_keyword">new</strong> ResourceCreationData();
-<a class="jxr_linenumber" name="L350" href="#L350">350</a>         resourceToCreate.setTitle(title);
-<a class="jxr_linenumber" name="L351" href="#L351">351</a>         resourceToCreate.setDocuments(List.of(<strong class="jxr_keyword">new</strong> TextDataBlock()));
-<a class="jxr_linenumber" name="L352" href="#L352">352</a>         resourceToCreate.setCardId(cardId);
-<a class="jxr_linenumber" name="L353" href="#L353">353</a> 
-<a class="jxr_linenumber" name="L354" href="#L354">354</a>         Long id = client.resourceRestEndpoint.createResource(resourceToCreate);
+<a class="jxr_linenumber" name="L335" href="#L335">335</a>         client.resourceRestEndpoint.publishResource(id);
+<a class="jxr_linenumber" name="L336" href="#L336">336</a> 
+<a class="jxr_linenumber" name="L337" href="#L337">337</a>         <strong class="jxr_keyword">return</strong> (Resource) client.resourceRestEndpoint.getAbstractResource(id);
+<a class="jxr_linenumber" name="L338" href="#L338">338</a>     }
+<a class="jxr_linenumber" name="L339" href="#L339">339</a> 
+<a class="jxr_linenumber" name="L340" href="#L340">340</a>     <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L341" href="#L341">341</a> <em class="jxr_javadoccomment">     * Create a resource with a text data block document for test purpose</em>
+<a class="jxr_linenumber" name="L342" href="#L342">342</a> <em class="jxr_javadoccomment">     *</em>
+<a class="jxr_linenumber" name="L343" href="#L343">343</a> <em class="jxr_javadoccomment">     * @param client rest client to execute HTTP requests</em>
+<a class="jxr_linenumber" name="L344" href="#L344">344</a> <em class="jxr_javadoccomment">     * @param cardId the id of the card the resource belongs to</em>
+<a class="jxr_linenumber" name="L345" href="#L345">345</a> <em class="jxr_javadoccomment">     * @param title  title of the document</em>
+<a class="jxr_linenumber" name="L346" href="#L346">346</a> <em class="jxr_javadoccomment">     *</em>
+<a class="jxr_linenumber" name="L347" href="#L347">347</a> <em class="jxr_javadoccomment">     * @return the freshly created document</em>
+<a class="jxr_linenumber" name="L348" href="#L348">348</a> <em class="jxr_javadoccomment">     */</em>
+<a class="jxr_linenumber" name="L349" href="#L349">349</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> Resource createTextDataBlockCardResource(ColabClient client, Long cardId,
+<a class="jxr_linenumber" name="L350" href="#L350">350</a>         String title) {
+<a class="jxr_linenumber" name="L351" href="#L351">351</a>         ResourceCreationData resourceToCreate = <strong class="jxr_keyword">new</strong> ResourceCreationData();
+<a class="jxr_linenumber" name="L352" href="#L352">352</a>         resourceToCreate.setTitle(title);
+<a class="jxr_linenumber" name="L353" href="#L353">353</a>         resourceToCreate.setDocuments(List.of(<strong class="jxr_keyword">new</strong> TextDataBlock()));
+<a class="jxr_linenumber" name="L354" href="#L354">354</a>         resourceToCreate.setCardId(cardId);
 <a class="jxr_linenumber" name="L355" href="#L355">355</a> 
-<a class="jxr_linenumber" name="L356" href="#L356">356</a>         <strong class="jxr_keyword">return</strong> (Resource) client.resourceRestEndpoint.getAbstractResource(id);
-<a class="jxr_linenumber" name="L357" href="#L357">357</a> 
-<a class="jxr_linenumber" name="L358" href="#L358">358</a>     }
-<a class="jxr_linenumber" name="L359" href="#L359">359</a> 
-<a class="jxr_linenumber" name="L360" href="#L360">360</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> Document getOneDocumentOfResource(ColabClient client, Resource resource) {
-<a class="jxr_linenumber" name="L361" href="#L361">361</a>         List&lt;Document&gt; docs = client.resourceRestEndpoint.getDocumentsOfResource(resource.getId());
-<a class="jxr_linenumber" name="L362" href="#L362">362</a>         <strong class="jxr_keyword">return</strong> docs.get(0);
-<a class="jxr_linenumber" name="L363" href="#L363">363</a>     }
-<a class="jxr_linenumber" name="L364" href="#L364">364</a> 
-<a class="jxr_linenumber" name="L365" href="#L365">365</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> Document createADocument(ColabClient client, Document doc) {
-<a class="jxr_linenumber" name="L366" href="#L366">366</a>         Long globalCardTypeId = ColabFactory.createGlobalCardType(client).getId();
+<a class="jxr_linenumber" name="L356" href="#L356">356</a>         Long id = client.resourceRestEndpoint.createResource(resourceToCreate);
+<a class="jxr_linenumber" name="L357" href="#L357">357</a>         client.resourceRestEndpoint.publishResource(id);
+<a class="jxr_linenumber" name="L358" href="#L358">358</a> 
+<a class="jxr_linenumber" name="L359" href="#L359">359</a>         <strong class="jxr_keyword">return</strong> (Resource) client.resourceRestEndpoint.getAbstractResource(id);
+<a class="jxr_linenumber" name="L360" href="#L360">360</a> 
+<a class="jxr_linenumber" name="L361" href="#L361">361</a>     }
+<a class="jxr_linenumber" name="L362" href="#L362">362</a> 
+<a class="jxr_linenumber" name="L363" href="#L363">363</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> Document getOneDocumentOfResource(ColabClient client, Resource resource) {
+<a class="jxr_linenumber" name="L364" href="#L364">364</a>         List&lt;Document&gt; docs = client.resourceRestEndpoint.getDocumentsOfResource(resource.getId());
+<a class="jxr_linenumber" name="L365" href="#L365">365</a>         <strong class="jxr_keyword">return</strong> docs.get(0);
+<a class="jxr_linenumber" name="L366" href="#L366">366</a>     }
 <a class="jxr_linenumber" name="L367" href="#L367">367</a> 
-<a class="jxr_linenumber" name="L368" href="#L368">368</a>         ResourceCreationData resourceCreationData = <strong class="jxr_keyword">new</strong> ResourceCreationData();
-<a class="jxr_linenumber" name="L369" href="#L369">369</a> 
-<a class="jxr_linenumber" name="L370" href="#L370">370</a>         resourceCreationData.setDocuments(List.of(doc));
-<a class="jxr_linenumber" name="L371" href="#L371">371</a>         resourceCreationData.setAbstractCardTypeId(globalCardTypeId);
+<a class="jxr_linenumber" name="L368" href="#L368">368</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> Document createADocument(ColabClient client, Document doc) {
+<a class="jxr_linenumber" name="L369" href="#L369">369</a>         Long globalCardTypeId = ColabFactory.createGlobalCardType(client).getId();
+<a class="jxr_linenumber" name="L370" href="#L370">370</a> 
+<a class="jxr_linenumber" name="L371" href="#L371">371</a>         ResourceCreationData resourceCreationData = <strong class="jxr_keyword">new</strong> ResourceCreationData();
 <a class="jxr_linenumber" name="L372" href="#L372">372</a> 
-<a class="jxr_linenumber" name="L373" href="#L373">373</a>         Long resourceId = client.resourceRestEndpoint.createResource(resourceCreationData);
-<a class="jxr_linenumber" name="L374" href="#L374">374</a> 
-<a class="jxr_linenumber" name="L375" href="#L375">375</a>         List&lt;Document&gt; persistedDocs = client.resourceRestEndpoint
-<a class="jxr_linenumber" name="L376" href="#L376">376</a>             .getDocumentsOfResource(resourceId);
-<a class="jxr_linenumber" name="L377" href="#L377">377</a>         <strong class="jxr_keyword">return</strong> persistedDocs.get(0);
-<a class="jxr_linenumber" name="L378" href="#L378">378</a>     }
-<a class="jxr_linenumber" name="L379" href="#L379">379</a> 
-<a class="jxr_linenumber" name="L380" href="#L380">380</a>     <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L381" href="#L381">381</a> <em class="jxr_javadoccomment">     * Create a sticky note link between two cards</em>
-<a class="jxr_linenumber" name="L382" href="#L382">382</a> <em class="jxr_javadoccomment">     *</em>
-<a class="jxr_linenumber" name="L383" href="#L383">383</a> <em class="jxr_javadoccomment">     * @param client            rest client to execute HTTP requests</em>
-<a class="jxr_linenumber" name="L384" href="#L384">384</a> <em class="jxr_javadoccomment">     * @param srcCardId         the id of the source card</em>
-<a class="jxr_linenumber" name="L385" href="#L385">385</a> <em class="jxr_javadoccomment">     * @param destinationCardId the id of the destination card</em>
+<a class="jxr_linenumber" name="L373" href="#L373">373</a>         resourceCreationData.setDocuments(List.of(doc));
+<a class="jxr_linenumber" name="L374" href="#L374">374</a>         resourceCreationData.setAbstractCardTypeId(globalCardTypeId);
+<a class="jxr_linenumber" name="L375" href="#L375">375</a> 
+<a class="jxr_linenumber" name="L376" href="#L376">376</a>         Long resourceId = client.resourceRestEndpoint.createResource(resourceCreationData);
+<a class="jxr_linenumber" name="L377" href="#L377">377</a>         client.resourceRestEndpoint.publishResource(resourceId);
+<a class="jxr_linenumber" name="L378" href="#L378">378</a> 
+<a class="jxr_linenumber" name="L379" href="#L379">379</a>         List&lt;Document&gt; persistedDocs = client.resourceRestEndpoint
+<a class="jxr_linenumber" name="L380" href="#L380">380</a>             .getDocumentsOfResource(resourceId);
+<a class="jxr_linenumber" name="L381" href="#L381">381</a>         <strong class="jxr_keyword">return</strong> persistedDocs.get(0);
+<a class="jxr_linenumber" name="L382" href="#L382">382</a>     }
+<a class="jxr_linenumber" name="L383" href="#L383">383</a> 
+<a class="jxr_linenumber" name="L384" href="#L384">384</a>     <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L385" href="#L385">385</a> <em class="jxr_javadoccomment">     * Create a sticky note link between two cards</em>
 <a class="jxr_linenumber" name="L386" href="#L386">386</a> <em class="jxr_javadoccomment">     *</em>
-<a class="jxr_linenumber" name="L387" href="#L387">387</a> <em class="jxr_javadoccomment">     * @return the id of the created link</em>
-<a class="jxr_linenumber" name="L388" href="#L388">388</a> <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="L389" href="#L389">389</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> Long createStickyNoteLink(ColabClient client, Long srcCardId,
-<a class="jxr_linenumber" name="L390" href="#L390">390</a>         Long destinationCardId) {
-<a class="jxr_linenumber" name="L391" href="#L391">391</a>         StickyNoteLinkCreationData linkToCreate = <strong class="jxr_keyword">new</strong> StickyNoteLinkCreationData();
-<a class="jxr_linenumber" name="L392" href="#L392">392</a>         linkToCreate.setSrcCardId(srcCardId);
-<a class="jxr_linenumber" name="L393" href="#L393">393</a>         linkToCreate.setDestinationCardId(destinationCardId);
-<a class="jxr_linenumber" name="L394" href="#L394">394</a> 
-<a class="jxr_linenumber" name="L395" href="#L395">395</a>         <strong class="jxr_keyword">return</strong> client.stickyNoteLinkRestEndpoint.createLink(linkToCreate);
-<a class="jxr_linenumber" name="L396" href="#L396">396</a>     }
-<a class="jxr_linenumber" name="L397" href="#L397">397</a> 
-<a class="jxr_linenumber" name="L398" href="#L398">398</a>     <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L399" href="#L399">399</a> <em class="jxr_javadoccomment">     * Create an activity flow link between two cards</em>
-<a class="jxr_linenumber" name="L400" href="#L400">400</a> <em class="jxr_javadoccomment">     *</em>
-<a class="jxr_linenumber" name="L401" href="#L401">401</a> <em class="jxr_javadoccomment">     * @param client         rest client to execute HTTP requests</em>
-<a class="jxr_linenumber" name="L402" href="#L402">402</a> <em class="jxr_javadoccomment">     * @param previousCardId the id of the previous card</em>
-<a class="jxr_linenumber" name="L403" href="#L403">403</a> <em class="jxr_javadoccomment">     * @param nextCardId     the id of the next card</em>
+<a class="jxr_linenumber" name="L387" href="#L387">387</a> <em class="jxr_javadoccomment">     * @param client            rest client to execute HTTP requests</em>
+<a class="jxr_linenumber" name="L388" href="#L388">388</a> <em class="jxr_javadoccomment">     * @param srcCardId         the id of the source card</em>
+<a class="jxr_linenumber" name="L389" href="#L389">389</a> <em class="jxr_javadoccomment">     * @param destinationCardId the id of the destination card</em>
+<a class="jxr_linenumber" name="L390" href="#L390">390</a> <em class="jxr_javadoccomment">     *</em>
+<a class="jxr_linenumber" name="L391" href="#L391">391</a> <em class="jxr_javadoccomment">     * @return the id of the created link</em>
+<a class="jxr_linenumber" name="L392" href="#L392">392</a> <em class="jxr_javadoccomment">     */</em>
+<a class="jxr_linenumber" name="L393" href="#L393">393</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> Long createStickyNoteLink(ColabClient client, Long srcCardId,
+<a class="jxr_linenumber" name="L394" href="#L394">394</a>         Long destinationCardId) {
+<a class="jxr_linenumber" name="L395" href="#L395">395</a>         StickyNoteLinkCreationData linkToCreate = <strong class="jxr_keyword">new</strong> StickyNoteLinkCreationData();
+<a class="jxr_linenumber" name="L396" href="#L396">396</a>         linkToCreate.setSrcCardId(srcCardId);
+<a class="jxr_linenumber" name="L397" href="#L397">397</a>         linkToCreate.setDestinationCardId(destinationCardId);
+<a class="jxr_linenumber" name="L398" href="#L398">398</a> 
+<a class="jxr_linenumber" name="L399" href="#L399">399</a>         <strong class="jxr_keyword">return</strong> client.stickyNoteLinkRestEndpoint.createLink(linkToCreate);
+<a class="jxr_linenumber" name="L400" href="#L400">400</a>     }
+<a class="jxr_linenumber" name="L401" href="#L401">401</a> 
+<a class="jxr_linenumber" name="L402" href="#L402">402</a>     <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L403" href="#L403">403</a> <em class="jxr_javadoccomment">     * Create an activity flow link between two cards</em>
 <a class="jxr_linenumber" name="L404" href="#L404">404</a> <em class="jxr_javadoccomment">     *</em>
-<a class="jxr_linenumber" name="L405" href="#L405">405</a> <em class="jxr_javadoccomment">     * @return the id of the created link</em>
-<a class="jxr_linenumber" name="L406" href="#L406">406</a> <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="L407" href="#L407">407</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> Long createActivityFlowLink(ColabClient client, Long previousCardId,
-<a class="jxr_linenumber" name="L408" href="#L408">408</a>         Long nextCardId) {
-<a class="jxr_linenumber" name="L409" href="#L409">409</a>         ActivityFlowLink link = <strong class="jxr_keyword">new</strong> ActivityFlowLink();
-<a class="jxr_linenumber" name="L410" href="#L410">410</a>         link.setPreviousCardId(previousCardId);
-<a class="jxr_linenumber" name="L411" href="#L411">411</a>         link.setNextCardId(nextCardId);
-<a class="jxr_linenumber" name="L412" href="#L412">412</a> 
-<a class="jxr_linenumber" name="L413" href="#L413">413</a>         <strong class="jxr_keyword">return</strong> client.activityFlowLinkRestEndpoint.createLink(link);
-<a class="jxr_linenumber" name="L414" href="#L414">414</a>     }
-<a class="jxr_linenumber" name="L415" href="#L415">415</a> 
-<a class="jxr_linenumber" name="L416" href="#L416">416</a> }
+<a class="jxr_linenumber" name="L405" href="#L405">405</a> <em class="jxr_javadoccomment">     * @param client         rest client to execute HTTP requests</em>
+<a class="jxr_linenumber" name="L406" href="#L406">406</a> <em class="jxr_javadoccomment">     * @param previousCardId the id of the previous card</em>
+<a class="jxr_linenumber" name="L407" href="#L407">407</a> <em class="jxr_javadoccomment">     * @param nextCardId     the id of the next card</em>
+<a class="jxr_linenumber" name="L408" href="#L408">408</a> <em class="jxr_javadoccomment">     *</em>
+<a class="jxr_linenumber" name="L409" href="#L409">409</a> <em class="jxr_javadoccomment">     * @return the id of the created link</em>
+<a class="jxr_linenumber" name="L410" href="#L410">410</a> <em class="jxr_javadoccomment">     */</em>
+<a class="jxr_linenumber" name="L411" href="#L411">411</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> Long createActivityFlowLink(ColabClient client, Long previousCardId,
+<a class="jxr_linenumber" name="L412" href="#L412">412</a>         Long nextCardId) {
+<a class="jxr_linenumber" name="L413" href="#L413">413</a>         ActivityFlowLink link = <strong class="jxr_keyword">new</strong> ActivityFlowLink();
+<a class="jxr_linenumber" name="L414" href="#L414">414</a>         link.setPreviousCardId(previousCardId);
+<a class="jxr_linenumber" name="L415" href="#L415">415</a>         link.setNextCardId(nextCardId);
+<a class="jxr_linenumber" name="L416" href="#L416">416</a> 
+<a class="jxr_linenumber" name="L417" href="#L417">417</a>         <strong class="jxr_keyword">return</strong> client.activityFlowLinkRestEndpoint.createLink(link);
+<a class="jxr_linenumber" name="L418" href="#L418">418</a>     }
+<a class="jxr_linenumber" name="L419" href="#L419">419</a> 
+<a class="jxr_linenumber" name="L420" href="#L420">420</a> }
 </pre>
 <hr/>
 <div id="footer">Copyright &#169; 2022 <a href="https://www.colab-project.ch">AlbaSim, MEI, HEIG-VD, HES-SO</a>. All rights reserved.</div>

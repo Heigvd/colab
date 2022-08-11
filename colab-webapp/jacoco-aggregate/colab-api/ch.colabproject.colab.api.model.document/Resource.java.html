@@ -224,28 +224,43 @@ import javax.validation.constraints.Size;
 <span class="nc bnc" id="L224" title="All 2 branches missed.">        if (other instanceof Resource) {</span>
 <span class="nc" id="L225">            Resource o = (Resource) other;</span>
 <span class="nc" id="L226">            this.setTitle(o.getTitle());</span>
-<span class="nc" id="L227">            this.setPublished(o.isPublished());</span>
+            // published cannot be changed alone manually. It is handled by ResourceManager
 <span class="nc" id="L228">            this.setRequestingForGlory(o.isRequestingForGlory());</span>
-<span class="nc" id="L229">            this.setDeprecated(o.isDeprecated());</span>
+            // deprecated cannot be changed alone manually. It is handled by ResourceManager
 <span class="nc" id="L230">        } else {</span>
 <span class="nc" id="L231">            throw new ColabMergeException(this, other);</span>
         }
 <span class="nc" id="L233">    }</span>
 
     @Override
+    public void duplicate(ColabEntity other) throws ColabMergeException {
+<span class="nc" id="L237">        super.duplicate(other);</span>
+
+<span class="nc bnc" id="L239" title="All 2 branches missed.">        if (other instanceof Resource) {</span>
+<span class="nc" id="L240">            Resource o = (Resource) other;</span>
+<span class="nc" id="L241">            this.setTitle(o.getTitle());</span>
+<span class="nc" id="L242">            this.setPublished(o.isPublished());</span>
+<span class="nc" id="L243">            this.setRequestingForGlory(o.isRequestingForGlory());</span>
+<span class="nc" id="L244">            this.setDeprecated(o.isDeprecated());</span>
+<span class="nc" id="L245">        } else {</span>
+<span class="nc" id="L246">            throw new ColabMergeException(this, other);</span>
+        }
+<span class="nc" id="L248">    }</span>
+
+    @Override
     public int hashCode() {
-<span class="nc" id="L237">        return EntityHelper.hashCode(this);</span>
+<span class="nc" id="L252">        return EntityHelper.hashCode(this);</span>
     }
 
     @Override
     @SuppressWarnings(&quot;EqualsWhichDoesntCheckParameterClass&quot;)
     public boolean equals(Object obj) {
-<span class="nc" id="L243">        return EntityHelper.equals(this, obj);</span>
+<span class="nc" id="L258">        return EntityHelper.equals(this, obj);</span>
     }
 
     @Override
     public String toString() {
-<span class="nc" id="L248">        return &quot;Resource{&quot; + toPartialString() + &quot;, title=&quot; + title</span>
+<span class="nc" id="L263">        return &quot;Resource{&quot; + toPartialString() + &quot;, title=&quot; + title</span>
             + &quot;, published=&quot; + published + &quot;, requestingForGlory=&quot; + requestingForGlory
             + &quot;, deprecated=&quot; + deprecated + &quot;}&quot;;
     }

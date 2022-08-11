@@ -42,8 +42,8 @@ import javax.validation.constraints.NotNull;
 )
 @DiscriminatorValue(&quot;RESOURCE_REF&quot;)
 @NamedQuery(name = &quot;ResourceRef.findDirectReferences&quot;,
-query = &quot;SELECT ref FROM ResourceRef ref &quot;
-    + &quot;WHERE ref.target IS NOT NULL AND ref.target.id = :targetId&quot;)
+    query = &quot;SELECT ref FROM ResourceRef ref &quot;
+        + &quot;WHERE ref.target IS NOT NULL AND ref.target.id = :targetId&quot;)
 <span class="nc" id="L47">public class ResourceRef extends AbstractResource {</span>
 
     private static final long serialVersionUID = 1L;
@@ -53,15 +53,20 @@ query = &quot;SELECT ref FROM ResourceRef ref &quot;
     // ---------------------------------------------------------------------------------------------
 
     /**
-     * If the target resource is not useful for that card/cardDef/cardContent
+     * Manually discard the resource = say that the target resource must not be displayed as an
+     * active resource at this reference level.
      */
     @NotNull
     private boolean refused;
 
     /**
-     * The reference is a rest of a former ancestor.
+     * Automatically discard the resource = say that the target resource must not be displayed as an
+     * active resource at this reference level.
      * &lt;p&gt;
-     * It is always kept for a possible rollback without loss of data
+     * It can be because it is not published anymore or the reference is a rest of a former
+     * ancestor. The resource can be manually &quot;revived&quot;.
+     * &lt;p&gt;
+     * The reference is not destroyed so that a rollback without loss of data is possible.
      */
     @NotNull
     private boolean residual;
@@ -85,46 +90,50 @@ query = &quot;SELECT ref FROM ResourceRef ref &quot;
     // ---------------------------------------------------------------------------------------------
 
     /**
-     * @return if the targeted resource is not useful for that card/cardDef/cardContent
+     * @return if the targeted resource was manually marked as to be not displayed as active at this
+     *         reference level
      */
     public boolean isRefused() {
-<span class="nc" id="L91">        return refused;</span>
+<span class="nc" id="L97">        return refused;</span>
     }
 
     /**
-     * @param refused if the targeted resource is not useful for that card/cardDef/cardContent
+     * @param refused if the targeted resource was manually marked as to be not displayed as active
+     *                at this reference level
      */
     public void setRefused(boolean refused) {
-<span class="nc" id="L98">        this.refused = refused;</span>
-<span class="nc" id="L99">    }</span>
+<span class="nc" id="L105">        this.refused = refused;</span>
+<span class="nc" id="L106">    }</span>
 
     /**
-     * @return if it is a rest of a former ancestor
+     * @return if the targeted resource was automatically marked as to be not displayed as active at
+     *         this reference level.
      */
     public boolean isResidual() {
-<span class="nc" id="L105">        return residual;</span>
+<span class="nc" id="L113">        return residual;</span>
     }
 
     /**
-     * @param residual if it is a rest of a former ancestor
+     * @param residual if the targeted resource was automatically marked as to be not displayed as
+     *                 active at this reference level.
      */
     public void setResidual(boolean residual) {
-<span class="nc" id="L112">        this.residual = residual;</span>
-<span class="nc" id="L113">    }</span>
+<span class="nc" id="L121">        this.residual = residual;</span>
+<span class="nc" id="L122">    }</span>
 
     /**
      * @return the resource (or resource reference) this reference aims at
      */
     public AbstractResource getTarget() {
-<span class="nc" id="L119">        return target;</span>
+<span class="nc" id="L128">        return target;</span>
     }
 
     /**
      * @param target the resource (or resource reference) this reference aims at
      */
     public void setTarget(AbstractResource target) {
-<span class="nc" id="L126">        this.target = target;</span>
-<span class="nc" id="L127">    }</span>
+<span class="nc" id="L135">        this.target = target;</span>
+<span class="nc" id="L136">    }</span>
 
     /**
      * get the id of the resource (or resource reference) this reference aims at. To be sent to
@@ -133,10 +142,10 @@ query = &quot;SELECT ref FROM ResourceRef ref &quot;
      * @return id of the abstract resource or null
      */
     public Long getTargetId() {
-<span class="nc bnc" id="L136" title="All 2 branches missed.">        if (target != null) {</span>
-<span class="nc" id="L137">            return target.getId();</span>
+<span class="nc bnc" id="L145" title="All 2 branches missed.">        if (target != null) {</span>
+<span class="nc" id="L146">            return target.getId();</span>
         } else {
-<span class="nc" id="L139">            return targetId;</span>
+<span class="nc" id="L148">            return targetId;</span>
         }
     }
 
@@ -147,8 +156,8 @@ query = &quot;SELECT ref FROM ResourceRef ref &quot;
      * @param targetId the id of the resource or resource reference
      */
     public void setTargetId(Long targetId) {
-<span class="nc" id="L150">        this.targetId = targetId;</span>
-<span class="nc" id="L151">    }</span>
+<span class="nc" id="L159">        this.targetId = targetId;</span>
+<span class="nc" id="L160">    }</span>
 
     // ---------------------------------------------------------------------------------------------
     // helpers
@@ -156,22 +165,22 @@ query = &quot;SELECT ref FROM ResourceRef ref &quot;
 
     @Override
     public Resource resolve() {
-<span class="nc bnc" id="L159" title="All 2 branches missed.">        if (this.target != null) {</span>
-<span class="nc" id="L160">            return this.target.resolve();</span>
+<span class="nc bnc" id="L168" title="All 2 branches missed.">        if (this.target != null) {</span>
+<span class="nc" id="L169">            return this.target.resolve();</span>
         }
 
-<span class="nc" id="L163">        return null;</span>
+<span class="nc" id="L172">        return null;</span>
     }
 
     @Override
     public List&lt;AbstractResource&gt; expand() {
-<span class="nc" id="L168">        List&lt;AbstractResource&gt; list = new ArrayList&lt;&gt;();</span>
+<span class="nc" id="L177">        List&lt;AbstractResource&gt; list = new ArrayList&lt;&gt;();</span>
 
-<span class="nc" id="L170">        list.add(this);</span>
-<span class="nc bnc" id="L171" title="All 2 branches missed.">        if (this.target != null) {</span>
-<span class="nc" id="L172">            list.addAll(this.target.expand());</span>
+<span class="nc" id="L179">        list.add(this);</span>
+<span class="nc bnc" id="L180" title="All 2 branches missed.">        if (this.target != null) {</span>
+<span class="nc" id="L181">            list.addAll(this.target.expand());</span>
         }
-<span class="nc" id="L174">        return list;</span>
+<span class="nc" id="L183">        return list;</span>
     }
 
     // ---------------------------------------------------------------------------------------------
@@ -180,31 +189,43 @@ query = &quot;SELECT ref FROM ResourceRef ref &quot;
 
     @Override
     public void merge(ColabEntity other) throws ColabMergeException {
-<span class="nc" id="L183">        super.merge(other);</span>
+<span class="nc" id="L192">        super.merge(other);</span>
 
-<span class="nc bnc" id="L185" title="All 2 branches missed.">        if (other instanceof ResourceRef) {</span>
-<span class="nc" id="L186">            ResourceRef o = (ResourceRef) other;</span>
-<span class="nc" id="L187">            this.setRefused(o.isRefused());</span>
-<span class="nc" id="L188">            this.setResidual(o.isResidual());</span>
-<span class="nc" id="L189">        } else {</span>
-<span class="nc" id="L190">            throw new ColabMergeException(this, other);</span>
+        // residual cannot be changed alone manually. It is handled by ResourceManager
+        // refused cannot be changed alone manually. It is handled by ResourceManager
+
+<span class="nc bnc" id="L197" title="All 2 branches missed.">        if (!(other instanceof ResourceRef)) {</span>
+<span class="nc" id="L198">            throw new ColabMergeException(this, other);</span>
         }
-<span class="nc" id="L192">    }</span>
+<span class="nc" id="L200">    }</span>
+
+    @Override
+    public void duplicate(ColabEntity other) throws ColabMergeException {
+<span class="nc" id="L204">        super.duplicate(other);</span>
+
+<span class="nc bnc" id="L206" title="All 2 branches missed.">        if (other instanceof ResourceRef) {</span>
+<span class="nc" id="L207">            ResourceRef o = (ResourceRef) other;</span>
+<span class="nc" id="L208">            this.setRefused(o.isRefused());</span>
+<span class="nc" id="L209">            this.setResidual(o.isResidual());</span>
+<span class="nc" id="L210">        } else {</span>
+<span class="nc" id="L211">            throw new ColabMergeException(this, other);</span>
+        }
+<span class="nc" id="L213">    }</span>
 
     @Override
     public int hashCode() {
-<span class="nc" id="L196">        return EntityHelper.hashCode(this);</span>
+<span class="nc" id="L217">        return EntityHelper.hashCode(this);</span>
     }
 
     @Override
     @SuppressWarnings(&quot;EqualsWhichDoesntCheckParameterClass&quot;)
     public boolean equals(Object obj) {
-<span class="nc" id="L202">        return EntityHelper.equals(this, obj);</span>
+<span class="nc" id="L223">        return EntityHelper.equals(this, obj);</span>
     }
 
     @Override
     public String toString() {
-<span class="nc" id="L207">        return &quot;ResourceRef{&quot; + toPartialString() + &quot;, refused=&quot; + refused</span>
+<span class="nc" id="L228">        return &quot;ResourceRef{&quot; + toPartialString() + &quot;, refused=&quot; + refused</span>
             + &quot;, residual=&quot; + residual + &quot;, targetId=&quot; + targetId + &quot;}&quot;;
     }
 

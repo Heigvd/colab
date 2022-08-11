@@ -144,6 +144,9 @@ import org.slf4j.LoggerFactory;
 <span class="nc" id="L144">        return resource;</span>
     }
 
+    // Note : there is no persistResourceRef because they are automatically generated
+    // and are persisted by cascade
+
     /**
      * Delete a resource / resource reference from database. This can't be undone
      *
@@ -152,11 +155,11 @@ import org.slf4j.LoggerFactory;
      * @return just deleted resource / resource reference
      */
     public AbstractResource deleteResourceOrRef(Long id) {
-<span class="nc" id="L155">        logger.debug(&quot;delete abstract resource reference #{}&quot;, id);</span>
+<span class="nc" id="L158">        logger.debug(&quot;delete abstract resource reference #{}&quot;, id);</span>
         // TODO: move to recycle bin first
-<span class="nc" id="L157">        AbstractResource resourceRef = this.findResourceOrRef(id);</span>
-<span class="nc" id="L158">        em.remove(resourceRef);</span>
-<span class="nc" id="L159">        return resourceRef;</span>
+<span class="nc" id="L160">        AbstractResource resourceRef = this.findResourceOrRef(id);</span>
+<span class="nc" id="L161">        em.remove(resourceRef);</span>
+<span class="nc" id="L162">        return resourceRef;</span>
     }
 
 }

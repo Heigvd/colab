@@ -28,7 +28,7 @@
 <a class="jxr_linenumber" name="L20" href="#L20">20</a>  <strong class="jxr_keyword">import</strong> com.google.common.collect.Lists;
 <a class="jxr_linenumber" name="L21" href="#L21">21</a>  
 <a class="jxr_linenumber" name="L22" href="#L22">22</a>  <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L23" href="#L23">23</a>  <em class="jxr_javadoccomment"> * Testing of the resource rest end point from a client point of view</em>
+<a class="jxr_linenumber" name="L23" href="#L23">23</a>  <em class="jxr_javadoccomment"> * Testing of the resource rest end point from a client point of view.</em>
 <a class="jxr_linenumber" name="L24" href="#L24">24</a>  <em class="jxr_javadoccomment"> * &lt;p&gt;</em>
 <a class="jxr_linenumber" name="L25" href="#L25">25</a>  <em class="jxr_javadoccomment"> * Focus on category handling</em>
 <a class="jxr_linenumber" name="L26" href="#L26">26</a>  <em class="jxr_javadoccomment"> *</em>
@@ -369,21 +369,22 @@
 <a class="jxr_linenumber" name="L361" href="#L361">361</a>         resourceCreationData.setAbstractCardTypeId(cardTypeId);
 <a class="jxr_linenumber" name="L362" href="#L362">362</a> 
 <a class="jxr_linenumber" name="L363" href="#L363">363</a>         Long persistedResourceId = client.resourceRestEndpoint.createResource(resourceCreationData);
-<a class="jxr_linenumber" name="L364" href="#L364">364</a> 
-<a class="jxr_linenumber" name="L365" href="#L365">365</a>         <strong class="jxr_keyword">return</strong> (Resource) client.resourceRestEndpoint.getAbstractResource(persistedResourceId);
-<a class="jxr_linenumber" name="L366" href="#L366">366</a>     }
-<a class="jxr_linenumber" name="L367" href="#L367">367</a> 
-<a class="jxr_linenumber" name="L368" href="#L368">368</a>     <strong class="jxr_keyword">private</strong> ResourceRef retrieveResourceRefForCard(Long cardId) {
-<a class="jxr_linenumber" name="L369" href="#L369">369</a>         <strong class="jxr_keyword">return</strong> (ResourceRef) client.resourceRestEndpoint.getResourceChainForCard(cardId)
-<a class="jxr_linenumber" name="L370" href="#L370">370</a>             .get(0).get(0);
-<a class="jxr_linenumber" name="L371" href="#L371">371</a>     }
-<a class="jxr_linenumber" name="L372" href="#L372">372</a> 
-<a class="jxr_linenumber" name="L373" href="#L373">373</a>     <strong class="jxr_keyword">private</strong> ResourceRef retrieveResourceRefForCardContent(Long cardContentId) {
-<a class="jxr_linenumber" name="L374" href="#L374">374</a>         <strong class="jxr_keyword">return</strong> (ResourceRef) client.resourceRestEndpoint
-<a class="jxr_linenumber" name="L375" href="#L375">375</a>             .getResourceChainForCardContent(cardContentId).get(0).get(0);
-<a class="jxr_linenumber" name="L376" href="#L376">376</a>     }
-<a class="jxr_linenumber" name="L377" href="#L377">377</a> 
-<a class="jxr_linenumber" name="L378" href="#L378">378</a> }
+<a class="jxr_linenumber" name="L364" href="#L364">364</a>         client.resourceRestEndpoint.publishResource(persistedResourceId);
+<a class="jxr_linenumber" name="L365" href="#L365">365</a> 
+<a class="jxr_linenumber" name="L366" href="#L366">366</a>         <strong class="jxr_keyword">return</strong> (Resource) client.resourceRestEndpoint.getAbstractResource(persistedResourceId);
+<a class="jxr_linenumber" name="L367" href="#L367">367</a>     }
+<a class="jxr_linenumber" name="L368" href="#L368">368</a> 
+<a class="jxr_linenumber" name="L369" href="#L369">369</a>     <strong class="jxr_keyword">private</strong> ResourceRef retrieveResourceRefForCard(Long cardId) {
+<a class="jxr_linenumber" name="L370" href="#L370">370</a>         <strong class="jxr_keyword">return</strong> (ResourceRef) client.resourceRestEndpoint.getResourceChainForCard(cardId)
+<a class="jxr_linenumber" name="L371" href="#L371">371</a>             .get(0).get(0);
+<a class="jxr_linenumber" name="L372" href="#L372">372</a>     }
+<a class="jxr_linenumber" name="L373" href="#L373">373</a> 
+<a class="jxr_linenumber" name="L374" href="#L374">374</a>     <strong class="jxr_keyword">private</strong> ResourceRef retrieveResourceRefForCardContent(Long cardContentId) {
+<a class="jxr_linenumber" name="L375" href="#L375">375</a>         <strong class="jxr_keyword">return</strong> (ResourceRef) client.resourceRestEndpoint
+<a class="jxr_linenumber" name="L376" href="#L376">376</a>             .getResourceChainForCardContent(cardContentId).get(0).get(0);
+<a class="jxr_linenumber" name="L377" href="#L377">377</a>     }
+<a class="jxr_linenumber" name="L378" href="#L378">378</a> 
+<a class="jxr_linenumber" name="L379" href="#L379">379</a> }
 </pre>
 <hr/>
 <div id="footer">Copyright &#169; 2022 <a href="https://www.colab-project.ch">AlbaSim, MEI, HEIG-VD, HES-SO</a>. All rights reserved.</div>

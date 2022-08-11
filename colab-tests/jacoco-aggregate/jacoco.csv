@@ -1,7 +1,7 @@
 GROUP,PACKAGE,CLASS,INSTRUCTION_MISSED,INSTRUCTION_COVERED,BRANCH_MISSED,BRANCH_COVERED,LINE_MISSED,LINE_COVERED,COMPLEXITY_MISSED,COMPLEXITY_COVERED,METHOD_MISSED,METHOD_COVERED
 colab-tests/colab-client,ch.colabproject.colab.client,ColabClient.ChangeRestEndpointClientImpl,81,22,0,0,9,3,2,2,2,2
 colab-tests/colab-client,ch.colabproject.colab.client,ColabClient.CardRestEndpointClientImpl,102,402,0,0,10,40,3,13,3,13
-colab-tests/colab-client,ch.colabproject.colab.client,ColabClient.ResourceRestEndpointClientImpl,141,625,0,0,12,69,4,20,4,20
+colab-tests/colab-client,ch.colabproject.colab.client,ColabClient.ResourceRestEndpointClientImpl,109,769,0,0,9,88,3,25,3,25
 colab-tests/colab-client,ch.colabproject.colab.client,ColabClient.DocumentRestEndpointClientImpl,170,130,0,0,20,15,5,5,5,5
 colab-tests/colab-client,ch.colabproject.colab.client,ColabClient.CardContentRestEndpointClientImpl,137,325,0,0,12,34,4,11,4,11
 colab-tests/colab-client,ch.colabproject.colab.client,ColabClient.DocumentFileRestEndPointClientImpl,0,149,0,0,0,19,0,5,0,5
@@ -27,7 +27,7 @@ colab-tests/colab-client,ch.colabproject.colab.client,ColabClient.ProjectRestEnd
 colab-tests/colab-client,ch.colabproject.colab.client,ColabClient.TeamRestEndpointClientImpl.new GenericType() {...},6,0,0,0,1,0,1,0,1,0
 colab-tests/colab-client,ch.colabproject.colab.client,ColabClient.CardContentRestEndpointClientImpl.new GenericType() {...},0,6,0,0,0,1,0,1,0,1
 colab-tests/colab-client,ch.colabproject.colab.client,ColabClient.ResourceRestEndpointClientImpl.new GenericType() {...},0,6,0,0,0,1,0,1,0,1
-colab-tests/colab-client,ch.colabproject.colab.client,ColabClient.ResourceRestEndpointClientImpl.new GenericType() {...},6,0,0,0,1,0,1,0,1,0
+colab-tests/colab-client,ch.colabproject.colab.client,ColabClient.ResourceRestEndpointClientImpl.new GenericType() {...},0,6,0,0,0,1,0,1,0,1
 colab-tests/colab-client,ch.colabproject.colab.client,ColabClient.ResourceRestEndpointClientImpl.new GenericType() {...},0,6,0,0,0,1,0,1,0,1
 colab-tests/colab-client,ch.colabproject.colab.client,ColabClient.ResourceRestEndpointClientImpl.new GenericType() {...},0,6,0,0,0,1,0,1,0,1
 colab-tests/colab-client,ch.colabproject.colab.client,ColabClient.ResourceRestEndpointClientImpl.new GenericType() {...},0,6,0,0,0,1,0,1,0,1

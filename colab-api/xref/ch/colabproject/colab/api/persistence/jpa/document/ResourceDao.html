@@ -152,22 +152,25 @@
 <a class="jxr_linenumber" name="L144" href="#L144">144</a>         <strong class="jxr_keyword">return</strong> resource;
 <a class="jxr_linenumber" name="L145" href="#L145">145</a>     }
 <a class="jxr_linenumber" name="L146" href="#L146">146</a> 
-<a class="jxr_linenumber" name="L147" href="#L147">147</a>     <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L148" href="#L148">148</a> <em class="jxr_javadoccomment">     * Delete a resource / resource reference from database. This can't be undone</em>
-<a class="jxr_linenumber" name="L149" href="#L149">149</a> <em class="jxr_javadoccomment">     *</em>
-<a class="jxr_linenumber" name="L150" href="#L150">150</a> <em class="jxr_javadoccomment">     * @param id the id of the resource / resource reference to delete</em>
-<a class="jxr_linenumber" name="L151" href="#L151">151</a> <em class="jxr_javadoccomment">     *</em>
-<a class="jxr_linenumber" name="L152" href="#L152">152</a> <em class="jxr_javadoccomment">     * @return just deleted resource / resource reference</em>
-<a class="jxr_linenumber" name="L153" href="#L153">153</a> <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="L154" href="#L154">154</a>     <strong class="jxr_keyword">public</strong> AbstractResource deleteResourceOrRef(Long id) {
-<a class="jxr_linenumber" name="L155" href="#L155">155</a>         logger.debug(<span class="jxr_string">"delete abstract resource reference #{}"</span>, id);
-<a class="jxr_linenumber" name="L156" href="#L156">156</a>         <em class="jxr_comment">// TODO: move to recycle bin first</em>
-<a class="jxr_linenumber" name="L157" href="#L157">157</a>         AbstractResource resourceRef = <strong class="jxr_keyword">this</strong>.findResourceOrRef(id);
-<a class="jxr_linenumber" name="L158" href="#L158">158</a>         em.remove(resourceRef);
-<a class="jxr_linenumber" name="L159" href="#L159">159</a>         <strong class="jxr_keyword">return</strong> resourceRef;
-<a class="jxr_linenumber" name="L160" href="#L160">160</a>     }
-<a class="jxr_linenumber" name="L161" href="#L161">161</a> 
-<a class="jxr_linenumber" name="L162" href="#L162">162</a> }
+<a class="jxr_linenumber" name="L147" href="#L147">147</a>     <em class="jxr_comment">// Note : there is no persistResourceRef because they are automatically generated</em>
+<a class="jxr_linenumber" name="L148" href="#L148">148</a>     <em class="jxr_comment">// and are persisted by cascade</em>
+<a class="jxr_linenumber" name="L149" href="#L149">149</a> 
+<a class="jxr_linenumber" name="L150" href="#L150">150</a>     <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L151" href="#L151">151</a> <em class="jxr_javadoccomment">     * Delete a resource / resource reference from database. This can't be undone</em>
+<a class="jxr_linenumber" name="L152" href="#L152">152</a> <em class="jxr_javadoccomment">     *</em>
+<a class="jxr_linenumber" name="L153" href="#L153">153</a> <em class="jxr_javadoccomment">     * @param id the id of the resource / resource reference to delete</em>
+<a class="jxr_linenumber" name="L154" href="#L154">154</a> <em class="jxr_javadoccomment">     *</em>
+<a class="jxr_linenumber" name="L155" href="#L155">155</a> <em class="jxr_javadoccomment">     * @return just deleted resource / resource reference</em>
+<a class="jxr_linenumber" name="L156" href="#L156">156</a> <em class="jxr_javadoccomment">     */</em>
+<a class="jxr_linenumber" name="L157" href="#L157">157</a>     <strong class="jxr_keyword">public</strong> AbstractResource deleteResourceOrRef(Long id) {
+<a class="jxr_linenumber" name="L158" href="#L158">158</a>         logger.debug(<span class="jxr_string">"delete abstract resource reference #{}"</span>, id);
+<a class="jxr_linenumber" name="L159" href="#L159">159</a>         <em class="jxr_comment">// TODO: move to recycle bin first</em>
+<a class="jxr_linenumber" name="L160" href="#L160">160</a>         AbstractResource resourceRef = <strong class="jxr_keyword">this</strong>.findResourceOrRef(id);
+<a class="jxr_linenumber" name="L161" href="#L161">161</a>         em.remove(resourceRef);
+<a class="jxr_linenumber" name="L162" href="#L162">162</a>         <strong class="jxr_keyword">return</strong> resourceRef;
+<a class="jxr_linenumber" name="L163" href="#L163">163</a>     }
+<a class="jxr_linenumber" name="L164" href="#L164">164</a> 
+<a class="jxr_linenumber" name="L165" href="#L165">165</a> }
 </pre>
 <hr/>
 <div id="footer">Copyright &#169; 2022 <a href="https://www.colab-project.ch">AlbaSim, MEI, HEIG-VD, HES-SO</a>. All rights reserved.</div>
