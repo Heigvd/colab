@@ -17,7 +17,7 @@ import { useAppDispatch } from '../../store/hooks';
 import { BlockEditorWrapper } from '../blocks/BlockEditorWrapper';
 import CardThumbWithSelector from '../cards/CardThumbWithSelector';
 import Button from '../common/element/Button';
-import { InlineInput } from '../common/element/Input';
+import { DiscreetInput } from '../common/element/Input';
 import ConfirmDeleteModal from '../common/layout/ConfirmDeleteModal';
 import DropDownMenu, { modalEntryStyle } from '../common/layout/DropDownMenu';
 import Flex from '../common/layout/Flex';
@@ -64,10 +64,9 @@ export default function StickyNoteDisplay({
         justify="space-between"
         className={css({ borderBottom: '1px solid var(--lightGray)', padding: space_S })}
       >
-        <InlineInput
+        <DiscreetInput
           value={stickyNote.teaser || ''}
           placeholder="There is no teaser for the moment. Feel free to fill it."
-          saveMode="ON_CONFIRM"
           onChange={newValue => dispatch(API.updateStickyNote({ ...stickyNote, teaser: newValue }))}
           inputDisplayClassName={css({ fontWeight: 'bold' })}
         />
