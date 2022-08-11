@@ -132,8 +132,8 @@ public class ColabFactory {
     /**
      * Create a brand new card in the given parent with the given type
      *
-     * @param client     rest client to execute HTTP requests
-     * @param parentId   id of the card content the card will belong to
+     * @param client   rest client to execute HTTP requests
+     * @param parentId id of the card content the card will belong to
      *
      * @return the newly created card
      */
@@ -332,6 +332,7 @@ public class ColabFactory {
         resourceToCreate.setCardId(cardId);
 
         Long id = client.resourceRestEndpoint.createResource(resourceToCreate);
+        client.resourceRestEndpoint.publishResource(id);
 
         return (Resource) client.resourceRestEndpoint.getAbstractResource(id);
     }
@@ -345,13 +346,15 @@ public class ColabFactory {
      *
      * @return the freshly created document
      */
-    public static Resource createTextDataBlockCardResource(ColabClient client, Long cardId, String title) {
+    public static Resource createTextDataBlockCardResource(ColabClient client, Long cardId,
+        String title) {
         ResourceCreationData resourceToCreate = new ResourceCreationData();
         resourceToCreate.setTitle(title);
         resourceToCreate.setDocuments(List.of(new TextDataBlock()));
         resourceToCreate.setCardId(cardId);
 
         Long id = client.resourceRestEndpoint.createResource(resourceToCreate);
+        client.resourceRestEndpoint.publishResource(id);
 
         return (Resource) client.resourceRestEndpoint.getAbstractResource(id);
 
@@ -371,6 +374,7 @@ public class ColabFactory {
         resourceCreationData.setAbstractCardTypeId(globalCardTypeId);
 
         Long resourceId = client.resourceRestEndpoint.createResource(resourceCreationData);
+        client.resourceRestEndpoint.publishResource(resourceId);
 
         List<Document> persistedDocs = client.resourceRestEndpoint
             .getDocumentsOfResource(resourceId);

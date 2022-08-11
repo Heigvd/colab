@@ -224,6 +224,21 @@ public class Resource extends AbstractResource {
         if (other instanceof Resource) {
             Resource o = (Resource) other;
             this.setTitle(o.getTitle());
+            // published cannot be changed alone manually. It is handled by ResourceManager
+            this.setRequestingForGlory(o.isRequestingForGlory());
+            // deprecated cannot be changed alone manually. It is handled by ResourceManager
+        } else {
+            throw new ColabMergeException(this, other);
+        }
+    }
+
+    @Override
+    public void duplicate(ColabEntity other) throws ColabMergeException {
+        super.duplicate(other);
+
+        if (other instanceof Resource) {
+            Resource o = (Resource) other;
+            this.setTitle(o.getTitle());
             this.setPublished(o.isPublished());
             this.setRequestingForGlory(o.isRequestingForGlory());
             this.setDeprecated(o.isDeprecated());
