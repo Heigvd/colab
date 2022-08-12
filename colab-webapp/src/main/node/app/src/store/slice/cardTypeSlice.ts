@@ -15,9 +15,7 @@ import { AvailabilityStatus } from '../store';
 /** what we have in the store */
 interface CardTypeState {
   /** all the card types we got so far */
-  cardtypes: {
-    [id: number]: AbstractCardType | AvailabilityStatus;
-  };
+  cardtypes: Record<number, AbstractCardType | AvailabilityStatus>;
 
   // are all types used by the current project known or not ?
   //  -> card types defined by the project
@@ -60,8 +58,8 @@ const cardTypeSlice = createSlice({
   extraReducers: builder =>
     builder
       .addCase(processMessage.fulfilled, (state, action) => {
-        action.payload.types.updated.forEach(cardType => updateCardType(state, cardType));
-        action.payload.types.deleted.forEach(entry => removeCardType(state, entry.id));
+        action.payload.cardTypes.updated.forEach(cardType => updateCardType(state, cardType));
+        action.payload.cardTypes.deleted.forEach(entry => removeCardType(state, entry.id));
       })
       .addCase(API.getExpandedCardType.pending, (state, action) => {
         state.cardtypes[action.meta.arg] = 'LOADING';
