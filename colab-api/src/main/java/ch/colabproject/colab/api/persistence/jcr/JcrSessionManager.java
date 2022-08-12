@@ -20,11 +20,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- *
  * @author maxence
  */
 @TransactionScoped
 public class JcrSessionManager implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     /** Logger */
     private static final Logger logger = LoggerFactory.getLogger(JcrSessionManager.class);
@@ -56,10 +57,10 @@ public class JcrSessionManager implements Serializable {
      */
     public JcrSession getSession(Project project) throws RepositoryException {
         if (sessions.containsKey(project.getId())) {
-            logger.trace("GetExisting session: Gm{}", project.getId());
+            logger.trace("GetExisting session: project #{}", project.getId());
             return sessions.get(project.getId());
         } else {
-            logger.trace("Create new session: Gm{}", project.getId());
+            logger.trace("Create new session: project #{}", project.getId());
             Repository repo = jcrRepository.getRepository();
             JcrSession session = new JcrSession(repo, project);
             sessions.put(project.getId(), session);
