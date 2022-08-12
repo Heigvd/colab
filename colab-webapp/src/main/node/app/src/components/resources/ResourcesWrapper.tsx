@@ -10,9 +10,8 @@ import * as API from '../../API/api';
 import { useResources } from '../../selectors/resourceSelector';
 import { useAppDispatch } from '../../store/hooks';
 import InlineLoading from '../common/element/InlineLoading';
-import { ResourceAndRef, ResourceCallContext } from './ResourceCommonType';
 import { ResourceDisplay } from './ResourceDisplay';
-import ResourcesList from './ResourcesList';
+import { isReadOnly, ResourceAndRef, ResourceCallContext } from './resourcesCommonType';
 
 /**
  * In this component, we load the resources if necessary and call the ResourceList
@@ -42,13 +41,7 @@ export default function ResourcesWrapper(contextInfo: ResourcesWrapperProps): JS
   const showTOC = React.useCallback(() => selectResource(null), []);
 
   if (contextInfo.accessLevel === 'DENIED') {
-    return (
-      <ResourcesList
-        resourcesAndRefs={resourcesAndRefs}
-        contextInfo={contextInfo}
-        selectResource={selectResource}
-      />
-    );
+    return <div>no right, no resource</div>;
   } else if (status === 'NOT_INITIALIZED') {
     return <InlineLoading />;
   } else if (status === 'LOADING') {
@@ -59,15 +52,22 @@ export default function ResourcesWrapper(contextInfo: ResourcesWrapperProps): JS
 
   if (selectedResource != null) {
     // show selected resource
-    return <ResourceDisplay resource={selectedResource} goBackToList={showTOC} />;
+    return (
+      <ResourceDisplay
+        resource={selectedResource}
+        goBackToList={showTOC}
+        readOnly={isReadOnly(contextInfo.accessLevel)}
+      />
+    );
   } else {
     // no selected resource : show table of content
     return (
-      <ResourcesList
-        resourcesAndRefs={resourcesAndRefs}
-        contextInfo={contextInfo}
-        selectResource={selectResource}
-      />
+      <div>once, there was a list of resources</div>
+      // <ResourcesList
+      //   resourcesAndRefs={resourcesAndRefs}
+      //   contextInfo={contextInfo}
+      //   selectResource={selectResource}
+      // />
     );
   }
 }

@@ -38,16 +38,21 @@ import {
   space_S,
   textSmall,
 } from '../styling/style';
-import { ResourceAndRef } from './ResourceCommonType';
 import { ResourceSettings } from './ResourceMiniDisplay';
+import { ResourceAndRef } from './resourcesCommonType';
 import TargetResourceSummary from './summary/TargetResourceSummary';
 
 export interface ResourceDisplayProps {
   resource: ResourceAndRef;
+  readOnly: boolean;
   goBackToList: () => void;
 }
 
-export function ResourceDisplay({ resource, goBackToList }: ResourceDisplayProps): JSX.Element {
+export function ResourceDisplay({
+  resource,
+  readOnly,
+  goBackToList,
+}: ResourceDisplayProps): JSX.Element {
   const dispatch = useAppDispatch();
   const i18n = useTranslations();
 
@@ -55,7 +60,8 @@ export function ResourceDisplay({ resource, goBackToList }: ResourceDisplayProps
   const [openToolbox, setOpenToolbox] = React.useState(true);
 
   const targetResource = resource.targetResource;
-  const readOnly = !resource.isDirectResource;
+
+  const effectiveReadOnly = readOnly || !resource.isDirectResource;
 
   const { text: teaser } = useAndLoadTextOfDocument(targetResource.teaserId);
 
@@ -82,14 +88,14 @@ export function ResourceDisplay({ resource, goBackToList }: ResourceDisplayProps
             <DiscreetInput
               value={targetResource.title || ''}
               placeholder={i18n.modules.resource.untitled}
-              readOnly={readOnly}
+              readOnly={effectiveReadOnly}
               onChange={newValue =>
                 dispatch(API.updateResource({ ...targetResource, title: newValue }))
               }
               inputDisplayClassName={localTitleStyle}
             />
           </Flex>
-          {readOnly && !teaser ? (
+          {effectiveReadOnly && !teaser ? (
             <ResourceSettingsModal resource={resource} isButton />
           ) : (
             <DropDownMenu
@@ -102,7 +108,7 @@ export function ResourceDisplay({ resource, goBackToList }: ResourceDisplayProps
                   label: (
                     <>
                       <FontAwesomeIcon icon={faInfoCircle} />{' '}
-                      {`${showTeaser ? 'Hide' : 'Show'} teaser`}
+                      {`${showTeaser ? i18n.common.hide : i18n.common.show} teaser`}
                     </>
                   ),
                   action: () => setShowTeaser(showTeaser => !showTeaser),
@@ -122,6 +128,17 @@ export function ResourceDisplay({ resource, goBackToList }: ResourceDisplayProps
                   label: <ResourceSettingsModal resource={resource} />,
                   modal: true,
                 },
+                // {
+                //   value: 'remove',
+                //   label: (
+                //     <>
+                //       <FontAwesomeIcon icon={faTrash} /> Remove / Delete
+                //     </>
+                //   ),
+                //   action: () => {
+                //     dispatch(API.removeAccessToResource(resource));
+                //   },
+                // },
               ]}
             />
           )}
@@ -132,8 +149,12 @@ export function ResourceDisplay({ resource, goBackToList }: ResourceDisplayProps
               {text => (
                 <DiscreetTextArea
                   value={text || ''}
-                  placeholder="There is no teaser for the moment. Feel free to fill it."
-                  readOnly={readOnly}
+                  placeholder={
+                    effectiveReadOnly
+                      ? 'There is no teaser'
+                      : 'There is no teaser for the moment. Feel free to fill it.'
+                  }
+                  readOnly={effectiveReadOnly}
                   onChange={(newValue: string) => {
                     if (targetResource.teaserId) {
                       dispatch(
@@ -154,7 +175,7 @@ export function ResourceDisplay({ resource, goBackToList }: ResourceDisplayProps
 
       {targetResource.id && (
         <>
-          {!readOnly && (
+          {!effectiveReadOnly && (
             <CardEditorToolbox
               open={openToolbox}
               docOwnership={{ kind: 'PartOfResource', ownerId: targetResource.id }}
@@ -164,7 +185,7 @@ export function ResourceDisplay({ resource, goBackToList }: ResourceDisplayProps
           <div className={cx(paddingAroundStyle([2, 4], space_M), css({ overflow: 'auto' }))}>
             <DocumentList
               docOwnership={{ kind: 'PartOfResource', ownerId: targetResource.id }}
-              allowEdition={!readOnly}
+              allowEdition={!effectiveReadOnly}
             />
           </div>
         </>

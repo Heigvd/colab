@@ -46,7 +46,7 @@ import Modal from '../common/layout/Modal';
 import OpenCloseModal from '../common/layout/OpenCloseModal';
 import { DocTextDisplay } from '../documents/DocTextItem';
 import DocumentList from '../documents/DocumentList';
-import ResourcesWrapper from '../resources/ResourcesWrapper';
+import ResourcesMainView from '../resources/ResourcesMainView';
 import StickyNoteWrapper from '../stickynotes/StickyNoteWrapper';
 import {
   cardStyle,
@@ -202,6 +202,7 @@ export default function CardEditor({
   const [markDownMode, setMarkDownMode] = React.useState(false);
   const [editToolbar, setEditToolbar] = React.useState(defaultCardEditorContext.editToolbar);
   const [openKey, setOpenKey] = React.useState<string | undefined>(undefined);
+
   const TXToptions = {
     showTree: showTree,
     setShowTree: setShowTree,
@@ -625,9 +626,24 @@ export default function CardEditor({
                     setOpenKey={setOpenKey}
                     items={{
                       resources: {
+                        icon: faPaperclip,
+                        title: i18n.modules.resource.documentation,
+                        nextToTitleElement: <Tips>{i18n.modules.resource.docDescription}</Tips>,
                         children: (
-                          <ResourcesWrapper
-                            kind={'CardOrCardContent'}
+                          <ResourcesMainView
+                            contextData={{
+                              kind: 'CardOrCardContent',
+                              cardId: card.id || undefined,
+                              cardContentId: variant.id,
+                              hasSeveralVariants: hasVariants,
+                              // TODO remove access
+                              accessLevel:
+                                !readOnly && userAcl.write
+                                  ? 'WRITE'
+                                  : userAcl.read
+                                  ? 'READ'
+                                  : 'DENIED',
+                            }}
                             accessLevel={
                               !readOnly && userAcl.write
                                 ? 'WRITE'
@@ -635,26 +651,20 @@ export default function CardEditor({
                                 ? 'READ'
                                 : 'DENIED'
                             }
-                            cardId={card.id}
-                            cardContentId={variant.id}
-                            hasSeveralVariants={hasVariants}
                           />
                         ),
-                        icon: faPaperclip,
-                        title: i18n.modules.resource.documentation,
-                        nextToTitleElement: <Tips>{i18n.modules.resource.docDescription}</Tips>,
                         className: css({ overflow: 'auto' }),
                       },
                       'Sticky Notes': {
                         icon: faStickyNote,
                         title: i18n.modules.stickyNotes.stickyNotes,
-                        children: <StickyNoteWrapper destCardId={card.id} showSrc />,
                         nextToTitleElement: (
                           <Tips>
                             <h5>{i18n.modules.stickyNotes.listStickyNotes}</h5>
                             <div>{i18n.modules.stickyNotes.snDescription}</div>
                           </Tips>
                         ),
+                        children: <StickyNoteWrapper destCardId={card.id} showSrc />,
                         className: css({ overflow: 'auto' }),
                       },
                     }}

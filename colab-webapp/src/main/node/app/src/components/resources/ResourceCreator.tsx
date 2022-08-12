@@ -18,7 +18,7 @@ import Form, { createSelectField, Field } from '../common/Form/Form';
 import Flex from '../common/layout/Flex';
 import OpenCloseModal from '../common/layout/OpenCloseModal';
 import { space_M, space_S } from '../styling/style';
-import { ResourceCallContext } from './ResourceCommonType';
+import { ResourceCallContext } from './resourcesCommonType';
 
 interface ResourceType {
   title: string;

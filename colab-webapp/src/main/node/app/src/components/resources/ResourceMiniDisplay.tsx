@@ -14,7 +14,7 @@ import { BlockEditorWrapper } from '../blocks/BlockEditorWrapper';
 import OnConfirmInput from '../common/element/OnConfirmInput';
 import Checkbox from '../common/Form/Checkbox';
 import { defaultColumnContainerStyle, defaultRowContainerStyle } from '../styling/style';
-import { ResourceAndRef } from './ResourceCommonType';
+import { ResourceAndRef } from './resourcesCommonType';
 
 function DisplayOwner({ resourceOrRef }: { resourceOrRef: AbstractResource }): JSX.Element {
   return (

@@ -17,7 +17,7 @@ import {
   CardOrCardContentContext,
   CardTypeContext,
   ResourceCallContext,
-} from '../ResourceCommonType';
+} from '../resourcesCommonType';
 
 export default function ResourcesListSummary(context: ResourceCallContext): JSX.Element {
   if (context.kind === 'CardOrCardContent') {

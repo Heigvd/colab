@@ -37,7 +37,7 @@ import {
 } from 'colab-rest-client';
 import { PasswordScore } from '../components/common/Form/Form';
 import { DocumentKind } from '../components/documents/documentCommonType';
-import { ResourceAndRef } from '../components/resources/ResourceCommonType';
+import { ResourceAndRef } from '../components/resources/resourcesCommonType';
 import { hashPassword } from '../SecurityHelper';
 import { addNotification } from '../store/notification';
 import { ColabState, getStore } from '../store/store';

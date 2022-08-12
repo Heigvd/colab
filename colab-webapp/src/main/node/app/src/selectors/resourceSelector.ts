@@ -6,14 +6,15 @@
  */
 
 import { entityIs, Resource, ResourceRef } from 'colab-rest-client';
-import { uniq } from 'lodash';
+import { difference, uniq } from 'lodash';
 import React from 'react';
 import * as API from '../API/api';
 import {
   CardTypeContext,
+  isActive,
   ResourceAndRef,
   ResourceCallContext,
-} from '../components/resources/ResourceCommonType';
+} from '../components/resources/resourcesCommonType';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
 import { AvailabilityStatus, ColabState, LoadingStatus } from '../store/store';
 import { useProjectBeingEdited } from './projectSelector';
@@ -138,6 +139,29 @@ export const useResources = (
     }
   });
 };
+
+export function useAndLoadResources(contextData: ResourceCallContext): {
+  activeResources: ResourceAndRef[];
+  ghostResources: ResourceAndRef[];
+  status: LoadingStatus;
+} {
+  const dispatch = useAppDispatch();
+
+  const { resourcesAndRefs: resources, status } = useResources(contextData);
+
+  if (status === 'NOT_INITIALIZED' && contextData.accessLevel !== 'DENIED') {
+    if (contextData.kind === 'CardOrCardContent' && contextData.cardContentId != null) {
+      dispatch(API.getResourceChainForCardContentId(contextData.cardContentId));
+    } else if (contextData.kind === 'CardType' && contextData.cardTypeId != null) {
+      dispatch(API.getResourceChainForAbstractCardTypeId(contextData.cardTypeId));
+    }
+  }
+
+  const activeResources = resources.filter(resource => isActive(resource));
+  const ghostResources = difference(resources, activeResources);
+
+  return { activeResources, ghostResources, status };
+}
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // nb resources

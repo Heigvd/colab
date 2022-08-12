@@ -8,14 +8,14 @@
 import { css, cx } from '@emotion/css';
 import { IconProp } from '@fortawesome/fontawesome-svg-core';
 import { faNewspaper, faQuestionCircle } from '@fortawesome/free-regular-svg-icons';
-import { faGhost, faTools } from '@fortawesome/free-solid-svg-icons';
+import { faGhost, faStethoscope, faTools } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import * as React from 'react';
 import useTranslations from '../../../i18n/I18nContext';
 import { lightIconButtonStyle, space_S, textSmall } from '../../styling/style';
 import Checkbox from '../Form/Checkbox';
 
-export type TipsType = 'TODO' | 'NEWS' | 'TIPS' | 'WIP';
+export type TipsType = 'TODO' | 'NEWS' | 'TIPS' | 'WIP' | 'DEBUG';
 
 export type TipsConfig = Record<TipsType, boolean>;
 export type TipsContextType = Record<
@@ -40,6 +40,10 @@ export const TipsCtx = React.createContext<TipsContextType>({
     value: false,
     set: () => {},
   },
+  DEBUG: {
+    value: false,
+    set: () => {},
+  },
 });
 
 export interface TipsProps {
@@ -57,6 +61,8 @@ function getIconProp(tipsType: TipsProps['tipsType']): IconProp {
       return faNewspaper;
     case 'WIP':
       return faGhost;
+    case 'DEBUG':
+      return faStethoscope;
     case 'TIPS':
     default:
       return faQuestionCircle;
@@ -145,6 +151,17 @@ export function TipsSettings(): JSX.Element {
         <Tips tipsType="WIP">
           <h4>{i18n.tips.example.wip.title}</h4>
           {i18n.tips.example.wip.content}
+        </Tips>
+      </div>
+      <div>
+        <Checkbox
+          label="Display debug info"
+          value={config.DEBUG.value}
+          onChange={config.DEBUG.set}
+          className={css({ display: 'inline-block', marginRight: space_S })}
+        />
+        <Tips tipsType="DEBUG">
+          <h4>Debug Example</h4>Some internal data useful to debug
         </Tips>
       </div>
     </div>

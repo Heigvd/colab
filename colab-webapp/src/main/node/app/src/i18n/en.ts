@@ -18,6 +18,8 @@ export const en = {
     close: 'Close',
     ok: 'OK',
     open: 'Open',
+    show: 'Show',
+    hide: 'Hide',
     add: 'Add',
     select: 'Select',
     selectAll: 'Select all',
@@ -68,6 +70,7 @@ export const en = {
       }
     },
     error: {
+      accessDenied: 'Unfortunately you are not allowed to see this',
       missingContent: 'oh there is nothing to display, dear developer please fix it',
       unknown: 'Unknown',
     },
