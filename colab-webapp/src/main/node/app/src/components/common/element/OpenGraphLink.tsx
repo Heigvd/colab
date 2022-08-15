@@ -23,7 +23,7 @@ import Flex from '../layout/Flex';
 import { emptyLightTextStyle } from './FilePicker';
 import IconButton from './IconButton';
 import InlineLoading from './InlineLoading';
-import OnConfirmInput from './OnConfirmInput';
+import { BlockInput } from './Input';
 
 const cardStyle = css({
   flexWrap: 'nowrap',
@@ -38,15 +38,8 @@ const urlStyle = css({
   fontStyle: 'italic',
   textDecoration: 'underline',
   color: 'var(--darkGray)',
-  //whiteSpace: 'nowrap',
   overflow: 'hidden',
   textOverflow: 'ellipsis',
-});
-
-const oneLineLinkEditionStyle = css({ display: 'flex', flexGrow: 1, alignItems: 'center' });
-const fullWidthLinkEditionStyle = css({
-  flexGrow: 1,
-  input: { flexGrow: 1, marginRight: space_S },
 });
 
 const legendStyle = css({
@@ -209,15 +202,13 @@ interface EditLinkProps {
 function EditLink({ url, onChange, refreshCb, onCancel }: EditLinkProps): JSX.Element {
   return (
     <>
-      <OnConfirmInput
+      <BlockInput
         value={url}
         placeholder="Empty link"
         onChange={onChange}
         onCancel={onCancel}
-        directEdit
-        enableAutoFocus
-        containerClassName={oneLineLinkEditionStyle}
-        className={fullWidthLinkEditionStyle}
+        containerClassName={css({flexGrow: 1})}
+        saveMode='ON_BLUR'
       />
       {refreshCb && (
         <IconButton

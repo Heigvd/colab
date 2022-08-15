@@ -16,7 +16,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import * as React from 'react';
-import { ReflexContainer, ReflexElement, ReflexSplitter } from 'react-reflex';
+import { ReflexContainer, ReflexElement } from 'react-reflex';
 import { Route, Routes, useNavigate, useParams } from 'react-router-dom';
 import Creatable from 'react-select/creatable';
 import * as API from '../../../API/api';
@@ -72,7 +72,7 @@ export default function CardTypeEditor({ className, usage }: CardTypeEditorProps
     label: tag,
     value: tag,
   }));
-  const [openKey, setOpenKey] = React.useState<string | undefined>(undefined);
+
   if (status !== 'READY' || !cardType) {
     return <AvailabilityStatusIndicator status={status} />;
   } else {
@@ -289,16 +289,15 @@ export default function CardTypeEditor({ className, usage }: CardTypeEditorProps
                 </Flex>
               </Flex>
             </ReflexElement>
-            {openKey && <ReflexSplitter />}
             <ReflexElement
-              className={'right-pane ' + css({ display: 'flex', minWidth: 'min-content' })}
+              className={'right-pane ' + css({ display: 'flex', minWidth: '50%' })}
               resizeHeight={false}
-              maxSize={openKey ? undefined : 40}
+              resizeWidth={false}
+              maxSize={50}
             >
               <SideCollapsiblePanel
                 direction="RIGHT"
-                openKey={openKey}
-                setOpenKey={setOpenKey}
+                openKey={'resources'}
                 items={{
                   resources: {
                     children: (
