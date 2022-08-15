@@ -259,10 +259,11 @@ export function useAndLoadProjectCardTypes(): {
   const cardTypes = useProjectCardTypes();
   const status = useAppSelector(state => state.cardType.currentProjectStatus);
   const { project } = useProjectBeingEdited();
-
-  if (status === 'NOT_INITIALIZED' && project) {
-    dispatch(API.getProjectCardTypes(project));
-  }
+  React.useEffect(() => {
+    if (status === 'NOT_INITIALIZED' && project) {
+      dispatch(API.getProjectCardTypes(project));
+    }
+  }, [dispatch, project, status]);
 
   if (status === 'READY') {
     return { cardTypes, status: status };
