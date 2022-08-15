@@ -6,11 +6,26 @@
  */
 import { css, cx } from '@emotion/css';
 import * as React from 'react';
-import { Route, Routes, useNavigate } from 'react-router-dom';
+import { Location, Route, Routes, useLocation, useNavigate } from 'react-router-dom';
 import useTranslations from '../../../i18n/I18nContext';
+import logger from '../../../logger';
 import { space_L, space_M, space_S } from '../../styling/style';
 import Clickable from './Clickable';
 import Flex from './Flex';
+
+function defaultTabFactory(
+  defaultTab: string | undefined,
+  routed: boolean | undefined,
+  location: Location,
+): string {
+  if (routed) {
+    return location.pathname.split('/').pop() || '';
+  } else if (defaultTab != null) {
+    return defaultTab;
+  } else {
+    return '';
+  }
+}
 
 interface TabProps {
   invisible?: boolean;
@@ -92,23 +107,29 @@ export default function Tabs({
 }: TabsProps): JSX.Element {
   const i18n = useTranslations();
   const navigate = useNavigate();
-  //const location = useLocation();
-  const mappedChildren: Record<
+  const location = useLocation();
+  /* const mappedChildren: Record<
     string,
     { label: string; child: React.ReactElement<TabProps>; invisible?: boolean }
-  > = {};
-  const names: string[] = [];
+  > = {}; */
 
-  React.Children.forEach(children, child => {
-    mappedChildren[child.props.name] = {
-      label: child.props.label,
-      child: child,
-      invisible: child.props.invisible,
-    };
-    names.push(child.props.name);
-  });
-
-  const [selectedTab, setTab] = React.useState<string>(defaultTab || names[0] || '');
+  const mappedChildren = React.useMemo(() => {
+    const map: Record<
+      string,
+      { label: string; child: React.ReactElement<TabProps>; invisible?: boolean }
+    > = {};
+    React.Children.forEach(children, child => {
+      map[child.props.name] = {
+        label: child.props.label,
+        child: child,
+        invisible: child.props.invisible,
+      };
+    });
+    return map;
+  }, [children]);
+  const [selectedTab, setTab] = React.useState<string>(
+    defaultTabFactory(defaultTab, routed, location),
+  );
 
   const onSelectTab = React.useCallback(
     (name: string) => {
@@ -124,16 +145,16 @@ export default function Tabs({
   );
 
   const child = mappedChildren[selectedTab]?.child;
- /*  React.useEffect(() => {
+  React.useEffect(() => {
     if (routed) {
       const path = location.pathname.split('/');
       const tabName = path[path.length - 1] || '';
-      if (names.includes(tabName)) {
-        logger.info(path[path.length - 1]);
+      if (Object.keys(mappedChildren).includes(tabName)) {
+        logger.info(tabName);
         setTab(tabName);
       }
     }
-  }, [names, routed]); */
+  }, [location.pathname, mappedChildren, routed]);
 
   return (
     <Flex
@@ -143,7 +164,7 @@ export default function Tabs({
       className={cx(css({ alignSelf: 'stretch' }), className)}
     >
       <Flex justify="space-evenly" className={headerStyle}>
-        {names.map(name => {
+        {Object.keys(mappedChildren).map(name => {
           if (!mappedChildren[name]!.invisible) {
             return (
               <Clickable
