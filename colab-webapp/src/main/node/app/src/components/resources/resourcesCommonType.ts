@@ -37,8 +37,6 @@ export type ResourceCallContext = CardTypeContext | CardOrCardContentContext;
 
 // ---------------------------------------------------------------------------------------------- //
 
-// TODO see if rename and see what is really useful
-
 /**
  * contains the resource and an eventual chain of references to it
  */

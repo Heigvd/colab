@@ -39,7 +39,7 @@ import DropDownMenu, { modalEntryStyle } from '../../common/layout/DropDownMenu'
 import Flex from '../../common/layout/Flex';
 import Modal from '../../common/layout/Modal';
 import { DocTextWrapper } from '../../documents/DocTextItem';
-import ResourcesWrapper from '../../resources/ResourcesWrapper';
+import ResourcesMainView from '../../resources/ResourcesMainView';
 import {
   cardStyle,
   errorColor,
@@ -301,22 +301,22 @@ export default function CardTypeEditor({ className, usage }: CardTypeEditorProps
                 setOpenKey={setOpenKey}
                 items={{
                   resources: {
-                    children: (
-                      <>
-                        {cardType.ownId && (
-                          <ResourcesWrapper
-                            kind={'CardType'}
-                            //accessLevel={ userAcl.write ? 'WRITE' : userAcl.read ? 'READ' : 'DENIED'}
-                            // TODO manage the user rights for editing resources
-                            // TODO work in progress
-                            accessLevel="WRITE"
-                            cardTypeId={cardType.ownId}
-                          />
-                        )}
-                      </>
-                    ),
                     icon: faPaperclip,
                     title: i18n.modules.resource.documentation,
+                    children: (
+                      <ResourcesMainView
+                        contextData={{
+                          kind: 'CardType',
+                          cardTypeId: cardType.ownId,
+                          // TODO remove access
+                          accessLevel: 'WRITE',
+                        }}
+                        //accessLevel={ userAcl.write ? 'WRITE' : userAcl.read ? 'READ' : 'DENIED'}
+                        // TODO manage the user rights for editing resources
+                        // TODO work in progress
+                        accessLevel="WRITE"
+                      />
+                    ),
                   },
                 }}
                 defaultOpenKey={'resources'}

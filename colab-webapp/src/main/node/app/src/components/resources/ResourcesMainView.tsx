@@ -5,13 +5,14 @@
  * Licensed under the MIT License
  */
 
-import { css } from '@emotion/css';
+import { css, cx } from '@emotion/css';
 import * as React from 'react';
 import useTranslations from '../../i18n/I18nContext';
 import { useAndLoadResources } from '../../selectors/resourceSelector';
 import AvailabilityStatusIndicator from '../common/element/AvailabilityStatusIndicator';
 import Flex from '../common/layout/Flex';
-import { lightIconButtonStyle } from '../styling/style';
+import { lightIconButtonStyle, space_S } from '../styling/style';
+import HidenResourcesKeeper from './HidenResourcesKeeper';
 import ResourceCreator from './ResourceCreator';
 import { ResourceDisplay } from './ResourceDisplay';
 import {
@@ -80,47 +81,46 @@ export default function ResourcesMainView({
         goBackToList={showList}
       />
     );
-  } else {
-    // nothing selected : show the list with some actions
-    return (
-      <Flex direction="column" align="stretch" grow={1}>
-        <ResourcesList resources={activeResources} selectResource={selectResource} />
-
-        {!isReadOnly(accessLevel) && (
-          <Flex>
-            <ResourceCreator
-              contextInfo={contextData}
-              onCreated={setLastCreated}
-              className={lightIconButtonStyle}
-            />
-
-            {ghostResources != null && ghostResources.length > 0 && (
-              // note : we can imagine that a read access level allows to see the ghost resources
-              <>
-                <span
-                  className={css({
-                    width: '1px',
-                    height: '100%',
-                    backgroundColor: 'var(--lightGray)',
-                  })}
-                />
-                {/* 
-                <HidenResourcesKeeper
-                  resources={ghostResources}
-                  collapsedClassName={cx(
-                    css({
-                      borderTop: '1px solid var(--lightGray)',
-                      padding: space_S,
-                      '&:hover': { backgroundColor: 'var(--lightGray)', cursor: 'pointer' },
-                    }),
-                    lightIconButtonStyle,
-                  )}
-                /> */}
-              </>
-            )}
-          </Flex>
-        )}
-      </Flex>
-    );
   }
+
+  // nothing selected : show the list with some actions
+  return (
+    <Flex direction="column" align="stretch" grow={1}>
+      <ResourcesList resources={activeResources} selectResource={selectResource} />
+
+      {!isReadOnly(accessLevel) && (
+        <Flex>
+          <ResourceCreator
+            contextInfo={contextData}
+            onCreated={setLastCreated}
+            className={lightIconButtonStyle}
+          />
+
+          {ghostResources != null && ghostResources.length > 0 && (
+            // note : we can imagine that a read access level allows to see the ghost resources
+            <>
+              <span
+                className={css({
+                  width: '1px',
+                  height: '100%',
+                  backgroundColor: 'var(--lightGray)',
+                })}
+              />
+              <HidenResourcesKeeper
+                resources={ghostResources}
+                collapsedClassName={cx(
+                  css({
+                    borderTop: '1px solid var(--lightGray)',
+                    padding: space_S,
+                    '&:hover': { backgroundColor: 'var(--lightGray)', cursor: 'pointer' },
+                  }),
+                  lightIconButtonStyle,
+                )}
+              />
+            </>
+          )}
+        </Flex>
+      )}
+    </Flex>
+  );
 }

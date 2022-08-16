@@ -14,6 +14,8 @@ import Flex from '../common/layout/Flex';
 import { marginAroundStyle, space_M, space_S } from '../styling/style';
 import { getKey, getTheDirectResource, ResourceAndRef } from './resourcesCommonType';
 
+// TODO UI : allow to have more thant 150px for the texts
+
 /**
  * List of ResourceAndRef grouped by category
  */
@@ -28,13 +30,13 @@ function sortResources(a: ResourceAndRef, b: ResourceAndRef): number {
 export interface ResourcesListProps {
   resources: ResourceAndRef[];
   selectResource?: (resource: ResourceAndRef) => void;
-  resourceItemDisplay?: (resource: ResourceAndRef) => React.ReactNode;
+  displayResourceItem?: (resource: ResourceAndRef) => React.ReactNode;
 }
 
 export default function ResourcesList({
   resources,
   selectResource,
-  resourceItemDisplay,
+  displayResourceItem,
 }: ResourcesListProps): JSX.Element {
   const [listsByCategories, setListsByCategories] = React.useState<
     Record<string, ResourceAndRef[]>
@@ -78,13 +80,12 @@ export default function ResourcesList({
                 key={getKey(resource)}
                 resource={resource}
                 selectResource={selectResource}
-                displayResource={resourceItemDisplay}
+                displayResource={displayResourceItem}
               />
             ))}
           </Flex>
         </div>
       ))}
-      <div className={css({ marginRight: '10px' })}> </div>
     </Flex>
   );
 }
