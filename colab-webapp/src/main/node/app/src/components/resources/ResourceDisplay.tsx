@@ -55,7 +55,7 @@ export function ResourceDisplay({
   const dispatch = useAppDispatch();
   const i18n = useTranslations();
 
-  const [showTeaser, setShowTeaser] = React.useState(false);
+  const [showTeaser, setShowTeaser] = React.useState(true);
   const [openToolbox, setOpenToolbox] = React.useState(true);
 
   const targetResource = resource.targetResource;
@@ -63,6 +63,9 @@ export function ResourceDisplay({
   const effectiveReadOnly = readOnly || !resource.isDirectResource;
 
   const { text: teaser } = useAndLoadTextOfDocument(targetResource.teaserId);
+
+  const alwaysShowTeaser = effectiveReadOnly && teaser;
+  const alwaysHideTeaser = effectiveReadOnly && !teaser;
 
   return (
     <Flex align="stretch" direction="column" grow={1}>
@@ -97,67 +100,85 @@ export function ResourceDisplay({
           {/* {effectiveReadOnly && !teaser ? (
             <ResourceSettingsModal resource={resource} isButton />
           ) : ( */}
-          <DropDownMenu
-            icon={faEllipsisV}
-            valueComp={{ value: '', label: '' }}
-            buttonClassName={cx(lightIconButtonStyle, css({ marginLeft: space_S }))}
-            entries={[
-              ...(!effectiveReadOnly || teaser != null
-                ? [
-                    {
-                      value: 'Toggle teaser',
-                      label: (
-                        <>
-                          <FontAwesomeIcon icon={faInfoCircle} />{' '}
-                          {`${showTeaser ? i18n.common.hide : i18n.common.show} teaser`}
-                        </>
-                      ),
-                      action: () => setShowTeaser(showTeaser => !showTeaser),
-                    },
-                  ]
-                : []),
-              ...(!effectiveReadOnly
-                ? [
-                    {
-                      value: 'Toggle toolbox',
-                      label: (
-                        <>
-                          <FontAwesomeIcon icon={faTools} />{' '}
-                          {`${openToolbox ? i18n.common.close : i18n.common.open} toolbox`}
-                        </>
-                      ),
-                      action: () => setOpenToolbox(openToolbox => !openToolbox),
-                    },
-                  ]
-                : []),
-              {
-                value: 'Settings',
-                label: <ResourceSettingsModal resource={resource} />,
-                modal: true,
-              },
-              {
-                value: 'remove',
-                label: (
-                  <>
-                    <FontAwesomeIcon icon={faBroom} /> Remove
-                  </>
-                ),
-                action: () => {
-                  dispatch(API.removeAccessToResource(resource));
-                  goBackToList();
-                },
-              },
-            ]}
-          />
-          {/* )} */}
+          {readOnly ? (
+            <div></div>
+          ) : (
+            <DropDownMenu
+              icon={faEllipsisV}
+              valueComp={{ value: '', label: '' }}
+              buttonClassName={cx(lightIconButtonStyle, css({ marginLeft: space_S }))}
+              entries={[
+                ...(!alwaysShowTeaser && !alwaysHideTeaser
+                  ? [
+                      {
+                        value: 'Toggle teaser',
+                        label: (
+                          <>
+                            <FontAwesomeIcon icon={faInfoCircle} />{' '}
+                            {`${showTeaser ? i18n.common.hide : i18n.common.show} teaser`}
+                          </>
+                        ),
+                        action: () => setShowTeaser(showTeaser => !showTeaser),
+                      },
+                    ]
+                  : []),
+
+                ...(!effectiveReadOnly
+                  ? [
+                      {
+                        value: 'Toggle toolbox',
+                        label: (
+                          <>
+                            <FontAwesomeIcon icon={faTools} />{' '}
+                            {`${openToolbox ? i18n.common.close : i18n.common.open} toolbox`}
+                          </>
+                        ),
+                        action: () => setOpenToolbox(openToolbox => !openToolbox),
+                      },
+                    ]
+                  : []),
+
+                ...(!effectiveReadOnly
+                  ? [
+                      {
+                        value: 'Settings',
+                        label: <ResourceSettingsModal resource={resource} />,
+                        modal: true,
+                      },
+                    ]
+                  : []),
+
+                ...(!readOnly
+                  ? [
+                      {
+                        value: 'remove',
+                        label: (
+                          <>
+                            <FontAwesomeIcon icon={faBroom} /> Remove
+                          </>
+                        ),
+                        action: () => {
+                          dispatch(API.removeAccessToResource(resource));
+                          goBackToList();
+                        },
+                      },
+                    ]
+                  : []),
+              ]}
+            />
+          )}
         </Flex>
         <div>
-          {showTeaser && (
+          {(alwaysShowTeaser || showTeaser) && !alwaysHideTeaser && (
             <DocTextWrapper id={targetResource.teaserId}>
               {text => (
                 <DiscreetTextArea
                   value={text || ''}
-                  placeholder="There is no teaser for the moment. Feel free to fill it."
+                  placeholder={
+                    effectiveReadOnly
+                      ? 'There is no teaser'
+                      : 'There is no teaser for the moment. Feel free to fill it.'
+                  }
                   readOnly={effectiveReadOnly}
                   onChange={(newValue: string) => {
                     if (targetResource.teaserId) {

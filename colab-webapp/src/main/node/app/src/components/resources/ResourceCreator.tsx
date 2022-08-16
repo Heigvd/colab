@@ -124,6 +124,7 @@ export default function ResourceCreator({
                 cardId = contextInfo.cardId || null;
               }
             }
+
             dispatch(
               API.createResource({
                 abstractCardTypeId: cardTypeId,
@@ -147,6 +148,7 @@ export default function ResourceCreator({
                   }
                 }
               }
+
               collapse();
             });
           }}
@@ -158,13 +160,7 @@ export default function ResourceCreator({
             justifyContent: 'end',
           })}
         >
-          <Button
-            onClick={() => {
-              collapse();
-            }}
-            invertedButton
-            className={css({ margin: space_M })}
-          >
+          <Button onClick={collapse} invertedButton className={css({ margin: space_M })}>
             {i18n.common.cancel}
           </Button>
         </Form>

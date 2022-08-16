@@ -975,7 +975,7 @@ export const deleteResource = createAsyncThunk('resource/delete', async (resourc
   }
 });
 
-function getResourceToEdit(resource: ResourceAndRef): ResourceRef | Resource {
+export function getResourceToEdit(resource: ResourceAndRef): ResourceRef | Resource {
   if (resource.isDirectResource) {
     return resource.targetResource;
   }

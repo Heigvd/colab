@@ -10,7 +10,7 @@ import * as React from 'react';
 import * as API from '../../API/api';
 import { useAppDispatch } from '../../store/hooks';
 import Toggler from '../common/Form/Toggler';
-import { getTheDirectResource, ResourceAndRef } from './resourcesCommonType';
+import { ResourceAndRef } from './resourcesCommonType';
 
 interface ResourceSettingsProps {
   resource: ResourceAndRef;
@@ -19,7 +19,9 @@ interface ResourceSettingsProps {
 export default function ResourceSettings({ resource }: ResourceSettingsProps): JSX.Element {
   const dispatch = useAppDispatch();
 
-  const updatableResource = getTheDirectResource(resource);
+  const updatableResource = React.useMemo(() => {
+    return API.getResourceToEdit(resource);
+  }, [resource]);
 
   return (
     <>
@@ -34,8 +36,16 @@ export default function ResourceSettings({ resource }: ResourceSettingsProps): J
                 : dispatch(API.publishResource(updatableResource.id));
             }
           }}
-          tip="chat"
-          fieldFooter={updatableResource.published ? '' : ''}
+          tip={
+            updatableResource.published
+              ? 'Unpublish the resource to make it private for this card'
+              : 'Publish the resource to make it available for subcards'
+          }
+          fieldFooter={
+            updatableResource.published
+              ? 'A published resource is available for subcards'
+              : 'An unpublished resource is private for this card'
+          }
         />
       )}
     </>
