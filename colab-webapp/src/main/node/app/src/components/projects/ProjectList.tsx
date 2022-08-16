@@ -13,7 +13,7 @@ import { Project } from 'colab-rest-client';
 import * as React from 'react';
 //import { useNavigate } from 'react-router-dom';
 import * as API from '../../API/api';
-import { shallowEqual, useAppDispatch, useAppSelector } from '../../store/hooks';
+import { shallowEqual, useAppDispatch, useAppSelector, useLoadingState } from '../../store/hooks';
 import { StateStatus } from '../../store/project';
 import ItemThumbnailsSelection from '../common/collection/ItemThumbnailsSelection';
 import IllustrationDisplay from '../common/element/IllustrationDisplay';
@@ -53,6 +53,7 @@ interface ProjectDisplayProps {
 // Display one project and allow to edit it
 const ProjectDisplay = ({ project }: ProjectDisplayProps) => {
   const dispatch = useAppDispatch();
+  const { isLoading, startLoading, stopLoading } = useLoadingState();
   return (
     <Flex direction="column" align="stretch">
       <Flex
@@ -119,9 +120,7 @@ const ProjectDisplay = ({ project }: ProjectDisplayProps) => {
                     widthMax
                     heightMax
                   >
-                    {() => (
-                      <ProjectDisplaySettings project={project} key={project.id} />
-                    )}
+                    {() => <ProjectDisplaySettings project={project} key={project.id} />}
                   </OpenCloseModal>
                 ),
                 modal: true,
@@ -155,8 +154,12 @@ const ProjectDisplay = ({ project }: ProjectDisplayProps) => {
                         will delete all cards inside.
                       </p>
                     }
-                    onConfirm={() => dispatch(API.deleteProject(project))}
+                    onConfirm={() => {
+                      startLoading();
+                      dispatch(API.deleteProject(project)).then(stopLoading);
+                    }}
                     confirmButtonLabel="Delete project"
+                    isConfirmButtonLoading={isLoading}
                   />
                 ),
                 modal: true,

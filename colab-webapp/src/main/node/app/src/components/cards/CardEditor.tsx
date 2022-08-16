@@ -33,7 +33,7 @@ import * as API from '../../API/api';
 import useTranslations from '../../i18n/I18nContext';
 import { useCardACLForCurrentUser, useVariantsOrLoad } from '../../selectors/cardSelector';
 import { useAndLoadCardType } from '../../selectors/cardTypeSelector';
-import { useAppDispatch } from '../../store/hooks';
+import { useAppDispatch, useLoadingState } from '../../store/hooks';
 import Button from '../common/element/Button';
 import IconButton from '../common/element/IconButton';
 import { DiscreetInput } from '../common/element/Input';
@@ -208,6 +208,7 @@ export default function CardEditor({
     markDownMode: markDownMode,
     setMarkDownMode: setMarkDownMode,
   };
+  const { isLoading, startLoading, stopLoading } = useLoadingState();
 
   const closeRouteCb = React.useCallback(
     route => {
@@ -509,17 +510,25 @@ export default function CardEditor({
                                         </p>
                                       }
                                       onConfirm={() => {
+                                        startLoading();
                                         if (hasVariants) {
-                                          dispatch(API.deleteCardContent(variant));
-                                          navigate(`../edit/${card.id}/v/${variantPager?.next.id}`);
+                                          dispatch(API.deleteCardContent(variant)).then(() => {
+                                            navigate(
+                                              `../edit/${card.id}/v/${variantPager?.next.id}`,
+                                            );
+                                            stopLoading();
+                                          });
                                         } else {
-                                          dispatch(API.deleteCard(card));
-                                          navigate('../');
+                                          dispatch(API.deleteCard(card)).then(() => {
+                                            navigate('../');
+                                            stopLoading();
+                                          });
                                         }
                                       }}
                                       confirmButtonLabel={i18n.modules.card.deleteCardVariant(
                                         hasVariants,
                                       )}
+                                      isConfirmButtonLoading={isLoading}
                                     />
                                   ),
                                   modal: true,

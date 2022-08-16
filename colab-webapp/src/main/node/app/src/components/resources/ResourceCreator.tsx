@@ -12,7 +12,7 @@ import * as React from 'react';
 import * as API from '../../API/api';
 import useTranslations from '../../i18n/I18nContext';
 import { useAndLoadResourceCategories } from '../../selectors/resourceSelector';
-import { useAppDispatch } from '../../store/hooks';
+import { useAppDispatch, useLoadingState } from '../../store/hooks';
 import Button from '../common/element/Button';
 import Form, { createSelectField, Field } from '../common/Form/Form';
 import Flex from '../common/layout/Flex';
@@ -47,6 +47,7 @@ export default function ResourceCreator({
 }: ResourceCreatorProps): JSX.Element {
   const dispatch = useAppDispatch();
   const i18n = useTranslations();
+  const { isLoading, startLoading, stopLoading } = useLoadingState();
 
   const { categories: allCategories } = useAndLoadResourceCategories();
 
@@ -124,6 +125,7 @@ export default function ResourceCreator({
                 cardId = contextInfo.cardId || null;
               }
             }
+            startLoading();
             dispatch(
               API.createResource({
                 abstractCardTypeId: cardTypeId,
@@ -148,6 +150,7 @@ export default function ResourceCreator({
                 }
               }
               collapse();
+              stopLoading();
             });
           }}
           submitLabel={i18n.common.create}
@@ -157,6 +160,7 @@ export default function ResourceCreator({
             alignItems: 'center',
             justifyContent: 'end',
           })}
+          isSubmitInProcess={isLoading}
         >
           <Button
             onClick={() => {

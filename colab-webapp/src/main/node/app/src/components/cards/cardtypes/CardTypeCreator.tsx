@@ -16,7 +16,7 @@ import {
   useGlobalCardTypeTags,
 } from '../../../selectors/cardTypeSelector';
 import { useProjectBeingEdited } from '../../../selectors/projectSelector';
-import { useAppDispatch } from '../../../store/hooks';
+import { useAppDispatch, useLoadingState } from '../../../store/hooks';
 import Button from '../../common/element/Button';
 import Form, { createSelectField, Field } from '../../common/Form/Form';
 import OpenCloseModal from '../../common/layout/OpenCloseModal';
@@ -36,11 +36,13 @@ interface NewType {
 export default function CardTypeCreator({ onCreated, usage }: CardTypeCreatorProps): JSX.Element {
   const dispatch = useAppDispatch();
   const i18n = useTranslations();
+  const { isLoading, startLoading, stopLoading } = useLoadingState();
 
   const { project } = useProjectBeingEdited();
 
   const createTypeCb = React.useCallback(
-    (typeToCreate: NewType) => {
+    (typeToCreate: NewType, close: () => void) => {
+      startLoading();
       dispatch(
         API.createCardType({
           projectId: usage === 'currentProject' && project ? project.id! : null,
@@ -61,9 +63,11 @@ export default function CardTypeCreator({ onCreated, usage }: CardTypeCreatorPro
             }
           }
         }
+        stopLoading();
+        close();
       });
     },
-    [dispatch, onCreated, usage, project],
+    [startLoading, dispatch, usage, project, onCreated, stopLoading],
   );
 
   const allCurrentProjectTags = useCurrentProjectCardTypeTags();
@@ -117,8 +121,7 @@ export default function CardTypeCreator({ onCreated, usage }: CardTypeCreatorPro
             fields={fields}
             value={{ title: '', purpose: '', tags: [] }}
             onSubmit={function (type) {
-              createTypeCb(type);
-              close();
+              createTypeCb(type, close);
             }}
             submitLabel={i18n.common.create}
             className={css({ alignSelf: 'center' })}
@@ -128,6 +131,7 @@ export default function CardTypeCreator({ onCreated, usage }: CardTypeCreatorPro
               justifyContent: 'end',
             })}
             buttonClassName={cx(buttonStyle, marginAroundStyle([1], space_M))}
+            isSubmitInProcess={isLoading}
           >
             <Button
               onClick={() => {

@@ -20,7 +20,7 @@ import * as React from 'react';
 import { Route, Routes, useLocation, useNavigate } from 'react-router-dom';
 import * as API from '../../API/api';
 import useTranslations from '../../i18n/I18nContext';
-import { useAppDispatch } from '../../store/hooks';
+import { useAppDispatch, useLoadingState } from '../../store/hooks';
 import Button from '../common/element/Button';
 import InlineLoading from '../common/element/InlineLoading';
 import ConfirmDeleteModal from '../common/layout/ConfirmDeleteModal';
@@ -55,7 +55,7 @@ export default function CardThumb({
   const location = useLocation();
   const hasVariants = variants.length > 1 && variant != null;
   const variantNumber = hasVariants ? variants.indexOf(variant) + 1 : undefined;
-
+  const { isLoading, startLoading, stopLoading } = useLoadingState();
   // Get nb of sticky notes and resources to display on card (cf below).
   //Commented temporarily for first online version. Full data is not complete on first load. To discuss.
   //const nbStickyNotes = useStickyNoteLinksForDest(card.id).stickyNotesForDest.length;
@@ -259,14 +259,18 @@ export default function CardThumb({
                             )
                           }
                           onConfirm={() => {
+                            startLoading();
                             if (hasVariants) {
-                              dispatch(API.deleteCardContent(variant));
+                              dispatch(API.deleteCardContent(variant)).then(stopLoading);
                             } else {
-                              dispatch(API.deleteCard(card));
-                              navigate('../');
+                              dispatch(API.deleteCard(card)).then(() => {
+                                stopLoading();
+                                navigate('../');
+                              });
                             }
                           }}
                           confirmButtonLabel={hasVariants ? 'Delete variant' : 'Delete card'}
+                          isConfirmButtonLoading={isLoading}
                         />
                       ),
                       modal: true,
