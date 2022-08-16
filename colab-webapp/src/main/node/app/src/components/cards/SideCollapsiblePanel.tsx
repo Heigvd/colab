@@ -40,6 +40,7 @@ export interface SideCollapsiblePanelProps<T extends { [key: string]: Item }> {
   setOpenKey?: React.Dispatch<React.SetStateAction<keyof T | string | undefined>>;
   className?: string;
   direction?: 'LEFT' | 'RIGHT';
+  cannotClose?: boolean;
 }
 
 export default function SideCollapsiblePanel<T extends { [key: string]: Item }>({
@@ -49,6 +50,7 @@ export default function SideCollapsiblePanel<T extends { [key: string]: Item }>(
   items,
   className,
   direction = 'LEFT',
+  cannotClose,
 }: SideCollapsiblePanelProps<T>): JSX.Element {
   const i18n = useTranslations();
 
@@ -91,18 +93,20 @@ export default function SideCollapsiblePanel<T extends { [key: string]: Item }>(
               <h3>{itemOpen.title}</h3>
               {itemOpen.nextToTitleElement}
             </Flex>
-            <IconButton
-              icon={faTimes}
-              title={i18n.common.close}
-              onClick={() => {
-                if (setOpenKey) {
-                  setOpenKey(undefined);
-                } else {
-                  setItemKeyOpen(undefined);
-                }
-              }}
-              className={cx(lightIconButtonStyle, marginAroundStyle([4], space_M))}
-            />
+            {!cannotClose && (
+              <IconButton
+                icon={faTimes}
+                title={i18n.common.close}
+                onClick={() => {
+                  if (setOpenKey) {
+                    setOpenKey(undefined);
+                  } else {
+                    setItemKeyOpen(undefined);
+                  }
+                }}
+                className={cx(lightIconButtonStyle, marginAroundStyle([4], space_M))}
+              />
+            )}
           </Flex>
           <Flex align="stretch" grow={1} className={itemOpen.className}>
             {itemOpen.children}
@@ -125,10 +129,12 @@ export default function SideCollapsiblePanel<T extends { [key: string]: Item }>(
             icon={item.icon}
             title={item.title}
             onClick={() => {
-              if (setOpenKey) {
-                setOpenKey(itemKey => (itemKey === key ? undefined : key));
-              } else {
-                setItemKeyOpen(itemKey => (itemKey === key ? undefined : key));
+              if (!cannotClose) {
+                if (setOpenKey) {
+                  setOpenKey(itemKey => (itemKey === key ? undefined : key));
+                } else {
+                  setItemKeyOpen(itemKey => (itemKey === key ? undefined : key));
+                }
               }
             }}
             iconColor={
