@@ -20,7 +20,7 @@ import org.junit.jupiter.api.Test;
 import com.google.common.collect.Lists;
 
 /**
- * Testing of the resource rest end point from a client point of view
+ * Testing of the resource rest end point from a client point of view.
  * <p>
  * Focus on category handling
  *
@@ -361,6 +361,7 @@ public class ResourceCategoryRestEndpointTest extends AbstractArquillianTest {
         resourceCreationData.setAbstractCardTypeId(cardTypeId);
 
         Long persistedResourceId = client.resourceRestEndpoint.createResource(resourceCreationData);
+        client.resourceRestEndpoint.publishResource(persistedResourceId);
 
         return (Resource) client.resourceRestEndpoint.getAbstractResource(persistedResourceId);
     }

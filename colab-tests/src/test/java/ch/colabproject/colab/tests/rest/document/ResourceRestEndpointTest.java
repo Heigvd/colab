@@ -22,12 +22,13 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 /**
- * Testing of the resource rest end point from a client point of view
+ * Testing of the resource rest end point from a client point of view.
+ * <p>
+ * Basis operation.<br>
+ * More specific tests are made in other test classes.
  *
  * @author sandra
  */
-// TODO refuse stuff
-// TODO publish / requestForGlory / deprecated stuff
 // TODO test getDirectResourcesOfProject
 public class ResourceRestEndpointTest extends AbstractArquillianTest {
 
@@ -112,6 +113,7 @@ public class ResourceRestEndpointTest extends AbstractArquillianTest {
         resourceCreationData.setDocuments(List.of(doc));
 
         Long resourceId = client.resourceRestEndpoint.createResource(resourceCreationData);
+        client.resourceRestEndpoint.publishResource(resourceId);
 
         Resource persistedResource = (Resource) client.resourceRestEndpoint
             .getAbstractResource(resourceId);
@@ -119,7 +121,7 @@ public class ResourceRestEndpointTest extends AbstractArquillianTest {
         Assertions.assertNotNull(persistedResource.getId());
         Assertions.assertEquals(resourceId, persistedResource.getId());
         Assertions.assertNull(persistedResource.getTitle());
-        Assertions.assertFalse(persistedResource.isPublished());
+        Assertions.assertTrue(persistedResource.isPublished());
         Assertions.assertFalse(persistedResource.isRequestingForGlory());
         Assertions.assertFalse(persistedResource.isDeprecated());
 
@@ -149,8 +151,12 @@ public class ResourceRestEndpointTest extends AbstractArquillianTest {
 
         persistedResource.setTitle(title);
         persistedResource.setCategory(category);
-        persistedResource.setPublished(true);
+
         persistedResource.setRequestingForGlory(true);
+
+        // published is not updatable via resourceRestEndpoint.updateResource
+        persistedResource.setPublished(false);
+        // deprecated is not updatable via resourceRestEndpoint.updateResource
         persistedResource.setDeprecated(true);
 
         client.resourceRestEndpoint.updateResource(persistedResource);
@@ -160,10 +166,13 @@ public class ResourceRestEndpointTest extends AbstractArquillianTest {
         Assertions.assertNotNull(persistedResource.getId());
         Assertions.assertEquals(resourceId, persistedResource.getId());
         Assertions.assertEquals(title, persistedResource.getTitle());
-        Assertions.assertTrue(persistedResource.isPublished());
         Assertions.assertTrue(persistedResource.isRequestingForGlory());
-        Assertions.assertTrue(persistedResource.isDeprecated());
         Assertions.assertEquals(category, persistedResource.getCategory());
+
+        // published is not updatable via resourceRestEndpoint.updateResource
+        Assertions.assertTrue(persistedResource.isPublished());
+        // deprecated is not updatable via resourceRestEndpoint.updateResource
+        Assertions.assertFalse(persistedResource.isDeprecated());
 
         persistedDocs = client.resourceRestEndpoint.getDocumentsOfResource(resourceId);
         Assertions.assertNotNull(persistedDocs);
@@ -256,6 +265,7 @@ public class ResourceRestEndpointTest extends AbstractArquillianTest {
         resourceCreationData.setDocuments(List.of(doc1, doc2));
 
         Long resourceId = client.resourceRestEndpoint.createResource(resourceCreationData);
+        client.resourceRestEndpoint.publishResource(resourceId);
 
         Resource persistedResource = (Resource) client.resourceRestEndpoint
             .getAbstractResource(resourceId);
@@ -384,7 +394,8 @@ public class ResourceRestEndpointTest extends AbstractArquillianTest {
         resourceCreationData.setAbstractCardTypeId(globalCardTypeId);
         resourceCreationData.setDocuments(List.of(doc));
 
-        client.resourceRestEndpoint.createResource(resourceCreationData);
+        Long resourceId = client.resourceRestEndpoint.createResource(resourceCreationData);
+        client.resourceRestEndpoint.publishResource(resourceId);
 
         List<List<AbstractResource>> persistedCardResources = client.resourceRestEndpoint
             .getResourceChainForCard(cardId);
@@ -405,8 +416,12 @@ public class ResourceRestEndpointTest extends AbstractArquillianTest {
 
         String category = "category " + ((int) (Math.random() * 1000));
 
-        persistedResourceRef.setRefused(true);
         persistedResourceRef.setCategory(category);
+
+        // refused is not updatable via resourceRestEndpoint.updateResourceRef
+        persistedResourceRef.setRefused(true);
+        // residual is not updatable via resourceRestEndpoint.updateResourceRef
+        persistedResourceRef.setResidual(true);
 
         client.resourceRestEndpoint.updateResourceRef(persistedResourceRef);
 
@@ -416,9 +431,13 @@ public class ResourceRestEndpointTest extends AbstractArquillianTest {
         Assertions.assertTrue(persistedAbstractResourceRef instanceof ResourceRef);
 
         persistedResourceRef = (ResourceRef) persistedAbstractResourceRef;
-        Assertions.assertTrue(persistedResourceRef.isRefused());
         Assertions.assertEquals(category, persistedResourceRef.getCategory());
         Assertions.assertEquals(cardId, persistedResourceRef.getCardId());
+
+        // refused is not updatable via resourceRestEndpoint.updateResourceRef
+        Assertions.assertFalse(persistedResourceRef.isRefused());
+        // residual is not updatable via resourceRestEndpoint.updateResourceRef
+        Assertions.assertFalse(persistedResourceRef.isResidual());
     }
 
 }

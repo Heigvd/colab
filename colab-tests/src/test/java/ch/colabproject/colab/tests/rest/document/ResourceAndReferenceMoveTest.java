@@ -53,6 +53,7 @@ public class ResourceAndReferenceMoveTest extends AbstractArquillianTest {
         localTypeOneResourceCreation.setAbstractCardTypeId(localTypeOne.getId());
         Long localTypeOneResourceId = client.resourceRestEndpoint
             .createResource(localTypeOneResourceCreation);
+        client.resourceRestEndpoint.publishResource(localTypeOneResourceId);
         /* Resource localTypeOneResource = (Resource) */client.resourceRestEndpoint
             .getAbstractResource(localTypeOneResourceId);
 
@@ -64,6 +65,7 @@ public class ResourceAndReferenceMoveTest extends AbstractArquillianTest {
         localTypeTwoResourceCreation.setAbstractCardTypeId(localTypeTwo.getId());
         Long localTypeTwoResourceId = client.resourceRestEndpoint
             .createResource(localTypeTwoResourceCreation);
+        client.resourceRestEndpoint.publishResource(localTypeTwoResourceId);
         Resource localTypeTwoResource = (Resource) client.resourceRestEndpoint
             .getAbstractResource(localTypeTwoResourceId);
 
@@ -76,6 +78,7 @@ public class ResourceAndReferenceMoveTest extends AbstractArquillianTest {
         rootCardResourceCreation.setCardId(rootCard.getId());
         Long rootCardResourceId = client.resourceRestEndpoint
             .createResource(rootCardResourceCreation);
+        client.resourceRestEndpoint.publishResource(rootCardResourceId);
         Resource rootCardResource = (Resource) client.resourceRestEndpoint
             .getAbstractResource(rootCardResourceId);
 
@@ -87,6 +90,7 @@ public class ResourceAndReferenceMoveTest extends AbstractArquillianTest {
         card1ResourceCreation.setDocuments(List.of(new ExternalLink()));
         card1ResourceCreation.setCardId(card1.getId());
         Long card1ResourceId = client.resourceRestEndpoint.createResource(card1ResourceCreation);
+        client.resourceRestEndpoint.publishResource(card1ResourceId);
         Resource card1Resource = (Resource) client.resourceRestEndpoint
             .getAbstractResource(card1ResourceId);
 
@@ -98,6 +102,7 @@ public class ResourceAndReferenceMoveTest extends AbstractArquillianTest {
         card2ResourceCreation.setDocuments(List.of(new ExternalLink()));
         card2ResourceCreation.setCardId(card2.getId());
         Long card2ResourceId = client.resourceRestEndpoint.createResource(card2ResourceCreation);
+        client.resourceRestEndpoint.publishResource(card2ResourceId);
         Resource card2Resource = (Resource) client.resourceRestEndpoint
             .getAbstractResource(card2ResourceId);
 
@@ -110,6 +115,7 @@ public class ResourceAndReferenceMoveTest extends AbstractArquillianTest {
         subCard22ResourceCreation.setCardId(subCard22.getId());
         Long subCard22ResourceId = client.resourceRestEndpoint
             .createResource(subCard22ResourceCreation);
+        client.resourceRestEndpoint.publishResource(subCard22ResourceId);
         Resource subCard22Resource = (Resource) client.resourceRestEndpoint
             .getAbstractResource(subCard22ResourceId);
 
@@ -123,6 +129,7 @@ public class ResourceAndReferenceMoveTest extends AbstractArquillianTest {
         wanderingCardResourceCreation.setCardId(wanderingCard.getId());
         Long wanderingCardResourceId = client.resourceRestEndpoint
             .createResource(wanderingCardResourceCreation);
+        client.resourceRestEndpoint.publishResource(wanderingCardResourceId);
         Resource wanderingCardResource = (Resource) client.resourceRestEndpoint
             .getAbstractResource(wanderingCardResourceId);
 
@@ -137,6 +144,7 @@ public class ResourceAndReferenceMoveTest extends AbstractArquillianTest {
         subWanderingCardResourceCreation.setCardId(subWanderingCard.getId());
         Long subWanderingCardResourceId = client.resourceRestEndpoint
             .createResource(subWanderingCardResourceCreation);
+        client.resourceRestEndpoint.publishResource(subWanderingCardResourceId);
         Resource subWanderingCardResource = (Resource) client.resourceRestEndpoint
             .getAbstractResource(subWanderingCardResourceId);
 
@@ -406,7 +414,8 @@ public class ResourceAndReferenceMoveTest extends AbstractArquillianTest {
 
         for (Resource resource : expectedResources) {
             Assertions.assertTrue(relevant.contains(resource.getId()),
-                MessageFormat.format("For {0}, the wandering card miss the relevant resource \"{1}\"",
+                MessageFormat.format(
+                    "For {0}, the wandering card miss the relevant resource \"{1}\"",
                     context, resource.getTitle()));
         }
 
@@ -427,7 +436,8 @@ public class ResourceAndReferenceMoveTest extends AbstractArquillianTest {
 
         for (Resource resource : expectedResources) {
             Assertions.assertTrue(residues.contains(resource.getId()),
-                MessageFormat.format("For {0}, the wandering card miss the residual resource \"{1}\"",
+                MessageFormat.format(
+                    "For {0}, the wandering card miss the residual resource \"{1}\"",
                     context, resource.getTitle()));
         }
 

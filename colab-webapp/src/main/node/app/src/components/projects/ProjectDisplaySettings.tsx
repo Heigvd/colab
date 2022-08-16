@@ -6,7 +6,7 @@
  */
 
 import { css } from '@emotion/css';
-import { Project } from 'colab-rest-client/dist/ColabClient';
+import { Project } from 'colab-rest-client';
 import * as React from 'react';
 import * as API from '../../API/api';
 import { dispatch } from '../../store/store';
@@ -18,9 +18,7 @@ interface ProjectDisplaySettingsProps {
   project: Project;
 }
 // Display one project and allow to edit it
-export function ProjectDisplaySettings({
-  project,
-}: ProjectDisplaySettingsProps): JSX.Element {
+export function ProjectDisplaySettings({ project }: ProjectDisplaySettingsProps): JSX.Element {
   return (
     <Flex align="stretch" direction="column" className={css({ alignSelf: 'stretch' })}>
       <LabeledInput
@@ -35,12 +33,17 @@ export function ProjectDisplaySettings({
         value={project.description || ''}
         onChange={newValue => dispatch(API.updateProject({ ...project, description: newValue }))}
       />
-      <ProjectIllustrationMaker illustration={project.illustration} setIllustration={i => dispatch(
-        API.updateProject({
-          ...project,
-          illustration: i,
-        }),
-      )} />
+      <ProjectIllustrationMaker
+        illustration={project.illustration}
+        setIllustration={i =>
+          dispatch(
+            API.updateProject({
+              ...project,
+              illustration: i,
+            }),
+          )
+        }
+      />
     </Flex>
   );
 }

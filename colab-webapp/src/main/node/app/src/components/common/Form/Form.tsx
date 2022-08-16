@@ -108,7 +108,7 @@ export interface FormProps<T> {
   submitLabel?: string;
   autoComplete?: string;
   children?: React.ReactNode;
-  submitFailed?: boolean;
+  isSubmitInProcess?: boolean;
   className?: string;
   childrenClassName?: string;
   buttonClassName?: string;
@@ -121,7 +121,7 @@ export default function Form<T>({
   submitLabel,
   autoComplete,
   children,
-  submitFailed,
+  isSubmitInProcess,
   className,
   childrenClassName,
   buttonClassName,
@@ -317,7 +317,7 @@ export default function Form<T>({
         <ButtonWithLoader
           key="submit"
           onClick={submit}
-          isLoading={submitFailed}
+          isLoading={isSubmitInProcess}
           className={cx(css({ margin: space_M + ' 0', alignSelf: 'flex-start' }), buttonClassName)}
         >
           {submitLabel || i18n.form.submit}

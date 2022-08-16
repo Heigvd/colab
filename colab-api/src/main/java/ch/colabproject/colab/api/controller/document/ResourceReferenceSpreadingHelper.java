@@ -55,7 +55,7 @@ public class ResourceReferenceSpreadingHelper {
      *
      * @param resourceOrRef the resource to reference
      */
-    public void spreadNewResourceDown(AbstractResource resourceOrRef) {
+    public void spreadAvailableResourceDown(AbstractResource resourceOrRef) {
         if (resourceOrRef.getAbstractCardType() != null) {
             AbstractCardType resourceOwner = resourceOrRef.getAbstractCardType();
 
@@ -167,15 +167,25 @@ public class ResourceReferenceSpreadingHelper {
     private ResourceRef makeActiveReference(Resourceable owner,
         AbstractResource targetResourceOrRef) {
 
-        if (canHaveReferences(targetResourceOrRef)) {
+        if (mustHaveReferences(targetResourceOrRef)) {
 
             ResourceRef existingMatchingReference = findMatchingResourceRef(owner,
                 targetResourceOrRef);
 
             if (existingMatchingReference != null) {
-                return reviveAndRetarget(existingMatchingReference, targetResourceOrRef);
+                ResourceRef aimedResourceRef = reviveAndRetarget(existingMatchingReference,
+                    targetResourceOrRef);
+
+                spreadAvailableResourceDown(aimedResourceRef);
+
+                return aimedResourceRef;
+
             } else {
-                return makeNewReference(owner, targetResourceOrRef);
+                ResourceRef aimedResourceRef = initNewReference(owner, targetResourceOrRef);
+
+                spreadAvailableResourceDown(aimedResourceRef);
+
+                return aimedResourceRef;
             }
         }
 
@@ -183,18 +193,29 @@ public class ResourceReferenceSpreadingHelper {
     }
 
     /**
-     * Ascertain if we must create resource references down stream for the given target resource (or
+     * Ascertain if there must be resource references down stream for the given target resource (or
      * reference).
      *
      * @param targetResourceOrRef Resource / resource reference
      *
      * @return true iff the resource can have references
      */
-    private boolean canHaveReferences(AbstractResource targetResourceOrRef) {
+    private boolean mustHaveReferences(AbstractResource targetResourceOrRef) {
+        Resource concreteTargetResource = targetResourceOrRef.resolve();
+
+        // do not spread unpublished resource
+        if (concreteTargetResource != null && !concreteTargetResource.isPublished()) {
+            // unless between a card and its card contents
+            boolean isResourceLinkedToACard = (targetResourceOrRef instanceof Resource)
+                && targetResourceOrRef.getCard() != null;
+            if (!isResourceLinkedToACard) {
+                return false;
+            }
+        }
+
         // do not spread references of a type from a card content to its sub cards
         boolean isResourceOrRefLinkedToACardContent = targetResourceOrRef.getCardContent() != null;
         if (isResourceOrRefLinkedToACardContent) {
-            Resource concreteTargetResource = targetResourceOrRef.resolve();
 
             boolean isConcreteResourceLinkedToACardType = concreteTargetResource != null
                 && concreteTargetResource.getAbstractCardType() != null;
@@ -223,7 +244,7 @@ public class ResourceReferenceSpreadingHelper {
             .stream()
             .filter(resOrRef -> resOrRef instanceof ResourceRef)
             .map(resOrRef -> (ResourceRef) resOrRef)
-            .filter(resOrRef -> Objects.equals(resOrRef.resolve(), targetResourceOrRef.resolve()))
+            .filter(ref -> Objects.equals(ref.resolve(), targetResourceOrRef.resolve()))
             .collect(Collectors.toList());
 
         if (refsOfOwnerWithSameFinalTarget.size() == 1) {
@@ -245,38 +266,27 @@ public class ResourceReferenceSpreadingHelper {
      * resource.
      *
      * @param resourceReference the resource reference to update
-     * @param newTarget         the new target of the resource reference
+     * @param newDirectTarget   the new target of the resource reference
      *
      * @return the resource reference that has been revived (or let as it is if nothing is needed)
      */
     private ResourceRef reviveAndRetarget(ResourceRef resourceReference,
-        AbstractResource newTarget) {
-        if (!Objects.equals(resourceReference.resolve(), newTarget.resolve())) {
+        AbstractResource newDirectTarget) {
+        if (!Objects.equals(resourceReference.resolve(), newDirectTarget.resolve())) {
             throw HttpErrorMessage.dataIntegrityFailure();
         }
 
-        reviveRecursively(resourceReference);
+        // revive
+        resourceReference.setResidual(false);
 
+        // retarget
         AbstractResource olderTarget = resourceReference.getTarget();
 
-        if (!Objects.equals(olderTarget, newTarget)) {
-            resourceReference.setTarget(newTarget);
+        if (!Objects.equals(olderTarget, newDirectTarget)) {
+            resourceReference.setTarget(newDirectTarget);
         }
 
         return resourceReference;
-    }
-
-    /**
-     * Mark the resource reference as not residual. Do it as well for all its descendants.
-     *
-     * @param resourceReference the reference to update
-     */
-    private void reviveRecursively(ResourceRef resourceReference) {
-        resourceReference.setResidual(false);
-
-        for (ResourceRef childRef : resourceDao.findDirectReferences(resourceReference)) {
-            reviveRecursively(childRef);
-        }
     }
 
     /**
@@ -288,7 +298,7 @@ public class ResourceReferenceSpreadingHelper {
      *
      * @return the resource reference that has been created
      */
-    private ResourceRef makeNewReference(Resourceable owner, AbstractResource targetResourceOrRef) {
+    private ResourceRef initNewReference(Resourceable owner, AbstractResource targetResourceOrRef) {
         ResourceRef newRef = initNewReferenceFrom(targetResourceOrRef);
 
         newRef.setOwner(owner);
@@ -296,11 +306,9 @@ public class ResourceReferenceSpreadingHelper {
 
         newRef.setTarget(targetResourceOrRef);
 
-        spreadNewResourceDown(newRef);
-
         return newRef;
 
-        // no need to persist, it will be done at once
+        // no need to persist, it will be done all at once
     }
 
     /**
@@ -315,41 +323,19 @@ public class ResourceReferenceSpreadingHelper {
 
         newRef.setCategory(targetResourceOrRef.getCategory());
 
-        newRef.setRefused(isNewReferenceInitiallyRefused(targetResourceOrRef));
-
         if (targetResourceOrRef instanceof ResourceRef) {
-            newRef.setResidual(((ResourceRef) targetResourceOrRef).isResidual());
+            ResourceRef targetResourceRef = (ResourceRef) targetResourceOrRef;
+
+            newRef.setRefused(targetResourceRef.isRefused());
+            newRef.setResidual(targetResourceRef.isResidual());
         }
 
         return newRef;
     }
 
-    /**
-     * Determine if the new reference must be initiated as refused.
-     *
-     * @param targetResource the target resource of the new reference
-     *
-     * @return how the new reference refused field must be initialized
-     */
-    private boolean isNewReferenceInitiallyRefused(AbstractResource targetResource) {
-        if (targetResource instanceof ResourceRef) {
-            // if it is from a reference, just copy the refused state
-            return ((ResourceRef) targetResource).isRefused();
-        }
-
-        if (targetResource instanceof Resource) {
-            // if it is from a concrete resource, set to true if deprecated
-            Resource targetConcreteResource = (Resource) targetResource;
-            if (targetConcreteResource.isDeprecated()) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
     // *********************************************************************************************
     // when something is moved, mark the former ancestors resource references as residual
+    // when something is un-published, mark the resource references as residual
     // *********************************************************************************************
 
     /**
@@ -359,24 +345,87 @@ public class ResourceReferenceSpreadingHelper {
      * @param owner         the owner of the resource references to mark
      * @param formerRelated the not-any-more-related target of the references
      */
-    public void spreadResidualMark(Resourceable owner, Resourceable formerRelated) {
+    public void spreadDisableResourceDown(Resourceable owner, Resourceable formerRelated) {
         owner.getDirectAbstractResources().stream()
             .filter(resOrRef -> (resOrRef instanceof ResourceRef))
             .map(resOrRef -> ((ResourceRef) resOrRef))
             .filter(ref -> Objects.equals(ref.getTarget().getOwner(), formerRelated))
-            .forEach(ref -> markAsResidualRecursively(ref));
+            .forEach(ref -> markAsResidualRecursively(ref, true));
+    }
+
+    /**
+     * Disable = mark as residual.
+     * <p>
+     * Mark the resource's references as residual. Do it as well for all descendants.
+     *
+     * @param resource the resource
+     */
+    public void spreadDisableResourceDown(Resource resource) {
+        for (ResourceRef childRef : resourceDao.findDirectReferences(resource)) {
+            markAsResidualRecursively(childRef, false);
+        }
     }
 
     /**
      * Mark the resource reference as residual. Do it as well for all its descendants.
      *
      * @param resourceReference the reference to update
+     * @param alwaysMark        if the reference must for sure be marked as residual
      */
-    private void markAsResidualRecursively(ResourceRef resourceReference) {
-        resourceReference.setResidual(true);
+    private void markAsResidualRecursively(ResourceRef resourceReference, boolean alwaysMark) {
+        if (alwaysMark || resourceReference.getTarget() == null
+            || !mustHaveReferences(resourceReference.getTarget())) {
+            resourceReference.setResidual(true);
+        }
 
         for (ResourceRef childRef : resourceDao.findDirectReferences(resourceReference)) {
-            markAsResidualRecursively(childRef);
+            markAsResidualRecursively(childRef, alwaysMark);
+        }
+    }
+
+    // *********************************************************************************************
+    //
+    // *********************************************************************************************
+
+    /**
+     * Mark the resource reference as refused. Do it as well for all its descendants.
+     *
+     * @param resourceReference the reference to update
+     */
+    public void refuseRecursively(ResourceRef resourceReference) {
+        resourceReference.setRefused(true);
+
+        for (ResourceRef childRef : resourceDao.findDirectReferences(resourceReference)) {
+            refuseRecursively(childRef);
+        }
+    }
+
+    /**
+     * Mark the resource reference as not refused. Do it as well for all its descendants.
+     *
+     * @param resourceReference the reference to update
+     */
+    public void unRefuseRecursively(ResourceRef resourceReference) {
+        resourceReference.setRefused(false);
+
+        for (ResourceRef childRef : resourceDao.findDirectReferences(resourceReference)) {
+            unRefuseRecursively(childRef);
+        }
+    }
+
+    /**
+     * Mark the resource reference as not residual. Do it as well for all its descendants.
+     *
+     * @param resourceReference the reference to update
+     */
+    public void reviveRecursively(ResourceRef resourceReference) {
+        if (resourceReference.getTarget() != null
+            && mustHaveReferences(resourceReference.getTarget())) {
+            resourceReference.setResidual(false);
+        }
+
+        for (ResourceRef childRef : resourceDao.findDirectReferences(resourceReference)) {
+            reviveRecursively(childRef);
         }
     }
 

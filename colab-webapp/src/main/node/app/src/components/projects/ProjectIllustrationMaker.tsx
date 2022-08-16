@@ -7,7 +7,7 @@
 
 import { css, cx } from '@emotion/css';
 import { IconName } from '@fortawesome/free-solid-svg-icons';
-import { Illustration } from 'colab-rest-client/dist/ColabClient';
+import { Illustration } from 'colab-rest-client';
 import * as React from 'react';
 import { CirclePicker } from 'react-color';
 import IconButton from '../common/element/IconButton';
