@@ -38,11 +38,7 @@ export default function ResourcesList({
   selectResource,
   displayResourceItem,
 }: ResourcesListProps): JSX.Element {
-  const [listsByCategories, setListsByCategories] = React.useState<
-    Record<string, ResourceAndRef[]>
-  >({});
-
-  React.useEffect(() => {
+  const listsByCategories: Record<string, ResourceAndRef[]> = React.useMemo(() => {
     const reducedByCategory = resources.reduce<Record<string, ResourceAndRef[]>>((acc, current) => {
       const category = getTheDirectResource(current).category || '';
 
@@ -56,12 +52,8 @@ export default function ResourcesList({
       list.sort(sortResources);
     });
 
-    setListsByCategories(reducedByCategory);
-  }, [resources, setListsByCategories]);
-
-  const categoryNameList = React.useMemo(() => {
-    return [...Object.keys(listsByCategories)].sort();
-  }, [listsByCategories]);
+    return reducedByCategory;
+  }, [resources]);
 
   return (
     <Flex
@@ -70,22 +62,24 @@ export default function ResourcesList({
       grow={1}
       className={css({ overflow: 'auto', paddingRight: '2px' })}
     >
-      {categoryNameList.map(category => (
-        <div key={category} className={marginAroundStyle([3], space_S)}>
-          <TocHeader category={category} />
+      {Object.keys(listsByCategories)
+        .sort()
+        .map(category => (
+          <div key={category} className={marginAroundStyle([3], space_S)}>
+            <TocHeader category={category} />
 
-          <Flex direction="column" align="stretch">
-            {listsByCategories[category]!.map(resource => (
-              <TocEntry
-                key={getKey(resource)}
-                resource={resource}
-                selectResource={selectResource}
-                displayResource={displayResourceItem}
-              />
-            ))}
-          </Flex>
-        </div>
-      ))}
+            <Flex direction="column" align="stretch">
+              {listsByCategories[category]!.map(resource => (
+                <TocEntry
+                  key={getKey(resource)}
+                  resource={resource}
+                  selectResource={selectResource}
+                  displayResource={displayResourceItem}
+                />
+              ))}
+            </Flex>
+          </div>
+        ))}
     </Flex>
   );
 }

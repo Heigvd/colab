@@ -52,7 +52,7 @@ export default function ResourcesMainView({
 
   // automatically select the last created resource
   React.useEffect(() => {
-    if (lastCreated) {
+    if (lastCreated != null) {
       const matchingResource = activeResources.find(
         resource => resource.targetResource.id === lastCreated,
       );
