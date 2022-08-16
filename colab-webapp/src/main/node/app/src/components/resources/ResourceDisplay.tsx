@@ -102,16 +102,20 @@ export function ResourceDisplay({
             valueComp={{ value: '', label: '' }}
             buttonClassName={cx(lightIconButtonStyle, css({ marginLeft: space_S }))}
             entries={[
-              {
-                value: 'Toggle teaser',
-                label: (
-                  <>
-                    <FontAwesomeIcon icon={faInfoCircle} />{' '}
-                    {`${showTeaser ? i18n.common.hide : i18n.common.show} teaser`}
-                  </>
-                ),
-                action: () => setShowTeaser(showTeaser => !showTeaser),
-              },
+              ...(!effectiveReadOnly || teaser != null
+                ? [
+                    {
+                      value: 'Toggle teaser',
+                      label: (
+                        <>
+                          <FontAwesomeIcon icon={faInfoCircle} />{' '}
+                          {`${showTeaser ? i18n.common.hide : i18n.common.show} teaser`}
+                        </>
+                      ),
+                      action: () => setShowTeaser(showTeaser => !showTeaser),
+                    },
+                  ]
+                : []),
               ...(!effectiveReadOnly
                 ? [
                     {
@@ -140,6 +144,7 @@ export function ResourceDisplay({
                 ),
                 action: () => {
                   dispatch(API.removeAccessToResource(resource));
+                  goBackToList();
                 },
               },
             ]}
@@ -152,11 +157,7 @@ export function ResourceDisplay({
               {text => (
                 <DiscreetTextArea
                   value={text || ''}
-                  placeholder={
-                    effectiveReadOnly
-                      ? 'There is no teaser'
-                      : 'There is no teaser for the moment. Feel free to fill it.'
-                  }
+                  placeholder="There is no teaser for the moment. Feel free to fill it."
                   readOnly={effectiveReadOnly}
                   onChange={(newValue: string) => {
                     if (targetResource.teaserId) {

@@ -26,6 +26,7 @@ import ch.colabproject.colab.api.persistence.jpa.document.ResourceDao;
 import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
@@ -401,6 +402,17 @@ public class ResourceManager {
             Resource resource = (Resource) resourceOrRef;
             resource.setDeprecated(true);
 
+            // if resource in card and has only one variant, refuse also the resource in the variant
+            if (resource.getCard() != null) {
+                List<ResourceRef> references = resourceDao.findDirectReferences(resource);
+                if (references.size() == 1) {
+                    ResourceRef ref = references.get(0);
+                    if (Objects.equals(resource.getCard(), ref.getCardContent().getCard())) {
+                        resourceReferenceSpreadingHelper.refuseRecursively(ref);
+                    }
+                }
+            }
+
         } else if (resourceOrRef instanceof ResourceRef) {
             ResourceRef resourceRef = (ResourceRef) resourceOrRef;
             resourceReferenceSpreadingHelper.refuseRecursively(resourceRef);
@@ -419,6 +431,17 @@ public class ResourceManager {
             Resource resource = (Resource) resourceOrRef;
             if (resource.isDeprecated()) {
                 resource.setDeprecated(false);
+            }
+
+            // if resource in card and has only one variant, refuse also the resource in the variant
+            if (resource.getCard() != null) {
+                List<ResourceRef> references = resourceDao.findDirectReferences(resource);
+                if (references.size() == 1) {
+                    ResourceRef ref = references.get(0);
+                    if (Objects.equals(resource.getCard(), ref.getCardContent().getCard())) {
+                        resourceReferenceSpreadingHelper.unRefuseRecursively(ref);
+                    }
+                }
             }
 
         } else if (resourceOrRef instanceof ResourceRef) {
