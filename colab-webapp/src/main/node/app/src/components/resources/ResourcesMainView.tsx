@@ -50,7 +50,7 @@ export default function ResourcesMainView({
 
   const showList = React.useCallback(() => selectResource(null), []);
 
-  // automatically select the last created resource
+  // when a resource is just created, select it to display it
   React.useEffect(() => {
     if (lastCreated != null) {
       const matchingResource = activeResources.find(
