@@ -1010,6 +1010,21 @@ export const removeAccessToResource = createAsyncThunk(
   },
 );
 
+export const changeResourceCategory = createAsyncThunk(
+  'resource/changeCategory',
+  async ({
+    resourceOrRef,
+    categoryName,
+  }: {
+    resourceOrRef: AbstractResource;
+    categoryName: string;
+  }) => {
+    if (resourceOrRef && resourceOrRef.id) {
+      return await restClient.ResourceRestEndpoint.changeCategory(resourceOrRef.id, categoryName);
+    }
+  },
+);
+
 export const getDocumentsOfResource = createAsyncThunk(
   'resource/getDocuments',
   async (resourceId: number) => {
