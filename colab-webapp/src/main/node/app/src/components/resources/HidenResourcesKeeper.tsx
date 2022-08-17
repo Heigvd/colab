@@ -15,7 +15,7 @@ import { useAppDispatch } from '../../store/hooks';
 import IconButton from '../common/element/IconButton';
 import Flex from '../common/layout/Flex';
 import OpenCloseModal from '../common/layout/OpenCloseModal';
-import { space_S } from '../styling/style';
+import { lightIconButtonStyle, space_M, space_S } from '../styling/style';
 import { ResourceDisplay } from './ResourceDisplay';
 import { ResourceAndRef } from './resourcesCommonType';
 import ResourcesList from './ResourcesList';
@@ -35,12 +35,14 @@ export default function ResourcesLoserKeeper({
 
   const displayResourceItem = React.useCallback(
     (resource: ResourceAndRef) => (
-      <Flex align="center">
+      <Flex align="center" justify='space-between' className={css({flexGrow: 1, padding: space_S + ' ' + space_M, '&:hover':{cursor: 'default'}})}>
         {resource.targetResource.title}
+        <div>
         <OpenCloseModal
           title="Document"
-          collapsedChildren={<FontAwesomeIcon title="Display the document" icon={faEye} />}
+          collapsedChildren={<FontAwesomeIcon title="Display the document" icon={faEye} className={lightIconButtonStyle} />}
           className={css({ padding: '0 ' + space_S })}
+          modalBodyClassName={css({alignItems: 'stretch'})}
           widthMax
           heightMax
         >
@@ -52,7 +54,9 @@ export default function ResourcesLoserKeeper({
           title="Restore the document"
           icon={faFlask}
           onClick={() => dispatch(API.giveAccessToResource(resource))}
+          className={lightIconButtonStyle}
         />
+        </div>
       </Flex>
     ),
     [dispatch],
@@ -60,14 +64,16 @@ export default function ResourcesLoserKeeper({
 
   return (
     <OpenCloseModal
-      title="Deserted documents"
+      title="Removed documents"
       showCloseButton
       collapsedChildren={
-        <Flex justify="center" className={collapsedClassName}>
-          <span>{resources.length}</span>
+        <Flex justify="center" align='center' className={collapsedClassName}>
+          <span className={css({marginRight: space_S, fontSize: '0.8em'})}>{resources.length}</span>
           <FontAwesomeIcon title="Deserted documents" icon={faGhost} />
         </Flex>
       }
+      className={css({'&:hover':{textDecoration: 'none'}})}
+      modalBodyClassName={css({alignItems: 'stretch'})}
       // tip={
       //   <Flex direction="column">
       //     <p>Here are hidden the deleted documents.</p>

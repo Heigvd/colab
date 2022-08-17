@@ -116,7 +116,7 @@ function TocHeader({ category }: TocHeaderProps): JSX.Element {
 
 const tocEntryStyle = css({
   cursor: 'pointer',
-  padding: space_S + ' ' + space_M,
+  //padding: space_S + ' ' + space_M,
   color: 'var(--pictoGrey)',
   '&:hover': {
     backgroundColor: 'var(--hoverBgColor)',
@@ -149,6 +149,7 @@ function TocEntry({ resource, selectResource, displayResource }: TocEntryProps):
               }
             }}
             grow={1}
+            className={css({padding: space_S + ' ' + space_M})}
           >
             <div
               className={css({

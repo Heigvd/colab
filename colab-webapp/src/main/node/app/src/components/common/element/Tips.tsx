@@ -95,6 +95,7 @@ function overlayStyle(coord: [number, number]) {
     backgroundColor: 'var(--bgColor)',
     width: `${ttWidth}px`,
     zIndex: 1,
+    whiteSpace: 'initial',
   });
 }
 

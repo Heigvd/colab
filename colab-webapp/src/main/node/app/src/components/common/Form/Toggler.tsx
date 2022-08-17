@@ -84,7 +84,7 @@ export default function Toggler({
           <div className={value ? onStyle : offStyle}></div>
         </Flex>
         <div>&nbsp;{label}</div>
-        {tip != null && <Tips>{tip}</Tips>}
+        {tip != null && <Tips interactionType='CLICK'>{tip}</Tips>}
       </Flex>
       {fieldFooter != null && <div className={textSmall}>{fieldFooter}</div>}
       <Flex direction="column" align="center" className={cx(textSmall, bottomClassName)}>
