@@ -11,7 +11,7 @@ import { Illustration, Project } from 'colab-rest-client';
 import * as React from 'react';
 import * as API from '../../API/api';
 import useTranslations from '../../i18n/I18nContext';
-import { useAppDispatch } from '../../store/hooks';
+import { useAppDispatch, useLoadingState } from '../../store/hooks';
 import Button from '../common/element/Button';
 import ButtonWithLoader from '../common/element/ButtonWithLoader';
 import Flex from '../common/layout/Flex';
@@ -64,6 +64,7 @@ export default function ProjectCreator({
   const [showCreateButton, setShowCreateButton] = React.useState<boolean>(false);
 
   const [readOnly, setReadOnly] = React.useState<boolean>(false);
+  const {isLoading, startLoading, stopLoading} = useLoadingState();
 
   React.useEffect(() => {
     if (status === 'chooseModel') {
@@ -153,7 +154,7 @@ export default function ProjectCreator({
               onClick={() => {
                 if (!readOnly) {
                   setReadOnly(true);
-
+                  startLoading();
                   dispatch(
                     API.createProject({
                       name: data.name,
@@ -166,9 +167,11 @@ export default function ProjectCreator({
                     resetCb();
                     close();
                     window.open(`#/editor/${payload.payload}`, '_blank');
+                    stopLoading();
                   });
                 }
               }}
+              isLoading={isLoading}
             >
               Create project
             </ButtonWithLoader>

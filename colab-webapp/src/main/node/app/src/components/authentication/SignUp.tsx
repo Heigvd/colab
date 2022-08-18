@@ -12,7 +12,7 @@ import { useNavigate } from 'react-router-dom';
 import * as API from '../../API/api';
 import { buildLinkWithQueryParam } from '../../helper';
 import useTranslations from '../../i18n/I18nContext';
-import { useAppDispatch } from '../../store/hooks';
+import { useAppDispatch, useLoadingState } from '../../store/hooks';
 import { InlineLink } from '../common/element/Link';
 import Form, { emailFormat, Field } from '../common/Form/Form';
 import { lightLinkStyle, space_M } from '../styling/style';
@@ -52,6 +52,7 @@ export default function SignUpForm({ redirectTo }: SignUpFormProps): JSX.Element
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const i18n = useTranslations();
+  const {isLoading, startLoading, stopLoading} = useLoadingState();
 
   const formFields: Field<FormData>[] = [
     {
@@ -94,14 +95,16 @@ export default function SignUpForm({ redirectTo }: SignUpFormProps): JSX.Element
 
   const signUp = React.useCallback(
     data => {
+      startLoading();
       dispatch(API.signUp(data)).then(action => {
         // is that a hack or not ???
         if (redirectTo && action.meta.requestStatus === 'fulfilled') {
           navigate(redirectTo);
         }
+        stopLoading();
       });
     },
-    [dispatch, navigate, redirectTo],
+    [dispatch, navigate, redirectTo, startLoading, stopLoading],
   );
 
   return (
@@ -113,6 +116,7 @@ export default function SignUpForm({ redirectTo }: SignUpFormProps): JSX.Element
         submitLabel={i18n.authentication.action.createAnAccount}
         autoComplete="off"
         buttonClassName={css({ margin: space_M + ' auto' })}
+        isSubmitInProcess={isLoading}
       >
         <InlineLink
           to={buildLinkWithQueryParam('/SignIn', { redirectTo: redirectTo })}

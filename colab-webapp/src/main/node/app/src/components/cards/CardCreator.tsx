@@ -14,10 +14,11 @@ import { useNavigate } from 'react-router-dom';
 import * as API from '../../API/api';
 import useTranslations from '../../i18n/I18nContext';
 import { useAndLoadProjectCardTypes } from '../../selectors/cardTypeSelector';
-import { useAppDispatch } from '../../store/hooks';
+import { useAppDispatch, useLoadingState } from '../../store/hooks';
 import CustomElementsList from '../common/collection/CustomElementsList';
 import AvailabilityStatusIndicator from '../common/element/AvailabilityStatusIndicator';
 import Button from '../common/element/Button';
+import ButtonWithLoader from '../common/element/ButtonWithLoader';
 import IconButton from '../common/element/IconButton';
 import Flex from '../common/layout/Flex';
 import OpenCloseModal from '../common/layout/OpenCloseModal';
@@ -54,17 +55,22 @@ export default function CardCreator({
   const i18n = useTranslations();
 
   const { cardTypes, status } = useAndLoadProjectCardTypes();
+  const { isLoading, startLoading, stopLoading } = useLoadingState();
 
   const [selectedType, setSelectedType] = React.useState<number | null>(null);
   //const mainButtonRef = React.useRef<HTMLDivElement>(null);
 
-  const createCard = () => {
+  const createCard = (close: () => void) => {
+    startLoading();
     dispatch(
       API.createSubCardWithTextDataBlock({
         parent: parentCardContent,
         cardTypeId: selectedType,
       }),
-    );
+    ).then(() => {
+      stopLoading();
+      close();
+    });
   };
 
   const resetData = React.useCallback(() => {
@@ -98,7 +104,7 @@ export default function CardCreator({
         >
           <IconButton
             onClick={function () {
-              navigate('types');
+              navigate('project-settings/card-types');
             }}
             title={i18n.modules.cardType.manageTypes}
             icon={faCog}
@@ -108,15 +114,15 @@ export default function CardCreator({
             {i18n.common.cancel}
           </Button>
 
-          <Button
+          <ButtonWithLoader
             onClick={() => {
-              createCard();
+              createCard(close);
               resetData();
-              close();
             }}
+            isLoading={isLoading}
           >
             {i18n.modules.card.addCard}
-          </Button>
+          </ButtonWithLoader>
         </Flex>
       )}
       showCloseButton
@@ -136,9 +142,8 @@ export default function CardCreator({
                 customThumbnailStyle={cx(cardTypeThumbnailStyle)}
                 customOnClick={item => setSelectedType(item?.id ? item.id : null)}
                 customOnDblClick={() => {
-                  createCard();
+                  createCard(close);
                   resetData();
-                  close();
                 }}
                 addEmptyItem
                 selectionnable

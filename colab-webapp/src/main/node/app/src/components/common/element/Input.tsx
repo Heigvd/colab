@@ -114,7 +114,7 @@ function Input({
 
   // const containerRef = React.useRef<HTMLDivElement>(null);
 
-  const [currentInternalValue, setCurrentInternalValue] = React.useState<string | number>();
+  const [currentInternalValue, setCurrentInternalValue] = React.useState<string | number>('');
   const [mode, setMode] = React.useState<'DISPLAY' | 'EDIT'>('DISPLAY');
 
   // the field can resize itself automatically

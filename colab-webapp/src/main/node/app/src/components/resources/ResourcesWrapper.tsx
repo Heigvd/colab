@@ -42,6 +42,7 @@ export default function ResourcesWrapper(contextInfo: ResourcesWrapperProps): JS
   const showTOC = React.useCallback(() => selectResource(null), []);
 
   if (contextInfo.accessLevel === 'DENIED') {
+    // IS THAT RIGHT?!
     return (
       <ResourcesList
         resourcesAndRefs={resourcesAndRefs}

@@ -25,7 +25,7 @@ import { getDisplayName } from '../../helper';
 import useTranslations from '../../i18n/I18nContext';
 import { useAndLoadProjectTeam } from '../../selectors/projectSelector';
 import { useCurrentUser } from '../../selectors/userSelector';
-import { useAppDispatch, useAppSelector } from '../../store/hooks';
+import { useAppDispatch, useAppSelector, useLoadingState } from '../../store/hooks';
 import { addNotification } from '../../store/notification';
 import { Destroyer } from '../common/Destroyer';
 import Button from '../common/element/Button';
@@ -176,6 +176,7 @@ const Member = ({ member, roles, isTheOnlyOwner }: MemberProps) => {
   const dispatch = useAppDispatch();
   const i18n = useTranslations();
   const { currentUser, status: currentUserStatus } = useCurrentUser();
+  const { isLoading, startLoading, stopLoading } = useLoadingState();
   //const [ open, setOpen ] = React.useState<'COLLAPSED' | 'EXPANDED'>('COLLAPSED');
 
   React.useEffect(() => {
@@ -306,9 +307,11 @@ const Member = ({ member, roles, isTheOnlyOwner }: MemberProps) => {
                     </p>
                   }
                   onConfirm={() => {
-                    dispatch(API.deleteMember(member));
+                    startLoading();
+                    dispatch(API.deleteMember(member)).then(stopLoading);
                   }}
                   confirmButtonLabel={'Delete team member'}
+                  isConfirmButtonLoading={isLoading}
                 />
               ),
               modal: true,
