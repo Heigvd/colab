@@ -34,7 +34,7 @@ interface BaseField<T> {
   isMandatory: boolean;
   readOnly?: boolean;
   tip?: TipsProps['children'];
-  fieldFooter?: React.ReactNode | ((data: T) => React.ReactNode);
+  footer?: React.ReactNode | ((data: T) => React.ReactNode);
   isErroneous?: (data: T) => boolean;
   errorMessage?: React.ReactNode | ((data: T) => React.ReactNode);
 }
@@ -178,7 +178,7 @@ export default function Form<T>({
         : null;
 
     const effectiveFieldFooter =
-      typeof field.fieldFooter === 'function' ? field.fieldFooter(state) : field.fieldFooter;
+      typeof field.footer === 'function' ? field.footer(state) : field.footer;
 
     if (field.type === 'text' || field.type === 'textarea') {
       return (
@@ -195,7 +195,7 @@ export default function Form<T>({
             onChange={value => setFormValue(field.key, value)}
             tip={field.tip}
             footer={effectiveFieldFooter}
-            error={errorMessage}
+            errorMessage={errorMessage}
           />
         </div>
       );
@@ -213,7 +213,7 @@ export default function Form<T>({
             onChange={value => setFormValue(field.key, value)}
             tip={field.tip}
             footer={effectiveFieldFooter}
-            error={errorMessage}
+            errorMessage={errorMessage}
           />
           {field.strengthProp != null && (
             <div className={cx({ [css({ display: 'none' })]: !field.showStrengthBar })}>
@@ -244,8 +244,8 @@ export default function Form<T>({
               readOnly={field.readOnly}
               onChange={value => setFormValue(field.key, value)}
               tip={field.tip}
-              fieldFooter={effectiveFieldFooter}
-              error={errorMessage}
+              footer={effectiveFieldFooter}
+              errorMessage={errorMessage}
             />
           ) : (
             <Checkbox
@@ -254,8 +254,8 @@ export default function Form<T>({
               readOnly={field.readOnly}
               onChange={value => setFormValue(field.key, value)}
               tip={field.tip}
-              fieldFooter={effectiveFieldFooter}
-              error={errorMessage}
+              footer={effectiveFieldFooter}
+              errorMessage={errorMessage}
             />
           )}
         </div>
@@ -274,8 +274,8 @@ export default function Form<T>({
             options={field.options}
             onChange={value => setFormValue(field.key, value)}
             tip={field.tip}
-            fieldFooter={effectiveFieldFooter}
-            warning={errorMessage}
+            footer={effectiveFieldFooter}
+            errorMessage={errorMessage}
           />
         </div>
       );
@@ -292,8 +292,8 @@ export default function Form<T>({
             options={field.options}
             onChange={value => setFormValue(field.key, value)}
             tip={field.tip}
-            fieldFooter={effectiveFieldFooter}
-            warning={errorMessage}
+            footer={effectiveFieldFooter}
+            errorMessage={errorMessage}
           />
         </div>
       );

@@ -32,7 +32,7 @@ type ValueType<T, IsMulti> = IsMulti extends true ? T[] : T | undefined;
 interface SelectInputProps<T, IsMulti extends boolean> {
   label?: React.ReactNode;
   value?: T;
-  placeholder?: string;
+  placeholder?: React.ReactNode;
   mandatory?: boolean;
   readOnly?: boolean;
   isMulti: IsMulti;
@@ -40,9 +40,9 @@ interface SelectInputProps<T, IsMulti extends boolean> {
   options: Opt<T>[];
   onChange: (newValue: ValueType<T, IsMulti>) => void;
   tip?: TipsProps['children'];
-  fieldFooter?: React.ReactNode;
-  warning?: React.ReactNode;
-  error?: React.ReactNode;
+  footer?: React.ReactNode;
+  warningMessage?: React.ReactNode;
+  errorMessage?: React.ReactNode;
   className?: string;
   bottomClassName?: string;
 }
@@ -58,9 +58,9 @@ export default function SelectInput<T, IsMulti extends boolean>({
   options,
   onChange,
   tip,
-  fieldFooter,
-  warning,
-  error,
+  footer,
+  warningMessage,
+  errorMessage,
   className,
   bottomClassName,
 }: SelectInputProps<T, IsMulti>): JSX.Element {
@@ -132,8 +132,8 @@ export default function SelectInput<T, IsMulti extends boolean>({
             isDisabled={readOnly}
             isMulti={isMulti}
             options={options}
-            onChange={onInternalChange}
             menuPortalTarget={document.body}
+            onChange={onInternalChange}
             styles={{
               menuPortal: base => ({ ...base, zIndex: 9999 }),
               menu: base => ({ ...base, marginTop: '0px' }),
@@ -142,10 +142,10 @@ export default function SelectInput<T, IsMulti extends boolean>({
           />
         )}
       </Flex>
-      {fieldFooter != null && <div className={textSmall}>{fieldFooter}</div>}
+      {footer != null && <div className={textSmall}>{footer}</div>}
       <Flex direction="column" align="center" className={cx(textSmall, bottomClassName)}>
-        {warning != null && <div className={warningStyle}>{warning}</div>}
-        {error != null && <div className={errorStyle}>{error}</div>}
+        {warningMessage != null && <div className={warningStyle}>{warningMessage}</div>}
+        {errorMessage != null && <div className={errorStyle}>{errorMessage}</div>}
       </Flex>
     </Flex>
   );
