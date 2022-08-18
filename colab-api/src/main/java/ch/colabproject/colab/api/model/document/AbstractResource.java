@@ -417,10 +417,8 @@ public abstract class AbstractResource
 
     @Override
     public void merge(ColabEntity other) throws ColabMergeException {
-        if (other instanceof AbstractResource) {
-            AbstractResource o = (AbstractResource) other;
-            this.setCategory(o.getCategory());
-        } else {
+     // category cannot be changed alone manually. It is handled by ResourceCategoryHelper
+        if (!(other instanceof AbstractResource)) {
             throw new ColabMergeException(this, other);
         }
     }

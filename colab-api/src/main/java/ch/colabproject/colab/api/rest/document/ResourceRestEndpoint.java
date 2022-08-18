@@ -392,11 +392,11 @@ public class ResourceRestEndpoint {
      *                        reference
      */
     @PUT
-    @Path("setCategory/{resourceOrRefId}")
-    public void setCategory(@PathParam("resourceOrRefId") Long resourceOrRefId,
+    @Path("changeCategory/{resourceOrRefId}")
+    public void changeCategory(@PathParam("resourceOrRefId") Long resourceOrRefId,
         String categoryName) {
         logger.debug("add resource/ref #{} to category {}", resourceOrRefId, categoryName);
-        resourceCategoryHelper.setCategory(resourceOrRefId, categoryName);
+        resourceCategoryHelper.changeCategory(resourceOrRefId, categoryName);
     }
 
     /**
@@ -407,11 +407,11 @@ public class ResourceRestEndpoint {
      *                         reference
      */
     @PUT
-    @Path("setCategory/list/{newName}")
-    public void setCategoryForList(@PathParam("newName") String categoryName,
+    @Path("changeCategory/list/{newName}")
+    public void changeCategoryForList(@PathParam("newName") String categoryName,
         List<Long> resourceOrRefIds) {
         logger.debug("add resource/ref #{} to category {}", resourceOrRefIds, categoryName);
-        resourceCategoryHelper.setCategory(resourceOrRefIds, categoryName);
+        resourceCategoryHelper.changeCategory(resourceOrRefIds, categoryName);
     }
 
     /**
@@ -423,7 +423,7 @@ public class ResourceRestEndpoint {
     @Path("removeCategory/{resourceOrRefId}")
     public void removeCategory(@PathParam("resourceOrRefId") Long resourceOrRefId) {
         logger.debug("remove category from resource/ref #{}", resourceOrRefId);
-        resourceCategoryHelper.removeCategory(resourceOrRefId);
+        resourceCategoryHelper.changeCategory(resourceOrRefId, null);
     }
 
     /**
@@ -435,7 +435,7 @@ public class ResourceRestEndpoint {
     @Path("removeCategory/list")
     public void removeCategoryForList(List<Long> resourceOrRefIds) {
         logger.debug("remove category from resource/ref #{}", resourceOrRefIds);
-        resourceCategoryHelper.removeCategory(resourceOrRefIds);
+        resourceCategoryHelper.changeCategory(resourceOrRefIds, null);
     }
 
     /**

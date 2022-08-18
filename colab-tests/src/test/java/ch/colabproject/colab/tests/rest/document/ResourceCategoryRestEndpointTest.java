@@ -49,10 +49,10 @@ public class ResourceCategoryRestEndpointTest extends AbstractArquillianTest {
         Assertions.assertNull(persistedResource2.getCategory());
 
         String categoryNameA = "Guides #" + ((int) (Math.random() * 1000));
-        String categoryNameB = "Work files +\"*ç%&/()=?^±“#Ç[]|{}≠¿´<>,.-¨$"
+        String categoryNameB = "Work files +\"*ç%&/()=?^±“#Ç[]|≠¿´<>,.-¨$" // {}
             + ((int) (Math.random() * 1000));
 
-        client.resourceRestEndpoint.setCategory(resource1Id, categoryNameA);
+        client.resourceRestEndpoint.changeCategory(resource1Id, categoryNameA);
         persistedResource1 = (Resource) client.resourceRestEndpoint
             .getAbstractResource(resource1Id);
         persistedResource2 = (Resource) client.resourceRestEndpoint
@@ -60,7 +60,7 @@ public class ResourceCategoryRestEndpointTest extends AbstractArquillianTest {
         Assertions.assertEquals(categoryNameA, persistedResource1.getCategory());
         Assertions.assertNull(persistedResource2.getCategory());
 
-        client.resourceRestEndpoint.setCategory(resource2Id, categoryNameA);
+        client.resourceRestEndpoint.changeCategory(resource2Id, categoryNameA);
         persistedResource1 = (Resource) client.resourceRestEndpoint
             .getAbstractResource(resource1Id);
         persistedResource2 = (Resource) client.resourceRestEndpoint
@@ -68,7 +68,7 @@ public class ResourceCategoryRestEndpointTest extends AbstractArquillianTest {
         Assertions.assertEquals(categoryNameA, persistedResource1.getCategory());
         Assertions.assertEquals(categoryNameA, persistedResource2.getCategory());
 
-        client.resourceRestEndpoint.setCategoryForList("   ",
+        client.resourceRestEndpoint.changeCategoryForList("   ",
             Lists.newArrayList(resource1Id, resource2Id));
         persistedResource1 = (Resource) client.resourceRestEndpoint
             .getAbstractResource(resource1Id);
@@ -77,7 +77,7 @@ public class ResourceCategoryRestEndpointTest extends AbstractArquillianTest {
         Assertions.assertNull(persistedResource1.getCategory());
         Assertions.assertNull(persistedResource2.getCategory());
 
-        client.resourceRestEndpoint.setCategoryForList(categoryNameA,
+        client.resourceRestEndpoint.changeCategoryForList(categoryNameA,
             Lists.newArrayList(resource1Id, resource2Id));
         persistedResource1 = (Resource) client.resourceRestEndpoint
             .getAbstractResource(resource1Id);
@@ -95,7 +95,7 @@ public class ResourceCategoryRestEndpointTest extends AbstractArquillianTest {
         Assertions.assertNull(persistedResource1.getCategory());
         Assertions.assertNull(persistedResource2.getCategory());
 
-        client.resourceRestEndpoint.setCategoryForList(categoryNameA,
+        client.resourceRestEndpoint.changeCategoryForList(categoryNameA,
             Lists.newArrayList(resource1Id, resource2Id));
         persistedResource1 = (Resource) client.resourceRestEndpoint
             .getAbstractResource(resource1Id);
@@ -104,7 +104,7 @@ public class ResourceCategoryRestEndpointTest extends AbstractArquillianTest {
         Assertions.assertEquals(categoryNameA, persistedResource1.getCategory());
         Assertions.assertEquals(categoryNameA, persistedResource2.getCategory());
 
-        client.resourceRestEndpoint.setCategory(resource1Id, categoryNameB);
+        client.resourceRestEndpoint.changeCategory(resource1Id, categoryNameB);
         persistedResource1 = (Resource) client.resourceRestEndpoint
             .getAbstractResource(resource1Id);
         persistedResource2 = (Resource) client.resourceRestEndpoint
@@ -187,20 +187,14 @@ public class ResourceCategoryRestEndpointTest extends AbstractArquillianTest {
 
         String categoryNameO = "work files #" + ((int) (Math.random() * 1000));
 
-        client.resourceRestEndpoint.setCategory(resource3Id, categoryNameO);
+        client.resourceRestEndpoint.changeCategory(resource3Id, categoryNameO);
         persistedResource3 = (Resource) client.resourceRestEndpoint
             .getAbstractResource(resource3Id);
         Assertions.assertEquals(categoryNameO, persistedResource3.getCategory());
 
         // set categoryNameA for each
 
-        client.resourceRestEndpoint.setCategoryForList(categoryNameA,
-            Lists.newArrayList(resourceOfCardType1Id,
-                resourceRefOfCard1Id, resourceRefOfCardContent1Id,
-                resourceRefOfSubCard2Id// ,
-//                resourceRefOfCardIIId
-            ));
-        // no category for resourceRefOfSubCardContent2Id
+        client.resourceRestEndpoint.changeCategory(resourceOfCardType1Id, categoryNameA);
 
         resourceOfCardType1 = (Resource) client.resourceRestEndpoint
             .getAbstractResource(resourceOfCardType1Id);
@@ -216,7 +210,7 @@ public class ResourceCategoryRestEndpointTest extends AbstractArquillianTest {
         Assertions.assertEquals(categoryNameA, resourceRefOfSubCard2.getCategory());
         resourceRefOfSubCardContent2 = (ResourceRef) client.resourceRestEndpoint
             .getAbstractResource(resourceRefOfSubCardContent2Id);
-        Assertions.assertNull(resourceRefOfSubCardContent2.getCategory());
+        Assertions.assertEquals(categoryNameA, resourceRefOfSubCardContent2.getCategory());
 //        resourceRefOfCardII = client.resourceRestEndpoint.getAbstractResource(resourceRefOfCardIIId);
 //        Assertions.assertEquals(categoryNameA, resourceRefOfCardII.getCategory());
 
@@ -238,7 +232,7 @@ public class ResourceCategoryRestEndpointTest extends AbstractArquillianTest {
         Assertions.assertEquals(categoryNameB, resourceRefOfSubCard2.getCategory());
         resourceRefOfSubCardContent2 = (ResourceRef) client.resourceRestEndpoint
             .getAbstractResource(resourceRefOfSubCardContent2Id);
-        Assertions.assertNull(resourceRefOfSubCardContent2.getCategory());
+        Assertions.assertEquals(categoryNameB, resourceRefOfSubCardContent2.getCategory());
         // in another project, stay category A
 //        resourceRefOfCardII = client.resourceRestEndpoint.getAbstractResource(resourceRefOfCardIIId);
 //        Assertions.assertEquals(categoryNameA, resourceRefOfCardII.getCategory());
@@ -261,7 +255,7 @@ public class ResourceCategoryRestEndpointTest extends AbstractArquillianTest {
         Assertions.assertEquals(categoryNameC, resourceRefOfSubCard2.getCategory());
         resourceRefOfSubCardContent2 = (ResourceRef) client.resourceRestEndpoint
             .getAbstractResource(resourceRefOfSubCardContent2Id);
-        Assertions.assertNull(resourceRefOfSubCardContent2.getCategory());
+        Assertions.assertEquals(categoryNameC, resourceRefOfSubCardContent2.getCategory());
 
         // rename category C -> D at card content 1 level
         client.resourceRestEndpoint.renameCategoryForCardContent(cardContent1Id, categoryNameC,
@@ -278,7 +272,7 @@ public class ResourceCategoryRestEndpointTest extends AbstractArquillianTest {
         Assertions.assertEquals(categoryNameD, resourceRefOfSubCard2.getCategory());
         resourceRefOfSubCardContent2 = (ResourceRef) client.resourceRestEndpoint
             .getAbstractResource(resourceRefOfSubCardContent2Id);
-        Assertions.assertNull(resourceRefOfSubCardContent2.getCategory());
+        Assertions.assertEquals(categoryNameD, resourceRefOfSubCardContent2.getCategory());
 
         // rename category D -> E at sub card 2 level
         client.resourceRestEndpoint.renameCategoryForCard(subCard2Id, categoryNameD,
@@ -292,7 +286,7 @@ public class ResourceCategoryRestEndpointTest extends AbstractArquillianTest {
         Assertions.assertEquals(categoryNameE, resourceRefOfSubCard2.getCategory());
         resourceRefOfSubCardContent2 = (ResourceRef) client.resourceRestEndpoint
             .getAbstractResource(resourceRefOfSubCardContent2Id);
-        Assertions.assertNull(resourceRefOfSubCardContent2.getCategory());
+        Assertions.assertEquals(categoryNameE, resourceRefOfSubCardContent2.getCategory());
 
         // recapitulation at this point
 //        resourceRefOfCardII = client.resourceRestEndpoint.getAbstractResource(resourceRefOfCardIIId);
@@ -311,7 +305,7 @@ public class ResourceCategoryRestEndpointTest extends AbstractArquillianTest {
         Assertions.assertEquals(categoryNameE, resourceRefOfSubCard2.getCategory());
         resourceRefOfSubCardContent2 = (ResourceRef) client.resourceRestEndpoint
             .getAbstractResource(resourceRefOfSubCardContent2Id);
-        Assertions.assertNull(resourceRefOfSubCardContent2.getCategory());
+        Assertions.assertEquals(categoryNameE, resourceRefOfSubCardContent2.getCategory());
         persistedResource3 = (Resource) client.resourceRestEndpoint
             .getAbstractResource(resource3Id);
         Assertions.assertEquals(categoryNameO, persistedResource3.getCategory());

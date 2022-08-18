@@ -73,7 +73,7 @@ export default function ResourceCreator({
       isMulti: false,
       canCreateOption: true,
       options: allCategories.map(c => ({ label: c, value: c })),
-      tip: 'Like folders to organize the documentation',
+      tip: 'Group of documents',
     }),
   ];
 
