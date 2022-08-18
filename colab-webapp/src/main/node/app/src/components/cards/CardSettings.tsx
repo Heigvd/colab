@@ -12,6 +12,7 @@ import { Card, CardContent } from 'colab-rest-client';
 import * as React from 'react';
 import { TwitterPicker } from 'react-color';
 import * as API from '../../API/api';
+import useTranslations from '../../i18n/I18nContext';
 import { useAppDispatch } from '../../store/hooks';
 import Tips, { WIPContainer } from '../common/element/Tips';
 import Checkbox from '../common/Form/Checkbox';
@@ -32,6 +33,7 @@ interface CardSettingsProps {
 
 export default function CardSettings({ card, variant }: CardSettingsProps): JSX.Element {
   const dispatch = useAppDispatch();
+  const i18n = useTranslations();
 
   return (
     <Flex className={css({ gap: space_M })} direction="column" shrink={1}>
@@ -39,19 +41,18 @@ export default function CardSettings({ card, variant }: CardSettingsProps): JSX.
         <Checkbox
           label={
             <>
-              <FontAwesomeIcon icon={faLock} className={iconStyle} /> Locked
+              <FontAwesomeIcon icon={faLock} className={iconStyle} /> {i18n.modules.card.settings.locked}
             </>
           }
           value={variant.frozen}
           onChange={value => dispatch(API.updateCardContent({ ...variant, frozen: value }))}
         />
         <Tips>
-          Locking the variant (card if only one variant) will artificially set it as read-only and
-          prevent the edition.
+        {i18n.modules.card.infos.lockingCard}
         </Tips>
       </Flex>
       <div>
-        <h3 className={marginDownSmall}>Card color</h3>
+        <h3 className={marginDownSmall}>{i18n.modules.card.settings.cardColor}</h3>
         <TwitterPicker
           colors={['#B54BB2', '#B63E3E', '#3DC15C', '#37A8D8', '#DFCA2A', '#9C9C9C', '#FFFFFF']}
           color={card.color || 'white'}
@@ -65,7 +66,7 @@ export default function CardSettings({ card, variant }: CardSettingsProps): JSX.
         />
       </div>
       <div>
-        <h3 className={marginDownSmall}>Card content status</h3>
+        <h3 className={marginDownSmall}>{i18n.modules.card.settings.contentStatus}</h3>
         <ContentStatusSelector
           self={variant.status}
           onChange={status => dispatch(API.updateCardContent({ ...variant, status: status }))}
@@ -73,10 +74,9 @@ export default function CardSettings({ card, variant }: CardSettingsProps): JSX.
       </div>
       <WIPContainer>
         <Flex>
-          <h3 className={marginDownSmall}>Completion level mode</h3>
+          <h3 className={marginDownSmall}>{i18n.modules.card.settings.completionLevelMode}</h3>
           <Tips tipsType="TODO">
-            Select completion mode (MANUAL | AUTO | NO_OP). Manual: input to set completion; Auto:
-            based on children; No: do not event diplay the bar
+          {i18n.modules.card.infos.completionModeInfo}
           </Tips>
         </Flex>
         <SelectInput

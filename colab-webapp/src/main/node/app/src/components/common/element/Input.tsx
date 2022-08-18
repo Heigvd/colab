@@ -200,10 +200,10 @@ function Input({
   const changeInternal = React.useCallback(
     (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
       const newValue = e.target.value;
+      setCurrentInternalValue(newValue);
+
       if (saveMode === 'SILLY_FLOWING') {
         onChange(newValue);
-      } else {
-        setCurrentInternalValue(newValue);
       }
     },
     [saveMode, onChange],

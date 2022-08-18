@@ -9,6 +9,7 @@ import { css, cx } from '@emotion/css';
 import { Card, CardContent } from 'colab-rest-client';
 import * as React from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
+import useTranslations from '../../i18n/I18nContext';
 import { useSingleAndDoubleClick } from '..//hooks/mouse';
 import { cardShadow, cardStyle } from '../styling/style';
 
@@ -53,6 +54,7 @@ export default function CardLayout({
 }: CardLayoutProps): JSX.Element {
   const navigate = useNavigate();
   const location = useLocation();
+  const i18n = useTranslations();
 
   const singleClick = React.useCallback(() => {
     if (variant != null) {
@@ -81,7 +83,7 @@ export default function CardLayout({
   const click = useSingleAndDoubleClick(singleClick, doubleClick);
 
   if (card.id == null) {
-    return <i>Card without id is invalid...</i>;
+    return <i>{i18n.modules.card.error.withoutId}</i>;
   } else {
     return (
       <div
