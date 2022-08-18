@@ -90,6 +90,14 @@ const breadCrumbsStyle = css({
   margin: '0 ' + space_S,
   alignSelf: 'center',
 });
+
+function parentPathFn() {
+  return '../';
+}
+
+function cardThumbFactory(card: Card) {
+return <CardThumbWithSelector depth={2} card={card} />
+}
 const Ancestor = ({ card, content }: Ancestor): JSX.Element => {
   const i18n = useTranslations();
   const navigate = useNavigate();
@@ -484,10 +492,10 @@ export default function Editor(): JSX.Element {
                 <CardWrapper
                   grow={0}
                   align="center"
-                  backButtonPath={() => '../'}
+                  backButtonPath={parentPathFn}
                   backButtonTitle="Back to root project"
                 >
-                  {card => <CardThumbWithSelector depth={2} card={card} />}
+                  {cardThumbFactory}
                 </CardWrapper>
               }
             />

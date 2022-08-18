@@ -11,6 +11,7 @@ import * as React from 'react';
 import useTranslations from '../../../i18n/I18nContext';
 import { errorColor, space_M } from '../../styling/style';
 import Button from '../element/Button';
+import ButtonWithLoader from '../element/ButtonWithLoader';
 import Flex from './Flex';
 import OpenCloseModal from './OpenCloseModal';
 
@@ -22,6 +23,7 @@ interface ConfirmDeleteModalProps {
   onConfirm: () => void;
   title?: string;
   className?: string;
+  isConfirmButtonLoading?: boolean;
 }
 
 export default function ConfirmDeleteModal({
@@ -32,6 +34,7 @@ export default function ConfirmDeleteModal({
   onConfirm,
   title,
   className,
+  isConfirmButtonLoading,
 }: ConfirmDeleteModalProps): JSX.Element {
   const mainButtonRef = React.useRef<HTMLSpanElement>(null);
   React.useEffect(() => {
@@ -39,7 +42,10 @@ export default function ConfirmDeleteModal({
   }, []);
 
   const i18n = useTranslations();
-
+  const onInternalConfirm = (close: () => void) => {
+    onConfirm();
+    close();
+  }
   return (
     <OpenCloseModal
       title={title ? title : ''}
@@ -64,20 +70,18 @@ export default function ConfirmDeleteModal({
             >
               {cancelButtonLabel ? cancelButtonLabel : i18n.common.cancel}
             </Button>
-            <Button
+            <ButtonWithLoader
               ref={mainButtonRef}
               title={confirmButtonLabel ? confirmButtonLabel : 'Delete'}
-              onClick={() => {
-                onConfirm();
-                collapse();
-              }}
+              onClick={() => onInternalConfirm(() => collapse)}
               className={css({
                 backgroundColor: errorColor,
                 marginLeft: space_M,
               })}
+              isLoading={isConfirmButtonLoading}
             >
               {confirmButtonLabel ? confirmButtonLabel : 'Delete'}
-            </Button>
+            </ButtonWithLoader>
           </Flex>
         </Flex>
       )}

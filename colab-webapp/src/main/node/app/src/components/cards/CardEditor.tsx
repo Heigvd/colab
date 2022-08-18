@@ -35,7 +35,7 @@ import { useCardACLForCurrentUser, useVariantsOrLoad } from '../../selectors/car
 import { useAndLoadCardType } from '../../selectors/cardTypeSelector';
 import { useResources } from '../../selectors/resourceSelector';
 import { useStickyNoteLinksForDest } from '../../selectors/stickyNoteLinkSelector';
-import { useAppDispatch } from '../../store/hooks';
+import { useAppDispatch, useLoadingState } from '../../store/hooks';
 import Button from '../common/element/Button';
 import IconButton from '../common/element/IconButton';
 import { DiscreetInput } from '../common/element/Input';
@@ -211,6 +211,8 @@ export default function CardEditor({
     markDownMode: markDownMode,
     setMarkDownMode: setMarkDownMode,
   };
+  const { isLoading, startLoading, stopLoading } = useLoadingState();
+
   const { resourcesAndRefs } = useResources({
     kind: 'CardOrCardContent',
     accessLevel: !readOnly && userAcl.write ? 'WRITE' : userAcl.read ? 'READ' : 'DENIED',
@@ -519,17 +521,25 @@ export default function CardEditor({
                                         </p>
                                       }
                                       onConfirm={() => {
+                                        startLoading();
                                         if (hasVariants) {
-                                          dispatch(API.deleteCardContent(variant));
-                                          navigate(`../edit/${card.id}/v/${variantPager?.next.id}`);
+                                          dispatch(API.deleteCardContent(variant)).then(() => {
+                                            navigate(
+                                              `../edit/${card.id}/v/${variantPager?.next.id}`,
+                                            );
+                                            stopLoading();
+                                          });
                                         } else {
-                                          dispatch(API.deleteCard(card));
-                                          navigate('../');
+                                          dispatch(API.deleteCard(card)).then(() => {
+                                            navigate('../');
+                                            stopLoading();
+                                          });
                                         }
                                       }}
                                       confirmButtonLabel={i18n.modules.card.deleteCardVariant(
                                         hasVariants,
                                       )}
+                                      isConfirmButtonLoading={isLoading}
                                     />
                                   ),
                                   modal: true,
@@ -651,14 +661,18 @@ export default function CardEditor({
                           />
                         ),
                         icon: faPaperclip,
-                        nextToIconElement: <div className={textSmall}> ({resourcesAndRefs.length})</div>,
+                        nextToIconElement: (
+                          <div className={textSmall}> ({resourcesAndRefs.length})</div>
+                        ),
                         title: i18n.modules.resource.documentation,
                         nextToTitleElement: <Tips>{i18n.modules.resource.docDescription}</Tips>,
                         className: css({ overflow: 'auto' }),
                       },
                       'Sticky Notes': {
                         icon: faStickyNote,
-                        nextToIconElement: <div className={textSmall}> ({stickyNotesForDest.length})</div>,
+                        nextToIconElement: (
+                          <div className={textSmall}> ({stickyNotesForDest.length})</div>
+                        ),
                         title: i18n.modules.stickyNotes.stickyNotes,
                         children: <StickyNoteWrapper destCardId={card.id} showSrc />,
                         nextToTitleElement: (
