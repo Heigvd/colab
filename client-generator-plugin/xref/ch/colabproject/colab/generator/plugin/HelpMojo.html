@@ -7,32 +7,32 @@
 <body>
 <div id="overview"><a href="../../../../../../apidocs/ch/colabproject/colab/generator/plugin/HelpMojo.html">View Javadoc</a></div><pre>
 <a class="jxr_linenumber" name="L1" href="#L1">1</a>   
-<a class="jxr_linenumber" name="L2" href="#L2">2</a>   <em class="jxr_comment">package ch.colabproject.colab.generator.plugin;</em>
+<a class="jxr_linenumber" name="L2" href="#L2">2</a>   <strong class="jxr_keyword">package</strong> ch.colabproject.colab.generator.plugin;
 <a class="jxr_linenumber" name="L3" href="#L3">3</a>   
-<a class="jxr_linenumber" name="L4" href="#L4">4</a>   <em class="jxr_comment">import org.apache.maven.plugin.AbstractMojo;</em>
-<a class="jxr_linenumber" name="L5" href="#L5">5</a>   <em class="jxr_comment">import org.apache.maven.plugin.MojoExecutionException;</em>
-<a class="jxr_linenumber" name="L6" href="#L6">6</a>   <em class="jxr_comment">import org.apache.maven.plugins.annotations.Mojo;</em>
-<a class="jxr_linenumber" name="L7" href="#L7">7</a>   <em class="jxr_comment">import org.apache.maven.plugins.annotations.Parameter;</em>
+<a class="jxr_linenumber" name="L4" href="#L4">4</a>   <strong class="jxr_keyword">import</strong> org.apache.maven.plugin.AbstractMojo;
+<a class="jxr_linenumber" name="L5" href="#L5">5</a>   <strong class="jxr_keyword">import</strong> org.apache.maven.plugin.MojoExecutionException;
+<a class="jxr_linenumber" name="L6" href="#L6">6</a>   <strong class="jxr_keyword">import</strong> org.apache.maven.plugins.annotations.Mojo;
+<a class="jxr_linenumber" name="L7" href="#L7">7</a>   <strong class="jxr_keyword">import</strong> org.apache.maven.plugins.annotations.Parameter;
 <a class="jxr_linenumber" name="L8" href="#L8">8</a>   
-<a class="jxr_linenumber" name="L9" href="#L9">9</a>   <em class="jxr_comment">import org.w3c.dom.Document;</em>
-<a class="jxr_linenumber" name="L10" href="#L10">10</a>  <em class="jxr_comment">import org.w3c.dom.Element;</em>
-<a class="jxr_linenumber" name="L11" href="#L11">11</a>  <em class="jxr_comment">import org.w3c.dom.Node;</em>
-<a class="jxr_linenumber" name="L12" href="#L12">12</a>  <em class="jxr_comment">import org.w3c.dom.NodeList;</em>
-<a class="jxr_linenumber" name="L13" href="#L13">13</a>  <em class="jxr_comment">import org.xml.sax.SAXException;</em>
+<a class="jxr_linenumber" name="L9" href="#L9">9</a>   <strong class="jxr_keyword">import</strong> org.w3c.dom.Document;
+<a class="jxr_linenumber" name="L10" href="#L10">10</a>  <strong class="jxr_keyword">import</strong> org.w3c.dom.Element;
+<a class="jxr_linenumber" name="L11" href="#L11">11</a>  <strong class="jxr_keyword">import</strong> org.w3c.dom.Node;
+<a class="jxr_linenumber" name="L12" href="#L12">12</a>  <strong class="jxr_keyword">import</strong> org.w3c.dom.NodeList;
+<a class="jxr_linenumber" name="L13" href="#L13">13</a>  <strong class="jxr_keyword">import</strong> org.xml.sax.SAXException;
 <a class="jxr_linenumber" name="L14" href="#L14">14</a>  
-<a class="jxr_linenumber" name="L15" href="#L15">15</a>  <em class="jxr_comment">import javax.xml.parsers.DocumentBuilder;</em>
-<a class="jxr_linenumber" name="L16" href="#L16">16</a>  <em class="jxr_comment">import javax.xml.parsers.DocumentBuilderFactory;</em>
-<a class="jxr_linenumber" name="L17" href="#L17">17</a>  <em class="jxr_comment">import javax.xml.parsers.ParserConfigurationException;</em>
-<a class="jxr_linenumber" name="L18" href="#L18">18</a>  <em class="jxr_comment">import java.io.IOException;</em>
-<a class="jxr_linenumber" name="L19" href="#L19">19</a>  <em class="jxr_comment">import java.io.InputStream;</em>
-<a class="jxr_linenumber" name="L20" href="#L20">20</a>  <em class="jxr_comment">import java.util.ArrayList;</em>
-<a class="jxr_linenumber" name="L21" href="#L21">21</a>  <em class="jxr_comment">import java.util.List;</em>
+<a class="jxr_linenumber" name="L15" href="#L15">15</a>  <strong class="jxr_keyword">import</strong> javax.xml.parsers.DocumentBuilder;
+<a class="jxr_linenumber" name="L16" href="#L16">16</a>  <strong class="jxr_keyword">import</strong> javax.xml.parsers.DocumentBuilderFactory;
+<a class="jxr_linenumber" name="L17" href="#L17">17</a>  <strong class="jxr_keyword">import</strong> javax.xml.parsers.ParserConfigurationException;
+<a class="jxr_linenumber" name="L18" href="#L18">18</a>  <strong class="jxr_keyword">import</strong> java.io.IOException;
+<a class="jxr_linenumber" name="L19" href="#L19">19</a>  <strong class="jxr_keyword">import</strong> java.io.InputStream;
+<a class="jxr_linenumber" name="L20" href="#L20">20</a>  <strong class="jxr_keyword">import</strong> java.util.ArrayList;
+<a class="jxr_linenumber" name="L21" href="#L21">21</a>  <strong class="jxr_keyword">import</strong> java.util.List;
 <a class="jxr_linenumber" name="L22" href="#L22">22</a>  
-<a class="jxr_linenumber" name="L23" href="#L23">23</a>  <em class="jxr_comment">/**</em>
-<a class="jxr_linenumber" name="L24" href="#L24">24</a>  <em class="jxr_comment"> * Display help information on client-generator-plugin.&lt;br&gt;</em>
-<a class="jxr_linenumber" name="L25" href="#L25">25</a>  <em class="jxr_comment"> * Call &lt;code&gt;mvn client-generator:help -Ddetail=true -Dgoal=&amp;lt;goal-name&amp;gt;&lt;/code&gt; to display parameter details.</em>
-<a class="jxr_linenumber" name="L26" href="#L26">26</a>  <em class="jxr_comment"> * @author maven-plugin-tools</em>
-<a class="jxr_linenumber" name="L27" href="#L27">27</a>  <em class="jxr_comment"> */</em>
+<a class="jxr_linenumber" name="L23" href="#L23">23</a>  <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L24" href="#L24">24</a>  <em class="jxr_javadoccomment"> * Display help information on client-generator-plugin.&lt;br&gt;</em>
+<a class="jxr_linenumber" name="L25" href="#L25">25</a>  <em class="jxr_javadoccomment"> * Call &lt;code&gt;mvn client-generator:help -Ddetail=true -Dgoal=&amp;lt;goal-name&amp;gt;&lt;/code&gt; to display parameter details.</em>
+<a class="jxr_linenumber" name="L26" href="#L26">26</a>  <em class="jxr_javadoccomment"> * @author maven-plugin-tools</em>
+<a class="jxr_linenumber" name="L27" href="#L27">27</a>  <em class="jxr_javadoccomment"> */</em>
 <a class="jxr_linenumber" name="L28" href="#L28">28</a>  @Mojo( name = <span class="jxr_string">"help"</span>, requiresProject = false, threadSafe = <strong class="jxr_keyword">true</strong> )
 <a class="jxr_linenumber" name="L29" href="#L29">29</a>  <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">class</strong> <a name="HelpMojo" href="../../../../../ch/colabproject/colab/generator/plugin/HelpMojo.html#HelpMojo">HelpMojo</a>
 <a class="jxr_linenumber" name="L30" href="#L30">30</a>      <strong class="jxr_keyword">extends</strong> AbstractMojo

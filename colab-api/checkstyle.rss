@@ -144,20 +144,6 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="${project.url}/checkstyle.html#ch.colabproject.colab.api.ws.WebsocketEndpoint.java">ch/colabproject/colab/api/ws/WebsocketEndpoint.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  1
-                </td>
-                <td>
-                  0
-                </td>
-              </tr>
-                          <tr>
-                <td>
                   <a href="${project.url}/checkstyle.html#ch.colabproject.colab.api.rest.project.bean.ProjectCreationData.java">ch/colabproject/colab/api/rest/project/bean/ProjectCreationData.java</a>
                 </td>
                 <td>
@@ -165,6 +151,20 @@ under the License.
                 </td>
                 <td>
                   0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="${project.url}/checkstyle.html#ch.colabproject.colab.api.ws.WebsocketEndpoint.java">ch/colabproject/colab/api/ws/WebsocketEndpoint.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  1
                 </td>
                 <td>
                   0
@@ -298,20 +298,6 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="${project.url}/checkstyle.html#ch.colabproject.colab.api.ws.message.IndexEntry.java">ch/colabproject/colab/api/ws/message/IndexEntry.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-              </tr>
-                          <tr>
-                <td>
                   <a href="${project.url}/checkstyle.html#ch.colabproject.colab.api.security.AuthenticationFailure.java">ch/colabproject/colab/api/security/AuthenticationFailure.java</a>
                 </td>
                 <td>
@@ -319,6 +305,20 @@ under the License.
                 </td>
                 <td>
                   1
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="${project.url}/checkstyle.html#ch.colabproject.colab.api.ws.message.IndexEntry.java">ch/colabproject/colab/api/ws/message/IndexEntry.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
                 </td>
                 <td>
                   0
@@ -382,20 +382,6 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="${project.url}/checkstyle.html#ch.colabproject.colab.api.model.team.acl.InvolvementLevel.java">ch/colabproject/colab/api/model/team/acl/InvolvementLevel.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-              </tr>
-                          <tr>
-                <td>
                   <a href="${project.url}/checkstyle.html#ch.colabproject.colab.api.model.tools.JpaCustomizer.java">ch/colabproject/colab/api/model/tools/JpaCustomizer.java</a>
                 </td>
                 <td>
@@ -403,6 +389,20 @@ under the License.
                 </td>
                 <td>
                   1
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="${project.url}/checkstyle.html#ch.colabproject.colab.api.model.team.acl.InvolvementLevel.java">ch/colabproject/colab/api/model/team/acl/InvolvementLevel.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
                 </td>
                 <td>
                   0
@@ -452,7 +452,7 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="${project.url}/checkstyle.html#ch.colabproject.colab.api.model.token.VerifyLocalAccountToken.java">ch/colabproject/colab/api/model/token/VerifyLocalAccountToken.java</a>
+                  <a href="${project.url}/checkstyle.html#ch.colabproject.colab.api.model.document.ResourceRef.java">ch/colabproject/colab/api/model/document/ResourceRef.java</a>
                 </td>
                 <td>
                   0
@@ -466,7 +466,7 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="${project.url}/checkstyle.html#ch.colabproject.colab.api.model.document.ResourceRef.java">ch/colabproject/colab/api/model/document/ResourceRef.java</a>
+                  <a href="${project.url}/checkstyle.html#ch.colabproject.colab.api.model.token.VerifyLocalAccountToken.java">ch/colabproject/colab/api/model/token/VerifyLocalAccountToken.java</a>
                 </td>
                 <td>
                   0
@@ -508,20 +508,6 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="${project.url}/checkstyle.html#ch.colabproject.colab.api.model.WithIndex.java">ch/colabproject/colab/api/model/WithIndex.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-              </tr>
-                          <tr>
-                <td>
                   <a href="${project.url}/checkstyle.html#ch.colabproject.colab.api.controller.card.CardTypeManager.java">ch/colabproject/colab/api/controller/card/CardTypeManager.java</a>
                 </td>
                 <td>
@@ -529,6 +515,20 @@ under the License.
                 </td>
                 <td>
                   2
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="${project.url}/checkstyle.html#ch.colabproject.colab.api.model.WithIndex.java">ch/colabproject/colab/api/model/WithIndex.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
                 </td>
                 <td>
                   0
@@ -830,20 +830,6 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="${project.url}/checkstyle.html#ch.colabproject.colab.api.model.user.LocalAccount.java">ch/colabproject/colab/api/model/user/LocalAccount.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  1
-                </td>
-                <td>
-                  0
-                </td>
-              </tr>
-                          <tr>
-                <td>
                   <a href="${project.url}/checkstyle.html#ch.colabproject.colab.api.controller.token.TokenManager.java">ch/colabproject/colab/api/controller/token/TokenManager.java</a>
                 </td>
                 <td>
@@ -851,6 +837,20 @@ under the License.
                 </td>
                 <td>
                   0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="${project.url}/checkstyle.html#ch.colabproject.colab.api.model.user.LocalAccount.java">ch/colabproject/colab/api/model/user/LocalAccount.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  1
                 </td>
                 <td>
                   0
@@ -1012,6 +1012,20 @@ under the License.
               </tr>
                           <tr>
                 <td>
+                  <a href="${project.url}/checkstyle.html#ch.colabproject.colab.api.controller.WebsocketTxManager.java">ch/colabproject/colab/api/controller/WebsocketTxManager.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
                   <a href="${project.url}/checkstyle.html#ch.colabproject.colab.api.model.tools.EntityListener.java">ch/colabproject/colab/api/model/tools/EntityListener.java</a>
                 </td>
                 <td>
@@ -1026,7 +1040,7 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="${project.url}/checkstyle.html#ch.colabproject.colab.api.controller.WebsocketTxManager.java">ch/colabproject/colab/api/controller/WebsocketTxManager.java</a>
+                  <a href="${project.url}/checkstyle.html#ch.colabproject.colab.api.rest.config.bean.AccountConfig.java">ch/colabproject/colab/api/rest/config/bean/AccountConfig.java</a>
                 </td>
                 <td>
                   0
@@ -1047,20 +1061,6 @@ under the License.
                 </td>
                 <td>
                   2
-                </td>
-                <td>
-                  0
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="${project.url}/checkstyle.html#ch.colabproject.colab.api.rest.config.bean.AccountConfig.java">ch/colabproject/colab/api/rest/config/bean/AccountConfig.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
                 </td>
                 <td>
                   0
@@ -1208,7 +1208,7 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="${project.url}/checkstyle.html#ch.colabproject.colab.api.model.project.Project.java">ch/colabproject/colab/api/model/project/Project.java</a>
+                  <a href="${project.url}/checkstyle.html#ch.colabproject.colab.api.controller.card.CardContentManager.java">ch/colabproject/colab/api/controller/card/CardContentManager.java</a>
                 </td>
                 <td>
                   0
@@ -1222,7 +1222,7 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="${project.url}/checkstyle.html#ch.colabproject.colab.api.controller.card.CardContentManager.java">ch/colabproject/colab/api/controller/card/CardContentManager.java</a>
+                  <a href="${project.url}/checkstyle.html#ch.colabproject.colab.api.model.project.Project.java">ch/colabproject/colab/api/model/project/Project.java</a>
                 </td>
                 <td>
                   0
@@ -1250,7 +1250,7 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="${project.url}/checkstyle.html#ch.colabproject.colab.api.persistence.jpa.card.CardDao.java">ch/colabproject/colab/api/persistence/jpa/card/CardDao.java</a>
+                  <a href="${project.url}/checkstyle.html#ch.colabproject.colab.api.rest.utils.exception.AbstractExceptionMapper.java">ch/colabproject/colab/api/rest/utils/exception/AbstractExceptionMapper.java</a>
                 </td>
                 <td>
                   0
@@ -1264,7 +1264,7 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="${project.url}/checkstyle.html#ch.colabproject.colab.api.rest.utils.exception.AbstractExceptionMapper.java">ch/colabproject/colab/api/rest/utils/exception/AbstractExceptionMapper.java</a>
+                  <a href="${project.url}/checkstyle.html#ch.colabproject.colab.api.persistence.jpa.card.CardDao.java">ch/colabproject/colab/api/persistence/jpa/card/CardDao.java</a>
                 </td>
                 <td>
                   0
@@ -1348,6 +1348,20 @@ under the License.
               </tr>
                           <tr>
                 <td>
+                  <a href="${project.url}/checkstyle.html#ch.colabproject.colab.api.rest.link.bean.StickyNoteLinkCreationData.java">ch/colabproject/colab/api/rest/link/bean/StickyNoteLinkCreationData.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
                   <a href="${project.url}/checkstyle.html#ch.colabproject.colab.api.Helper.java">ch/colabproject/colab/api/Helper.java</a>
                 </td>
                 <td>
@@ -1362,7 +1376,7 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="${project.url}/checkstyle.html#ch.colabproject.colab.api.rest.link.bean.StickyNoteLinkCreationData.java">ch/colabproject/colab/api/rest/link/bean/StickyNoteLinkCreationData.java</a>
+                  <a href="${project.url}/checkstyle.html#ch.colabproject.colab.api.setup.ApplicationLifecycle.java">ch/colabproject/colab/api/setup/ApplicationLifecycle.java</a>
                 </td>
                 <td>
                   0
@@ -1391,20 +1405,6 @@ under the License.
                           <tr>
                 <td>
                   <a href="${project.url}/checkstyle.html#ch.colabproject.colab.api.persistence.jcr.JcrSessionManager.java">ch/colabproject/colab/api/persistence/jcr/JcrSessionManager.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="${project.url}/checkstyle.html#ch.colabproject.colab.api.setup.ApplicationLifecycle.java">ch/colabproject/colab/api/setup/ApplicationLifecycle.java</a>
                 </td>
                 <td>
                   0
@@ -1656,20 +1656,6 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="${project.url}/checkstyle.html#ch.colabproject.colab.api.model.user.HttpSession.java">ch/colabproject/colab/api/model/user/HttpSession.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  3
-                </td>
-                <td>
-                  0
-                </td>
-              </tr>
-                          <tr>
-                <td>
                   <a href="${project.url}/checkstyle.html#ch.colabproject.colab.api.controller.document.ResourceReferenceSpreadingHelper.java">ch/colabproject/colab/api/controller/document/ResourceReferenceSpreadingHelper.java</a>
                 </td>
                 <td>
@@ -1677,6 +1663,20 @@ under the License.
                 </td>
                 <td>
                   0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="${project.url}/checkstyle.html#ch.colabproject.colab.api.model.user.HttpSession.java">ch/colabproject/colab/api/model/user/HttpSession.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  3
                 </td>
                 <td>
                   0
@@ -1782,7 +1782,7 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="${project.url}/checkstyle.html#ch.colabproject.colab.api.model.document.Resourceable.java">ch/colabproject/colab/api/model/document/Resourceable.java</a>
+                  <a href="${project.url}/checkstyle.html#ch.colabproject.colab.api.controller.document.RelatedPosition.java">ch/colabproject/colab/api/controller/document/RelatedPosition.java</a>
                 </td>
                 <td>
                   0
@@ -1796,7 +1796,7 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="${project.url}/checkstyle.html#ch.colabproject.colab.api.controller.document.RelatedPosition.java">ch/colabproject/colab/api/controller/document/RelatedPosition.java</a>
+                  <a href="${project.url}/checkstyle.html#ch.colabproject.colab.api.model.document.Resourceable.java">ch/colabproject/colab/api/model/document/Resourceable.java</a>
                 </td>
                 <td>
                   0
@@ -1866,20 +1866,6 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="${project.url}/checkstyle.html#ch.colabproject.colab.api.ws.utils.JsonDecoder.java">ch/colabproject/colab/api/ws/utils/JsonDecoder.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-              </tr>
-                          <tr>
-                <td>
                   <a href="${project.url}/checkstyle.html#ch.colabproject.colab.api.rest.project.ProjectRestEndpoint.java">ch/colabproject/colab/api/rest/project/ProjectRestEndpoint.java</a>
                 </td>
                 <td>
@@ -1894,7 +1880,7 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="${project.url}/checkstyle.html#ch.colabproject.colab.api.ws.message.WsMessage.java">ch/colabproject/colab/api/ws/message/WsMessage.java</a>
+                  <a href="${project.url}/checkstyle.html#ch.colabproject.colab.api.ws.utils.JsonDecoder.java">ch/colabproject/colab/api/ws/utils/JsonDecoder.java</a>
                 </td>
                 <td>
                   0
@@ -1909,6 +1895,20 @@ under the License.
                           <tr>
                 <td>
                   <a href="${project.url}/checkstyle.html#ch.colabproject.colab.api.security.permissions.project.ProjectConditions.java">ch/colabproject/colab/api/security/permissions/project/ProjectConditions.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="${project.url}/checkstyle.html#ch.colabproject.colab.api.ws.message.WsMessage.java">ch/colabproject/colab/api/ws/message/WsMessage.java</a>
                 </td>
                 <td>
                   0
@@ -2118,20 +2118,6 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="${project.url}/checkstyle.html#ch.colabproject.colab.api.persistence.jpa.token.TokenDao.java">ch/colabproject/colab/api/persistence/jpa/token/TokenDao.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-              </tr>
-                          <tr>
-                <td>
                   <a href="${project.url}/checkstyle.html#ch.colabproject.colab.api.rest.document.ExternalDataRestEndpoint.java">ch/colabproject/colab/api/rest/document/ExternalDataRestEndpoint.java</a>
                 </td>
                 <td>
@@ -2160,7 +2146,7 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="${project.url}/checkstyle.html#ch.colabproject.colab.api.microchanges.live.LiveResult.java">ch/colabproject/colab/api/microchanges/live/LiveResult.java</a>
+                  <a href="${project.url}/checkstyle.html#ch.colabproject.colab.api.persistence.jpa.token.TokenDao.java">ch/colabproject/colab/api/persistence/jpa/token/TokenDao.java</a>
                 </td>
                 <td>
                   0
@@ -2188,27 +2174,13 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="${project.url}/checkstyle.html#ch.colabproject.colab.api.ws.message.WsUpdateMessage.java">ch/colabproject/colab/api/ws/message/WsUpdateMessage.java</a>
+                  <a href="${project.url}/checkstyle.html#ch.colabproject.colab.api.microchanges.live.LiveResult.java">ch/colabproject/colab/api/microchanges/live/LiveResult.java</a>
                 </td>
                 <td>
                   0
                 </td>
                 <td>
-                  1
-                </td>
-                <td>
                   0
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="${project.url}/checkstyle.html#ch.colabproject.colab.api.microchanges.live.LiveUpdates.java">ch/colabproject/colab/api/microchanges/live/LiveUpdates.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  10
                 </td>
                 <td>
                   0
@@ -2230,13 +2202,27 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="${project.url}/checkstyle.html#ch.colabproject.colab.api.persistence.jcr.JcrRepository.java">ch/colabproject/colab/api/persistence/jcr/JcrRepository.java</a>
+                  <a href="${project.url}/checkstyle.html#ch.colabproject.colab.api.microchanges.live.LiveUpdates.java">ch/colabproject/colab/api/microchanges/live/LiveUpdates.java</a>
                 </td>
                 <td>
                   0
                 </td>
                 <td>
-                  14
+                  10
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="${project.url}/checkstyle.html#ch.colabproject.colab.api.ws.message.WsUpdateMessage.java">ch/colabproject/colab/api/ws/message/WsUpdateMessage.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  1
                 </td>
                 <td>
                   0
@@ -2251,6 +2237,20 @@ under the License.
                 </td>
                 <td>
                   2
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="${project.url}/checkstyle.html#ch.colabproject.colab.api.persistence.jcr.JcrRepository.java">ch/colabproject/colab/api/persistence/jcr/JcrRepository.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  14
                 </td>
                 <td>
                   0
@@ -2314,20 +2314,6 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="${project.url}/checkstyle.html#ch.colabproject.colab.api.model.document.TextDataBlock.java">ch/colabproject/colab/api/model/document/TextDataBlock.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  1
-                </td>
-                <td>
-                  0
-                </td>
-              </tr>
-                          <tr>
-                <td>
                   <a href="${project.url}/checkstyle.html#ch.colabproject.colab.api.controller.RequestManager.java">ch/colabproject/colab/api/controller/RequestManager.java</a>
                 </td>
                 <td>
@@ -2335,6 +2321,20 @@ under the License.
                 </td>
                 <td>
                   2
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="${project.url}/checkstyle.html#ch.colabproject.colab.api.model.document.TextDataBlock.java">ch/colabproject/colab/api/model/document/TextDataBlock.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  1
                 </td>
                 <td>
                   0
@@ -2398,7 +2398,7 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="${project.url}/checkstyle.html#ch.colabproject.colab.api.model.ColabEntity.java">ch/colabproject/colab/api/model/ColabEntity.java</a>
+                  <a href="${project.url}/checkstyle.html#ch.colabproject.colab.api.controller.document.DocumentManager.java">ch/colabproject/colab/api/controller/document/DocumentManager.java</a>
                 </td>
                 <td>
                   0
@@ -2412,7 +2412,7 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="${project.url}/checkstyle.html#ch.colabproject.colab.api.controller.document.DocumentManager.java">ch/colabproject/colab/api/controller/document/DocumentManager.java</a>
+                  <a href="${project.url}/checkstyle.html#ch.colabproject.colab.api.model.ColabEntity.java">ch/colabproject/colab/api/model/ColabEntity.java</a>
                 </td>
                 <td>
                   0
