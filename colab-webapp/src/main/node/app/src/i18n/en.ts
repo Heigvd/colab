@@ -80,6 +80,22 @@ export const en = {
       accessKeyIsRequired: 'access key is required',
     },
   },
+
+  //////////////////////////////////////////////////////////////////////////////////////////////////
+  // Basic components
+  basicComponent: {
+    form: {
+      missingMandatory: 'please fill in data',
+      defaultFieldError: 'please correct data',
+      pleaseProvideData: 'Some data are missing',
+      submit: 'Submit',
+    },
+    selectInput: {
+      select: 'Select',
+      selectOrCreate: 'Select or type to create',
+    },
+  },
+
   //////////////////////////////////////////////////////////////////////////////////////////////////
   // USER
   user: {
@@ -130,17 +146,6 @@ export const en = {
     users: 'Users',
     loggers: 'Loggers',
     stats: 'Stats',
-  },
-
-  //////////////////////////////////////////////////////////////////////////////////////////////////
-  // FORM
-  form: {
-    missingMandatory: 'please fill in data',
-    defaultFieldError: 'please correct data',
-    pleaseProvideData: 'Some data are missing',
-    select: 'Select',
-    selectOrCreate: 'Select or type to create',
-    submit: 'Submit',
   },
 
   //////////////////////////////////////////////////////////////////////////////////////////////////

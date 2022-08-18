@@ -107,7 +107,7 @@ export default function SelectInput<T, IsMulti extends boolean>({
         {canCreateOption ? (
           <Creatable
             value={currentValue}
-            placeholder={placeholder || i18n.form.selectOrCreate}
+            placeholder={placeholder || i18n.basicComponent.selectInput.selectOrCreate}
             isDisabled={readOnly}
             isMulti={isMulti}
             options={options}
@@ -131,7 +131,7 @@ export default function SelectInput<T, IsMulti extends boolean>({
         ) : (
           <Select
             value={currentValue}
-            placeholder={placeholder || i18n.form.select}
+            placeholder={placeholder || i18n.basicComponent.selectInput.select}
             isDisabled={readOnly}
             isMulti={isMulti}
             options={options}

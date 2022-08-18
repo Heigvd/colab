@@ -170,13 +170,13 @@ export default function Form<T>({
 
     const errorMessage =
       showErrors && isEmptyError
-        ? i18n.form.missingMandatory
+        ? i18n.basicComponent.form.missingMandatory
         : showErrors && isErroneous
         ? field.errorMessage != null
           ? typeof field.errorMessage === 'function'
             ? field.errorMessage(state)
             : field.errorMessage
-          : i18n.form.defaultFieldError
+          : i18n.basicComponent.form.defaultFieldError
         : null;
 
     const effectiveFieldFooter =
@@ -321,7 +321,7 @@ export default function Form<T>({
           isLoading={isSubmitInProcess}
           className={cx(css({ margin: space_M + ' 0', alignSelf: 'flex-start' }), buttonClassName)}
         >
-          {submitLabel || i18n.form.submit}
+          {submitLabel || i18n.basicComponent.form.submit}
         </ButtonWithLoader>
         {children}
       </Flex>
