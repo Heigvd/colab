@@ -40,8 +40,8 @@ export function ProjectSettings({ project }: ProjectSettingsProps): JSX.Element 
         />
         <h2>Project settings</h2>
       </Flex>
-      <Tabs>
-        <Tab name="General" label="General">
+      <Tabs routed>
+        <Tab name="general" label="General">
           <Flex className={css({ alignSelf: 'stretch' })}>
             <Flex
               direction="column"
@@ -84,10 +84,10 @@ export function ProjectSettings({ project }: ProjectSettingsProps): JSX.Element 
             </Flex>
           </Flex>
         </Tab>
-        <Tab name="Team" label="Team">
+        <Tab name="team" label="Team">
           <Team project={project} />
         </Tab>
-        <Tab name="Card Types" label="Card Types">
+        <Tab name="card-types" label="Card Types">
           <ProjectCardTypeList />
         </Tab>
       </Tabs>

@@ -31,6 +31,7 @@ export interface Item {
   className?: string;
   title: string;
   nextToTitleElement?: React.ReactNode;
+  nextToIconElement?: React.ReactNode;
 }
 
 export interface SideCollapsiblePanelProps<T extends { [key: string]: Item }> {
@@ -112,7 +113,7 @@ export default function SideCollapsiblePanel<T extends { [key: string]: Item }>(
       <Flex
         direction="column"
         justify="flex-start"
-        align="center"
+        align="stretch"
         className={cx(
           direction === 'LEFT'
             ? css({ borderRight: '1px solid var(--lightGray)' })
@@ -120,29 +121,11 @@ export default function SideCollapsiblePanel<T extends { [key: string]: Item }>(
         )}
       >
         {Object.entries(items).map(([key, item]) => (
-          <IconButton
+          <Flex
             key={key}
-            icon={item.icon}
-            title={item.title}
-            onClick={() => {
-              if (setOpenKey) {
-                setOpenKey(itemKey => (itemKey === key ? undefined : key));
-              } else {
-                setItemKeyOpen(itemKey => (itemKey === key ? undefined : key));
-              }
-            }}
-            iconColor={
-              setOpenKey
-                ? openKey === key
-                  ? 'var(--fgColor)'
-                  : undefined
-                : itemKeyOpen === key
-                ? 'var(--fgColor)'
-                : undefined
-            }
-            iconSize="lg"
+            justify='center'
+            align='center'
             className={cx(
-              lightIconButtonStyle,
               css({ color: 'var(--lightGray)', padding: space_M }),
               {
                 [bgActiveStyleRight]: setOpenKey
@@ -155,7 +138,31 @@ export default function SideCollapsiblePanel<T extends { [key: string]: Item }>(
                   : itemKeyOpen === key && direction === 'LEFT',
               },
             )}
-          />
+          >
+            <IconButton
+              icon={item.icon}
+              title={item.title}
+              onClick={() => {
+                if (setOpenKey) {
+                  setOpenKey(itemKey => (itemKey === key ? undefined : key));
+                } else {
+                  setItemKeyOpen(itemKey => (itemKey === key ? undefined : key));
+                }
+              }}
+              iconColor={
+                setOpenKey
+                  ? openKey === key
+                    ? 'var(--fgColor)'
+                    : undefined
+                  : itemKeyOpen === key
+                  ? 'var(--fgColor)'
+                  : undefined
+              }
+              iconSize="lg"
+              className={cx(lightIconButtonStyle, css({paddingLeft: 0}))}
+            />
+            {item.nextToIconElement}
+          </Flex>
         ))}
       </Flex>
       {direction === 'LEFT' && itemOpen && (

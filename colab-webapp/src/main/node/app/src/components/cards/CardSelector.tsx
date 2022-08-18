@@ -10,6 +10,7 @@ import { Card, entityIs } from 'colab-rest-client';
 import * as React from 'react';
 import Select from 'react-select';
 import * as API from '../../API/api';
+import useTranslations from '../../i18n/I18nContext';
 import { useAllProjectCards } from '../../selectors/cardSelector';
 import { useProjectBeingEdited } from '../../selectors/projectSelector';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
@@ -22,6 +23,7 @@ interface CardSelectorProps {
 }
 
 export default function CardSelector({ value, onSelect }: CardSelectorProps): JSX.Element {
+  const i18n = useTranslations();
   const { project } = useProjectBeingEdited();
   const dispatch = useAppDispatch();
   const cards = useAllProjectCards();
@@ -50,7 +52,7 @@ export default function CardSelector({ value, onSelect }: CardSelectorProps): JS
     return <InlineLoading />;
   } else {
     const options = cards.map(card => ({
-      label: `card ${card.id}`,
+      label: `${i18n.modules.card.card} ${card.id}`,
       value: card,
     }));
     const cardId = entityIs(value, 'Card') ? value.id : value;
