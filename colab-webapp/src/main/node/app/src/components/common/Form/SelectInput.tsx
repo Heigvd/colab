@@ -39,7 +39,7 @@ interface SelectInputProps<T, IsMulti extends boolean> {
   isMulti: IsMulti;
   canCreateOption?: boolean;
   options: Opt<T>[];
-  onChange: (newValue: ValueType<T, IsMulti>) => void;
+  onChange: (newValue: ValueType<T, IsMulti> | null) => void;
   tip?: TipsProps['children'];
   footer?: React.ReactNode;
   warningMessage?: React.ReactNode;
@@ -67,12 +67,9 @@ export default function SelectInput<T, IsMulti extends boolean>({
 }: SelectInputProps<T, IsMulti>): JSX.Element {
   const i18n = useTranslations();
 
-  const [state, setState] = React.useState<T | undefined>(value);
-  const currentValue = options.find(o => o.value === state);
-
-  React.useEffect(() => {
-    setState(value);
-  }, [value]);
+  const currentValue = React.useMemo(() => {
+    return options.find(o => o.value === value);
+  }, [value, options]);
 
   const onInternalChange = React.useCallback(
     (data: OnChangeValue<{ label: string; value: T }, IsMulti>) => {
@@ -84,7 +81,10 @@ export default function SelectInput<T, IsMulti extends boolean>({
         if (v != null) {
           onChange(v.value as ValueType<T, IsMulti>);
         }
+      } else {
+        onChange(null);
       }
+
       return undefined;
     },
     [isMulti, onChange],
@@ -111,14 +111,16 @@ export default function SelectInput<T, IsMulti extends boolean>({
             isDisabled={readOnly}
             isMulti={isMulti}
             options={options}
-            isClearable
+            isClearable={!isMulti}
             menuPortalTarget={document.body}
-            openMenuOnClick
-            openMenuOnFocus
             onChange={onInternalChange}
+            noOptionsMessage={() => {
+              return i18n.basicComponent.selectInput.noItemTypeToCreate;
+            }}
             formatCreateLabel={(inputValue: string) => (
               <div className={cx(selectCreatorStyle, textSmall)}>
-                <FontAwesomeIcon icon={faPlus} /> {' Create "' + inputValue + '"'}
+                <FontAwesomeIcon icon={faPlus} />{' '}
+                {i18n.basicComponent.selectInput.create + ' "' + inputValue + '"'}
               </div>
             )}
             styles={{
@@ -135,8 +137,12 @@ export default function SelectInput<T, IsMulti extends boolean>({
             isDisabled={readOnly}
             isMulti={isMulti}
             options={options}
+            isClearable={!isMulti}
             menuPortalTarget={document.body}
             onChange={onInternalChange}
+            noOptionsMessage={() => {
+              return i18n.basicComponent.selectInput.noMatch;
+            }}
             styles={{
               menuPortal: base => ({ ...base, zIndex: 9999 }),
               menu: base => ({ ...base, marginTop: '0px' }),

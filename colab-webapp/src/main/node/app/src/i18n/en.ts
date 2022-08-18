@@ -91,8 +91,11 @@ export const en = {
       submit: 'Submit',
     },
     selectInput: {
+      noMatch: 'No match',
+      noItemTypeToCreate: 'Type to create the first item',
       select: 'Select',
       selectOrCreate: 'Select or type to create',
+      create: 'Create',
     },
   },
 
