@@ -282,6 +282,7 @@ export default function Form<T>({
         </div>
       );
     } else if (field.type === 'selectnumber') {
+      // TODO see if really useful to have a selection of a number
       return (
         <div key={fieldKey}>
           <SelectInput
