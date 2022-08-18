@@ -163,13 +163,15 @@ export const useAndLoadDocuments = (context: DocumentOwnership): DocsAndStatus =
 
   const { documents, status } = useDocuments(context);
 
-  if (status === 'NOT_INITIALIZED' && context.ownerId) {
-    if (context.kind === 'DeliverableOfCardContent') {
-      dispatch(API.getDeliverablesOfCardContent(context.ownerId));
-    } else if (context.kind === 'PartOfResource') {
-      dispatch(API.getDocumentsOfResource(context.ownerId));
+  React.useEffect(() => {
+    if (status === 'NOT_INITIALIZED' && context.ownerId) {
+      if (context.kind === 'DeliverableOfCardContent') {
+        dispatch(API.getDeliverablesOfCardContent(context.ownerId));
+      } else if (context.kind === 'PartOfResource') {
+        dispatch(API.getDocumentsOfResource(context.ownerId));
+      }
     }
-  }
+  }, [context.kind, context.ownerId, dispatch, status]);
 
   return { documents, status };
 };
