@@ -90,7 +90,7 @@ const breadCrumbsStyle = css({
   margin: '0 ' + space_S,
   alignSelf: 'center',
 });
-const Ancestor = ({ card, content }: Ancestor): JSX.Element => {
+const Ancestor = ({ card, content, last }: Ancestor): JSX.Element => {
   const i18n = useTranslations();
   const navigate = useNavigate();
   const location = useLocation();
@@ -115,7 +115,7 @@ const Ancestor = ({ card, content }: Ancestor): JSX.Element => {
           }}
           clickableClassName={cx(linkStyle, breadCrumbsStyle)}
         >
-          project
+          Project
         </Clickable>
         <FontAwesomeIcon icon={faChevronRight} size="xs" className={breadCrumbsStyle} />
       </>
@@ -134,7 +134,7 @@ const Ancestor = ({ card, content }: Ancestor): JSX.Element => {
         >
           {card.title ? card.title : i18n.modules.card.untitled}
         </Clickable>
-        <FontAwesomeIcon icon={faChevronRight} size="xs" className={breadCrumbsStyle} />
+        {!last && <FontAwesomeIcon icon={faChevronRight} size="xs" className={breadCrumbsStyle} />}
       </>
     );
   } else {
@@ -241,6 +241,8 @@ const CardWrapper = ({
           {ancestors.map((ancestor, x) => (
             <Ancestor key={x} card={ancestor.card} content={ancestor.content} />
           ))}
+          <Ancestor card={card} content={content} last />
+          {/* TODO bouton navigation carte*/}
         </Flex>
         <Flex
           direction="column"

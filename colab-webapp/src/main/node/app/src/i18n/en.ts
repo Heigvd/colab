@@ -43,7 +43,7 @@ export const en = {
     name: 'name',
     date: 'date',
     by: 'by',
-    settings: 'settings',
+    settings: 'Settings',
     basicSettings: 'Basic parameters',
     advancedSettings: 'Advanced parameters',
     comments: 'comments',

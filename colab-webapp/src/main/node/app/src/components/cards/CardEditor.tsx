@@ -331,7 +331,6 @@ export default function CardEditor({
                                 title={i18n.modules.card.showCardType}
                                 className={cx(
                                   lightIconButtonStyle,
-                                  css({ color: 'var(--lightGray)' }),
                                 )}
                                 onClick={() =>
                                   setShowTypeDetails(showTypeDetails => !showTypeDetails)
@@ -413,10 +412,7 @@ export default function CardEditor({
                                     : undefined
                                 }
                                 title={i18n.modules.card.editor.toggleToolbox}
-                                className={cx(
-                                  lightIconButtonStyle,
-                                  css({ color: 'var(--lightGray)' }),
-                                )}
+                                className={lightIconButtonStyle}
                                 onClick={() => setOpenToolbox(openToolbox => !openToolbox)}
                               />
                             )}
@@ -438,8 +434,7 @@ export default function CardEditor({
                                   value: 'settings',
                                   label: (
                                     <>
-                                      <FontAwesomeIcon icon={faCog} />{' '}
-                                      {i18n.modules.card.settings.title}
+                                      <FontAwesomeIcon icon={faCog} /> {i18n.common.settings}
                                     </>
                                   ),
                                   action: () => navigate('settings'),
@@ -448,7 +443,7 @@ export default function CardEditor({
                                   value: 'involvements',
                                   label: (
                                     <>
-                                      <FontAwesomeIcon icon={faUsers} />
+                                      <FontAwesomeIcon icon={faUsers} />{' '}
                                       {i18n.modules.card.involvements}
                                     </>
                                   ),
@@ -458,7 +453,7 @@ export default function CardEditor({
                                   value: 'completion',
                                   label: (
                                     <>
-                                      <FontAwesomeIcon icon={faPercent} />
+                                      <FontAwesomeIcon icon={faPercent} />{' '}
                                       {i18n.modules.card.completion}
                                     </>
                                   ),
@@ -615,7 +610,7 @@ export default function CardEditor({
                     </Flex>
                   </Flex>
                 </ReflexElement>
-                {openKey && <ReflexSplitter />}
+                {openKey && <ReflexSplitter className={css({ zIndex: 0 })} />}
                 <ReflexElement
                   className={'right-pane ' + css({ display: 'flex', minWidth: 'min-content' })}
                   resizeHeight={false}
