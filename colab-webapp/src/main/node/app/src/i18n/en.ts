@@ -138,6 +138,7 @@ export const en = {
     missingMandatory: 'please fill in data',
     defaultFieldError: 'please correct data',
     pleaseProvideData: 'Some data are missing',
+    select: 'Select',
     selectOrCreate: 'Select or type to create',
     submit: 'Submit',
   },
@@ -231,7 +232,8 @@ export const en = {
         lockingCard:
           'Locking the variant (card if only one variant) will artificially set it as read-only and prevent the edition.',
         noDeliverable: 'No deliverable available',
-        completionModeInfo: 'Select completion mode (MANUAL | AUTO | NO_OP). Manual: input to set completion; Auto: based on children; No: do not event diplay the bar',
+        completionModeInfo:
+          'Select completion mode (MANUAL | AUTO | NO_OP). Manual: input to set completion; Auto: based on children; No: do not event diplay the bar',
       },
       error: {
         withoutId: 'Card without id is invalid...',

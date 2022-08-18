@@ -100,7 +100,6 @@ export default function StickyNoteCreator({
     {
       key: 'srcCardId',
       label: 'Source',
-      placeholder: 'Select source',
       type: 'selectnumber',
       isMandatory: true,
       options: cardOptions,

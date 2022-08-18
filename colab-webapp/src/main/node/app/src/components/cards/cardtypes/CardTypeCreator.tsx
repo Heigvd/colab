@@ -88,7 +88,6 @@ export default function CardTypeCreator({ onCreated, usage }: CardTypeCreatorPro
     createSelectField({
       key: 'tags',
       label: i18n.modules.resource.category,
-      placeholder: i18n.form.selectOrCreate,
       type: 'select',
       isMandatory: true,
       isMulti: true,

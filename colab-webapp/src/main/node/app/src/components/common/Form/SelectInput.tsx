@@ -11,6 +11,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import * as React from 'react';
 import Select, { MultiValue, OnChangeValue, SingleValue } from 'react-select';
 import Creatable from 'react-select/creatable';
+import useTranslations from '../../../i18n/I18nContext';
 import {
   errorStyle,
   labelStyle,
@@ -50,7 +51,7 @@ interface SelectInputProps<T, IsMulti extends boolean> {
 export default function SelectInput<T, IsMulti extends boolean>({
   label,
   value,
-  placeholder = 'no value',
+  placeholder,
   mandatory,
   readOnly = false,
   isMulti,
@@ -64,6 +65,8 @@ export default function SelectInput<T, IsMulti extends boolean>({
   className,
   bottomClassName,
 }: SelectInputProps<T, IsMulti>): JSX.Element {
+  const i18n = useTranslations();
+
   const [state, setState] = React.useState<T | undefined>(value);
   const currentValue = options.find(o => o.value === state);
 
@@ -104,7 +107,7 @@ export default function SelectInput<T, IsMulti extends boolean>({
         {canCreateOption ? (
           <Creatable
             value={currentValue}
-            placeholder={placeholder}
+            placeholder={placeholder || i18n.form.selectOrCreate}
             isDisabled={readOnly}
             isMulti={isMulti}
             options={options}
@@ -128,7 +131,7 @@ export default function SelectInput<T, IsMulti extends boolean>({
         ) : (
           <Select
             value={currentValue}
-            placeholder={placeholder}
+            placeholder={placeholder || i18n.form.select}
             isDisabled={readOnly}
             isMulti={isMulti}
             options={options}

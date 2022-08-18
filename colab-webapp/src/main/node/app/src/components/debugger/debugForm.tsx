@@ -90,7 +90,6 @@ export default function DebugForm(): JSX.Element {
           {
             key: 'choice',
             label: 'a choice',
-            placeholder: 'please select what you really want',
             type: 'select',
             isMandatory: mandatory,
             readOnly: readOnly,
@@ -118,7 +117,6 @@ export default function DebugForm(): JSX.Element {
           {
             key: 'rate',
             label: 'a rate',
-            placeholder: 'what is it worth',
             type: 'selectnumber',
             isMandatory: mandatory,
             readOnly: readOnly,

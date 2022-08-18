@@ -29,7 +29,6 @@ export const emailFormat = /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:
 interface BaseField<T> {
   key: keyof T;
   label?: React.ReactNode;
-  placeholder?: string;
   type: 'text' | 'textarea' | 'password' | 'boolean' | 'select' | 'selectnumber';
   isMandatory: boolean;
   readOnly?: boolean;
@@ -41,6 +40,7 @@ interface BaseField<T> {
 
 interface TextualField<T> extends BaseField<T> {
   type: 'text' | 'textarea';
+  placeholder?: string;
 }
 
 export interface PasswordScore {
@@ -50,6 +50,7 @@ export interface PasswordScore {
 
 interface PasswordField<T> extends BaseField<T> {
   type: 'password';
+  placeholder?: string;
   showStrengthBar: boolean;
   strengthProp?: keyof T;
 }
@@ -61,6 +62,7 @@ interface BooleanField<T> extends BaseField<T> {
 
 interface SelectField<T> extends BaseField<T> {
   type: 'select';
+  placeholder?: string;
   isMulti: boolean;
   canCreateOption?: boolean;
   options: { label: string; value: unknown }[];
@@ -285,7 +287,6 @@ export default function Form<T>({
           <SelectInput
             label={field.label}
             value={Number(state[field.key])}
-            placeholder={field.placeholder}
             mandatory={field.isMandatory}
             readOnly={field.readOnly}
             isMulti={false}

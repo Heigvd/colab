@@ -41,15 +41,14 @@ export default function CardSettings({ card, variant }: CardSettingsProps): JSX.
         <Checkbox
           label={
             <>
-              <FontAwesomeIcon icon={faLock} className={iconStyle} /> {i18n.modules.card.settings.locked}
+              <FontAwesomeIcon icon={faLock} className={iconStyle} />{' '}
+              {i18n.modules.card.settings.locked}
             </>
           }
           value={variant.frozen}
           onChange={value => dispatch(API.updateCardContent({ ...variant, frozen: value }))}
         />
-        <Tips>
-        {i18n.modules.card.infos.lockingCard}
-        </Tips>
+        <Tips>{i18n.modules.card.infos.lockingCard}</Tips>
       </Flex>
       <div>
         <h3 className={marginDownSmall}>{i18n.modules.card.settings.cardColor}</h3>
@@ -75,13 +74,10 @@ export default function CardSettings({ card, variant }: CardSettingsProps): JSX.
       <WIPContainer>
         <Flex>
           <h3 className={marginDownSmall}>{i18n.modules.card.settings.completionLevelMode}</h3>
-          <Tips tipsType="TODO">
-          {i18n.modules.card.infos.completionModeInfo}
-          </Tips>
+          <Tips tipsType="TODO">{i18n.modules.card.infos.completionModeInfo}</Tips>
         </Flex>
         <SelectInput
           value={String(variant.completionMode)}
-          placeholder={String(variant.completionMode)}
           options={[]}
           onChange={() => {}}
           isMulti={false}

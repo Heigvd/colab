@@ -68,7 +68,6 @@ export default function ResourceCreator({
     createSelectField({
       key: 'category',
       label: 'Category',
-      placeholder: 'Select or type to create',
       type: 'select',
       isMandatory: false,
       isMulti: false,
