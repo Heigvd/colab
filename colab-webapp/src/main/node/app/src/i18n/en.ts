@@ -38,7 +38,7 @@ export const en = {
     sortBy: 'sort by: ',
     createdBy: 'created by',
     createdOn: 'Created on',
-    name: 'name',
+    name: 'Name',
     date: 'date',
     by: 'by',
     settings: 'settings',
@@ -268,6 +268,10 @@ export const en = {
         'Are you sure you want to delete this whole block? This will be lost forever.',
       openUrlNewTab: 'Open URL in new tab',
     },
+    document: {
+      createDocument: 'Create document',
+      createADocument: 'Create a document',
+    },
     resource: {
       untitled: 'New document',
       noTeaser: 'no document teaser',
@@ -286,6 +290,8 @@ export const en = {
       cardType: 'Card type',
       blankType: 'Blank card type',
       purpose: 'Purpose',
+      createType: 'Create type',
+      createAType: 'Create a type',
       addType: 'Add a type',
       editType: 'Edit type',
       deleteType: 'Delete card type',
