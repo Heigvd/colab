@@ -79,7 +79,7 @@ export default function GlobalCardTypeList(): JSX.Element {
               </CardTypeListWithFilter>
             ) : (
               <div className={voidStyle}>
-                <p>{i18n.modules.cardType.infos.addFirstGlobalTypes}</p>
+                <p>{i18n.modules.cardType.infos.createFirstGlobalTypes}</p>
               </div>
             )}
           </Flex>

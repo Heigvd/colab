@@ -11,6 +11,7 @@ import { Card, CardContent } from 'colab-rest-client';
 import * as React from 'react';
 import { useLocation } from 'react-router-dom';
 import { getSubCards } from '../../API/api';
+import useTranslations from '../../i18n/I18nContext';
 import { shallowEqual, useAppDispatch, useAppSelector } from '../../store/hooks';
 import Button from '../common/element/Button';
 import InlineLoading from '../common/element/InlineLoading';
@@ -108,6 +109,8 @@ export default function ContentSubs({
 }: ContentSubsProps): JSX.Element {
   const dispatch = useAppDispatch();
   const location = useLocation();
+  const i18n = useTranslations();
+
   const isInRootView = !location.pathname.match(/card/);
 
   const subCards = useAppSelector(state => {
@@ -177,12 +180,12 @@ export default function ContentSubs({
     if (subCards.length === 0 && showEmptiness) {
       return (
         <div className={voidStyle}>
-          <p>This project has no card yet. Add some to begin this co-design journey!</p>
+          <p>{i18n.modules.card.infos.noCardYetPleaseCreate}</p>
           <CardCreator
             parentCardContent={cardContent}
             customButton={
               <Button icon={faPlus} clickable>
-                Add the first card
+                {i18n.modules.card.infos.createFirstCard}
               </Button>
             }
             className={css({ display: 'block' })}
@@ -224,7 +227,7 @@ export default function ContentSubs({
                 depth === depthMax ? (
                   location.pathname.match(/card\/\d+\/v\/\d+/) ? undefined : (
                     <Button icon={faPlus} className={fixedButtonStyle} clickable>
-                      Add Card
+                      {i18n.modules.card.createCard}
                     </Button>
                   )
                 ) : undefined

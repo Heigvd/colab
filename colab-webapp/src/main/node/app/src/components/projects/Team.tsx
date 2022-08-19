@@ -357,12 +357,18 @@ const Member = ({ member, roles, isTheOnlyOwner }: MemberProps) => {
 
 function CreateRole({ project }: { project: Project }): JSX.Element {
   const dispatch = useAppDispatch();
+  const i18n = useTranslations();
+
   const [name, setName] = React.useState('');
 
   return (
     <OpenClose
       collapsedChildren={
-        <IconButton title="Add role" icon={faPlus} className={lightIconButtonStyle} />
+        <IconButton
+          title={i18n.modules.team.actions.createRole}
+          icon={faPlus}
+          className={lightIconButtonStyle}
+        />
       }
     >
       {collapse => (

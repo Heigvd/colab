@@ -459,7 +459,7 @@ export default function CardEditor({
                                   value: 'involvements',
                                   label: (
                                     <>
-                                      <FontAwesomeIcon icon={faUsers} />
+                                      <FontAwesomeIcon icon={faUsers} />{' '}
                                       {i18n.modules.card.involvements}
                                     </>
                                   ),
@@ -469,18 +469,18 @@ export default function CardEditor({
                                   value: 'completion',
                                   label: (
                                     <>
-                                      <FontAwesomeIcon icon={faPercent} />
+                                      <FontAwesomeIcon icon={faPercent} />{' '}
                                       {i18n.modules.card.completion}
                                     </>
                                   ),
                                   action: () => navigate('completion'),
                                 },
                                 {
-                                  value: 'Add new variant',
+                                  value: 'createVariant',
                                   label: (
                                     <>
                                       <FontAwesomeIcon icon={faWindowRestore} />{' '}
-                                      {i18n.modules.card.addVariant}
+                                      {i18n.modules.card.createVariant}
                                     </>
                                   ),
                                   action: () => {
@@ -665,7 +665,13 @@ export default function CardEditor({
                           <div className={textSmall}> ({resourcesAndRefs.length})</div>
                         ),
                         title: i18n.modules.resource.documentation,
-                        nextToTitleElement: <Tips>{i18n.modules.resource.docDescription}</Tips>,
+                        nextToTitleElement: (
+                          <Tips>
+                            {card.cardTypeId
+                              ? i18n.modules.resource.docDescriptionWithType
+                              : i18n.modules.resource.docDescription}
+                          </Tips>
+                        ),
                         className: css({ overflow: 'auto' }),
                       },
                       'Sticky Notes': {

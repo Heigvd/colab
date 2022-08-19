@@ -95,7 +95,7 @@ export const en = {
       noItemTypeToCreate: 'Type to create the first item',
       select: 'Select',
       selectOrCreate: 'Select or type to create',
-      create: 'Create',
+      create: (newValue: string): string => `Create "${newValue}"`,
     },
   },
 
@@ -199,16 +199,31 @@ export const en = {
   //////////////////////////////////////////////////////////////////////////////////////////////////
   // MODULES
   modules: {
+    project: {
+      actions: {
+        createProject: 'Create project',
+        createAProject: 'Create a project',
+        chooseAModel: 'choose a model',
+        createAProjectFrom: (templateTitle?: string | null): string =>
+          `Create a project from ${'"' + templateTitle + '"'}`,
+      },
+    },
+    team: {
+      actions: {
+        createRole: 'Create role',
+      },
+    },
     card: {
       card: 'Card',
       variant: 'Variant',
       subcards: 'Subcards',
       untitled: 'New card',
-      addCard: 'Add a card',
+      createCard: 'Create card',
+      createACard: 'Create a card',
       editCard: 'Edit card',
-      addVariant: 'Add a variant',
+      createVariant: 'Create variant',
       createNew: (parentTitle?: string | null): string =>
-        `Create a new ${parentTitle ? 'subcard for ' + parentTitle : 'card'}"`,
+        `Create a ${parentTitle ? 'subcard for ' + parentTitle : 'card'}`,
       deleteCardVariant: (hasVariant?: boolean): string =>
         `Delete ${hasVariant ? 'variant' : 'card'}`,
       confirmDeleteCardVariant: (hasVariant?: boolean): string =>
@@ -217,7 +232,7 @@ export const en = {
         }? This will delete all subcards inside.`,
       involvements: 'Involvements',
       completion: 'Completion',
-      position: 'position',
+      position: 'Position',
       showCardType: 'Show card type information',
       editCompletion: 'Edit card completion',
       editor: {
@@ -236,6 +251,9 @@ export const en = {
         cardPosition: 'Card position',
       },
       infos: {
+        createFirstCard: 'Create the first card',
+        noCardYetPleaseCreate:
+          'This project has no card yet. Create some to begin this co-design journey !',
         cardLocked: 'Card is locked. To unlock it go to Card settings and uncheck "locked".',
         lockingCard:
           'Locking the variant (card if only one variant) will artificially set it as read-only and prevent the edition.',
@@ -257,13 +275,13 @@ export const en = {
       dlFile: 'Download file',
       editBlock: 'Edit block',
       deleteBlock: 'Delete block',
-      addText: 'Add a text block',
-      addFile: 'Add a file',
-      addLink: 'Add a link',
+      createText: 'Create text block',
+      createFile: 'Create file',
+      createLink: 'Create link',
       moveBlockUpDown: (direction: string): string =>
         `Move block ${direction === 'up' ? 'up' : 'down'}`,
       deleteBlockType: (isText: boolean, isLink: boolean): string =>
-        `Delete ${isText ? 'text' : isLink ? 'link' : 'doc'}"`,
+        `Delete ${isText ? 'text' : isLink ? 'link' : 'doc'}`,
       confirmDeleteBlock:
         'Are you sure you want to delete this whole block? This will be lost forever.',
       openUrlNewTab: 'Open URL in new tab',
@@ -277,8 +295,9 @@ export const en = {
       noTeaser: 'no document teaser',
       category: 'category',
       documentation: 'Documentation',
-      docDescription:
-        'Use documentation panel to add pieces of (meta)information related to the card or variant. Pieces of documentation can come from card type.',
+      docDescription: 'Add all documentation related to the card.',
+      docDescriptionWithType:
+        'Add all documentation related to the card. The card model may provide basic documentation.',
     },
     stickyNotes: {
       stickyNotes: 'Sticky notes',
@@ -292,7 +311,6 @@ export const en = {
       purpose: 'Purpose',
       createType: 'Create type',
       createAType: 'Create a type',
-      addType: 'Add a type',
       editType: 'Edit type',
       deleteType: 'Delete card type',
       manageTypes: 'Manage card types',
@@ -307,8 +325,8 @@ export const en = {
         referencedByOther: 'It can be referenced by other projects (with regards to access rights)',
         shouldNotBeUsed: 'It should not be used anymore',
         isIsglobalType: 'It is a global type',
-        addFirstGlobalTypes: 'Add first global card type',
-        addFirstProjectType: 'Add first card type to the project',
+        createFirstGlobalTypes: 'Create first global card type',
+        createFirstProjectType: 'Create first card type to the project',
         fromProject: 'It comes from the project',
         fromAProject: 'It comes from a project',
         nothingMatchTag: 'Nothing matches tag selection',

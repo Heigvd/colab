@@ -120,7 +120,7 @@ export default function SelectInput<T, IsMulti extends boolean>({
             formatCreateLabel={(inputValue: string) => (
               <div className={cx(selectCreatorStyle, textSmall)}>
                 <FontAwesomeIcon icon={faPlus} />{' '}
-                {i18n.basicComponent.selectInput.create + ' "' + inputValue + '"'}
+                {i18n.basicComponent.selectInput.create(inputValue)}
               </div>
             )}
             styles={{
