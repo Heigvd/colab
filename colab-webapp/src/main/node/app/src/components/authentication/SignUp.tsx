@@ -34,7 +34,7 @@ interface FormData {
   };
 }
 
-const defaultFormData: FormData = {
+const defaultData: FormData = {
   email: '',
   username: '',
   password: '',
@@ -52,6 +52,7 @@ export default function SignUpForm({ redirectTo }: SignUpFormProps): JSX.Element
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const i18n = useTranslations();
+
   const { isLoading, startLoading, stopLoading } = useLoadingState();
 
   const formFields: Field<FormData>[] = [
@@ -90,6 +91,7 @@ export default function SignUpForm({ redirectTo }: SignUpFormProps): JSX.Element
       label: i18n.authentication.field.passwordConfirmation,
       type: 'password',
       isMandatory: true,
+      autoComplete: 'off',
       isErroneous: data => data.password !== data.confirm,
       errorMessage: i18n.authentication.error.passwordsMismatch,
       showStrengthBar: false,
@@ -99,12 +101,14 @@ export default function SignUpForm({ redirectTo }: SignUpFormProps): JSX.Element
   const signUp = React.useCallback(
     data => {
       startLoading();
+
       dispatch(API.signUp(data)).then(action => {
+        stopLoading();
+
         // is that a hack or not ???
         if (redirectTo && action.meta.requestStatus === 'fulfilled') {
           navigate(redirectTo);
         }
-        stopLoading();
       });
     },
     [dispatch, navigate, redirectTo, startLoading, stopLoading],
@@ -114,7 +118,7 @@ export default function SignUpForm({ redirectTo }: SignUpFormProps): JSX.Element
     <PublicEntranceContainer>
       <Form
         fields={formFields}
-        value={defaultFormData}
+        value={defaultData}
         onSubmit={signUp}
         submitLabel={i18n.authentication.action.createAnAccount}
         buttonClassName={css({ margin: space_M + ' auto' })}
