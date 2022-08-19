@@ -21,8 +21,6 @@ import Toggler from './Toggler';
 
 const PasswordStrengthBar = React.lazy(() => import('react-password-strength-bar'));
 
-export const emailFormat = /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
-
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Fields
 

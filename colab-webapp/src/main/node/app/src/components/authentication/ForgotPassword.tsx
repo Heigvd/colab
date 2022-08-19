@@ -9,11 +9,11 @@ import { css, cx } from '@emotion/css';
 import * as React from 'react';
 import { useNavigate } from 'react-router-dom';
 import * as API from '../../API/api';
-import { buildLinkWithQueryParam } from '../../helper';
+import { buildLinkWithQueryParam, emailFormat } from '../../helper';
 import useTranslations from '../../i18n/I18nContext';
 import { useAppDispatch } from '../../store/hooks';
 import { InlineLink } from '../common/element/Link';
-import Form, { emailFormat, Field } from '../common/Form/Form';
+import Form, { Field } from '../common/Form/Form';
 import { lightLinkStyle, space_M } from '../styling/style';
 import PublicEntranceContainer from './PublicEntranceContainer';
 
@@ -25,7 +25,7 @@ interface FormData {
   email: string;
 }
 
-const defaultFormData: FormData = { email: '' };
+const defaultData: FormData = { email: '' };
 
 export default function ResetPasswordForm({ redirectTo }: ResetPasswordFormProps): JSX.Element {
   const dispatch = useAppDispatch();
@@ -54,7 +54,7 @@ export default function ResetPasswordForm({ redirectTo }: ResetPasswordFormProps
     <PublicEntranceContainer>
       <Form
         fields={formFields}
-        value={defaultFormData}
+        value={defaultData}
         onSubmit={requestPasswordReset}
         submitLabel={i18n.authentication.action.sendMePassword}
         buttonClassName={css({ margin: space_M + ' auto' })}

@@ -21,7 +21,7 @@ import { HierarchicalPosition, Project, TeamMember, TeamRole } from 'colab-rest-
 import * as React from 'react';
 import Select from 'react-select';
 import * as API from '../../API/api';
-import { getDisplayName } from '../../helper';
+import { emailFormat, getDisplayName } from '../../helper';
 import useTranslations from '../../i18n/I18nContext';
 import { useAndLoadProjectTeam } from '../../selectors/projectSelector';
 import { useCurrentUser } from '../../selectors/userSelector';
@@ -33,7 +33,6 @@ import IconButton from '../common/element/IconButton';
 import IconButtonWithLoader from '../common/element/IconButtonWithLoader';
 import InlineLoading from '../common/element/InlineLoading';
 import { DiscreetInput, InlineInput } from '../common/element/Input';
-import { emailFormat } from '../common/Form/Form';
 import ConfirmDeleteModal from '../common/layout/ConfirmDeleteModal';
 import DropDownMenu, { modalEntryStyle } from '../common/layout/DropDownMenu';
 import Flex from '../common/layout/Flex';
