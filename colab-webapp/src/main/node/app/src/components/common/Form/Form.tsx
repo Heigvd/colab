@@ -9,7 +9,7 @@ import { css, cx } from '@emotion/css';
 import * as React from 'react';
 import { PasswordFeedback } from 'react-password-strength-bar';
 import useTranslations from '../../../i18n/I18nContext';
-import { space_M } from '../../styling/style';
+import { errorColor, space_M, textSmall } from '../../styling/style';
 import ButtonWithLoader from '../element/ButtonWithLoader';
 import InlineLoading from '../element/InlineLoading';
 import { FormInput } from '../element/Input';
@@ -107,10 +107,12 @@ export type Field<T> =
 export interface FormProps<T> {
   fields: Field<T>[];
   value: T;
-  onSubmit: (entity: T) => void;
+  onSubmit: (data: T) => void;
   submitLabel?: string;
   children?: React.ReactNode;
   isSubmitInProcess?: boolean;
+  isGloballyErroneous?: boolean | ((data: T) => boolean);
+  globalErrorMessage?: React.ReactNode | ((data: T) => React.ReactNode);
   className?: string;
   childrenClassName?: string;
   buttonClassName?: string;
@@ -123,6 +125,8 @@ export default function Form<T>({
   submitLabel,
   children,
   isSubmitInProcess,
+  isGloballyErroneous,
+  globalErrorMessage,
   className,
   childrenClassName,
   buttonClassName,
@@ -131,7 +135,7 @@ export default function Form<T>({
 
   const [state, setState] = React.useState<T>(value);
   const [showErrors, setShowErrors] = React.useState(false);
-  let globalErroneous = false;
+  let globalErroneous = isGloballyErroneous;
 
   const setFormValue = React.useCallback((key: keyof T, value: unknown) => {
     // genuine hack inside: use setState as getter
@@ -302,29 +306,44 @@ export default function Form<T>({
   });
 
   return (
-    <div
-      onKeyDown={onEnter}
-      className={cx(
-        css({
-          display: 'flex',
-          flexDirection: 'column',
-          width: 'min-content',
-        }),
-        className,
-      )}
-    >
-      {fieldComps}
-      <Flex direction="column" justify="center" align="center" className={childrenClassName}>
-        <ButtonWithLoader
-          key="submit"
-          onClick={submit}
-          isLoading={isSubmitInProcess}
-          className={cx(css({ margin: space_M + ' 0', alignSelf: 'flex-start' }), buttonClassName)}
+    <>
+      {isGloballyErroneous && (
+        <Flex
+          className={cx(
+            css({ color: errorColor, textAlign: 'left', marginBottom: space_M }),
+            textSmall,
+          )}
         >
-          {submitLabel || i18n.basicComponent.form.submit}
-        </ButtonWithLoader>
-        {children}
-      </Flex>
-    </div>
+          {globalErrorMessage}
+        </Flex>
+      )}
+      <div
+        onKeyDown={onEnter}
+        className={cx(
+          css({
+            display: 'flex',
+            flexDirection: 'column',
+            width: 'min-content',
+          }),
+          className,
+        )}
+      >
+        {fieldComps}
+        <Flex direction="column" justify="center" align="center" className={childrenClassName}>
+          <ButtonWithLoader
+            key="submit"
+            onClick={submit}
+            isLoading={isSubmitInProcess}
+            className={cx(
+              css({ margin: space_M + ' 0', alignSelf: 'flex-start' }),
+              buttonClassName,
+            )}
+          >
+            {submitLabel || i18n.basicComponent.form.submit}
+          </ButtonWithLoader>
+          {children}
+        </Flex>
+      </div>
+    </>
   );
 }
