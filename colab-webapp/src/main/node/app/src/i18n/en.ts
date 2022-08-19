@@ -88,7 +88,6 @@ export const en = {
       missingMandatory: 'please fill in data',
       defaultFieldError: 'please correct data',
       pleaseProvideData: 'Some data are missing',
-      submit: 'Submit',
     },
     selectInput: {
       noMatch: 'No match',

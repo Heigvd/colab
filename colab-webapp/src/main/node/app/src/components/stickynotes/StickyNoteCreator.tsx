@@ -148,6 +148,7 @@ export default function StickyNoteCreator({
                 collapse();
               });
             }}
+            submitLabel={i18n.common.create}
             className={css({ alignSelf: 'center' })}
             childrenClassName={css({
               flexDirection: 'row-reverse',

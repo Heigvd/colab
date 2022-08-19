@@ -19,7 +19,7 @@ interface UserProfileProps {
 export default function UserProfile({ user }: UserProfileProps): JSX.Element {
   const dispatch = useAppDispatch();
   const i18n = useTranslations();
-  const {isLoading, startLoading, stopLoading} = useLoadingState();
+  const { isLoading, startLoading, stopLoading } = useLoadingState();
 
   const fields: Field<User>[] = [
     {
@@ -65,8 +65,10 @@ export default function UserProfile({ user }: UserProfileProps): JSX.Element {
             value={user}
             onSubmit={u => {
               startLoading();
+
               dispatch(updateUser(u)).then(stopLoading);
             }}
+            submitLabel={i18n.common.save}
             isSubmitInProcess={isLoading}
           />
         </div>

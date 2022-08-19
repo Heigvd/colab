@@ -108,7 +108,7 @@ export interface FormProps<T> {
   fields: Field<T>[];
   value: T;
   onSubmit: (data: T) => void;
-  submitLabel?: string;
+  submitLabel: string;
   children?: React.ReactNode;
   isSubmitInProcess?: boolean;
   isGloballyErroneous?: boolean | ((data: T) => boolean);
@@ -339,7 +339,7 @@ export default function Form<T>({
               buttonClassName,
             )}
           >
-            {submitLabel || i18n.basicComponent.form.submit}
+            {submitLabel}
           </ButtonWithLoader>
           {children}
         </Flex>
