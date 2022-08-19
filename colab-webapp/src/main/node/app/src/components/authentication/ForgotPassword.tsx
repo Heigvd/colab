@@ -11,7 +11,7 @@ import { useNavigate } from 'react-router-dom';
 import * as API from '../../API/api';
 import { buildLinkWithQueryParam, emailFormat } from '../../helper';
 import useTranslations from '../../i18n/I18nContext';
-import { useAppDispatch } from '../../store/hooks';
+import { useAppDispatch, useLoadingState } from '../../store/hooks';
 import { InlineLink } from '../common/element/Link';
 import Form, { Field } from '../common/Form/Form';
 import { lightLinkStyle, space_M } from '../styling/style';
@@ -32,6 +32,8 @@ export default function ResetPasswordForm({ redirectTo }: ResetPasswordFormProps
   const navigate = useNavigate();
   const i18n = useTranslations();
 
+  const { isLoading, startLoading, stopLoading } = useLoadingState();
+
   const formFields: Field<FormData>[] = [
     {
       key: 'email',
@@ -45,9 +47,15 @@ export default function ResetPasswordForm({ redirectTo }: ResetPasswordFormProps
 
   const requestPasswordReset = React.useCallback(
     ({ email }: FormData) => {
-      dispatch(API.requestPasswordReset(email)).then(() => navigate('../ResetPasswordEmailSent'));
+      startLoading();
+
+      dispatch(API.requestPasswordReset(email)).then(() => {
+        stopLoading();
+
+        navigate('../ResetPasswordEmailSent');
+      });
     },
-    [dispatch, navigate],
+    [dispatch, navigate, startLoading, stopLoading],
   );
 
   return (
@@ -57,6 +65,7 @@ export default function ResetPasswordForm({ redirectTo }: ResetPasswordFormProps
         value={defaultData}
         onSubmit={requestPasswordReset}
         submitLabel={i18n.authentication.action.sendMePassword}
+        isSubmitInProcess={isLoading}
         buttonClassName={css({ margin: space_M + ' auto' })}
       >
         <InlineLink
