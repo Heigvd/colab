@@ -132,8 +132,7 @@ export default function CardTypeThumbnail({
                           value: 'Edit type',
                           label: (
                             <>
-                              <FontAwesomeIcon icon={faPen} />
-                              {i18n.modules.cardType.editType}
+                              <FontAwesomeIcon icon={faPen} /> {i18n.modules.cardType.editType}
                             </>
                           ),
                           action: () => navigate(`./edit/${cardType.ownId}`),
@@ -148,7 +147,7 @@ export default function CardTypeThumbnail({
                           value: 'Use this type in the project',
                           label: (
                             <>
-                              <FontAwesomeIcon icon={faMapPin} />
+                              <FontAwesomeIcon icon={faMapPin} />{' '}
                               {i18n.modules.cardType.useInProject}
                             </>
                           ),

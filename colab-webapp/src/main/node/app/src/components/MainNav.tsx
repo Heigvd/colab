@@ -114,7 +114,7 @@ export function UserDropDown({ onlyLogout }: { onlyLogout?: boolean }): JSX.Elem
                       padding: space_S,
                     })}
                   >
-                    <FontAwesomeIcon icon={faUser} />
+                    <FontAwesomeIcon icon={faUser} />{' '}
                     {currentUser.firstname && currentUser.lastname
                       ? currentUser.firstname + ' ' + currentUser.lastname
                       : currentUser.username}
