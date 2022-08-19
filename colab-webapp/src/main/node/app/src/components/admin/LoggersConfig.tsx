@@ -180,7 +180,7 @@ export default function (): JSX.Element {
   } else {
     return (
       <div>
-        <h2>Loggers Config</h2>
+        <h3>Loggers Config</h3>
         <IconButton
           icon={faSync}
           title="Sync"
