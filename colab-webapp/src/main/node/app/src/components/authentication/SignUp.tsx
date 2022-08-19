@@ -52,7 +52,7 @@ export default function SignUpForm({ redirectTo }: SignUpFormProps): JSX.Element
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const i18n = useTranslations();
-  const {isLoading, startLoading, stopLoading} = useLoadingState();
+  const { isLoading, startLoading, stopLoading } = useLoadingState();
 
   const formFields: Field<FormData>[] = [
     {
@@ -60,6 +60,7 @@ export default function SignUpForm({ redirectTo }: SignUpFormProps): JSX.Element
       label: i18n.authentication.field.emailAddress,
       type: 'text',
       isMandatory: true,
+      autoComplete: 'off',
       isErroneous: value => value.email.match(emailFormat) == null,
       errorMessage: i18n.authentication.error.emailAddressNotValid,
     },
@@ -68,6 +69,7 @@ export default function SignUpForm({ redirectTo }: SignUpFormProps): JSX.Element
       label: i18n.authentication.field.username,
       type: 'text',
       isMandatory: true,
+      autoComplete: 'off',
       isErroneous: value => value.username.match(/^[a-zA-Z0-9_\\-\\.]+$/) == null,
       errorMessage: i18n.authentication.error.usernameNotValid,
     },
@@ -77,6 +79,7 @@ export default function SignUpForm({ redirectTo }: SignUpFormProps): JSX.Element
       placeholder: i18n.authentication.placeholder.min7Char,
       type: 'password',
       isMandatory: true,
+      autoComplete: 'off',
       isErroneous: data => data.passwordScore.score < 2,
       errorMessage: data => <PasswordFeedbackDisplay feedback={data.passwordScore.feedback} />,
       showStrengthBar: true,
@@ -114,7 +117,6 @@ export default function SignUpForm({ redirectTo }: SignUpFormProps): JSX.Element
         value={defaultFormData}
         onSubmit={signUp}
         submitLabel={i18n.authentication.action.createAnAccount}
-        autoComplete="off"
         buttonClassName={css({ margin: space_M + ' auto' })}
         isSubmitInProcess={isLoading}
       >

@@ -41,6 +41,7 @@ interface BaseField<T> {
 interface TextualField<T> extends BaseField<T> {
   type: 'text' | 'textarea';
   placeholder?: string;
+  autoComplete?: string;
 }
 
 export interface PasswordScore {
@@ -51,6 +52,7 @@ export interface PasswordScore {
 interface PasswordField<T> extends BaseField<T> {
   type: 'password';
   placeholder?: string;
+  autoComplete?: string;
   showStrengthBar: boolean;
   strengthProp?: keyof T;
 }
@@ -81,6 +83,7 @@ export function createSelectField<T, IsMulti extends boolean, K extends keyof T>
   return field;
 }
 
+// is it really useful ? on august 2022, it is not used
 interface SelectNumberField<T> extends BaseField<T> {
   type: 'selectnumber';
   options: { label: string; value: number }[];
@@ -108,7 +111,6 @@ export interface FormProps<T> {
   value: T;
   onSubmit: (entity: T) => void;
   submitLabel?: string;
-  autoComplete?: string;
   children?: React.ReactNode;
   isSubmitInProcess?: boolean;
   className?: string;
@@ -121,7 +123,6 @@ export default function Form<T>({
   value,
   onSubmit,
   submitLabel,
-  autoComplete,
   children,
   isSubmitInProcess,
   className,
@@ -193,7 +194,7 @@ export default function Form<T>({
             inputType={field.type === 'text' ? 'input' : 'textarea'}
             mandatory={field.isMandatory}
             readOnly={field.readOnly}
-            autoComplete={autoComplete}
+            autoComplete={field.autoComplete}
             onChange={value => setFormValue(field.key, value)}
             tip={field.tip}
             footer={effectiveFieldFooter}
@@ -211,7 +212,7 @@ export default function Form<T>({
             type="password"
             mandatory={field.isMandatory}
             readOnly={field.readOnly}
-            autoComplete={autoComplete}
+            autoComplete={field.autoComplete}
             onChange={value => setFormValue(field.key, value)}
             tip={field.tip}
             footer={effectiveFieldFooter}
