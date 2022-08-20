@@ -57,16 +57,11 @@ export default function ConfirmDeleteModal({
             {message}
           </Flex>
           <Flex justify="flex-end">
-            <Button
-              title={cancelButtonLabel ? cancelButtonLabel : 'Cancel delete'}
-              onClick={() => collapse()}
-              invertedButton
-            >
+            <Button onClick={() => collapse()} invertedButton>
               {cancelButtonLabel ? cancelButtonLabel : i18n.common.cancel}
             </Button>
             <Button
               ref={mainButtonRef}
-              title={confirmButtonLabel ? confirmButtonLabel : 'Delete'}
               onClick={() => {
                 onConfirm();
                 collapse();

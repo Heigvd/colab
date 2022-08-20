@@ -93,7 +93,7 @@ export default function ResourcesMainView({
           <ResourceCreator
             contextInfo={contextData}
             onCreated={setLastCreated}
-            className={lightIconButtonStyle}
+            collapsedClassName={lightIconButtonStyle}
           />
 
           {ghostResources != null && ghostResources.length > 0 && (

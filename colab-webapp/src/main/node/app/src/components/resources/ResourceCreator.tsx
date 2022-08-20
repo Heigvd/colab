@@ -37,13 +37,13 @@ const defaultData: ResourceType = {
 interface ResourceCreatorProps {
   contextInfo: ResourceCallContext;
   onCreated: (newId: number) => void;
-  className?: string;
+  collapsedClassName?: string;
 }
 
 export default function ResourceCreator({
   contextInfo,
   onCreated,
-  className,
+  collapsedClassName,
 }: ResourceCreatorProps): JSX.Element {
   const dispatch = useAppDispatch();
   const i18n = useTranslations();
@@ -99,7 +99,7 @@ export default function ResourceCreator({
               padding: space_S,
               '&:hover': { backgroundColor: 'var(--lightGray)', cursor: 'pointer' },
             }),
-            className,
+            collapsedClassName,
           )}
         >
           <FontAwesomeIcon title="Add a document" icon={faPlus} />
