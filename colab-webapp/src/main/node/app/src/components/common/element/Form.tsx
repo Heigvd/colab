@@ -10,13 +10,13 @@ import * as React from 'react';
 import { PasswordFeedback } from 'react-password-strength-bar';
 import useTranslations from '../../../i18n/I18nContext';
 import { errorColor, space_M, textSmall } from '../../styling/style';
-import ButtonWithLoader from '../element/ButtonWithLoader';
-import InlineLoading from '../element/InlineLoading';
-import { FormInput } from '../element/Input';
-import { TipsProps } from '../element/Tips';
 import Flex from '../layout/Flex';
+import ButtonWithLoader from './ButtonWithLoader';
 import Checkbox from './Checkbox';
+import InlineLoading from './InlineLoading';
+import { FormInput } from './Input';
 import SelectInput from './SelectInput';
+import { TipsProps } from './Tips';
 import Toggler from './Toggler';
 
 const PasswordStrengthBar = React.lazy(() => import('react-password-strength-bar'));

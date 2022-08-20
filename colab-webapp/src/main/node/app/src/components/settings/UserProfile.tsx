@@ -10,7 +10,7 @@ import * as React from 'react';
 import { updateUser } from '../../API/api';
 import useTranslations from '../../i18n/I18nContext';
 import { useAppDispatch, useLoadingState } from '../../store/hooks';
-import Form, { Field } from '../common/Form/Form';
+import Form, { Field } from '../common/element/Form';
 
 interface UserProfileProps {
   user: User;

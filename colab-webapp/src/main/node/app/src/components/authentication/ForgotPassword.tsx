@@ -12,8 +12,8 @@ import * as API from '../../API/api';
 import { buildLinkWithQueryParam, emailFormat } from '../../helper';
 import useTranslations from '../../i18n/I18nContext';
 import { useAppDispatch, useLoadingState } from '../../store/hooks';
+import Form, { Field } from '../common/element/Form';
 import { InlineLink } from '../common/element/Link';
-import Form, { Field } from '../common/Form/Form';
 import { lightLinkStyle, space_M } from '../styling/style';
 import PublicEntranceContainer from './PublicEntranceContainer';
 

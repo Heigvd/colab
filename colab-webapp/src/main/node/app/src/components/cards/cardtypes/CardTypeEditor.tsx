@@ -27,7 +27,7 @@ import Button from '../../common/element/Button';
 import IconButton from '../../common/element/IconButton';
 import { DiscreetInput, LabeledTextArea } from '../../common/element/Input';
 import Tips from '../../common/element/Tips';
-import Toggler from '../../common/Form/Toggler';
+import Toggler from '../../common/element/Toggler';
 import ConfirmDeleteModal from '../../common/layout/ConfirmDeleteModal';
 import Flex from '../../common/layout/Flex';
 import { DocTextWrapper } from '../../documents/DocTextItem';

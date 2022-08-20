@@ -14,7 +14,7 @@ import useTranslations from '../../i18n/I18nContext';
 import { useAndLoadResourceCategories } from '../../selectors/resourceSelector';
 import { useAppDispatch, useLoadingState } from '../../store/hooks';
 import Button from '../common/element/Button';
-import Form, { createSelectField, Field } from '../common/Form/Form';
+import Form, { createSelectField, Field } from '../common/element/Form';
 import Flex from '../common/layout/Flex';
 import OpenCloseModal from '../common/layout/OpenCloseModal';
 import { space_M, space_S } from '../styling/style';

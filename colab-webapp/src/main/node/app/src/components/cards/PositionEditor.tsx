@@ -12,7 +12,7 @@ import { useNavigate } from 'react-router-dom';
 import * as API from '../../API/api';
 import useTranslations from '../../i18n/I18nContext';
 import { useAppDispatch } from '../../store/hooks';
-import Form from '../common/Form/Form';
+import Form from '../common/element/Form';
 import Flex from '../common/layout/Flex';
 import { space_L, space_S } from '../styling/style';
 

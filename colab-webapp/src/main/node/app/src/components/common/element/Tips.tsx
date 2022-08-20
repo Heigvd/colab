@@ -13,7 +13,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import * as React from 'react';
 import useTranslations from '../../../i18n/I18nContext';
 import { lightIconButtonStyle, space_S, textSmall } from '../../styling/style';
-import Checkbox from '../Form/Checkbox';
+import Checkbox from './Checkbox';
 
 export type TipsType = 'TODO' | 'NEWS' | 'TIPS' | 'WIP' | 'DEBUG';
 

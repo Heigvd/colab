@@ -8,8 +8,8 @@
 import { css, cx } from '@emotion/css';
 import * as React from 'react';
 import { errorStyle, space_S, successColor, textSmall, warningStyle } from '../../styling/style';
-import Tips, { TipsProps } from '../element/Tips';
 import Flex from '../layout/Flex';
+import Tips, { TipsProps } from './Tips';
 
 const containerStyle = css({
   width: '28px',
@@ -84,7 +84,7 @@ export default function Toggler({
           <div className={value ? onStyle : offStyle}></div>
         </Flex>
         <div>&nbsp;{label}</div>
-        {tip != null && <Tips interactionType='CLICK'>{tip}</Tips>}
+        {tip != null && <Tips interactionType="CLICK">{tip}</Tips>}
       </Flex>
       {footer != null && <div className={textSmall}>{footer}</div>}
       <Flex direction="column" align="center" className={cx(textSmall, bottomClassName)}>

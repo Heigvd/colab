@@ -9,7 +9,7 @@ import { entityIs } from 'colab-rest-client';
 import * as React from 'react';
 import * as API from '../../API/api';
 import { useAppDispatch } from '../../store/hooks';
-import Toggler from '../common/Form/Toggler';
+import Toggler from '../common/element/Toggler';
 import { ResourceAndRef } from './resourcesCommonType';
 
 interface ResourceSettingsProps {

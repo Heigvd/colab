@@ -18,7 +18,7 @@ import {
 import { useProjectBeingEdited } from '../../../selectors/projectSelector';
 import { useAppDispatch, useLoadingState } from '../../../store/hooks';
 import Button from '../../common/element/Button';
-import Form, { createSelectField, Field } from '../../common/Form/Form';
+import Form, { createSelectField, Field } from '../../common/element/Form';
 import OpenCloseModal from '../../common/layout/OpenCloseModal';
 import { buttonStyle, marginAroundStyle, space_M } from '../../styling/style';
 

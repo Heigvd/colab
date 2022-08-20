@@ -14,9 +14,9 @@ import { emailFormat } from '../../helper';
 import useTranslations from '../../i18n/I18nContext';
 import Button from '../common/element/Button';
 import { ConfirmIconButton } from '../common/element/ConfirmIconButton';
+import Form from '../common/element/Form';
 import IllustrationDisplay from '../common/element/IllustrationDisplay';
 import { FormInput } from '../common/element/Input';
-import Form from '../common/Form/Form';
 import Flex from '../common/layout/Flex';
 import {
   borderRadius,

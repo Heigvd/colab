@@ -35,7 +35,7 @@ import {
   User,
   WsSessionIdentifier,
 } from 'colab-rest-client';
-import { PasswordScore } from '../components/common/Form/Form';
+import { PasswordScore } from '../components/common/element/Form';
 import { DocumentKind } from '../components/documents/documentCommonType';
 import { ResourceAndRef } from '../components/resources/resourcesCommonType';
 import { hashPassword } from '../SecurityHelper';
