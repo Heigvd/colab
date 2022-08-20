@@ -6,7 +6,7 @@
  */
 
 import { css } from '@emotion/css';
-import { IconName, IconPrefix } from '@fortawesome/fontawesome-svg-core';
+import { IconName } from '@fortawesome/fontawesome-svg-core';
 import { faCircleDot } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import * as React from 'react';
@@ -59,7 +59,7 @@ function TargetProjectSummary({ projectId }: TargetProjectSummaryProps): JSX.Ele
       icon={
         project?.illustration
           ? {
-              prefix: project.illustration.iconLibrary as IconPrefix,
+              prefix: project.illustration.iconLibrary === 'FONT_AWESOME_REGULAR' ? 'far' : 'fas',
               iconName: project.illustration.iconKey as IconName,
             }
           : referenceIcon

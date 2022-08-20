@@ -21,6 +21,7 @@ export const en = {
     show: 'Show',
     hide: 'Hide',
     add: 'Add',
+    edit: 'Edit',
     select: 'Select',
     selectAll: 'Select all',
     next: 'Next',
@@ -40,7 +41,7 @@ export const en = {
     sortBy: 'sort by: ',
     createdBy: 'created by',
     createdOn: 'Created on',
-    name: 'name',
+    name: 'Name',
     date: 'date',
     by: 'by',
     settings: 'Settings',
@@ -83,6 +84,24 @@ export const en = {
       accessKeyIsRequired: 'access key is required',
     },
   },
+
+  //////////////////////////////////////////////////////////////////////////////////////////////////
+  // Basic components
+  basicComponent: {
+    form: {
+      missingMandatory: 'please fill in data',
+      defaultFieldError: 'please correct data',
+      pleaseProvideData: 'Some data are missing',
+    },
+    selectInput: {
+      noMatch: 'No match',
+      noItemTypeToCreate: 'Type to create the first item',
+      select: 'Select',
+      selectOrCreate: 'Select or type to create',
+      create: (newValue: string): string => `Create "${newValue}"`,
+    },
+  },
+
   //////////////////////////////////////////////////////////////////////////////////////////////////
   // USER
   user: {
@@ -136,16 +155,6 @@ export const en = {
   },
 
   //////////////////////////////////////////////////////////////////////////////////////////////////
-  // FORM
-  form: {
-    missingMandatory: 'please fill in data',
-    defaultFieldError: 'please correct data',
-    pleaseProvideData: 'Some data are missing',
-    selectOrCreate: 'Select or type to create',
-    submit: 'Submit',
-  },
-
-  //////////////////////////////////////////////////////////////////////////////////////////////////
   // Authentication
   authentication: {
     field: {
@@ -193,15 +202,30 @@ export const en = {
   //////////////////////////////////////////////////////////////////////////////////////////////////
   // MODULES
   modules: {
+    project: {
+      actions: {
+        createProject: 'Create project',
+        createAProject: 'Create a project',
+        chooseAModel: 'choose a model',
+        createAProjectFrom: (templateTitle?: string | null): string =>
+          `Create a project from ${'"' + templateTitle + '"'}`,
+      },
+    },
+    team: {
+      actions: {
+        createRole: 'Create role',
+      },
+    },
     card: {
       card: 'Card',
       variant: 'Variant',
       subcards: 'Subcards',
       untitled: 'New card',
-      addCard: 'Add a card',
-      addVariant: 'Add a variant',
+      createCard: 'Create card',
+      createACard: 'Create a card',
+      createVariant: 'Create variant',
       createNew: (parentTitle?: string | null): string =>
-        `Create a new ${parentTitle ? 'subcard for ' + parentTitle : 'card'}"`,
+        `Create a ${parentTitle ? 'subcard for ' + parentTitle : 'card'}`,
       deleteCardVariant: (hasVariant?: boolean): string =>
         `Delete ${hasVariant ? 'variant' : 'card'}`,
       confirmDeleteCardVariant: (hasVariant?: boolean): string =>
@@ -210,6 +234,7 @@ export const en = {
         }? This will delete all subcards inside.`,
       involvements: 'Involvements',
       completion: 'Completion',
+      position: 'Position',
       showCardType: 'Show card type information',
       editCompletion: 'Edit card completion',
       editor: {
@@ -221,10 +246,22 @@ export const en = {
         acl: {
           title: 'Access Control',
         },
+        locked: 'Locked',
+        cardColor: 'Card color',
+        contentStatus: 'Card content status',
+        completionLevelMode: 'Completion level mode',
+        cardPosition: 'Card position',
       },
       infos: {
+        createFirstCard: 'Create the first card',
+        noCardYetPleaseCreate:
+          'This project has no card yet. Create some to begin this co-design journey !',
         cardLocked: 'Card is locked. To unlock it go to Card settings and uncheck "locked".',
+        lockingCard:
+          'Locking the variant (card if only one variant) will artificially set it as read-only and prevent the edition.',
         noDeliverable: 'No deliverable available',
+        completionModeInfo:
+          'Select completion mode (MANUAL | AUTO | NO_OP). Manual: input to set completion; Auto: based on children; No: do not event diplay the bar',
       },
       error: {
         withoutId: 'Card without id is invalid...',
@@ -240,24 +277,29 @@ export const en = {
       dlFile: 'Download file',
       editBlock: 'Edit block',
       deleteBlock: 'Delete block',
-      addText: 'Add a text block',
-      addFile: 'Add a file',
-      addLink: 'Add a link',
+      createText: 'Create text block',
+      createFile: 'Create file',
+      createLink: 'Create link',
       moveBlockUpDown: (direction: string): string =>
         `Move block ${direction === 'up' ? 'up' : 'down'}`,
       deleteBlockType: (isText: boolean, isLink: boolean): string =>
-        `Delete ${isText ? 'text' : isLink ? 'link' : 'doc'}"`,
+        `Delete ${isText ? 'text' : isLink ? 'link' : 'doc'}`,
       confirmDeleteBlock:
         'Are you sure you want to delete this whole block? This will be lost forever.',
       openUrlNewTab: 'Open URL in new tab',
+    },
+    document: {
+      createDocument: 'Create document',
+      createADocument: 'Create a document',
     },
     resource: {
       untitled: 'New document',
       noTeaser: 'no document teaser',
       category: 'category',
       documentation: 'Documentation',
-      docDescription:
-        'Use documentation panel to add pieces of (meta)information related to the card or variant. Pieces of documentation can come from card type.',
+      docDescription: 'Add all documentation related to the card.',
+      docDescriptionWithType:
+        'Add all documentation related to the card. The card model may provide basic documentation.',
     },
     stickyNotes: {
       stickyNotes: 'Sticky notes',
@@ -269,7 +311,8 @@ export const en = {
       cardType: 'Card type',
       blankType: 'Blank card type',
       purpose: 'Purpose',
-      addType: 'Add a type',
+      createType: 'Create type',
+      createAType: 'Create a type',
       editType: 'Edit type',
       deleteType: 'Delete card type',
       manageTypes: 'Manage card types',
@@ -284,8 +327,8 @@ export const en = {
         referencedByOther: 'It can be referenced by other projects (with regards to access rights)',
         shouldNotBeUsed: 'It should not be used anymore',
         isIsglobalType: 'It is a global type',
-        addFirstGlobalTypes: 'Add first global card type',
-        addFirstProjectType: 'Add first card type to the project',
+        createFirstGlobalTypes: 'Create first global card type',
+        createFirstProjectType: 'Create first card type to the project',
         fromProject: 'It comes from the project',
         fromAProject: 'It comes from a project',
         nothingMatchTag: 'Nothing matches tag selection',

@@ -10,12 +10,13 @@ import { faPen, faTrash } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Illustration } from 'colab-rest-client';
 import * as React from 'react';
+import { emailFormat } from '../../helper';
 import useTranslations from '../../i18n/I18nContext';
 import Button from '../common/element/Button';
 import { ConfirmIconButton } from '../common/element/ConfirmIconButton';
 import IllustrationDisplay from '../common/element/IllustrationDisplay';
 import { FormInput } from '../common/element/Input';
-import Form, { emailFormat } from '../common/Form/Form';
+import Form from '../common/Form/Form';
 import Flex from '../common/layout/Flex';
 import {
   borderRadius,

@@ -51,9 +51,9 @@ interface TogglerProps {
   readOnly?: boolean;
   onChange: (newValue: boolean) => void;
   tip?: TipsProps['children'];
-  fieldFooter?: React.ReactNode;
-  warning?: React.ReactNode;
-  error?: React.ReactNode;
+  footer?: React.ReactNode;
+  warningMessage?: React.ReactNode;
+  errorMessage?: React.ReactNode;
   className?: string;
   bottomClassName?: string;
 }
@@ -64,9 +64,9 @@ export default function Toggler({
   readOnly = false,
   onChange,
   tip,
-  fieldFooter,
-  warning,
-  error,
+  footer,
+  warningMessage,
+  errorMessage,
   className,
   bottomClassName,
 }: TogglerProps): JSX.Element {
@@ -86,10 +86,10 @@ export default function Toggler({
         <div>&nbsp;{label}</div>
         {tip != null && <Tips interactionType='CLICK'>{tip}</Tips>}
       </Flex>
-      {fieldFooter != null && <div className={textSmall}>{fieldFooter}</div>}
+      {footer != null && <div className={textSmall}>{footer}</div>}
       <Flex direction="column" align="center" className={cx(textSmall, bottomClassName)}>
-        {warning != null && <div className={warningStyle}>{warning}</div>}
-        {error != null && <div className={errorStyle}>{error}</div>}
+        {warningMessage != null && <div className={warningStyle}>{warningMessage}</div>}
+        {errorMessage != null && <div className={errorStyle}>{errorMessage}</div>}
       </Flex>
     </Flex>
   );

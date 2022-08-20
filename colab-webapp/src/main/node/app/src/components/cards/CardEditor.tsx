@@ -33,7 +33,9 @@ import * as API from '../../API/api';
 import useTranslations from '../../i18n/I18nContext';
 import { useCardACLForCurrentUser, useVariantsOrLoad } from '../../selectors/cardSelector';
 import { useAndLoadCardType } from '../../selectors/cardTypeSelector';
-import { useAppDispatch } from '../../store/hooks';
+import { useResources } from '../../selectors/resourceSelector';
+import { useStickyNoteLinksForDest } from '../../selectors/stickyNoteLinkSelector';
+import { useAppDispatch, useLoadingState } from '../../store/hooks';
 import Button from '../common/element/Button';
 import IconButton from '../common/element/IconButton';
 import { DiscreetInput } from '../common/element/Input';
@@ -55,6 +57,7 @@ import {
   localTitleStyle,
   space_M,
   space_S,
+  textSmall,
   variantTitle,
 } from '../styling/style';
 import CardEditorToolbox from './CardEditorToolbox';
@@ -209,7 +212,16 @@ export default function CardEditor({
     markDownMode: markDownMode,
     setMarkDownMode: setMarkDownMode,
   };
+  const { isLoading, startLoading, stopLoading } = useLoadingState();
 
+  const { resourcesAndRefs } = useResources({
+    kind: 'CardOrCardContent',
+    accessLevel: !readOnly && userAcl.write ? 'WRITE' : userAcl.read ? 'READ' : 'DENIED',
+    cardId: card.id || undefined,
+    cardContentId: variant.id,
+    hasSeveralVariants: hasVariants,
+  });
+  const { stickyNotesForDest } = useStickyNoteLinksForDest(card.id);
   const closeRouteCb = React.useCallback(
     route => {
       navigate(location.pathname.replace(new RegExp(route + '$'), ''));
@@ -329,9 +341,7 @@ export default function CardEditor({
                               <IconButton
                                 icon={faInfoCircle}
                                 title={i18n.modules.card.showCardType}
-                                className={cx(
-                                  lightIconButtonStyle,
-                                )}
+                                className={cx(lightIconButtonStyle)}
                                 onClick={() =>
                                   setShowTypeDetails(showTypeDetails => !showTypeDetails)
                                 }
@@ -460,11 +470,11 @@ export default function CardEditor({
                                   action: () => navigate('completion'),
                                 },
                                 {
-                                  value: 'Add new variant',
+                                  value: 'createVariant',
                                   label: (
                                     <>
                                       <FontAwesomeIcon icon={faWindowRestore} />{' '}
-                                      {i18n.modules.card.addVariant}
+                                      {i18n.modules.card.createVariant}
                                     </>
                                   ),
                                   action: () => {
@@ -505,17 +515,25 @@ export default function CardEditor({
                                         </p>
                                       }
                                       onConfirm={() => {
+                                        startLoading();
                                         if (hasVariants) {
-                                          dispatch(API.deleteCardContent(variant));
-                                          navigate(`../edit/${card.id}/v/${variantPager?.next.id}`);
+                                          dispatch(API.deleteCardContent(variant)).then(() => {
+                                            navigate(
+                                              `../edit/${card.id}/v/${variantPager?.next.id}`,
+                                            );
+                                            stopLoading();
+                                          });
                                         } else {
-                                          dispatch(API.deleteCard(card));
-                                          navigate('../');
+                                          dispatch(API.deleteCard(card)).then(() => {
+                                            navigate('../');
+                                            stopLoading();
+                                          });
                                         }
                                       }}
                                       confirmButtonLabel={i18n.modules.card.deleteCardVariant(
                                         hasVariants,
                                       )}
+                                      isConfirmButtonLoading={isLoading}
                                     />
                                   ),
                                   modal: true,
@@ -622,8 +640,17 @@ export default function CardEditor({
                     items={{
                       resources: {
                         icon: faPaperclip,
+                        nextToIconElement: (
+                          <div className={textSmall}> ({resourcesAndRefs.length})</div>
+                        ),
                         title: i18n.modules.resource.documentation,
-                        nextToTitleElement: <Tips>{i18n.modules.resource.docDescription}</Tips>,
+                        nextToTitleElement: (
+                          <Tips>
+                            {card.cardTypeId
+                              ? i18n.modules.resource.docDescriptionWithType
+                              : i18n.modules.resource.docDescription}
+                          </Tips>
+                        ),
                         children: (
                           <ResourcesMainView
                             contextData={{
@@ -652,6 +679,9 @@ export default function CardEditor({
                       },
                       'Sticky Notes': {
                         icon: faStickyNote,
+                        nextToIconElement: (
+                          <div className={textSmall}> ({stickyNotesForDest.length})</div>
+                        ),
                         title: i18n.modules.stickyNotes.stickyNotes,
                         nextToTitleElement: (
                           <Tips>

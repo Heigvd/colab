@@ -82,8 +82,7 @@ export default function CardTypeItem({ cardType, usage }: CardTypeItemProps): JS
                     value: 'Edit type',
                     label: (
                       <>
-                        <FontAwesomeIcon icon={faPen} />
-                        {i18n.modules.cardType.editType}
+                        <FontAwesomeIcon icon={faPen} /> {i18n.modules.cardType.editType}
                       </>
                     ),
                     action: () => navigate(`./edit/${cardType.ownId}`),

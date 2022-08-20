@@ -100,7 +100,6 @@ export default function StickyNoteCreator({
     {
       key: 'srcCardId',
       label: 'Source',
-      placeholder: 'Select source',
       type: 'selectnumber',
       isMandatory: true,
       options: cardOptions,
@@ -122,7 +121,7 @@ export default function StickyNoteCreator({
             className,
           )}
         >
-          <FontAwesomeIcon title="Add a sticky note" icon={faPlus} />
+          <FontAwesomeIcon title="Create a sticky note" icon={faPlus} />
         </Flex>
       }
     >
@@ -149,6 +148,7 @@ export default function StickyNoteCreator({
                 collapse();
               });
             }}
+            submitLabel={i18n.common.create}
             className={css({ alignSelf: 'center' })}
             childrenClassName={css({
               flexDirection: 'row-reverse',

@@ -41,7 +41,7 @@ export default function ResourceSettings({ resource }: ResourceSettingsProps): J
               ? 'Unpublish the resource to make it private for this card'
               : 'Publish the resource to make it available for subcards'
           }
-          fieldFooter={
+          footer={
             updatableResource.published
               ? 'A published resource is available for subcards'
               : 'An unpublished resource is private for this card'

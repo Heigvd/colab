@@ -21,7 +21,7 @@ import * as API from '../../../API/api';
 import useTranslations from '../../../i18n/I18nContext';
 import { useAllProjectCardTypes } from '../../../selectors/cardSelector';
 import { useProjectBeingEdited } from '../../../selectors/projectSelector';
-import { useAppDispatch } from '../../../store/hooks';
+import { useAppDispatch, useLoadingState } from '../../../store/hooks';
 import { CardTypeAllInOne as CardType } from '../../../types/cardTypeDefinition';
 import Button from '../../common/element/Button';
 import ConfirmDeleteModal from '../../common/layout/ConfirmDeleteModal';
@@ -79,6 +79,7 @@ export default function CardTypeThumbnail({
       return cardTypesId.includes(cardTypeID);
     }
   };
+  const { isLoading, startLoading, stopLoading } = useLoadingState();
   return (
     <>
       {isEmpty ? (
@@ -131,8 +132,7 @@ export default function CardTypeThumbnail({
                           value: 'Edit type',
                           label: (
                             <>
-                              <FontAwesomeIcon icon={faPen} />
-                              {i18n.modules.cardType.editType}
+                              <FontAwesomeIcon icon={faPen} /> {i18n.modules.cardType.editType}
                             </>
                           ),
                           action: () => navigate(`./edit/${cardType.ownId}`),
@@ -147,7 +147,7 @@ export default function CardTypeThumbnail({
                           value: 'Use this type in the project',
                           label: (
                             <>
-                              <FontAwesomeIcon icon={faMapPin} />
+                              <FontAwesomeIcon icon={faMapPin} />{' '}
                               {i18n.modules.cardType.useInProject}
                             </>
                           ),
@@ -240,8 +240,12 @@ export default function CardTypeThumbnail({
                                     alignItems: 'center',
                                   })}
                                   message={<p>{i18n.modules.cardType.confirmDeleteType}</p>}
-                                  onConfirm={() => dispatch(API.deleteCardType(cardType))}
+                                  onConfirm={() => {
+                                    startLoading();
+                                    dispatch(API.deleteCardType(cardType)).then(stopLoading);
+                                  }}
                                   confirmButtonLabel="Delete type"
+                                  isConfirmButtonLoading={isLoading}
                                 />
                               ) : (
                                 <OpenCloseModal

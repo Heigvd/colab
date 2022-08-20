@@ -181,6 +181,41 @@ export default function CardEditorToolbox({
               onClick={() => setEditMode(true)}
             />
           )}
+          {/* FUTUR FEATURE <DropDownMenu
+            icon={faFlag}
+            buttonClassName={cx(
+              lightIconButtonStyle,
+              css({
+                paddingLeft: space_M,
+                marginLeft: space_M,
+                borderLeft: '1px solid var(--lightGray)',
+              }),
+            )}
+            valueComp={{ value: '', label: '' }}
+            menuIcon="CARET"
+            entries={[
+              {
+                value: 'decision',
+                label: (
+                  <>
+                    <FontAwesomeIcon icon={faCheck} size="xs" color="var(--lightGray)" />
+                    Decision
+                  </>
+                ),
+                action: () => {},
+              },
+              {
+                value: 'validation',
+                label: (
+                  <>
+                    <FontAwesomeIcon icon={faCheck} size="xs" color="var(--lightGray)" />
+                    Validation
+                  </>
+                ),
+                action: () => {},
+              },
+            ]}
+          /> */}
           <ConfirmDeleteModal
             confirmButtonLabel={i18n.modules.content.deleteBlockType(isText, isLink)}
             buttonLabel={
@@ -263,21 +298,21 @@ export function BlockCreatorButtons({
         <DocumentCreatorButton
           docOwnership={docOwnership}
           docKind="TextDataBlock"
-          title={i18n.modules.content.addText}
+          title={i18n.modules.content.createText}
           className={toolboxButtonStyle}
           isAdditionAlwaysAtEnd={nb < 1}
         />
         <DocumentCreatorButton
           docOwnership={docOwnership}
           docKind="DocumentFile"
-          title={i18n.modules.content.addFile}
+          title={i18n.modules.content.createFile}
           className={toolboxButtonStyle}
           isAdditionAlwaysAtEnd={nb < 1}
         />
         <DocumentCreatorButton
           docOwnership={docOwnership}
           docKind="ExternalLink"
-          title={i18n.modules.content.addLink}
+          title={i18n.modules.content.createLink}
           className={toolboxButtonStyle}
           isAdditionAlwaysAtEnd={nb < 1}
         />

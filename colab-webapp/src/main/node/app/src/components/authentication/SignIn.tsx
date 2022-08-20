@@ -14,11 +14,11 @@ import * as API from '../../API/api';
 import { buildLinkWithQueryParam } from '../../helper';
 import useTranslations from '../../i18n/I18nContext';
 import { useAccountConfig } from '../../selectors/configSelector';
-import { useAppDispatch } from '../../store/hooks';
+import { useAppDispatch, useLoadingState } from '../../store/hooks';
 import { InlineLink } from '../common/element/Link';
 import Form, { Field, PasswordScore } from '../common/Form/Form';
 import Flex from '../common/layout/Flex';
-import { errorColor, lightLinkStyle, space_M, space_S, textSmall } from '../styling/style';
+import { lightLinkStyle, space_M, space_S } from '../styling/style';
 import PublicEntranceContainer from './PublicEntranceContainer';
 
 interface SignInFormProps {
@@ -48,7 +48,10 @@ export default function SignInForm({ redirectTo, message }: SignInFormProps): JS
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const i18n = useTranslations();
+
   const [loginFailed, setLoginFailed] = React.useState<boolean>(false);
+
+  const { isLoading, startLoading, stopLoading } = useLoadingState();
 
   const accountConfig = useAccountConfig();
 
@@ -68,10 +71,12 @@ export default function SignInForm({ redirectTo, message }: SignInFormProps): JS
       strengthProp: 'passwordScore',
     },
   ];
-  const [isSubmitting, setIsSubmitting] = React.useState<boolean>(false);
+
   const signIn = React.useCallback(
     (credentials: Credentials) => {
-      setIsSubmitting(true);
+      startLoading();
+      setLoginFailed(false);
+
       dispatch(
         API.signInWithLocalAccount({
           identifier: credentials.identifier,
@@ -79,7 +84,8 @@ export default function SignInForm({ redirectTo, message }: SignInFormProps): JS
           passwordScore: credentials.passwordScore,
         }),
       ).then(action => {
-        setIsSubmitting(false);
+        stopLoading();
+
         if (redirectTo && action.meta.requestStatus === 'fulfilled') {
           navigate(redirectTo);
         } else if (action.meta.requestStatus === 'rejected') {
@@ -87,24 +93,21 @@ export default function SignInForm({ redirectTo, message }: SignInFormProps): JS
         }
       });
     },
-    [dispatch, navigate, redirectTo],
+    [dispatch, navigate, redirectTo, startLoading, stopLoading],
   );
 
   return (
     <PublicEntranceContainer>
-      {loginFailed && (
-        <Flex className={cx(css({ color: errorColor, textAlign: 'left' }), textSmall)}>
-          {i18n.authentication.error.emailOrUserNotValid}
-        </Flex>
-      )}
-      {message && <div>{message}</div>}
+      {message && <Flex className={css({ marginBottom: space_M })}>{message}</Flex>}
       <Form
         fields={formFields}
         value={defaultCredentials}
         onSubmit={signIn}
+        isGloballyErroneous={loginFailed}
+        globalErrorMessage={i18n.authentication.error.emailOrUserNotValid}
         submitLabel={i18n.authentication.action.login}
         buttonClassName={css({ margin: space_M + ' auto' })}
-        isSubmitInProcess={isSubmitting}
+        isSubmitInProcess={isLoading}
       />
       <Flex direction="column" justify="center" align="center">
         <InlineLink

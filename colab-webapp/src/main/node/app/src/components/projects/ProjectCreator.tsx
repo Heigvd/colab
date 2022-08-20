@@ -11,7 +11,7 @@ import { Illustration, Project } from 'colab-rest-client';
 import * as React from 'react';
 import * as API from '../../API/api';
 import useTranslations from '../../i18n/I18nContext';
-import { useAppDispatch } from '../../store/hooks';
+import { useAppDispatch, useLoadingState } from '../../store/hooks';
 import Button from '../common/element/Button';
 import ButtonWithLoader from '../common/element/ButtonWithLoader';
 import Flex from '../common/layout/Flex';
@@ -64,16 +64,21 @@ export default function ProjectCreator({
   const [showCreateButton, setShowCreateButton] = React.useState<boolean>(false);
 
   const [readOnly, setReadOnly] = React.useState<boolean>(false);
+  const { isLoading, startLoading, stopLoading } = useLoadingState();
 
   React.useEffect(() => {
     if (status === 'chooseModel') {
-      setTitle('Create new project : choose a model');
+      setTitle(
+        i18n.modules.project.actions.createAProject +
+          ' : ' +
+          i18n.modules.project.actions.chooseAModel,
+      );
     } else if (status === 'fillBasisData' && data.projectModel) {
-      setTitle('Create new project : ' + data.projectModel.name);
+      setTitle(i18n.modules.project.actions.createAProjectFrom(data.projectModel.name));
     } else {
-      setTitle('Create new project');
+      setTitle(i18n.modules.project.actions.createAProject);
     }
-  }, [status, data.projectModel]);
+  }, [status, i18n, data.projectModel]);
 
   React.useEffect(() => {
     if (status === 'chooseModel') {
@@ -119,7 +124,7 @@ export default function ProjectCreator({
       heightMax
       collapsedChildren={
         <Button className={collapsedButtonClassName} icon={faPlus} clickable={!disabled}>
-          New project
+          {i18n.modules.project.actions.createProject}
         </Button>
       }
       footer={close => (
@@ -153,7 +158,7 @@ export default function ProjectCreator({
               onClick={() => {
                 if (!readOnly) {
                   setReadOnly(true);
-
+                  startLoading();
                   dispatch(
                     API.createProject({
                       name: data.name,
@@ -166,9 +171,11 @@ export default function ProjectCreator({
                     resetCb();
                     close();
                     window.open(`#/editor/${payload.payload}`, '_blank');
+                    stopLoading();
                   });
                 }
               }}
+              isLoading={isLoading}
             >
               Create project
             </ButtonWithLoader>
