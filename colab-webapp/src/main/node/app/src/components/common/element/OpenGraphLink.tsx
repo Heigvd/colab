@@ -207,8 +207,8 @@ function EditLink({ url, onChange, refreshCb, onCancel }: EditLinkProps): JSX.El
         placeholder="Empty link"
         onChange={onChange}
         onCancel={onCancel}
-        containerClassName={css({flexGrow: 1})}
-        saveMode='ON_BLUR'
+        containerClassName={css({ flexGrow: 1 })}
+        saveMode="ON_BLUR"
       />
       {refreshCb && (
         <IconButton

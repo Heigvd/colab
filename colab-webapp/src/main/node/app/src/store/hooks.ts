@@ -73,5 +73,5 @@ export const useLoadingState = () => {
   function stopLoading() {
     setIsLoading(false);
   }
-  return {isLoading, startLoading, stopLoading}
-} 
+  return { isLoading, startLoading, stopLoading };
+};

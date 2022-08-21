@@ -149,7 +149,7 @@ function TocEntry({ resource, selectResource, displayResource }: TocEntryProps):
               }
             }}
             grow={1}
-            className={css({padding: space_S + ' ' + space_M})}
+            className={css({ padding: space_S + ' ' + space_M })}
           >
             <div
               className={css({

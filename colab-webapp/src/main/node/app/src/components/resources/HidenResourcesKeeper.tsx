@@ -35,27 +35,41 @@ export default function ResourcesLoserKeeper({
 
   const displayResourceItem = React.useCallback(
     (resource: ResourceAndRef) => (
-      <Flex align="center" justify='space-between' className={css({flexGrow: 1, padding: space_S + ' ' + space_M, '&:hover':{cursor: 'default'}})}>
+      <Flex
+        align="center"
+        justify="space-between"
+        className={css({
+          flexGrow: 1,
+          padding: space_S + ' ' + space_M,
+          '&:hover': { cursor: 'default' },
+        })}
+      >
         {resource.targetResource.title}
         <div>
-        <OpenCloseModal
-          title="Document"
-          collapsedChildren={<FontAwesomeIcon title="Display the document" icon={faEye} className={lightIconButtonStyle} />}
-          className={css({ padding: '0 ' + space_S })}
-          modalBodyClassName={css({alignItems: 'stretch'})}
-          widthMax
-          heightMax
-        >
-          {close => {
-            return <ResourceDisplay resource={resource} goBackToList={close} readOnly />;
-          }}
-        </OpenCloseModal>
-        <IconButton
-          title="Restore the document"
-          icon={faFlask}
-          onClick={() => dispatch(API.giveAccessToResource(resource))}
-          className={lightIconButtonStyle}
-        />
+          <OpenCloseModal
+            title="Document"
+            collapsedChildren={
+              <FontAwesomeIcon
+                title="Display the document"
+                icon={faEye}
+                className={lightIconButtonStyle}
+              />
+            }
+            className={css({ padding: '0 ' + space_S })}
+            modalBodyClassName={css({ alignItems: 'stretch' })}
+            widthMax
+            heightMax
+          >
+            {close => {
+              return <ResourceDisplay resource={resource} goBackToList={close} readOnly />;
+            }}
+          </OpenCloseModal>
+          <IconButton
+            title="Restore the document"
+            icon={faFlask}
+            onClick={() => dispatch(API.giveAccessToResource(resource))}
+            className={lightIconButtonStyle}
+          />
         </div>
       </Flex>
     ),
@@ -67,13 +81,15 @@ export default function ResourcesLoserKeeper({
       title="Removed documents"
       showCloseButton
       collapsedChildren={
-        <Flex justify="center" align='center' className={collapsedClassName}>
-          <span className={css({marginRight: space_S, fontSize: '0.8em'})}>{resources.length}</span>
+        <Flex justify="center" align="center" className={collapsedClassName}>
+          <span className={css({ marginRight: space_S, fontSize: '0.8em' })}>
+            {resources.length}
+          </span>
           <FontAwesomeIcon title="Deserted documents" icon={faGhost} />
         </Flex>
       }
-      className={css({'&:hover':{textDecoration: 'none'}})}
-      modalBodyClassName={css({alignItems: 'stretch'})}
+      className={css({ '&:hover': { textDecoration: 'none' } })}
+      modalBodyClassName={css({ alignItems: 'stretch' })}
       // tip={
       //   <Flex direction="column">
       //     <p>Here are hidden the deleted documents.</p>
