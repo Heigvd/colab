@@ -105,11 +105,11 @@ public class ResourceCategoryHelper {
         // but only if it is in the same project and the category is still synchronized
         List<ResourceRef> directRefs = resourceDao.findDirectReferences(resourceOrRef);
         for (ResourceRef ref : directRefs) {
-            if (ref.getProject() == resourceOrRef.getProject()) {
-                if (StringUtils.equals(ref.getCategory(), oldCategoryName)) {
-                    changeCategory(ref.getId(), newCategoryName);
-                }
+            if (ref.getProject() == resourceOrRef.getProject()
+                && StringUtils.equals(ref.getCategory(), oldCategoryName)) {
+                changeCategory(ref.getId(), newCategoryName);
             }
+
         }
     }
 
