@@ -27,7 +27,7 @@ export default function Admin(): JSX.Element {
     <div className={css({ padding: space_L })}>
       <h2>Admin Page</h2>
       <div>
-        <Tabs>
+        <Tabs routed>
           <Tab name="main" label="Admin">
             <MainPanel />
           </Tab>
@@ -43,7 +43,7 @@ export default function Admin(): JSX.Element {
           <Tab name="onlineusers" label="Online Users">
             <Who />
           </Tab>
-          <Tab name="types" label="Card Types">
+          <Tab name="cardtypes" label="Card Types">
             <GlobalCardTypeList />
           </Tab>
         </Tabs>

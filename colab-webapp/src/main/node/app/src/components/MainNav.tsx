@@ -132,7 +132,7 @@ export function UserDropDown({ onlyLogout }: { onlyLogout?: boolean }): JSX.Elem
                         <FontAwesomeIcon icon={faCog} /> Settings
                       </>
                     ),
-                    action: () => navigate('/settings'),
+                    action: () => navigate('/settings/user'),
                   },
                 ]
               : []),
@@ -145,7 +145,7 @@ export function UserDropDown({ onlyLogout }: { onlyLogout?: boolean }): JSX.Elem
                         <FontAwesomeIcon icon={faMeteor} /> Admin
                       </>
                     ),
-                    action: () => navigate('/admin'),
+                    action: () => navigate('/admin/main'),
                   },
                 ]
               : []),

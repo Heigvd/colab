@@ -369,7 +369,7 @@ function EditorNav({ project, setShowProjectDetails }: EditorNavProps): JSX.Elem
         </div>
         <Flex align="center">
           <IconButton
-            onClick={() => navigate('./project-settings')}
+            onClick={() => navigate('./project-settings/general')}
             title="Settings"
             icon={faCog}
             className={css({ textAlign: 'right', alignSelf: 'center', marginLeft: 'auto' })}
