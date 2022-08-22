@@ -11,7 +11,7 @@ import { useResources } from '../../selectors/resourceSelector';
 import { useAppDispatch } from '../../store/hooks';
 import InlineLoading from '../common/element/InlineLoading';
 import { ResourceDisplay } from './ResourceDisplay';
-import { isReadOnly, ResourceAndRef, ResourceCallContext } from './ResourcesCommonType';
+import { isReadOnly, ResourceAndRef, ResourceCallContext } from './resourcesCommonType';
 
 /**
  * In this component, we load the resources if necessary and call the ResourceList
