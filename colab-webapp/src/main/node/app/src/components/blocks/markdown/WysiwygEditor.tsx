@@ -12,9 +12,10 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import * as React from 'react';
 import * as LiveHelper from '../../../LiveHelper';
 import { getLogger } from '../../../logger';
+import { CardEditorCTX } from '../../cards/CardEditor';
 import Tips from '../../common/element/Tips';
 import Flex from '../../common/layout/Flex';
-import { borderRadius } from '../../styling/style';
+import { borderRadius, lightIconButtonStyle } from '../../styling/style';
 import {
   areAllLeafsWrappedByTag,
   boundedClosest,
@@ -33,23 +34,23 @@ const logger = getLogger('WysiwygEditor');
  *    STYLES
  *************************************************/
 
-const whiteIcon = css({
-  stroke: 'white',
-  strokeWidth: '40%',
-});
-
-const idleStyle = css({
-  border: '1px solid black',
-  borderRadius: '1px',
-  color: 'black',
-  padding: '5px',
-  margin: '2px',
-});
+const idleStyle = cx(
+  lightIconButtonStyle,
+  css({
+    borderRadius: borderRadius,
+    padding: '5px',
+    margin: '0 2px',
+    '&:hover': {
+      cursor: 'pointer',
+    },
+  }),
+);
 
 const toggledStyle = cx(
   idleStyle,
   css({
-    backgroundColor: 'darkGrey',
+    backgroundColor: 'var(--lightGray)',
+    color: 'var(--primaryColor)',
   }),
 );
 
@@ -58,7 +59,7 @@ const editorStyle = cx(
   css({
     backgroundColor: 'var(--bgColor)',
     padding: '5px',
-    border: '1px solid var(--lightGray)',
+    border: '1px solid var(--lighterGray)',
     borderRadius: borderRadius,
     whiteSpace: 'pre-line',
     cursor: 'text',
@@ -67,8 +68,12 @@ const editorStyle = cx(
       pointerEvents: 'none',
       userSelect: 'none',
     },
-    ':focus': {
+    '&:hover': {
+      border: '1px solid var(--lightGray)',
+    },
+    ':focus, :focus-visible': {
       border: '1px solid var(--darkGray)',
+      outline: 'none',
     },
   }),
 );
@@ -98,7 +103,7 @@ interface ToolbarButtonProps {
   icon: IconProp;
 }
 
-interface TXTFormatToolbarProps {
+export interface TXTFormatToolbarProps {
   toolbarState: ToolbarState;
   toolbarFormatFeatures: ToolbarFeatures;
 }
@@ -109,6 +114,10 @@ export interface WysiwygEditorProps {
   /** new markdown text */
   onChange: (newValue: string) => void;
   className?: string;
+  flyingToolBar?: boolean;
+  //ToolBar?: React.FunctionComponent<TXTFormatToolbarProps>;
+  ToolBar?: React.FunctionComponent<TXTFormatToolbarProps>;
+  selected?: boolean;
 }
 
 type SelectionWithModify = Selection & {
@@ -129,7 +138,7 @@ function ToolbarButton({ toggled, onClick, icon }: ToolbarButtonProps) {
       className={cx('fa-layers', toggled ? toggledStyle : idleStyle)}
       onMouseDownCapture={onClick}
     >
-      <FontAwesomeIcon className={whiteIcon} icon={icon} />
+      <FontAwesomeIcon icon={icon} />
       <FontAwesomeIcon icon={icon} />
     </span>
   );
@@ -138,7 +147,6 @@ function ToolbarButton({ toggled, onClick, icon }: ToolbarButtonProps) {
 export function TXTFormatToolbar({ toolbarState, toolbarFormatFeatures }: TXTFormatToolbarProps) {
   return (
     <Flex>
-      {/* Listening to onMouseDownCapture is very important !*/}
       <ToolbarButton
         icon={faBold}
         toggled={toolbarState.bold}
@@ -159,10 +167,29 @@ export function TXTFormatToolbar({ toolbarState, toolbarFormatFeatures }: TXTFor
         toggled={toolbarState.strike}
         onClick={toolbarFormatFeatures.toggleStrike}
       />
-      <Tips tipsType="TODO">TODO: add more styling options (headings level, lists, ...</Tips>
+      <Tips tipsType="TODO" className={lightIconButtonStyle}>
+        TODO: add more styling options (headings level, lists, ...
+      </Tips>
     </Flex>
   );
 }
+
+/* function HiddenToolbar({ toolbarState, toolbarFormatFeatures }: TXTFormatToolbarProps){
+ const {setToolbar} = useContext(...)
+
+const FlyingToolbar = React.useMemo(()=>{
+  return function(){
+    return <TXTFormatToolbar toolbarState={toolbarState} toolbarFormatFeatures={toolbarFormatFeatures}/>
+  }
+})
+
+React.useEffect(()=>{
+  setToolbar(FlyingToolbar);
+  return ()=>setToolbar(undefined)
+},[FlyingToolbar])
+
+ return null;
+} */
 
 /**
  * Get new selection range by applying offsets to current selection
@@ -199,12 +226,16 @@ export default function WysiwygEditor({
   value,
   onChange,
   className,
+  flyingToolBar,
+  ToolBar = TXTFormatToolbar,
+  selected,
 }: WysiwygEditorProps): JSX.Element {
   // use a ref to manage editor content
   const divRef = React.useRef<HTMLDivElement>(null);
 
   // to detect is composition in on going
   const compositionRef = React.useRef(false);
+  const { setEditToolbar } = React.useContext(CardEditorCTX);
 
   const [toolbarState, setToolbarState] = React.useState<ToolbarState>({
     bold: false,
@@ -462,17 +493,34 @@ export default function WysiwygEditor({
     [onInternalChangeCb],
   );
 
+  const toolbarFormatFeatures = React.useMemo(() => {
+    return {
+      toggleBold: toggleBold,
+      toggleItalic: toggleItalic,
+      toggleUnderline: toggleUnderline,
+      toggleStrike: toggleStrike,
+    };
+  }, [toggleBold, toggleItalic, toggleStrike, toggleUnderline]);
+
+  React.useEffect(() => {
+    if (flyingToolBar && selected) {
+      setEditToolbar(
+        <ToolBar toolbarState={toolbarState} toolbarFormatFeatures={toolbarFormatFeatures} />,
+      );
+    }
+  }, [ToolBar, flyingToolBar, setEditToolbar, toolbarFormatFeatures, toolbarState, selected]);
+
+  React.useEffect(() => {
+    if (selected) {
+      divRef.current?.focus();
+    }
+  }, [selected, divRef]);
+
   return (
     <Flex className={className} direction="column" grow={1} align="stretch">
-      <TXTFormatToolbar
-        toolbarState={toolbarState}
-        toolbarFormatFeatures={{
-          toggleBold: toggleBold,
-          toggleItalic: toggleItalic,
-          toggleUnderline: toggleUnderline,
-          toggleStrike: toggleStrike,
-        }}
-      />
+      {!flyingToolBar && (
+        <ToolBar toolbarState={toolbarState} toolbarFormatFeatures={toolbarFormatFeatures} />
+      )}
       <Flex direction="column" align="stretch">
         <div
           onClick={interceptClick}
