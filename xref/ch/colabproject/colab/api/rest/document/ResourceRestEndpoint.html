@@ -400,11 +400,11 @@
 <a class="jxr_linenumber" name="L392" href="#L392">392</a> <em class="jxr_javadoccomment">     *                        reference</em>
 <a class="jxr_linenumber" name="L393" href="#L393">393</a> <em class="jxr_javadoccomment">     */</em>
 <a class="jxr_linenumber" name="L394" href="#L394">394</a>     @PUT
-<a class="jxr_linenumber" name="L395" href="#L395">395</a>     @Path(<span class="jxr_string">"setCategory/{resourceOrRefId}"</span>)
-<a class="jxr_linenumber" name="L396" href="#L396">396</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> setCategory(@PathParam(<span class="jxr_string">"resourceOrRefId"</span>) Long resourceOrRefId,
+<a class="jxr_linenumber" name="L395" href="#L395">395</a>     @Path(<span class="jxr_string">"changeCategory/{resourceOrRefId}"</span>)
+<a class="jxr_linenumber" name="L396" href="#L396">396</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> changeCategory(@PathParam(<span class="jxr_string">"resourceOrRefId"</span>) Long resourceOrRefId,
 <a class="jxr_linenumber" name="L397" href="#L397">397</a>         String categoryName) {
 <a class="jxr_linenumber" name="L398" href="#L398">398</a>         logger.debug(<span class="jxr_string">"add resource/ref #{} to category {}"</span>, resourceOrRefId, categoryName);
-<a class="jxr_linenumber" name="L399" href="#L399">399</a>         resourceCategoryHelper.setCategory(resourceOrRefId, categoryName);
+<a class="jxr_linenumber" name="L399" href="#L399">399</a>         resourceCategoryHelper.changeCategory(resourceOrRefId, categoryName);
 <a class="jxr_linenumber" name="L400" href="#L400">400</a>     }
 <a class="jxr_linenumber" name="L401" href="#L401">401</a> 
 <a class="jxr_linenumber" name="L402" href="#L402">402</a>     <em class="jxr_javadoccomment">/**</em>
@@ -415,11 +415,11 @@
 <a class="jxr_linenumber" name="L407" href="#L407">407</a> <em class="jxr_javadoccomment">     *                         reference</em>
 <a class="jxr_linenumber" name="L408" href="#L408">408</a> <em class="jxr_javadoccomment">     */</em>
 <a class="jxr_linenumber" name="L409" href="#L409">409</a>     @PUT
-<a class="jxr_linenumber" name="L410" href="#L410">410</a>     @Path(<span class="jxr_string">"setCategory/list/{newName}"</span>)
-<a class="jxr_linenumber" name="L411" href="#L411">411</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> setCategoryForList(@PathParam(<span class="jxr_string">"newName"</span>) String categoryName,
+<a class="jxr_linenumber" name="L410" href="#L410">410</a>     @Path(<span class="jxr_string">"changeCategory/list/{newName}"</span>)
+<a class="jxr_linenumber" name="L411" href="#L411">411</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> changeCategoryForList(@PathParam(<span class="jxr_string">"newName"</span>) String categoryName,
 <a class="jxr_linenumber" name="L412" href="#L412">412</a>         List&lt;Long&gt; resourceOrRefIds) {
 <a class="jxr_linenumber" name="L413" href="#L413">413</a>         logger.debug(<span class="jxr_string">"add resource/ref #{} to category {}"</span>, resourceOrRefIds, categoryName);
-<a class="jxr_linenumber" name="L414" href="#L414">414</a>         resourceCategoryHelper.setCategory(resourceOrRefIds, categoryName);
+<a class="jxr_linenumber" name="L414" href="#L414">414</a>         resourceCategoryHelper.changeCategory(resourceOrRefIds, categoryName);
 <a class="jxr_linenumber" name="L415" href="#L415">415</a>     }
 <a class="jxr_linenumber" name="L416" href="#L416">416</a> 
 <a class="jxr_linenumber" name="L417" href="#L417">417</a>     <em class="jxr_javadoccomment">/**</em>
@@ -431,7 +431,7 @@
 <a class="jxr_linenumber" name="L423" href="#L423">423</a>     @Path(<span class="jxr_string">"removeCategory/{resourceOrRefId}"</span>)
 <a class="jxr_linenumber" name="L424" href="#L424">424</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> removeCategory(@PathParam(<span class="jxr_string">"resourceOrRefId"</span>) Long resourceOrRefId) {
 <a class="jxr_linenumber" name="L425" href="#L425">425</a>         logger.debug(<span class="jxr_string">"remove category from resource/ref #{}"</span>, resourceOrRefId);
-<a class="jxr_linenumber" name="L426" href="#L426">426</a>         resourceCategoryHelper.removeCategory(resourceOrRefId);
+<a class="jxr_linenumber" name="L426" href="#L426">426</a>         resourceCategoryHelper.changeCategory(resourceOrRefId, <strong class="jxr_keyword">null</strong>);
 <a class="jxr_linenumber" name="L427" href="#L427">427</a>     }
 <a class="jxr_linenumber" name="L428" href="#L428">428</a> 
 <a class="jxr_linenumber" name="L429" href="#L429">429</a>     <em class="jxr_javadoccomment">/**</em>
@@ -443,7 +443,7 @@
 <a class="jxr_linenumber" name="L435" href="#L435">435</a>     @Path(<span class="jxr_string">"removeCategory/list"</span>)
 <a class="jxr_linenumber" name="L436" href="#L436">436</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> removeCategoryForList(List&lt;Long&gt; resourceOrRefIds) {
 <a class="jxr_linenumber" name="L437" href="#L437">437</a>         logger.debug(<span class="jxr_string">"remove category from resource/ref #{}"</span>, resourceOrRefIds);
-<a class="jxr_linenumber" name="L438" href="#L438">438</a>         resourceCategoryHelper.removeCategory(resourceOrRefIds);
+<a class="jxr_linenumber" name="L438" href="#L438">438</a>         resourceCategoryHelper.changeCategory(resourceOrRefIds, <strong class="jxr_keyword">null</strong>);
 <a class="jxr_linenumber" name="L439" href="#L439">439</a>     }
 <a class="jxr_linenumber" name="L440" href="#L440">440</a> 
 <a class="jxr_linenumber" name="L441" href="#L441">441</a>     <em class="jxr_javadoccomment">/**</em>

@@ -392,11 +392,11 @@ import org.slf4j.LoggerFactory;
      *                        reference
      */
     @PUT
-    @Path(&quot;setCategory/{resourceOrRefId}&quot;)
-    public void setCategory(@PathParam(&quot;resourceOrRefId&quot;) Long resourceOrRefId,
+    @Path(&quot;changeCategory/{resourceOrRefId}&quot;)
+    public void changeCategory(@PathParam(&quot;resourceOrRefId&quot;) Long resourceOrRefId,
         String categoryName) {
 <span class="nc" id="L398">        logger.debug(&quot;add resource/ref #{} to category {}&quot;, resourceOrRefId, categoryName);</span>
-<span class="nc" id="L399">        resourceCategoryHelper.setCategory(resourceOrRefId, categoryName);</span>
+<span class="nc" id="L399">        resourceCategoryHelper.changeCategory(resourceOrRefId, categoryName);</span>
 <span class="nc" id="L400">    }</span>
 
     /**
@@ -407,11 +407,11 @@ import org.slf4j.LoggerFactory;
      *                         reference
      */
     @PUT
-    @Path(&quot;setCategory/list/{newName}&quot;)
-    public void setCategoryForList(@PathParam(&quot;newName&quot;) String categoryName,
+    @Path(&quot;changeCategory/list/{newName}&quot;)
+    public void changeCategoryForList(@PathParam(&quot;newName&quot;) String categoryName,
         List&lt;Long&gt; resourceOrRefIds) {
 <span class="nc" id="L413">        logger.debug(&quot;add resource/ref #{} to category {}&quot;, resourceOrRefIds, categoryName);</span>
-<span class="nc" id="L414">        resourceCategoryHelper.setCategory(resourceOrRefIds, categoryName);</span>
+<span class="nc" id="L414">        resourceCategoryHelper.changeCategory(resourceOrRefIds, categoryName);</span>
 <span class="nc" id="L415">    }</span>
 
     /**
@@ -423,7 +423,7 @@ import org.slf4j.LoggerFactory;
     @Path(&quot;removeCategory/{resourceOrRefId}&quot;)
     public void removeCategory(@PathParam(&quot;resourceOrRefId&quot;) Long resourceOrRefId) {
 <span class="nc" id="L425">        logger.debug(&quot;remove category from resource/ref #{}&quot;, resourceOrRefId);</span>
-<span class="nc" id="L426">        resourceCategoryHelper.removeCategory(resourceOrRefId);</span>
+<span class="nc" id="L426">        resourceCategoryHelper.changeCategory(resourceOrRefId, null);</span>
 <span class="nc" id="L427">    }</span>
 
     /**
@@ -435,7 +435,7 @@ import org.slf4j.LoggerFactory;
     @Path(&quot;removeCategory/list&quot;)
     public void removeCategoryForList(List&lt;Long&gt; resourceOrRefIds) {
 <span class="nc" id="L437">        logger.debug(&quot;remove category from resource/ref #{}&quot;, resourceOrRefIds);</span>
-<span class="nc" id="L438">        resourceCategoryHelper.removeCategory(resourceOrRefIds);</span>
+<span class="nc" id="L438">        resourceCategoryHelper.changeCategory(resourceOrRefIds, null);</span>
 <span class="nc" id="L439">    }</span>
 
     /**
