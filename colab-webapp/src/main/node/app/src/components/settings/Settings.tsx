@@ -31,8 +31,8 @@ export default function Settings(): JSX.Element {
     return (
       <div className={css({ padding: space_L })}>
         <h2>Settings</h2>
-        <Tabs>
-          <Tab name="User Profile" label="User">
+        <Tabs routed>
+          <Tab name="user" label="User">
             <Flex direction="row" className={css({ gap: space_L })}>
               <UserProfile user={currentUser} />
               {accounts.map(account => {
@@ -46,7 +46,7 @@ export default function Settings(): JSX.Element {
               })}
             </Flex>
           </Tab>
-          <Tab name="Display" label="Display">
+          <Tab name="display" label="Display">
             <DisplaySettings />
           </Tab>
           <Tab name="activeSess" label="Active Sessions">

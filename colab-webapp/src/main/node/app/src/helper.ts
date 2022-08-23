@@ -1,12 +1,14 @@
-import { CardContent, User, WithId } from 'colab-rest-client';
-import logger from './logger';
-
 /*
  * The coLAB project
  * Copyright (C) 2021 AlbaSim, MEI, HEIG-VD, HES-SO
  *
  * Licensed under the MIT License
  */
+
+import { CardContent, User, WithId } from 'colab-rest-client';
+import logger from './logger';
+
+export const emailFormat = /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
 
 export const getDisplayName = (user: User): string => {
   return (

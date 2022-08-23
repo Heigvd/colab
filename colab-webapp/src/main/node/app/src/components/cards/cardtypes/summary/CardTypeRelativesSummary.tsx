@@ -46,9 +46,11 @@ export default function CardTypeRelativesSummary({
       {displayChoices.showResources && (
         <Flex className={itemStyle}>
           <ResourcesListSummary
-            kind={'CardType'}
-            accessLevel={'READ'}
-            cardTypeId={cardType.ownId}
+            context={{
+              kind: 'CardType',
+              accessLevel: 'READ',
+              cardTypeId: cardType.ownId,
+            }}
           />
         </Flex>
       )}

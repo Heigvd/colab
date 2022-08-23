@@ -9,22 +9,115 @@ import { css } from '@emotion/css';
 import * as React from 'react';
 import useTranslations from '../../i18n/I18nContext';
 import { useAndLoadTextOfDocument } from '../../selectors/documentSelector';
+import Tips from '../common/element/Tips';
 import Flex from '../common/layout/Flex';
-import { lightIconButtonStyle, marginAroundStyle, space_M, space_S } from '../styling/style';
-import { getKey, ResourceAndRef, ResourceCallContext } from './ResourceCommonType';
-import ResourceCreator from './ResourceCreator';
+import { marginAroundStyle, space_M, space_S } from '../styling/style';
+import { getKey, getTheDirectResource, ResourceAndRef } from './resourcesCommonType';
+
+// TODO UI : allow to have more thant 150px for the texts
+// => solution à l'arrache de mettre 300. mais pas pas satisfaisant
 
 /**
- * List of ResourceAndRef which handles sorting, adding, removing.
+ * List of ResourceAndRef grouped by category
  */
-// TODO real sort order
+
+// for the moment, the resources are ordered by id (= creation date)
 function sortResources(a: ResourceAndRef, b: ResourceAndRef): number {
   return (a.targetResource.id || 0) - (b.targetResource.id || 0);
 }
 
+// ********************************************************************************************** //
+
+export interface ResourcesListProps {
+  resources: ResourceAndRef[];
+  selectResource?: (resource: ResourceAndRef) => void;
+  displayResourceItem?: (resource: ResourceAndRef) => React.ReactNode;
+}
+
+export default function ResourcesList({
+  resources,
+  selectResource,
+  displayResourceItem,
+}: ResourcesListProps): JSX.Element {
+  const listsByCategories: Record<string, ResourceAndRef[]> = React.useMemo(() => {
+    const reducedByCategory = resources.reduce<Record<string, ResourceAndRef[]>>((acc, current) => {
+      const category = getTheDirectResource(current).category || '';
+
+      acc[category] = acc[category] || [];
+      acc[category]!.push(current);
+
+      return acc;
+    }, {});
+
+    Object.values(reducedByCategory).forEach(list => {
+      list.sort(sortResources);
+    });
+
+    return reducedByCategory;
+  }, [resources]);
+
+  return (
+    <Flex
+      direction="column"
+      align="stretch"
+      grow={1}
+      className={css({ overflow: 'auto', paddingRight: '2px' })}
+    >
+      {Object.keys(listsByCategories)
+        .sort()
+        .map(category => (
+          <div key={category} className={marginAroundStyle([3], space_S)}>
+            <TocHeader category={category} />
+
+            <Flex direction="column" align="stretch">
+              {listsByCategories[category]!.map(resource => (
+                <TocEntry
+                  key={getKey(resource)}
+                  resource={resource}
+                  selectResource={selectResource}
+                  displayResource={displayResourceItem}
+                />
+              ))}
+            </Flex>
+          </div>
+        ))}
+    </Flex>
+  );
+}
+
+// ********************************************************************************************** //
+
+interface TocHeaderProps {
+  category: string;
+}
+
+function TocHeader({ category }: TocHeaderProps): JSX.Element {
+  return (
+    <>
+      {category && (
+        <div className={marginAroundStyle([1, 2, 4], space_M)}>
+          <h3
+            className={css({
+              maxWidth: '300px',
+              whiteSpace: 'nowrap',
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
+              flexGrow: 1,
+            })}
+          >
+            {category}
+          </h3>
+        </div>
+      )}
+    </>
+  );
+}
+
+// ********************************************************************************************** //
+
 const tocEntryStyle = css({
   cursor: 'pointer',
-  padding: space_S + ' ' + space_M,
+  //padding: space_S + ' ' + space_M,
   color: 'var(--pictoGrey)',
   '&:hover': {
     backgroundColor: 'var(--hoverBgColor)',
@@ -32,146 +125,88 @@ const tocEntryStyle = css({
   },
 });
 
-export interface ResourcesListProps {
-  resourcesAndRefs: ResourceAndRef[];
-  contextInfo: ResourceCallContext;
-  selectResource: (r: ResourceAndRef) => void;
-}
-interface Categorized {
-  categorized: Record<string, ResourceAndRef[]>;
-  raw: ResourceAndRef[];
+interface TocEntryProps {
+  resource: ResourceAndRef;
+  selectResource?: (resource: ResourceAndRef) => void;
+  displayResource?: (resource: ResourceAndRef) => React.ReactNode;
 }
 
-export default function ResourcesList({
-  resourcesAndRefs,
-  contextInfo,
-  selectResource,
-}: ResourcesListProps): JSX.Element {
-  const [lastCreated, setLastCreated] = React.useState<number | null>(null);
+function TocEntry({ resource, selectResource, displayResource }: TocEntryProps): JSX.Element {
+  const i18n = useTranslations();
 
-  const categorized = resourcesAndRefs.reduce<Categorized>(
-    (acc, current) => {
-      const cat =
-        (current.cardResourceRef || current.cardContentResourceRef || current.cardTypeResourceRef)
-          ?.category || current.targetResource.category;
-
-      if (cat) {
-        acc.categorized[cat] = acc.categorized[cat] || [];
-        acc.categorized[cat]!.push(current);
-      } else {
-        acc.raw.push(current);
-      }
-      return acc;
-    },
-    {
-      categorized: {},
-      raw: [],
-    },
-  );
-
-  const categories = Object.keys(categorized.categorized);
-
-  const toDisplay = [...categories];
-
-  // hack to show uncategorized in a discreet group at the beginning
-  if (categorized.raw.length > 0) {
-    toDisplay.splice(0, 0, '');
-    categorized.categorized[''] = categorized.raw;
-  }
-
-  React.useEffect(() => {
-    if (lastCreated) {
-      resourcesAndRefs.forEach(resource => {
-        if (resource.targetResource.id === lastCreated) {
-          selectResource(resource);
-          setLastCreated(null);
-        }
-      });
-    }
-  }, [lastCreated, resourcesAndRefs, selectResource, setLastCreated]);
+  const { text: teaser } = useAndLoadTextOfDocument(resource.targetResource.teaserId);
 
   return (
-    <Flex direction="column" align="stretch" grow={1}>
-      <Flex
-        grow={1}
-        direction="column"
-        align="stretch"
-        className={css({ overflow: 'auto', paddingRight: '2px' })}
-      >
-        {contextInfo.accessLevel === 'DENIED' ? (
-          <div>ACCESS DENIED</div>
-        ) : (
-          toDisplay.map(category => (
-            <div key={category} className={marginAroundStyle([3], space_S)}>
-              {category && (
-                <div className={marginAroundStyle([1, 2, 4], space_M)}>
-                  <h3
-                    className={css({
-                      maxWidth: '150px',
-                      whiteSpace: 'nowrap',
-                      overflow: 'hidden',
-                      textOverflow: 'ellipsis',
-                      flexGrow: 1,
-                    })}
-                    title={category}
-                  >
-                    {category}
-                  </h3>
+    <Flex className={tocEntryStyle} justify="space-between">
+      {displayResource != null ? (
+        displayResource(resource)
+      ) : (
+        <>
+          <Flex
+            title={teaser || ''}
+            onClick={() => {
+              if (selectResource != null) {
+                selectResource(resource);
+              }
+            }}
+            grow={1}
+            className={css({ padding: space_S + ' ' + space_M })}
+          >
+            <div
+              className={css({
+                maxWidth: '300px',
+                whiteSpace: 'nowrap',
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+                flexGrow: 1,
+              })}
+            >
+              {resource.targetResource.title || i18n.modules.resource.untitled}
+            </div>
+          </Flex>
+          <Tips tipsType="DEBUG" interactionType="CLICK">
+            <div className={css({ fontSize: '0.8em' })}>
+              {resource.targetResource && (
+                <div>
+                  {resource.targetResource.cardId != null && <p> on card </p>}
+                  {resource.targetResource.cardContentId != null && <p> on var </p>}
+                  {resource.targetResource.abstractCardTypeId != null && <p> on type </p>}
+                  <p>- {resource.targetResource.published ? 'is' : 'not'} published </p>
+                  <p>- {resource.targetResource.deprecated ? 'is' : 'not'} deprecated </p>
+                  <p>- "{resource.targetResource.category}"</p>
+                  <br />
                 </div>
               )}
-
-              <Flex direction="column" align="stretch">
-                {categorized.categorized[category]!.sort(sortResources).map(resourceAndRef => (
-                  <TocEntry
-                    key={getKey(resourceAndRef)}
-                    resourceAndRef={resourceAndRef}
-                    selectResource={selectResource}
-                  />
-                ))}
-              </Flex>
+              {resource.cardTypeResourceRef && (
+                <div>
+                  <p>type ref</p>
+                  <p>- {resource.cardTypeResourceRef.residual ? 'is' : 'not'} residual </p>
+                  <p>- {resource.cardTypeResourceRef.refused ? 'is' : 'not'} refused </p>
+                  <p>- "{resource.cardTypeResourceRef.category}"</p>
+                </div>
+              )}
+              {resource.cardResourceRef && (
+                <div>
+                  <p>card ref</p>
+                  <p>- {resource.cardResourceRef.residual ? 'is' : 'not'} residual </p>
+                  <p>- {resource.cardResourceRef.refused ? 'is' : 'not'} refused </p>
+                  <p>- "{resource.cardResourceRef.category}"</p>
+                </div>
+              )}
+              {resource.cardContentResourceRef && (
+                <div>
+                  <p>var ref</p>
+                  <p>- {resource.cardContentResourceRef.residual ? 'is' : 'not'} residual </p>
+                  <p>- {resource.cardContentResourceRef.refused ? 'is' : 'not'} refused </p>
+                  <p>- "{resource.cardContentResourceRef.category}"</p>
+                </div>
+              )}
             </div>
-          ))
-        )}
-        <div className={css({ marginRight: '10px' })}> </div>
-      </Flex>
-      {contextInfo.accessLevel === 'WRITE' && (
-        <ResourceCreator
-          contextInfo={contextInfo}
-          className={lightIconButtonStyle}
-          onCreated={setLastCreated}
-        />
+          </Tips>
+        </>
       )}
     </Flex>
   );
 }
 
-interface TocEntryProps {
-  resourceAndRef: ResourceAndRef;
-  selectResource: (r: ResourceAndRef) => void;
-}
-
-function TocEntry({ resourceAndRef, selectResource }: TocEntryProps) {
-  const i18n = useTranslations();
-
-  const { text: teaser } = useAndLoadTextOfDocument(resourceAndRef.targetResource.teaserId);
-
-  return (
-    <Flex
-      title={teaser || ''}
-      className={tocEntryStyle}
-      onClick={() => selectResource(resourceAndRef)}
-    >
-      <div
-        className={css({
-          maxWidth: '150px',
-          whiteSpace: 'nowrap',
-          overflow: 'hidden',
-          textOverflow: 'ellipsis',
-          flexGrow: 1,
-        })}
-      >
-        {resourceAndRef.targetResource.title || i18n.modules.resource.untitled}
-      </div>
-    </Flex>
-  );
-}
+// ********************************************************************************************** //

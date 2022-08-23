@@ -22,6 +22,7 @@ export default function TargetResourceSummary({
   return (
     <>
       {resource.cardContentId && <ResourceOfCardContentSummary className={iconClassName} />}
+      {/* at card leved is the nothing-special way */}
       {resource.abstractCardTypeId && <ResourceOfCardTypeSummary className={iconClassName} />}
     </>
   );

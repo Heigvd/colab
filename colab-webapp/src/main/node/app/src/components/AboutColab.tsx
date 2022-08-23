@@ -5,13 +5,6 @@
  * Licensed under the MIT License
  */
 
-/*
- * The coLAB project
- * Copyright (C) 2021 AlbaSim, MEI, HEIG-VD, HES-SO
- *
- * Licensed under the MIT License
- */
-
 import { css } from '@emotion/css';
 import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
 import React from 'react';
@@ -57,7 +50,7 @@ export default function AboutColab(): JSX.Element {
                   games.
                 </li>
                 <li>
-                  <b>Friendly and intuitive interfaces</b> for all type of user profiles.
+                  <b>Friendly and intuitive interfaces</b> for all types of user profiles.
                 </li>
               </ul>
               We tried to create a platform for all of you to imagine the serious game you need!
@@ -71,9 +64,9 @@ export default function AboutColab(): JSX.Element {
               The goal of the co.LAB project is to improve the design, development and uses of
               Digital Learning Games. This goal will be achieved by the development of a
               collaborative methodological framework associated with a collaborative digital
-              platform dedicated to co-design, co-development and co-evaluation of DLGs. The co.LAB
-              project has been elected for a four-year grant by the Swiss National Science
-              Foundation (SNF) in the frame of the NRP 77 program “Digital Transformation”
+              platform dedicated to co-design, co-development and co-evaluation of digital learning
+              games. The co.LAB project has been elected for a four-year grant by the Swiss National
+              Science Foundation (SNF) in the frame of the NRP 77 program “Digital Transformation”
             </p>
           </div>
           <div>

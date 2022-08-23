@@ -87,7 +87,7 @@ export function ProjectSettings({ project }: ProjectSettingsProps): JSX.Element 
         <Tab name="team" label="Team">
           <Team project={project} />
         </Tab>
-        <Tab name="card-types" label="Card Types">
+        <Tab name="cardtypes" label="Card Types">
           <ProjectCardTypeList />
         </Tab>
       </Tabs>

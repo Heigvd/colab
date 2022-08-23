@@ -35,9 +35,9 @@ import {
   User,
   WsSessionIdentifier,
 } from 'colab-rest-client';
-import { PasswordScore } from '../components/common/Form/Form';
+import { PasswordScore } from '../components/common/element/Form';
 import { DocumentKind } from '../components/documents/documentCommonType';
-import { ResourceAndRef } from '../components/resources/ResourceCommonType';
+import { ResourceAndRef } from '../components/resources/resourcesCommonType';
 import { hashPassword } from '../SecurityHelper';
 import { addNotification } from '../store/notification';
 import { ColabState, getStore } from '../store/store';
@@ -975,7 +975,7 @@ export const deleteResource = createAsyncThunk('resource/delete', async (resourc
   }
 });
 
-function getResourceToEdit(resource: ResourceAndRef): ResourceRef | Resource {
+export function getResourceToEdit(resource: ResourceAndRef): ResourceRef | Resource {
   if (resource.isDirectResource) {
     return resource.targetResource;
   }
@@ -1006,6 +1006,21 @@ export const removeAccessToResource = createAsyncThunk(
     const resourceToDisable = getResourceToEdit(resource);
     if (resourceToDisable.id != null) {
       return await restClient.ResourceRestEndpoint.discardResourceOrRef(resourceToDisable.id);
+    }
+  },
+);
+
+export const changeResourceCategory = createAsyncThunk(
+  'resource/changeCategory',
+  async ({
+    resourceOrRef,
+    categoryName,
+  }: {
+    resourceOrRef: AbstractResource;
+    categoryName: string;
+  }) => {
+    if (resourceOrRef && resourceOrRef.id) {
+      return await restClient.ResourceRestEndpoint.changeCategory(resourceOrRef.id, categoryName);
     }
   },
 );

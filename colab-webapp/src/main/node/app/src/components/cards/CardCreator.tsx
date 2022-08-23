@@ -55,6 +55,7 @@ export default function CardCreator({
   const i18n = useTranslations();
 
   const { cardTypes, status } = useAndLoadProjectCardTypes();
+
   const { isLoading, startLoading, stopLoading } = useLoadingState();
 
   const [selectedType, setSelectedType] = React.useState<number | null>(null);
@@ -62,6 +63,7 @@ export default function CardCreator({
 
   const createCard = (close: () => void) => {
     startLoading();
+
     dispatch(
       API.createSubCardWithTextDataBlock({
         parent: parentCardContent,
@@ -69,6 +71,9 @@ export default function CardCreator({
       }),
     ).then(() => {
       stopLoading();
+
+      resetData();
+
       close();
     });
   };
@@ -87,7 +92,7 @@ export default function CardCreator({
           <IconButton
             icon={faPlus}
             className={greyIconButtonChipStyle}
-            title={i18n.modules.card.addCard}
+            title={i18n.modules.card.createCard}
           />
         )
       }
@@ -103,7 +108,7 @@ export default function CardCreator({
           className={css({ padding: space_M, alignSelf: 'stretch' })}
         >
           <IconButton
-            onClick={function () {
+            onClick={() => {
               navigate('project-settings/card-types');
             }}
             title={i18n.modules.cardType.manageTypes}
@@ -117,11 +122,10 @@ export default function CardCreator({
           <ButtonWithLoader
             onClick={() => {
               createCard(close);
-              resetData();
             }}
             isLoading={isLoading}
           >
-            {i18n.modules.card.addCard}
+            {i18n.modules.card.createCard}
           </ButtonWithLoader>
         </Flex>
       )}
@@ -143,7 +147,6 @@ export default function CardCreator({
                 customOnClick={item => setSelectedType(item?.id ? item.id : null)}
                 customOnDblClick={() => {
                   createCard(close);
-                  resetData();
                 }}
                 addEmptyItem
                 selectionnable

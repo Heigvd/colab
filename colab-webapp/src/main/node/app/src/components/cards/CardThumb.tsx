@@ -185,7 +185,7 @@ export default function CardThumb({
                       value: 'edit card',
                       label: (
                         <>
-                          <FontAwesomeIcon icon={faPen} /> {i18n.modules.card.editCard}
+                          <FontAwesomeIcon icon={faPen} /> {i18n.common.edit}
                         </>
                       ),
                       action: () => {
@@ -201,7 +201,7 @@ export default function CardThumb({
                       value: 'settings',
                       label: (
                         <>
-                          <FontAwesomeIcon icon={faCog} /> {i18n.modules.card.settings.title}
+                          <FontAwesomeIcon icon={faCog} /> {i18n.common.settings}
                         </>
                       ),
                       action: () => {

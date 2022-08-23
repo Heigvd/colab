@@ -27,12 +27,21 @@ import Button from '../../common/element/Button';
 import IconButton from '../../common/element/IconButton';
 import { DiscreetInput, LabeledTextArea } from '../../common/element/Input';
 import Tips from '../../common/element/Tips';
-import Toggler from '../../common/Form/Toggler';
+import Toggler from '../../common/element/Toggler';
 import ConfirmDeleteModal from '../../common/layout/ConfirmDeleteModal';
 import Flex from '../../common/layout/Flex';
 import { DocTextWrapper } from '../../documents/DocTextItem';
-import ResourcesWrapper from '../../resources/ResourcesWrapper';
-import { cardStyle, errorColor, localTitleStyle, space_M, space_S } from '../../styling/style';
+import { ResourceCallContext } from '../../resources/resourcesCommonType';
+import ResourcesMainView from '../../resources/ResourcesMainView';
+import { ResourceListNb } from '../../resources/summary/ResourcesListSummary';
+import {
+  cardStyle,
+  errorColor,
+  localTitleStyle,
+  space_M,
+  space_S,
+  textSmall,
+} from '../../styling/style';
 import SideCollapsiblePanel from './../SideCollapsiblePanel';
 
 interface CardTypeEditorProps {
@@ -56,6 +65,13 @@ export default function CardTypeEditor({ className, usage }: CardTypeEditorProps
     label: tag,
     value: tag,
   }));
+
+  const resourceContext: ResourceCallContext = {
+    kind: 'CardType',
+    cardTypeId: cardType?.ownId,
+    // TODO remove access
+    accessLevel: 'WRITE',
+  };
 
   if (status !== 'READY' || !cardType) {
     return <AvailabilityStatusIndicator status={status} />;
@@ -195,7 +211,11 @@ export default function CardTypeEditor({ className, usage }: CardTypeEditorProps
                   />
                   <ConfirmDeleteModal
                     buttonLabel={
-                      <Button invertedButton className={cx(css({ color: errorColor, borderColor: errorColor }))} clickable>
+                      <Button
+                        invertedButton
+                        className={cx(css({ color: errorColor, borderColor: errorColor }))}
+                        clickable
+                      >
                         <FontAwesomeIcon icon={faTrash} /> {i18n.modules.cardType.deleteType}
                       </Button>
                     }
@@ -235,22 +255,23 @@ export default function CardTypeEditor({ className, usage }: CardTypeEditorProps
                 openKey={'resources'}
                 items={{
                   resources: {
-                    children: (
-                      <>
-                        {cardType.ownId && (
-                          <ResourcesWrapper
-                            kind={'CardType'}
-                            //accessLevel={ userAcl.write ? 'WRITE' : userAcl.read ? 'READ' : 'DENIED'}
-                            // TODO manage the user rights for editing resources
-                            // TODO work in progress
-                            accessLevel="WRITE"
-                            cardTypeId={cardType.ownId}
-                          />
-                        )}
-                      </>
-                    ),
                     icon: faPaperclip,
+                    nextToIconElement: (
+                      <div className={textSmall}>
+                        {' '}
+                        (<ResourceListNb context={resourceContext} />)
+                      </div>
+                    ),
                     title: i18n.modules.resource.documentation,
+                    children: (
+                      <ResourcesMainView
+                        contextData={resourceContext}
+                        //accessLevel={ userAcl.write ? 'WRITE' : userAcl.read ? 'READ' : 'DENIED'}
+                        // TODO manage the user rights for editing resources
+                        // TODO work in progress
+                        accessLevel="WRITE"
+                      />
+                    ),
                   },
                 }}
                 defaultOpenKey={'resources'}

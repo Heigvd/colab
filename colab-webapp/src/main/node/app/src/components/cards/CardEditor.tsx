@@ -33,7 +33,6 @@ import * as API from '../../API/api';
 import useTranslations from '../../i18n/I18nContext';
 import { useCardACLForCurrentUser, useVariantsOrLoad } from '../../selectors/cardSelector';
 import { useAndLoadCardType } from '../../selectors/cardTypeSelector';
-import { useResources } from '../../selectors/resourceSelector';
 import { useStickyNoteLinksForDest } from '../../selectors/stickyNoteLinkSelector';
 import { useAppDispatch, useLoadingState } from '../../store/hooks';
 import Button from '../common/element/Button';
@@ -48,7 +47,9 @@ import Modal from '../common/layout/Modal';
 import OpenCloseModal from '../common/layout/OpenCloseModal';
 import { DocTextDisplay } from '../documents/DocTextItem';
 import DocumentList from '../documents/DocumentList';
-import ResourcesWrapper from '../resources/ResourcesWrapper';
+import { ResourceCallContext } from '../resources/resourcesCommonType';
+import ResourcesMainView from '../resources/ResourcesMainView';
+import { ResourceListNb } from '../resources/summary/ResourcesListSummary';
 import StickyNoteWrapper from '../stickynotes/StickyNoteWrapper';
 import {
   cardStyle,
@@ -205,6 +206,7 @@ export default function CardEditor({
   const [markDownMode, setMarkDownMode] = React.useState(false);
   const [editToolbar, setEditToolbar] = React.useState(defaultCardEditorContext.editToolbar);
   const [openKey, setOpenKey] = React.useState<string | undefined>(undefined);
+
   const TXToptions = {
     showTree: showTree,
     setShowTree: setShowTree,
@@ -213,13 +215,14 @@ export default function CardEditor({
   };
   const { isLoading, startLoading, stopLoading } = useLoadingState();
 
-  const { resourcesAndRefs } = useResources({
+  const resourceContext: ResourceCallContext = {
     kind: 'CardOrCardContent',
     accessLevel: !readOnly && userAcl.write ? 'WRITE' : userAcl.read ? 'READ' : 'DENIED',
     cardId: card.id || undefined,
     cardContentId: variant.id,
     hasSeveralVariants: hasVariants,
-  });
+  };
+
   const { stickyNotesForDest } = useStickyNoteLinksForDest(card.id);
   const closeRouteCb = React.useCallback(
     route => {
@@ -340,10 +343,7 @@ export default function CardEditor({
                               <IconButton
                                 icon={faInfoCircle}
                                 title={i18n.modules.card.showCardType}
-                                className={cx(
-                                  lightIconButtonStyle,
-                                  css({ color: 'var(--lightGray)' }),
-                                )}
+                                className={cx(lightIconButtonStyle)}
                                 onClick={() =>
                                   setShowTypeDetails(showTypeDetails => !showTypeDetails)
                                 }
@@ -424,10 +424,7 @@ export default function CardEditor({
                                     : undefined
                                 }
                                 title={i18n.modules.card.editor.toggleToolbox}
-                                className={cx(
-                                  lightIconButtonStyle,
-                                  css({ color: 'var(--lightGray)' }),
-                                )}
+                                className={lightIconButtonStyle}
                                 onClick={() => setOpenToolbox(openToolbox => !openToolbox)}
                               />
                             )}
@@ -449,8 +446,7 @@ export default function CardEditor({
                                   value: 'settings',
                                   label: (
                                     <>
-                                      <FontAwesomeIcon icon={faCog} />{' '}
-                                      {i18n.modules.card.settings.title}
+                                      <FontAwesomeIcon icon={faCog} /> {i18n.common.settings}
                                     </>
                                   ),
                                   action: () => navigate('settings'),
@@ -459,7 +455,7 @@ export default function CardEditor({
                                   value: 'involvements',
                                   label: (
                                     <>
-                                      <FontAwesomeIcon icon={faUsers} />
+                                      <FontAwesomeIcon icon={faUsers} />{' '}
                                       {i18n.modules.card.involvements}
                                     </>
                                   ),
@@ -469,18 +465,18 @@ export default function CardEditor({
                                   value: 'completion',
                                   label: (
                                     <>
-                                      <FontAwesomeIcon icon={faPercent} />
+                                      <FontAwesomeIcon icon={faPercent} />{' '}
                                       {i18n.modules.card.completion}
                                     </>
                                   ),
                                   action: () => navigate('completion'),
                                 },
                                 {
-                                  value: 'Add new variant',
+                                  value: 'createVariant',
                                   label: (
                                     <>
                                       <FontAwesomeIcon icon={faWindowRestore} />{' '}
-                                      {i18n.modules.card.addVariant}
+                                      {i18n.modules.card.createVariant}
                                     </>
                                   ),
                                   action: () => {
@@ -634,7 +630,7 @@ export default function CardEditor({
                     </Flex>
                   </Flex>
                 </ReflexElement>
-                {openKey && <ReflexSplitter />}
+                {openKey && <ReflexSplitter className={css({ zIndex: 0 })} />}
                 <ReflexElement
                   className={'right-pane ' + css({ display: 'flex', minWidth: 'min-content' })}
                   resizeHeight={false}
@@ -645,9 +641,24 @@ export default function CardEditor({
                     setOpenKey={setOpenKey}
                     items={{
                       resources: {
+                        icon: faPaperclip,
+                        nextToIconElement: (
+                          <div className={textSmall}>
+                            {' '}
+                            (<ResourceListNb context={resourceContext} />)
+                          </div>
+                        ),
+                        title: i18n.modules.resource.documentation,
+                        nextToTitleElement: (
+                          <Tips>
+                            {card.cardTypeId
+                              ? i18n.modules.resource.docDescriptionWithType
+                              : i18n.modules.resource.docDescription}
+                          </Tips>
+                        ),
                         children: (
-                          <ResourcesWrapper
-                            kind={'CardOrCardContent'}
+                          <ResourcesMainView
+                            contextData={resourceContext}
                             accessLevel={
                               !readOnly && userAcl.write
                                 ? 'WRITE'
@@ -655,17 +666,8 @@ export default function CardEditor({
                                 ? 'READ'
                                 : 'DENIED'
                             }
-                            cardId={card.id}
-                            cardContentId={variant.id}
-                            hasSeveralVariants={hasVariants}
                           />
                         ),
-                        icon: faPaperclip,
-                        nextToIconElement: (
-                          <div className={textSmall}> ({resourcesAndRefs.length})</div>
-                        ),
-                        title: i18n.modules.resource.documentation,
-                        nextToTitleElement: <Tips>{i18n.modules.resource.docDescription}</Tips>,
                         className: css({ overflow: 'auto' }),
                       },
                       'Sticky Notes': {
@@ -674,13 +676,13 @@ export default function CardEditor({
                           <div className={textSmall}> ({stickyNotesForDest.length})</div>
                         ),
                         title: i18n.modules.stickyNotes.stickyNotes,
-                        children: <StickyNoteWrapper destCardId={card.id} showSrc />,
                         nextToTitleElement: (
                           <Tips>
                             <h5>{i18n.modules.stickyNotes.listStickyNotes}</h5>
                             <div>{i18n.modules.stickyNotes.snDescription}</div>
                           </Tips>
                         ),
+                        children: <StickyNoteWrapper destCardId={card.id} showSrc />,
                         className: css({ overflow: 'auto' }),
                       },
                     }}

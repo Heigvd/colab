@@ -10,12 +10,13 @@ import { faCheckSquare, faSquare } from '@fortawesome/free-regular-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import * as React from 'react';
 import { errorStyle, space_S, textSmall, warningStyle } from '../../styling/style';
-import Tips, { TipsProps } from '../element/Tips';
 import Flex from '../layout/Flex';
+import Tips, { TipsProps } from './Tips';
 
 const disabledStyle = css({
   color: 'var(--disabledFgColor)',
 });
+
 const enabledStyle = css({ cursor: 'pointer' });
 
 interface CheckboxProps {
@@ -24,9 +25,9 @@ interface CheckboxProps {
   readOnly?: boolean;
   onChange: (newValue: boolean) => void;
   tip?: TipsProps['children'];
-  fieldFooter?: React.ReactNode;
-  warning?: React.ReactNode;
-  error?: React.ReactNode;
+  footer?: React.ReactNode;
+  warningMessage?: React.ReactNode;
+  errorMessage?: React.ReactNode;
   className?: string;
   bottomClassName?: string;
 }
@@ -37,9 +38,9 @@ export default function Checkbox({
   readOnly = false,
   onChange,
   tip,
-  fieldFooter,
-  warning,
-  error,
+  footer,
+  warningMessage,
+  errorMessage,
   className,
   bottomClassName,
 }: CheckboxProps): JSX.Element {
@@ -62,10 +63,10 @@ export default function Checkbox({
         </Flex>
         {tip != null && <Tips>{tip}</Tips>}
       </Flex>
-      {fieldFooter != null && <div className={textSmall}>{fieldFooter}</div>}
+      {footer != null && <div className={textSmall}>{footer}</div>}
       <Flex direction="column" align="center" className={cx(textSmall, bottomClassName)}>
-        {warning != null && <div className={warningStyle}>{warning}</div>}
-        {error != null && <div className={errorStyle}>{error}</div>}
+        {warningMessage != null && <div className={warningStyle}>{warningMessage}</div>}
+        {errorMessage != null && <div className={errorStyle}>{errorMessage}</div>}
       </Flex>
     </Flex>
   );

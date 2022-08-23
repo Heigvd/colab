@@ -135,12 +135,12 @@ const ProjectDisplay = ({ project }: ProjectDisplayProps) => {
                 action: () => dispatch(API.duplicateProject(project)),
               },
               {
-                value: 'Delete project',
+                value: 'Delete',
                 label: (
                   <ConfirmDeleteModal
                     buttonLabel={
                       <div className={cx(css({ color: errorColor }), modalEntryStyle)}>
-                        <FontAwesomeIcon icon={faTrash} /> Delete project
+                        <FontAwesomeIcon icon={faTrash} /> Delete
                       </div>
                     }
                     className={css({

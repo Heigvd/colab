@@ -8,7 +8,7 @@
 import { css, cx } from '@emotion/css';
 import * as React from 'react';
 import Button from '../common/element/Button';
-import Form from '../common/Form/Form';
+import Form from '../common/element/Form';
 import Flex from '../common/layout/Flex';
 import { space_M, textSmall } from '../styling/style';
 
@@ -32,7 +32,7 @@ export default function DebugForm(): JSX.Element {
             isMandatory: mandatory,
             readOnly: readOnly,
             tip: 'a wonderful advice about the name',
-            fieldFooter: 'and if I would like to add something about the name',
+            footer: 'and if I would like to add something about the name',
             isErroneous: _value => allInvalid,
             errorMessage: value => value.name + ' not top',
           },
@@ -44,7 +44,7 @@ export default function DebugForm(): JSX.Element {
             isMandatory: mandatory,
             readOnly: readOnly,
             tip: 'a wonderful advice about the explanation',
-            fieldFooter: 'and if I would like to add something about the explanation',
+            footer: 'and if I would like to add something about the explanation',
             isErroneous: _value => allInvalid,
             errorMessage: value => value.explanation + ' not top',
           },
@@ -56,7 +56,7 @@ export default function DebugForm(): JSX.Element {
             isMandatory: mandatory,
             readOnly: readOnly,
             tip: 'a wonderful advice about the password',
-            fieldFooter: 'and if I would like to add something about the password',
+            footer: 'and if I would like to add something about the password',
             isErroneous: _value => allInvalid,
             errorMessage: value =>
               value.password + ' with score of ' + value.passwordScore.score + ' not top',
@@ -71,7 +71,7 @@ export default function DebugForm(): JSX.Element {
             isMandatory: mandatory,
             readOnly: readOnly,
             tip: 'a wonderful advice about the toggle',
-            fieldFooter: 'and if I would like to add something about the toggle',
+            footer: 'and if I would like to add something about the toggle',
             isErroneous: _value => allInvalid,
             errorMessage: value => value.toggle + ' not top',
           },
@@ -83,14 +83,13 @@ export default function DebugForm(): JSX.Element {
             isMandatory: mandatory,
             readOnly: readOnly,
             tip: 'a wonderful advice about the checkbox',
-            fieldFooter: 'and if I would like to add something about the checkbox',
+            footer: 'and if I would like to add something about the checkbox',
             isErroneous: _value => allInvalid,
             errorMessage: value => value.checkbox + ' not top',
           },
           {
             key: 'choice',
             label: 'a choice',
-            placeholder: 'please select what you really want',
             type: 'select',
             isMandatory: mandatory,
             readOnly: readOnly,
@@ -111,14 +110,13 @@ export default function DebugForm(): JSX.Element {
               },
             ],
             tip: 'a wonderful advice about choice',
-            fieldFooter: 'and if I would like to add something about choice',
+            footer: 'and if I would like to add something about choice',
             isErroneous: _value => allInvalid,
             errorMessage: value => value.choice + ' not top',
           },
           {
             key: 'rate',
             label: 'a rate',
-            placeholder: 'what is it worth',
             type: 'selectnumber',
             isMandatory: mandatory,
             readOnly: readOnly,
@@ -128,7 +126,7 @@ export default function DebugForm(): JSX.Element {
               { label: 'top', value: 3 },
             ],
             tip: 'a wonderful advice about rate',
-            fieldFooter: 'and if I would like to add something about rate',
+            footer: 'and if I would like to add something about rate',
             isErroneous: _value => allInvalid,
             errorMessage: value => value.rate + ' not top',
           },
