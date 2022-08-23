@@ -22,14 +22,12 @@ import { ResourceCallContext } from './resourcesCommonType';
 
 interface ResourceCreationType {
   title: string;
-  teaser: string;
   category: string;
   atCardContentLevel: boolean;
 }
 
 const defaultData: ResourceCreationType = {
   title: '',
-  teaser: '',
   category: '',
   atCardContentLevel: false,
 };
@@ -58,13 +56,6 @@ export default function ResourceCreator({
       label: 'Title',
       type: 'text',
       isMandatory: true,
-    },
-    {
-      key: 'teaser',
-      label: 'Teaser',
-      type: 'textarea',
-      isMandatory: false,
-      placeholder: 'Summarize the content if the title is not self-explanatory',
     },
     createSelectField({
       key: 'category',
@@ -112,12 +103,6 @@ export default function ResourceCreator({
           cardContentId: cardContentId,
           documents: [],
           title: resourceToCreate.title,
-          teaser: {
-            '@class': 'TextDataBlock',
-            mimeType: 'text/markdown',
-            textData: resourceToCreate.teaser,
-            revision: '0',
-          },
           category: resourceToCreate.category,
         }),
       ).then(action => {

@@ -55,7 +55,7 @@ export function ResourceDisplay({
   const dispatch = useAppDispatch();
   const i18n = useTranslations();
 
-  const [showTeaser, setShowTeaser] = React.useState(true);
+  const [showTeaser, setShowTeaser] = React.useState(false);
   const [openToolbox, setOpenToolbox] = React.useState(true);
 
   const targetResource = resource.targetResource;
@@ -176,8 +176,8 @@ export function ResourceDisplay({
                   value={text || ''}
                   placeholder={
                     effectiveReadOnly
-                      ? 'There is no teaser'
-                      : 'There is no teaser for the moment. Feel free to fill it.'
+                      ? i18n.modules.resource.noTeaser
+                      : i18n.modules.resource.noTeaserForNow
                   }
                   readOnly={effectiveReadOnly}
                   onChange={(newValue: string) => {

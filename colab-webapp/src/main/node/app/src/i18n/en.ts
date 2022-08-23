@@ -292,7 +292,8 @@ export const en = {
     },
     resource: {
       untitled: 'New document',
-      noTeaser: 'No document teaser',
+      noTeaser: 'There is no teaser',
+      noTeaserForNow: 'There is no teaser for the moment. Feel free to fill it.',
       category: 'Category',
       documentation: 'Documentation',
       docDescription: 'Add all documentation related to the card.',
