@@ -31,8 +31,17 @@ import Toggler from '../../common/element/Toggler';
 import ConfirmDeleteModal from '../../common/layout/ConfirmDeleteModal';
 import Flex from '../../common/layout/Flex';
 import { DocTextWrapper } from '../../documents/DocTextItem';
+import { ResourceCallContext } from '../../resources/resourcesCommonType';
 import ResourcesMainView from '../../resources/ResourcesMainView';
-import { cardStyle, errorColor, localTitleStyle, space_M, space_S } from '../../styling/style';
+import { ResourceListNb } from '../../resources/summary/ResourcesListSummary';
+import {
+  cardStyle,
+  errorColor,
+  localTitleStyle,
+  space_M,
+  space_S,
+  textSmall,
+} from '../../styling/style';
 import SideCollapsiblePanel from './../SideCollapsiblePanel';
 
 interface CardTypeEditorProps {
@@ -56,6 +65,13 @@ export default function CardTypeEditor({ className, usage }: CardTypeEditorProps
     label: tag,
     value: tag,
   }));
+
+  const resourceContext: ResourceCallContext = {
+    kind: 'CardType',
+    cardTypeId: cardType?.ownId,
+    // TODO remove access
+    accessLevel: 'WRITE',
+  };
 
   if (status !== 'READY' || !cardType) {
     return <AvailabilityStatusIndicator status={status} />;
@@ -240,15 +256,16 @@ export default function CardTypeEditor({ className, usage }: CardTypeEditorProps
                 items={{
                   resources: {
                     icon: faPaperclip,
+                    nextToIconElement: (
+                      <div className={textSmall}>
+                        {' '}
+                        (<ResourceListNb context={resourceContext} />)
+                      </div>
+                    ),
                     title: i18n.modules.resource.documentation,
                     children: (
                       <ResourcesMainView
-                        contextData={{
-                          kind: 'CardType',
-                          cardTypeId: cardType.ownId,
-                          // TODO remove access
-                          accessLevel: 'WRITE',
-                        }}
+                        contextData={resourceContext}
                         //accessLevel={ userAcl.write ? 'WRITE' : userAcl.read ? 'READ' : 'DENIED'}
                         // TODO manage the user rights for editing resources
                         // TODO work in progress

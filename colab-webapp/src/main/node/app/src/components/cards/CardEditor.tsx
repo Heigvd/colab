@@ -33,7 +33,6 @@ import * as API from '../../API/api';
 import useTranslations from '../../i18n/I18nContext';
 import { useCardACLForCurrentUser, useVariantsOrLoad } from '../../selectors/cardSelector';
 import { useAndLoadCardType } from '../../selectors/cardTypeSelector';
-import { useResources } from '../../selectors/resourceSelector';
 import { useStickyNoteLinksForDest } from '../../selectors/stickyNoteLinkSelector';
 import { useAppDispatch, useLoadingState } from '../../store/hooks';
 import Button from '../common/element/Button';
@@ -48,7 +47,9 @@ import Modal from '../common/layout/Modal';
 import OpenCloseModal from '../common/layout/OpenCloseModal';
 import { DocTextDisplay } from '../documents/DocTextItem';
 import DocumentList from '../documents/DocumentList';
+import { ResourceCallContext } from '../resources/resourcesCommonType';
 import ResourcesMainView from '../resources/ResourcesMainView';
+import { ResourceListNb } from '../resources/summary/ResourcesListSummary';
 import StickyNoteWrapper from '../stickynotes/StickyNoteWrapper';
 import {
   cardStyle,
@@ -214,13 +215,14 @@ export default function CardEditor({
   };
   const { isLoading, startLoading, stopLoading } = useLoadingState();
 
-  const { resourcesAndRefs } = useResources({
+  const resourceContext: ResourceCallContext = {
     kind: 'CardOrCardContent',
     accessLevel: !readOnly && userAcl.write ? 'WRITE' : userAcl.read ? 'READ' : 'DENIED',
     cardId: card.id || undefined,
     cardContentId: variant.id,
     hasSeveralVariants: hasVariants,
-  });
+  };
+
   const { stickyNotesForDest } = useStickyNoteLinksForDest(card.id);
   const closeRouteCb = React.useCallback(
     route => {
@@ -641,7 +643,10 @@ export default function CardEditor({
                       resources: {
                         icon: faPaperclip,
                         nextToIconElement: (
-                          <div className={textSmall}> ({resourcesAndRefs.length})</div>
+                          <div className={textSmall}>
+                            {' '}
+                            (<ResourceListNb context={resourceContext} />)
+                          </div>
                         ),
                         title: i18n.modules.resource.documentation,
                         nextToTitleElement: (
@@ -653,19 +658,7 @@ export default function CardEditor({
                         ),
                         children: (
                           <ResourcesMainView
-                            contextData={{
-                              kind: 'CardOrCardContent',
-                              cardId: card.id || undefined,
-                              cardContentId: variant.id,
-                              hasSeveralVariants: hasVariants,
-                              // TODO remove access
-                              accessLevel:
-                                !readOnly && userAcl.write
-                                  ? 'WRITE'
-                                  : userAcl.read
-                                  ? 'READ'
-                                  : 'DENIED',
-                            }}
+                            contextData={resourceContext}
                             accessLevel={
                               !readOnly && userAcl.write
                                 ? 'WRITE'

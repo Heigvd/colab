@@ -10,7 +10,6 @@ import { difference, uniq } from 'lodash';
 import React from 'react';
 import * as API from '../API/api';
 import {
-  CardTypeContext,
   isActive,
   ResourceAndRef,
   ResourceCallContext,
@@ -225,31 +224,31 @@ const useNbResources = (context: ResourceCallContext): NbAndStatus => {
           };
         }
       }
-      // } else if (context.kind === 'CardOrCardContent') {
-      //   const ownerId = context.cardContentId;
+    } else if (context.kind === 'CardOrCardContent') {
+      const ownerId = context.cardContentId;
 
-      //   if (ownerId != null) {
-      //     const status = state.resources.statusByCardContent[ownerId];
+      if (ownerId != null) {
+        const status = state.resources.statusByCardContent[ownerId];
 
-      //     if (status === undefined) {
-      //       // nothing in store
-      //       return { ...defaultResult, status: 'NOT_INITIALIZED' };
-      //     } else if (status !== 'READY') {
-      //       // we got an availability status
-      //       return { ...defaultResult, status: status };
-      //     } else {
-      //       // great. we can get the data
-      //       const resources = Object.values(state.resources.resources).flatMap(resource =>
-      //         entityIs(resource, 'AbstractResource') && resource.cardContentId === ownerId
-      //           ? [resource]
-      //           : [],
-      //       );
-      //       return {
-      //         nb: resources.length,
-      //         status: 'READY',
-      //       };
-      //     }
-      //   }
+        if (status === undefined) {
+          // nothing in store
+          return { ...defaultResult, status: 'NOT_INITIALIZED' };
+        } else if (status !== 'READY') {
+          // we got an availability status
+          return { ...defaultResult, status: status };
+        } else {
+          // great. we can get the data
+          const resources = Object.values(state.resources.resources).flatMap(resource =>
+            entityIs(resource, 'AbstractResource') && resource.cardContentId === ownerId
+              ? [resource]
+              : [],
+          );
+          return {
+            nb: resources.length,
+            status: 'READY',
+          };
+        }
+      }
     }
 
     return { ...defaultResult, status: 'ERROR' };
@@ -266,35 +265,16 @@ export const useAndLoadNbResources = (context: ResourceCallContext): NbAndStatus
   const dispatch = useAppDispatch();
 
   const { nb, status } = useNbResources(context);
-  if (status === 'NOT_INITIALIZED') {
-    if (context.kind === 'CardType' && context.cardTypeId) {
-      dispatch(API.getResourceChainForAbstractCardTypeId(context.cardTypeId));
-      // } else if (context.kind === 'CardOrCardContent' && context.cardContentId) {
-      //   dispatch(API.getResourceChainForCardContentId(context.cardContentId));
-    }
-  }
 
-  return { nb, status };
-};
-/**
- * fetch and load (if needed) the number of resources for card type
- *
- * @param context data needed to know what to fetch
- * @returns the nb of resources + the availability status
- */
-export const useAndLoadCardTypeNbResources = (context: CardTypeContext): NbAndStatus => {
-  const dispatch = useAppDispatch();
-
-  const { nb, status } = useNbResources(context);
   React.useEffect(() => {
     if (status === 'NOT_INITIALIZED') {
       if (context.kind === 'CardType' && context.cardTypeId) {
         dispatch(API.getResourceChainForAbstractCardTypeId(context.cardTypeId));
-        // } else if (context.kind === 'CardOrCardContent' && context.cardContentId) {
-        //   dispatch(API.getResourceChainForCardContentId(context.cardContentId));
+      } else if (context.kind === 'CardOrCardContent' && context.cardContentId) {
+        dispatch(API.getResourceChainForCardContentId(context.cardContentId));
       }
     }
-  }, [context.cardTypeId, context.kind, dispatch, status]);
+  }, [context, dispatch, status]);
 
   return { nb, status };
 };
