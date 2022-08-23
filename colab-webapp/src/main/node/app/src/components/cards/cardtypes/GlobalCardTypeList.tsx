@@ -49,6 +49,8 @@ export default function GlobalCardTypeList(): JSX.Element {
   return (
     <Routes>
       <Route path="edit/:id/*" element={<CardTypeEditor usage="global" />} />
+      {/* TODO : stabilize the routes ! Now : easy path to make it work*/}
+      <Route path="cardtypes/edit/:id/*" element={<CardTypeEditor usage="global" />} />
       <Route
         path="*"
         element={

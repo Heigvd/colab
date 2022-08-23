@@ -64,6 +64,8 @@ export default function ProjectCardTypeList(): JSX.Element {
   return (
     <Routes>
       <Route path="/edit/:id/*" element={<CardTypeEditor usage="currentProject" />} />
+      {/* TODO : stabilize the routes ! Now : easy path to make it work*/}
+      <Route path="/cardtypes/edit/:id/*" element={<CardTypeEditor usage="currentProject" />} />
       <Route
         path="*"
         element={
