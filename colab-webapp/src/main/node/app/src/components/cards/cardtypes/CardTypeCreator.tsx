@@ -107,15 +107,15 @@ export default function CardTypeCreator({ onCreated, usage }: CardTypeCreatorPro
   );
 
   if (project == null && usage === 'currentProject') {
-    return <i>{i18n.modules.cardType.infos.noProjectSelected}</i>;
+    return <i>{i18n.modules.project.info.noProjectSelected}</i>;
   }
 
   return (
     <OpenCloseModal
-      title={i18n.modules.cardType.createAType}
+      title={i18n.modules.cardType.action.createAType}
       collapsedChildren={
         <>
-          <FontAwesomeIcon icon={faPlus} /> {i18n.modules.cardType.createType}
+          <FontAwesomeIcon icon={faPlus} /> {i18n.modules.cardType.action.createType}
         </>
       }
       className={cx(buttonStyle, css({ marginBottom: space_M }))}

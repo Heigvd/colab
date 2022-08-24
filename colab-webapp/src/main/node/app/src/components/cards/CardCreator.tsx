@@ -109,9 +109,9 @@ export default function CardCreator({
         >
           <IconButton
             onClick={() => {
-              navigate('project-settings/card-types');
+              navigate('project-settings/cardtypes');
             }}
-            title={i18n.modules.cardType.manageTypes}
+            title={i18n.modules.cardType.route.manageTypes}
             icon={faCog}
             className={lightIconButtonStyle}
           />
@@ -137,6 +137,9 @@ export default function CardCreator({
         } else {
           return (
             <div className={css({ width: '100%', textAlign: 'left' })}>
+              <Flex grow={1} className={css({ paddingTop: space_S })}>
+                <h2>{i18n.modules.card.action.chooseACardType}</h2>
+              </Flex>
               <CustomElementsList
                 items={cardTypes}
                 loadingStatus={status}

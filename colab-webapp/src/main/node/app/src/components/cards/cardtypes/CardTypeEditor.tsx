@@ -85,7 +85,7 @@ export default function CardTypeEditor({ className, usage }: CardTypeEditorProps
       >
         <IconButton
           icon={faArrowLeft}
-          title={'Back to card types'}
+          title={i18n.modules.cardType.route.backToCardType}
           iconColor="var(--darkGray)"
           onClick={() => navigate('../')}
           className={css({ display: 'block', marginBottom: space_M })}
@@ -126,7 +126,7 @@ export default function CardTypeEditor({ className, usage }: CardTypeEditorProps
                 >
                   <DiscreetInput
                     value={cardType.title || ''}
-                    placeholder={i18n.modules.cardType.cardType}
+                    placeholder={i18n.modules.cardType.titlePlaceholder}
                     onChange={newValue =>
                       dispatch(API.updateCardTypeTitle({ ...cardType, title: newValue }))
                     }
@@ -144,7 +144,7 @@ export default function CardTypeEditor({ className, usage }: CardTypeEditorProps
                         <LabeledTextArea
                           label={i18n.modules.cardType.purpose}
                           value={text || ''}
-                          placeholder={i18n.modules.cardType.explainPurpose}
+                          placeholder={i18n.modules.cardType.info.explainPurpose}
                           onChange={(newValue: string) => {
                             if (cardType.purposeId) {
                               dispatch(
@@ -186,7 +186,7 @@ export default function CardTypeEditor({ className, usage }: CardTypeEditorProps
                   <Toggler
                     value={cardType.published || undefined}
                     label={i18n.common.published}
-                    tip={i18n.modules.cardType.infos.infoPublished}
+                    tip={i18n.modules.cardType.info.infoPublished(usage === 'currentProject')}
                     onChange={() =>
                       dispatch(
                         API.updateCardTypePublished({
@@ -199,7 +199,7 @@ export default function CardTypeEditor({ className, usage }: CardTypeEditorProps
                   <Toggler
                     value={cardType.deprecated || undefined}
                     label={i18n.common.deprecated}
-                    tip={i18n.modules.cardType.infos.infoDeprecated}
+                    tip={i18n.modules.cardType.info.infoDeprecated}
                     onChange={() =>
                       dispatch(
                         API.updateCardTypeDeprecated({
@@ -216,7 +216,7 @@ export default function CardTypeEditor({ className, usage }: CardTypeEditorProps
                         className={cx(css({ color: errorColor, borderColor: errorColor }))}
                         clickable
                       >
-                        <FontAwesomeIcon icon={faTrash} /> {i18n.modules.cardType.deleteType}
+                        <FontAwesomeIcon icon={faTrash} /> {i18n.common.delete}
                       </Button>
                     }
                     className={css({
@@ -227,10 +227,10 @@ export default function CardTypeEditor({ className, usage }: CardTypeEditorProps
                     message={
                       <p>
                         <Tips tipsType="TODO">
-                          Make test if type is used in card(s). Disable or hide this delete option
+                          Make test if model is used in card(s). Disable or hide this delete option
                           if used.
                         </Tips>
-                        {i18n.modules.cardType.confirmDeleteType}
+                        {i18n.modules.cardType.action.confirmDeleteType}
                       </p>
                     }
                     onConfirm={() => {
@@ -239,7 +239,7 @@ export default function CardTypeEditor({ className, usage }: CardTypeEditorProps
                         navigate('../');
                       }
                     }}
-                    confirmButtonLabel={i18n.modules.cardType.deleteType}
+                    confirmButtonLabel={i18n.modules.cardType.action.deleteType}
                   />
                 </Flex>
               </Flex>

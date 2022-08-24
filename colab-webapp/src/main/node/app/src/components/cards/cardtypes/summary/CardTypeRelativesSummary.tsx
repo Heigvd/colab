@@ -58,10 +58,7 @@ export default function CardTypeRelativesSummary({
       {/* is published */}
       {displayChoices.showPublished && cardType.published && (
         <Flex className={itemStyle}>
-          <FontAwesomeIcon
-            icon={faBullhorn}
-            title={i18n.modules.cardType.infos.referencedByOther}
-          />
+          <FontAwesomeIcon icon={faBullhorn} title={i18n.modules.cardType.info.referencedByOther} />
         </Flex>
       )}
 
@@ -70,7 +67,7 @@ export default function CardTypeRelativesSummary({
         <Flex className={itemStyle}>
           <FontAwesomeIcon
             icon={faTriangleExclamation}
-            title={i18n.modules.cardType.infos.shouldNotBeUsed}
+            title={i18n.modules.cardType.info.shouldNotBeUsed}
           />
         </Flex>
       )}
