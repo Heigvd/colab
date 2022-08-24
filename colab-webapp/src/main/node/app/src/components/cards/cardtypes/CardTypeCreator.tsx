@@ -55,7 +55,7 @@ export default function CardTypeCreator({ onCreated, usage }: CardTypeCreatorPro
       key: 'purpose',
       label: i18n.modules.cardType.purpose,
       type: 'textarea',
-      isMandatory: true,
+      isMandatory: false,
     },
     createSelectField({
       key: 'tags',
