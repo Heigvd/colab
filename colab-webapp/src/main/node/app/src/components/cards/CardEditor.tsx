@@ -492,7 +492,7 @@ export default function CardEditor({
                                   },
                                 },
                                 {
-                                  value: 'Delete card or variant',
+                                  value: 'delete',
                                   label: (
                                     <ConfirmDeleteModal
                                       buttonLabel={

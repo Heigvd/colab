@@ -14,9 +14,11 @@ export const en = {
     cancel: 'Cancel',
     create: 'Create',
     save: 'Save',
+    duplicate: 'Duplicate',
     confirm: 'Confirm',
     close: 'Close',
     delete: 'Delete',
+    remove: 'Remove',
     ok: 'OK',
     open: 'Open',
     show: 'Show',
@@ -146,6 +148,7 @@ export const en = {
   //////////////////////////////////////////////////////////////////////////////////////////////////
   // ADMIN
   admin: {
+    admin: 'Admin',
     adminPanel: 'Admin',
     adminConsole: 'Welcome to the admin console',
     who: 'Who',

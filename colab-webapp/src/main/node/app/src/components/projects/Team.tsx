@@ -287,12 +287,12 @@ const Member = ({ member, roles, isTheOnlyOwner }: MemberProps) => {
           buttonClassName={cx(lightIconButtonStyle, css({ marginLeft: space_S }))}
           entries={[
             {
-              value: 'Delete team member',
+              value: 'delete',
               label: (
                 <ConfirmDeleteModal
                   buttonLabel={
                     <div className={cx(css({ color: errorColor }), modalEntryStyle)}>
-                      <FontAwesomeIcon icon={faTrash} /> Delete
+                      <FontAwesomeIcon icon={faTrash} /> {i18n.common.delete}
                     </div>
                   }
                   className={css({

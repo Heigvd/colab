@@ -79,7 +79,7 @@ export default function CardTypeItem({ cardType, usage }: CardTypeItemProps): JS
             usage === 'global'
               ? [
                   {
-                    value: 'editType',
+                    value: 'edit',
                     label: (
                       <>
                         <FontAwesomeIcon icon={faPen} /> {i18n.common.edit}
@@ -114,7 +114,7 @@ export default function CardTypeItem({ cardType, usage }: CardTypeItemProps): JS
                     value: 'removeFromProject',
                     label: (
                       <>
-                        <FontAwesomeIcon icon={faExchangeAlt} />
+                        <FontAwesomeIcon icon={faExchangeAlt} />{' '}
                         {i18n.modules.cardType.action.removeFromProject}
                       </>
                     ),
@@ -131,13 +131,12 @@ export default function CardTypeItem({ cardType, usage }: CardTypeItemProps): JS
               usage === 'global')
               ? [
                   {
-                    value: 'deleteType',
+                    value: 'delete',
                     label: (
                       <ConfirmDeleteModal
                         buttonLabel={
                           <div className={cx(css({ color: errorColor }), modalEntryStyle)}>
-                            <FontAwesomeIcon icon={faTrash} />
-                            {i18n.common.delete}
+                            <FontAwesomeIcon icon={faTrash} /> {i18n.common.delete}
                           </div>
                         }
                         className={css({

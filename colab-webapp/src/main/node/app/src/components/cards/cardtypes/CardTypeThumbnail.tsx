@@ -129,7 +129,7 @@ export default function CardTypeThumbnail({
                   usage === 'global'
                     ? [
                         {
-                          value: 'editType',
+                          value: 'edit',
                           label: (
                             <>
                               <FontAwesomeIcon icon={faPen} /> {i18n.common.edit}
@@ -223,7 +223,7 @@ export default function CardTypeThumbnail({
                     usage === 'global')
                     ? [
                         {
-                          value: 'deleteType',
+                          value: 'delete',
                           label: (
                             <>
                               {!isUsedInProject(cardType.id) ? (
@@ -260,8 +260,7 @@ export default function CardTypeThumbnail({
                                     <div
                                       className={cx(css({ color: errorColor }), modalEntryStyle)}
                                     >
-                                      <FontAwesomeIcon icon={faTrash} />
-                                      {i18n.common.delete}
+                                      <FontAwesomeIcon icon={faTrash} /> {i18n.common.delete}
                                     </div>
                                   }
                                   footer={collapse => (
