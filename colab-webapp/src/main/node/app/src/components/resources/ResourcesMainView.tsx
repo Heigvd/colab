@@ -48,7 +48,32 @@ export default function ResourcesMainView({
 
   const [lastCreated, setLastCreated] = React.useState<number | null>(null);
 
+  // just to see if it changes
+  const [currentContext, setCurrentContext] = React.useState<ResourceCallContext>(contextData);
+
   const showList = React.useCallback(() => selectResource(null), []);
+
+  React.useEffect(() => {
+    // show the list if the context changed
+    if (contextData.kind !== currentContext.kind) {
+      showList();
+    } else if (
+      contextData.kind === 'CardOrCardContent' &&
+      currentContext.kind === 'CardOrCardContent' &&
+      (contextData.cardId !== currentContext.cardId ||
+        contextData.cardContentId !== currentContext.cardContentId)
+    ) {
+      showList();
+    } else if (
+      contextData.kind === 'CardType' &&
+      currentContext.kind === 'CardType' &&
+      contextData.cardTypeId !== currentContext.cardTypeId
+    ) {
+      showList();
+    }
+
+    setCurrentContext(contextData);
+  }, [contextData, currentContext, setCurrentContext, showList]);
 
   // when a resource is just created, select it to display it
   React.useEffect(() => {
