@@ -111,7 +111,7 @@ export function ResourceDisplay({
                 ...(!alwaysShowTeaser && !alwaysHideTeaser
                   ? [
                       {
-                        value: 'Toggle teaser',
+                        value: 'teaser',
                         label: (
                           <>
                             <FontAwesomeIcon icon={faInfoCircle} />{' '}
@@ -126,7 +126,7 @@ export function ResourceDisplay({
                 ...(!effectiveReadOnly
                   ? [
                       {
-                        value: 'Toggle toolbox',
+                        value: 'toolbox',
                         label: (
                           <>
                             <FontAwesomeIcon icon={faTools} />{' '}
@@ -141,7 +141,7 @@ export function ResourceDisplay({
                 ...(!effectiveReadOnly
                   ? [
                       {
-                        value: 'Settings',
+                        value: 'settings',
                         label: <ResourceSettingsModal resource={resource} />,
                         modal: true,
                       },
@@ -154,7 +154,7 @@ export function ResourceDisplay({
                         value: 'remove',
                         label: (
                           <>
-                            <FontAwesomeIcon icon={faBroom} /> Remove
+                            <FontAwesomeIcon icon={faBroom} /> {i18n.common.remove}
                           </>
                         ),
                         action: () => {
@@ -224,6 +224,8 @@ interface ResourceSettingsModalProps {
 }
 
 function ResourceSettingsModal({ resource, isButton }: ResourceSettingsModalProps): JSX.Element {
+  const i18n = useTranslations();
+
   return (
     <OpenCloseModal
       title="Document settings"
@@ -236,11 +238,14 @@ function ResourceSettingsModal({ resource, isButton }: ResourceSettingsModalProp
       collapsedChildren={
         <>
           {isButton ? (
-            <IconButton icon={faCog} className={lightIconButtonStyle} title="Settings" />
+            <IconButton
+              icon={faCog}
+              className={lightIconButtonStyle}
+              title={i18n.common.settings}
+            />
           ) : (
             <div className={modalEntryStyle}>
-              <FontAwesomeIcon icon={faCog} />
-              Settings
+              <FontAwesomeIcon icon={faCog} /> {i18n.common.settings}
             </div>
           )}
         </>

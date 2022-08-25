@@ -182,7 +182,7 @@ export default function CardThumb({
                   buttonClassName={cx(lightIconButtonStyle, css({ marginLeft: space_S }))}
                   entries={[
                     {
-                      value: 'edit card',
+                      value: 'edit',
                       label: (
                         <>
                           <FontAwesomeIcon icon={faPen} /> {i18n.common.edit}
@@ -231,7 +231,7 @@ export default function CardThumb({
                       },
                     },
                     {
-                      value: 'Delete card',
+                      value: 'delete',
                       label: (
                         <ConfirmDeleteModal
                           buttonLabel={

@@ -11,6 +11,7 @@ import { Project } from 'colab-rest-client';
 import * as React from 'react';
 import { useNavigate } from 'react-router-dom';
 import * as API from '../../API/api';
+import useTranslations from '../../i18n/I18nContext';
 import { dispatch } from '../../store/store';
 import ProjectCardTypeList from '../cards/cardtypes/ProjectCardTypeList';
 import IconButton from '../common/element/IconButton';
@@ -29,6 +30,8 @@ interface ProjectSettingsProps {
 // Display one project and allow to edit it
 export function ProjectSettings({ project }: ProjectSettingsProps): JSX.Element {
   const navigate = useNavigate();
+  const i18n = useTranslations();
+
   return (
     <Flex align="stretch" direction="column" grow={1} className={css({ alignSelf: 'stretch' })}>
       <Flex align="center">
@@ -87,7 +90,7 @@ export function ProjectSettings({ project }: ProjectSettingsProps): JSX.Element 
         <Tab name="team" label="Team">
           <Team project={project} />
         </Tab>
-        <Tab name="cardtypes" label="Card Types">
+        <Tab name="cardtypes" label={i18n.modules.cardType.cardTypesLongWay}>
           <ProjectCardTypeList />
         </Tab>
       </Tabs>

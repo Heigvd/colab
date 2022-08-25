@@ -39,7 +39,7 @@ export default function TargetCardTypeSummary({
           <FontAwesomeIcon
             icon={referenceIcon}
             color={'var(--secondaryColor)'}
-            title={i18n.modules.cardType.infos.isIsglobalType}
+            title={i18n.modules.cardType.info.isGlobalType}
             className={targetProjectIconStyle}
           />
         ))}
@@ -54,6 +54,7 @@ interface TargetProjectSummaryProps {
 function TargetProjectSummary({ projectId }: TargetProjectSummaryProps): JSX.Element {
   const { project, status } = useProject(projectId);
   const i18n = useTranslations();
+
   return (
     <FontAwesomeIcon
       icon={
@@ -68,8 +69,8 @@ function TargetProjectSummary({ projectId }: TargetProjectSummaryProps): JSX.Ele
       color={project?.illustration ? project.illustration.iconBkgdColor : 'var(--lightGray)'}
       title={
         status === 'INITIALIZED' && project?.name
-          ? `${i18n.modules.cardType.infos.fromProject} ` + project.name + '"'
-          : `${i18n.modules.cardType.infos.fromAProject}`
+          ? i18n.modules.cardType.info.fromProject(project.name)
+          : i18n.modules.cardType.info.fromAProject
       }
     />
   );

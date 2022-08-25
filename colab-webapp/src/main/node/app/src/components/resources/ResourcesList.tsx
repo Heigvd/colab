@@ -170,7 +170,7 @@ function TocEntry({ resource, selectResource, displayResource }: TocEntryProps):
                 <div>
                   {resource.targetResource.cardId != null && <p> on card </p>}
                   {resource.targetResource.cardContentId != null && <p> on var </p>}
-                  {resource.targetResource.abstractCardTypeId != null && <p> on type </p>}
+                  {resource.targetResource.abstractCardTypeId != null && <p> on model </p>}
                   <p>- {resource.targetResource.published ? 'is' : 'not'} published </p>
                   <p>- {resource.targetResource.deprecated ? 'is' : 'not'} deprecated </p>
                   <p>- "{resource.targetResource.category}"</p>
