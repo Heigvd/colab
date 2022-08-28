@@ -108,7 +108,10 @@ import org.slf4j.LoggerFactory;
 <span class="nc" id="L108">        sessionToIds.put(session, sessionId);</span>
 <span class="nc" id="L109">        idsToSessions.put(sessionId, session);</span>
 <span class="nc" id="L110">        session.getBasicRemote().sendObject(new WsSessionIdentifier(sessionId));</span>
-<span class="nc" id="L111">    }</span>
+
+<span class="nc" id="L112">        long maxIdleTimeout = session.getMaxIdleTimeout();</span>
+<span class="nc" id="L113">        logger.trace(&quot;Session Timeout: {} ms&quot;, maxIdleTimeout);</span>
+<span class="nc" id="L114">    }</span>
 
     /**
      * called when client send messages
@@ -118,8 +121,8 @@ import org.slf4j.LoggerFactory;
      */
     @OnMessage
     public void onMessage(WsMessage message, Session session) {
-<span class="nc" id="L121">        logger.info(&quot;Message received: {} from {}&quot;, message, session.getId());</span>
-<span class="nc" id="L122">    }</span>
+<span class="nc" id="L124">        logger.info(&quot;Message received: {} from {}&quot;, message, session.getId());</span>
+<span class="nc" id="L125">    }</span>
 
     /**
      * TO handle errors. TBD TODO
@@ -129,8 +132,8 @@ import org.slf4j.LoggerFactory;
      */
     @OnError
     public void onError(Session session, Throwable throwable) {
-<span class="nc" id="L132">        logger.info(&quot;WebSocket error for {} {}&quot;, session.getId(), throwable.getMessage());</span>
-<span class="nc" id="L133">    }</span>
+<span class="nc" id="L135">        logger.info(&quot;WebSocket error for {} {}&quot;, session.getId(), throwable.getMessage());</span>
+<span class="nc" id="L136">    }</span>
 
     /**
      * When a client is leaving
@@ -140,14 +143,14 @@ import org.slf4j.LoggerFactory;
      */
     @OnClose
     public void onClose(Session session, CloseReason closeReason) {
-<span class="nc" id="L143">        logger.info(&quot;WebSocket closed for {} with reason {}&quot;,</span>
-<span class="nc" id="L144">            session.getId(), closeReason.getCloseCode());</span>
-<span class="nc" id="L145">        sessions.remove(session);</span>
-<span class="nc" id="L146">        String id = sessionToIds.get(session);</span>
-<span class="nc" id="L147">        idsToSessions.remove(id);</span>
-<span class="nc" id="L148">        sessionToIds.remove(session);</span>
-<span class="nc" id="L149">        websocketManager.unsubscribeFromAll(session);</span>
-<span class="nc" id="L150">    }</span>
+<span class="nc" id="L146">        logger.info(&quot;WebSocket closed for {} with reason {}: {}&quot;,</span>
+<span class="nc" id="L147">            session.getId(), closeReason.getCloseCode(), closeReason.getReasonPhrase());</span>
+<span class="nc" id="L148">        sessions.remove(session);</span>
+<span class="nc" id="L149">        String id = sessionToIds.get(session);</span>
+<span class="nc" id="L150">        idsToSessions.remove(id);</span>
+<span class="nc" id="L151">        sessionToIds.remove(session);</span>
+<span class="nc" id="L152">        websocketManager.unsubscribeFromAll(session);</span>
+<span class="nc" id="L153">    }</span>
 
     /**
      * Get session by its id
@@ -157,7 +160,7 @@ import org.slf4j.LoggerFactory;
      * @return the session or null
      */
     public static Session getSession(String sessionId) {
-<span class="nc" id="L160">        return idsToSessions.get(sessionId);</span>
+<span class="nc" id="L163">        return idsToSessions.get(sessionId);</span>
     }
 
     /**
@@ -168,7 +171,7 @@ import org.slf4j.LoggerFactory;
      * @return sessionid or null
      */
     public static String getSessionId(Session session) {
-<span class="nc" id="L171">        return sessionToIds.get(session);</span>
+<span class="nc" id="L174">        return sessionToIds.get(session);</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

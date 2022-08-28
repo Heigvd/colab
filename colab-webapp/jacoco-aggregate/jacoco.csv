@@ -114,7 +114,7 @@ colab-webapp/colab-api,ch.colabproject.colab.api.model.user,InternalHashMethod.n
 colab-webapp/colab-api,ch.colabproject.colab.api.model.user,LocalAccount,453,0,44,0,36,0,69,0,47,0
 colab-webapp/colab-api,ch.colabproject.colab.api.rest.config,ConfigRestEndpoint,7,0,0,0,2,0,2,0,2,0
 colab-webapp/colab-api,ch.colabproject.colab.api.rest.monitoring,MonitoringRestEndpoint,19,0,0,0,6,0,5,0,5,0
-colab-webapp/colab-api,ch.colabproject.colab.api.ws,WebsocketEndpoint,136,0,2,0,35,0,10,0,9,0
+colab-webapp/colab-api,ch.colabproject.colab.api.ws,WebsocketEndpoint,157,0,2,0,37,0,10,0,9,0
 colab-webapp/colab-api,ch.colabproject.colab.api.ws,WebsocketMessagePreparer,236,0,6,0,59,0,18,0,15,0
 colab-webapp/colab-api,ch.colabproject.colab.api.controller.monitoring,LoggerLevelPayload,29,0,0,0,11,0,6,0,6,0
 colab-webapp/colab-api,ch.colabproject.colab.api.controller.monitoring,MonitoringManager,77,0,2,0,23,0,8,0,7,0
@@ -146,7 +146,7 @@ colab-webapp/colab-api,ch.colabproject.colab.api.model.team,TeamRole,590,0,62,0,
 colab-webapp/colab-api,ch.colabproject.colab.api.model.team,TeamMember,834,0,100,0,78,0,133,0,83,0
 colab-webapp/colab-api,ch.colabproject.colab.api.controller.document,ResourceManager,672,0,82,0,171,0,69,0,27,0
 colab-webapp/colab-api,ch.colabproject.colab.api.controller.document,BlockManager,80,0,10,0,25,0,13,0,8,0
-colab-webapp/colab-api,ch.colabproject.colab.api.controller.document,ExternalDataManager,211,0,24,0,56,0,18,0,6,0
+colab-webapp/colab-api,ch.colabproject.colab.api.controller.document,ExternalDataManager,232,0,28,0,62,0,21,0,7,0
 colab-webapp/colab-api,ch.colabproject.colab.api.controller.document,FileManager,233,0,18,0,59,0,18,0,9,0
 colab-webapp/colab-api,ch.colabproject.colab.api.controller.document,IndexGeneratorHelper,443,0,46,0,111,0,39,0,16,0
 colab-webapp/colab-api,ch.colabproject.colab.api.controller.document,RelatedPosition,44,0,0,0,5,0,1,0,1,0
