@@ -11,7 +11,7 @@ import { MarkdownRange } from './domToMarkdown';
 const logger = getLogger('Markdown2DomParser');
 logger.setLevel(4);
 
-// detec lines and indentation level
+// detect lines and indentation levels
 // A line may be :
 //  -> a UL item "* Item 1" with any indentation level,
 //  -> a OL item "1. Item 1" with any indentation level
@@ -244,7 +244,7 @@ function extractMajorTags(markdown: string): MajorTag[] {
         majorTags.push({
           tagType: 'OListItem',
           initialMark: m.groups.olIndent,
-          listLevel: m.groups.olLevel.length,
+          listLevel: m.groups.olLevel.length + 1,
           startNumber: +m.groups.olNumber,
           text: [{ offset: currentIndentation || 0, data: m.groups.olData, postOffset: 0 }],
         });
@@ -336,8 +336,16 @@ function combineMultiline(majorTag: MajorTag): Combined {
 
   if (majorTag.tagType === 'Code') {
     combined.attributes['data-lang'] = majorTag.lang;
-  } else if (majorTag.tagType === 'UListItem' && majorTag.checked != undefined) {
-    combined.attributes['data-checked'] = majorTag.checked ? 'DONE' : 'TODO';
+  } else if (majorTag.tagType === 'UListItem') {
+    combined.attributes['data-list-type'] = 'UL';
+    if (majorTag.checked != undefined) {
+      combined.attributes['data-checked'] = majorTag.checked ? 'DONE' : 'TODO';
+      combined.attributes['data-list-type'] = 'TL';
+    } else {
+      combined.attributes['data-list-type'] = 'UL';
+    }
+  } else if (majorTag.tagType === 'OListItem') {
+    combined.attributes['data-list-type'] = 'OL';
   }
 
   logger.trace('Combined', combined);
@@ -433,6 +441,33 @@ function parseMinor(minor: Combined): DomTree {
   const { boldRegex, italicRegex, strikethroughRegex, underlineRegex } = getRegexes();
 
   logger.trace(`ParseMinor(${minor.tag}): >${minor.data}<`);
+  if (minor.tag === 'P' && minor.data?.length == 0) {
+    // Empty P => <p><br /><p>
+    const p = document.createElement('P');
+    const br = document.createElement('BR');
+    p.append(br);
+
+    const node = {
+      node: p,
+      rawPosition: minor.offset[0]!,
+      consumed: 0,
+      combined: minor,
+    };
+
+    return {
+      root: node,
+      all: [
+        node,
+        {
+          node: br,
+          rawPosition: minor.offset[0]!,
+          consumed: 0,
+          combined: minor,
+        },
+      ],
+    };
+  }
+
   if (minor.tag === 'PRE') {
     // do not parse pre tags content
     const pre = document.createElement(minor.tag);
@@ -573,8 +608,8 @@ function rebuildHierarchy(domTrees: DomTree[]): DomTree[] {
 
       if (currentListLevel === 0) {
         // no list context
-        const listType = liMajor.tagType === 'UListItem' ? 'UL' : 'OL';
-        const listTag = document.createElement(listType) as HTMLUListElement | HTMLOListElement;
+        //const listType = liMajor.tagType === 'UListItem' ? 'UL' : 'OL';
+        const listTag = document.createElement('UL') as HTMLUListElement | HTMLOListElement;
         listContext.push(listTag);
         rootTree = {
           root: {
@@ -590,8 +625,8 @@ function rebuildHierarchy(domTrees: DomTree[]): DomTree[] {
       rootTree!.all.push(...child.all);
 
       if (itemLevel > currentListLevel) {
-        const listType = liMajor.tagType === 'UListItem' ? 'UL' : 'OL';
-        const listTag = document.createElement(listType) as HTMLUListElement | HTMLOListElement;
+        // const listType = liMajor.tagType === 'UListItem' ? 'UL' : 'OL';
+        const listTag = document.createElement('UL') as HTMLUListElement | HTMLOListElement;
 
         const list = listContext[listContext.length - 1]!;
         (list.lastChild as Element).append(listTag);
