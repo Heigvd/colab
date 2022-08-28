@@ -65,6 +65,13 @@ export interface OpenGraphProps {
   document: ExternalLink;
 }
 
+function sanitizeUrl(rawUrl: string, defaultProtocol?: string) : string {
+  if (!rawUrl.match(/[a-zA-Z0-9]*:\/\/.*/)){
+    return `${defaultProtocol || 'http'}://${rawUrl}`;
+  }
+  return rawUrl;
+}
+
 export default function OpenGraphLink({
   url,
   editingStatus,
@@ -74,6 +81,8 @@ export default function OpenGraphLink({
   const dispatch = useAppDispatch();
   const metadata = useUrlMetadata(url);
 
+  const sanitizedUrl = sanitizeUrl(url);
+
   const refreshCb = React.useCallback(
     (e: React.UIEvent) => {
       e.stopPropagation();
@@ -82,8 +91,8 @@ export default function OpenGraphLink({
     [url, dispatch],
   );
   const openUrl = React.useCallback(() => {
-    window.open(url);
-  }, [url]);
+    window.open(sanitizedUrl);
+  }, [sanitizedUrl]);
   const updateDocCb = React.useCallback(
     (newValue: string) => {
       dispatch(updateDocument({ ...document, url: newValue }));
@@ -178,7 +187,7 @@ export default function OpenGraphLink({
                   />
                 </Flex>
                 {title && <p>{title}</p>}
-                <a href={url} target="_blank" rel="noreferrer" className={urlStyle}>
+                <a href={sanitizedUrl} target="_blank" rel="noreferrer" className={urlStyle}>
                   {url}
                 </a>
               </div>

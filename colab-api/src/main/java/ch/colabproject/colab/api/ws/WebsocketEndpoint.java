@@ -108,6 +108,9 @@ public class WebsocketEndpoint {
         sessionToIds.put(session, sessionId);
         idsToSessions.put(sessionId, session);
         session.getBasicRemote().sendObject(new WsSessionIdentifier(sessionId));
+
+        long maxIdleTimeout = session.getMaxIdleTimeout();
+        logger.trace("Session Timeout: {} ms", maxIdleTimeout);
     }
 
     /**
@@ -140,8 +143,8 @@ public class WebsocketEndpoint {
      */
     @OnClose
     public void onClose(Session session, CloseReason closeReason) {
-        logger.info("WebSocket closed for {} with reason {}",
-            session.getId(), closeReason.getCloseCode());
+        logger.info("WebSocket closed for {} with reason {}: {}",
+            session.getId(), closeReason.getCloseCode(), closeReason.getReasonPhrase());
         sessions.remove(session);
         String id = sessionToIds.get(session);
         idsToSessions.remove(id);

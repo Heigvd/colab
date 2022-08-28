@@ -12,6 +12,9 @@ import { space_S } from '../../styling/style';
 import markdownToDom from './parser/markdownToDom';
 
 export const colabFlavouredMarkdown = css({
+  'li[data-checked]': {
+    marginLeft: '-15px',
+  },
   "li[data-checked='TODO']": {
     listStyleType: 'none',
     '::before': {
@@ -22,9 +25,18 @@ export const colabFlavouredMarkdown = css({
   " li[data-checked='DONE']": {
     listStyleType: 'none',
     '::before': {
-      content: '"\\1F5F9  "', // \f14a
+      content: '"\\2611  "', // \f14a   \1F5F9
       //fontFamily: 'FontAwesome',  \f14a
     },
+  },
+  "li[data-list-type='OL']": {
+    listStyleType: 'numeric',
+  },
+});
+
+export const colabFlavouredMarkdownEditable = css({
+  'li[data-checked]::before': {
+    cursor: 'pointer',
   },
 });
 

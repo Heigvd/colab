@@ -10,6 +10,7 @@ import {
   faArrowDown,
   faArrowUp,
   faCheck,
+  faCode,
   faCog,
   faDownload,
   faExternalLinkAlt,
@@ -24,6 +25,7 @@ import useTranslations from '../../i18n/I18nContext';
 import { useAndLoadNbDocuments } from '../../selectors/documentSelector';
 import { useUrlMetadata } from '../../selectors/externalDataSelector';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
+import { idleStyle, toggledStyle } from '../blocks/markdown/WysiwygEditor';
 import IconButton from '../common/element/IconButton';
 import ConfirmDeleteModal from '../common/layout/ConfirmDeleteModal';
 import DropDownMenu from '../common/layout/DropDownMenu';
@@ -119,6 +121,12 @@ export default function CardEditorToolbox({
           {isText && (
             <>
               {editToolbar}
+              <IconButton
+                icon={faCode}
+                title={i18n.modules.content.mdMode}
+                className={TXToptions?.markDownMode ? toggledStyle : idleStyle}
+                onClick={() => TXToptions?.setMarkDownMode(markDownMode => !markDownMode)}
+              />
               <DropDownMenu
                 icon={faCog}
                 valueComp={{ value: '', label: '' }}
