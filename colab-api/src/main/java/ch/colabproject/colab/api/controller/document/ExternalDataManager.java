@@ -10,12 +10,15 @@ import ch.colabproject.colab.api.rest.document.bean.UrlMetadata;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
+import java.util.regex.Pattern;
 import javax.cache.Cache;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.hc.client5.http.classic.methods.HttpGet;
 import org.apache.hc.client5.http.impl.classic.HttpClients;
 import org.apache.hc.core5.http.Header;
@@ -86,6 +89,27 @@ public class ExternalDataManager {
     }
 
     /**
+     * Make sure url starts with a protocol
+     *
+     * @param                 url to sanitize
+     * @param defaultProtocol default protocol to use. http is the default defaultProtocol
+     *
+     * @return url with protocol
+     *
+     */
+    private String sanitizeUrl(String rawUrl, String defaultProtocol) {
+        if (!rawUrl.matches("[a-z-A-Z0-9]*://.*")){
+            //There is no protocol, add default one
+            if (StringUtils.isEmpty(defaultProtocol)){
+                return "http://" + rawUrl;
+            } else {
+                return defaultProtocol + "://" + rawUrl;
+            }
+        }
+        return rawUrl;
+    }
+
+    /**
      * Update cache with fresh metadata
      *
      * @param url url to fetch metadata for
@@ -98,9 +122,12 @@ public class ExternalDataManager {
         HashMap<String, String> metadata = new HashMap<>();
         urlMetadata.setMetadata(metadata);
 
-        logger.trace("Scrap {}", url);
+        logger.trace("Raw URL {}", url);
         try (var client = HttpClients.createDefault()) {
-            URIBuilder uriBuilder = new URIBuilder(url, StandardCharsets.UTF_8);
+            String sanitizedUrl = sanitizeUrl(url, null);
+
+            URIBuilder uriBuilder = new URIBuilder(sanitizedUrl, StandardCharsets.UTF_8);
+
             URI uri = uriBuilder.normalizeSyntax().build();
             metadata.put(OG_URL, url);
 
@@ -153,7 +180,7 @@ public class ExternalDataManager {
 
             }
         } catch (Exception e) {
-            logger.error("Major Failure", e);
+            logger.debug("Major Failure", e);
             urlMetadata.setBroken(true);
         }
         // cache metadata
