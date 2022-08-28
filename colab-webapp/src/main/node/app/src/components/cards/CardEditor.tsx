@@ -36,6 +36,7 @@ import { useAndLoadCardType } from '../../selectors/cardTypeSelector';
 import { useResources } from '../../selectors/resourceSelector';
 import { useStickyNoteLinksForDest } from '../../selectors/stickyNoteLinkSelector';
 import { useAppDispatch, useLoadingState } from '../../store/hooks';
+import {idleStyle, toggledStyle} from '../blocks/markdown/WysiwygEditor';
 import Button from '../common/element/Button';
 import IconButton from '../common/element/IconButton';
 import { DiscreetInput } from '../common/element/Input';
@@ -424,10 +425,7 @@ export default function CardEditor({
                                     : undefined
                                 }
                                 title={i18n.modules.card.editor.toggleToolbox}
-                                className={cx(
-                                  lightIconButtonStyle,
-                                  css({ color: 'var(--lightGray)' }),
-                                )}
+                                className={openToolbox ? toggledStyle : idleStyle}
                                 onClick={() => setOpenToolbox(openToolbox => !openToolbox)}
                               />
                             )}
@@ -435,14 +433,14 @@ export default function CardEditor({
                               title={i18n.modules.card.editor.fullScreen}
                               icon={fullScreen ? faCompressArrowsAlt : faExpandArrowsAlt}
                               onClick={() => setFullScreen(fullScreen => !fullScreen)}
-                              className={lightIconButtonStyle}
+                              className={cx(lightIconButtonStyle, css({padding: space_S}))}
                             />
                             <DropDownMenu
                               icon={faEllipsisV}
                               valueComp={{ value: '', label: '' }}
                               buttonClassName={cx(
                                 lightIconButtonStyle,
-                                css({ marginLeft: space_S }),
+                                css({marginLeft: space_S, padding: space_S }),
                               )}
                               entries={[
                                 {
