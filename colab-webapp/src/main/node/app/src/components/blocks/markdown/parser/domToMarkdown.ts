@@ -23,6 +23,11 @@ interface DomParserContext {
   list: ('ul' | 'ol')[];
 }
 
+export interface Position {
+  element: Node;
+  offset: number;
+}
+
 function processChildren(
   element: Element,
   selection: Selection | null,
@@ -49,7 +54,16 @@ function processChildren(
             logger.trace('Reach Focus: ', i, context, anchor, focus);
           }
 
-          if (char === '*' || char === '_' || char === '~' || char == '/') {
+          if (
+            char === '*' ||
+            char === '_' ||
+            char === '~' ||
+            char == '/' ||
+            char === '[' ||
+            char === ']' ||
+            char === '(' ||
+            char === ')'
+          ) {
             context.current++;
             logger.trace('Escaped: ', i, context, anchor, focus);
             md.push('\\');
@@ -167,7 +181,8 @@ function _domToMarkdown(
           push('\n');
         }
         push('  '.repeat(context.list.length - 1));
-        if (currentList === 'ol') {
+        const listType = elementArg.getAttribute('data-list-type');
+        if (listType === 'OL') {
           // TODO: fetch start number
           push('1. ');
         } else {
