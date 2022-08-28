@@ -38,7 +38,7 @@ export default function CompletionEditor({ variant }: CompletionEditorProps): JS
           )
         }
         autoFocus={true}
-        saveMode='SILLY_FLOWING'
+        saveMode="SILLY_FLOWING"
       />
       <Flex align="center">
         <BlockInput

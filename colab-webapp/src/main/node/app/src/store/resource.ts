@@ -14,13 +14,14 @@ import { AvailabilityStatus, LoadingStatus } from './store';
 
 export interface ResourceState {
   resources: Record<number, AbstractResource | LoadingStatus>;
+
   byCardType: Record<number, number[] | LoadingStatus>;
   byCardContent: Record<number, number[] | LoadingStatus>;
 
   /** did we load the resources of a card type */
   statusByCardType: Record<number, AvailabilityStatus>;
-  // /** did we load the resources of a card content */
-  // statusByCardContent: Record<number, AvailabilityStatus>;
+  /** did we load the resources of a card content */
+  statusByCardContent: Record<number, AvailabilityStatus>;
 
   /** did we load all the resources of the project */
   allOfProjectStatus: AvailabilityStatus;
@@ -32,7 +33,7 @@ const initialState: ResourceState = {
   byCardContent: {},
 
   statusByCardType: {},
-  // statusByCardContent: {},
+  statusByCardContent: {},
 
   allOfProjectStatus: 'NOT_INITIALIZED',
 };
@@ -112,7 +113,7 @@ const resourcesSlice = createSlice({
       .addCase(API.getResourceChainForCardContentId.pending, (state, action) => {
         const cardContentId = action.meta.arg;
         state.byCardContent[cardContentId] = 'LOADING';
-        // state.statusByCardContent[cardContentId] = 'LOADING';
+        state.statusByCardContent[cardContentId] = 'LOADING';
       })
       .addCase(API.getResourceChainForCardContentId.fulfilled, (state, action) => {
         const cardContentId = action.meta.arg;
@@ -127,12 +128,12 @@ const resourcesSlice = createSlice({
             }
           }
         });
-        // state.statusByCardContent[cardContentId] = 'READY';
+        state.statusByCardContent[cardContentId] = 'READY';
       })
-      // .addCase(API.getResourceChainForCardContentId.rejected, (state, action) => {
-      //   const cardContentId = action.meta.arg;
-      //   state.statusByCardContent[cardContentId] = 'ERROR';
-      // })
+      .addCase(API.getResourceChainForCardContentId.rejected, (state, action) => {
+        const cardContentId = action.meta.arg;
+        state.statusByCardContent[cardContentId] = 'ERROR';
+      })
       .addCase(API.getResourceChainForAbstractCardTypeId.pending, (state, action) => {
         const cardTypeId = action.meta.arg;
         state.byCardType[cardTypeId] = 'LOADING';

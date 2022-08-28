@@ -134,6 +134,7 @@ export const useCardContent = (
 export interface Ancestor {
   card: Card | number | undefined | 'LOADING';
   content: CardContent | number | 'LOADING';
+  last?: boolean;
 }
 
 export const useAncestors = (contentId: number | null | undefined): Ancestor[] => {

@@ -39,6 +39,7 @@ function App(): JSX.Element {
     NEWS: true,
     TIPS: true,
     WIP: false,
+    DEBUG: false,
   });
 
   const setTodoCb = React.useCallback(
@@ -73,6 +74,15 @@ function App(): JSX.Element {
       setTipsConfig(state => ({
         ...state,
         WIP: v,
+      })),
+    [setTipsConfig],
+  );
+
+  const setDebugCb = React.useCallback(
+    (v: boolean) =>
+      setTipsConfig(state => ({
+        ...state,
+        DEBUG: v,
       })),
     [setTipsConfig],
   );
@@ -114,6 +124,10 @@ function App(): JSX.Element {
                     WIP: {
                       value: tipsConfig.WIP,
                       set: setWipCb,
+                    },
+                    DEBUG: {
+                      value: tipsConfig.DEBUG,
+                      set: setDebugCb,
                     },
                   }}
                 >

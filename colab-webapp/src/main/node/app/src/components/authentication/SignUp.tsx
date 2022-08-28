@@ -10,11 +10,11 @@ import * as React from 'react';
 import { PasswordFeedback } from 'react-password-strength-bar';
 import { useNavigate } from 'react-router-dom';
 import * as API from '../../API/api';
-import { buildLinkWithQueryParam } from '../../helper';
+import { buildLinkWithQueryParam, emailFormat } from '../../helper';
 import useTranslations from '../../i18n/I18nContext';
 import { useAppDispatch, useLoadingState } from '../../store/hooks';
+import Form, { Field } from '../common/element/Form';
 import { InlineLink } from '../common/element/Link';
-import Form, { emailFormat, Field } from '../common/Form/Form';
 import { lightLinkStyle, space_M } from '../styling/style';
 import PasswordFeedbackDisplay from './PasswordFeedbackDisplay';
 import PublicEntranceContainer from './PublicEntranceContainer';
@@ -34,7 +34,7 @@ interface FormData {
   };
 }
 
-const defaultFormData: FormData = {
+const defaultData: FormData = {
   email: '',
   username: '',
   password: '',
@@ -52,7 +52,8 @@ export default function SignUpForm({ redirectTo }: SignUpFormProps): JSX.Element
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const i18n = useTranslations();
-  const {isLoading, startLoading, stopLoading} = useLoadingState();
+
+  const { isLoading, startLoading, stopLoading } = useLoadingState();
 
   const formFields: Field<FormData>[] = [
     {
@@ -60,6 +61,7 @@ export default function SignUpForm({ redirectTo }: SignUpFormProps): JSX.Element
       label: i18n.authentication.field.emailAddress,
       type: 'text',
       isMandatory: true,
+      autoComplete: 'off',
       isErroneous: value => value.email.match(emailFormat) == null,
       errorMessage: i18n.authentication.error.emailAddressNotValid,
     },
@@ -68,6 +70,7 @@ export default function SignUpForm({ redirectTo }: SignUpFormProps): JSX.Element
       label: i18n.authentication.field.username,
       type: 'text',
       isMandatory: true,
+      autoComplete: 'off',
       isErroneous: value => value.username.match(/^[a-zA-Z0-9_\\-\\.]+$/) == null,
       errorMessage: i18n.authentication.error.usernameNotValid,
     },
@@ -77,6 +80,7 @@ export default function SignUpForm({ redirectTo }: SignUpFormProps): JSX.Element
       placeholder: i18n.authentication.placeholder.min7Char,
       type: 'password',
       isMandatory: true,
+      autoComplete: 'off',
       isErroneous: data => data.passwordScore.score < 2,
       errorMessage: data => <PasswordFeedbackDisplay feedback={data.passwordScore.feedback} />,
       showStrengthBar: true,
@@ -87,6 +91,7 @@ export default function SignUpForm({ redirectTo }: SignUpFormProps): JSX.Element
       label: i18n.authentication.field.passwordConfirmation,
       type: 'password',
       isMandatory: true,
+      autoComplete: 'off',
       isErroneous: data => data.password !== data.confirm,
       errorMessage: i18n.authentication.error.passwordsMismatch,
       showStrengthBar: false,
@@ -96,12 +101,14 @@ export default function SignUpForm({ redirectTo }: SignUpFormProps): JSX.Element
   const signUp = React.useCallback(
     data => {
       startLoading();
+
       dispatch(API.signUp(data)).then(action => {
+        stopLoading();
+
         // is that a hack or not ???
         if (redirectTo && action.meta.requestStatus === 'fulfilled') {
           navigate(redirectTo);
         }
-        stopLoading();
       });
     },
     [dispatch, navigate, redirectTo, startLoading, stopLoading],
@@ -111,10 +118,9 @@ export default function SignUpForm({ redirectTo }: SignUpFormProps): JSX.Element
     <PublicEntranceContainer>
       <Form
         fields={formFields}
-        value={defaultFormData}
+        value={defaultData}
         onSubmit={signUp}
         submitLabel={i18n.authentication.action.createAnAccount}
-        autoComplete="off"
         buttonClassName={css({ margin: space_M + ' auto' })}
         isSubmitInProcess={isLoading}
       >

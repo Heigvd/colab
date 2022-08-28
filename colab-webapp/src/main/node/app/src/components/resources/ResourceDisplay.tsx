@@ -8,11 +8,11 @@
 import { css, cx } from '@emotion/css';
 import {
   faArrowLeft,
+  faBroom,
   faCog,
   faEllipsisV,
   faInfoCircle,
   faTools,
-  faTrashAlt,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import * as React from 'react';
@@ -22,10 +22,9 @@ import useTranslations from '../../i18n/I18nContext';
 import { useAndLoadTextOfDocument } from '../../selectors/documentSelector';
 import { useAppDispatch } from '../../store/hooks';
 import CardEditorToolbox from '../cards/CardEditorToolbox';
-import { Destroyer } from '../common/Destroyer';
 import IconButton from '../common/element/IconButton';
 import { DiscreetInput, DiscreetTextArea } from '../common/element/Input';
-import DropDownMenu from '../common/layout/DropDownMenu';
+import DropDownMenu, { modalEntryStyle } from '../common/layout/DropDownMenu';
 import Flex from '../common/layout/Flex';
 import OpenCloseModal from '../common/layout/OpenCloseModal';
 import { DocTextWrapper } from '../documents/DocTextItem';
@@ -38,16 +37,21 @@ import {
   space_S,
   textSmall,
 } from '../styling/style';
-import { ResourceAndRef } from './ResourceCommonType';
-import { ResourceSettings } from './ResourceMiniDisplay';
+import { ResourceAndRef } from './resourcesCommonType';
+import ResourceSettings from './ResourceSettings';
 import TargetResourceSummary from './summary/TargetResourceSummary';
 
 export interface ResourceDisplayProps {
   resource: ResourceAndRef;
+  readOnly: boolean;
   goBackToList: () => void;
 }
 
-export function ResourceDisplay({ resource, goBackToList }: ResourceDisplayProps): JSX.Element {
+export function ResourceDisplay({
+  resource,
+  readOnly,
+  goBackToList,
+}: ResourceDisplayProps): JSX.Element {
   const dispatch = useAppDispatch();
   const i18n = useTranslations();
 
@@ -55,9 +59,13 @@ export function ResourceDisplay({ resource, goBackToList }: ResourceDisplayProps
   const [openToolbox, setOpenToolbox] = React.useState(true);
 
   const targetResource = resource.targetResource;
-  const readOnly = !resource.isDirectResource;
+
+  const effectiveReadOnly = readOnly || !resource.isDirectResource;
 
   const { text: teaser } = useAndLoadTextOfDocument(targetResource.teaserId);
+
+  const alwaysShowTeaser = effectiveReadOnly && teaser;
+  const alwaysHideTeaser = effectiveReadOnly && !teaser;
 
   return (
     <Flex align="stretch" direction="column" grow={1}>
@@ -70,7 +78,7 @@ export function ResourceDisplay({ resource, goBackToList }: ResourceDisplayProps
         >
           <IconButton
             icon={faArrowLeft}
-            title={i18n.common.back}
+            title="Back to the list"
             onClick={goBackToList}
             className={lightIconButtonStyle}
           />
@@ -82,58 +90,96 @@ export function ResourceDisplay({ resource, goBackToList }: ResourceDisplayProps
             <DiscreetInput
               value={targetResource.title || ''}
               placeholder={i18n.modules.resource.untitled}
-              readOnly={readOnly}
+              readOnly={effectiveReadOnly}
               onChange={newValue =>
                 dispatch(API.updateResource({ ...targetResource, title: newValue }))
               }
               inputDisplayClassName={localTitleStyle}
             />
           </Flex>
-          {readOnly && !teaser ? (
+          {/* {effectiveReadOnly && !teaser ? (
             <ResourceSettingsModal resource={resource} isButton />
+          ) : ( */}
+          {readOnly ? (
+            <div></div>
           ) : (
             <DropDownMenu
               icon={faEllipsisV}
               valueComp={{ value: '', label: '' }}
               buttonClassName={cx(lightIconButtonStyle, css({ marginLeft: space_S }))}
               entries={[
-                {
-                  value: 'Toggle teaser',
-                  label: (
-                    <>
-                      <FontAwesomeIcon icon={faInfoCircle} />{' '}
-                      {`${showTeaser ? 'Hide' : 'Show'} teaser`}
-                    </>
-                  ),
-                  action: () => setShowTeaser(showTeaser => !showTeaser),
-                },
-                {
-                  value: 'Toggle toolbox',
-                  label: (
-                    <>
-                      <FontAwesomeIcon icon={faTools} />{' '}
-                      {`${openToolbox ? i18n.common.close : i18n.common.open} toolbox`}
-                    </>
-                  ),
-                  action: () => setOpenToolbox(openToolbox => !openToolbox),
-                },
-                {
-                  value: 'Settings',
-                  label: <ResourceSettingsModal resource={resource} />,
-                  modal: true,
-                },
+                ...(!alwaysShowTeaser && !alwaysHideTeaser
+                  ? [
+                      {
+                        value: 'teaser',
+                        label: (
+                          <>
+                            <FontAwesomeIcon icon={faInfoCircle} />{' '}
+                            {`${showTeaser ? i18n.common.hide : i18n.common.show} teaser`}
+                          </>
+                        ),
+                        action: () => setShowTeaser(showTeaser => !showTeaser),
+                      },
+                    ]
+                  : []),
+
+                ...(!effectiveReadOnly
+                  ? [
+                      {
+                        value: 'toolbox',
+                        label: (
+                          <>
+                            <FontAwesomeIcon icon={faTools} />{' '}
+                            {`${openToolbox ? i18n.common.hide : i18n.common.show} toolbox`}
+                          </>
+                        ),
+                        action: () => setOpenToolbox(openToolbox => !openToolbox),
+                      },
+                    ]
+                  : []),
+
+                ...(!effectiveReadOnly
+                  ? [
+                      {
+                        value: 'settings',
+                        label: <ResourceSettingsModal resource={resource} />,
+                        modal: true,
+                      },
+                    ]
+                  : []),
+
+                ...(!readOnly
+                  ? [
+                      {
+                        value: 'remove',
+                        label: (
+                          <>
+                            <FontAwesomeIcon icon={faBroom} /> {i18n.common.remove}
+                          </>
+                        ),
+                        action: () => {
+                          dispatch(API.removeAccessToResource(resource));
+                          goBackToList();
+                        },
+                      },
+                    ]
+                  : []),
               ]}
             />
           )}
         </Flex>
         <div>
-          {showTeaser && (
+          {(alwaysShowTeaser || showTeaser) && !alwaysHideTeaser && (
             <DocTextWrapper id={targetResource.teaserId}>
               {text => (
                 <DiscreetTextArea
                   value={text || ''}
-                  placeholder="There is no teaser for the moment. Feel free to fill it."
-                  readOnly={readOnly}
+                  placeholder={
+                    effectiveReadOnly
+                      ? i18n.modules.resource.noTeaser
+                      : i18n.modules.resource.noTeaserForNow
+                  }
+                  readOnly={effectiveReadOnly}
                   onChange={(newValue: string) => {
                     if (targetResource.teaserId) {
                       dispatch(
@@ -154,17 +200,16 @@ export function ResourceDisplay({ resource, goBackToList }: ResourceDisplayProps
 
       {targetResource.id && (
         <>
-          {!readOnly && (
+          {!effectiveReadOnly && (
             <CardEditorToolbox
               open={openToolbox}
               docOwnership={{ kind: 'PartOfResource', ownerId: targetResource.id }}
-              //prefixElement={<IconButton icon={faTimes} title={"Close toolbox"} onClick={() => setOpenToolbox(openToolbox => !openToolbox)} />}
             />
           )}
           <div className={cx(paddingAroundStyle([2, 4], space_M), css({ overflow: 'auto' }))}>
             <DocumentList
               docOwnership={{ kind: 'PartOfResource', ownerId: targetResource.id }}
-              allowEdition={!readOnly}
+              allowEdition={!effectiveReadOnly}
             />
           </div>
         </>
@@ -173,74 +218,40 @@ export function ResourceDisplay({ resource, goBackToList }: ResourceDisplayProps
   );
 }
 
-function ResourceSettingsModal({
-  resource,
-  isButton,
-}: {
+interface ResourceSettingsModalProps {
   resource: ResourceAndRef;
   isButton?: boolean;
-}): JSX.Element {
-  const dispatch = useAppDispatch();
+}
+
+function ResourceSettingsModal({ resource, isButton }: ResourceSettingsModalProps): JSX.Element {
+  const i18n = useTranslations();
+
   return (
-    <>
-      <OpenCloseModal
-        title="Document settings"
-        showCloseButton={true}
-        collapsedChildren={
-          <>
-            {isButton ? (
-              <IconButton icon={faCog} className={lightIconButtonStyle} title="Document settings" />
-            ) : (
-              <>
-                <FontAwesomeIcon icon={faCog} title="Document settings" /> Settings
-              </>
-            )}
-          </>
-        }
-        className={css({ '&:hover': { textDecoration: 'none' } })}
-      >
-        {() => (
-          <>
-            <ResourceSettings {...resource} />
-            {resource.isDirectResource && (
-              <Destroyer
-                title="Delete this document"
-                icon={faTrashAlt}
-                onDelete={() => {
-                  dispatch(API.deleteResource(resource.targetResource));
-                }}
-              />
-            )}
-            {/* {!resource.isDirectResource && resource.cardTypeResourceRef && (
-              <Destroyer
-                title="Refuse at card type level"
-                icon={faTrash}
-                onDelete={() => {
-                  dispatch(API.removeAccessToResource(resource.cardTypeResourceRef!));
-                }}
-              />
-            )}
-            {!resource.isDirectResource && resource.cardResourceRef && (
-              <Destroyer
-                title="Refuse at card level"
-                icon={faTrash}
-                onDelete={() => {
-                  dispatch(API.removeAccessToResource(resource.cardResourceRef!));
-                }}
-              />
-            )}
-            {!resource.isDirectResource && resource.cardContentResourceRef && (
-              <Destroyer
-                title="Refuse at variant level"
-                icon={faTrash}
-                onDelete={() => {
-                  dispatch(API.removeAccessToResource(resource.cardContentResourceRef!));
-                }}
-              />
-            )} */}
-          </>
-        )}
-      </OpenCloseModal>
-    </>
+    <OpenCloseModal
+      title="Document settings"
+      showCloseButton
+      className={css({
+        '&:hover': { textDecoration: 'none' },
+        display: 'flex',
+        alignItems: 'center',
+      })}
+      collapsedChildren={
+        <>
+          {isButton ? (
+            <IconButton
+              icon={faCog}
+              className={lightIconButtonStyle}
+              title={i18n.common.settings}
+            />
+          ) : (
+            <div className={modalEntryStyle}>
+              <FontAwesomeIcon icon={faCog} /> {i18n.common.settings}
+            </div>
+          )}
+        </>
+      }
+    >
+      {() => <ResourceSettings resource={resource} />}
+    </OpenCloseModal>
   );
 }

@@ -10,8 +10,9 @@ import { Card } from 'colab-rest-client';
 import * as React from 'react';
 import { useNavigate } from 'react-router-dom';
 import * as API from '../../API/api';
+import useTranslations from '../../i18n/I18nContext';
 import { useAppDispatch } from '../../store/hooks';
-import Form from '../common/Form/Form';
+import Form from '../common/element/Form';
 import Flex from '../common/layout/Flex';
 import { space_L, space_S } from '../styling/style';
 
@@ -25,6 +26,8 @@ interface PositionEditorProps {
 export default function PositionEditor({ card }: PositionEditorProps): JSX.Element {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
+  const i18n = useTranslations();
+
   return (
     <Form
       fields={[
@@ -137,6 +140,7 @@ export default function PositionEditor({ card }: PositionEditorProps): JSX.Eleme
           navigate('../');
         }
       }}
+      submitLabel={i18n.common.save}
     />
   );
 }

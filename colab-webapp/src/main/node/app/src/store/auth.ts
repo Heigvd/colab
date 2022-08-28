@@ -6,7 +6,7 @@
  */
 import { createSlice } from '@reduxjs/toolkit';
 import * as API from '../API/api';
-import { PasswordScore } from '../components/common/Form/Form';
+import { PasswordScore } from '../components/common/element/Form';
 
 export interface AuthState {
   status: 'NOT_INITIALIZED' | 'LOADING' | 'NOT_AUTHENTICATED' | 'AUTHENTICATED';

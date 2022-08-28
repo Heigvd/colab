@@ -23,7 +23,7 @@ export default function DebugInput(): JSX.Element {
 
   const [val11, setVal11] = React.useState<string>();
   const [val12, setVal12] = React.useState<string>();
-  const [val13, setVal13] = React.useState<number>();
+  const [val13, setVal13] = React.useState<string>(); //React.useState<number>();
 
   return (
     <Flex direction="row">
@@ -46,8 +46,8 @@ export default function DebugInput(): JSX.Element {
               }}
               tip={showTip && 'a wonderful advice'}
               footer={showFooter && 'and if I would like to add something'}
-              warning={showWarning && 'ah a warning'}
-              error={showError && 'oh an error'}
+              warningMessage={showWarning && 'ah a warningMessage'}
+              errorMessage={showError && 'oh an errorMessage'}
               // containerClassName={css({ border: '2px solid yellow' })}
               // labelClassName={css({ border: '2px solid orange' })}
               // inputDisplayClassName={css({ border: '2px solid red' })}
@@ -74,8 +74,8 @@ export default function DebugInput(): JSX.Element {
               }}
               tip={showTip && 'a wonderful advice'}
               footer={showFooter && 'and if I would like to add something'}
-              warning={showWarning && 'ah a warning'}
-              error={showError && 'oh an error'}
+              warningMessage={showWarning && 'ah a warningMessage'}
+              errorMessage={showError && 'oh an errorMessage'}
             />
             <BlockInput
               label="input number"
@@ -91,12 +91,12 @@ export default function DebugInput(): JSX.Element {
                 // eslint-disable-next-line no-alert
                 //alert('changed');
                 logger.info('changed');
-                setVal13(parseInt(newValue));
+                setVal13(newValue); //setVal13(newValue);//setVal13(parseInt(newValue));
               }}
               tip={showTip && 'a wonderful advice'}
               footer={showFooter && 'and if I would like to add something'}
-              warning={showWarning && 'ah a warning'}
-              error={showError && 'oh an error'}
+              warningMessage={showWarning && 'ah a warningMessage'}
+              errorMessage={showError && 'oh an errorMessage'}
             />
           </Flex>
           <Flex direction="column" className={css({ margin: space_M })}>
@@ -116,8 +116,8 @@ export default function DebugInput(): JSX.Element {
               }}
               tip={showTip && 'a wonderful advice'}
               footer={showFooter && 'and if I would like to add something'}
-              warning={showWarning && 'ah a warning'}
-              error={showError && 'oh an error'}
+              warningMessage={showWarning && 'ah a warningMessage'}
+              errorMessage={showError && 'oh an errorMessage'}
             />
             <InlineInput
               label="text area"
@@ -137,8 +137,8 @@ export default function DebugInput(): JSX.Element {
               }}
               tip={showTip && 'a wonderful advice'}
               footer={showFooter && 'and if I would like to add something'}
-              warning={showWarning && 'ah a warning'}
-              error={showError && 'oh an error'}
+              warningMessage={showWarning && 'ah a warningMessage'}
+              errorMessage={showError && 'oh an errorMessage'}
             />
             <InlineInput
               label="input number"
@@ -154,12 +154,12 @@ export default function DebugInput(): JSX.Element {
                 // eslint-disable-next-line no-alert
                 //alert('changed');
                 logger.info('changed');
-                setVal13(parseInt(newValue));
+                setVal13(newValue); //setVal13(parseInt(newValue));
               }}
               tip={showTip && 'a wonderful advice'}
               footer={showFooter && 'and if I would like to add something'}
-              warning={showWarning && 'ah a warning'}
-              error={showError && 'oh an error'}
+              warningMessage={showWarning && 'ah a warningMessage'}
+              errorMessage={showError && 'oh an errorMessage'}
             />
           </Flex>
           <Flex direction="column" className={css({ margin: space_M })}>
@@ -178,8 +178,8 @@ export default function DebugInput(): JSX.Element {
               }}
               tip={showTip && 'a wonderful advice'}
               footer={showFooter && 'and if I would like to add something'}
-              warning={showWarning && 'ah a warning'}
-              error={showError && 'oh an error'}
+              warningMessage={showWarning && 'ah a warningMessage'}
+              errorMessage={showError && 'oh an errorMessage'}
             />
             <InlineInput
               value={val12}
@@ -198,8 +198,8 @@ export default function DebugInput(): JSX.Element {
               }}
               tip={showTip && 'a wonderful advice'}
               footer={showFooter && 'and if I would like to add something'}
-              warning={showWarning && 'ah a warning'}
-              error={showError && 'oh an error'}
+              warningMessage={showWarning && 'ah a warningMessage'}
+              errorMessage={showError && 'oh an errorMessage'}
             />
             <InlineInput
               value={val13}
@@ -214,12 +214,12 @@ export default function DebugInput(): JSX.Element {
                 // eslint-disable-next-line no-alert
                 //alert('changed');
                 logger.info('changed');
-                setVal13(parseInt(newValue));
+                setVal13(newValue); //setVal13(parseInt(newValue));
               }}
               tip={showTip && 'a wonderful advice'}
               footer={showFooter && 'and if I would like to add something'}
-              warning={showWarning && 'ah a warning'}
-              error={showError && 'oh an error'}
+              warningMessage={showWarning && 'ah a warningMessage'}
+              errorMessage={showError && 'oh an errorMessage'}
             />
           </Flex>
         </Flex>
@@ -241,8 +241,8 @@ export default function DebugInput(): JSX.Element {
               }}
               tip={showTip && 'a wonderful advice'}
               footer={showFooter && 'and if I would like to add something'}
-              warning={showWarning && 'ah a warning'}
-              error={showError && 'oh an error'}
+              warningMessage={showWarning && 'ah a warningMessage'}
+              errorMessage={showError && 'oh an errorMessage'}
             />
             <BlockInput
               label="text area confirm"
@@ -260,8 +260,8 @@ export default function DebugInput(): JSX.Element {
               }}
               tip={showTip && 'a wonderful advice'}
               footer={showFooter && 'and if I would like to add something'}
-              warning={showWarning && 'ah a warning'}
-              error={showError && 'oh an error'}
+              warningMessage={showWarning && 'ah a warningMessage'}
+              errorMessage={showError && 'oh an errorMessage'}
             />
             <BlockInput
               label="input number"
@@ -277,12 +277,12 @@ export default function DebugInput(): JSX.Element {
                 // eslint-disable-next-line no-alert
                 //alert('changed');
                 logger.info('changed');
-                setVal13(parseInt(newValue));
+                setVal13(newValue); //setVal13(parseInt(newValue));
               }}
               tip={showTip && 'a wonderful advice'}
               footer={showFooter && 'and if I would like to add something'}
-              warning={showWarning && 'ah a warning'}
-              error={showError && 'oh an error'}
+              warningMessage={showWarning && 'ah a warningMessage'}
+              errorMessage={showError && 'oh an errorMessage'}
             />
           </Flex>
           <Flex direction="column" className={css({ margin: space_M })}>
@@ -303,8 +303,8 @@ export default function DebugInput(): JSX.Element {
               }}
               tip={showTip && 'a wonderful advice'}
               footer={showFooter && 'and if I would like to add something'}
-              warning={showWarning && 'ah a warning'}
-              error={showError && 'oh an error'}
+              warningMessage={showWarning && 'ah a warningMessage'}
+              errorMessage={showError && 'oh an errorMessage'}
               // containerClassName={css({ border: '2px solid yellow' })}
               // labelClassName={css({ border: '2px solid orange' })}
               // inputDisplayClassName={css({ border: '2px solid red' })}
@@ -329,8 +329,8 @@ export default function DebugInput(): JSX.Element {
               }}
               tip={showTip && 'a wonderful advice'}
               footer={showFooter && 'and if I would like to add something'}
-              warning={showWarning && 'ah a warning'}
-              error={showError && 'oh an error'}
+              warningMessage={showWarning && 'ah a warningMessage'}
+              errorMessage={showError && 'oh an errorMessage'}
             />
             <InlineInput
               label="input number"
@@ -346,12 +346,12 @@ export default function DebugInput(): JSX.Element {
                 // eslint-disable-next-line no-alert
                 //alert('changed');
                 logger.info('changed');
-                setVal13(parseInt(newValue));
+                setVal13(newValue); //setVal13(parseInt(newValue));
               }}
               tip={showTip && 'a wonderful advice'}
               footer={showFooter && 'and if I would like to add something'}
-              warning={showWarning && 'ah a warning'}
-              error={showError && 'oh an error'}
+              warningMessage={showWarning && 'ah a warningMessage'}
+              errorMessage={showError && 'oh an errorMessage'}
             />
           </Flex>
           <Flex direction="column" className={css({ margin: space_M })}>
@@ -371,8 +371,8 @@ export default function DebugInput(): JSX.Element {
               }}
               tip={showTip && 'a wonderful advice'}
               footer={showFooter && 'and if I would like to add something'}
-              warning={showWarning && 'ah a warning'}
-              error={showError && 'oh an error'}
+              warningMessage={showWarning && 'ah a warningMessage'}
+              errorMessage={showError && 'oh an errorMessage'}
               // containerClassName={css({ border: '2px solid yellow' })}
               // labelClassName={css({ border: '2px solid orange' })}
               // inputDisplayClassName={css({ border: '2px solid red' })}
@@ -396,8 +396,8 @@ export default function DebugInput(): JSX.Element {
               }}
               tip={showTip && 'a wonderful advice'}
               footer={showFooter && 'and if I would like to add something'}
-              warning={showWarning && 'ah a warning'}
-              error={showError && 'oh an error'}
+              warningMessage={showWarning && 'ah a warningMessage'}
+              errorMessage={showError && 'oh an errorMessage'}
             />
             <InlineInput
               value={val13}
@@ -412,12 +412,12 @@ export default function DebugInput(): JSX.Element {
                 // eslint-disable-next-line no-alert
                 //alert('changed');
                 logger.info('changed');
-                setVal13(parseInt(newValue));
+                setVal13(newValue); //setVal13(parseInt(newValue));
               }}
               tip={showTip && 'a wonderful advice'}
               footer={showFooter && 'and if I would like to add something'}
-              warning={showWarning && 'ah a warning'}
-              error={showError && 'oh an error'}
+              warningMessage={showWarning && 'ah a warningMessage'}
+              errorMessage={showError && 'oh an errorMessage'}
             />
           </Flex>
         </Flex>
@@ -439,8 +439,8 @@ export default function DebugInput(): JSX.Element {
               }}
               tip={showTip && 'a wonderful advice'}
               footer={showFooter && 'and if I would like to add something'}
-              warning={showWarning && 'ah a warning'}
-              error={showError && 'oh an error'}
+              warningMessage={showWarning && 'ah a warningMessage'}
+              errorMessage={showError && 'oh an errorMessage'}
             />
             <BlockInput
               label="text area confirm"
@@ -458,8 +458,8 @@ export default function DebugInput(): JSX.Element {
               }}
               tip={showTip && 'a wonderful advice'}
               footer={showFooter && 'and if I would like to add something'}
-              warning={showWarning && 'ah a warning'}
-              error={showError && 'oh an error'}
+              warningMessage={showWarning && 'ah a warningMessage'}
+              errorMessage={showError && 'oh an errorMessage'}
             />
             <BlockInput
               label="input number"
@@ -475,12 +475,12 @@ export default function DebugInput(): JSX.Element {
                 // eslint-disable-next-line no-alert
                 //alert('changed');
                 logger.info('changed');
-                setVal13(parseInt(newValue));
+                setVal13(newValue); //setVal13(parseInt(newValue));
               }}
               tip={showTip && 'a wonderful advice'}
               footer={showFooter && 'and if I would like to add something'}
-              warning={showWarning && 'ah a warning'}
-              error={showError && 'oh an error'}
+              warningMessage={showWarning && 'ah a warningMessage'}
+              errorMessage={showError && 'oh an errorMessage'}
             />
           </Flex>
           <Flex direction="column" className={css({ margin: space_M })}>
@@ -501,8 +501,8 @@ export default function DebugInput(): JSX.Element {
               }}
               tip={showTip && 'a wonderful advice'}
               footer={showFooter && 'and if I would like to add something'}
-              warning={showWarning && 'ah a warning'}
-              error={showError && 'oh an error'}
+              warningMessage={showWarning && 'ah a warningMessage'}
+              errorMessage={showError && 'oh an errorMessage'}
               // containerClassName={css({ border: '2px solid yellow' })}
               // labelClassName={css({ border: '2px solid orange' })}
               // inputDisplayClassName={css({ border: '2px solid red' })}
@@ -527,8 +527,8 @@ export default function DebugInput(): JSX.Element {
               }}
               tip={showTip && 'a wonderful advice'}
               footer={showFooter && 'and if I would like to add something'}
-              warning={showWarning && 'ah a warning'}
-              error={showError && 'oh an error'}
+              warningMessage={showWarning && 'ah a warningMessage'}
+              errorMessage={showError && 'oh an errorMessage'}
             />
             <InlineInput
               label="input number"
@@ -544,12 +544,12 @@ export default function DebugInput(): JSX.Element {
                 // eslint-disable-next-line no-alert
                 //alert('changed');
                 logger.info('changed');
-                setVal13(parseInt(newValue));
+                setVal13(newValue); //setVal13(parseInt(newValue));
               }}
               tip={showTip && 'a wonderful advice'}
               footer={showFooter && 'and if I would like to add something'}
-              warning={showWarning && 'ah a warning'}
-              error={showError && 'oh an error'}
+              warningMessage={showWarning && 'ah a warningMessage'}
+              errorMessage={showError && 'oh an errorMessage'}
             />
           </Flex>
           <Flex direction="column" className={css({ margin: space_M })}>
@@ -569,8 +569,8 @@ export default function DebugInput(): JSX.Element {
               }}
               tip={showTip && 'a wonderful advice'}
               footer={showFooter && 'and if I would like to add something'}
-              warning={showWarning && 'ah a warning'}
-              error={showError && 'oh an error'}
+              warningMessage={showWarning && 'ah a warningMessage'}
+              errorMessage={showError && 'oh an errorMessage'}
               // containerClassName={css({ border: '2px solid yellow' })}
               // labelClassName={css({ border: '2px solid orange' })}
               // inputDisplayClassName={css({ border: '2px solid red' })}
@@ -594,8 +594,8 @@ export default function DebugInput(): JSX.Element {
               }}
               tip={showTip && 'a wonderful advice'}
               footer={showFooter && 'and if I would like to add something'}
-              warning={showWarning && 'ah a warning'}
-              error={showError && 'oh an error'}
+              warningMessage={showWarning && 'ah a warningMessage'}
+              errorMessage={showError && 'oh an errorMessage'}
             />
             <InlineInput
               value={val13}
@@ -610,12 +610,12 @@ export default function DebugInput(): JSX.Element {
                 // eslint-disable-next-line no-alert
                 //alert('changed');
                 logger.info('changed');
-                setVal13(parseInt(newValue));
+                setVal13(newValue); //setVal13(parseInt(newValue));
               }}
               tip={showTip && 'a wonderful advice'}
               footer={showFooter && 'and if I would like to add something'}
-              warning={showWarning && 'ah a warning'}
-              error={showError && 'oh an error'}
+              warningMessage={showWarning && 'ah a warningMessage'}
+              errorMessage={showError && 'oh an errorMessage'}
             />
           </Flex>
         </Flex>

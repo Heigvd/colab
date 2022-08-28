@@ -84,7 +84,9 @@ export function UserDropDown({ onlyLogout }: { onlyLogout?: boolean }): JSX.Elem
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const i18n = useTranslations();
+
   const { currentUser, status: currentUserStatus } = useCurrentUser();
+
   const logout = React.useCallback(() => {
     dispatch(API.signOut());
   }, [dispatch]);
@@ -114,7 +116,7 @@ export function UserDropDown({ onlyLogout }: { onlyLogout?: boolean }): JSX.Elem
                       padding: space_S,
                     })}
                   >
-                    <FontAwesomeIcon icon={faUser} />
+                    <FontAwesomeIcon icon={faUser} />{' '}
                     {currentUser.firstname && currentUser.lastname
                       ? currentUser.firstname + ' ' + currentUser.lastname
                       : currentUser.username}
@@ -129,10 +131,10 @@ export function UserDropDown({ onlyLogout }: { onlyLogout?: boolean }): JSX.Elem
                     value: 'settings',
                     label: (
                       <>
-                        <FontAwesomeIcon icon={faCog} /> Settings
+                        <FontAwesomeIcon icon={faCog} /> {i18n.common.settings}
                       </>
                     ),
-                    action: () => navigate('/settings'),
+                    action: () => navigate('/settings/user'),
                   },
                 ]
               : []),
@@ -142,10 +144,10 @@ export function UserDropDown({ onlyLogout }: { onlyLogout?: boolean }): JSX.Elem
                     value: 'admin',
                     label: (
                       <>
-                        <FontAwesomeIcon icon={faMeteor} /> Admin
+                        <FontAwesomeIcon icon={faMeteor} /> {i18n.admin.admin}
                       </>
                     ),
-                    action: () => navigate('/admin'),
+                    action: () => navigate('/admin/main'),
                   },
                 ]
               : []),
@@ -153,7 +155,7 @@ export function UserDropDown({ onlyLogout }: { onlyLogout?: boolean }): JSX.Elem
               value: 'logout',
               label: (
                 <>
-                  Logout <FontAwesomeIcon icon={faSignOutAlt} />
+                  {i18n.common.logout} <FontAwesomeIcon icon={faSignOutAlt} />
                 </>
               ),
               action: logout,

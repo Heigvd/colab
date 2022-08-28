@@ -34,7 +34,7 @@ export default function Thumbnail({
     <Clickable
       onClick={onClick}
       onDoubleClick={onDoubleClick}
-      enterKeyBehaviour={disableOnEnter ? "NONE" : "DBL_CLICK"}
+      enterKeyBehaviour={disableOnEnter ? 'NONE' : 'DBL_CLICK'}
       clickableClassName={cx(thumbStyle, className)}
     >
       {children}

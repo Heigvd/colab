@@ -9,6 +9,7 @@ import { faCircle, faCircleDot } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Resource } from 'colab-rest-client';
 import * as React from 'react';
+import useTranslations from '../../../i18n/I18nContext';
 
 interface TargetResourceSummaryProps {
   resource: Resource;
@@ -22,6 +23,7 @@ export default function TargetResourceSummary({
   return (
     <>
       {resource.cardContentId && <ResourceOfCardContentSummary className={iconClassName} />}
+      {/* at card leved is the nothing-special way */}
       {resource.abstractCardTypeId && <ResourceOfCardTypeSummary className={iconClassName} />}
     </>
   );
@@ -39,7 +41,13 @@ function ResourceOfCardContentSummary({ className }: { className?: string }): JS
 }
 
 function ResourceOfCardTypeSummary({ className }: { className?: string }): JSX.Element {
+  const i18n = useTranslations();
+
   return (
-    <FontAwesomeIcon icon={faCircleDot} title={'Provided by the card type'} className={className} />
+    <FontAwesomeIcon
+      icon={faCircleDot}
+      title={i18n.modules.cardType.info.providedByCardType}
+      className={className}
+    />
   );
 }

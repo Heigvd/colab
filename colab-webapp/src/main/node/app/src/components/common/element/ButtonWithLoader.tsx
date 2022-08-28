@@ -58,7 +58,6 @@ export default function ButtonWithLoader({
   invertedButton,
   className,
 }: ButtonWithLoaderProps): JSX.Element {
-
   return (
     <Clickable
       title={title}

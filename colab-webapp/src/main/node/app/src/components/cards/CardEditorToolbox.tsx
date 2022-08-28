@@ -306,21 +306,21 @@ export function BlockCreatorButtons({
         <DocumentCreatorButton
           docOwnership={docOwnership}
           docKind="TextDataBlock"
-          title={i18n.modules.content.addText}
+          title={i18n.modules.content.createText}
           className={toolboxButtonStyle}
           isAdditionAlwaysAtEnd={nb < 1}
         />
         <DocumentCreatorButton
           docOwnership={docOwnership}
           docKind="DocumentFile"
-          title={i18n.modules.content.addFile}
+          title={i18n.modules.content.createFile}
           className={toolboxButtonStyle}
           isAdditionAlwaysAtEnd={nb < 1}
         />
         <DocumentCreatorButton
           docOwnership={docOwnership}
           docKind="ExternalLink"
-          title={i18n.modules.content.addLink}
+          title={i18n.modules.content.createLink}
           className={toolboxButtonStyle}
           isAdditionAlwaysAtEnd={nb < 1}
         />
