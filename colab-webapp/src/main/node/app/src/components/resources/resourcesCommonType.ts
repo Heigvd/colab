@@ -76,13 +76,17 @@ export function getTheDirectResource(resource: ResourceAndRef): Resource | Resou
   return getTheRef(resource) || resource.targetResource;
 }
 
-export function isActive(resource: ResourceAndRef): boolean {
+export function isActive1(resource: ResourceAndRef): boolean {
   const directResource = getTheDirectResource(resource);
 
-  if (entityIs(directResource, 'ResourceRef')) {
-    return isResourceRefActive(directResource);
+  return isActive2(directResource);
+}
+
+export function isActive2(resource: Resource | ResourceRef): boolean {
+  if (entityIs(resource, 'ResourceRef')) {
+    return isResourceRefActive(resource);
   } else {
-    return isResourceActive(directResource);
+    return isResourceActive(resource);
   }
 }
 
