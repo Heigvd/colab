@@ -51,7 +51,7 @@ export default function CardSettings({ card, variant }: CardSettingsProps): JSX.
         <Tips>{i18n.modules.card.infos.lockingCard}</Tips>
       </Flex>
       <div>
-        <h3 className={marginDownSmall}>{i18n.modules.card.settings.cardColor}</h3>
+        <h3 className={marginDownSmall}>{i18n.modules.card.settings.color}</h3>
         <TwitterPicker
           colors={['#B54BB2', '#B63E3E', '#3DC15C', '#37A8D8', '#DFCA2A', '#9C9C9C', '#FFFFFF']}
           color={card.color || 'white'}
@@ -65,7 +65,7 @@ export default function CardSettings({ card, variant }: CardSettingsProps): JSX.
         />
       </div>
       <div>
-        <h3 className={marginDownSmall}>{i18n.modules.card.settings.contentStatus}</h3>
+        <h3 className={marginDownSmall}>{i18n.modules.card.settings.status}</h3>
         <ContentStatusSelector
           self={variant.status}
           onChange={status => dispatch(API.updateCardContent({ ...variant, status: status }))}
