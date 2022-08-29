@@ -257,8 +257,8 @@ export const en = {
           title: 'Access Control',
         },
         locked: 'Locked',
-        cardColor: 'Card color',
-        contentStatus: 'Card content status',
+        color: 'Color',
+        status: 'Status',
         completionLevelMode: 'Completion level mode',
         cardPosition: 'Card position',
       },
@@ -267,8 +267,7 @@ export const en = {
         noCardYetPleaseCreate:
           'This project has no card yet. Create some to begin this co-design journey !',
         cardLocked: 'Card is locked. To unlock it go to Card settings and uncheck "locked".',
-        lockingCard:
-          'Locking the variant (card if only one variant) will artificially set it as read-only and prevent the edition.',
+        lockingCard: 'Locking sets to read-only.',
         noDeliverable: 'No deliverable available',
         completionModeInfo:
           'Select completion mode (MANUAL | AUTO | NO_OP). Manual: input to set completion; Auto: based on children; No: do not event diplay the bar',
