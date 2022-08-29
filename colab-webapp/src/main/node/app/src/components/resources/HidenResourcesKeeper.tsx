@@ -7,7 +7,7 @@
 
 import { css } from '@emotion/css';
 import { faEye } from '@fortawesome/free-regular-svg-icons';
-import { faFlask, faGhost } from '@fortawesome/free-solid-svg-icons';
+import { faArrowUp, faBoxArchive, faGhost } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import * as React from 'react';
 import * as API from '../../API/api';
@@ -66,7 +66,8 @@ export default function ResourcesLoserKeeper({
           </OpenCloseModal>
           <IconButton
             title="Restore the document"
-            icon={faFlask}
+            icon={faBoxArchive}
+            layer={{ layerIcon: faArrowUp, transform: 'shrink-6 up-10' }}
             onClick={() => dispatch(API.giveAccessToResource(resource))}
             className={lightIconButtonStyle}
           />
