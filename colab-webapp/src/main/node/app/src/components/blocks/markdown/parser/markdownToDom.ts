@@ -716,6 +716,16 @@ export function convertRange(md: NodesAndOffsets, mdRange: MarkdownRange): Range
 
 export default function markdownToDom(markdown: string): NodesAndOffsets {
   logger.trace('MarkDown: ', markdown);
+  if (markdown == ''){
+    const p = document.createElement('P');
+    const br = document.createElement('BR');
+    p.append(br);
+
+    return {
+      nodes: [p],
+      offsets: {0: [p]},
+    };
+  }
 
   const majorTags = extractMajorTags(markdown);
   const combined = majorTags.map(combineMultiline);
