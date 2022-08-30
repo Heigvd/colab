@@ -432,7 +432,7 @@ export default function WysiwygEditor({
       if (divRef.current.contains(selection.anchorNode)) {
         if (selection.type === 'Caret') {
           const current = boundedClosest(selection.anchorNode!, majorTags, divRef.current);
-          if (current) {
+          if (current && current != divRef.current) {
             majorNodes.push(current);
           }
         } else {
