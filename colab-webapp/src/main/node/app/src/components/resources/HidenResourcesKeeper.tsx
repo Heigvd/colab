@@ -7,7 +7,7 @@
 
 import { css } from '@emotion/css';
 import { faEye } from '@fortawesome/free-regular-svg-icons';
-import { faArrowUp, faBoxArchive, faGhost } from '@fortawesome/free-solid-svg-icons';
+import { faArrowUp, faBoxArchive, faGhost, faTrash } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import * as React from 'react';
 import * as API from '../../API/api';
@@ -45,7 +45,7 @@ export default function ResourcesLoserKeeper({
         })}
       >
         {resource.targetResource.title}
-        <div>
+        <Flex>
           <OpenCloseModal
             title="Document"
             collapsedChildren={
@@ -71,7 +71,19 @@ export default function ResourcesLoserKeeper({
             onClick={() => dispatch(API.giveAccessToResource(resource))}
             className={lightIconButtonStyle}
           />
-        </div>
+          {resource.isDirectResource ? (
+            <IconButton
+              title="Irremediately delete"
+              icon={faTrash}
+              onClick={() => dispatch(API.deleteResource(resource.targetResource))}
+              className={lightIconButtonStyle}
+            />
+          ) : (
+            // a way to have space and not all icons shifted if no deletion possible
+            // I'm not proud of it, but it works
+            <div className={css({ minWidth: '24px' })}>&nbsp;</div>
+          )}
+        </Flex>
       </Flex>
     ),
     [dispatch],
