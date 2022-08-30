@@ -86,13 +86,19 @@ export default function CardEditorToolbox({
   const i18n = useTranslations();
 
   const selectedDocument = useAppSelector(state => {
-    let document = undefined;
     if (selectedDocId) {
       const doc = state.document.documents[selectedDocId];
       if (entityIs(doc, 'Document')) {
-        document = doc;
+        //make sure selected document is part of the current document owner
+        if (
+          (docOwnership.kind === 'DeliverableOfCardContent' &&
+            doc.owningCardContentId === docOwnership.ownerId) ||
+          (docOwnership.kind === 'PartOfResource' && doc.owningResourceId === docOwnership.ownerId)
+        ) {
+          return doc;
+        }
+        return undefined;
       }
-      return document;
     }
   });
 
@@ -100,9 +106,9 @@ export default function CardEditorToolbox({
   const isLink = entityIs(selectedDocument, 'ExternalLink');
   const isDoc = entityIs(selectedDocument, 'DocumentFile');
 
-  const downloadUrl = API.getRestClient().DocumentFileRestEndPoint.getFileContentPath(
-    selectedDocId!,
-  );
+  const downloadUrl = selectedDocument?.id
+    ? API.getRestClient().DocumentFileRestEndPoint.getFileContentPath(selectedDocument.id!)
+    : '';
 
   const downloadCb = React.useCallback(() => {
     window.open(downloadUrl);
@@ -115,7 +121,10 @@ export default function CardEditorToolbox({
   return (
     <Flex align="center" className={cx(toolboxContainerStyle, { [closedToolboxStyle]: !open })}>
       {prefixElement}
-      <BlockCreatorButtons docOwnership={docOwnership} selectedBlockId={selectedDocId || null} />
+      <BlockCreatorButtons
+        docOwnership={docOwnership}
+        selectedBlockId={selectedDocument?.id ?? null}
+      />
       {selectedDocument != (undefined || null) && docOwnership.kind === selectedOwnKind && (
         <>
           {isText && (
@@ -238,19 +247,19 @@ export default function CardEditorToolbox({
             }
             message={<p>{i18n.modules.content.confirmDeleteBlock}</p>}
             onConfirm={() => {
-              if (selectedDocId) {
+              if (selectedDocument.id != null) {
                 if (selectedDocument.owningCardContentId != null) {
                   dispatch(
                     API.removeDeliverable({
                       cardContentId: selectedDocument.owningCardContentId,
-                      documentId: selectedDocId,
+                      documentId: selectedDocument.id,
                     }),
                   );
                 } else if (selectedDocument.owningResourceId != null) {
                   dispatch(
                     API.removeDocumentOfResource({
                       resourceId: selectedDocument.owningResourceId,
-                      documentId: selectedDocId,
+                      documentId: selectedDocument.id,
                     }),
                   );
                 }
@@ -270,7 +279,7 @@ export default function CardEditorToolbox({
               title={i18n.modules.content.moveBlockUpDown('up')}
               className={lightIconButtonStyle}
               onClick={() => {
-                dispatch(API.moveDocumentUp(selectedDocId!));
+                dispatch(API.moveDocumentUp(selectedDocument.id!));
               }}
             />
             <IconButton
@@ -278,7 +287,7 @@ export default function CardEditorToolbox({
               title={i18n.modules.content.moveBlockUpDown('down')}
               className={lightIconButtonStyle}
               onClick={() => {
-                dispatch(API.moveDocumentDown(selectedDocId!));
+                dispatch(API.moveDocumentDown(selectedDocument.id!));
               }}
             />
           </div>
@@ -306,6 +315,7 @@ export function BlockCreatorButtons({
         <DocumentCreatorButton
           docOwnership={docOwnership}
           docKind="TextDataBlock"
+          selectedDocumentId={selectedBlockId}
           title={i18n.modules.content.createText}
           className={toolboxButtonStyle}
           isAdditionAlwaysAtEnd={nb < 1}
@@ -313,6 +323,7 @@ export function BlockCreatorButtons({
         <DocumentCreatorButton
           docOwnership={docOwnership}
           docKind="DocumentFile"
+          selectedDocumentId={selectedBlockId}
           title={i18n.modules.content.createFile}
           className={toolboxButtonStyle}
           isAdditionAlwaysAtEnd={nb < 1}
@@ -320,6 +331,7 @@ export function BlockCreatorButtons({
         <DocumentCreatorButton
           docOwnership={docOwnership}
           docKind="ExternalLink"
+          selectedDocumentId={selectedBlockId}
           title={i18n.modules.content.createLink}
           className={toolboxButtonStyle}
           isAdditionAlwaysAtEnd={nb < 1}

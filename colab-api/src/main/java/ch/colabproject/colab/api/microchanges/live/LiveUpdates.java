@@ -9,6 +9,7 @@ package ch.colabproject.colab.api.microchanges.live;
 import ch.colabproject.colab.api.microchanges.model.Change;
 import ch.colabproject.colab.api.microchanges.model.MicroChange;
 import ch.colabproject.colab.api.microchanges.model.MicroChange.Type;
+import ch.colabproject.colab.generator.model.tools.JsonbProvider;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -20,6 +21,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
+import javax.json.bind.Jsonb;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -59,6 +61,11 @@ public class LiveUpdates implements Serializable {
      * List of pending changes
      */
     private List<Change> pendingChanges = new ArrayList<>();
+
+    /**
+     * Temp debug data
+     */
+    private transient String debugData = null;
 
     /**
      * Get the JSON discriminator
@@ -572,22 +579,28 @@ public class LiveUpdates implements Serializable {
         Set<String> changeDeps = getAllDependencies(changes, change);
 
         if (setsEqual(baseDeps, changeDeps)) {
-            // exact same set of dependencies: changes are sieblings
-            Map<Integer, Integer> offsets = computeOffset(newBase);
-            boolean conflictFree = true;
-            String newBaseRev = newBase.getRevision();
+            try {
+                // exact same set of dependencies: changes are sieblings
+                Map<Integer, Integer> offsets = computeOffset(newBase);
+                boolean conflictFree = true;
+                String newBaseRev = newBase.getRevision();
 
-            logger.debug("Rebase Sieblings: " + change + " on " + newBase
-                + " with offset " + offsets);
+                logger.debug("Rebase Sieblings: " + change + " on " + newBase
+                    + " with offset " + offsets);
 
-            conflictFree = shift(change, offsets, true) && conflictFree;
-            conflictFree = propagateOffsets(changes, change,
-                offsets, true, newBaseRev) && conflictFree;
+                conflictFree = shift(change, offsets, true) && conflictFree;
+                conflictFree = propagateOffsets(changes, change,
+                    offsets, true, newBaseRev) && conflictFree;
 
-            // Update parents after rebase/propagation step
-            change.setBasedOn(Set.of(newBase.getRevision()));
-            logger.trace(" -> " + change);
-            return conflictFree;
+                // Update parents after rebase/propagation step
+                change.setBasedOn(Set.of(newBase.getRevision()));
+                logger.trace(" -> " + change);
+                return conflictFree;
+            } catch (StackOverflowError e) {
+                logger.warn("Major issue: fail to propagate offset");
+                printDebugData();
+                throw e;
+            }
         } else if (setsEqual(Set.of(change.getRevision()), newBase.getBasedOn())) {
             logger.debug("Inverse hierarchy : " + change + " on " + newBase);
             // [x] -> change -> newBase
@@ -611,7 +624,7 @@ public class LiveUpdates implements Serializable {
             return conflictFree;
         } else if (changeDeps.containsAll(baseDeps)) {
             // nothing to do as all deps are already known
-            logger.info("Nothing to do: change includes all base parents");
+            logger.trace("Nothing to do: change includes all base parents");
             return true;
         } else {
             logger.error("Not yet implemented: Changes: {} Change: {} NewBase: {} BaseDeps: {} ChangeDeps: {}", changes, change.getRevision(), newBase.getRevision(), baseDeps, changeDeps);
@@ -620,7 +633,7 @@ public class LiveUpdates implements Serializable {
     }
 
     /**
-     * FIlter list of change and return only those which match the given live session
+     * Filter list of change and return only those which match the given live session
      *
      * @param changes list of changes
      * @param author  live-session id
@@ -646,6 +659,7 @@ public class LiveUpdates implements Serializable {
      * @return up-to date content
      */
     public LiveResult process(boolean strict) {
+        initDebugData();
         StringBuilder buffer = new StringBuilder();
         if (this.content != null) {
             buffer.append(this.content);
@@ -704,12 +718,16 @@ public class LiveUpdates implements Serializable {
                     }
                     currentRevision = change.getRevision();
                 } else {
+                    //TODO add full tree JSON formated full tree
                     logger.error("No child found in {}", children);
+                    printDebugData();
                     break;
                 }
 
             } else {
+                //TODO add full tree JSON formated full tree
                 logger.error("Some children without any parents left: {}", changes);
+                printDebugData();
                 break;
             }
         }
@@ -720,5 +738,37 @@ public class LiveUpdates implements Serializable {
     @Override
     public String toString() {
         return "LiveUpdates{" + "targetClass=" + targetClass + ", targetId=" + targetId + ", revision=" + revision + ", content=" + content + ", pendingChanges=" + pendingChanges + '}';
+    }
+
+    /**
+     * BUidl log message
+     */
+    public void initDebugData() {
+
+        Jsonb jsonb = JsonbProvider.getJsonb();
+
+        StringBuilder sb = new StringBuilder();
+        sb.append("Content @ ").append(this.revision)
+            .append((System.lineSeparator()))
+            .append(content)
+            .append((System.lineSeparator()))
+            .append((System.lineSeparator()))
+            .append("Changes:")
+            .append("[");
+
+        this.pendingChanges.forEach(change -> {
+            sb.append( jsonb.toJson(change ));
+        });
+
+        sb.append("]");
+
+        this.debugData = sb.toString();
+    }
+
+    /**
+     * Print debug message
+     */
+    public void printDebugData() {
+        logger.warn("Debug Data {}", this.debugData);
     }
 }
