@@ -529,8 +529,8 @@ export const process = (
       }
     } else {
       logger.error('Inconsistent changes: no children for @', currentRevision, ' in ', changes);
-      throw new Error('Inconsistent changset: missing ' + currentRevision + ' children');
-      //break;
+      //throw new Error('Inconsistent changset: missing ' + currentRevision + ' children');
+      break;
     }
     logger.trace('Processed revision is ', currentRevision);
   }
