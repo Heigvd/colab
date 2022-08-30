@@ -159,13 +159,13 @@ import com.hazelcast.cp.lock.FencedLock;
 <span class="nc bnc" id="L159" title="All 2 branches missed.">            boolean parentExists = basedOn.contains(block.getRevision())</span>
 <span class="nc" id="L160">                || changes.stream()</span>
 <span class="nc" id="L161">                    .filter(change -&gt; basedOn.stream()</span>
-<span class="nc" id="L162">                        .filter(rev -&gt; change.getRevision().equals(rev))</span>
-<span class="nc" id="L163">                        .findFirst().isPresent()</span>
+<span class="nc" id="L162">                    .filter(rev -&gt; change.getRevision().equals(rev))</span>
+<span class="nc" id="L163">                    .findFirst().isPresent()</span>
                     )
 <span class="nc bnc" id="L165" title="All 2 branches missed.">                    .findFirst().isPresent();</span>
 
 <span class="nc bnc" id="L167" title="All 2 branches missed.">            if (!parentExists) {</span>
-<span class="nc" id="L168">                logger.trace(&quot;Change is based on non-existing parent&quot;);</span>
+<span class="nc" id="L168">                logger.warn(&quot;Change is based on non-existing parent&quot;);</span>
 <span class="nc" id="L169">                logger.trace(&quot;TODO: keep it in a temp bag the time his parent is known&quot;);</span>
                 // patch.setBasedOn(&quot;0&quot;);
             }
@@ -237,11 +237,15 @@ import com.hazelcast.cp.lock.FencedLock;
 <span class="nc" id="L237">                        logger.error(&quot;Fails to save block&quot;, ex);</span>
 <span class="nc" id="L238">                    }</span>
                 }
+<span class="nc" id="L240">            } catch (StackOverflowError error) {</span>
+<span class="nc" id="L241">                logger.error(&quot;StackOverflowError&quot;);</span>
+<span class="nc" id="L242">                throw error;</span>
             } finally {
-<span class="nc" id="L241">                this.unlock(blockId);</span>
+<span class="nc" id="L244">                this.unlock(blockId);</span>
             }
-<span class="nc" id="L243">        });</span>
-<span class="nc" id="L244">    }</span>
+<span class="nc" id="L246">        }</span>
+        );
+<span class="nc" id="L248">    }</span>
 
     /**
      * Clear pending changes
@@ -249,13 +253,13 @@ import com.hazelcast.cp.lock.FencedLock;
      * @param id id of the block
      */
     public void deletePendingChangesAndPropagate(Long id) {
-<span class="nc" id="L252">        logger.debug(&quot;Delete pending changes&quot;);</span>
-<span class="nc" id="L253">        TextDataBlock block = blockManager.findBlock(id);</span>
-<span class="nc bnc" id="L254" title="All 2 branches missed.">        if (block != null) {</span>
-<span class="nc" id="L255">            List&lt;Change&gt; changes = getPendingChanges(id);</span>
-<span class="nc" id="L256">            cache.remove(id);</span>
+<span class="nc" id="L256">        logger.debug(&quot;Delete pending changes&quot;);</span>
+<span class="nc" id="L257">        TextDataBlock block = blockManager.findBlock(id);</span>
+<span class="nc bnc" id="L258" title="All 2 branches missed.">        if (block != null) {</span>
+<span class="nc" id="L259">            List&lt;Change&gt; changes = getPendingChanges(id);</span>
+<span class="nc" id="L260">            cache.remove(id);</span>
 
-<span class="nc" id="L258">            transactionManager.registerDeletion(changes);</span>
+<span class="nc" id="L262">            transactionManager.registerDeletion(changes);</span>
 //            WsDeleteChangeMessage message = WsDeleteChangeMessage.build(changes);
 //
 //            try {
@@ -265,7 +269,7 @@ import com.hazelcast.cp.lock.FencedLock;
 //                logger.error(&quot;Live update error: precompute failed&quot;);
 //            }
         }
-<span class="nc" id="L268">    }</span>
+<span class="nc" id="L272">    }</span>
 
     /**
      * Cancel any debounce call related to the given blockId
@@ -275,12 +279,12 @@ import com.hazelcast.cp.lock.FencedLock;
      * @return true if there was something to cancel
      */
     public boolean cancelDebounce(Long blockId) {
-<span class="nc" id="L278">        logger.debug(&quot;Cancel debounce #{}&quot;, blockId);</span>
-<span class="nc" id="L279">        Future&lt;Void&gt; remove = this.debounces.remove(blockId);</span>
-<span class="nc bnc" id="L280" title="All 2 branches missed.">        if (remove != null) {</span>
-<span class="nc" id="L281">            return remove.cancel(true);</span>
+<span class="nc" id="L282">        logger.debug(&quot;Cancel debounce #{}&quot;, blockId);</span>
+<span class="nc" id="L283">        Future&lt;Void&gt; remove = this.debounces.remove(blockId);</span>
+<span class="nc bnc" id="L284" title="All 2 branches missed.">        if (remove != null) {</span>
+<span class="nc" id="L285">            return remove.cancel(true);</span>
         }
-<span class="nc" id="L283">        return false;</span>
+<span class="nc" id="L287">        return false;</span>
     }
 
     /**
@@ -291,24 +295,24 @@ import com.hazelcast.cp.lock.FencedLock;
      * @param blockId id of the block
      */
     public void scheduleSaveMicroChanges(Long blockId) {
-<span class="nc" id="L294">        IExecutorService executorService = hzInstance.getExecutorService(&quot;COLAB_LIVE&quot;);</span>
-<span class="nc" id="L295">        Map&lt;Member, Future&lt;Boolean&gt;&gt; cancelCalls = executorService</span>
-<span class="nc" id="L296">            .submitToAllMembers(new CancelDebounce(blockId));</span>
+<span class="nc" id="L298">        IExecutorService executorService = hzInstance.getExecutorService(&quot;COLAB_LIVE&quot;);</span>
+<span class="nc" id="L299">        Map&lt;Member, Future&lt;Boolean&gt;&gt; cancelCalls = executorService</span>
+<span class="nc" id="L300">            .submitToAllMembers(new CancelDebounce(blockId));</span>
 
-<span class="nc" id="L298">        logger.debug(&quot;Schedule processing #{}&quot;, blockId);</span>
+<span class="nc" id="L302">        logger.debug(&quot;Schedule processing #{}&quot;, blockId);</span>
 
         // cancel all pending debounce calls
-<span class="nc" id="L301">        cancelCalls.values().forEach(cancelCall -&gt; {</span>
+<span class="nc" id="L305">        cancelCalls.values().forEach(cancelCall -&gt; {</span>
             try {
-<span class="nc" id="L303">                cancelCall.get();</span>
-<span class="nc" id="L304">            } catch (InterruptedException | ExecutionException ex) {</span>
-<span class="nc" id="L305">                logger.error(&quot;Fails to cancel&quot;, ex);</span>
-<span class="nc" id="L306">            }</span>
-<span class="nc" id="L307">        });</span>
+<span class="nc" id="L307">                cancelCall.get();</span>
+<span class="nc" id="L308">            } catch (InterruptedException | ExecutionException ex) {</span>
+<span class="nc" id="L309">                logger.error(&quot;Fails to cancel&quot;, ex);</span>
+<span class="nc" id="L310">            }</span>
+<span class="nc" id="L311">        });</span>
 
         // schedule a new one
-<span class="nc" id="L310">        Future&lt;Void&gt; call = executorService.submit(new Debouncer(blockId));</span>
-<span class="nc" id="L311">        this.debounces.put(blockId, call);</span>
-<span class="nc" id="L312">    }</span>
+<span class="nc" id="L314">        Future&lt;Void&gt; call = executorService.submit(new Debouncer(blockId));</span>
+<span class="nc" id="L315">        this.debounces.put(blockId, call);</span>
+<span class="nc" id="L316">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

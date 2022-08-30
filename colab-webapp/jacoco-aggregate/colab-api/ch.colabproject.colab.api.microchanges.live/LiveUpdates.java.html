@@ -9,6 +9,7 @@ package ch.colabproject.colab.api.microchanges.live;
 import ch.colabproject.colab.api.microchanges.model.Change;
 import ch.colabproject.colab.api.microchanges.model.MicroChange;
 import ch.colabproject.colab.api.microchanges.model.MicroChange.Type;
+import ch.colabproject.colab.generator.model.tools.JsonbProvider;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -20,6 +21,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
+import javax.json.bind.Jsonb;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -28,12 +30,12 @@ import org.slf4j.LoggerFactory;
  *
  * @author maxence
  */
-<span class="nc" id="L31">public class LiveUpdates implements Serializable {</span>
+<span class="nc" id="L33">public class LiveUpdates implements Serializable {</span>
 
     private static final long serialVersionUID = 1L;
 
     /** Logger */
-<span class="nc" id="L36">    private static final Logger logger = LoggerFactory.getLogger(LiveUpdates.class);</span>
+<span class="nc" id="L38">    private static final Logger logger = LoggerFactory.getLogger(LiveUpdates.class);</span>
 
     /**
      * JsonDiscriminator to fetch the class this change targets
@@ -58,7 +60,12 @@ import org.slf4j.LoggerFactory;
     /**
      * List of pending changes
      */
-<span class="nc" id="L61">    private List&lt;Change&gt; pendingChanges = new ArrayList&lt;&gt;();</span>
+<span class="nc" id="L63">    private List&lt;Change&gt; pendingChanges = new ArrayList&lt;&gt;();</span>
+
+    /**
+     * Temp debug data
+     */
+<span class="nc" id="L68">    private transient String debugData = null;</span>
 
     /**
      * Get the JSON discriminator
@@ -66,7 +73,7 @@ import org.slf4j.LoggerFactory;
      * @return JSON discriminator
      */
     public String getTargetClass() {
-<span class="nc" id="L69">        return targetClass;</span>
+<span class="nc" id="L76">        return targetClass;</span>
     }
 
     /**
@@ -75,8 +82,8 @@ import org.slf4j.LoggerFactory;
      * @param targetClass new discriminator
      */
     public void setTargetClass(String targetClass) {
-<span class="nc" id="L78">        this.targetClass = targetClass;</span>
-<span class="nc" id="L79">    }</span>
+<span class="nc" id="L85">        this.targetClass = targetClass;</span>
+<span class="nc" id="L86">    }</span>
 
     /**
      * The object id.
@@ -84,7 +91,7 @@ import org.slf4j.LoggerFactory;
      * @return the id of the object
      */
     public Long getTargetId() {
-<span class="nc" id="L87">        return targetId;</span>
+<span class="nc" id="L94">        return targetId;</span>
     }
 
     /**
@@ -93,8 +100,8 @@ import org.slf4j.LoggerFactory;
      * @param targetId object id
      */
     public void setTargetId(Long targetId) {
-<span class="nc" id="L96">        this.targetId = targetId;</span>
-<span class="nc" id="L97">    }</span>
+<span class="nc" id="L103">        this.targetId = targetId;</span>
+<span class="nc" id="L104">    }</span>
 
     /**
      * Get the revision
@@ -102,7 +109,7 @@ import org.slf4j.LoggerFactory;
      * @return the revision
      */
     public String getRevision() {
-<span class="nc" id="L105">        return revision;</span>
+<span class="nc" id="L112">        return revision;</span>
     }
 
     /**
@@ -111,8 +118,8 @@ import org.slf4j.LoggerFactory;
      * @param revision the revision
      */
     public void setRevision(String revision) {
-<span class="nc" id="L114">        this.revision = revision;</span>
-<span class="nc" id="L115">    }</span>
+<span class="nc" id="L121">        this.revision = revision;</span>
+<span class="nc" id="L122">    }</span>
 
     /**
      * Get initial &quot;root&quot; content
@@ -120,7 +127,7 @@ import org.slf4j.LoggerFactory;
      * @return the root content
      */
     public String getContent() {
-<span class="nc" id="L123">        return content;</span>
+<span class="nc" id="L130">        return content;</span>
     }
 
     /**
@@ -129,8 +136,8 @@ import org.slf4j.LoggerFactory;
      * @param content the content
      */
     public void setContent(String content) {
-<span class="nc" id="L132">        this.content = content;</span>
-<span class="nc" id="L133">    }</span>
+<span class="nc" id="L139">        this.content = content;</span>
+<span class="nc" id="L140">    }</span>
 
     /**
      * Get the list of pending changes
@@ -138,7 +145,7 @@ import org.slf4j.LoggerFactory;
      * @return changes
      */
     public List&lt;Change&gt; getPendingChanges() {
-<span class="nc" id="L141">        return pendingChanges;</span>
+<span class="nc" id="L148">        return pendingChanges;</span>
     }
 
     /**
@@ -147,8 +154,8 @@ import org.slf4j.LoggerFactory;
      * @param pendingChanges changes
      */
     public void setPendingChanges(List&lt;Change&gt; pendingChanges) {
-<span class="nc" id="L150">        this.pendingChanges = pendingChanges;</span>
-<span class="nc" id="L151">    }</span>
+<span class="nc" id="L157">        this.pendingChanges = pendingChanges;</span>
+<span class="nc" id="L158">    }</span>
 
     /**
      * Get change by revision
@@ -159,10 +166,10 @@ import org.slf4j.LoggerFactory;
      * @return the change which the given revision or null if such a change does not exist
      */
     public Change getByRevision(List&lt;Change&gt; changes, String revision) {
-<span class="nc" id="L162">        Optional&lt;Change&gt; findAny = changes.stream()</span>
-<span class="nc" id="L163">            .filter(ch -&gt; ch.getRevision().equals(revision))</span>
-<span class="nc" id="L164">            .findAny();</span>
-<span class="nc bnc" id="L165" title="All 2 branches missed.">        return findAny.isPresent() ? findAny.get() : null;</span>
+<span class="nc" id="L169">        Optional&lt;Change&gt; findAny = changes.stream()</span>
+<span class="nc" id="L170">            .filter(ch -&gt; ch.getRevision().equals(revision))</span>
+<span class="nc" id="L171">            .findAny();</span>
+<span class="nc bnc" id="L172" title="All 2 branches missed.">        return findAny.isPresent() ? findAny.get() : null;</span>
     }
 
     /**
@@ -174,10 +181,10 @@ import org.slf4j.LoggerFactory;
      * @return all changes which are based on the given parentId
      */
     public List&lt;Change&gt; getByParent(List&lt;Change&gt; changes, String basedOn) {
-<span class="nc" id="L177">        List&lt;Change&gt; collect = changes.stream()</span>
-<span class="nc" id="L178">            .filter(ch -&gt; ch.getBasedOn().contains(basedOn))</span>
-<span class="nc" id="L179">            .collect(Collectors.toList());</span>
-<span class="nc" id="L180">        return new ArrayList&lt;&gt;(collect);</span>
+<span class="nc" id="L184">        List&lt;Change&gt; collect = changes.stream()</span>
+<span class="nc" id="L185">            .filter(ch -&gt; ch.getBasedOn().contains(basedOn))</span>
+<span class="nc" id="L186">            .collect(Collectors.toList());</span>
+<span class="nc" id="L187">        return new ArrayList&lt;&gt;(collect);</span>
     }
 
     /**
@@ -190,13 +197,13 @@ import org.slf4j.LoggerFactory;
      * @return children of parent if they are authored by the same person
      */
     public List&lt;Change&gt; getByParentAndSession(List&lt;Change&gt; changes, Change parent) {
-<span class="nc" id="L193">        logger.trace(&quot;Get Children By Parent And Session&quot;);</span>
+<span class="nc" id="L200">        logger.trace(&quot;Get Children By Parent And Session&quot;);</span>
 
-<span class="nc" id="L195">        List&lt;Change&gt; collect = changes.stream()</span>
-<span class="nc bnc" id="L196" title="All 2 branches missed.">            .filter(ch -&gt; ch.getBasedOn().contains(parent.getRevision())</span>
-<span class="nc bnc" id="L197" title="All 2 branches missed.">            &amp;&amp; ch.getLiveSession().equals(parent.getLiveSession()))</span>
-<span class="nc" id="L198">            .collect(Collectors.toList());</span>
-<span class="nc" id="L199">        return new ArrayList&lt;&gt;(collect);</span>
+<span class="nc" id="L202">        List&lt;Change&gt; collect = changes.stream()</span>
+<span class="nc bnc" id="L203" title="All 2 branches missed.">            .filter(ch -&gt; ch.getBasedOn().contains(parent.getRevision())</span>
+<span class="nc bnc" id="L204" title="All 2 branches missed.">            &amp;&amp; ch.getLiveSession().equals(parent.getLiveSession()))</span>
+<span class="nc" id="L205">            .collect(Collectors.toList());</span>
+<span class="nc" id="L206">        return new ArrayList&lt;&gt;(collect);</span>
     }
 
     /**
@@ -207,51 +214,51 @@ import org.slf4j.LoggerFactory;
      * @param value   new offset value
      */
     private void modifyOffset(Map&lt;Integer, Integer&gt; offsets, Integer index, Integer value) {
-<span class="nc" id="L210">        Integer currentOffset = offsets.get(index);</span>
-<span class="nc bnc" id="L211" title="All 2 branches missed.">        if (currentOffset == null) {</span>
-<span class="nc" id="L212">            currentOffset = 0;</span>
+<span class="nc" id="L217">        Integer currentOffset = offsets.get(index);</span>
+<span class="nc bnc" id="L218" title="All 2 branches missed.">        if (currentOffset == null) {</span>
+<span class="nc" id="L219">            currentOffset = 0;</span>
         }
-<span class="nc" id="L214">        currentOffset += value;</span>
-<span class="nc" id="L215">        logger.trace(&quot;  modOffset.start &quot; + offsets);</span>
+<span class="nc" id="L221">        currentOffset += value;</span>
+<span class="nc" id="L222">        logger.trace(&quot;  modOffset.start &quot; + offsets);</span>
 
-<span class="nc" id="L217">        offsets.put(index, currentOffset);</span>
+<span class="nc" id="L224">        offsets.put(index, currentOffset);</span>
 
-<span class="nc" id="L219">        logger.trace(&quot;  modOffset.second &quot; + offsets);</span>
+<span class="nc" id="L226">        logger.trace(&quot;  modOffset.second &quot; + offsets);</span>
 
-<span class="nc" id="L221">        Map&lt;Integer, Integer&gt; modified = new HashMap&lt;&gt;();</span>
+<span class="nc" id="L228">        Map&lt;Integer, Integer&gt; modified = new HashMap&lt;&gt;();</span>
 
         // shift offsets after current index
-<span class="nc" id="L224">        offsets.entrySet().forEach(entry -&gt; {</span>
-<span class="nc" id="L225">            Integer key = entry.getKey();</span>
-<span class="nc bnc" id="L226" title="All 4 branches missed.">            if (key &gt; index &amp;&amp; key &lt; index + value) {</span>
-<span class="nc" id="L227">                logger.trace(&quot;CONFLIT&quot;);</span>
+<span class="nc" id="L231">        offsets.entrySet().forEach(entry -&gt; {</span>
+<span class="nc" id="L232">            Integer key = entry.getKey();</span>
+<span class="nc bnc" id="L233" title="All 4 branches missed.">            if (key &gt; index &amp;&amp; key &lt; index + value) {</span>
+<span class="nc" id="L234">                logger.trace(&quot;CONFLIT&quot;);</span>
             }
-<span class="nc bnc" id="L229" title="All 2 branches missed.">            if (key &gt; index) {</span>
+<span class="nc bnc" id="L236" title="All 2 branches missed.">            if (key &gt; index) {</span>
                 // move offset to new index
-<span class="nc" id="L231">                Integer v = entry.getValue();</span>
-<span class="nc bnc" id="L232" title="All 2 branches missed.">                if (v != null) {</span>
-<span class="nc" id="L233">                    int newKey = key + value;</span>
-<span class="nc" id="L234">                    int newValue = v;</span>
-<span class="nc bnc" id="L235" title="All 2 branches missed.">                    if (offsets.containsKey(newKey)) {</span>
-<span class="nc" id="L236">                        newValue = offsets.get(newKey) + newValue;</span>
+<span class="nc" id="L238">                Integer v = entry.getValue();</span>
+<span class="nc bnc" id="L239" title="All 2 branches missed.">                if (v != null) {</span>
+<span class="nc" id="L240">                    int newKey = key + value;</span>
+<span class="nc" id="L241">                    int newValue = v;</span>
+<span class="nc bnc" id="L242" title="All 2 branches missed.">                    if (offsets.containsKey(newKey)) {</span>
+<span class="nc" id="L243">                        newValue = offsets.get(newKey) + newValue;</span>
                     }
-<span class="nc" id="L238">                    modified.put(key, 0);</span>
-<span class="nc" id="L239">                    modified.put(newKey, newValue);</span>
+<span class="nc" id="L245">                    modified.put(key, 0);</span>
+<span class="nc" id="L246">                    modified.put(newKey, newValue);</span>
                 }
             }
-<span class="nc" id="L242">        });</span>
+<span class="nc" id="L249">        });</span>
 
-<span class="nc" id="L244">        logger.trace(&quot;  modOffset.third &quot; + modified);</span>
+<span class="nc" id="L251">        logger.trace(&quot;  modOffset.third &quot; + modified);</span>
 
         // merge shifted offsets
-<span class="nc" id="L247">        modified.entrySet().forEach(entry -&gt; {</span>
-<span class="nc" id="L248">            Integer key = entry.getKey();</span>
-<span class="nc" id="L249">            int current = entry.getValue();</span>
-<span class="nc" id="L250">            offsets.put(key, current);</span>
-<span class="nc" id="L251">        });</span>
+<span class="nc" id="L254">        modified.entrySet().forEach(entry -&gt; {</span>
+<span class="nc" id="L255">            Integer key = entry.getKey();</span>
+<span class="nc" id="L256">            int current = entry.getValue();</span>
+<span class="nc" id="L257">            offsets.put(key, current);</span>
+<span class="nc" id="L258">        });</span>
 
-<span class="nc" id="L253">        logger.trace(&quot; mod Offsets.done &quot; + offsets);</span>
-<span class="nc" id="L254">    }</span>
+<span class="nc" id="L260">        logger.trace(&quot; mod Offsets.done &quot; + offsets);</span>
+<span class="nc" id="L261">    }</span>
 
     /**
      * Apply microchange to the buffer
@@ -260,22 +267,22 @@ import org.slf4j.LoggerFactory;
      * @param mu     the patch
      */
     private void applyChange(StringBuilder buffer, MicroChange mu) {
-<span class="nc" id="L263">        logger.trace(&quot;Apply {} to {}&quot;, mu, buffer);</span>
-<span class="nc bnc" id="L264" title="All 2 branches missed.">        if (mu.getT() == MicroChange.Type.D) {</span>
-<span class="nc bnc" id="L265" title="All 2 branches missed.">            if (mu.getO() &lt; buffer.length()) {</span>
-<span class="nc" id="L266">                buffer.length();</span>
-<span class="nc" id="L267">                buffer.delete(mu.getO(), mu.getO() + mu.getL());</span>
+<span class="nc" id="L270">        logger.trace(&quot;Apply {} to {}&quot;, mu, buffer);</span>
+<span class="nc bnc" id="L271" title="All 2 branches missed.">        if (mu.getT() == MicroChange.Type.D) {</span>
+<span class="nc bnc" id="L272" title="All 2 branches missed.">            if (mu.getO() &lt; buffer.length()) {</span>
+<span class="nc" id="L273">                buffer.length();</span>
+<span class="nc" id="L274">                buffer.delete(mu.getO(), mu.getO() + mu.getL());</span>
             } else {
-<span class="nc" id="L269">                logger.trace(&quot;Skip micro change&quot;);</span>
+<span class="nc" id="L276">                logger.trace(&quot;Skip micro change&quot;);</span>
             }
-<span class="nc bnc" id="L271" title="All 2 branches missed.">        } else if (mu.getT() == MicroChange.Type.I) {</span>
-<span class="nc bnc" id="L272" title="All 2 branches missed.">            if (mu.getO() &gt;= buffer.length()) {</span>
-<span class="nc" id="L273">                buffer.append(mu.getV());</span>
+<span class="nc bnc" id="L278" title="All 2 branches missed.">        } else if (mu.getT() == MicroChange.Type.I) {</span>
+<span class="nc bnc" id="L279" title="All 2 branches missed.">            if (mu.getO() &gt;= buffer.length()) {</span>
+<span class="nc" id="L280">                buffer.append(mu.getV());</span>
             } else {
-<span class="nc" id="L275">                buffer.insert(mu.getO(), mu.getV());</span>
+<span class="nc" id="L282">                buffer.insert(mu.getO(), mu.getV());</span>
             }
         }
-<span class="nc" id="L278">    }</span>
+<span class="nc" id="L285">    }</span>
 
     /**
      * Compute offset the set of microchanges will generate.
@@ -287,19 +294,19 @@ import org.slf4j.LoggerFactory;
      * @return offset mapped by index
      */
     private Map&lt;Integer, Integer&gt; computeOffset(Change change) {
-<span class="nc" id="L290">        Map&lt;Integer, Integer&gt; offsets = new HashMap&lt;&gt;();</span>
+<span class="nc" id="L297">        Map&lt;Integer, Integer&gt; offsets = new HashMap&lt;&gt;();</span>
 
-<span class="nc" id="L292">        List&lt;MicroChange&gt; muChanges = change.getMicrochanges();</span>
-<span class="nc bnc" id="L293" title="All 2 branches missed.">        for (int i = muChanges.size() - 1; i &gt;= 0; i--) {</span>
-<span class="nc" id="L294">            MicroChange mu = muChanges.get(i);</span>
-<span class="nc bnc" id="L295" title="All 2 branches missed.">            if (mu.getT() == MicroChange.Type.D) {</span>
-<span class="nc" id="L296">                modifyOffset(offsets, mu.getO() + mu.getL(), -mu.getL());</span>
-<span class="nc bnc" id="L297" title="All 2 branches missed.">            } else if (mu.getT() == MicroChange.Type.I) {</span>
-<span class="nc" id="L298">                modifyOffset(offsets, mu.getO(), mu.getV().length());</span>
+<span class="nc" id="L299">        List&lt;MicroChange&gt; muChanges = change.getMicrochanges();</span>
+<span class="nc bnc" id="L300" title="All 2 branches missed.">        for (int i = muChanges.size() - 1; i &gt;= 0; i--) {</span>
+<span class="nc" id="L301">            MicroChange mu = muChanges.get(i);</span>
+<span class="nc bnc" id="L302" title="All 2 branches missed.">            if (mu.getT() == MicroChange.Type.D) {</span>
+<span class="nc" id="L303">                modifyOffset(offsets, mu.getO() + mu.getL(), -mu.getL());</span>
+<span class="nc bnc" id="L304" title="All 2 branches missed.">            } else if (mu.getT() == MicroChange.Type.I) {</span>
+<span class="nc" id="L305">                modifyOffset(offsets, mu.getO(), mu.getV().length());</span>
             }
         }
 
-<span class="nc" id="L302">        return offsets;</span>
+<span class="nc" id="L309">        return offsets;</span>
     }
 
     /**
@@ -312,132 +319,132 @@ import org.slf4j.LoggerFactory;
      * @return true if operation was successful, false if there ws some conflict
      */
     private boolean shift(Change change, Map&lt;Integer, Integer&gt; offsets, boolean forward) {
-<span class="nc" id="L315">        boolean conflictFree = true;</span>
-<span class="nc bnc" id="L316" title="All 2 branches missed.">        if (forward == false) {</span>
-<span class="nc" id="L317">            logger.warn(&quot;TODO: implement backward shift&quot;);</span>
+<span class="nc" id="L322">        boolean conflictFree = true;</span>
+<span class="nc bnc" id="L323" title="All 2 branches missed.">        if (forward == false) {</span>
+<span class="nc" id="L324">            logger.warn(&quot;TODO: implement backward shift&quot;);</span>
         }
         //int way = forward ? 1 : -1; // TODO
 
-<span class="nc" id="L321">        logger.trace(&quot;Shift offsets: {}&quot;, change);</span>
-<span class="nc" id="L322">        List&lt;MicroChange&gt; microchanges = change.getMicrochanges();</span>
-<span class="nc bnc" id="L323" title="All 2 branches missed.">        for (int i = 0; i &lt; microchanges.size(); i++) {</span>
-<span class="nc" id="L324">            MicroChange mu = microchanges.get(i);</span>
+<span class="nc" id="L328">        logger.trace(&quot;Shift offsets: {}&quot;, change);</span>
+<span class="nc" id="L329">        List&lt;MicroChange&gt; microchanges = change.getMicrochanges();</span>
+<span class="nc bnc" id="L330" title="All 2 branches missed.">        for (int i = 0; i &lt; microchanges.size(); i++) {</span>
+<span class="nc" id="L331">            MicroChange mu = microchanges.get(i);</span>
 
-<span class="nc bnc" id="L326" title="All 2 branches missed.">            for (Map.Entry&lt;Integer, Integer&gt; entry : offsets.entrySet()) {</span>
-<span class="nc" id="L327">                Integer offsetValue = entry.getValue();</span>
-<span class="nc" id="L328">                Integer offsetIndex = entry.getKey();</span>
+<span class="nc bnc" id="L333" title="All 2 branches missed.">            for (Map.Entry&lt;Integer, Integer&gt; entry : offsets.entrySet()) {</span>
+<span class="nc" id="L334">                Integer offsetValue = entry.getValue();</span>
+<span class="nc" id="L335">                Integer offsetIndex = entry.getKey();</span>
 
-<span class="nc" id="L330">                int muStart = mu.getO();</span>
+<span class="nc" id="L337">                int muStart = mu.getO();</span>
 
-<span class="nc bnc" id="L332" title="All 4 branches missed.">                if (offsetValue &gt; 0 &amp;&amp; mu.getT().equals(Type.I)) {</span>
+<span class="nc bnc" id="L339" title="All 4 branches missed.">                if (offsetValue &gt; 0 &amp;&amp; mu.getT().equals(Type.I)) {</span>
                     // both are insetion
-<span class="nc bnc" id="L334" title="All 2 branches missed.">                    if (mu.getO() &gt;= offsetIndex) {</span>
+<span class="nc bnc" id="L341" title="All 2 branches missed.">                    if (mu.getO() &gt;= offsetIndex) {</span>
                         // changes is after the first insertion =&gt; shift it
-<span class="nc" id="L336">                        mu.setO(mu.getO() + offsetValue);</span>
+<span class="nc" id="L343">                        mu.setO(mu.getO() + offsetValue);</span>
                     }
-<span class="nc bnc" id="L338" title="All 4 branches missed.">                } else if (offsetValue &lt; 0 &amp;&amp; mu.getT().equals(Type.D)) {</span>
+<span class="nc bnc" id="L345" title="All 4 branches missed.">                } else if (offsetValue &lt; 0 &amp;&amp; mu.getT().equals(Type.D)) {</span>
                     // both are deletion
-<span class="nc" id="L340">                    int deleteFromIndex = offsetIndex + offsetValue;</span>
-<span class="nc" id="L341">                    int deleteToIndex = offsetIndex;</span>
-<span class="nc" id="L342">                    int muEnd = muStart + mu.getL();</span>
+<span class="nc" id="L347">                    int deleteFromIndex = offsetIndex + offsetValue;</span>
+<span class="nc" id="L348">                    int deleteToIndex = offsetIndex;</span>
+<span class="nc" id="L349">                    int muEnd = muStart + mu.getL();</span>
 
                     // nothing to do if mu is complely before offset
-<span class="nc bnc" id="L345" title="All 2 branches missed.">                    if (muEnd &gt;= deleteFromIndex) {</span>
+<span class="nc bnc" id="L352" title="All 2 branches missed.">                    if (muEnd &gt;= deleteFromIndex) {</span>
                         // mu is completely before offset
                         // nothing to do
-<span class="nc bnc" id="L348" title="All 2 branches missed.">                        if (muStart &gt; deleteToIndex) {</span>
+<span class="nc bnc" id="L355" title="All 2 branches missed.">                        if (muStart &gt; deleteToIndex) {</span>
                             // mu is completely after offset
                             // just shift mu
-<span class="nc" id="L351">                            mu.setO(mu.getO() + offsetValue);</span>
+<span class="nc" id="L358">                            mu.setO(mu.getO() + offsetValue);</span>
                         } else {
                             // deletions overlap
-<span class="nc bnc" id="L354" title="All 4 branches missed.">                            if (muStart &lt;= deleteFromIndex &amp;&amp; muEnd &gt;= deleteToIndex) {</span>
+<span class="nc bnc" id="L361" title="All 4 branches missed.">                            if (muStart &lt;= deleteFromIndex &amp;&amp; muEnd &gt;= deleteToIndex) {</span>
                                 // mu wraps offset
                                 // off          |---|
                                 // mu       |---------|
                                 // new mu   |---     -|
-<span class="nc" id="L359">                                mu.setL(mu.getL() + offsetValue);</span>
-<span class="nc bnc" id="L360" title="All 4 branches missed.">                            } else if (muStart &gt;= deleteFromIndex &amp;&amp; muEnd &lt;= deleteToIndex) {</span>
+<span class="nc" id="L366">                                mu.setL(mu.getL() + offsetValue);</span>
+<span class="nc bnc" id="L367" title="All 4 branches missed.">                            } else if (muStart &gt;= deleteFromIndex &amp;&amp; muEnd &lt;= deleteToIndex) {</span>
                                 // offset wraps mu =&gt; mus is useless
                                 // off       |---------|
                                 // mu          |---|
                                 // new mu    canceled
-<span class="nc" id="L365">                                microchanges.remove(i);</span>
-<span class="nc" id="L366">                                i--;</span>
-<span class="nc bnc" id="L367" title="All 4 branches missed.">                            } else if (muStart &lt;= deleteFromIndex &amp;&amp; muEnd &lt;= deleteToIndex) {</span>
+<span class="nc" id="L372">                                microchanges.remove(i);</span>
+<span class="nc" id="L373">                                i--;</span>
+<span class="nc bnc" id="L374" title="All 4 branches missed.">                            } else if (muStart &lt;= deleteFromIndex &amp;&amp; muEnd &lt;= deleteToIndex) {</span>
                                 // partial overlap
                                 // off       |-----|
                                 // mu     |-----|
                                 // new mu |--|
-<span class="nc" id="L372">                                mu.setL(deleteFromIndex - muStart);</span>
-<span class="nc bnc" id="L373" title="All 4 branches missed.">                            } else if (muStart &gt;= deleteFromIndex &amp;&amp; muEnd &gt;= deleteToIndex) {</span>
+<span class="nc" id="L379">                                mu.setL(deleteFromIndex - muStart);</span>
+<span class="nc bnc" id="L380" title="All 4 branches missed.">                            } else if (muStart &gt;= deleteFromIndex &amp;&amp; muEnd &gt;= deleteToIndex) {</span>
                                 // partial overlap
                                 // off    |-----|
                                 // mu        |-----|
                                 // new mu       |--| shifted at offsetStart
-<span class="nc" id="L378">                                mu.setL(muEnd - deleteToIndex);</span>
-<span class="nc" id="L379">                                mu.setO(deleteFromIndex);</span>
+<span class="nc" id="L385">                                mu.setL(muEnd - deleteToIndex);</span>
+<span class="nc" id="L386">                                mu.setO(deleteFromIndex);</span>
                             } else {
-<span class="nc" id="L381">                                logger.error(&quot;Unhandled case offset{}:{}, mu:{}&quot;,</span>
-<span class="nc" id="L382">                                    deleteFromIndex, offsetValue, mu);</span>
+<span class="nc" id="L388">                                logger.error(&quot;Unhandled case offset{}:{}, mu:{}&quot;,</span>
+<span class="nc" id="L389">                                    deleteFromIndex, offsetValue, mu);</span>
                             }
                         }
                     }
-<span class="nc bnc" id="L386" title="All 4 branches missed.">                } else if (offsetValue &lt; 0 &amp;&amp; mu.getT().equals(Type.I)) {</span>
+<span class="nc bnc" id="L393" title="All 4 branches missed.">                } else if (offsetValue &lt; 0 &amp;&amp; mu.getT().equals(Type.I)) {</span>
                     // offset is deletion, mu is addition
-<span class="nc" id="L388">                    int deleteFromIndex = offsetIndex + offsetValue;</span>
-<span class="nc" id="L389">                    int deleteToIndex = offsetIndex;</span>
+<span class="nc" id="L395">                    int deleteFromIndex = offsetIndex + offsetValue;</span>
+<span class="nc" id="L396">                    int deleteToIndex = offsetIndex;</span>
 
-<span class="nc bnc" id="L391" title="All 2 branches missed.">                    if (muStart &gt;= deleteToIndex) {</span>
+<span class="nc bnc" id="L398" title="All 2 branches missed.">                    if (muStart &gt;= deleteToIndex) {</span>
                         // off    |-----|
                         // mu               |+++++|
                         // just shift to the left
-<span class="nc" id="L395">                        mu.setO(mu.getO() + offsetValue);</span>
-<span class="nc bnc" id="L396" title="All 2 branches missed.">                    } else if (muStart &gt; deleteFromIndex) {</span>
+<span class="nc" id="L402">                        mu.setO(mu.getO() + offsetValue);</span>
+<span class="nc bnc" id="L403" title="All 2 branches missed.">                    } else if (muStart &gt; deleteFromIndex) {</span>
                         // off         |-----|
                         // mu            |+|
                         // mu          |+|
-<span class="nc" id="L400">                        mu.setO(deleteFromIndex);</span>
+<span class="nc" id="L407">                        mu.setO(deleteFromIndex);</span>
 //                    } else {
                         // mu is before offset
                         // off         |-----|
                         // mu     |+|
                         // nothing to do
                     }
-<span class="nc bnc" id="L407" title="All 4 branches missed.">                } else if (offsetValue &gt; 0 &amp;&amp; mu.getT().equals(Type.D)) {</span>
+<span class="nc bnc" id="L414" title="All 4 branches missed.">                } else if (offsetValue &gt; 0 &amp;&amp; mu.getT().equals(Type.D)) {</span>
                     // offset is addition, mu is deletion
-<span class="nc" id="L409">                    int muEnd = muStart + mu.getL();</span>
+<span class="nc" id="L416">                    int muEnd = muStart + mu.getL();</span>
 
                     // nothing to do if mu is completely before offset
-<span class="nc bnc" id="L412" title="All 2 branches missed.">                    if (muEnd &gt;= offsetIndex) {</span>
-<span class="nc bnc" id="L413" title="All 2 branches missed.">                        if (muStart &gt; offsetIndex) {</span>
+<span class="nc bnc" id="L419" title="All 2 branches missed.">                    if (muEnd &gt;= offsetIndex) {</span>
+<span class="nc bnc" id="L420" title="All 2 branches missed.">                        if (muStart &gt; offsetIndex) {</span>
                             // off   |+|
                             // mu         |---|
                             // new mu : shift
-<span class="nc" id="L417">                            mu.setO(mu.getO() + offsetValue);</span>
+<span class="nc" id="L424">                            mu.setO(mu.getO() + offsetValue);</span>
                         } else {
                             // off        |+|
                             // mu      |--------|
                             // new v1  |--|  |--|
                             // split mu to preserve addition
-<span class="nc" id="L423">                            Integer totalLength = mu.getL();</span>
-<span class="nc" id="L424">                            mu.setL(offsetIndex - muStart);</span>
-<span class="nc" id="L425">                            MicroChange newMu = new MicroChange();</span>
-<span class="nc" id="L426">                            newMu.setT(Type.D);</span>
-<span class="nc" id="L427">                            newMu.setO(offsetIndex + offsetValue);</span>
-<span class="nc" id="L428">                            newMu.setL(totalLength - mu.getL());</span>
-<span class="nc" id="L429">                            microchanges.add(i + 1, newMu);</span>
-<span class="nc" id="L430">                            i++;</span>
+<span class="nc" id="L430">                            Integer totalLength = mu.getL();</span>
+<span class="nc" id="L431">                            mu.setL(offsetIndex - muStart);</span>
+<span class="nc" id="L432">                            MicroChange newMu = new MicroChange();</span>
+<span class="nc" id="L433">                            newMu.setT(Type.D);</span>
+<span class="nc" id="L434">                            newMu.setO(offsetIndex + offsetValue);</span>
+<span class="nc" id="L435">                            newMu.setL(totalLength - mu.getL());</span>
+<span class="nc" id="L436">                            microchanges.add(i + 1, newMu);</span>
+<span class="nc" id="L437">                            i++;</span>
                         }
                     }
                 }
-<span class="nc" id="L434">            }</span>
+<span class="nc" id="L441">            }</span>
         }
 
-<span class="nc" id="L437">        logger.trace(</span>
+<span class="nc" id="L444">        logger.trace(</span>
             &quot;Shift done: {}&quot;, change);
 
-<span class="nc" id="L440">        return conflictFree;</span>
+<span class="nc" id="L447">        return conflictFree;</span>
     }
 
     /**
@@ -449,27 +456,27 @@ import org.slf4j.LoggerFactory;
      * @return new map of shifted offsets
      */
     private Map&lt;Integer, Integer&gt; shiftOffsets(Map&lt;Integer, Integer&gt; offsets, Change change) {
-<span class="nc" id="L452">        Map&lt;Integer, Integer&gt; shifted = new HashMap&lt;&gt;();</span>
+<span class="nc" id="L459">        Map&lt;Integer, Integer&gt; shifted = new HashMap&lt;&gt;();</span>
 
-<span class="nc" id="L454">        offsets.entrySet().forEach(entry -&gt; {</span>
-<span class="nc" id="L455">            Integer offsetIndex = entry.getKey();</span>
-<span class="nc" id="L456">            Integer offsetValue = entry.getValue();</span>
+<span class="nc" id="L461">        offsets.entrySet().forEach(entry -&gt; {</span>
+<span class="nc" id="L462">            Integer offsetIndex = entry.getKey();</span>
+<span class="nc" id="L463">            Integer offsetValue = entry.getValue();</span>
 
-<span class="nc" id="L458">            List&lt;MicroChange&gt; muChanges = change.getMicrochanges();</span>
-<span class="nc bnc" id="L459" title="All 2 branches missed.">            for (int i = muChanges.size() - 1; i &gt;= 0; i--) {</span>
-<span class="nc" id="L460">                MicroChange mu = muChanges.get(i);</span>
-<span class="nc bnc" id="L461" title="All 2 branches missed.">                if (mu.getO() &lt;= offsetIndex) {</span>
-<span class="nc bnc" id="L462" title="All 2 branches missed.">                    if (mu.getT() == MicroChange.Type.D) {</span>
-<span class="nc" id="L463">                        offsetIndex -= mu.getL();</span>
-<span class="nc bnc" id="L464" title="All 2 branches missed.">                    } else if (mu.getT() == MicroChange.Type.I) {</span>
-<span class="nc" id="L465">                        offsetIndex += mu.getV().length();</span>
+<span class="nc" id="L465">            List&lt;MicroChange&gt; muChanges = change.getMicrochanges();</span>
+<span class="nc bnc" id="L466" title="All 2 branches missed.">            for (int i = muChanges.size() - 1; i &gt;= 0; i--) {</span>
+<span class="nc" id="L467">                MicroChange mu = muChanges.get(i);</span>
+<span class="nc bnc" id="L468" title="All 2 branches missed.">                if (mu.getO() &lt;= offsetIndex) {</span>
+<span class="nc bnc" id="L469" title="All 2 branches missed.">                    if (mu.getT() == MicroChange.Type.D) {</span>
+<span class="nc" id="L470">                        offsetIndex -= mu.getL();</span>
+<span class="nc bnc" id="L471" title="All 2 branches missed.">                    } else if (mu.getT() == MicroChange.Type.I) {</span>
+<span class="nc" id="L472">                        offsetIndex += mu.getV().length();</span>
                     }
                 }
             }
-<span class="nc" id="L469">            shifted.put(offsetIndex, offsetValue);</span>
-<span class="nc" id="L470">        });</span>
+<span class="nc" id="L476">            shifted.put(offsetIndex, offsetValue);</span>
+<span class="nc" id="L477">        });</span>
 
-<span class="nc" id="L472">        return shifted;</span>
+<span class="nc" id="L479">        return shifted;</span>
     }
 
     /**
@@ -481,28 +488,28 @@ import org.slf4j.LoggerFactory;
      * @return conflict free propagation or not
      */
     private boolean propagateOffsets(List&lt;Change&gt; changes, Change parent, Map&lt;Integer, Integer&gt; offsets, boolean forward, String offsetFromRev) {
-<span class="nc" id="L484">        boolean conflictFree = true;</span>
+<span class="nc" id="L491">        boolean conflictFree = true;</span>
 
-<span class="nc bnc" id="L486" title="All 2 branches missed.">        for (Change child : getByParent(changes, parent.getRevision())) {</span>
-<span class="nc" id="L487">            Set&lt;String&gt; childDeps = getAllDependencies(changes, child);</span>
-<span class="nc bnc" id="L488" title="All 2 branches missed.">            if (!childDeps.contains(offsetFromRev)) {</span>
-<span class="nc" id="L489">                logger.debug(&quot;PropagateOffset {}@{} to {}&quot;, offsets, offsetFromRev, child);</span>
+<span class="nc bnc" id="L493" title="All 2 branches missed.">        for (Change child : getByParent(changes, parent.getRevision())) {</span>
+<span class="nc" id="L494">            Set&lt;String&gt; childDeps = getAllDependencies(changes, child);</span>
+<span class="nc bnc" id="L495" title="All 2 branches missed.">            if (!childDeps.contains(offsetFromRev)) {</span>
+<span class="nc" id="L496">                logger.debug(&quot;PropagateOffset {}@{} to {}&quot;, offsets, offsetFromRev, child);</span>
                 // should propagate to children which are not based on the offsetsFromRev
-<span class="nc" id="L491">                boolean shiftFree = this.shift(child, offsets, forward);</span>
-<span class="nc" id="L492">                Map&lt;Integer, Integer&gt; shiftedOffsets = shiftOffsets(offsets, child);</span>
-<span class="nc" id="L493">                logger.debug(&quot;Shifted Offsets: {}&quot;, shiftedOffsets);</span>
-<span class="nc" id="L494">                boolean pFree = this.propagateOffsets(changes, child, shiftedOffsets, forward, offsetFromRev);</span>
-<span class="nc bnc" id="L495" title="All 6 branches missed.">                conflictFree = conflictFree &amp;&amp; shiftFree &amp;&amp; pFree;</span>
-<span class="nc" id="L496">            } else {</span>
+<span class="nc" id="L498">                boolean shiftFree = this.shift(child, offsets, forward);</span>
+<span class="nc" id="L499">                Map&lt;Integer, Integer&gt; shiftedOffsets = shiftOffsets(offsets, child);</span>
+<span class="nc" id="L500">                logger.debug(&quot;Shifted Offsets: {}&quot;, shiftedOffsets);</span>
+<span class="nc" id="L501">                boolean pFree = this.propagateOffsets(changes, child, shiftedOffsets, forward, offsetFromRev);</span>
+<span class="nc bnc" id="L502" title="All 6 branches missed.">                conflictFree = conflictFree &amp;&amp; shiftFree &amp;&amp; pFree;</span>
+<span class="nc" id="L503">            } else {</span>
                 //merge has been done
-<span class="nc" id="L498">                HashSet&lt;String&gt; newDeps = new HashSet&lt;&gt;(child.getBasedOn());</span>
-<span class="nc" id="L499">                newDeps.remove(offsetFromRev);</span>
-<span class="nc" id="L500">                logger.debug(&quot;Do not go deeper than {}, now based on {}&quot;, child, newDeps);</span>
-<span class="nc" id="L501">                child.setBasedOn(newDeps);</span>
+<span class="nc" id="L505">                HashSet&lt;String&gt; newDeps = new HashSet&lt;&gt;(child.getBasedOn());</span>
+<span class="nc" id="L506">                newDeps.remove(offsetFromRev);</span>
+<span class="nc" id="L507">                logger.debug(&quot;Do not go deeper than {}, now based on {}&quot;, child, newDeps);</span>
+<span class="nc" id="L508">                child.setBasedOn(newDeps);</span>
                 //child.getBasedOn().remove(offsetFromRev);
             }
-<span class="nc" id="L504">        }</span>
-<span class="nc" id="L505">        return conflictFree;</span>
+<span class="nc" id="L511">        }</span>
+<span class="nc" id="L512">        return conflictFree;</span>
     }
 
     /**
@@ -514,25 +521,25 @@ import org.slf4j.LoggerFactory;
      * @return set of dependencies
      */
     private Set&lt;String&gt; getAllDependencies(List&lt;Change&gt; changes, Change change) {
-<span class="nc" id="L517">        Set&lt;String&gt; deps = new HashSet&lt;&gt;();</span>
+<span class="nc" id="L524">        Set&lt;String&gt; deps = new HashSet&lt;&gt;();</span>
 
-<span class="nc" id="L519">        List&lt;Change&gt; queue = new LinkedList&lt;&gt;();</span>
-<span class="nc" id="L520">        queue.add(change);</span>
+<span class="nc" id="L526">        List&lt;Change&gt; queue = new LinkedList&lt;&gt;();</span>
+<span class="nc" id="L527">        queue.add(change);</span>
 
-<span class="nc bnc" id="L522" title="All 2 branches missed.">        while (!queue.isEmpty()) {</span>
-<span class="nc" id="L523">            Change ch = queue.remove(0);</span>
-<span class="nc" id="L524">            ch.getBasedOn().forEach(dep -&gt; {</span>
-<span class="nc bnc" id="L525" title="All 2 branches missed.">                if (!deps.contains(dep)) {</span>
-<span class="nc" id="L526">                    deps.add(dep);</span>
-<span class="nc" id="L527">                    Change parent = getByRevision(changes, dep);</span>
-<span class="nc bnc" id="L528" title="All 4 branches missed.">                    if (parent != null &amp;&amp; !queue.contains(parent)) {</span>
-<span class="nc" id="L529">                        queue.add(parent);</span>
+<span class="nc bnc" id="L529" title="All 2 branches missed.">        while (!queue.isEmpty()) {</span>
+<span class="nc" id="L530">            Change ch = queue.remove(0);</span>
+<span class="nc" id="L531">            ch.getBasedOn().forEach(dep -&gt; {</span>
+<span class="nc bnc" id="L532" title="All 2 branches missed.">                if (!deps.contains(dep)) {</span>
+<span class="nc" id="L533">                    deps.add(dep);</span>
+<span class="nc" id="L534">                    Change parent = getByRevision(changes, dep);</span>
+<span class="nc bnc" id="L535" title="All 4 branches missed.">                    if (parent != null &amp;&amp; !queue.contains(parent)) {</span>
+<span class="nc" id="L536">                        queue.add(parent);</span>
                     }
                 }
-<span class="nc" id="L532">            });</span>
-<span class="nc" id="L533">        }</span>
+<span class="nc" id="L539">            });</span>
+<span class="nc" id="L540">        }</span>
 
-<span class="nc" id="L535">        return deps;</span>
+<span class="nc" id="L542">        return deps;</span>
     }
 
     /**
@@ -544,17 +551,17 @@ import org.slf4j.LoggerFactory;
      * @return true if sets equal
      */
     private boolean setsEqual(Set&lt;String&gt; a, Set&lt;String&gt; b) {
-<span class="nc bnc" id="L547" title="All 4 branches missed.">        if (a == null &amp;&amp; b == null) {</span>
+<span class="nc bnc" id="L554" title="All 4 branches missed.">        if (a == null &amp;&amp; b == null) {</span>
             // both null equals
-<span class="nc" id="L549">            return true;</span>
-<span class="nc bnc" id="L550" title="All 4 branches missed.">        } else if (a == null || b == null) {</span>
+<span class="nc" id="L556">            return true;</span>
+<span class="nc bnc" id="L557" title="All 4 branches missed.">        } else if (a == null || b == null) {</span>
             // only one is null
-<span class="nc" id="L552">            return false;</span>
+<span class="nc" id="L559">            return false;</span>
         } else {
-<span class="nc bnc" id="L554" title="All 2 branches missed.">            if (a.size() != b.size()) {</span>
-<span class="nc" id="L555">                return false;</span>
+<span class="nc bnc" id="L561" title="All 2 branches missed.">            if (a.size() != b.size()) {</span>
+<span class="nc" id="L562">                return false;</span>
             }
-<span class="nc" id="L557">            return a.containsAll(b);</span>
+<span class="nc" id="L564">            return a.containsAll(b);</span>
         }
     }
 
@@ -568,59 +575,65 @@ import org.slf4j.LoggerFactory;
      * @return true if rebase has been done without conflict
      */
     private boolean rebase(List&lt;Change&gt; changes, Change newBase, Change change) {
-<span class="nc" id="L571">        Set&lt;String&gt; baseDeps = getAllDependencies(changes, newBase);</span>
-<span class="nc" id="L572">        Set&lt;String&gt; changeDeps = getAllDependencies(changes, change);</span>
+<span class="nc" id="L578">        Set&lt;String&gt; baseDeps = getAllDependencies(changes, newBase);</span>
+<span class="nc" id="L579">        Set&lt;String&gt; changeDeps = getAllDependencies(changes, change);</span>
 
-<span class="nc bnc" id="L574" title="All 2 branches missed.">        if (setsEqual(baseDeps, changeDeps)) {</span>
-            // exact same set of dependencies: changes are sieblings
-<span class="nc" id="L576">            Map&lt;Integer, Integer&gt; offsets = computeOffset(newBase);</span>
-<span class="nc" id="L577">            boolean conflictFree = true;</span>
-<span class="nc" id="L578">            String newBaseRev = newBase.getRevision();</span>
+<span class="nc bnc" id="L581" title="All 2 branches missed.">        if (setsEqual(baseDeps, changeDeps)) {</span>
+            try {
+                // exact same set of dependencies: changes are sieblings
+<span class="nc" id="L584">                Map&lt;Integer, Integer&gt; offsets = computeOffset(newBase);</span>
+<span class="nc" id="L585">                boolean conflictFree = true;</span>
+<span class="nc" id="L586">                String newBaseRev = newBase.getRevision();</span>
 
-<span class="nc" id="L580">            logger.debug(&quot;Rebase Sieblings: &quot; + change + &quot; on &quot; + newBase</span>
-                + &quot; with offset &quot; + offsets);
+<span class="nc" id="L588">                logger.debug(&quot;Rebase Sieblings: &quot; + change + &quot; on &quot; + newBase</span>
+                    + &quot; with offset &quot; + offsets);
 
-<span class="nc bnc" id="L583" title="All 4 branches missed.">            conflictFree = shift(change, offsets, true) &amp;&amp; conflictFree;</span>
-<span class="nc bnc" id="L584" title="All 4 branches missed.">            conflictFree = propagateOffsets(changes, change,</span>
-                offsets, true, newBaseRev) &amp;&amp; conflictFree;
+<span class="nc bnc" id="L591" title="All 4 branches missed.">                conflictFree = shift(change, offsets, true) &amp;&amp; conflictFree;</span>
+<span class="nc bnc" id="L592" title="All 4 branches missed.">                conflictFree = propagateOffsets(changes, change,</span>
+                    offsets, true, newBaseRev) &amp;&amp; conflictFree;
 
-            // Update parents after rebase/propagation step
-<span class="nc" id="L588">            change.setBasedOn(Set.of(newBase.getRevision()));</span>
-<span class="nc" id="L589">            logger.trace(&quot; -&gt; &quot; + change);</span>
-<span class="nc" id="L590">            return conflictFree;</span>
-<span class="nc bnc" id="L591" title="All 2 branches missed.">        } else if (setsEqual(Set.of(change.getRevision()), newBase.getBasedOn())) {</span>
-<span class="nc" id="L592">            logger.debug(&quot;Inverse hierarchy : &quot; + change + &quot; on &quot; + newBase);</span>
+                // Update parents after rebase/propagation step
+<span class="nc" id="L596">                change.setBasedOn(Set.of(newBase.getRevision()));</span>
+<span class="nc" id="L597">                logger.trace(&quot; -&gt; &quot; + change);</span>
+<span class="nc" id="L598">                return conflictFree;</span>
+<span class="nc" id="L599">            } catch (StackOverflowError e) {</span>
+<span class="nc" id="L600">                logger.warn(&quot;Major issue: fail to propagate offset&quot;);</span>
+<span class="nc" id="L601">                printDebugData();</span>
+<span class="nc" id="L602">                throw e;</span>
+            }
+<span class="nc bnc" id="L604" title="All 2 branches missed.">        } else if (setsEqual(Set.of(change.getRevision()), newBase.getBasedOn())) {</span>
+<span class="nc" id="L605">            logger.debug(&quot;Inverse hierarchy : &quot; + change + &quot; on &quot; + newBase);</span>
             // [x] -&gt; change -&gt; newBase
             // ==&gt;[x] -&gt;  newBase -&gt; change
 
-<span class="nc" id="L596">            boolean conflictFree = true;</span>
+<span class="nc" id="L609">            boolean conflictFree = true;</span>
 
-<span class="nc" id="L598">            Map&lt;Integer, Integer&gt; changeOffsets = computeOffset(change);</span>
+<span class="nc" id="L611">            Map&lt;Integer, Integer&gt; changeOffsets = computeOffset(change);</span>
 
-<span class="nc" id="L600">            newBase.setBasedOn(change.getBasedOn());</span>
-<span class="nc" id="L601">            change.setBasedOn(Set.of(newBase.getRevision()));</span>
+<span class="nc" id="L613">            newBase.setBasedOn(change.getBasedOn());</span>
+<span class="nc" id="L614">            change.setBasedOn(Set.of(newBase.getRevision()));</span>
 
-<span class="nc bnc" id="L603" title="All 4 branches missed.">            conflictFree = shift(newBase, changeOffsets, false) &amp;&amp; conflictFree;</span>
+<span class="nc bnc" id="L616" title="All 4 branches missed.">            conflictFree = shift(newBase, changeOffsets, false) &amp;&amp; conflictFree;</span>
 
-<span class="nc" id="L605">            Map&lt;Integer, Integer&gt; newBaseOffsets = computeOffset(newBase);</span>
-<span class="nc bnc" id="L606" title="All 4 branches missed.">            conflictFree = shift(change, newBaseOffsets, true) &amp;&amp; conflictFree;</span>
+<span class="nc" id="L618">            Map&lt;Integer, Integer&gt; newBaseOffsets = computeOffset(newBase);</span>
+<span class="nc bnc" id="L619" title="All 4 branches missed.">            conflictFree = shift(change, newBaseOffsets, true) &amp;&amp; conflictFree;</span>
 
-<span class="nc" id="L608">            logger.trace(&quot; with offsets &quot; + changeOffsets + &quot; and &quot; + newBaseOffsets);</span>
-<span class="nc" id="L609">            logger.trace(&quot; -&gt; &quot; + change);</span>
+<span class="nc" id="L621">            logger.trace(&quot; with offsets &quot; + changeOffsets + &quot; and &quot; + newBaseOffsets);</span>
+<span class="nc" id="L622">            logger.trace(&quot; -&gt; &quot; + change);</span>
 
-<span class="nc" id="L611">            return conflictFree;</span>
-<span class="nc bnc" id="L612" title="All 2 branches missed.">        } else if (changeDeps.containsAll(baseDeps)) {</span>
+<span class="nc" id="L624">            return conflictFree;</span>
+<span class="nc bnc" id="L625" title="All 2 branches missed.">        } else if (changeDeps.containsAll(baseDeps)) {</span>
             // nothing to do as all deps are already known
-<span class="nc" id="L614">            logger.info(&quot;Nothing to do: change includes all base parents&quot;);</span>
-<span class="nc" id="L615">            return true;</span>
+<span class="nc" id="L627">            logger.trace(&quot;Nothing to do: change includes all base parents&quot;);</span>
+<span class="nc" id="L628">            return true;</span>
         } else {
-<span class="nc" id="L617">            logger.error(&quot;Not yet implemented: Changes: {} Change: {} NewBase: {} BaseDeps: {} ChangeDeps: {}&quot;, changes, change.getRevision(), newBase.getRevision(), baseDeps, changeDeps);</span>
-<span class="nc" id="L618">            return false;</span>
+<span class="nc" id="L630">            logger.error(&quot;Not yet implemented: Changes: {} Change: {} NewBase: {} BaseDeps: {} ChangeDeps: {}&quot;, changes, change.getRevision(), newBase.getRevision(), baseDeps, changeDeps);</span>
+<span class="nc" id="L631">            return false;</span>
         }
     }
 
     /**
-     * FIlter list of change and return only those which match the given live session
+     * Filter list of change and return only those which match the given live session
      *
      * @param changes list of changes
      * @param author  live-session id
@@ -628,14 +641,14 @@ import org.slf4j.LoggerFactory;
      * @return list of changes authored by the given author
      */
     public List&lt;Change&gt; filterByAuthor(List&lt;Change&gt; changes, String author) {
-<span class="nc" id="L631">        return changes.stream()</span>
-<span class="nc" id="L632">            .filter(child</span>
-<span class="nc" id="L633">                -&gt; child.getLiveSession().equals(author))</span>
-<span class="nc" id="L634">            .collect(Collectors.toList());</span>
+<span class="nc" id="L644">        return changes.stream()</span>
+<span class="nc" id="L645">            .filter(child</span>
+<span class="nc" id="L646">                -&gt; child.getLiveSession().equals(author))</span>
+<span class="nc" id="L647">            .collect(Collectors.toList());</span>
     }
 
     private List&lt;String&gt; mapChangesRevision(Collection&lt;Change&gt; changes) {
-<span class="nc" id="L638">        return changes.stream().map(Change::getRevision).collect(Collectors.toList());</span>
+<span class="nc" id="L651">        return changes.stream().map(Change::getRevision).collect(Collectors.toList());</span>
     }
 
     /**
@@ -646,80 +659,117 @@ import org.slf4j.LoggerFactory;
      * @return up-to date content
      */
     public LiveResult process(boolean strict) {
-<span class="nc" id="L649">        StringBuilder buffer = new StringBuilder();</span>
-<span class="nc bnc" id="L650" title="All 2 branches missed.">        if (this.content != null) {</span>
-<span class="nc" id="L651">            buffer.append(this.content);</span>
+<span class="nc" id="L662">        initDebugData();</span>
+<span class="nc" id="L663">        StringBuilder buffer = new StringBuilder();</span>
+<span class="nc bnc" id="L664" title="All 2 branches missed.">        if (this.content != null) {</span>
+<span class="nc" id="L665">            buffer.append(this.content);</span>
         }
 
-<span class="nc" id="L654">        logger.trace(&quot;Process: {}&quot;, this);</span>
+<span class="nc" id="L668">        logger.trace(&quot;Process: {}&quot;, this);</span>
 
-<span class="nc" id="L656">        String currentRevision = this.revision;</span>
+<span class="nc" id="L670">        String currentRevision = this.revision;</span>
 
-<span class="nc" id="L658">        List&lt;Change&gt; allChanges = this.getPendingChanges();</span>
-<span class="nc" id="L659">        List&lt;Change&gt; changes = new ArrayList&lt;&gt;(allChanges);</span>
+<span class="nc" id="L672">        List&lt;Change&gt; allChanges = this.getPendingChanges();</span>
+<span class="nc" id="L673">        List&lt;Change&gt; changes = new ArrayList&lt;&gt;(allChanges);</span>
 
-<span class="nc" id="L661">        Set&lt;String&gt; appliedChanges = new HashSet&lt;&gt;();</span>
+<span class="nc" id="L675">        Set&lt;String&gt; appliedChanges = new HashSet&lt;&gt;();</span>
 
-<span class="nc bnc" id="L663" title="All 2 branches missed.">        while (!changes.isEmpty()) {</span>
-<span class="nc" id="L664">            appliedChanges.add(currentRevision);</span>
+<span class="nc bnc" id="L677" title="All 2 branches missed.">        while (!changes.isEmpty()) {</span>
+<span class="nc" id="L678">            appliedChanges.add(currentRevision);</span>
             // fetch all changes based on the current revision
-<span class="nc" id="L666">            List&lt;Change&gt; children = getByParent(changes, currentRevision);</span>
-<span class="nc bnc" id="L667" title="All 2 branches missed.">            if (!children.isEmpty()) {</span>
+<span class="nc" id="L680">            List&lt;Change&gt; children = getByParent(changes, currentRevision);</span>
+<span class="nc bnc" id="L681" title="All 2 branches missed.">            if (!children.isEmpty()) {</span>
                 //Map&lt;Integer, Integer&gt; offsets = new HashMap&lt;&gt;();
                 //logger.trace(&quot;new empty offsets &quot; + offsets);
-<span class="nc" id="L670">                logger.debug(&quot;All @{} children: {}&quot;, currentRevision, mapChangesRevision(children));</span>
+<span class="nc" id="L684">                logger.debug(&quot;All @{} children: {}&quot;, currentRevision, mapChangesRevision(children));</span>
 
                 // find a child which depends only only already applied changes
                 // NB: as I understand the algorithm, I can't figure out a case
                 //     such a child-with-unapplied-parent may event exists...
-<span class="nc" id="L675">                Optional&lt;Change&gt; optChange = children.stream()</span>
-<span class="nc" id="L676">                    .filter(ch -&gt; appliedChanges.containsAll(ch.getBasedOn()))</span>
-<span class="nc" id="L677">                    .findFirst();</span>
-<span class="nc bnc" id="L678" title="All 2 branches missed.">                if (optChange.isPresent()) {</span>
-<span class="nc" id="L679">                    Change change = optChange.get();</span>
+<span class="nc" id="L689">                Optional&lt;Change&gt; optChange = children.stream()</span>
+<span class="nc" id="L690">                    .filter(ch -&gt; appliedChanges.containsAll(ch.getBasedOn()))</span>
+<span class="nc" id="L691">                    .findFirst();</span>
+<span class="nc bnc" id="L692" title="All 2 branches missed.">                if (optChange.isPresent()) {</span>
+<span class="nc" id="L693">                    Change change = optChange.get();</span>
                     // clean lists
-<span class="nc" id="L681">                    changes.remove(change);</span>
-<span class="nc" id="L682">                    children.remove(change);</span>
+<span class="nc" id="L695">                    changes.remove(change);</span>
+<span class="nc" id="L696">                    children.remove(change);</span>
 
-<span class="nc" id="L684">                    logger.debug(&quot;Process: {}&quot;, change);</span>
+<span class="nc" id="L698">                    logger.debug(&quot;Process: {}&quot;, change);</span>
 
-<span class="nc" id="L686">                    List&lt;MicroChange&gt; muChanges = change.getMicrochanges();</span>
-<span class="nc bnc" id="L687" title="All 2 branches missed.">                    for (int i = muChanges.size() - 1; i &gt;= 0; i--) {</span>
-<span class="nc" id="L688">                        applyChange(buffer, muChanges.get(i));</span>
-<span class="nc" id="L689">                        logger.trace(&quot;  &quot; + i + &quot;)&quot; + buffer);</span>
+<span class="nc" id="L700">                    List&lt;MicroChange&gt; muChanges = change.getMicrochanges();</span>
+<span class="nc bnc" id="L701" title="All 2 branches missed.">                    for (int i = muChanges.size() - 1; i &gt;= 0; i--) {</span>
+<span class="nc" id="L702">                        applyChange(buffer, muChanges.get(i));</span>
+<span class="nc" id="L703">                        logger.trace(&quot;  &quot; + i + &quot;)&quot; + buffer);</span>
                     }
 
-<span class="nc" id="L692">                    logger.debug(&quot; -&gt; {}&quot;, buffer);</span>
+<span class="nc" id="L706">                    logger.debug(&quot; -&gt; {}&quot;, buffer);</span>
                     // logger.trace(&quot;Offsets&quot; + offsets);
                     // rebase others children
 
-<span class="nc" id="L696">                    changes.removeAll(children);</span>
-<span class="nc bnc" id="L697" title="All 2 branches missed.">                    for (int i = children.size() - 1; i &gt;= 0; i--) {</span>
-<span class="nc" id="L698">                        Change child = children.remove(i);</span>
-<span class="nc bnc" id="L699" title="All 4 branches missed.">                        if (!rebase(allChanges, change, child) &amp;&amp; strict) {</span>
+<span class="nc" id="L710">                    changes.removeAll(children);</span>
+<span class="nc bnc" id="L711" title="All 2 branches missed.">                    for (int i = children.size() - 1; i &gt;= 0; i--) {</span>
+<span class="nc" id="L712">                        Change child = children.remove(i);</span>
+<span class="nc bnc" id="L713" title="All 4 branches missed.">                        if (!rebase(allChanges, change, child) &amp;&amp; strict) {</span>
                             // todo throw ?
-<span class="nc" id="L701">                            logger.warn(&quot;Conflict&quot;);</span>
+<span class="nc" id="L715">                            logger.warn(&quot;Conflict&quot;);</span>
                         }
-<span class="nc" id="L703">                        changes.add(0, child);</span>
+<span class="nc" id="L717">                        changes.add(0, child);</span>
                     }
-<span class="nc" id="L705">                    currentRevision = change.getRevision();</span>
-<span class="nc" id="L706">                } else {</span>
-<span class="nc" id="L707">                    logger.error(&quot;No child found in {}&quot;, children);</span>
-<span class="nc" id="L708">                    break;</span>
+<span class="nc" id="L719">                    currentRevision = change.getRevision();</span>
+<span class="nc" id="L720">                } else {</span>
+                    //TODO add full tree JSON formated full tree
+<span class="nc" id="L722">                    logger.error(&quot;No child found in {}&quot;, children);</span>
+<span class="nc" id="L723">                    printDebugData();</span>
+<span class="nc" id="L724">                    break;</span>
                 }
 
-<span class="nc" id="L711">            } else {</span>
-<span class="nc" id="L712">                logger.error(&quot;Some children without any parents left: {}&quot;, changes);</span>
-<span class="nc" id="L713">                break;</span>
+<span class="nc" id="L727">            } else {</span>
+                //TODO add full tree JSON formated full tree
+<span class="nc" id="L729">                logger.error(&quot;Some children without any parents left: {}&quot;, changes);</span>
+<span class="nc" id="L730">                printDebugData();</span>
+<span class="nc" id="L731">                break;</span>
             }
-<span class="nc" id="L715">        }</span>
+<span class="nc" id="L733">        }</span>
 
-<span class="nc" id="L717">        return LiveResult.build(buffer.toString(), currentRevision);</span>
+<span class="nc" id="L735">        return LiveResult.build(buffer.toString(), currentRevision);</span>
     }
 
     @Override
     public String toString() {
-<span class="nc" id="L722">        return &quot;LiveUpdates{&quot; + &quot;targetClass=&quot; + targetClass + &quot;, targetId=&quot; + targetId + &quot;, revision=&quot; + revision + &quot;, content=&quot; + content + &quot;, pendingChanges=&quot; + pendingChanges + '}';</span>
+<span class="nc" id="L740">        return &quot;LiveUpdates{&quot; + &quot;targetClass=&quot; + targetClass + &quot;, targetId=&quot; + targetId + &quot;, revision=&quot; + revision + &quot;, content=&quot; + content + &quot;, pendingChanges=&quot; + pendingChanges + '}';</span>
     }
+
+    /**
+     * BUidl log message
+     */
+    public void initDebugData() {
+
+<span class="nc" id="L748">        Jsonb jsonb = JsonbProvider.getJsonb();</span>
+
+<span class="nc" id="L750">        StringBuilder sb = new StringBuilder();</span>
+<span class="nc" id="L751">        sb.append(&quot;Content @ &quot;).append(this.revision)</span>
+<span class="nc" id="L752">            .append((System.lineSeparator()))</span>
+<span class="nc" id="L753">            .append(content)</span>
+<span class="nc" id="L754">            .append((System.lineSeparator()))</span>
+<span class="nc" id="L755">            .append((System.lineSeparator()))</span>
+<span class="nc" id="L756">            .append(&quot;Changes:&quot;)</span>
+<span class="nc" id="L757">            .append(&quot;[&quot;);</span>
+
+<span class="nc" id="L759">        this.pendingChanges.forEach(change -&gt; {</span>
+<span class="nc" id="L760">            sb.append( jsonb.toJson(change ));</span>
+<span class="nc" id="L761">        });</span>
+
+<span class="nc" id="L763">        sb.append(&quot;]&quot;);</span>
+
+<span class="nc" id="L765">        this.debugData = sb.toString();</span>
+<span class="nc" id="L766">    }</span>
+
+    /**
+     * Print debug message
+     */
+    public void printDebugData() {
+<span class="nc" id="L772">        logger.warn(&quot;Debug Data {}&quot;, this.debugData);</span>
+<span class="nc" id="L773">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>
