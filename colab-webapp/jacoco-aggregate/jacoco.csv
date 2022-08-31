@@ -25,7 +25,7 @@ colab-webapp/colab-api,ch.colabproject.colab.api.security.permissions,Conditions
 colab-webapp/colab-api,ch.colabproject.colab.api.security.permissions,Conditions.IsCurrentUserMemberOfProject,56,0,8,0,18,0,9,0,5,0
 colab-webapp/colab-api,ch.colabproject.colab.api.rest.document.bean,UrlMetadata,29,0,0,0,11,0,7,0,7,0
 colab-webapp/colab-api,ch.colabproject.colab.api.rest.document.bean,ResourceCreationData,138,0,6,0,45,0,21,0,18,0
-colab-webapp/colab-api,ch.colabproject.colab.api.microchanges.live,LiveUpdates,1378,0,158,0,292,0,119,0,40,0
+colab-webapp/colab-api,ch.colabproject.colab.api.microchanges.live,LiveUpdates,1374,0,158,0,291,0,119,0,40,0
 colab-webapp/colab-api,ch.colabproject.colab.api.microchanges.live,LiveResult,29,0,0,0,11,0,6,0,6,0
 colab-webapp/colab-api,ch.colabproject.colab.api.microchanges.live,LiveManager,356,0,16,0,100,0,24,0,16,0
 colab-webapp/colab-api,ch.colabproject.colab.api.ws.utils,JsonEncoder,22,0,0,0,8,0,5,0,5,0
