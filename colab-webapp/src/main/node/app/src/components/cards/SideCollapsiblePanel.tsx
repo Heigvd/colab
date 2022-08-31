@@ -153,6 +153,12 @@ export default function SideCollapsiblePanel<T extends { [key: string]: Item }>(
                   } else {
                     setItemKeyOpen(itemKey => (itemKey === key ? undefined : key));
                   }
+                } else {
+                  if (setOpenKey) {
+                    setOpenKey(key);
+                  } else {
+                    setItemKeyOpen(key);
+                  }
                 }
               }}
               iconColor={
@@ -165,7 +171,9 @@ export default function SideCollapsiblePanel<T extends { [key: string]: Item }>(
                   : undefined
               }
               iconSize="lg"
-              className={cx(lightIconButtonStyle, css({ paddingLeft: 0 }))}
+              className={cx(lightIconButtonStyle, css({ paddingLeft: 0 }), {
+                [css({ cursor: 'default' })]: cannotClose && Object.entries(items).length === 1,
+              })}
             />
             {item.nextToIconElement}
           </Flex>
