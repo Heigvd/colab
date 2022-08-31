@@ -9,7 +9,6 @@ package ch.colabproject.colab.api.microchanges.live;
 import ch.colabproject.colab.api.microchanges.model.Change;
 import ch.colabproject.colab.api.microchanges.model.MicroChange;
 import ch.colabproject.colab.api.microchanges.model.MicroChange.Type;
-import ch.colabproject.colab.generator.model.tools.JsonbProvider;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -21,7 +20,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
-import javax.json.bind.Jsonb;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -745,8 +743,6 @@ public class LiveUpdates implements Serializable {
      */
     public void initDebugData() {
 
-        Jsonb jsonb = JsonbProvider.getJsonb();
-
         StringBuilder sb = new StringBuilder();
         sb.append("Content @ ").append(this.revision)
             .append((System.lineSeparator()))
@@ -757,7 +753,7 @@ public class LiveUpdates implements Serializable {
             .append("[");
 
         this.pendingChanges.forEach(change -> {
-            sb.append( jsonb.toJson(change ));
+            sb.append(change.toString());
         });
 
         sb.append("]");
