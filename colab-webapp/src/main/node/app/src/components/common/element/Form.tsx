@@ -135,7 +135,7 @@ export default function Form<T>({
 
   const [state, setState] = React.useState<T>(value);
   const [showErrors, setShowErrors] = React.useState(false);
-  let globalErroneous = isGloballyErroneous;
+  let globalErroneous = false;
 
   const setFormValue = React.useCallback((key: keyof T, value: unknown) => {
     // genuine hack inside: use setState as getter
@@ -307,7 +307,7 @@ export default function Form<T>({
 
   return (
     <>
-      {isGloballyErroneous && (
+      {(isGloballyErroneous || (globalErroneous && showErrors)) && (
         <Flex
           className={cx(
             css({ color: errorColor, textAlign: 'left', marginBottom: space_M }),
