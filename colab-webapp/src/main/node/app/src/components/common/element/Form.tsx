@@ -307,7 +307,7 @@ export default function Form<T>({
 
   return (
     <>
-      {(isGloballyErroneous || globalErroneous) && (
+      {(isGloballyErroneous || (globalErroneous && showErrors)) && (
         <Flex
           className={cx(
             css({ color: errorColor, textAlign: 'left', marginBottom: space_M }),
