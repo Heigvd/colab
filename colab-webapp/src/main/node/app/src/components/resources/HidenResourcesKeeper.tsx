@@ -5,9 +5,9 @@
  * Licensed under the MIT License
  */
 
-import { css } from '@emotion/css';
+import { css, cx } from '@emotion/css';
 import { faEye } from '@fortawesome/free-regular-svg-icons';
-import { faFlask, faGhost } from '@fortawesome/free-solid-svg-icons';
+import { faArrowUp, faBoxArchive, faGhost, faTrash } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import * as React from 'react';
 import * as API from '../../API/api';
@@ -15,7 +15,7 @@ import { useAppDispatch } from '../../store/hooks';
 import IconButton from '../common/element/IconButton';
 import Flex from '../common/layout/Flex';
 import OpenCloseModal from '../common/layout/OpenCloseModal';
-import { lightIconButtonStyle, space_M, space_S } from '../styling/style';
+import { iconButton, lightIconButtonStyle, space_M, space_S } from '../styling/style';
 import { ResourceDisplay } from './ResourceDisplay';
 import { ResourceAndRef } from './resourcesCommonType';
 import ResourcesList from './ResourcesList';
@@ -45,14 +45,14 @@ export default function ResourcesLoserKeeper({
         })}
       >
         {resource.targetResource.title}
-        <div>
+        <Flex>
           <OpenCloseModal
             title="Document"
             collapsedChildren={
               <FontAwesomeIcon
-                title="Display the document"
+                title="Display"
                 icon={faEye}
-                className={lightIconButtonStyle}
+                className={cx(iconButton, lightIconButtonStyle)}
               />
             }
             className={css({ padding: '0 ' + space_S })}
@@ -65,12 +65,27 @@ export default function ResourcesLoserKeeper({
             }}
           </OpenCloseModal>
           <IconButton
-            title="Restore the document"
-            icon={faFlask}
+            title="Restore"
+            icon={faBoxArchive}
+            layer={{ layerIcon: faArrowUp, transform: 'shrink-6 up-10' }}
             onClick={() => dispatch(API.giveAccessToResource(resource))}
-            className={lightIconButtonStyle}
+            className={cx(lightIconButtonStyle)}
+            IconClassName={iconButton}
           />
-        </div>
+          {resource.isDirectResource ? (
+            <IconButton
+              title="Irremediately delete"
+              icon={faTrash}
+              onClick={() => dispatch(API.deleteResource(resource.targetResource))}
+              className={lightIconButtonStyle}
+              IconClassName={iconButton}
+            />
+          ) : (
+            // a way to have space and not all icons shifted if no deletion possible
+            // I'm not proud of it, but it works
+            <div className={css({ minWidth: '34px' })}>&nbsp;</div>
+          )}
+        </Flex>
       </Flex>
     ),
     [dispatch],

@@ -27,7 +27,7 @@ import ConfirmDeleteModal from '../common/layout/ConfirmDeleteModal';
 import DropDownMenu, { modalEntryStyle } from '../common/layout/DropDownMenu';
 import Flex from '../common/layout/Flex';
 import Modal from '../common/layout/Modal';
-import { errorColor, lightIconButtonStyle, space_M, space_S, variantTitle } from '../styling/style';
+import { errorColor, lightIconButtonStyle, space_L, space_M, space_S, variantTitle } from '../styling/style';
 import CardLayout from './CardLayout';
 import CardSettings from './CardSettings';
 import CompletionEditor from './CompletionEditor';
@@ -75,6 +75,40 @@ export default function CardThumb({
 
   const cardId = card.id;
 
+  const navigateToZoomPageCb = React.useCallback(() => {
+    const path = `card/${cardId}/v/${variant?.id}`;
+    if (location.pathname.match(/(edit|card)\/\d+\/v\/\d+/)) {
+      navigate(`../${path}`);
+    } else {
+      navigate(path);
+    }
+  }, [variant, cardId, location.pathname, navigate]);
+
+  const navigateToEditPageCb = React.useCallback(() => {
+    const path = `edit/${cardId}/v/${variant?.id}`;
+    if (location.pathname.match(/(edit|card)\/\d+\/v\/\d+/)) {
+      navigate(`../${path}`);
+    } else {
+      navigate(path);
+    }
+  }, [variant, cardId, location.pathname, navigate]);
+
+  const clickOnCardTitleCb = React.useCallback(
+    (e: React.MouseEvent) => {
+      navigateToEditPageCb();
+      e.stopPropagation();
+    },
+    [navigateToEditPageCb],
+  );
+
+  const clickOnCardContentCb = React.useCallback(
+    (e: React.MouseEvent) => {
+      navigateToZoomPageCb();
+      e.stopPropagation();
+    },
+    [navigateToZoomPageCb],
+  );
+
   if (cardId == null) {
     return <i>{i18n.modules.card.error.withoutId}</i>;
   } else {
@@ -105,7 +139,10 @@ export default function CardThumb({
                   justifyContent: 'space-between',
                 })}
               >
-                <div>
+                <div
+                  className={css({ flexGrow: 1, cursor: 'pointer' })}
+                  onClick={clickOnCardTitleCb}
+                >
                   <span className={css({ fontWeight: 'bold' })}>
                     {card.title || i18n.modules.card.untitled}
                   </span>
@@ -188,14 +225,7 @@ export default function CardThumb({
                           <FontAwesomeIcon icon={faPen} /> {i18n.common.edit}
                         </>
                       ),
-                      action: () => {
-                        const path = `edit/${cardId}/v/${variant?.id}`;
-                        if (location.pathname.match(/(edit|card)\/\d+\/v\/\d+/)) {
-                          navigate(`../${path}`);
-                        } else {
-                          navigate(path);
-                        }
-                      },
+                      action: navigateToEditPageCb,
                     },
                     {
                       value: 'settings',
@@ -266,9 +296,9 @@ export default function CardThumb({
                   ]}
                 />
               </div>
-              {/* 
-              // Show nb of sticky notes and resources under card title. 
-              // Commented temporarily for first online version. Full data is not complete on first load. Erroneous data displayed yet. 
+              {/*
+              // Show nb of sticky notes and resources under card title.
+              // Commented temporarily for first online version. Full data is not complete on first load. Erroneous data displayed yet.
               // To discuss.
               <Flex
                 className={css({
@@ -290,13 +320,13 @@ export default function CardThumb({
           <Flex
             grow={1}
             align="stretch"
-            className={
-              depth > 0
-                ? css({
-                    padding: space_M,
-                  })
-                : ''
-            }
+            onClick={clickOnCardContentCb}
+            className={cx({
+              [css({ minHeight: space_L, cursor: 'zoom-in' })]: true,
+              [css({
+                padding: space_M,
+              })]: depth > 0,
+            })}
             justify="center"
           >
             {showSubcards ? (

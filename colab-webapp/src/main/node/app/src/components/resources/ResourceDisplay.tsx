@@ -8,7 +8,7 @@
 import { css, cx } from '@emotion/css';
 import {
   faArrowLeft,
-  faBroom,
+  faBoxArchive,
   faCog,
   faEllipsisV,
   faInfoCircle,
@@ -154,7 +154,7 @@ export function ResourceDisplay({
                         value: 'remove',
                         label: (
                           <>
-                            <FontAwesomeIcon icon={faBroom} /> {i18n.common.remove}
+                            <FontAwesomeIcon icon={faBoxArchive} /> {i18n.common.remove}
                           </>
                         ),
                         action: () => {
