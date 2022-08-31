@@ -13,7 +13,7 @@ import { processMessage } from '../../ws/wsThunkActions';
 import { AvailabilityStatus } from '../store';
 
 /** what we have in the store */
-interface CardTypeState {
+export interface CardTypeState {
   /** all the card types we got so far */
   cardtypes: Record<number, AbstractCardType | AvailabilityStatus>;
 
