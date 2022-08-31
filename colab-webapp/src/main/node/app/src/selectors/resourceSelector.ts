@@ -10,7 +10,8 @@ import { difference, uniq } from 'lodash';
 import React from 'react';
 import * as API from '../API/api';
 import {
-  isActive,
+  isActive1,
+  isActive2,
   ResourceAndRef,
   ResourceCallContext,
 } from '../components/resources/resourcesCommonType';
@@ -156,7 +157,7 @@ export function useAndLoadResources(contextData: ResourceCallContext): {
     }
   }
 
-  const activeResources = resources.filter(resource => isActive(resource));
+  const activeResources = resources.filter(resource => isActive1(resource));
   const ghostResources = difference(resources, activeResources);
 
   return { activeResources, ghostResources, status };
@@ -195,7 +196,7 @@ export type NbAndStatus = {
  * @param context data needed to know what to fetch
  * @returns the nb of resources + the availability status
  */
-const useNbResources = (context: ResourceCallContext): NbAndStatus => {
+const useNbActiveResources = (context: ResourceCallContext): NbAndStatus => {
   return useAppSelector(state => {
     const defaultResult = { nb: undefined };
 
@@ -214,7 +215,9 @@ const useNbResources = (context: ResourceCallContext): NbAndStatus => {
         } else {
           // great. we can get the data
           const resources = Object.values(state.resources.resources).flatMap(resource =>
-            entityIs(resource, 'AbstractResource') && resource.abstractCardTypeId === ownerId
+            entityIs(resource, 'AbstractResource') &&
+            resource.abstractCardTypeId === ownerId &&
+            isActive2(resource)
               ? [resource]
               : [],
           );
@@ -239,7 +242,9 @@ const useNbResources = (context: ResourceCallContext): NbAndStatus => {
         } else {
           // great. we can get the data
           const resources = Object.values(state.resources.resources).flatMap(resource =>
-            entityIs(resource, 'AbstractResource') && resource.cardContentId === ownerId
+            entityIs(resource, 'AbstractResource') &&
+            resource.cardContentId === ownerId &&
+            isActive2(resource)
               ? [resource]
               : [],
           );
@@ -261,10 +266,10 @@ const useNbResources = (context: ResourceCallContext): NbAndStatus => {
  * @param context data needed to know what to fetch
  * @returns the nb of resources + the availability status
  */
-export const useAndLoadNbResources = (context: ResourceCallContext): NbAndStatus => {
+export const useAndLoadNbActiveResources = (context: ResourceCallContext): NbAndStatus => {
   const dispatch = useAppDispatch();
 
-  const { nb, status } = useNbResources(context);
+  const { nb, status } = useNbActiveResources(context);
 
   React.useEffect(() => {
     if (status === 'NOT_INITIALIZED') {
