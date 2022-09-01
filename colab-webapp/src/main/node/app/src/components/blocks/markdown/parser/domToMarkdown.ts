@@ -5,8 +5,8 @@
  * Licensed under the MIT License
  */
 
-import { getLogger } from '../../../../logger';
-import { HeadingLevel } from './markdownToDom';
+import {getLogger} from '../../../../logger';
+import {HeadingLevel} from './markdownToDom';
 
 const logger = getLogger('Dom2Markdown2Parser');
 logger.setLevel(4);
@@ -227,7 +227,10 @@ function _domToMarkdown(
       tag === 'FOOTER'
     ) {
       if (context.current > 0) {
-        push('\n');
+        // hack no newline within lists
+        if (context.list.length === 0) {
+          push('\n');
+        }
       }
       md.push(processChildren(element, selection, context));
     } else if (tag === 'STRONG' || tag === 'B') {
