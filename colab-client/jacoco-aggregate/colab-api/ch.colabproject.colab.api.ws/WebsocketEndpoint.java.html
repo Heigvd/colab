@@ -123,12 +123,12 @@ import org.slf4j.LoggerFactory;
      */
     @OnMessage
     public void onMessage(WsMessage message, Session session) {
-<span class="nc" id="L126">        logger.info(&quot;Message received: {} from {}&quot;, message, session.getId());</span>
+<span class="nc" id="L126">        logger.trace(&quot;Message received: {} from {}&quot;, message, session.getId());</span>
 <span class="nc bnc" id="L127" title="All 2 branches missed.">        if (message instanceof WsPing) {</span>
             try {
 <span class="nc" id="L129">                session.getBasicRemote().sendObject(new WsPong());</span>
 <span class="nc" id="L130">            } catch (IOException | EncodeException ex) {</span>
-<span class="nc" id="L131">                logger.trace(&quot;Fail to reply to ping&quot;, ex);</span>
+<span class="nc" id="L131">                logger.warn(&quot;Fail to reply to ping&quot;, ex);</span>
 <span class="nc" id="L132">            }</span>
         }
 <span class="nc" id="L134">    }</span>

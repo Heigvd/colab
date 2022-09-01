@@ -131,12 +131,12 @@
 <a class="jxr_linenumber" name="L123" href="#L123">123</a> <em class="jxr_javadoccomment">     */</em>
 <a class="jxr_linenumber" name="L124" href="#L124">124</a>     @OnMessage
 <a class="jxr_linenumber" name="L125" href="#L125">125</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> onMessage(<a name="WsMessage" href="../../../../../ch/colabproject/colab/api/ws/message/WsMessage.html#WsMessage">WsMessage</a> message, Session session) {
-<a class="jxr_linenumber" name="L126" href="#L126">126</a>         logger.info(<span class="jxr_string">"Message received: {} from {}"</span>, message, session.getId());
+<a class="jxr_linenumber" name="L126" href="#L126">126</a>         logger.trace(<span class="jxr_string">"Message received: {} from {}"</span>, message, session.getId());
 <a class="jxr_linenumber" name="L127" href="#L127">127</a>         <strong class="jxr_keyword">if</strong> (message instanceof <a name="WsPing" href="../../../../../ch/colabproject/colab/api/ws/message/WsPing.html#WsPing">WsPing</a>) {
 <a class="jxr_linenumber" name="L128" href="#L128">128</a>             <strong class="jxr_keyword">try</strong> {
 <a class="jxr_linenumber" name="L129" href="#L129">129</a>                 session.getBasicRemote().sendObject(<strong class="jxr_keyword">new</strong> <a name="WsPong" href="../../../../../ch/colabproject/colab/api/ws/message/WsPong.html#WsPong">WsPong</a>());
 <a class="jxr_linenumber" name="L130" href="#L130">130</a>             } <strong class="jxr_keyword">catch</strong> (IOException | EncodeException ex) {
-<a class="jxr_linenumber" name="L131" href="#L131">131</a>                 logger.trace(<span class="jxr_string">"Fail to reply to ping"</span>, ex);
+<a class="jxr_linenumber" name="L131" href="#L131">131</a>                 logger.warn(<span class="jxr_string">"Fail to reply to ping"</span>, ex);
 <a class="jxr_linenumber" name="L132" href="#L132">132</a>             }
 <a class="jxr_linenumber" name="L133" href="#L133">133</a>         }
 <a class="jxr_linenumber" name="L134" href="#L134">134</a>     }
