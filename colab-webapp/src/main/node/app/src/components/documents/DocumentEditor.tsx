@@ -88,6 +88,7 @@ export default function DocumentEditor({
             justifyContent: 'space-between',
             flexGrow: 1,
             padding: 0,
+            maxWidth: "21cm",
           }),
           { [selectedStyle]: selected && !isTextDataBlock },
           { [noBorderStyle]: isTextDataBlock },
