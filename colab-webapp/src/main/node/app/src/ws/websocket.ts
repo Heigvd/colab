@@ -5,7 +5,14 @@
  * Licensed under the MIT License
  */
 
-import { entityIs, WsChannelUpdate, WsSessionIdentifier, WsUpdateMessage } from 'colab-rest-client';
+import {
+  entityIs,
+  WsChannelUpdate,
+  WsPing,
+  WsPong,
+  WsSessionIdentifier,
+  WsUpdateMessage,
+} from 'colab-rest-client';
 import { getApplicationPath, initSocketId } from '../API/api';
 import { checkUnreachable } from '../helper';
 import { getLogger } from '../logger';
@@ -17,6 +24,9 @@ import { processMessage } from './wsThunkActions';
 const logger = getLogger('WebSockets');
 logger.setLevel(3);
 
+// Turning monkey on will provocate ws failures
+const monkey = false;
+
 //export function send(channel: string, payload: {}) {
 //  connection.send(JSON.stringify({
 //    channel,
@@ -25,6 +35,18 @@ logger.setLevel(3);
 //}
 
 const path = getApplicationPath();
+
+const ping: WsPing = {
+  '@class': 'WsPing',
+};
+
+const pingJson = JSON.stringify(ping);
+
+const pong: WsPong = {
+  '@class': 'WsPong',
+};
+
+const pongJson = JSON.stringify(pong);
 
 interface MappedMessages {
   WsChannelUpdate: WsChannelUpdate[];
@@ -39,9 +61,29 @@ function createConnection(onCloseCb: () => void) {
   const connection = new WebSocket(`${protocol}:///${window.location.host}${wsPath}`);
   logger.info('Init Ws Done');
 
-  connection.onclose = () => {
+  if (monkey) {
+    setTimeout(() => {
+      logger.warn('Close connection');
+      connection.close();
+    }, 30000);
+  }
+
+  let pingId: ReturnType<typeof setInterval> | null = setInterval(() => {
+    logger.trace('Ping');
+    connection.send(pingJson);
+  }, 1000 * 60);
+
+  const clearPing = () => {
+    if (pingId != null) {
+      clearInterval(pingId);
+      pingId = null;
+    }
+  };
+
+  connection.onclose = event => {
     // reset by peer => reconnect please
-    logger.info('WS reset by peer');
+    logger.warn('WS Close ', event);
+    clearPing();
     onCloseCb();
   };
 
@@ -59,6 +101,11 @@ function createConnection(onCloseCb: () => void) {
             acc.WsUpdateMessage.push(message);
           } else if (entityIs(message, 'WsChannelUpdate')) {
             acc.WsChannelUpdate.push(message);
+          } else if (entityIs(message, 'WsPing')) {
+            logger.trace('Receive Ping -> send Pong');
+            connection.send(pongJson);
+          } else if (entityIs(message, 'WsPong')) {
+            logger.trace('Receive Pong');
           } else {
             //If next line is erroneous, it means a type of WsMessage is not handled
             checkUnreachable(message);
@@ -116,7 +163,7 @@ export function init(): void {
     dispatch(initSocketId(null));
     setTimeout(() => {
       createConnection(reinit);
-    }, 500);
+    }, 200);
   };
 
   return createConnection(reinit);

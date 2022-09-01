@@ -5,14 +5,14 @@
  * Licensed under the MIT License
  */
 
-import { Change, entityIs, TextDataBlock } from 'colab-rest-client';
-import { throttle } from 'lodash';
+import {Change, entityIs, TextDataBlock} from 'colab-rest-client';
+import {throttle} from 'lodash';
 import * as React from 'react';
 import * as API from '../../API/api';
 import * as LiveHelper from '../../LiveHelper';
-import { getLogger } from '../../logger';
-import { useChanges } from '../../selectors/changeSelector';
-import { useAppDispatch, useAppSelector } from '../../store/hooks';
+import {getLogger} from '../../logger';
+import {useChanges} from '../../selectors/changeSelector';
+import {useAppDispatch, useAppSelector} from '../../store/hooks';
 
 //import {ToastClsMarkdownEditor} from '../blocks/markdown/ToastClsMarkdownEditor';
 
@@ -46,38 +46,53 @@ function findCounterValue(liveSession: string, changes: Change[]): number {
     .reduce((max, current) => (current > max ? current : max), 0);
 }
 
+//                                  socketId    channelId count
+const subscriptionCounters: Record<string, Record<string, number>> = {};
+
 export function useBlock(blockId: number | null | undefined): TextDataBlock | null | undefined {
   // blockId =>  number of subscriptions
-  const subscriptionCounters = React.useRef<Record<number, number>>({});
   const dispatch = useAppDispatch();
+  const webSocketId = useAppSelector(state => state.websockets.sessionId);
+  const socketIdRef = React.useRef<string | null>(null);
+  // maintain socketId up to date
+  socketIdRef.current = webSocketId || null;
 
   React.useEffect(() => {
-    if (blockId != null) {
-      const refSubs = subscriptionCounters.current;
-      const count = refSubs[blockId];
+    if (blockId != null && webSocketId != null) {
+      const channelId = `block_${blockId}`;
+      const currentChannels = subscriptionCounters[webSocketId] || {}
+      subscriptionCounters[webSocketId] = currentChannels;
+
+      const count = currentChannels[channelId] || 0;
       if (!count) {
         // subscribe
-        refSubs[blockId] = 1;
+        currentChannels[channelId] = 1;
         dispatch(API.subscribeToBlockChannel(blockId));
       } else {
-        refSubs[blockId] = count + 1;
+        currentChannels[channelId] = count + 1;
       }
 
       return () => {
-        const count = refSubs[blockId];
-        if (count != null) {
-          if (count === 1) {
-            refSubs[blockId] = 0;
-            dispatch(API.unsubscribeFromBlockChannel(blockId));
-          } else if (count <= 0) {
-            logger.error('Already unsubscribed !');
-          } else {
-            refSubs[blockId] = count - 1;
+        // make sure socketId did not change
+        // There is no need to unsubscribe from previous session as this session do no longer exist
+        if (socketIdRef.current === webSocketId) {
+          // socketId did not change
+          const currentChannels = subscriptionCounters[webSocketId];
+          if (currentChannels) {
+            const count = currentChannels[channelId];
+            if (count === 1) {
+              currentChannels[channelId] = 0;
+              dispatch(API.unsubscribeFromBlockChannel(blockId));
+            } else if (count ?? 0 > 1) {
+              currentChannels[channelId] = count! - 1;
+            } else {
+              logger.error('Already unsubscribed !');
+            }
           }
         }
       };
     }
-  }, [blockId, dispatch]);
+  }, [blockId, dispatch, webSocketId]);
 
   return useAppSelector(state => {
     if (blockId) {
@@ -95,7 +110,7 @@ export function useBlock(blockId: number | null | undefined): TextDataBlock | nu
   });
 }
 
-export function useLiveBlock({ atClass, atId, value, revision }: Props): LiveBlockState {
+export function useLiveBlock({atClass, atId, value, revision}: Props): LiveBlockState {
   const liveSession = useAppSelector(state => state.websockets.sessionId);
   const changesState = useChanges(atClass, atId);
   const dispatch = useAppDispatch();
@@ -183,11 +198,11 @@ export function useLiveBlock({ atClass, atId, value, revision }: Props): LiveBlo
 
           logger.trace('Send change', change);
           //onChange(change);
-          dispatch(API.patchBlock({ id: atId, change: change }));
+          dispatch(API.patchBlock({id: atId, change: change}));
         }
       },
       500,
-      { trailing: true },
+      {trailing: true},
     );
   }, [valueRef, liveSession, atClass, atId, dispatch]);
 
