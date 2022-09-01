@@ -19,6 +19,10 @@ logger.setLevel(4);
 
 // const newMajorBlockDetector = /(?:^(?! ))/; // New line which starts with non-space character
 
+export function getFirstMajorTag(md: string): MajorTagParsed | undefined {
+  return extractMajorTags(md)[0];
+}
+
 const regexBuilder = () => {
   // seems some odd browsers do not support negative lookbehind group...
   // current mitigation: delay regexp instantiation so the whole app won't crash...
@@ -170,9 +174,9 @@ interface Paragraph extends Multiline {
   tagType: 'P';
 }
 
-type MajorTag = Code | Heading | UListItem | OListItem | Paragraph;
+export type MajorTagParsed = Code | Heading | UListItem | OListItem | Paragraph;
 
-function getTagFromMajor(major: MajorTag): string {
+function getTagFromMajor(major: MajorTagParsed): string {
   switch (major.tagType) {
     case 'Code':
       return 'PRE';
@@ -187,11 +191,11 @@ function getTagFromMajor(major: MajorTag): string {
   }
 }
 
-function extractMajorTags(markdown: string): MajorTag[] {
+function extractMajorTags(markdown: string): MajorTagParsed[] {
   let m: RegExpExecArray | null;
   const { linesRegex } = getRegexes();
   linesRegex.lastIndex = 0;
-  const majorTags: MajorTag[] = [];
+  const majorTags: MajorTagParsed[] = [];
 
   let currentIndentation: number | undefined = undefined;
 
@@ -289,12 +293,12 @@ interface Combined {
   attributes: Record<string, string>;
   data: string | undefined;
   offset: number[];
-  major: MajorTag;
+  major: MajorTagParsed;
   currentRowPosition: number;
   currentDataPosition: number;
 }
 
-function combineMultiline(majorTag: MajorTag): Combined {
+function combineMultiline(majorTag: MajorTagParsed): Combined {
   const tag = getTagFromMajor(majorTag);
 
   const combined = majorTag.text.reduce<Combined>(
@@ -664,7 +668,7 @@ function convertPosition(
   if (position) {
     const sortedOffset = Object.keys(md.offsets)
       .filter(offset => +offset <= position)
-      .sort();
+      .sort((a, b) => +a - +b);
     const strOffset = sortedOffset[sortedOffset.length - 1];
     if (strOffset != null) {
       const theOffset = +strOffset;
@@ -716,14 +720,14 @@ export function convertRange(md: NodesAndOffsets, mdRange: MarkdownRange): Range
 
 export default function markdownToDom(markdown: string): NodesAndOffsets {
   logger.trace('MarkDown: ', markdown);
-  if (markdown == ''){
+  if (markdown == '') {
     const p = document.createElement('P');
     const br = document.createElement('BR');
     p.append(br);
 
     return {
       nodes: [p],
-      offsets: {0: [p]},
+      offsets: { 0: [p] },
     };
   }
 

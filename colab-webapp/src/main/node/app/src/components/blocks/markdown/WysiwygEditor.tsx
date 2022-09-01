@@ -41,10 +41,129 @@ import {
   unindentListItem,
 } from './DomHelper';
 import { colabFlavouredMarkdown, colabFlavouredMarkdownEditable } from './MarkdownViewer';
-import domToMarkdown, { MarkdownWithSelection } from './parser/domToMarkdown';
-import markdownToDom, { convertRange } from './parser/markdownToDom';
+import domToMarkdown, { MarkdownRange, MarkdownWithSelection } from './parser/domToMarkdown';
+import markdownToDom, {
+  convertRange,
+  getFirstMajorTag,
+  MajorTagParsed,
+  NodesAndOffsets,
+} from './parser/markdownToDom';
 
 const logger = getLogger('WysiwygEditor');
+
+logger.setLevel(5);
+
+function restoreMarkdownRange(dom: NodesAndOffsets, range: MarkdownWithSelection['range']) {
+  const domRange = convertRange(dom, range);
+  if (domRange) {
+    const selection = window.getSelection();
+    if (selection != null) {
+      selection.removeAllRanges();
+      selection.addRange(domRange);
+    }
+  }
+}
+
+function getLastIndexOfMatch(str: string, regex: RegExp): number {
+  regex.lastIndex = 0;
+  let index = -1;
+  let match: RegExpExecArray | null = null;
+
+  while ((match = regex.exec(str)) != null) {
+    // This is necessary to avoid infinite loops with zero-width matches
+    if (match.index === regex.lastIndex) {
+      regex.lastIndex++;
+    }
+    index = match.index;
+  }
+  return index;
+}
+
+/**
+ * Insert to insert in md, according to cursor position set in md.range
+ */
+function mergeMardown(md: MarkdownWithSelection, toInsert: string): MarkdownWithSelection {
+  const anchor = md.range.anchor ?? md.data.length;
+  const focus = md.range.focus ?? anchor ?? md.data.length;
+
+  logger.info('Range: ', { anchor, focus });
+
+  const result: MarkdownWithSelection = {
+    data: '',
+    range: {
+      anchor: anchor,
+      focus: focus,
+    },
+  };
+  if (focus > anchor) {
+    // Selection
+    result.range.focus = anchor + toInsert.length;
+  } else {
+    // cursor
+    result.range.anchor = anchor + toInsert.length;
+  }
+
+  let firstMajor: MajorTagParsed | undefined;
+
+  if (anchor ?? 0 > 0) {
+    // extract text from 0 to selection start
+    const sub = md.data.substring(0, anchor);
+    // find last line return (not follwowed by a space) within such extract
+    const index = getLastIndexOfMatch(sub, /\n(?! )/g);
+    // extract markdown from this position
+    const part = md.data.substring(index + 1);
+    firstMajor = getFirstMajorTag(part);
+  } else {
+    firstMajor = getFirstMajorTag(md.data);
+  }
+
+  const toInsertMajor = getFirstMajorTag(toInsert);
+  logger.info('FirstMajor: ', firstMajor);
+  logger.info('ToInsertMaj: ', toInsertMajor);
+
+  if (toInsertMajor) {
+    if (firstMajor) {
+      if (firstMajor.tagType === toInsertMajor.tagType || toInsertMajor.tagType === 'P') {
+        logger.info('SameTag Merge');
+        result.data =
+          md.data.substring(0, anchor) +
+          toInsert.substring(toInsertMajor.initialMark.length) +
+          md.data.substring(focus);
+      } else {
+        logger.info('Insert ', toInsertMajor.tagType, ' after ', firstMajor.tagType);
+        result.data =
+          md.data.substring(0, anchor) + '\n' + toInsert + '\n' + md.data.substring(focus);
+      }
+    } else {
+      result.data = toInsert;
+    }
+  }
+
+  return result;
+}
+
+/**
+ * Convert markdown to dom and put thre resulting tree in given dom.
+ * Optionally, restore the selection to match the range in markdown, if any.
+ */
+function putMarkdownInDom(
+  div: HTMLDivElement,
+  markdown: MarkdownWithSelection,
+  restoreSelection: boolean,
+) {
+  const newDom = markdownToDom(markdown.data);
+
+  // make sure div is empty
+  while (div.firstChild != null) {
+    div.removeChild(div.firstChild);
+  }
+  newDom.nodes.forEach(n => div.appendChild(n));
+
+  if (restoreSelection) {
+    restoreMarkdownRange(newDom, markdown.range);
+  }
+  return newDom;
+}
 
 /*************************************************
  *    STYLES
@@ -155,7 +274,7 @@ type SelectionWithModify = Selection & {
   modify: (
     alter: 'move' | 'extend',
     direction: 'left' | 'right' | 'forward' | 'backward',
-    granularity: 'word',
+    granularity: 'word' | 'character',
   ) => void;
 };
 
@@ -314,10 +433,7 @@ React.useEffect(()=>{
 /**
  * Get new selection range by applying offsets to current selection
  */
-function computeSelectionOffsets(
-  offsets: LiveHelper.Offsets,
-  range: MarkdownWithSelection['range'],
-) {
+function computeSelectionOffsets(offsets: LiveHelper.Offsets, range: MarkdownRange) {
   const anchorIndex = range.anchor || 0;
   const focusIndex = range.focus || 0;
 
@@ -395,32 +511,26 @@ export default function WysiwygEditor({
     if (div != null) {
       const md = domToMarkdown(divRef.current!);
       if (md.data !== value) {
+        logger.info('Update value from outside');
         // current markdown version is different
 
-        const newDom = markdownToDom(value);
-
-        // make sure div is empty
-        while (div.firstChild != null) {
-          div.removeChild(div.firstChild);
-        }
-        newDom.nodes.forEach(n => div.appendChild(n));
+        const newRange: MarkdownRange = {
+          anchor: undefined,
+          focus: undefined,
+        };
 
         if (md.range.anchor != null || md.range.focus != null) {
           // -> should update selection caret/range
           const diff = LiveHelper.getMicroChange(md.data, value);
           const offsets = LiveHelper.computeOffsets(diff);
-          const newRange = computeSelectionOffsets(offsets, md.range);
-
-          const domRange = convertRange(newDom, newRange);
-          if (domRange != null) {
-            const selection = window.getSelection();
-            if (selection != null) {
-              selection.removeAllRanges();
-              selection.addRange(domRange);
-            }
-          }
-          // TODO: compute new Range
+          const range = computeSelectionOffsets(offsets, md.range);
+          newRange.anchor = range.anchor;
+          newRange.focus = range.focus;
         }
+
+        putMarkdownInDom(div, { data: value, range: newRange }, true);
+      } else {
+        logger.info('Do not update :same value');
       }
     }
   }, [value]);
@@ -572,6 +682,9 @@ export default function WysiwygEditor({
     };
   }, [onSelectionChange]);
 
+  /**
+   * convert current DOM tree and trigger onChange
+   */
   const onInternalChangeCb = React.useCallback(() => {
     updateToolbar();
     const md = domToMarkdown(divRef.current!);
@@ -637,9 +750,6 @@ export default function WysiwygEditor({
                 range.end.offset,
               );
             onInternalChangeCb();
-          } else {
-            //const range = document.createRange();
-            //range.setStart(selection.anchorNode, selection.anchorOffset);
           }
         }
       }
@@ -748,17 +858,24 @@ export default function WysiwygEditor({
             let node = nodeArg;
             if (node.tagName === 'LI') {
               // node is a list: remove list first
-               node = toggleListNode(node, 'none');
+              node = toggleListNode(node, 'none');
             }
 
-            const selection = document.getSelection()!;
-            const newNode = switchTo(node, tag);
-            selection.setPosition(newNode, selection.anchorOffset);
+            // const newNode =
+            switchTo(node, tag);
+            //            let pos = selection.anchorOffset;
+            //            selection.setPosition(newNode, 0);
+            //            while (pos > 0){
+            //              (selection as SelectionWithModify).modify('move', 'forward', 'character');
+            //              pos--;
+            //            }
           });
+          restoreSelection(savedSelection);
+          onInternalChangeCb();
         }
       }
     },
-    [getAllSelectedMajorElements, toggleListNode],
+    [getAllSelectedMajorElements, toggleListNode, onInternalChangeCb],
   );
 
   const toggleList = React.useCallback(
@@ -941,6 +1058,78 @@ export default function WysiwygEditor({
     }
   }, [selected, divRef]);
 
+  const copyCb = React.useCallback((e: React.ClipboardEvent) => {
+    logger.trace('OnCopy', e);
+    if (logger.getLevel() >= 5) {
+      e.clipboardData.types.forEach(t => {
+        logger.info(`Copied ${t}: ${e.clipboardData.getData(t)}`);
+      });
+    }
+
+    const md = domToMarkdown(divRef.current);
+    if (md.range.anchor != null && md.range.focus != null) {
+      const copiedMd = md.data.substring(md.range.anchor, md.range.focus);
+      e.clipboardData.setData('text/x-colab-markdown', copiedMd);
+      logger.info('CopiedMD', copiedMd);
+    }
+  }, []);
+
+  const pasteCb = React.useCallback(
+    (e: React.ClipboardEvent) => {
+      if (logger.getLevel() >= 5) {
+        e.clipboardData.types.forEach(t => {
+          logger.trace(`Paste ${t}: ${e.clipboardData.getData(t)}`);
+        });
+      }
+
+      // supported MIME type only
+      const html = e.clipboardData.getData('text/html');
+      const plainText = e.clipboardData.getData('text/plain');
+      const colabMd = e.clipboardData.getData('text/x-colab-markdown');
+
+      let mdToInsert = '';
+
+      if (colabMd) {
+        // use markdows as-is if any
+        mdToInsert = colabMd;
+      }
+
+      if (!mdToInsert && html) {
+        // html is second choice
+        // convert pasted html to markdown
+        const div = document.createElement('div');
+        div.innerHTML = html;
+        const toInsert = domToMarkdown(div);
+        mdToInsert = toInsert.data;
+      }
+
+      if (!mdToInsert && plainText) {
+        // plain text is fallback
+        // TODO or not TODO? escape plain text
+        mdToInsert = plainText;
+      } else {
+        logger.warn('No eligible MIME type', e.clipboardData.types);
+      }
+
+      if (mdToInsert) {
+        logger.trace('ToInsert', mdToInsert);
+        const currentMd = domToMarkdown(divRef.current);
+        const result = mergeMardown(currentMd, mdToInsert);
+
+        logger.info('Final MD: ', result.data, result.range);
+
+        if (divRef.current) {
+          putMarkdownInDom(divRef.current, result, true);
+          // trigger change
+          onInternalChangeCb();
+        }
+      }
+
+      e.preventDefault();
+    },
+    [onInternalChangeCb],
+  );
+
   return (
     <Flex className={className} direction="column" grow={1} align="stretch">
       {!flyingToolBar && (
@@ -948,6 +1137,8 @@ export default function WysiwygEditor({
       )}
       <Flex direction="column" align="stretch">
         <div
+          onCopy={copyCb}
+          onPaste={pasteCb}
           onClick={interceptClick}
           className={editorStyle}
           ref={divRef}
