@@ -20,7 +20,7 @@ import {
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Card, CardContent, entityIs, Project } from 'colab-rest-client';
 import * as React from 'react';
-import { Navigate, Route, Routes, useLocation, useNavigate, useParams } from 'react-router-dom';
+import { Navigate, Route, Routes, useNavigate, useParams } from 'react-router-dom';
 import * as API from '../../../API/api';
 import { sortCardContents } from '../../../helper';
 import useTranslations from '../../../i18n/I18nContext';
@@ -101,7 +101,7 @@ function cardThumbFactory(card: Card) {
 const Ancestor = ({ card, content, last }: Ancestor): JSX.Element => {
   const i18n = useTranslations();
   const navigate = useNavigate();
-  const location = useLocation();
+  //const location = useLocation();
   const dispatch = useAppDispatch();
 
   React.useEffect(() => {
@@ -129,8 +129,9 @@ const Ancestor = ({ card, content, last }: Ancestor): JSX.Element => {
       </>
     );
   } else if (entityIs(card, 'Card') && entityIs(content, 'CardContent')) {
-    const match = location.pathname.match(/(edit|card)\/\d+\/v\/\d+/);
-    const t = match ? match[1] || 'card' : 'card';
+    //const match = location.pathname.match(/(edit|card)\/\d+\/v\/\d+/);
+    //const t = match ? match[1] || 'card' : 'card';
+    const t = 'card';
 
     return (
       <>
