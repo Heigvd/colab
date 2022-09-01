@@ -9,7 +9,7 @@ import { css, cx } from '@emotion/css';
 import { faCog, faCopy, faEdit, faEllipsisV, faTrash } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { AsyncThunk } from '@reduxjs/toolkit';
-import { Project } from 'colab-rest-client';
+import { entityIs, Project } from 'colab-rest-client';
 import * as React from 'react';
 //import { useNavigate } from 'react-router-dom';
 import * as API from '../../API/api';
@@ -274,7 +274,7 @@ export const UserProjects = (): JSX.Element => {
     state =>
       state.projects.mine.flatMap(projectId => {
         const p = state.projects.projects[projectId];
-        if (p) {
+        if (entityIs(p, 'Project')) {
           return [p];
         } else {
           return [];
@@ -295,7 +295,17 @@ export const UserProjects = (): JSX.Element => {
 };
 
 export const AllProjects = (): JSX.Element => {
-  const projects = useAppSelector(state => Object.values(state.projects.projects), shallowEqual);
+  const projects = useAppSelector(
+    state =>
+      Object.values(state.projects.projects).flatMap(p => {
+        if (entityIs(p, 'Project')) {
+          return [p];
+        } else {
+          return [];
+        }
+      }),
+    shallowEqual,
+  );
   const status = useAppSelector(state => state.projects.allStatus);
 
   return <ProjectList projects={projects} status={status} reload={API.getAllProjects} />;
