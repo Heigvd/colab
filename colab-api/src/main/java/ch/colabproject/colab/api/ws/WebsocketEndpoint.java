@@ -123,12 +123,12 @@ public class WebsocketEndpoint {
      */
     @OnMessage
     public void onMessage(WsMessage message, Session session) {
-        logger.info("Message received: {} from {}", message, session.getId());
+        logger.trace("Message received: {} from {}", message, session.getId());
         if (message instanceof WsPing) {
             try {
                 session.getBasicRemote().sendObject(new WsPong());
             } catch (IOException | EncodeException ex) {
-                logger.trace("Fail to reply to ping", ex);
+                logger.warn("Fail to reply to ping", ex);
             }
         }
     }
