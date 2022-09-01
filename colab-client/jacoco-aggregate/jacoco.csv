@@ -83,13 +83,15 @@ colab-client/colab-api,ch.colabproject.colab.api.rest,WebsocketRestEndpoint,94,0
 colab-client/colab-api,ch.colabproject.colab.api.model.tools,EntityListener,113,0,26,0,27,0,20,0,7,0
 colab-client/colab-api,ch.colabproject.colab.api.model.tools,JpaCustomizer,44,0,2,0,13,0,7,0,6,0
 colab-client/colab-api,ch.colabproject.colab.api.model.tools,EntityHelper,54,0,12,0,15,0,9,0,3,0
-colab-client/colab-api,ch.colabproject.colab.api.controller.user,UserManager,608,0,58,0,175,0,54,0,25,0
+colab-client/colab-api,ch.colabproject.colab.api.ws.message,WsPing,5,0,0,0,3,0,2,0,2,0
 colab-client/colab-api,ch.colabproject.colab.api.ws.message,WsMessage,3,0,0,0,1,0,1,0,1,0
 colab-client/colab-api,ch.colabproject.colab.api.ws.message,WsSessionIdentifier,20,0,0,0,9,0,5,0,5,0
 colab-client/colab-api,ch.colabproject.colab.api.ws.message,WsUpdateMessage,33,0,0,0,11,0,6,0,6,0
 colab-client/colab-api,ch.colabproject.colab.api.ws.message,WsChannelUpdate,35,0,0,0,12,0,7,0,7,0
 colab-client/colab-api,ch.colabproject.colab.api.ws.message,PrecomputedWsMessages,75,0,6,0,18,0,8,0,5,0
 colab-client/colab-api,ch.colabproject.colab.api.ws.message,IndexEntry,53,0,0,0,19,0,10,0,10,0
+colab-client/colab-api,ch.colabproject.colab.api.ws.message,WsPong,5,0,0,0,3,0,2,0,2,0
+colab-client/colab-api,ch.colabproject.colab.api.controller.user,UserManager,608,0,58,0,175,0,54,0,25,0
 colab-client/colab-api,ch.colabproject.colab.api.model.link,StickyNoteLink,1356,0,184,0,115,0,202,0,110,0
 colab-client/colab-api,ch.colabproject.colab.api.model.link,ActivityFlowLink,586,0,64,0,36,0,94,0,62,0
 colab-client/colab-api,ch.colabproject.colab.api.rest.token,TokenRestEndpoint,14,0,0,0,3,0,3,0,3,0
@@ -114,7 +116,7 @@ colab-client/colab-api,ch.colabproject.colab.api.model.user,InternalHashMethod.n
 colab-client/colab-api,ch.colabproject.colab.api.model.user,LocalAccount,453,0,44,0,36,0,69,0,47,0
 colab-client/colab-api,ch.colabproject.colab.api.rest.config,ConfigRestEndpoint,7,0,0,0,2,0,2,0,2,0
 colab-client/colab-api,ch.colabproject.colab.api.rest.monitoring,MonitoringRestEndpoint,19,0,0,0,6,0,5,0,5,0
-colab-client/colab-api,ch.colabproject.colab.api.ws,WebsocketEndpoint,157,0,2,0,37,0,10,0,9,0
+colab-client/colab-api,ch.colabproject.colab.api.ws,WebsocketEndpoint,172,0,4,0,42,0,11,0,9,0
 colab-client/colab-api,ch.colabproject.colab.api.ws,WebsocketMessagePreparer,236,0,6,0,59,0,18,0,15,0
 colab-client/colab-api,ch.colabproject.colab.api.controller.monitoring,LoggerLevelPayload,29,0,0,0,11,0,6,0,6,0
 colab-client/colab-api,ch.colabproject.colab.api.controller.monitoring,MonitoringManager,77,0,2,0,23,0,8,0,7,0

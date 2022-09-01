@@ -25,7 +25,7 @@ under the License.
     <language>en-us</language>
     <copyright>&#169;2022 AlbaSim, MEI, HEIG-VD, HES-SO</copyright>
     <item>
-      <title>File: 173,
+      <title>File: 175,
              Errors: 0,
              Warnings: 182,
              Infos: 0
@@ -747,6 +747,20 @@ under the License.
                           <tr>
                 <td>
                   <a href="${project.url}/checkstyle.html#ch.colabproject.colab.api.security.permissions.card.CardTypeOrRefConditions.java">ch/colabproject/colab/api/security/permissions/card/CardTypeOrRefConditions.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="${project.url}/checkstyle.html#ch.colabproject.colab.api.ws.message.WsPing.java">ch/colabproject/colab/api/ws/message/WsPing.java</a>
                 </td>
                 <td>
                   0
@@ -1985,6 +1999,20 @@ under the License.
                 </td>
                 <td>
                   1
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="${project.url}/checkstyle.html#ch.colabproject.colab.api.ws.message.WsPong.java">ch/colabproject/colab/api/ws/message/WsPong.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
                 </td>
                 <td>
                   0

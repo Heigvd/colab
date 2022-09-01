@@ -25,7 +25,7 @@ under the License.
     <language>en-us</language>
     <copyright>&#169;2022 AlbaSim, MEI, HEIG-VD, HES-SO</copyright>
     <item>
-      <title>File: 200,
+      <title>File: 202,
              Errors: 0,
              Warnings: 215,
              Infos: 0
@@ -1866,6 +1866,20 @@ under the License.
               </tr>
                           <tr>
                 <td>
+                  <a href="${project.url}/checkstyle.html#ch.colabproject.colab.api.ws.message.WsPing.java">ch/colabproject/colab/api/ws/message/WsPing.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
                   <a href="${project.url}/checkstyle.html#ch.colabproject.colab.api.rest.monitoring.MonitoringRestEndpoint.java">ch/colabproject/colab/api/rest/monitoring/MonitoringRestEndpoint.java</a>
                 </td>
                 <td>
@@ -2539,6 +2553,20 @@ under the License.
                           <tr>
                 <td>
                   <a href="${project.url}/checkstyle.html#ch.colabproject.colab.generator.plugin.GeneratorPlugin.java">ch/colabproject/colab/generator/plugin/GeneratorPlugin.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="${project.url}/checkstyle.html#ch.colabproject.colab.api.ws.message.WsPong.java">ch/colabproject/colab/api/ws/message/WsPong.java</a>
                 </td>
                 <td>
                   0
