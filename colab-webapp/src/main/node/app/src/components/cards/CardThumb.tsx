@@ -27,7 +27,14 @@ import ConfirmDeleteModal from '../common/layout/ConfirmDeleteModal';
 import DropDownMenu, { modalEntryStyle } from '../common/layout/DropDownMenu';
 import Flex from '../common/layout/Flex';
 import Modal from '../common/layout/Modal';
-import { errorColor, lightIconButtonStyle, space_L, space_M, space_S, variantTitle } from '../styling/style';
+import {
+  errorColor,
+  lightIconButtonStyle,
+  space_L,
+  space_M,
+  space_S,
+  variantTitle,
+} from '../styling/style';
 import CardLayout from './CardLayout';
 import CardSettings from './CardSettings';
 import CompletionEditor from './CompletionEditor';
@@ -67,7 +74,7 @@ export default function CardThumb({
   }).resourcesAndRefs.length; */
 
   const closeRouteCb = React.useCallback(
-    route => {
+    (route: string) => {
       navigate(location.pathname.replace(new RegExp(route + '$'), ''));
     },
     [location.pathname, navigate],

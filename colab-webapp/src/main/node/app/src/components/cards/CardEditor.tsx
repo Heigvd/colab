@@ -225,7 +225,7 @@ export default function CardEditor({
 
   const { stickyNotesForDest } = useStickyNoteLinksForDest(card.id);
   const closeRouteCb = React.useCallback(
-    route => {
+    (route: string) => {
       navigate(location.pathname.replace(new RegExp(route + '$'), ''));
     },
     [location.pathname, navigate],

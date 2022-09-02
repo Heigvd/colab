@@ -8,7 +8,7 @@
 import { cx } from '@emotion/css';
 import * as React from 'react';
 import { Suspense } from 'react';
-import { render } from 'react-dom';
+import { createRoot } from 'react-dom/client';
 import { Provider } from 'react-redux';
 import { HashRouter, Route, Routes, useParams } from 'react-router-dom';
 import { I18nCtx, Language } from '../i18n/I18nContext';
@@ -150,7 +150,9 @@ function App(): JSX.Element {
 }
 
 function mount() {
-  return render(<App />, document.getElementById('root'));
+  const container = document.getElementById('root');
+  const root = createRoot(container!);
+  return root.render(<App />);
 }
 
 init();
