@@ -36,7 +36,7 @@ public class CypressTest extends AbstractArquillianTest {
         try {
             Map<String, String> env = new HashMap<>();
 
-            env.put("WEGAS_URL", this.deploymentURL.toString());
+            env.put("COLAB_URL", this.deploymentURL.toString());
             env.put("ADMIN_USERNAME", ADMIN_USERNAME);
             env.put("ADMIN_EMAIL", ADMIN_EMAIL);
             env.put("ADMIN_PASSWORD", ADMIN_PASSWORD);
