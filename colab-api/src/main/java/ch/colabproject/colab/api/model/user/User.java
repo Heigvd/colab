@@ -346,7 +346,7 @@ public class User implements ColabEntity, WithWebsocketChannels {
             StringBuilder sb = new StringBuilder();
 
             if (this.firstname != null) {
-                sb.append(this.firstname).append(" ");
+                sb.append(this.firstname).append(' ');
             }
             if (this.firstname != null) {
                 sb.append(this.firstname);

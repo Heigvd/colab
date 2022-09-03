@@ -23,6 +23,8 @@ import MainApp from './MainApp';
 import { lightTheme, normalThemeMode } from './styling/style';
 import Token from './token/Token';
 
+import "inter-ui/inter.css"
+
 /**
  * To read parameters from hash
  */

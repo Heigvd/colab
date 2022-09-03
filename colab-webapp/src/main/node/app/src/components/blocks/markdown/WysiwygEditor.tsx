@@ -151,7 +151,10 @@ function putMarkdownInDom(
   markdown: MarkdownWithSelection,
   restoreSelection: boolean,
 ) {
+  logger.info("Markdown:>", markdown.data, "<");
   const newDom = markdownToDom(markdown.data);
+
+  logger.info("DOM:", newDom);
 
   // make sure div is empty
   while (div.firstChild != null) {
@@ -433,7 +436,7 @@ React.useEffect(()=>{
 /**
  * Get new selection range by applying offsets to current selection
  */
-function computeSelectionOffsets(offsets: LiveHelper.Offsets, range: MarkdownRange) {
+export function computeSelectionOffsets(offsets: LiveHelper.Offsets, range: MarkdownRange) {
   const anchorIndex = range.anchor || 0;
   const focusIndex = range.focus || 0;
 
@@ -1149,6 +1152,7 @@ export default function WysiwygEditor({
           onCompositionEnd={logCompEnd}
           contentEditable={true}
         ></div>
+        {/*<pre>{value}</pre>*/}
       </Flex>
     </Flex>
   );
