@@ -22,7 +22,7 @@ export default function AboutColab(): JSX.Element {
         icon={faArrowLeft}
         title={'Back'}
         onClick={() => {
-          navigate('/');
+          navigate(-1);
         }}
       />
       <Flex direction="column" align="center">

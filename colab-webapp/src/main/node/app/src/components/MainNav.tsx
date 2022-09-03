@@ -7,6 +7,7 @@
 
 import { css, cx } from '@emotion/css';
 import {
+  faCircleInfo,
   faCog,
   faExclamationTriangle,
   faMeteor,
@@ -29,9 +30,10 @@ import Picto from './styling/Picto';
 import { flex, invertedThemeMode, paddingAroundStyle, space_M, space_S } from './styling/style';
 
 export default function MainNav(): JSX.Element {
+  const navigate = useNavigate();
   return (
     <>
-      <Clickable onClick={() => window.open(`#/about-colab`, '_blank')}>
+      <Clickable onClick={() => navigate(`/`)}>
         <Picto
           className={cx(
             css({
@@ -151,11 +153,24 @@ export function UserDropDown({ onlyLogout }: { onlyLogout?: boolean }): JSX.Elem
                   },
                 ]
               : []),
+            ...(!onlyLogout
+              ? [
+                  {
+                    value: 'about',
+                    label: (
+                      <>
+                        <FontAwesomeIcon icon={faCircleInfo} /> {i18n.common.about}
+                      </>
+                    ),
+                    action: () => navigate('/about-colab'),
+                  },
+                ]
+              : []),
             {
               value: 'logout',
               label: (
                 <>
-                  {i18n.common.logout} <FontAwesomeIcon icon={faSignOutAlt} />
+                  <FontAwesomeIcon icon={faSignOutAlt} /> {i18n.common.logout}
                 </>
               ),
               action: logout,
