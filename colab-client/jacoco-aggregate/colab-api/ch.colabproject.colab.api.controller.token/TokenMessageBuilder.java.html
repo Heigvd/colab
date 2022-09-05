@@ -1,0 +1,304 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>TokenMessageBuilder.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">colab-client</a> &gt; <a href="../index.html" class="el_bundle">colab-api</a> &gt; <a href="index.source.html" class="el_package">ch.colabproject.colab.api.controller.token</a> &gt; <span class="el_source">TokenMessageBuilder.java</span></div><h1>TokenMessageBuilder.java</h1><pre class="source lang-java linenums">/*
+ * The coLAB project
+ * Copyright (C) 2021 AlbaSim, MEI, HEIG-VD, HES-SO
+ *
+ * Licensed under the MIT License
+ */
+package ch.colabproject.colab.api.controller.token;
+
+import ch.colabproject.colab.api.model.token.Token;
+import java.text.MessageFormat;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+import org.apache.commons.lang3.StringUtils;
+
+/**
+ * To build the body of the message to send for a token.
+ *
+ * @author sandra
+ */
+public class TokenMessageBuilder {
+
+    /**
+     * Text to set as a footer to inform about the validity of the message
+     */
+    public static final String VALIDITY_FOOTER = &quot;This link can be used until {0} GMT.&quot;;
+
+    /**
+     * The message title
+     */
+    private String headTitle;
+
+    /**
+     * The message main picture
+     */
+    private String picture;
+
+    /**
+     * The message heading
+     */
+    private String heading;
+
+    /**
+     * The message sub heading
+     */
+    private String subheading;
+
+    /**
+     * The message informations
+     */
+    private String info;
+
+    /**
+     * The link to go to consume the token on co.LAB
+     */
+    private String linkHref;
+
+    /**
+     * The label of the link to go to consume the token on co.LAB
+     */
+    private String linkLabel;
+
+    /**
+     * The message footer info
+     */
+<span class="nc" id="L67">    private List&lt;String&gt; footer = new ArrayList&lt;&gt;();</span>
+
+    /**
+     * Constructor
+     *
+     * @param token the token for which we are writing a message
+     */
+<span class="nc" id="L74">    public TokenMessageBuilder(Token token) {</span>
+        // this.token = token;
+<span class="nc" id="L76">        headTitle = null;</span>
+<span class="nc" id="L77">        picture = null;</span>
+<span class="nc" id="L78">        heading = null;</span>
+<span class="nc" id="L79">        subheading = null;</span>
+<span class="nc" id="L80">        info = null;</span>
+<span class="nc" id="L81">        linkHref = null;</span>
+<span class="nc" id="L82">        linkLabel = null;</span>
+<span class="nc" id="L83">        footer = new ArrayList&lt;&gt;();</span>
+<span class="nc bnc" id="L84" title="All 2 branches missed.">        if (token.getExpirationDate() != null) {</span>
+<span class="nc" id="L85">            footer.add(MessageFormat.format(VALIDITY_FOOTER,</span>
+<span class="nc" id="L86">                token.getExpirationDate().format(DateTimeFormatter.RFC_1123_DATE_TIME)));</span>
+        }
+<span class="nc" id="L88">    }</span>
+
+    /**
+     * Set the message head title
+     *
+     * @param headTitle the head title to set
+     *
+     * @return this builder
+     */
+    public TokenMessageBuilder headTitle(String headTitle) {
+<span class="nc" id="L98">        this.headTitle = headTitle;</span>
+<span class="nc" id="L99">        return this;</span>
+    }
+
+    /**
+     * Set the message main picture
+     *
+     * @param picture the main picture to set
+     *
+     * @return this builder
+     */
+    public TokenMessageBuilder picture(String picture) {
+<span class="nc" id="L110">        this.picture = picture;</span>
+<span class="nc" id="L111">        return this;</span>
+    }
+
+    /**
+     * Set the message heading
+     *
+     * @param heading the heading to set
+     *
+     * @return this builder
+     */
+    public TokenMessageBuilder heading(String heading) {
+<span class="nc" id="L122">        this.heading = heading;</span>
+<span class="nc" id="L123">        return this;</span>
+    }
+
+    /**
+     * Set the message sub heading
+     *
+     * @param subheading the sub heading to set
+     *
+     * @return this builder
+     */
+    public TokenMessageBuilder subheading(String subheading) {
+<span class="nc" id="L134">        this.subheading = subheading;</span>
+<span class="nc" id="L135">        return this;</span>
+    }
+
+    /**
+     * Set the message additional content
+     *
+     * @param info the additional content to set
+     *
+     * @return this builder
+     */
+    public TokenMessageBuilder info(String info) {
+<span class="nc" id="L146">        this.info = info;</span>
+<span class="nc" id="L147">        return this;</span>
+    }
+
+    /**
+     * Set the message link href
+     *
+     * @param linkHref the link href to set
+     *
+     * @return this builder
+     */
+    public TokenMessageBuilder linkHref(String linkHref) {
+<span class="nc" id="L158">        this.linkHref = linkHref;</span>
+<span class="nc" id="L159">        return this;</span>
+    }
+
+    /**
+     * Set the message link label
+     *
+     * @param linkLabel the link label to set
+     *
+     * @return this builder
+     */
+    public TokenMessageBuilder linkLabel(String linkLabel) {
+<span class="nc" id="L170">        this.linkLabel = linkLabel;</span>
+<span class="nc" id="L171">        return this;</span>
+    }
+
+    /**
+     * Add a message footer
+     *
+     * @param footer the footer to add
+     *
+     * @return this builder
+     */
+    public TokenMessageBuilder additionalFooter(String footer) {
+<span class="nc" id="L182">        this.footer.add(footer);</span>
+<span class="nc" id="L183">        return this;</span>
+    }
+
+    /**
+     * Build the email body to send with the token
+     *
+     * @return html email body
+     */
+    public String build() {
+<span class="nc" id="L192">        return &quot;&lt;!DOCTYPE html&gt;\n&quot;</span>
+            + &quot;&lt;html lang=\&quot;en\&quot; xmlns=\&quot;http://www.w3.org/1999/xhtml\&quot;&gt;\n&quot;
+            + &quot;  &lt;head&gt;\n&quot;
+            + &quot;    &lt;meta charset=\&quot;utf-8\&quot; /&gt;\n&quot;
+            + &quot;    &lt;!-- utf-8 works for most cases --&gt;\n&quot;
+            + &quot;    &lt;meta name=\&quot;viewport\&quot; content=\&quot;width=device-width\&quot; /&gt;\n&quot;
+            + &quot;    &lt;!-- Forcing initial-scale shouldn't be necessary --&gt;\n&quot;
+            + &quot;    &lt;meta http-equiv=\&quot;X-UA-Compatible\&quot; content=\&quot;IE=edge\&quot; /&gt;\n&quot;
+            + &quot;    &lt;!-- Use the latest (edge) version of IE rendering engine --&gt;\n&quot;
+            + &quot;    &lt;meta name=\&quot;x-apple-disable-message-reformatting\&quot; /&gt;\n&quot;
+            + &quot;    &lt;!-- Disable auto-scale in iOS 10 Mail entirely --&gt;\n&quot;
+            + &quot;    &lt;title&gt;&quot; + headTitle + &quot;&lt;/title&gt;\n&quot;
+            + &quot;    &lt;!-- The title tag shows in email notifications, like Android 4.4. --&gt;\n&quot;
+            + &quot;    &lt;style&gt;\n&quot;
+            + &quot;      h2,\n&quot;
+            + &quot;      h3 {\n&quot;
+            + &quot;        font-family: sans-serif;\n&quot;
+            + &quot;        color: #000000;\n&quot;
+            + &quot;        margin-top: 0;\n&quot;
+            + &quot;      }\n&quot;
+            + &quot;      /* What it does: Stops email clients resizing small text. */\n&quot;
+            + &quot;      * {\n&quot;
+            + &quot;        -ms-text-size-adjust: 100%;\n&quot;
+            + &quot;        -webkit-text-size-adjust: 100%;\n&quot;
+            + &quot;      }\n&quot;
+            + &quot;      /* What it does: Prevents Windows 10 Mail from underlining links despite inline CSS. Styles for underlined links should be inline. */\n&quot;
+            + &quot;      a {\n&quot;
+            + &quot;        text-decoration: none;\n&quot;
+            + &quot;      }\n&quot;
+            + &quot;      /* What it does: Removes right gutter in Gmail iOS app: https://github.com/TedGoas/Cerberus/issues/89  */\n&quot;
+            + &quot;      /* Create one of these media queries for each additional viewport size you'd like to fix */\n&quot;
+            + &quot;\n&quot;
+            + &quot;      /* iPhone 4, 4S, 5, 5S, 5C, and 5SE */\n&quot;
+            + &quot;      @media only screen and (min-device-width: 320px) and (max-device-width: 374px) {\n&quot;
+            + &quot;        u ~ div .email-container {\n&quot;
+            + &quot;          min-width: 320px !important;\n&quot;
+            + &quot;        }\n&quot;
+            + &quot;      }\n&quot;
+            + &quot;      /* iPhone 6, 6S, 7, 8, and X */\n&quot;
+            + &quot;      @media only screen and (min-device-width: 375px) and (max-device-width: 413px) {\n&quot;
+            + &quot;        u ~ div .email-container {\n&quot;
+            + &quot;          min-width: 375px !important;\n&quot;
+            + &quot;        }\n&quot;
+            + &quot;      }\n&quot;
+            + &quot;      /* iPhone 6+, 7+, and 8+ */\n&quot;
+            + &quot;      @media only screen and (min-device-width: 414px) {\n&quot;
+            + &quot;        u ~ div .email-container {\n&quot;
+            + &quot;          min-width: 414px !important;\n&quot;
+            + &quot;        }\n&quot;
+            + &quot;      }\n&quot;
+            + &quot;    &lt;/style&gt;\n&quot;
+            + &quot;  &lt;/head&gt;\n&quot;
+            + &quot;\n&quot;
+            + &quot;  &lt;body\n&quot;
+            + &quot;    width=\&quot;100%\&quot;\n&quot;
+            + &quot;    style=\&quot;\n&quot;
+            + &quot;      margin: 0;\n&quot;
+            + &quot;      padding: 0 !important;\n&quot;
+            + &quot;      mso-line-height-rule: exactly;\n&quot;
+            + &quot;      background-color: #f1f1f1;\n&quot;
+            + &quot;      font-family: sans-serif;\n&quot;
+            + &quot;      font-size: 15px;\n&quot;
+            + &quot;      line-height: 1.8;\n&quot;
+            + &quot;      color: rgba(0, 0, 0, 0.4);\n&quot;
+            + &quot;    \&quot;\n&quot;
+            + &quot;  &gt;\n&quot;
+            + &quot;    &lt;div style=\&quot;max-width: 600px; margin: 0 auto\&quot; class=\&quot;email-container\&quot;&gt;\n&quot;
+            + &quot;      &lt;div\n&quot;
+            + &quot;        align=\&quot;center\&quot;\n&quot;
+            + &quot;        role=\&quot;presentation\&quot;\n&quot;
+            + &quot;        cellspacing=\&quot;0\&quot;\n&quot;
+            + &quot;        cellpadding=\&quot;0\&quot;\n&quot;
+            + &quot;        border=\&quot;0\&quot;\n&quot;
+            + &quot;        width=\&quot;100%\&quot;\n&quot;
+            + &quot;        style=\&quot;margin: auto\&quot;\n&quot;
+            + &quot;      &gt;\n&quot;
+            + &quot;        &lt;div valign=\&quot;middle\&quot; class=\&quot;hero\&quot; style=\&quot;padding: 3em 0 2em 0; background: #ffffff\&quot;&gt;\n&quot;
+            + &quot;          &quot; + picture + &quot;\n&quot;
+            + &quot;          &lt;div class=\&quot;text\&quot; style=\&quot;padding: 0 2.5em; text-align: center\&quot;&gt;\n&quot;
+<span class="nc bnc" id="L271" title="All 2 branches missed.">            + (StringUtils.isNotBlank(heading)</span>
+<span class="nc" id="L272">                ? (&quot;            &lt;h2 style=\&quot;font-size: 30px; margin-bottom: 0\&quot;&gt;&quot; + heading</span>
+                    + &quot;&lt;/h2&gt;\n&quot;)
+<span class="nc" id="L274">                : (&quot;&quot;))</span>
+<span class="nc bnc" id="L275" title="All 2 branches missed.">            + (StringUtils.isNotBlank(subheading) ? (&quot;            &lt;h3&gt;&quot; + subheading + &quot;&lt;/h3&gt;\n&quot;)</span>
+<span class="nc" id="L276">                : (&quot;&quot;))</span>
+<span class="nc bnc" id="L277" title="All 2 branches missed.">            + (StringUtils.isNotBlank(info) ? (&quot;            &quot; + info + &quot;\n&quot;)</span>
+<span class="nc" id="L278">                : (&quot;&quot;))</span>
+            + &quot;            &lt;p&gt;\n&quot;
+            + &quot;              &lt;a\n&quot;
+            + &quot;                href=\&quot;&quot; + linkHref + &quot;\&quot;\n&quot;
+            + &quot;                style=\&quot;\n&quot;
+            + &quot;                  padding: 10px 15px;\n&quot;
+            + &quot;                  display: inline-block;\n&quot;
+            + &quot;                  border-radius: 5px;\n&quot;
+            + &quot;                  background: #50bfd5;\n&quot;
+            + &quot;                  color: #ffffff;\n&quot;
+            + &quot;                \&quot;&gt;\n&quot;
+            + &quot;                &quot; + linkLabel + &quot;\n&quot;
+            + &quot;              &lt;/a&gt;\n&quot;
+            + &quot;            &lt;/p&gt;\n&quot;
+<span class="nc bnc" id="L292" title="All 4 branches missed.">            + ((footer != null &amp;&amp; footer.isEmpty())</span>
+<span class="nc" id="L293">                ? (&quot;            &lt;p&gt;&quot; + footer.stream().collect(Collectors.joining(&quot; &quot;)) + &quot;&lt;/p&gt;&quot;)</span>
+<span class="nc" id="L294">                : (&quot;&quot;))</span>
+            + &quot;          &lt;/div&gt;\n&quot;
+            + &quot;        &lt;/div&gt;\n&quot;
+            + &quot;      &lt;/div&gt;\n&quot;
+            + &quot;    &lt;/div&gt;\n&quot;
+            + &quot;  &lt;/body&gt;\n&quot;
+            + &quot;&lt;/html&gt;&quot;;
+    }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

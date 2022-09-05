@@ -40,7 +40,7 @@
 <a class="jxr_linenumber" name="L32" href="#L32">32</a>  <em class="jxr_javadoccomment">     * Regex which extract token id and plain Token from an email body. It search the values within</em>
 <a class="jxr_linenumber" name="L33" href="#L33">33</a>  <em class="jxr_javadoccomment">     * a href attribute</em>
 <a class="jxr_linenumber" name="L34" href="#L34">34</a>  <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="L35" href="#L35">35</a>      <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">final</strong> Pattern TOKEN_EXTRACTOR = Pattern.compile(<span class="jxr_string">".*href=\&quot;.*#/token/(&#92;&#92;d+)/(.*)\&quot;.*"</span>);
+<a class="jxr_linenumber" name="L35" href="#L35">35</a>      <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">final</strong> Pattern TOKEN_EXTRACTOR = Pattern.compile(<span class="jxr_string">".*href=\&quot;.*#/token/(&#92;&#92;d+)/([a-fA-F0-9]*)\&quot;.*"</span>, Pattern.DOTALL);
 <a class="jxr_linenumber" name="L36" href="#L36">36</a>  
 <a class="jxr_linenumber" name="L37" href="#L37">37</a>      <em class="jxr_javadoccomment">/**</em>
 <a class="jxr_linenumber" name="L38" href="#L38">38</a>  <em class="jxr_javadoccomment">     * Assert HttpErrorMessage is thrown with expected error code</em>

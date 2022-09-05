@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>VerifyLocalAccountMessageBuilder.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">colab-webapp</a> &gt; <a href="../index.html" class="el_bundle">colab-api</a> &gt; <a href="index.source.html" class="el_package">ch.colabproject.colab.api.model.token.tools</a> &gt; <span class="el_source">VerifyLocalAccountMessageBuilder.java</span></div><h1>VerifyLocalAccountMessageBuilder.java</h1><pre class="source lang-java linenums">/*
+ * The coLAB project
+ * Copyright (C) 2021 AlbaSim, MEI, HEIG-VD, HES-SO
+ *
+ * Licensed under the MIT License
+ */
+package ch.colabproject.colab.api.model.token.tools;
+
+import ch.colabproject.colab.api.controller.token.TokenMessageBuilder;
+import ch.colabproject.colab.api.model.token.VerifyLocalAccountToken;
+import java.text.MessageFormat;
+
+/**
+ * To build the body of the message to send to verify the local account.
+ *
+ * @author sandra
+ */
+public final class VerifyLocalAccountMessageBuilder {
+
+    /** Title */
+    private static final String MESSAGE_HEAD_TITLE = &quot;co.LAB: verify your email address&quot;;
+
+    /** Picture */
+    private static final String MESSAGE_PICTURE = &quot;&lt;svg width=\&quot;240\&quot; height=\&quot;240\&quot; id=\&quot;Layer_1\&quot; xmlns=\&quot;http://www.w3.org/2000/svg\&quot; viewBox=\&quot;0 0 370 376.4\&quot;&gt;\n&quot;
+        + &quot;            &lt;g&gt;\n&quot;
+        + &quot;              &lt;path\n&quot;
+        + &quot;                d=\&quot;M370,188.2c0,103.9-82.8,188.2-185,188.2S0,292.2,0,188.2,82.8,0,185,0s185,84.2,185,188.2h0Z\&quot;\n&quot;
+        + &quot;                style=\&quot;fill: #e05d11\&quot;\n&quot;
+        + &quot;              /&gt;\n&quot;
+        + &quot;              &lt;g&gt;\n&quot;
+        + &quot;                &lt;polygon\n&quot;
+        + &quot;                  points=\&quot;204.4 187 157.4 187 157.4 186.9 43.5 267.5 318.2 267.5 204.4 187\&quot;\n&quot;
+        + &quot;                  style=\&quot;fill: #edc51d\&quot;\n&quot;
+        + &quot;                /&gt;\n&quot;
+        + &quot;                &lt;polygon\n&quot;
+        + &quot;                  points=\&quot;43.5 106.5 157.4 187 43.5 267.5 43.5 106.5\&quot;\n&quot;
+        + &quot;                  style=\&quot;fill: #d6b90d\&quot;\n&quot;
+        + &quot;                /&gt;\n&quot;
+        + &quot;                &lt;polygon\n&quot;
+        + &quot;                  points=\&quot;318.2 106.5 204.3 187 318.2 267.5 318.2 106.5\&quot;\n&quot;
+        + &quot;                  style=\&quot;fill: #d6b90d\&quot;\n&quot;
+        + &quot;                /&gt;\n&quot;
+        + &quot;                &lt;polygon\n&quot;
+        + &quot;                  points=\&quot;43.5 106.5 180.8 220.4 318.2 106.5 43.5 106.5\&quot;\n&quot;
+        + &quot;                  style=\&quot;fill: #ffe20f\&quot;\n&quot;
+        + &quot;                /&gt;\n&quot;
+        + &quot;              &lt;/g&gt;\n&quot;
+        + &quot;            &lt;/g&gt;\n&quot;
+        + &quot;            &lt;circle cx=\&quot;289.6\&quot; cy=\&quot;296.2\&quot; r=\&quot;79.4\&quot; style=\&quot;fill: #50bfd5\&quot; /&gt;\n&quot;
+        + &quot;            &lt;rect x=\&quot;237.2\&quot; y=\&quot;259.1\&quot; width=\&quot;121.8\&quot; height=\&quot;106.5\&quot; style=\&quot;fill: none\&quot; /&gt;\n&quot;
+        + &quot;            &lt;polygon\n&quot;
+        + &quot;              points=\&quot;271.7 343.4 234.8 306.5 248 293.2 271.7 316.8 331.4 257.1 344.7 270.4 271.7 343.4\&quot;\n&quot;
+        + &quot;              style=\&quot;fill: #fff\&quot;\n&quot;
+        + &quot;            /&gt;\n&quot;
+        + &quot;          &lt;/svg&gt;&quot;;
+
+    /** Header 1 */
+    private static final String MESSAGE_HEADING = &quot;Please verify your email address.&quot;;
+
+    /** Header 2 */
+    private static final String MESSAGE_SUBHEADING = &quot;Hi {0} ! Click on the link below to verify your email address.&quot;;
+
+    /** Label of the link */
+    private static final String MESSAGE_LINK_LABEL = &quot;Verify&quot;;
+
+    private VerifyLocalAccountMessageBuilder() {
+        // private constructor
+    }
+
+    /**
+     * Build a HTML body to send a message to verify the local account.
+     *
+     * @param token the verify local account token
+     * @param link  the ink in order to consume the token
+     *
+     * @return the HTML body of the message to send
+     */
+    public static String build(VerifyLocalAccountToken token, String link) {
+<span class="nc" id="L79">        String subHeading = MessageFormat.format(MESSAGE_SUBHEADING,</span>
+<span class="nc bnc" id="L80" title="All 4 branches missed.">            (token.getLocalAccount() != null &amp;&amp; token.getLocalAccount().getUser() != null)</span>
+<span class="nc" id="L81">                ? token.getLocalAccount().getUser().getDisplayName()</span>
+<span class="nc" id="L82">                : &quot;&quot;);</span>
+
+<span class="nc" id="L84">        return new TokenMessageBuilder(token)</span>
+<span class="nc" id="L85">            .headTitle(MESSAGE_HEAD_TITLE)</span>
+<span class="nc" id="L86">            .picture(MESSAGE_PICTURE)</span>
+<span class="nc" id="L87">            .heading(MESSAGE_HEADING)</span>
+<span class="nc" id="L88">            .subheading(subHeading)</span>
+            // no info
+<span class="nc" id="L90">            .linkHref(link)</span>
+<span class="nc" id="L91">            .linkLabel(MESSAGE_LINK_LABEL)</span>
+            // let default footer
+<span class="nc" id="L93">            .build();</span>
+    }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

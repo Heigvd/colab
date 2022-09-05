@@ -7,8 +7,8 @@
 package ch.colabproject.colab.api.model.token;
 
 import ch.colabproject.colab.api.controller.RequestManager;
+import ch.colabproject.colab.api.model.token.tools.VerifyLocalAccountMessageBuilder;
 import ch.colabproject.colab.api.model.user.LocalAccount;
-import java.text.MessageFormat;
 import javax.json.bind.annotation.JsonbTransient;
 import javax.persistence.Entity;
 import javax.persistence.Index;
@@ -93,17 +93,19 @@ import javax.validation.constraints.NotNull;
 <span class="nc" id="L93">        this.localAccount.setVerified(Boolean.TRUE);</span>
 <span class="nc" id="L94">    }</span>
 
+    // ---------------------------------------------------------------------------------------------
+    // to build a message
+    // ---------------------------------------------------------------------------------------------
+
     @JsonbTransient
     @Override
     public String getSubject() {
-<span class="nc" id="L99">        return EMAIL_SUBJECT;</span>
+<span class="nc" id="L103">        return EMAIL_SUBJECT;</span>
     }
 
     @Override
     public String getEmailBody(String link) {
-<span class="nc" id="L104">        return MessageFormat.format(&quot;Hi {0},&lt;br /&gt;&lt;br /&gt;&quot;</span>
-            + &quot;Please verify your email address: &lt;a href=\&quot;{1}\&quot;&gt;verify&lt;/a&gt;&lt;br /&gt;&lt;br /&gt;&quot;,
-<span class="nc" id="L106">            localAccount.getUser().getDisplayName(), link);</span>
+<span class="nc" id="L108">        return VerifyLocalAccountMessageBuilder.build(this, link);</span>
     }
 
     // ---------------------------------------------------------------------------------------------
@@ -112,7 +114,7 @@ import javax.validation.constraints.NotNull;
 
     @Override
     public String toString() {
-<span class="nc" id="L115">        return &quot;VerifyLocalAccountToken{&quot; + &quot;id=&quot; + getId()</span>
+<span class="nc" id="L117">        return &quot;VerifyLocalAccountToken{&quot; + &quot;id=&quot; + getId()</span>
             + &quot;, localAccount=&quot; + localAccount + '}';
     }
 

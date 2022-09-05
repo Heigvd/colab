@@ -26,6 +26,7 @@ ch.colabproject.colab.api.model.project
 ch.colabproject.colab.api.model.team
 ch.colabproject.colab.api.model.team.acl
 ch.colabproject.colab.api.model.token
+ch.colabproject.colab.api.model.token.tools
 ch.colabproject.colab.api.model.tools
 ch.colabproject.colab.api.model.user
 ch.colabproject.colab.api.persistence.jcr
