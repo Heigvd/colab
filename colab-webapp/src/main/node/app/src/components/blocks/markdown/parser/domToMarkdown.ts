@@ -226,7 +226,7 @@ function _domToMarkdown(
       tag === 'P' ||
       tag === 'DIV' ||
       tag === 'SECTION' ||
-      tag === 'ACTICLE' ||
+      tag === 'ARTICLE' ||
       tag === 'HEADER' ||
       tag === 'FOOTER'
     ) {
