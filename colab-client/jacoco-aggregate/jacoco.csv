@@ -207,7 +207,7 @@ colab-client/colab-api,ch.colabproject.colab.api.microchanges.model,MicroChange.
 colab-client/colab-api,ch.colabproject.colab.api.persistence.jpa.project,ProjectDao,73,0,0,0,18,0,8,0,8,0
 colab-client/colab-api,ch.colabproject.colab.api.rest.link,StickyNoteLinkRestEndpoint,143,0,2,0,37,0,12,0,11,0
 colab-client/colab-api,ch.colabproject.colab.api.rest.link,ActivityFlowLinkRestEndpoint,57,0,0,0,16,0,7,0,7,0
-colab-client/client-generator-plugin,ch.colabproject.colab.generator.plugin,HelpMojo,802,0,110,0,159,0,71,0,16,0
+colab-client/client-generator-plugin,ch.colabproject.colab.generator.plugin,HelpMojo,763,0,108,0,153,0,70,0,16,0
 colab-client/client-generator-plugin,ch.colabproject.colab.generator.plugin,Logger,49,0,8,0,18,0,11,0,7,0
 colab-client/client-generator-plugin,ch.colabproject.colab.generator.plugin,TypeScriptHelper,633,0,108,0,169,0,68,0,14,0
 colab-client/client-generator-plugin,ch.colabproject.colab.generator.plugin,FileHelper,24,0,0,0,7,0,2,0,2,0
