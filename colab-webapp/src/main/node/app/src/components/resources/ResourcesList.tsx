@@ -23,7 +23,8 @@ import { getKey, getTheDirectResource, ResourceAndRef } from './resourcesCommonT
 
 // for the moment, the resources are ordered by id (= creation date)
 function sortResources(a: ResourceAndRef, b: ResourceAndRef): number {
-  return (a.targetResource.id || 0) - (b.targetResource.id || 0);
+  return (a.targetResource.title || '').localeCompare(b.targetResource.title || '');
+  // return (a.targetResource.id || 0) - (b.targetResource.id || 0);
 }
 
 // ********************************************************************************************** //

@@ -46,6 +46,7 @@ export const en = {
     date: 'Date',
     by: 'By',
     settings: 'Settings',
+    about: 'About co.LAB',
     blank: 'Blank',
     deprecated: 'Deprecated',
     published: 'Published',

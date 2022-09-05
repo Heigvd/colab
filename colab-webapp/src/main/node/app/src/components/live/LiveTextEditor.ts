@@ -201,7 +201,7 @@ export function useLiveBlock({atClass, atId, value, revision}: Props): LiveBlock
           dispatch(API.patchBlock({id: atId, change: change}));
         }
       },
-      500,
+      1000,
       {trailing: true},
     );
   }, [valueRef, liveSession, atClass, atId, dispatch]);

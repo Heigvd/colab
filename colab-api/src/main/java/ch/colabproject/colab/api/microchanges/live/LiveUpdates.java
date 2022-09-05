@@ -221,6 +221,9 @@ public class LiveUpdates implements Serializable {
 
         offsets.put(index, currentOffset);
 
+        /*
+
+
         logger.trace("  modOffset.second " + offsets);
 
         Map<Integer, Integer> modified = new HashMap<>();
@@ -256,6 +259,7 @@ public class LiveUpdates implements Serializable {
         });
 
         logger.trace(" mod Offsets.done " + offsets);
+        */
     }
 
     /**
@@ -749,14 +753,13 @@ public class LiveUpdates implements Serializable {
             .append(content)
             .append((System.lineSeparator()))
             .append((System.lineSeparator()))
-            .append("Changes:")
-            .append("[");
+            .append("Changes: [");
 
         this.pendingChanges.forEach(change -> {
             sb.append(change.toString());
         });
 
-        sb.append("]");
+        sb.append(']');
 
         this.debugData = sb.toString();
     }

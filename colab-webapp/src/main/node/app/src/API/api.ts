@@ -1194,6 +1194,8 @@ export const subscribeToBlockChannel = createAsyncThunk(
         '@class': 'WsSessionIdentifier',
         sessionId: sessionId,
       });
+      // once registerd, make sur to sync pending changes
+      thunkApi.dispatch(getBlockPendingChanges(id));
     }
   },
 );

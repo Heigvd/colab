@@ -107,6 +107,8 @@ export default function MainApp(): JSX.Element {
         className={css({
           display: 'flex',
           alignItems: 'center',
+          backgroundColor: "var(--bgColor)",
+          boxShadow: "0 0 30px 30px var(--bgColor)",
         })}
       >
         <InlineLoading colour={true} /> <span>{i18n.authentication.info.reconnecting}</span>
