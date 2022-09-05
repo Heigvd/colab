@@ -26,7 +26,6 @@ import ch.colabproject.colab.api.service.smtp.Sendmail;
 import ch.colabproject.colab.api.setup.ColabConfiguration;
 import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
 import java.time.OffsetDateTime;
-import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 import javax.ejb.LocalBean;
@@ -96,13 +95,6 @@ public class TokenManager {
         String body = token.getEmailBody(baseUrl + "/#/token/" + token.getId()
             + "/" + plainToken);
 
-        String footer = "";
-        if (token.getExpirationDate() != null) {
-            footer = "<br /><br /><i>This link can be used until "
-                + token.getExpirationDate().format(DateTimeFormatter.RFC_1123_DATE_TIME)
-                + " GMT</i>";
-        }
-
         // this log message contains sensitive information (body contains the plain-text token)
         logger.trace("Send token {} to {} with body {}", token, recipient, body);
         Sendmail.send(
@@ -110,7 +102,7 @@ public class TokenManager {
                 .from("noreply@" + ColabConfiguration.getSmtpDomain())
                 .to(recipient)
                 .subject(token.getSubject())
-                .htmlBody(body + footer)
+                .htmlBody(body)
                 .build()
         );
     }
