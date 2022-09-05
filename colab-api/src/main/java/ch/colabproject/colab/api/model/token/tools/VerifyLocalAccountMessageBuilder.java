@@ -17,12 +17,10 @@ import java.text.MessageFormat;
  */
 public final class VerifyLocalAccountMessageBuilder {
 
-    private VerifyLocalAccountMessageBuilder() {
-        // private constructor
-    }
-
+    /** Title */
     private static final String MESSAGE_HEAD_TITLE = "co.LAB: verify your email address";
 
+    /** Picture */
     private static final String MESSAGE_PICTURE = "<svg width=\"240\" height=\"240\" id=\"Layer_1\" xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 370 376.4\">\n"
         + "            <g>\n"
         + "              <path\n"
@@ -56,11 +54,18 @@ public final class VerifyLocalAccountMessageBuilder {
         + "            />\n"
         + "          </svg>";
 
+    /** Header 1 */
     private static final String MESSAGE_HEADING = "Please verify your email address.";
 
+    /** Header 2 */
     private static final String MESSAGE_SUBHEADING = "Hi {0} ! Click on the link below to verify your email address.";
 
+    /** Label of the link */
     private static final String MESSAGE_LINK_LABEL = "Verify";
+
+    private VerifyLocalAccountMessageBuilder() {
+        // private constructor
+    }
 
     /**
      * Build a HTML body to send a message to verify the local account.

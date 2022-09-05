@@ -289,7 +289,7 @@ public class TokenMessageBuilder {
             + "                " + linkLabel + "\n"
             + "              </a>\n"
             + "            </p>\n"
-            + ((footer != null && footer.size() > 0)
+            + ((footer != null && footer.isEmpty())
                 ? ("            <p>" + footer.stream().collect(Collectors.joining(" ")) + "</p>")
                 : (""))
             + "          </div>\n"
@@ -297,8 +297,7 @@ public class TokenMessageBuilder {
             + "      </div>\n"
             + "    </div>\n"
             + "  </body>\n"
-            + "</html>\n"
-            + "";
+            + "</html>";
     }
 
 }

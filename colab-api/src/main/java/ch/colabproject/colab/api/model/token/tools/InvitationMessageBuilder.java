@@ -17,12 +17,10 @@ import java.text.MessageFormat;
  */
 public final class InvitationMessageBuilder {
 
-    private InvitationMessageBuilder() {
-        // private constructor
-    }
-
+    /** Title */
     private static final String MESSAGE_HEAD_TITLE = "Invitation to a co.LAB project";
 
+    /** Picture */
     private static final String MESSAGE_PICTURE = "<svg\n"
         + "            width=\"230\"\n"
         + "            height=\"245\"\n"
@@ -139,13 +137,21 @@ public final class InvitationMessageBuilder {
         + "            </g>\n"
         + "          </svg>";
 
+    /** Header 1 */
     private static final String MESSAGE_HEADING = "Hi ! You've got an invitation.";
 
+    /** Header 2 */
     private static final String MESSAGE_SUBHEADING = "{0} invites you to collaborate on {1}.";
 
+    /** Information */
     private static final String MESSAGE_INFO = "<p>Click on the link below to start colabbing on the project.</p>";
 
+    /** Label of the link */
     private static final String MESSAGE_LINK_LABEL = "Go to the project";
+
+    private InvitationMessageBuilder() {
+        // private constructor
+    }
 
     /**
      * Build a HTML body to send a message for the invitation token

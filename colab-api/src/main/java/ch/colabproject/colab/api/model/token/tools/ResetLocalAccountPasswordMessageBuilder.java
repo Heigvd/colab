@@ -17,12 +17,10 @@ import java.text.MessageFormat;
  */
 public final class ResetLocalAccountPasswordMessageBuilder {
 
-    private ResetLocalAccountPasswordMessageBuilder() {
-        // private constructor
-    }
-
+    /** Title */
     private static final String MESSAGE_HEAD_TITLE = "co.LAB: reset your password";
 
+    /** Picture */
     private static final String MESSAGE_PICTURE = "<svg id=\"Layer_1\" width=\"240\" height=\"240\" xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 370 376.4\">\n"
         + "            <path\n"
         + "              d=\"M370,188.2c0,103.9-82.8,188.2-185,188.2S0,292.2,0,188.2,82.8,0,185,0s185,84.2,185,188.2h0Z\"\n"
@@ -81,15 +79,24 @@ public final class ResetLocalAccountPasswordMessageBuilder {
         + "            </g>\n"
         + "          </svg>";
 
+    /** Header 1 */
     private static final String MESSAGE_HEADING = "Reset your password";
 
+    /** Header 2 */
     private static final String MESSAGE_SUBHEADING = "We received a request to reset the password for {0}.";
 
+    /** Information */
     private static final String MESSAGE_INFO = "<p>Click on the link below to reset your password.</p>";
 
+    /** Label of the link */
     private static final String MESSAGE_LINK_LABEL = "Reset password";
 
+    /** Additional footer */
     private static final String MESSAGE_ADDITIONAL_FOOTER = "<br/>If you did not make this request, you can safely ignore this email.";
+
+    private ResetLocalAccountPasswordMessageBuilder() {
+        // private constructor
+    }
 
     /**
      * Build a HTML body to send a message to reset the local account password.
