@@ -7,8 +7,8 @@
 package ch.colabproject.colab.api.model.token;
 
 import ch.colabproject.colab.api.controller.RequestManager;
+import ch.colabproject.colab.api.model.token.tools.ResetLocalAccountPasswordMessageBuilder;
 import ch.colabproject.colab.api.model.user.LocalAccount;
-import java.text.MessageFormat;
 import javax.json.bind.annotation.JsonbTransient;
 import javax.persistence.Entity;
 import javax.persistence.Index;
@@ -95,6 +95,10 @@ public class ResetLocalAccountPasswordToken extends Token {
         requestManager.login(localAccount);
     }
 
+    // ---------------------------------------------------------------------------------------------
+    // to build a message
+    // ---------------------------------------------------------------------------------------------
+
     @JsonbTransient
     @Override
     public String getSubject() {
@@ -103,9 +107,7 @@ public class ResetLocalAccountPasswordToken extends Token {
 
     @Override
     public String getEmailBody(String link) {
-        return MessageFormat.format("Hi {0},<br /><br />"
-            + "Click <a href=\"{1}\">here</a> to reset your password.<br /><br />",
-            localAccount.getUser().getDisplayName(), link);
+        return ResetLocalAccountPasswordMessageBuilder.build(this, link);
     }
 
     // ---------------------------------------------------------------------------------------------

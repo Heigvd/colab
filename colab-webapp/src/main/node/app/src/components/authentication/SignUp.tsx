@@ -7,13 +7,12 @@
 
 import { css } from '@emotion/css';
 import * as React from 'react';
-import { PasswordFeedback } from 'react-password-strength-bar';
 import { useNavigate } from 'react-router-dom';
 import * as API from '../../API/api';
 import { buildLinkWithQueryParam, emailFormat } from '../../helper';
 import useTranslations from '../../i18n/I18nContext';
 import { useAppDispatch, useLoadingState } from '../../store/hooks';
-import Form, { Field } from '../common/element/Form';
+import Form, { Field, PasswordScore } from '../common/element/Form';
 import { InlineLink } from '../common/element/Link';
 import { lightLinkStyle, space_M } from '../styling/style';
 import PasswordFeedbackDisplay from './PasswordFeedbackDisplay';
@@ -28,10 +27,7 @@ interface FormData {
   username: string;
   password: string;
   confirm: string;
-  passwordScore: {
-    score: number;
-    feedback: PasswordFeedback;
-  };
+  passwordScore: PasswordScore;
 }
 
 const defaultData: FormData = {
@@ -99,7 +95,7 @@ export default function SignUpForm({ redirectTo }: SignUpFormProps): JSX.Element
   ];
 
   const signUp = React.useCallback(
-    data => {
+    (data: FormData) => {
       startLoading();
 
       dispatch(API.signUp(data)).then(action => {

@@ -32,7 +32,7 @@ public class TestHelper {
      * Regex which extract token id and plain Token from an email body. It search the values within
      * a href attribute
      */
-    public static final Pattern TOKEN_EXTRACTOR = Pattern.compile(".*href=\".*#/token/(\\d+)/(.*)\".*");
+    public static final Pattern TOKEN_EXTRACTOR = Pattern.compile(".*href=\".*#/token/(\\d+)/([a-fA-F0-9]*)\".*", Pattern.DOTALL);
 
     /**
      * Assert HttpErrorMessage is thrown with expected error code

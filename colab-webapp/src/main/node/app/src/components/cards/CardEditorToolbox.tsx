@@ -114,8 +114,10 @@ export default function CardEditorToolbox({
     window.open(downloadUrl);
   }, [downloadUrl]);
 
-  const openUrl = React.useCallback(url => {
-    window.open(url);
+  const openUrl = React.useCallback((url: string | null | undefined) => {
+    if (url) {
+      window.open(url);
+    }
   }, []);
 
   return (

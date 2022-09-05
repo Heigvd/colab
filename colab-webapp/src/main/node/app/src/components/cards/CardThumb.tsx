@@ -75,7 +75,7 @@ export default function CardThumb({
   }).resourcesAndRefs.length; */
 
   const closeRouteCb = React.useCallback(
-    route => {
+    (route: string) => {
       navigate(location.pathname.replace(new RegExp(route + '$'), ''));
     },
     [location.pathname, navigate],
