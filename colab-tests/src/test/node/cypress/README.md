@@ -8,7 +8,7 @@ To have consistent naming, please follow this template
 describe("ch.colabproject.colab.tests.e2e.<SuiteName>", () => {
 
   beforeEach(() => {
-    cy.visitWegas();
+    cy.visitColab();
     cy.waitForReact();
   });
 

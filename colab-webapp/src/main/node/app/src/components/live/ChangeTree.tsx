@@ -221,9 +221,11 @@ export function ChangeTreeRaw({
         ))}
       </div>
       <h4>Orphans</h4>
-      {toProcess.map(change => {
-        <ChangeDisplay key={change.revision} change={change} divRefs={divRefs.current} />;
-      })}
+      <>
+        {toProcess.map(change => {
+          <ChangeDisplay key={change.revision} change={change} divRefs={divRefs.current} />;
+        })}
+      </>
       <h4>Result</h4>
       <div>
         "{processedValue.value}" basedOn {processedValue.revision.map(truncateRevision)}

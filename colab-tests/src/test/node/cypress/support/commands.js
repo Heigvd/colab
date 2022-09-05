@@ -24,32 +24,49 @@
 // -- This will overwrite an existing command --
 // Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
 
-Cypress.Commands.add("visitWegas", () => {
-  const url = Cypress.env("WEGAS_URL");
+Cypress.Commands.add("visitColab", () => {
+  const url = Cypress.env("COLAB_URL");
   if (url) {
     cy.visit(url);
+    cy.waitForReact(5000, "#root");
   } else {
-    throw "please set env WEGAS_URL to the test url";
+    throw "please set env COLAB_URL to the test url";
   }
 });
 
 Cypress.Commands.add("login", (identifier, password) => {
-  cy.react("Input").should("have.length", "2");
+    /* cypress react-selector fails with react 18...*/
+//  cy.react("Input").should("have.length", "2");
+//
+//  cy.react("Input")
+//    .get("input[type=text]")
+//    .should("have.length", "1")
+//    .type(identifier);
+//  cy.react("Input")
+//    .get("input[type=password]")
+//    .should("have.length", "1")
+//    .type(password);
+//  cy.react("ButtonWithLoader").should("have.length", "1").click();
 
-  cy.react("Input")
-    .get("input[type=text]")
-    .should("have.length", "1")
-    .type(identifier);
-  cy.react("Input")
-    .get("input[type=password]")
-    .should("have.length", "1")
-    .type(password);
+  cy.get("input", { options: { timeout: 50000 } }).should("have.length", "2");
 
-  cy.react("ButtonWithLoader").should("have.length", "1").click();
+  cy.get("input[type=text]").should("have.length", "1").type(identifier);
+  cy.get("input[type=password]").should("have.length", "1").type(password);
+
+  cy.contains("Login").should("have.length", "1").click();
+
 });
 
 Cypress.Commands.add("logout", (identifier, password) => {
-  cy.react("IconButton", { props: { icon: { iconName: "sign-out-alt" } } })
-    .should("have.length", "1")
-    .click();
+
+    cy.get("svg.fa-circle-user")
+      .should("have.length", "1")
+      .click();
+
+    cy.get("svg.fa-right-from-bracket")
+      .should("have.length", "1")
+      .click();
+//  cy.react("IconButton", { props: { icon: { iconName: "sign-out-alt" } } })
+//    .should("have.length", "1")
+//    .click();
 });

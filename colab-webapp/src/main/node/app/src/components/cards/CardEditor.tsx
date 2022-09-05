@@ -16,7 +16,6 @@ import {
   faLock,
   faPaperclip,
   faPercent,
-  faSlash,
   faStickyNote,
   faTimes,
   faTools,
@@ -35,7 +34,7 @@ import { useCardACLForCurrentUser, useVariantsOrLoad } from '../../selectors/car
 import { useAndLoadCardType } from '../../selectors/cardTypeSelector';
 import { useStickyNoteLinksForDest } from '../../selectors/stickyNoteLinkSelector';
 import { useAppDispatch, useLoadingState } from '../../store/hooks';
-import {idleStyle, toggledStyle} from '../blocks/markdown/WysiwygEditor';
+import { idleStyle, toggledStyle } from '../blocks/markdown/WysiwygEditor';
 import Button from '../common/element/Button';
 import IconButton from '../common/element/IconButton';
 import { DiscreetInput } from '../common/element/Input';
@@ -226,7 +225,7 @@ export default function CardEditor({
 
   const { stickyNotesForDest } = useStickyNoteLinksForDest(card.id);
   const closeRouteCb = React.useCallback(
-    route => {
+    (route: string) => {
       navigate(location.pathname.replace(new RegExp(route + '$'), ''));
     },
     [location.pathname, navigate],
@@ -419,11 +418,6 @@ export default function CardEditor({
                             {!readOnly && (
                               <IconButton
                                 icon={faTools}
-                                layer={
-                                  openToolbox
-                                    ? { layerIcon: faSlash, transform: 'grow-1' }
-                                    : undefined
-                                }
                                 title={i18n.modules.card.editor.toggleToolbox}
                                 className={openToolbox ? toggledStyle : idleStyle}
                                 onClick={() => setOpenToolbox(openToolbox => !openToolbox)}
@@ -433,14 +427,14 @@ export default function CardEditor({
                               title={i18n.modules.card.editor.fullScreen}
                               icon={fullScreen ? faCompressArrowsAlt : faExpandArrowsAlt}
                               onClick={() => setFullScreen(fullScreen => !fullScreen)}
-                              className={cx(lightIconButtonStyle, css({padding: space_S}))}
+                              className={cx(lightIconButtonStyle, css({ padding: space_S }))}
                             />
                             <DropDownMenu
                               icon={faEllipsisV}
                               valueComp={{ value: '', label: '' }}
                               buttonClassName={cx(
                                 lightIconButtonStyle,
-                                css({marginLeft: space_S, padding: space_S }),
+                                css({ marginLeft: space_S, padding: space_S }),
                               )}
                               entries={[
                                 {
