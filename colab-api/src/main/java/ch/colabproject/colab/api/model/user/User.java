@@ -36,6 +36,7 @@ import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * Represents a registered user. A user may authenticate by several means (accounts).
@@ -340,19 +341,24 @@ public class User implements ColabEntity, WithWebsocketChannels {
      */
     @JsonbTransient
     public String getDisplayName() {
-        if (this.commonname != null && !this.commonname.isBlank()) {
+        if (StringUtils.isNotBlank(this.commonname)) {
             return this.commonname;
+
         } else {
             StringBuilder sb = new StringBuilder();
 
-            if (this.firstname != null) {
-                sb.append(this.firstname).append(" ");
-            }
-            if (this.firstname != null) {
+            if (StringUtils.isNotBlank(this.firstname)) {
                 sb.append(this.firstname);
             }
+            if (StringUtils.isNotBlank(this.firstname) && StringUtils.isNotBlank(this.lastname)) {
+                sb.append(" ");
+            }
+            if (StringUtils.isNotBlank(this.lastname)) {
+                sb.append(this.lastname);
+            }
+
             String toString = sb.toString();
-            if (!toString.isBlank()) {
+            if (StringUtils.isNotBlank(toString)) {
                 return toString;
             }
         }
