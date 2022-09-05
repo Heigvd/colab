@@ -14,7 +14,7 @@ import {
   useAppDispatch,
   useAppSelector,
 } from '../store/hooks';
-import { StateStatus } from '../store/project';
+import { StateStatus } from '../store/slice/projectSlice';
 import { AvailabilityStatus } from '../store/store';
 
 export interface UsedProject {

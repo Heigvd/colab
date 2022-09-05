@@ -6,10 +6,10 @@
  */
 import { createSlice } from '@reduxjs/toolkit';
 import { entityIs, Project, TeamMember, TeamRole } from 'colab-rest-client';
-import * as API from '../API/api';
-import { mapById } from '../helper';
-import { processMessage } from '../ws/wsThunkActions';
-import { AvailabilityStatus } from './store';
+import * as API from '../../API/api';
+import { mapById } from '../../helper';
+import { processMessage } from '../../ws/wsThunkActions';
+import { AvailabilityStatus } from '../store';
 
 /**
  * NOT_SET: the state is not fully set. It may contain some data (received by websocket) but there

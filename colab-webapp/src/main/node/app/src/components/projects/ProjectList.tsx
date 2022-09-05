@@ -15,7 +15,7 @@ import * as React from 'react';
 import * as API from '../../API/api';
 import useTranslations from '../../i18n/I18nContext';
 import { shallowEqual, useAppDispatch, useAppSelector, useLoadingState } from '../../store/hooks';
-import { StateStatus } from '../../store/project';
+import { StateStatus } from '../../store/slice/projectSlice';
 import ItemThumbnailsSelection from '../common/collection/ItemThumbnailsSelection';
 import IllustrationDisplay from '../common/element/IllustrationDisplay';
 import InlineLoading from '../common/element/InlineLoading';

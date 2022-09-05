@@ -9,7 +9,7 @@ import { AccessControl, IndexEntry } from 'colab-rest-client';
 import * as API from '../API/api';
 import { mapById } from '../helper';
 import { processMessage } from '../ws/wsThunkActions';
-import { StateStatus } from './project';
+import { StateStatus } from './slice/projectSlice';
 
 export type ACLState = Record<
   number,
