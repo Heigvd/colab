@@ -147,6 +147,7 @@ function processChildren(
         }
       }
     } else if (node instanceof Element) {
+      // detect and skip emptiness (<p><br/></p> is quite normal to reprensent one single empty line)
       // if last child is a <BR />, it should be ignored
       if (node != element.lastChild || node instanceof HTMLBRElement === false) {
         md.push(_domToMarkdown(node, selection, context));
@@ -235,10 +236,7 @@ function _domToMarkdown(
           push('\n');
         }
       }
-      // detect and skip emptiness (<p><br/></p> is quite normal to reprensent one single empty line)
-      if (element.childNodes.length !== 1 || element.firstChild instanceof HTMLBRElement === false) {
-        md.push(processChildren(element, selection, context));
-      }
+      md.push(processChildren(element, selection, context));
     } else if (tag === 'STRONG' || tag === 'B') {
       if (element.textContent) {
         process('strong', '**', '**');

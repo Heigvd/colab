@@ -434,14 +434,14 @@ function rebase(allChanges: Change[], newBase: Change, change: Change) {
     const offsets = computeOffsets(newBase.microchanges);
     const newBaseRev = newBase.revision;
 
-    logger.warn('Rebase Sieblings: ', change, ' on ', newBase, ' with offset ', offsets);
+    logger.info('Rebase Sieblings: ', change, ' on ', newBase, ' with offset ', offsets);
     shift(change, offsets, true);
-    logger.warn('Rebase done: ', change, ' on ', newBase, ' with offset ', offsets);
+    logger.info('Rebase done: ', change, ' on ', newBase, ' with offset ', offsets);
     propagateOffsets(allChanges, change, offsets, true, newBaseRev);
 
     change.basedOn = [newBaseRev];
   } else if (setsEqual([change.revision], newBase.basedOn)) {
-    logger.warn('Inverse hierarchy : ', change, ' on ', newBase);
+    logger.info('Inverse hierarchy : ', change, ' on ', newBase);
     const offsets = computeOffsets(newBase.microchanges);
 
     newBase.basedOn = change.basedOn;
