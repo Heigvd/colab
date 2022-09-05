@@ -383,18 +383,20 @@ export function areAllLeafsWrappedByTag(
       const nodes: Element[] = [];
       while (current != null) {
         logger.info('Test leaf: ', current);
-        const matchingParent = boundedClosest(current, [tagName], rootNode);
-        if (matchingParent != null) {
-          nodes.push(matchingParent);
-          // The current node is fine, move to next
-          if (current === end.node) {
-            current = undefined;
+        if (current.textContent) {
+          const matchingParent = boundedClosest(current, [tagName], rootNode);
+          if (matchingParent != null) {
+            nodes.push(matchingParent);
+            // The current node is fine, move to next
+            if (current === end.node) {
+              current = undefined;
+            } else {
+              current = findNextLeaf(matchingParent, rootNode);
+            }
           } else {
-            current = findNextLeaf(matchingParent, rootNode);
+            // current leaf not inside expected tag
+            return { type: 'NO' };
           }
-        } else {
-          // current leaf not inside expected tag
-          return { type: 'NO' };
         }
       }
       // all leaves stands in expected tags
@@ -601,7 +603,7 @@ export function wrap(node: Node, tagName: string): Element {
 }
 
 /**
- * Unwrap given node within brand new `tagName` tag
+ * Unwrap given node
  *      _                           _
  *     / \                         / \----
  *     x  \             \         x   \   \
@@ -631,7 +633,7 @@ function unwrap(node: Node): CaretRange {
       document.getSelection()?.setBaseAndExtent(children[0]!, 0, last.node, last.offset);
     }
 
-    parent.normalize();
+    //parent.normalize();
 
     const selection = document.getSelection()!;
     return {
@@ -675,6 +677,9 @@ function safeUnwrap(
   // remove all tags within wrapper
   removeTags(node, tagName);
 
+  // remove the wrapper too
+  const result = unwrap(node);
+
   let start: CaretPosition | undefined = undefined;
   let end: CaretPosition | undefined = undefined;
 
@@ -693,8 +698,6 @@ function safeUnwrap(
     }
   }
 
-  // remove the wrapper too
-  const result = unwrap(node);
   if (start == null) {
     start = result.start;
   }

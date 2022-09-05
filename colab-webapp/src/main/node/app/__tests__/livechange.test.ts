@@ -314,25 +314,6 @@ test('TestConflict', () => {
 });
 
 
-
-test('TestDeep', () => {
-  const session1 = 's1';
-  const session2 = 's2';
-  const initialValue = 'apple blueberry cherry durian elderberry\n'
-  + "asparagus bean cucumber daikon eggplant";
-
-  const changes: Change[] = [
-    createChange(session1, ['0'], 's1-1', ins(0, 'abcdefghi '), ins(22, " 1234567890")),
-
-    createChange(session2, ['0'], 's2-1', del(7, 5), ins(12, 'lueberry')),
-  ];
-
-  const newValue = LiveHelper.process(initialValue, '0', changes);
-
-  expect(newValue.value).toBe('apple blilueberry carrot');
-});
-
-
 test("SadAndBeautiful", () => {
   const session1 = "s1";
   const session2 = "s2";

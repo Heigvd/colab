@@ -51,7 +51,108 @@ import markdownToDom, {
 
 const logger = getLogger('WysiwygEditor');
 
-logger.setLevel(5);
+//logger.setLevel(5);
+
+//////////////////////////////////////////////////////////////////////////////////////
+// Selection manipulation
+//////////////////////////////////////////////////////////////////////////////////////
+
+type SavedSelection = Required<
+  Pick<Selection, 'type' | 'anchorNode' | 'anchorOffset' | 'focusNode' | 'focusOffset'>
+>;
+
+export function selectionsEqual(a: SavedSelection, b: SavedSelection): boolean {
+  if (a == null && b == null) {
+    return true;
+  }
+  if (a == null || b == null) {
+    return false;
+  }
+  if (a.anchorNode != b.anchorNode) {
+    return false;
+  }
+  if (a.anchorOffset != b.anchorOffset) {
+    return false;
+  }
+  if (a.focusNode != b.focusNode) {
+    return false;
+  }
+  if (a.focusOffset != b.focusOffset) {
+    return false;
+  }
+
+  return true;
+}
+
+function saveSelection(root: Element | null): SavedSelection | undefined {
+  if (root != null) {
+    const selection = document.getSelection();
+    if (selection != null) {
+      if (selection?.anchorNode != null && root) {
+        if (root.contains(selection.anchorNode)) {
+          return {
+            anchorNode: selection.anchorNode,
+            anchorOffset: selection.anchorOffset,
+            focusNode: selection.focusNode,
+            focusOffset: selection.focusOffset,
+            type: selection.type,
+          };
+        }
+      }
+    }
+    return undefined;
+  }
+}
+
+function restoreSavedSelection(savedSelection: SavedSelection): Selection | null {
+  const selection = document.getSelection();
+
+  // restore saved selection
+  if (savedSelection.focusNode) {
+    selection?.setBaseAndExtent(
+      savedSelection.anchorNode!,
+      savedSelection.anchorOffset,
+      savedSelection.focusNode,
+      savedSelection.focusOffset,
+    );
+  } else {
+    selection?.setPosition(savedSelection.anchorNode, savedSelection.anchorOffset);
+  }
+  return selection;
+}
+
+function getSelectionType(root: Element | null): 'RANGE' | 'ON_WORD' | 'NOT_ON_WORD' | 'NONE' {
+  const userSelection = saveSelection(root);
+  if (userSelection) {
+    if (userSelection.type === 'Range') {
+      // Range is a Range
+      return 'RANGE';
+    } else if (userSelection.type === 'Caret') {
+      // two possibilities.
+      // is the caret within a world or outside
+
+      const wSelection = window.getSelection() as SelectionWithModify;
+
+      (wSelection as SelectionWithModify).modify('extend', 'backward', 'character');
+      const bText = wSelection.getRangeAt(0).toString();
+      restoreSavedSelection(userSelection);
+
+      (wSelection as SelectionWithModify).modify('extend', 'forward', 'character');
+      const fText = wSelection.getRangeAt(0).toString();
+      restoreSavedSelection(userSelection);
+
+      logger.warn('Selection Texts: ', bText, fText);
+      if (bText.trim() && fText.trim()) {
+        return 'ON_WORD';
+      }
+
+      return 'NOT_ON_WORD';
+    }
+  }
+  return 'NONE';
+}
+
+//////////////////////////////////////////////////////////////////////////////////////
 
 function restoreMarkdownRange(dom: NodesAndOffsets, range: MarkdownWithSelection['range']) {
   const domRange = convertRange(dom, range);
@@ -151,10 +252,10 @@ function putMarkdownInDom(
   markdown: MarkdownWithSelection,
   restoreSelection: boolean,
 ) {
-  logger.info("Markdown:>", markdown.data, "<");
+  logger.info('Markdown:>', markdown.data, '<');
   const newDom = markdownToDom(markdown.data);
 
-  logger.info("DOM:", newDom);
+  logger.info('DOM:', newDom);
 
   // make sure div is empty
   while (div.firstChild != null) {
@@ -458,27 +559,6 @@ export function computeSelectionOffsets(offsets: LiveHelper.Offsets, range: Mark
   return newRange;
 }
 
-type SavedSelection = Required<
-  Pick<Selection, 'type' | 'anchorNode' | 'anchorOffset' | 'focusNode' | 'focusOffset'>
->;
-
-function restoreSelection(savedSelection: SavedSelection): Selection | null {
-  const selection = document.getSelection();
-
-  // restore saved selection
-  if (savedSelection.focusNode) {
-    selection?.setBaseAndExtent(
-      savedSelection.anchorNode!,
-      savedSelection.anchorOffset,
-      savedSelection.focusNode,
-      savedSelection.focusOffset,
-    );
-  } else {
-    selection?.setPosition(savedSelection.anchorNode, savedSelection.anchorOffset);
-  }
-  return selection;
-}
-
 /**
  * Wysiwyg editor which try to keep selected text accros updates
  */
@@ -638,21 +718,10 @@ export default function WysiwygEditor({
   }, [getAllSelectedMajorElements]);
 
   const onSelectionChange = React.useCallback(() => {
-    const selection = document.getSelection();
-    if (selection != null) {
-      if (selection?.anchorNode != null && divRef.current) {
-        if (divRef.current.contains(selection.anchorNode)) {
-          // since getSelection return a mutable object, make sure to make a copy
-          selectionRef.current = {
-            anchorNode: selection.anchorNode,
-            anchorOffset: selection.anchorOffset,
-            focusNode: selection.focusNode,
-            focusOffset: selection.focusOffset,
-            type: selection.type,
-          };
-        }
-      }
-
+    const selection = saveSelection(divRef.current);
+    if (selection) {
+      // since getSelection return a mutable object, make sure to make a copy
+      selectionRef.current = selection;
       updateToolbar();
       //      logger.info("SelectionAnchor: ", selection.anchorNode?.nodeName);
       //      logger.info("SelectionAndhorOffset: ", selection.anchorOffset);
@@ -725,16 +794,48 @@ export default function WysiwygEditor({
       const savedSelection = selectionRef.current;
       if (savedSelection?.anchorNode != null && divRef.current) {
         if (divRef.current.contains(savedSelection.anchorNode)) {
-          const selection = restoreSelection(savedSelection);
+          const selection = restoreSavedSelection(savedSelection);
 
           let originalCaret: { node: Node; offset: number } | null = null;
 
           if (selection?.type === 'Caret') {
-            originalCaret = { node: selection.anchorNode!, offset: selection.anchorOffset };
-            (selection as SelectionWithModify).modify('move', 'backward', 'word');
-            (selection as SelectionWithModify).modify('extend', 'forward', 'word');
+            const sType = getSelectionType(divRef.current);
+            logger.warn('SelectionType: ', sType);
+            if (sType === 'ON_WORD') {
+              originalCaret = { node: selection.anchorNode!, offset: selection.anchorOffset };
+              (selection as SelectionWithModify).modify('move', 'backward', 'word');
+              (selection as SelectionWithModify).modify('extend', 'forward', 'word');
+            }
           }
-          if (selection?.type === 'Range') {
+
+          if (selection?.type === 'Caret') {
+            const toggled = !!boundedClosest(selection.anchorNode!, [tagName], divRef.current);
+            if (toggled) {
+              logger.warn('Untoggle');
+
+              const node = document.createTextNode('x');
+              selection.getRangeAt(0).insertNode(node);
+              toggleTag(
+                {
+                  node,
+                  offset: 0,
+                },
+                {
+                  node: node,
+                  offset: 1,
+                },
+                tagName,
+                divRef.current,
+              );
+              node.textContent = '';
+              selection.setPosition(node, 0);
+            } else {
+              logger.warn('Toggle');
+              const newTag = document.createElement(tagName);
+              selection.getRangeAt(0).insertNode(newTag);
+              selection.setPosition(newTag);
+            }
+          } else {
             logger.info('Selection: ', savedSelection);
             const nodes = sortNodes(
               { node: selection!.anchorNode!, offset: selection!.anchorOffset },
@@ -744,15 +845,23 @@ export default function WysiwygEditor({
               document.getSelection()?.setPosition(originalCaret.node, originalCaret.offset);
             }
             const range = toggleTag(nodes.left, nodes.right, tagName, divRef.current);
-            document
-              .getSelection()
-              ?.setBaseAndExtent(
-                range.start.node,
-                range.start.offset,
-                range.end.node,
-                range.end.offset,
-              );
-            onInternalChangeCb();
+            if (originalCaret) {
+              const sel = document.getSelection()! as SelectionWithModify;
+              sel.setPosition(originalCaret.node, 0);
+              for (let i = 0; i < originalCaret.offset; i++) {
+                sel.modify('move', 'forward', 'character');
+              }
+            } else {
+              document
+                .getSelection()
+                ?.setBaseAndExtent(
+                  range.start.node,
+                  range.start.offset,
+                  range.end.node,
+                  range.end.offset,
+                );
+              onInternalChangeCb();
+            }
           }
         }
       }
@@ -855,7 +964,7 @@ export default function WysiwygEditor({
       const savedSelection = selectionRef.current;
       if (savedSelection?.anchorNode != null && divRef.current) {
         if (divRef.current.contains(savedSelection.anchorNode)) {
-          restoreSelection(savedSelection);
+          restoreSavedSelection(savedSelection);
           const majorNodes = getAllSelectedMajorElements();
           majorNodes.forEach(nodeArg => {
             let node = nodeArg;
@@ -873,7 +982,7 @@ export default function WysiwygEditor({
             //              pos--;
             //            }
           });
-          restoreSelection(savedSelection);
+          restoreSavedSelection(savedSelection);
           onInternalChangeCb();
         }
       }
@@ -894,7 +1003,7 @@ export default function WysiwygEditor({
       majorNodes.forEach(node => toggleListNode(node, currentListType === type ? 'none' : type));
       const savedSelection = selectionRef.current;
       if (savedSelection) {
-        restoreSelection(savedSelection);
+        restoreSavedSelection(savedSelection);
       }
       onInternalChangeCb();
     },
@@ -969,7 +1078,7 @@ export default function WysiwygEditor({
             } else {
               indentListItem(listItem);
             }
-            restoreSelection(selectionRef.current);
+            restoreSavedSelection(selectionRef.current);
             e.preventDefault();
             onInternalChangeCb();
           }
