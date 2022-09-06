@@ -186,7 +186,7 @@ colab-webapp/colab-api,ch.colabproject.colab.api.security,AuthenticationFilter,1
 colab-webapp/colab-api,ch.colabproject.colab.api.security,CookieFilter.ParsedCookie,58,0,6,0,14,0,4,0,1,0
 colab-webapp/colab-api,ch.colabproject.colab.api.security,SessionManager,423,0,46,0,121,0,40,0,17,0
 colab-webapp/colab-api,ch.colabproject.colab.api.security,AuthenticationFailure,35,0,0,0,9,0,4,0,4,0
-colab-webapp/colab-api,ch.colabproject.colab.api.security,CookieFilter,161,0,22,0,40,0,15,0,4,0
+colab-webapp/colab-api,ch.colabproject.colab.api.security,CookieFilter,166,0,22,0,41,0,15,0,4,0
 colab-webapp/colab-api,ch.colabproject.colab.api.rest.project,ProjectRestEndpoint,189,0,4,0,47,0,19,0,17,0
 colab-webapp/colab-api,ch.colabproject.colab.api.ws.channel.tool,ChannelsBuilders,114,0,8,0,26,0,14,0,10,0
 colab-webapp/colab-api,ch.colabproject.colab.api.ws.channel.tool,ChannelsBuilders.AboutCardTypeChannelsBuilder,12,0,0,0,4,0,2,0,2,0

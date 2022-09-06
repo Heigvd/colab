@@ -179,22 +179,26 @@
 <a class="jxr_linenumber" name="L171" href="#L171">171</a>             NewCookie sessionCookie = <strong class="jxr_keyword">new</strong> NewCookie(COOKIE_NAME, cookieValue,
 <a class="jxr_linenumber" name="L172" href="#L172">172</a>                 <span class="jxr_string">"/"</span>, <strong class="jxr_keyword">null</strong>, <strong class="jxr_keyword">null</strong>, COOKIE_MAX_AGE, <strong class="jxr_keyword">true</strong>, <strong class="jxr_keyword">true</strong>);
 <a class="jxr_linenumber" name="L173" href="#L173">173</a> 
-<a class="jxr_linenumber" name="L174" href="#L174">174</a>             logger.trace(<span class="jxr_string">"Request completed with session id {}"</span>, sessionCookie);
-<a class="jxr_linenumber" name="L175" href="#L175">175</a>             responseContext.getHeaders().add(HttpHeaders.SET_COOKIE, sessionCookie);
-<a class="jxr_linenumber" name="L176" href="#L176">176</a>         } <strong class="jxr_keyword">else</strong> {
-<a class="jxr_linenumber" name="L177" href="#L177">177</a>             <em class="jxr_comment">// not session =&gt; clear cookie if exists</em>
-<a class="jxr_linenumber" name="L178" href="#L178">178</a>             <strong class="jxr_keyword">if</strong> (cookie != <strong class="jxr_keyword">null</strong>) {
-<a class="jxr_linenumber" name="L179" href="#L179">179</a>                 <em class="jxr_comment">// Clear cookie by setting no value and max-age=0</em>
-<a class="jxr_linenumber" name="L180" href="#L180">180</a>                 NewCookie sessionCookie = <strong class="jxr_keyword">new</strong> NewCookie(COOKIE_NAME, <span class="jxr_string">""</span>,
-<a class="jxr_linenumber" name="L181" href="#L181">181</a>                     <span class="jxr_string">"/"</span>, <strong class="jxr_keyword">null</strong>, <strong class="jxr_keyword">null</strong>, 0, <strong class="jxr_keyword">true</strong>, <strong class="jxr_keyword">true</strong>);
-<a class="jxr_linenumber" name="L182" href="#L182">182</a> 
-<a class="jxr_linenumber" name="L183" href="#L183">183</a>                 logger.trace(<span class="jxr_string">"Request completed with session id {}"</span>, sessionCookie);
-<a class="jxr_linenumber" name="L184" href="#L184">184</a>                 responseContext.getHeaders().add(HttpHeaders.SET_COOKIE, sessionCookie);
-<a class="jxr_linenumber" name="L185" href="#L185">185</a>             }
-<a class="jxr_linenumber" name="L186" href="#L186">186</a>         }
-<a class="jxr_linenumber" name="L187" href="#L187">187</a>     }
-<a class="jxr_linenumber" name="L188" href="#L188">188</a> 
-<a class="jxr_linenumber" name="L189" href="#L189">189</a> }
+<a class="jxr_linenumber" name="L174" href="#L174">174</a>             <em class="jxr_comment">//hack: SameSite not handled yet by jakarta rs library</em>
+<a class="jxr_linenumber" name="L175" href="#L175">175</a>             <em class="jxr_comment">//inject SameSite=Lax by hand</em>
+<a class="jxr_linenumber" name="L176" href="#L176">176</a>             String theCookie = sessionCookie.toString() + <span class="jxr_string">";SameSite=Lax"</span>;
+<a class="jxr_linenumber" name="L177" href="#L177">177</a> 
+<a class="jxr_linenumber" name="L178" href="#L178">178</a>             logger.trace(<span class="jxr_string">"Request completed with session id {}"</span>, session.getId());
+<a class="jxr_linenumber" name="L179" href="#L179">179</a>             responseContext.getHeaders().add(HttpHeaders.SET_COOKIE, theCookie);
+<a class="jxr_linenumber" name="L180" href="#L180">180</a>         } <strong class="jxr_keyword">else</strong> {
+<a class="jxr_linenumber" name="L181" href="#L181">181</a>             <em class="jxr_comment">// not session =&gt; clear cookie if exists</em>
+<a class="jxr_linenumber" name="L182" href="#L182">182</a>             <strong class="jxr_keyword">if</strong> (cookie != <strong class="jxr_keyword">null</strong>) {
+<a class="jxr_linenumber" name="L183" href="#L183">183</a>                 <em class="jxr_comment">// Clear cookie by setting no value and max-age=0</em>
+<a class="jxr_linenumber" name="L184" href="#L184">184</a>                 NewCookie sessionCookie = <strong class="jxr_keyword">new</strong> NewCookie(COOKIE_NAME, <span class="jxr_string">""</span>,
+<a class="jxr_linenumber" name="L185" href="#L185">185</a>                     <span class="jxr_string">"/"</span>, <strong class="jxr_keyword">null</strong>, <strong class="jxr_keyword">null</strong>, 0, <strong class="jxr_keyword">true</strong>, <strong class="jxr_keyword">true</strong>);
+<a class="jxr_linenumber" name="L186" href="#L186">186</a> 
+<a class="jxr_linenumber" name="L187" href="#L187">187</a>                 logger.trace(<span class="jxr_string">"Request completed with session id {}"</span>, sessionCookie);
+<a class="jxr_linenumber" name="L188" href="#L188">188</a>                 responseContext.getHeaders().add(HttpHeaders.SET_COOKIE, sessionCookie);
+<a class="jxr_linenumber" name="L189" href="#L189">189</a>             }
+<a class="jxr_linenumber" name="L190" href="#L190">190</a>         }
+<a class="jxr_linenumber" name="L191" href="#L191">191</a>     }
+<a class="jxr_linenumber" name="L192" href="#L192">192</a> 
+<a class="jxr_linenumber" name="L193" href="#L193">193</a> }
 </pre>
 <hr/>
 <div id="footer">Copyright &#169; 2022 <a href="https://www.colab-project.ch">AlbaSim, MEI, HEIG-VD, HES-SO</a>. All rights reserved.</div>
