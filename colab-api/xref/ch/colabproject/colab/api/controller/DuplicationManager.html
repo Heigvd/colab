@@ -438,222 +438,230 @@
 <a class="jxr_linenumber" name="L430" href="#L430">430</a> 
 <a class="jxr_linenumber" name="L431" href="#L431">431</a>     <strong class="jxr_keyword">private</strong> Document duplicateDocument(Document original) <strong class="jxr_keyword">throws</strong> <a name="ColabMergeException" href="../../../../../ch/colabproject/colab/api/exceptions/ColabMergeException.html#ColabMergeException">ColabMergeException</a> {
 <a class="jxr_linenumber" name="L432" href="#L432">432</a>         <strong class="jxr_keyword">if</strong> (original instanceof <a name="DocumentFile" href="../../../../../ch/colabproject/colab/api/model/document/DocumentFile.html#DocumentFile">DocumentFile</a>) {
-<a class="jxr_linenumber" name="L433" href="#L433">433</a>             <em class="jxr_comment">// TODO sandra work in progress : copy also the file</em>
-<a class="jxr_linenumber" name="L434" href="#L434">434</a>             <a name="DocumentFile" href="../../../../../ch/colabproject/colab/api/model/document/DocumentFile.html#DocumentFile">DocumentFile</a> originalDocumentFile = (<a name="DocumentFile" href="../../../../../ch/colabproject/colab/api/model/document/DocumentFile.html#DocumentFile">DocumentFile</a>) original;
-<a class="jxr_linenumber" name="L435" href="#L435">435</a> 
-<a class="jxr_linenumber" name="L436" href="#L436">436</a>             <a name="DocumentFile" href="../../../../../ch/colabproject/colab/api/model/document/DocumentFile.html#DocumentFile">DocumentFile</a> newDocumentFile = <strong class="jxr_keyword">new</strong> <a name="DocumentFile" href="../../../../../ch/colabproject/colab/api/model/document/DocumentFile.html#DocumentFile">DocumentFile</a>();
-<a class="jxr_linenumber" name="L437" href="#L437">437</a>             newDocumentFile.duplicate(originalDocumentFile);
+<a class="jxr_linenumber" name="L433" href="#L433">433</a>             <a name="DocumentFile" href="../../../../../ch/colabproject/colab/api/model/document/DocumentFile.html#DocumentFile">DocumentFile</a> originalDocumentFile = (<a name="DocumentFile" href="../../../../../ch/colabproject/colab/api/model/document/DocumentFile.html#DocumentFile">DocumentFile</a>) original;
+<a class="jxr_linenumber" name="L434" href="#L434">434</a> 
+<a class="jxr_linenumber" name="L435" href="#L435">435</a>             <a name="DocumentFile" href="../../../../../ch/colabproject/colab/api/model/document/DocumentFile.html#DocumentFile">DocumentFile</a> newDocumentFile = duplicateDocumentFile(originalDocumentFile);
+<a class="jxr_linenumber" name="L436" href="#L436">436</a> 
+<a class="jxr_linenumber" name="L437" href="#L437">437</a>             documentMatching.put(originalDocumentFile.getId(), newDocumentFile);
 <a class="jxr_linenumber" name="L438" href="#L438">438</a> 
-<a class="jxr_linenumber" name="L439" href="#L439">439</a>             documentMatching.put(originalDocumentFile.getId(), newDocumentFile);
-<a class="jxr_linenumber" name="L440" href="#L440">440</a> 
-<a class="jxr_linenumber" name="L441" href="#L441">441</a>             <strong class="jxr_keyword">return</strong> newDocumentFile;
-<a class="jxr_linenumber" name="L442" href="#L442">442</a>         } <strong class="jxr_keyword">else</strong> <strong class="jxr_keyword">if</strong> (original instanceof <a name="ExternalLink" href="../../../../../ch/colabproject/colab/api/model/document/ExternalLink.html#ExternalLink">ExternalLink</a>) {
-<a class="jxr_linenumber" name="L443" href="#L443">443</a>             <a name="ExternalLink" href="../../../../../ch/colabproject/colab/api/model/document/ExternalLink.html#ExternalLink">ExternalLink</a> originalExternalLink = (<a name="ExternalLink" href="../../../../../ch/colabproject/colab/api/model/document/ExternalLink.html#ExternalLink">ExternalLink</a>) original;
-<a class="jxr_linenumber" name="L444" href="#L444">444</a> 
-<a class="jxr_linenumber" name="L445" href="#L445">445</a>             <a name="ExternalLink" href="../../../../../ch/colabproject/colab/api/model/document/ExternalLink.html#ExternalLink">ExternalLink</a> newExternalLink = <strong class="jxr_keyword">new</strong> <a name="ExternalLink" href="../../../../../ch/colabproject/colab/api/model/document/ExternalLink.html#ExternalLink">ExternalLink</a>();
-<a class="jxr_linenumber" name="L446" href="#L446">446</a>             newExternalLink.duplicate(originalExternalLink);
+<a class="jxr_linenumber" name="L439" href="#L439">439</a>             <strong class="jxr_keyword">return</strong> newDocumentFile;
+<a class="jxr_linenumber" name="L440" href="#L440">440</a>         } <strong class="jxr_keyword">else</strong> <strong class="jxr_keyword">if</strong> (original instanceof <a name="ExternalLink" href="../../../../../ch/colabproject/colab/api/model/document/ExternalLink.html#ExternalLink">ExternalLink</a>) {
+<a class="jxr_linenumber" name="L441" href="#L441">441</a>             <a name="ExternalLink" href="../../../../../ch/colabproject/colab/api/model/document/ExternalLink.html#ExternalLink">ExternalLink</a> originalExternalLink = (<a name="ExternalLink" href="../../../../../ch/colabproject/colab/api/model/document/ExternalLink.html#ExternalLink">ExternalLink</a>) original;
+<a class="jxr_linenumber" name="L442" href="#L442">442</a> 
+<a class="jxr_linenumber" name="L443" href="#L443">443</a>             <a name="ExternalLink" href="../../../../../ch/colabproject/colab/api/model/document/ExternalLink.html#ExternalLink">ExternalLink</a> newExternalLink = <strong class="jxr_keyword">new</strong> <a name="ExternalLink" href="../../../../../ch/colabproject/colab/api/model/document/ExternalLink.html#ExternalLink">ExternalLink</a>();
+<a class="jxr_linenumber" name="L444" href="#L444">444</a>             newExternalLink.duplicate(originalExternalLink);
+<a class="jxr_linenumber" name="L445" href="#L445">445</a> 
+<a class="jxr_linenumber" name="L446" href="#L446">446</a>             documentMatching.put(originalExternalLink.getId(), newExternalLink);
 <a class="jxr_linenumber" name="L447" href="#L447">447</a> 
-<a class="jxr_linenumber" name="L448" href="#L448">448</a>             documentMatching.put(originalExternalLink.getId(), newExternalLink);
-<a class="jxr_linenumber" name="L449" href="#L449">449</a> 
-<a class="jxr_linenumber" name="L450" href="#L450">450</a>             <strong class="jxr_keyword">return</strong> newExternalLink;
-<a class="jxr_linenumber" name="L451" href="#L451">451</a>         } <strong class="jxr_keyword">else</strong> <strong class="jxr_keyword">if</strong> (original instanceof <a name="TextDataBlock" href="../../../../../ch/colabproject/colab/api/model/document/TextDataBlock.html#TextDataBlock">TextDataBlock</a>) {
-<a class="jxr_linenumber" name="L452" href="#L452">452</a>             <a name="TextDataBlock" href="../../../../../ch/colabproject/colab/api/model/document/TextDataBlock.html#TextDataBlock">TextDataBlock</a> originalTextDataBlock = (<a name="TextDataBlock" href="../../../../../ch/colabproject/colab/api/model/document/TextDataBlock.html#TextDataBlock">TextDataBlock</a>) original;
-<a class="jxr_linenumber" name="L453" href="#L453">453</a> 
-<a class="jxr_linenumber" name="L454" href="#L454">454</a>             <a name="TextDataBlock" href="../../../../../ch/colabproject/colab/api/model/document/TextDataBlock.html#TextDataBlock">TextDataBlock</a> newTextDataBlock = <strong class="jxr_keyword">new</strong> <a name="TextDataBlock" href="../../../../../ch/colabproject/colab/api/model/document/TextDataBlock.html#TextDataBlock">TextDataBlock</a>();
-<a class="jxr_linenumber" name="L455" href="#L455">455</a>             newTextDataBlock.duplicate(originalTextDataBlock);
+<a class="jxr_linenumber" name="L448" href="#L448">448</a>             <strong class="jxr_keyword">return</strong> newExternalLink;
+<a class="jxr_linenumber" name="L449" href="#L449">449</a>         } <strong class="jxr_keyword">else</strong> <strong class="jxr_keyword">if</strong> (original instanceof <a name="TextDataBlock" href="../../../../../ch/colabproject/colab/api/model/document/TextDataBlock.html#TextDataBlock">TextDataBlock</a>) {
+<a class="jxr_linenumber" name="L450" href="#L450">450</a>             <a name="TextDataBlock" href="../../../../../ch/colabproject/colab/api/model/document/TextDataBlock.html#TextDataBlock">TextDataBlock</a> originalTextDataBlock = (<a name="TextDataBlock" href="../../../../../ch/colabproject/colab/api/model/document/TextDataBlock.html#TextDataBlock">TextDataBlock</a>) original;
+<a class="jxr_linenumber" name="L451" href="#L451">451</a> 
+<a class="jxr_linenumber" name="L452" href="#L452">452</a>             <a name="TextDataBlock" href="../../../../../ch/colabproject/colab/api/model/document/TextDataBlock.html#TextDataBlock">TextDataBlock</a> newTextDataBlock = <strong class="jxr_keyword">new</strong> <a name="TextDataBlock" href="../../../../../ch/colabproject/colab/api/model/document/TextDataBlock.html#TextDataBlock">TextDataBlock</a>();
+<a class="jxr_linenumber" name="L453" href="#L453">453</a>             newTextDataBlock.duplicate(originalTextDataBlock);
+<a class="jxr_linenumber" name="L454" href="#L454">454</a> 
+<a class="jxr_linenumber" name="L455" href="#L455">455</a>             documentMatching.put(originalTextDataBlock.getId(), newTextDataBlock);
 <a class="jxr_linenumber" name="L456" href="#L456">456</a> 
-<a class="jxr_linenumber" name="L457" href="#L457">457</a>             documentMatching.put(originalTextDataBlock.getId(), newTextDataBlock);
-<a class="jxr_linenumber" name="L458" href="#L458">458</a> 
-<a class="jxr_linenumber" name="L459" href="#L459">459</a>             <strong class="jxr_keyword">return</strong> newTextDataBlock;
-<a class="jxr_linenumber" name="L460" href="#L460">460</a>         } <strong class="jxr_keyword">else</strong> {
-<a class="jxr_linenumber" name="L461" href="#L461">461</a>             <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> IllegalStateException(<span class="jxr_string">"abstract card type implementation not handled"</span>);
-<a class="jxr_linenumber" name="L462" href="#L462">462</a>         }
-<a class="jxr_linenumber" name="L463" href="#L463">463</a>     }
-<a class="jxr_linenumber" name="L464" href="#L464">464</a> 
-<a class="jxr_linenumber" name="L465" href="#L465">465</a>     <strong class="jxr_keyword">private</strong> AbstractResource duplicateResource(AbstractResource original)
-<a class="jxr_linenumber" name="L466" href="#L466">466</a>         <strong class="jxr_keyword">throws</strong> <a name="ColabMergeException" href="../../../../../ch/colabproject/colab/api/exceptions/ColabMergeException.html#ColabMergeException">ColabMergeException</a> {
-<a class="jxr_linenumber" name="L467" href="#L467">467</a>         <strong class="jxr_keyword">if</strong> (original instanceof Resource) {
-<a class="jxr_linenumber" name="L468" href="#L468">468</a>             Resource originalResource = (Resource) original;
+<a class="jxr_linenumber" name="L457" href="#L457">457</a>             <strong class="jxr_keyword">return</strong> newTextDataBlock;
+<a class="jxr_linenumber" name="L458" href="#L458">458</a>         } <strong class="jxr_keyword">else</strong> {
+<a class="jxr_linenumber" name="L459" href="#L459">459</a>             <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> IllegalStateException(<span class="jxr_string">"abstract card type implementation not handled"</span>);
+<a class="jxr_linenumber" name="L460" href="#L460">460</a>         }
+<a class="jxr_linenumber" name="L461" href="#L461">461</a>     }
+<a class="jxr_linenumber" name="L462" href="#L462">462</a> 
+<a class="jxr_linenumber" name="L463" href="#L463">463</a>     <em class="jxr_comment">// TODO sandra work in progress : copy also the file</em>
+<a class="jxr_linenumber" name="L464" href="#L464">464</a>     <strong class="jxr_keyword">private</strong> <a name="DocumentFile" href="../../../../../ch/colabproject/colab/api/model/document/DocumentFile.html#DocumentFile">DocumentFile</a> duplicateDocumentFile(<a name="DocumentFile" href="../../../../../ch/colabproject/colab/api/model/document/DocumentFile.html#DocumentFile">DocumentFile</a> original) <strong class="jxr_keyword">throws</strong> <a name="ColabMergeException" href="../../../../../ch/colabproject/colab/api/exceptions/ColabMergeException.html#ColabMergeException">ColabMergeException</a> {
+<a class="jxr_linenumber" name="L465" href="#L465">465</a>         <a name="DocumentFile" href="../../../../../ch/colabproject/colab/api/model/document/DocumentFile.html#DocumentFile">DocumentFile</a> newDocumentFile = <strong class="jxr_keyword">new</strong> <a name="DocumentFile" href="../../../../../ch/colabproject/colab/api/model/document/DocumentFile.html#DocumentFile">DocumentFile</a>();
+<a class="jxr_linenumber" name="L466" href="#L466">466</a>         newDocumentFile.duplicate(original);
+<a class="jxr_linenumber" name="L467" href="#L467">467</a> 
+<a class="jxr_linenumber" name="L468" href="#L468">468</a> 
 <a class="jxr_linenumber" name="L469" href="#L469">469</a> 
-<a class="jxr_linenumber" name="L470" href="#L470">470</a>             Resource newResource = <strong class="jxr_keyword">new</strong> Resource();
-<a class="jxr_linenumber" name="L471" href="#L471">471</a>             newResource.duplicate(originalResource);
+<a class="jxr_linenumber" name="L470" href="#L470">470</a>         <strong class="jxr_keyword">return</strong> newDocumentFile;
+<a class="jxr_linenumber" name="L471" href="#L471">471</a>     }
 <a class="jxr_linenumber" name="L472" href="#L472">472</a> 
-<a class="jxr_linenumber" name="L473" href="#L473">473</a>             resourceMatching.put(originalResource.getId(), newResource);
-<a class="jxr_linenumber" name="L474" href="#L474">474</a> 
-<a class="jxr_linenumber" name="L475" href="#L475">475</a>             List&lt;Document&gt; originalDocuments = originalResource.getDocuments();
-<a class="jxr_linenumber" name="L476" href="#L476">476</a>             originalDocuments.sort(ID_COMPARATOR);
+<a class="jxr_linenumber" name="L473" href="#L473">473</a>     <strong class="jxr_keyword">private</strong> AbstractResource duplicateResource(AbstractResource original)
+<a class="jxr_linenumber" name="L474" href="#L474">474</a>         <strong class="jxr_keyword">throws</strong> <a name="ColabMergeException" href="../../../../../ch/colabproject/colab/api/exceptions/ColabMergeException.html#ColabMergeException">ColabMergeException</a> {
+<a class="jxr_linenumber" name="L475" href="#L475">475</a>         <strong class="jxr_keyword">if</strong> (original instanceof Resource) {
+<a class="jxr_linenumber" name="L476" href="#L476">476</a>             Resource originalResource = (Resource) original;
 <a class="jxr_linenumber" name="L477" href="#L477">477</a> 
-<a class="jxr_linenumber" name="L478" href="#L478">478</a>             <strong class="jxr_keyword">for</strong> (Document originalDocument : originalDocuments) {
-<a class="jxr_linenumber" name="L479" href="#L479">479</a>                 Document newDocument = duplicateDocument(originalDocument);
+<a class="jxr_linenumber" name="L478" href="#L478">478</a>             Resource newResource = <strong class="jxr_keyword">new</strong> Resource();
+<a class="jxr_linenumber" name="L479" href="#L479">479</a>             newResource.duplicate(originalResource);
 <a class="jxr_linenumber" name="L480" href="#L480">480</a> 
-<a class="jxr_linenumber" name="L481" href="#L481">481</a>                 newDocument.setOwningResource(newResource);
-<a class="jxr_linenumber" name="L482" href="#L482">482</a>                 newResource.getDocuments().add(newDocument);
-<a class="jxr_linenumber" name="L483" href="#L483">483</a>             }
-<a class="jxr_linenumber" name="L484" href="#L484">484</a> 
-<a class="jxr_linenumber" name="L485" href="#L485">485</a>             <a name="TextDataBlock" href="../../../../../ch/colabproject/colab/api/model/document/TextDataBlock.html#TextDataBlock">TextDataBlock</a> teaser = originalResource.getTeaser();
-<a class="jxr_linenumber" name="L486" href="#L486">486</a>             <strong class="jxr_keyword">if</strong> (teaser != <strong class="jxr_keyword">null</strong>) {
-<a class="jxr_linenumber" name="L487" href="#L487">487</a>                 <a name="TextDataBlock" href="../../../../../ch/colabproject/colab/api/model/document/TextDataBlock.html#TextDataBlock">TextDataBlock</a> newTeaser = (<a name="TextDataBlock" href="../../../../../ch/colabproject/colab/api/model/document/TextDataBlock.html#TextDataBlock">TextDataBlock</a>) duplicateDocument(teaser);
+<a class="jxr_linenumber" name="L481" href="#L481">481</a>             resourceMatching.put(originalResource.getId(), newResource);
+<a class="jxr_linenumber" name="L482" href="#L482">482</a> 
+<a class="jxr_linenumber" name="L483" href="#L483">483</a>             List&lt;Document&gt; originalDocuments = originalResource.getDocuments();
+<a class="jxr_linenumber" name="L484" href="#L484">484</a>             originalDocuments.sort(ID_COMPARATOR);
+<a class="jxr_linenumber" name="L485" href="#L485">485</a> 
+<a class="jxr_linenumber" name="L486" href="#L486">486</a>             <strong class="jxr_keyword">for</strong> (Document originalDocument : originalDocuments) {
+<a class="jxr_linenumber" name="L487" href="#L487">487</a>                 Document newDocument = duplicateDocument(originalDocument);
 <a class="jxr_linenumber" name="L488" href="#L488">488</a> 
-<a class="jxr_linenumber" name="L489" href="#L489">489</a>                 newTeaser.setTeasingResource(newResource);
-<a class="jxr_linenumber" name="L490" href="#L490">490</a>                 newResource.setTeaser(newTeaser);
+<a class="jxr_linenumber" name="L489" href="#L489">489</a>                 newDocument.setOwningResource(newResource);
+<a class="jxr_linenumber" name="L490" href="#L490">490</a>                 newResource.getDocuments().add(newDocument);
 <a class="jxr_linenumber" name="L491" href="#L491">491</a>             }
 <a class="jxr_linenumber" name="L492" href="#L492">492</a> 
-<a class="jxr_linenumber" name="L493" href="#L493">493</a>             <strong class="jxr_keyword">return</strong> newResource;
-<a class="jxr_linenumber" name="L494" href="#L494">494</a>         } <strong class="jxr_keyword">else</strong> <strong class="jxr_keyword">if</strong> (original instanceof ResourceRef) {
-<a class="jxr_linenumber" name="L495" href="#L495">495</a>             ResourceRef originalResourceRef = (ResourceRef) original;
+<a class="jxr_linenumber" name="L493" href="#L493">493</a>             <a name="TextDataBlock" href="../../../../../ch/colabproject/colab/api/model/document/TextDataBlock.html#TextDataBlock">TextDataBlock</a> teaser = originalResource.getTeaser();
+<a class="jxr_linenumber" name="L494" href="#L494">494</a>             <strong class="jxr_keyword">if</strong> (teaser != <strong class="jxr_keyword">null</strong>) {
+<a class="jxr_linenumber" name="L495" href="#L495">495</a>                 <a name="TextDataBlock" href="../../../../../ch/colabproject/colab/api/model/document/TextDataBlock.html#TextDataBlock">TextDataBlock</a> newTeaser = (<a name="TextDataBlock" href="../../../../../ch/colabproject/colab/api/model/document/TextDataBlock.html#TextDataBlock">TextDataBlock</a>) duplicateDocument(teaser);
 <a class="jxr_linenumber" name="L496" href="#L496">496</a> 
-<a class="jxr_linenumber" name="L497" href="#L497">497</a>             ResourceRef newResourceRef = <strong class="jxr_keyword">new</strong> ResourceRef();
-<a class="jxr_linenumber" name="L498" href="#L498">498</a>             newResourceRef.duplicate(originalResourceRef);
-<a class="jxr_linenumber" name="L499" href="#L499">499</a> 
-<a class="jxr_linenumber" name="L500" href="#L500">500</a>             resourceMatching.put(originalResourceRef.getId(), newResourceRef);
-<a class="jxr_linenumber" name="L501" href="#L501">501</a> 
-<a class="jxr_linenumber" name="L502" href="#L502">502</a>             AbstractResource originalTarget = originalResourceRef.getTarget();
-<a class="jxr_linenumber" name="L503" href="#L503">503</a>             <strong class="jxr_keyword">if</strong> (originalTarget != <strong class="jxr_keyword">null</strong>) {
-<a class="jxr_linenumber" name="L504" href="#L504">504</a>                 AbstractResource newTarget = originalTarget;
-<a class="jxr_linenumber" name="L505" href="#L505">505</a> 
-<a class="jxr_linenumber" name="L506" href="#L506">506</a>                 newResourceRef.setTarget(newTarget);
-<a class="jxr_linenumber" name="L507" href="#L507">507</a>             }
-<a class="jxr_linenumber" name="L508" href="#L508">508</a> 
-<a class="jxr_linenumber" name="L509" href="#L509">509</a>             <strong class="jxr_keyword">return</strong> newResourceRef;
-<a class="jxr_linenumber" name="L510" href="#L510">510</a> 
-<a class="jxr_linenumber" name="L511" href="#L511">511</a>         } <strong class="jxr_keyword">else</strong> {
-<a class="jxr_linenumber" name="L512" href="#L512">512</a>             <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> IllegalStateException(<span class="jxr_string">"abstract card type implementation not handled"</span>);
-<a class="jxr_linenumber" name="L513" href="#L513">513</a>         }
-<a class="jxr_linenumber" name="L514" href="#L514">514</a>     }
-<a class="jxr_linenumber" name="L515" href="#L515">515</a> 
-<a class="jxr_linenumber" name="L516" href="#L516">516</a>     <strong class="jxr_keyword">private</strong> AccessControl duplicateAccessControl(AccessControl original)
-<a class="jxr_linenumber" name="L517" href="#L517">517</a>         <strong class="jxr_keyword">throws</strong> <a name="ColabMergeException" href="../../../../../ch/colabproject/colab/api/exceptions/ColabMergeException.html#ColabMergeException">ColabMergeException</a> {
-<a class="jxr_linenumber" name="L518" href="#L518">518</a>         AccessControl newAccessControl = <strong class="jxr_keyword">new</strong> AccessControl();
-<a class="jxr_linenumber" name="L519" href="#L519">519</a>         newAccessControl.duplicate(original);
-<a class="jxr_linenumber" name="L520" href="#L520">520</a> 
-<a class="jxr_linenumber" name="L521" href="#L521">521</a>         <strong class="jxr_keyword">if</strong> (original.getMember() != <strong class="jxr_keyword">null</strong>) {
-<a class="jxr_linenumber" name="L522" href="#L522">522</a>             TeamMember member = teamMemberMatching.get(original.getMember().getId());
+<a class="jxr_linenumber" name="L497" href="#L497">497</a>                 newTeaser.setTeasingResource(newResource);
+<a class="jxr_linenumber" name="L498" href="#L498">498</a>                 newResource.setTeaser(newTeaser);
+<a class="jxr_linenumber" name="L499" href="#L499">499</a>             }
+<a class="jxr_linenumber" name="L500" href="#L500">500</a> 
+<a class="jxr_linenumber" name="L501" href="#L501">501</a>             <strong class="jxr_keyword">return</strong> newResource;
+<a class="jxr_linenumber" name="L502" href="#L502">502</a>         } <strong class="jxr_keyword">else</strong> <strong class="jxr_keyword">if</strong> (original instanceof ResourceRef) {
+<a class="jxr_linenumber" name="L503" href="#L503">503</a>             ResourceRef originalResourceRef = (ResourceRef) original;
+<a class="jxr_linenumber" name="L504" href="#L504">504</a> 
+<a class="jxr_linenumber" name="L505" href="#L505">505</a>             ResourceRef newResourceRef = <strong class="jxr_keyword">new</strong> ResourceRef();
+<a class="jxr_linenumber" name="L506" href="#L506">506</a>             newResourceRef.duplicate(originalResourceRef);
+<a class="jxr_linenumber" name="L507" href="#L507">507</a> 
+<a class="jxr_linenumber" name="L508" href="#L508">508</a>             resourceMatching.put(originalResourceRef.getId(), newResourceRef);
+<a class="jxr_linenumber" name="L509" href="#L509">509</a> 
+<a class="jxr_linenumber" name="L510" href="#L510">510</a>             AbstractResource originalTarget = originalResourceRef.getTarget();
+<a class="jxr_linenumber" name="L511" href="#L511">511</a>             <strong class="jxr_keyword">if</strong> (originalTarget != <strong class="jxr_keyword">null</strong>) {
+<a class="jxr_linenumber" name="L512" href="#L512">512</a>                 AbstractResource newTarget = originalTarget;
+<a class="jxr_linenumber" name="L513" href="#L513">513</a> 
+<a class="jxr_linenumber" name="L514" href="#L514">514</a>                 newResourceRef.setTarget(newTarget);
+<a class="jxr_linenumber" name="L515" href="#L515">515</a>             }
+<a class="jxr_linenumber" name="L516" href="#L516">516</a> 
+<a class="jxr_linenumber" name="L517" href="#L517">517</a>             <strong class="jxr_keyword">return</strong> newResourceRef;
+<a class="jxr_linenumber" name="L518" href="#L518">518</a> 
+<a class="jxr_linenumber" name="L519" href="#L519">519</a>         } <strong class="jxr_keyword">else</strong> {
+<a class="jxr_linenumber" name="L520" href="#L520">520</a>             <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> IllegalStateException(<span class="jxr_string">"abstract card type implementation not handled"</span>);
+<a class="jxr_linenumber" name="L521" href="#L521">521</a>         }
+<a class="jxr_linenumber" name="L522" href="#L522">522</a>     }
 <a class="jxr_linenumber" name="L523" href="#L523">523</a> 
-<a class="jxr_linenumber" name="L524" href="#L524">524</a>             <strong class="jxr_keyword">if</strong> (member == <strong class="jxr_keyword">null</strong>) {
-<a class="jxr_linenumber" name="L525" href="#L525">525</a>                 <strong class="jxr_keyword">throw</strong> HttpErrorMessage.dataIntegrityFailure();
-<a class="jxr_linenumber" name="L526" href="#L526">526</a>             }
-<a class="jxr_linenumber" name="L527" href="#L527">527</a> 
-<a class="jxr_linenumber" name="L528" href="#L528">528</a>             member.getAccessControlList().add(newAccessControl);
-<a class="jxr_linenumber" name="L529" href="#L529">529</a>             newAccessControl.setMember(member);
-<a class="jxr_linenumber" name="L530" href="#L530">530</a>         }
+<a class="jxr_linenumber" name="L524" href="#L524">524</a>     <strong class="jxr_keyword">private</strong> AccessControl duplicateAccessControl(AccessControl original)
+<a class="jxr_linenumber" name="L525" href="#L525">525</a>         <strong class="jxr_keyword">throws</strong> <a name="ColabMergeException" href="../../../../../ch/colabproject/colab/api/exceptions/ColabMergeException.html#ColabMergeException">ColabMergeException</a> {
+<a class="jxr_linenumber" name="L526" href="#L526">526</a>         AccessControl newAccessControl = <strong class="jxr_keyword">new</strong> AccessControl();
+<a class="jxr_linenumber" name="L527" href="#L527">527</a>         newAccessControl.duplicate(original);
+<a class="jxr_linenumber" name="L528" href="#L528">528</a> 
+<a class="jxr_linenumber" name="L529" href="#L529">529</a>         <strong class="jxr_keyword">if</strong> (original.getMember() != <strong class="jxr_keyword">null</strong>) {
+<a class="jxr_linenumber" name="L530" href="#L530">530</a>             TeamMember member = teamMemberMatching.get(original.getMember().getId());
 <a class="jxr_linenumber" name="L531" href="#L531">531</a> 
-<a class="jxr_linenumber" name="L532" href="#L532">532</a>         <strong class="jxr_keyword">if</strong> (original.getRole() != <strong class="jxr_keyword">null</strong>) {
-<a class="jxr_linenumber" name="L533" href="#L533">533</a>             TeamRole role = teamRoleMatching.get(original.getRole().getId());
-<a class="jxr_linenumber" name="L534" href="#L534">534</a> 
-<a class="jxr_linenumber" name="L535" href="#L535">535</a>             <strong class="jxr_keyword">if</strong> (role == <strong class="jxr_keyword">null</strong>) {
-<a class="jxr_linenumber" name="L536" href="#L536">536</a>                 <strong class="jxr_keyword">throw</strong> HttpErrorMessage.dataIntegrityFailure();
-<a class="jxr_linenumber" name="L537" href="#L537">537</a>             }
-<a class="jxr_linenumber" name="L538" href="#L538">538</a> 
-<a class="jxr_linenumber" name="L539" href="#L539">539</a>             role.getAccessControl().add(newAccessControl);
-<a class="jxr_linenumber" name="L540" href="#L540">540</a>             newAccessControl.setRole(role);
-<a class="jxr_linenumber" name="L541" href="#L541">541</a>         }
+<a class="jxr_linenumber" name="L532" href="#L532">532</a>             <strong class="jxr_keyword">if</strong> (member == <strong class="jxr_keyword">null</strong>) {
+<a class="jxr_linenumber" name="L533" href="#L533">533</a>                 <strong class="jxr_keyword">throw</strong> HttpErrorMessage.dataIntegrityFailure();
+<a class="jxr_linenumber" name="L534" href="#L534">534</a>             }
+<a class="jxr_linenumber" name="L535" href="#L535">535</a> 
+<a class="jxr_linenumber" name="L536" href="#L536">536</a>             member.getAccessControlList().add(newAccessControl);
+<a class="jxr_linenumber" name="L537" href="#L537">537</a>             newAccessControl.setMember(member);
+<a class="jxr_linenumber" name="L538" href="#L538">538</a>         }
+<a class="jxr_linenumber" name="L539" href="#L539">539</a> 
+<a class="jxr_linenumber" name="L540" href="#L540">540</a>         <strong class="jxr_keyword">if</strong> (original.getRole() != <strong class="jxr_keyword">null</strong>) {
+<a class="jxr_linenumber" name="L541" href="#L541">541</a>             TeamRole role = teamRoleMatching.get(original.getRole().getId());
 <a class="jxr_linenumber" name="L542" href="#L542">542</a> 
-<a class="jxr_linenumber" name="L543" href="#L543">543</a>         <strong class="jxr_keyword">return</strong> newAccessControl;
-<a class="jxr_linenumber" name="L544" href="#L544">544</a>     }
-<a class="jxr_linenumber" name="L545" href="#L545">545</a> 
-<a class="jxr_linenumber" name="L546" href="#L546">546</a>     <strong class="jxr_keyword">private</strong> StickyNoteLink duplicateStickyNoteLink(StickyNoteLink original)
-<a class="jxr_linenumber" name="L547" href="#L547">547</a>         <strong class="jxr_keyword">throws</strong> <a name="ColabMergeException" href="../../../../../ch/colabproject/colab/api/exceptions/ColabMergeException.html#ColabMergeException">ColabMergeException</a> {
-<a class="jxr_linenumber" name="L548" href="#L548">548</a>         StickyNoteLink newLink = <strong class="jxr_keyword">new</strong> StickyNoteLink();
-<a class="jxr_linenumber" name="L549" href="#L549">549</a>         newLink.duplicate(original);
+<a class="jxr_linenumber" name="L543" href="#L543">543</a>             <strong class="jxr_keyword">if</strong> (role == <strong class="jxr_keyword">null</strong>) {
+<a class="jxr_linenumber" name="L544" href="#L544">544</a>                 <strong class="jxr_keyword">throw</strong> HttpErrorMessage.dataIntegrityFailure();
+<a class="jxr_linenumber" name="L545" href="#L545">545</a>             }
+<a class="jxr_linenumber" name="L546" href="#L546">546</a> 
+<a class="jxr_linenumber" name="L547" href="#L547">547</a>             role.getAccessControl().add(newAccessControl);
+<a class="jxr_linenumber" name="L548" href="#L548">548</a>             newAccessControl.setRole(role);
+<a class="jxr_linenumber" name="L549" href="#L549">549</a>         }
 <a class="jxr_linenumber" name="L550" href="#L550">550</a> 
-<a class="jxr_linenumber" name="L551" href="#L551">551</a>         <a name="TextDataBlock" href="../../../../../ch/colabproject/colab/api/model/document/TextDataBlock.html#TextDataBlock">TextDataBlock</a> explanation = original.getExplanation();
-<a class="jxr_linenumber" name="L552" href="#L552">552</a>         <strong class="jxr_keyword">if</strong> (explanation != <strong class="jxr_keyword">null</strong>) {
-<a class="jxr_linenumber" name="L553" href="#L553">553</a>             <a name="TextDataBlock" href="../../../../../ch/colabproject/colab/api/model/document/TextDataBlock.html#TextDataBlock">TextDataBlock</a> newExplanation = (<a name="TextDataBlock" href="../../../../../ch/colabproject/colab/api/model/document/TextDataBlock.html#TextDataBlock">TextDataBlock</a>) duplicateDocument(explanation);
-<a class="jxr_linenumber" name="L554" href="#L554">554</a>             newExplanation.setExplainingStickyNoteLink(newLink);
-<a class="jxr_linenumber" name="L555" href="#L555">555</a>             newLink.setExplanation(newExplanation);
-<a class="jxr_linenumber" name="L556" href="#L556">556</a>         }
-<a class="jxr_linenumber" name="L557" href="#L557">557</a> 
-<a class="jxr_linenumber" name="L558" href="#L558">558</a>         <strong class="jxr_keyword">if</strong> (original.getDestinationCard() != <strong class="jxr_keyword">null</strong>) {
-<a class="jxr_linenumber" name="L559" href="#L559">559</a>             Card destinationCard = cardMatching.get(original.getDestinationCard().getId());
-<a class="jxr_linenumber" name="L560" href="#L560">560</a> 
-<a class="jxr_linenumber" name="L561" href="#L561">561</a>             <strong class="jxr_keyword">if</strong> (destinationCard == <strong class="jxr_keyword">null</strong>) {
-<a class="jxr_linenumber" name="L562" href="#L562">562</a>                 <strong class="jxr_keyword">throw</strong> HttpErrorMessage.dataIntegrityFailure();
-<a class="jxr_linenumber" name="L563" href="#L563">563</a>             }
-<a class="jxr_linenumber" name="L564" href="#L564">564</a> 
-<a class="jxr_linenumber" name="L565" href="#L565">565</a>             destinationCard.getStickyNoteLinksAsDest().add(newLink);
-<a class="jxr_linenumber" name="L566" href="#L566">566</a>             newLink.setDestinationCard(destinationCard);
-<a class="jxr_linenumber" name="L567" href="#L567">567</a>         }
+<a class="jxr_linenumber" name="L551" href="#L551">551</a>         <strong class="jxr_keyword">return</strong> newAccessControl;
+<a class="jxr_linenumber" name="L552" href="#L552">552</a>     }
+<a class="jxr_linenumber" name="L553" href="#L553">553</a> 
+<a class="jxr_linenumber" name="L554" href="#L554">554</a>     <strong class="jxr_keyword">private</strong> StickyNoteLink duplicateStickyNoteLink(StickyNoteLink original)
+<a class="jxr_linenumber" name="L555" href="#L555">555</a>         <strong class="jxr_keyword">throws</strong> <a name="ColabMergeException" href="../../../../../ch/colabproject/colab/api/exceptions/ColabMergeException.html#ColabMergeException">ColabMergeException</a> {
+<a class="jxr_linenumber" name="L556" href="#L556">556</a>         StickyNoteLink newLink = <strong class="jxr_keyword">new</strong> StickyNoteLink();
+<a class="jxr_linenumber" name="L557" href="#L557">557</a>         newLink.duplicate(original);
+<a class="jxr_linenumber" name="L558" href="#L558">558</a> 
+<a class="jxr_linenumber" name="L559" href="#L559">559</a>         <a name="TextDataBlock" href="../../../../../ch/colabproject/colab/api/model/document/TextDataBlock.html#TextDataBlock">TextDataBlock</a> explanation = original.getExplanation();
+<a class="jxr_linenumber" name="L560" href="#L560">560</a>         <strong class="jxr_keyword">if</strong> (explanation != <strong class="jxr_keyword">null</strong>) {
+<a class="jxr_linenumber" name="L561" href="#L561">561</a>             <a name="TextDataBlock" href="../../../../../ch/colabproject/colab/api/model/document/TextDataBlock.html#TextDataBlock">TextDataBlock</a> newExplanation = (<a name="TextDataBlock" href="../../../../../ch/colabproject/colab/api/model/document/TextDataBlock.html#TextDataBlock">TextDataBlock</a>) duplicateDocument(explanation);
+<a class="jxr_linenumber" name="L562" href="#L562">562</a>             newExplanation.setExplainingStickyNoteLink(newLink);
+<a class="jxr_linenumber" name="L563" href="#L563">563</a>             newLink.setExplanation(newExplanation);
+<a class="jxr_linenumber" name="L564" href="#L564">564</a>         }
+<a class="jxr_linenumber" name="L565" href="#L565">565</a> 
+<a class="jxr_linenumber" name="L566" href="#L566">566</a>         <strong class="jxr_keyword">if</strong> (original.getDestinationCard() != <strong class="jxr_keyword">null</strong>) {
+<a class="jxr_linenumber" name="L567" href="#L567">567</a>             Card destinationCard = cardMatching.get(original.getDestinationCard().getId());
 <a class="jxr_linenumber" name="L568" href="#L568">568</a> 
-<a class="jxr_linenumber" name="L569" href="#L569">569</a>         <strong class="jxr_keyword">if</strong> (original.getSrcCard() != <strong class="jxr_keyword">null</strong>) {
-<a class="jxr_linenumber" name="L570" href="#L570">570</a>             Card srcCard = cardMatching.get(original.getSrcCard().getId());
-<a class="jxr_linenumber" name="L571" href="#L571">571</a> 
-<a class="jxr_linenumber" name="L572" href="#L572">572</a>             <strong class="jxr_keyword">if</strong> (srcCard == <strong class="jxr_keyword">null</strong>) {
-<a class="jxr_linenumber" name="L573" href="#L573">573</a>                 <strong class="jxr_keyword">throw</strong> HttpErrorMessage.dataIntegrityFailure();
-<a class="jxr_linenumber" name="L574" href="#L574">574</a>             }
-<a class="jxr_linenumber" name="L575" href="#L575">575</a> 
-<a class="jxr_linenumber" name="L576" href="#L576">576</a>             srcCard.getStickyNoteLinksAsSrc().add(newLink);
-<a class="jxr_linenumber" name="L577" href="#L577">577</a>             newLink.setSrcCard(srcCard);
-<a class="jxr_linenumber" name="L578" href="#L578">578</a>         }
+<a class="jxr_linenumber" name="L569" href="#L569">569</a>             <strong class="jxr_keyword">if</strong> (destinationCard == <strong class="jxr_keyword">null</strong>) {
+<a class="jxr_linenumber" name="L570" href="#L570">570</a>                 <strong class="jxr_keyword">throw</strong> HttpErrorMessage.dataIntegrityFailure();
+<a class="jxr_linenumber" name="L571" href="#L571">571</a>             }
+<a class="jxr_linenumber" name="L572" href="#L572">572</a> 
+<a class="jxr_linenumber" name="L573" href="#L573">573</a>             destinationCard.getStickyNoteLinksAsDest().add(newLink);
+<a class="jxr_linenumber" name="L574" href="#L574">574</a>             newLink.setDestinationCard(destinationCard);
+<a class="jxr_linenumber" name="L575" href="#L575">575</a>         }
+<a class="jxr_linenumber" name="L576" href="#L576">576</a> 
+<a class="jxr_linenumber" name="L577" href="#L577">577</a>         <strong class="jxr_keyword">if</strong> (original.getSrcCard() != <strong class="jxr_keyword">null</strong>) {
+<a class="jxr_linenumber" name="L578" href="#L578">578</a>             Card srcCard = cardMatching.get(original.getSrcCard().getId());
 <a class="jxr_linenumber" name="L579" href="#L579">579</a> 
-<a class="jxr_linenumber" name="L580" href="#L580">580</a>         <strong class="jxr_keyword">if</strong> (original.getSrcCardContent() != <strong class="jxr_keyword">null</strong>) {
-<a class="jxr_linenumber" name="L581" href="#L581">581</a>             CardContent srcCardContent = cardContentMatching
-<a class="jxr_linenumber" name="L582" href="#L582">582</a>                 .get(original.getSrcCardContent().getId());
+<a class="jxr_linenumber" name="L580" href="#L580">580</a>             <strong class="jxr_keyword">if</strong> (srcCard == <strong class="jxr_keyword">null</strong>) {
+<a class="jxr_linenumber" name="L581" href="#L581">581</a>                 <strong class="jxr_keyword">throw</strong> HttpErrorMessage.dataIntegrityFailure();
+<a class="jxr_linenumber" name="L582" href="#L582">582</a>             }
 <a class="jxr_linenumber" name="L583" href="#L583">583</a> 
-<a class="jxr_linenumber" name="L584" href="#L584">584</a>             <strong class="jxr_keyword">if</strong> (srcCardContent == <strong class="jxr_keyword">null</strong>) {
-<a class="jxr_linenumber" name="L585" href="#L585">585</a>                 <strong class="jxr_keyword">throw</strong> HttpErrorMessage.dataIntegrityFailure();
-<a class="jxr_linenumber" name="L586" href="#L586">586</a>             }
+<a class="jxr_linenumber" name="L584" href="#L584">584</a>             srcCard.getStickyNoteLinksAsSrc().add(newLink);
+<a class="jxr_linenumber" name="L585" href="#L585">585</a>             newLink.setSrcCard(srcCard);
+<a class="jxr_linenumber" name="L586" href="#L586">586</a>         }
 <a class="jxr_linenumber" name="L587" href="#L587">587</a> 
-<a class="jxr_linenumber" name="L588" href="#L588">588</a>             srcCardContent.getStickyNoteLinksAsSrc().add(newLink);
-<a class="jxr_linenumber" name="L589" href="#L589">589</a>             newLink.setSrcCardContent(srcCardContent);
-<a class="jxr_linenumber" name="L590" href="#L590">590</a>         }
+<a class="jxr_linenumber" name="L588" href="#L588">588</a>         <strong class="jxr_keyword">if</strong> (original.getSrcCardContent() != <strong class="jxr_keyword">null</strong>) {
+<a class="jxr_linenumber" name="L589" href="#L589">589</a>             CardContent srcCardContent = cardContentMatching
+<a class="jxr_linenumber" name="L590" href="#L590">590</a>                 .get(original.getSrcCardContent().getId());
 <a class="jxr_linenumber" name="L591" href="#L591">591</a> 
-<a class="jxr_linenumber" name="L592" href="#L592">592</a>         <strong class="jxr_keyword">if</strong> (original.getSrcResourceOrRef() != <strong class="jxr_keyword">null</strong>) {
-<a class="jxr_linenumber" name="L593" href="#L593">593</a>             AbstractResource srcResourceOrRef = resourceMatching
-<a class="jxr_linenumber" name="L594" href="#L594">594</a>                 .get(original.getSrcResourceOrRef().getId());
+<a class="jxr_linenumber" name="L592" href="#L592">592</a>             <strong class="jxr_keyword">if</strong> (srcCardContent == <strong class="jxr_keyword">null</strong>) {
+<a class="jxr_linenumber" name="L593" href="#L593">593</a>                 <strong class="jxr_keyword">throw</strong> HttpErrorMessage.dataIntegrityFailure();
+<a class="jxr_linenumber" name="L594" href="#L594">594</a>             }
 <a class="jxr_linenumber" name="L595" href="#L595">595</a> 
-<a class="jxr_linenumber" name="L596" href="#L596">596</a>             <strong class="jxr_keyword">if</strong> (srcResourceOrRef == <strong class="jxr_keyword">null</strong>) {
-<a class="jxr_linenumber" name="L597" href="#L597">597</a>                 <strong class="jxr_keyword">throw</strong> HttpErrorMessage.dataIntegrityFailure();
-<a class="jxr_linenumber" name="L598" href="#L598">598</a>             }
+<a class="jxr_linenumber" name="L596" href="#L596">596</a>             srcCardContent.getStickyNoteLinksAsSrc().add(newLink);
+<a class="jxr_linenumber" name="L597" href="#L597">597</a>             newLink.setSrcCardContent(srcCardContent);
+<a class="jxr_linenumber" name="L598" href="#L598">598</a>         }
 <a class="jxr_linenumber" name="L599" href="#L599">599</a> 
-<a class="jxr_linenumber" name="L600" href="#L600">600</a>             srcResourceOrRef.getStickyNoteLinksAsSrc().add(newLink);
-<a class="jxr_linenumber" name="L601" href="#L601">601</a>             newLink.setSrcResourceOrRef(srcResourceOrRef);
-<a class="jxr_linenumber" name="L602" href="#L602">602</a>         }
+<a class="jxr_linenumber" name="L600" href="#L600">600</a>         <strong class="jxr_keyword">if</strong> (original.getSrcResourceOrRef() != <strong class="jxr_keyword">null</strong>) {
+<a class="jxr_linenumber" name="L601" href="#L601">601</a>             AbstractResource srcResourceOrRef = resourceMatching
+<a class="jxr_linenumber" name="L602" href="#L602">602</a>                 .get(original.getSrcResourceOrRef().getId());
 <a class="jxr_linenumber" name="L603" href="#L603">603</a> 
-<a class="jxr_linenumber" name="L604" href="#L604">604</a>         <strong class="jxr_keyword">if</strong> (original.getSrcDocument() != <strong class="jxr_keyword">null</strong>) {
-<a class="jxr_linenumber" name="L605" href="#L605">605</a>             Document srcDocument = documentMatching.get(original.getSrcDocument().getId());
-<a class="jxr_linenumber" name="L606" href="#L606">606</a> 
-<a class="jxr_linenumber" name="L607" href="#L607">607</a>             <strong class="jxr_keyword">if</strong> (srcDocument == <strong class="jxr_keyword">null</strong>) {
-<a class="jxr_linenumber" name="L608" href="#L608">608</a>                 <strong class="jxr_keyword">throw</strong> HttpErrorMessage.dataIntegrityFailure();
-<a class="jxr_linenumber" name="L609" href="#L609">609</a>             }
-<a class="jxr_linenumber" name="L610" href="#L610">610</a> 
-<a class="jxr_linenumber" name="L611" href="#L611">611</a>             srcDocument.getStickyNoteLinksAsSrc().add(newLink);
-<a class="jxr_linenumber" name="L612" href="#L612">612</a>             newLink.setSrcDocument(srcDocument);
-<a class="jxr_linenumber" name="L613" href="#L613">613</a>         }
+<a class="jxr_linenumber" name="L604" href="#L604">604</a>             <strong class="jxr_keyword">if</strong> (srcResourceOrRef == <strong class="jxr_keyword">null</strong>) {
+<a class="jxr_linenumber" name="L605" href="#L605">605</a>                 <strong class="jxr_keyword">throw</strong> HttpErrorMessage.dataIntegrityFailure();
+<a class="jxr_linenumber" name="L606" href="#L606">606</a>             }
+<a class="jxr_linenumber" name="L607" href="#L607">607</a> 
+<a class="jxr_linenumber" name="L608" href="#L608">608</a>             srcResourceOrRef.getStickyNoteLinksAsSrc().add(newLink);
+<a class="jxr_linenumber" name="L609" href="#L609">609</a>             newLink.setSrcResourceOrRef(srcResourceOrRef);
+<a class="jxr_linenumber" name="L610" href="#L610">610</a>         }
+<a class="jxr_linenumber" name="L611" href="#L611">611</a> 
+<a class="jxr_linenumber" name="L612" href="#L612">612</a>         <strong class="jxr_keyword">if</strong> (original.getSrcDocument() != <strong class="jxr_keyword">null</strong>) {
+<a class="jxr_linenumber" name="L613" href="#L613">613</a>             Document srcDocument = documentMatching.get(original.getSrcDocument().getId());
 <a class="jxr_linenumber" name="L614" href="#L614">614</a> 
-<a class="jxr_linenumber" name="L615" href="#L615">615</a>         <strong class="jxr_keyword">return</strong> newLink;
-<a class="jxr_linenumber" name="L616" href="#L616">616</a>     }
-<a class="jxr_linenumber" name="L617" href="#L617">617</a> 
-<a class="jxr_linenumber" name="L618" href="#L618">618</a>     <strong class="jxr_keyword">private</strong> ActivityFlowLink duplicateActivityFlowLink(ActivityFlowLink original)
-<a class="jxr_linenumber" name="L619" href="#L619">619</a>         <strong class="jxr_keyword">throws</strong> <a name="ColabMergeException" href="../../../../../ch/colabproject/colab/api/exceptions/ColabMergeException.html#ColabMergeException">ColabMergeException</a> {
-<a class="jxr_linenumber" name="L620" href="#L620">620</a>         ActivityFlowLink newLink = <strong class="jxr_keyword">new</strong> ActivityFlowLink();
-<a class="jxr_linenumber" name="L621" href="#L621">621</a>         newLink.duplicate(newLink);
+<a class="jxr_linenumber" name="L615" href="#L615">615</a>             <strong class="jxr_keyword">if</strong> (srcDocument == <strong class="jxr_keyword">null</strong>) {
+<a class="jxr_linenumber" name="L616" href="#L616">616</a>                 <strong class="jxr_keyword">throw</strong> HttpErrorMessage.dataIntegrityFailure();
+<a class="jxr_linenumber" name="L617" href="#L617">617</a>             }
+<a class="jxr_linenumber" name="L618" href="#L618">618</a> 
+<a class="jxr_linenumber" name="L619" href="#L619">619</a>             srcDocument.getStickyNoteLinksAsSrc().add(newLink);
+<a class="jxr_linenumber" name="L620" href="#L620">620</a>             newLink.setSrcDocument(srcDocument);
+<a class="jxr_linenumber" name="L621" href="#L621">621</a>         }
 <a class="jxr_linenumber" name="L622" href="#L622">622</a> 
-<a class="jxr_linenumber" name="L623" href="#L623">623</a>         <strong class="jxr_keyword">if</strong> (original.getPreviousCard() != <strong class="jxr_keyword">null</strong>) {
-<a class="jxr_linenumber" name="L624" href="#L624">624</a>             Card previousCard = cardMatching.get(original.getPreviousCard().getId());
+<a class="jxr_linenumber" name="L623" href="#L623">623</a>         <strong class="jxr_keyword">return</strong> newLink;
+<a class="jxr_linenumber" name="L624" href="#L624">624</a>     }
 <a class="jxr_linenumber" name="L625" href="#L625">625</a> 
-<a class="jxr_linenumber" name="L626" href="#L626">626</a>             <strong class="jxr_keyword">if</strong> (previousCard == <strong class="jxr_keyword">null</strong>) {
-<a class="jxr_linenumber" name="L627" href="#L627">627</a>                 <strong class="jxr_keyword">throw</strong> HttpErrorMessage.dataIntegrityFailure();
-<a class="jxr_linenumber" name="L628" href="#L628">628</a>             }
-<a class="jxr_linenumber" name="L629" href="#L629">629</a> 
-<a class="jxr_linenumber" name="L630" href="#L630">630</a>             previousCard.getActivityFlowLinksAsPrevious().add(newLink);
-<a class="jxr_linenumber" name="L631" href="#L631">631</a>             newLink.setPreviousCard(previousCard);
-<a class="jxr_linenumber" name="L632" href="#L632">632</a>         }
+<a class="jxr_linenumber" name="L626" href="#L626">626</a>     <strong class="jxr_keyword">private</strong> ActivityFlowLink duplicateActivityFlowLink(ActivityFlowLink original)
+<a class="jxr_linenumber" name="L627" href="#L627">627</a>         <strong class="jxr_keyword">throws</strong> <a name="ColabMergeException" href="../../../../../ch/colabproject/colab/api/exceptions/ColabMergeException.html#ColabMergeException">ColabMergeException</a> {
+<a class="jxr_linenumber" name="L628" href="#L628">628</a>         ActivityFlowLink newLink = <strong class="jxr_keyword">new</strong> ActivityFlowLink();
+<a class="jxr_linenumber" name="L629" href="#L629">629</a>         newLink.duplicate(newLink);
+<a class="jxr_linenumber" name="L630" href="#L630">630</a> 
+<a class="jxr_linenumber" name="L631" href="#L631">631</a>         <strong class="jxr_keyword">if</strong> (original.getPreviousCard() != <strong class="jxr_keyword">null</strong>) {
+<a class="jxr_linenumber" name="L632" href="#L632">632</a>             Card previousCard = cardMatching.get(original.getPreviousCard().getId());
 <a class="jxr_linenumber" name="L633" href="#L633">633</a> 
-<a class="jxr_linenumber" name="L634" href="#L634">634</a>         <strong class="jxr_keyword">if</strong> (original.getNextCard() != <strong class="jxr_keyword">null</strong>) {
-<a class="jxr_linenumber" name="L635" href="#L635">635</a>             Card nextCard = cardMatching.get(original.getNextCard().getId());
-<a class="jxr_linenumber" name="L636" href="#L636">636</a> 
-<a class="jxr_linenumber" name="L637" href="#L637">637</a>             <strong class="jxr_keyword">if</strong> (nextCard == <strong class="jxr_keyword">null</strong>) {
-<a class="jxr_linenumber" name="L638" href="#L638">638</a>                 <strong class="jxr_keyword">throw</strong> HttpErrorMessage.dataIntegrityFailure();
-<a class="jxr_linenumber" name="L639" href="#L639">639</a>             }
-<a class="jxr_linenumber" name="L640" href="#L640">640</a> 
-<a class="jxr_linenumber" name="L641" href="#L641">641</a>             nextCard.getActivityFlowLinksAsNext().add(newLink);
-<a class="jxr_linenumber" name="L642" href="#L642">642</a>             newLink.setNextCard(nextCard);
-<a class="jxr_linenumber" name="L643" href="#L643">643</a>         }
+<a class="jxr_linenumber" name="L634" href="#L634">634</a>             <strong class="jxr_keyword">if</strong> (previousCard == <strong class="jxr_keyword">null</strong>) {
+<a class="jxr_linenumber" name="L635" href="#L635">635</a>                 <strong class="jxr_keyword">throw</strong> HttpErrorMessage.dataIntegrityFailure();
+<a class="jxr_linenumber" name="L636" href="#L636">636</a>             }
+<a class="jxr_linenumber" name="L637" href="#L637">637</a> 
+<a class="jxr_linenumber" name="L638" href="#L638">638</a>             previousCard.getActivityFlowLinksAsPrevious().add(newLink);
+<a class="jxr_linenumber" name="L639" href="#L639">639</a>             newLink.setPreviousCard(previousCard);
+<a class="jxr_linenumber" name="L640" href="#L640">640</a>         }
+<a class="jxr_linenumber" name="L641" href="#L641">641</a> 
+<a class="jxr_linenumber" name="L642" href="#L642">642</a>         <strong class="jxr_keyword">if</strong> (original.getNextCard() != <strong class="jxr_keyword">null</strong>) {
+<a class="jxr_linenumber" name="L643" href="#L643">643</a>             Card nextCard = cardMatching.get(original.getNextCard().getId());
 <a class="jxr_linenumber" name="L644" href="#L644">644</a> 
-<a class="jxr_linenumber" name="L645" href="#L645">645</a>         <strong class="jxr_keyword">return</strong> newLink;
-<a class="jxr_linenumber" name="L646" href="#L646">646</a>     }
-<a class="jxr_linenumber" name="L647" href="#L647">647</a> 
-<a class="jxr_linenumber" name="L648" href="#L648">648</a> }
+<a class="jxr_linenumber" name="L645" href="#L645">645</a>             <strong class="jxr_keyword">if</strong> (nextCard == <strong class="jxr_keyword">null</strong>) {
+<a class="jxr_linenumber" name="L646" href="#L646">646</a>                 <strong class="jxr_keyword">throw</strong> HttpErrorMessage.dataIntegrityFailure();
+<a class="jxr_linenumber" name="L647" href="#L647">647</a>             }
+<a class="jxr_linenumber" name="L648" href="#L648">648</a> 
+<a class="jxr_linenumber" name="L649" href="#L649">649</a>             nextCard.getActivityFlowLinksAsNext().add(newLink);
+<a class="jxr_linenumber" name="L650" href="#L650">650</a>             newLink.setNextCard(nextCard);
+<a class="jxr_linenumber" name="L651" href="#L651">651</a>         }
+<a class="jxr_linenumber" name="L652" href="#L652">652</a> 
+<a class="jxr_linenumber" name="L653" href="#L653">653</a>         <strong class="jxr_keyword">return</strong> newLink;
+<a class="jxr_linenumber" name="L654" href="#L654">654</a>     }
+<a class="jxr_linenumber" name="L655" href="#L655">655</a> 
+<a class="jxr_linenumber" name="L656" href="#L656">656</a> }
 </pre>
 <hr/>
 <div id="footer">Copyright &#169; 2022 <a href="https://www.colab-project.ch">AlbaSim, MEI, HEIG-VD, HES-SO</a>. All rights reserved.</div>

@@ -20,19 +20,20 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- *
  * @author maxence
  */
 @TransactionScoped
-<span class="nc" id="L27">public class JcrSessionManager implements Serializable {</span>
+<span class="nc" id="L26">public class JcrSessionManager implements Serializable {</span>
+
+    private static final long serialVersionUID = 1L;
 
     /** Logger */
-<span class="nc" id="L30">    private static final Logger logger = LoggerFactory.getLogger(JcrSessionManager.class);</span>
+<span class="nc" id="L31">    private static final Logger logger = LoggerFactory.getLogger(JcrSessionManager.class);</span>
 
     /**
      * Opened session mapped by project id
      */
-<span class="nc" id="L35">    private final Map&lt;Long, JcrSession&gt; sessions = new HashMap&lt;&gt;();</span>
+<span class="nc" id="L36">    private final Map&lt;Long, JcrSession&gt; sessions = new HashMap&lt;&gt;();</span>
 
     /** Access to the repository */
     @Inject
@@ -55,19 +56,19 @@ import org.slf4j.LoggerFactory;
      * @throws javax.jcr.RepositoryException if something went wring
      */
     public JcrSession getSession(Project project) throws RepositoryException {
-<span class="nc bnc" id="L58" title="All 2 branches missed.">        if (sessions.containsKey(project.getId())) {</span>
-<span class="nc" id="L59">            logger.trace(&quot;GetExisting session: Gm{}&quot;, project.getId());</span>
-<span class="nc" id="L60">            return sessions.get(project.getId());</span>
+<span class="nc bnc" id="L59" title="All 2 branches missed.">        if (sessions.containsKey(project.getId())) {</span>
+<span class="nc" id="L60">            logger.trace(&quot;GetExisting session: project #{}&quot;, project.getId());</span>
+<span class="nc" id="L61">            return sessions.get(project.getId());</span>
         } else {
-<span class="nc" id="L62">            logger.trace(&quot;Create new session: Gm{}&quot;, project.getId());</span>
-<span class="nc" id="L63">            Repository repo = jcrRepository.getRepository();</span>
-<span class="nc" id="L64">            JcrSession session = new JcrSession(repo, project);</span>
-<span class="nc" id="L65">            sessions.put(project.getId(), session);</span>
+<span class="nc" id="L63">            logger.trace(&quot;Create new session: project #{}&quot;, project.getId());</span>
+<span class="nc" id="L64">            Repository repo = jcrRepository.getRepository();</span>
+<span class="nc" id="L65">            JcrSession session = new JcrSession(repo, project);</span>
+<span class="nc" id="L66">            sessions.put(project.getId(), session);</span>
 
-<span class="nc" id="L67">            JcrSynchronizer jcrSynchronizer = new JcrSynchronizer(session);</span>
-<span class="nc" id="L68">            jtaSyncRegistry.registerInterposedSynchronization(jcrSynchronizer);</span>
+<span class="nc" id="L68">            JcrSynchronizer jcrSynchronizer = new JcrSynchronizer(session);</span>
+<span class="nc" id="L69">            jtaSyncRegistry.registerInterposedSynchronization(jcrSynchronizer);</span>
 
-<span class="nc" id="L70">            return session;</span>
+<span class="nc" id="L71">            return session;</span>
         }
     }
 }
