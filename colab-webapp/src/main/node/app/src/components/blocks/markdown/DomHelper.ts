@@ -383,20 +383,19 @@ export function areAllLeafsWrappedByTag(
       const nodes: Element[] = [];
       while (current != null) {
         logger.info('Test leaf: ', current);
-        if (current.textContent) {
-          const matchingParent = boundedClosest(current, [tagName], rootNode);
-          if (matchingParent != null) {
-            nodes.push(matchingParent);
-            // The current node is fine, move to next
-            if (current === end.node) {
-              current = undefined;
-            } else {
-              current = findNextLeaf(matchingParent, rootNode);
-            }
+
+        const matchingParent = boundedClosest(current, [tagName], rootNode);
+        if (matchingParent != null) {
+          nodes.push(matchingParent);
+          // The current node is fine, move to next
+          if (current === end.node) {
+            current = undefined;
           } else {
-            // current leaf not inside expected tag
-            return { type: 'NO' };
+            current = findNextLeaf(matchingParent, rootNode);
           }
+        } else if (current.textContent) {
+          // current leaf not inside expected tag
+          return { type: 'NO' };
         }
       }
       // all leaves stands in expected tags
@@ -773,7 +772,7 @@ export function findChildByTag(element: Element, tag: string): Element | undefin
  *           li3
  */
 export function indentListItem(listItem: Element) {
-  logger.warn('Indent');
+  logger.trace('Indent');
 
   const parentUl = listItem.parentElement;
   if (parentUl == null) {
@@ -810,7 +809,7 @@ export function indentListItem(listItem: Element) {
 }
 
 export function unindentListItem(listItem: Element): boolean {
-  logger.warn('deindent indentation');
+  logger.trace('deindent indentation');
   const currentUl = listItem.parentElement;
 
   if (currentUl == null) {

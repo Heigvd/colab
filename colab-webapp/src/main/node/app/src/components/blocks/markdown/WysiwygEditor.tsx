@@ -141,7 +141,7 @@ function getSelectionType(root: Element | null): 'RANGE' | 'ON_WORD' | 'NOT_ON_W
       const fText = wSelection.getRangeAt(0).toString();
       restoreSavedSelection(userSelection);
 
-      logger.warn('Selection Texts: ', bText, fText);
+      logger.info('Selection Texts: ', bText, fText);
       if (bText.trim() && fText.trim()) {
         return 'ON_WORD';
       }
@@ -588,7 +588,7 @@ export default function WysiwygEditor({
     majorStyle: 'P',
   });
 
-  React.useEffect(() => {
+  React.useLayoutEffect(() => {
     // props just changed
     const div = divRef.current;
     if (div != null) {
@@ -760,6 +760,7 @@ export default function WysiwygEditor({
   const onInternalChangeCb = React.useCallback(() => {
     updateToolbar();
     const md = domToMarkdown(divRef.current!);
+    logger.info('OnInternalChangeCb', md.data);
     onChange(md.data);
   }, [onChange, updateToolbar]);
 

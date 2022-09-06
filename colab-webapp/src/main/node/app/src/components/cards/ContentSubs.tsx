@@ -175,23 +175,22 @@ export default function ContentSubs({
           )}
         >
           <div className={cx(gridCardsStyle(depth - 1, isInRootView), subcardsContainerStyle)}>
-            {orderAndFillSubCards.map(sub => (
-              <>
-                {sub == null ? (
-                  <div
-                    className={cx(
-                      //rootViewCardsStyle(depth - 1, isInRootView),
-                      css({
-                        margin: '10px',
-                        minHeight: '100px',
-                      }),
-                    )}
-                  />
-                ) : (
-                  <CardThumbWithSelector depth={depth - 1} key={sub.id} card={sub} />
-                )}
-              </>
-            ))}
+            {orderAndFillSubCards.map((sub, index) =>
+              sub == null ? (
+                <div
+                  key={`loader_${index}`}
+                  className={cx(
+                    //rootViewCardsStyle(depth - 1, isInRootView),
+                    css({
+                      margin: '10px',
+                      minHeight: '100px',
+                    }),
+                  )}
+                />
+              ) : (
+                <CardThumbWithSelector depth={depth - 1} key={sub.id} card={sub} />
+              ),
+            )}
           </div>
           <Flex justify="center">
             <CardCreator
