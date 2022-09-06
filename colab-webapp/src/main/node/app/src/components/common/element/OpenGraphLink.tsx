@@ -16,6 +16,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { ExternalLink } from 'colab-rest-client';
 import * as React from 'react';
 import { refreshUrlMetadata, updateDocument } from '../../../API/api';
+import useTranslations from '../../../i18n/I18nContext';
 import { useUrlMetadata } from '../../../selectors/externalDataSelector';
 import { useAppDispatch } from '../../../store/hooks';
 import { lightIconButtonStyle, space_M, space_S } from '../../styling/style';
@@ -65,8 +66,8 @@ export interface OpenGraphProps {
   document: ExternalLink;
 }
 
-function sanitizeUrl(rawUrl: string, defaultProtocol?: string) : string {
-  if (!rawUrl.match(/[a-zA-Z0-9]*:\/\/.*/)){
+function sanitizeUrl(rawUrl: string, defaultProtocol?: string): string {
+  if (!rawUrl.match(/[a-zA-Z0-9]*:\/\/.*/)) {
     return `${defaultProtocol || 'http'}://${rawUrl}`;
   }
   return rawUrl;
@@ -79,6 +80,8 @@ export default function OpenGraphLink({
   document,
 }: OpenGraphProps): JSX.Element {
   const dispatch = useAppDispatch();
+  const i18n = useTranslations();
+
   const metadata = useUrlMetadata(url);
 
   const sanitizedUrl = sanitizeUrl(url);
@@ -178,7 +181,7 @@ export default function OpenGraphLink({
                   {siteName || 'Untitled site'}
                   <IconButton
                     icon={faExternalLinkAlt}
-                    title="Open site in new tab"
+                    title={i18n.modules.document.openInNewTab}
                     className={cx(
                       lightIconButtonStyle,
                       css({ marginLeft: space_M, cursor: 'pointer' }),

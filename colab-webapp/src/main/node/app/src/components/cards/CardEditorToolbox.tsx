@@ -35,8 +35,6 @@ import DocumentCreatorButton from '../documents/DocumentCreatorButton';
 import { lightIconButtonStyle, space_M, space_S } from '../styling/style';
 import { CardEditorCTX } from './CardEditor';
 
-// TODO : do not change height when a bloc is selected
-
 const toolboxContainerStyle = css({
   height: 'auto',
   maxHeight: '400px',
@@ -71,14 +69,14 @@ const toolboxButtonStyle = cx(
 interface CardEditorToolboxProps {
   open: boolean;
   docOwnership: DocumentOwnership;
-  prefixElement?: React.ReactNode;
+  //prefixElement?: React.ReactNode;
 }
 
 export default function CardEditorToolbox({
   open,
   docOwnership,
-  prefixElement,
-}: CardEditorToolboxProps): JSX.Element {
+}: //prefixElement,
+CardEditorToolboxProps): JSX.Element {
   const { setSelectedDocId, selectedDocId, selectedOwnKind, setEditMode, TXToptions, editToolbar } =
     React.useContext(CardEditorCTX);
   const showTree = TXToptions?.showTree || false;
@@ -122,7 +120,7 @@ export default function CardEditorToolbox({
 
   return (
     <Flex align="center" className={cx(toolboxContainerStyle, { [closedToolboxStyle]: !open })}>
-      {prefixElement}
+      {/*prefixElement*/}
       <BlockCreatorButtons
         docOwnership={docOwnership}
         selectedBlockId={selectedDocument?.id ?? null}
@@ -353,12 +351,13 @@ interface OpenLinkButtonProps {
 function OpenLinkButton({ url, openUrl }: OpenLinkButtonProps): JSX.Element {
   const metadata = useUrlMetadata(url);
   const i18n = useTranslations();
+
   return (
     <>
       {metadata != 'LOADING' && metadata != 'NO_URL' && !metadata.broken && (
         <IconButton
           icon={faExternalLinkAlt}
-          title={i18n.modules.content.openUrlNewTab}
+          title={i18n.modules.document.openInNewTab}
           className={lightIconButtonStyle}
           onClick={openUrl}
         />
