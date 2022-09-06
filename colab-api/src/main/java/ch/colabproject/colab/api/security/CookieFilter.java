@@ -171,8 +171,12 @@ public class CookieFilter implements ContainerRequestFilter, ContainerResponseFi
             NewCookie sessionCookie = new NewCookie(COOKIE_NAME, cookieValue,
                 "/", null, null, COOKIE_MAX_AGE, true, true);
 
-            logger.trace("Request completed with session id {}", sessionCookie);
-            responseContext.getHeaders().add(HttpHeaders.SET_COOKIE, sessionCookie);
+            //hack: SameSite not handled yet by jakarta rs library
+            //inject SameSite=Lax by hand
+            String theCookie = sessionCookie.toString() + ";SameSite=Lax";
+
+            logger.trace("Request completed with session id {}", session.getId());
+            responseContext.getHeaders().add(HttpHeaders.SET_COOKIE, theCookie);
         } else {
             // not session => clear cookie if exists
             if (cookie != null) {
