@@ -21,7 +21,7 @@ import org.slf4j.LoggerFactory;
 public class JcrSynchronizer implements Synchronization {
 
     /** Logger */
-    private static final Logger logger = LoggerFactory.getLogger(JcrSessionManager.class);
+    private static final Logger logger = LoggerFactory.getLogger(JcrSynchronizer.class);
 
     /** The synchronized session */
     private final JcrSession session;
@@ -63,7 +63,6 @@ public class JcrSynchronizer implements Synchronization {
                 logger.trace("JCR Sync afterCompletion: {} => UNKNOWN", status);
                 break;
         }
-
 
     }
 }

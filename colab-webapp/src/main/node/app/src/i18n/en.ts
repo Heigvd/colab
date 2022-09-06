@@ -297,11 +297,11 @@ export const en = {
         `Delete ${isText ? 'text' : isLink ? 'link' : 'doc'}`,
       confirmDeleteBlock:
         'Are you sure you want to delete this whole block? This will be lost forever.',
-      openUrlNewTab: 'Open URL in new tab',
     },
     document: {
       createDocument: 'Create document',
       createADocument: 'Create a document',
+      openInNewTab: 'Open in new tab',
     },
     resource: {
       untitled: 'New document',

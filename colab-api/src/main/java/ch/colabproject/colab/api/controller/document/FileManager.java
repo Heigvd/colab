@@ -165,7 +165,7 @@ public class FileManager {
     }
 
     /**
-     * Encore path as URI component
+     * Encode path as URI component
      *
      * @param path path to encode
      *

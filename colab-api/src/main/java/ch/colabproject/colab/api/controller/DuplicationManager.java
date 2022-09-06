@@ -430,11 +430,9 @@ public class DuplicationManager {
 
     private Document duplicateDocument(Document original) throws ColabMergeException {
         if (original instanceof DocumentFile) {
-            // TODO sandra work in progress : copy also the file
             DocumentFile originalDocumentFile = (DocumentFile) original;
 
-            DocumentFile newDocumentFile = new DocumentFile();
-            newDocumentFile.duplicate(originalDocumentFile);
+            DocumentFile newDocumentFile = duplicateDocumentFile(originalDocumentFile);
 
             documentMatching.put(originalDocumentFile.getId(), newDocumentFile);
 
@@ -460,6 +458,16 @@ public class DuplicationManager {
         } else {
             throw new IllegalStateException("abstract card type implementation not handled");
         }
+    }
+
+    // TODO sandra work in progress : copy also the file
+    private DocumentFile duplicateDocumentFile(DocumentFile original) throws ColabMergeException {
+        DocumentFile newDocumentFile = new DocumentFile();
+        newDocumentFile.duplicate(original);
+
+
+
+        return newDocumentFile;
     }
 
     private AbstractResource duplicateResource(AbstractResource original)
