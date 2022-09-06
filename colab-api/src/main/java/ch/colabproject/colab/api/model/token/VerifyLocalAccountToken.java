@@ -7,8 +7,8 @@
 package ch.colabproject.colab.api.model.token;
 
 import ch.colabproject.colab.api.controller.RequestManager;
+import ch.colabproject.colab.api.model.token.tools.VerifyLocalAccountMessageBuilder;
 import ch.colabproject.colab.api.model.user.LocalAccount;
-import java.text.MessageFormat;
 import javax.json.bind.annotation.JsonbTransient;
 import javax.persistence.Entity;
 import javax.persistence.Index;
@@ -93,6 +93,10 @@ public class VerifyLocalAccountToken extends Token {
         this.localAccount.setVerified(Boolean.TRUE);
     }
 
+    // ---------------------------------------------------------------------------------------------
+    // to build a message
+    // ---------------------------------------------------------------------------------------------
+
     @JsonbTransient
     @Override
     public String getSubject() {
@@ -101,9 +105,7 @@ public class VerifyLocalAccountToken extends Token {
 
     @Override
     public String getEmailBody(String link) {
-        return MessageFormat.format("Hi {0},<br /><br />"
-            + "Please verify your email address: <a href=\"{1}\">verify</a><br /><br />",
-            localAccount.getUser().getDisplayName(), link);
+        return VerifyLocalAccountMessageBuilder.build(this, link);
     }
 
     // ---------------------------------------------------------------------------------------------

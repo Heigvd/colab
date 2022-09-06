@@ -154,11 +154,12 @@ export interface Offsets {
 }
 
 function modifyOffsets(offsets: Offsets, index: number, value: number) {
+  logger.info('modifying offsets: ', offsets, 'index: ', index, 'value: ', value);
   let currentOffset = offsets[index] || 0;
   currentOffset += value;
   offsets[index] = currentOffset;
 
-  const modified: Offsets = {};
+  /*const modified: Offsets = {};
 
   for (const sKey in offsets) {
     const key = +sKey;
@@ -166,8 +167,8 @@ function modifyOffsets(offsets: Offsets, index: number, value: number) {
       logger.error('Conflict modifying offsets: ', offsets, 'index: ', index, 'value: ', value);
     }
     if (key > index) {
-      // current offset if after the new offset
-      // shoudl be moves
+      // current offset is after the new offset
+      // should be moved
       const oValue = offsets[key];
       if (oValue != null) {
         const newKey = key + value;
@@ -189,7 +190,7 @@ function modifyOffsets(offsets: Offsets, index: number, value: number) {
     if (current != null) {
       offsets[key] = current;
     }
-  }
+  }*/
 }
 
 export function computeOffsets(microchanges: MicroChange[]): Offsets {
@@ -214,13 +215,11 @@ export function shiftOffsets(offsets: Offsets, change: Change): Offsets {
   const shifted: Offsets = {};
   const microchanges = change.microchanges;
 
-  logger.trace('ShiftOffsets ', offsets, ' according to ', change);
-
   for (const offsetStringIndex in offsets) {
     let offsetIndex = +offsetStringIndex;
     const offsetValue = offsets[offsetIndex] || 0;
 
-    logger.trace('Process ', offsetIndex, '=', offsetValue);
+    logger.trace('Shift O ', offsetIndex, '=', offsetValue);
     for (let i = microchanges.length - 1; i >= 0; i--) {
       const mu = microchanges[i]!;
 
@@ -236,6 +235,8 @@ export function shiftOffsets(offsets: Offsets, change: Change): Offsets {
     }
     shifted[offsetIndex] = offsetValue;
   }
+  
+  logger.info('ShiftOffsets ', offsets, ' according to ', change, ' gives ', shifted);
   return shifted;
 }
 
@@ -356,7 +357,7 @@ function propagateOffsets(
   offsetFromRev: string,
 ) {
   const children = changes.filter(ch => ch.basedOn.indexOf(parent.revision) >= 0);
-
+  logger.debug("Propagate offsets to ", children.length ," children #");
   for (const child of children) {
     const childDep = getAllDependencies(changes, child);
     if (childDep.indexOf(offsetFromRev) < 0) {
@@ -433,14 +434,14 @@ function rebase(allChanges: Change[], newBase: Change, change: Change) {
     const offsets = computeOffsets(newBase.microchanges);
     const newBaseRev = newBase.revision;
 
-    logger.debug('Rebase Sieblings: ', change, ' on ', newBase, ' with offset ', offsets);
+    logger.info('Rebase Sieblings: ', change, ' on ', newBase, ' with offset ', offsets);
     shift(change, offsets, true);
-    logger.debug('Rebase done: ', change, ' on ', newBase, ' with offset ', offsets);
+    logger.info('Rebase done: ', change, ' on ', newBase, ' with offset ', offsets);
     propagateOffsets(allChanges, change, offsets, true, newBaseRev);
 
     change.basedOn = [newBaseRev];
   } else if (setsEqual([change.revision], newBase.basedOn)) {
-    logger.debug('Inverse hierarchy : ', change, ' on ', newBase);
+    logger.info('Inverse hierarchy : ', change, ' on ', newBase);
     const offsets = computeOffsets(newBase.microchanges);
 
     newBase.basedOn = change.basedOn;
@@ -529,8 +530,8 @@ export const process = (
       }
     } else {
       logger.error('Inconsistent changes: no children for @', currentRevision, ' in ', changes);
-      throw new Error('Inconsistent changset: missing ' + currentRevision + ' children');
-      //break;
+      //throw new Error('Inconsistent changset: missing ' + currentRevision + ' children');
+      break;
     }
     logger.trace('Processed revision is ', currentRevision);
   }

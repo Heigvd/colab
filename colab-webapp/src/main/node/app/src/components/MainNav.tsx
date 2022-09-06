@@ -7,6 +7,7 @@
 
 import { css, cx } from '@emotion/css';
 import {
+  faCircleInfo,
   faCog,
   faExclamationTriangle,
   faMeteor,
@@ -29,9 +30,10 @@ import Picto from './styling/Picto';
 import { flex, invertedThemeMode, paddingAroundStyle, space_M, space_S } from './styling/style';
 
 export default function MainNav(): JSX.Element {
+  const navigate = useNavigate();
   return (
     <>
-      <Clickable onClick={() => window.open(`#/about-colab`, '_blank')}>
+      <Clickable onClick={() => navigate(`/`)}>
         <Picto
           className={cx(
             css({
@@ -84,7 +86,9 @@ export function UserDropDown({ onlyLogout }: { onlyLogout?: boolean }): JSX.Elem
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const i18n = useTranslations();
+
   const { currentUser, status: currentUserStatus } = useCurrentUser();
+
   const logout = React.useCallback(() => {
     dispatch(API.signOut());
   }, [dispatch]);
@@ -114,7 +118,7 @@ export function UserDropDown({ onlyLogout }: { onlyLogout?: boolean }): JSX.Elem
                       padding: space_S,
                     })}
                   >
-                    <FontAwesomeIcon icon={faUser} />
+                    <FontAwesomeIcon icon={faUser} />{' '}
                     {currentUser.firstname && currentUser.lastname
                       ? currentUser.firstname + ' ' + currentUser.lastname
                       : currentUser.username}
@@ -129,10 +133,10 @@ export function UserDropDown({ onlyLogout }: { onlyLogout?: boolean }): JSX.Elem
                     value: 'settings',
                     label: (
                       <>
-                        <FontAwesomeIcon icon={faCog} /> Settings
+                        <FontAwesomeIcon icon={faCog} /> {i18n.common.settings}
                       </>
                     ),
-                    action: () => navigate('/settings'),
+                    action: () => navigate('/settings/user'),
                   },
                 ]
               : []),
@@ -142,10 +146,23 @@ export function UserDropDown({ onlyLogout }: { onlyLogout?: boolean }): JSX.Elem
                     value: 'admin',
                     label: (
                       <>
-                        <FontAwesomeIcon icon={faMeteor} /> Admin
+                        <FontAwesomeIcon icon={faMeteor} /> {i18n.admin.admin}
                       </>
                     ),
-                    action: () => navigate('/admin'),
+                    action: () => navigate('/admin/main'),
+                  },
+                ]
+              : []),
+            ...(!onlyLogout
+              ? [
+                  {
+                    value: 'about',
+                    label: (
+                      <>
+                        <FontAwesomeIcon icon={faCircleInfo} /> {i18n.common.about}
+                      </>
+                    ),
+                    action: () => navigate('/about-colab'),
                   },
                 ]
               : []),
@@ -153,7 +170,7 @@ export function UserDropDown({ onlyLogout }: { onlyLogout?: boolean }): JSX.Elem
               value: 'logout',
               label: (
                 <>
-                  Logout <FontAwesomeIcon icon={faSignOutAlt} />
+                  <FontAwesomeIcon icon={faSignOutAlt} /> {i18n.common.logout}
                 </>
               ),
               action: logout,

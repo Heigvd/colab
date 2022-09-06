@@ -46,9 +46,11 @@ export default function CardTypeRelativesSummary({
       {displayChoices.showResources && (
         <Flex className={itemStyle}>
           <ResourcesListSummary
-            kind={'CardType'}
-            accessLevel={'READ'}
-            cardTypeId={cardType.ownId}
+            context={{
+              kind: 'CardType',
+              accessLevel: 'READ',
+              cardTypeId: cardType.ownId,
+            }}
           />
         </Flex>
       )}
@@ -56,10 +58,7 @@ export default function CardTypeRelativesSummary({
       {/* is published */}
       {displayChoices.showPublished && cardType.published && (
         <Flex className={itemStyle}>
-          <FontAwesomeIcon
-            icon={faBullhorn}
-            title={i18n.modules.cardType.infos.referencedByOther}
-          />
+          <FontAwesomeIcon icon={faBullhorn} title={i18n.modules.cardType.info.referencedByOther} />
         </Flex>
       )}
 
@@ -68,7 +67,7 @@ export default function CardTypeRelativesSummary({
         <Flex className={itemStyle}>
           <FontAwesomeIcon
             icon={faTriangleExclamation}
-            title={i18n.modules.cardType.infos.shouldNotBeUsed}
+            title={i18n.modules.cardType.info.shouldNotBeUsed}
           />
         </Flex>
       )}

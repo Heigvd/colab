@@ -16,9 +16,9 @@ import {
   useGlobalCardTypeTags,
 } from '../../../selectors/cardTypeSelector';
 import { useProjectBeingEdited } from '../../../selectors/projectSelector';
-import { useAppDispatch } from '../../../store/hooks';
+import { useAppDispatch, useLoadingState } from '../../../store/hooks';
 import Button from '../../common/element/Button';
-import Form, { createSelectField, Field } from '../../common/Form/Form';
+import Form, { createSelectField, Field } from '../../common/element/Form';
 import OpenCloseModal from '../../common/layout/OpenCloseModal';
 import { buttonStyle, marginAroundStyle, space_M } from '../../styling/style';
 
@@ -27,7 +27,7 @@ interface CardTypeCreatorProps {
   usage: 'currentProject' | 'global';
 }
 
-interface NewType {
+interface CardTypeCreationType {
   title: string;
   purpose: string;
   tags: string[];
@@ -37,10 +37,46 @@ export default function CardTypeCreator({ onCreated, usage }: CardTypeCreatorPro
   const dispatch = useAppDispatch();
   const i18n = useTranslations();
 
+  const { isLoading, startLoading, stopLoading } = useLoadingState();
+
   const { project } = useProjectBeingEdited();
 
-  const createTypeCb = React.useCallback(
-    (typeToCreate: NewType) => {
+  const allCurrentProjectTags = useCurrentProjectCardTypeTags();
+  const allGlobalTags = useGlobalCardTypeTags();
+
+  const fields: Field<CardTypeCreationType>[] = [
+    {
+      key: 'title',
+      label: i18n.common.name,
+      type: 'text',
+      isMandatory: true,
+    },
+    {
+      key: 'purpose',
+      label: i18n.modules.cardType.purpose,
+      type: 'textarea',
+      isMandatory: false,
+    },
+    createSelectField({
+      key: 'tags',
+      label: i18n.modules.resource.category,
+      type: 'select',
+      isMandatory: true,
+      isMulti: true,
+      canCreateOption: true,
+      options: (usage === 'currentProject' ? allCurrentProjectTags : allGlobalTags).map(c => ({
+        label: c,
+        value: c,
+      })),
+    }),
+  ];
+
+  const defaultData = { title: '', purpose: '', tags: [] };
+
+  const onSubmit = React.useCallback(
+    (typeToCreate: CardTypeCreationType, close: () => void) => {
+      startLoading();
+
       dispatch(
         API.createCardType({
           projectId: usage === 'currentProject' && project ? project.id! : null,
@@ -54,6 +90,8 @@ export default function CardTypeCreator({ onCreated, usage }: CardTypeCreatorPro
           },
         }),
       ).then(action => {
+        stopLoading();
+
         if (onCreated != null) {
           if (action.meta.requestStatus === 'fulfilled') {
             if (typeof action.payload === 'number') {
@@ -61,51 +99,23 @@ export default function CardTypeCreator({ onCreated, usage }: CardTypeCreatorPro
             }
           }
         }
+
+        close();
       });
     },
-    [dispatch, onCreated, usage, project],
+    [startLoading, dispatch, usage, project, onCreated, stopLoading],
   );
 
-  const allCurrentProjectTags = useCurrentProjectCardTypeTags();
-  const allGlobalTags = useGlobalCardTypeTags();
-  const fields: Field<NewType>[] = [
-    {
-      key: 'title',
-      label: i18n.common.name,
-      type: 'text',
-      isMandatory: true,
-    },
-    {
-      key: 'purpose',
-      label: i18n.modules.cardType.purpose,
-      type: 'textarea',
-      isMandatory: true,
-    },
-    createSelectField({
-      key: 'tags',
-      label: i18n.modules.resource.category,
-      placeholder: i18n.form.selectOrCreate,
-      type: 'select',
-      isMandatory: true,
-      isMulti: true,
-      canCreateOption: true,
-      options: (usage === 'currentProject' ? allCurrentProjectTags : allGlobalTags).map(c => ({
-        label: c,
-        value: c,
-      })),
-    }),
-  ];
-
   if (project == null && usage === 'currentProject') {
-    return <i>{i18n.modules.cardType.infos.noProjectSelected}</i>;
+    return <i>{i18n.modules.project.info.noProjectSelected}</i>;
   }
 
   return (
     <OpenCloseModal
-      title={'Create a type'}
+      title={i18n.modules.cardType.action.createAType}
       collapsedChildren={
         <>
-          <FontAwesomeIcon icon={faPlus} /> {i18n.modules.cardType.addType}
+          <FontAwesomeIcon icon={faPlus} /> {i18n.modules.cardType.action.createType}
         </>
       }
       className={cx(buttonStyle, css({ marginBottom: space_M }))}
@@ -115,12 +125,12 @@ export default function CardTypeCreator({ onCreated, usage }: CardTypeCreatorPro
         return (
           <Form
             fields={fields}
-            value={{ title: '', purpose: '', tags: [] }}
-            onSubmit={function (type) {
-              createTypeCb(type);
-              close();
+            value={defaultData}
+            onSubmit={type => {
+              onSubmit(type, close);
             }}
             submitLabel={i18n.common.create}
+            isSubmitInProcess={isLoading}
             className={css({ alignSelf: 'center' })}
             childrenClassName={css({
               flexDirection: 'row-reverse',
@@ -129,13 +139,7 @@ export default function CardTypeCreator({ onCreated, usage }: CardTypeCreatorPro
             })}
             buttonClassName={cx(buttonStyle, marginAroundStyle([1], space_M))}
           >
-            <Button
-              onClick={() => {
-                close();
-              }}
-              invertedButton
-              className={css({ margin: space_M })}
-            >
+            <Button onClick={close} invertedButton className={css({ margin: space_M })}>
               {i18n.common.cancel}
             </Button>
           </Form>

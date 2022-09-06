@@ -43,13 +43,13 @@ import Tips, { TipsProps } from './Tips';
 
 interface InputProps {
   label?: React.ReactNode;
-  value?: string | number;
+  value?: string | number; // TODO  HTMLInputElement['value'] | HTMLTextAreaElement['value'];
   placeholder?: HTMLInputElement['placeholder'] | HTMLTextAreaElement['placeholder'];
-  inputType?: 'input' | 'textarea';
+  inputType?: 'input' | 'textarea'; // not sure if could better be two distincts components
   type?: HTMLInputElement['type'];
   mandatory?: boolean;
   readOnly?: HTMLInputElement['readOnly'] | HTMLTextAreaElement['readOnly'];
-  autoComplete?: string;
+  autoComplete?: HTMLInputElement['autocomplete'] | HTMLTextAreaElement['autocomplete'];
   autoFocus?: HTMLInputElement['autofocus'] | HTMLTextAreaElement['autofocus'];
   min?: HTMLInputElement['min'];
   max?: HTMLInputElement['max'];
@@ -61,8 +61,8 @@ interface InputProps {
   onCancel?: () => void;
   tip?: TipsProps['children'];
   footer?: React.ReactNode;
-  warning?: React.ReactNode;
-  error?: React.ReactNode;
+  warningMessage?: React.ReactNode;
+  errorMessage?: React.ReactNode;
   containerClassName?: string;
   labelClassName?: string;
   inputDisplayClassName?: string;
@@ -96,8 +96,8 @@ function Input({
   onCancel,
   tip,
   footer,
-  warning,
-  error,
+  warningMessage,
+  errorMessage,
   containerClassName,
   labelClassName,
   inputDisplayClassName,
@@ -114,7 +114,7 @@ function Input({
 
   // const containerRef = React.useRef<HTMLDivElement>(null);
 
-  const [currentInternalValue, setCurrentInternalValue] = React.useState<string | number>();
+  const [currentInternalValue, setCurrentInternalValue] = React.useState<string | number>('');
   const [mode, setMode] = React.useState<'DISPLAY' | 'EDIT'>('DISPLAY');
 
   // the field can resize itself automatically
@@ -317,13 +317,13 @@ function Input({
           </Flex>
         )} 
       </Flex> */}
-      {(footer || warning || error) && (
+      {(footer || warningMessage || errorMessage) && (
         <Flex direction="column" grow="1" align="flex-start" className={bottomClassName}>
           {footer && <Flex className={cx(textSmall, footerClassName)}>{footer}</Flex>}
-          {(warning || error) && (
+          {(warningMessage || errorMessage) && (
             <Flex direction="column" grow="1" className={cx(textSmall, validationClassName)}>
-              {warning != null && <div className={warningStyle}>{warning}</div>}
-              {error != null && <div className={errorStyle}>{error}</div>}
+              {warningMessage != null && <div className={warningStyle}>{warningMessage}</div>}
+              {errorMessage != null && <div className={errorStyle}>{errorMessage}</div>}
             </Flex>
           )}
         </Flex>

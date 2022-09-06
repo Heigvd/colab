@@ -7,58 +7,306 @@
 
 import { css, cx } from '@emotion/css';
 import { IconProp } from '@fortawesome/fontawesome-svg-core';
-import { faBold, faItalic, faStrikethrough, faUnderline } from '@fortawesome/free-solid-svg-icons';
+import {
+  faBold,
+  faItalic,
+  faList,
+  faListOl,
+  faStrikethrough,
+  faTasks,
+  faUnderline,
+} from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { uniq } from 'lodash';
 import * as React from 'react';
 import * as LiveHelper from '../../../LiveHelper';
 import { getLogger } from '../../../logger';
-import Tips from '../../common/element/Tips';
+import { CardEditorCTX } from '../../cards/CardEditor';
+import DropDownMenu, { Entry } from '../../common/layout/DropDownMenu';
 import Flex from '../../common/layout/Flex';
-import { borderRadius } from '../../styling/style';
+import { borderRadius, lightIconButtonStyle, space_S } from '../../styling/style';
 import {
   areAllLeafsWrappedByTag,
   boundedClosest,
+  findChildByTag,
+  findNextLeaf,
+  indentListItem,
+  MajorTag,
+  majorTags,
   MinorTag,
   moveToLeaf,
   sortNodes,
+  switchTo,
   toggleTag,
+  unindentListItem,
 } from './DomHelper';
-import { colabFlavouredMarkdown } from './MarkdownViewer';
-import domToMarkdown, { MarkdownWithSelection } from './parser/domToMarkdown';
-import markdownToDom, { convertRange, HeadingLevel } from './parser/markdownToDom';
+import { colabFlavouredMarkdown, colabFlavouredMarkdownEditable } from './MarkdownViewer';
+import domToMarkdown, { MarkdownRange, MarkdownWithSelection } from './parser/domToMarkdown';
+import markdownToDom, {
+  convertRange,
+  getFirstMajorTag,
+  MajorTagParsed,
+  NodesAndOffsets,
+} from './parser/markdownToDom';
 
 const logger = getLogger('WysiwygEditor');
+
+//logger.setLevel(5);
+
+//////////////////////////////////////////////////////////////////////////////////////
+// Selection manipulation
+//////////////////////////////////////////////////////////////////////////////////////
+
+type SavedSelection = Required<
+  Pick<Selection, 'type' | 'anchorNode' | 'anchorOffset' | 'focusNode' | 'focusOffset'>
+>;
+
+export function selectionsEqual(a: SavedSelection, b: SavedSelection): boolean {
+  if (a == null && b == null) {
+    return true;
+  }
+  if (a == null || b == null) {
+    return false;
+  }
+  if (a.anchorNode != b.anchorNode) {
+    return false;
+  }
+  if (a.anchorOffset != b.anchorOffset) {
+    return false;
+  }
+  if (a.focusNode != b.focusNode) {
+    return false;
+  }
+  if (a.focusOffset != b.focusOffset) {
+    return false;
+  }
+
+  return true;
+}
+
+function saveSelection(root: Element | null): SavedSelection | undefined {
+  if (root != null) {
+    const selection = document.getSelection();
+    if (selection != null) {
+      if (selection?.anchorNode != null && root) {
+        if (root.contains(selection.anchorNode)) {
+          return {
+            anchorNode: selection.anchorNode,
+            anchorOffset: selection.anchorOffset,
+            focusNode: selection.focusNode,
+            focusOffset: selection.focusOffset,
+            type: selection.type,
+          };
+        }
+      }
+    }
+    return undefined;
+  }
+}
+
+function restoreSavedSelection(savedSelection: SavedSelection): Selection | null {
+  const selection = document.getSelection();
+
+  // restore saved selection
+  if (savedSelection.focusNode) {
+    selection?.setBaseAndExtent(
+      savedSelection.anchorNode!,
+      savedSelection.anchorOffset,
+      savedSelection.focusNode,
+      savedSelection.focusOffset,
+    );
+  } else {
+    selection?.setPosition(savedSelection.anchorNode, savedSelection.anchorOffset);
+  }
+  return selection;
+}
+
+function getSelectionType(root: Element | null): 'RANGE' | 'ON_WORD' | 'NOT_ON_WORD' | 'NONE' {
+  const userSelection = saveSelection(root);
+  if (userSelection) {
+    if (userSelection.type === 'Range') {
+      // Range is a Range
+      return 'RANGE';
+    } else if (userSelection.type === 'Caret') {
+      // two possibilities.
+      // is the caret within a world or outside
+
+      const wSelection = window.getSelection() as SelectionWithModify;
+
+      (wSelection as SelectionWithModify).modify('extend', 'backward', 'character');
+      const bText = wSelection.getRangeAt(0).toString();
+      restoreSavedSelection(userSelection);
+
+      (wSelection as SelectionWithModify).modify('extend', 'forward', 'character');
+      const fText = wSelection.getRangeAt(0).toString();
+      restoreSavedSelection(userSelection);
+
+      logger.warn('Selection Texts: ', bText, fText);
+      if (bText.trim() && fText.trim()) {
+        return 'ON_WORD';
+      }
+
+      return 'NOT_ON_WORD';
+    }
+  }
+  return 'NONE';
+}
+
+//////////////////////////////////////////////////////////////////////////////////////
+
+function restoreMarkdownRange(dom: NodesAndOffsets, range: MarkdownWithSelection['range']) {
+  const domRange = convertRange(dom, range);
+  if (domRange) {
+    const selection = window.getSelection();
+    if (selection != null) {
+      selection.removeAllRanges();
+      selection.addRange(domRange);
+    }
+  }
+}
+
+function getLastIndexOfMatch(str: string, regex: RegExp): number {
+  regex.lastIndex = 0;
+  let index = -1;
+  let match: RegExpExecArray | null = null;
+
+  while ((match = regex.exec(str)) != null) {
+    // This is necessary to avoid infinite loops with zero-width matches
+    if (match.index === regex.lastIndex) {
+      regex.lastIndex++;
+    }
+    index = match.index;
+  }
+  return index;
+}
+
+/**
+ * Insert to insert in md, according to cursor position set in md.range
+ */
+function mergeMardown(md: MarkdownWithSelection, toInsert: string): MarkdownWithSelection {
+  const anchor = md.range.anchor ?? md.data.length;
+  const focus = md.range.focus ?? anchor ?? md.data.length;
+
+  logger.info('Range: ', { anchor, focus });
+
+  const result: MarkdownWithSelection = {
+    data: '',
+    range: {
+      anchor: anchor,
+      focus: focus,
+    },
+  };
+  if (focus > anchor) {
+    // Selection
+    result.range.focus = anchor + toInsert.length;
+  } else {
+    // cursor
+    result.range.anchor = anchor + toInsert.length;
+  }
+
+  let firstMajor: MajorTagParsed | undefined;
+
+  if (anchor ?? 0 > 0) {
+    // extract text from 0 to selection start
+    const sub = md.data.substring(0, anchor);
+    // find last line return (not follwowed by a space) within such extract
+    const index = getLastIndexOfMatch(sub, /\n(?! )/g);
+    // extract markdown from this position
+    const part = md.data.substring(index + 1);
+    firstMajor = getFirstMajorTag(part);
+  } else {
+    firstMajor = getFirstMajorTag(md.data);
+  }
+
+  const toInsertMajor = getFirstMajorTag(toInsert);
+  logger.info('FirstMajor: ', firstMajor);
+  logger.info('ToInsertMaj: ', toInsertMajor);
+
+  if (toInsertMajor) {
+    if (firstMajor) {
+      if (firstMajor.tagType === toInsertMajor.tagType || toInsertMajor.tagType === 'P') {
+        logger.info('SameTag Merge');
+        result.data =
+          md.data.substring(0, anchor) +
+          toInsert.substring(toInsertMajor.initialMark.length) +
+          md.data.substring(focus);
+      } else {
+        logger.info('Insert ', toInsertMajor.tagType, ' after ', firstMajor.tagType);
+        result.data =
+          md.data.substring(0, anchor) + '\n' + toInsert + '\n' + md.data.substring(focus);
+      }
+    } else {
+      result.data = toInsert;
+    }
+  }
+
+  return result;
+}
+
+/**
+ * Convert markdown to dom and put thre resulting tree in given dom.
+ * Optionally, restore the selection to match the range in markdown, if any.
+ */
+function putMarkdownInDom(
+  div: HTMLDivElement,
+  markdown: MarkdownWithSelection,
+  restoreSelection: boolean,
+) {
+  logger.info('Markdown:>', markdown.data, '<');
+  const newDom = markdownToDom(markdown.data);
+
+  logger.info('DOM:', newDom);
+
+  // make sure div is empty
+  while (div.firstChild != null) {
+    div.removeChild(div.firstChild);
+  }
+  newDom.nodes.forEach(n => div.appendChild(n));
+
+  if (restoreSelection) {
+    restoreMarkdownRange(newDom, markdown.range);
+  }
+  return newDom;
+}
 
 /*************************************************
  *    STYLES
  *************************************************/
 
-const whiteIcon = css({
-  stroke: 'white',
-  strokeWidth: '40%',
-});
-
-const idleStyle = css({
-  border: '1px solid black',
-  borderRadius: '1px',
-  color: 'black',
-  padding: '5px',
-  margin: '2px',
-});
-
-const toggledStyle = cx(
-  idleStyle,
+export const idleStyle = cx(
+  lightIconButtonStyle,
   css({
-    backgroundColor: 'darkGrey',
+    borderRadius: borderRadius,
+    padding: '5px',
+    margin: '0 2px',
+    '&:hover': {
+      cursor: 'pointer',
+    },
   }),
 );
 
+export const toggledStyle = cx(
+  idleStyle,
+  css({
+    backgroundColor: 'var(--lightGray)',
+    color: 'var(--primaryColor)',
+  }),
+);
+
+export const toolbarSeparatorStyle = css({
+  paddingLeft: space_S,
+  marginLeft: space_S,
+  borderLeft: '1px solid var(--lightGray)',
+  height: '24px',
+});
+
 const editorStyle = cx(
   colabFlavouredMarkdown,
+  colabFlavouredMarkdownEditable,
   css({
     backgroundColor: 'var(--bgColor)',
     padding: '5px',
-    border: '1px solid var(--lightGray)',
+    border: '1px solid var(--lighterGray)',
     borderRadius: borderRadius,
     whiteSpace: 'pre-line',
     cursor: 'text',
@@ -67,8 +315,12 @@ const editorStyle = cx(
       pointerEvents: 'none',
       userSelect: 'none',
     },
-    ':focus': {
+    '&:hover': {
+      border: '1px solid var(--lightGray)',
+    },
+    ':focus, :focus-visible': {
       border: '1px solid var(--darkGray)',
+      outline: 'none',
     },
   }),
 );
@@ -77,12 +329,15 @@ const editorStyle = cx(
  *    TYPES
  *************************************************/
 
+type ListType = 'UL' | 'OL' | 'TL' | 'none';
+
 export interface ToolbarState {
   bold: boolean;
   italic: boolean;
   strike: boolean;
   underline: boolean;
-  heading: HeadingLevel | 0;
+  list: ListType;
+  majorStyle: MajorTag | undefined;
 }
 
 export interface ToolbarFeatures {
@@ -90,6 +345,10 @@ export interface ToolbarFeatures {
   toggleItalic: (e: React.MouseEvent | React.KeyboardEvent) => void;
   toggleUnderline: (e: React.MouseEvent | React.KeyboardEvent) => void;
   toggleStrike: (e: React.MouseEvent | React.KeyboardEvent) => void;
+  toggleList: (e: React.MouseEvent | React.KeyboardEvent) => void;
+  toggleOrderedList: (e: React.MouseEvent | React.KeyboardEvent) => void;
+  toggleTodoList: (e: React.MouseEvent | React.KeyboardEvent) => void;
+  selectMajorStyle: (tag: MajorTag) => void;
 }
 
 interface ToolbarButtonProps {
@@ -98,7 +357,7 @@ interface ToolbarButtonProps {
   icon: IconProp;
 }
 
-interface TXTFormatToolbarProps {
+export interface TXTFormatToolbarProps {
   toolbarState: ToolbarState;
   toolbarFormatFeatures: ToolbarFeatures;
 }
@@ -109,19 +368,47 @@ export interface WysiwygEditorProps {
   /** new markdown text */
   onChange: (newValue: string) => void;
   className?: string;
+  flyingToolBar?: boolean;
+  //ToolBar?: React.FunctionComponent<TXTFormatToolbarProps>;
+  ToolBar?: React.FunctionComponent<TXTFormatToolbarProps>;
+  selected?: boolean;
 }
 
 type SelectionWithModify = Selection & {
   modify: (
     alter: 'move' | 'extend',
     direction: 'left' | 'right' | 'forward' | 'backward',
-    granularity: 'word',
+    granularity: 'word' | 'character',
   ) => void;
 };
+
+function getListType(element: Element | null | undefined): ListType {
+  if (element == null) {
+    return 'none';
+  }
+
+  if (element.tagName != 'LI') {
+    return 'none';
+  }
+  if (element.getAttribute('data-checked')) {
+    return 'TL';
+  }
+
+  const type = element.getAttribute('data-list-type');
+  if (type === 'OL') {
+    return 'OL';
+  }
+
+  return 'UL';
+}
 
 /*************************************************
  *    COMPONENTS
  *************************************************/
+
+function ToolbarSeparator() {
+  return <span className={toolbarSeparatorStyle} />;
+}
 
 function ToolbarButton({ toggled, onClick, icon }: ToolbarButtonProps) {
   return (
@@ -129,16 +416,66 @@ function ToolbarButton({ toggled, onClick, icon }: ToolbarButtonProps) {
       className={cx('fa-layers', toggled ? toggledStyle : idleStyle)}
       onMouseDownCapture={onClick}
     >
-      <FontAwesomeIcon className={whiteIcon} icon={icon} />
       <FontAwesomeIcon icon={icon} />
     </span>
   );
 }
 
+function getTagHumanName(tag: string | undefined): string {
+  switch (tag) {
+    case 'H1':
+      return 'Title 1';
+    case 'H2':
+      return 'Title 2';
+    case 'H3':
+      return 'Title 3';
+    case 'H4':
+      return 'Title 4';
+    case 'H5':
+      return 'Title 5';
+    case 'P':
+    case 'DIV':
+      return 'paragraph';
+    case 'PRE':
+      return 'code';
+    default:
+      return ' - ';
+    //return tag?.toLowerCase() || '';
+  }
+}
+
+function createEntry(tag: MajorTag | undefined, jsx: boolean) {
+  const name = getTagHumanName(tag);
+  const label = jsx ? React.createElement((tag || 'DIV').toLowerCase(), {}, name) : name;
+  return { value: tag || 'DIV', label: <div className={css({ width: '80px' })}>{label}</div> };
+}
+
 export function TXTFormatToolbar({ toolbarState, toolbarFormatFeatures }: TXTFormatToolbarProps) {
+  const selectHeadingCb = React.useCallback(
+    (entry: Entry<MajorTag>) => {
+      toolbarFormatFeatures.selectMajorStyle(entry.value);
+    },
+    [toolbarFormatFeatures],
+  );
+
   return (
     <Flex>
-      {/* Listening to onMouseDownCapture is very important !*/}
+      <DropDownMenu
+        value={toolbarState.majorStyle}
+        menuIcon="CARET"
+        onSelect={selectHeadingCb}
+        valueComp={createEntry(toolbarState.majorStyle, false)}
+        entries={[
+          createEntry('H1', true),
+          createEntry('H2', true),
+          createEntry('H3', true),
+          createEntry('H4', true),
+          createEntry('H5', true),
+          createEntry('P', true),
+          createEntry('PRE', true),
+        ]}
+      />
+      <ToolbarSeparator />
       <ToolbarButton
         icon={faBold}
         toggled={toolbarState.bold}
@@ -159,18 +496,48 @@ export function TXTFormatToolbar({ toolbarState, toolbarFormatFeatures }: TXTFor
         toggled={toolbarState.strike}
         onClick={toolbarFormatFeatures.toggleStrike}
       />
-      <Tips tipsType="TODO">TODO: add more styling options (headings level, lists, ...</Tips>
+      <ToolbarSeparator />
+      <ToolbarButton
+        icon={faList}
+        toggled={toolbarState.list === 'UL'}
+        onClick={toolbarFormatFeatures.toggleList}
+      />
+      <ToolbarButton
+        icon={faListOl}
+        toggled={toolbarState.list === 'OL'}
+        onClick={toolbarFormatFeatures.toggleOrderedList}
+      />
+      <ToolbarButton
+        icon={faTasks}
+        toggled={toolbarState.list === 'TL'}
+        onClick={toolbarFormatFeatures.toggleTodoList}
+      />
+      <ToolbarSeparator />
     </Flex>
   );
 }
 
+/* function HiddenToolbar({ toolbarState, toolbarFormatFeatures }: TXTFormatToolbarProps){
+ const {setToolbar} = useContext(...)
+
+const FlyingToolbar = React.useMemo(()=>{
+  return function(){
+    return <TXTFormatToolbar toolbarState={toolbarState} toolbarFormatFeatures={toolbarFormatFeatures}/>
+  }
+})
+
+React.useEffect(()=>{
+  setToolbar(FlyingToolbar);
+  return ()=>setToolbar(undefined)
+},[FlyingToolbar])
+
+ return null;
+} */
+
 /**
  * Get new selection range by applying offsets to current selection
  */
-function computeSelectionOffsets(
-  offsets: LiveHelper.Offsets,
-  range: MarkdownWithSelection['range'],
-) {
+export function computeSelectionOffsets(offsets: LiveHelper.Offsets, range: MarkdownRange) {
   const anchorIndex = range.anchor || 0;
   const focusIndex = range.focus || 0;
 
@@ -199,19 +566,26 @@ export default function WysiwygEditor({
   value,
   onChange,
   className,
+  flyingToolBar,
+  ToolBar = TXTFormatToolbar,
+  selected,
 }: WysiwygEditorProps): JSX.Element {
   // use a ref to manage editor content
   const divRef = React.useRef<HTMLDivElement>(null);
 
   // to detect is composition in on going
   const compositionRef = React.useRef(false);
+  const { setEditToolbar } = React.useContext(CardEditorCTX);
+
+  const selectionRef = React.useRef<SavedSelection | null>(null);
 
   const [toolbarState, setToolbarState] = React.useState<ToolbarState>({
     bold: false,
     italic: false,
     strike: false,
     underline: false,
-    heading: 0,
+    list: 'none',
+    majorStyle: 'P',
   });
 
   React.useEffect(() => {
@@ -220,52 +594,94 @@ export default function WysiwygEditor({
     if (div != null) {
       const md = domToMarkdown(divRef.current!);
       if (md.data !== value) {
+        logger.info('Update value from outside');
         // current markdown version is different
 
-        const newDom = markdownToDom(value);
-
-        // make sure div is empty
-        while (div.firstChild != null) {
-          div.removeChild(div.firstChild);
-        }
-        newDom.nodes.forEach(n => div.appendChild(n));
+        const newRange: MarkdownRange = {
+          anchor: undefined,
+          focus: undefined,
+        };
 
         if (md.range.anchor != null || md.range.focus != null) {
           // -> should update selection caret/range
           const diff = LiveHelper.getMicroChange(md.data, value);
           const offsets = LiveHelper.computeOffsets(diff);
-          const newRange = computeSelectionOffsets(offsets, md.range);
-
-          const domRange = convertRange(newDom, newRange);
-          if (domRange != null) {
-            const selection = window.getSelection();
-            if (selection != null) {
-              selection.removeAllRanges();
-              selection.addRange(domRange);
-            }
-          }
-          // TODO: compute new Range
+          const range = computeSelectionOffsets(offsets, md.range);
+          newRange.anchor = range.anchor;
+          newRange.focus = range.focus;
         }
+
+        putMarkdownInDom(div, { data: value, range: newRange }, true);
+      } else {
+        logger.info('Do not update :same value');
       }
     }
   }, [value]);
 
-  const updateToolbar = React.useCallback(() => {
+  const getAllSelectedMajorElements = React.useCallback(() => {
+    const majorNodes: Element[] = [];
     const selection = document.getSelection();
+    if (selection?.anchorNode != null && divRef.current) {
+      if (divRef.current.contains(selection.anchorNode)) {
+        if (selection.type === 'Caret') {
+          const current = boundedClosest(selection.anchorNode!, majorTags, divRef.current);
+          if (current && current != divRef.current) {
+            majorNodes.push(current);
+          }
+        } else {
+          logger.info('Seleciton changed');
+
+          const selection = document.getSelection();
+
+          const nodes = sortNodes(
+            { node: selection!.anchorNode!, offset: selection!.anchorOffset },
+            { node: selection!.focusNode!, offset: selection!.focusOffset },
+          );
+
+          const finalMajor = boundedClosest(nodes.right.node, majorTags, divRef.current);
+
+          let current: Node | undefined = nodes.left.node;
+          let major: Element | null | undefined = undefined;
+
+          logger.trace('Selection: ', nodes.left.node, nodes.right.node, finalMajor);
+          do {
+            logger.trace('Process ', current);
+            major = boundedClosest(current, majorTags, divRef.current);
+
+            logger.trace('Current Major ', major);
+            if (major && major != divRef.current && majorNodes.includes(major) === false) {
+              majorNodes.push(major);
+            }
+            current = findNextLeaf(current, divRef.current);
+            logger.trace('NewCurrent ', current);
+          } while (current != null && major !== finalMajor);
+        }
+      }
+    }
+    return majorNodes;
+  }, []);
+
+  const updateToolbar = React.useCallback(() => {
+    const selection = selectionRef.current;
     if (selection != null) {
       if (divRef.current) {
+        const majors = getAllSelectedMajorElements();
         if (selection.type === 'Caret') {
-          const isBold = boundedClosest(selection.anchorNode!, 'STRONG', divRef.current) != null;
-          const isItalic = boundedClosest(selection.anchorNode!, 'EM', divRef.current) != null;
-          const isStrike = boundedClosest(selection.anchorNode!, 'STRIKE', divRef.current) != null;
-          const isUnderline = boundedClosest(selection.anchorNode!, 'U', divRef.current) != null;
+          const isBold = boundedClosest(selection.anchorNode!, ['STRONG'], divRef.current) != null;
+          const isItalic = boundedClosest(selection.anchorNode!, ['EM'], divRef.current) != null;
+          const isStrike =
+            boundedClosest(selection.anchorNode!, ['STRIKE'], divRef.current) != null;
+          const isUnderline = boundedClosest(selection.anchorNode!, ['U'], divRef.current) != null;
+
+          const majorElement = boundedClosest(selection.anchorNode!, majorTags, divRef.current);
 
           setToolbarState({
             bold: isBold,
             italic: isItalic,
             strike: isStrike,
             underline: isUnderline,
-            heading: 0,
+            list: getListType(majorElement),
+            majorStyle: majorElement?.tagName as MajorTag,
           });
         } else if (selection.type === 'Range') {
           const nodes = sortNodes(
@@ -282,21 +698,30 @@ export default function WysiwygEditor({
             areAllLeafsWrappedByTag(start, end, 'STRIKE', divRef.current).type != 'NO';
           const isUnderline = areAllLeafsWrappedByTag(start, end, 'U', divRef.current).type != 'NO';
 
+          const uniqMajors = uniq(majors.map(t => t.tagName));
+
+          const uniqListType = uniq(majors.map(t => t.getAttribute('data-list-type')));
+          const currentListType =
+            uniqListType.length === 1 && uniqListType[0] != null ? uniqListType[0] : 'none';
+
           setToolbarState({
             bold: isBold,
             italic: isItalic,
             strike: isStrike,
             underline: isUnderline,
-            heading: 0,
+            list: currentListType as ListType,
+            majorStyle: uniqMajors.length === 1 ? (uniqMajors[0] as MajorTag) : undefined,
           });
         }
       }
     }
-  }, []);
+  }, [getAllSelectedMajorElements]);
 
   const onSelectionChange = React.useCallback(() => {
-    const selection = document.getSelection();
-    if (selection != null) {
+    const selection = saveSelection(divRef.current);
+    if (selection) {
+      // since getSelection return a mutable object, make sure to make a copy
+      selectionRef.current = selection;
       updateToolbar();
       //      logger.info("SelectionAnchor: ", selection.anchorNode?.nodeName);
       //      logger.info("SelectionAndhorOffset: ", selection.anchorOffset);
@@ -329,6 +754,9 @@ export default function WysiwygEditor({
     };
   }, [onSelectionChange]);
 
+  /**
+   * convert current DOM tree and trigger onChange
+   */
   const onInternalChangeCb = React.useCallback(() => {
     updateToolbar();
     const md = domToMarkdown(divRef.current!);
@@ -361,32 +789,79 @@ export default function WysiwygEditor({
     [onInternalChangeCb],
   );
 
-  const toggleTagCb = React.useCallback(
+  const toggleMinorTagCb = React.useCallback(
     (tagName: MinorTag) => {
-      const selection = window.getSelection();
-      if (selection?.anchorNode != null && divRef.current) {
-        if (divRef.current.contains(selection.anchorNode)) {
+      const savedSelection = selectionRef.current;
+      if (savedSelection?.anchorNode != null && divRef.current) {
+        if (divRef.current.contains(savedSelection.anchorNode)) {
+          const selection = restoreSavedSelection(savedSelection);
+
           let originalCaret: { node: Node; offset: number } | null = null;
 
-          if (selection.type === 'Caret') {
-            originalCaret = { node: selection.anchorNode, offset: selection.anchorOffset };
-            (selection as SelectionWithModify).modify('move', 'backward', 'word');
-            (selection as SelectionWithModify).modify('extend', 'forward', 'word');
+          if (selection?.type === 'Caret') {
+            const sType = getSelectionType(divRef.current);
+            logger.warn('SelectionType: ', sType);
+            if (sType === 'ON_WORD') {
+              originalCaret = { node: selection.anchorNode!, offset: selection.anchorOffset };
+              (selection as SelectionWithModify).modify('move', 'backward', 'word');
+              (selection as SelectionWithModify).modify('extend', 'forward', 'word');
+            }
           }
-          if (selection.type === 'Range') {
-            logger.info('Selection: ', selection);
+
+          if (selection?.type === 'Caret') {
+            const toggled = !!boundedClosest(selection.anchorNode!, [tagName], divRef.current);
+            if (toggled) {
+              logger.warn('Untoggle');
+
+              const node = document.createTextNode('x');
+              selection.getRangeAt(0).insertNode(node);
+              toggleTag(
+                {
+                  node,
+                  offset: 0,
+                },
+                {
+                  node: node,
+                  offset: 1,
+                },
+                tagName,
+                divRef.current,
+              );
+              node.textContent = '';
+              selection.setPosition(node, 0);
+            } else {
+              logger.warn('Toggle');
+              const newTag = document.createElement(tagName);
+              selection.getRangeAt(0).insertNode(newTag);
+              selection.setPosition(newTag);
+            }
+          } else {
+            logger.info('Selection: ', savedSelection);
             const nodes = sortNodes(
-              { node: selection.anchorNode, offset: selection.anchorOffset },
-              { node: selection.focusNode!, offset: selection.focusOffset },
+              { node: selection!.anchorNode!, offset: selection!.anchorOffset },
+              { node: selection!.focusNode!, offset: selection!.focusOffset },
             );
             if (originalCaret) {
-              selection.setPosition(originalCaret.node, originalCaret.offset);
+              document.getSelection()?.setPosition(originalCaret.node, originalCaret.offset);
             }
-            toggleTag(nodes.left, nodes.right, tagName, divRef.current);
-            onInternalChangeCb();
-          } else {
-            //const range = document.createRange();
-            //range.setStart(selection.anchorNode, selection.anchorOffset);
+            const range = toggleTag(nodes.left, nodes.right, tagName, divRef.current);
+            if (originalCaret) {
+              const sel = document.getSelection()! as SelectionWithModify;
+              sel.setPosition(originalCaret.node, 0);
+              for (let i = 0; i < originalCaret.offset; i++) {
+                sel.modify('move', 'forward', 'character');
+              }
+            } else {
+              document
+                .getSelection()
+                ?.setBaseAndExtent(
+                  range.start.node,
+                  range.start.offset,
+                  range.end.node,
+                  range.end.offset,
+                );
+              onInternalChangeCb();
+            }
           }
         }
       }
@@ -394,66 +869,263 @@ export default function WysiwygEditor({
     [onInternalChangeCb],
   );
 
+  const toggleListNode = React.useCallback(
+    (node: Element, newType: 'UL' | 'OL' | 'TL' | 'none'): Element => {
+      if (node.parentElement) {
+        const currentListType = getListType(node);
+        if (newType != null && currentListType === 'none') {
+          // make list item
+          let previous = node.previousSibling;
+          if (previous instanceof Element == false || (previous as Element)?.tagName != 'UL') {
+            // previous does not exist or is not a list
+            // init list
+            previous = document.createElement('UL');
+            node.parentElement.insertBefore(previous, node);
+          }
+          const listItem = document.createElement('LI');
+          listItem.setAttribute('data-list-type', newType);
+          if (newType === 'TL') {
+            listItem.setAttribute('data-checked', 'TODO');
+          }
+          while (node.firstChild) {
+            listItem.append(node.firstChild);
+          }
+          previous!.appendChild(listItem);
+
+          const next = node.nextElementSibling;
+          if (next?.tagName === 'UL') {
+            // merge consecutive list
+            while (next.firstChild) {
+              previous!.appendChild(next.firstChild);
+            }
+            next.remove();
+          }
+          node.remove();
+          return listItem;
+        } else if (currentListType !== 'none' && newType == 'none') {
+          // unindent
+          let unindent = true;
+          while (unindent) {
+            unindent = unindentListItem(node);
+          }
+
+          const nestedList = findChildByTag(node, 'UL');
+
+          // collect next list items
+          const nextLis: Element[] = [];
+          while (node.nextElementSibling) {
+            nextLis.push(node.nextElementSibling);
+            node.nextElementSibling.remove();
+          }
+
+          let newList: Element | undefined = undefined;
+
+          if (nestedList || nextLis.length > 0) {
+            newList = document.createElement('UL');
+            if (nestedList) {
+              // move previously nested item to new list
+              while (nestedList.firstChild) {
+                newList.append(nestedList.firstChild);
+              }
+              nestedList.remove();
+            }
+            for (const item of nextLis) {
+              newList.append(item);
+            }
+          }
+          const newMajor = document.createElement('P');
+          while (node.firstChild) {
+            newMajor.append(node.firstChild);
+          }
+          node.parentElement.after(newMajor);
+          if (newList) {
+            newMajor.after(newList);
+          }
+
+          node.remove();
+          return newMajor;
+        } else {
+          // mutate list
+          node.removeAttribute('data-checked');
+          node.setAttribute('data-list-type', newType);
+          if (newType === 'TL') {
+            node.setAttribute('data-checked', 'TODO');
+          }
+          return node;
+        }
+      }
+      return node;
+    },
+    [],
+  );
+
+  const selectMajorTag = React.useCallback(
+    (tag: MajorTag) => {
+      const savedSelection = selectionRef.current;
+      if (savedSelection?.anchorNode != null && divRef.current) {
+        if (divRef.current.contains(savedSelection.anchorNode)) {
+          restoreSavedSelection(savedSelection);
+          const majorNodes = getAllSelectedMajorElements();
+          majorNodes.forEach(nodeArg => {
+            let node = nodeArg;
+            if (node.tagName === 'LI') {
+              // node is a list: remove list first
+              node = toggleListNode(node, 'none');
+            }
+
+            // const newNode =
+            switchTo(node, tag);
+            //            let pos = selection.anchorOffset;
+            //            selection.setPosition(newNode, 0);
+            //            while (pos > 0){
+            //              (selection as SelectionWithModify).modify('move', 'forward', 'character');
+            //              pos--;
+            //            }
+          });
+          restoreSavedSelection(savedSelection);
+          onInternalChangeCb();
+        }
+      }
+    },
+    [getAllSelectedMajorElements, toggleListNode, onInternalChangeCb],
+  );
+
+  const toggleList = React.useCallback(
+    (type: 'UL' | 'OL' | 'TL') => {
+      const majorNodes = getAllSelectedMajorElements();
+
+      // check if selection contains only list items
+      const uniqListType = uniq(majorNodes.map(t => t.getAttribute('data-list-type')));
+      // check if all list item share the same type
+      const currentListType =
+        uniqListType.length === 1 && uniqListType[0] != null ? uniqListType[0] : 'none';
+
+      majorNodes.forEach(node => toggleListNode(node, currentListType === type ? 'none' : type));
+      const savedSelection = selectionRef.current;
+      if (savedSelection) {
+        restoreSavedSelection(savedSelection);
+      }
+      onInternalChangeCb();
+    },
+    [getAllSelectedMajorElements, onInternalChangeCb, toggleListNode],
+  );
+
   const toggleBold = React.useCallback(
     (e: React.MouseEvent | React.KeyboardEvent) => {
-      toggleTagCb('STRONG');
+      toggleMinorTagCb('STRONG');
       e.preventDefault();
     },
-    [toggleTagCb],
+    [toggleMinorTagCb],
   );
 
   const toggleItalic = React.useCallback(
     (e: React.MouseEvent | React.KeyboardEvent) => {
-      toggleTagCb('EM');
+      toggleMinorTagCb('EM');
       e.preventDefault();
     },
-    [toggleTagCb],
+    [toggleMinorTagCb],
   );
 
   const toggleUnderline = React.useCallback(
     (e: React.MouseEvent | React.KeyboardEvent) => {
-      toggleTagCb('U');
+      toggleMinorTagCb('U');
       e.preventDefault();
     },
-    [toggleTagCb],
+    [toggleMinorTagCb],
   );
 
   const toggleStrike = React.useCallback(
     (e: React.MouseEvent | React.KeyboardEvent) => {
-      toggleTagCb('STRIKE');
+      toggleMinorTagCb('STRIKE');
       e.preventDefault();
     },
-    [toggleTagCb],
+    [toggleMinorTagCb],
+  );
+
+  const toggleListCb = React.useCallback(
+    (e: React.MouseEvent | React.KeyboardEvent) => {
+      toggleList('UL');
+      e.preventDefault();
+    },
+    [toggleList],
+  );
+
+  const toggleOrderedListCb = React.useCallback(
+    (e: React.MouseEvent | React.KeyboardEvent) => {
+      toggleList('OL');
+      e.preventDefault();
+    },
+    [toggleList],
+  );
+
+  const toggleTodoListCb = React.useCallback(
+    (e: React.MouseEvent | React.KeyboardEvent) => {
+      toggleList('TL');
+      e.preventDefault();
+    },
+    [toggleList],
   );
 
   const onKeyDownCb = React.useCallback(
     (e: React.KeyboardEvent) => {
+      if (e.key === 'Tab') {
+        if (divRef.current && selectionRef.current) {
+          logger.trace('Hit tab');
+          const listItem = boundedClosest(selectionRef.current.anchorNode!, ['LI'], divRef.current);
+          if (listItem != null) {
+            if (e.shiftKey) {
+              unindentListItem(listItem);
+            } else {
+              indentListItem(listItem);
+            }
+            restoreSavedSelection(selectionRef.current);
+            e.preventDefault();
+            onInternalChangeCb();
+          }
+        }
+      }
       if (e.ctrlKey && !e.altKey && !e.metaKey) {
         if (e.key === 'b') {
           toggleBold(e);
+          e.preventDefault();
         } else if (e.key === 'i') {
           toggleItalic(e);
+          e.preventDefault();
         } else if (e.key === 'u') {
           toggleUnderline(e);
+          e.preventDefault();
         } else if (e.key === 's') {
           // ctrl-s is useless (autosave)
           e.preventDefault();
         }
       }
     },
-    [toggleBold, toggleItalic, toggleUnderline],
+    [toggleBold, toggleItalic, toggleUnderline, onInternalChangeCb],
   );
 
   const interceptClick = React.useCallback(
-    (e: React.UIEvent) => {
+    (e: React.MouseEvent) => {
       // click on todo-list item toggled the state
       if (e.target instanceof Element) {
         if (e.target.tagName === 'LI') {
-          const checked = e.target.getAttribute('data-checked');
-          if (checked != null) {
-            const newChecked = checked === 'TODO' ? 'DONE' : 'TODO';
-            e.target.setAttribute('data-checked', newChecked);
-            onInternalChangeCb();
+          if (e.target.firstChild) {
+            // hack
+            // Since boxes are displayed using CSS pseudoelement, boxes do not exists
+            // as DOM nodes.
+            // To detect clicks on such "non-existing" nodes, a hack based on mouse position
+            // is used.
+            const range = new Range();
+            range.setStart(e.target.firstChild, 0);
+            range.setEnd(e.target.firstChild, 1);
+            const { left } = range.getBoundingClientRect();
+            if (e.clientX < left) {
+              const checked = e.target.getAttribute('data-checked');
+              if (checked != null) {
+                const newChecked = checked === 'TODO' ? 'DONE' : 'TODO';
+                e.target.setAttribute('data-checked', newChecked);
+                onInternalChangeCb();
+              }
+            }
           }
         }
       }
@@ -462,19 +1134,123 @@ export default function WysiwygEditor({
     [onInternalChangeCb],
   );
 
+  const toolbarFormatFeatures = React.useMemo<ToolbarFeatures>(() => {
+    return {
+      toggleBold: toggleBold,
+      toggleItalic: toggleItalic,
+      toggleUnderline: toggleUnderline,
+      toggleStrike: toggleStrike,
+      selectMajorStyle: selectMajorTag,
+      toggleList: toggleListCb,
+      toggleOrderedList: toggleOrderedListCb,
+      toggleTodoList: toggleTodoListCb,
+    };
+  }, [
+    toggleBold,
+    toggleItalic,
+    toggleStrike,
+    toggleUnderline,
+    selectMajorTag,
+    toggleListCb,
+    toggleOrderedListCb,
+    toggleTodoListCb,
+  ]);
+
+  React.useEffect(() => {
+    if (flyingToolBar && selected) {
+      setEditToolbar(
+        <ToolBar toolbarState={toolbarState} toolbarFormatFeatures={toolbarFormatFeatures} />,
+      );
+    }
+  }, [ToolBar, flyingToolBar, setEditToolbar, toolbarFormatFeatures, toolbarState, selected]);
+
+  React.useEffect(() => {
+    if (selected) {
+      divRef.current?.focus();
+    }
+  }, [selected, divRef]);
+
+  const copyCb = React.useCallback((e: React.ClipboardEvent) => {
+    logger.trace('OnCopy', e);
+    if (logger.getLevel() >= 5) {
+      e.clipboardData.types.forEach(t => {
+        logger.info(`Copied ${t}: ${e.clipboardData.getData(t)}`);
+      });
+    }
+
+    const md = domToMarkdown(divRef.current);
+    if (md.range.anchor != null && md.range.focus != null) {
+      const copiedMd = md.data.substring(md.range.anchor, md.range.focus);
+      e.clipboardData.setData('text/x-colab-markdown', copiedMd);
+      logger.info('CopiedMD', copiedMd);
+    }
+  }, []);
+
+  const pasteCb = React.useCallback(
+    (e: React.ClipboardEvent) => {
+      if (logger.getLevel() >= 5) {
+        e.clipboardData.types.forEach(t => {
+          logger.trace(`Paste ${t}: ${e.clipboardData.getData(t)}`);
+        });
+      }
+
+      // supported MIME type only
+      const html = e.clipboardData.getData('text/html');
+      const plainText = e.clipboardData.getData('text/plain');
+      const colabMd = e.clipboardData.getData('text/x-colab-markdown');
+
+      let mdToInsert = '';
+
+      if (colabMd) {
+        // use markdows as-is if any
+        mdToInsert = colabMd;
+      }
+
+      if (!mdToInsert && html) {
+        // html is second choice
+        // convert pasted html to markdown
+        const div = document.createElement('div');
+        div.innerHTML = html;
+        const toInsert = domToMarkdown(div);
+        mdToInsert = toInsert.data;
+      }
+
+      if (!mdToInsert && plainText) {
+        // plain text is fallback
+        // TODO or not TODO? escape plain text
+        mdToInsert = plainText;
+      } else {
+        logger.warn('No eligible MIME type', e.clipboardData.types);
+      }
+
+      if (mdToInsert) {
+        logger.trace('ToInsert', mdToInsert);
+        const currentMd = domToMarkdown(divRef.current);
+        const result = mergeMardown(currentMd, mdToInsert);
+
+        logger.info('Final MD: ', result.data, result.range);
+
+        if (divRef.current) {
+          putMarkdownInDom(divRef.current, result, true);
+          // trigger change
+          onInternalChangeCb();
+        }
+      }
+
+      e.preventDefault();
+    },
+    [onInternalChangeCb],
+  );
+
   return (
     <Flex className={className} direction="column" grow={1} align="stretch">
-      <TXTFormatToolbar
-        toolbarState={toolbarState}
-        toolbarFormatFeatures={{
-          toggleBold: toggleBold,
-          toggleItalic: toggleItalic,
-          toggleUnderline: toggleUnderline,
-          toggleStrike: toggleStrike,
-        }}
-      />
+      {!flyingToolBar && (
+        <ToolBar toolbarState={toolbarState} toolbarFormatFeatures={toolbarFormatFeatures} />
+      )}
       <Flex direction="column" align="stretch">
         <div
+          onCopy={copyCb}
+          onPaste={pasteCb}
           onClick={interceptClick}
           className={editorStyle}
           ref={divRef}
@@ -485,6 +1261,7 @@ export default function WysiwygEditor({
           onCompositionEnd={logCompEnd}
           contentEditable={true}
         ></div>
+        {/*<pre>{value}</pre>*/}
       </Flex>
     </Flex>
   );

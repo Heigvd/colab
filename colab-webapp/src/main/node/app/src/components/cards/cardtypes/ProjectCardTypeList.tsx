@@ -64,6 +64,8 @@ export default function ProjectCardTypeList(): JSX.Element {
   return (
     <Routes>
       <Route path="/edit/:id/*" element={<CardTypeEditor usage="currentProject" />} />
+      {/* TODO : stabilize the routes ! Now : easy path to make it work*/}
+      <Route path="/cardtypes/edit/:id/*" element={<CardTypeEditor usage="currentProject" />} />
       <Route
         path="*"
         element={
@@ -96,17 +98,17 @@ export default function ProjectCardTypeList(): JSX.Element {
             ) : (
               <div className={voidStyle}>
                 <p>
-                  {i18n.modules.cardType.infos.addFirstProjectType}
+                  {i18n.modules.cardType.info.createFirstProjectType}
                   <br />
                   <br />
-                  {i18n.modules.cardType.infos.createEmptyType}
+                  {i18n.modules.cardType.info.createEmptyType}
                   <br />
-                  {i18n.modules.cardType.infos.orAddSharedType}
+                  {i18n.modules.cardType.info.orAddSharedType}
                 </p>
               </div>
             )}
             <Collapsible
-              label="Shared available types"
+              label={i18n.modules.cardType.sharedAvailableTypes}
               contentClassName={css({ flexDirection: 'column', alignItems: 'stretch' })}
             >
               {availableCTStatus !== 'READY' ? (
@@ -123,7 +125,7 @@ export default function ProjectCardTypeList(): JSX.Element {
                 />
               ) : (
                 <div className={voidStyle}>
-                  <p>{i18n.modules.cardType.infos.noExternalType}</p>
+                  <p>{i18n.modules.cardType.info.noExternalType}</p>
                 </div>
               )}
             </Collapsible>

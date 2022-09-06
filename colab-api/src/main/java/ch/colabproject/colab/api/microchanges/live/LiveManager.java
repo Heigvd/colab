@@ -159,13 +159,13 @@ public class LiveManager implements Serializable {
             boolean parentExists = basedOn.contains(block.getRevision())
                 || changes.stream()
                     .filter(change -> basedOn.stream()
-                        .filter(rev -> change.getRevision().equals(rev))
-                        .findFirst().isPresent()
+                    .filter(rev -> change.getRevision().equals(rev))
+                    .findFirst().isPresent()
                     )
                     .findFirst().isPresent();
 
             if (!parentExists) {
-                logger.trace("Change is based on non-existing parent");
+                logger.warn("Change is based on non-existing parent");
                 logger.trace("TODO: keep it in a temp bag the time his parent is known");
                 // patch.setBasedOn("0");
             }
@@ -237,10 +237,14 @@ public class LiveManager implements Serializable {
                         logger.error("Fails to save block", ex);
                     }
                 }
+            } catch (StackOverflowError error) {
+                logger.error("StackOverflowError");
+                throw error;
             } finally {
                 this.unlock(blockId);
             }
-        });
+        }
+        );
     }
 
     /**

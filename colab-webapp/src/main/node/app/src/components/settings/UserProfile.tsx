@@ -9,8 +9,8 @@ import { User } from 'colab-rest-client';
 import * as React from 'react';
 import { updateUser } from '../../API/api';
 import useTranslations from '../../i18n/I18nContext';
-import { useAppDispatch } from '../../store/hooks';
-import Form, { Field } from '../common/Form/Form';
+import { useAppDispatch, useLoadingState } from '../../store/hooks';
+import Form, { Field } from '../common/element/Form';
 
 interface UserProfileProps {
   user: User;
@@ -19,6 +19,7 @@ interface UserProfileProps {
 export default function UserProfile({ user }: UserProfileProps): JSX.Element {
   const dispatch = useAppDispatch();
   const i18n = useTranslations();
+  const { isLoading, startLoading, stopLoading } = useLoadingState();
 
   const fields: Field<User>[] = [
     {
@@ -63,8 +64,12 @@ export default function UserProfile({ user }: UserProfileProps): JSX.Element {
             fields={fields}
             value={user}
             onSubmit={u => {
-              dispatch(updateUser(u));
+              startLoading();
+
+              dispatch(updateUser(u)).then(stopLoading);
             }}
+            submitLabel={i18n.common.save}
+            isSubmitInProcess={isLoading}
           />
         </div>
       </div>

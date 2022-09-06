@@ -9,19 +9,17 @@ import { css, cx } from '@emotion/css';
 import * as React from 'react';
 import { PasswordFeedback } from 'react-password-strength-bar';
 import useTranslations from '../../../i18n/I18nContext';
-import { space_M } from '../../styling/style';
-import ButtonWithLoader from '../element/ButtonWithLoader';
-import InlineLoading from '../element/InlineLoading';
-import { FormInput } from '../element/Input';
-import { TipsProps } from '../element/Tips';
+import { errorColor, space_M, textSmall } from '../../styling/style';
 import Flex from '../layout/Flex';
+import ButtonWithLoader from './ButtonWithLoader';
 import Checkbox from './Checkbox';
+import InlineLoading from './InlineLoading';
+import { FormInput } from './Input';
 import SelectInput from './SelectInput';
+import { TipsProps } from './Tips';
 import Toggler from './Toggler';
 
 const PasswordStrengthBar = React.lazy(() => import('react-password-strength-bar'));
-
-export const emailFormat = /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Fields
@@ -29,18 +27,19 @@ export const emailFormat = /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:
 interface BaseField<T> {
   key: keyof T;
   label?: React.ReactNode;
-  placeholder?: string;
   type: 'text' | 'textarea' | 'password' | 'boolean' | 'select' | 'selectnumber';
   isMandatory: boolean;
   readOnly?: boolean;
   tip?: TipsProps['children'];
-  fieldFooter?: React.ReactNode | ((data: T) => React.ReactNode);
+  footer?: React.ReactNode | ((data: T) => React.ReactNode);
   isErroneous?: (data: T) => boolean;
   errorMessage?: React.ReactNode | ((data: T) => React.ReactNode);
 }
 
 interface TextualField<T> extends BaseField<T> {
   type: 'text' | 'textarea';
+  placeholder?: string;
+  autoComplete?: string;
 }
 
 export interface PasswordScore {
@@ -50,6 +49,8 @@ export interface PasswordScore {
 
 interface PasswordField<T> extends BaseField<T> {
   type: 'password';
+  placeholder?: string;
+  autoComplete?: string;
   showStrengthBar: boolean;
   strengthProp?: keyof T;
 }
@@ -61,6 +62,7 @@ interface BooleanField<T> extends BaseField<T> {
 
 interface SelectField<T> extends BaseField<T> {
   type: 'select';
+  placeholder?: string;
   isMulti: boolean;
   canCreateOption?: boolean;
   options: { label: string; value: unknown }[];
@@ -79,6 +81,7 @@ export function createSelectField<T, IsMulti extends boolean, K extends keyof T>
   return field;
 }
 
+// is it really useful ? on august 2022, it is not used
 interface SelectNumberField<T> extends BaseField<T> {
   type: 'selectnumber';
   options: { label: string; value: number }[];
@@ -104,11 +107,12 @@ export type Field<T> =
 export interface FormProps<T> {
   fields: Field<T>[];
   value: T;
-  onSubmit: (entity: T) => void;
-  submitLabel?: string;
-  autoComplete?: string;
+  onSubmit: (data: T) => void;
+  submitLabel: string;
   children?: React.ReactNode;
   isSubmitInProcess?: boolean;
+  isGloballyErroneous?: boolean | ((data: T) => boolean);
+  globalErrorMessage?: React.ReactNode;
   className?: string;
   childrenClassName?: string;
   buttonClassName?: string;
@@ -119,9 +123,10 @@ export default function Form<T>({
   value,
   onSubmit,
   submitLabel,
-  autoComplete,
   children,
   isSubmitInProcess,
+  isGloballyErroneous,
+  globalErrorMessage,
   className,
   childrenClassName,
   buttonClassName,
@@ -168,17 +173,17 @@ export default function Form<T>({
 
     const errorMessage =
       showErrors && isEmptyError
-        ? i18n.form.missingMandatory
+        ? i18n.basicComponent.form.missingMandatory
         : showErrors && isErroneous
         ? field.errorMessage != null
           ? typeof field.errorMessage === 'function'
             ? field.errorMessage(state)
             : field.errorMessage
-          : i18n.form.defaultFieldError
+          : i18n.basicComponent.form.defaultFieldError
         : null;
 
     const effectiveFieldFooter =
-      typeof field.fieldFooter === 'function' ? field.fieldFooter(state) : field.fieldFooter;
+      typeof field.footer === 'function' ? field.footer(state) : field.footer;
 
     if (field.type === 'text' || field.type === 'textarea') {
       return (
@@ -191,11 +196,11 @@ export default function Form<T>({
             inputType={field.type === 'text' ? 'input' : 'textarea'}
             mandatory={field.isMandatory}
             readOnly={field.readOnly}
-            autoComplete={autoComplete}
+            autoComplete={field.autoComplete}
             onChange={value => setFormValue(field.key, value)}
             tip={field.tip}
             footer={effectiveFieldFooter}
-            error={errorMessage}
+            errorMessage={errorMessage}
           />
         </div>
       );
@@ -209,11 +214,11 @@ export default function Form<T>({
             type="password"
             mandatory={field.isMandatory}
             readOnly={field.readOnly}
-            autoComplete={autoComplete}
+            autoComplete={field.autoComplete}
             onChange={value => setFormValue(field.key, value)}
             tip={field.tip}
             footer={effectiveFieldFooter}
-            error={errorMessage}
+            errorMessage={errorMessage}
           />
           {field.strengthProp != null && (
             <div className={cx({ [css({ display: 'none' })]: !field.showStrengthBar })}>
@@ -244,8 +249,8 @@ export default function Form<T>({
               readOnly={field.readOnly}
               onChange={value => setFormValue(field.key, value)}
               tip={field.tip}
-              fieldFooter={effectiveFieldFooter}
-              error={errorMessage}
+              footer={effectiveFieldFooter}
+              errorMessage={errorMessage}
             />
           ) : (
             <Checkbox
@@ -254,8 +259,8 @@ export default function Form<T>({
               readOnly={field.readOnly}
               onChange={value => setFormValue(field.key, value)}
               tip={field.tip}
-              fieldFooter={effectiveFieldFooter}
-              error={errorMessage}
+              footer={effectiveFieldFooter}
+              errorMessage={errorMessage}
             />
           )}
         </div>
@@ -274,26 +279,26 @@ export default function Form<T>({
             options={field.options}
             onChange={value => setFormValue(field.key, value)}
             tip={field.tip}
-            fieldFooter={effectiveFieldFooter}
-            warning={errorMessage}
+            footer={effectiveFieldFooter}
+            errorMessage={errorMessage}
           />
         </div>
       );
     } else if (field.type === 'selectnumber') {
+      // TODO see if really useful to have a selection of a number
       return (
         <div key={fieldKey}>
           <SelectInput
             label={field.label}
             value={Number(state[field.key])}
-            placeholder={field.placeholder}
             mandatory={field.isMandatory}
             readOnly={field.readOnly}
             isMulti={false}
             options={field.options}
             onChange={value => setFormValue(field.key, value)}
             tip={field.tip}
-            fieldFooter={effectiveFieldFooter}
-            warning={errorMessage}
+            footer={effectiveFieldFooter}
+            errorMessage={errorMessage}
           />
         </div>
       );
@@ -301,29 +306,44 @@ export default function Form<T>({
   });
 
   return (
-    <div
-      onKeyDown={onEnter}
-      className={cx(
-        css({
-          display: 'flex',
-          flexDirection: 'column',
-          width: 'min-content',
-        }),
-        className,
-      )}
-    >
-      {fieldComps}
-      <Flex direction="column" justify="center" align="center" className={childrenClassName}>
-        <ButtonWithLoader
-          key="submit"
-          onClick={submit}
-          isLoading={isSubmitInProcess}
-          className={cx(css({ margin: space_M + ' 0', alignSelf: 'flex-start' }), buttonClassName)}
+    <>
+      {(isGloballyErroneous || (globalErroneous && showErrors)) && (
+        <Flex
+          className={cx(
+            css({ color: errorColor, textAlign: 'left', marginBottom: space_M }),
+            textSmall,
+          )}
         >
-          {submitLabel || i18n.form.submit}
-        </ButtonWithLoader>
-        {children}
-      </Flex>
-    </div>
+          {globalErrorMessage}
+        </Flex>
+      )}
+      <div
+        onKeyDown={onEnter}
+        className={cx(
+          css({
+            display: 'flex',
+            flexDirection: 'column',
+            width: 'min-content',
+          }),
+          className,
+        )}
+      >
+        {fieldComps}
+        <Flex direction="column" justify="center" align="center" className={childrenClassName}>
+          <ButtonWithLoader
+            key="submit"
+            onClick={submit}
+            isLoading={isSubmitInProcess}
+            className={cx(
+              css({ margin: space_M + ' 0', alignSelf: 'flex-start' }),
+              buttonClassName,
+            )}
+          >
+            {submitLabel}
+          </ButtonWithLoader>
+          {children}
+        </Flex>
+      </div>
+    </>
   );
 }

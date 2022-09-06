@@ -13,7 +13,8 @@ import { Project } from 'colab-rest-client';
 import * as React from 'react';
 //import { useNavigate } from 'react-router-dom';
 import * as API from '../../API/api';
-import { shallowEqual, useAppDispatch, useAppSelector } from '../../store/hooks';
+import useTranslations from '../../i18n/I18nContext';
+import { shallowEqual, useAppDispatch, useAppSelector, useLoadingState } from '../../store/hooks';
 import { StateStatus } from '../../store/project';
 import ItemThumbnailsSelection from '../common/collection/ItemThumbnailsSelection';
 import IllustrationDisplay from '../common/element/IllustrationDisplay';
@@ -53,6 +54,10 @@ interface ProjectDisplayProps {
 // Display one project and allow to edit it
 const ProjectDisplay = ({ project }: ProjectDisplayProps) => {
   const dispatch = useAppDispatch();
+  const i18n = useTranslations();
+
+  const { isLoading, startLoading, stopLoading } = useLoadingState();
+
   return (
     <Flex direction="column" align="stretch">
       <Flex
@@ -94,13 +99,13 @@ const ProjectDisplay = ({ project }: ProjectDisplayProps) => {
                 value: 'open',
                 label: (
                   <>
-                    <FontAwesomeIcon icon={faEdit} /> Open
+                    <FontAwesomeIcon icon={faEdit} /> {i18n.common.open}
                   </>
                 ),
                 action: () => window.open(`#/editor/${project.id}`, '_blank'),
               },
               {
-                value: 'display settings',
+                value: 'settings',
                 label: (
                   <OpenCloseModal
                     title="Project display settings"
@@ -112,36 +117,33 @@ const ProjectDisplay = ({ project }: ProjectDisplayProps) => {
                     })}
                     collapsedChildren={
                       <div className={modalEntryStyle}>
-                        <FontAwesomeIcon icon={faCog} />
-                        Settings
+                        <FontAwesomeIcon icon={faCog} /> {i18n.common.settings}
                       </div>
                     }
                     widthMax
                     heightMax
                   >
-                    {() => (
-                      <ProjectDisplaySettings project={project} key={project.id} />
-                    )}
+                    {() => <ProjectDisplaySettings project={project} key={project.id} />}
                   </OpenCloseModal>
                 ),
                 modal: true,
               },
               {
-                value: 'Duplicate project',
+                value: 'duplicate',
                 label: (
                   <>
-                    <FontAwesomeIcon icon={faCopy} /> Duplicate
+                    <FontAwesomeIcon icon={faCopy} /> {i18n.common.duplicate}
                   </>
                 ),
                 action: () => dispatch(API.duplicateProject(project)),
               },
               {
-                value: 'Delete project',
+                value: 'delete',
                 label: (
                   <ConfirmDeleteModal
                     buttonLabel={
                       <div className={cx(css({ color: errorColor }), modalEntryStyle)}>
-                        <FontAwesomeIcon icon={faTrash} /> Delete project
+                        <FontAwesomeIcon icon={faTrash} /> {i18n.common.delete}
                       </div>
                     }
                     className={css({
@@ -155,8 +157,12 @@ const ProjectDisplay = ({ project }: ProjectDisplayProps) => {
                         will delete all cards inside.
                       </p>
                     }
-                    onConfirm={() => dispatch(API.deleteProject(project))}
+                    onConfirm={() => {
+                      startLoading();
+                      dispatch(API.deleteProject(project)).then(stopLoading);
+                    }}
                     confirmButtonLabel="Delete project"
+                    isConfirmButtonLoading={isLoading}
                   />
                 ),
                 modal: true,

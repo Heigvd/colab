@@ -6,18 +6,11 @@
  */
 
 import { css, cx } from '@emotion/css';
-import {
-  faArrowLeft,
-  faCog,
-  faEllipsisV,
-  faInfoCircle,
-  faPaperclip,
-  faTrash,
-} from '@fortawesome/free-solid-svg-icons';
+import { faArrowLeft, faPaperclip, faTrash } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import * as React from 'react';
-import { ReflexContainer, ReflexElement, ReflexSplitter } from 'react-reflex';
-import { Route, Routes, useNavigate, useParams } from 'react-router-dom';
+import { ReflexContainer, ReflexElement } from 'react-reflex';
+import { useNavigate, useParams } from 'react-router-dom';
 import Creatable from 'react-select/creatable';
 import * as API from '../../../API/api';
 import { updateDocumentText } from '../../../API/api';
@@ -30,24 +23,24 @@ import {
 import { useProjectBeingEdited } from '../../../selectors/projectSelector';
 import { dispatch } from '../../../store/store';
 import AvailabilityStatusIndicator from '../../common/element/AvailabilityStatusIndicator';
+import Button from '../../common/element/Button';
 import IconButton from '../../common/element/IconButton';
 import { DiscreetInput, LabeledTextArea } from '../../common/element/Input';
 import Tips from '../../common/element/Tips';
-import Toggler from '../../common/Form/Toggler';
+import Toggler from '../../common/element/Toggler';
 import ConfirmDeleteModal from '../../common/layout/ConfirmDeleteModal';
-import DropDownMenu, { modalEntryStyle } from '../../common/layout/DropDownMenu';
 import Flex from '../../common/layout/Flex';
-import Modal from '../../common/layout/Modal';
 import { DocTextWrapper } from '../../documents/DocTextItem';
-import ResourcesWrapper from '../../resources/ResourcesWrapper';
+import { ResourceCallContext } from '../../resources/resourcesCommonType';
+import ResourcesMainView from '../../resources/ResourcesMainView';
+import { ResourceListNb } from '../../resources/summary/ResourcesListSummary';
 import {
   cardStyle,
   errorColor,
-  lightIconButtonStyle,
-  lightItalicText,
   localTitleStyle,
   space_M,
   space_S,
+  textSmall,
 } from '../../styling/style';
 import SideCollapsiblePanel from './../SideCollapsiblePanel';
 
@@ -72,7 +65,14 @@ export default function CardTypeEditor({ className, usage }: CardTypeEditorProps
     label: tag,
     value: tag,
   }));
-  const [openKey, setOpenKey] = React.useState<string | undefined>(undefined);
+
+  const resourceContext: ResourceCallContext = {
+    kind: 'CardType',
+    cardTypeId: cardType?.ownId,
+    // TODO remove access
+    accessLevel: 'WRITE',
+  };
+
   if (status !== 'READY' || !cardType) {
     return <AvailabilityStatusIndicator status={status} />;
   } else {
@@ -85,7 +85,7 @@ export default function CardTypeEditor({ className, usage }: CardTypeEditorProps
       >
         <IconButton
           icon={faArrowLeft}
-          title={'Back to card types'}
+          title={i18n.modules.cardType.route.backToCardType}
           iconColor="var(--darkGray)"
           onClick={() => navigate('../')}
           className={css({ display: 'block', marginBottom: space_M })}
@@ -126,100 +126,12 @@ export default function CardTypeEditor({ className, usage }: CardTypeEditorProps
                 >
                   <DiscreetInput
                     value={cardType.title || ''}
-                    placeholder={i18n.modules.cardType.cardType}
+                    placeholder={i18n.modules.cardType.titlePlaceholder}
                     onChange={newValue =>
                       dispatch(API.updateCardTypeTitle({ ...cardType, title: newValue }))
                     }
                     inputDisplayClassName={localTitleStyle}
                   />
-                  <Flex>
-                    {/* handle modal routes*/}
-                    <Routes>
-                      <Route
-                        path="settings"
-                        element={
-                          <Modal
-                            title={i18n.modules.cardType.advancedTypeSettings}
-                            onClose={() => navigate('./')}
-                            showCloseButton
-                          >
-                            {() => (
-                              <>
-                                <Toggler
-                                  value={cardType.deprecated || undefined}
-                                  label={i18n.common.deprecated}
-                                  onChange={() =>
-                                    dispatch(
-                                      API.updateCardTypeDeprecated({
-                                        ...cardType,
-                                        deprecated: !cardType.deprecated,
-                                      }),
-                                    )
-                                  }
-                                />
-                                <div className={lightItalicText}>
-                                  <FontAwesomeIcon icon={faInfoCircle} />
-                                  {i18n.modules.cardType.infos.infoDeprecated}
-                                </div>
-                              </>
-                            )}
-                          </Modal>
-                        }
-                      />
-                    </Routes>
-                    <DropDownMenu
-                      icon={faEllipsisV}
-                      valueComp={{ value: '', label: '' }}
-                      buttonClassName={cx(lightIconButtonStyle, css({ marginLeft: space_S }))}
-                      entries={[
-                        {
-                          value: 'settings',
-                          label: (
-                            <>
-                              <FontAwesomeIcon icon={faCog} />
-                              {i18n.modules.cardType.typeSettings}
-                            </>
-                          ),
-                          action: () => navigate('settings'),
-                        },
-                        {
-                          value: 'Delete type',
-                          label: (
-                            <ConfirmDeleteModal
-                              buttonLabel={
-                                <div className={cx(css({ color: errorColor }), modalEntryStyle)}>
-                                  <FontAwesomeIcon icon={faTrash} />{' '}
-                                  {i18n.modules.cardType.deleteType}
-                                </div>
-                              }
-                              className={css({
-                                '&:hover': { textDecoration: 'none' },
-                                display: 'flex',
-                                alignItems: 'center',
-                              })}
-                              message={
-                                <p>
-                                  <Tips tipsType="TODO">
-                                    Make test if type is used in card(s). Disable or hide this
-                                    delete option if used.
-                                  </Tips>
-                                  {i18n.modules.cardType.confirmDeleteType}
-                                </p>
-                              }
-                              onConfirm={() => {
-                                if (project && cardType.kind === 'own') {
-                                  dispatch(API.deleteCardType(cardType));
-                                  navigate('../');
-                                }
-                              }}
-                              confirmButtonLabel={i18n.modules.cardType.deleteType}
-                            />
-                          ),
-                          modal: true,
-                        },
-                      ]}
-                    />
-                  </Flex>
                 </Flex>
                 <Flex direction="column" grow={1} align="stretch">
                   <Flex
@@ -232,7 +144,7 @@ export default function CardTypeEditor({ className, usage }: CardTypeEditorProps
                         <LabeledTextArea
                           label={i18n.modules.cardType.purpose}
                           value={text || ''}
-                          placeholder={i18n.modules.cardType.explainPurpose}
+                          placeholder={i18n.modules.cardType.info.explainPurpose}
                           onChange={(newValue: string) => {
                             if (cardType.purposeId) {
                               dispatch(
@@ -271,56 +183,100 @@ export default function CardTypeEditor({ className, usage }: CardTypeEditorProps
                       }}
                     />
                   </Flex>
-                  <Flex>
-                    <Toggler
-                      value={cardType.published || undefined}
-                      label={i18n.common.published}
-                      tip={i18n.modules.cardType.infos.infoPublished}
-                      onChange={() =>
-                        dispatch(
-                          API.updateCardTypePublished({
-                            ...cardType,
-                            published: !cardType.published,
-                          }),
-                        )
+                  <Toggler
+                    value={cardType.published || undefined}
+                    label={i18n.common.published}
+                    tip={i18n.modules.cardType.info.infoPublished(usage === 'currentProject')}
+                    onChange={() =>
+                      dispatch(
+                        API.updateCardTypePublished({
+                          ...cardType,
+                          published: !cardType.published,
+                        }),
+                      )
+                    }
+                  />
+                  <Toggler
+                    value={cardType.deprecated || undefined}
+                    label={i18n.common.deprecated}
+                    tip={i18n.modules.cardType.info.infoDeprecated}
+                    onChange={() =>
+                      dispatch(
+                        API.updateCardTypeDeprecated({
+                          ...cardType,
+                          deprecated: !cardType.deprecated,
+                        }),
+                      )
+                    }
+                  />
+                  <ConfirmDeleteModal
+                    buttonLabel={
+                      <Button
+                        invertedButton
+                        className={cx(css({ color: errorColor, borderColor: errorColor }))}
+                        clickable
+                      >
+                        <FontAwesomeIcon icon={faTrash} /> {i18n.common.delete}
+                      </Button>
+                    }
+                    className={css({
+                      '&:hover': { textDecoration: 'none' },
+                      display: 'flex',
+                      alignItems: 'center',
+                    })}
+                    message={
+                      <p>
+                        <Tips tipsType="TODO">
+                          Make test if model is used in card(s). Disable or hide this delete option
+                          if used.
+                        </Tips>
+                        {i18n.modules.cardType.action.confirmDeleteType}
+                      </p>
+                    }
+                    onConfirm={() => {
+                      if (project && cardType.kind === 'own') {
+                        dispatch(API.deleteCardType(cardType));
+                        navigate('../');
                       }
-                    />
-                  </Flex>
+                    }}
+                    confirmButtonLabel={i18n.modules.cardType.action.deleteType}
+                  />
                 </Flex>
               </Flex>
             </ReflexElement>
-            {openKey && <ReflexSplitter />}
             <ReflexElement
-              className={'right-pane ' + css({ display: 'flex', minWidth: 'min-content' })}
+              className={'right-pane ' + css({ display: 'flex', minWidth: '50%' })}
               resizeHeight={false}
-              maxSize={openKey ? undefined : 40}
+              resizeWidth={false}
+              maxSize={50}
             >
               <SideCollapsiblePanel
                 direction="RIGHT"
-                openKey={openKey}
-                setOpenKey={setOpenKey}
+                openKey={'resources'}
                 items={{
                   resources: {
-                    children: (
-                      <>
-                        {cardType.ownId && (
-                          <ResourcesWrapper
-                            kind={'CardType'}
-                            //accessLevel={ userAcl.write ? 'WRITE' : userAcl.read ? 'READ' : 'DENIED'}
-                            // TODO manage the user rights for editing resources
-                            // TODO work in progress
-                            accessLevel="WRITE"
-                            cardTypeId={cardType.ownId}
-                          />
-                        )}
-                      </>
-                    ),
                     icon: faPaperclip,
+                    nextToIconElement: (
+                      <div className={textSmall}>
+                        {' '}
+                        (<ResourceListNb context={resourceContext} />)
+                      </div>
+                    ),
                     title: i18n.modules.resource.documentation,
+                    children: (
+                      <ResourcesMainView
+                        contextData={resourceContext}
+                        //accessLevel={ userAcl.write ? 'WRITE' : userAcl.read ? 'READ' : 'DENIED'}
+                        // TODO manage the user rights for editing resources
+                        // TODO work in progress
+                        accessLevel="WRITE"
+                      />
+                    ),
                   },
                 }}
                 defaultOpenKey={'resources'}
                 className={css({ flexGrow: 1 })}
+                cannotClose
               />
             </ReflexElement>
           </ReflexContainer>

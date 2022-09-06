@@ -69,7 +69,7 @@ export default function CardTypeItem({ cardType, usage }: CardTypeItemProps): JS
   return (
     <Flex direction="column" align="stretch" className={style}>
       <Flex justify="space-between">
-        <h3>{cardType.title || i18n.modules.cardType.cardType}</h3>
+        <h3>{cardType.title || i18n.modules.cardType.titlePlaceholder}</h3>
         <DropDownMenu
           icon={faEllipsisV}
           valueComp={{ value: '', label: '' }}
@@ -79,11 +79,10 @@ export default function CardTypeItem({ cardType, usage }: CardTypeItemProps): JS
             usage === 'global'
               ? [
                   {
-                    value: 'Edit type',
+                    value: 'edit',
                     label: (
                       <>
-                        <FontAwesomeIcon icon={faPen} />
-                        {i18n.modules.cardType.editType}
+                        <FontAwesomeIcon icon={faPen} /> {i18n.common.edit}
                       </>
                     ),
                     action: () => navigate(`./edit/${cardType.ownId}`),
@@ -93,10 +92,11 @@ export default function CardTypeItem({ cardType, usage }: CardTypeItemProps): JS
             ...(usage === 'available' && editedProject && cardType.projectId !== editedProjectId
               ? [
                   {
-                    value: 'Use this type in the project',
+                    value: 'useInProject',
                     label: (
                       <>
-                        <FontAwesomeIcon icon={faMapPin} /> {i18n.modules.cardType.useInProject}
+                        <FontAwesomeIcon icon={faMapPin} />{' '}
+                        {i18n.modules.cardType.action.useInProject}
                       </>
                     ),
                     action: () =>
@@ -111,11 +111,11 @@ export default function CardTypeItem({ cardType, usage }: CardTypeItemProps): JS
             cardType.kind === 'referenced'
               ? [
                   {
-                    value: 'Remove this type from the project',
+                    value: 'removeFromProject',
                     label: (
                       <>
-                        <FontAwesomeIcon icon={faExchangeAlt} />
-                        {i18n.modules.cardType.RmFromProject}
+                        <FontAwesomeIcon icon={faExchangeAlt} />{' '}
+                        {i18n.modules.cardType.action.removeFromProject}
                       </>
                     ),
                     action: () =>
@@ -131,13 +131,12 @@ export default function CardTypeItem({ cardType, usage }: CardTypeItemProps): JS
               usage === 'global')
               ? [
                   {
-                    value: 'Delete type',
+                    value: 'delete',
                     label: (
                       <ConfirmDeleteModal
                         buttonLabel={
                           <div className={cx(css({ color: errorColor }), modalEntryStyle)}>
-                            <FontAwesomeIcon icon={faTrash} />
-                            {i18n.modules.cardType.deleteType}
+                            <FontAwesomeIcon icon={faTrash} /> {i18n.common.delete}
                           </div>
                         }
                         className={css({
@@ -145,9 +144,9 @@ export default function CardTypeItem({ cardType, usage }: CardTypeItemProps): JS
                           display: 'flex',
                           alignItems: 'center',
                         })}
-                        message={<p>{i18n.modules.cardType.confirmDeleteType}</p>}
+                        message={<p>{i18n.modules.cardType.action.confirmDeleteType}</p>}
                         onConfirm={() => dispatch(API.deleteCardType(cardType))}
-                        confirmButtonLabel={i18n.modules.cardType.deleteType}
+                        confirmButtonLabel={i18n.modules.cardType.action.deleteType}
                       />
                     ),
                     modal: true,

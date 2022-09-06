@@ -12,6 +12,7 @@ import { StickyNoteLink } from 'colab-rest-client';
 import * as React from 'react';
 import { useNavigate } from 'react-router-dom';
 import * as API from '../../API/api';
+import useTranslations from '../../i18n/I18nContext';
 import { useCard } from '../../selectors/cardSelector';
 import { useAppDispatch } from '../../store/hooks';
 import { BlockEditorWrapper } from '../blocks/BlockEditorWrapper';
@@ -38,6 +39,7 @@ export default function StickyNoteDisplay({
 }: StickyNoteDisplayProps): JSX.Element {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
+  const i18n = useTranslations();
 
   const srcCard = useCard(stickyNote.srcCardId || 0);
   const destCard = useCard(stickyNote.destinationCardId || 0);
@@ -76,13 +78,12 @@ export default function StickyNoteDisplay({
           buttonClassName={cx(lightIconButtonStyle, css({ marginLeft: space_S }))}
           entries={[
             {
-              value: 'Delete sticky note',
+              value: 'delete',
               label: (
                 <ConfirmDeleteModal
                   buttonLabel={
                     <div className={cx(css({ color: errorColor }), modalEntryStyle)}>
-                      <FontAwesomeIcon icon={faTrash} />
-                      {' Delete sticky note'}
+                      <FontAwesomeIcon icon={faTrash} /> {i18n.common.delete}
                     </div>
                   }
                   className={css({

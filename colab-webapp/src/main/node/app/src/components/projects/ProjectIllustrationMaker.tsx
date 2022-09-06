@@ -53,7 +53,6 @@ const projectIconsSolid: IconName[] = [
   'dragon',
   'crow',
   'feather',
-  'poo',
   'heart',
   'cloud',
   'sun',

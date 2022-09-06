@@ -11,7 +11,7 @@ import useTranslations from '../../i18n/I18nContext';
 import InlineLoading from '../common/element/InlineLoading';
 import LiveEditor from '../live/LiveEditor';
 import { useBlock } from '../live/LiveTextEditor';
-import { TXTFormatToolbarProps } from './markdown/WysiwygEditorCustom';
+import { TXTFormatToolbarProps } from './markdown/WysiwygEditor';
 
 export interface BlockEditorProps {
   blockId: number;

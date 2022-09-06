@@ -35,9 +35,9 @@ import {
   User,
   WsSessionIdentifier,
 } from 'colab-rest-client';
-import { PasswordScore } from '../components/common/Form/Form';
+import { PasswordScore } from '../components/common/element/Form';
 import { DocumentKind } from '../components/documents/documentCommonType';
-import { ResourceAndRef } from '../components/resources/ResourceCommonType';
+import { ResourceAndRef } from '../components/resources/resourcesCommonType';
 import { hashPassword } from '../SecurityHelper';
 import { addNotification } from '../store/notification';
 import { ColabState, getStore } from '../store/store';
@@ -357,6 +357,27 @@ export const getRootCardOfProject = createAsyncThunk<Card, number>(
     return await restClient.ProjectRestEndpoint.getRootCardOfProject(projectId);
   },
 );
+
+
+export const reconnectToProjectChannel = createAsyncThunk(
+  'project/reconnect',
+  async (project: Project, thunkApi) => {
+    const state = thunkApi.getState() as ColabState;
+    if (state.websockets.sessionId != null && project.id != null) {
+      // Subscribe to new project channel
+      await restClient.WebsocketRestEndpoint.subscribeToProjectChannel(project.id, {
+        '@class': 'WsSessionIdentifier',
+        sessionId: state.websockets.sessionId,
+      });
+
+      // initialized project content
+      await thunkApi.dispatch(getRootCardOfProject(project.id));
+    }
+    return project;
+  },
+);
+
+
 
 export const startProjectEdition = createAsyncThunk(
   'project/startEditing',
@@ -975,7 +996,7 @@ export const deleteResource = createAsyncThunk('resource/delete', async (resourc
   }
 });
 
-function getResourceToEdit(resource: ResourceAndRef): ResourceRef | Resource {
+export function getResourceToEdit(resource: ResourceAndRef): ResourceRef | Resource {
   if (resource.isDirectResource) {
     return resource.targetResource;
   }
@@ -1006,6 +1027,21 @@ export const removeAccessToResource = createAsyncThunk(
     const resourceToDisable = getResourceToEdit(resource);
     if (resourceToDisable.id != null) {
       return await restClient.ResourceRestEndpoint.discardResourceOrRef(resourceToDisable.id);
+    }
+  },
+);
+
+export const changeResourceCategory = createAsyncThunk(
+  'resource/changeCategory',
+  async ({
+    resourceOrRef,
+    categoryName,
+  }: {
+    resourceOrRef: AbstractResource;
+    categoryName: string;
+  }) => {
+    if (resourceOrRef && resourceOrRef.id) {
+      return await restClient.ResourceRestEndpoint.changeCategory(resourceOrRef.id, categoryName);
     }
   },
 );
@@ -1158,6 +1194,8 @@ export const subscribeToBlockChannel = createAsyncThunk(
         '@class': 'WsSessionIdentifier',
         sessionId: sessionId,
       });
+      // once registerd, make sur to sync pending changes
+      thunkApi.dispatch(getBlockPendingChanges(id));
     }
   },
 );

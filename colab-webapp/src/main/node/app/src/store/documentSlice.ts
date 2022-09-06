@@ -14,7 +14,7 @@ import { processMessage } from '../ws/wsThunkActions';
 import { AvailabilityStatus } from './store';
 
 /** what we have in the store */
-interface DocumentState {
+export interface DocumentState {
   /** all the documents we got so far */
   documents: Record<number, Document | AvailabilityStatus>;
 
@@ -72,39 +72,33 @@ const documentSlice = createSlice({
         action.payload.documents.deleted.forEach(entry => removeDocument(state, entry.id));
       })
       .addCase(API.getDocument.pending, (state, action) => {
-        const docId = action.meta.arg;
-        state.documents[docId] = 'LOADING';
+        state.documents[action.meta.arg] = 'LOADING';
       })
       .addCase(API.getDocument.fulfilled, (state, action) => {
         updateDocument(state, action.payload);
       })
       .addCase(API.getDocument.rejected, (state, action) => {
-        const docId = action.meta.arg;
-        state.documents[docId] = 'ERROR';
+        state.documents[action.meta.arg] = 'ERROR';
       })
       .addCase(API.getDeliverablesOfCardContent.pending, (state, action) => {
-        const cardContentId = action.meta.arg;
-        state.statusByCardContent[cardContentId] = 'LOADING';
+        state.statusByCardContent[action.meta.arg] = 'LOADING';
       })
       .addCase(API.getDeliverablesOfCardContent.fulfilled, (state, action) => {
         state.documents = { ...state.documents, ...mapById(action.payload) };
         state.statusByCardContent[action.meta.arg] = 'READY';
       })
       .addCase(API.getDeliverablesOfCardContent.rejected, (state, action) => {
-        const cardContentId = action.meta.arg;
-        state.statusByCardContent[cardContentId] = 'ERROR';
+        state.statusByCardContent[action.meta.arg] = 'ERROR';
       })
       .addCase(API.getDocumentsOfResource.pending, (state, action) => {
-        const resourceId = action.meta.arg;
-        state.statusByResource[resourceId] = 'LOADING';
+        state.statusByResource[action.meta.arg] = 'LOADING';
       })
       .addCase(API.getDocumentsOfResource.fulfilled, (state, action) => {
         state.documents = { ...state.documents, ...mapById(action.payload) };
         state.statusByResource[action.meta.arg] = 'READY';
       })
       .addCase(API.getDocumentsOfResource.rejected, (state, action) => {
-        const resourceId = action.meta.arg;
-        state.statusByResource[resourceId] = 'ERROR';
+        state.statusByResource[action.meta.arg] = 'ERROR';
       })
       .addCase(API.addDeliverableAtBeginning.fulfilled, (state, action) => {
         if (action.meta.arg.cardContentId && action.payload.id) {

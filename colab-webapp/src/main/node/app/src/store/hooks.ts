@@ -5,6 +5,7 @@
  * Licensed under the MIT License
  */
 
+import React from 'react';
 import { shallowEqual, TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, ColabState } from './store';
 
@@ -62,4 +63,15 @@ export const customColabStateEquals = (a: unknown, b: unknown): boolean => {
   } else {
     return false;
   }
+};
+
+export const useLoadingState = () => {
+  const [isLoading, setIsLoading] = React.useState<boolean>(false);
+  function startLoading() {
+    setIsLoading(true);
+  }
+  function stopLoading() {
+    setIsLoading(false);
+  }
+  return { isLoading, startLoading, stopLoading };
 };

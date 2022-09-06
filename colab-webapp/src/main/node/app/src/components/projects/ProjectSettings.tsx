@@ -11,6 +11,7 @@ import { Project } from 'colab-rest-client';
 import * as React from 'react';
 import { useNavigate } from 'react-router-dom';
 import * as API from '../../API/api';
+import useTranslations from '../../i18n/I18nContext';
 import { dispatch } from '../../store/store';
 import ProjectCardTypeList from '../cards/cardtypes/ProjectCardTypeList';
 import IconButton from '../common/element/IconButton';
@@ -29,19 +30,21 @@ interface ProjectSettingsProps {
 // Display one project and allow to edit it
 export function ProjectSettings({ project }: ProjectSettingsProps): JSX.Element {
   const navigate = useNavigate();
+  const i18n = useTranslations();
+
   return (
     <Flex align="stretch" direction="column" grow={1} className={css({ alignSelf: 'stretch' })}>
       <Flex align="center">
         <IconButton
           icon={faArrowLeft}
-          title={'Back to project'}
-          onClick={() => navigate('../')}
+          title={'Back'}
+          onClick={() => navigate(-1)}
           className={cx(css({ display: 'block' }), lightIconButtonStyle)}
         />
         <h2>Project settings</h2>
       </Flex>
-      <Tabs>
-        <Tab name="General" label="General">
+      <Tabs routed>
+        <Tab name="general" label="General">
           <Flex className={css({ alignSelf: 'stretch' })}>
             <Flex
               direction="column"
@@ -84,10 +87,10 @@ export function ProjectSettings({ project }: ProjectSettingsProps): JSX.Element 
             </Flex>
           </Flex>
         </Tab>
-        <Tab name="Team" label="Team">
+        <Tab name="team" label="Team">
           <Team project={project} />
         </Tab>
-        <Tab name="Card Types" label="Card Types">
+        <Tab name="cardtypes" label={i18n.modules.cardType.cardTypesLongWay}>
           <ProjectCardTypeList />
         </Tab>
       </Tabs>

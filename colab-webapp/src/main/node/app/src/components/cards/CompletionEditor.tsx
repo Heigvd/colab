@@ -27,18 +27,18 @@ export default function CompletionEditor({ variant }: CompletionEditorProps): JS
       <BlockInput
         type="range"
         label="Completion level"
-        value={String(variant.completionLevel) == '0' ? '0' : String(variant.completionLevel)}
+        value={variant.completionLevel == 0 ? 0 : variant.completionLevel}
         placeholder="0"
-        saveMode="ON_BLUR"
         onChange={newValue =>
           dispatch(
             API.updateCardContent({
               ...variant,
-              completionLevel: +newValue,
+              completionLevel: Number(newValue),
             }),
           )
         }
         autoFocus={true}
+        saveMode="SILLY_FLOWING"
       />
       <Flex align="center">
         <BlockInput

@@ -9,10 +9,10 @@ package ch.colabproject.colab.api.model.token;
 import ch.colabproject.colab.api.controller.RequestManager;
 import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.api.model.team.TeamMember;
+import ch.colabproject.colab.api.model.token.tools.InvitationMessageBuilder;
 import ch.colabproject.colab.api.model.user.User;
 import ch.colabproject.colab.api.security.permissions.Conditions;
 import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
-import java.text.MessageFormat;
 import javax.json.bind.annotation.JsonbTransient;
 import javax.persistence.Entity;
 import javax.persistence.Index;
@@ -48,7 +48,7 @@ public class InvitationToken extends Token {
     /**
      * Email subject
      */
-    public static final String EMAIL_SUBJECT = "Invitation to collaborate on a co.LAB project";
+    private static final String EMAIL_SUBJECT = "Invitation to collaborate on a co.LAB project";
 
     // ---------------------------------------------------------------------------------------------
     // fields
@@ -165,6 +165,10 @@ public class InvitationToken extends Token {
         }
     }
 
+    // ---------------------------------------------------------------------------------------------
+    // to build a message
+    // ---------------------------------------------------------------------------------------------
+
     @JsonbTransient
     @Override
     public String getSubject() {
@@ -173,16 +177,7 @@ public class InvitationToken extends Token {
 
     @Override
     public String getEmailBody(String link) {
-        Project project = getProject();
-
-        String theProject = project != null
-            ? "the \"" + project.getName() + "\" project"
-            : "a co.LAB project";
-
-        return MessageFormat.format("Hi,<br /><br />"
-            + "{0} invites you to collaborate on {1}.<br /><br />"
-            + "Click <a href=\"{2}\">here</a> to join the team.<br /><br />",
-            sender != null ? sender : "Someone", theProject, link);
+        return InvitationMessageBuilder.build(this, link);
     }
 
     // ---------------------------------------------------------------------------------------------
@@ -195,7 +190,7 @@ public class InvitationToken extends Token {
      * @return the project
      */
     @JsonbTransient
-    private Project getProject() {
+    public Project getProject() {
         if (teamMember != null) {
             return teamMember.getProject();
         }

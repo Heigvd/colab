@@ -23,7 +23,7 @@ import Flex from '../layout/Flex';
 import { emptyLightTextStyle } from './FilePicker';
 import IconButton from './IconButton';
 import InlineLoading from './InlineLoading';
-import OnConfirmInput from './OnConfirmInput';
+import { BlockInput } from './Input';
 
 const cardStyle = css({
   flexWrap: 'nowrap',
@@ -38,15 +38,8 @@ const urlStyle = css({
   fontStyle: 'italic',
   textDecoration: 'underline',
   color: 'var(--darkGray)',
-  //whiteSpace: 'nowrap',
   overflow: 'hidden',
   textOverflow: 'ellipsis',
-});
-
-const oneLineLinkEditionStyle = css({ display: 'flex', flexGrow: 1, alignItems: 'center' });
-const fullWidthLinkEditionStyle = css({
-  flexGrow: 1,
-  input: { flexGrow: 1, marginRight: space_S },
 });
 
 const legendStyle = css({
@@ -72,6 +65,13 @@ export interface OpenGraphProps {
   document: ExternalLink;
 }
 
+function sanitizeUrl(rawUrl: string, defaultProtocol?: string) : string {
+  if (!rawUrl.match(/[a-zA-Z0-9]*:\/\/.*/)){
+    return `${defaultProtocol || 'http'}://${rawUrl}`;
+  }
+  return rawUrl;
+}
+
 export default function OpenGraphLink({
   url,
   editingStatus,
@@ -81,6 +81,8 @@ export default function OpenGraphLink({
   const dispatch = useAppDispatch();
   const metadata = useUrlMetadata(url);
 
+  const sanitizedUrl = sanitizeUrl(url);
+
   const refreshCb = React.useCallback(
     (e: React.UIEvent) => {
       e.stopPropagation();
@@ -89,8 +91,8 @@ export default function OpenGraphLink({
     [url, dispatch],
   );
   const openUrl = React.useCallback(() => {
-    window.open(url);
-  }, [url]);
+    window.open(sanitizedUrl);
+  }, [sanitizedUrl]);
   const updateDocCb = React.useCallback(
     (newValue: string) => {
       dispatch(updateDocument({ ...document, url: newValue }));
@@ -185,7 +187,7 @@ export default function OpenGraphLink({
                   />
                 </Flex>
                 {title && <p>{title}</p>}
-                <a href={url} target="_blank" rel="noreferrer" className={urlStyle}>
+                <a href={sanitizedUrl} target="_blank" rel="noreferrer" className={urlStyle}>
                   {url}
                 </a>
               </div>
@@ -209,15 +211,13 @@ interface EditLinkProps {
 function EditLink({ url, onChange, refreshCb, onCancel }: EditLinkProps): JSX.Element {
   return (
     <>
-      <OnConfirmInput
+      <BlockInput
         value={url}
         placeholder="Empty link"
         onChange={onChange}
         onCancel={onCancel}
-        directEdit
-        enableAutoFocus
-        containerClassName={oneLineLinkEditionStyle}
-        className={fullWidthLinkEditionStyle}
+        containerClassName={css({ flexGrow: 1 })}
+        saveMode="ON_BLUR"
       />
       {refreshCb && (
         <IconButton

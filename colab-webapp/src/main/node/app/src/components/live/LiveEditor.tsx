@@ -9,7 +9,7 @@ import { css } from '@emotion/css';
 import * as React from 'react';
 import { useAppSelector } from '../../store/hooks';
 import MarkdownViewer from '../blocks/markdown/MarkdownViewer';
-import WysiwygEditorCustom, { TXTFormatToolbarProps } from '../blocks/markdown/WysiwygEditorCustom';
+import WysiwygEditor, { TXTFormatToolbarProps } from '../blocks/markdown/WysiwygEditor';
 import CleverTextarea from '../common/element/CleverTextarea';
 import InlineLoading from '../common/element/InlineLoading';
 import Flex from '../common/layout/Flex';
@@ -134,7 +134,7 @@ export default function LiveEditor({
               </Flex>
             ) : (
               <ErrorBoundary fallback={<Unsupported md={currentValue} />}>
-                <WysiwygEditorCustom
+                <WysiwygEditor
                   className={css({ alignItems: 'stretch' })}
                   value={currentValue}
                   onChange={onChange}

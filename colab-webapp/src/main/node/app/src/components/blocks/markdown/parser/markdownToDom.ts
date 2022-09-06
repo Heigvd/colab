@@ -11,13 +11,17 @@ import { MarkdownRange } from './domToMarkdown';
 const logger = getLogger('Markdown2DomParser');
 logger.setLevel(4);
 
-// detec lines and indentation level
+// detect lines and indentation levels
 // A line may be :
 //  -> a UL item "* Item 1" with any indentation level,
 //  -> a OL item "1. Item 1" with any indentation level
 //  -> a todo item: "* []
 
 // const newMajorBlockDetector = /(?:^(?! ))/; // New line which starts with non-space character
+
+export function getFirstMajorTag(md: string): MajorTagParsed | undefined {
+  return extractMajorTags(md)[0];
+}
 
 const regexBuilder = () => {
   // seems some odd browsers do not support negative lookbehind group...
@@ -170,9 +174,9 @@ interface Paragraph extends Multiline {
   tagType: 'P';
 }
 
-type MajorTag = Code | Heading | UListItem | OListItem | Paragraph;
+export type MajorTagParsed = Code | Heading | UListItem | OListItem | Paragraph;
 
-function getTagFromMajor(major: MajorTag): string {
+function getTagFromMajor(major: MajorTagParsed): string {
   switch (major.tagType) {
     case 'Code':
       return 'PRE';
@@ -187,11 +191,11 @@ function getTagFromMajor(major: MajorTag): string {
   }
 }
 
-function extractMajorTags(markdown: string): MajorTag[] {
+function extractMajorTags(markdown: string): MajorTagParsed[] {
   let m: RegExpExecArray | null;
   const { linesRegex } = getRegexes();
   linesRegex.lastIndex = 0;
-  const majorTags: MajorTag[] = [];
+  const majorTags: MajorTagParsed[] = [];
 
   let currentIndentation: number | undefined = undefined;
 
@@ -244,7 +248,7 @@ function extractMajorTags(markdown: string): MajorTag[] {
         majorTags.push({
           tagType: 'OListItem',
           initialMark: m.groups.olIndent,
-          listLevel: m.groups.olLevel.length,
+          listLevel: m.groups.olLevel.length + 1,
           startNumber: +m.groups.olNumber,
           text: [{ offset: currentIndentation || 0, data: m.groups.olData, postOffset: 0 }],
         });
@@ -289,12 +293,12 @@ interface Combined {
   attributes: Record<string, string>;
   data: string | undefined;
   offset: number[];
-  major: MajorTag;
+  major: MajorTagParsed;
   currentRowPosition: number;
   currentDataPosition: number;
 }
 
-function combineMultiline(majorTag: MajorTag): Combined {
+function combineMultiline(majorTag: MajorTagParsed): Combined {
   const tag = getTagFromMajor(majorTag);
 
   const combined = majorTag.text.reduce<Combined>(
@@ -336,8 +340,16 @@ function combineMultiline(majorTag: MajorTag): Combined {
 
   if (majorTag.tagType === 'Code') {
     combined.attributes['data-lang'] = majorTag.lang;
-  } else if (majorTag.tagType === 'UListItem' && majorTag.checked != undefined) {
-    combined.attributes['data-checked'] = majorTag.checked ? 'DONE' : 'TODO';
+  } else if (majorTag.tagType === 'UListItem') {
+    combined.attributes['data-list-type'] = 'UL';
+    if (majorTag.checked != undefined) {
+      combined.attributes['data-checked'] = majorTag.checked ? 'DONE' : 'TODO';
+      combined.attributes['data-list-type'] = 'TL';
+    } else {
+      combined.attributes['data-list-type'] = 'UL';
+    }
+  } else if (majorTag.tagType === 'OListItem') {
+    combined.attributes['data-list-type'] = 'OL';
   }
 
   logger.trace('Combined', combined);
@@ -433,6 +445,33 @@ function parseMinor(minor: Combined): DomTree {
   const { boldRegex, italicRegex, strikethroughRegex, underlineRegex } = getRegexes();
 
   logger.trace(`ParseMinor(${minor.tag}): >${minor.data}<`);
+  if (minor.tag === 'P' && minor.data?.length == 0) {
+    // Empty P => <p><br /><p>
+    const p = document.createElement('P');
+    const br = document.createElement('BR');
+    p.append(br);
+
+    const node = {
+      node: p,
+      rawPosition: minor.offset[0]!,
+      consumed: 0,
+      combined: minor,
+    };
+
+    return {
+      root: node,
+      all: [
+        node,
+        {
+          node: br,
+          rawPosition: minor.offset[0]!,
+          consumed: 0,
+          combined: minor,
+        },
+      ],
+    };
+  }
+
   if (minor.tag === 'PRE') {
     // do not parse pre tags content
     const pre = document.createElement(minor.tag);
@@ -573,8 +612,8 @@ function rebuildHierarchy(domTrees: DomTree[]): DomTree[] {
 
       if (currentListLevel === 0) {
         // no list context
-        const listType = liMajor.tagType === 'UListItem' ? 'UL' : 'OL';
-        const listTag = document.createElement(listType) as HTMLUListElement | HTMLOListElement;
+        //const listType = liMajor.tagType === 'UListItem' ? 'UL' : 'OL';
+        const listTag = document.createElement('UL') as HTMLUListElement | HTMLOListElement;
         listContext.push(listTag);
         rootTree = {
           root: {
@@ -590,8 +629,8 @@ function rebuildHierarchy(domTrees: DomTree[]): DomTree[] {
       rootTree!.all.push(...child.all);
 
       if (itemLevel > currentListLevel) {
-        const listType = liMajor.tagType === 'UListItem' ? 'UL' : 'OL';
-        const listTag = document.createElement(listType) as HTMLUListElement | HTMLOListElement;
+        // const listType = liMajor.tagType === 'UListItem' ? 'UL' : 'OL';
+        const listTag = document.createElement('UL') as HTMLUListElement | HTMLOListElement;
 
         const list = listContext[listContext.length - 1]!;
         (list.lastChild as Element).append(listTag);
@@ -629,7 +668,7 @@ function convertPosition(
   if (position) {
     const sortedOffset = Object.keys(md.offsets)
       .filter(offset => +offset <= position)
-      .sort();
+      .sort((a, b) => +a - +b);
     const strOffset = sortedOffset[sortedOffset.length - 1];
     if (strOffset != null) {
       const theOffset = +strOffset;
@@ -681,6 +720,16 @@ export function convertRange(md: NodesAndOffsets, mdRange: MarkdownRange): Range
 
 export default function markdownToDom(markdown: string): NodesAndOffsets {
   logger.trace('MarkDown: ', markdown);
+  if (markdown == '') {
+    const p = document.createElement('P');
+    const br = document.createElement('BR');
+    p.append(br);
+
+    return {
+      nodes: [p],
+      offsets: { 0: [p] },
+    };
+  }
 
   const majorTags = extractMajorTags(markdown);
   const combined = majorTags.map(combineMultiline);

@@ -6,6 +6,7 @@
  */
 
 import { getLogger } from '../../../logger';
+import { HeadingLevel } from './parser/markdownToDom';
 
 const logger = getLogger('DOMHelper');
 
@@ -19,6 +20,11 @@ interface OptionalCaretPosition {
   offset: number;
 }
 
+interface CaretRange {
+  start: CaretPosition;
+  end: CaretPosition;
+}
+
 /**
  * Aka style tags
  */
@@ -29,12 +35,24 @@ export type MinorTag = typeof minorTags[number];
 /**
  * Structure tags
  */
-const majorTags = ['H1', 'H2', 'H3', 'H4', 'H5', 'UL', 'OL', 'LI', 'P', 'DIV'] as const;
+const headingTags = ['H1', 'H2', 'H3', 'H4', 'H5'] as const;
+export type HeadingTag = typeof headingTags[number];
+
+export const majorTags = [...headingTags, 'LI', 'P', 'DIV', 'PRE'] as const;
+
 const majorTagsSelector = majorTags.join(',');
-type MajorTag = typeof majorTags[number];
+export type MajorTag = typeof majorTags[number];
 
 function isMajorTag(tagName: string): tagName is MajorTag {
   return (majorTags as Readonly<string[]>).includes(tagName);
+}
+
+export function getHeadingLevel(tag: MajorTag | null | undefined): HeadingLevel | 0 {
+  if (tag?.startsWith('H')) {
+    return tag.charAt(1) as unknown as HeadingLevel;
+  } else {
+    return 0;
+  }
 }
 
 /*****************************************************
@@ -44,10 +62,10 @@ function isMajorTag(tagName: string): tagName is MajorTag {
 /**
  * Find closest node matching tag, but never go upper the root
  */
-export function boundedClosest(node: Node, tagName: string, root: Node) {
+export function boundedClosest(node: Node, tagName: Readonly<string[]>, root: Node) {
   let current = node instanceof Element ? node : node.parentElement;
   while (current != null) {
-    if (current.tagName === tagName) {
+    if (tagName.includes(current.tagName)) {
       return current;
     }
     if (current === root || current.parentElement == null) {
@@ -57,22 +75,33 @@ export function boundedClosest(node: Node, tagName: string, root: Node) {
   }
 }
 
-export function sortNodes(c1: CaretPosition, c2: CaretPosition) {
-  if (c1.node === c2.node) {
-    if (c1.offset < c2.offset) {
-      return { left: c1, right: c2 };
+function compareCaretPosition(a: CaretPosition, b: CaretPosition) {
+  if (a.node === b.node) {
+    if (a.offset === b.offset) {
+      return 0;
+    } else if (a.offset < b.offset) {
+      return -1;
     } else {
-      return { left: c2, right: c1 };
+      return 1;
     }
   } else {
-    const c1Leaf = moveToLeaf(c1, 'LEFT');
-    const c2Leaf = moveToLeaf(c2, 'LEFT');
+    const c1Leaf = moveToLeaf(a, 'LEFT');
+    const c2Leaf = moveToLeaf(b, 'LEFT');
     const pos = c1Leaf.node.compareDocumentPosition(c2Leaf.node);
     if (pos & Node.DOCUMENT_POSITION_FOLLOWING) {
-      return { left: c1, right: c2 };
+      return -1;
     } else {
-      return { left: c2, right: c1 };
+      return +1;
     }
+  }
+}
+
+export function sortNodes(c1: CaretPosition, c2: CaretPosition) {
+  const r = compareCaretPosition(c1, c2);
+  if (r <= 0) {
+    return { left: c1, right: c2 };
+  } else {
+    return { left: c2, right: c1 };
   }
 }
 
@@ -139,6 +168,7 @@ export function moveToLeaf(pos: CaretPosition, direction: 'LEFT' | 'RIGHT'): Car
         }
       }
     } else {
+      // Element has no children
       return pos;
     }
   } else {
@@ -201,7 +231,7 @@ function findPreviousLeaf(node: Node, rootNode: Node): Node | undefined {
  *                x
  *
  */
-function findNextNode(node: Node, rootNode: Node): Node | undefined {
+export function findNextNode(node: Node, rootNode: Node): Node | undefined {
   if (node === rootNode) {
     return undefined;
   }
@@ -217,7 +247,7 @@ function findNextNode(node: Node, rootNode: Node): Node | undefined {
   }
 }
 
-function findNextLeaf(node: Node, rootNode: Node): Node | undefined {
+export function findNextLeaf(node: Node, rootNode: Node): Node | undefined {
   const next = findNextNode(node, rootNode);
   return next != null ? findFirstLeaf(next).node : undefined;
 }
@@ -326,13 +356,13 @@ export function areAllLeafsWrappedByTag(
 
   if (start.node == end.node) {
     if (start.node instanceof Text) {
-      const ancestor = boundedClosest(start.node, tagName, rootNode);
+      const ancestor = boundedClosest(start.node, [tagName], rootNode);
       if (ancestor != null) {
         return { type: 'FULLY_WRAPPED', ancestor: ancestor };
       }
     } else if (start.node instanceof Element) {
       logger.warn('Is that case even exists ? (if so, may need to check children)');
-      const ancestor = boundedClosest(start.node, tagName, rootNode);
+      const ancestor = boundedClosest(start.node, [tagName], rootNode);
       if (ancestor != null) {
         return { type: 'FULLY_WRAPPED', ancestor: ancestor };
       }
@@ -341,9 +371,9 @@ export function areAllLeafsWrappedByTag(
   } else {
     const leftElem = start.node instanceof Element ? start.node : start.node.parentElement!;
     const rightElem = end.node instanceof Element ? end.node : end.node.parentElement!;
-    const leftUpperTag = boundedClosest(leftElem, tagName, rootNode);
+    const leftUpperTag = boundedClosest(leftElem, [tagName], rootNode);
 
-    if (leftUpperTag != null && leftUpperTag === boundedClosest(rightElem, tagName, rootNode)) {
+    if (leftUpperTag != null && leftUpperTag === boundedClosest(rightElem, [tagName], rootNode)) {
       // both end wrapped within the same tag
       return { type: 'FULLY_WRAPPED', ancestor: leftUpperTag };
     } else {
@@ -353,18 +383,20 @@ export function areAllLeafsWrappedByTag(
       const nodes: Element[] = [];
       while (current != null) {
         logger.info('Test leaf: ', current);
-        const matchingParent = boundedClosest(current, tagName, rootNode);
-        if (matchingParent != null) {
-          nodes.push(matchingParent);
-          // The current node is fine, move to next
-          if (current === end.node) {
-            current = undefined;
+        if (current.textContent) {
+          const matchingParent = boundedClosest(current, [tagName], rootNode);
+          if (matchingParent != null) {
+            nodes.push(matchingParent);
+            // The current node is fine, move to next
+            if (current === end.node) {
+              current = undefined;
+            } else {
+              current = findNextLeaf(matchingParent, rootNode);
+            }
           } else {
-            current = findNextLeaf(matchingParent, rootNode);
+            // current leaf not inside expected tag
+            return { type: 'NO' };
           }
-        } else {
-          // current leaf not inside expected tag
-          return { type: 'NO' };
         }
       }
       // all leaves stands in expected tags
@@ -383,7 +415,7 @@ export function toggleTag(
   endCaret: CaretPosition,
   tagName: MinorTag,
   rootNode: Node,
-) {
+): CaretRange {
   // Make sure carets stands in leaves
   const start = moveToLeaf(startCaret, 'LEFT');
   const end = moveToLeaf(endCaret, 'RIGHT');
@@ -391,27 +423,41 @@ export function toggleTag(
   const state = areAllLeafsWrappedByTag(start, end, tagName, rootNode);
   if (state.type === 'NO') {
     logger.info(`At least one leaf not in ${tagName} tag`);
-    spreadTag(start, end, tagName, rootNode);
+    const range = spreadTag(start, end, tagName, rootNode);
+    return range;
   } else if (state.type === 'FULLY_WRAPPED') {
     //
     logger.info(`Fully Wrapped in one single ${tagName} tag`);
-    safeUnwrap(state.ancestor, tagName, start, end, rootNode);
+    const range = safeUnwrap(state.ancestor, tagName, start, end, rootNode);
+    return range;
   } else if (state.type === 'FULLY_NESTED') {
     // the whole selection (at least all the Text nodes of the selection) is already in one or many
     // tags => remove tags
     //removeTags())
     logger.info(`Each leaf is wrapped in ${tagName} tag`);
-    state.elements.forEach(elem => {
-      safeUnwrap(elem, tagName, start, end, rootNode);
-    });
+    const ranges = state.elements.map(elem => safeUnwrap(elem, tagName, start, end, rootNode));
+    if (ranges.length > 0) {
+      return {
+        start: ranges[0]!.start,
+        end: ranges[ranges.length - 1]!.end,
+      };
+    } else {
+      throw new Error('unreachable code');
+    }
   }
+  throw new Error('unreachable code');
 }
 
-function spreadTag(start: CaretPosition, end: CaretPosition, tagName: MinorTag, rootNode: Node) {
+function spreadTag(
+  start: CaretPosition,
+  end: CaretPosition,
+  tagName: MinorTag,
+  rootNode: Node,
+): CaretRange {
   if (start.node === end.node) {
     if (start.offset === end.offset) {
       // start equals ends => nothing to do
-      return;
+      return { start, end };
     }
     if (start.node instanceof Text) {
       if (end.offset < start.node.length) {
@@ -425,51 +471,111 @@ function spreadTag(start: CaretPosition, end: CaretPosition, tagName: MinorTag, 
       parent.insertBefore(tag, toWrap);
       tag.appendChild(toWrap);
       logger.info('Single text node');
+      return {
+        start: { node: toWrap, offset: 0 },
+        end: { node: toWrap, offset: toWrap.length },
+      };
     } else {
       logger.warn('Is that case even exists ?');
+      return { start, end };
     }
   } else {
     let currentPosition: OptionalCaretPosition = start;
+    const result: Partial<CaretRange> = {};
+
+    const setStartResult = (node: Node, offset: number, force: boolean) => {
+      if (force || result.start == null) {
+        result.start = {
+          node: node,
+          offset: offset,
+        };
+      }
+    };
+
+    const setEndResult = (node: Node, offset: number, force: boolean) => {
+      if (force || result.end == null) {
+        result.end = {
+          node: node,
+          offset: offset,
+        };
+      }
+    };
 
     while (currentPosition.node != null && currentPosition.node.contains(end.node) == false) {
       const nextPosition = { node: findNextNode(currentPosition.node, rootNode), offset: 0 };
-      if (currentPosition.node instanceof Text) {
-        if (currentPosition.offset < currentPosition.node.length) {
-          const tag = document.createElement(tagName);
-          const textNode = currentPosition.node.splitText(currentPosition.offset);
-          const parent = currentPosition.node.parentNode!;
-          parent.insertBefore(tag, textNode);
-          tag.appendChild(textNode);
+      if (boundedClosest(currentPosition.node, [tagName], rootNode) != null) {
+        // node already wrapped by tag
+        setStartResult(currentPosition.node, currentPosition.offset, false);
+      } else {
+        if (currentPosition.node instanceof Text) {
+          if (currentPosition.offset < currentPosition.node.length) {
+            const tag = document.createElement(tagName);
+            const textNode =
+              currentPosition.offset > 0
+                ? currentPosition.node.splitText(currentPosition.offset)
+                : currentPosition.node;
+            const parent = currentPosition.node.parentNode!;
+            parent.insertBefore(tag, textNode);
+            tag.appendChild(textNode);
+
+            setStartResult(textNode, 0, false);
+            setEndResult(textNode, textNode.length, true);
+          }
+        } else if (currentPosition.node instanceof Element) {
+          const inserted = insertTag(currentPosition.node, tagName);
+
+          setStartResult(inserted.start.node, inserted.start.offset, false);
+          setEndResult(inserted.end.node, inserted.end.offset, true);
         }
-      } else if (currentPosition.node instanceof Element) {
-        insertTag(currentPosition.node, tagName);
       }
       currentPosition = nextPosition;
     }
+
+    const forceStartResult = result.start == null;
+    let forceEndResult = result.end != null;
 
     const top = currentPosition.node;
     if (top != null) {
       let rightPosition: { node: Node | undefined; offset: number } = end;
       while (rightPosition.node != null) {
         const previousPosition = { node: findPreviousNode(rightPosition.node, top), offset: 0 };
-        if (previousPosition.node instanceof Text) {
-          previousPosition.offset = previousPosition.node.length;
-        }
-        if (rightPosition.node instanceof Text) {
-          if (rightPosition.offset > 0) {
-            const tag = document.createElement(tagName);
-            rightPosition.node.splitText(rightPosition.offset);
-            const parent = rightPosition.node.parentNode!;
-            parent.insertBefore(tag, rightPosition.node);
-            tag.appendChild(rightPosition.node);
+        if (boundedClosest(rightPosition.node, [tagName], rootNode) != null) {
+          // already wrapped by tag
+          setStartResult(rightPosition.node, 0, forceStartResult);
+          setEndResult(rightPosition.node, rightPosition.offset, forceEndResult);
+          forceEndResult = false;
+        } else {
+          if (previousPosition.node instanceof Text) {
+            previousPosition.offset = previousPosition.node.length;
           }
-        } else if (rightPosition.node instanceof Element) {
-          insertTag(rightPosition.node, tagName);
+          if (rightPosition.node instanceof Text) {
+            if (rightPosition.offset > 0) {
+              const tag = document.createElement(tagName);
+              rightPosition.node.splitText(rightPosition.offset);
+              const parent = rightPosition.node.parentNode!;
+              parent.insertBefore(tag, rightPosition.node);
+              tag.appendChild(rightPosition.node);
+
+              setStartResult(rightPosition.node, rightPosition.offset, forceStartResult);
+              setEndResult(rightPosition.node, rightPosition.node.length, forceEndResult);
+              forceEndResult = false;
+            }
+          } else if (rightPosition.node instanceof Element) {
+            const inserted = insertTag(rightPosition.node, tagName);
+            setStartResult(inserted.start.node, inserted.start.offset, forceStartResult);
+            setEndResult(inserted.end.node, inserted.end.offset, forceEndResult);
+            forceEndResult = false;
+          }
         }
         rightPosition = previousPosition;
       }
     } else {
       logger.warn('No top => BUG');
+    }
+    if (result.start && result.end) {
+      return result as CaretRange;
+    } else {
+      throw new Error('Fail to spread tag');
     }
   }
 }
@@ -489,22 +595,53 @@ function spreadTag(start: CaretPosition, end: CaretPosition, tagName: MinorTag, 
  *                                      x   x
  *
  */
-function wrap(node: Node, tagName: MinorTag) {
+export function wrap(node: Node, tagName: string): Element {
   const tag = document.createElement(tagName);
   node.parentNode!.insertBefore(tag, node);
   tag.appendChild(node);
+  return tag;
 }
 
-function unwrap(node: Node) {
+/**
+ * Unwrap given node
+ *      _                           _
+ *     / \                         / \----
+ *     x  \             \         x   \   \
+ *        NODE       ====\             y   z
+ *        /  \       ====/               / \
+ *       y    \         /               /   \
+ *             z                       a     b
+ *            / \
+ *           a   b
+ *
+ */
+function unwrap(node: Node): CaretRange {
   const parent = node.parentNode;
   if (parent != null) {
     // Convert to array to
-    Array.from(node.childNodes).forEach(child => {
+    const children = Array.from(node.childNodes).map(child => {
       logger.info('Child to move up', child);
       parent.insertBefore(child, node);
+      return child;
     });
     parent.removeChild(node);
-    parent.normalize();
+
+    // moving children broke the selection
+    // restore it before normalization
+    if (children.length > 0) {
+      const last = findLastLeaf(children[children.length - 1]!);
+      document.getSelection()?.setBaseAndExtent(children[0]!, 0, last.node, last.offset);
+    }
+
+    //parent.normalize();
+
+    const selection = document.getSelection()!;
+    return {
+      start: { node: selection.anchorNode!, offset: selection.anchorOffset },
+      end: { node: selection.focusNode!, offset: selection.focusOffset },
+    };
+  } else {
+    throw new Error('Impossible case');
   }
 }
 
@@ -514,7 +651,7 @@ function safeUnwrap(
   leftArg: Readonly<CaretPosition>,
   rightArg: Readonly<CaretPosition>,
   rootNode: Node,
-) {
+): CaretRange {
   const left = { ...leftArg };
   const right = { ...rightArg };
 
@@ -540,17 +677,39 @@ function safeUnwrap(
   // remove all tags within wrapper
   removeTags(node, tagName);
 
+  // remove the wrapper too
+  const result = unwrap(node);
+
+  let start: CaretPosition | undefined = undefined;
+  let end: CaretPosition | undefined = undefined;
+
   if (saveLeftBranch) {
     // wrapStart -> start : TAG
-    spreadTag(wrapStart, left, tagName, rootNode);
+    const range = spreadTag(wrapStart, left, tagName, rootNode);
+    if (compareCaretPosition(range.start, range.end) !== 0) {
+      start = range.end;
+    }
   }
   if (saveRightBranch) {
     // end -> endStart : TAG
-    spreadTag(right, wrapEnd, tagName, rootNode);
+    const range = spreadTag(right, wrapEnd, tagName, rootNode);
+    if (compareCaretPosition(range.start, range.end) !== 0) {
+      end = range.end;
+    }
   }
 
-  // remove the wrapper too
-  unwrap(node);
+  if (start == null) {
+    start = result.start;
+  }
+
+  if (end == null) {
+    end = result.end;
+  }
+
+  return {
+    start: start!,
+    end: end!,
+  };
 }
 
 /**
@@ -566,7 +725,7 @@ function removeTags(node: Element, tagName: MinorTag) {
   }
 }
 
-function insertTag(node: Element, tagName: MinorTag) {
+function insertTag(node: Element, tagName: MinorTag): CaretRange {
   removeTags(node, tagName);
 
   if (node.tagName != tagName) {
@@ -585,4 +744,112 @@ function insertTag(node: Element, tagName: MinorTag) {
       current = queue.pop();
     }
   }
+
+  return {
+    start: findFirstLeaf(node),
+    end: findLastLeaf(node),
+  };
+}
+
+export function switchTo(node: Element, tagName: MajorTag): Element {
+  const newNode = wrap(node, tagName);
+  unwrap(node);
+  return newNode;
+}
+
+export function findChildByTag(element: Element, tag: string): Element | undefined {
+  return Array.from(element.children).find(child => child.tagName === tag);
+}
+
+////////////////////
+// List manipulation
+////////////////////
+
+/**
+ * ul        ul
+ *  li1      li1
+ *  li2       ul
+ *  li3        li2
+ *           li3
+ */
+export function indentListItem(listItem: Element) {
+  logger.warn('Indent');
+
+  const parentUl = listItem.parentElement;
+  if (parentUl == null) {
+    throw new Error('Invalid DOM');
+  }
+
+  // First, make sure previous element exists
+  const previous = listItem.previousSibling;
+  if (previous instanceof Element == false || (previous as Element)?.tagName !== 'LI') {
+    // Indenting first item does not make any sense
+    return;
+    // no previous LI, create one
+    //previous = document.createElement("LI");
+    //parentUl.insertBefore(previous, listItem);
+  }
+
+  // Then, make sure previous listItem contains a UL
+  let subList = findChildByTag(previous as Element, 'UL');
+  if (subList == null) {
+    subList = document.createElement('UL');
+    (previous as Element).appendChild(subList);
+  }
+
+  // Move listItem to tue subList
+  subList.append(listItem);
+
+  // If listItem, contains a list, move sublist up
+  const selfSubList = findChildByTag(listItem, 'UL');
+  if (selfSubList) {
+    while (selfSubList.firstChild) {
+      subList.append(selfSubList.firstChild);
+    }
+  }
+}
+
+export function unindentListItem(listItem: Element): boolean {
+  logger.warn('deindent indentation');
+  const currentUl = listItem.parentElement;
+
+  if (currentUl == null) {
+    throw new Error('Invalid DOM');
+  }
+
+  const parentListItem = currentUl.parentElement;
+  if (parentListItem == null || parentListItem.tagName !== 'LI') {
+    // cannont unindent first level
+    return false;
+  }
+
+  const newUl = parentListItem.parentElement;
+  if (newUl == null) {
+    // cannont unindent first level
+    return false;
+  }
+
+  const nextSubItems: ChildNode[] = [];
+  while (listItem.nextSibling) {
+    nextSubItems.push(listItem.nextSibling);
+    listItem.nextSibling.remove();
+  }
+
+  parentListItem.after(listItem);
+
+  if (nextSubItems.length > 0) {
+    let subList = findChildByTag(listItem, 'UL');
+    if (subList == null) {
+      subList = document.createElement('UL');
+      listItem.appendChild(subList);
+    }
+    while (nextSubItems.length > 0) {
+      subList.append(nextSubItems.shift()!);
+    }
+  }
+
+  if (currentUl.childNodes.length === 0) {
+    currentUl.remove();
+  }
+  return true;
 }

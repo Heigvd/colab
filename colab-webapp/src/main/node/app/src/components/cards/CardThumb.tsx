@@ -20,14 +20,22 @@ import * as React from 'react';
 import { Route, Routes, useLocation, useNavigate } from 'react-router-dom';
 import * as API from '../../API/api';
 import useTranslations from '../../i18n/I18nContext';
-import { useAppDispatch } from '../../store/hooks';
+import { useAndLoadSubCards } from '../../selectors/cardSelector';
+import { useAppDispatch, useLoadingState } from '../../store/hooks';
 import Button from '../common/element/Button';
 import InlineLoading from '../common/element/InlineLoading';
 import ConfirmDeleteModal from '../common/layout/ConfirmDeleteModal';
 import DropDownMenu, { modalEntryStyle } from '../common/layout/DropDownMenu';
 import Flex from '../common/layout/Flex';
 import Modal from '../common/layout/Modal';
-import { errorColor, lightIconButtonStyle, space_M, space_S, variantTitle } from '../styling/style';
+import {
+  errorColor,
+  lightIconButtonStyle,
+  space_L,
+  space_M,
+  space_S,
+  variantTitle,
+} from '../styling/style';
 import CardLayout from './CardLayout';
 import CardSettings from './CardSettings';
 import CompletionEditor from './CompletionEditor';
@@ -55,7 +63,7 @@ export default function CardThumb({
   const location = useLocation();
   const hasVariants = variants.length > 1 && variant != null;
   const variantNumber = hasVariants ? variants.indexOf(variant) + 1 : undefined;
-
+  const { isLoading, startLoading, stopLoading } = useLoadingState();
   // Get nb of sticky notes and resources to display on card (cf below).
   //Commented temporarily for first online version. Full data is not complete on first load. To discuss.
   //const nbStickyNotes = useStickyNoteLinksForDest(card.id).stickyNotesForDest.length;
@@ -67,7 +75,7 @@ export default function CardThumb({
   }).resourcesAndRefs.length; */
 
   const closeRouteCb = React.useCallback(
-    route => {
+    (route: string) => {
       navigate(location.pathname.replace(new RegExp(route + '$'), ''));
     },
     [location.pathname, navigate],
@@ -75,8 +83,49 @@ export default function CardThumb({
 
   const cardId = card.id;
 
+  const navigateToZoomPageCb = React.useCallback(() => {
+    const path = `card/${cardId}/v/${variant?.id}`;
+    if (location.pathname.match(/(edit|card)\/\d+\/v\/\d+/)) {
+      navigate(`../${path}`);
+    } else {
+      navigate(path);
+    }
+  }, [variant, cardId, location.pathname, navigate]);
+
+  const navigateToEditPageCb = React.useCallback(() => {
+    const path = `edit/${cardId}/v/${variant?.id}`;
+    if (location.pathname.match(/(edit|card)\/\d+\/v\/\d+/)) {
+      navigate(`../${path}`);
+    } else {
+      navigate(path);
+    }
+  }, [variant, cardId, location.pathname, navigate]);
+
+  const subCards = useAndLoadSubCards(variant?.id);
+  const hasSubCards = subCards?.length ?? 0 > 0;
+
+  const clickOnCardTitleCb = React.useCallback(
+    (e: React.MouseEvent) => {
+      navigateToEditPageCb();
+      e.stopPropagation();
+    },
+    [navigateToEditPageCb],
+  );
+
+  const clickOnCardContentCb = React.useCallback(
+    (e: React.MouseEvent) => {
+      if (hasSubCards) {
+        navigateToZoomPageCb();
+      } else {
+        navigateToEditPageCb();
+      }
+      e.stopPropagation();
+    },
+    [hasSubCards, navigateToZoomPageCb, navigateToEditPageCb],
+  );
+
   if (cardId == null) {
-    return <i>Card without id is invalid...</i>;
+    return <i>{i18n.modules.card.error.withoutId}</i>;
   } else {
     return (
       <CardLayout card={card} variant={variant} variants={variants}>
@@ -105,7 +154,10 @@ export default function CardThumb({
                   justifyContent: 'space-between',
                 })}
               >
-                <div>
+                <div
+                  className={css({ flexGrow: 1, cursor: 'pointer' })}
+                  onClick={clickOnCardTitleCb}
+                >
                   <span className={css({ fontWeight: 'bold' })}>
                     {card.title || i18n.modules.card.untitled}
                   </span>
@@ -114,7 +166,7 @@ export default function CardThumb({
                       &#xFE58;
                       {variant?.title && variant.title.length > 0
                         ? variant.title
-                        : `Variant ${variantNumber}`}
+                        : `${i18n.modules.card.variant} ${variantNumber}`}
                     </span>
                   )}
                 </div>
@@ -124,7 +176,7 @@ export default function CardThumb({
                     path={`${cardId}/settings`}
                     element={
                       <Modal
-                        title="Card Settings"
+                        title={i18n.modules.card.settings.title}
                         onClose={() => closeRouteCb(`${cardId}/settings`)}
                         showCloseButton
                       >
@@ -142,14 +194,14 @@ export default function CardThumb({
                     path={`${cardId}/v/${variant?.id}/completion`}
                     element={
                       <Modal
-                        title="Edit card completion"
+                        title={i18n.modules.card.editCompletion}
                         onClose={() => closeRouteCb(`${cardId}/v/${variant?.id}/completion`)}
                         showCloseButton
                         modalBodyClassName={css({ alignItems: 'center' })}
                         onEnter={close => close()}
                         footer={close => (
                           <Flex grow={1} justify="center" className={css({ margin: space_S })}>
-                            <Button onClick={close}>OK</Button>
+                            <Button onClick={close}>{i18n.common.ok}</Button>
                           </Flex>
                         )}
                       >
@@ -167,7 +219,7 @@ export default function CardThumb({
                     path={`${cardId}/position`}
                     element={
                       <Modal
-                        title="Card position"
+                        title={i18n.modules.card.settings.cardPosition}
                         onClose={() => closeRouteCb(`${cardId}/position`)}
                         showCloseButton
                       >
@@ -182,26 +234,19 @@ export default function CardThumb({
                   buttonClassName={cx(lightIconButtonStyle, css({ marginLeft: space_S }))}
                   entries={[
                     {
-                      value: 'edit card',
+                      value: 'edit',
                       label: (
                         <>
-                          <FontAwesomeIcon icon={faPen} /> Edit Card
+                          <FontAwesomeIcon icon={faPen} /> {i18n.common.edit}
                         </>
                       ),
-                      action: () => {
-                        const path = `edit/${cardId}/v/${variant?.id}`;
-                        if (location.pathname.match(/(edit|card)\/\d+\/v\/\d+/)) {
-                          navigate(`../${path}`);
-                        } else {
-                          navigate(path);
-                        }
-                      },
+                      action: navigateToEditPageCb,
                     },
                     {
                       value: 'settings',
                       label: (
                         <>
-                          <FontAwesomeIcon icon={faCog} /> Card Settings
+                          <FontAwesomeIcon icon={faCog} /> {i18n.common.settings}
                         </>
                       ),
                       action: () => {
@@ -212,7 +257,7 @@ export default function CardThumb({
                       value: 'completion',
                       label: (
                         <>
-                          <FontAwesomeIcon icon={faPercent} /> Completion
+                          <FontAwesomeIcon icon={faPercent} /> {i18n.modules.card.completion}
                         </>
                       ),
                       action: () => {
@@ -223,7 +268,7 @@ export default function CardThumb({
                       value: 'position',
                       label: (
                         <>
-                          <FontAwesomeIcon icon={faFrog} /> Position
+                          <FontAwesomeIcon icon={faFrog} /> {i18n.modules.card.position}
                         </>
                       ),
                       action: () => {
@@ -231,13 +276,13 @@ export default function CardThumb({
                       },
                     },
                     {
-                      value: 'Delete card',
+                      value: 'delete',
                       label: (
                         <ConfirmDeleteModal
                           buttonLabel={
                             <div className={cx(css({ color: errorColor }), modalEntryStyle)}>
                               <FontAwesomeIcon icon={faTrash} />
-                              {hasVariants ? ' Delete variant' : ' Delete card'}
+                              {i18n.modules.card.deleteCardVariant(hasVariants)}
                             </div>
                           }
                           className={css({
@@ -245,28 +290,20 @@ export default function CardThumb({
                             display: 'flex',
                             alignItems: 'center',
                           })}
-                          message={
-                            hasVariants ? (
-                              <p>
-                                Are you <strong>sure</strong> you want to delete this whole variant?
-                                This will delete all subcards inside.
-                              </p>
-                            ) : (
-                              <p>
-                                Are you <strong>sure</strong> you want to delete this whole card?
-                                This will delete all subcards inside.
-                              </p>
-                            )
-                          }
+                          message={i18n.modules.card.confirmDeleteCardVariant(hasVariants)}
                           onConfirm={() => {
+                            startLoading();
                             if (hasVariants) {
-                              dispatch(API.deleteCardContent(variant));
+                              dispatch(API.deleteCardContent(variant)).then(stopLoading);
                             } else {
-                              dispatch(API.deleteCard(card));
-                              navigate('../');
+                              dispatch(API.deleteCard(card)).then(() => {
+                                stopLoading();
+                                navigate('../');
+                              });
                             }
                           }}
-                          confirmButtonLabel={hasVariants ? 'Delete variant' : 'Delete card'}
+                          confirmButtonLabel={i18n.modules.card.deleteCardVariant(hasVariants)}
+                          isConfirmButtonLoading={isLoading}
                         />
                       ),
                       modal: true,
@@ -274,9 +311,9 @@ export default function CardThumb({
                   ]}
                 />
               </div>
-              {/* 
-              // Show nb of sticky notes and resources under card title. 
-              // Commented temporarily for first online version. Full data is not complete on first load. Erroneous data displayed yet. 
+              {/*
+              // Show nb of sticky notes and resources under card title.
+              // Commented temporarily for first online version. Full data is not complete on first load. Erroneous data displayed yet.
               // To discuss.
               <Flex
                 className={css({
@@ -298,13 +335,13 @@ export default function CardThumb({
           <Flex
             grow={1}
             align="stretch"
-            className={
-              depth > 0
-                ? css({
-                    padding: space_M,
-                  })
-                : ''
-            }
+            onClick={clickOnCardContentCb}
+            className={cx({
+              [css({ minHeight: space_L, cursor: hasSubCards ? 'zoom-in' : 'pointer' })]: true,
+              [css({
+                padding: space_M,
+              })]: depth > 0,
+            })}
             justify="center"
           >
             {showSubcards ? (

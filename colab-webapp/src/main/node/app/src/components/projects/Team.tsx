@@ -21,11 +21,11 @@ import { HierarchicalPosition, Project, TeamMember, TeamRole } from 'colab-rest-
 import * as React from 'react';
 import Select from 'react-select';
 import * as API from '../../API/api';
-import { getDisplayName } from '../../helper';
+import { emailFormat, getDisplayName } from '../../helper';
 import useTranslations from '../../i18n/I18nContext';
 import { useAndLoadProjectTeam } from '../../selectors/projectSelector';
 import { useCurrentUser } from '../../selectors/userSelector';
-import { useAppDispatch, useAppSelector } from '../../store/hooks';
+import { useAppDispatch, useAppSelector, useLoadingState } from '../../store/hooks';
 import { addNotification } from '../../store/notification';
 import { Destroyer } from '../common/Destroyer';
 import Button from '../common/element/Button';
@@ -33,7 +33,6 @@ import IconButton from '../common/element/IconButton';
 import IconButtonWithLoader from '../common/element/IconButtonWithLoader';
 import InlineLoading from '../common/element/InlineLoading';
 import { DiscreetInput, InlineInput } from '../common/element/Input';
-import { emailFormat } from '../common/Form/Form';
 import ConfirmDeleteModal from '../common/layout/ConfirmDeleteModal';
 import DropDownMenu, { modalEntryStyle } from '../common/layout/DropDownMenu';
 import Flex from '../common/layout/Flex';
@@ -176,6 +175,7 @@ const Member = ({ member, roles, isTheOnlyOwner }: MemberProps) => {
   const dispatch = useAppDispatch();
   const i18n = useTranslations();
   const { currentUser, status: currentUserStatus } = useCurrentUser();
+  const { isLoading, startLoading, stopLoading } = useLoadingState();
   //const [ open, setOpen ] = React.useState<'COLLAPSED' | 'EXPANDED'>('COLLAPSED');
 
   React.useEffect(() => {
@@ -287,12 +287,12 @@ const Member = ({ member, roles, isTheOnlyOwner }: MemberProps) => {
           buttonClassName={cx(lightIconButtonStyle, css({ marginLeft: space_S }))}
           entries={[
             {
-              value: 'Delete team member',
+              value: 'delete',
               label: (
                 <ConfirmDeleteModal
                   buttonLabel={
                     <div className={cx(css({ color: errorColor }), modalEntryStyle)}>
-                      <FontAwesomeIcon icon={faTrash} /> Delete
+                      <FontAwesomeIcon icon={faTrash} /> {i18n.common.delete}
                     </div>
                   }
                   className={css({
@@ -306,9 +306,11 @@ const Member = ({ member, roles, isTheOnlyOwner }: MemberProps) => {
                     </p>
                   }
                   onConfirm={() => {
-                    dispatch(API.deleteMember(member));
+                    startLoading();
+                    dispatch(API.deleteMember(member)).then(stopLoading);
                   }}
                   confirmButtonLabel={'Delete team member'}
+                  isConfirmButtonLoading={isLoading}
                 />
               ),
               modal: true,
@@ -355,12 +357,18 @@ const Member = ({ member, roles, isTheOnlyOwner }: MemberProps) => {
 
 function CreateRole({ project }: { project: Project }): JSX.Element {
   const dispatch = useAppDispatch();
+  const i18n = useTranslations();
+
   const [name, setName] = React.useState('');
 
   return (
     <OpenClose
       collapsedChildren={
-        <IconButton title="Add role" icon={faPlus} className={lightIconButtonStyle} />
+        <IconButton
+          title={i18n.modules.team.actions.createRole}
+          icon={faPlus}
+          className={lightIconButtonStyle}
+        />
       }
     >
       {collapse => (

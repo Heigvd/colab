@@ -9,6 +9,8 @@ package ch.colabproject.colab.api.ws;
 import ch.colabproject.colab.api.Helper;
 import ch.colabproject.colab.api.controller.WebsocketManager;
 import ch.colabproject.colab.api.ws.message.WsMessage;
+import ch.colabproject.colab.api.ws.message.WsPing;
+import ch.colabproject.colab.api.ws.message.WsPong;
 import ch.colabproject.colab.api.ws.message.WsSessionIdentifier;
 import ch.colabproject.colab.api.ws.utils.JsonDecoder;
 import ch.colabproject.colab.api.ws.utils.JsonEncoder;
@@ -108,6 +110,9 @@ public class WebsocketEndpoint {
         sessionToIds.put(session, sessionId);
         idsToSessions.put(sessionId, session);
         session.getBasicRemote().sendObject(new WsSessionIdentifier(sessionId));
+
+        long maxIdleTimeout = session.getMaxIdleTimeout();
+        logger.trace("Session Timeout: {} ms", maxIdleTimeout);
     }
 
     /**
@@ -118,7 +123,14 @@ public class WebsocketEndpoint {
      */
     @OnMessage
     public void onMessage(WsMessage message, Session session) {
-        logger.info("Message received: {} from {}", message, session.getId());
+        logger.trace("Message received: {} from {}", message, session.getId());
+        if (message instanceof WsPing) {
+            try {
+                session.getBasicRemote().sendObject(new WsPong());
+            } catch (IOException | EncodeException ex) {
+                logger.warn("Fail to reply to ping", ex);
+            }
+        }
     }
 
     /**
@@ -140,8 +152,8 @@ public class WebsocketEndpoint {
      */
     @OnClose
     public void onClose(Session session, CloseReason closeReason) {
-        logger.info("WebSocket closed for {} with reason {}",
-            session.getId(), closeReason.getCloseCode());
+        logger.info("WebSocket closed for {} with reason {}: {}",
+            session.getId(), closeReason.getCloseCode(), closeReason.getReasonPhrase());
         sessions.remove(session);
         String id = sessionToIds.get(session);
         idsToSessions.remove(id);

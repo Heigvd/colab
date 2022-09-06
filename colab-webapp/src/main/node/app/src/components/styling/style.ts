@@ -432,7 +432,6 @@ export const mainHeaderHeight = '50px';
 
 export const labelStyle = css({
   fontWeight: 500,
-  textTransform: 'capitalize',
 });
 
 export const textareaStyle = css({

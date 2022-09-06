@@ -134,6 +134,7 @@ export const useCardContent = (
 export interface Ancestor {
   card: Card | number | undefined | 'LOADING';
   content: CardContent | number | 'LOADING';
+  last?: boolean;
 }
 
 export const useAncestors = (contentId: number | null | undefined): Ancestor[] => {
@@ -452,4 +453,39 @@ export const useCardACLForCurrentUser = (cardId: number | null | undefined): MyC
     read: false,
     write: false,
   };
+};
+
+export const useSubCards = (cardContentId: number | null | undefined) => {
+  return useAppSelector(state => {
+    if (cardContentId) {
+      const contentState = state.cards.contents[cardContentId];
+      if (contentState != null) {
+        if (contentState.subs != null) {
+          return contentState.subs.flatMap(cardId => {
+            const cardState = state.cards.cards[cardId];
+            return cardState && cardState.card ? [cardState.card] : [];
+          });
+        } else {
+          return contentState.subs;
+        }
+      }
+    } else {
+      return [];
+    }
+  }, shallowEqual);
+};
+
+export const useAndLoadSubCards = (cardContentId: number | null | undefined) => {
+  const dispatch = useAppDispatch();
+  const subCards = useSubCards(cardContentId);
+
+  React.useEffect(() => {
+    if (subCards === undefined) {
+      if (cardContentId) {
+        dispatch(API.getSubCards(cardContentId));
+      }
+    }
+  }, [subCards, dispatch, cardContentId]);
+
+  return subCards;
 };

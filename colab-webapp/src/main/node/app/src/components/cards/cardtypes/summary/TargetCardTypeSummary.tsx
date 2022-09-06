@@ -6,7 +6,7 @@
  */
 
 import { css } from '@emotion/css';
-import { IconName, IconPrefix } from '@fortawesome/fontawesome-svg-core';
+import { IconName } from '@fortawesome/fontawesome-svg-core';
 import { faCircleDot } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import * as React from 'react';
@@ -39,7 +39,7 @@ export default function TargetCardTypeSummary({
           <FontAwesomeIcon
             icon={referenceIcon}
             color={'var(--secondaryColor)'}
-            title={i18n.modules.cardType.infos.isIsglobalType}
+            title={i18n.modules.cardType.info.isGlobalType}
             className={targetProjectIconStyle}
           />
         ))}
@@ -54,12 +54,13 @@ interface TargetProjectSummaryProps {
 function TargetProjectSummary({ projectId }: TargetProjectSummaryProps): JSX.Element {
   const { project, status } = useProject(projectId);
   const i18n = useTranslations();
+
   return (
     <FontAwesomeIcon
       icon={
         project?.illustration
           ? {
-              prefix: project.illustration.iconLibrary as IconPrefix,
+              prefix: project.illustration.iconLibrary === 'FONT_AWESOME_REGULAR' ? 'far' : 'fas',
               iconName: project.illustration.iconKey as IconName,
             }
           : referenceIcon
@@ -68,8 +69,8 @@ function TargetProjectSummary({ projectId }: TargetProjectSummaryProps): JSX.Ele
       color={project?.illustration ? project.illustration.iconBkgdColor : 'var(--lightGray)'}
       title={
         status === 'INITIALIZED' && project?.name
-          ? `${i18n.modules.cardType.infos.fromProject} ` + project.name + '"'
-          : `${i18n.modules.cardType.infos.fromAProject}`
+          ? i18n.modules.cardType.info.fromProject(project.name)
+          : i18n.modules.cardType.info.fromAProject
       }
     />
   );
