@@ -30,9 +30,9 @@ import IconButton from '../common/element/IconButton';
 import ConfirmDeleteModal from '../common/layout/ConfirmDeleteModal';
 import DropDownMenu from '../common/layout/DropDownMenu';
 import Flex from '../common/layout/Flex';
-import { DocumentOwnership } from '../documents/documentCommonType';
-import DocumentCreatorButton from '../documents/DocumentCreatorButton';
 import { lightIconButtonStyle, space_M, space_S } from '../styling/style';
+import { DocumentOwnership } from './documentCommonType';
+import DocumentCreatorButton from './DocumentCreatorButton';
 
 const toolboxContainerStyle = css({
   height: 'auto',
@@ -65,7 +65,7 @@ const toolboxButtonStyle = cx(
   }),
 );
 
-interface CardEditorToolboxProps {
+interface DocEditorToolboxProps {
   open: boolean;
   docOwnership: DocumentOwnership;
   //prefixElement?: React.ReactNode;
@@ -78,7 +78,7 @@ interface TXToptionsType {
   setMarkDownMode: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-interface CardEditorContext {
+interface DocEditorContext {
   selectedDocId?: number | null;
   setSelectedDocId: (id: number | undefined | null) => void;
   editMode: boolean;
@@ -88,7 +88,7 @@ interface CardEditorContext {
   setEditToolbar: React.Dispatch<React.SetStateAction<JSX.Element>>;
 }
 
-export const defaultCardEditorContext: CardEditorContext = {
+export const defaultDocEditorContext: DocEditorContext = {
   setSelectedDocId: () => {},
   editMode: false,
   setEditMode: () => {},
@@ -96,15 +96,15 @@ export const defaultCardEditorContext: CardEditorContext = {
   setEditToolbar: () => {},
 };
 
-export const CardEditorCTX = React.createContext<CardEditorContext>(defaultCardEditorContext);
+export const DocEditorCTX = React.createContext<DocEditorContext>(defaultDocEditorContext);
 
-export default function CardEditorToolbox({
+export default function DocEditorToolbox({
   open,
   docOwnership,
 }: //prefixElement,
-CardEditorToolboxProps): JSX.Element {
+DocEditorToolboxProps): JSX.Element {
   const { setSelectedDocId, selectedDocId, setEditMode, TXToptions, editToolbar } =
-    React.useContext(CardEditorCTX);
+    React.useContext(DocEditorCTX);
   const showTree = TXToptions?.showTree || false;
   const dispatch = useAppDispatch();
   const i18n = useTranslations();

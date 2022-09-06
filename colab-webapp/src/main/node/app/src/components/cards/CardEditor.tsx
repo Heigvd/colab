@@ -46,6 +46,10 @@ import Flex from '../common/layout/Flex';
 import Modal from '../common/layout/Modal';
 import OpenCloseModal from '../common/layout/OpenCloseModal';
 import { DocTextDisplay } from '../documents/DocTextItem';
+import DocEditorToolbox, {
+  defaultDocEditorContext,
+  DocEditorCTX,
+} from '../documents/DocumentEditorToolbox';
 import DocumentList from '../documents/DocumentList';
 import { ResourceCallContext } from '../resources/resourcesCommonType';
 import ResourcesMainView from '../resources/ResourcesMainView';
@@ -61,7 +65,6 @@ import {
   textSmall,
   variantTitle,
 } from '../styling/style';
-import CardEditorToolbox, { CardEditorCTX, defaultCardEditorContext } from './CardEditorToolbox';
 import CardInvolvement from './CardInvolvement';
 import CardSettings from './CardSettings';
 import CompletionEditor from './CompletionEditor';
@@ -167,10 +170,10 @@ export default function CardEditor({
   const [fullScreen, setFullScreen] = React.useState(false);
   const [openToolbox, setOpenToolbox] = React.useState(true);
   const [selectedDocId, setSelectedDocId] = React.useState<number | undefined | null>(undefined);
-  const [editMode, setEditMode] = React.useState(defaultCardEditorContext.editMode);
+  const [editMode, setEditMode] = React.useState(defaultDocEditorContext.editMode);
   const [showTree, setShowTree] = React.useState(false);
   const [markDownMode, setMarkDownMode] = React.useState(false);
-  const [editToolbar, setEditToolbar] = React.useState(defaultCardEditorContext.editToolbar);
+  const [editToolbar, setEditToolbar] = React.useState(defaultDocEditorContext.editToolbar);
   const [openKey, setOpenKey] = React.useState<string | undefined>(undefined);
 
   const TXToptions = {
@@ -236,7 +239,7 @@ export default function CardEditor({
                 resizeHeight={false}
                 minSize={150}
               >
-                <CardEditorCTX.Provider
+                <DocEditorCTX.Provider
                   value={{
                     selectedDocId,
                     setSelectedDocId,
@@ -504,7 +507,7 @@ export default function CardEditor({
                           </Flex>
                         </Flex>
                         {!readOnly && variant.id && (
-                          <CardEditorToolbox
+                          <DocEditorToolbox
                             open={openToolbox}
                             docOwnership={{
                               kind: 'DeliverableOfCardContent',
@@ -588,7 +591,7 @@ export default function CardEditor({
                       </OpenCloseModal>
                     </Flex>
                   </Flex>
-                </CardEditorCTX.Provider>
+                </DocEditorCTX.Provider>
               </ReflexElement>
               {openKey && <ReflexSplitter className={css({ zIndex: 0 })} />}
               <ReflexElement

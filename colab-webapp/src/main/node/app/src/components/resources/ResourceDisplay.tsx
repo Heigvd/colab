@@ -21,16 +21,16 @@ import { updateDocumentText } from '../../API/api';
 import useTranslations from '../../i18n/I18nContext';
 import { useAndLoadTextOfDocument } from '../../selectors/documentSelector';
 import { useAppDispatch } from '../../store/hooks';
-import CardEditorToolbox, {
-  CardEditorCTX,
-  defaultCardEditorContext,
-} from '../cards/CardEditorToolbox';
 import IconButton from '../common/element/IconButton';
 import { DiscreetInput, DiscreetTextArea } from '../common/element/Input';
 import DropDownMenu, { modalEntryStyle } from '../common/layout/DropDownMenu';
 import Flex from '../common/layout/Flex';
 import OpenCloseModal from '../common/layout/OpenCloseModal';
 import { DocTextWrapper } from '../documents/DocTextItem';
+import DocEditorToolbox, {
+  defaultDocEditorContext,
+  DocEditorCTX,
+} from '../documents/DocumentEditorToolbox';
 import DocumentList from '../documents/DocumentList';
 import {
   lightIconButtonStyle,
@@ -59,10 +59,10 @@ export function ResourceDisplay({
   const i18n = useTranslations();
 
   const [selectedDocId, setSelectedDocId] = React.useState<number | undefined | null>(undefined);
-  const [editMode, setEditMode] = React.useState(defaultCardEditorContext.editMode);
+  const [editMode, setEditMode] = React.useState(defaultDocEditorContext.editMode);
   const [showTree, setShowTree] = React.useState(false);
   const [markDownMode, setMarkDownMode] = React.useState(false);
-  const [editToolbar, setEditToolbar] = React.useState(defaultCardEditorContext.editToolbar);
+  const [editToolbar, setEditToolbar] = React.useState(defaultDocEditorContext.editToolbar);
 
   const TXToptions = {
     showTree: showTree,
@@ -215,7 +215,7 @@ export function ResourceDisplay({
       </Flex>
 
       {targetResource.id && (
-        <CardEditorCTX.Provider
+        <DocEditorCTX.Provider
           value={{
             selectedDocId,
             setSelectedDocId,
@@ -227,7 +227,7 @@ export function ResourceDisplay({
           }}
         >
           {!effectiveReadOnly && (
-            <CardEditorToolbox
+            <DocEditorToolbox
               open={openToolbox}
               docOwnership={{ kind: 'PartOfResource', ownerId: targetResource.id }}
             />
@@ -238,7 +238,7 @@ export function ResourceDisplay({
               allowEdition={!effectiveReadOnly}
             />
           </div>
-        </CardEditorCTX.Provider>
+        </DocEditorCTX.Provider>
       )}
     </Flex>
   );

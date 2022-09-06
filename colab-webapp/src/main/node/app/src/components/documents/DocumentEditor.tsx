@@ -12,11 +12,11 @@ import { useLastInsertedDocId } from '../../selectors/documentSelector';
 import * as DocumentActions from '../../store/documentSlice';
 import { useAppDispatch } from '../../store/hooks';
 import { BlockEditorWrapper } from '../blocks/BlockEditorWrapper';
-import { CardEditorCTX } from '../cards/CardEditorToolbox';
 import OpenGraphLink from '../common/element/OpenGraphLink';
 import Flex from '../common/layout/Flex';
 import { editableBlockStyle } from '../styling/style';
 import { DocumentOwnership } from './documentCommonType';
+import { DocEditorCTX } from './DocumentEditorToolbox';
 import DocumentFileEditor from './DocumentFileEditor';
 
 const selectedStyle = css({
@@ -55,7 +55,7 @@ export default function DocumentEditor({
   const dropRef = React.useRef<HTMLDivElement>(null);
 
   const { setSelectedDocId, selectedDocId, editMode, setEditMode, TXToptions } =
-    React.useContext(CardEditorCTX);
+    React.useContext(DocEditorCTX);
 
   const selected = doc.id === selectedDocId;
   const editing = editMode && selected;

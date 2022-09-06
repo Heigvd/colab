@@ -21,9 +21,9 @@ import { uniq } from 'lodash';
 import * as React from 'react';
 import * as LiveHelper from '../../../LiveHelper';
 import { getLogger } from '../../../logger';
-import { CardEditorCTX } from '../../cards/CardEditorToolbox';
 import DropDownMenu, { Entry } from '../../common/layout/DropDownMenu';
 import Flex from '../../common/layout/Flex';
+import { DocEditorCTX } from '../../documents/DocumentEditorToolbox';
 import { borderRadius, lightIconButtonStyle, space_S } from '../../styling/style';
 import {
   areAllLeafsWrappedByTag,
@@ -575,7 +575,7 @@ export default function WysiwygEditor({
 
   // to detect is composition in on going
   const compositionRef = React.useRef(false);
-  const { setEditToolbar } = React.useContext(CardEditorCTX);
+  const { setEditToolbar } = React.useContext(DocEditorCTX);
 
   const selectionRef = React.useRef<SavedSelection | null>(null);
 
