@@ -65,6 +65,7 @@ import {
   textSmall,
   variantTitle,
 } from '../styling/style';
+import CardContentStatus from './CardContentStatus';
 import CardInvolvement from './CardInvolvement';
 import CardSettings from './CardSettings';
 import CompletionEditor from './CompletionEditor';
@@ -274,11 +275,13 @@ export default function CardEditor({
                           <Flex align="center">
                             {variant.frozen && (
                               <FontAwesomeIcon
+                                className={css({ padding: `0 ${space_S}` })}
                                 icon={faLock}
                                 title={i18n.modules.card.infos.cardLocked}
                                 color={'var(--darkGray)'}
                               />
                             )}
+                            <CardContentStatus mode="icon" status={variant.status} />
                             <DiscreetInput
                               value={card.title || ''}
                               placeholder={i18n.modules.card.untitled}

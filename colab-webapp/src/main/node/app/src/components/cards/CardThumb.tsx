@@ -36,6 +36,7 @@ import {
   space_S,
   variantTitle,
 } from '../styling/style';
+import CardContentStatus from './CardContentStatus';
 import CardLayout from './CardLayout';
 import CardSettings from './CardSettings';
 import CompletionEditor from './CompletionEditor';
@@ -102,7 +103,9 @@ export default function CardThumb({
   }, [variant, cardId, location.pathname, navigate]);
 
   const subCards = useAndLoadSubCards(variant?.id);
-  const hasSubCards = subCards?.length ?? 0 > 0;
+  const currentPathIsSelf = location.pathname.match(new RegExp(`card/${card.id}`)) != null;
+
+  const shouldZoomOnClick = currentPathIsSelf == false && (subCards?.length ?? 0 > 0);
 
   const clickOnCardTitleCb = React.useCallback(
     (e: React.MouseEvent) => {
@@ -114,14 +117,14 @@ export default function CardThumb({
 
   const clickOnCardContentCb = React.useCallback(
     (e: React.MouseEvent) => {
-      if (hasSubCards) {
+      if (shouldZoomOnClick) {
         navigateToZoomPageCb();
       } else {
         navigateToEditPageCb();
       }
       e.stopPropagation();
     },
-    [hasSubCards, navigateToZoomPageCb, navigateToEditPageCb],
+    [shouldZoomOnClick, navigateToZoomPageCb, navigateToEditPageCb],
   );
 
   if (cardId == null) {
@@ -158,6 +161,7 @@ export default function CardThumb({
                   className={css({ flexGrow: 1, cursor: 'pointer' })}
                   onClick={clickOnCardTitleCb}
                 >
+                  <CardContentStatus mode="icon" status={variant?.status || 'ACTIVE'} />
                   <span className={css({ fontWeight: 'bold' })}>
                     {card.title || i18n.modules.card.untitled}
                   </span>
@@ -337,7 +341,8 @@ export default function CardThumb({
             align="stretch"
             onClick={clickOnCardContentCb}
             className={cx({
-              [css({ minHeight: space_L, cursor: hasSubCards ? 'zoom-in' : 'pointer' })]: true,
+              [css({ minHeight: space_L, cursor: shouldZoomOnClick ? 'zoom-in' : 'pointer' })]:
+                true,
               [css({
                 padding: space_M,
               })]: depth > 0,
