@@ -260,6 +260,7 @@ export const en = {
         locked: 'Locked',
         color: 'Color',
         status: 'Status',
+        statusTooltip: (status: string) => `Status: ${status.toLocaleLowerCase('en')}`,
         completionLevelMode: 'Completion level mode',
         cardPosition: 'Card position',
       },
