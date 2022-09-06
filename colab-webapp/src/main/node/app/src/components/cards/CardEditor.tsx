@@ -61,7 +61,7 @@ import {
   textSmall,
   variantTitle,
 } from '../styling/style';
-import CardEditorToolbox from './CardEditorToolbox';
+import CardEditorToolbox, { CardEditorCTX, defaultCardEditorContext } from './CardEditorToolbox';
 import CardInvolvement from './CardInvolvement';
 import CardSettings from './CardSettings';
 import CompletionEditor from './CompletionEditor';
@@ -143,32 +143,6 @@ function ProgressBar({
   );
 }
 
-interface TXToptionsType {
-  showTree: boolean;
-  setShowTree: React.Dispatch<React.SetStateAction<boolean>>;
-  markDownMode: boolean;
-  setMarkDownMode: React.Dispatch<React.SetStateAction<boolean>>;
-}
-
-interface CardEditorContext {
-  selectedDocId?: number | null;
-  setSelectedDocId: (id: number | undefined | null) => void;
-  editMode: boolean;
-  setEditMode: (editMode: boolean) => void;
-  TXToptions?: TXToptionsType;
-  editToolbar: JSX.Element;
-  setEditToolbar: React.Dispatch<React.SetStateAction<JSX.Element>>;
-}
-
-const defaultCardEditorContext: CardEditorContext = {
-  setSelectedDocId: () => {},
-  editMode: false,
-  setEditMode: () => {},
-  editToolbar: <></>,
-  setEditToolbar: () => {},
-};
-export const CardEditorCTX = React.createContext<CardEditorContext>(defaultCardEditorContext);
-
 export default function CardEditor({
   card,
   variant,
@@ -235,43 +209,43 @@ export default function CardEditor({
   } else {
     const cardId = card.id;
     return (
-      <CardEditorCTX.Provider
-        value={{
-          selectedDocId,
-          setSelectedDocId,
-          editMode,
-          setEditMode,
-          editToolbar,
-          setEditToolbar,
-          TXToptions,
-        }}
-      >
-        <Flex direction="column" grow={1} align="stretch">
+      <Flex direction="column" grow={1} align="stretch">
+        <Flex
+          grow={1}
+          direction="row"
+          align="stretch"
+          className={css({ paddingBottom: space_S, height: '50vh' })}
+        >
           <Flex
             grow={1}
             direction="row"
+            justify="space-between"
             align="stretch"
-            className={css({ paddingBottom: space_S, height: '50vh' })}
+            className={cx(
+              cardStyle,
+              { [fullScreenStyle]: fullScreen === true },
+              css({
+                backgroundColor: 'white',
+                overflow: 'hidden',
+              }),
+            )}
           >
-            <Flex
-              grow={1}
-              direction="row"
-              justify="space-between"
-              align="stretch"
-              className={cx(
-                cardStyle,
-                { [fullScreenStyle]: fullScreen === true },
-                css({
-                  backgroundColor: 'white',
-                  overflow: 'hidden',
-                }),
-              )}
-            >
-              <ReflexContainer orientation={'vertical'}>
-                <ReflexElement
-                  className={'left-pane ' + css({ display: 'flex' })}
-                  resizeHeight={false}
-                  minSize={150}
+            <ReflexContainer orientation={'vertical'}>
+              <ReflexElement
+                className={'left-pane ' + css({ display: 'flex' })}
+                resizeHeight={false}
+                minSize={150}
+              >
+                <CardEditorCTX.Provider
+                  value={{
+                    selectedDocId,
+                    setSelectedDocId,
+                    editMode,
+                    setEditMode,
+                    editToolbar,
+                    setEditToolbar,
+                    TXToptions,
+                  }}
                 >
                   <Flex direction="column" grow={1} align="stretch">
                     <Flex
@@ -614,87 +588,83 @@ export default function CardEditor({
                       </OpenCloseModal>
                     </Flex>
                   </Flex>
-                </ReflexElement>
-                {openKey && <ReflexSplitter className={css({ zIndex: 0 })} />}
-                <ReflexElement
-                  className={'right-pane ' + css({ display: 'flex', minWidth: 'min-content' })}
-                  resizeHeight={false}
-                  maxSize={openKey ? undefined : 40}
-                >
-                  <SideCollapsiblePanel
-                    openKey={openKey}
-                    setOpenKey={setOpenKey}
-                    items={{
-                      resources: {
-                        icon: faPaperclip,
-                        nextToIconElement: (
-                          <div className={textSmall}>
-                            {' '}
-                            (<ResourceListNb context={resourceContext} />)
-                          </div>
-                        ),
-                        title: i18n.modules.resource.documentation,
-                        nextToTitleElement: (
-                          <Tips>
-                            {card.cardTypeId
-                              ? i18n.modules.resource.docDescriptionWithType
-                              : i18n.modules.resource.docDescription}
-                          </Tips>
-                        ),
-                        children: (
-                          <ResourcesMainView
-                            contextData={resourceContext}
-                            accessLevel={
-                              !readOnly && userAcl.write
-                                ? 'WRITE'
-                                : userAcl.read
-                                ? 'READ'
-                                : 'DENIED'
-                            }
-                          />
-                        ),
-                        className: css({ overflow: 'auto' }),
-                      },
-                      'Sticky Notes': {
-                        icon: faStickyNote,
-                        nextToIconElement: (
-                          <div className={textSmall}> ({stickyNotesForDest.length})</div>
-                        ),
-                        title: i18n.modules.stickyNotes.stickyNotes,
-                        nextToTitleElement: (
-                          <Tips>
-                            <h5>{i18n.modules.stickyNotes.listStickyNotes}</h5>
-                            <div>{i18n.modules.stickyNotes.snDescription}</div>
-                          </Tips>
-                        ),
-                        children: <StickyNoteWrapper destCardId={card.id} showSrc />,
-                        className: css({ overflow: 'auto' }),
-                      },
-                    }}
-                    direction="RIGHT"
-                    className={css({ flexGrow: 1 })}
-                  />
-                </ReflexElement>
-              </ReflexContainer>
-            </Flex>
+                </CardEditorCTX.Provider>
+              </ReflexElement>
+              {openKey && <ReflexSplitter className={css({ zIndex: 0 })} />}
+              <ReflexElement
+                className={'right-pane ' + css({ display: 'flex', minWidth: 'min-content' })}
+                resizeHeight={false}
+                maxSize={openKey ? undefined : 40}
+              >
+                <SideCollapsiblePanel
+                  openKey={openKey}
+                  setOpenKey={setOpenKey}
+                  items={{
+                    resources: {
+                      icon: faPaperclip,
+                      nextToIconElement: (
+                        <div className={textSmall}>
+                          {' '}
+                          (<ResourceListNb context={resourceContext} />)
+                        </div>
+                      ),
+                      title: i18n.modules.resource.documentation,
+                      nextToTitleElement: (
+                        <Tips>
+                          {card.cardTypeId
+                            ? i18n.modules.resource.docDescriptionWithType
+                            : i18n.modules.resource.docDescription}
+                        </Tips>
+                      ),
+                      children: (
+                        <ResourcesMainView
+                          contextData={resourceContext}
+                          accessLevel={
+                            !readOnly && userAcl.write ? 'WRITE' : userAcl.read ? 'READ' : 'DENIED'
+                          }
+                        />
+                      ),
+                      className: css({ overflow: 'auto' }),
+                    },
+                    'Sticky Notes': {
+                      icon: faStickyNote,
+                      nextToIconElement: (
+                        <div className={textSmall}> ({stickyNotesForDest.length})</div>
+                      ),
+                      title: i18n.modules.stickyNotes.stickyNotes,
+                      nextToTitleElement: (
+                        <Tips>
+                          <h5>{i18n.modules.stickyNotes.listStickyNotes}</h5>
+                          <div>{i18n.modules.stickyNotes.snDescription}</div>
+                        </Tips>
+                      ),
+                      children: <StickyNoteWrapper destCardId={card.id} showSrc />,
+                      className: css({ overflow: 'auto' }),
+                    },
+                  }}
+                  direction="RIGHT"
+                  className={css({ flexGrow: 1 })}
+                />
+              </ReflexElement>
+            </ReflexContainer>
           </Flex>
-          <VariantPager allowCreation={userAcl.write} card={card} current={variant} />
-          {showSubcards ? (
-            <Collapsible label={i18n.modules.card.subcards}>
-              <ContentSubs
-                depth={1}
-                cardContent={variant}
-                className={css({ alignItems: 'flex-start', overflow: 'auto', width: '100%' })}
-                subcardsContainerStyle={css({
-                  overflow: 'auto',
-                  width: '100%',
-                  flexWrap: 'nowrap',
-                })}
-              />
-            </Collapsible>
-          ) : null}
         </Flex>
-      </CardEditorCTX.Provider>
+        <VariantPager allowCreation={userAcl.write} card={card} current={variant} />
+        {showSubcards ? (
+          <Collapsible label={i18n.modules.card.subcards}>
+            <ContentSubs
+              depth={1}
+              cardContent={variant}
+              className={css({ alignItems: 'flex-start', overflow: 'auto', width: '100%' })}
+              subcardsContainerStyle={css({
+                overflow: 'auto',
+                width: '100%',
+                flexWrap: 'nowrap',
+              })}
+            />
+          </Collapsible>
+        ) : null}
+      </Flex>
     );
   }
 }

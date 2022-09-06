@@ -33,7 +33,6 @@ import Flex from '../common/layout/Flex';
 import { DocumentOwnership } from '../documents/documentCommonType';
 import DocumentCreatorButton from '../documents/DocumentCreatorButton';
 import { lightIconButtonStyle, space_M, space_S } from '../styling/style';
-import { CardEditorCTX } from './CardEditor';
 
 const toolboxContainerStyle = css({
   height: 'auto',
@@ -71,6 +70,33 @@ interface CardEditorToolboxProps {
   docOwnership: DocumentOwnership;
   //prefixElement?: React.ReactNode;
 }
+
+interface TXToptionsType {
+  showTree: boolean;
+  setShowTree: React.Dispatch<React.SetStateAction<boolean>>;
+  markDownMode: boolean;
+  setMarkDownMode: React.Dispatch<React.SetStateAction<boolean>>;
+}
+
+interface CardEditorContext {
+  selectedDocId?: number | null;
+  setSelectedDocId: (id: number | undefined | null) => void;
+  editMode: boolean;
+  setEditMode: (editMode: boolean) => void;
+  TXToptions?: TXToptionsType;
+  editToolbar: JSX.Element;
+  setEditToolbar: React.Dispatch<React.SetStateAction<JSX.Element>>;
+}
+
+export const defaultCardEditorContext: CardEditorContext = {
+  setSelectedDocId: () => {},
+  editMode: false,
+  setEditMode: () => {},
+  editToolbar: <></>,
+  setEditToolbar: () => {},
+};
+
+export const CardEditorCTX = React.createContext<CardEditorContext>(defaultCardEditorContext);
 
 export default function CardEditorToolbox({
   open,

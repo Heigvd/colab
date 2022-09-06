@@ -21,7 +21,7 @@ import { uniq } from 'lodash';
 import * as React from 'react';
 import * as LiveHelper from '../../../LiveHelper';
 import { getLogger } from '../../../logger';
-import { CardEditorCTX } from '../../cards/CardEditor';
+import { CardEditorCTX } from '../../cards/CardEditorToolbox';
 import DropDownMenu, { Entry } from '../../common/layout/DropDownMenu';
 import Flex from '../../common/layout/Flex';
 import { borderRadius, lightIconButtonStyle, space_S } from '../../styling/style';

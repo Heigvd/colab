@@ -12,7 +12,7 @@ import { useLastInsertedDocId } from '../../selectors/documentSelector';
 import * as DocumentActions from '../../store/documentSlice';
 import { useAppDispatch } from '../../store/hooks';
 import { BlockEditorWrapper } from '../blocks/BlockEditorWrapper';
-import { CardEditorCTX } from '../cards/CardEditor';
+import { CardEditorCTX } from '../cards/CardEditorToolbox';
 import OpenGraphLink from '../common/element/OpenGraphLink';
 import Flex from '../common/layout/Flex';
 import { editableBlockStyle } from '../styling/style';

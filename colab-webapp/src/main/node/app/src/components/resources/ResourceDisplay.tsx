@@ -21,7 +21,10 @@ import { updateDocumentText } from '../../API/api';
 import useTranslations from '../../i18n/I18nContext';
 import { useAndLoadTextOfDocument } from '../../selectors/documentSelector';
 import { useAppDispatch } from '../../store/hooks';
-import CardEditorToolbox from '../cards/CardEditorToolbox';
+import CardEditorToolbox, {
+  CardEditorCTX,
+  defaultCardEditorContext,
+} from '../cards/CardEditorToolbox';
 import IconButton from '../common/element/IconButton';
 import { DiscreetInput, DiscreetTextArea } from '../common/element/Input';
 import DropDownMenu, { modalEntryStyle } from '../common/layout/DropDownMenu';
@@ -54,6 +57,19 @@ export function ResourceDisplay({
 }: ResourceDisplayProps): JSX.Element {
   const dispatch = useAppDispatch();
   const i18n = useTranslations();
+
+  const [selectedDocId, setSelectedDocId] = React.useState<number | undefined | null>(undefined);
+  const [editMode, setEditMode] = React.useState(defaultCardEditorContext.editMode);
+  const [showTree, setShowTree] = React.useState(false);
+  const [markDownMode, setMarkDownMode] = React.useState(false);
+  const [editToolbar, setEditToolbar] = React.useState(defaultCardEditorContext.editToolbar);
+
+  const TXToptions = {
+    showTree: showTree,
+    setShowTree: setShowTree,
+    markDownMode: markDownMode,
+    setMarkDownMode: setMarkDownMode,
+  };
 
   const [showTeaser, setShowTeaser] = React.useState(false);
   const [openToolbox, setOpenToolbox] = React.useState(true);
@@ -199,7 +215,17 @@ export function ResourceDisplay({
       </Flex>
 
       {targetResource.id && (
-        <>
+        <CardEditorCTX.Provider
+          value={{
+            selectedDocId,
+            setSelectedDocId,
+            editMode,
+            setEditMode,
+            editToolbar,
+            setEditToolbar,
+            TXToptions,
+          }}
+        >
           {!effectiveReadOnly && (
             <CardEditorToolbox
               open={openToolbox}
@@ -212,7 +238,7 @@ export function ResourceDisplay({
               allowEdition={!effectiveReadOnly}
             />
           </div>
-        </>
+        </CardEditorCTX.Provider>
       )}
     </Flex>
   );
