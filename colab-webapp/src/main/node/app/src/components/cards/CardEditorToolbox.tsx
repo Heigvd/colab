@@ -77,7 +77,7 @@ export default function CardEditorToolbox({
   docOwnership,
 }: //prefixElement,
 CardEditorToolboxProps): JSX.Element {
-  const { setSelectedDocId, selectedDocId, selectedOwnKind, setEditMode, TXToptions, editToolbar } =
+  const { setSelectedDocId, selectedDocId, setEditMode, TXToptions, editToolbar } =
     React.useContext(CardEditorCTX);
   const showTree = TXToptions?.showTree || false;
   const dispatch = useAppDispatch();
@@ -125,11 +125,11 @@ CardEditorToolboxProps): JSX.Element {
         docOwnership={docOwnership}
         selectedBlockId={selectedDocument?.id ?? null}
       />
-      {selectedDocument != (undefined || null) && docOwnership.kind === selectedOwnKind && (
+      {selectedDocument != (undefined || null) && (
         <>
           {isText && (
             <>
-              {editToolbar}
+              {!TXToptions?.markDownMode && editToolbar}
               <IconButton
                 icon={faCode}
                 title={i18n.modules.content.mdMode}

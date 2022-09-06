@@ -54,7 +54,7 @@ export default function DocumentEditor({
 
   const dropRef = React.useRef<HTMLDivElement>(null);
 
-  const { setSelectedDocId, selectedDocId, setSelectedOwnKind, editMode, setEditMode, TXToptions } =
+  const { setSelectedDocId, selectedDocId, editMode, setEditMode, TXToptions } =
     React.useContext(CardEditorCTX);
 
   const selected = doc.id === selectedDocId;
@@ -65,8 +65,7 @@ export default function DocumentEditor({
       setEditMode(false);
     }
     setSelectedDocId(doc.id);
-    setSelectedOwnKind(docOwnership.kind);
-  }, [doc.id, docOwnership.kind, selectedDocId, setEditMode, setSelectedDocId, setSelectedOwnKind]);
+  }, [doc.id, selectedDocId, setEditMode, setSelectedDocId]);
 
   React.useEffect(() => {
     if (lastInsertedDocId === doc.id) {
@@ -88,7 +87,7 @@ export default function DocumentEditor({
             justifyContent: 'space-between',
             flexGrow: 1,
             padding: 0,
-            maxWidth: "21cm",
+            maxWidth: '21cm',
           }),
           { [selectedStyle]: selected && !isTextDataBlock },
           { [noBorderStyle]: isTextDataBlock },

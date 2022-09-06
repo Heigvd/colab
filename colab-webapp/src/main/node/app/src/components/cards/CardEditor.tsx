@@ -153,10 +153,6 @@ interface TXToptionsType {
 interface CardEditorContext {
   selectedDocId?: number | null;
   setSelectedDocId: (id: number | undefined | null) => void;
-  selectedOwnKind?: 'DeliverableOfCardContent' | 'PartOfResource';
-  setSelectedOwnKind: React.Dispatch<
-    React.SetStateAction<'DeliverableOfCardContent' | 'PartOfResource' | undefined>
-  >;
   editMode: boolean;
   setEditMode: (editMode: boolean) => void;
   TXToptions?: TXToptionsType;
@@ -166,7 +162,6 @@ interface CardEditorContext {
 
 const defaultCardEditorContext: CardEditorContext = {
   setSelectedDocId: () => {},
-  setSelectedOwnKind: () => {},
   editMode: false,
   setEditMode: () => {},
   editToolbar: <></>,
@@ -198,9 +193,6 @@ export default function CardEditor({
   const [fullScreen, setFullScreen] = React.useState(false);
   const [openToolbox, setOpenToolbox] = React.useState(true);
   const [selectedDocId, setSelectedDocId] = React.useState<number | undefined | null>(undefined);
-  const [selectedOwnKind, setSelectedOwnKind] = React.useState<
-    'DeliverableOfCardContent' | 'PartOfResource' | undefined
-  >(undefined);
   const [editMode, setEditMode] = React.useState(defaultCardEditorContext.editMode);
   const [showTree, setShowTree] = React.useState(false);
   const [markDownMode, setMarkDownMode] = React.useState(false);
@@ -247,8 +239,6 @@ export default function CardEditor({
         value={{
           selectedDocId,
           setSelectedDocId,
-          selectedOwnKind,
-          setSelectedOwnKind,
           editMode,
           setEditMode,
           editToolbar,
