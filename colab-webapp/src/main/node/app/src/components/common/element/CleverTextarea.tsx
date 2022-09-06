@@ -54,7 +54,7 @@ export default function CleverTextarea({
   // use a ref to manage the input directly
   const inputRef = React.useRef<HTMLTextAreaElement>(null);
 
-  React.useEffect(() => {
+  React.useLayoutEffect(() => {
     const ta = inputRef.current;
     if (ta != null) {
       if (ta.value !== value) {

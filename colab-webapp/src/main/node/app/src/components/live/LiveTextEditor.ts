@@ -204,7 +204,7 @@ export function useLiveBlock({atClass, atId, value, revision}: Props): LiveBlock
       1000,
       {trailing: true},
     );
-  }, [valueRef, liveSession, atClass, atId, dispatch]);
+  }, [liveSession, atClass, atId, dispatch]);
 
   const onChange = React.useCallback(
     (value: string) => {
