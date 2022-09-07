@@ -47,6 +47,18 @@ export const useProject = (id: number): UsedProject => {
   }, shallowEqual);
 };
 
+export function useAndLoadProject(id: number): UsedProject {
+  const dispatch = useAppDispatch();
+
+  const { project, status } = useProject(id);
+
+  if (status === 'NOT_INITIALIZED') {
+    dispatch(API.getProject(id));
+  }
+
+  return { project, status };
+}
+
 export const useProjectBeingEdited = (): {
   project: Project | null;
   status: 'NOT_EDITING' | 'LOADING' | 'READY';
