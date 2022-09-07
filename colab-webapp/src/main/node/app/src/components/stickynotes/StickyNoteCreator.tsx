@@ -140,6 +140,7 @@ export default function StickyNoteCreator({
                     mimeType: 'text/markdown',
                     textData: e.explanation,
                     revision: '0',
+                    healthy: true,
                   },
                   destinationCardId: destCardId,
                 }),

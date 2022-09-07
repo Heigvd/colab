@@ -232,14 +232,15 @@ public class LiveManager implements Serializable {
                         this.deletePendingChangesAndPropagate(blockId);
                     } catch (RuntimeException ex) {
                         logger.error("Process failed", ex);
-                        throw ex;
+                        block.setHealthy(false);
                     } catch (ColabMergeException ex) {
                         logger.error("Fails to save block", ex);
+                        block.setHealthy(false);
+                    } catch (StackOverflowError error) {
+                        logger.error("StackOverflowError");
+                        block.setHealthy(false);
                     }
                 }
-            } catch (StackOverflowError error) {
-                logger.error("StackOverflowError");
-                throw error;
             } finally {
                 this.unlock(blockId);
             }
@@ -258,6 +259,7 @@ public class LiveManager implements Serializable {
         if (block != null) {
             List<Change> changes = getPendingChanges(id);
             cache.remove(id);
+            block.setHealthy(true);
 
             transactionManager.registerDeletion(changes);
 //            WsDeleteChangeMessage message = WsDeleteChangeMessage.build(changes);

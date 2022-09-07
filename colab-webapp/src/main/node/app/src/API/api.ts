@@ -358,7 +358,6 @@ export const getRootCardOfProject = createAsyncThunk<Card, number>(
   },
 );
 
-
 export const reconnectToProjectChannel = createAsyncThunk(
   'project/reconnect',
   async (project: Project, thunkApi) => {
@@ -376,8 +375,6 @@ export const reconnectToProjectChannel = createAsyncThunk(
     return project;
   },
 );
-
-
 
 export const startProjectEdition = createAsyncThunk(
   'project/startEditing',
@@ -747,6 +744,7 @@ export const createSubCardWithTextDataBlock = createAsyncThunk(
       const firstDeliverable: TextDataBlock = {
         '@class': 'TextDataBlock',
         mimeType: 'text/markdown',
+        healthy: true,
         revision: '0',
       };
 
@@ -818,6 +816,7 @@ export const createCardContentVariantWithBlockDoc = createAsyncThunk(
       '@class': 'TextDataBlock',
       mimeType: 'text/markdown',
       revision: '0',
+      healthy: true,
     };
     return await restClient.CardContentRestEndpoint.createNewCardContentWithDeliverable(
       cardId,
@@ -1156,27 +1155,26 @@ export const moveDocumentDown = createAsyncThunk('document/moveDown', async (doc
   return await restClient.DocumentRestEndpoint.moveDocumentDown(docId);
 });
 
-function makeNewDocument(docKind: DocumentKind) {
-  let document = null;
+function makeNewDocument(docKind: DocumentKind): Document {
   if (docKind == 'DocumentFile') {
-    document = {
+    return {
       '@class': docKind,
       fileSize: 0,
       mimeType: 'application/octet-stream',
     };
   } else if (docKind == 'TextDataBlock') {
-    document = {
+    return {
       '@class': docKind,
       mimeType: 'text/markdown',
+      healthy: true,
       revision: '0',
     };
-  } else {
-    document = {
+  } else if (docKind == 'ExternalLink') {
+    return {
       '@class': docKind,
     };
   }
-
-  return document;
+  throw new Error('Unreachable code');
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////

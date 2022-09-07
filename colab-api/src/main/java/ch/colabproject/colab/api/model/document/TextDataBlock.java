@@ -21,6 +21,7 @@ import javax.persistence.FetchType;
 import javax.persistence.Lob;
 import javax.persistence.OneToOne;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 /**
@@ -37,7 +38,6 @@ public class TextDataBlock extends Document {
     // ---------------------------------------------------------------------------------------------
     // fields
     // ---------------------------------------------------------------------------------------------
-
     /**
      * The mime type of the information
      */
@@ -56,6 +56,13 @@ public class TextDataBlock extends Document {
     @NotBlank
     @Size(max = 255)
     private String revision = "0";
+
+    /**
+     * is the current live block healthy? To heal an un-healthy block, pending changes must be
+     * deleted.
+     */
+    @NotNull
+    private boolean healthy = true;
 
     /**
      * The card type it is the purpose of
@@ -175,10 +182,27 @@ public class TextDataBlock extends Document {
         this.explainingStickyNoteLink = stickyNoteLink;
     }
 
+    /**
+     * Is the block healthy?
+     *
+     * @return true if the block is healthy
+     */
+    public boolean isHealthy() {
+        return healthy;
+    }
+
+    /**
+     * Set the block health status
+     *
+     * @param healthy true is the block is healthy
+     */
+    public void setHealthy(boolean healthy) {
+        this.healthy = healthy;
+    }
+
     // ---------------------------------------------------------------------------------------------
     // concerning the whole class
     // ---------------------------------------------------------------------------------------------
-
     @Override
     public void merge(ColabEntity other) throws ColabMergeException {
         super.merge(other);
@@ -188,6 +212,7 @@ public class TextDataBlock extends Document {
             this.setMimeType(o.getMimeType());
             this.setTextData(o.getTextData());
             // Note : the revision is handled by the LiveManager
+            // Note : healthy is handled by the LiveManager
         } else {
             throw new ColabMergeException(this, other);
         }
@@ -248,7 +273,6 @@ public class TextDataBlock extends Document {
     }
 
 // TODO sandra work in progress - ACL on text data blocks
-
 //    @Override
 //    @JsonbTransient
 //    public Conditions.Condition getReadCondition() {
@@ -295,7 +319,6 @@ public class TextDataBlock extends Document {
 //            return Conditions.defaultForOrphan;
 //        }
 //    }
-
     @Override
     public int hashCode() {
         return EntityHelper.hashCode(this);

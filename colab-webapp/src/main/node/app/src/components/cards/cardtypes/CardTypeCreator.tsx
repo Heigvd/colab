@@ -87,6 +87,7 @@ export default function CardTypeCreator({ onCreated, usage }: CardTypeCreatorPro
             mimeType: 'text/markdown',
             textData: typeToCreate.purpose,
             revision: '0',
+            healthy: true,
           },
         }),
       ).then(action => {
