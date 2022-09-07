@@ -5,6 +5,8 @@
  * Licensed under the MIT License
  */
 import { css, cx } from '@emotion/css';
+import { faSkullCrossbones } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import * as React from 'react';
 import { Navigate, Route, Routes, useLocation, useParams } from 'react-router-dom';
 import * as API from '../API/api';
@@ -57,15 +59,20 @@ const EditorWrapper = () => {
 
 
   React.useEffect(() => {
-    if (project === undefined && status === 'NOT_INITIALIZED') {
-      dispatch(API.getUserProjects());
+    if (project == null && status === 'NOT_INITIALIZED') {
+      dispatch(API.getProject(id));
     }
-  }, [project, status, dispatch]);
+  }, [project, status, dispatch, id]);
 
-  if (project === undefined) {
+  if (status === 'NOT_INITIALIZED' || status === 'LOADING') {
     return <InlineLoading />;
-  } else if (project == null) {
-    return <div>There is no project yet</div>;
+  } else if (project == null || status === 'ERROR') {
+    return (
+      <div>
+        <FontAwesomeIcon icon={faSkullCrossbones} />
+        <span>There is no project yet</span>
+      </div>
+    );
   } else {
     if (editingStatus === 'NOT_EDITING' || (editedProject != null && editedProject.id !== +id)) {
       return <InlineLoading />;

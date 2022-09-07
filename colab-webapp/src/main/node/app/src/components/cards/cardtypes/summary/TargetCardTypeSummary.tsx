@@ -9,9 +9,10 @@ import { css } from '@emotion/css';
 import { IconName } from '@fortawesome/fontawesome-svg-core';
 import { faCircleDot } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { entityIs } from 'colab-rest-client';
 import * as React from 'react';
 import useTranslations from '../../../../i18n/I18nContext';
-import { useProject } from '../../../../selectors/projectSelector';
+import { useAndLoadProject } from '../../../../selectors/projectSelector';
 import { CardTypeAllInOne as CardType } from '../../../../types/cardTypeDefinition';
 import { space_S } from '../../../styling/style';
 
@@ -52,7 +53,7 @@ interface TargetProjectSummaryProps {
 }
 
 function TargetProjectSummary({ projectId }: TargetProjectSummaryProps): JSX.Element {
-  const { project, status } = useProject(projectId);
+  const { project } = useAndLoadProject(projectId);
   const i18n = useTranslations();
 
   return (
@@ -68,7 +69,7 @@ function TargetProjectSummary({ projectId }: TargetProjectSummaryProps): JSX.Ele
       className={targetProjectIconStyle}
       color={project?.illustration ? project.illustration.iconBkgdColor : 'var(--lightGray)'}
       title={
-        status === 'INITIALIZED' && project?.name
+        entityIs(project, 'Project') && project?.name
           ? i18n.modules.cardType.info.fromProject(project.name)
           : i18n.modules.cardType.info.fromAProject
       }
