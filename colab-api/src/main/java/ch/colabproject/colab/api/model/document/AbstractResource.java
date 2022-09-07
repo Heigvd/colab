@@ -423,6 +423,16 @@ public abstract class AbstractResource
         }
     }
 
+    @Override
+    public void duplicate(ColabEntity other) throws ColabMergeException {
+        if (other instanceof AbstractResource) {
+            AbstractResource o = (AbstractResource) other;
+            this.setCategory(o.getCategory());
+        } else {
+            throw new ColabMergeException(this, other);
+        }
+    }
+
     /**
      * Get the project this content belongs to
      *
