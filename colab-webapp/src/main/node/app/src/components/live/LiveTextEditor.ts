@@ -5,14 +5,14 @@
  * Licensed under the MIT License
  */
 
-import {Change, entityIs, TextDataBlock} from 'colab-rest-client';
-import {throttle} from 'lodash';
+import { Change, entityIs, TextDataBlock } from 'colab-rest-client';
+import { throttle } from 'lodash';
 import * as React from 'react';
 import * as API from '../../API/api';
 import * as LiveHelper from '../../LiveHelper';
-import {getLogger} from '../../logger';
-import {useChanges} from '../../selectors/changeSelector';
-import {useAppDispatch, useAppSelector} from '../../store/hooks';
+import { getLogger } from '../../logger';
+import { useChanges } from '../../selectors/changeSelector';
+import { useAppDispatch, useAppSelector } from '../../store/hooks';
 
 //import {ToastClsMarkdownEditor} from '../blocks/markdown/ToastClsMarkdownEditor';
 
@@ -39,11 +39,15 @@ function applyChanges(value: string, revision: string, changes: Change[]) {
   }
 }
 
-function findCounterValue(liveSession: string, changes: Change[]): number {
+function findCounterValue(initialRevision: string, liveSession: string, changes: Change[]): number {
+  let minChange = 0;
+  if (initialRevision.startsWith(liveSession)) {
+    minChange = +initialRevision.replace(liveSession + '::', '');
+  }
   return changes
     .filter(ch => ch.liveSession === liveSession)
     .map(ch => +ch.revision.replace(liveSession + '::', ''))
-    .reduce((max, current) => (current > max ? current : max), 0);
+    .reduce((max, current) => (current > max ? current : max), minChange);
 }
 
 //                                  socketId    channelId count
@@ -60,7 +64,7 @@ export function useBlock(blockId: number | null | undefined): TextDataBlock | nu
   React.useEffect(() => {
     if (blockId != null && webSocketId != null) {
       const channelId = `block_${blockId}`;
-      const currentChannels = subscriptionCounters[webSocketId] || {}
+      const currentChannels = subscriptionCounters[webSocketId] || {};
       subscriptionCounters[webSocketId] = currentChannels;
 
       const count = currentChannels[channelId] || 0;
@@ -110,7 +114,7 @@ export function useBlock(blockId: number | null | undefined): TextDataBlock | nu
   });
 }
 
-export function useLiveBlock({atClass, atId, value, revision}: Props): LiveBlockState {
+export function useLiveBlock({ atClass, atId, value, revision }: Props): LiveBlockState {
   const liveSession = useAppSelector(state => state.websockets.sessionId);
   const changesState = useChanges(atClass, atId);
   const dispatch = useAppDispatch();
@@ -198,11 +202,11 @@ export function useLiveBlock({atClass, atId, value, revision}: Props): LiveBlock
 
           logger.trace('Send change', change);
           //onChange(change);
-          dispatch(API.patchBlock({id: atId, change: change}));
+          dispatch(API.patchBlock({ id: atId, change: change }));
         }
       },
       1000,
-      {trailing: true},
+      { trailing: true },
     );
   }, [liveSession, atClass, atId, dispatch]);
 
@@ -218,7 +222,7 @@ export function useLiveBlock({atClass, atId, value, revision}: Props): LiveBlock
   /* make sure to set myCounter to a correct value*/
   React.useEffect(() => {
     if (liveSession != null && valueRef.current.revCounter === 0) {
-      const counter = findCounterValue(liveSession, changes);
+      const counter = findCounterValue(valueRef.current.initialRevision, liveSession, changes);
       valueRef.current.revCounter = counter;
     }
   }, [changes, liveSession]);

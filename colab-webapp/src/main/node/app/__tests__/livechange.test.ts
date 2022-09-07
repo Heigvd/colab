@@ -313,44 +313,42 @@ test('TestConflict', () => {
   expect(newValue.value).toBe('apple blilueberry carrot');
 });
 
-
-test("SadAndBeautiful", () => {
-  const session1 = "s1";
-  const session2 = "s2";
-  const initialValue = "Hello, world!";
+test('SadAndBeautiful', () => {
+  const session1 = 's1';
+  const session2 = 's2';
+  const initialValue = 'Hello, world!';
 
   const changes: Change[] = [
-    createChange(session1, ["0"], "s1-1", ins(5, " hello")),
+    createChange(session1, ['0'], 's1-1', ins(5, ' hello')),
 
-    createChange(session2, ["0"], "s2-1", del(12, 1)),
-    createChange(session2, ["s2-1"], "s2-2", ins(7, "and beautiful ")),
-    createChange(session2, ["s2-2"], "s2-3", ins(0, "It is a sad"), del(2, 4)),
-    createChange(session2, ["s2-3"], "s2-4", del(11, 2)),
-    createChange(session2, ["s2-4", "s1-1"], "s2-5", del(11, 6)),
+    createChange(session2, ['0'], 's2-1', del(12, 1)),
+    createChange(session2, ['s2-1'], 's2-2', ins(7, 'and beautiful ')),
+    createChange(session2, ['s2-2'], 's2-3', ins(0, 'It is a sad'), del(2, 4)),
+    createChange(session2, ['s2-3'], 's2-4', del(11, 2)),
+    createChange(session2, ['s2-4', 's1-1'], 's2-5', del(11, 6)),
   ];
 
   const newValue = LiveHelper.process(initialValue, '0', changes);
 
-  expect(newValue.value).toBe("It is a sad and beautiful world");
+  expect(newValue.value).toBe('It is a sad and beautiful world');
 });
 
-
-test("SadAndBeautifulII", () => {
-  const session1 = "s1";
-  const session2 = "s2";
-  const initialValue = "Hello, world!";
+test('SadAndBeautifulII', () => {
+  const session1 = 's1';
+  const session2 = 's2';
+  const initialValue = 'Hello, world!';
 
   const changes: Change[] = [
-    createChange(session1, ["0"], "s1-1", ins(5, " hello"), ins(7, "beautiful ")),
+    createChange(session1, ['0'], 's1-1', ins(5, ' hello'), ins(7, 'beautiful ')),
 
-    createChange(session2, ["0"], "s2-1", del(12, 1)),
-    createChange(session2, ["s2-1"], "s2-2", ins(7, "and beautiful ")),
-    createChange(session2, ["s2-2"], "s2-3", ins(0, "It is a sad"), del(2, 4)),
-    createChange(session2, ["s2-3"], "s2-4", del(11, 2)),
-    createChange(session2, ["s2-4", "s1-1"], "s2-5", del(11, 6)),
+    createChange(session2, ['0'], 's2-1', del(12, 1)),
+    createChange(session2, ['s2-1'], 's2-2', ins(7, 'and beautiful ')),
+    createChange(session2, ['s2-2'], 's2-3', ins(0, 'It is a sad'), del(2, 4)),
+    createChange(session2, ['s2-3'], 's2-4', del(11, 2)),
+    createChange(session2, ['s2-4', 's1-1'], 's2-5', del(11, 6)),
   ];
 
   const newValue = LiveHelper.process(initialValue, '0', changes);
 
-  expect(newValue.value).toBe("It is a sad beautiful and beautiful world");
+  expect(newValue.value).toBe('It is a sad beautiful and beautiful world');
 });

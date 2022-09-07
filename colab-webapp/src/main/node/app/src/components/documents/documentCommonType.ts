@@ -5,10 +5,12 @@
  * Licensed under the MIT License
  */
 
+import { Document } from 'colab-rest-client';
+
 /** a document is owned either by a deliverable of a card content or by a resource */
 export type DocumentOwnership = {
   kind: 'DeliverableOfCardContent' | 'PartOfResource';
   ownerId: number;
 };
 
-export type DocumentKind = 'TextDataBlock' | 'ExternalLink' | 'DocumentFile';
+export type DocumentKind = Document['@class'];

@@ -624,6 +624,20 @@ export default function WysiwygEditor({
     if (selection?.anchorNode != null && divRef.current) {
       if (divRef.current.contains(selection.anchorNode)) {
         if (selection.type === 'Caret') {
+          if (
+            selection.anchorNode instanceof Text &&
+            selection.anchorNode.parentElement === divRef.current
+          ) {
+            // HACK: <div>TEXT</div> case => create <div><p>TEXT</p></div>
+            const offset = selection.anchorOffset;
+            const textNode = selection.anchorNode;
+
+            const p = document.createElement('P');
+            divRef.current.insertBefore(p, textNode);
+            p.append(textNode);
+            selection.setPosition(textNode, offset);
+          }
+
           const current = boundedClosest(selection.anchorNode!, majorTags, divRef.current);
           if (current && current != divRef.current) {
             majorNodes.push(current);

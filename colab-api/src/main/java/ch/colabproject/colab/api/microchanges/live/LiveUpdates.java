@@ -20,6 +20,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
+import org.apache.commons.text.StringEscapeUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -221,45 +222,41 @@ public class LiveUpdates implements Serializable {
 
         offsets.put(index, currentOffset);
 
-        /*
-
-
-        logger.trace("  modOffset.second " + offsets);
-
-        Map<Integer, Integer> modified = new HashMap<>();
-
-        // shift offsets after current index
-        offsets.entrySet().forEach(entry -> {
-            Integer key = entry.getKey();
-            if (key > index && key < index + value) {
-                logger.trace("CONFLIT");
-            }
-            if (key > index) {
-                // move offset to new index
-                Integer v = entry.getValue();
-                if (v != null) {
-                    int newKey = key + value;
-                    int newValue = v;
-                    if (offsets.containsKey(newKey)) {
-                        newValue = offsets.get(newKey) + newValue;
-                    }
-                    modified.put(key, 0);
-                    modified.put(newKey, newValue);
-                }
-            }
-        });
-
-        logger.trace("  modOffset.third " + modified);
-
-        // merge shifted offsets
-        modified.entrySet().forEach(entry -> {
-            Integer key = entry.getKey();
-            int current = entry.getValue();
-            offsets.put(key, current);
-        });
-
-        logger.trace(" mod Offsets.done " + offsets);
-        */
+//        logger.trace("  modOffset.second " + offsets);
+//
+//        Map<Integer, Integer> modified = new HashMap<>();
+//
+//        // shift offsets after current index
+//        offsets.entrySet().forEach(entry -> {
+//            Integer key = entry.getKey();
+//            if (key > index && key < index + value) {
+//                logger.trace("CONFLIT");
+//            }
+//            if (key > index) {
+//                // move offset to new index
+//                Integer v = entry.getValue();
+//                if (v != null) {
+//                    int newKey = key + value;
+//                    int newValue = v;
+//                    if (offsets.containsKey(newKey)) {
+//                        newValue = offsets.get(newKey) + newValue;
+//                    }
+//                    modified.put(key, 0);
+//                    modified.put(newKey, newValue);
+//                }
+//            }
+//        });
+//
+//        logger.trace("  modOffset.third " + modified);
+//
+//        // merge shifted offsets
+//        modified.entrySet().forEach(entry -> {
+//            Integer key = entry.getKey();
+//            int current = entry.getValue();
+//            offsets.put(key, current);
+//        });
+//
+//        logger.trace(" mod Offsets.done " + offsets);
     }
 
     /**
@@ -743,23 +740,33 @@ public class LiveUpdates implements Serializable {
     }
 
     /**
-     * BUidl log message
+     * Build log message that can be easily used to reproduces the process in a test
      */
     public void initDebugData() {
 
         StringBuilder sb = new StringBuilder();
-        sb.append("Content @ ").append(this.revision)
-            .append((System.lineSeparator()))
-            .append(content)
-            .append((System.lineSeparator()))
-            .append((System.lineSeparator()))
-            .append("Changes: [");
+        sb.append("test('A Test', () => {")
+            .append(System.lineSeparator())
+            .append("const initialValue = \"")
+            .append(StringEscapeUtils.escapeEcmaScript(this.content))
+            .append("\";").append(System.lineSeparator())
+            .append("const initialRevision = \"")
+            .append(StringEscapeUtils.escapeEcmaScript(this.revision))
+            .append("\";").append(System.lineSeparator())
+            .append(System.lineSeparator())
+            .append(System.lineSeparator())
+            .append("const changes =[")
+            .append(System.lineSeparator());
 
         this.pendingChanges.forEach(change -> {
-            sb.append(change.toString());
+            sb.append(change.toDebugStatement()).append(", ").append(System.lineSeparator());
         });
 
-        sb.append(']');
+        sb.append("];").append(System.lineSeparator())
+            .append(System.lineSeparator())
+            .append("const newValue = LiveHelper.process(initialValue, initialRevision, changes);")
+            .append(System.lineSeparator())
+            .append("});");
 
         this.debugData = sb.toString();
     }

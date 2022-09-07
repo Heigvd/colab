@@ -396,6 +396,10 @@ export function areAllLeafsWrappedByTag(
         } else if (current.textContent) {
           // current leaf not inside expected tag
           return { type: 'NO' };
+        } else if (current === end.node) {
+          current = undefined;
+        } else {
+          current = findNextLeaf(current, rootNode);
         }
       }
       // all leaves stands in expected tags

@@ -49,6 +49,7 @@ export function BlockEditorWrapper({
               allowEdition={allowEdition}
               atClass={block['@class']}
               atId={blockId}
+              healthy={block.healthy}
               value={block.textData || ''}
               revision={block.revision}
               editingStatus={editingStatus}

@@ -227,6 +227,7 @@ export const en = {
     card: {
       card: 'Card',
       variant: 'Variant',
+      subcardTooltip: (name: string) => `Subcard: ${name}`,
       subcards: 'Subcards',
       untitled: 'New card',
       createCard: 'Create card',
