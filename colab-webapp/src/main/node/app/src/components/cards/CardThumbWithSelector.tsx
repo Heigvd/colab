@@ -11,19 +11,21 @@ import CardThumb from './CardThumb';
 import VariantSelector from './VariantSelector';
 
 interface CardThumbWithSelectorProps {
+  className?: string;
   card: Card;
   depth?: number;
 }
 
 export default function CardThumbWithSelector({
   card,
+  className,
   depth = 1,
 }: CardThumbWithSelectorProps): JSX.Element {
   if (card.id == null) {
     return <i>Card without id is invalid...</i>;
   } else {
     return (
-      <VariantSelector card={card}>
+      <VariantSelector className={className} card={card}>
         {(variant, list) => (
           <>
             <CardThumb

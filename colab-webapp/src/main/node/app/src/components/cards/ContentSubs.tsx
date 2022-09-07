@@ -7,7 +7,7 @@
 
 import { css, cx } from '@emotion/css';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
-import { Card, CardContent } from 'colab-rest-client';
+import { CardContent } from 'colab-rest-client';
 import * as React from 'react';
 import { useLocation } from 'react-router-dom';
 import useTranslations from '../../i18n/I18nContext';
@@ -18,6 +18,7 @@ import Flex from '../common/layout/Flex';
 import { depthMax } from '../projects/edition/Editor';
 import { fixedButtonStyle, voidStyle } from '../styling/style';
 import CardCreator from './CardCreator';
+import { TinyCard } from './CardThumb';
 import CardThumbWithSelector from './CardThumbWithSelector';
 
 // TODO : nice className for div for empty slot (blank card)
@@ -51,51 +52,27 @@ const flexWrap = css({
   justifyItems: 'stretch', 
   alignItems: 'stretch'}); */
 
-export function gridCardsStyle(depth: number, inRootView: boolean) {
-  if (inRootView) {
-    if (depth === 1) {
-      return css`
-        display: grid;
-        grid-template-columns: repeat(3, minmax(min-content, 1fr));
-        justify-content: stretch;
-        align-content: stretch;
-        justify-items: stretch;
-        align-items: stretch;
-      `;
-    }
-    if (depth === 0) {
-      return css`
-        display: grid;
-        grid-template-columns: repeat(2, minmax(min-content, 1fr));
-        justify-content: stretch;
-        align-content: stretch;
-        justify-items: stretch;
-        align-items: stretch;
-      `;
-    }
-  } else {
-    if (depth === 2) {
-      return css`
-        flex-grow: 1;
-      `;
-    }
-    if (depth === 1) {
-      return css`
-        display: grid;
-        grid-template-columns: repeat(3, minmax(min-content, 1fr));
-        justify-content: stretch;
-        align-content: stretch;
-        justify-items: stretch;
-        align-items: stretch;
-      `;
-    }
-    if (depth === 0) {
-      return css`
-        width: auto;
-        flex-grow: 1;
-      `;
-    }
-  }
+function gridPosFromIndex(index: number): { row: number; column: number } {
+  return {
+    row: Math.ceil(index / 3),
+    column: ((index - 1) % 3) + 1,
+  };
+}
+
+interface MaxSize {
+  maxColumn: number;
+  maxRow: number;
+}
+
+export function gridCardsStyle(max: MaxSize) {
+  return css({
+    display: 'grid',
+    gridTemplateColumns: `repeat(${max.maxColumn}, 1fr)`,
+    justifyContent: 'strech',
+    alignContent: 'stretch',
+    justifyItems: 'stretch',
+    alignItems: 'stretch',
+  });
 }
 
 // Display sub cards of a parent
@@ -109,42 +86,35 @@ export default function ContentSubs({
   const location = useLocation();
   const i18n = useTranslations();
 
-  const isInRootView = !location.pathname.match(/card/);
-
   const subCards = useAndLoadSubCards(cardContent.id);
 
-  const orderAndFillSubCards = React.useMemo(() => {
-    const orderedSubCards: (Card | null)[] = [];
-
+  const indexedSubCards = React.useMemo(() => {
     if (subCards != null) {
-      // sort by index, and if no index, by id
-      // cards without index appear after those with index, ordered by id
-      const sortedSubCards = subCards.sort((a, b) => {
-        if ((a.index || 0) === 0 && (b.index || 0) === 0) {
-          return (a.id || 0) - (b.id || 0);
-        }
+      const maxIndex = subCards.reduce<number>((acc, cur) => {
+        return Math.max(acc, cur.index ?? 0);
+      }, 1);
 
-        return (a.index || 1000) - (b.index || 1000);
+      const cards = subCards.map((card, index) => {
+        const { row, column } = gridPosFromIndex(card.index || index + maxIndex);
+        return {
+          card: card,
+          row: row,
+          column: column,
+        };
       });
+      const max = cards.reduce<MaxSize>(
+        (max, cur) => {
+          max.maxColumn = Math.max(max.maxColumn, cur.column);
+          max.maxRow = Math.max(max.maxRow, cur.row);
+          return max;
+        },
+        { maxRow: 0, maxColumn: 0 },
+      );
 
-      // fill empty cards where needed
-      let lastSeenIndex: number = 0;
-
-      sortedSubCards.forEach(card => {
-        lastSeenIndex++;
-
-        if (card.index && card.index > 0) {
-          while (lastSeenIndex < card.index) {
-            orderedSubCards.push(null);
-            lastSeenIndex++;
-          }
-        }
-
-        orderedSubCards.push(card);
-      });
+      return { subCardWithIndex: cards, max: max };
     }
 
-    return orderedSubCards;
+    return { subCardWithIndex: [], max: { maxColumn: 1, maxRow: 1 } };
   }, [subCards]);
 
   if (subCards == null) {
@@ -174,23 +144,18 @@ export default function ContentSubs({
             className,
           )}
         >
-          <div className={cx(gridCardsStyle(depth - 1, isInRootView), subcardsContainerStyle)}>
-            {orderAndFillSubCards.map((sub, index) =>
-              sub == null ? (
-                <div
-                  key={`loader_${index}`}
-                  className={cx(
-                    //rootViewCardsStyle(depth - 1, isInRootView),
-                    css({
-                      margin: '10px',
-                      minHeight: '100px',
-                    }),
-                  )}
-                />
-              ) : (
-                <CardThumbWithSelector depth={depth - 1} key={sub.id} card={sub} />
-              ),
-            )}
+          <div className={cx(gridCardsStyle(indexedSubCards.max), subcardsContainerStyle)}>
+            {indexedSubCards.subCardWithIndex.map(({ card, row, column }) => (
+              <CardThumbWithSelector
+                className={css({
+                  gridColumn: column,
+                  gridRow: row,
+                })}
+                depth={depth - 1}
+                key={card.id}
+                card={card}
+              />
+            ))}
           </div>
           <Flex justify="center">
             <CardCreator
@@ -208,17 +173,25 @@ export default function ContentSubs({
           </Flex>
         </div>
       ) : (
-        <>
-          {/* <div className={flexWrap}>
-          {subCards.map(sub => (
-            <div
-              key={sub.id}
-              className={cx(tinyCard, css({ backgroundColor: sub.color || 'var(--pictoGrey)' }))}
-            >
-            </div>
-          ))}
-        </div> */}
-        </>
+        <div
+          className={css({
+            position: 'relative',
+            width: '100%',
+            overflow: 'hidden',
+          })}
+        >
+          <div
+            className={css({
+              position: 'absolute',
+              display: 'flex',
+              justifyContent: 'space-evenly',
+            })}
+          >
+            {subCards.map(sub => (
+              <TinyCard key={sub.id} card={sub} />
+            ))}
+          </div>
+        </div>
       );
     }
   }

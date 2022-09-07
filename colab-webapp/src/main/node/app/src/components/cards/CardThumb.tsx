@@ -43,7 +43,29 @@ import CompletionEditor from './CompletionEditor';
 import ContentSubs from './ContentSubs';
 import PositionEditor from './PositionEditor';
 
-interface CardThumbProps {
+export interface TinyCardProps {
+  card: Card;
+  width?: string;
+  height?: string;
+}
+
+export function TinyCard({ card, width = '15px', height = '10px' }: TinyCardProps): JSX.Element {
+  const i18n = useTranslations();
+  return (
+    <div
+      className={css({
+        width: width,
+        height: height,
+        border: `2px solid ${card.color || 'var(--lightGray)'}`,
+        borderRadius: '4px',
+        margin: '5px',
+      })}
+      title={(card.title && i18n.modules.card.subcardTooltip(card.title)) || undefined}
+    ></div>
+  );
+}
+
+export interface CardThumbProps {
   card: Card;
   variant: CardContent | undefined;
   variants: CardContent[];
