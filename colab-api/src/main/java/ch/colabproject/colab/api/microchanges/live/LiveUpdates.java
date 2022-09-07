@@ -20,6 +20,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
+import org.apache.commons.text.StringEscapeUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -743,23 +744,32 @@ public class LiveUpdates implements Serializable {
     }
 
     /**
-     * BUidl log message
+     * Build log message that can be easily used to reproduces the process in a test
      */
     public void initDebugData() {
 
         StringBuilder sb = new StringBuilder();
-        sb.append("Content @ ").append(this.revision)
-            .append((System.lineSeparator()))
-            .append(content)
-            .append((System.lineSeparator()))
-            .append((System.lineSeparator()))
-            .append("Changes: [");
+        sb.append("test('A Test', () => {")
+            .append(System.lineSeparator())
+            .append("const initialValue = \"")
+            .append(StringEscapeUtils.escapeEcmaScript(this.content))
+            .append("\";").append(System.lineSeparator())
+            .append("const initialRevision = \"")
+            .append(StringEscapeUtils.escapeEcmaScript(this.revision))
+            .append("\";").append(System.lineSeparator())
+            .append(System.lineSeparator())
+            .append(System.lineSeparator())
+            .append("const changes =[")
+            .append(System.lineSeparator());
 
         this.pendingChanges.forEach(change -> {
-            sb.append(change.toString());
+            sb.append(change.toDebugStatement()).append(", ").append(System.lineSeparator());
         });
 
-        sb.append(']');
+        sb.append("];").append(System.lineSeparator()).append(System.lineSeparator())
+        .append("const newValue = LiveHelper.process(initialValue, initialRevision, changes);");
+
+        sb.append("});");
 
         this.debugData = sb.toString();
     }
