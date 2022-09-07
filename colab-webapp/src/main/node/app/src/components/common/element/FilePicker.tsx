@@ -18,12 +18,19 @@ import {
   faFileVideo,
   faFileWord,
 } from '@fortawesome/free-regular-svg-icons';
-import { faFileCsv, faSkullCrossbones, faUpload } from '@fortawesome/free-solid-svg-icons';
+import {
+  faDownload,
+  faFileCsv,
+  faSkullCrossbones,
+  faUpload,
+} from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import * as React from 'react';
-import { invertedButtonStyle, space_M, space_S } from '../../styling/style';
+import useTranslations from '../../../i18n/I18nContext';
+import { invertedButtonStyle, lightIconButtonStyle, space_M, space_S } from '../../styling/style';
 import Flex from '../layout/Flex';
 import Button from './Button';
+import IconButton from './IconButton';
 
 const contains = (value: string, ...values: string[]): boolean => {
   return !!values.find(needle => value.includes(needle));
@@ -165,6 +172,8 @@ export default function FilePicker({
   editingStatus,
   setEditingState,
 }: FilePickerProps): JSX.Element {
+  const i18n = useTranslations();
+
   const [dragging, setDragging] = React.useState(false);
 
   const onInputCb = React.useMemo(
@@ -296,6 +305,14 @@ export default function FilePicker({
               {currentFilename || 'No file uploaded'}
             </div>
           </>
+        )}
+        {!hasNoFile && !editingStatus && (
+          <IconButton
+            icon={faDownload}
+            title={i18n.modules.content.dlFile}
+            className={lightIconButtonStyle}
+            onClick={onDownload}
+          />
         )}
         {onChange && editingStatus && (
           <div className={css({ paddingLeft: space_M })} onClick={e => e.stopPropagation()}>

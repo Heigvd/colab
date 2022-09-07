@@ -37,8 +37,8 @@ export function ProjectSettings({ project }: ProjectSettingsProps): JSX.Element 
       <Flex align="center">
         <IconButton
           icon={faArrowLeft}
-          title={'Back to project'}
-          onClick={() => navigate('../')}
+          title={'Back'}
+          onClick={() => navigate(-1)}
           className={cx(css({ display: 'block' }), lightIconButtonStyle)}
         />
         <h2>Project settings</h2>

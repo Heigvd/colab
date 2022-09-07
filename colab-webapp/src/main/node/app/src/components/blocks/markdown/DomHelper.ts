@@ -383,6 +383,7 @@ export function areAllLeafsWrappedByTag(
       const nodes: Element[] = [];
       while (current != null) {
         logger.info('Test leaf: ', current);
+
         const matchingParent = boundedClosest(current, [tagName], rootNode);
         if (matchingParent != null) {
           nodes.push(matchingParent);
@@ -392,7 +393,7 @@ export function areAllLeafsWrappedByTag(
           } else {
             current = findNextLeaf(matchingParent, rootNode);
           }
-        } else {
+        } else if (current.textContent) {
           // current leaf not inside expected tag
           return { type: 'NO' };
         }
@@ -601,7 +602,7 @@ export function wrap(node: Node, tagName: string): Element {
 }
 
 /**
- * Unwrap given node within brand new `tagName` tag
+ * Unwrap given node
  *      _                           _
  *     / \                         / \----
  *     x  \             \         x   \   \
@@ -631,7 +632,7 @@ function unwrap(node: Node): CaretRange {
       document.getSelection()?.setBaseAndExtent(children[0]!, 0, last.node, last.offset);
     }
 
-    parent.normalize();
+    //parent.normalize();
 
     const selection = document.getSelection()!;
     return {
@@ -675,6 +676,9 @@ function safeUnwrap(
   // remove all tags within wrapper
   removeTags(node, tagName);
 
+  // remove the wrapper too
+  const result = unwrap(node);
+
   let start: CaretPosition | undefined = undefined;
   let end: CaretPosition | undefined = undefined;
 
@@ -693,8 +697,6 @@ function safeUnwrap(
     }
   }
 
-  // remove the wrapper too
-  const result = unwrap(node);
   if (start == null) {
     start = result.start;
   }
@@ -770,7 +772,7 @@ export function findChildByTag(element: Element, tag: string): Element | undefin
  *           li3
  */
 export function indentListItem(listItem: Element) {
-  logger.warn('Indent');
+  logger.trace('Indent');
 
   const parentUl = listItem.parentElement;
   if (parentUl == null) {
@@ -807,7 +809,7 @@ export function indentListItem(listItem: Element) {
 }
 
 export function unindentListItem(listItem: Element): boolean {
-  logger.warn('deindent indentation');
+  logger.trace('deindent indentation');
   const currentUl = listItem.parentElement;
 
   if (currentUl == null) {

@@ -20,6 +20,7 @@ import * as React from 'react';
 import { Route, Routes, useLocation, useNavigate } from 'react-router-dom';
 import * as API from '../../API/api';
 import useTranslations from '../../i18n/I18nContext';
+import { useAndLoadSubCards } from '../../selectors/cardSelector';
 import { useAppDispatch, useLoadingState } from '../../store/hooks';
 import Button from '../common/element/Button';
 import InlineLoading from '../common/element/InlineLoading';
@@ -27,7 +28,15 @@ import ConfirmDeleteModal from '../common/layout/ConfirmDeleteModal';
 import DropDownMenu, { modalEntryStyle } from '../common/layout/DropDownMenu';
 import Flex from '../common/layout/Flex';
 import Modal from '../common/layout/Modal';
-import { errorColor, lightIconButtonStyle, space_L, space_M, space_S, variantTitle } from '../styling/style';
+import {
+  errorColor,
+  lightIconButtonStyle,
+  space_L,
+  space_M,
+  space_S,
+  variantTitle,
+} from '../styling/style';
+import CardContentStatus from './CardContentStatus';
 import CardLayout from './CardLayout';
 import CardSettings from './CardSettings';
 import CompletionEditor from './CompletionEditor';
@@ -67,7 +76,7 @@ export default function CardThumb({
   }).resourcesAndRefs.length; */
 
   const closeRouteCb = React.useCallback(
-    route => {
+    (route: string) => {
       navigate(location.pathname.replace(new RegExp(route + '$'), ''));
     },
     [location.pathname, navigate],
@@ -93,6 +102,11 @@ export default function CardThumb({
     }
   }, [variant, cardId, location.pathname, navigate]);
 
+  const subCards = useAndLoadSubCards(variant?.id);
+  const currentPathIsSelf = location.pathname.match(new RegExp(`card/${card.id}`)) != null;
+
+  const shouldZoomOnClick = currentPathIsSelf == false && (subCards?.length ?? 0 > 0);
+
   const clickOnCardTitleCb = React.useCallback(
     (e: React.MouseEvent) => {
       navigateToEditPageCb();
@@ -103,10 +117,14 @@ export default function CardThumb({
 
   const clickOnCardContentCb = React.useCallback(
     (e: React.MouseEvent) => {
-      navigateToZoomPageCb();
+      if (shouldZoomOnClick) {
+        navigateToZoomPageCb();
+      } else {
+        navigateToEditPageCb();
+      }
       e.stopPropagation();
     },
-    [navigateToZoomPageCb],
+    [shouldZoomOnClick, navigateToZoomPageCb, navigateToEditPageCb],
   );
 
   if (cardId == null) {
@@ -143,6 +161,7 @@ export default function CardThumb({
                   className={css({ flexGrow: 1, cursor: 'pointer' })}
                   onClick={clickOnCardTitleCb}
                 >
+                  <CardContentStatus mode="icon" status={variant?.status || 'ACTIVE'} />
                   <span className={css({ fontWeight: 'bold' })}>
                     {card.title || i18n.modules.card.untitled}
                   </span>
@@ -322,7 +341,8 @@ export default function CardThumb({
             align="stretch"
             onClick={clickOnCardContentCb}
             className={cx({
-              [css({ minHeight: space_L, cursor: 'zoom-in' })]: true,
+              [css({ minHeight: space_L, cursor: shouldZoomOnClick ? 'zoom-in' : 'pointer' })]:
+                true,
               [css({
                 padding: space_M,
               })]: depth > 0,

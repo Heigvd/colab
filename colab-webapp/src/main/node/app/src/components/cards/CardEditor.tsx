@@ -16,7 +16,6 @@ import {
   faLock,
   faPaperclip,
   faPercent,
-  faSlash,
   faStickyNote,
   faTimes,
   faTools,
@@ -35,7 +34,7 @@ import { useCardACLForCurrentUser, useVariantsOrLoad } from '../../selectors/car
 import { useAndLoadCardType } from '../../selectors/cardTypeSelector';
 import { useStickyNoteLinksForDest } from '../../selectors/stickyNoteLinkSelector';
 import { useAppDispatch, useLoadingState } from '../../store/hooks';
-import {idleStyle, toggledStyle} from '../blocks/markdown/WysiwygEditor';
+import { idleStyle, toggledStyle } from '../blocks/markdown/WysiwygEditor';
 import Button from '../common/element/Button';
 import IconButton from '../common/element/IconButton';
 import { DiscreetInput } from '../common/element/Input';
@@ -47,6 +46,10 @@ import Flex from '../common/layout/Flex';
 import Modal from '../common/layout/Modal';
 import OpenCloseModal from '../common/layout/OpenCloseModal';
 import { DocTextDisplay } from '../documents/DocTextItem';
+import DocEditorToolbox, {
+  defaultDocEditorContext,
+  DocEditorCTX,
+} from '../documents/DocumentEditorToolbox';
 import DocumentList from '../documents/DocumentList';
 import { ResourceCallContext } from '../resources/resourcesCommonType';
 import ResourcesMainView from '../resources/ResourcesMainView';
@@ -62,7 +65,7 @@ import {
   textSmall,
   variantTitle,
 } from '../styling/style';
-import CardEditorToolbox from './CardEditorToolbox';
+import CardContentStatus from './CardContentStatus';
 import CardInvolvement from './CardInvolvement';
 import CardSettings from './CardSettings';
 import CompletionEditor from './CompletionEditor';
@@ -144,37 +147,6 @@ function ProgressBar({
   );
 }
 
-interface TXToptionsType {
-  showTree: boolean;
-  setShowTree: React.Dispatch<React.SetStateAction<boolean>>;
-  markDownMode: boolean;
-  setMarkDownMode: React.Dispatch<React.SetStateAction<boolean>>;
-}
-
-interface CardEditorContext {
-  selectedDocId?: number | null;
-  setSelectedDocId: (id: number | undefined | null) => void;
-  selectedOwnKind?: 'DeliverableOfCardContent' | 'PartOfResource';
-  setSelectedOwnKind: React.Dispatch<
-    React.SetStateAction<'DeliverableOfCardContent' | 'PartOfResource' | undefined>
-  >;
-  editMode: boolean;
-  setEditMode: (editMode: boolean) => void;
-  TXToptions?: TXToptionsType;
-  editToolbar: JSX.Element;
-  setEditToolbar: React.Dispatch<React.SetStateAction<JSX.Element>>;
-}
-
-const defaultCardEditorContext: CardEditorContext = {
-  setSelectedDocId: () => {},
-  setSelectedOwnKind: () => {},
-  editMode: false,
-  setEditMode: () => {},
-  editToolbar: <></>,
-  setEditToolbar: () => {},
-};
-export const CardEditorCTX = React.createContext<CardEditorContext>(defaultCardEditorContext);
-
 export default function CardEditor({
   card,
   variant,
@@ -199,13 +171,10 @@ export default function CardEditor({
   const [fullScreen, setFullScreen] = React.useState(false);
   const [openToolbox, setOpenToolbox] = React.useState(true);
   const [selectedDocId, setSelectedDocId] = React.useState<number | undefined | null>(undefined);
-  const [selectedOwnKind, setSelectedOwnKind] = React.useState<
-    'DeliverableOfCardContent' | 'PartOfResource' | undefined
-  >(undefined);
-  const [editMode, setEditMode] = React.useState(defaultCardEditorContext.editMode);
+  const [editMode, setEditMode] = React.useState(defaultDocEditorContext.editMode);
   const [showTree, setShowTree] = React.useState(false);
   const [markDownMode, setMarkDownMode] = React.useState(false);
-  const [editToolbar, setEditToolbar] = React.useState(defaultCardEditorContext.editToolbar);
+  const [editToolbar, setEditToolbar] = React.useState(defaultDocEditorContext.editToolbar);
   const [openKey, setOpenKey] = React.useState<string | undefined>(undefined);
 
   const TXToptions = {
@@ -226,7 +195,7 @@ export default function CardEditor({
 
   const { stickyNotesForDest } = useStickyNoteLinksForDest(card.id);
   const closeRouteCb = React.useCallback(
-    route => {
+    (route: string) => {
       navigate(location.pathname.replace(new RegExp(route + '$'), ''));
     },
     [location.pathname, navigate],
@@ -244,45 +213,43 @@ export default function CardEditor({
   } else {
     const cardId = card.id;
     return (
-      <CardEditorCTX.Provider
-        value={{
-          selectedDocId,
-          setSelectedDocId,
-          selectedOwnKind,
-          setSelectedOwnKind,
-          editMode,
-          setEditMode,
-          editToolbar,
-          setEditToolbar,
-          TXToptions,
-        }}
-      >
-        <Flex direction="column" grow={1} align="stretch">
+      <Flex direction="column" grow={1} align="stretch">
+        <Flex
+          grow={1}
+          direction="row"
+          align="stretch"
+          className={css({ paddingBottom: space_S, height: '50vh' })}
+        >
           <Flex
             grow={1}
             direction="row"
+            justify="space-between"
             align="stretch"
-            className={css({ paddingBottom: space_S, height: '50vh' })}
+            className={cx(
+              cardStyle,
+              { [fullScreenStyle]: fullScreen === true },
+              css({
+                backgroundColor: 'white',
+                overflow: 'hidden',
+              }),
+            )}
           >
-            <Flex
-              grow={1}
-              direction="row"
-              justify="space-between"
-              align="stretch"
-              className={cx(
-                cardStyle,
-                { [fullScreenStyle]: fullScreen === true },
-                css({
-                  backgroundColor: 'white',
-                  overflow: 'hidden',
-                }),
-              )}
-            >
-              <ReflexContainer orientation={'vertical'}>
-                <ReflexElement
-                  className={'left-pane ' + css({ display: 'flex' })}
-                  resizeHeight={false}
-                  minSize={150}
+            <ReflexContainer orientation={'vertical'}>
+              <ReflexElement
+                className={'left-pane ' + css({ display: 'flex' })}
+                resizeHeight={false}
+                minSize={150}
+              >
+                <DocEditorCTX.Provider
+                  value={{
+                    selectedDocId,
+                    setSelectedDocId,
+                    editMode,
+                    setEditMode,
+                    editToolbar,
+                    setEditToolbar,
+                    TXToptions,
+                  }}
                 >
                   <Flex direction="column" grow={1} align="stretch">
                     <Flex
@@ -308,11 +275,13 @@ export default function CardEditor({
                           <Flex align="center">
                             {variant.frozen && (
                               <FontAwesomeIcon
+                                className={css({ padding: `0 ${space_S}` })}
                                 icon={faLock}
                                 title={i18n.modules.card.infos.cardLocked}
                                 color={'var(--darkGray)'}
                               />
                             )}
+                            <CardContentStatus mode="icon" status={variant.status} />
                             <DiscreetInput
                               value={card.title || ''}
                               placeholder={i18n.modules.card.untitled}
@@ -419,11 +388,6 @@ export default function CardEditor({
                             {!readOnly && (
                               <IconButton
                                 icon={faTools}
-                                layer={
-                                  openToolbox
-                                    ? { layerIcon: faSlash, transform: 'grow-1' }
-                                    : undefined
-                                }
                                 title={i18n.modules.card.editor.toggleToolbox}
                                 className={openToolbox ? toggledStyle : idleStyle}
                                 onClick={() => setOpenToolbox(openToolbox => !openToolbox)}
@@ -433,14 +397,14 @@ export default function CardEditor({
                               title={i18n.modules.card.editor.fullScreen}
                               icon={fullScreen ? faCompressArrowsAlt : faExpandArrowsAlt}
                               onClick={() => setFullScreen(fullScreen => !fullScreen)}
-                              className={cx(lightIconButtonStyle, css({padding: space_S}))}
+                              className={cx(lightIconButtonStyle, css({ padding: space_S }))}
                             />
                             <DropDownMenu
                               icon={faEllipsisV}
                               valueComp={{ value: '', label: '' }}
                               buttonClassName={cx(
                                 lightIconButtonStyle,
-                                css({marginLeft: space_S, padding: space_S }),
+                                css({ marginLeft: space_S, padding: space_S }),
                               )}
                               entries={[
                                 {
@@ -546,7 +510,7 @@ export default function CardEditor({
                           </Flex>
                         </Flex>
                         {!readOnly && variant.id && (
-                          <CardEditorToolbox
+                          <DocEditorToolbox
                             open={openToolbox}
                             docOwnership={{
                               kind: 'DeliverableOfCardContent',
@@ -630,87 +594,83 @@ export default function CardEditor({
                       </OpenCloseModal>
                     </Flex>
                   </Flex>
-                </ReflexElement>
-                {openKey && <ReflexSplitter className={css({ zIndex: 0 })} />}
-                <ReflexElement
-                  className={'right-pane ' + css({ display: 'flex', minWidth: 'min-content' })}
-                  resizeHeight={false}
-                  maxSize={openKey ? undefined : 40}
-                >
-                  <SideCollapsiblePanel
-                    openKey={openKey}
-                    setOpenKey={setOpenKey}
-                    items={{
-                      resources: {
-                        icon: faPaperclip,
-                        nextToIconElement: (
-                          <div className={textSmall}>
-                            {' '}
-                            (<ResourceListNb context={resourceContext} />)
-                          </div>
-                        ),
-                        title: i18n.modules.resource.documentation,
-                        nextToTitleElement: (
-                          <Tips>
-                            {card.cardTypeId
-                              ? i18n.modules.resource.docDescriptionWithType
-                              : i18n.modules.resource.docDescription}
-                          </Tips>
-                        ),
-                        children: (
-                          <ResourcesMainView
-                            contextData={resourceContext}
-                            accessLevel={
-                              !readOnly && userAcl.write
-                                ? 'WRITE'
-                                : userAcl.read
-                                ? 'READ'
-                                : 'DENIED'
-                            }
-                          />
-                        ),
-                        className: css({ overflow: 'auto' }),
-                      },
-                      'Sticky Notes': {
-                        icon: faStickyNote,
-                        nextToIconElement: (
-                          <div className={textSmall}> ({stickyNotesForDest.length})</div>
-                        ),
-                        title: i18n.modules.stickyNotes.stickyNotes,
-                        nextToTitleElement: (
-                          <Tips>
-                            <h5>{i18n.modules.stickyNotes.listStickyNotes}</h5>
-                            <div>{i18n.modules.stickyNotes.snDescription}</div>
-                          </Tips>
-                        ),
-                        children: <StickyNoteWrapper destCardId={card.id} showSrc />,
-                        className: css({ overflow: 'auto' }),
-                      },
-                    }}
-                    direction="RIGHT"
-                    className={css({ flexGrow: 1 })}
-                  />
-                </ReflexElement>
-              </ReflexContainer>
-            </Flex>
+                </DocEditorCTX.Provider>
+              </ReflexElement>
+              {openKey && <ReflexSplitter className={css({ zIndex: 0 })} />}
+              <ReflexElement
+                className={'right-pane ' + css({ display: 'flex', minWidth: 'min-content' })}
+                resizeHeight={false}
+                maxSize={openKey ? undefined : 40}
+              >
+                <SideCollapsiblePanel
+                  openKey={openKey}
+                  setOpenKey={setOpenKey}
+                  items={{
+                    resources: {
+                      icon: faPaperclip,
+                      nextToIconElement: (
+                        <div className={textSmall}>
+                          {' '}
+                          (<ResourceListNb context={resourceContext} />)
+                        </div>
+                      ),
+                      title: i18n.modules.resource.documentation,
+                      nextToTitleElement: (
+                        <Tips>
+                          {card.cardTypeId
+                            ? i18n.modules.resource.docDescriptionWithType
+                            : i18n.modules.resource.docDescription}
+                        </Tips>
+                      ),
+                      children: (
+                        <ResourcesMainView
+                          contextData={resourceContext}
+                          accessLevel={
+                            !readOnly && userAcl.write ? 'WRITE' : userAcl.read ? 'READ' : 'DENIED'
+                          }
+                        />
+                      ),
+                      className: css({ overflow: 'auto' }),
+                    },
+                    'Sticky Notes': {
+                      icon: faStickyNote,
+                      nextToIconElement: (
+                        <div className={textSmall}> ({stickyNotesForDest.length})</div>
+                      ),
+                      title: i18n.modules.stickyNotes.stickyNotes,
+                      nextToTitleElement: (
+                        <Tips>
+                          <h5>{i18n.modules.stickyNotes.listStickyNotes}</h5>
+                          <div>{i18n.modules.stickyNotes.snDescription}</div>
+                        </Tips>
+                      ),
+                      children: <StickyNoteWrapper destCardId={card.id} showSrc />,
+                      className: css({ overflow: 'auto' }),
+                    },
+                  }}
+                  direction="RIGHT"
+                  className={css({ flexGrow: 1 })}
+                />
+              </ReflexElement>
+            </ReflexContainer>
           </Flex>
-          <VariantPager allowCreation={userAcl.write} card={card} current={variant} />
-          {showSubcards ? (
-            <Collapsible label={i18n.modules.card.subcards}>
-              <ContentSubs
-                depth={1}
-                cardContent={variant}
-                className={css({ alignItems: 'flex-start', overflow: 'auto', width: '100%' })}
-                subcardsContainerStyle={css({
-                  overflow: 'auto',
-                  width: '100%',
-                  flexWrap: 'nowrap',
-                })}
-              />
-            </Collapsible>
-          ) : null}
         </Flex>
-      </CardEditorCTX.Provider>
+        <VariantPager allowCreation={userAcl.write} card={card} current={variant} />
+        {showSubcards ? (
+          <Collapsible label={i18n.modules.card.subcards}>
+            <ContentSubs
+              depth={1}
+              cardContent={variant}
+              className={css({ alignItems: 'flex-start', overflow: 'auto', width: '100%' })}
+              subcardsContainerStyle={css({
+                overflow: 'auto',
+                width: '100%',
+                flexWrap: 'nowrap',
+              })}
+            />
+          </Collapsible>
+        ) : null}
+      </Flex>
     );
   }
 }

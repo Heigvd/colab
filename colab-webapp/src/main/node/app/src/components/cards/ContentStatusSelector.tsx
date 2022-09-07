@@ -9,13 +9,14 @@ import { css } from '@emotion/css';
 import { CardContent } from 'colab-rest-client';
 import * as React from 'react';
 import Select from 'react-select';
+import CardContentStatus from './CardContentStatus';
 
 type Status = CardContent['status'];
 
 function buildOption(status: Status) {
   return {
     value: status,
-    label: status,
+    label: <CardContentStatus status={status} mode="full" />,
   };
 }
 

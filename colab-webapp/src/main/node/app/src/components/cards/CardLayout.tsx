@@ -8,9 +8,7 @@
 import { css, cx } from '@emotion/css';
 import { Card, CardContent } from 'colab-rest-client';
 import * as React from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
 import useTranslations from '../../i18n/I18nContext';
-import { useSingleAndDoubleClick } from '..//hooks/mouse';
 import { cardShadow, cardStyle } from '../styling/style';
 
 const progressBarContainer = css({
@@ -52,10 +50,11 @@ export default function CardLayout({
   extraTools,
   showProgressBar = true,
 }: CardLayoutProps): JSX.Element {
-  const navigate = useNavigate();
-  const location = useLocation();
+  //const navigate = useNavigate();
+  //const location = useLocation();
   const i18n = useTranslations();
 
+  /*
   const singleClick = React.useCallback(() => {
     if (variant != null) {
       const path = `card/${card.id}`;
@@ -81,6 +80,7 @@ export default function CardLayout({
   }, [variant, card.id, location.pathname, navigate]);
 
   const click = useSingleAndDoubleClick(singleClick, doubleClick);
+  */
 
   if (card.id == null) {
     return <i>{i18n.modules.card.error.withoutId}</i>;
@@ -98,9 +98,9 @@ export default function CardLayout({
             flexDirection: 'column',
             justifyContent: 'space-between',
             display: 'flex',
+            cursor: 'default',
           }),
         )}
-        onClick={click}
       >
         {extraTools}
         {children}

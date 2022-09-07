@@ -9,6 +9,8 @@ package ch.colabproject.colab.api.ws;
 import ch.colabproject.colab.api.Helper;
 import ch.colabproject.colab.api.controller.WebsocketManager;
 import ch.colabproject.colab.api.ws.message.WsMessage;
+import ch.colabproject.colab.api.ws.message.WsPing;
+import ch.colabproject.colab.api.ws.message.WsPong;
 import ch.colabproject.colab.api.ws.message.WsSessionIdentifier;
 import ch.colabproject.colab.api.ws.utils.JsonDecoder;
 import ch.colabproject.colab.api.ws.utils.JsonEncoder;
@@ -121,7 +123,14 @@ public class WebsocketEndpoint {
      */
     @OnMessage
     public void onMessage(WsMessage message, Session session) {
-        logger.info("Message received: {} from {}", message, session.getId());
+        logger.trace("Message received: {} from {}", message, session.getId());
+        if (message instanceof WsPing) {
+            try {
+                session.getBasicRemote().sendObject(new WsPong());
+            } catch (IOException | EncodeException ex) {
+                logger.warn("Fail to reply to ping", ex);
+            }
+        }
     }
 
     /**

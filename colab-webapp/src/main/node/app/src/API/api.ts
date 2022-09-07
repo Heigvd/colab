@@ -362,6 +362,27 @@ export const getRootCardOfProject = createAsyncThunk<Card, number>(
   },
 );
 
+
+export const reconnectToProjectChannel = createAsyncThunk(
+  'project/reconnect',
+  async (project: Project, thunkApi) => {
+    const state = thunkApi.getState() as ColabState;
+    if (state.websockets.sessionId != null && project.id != null) {
+      // Subscribe to new project channel
+      await restClient.WebsocketRestEndpoint.subscribeToProjectChannel(project.id, {
+        '@class': 'WsSessionIdentifier',
+        sessionId: state.websockets.sessionId,
+      });
+
+      // initialized project content
+      await thunkApi.dispatch(getRootCardOfProject(project.id));
+    }
+    return project;
+  },
+);
+
+
+
 export const startProjectEdition = createAsyncThunk(
   'project/startEditing',
   async (project: Project, thunkApi) => {
@@ -1177,6 +1198,8 @@ export const subscribeToBlockChannel = createAsyncThunk(
         '@class': 'WsSessionIdentifier',
         sessionId: sessionId,
       });
+      // once registerd, make sur to sync pending changes
+      thunkApi.dispatch(getBlockPendingChanges(id));
     }
   },
 );

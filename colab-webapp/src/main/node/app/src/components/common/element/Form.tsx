@@ -112,7 +112,7 @@ export interface FormProps<T> {
   children?: React.ReactNode;
   isSubmitInProcess?: boolean;
   isGloballyErroneous?: boolean | ((data: T) => boolean);
-  globalErrorMessage?: React.ReactNode | ((data: T) => React.ReactNode);
+  globalErrorMessage?: React.ReactNode;
   className?: string;
   childrenClassName?: string;
   buttonClassName?: string;

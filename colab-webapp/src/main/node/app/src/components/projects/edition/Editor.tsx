@@ -20,7 +20,7 @@ import {
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Card, CardContent, entityIs, Project } from 'colab-rest-client';
 import * as React from 'react';
-import { Navigate, Route, Routes, useLocation, useNavigate, useParams } from 'react-router-dom';
+import { Navigate, Route, Routes, useNavigate, useParams } from 'react-router-dom';
 import * as API from '../../../API/api';
 import { sortCardContents } from '../../../helper';
 import useTranslations from '../../../i18n/I18nContext';
@@ -48,6 +48,7 @@ import Clickable from '../../common/layout/Clickable';
 import DropDownMenu from '../../common/layout/DropDownMenu';
 import Flex from '../../common/layout/Flex';
 import { UserDropDown } from '../../MainNav';
+import Picto from '../../styling/Picto';
 import {
   fullPageStyle,
   invertedThemeMode,
@@ -101,7 +102,7 @@ function cardThumbFactory(card: Card) {
 const Ancestor = ({ card, content, last }: Ancestor): JSX.Element => {
   const i18n = useTranslations();
   const navigate = useNavigate();
-  const location = useLocation();
+  //const location = useLocation();
   const dispatch = useAppDispatch();
 
   React.useEffect(() => {
@@ -129,8 +130,9 @@ const Ancestor = ({ card, content, last }: Ancestor): JSX.Element => {
       </>
     );
   } else if (entityIs(card, 'Card') && entityIs(content, 'CardContent')) {
-    const match = location.pathname.match(/(edit|card)\/\d+\/v\/\d+/);
-    const t = match ? match[1] || 'card' : 'card';
+    //const match = location.pathname.match(/(edit|card)\/\d+\/v\/\d+/);
+    //const t = match ? match[1] || 'card' : 'card';
+    const t = 'card';
 
     return (
       <>
@@ -287,16 +289,38 @@ function EditorNav({ project, setShowProjectDetails }: EditorNavProps): JSX.Elem
           }),
         )}
       >
-        <IconButton
-          icon={faGrip}
-          title="Back to projects"
-          onClick={events => {
-            events.preventDefault();
-            navigate('../../');
-            dispatch(API.closeCurrentProject());
-          }}
-          className={css({ display: 'flex', alignItems: 'center' })}
-        />
+        <Flex align='center'>
+          <Clickable
+            title='Back to projects'
+            onClick={event => {
+              event.preventDefault();
+              navigate('../../');
+              dispatch(API.closeCurrentProject());
+            }}
+          >
+            <Picto
+              className={
+                css({
+                  height: '22px',
+                  width: 'auto',
+                  paddingRight: space_M,
+                  paddingTop: "0px",
+                  paddingBottom: "0px",
+                  paddingLeft: space_S
+                })
+              }
+            />
+          </Clickable>
+          <IconButton
+            icon={faGrip}
+            title="Back to project root"
+            onClick={event => {
+              event.preventDefault();
+              navigate(`/editor/${project.id}`)
+            }}
+            className={css({ display: 'flex', alignItems: 'center' })}
+          />
+        </Flex>
         <div
           className={css({
             gridColumn: '2/3',

@@ -38,14 +38,25 @@ const EditorWrapper = () => {
   const { project, status } = useProject(+id!);
   const { project: editedProject, status: editingStatus } = useProjectBeingEdited();
 
+  const webSocketId = useAppSelector(state => state.websockets.sessionId);
+  const socketIdRef = React.useRef<string | undefined>(undefined);
+
   React.useEffect(() => {
-    if (
-      project != null &&
-      (editingStatus === 'NOT_EDITING' || (editedProject != null && editedProject.id !== +id))
-    ) {
-      dispatch(API.startProjectEdition(project));
+    if (webSocketId && project != null) {
+      if (editingStatus === 'NOT_EDITING' || (editedProject != null && editedProject.id !== +id)) {
+        socketIdRef.current = webSocketId;
+        dispatch(API.startProjectEdition(project));
+      } else if (editingStatus === 'READY') {
+        if (webSocketId !== socketIdRef.current) {
+          // ws reconnection occured => reconnect
+          socketIdRef.current = webSocketId;
+          dispatch(API.reconnectToProjectChannel(project));
+        }
+      }
     }
-  }, [dispatch, editingStatus, editedProject, project, id]);
+  }, [dispatch, editingStatus, editedProject, project, id, webSocketId]);
+
+
 
   React.useEffect(() => {
     if (project == null && status === 'NOT_INITIALIZED') {
@@ -95,11 +106,16 @@ export default function MainApp(): JSX.Element {
   }, [currentUserStatus, dispatch]);
 
   const reconnecting = socketId == null && (
-    <Overlay>
+    <Overlay backgroundStyle={css({
+      backgroundColor: '#dfdfdf20',
+      userSelect: 'none',
+    })}>
       <div
         className={css({
           display: 'flex',
           alignItems: 'center',
+          backgroundColor: "var(--bgColor)",
+          boxShadow: "0 0 30px 30px var(--bgColor)",
         })}
       >
         <InlineLoading colour={true} /> <span>{i18n.authentication.info.reconnecting}</span>

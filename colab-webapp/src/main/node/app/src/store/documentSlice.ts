@@ -14,7 +14,7 @@ import { processMessage } from '../ws/wsThunkActions';
 import { AvailabilityStatus } from './store';
 
 /** what we have in the store */
-interface DocumentState {
+export interface DocumentState {
   /** all the documents we got so far */
   documents: Record<number, Document | AvailabilityStatus>;
 

@@ -30,12 +30,9 @@ import IconButton from '../common/element/IconButton';
 import ConfirmDeleteModal from '../common/layout/ConfirmDeleteModal';
 import DropDownMenu from '../common/layout/DropDownMenu';
 import Flex from '../common/layout/Flex';
-import { DocumentOwnership } from '../documents/documentCommonType';
-import DocumentCreatorButton from '../documents/DocumentCreatorButton';
 import { lightIconButtonStyle, space_M, space_S } from '../styling/style';
-import { CardEditorCTX } from './CardEditor';
-
-// TODO : do not change height when a bloc is selected
+import { DocumentOwnership } from './documentCommonType';
+import DocumentCreatorButton from './DocumentCreatorButton';
 
 const toolboxContainerStyle = css({
   height: 'auto',
@@ -68,19 +65,46 @@ const toolboxButtonStyle = cx(
   }),
 );
 
-interface CardEditorToolboxProps {
+interface DocEditorToolboxProps {
   open: boolean;
   docOwnership: DocumentOwnership;
-  prefixElement?: React.ReactNode;
+  //prefixElement?: React.ReactNode;
 }
 
-export default function CardEditorToolbox({
+interface TXToptionsType {
+  showTree: boolean;
+  setShowTree: React.Dispatch<React.SetStateAction<boolean>>;
+  markDownMode: boolean;
+  setMarkDownMode: React.Dispatch<React.SetStateAction<boolean>>;
+}
+
+interface DocEditorContext {
+  selectedDocId?: number | null;
+  setSelectedDocId: (id: number | undefined | null) => void;
+  editMode: boolean;
+  setEditMode: (editMode: boolean) => void;
+  TXToptions?: TXToptionsType;
+  editToolbar: JSX.Element;
+  setEditToolbar: React.Dispatch<React.SetStateAction<JSX.Element>>;
+}
+
+export const defaultDocEditorContext: DocEditorContext = {
+  setSelectedDocId: () => {},
+  editMode: false,
+  setEditMode: () => {},
+  editToolbar: <></>,
+  setEditToolbar: () => {},
+};
+
+export const DocEditorCTX = React.createContext<DocEditorContext>(defaultDocEditorContext);
+
+export default function DocEditorToolbox({
   open,
   docOwnership,
-  prefixElement,
-}: CardEditorToolboxProps): JSX.Element {
-  const { setSelectedDocId, selectedDocId, selectedOwnKind, setEditMode, TXToptions, editToolbar } =
-    React.useContext(CardEditorCTX);
+}: //prefixElement,
+DocEditorToolboxProps): JSX.Element {
+  const { setSelectedDocId, selectedDocId, setEditMode, TXToptions, editToolbar } =
+    React.useContext(DocEditorCTX);
   const showTree = TXToptions?.showTree || false;
   const dispatch = useAppDispatch();
   const i18n = useTranslations();
@@ -114,22 +138,24 @@ export default function CardEditorToolbox({
     window.open(downloadUrl);
   }, [downloadUrl]);
 
-  const openUrl = React.useCallback(url => {
-    window.open(url);
+  const openUrl = React.useCallback((url: string | null | undefined) => {
+    if (url) {
+      window.open(url);
+    }
   }, []);
 
   return (
     <Flex align="center" className={cx(toolboxContainerStyle, { [closedToolboxStyle]: !open })}>
-      {prefixElement}
+      {/*prefixElement*/}
       <BlockCreatorButtons
         docOwnership={docOwnership}
         selectedBlockId={selectedDocument?.id ?? null}
       />
-      {selectedDocument != (undefined || null) && docOwnership.kind === selectedOwnKind && (
+      {selectedDocument != (undefined || null) && (
         <>
           {isText && (
             <>
-              {editToolbar}
+              {!TXToptions?.markDownMode && editToolbar}
               <IconButton
                 icon={faCode}
                 title={i18n.modules.content.mdMode}
@@ -351,12 +377,13 @@ interface OpenLinkButtonProps {
 function OpenLinkButton({ url, openUrl }: OpenLinkButtonProps): JSX.Element {
   const metadata = useUrlMetadata(url);
   const i18n = useTranslations();
+
   return (
     <>
       {metadata != 'LOADING' && metadata != 'NO_URL' && !metadata.broken && (
         <IconButton
           icon={faExternalLinkAlt}
-          title={i18n.modules.content.openUrlNewTab}
+          title={i18n.modules.document.openInNewTab}
           className={lightIconButtonStyle}
           onClick={openUrl}
         />

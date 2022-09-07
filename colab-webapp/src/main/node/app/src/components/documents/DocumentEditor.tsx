@@ -12,11 +12,11 @@ import { useLastInsertedDocId } from '../../selectors/documentSelector';
 import * as DocumentActions from '../../store/documentSlice';
 import { useAppDispatch } from '../../store/hooks';
 import { BlockEditorWrapper } from '../blocks/BlockEditorWrapper';
-import { CardEditorCTX } from '../cards/CardEditor';
 import OpenGraphLink from '../common/element/OpenGraphLink';
 import Flex from '../common/layout/Flex';
 import { editableBlockStyle } from '../styling/style';
 import { DocumentOwnership } from './documentCommonType';
+import { DocEditorCTX } from './DocumentEditorToolbox';
 import DocumentFileEditor from './DocumentFileEditor';
 
 const selectedStyle = css({
@@ -54,8 +54,8 @@ export default function DocumentEditor({
 
   const dropRef = React.useRef<HTMLDivElement>(null);
 
-  const { setSelectedDocId, selectedDocId, setSelectedOwnKind, editMode, setEditMode, TXToptions } =
-    React.useContext(CardEditorCTX);
+  const { setSelectedDocId, selectedDocId, editMode, setEditMode, TXToptions } =
+    React.useContext(DocEditorCTX);
 
   const selected = doc.id === selectedDocId;
   const editing = editMode && selected;
@@ -65,8 +65,7 @@ export default function DocumentEditor({
       setEditMode(false);
     }
     setSelectedDocId(doc.id);
-    setSelectedOwnKind(docOwnership.kind);
-  }, [doc.id, docOwnership.kind, selectedDocId, setEditMode, setSelectedDocId, setSelectedOwnKind]);
+  }, [doc.id, selectedDocId, setEditMode, setSelectedDocId]);
 
   React.useEffect(() => {
     if (lastInsertedDocId === doc.id) {
@@ -88,6 +87,7 @@ export default function DocumentEditor({
             justifyContent: 'space-between',
             flexGrow: 1,
             padding: 0,
+            maxWidth: '21cm',
           }),
           { [selectedStyle]: selected && !isTextDataBlock },
           { [noBorderStyle]: isTextDataBlock },
