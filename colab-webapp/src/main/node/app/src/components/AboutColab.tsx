@@ -5,19 +5,23 @@
  * Licensed under the MIT License
  */
 
-import { css } from '@emotion/css';
+import { css, cx } from '@emotion/css';
 import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useVersionDetails } from '../selectors/configSelector';
 import IconButton from './common/element/IconButton';
 import Flex from './common/layout/Flex';
 import Logo from './styling/Logo';
-import { paddedContainerStyle, space_M } from './styling/style';
+import { fullPageStyle, paddedContainerStyle, space_M } from './styling/style';
 
 export default function AboutColab(): JSX.Element {
   const navigate = useNavigate();
+
+  const version = useVersionDetails();
+
   return (
-    <div className={paddedContainerStyle}>
+    <Flex direction="column" className={cx(fullPageStyle, paddedContainerStyle)} align="stretch">
       <IconButton
         icon={faArrowLeft}
         title={'Back'}
@@ -43,24 +47,22 @@ export default function AboutColab(): JSX.Element {
               create an intuitive, friendly and meaningful web platform, that should facilitate the
               collaboration during serious games design. Two main ingredients are at the heart of
               the platform:
-              <ul>
-                <li>
-                  <b>
-                    The{' '}
-                    <a
-                      href="https://games.jmir.org/2021/3/e28674/"
-                      target="_blank"
-                      rel="noreferrer"
-                    >
-                      co.LAB framework
-                    </a>
-                  </b>{' '}
-                  that support the co-design serious games.
-                </li>
-                <li>
-                  <b>Friendly and intuitive interfaces</b> for all user profiles.
-                </li>
-              </ul>
+            </p>
+            <ul>
+              <li>
+                <b>
+                  The{' '}
+                  <a href="https://games.jmir.org/2021/3/e28674/" target="_blank" rel="noreferrer">
+                    co.LAB framework
+                  </a>
+                </b>{' '}
+                that support the co-design serious games.
+              </li>
+              <li>
+                <b>Friendly and intuitive interfaces</b> for all user profiles.
+              </li>
+            </ul>
+            <p>
               We want to create a platform for all of you, that let to imagine and design the
               serious game you need !
             </p>
@@ -94,6 +96,19 @@ export default function AboutColab(): JSX.Element {
           </div>
         </Flex>
       </Flex>
-    </div>
+      <div className={css({ flexGrow: 1 })}></div>
+      {version != 'LOADING' && (
+        <div
+          className={css({
+            fontStyle: 'italic',
+            alignSelf: 'center',
+            color: 'var(--darkDisabledGray)',
+          })}
+        >
+          version {version.dockerImages ? version.dockerImages : 'dev'} (build #
+          {version.buildNumber ? version.buildNumber : 'ninja'})
+        </div>
+      )}
+    </Flex>
   );
 }
