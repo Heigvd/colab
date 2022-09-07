@@ -326,6 +326,10 @@ export const forceLogout = createAsyncThunk('user/forceLogout', async (session: 
 // Projects
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
+export const getProject = createAsyncThunk('project/get', async (id: number) => {
+  return await restClient.ProjectRestEndpoint.getProject(id);
+});
+
 export const getUserProjects = createAsyncThunk('project/users', async () => {
   return await restClient.ProjectRestEndpoint.getUserProjects();
 });
