@@ -15,13 +15,14 @@ import java.util.List;
 import java.util.Set;
 import javax.json.bind.annotation.JsonbTransient;
 import javax.validation.constraints.NotNull;
+import org.apache.commons.text.StringEscapeUtils;
 
 /**
  * A change is an atomic set of microchanges.
  *
  * @author maxence
  */
-<span class="nc" id="L24">public class Change implements Serializable, WithWebsocketChannels {</span>
+<span class="nc" id="L25">public class Change implements Serializable, WithWebsocketChannels {</span>
 
     private static final long serialVersionUID = 1L;
 
@@ -58,7 +59,7 @@ import javax.validation.constraints.NotNull;
     /**
      * List of micro microchanges which compose this change
      */
-<span class="nc" id="L61">    @NotNull</span>
+<span class="nc" id="L62">    @NotNull</span>
     private List&lt;MicroChange&gt; microchanges = new ArrayList&lt;&gt;();
 
     /**
@@ -70,7 +71,7 @@ import javax.validation.constraints.NotNull;
 
     @Override
     public Long getId() {
-<span class="nc" id="L73">        return atId;</span>
+<span class="nc" id="L74">        return atId;</span>
     }
 
     /**
@@ -79,7 +80,7 @@ import javax.validation.constraints.NotNull;
      * @return set of microchanges
      */
     public List&lt;MicroChange&gt; getMicrochanges() {
-<span class="nc" id="L82">        return microchanges;</span>
+<span class="nc" id="L83">        return microchanges;</span>
     }
 
     /**
@@ -88,8 +89,8 @@ import javax.validation.constraints.NotNull;
      * @param microchanges microchanges
      */
     public void setMicrochanges(List&lt;MicroChange&gt; microchanges) {
-<span class="nc" id="L91">        this.microchanges = microchanges;</span>
-<span class="nc" id="L92">    }</span>
+<span class="nc" id="L92">        this.microchanges = microchanges;</span>
+<span class="nc" id="L93">    }</span>
 
     /**
      * Get the JSON discriminator
@@ -97,7 +98,7 @@ import javax.validation.constraints.NotNull;
      * @return JSON discriminator
      */
     public String getAtClass() {
-<span class="nc" id="L100">        return atClass;</span>
+<span class="nc" id="L101">        return atClass;</span>
     }
 
     /**
@@ -106,8 +107,8 @@ import javax.validation.constraints.NotNull;
      * @param atClass new discriminator
      */
     public void setAtClass(String atClass) {
-<span class="nc" id="L109">        this.atClass = atClass;</span>
-<span class="nc" id="L110">    }</span>
+<span class="nc" id="L110">        this.atClass = atClass;</span>
+<span class="nc" id="L111">    }</span>
 
     /**
      * The object id.
@@ -115,7 +116,7 @@ import javax.validation.constraints.NotNull;
      * @return the id of the object
      */
     public Long getAtId() {
-<span class="nc" id="L118">        return atId;</span>
+<span class="nc" id="L119">        return atId;</span>
     }
 
     /**
@@ -124,8 +125,8 @@ import javax.validation.constraints.NotNull;
      * @param atId object id
      */
     public void setAtId(Long atId) {
-<span class="nc" id="L127">        this.atId = atId;</span>
-<span class="nc" id="L128">    }</span>
+<span class="nc" id="L128">        this.atId = atId;</span>
+<span class="nc" id="L129">    }</span>
 
     /**
      * Get the revision hash this change is based on
@@ -133,7 +134,7 @@ import javax.validation.constraints.NotNull;
      * @return the revision hash
      */
     public Set&lt;String&gt; getBasedOn() {
-<span class="nc" id="L136">        return basedOn;</span>
+<span class="nc" id="L137">        return basedOn;</span>
     }
 
     /**
@@ -142,8 +143,8 @@ import javax.validation.constraints.NotNull;
      * @param basedOn list of revision hash
      */
     public void setBasedOn(Set&lt;String&gt; basedOn) {
-<span class="nc" id="L145">        this.basedOn = basedOn;</span>
-<span class="nc" id="L146">    }</span>
+<span class="nc" id="L146">        this.basedOn = basedOn;</span>
+<span class="nc" id="L147">    }</span>
 
     /**
      * the review to which this change leads.
@@ -151,7 +152,7 @@ import javax.validation.constraints.NotNull;
      * @return the revision hash
      */
     public String getRevision() {
-<span class="nc" id="L154">        return revision;</span>
+<span class="nc" id="L155">        return revision;</span>
     }
 
     /**
@@ -160,8 +161,8 @@ import javax.validation.constraints.NotNull;
      * @param revision revision hash
      */
     public void setRevision(String revision) {
-<span class="nc" id="L163">        this.revision = revision;</span>
-<span class="nc" id="L164">    }</span>
+<span class="nc" id="L164">        this.revision = revision;</span>
+<span class="nc" id="L165">    }</span>
 
     /**
      * The live session who authored this change
@@ -169,7 +170,7 @@ import javax.validation.constraints.NotNull;
      * @return live session id (ie. websocket session id)
      */
     public String getLiveSession() {
-<span class="nc" id="L172">        return liveSession;</span>
+<span class="nc" id="L173">        return liveSession;</span>
     }
 
     /**
@@ -178,8 +179,8 @@ import javax.validation.constraints.NotNull;
      * @param liveSession the live session id
      */
     public void setLiveSession(String liveSession) {
-<span class="nc" id="L181">        this.liveSession = liveSession;</span>
-<span class="nc" id="L182">    }</span>
+<span class="nc" id="L182">        this.liveSession = liveSession;</span>
+<span class="nc" id="L183">    }</span>
 
     /**
      * Get the project id
@@ -187,12 +188,12 @@ import javax.validation.constraints.NotNull;
      * @return id of the project
      */
     public Long getBlockId() {
-<span class="nc" id="L190">        return blockId;</span>
+<span class="nc" id="L191">        return blockId;</span>
     }
 
     @Override
     public Object getIndexEntryPayload() {
-<span class="nc" id="L195">        return this;</span>
+<span class="nc" id="L196">        return this;</span>
     }
 
     /**
@@ -201,19 +202,48 @@ import javax.validation.constraints.NotNull;
      * @param blockId the id
      */
     public void setBlockId(Long blockId) {
-<span class="nc" id="L204">        this.blockId = blockId;</span>
-<span class="nc" id="L205">    }</span>
+<span class="nc" id="L205">        this.blockId = blockId;</span>
+<span class="nc" id="L206">    }</span>
 
     @Override
     public ChannelsBuilder getChannelsBuilder() {
-<span class="nc" id="L209">        return new BlockChannelBuilder(blockId);</span>
+<span class="nc" id="L210">        return new BlockChannelBuilder(blockId);</span>
     }
 
     @Override
     public String toString() {
-<span class="nc" id="L214">        return &quot;Patch{rev@&quot; + this.revision</span>
+<span class="nc" id="L215">        return &quot;Patch{rev@&quot; + this.revision</span>
             + &quot; basedOn@&quot; + this.basedOn + &quot; µ: &quot;
             + this.microchanges + &quot;}&quot;;
+    }
+
+    /**
+     * Get debug code
+     *
+     * @return debug code
+     */
+    public String toDebugStatement() {
+<span class="nc" id="L226">        StringBuilder sb = new StringBuilder();</span>
+<span class="nc" id="L227">        sb.append(&quot;createChange(\&quot;&quot;).append(</span>
+<span class="nc" id="L228">            StringEscapeUtils.escapeEcmaScript(this.liveSession)</span>
+<span class="nc" id="L229">        ).append(&quot;\&quot;, [&quot;);</span>
+
+<span class="nc" id="L231">        this.basedOn.forEach(base -&gt; {</span>
+<span class="nc" id="L232">            sb.append(&quot;\&quot;&quot;)</span>
+<span class="nc" id="L233">                .append(StringEscapeUtils.escapeEcmaScript(base))</span>
+<span class="nc" id="L234">                .append(&quot;\&quot;&quot;);</span>
+<span class="nc" id="L235">        });</span>
+
+<span class="nc" id="L237">        sb.append(&quot;], \&quot;&quot;)</span>
+<span class="nc" id="L238">            .append(StringEscapeUtils.escapeEcmaScript(this.revision))</span>
+<span class="nc" id="L239">            .append(&quot;\&quot;&quot;);</span>
+
+<span class="nc" id="L241">        this.microchanges.forEach(mu -&gt; {</span>
+<span class="nc" id="L242">            sb.append(&quot;, &quot;).append(mu.getDebugStatement());</span>
+<span class="nc" id="L243">        });</span>
+<span class="nc" id="L244">        sb.append(&quot;)&quot;);</span>
+
+<span class="nc" id="L246">        return sb.toString();</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

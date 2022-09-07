@@ -8,26 +8,27 @@ package ch.colabproject.colab.api.microchanges.model;
 
 import java.io.Serializable;
 import javax.validation.constraints.NotNull;
+import org.apache.commons.text.StringEscapeUtils;
 
 /**
  * A microchange.
  *
  * @author maxence
  */
-<span class="nc" id="L17">public class MicroChange implements Serializable {</span>
+<span class="nc" id="L18">public class MicroChange implements Serializable {</span>
 
     /**
      * microChange Type
      */
-<span class="nc" id="L22">    public enum Type {</span>
+<span class="nc" id="L23">    public enum Type {</span>
         /**
          * Insert
          */
-<span class="nc" id="L26">        I,</span>
+<span class="nc" id="L27">        I,</span>
         /**
          * Delete
          */
-<span class="nc" id="L30">        D</span>
+<span class="nc" id="L31">        D</span>
     }
 
     /**
@@ -58,7 +59,7 @@ import javax.validation.constraints.NotNull;
      * @return offset value
      */
     public Integer getO() {
-<span class="nc" id="L61">        return o;</span>
+<span class="nc" id="L62">        return o;</span>
     }
 
     /**
@@ -67,8 +68,8 @@ import javax.validation.constraints.NotNull;
      * @param o offset value
      */
     public void setO(Integer o) {
-<span class="nc" id="L70">        this.o = o;</span>
-<span class="nc" id="L71">    }</span>
+<span class="nc" id="L71">        this.o = o;</span>
+<span class="nc" id="L72">    }</span>
 
     /**
      * get type
@@ -76,7 +77,7 @@ import javax.validation.constraints.NotNull;
      * @return change type
      */
     public Type getT() {
-<span class="nc" id="L79">        return t;</span>
+<span class="nc" id="L80">        return t;</span>
     }
 
     /**
@@ -85,8 +86,8 @@ import javax.validation.constraints.NotNull;
      * @param t type
      */
     public void setT(Type t) {
-<span class="nc" id="L88">        this.t = t;</span>
-<span class="nc" id="L89">    }</span>
+<span class="nc" id="L89">        this.t = t;</span>
+<span class="nc" id="L90">    }</span>
 
     /**
      * Get change value
@@ -94,7 +95,7 @@ import javax.validation.constraints.NotNull;
      * @return value
      */
     public String getV() {
-<span class="nc" id="L97">        return v;</span>
+<span class="nc" id="L98">        return v;</span>
     }
 
     /**
@@ -103,8 +104,8 @@ import javax.validation.constraints.NotNull;
      * @param v value
      */
     public void setV(String v) {
-<span class="nc" id="L106">        this.v = v;</span>
-<span class="nc" id="L107">    }</span>
+<span class="nc" id="L107">        this.v = v;</span>
+<span class="nc" id="L108">    }</span>
 
     /**
      * get length.
@@ -112,7 +113,7 @@ import javax.validation.constraints.NotNull;
      * @return length
      */
     public Integer getL() {
-<span class="nc" id="L115">        return l;</span>
+<span class="nc" id="L116">        return l;</span>
     }
 
     /**
@@ -121,19 +122,32 @@ import javax.validation.constraints.NotNull;
      * @param l length
      */
     public void setL(Integer l) {
-<span class="nc" id="L124">        this.l = l;</span>
-<span class="nc" id="L125">    }</span>
+<span class="nc" id="L125">        this.l = l;</span>
+<span class="nc" id="L126">    }</span>
 
     @Override
     public String toString() {
-<span class="nc bnc" id="L129" title="All 2 branches missed.">        if (t == Type.D) {</span>
-<span class="nc" id="L130">            return &quot;MicroChange{&quot;</span>
+<span class="nc bnc" id="L130" title="All 2 branches missed.">        if (t == Type.D) {</span>
+<span class="nc" id="L131">            return &quot;MicroChange{&quot;</span>
                 + &quot;DELETE &quot; + l + &quot; from &quot; + o
                 + '}';
         } else {
-<span class="nc" id="L134">            return &quot;MicroChange{&quot;</span>
+<span class="nc" id="L135">            return &quot;MicroChange{&quot;</span>
                 + &quot;INSERT '&quot; + v + &quot;' at &quot; + o
                 + '}';
+        }
+    }
+
+    /**
+     * Get debug code
+     *
+     * @return debug code
+     */
+    public String getDebugStatement() {
+<span class="nc bnc" id="L147" title="All 2 branches missed.">        if (t == Type.D) {</span>
+<span class="nc" id="L148">            return &quot;del(&quot; + o + &quot;, &quot; + l + &quot;)&quot;;</span>
+        } else {
+<span class="nc" id="L150">            return &quot;ins(&quot; + o + &quot;, \&quot;&quot; + StringEscapeUtils.escapeEcmaScript(v)+ &quot;\&quot;)&quot;;</span>
         }
     }
 }

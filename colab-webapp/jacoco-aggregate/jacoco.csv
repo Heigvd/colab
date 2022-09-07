@@ -25,9 +25,9 @@ colab-webapp/colab-api,ch.colabproject.colab.api.security.permissions,Conditions
 colab-webapp/colab-api,ch.colabproject.colab.api.security.permissions,Conditions.IsCurrentUserMemberOfProject,56,0,8,0,18,0,9,0,5,0
 colab-webapp/colab-api,ch.colabproject.colab.api.rest.document.bean,UrlMetadata,29,0,0,0,11,0,7,0,7,0
 colab-webapp/colab-api,ch.colabproject.colab.api.rest.document.bean,ResourceCreationData,138,0,6,0,45,0,21,0,18,0
-colab-webapp/colab-api,ch.colabproject.colab.api.microchanges.live,LiveUpdates,1259,0,148,0,267,0,112,0,38,0
+colab-webapp/colab-api,ch.colabproject.colab.api.microchanges.live,LiveUpdates,1289,0,148,0,277,0,112,0,38,0
 colab-webapp/colab-api,ch.colabproject.colab.api.microchanges.live,LiveResult,29,0,0,0,11,0,6,0,6,0
-colab-webapp/colab-api,ch.colabproject.colab.api.microchanges.live,LiveManager,356,0,16,0,100,0,24,0,16,0
+colab-webapp/colab-api,ch.colabproject.colab.api.microchanges.live,LiveManager,366,0,16,0,102,0,24,0,16,0
 colab-webapp/colab-api,ch.colabproject.colab.api.ws.utils,JsonEncoder,22,0,0,0,8,0,5,0,5,0
 colab-webapp/colab-api,ch.colabproject.colab.api.ws.utils,CallableGetChannel,14,0,2,0,5,0,3,0,2,0
 colab-webapp/colab-api,ch.colabproject.colab.api.ws.utils,JsonWsMessageListDecoder.new GenericType() {...},6,0,0,0,1,0,1,0,1,0
@@ -61,7 +61,7 @@ colab-webapp/colab-api,ch.colabproject.colab.api.model.document,ExternalLink,106
 colab-webapp/colab-api,ch.colabproject.colab.api.model.document,AbstractResource,991,0,142,0,108,0,158,0,87,0
 colab-webapp/colab-api,ch.colabproject.colab.api.model.document,Resource,489,0,44,0,48,0,63,0,41,0
 colab-webapp/colab-api,ch.colabproject.colab.api.model.document,ResourceRef,357,0,36,0,38,0,47,0,29,0
-colab-webapp/colab-api,ch.colabproject.colab.api.model.document,TextDataBlock,665,0,88,0,53,0,88,0,44,0
+colab-webapp/colab-api,ch.colabproject.colab.api.model.document,TextDataBlock,716,0,92,0,57,0,94,0,48,0
 colab-webapp/colab-api,ch.colabproject.colab.api.model.document,DocumentFile,201,0,14,0,25,0,28,0,21,0
 colab-webapp/colab-api,ch.colabproject.colab.api.model.document,Document,722,0,94,0,61,0,120,0,73,0
 colab-webapp/colab-api,ch.colabproject.colab.api.controller.config,ConfigurationManager,12,0,0,0,4,0,2,0,2,0
@@ -205,8 +205,8 @@ colab-webapp/colab-api,ch.colabproject.colab.api.controller.card,CardTypeManager
 colab-webapp/colab-api,ch.colabproject.colab.api.model.common,Illustration,305,0,30,0,29,0,55,0,40,0
 colab-webapp/colab-api,ch.colabproject.colab.api.model.common,Tracking,281,0,28,0,13,0,55,0,41,0
 colab-webapp/colab-api,ch.colabproject.colab.api.model.common,IconLibrary,24,0,0,0,3,0,1,0,1,0
-colab-webapp/colab-api,ch.colabproject.colab.api.microchanges.model,MicroChange,47,0,2,0,16,0,11,0,10,0
-colab-webapp/colab-api,ch.colabproject.colab.api.microchanges.model,Change,76,0,0,0,27,0,19,0,19,0
+colab-webapp/colab-api,ch.colabproject.colab.api.microchanges.model,MicroChange,64,0,4,0,19,0,13,0,11,0
+colab-webapp/colab-api,ch.colabproject.colab.api.microchanges.model,Change,135,0,0,0,44,0,22,0,22,0
 colab-webapp/colab-api,ch.colabproject.colab.api.microchanges.model,MicroChange.Type,24,0,0,0,3,0,1,0,1,0
 colab-webapp/colab-api,ch.colabproject.colab.api.persistence.jpa.project,ProjectDao,73,0,0,0,18,0,8,0,8,0
 colab-webapp/colab-api,ch.colabproject.colab.api.rest.link,StickyNoteLinkRestEndpoint,143,0,2,0,37,0,12,0,11,0
