@@ -7,6 +7,7 @@
 package ch.colabproject.colab.api.rest.document;
 
 import ch.colabproject.colab.api.microchanges.live.LiveManager;
+import ch.colabproject.colab.api.microchanges.live.monitoring.BlockMonitoring;
 import ch.colabproject.colab.api.microchanges.model.Change;
 import ch.colabproject.colab.generator.model.annotations.AdminResource;
 import ch.colabproject.colab.generator.model.annotations.AuthenticationRequired;
@@ -29,7 +30,7 @@ import javax.ws.rs.core.MediaType;
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
 @AuthenticationRequired
-<span class="nc" id="L32">public class ChangeRestEndpoint {</span>
+<span class="nc" id="L33">public class ChangeRestEndpoint {</span>
 
     /** logger */
     // private static final Logger logger = LoggerFactory.getLogger(ChangesRestEndpoint.class);
@@ -50,7 +51,7 @@ import javax.ws.rs.core.MediaType;
     @GET
     @Path(&quot;/{id}/changes&quot;)
     public List&lt;Change&gt; getChanges(@PathParam(&quot;id&quot;) Long id) {
-<span class="nc" id="L53">        return liveManager.getPendingChanges(id);</span>
+<span class="nc" id="L54">        return liveManager.getPendingChanges(id);</span>
     }
 
     /**
@@ -62,8 +63,8 @@ import javax.ws.rs.core.MediaType;
     @PUT
     @Path(&quot;/{id}&quot;)
     public void patchBlock(@PathParam(&quot;id&quot;) Long id, Change change) {
-<span class="nc" id="L65">        liveManager.patchBlock(id, change);</span>
-<span class="nc" id="L66">    }</span>
+<span class="nc" id="L66">        liveManager.patchBlock(id, change);</span>
+<span class="nc" id="L67">    }</span>
 
     /**
      * Patch a block with a change
@@ -72,10 +73,21 @@ import javax.ws.rs.core.MediaType;
      */
     @PUT
     @Path(&quot;/{id}/dropChanges&quot;)
-    @AdminResource
     public void deletePendingChanges(@PathParam(&quot;id&quot;) Long id) {
 <span class="nc" id="L77">        liveManager.deletePendingChangesAndPropagate(id);</span>
 <span class="nc" id="L78">    }</span>
+
+    /**
+     * get data to monitor block with pending changes
+     *
+     * @return list of block beiing edited and their status
+     */
+    @GET
+    @Path(&quot;/Monitoring&quot;)
+    @AdminResource
+    public List&lt;BlockMonitoring&gt; getMonitoringData(){
+<span class="nc" id="L89">        return liveManager.getMonitoringData();</span>
+    }
 
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

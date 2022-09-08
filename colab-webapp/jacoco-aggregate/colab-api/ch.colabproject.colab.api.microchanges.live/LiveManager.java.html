@@ -10,10 +10,18 @@ import ch.colabproject.colab.api.controller.EntityGatheringBagForPropagation;
 import ch.colabproject.colab.api.controller.RequestManager;
 import ch.colabproject.colab.api.controller.document.BlockManager;
 import ch.colabproject.colab.api.exceptions.ColabMergeException;
+import ch.colabproject.colab.api.microchanges.live.monitoring.BlockMonitoring;
 import ch.colabproject.colab.api.microchanges.model.Change;
 import ch.colabproject.colab.api.microchanges.tools.CancelDebounce;
 import ch.colabproject.colab.api.microchanges.tools.Debouncer;
+import ch.colabproject.colab.api.model.card.Card;
+import ch.colabproject.colab.api.model.card.CardContent;
+import ch.colabproject.colab.api.model.card.CardType;
+import ch.colabproject.colab.api.model.card.CardTypeRef;
+import ch.colabproject.colab.api.model.document.Resource;
+import ch.colabproject.colab.api.model.document.Resourceable;
 import ch.colabproject.colab.api.model.document.TextDataBlock;
+import ch.colabproject.colab.api.model.project.Project;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -22,7 +30,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
-import javax.cache.Cache;
 import javax.ejb.Lock;
 import javax.ejb.LockType;
 import javax.ejb.Singleton;
@@ -35,6 +42,8 @@ import com.hazelcast.cluster.Member;
 import com.hazelcast.core.HazelcastInstance;
 import com.hazelcast.core.IExecutorService;
 import com.hazelcast.cp.lock.FencedLock;
+import com.hazelcast.map.IMap;
+import java.util.stream.Collectors;
 
 /**
  * Micro Changes Management.
@@ -43,19 +52,15 @@ import com.hazelcast.cp.lock.FencedLock;
  */
 @Singleton
 @Lock(LockType.READ)
-<span class="nc" id="L46">public class LiveManager implements Serializable {</span>
+<span class="nc" id="L55">public class LiveManager implements Serializable {</span>
 
     private static final long serialVersionUID = 1L;
 
     /** logger */
-<span class="nc" id="L51">    private static final Logger logger = LoggerFactory.getLogger(LiveManager.class);</span>
+<span class="nc" id="L60">    private static final Logger logger = LoggerFactory.getLogger(LiveManager.class);</span>
 
     /** delayed process call */
-<span class="nc" id="L54">    private final Map&lt;Long, Future&lt;Void&gt;&gt; debounces = new HashMap&lt;&gt;();</span>
-
-    /** Shared cache of microchanges */
-    @Inject
-    private Cache&lt;Long, LiveUpdates&gt; cache;
+<span class="nc" id="L63">    private final Map&lt;Long, Future&lt;Void&gt;&gt; debounces = new HashMap&lt;&gt;();</span>
 
     /** Block specific logic management */
     @Inject
@@ -75,6 +80,11 @@ import com.hazelcast.cp.lock.FencedLock;
     @Inject
     private EntityGatheringBagForPropagation transactionManager;
 
+    /** Get shared cache of microchanges */
+    private IMap&lt;Long, LiveUpdates&gt; getCache() {
+<span class="nc" id="L85">        return hzInstance.getMap(&quot;MICROCHANGES_CAHCE&quot;);</span>
+    }
+
     /**
      * Get the lock for the given block id
      *
@@ -83,7 +93,7 @@ import com.hazelcast.cp.lock.FencedLock;
      * @return the lock
      */
     private FencedLock getLock(Long id) {
-<span class="nc" id="L86">        return hzInstance.getCPSubsystem().getLock(&quot;Block&quot; + id);</span>
+<span class="nc" id="L96">        return hzInstance.getCPSubsystem().getLock(&quot;Block&quot; + id);</span>
     }
 
     /**
@@ -92,9 +102,9 @@ import com.hazelcast.cp.lock.FencedLock;
      * @param id id of the block to lock
      */
     private void lock(Long id) {
-<span class="nc" id="L95">        logger.trace(&quot;Lock block #{}&quot;, id);</span>
-<span class="nc" id="L96">        getLock(id).lock();</span>
-<span class="nc" id="L97">    }</span>
+<span class="nc" id="L105">        logger.trace(&quot;Lock block #{}&quot;, id);</span>
+<span class="nc" id="L106">        getLock(id).lock();</span>
+<span class="nc" id="L107">    }</span>
 
     /**
      * Unlock the block
@@ -102,9 +112,9 @@ import com.hazelcast.cp.lock.FencedLock;
      * @param id id of the block to unlock
      */
     private void unlock(Long id) {
-<span class="nc" id="L105">        logger.trace(&quot;Unlock block #{}&quot;, id);</span>
-<span class="nc" id="L106">        getLock(id).unlock();</span>
-<span class="nc" id="L107">    }</span>
+<span class="nc" id="L115">        logger.trace(&quot;Unlock block #{}&quot;, id);</span>
+<span class="nc" id="L116">        getLock(id).unlock();</span>
+<span class="nc" id="L117">    }</span>
 
     /**
      * Get pending updates for the given block
@@ -114,28 +124,28 @@ import com.hazelcast.cp.lock.FencedLock;
      * @return LiveUpdate object
      */
     private LiveUpdates get(Long id) {
-<span class="nc" id="L117">        logger.debug(&quot;Get LiveUpdates for block #{}&quot;, id);</span>
+<span class="nc" id="L127">        logger.debug(&quot;Get LiveUpdates for block #{}&quot;, id);</span>
         try {
-<span class="nc" id="L119">            this.lock(id);</span>
-<span class="nc" id="L120">            LiveUpdates get = cache.get(id);</span>
-<span class="nc bnc" id="L121" title="All 2 branches missed.">            if (get != null) {</span>
-<span class="nc" id="L122">                logger.trace(&quot;Get existing {}&quot;, get);</span>
-<span class="nc" id="L123">                return get;</span>
+<span class="nc" id="L129">            this.lock(id);</span>
+<span class="nc" id="L130">            LiveUpdates get = getCache().get(id);</span>
+<span class="nc bnc" id="L131" title="All 2 branches missed.">            if (get != null) {</span>
+<span class="nc" id="L132">                logger.trace(&quot;Get existing {}&quot;, get);</span>
+<span class="nc" id="L133">                return get;</span>
             } else {
-<span class="nc" id="L125">                LiveUpdates l = new LiveUpdates();</span>
+<span class="nc" id="L135">                LiveUpdates l = new LiveUpdates();</span>
 
-<span class="nc" id="L127">                TextDataBlock block = blockManager.findBlock(id);</span>
-<span class="nc" id="L128">                l.setRevision(block.getRevision());</span>
-<span class="nc" id="L129">                l.setContent(block.getTextData());</span>
+<span class="nc" id="L137">                TextDataBlock block = blockManager.findBlock(id);</span>
+<span class="nc" id="L138">                l.setRevision(block.getRevision());</span>
+<span class="nc" id="L139">                l.setContent(block.getTextData());</span>
 
-<span class="nc" id="L131">                l.setTargetClass(block.getJsonDiscriminator());</span>
-<span class="nc" id="L132">                l.setTargetId(block.getId());</span>
+<span class="nc" id="L141">                l.setTargetClass(block.getJsonDiscriminator());</span>
+<span class="nc" id="L142">                l.setTargetId(block.getId());</span>
 
-<span class="nc" id="L134">                logger.trace(&quot;new empty LiveUpdates  {}&quot;, l);</span>
-<span class="nc" id="L135">                return l;</span>
+<span class="nc" id="L144">                logger.trace(&quot;new empty LiveUpdates  {}&quot;, l);</span>
+<span class="nc" id="L145">                return l;</span>
             }
         } finally {
-<span class="nc" id="L138">            this.unlock(id);</span>
+<span class="nc" id="L148">            this.unlock(id);</span>
         }
     }
 
@@ -147,38 +157,38 @@ import com.hazelcast.cp.lock.FencedLock;
      * @param patch the patch to apply
      */
     public void patchBlock(Long id, Change patch) {
-<span class="nc" id="L150">        logger.debug(&quot;Patch block #{} with {}&quot;, id, patch);</span>
-<span class="nc" id="L151">        TextDataBlock block = blockManager.findBlock(id);</span>
+<span class="nc" id="L160">        logger.debug(&quot;Patch block #{} with {}&quot;, id, patch);</span>
+<span class="nc" id="L161">        TextDataBlock block = blockManager.findBlock(id);</span>
         try {
-<span class="nc" id="L153">            this.lock(id);</span>
-<span class="nc" id="L154">            LiveUpdates get = get(id);</span>
-<span class="nc" id="L155">            List&lt;Change&gt; changes = get.getPendingChanges();</span>
+<span class="nc" id="L163">            this.lock(id);</span>
+<span class="nc" id="L164">            LiveUpdates get = get(id);</span>
+<span class="nc" id="L165">            List&lt;Change&gt; changes = get.getPendingChanges();</span>
 
-<span class="nc" id="L157">            Set&lt;String&gt; basedOn = patch.getBasedOn();</span>
+<span class="nc" id="L167">            Set&lt;String&gt; basedOn = patch.getBasedOn();</span>
 
-<span class="nc bnc" id="L159" title="All 2 branches missed.">            boolean parentExists = basedOn.contains(block.getRevision())</span>
-<span class="nc" id="L160">                || changes.stream()</span>
-<span class="nc" id="L161">                    .filter(change -&gt; basedOn.stream()</span>
-<span class="nc" id="L162">                    .filter(rev -&gt; change.getRevision().equals(rev))</span>
-<span class="nc" id="L163">                    .findFirst().isPresent()</span>
+<span class="nc bnc" id="L169" title="All 2 branches missed.">            boolean parentExists = basedOn.contains(block.getRevision())</span>
+<span class="nc" id="L170">                || changes.stream()</span>
+<span class="nc" id="L171">                    .filter(change -&gt; basedOn.stream()</span>
+<span class="nc" id="L172">                    .filter(rev -&gt; change.getRevision().equals(rev))</span>
+<span class="nc" id="L173">                    .findFirst().isPresent()</span>
                     )
-<span class="nc bnc" id="L165" title="All 2 branches missed.">                    .findFirst().isPresent();</span>
+<span class="nc bnc" id="L175" title="All 2 branches missed.">                    .findFirst().isPresent();</span>
 
-<span class="nc bnc" id="L167" title="All 2 branches missed.">            if (!parentExists) {</span>
-<span class="nc" id="L168">                logger.warn(&quot;Change is based on non-existing parent&quot;);</span>
-<span class="nc" id="L169">                logger.trace(&quot;TODO: keep it in a temp bag the time his parent is known&quot;);</span>
+<span class="nc bnc" id="L177" title="All 2 branches missed.">            if (!parentExists) {</span>
+<span class="nc" id="L178">                logger.warn(&quot;Change is based on non-existing parent&quot;);</span>
+<span class="nc" id="L179">                logger.trace(&quot;TODO: keep it in a temp bag the time his parent is known&quot;);</span>
                 // patch.setBasedOn(&quot;0&quot;);
             }
             // Project project = block.getProject();
 
-<span class="nc" id="L174">            patch.setBlockId(block.getId());</span>
+<span class="nc" id="L184">            patch.setBlockId(block.getId());</span>
 
-<span class="nc" id="L176">            changes.add(patch);</span>
-<span class="nc" id="L177">            cache.put(id, get);</span>
-<span class="nc" id="L178">            this.scheduleSaveMicroChanges(id);</span>
+<span class="nc" id="L186">            changes.add(patch);</span>
+<span class="nc" id="L187">            getCache().put(id, get);</span>
+<span class="nc" id="L188">            this.scheduleSaveMicroChanges(id);</span>
 
-<span class="nc" id="L180">            logger.trace(&quot;Registered change is {}&quot;, patch);</span>
-<span class="nc" id="L181">            transactionManager.registerUpdate(patch);</span>
+<span class="nc" id="L190">            logger.trace(&quot;Registered change is {}&quot;, patch);</span>
+<span class="nc" id="L191">            transactionManager.registerUpdate(patch);</span>
 //            WsUpdateChangeMessage message = WsUpdateChangeMessage.build(List.of(patch));
 
 //            try {
@@ -189,9 +199,9 @@ import com.hazelcast.cp.lock.FencedLock;
 //                logger.error(&quot;Live update error: precompute failed&quot;);
 //            }
         } finally {
-<span class="nc" id="L192">            this.unlock(id);</span>
+<span class="nc" id="L202">            this.unlock(id);</span>
         }
-<span class="nc" id="L194">    }</span>
+<span class="nc" id="L204">    }</span>
 
     /**
      * Get all pending changes for the given block
@@ -201,11 +211,11 @@ import com.hazelcast.cp.lock.FencedLock;
      * @return list of changes
      */
     public List&lt;Change&gt; getPendingChanges(Long id) {
-<span class="nc" id="L204">        LiveUpdates get = cache.get(id);</span>
-<span class="nc bnc" id="L205" title="All 2 branches missed.">        if (get != null) {</span>
-<span class="nc" id="L206">            return get.getPendingChanges();</span>
+<span class="nc" id="L214">        LiveUpdates get = getCache().get(id);</span>
+<span class="nc bnc" id="L215" title="All 2 branches missed.">        if (get != null) {</span>
+<span class="nc" id="L216">            return get.getPendingChanges();</span>
         } else {
-<span class="nc" id="L208">            return new ArrayList&lt;&gt;();</span>
+<span class="nc" id="L218">            return new ArrayList&lt;&gt;();</span>
         }
     }
 
@@ -216,37 +226,42 @@ import com.hazelcast.cp.lock.FencedLock;
      */
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     public void process(Long blockId) {
-<span class="nc" id="L219">        requestManager.sudo(() -&gt; {</span>
-<span class="nc" id="L220">            logger.debug(&quot;Process changes for #{}&quot;, blockId);</span>
+<span class="nc" id="L229">        requestManager.sudo(() -&gt; {</span>
+<span class="nc" id="L230">            logger.debug(&quot;Process changes for #{}&quot;, blockId);</span>
             try {
-<span class="nc" id="L222">                this.lock(blockId);</span>
-<span class="nc" id="L223">                TextDataBlock block = blockManager.findBlock(blockId);</span>
-<span class="nc" id="L224">                LiveUpdates get = this.cache.get(blockId);</span>
-<span class="nc bnc" id="L225" title="All 2 branches missed.">                if (get != null) {</span>
-                    try {
-<span class="nc" id="L227">                        LiveResult result = get.process(false);</span>
-<span class="nc" id="L228">                        block.setTextData(result.getContent());</span>
-<span class="nc" id="L229">                        block.setRevision(result.getRevision());</span>
+<span class="nc" id="L232">                this.lock(blockId);</span>
+<span class="nc" id="L233">                TextDataBlock block = blockManager.findBlock(blockId);</span>
+<span class="nc bnc" id="L234" title="All 2 branches missed.">                if (block != null) {</span>
+<span class="nc" id="L235">                    LiveUpdates get = this.getCache().get(blockId);</span>
+<span class="nc bnc" id="L236" title="All 2 branches missed.">                    if (get != null) {</span>
+                        try {
+<span class="nc" id="L238">                            LiveResult result = get.process(false);</span>
+<span class="nc" id="L239">                            block.setTextData(result.getContent());</span>
+<span class="nc" id="L240">                            block.setRevision(result.getRevision());</span>
 
-<span class="nc" id="L231">                        blockManager.updateBlock(block);</span>
-<span class="nc" id="L232">                        this.deletePendingChangesAndPropagate(blockId);</span>
-<span class="nc" id="L233">                    } catch (RuntimeException ex) {</span>
-<span class="nc" id="L234">                        logger.error(&quot;Process failed&quot;, ex);</span>
-<span class="nc" id="L235">                        block.setHealthy(false);</span>
-<span class="nc" id="L236">                    } catch (ColabMergeException ex) {</span>
-<span class="nc" id="L237">                        logger.error(&quot;Fails to save block&quot;, ex);</span>
-<span class="nc" id="L238">                        block.setHealthy(false);</span>
-<span class="nc" id="L239">                    } catch (StackOverflowError error) {</span>
-<span class="nc" id="L240">                        logger.error(&quot;StackOverflowError&quot;);</span>
-<span class="nc" id="L241">                        block.setHealthy(false);</span>
-<span class="nc" id="L242">                    }</span>
+<span class="nc" id="L242">                            blockManager.updateBlock(block);</span>
+<span class="nc" id="L243">                            this.deletePendingChangesAndPropagate(blockId);</span>
+<span class="nc" id="L244">                        } catch (RuntimeException ex) {</span>
+<span class="nc" id="L245">                            logger.error(&quot;Process failed&quot;, ex);</span>
+<span class="nc" id="L246">                            block.setHealthy(false);</span>
+<span class="nc" id="L247">                        } catch (ColabMergeException ex) {</span>
+<span class="nc" id="L248">                            logger.error(&quot;Fails to save block&quot;, ex);</span>
+<span class="nc" id="L249">                            block.setHealthy(false);</span>
+<span class="nc" id="L250">                        } catch (StackOverflowError error) {</span>
+<span class="nc" id="L251">                            logger.error(&quot;StackOverflowError&quot;);</span>
+<span class="nc" id="L252">                            block.setHealthy(false);</span>
+<span class="nc" id="L253">                        }</span>
+                    }
+<span class="nc" id="L255">                } else {</span>
+                    // block has been deleted
+<span class="nc" id="L257">                    this.deletePendingChangesAndPropagate(blockId);</span>
                 }
             } finally {
-<span class="nc" id="L245">                this.unlock(blockId);</span>
+<span class="nc" id="L260">                this.unlock(blockId);</span>
             }
-<span class="nc" id="L247">        }</span>
+<span class="nc" id="L262">        }</span>
         );
-<span class="nc" id="L249">    }</span>
+<span class="nc" id="L264">    }</span>
 
     /**
      * Clear pending changes
@@ -254,14 +269,17 @@ import com.hazelcast.cp.lock.FencedLock;
      * @param id id of the block
      */
     public void deletePendingChangesAndPropagate(Long id) {
-<span class="nc" id="L257">        logger.debug(&quot;Delete pending changes&quot;);</span>
-<span class="nc" id="L258">        TextDataBlock block = blockManager.findBlock(id);</span>
-<span class="nc bnc" id="L259" title="All 2 branches missed.">        if (block != null) {</span>
-<span class="nc" id="L260">            List&lt;Change&gt; changes = getPendingChanges(id);</span>
-<span class="nc" id="L261">            cache.remove(id);</span>
-<span class="nc" id="L262">            block.setHealthy(true);</span>
+<span class="nc" id="L272">        logger.debug(&quot;Delete pending changes&quot;);</span>
+<span class="nc" id="L273">        TextDataBlock block = blockManager.findBlock(id);</span>
+<span class="nc bnc" id="L274" title="All 2 branches missed.">        if (block != null) {</span>
 
-<span class="nc" id="L264">            transactionManager.registerDeletion(changes);</span>
+<span class="nc" id="L276">            block.setHealthy(true);</span>
+            try {
+<span class="nc" id="L278">                List&lt;Change&gt; changes = getPendingChanges(id);</span>
+<span class="nc" id="L279">                transactionManager.registerDeletion(changes);</span>
+<span class="nc" id="L280">            } catch (Throwable t) {</span>
+<span class="nc" id="L281">                logger.warn(&quot;Propagate deleted changes failed&quot;, t);</span>
+<span class="nc" id="L282">            }</span>
 //            WsDeleteChangeMessage message = WsDeleteChangeMessage.build(changes);
 //
 //            try {
@@ -271,7 +289,13 @@ import com.hazelcast.cp.lock.FencedLock;
 //                logger.error(&quot;Live update error: precompute failed&quot;);
 //            }
         }
-<span class="nc" id="L274">    }</span>
+
+        try {
+<span class="nc" id="L294">            getCache().remove(id);</span>
+<span class="nc" id="L295">        } catch (Throwable t) {</span>
+<span class="nc" id="L296">            logger.warn(&quot;Drop changes&quot;, t);</span>
+<span class="nc" id="L297">        }</span>
+<span class="nc" id="L298">    }</span>
 
     /**
      * Cancel any debounce call related to the given blockId
@@ -281,12 +305,12 @@ import com.hazelcast.cp.lock.FencedLock;
      * @return true if there was something to cancel
      */
     public boolean cancelDebounce(Long blockId) {
-<span class="nc" id="L284">        logger.debug(&quot;Cancel debounce #{}&quot;, blockId);</span>
-<span class="nc" id="L285">        Future&lt;Void&gt; remove = this.debounces.remove(blockId);</span>
-<span class="nc bnc" id="L286" title="All 2 branches missed.">        if (remove != null) {</span>
-<span class="nc" id="L287">            return remove.cancel(true);</span>
+<span class="nc" id="L308">        logger.debug(&quot;Cancel debounce #{}&quot;, blockId);</span>
+<span class="nc" id="L309">        Future&lt;Void&gt; remove = this.debounces.remove(blockId);</span>
+<span class="nc bnc" id="L310" title="All 2 branches missed.">        if (remove != null) {</span>
+<span class="nc" id="L311">            return remove.cancel(true);</span>
         }
-<span class="nc" id="L289">        return false;</span>
+<span class="nc" id="L313">        return false;</span>
     }
 
     /**
@@ -297,24 +321,105 @@ import com.hazelcast.cp.lock.FencedLock;
      * @param blockId id of the block
      */
     public void scheduleSaveMicroChanges(Long blockId) {
-<span class="nc" id="L300">        IExecutorService executorService = hzInstance.getExecutorService(&quot;COLAB_LIVE&quot;);</span>
-<span class="nc" id="L301">        Map&lt;Member, Future&lt;Boolean&gt;&gt; cancelCalls = executorService</span>
-<span class="nc" id="L302">            .submitToAllMembers(new CancelDebounce(blockId));</span>
+<span class="nc" id="L324">        IExecutorService executorService = hzInstance.getExecutorService(&quot;COLAB_LIVE&quot;);</span>
+<span class="nc" id="L325">        Map&lt;Member, Future&lt;Boolean&gt;&gt; cancelCalls = executorService</span>
+<span class="nc" id="L326">            .submitToAllMembers(new CancelDebounce(blockId));</span>
 
-<span class="nc" id="L304">        logger.debug(&quot;Schedule processing #{}&quot;, blockId);</span>
+<span class="nc" id="L328">        logger.debug(&quot;Schedule processing #{}&quot;, blockId);</span>
 
         // cancel all pending debounce calls
-<span class="nc" id="L307">        cancelCalls.values().forEach(cancelCall -&gt; {</span>
+<span class="nc" id="L331">        cancelCalls.values().forEach(cancelCall -&gt; {</span>
             try {
-<span class="nc" id="L309">                cancelCall.get();</span>
-<span class="nc" id="L310">            } catch (InterruptedException | ExecutionException ex) {</span>
-<span class="nc" id="L311">                logger.error(&quot;Fails to cancel&quot;, ex);</span>
-<span class="nc" id="L312">            }</span>
-<span class="nc" id="L313">        });</span>
+<span class="nc" id="L333">                cancelCall.get();</span>
+<span class="nc" id="L334">            } catch (InterruptedException | ExecutionException ex) {</span>
+<span class="nc" id="L335">                logger.error(&quot;Fails to cancel&quot;, ex);</span>
+<span class="nc" id="L336">            }</span>
+<span class="nc" id="L337">        });</span>
 
         // schedule a new one
-<span class="nc" id="L316">        Future&lt;Void&gt; call = executorService.submit(new Debouncer(blockId));</span>
-<span class="nc" id="L317">        this.debounces.put(blockId, call);</span>
-<span class="nc" id="L318">    }</span>
+<span class="nc" id="L340">        Future&lt;Void&gt; call = executorService.submit(new Debouncer(blockId));</span>
+<span class="nc" id="L341">        this.debounces.put(blockId, call);</span>
+<span class="nc" id="L342">    }</span>
+
+    /**
+     * get data to monitor block with pending changes
+     *
+     * @return monitoring data
+     */
+    public List&lt;BlockMonitoring&gt; getMonitoringData() {
+<span class="nc" id="L350">        IMap&lt;Long, LiveUpdates&gt; cache = getCache();</span>
+<span class="nc" id="L351">        Set&lt;Long&gt; keys = cache.keySet();</span>
+
+<span class="nc" id="L353">        return keys.stream().map(key -&gt; {</span>
+<span class="nc" id="L354">            var bm = new BlockMonitoring();</span>
+<span class="nc" id="L355">            bm.setBlockId(key);</span>
+<span class="nc" id="L356">            TextDataBlock block = blockManager.findBlock(key);</span>
+
+<span class="nc bnc" id="L358" title="All 2 branches missed.">            if (block != null) {</span>
+<span class="nc" id="L359">                StringBuilder title = new StringBuilder();</span>
+<span class="nc bnc" id="L360" title="All 2 branches missed.">                if (block.getProject() != null) {</span>
+<span class="nc" id="L361">                    Project p = block.getProject();</span>
+<span class="nc" id="L362">                    title.append(&quot;Project \&quot;&quot;)</span>
+<span class="nc" id="L363">                        .append(p.getName())</span>
+<span class="nc" id="L364">                        .append(&quot;\&quot; #&quot;)</span>
+<span class="nc" id="L365">                        .append(p.getId())</span>
+<span class="nc" id="L366">                        .append(&quot; / &quot;);</span>
+                }
+                try {
+<span class="nc bnc" id="L369" title="All 2 branches missed.">                    if (block.getOwningResource() != null) {</span>
+                        // block belongs to a resource
+<span class="nc" id="L371">                        Resource r = block.getOwningResource();</span>
+<span class="nc" id="L372">                        Resourceable owner = r.getOwner();</span>
+<span class="nc bnc" id="L373" title="All 2 branches missed.">                        if (owner instanceof CardType) {</span>
+<span class="nc" id="L374">                            CardType ct = (CardType) owner;</span>
+<span class="nc" id="L375">                            title.append(&quot;Type: &quot;).append(ct.getTitle()).append(&quot; #&quot;).append(ct.getId());</span>
+<span class="nc bnc" id="L376" title="All 2 branches missed.">                        } else if (owner instanceof CardTypeRef) {</span>
+<span class="nc" id="L377">                            CardTypeRef ref = (CardTypeRef) owner;</span>
+<span class="nc" id="L378">                            title.append(&quot;TypeRef: &quot;).append(ref.resolve().getTitle()).append(&quot; #&quot;).append(ref.getId());</span>
+<span class="nc bnc" id="L379" title="All 2 branches missed.">                        } else if (owner instanceof CardContent) {</span>
+<span class="nc" id="L380">                            CardContent cc = (CardContent) owner;</span>
+<span class="nc" id="L381">                            Card c = cc.getCard();</span>
+<span class="nc" id="L382">                            title.append(&quot;Card: &quot;).append(c.getTitle()).append(&quot; #&quot;).append(c.getId());</span>
+<span class="nc" id="L383">                            title.append(&quot; / CardContent: &quot;).append(cc.getTitle()).append(&quot; #&quot;).append(cc.getId());</span>
+<span class="nc bnc" id="L384" title="All 2 branches missed.">                        } else if (owner instanceof Card) {</span>
+<span class="nc" id="L385">                            Card c = (Card) owner;</span>
+<span class="nc" id="L386">                            title.append(&quot;Card: &quot;).append(c.getTitle()).append(&quot; #&quot;).append(c.getId());</span>
+                        }
+
+<span class="nc" id="L389">                        title.append(&quot; / Resource &quot;).append(r.getTitle()).append(&quot; # &quot;).append(r.getId());</span>
+<span class="nc bnc" id="L390" title="All 2 branches missed.">                    } else if (block.getOwningCardContent() != null) {</span>
+<span class="nc" id="L391">                        CardContent cc = block.getOwningCardContent();</span>
+<span class="nc" id="L392">                        Card c = cc.getCard();</span>
+<span class="nc" id="L393">                        title.append(&quot;Card: &quot;).append(c.getTitle()).append(&quot; #&quot;).append(c.getId()</span>
+<span class="nc" id="L394">                        ).append(&quot; / CardContent: &quot;).append(cc.getTitle()).append(&quot; #&quot;).append(cc.getId());</span>
+                    }
+<span class="nc" id="L396">                } catch (Throwable error) {</span>
+                    /** no-op */
+<span class="nc" id="L398">                    logger.warn(&quot;Fails to build block title {}&quot;, block);</span>
+<span class="nc" id="L399">                }</span>
+<span class="nc" id="L400">                bm.setTitle(title.toString());</span>
+                try {
+<span class="nc" id="L402">                    var data = cache.get(key);</span>
+<span class="nc bnc" id="L403" title="All 2 branches missed.">                    if (data != null) {</span>
+<span class="nc bnc" id="L404" title="All 2 branches missed.">                        if (block.isHealthy()) {</span>
+<span class="nc" id="L405">                            bm.setStatus(BlockMonitoring.BlockStatus.HEALTHY);</span>
+                        } else {
+<span class="nc" id="L407">                            bm.setStatus(BlockMonitoring.BlockStatus.UNHEALTHY);</span>
+                        }
+                    } else {
+<span class="nc" id="L410">                        bm.setStatus(BlockMonitoring.BlockStatus.PROCESSED);</span>
+                    }
+<span class="nc" id="L412">                } catch (Throwable e) {</span>
+                    /** Catch everything ! */
+<span class="nc" id="L414">                    bm.setStatus(BlockMonitoring.BlockStatus.DATA_ERROR);</span>
+<span class="nc" id="L415">                }</span>
+<span class="nc" id="L416">            } else {</span>
+<span class="nc" id="L417">                bm.setTitle(&quot;Ghost block&quot;);</span>
+<span class="nc" id="L418">                bm.setStatus(BlockMonitoring.BlockStatus.DELETED);</span>
+            }
+
+<span class="nc" id="L421">            return bm;</span>
+<span class="nc" id="L422">        }).collect(Collectors.toList());</span>
+    }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

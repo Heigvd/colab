@@ -15,6 +15,7 @@ ch.colabproject.colab.api.controller.token
 ch.colabproject.colab.api.controller.user
 ch.colabproject.colab.api.exceptions
 ch.colabproject.colab.api.microchanges.live
+ch.colabproject.colab.api.microchanges.live.monitoring
 ch.colabproject.colab.api.microchanges.model
 ch.colabproject.colab.api.microchanges.tools
 ch.colabproject.colab.api.model
