@@ -509,8 +509,12 @@ public class DuplicationManager {
 
             AbstractResource originalTarget = originalResourceRef.getTarget();
             if (originalTarget != null) {
-                AbstractResource newTarget = originalTarget;
-
+                AbstractResource newTarget;
+                if (resourceMatching.containsKey(originalTarget.getId())) {
+                    newTarget = resourceMatching.get(originalTarget.getId());
+                } else {
+                    newTarget = originalTarget;
+                }
                 newResourceRef.setTarget(newTarget);
             }
 
