@@ -13,13 +13,10 @@ import DocumentEditor from './DocumentEditor';
 
 export interface DocumentListProps {
   docOwnership: DocumentOwnership;
-  allowEdition?: boolean;
+  readOnly?: boolean;
 }
 
-export default function DocumentList({
-  docOwnership,
-  allowEdition,
-}: DocumentListProps): JSX.Element {
+export default function DocumentList({ docOwnership, readOnly }: DocumentListProps): JSX.Element {
   const { documents, status } = useAndLoadDocuments(docOwnership);
 
   if (status !== 'READY') {
@@ -31,12 +28,7 @@ export default function DocumentList({
       {documents
         .sort((a, b) => (a.index || 0) - (b.index || 0))
         .map(doc => (
-          <DocumentEditor
-            key={doc.id}
-            doc={doc}
-            allowEdition={allowEdition}
-            docOwnership={docOwnership}
-          />
+          <DocumentEditor key={doc.id} doc={doc} readOnly={readOnly} docOwnership={docOwnership} />
         ))}
     </>
   );

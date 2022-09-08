@@ -17,6 +17,8 @@ import javax.validation.constraints.NotNull;
  */
 public class UrlMetadata implements Serializable {
 
+    private static final long serialVersionUID = 1L;
+
     /**
      * Is the url broken
      */

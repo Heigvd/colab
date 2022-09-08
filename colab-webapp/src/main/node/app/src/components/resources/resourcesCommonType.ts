@@ -21,13 +21,11 @@ export type ResourceOwnership = CardTypeContext | CardOrCardContentContext;
 
 export type CardTypeContext = {
   kind: 'CardType';
-  accessLevel: 'READ' | 'WRITE' | 'DENIED'; // TODO remove from here
   cardTypeId: number | null | undefined;
 };
 
 export type CardOrCardContentContext = {
   kind: 'CardOrCardContent';
-  accessLevel: 'READ' | 'WRITE' | 'DENIED'; // TODO remove from here
   cardId: number | undefined;
   cardContentId: number | null | undefined;
   hasSeveralVariants: boolean;

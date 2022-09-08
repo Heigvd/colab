@@ -165,8 +165,8 @@ export default function CardEditor({
 
   const contents = useVariantsOrLoad(card);
   const variantPager = computeNav(contents, variant.id);
-  const userAcl = useCardACLForCurrentUser(card.id);
-  const readOnly = !userAcl.write || variant.frozen;
+  const { canRead, canWrite } = useCardACLForCurrentUser(card.id);
+  const readOnly = !canWrite || variant.frozen;
   const [showTypeDetails, setShowTypeDetails] = React.useState(false);
   const [fullScreen, setFullScreen] = React.useState(false);
   const [openToolbox, setOpenToolbox] = React.useState(true);
@@ -187,7 +187,6 @@ export default function CardEditor({
 
   const resourceContext: ResourceCallContext = {
     kind: 'CardOrCardContent',
-    accessLevel: !readOnly && userAcl.write ? 'WRITE' : userAcl.read ? 'READ' : 'DENIED',
     cardId: card.id || undefined,
     cardContentId: variant.id,
     hasSeveralVariants: hasVariants,
@@ -543,21 +542,22 @@ export default function CardEditor({
                         align="stretch"
                         className={css({ overflow: 'auto', padding: space_S })}
                       >
-                        {userAcl.read ? (
-                          variant.id ? (
-                            <DocumentList
-                              docOwnership={{
-                                kind: 'DeliverableOfCardContent',
-                                ownerId: variant.id,
-                              }}
-                              allowEdition={!readOnly}
-                            />
+                        {canRead != undefined &&
+                          (canRead ? (
+                            variant.id ? (
+                              <DocumentList
+                                docOwnership={{
+                                  kind: 'DeliverableOfCardContent',
+                                  ownerId: variant.id,
+                                }}
+                                readOnly={readOnly}
+                              />
+                            ) : (
+                              <span>{i18n.modules.card.infos.noDeliverable}</span>
+                            )
                           ) : (
-                            <span>{i18n.modules.card.infos.noDeliverable}</span>
-                          )
-                        ) : (
-                          <span>{i18n.httpErrorMessage.ACCESS_DENIED}</span>
-                        )}
+                            <span>{i18n.httpErrorMessage.ACCESS_DENIED}</span>
+                          ))}
                       </Flex>
                     </Flex>
 
@@ -625,9 +625,7 @@ export default function CardEditor({
                       children: (
                         <ResourcesMainView
                           contextData={resourceContext}
-                          accessLevel={
-                            !readOnly && userAcl.write ? 'WRITE' : userAcl.read ? 'READ' : 'DENIED'
-                          }
+                          accessLevel={!readOnly ? 'WRITE' : canRead ? 'READ' : 'DENIED'}
                         />
                       ),
                       className: css({ overflow: 'auto' }),
@@ -655,7 +653,7 @@ export default function CardEditor({
             </ReflexContainer>
           </Flex>
         </Flex>
-        <VariantPager allowCreation={userAcl.write} card={card} current={variant} />
+        <VariantPager allowCreation={!!canWrite} card={card} current={variant} />
         {showSubcards ? (
           <Collapsible label={i18n.modules.card.subcards}>
             <ContentSubs

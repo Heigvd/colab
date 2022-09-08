@@ -115,7 +115,7 @@ export default function StickyNoteDisplay({
               <p>
                 <b>Explanation:</b>
               </p>
-              <BlockEditorWrapper blockId={stickyNote.explanationId} allowEdition={true} />
+              <BlockEditorWrapper blockId={stickyNote.explanationId} readOnly={false} />
             </div>
           )}
           {showSrc && (

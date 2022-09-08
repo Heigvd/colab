@@ -160,6 +160,7 @@ export interface FilePickerProps {
   currentPreviewImgUrl?: string;
   editingStatus: boolean;
   setEditingState: (editMode: boolean) => void;
+  readOnly: boolean;
 }
 
 export default function FilePicker({
@@ -171,6 +172,7 @@ export default function FilePicker({
   onDownload,
   editingStatus,
   setEditingState,
+  readOnly,
 }: FilePickerProps): JSX.Element {
   const i18n = useTranslations();
 
@@ -314,7 +316,7 @@ export default function FilePicker({
             onClick={onDownload}
           />
         )}
-        {onChange && editingStatus && (
+        {!readOnly && onChange && editingStatus && (
           <div className={css({ paddingLeft: space_M })} onClick={e => e.stopPropagation()}>
             <label>
               <Button onClick={() => {}}>
