@@ -492,18 +492,18 @@ public class LiveUpdates implements Serializable {
         for (Change child : getByParent(changes, parent.getRevision())) {
             Set<String> childDeps = getAllDependencies(changes, child);
             if (!childDeps.contains(offsetFromRev)) {
-                logger.debug("PropagateOffset {}@{} to {}", offsets, offsetFromRev, child);
+                logger.trace("PropagateOffset {}@{} to {}", offsets, offsetFromRev, child);
                 // should propagate to children which are not based on the offsetsFromRev
                 boolean shiftFree = this.shift(child, offsets, forward);
                 Map<Integer, Integer> shiftedOffsets = shiftOffsets(offsets, child);
-                logger.debug("Shifted Offsets: {}", shiftedOffsets);
+                logger.trace("Shifted Offsets: {}", shiftedOffsets);
                 boolean pFree = this.propagateOffsets(changes, child, shiftedOffsets, forward, offsetFromRev);
                 conflictFree = conflictFree && shiftFree && pFree;
             } else {
                 //merge has been done
                 HashSet<String> newDeps = new HashSet<>(child.getBasedOn());
                 newDeps.remove(offsetFromRev);
-                logger.debug("Do not go deeper than {}, now based on {}", child, newDeps);
+                logger.trace("Do not go deeper than {}, now based on {}", child, newDeps);
                 child.setBasedOn(newDeps);
                 //child.getBasedOn().remove(offsetFromRev);
             }
@@ -584,7 +584,7 @@ public class LiveUpdates implements Serializable {
                 boolean conflictFree = true;
                 String newBaseRev = newBase.getRevision();
 
-                logger.debug("Rebase Sieblings: " + change + " on " + newBase
+                logger.trace("Rebase Sieblings: " + change + " on " + newBase
                     + " with offset " + offsets);
 
                 conflictFree = shift(change, offsets, true) && conflictFree;
@@ -601,7 +601,7 @@ public class LiveUpdates implements Serializable {
                 throw e;
             }
         } else if (setsEqual(Set.of(change.getRevision()), newBase.getBasedOn())) {
-            logger.debug("Inverse hierarchy : " + change + " on " + newBase);
+            logger.trace("Inverse hierarchy : " + change + " on " + newBase);
             // [x] -> change -> newBase
             // ==>[x] ->  newBase -> change
 
@@ -659,6 +659,8 @@ public class LiveUpdates implements Serializable {
      */
     public LiveResult process(boolean strict) {
         initDebugData();
+        logger.debug("Debug Data {}", this.debugData);
+
         StringBuilder buffer = new StringBuilder();
         if (this.content != null) {
             buffer.append(this.content);
@@ -680,7 +682,7 @@ public class LiveUpdates implements Serializable {
             if (!children.isEmpty()) {
                 //Map<Integer, Integer> offsets = new HashMap<>();
                 //logger.trace("new empty offsets " + offsets);
-                logger.debug("All @{} children: {}", currentRevision, mapChangesRevision(children));
+                logger.trace("All @{} children: {}", currentRevision, mapChangesRevision(children));
 
                 // find a child which depends only only already applied changes
                 // NB: as I understand the algorithm, I can't figure out a case
@@ -694,7 +696,7 @@ public class LiveUpdates implements Serializable {
                     changes.remove(change);
                     children.remove(change);
 
-                    logger.debug("Process: {}", change);
+                    logger.trace("Process: {}", change);
 
                     List<MicroChange> muChanges = change.getMicrochanges();
                     for (int i = muChanges.size() - 1; i >= 0; i--) {
@@ -702,7 +704,7 @@ public class LiveUpdates implements Serializable {
                         logger.trace("  " + i + ")" + buffer);
                     }
 
-                    logger.debug(" -> {}", buffer);
+                    logger.trace(" -> {}", buffer);
                     // logger.trace("Offsets" + offsets);
                     // rebase others children
 

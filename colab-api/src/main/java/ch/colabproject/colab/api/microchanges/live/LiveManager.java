@@ -343,6 +343,8 @@ public class LiveManager implements Serializable {
 
     /**
      * get data to monitor block with pending changes
+     *
+     * @return monitoring data
      */
     public List<BlockMonitoring> getMonitoringData() {
         IMap<Long, LiveUpdates> cache = getCache();
