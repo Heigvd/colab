@@ -10,7 +10,7 @@ import { Change, entityIs } from 'colab-rest-client';
 import * as API from '../API/api';
 import { processMessage } from '../ws/wsThunkActions';
 
-export type Status = 'UNSET' | 'LOADING' | 'READY';
+export type Status = 'UNSET' | 'LOADING' | 'READY' | 'ERROR';
 
 export interface ChangeState {
   [atClass: string]: {
@@ -108,6 +108,15 @@ const changeSlice = createSlice({
         const objectState = getOrCreateObjectState(state, 'TextDataBlock', action.meta.arg);
         objectState.status = 'READY';
         action.payload.forEach(change => update(state, change));
+      })
+      .addCase(API.getBlockPendingChanges.rejected, (state, action) => {
+        const objectState = getOrCreateObjectState(state, 'TextDataBlock', action.meta.arg);
+        objectState.status = 'ERROR';
+      })
+      .addCase(API.deletePendingChanges.fulfilled, (state, action) => {
+        const objectState = getOrCreateObjectState(state, 'TextDataBlock', action.meta.arg);
+        objectState.status = 'UNSET';
+        objectState.changes = [];
       })
       .addCase(API.closeCurrentProject.fulfilled, () => {
         return initialState;

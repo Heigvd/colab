@@ -8,9 +8,11 @@
 import { css } from '@emotion/css';
 import { faRotateLeft } from '@fortawesome/free-solid-svg-icons';
 import * as React from 'react';
+import * as API from '../../API/api';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import MarkdownViewer from '../blocks/markdown/MarkdownViewer';
 import WysiwygEditor, { TXTFormatToolbarProps } from '../blocks/markdown/WysiwygEditor';
+import Button from '../common/element/Button';
 import CleverTextarea from '../common/element/CleverTextarea';
 import InlineLoading from '../common/element/InlineLoading';
 import Flex from '../common/layout/Flex';
@@ -18,8 +20,6 @@ import ErrorBoundary from '../common/toplevel/ErrorBoundary';
 import { space_S } from '../styling/style';
 import ChangeTree from './ChangeTree';
 import { useLiveBlock } from './LiveTextEditor';
-import * as API from '../../API/api';
-import Button from '../common/element/Button';
 
 const shrink = css({
   flexGrow: 0,
@@ -83,6 +83,8 @@ export default function LiveEditor({
   const dispatch = useAppDispatch();
   const liveSession = useAppSelector(state => state.websockets.sessionId);
 
+  const readOnly = !allowEdition;
+
   const { currentValue, onChange, status } = useLiveBlock({
     atClass: atClass,
     atId: atId,
@@ -90,7 +92,7 @@ export default function LiveEditor({
     revision: revision,
   });
 
-  if (status != 'READY') {
+  if (status === 'DISCONNECTED' || status === 'UNSET' || status === 'LOADING') {
     return <InlineLoading />;
   }
 
@@ -98,7 +100,7 @@ export default function LiveEditor({
     return (
       <div>
         <div>
-          <i>disconnected...</i>
+          <em>disconnected...</em>
         </div>
         <ErrorBoundary fallback={<Disclaimer md={currentValue} />}>
           <MarkdownViewer md={currentValue} />
@@ -107,7 +109,13 @@ export default function LiveEditor({
     );
   }
 
-  if (!healthy) {
+  if (readOnly) {
+    return (
+      <ErrorBoundary fallback={<Disclaimer md={currentValue} />}>
+        <MarkdownViewer md={currentValue} />
+      </ErrorBoundary>
+    );
+  } else if (!healthy) {
     return (
       <Flex direction="column">
         <Disclaimer md="">{unhealthyText}</Disclaimer>
@@ -125,11 +133,23 @@ export default function LiveEditor({
         </ErrorBoundary>
       </Flex>
     );
-  } else if (!allowEdition) {
+  } else if (status === 'ERROR') {
     return (
-      <ErrorBoundary fallback={<Disclaimer md={currentValue} />}>
-        <MarkdownViewer md={currentValue} />
-      </ErrorBoundary>
+      <Flex direction="column">
+        <Disclaimer md="">{unhealthyText}</Disclaimer>
+        <Button
+          title="Restore previous version"
+          icon={faRotateLeft}
+          onClick={() => {
+            dispatch(API.deletePendingChanges(atId));
+          }}
+        >
+          Restore previous version
+        </Button>
+        <ErrorBoundary fallback={<Disclaimer md={currentValue} />}>
+          <MarkdownViewer md={currentValue} />
+        </ErrorBoundary>
+      </Flex>
     );
   } else {
     if (!editingStatus) {

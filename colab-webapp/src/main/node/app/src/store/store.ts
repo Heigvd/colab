@@ -60,3 +60,5 @@ export type AppDispatch = typeof store.dispatch;
 export type LoadingStatus = 'NOT_INITIALIZED' | 'LOADING' | 'READY';
 
 export type AvailabilityStatus = 'NOT_INITIALIZED' | 'LOADING' | 'READY' | 'ERROR';
+
+export type InlineAvailabilityStatus<T> = 'NOT_INITIALIZED' | 'LOADING' | 'ERROR' | T;

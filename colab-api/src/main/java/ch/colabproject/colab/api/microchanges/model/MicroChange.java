@@ -17,6 +17,8 @@ import org.apache.commons.text.StringEscapeUtils;
  */
 public class MicroChange implements Serializable {
 
+    private static final long serialVersionUID = 1L;
+
     /**
      * microChange Type
      */

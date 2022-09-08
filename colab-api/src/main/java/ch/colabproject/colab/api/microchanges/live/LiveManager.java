@@ -10,10 +10,18 @@ import ch.colabproject.colab.api.controller.EntityGatheringBagForPropagation;
 import ch.colabproject.colab.api.controller.RequestManager;
 import ch.colabproject.colab.api.controller.document.BlockManager;
 import ch.colabproject.colab.api.exceptions.ColabMergeException;
+import ch.colabproject.colab.api.microchanges.live.monitoring.BlockMonitoring;
 import ch.colabproject.colab.api.microchanges.model.Change;
 import ch.colabproject.colab.api.microchanges.tools.CancelDebounce;
 import ch.colabproject.colab.api.microchanges.tools.Debouncer;
+import ch.colabproject.colab.api.model.card.Card;
+import ch.colabproject.colab.api.model.card.CardContent;
+import ch.colabproject.colab.api.model.card.CardType;
+import ch.colabproject.colab.api.model.card.CardTypeRef;
+import ch.colabproject.colab.api.model.document.Resource;
+import ch.colabproject.colab.api.model.document.Resourceable;
 import ch.colabproject.colab.api.model.document.TextDataBlock;
+import ch.colabproject.colab.api.model.project.Project;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -22,7 +30,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
-import javax.cache.Cache;
 import javax.ejb.Lock;
 import javax.ejb.LockType;
 import javax.ejb.Singleton;
@@ -35,6 +42,8 @@ import com.hazelcast.cluster.Member;
 import com.hazelcast.core.HazelcastInstance;
 import com.hazelcast.core.IExecutorService;
 import com.hazelcast.cp.lock.FencedLock;
+import com.hazelcast.map.IMap;
+import java.util.stream.Collectors;
 
 /**
  * Micro Changes Management.
@@ -53,10 +62,6 @@ public class LiveManager implements Serializable {
     /** delayed process call */
     private final Map<Long, Future<Void>> debounces = new HashMap<>();
 
-    /** Shared cache of microchanges */
-    @Inject
-    private Cache<Long, LiveUpdates> cache;
-
     /** Block specific logic management */
     @Inject
     private BlockManager blockManager;
@@ -74,6 +79,11 @@ public class LiveManager implements Serializable {
      */
     @Inject
     private EntityGatheringBagForPropagation transactionManager;
+
+    /** Get shared cache of microchanges */
+    private IMap<Long, LiveUpdates> getCache() {
+        return hzInstance.getMap("MICROCHANGES_CAHCE");
+    }
 
     /**
      * Get the lock for the given block id
@@ -117,7 +127,7 @@ public class LiveManager implements Serializable {
         logger.debug("Get LiveUpdates for block #{}", id);
         try {
             this.lock(id);
-            LiveUpdates get = cache.get(id);
+            LiveUpdates get = getCache().get(id);
             if (get != null) {
                 logger.trace("Get existing {}", get);
                 return get;
@@ -174,7 +184,7 @@ public class LiveManager implements Serializable {
             patch.setBlockId(block.getId());
 
             changes.add(patch);
-            cache.put(id, get);
+            getCache().put(id, get);
             this.scheduleSaveMicroChanges(id);
 
             logger.trace("Registered change is {}", patch);
@@ -201,7 +211,7 @@ public class LiveManager implements Serializable {
      * @return list of changes
      */
     public List<Change> getPendingChanges(Long id) {
-        LiveUpdates get = cache.get(id);
+        LiveUpdates get = getCache().get(id);
         if (get != null) {
             return get.getPendingChanges();
         } else {
@@ -221,25 +231,30 @@ public class LiveManager implements Serializable {
             try {
                 this.lock(blockId);
                 TextDataBlock block = blockManager.findBlock(blockId);
-                LiveUpdates get = this.cache.get(blockId);
-                if (get != null) {
-                    try {
-                        LiveResult result = get.process(false);
-                        block.setTextData(result.getContent());
-                        block.setRevision(result.getRevision());
+                if (block != null) {
+                    LiveUpdates get = this.getCache().get(blockId);
+                    if (get != null) {
+                        try {
+                            LiveResult result = get.process(false);
+                            block.setTextData(result.getContent());
+                            block.setRevision(result.getRevision());
 
-                        blockManager.updateBlock(block);
-                        this.deletePendingChangesAndPropagate(blockId);
-                    } catch (RuntimeException ex) {
-                        logger.error("Process failed", ex);
-                        block.setHealthy(false);
-                    } catch (ColabMergeException ex) {
-                        logger.error("Fails to save block", ex);
-                        block.setHealthy(false);
-                    } catch (StackOverflowError error) {
-                        logger.error("StackOverflowError");
-                        block.setHealthy(false);
+                            blockManager.updateBlock(block);
+                            this.deletePendingChangesAndPropagate(blockId);
+                        } catch (RuntimeException ex) {
+                            logger.error("Process failed", ex);
+                            block.setHealthy(false);
+                        } catch (ColabMergeException ex) {
+                            logger.error("Fails to save block", ex);
+                            block.setHealthy(false);
+                        } catch (StackOverflowError error) {
+                            logger.error("StackOverflowError");
+                            block.setHealthy(false);
+                        }
                     }
+                } else {
+                    // block has been deleted
+                    this.deletePendingChangesAndPropagate(blockId);
                 }
             } finally {
                 this.unlock(blockId);
@@ -257,11 +272,14 @@ public class LiveManager implements Serializable {
         logger.debug("Delete pending changes");
         TextDataBlock block = blockManager.findBlock(id);
         if (block != null) {
-            List<Change> changes = getPendingChanges(id);
-            cache.remove(id);
-            block.setHealthy(true);
 
-            transactionManager.registerDeletion(changes);
+            block.setHealthy(true);
+            try {
+                List<Change> changes = getPendingChanges(id);
+                transactionManager.registerDeletion(changes);
+            } catch (Throwable t) {
+                logger.warn("Propagate deleted changes failed", t);
+            }
 //            WsDeleteChangeMessage message = WsDeleteChangeMessage.build(changes);
 //
 //            try {
@@ -270,6 +288,12 @@ public class LiveManager implements Serializable {
 //            } catch (EncodeException ex) {
 //                logger.error("Live update error: precompute failed");
 //            }
+        }
+
+        try {
+            getCache().remove(id);
+        } catch (Throwable t) {
+            logger.warn("Drop changes", t);
         }
     }
 
@@ -315,5 +339,84 @@ public class LiveManager implements Serializable {
         // schedule a new one
         Future<Void> call = executorService.submit(new Debouncer(blockId));
         this.debounces.put(blockId, call);
+    }
+
+    /**
+     * get data to monitor block with pending changes
+     */
+    public List<BlockMonitoring> getMonitoringData() {
+        IMap<Long, LiveUpdates> cache = getCache();
+        Set<Long> keys = cache.keySet();
+
+        return keys.stream().map(key -> {
+            var bm = new BlockMonitoring();
+            bm.setBlockId(key);
+            TextDataBlock block = blockManager.findBlock(key);
+
+            if (block != null) {
+                StringBuilder title = new StringBuilder();
+                if (block.getProject() != null) {
+                    Project p = block.getProject();
+                    title.append("Project \"")
+                        .append(p.getName())
+                        .append("\" #")
+                        .append(p.getId())
+                        .append(" / ");
+                }
+                try {
+                    if (block.getOwningResource() != null) {
+                        // block belongs to a resource
+                        Resource r = block.getOwningResource();
+                        Resourceable owner = r.getOwner();
+                        if (owner instanceof CardType) {
+                            CardType ct = (CardType) owner;
+                            title.append("Type: ").append(ct.getTitle()).append(" #").append(ct.getId());
+                        } else if (owner instanceof CardTypeRef) {
+                            CardTypeRef ref = (CardTypeRef) owner;
+                            title.append("TypeRef: ").append(ref.resolve().getTitle()).append(" #").append(ref.getId());
+                        } else if (owner instanceof CardContent) {
+                            CardContent cc = (CardContent) owner;
+                            Card c = cc.getCard();
+                            title.append("Card: ").append(c.getTitle()).append(" #").append(c.getId());
+                            title.append(" / CardContent: ").append(cc.getTitle()).append(" #").append(cc.getId());
+                        } else if (owner instanceof Card) {
+                            Card c = (Card) owner;
+                            title.append("Card: ").append(c.getTitle()).append(" #").append(c.getId());
+                        }
+
+                        title.append(" / Resource ").append(r.getTitle()).append(" # ").append(r.getId());
+                    } else if (block.getOwningCardContent() != null) {
+                        CardContent cc = block.getOwningCardContent();
+                        Card c = cc.getCard();
+                        title.append("Card: ").append(c.getTitle()).append(" #").append(c.getId()
+                        ).append(" / CardContent: ").append(cc.getTitle()).append(" #").append(cc.getId());
+                    }
+                } catch (Throwable error) {
+                    /** no-op */
+                    logger.warn("Fails to build block title {}", block);
+                }
+                bm.setTitle(title.toString());
+                try {
+                    var data = cache.get(key);
+                    if (data != null) {
+                        if (block.isHealthy()) {
+                            bm.setStatus(BlockMonitoring.BlockStatus.HEALTHY);
+                        } else {
+                            bm.setStatus(BlockMonitoring.BlockStatus.UNHEALTHY);
+                        }
+                    } else {
+                        bm.setStatus(BlockMonitoring.BlockStatus.PROCESSED);
+                    }
+                } catch (Throwable e) {
+                    /** Catch everything ! */
+                    bm.setStatus(BlockMonitoring.BlockStatus.DATA_ERROR);
+                }
+            } else {
+                bm.setTitle("Ghost block");
+                bm.setStatus(BlockMonitoring.BlockStatus.DELETED);
+            }
+
+            return bm;
+        }).collect(Collectors.toList());
     }
 }
