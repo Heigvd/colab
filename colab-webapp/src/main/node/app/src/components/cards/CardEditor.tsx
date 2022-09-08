@@ -187,7 +187,6 @@ export default function CardEditor({
 
   const resourceContext: ResourceCallContext = {
     kind: 'CardOrCardContent',
-    accessLevel: !readOnly && userAcl.write ? 'WRITE' : userAcl.read ? 'READ' : 'DENIED',
     cardId: card.id || undefined,
     cardContentId: variant.id,
     hasSeveralVariants: hasVariants,

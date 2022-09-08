@@ -48,7 +48,6 @@ export default function CardTypeRelativesSummary({
           <ResourcesListSummary
             context={{
               kind: 'CardType',
-              accessLevel: 'READ',
               cardTypeId: cardType.ownId,
             }}
           />
