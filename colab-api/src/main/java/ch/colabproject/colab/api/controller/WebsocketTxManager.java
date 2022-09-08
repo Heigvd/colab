@@ -23,6 +23,8 @@ import org.slf4j.LoggerFactory;
 @TransactionScoped
 public class WebsocketTxManager implements Serializable {
 
+    private static final long serialVersionUID = 1L;
+
     /** logger */
     private static final Logger logger = LoggerFactory.getLogger(WebsocketTxManager.class);
 

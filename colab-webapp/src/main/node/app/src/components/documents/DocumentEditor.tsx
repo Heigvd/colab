@@ -35,13 +35,13 @@ const noBorderStyle = css({
 
 export interface DocumentEditorProps {
   doc: Document;
-  allowEdition?: boolean;
+  readOnly?: boolean;
   docOwnership: DocumentOwnership;
 }
 
 export default function DocumentEditor({
   doc,
-  allowEdition = true,
+  readOnly = false,
   docOwnership,
 }: DocumentEditorProps): JSX.Element {
   const dispatch = useAppDispatch();
@@ -93,12 +93,12 @@ export default function DocumentEditor({
           { [noBorderStyle]: isTextDataBlock },
         )}
         onClick={onSelect}
-        onDoubleClick={() => setEditMode(true)}
+        onDoubleClick={readOnly ? undefined : () => setEditMode(true)}
       >
         {isTextDataBlock ? (
           <BlockEditorWrapper
             blockId={doc.id!}
-            allowEdition={allowEdition}
+            readOnly={readOnly}
             editingStatus={true}
             showTree={TXToptions?.showTree}
             markDownEditor={TXToptions?.markDownMode}
@@ -109,7 +109,7 @@ export default function DocumentEditor({
         ) : isDocumentFile ? (
           <DocumentFileEditor
             document={doc}
-            allowEdition={allowEdition}
+            readOnly={readOnly}
             editingStatus={editing}
             setEditingState={setEditMode}
           />
@@ -117,6 +117,7 @@ export default function DocumentEditor({
           <OpenGraphLink
             url={doc.url || ''}
             editingStatus={editing}
+            readOnly={readOnly}
             document={doc}
             setEditingState={setEditMode}
           />
