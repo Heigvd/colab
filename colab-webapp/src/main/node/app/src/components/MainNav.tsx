@@ -26,6 +26,7 @@ import InlineLoading from './common/element/InlineLoading';
 import { MainMenuLink } from './common/element/Link';
 import Clickable from './common/layout/Clickable';
 import DropDownMenu from './common/layout/DropDownMenu';
+import Monkeys from './debugger/monkey/Monkeys';
 import Picto from './styling/Picto';
 import { flex, invertedThemeMode, paddingAroundStyle, space_M, space_S } from './styling/style';
 
@@ -77,6 +78,7 @@ export default function MainNav(): JSX.Element {
           flexGrow: 1,
         })}
       ></div>
+      <Monkeys />
       <UserDropDown />
     </>
   );

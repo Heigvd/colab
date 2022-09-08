@@ -47,6 +47,7 @@ import InlineLoading from '../../common/element/InlineLoading';
 import Clickable from '../../common/layout/Clickable';
 import DropDownMenu from '../../common/layout/DropDownMenu';
 import Flex from '../../common/layout/Flex';
+import Monkeys from '../../debugger/monkey/Monkeys';
 import { UserDropDown } from '../../MainNav';
 import Picto from '../../styling/Picto';
 import {
@@ -289,9 +290,9 @@ function EditorNav({ project, setShowProjectDetails }: EditorNavProps): JSX.Elem
           }),
         )}
       >
-        <Flex align='center'>
+        <Flex align="center">
           <Clickable
-            title='Back to projects'
+            title="Back to projects"
             onClick={event => {
               event.preventDefault();
               navigate('../../');
@@ -299,16 +300,14 @@ function EditorNav({ project, setShowProjectDetails }: EditorNavProps): JSX.Elem
             }}
           >
             <Picto
-              className={
-                css({
-                  height: '22px',
-                  width: 'auto',
-                  paddingRight: space_M,
-                  paddingTop: "0px",
-                  paddingBottom: "0px",
-                  paddingLeft: space_S
-                })
-              }
+              className={css({
+                height: '22px',
+                width: 'auto',
+                paddingRight: space_M,
+                paddingTop: '0px',
+                paddingBottom: '0px',
+                paddingLeft: space_S,
+              })}
             />
           </Clickable>
           <IconButton
@@ -316,7 +315,7 @@ function EditorNav({ project, setShowProjectDetails }: EditorNavProps): JSX.Elem
             title="Back to project root"
             onClick={event => {
               event.preventDefault();
-              navigate(`/editor/${project.id}`)
+              navigate(`/editor/${project.id}`);
             }}
             className={css({ display: 'flex', alignItems: 'center' })}
           />
@@ -392,6 +391,7 @@ function EditorNav({ project, setShowProjectDetails }: EditorNavProps): JSX.Elem
           />
         </div>
         <Flex align="center">
+          <Monkeys />
           <IconButton
             onClick={() => navigate('./project-settings/general')}
             title="Settings"

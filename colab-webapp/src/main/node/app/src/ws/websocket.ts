@@ -25,7 +25,7 @@ const logger = getLogger('WebSockets');
 logger.setLevel(3);
 
 // Turning monkey on will provocate ws failures
-const monkey = false;
+export const monkeyWebsocket = false;
 
 //export function send(channel: string, payload: {}) {
 //  connection.send(JSON.stringify({
@@ -61,7 +61,7 @@ function createConnection(onCloseCb: () => void) {
   const connection = new WebSocket(`${protocol}:///${window.location.host}${wsPath}`);
   logger.info('Init Ws Done');
 
-  if (monkey) {
+  if (monkeyWebsocket) {
     setTimeout(() => {
       logger.warn('Close connection');
       connection.close();
