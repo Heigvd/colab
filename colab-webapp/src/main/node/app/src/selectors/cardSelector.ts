@@ -394,15 +394,15 @@ export const useAndLoadCardACL = (cardId: number | null | undefined): CardAcl =>
 };
 
 export type MyCardAcl = {
-  status: {
-    cardId: number | null | undefined;
-    missingCardId: number | undefined;
-    missingCardContentId: number | undefined;
-    missingAclCardId: number | undefined;
-  };
-  mine: InvolvementLevel | undefined;
-  read: boolean;
-  write: boolean;
+  // status: {
+  //   cardId: number | null | undefined;
+  //   missingCardId: number | undefined;
+  //   missingCardContentId: number | undefined;
+  //   missingAclCardId: number | undefined;
+  // };
+  // mine: InvolvementLevel | undefined;
+  canRead: boolean | undefined;
+  canWrite: boolean | undefined;
 };
 
 const levelOrder: Record<InvolvementLevel, { order: number; write: boolean }> = {
@@ -434,24 +434,31 @@ export const useCardACLForCurrentUser = (cardId: number | null | undefined): MyC
 
   const member = useMyMember(project?.id, currentUser?.id);
 
+  if (currentUser?.admin) {
+    return {
+      canRead: true,
+      canWrite: true,
+    };
+  }
+
   if (member?.id != null) {
     const levels = acl.effective.members[member.id];
     if (levels) {
       const resolved = resolveAcl(levels);
       return {
-        status: acl.status,
-        mine: resolved,
-        read: resolved !== 'OUT_OF_THE_LOOP',
-        write: levelOrder[resolved].write,
+        // status: acl.status,
+        // mine: resolved,
+        canRead: resolved !== 'OUT_OF_THE_LOOP',
+        canWrite: levelOrder[resolved].write,
       };
     }
   }
 
   return {
-    status: acl.status,
-    mine: undefined,
-    read: false,
-    write: false,
+    // status: acl.status,
+    // mine: undefined,
+    canRead: undefined,
+    canWrite: undefined,
   };
 };
 

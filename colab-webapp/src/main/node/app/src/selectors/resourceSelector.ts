@@ -149,7 +149,7 @@ export function useAndLoadResources(contextData: ResourceCallContext): {
 
   const { resourcesAndRefs: resources, status } = useResources(contextData);
 
-  if (status === 'NOT_INITIALIZED' && contextData.accessLevel !== 'DENIED') {
+  if (status === 'NOT_INITIALIZED') {
     if (contextData.kind === 'CardOrCardContent' && contextData.cardContentId != null) {
       dispatch(API.getResourceChainForCardContentId(contextData.cardContentId));
     } else if (contextData.kind === 'CardType' && contextData.cardTypeId != null) {

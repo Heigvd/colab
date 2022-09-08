@@ -235,7 +235,7 @@ export function ResourceDisplay({
           <div className={cx(paddingAroundStyle([2, 4], space_M), css({ overflow: 'auto' }))}>
             <DocumentList
               docOwnership={{ kind: 'PartOfResource', ownerId: targetResource.id }}
-              allowEdition={!effectiveReadOnly}
+              readOnly={effectiveReadOnly}
             />
           </div>
         </DocEditorCTX.Provider>

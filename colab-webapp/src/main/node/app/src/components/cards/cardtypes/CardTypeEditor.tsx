@@ -69,8 +69,6 @@ export default function CardTypeEditor({ className, usage }: CardTypeEditorProps
   const resourceContext: ResourceCallContext = {
     kind: 'CardType',
     cardTypeId: cardType?.ownId,
-    // TODO remove access
-    accessLevel: 'WRITE',
   };
 
   if (status !== 'READY' || !cardType) {
