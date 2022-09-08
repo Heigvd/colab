@@ -93,7 +93,7 @@ export default function DocumentEditor({
           { [noBorderStyle]: isTextDataBlock },
         )}
         onClick={onSelect}
-        onDoubleClick={readonly ? undefined : () => setEditMode(true)}
+        onDoubleClick={readOnly ? undefined : () => setEditMode(true)}
       >
         {isTextDataBlock ? (
           <BlockEditorWrapper
