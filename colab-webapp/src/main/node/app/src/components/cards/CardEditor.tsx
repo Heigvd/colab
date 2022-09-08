@@ -542,21 +542,22 @@ export default function CardEditor({
                         align="stretch"
                         className={css({ overflow: 'auto', padding: space_S })}
                       >
-                        {userAcl.read ? (
-                          variant.id ? (
-                            <DocumentList
-                              docOwnership={{
-                                kind: 'DeliverableOfCardContent',
-                                ownerId: variant.id,
-                              }}
-                              allowEdition={!readOnly}
-                            />
+                        {userAcl.mine != null &&
+                          (userAcl.read ? (
+                            variant.id ? (
+                              <DocumentList
+                                docOwnership={{
+                                  kind: 'DeliverableOfCardContent',
+                                  ownerId: variant.id,
+                                }}
+                                allowEdition={!readOnly}
+                              />
+                            ) : (
+                              <span>{i18n.modules.card.infos.noDeliverable}</span>
+                            )
                           ) : (
-                            <span>{i18n.modules.card.infos.noDeliverable}</span>
-                          )
-                        ) : (
-                          <span>{i18n.httpErrorMessage.ACCESS_DENIED}</span>
-                        )}
+                            <span>{i18n.httpErrorMessage.ACCESS_DENIED}</span>
+                          ))}
                       </Flex>
                     </Flex>
 
