@@ -137,7 +137,7 @@ colab-client/colab-api,ch.colabproject.colab.api.controller,RequestManager,308,0
 colab-client/colab-api,ch.colabproject.colab.api.controller,WebsocketTxSync,45,0,4,0,16,0,6,0,4,0
 colab-client/colab-api,ch.colabproject.colab.api.controller,SubscriptionRequest.ChannelType,44,0,0,0,5,0,1,0,1,0
 colab-client/colab-api,ch.colabproject.colab.api.controller,SubscriptionRequest,71,0,0,0,24,0,13,0,13,0
-colab-client/colab-api,ch.colabproject.colab.api.controller,DuplicationManager,1192,0,132,0,312,0,82,0,16,0
+colab-client/colab-api,ch.colabproject.colab.api.controller,DuplicationManager,1206,0,134,0,314,0,83,0,16,0
 colab-client/colab-api,ch.colabproject.colab.api.controller,WebsocketManager,794,0,52,0,217,0,64,0,38,0
 colab-client/colab-api,ch.colabproject.colab.api.controller,CdiBridgeSingleton,26,0,0,0,8,0,6,0,6,0
 colab-client/colab-api,ch.colabproject.colab.api.controller,CronTab,21,0,0,0,8,0,4,0,4,0
