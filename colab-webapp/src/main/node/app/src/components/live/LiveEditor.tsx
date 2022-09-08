@@ -34,7 +34,7 @@ interface LiveEditorProps {
   value: string;
   healthy: boolean;
   revision: string;
-  allowEdition?: boolean;
+  readOnly?: boolean;
   editingStatus?: boolean;
   showTree?: boolean;
   markDownEditor?: boolean;
@@ -71,7 +71,7 @@ export default function LiveEditor({
   value,
   healthy,
   revision,
-  allowEdition,
+  readOnly,
   editingStatus,
   showTree,
   markDownEditor,
@@ -82,8 +82,6 @@ export default function LiveEditor({
 }: LiveEditorProps): JSX.Element {
   const dispatch = useAppDispatch();
   const liveSession = useAppSelector(state => state.websockets.sessionId);
-
-  const readOnly = !allowEdition;
 
   const { currentValue, onChange, status } = useLiveBlock({
     atClass: atClass,
