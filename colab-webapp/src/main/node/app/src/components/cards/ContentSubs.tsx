@@ -67,7 +67,7 @@ interface MaxSize {
 export function gridCardsStyle(max: MaxSize) {
   return css({
     display: 'grid',
-    gridTemplateColumns: `repeat(${max.maxColumn}, 1fr)`,
+    gridTemplateColumns: `repeat(${max.maxColumn}, minmax(min-content, 1fr))`,
     justifyContent: 'strech',
     alignContent: 'stretch',
     justifyItems: 'stretch',
