@@ -64,6 +64,7 @@ export interface OpenGraphProps {
   editingStatus: boolean;
   setEditingState: (editMode: boolean) => void;
   document: ExternalLink;
+  readOnly: boolean;
 }
 
 function sanitizeUrl(rawUrl: string, defaultProtocol?: string): string {
@@ -78,6 +79,7 @@ export default function OpenGraphLink({
   editingStatus,
   setEditingState,
   document,
+  readOnly,
 }: OpenGraphProps): JSX.Element {
   const dispatch = useAppDispatch();
   const i18n = useTranslations();
@@ -98,9 +100,11 @@ export default function OpenGraphLink({
   }, [sanitizedUrl]);
   const updateDocCb = React.useCallback(
     (newValue: string) => {
-      dispatch(updateDocument({ ...document, url: newValue }));
+      if (!readOnly) {
+        dispatch(updateDocument({ ...document, url: newValue }));
+      }
     },
-    [dispatch, document],
+    [readOnly, dispatch, document],
   );
   const saveLink = React.useCallback(
     (newValue: string) => {

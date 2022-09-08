@@ -550,7 +550,7 @@ export default function CardEditor({
                                   kind: 'DeliverableOfCardContent',
                                   ownerId: variant.id,
                                 }}
-                                allowEdition={!readOnly}
+                                readOnly={readOnly}
                               />
                             ) : (
                               <span>{i18n.modules.card.infos.noDeliverable}</span>
