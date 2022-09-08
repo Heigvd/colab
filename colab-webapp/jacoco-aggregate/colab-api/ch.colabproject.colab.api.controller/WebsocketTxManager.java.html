@@ -23,8 +23,10 @@ import org.slf4j.LoggerFactory;
 @TransactionScoped
 <span class="nc" id="L24">public class WebsocketTxManager implements Serializable {</span>
 
+    private static final long serialVersionUID = 1L;
+
     /** logger */
-<span class="nc" id="L27">    private static final Logger logger = LoggerFactory.getLogger(WebsocketTxManager.class);</span>
+<span class="nc" id="L29">    private static final Logger logger = LoggerFactory.getLogger(WebsocketTxManager.class);</span>
 
     /**
      * Tx sync registry
@@ -42,28 +44,28 @@ import org.slf4j.LoggerFactory;
      * make sure bean exists
      */
     public void touch() {
-<span class="nc" id="L45">        logger.trace(&quot;Touch WsTxManager&quot;);</span>
-<span class="nc" id="L46">    }</span>
+<span class="nc" id="L47">        logger.trace(&quot;Touch WsTxManager&quot;);</span>
+<span class="nc" id="L48">    }</span>
 
     /**
      * Called each time a new transaction is created.
      */
     @PostConstruct
     public void construct() {
-<span class="nc" id="L53">        logger.trace(&quot;NEW TRANSACTION BEANLIFE CYCLE&quot;);</span>
-<span class="nc bnc" id="L54" title="All 2 branches missed.">        if (jtaSyncRegistry != null) {</span>
-<span class="nc" id="L55">            WebsocketTxSync synchronizer = bean.getSynchronizer();</span>
-<span class="nc bnc" id="L56" title="All 2 branches missed.">            if (synchronizer == null) {</span>
-<span class="nc" id="L57">                logger.trace(&quot;Create Sync&quot;);</span>
-<span class="nc" id="L58">                synchronizer = new WebsocketTxSync(bean);</span>
-<span class="nc" id="L59">                jtaSyncRegistry.registerInterposedSynchronization(synchronizer);</span>
+<span class="nc" id="L55">        logger.trace(&quot;NEW TRANSACTION BEANLIFE CYCLE&quot;);</span>
+<span class="nc bnc" id="L56" title="All 2 branches missed.">        if (jtaSyncRegistry != null) {</span>
+<span class="nc" id="L57">            WebsocketTxSync synchronizer = bean.getSynchronizer();</span>
+<span class="nc bnc" id="L58" title="All 2 branches missed.">            if (synchronizer == null) {</span>
+<span class="nc" id="L59">                logger.trace(&quot;Create Sync&quot;);</span>
+<span class="nc" id="L60">                synchronizer = new WebsocketTxSync(bean);</span>
+<span class="nc" id="L61">                jtaSyncRegistry.registerInterposedSynchronization(synchronizer);</span>
             } else {
-<span class="nc" id="L61">                logger.trace(&quot;Synchronizer already registered&quot;);</span>
+<span class="nc" id="L63">                logger.trace(&quot;Synchronizer already registered&quot;);</span>
             }
-<span class="nc" id="L63">        } else {</span>
-<span class="nc" id="L64">            logger.error(&quot; * NULL -&gt; NO-CONTEXT&quot;);</span>
+<span class="nc" id="L65">        } else {</span>
+<span class="nc" id="L66">            logger.error(&quot; * NULL -&gt; NO-CONTEXT&quot;);</span>
         }
-<span class="nc" id="L66">    }</span>
+<span class="nc" id="L68">    }</span>
 
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>
