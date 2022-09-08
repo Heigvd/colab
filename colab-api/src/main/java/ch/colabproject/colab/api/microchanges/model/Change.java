@@ -231,7 +231,7 @@ public class Change implements Serializable, WithWebsocketChannels {
         this.basedOn.forEach(base -> {
             sb.append("\"")
                 .append(StringEscapeUtils.escapeEcmaScript(base))
-                .append("\"");
+                .append("\", ");
         });
 
         sb.append("], \"")

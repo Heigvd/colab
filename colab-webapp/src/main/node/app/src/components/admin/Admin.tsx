@@ -13,6 +13,7 @@ import Tabs, { Tab } from '../common/layout/Tabs';
 import { AllProjects } from '../projects/ProjectList';
 import { space_L } from '../styling/style';
 import AllUsers from './AllUsers';
+import LiveMonitor from './LiveMonitor';
 import LoggersConfig from './LoggersConfig';
 import MainPanel from './MainPanel';
 import Who from './Who';
@@ -48,6 +49,9 @@ export default function Admin(): JSX.Element {
           </Tab>
           <Tab name="cardtypes" label={i18n.modules.cardType.cardTypesLongWay}>
             <GlobalCardTypeList />
+          </Tab>
+          <Tab name="liveMonitor" label="Live Monitor">
+            <LiveMonitor />
           </Tab>
         </Tabs>
       </div>

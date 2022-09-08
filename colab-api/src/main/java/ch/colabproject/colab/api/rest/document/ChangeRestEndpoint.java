@@ -7,6 +7,7 @@
 package ch.colabproject.colab.api.rest.document;
 
 import ch.colabproject.colab.api.microchanges.live.LiveManager;
+import ch.colabproject.colab.api.microchanges.live.monitoring.BlockMonitoring;
 import ch.colabproject.colab.api.microchanges.model.Change;
 import ch.colabproject.colab.generator.model.annotations.AdminResource;
 import ch.colabproject.colab.generator.model.annotations.AuthenticationRequired;
@@ -72,9 +73,20 @@ public class ChangeRestEndpoint {
      */
     @PUT
     @Path("/{id}/dropChanges")
-    @AdminResource
     public void deletePendingChanges(@PathParam("id") Long id) {
         liveManager.deletePendingChangesAndPropagate(id);
+    }
+
+    /**
+     * get data to monitor block with pending changes
+     *
+     * @return list of block beiing edited and their status
+     */
+    @GET
+    @Path("/Monitoring")
+    @AdminResource
+    public List<BlockMonitoring> getMonitoringData(){
+        return liveManager.getMonitoringData();
     }
 
 }

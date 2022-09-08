@@ -8,6 +8,7 @@
 import { css, cx } from '@emotion/css';
 import * as React from 'react';
 import Flex from '../common/layout/Flex';
+import Monkeys from '../debugger/monkey/Monkeys';
 import Logo from '../styling/Logo';
 import { fullPageStyle } from '../styling/style';
 
@@ -51,6 +52,7 @@ export default function PublicEntranceContainer({
             />
           </a>
         </div>
+        <Monkeys />
         <Flex
           direction="column"
           align="center"

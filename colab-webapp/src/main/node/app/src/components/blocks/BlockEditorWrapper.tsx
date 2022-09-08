@@ -46,7 +46,7 @@ export function BlockEditorWrapper({
         case 'text/markdown':
           return (
             <LiveEditor
-              allowEdition={!readOnly}
+              readOnly={readOnly}
               atClass={block['@class']}
               atId={blockId}
               healthy={block.healthy}

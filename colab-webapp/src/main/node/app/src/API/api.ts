@@ -144,6 +144,10 @@ export const getVersionDetails = createAsyncThunk('monitoring/getVersionDetails'
   return await restClient.MonitoringRestEndpoint.getVersion();
 });
 
+export const getLiveMonitoringData = createAsyncThunk('monitoring/getLive', async () => {
+  return await restClient.ChangeRestEndpoint.getMonitoringData();
+});
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Authentication
 ////////////////////////////////////////////////////////////////////////////////////////////////////

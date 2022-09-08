@@ -19,7 +19,7 @@ import { useAppDispatch, useAppSelector } from '../../store/hooks';
 const logger = getLogger('LiveChanges');
 
 export interface LiveBlockState {
-  status: 'DISCONNECTED' | 'UNSET' | 'LOADING' | 'READY';
+  status: 'DISCONNECTED' | 'UNSET' | 'LOADING' | 'READY' | 'ERROR';
   currentValue: string;
   onChange: (value: string) => void;
 }
@@ -39,10 +39,14 @@ function applyChanges(value: string, revision: string, changes: Change[]) {
   }
 }
 
+export const monkeyLiveEdition = false;
+
 function findCounterValue(initialRevision: string, liveSession: string, changes: Change[]): number {
   let minChange = 0;
-  if (initialRevision.startsWith(liveSession)) {
-    minChange = +initialRevision.replace(liveSession + '::', '');
+  if (!monkeyLiveEdition) {
+    if (initialRevision.startsWith(liveSession)) {
+      minChange = +initialRevision.replace(liveSession + '::', '');
+    }
   }
   return changes
     .filter(ch => ch.liveSession === liveSession)
