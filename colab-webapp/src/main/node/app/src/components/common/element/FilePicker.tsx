@@ -21,6 +21,7 @@ import {
 import {
   faDownload,
   faFileCsv,
+  faMagnifyingGlassPlus,
   faSkullCrossbones,
   faUpload,
 } from '@fortawesome/free-solid-svg-icons';
@@ -29,6 +30,7 @@ import * as React from 'react';
 import useTranslations from '../../../i18n/I18nContext';
 import { invertedButtonStyle, lightIconButtonStyle, space_M, space_S } from '../../styling/style';
 import Flex from '../layout/Flex';
+import Overlay from '../layout/Overlay';
 import Button from './Button';
 import IconButton from './IconButton';
 
@@ -149,6 +151,12 @@ const previewImageStyle = css({
 const displayImageStyle = css({
   maxWidth: '100%',
   maxHeight: '300px',
+});
+
+const zoomImageStyle = css({
+  cursor: 'zoom-out',
+  maxWidth: '90vw',
+  maxHeight: '90vh',
 });
 
 export interface FilePickerProps {
@@ -279,6 +287,16 @@ export default function FilePicker({
     }
   }, [hasPreview]);
 
+  const [zoom, setZoom] = React.useState(false);
+
+  const zoomCb = React.useCallback(() => {
+    setZoom(true);
+  }, []);
+
+  const unZoomCb = React.useCallback(() => {
+    setZoom(false);
+  }, []);
+
   return (
     <Flex className={css({ padding: space_S })} align="center">
       <Flex
@@ -295,7 +313,16 @@ export default function FilePicker({
         onMouseMove={onMoveCb}
       >
         {isImageToDisplay && !editingStatus ? (
-          <img className={displayImageStyle} src={currentPreviewImgUrl} />
+          <>
+            {zoom ? (
+              <Overlay onClickOutside={unZoomCb}>
+                <img onClick={unZoomCb} className={zoomImageStyle} src={currentPreviewImgUrl} />
+              </Overlay>
+            ) : (
+              <img className={displayImageStyle} src={currentPreviewImgUrl} />
+            )}
+            <IconButton onClick={zoomCb} icon={faMagnifyingGlassPlus} title="" />
+          </>
         ) : (
           <>
             {getMimeTypeIcon(currentMimetype, hasNoFile)}
