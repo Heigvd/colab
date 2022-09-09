@@ -236,7 +236,7 @@ export default function FilePicker({
   const [coord, setCoord] = React.useState<[number, number] | undefined>(undefined);
   const [displayed, setDisplayed] = React.useState(false);
   const timerRef = React.useRef<number>();
-  const hasNoFile = currentFilename === null || currentFilename === undefined;
+  const hasNoFile = currentFilename == null;
   const isImageToDisplay =
     currentMimetype && (currentMimetype === 'image/png' || currentMimetype === 'image/jpeg');
 
