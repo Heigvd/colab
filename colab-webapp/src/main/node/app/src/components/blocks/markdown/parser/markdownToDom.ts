@@ -64,7 +64,7 @@ const regexBuilder = () => {
     if (!linesRegex) {
       linesRegex = new RegExp(
         [
-          '(?<CODE>(?<codeIndent>^```(?<codeLang>.*)\n)(?<codeData>.*)\n```)^',
+          '(?<CODE>(?<codeIndent>^```(?<codeLang>.*)\n)(?<codeData>.*)\n```)',
           `(?<UL>^(?<ulIndent>(?<ulLevel>${anyWhiteSpace}*[*-])(?:${anyWhiteSpace}\\[(?<ulChecked>[ x])\\])?${anyWhiteSpace})(?<ulData>.*)$)`,
           `(?<OL>^(?<olIndent>(?<olLevel>${anyWhiteSpace}*)(?<olNumber>\\d+)\\.${anyWhiteSpace})(?<olData>.*)$)`,
           `(?<H>^(?<hIndent>(?<hLevel>#{1,5})${anyWhiteSpace}?)(?<hData>.*)$)`,
