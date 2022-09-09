@@ -28,7 +28,8 @@ export const useProjectRootCard = (project: Project | null | undefined): Card | 
     if (project != null) {
       if (typeof state.cards.rootCardId === 'string') {
         if (state.cards.rootCardId === 'NOT_INITIALIZED') {
-          dispatch(API.getRootCardOfProject(project.id!));
+          dispatch(API.getProjectStructure(project.id!));
+          // dispatch(API.getRootCardOfProject(project.id!));
         }
         return 'LOADING';
       } else {
@@ -42,7 +43,8 @@ export const useProjectRootCard = (project: Project | null | undefined): Card | 
             return 'LOADING';
           }
         } else {
-          dispatch(API.getRootCardOfProject(project.id!));
+          dispatch(API.getProjectStructure(project.id!));
+          // dispatch(API.getRootCardOfProject(project.id!));
           return 'LOADING';
         }
       }

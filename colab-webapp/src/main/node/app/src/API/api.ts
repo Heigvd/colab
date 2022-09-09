@@ -378,7 +378,8 @@ export const reconnectToProjectChannel = createAsyncThunk(
       });
 
       // initialized project content
-      await thunkApi.dispatch(getRootCardOfProject(project.id));
+      //await thunkApi.dispatch(getRootCardOfProject(project.id)); // LAZY
+      await thunkApi.dispatch(getProjectStructure(project.id)); // GREEDY
     }
     return project;
   },
@@ -401,7 +402,8 @@ export const startProjectEdition = createAsyncThunk(
       });
 
       // initialized project content
-      await thunkApi.dispatch(getRootCardOfProject(project.id));
+      //await thunkApi.dispatch(getRootCardOfProject(project.id)); // LAZY
+      await thunkApi.dispatch(getProjectStructure(project.id)); // GREEDY
     }
     return project;
   },
@@ -730,6 +732,13 @@ export const getAllGlobalCardTypes = createAsyncThunk('cardType/getAllGlobals', 
 export const getCard = createAsyncThunk('card/get', async (id: number) => {
   return await restClient.CardRestEndpoint.getCard(id);
 });
+
+export const getProjectStructure = createAsyncThunk(
+  'project/getStructure',
+  async (id: number) => {
+    return await restClient.ProjectRestEndpoint.getStructureOfProject(id);
+  },
+);
 
 export const getAllProjectCards = createAsyncThunk(
   'card/getAllProjectCards',

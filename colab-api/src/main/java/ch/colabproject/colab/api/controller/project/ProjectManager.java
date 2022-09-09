@@ -25,6 +25,7 @@ import ch.colabproject.colab.api.model.team.TeamMember;
 import ch.colabproject.colab.api.model.team.acl.HierarchicalPosition;
 import ch.colabproject.colab.api.model.user.User;
 import ch.colabproject.colab.api.persistence.jpa.project.ProjectDao;
+import ch.colabproject.colab.api.rest.project.bean.ProjectStructure;
 import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
 import java.util.ArrayList;
 import java.util.List;
@@ -321,6 +322,32 @@ public class ProjectManager {
         Project project = assertAndGetProject(projectId);
 
         return cardManager.getAllCardContents(project.getRootCard());
+    }
+
+    /**
+     * Get project whole structure
+     *
+     * @param projectId id of the project
+     *
+     * @return project structure
+     */
+    public ProjectStructure getStructure(Long projectId) {
+        logger.debug("get all card contents of project #{}", projectId);
+
+        Project project = assertAndGetProject(projectId);
+
+        ProjectStructure structure = new ProjectStructure();
+        Card rootCard = project.getRootCard();
+
+        if (rootCard != null) {
+            structure.setRootCardId(rootCard.getId());
+        }
+
+        structure.setCards(cardManager.getAllCards(rootCard));
+
+        structure.setCardContents(cardManager.getAllCardContents(rootCard));
+
+        return structure;
     }
 
     /**
