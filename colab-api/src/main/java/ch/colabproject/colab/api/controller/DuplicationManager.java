@@ -6,6 +6,7 @@
  */
 package ch.colabproject.colab.api.controller;
 
+import ch.colabproject.colab.api.controller.document.FileManager;
 import ch.colabproject.colab.api.controller.document.ResourceReferenceSpreadingHelper;
 import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.model.ColabEntity;
@@ -30,16 +31,28 @@ import ch.colabproject.colab.api.model.team.TeamRole;
 import ch.colabproject.colab.api.model.team.acl.AccessControl;
 import ch.colabproject.colab.api.model.user.User;
 import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
+import javax.jcr.RepositoryException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Duplication of colab entities
+ * Duplication of colab entities.
+ * <p>
+ * Usage :
+ * <ul>
+ * <li>Create a {@link DuplicationManager}</li>
+ * <li>Duplicate the object with any duplicateXXX</li>
+ * <li>Save to JPA database</li>
+ * <li>Call {@link #duplicateDataIntoJCR()} in order to save to JCR database</li>
+ * </ul>
  *
  * @author sandra
  */
@@ -57,6 +70,9 @@ public class DuplicationManager {
 
     /** helper for resource references */
     private final ResourceReferenceSpreadingHelper resourceSpreader;
+
+    /** File persistence management */
+    private final FileManager fileManager;
 
     /** Matching between the old id and the new team roles */
     private Map<Long, TeamRole> teamRoleMatching = new HashMap<>();
@@ -85,14 +101,20 @@ public class DuplicationManager {
     /** the activity flow links to duplicate. They are filled when handling cards */
     private List<ActivityFlowLink> activityFlowLinksToDuplicate = new ArrayList<>();
 
+    /** Document files to process once the ids are here */
+    private Map<Long, DocumentFile> documentFilesToProcessOnceIds = new HashMap<>();
+
     /**
      * @param params           Parameters to fine tune duplication
      * @param resourceSpreader Helper for resource references
+     * @param fileManager      File persistence management
      */
     public DuplicationManager(DuplicationParam params,
-        ResourceReferenceSpreadingHelper resourceSpreader) {
+        ResourceReferenceSpreadingHelper resourceSpreader,
+        FileManager fileManager) {
         this.params = params;
         this.resourceSpreader = resourceSpreader;
+        this.fileManager = fileManager;
     }
 
     // *********************************************************************************************
@@ -250,6 +272,11 @@ public class DuplicationManager {
             newCardTypeRef.setPublished(false);
 
             cardTypeMatching.put(original.getId(), newCardTypeRef);
+
+            if (resourceSpreader == null) {
+                throw new IllegalStateException(
+                    "Dear developer, please define the resource spreader");
+            }
 
             List<ResourceRef> createdRefs = resourceSpreader
                 .extractReferencesFromUp(newCardTypeRef);
@@ -460,12 +487,11 @@ public class DuplicationManager {
         }
     }
 
-    // TODO sandra work in progress : copy also the file
     private DocumentFile duplicateDocumentFile(DocumentFile original) throws ColabMergeException {
         DocumentFile newDocumentFile = new DocumentFile();
         newDocumentFile.duplicate(original);
 
-
+        documentFilesToProcessOnceIds.put(original.getId(), newDocumentFile);
 
         return newDocumentFile;
     }
@@ -655,6 +681,67 @@ public class DuplicationManager {
         }
 
         return newLink;
+    }
+
+    /**
+     * Duplicate the data in the JCR. It must happen after creating the data in JPA as long as we
+     * need the ids.
+     */
+    public void duplicateDataIntoJCR() {
+        try {
+            for (Entry<Long, DocumentFile> data : documentFilesToProcessOnceIds.entrySet()) {
+                duplicateFileDocumentIntoJCR(data.getKey(), data.getValue());
+            }
+        } catch (RepositoryException e) {
+            throw HttpErrorMessage.internalServerError();
+        }
+    }
+
+    /**
+     * Duplicate the file document data into JCR
+     *
+     * @param srcDocId
+     * @param newDocFile
+     */
+    private void duplicateFileDocumentIntoJCR(Long srcDocId, DocumentFile newDocFile)
+        throws RepositoryException {
+        if (fileManager == null) {
+            throw new IllegalStateException("Dear developer, you must have defined a file manager");
+        }
+
+        if (fileManager.hasFile(srcDocId)) {
+            InputStream fileStream = null;
+            try {
+                fileStream = fileManager.getFileStream(srcDocId);
+                fileManager.updateOrCreateFile(newDocFile.getId(), fileStream);
+            } finally {
+                if (fileStream != null) {
+                    try {
+                        fileStream.close();
+                    } catch (IOException e) {
+                        // not really a problem
+                        // silent ex
+                        logger.warn("Could not close stream", e);
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * Clear processed data
+     */
+    public void clear() {
+        teamRoleMatching.clear();
+        teamMemberMatching.clear();
+        cardTypeMatching.clear();
+        cardMatching.clear();
+        cardContentMatching.clear();
+        resourceMatching.clear();
+        documentMatching.clear();
+        stickyNoteLinksToDuplicate.clear();
+        activityFlowLinksToDuplicate.clear();
+        documentFilesToProcessOnceIds.clear();
     }
 
 }
