@@ -5,8 +5,8 @@
  * Licensed under the MIT License
  */
 
-import {getLogger} from '../../../../logger';
-import {HeadingLevel} from './markdownToDom';
+import { getLogger } from '../../../../logger';
+import { HeadingLevel } from './markdownToDom';
 
 const logger = getLogger('Dom2Markdown2Parser');
 logger.setLevel(4);
@@ -270,7 +270,6 @@ function _domToMarkdown(
         push('  '.repeat(context.list.length - 1));
         const listType = element.getAttribute('data-list-type');
         if (listType === 'OL') {
-          // TODO: fetch start number
           push('1. ');
         } else {
           const checked = element.getAttribute('data-checked');

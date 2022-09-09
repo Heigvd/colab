@@ -168,6 +168,7 @@ export function useLiveBlock({ atClass, atId, value, revision }: Props): LiveBlo
     logger.info('Revision changed');
     valueRef.current.initialRevision = revision;
     valueRef.current.baseRevision = [revision];
+    valueRef.current.baseValue = value;
     valueRef.current.currentValue = value;
     valueRef.current.localChanges = [];
   }

@@ -59,14 +59,16 @@ const regexBuilder = () => {
       underlineRegex = new RegExp('(?<!\\\\)(_)');
     }
 
+    const anyWhiteSpace = '[^\\S\n\r]'; // aka not not-a-whitespace nor \r nor \n
+
     if (!linesRegex) {
       linesRegex = new RegExp(
         [
-          '(?<CODE>(?<codeIndent>^```(?<codeLang>.*)\n)(?<codeData>.*)\n```)',
-          '(?<UL>^(?<ulIndent>(?<ulLevel> *[*-])(?: \\[(?<ulChecked>[ x])\\])? )(?<ulData>.*)$)',
-          '(?<OL>^(?<olIndent>(?<olLevel> *)(?<olNumber>\\d+)\\.)(?<olData>.*)$)',
-          '(?<H>^(?<hIndent>(?<hLevel>#{1,5}) ?)(?<hData>.*)$)',
-          '(?<P>^(?<pIndent> *)(?<pData>.*)$)',
+          '(?<CODE>(?<codeIndent>^```(?<codeLang>.*)\n)(?<codeData>.*)\n```)^',
+          `(?<UL>^(?<ulIndent>(?<ulLevel>${anyWhiteSpace}*[*-])(?:${anyWhiteSpace}\\[(?<ulChecked>[ x])\\])?${anyWhiteSpace})(?<ulData>.*)$)`,
+          `(?<OL>^(?<olIndent>(?<olLevel>${anyWhiteSpace}*)(?<olNumber>\\d+)\\.${anyWhiteSpace})(?<olData>.*)$)`,
+          `(?<H>^(?<hIndent>(?<hLevel>#{1,5})${anyWhiteSpace}?)(?<hData>.*)$)`,
+          `(?<P>^(?<pIndent>${anyWhiteSpace}*)(?<pData>.*)$)`,
         ].join('|'),
         'gm',
       );
@@ -245,6 +247,7 @@ function extractMajorTags(markdown: string): MajorTagParsed[] {
         logger.trace('CurrentLevel', currentIndentation);
       } else if (isOlGroup(m.groups)) {
         logger.trace('Hit OL item');
+        currentIndentation = m.groups.olIndent.length;
         majorTags.push({
           tagType: 'OListItem',
           initialMark: m.groups.olIndent,
@@ -252,7 +255,6 @@ function extractMajorTags(markdown: string): MajorTagParsed[] {
           startNumber: +m.groups.olNumber,
           text: [{ offset: currentIndentation || 0, data: m.groups.olData, postOffset: 0 }],
         });
-        currentIndentation = m.groups.olIndent.length;
         logger.trace('CurrentLevel', currentIndentation);
       } else if (isPLineGroup(m.groups)) {
         const pLevel = m.groups.pIndent.length;
@@ -307,6 +309,7 @@ function combineMultiline(majorTag: MajorTagParsed): Combined {
 
       if (acc.data == null) {
         acc.data = '';
+        acc.offset[acc.currentDataPosition] = acc.currentRowPosition;
       } else {
         acc.data = `${acc.data}\n`;
         acc.offset[acc.currentDataPosition] = acc.currentRowPosition;
@@ -665,7 +668,7 @@ function convertPosition(
   md: NodesAndOffsets,
   position: number | undefined,
 ): { node: Node; offset: number } | null {
-  if (position) {
+  if (position != null) {
     const sortedOffset = Object.keys(md.offsets)
       .filter(offset => +offset <= position)
       .sort((a, b) => +a - +b);

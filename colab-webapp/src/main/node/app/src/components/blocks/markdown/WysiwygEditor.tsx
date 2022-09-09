@@ -187,28 +187,31 @@ function mergeMardown(md: MarkdownWithSelection, toInsert: string): MarkdownWith
   const anchor = md.range.anchor ?? md.data.length;
   const focus = md.range.focus ?? anchor ?? md.data.length;
 
-  logger.info('Range: ', { anchor, focus });
+  const start = Math.min(anchor, focus);
+  const end = Math.max(anchor, focus);
+
+  logger.info('Range: ', { start, end });
 
   const result: MarkdownWithSelection = {
     data: '',
     range: {
-      anchor: anchor,
-      focus: focus,
+      anchor: start,
+      focus: end,
     },
   };
-  if (focus > anchor) {
+  if (end > start) {
     // Selection
-    result.range.focus = anchor + toInsert.length;
+    result.range.focus = start + toInsert.length;
   } else {
     // cursor
-    result.range.anchor = anchor + toInsert.length;
+    result.range.anchor = start + toInsert.length;
   }
 
   let firstMajor: MajorTagParsed | undefined;
 
-  if (anchor ?? 0 > 0) {
+  if (start ?? 0 > 0) {
     // extract text from 0 to selection start
-    const sub = md.data.substring(0, anchor);
+    const sub = md.data.substring(0, start);
     // find last line return (not follwowed by a space) within such extract
     const index = getLastIndexOfMatch(sub, /\n(?! )/g);
     // extract markdown from this position
@@ -227,13 +230,12 @@ function mergeMardown(md: MarkdownWithSelection, toInsert: string): MarkdownWith
       if (firstMajor.tagType === toInsertMajor.tagType || toInsertMajor.tagType === 'P') {
         logger.info('SameTag Merge');
         result.data =
-          md.data.substring(0, anchor) +
+          md.data.substring(0, start) +
           toInsert.substring(toInsertMajor.initialMark.length) +
-          md.data.substring(focus);
+          md.data.substring(end);
       } else {
         logger.info('Insert ', toInsertMajor.tagType, ' after ', firstMajor.tagType);
-        result.data =
-          md.data.substring(0, anchor) + '\n' + toInsert + '\n' + md.data.substring(focus);
+        result.data = md.data.substring(0, start) + '\n' + toInsert + '\n' + md.data.substring(end);
       }
     } else {
       result.data = toInsert;
@@ -252,8 +254,9 @@ function putMarkdownInDom(
   markdown: MarkdownWithSelection,
   restoreSelection: boolean,
 ) {
-  logger.info('Markdown:>', markdown.data, '<');
-  const newDom = markdownToDom(markdown.data);
+  const hacked = markdown.data.replace(/ $/gm, '\u00A0');
+  logger.info('Markdown:>', hacked, '<');
+  const newDom = markdownToDom(hacked);
 
   logger.info('DOM:', newDom);
 
@@ -614,6 +617,8 @@ export default function WysiwygEditor({
         putMarkdownInDom(div, { data: value, range: newRange }, true);
       } else {
         logger.info('Do not update :same value');
+        // sync dom to restore dom integrity
+        putMarkdownInDom(div, { data: value, range: md.range }, true);
       }
     }
   }, [value]);
@@ -775,7 +780,8 @@ export default function WysiwygEditor({
     updateToolbar();
     const md = domToMarkdown(divRef.current!);
     logger.info('OnInternalChangeCb', md.data);
-    onChange(md.data);
+    const unHacked = md.data.replace(/\u00A0$/gm, ' ');
+    onChange(unHacked);
   }, [onChange, updateToolbar]);
 
   const onInputCb = React.useCallback(
@@ -815,7 +821,7 @@ export default function WysiwygEditor({
 
           if (selection?.type === 'Caret') {
             const sType = getSelectionType(divRef.current);
-            logger.warn('SelectionType: ', sType);
+            logger.trace('SelectionType: ', sType);
             if (sType === 'ON_WORD') {
               originalCaret = { node: selection.anchorNode!, offset: selection.anchorOffset };
               (selection as SelectionWithModify).modify('move', 'backward', 'word');
@@ -826,7 +832,7 @@ export default function WysiwygEditor({
           if (selection?.type === 'Caret') {
             const toggled = !!boundedClosest(selection.anchorNode!, [tagName], divRef.current);
             if (toggled) {
-              logger.warn('Untoggle');
+              logger.trace('Untoggle');
 
               const node = document.createTextNode('x');
               selection.getRangeAt(0).insertNode(node);
@@ -845,7 +851,7 @@ export default function WysiwygEditor({
               node.textContent = '';
               selection.setPosition(node, 0);
             } else {
-              logger.warn('Toggle');
+              logger.trace('Toggle');
               const newTag = document.createElement(tagName);
               selection.getRangeAt(0).insertNode(newTag);
               selection.setPosition(newTag);
@@ -884,6 +890,9 @@ export default function WysiwygEditor({
     [onInternalChangeCb],
   );
 
+  /**
+   * @param node must be a major tag!
+   */
   const toggleListNode = React.useCallback(
     (node: Element, newType: 'UL' | 'OL' | 'TL' | 'none'): Element => {
       if (node.parentElement) {
@@ -897,6 +906,9 @@ export default function WysiwygEditor({
             previous = document.createElement('UL');
             node.parentElement.insertBefore(previous, node);
           }
+          const selection = document.getSelection();
+          const isMajorSelected = selection?.anchorNode === node;
+
           const listItem = document.createElement('LI');
           listItem.setAttribute('data-list-type', newType);
           if (newType === 'TL') {
@@ -916,6 +928,11 @@ export default function WysiwygEditor({
             next.remove();
           }
           node.remove();
+
+          if (isMajorSelected) {
+            selection?.setPosition(listItem, 0);
+          }
+
           return listItem;
         } else if (currentListType !== 'none' && newType == 'none') {
           // unindent
