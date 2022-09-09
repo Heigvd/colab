@@ -6,6 +6,7 @@
  */
 package ch.colabproject.colab.api.controller;
 
+import ch.colabproject.colab.api.controller.document.FileManager;
 import ch.colabproject.colab.api.controller.document.ResourceReferenceSpreadingHelper;
 import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.model.ColabEntity;
@@ -30,27 +31,39 @@ import ch.colabproject.colab.api.model.team.TeamRole;
 import ch.colabproject.colab.api.model.team.acl.AccessControl;
 import ch.colabproject.colab.api.model.user.User;
 import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
+import javax.jcr.RepositoryException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Duplication of colab entities
+ * Duplication of colab entities.
+ * &lt;p&gt;
+ * Usage :
+ * &lt;ul&gt;
+ * &lt;li&gt;Create a {@link DuplicationManager}&lt;/li&gt;
+ * &lt;li&gt;Duplicate the object with any duplicateXXX&lt;/li&gt;
+ * &lt;li&gt;Save to JPA database&lt;/li&gt;
+ * &lt;li&gt;Call {@link #duplicateDataIntoJCR()} in order to save to JCR database&lt;/li&gt;
+ * &lt;/ul&gt;
  *
  * @author sandra
  */
 public class DuplicationManager {
 
     /** logger */
-<span class="nc" id="L49">    private static final Logger logger = LoggerFactory.getLogger(DuplicationManager.class);</span>
+<span class="nc" id="L62">    private static final Logger logger = LoggerFactory.getLogger(DuplicationManager.class);</span>
 
     /** Comparator for sorting data to create objects in the same order */
-<span class="nc" id="L52">    private static final Comparator&lt;ColabEntity&gt; ID_COMPARATOR = Comparator</span>
-<span class="nc" id="L53">        .comparingLong(entity -&gt; entity.getId());</span>
+<span class="nc" id="L65">    private static final Comparator&lt;ColabEntity&gt; ID_COMPARATOR = Comparator</span>
+<span class="nc" id="L66">        .comparingLong(entity -&gt; entity.getId());</span>
 
     /** parameters to fine tune a duplication */
     private final DuplicationParam params;
@@ -58,42 +71,51 @@ public class DuplicationManager {
     /** helper for resource references */
     private final ResourceReferenceSpreadingHelper resourceSpreader;
 
+    /** File persistence management */
+    private final FileManager fileManager;
+
     /** Matching between the old id and the new team roles */
-<span class="nc" id="L62">    private Map&lt;Long, TeamRole&gt; teamRoleMatching = new HashMap&lt;&gt;();</span>
+<span class="nc" id="L78">    private Map&lt;Long, TeamRole&gt; teamRoleMatching = new HashMap&lt;&gt;();</span>
 
     /** Matching between the old id and the new team members */
-<span class="nc" id="L65">    private Map&lt;Long, TeamMember&gt; teamMemberMatching = new HashMap&lt;&gt;();</span>
+<span class="nc" id="L81">    private Map&lt;Long, TeamMember&gt; teamMemberMatching = new HashMap&lt;&gt;();</span>
 
     /** Matching between the old id and the new card types */
-<span class="nc" id="L68">    private Map&lt;Long, AbstractCardType&gt; cardTypeMatching = new HashMap&lt;&gt;();</span>
+<span class="nc" id="L84">    private Map&lt;Long, AbstractCardType&gt; cardTypeMatching = new HashMap&lt;&gt;();</span>
 
     /** Matching between the old id and the new cards */
-<span class="nc" id="L71">    private Map&lt;Long, Card&gt; cardMatching = new HashMap&lt;&gt;();</span>
+<span class="nc" id="L87">    private Map&lt;Long, Card&gt; cardMatching = new HashMap&lt;&gt;();</span>
 
     /** Matching between the old id and the new card contents */
-<span class="nc" id="L74">    private Map&lt;Long, CardContent&gt; cardContentMatching = new HashMap&lt;&gt;();</span>
+<span class="nc" id="L90">    private Map&lt;Long, CardContent&gt; cardContentMatching = new HashMap&lt;&gt;();</span>
 
     /** Matching between the old id and the new resources */
-<span class="nc" id="L77">    private Map&lt;Long, AbstractResource&gt; resourceMatching = new HashMap&lt;&gt;();</span>
+<span class="nc" id="L93">    private Map&lt;Long, AbstractResource&gt; resourceMatching = new HashMap&lt;&gt;();</span>
 
     /** Matching between the old id and the new document */
-<span class="nc" id="L80">    private Map&lt;Long, Document&gt; documentMatching = new HashMap&lt;&gt;();</span>
+<span class="nc" id="L96">    private Map&lt;Long, Document&gt; documentMatching = new HashMap&lt;&gt;();</span>
 
     /** the sticky note links to duplicate. They are filled when handling cards */
-<span class="nc" id="L83">    private List&lt;StickyNoteLink&gt; stickyNoteLinksToDuplicate = new ArrayList&lt;&gt;();</span>
+<span class="nc" id="L99">    private List&lt;StickyNoteLink&gt; stickyNoteLinksToDuplicate = new ArrayList&lt;&gt;();</span>
 
     /** the activity flow links to duplicate. They are filled when handling cards */
-<span class="nc" id="L86">    private List&lt;ActivityFlowLink&gt; activityFlowLinksToDuplicate = new ArrayList&lt;&gt;();</span>
+<span class="nc" id="L102">    private List&lt;ActivityFlowLink&gt; activityFlowLinksToDuplicate = new ArrayList&lt;&gt;();</span>
+
+    /** Document files to process once the ids are here */
+<span class="nc" id="L105">    private Map&lt;Long, DocumentFile&gt; documentFilesToProcessOnceIds = new HashMap&lt;&gt;();</span>
 
     /**
      * @param params           Parameters to fine tune duplication
      * @param resourceSpreader Helper for resource references
+     * @param fileManager      File persistence management
      */
     public DuplicationManager(DuplicationParam params,
-<span class="nc" id="L93">        ResourceReferenceSpreadingHelper resourceSpreader) {</span>
-<span class="nc" id="L94">        this.params = params;</span>
-<span class="nc" id="L95">        this.resourceSpreader = resourceSpreader;</span>
-<span class="nc" id="L96">    }</span>
+        ResourceReferenceSpreadingHelper resourceSpreader,
+<span class="nc" id="L114">        FileManager fileManager) {</span>
+<span class="nc" id="L115">        this.params = params;</span>
+<span class="nc" id="L116">        this.resourceSpreader = resourceSpreader;</span>
+<span class="nc" id="L117">        this.fileManager = fileManager;</span>
+<span class="nc" id="L118">    }</span>
 
     // *********************************************************************************************
     // duplication
@@ -108,186 +130,191 @@ public class DuplicationManager {
      */
     public Project duplicateProject(Project originalProject) {
         try {
-<span class="nc" id="L111">            Project newProject = new Project();</span>
-<span class="nc" id="L112">            newProject.duplicate(originalProject);</span>
+<span class="nc" id="L133">            Project newProject = new Project();</span>
+<span class="nc" id="L134">            newProject.duplicate(originalProject);</span>
 
             ////////////////////////////////////////////////////////////////////////////////////////
             // Team roles
-<span class="nc bnc" id="L116" title="All 2 branches missed.">            if (params.isWithRoles()) {</span>
-<span class="nc" id="L117">                List&lt;TeamRole&gt; teamRoles = originalProject.getRoles();</span>
-<span class="nc" id="L118">                teamRoles.sort(ID_COMPARATOR);</span>
+<span class="nc bnc" id="L138" title="All 2 branches missed.">            if (params.isWithRoles()) {</span>
+<span class="nc" id="L139">                List&lt;TeamRole&gt; teamRoles = originalProject.getRoles();</span>
+<span class="nc" id="L140">                teamRoles.sort(ID_COMPARATOR);</span>
 
-<span class="nc bnc" id="L120" title="All 2 branches missed.">                for (TeamRole original : teamRoles) {</span>
-<span class="nc" id="L121">                    TeamRole newTeamRole = duplicateTeamRole(original);</span>
+<span class="nc bnc" id="L142" title="All 2 branches missed.">                for (TeamRole original : teamRoles) {</span>
+<span class="nc" id="L143">                    TeamRole newTeamRole = duplicateTeamRole(original);</span>
 
-<span class="nc" id="L123">                    newTeamRole.setProject(newProject);</span>
-<span class="nc" id="L124">                    newProject.getRoles().add(newTeamRole);</span>
-<span class="nc" id="L125">                }</span>
-<span class="nc" id="L126">            } else {</span>
-<span class="nc" id="L127">                logger.info(&quot;param do not duplicate project's team roles&quot;);</span>
+<span class="nc" id="L145">                    newTeamRole.setProject(newProject);</span>
+<span class="nc" id="L146">                    newProject.getRoles().add(newTeamRole);</span>
+<span class="nc" id="L147">                }</span>
+<span class="nc" id="L148">            } else {</span>
+<span class="nc" id="L149">                logger.info(&quot;param do not duplicate project's team roles&quot;);</span>
             }
 
             ////////////////////////////////////////////////////////////////////////////////////////
             // Team members
-<span class="nc bnc" id="L132" title="All 2 branches missed.">            if (params.isWithTeamMembers()) {</span>
-<span class="nc" id="L133">                List&lt;TeamMember&gt; teamMembers = originalProject.getTeamMembers();</span>
-<span class="nc" id="L134">                teamMembers.sort(ID_COMPARATOR);</span>
+<span class="nc bnc" id="L154" title="All 2 branches missed.">            if (params.isWithTeamMembers()) {</span>
+<span class="nc" id="L155">                List&lt;TeamMember&gt; teamMembers = originalProject.getTeamMembers();</span>
+<span class="nc" id="L156">                teamMembers.sort(ID_COMPARATOR);</span>
 
-<span class="nc bnc" id="L136" title="All 2 branches missed.">                for (TeamMember original : teamMembers) {</span>
-<span class="nc" id="L137">                    TeamMember newTeamMember = duplicateTeamMember(original);</span>
+<span class="nc bnc" id="L158" title="All 2 branches missed.">                for (TeamMember original : teamMembers) {</span>
+<span class="nc" id="L159">                    TeamMember newTeamMember = duplicateTeamMember(original);</span>
 
-<span class="nc" id="L139">                    newTeamMember.setProject(newProject);</span>
-<span class="nc" id="L140">                    newProject.getTeamMembers().add(newTeamMember);</span>
-<span class="nc" id="L141">                }</span>
-<span class="nc" id="L142">            } else {</span>
-<span class="nc" id="L143">                logger.info(&quot;param do not duplicate project's team members&quot;);</span>
+<span class="nc" id="L161">                    newTeamMember.setProject(newProject);</span>
+<span class="nc" id="L162">                    newProject.getTeamMembers().add(newTeamMember);</span>
+<span class="nc" id="L163">                }</span>
+<span class="nc" id="L164">            } else {</span>
+<span class="nc" id="L165">                logger.info(&quot;param do not duplicate project's team members&quot;);</span>
             }
 
             ////////////////////////////////////////////////////////////////////////////////////////
             // Card types
-<span class="nc bnc" id="L148" title="All 2 branches missed.">            if (params.isWithCardTypes()) {</span>
-<span class="nc" id="L149">                List&lt;AbstractCardType&gt; cardTypes = originalProject.getElementsToBeDefined();</span>
-<span class="nc" id="L150">                cardTypes.sort(ID_COMPARATOR);</span>
+<span class="nc bnc" id="L170" title="All 2 branches missed.">            if (params.isWithCardTypes()) {</span>
+<span class="nc" id="L171">                List&lt;AbstractCardType&gt; cardTypes = originalProject.getElementsToBeDefined();</span>
+<span class="nc" id="L172">                cardTypes.sort(ID_COMPARATOR);</span>
 
-<span class="nc bnc" id="L152" title="All 2 branches missed.">                for (AbstractCardType original : cardTypes) {</span>
-<span class="nc" id="L153">                    AbstractCardType newCardType = duplicateCardType(original);</span>
+<span class="nc bnc" id="L174" title="All 2 branches missed.">                for (AbstractCardType original : cardTypes) {</span>
+<span class="nc" id="L175">                    AbstractCardType newCardType = duplicateCardType(original);</span>
 
-<span class="nc" id="L155">                    newCardType.setProject(newProject);</span>
-<span class="nc" id="L156">                    newProject.getElementsToBeDefined().add(newCardType);</span>
-<span class="nc" id="L157">                }</span>
+<span class="nc" id="L177">                    newCardType.setProject(newProject);</span>
+<span class="nc" id="L178">                    newProject.getElementsToBeDefined().add(newCardType);</span>
+<span class="nc" id="L179">                }</span>
             }
 
             ////////////////////////////////////////////////////////////////////////////////////////
             // Cards
-<span class="nc bnc" id="L162" title="All 2 branches missed.">            if (params.isWithCardsStructure()) {</span>
-<span class="nc" id="L163">                Card original = originalProject.getRootCard();</span>
-<span class="nc bnc" id="L164" title="All 2 branches missed.">                if (original != null) {</span>
-<span class="nc" id="L165">                    Card newRootCard = duplicateCard(original);</span>
+<span class="nc bnc" id="L184" title="All 2 branches missed.">            if (params.isWithCardsStructure()) {</span>
+<span class="nc" id="L185">                Card original = originalProject.getRootCard();</span>
+<span class="nc bnc" id="L186" title="All 2 branches missed.">                if (original != null) {</span>
+<span class="nc" id="L187">                    Card newRootCard = duplicateCard(original);</span>
 
-<span class="nc" id="L167">                    newRootCard.setRootCardProject(newProject);</span>
-<span class="nc" id="L168">                    newProject.setRootCard(newRootCard);</span>
+<span class="nc" id="L189">                    newRootCard.setRootCardProject(newProject);</span>
+<span class="nc" id="L190">                    newProject.setRootCard(newRootCard);</span>
                 }
 
             }
 
             ////////////////////////////////////////////////////////////////////////////////////////
             // sticky notes
-<span class="nc bnc" id="L175" title="All 2 branches missed.">            if (params.isWithStickyNotes()) {</span>
-<span class="nc" id="L176">                stickyNoteLinksToDuplicate.sort(ID_COMPARATOR);</span>
+<span class="nc bnc" id="L197" title="All 2 branches missed.">            if (params.isWithStickyNotes()) {</span>
+<span class="nc" id="L198">                stickyNoteLinksToDuplicate.sort(ID_COMPARATOR);</span>
 
-<span class="nc bnc" id="L178" title="All 2 branches missed.">                for (StickyNoteLink original : stickyNoteLinksToDuplicate) {</span>
-<span class="nc" id="L179">                    duplicateStickyNoteLink(original);</span>
-<span class="nc" id="L180">                }</span>
+<span class="nc bnc" id="L200" title="All 2 branches missed.">                for (StickyNoteLink original : stickyNoteLinksToDuplicate) {</span>
+<span class="nc" id="L201">                    duplicateStickyNoteLink(original);</span>
+<span class="nc" id="L202">                }</span>
             }
 
             ////////////////////////////////////////////////////////////////////////////////////////
             // activity flow
-<span class="nc bnc" id="L185" title="All 2 branches missed.">            if (params.isWithActivityFlow()) {</span>
-<span class="nc" id="L186">                activityFlowLinksToDuplicate.sort(ID_COMPARATOR);</span>
+<span class="nc bnc" id="L207" title="All 2 branches missed.">            if (params.isWithActivityFlow()) {</span>
+<span class="nc" id="L208">                activityFlowLinksToDuplicate.sort(ID_COMPARATOR);</span>
 
-<span class="nc bnc" id="L188" title="All 2 branches missed.">                for (ActivityFlowLink original : activityFlowLinksToDuplicate) {</span>
-<span class="nc" id="L189">                    duplicateActivityFlowLink(original);</span>
-<span class="nc" id="L190">                }</span>
+<span class="nc bnc" id="L210" title="All 2 branches missed.">                for (ActivityFlowLink original : activityFlowLinksToDuplicate) {</span>
+<span class="nc" id="L211">                    duplicateActivityFlowLink(original);</span>
+<span class="nc" id="L212">                }</span>
             }
 
-<span class="nc" id="L193">            return newProject;</span>
-<span class="nc" id="L194">        } catch (ColabMergeException e) {</span>
-<span class="nc" id="L195">            throw HttpErrorMessage.dataIntegrityFailure();</span>
+<span class="nc" id="L215">            return newProject;</span>
+<span class="nc" id="L216">        } catch (ColabMergeException e) {</span>
+<span class="nc" id="L217">            throw HttpErrorMessage.dataIntegrityFailure();</span>
         }
         // TODO sandra work in progress : handle exceptions
     }
 
     private TeamRole duplicateTeamRole(TeamRole original) throws ColabMergeException {
-<span class="nc" id="L201">        TeamRole newTeamRole = new TeamRole();</span>
-<span class="nc" id="L202">        newTeamRole.duplicate(original);</span>
+<span class="nc" id="L223">        TeamRole newTeamRole = new TeamRole();</span>
+<span class="nc" id="L224">        newTeamRole.duplicate(original);</span>
 
-<span class="nc" id="L204">        teamRoleMatching.put(original.getId(), newTeamRole);</span>
+<span class="nc" id="L226">        teamRoleMatching.put(original.getId(), newTeamRole);</span>
 
-<span class="nc" id="L206">        return newTeamRole;</span>
+<span class="nc" id="L228">        return newTeamRole;</span>
     }
 
     private TeamMember duplicateTeamMember(TeamMember original) throws ColabMergeException {
-<span class="nc" id="L210">        TeamMember newTeamMember = new TeamMember();</span>
-<span class="nc" id="L211">        newTeamMember.duplicate(original);</span>
+<span class="nc" id="L232">        TeamMember newTeamMember = new TeamMember();</span>
+<span class="nc" id="L233">        newTeamMember.duplicate(original);</span>
 
-<span class="nc" id="L213">        teamMemberMatching.put(original.getId(), newTeamMember);</span>
+<span class="nc" id="L235">        teamMemberMatching.put(original.getId(), newTeamMember);</span>
 
         ////////////////////////////////////////////////////////////////////////////////////////////
         // Team members's user
-<span class="nc" id="L217">        User user = original.getUser();</span>
-<span class="nc bnc" id="L218" title="All 2 branches missed.">        if (user != null) {</span>
-<span class="nc" id="L219">            newTeamMember.setUser(user);</span>
+<span class="nc" id="L239">        User user = original.getUser();</span>
+<span class="nc bnc" id="L240" title="All 2 branches missed.">        if (user != null) {</span>
+<span class="nc" id="L241">            newTeamMember.setUser(user);</span>
         }
 
         ////////////////////////////////////////////////////////////////////////////////////////////
         // Team members's roles
-<span class="nc bnc" id="L224" title="All 2 branches missed.">        if (params.isWithRoles()) {</span>
-<span class="nc" id="L225">            List&lt;TeamRole&gt; linkedRoles = original.getRoles();</span>
-<span class="nc" id="L226">            linkedRoles.sort(ID_COMPARATOR);</span>
+<span class="nc bnc" id="L246" title="All 2 branches missed.">        if (params.isWithRoles()) {</span>
+<span class="nc" id="L247">            List&lt;TeamRole&gt; linkedRoles = original.getRoles();</span>
+<span class="nc" id="L248">            linkedRoles.sort(ID_COMPARATOR);</span>
 
-<span class="nc bnc" id="L228" title="All 2 branches missed.">            for (TeamRole linkedRole : linkedRoles) {</span>
-<span class="nc" id="L229">                TeamRole newRole = teamRoleMatching.get(linkedRole.getId());</span>
+<span class="nc bnc" id="L250" title="All 2 branches missed.">            for (TeamRole linkedRole : linkedRoles) {</span>
+<span class="nc" id="L251">                TeamRole newRole = teamRoleMatching.get(linkedRole.getId());</span>
 
-<span class="nc bnc" id="L231" title="All 2 branches missed.">                if (newRole == null) {</span>
-<span class="nc" id="L232">                    throw HttpErrorMessage.dataIntegrityFailure();</span>
+<span class="nc bnc" id="L253" title="All 2 branches missed.">                if (newRole == null) {</span>
+<span class="nc" id="L254">                    throw HttpErrorMessage.dataIntegrityFailure();</span>
                 }
 
-<span class="nc" id="L235">                newRole.getMembers().add(newTeamMember);</span>
-<span class="nc" id="L236">                newTeamMember.getRoles().add(newRole);</span>
-<span class="nc" id="L237">            }</span>
+<span class="nc" id="L257">                newRole.getMembers().add(newTeamMember);</span>
+<span class="nc" id="L258">                newTeamMember.getRoles().add(newRole);</span>
+<span class="nc" id="L259">            }</span>
         }
 
-<span class="nc" id="L240">        return newTeamMember;</span>
+<span class="nc" id="L262">        return newTeamMember;</span>
     }
 
     private AbstractCardType duplicateCardType(AbstractCardType original)
         throws ColabMergeException {
 
-<span class="nc bnc" id="L246" title="All 2 branches missed.">        if (params.isMakeOnlyCardTypeReferences()) {</span>
-<span class="nc" id="L247">            CardTypeRef newCardTypeRef = new CardTypeRef();</span>
-<span class="nc" id="L248">            newCardTypeRef.setTarget(original);</span>
-<span class="nc" id="L249">            newCardTypeRef.setDeprecated(original.isDeprecated());</span>
-<span class="nc" id="L250">            newCardTypeRef.setPublished(false);</span>
+<span class="nc bnc" id="L268" title="All 2 branches missed.">        if (params.isMakeOnlyCardTypeReferences()) {</span>
+<span class="nc" id="L269">            CardTypeRef newCardTypeRef = new CardTypeRef();</span>
+<span class="nc" id="L270">            newCardTypeRef.setTarget(original);</span>
+<span class="nc" id="L271">            newCardTypeRef.setDeprecated(original.isDeprecated());</span>
+<span class="nc" id="L272">            newCardTypeRef.setPublished(false);</span>
 
-<span class="nc" id="L252">            cardTypeMatching.put(original.getId(), newCardTypeRef);</span>
+<span class="nc" id="L274">            cardTypeMatching.put(original.getId(), newCardTypeRef);</span>
 
-<span class="nc" id="L254">            List&lt;ResourceRef&gt; createdRefs = resourceSpreader</span>
-<span class="nc" id="L255">                .extractReferencesFromUp(newCardTypeRef);</span>
-<span class="nc" id="L256">            createdRefs.stream().forEach(ref -&gt; resourceMatching.put(ref.getTarget().getId(), ref));</span>
+<span class="nc bnc" id="L276" title="All 2 branches missed.">            if (resourceSpreader == null) {</span>
+<span class="nc" id="L277">                throw new IllegalStateException(</span>
+                    &quot;Dear developer, please define the resource spreader&quot;);
+            }
 
-<span class="nc" id="L258">            return newCardTypeRef;</span>
+<span class="nc" id="L281">            List&lt;ResourceRef&gt; createdRefs = resourceSpreader</span>
+<span class="nc" id="L282">                .extractReferencesFromUp(newCardTypeRef);</span>
+<span class="nc" id="L283">            createdRefs.stream().forEach(ref -&gt; resourceMatching.put(ref.getTarget().getId(), ref));</span>
+
+<span class="nc" id="L285">            return newCardTypeRef;</span>
         } else {
             AbstractCardType newAbstractCardType;
-<span class="nc bnc" id="L261" title="All 2 branches missed.">            if (original instanceof CardType) {</span>
-<span class="nc" id="L262">                CardType originalCardType = (CardType) original;</span>
+<span class="nc bnc" id="L288" title="All 2 branches missed.">            if (original instanceof CardType) {</span>
+<span class="nc" id="L289">                CardType originalCardType = (CardType) original;</span>
 
-<span class="nc" id="L264">                CardType newCardType = new CardType();</span>
-<span class="nc" id="L265">                newCardType.duplicate(originalCardType);</span>
+<span class="nc" id="L291">                CardType newCardType = new CardType();</span>
+<span class="nc" id="L292">                newCardType.duplicate(originalCardType);</span>
 
-<span class="nc" id="L267">                cardTypeMatching.put(originalCardType.getId(), newCardType);</span>
+<span class="nc" id="L294">                cardTypeMatching.put(originalCardType.getId(), newCardType);</span>
 
-<span class="nc" id="L269">                TextDataBlock purpose = originalCardType.getPurpose();</span>
-<span class="nc bnc" id="L270" title="All 2 branches missed.">                if (purpose != null) {</span>
-<span class="nc" id="L271">                    TextDataBlock newPurpose = (TextDataBlock) duplicateDocument(purpose);</span>
-<span class="nc" id="L272">                    newPurpose.setPurposingCardType(newCardType);</span>
-<span class="nc" id="L273">                    newCardType.setPurpose(newPurpose);</span>
+<span class="nc" id="L296">                TextDataBlock purpose = originalCardType.getPurpose();</span>
+<span class="nc bnc" id="L297" title="All 2 branches missed.">                if (purpose != null) {</span>
+<span class="nc" id="L298">                    TextDataBlock newPurpose = (TextDataBlock) duplicateDocument(purpose);</span>
+<span class="nc" id="L299">                    newPurpose.setPurposingCardType(newCardType);</span>
+<span class="nc" id="L300">                    newCardType.setPurpose(newPurpose);</span>
                 }
 
-<span class="nc" id="L276">                newAbstractCardType = newCardType;</span>
-<span class="nc bnc" id="L277" title="All 2 branches missed.">            } else if (original instanceof CardTypeRef) {</span>
-<span class="nc" id="L278">                CardTypeRef originalCardTypeRef = (CardTypeRef) original;</span>
+<span class="nc" id="L303">                newAbstractCardType = newCardType;</span>
+<span class="nc bnc" id="L304" title="All 2 branches missed.">            } else if (original instanceof CardTypeRef) {</span>
+<span class="nc" id="L305">                CardTypeRef originalCardTypeRef = (CardTypeRef) original;</span>
 
-<span class="nc" id="L280">                CardTypeRef newCardTypeRef = new CardTypeRef();</span>
-<span class="nc" id="L281">                newCardTypeRef.duplicate(originalCardTypeRef);</span>
+<span class="nc" id="L307">                CardTypeRef newCardTypeRef = new CardTypeRef();</span>
+<span class="nc" id="L308">                newCardTypeRef.duplicate(originalCardTypeRef);</span>
 
-<span class="nc" id="L283">                cardTypeMatching.put(originalCardTypeRef.getId(), newCardTypeRef);</span>
+<span class="nc" id="L310">                cardTypeMatching.put(originalCardTypeRef.getId(), newCardTypeRef);</span>
 
-<span class="nc" id="L285">                AbstractCardType originalTarget = originalCardTypeRef.getTarget();</span>
-<span class="nc bnc" id="L286" title="All 2 branches missed.">                if (originalTarget != null) {</span>
-<span class="nc bnc" id="L287" title="All 2 branches missed.">                    if (originalTarget.getProjectId() != originalCardTypeRef.getProjectId()) {</span>
-<span class="nc" id="L288">                        newCardTypeRef.setTarget(originalTarget);</span>
+<span class="nc" id="L312">                AbstractCardType originalTarget = originalCardTypeRef.getTarget();</span>
+<span class="nc bnc" id="L313" title="All 2 branches missed.">                if (originalTarget != null) {</span>
+<span class="nc bnc" id="L314" title="All 2 branches missed.">                    if (originalTarget.getProjectId() != originalCardTypeRef.getProjectId()) {</span>
+<span class="nc" id="L315">                        newCardTypeRef.setTarget(originalTarget);</span>
                     } else {
-<span class="nc" id="L290">                        throw new IllegalStateException(</span>
+<span class="nc" id="L317">                        throw new IllegalStateException(</span>
                             &quot;the target of a card type reference must be outside the project&quot;);
                         // Note for an hypothetical future evolution :
                         // if we break the condition that, in a project,
@@ -296,366 +323,426 @@ public class DuplicationManager {
                     }
                 }
 
-<span class="nc" id="L299">                newAbstractCardType = newCardTypeRef;</span>
-<span class="nc" id="L300">            } else {</span>
-<span class="nc" id="L301">                throw new IllegalStateException(&quot;abstract card type implementation not handled&quot;);</span>
+<span class="nc" id="L326">                newAbstractCardType = newCardTypeRef;</span>
+<span class="nc" id="L327">            } else {</span>
+<span class="nc" id="L328">                throw new IllegalStateException(&quot;abstract card type implementation not handled&quot;);</span>
             }
 
-<span class="nc" id="L304">            List&lt;AbstractResource&gt; originalResources = original.getDirectAbstractResources();</span>
-<span class="nc" id="L305">            originalResources.sort(ID_COMPARATOR);</span>
+<span class="nc" id="L331">            List&lt;AbstractResource&gt; originalResources = original.getDirectAbstractResources();</span>
+<span class="nc" id="L332">            originalResources.sort(ID_COMPARATOR);</span>
 
-<span class="nc bnc" id="L307" title="All 2 branches missed.">            for (AbstractResource originalResource : originalResources) {</span>
-<span class="nc" id="L308">                AbstractResource newResource = duplicateResource(originalResource);</span>
+<span class="nc bnc" id="L334" title="All 2 branches missed.">            for (AbstractResource originalResource : originalResources) {</span>
+<span class="nc" id="L335">                AbstractResource newResource = duplicateResource(originalResource);</span>
 
-<span class="nc" id="L310">                newResource.setAbstractCardType(newAbstractCardType);</span>
-<span class="nc" id="L311">                newAbstractCardType.getDirectAbstractResources().add(newResource);</span>
-<span class="nc" id="L312">            }</span>
+<span class="nc" id="L337">                newResource.setAbstractCardType(newAbstractCardType);</span>
+<span class="nc" id="L338">                newAbstractCardType.getDirectAbstractResources().add(newResource);</span>
+<span class="nc" id="L339">            }</span>
 
-<span class="nc" id="L314">            return newAbstractCardType;</span>
+<span class="nc" id="L341">            return newAbstractCardType;</span>
         }
     }
 
     private Card duplicateCard(Card original) throws ColabMergeException {
-<span class="nc" id="L319">        Card newCard = new Card();</span>
-<span class="nc" id="L320">        newCard.duplicate(original);</span>
+<span class="nc" id="L346">        Card newCard = new Card();</span>
+<span class="nc" id="L347">        newCard.duplicate(original);</span>
 
-<span class="nc" id="L322">        cardMatching.put(original.getId(), newCard);</span>
+<span class="nc" id="L349">        cardMatching.put(original.getId(), newCard);</span>
 
-<span class="nc" id="L324">        AbstractCardType originalCardType = original.getCardType();</span>
-<span class="nc bnc" id="L325" title="All 2 branches missed.">        if (originalCardType != null) {</span>
-<span class="nc" id="L326">            AbstractCardType newCardType = cardTypeMatching.get(originalCardType.getId());</span>
+<span class="nc" id="L351">        AbstractCardType originalCardType = original.getCardType();</span>
+<span class="nc bnc" id="L352" title="All 2 branches missed.">        if (originalCardType != null) {</span>
+<span class="nc" id="L353">            AbstractCardType newCardType = cardTypeMatching.get(originalCardType.getId());</span>
 
-<span class="nc bnc" id="L328" title="All 2 branches missed.">            if (newCardType == null) {</span>
-<span class="nc" id="L329">                throw HttpErrorMessage.dataIntegrityFailure();</span>
+<span class="nc bnc" id="L355" title="All 2 branches missed.">            if (newCardType == null) {</span>
+<span class="nc" id="L356">                throw HttpErrorMessage.dataIntegrityFailure();</span>
             }
 
-<span class="nc" id="L332">            newCard.setCardType(newCardType);</span>
+<span class="nc" id="L359">            newCard.setCardType(newCardType);</span>
         }
 
-<span class="nc" id="L335">        List&lt;AbstractResource&gt; originalResources = original.getDirectAbstractResources();</span>
-<span class="nc" id="L336">        originalResources.sort(ID_COMPARATOR);</span>
+<span class="nc" id="L362">        List&lt;AbstractResource&gt; originalResources = original.getDirectAbstractResources();</span>
+<span class="nc" id="L363">        originalResources.sort(ID_COMPARATOR);</span>
 
-<span class="nc bnc" id="L338" title="All 2 branches missed.">        for (AbstractResource originalResource : originalResources) {</span>
-<span class="nc" id="L339">            AbstractResource newResource = duplicateResource(originalResource);</span>
+<span class="nc bnc" id="L365" title="All 2 branches missed.">        for (AbstractResource originalResource : originalResources) {</span>
+<span class="nc" id="L366">            AbstractResource newResource = duplicateResource(originalResource);</span>
 
-<span class="nc" id="L341">            newResource.setCard(newCard);</span>
-<span class="nc" id="L342">            newCard.getDirectAbstractResources().add(newResource);</span>
-<span class="nc" id="L343">        }</span>
+<span class="nc" id="L368">            newResource.setCard(newCard);</span>
+<span class="nc" id="L369">            newCard.getDirectAbstractResources().add(newResource);</span>
+<span class="nc" id="L370">        }</span>
 
-<span class="nc" id="L345">        List&lt;CardContent&gt; originalContents = original.getContentVariants();</span>
-<span class="nc" id="L346">        originalContents.sort(ID_COMPARATOR);</span>
+<span class="nc" id="L372">        List&lt;CardContent&gt; originalContents = original.getContentVariants();</span>
+<span class="nc" id="L373">        originalContents.sort(ID_COMPARATOR);</span>
 
-<span class="nc bnc" id="L348" title="All 2 branches missed.">        for (CardContent originalCardContent : originalContents) {</span>
-<span class="nc" id="L349">            CardContent newCardContent = duplicateCardContent(originalCardContent);</span>
+<span class="nc bnc" id="L375" title="All 2 branches missed.">        for (CardContent originalCardContent : originalContents) {</span>
+<span class="nc" id="L376">            CardContent newCardContent = duplicateCardContent(originalCardContent);</span>
 
-<span class="nc" id="L351">            newCardContent.setCard(newCard);</span>
-<span class="nc" id="L352">            newCard.getContentVariants().add(newCardContent);</span>
-<span class="nc" id="L353">        }</span>
+<span class="nc" id="L378">            newCardContent.setCard(newCard);</span>
+<span class="nc" id="L379">            newCard.getContentVariants().add(newCardContent);</span>
+<span class="nc" id="L380">        }</span>
 
         ////////////////////////////////////////////////////////////////////////////////////////////
         // Access control
 
-<span class="nc" id="L358">        List&lt;AccessControl&gt; originalACL = original.getAccessControlList();</span>
-<span class="nc" id="L359">        originalACL.sort(ID_COMPARATOR);</span>
+<span class="nc" id="L385">        List&lt;AccessControl&gt; originalACL = original.getAccessControlList();</span>
+<span class="nc" id="L386">        originalACL.sort(ID_COMPARATOR);</span>
 
-<span class="nc bnc" id="L361" title="All 2 branches missed.">        for (AccessControl originalAccessControl : originalACL) {</span>
-<span class="nc bnc" id="L362" title="All 4 branches missed.">            if ((params.isWithTeamMembers() || originalAccessControl.getMember() == null)</span>
-<span class="nc bnc" id="L363" title="All 4 branches missed.">                &amp;&amp; (params.isWithRoles() || originalAccessControl.getRole() == null)) {</span>
+<span class="nc bnc" id="L388" title="All 2 branches missed.">        for (AccessControl originalAccessControl : originalACL) {</span>
+<span class="nc bnc" id="L389" title="All 4 branches missed.">            if ((params.isWithTeamMembers() || originalAccessControl.getMember() == null)</span>
+<span class="nc bnc" id="L390" title="All 4 branches missed.">                &amp;&amp; (params.isWithRoles() || originalAccessControl.getRole() == null)) {</span>
 
-<span class="nc" id="L365">                AccessControl newAccessControl = duplicateAccessControl(originalAccessControl);</span>
+<span class="nc" id="L392">                AccessControl newAccessControl = duplicateAccessControl(originalAccessControl);</span>
 
-<span class="nc bnc" id="L367" title="All 2 branches missed.">                if (newAccessControl != null) { // if we got a null, no need to duplicate</span>
-<span class="nc" id="L368">                    newAccessControl.setCard(newCard);</span>
-<span class="nc" id="L369">                    newCard.getAccessControlList().add(newAccessControl);</span>
+<span class="nc bnc" id="L394" title="All 2 branches missed.">                if (newAccessControl != null) { // if we got a null, no need to duplicate</span>
+<span class="nc" id="L395">                    newAccessControl.setCard(newCard);</span>
+<span class="nc" id="L396">                    newCard.getAccessControlList().add(newAccessControl);</span>
                 }
             }
 
-<span class="nc" id="L373">        }</span>
+<span class="nc" id="L400">        }</span>
 
         ////////////////////////////////////////////////////////////////////////////////////////
         // sticky notes
-<span class="nc bnc" id="L377" title="All 2 branches missed.">        if (params.isWithStickyNotes()) {</span>
-<span class="nc" id="L378">            stickyNoteLinksToDuplicate.addAll(original.getStickyNoteLinksAsDest());</span>
+<span class="nc bnc" id="L404" title="All 2 branches missed.">        if (params.isWithStickyNotes()) {</span>
+<span class="nc" id="L405">            stickyNoteLinksToDuplicate.addAll(original.getStickyNoteLinksAsDest());</span>
         }
 
         ////////////////////////////////////////////////////////////////////////////////////////
         // activity flow
-<span class="nc bnc" id="L383" title="All 2 branches missed.">        if (params.isWithActivityFlow()) {</span>
-<span class="nc" id="L384">            activityFlowLinksToDuplicate.addAll(original.getActivityFlowLinksAsPrevious());</span>
+<span class="nc bnc" id="L410" title="All 2 branches missed.">        if (params.isWithActivityFlow()) {</span>
+<span class="nc" id="L411">            activityFlowLinksToDuplicate.addAll(original.getActivityFlowLinksAsPrevious());</span>
         }
 
-<span class="nc" id="L387">        return newCard;</span>
+<span class="nc" id="L414">        return newCard;</span>
     }
 
     private CardContent duplicateCardContent(CardContent original) throws ColabMergeException {
-<span class="nc" id="L391">        CardContent newCardContent = new CardContent();</span>
-<span class="nc" id="L392">        newCardContent.duplicate(original);</span>
+<span class="nc" id="L418">        CardContent newCardContent = new CardContent();</span>
+<span class="nc" id="L419">        newCardContent.duplicate(original);</span>
 
-<span class="nc" id="L394">        cardContentMatching.put(original.getId(), newCardContent);</span>
+<span class="nc" id="L421">        cardContentMatching.put(original.getId(), newCardContent);</span>
 
-<span class="nc bnc" id="L396" title="All 2 branches missed.">        if (params.isWithDeliverables()) {</span>
-<span class="nc" id="L397">            List&lt;Document&gt; originalDeliverables = original.getDeliverables();</span>
-<span class="nc" id="L398">            originalDeliverables.sort(ID_COMPARATOR);</span>
+<span class="nc bnc" id="L423" title="All 2 branches missed.">        if (params.isWithDeliverables()) {</span>
+<span class="nc" id="L424">            List&lt;Document&gt; originalDeliverables = original.getDeliverables();</span>
+<span class="nc" id="L425">            originalDeliverables.sort(ID_COMPARATOR);</span>
 
-<span class="nc bnc" id="L400" title="All 2 branches missed.">            for (Document originalDoc : originalDeliverables) {</span>
-<span class="nc" id="L401">                Document newDoc = duplicateDocument(originalDoc);</span>
+<span class="nc bnc" id="L427" title="All 2 branches missed.">            for (Document originalDoc : originalDeliverables) {</span>
+<span class="nc" id="L428">                Document newDoc = duplicateDocument(originalDoc);</span>
 
-<span class="nc" id="L403">                newDoc.setOwningCardContent(newCardContent);</span>
-<span class="nc" id="L404">                newCardContent.getDeliverables().add(newDoc);</span>
-<span class="nc" id="L405">            }</span>
+<span class="nc" id="L430">                newDoc.setOwningCardContent(newCardContent);</span>
+<span class="nc" id="L431">                newCardContent.getDeliverables().add(newDoc);</span>
+<span class="nc" id="L432">            }</span>
         }
 
-<span class="nc" id="L408">        List&lt;AbstractResource&gt; originalResources = original.getDirectAbstractResources();</span>
-<span class="nc" id="L409">        originalResources.sort(ID_COMPARATOR);</span>
+<span class="nc" id="L435">        List&lt;AbstractResource&gt; originalResources = original.getDirectAbstractResources();</span>
+<span class="nc" id="L436">        originalResources.sort(ID_COMPARATOR);</span>
 
-<span class="nc bnc" id="L411" title="All 2 branches missed.">        for (AbstractResource originalResource : originalResources) {</span>
-<span class="nc" id="L412">            AbstractResource newResource = duplicateResource(originalResource);</span>
+<span class="nc bnc" id="L438" title="All 2 branches missed.">        for (AbstractResource originalResource : originalResources) {</span>
+<span class="nc" id="L439">            AbstractResource newResource = duplicateResource(originalResource);</span>
 
-<span class="nc" id="L414">            newResource.setCardContent(newCardContent);</span>
-<span class="nc" id="L415">            newCardContent.getDirectAbstractResources().add(newResource);</span>
-<span class="nc" id="L416">        }</span>
+<span class="nc" id="L441">            newResource.setCardContent(newCardContent);</span>
+<span class="nc" id="L442">            newCardContent.getDirectAbstractResources().add(newResource);</span>
+<span class="nc" id="L443">        }</span>
 
-<span class="nc" id="L418">        List&lt;Card&gt; originalSubCards = original.getSubCards();</span>
-<span class="nc" id="L419">        originalSubCards.sort(ID_COMPARATOR);</span>
+<span class="nc" id="L445">        List&lt;Card&gt; originalSubCards = original.getSubCards();</span>
+<span class="nc" id="L446">        originalSubCards.sort(ID_COMPARATOR);</span>
 
-<span class="nc bnc" id="L421" title="All 2 branches missed.">        for (Card originalSubCard : originalSubCards) {</span>
-<span class="nc" id="L422">            Card newSubCard = duplicateCard(originalSubCard);</span>
+<span class="nc bnc" id="L448" title="All 2 branches missed.">        for (Card originalSubCard : originalSubCards) {</span>
+<span class="nc" id="L449">            Card newSubCard = duplicateCard(originalSubCard);</span>
 
-<span class="nc" id="L424">            newSubCard.setParent(newCardContent);</span>
-<span class="nc" id="L425">            newCardContent.getSubCards().add(newSubCard);</span>
-<span class="nc" id="L426">        }</span>
+<span class="nc" id="L451">            newSubCard.setParent(newCardContent);</span>
+<span class="nc" id="L452">            newCardContent.getSubCards().add(newSubCard);</span>
+<span class="nc" id="L453">        }</span>
 
-<span class="nc" id="L428">        return newCardContent;</span>
+<span class="nc" id="L455">        return newCardContent;</span>
     }
 
     private Document duplicateDocument(Document original) throws ColabMergeException {
-<span class="nc bnc" id="L432" title="All 2 branches missed.">        if (original instanceof DocumentFile) {</span>
-<span class="nc" id="L433">            DocumentFile originalDocumentFile = (DocumentFile) original;</span>
+<span class="nc bnc" id="L459" title="All 2 branches missed.">        if (original instanceof DocumentFile) {</span>
+<span class="nc" id="L460">            DocumentFile originalDocumentFile = (DocumentFile) original;</span>
 
-<span class="nc" id="L435">            DocumentFile newDocumentFile = duplicateDocumentFile(originalDocumentFile);</span>
+<span class="nc" id="L462">            DocumentFile newDocumentFile = duplicateDocumentFile(originalDocumentFile);</span>
 
-<span class="nc" id="L437">            documentMatching.put(originalDocumentFile.getId(), newDocumentFile);</span>
+<span class="nc" id="L464">            documentMatching.put(originalDocumentFile.getId(), newDocumentFile);</span>
 
-<span class="nc" id="L439">            return newDocumentFile;</span>
-<span class="nc bnc" id="L440" title="All 2 branches missed.">        } else if (original instanceof ExternalLink) {</span>
-<span class="nc" id="L441">            ExternalLink originalExternalLink = (ExternalLink) original;</span>
+<span class="nc" id="L466">            return newDocumentFile;</span>
+<span class="nc bnc" id="L467" title="All 2 branches missed.">        } else if (original instanceof ExternalLink) {</span>
+<span class="nc" id="L468">            ExternalLink originalExternalLink = (ExternalLink) original;</span>
 
-<span class="nc" id="L443">            ExternalLink newExternalLink = new ExternalLink();</span>
-<span class="nc" id="L444">            newExternalLink.duplicate(originalExternalLink);</span>
+<span class="nc" id="L470">            ExternalLink newExternalLink = new ExternalLink();</span>
+<span class="nc" id="L471">            newExternalLink.duplicate(originalExternalLink);</span>
 
-<span class="nc" id="L446">            documentMatching.put(originalExternalLink.getId(), newExternalLink);</span>
+<span class="nc" id="L473">            documentMatching.put(originalExternalLink.getId(), newExternalLink);</span>
 
-<span class="nc" id="L448">            return newExternalLink;</span>
-<span class="nc bnc" id="L449" title="All 2 branches missed.">        } else if (original instanceof TextDataBlock) {</span>
-<span class="nc" id="L450">            TextDataBlock originalTextDataBlock = (TextDataBlock) original;</span>
+<span class="nc" id="L475">            return newExternalLink;</span>
+<span class="nc bnc" id="L476" title="All 2 branches missed.">        } else if (original instanceof TextDataBlock) {</span>
+<span class="nc" id="L477">            TextDataBlock originalTextDataBlock = (TextDataBlock) original;</span>
 
-<span class="nc" id="L452">            TextDataBlock newTextDataBlock = new TextDataBlock();</span>
-<span class="nc" id="L453">            newTextDataBlock.duplicate(originalTextDataBlock);</span>
+<span class="nc" id="L479">            TextDataBlock newTextDataBlock = new TextDataBlock();</span>
+<span class="nc" id="L480">            newTextDataBlock.duplicate(originalTextDataBlock);</span>
 
-<span class="nc" id="L455">            documentMatching.put(originalTextDataBlock.getId(), newTextDataBlock);</span>
+<span class="nc" id="L482">            documentMatching.put(originalTextDataBlock.getId(), newTextDataBlock);</span>
 
-<span class="nc" id="L457">            return newTextDataBlock;</span>
+<span class="nc" id="L484">            return newTextDataBlock;</span>
         } else {
-<span class="nc" id="L459">            throw new IllegalStateException(&quot;abstract card type implementation not handled&quot;);</span>
+<span class="nc" id="L486">            throw new IllegalStateException(&quot;abstract card type implementation not handled&quot;);</span>
         }
     }
 
-    // TODO sandra work in progress : copy also the file
     private DocumentFile duplicateDocumentFile(DocumentFile original) throws ColabMergeException {
-<span class="nc" id="L465">        DocumentFile newDocumentFile = new DocumentFile();</span>
-<span class="nc" id="L466">        newDocumentFile.duplicate(original);</span>
+<span class="nc" id="L491">        DocumentFile newDocumentFile = new DocumentFile();</span>
+<span class="nc" id="L492">        newDocumentFile.duplicate(original);</span>
 
+<span class="nc" id="L494">        documentFilesToProcessOnceIds.put(original.getId(), newDocumentFile);</span>
 
-
-<span class="nc" id="L470">        return newDocumentFile;</span>
+<span class="nc" id="L496">        return newDocumentFile;</span>
     }
 
     private AbstractResource duplicateResource(AbstractResource original)
         throws ColabMergeException {
-<span class="nc bnc" id="L475" title="All 2 branches missed.">        if (original instanceof Resource) {</span>
-<span class="nc" id="L476">            Resource originalResource = (Resource) original;</span>
+<span class="nc bnc" id="L501" title="All 2 branches missed.">        if (original instanceof Resource) {</span>
+<span class="nc" id="L502">            Resource originalResource = (Resource) original;</span>
 
-<span class="nc" id="L478">            Resource newResource = new Resource();</span>
-<span class="nc" id="L479">            newResource.duplicate(originalResource);</span>
+<span class="nc" id="L504">            Resource newResource = new Resource();</span>
+<span class="nc" id="L505">            newResource.duplicate(originalResource);</span>
 
-<span class="nc" id="L481">            resourceMatching.put(originalResource.getId(), newResource);</span>
+<span class="nc" id="L507">            resourceMatching.put(originalResource.getId(), newResource);</span>
 
-<span class="nc" id="L483">            List&lt;Document&gt; originalDocuments = originalResource.getDocuments();</span>
-<span class="nc" id="L484">            originalDocuments.sort(ID_COMPARATOR);</span>
+<span class="nc" id="L509">            List&lt;Document&gt; originalDocuments = originalResource.getDocuments();</span>
+<span class="nc" id="L510">            originalDocuments.sort(ID_COMPARATOR);</span>
 
-<span class="nc bnc" id="L486" title="All 2 branches missed.">            for (Document originalDocument : originalDocuments) {</span>
-<span class="nc" id="L487">                Document newDocument = duplicateDocument(originalDocument);</span>
+<span class="nc bnc" id="L512" title="All 2 branches missed.">            for (Document originalDocument : originalDocuments) {</span>
+<span class="nc" id="L513">                Document newDocument = duplicateDocument(originalDocument);</span>
 
-<span class="nc" id="L489">                newDocument.setOwningResource(newResource);</span>
-<span class="nc" id="L490">                newResource.getDocuments().add(newDocument);</span>
-<span class="nc" id="L491">            }</span>
+<span class="nc" id="L515">                newDocument.setOwningResource(newResource);</span>
+<span class="nc" id="L516">                newResource.getDocuments().add(newDocument);</span>
+<span class="nc" id="L517">            }</span>
 
-<span class="nc" id="L493">            TextDataBlock teaser = originalResource.getTeaser();</span>
-<span class="nc bnc" id="L494" title="All 2 branches missed.">            if (teaser != null) {</span>
-<span class="nc" id="L495">                TextDataBlock newTeaser = (TextDataBlock) duplicateDocument(teaser);</span>
+<span class="nc" id="L519">            TextDataBlock teaser = originalResource.getTeaser();</span>
+<span class="nc bnc" id="L520" title="All 2 branches missed.">            if (teaser != null) {</span>
+<span class="nc" id="L521">                TextDataBlock newTeaser = (TextDataBlock) duplicateDocument(teaser);</span>
 
-<span class="nc" id="L497">                newTeaser.setTeasingResource(newResource);</span>
-<span class="nc" id="L498">                newResource.setTeaser(newTeaser);</span>
+<span class="nc" id="L523">                newTeaser.setTeasingResource(newResource);</span>
+<span class="nc" id="L524">                newResource.setTeaser(newTeaser);</span>
             }
 
-<span class="nc" id="L501">            return newResource;</span>
-<span class="nc bnc" id="L502" title="All 2 branches missed.">        } else if (original instanceof ResourceRef) {</span>
-<span class="nc" id="L503">            ResourceRef originalResourceRef = (ResourceRef) original;</span>
+<span class="nc" id="L527">            return newResource;</span>
+<span class="nc bnc" id="L528" title="All 2 branches missed.">        } else if (original instanceof ResourceRef) {</span>
+<span class="nc" id="L529">            ResourceRef originalResourceRef = (ResourceRef) original;</span>
 
-<span class="nc" id="L505">            ResourceRef newResourceRef = new ResourceRef();</span>
-<span class="nc" id="L506">            newResourceRef.duplicate(originalResourceRef);</span>
+<span class="nc" id="L531">            ResourceRef newResourceRef = new ResourceRef();</span>
+<span class="nc" id="L532">            newResourceRef.duplicate(originalResourceRef);</span>
 
-<span class="nc" id="L508">            resourceMatching.put(originalResourceRef.getId(), newResourceRef);</span>
+<span class="nc" id="L534">            resourceMatching.put(originalResourceRef.getId(), newResourceRef);</span>
 
-<span class="nc" id="L510">            AbstractResource originalTarget = originalResourceRef.getTarget();</span>
-<span class="nc bnc" id="L511" title="All 2 branches missed.">            if (originalTarget != null) {</span>
+<span class="nc" id="L536">            AbstractResource originalTarget = originalResourceRef.getTarget();</span>
+<span class="nc bnc" id="L537" title="All 2 branches missed.">            if (originalTarget != null) {</span>
                 AbstractResource newTarget;
-<span class="nc bnc" id="L513" title="All 2 branches missed.">                if (resourceMatching.containsKey(originalTarget.getId())) {</span>
-<span class="nc" id="L514">                    newTarget = resourceMatching.get(originalTarget.getId());</span>
+<span class="nc bnc" id="L539" title="All 2 branches missed.">                if (resourceMatching.containsKey(originalTarget.getId())) {</span>
+<span class="nc" id="L540">                    newTarget = resourceMatching.get(originalTarget.getId());</span>
                 } else {
-<span class="nc" id="L516">                    newTarget = originalTarget;</span>
+<span class="nc" id="L542">                    newTarget = originalTarget;</span>
                 }
-<span class="nc" id="L518">                newResourceRef.setTarget(newTarget);</span>
+<span class="nc" id="L544">                newResourceRef.setTarget(newTarget);</span>
             }
 
-<span class="nc" id="L521">            return newResourceRef;</span>
+<span class="nc" id="L547">            return newResourceRef;</span>
 
         } else {
-<span class="nc" id="L524">            throw new IllegalStateException(&quot;abstract card type implementation not handled&quot;);</span>
+<span class="nc" id="L550">            throw new IllegalStateException(&quot;abstract card type implementation not handled&quot;);</span>
         }
     }
 
     private AccessControl duplicateAccessControl(AccessControl original)
         throws ColabMergeException {
-<span class="nc" id="L530">        AccessControl newAccessControl = new AccessControl();</span>
-<span class="nc" id="L531">        newAccessControl.duplicate(original);</span>
+<span class="nc" id="L556">        AccessControl newAccessControl = new AccessControl();</span>
+<span class="nc" id="L557">        newAccessControl.duplicate(original);</span>
 
-<span class="nc bnc" id="L533" title="All 2 branches missed.">        if (original.getMember() != null) {</span>
-<span class="nc" id="L534">            TeamMember member = teamMemberMatching.get(original.getMember().getId());</span>
+<span class="nc bnc" id="L559" title="All 2 branches missed.">        if (original.getMember() != null) {</span>
+<span class="nc" id="L560">            TeamMember member = teamMemberMatching.get(original.getMember().getId());</span>
 
-<span class="nc bnc" id="L536" title="All 2 branches missed.">            if (member == null) {</span>
-<span class="nc" id="L537">                throw HttpErrorMessage.dataIntegrityFailure();</span>
+<span class="nc bnc" id="L562" title="All 2 branches missed.">            if (member == null) {</span>
+<span class="nc" id="L563">                throw HttpErrorMessage.dataIntegrityFailure();</span>
             }
 
-<span class="nc" id="L540">            member.getAccessControlList().add(newAccessControl);</span>
-<span class="nc" id="L541">            newAccessControl.setMember(member);</span>
+<span class="nc" id="L566">            member.getAccessControlList().add(newAccessControl);</span>
+<span class="nc" id="L567">            newAccessControl.setMember(member);</span>
         }
 
-<span class="nc bnc" id="L544" title="All 2 branches missed.">        if (original.getRole() != null) {</span>
-<span class="nc" id="L545">            TeamRole role = teamRoleMatching.get(original.getRole().getId());</span>
+<span class="nc bnc" id="L570" title="All 2 branches missed.">        if (original.getRole() != null) {</span>
+<span class="nc" id="L571">            TeamRole role = teamRoleMatching.get(original.getRole().getId());</span>
 
-<span class="nc bnc" id="L547" title="All 2 branches missed.">            if (role == null) {</span>
-<span class="nc" id="L548">                throw HttpErrorMessage.dataIntegrityFailure();</span>
+<span class="nc bnc" id="L573" title="All 2 branches missed.">            if (role == null) {</span>
+<span class="nc" id="L574">                throw HttpErrorMessage.dataIntegrityFailure();</span>
             }
 
-<span class="nc" id="L551">            role.getAccessControl().add(newAccessControl);</span>
-<span class="nc" id="L552">            newAccessControl.setRole(role);</span>
+<span class="nc" id="L577">            role.getAccessControl().add(newAccessControl);</span>
+<span class="nc" id="L578">            newAccessControl.setRole(role);</span>
         }
 
-<span class="nc" id="L555">        return newAccessControl;</span>
+<span class="nc" id="L581">        return newAccessControl;</span>
     }
 
     private StickyNoteLink duplicateStickyNoteLink(StickyNoteLink original)
         throws ColabMergeException {
-<span class="nc" id="L560">        StickyNoteLink newLink = new StickyNoteLink();</span>
-<span class="nc" id="L561">        newLink.duplicate(original);</span>
+<span class="nc" id="L586">        StickyNoteLink newLink = new StickyNoteLink();</span>
+<span class="nc" id="L587">        newLink.duplicate(original);</span>
 
-<span class="nc" id="L563">        TextDataBlock explanation = original.getExplanation();</span>
-<span class="nc bnc" id="L564" title="All 2 branches missed.">        if (explanation != null) {</span>
-<span class="nc" id="L565">            TextDataBlock newExplanation = (TextDataBlock) duplicateDocument(explanation);</span>
-<span class="nc" id="L566">            newExplanation.setExplainingStickyNoteLink(newLink);</span>
-<span class="nc" id="L567">            newLink.setExplanation(newExplanation);</span>
+<span class="nc" id="L589">        TextDataBlock explanation = original.getExplanation();</span>
+<span class="nc bnc" id="L590" title="All 2 branches missed.">        if (explanation != null) {</span>
+<span class="nc" id="L591">            TextDataBlock newExplanation = (TextDataBlock) duplicateDocument(explanation);</span>
+<span class="nc" id="L592">            newExplanation.setExplainingStickyNoteLink(newLink);</span>
+<span class="nc" id="L593">            newLink.setExplanation(newExplanation);</span>
         }
 
-<span class="nc bnc" id="L570" title="All 2 branches missed.">        if (original.getDestinationCard() != null) {</span>
-<span class="nc" id="L571">            Card destinationCard = cardMatching.get(original.getDestinationCard().getId());</span>
+<span class="nc bnc" id="L596" title="All 2 branches missed.">        if (original.getDestinationCard() != null) {</span>
+<span class="nc" id="L597">            Card destinationCard = cardMatching.get(original.getDestinationCard().getId());</span>
 
-<span class="nc bnc" id="L573" title="All 2 branches missed.">            if (destinationCard == null) {</span>
-<span class="nc" id="L574">                throw HttpErrorMessage.dataIntegrityFailure();</span>
+<span class="nc bnc" id="L599" title="All 2 branches missed.">            if (destinationCard == null) {</span>
+<span class="nc" id="L600">                throw HttpErrorMessage.dataIntegrityFailure();</span>
             }
 
-<span class="nc" id="L577">            destinationCard.getStickyNoteLinksAsDest().add(newLink);</span>
-<span class="nc" id="L578">            newLink.setDestinationCard(destinationCard);</span>
+<span class="nc" id="L603">            destinationCard.getStickyNoteLinksAsDest().add(newLink);</span>
+<span class="nc" id="L604">            newLink.setDestinationCard(destinationCard);</span>
         }
 
-<span class="nc bnc" id="L581" title="All 2 branches missed.">        if (original.getSrcCard() != null) {</span>
-<span class="nc" id="L582">            Card srcCard = cardMatching.get(original.getSrcCard().getId());</span>
+<span class="nc bnc" id="L607" title="All 2 branches missed.">        if (original.getSrcCard() != null) {</span>
+<span class="nc" id="L608">            Card srcCard = cardMatching.get(original.getSrcCard().getId());</span>
 
-<span class="nc bnc" id="L584" title="All 2 branches missed.">            if (srcCard == null) {</span>
-<span class="nc" id="L585">                throw HttpErrorMessage.dataIntegrityFailure();</span>
+<span class="nc bnc" id="L610" title="All 2 branches missed.">            if (srcCard == null) {</span>
+<span class="nc" id="L611">                throw HttpErrorMessage.dataIntegrityFailure();</span>
             }
 
-<span class="nc" id="L588">            srcCard.getStickyNoteLinksAsSrc().add(newLink);</span>
-<span class="nc" id="L589">            newLink.setSrcCard(srcCard);</span>
+<span class="nc" id="L614">            srcCard.getStickyNoteLinksAsSrc().add(newLink);</span>
+<span class="nc" id="L615">            newLink.setSrcCard(srcCard);</span>
         }
 
-<span class="nc bnc" id="L592" title="All 2 branches missed.">        if (original.getSrcCardContent() != null) {</span>
-<span class="nc" id="L593">            CardContent srcCardContent = cardContentMatching</span>
-<span class="nc" id="L594">                .get(original.getSrcCardContent().getId());</span>
+<span class="nc bnc" id="L618" title="All 2 branches missed.">        if (original.getSrcCardContent() != null) {</span>
+<span class="nc" id="L619">            CardContent srcCardContent = cardContentMatching</span>
+<span class="nc" id="L620">                .get(original.getSrcCardContent().getId());</span>
 
-<span class="nc bnc" id="L596" title="All 2 branches missed.">            if (srcCardContent == null) {</span>
-<span class="nc" id="L597">                throw HttpErrorMessage.dataIntegrityFailure();</span>
+<span class="nc bnc" id="L622" title="All 2 branches missed.">            if (srcCardContent == null) {</span>
+<span class="nc" id="L623">                throw HttpErrorMessage.dataIntegrityFailure();</span>
             }
 
-<span class="nc" id="L600">            srcCardContent.getStickyNoteLinksAsSrc().add(newLink);</span>
-<span class="nc" id="L601">            newLink.setSrcCardContent(srcCardContent);</span>
+<span class="nc" id="L626">            srcCardContent.getStickyNoteLinksAsSrc().add(newLink);</span>
+<span class="nc" id="L627">            newLink.setSrcCardContent(srcCardContent);</span>
         }
 
-<span class="nc bnc" id="L604" title="All 2 branches missed.">        if (original.getSrcResourceOrRef() != null) {</span>
-<span class="nc" id="L605">            AbstractResource srcResourceOrRef = resourceMatching</span>
-<span class="nc" id="L606">                .get(original.getSrcResourceOrRef().getId());</span>
+<span class="nc bnc" id="L630" title="All 2 branches missed.">        if (original.getSrcResourceOrRef() != null) {</span>
+<span class="nc" id="L631">            AbstractResource srcResourceOrRef = resourceMatching</span>
+<span class="nc" id="L632">                .get(original.getSrcResourceOrRef().getId());</span>
 
-<span class="nc bnc" id="L608" title="All 2 branches missed.">            if (srcResourceOrRef == null) {</span>
-<span class="nc" id="L609">                throw HttpErrorMessage.dataIntegrityFailure();</span>
+<span class="nc bnc" id="L634" title="All 2 branches missed.">            if (srcResourceOrRef == null) {</span>
+<span class="nc" id="L635">                throw HttpErrorMessage.dataIntegrityFailure();</span>
             }
 
-<span class="nc" id="L612">            srcResourceOrRef.getStickyNoteLinksAsSrc().add(newLink);</span>
-<span class="nc" id="L613">            newLink.setSrcResourceOrRef(srcResourceOrRef);</span>
+<span class="nc" id="L638">            srcResourceOrRef.getStickyNoteLinksAsSrc().add(newLink);</span>
+<span class="nc" id="L639">            newLink.setSrcResourceOrRef(srcResourceOrRef);</span>
         }
 
-<span class="nc bnc" id="L616" title="All 2 branches missed.">        if (original.getSrcDocument() != null) {</span>
-<span class="nc" id="L617">            Document srcDocument = documentMatching.get(original.getSrcDocument().getId());</span>
+<span class="nc bnc" id="L642" title="All 2 branches missed.">        if (original.getSrcDocument() != null) {</span>
+<span class="nc" id="L643">            Document srcDocument = documentMatching.get(original.getSrcDocument().getId());</span>
 
-<span class="nc bnc" id="L619" title="All 2 branches missed.">            if (srcDocument == null) {</span>
-<span class="nc" id="L620">                throw HttpErrorMessage.dataIntegrityFailure();</span>
+<span class="nc bnc" id="L645" title="All 2 branches missed.">            if (srcDocument == null) {</span>
+<span class="nc" id="L646">                throw HttpErrorMessage.dataIntegrityFailure();</span>
             }
 
-<span class="nc" id="L623">            srcDocument.getStickyNoteLinksAsSrc().add(newLink);</span>
-<span class="nc" id="L624">            newLink.setSrcDocument(srcDocument);</span>
+<span class="nc" id="L649">            srcDocument.getStickyNoteLinksAsSrc().add(newLink);</span>
+<span class="nc" id="L650">            newLink.setSrcDocument(srcDocument);</span>
         }
 
-<span class="nc" id="L627">        return newLink;</span>
+<span class="nc" id="L653">        return newLink;</span>
     }
 
     private ActivityFlowLink duplicateActivityFlowLink(ActivityFlowLink original)
         throws ColabMergeException {
-<span class="nc" id="L632">        ActivityFlowLink newLink = new ActivityFlowLink();</span>
-<span class="nc" id="L633">        newLink.duplicate(newLink);</span>
+<span class="nc" id="L658">        ActivityFlowLink newLink = new ActivityFlowLink();</span>
+<span class="nc" id="L659">        newLink.duplicate(newLink);</span>
 
-<span class="nc bnc" id="L635" title="All 2 branches missed.">        if (original.getPreviousCard() != null) {</span>
-<span class="nc" id="L636">            Card previousCard = cardMatching.get(original.getPreviousCard().getId());</span>
+<span class="nc bnc" id="L661" title="All 2 branches missed.">        if (original.getPreviousCard() != null) {</span>
+<span class="nc" id="L662">            Card previousCard = cardMatching.get(original.getPreviousCard().getId());</span>
 
-<span class="nc bnc" id="L638" title="All 2 branches missed.">            if (previousCard == null) {</span>
-<span class="nc" id="L639">                throw HttpErrorMessage.dataIntegrityFailure();</span>
+<span class="nc bnc" id="L664" title="All 2 branches missed.">            if (previousCard == null) {</span>
+<span class="nc" id="L665">                throw HttpErrorMessage.dataIntegrityFailure();</span>
             }
 
-<span class="nc" id="L642">            previousCard.getActivityFlowLinksAsPrevious().add(newLink);</span>
-<span class="nc" id="L643">            newLink.setPreviousCard(previousCard);</span>
+<span class="nc" id="L668">            previousCard.getActivityFlowLinksAsPrevious().add(newLink);</span>
+<span class="nc" id="L669">            newLink.setPreviousCard(previousCard);</span>
         }
 
-<span class="nc bnc" id="L646" title="All 2 branches missed.">        if (original.getNextCard() != null) {</span>
-<span class="nc" id="L647">            Card nextCard = cardMatching.get(original.getNextCard().getId());</span>
+<span class="nc bnc" id="L672" title="All 2 branches missed.">        if (original.getNextCard() != null) {</span>
+<span class="nc" id="L673">            Card nextCard = cardMatching.get(original.getNextCard().getId());</span>
 
-<span class="nc bnc" id="L649" title="All 2 branches missed.">            if (nextCard == null) {</span>
-<span class="nc" id="L650">                throw HttpErrorMessage.dataIntegrityFailure();</span>
+<span class="nc bnc" id="L675" title="All 2 branches missed.">            if (nextCard == null) {</span>
+<span class="nc" id="L676">                throw HttpErrorMessage.dataIntegrityFailure();</span>
             }
 
-<span class="nc" id="L653">            nextCard.getActivityFlowLinksAsNext().add(newLink);</span>
-<span class="nc" id="L654">            newLink.setNextCard(nextCard);</span>
+<span class="nc" id="L679">            nextCard.getActivityFlowLinksAsNext().add(newLink);</span>
+<span class="nc" id="L680">            newLink.setNextCard(nextCard);</span>
         }
 
-<span class="nc" id="L657">        return newLink;</span>
+<span class="nc" id="L683">        return newLink;</span>
     }
+
+    /**
+     * Duplicate the data in the JCR. It must happen after creating the data in JPA as long as we
+     * need the ids.
+     */
+    public void duplicateDataIntoJCR() {
+        try {
+<span class="nc bnc" id="L692" title="All 2 branches missed.">            for (Entry&lt;Long, DocumentFile&gt; data : documentFilesToProcessOnceIds.entrySet()) {</span>
+<span class="nc" id="L693">                duplicateFileDocumentIntoJCR(data.getKey(), data.getValue());</span>
+<span class="nc" id="L694">            }</span>
+<span class="nc" id="L695">        } catch (RepositoryException e) {</span>
+<span class="nc" id="L696">            throw HttpErrorMessage.internalServerError();</span>
+<span class="nc" id="L697">        }</span>
+<span class="nc" id="L698">    }</span>
+
+    /**
+     * Duplicate the file document data into JCR
+     *
+     * @param srcDocId
+     * @param newDocFile
+     */
+    private void duplicateFileDocumentIntoJCR(Long srcDocId, DocumentFile newDocFile)
+        throws RepositoryException {
+<span class="nc bnc" id="L708" title="All 2 branches missed.">        if (fileManager == null) {</span>
+<span class="nc" id="L709">            throw new IllegalStateException(&quot;Dear developer, you must have defined a file manager&quot;);</span>
+        }
+
+<span class="nc bnc" id="L712" title="All 2 branches missed.">        if (fileManager.hasFile(srcDocId)) {</span>
+<span class="nc" id="L713">            InputStream fileStream = null;</span>
+            try {
+<span class="nc" id="L715">                fileStream = fileManager.getFileStream(srcDocId);</span>
+<span class="nc" id="L716">                fileManager.updateOrCreateFile(newDocFile.getId(), fileStream);</span>
+            } finally {
+<span class="nc bnc" id="L718" title="All 2 branches missed.">                if (fileStream != null) {</span>
+                    try {
+<span class="nc" id="L720">                        fileStream.close();</span>
+<span class="nc" id="L721">                    } catch (IOException e) {</span>
+                        // not really a problem
+                        // silent ex
+<span class="nc" id="L724">                        logger.warn(&quot;Could not close stream&quot;, e);</span>
+<span class="nc" id="L725">                    }</span>
+                }
+            }
+        }
+<span class="nc" id="L729">    }</span>
+
+    /**
+     * Clear processed data
+     */
+    public void clear() {
+<span class="nc" id="L735">        teamRoleMatching.clear();</span>
+<span class="nc" id="L736">        teamMemberMatching.clear();</span>
+<span class="nc" id="L737">        cardTypeMatching.clear();</span>
+<span class="nc" id="L738">        cardMatching.clear();</span>
+<span class="nc" id="L739">        cardContentMatching.clear();</span>
+<span class="nc" id="L740">        resourceMatching.clear();</span>
+<span class="nc" id="L741">        documentMatching.clear();</span>
+<span class="nc" id="L742">        stickyNoteLinksToDuplicate.clear();</span>
+<span class="nc" id="L743">        activityFlowLinksToDuplicate.clear();</span>
+<span class="nc" id="L744">        documentFilesToProcessOnceIds.clear();</span>
+<span class="nc" id="L745">    }</span>
 
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

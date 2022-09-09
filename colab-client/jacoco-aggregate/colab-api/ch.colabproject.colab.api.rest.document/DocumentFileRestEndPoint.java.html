@@ -87,7 +87,7 @@ import org.slf4j.LoggerFactory;
         @FormDataParam(&quot;file&quot;) FormDataBodyPart bodypart
     ) {
         try {
-<span class="nc" id="L90">            fileManager.updateFile(docId, fileSize, file, bodypart);</span>
+<span class="nc" id="L90">            fileManager.updateOrCreateFile(docId, fileSize, file, bodypart);</span>
 <span class="nc" id="L91">        } catch (RepositoryException ex) {</span>
 <span class="nc" id="L92">            logger.debug(&quot;Could not update file with id {} : {}&quot;, docId, ex);</span>
 <span class="nc" id="L93">            throw HttpErrorMessage.internalServerError();</span>

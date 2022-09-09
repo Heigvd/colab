@@ -33,16 +33,15 @@ import org.glassfish.jersey.media.multipart.FormDataBodyPart;
  * Handles DocumentFiles instances both DB and Jcr persistence
  *
  * @author xaviergood
- *
  */
 @LocalBean
 @Stateless
-<span class="nc" id="L40">public class FileManager {</span>
+<span class="nc" id="L39">public class FileManager {</span>
 
     /**
      * Logger
      */
-<span class="nc" id="L45">    private static final Logger logger = LoggerFactory.getLogger(FileManager.class);</span>
+<span class="nc" id="L44">    private static final Logger logger = LoggerFactory.getLogger(FileManager.class);</span>
 
     /**
      * File persistence management
@@ -72,50 +71,70 @@ import org.glassfish.jersey.media.multipart.FormDataBodyPart;
      *
      * @throws RepositoryException in case of a JCR issue
      */
-    public void updateFile(
+    public void updateOrCreateFile(
         Long docId,
         Long fileSize,
         InputStream file,
         FormDataBodyPart body)
         throws RepositoryException {
-<span class="nc" id="L81">        FormDataContentDisposition details = body.getFormDataContentDisposition();</span>
+<span class="nc" id="L80">        FormDataContentDisposition details = body.getFormDataContentDisposition();</span>
 
-        //charset black magic
-<span class="nc" id="L84">        var fileNameBytes = details.getFileName().getBytes(StandardCharsets.ISO_8859_1);</span>
-<span class="nc" id="L85">        var fileName = new String(fileNameBytes, StandardCharsets.UTF_8);</span>
+        // charset black magic
+<span class="nc" id="L83">        var fileNameBytes = details.getFileName().getBytes(StandardCharsets.ISO_8859_1);</span>
+<span class="nc" id="L84">        var fileName = new String(fileNameBytes, StandardCharsets.UTF_8);</span>
 
-<span class="nc" id="L87">        FileManager.logger.debug(&quot;Updating file {} with id {}&quot;, fileName, docId);</span>
+<span class="nc" id="L86">        FileManager.logger.debug(&quot;Updating file {} with id {}&quot;, fileName, docId);</span>
 
-<span class="nc" id="L89">        Document doc = documentDao.findDocument(docId);</span>
-<span class="nc bnc" id="L90" title="All 2 branches missed.">        if (!(doc instanceof DocumentFile)) {</span>
-<span class="nc" id="L91">            throw HttpErrorMessage.notFound();</span>
+<span class="nc" id="L88">        Document doc = documentDao.findDocument(docId);</span>
+<span class="nc bnc" id="L89" title="All 2 branches missed.">        if (!(doc instanceof DocumentFile)) {</span>
+<span class="nc" id="L90">            throw HttpErrorMessage.notFound();</span>
         }
         // Check file size limit
-<span class="nc bnc" id="L94" title="All 2 branches missed.">        if (fileSize &gt; ColabConfiguration.getJcrRepositoryFileSizeLimit()) {</span>
-<span class="nc" id="L95">            FileManager.logger.debug(&quot;File exceeds authorized size ({} bytes)&quot;</span>
+<span class="nc bnc" id="L93" title="All 2 branches missed.">        if (fileSize &gt; ColabConfiguration.getJcrRepositoryFileSizeLimit()) {</span>
+<span class="nc" id="L94">            FileManager.logger.debug(&quot;File exceeds authorized size ({} bytes)&quot;</span>
                 + &quot;, size limit is {} bytes&quot;,
-<span class="nc" id="L97">                fileSize, ColabConfiguration.getJcrRepositoryFileSizeLimit());</span>
+<span class="nc" id="L96">                fileSize, ColabConfiguration.getJcrRepositoryFileSizeLimit());</span>
 
-<span class="nc" id="L99">            throw HttpErrorMessage.fileSizeLimitExceededError();</span>
+<span class="nc" id="L98">            throw HttpErrorMessage.fileSizeLimitExceededError();</span>
         }
 
         // Check quota limit
-<span class="nc" id="L103">        Project project = doc.getProject();</span>
-<span class="nc" id="L104">        var usedQuota = getUsage(project.getId());</span>
-<span class="nc bnc" id="L105" title="All 2 branches missed.">        if (usedQuota + fileSize &gt; getQuota()) {</span>
-<span class="nc" id="L106">            FileManager.logger.debug(&quot;Quota exceeded. Used : {}, Authorized : {}&quot;,</span>
-<span class="nc" id="L107">                usedQuota + fileSize, ColabConfiguration.getJcrRepositoryProjectQuota());</span>
+<span class="nc" id="L102">        Project project = doc.getProject();</span>
+<span class="nc" id="L103">        var usedQuota = getUsage(project.getId());</span>
+<span class="nc bnc" id="L104" title="All 2 branches missed.">        if (usedQuota + fileSize &gt; getQuota()) {</span>
+<span class="nc" id="L105">            FileManager.logger.debug(&quot;Quota exceeded. Used : {}, Authorized : {}&quot;,</span>
+<span class="nc" id="L106">                usedQuota + fileSize, ColabConfiguration.getJcrRepositoryProjectQuota());</span>
 
-<span class="nc" id="L109">            throw HttpErrorMessage.projectQuotaExceededError();</span>
+<span class="nc" id="L108">            throw HttpErrorMessage.projectQuotaExceededError();</span>
         }
 
-<span class="nc" id="L112">        DocumentFile hostedDoc = (DocumentFile) doc;</span>
-<span class="nc" id="L113">        hostedDoc.setFileName(fileName);</span>
-<span class="nc" id="L114">        hostedDoc.setFileSize(fileSize);</span>
-<span class="nc" id="L115">        hostedDoc.setMimeType(body.getMediaType().toString());</span>
+<span class="nc" id="L111">        DocumentFile hostedDoc = (DocumentFile) doc;</span>
+<span class="nc" id="L112">        hostedDoc.setFileName(fileName);</span>
+<span class="nc" id="L113">        hostedDoc.setFileSize(fileSize);</span>
+<span class="nc" id="L114">        hostedDoc.setMimeType(body.getMediaType().toString());</span>
 
-<span class="nc" id="L117">        this.jcrManager.updateOrCreateFile(project, docId, file);</span>
-<span class="nc" id="L118">    }</span>
+<span class="nc" id="L116">        this.jcrManager.updateOrCreateFile(project, docId, file);</span>
+<span class="nc" id="L117">    }</span>
+
+    /**
+     * Update or create the file for the given document
+     *
+     * @param documentId  document id
+     * @param fileContent file content
+     *
+     * @throws RepositoryException in case of JCR problem
+     */
+    public void updateOrCreateFile(Long documentId, InputStream fileContent)
+        throws RepositoryException {
+<span class="nc" id="L129">        Document doc = documentDao.findDocument(documentId);</span>
+<span class="nc bnc" id="L130" title="All 2 branches missed.">        if (!(doc instanceof DocumentFile)) {</span>
+<span class="nc" id="L131">            throw HttpErrorMessage.notFound();</span>
+        }
+
+<span class="nc" id="L134">        Project project = doc.getProject();</span>
+
+<span class="nc" id="L136">        this.jcrManager.updateOrCreateFile(project, documentId, fileContent);</span>
+<span class="nc" id="L137">    }</span>
 
     /**
      * Delete the file contents, and resets size and mime type
@@ -126,25 +145,48 @@ import org.glassfish.jersey.media.multipart.FormDataBodyPart;
      */
     public void deleteFile(Long docId) throws RepositoryException {
 
-<span class="nc" id="L129">        Document doc = documentDao.findDocument(docId);</span>
-<span class="nc bnc" id="L130" title="All 2 branches missed.">        if (!(doc instanceof DocumentFile)) {</span>
-<span class="nc" id="L131">            throw HttpErrorMessage.notFound();</span>
+<span class="nc" id="L148">        Document doc = documentDao.findDocument(docId);</span>
+<span class="nc bnc" id="L149" title="All 2 branches missed.">        if (!(doc instanceof DocumentFile)) {</span>
+<span class="nc" id="L150">            throw HttpErrorMessage.notFound();</span>
         }
 
-<span class="nc" id="L134">        Project project = doc.getProject();</span>
-<span class="nc" id="L135">        DocumentFile hostedDoc = (DocumentFile) doc;</span>
-<span class="nc" id="L136">        FileManager.logger.debug(&quot;Deleting file '{}' with id {}&quot;, hostedDoc.getFileName(), doc.getId());</span>
+<span class="nc" id="L153">        Project project = doc.getProject();</span>
+<span class="nc" id="L154">        DocumentFile hostedDoc = (DocumentFile) doc;</span>
+<span class="nc" id="L155">        FileManager.logger.debug(&quot;Deleting file '{}' with id {}&quot;, hostedDoc.getFileName(),</span>
+<span class="nc" id="L156">            doc.getId());</span>
 
-<span class="nc" id="L138">        hostedDoc.setFileName(null);</span>
-<span class="nc" id="L139">        hostedDoc.setFileSize(0L);</span>
-<span class="nc" id="L140">        hostedDoc.setMimeType(MediaType.APPLICATION_OCTET_STREAM);</span>
+<span class="nc" id="L158">        hostedDoc.setFileName(null);</span>
+<span class="nc" id="L159">        hostedDoc.setFileSize(0L);</span>
+<span class="nc" id="L160">        hostedDoc.setMimeType(MediaType.APPLICATION_OCTET_STREAM);</span>
 
-<span class="nc" id="L142">        this.jcrManager.deleteFile(project, docId);</span>
+<span class="nc" id="L162">        this.jcrManager.deleteFile(project, docId);</span>
 
-<span class="nc" id="L144">    }</span>
+<span class="nc" id="L164">    }</span>
 
     /**
-     * Retrieves the file content. Not used yet
+     * Tells if a file exists for the given identifier
+     *
+     * @param documentId id of the requested document
+     *
+     * @return true if there is a corresponding file
+     *
+     * @throws RepositoryException in case of a JCR issue
+     */
+    public boolean hasFile(Long documentId) throws RepositoryException {
+<span class="nc" id="L176">        var doc = this.documentDao.findDocument(documentId);</span>
+
+<span class="nc bnc" id="L178" title="All 2 branches missed.">        if (!(doc instanceof DocumentFile)) {</span>
+<span class="nc" id="L179">            throw HttpErrorMessage.notFound();</span>
+        }
+
+<span class="nc" id="L182">        Project project = doc.getProject();</span>
+
+<span class="nc" id="L184">        return jcrManager.nodeExists(project, documentId);</span>
+
+    }
+
+    /**
+     * Retrieves the file content.
      *
      * @param documentId id of the requested document
      *
@@ -153,15 +195,15 @@ import org.glassfish.jersey.media.multipart.FormDataBodyPart;
      * @throws RepositoryException in case of a JCR issue
      */
     public InputStream getFileStream(Long documentId) throws RepositoryException {
-<span class="nc" id="L156">        var doc = this.documentDao.findDocument(documentId);</span>
+<span class="nc" id="L198">        var doc = this.documentDao.findDocument(documentId);</span>
 
-<span class="nc bnc" id="L158" title="All 2 branches missed.">        if (!(doc instanceof DocumentFile)) {</span>
-<span class="nc" id="L159">            throw HttpErrorMessage.notFound();</span>
+<span class="nc bnc" id="L200" title="All 2 branches missed.">        if (!(doc instanceof DocumentFile)) {</span>
+<span class="nc" id="L201">            throw HttpErrorMessage.notFound();</span>
         }
 
-<span class="nc" id="L162">        Project project = doc.getProject();</span>
+<span class="nc" id="L204">        Project project = doc.getProject();</span>
 
-<span class="nc" id="L164">        return new BufferedInputStream(this.jcrManager.getFileStream(project, documentId));</span>
+<span class="nc" id="L206">        return new BufferedInputStream(this.jcrManager.getFileStream(project, documentId));</span>
     }
 
     /**
@@ -172,10 +214,10 @@ import org.glassfish.jersey.media.multipart.FormDataBodyPart;
      * @return URI encoded path
      */
     public String encodePath(final String path) {
-<span class="nc bnc" id="L175" title="All 4 branches missed.">        if (path == null || path.length() == 0) {</span>
-<span class="nc" id="L176">            return &quot;&quot;;</span>
+<span class="nc bnc" id="L217" title="All 4 branches missed.">        if (path == null || path.length() == 0) {</span>
+<span class="nc" id="L218">            return &quot;&quot;;</span>
         } else {
-<span class="nc" id="L178">            return new URIBuilder().setPath(path).toString();</span>
+<span class="nc" id="L220">            return new URIBuilder().setPath(path).toString();</span>
         }
     }
 
@@ -190,27 +232,28 @@ import org.glassfish.jersey.media.multipart.FormDataBodyPart;
      *
      * @throws RepositoryException in case of a JCR issue
      */
-    public ImmutableTriple&lt;BufferedInputStream, String, MediaType&gt; getDownloadFileInfo(Long documentId) throws RepositoryException {
-<span class="nc" id="L194">        var doc = this.documentDao.findDocument(documentId);</span>
+    public ImmutableTriple&lt;BufferedInputStream, String, MediaType&gt; getDownloadFileInfo(
+        Long documentId) throws RepositoryException {
+<span class="nc" id="L237">        var doc = this.documentDao.findDocument(documentId);</span>
 
-<span class="nc bnc" id="L196" title="All 2 branches missed.">        if (!(doc instanceof DocumentFile)) {</span>
-<span class="nc" id="L197">            throw HttpErrorMessage.notFound();</span>
+<span class="nc bnc" id="L239" title="All 2 branches missed.">        if (!(doc instanceof DocumentFile)) {</span>
+<span class="nc" id="L240">            throw HttpErrorMessage.notFound();</span>
         }
 
-<span class="nc" id="L200">        Project project = doc.getProject();</span>
-<span class="nc" id="L201">        var hostedDoc = (DocumentFile) doc;</span>
+<span class="nc" id="L243">        Project project = doc.getProject();</span>
+<span class="nc" id="L244">        var hostedDoc = (DocumentFile) doc;</span>
 
-<span class="nc" id="L203">        var stream = new BufferedInputStream(this.jcrManager.getFileStream(project, documentId));</span>
+<span class="nc" id="L246">        var stream = new BufferedInputStream(this.jcrManager.getFileStream(project, documentId));</span>
 
-<span class="nc" id="L205">        var fileName = hostedDoc.getFileName();</span>
-<span class="nc" id="L206">        String safeFileName = &quot;&quot;;</span>
-<span class="nc bnc" id="L207" title="All 2 branches missed.">        if (fileName != null) {</span>
-<span class="nc" id="L208">            safeFileName = this.encodePath(fileName);</span>
+<span class="nc" id="L248">        var fileName = hostedDoc.getFileName();</span>
+<span class="nc" id="L249">        String safeFileName = &quot;&quot;;</span>
+<span class="nc bnc" id="L250" title="All 2 branches missed.">        if (fileName != null) {</span>
+<span class="nc" id="L251">            safeFileName = this.encodePath(fileName);</span>
         }
 
-<span class="nc" id="L211">        MediaType mediaType = MediaType.valueOf(hostedDoc.getMimeType());</span>
+<span class="nc" id="L254">        MediaType mediaType = MediaType.valueOf(hostedDoc.getMimeType());</span>
 
-<span class="nc" id="L213">        return new ImmutableTriple&lt;&gt;(stream, safeFileName, mediaType);</span>
+<span class="nc" id="L256">        return new ImmutableTriple&lt;&gt;(stream, safeFileName, mediaType);</span>
     }
 
     /**
@@ -219,7 +262,7 @@ import org.glassfish.jersey.media.multipart.FormDataBodyPart;
      * @return the quota of disk space usage for files per project in bytes
      */
     public static Long getQuota() {
-<span class="nc" id="L222">        return ColabConfiguration.getJcrRepositoryProjectQuota();</span>
+<span class="nc" id="L265">        return ColabConfiguration.getJcrRepositoryProjectQuota();</span>
     }
 
     /**
@@ -232,8 +275,8 @@ import org.glassfish.jersey.media.multipart.FormDataBodyPart;
      * @throws RepositoryException in case of a JCR issue
      */
     public Long getUsage(Long projectId) throws RepositoryException {
-<span class="nc" id="L235">        Project project = projectDao.findProject(projectId);</span>
-<span class="nc" id="L236">        return jcrManager.computeMemoryUsage(project);</span>
+<span class="nc" id="L278">        Project project = projectDao.findProject(projectId);</span>
+<span class="nc" id="L279">        return jcrManager.computeMemoryUsage(project);</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>
