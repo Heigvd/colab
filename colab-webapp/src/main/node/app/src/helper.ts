@@ -93,7 +93,7 @@ export function sortCardContents(contents: CardContent[]): CardContent[] {
     const bStatus = statusOrder(b);
 
     if (aStatus === bStatus) {
-      return (a.title || '').localeCompare(b.title || '', 'fr');
+      return (a.title || '').localeCompare(b.title || '', 'en', {numeric: true});
     } else {
       return aStatus - bStatus;
     }
