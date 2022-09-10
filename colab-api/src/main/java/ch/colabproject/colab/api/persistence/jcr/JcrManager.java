@@ -62,6 +62,20 @@ public class JcrManager {
      * @param project    related project
      * @param identifier document id
      *
+     * @return True if the node exists
+     *
+     * @throws RepositoryException in case of JCR problem
+     */
+    public boolean nodeExists(Project project, Long identifier) throws RepositoryException {
+        var session = this.jcrSessionManager.getSession(project);
+
+        return session.nodeExists(identifier.toString());
+    }
+
+    /**
+     * @param project    related project
+     * @param identifier document id
+     *
      * @return stream to the file
      *
      * @throws javax.jcr.RepositoryException in case of JCR problem
@@ -76,7 +90,7 @@ public class JcrManager {
 
         var prop = node.getProperty(CONTENT);
 
-        //TODO figure out when to call dispose
+        // TODO figure out when to call dispose
         return prop.getBinary().getStream();
     }
 
@@ -87,7 +101,8 @@ public class JcrManager {
      *
      * @throws RepositoryException in case of JCR problem
      */
-    public void updateOrCreateFile(Project project, Long identifier, InputStream fileContent) throws RepositoryException {
+    public void updateOrCreateFile(Project project, Long identifier, InputStream fileContent)
+        throws RepositoryException {
         var session = this.jcrSessionManager.getSession(project);
 
         if (!session.nodeExists(identifier.toString())) {
@@ -108,7 +123,8 @@ public class JcrManager {
      *
      * @throws RepositoryException in case of JCR problem
      */
-    private void createFile(Project project, Long identifier, InputStream content) throws RepositoryException {
+    private void createFile(Project project, Long identifier, InputStream content)
+        throws RepositoryException {
         var session = this.jcrSessionManager.getSession(project);
 
         Node root = session.getWorkspaceRoot();
@@ -158,7 +174,7 @@ public class JcrManager {
             var iterator = node.getNodes();
             while (iterator.hasNext()) {
                 Node next = iterator.nextNode();
-                total += next.getProperty(CONTENT).getLength();//getSize()?
+                total += next.getProperty(CONTENT).getLength();// getSize()?
             }
 
         } catch (RepositoryException re) {
