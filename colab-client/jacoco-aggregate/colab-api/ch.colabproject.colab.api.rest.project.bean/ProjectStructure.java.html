@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>ProjectStructure.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">colab-client</a> &gt; <a href="../index.html" class="el_bundle">colab-api</a> &gt; <a href="index.source.html" class="el_package">ch.colabproject.colab.api.rest.project.bean</a> &gt; <span class="el_source">ProjectStructure.java</span></div><h1>ProjectStructure.java</h1><pre class="source lang-java linenums">/*
+ * The coLAB project
+ * Copyright (C) 2022 AlbaSim, MEI, HEIG-VD, HES-SO
+ *
+ * Licensed under the MIT License
+ */
+package ch.colabproject.colab.api.rest.project.bean;
+
+import ch.colabproject.colab.api.model.card.Card;
+import ch.colabproject.colab.api.model.card.CardContent;
+import java.util.Set;
+import javax.validation.constraints.NotNull;
+
+/**
+ * Bean to groups the whole project structure
+ *
+ * @author maxence
+ */
+<span class="nc" id="L19">public class ProjectStructure {</span>
+
+    /** Id of the root card */
+    @NotNull
+    private Long rootCardId;
+
+    /** Cards which belong to the project */
+    @NotNull
+    private Set&lt;Card&gt; cards;
+
+    /** CardContents which belong to the project */
+    @NotNull
+    private Set&lt;CardContent&gt; cardContents;
+
+    /**
+     * Get the value of rootCardId
+     *
+     * @return the value of rootCardId
+     */
+    public Long getRootCardId() {
+<span class="nc" id="L39">        return rootCardId;</span>
+    }
+
+    /**
+     * Set the value of rootCardId
+     *
+     * @param rootCardId new value of rootCardId
+     */
+    public void setRootCardId(Long rootCardId) {
+<span class="nc" id="L48">        this.rootCardId = rootCardId;</span>
+<span class="nc" id="L49">    }</span>
+
+
+    /**
+     * Get the value of cardContents
+     *
+     * @return the value of cardContents
+     */
+    public Set&lt;CardContent&gt; getCardContents() {
+<span class="nc" id="L58">        return cardContents;</span>
+    }
+
+    /**
+     * Set the value of cardContents
+     *
+     * @param cardContents new value of cardContents
+     */
+    public void setCardContents(Set&lt;CardContent&gt; cardContents) {
+<span class="nc" id="L67">        this.cardContents = cardContents;</span>
+<span class="nc" id="L68">    }</span>
+
+
+    /**
+     * Get the value of cards
+     *
+     * @return the value of cards
+     */
+    public Set&lt;Card&gt; getCards() {
+<span class="nc" id="L77">        return cards;</span>
+    }
+
+    /**
+     * Set the value of cards
+     *
+     * @param cards new value of cards
+     */
+    public void setCards(Set&lt;Card&gt; cards) {
+<span class="nc" id="L86">        this.cards = cards;</span>
+<span class="nc" id="L87">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>
