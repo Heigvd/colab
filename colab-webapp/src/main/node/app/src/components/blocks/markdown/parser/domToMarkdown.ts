@@ -287,7 +287,34 @@ function _domToMarkdown(
       }
       const lang = element.getAttribute('data-lang') || '';
       push(`\`\`\`${lang}\n`);
-      push(element.textContent || '');
+
+      // Consume the whole text as-is and detect selection
+      const children = [...element.childNodes]
+      children.forEach((child, index) => {
+        if (element === selection?.anchorNode && selection.anchorOffset === index) {
+          context.anchor = context.current;
+        }
+        if (child === selection?.anchorNode) {
+          context.anchor = context.current + selection.anchorOffset;
+        }
+
+        if (element === selection?.focusNode && selection.focusOffset === index) {
+          context.focus = context.current;
+        }
+        if (child === selection?.focusNode) {
+          context.focus = context.current + selection.focusOffset;
+        }
+        push(child.textContent || '');
+        if (child instanceof HTMLBRElement) {
+          push('\n');
+        }
+      });
+      if (element === selection?.anchorNode && selection.anchorOffset === children.length) {
+        context.anchor = context.current;
+      }
+      if (element === selection?.focusNode && selection.focusOffset === children.length) {
+        context.focus = context.current;
+      }
       push('\n```');
     } else if (tag === 'BR') {
       push('\n ');
