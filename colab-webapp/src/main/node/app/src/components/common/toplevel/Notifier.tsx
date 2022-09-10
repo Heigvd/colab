@@ -21,9 +21,11 @@ import { closeNotification, ColabNotification } from '../../../store/notificatio
 import { space_M, space_S } from '../../styling/style';
 import Flex from '../layout/Flex';
 
-function prettyPrint(error: HttpException | string, i18n: ColabTranslations): string {
+function prettyPrint(error: HttpException | Error | string, i18n: ColabTranslations): string {
   if (entityIs<'HttpErrorMessage'>(error, 'HttpErrorMessage')) {
     return translateHttpErrorMessage(error.messageCode, error.messageI18nKey, i18n);
+  } else if (error instanceof Error) {
+    return `${error.name}: ${error.message}`;
   } else {
     return error;
   }

@@ -54,20 +54,12 @@ export const getApplicationPath = () => {
 };
 
 const restClient = ColabClient(getApplicationPath(), error => {
-  if (entityIs(error, 'HttpException')) {
+  if (entityIs(error, 'HttpException') || error instanceof Error) {
     getStore().dispatch(
       addNotification({
         status: 'OPEN',
         type: 'ERROR',
         message: error,
-      }),
-    );
-  } else if (error instanceof Error) {
-    getStore().dispatch(
-      addNotification({
-        status: 'OPEN',
-        type: 'ERROR',
-        message: `${error.name}: ${error.message}`,
       }),
     );
   } else {
