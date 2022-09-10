@@ -42,21 +42,45 @@ const regexBuilder = () => {
   /** one unescaped unescaped '_' */
   let underlineRegex: RegExp;
 
+  /**  [link label](link_url) */
+  let linkRegex: RegExp;
+
   return () => {
     if (!boldRegex) {
-      boldRegex = new RegExp('(?<!\\\\)(\\*\\*)');
+      boldRegex = new RegExp('(\\*\\*)', 'g');
     }
 
     if (!italicRegex) {
-      italicRegex = new RegExp('(?<!\\\\)(\\/)');
+      italicRegex = new RegExp('(\\/)', 'g');
     }
 
     if (!strikethroughRegex) {
-      strikethroughRegex = new RegExp('(?<!\\\\)(~)');
+      strikethroughRegex = new RegExp('(~)', 'g');
     }
 
     if (!underlineRegex) {
-      underlineRegex = new RegExp('(?<!\\\\)(_)');
+      underlineRegex = new RegExp('(_)', 'g');
+    }
+
+    /* WITH NEGATIVE LOOKBEHIND */
+    //    if (!boldRegex) {
+    //      boldRegex = new RegExp('(?<!\\\\)(\\*\\*)');
+    //    }
+    //
+    //    if (!italicRegex) {
+    //      italicRegex = new RegExp('(?<!\\\\)(\\/)');
+    //    }
+    //
+    //    if (!strikethroughRegex) {
+    //      strikethroughRegex = new RegExp('(?<!\\\\)(~)');
+    //    }
+    //
+    //    if (!underlineRegex) {
+    //      underlineRegex = new RegExp('(?<!\\\\)(_)');
+    //    }
+
+    if (!linkRegex) {
+      linkRegex = new RegExp('^(?<LINK>\\[(?<LINK_LABEL>.*?)\\]\\((?<LINK_HREF>.*?)\\))');
     }
 
     const anyWhiteSpace = '[^\\S\n\r]'; // aka not not-a-whitespace nor \r nor \n
@@ -64,7 +88,7 @@ const regexBuilder = () => {
     if (!linesRegex) {
       linesRegex = new RegExp(
         [
-          '(?<CODE>(?<codeIndent>^```(?<codeLang>.*)\n)(?<codeData>.*)\n```)',
+          '(?<CODE>(?<codeIndent>^```(?<codeLang>.*)\n)(?<codeData>(?:.|\n|\r)*?)\n```)',
           `(?<UL>^(?<ulIndent>(?<ulLevel>${anyWhiteSpace}*[*-])(?:${anyWhiteSpace}\\[(?<ulChecked>[ x])\\])?${anyWhiteSpace})(?<ulData>.*)$)`,
           `(?<OL>^(?<olIndent>(?<olLevel>${anyWhiteSpace}*)(?<olNumber>\\d+)\\.${anyWhiteSpace})(?<olData>.*)$)`,
           `(?<H>^(?<hIndent>(?<hLevel>#{1,5})${anyWhiteSpace}?)(?<hData>.*)$)`,
@@ -73,7 +97,7 @@ const regexBuilder = () => {
         'gm',
       );
     }
-    return { linesRegex, boldRegex, italicRegex, strikethroughRegex, underlineRegex };
+    return { linesRegex, boldRegex, italicRegex, strikethroughRegex, underlineRegex, linkRegex };
   };
 };
 
@@ -420,7 +444,24 @@ function processTag(
     logger.trace(`Start of tag ${mark} found at :${position}`);
     const markLength = mark.length;
     const sub = data.substring(markLength);
-    const endIndex = sub.search(markRegex);
+
+    // one would use negative-lookbehin regex but odd browsers still do not implement such ES2018 spec...
+    // With such a regex, simply use:
+    //const endIndex = sub.search(markRegex);
+
+    let endIndex = -1;
+    const endIndexes = [...sub.matchAll(markRegex)];
+
+    const firstNonEscapedMatch = endIndexes.find(match => {
+      const currentIndex = match.index;
+      // is the group escaped?
+      return currentIndex != null && sub.charAt(currentIndex - 1) !== '\\';
+    });
+
+    if (firstNonEscapedMatch?.index != null) {
+      endIndex = firstNonEscapedMatch.index;
+    }
+
     if (endIndex >= 0) {
       logger.trace(`end of tag ${mark} found at :${position + endIndex + 2 * markLength}`);
       const inner = extract(
@@ -445,7 +486,7 @@ function parseMinor(minor: Combined): DomTree {
   const children: NodeWithPosition[] = [];
   const all: NodeWithPosition[] = [];
 
-  const { boldRegex, italicRegex, strikethroughRegex, underlineRegex } = getRegexes();
+  const { boldRegex, italicRegex, strikethroughRegex, underlineRegex, linkRegex } = getRegexes();
 
   logger.trace(`ParseMinor(${minor.tag}): >${minor.data}<`);
   if (minor.tag === 'P' && minor.data?.length == 0) {
@@ -570,6 +611,41 @@ function parseMinor(minor: Combined): DomTree {
             all.push(n);
             offset++;
             nodeStart = offset;
+          }
+        } else {
+          const data = minor.data!.substring(offset);
+          const match = data.match(linkRegex);
+          if (match != null) {
+            if (match.groups) {
+              const label = match.groups['LINK_LABEL'];
+              const href = match.groups['LINK_HREF'];
+              const full = match.groups['LINK'];
+              const rawLength = full?.length ?? 0;
+
+              createTextNode();
+              const span = document.createElement('span');
+              span.setAttribute('data-type', 'link');
+              span.setAttribute('data-link-href', href ?? '');
+
+              const textNode = document.createTextNode(label ?? '');
+              span.append(textNode);
+              const n = {
+                node: span,
+                rawPosition: minor.offset[offset]!,
+                consumed: rawLength,
+                combined: minor,
+              };
+              children.push(n);
+              all.push(n);
+              all.push({
+                node: textNode,
+                rawPosition: minor.offset[offset]! + 1,
+                consumed: label?.length ?? 0,
+                combined: minor,
+              });
+              offset += rawLength;
+              nodeStart = offset;
+            }
           }
         }
       }

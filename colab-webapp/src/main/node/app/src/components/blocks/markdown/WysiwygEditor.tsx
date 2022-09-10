@@ -21,6 +21,7 @@ import { uniq } from 'lodash';
 import * as React from 'react';
 import * as LiveHelper from '../../../LiveHelper';
 import { getLogger } from '../../../logger';
+import OpenGraphLink from '../../common/element/OpenGraphLink';
 import DropDownMenu, { Entry } from '../../common/layout/DropDownMenu';
 import Flex from '../../common/layout/Flex';
 import { DocEditorCTX } from '../../documents/DocumentEditorToolbox';
@@ -40,7 +41,12 @@ import {
   toggleTag,
   unindentListItem,
 } from './DomHelper';
-import { colabFlavouredMarkdown, colabFlavouredMarkdownEditable } from './MarkdownViewer';
+import {
+  colabFlavouredMarkdown,
+  colabFlavouredMarkdownEditable,
+  computeOverlayPosition,
+  LinkOverlay,
+} from './MarkdownViewer';
 import domToMarkdown, { MarkdownRange, MarkdownWithSelection } from './parser/domToMarkdown';
 import markdownToDom, {
   convertRange,
@@ -742,6 +748,34 @@ export default function WysiwygEditor({
       // since getSelection return a mutable object, make sure to make a copy
       selectionRef.current = selection;
       updateToolbar();
+
+      if (selection.type === 'Caret' && selection.focusNode != null) {
+        const node =
+          selection.focusNode instanceof Element
+            ? selection.focusNode
+            : selection.focusNode.parentElement;
+        if (node) {
+          const linkNode = node.closest('span[data-type=link]');
+          if (linkNode) {
+            // tag found
+            setLinkOverlay({
+              node: linkNode,
+              editing: false,
+              href: linkNode.getAttribute('data-link-href') ?? '',
+            });
+          } else {
+            // no link here
+            setLinkOverlay(undefined);
+          }
+        } else {
+          // no element here
+          setLinkOverlay(undefined);
+        }
+      } else {
+        // do never show link overlay if selection is a range
+        setLinkOverlay(undefined);
+      }
+
       //      logger.info("SelectionAnchor: ", selection.anchorNode?.nodeName);
       //      logger.info("SelectionAndhorOffset: ", selection.anchorOffset);
       //      logger.info("SelectionFocus: ", selection.focusNode?.nodeName);
@@ -1135,11 +1169,39 @@ export default function WysiwygEditor({
     [toggleBold, toggleItalic, toggleUnderline, onInternalChangeCb],
   );
 
+  const [linkOverlay, setLinkOverlay] = React.useState<LinkOverlay | undefined>(undefined);
+
+  const updateLinkCb = React.useCallback(
+    (newUrl: string) => {
+      if (linkOverlay) {
+        linkOverlay.node.setAttribute('data-link-href', newUrl);
+        onInternalChangeCb();
+      }
+    },
+    [linkOverlay, onInternalChangeCb],
+  );
+
+  const onClick = React.useCallback((event: MouseEvent) => {
+    if (event.target instanceof Element) {
+      if (event.target.closest('div.linkOverlay') || event.target.closest('span[data-type=link]')) {
+        return;
+      }
+    }
+    setLinkOverlay(undefined);
+  }, []);
+
+  React.useEffect(() => {
+    document.addEventListener('click', onClick, true);
+    return () => {
+      document.removeEventListener('click', onClick, true);
+    };
+  }, [onClick]);
+
   const interceptClick = React.useCallback(
     (e: React.MouseEvent) => {
-      // click on todo-list item toggled the state
       if (e.target instanceof Element) {
         if (e.target.tagName === 'LI') {
+          // click on todo-list item toggled the state
           if (e.target.firstChild) {
             // hack
             // Since boxes are displayed using CSS pseudoelement, boxes do not exists
@@ -1161,7 +1223,6 @@ export default function WysiwygEditor({
           }
         }
       }
-      e.target;
     },
     [onInternalChangeCb],
   );
@@ -1293,6 +1354,22 @@ export default function WysiwygEditor({
           onCompositionEnd={logCompEnd}
           contentEditable={true}
         ></div>
+        {linkOverlay && (
+          <div className={'linkOverlay ' + computeOverlayPosition(linkOverlay.node)}>
+            <OpenGraphLink
+              url={linkOverlay.href}
+              readOnly={false}
+              editCb={updateLinkCb}
+              setEditingState={() => {
+                setLinkOverlay({
+                  ...linkOverlay,
+                  editing: !linkOverlay.editing,
+                });
+              }}
+              editingStatus={linkOverlay.editing}
+            />
+          </div>
+        )}
         {/*<pre>{value}</pre>*/}
       </Flex>
     </Flex>
