@@ -155,6 +155,55 @@ const removeContent = (state: CardState, contentId: number) => {
   delete state.contents[contentId];
 };
 
+const processAllCards = (state: CardState, cards: Card[]) => {
+  cards.forEach(card => {
+    const cardState = getOrCreateCardState(state, card.id!);
+    cardState.card = card;
+  });
+  state.status = 'READY';
+};
+
+const processAllCardContents = (state: CardState, cardContents: CardContent[]) => {
+  state.contentStatus = 'READY';
+  Object.values(state.cards).forEach(cardState => {
+    if (cardState.contents == null) {
+      cardState.contents = [];
+    }
+  });
+  cardContents.forEach(cc => {
+    if (cc.id) {
+      const contentState = getOrCreateCardContentState(state, cc.id);
+      contentState.content = cc;
+      const cardId = cc.cardId!;
+      const cardState = getOrCreateCardState(state, cardId);
+      if (cardState.contents == null) {
+        cardState.contents = [];
+      }
+      if (cardState.contents.indexOf(cc.id) < 0) {
+        cardState.contents.push(cc.id);
+      }
+    }
+  });
+};
+
+const rebuildSubs = (state: CardState) => {
+  // clear current subs
+  Object.values(state.contents).forEach(v => {
+    v.subs = [];
+  });
+  Object.values(state.cards).forEach(card => {
+    const cardId = card.card?.id;
+    const cardContentId = card.card?.parentId;
+    if (cardId != null && cardContentId != null) {
+      const contentState = getOrCreateCardContentState(state, cardContentId);
+      if (contentState.subs == null) {
+        contentState.subs = [];
+      }
+      contentState.subs.push(cardId);
+    }
+  });
+};
+
 const cardsSlice = createSlice({
   name: 'cards',
   initialState,
@@ -171,11 +220,7 @@ const cardsSlice = createSlice({
         state.status = 'LOADING';
       })
       .addCase(API.getAllProjectCards.fulfilled, (state, action) => {
-        action.payload.forEach(card => {
-          const cardState = getOrCreateCardState(state, card.id!);
-          cardState.card = card;
-        });
-        state.status = 'READY';
+        processAllCards(state, action.payload);
       })
       .addCase(API.getRootCardOfProject.pending, state => {
         state.rootCardId = 'LOADING';
@@ -212,26 +257,7 @@ const cardsSlice = createSlice({
         state.contentStatus = 'LOADING';
       })
       .addCase(API.getAllProjectCardContents.fulfilled, (state, action) => {
-        state.contentStatus = 'READY';
-        Object.values(state.cards).forEach(cardState => {
-          if (cardState.contents == null) {
-            cardState.contents = [];
-          }
-        });
-        action.payload.forEach(cc => {
-          if (cc.id) {
-            const contentState = getOrCreateCardContentState(state, cc.id);
-            contentState.content = cc;
-            const cardId = cc.cardId!;
-            const cardState = getOrCreateCardState(state, cardId);
-            if (cardState.contents == null) {
-              cardState.contents = [];
-            }
-            if (cardState.contents.indexOf(cc.id) < 0) {
-              cardState.contents.push(cc.id);
-            }
-          }
-        });
+        processAllCardContents(state, action.payload);
       })
       .addCase(API.closeCurrentProject.fulfilled, () => {
         return initialState;
@@ -265,7 +291,7 @@ const cardsSlice = createSlice({
         const cardContentId = action.meta.arg;
 
         const contentState = getOrCreateCardContentState(state, cardContentId);
-        contentState.subs = action.payload.flatMap(cc => (cc.id ? [cc.id] : []));
+        contentState.subs = action.payload.flatMap(card => (card.id ? [card.id] : []));
 
         action.payload.forEach(card => {
           if (card && card.id) {
@@ -275,6 +301,18 @@ const cardsSlice = createSlice({
             };
           }
         });
+      })
+
+      .addCase(API.getProjectStructure.pending, (state) => {
+        state.status = 'LOADING';
+        state.contentStatus = 'LOADING';
+        state.rootCardId = 'LOADING';
+      })
+      .addCase(API.getProjectStructure.fulfilled, (state, action) => {
+        processAllCards(state, action.payload.cards);
+        processAllCardContents(state, action.payload.cardContents);
+        rebuildSubs(state);
+        state.rootCardId = action.payload.rootCardId;
       })
 
       .addCase(API.signOut.fulfilled, () => {

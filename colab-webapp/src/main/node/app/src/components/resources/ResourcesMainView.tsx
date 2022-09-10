@@ -89,6 +89,21 @@ export default function ResourcesMainView({
     }
   }, [lastCreated, activeResources, selectResource, setLastCreated]);
 
+  /**
+   * Quick Fix: keep selectedResource up-to-date
+   * TODO: identify selectedResource by id
+   */
+  React.useEffect(() => {
+    if (selectedResource != null) {
+      const found = activeResources.find(
+        ar => ar.targetResource.id === selectedResource.targetResource.id,
+      );
+      if (found && found.targetResource != selectedResource.targetResource) {
+        selectResource(found);
+      }
+    }
+  }, [activeResources, selectedResource, selectResource]);
+
   if (accessLevel === 'DENIED') {
     return <div>{i18n.common.error.accessDenied}</div>;
   }

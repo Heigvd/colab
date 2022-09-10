@@ -19,6 +19,7 @@ import ch.colabproject.colab.api.model.team.TeamMember;
 import ch.colabproject.colab.api.model.team.TeamRole;
 import ch.colabproject.colab.api.persistence.jpa.project.ProjectDao;
 import ch.colabproject.colab.api.rest.project.bean.ProjectCreationData;
+import ch.colabproject.colab.api.rest.project.bean.ProjectStructure;
 import ch.colabproject.colab.generator.model.annotations.AdminResource;
 import ch.colabproject.colab.generator.model.annotations.AuthenticationRequired;
 import java.util.List;
@@ -266,6 +267,20 @@ public class ProjectRestEndpoint {
     public Set<CardContent> getCardContentsOfProject(@PathParam("id") Long id) {
         logger.debug("Get project #{} cardContents", id);
         return projectManager.getCardContents(id);
+    }
+
+    /**
+     * Get all cards, cardContents and structure in one shot.
+     *
+     * @param id ID of the project data belong to
+     *
+     * @return full structure of the project
+     */
+    @GET
+    @Path("{id}/structure")
+    public ProjectStructure getStructureOfProject(@PathParam("id") Long id) {
+        logger.debug("Get project #{} cardContents", id);
+        return projectManager.getStructure(id);
     }
 
     /**
