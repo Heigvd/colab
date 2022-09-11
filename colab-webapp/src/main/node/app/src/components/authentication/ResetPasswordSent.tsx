@@ -24,7 +24,7 @@ export default function ResetPasswordSent(): JSX.Element {
         <h3>{i18n.authentication.info.checkYourMailbox}</h3>
         <p className={css({ textAlign: 'left' })}>{i18n.authentication.info.resetPasswordSent}</p>
         <Button onClick={() => navigate('/')} className={css({ marginTop: space_M })}>
-          Back to login
+          {i18n.common.action.backToHome}
         </Button>
       </Flex>
     </PublicEntranceContainer>

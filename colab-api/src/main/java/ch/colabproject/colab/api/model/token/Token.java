@@ -6,7 +6,7 @@
  */
 package ch.colabproject.colab.api.model.token;
 
-import ch.colabproject.colab.api.controller.RequestManager;
+import ch.colabproject.colab.api.controller.token.TokenManager;
 import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.model.ColabEntity;
 import ch.colabproject.colab.api.model.common.Tracking;
@@ -35,7 +35,6 @@ import javax.persistence.SequenceGenerator;
 import javax.validation.constraints.NotNull;
 
 /**
- *
  * @author maxence
  */
 @Entity
@@ -230,11 +229,13 @@ public abstract class Token implements ColabEntity {
     /**
      * token effect. As some token may requires the resquestManager, give it to them.
      *
-     * @param requestManager requestManager
+     * @param tokenManager token manager that handles all token-specific logic
+     *
+     * @return true if the token can be consumed
      *
      * @throws HttpException if consumption fails
      */
-    public abstract void consume(RequestManager requestManager);
+    public abstract boolean consume(TokenManager tokenManager);
 
     /**
      * Generate email body
@@ -293,7 +294,7 @@ public abstract class Token implements ColabEntity {
 
     @Override
     public Conditions.Condition getUpdateCondition() {
-        //TODO: decide what to do
+        // TODO: decide what to do
         return Conditions.alwaysTrue;
     }
 

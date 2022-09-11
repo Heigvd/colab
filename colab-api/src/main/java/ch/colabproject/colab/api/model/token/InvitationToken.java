@@ -6,13 +6,11 @@
  */
 package ch.colabproject.colab.api.model.token;
 
-import ch.colabproject.colab.api.controller.RequestManager;
+import ch.colabproject.colab.api.controller.token.TokenManager;
 import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.api.model.team.TeamMember;
 import ch.colabproject.colab.api.model.token.tools.InvitationMessageBuilder;
-import ch.colabproject.colab.api.model.user.User;
 import ch.colabproject.colab.api.security.permissions.Conditions;
-import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
 import javax.json.bind.annotation.JsonbTransient;
 import javax.persistence.Entity;
 import javax.persistence.Index;
@@ -151,18 +149,9 @@ public class InvitationToken extends Token {
         return "";
     }
 
-    /**
-     * Register currentUser in teamMember
-     */
     @Override
-    public void consume(RequestManager requestManager) {
-        User user = requestManager.getCurrentUser();
-        if (user != null) {
-            teamMember.setUser(user);
-            teamMember.setDisplayName("");
-        } else {
-            throw HttpErrorMessage.authenticationRequired();
-        }
+    public boolean consume(TokenManager tokenManager) {
+        return tokenManager.consumeInvitationToken(teamMember);
     }
 
     // ---------------------------------------------------------------------------------------------

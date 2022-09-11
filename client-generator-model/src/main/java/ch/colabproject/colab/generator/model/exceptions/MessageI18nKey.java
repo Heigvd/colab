@@ -16,5 +16,7 @@ public enum MessageI18nKey {
     // sign up
     EMAIL_NOT_VALID,
     IDENTIFIER_ALREADY_TAKEN,
+    // token
+    INVITATION_CONSUMING_BY_TEAMMEMBER,
 
 }

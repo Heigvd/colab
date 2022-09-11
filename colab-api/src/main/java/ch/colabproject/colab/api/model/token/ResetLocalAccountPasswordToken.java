@@ -6,7 +6,7 @@
  */
 package ch.colabproject.colab.api.model.token;
 
-import ch.colabproject.colab.api.controller.RequestManager;
+import ch.colabproject.colab.api.controller.token.TokenManager;
 import ch.colabproject.colab.api.model.token.tools.ResetLocalAccountPasswordMessageBuilder;
 import ch.colabproject.colab.api.model.user.LocalAccount;
 import javax.json.bind.annotation.JsonbTransient;
@@ -81,18 +81,15 @@ public class ResetLocalAccountPasswordToken extends Token {
     @Override
     public String getRedirectTo() {
         if (localAccount != null) {
-            return "/settings/account/" + localAccount.getId();
+            return "/settings/user"; // "/settings/account/" + localAccount.getId();
         } else {
             return "";
         }
     }
 
-    /**
-     * auto-login
-     */
     @Override
-    public void consume(RequestManager requestManager) {
-        requestManager.login(localAccount);
+    public boolean consume(TokenManager tokenManager) {
+        return tokenManager.consumeResetPasswordToken(localAccount);
     }
 
     // ---------------------------------------------------------------------------------------------
