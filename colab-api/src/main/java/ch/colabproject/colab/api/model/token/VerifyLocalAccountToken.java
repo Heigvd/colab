@@ -6,7 +6,7 @@
  */
 package ch.colabproject.colab.api.model.token;
 
-import ch.colabproject.colab.api.controller.RequestManager;
+import ch.colabproject.colab.api.controller.token.TokenManager;
 import ch.colabproject.colab.api.model.token.tools.VerifyLocalAccountMessageBuilder;
 import ch.colabproject.colab.api.model.user.LocalAccount;
 import javax.json.bind.annotation.JsonbTransient;
@@ -83,14 +83,9 @@ public class VerifyLocalAccountToken extends Token {
         return "/";
     }
 
-    /**
-     * Mark the localAccount as verified.
-     *
-     * @param reqMan the request manager
-     */
     @Override
-    public void consume(RequestManager reqMan) {
-        this.localAccount.setVerified(Boolean.TRUE);
+    public boolean consume(TokenManager tokenManager) {
+        return tokenManager.consumeVerifyAccountToken(localAccount);
     }
 
     // ---------------------------------------------------------------------------------------------

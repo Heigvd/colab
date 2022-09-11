@@ -73,8 +73,12 @@ export const en = {
         return 'never';
       }
     },
+    action: {
+      backToHome: 'Back to co.LAB home',
+    },
     error: {
       accessDenied: 'Unfortunately you are not allowed to see this',
+      tryToLogOut: 'Try to log out first',
       missingContent: 'Oh there is nothing to display, dear developer please fix it',
       somethingWentWrong: 'Something went wrong',
       unknown: 'Unknown',
@@ -421,6 +425,8 @@ export const en = {
         return 'E-mail address is not valid';
       case 'IDENTIFIER_ALREADY_TAKEN':
         return 'Please choose another identifier';
+      case 'INVITATION_CONSUMING_BY_TEAMMEMBER':
+        return 'The current user is already a team member';
     }
   },
 

@@ -38,6 +38,8 @@ public class HttpErrorMessage extends HttpException {
         TOO_MANY_ATTEMPTS,
         /** Sign up failure */
         SIGNUP_FAILURE,
+        /** Problem processing a token */
+        TOKEN_PROCESSING_FAILURE,
     }
 
     /**
@@ -240,4 +242,12 @@ public class HttpErrorMessage extends HttpException {
         return new HttpErrorMessage(MessageCode.SIGNUP_FAILURE, i18nKey);
     }
 
+    /**
+     * @param i18nKey translation key of the message
+     *
+     * @return 400 token processing failure
+     */
+    public static HttpErrorMessage tokenProcessingFailure(MessageI18nKey i18nKey) {
+        return new HttpErrorMessage(MessageCode.TOKEN_PROCESSING_FAILURE, i18nKey);
+    }
 }
