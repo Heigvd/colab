@@ -8,6 +8,7 @@
 import { css, cx } from '@emotion/css';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { WithJsonDiscriminator } from 'colab-rest-client';
 import * as React from 'react';
 import { useNavigate } from 'react-router-dom';
 import * as API from '../../API/api';
@@ -18,6 +19,7 @@ import { useAppDispatch, useLoadingState } from '../../store/hooks';
 import Form, { Field, PasswordScore } from '../common/element/Form';
 import { InlineLink } from '../common/element/Link';
 import Flex from '../common/layout/Flex';
+import { prettyPrint } from '../common/toplevel/Notifier';
 import { lightLinkStyle, space_M, space_S } from '../styling/style';
 import PublicEntranceContainer from './PublicEntranceContainer';
 
@@ -49,7 +51,7 @@ export default function SignInForm({ redirectTo, message }: SignInFormProps): JS
   const navigate = useNavigate();
   const i18n = useTranslations();
 
-  const [loginFailed, setLoginFailed] = React.useState<boolean>(false);
+  const [error, setError] = React.useState<Error | WithJsonDiscriminator | null>(null);
 
   const { isLoading, startLoading, stopLoading } = useLoadingState();
 
@@ -75,26 +77,37 @@ export default function SignInForm({ redirectTo, message }: SignInFormProps): JS
   const signIn = React.useCallback(
     (credentials: Credentials) => {
       startLoading();
-      setLoginFailed(false);
+      setError(null);
 
       dispatch(
         API.signInWithLocalAccount({
           identifier: credentials.identifier,
           password: credentials.password,
           passwordScore: credentials.passwordScore,
+          errorHandler: error => {
+            if (error) {
+              setError(error);
+            }
+          },
         }),
       ).then(action => {
         stopLoading();
 
-        if (redirectTo && action.meta.requestStatus === 'fulfilled') {
+        if (action.meta.requestStatus === 'fulfilled' && redirectTo) {
           navigate(redirectTo);
-        } else if (action.meta.requestStatus === 'rejected') {
-          setLoginFailed(true);
         }
       });
     },
     [dispatch, navigate, redirectTo, startLoading, stopLoading],
   );
+
+  const errorMessage = React.useMemo(() => {
+    if (error) {
+      return prettyPrint(error, i18n);
+    } else {
+      return null;
+    }
+  }, [error, i18n]);
 
   return (
     <PublicEntranceContainer>
@@ -103,8 +116,7 @@ export default function SignInForm({ redirectTo, message }: SignInFormProps): JS
         fields={formFields}
         value={defaultCredentials}
         onSubmit={signIn}
-        isGloballyErroneous={loginFailed}
-        globalErrorMessage={i18n.authentication.error.emailOrUserNotValid}
+        globalErrorMessage={errorMessage}
         submitLabel={i18n.authentication.action.login}
         buttonClassName={css({ margin: space_M + ' auto' })}
         isSubmitInProcess={isLoading}

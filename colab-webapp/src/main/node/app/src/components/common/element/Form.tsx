@@ -111,7 +111,6 @@ export interface FormProps<T> {
   submitLabel: string;
   children?: React.ReactNode;
   isSubmitInProcess?: boolean;
-  isGloballyErroneous?: boolean | ((data: T) => boolean);
   globalErrorMessage?: React.ReactNode;
   className?: string;
   childrenClassName?: string;
@@ -125,7 +124,6 @@ export default function Form<T>({
   submitLabel,
   children,
   isSubmitInProcess,
-  isGloballyErroneous,
   globalErrorMessage,
   className,
   childrenClassName,
@@ -135,7 +133,7 @@ export default function Form<T>({
 
   const [state, setState] = React.useState<T>(value);
   const [showErrors, setShowErrors] = React.useState(false);
-  let globalErroneous = false;
+  let isFormErroneous = false;
 
   const setFormValue = React.useCallback((key: keyof T, value: unknown) => {
     // genuine hack inside: use setState as getter
@@ -146,12 +144,12 @@ export default function Form<T>({
   }, []);
 
   const submit = React.useCallback(() => {
-    if (!globalErroneous) {
+    if (!isFormErroneous) {
       onSubmit(state);
     } else {
       setShowErrors(true);
     }
-  }, [globalErroneous, onSubmit, state]);
+  }, [isFormErroneous, onSubmit, state]);
 
   const onEnter = React.useCallback(
     (event: React.KeyboardEvent<HTMLElement>) => {
@@ -163,18 +161,18 @@ export default function Form<T>({
   );
 
   const fieldComps = fields.map(field => {
-    const isErroneous = field.isErroneous != null ? field.isErroneous(state) : false;
-    const isEmptyError = field.isMandatory
+    const isFieldErroneous = field.isErroneous != null ? field.isErroneous(state) : false;
+    const isFieldEmptyError = field.isMandatory
       ? String(state[field.key]).length === 0 || state[field.key] === null
       : false;
-    globalErroneous = globalErroneous || isErroneous || isEmptyError;
+    isFormErroneous = isFormErroneous || isFieldErroneous || isFieldEmptyError;
 
     const fieldKey = `field-${String(field.key)}`;
 
     const errorMessage =
-      showErrors && isEmptyError
+      showErrors && isFieldEmptyError
         ? i18n.basicComponent.form.missingMandatory
-        : showErrors && isErroneous
+        : showErrors && isFieldErroneous
         ? field.errorMessage != null
           ? typeof field.errorMessage === 'function'
             ? field.errorMessage(state)
@@ -307,7 +305,7 @@ export default function Form<T>({
 
   return (
     <>
-      {(isGloballyErroneous || (globalErroneous && showErrors)) && (
+      {globalErrorMessage != null && (
         <Flex
           className={cx(
             css({ color: errorColor, textAlign: 'left', marginBottom: space_M }),

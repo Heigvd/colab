@@ -92,8 +92,8 @@ export function UserDropDown({ onlyLogout }: { onlyLogout?: boolean }): JSX.Elem
   const { currentUser, status: currentUserStatus } = useCurrentUser();
 
   const logout = React.useCallback(() => {
-    dispatch(API.signOut());
-  }, [dispatch]);
+    dispatch(API.signOut()).then(() => navigate(`/`));
+  }, [dispatch, navigate]);
 
   React.useEffect(() => {
     if (currentUserStatus == 'NOT_INITIALIZED') {
@@ -101,7 +101,9 @@ export function UserDropDown({ onlyLogout }: { onlyLogout?: boolean }): JSX.Elem
       dispatch(API.reloadCurrentUser());
     }
   }, [currentUserStatus, dispatch]);
+
   const passwordScore = useAppSelector(state => state.auth.localAccountPasswordScore);
+
   if (currentUser != null) {
     return (
       <>

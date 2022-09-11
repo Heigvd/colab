@@ -554,7 +554,7 @@ export default function Team({ project }: TeamProps): JSX.Element {
   } else {
     return (
       <div>
-        <InlineLoading />;
+        <InlineLoading />
       </div>
     );
   }

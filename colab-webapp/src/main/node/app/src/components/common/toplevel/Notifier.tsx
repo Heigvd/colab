@@ -13,7 +13,7 @@ import {
   IconDefinition,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { entityIs, HttpErrorMessage, HttpException } from 'colab-rest-client';
+import { entityIs, HttpErrorMessage } from 'colab-rest-client';
 import * as React from 'react';
 import useTranslations, { ColabTranslations } from '../../../i18n/I18nContext';
 import { shallowEqual, useAppDispatch, useAppSelector } from '../../../store/hooks';
@@ -21,11 +21,15 @@ import { closeNotification, ColabNotification } from '../../../store/notificatio
 import { space_M, space_S } from '../../styling/style';
 import Flex from '../layout/Flex';
 
-function prettyPrint(error: HttpException | string, i18n: ColabTranslations): string {
-  if (entityIs<'HttpErrorMessage'>(error, 'HttpErrorMessage')) {
+export function prettyPrint(error: unknown, i18n: ColabTranslations): string {
+  if (entityIs<'HttpErrorMessage'>(error, 'HttpErrorMessage') || entityIs(error, 'HttpException')) {
     return translateHttpErrorMessage(error.messageCode, error.messageI18nKey, i18n);
-  } else {
+  } else if (error instanceof Error) {
+    return `${error.name}: ${error.message}`;
+  } else if (typeof error === 'string') {
     return error;
+  } else {
+    return i18n.common.error.somethingWentWrong;
   }
 }
 

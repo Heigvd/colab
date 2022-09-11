@@ -6,6 +6,7 @@
  */
 
 import { css } from '@emotion/css';
+import { WithJsonDiscriminator } from 'colab-rest-client';
 import * as React from 'react';
 import { useNavigate } from 'react-router-dom';
 import * as API from '../../API/api';
@@ -14,6 +15,7 @@ import useTranslations from '../../i18n/I18nContext';
 import { useAppDispatch, useLoadingState } from '../../store/hooks';
 import Form, { Field, PasswordScore } from '../common/element/Form';
 import { InlineLink } from '../common/element/Link';
+import { prettyPrint } from '../common/toplevel/Notifier';
 import { lightLinkStyle, space_M } from '../styling/style';
 import PasswordFeedbackDisplay from './PasswordFeedbackDisplay';
 import PublicEntranceContainer from './PublicEntranceContainer';
@@ -48,6 +50,8 @@ export default function SignUpForm({ redirectTo }: SignUpFormProps): JSX.Element
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const i18n = useTranslations();
+
+  const [error, setError] = React.useState<Error | WithJsonDiscriminator | null>(null);
 
   const { isLoading, startLoading, stopLoading } = useLoadingState();
 
@@ -97,8 +101,18 @@ export default function SignUpForm({ redirectTo }: SignUpFormProps): JSX.Element
   const signUp = React.useCallback(
     (data: FormData) => {
       startLoading();
+      setError(null);
 
-      dispatch(API.signUp(data)).then(action => {
+      dispatch(
+        API.signUp({
+          ...data,
+          errorHandler: error => {
+            if (error) {
+              setError(error);
+            }
+          },
+        }),
+      ).then(action => {
         stopLoading();
 
         // is that a hack or not ???
@@ -110,12 +124,21 @@ export default function SignUpForm({ redirectTo }: SignUpFormProps): JSX.Element
     [dispatch, navigate, redirectTo, startLoading, stopLoading],
   );
 
+  const errorMessage = React.useMemo(() => {
+    if (error) {
+      return prettyPrint(error, i18n);
+    } else {
+      return null;
+    }
+  }, [error, i18n]);
+
   return (
     <PublicEntranceContainer>
       <Form
         fields={formFields}
         value={defaultData}
         onSubmit={signUp}
+        globalErrorMessage={errorMessage}
         submitLabel={i18n.authentication.action.createAnAccount}
         buttonClassName={css({ margin: space_M + ' auto' })}
         isSubmitInProcess={isLoading}

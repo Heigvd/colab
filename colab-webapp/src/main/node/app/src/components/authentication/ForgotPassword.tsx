@@ -49,10 +49,11 @@ export default function ResetPasswordForm({ redirectTo }: ResetPasswordFormProps
     ({ email }: FormData) => {
       startLoading();
 
-      dispatch(API.requestPasswordReset(email)).then(() => {
+      dispatch(API.requestPasswordReset(email)).then(action => {
         stopLoading();
-
-        navigate('../ResetPasswordEmailSent');
+        if (action.meta.requestStatus === 'fulfilled') {
+          navigate('../ResetPasswordEmailSent');
+        }
       });
     },
     [dispatch, navigate, startLoading, stopLoading],
