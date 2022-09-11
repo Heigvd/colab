@@ -61,7 +61,7 @@ colab-tests/client-generator-model,ch.colabproject.colab.generator.model.tools,D
 colab-tests/client-generator-model,ch.colabproject.colab.generator.model.tools,ClassDoc,21,33,0,0,6,13,6,6,6,6
 colab-tests/client-generator-model,ch.colabproject.colab.generator.model.tools,JavaDocExtractor.new TypeLiteral() {...},0,3,0,0,0,1,0,1,0,1
 colab-tests/client-generator-model,ch.colabproject.colab.generator.model.interfaces,WithJsonDiscriminator,3,14,1,1,1,4,1,2,0,2
-colab-tests/client-generator-model,ch.colabproject.colab.generator.model.exceptions,HttpErrorMessage,48,76,0,0,10,23,8,15,8,15
+colab-tests/client-generator-model,ch.colabproject.colab.generator.model.exceptions,HttpErrorMessage,54,76,0,0,11,23,9,15,9,15
 colab-tests/client-generator-model,ch.colabproject.colab.generator.model.exceptions,HttpException,7,12,0,0,3,5,2,3,2,3
-colab-tests/client-generator-model,ch.colabproject.colab.generator.model.exceptions,MessageI18nKey,0,24,0,0,0,3,0,1,0,1
-colab-tests/client-generator-model,ch.colabproject.colab.generator.model.exceptions,HttpErrorMessage.MessageCode,0,144,0,0,0,15,0,1,0,1
+colab-tests/client-generator-model,ch.colabproject.colab.generator.model.exceptions,MessageI18nKey,0,34,0,0,0,4,0,1,0,1
+colab-tests/client-generator-model,ch.colabproject.colab.generator.model.exceptions,HttpErrorMessage.MessageCode,0,154,0,0,0,16,0,1,0,1

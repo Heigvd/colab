@@ -6,7 +6,7 @@
  */
 package ch.colabproject.colab.api.model.token;
 
-import ch.colabproject.colab.api.controller.RequestManager;
+import ch.colabproject.colab.api.controller.token.TokenManager;
 import ch.colabproject.colab.api.model.token.tools.VerifyLocalAccountMessageBuilder;
 import ch.colabproject.colab.api.model.user.LocalAccount;
 import javax.json.bind.annotation.JsonbTransient;
@@ -83,15 +83,10 @@ import javax.validation.constraints.NotNull;
 <span class="nc" id="L83">        return &quot;/&quot;;</span>
     }
 
-    /**
-     * Mark the localAccount as verified.
-     *
-     * @param reqMan the request manager
-     */
     @Override
-    public void consume(RequestManager reqMan) {
-<span class="nc" id="L93">        this.localAccount.setVerified(Boolean.TRUE);</span>
-<span class="nc" id="L94">    }</span>
+    public boolean consume(TokenManager tokenManager) {
+<span class="nc" id="L88">        return tokenManager.consumeVerifyAccountToken(localAccount);</span>
+    }
 
     // ---------------------------------------------------------------------------------------------
     // to build a message
@@ -100,12 +95,12 @@ import javax.validation.constraints.NotNull;
     @JsonbTransient
     @Override
     public String getSubject() {
-<span class="nc" id="L103">        return EMAIL_SUBJECT;</span>
+<span class="nc" id="L98">        return EMAIL_SUBJECT;</span>
     }
 
     @Override
     public String getEmailBody(String link) {
-<span class="nc" id="L108">        return VerifyLocalAccountMessageBuilder.build(this, link);</span>
+<span class="nc" id="L103">        return VerifyLocalAccountMessageBuilder.build(this, link);</span>
     }
 
     // ---------------------------------------------------------------------------------------------
@@ -114,7 +109,7 @@ import javax.validation.constraints.NotNull;
 
     @Override
     public String toString() {
-<span class="nc" id="L117">        return &quot;VerifyLocalAccountToken{&quot; + &quot;id=&quot; + getId()</span>
+<span class="nc" id="L112">        return &quot;VerifyLocalAccountToken{&quot; + &quot;id=&quot; + getId()</span>
             + &quot;, localAccount=&quot; + localAccount + '}';
     }
 

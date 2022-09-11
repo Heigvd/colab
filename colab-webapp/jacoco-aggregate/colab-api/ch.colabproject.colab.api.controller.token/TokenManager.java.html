@@ -10,6 +10,7 @@ import ch.colabproject.colab.api.Helper;
 import ch.colabproject.colab.api.controller.RequestManager;
 import ch.colabproject.colab.api.controller.security.SecurityManager;
 import ch.colabproject.colab.api.controller.team.TeamManager;
+import ch.colabproject.colab.api.controller.user.UserManager;
 import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.api.model.team.TeamMember;
 import ch.colabproject.colab.api.model.team.acl.HierarchicalPosition;
@@ -25,6 +26,7 @@ import ch.colabproject.colab.api.service.smtp.Message;
 import ch.colabproject.colab.api.service.smtp.Sendmail;
 import ch.colabproject.colab.api.setup.ColabConfiguration;
 import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
+import ch.colabproject.colab.generator.model.exceptions.MessageI18nKey;
 import java.time.OffsetDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
@@ -42,15 +44,22 @@ import org.slf4j.LoggerFactory;
  */
 @Stateless
 @LocalBean
-<span class="nc" id="L45">public class TokenManager {</span>
+<span class="nc" id="L47">public class TokenManager {</span>
 
     /** logger */
-<span class="nc" id="L48">    private static final Logger logger = LoggerFactory.getLogger(TokenDao.class);</span>
+<span class="nc" id="L50">    private static final Logger logger = LoggerFactory.getLogger(TokenDao.class);</span>
+
     /**
      * to create team member
      */
     @Inject
     private TeamManager teamManager;
+
+    /**
+     * User and account specific logic
+     */
+    @Inject
+    private UserManager userManager;
 
     /**
      * To check access rights
@@ -81,31 +90,31 @@ import org.slf4j.LoggerFactory;
      * @throws javax.mail.MessagingException if sending the message fails
      */
     public void sendTokenByEmail(Token token, String recipient) throws MessagingException {
-<span class="nc" id="L84">        logger.debug(&quot;Send token {} to {}&quot;, token, recipient);</span>
-<span class="nc" id="L85">        String plainToken = Helper.generateHexSalt(64);</span>
-<span class="nc" id="L86">        HashMethod hashMethod = Helper.getDefaultHashMethod();</span>
-<span class="nc" id="L87">        byte[] hashedToken = hashMethod.hash(plainToken, Token.SALT);</span>
+<span class="nc" id="L93">        logger.debug(&quot;Send token {} to {}&quot;, token, recipient);</span>
+<span class="nc" id="L94">        String plainToken = Helper.generateHexSalt(64);</span>
+<span class="nc" id="L95">        HashMethod hashMethod = Helper.getDefaultHashMethod();</span>
+<span class="nc" id="L96">        byte[] hashedToken = hashMethod.hash(plainToken, Token.SALT);</span>
 
-<span class="nc" id="L89">        token.setHashMethod(hashMethod);</span>
-<span class="nc" id="L90">        token.setHashedToken(hashedToken);</span>
+<span class="nc" id="L98">        token.setHashMethod(hashMethod);</span>
+<span class="nc" id="L99">        token.setHashedToken(hashedToken);</span>
 
-<span class="nc" id="L92">        String baseUrl = requestManager.getBaseUrl();</span>
+<span class="nc" id="L101">        String baseUrl = requestManager.getBaseUrl();</span>
 
         // todo generate URL
-<span class="nc" id="L95">        String body = token.getEmailBody(baseUrl + &quot;/#/token/&quot; + token.getId()</span>
+<span class="nc" id="L104">        String body = token.getEmailBody(baseUrl + &quot;/#/token/&quot; + token.getId()</span>
             + &quot;/&quot; + plainToken);
 
         // this log message contains sensitive information (body contains the plain-text token)
-<span class="nc" id="L99">        logger.trace(&quot;Send token {} to {} with body {}&quot;, token, recipient, body);</span>
-<span class="nc" id="L100">        Sendmail.send(</span>
-<span class="nc" id="L101">            Message.create()</span>
-<span class="nc" id="L102">                .from(&quot;noreply@&quot; + ColabConfiguration.getSmtpDomain())</span>
-<span class="nc" id="L103">                .to(recipient)</span>
-<span class="nc" id="L104">                .subject(token.getSubject())</span>
-<span class="nc" id="L105">                .htmlBody(body)</span>
-<span class="nc" id="L106">                .build()</span>
+<span class="nc" id="L108">        logger.trace(&quot;Send token {} to {} with body {}&quot;, token, recipient, body);</span>
+<span class="nc" id="L109">        Sendmail.send(</span>
+<span class="nc" id="L110">            Message.create()</span>
+<span class="nc" id="L111">                .from(&quot;noreply@&quot; + ColabConfiguration.getSmtpDomain())</span>
+<span class="nc" id="L112">                .to(recipient)</span>
+<span class="nc" id="L113">                .subject(token.getSubject())</span>
+<span class="nc" id="L114">                .htmlBody(body)</span>
+<span class="nc" id="L115">                .build()</span>
         );
-<span class="nc" id="L108">    }</span>
+<span class="nc" id="L117">    }</span>
 
     /**
      * Consume the token
@@ -120,33 +129,36 @@ import org.slf4j.LoggerFactory;
      *                          current user id not
      */
     public Token consume(Long id, String plainToken) {
-<span class="nc" id="L123">        logger.debug(&quot;Consume token #{}&quot;, id);</span>
-<span class="nc" id="L124">        Token token = tokenDao.getToken(id);</span>
-<span class="nc bnc" id="L125" title="All 2 branches missed.">        if (token != null) {</span>
-<span class="nc bnc" id="L126" title="All 4 branches missed.">            if (token.isAuthenticationRequired() &amp;&amp; !requestManager.isAuthenticated()) {</span>
-<span class="nc" id="L127">                logger.debug(&quot;Token requires an authenticated user&quot;);</span>
-<span class="nc" id="L128">                throw HttpErrorMessage.authenticationRequired();</span>
+<span class="nc" id="L132">        logger.debug(&quot;Consume token #{}&quot;, id);</span>
+<span class="nc" id="L133">        Token token = tokenDao.getToken(id);</span>
+<span class="nc bnc" id="L134" title="All 2 branches missed.">        if (token != null) {</span>
+<span class="nc bnc" id="L135" title="All 4 branches missed.">            if (token.isAuthenticationRequired() &amp;&amp; !requestManager.isAuthenticated()) {</span>
+<span class="nc" id="L136">                logger.debug(&quot;Token requires an authenticated user&quot;);</span>
+<span class="nc" id="L137">                throw HttpErrorMessage.authenticationRequired();</span>
             } else {
-<span class="nc bnc" id="L130" title="All 2 branches missed.">                if (token.checkHash(plainToken)) {</span>
-<span class="nc" id="L131">                    requestManager.sudo(() -&gt; {</span>
-<span class="nc" id="L132">                        token.consume(requestManager);</span>
-<span class="nc" id="L133">                        tokenDao.deleteToken(token);</span>
-<span class="nc" id="L134">                    });</span>
-<span class="nc" id="L135">                    return token;</span>
+<span class="nc bnc" id="L139" title="All 2 branches missed.">                if (token.checkHash(plainToken)) {</span>
+<span class="nc" id="L140">                    requestManager.sudo(() -&gt; {</span>
+<span class="nc" id="L141">                        boolean isConsumed = token.consume(this);</span>
+<span class="nc bnc" id="L142" title="All 2 branches missed.">                        if (isConsumed) {</span>
+<span class="nc" id="L143">                            tokenDao.deleteToken(token);</span>
+                        }
+<span class="nc" id="L145">                    });</span>
+<span class="nc" id="L146">                    return token;</span>
                 } else {
-<span class="nc" id="L137">                    logger.debug(&quot;Provided plain-token does not match&quot;);</span>
-<span class="nc" id="L138">                    throw HttpErrorMessage.badRequest();</span>
+<span class="nc" id="L148">                    logger.debug(&quot;Provided plain-token does not match&quot;);</span>
+<span class="nc" id="L149">                    throw HttpErrorMessage.badRequest();</span>
                 }
             }
         } else {
-<span class="nc" id="L142">            logger.debug(&quot;There is no token #{}&quot;, id);</span>
-<span class="nc" id="L143">            throw HttpErrorMessage.notFound();</span>
+<span class="nc" id="L153">            logger.debug(&quot;There is no token #{}&quot;, id);</span>
+<span class="nc" id="L154">            throw HttpErrorMessage.notFound();</span>
         }
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////
     // Verify email address
     ////////////////////////////////////////////////////////////////////////////////////////////////
+
     /**
      * Create or update a validation token.
      * &lt;p&gt;
@@ -158,20 +170,20 @@ import org.slf4j.LoggerFactory;
      * @return a brand new token or a refresh
      */
     public VerifyLocalAccountToken getOrCreateVerifyAccountToken(LocalAccount account) {
-<span class="nc" id="L161">        logger.debug(&quot;getOrCreate VerifyToken for {}&quot;, account);</span>
-<span class="nc" id="L162">        VerifyLocalAccountToken token = tokenDao.findVerifyTokenByAccount(account);</span>
+<span class="nc" id="L173">        logger.debug(&quot;getOrCreate VerifyToken for {}&quot;, account);</span>
+<span class="nc" id="L174">        VerifyLocalAccountToken token = tokenDao.findVerifyTokenByAccount(account);</span>
 
-<span class="nc bnc" id="L164" title="All 2 branches missed.">        if (token == null) {</span>
-<span class="nc" id="L165">            logger.debug(&quot;no token, create one&quot;);</span>
-<span class="nc" id="L166">            token = new VerifyLocalAccountToken();</span>
-<span class="nc" id="L167">            token.setAuthenticationRequired(false);</span>
-<span class="nc" id="L168">            token.setLocalAccount(account);</span>
-<span class="nc" id="L169">            tokenDao.persistToken(token);</span>
+<span class="nc bnc" id="L176" title="All 2 branches missed.">        if (token == null) {</span>
+<span class="nc" id="L177">            logger.debug(&quot;no token, create one&quot;);</span>
+<span class="nc" id="L178">            token = new VerifyLocalAccountToken();</span>
+<span class="nc" id="L179">            token.setAuthenticationRequired(false);</span>
+<span class="nc" id="L180">            token.setLocalAccount(account);</span>
+<span class="nc" id="L181">            tokenDao.persistToken(token);</span>
         }
         // token.setExpirationDate(OffsetDateTime.now().plus(1, ChronoUnit.WEEKS));
-<span class="nc" id="L172">        token.setExpirationDate(null);</span>
+<span class="nc" id="L184">        token.setExpirationDate(null);</span>
 
-<span class="nc" id="L174">        return token;</span>
+<span class="nc" id="L186">        return token;</span>
     }
 
     /**
@@ -186,19 +198,33 @@ import org.slf4j.LoggerFactory;
      */
     public void requestEmailAddressVerification(LocalAccount account, boolean failsOnError) {
         try {
-<span class="nc" id="L189">            VerifyLocalAccountToken token = this.getOrCreateVerifyAccountToken(account);</span>
-<span class="nc" id="L190">            sendTokenByEmail(token, account.getEmail());</span>
-<span class="nc" id="L191">        } catch (MessagingException ex) {</span>
-<span class="nc" id="L192">            logger.error(&quot;Fails to send email address verification email&quot;, ex);</span>
-<span class="nc bnc" id="L193" title="All 2 branches missed.">            if (failsOnError) {</span>
-<span class="nc" id="L194">                throw HttpErrorMessage.smtpError();</span>
+<span class="nc" id="L201">            VerifyLocalAccountToken token = this.getOrCreateVerifyAccountToken(account);</span>
+<span class="nc" id="L202">            sendTokenByEmail(token, account.getEmail());</span>
+<span class="nc" id="L203">        } catch (MessagingException ex) {</span>
+<span class="nc" id="L204">            logger.error(&quot;Fails to send email address verification email&quot;, ex);</span>
+<span class="nc bnc" id="L205" title="All 2 branches missed.">            if (failsOnError) {</span>
+<span class="nc" id="L206">                throw HttpErrorMessage.smtpError();</span>
             }
-<span class="nc" id="L196">        }</span>
-<span class="nc" id="L197">    }</span>
+<span class="nc" id="L208">        }</span>
+<span class="nc" id="L209">    }</span>
+
+    /**
+     * Consume the local account verification token
+     *
+     * @param account the account related to the token
+     *
+     * @return true if the token can be consumed
+     */
+    public boolean consumeVerifyAccountToken(LocalAccount account) {
+<span class="nc" id="L219">        userManager.setLocalAccountAsVerified(account);</span>
+
+<span class="nc" id="L221">        return true;</span>
+    }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////
     // RESET PASSWORD
     ////////////////////////////////////////////////////////////////////////////////////////////////
+
     /**
      * get existing reset password token if it exists or create new one otherwise.
      *
@@ -207,19 +233,19 @@ import org.slf4j.LoggerFactory;
      * @return the token to user
      */
     private ResetLocalAccountPasswordToken getOrCreateResetToken(LocalAccount account) {
-<span class="nc" id="L210">        logger.debug(&quot;getOrCreate Reset for {}&quot;, account);</span>
-<span class="nc" id="L211">        ResetLocalAccountPasswordToken token = tokenDao.findResetTokenByAccount(account);</span>
+<span class="nc" id="L236">        logger.debug(&quot;getOrCreate Reset for {}&quot;, account);</span>
+<span class="nc" id="L237">        ResetLocalAccountPasswordToken token = tokenDao.findResetTokenByAccount(account);</span>
 
-<span class="nc bnc" id="L213" title="All 2 branches missed.">        if (token == null) {</span>
-<span class="nc" id="L214">            token = new ResetLocalAccountPasswordToken();</span>
-<span class="nc" id="L215">            logger.debug(&quot;no token, create one&quot;);</span>
-<span class="nc" id="L216">            token.setAuthenticationRequired(false);</span>
-<span class="nc" id="L217">            token.setLocalAccount(account);</span>
-<span class="nc" id="L218">            tokenDao.persistToken(token);</span>
+<span class="nc bnc" id="L239" title="All 2 branches missed.">        if (token == null) {</span>
+<span class="nc" id="L240">            token = new ResetLocalAccountPasswordToken();</span>
+<span class="nc" id="L241">            logger.debug(&quot;no token, create one&quot;);</span>
+<span class="nc" id="L242">            token.setAuthenticationRequired(false);</span>
+<span class="nc" id="L243">            token.setLocalAccount(account);</span>
+<span class="nc" id="L244">            tokenDao.persistToken(token);</span>
         }
-<span class="nc" id="L220">        token.setExpirationDate(OffsetDateTime.now().plus(1, ChronoUnit.HOURS));</span>
+<span class="nc" id="L246">        token.setExpirationDate(OffsetDateTime.now().plus(1, ChronoUnit.HOURS));</span>
 
-<span class="nc" id="L222">        return token;</span>
+<span class="nc" id="L248">        return token;</span>
     }
 
     /**
@@ -234,16 +260,29 @@ import org.slf4j.LoggerFactory;
      */
     public void sendResetPasswordToken(LocalAccount account, boolean failsOnError) {
         try {
-<span class="nc" id="L237">            logger.debug(&quot;Send reset password token to {}&quot;, account);</span>
-<span class="nc" id="L238">            ResetLocalAccountPasswordToken token = this.getOrCreateResetToken(account);</span>
-<span class="nc" id="L239">            sendTokenByEmail(token, account.getEmail());</span>
-<span class="nc" id="L240">        } catch (MessagingException ex) {</span>
-<span class="nc" id="L241">            logger.error(&quot;Failed to send password reset email&quot;, ex);</span>
-<span class="nc bnc" id="L242" title="All 2 branches missed.">            if (failsOnError) {</span>
-<span class="nc" id="L243">                throw HttpErrorMessage.smtpError();</span>
+<span class="nc" id="L263">            logger.debug(&quot;Send reset password token to {}&quot;, account);</span>
+<span class="nc" id="L264">            ResetLocalAccountPasswordToken token = this.getOrCreateResetToken(account);</span>
+<span class="nc" id="L265">            sendTokenByEmail(token, account.getEmail());</span>
+<span class="nc" id="L266">        } catch (MessagingException ex) {</span>
+<span class="nc" id="L267">            logger.error(&quot;Failed to send password reset email&quot;, ex);</span>
+<span class="nc bnc" id="L268" title="All 2 branches missed.">            if (failsOnError) {</span>
+<span class="nc" id="L269">                throw HttpErrorMessage.smtpError();</span>
             }
-<span class="nc" id="L245">        }</span>
-<span class="nc" id="L246">    }</span>
+<span class="nc" id="L271">        }</span>
+<span class="nc" id="L272">    }</span>
+
+    /**
+     * Consume the given reset password login.
+     *
+     * @param account the account related to the token
+     *
+     * @return true if the token can be consumed
+     */
+    public boolean consumeResetPasswordToken(LocalAccount account) {
+<span class="nc" id="L282">        requestManager.login(account);</span>
+
+<span class="nc" id="L284">        return true;</span>
+    }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////
     // Invite a new team member
@@ -258,35 +297,35 @@ import org.slf4j.LoggerFactory;
      * @return the pending teamMember of null if none was sent
      */
     public TeamMember sendMembershipInvitation(Project project, String recipient) {
-<span class="nc" id="L261">        User currentUser = securityManager.assertAndGetCurrentUser();</span>
+<span class="nc" id="L300">        User currentUser = securityManager.assertAndGetCurrentUser();</span>
 
-<span class="nc" id="L263">        InvitationToken token = tokenDao.findInvitationByProjectAndRecipient(project, recipient);</span>
-<span class="nc bnc" id="L264" title="All 2 branches missed.">        if (token == null) {</span>
+<span class="nc" id="L302">        InvitationToken token = tokenDao.findInvitationByProjectAndRecipient(project, recipient);</span>
+<span class="nc bnc" id="L303" title="All 2 branches missed.">        if (token == null) {</span>
             // create a member and link it to the project, but do not link it to any user
             // this link will be set during token consumption
-<span class="nc" id="L267">            TeamMember newMember = teamManager.addMember(project, null,</span>
+<span class="nc" id="L306">            TeamMember newMember = teamManager.addMember(project, null,</span>
                 HierarchicalPosition.INTERNAL);
-<span class="nc" id="L269">            token = new InvitationToken();</span>
+<span class="nc" id="L308">            token = new InvitationToken();</span>
 
-<span class="nc" id="L271">            token.setTeamMember(newMember);</span>
+<span class="nc" id="L310">            token.setTeamMember(newMember);</span>
             // never expire
-<span class="nc" id="L273">            token.setExpirationDate(null);</span>
-<span class="nc" id="L274">            token.setAuthenticationRequired(Boolean.TRUE);</span>
-<span class="nc" id="L275">            token.setRecipient(recipient);</span>
+<span class="nc" id="L312">            token.setExpirationDate(null);</span>
+<span class="nc" id="L313">            token.setAuthenticationRequired(Boolean.TRUE);</span>
+<span class="nc" id="L314">            token.setRecipient(recipient);</span>
 
-<span class="nc" id="L277">            newMember.setDisplayName(recipient);</span>
+<span class="nc" id="L316">            newMember.setDisplayName(recipient);</span>
 
-<span class="nc" id="L279">            tokenDao.persistToken(token);</span>
+<span class="nc" id="L318">            tokenDao.persistToken(token);</span>
         }
 
-<span class="nc" id="L282">        token.setSender(currentUser.getDisplayName());</span>
+<span class="nc" id="L321">        token.setSender(currentUser.getDisplayName());</span>
         try {
-<span class="nc" id="L284">            sendTokenByEmail(token, recipient);</span>
-<span class="nc" id="L285">        } catch (MessagingException ex) {</span>
-<span class="nc" id="L286">            logger.error(&quot;Failed to send pssword reset email&quot;, ex);</span>
-<span class="nc" id="L287">            throw HttpErrorMessage.smtpError();</span>
-<span class="nc" id="L288">        }</span>
-<span class="nc" id="L289">        return token.getTeamMember();</span>
+<span class="nc" id="L323">            sendTokenByEmail(token, recipient);</span>
+<span class="nc" id="L324">        } catch (MessagingException ex) {</span>
+<span class="nc" id="L325">            logger.error(&quot;Failed to send pssword reset email&quot;, ex);</span>
+<span class="nc" id="L326">            throw HttpErrorMessage.smtpError();</span>
+<span class="nc" id="L327">        }</span>
+<span class="nc" id="L328">        return token.getTeamMember();</span>
     }
 
     /**
@@ -295,9 +334,36 @@ import org.slf4j.LoggerFactory;
      * @param teamMember the team member for which we delete all invitations
      */
     public void deleteInvitationsByTeamMember(TeamMember teamMember) {
-<span class="nc" id="L298">        List&lt;InvitationToken&gt; invitations = tokenDao.findInvitationByTeamMember(teamMember);</span>
-<span class="nc" id="L299">        invitations.stream().forEach(token -&gt; tokenDao.deleteToken(token));</span>
-<span class="nc" id="L300">    }</span>
+<span class="nc" id="L337">        List&lt;InvitationToken&gt; invitations = tokenDao.findInvitationByTeamMember(teamMember);</span>
+<span class="nc" id="L338">        invitations.stream().forEach(token -&gt; tokenDao.deleteToken(token));</span>
+<span class="nc" id="L339">    }</span>
+
+    /**
+     * Consume the invitation token
+     *
+     * @param teamMember the team member related to the token
+     *
+     * @return true if the token can be consumed
+     */
+    public boolean consumeInvitationToken(TeamMember teamMember) {
+<span class="nc" id="L349">        User user = requestManager.getCurrentUser();</span>
+<span class="nc" id="L350">        Project project = teamMember.getProject();</span>
+
+<span class="nc" id="L352">        TeamMember existingTeamMember = teamManager.findMemberByUserAndProject(project, user);</span>
+<span class="nc bnc" id="L353" title="All 2 branches missed.">        if (existingTeamMember != null) {</span>
+<span class="nc" id="L354">            throw HttpErrorMessage</span>
+<span class="nc" id="L355">                .tokenProcessingFailure(MessageI18nKey.INVITATION_CONSUMING_BY_TEAMMEMBER);</span>
+        }
+
+<span class="nc bnc" id="L358" title="All 2 branches missed.">        if (user != null) {</span>
+<span class="nc" id="L359">            teamMember.setUser(user);</span>
+<span class="nc" id="L360">            teamMember.setDisplayName(null);</span>
+        } else {
+<span class="nc" id="L362">            throw HttpErrorMessage.authenticationRequired();</span>
+        }
+
+<span class="nc" id="L365">        return true;</span>
+    }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////
     // for each token
@@ -312,12 +378,12 @@ import org.slf4j.LoggerFactory;
      * @return token if it exists and is not outdated, null otherwise
      */
     public Token getNotExpiredToken(Long id) {
-<span class="nc" id="L315">        Token token = tokenDao.getToken(id);</span>
-<span class="nc bnc" id="L316" title="All 4 branches missed.">        if (token != null &amp;&amp; token.isOutdated()) {</span>
-<span class="nc" id="L317">            requestManager.sudo(() -&gt; tokenDao.deleteToken(token));</span>
-<span class="nc" id="L318">            return null;</span>
+<span class="nc" id="L381">        Token token = tokenDao.getToken(id);</span>
+<span class="nc bnc" id="L382" title="All 4 branches missed.">        if (token != null &amp;&amp; token.isOutdated()) {</span>
+<span class="nc" id="L383">            requestManager.sudo(() -&gt; tokenDao.deleteToken(token));</span>
+<span class="nc" id="L384">            return null;</span>
         } else {
-<span class="nc" id="L320">            return token;</span>
+<span class="nc" id="L386">            return token;</span>
         }
     }
 }

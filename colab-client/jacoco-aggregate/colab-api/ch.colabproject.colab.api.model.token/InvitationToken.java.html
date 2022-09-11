@@ -6,13 +6,11 @@
  */
 package ch.colabproject.colab.api.model.token;
 
-import ch.colabproject.colab.api.controller.RequestManager;
+import ch.colabproject.colab.api.controller.token.TokenManager;
 import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.api.model.team.TeamMember;
 import ch.colabproject.colab.api.model.token.tools.InvitationMessageBuilder;
-import ch.colabproject.colab.api.model.user.User;
 import ch.colabproject.colab.api.security.permissions.Conditions;
-import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
 import javax.json.bind.annotation.JsonbTransient;
 import javax.persistence.Entity;
 import javax.persistence.Index;
@@ -41,7 +39,7 @@ import javax.validation.constraints.Size;
     name = &quot;InvitationToken.findByTeamMember&quot;,
     query = &quot;SELECT t from InvitationToken t &quot;
         + &quot;WHERE t.teamMember.id = :teamMemberId&quot;)
-<span class="nc" id="L44">public class InvitationToken extends Token {</span>
+<span class="nc" id="L42">public class InvitationToken extends Token {</span>
 
     private static final long serialVersionUID = 1L;
 
@@ -86,7 +84,7 @@ import javax.validation.constraints.Size;
      * @return team member
      */
     public TeamMember getTeamMember() {
-<span class="nc" id="L89">        return teamMember;</span>
+<span class="nc" id="L87">        return teamMember;</span>
     }
 
     /**
@@ -95,8 +93,8 @@ import javax.validation.constraints.Size;
      * @param teamMember the team member for which this invitation is pending
      */
     public void setTeamMember(TeamMember teamMember) {
-<span class="nc" id="L98">        this.teamMember = teamMember;</span>
-<span class="nc" id="L99">    }</span>
+<span class="nc" id="L96">        this.teamMember = teamMember;</span>
+<span class="nc" id="L97">    }</span>
 
     /**
      * Get sender name
@@ -104,7 +102,7 @@ import javax.validation.constraints.Size;
      * @return name of sender
      */
     public String getSender() {
-<span class="nc" id="L107">        return sender;</span>
+<span class="nc" id="L105">        return sender;</span>
     }
 
     /**
@@ -113,8 +111,8 @@ import javax.validation.constraints.Size;
      * @param sender name of the sender
      */
     public void setSender(String sender) {
-<span class="nc" id="L116">        this.sender = sender;</span>
-<span class="nc" id="L117">    }</span>
+<span class="nc" id="L114">        this.sender = sender;</span>
+<span class="nc" id="L115">    }</span>
 
     /**
      * Email address to send the invitation to
@@ -122,7 +120,7 @@ import javax.validation.constraints.Size;
      * @return email address
      */
     public String getRecipient() {
-<span class="nc" id="L125">        return recipient;</span>
+<span class="nc" id="L123">        return recipient;</span>
     }
 
     /**
@@ -131,8 +129,8 @@ import javax.validation.constraints.Size;
      * @param recipient recipient email address
      */
     public void setRecipient(String recipient) {
-<span class="nc" id="L134">        this.recipient = recipient;</span>
-<span class="nc" id="L135">    }</span>
+<span class="nc" id="L132">        this.recipient = recipient;</span>
+<span class="nc" id="L133">    }</span>
 
     // ---------------------------------------------------------------------------------------------
     // helpers
@@ -140,30 +138,21 @@ import javax.validation.constraints.Size;
 
     @Override
     public String getRedirectTo() {
-<span class="nc bnc" id="L143" title="All 4 branches missed.">        if (this.teamMember != null &amp;&amp; this.teamMember.getUser() != null) {</span>
+<span class="nc bnc" id="L141" title="All 4 branches missed.">        if (this.teamMember != null &amp;&amp; this.teamMember.getUser() != null) {</span>
             // if link from user to project is not set, do not even try to read the project
             // as it will lead to an access denied exception
-<span class="nc" id="L146">            Project project = getProject();</span>
-<span class="nc bnc" id="L147" title="All 4 branches missed.">            if (project != null &amp;&amp; project.getId() != null) {</span>
-<span class="nc" id="L148">                return &quot;/editor/&quot; + project.getId();</span>
+<span class="nc" id="L144">            Project project = getProject();</span>
+<span class="nc bnc" id="L145" title="All 4 branches missed.">            if (project != null &amp;&amp; project.getId() != null) {</span>
+<span class="nc" id="L146">                return &quot;/editor/&quot; + project.getId();</span>
             }
         }
-<span class="nc" id="L151">        return &quot;&quot;;</span>
+<span class="nc" id="L149">        return &quot;&quot;;</span>
     }
 
-    /**
-     * Register currentUser in teamMember
-     */
     @Override
-    public void consume(RequestManager requestManager) {
-<span class="nc" id="L159">        User user = requestManager.getCurrentUser();</span>
-<span class="nc bnc" id="L160" title="All 2 branches missed.">        if (user != null) {</span>
-<span class="nc" id="L161">            teamMember.setUser(user);</span>
-<span class="nc" id="L162">            teamMember.setDisplayName(&quot;&quot;);</span>
-        } else {
-<span class="nc" id="L164">            throw HttpErrorMessage.authenticationRequired();</span>
-        }
-<span class="nc" id="L166">    }</span>
+    public boolean consume(TokenManager tokenManager) {
+<span class="nc" id="L154">        return tokenManager.consumeInvitationToken(teamMember);</span>
+    }
 
     // ---------------------------------------------------------------------------------------------
     // to build a message
@@ -172,12 +161,12 @@ import javax.validation.constraints.Size;
     @JsonbTransient
     @Override
     public String getSubject() {
-<span class="nc" id="L175">        return EMAIL_SUBJECT;</span>
+<span class="nc" id="L164">        return EMAIL_SUBJECT;</span>
     }
 
     @Override
     public String getEmailBody(String link) {
-<span class="nc" id="L180">        return InvitationMessageBuilder.build(this, link);</span>
+<span class="nc" id="L169">        return InvitationMessageBuilder.build(this, link);</span>
     }
 
     // ---------------------------------------------------------------------------------------------
@@ -191,21 +180,21 @@ import javax.validation.constraints.Size;
      */
     @JsonbTransient
     public Project getProject() {
-<span class="nc bnc" id="L194" title="All 2 branches missed.">        if (teamMember != null) {</span>
-<span class="nc" id="L195">            return teamMember.getProject();</span>
+<span class="nc bnc" id="L183" title="All 2 branches missed.">        if (teamMember != null) {</span>
+<span class="nc" id="L184">            return teamMember.getProject();</span>
         }
-<span class="nc" id="L197">        return null;</span>
+<span class="nc" id="L186">        return null;</span>
     }
 
     @Override
     @JsonbTransient
     public Conditions.Condition getCreateCondition() {
-<span class="nc" id="L203">        return new Conditions.IsCurrentUserMemberOfProject(getProject());</span>
+<span class="nc" id="L192">        return new Conditions.IsCurrentUserMemberOfProject(getProject());</span>
     }
 
     @Override
     public String toString() {
-<span class="nc" id="L208">        return &quot;InvitationToken{&quot; + &quot;id=&quot; + getId() + '}';</span>
+<span class="nc" id="L197">        return &quot;InvitationToken{&quot; + &quot;id=&quot; + getId() + '}';</span>
     }
 
 }
