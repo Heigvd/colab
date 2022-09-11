@@ -76,6 +76,7 @@ export const en = {
     error: {
       accessDenied: 'Unfortunately you are not allowed to see this',
       missingContent: 'Oh there is nothing to display, dear developer please fix it',
+      somethingWentWrong: 'Something went wrong',
       unknown: 'Unknown',
     },
     info: {

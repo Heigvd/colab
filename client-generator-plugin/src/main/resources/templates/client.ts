@@ -36,7 +36,7 @@ function getOptions({
   };
 }
 
-type ErrorHandler = (error: WithJsonDiscriminator | Error) => void;
+export type ErrorHandler = (error: WithJsonDiscriminator | Error) => void;
 
 const sendJsonRequest = async <T>(
   method: string,

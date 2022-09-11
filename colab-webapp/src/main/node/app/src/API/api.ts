@@ -18,6 +18,7 @@ import {
   Document,
   DuplicationParam,
   entityIs,
+  ErrorHandler,
   HierarchicalPosition,
   HttpSession,
   InvolvementLevel,
@@ -54,7 +55,8 @@ export const getApplicationPath = () => {
 };
 
 const restClient = ColabClient(getApplicationPath(), error => {
-  if (entityIs(error, 'HttpException') || error instanceof Error) {
+  // TODO see how it could be auto generated as everything that is handled by ColabNotification.message
+  if (entityIs(error, 'HttpException') || error instanceof Error || typeof error === 'string') {
     getStore().dispatch(
       addNotification({
         status: 'OPEN',
@@ -67,7 +69,7 @@ const restClient = ColabClient(getApplicationPath(), error => {
       addNotification({
         status: 'OPEN',
         type: 'ERROR',
-        message: 'Something went wrong', // TODO i18n
+        message: null,
       }),
     );
   }
@@ -150,10 +152,12 @@ export const signInWithLocalAccount = createAsyncThunk(
     {
       identifier,
       password /*, passwordScore*/,
+      errorHandler,
     }: {
       identifier: string;
       password: string;
       passwordScore: PasswordScore;
+      errorHandler?: ErrorHandler;
     },
     thunkApi,
   ) => {
@@ -166,7 +170,7 @@ export const signInWithLocalAccount = createAsyncThunk(
       mandatoryHash: await hashPassword(authMethod.mandatoryMethod, authMethod.salt, password),
     };
 
-    await restClient.UserRestEndpoint.signIn(authInfo);
+    await restClient.UserRestEndpoint.signIn(authInfo, errorHandler);
 
     thunkApi.dispatch(reloadCurrentUser());
   },
@@ -180,11 +184,13 @@ export const signUp = createAsyncThunk(
       email,
       password,
       passwordScore,
+      errorHandler,
     }: {
       username: string;
       email: string;
       password: string;
       passwordScore: PasswordScore;
+      errorHandler?: ErrorHandler;
     },
     thunkApi,
   ) => {
@@ -200,7 +206,7 @@ export const signUp = createAsyncThunk(
       hash: await hashPassword(authMethod.mandatoryMethod, authMethod.salt, password),
     };
 
-    await restClient.UserRestEndpoint.signUp(signUpInfo);
+    await restClient.UserRestEndpoint.signUp(signUpInfo, errorHandler);
 
     // go back to sign in page
     thunkApi.dispatch(

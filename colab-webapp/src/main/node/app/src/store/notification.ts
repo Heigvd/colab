@@ -12,7 +12,7 @@ import { processMessage } from '../ws/wsThunkActions';
 export interface ColabNotification {
   status: 'OPEN' | 'CLOSED';
   type: 'INFO' | 'WARN' | 'ERROR';
-  message: HttpException | Error | string;
+  message: HttpException | Error | string | null;
 }
 
 const initialState: ColabNotification[] = [];
