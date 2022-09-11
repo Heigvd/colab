@@ -22,7 +22,6 @@ import { Card, CardContent, entityIs, Project } from 'colab-rest-client';
 import * as React from 'react';
 import { Navigate, Route, Routes, useNavigate, useParams } from 'react-router-dom';
 import * as API from '../../../API/api';
-import { sortCardContents } from '../../../helper';
 import useTranslations from '../../../i18n/I18nContext';
 import {
   Ancestor,
@@ -173,7 +172,7 @@ export function useDefaultVariant(cardId: number): 'LOADING' | CardContent {
   } else if (variants.length === 0) {
     return 'LOADING';
   } else {
-    return sortCardContents(variants)[0]!;
+    return variants[0]!;
   }
 }
 

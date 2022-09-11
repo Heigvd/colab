@@ -56,12 +56,20 @@ export function TinyCard({ card, width = '15px', height = '10px' }: TinyCardProp
       className={css({
         width: width,
         height: height,
-        border: `2px solid ${card.color || 'var(--lightGray)'}`,
+        border: `2px solid var(--lightGray)`,
         borderRadius: '4px',
         margin: '5px',
       })}
       title={(card.title && i18n.modules.card.subcardTooltip(card.title)) || undefined}
-    ></div>
+    >
+      <div
+        className={css({
+          height: '3px',
+          width: '100%',
+          borderBottom: `2px solid ${card.color || 'var(--lightGray)'}`,
+        })}
+      ></div>
+    </div>
   );
 }
 

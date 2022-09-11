@@ -9,6 +9,7 @@ import { Card, CardContent, InvolvementLevel, Project } from 'colab-rest-client'
 import { mapValues, uniq } from 'lodash';
 import * as React from 'react';
 import * as API from '../API/api';
+import { sortCardContents } from '../helper';
 import logger from '../logger';
 import { CardContentDetail, CardDetail } from '../store/card';
 import {
@@ -28,7 +29,8 @@ export const useProjectRootCard = (project: Project | null | undefined): Card | 
     if (project != null) {
       if (typeof state.cards.rootCardId === 'string') {
         if (state.cards.rootCardId === 'NOT_INITIALIZED') {
-          dispatch(API.getRootCardOfProject(project.id!));
+          dispatch(API.getProjectStructure(project.id!));
+          // dispatch(API.getRootCardOfProject(project.id!));
         }
         return 'LOADING';
       } else {
@@ -42,7 +44,8 @@ export const useProjectRootCard = (project: Project | null | undefined): Card | 
             return 'LOADING';
           }
         } else {
-          dispatch(API.getRootCardOfProject(project.id!));
+          dispatch(API.getProjectStructure(project.id!));
+          // dispatch(API.getRootCardOfProject(project.id!));
           return 'LOADING';
         }
       }
@@ -82,10 +85,12 @@ export function useVariantsOrLoad(card?: Card): CardContent[] | null | undefined
         return null;
       } else {
         const contentState = state.cards.contents;
-        return cardState.contents.flatMap(contentId => {
-          const content = contentState[contentId];
-          return content && content.content ? [content.content] : [];
-        });
+        return sortCardContents(
+          cardState.contents.flatMap(contentId => {
+            const content = contentState[contentId];
+            return content && content.content ? [content.content] : [];
+          }),
+        );
       }
     } else {
       return null;

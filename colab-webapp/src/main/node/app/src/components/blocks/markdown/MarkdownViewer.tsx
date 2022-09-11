@@ -8,6 +8,7 @@ import { css, cx } from '@emotion/css';
 import * as React from 'react';
 import useTranslations from '../../../i18n/I18nContext';
 import logger from '../../../logger';
+import OpenGraphLink from '../../common/element/OpenGraphLink';
 import { space_S } from '../../styling/style';
 import markdownToDom from './parser/markdownToDom';
 
@@ -32,6 +33,9 @@ export const colabFlavouredMarkdown = css({
   "li[data-list-type='OL']": {
     listStyleType: 'numeric',
   },
+  "span[data-type='link']": {
+    textDecorationLine: 'underline',
+  },
 });
 
 export const colabFlavouredMarkdownEditable = css({
@@ -39,6 +43,25 @@ export const colabFlavouredMarkdownEditable = css({
     cursor: 'pointer',
   },
 });
+
+export interface LinkOverlay {
+  node: Element;
+  href: string;
+  editing: boolean;
+}
+
+export const computeOverlayPosition = (node: Element) => {
+  if (node.isConnected) {
+    const { top, left, height } = node.getBoundingClientRect();
+    return css({
+      position: 'fixed',
+      top: top + height,
+      left,
+    });
+  } else {
+    return css({ display: 'none' });
+  }
+};
 
 export interface MarkdownViewerProps {
   md: string;
@@ -64,6 +87,37 @@ export default function MarkdownViewer({ md, className }: MarkdownViewerProps): 
     }
   }, [md]);
 
+  const [linkOverlay, setLinkOverlay] = React.useState<LinkOverlay | undefined>(undefined);
+
+  const onClick = React.useCallback((event: MouseEvent) => {
+    if (event.target instanceof Element) {
+      if (event.target.closest('div.linkOverlay')) {
+        return;
+      }
+    }
+    setLinkOverlay(undefined);
+  }, []);
+
+  React.useEffect(() => {
+    document.addEventListener('click', onClick, true);
+    return () => {
+      document.removeEventListener('click', onClick, true);
+    };
+  }, [onClick]);
+
+  const interceptClickCb = React.useCallback((event: React.MouseEvent) => {
+    if (event.target instanceof Element) {
+      const linkNode = event.target.closest('span[data-type=link');
+      if (linkNode) {
+        setLinkOverlay({
+          editing: false,
+          href: linkNode.getAttribute('data-link-href') || '',
+          node: linkNode,
+        });
+      }
+    }
+  }, []);
+
   return (
     <div className={cx(css({ p: { margin: space_S + ' 0' } }), colabFlavouredMarkdown, className)}>
       {md === '' ? (
@@ -71,7 +125,22 @@ export default function MarkdownViewer({ md, className }: MarkdownViewerProps): 
           <i>{i18n.common.empty}</i>
         </p>
       ) : null}
-      <div ref={divRef} />
+      <div onClick={interceptClickCb} ref={divRef} />
+      {linkOverlay && (
+        <div className={'linkOverlay ' + computeOverlayPosition(linkOverlay.node)}>
+          <OpenGraphLink
+            url={linkOverlay.href}
+            readOnly={true}
+            setEditingState={() => {
+              setLinkOverlay({
+                ...linkOverlay,
+                editing: !linkOverlay.editing,
+              });
+            }}
+            editingStatus={linkOverlay.editing}
+          />
+        </div>
+      )}
     </div>
   );
 }

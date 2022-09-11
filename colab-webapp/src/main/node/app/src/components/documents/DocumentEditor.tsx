@@ -8,6 +8,7 @@
 import { css, cx } from '@emotion/css';
 import { Document, entityIs } from 'colab-rest-client';
 import * as React from 'react';
+import { updateDocument } from '../../API/api';
 import { useLastInsertedDocId } from '../../selectors/documentSelector';
 import * as DocumentActions from '../../store/documentSlice';
 import { useAppDispatch } from '../../store/hooks';
@@ -118,7 +119,9 @@ export default function DocumentEditor({
             url={doc.url || ''}
             editingStatus={editing}
             readOnly={readOnly}
-            document={doc}
+            editCb={newUrl => {
+              dispatch(updateDocument({ ...doc, url: newUrl }));
+            }}
             setEditingState={setEditMode}
           />
         ) : (

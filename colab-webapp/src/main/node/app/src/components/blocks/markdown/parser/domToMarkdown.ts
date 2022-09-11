@@ -5,8 +5,8 @@
  * Licensed under the MIT License
  */
 
-import {getLogger} from '../../../../logger';
-import {HeadingLevel} from './markdownToDom';
+import { getLogger } from '../../../../logger';
+import { HeadingLevel } from './markdownToDom';
 
 const logger = getLogger('Dom2Markdown2Parser');
 logger.setLevel(4);
@@ -211,6 +211,41 @@ function _domToMarkdown(
     }
   }
 
+  function processUnformatable(element: Element, escape: boolean = false) {
+    // Consume the whole text as-is and detect selection
+    const children = [...element.childNodes];
+    children.forEach((child, index) => {
+      if (element === selection?.anchorNode && selection.anchorOffset === index) {
+        context.anchor = context.current;
+      }
+      if (child === selection?.anchorNode) {
+        context.anchor = context.current + selection.anchorOffset;
+      }
+
+      if (element === selection?.focusNode && selection.focusOffset === index) {
+        context.focus = context.current;
+      }
+      if (child === selection?.focusNode) {
+        context.focus = context.current + selection.focusOffset;
+      }
+      if (escape) {
+        push(escapeText(child.textContent || ''));
+      } else {
+        push(child.textContent || '');
+      }
+
+      if (child instanceof HTMLBRElement) {
+        push('\n');
+      }
+    });
+    if (element === selection?.anchorNode && selection.anchorOffset === children.length) {
+      context.anchor = context.current;
+    }
+    if (element === selection?.focusNode && selection.focusOffset === children.length) {
+      context.focus = context.current;
+    }
+  }
+
   logger.trace('Parser: ', tag);
 
   const headerLevel = isHeader(tag);
@@ -220,7 +255,19 @@ function _domToMarkdown(
     }
     process('heading', `${'#'.repeat(headerLevel)} `, '');
   } else {
-    if (tag === 'SPAN') {
+    if (tag === 'A') {
+      // convert links to markdown: [link label](url)
+      const url = element.getAttribute('href');
+      const label = element.textContent;
+      const data = `[${label}](${url})`;
+      push(data);
+    } else if (tag === 'SPAN' && element.getAttribute('DATA-TYPE') === 'link') {
+      // convert custom links to markdown: [link label](url)
+      const url = element.getAttribute('data-link-href');
+      push('[');
+      processUnformatable(element);
+      push(`](${url})`);
+    } else if (tag === 'SPAN') {
       md.push(processChildren(element, selection, context));
     } else if (
       tag === 'P' ||
@@ -270,7 +317,6 @@ function _domToMarkdown(
         push('  '.repeat(context.list.length - 1));
         const listType = element.getAttribute('data-list-type');
         if (listType === 'OL') {
-          // TODO: fetch start number
           push('1. ');
         } else {
           const checked = element.getAttribute('data-checked');
@@ -288,21 +334,15 @@ function _domToMarkdown(
       }
       const lang = element.getAttribute('data-lang') || '';
       push(`\`\`\`${lang}\n`);
-      push(element.textContent || '');
+      processUnformatable(element);
       push('\n```');
     } else if (tag === 'BR') {
       push('\n ');
-    } else if (tag === 'A') {
-      // convert links to markdown: [link label](url)
-      const url = element.getAttribute('href');
-      const label = element.textContent;
-      const data = `[${escapeText(label)}](${escapeText(url)})`;
-      push(data);
     } else if (tag === 'IMG') {
       // convert links to markdown: [link label](url)
       const src = element.getAttribute('src');
       const label = element.getAttribute('alt');
-      const data = `![${escapeText(label)}](${escapeText(src)})`;
+      const data = `![${label}](${src})`;
       push(data);
     } else if (tag === 'TABLE') {
       logger.warn('TABLE');
