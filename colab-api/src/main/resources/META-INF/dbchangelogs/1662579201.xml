@@ -1,0 +1,58 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:pro="http://www.liquibase.org/xml/ns/pro" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-4.1.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.1.xsd">
+    <changeSet author="sandra" id="1662579204232-2">
+        <sql>
+with data_to_change as (select distinct ref.id as ref_id, copied_resource_id
+  from 
+  resourceref ref
+
+  join 
+  (select 
+  ref.id as ref_id, 
+  card.id as copied_card_id
+  from resourceref ref
+  join abstractresource arsrc on arsrc.id = ref.id
+  join cardcontent var on var.id = arsrc.cardcontent_id
+  join card card on card.id = var.card_id
+  ) copied_data
+  on copied_data.ref_id = ref.id
+
+  join
+  (select 
+  ref.id as ref_id, 
+  resource.id as base_resource_id, 
+  resource.title as base_resource_title, 
+  resource.deprecated as base_resource_deprecated,
+  arsrc.category as base_resource_category,
+  card.id as base_card_id
+  from resourceref ref
+  join resource on resource.id = ref.target_id
+  join abstractresource arsrc on arsrc.id = resource.id
+  join card on card.id = arsrc.card_id
+  ) base_data
+  on base_data.ref_id = ref.id
+
+  join (select card.id as card_id, 
+  resource.id as copied_resource_id, 
+  resource.title as copied_resource_title,
+  resource.deprecated as copied_resource_deprecated,
+  arsrc.category as copied_resource_category
+  from resource
+  join abstractresource arsrc on arsrc.id = resource.id
+  join card on card.id = arsrc.card_id
+  ) copied_resource
+  on copied_resource.card_id = copied_data.copied_card_id
+
+  where copied_card_id != base_card_id
+  and coalesce(base_resource_title, '') = coalesce(copied_resource_title, '')
+)
+
+update resourceref resource_ref_to_update
+set target_id = (select copied_resource_id from data_to_change
+  where resource_ref_to_update.id = data_to_change.ref_id)
+where exists (select 1 from data_to_change
+  where resource_ref_to_update.id = data_to_change.ref_id
+  );
+        </sql>
+    </changeSet>
+</databaseChangeLog>
