@@ -117,6 +117,15 @@ public final class ChannelsBuilders {
             projectId = project.getId();
         }
 
+        /**
+         * Create a builder for a project content channel
+         *
+         * @param projectId id of the project
+         */
+        public ProjectContentChannelBuilder(Long projectId) {
+            this.projectId = projectId;
+        }
+
         @Override
         protected Set<WebsocketChannel> build(UserDao userDao, TeamDao teamDao,
             CardTypeDao cardTypeDao) {

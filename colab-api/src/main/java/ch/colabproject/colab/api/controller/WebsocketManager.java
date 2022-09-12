@@ -13,6 +13,8 @@ import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.api.model.user.User;
 import ch.colabproject.colab.api.persistence.jpa.project.ProjectDao;
 import ch.colabproject.colab.api.persistence.jpa.user.UserDao;
+import ch.colabproject.colab.api.presence.PresenceManager;
+import ch.colabproject.colab.api.presence.model.TouchUserPresence;
 import ch.colabproject.colab.api.security.permissions.Conditions;
 import ch.colabproject.colab.api.ws.WebsocketEndpoint;
 import ch.colabproject.colab.api.ws.WebsocketMessagePreparer;
@@ -140,6 +142,16 @@ public class WebsocketManager {
      */
     @Inject
     private UserDao userDao;
+
+    /**
+     * Presence Manager
+     */
+    @Inject
+    private PresenceManager presenceManager;
+
+    /** to propagate changes */
+    @Inject
+    private EntityGatheringBagForPropagation bag;
 
     /**
      * channel subscriptions.
@@ -305,6 +317,12 @@ public class WebsocketManager {
                 sessionId.getSessionId(),
                 requestManager.getAndAssertHttpSession().getId());
             subscriptionEvents.fire(request);
+
+            // Register user presence
+            TouchUserPresence touch = new TouchUserPresence();
+            touch.setProjectId(projectId);
+            touch.setWsSessionId(sessionId.getSessionId());
+            presenceManager.updateUserPresence(touch);
         } else {
             throw HttpErrorMessage.notFound();
         }
@@ -331,6 +349,9 @@ public class WebsocketManager {
                 sessionId.getSessionId(),
                 requestManager.getAndAssertHttpSession().getId());
             subscriptionEvents.fire(request);
+
+            // user is not present any longer
+            presenceManager.clearWsSession(projectId, sessionId.getSessionId());
         } else {
             throw HttpErrorMessage.notFound();
         }
@@ -632,15 +653,24 @@ public class WebsocketManager {
      *
      * @param session websocket session to clean subscription for
      */
-    public void unsubscribeFromAll(Session session) {
+    public void unsubscribeFromAll(Session session, String sessionId) {
         synchronized (this) {
             Set<WebsocketChannel> set = this.wsSessionMap.get(session);
             if (set != null) {
                 Set<Session> setOfSession = Set.of(session);
                 set.forEach(channel -> {
                     unsubscribe(channel, setOfSession);
+                    if (channel instanceof ProjectContentChannel) {
+                        ProjectContentChannel pChannel = (ProjectContentChannel) channel;
+                        presenceManager.clearWsSession(pChannel.getProjectId(), sessionId);
+                    }
                 });
                 this.wsSessionMap.remove(session);
+                // flush changes ASAP
+                WebsocketTxSync synchronizer = bag.getSynchronizer();
+                if (synchronizer != null){
+                    synchronizer.flush();
+                }
             }
         }
     }

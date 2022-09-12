@@ -158,7 +158,7 @@ public class WebsocketEndpoint {
         String id = sessionToIds.get(session);
         idsToSessions.remove(id);
         sessionToIds.remove(session);
-        websocketManager.unsubscribeFromAll(session);
+        websocketManager.unsubscribeFromAll(session, id);
     }
 
     /**

@@ -33,6 +33,7 @@ import {
   TeamMember,
   TeamRole,
   TextDataBlock,
+  TouchUserPresence,
   User,
   WsSessionIdentifier,
 } from 'colab-rest-client';
@@ -565,6 +566,30 @@ export const clearRoleInvolvement = createAsyncThunk(
 );
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
+// Presence
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+export const getPresenceList = createAsyncThunk('presence/getList', async (projectId: number) => {
+  return await restClient.PresenceRestEndpoint.getProjectPresence(projectId);
+});
+
+export const makePresenceKnown = createAsyncThunk(
+  'presence/touch',
+  async (presence: TouchUserPresence) => {
+    return await restClient.PresenceRestEndpoint.updateUserPresence(presence);
+  },
+);
+
+export const clearPresenceList = createAsyncThunk('presence/clear', async (projectId: number) => {
+  return await restClient.PresenceRestEndpoint.clearProjectPresenceList(projectId);
+});
+
+
+export const clearAllPresenceLists = createAsyncThunk('presence/clearAll', async () => {
+  return await restClient.PresenceRestEndpoint.clearAlltPresenceList();
+});
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
 // Card Types
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -731,12 +756,9 @@ export const getCard = createAsyncThunk('card/get', async (id: number) => {
   return await restClient.CardRestEndpoint.getCard(id);
 });
 
-export const getProjectStructure = createAsyncThunk(
-  'project/getStructure',
-  async (id: number) => {
-    return await restClient.ProjectRestEndpoint.getStructureOfProject(id);
-  },
-);
+export const getProjectStructure = createAsyncThunk('project/getStructure', async (id: number) => {
+  return await restClient.ProjectRestEndpoint.getStructureOfProject(id);
+});
 
 export const getAllProjectCards = createAsyncThunk(
   'card/getAllProjectCards',
