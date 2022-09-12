@@ -33,6 +33,8 @@ export const en = {
     upload: 'Upload',
     replace: 'Replace',
     refresh: 'Refresh',
+    change: 'Change',
+    send: 'Send',
     empty: 'Empty',
     loading: 'Loading...',
     copiedToClipboard: 'Copied to clipboard',
@@ -50,6 +52,7 @@ export const en = {
     date: 'Date',
     by: 'By',
     settings: 'Settings',
+    general: 'General',
     about: 'About co.LAB',
     blank: 'Blank',
     description: 'Description',
@@ -58,9 +61,9 @@ export const en = {
     published: 'Published',
     project: 'Project',
     views: {
-      board:'Board',
+      board: 'Board',
       hierarchy: 'Hierarchy',
-      activityFlow:'Activity Flow',
+      activityFlow: 'Activity Flow',
     },
     welcome: 'Welcome!',
     //comments: 'comments',
@@ -150,14 +153,34 @@ export const en = {
     editUser: 'Edit user',
   },
   team: {
+    team: 'Team',
     roles: 'Roles',
+    rights: 'Rights',
     members: 'Members',
     generalInvolvement: 'General involvement',
     resetInvolvement: 'Reset involvement',
     involvementHelper:
       'Add or select an involvement level for all members and roles. You can fine-tune it below by choosing indiviually a different level.  When undefined, the involvement level is calculated based on parent(s) card(s), and then on your rights in the project.',
     inviteMembers: 'Invite members',
+    inviteNewMember: 'Invite new member',
+    deleteMember: 'Delete team member',
     removeGuest: 'Remove guest',
+    removeRole: 'Remove role',
+    giveRole: 'Give role',
+    fillRoleName: 'Fill the role name',
+    me: 'me',
+    rolesNames: {
+      owner: 'Owner',
+      projectLeader: 'Project leader',
+      member: 'Member',
+      guest: 'Guest',
+    },
+    sureChangeOwnRights: 'Are you sure you want to change your own rights?',
+    sureDeleteMember: 'Are you sure you want to delete this team member ?',
+    changeOwnRights: 'Change my own rights',
+    oneOwnerPerProject: 'You cannot change this right. There must be at least one Owner of the project.',
+    memberAlreadyExist: 'Member with same email already in team',
+
   },
   //////////////////////////////////////////////////////////////////////////////////////////////////
   // ACTIVITY
@@ -237,7 +260,8 @@ export const en = {
   modules: {
     project: {
       labels: {
-      projectDisplaySettings: 'Project display settings',
+        projectDisplaySettings: 'Project display settings',
+        projectSettings: 'Project settings',
       },
       actions: {
         createProject: 'Create project',
@@ -246,18 +270,20 @@ export const en = {
         chooseAModel: 'Choose a model',
         createAProjectFrom: (templateTitle?: string | null): string =>
           `Create a project from ${'"' + templateTitle + '"'}`,
-        editIllustration:"Edit project illustration",
+        editIllustration: 'Edit project illustration',
         newProject: 'New project',
       },
       info: {
         noProjectSelected: 'No project selected',
-        noProjectYet: 'You don\'t have any project yet',
+        noProjectYet: "You don't have any project yet",
         emptyProject: 'Empty project',
-        useBlankProject: 'Use this empty project and you\'ll be free to create a whole new world',
-        deleteConfirmation: 'Are you sure you want to delete the whole project? This will delete all cards inside.'
+        useBlankProject: "Use this empty project and you'll be free to create a whole new world",
+        deleteConfirmation:
+          'Are you sure you want to delete the whole project? This will delete all cards inside.',
       },
       settings: {
-        missingIcon: 'Oh a new icon library, dear developer please make what is needed to display the icon.',
+        missingIcon:
+          'Oh a new icon library, dear developer please make what is needed to display the icon.',
       },
     },
     team: {
@@ -350,13 +376,13 @@ export const en = {
       after: 'After',
       end: 'At the end',
       liveEditor: {
-        browserNotDisplay: 'Your browser does not support to display this text in its pretty form. Our technicians are on the case.',
+        browserNotDisplay:
+          'Your browser does not support to display this text in its pretty form. Our technicians are on the case.',
         updatesWillBeLost: 'Some updates could not be taken into account and will be lost.',
         clickRollback: 'Click on the "rollback" button to restore the previous version',
         disconnected: 'Disconnected...',
         restorePrevVersion: 'Restore previous version',
-
-      }
+      },
     },
     document: {
       createDocument: 'Create document',
@@ -373,6 +399,10 @@ export const en = {
       docDescription: 'Documentation related to the card.',
       docDescriptionWithType:
         'Documentation related to the card. The model may provide basic documentation.',
+      noResource:  'It does not contain any resource',
+      oneResource: 'It contains 1 resource',
+      xResources: (nbR: number): string => `It contains ${nbR} resources`,
+      onlyForVariant: 'Available only for this variant',
     },
     cardType: {
       cardType: 'Model',
@@ -451,9 +481,9 @@ export const en = {
         content: 'Some features not completely finished yet',
       },
       debug: {
-        title:'Debug Example',
+        title: 'Debug Example',
         content: 'Some internal data useful to debug',
-      }
+      },
     },
     info: { wip: 'Work in progress feature below' },
   },
