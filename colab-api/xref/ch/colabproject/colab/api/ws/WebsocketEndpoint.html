@@ -114,7 +114,7 @@
 <a class="jxr_linenumber" name="L106" href="#L106">106</a>         logger.info(<span class="jxr_string">"WebSocket opened: {}"</span>, session.getId());
 <a class="jxr_linenumber" name="L107" href="#L107">107</a>         sessions.add(session);
 <a class="jxr_linenumber" name="L108" href="#L108">108</a>         FlakeIdGenerator idGenerator = hzInstance.getFlakeIdGenerator(<span class="jxr_string">"WS_SESSION_ID_GENERATOR"</span>);
-<a class="jxr_linenumber" name="L109" href="#L109">109</a>         String sessionId = <span class="jxr_string">"ws-"</span> + Helper.generateHexSalt(32) + idGenerator.newId();
+<a class="jxr_linenumber" name="L109" href="#L109">109</a>         String sessionId = <span class="jxr_string">"ws-"</span> + Helper.generateHexSalt(8) + idGenerator.newId();
 <a class="jxr_linenumber" name="L110" href="#L110">110</a>         sessionToIds.put(session, sessionId);
 <a class="jxr_linenumber" name="L111" href="#L111">111</a>         idsToSessions.put(sessionId, session);
 <a class="jxr_linenumber" name="L112" href="#L112">112</a>         session.getBasicRemote().sendObject(<strong class="jxr_keyword">new</strong> <a name="WsSessionIdentifier" href="../../../../../ch/colabproject/colab/api/ws/message/WsSessionIdentifier.html#WsSessionIdentifier">WsSessionIdentifier</a>(sessionId));
@@ -166,7 +166,7 @@
 <a class="jxr_linenumber" name="L158" href="#L158">158</a>         String id = sessionToIds.get(session);
 <a class="jxr_linenumber" name="L159" href="#L159">159</a>         idsToSessions.remove(id);
 <a class="jxr_linenumber" name="L160" href="#L160">160</a>         sessionToIds.remove(session);
-<a class="jxr_linenumber" name="L161" href="#L161">161</a>         websocketManager.unsubscribeFromAll(session);
+<a class="jxr_linenumber" name="L161" href="#L161">161</a>         websocketManager.unsubscribeFromAll(session, id);
 <a class="jxr_linenumber" name="L162" href="#L162">162</a>     }
 <a class="jxr_linenumber" name="L163" href="#L163">163</a> 
 <a class="jxr_linenumber" name="L164" href="#L164">164</a>     <em class="jxr_javadoccomment">/**</em>

@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>PresenceManager.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">colab-client</a> &gt; <a href="../index.html" class="el_bundle">colab-api</a> &gt; <a href="index.source.html" class="el_package">ch.colabproject.colab.api.presence</a> &gt; <span class="el_source">PresenceManager.java</span></div><h1>PresenceManager.java</h1><pre class="source lang-java linenums">/*
+ * The coLAB project
+ * Copyright (C) 2022 AlbaSim, MEI, HEIG-VD, HES-SO
+ *
+ * Licensed under the MIT License
+ */
+package ch.colabproject.colab.api.presence;
+
+import ch.colabproject.colab.api.controller.EntityGatheringBagForPropagation;
+import ch.colabproject.colab.api.controller.RequestManager;
+import ch.colabproject.colab.api.controller.team.TeamManager;
+import ch.colabproject.colab.api.model.project.Project;
+import ch.colabproject.colab.api.model.team.TeamMember;
+import ch.colabproject.colab.api.model.user.User;
+import ch.colabproject.colab.api.persistence.jpa.project.ProjectDao;
+import ch.colabproject.colab.api.presence.model.TouchUserPresence;
+import ch.colabproject.colab.api.presence.model.UserPresence;
+import com.hazelcast.core.HazelcastInstance;
+import com.hazelcast.cp.lock.FencedLock;
+import com.hazelcast.map.IMap;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import javax.ejb.LocalBean;
+import javax.ejb.Stateless;
+import javax.inject.Inject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+/**
+ * To manages user presence
+ *
+ * @author maxence
+ */
+@Stateless
+@LocalBean
+<span class="nc" id="L38">public class PresenceManager {</span>
+
+    /** logger */
+<span class="nc" id="L41">    private static final Logger logger = LoggerFactory.getLogger(PresenceManager.class);</span>
+
+    /** Hazelcast instance. */
+    @Inject
+    private HazelcastInstance hzInstance;
+
+    /**
+     * To register presence
+     */
+    @Inject
+    private EntityGatheringBagForPropagation transactionManager;
+
+    /** To load project */
+    @Inject
+    private ProjectDao projectDao;
+
+    /** To fetch teamMembers */
+    @Inject
+    private TeamManager teamManager;
+
+    /** to fetch current user */
+    @Inject
+    private RequestManager requestManager;
+
+    /**
+     * Get shared cache of presence.
+     * &lt;p&gt;
+     * projectId =&gt; wsSessionId =&gt; UserPresence
+     */
+    private IMap&lt;Long, Map&lt;String, UserPresence&gt;&gt; getCache() {
+<span class="nc" id="L71">        return hzInstance.getMap(&quot;PRESENCE_CACHE&quot;);</span>
+    }
+
+    /**
+     * Get the lock for the given project id
+     *
+     * @param id id of the project
+     *
+     * @return the lock
+     */
+    private FencedLock getLock(Long id) {
+<span class="nc" id="L82">        return hzInstance.getCPSubsystem().getLock(&quot;Project-Presence-&quot; + id);</span>
+    }
+
+    /**
+     * Get presence list for the current project
+     *
+     * @param projectId if of the project
+     *
+     * @return presence list
+     */
+    public Collection&lt;UserPresence&gt; getPresenceList(Long projectId) {
+        // just to check read access to project
+<span class="nc" id="L94">        projectDao.findProject(projectId);</span>
+
+<span class="nc" id="L96">        Map&lt;String, UserPresence&gt; get = null;</span>
+        try {
+<span class="nc" id="L98">            get = getCache().get(projectId);</span>
+<span class="nc" id="L99">        } catch (RuntimeException e) {</span>
+<span class="nc" id="L100">            logger.warn(&quot;Unable to fetch presence list&quot;, e);</span>
+<span class="nc" id="L101">        }</span>
+
+<span class="nc bnc" id="L103" title="All 2 branches missed.">        if (get != null) {</span>
+<span class="nc" id="L104">            return get.values();</span>
+        } else {
+<span class="nc" id="L106">            return new HashSet&lt;&gt;();</span>
+        }
+    }
+
+    /**
+     * Register and propagate user presence
+     *
+     * @param touch presence data
+     */
+    public void updateUserPresence(TouchUserPresence touch) {
+<span class="nc bnc" id="L116" title="All 6 branches missed.">        if (touch != null &amp;&amp; touch.getProjectId() != null &amp;&amp; touch.getWsSessionId() != null) {</span>
+<span class="nc" id="L117">            Long projectId = touch.getProjectId();</span>
+
+<span class="nc" id="L119">            Project project = projectDao.findProject(projectId);</span>
+<span class="nc" id="L120">            User currentUser = requestManager.getCurrentUser();</span>
+<span class="nc" id="L121">            TeamMember member = teamManager.findMemberByUserAndProject(project, currentUser);</span>
+
+<span class="nc" id="L123">            String wsSessionId = touch.getWsSessionId();</span>
+<span class="nc" id="L124">            FencedLock lock = getLock(projectId);</span>
+<span class="nc" id="L125">            UserPresence userPresence = new UserPresence(touch);</span>
+
+            // no member =&gt; user is an admin
+<span class="nc bnc" id="L128" title="All 2 branches missed.">            if (member != null) {</span>
+<span class="nc" id="L129">                userPresence.setTeamMemberId(member.getId());</span>
+            }
+
+            try {
+<span class="nc" id="L133">                lock.lock();</span>
+<span class="nc" id="L134">                IMap&lt;Long, Map&lt;String, UserPresence&gt;&gt; cache = getCache();</span>
+<span class="nc" id="L135">                cache.putIfAbsent(projectId, new HashMap&lt;&gt;());</span>
+<span class="nc" id="L136">                Map&lt;String, UserPresence&gt; projectPresence = cache.get(projectId);</span>
+<span class="nc" id="L137">                projectPresence.put(wsSessionId, userPresence);</span>
+<span class="nc" id="L138">                cache.put(projectId, projectPresence);</span>
+
+<span class="nc" id="L140">                transactionManager.registerUpdate(userPresence);</span>
+<span class="nc" id="L141">            } catch (RuntimeException e) {</span>
+<span class="nc" id="L142">                logger.warn(&quot;Unable to update user presence&quot;, e);</span>
+            } finally {
+<span class="nc" id="L144">                lock.unlock();</span>
+            }
+        }
+<span class="nc" id="L147">    }</span>
+
+    /**
+     * User has just left, clear from activity table and propagate.
+     *
+     * @param projectId   id of the project
+     * @param wsSessionId the sessionId to clean
+     */
+    public void clearWsSession(Long projectId, String wsSessionId) {
+
+<span class="nc" id="L157">        FencedLock lock = getLock(projectId);</span>
+        try {
+<span class="nc" id="L159">            lock.lock();</span>
+<span class="nc" id="L160">            IMap&lt;Long, Map&lt;String, UserPresence&gt;&gt; cache = getCache();</span>
+<span class="nc" id="L161">            Map&lt;String, UserPresence&gt; projectPresence = cache.get(projectId);</span>
+
+<span class="nc bnc" id="L163" title="All 2 branches missed.">            if (projectPresence != null) {</span>
+<span class="nc" id="L164">                UserPresence remove = projectPresence.remove(wsSessionId);</span>
+<span class="nc" id="L165">                transactionManager.registerDeletion(remove);</span>
+<span class="nc bnc" id="L166" title="All 2 branches missed.">                if (projectPresence.isEmpty()) {</span>
+<span class="nc" id="L167">                    cache.delete(projectId);</span>
+                } else {
+                    // make sure to cal setValue to save the change!
+<span class="nc" id="L170">                    cache.put(projectId, projectPresence);</span>
+                }
+            }
+<span class="nc" id="L173">        } catch (RuntimeException e) {</span>
+<span class="nc" id="L174">            logger.warn(&quot;Unable to remove wsSession&quot;, e);</span>
+        } finally {
+<span class="nc" id="L176">            lock.unlock();</span>
+        }
+<span class="nc" id="L178">    }</span>
+
+    /**
+     * Clear presence list for the given project
+     *
+     * @param projectId id of the project
+     */
+    public void clearProjectPresenceList(Long projectId) {
+        // laod project to check permissions
+<span class="nc" id="L187">        projectDao.findProject(projectId);</span>
+
+<span class="nc" id="L189">        FencedLock lock = getLock(projectId);</span>
+
+        try {
+<span class="nc" id="L192">            lock.lock();</span>
+<span class="nc" id="L193">            getCache().delete(projectId);</span>
+        } finally {
+<span class="nc" id="L195">            lock.unlock();</span>
+        }
+<span class="nc" id="L197">    }</span>
+
+    /**
+     * Clear all presence lists
+     */
+    public void clearAllPresenceLists() {
+<span class="nc bnc" id="L203" title="All 2 branches missed.">        if (requestManager.getCurrentUser().isAdmin()) {</span>
+<span class="nc" id="L204">            getCache().evictAll();</span>
+        }
+<span class="nc" id="L206">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

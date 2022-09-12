@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>TouchUserPresence.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">colab-client</a> &gt; <a href="../index.html" class="el_bundle">colab-api</a> &gt; <a href="index.source.html" class="el_package">ch.colabproject.colab.api.presence.model</a> &gt; <span class="el_source">TouchUserPresence.java</span></div><h1>TouchUserPresence.java</h1><pre class="source lang-java linenums">/*
+ * The coLAB project
+ * Copyright (C) 2022 AlbaSim, MEI, HEIG-VD, HES-SO
+ *
+ * Licensed under the MIT License
+ */
+package ch.colabproject.colab.api.presence.model;
+
+import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
+import java.io.Serializable;
+import javax.validation.constraints.NotNull;
+
+/**
+ *
+ * @author maxence
+ */
+<span class="nc" id="L17">public class TouchUserPresence implements Serializable {</span>
+
+    /**
+     * Id of the project
+     */
+    @NotNull
+    private Long projectId;
+
+    /**
+     * If of the card, may be null
+     */
+    private Long cardId;
+
+    /** if of the variant */
+    private Long cardContentId;
+
+    /** some informative data */
+    private String context;
+
+    /**
+     * Websocket session id
+     */
+    @NotNull
+    private String wsSessionId;
+
+    /** If of a document */
+    private Long documentId;
+
+    /** selection start index */
+    private Long selectionStart;
+
+    /** selection end index */
+    private Long selectionEnd;
+
+    /**
+     * Get the value of selectionStart
+     *
+     * @return the value of selectionStart
+     */
+    public Long getSelectionStart() {
+<span class="nc" id="L57">        return selectionStart;</span>
+    }
+
+    /**
+     * Set the value of selectionStart
+     *
+     * @param selectionStart new value of selectionStart
+     */
+    public void setSelectionStart(Long selectionStart) {
+<span class="nc" id="L66">        this.selectionStart = selectionStart;</span>
+<span class="nc" id="L67">    }</span>
+
+    /**
+     * Get the value of selectionEnd
+     *
+     * @return the value of selectionEnd
+     */
+    public Long getSelectionEnd() {
+<span class="nc" id="L75">        return selectionEnd;</span>
+    }
+
+    /**
+     * Set the value of selectionEnd
+     *
+     * @param selectionEnd new value of selectionEnd
+     */
+    public void setSelectionEnd(Long selectionEnd) {
+<span class="nc" id="L84">        this.selectionEnd = selectionEnd;</span>
+<span class="nc" id="L85">    }</span>
+
+    /**
+     * Get the value of cardId
+     *
+     * @return the value of cardId
+     */
+    public Long getCardId() {
+<span class="nc" id="L93">        return cardId;</span>
+    }
+
+    /**
+     * Set the value of cardId
+     *
+     * @param cardId new value of cardId
+     */
+    public void setCardId(Long cardId) {
+<span class="nc" id="L102">        this.cardId = cardId;</span>
+<span class="nc" id="L103">    }</span>
+
+    /**
+     * Get the value of documentId
+     *
+     * @return the value of documentId
+     */
+    public Long getDocumentId() {
+<span class="nc" id="L111">        return documentId;</span>
+    }
+
+    /**
+     * Set the value of documentId
+     *
+     * @param documentId new value of documentId
+     */
+    public void setDocumentId(Long documentId) {
+<span class="nc" id="L120">        this.documentId = documentId;</span>
+<span class="nc" id="L121">    }</span>
+
+    /**
+     * Get the value of cardContentId
+     *
+     * @return the value of cardContentId
+     */
+    public Long getCardContentId() {
+<span class="nc" id="L129">        return cardContentId;</span>
+    }
+
+    /**
+     * Set the value of cardContentId
+     *
+     * @param cardContentId new value of cardContentId
+     */
+    public void setCardContentId(Long cardContentId) {
+<span class="nc" id="L138">        this.cardContentId = cardContentId;</span>
+<span class="nc" id="L139">    }</span>
+
+    /**
+     * Get the value of projectId
+     *
+     * @return the value of projectId
+     */
+    public Long getProjectId() {
+<span class="nc" id="L147">        return projectId;</span>
+    }
+
+    /**
+     * Set the value of projectId
+     *
+     * @param projectId new value of projectId
+     */
+    public void setProjectId(Long projectId) {
+<span class="nc" id="L156">        this.projectId = projectId;</span>
+<span class="nc" id="L157">    }</span>
+
+    /**
+     * Get the value of wsSessionId
+     *
+     * @return the value of wsSessionId, never null
+     */
+    public String getWsSessionId() {
+<span class="nc" id="L165">        return wsSessionId;</span>
+    }
+
+    /**
+     * Set the value of wsSessionId
+     *
+     * @param wsSessionId new value of wsSessionId
+     *
+     * @throws HttpErrorMessage if wsSessionId is null (dataIntegrityFailure)
+     */
+    public void setWsSessionId(String wsSessionId) {
+<span class="nc bnc" id="L176" title="All 2 branches missed.">        if (wsSessionId == null) {</span>
+<span class="nc" id="L177">            throw HttpErrorMessage.dataIntegrityFailure();</span>
+        }
+<span class="nc" id="L179">        this.wsSessionId = wsSessionId;</span>
+<span class="nc" id="L180">    }</span>
+
+    /**
+     * Get the context
+     *
+     * @return the context
+     */
+    public String getContext() {
+<span class="nc" id="L188">        return context;</span>
+    }
+
+    /**
+     * Set the context
+     *
+     * @param context new context
+     */
+    public void setContext(String context) {
+<span class="nc" id="L197">        this.context = context;</span>
+<span class="nc" id="L198">    }</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

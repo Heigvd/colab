@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>PresenceRestEndpoint.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">colab-client</a> &gt; <a href="../index.html" class="el_bundle">colab-api</a> &gt; <a href="index.source.html" class="el_package">ch.colabproject.colab.api.rest</a> &gt; <span class="el_source">PresenceRestEndpoint.java</span></div><h1>PresenceRestEndpoint.java</h1><pre class="source lang-java linenums">/*
+ * The coLAB project
+ * Copyright (C) 2021 AlbaSim, MEI, HEIG-VD, HES-SO
+ *
+ * Licensed under the MIT License
+ */
+package ch.colabproject.colab.api.rest;
+
+import ch.colabproject.colab.api.presence.model.TouchUserPresence;
+import ch.colabproject.colab.api.presence.model.UserPresence;
+import ch.colabproject.colab.api.presence.PresenceManager;
+import ch.colabproject.colab.generator.model.annotations.AdminResource;
+import ch.colabproject.colab.generator.model.annotations.AuthenticationRequired;
+import java.util.Collection;
+import javax.inject.Inject;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
+import javax.ws.rs.GET;
+import javax.ws.rs.PUT;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+/**
+ * API to manage presence
+ *
+ * @author maxence
+ */
+@Path(&quot;presence&quot;)
+@Consumes(MediaType.APPLICATION_JSON)
+@Produces(MediaType.APPLICATION_JSON)
+@AuthenticationRequired
+<span class="nc" id="L36">public class PresenceRestEndpoint {</span>
+
+    /** logger */
+<span class="nc" id="L39">    private static final Logger logger = LoggerFactory.getLogger(PresenceRestEndpoint.class);</span>
+
+    /**
+     * Presence business logic
+     */
+    @Inject
+    private PresenceManager presenceManager;
+
+    /**
+     * get the presence list for the current project.
+     *
+     * @param projectId id of the project
+     *
+     * @return current presence list
+     */
+    @GET
+    @Path(&quot;{projectId: [0-9]*}&quot;)
+    public Collection&lt;UserPresence&gt; getProjectPresence(
+        @PathParam(&quot;projectId&quot;) Long projectId
+    ) {
+<span class="nc" id="L59">        logger.debug(&quot;Get Project Presence List #{}&quot;, projectId);</span>
+<span class="nc" id="L60">        return presenceManager.getPresenceList(projectId);</span>
+    }
+
+    /**
+     * Make presence of a user known
+     *
+     * @param presence presence data
+     */
+    @PUT
+    @Path(&quot;{projectId: [0-9]*}&quot;)
+    public void updateUserPresence(TouchUserPresence presence) {
+<span class="nc" id="L71">        presenceManager.updateUserPresence(presence);</span>
+<span class="nc" id="L72">    }</span>
+
+    /**
+     * Clear presence list for the given project
+     *
+     * @param projectId id of the project
+     */
+    @DELETE
+    @Path(&quot;{projectId: [0-9]*}&quot;)
+    public void clearProjectPresenceList(@PathParam(&quot;projectId&quot;) Long projectId) {
+<span class="nc" id="L82">        presenceManager.clearProjectPresenceList(projectId);</span>
+<span class="nc" id="L83">    }</span>
+
+    /**
+     * Clear all presence lists
+     */
+    @DELETE
+    @AdminResource
+    public void clearAlltPresenceList() {
+<span class="nc" id="L91">        presenceManager.clearAllPresenceLists();</span>
+<span class="nc" id="L92">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

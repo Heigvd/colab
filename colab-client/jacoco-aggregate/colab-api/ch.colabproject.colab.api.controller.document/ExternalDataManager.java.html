@@ -79,11 +79,15 @@ import org.slf4j.LoggerFactory;
      * @return url metadata
      */
     public UrlMetadata getUrlMetadata(String url) {
-<span class="nc" id="L82">        UrlMetadata cached = metadataCache.get(url);</span>
-<span class="nc bnc" id="L83" title="All 2 branches missed.">        if (cached != null) {</span>
-<span class="nc" id="L84">            return cached;</span>
-        }
-<span class="nc" id="L86">        return this.refreshAndGetUrlMetadata(url);</span>
+        try {
+<span class="nc" id="L83">            UrlMetadata cached = metadataCache.get(url);</span>
+<span class="nc bnc" id="L84" title="All 2 branches missed.">            if (cached != null) {</span>
+<span class="nc" id="L85">                return cached;</span>
+            }
+<span class="nc" id="L87">        } catch (Throwable t) {</span>
+<span class="nc" id="L88">            metadataCache.remove(url);</span>
+<span class="nc" id="L89">        }</span>
+<span class="nc" id="L90">        return this.refreshAndGetUrlMetadata(url);</span>
     }
 
     /**
@@ -96,15 +100,15 @@ import org.slf4j.LoggerFactory;
      *
      */
     private String sanitizeUrl(String rawUrl, String defaultProtocol) {
-<span class="nc bnc" id="L99" title="All 2 branches missed.">        if (!rawUrl.matches(&quot;[a-z-A-Z0-9]*://.*&quot;)){</span>
+<span class="nc bnc" id="L103" title="All 2 branches missed.">        if (!rawUrl.matches(&quot;[a-z-A-Z0-9]*://.*&quot;)){</span>
             //There is no protocol, add default one
-<span class="nc bnc" id="L101" title="All 2 branches missed.">            if (StringUtils.isEmpty(defaultProtocol)){</span>
-<span class="nc" id="L102">                return &quot;http://&quot; + rawUrl;</span>
+<span class="nc bnc" id="L105" title="All 2 branches missed.">            if (StringUtils.isEmpty(defaultProtocol)){</span>
+<span class="nc" id="L106">                return &quot;http://&quot; + rawUrl;</span>
             } else {
-<span class="nc" id="L104">                return defaultProtocol + &quot;://&quot; + rawUrl;</span>
+<span class="nc" id="L108">                return defaultProtocol + &quot;://&quot; + rawUrl;</span>
             }
         }
-<span class="nc" id="L107">        return rawUrl;</span>
+<span class="nc" id="L111">        return rawUrl;</span>
     }
 
     /**
@@ -115,75 +119,75 @@ import org.slf4j.LoggerFactory;
      * @return url metadata
      */
     public UrlMetadata refreshAndGetUrlMetadata(String url) {
-<span class="nc" id="L118">        UrlMetadata urlMetadata = new UrlMetadata();</span>
-<span class="nc" id="L119">        urlMetadata.setBroken(true);</span>
-<span class="nc" id="L120">        HashMap&lt;String, String&gt; metadata = new HashMap&lt;&gt;();</span>
-<span class="nc" id="L121">        urlMetadata.setMetadata(metadata);</span>
+<span class="nc" id="L122">        UrlMetadata urlMetadata = new UrlMetadata();</span>
+<span class="nc" id="L123">        urlMetadata.setBroken(true);</span>
+<span class="nc" id="L124">        HashMap&lt;String, String&gt; metadata = new HashMap&lt;&gt;();</span>
+<span class="nc" id="L125">        urlMetadata.setMetadata(metadata);</span>
 
-<span class="nc" id="L123">        logger.trace(&quot;Raw URL {}&quot;, url);</span>
-<span class="nc" id="L124">        try (var client = HttpClients.createDefault()) {</span>
-<span class="nc" id="L125">            String sanitizedUrl = sanitizeUrl(url, null);</span>
+<span class="nc" id="L127">        logger.trace(&quot;Raw URL {}&quot;, url);</span>
+<span class="nc" id="L128">        try (var client = HttpClients.createDefault()) {</span>
+<span class="nc" id="L129">            String sanitizedUrl = sanitizeUrl(url, null);</span>
 
-<span class="nc" id="L127">            URIBuilder uriBuilder = new URIBuilder(sanitizedUrl, StandardCharsets.UTF_8);</span>
+<span class="nc" id="L131">            URIBuilder uriBuilder = new URIBuilder(sanitizedUrl, StandardCharsets.UTF_8);</span>
 
-<span class="nc" id="L129">            URI uri = uriBuilder.normalizeSyntax().build();</span>
-<span class="nc" id="L130">            metadata.put(OG_URL, url);</span>
+<span class="nc" id="L133">            URI uri = uriBuilder.normalizeSyntax().build();</span>
+<span class="nc" id="L134">            metadata.put(OG_URL, url);</span>
 
-<span class="nc" id="L132">            String[] segs = uri.getPath().split(&quot;/&quot;);</span>
-<span class="nc bnc" id="L133" title="All 4 branches missed.">            if (segs != null &amp;&amp; segs.length &gt; 0) {</span>
+<span class="nc" id="L136">            String[] segs = uri.getPath().split(&quot;/&quot;);</span>
+<span class="nc bnc" id="L137" title="All 4 branches missed.">            if (segs != null &amp;&amp; segs.length &gt; 0) {</span>
                 // default og:name to last path segment
-<span class="nc" id="L135">                String filename = segs[segs.length - 1];</span>
-<span class="nc" id="L136">                metadata.put(OG_TITLE, filename);</span>
-<span class="nc" id="L137">            } else {</span>
+<span class="nc" id="L139">                String filename = segs[segs.length - 1];</span>
+<span class="nc" id="L140">                metadata.put(OG_TITLE, filename);</span>
+<span class="nc" id="L141">            } else {</span>
                 // otherwise, default to hostname
-<span class="nc" id="L139">                metadata.put(OG_TITLE, uri.getHost());</span>
+<span class="nc" id="L143">                metadata.put(OG_TITLE, uri.getHost());</span>
             }
 
-<span class="nc" id="L142">            var get = new HttpGet(uri);</span>
-<span class="nc" id="L143">            try (var response = client.execute(get)) {</span>
+<span class="nc" id="L146">            var get = new HttpGet(uri);</span>
+<span class="nc" id="L147">            try (var response = client.execute(get)) {</span>
 
-<span class="nc" id="L145">                HttpEntity entity = response.getEntity();</span>
-<span class="nc" id="L146">                int statusCode = response.getCode();</span>
+<span class="nc" id="L149">                HttpEntity entity = response.getEntity();</span>
+<span class="nc" id="L150">                int statusCode = response.getCode();</span>
 
-<span class="nc bnc" id="L148" title="All 2 branches missed.">                if (statusCode &lt; 400) {</span>
+<span class="nc bnc" id="L152" title="All 2 branches missed.">                if (statusCode &lt; 400) {</span>
                     // success
-<span class="nc" id="L150">                    urlMetadata.setBroken(false);</span>
+<span class="nc" id="L154">                    urlMetadata.setBroken(false);</span>
 
-<span class="nc" id="L152">                    Header firstHeader = response.getFirstHeader(&quot;content-type&quot;);</span>
-<span class="nc" id="L153">                    String contentType = firstHeader.getValue();</span>
-<span class="nc" id="L154">                    int separator = contentType.indexOf(';');</span>
+<span class="nc" id="L156">                    Header firstHeader = response.getFirstHeader(&quot;content-type&quot;);</span>
+<span class="nc" id="L157">                    String contentType = firstHeader.getValue();</span>
+<span class="nc" id="L158">                    int separator = contentType.indexOf(';');</span>
 
-<span class="nc bnc" id="L156" title="All 2 branches missed.">                    if (separator &gt; 0) {</span>
-<span class="nc" id="L157">                        contentType = contentType.substring(0, separator);</span>
+<span class="nc bnc" id="L160" title="All 2 branches missed.">                    if (separator &gt; 0) {</span>
+<span class="nc" id="L161">                        contentType = contentType.substring(0, separator);</span>
                     }
 
-<span class="nc bnc" id="L160" title="All 2 branches missed.">                    if (contentType != null) {</span>
-<span class="nc" id="L161">                        urlMetadata.setContentType(contentType);</span>
-<span class="nc bnc" id="L162" title="All 2 branches missed.">                        if (contentType.equals(&quot;text/html&quot;)) {</span>
+<span class="nc bnc" id="L164" title="All 2 branches missed.">                    if (contentType != null) {</span>
+<span class="nc" id="L165">                        urlMetadata.setContentType(contentType);</span>
+<span class="nc bnc" id="L166" title="All 2 branches missed.">                        if (contentType.equals(&quot;text/html&quot;)) {</span>
                             // try to fetch metadata in head meta tags
-<span class="nc" id="L164">                            String html = getEntityAsString(entity);</span>
-<span class="nc" id="L165">                            Document htmlDocument = Jsoup.parse(html, url);</span>
-<span class="nc" id="L166">                            Elements metas = htmlDocument.head().select(&quot;meta&quot;);</span>
-<span class="nc" id="L167">                            metas.forEach(meta -&gt; {</span>
-<span class="nc" id="L168">                                String prop = meta.attr(&quot;property&quot;);</span>
-<span class="nc" id="L169">                                String name = meta.attr(&quot;name&quot;);</span>
-<span class="nc bnc" id="L170" title="All 6 branches missed.">                                if (prop != null &amp;&amp; prop.indexOf(':') &gt;= 0</span>
-<span class="nc bnc" id="L171" title="All 2 branches missed.">                                    || name != null &amp;&amp; name.indexOf(':') &gt;= 0) {</span>
-<span class="nc" id="L172">                                    metadata.put(prop, meta.attr(&quot;content&quot;));</span>
+<span class="nc" id="L168">                            String html = getEntityAsString(entity);</span>
+<span class="nc" id="L169">                            Document htmlDocument = Jsoup.parse(html, url);</span>
+<span class="nc" id="L170">                            Elements metas = htmlDocument.head().select(&quot;meta&quot;);</span>
+<span class="nc" id="L171">                            metas.forEach(meta -&gt; {</span>
+<span class="nc" id="L172">                                String prop = meta.attr(&quot;property&quot;);</span>
+<span class="nc" id="L173">                                String name = meta.attr(&quot;name&quot;);</span>
+<span class="nc bnc" id="L174" title="All 6 branches missed.">                                if (prop != null &amp;&amp; prop.indexOf(':') &gt;= 0</span>
+<span class="nc bnc" id="L175" title="All 2 branches missed.">                                    || name != null &amp;&amp; name.indexOf(':') &gt;= 0) {</span>
+<span class="nc" id="L176">                                    metadata.put(prop, meta.attr(&quot;content&quot;));</span>
                                 }
-<span class="nc" id="L174">                            });</span>
+<span class="nc" id="L178">                            });</span>
                         }
                     }
                 }
 
             }
-<span class="nc" id="L180">        } catch (Exception e) {</span>
-<span class="nc" id="L181">            logger.debug(&quot;Major Failure&quot;, e);</span>
-<span class="nc" id="L182">            urlMetadata.setBroken(true);</span>
-<span class="nc" id="L183">        }</span>
+<span class="nc" id="L184">        } catch (Exception e) {</span>
+<span class="nc" id="L185">            logger.debug(&quot;Major Failure&quot;, e);</span>
+<span class="nc" id="L186">            urlMetadata.setBroken(true);</span>
+<span class="nc" id="L187">        }</span>
         // cache metadata
-<span class="nc" id="L185">        metadataCache.put(url, urlMetadata);</span>
-<span class="nc" id="L186">        return urlMetadata;</span>
+<span class="nc" id="L189">        metadataCache.put(url, urlMetadata);</span>
+<span class="nc" id="L190">        return urlMetadata;</span>
     }
 
 }

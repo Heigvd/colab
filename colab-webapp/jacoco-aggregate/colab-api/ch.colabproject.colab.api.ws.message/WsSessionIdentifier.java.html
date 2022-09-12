@@ -18,7 +18,7 @@ public class WsSessionIdentifier extends WsMessage {
     private static final long serialVersionUID = 1L;
 
     /**
-     * Unique session ID TODO: check uniqueness through the cluster
+     * Unique session ID
      */
     @NotNull
     private String sessionId;

@@ -58,14 +58,15 @@ import org.slf4j.LoggerFactory;
 <span class="nc bnc" id="L58" title="All 2 branches missed.">            if (synchronizer == null) {</span>
 <span class="nc" id="L59">                logger.trace(&quot;Create Sync&quot;);</span>
 <span class="nc" id="L60">                synchronizer = new WebsocketTxSync(bean);</span>
-<span class="nc" id="L61">                jtaSyncRegistry.registerInterposedSynchronization(synchronizer);</span>
+<span class="nc" id="L61">                bean.setSynchronizer(synchronizer);</span>
+<span class="nc" id="L62">                jtaSyncRegistry.registerInterposedSynchronization(synchronizer);</span>
             } else {
-<span class="nc" id="L63">                logger.trace(&quot;Synchronizer already registered&quot;);</span>
+<span class="nc" id="L64">                logger.trace(&quot;Synchronizer already registered&quot;);</span>
             }
-<span class="nc" id="L65">        } else {</span>
-<span class="nc" id="L66">            logger.error(&quot; * NULL -&gt; NO-CONTEXT&quot;);</span>
+<span class="nc" id="L66">        } else {</span>
+<span class="nc" id="L67">            logger.error(&quot; * NULL -&gt; NO-CONTEXT&quot;);</span>
         }
-<span class="nc" id="L68">    }</span>
+<span class="nc" id="L69">    }</span>
 
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

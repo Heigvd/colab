@@ -37,6 +37,8 @@ ch.colabproject.colab.api.persistence.jpa.project
 ch.colabproject.colab.api.persistence.jpa.team
 ch.colabproject.colab.api.persistence.jpa.token
 ch.colabproject.colab.api.persistence.jpa.user
+ch.colabproject.colab.api.presence
+ch.colabproject.colab.api.presence.model
 ch.colabproject.colab.api.rest
 ch.colabproject.colab.api.rest.card
 ch.colabproject.colab.api.rest.card.bean

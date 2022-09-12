@@ -6,6 +6,7 @@
  */
 package ch.colabproject.colab.api.controller;
 
+import javax.transaction.Status;
 import javax.transaction.Synchronization;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,7 +19,7 @@ import org.slf4j.LoggerFactory;
 public class WebsocketTxSync implements Synchronization {
 
     /** logger */
-<span class="nc" id="L21">    private static final Logger logger = LoggerFactory.getLogger(WebsocketTxSync.class);</span>
+<span class="nc" id="L22">    private static final Logger logger = LoggerFactory.getLogger(WebsocketTxSync.class);</span>
 
     /**
      * the TransactionManaget bound to this synchronizer
@@ -28,21 +29,21 @@ public class WebsocketTxSync implements Synchronization {
     /**
      * Make sure to &quot;beforeCompletion&quot; only once
      */
-<span class="nc" id="L31">    private boolean beforeDone = false;</span>
+<span class="nc" id="L32">    private boolean beforeDone = false;</span>
 
     /**
      * Make sure to &quot;afterCompletion&quot; only once
      */
-<span class="nc" id="L36">    private boolean afterDone = false;</span>
+<span class="nc" id="L37">    private boolean afterDone = false;</span>
 
     /**
      * New Synchronizer to link to the current transaction.
      *
      * @param context TranssactionManager which is in charge for the current transaction
      */
-<span class="nc" id="L43">    public WebsocketTxSync(EntityGatheringBagForPropagation context) {</span>
-<span class="nc" id="L44">        this.context = context;</span>
-<span class="nc" id="L45">    }</span>
+<span class="nc" id="L44">    public WebsocketTxSync(EntityGatheringBagForPropagation context) {</span>
+<span class="nc" id="L45">        this.context = context;</span>
+<span class="nc" id="L46">    }</span>
 
     /**
      * At this point, the final state of the transaction in known.
@@ -55,12 +56,12 @@ public class WebsocketTxSync implements Synchronization {
      */
     @Override
     public void afterCompletion(int status) {
-<span class="nc bnc" id="L58" title="All 2 branches missed.">        if (!afterDone) {</span>
-<span class="nc" id="L59">            afterDone = true;</span>
-<span class="nc" id="L60">            logger.trace(&quot;afterCompletion with status: {}&quot;, status);</span>
-<span class="nc" id="L61">            context.afterCompletion(status);</span>
+<span class="nc bnc" id="L59" title="All 2 branches missed.">        if (!afterDone) {</span>
+<span class="nc" id="L60">            afterDone = true;</span>
+<span class="nc" id="L61">            logger.trace(&quot;afterCompletion with status: {}&quot;, status);</span>
+<span class="nc" id="L62">            context.afterCompletion(status);</span>
         }
-<span class="nc" id="L63">    }</span>
+<span class="nc" id="L64">    }</span>
 
     /**
      * This is called before just before the commit occurs.
@@ -70,13 +71,20 @@ public class WebsocketTxSync implements Synchronization {
      */
     @Override
     public void beforeCompletion() {
-<span class="nc bnc" id="L73" title="All 2 branches missed.">        if (!beforeDone) {</span>
-<span class="nc" id="L74">            beforeDone = true;</span>
-<span class="nc" id="L75">            logger.trace(&quot;beforeCompletion&quot;);</span>
+<span class="nc bnc" id="L74" title="All 2 branches missed.">        if (!beforeDone) {</span>
+<span class="nc" id="L75">            beforeDone = true;</span>
+<span class="nc" id="L76">            logger.trace(&quot;beforeCompletion&quot;);</span>
             // make sure the commit will success or throw some Runtimeexception
-<span class="nc" id="L77">            context.prepare();</span>
+<span class="nc" id="L78">            context.prepare();</span>
         }
-<span class="nc" id="L79">    }</span>
+<span class="nc" id="L80">    }</span>
 
+    /**
+     * Force sending websocket messages now
+     */
+    public void flush() {
+<span class="nc" id="L86">        this.beforeCompletion();</span>
+<span class="nc" id="L87">        this.afterCompletion(Status.STATUS_COMMITTED);</span>
+<span class="nc" id="L88">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

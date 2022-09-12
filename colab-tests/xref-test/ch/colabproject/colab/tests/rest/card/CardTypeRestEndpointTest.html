@@ -246,8 +246,8 @@
 <a class="jxr_linenumber" name="L238" href="#L238">238</a>         client.websocketRestEndpoint.subscribeToProjectChannel(projectOne.getId(),
 <a class="jxr_linenumber" name="L239" href="#L239">239</a>             wsClient.getSessionId());
 <a class="jxr_linenumber" name="L240" href="#L240">240</a> 
-<a class="jxr_linenumber" name="L241" href="#L241">241</a>         <em class="jxr_comment">// wait for propagation</em>
-<a class="jxr_linenumber" name="L242" href="#L242">242</a>         TestHelper.waitForMessagesAndAssert(wsClient, 1, 5, WsUpdateMessage.<strong class="jxr_keyword">class</strong>).get(0);
+<a class="jxr_linenumber" name="L241" href="#L241">241</a>         <em class="jxr_comment">// wait for propagation : the project and the user presence on the presence list</em>
+<a class="jxr_linenumber" name="L242" href="#L242">242</a>         List&lt;WsUpdateMessage&gt; messages = TestHelper.waitForMessagesAndAssert(wsClient, 2, 5, WsUpdateMessage.<strong class="jxr_keyword">class</strong>);
 <a class="jxr_linenumber" name="L243" href="#L243">243</a> 
 <a class="jxr_linenumber" name="L244" href="#L244">244</a>         <em class="jxr_comment">// -----</em>
 <a class="jxr_linenumber" name="L245" href="#L245">245</a>         <em class="jxr_comment">// Create type in project one</em>
@@ -297,7 +297,7 @@
 <a class="jxr_linenumber" name="L289" href="#L289">289</a>         <strong class="jxr_keyword">this</strong>.client.websocketRestEndpoint.subscribeToProjectChannel(projectTwo.getId(),
 <a class="jxr_linenumber" name="L290" href="#L290">290</a>             wsClient.getSessionId());
 <a class="jxr_linenumber" name="L291" href="#L291">291</a> 
-<a class="jxr_linenumber" name="L292" href="#L292">292</a>         <em class="jxr_comment">// pizza consume 1 websocket message (new team member)</em>
+<a class="jxr_linenumber" name="L292" href="#L292">292</a>         <em class="jxr_comment">// pizza consume 2 websocket messages (new team member &amp; user presence)</em>
 <a class="jxr_linenumber" name="L293" href="#L293">293</a>         TestHelper.waitForMessagesAndAssert(pizzaWsClient, 1, 5, WsUpdateMessage.<strong class="jxr_keyword">class</strong>).get(0);
 <a class="jxr_linenumber" name="L294" href="#L294">294</a> 
 <a class="jxr_linenumber" name="L295" href="#L295">295</a>         pizzaHttpClient.websocketRestEndpoint.subscribeToProjectChannel(projectTwo.getId(),
@@ -309,8 +309,8 @@
 <a class="jxr_linenumber" name="L301" href="#L301">301</a> 
 <a class="jxr_linenumber" name="L302" href="#L302">302</a>         <em class="jxr_comment">// it is visible for goulash</em>
 <a class="jxr_linenumber" name="L303" href="#L303">303</a>         Assertions.assertEquals(1l, client.cardTypeRestEndpoint.getPublishedCardTypesOfReachableProjects().size());
-<a class="jxr_linenumber" name="L304" href="#L304">304</a>         <em class="jxr_comment">// consume websocket messages (one through project channel, other through user channel)</em>
-<a class="jxr_linenumber" name="L305" href="#L305">305</a>         TestHelper.waitForMessagesAndAssert(wsClient, 2, 5, WsUpdateMessage.<strong class="jxr_keyword">class</strong>).get(0);
+<a class="jxr_linenumber" name="L304" href="#L304">304</a>         <em class="jxr_comment">// consume websocket messages (two through project channel, other through user channel)</em>
+<a class="jxr_linenumber" name="L305" href="#L305">305</a>         TestHelper.waitForMessagesAndAssert(wsClient, 4, 5, WsUpdateMessage.<strong class="jxr_keyword">class</strong>).get(0);
 <a class="jxr_linenumber" name="L306" href="#L306">306</a> 
 <a class="jxr_linenumber" name="L307" href="#L307">307</a>         <em class="jxr_comment">// but not for pizzaiolo</em>
 <a class="jxr_linenumber" name="L308" href="#L308">308</a>         Assertions.assertEquals(0,
@@ -322,7 +322,7 @@
 <a class="jxr_linenumber" name="L314" href="#L314">314</a>         <em class="jxr_comment">// consume websocket messages (overview update; project 1 update; project 2 update)</em>
 <a class="jxr_linenumber" name="L315" href="#L315">315</a>         TestHelper.waitForMessagesAndAssert(wsClient, 2, 5, WsUpdateMessage.<strong class="jxr_keyword">class</strong>).get(0);
 <a class="jxr_linenumber" name="L316" href="#L316">316</a>         <em class="jxr_comment">// consume websocket messages (overview update; project 2 update)</em>
-<a class="jxr_linenumber" name="L317" href="#L317">317</a>         TestHelper.waitForMessagesAndAssert(pizzaWsClient, 2, 5, WsUpdateMessage.<strong class="jxr_keyword">class</strong>).get(0);
+<a class="jxr_linenumber" name="L317" href="#L317">317</a>         TestHelper.waitForMessagesAndAssert(pizzaWsClient, 3, 5, WsUpdateMessage.<strong class="jxr_keyword">class</strong>).get(0);
 <a class="jxr_linenumber" name="L318" href="#L318">318</a> 
 <a class="jxr_linenumber" name="L319" href="#L319">319</a>         <em class="jxr_comment">// goulash and pizzaiolo can now access the type through the reference from projectTwo</em>
 <a class="jxr_linenumber" name="L320" href="#L320">320</a>         Set&lt;AbstractCardType&gt; goulashTypes = client.projectRestEndpoint

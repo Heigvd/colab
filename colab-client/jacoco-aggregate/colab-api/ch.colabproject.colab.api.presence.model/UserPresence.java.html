@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>UserPresence.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">colab-client</a> &gt; <a href="../index.html" class="el_bundle">colab-api</a> &gt; <a href="index.source.html" class="el_package">ch.colabproject.colab.api.presence.model</a> &gt; <span class="el_source">UserPresence.java</span></div><h1>UserPresence.java</h1><pre class="source lang-java linenums">/*
+ * The coLAB project
+ * Copyright (C) 2022 AlbaSim, MEI, HEIG-VD, HES-SO
+ *
+ * Licensed under the MIT License
+ */
+package ch.colabproject.colab.api.presence.model;
+
+import ch.colabproject.colab.api.model.WithWebsocketChannels;
+import ch.colabproject.colab.api.ws.channel.tool.ChannelsBuilders;
+import ch.colabproject.colab.api.ws.channel.tool.ChannelsBuilders.ChannelsBuilder;
+import ch.colabproject.colab.generator.model.tools.DateSerDe;
+import java.io.Serializable;
+import java.time.OffsetDateTime;
+import javax.json.bind.annotation.JsonbTypeDeserializer;
+import javax.json.bind.annotation.JsonbTypeSerializer;
+import javax.validation.constraints.NotNull;
+
+/**
+ * Used to activity status of a user with the rest of the team
+ *
+ * @author maxence
+ */
+public class UserPresence extends TouchUserPresence implements Serializable, WithWebsocketChannels {
+
+    private static final long serialVersionUID = 1L;
+
+    /**
+     * activity date
+     */
+    @JsonbTypeDeserializer(DateSerDe.class)
+    @JsonbTypeSerializer(DateSerDe.class)
+    @NotNull
+    private OffsetDateTime date;
+
+    /** Id of the team member, if null, it means it's a admin */
+    private Long teamMemberId;
+
+    /**
+     * new empty user presence instance
+     */
+<span class="nc" id="L42">    public UserPresence() {</span>
+        /** empty default constructor */
+<span class="nc" id="L44">    }</span>
+
+    /**
+     * Create a userPresence instance by copying a TouchUserPresence
+     *
+     * @param touch the presence to copy
+     */
+<span class="nc" id="L51">    public UserPresence(TouchUserPresence touch) {</span>
+<span class="nc" id="L52">        this.setProjectId(touch.getProjectId());</span>
+<span class="nc" id="L53">        this.setCardId(touch.getCardId());</span>
+<span class="nc" id="L54">        this.setCardContentId(touch.getCardContentId());</span>
+<span class="nc" id="L55">        this.setContext(touch.getContext());</span>
+<span class="nc" id="L56">        this.setDocumentId(touch.getDocumentId());</span>
+<span class="nc" id="L57">        this.setSelectionStart(touch.getSelectionStart());</span>
+<span class="nc" id="L58">        this.setSelectionEnd(touch.getSelectionEnd());</span>
+<span class="nc" id="L59">        this.setProjectId(touch.getProjectId());</span>
+<span class="nc" id="L60">        this.setWsSessionId(touch.getWsSessionId());</span>
+<span class="nc" id="L61">        this.setDate(OffsetDateTime.now());</span>
+<span class="nc" id="L62">    }</span>
+
+    @Override
+    public Long getId() {
+<span class="nc" id="L66">        return this.getProjectId();</span>
+    }
+
+    @Override
+    public Object getIndexEntryPayload() {
+<span class="nc" id="L71">        return this.getWsSessionId();</span>
+    }
+
+    /**
+     * Get the value of date
+     *
+     * @return the value of date
+     */
+    public OffsetDateTime getDate() {
+<span class="nc" id="L80">        return date;</span>
+    }
+
+    /**
+     * Set the value of date
+     *
+     * @param date new value of date
+     */
+    public void setDate(OffsetDateTime date) {
+<span class="nc" id="L89">        this.date = date;</span>
+<span class="nc" id="L90">    }</span>
+
+    /**
+     * Get the value of teamMemberId
+     *
+     * @return the value of teamMemberId. If null, it means an admin is spying
+     */
+    public Long getTeamMemberId() {
+<span class="nc" id="L98">        return teamMemberId;</span>
+    }
+
+    /**
+     * Set the value of teamMemberId
+     *
+     * @param teamMemberId new value of teamMemberId
+     */
+    public void setTeamMemberId(Long teamMemberId) {
+<span class="nc" id="L107">        this.teamMemberId = teamMemberId;</span>
+<span class="nc" id="L108">    }</span>
+
+    /////////////////////
+    // Websockets
+    /////////////////////
+    @Override
+    public ChannelsBuilder getChannelsBuilder() {
+<span class="nc" id="L115">        return new ChannelsBuilders.ProjectContentChannelBuilder(this.getProjectId());</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>
