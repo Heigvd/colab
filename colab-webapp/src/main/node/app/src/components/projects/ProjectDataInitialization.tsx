@@ -99,8 +99,8 @@ export default function ProjectDataInitialization({
           fields={[
             {
               key: 'email',
-              label: 'Invite members',
-              placeholder: 'email',
+              label: i18n.team.inviteMembers,
+              placeholder: i18n.authentication.field.emailAddress,
               type: 'text',
               isMandatory: false,
               readOnly: readOnly,
@@ -128,7 +128,7 @@ export default function ProjectDataInitialization({
               {!readOnly && (
                 <ConfirmIconButton
                   icon={faTrash}
-                  title="Remove guest"
+                  title={i18n.team.removeGuest}
                   onConfirm={() => removeGuest(guest)}
                   className={lightIconButtonStyle}
                 />
@@ -152,7 +152,7 @@ export default function ProjectDataInitialization({
             align="flex-end"
             justify="flex-end"
             className={projectIllustrationOverlay}
-            title="Edit project illustration"
+            title={i18n.modules.project.actions.editIllustration}
           >
             <FontAwesomeIcon icon={faPen} color={'var(--bgColor)'} />
           </Flex>
@@ -177,7 +177,7 @@ export default function ProjectDataInitialization({
             />
             <Flex justify="flex-end" className={css({ gap: space_S })}>
               <Button onClick={() => setEditIllustration(false)} invertedButton>
-                cancel
+                {i18n.common.cancel}
               </Button>
               <Button
                 onClick={() => {
@@ -185,7 +185,7 @@ export default function ProjectDataInitialization({
                   setEditIllustration(false);
                 }}
               >
-                OK
+                {i18n.common.ok}
               </Button>
             </Flex>
           </Flex>
@@ -194,15 +194,15 @@ export default function ProjectDataInitialization({
           {data.projectModel
             ? data.projectModel.name
               ? data.projectModel.name
-              : 'New project'
-            : 'Empty project'}
+              : i18n.modules.project.actions.newProject
+            : i18n.modules.project.info.emptyProject}
         </h2>
         <Flex className={textSmall}>
           {data.projectModel
             ? data.projectModel.description
               ? data.projectModel.description
-              : 'No description'
-            : "Use this empty project and you'll be free to create a whole new world"}
+              : i18n.common.noDescription
+            : i18n.modules.project.info.useBlankProject}
         </Flex>
       </Flex>
     </Flex>

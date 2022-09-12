@@ -14,6 +14,7 @@ import { Change } from 'colab-rest-client';
 import * as React from 'react';
 import * as API from '../../API/api';
 import { removeAllItems } from '../../helper';
+import useTranslations from '../../i18n/I18nContext';
 import * as LiveHelper from '../../LiveHelper';
 import { useChanges } from '../../selectors/changeSelector';
 import { useAppDispatch } from '../../store/hooks';
@@ -90,6 +91,7 @@ export function ChangeTreeRaw({
   revision,
   onDelete,
 }: ChangeTreeRawProps): JSX.Element {
+  const i18n = useTranslations();
   const divRefs = React.useRef<DivRefType>({});
 
   const toProcess = [...changes];
@@ -197,8 +199,8 @@ export function ChangeTreeRaw({
 
   return (
     <div>
-      <h4>Tree</h4>
-      {onDelete ? <IconButton icon={faTrash} title="Delete" onClick={onDelete} /> : null}
+      <h4>{i18n.modules.content.tree}</h4>
+      {onDelete ? <IconButton icon={faTrash} title={i18n.common.delete} onClick={onDelete} /> : null}
       <div
         ref={ref => {
           if (ref != null) {
@@ -220,13 +222,13 @@ export function ChangeTreeRaw({
           </div>
         ))}
       </div>
-      <h4>Orphans</h4>
+      <h4>{i18n.modules.content.orphans}</h4>
       <>
         {toProcess.map(change => {
           <ChangeDisplay key={change.revision} change={change} divRefs={divRefs.current} />;
         })}
       </>
-      <h4>Result</h4>
+      <h4>{i18n.modules.content.result}</h4>
       <div>
         "{processedValue.value}" basedOn {processedValue.revision.map(truncateRevision)}
       </div>

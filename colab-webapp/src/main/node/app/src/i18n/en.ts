@@ -30,6 +30,9 @@ export const en = {
     next: 'Next',
     back: 'Back',
     updated: 'Updated',
+    upload: 'Upload',
+    replace: 'Replace',
+    refresh: 'Refresh',
     empty: 'Empty',
     loading: 'Loading...',
     copiedToClipboard: 'Copied to clipboard',
@@ -42,14 +45,24 @@ export const en = {
     sortBy: 'Sort by: ',
     createdBy: 'created by',
     createdOn: 'Created on',
+    createdAt: 'Created at',
     name: 'Name',
     date: 'Date',
     by: 'By',
     settings: 'Settings',
     about: 'About co.LAB',
     blank: 'Blank',
+    description: 'Description',
+    noDescription: 'No description',
     deprecated: 'Deprecated',
     published: 'Published',
+    project: 'Project',
+    views: {
+      board:'Board',
+      hierarchy: 'Hierarchy',
+      activityFlow:'Activity Flow',
+    },
+    welcome: 'Welcome!',
     //comments: 'comments',
     //commentsAreOptional: 'Comments are optional',
     dateFn: (timestamp: number | null | undefined) => {
@@ -75,6 +88,10 @@ export const en = {
     },
     action: {
       backToHome: 'Back to co.LAB home',
+      backToProjects: 'Back to projects',
+      backProjectRoot: 'Back to project root',
+      backCardView: 'Back to card view',
+      showProjectDetails: 'Show project details',
     },
     error: {
       accessDenied: 'Unfortunately you are not allowed to see this',
@@ -82,6 +99,8 @@ export const en = {
       missingContent: 'Oh there is nothing to display, dear developer please fix it',
       somethingWentWrong: 'Something went wrong',
       unknown: 'Unknown',
+      sorryError: 'Sorry... There was an error',
+      notImplemented: 'Not implemented yet',
     },
     info: {
       pleaseWait: 'Please wait...',
@@ -91,6 +110,7 @@ export const en = {
       nameIsRequired: 'Name is required',
       accessKeyIsRequired: 'Access key is required',
       nothingMatchTag: 'Nothing matches tag selection',
+      writeDescription: 'Write a description here',
     },
   },
 
@@ -133,8 +153,11 @@ export const en = {
     roles: 'Roles',
     members: 'Members',
     generalInvolvement: 'General involvement',
+    resetInvolvement: 'Reset involvement',
     involvementHelper:
       'Add or select an involvement level for all members and roles. You can fine-tune it below by choosing indiviually a different level.  When undefined, the involvement level is calculated based on parent(s) card(s), and then on your rights in the project.',
+    inviteMembers: 'Invite members',
+    removeGuest: 'Remove guest',
   },
   //////////////////////////////////////////////////////////////////////////////////////////////////
   // ACTIVITY
@@ -213,15 +236,28 @@ export const en = {
   // MODULES
   modules: {
     project: {
+      labels: {
+      projectDisplaySettings: 'Project display settings',
+      },
       actions: {
         createProject: 'Create project',
         createAProject: 'Create a project',
+        deleteProject: 'Delete project',
         chooseAModel: 'Choose a model',
         createAProjectFrom: (templateTitle?: string | null): string =>
           `Create a project from ${'"' + templateTitle + '"'}`,
+        editIllustration:"Edit project illustration",
+        newProject: 'New project',
       },
       info: {
         noProjectSelected: 'No project selected',
+        noProjectYet: 'You don\'t have any project yet',
+        emptyProject: 'Empty project',
+        useBlankProject: 'Use this empty project and you\'ll be free to create a whole new world',
+        deleteConfirmation: 'Are you sure you want to delete the whole project? This will delete all cards inside.'
+      },
+      settings: {
+        missingIcon: 'Oh a new icon library, dear developer please make what is needed to display the icon.',
       },
     },
     team: {
@@ -291,23 +327,42 @@ export const en = {
       document: 'Document',
       mdMode: 'Markdown mode',
       showTree: 'Show tree',
+      tree: 'Tree',
+      orphans: 'Orphans',
+      result: 'Result',
+      file: 'file',
       dlFile: 'Download file',
       editBlock: 'Edit block',
       deleteBlock: 'Delete block',
       createText: 'Create text block',
       createFile: 'Create file',
       createLink: 'Create link',
+      emptyLink: 'Empty link',
       moveBlockUpDown: (direction: string): string =>
         `Move block ${direction === 'up' ? 'up' : 'down'}`,
       deleteBlockType: (isText: boolean, isLink: boolean): string =>
         `Delete ${isText ? 'text' : isLink ? 'link' : 'doc'}`,
       confirmDeleteBlock:
         'Are you sure you want to delete this whole block? This will be lost forever.',
+      noFileUploaded: 'No file uploaded',
+      before: 'Before',
+      onTop: 'OnTop',
+      after: 'After',
+      end: 'At the end',
+      liveEditor: {
+        browserNotDisplay: 'Your browser does not support to display this text in its pretty form. Our technicians are on the case.',
+        updatesWillBeLost: 'Some updates could not be taken into account and will be lost.',
+        clickRollback: 'Click on the "rollback" button to restore the previous version',
+        disconnected: 'Disconnected...',
+        restorePrevVersion: 'Restore previous version',
+
+      }
     },
     document: {
       createDocument: 'Create document',
       createADocument: 'Create a document',
       openInNewTab: 'Open in new tab',
+      unknownDocument: 'Unknown document',
     },
     resource: {
       untitled: 'New document',
@@ -376,6 +431,7 @@ export const en = {
       tips: 'Display Tips',
       news: 'Display News',
       wip: 'Display work in progress elements',
+      debug: 'Display debug info',
     },
     example: {
       todo: {
@@ -394,6 +450,10 @@ export const en = {
         title: 'WIP Example',
         content: 'Some features not completely finished yet',
       },
+      debug: {
+        title:'Debug Example',
+        content: 'Some internal data useful to debug',
+      }
     },
     info: { wip: 'Work in progress feature below' },
   },

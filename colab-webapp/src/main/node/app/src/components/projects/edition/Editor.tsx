@@ -124,7 +124,7 @@ const Ancestor = ({ card, content, last }: Ancestor): JSX.Element => {
           }}
           clickableClassName={cx(linkStyle, breadCrumbsStyle)}
         >
-          Project
+          {i18n.common.project}
         </Clickable>
         <FontAwesomeIcon icon={faChevronRight} size="xs" className={breadCrumbsStyle} />
       </>
@@ -273,6 +273,7 @@ interface EditorNavProps {
 }
 
 function EditorNav({ project, setShowProjectDetails }: EditorNavProps): JSX.Element {
+  const i18n = useTranslations();
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   return (
@@ -291,7 +292,7 @@ function EditorNav({ project, setShowProjectDetails }: EditorNavProps): JSX.Elem
       >
         <Flex align="center">
           <Clickable
-            title="Back to projects"
+            title={i18n.common.action.backToProjects}
             onClick={event => {
               event.preventDefault();
               navigate('../../');
@@ -311,7 +312,7 @@ function EditorNav({ project, setShowProjectDetails }: EditorNavProps): JSX.Elem
           </Clickable>
           <IconButton
             icon={faGrip}
-            title="Back to project root"
+            title={i18n.common.action.backProjectRoot}
             onClick={event => {
               event.preventDefault();
               navigate(`/editor/${project.id}`);
@@ -329,7 +330,7 @@ function EditorNav({ project, setShowProjectDetails }: EditorNavProps): JSX.Elem
         >
           <Button
             onClick={() => setShowProjectDetails(showProjectDetails => !showProjectDetails)}
-            title="Show project details"
+            title={i18n.common.action.showProjectDetails}
             className={css({ padding: '2px' })}
           >
             <Flex align="stretch">
@@ -349,7 +350,7 @@ function EditorNav({ project, setShowProjectDetails }: EditorNavProps): JSX.Elem
                 />
               </Flex>
               <div className={css({ padding: '0 ' + space_S })}>
-                {project.name || 'New project'}
+                {project.name || i18n.modules.project.actions.newProject}
               </div>
             </Flex>
           </Button>
@@ -361,7 +362,7 @@ function EditorNav({ project, setShowProjectDetails }: EditorNavProps): JSX.Elem
                 value: 'board',
                 label: (
                   <>
-                    <FontAwesomeIcon icon={faClone} /> Board
+                    <FontAwesomeIcon icon={faClone} />{i18n.common.views.board}
                   </>
                 ),
                 action: () => navigate('./'),
@@ -370,7 +371,7 @@ function EditorNav({ project, setShowProjectDetails }: EditorNavProps): JSX.Elem
                 value: 'hierarchy',
                 label: (
                   <>
-                    <FontAwesomeIcon icon={faNetworkWired} /> Hierarchy
+                    <FontAwesomeIcon icon={faNetworkWired} />{i18n.common.views.hierarchy}
                   </>
                 ),
                 action: () => navigate('./hierarchy'),
@@ -379,7 +380,7 @@ function EditorNav({ project, setShowProjectDetails }: EditorNavProps): JSX.Elem
                 value: 'flow',
                 label: (
                   <>
-                    <FontAwesomeIcon icon={faProjectDiagram} /> Activity Flow
+                    <FontAwesomeIcon icon={faProjectDiagram} />{i18n.common.views.activityFlow}
                   </>
                 ),
                 action: () => navigate('./flow'),
@@ -393,7 +394,7 @@ function EditorNav({ project, setShowProjectDetails }: EditorNavProps): JSX.Elem
           <Monkeys />
           <IconButton
             onClick={() => navigate('./project-settings/general')}
-            title="Settings"
+            title={i18n.common.settings}
             icon={faCog}
             className={css({ textAlign: 'right', alignSelf: 'center', marginLeft: 'auto' })}
           />{' '}
@@ -480,8 +481,8 @@ export default function Editor(): JSX.Element {
                   {project.description}
                 </div>
                 <div>
-                  <p>Created by: {project.trackingData?.createdBy}</p>
-                  <p>Created date: {i18n.common.datetime(project.trackingData?.creationDate)}</p>
+                  <p>{i18n.common.createdBy}: {project.trackingData?.createdBy}</p>
+                  <p>{i18n.common.createdAt}: {i18n.common.datetime(project.trackingData?.creationDate)}</p>
                   {/* more infos? Add project team names */}
                 </div>
               </div>
@@ -532,7 +533,7 @@ export default function Editor(): JSX.Element {
               element={
                 <CardWrapper
                   backButtonPath={(card, variant) => `../card/${card.id}/v/${variant.id}`}
-                  backButtonTitle="Back to card view"
+                  backButtonTitle={i18n.common.action.backCardView}
                 >
                   {(card, variant) => <CardEditor card={card} variant={variant} showSubcards />}
                 </CardWrapper>

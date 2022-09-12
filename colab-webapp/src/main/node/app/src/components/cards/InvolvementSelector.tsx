@@ -10,6 +10,7 @@ import { faRotateLeft } from '@fortawesome/free-solid-svg-icons';
 import { InvolvementLevel } from 'colab-rest-client';
 import * as React from 'react';
 import Select from 'react-select';
+import useTranslations from '../../i18n/I18nContext';
 import IconButton from '../common/element/IconButton';
 import Flex from '../common/layout/Flex';
 
@@ -59,6 +60,7 @@ export default function InvolvementSelector({
   effectives?: InvolvementLevel[];
   onChange: (value: InvolvementLevel | null) => void;
 }): JSX.Element {
+  const i18n = useTranslations();
   const onChangeCb = React.useCallback(
     (option: { value: InvolvementLevel } | null) => {
       if (option != null) {
@@ -134,7 +136,7 @@ export default function InvolvementSelector({
             onChange={onChangeCb}
           />
           {self != null && (
-            <IconButton icon={faRotateLeft} title="Reset involvement" onClick={clearCb} />
+            <IconButton icon={faRotateLeft} title={i18n.team.resetInvolvement} onClick={clearCb} />
           )}
         </>
       )}
