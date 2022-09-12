@@ -8,6 +8,7 @@ package ch.colabproject.colab.api.ws.message;
 
 import ch.colabproject.colab.api.model.WithWebsocketChannels;
 import ch.colabproject.colab.api.ws.channel.tool.ChannelsBuilders.ChannelsBuilder;
+import ch.colabproject.colab.generator.model.annotations.ExtractJavaDoc;
 import ch.colabproject.colab.generator.model.interfaces.WithJsonDiscriminator;
 import javax.json.bind.annotation.JsonbTransient;
 import javax.validation.constraints.NotNull;
@@ -15,6 +16,7 @@ import javax.validation.constraints.NotNull;
 /**
  * No need to send full object details, @class + id is way sufficient
  */
+@ExtractJavaDoc
 public class IndexEntry implements WithJsonDiscriminator {
 
     private static final long serialVersionUID = 1L;

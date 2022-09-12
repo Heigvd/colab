@@ -6,6 +6,8 @@
  */
 package ch.colabproject.colab.api.ws.channel.model;
 
+import ch.colabproject.colab.generator.model.annotations.ExtractJavaDoc;
+
 /**
  * The channel to be used to transmit data to all online users.<br>
  * <p>
@@ -18,6 +20,7 @@ package ch.colabproject.colab.api.ws.channel.model;
  *
  * @author maxence
  */
+@ExtractJavaDoc
 public class BroadcastChannel implements WebsocketChannel {
 
     private static final long serialVersionUID = 1L;

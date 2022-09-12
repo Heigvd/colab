@@ -9,6 +9,7 @@ package ch.colabproject.colab.api.presence.model;
 import ch.colabproject.colab.api.model.WithWebsocketChannels;
 import ch.colabproject.colab.api.ws.channel.tool.ChannelsBuilders;
 import ch.colabproject.colab.api.ws.channel.tool.ChannelsBuilders.ChannelsBuilder;
+import ch.colabproject.colab.generator.model.annotations.ExtractJavaDoc;
 import ch.colabproject.colab.generator.model.tools.DateSerDe;
 import java.io.Serializable;
 import java.time.OffsetDateTime;
@@ -21,6 +22,7 @@ import javax.validation.constraints.NotNull;
  *
  * @author maxence
  */
+@ExtractJavaDoc
 public class UserPresence extends TouchUserPresence implements Serializable, WithWebsocketChannels {
 
     private static final long serialVersionUID = 1L;

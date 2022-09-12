@@ -6,6 +6,7 @@
  */
 package ch.colabproject.colab.api.presence.model;
 
+import ch.colabproject.colab.generator.model.annotations.ExtractJavaDoc;
 import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
 import java.io.Serializable;
 import javax.validation.constraints.NotNull;
@@ -14,6 +15,7 @@ import javax.validation.constraints.NotNull;
  *
  * @author maxence
  */
+@ExtractJavaDoc
 public class TouchUserPresence implements Serializable {
 
     /**

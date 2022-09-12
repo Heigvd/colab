@@ -6,6 +6,7 @@
  */
 package ch.colabproject.colab.generator.model.exceptions;
 
+import ch.colabproject.colab.generator.model.annotations.ExtractJavaDoc;
 import javax.ws.rs.core.Response;
 
 /**
@@ -13,6 +14,7 @@ import javax.ws.rs.core.Response;
  *
  * @author maxence
  */
+@ExtractJavaDoc
 public class HttpErrorMessage extends HttpException {
 
     private static final long serialVersionUID = 1L;
