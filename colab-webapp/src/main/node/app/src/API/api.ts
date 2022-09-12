@@ -586,7 +586,7 @@ export const clearPresenceList = createAsyncThunk('presence/clear', async (proje
 
 
 export const clearAllPresenceLists = createAsyncThunk('presence/clearAll', async () => {
-  return await restClient.PresenceRestEndpoint.clearAlltPresenceList();
+  return await restClient.PresenceRestEndpoint.clearAllPresenceList();
 });
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
