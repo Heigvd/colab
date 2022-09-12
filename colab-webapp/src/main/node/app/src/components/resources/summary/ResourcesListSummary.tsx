@@ -9,7 +9,6 @@ import { faPaperclip } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import * as React from 'react';
 import { useAndLoadNbActiveResources } from '../../../selectors/resourceSelector';
-import AvailabilityStatusIndicator from '../../common/element/AvailabilityStatusIndicator';
 import { ResourceCallContext } from '../resourcesCommonType';
 
 interface ResourceListSummaryProps {
@@ -20,7 +19,7 @@ export default function ResourcesListSummary({ context }: ResourceListSummaryPro
   const { nb, status } = useAndLoadNbActiveResources(context);
 
   if (status !== 'READY') {
-    return <AvailabilityStatusIndicator status={status} />;
+    return <></>;
   }
 
   return (
@@ -47,7 +46,7 @@ export function ResourceListNb({ context }: ResourceListNbProps): JSX.Element {
   const { nb, status } = useAndLoadNbActiveResources(context);
 
   if (status !== 'READY') {
-    return <AvailabilityStatusIndicator status={status} />;
+    return <></>;
   }
 
   return <>{nb}</>;
