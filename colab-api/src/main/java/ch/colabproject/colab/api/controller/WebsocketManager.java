@@ -651,7 +651,8 @@ public class WebsocketManager {
     /**
      * Clean subscription on session close
      *
-     * @param session websocket session to clean subscription for
+     * @param session   websocket session to clean subscription for
+     * @param sessionId public websocket identifier
      */
     public void unsubscribeFromAll(Session session, String sessionId) {
         synchronized (this) {

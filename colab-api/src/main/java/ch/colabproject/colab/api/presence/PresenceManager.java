@@ -108,9 +108,9 @@ public class PresenceManager {
     }
 
     /**
-     * Register and propagate the
+     * Register and propagate user presence
      *
-     * @param touch
+     * @param touch presence data
      */
     public void updateUserPresence(TouchUserPresence touch) {
         if (touch != null && touch.getProjectId() != null && touch.getWsSessionId() != null) {
