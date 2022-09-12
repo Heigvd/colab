@@ -166,7 +166,7 @@ export default function DocumentCreatorButton({
               action: () => createDoc('BEFORE'),
             },
             {
-              value: selectedDocumentId != null  ? 'after' : 'end',
+              value: selectedDocumentId != null ? 'after' : 'end',
               label: selectedDocumentId != null ? 'After' : 'At the end',
               action: () => createDoc('AFTER'),
             },

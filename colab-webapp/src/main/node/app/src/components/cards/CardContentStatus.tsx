@@ -5,19 +5,19 @@
  * Licensed under the MIT License
  */
 
-import * as React from 'react';
-import { CardContentStatus } from 'colab-rest-client';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { css } from '@emotion/css';
+import { IconProp } from '@fortawesome/fontawesome-svg-core';
 import {
   faArchive,
   faPause,
   faPencilRuler,
   faSkullCrossbones,
 } from '@fortawesome/free-solid-svg-icons';
-import { IconProp } from '@fortawesome/fontawesome-svg-core';
-import { space_S } from '../styling/style';
-import { css } from '@emotion/css';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { CardContentStatus } from 'colab-rest-client';
+import * as React from 'react';
 import useTranslations from '../../i18n/I18nContext';
+import { space_S } from '../styling/style';
 
 export interface CardContentStatusProps {
   status: CardContentStatus;

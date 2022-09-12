@@ -731,12 +731,9 @@ export const getCard = createAsyncThunk('card/get', async (id: number) => {
   return await restClient.CardRestEndpoint.getCard(id);
 });
 
-export const getProjectStructure = createAsyncThunk(
-  'project/getStructure',
-  async (id: number) => {
-    return await restClient.ProjectRestEndpoint.getStructureOfProject(id);
-  },
-);
+export const getProjectStructure = createAsyncThunk('project/getStructure', async (id: number) => {
+  return await restClient.ProjectRestEndpoint.getStructureOfProject(id);
+});
 
 export const getAllProjectCards = createAsyncThunk(
   'card/getAllProjectCards',

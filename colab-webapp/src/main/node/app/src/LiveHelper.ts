@@ -235,7 +235,7 @@ export function shiftOffsets(offsets: Offsets, change: Change): Offsets {
     }
     shifted[offsetIndex] = offsetValue;
   }
-  
+
   logger.info('ShiftOffsets ', offsets, ' according to ', change, ' gives ', shifted);
   return shifted;
 }
@@ -357,7 +357,7 @@ function propagateOffsets(
   offsetFromRev: string,
 ) {
   const children = changes.filter(ch => ch.basedOn.indexOf(parent.revision) >= 0);
-  logger.debug("Propagate offsets to ", children.length ," children #");
+  logger.debug('Propagate offsets to ', children.length, ' children #');
   for (const child of children) {
     const childDep = getAllDependencies(changes, child);
     if (childDep.indexOf(offsetFromRev) < 0) {

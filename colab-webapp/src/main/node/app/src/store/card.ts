@@ -303,7 +303,7 @@ const cardsSlice = createSlice({
         });
       })
 
-      .addCase(API.getProjectStructure.pending, (state) => {
+      .addCase(API.getProjectStructure.pending, state => {
         state.status = 'LOADING';
         state.contentStatus = 'LOADING';
         state.rootCardId = 'LOADING';
