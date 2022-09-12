@@ -11,7 +11,7 @@ import { UserPresence } from 'colab-rest-client';
 import * as API from '../API/api';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
 import { InlineAvailabilityStatus } from '../store/store';
-import { useDeepMemo } from './hooks/useDeppMemo';
+import { useDeepMemo } from './hooks/useDeepMemo';
 
 export function usePresence(projectId: number): InlineAvailabilityStatus<UserPresence[]> {
   const dispatch = useAppDispatch();
