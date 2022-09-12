@@ -79,9 +79,13 @@ public class ExternalDataManager {
      * @return url metadata
      */
     public UrlMetadata getUrlMetadata(String url) {
-        UrlMetadata cached = metadataCache.get(url);
-        if (cached != null) {
-            return cached;
+        try {
+            UrlMetadata cached = metadataCache.get(url);
+            if (cached != null) {
+                return cached;
+            }
+        } catch (Throwable t) {
+            metadataCache.remove(url);
         }
         return this.refreshAndGetUrlMetadata(url);
     }

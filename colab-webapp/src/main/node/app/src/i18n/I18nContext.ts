@@ -9,7 +9,9 @@ import * as React from 'react';
 import { en } from './en';
 //import { fr } from './fr';
 
-export type Language = 'FR' | 'EN';
+export const languages = ['FR', 'EN'] as const;
+
+export type Language = typeof languages[number]
 
 export interface I18nState {
   lang: Language;

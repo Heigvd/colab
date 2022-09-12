@@ -210,9 +210,11 @@ export function useAndLoadCardType(id: number | null | undefined): CardTypeAndSt
 
   const { cardType, status } = useCardType(id);
 
-  if (status === 'NOT_INITIALIZED' && id != null) {
-    dispatch(API.getExpandedCardType(id));
-  }
+  React.useEffect(() => {
+    if (status === 'NOT_INITIALIZED' && id != null) {
+      dispatch(API.getExpandedCardType(id));
+    }
+  }, [status, dispatch, id]);
 
   return { cardType, status };
 }

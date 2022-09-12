@@ -57,6 +57,8 @@ import {
   space_M,
   space_S,
 } from '../../styling/style';
+import Presence from '../presence/Presence';
+import { PresenceContext, usePresenceContext } from '../presence/PresenceContext';
 import { defaultProjectIllustration } from '../ProjectCommon';
 import { ProjectSettings } from '../ProjectSettings';
 import Team from '../Team';
@@ -196,6 +198,7 @@ interface CardWrapperProps {
   children: (card: Card, variant: CardContent) => JSX.Element;
   backButtonPath: (card: Card, variant: CardContent) => string;
   backButtonTitle: string;
+  touchMode: 'zoom' | 'edit',
   grow?: number;
   align?: 'center' | 'normal';
 }
@@ -204,6 +207,7 @@ const CardWrapper = ({
   children,
   grow = 1,
   align = 'normal',
+  touchMode,
   backButtonPath,
   backButtonTitle,
 }: CardWrapperProps): JSX.Element => {
@@ -222,6 +226,16 @@ const CardWrapper = ({
 
   const ancestors = useAncestors(parentId);
   const navigate = useNavigate();
+
+  const { touch } = React.useContext(PresenceContext);
+
+  React.useEffect(() => {
+    touch({
+      cardId: cardId,
+      cardContentId: cardContentId,
+      context: touchMode,
+    });
+  }, [touch, cardContentId, cardId, touchMode]);
 
   React.useEffect(() => {
     if (card === undefined && cardId) {
@@ -390,6 +404,7 @@ function EditorNav({ project, setShowProjectDetails }: EditorNavProps): JSX.Elem
           />
         </div>
         <Flex align="center">
+          <Presence projectId={project.id!} />
           <Monkeys />
           <IconButton
             onClick={() => navigate('./project-settings/general')}
@@ -404,6 +419,24 @@ function EditorNav({ project, setShowProjectDetails }: EditorNavProps): JSX.Elem
   );
 }
 
+function RootView({ rootContent }: { rootContent: CardContent | null | undefined }) {
+  const { touch } = React.useContext(PresenceContext);
+
+  React.useEffect(() => {
+    touch({});
+  }, [touch]);
+
+  return (
+    <div>
+      {rootContent != null ? (
+        <ContentSubs showEmptiness={true} depth={depthMax} cardContent={rootContent} />
+      ) : (
+        <InlineLoading />
+      )}
+    </div>
+  );
+}
+
 export default function Editor(): JSX.Element {
   const dispatch = useAppDispatch();
   const i18n = useTranslations();
@@ -412,6 +445,8 @@ export default function Editor(): JSX.Element {
 
   const root = useProjectRootCard(project);
   const [showProjectDetails, setShowProjectDetails] = React.useState(false);
+
+  const presenceContext = usePresenceContext();
 
   const rootContent = useAppSelector(state => {
     if (entityIs(root, 'Card') && root.id != null) {
@@ -463,97 +498,90 @@ export default function Editor(): JSX.Element {
     return <InlineLoading />;
   } else {
     return (
-      <Flex direction="column" align="stretch" grow={1} className={fullPageStyle}>
-        <EditorNav project={project} setShowProjectDetails={setShowProjectDetails} />
-        <Flex className={showProjectDetails ? openDetails : closeDetails}>
-          <Flex justify="space-between" grow={1}>
-            <Flex gap={space_M}>
-              <IllustrationDisplay
-                illustration={
-                  project.illustration ? project.illustration : defaultProjectIllustration
-                }
-                className={css({ width: 'auto', padding: space_L, borderRadius: '50%' })}
+      <PresenceContext.Provider value={presenceContext}>
+        <Flex direction="column" align="stretch" grow={1} className={fullPageStyle}>
+          <EditorNav project={project} setShowProjectDetails={setShowProjectDetails} />
+          <Flex className={showProjectDetails ? openDetails : closeDetails}>
+            <Flex justify="space-between" grow={1}>
+              <Flex gap={space_M}>
+                <IllustrationDisplay
+                  illustration={
+                    project.illustration ? project.illustration : defaultProjectIllustration
+                  }
+                  className={css({ width: 'auto', padding: space_L, borderRadius: '50%' })}
+                />
+                <div>
+                  <div>
+                    <h3>{project.name}</h3>
+                    {project.description}
+                  </div>
+                  <div>
+                    <p>Created by: {project.trackingData?.createdBy}</p>
+                    <p>Created date: {i18n.common.datetime(project.trackingData?.creationDate)}</p>
+                    {/* more infos? Add project team names */}
+                  </div>
+                </div>
+              </Flex>
+              <IconButton
+                icon={faTimes}
+                title={i18n.common.close}
+                onClick={() => setShowProjectDetails(false)}
               />
-              <div>
-                <div>
-                  <h3>{project.name}</h3>
-                  {project.description}
-                </div>
-                <div>
-                  <p>Created by: {project.trackingData?.createdBy}</p>
-                  <p>Created date: {i18n.common.datetime(project.trackingData?.creationDate)}</p>
-                  {/* more infos? Add project team names */}
-                </div>
-              </div>
             </Flex>
-            <IconButton
-              icon={faTimes}
-              title={i18n.common.close}
-              onClick={() => setShowProjectDetails(false)}
-            />
+          </Flex>
+          <Flex
+            direction="column"
+            grow={1}
+            align="stretch"
+            className={css({
+              padding: space_L,
+              overflow: 'auto',
+            })}
+          >
+            <Routes>
+              <Route path="settings" element={<ProjectSettings project={project} />} />
+              <Route path="project-settings/*" element={<ProjectSettings project={project} />} />
+              <Route path="team" element={<Team project={project} />} />
+              <Route path="hierarchy" element={<Hierarchy rootId={root.id} />} />
+              <Route path="flow" element={<ActivityFlowChart />} />
+              <Route path="types/*" element={<ProjectCardTypeList />} />
+              <Route path="card/:id" element={<DefaultVariantDetector />} />
+              {/* Zooom on a card */}
+              <Route
+                path="card/:id/v/:vId/*"
+                element={
+                  <CardWrapper
+                    grow={0}
+                    align="center"
+                    backButtonPath={parentPathFn}
+                    backButtonTitle="Back to root project"
+                    touchMode='zoom'
+                  >
+                    {cardThumbFactory}
+                  </CardWrapper>
+                }
+              />
+              {/* Edit cart, send to default variant */}
+              <Route path="edit/:id" element={<DefaultVariantDetector />} />
+              {/* Edit card */}
+              <Route
+                path="edit/:id/v/:vId/*"
+                element={
+                  <CardWrapper
+                    backButtonPath={(card, variant) => `../card/${card.id}/v/${variant.id}`}
+                    backButtonTitle="Back to card view"
+                    touchMode='edit'
+                  >
+                    {(card, variant) => <CardEditor card={card} variant={variant} showSubcards />}
+                  </CardWrapper>
+                }
+              />
+              {/* All cards. Root route */}
+              <Route path="*" element={<RootView rootContent={rootContent} />} />
+            </Routes>
           </Flex>
         </Flex>
-        <Flex
-          direction="column"
-          grow={1}
-          align="stretch"
-          className={css({
-            padding: space_L,
-            overflow: 'auto',
-          })}
-        >
-          <Routes>
-            <Route path="settings" element={<ProjectSettings project={project} />} />
-            <Route path="project-settings/*" element={<ProjectSettings project={project} />} />
-            <Route path="team" element={<Team project={project} />} />
-            <Route path="hierarchy" element={<Hierarchy rootId={root.id} />} />
-            <Route path="flow" element={<ActivityFlowChart />} />
-            <Route path="types/*" element={<ProjectCardTypeList />} />
-            <Route path="card/:id" element={<DefaultVariantDetector />} />
-            {/* Zooom on a card */}
-            <Route
-              path="card/:id/v/:vId/*"
-              element={
-                <CardWrapper
-                  grow={0}
-                  align="center"
-                  backButtonPath={parentPathFn}
-                  backButtonTitle="Back to root project"
-                >
-                  {cardThumbFactory}
-                </CardWrapper>
-              }
-            />
-            {/* Edit cart, send to default variant */}
-            <Route path="edit/:id" element={<DefaultVariantDetector />} />
-            {/* Edit card */}
-            <Route
-              path="edit/:id/v/:vId/*"
-              element={
-                <CardWrapper
-                  backButtonPath={(card, variant) => `../card/${card.id}/v/${variant.id}`}
-                  backButtonTitle="Back to card view"
-                >
-                  {(card, variant) => <CardEditor card={card} variant={variant} showSubcards />}
-                </CardWrapper>
-              }
-            />
-            {/* All cards. Root route */}
-            <Route
-              path="*"
-              element={
-                <div>
-                  {rootContent != null ? (
-                    <ContentSubs showEmptiness={true} depth={depthMax} cardContent={rootContent} />
-                  ) : (
-                    <InlineLoading />
-                  )}
-                </div>
-              }
-            />
-          </Routes>
-        </Flex>
-      </Flex>
+      </PresenceContext.Provider>
     );
   }
 }
