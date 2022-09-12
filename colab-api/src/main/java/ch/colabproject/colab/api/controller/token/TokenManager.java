@@ -10,6 +10,7 @@ import ch.colabproject.colab.api.Helper;
 import ch.colabproject.colab.api.controller.RequestManager;
 import ch.colabproject.colab.api.controller.security.SecurityManager;
 import ch.colabproject.colab.api.controller.team.TeamManager;
+import ch.colabproject.colab.api.controller.user.UserManager;
 import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.api.model.team.TeamMember;
 import ch.colabproject.colab.api.model.team.acl.HierarchicalPosition;
@@ -25,8 +26,8 @@ import ch.colabproject.colab.api.service.smtp.Message;
 import ch.colabproject.colab.api.service.smtp.Sendmail;
 import ch.colabproject.colab.api.setup.ColabConfiguration;
 import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
+import ch.colabproject.colab.generator.model.exceptions.MessageI18nKey;
 import java.time.OffsetDateTime;
-import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 import javax.ejb.LocalBean;
@@ -47,11 +48,18 @@ public class TokenManager {
 
     /** logger */
     private static final Logger logger = LoggerFactory.getLogger(TokenDao.class);
+
     /**
      * to create team member
      */
     @Inject
     private TeamManager teamManager;
+
+    /**
+     * User and account specific logic
+     */
+    @Inject
+    private UserManager userManager;
 
     /**
      * To check access rights
@@ -96,13 +104,6 @@ public class TokenManager {
         String body = token.getEmailBody(baseUrl + "/#/token/" + token.getId()
             + "/" + plainToken);
 
-        String footer = "";
-        if (token.getExpirationDate() != null) {
-            footer = "<br /><br /><i>This link can be used until "
-                + token.getExpirationDate().format(DateTimeFormatter.RFC_1123_DATE_TIME)
-                + " GMT</i>";
-        }
-
         // this log message contains sensitive information (body contains the plain-text token)
         logger.trace("Send token {} to {} with body {}", token, recipient, body);
         Sendmail.send(
@@ -110,7 +111,7 @@ public class TokenManager {
                 .from("noreply@" + ColabConfiguration.getSmtpDomain())
                 .to(recipient)
                 .subject(token.getSubject())
-                .htmlBody(body + footer)
+                .htmlBody(body)
                 .build()
         );
     }
@@ -137,8 +138,10 @@ public class TokenManager {
             } else {
                 if (token.checkHash(plainToken)) {
                     requestManager.sudo(() -> {
-                        token.consume(requestManager);
-                        tokenDao.deleteToken(token);
+                        boolean isConsumed = token.consume(this);
+                        if (isConsumed) {
+                            tokenDao.deleteToken(token);
+                        }
                     });
                     return token;
                 } else {
@@ -155,6 +158,7 @@ public class TokenManager {
     ////////////////////////////////////////////////////////////////////////////////////////////////
     // Verify email address
     ////////////////////////////////////////////////////////////////////////////////////////////////
+
     /**
      * Create or update a validation token.
      * <p>
@@ -204,9 +208,23 @@ public class TokenManager {
         }
     }
 
+    /**
+     * Consume the local account verification token
+     *
+     * @param account the account related to the token
+     *
+     * @return true if the token can be consumed
+     */
+    public boolean consumeVerifyAccountToken(LocalAccount account) {
+        userManager.setLocalAccountAsVerified(account);
+
+        return true;
+    }
+
     ////////////////////////////////////////////////////////////////////////////////////////////////
     // RESET PASSWORD
     ////////////////////////////////////////////////////////////////////////////////////////////////
+
     /**
      * get existing reset password token if it exists or create new one otherwise.
      *
@@ -251,6 +269,19 @@ public class TokenManager {
                 throw HttpErrorMessage.smtpError();
             }
         }
+    }
+
+    /**
+     * Consume the given reset password login.
+     *
+     * @param account the account related to the token
+     *
+     * @return true if the token can be consumed
+     */
+    public boolean consumeResetPasswordToken(LocalAccount account) {
+        requestManager.login(account);
+
+        return true;
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////
@@ -305,6 +336,33 @@ public class TokenManager {
     public void deleteInvitationsByTeamMember(TeamMember teamMember) {
         List<InvitationToken> invitations = tokenDao.findInvitationByTeamMember(teamMember);
         invitations.stream().forEach(token -> tokenDao.deleteToken(token));
+    }
+
+    /**
+     * Consume the invitation token
+     *
+     * @param teamMember the team member related to the token
+     *
+     * @return true if the token can be consumed
+     */
+    public boolean consumeInvitationToken(TeamMember teamMember) {
+        User user = requestManager.getCurrentUser();
+        Project project = teamMember.getProject();
+
+        TeamMember existingTeamMember = teamManager.findMemberByUserAndProject(project, user);
+        if (existingTeamMember != null) {
+            throw HttpErrorMessage
+                .tokenProcessingFailure(MessageI18nKey.INVITATION_CONSUMING_BY_TEAMMEMBER);
+        }
+
+        if (user != null) {
+            teamMember.setUser(user);
+            teamMember.setDisplayName(null);
+        } else {
+            throw HttpErrorMessage.authenticationRequired();
+        }
+
+        return true;
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////

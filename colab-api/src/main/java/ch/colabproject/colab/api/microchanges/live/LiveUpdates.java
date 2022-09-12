@@ -20,6 +20,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
+import org.apache.commons.text.StringEscapeUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -59,6 +60,11 @@ public class LiveUpdates implements Serializable {
      * List of pending changes
      */
     private List<Change> pendingChanges = new ArrayList<>();
+
+    /**
+     * Temp debug data
+     */
+    private transient String debugData = null;
 
     /**
      * Get the JSON discriminator
@@ -216,41 +222,41 @@ public class LiveUpdates implements Serializable {
 
         offsets.put(index, currentOffset);
 
-        logger.trace("  modOffset.second " + offsets);
-
-        Map<Integer, Integer> modified = new HashMap<>();
-
-        // shift offsets after current index
-        offsets.entrySet().forEach(entry -> {
-            Integer key = entry.getKey();
-            if (key > index && key < index + value) {
-                logger.trace("CONFLIT");
-            }
-            if (key > index) {
-                // move offset to new index
-                Integer v = entry.getValue();
-                if (v != null) {
-                    int newKey = key + value;
-                    int newValue = v;
-                    if (offsets.containsKey(newKey)) {
-                        newValue = offsets.get(newKey) + newValue;
-                    }
-                    modified.put(key, 0);
-                    modified.put(newKey, newValue);
-                }
-            }
-        });
-
-        logger.trace("  modOffset.third " + modified);
-
-        // merge shifted offsets
-        modified.entrySet().forEach(entry -> {
-            Integer key = entry.getKey();
-            int current = entry.getValue();
-            offsets.put(key, current);
-        });
-
-        logger.trace(" mod Offsets.done " + offsets);
+//        logger.trace("  modOffset.second " + offsets);
+//
+//        Map<Integer, Integer> modified = new HashMap<>();
+//
+//        // shift offsets after current index
+//        offsets.entrySet().forEach(entry -> {
+//            Integer key = entry.getKey();
+//            if (key > index && key < index + value) {
+//                logger.trace("CONFLIT");
+//            }
+//            if (key > index) {
+//                // move offset to new index
+//                Integer v = entry.getValue();
+//                if (v != null) {
+//                    int newKey = key + value;
+//                    int newValue = v;
+//                    if (offsets.containsKey(newKey)) {
+//                        newValue = offsets.get(newKey) + newValue;
+//                    }
+//                    modified.put(key, 0);
+//                    modified.put(newKey, newValue);
+//                }
+//            }
+//        });
+//
+//        logger.trace("  modOffset.third " + modified);
+//
+//        // merge shifted offsets
+//        modified.entrySet().forEach(entry -> {
+//            Integer key = entry.getKey();
+//            int current = entry.getValue();
+//            offsets.put(key, current);
+//        });
+//
+//        logger.trace(" mod Offsets.done " + offsets);
     }
 
     /**
@@ -486,18 +492,18 @@ public class LiveUpdates implements Serializable {
         for (Change child : getByParent(changes, parent.getRevision())) {
             Set<String> childDeps = getAllDependencies(changes, child);
             if (!childDeps.contains(offsetFromRev)) {
-                logger.debug("PropagateOffset {}@{} to {}", offsets, offsetFromRev, child);
+                logger.trace("PropagateOffset {}@{} to {}", offsets, offsetFromRev, child);
                 // should propagate to children which are not based on the offsetsFromRev
                 boolean shiftFree = this.shift(child, offsets, forward);
                 Map<Integer, Integer> shiftedOffsets = shiftOffsets(offsets, child);
-                logger.debug("Shifted Offsets: {}", shiftedOffsets);
+                logger.trace("Shifted Offsets: {}", shiftedOffsets);
                 boolean pFree = this.propagateOffsets(changes, child, shiftedOffsets, forward, offsetFromRev);
                 conflictFree = conflictFree && shiftFree && pFree;
             } else {
                 //merge has been done
                 HashSet<String> newDeps = new HashSet<>(child.getBasedOn());
                 newDeps.remove(offsetFromRev);
-                logger.debug("Do not go deeper than {}, now based on {}", child, newDeps);
+                logger.trace("Do not go deeper than {}, now based on {}", child, newDeps);
                 child.setBasedOn(newDeps);
                 //child.getBasedOn().remove(offsetFromRev);
             }
@@ -572,24 +578,30 @@ public class LiveUpdates implements Serializable {
         Set<String> changeDeps = getAllDependencies(changes, change);
 
         if (setsEqual(baseDeps, changeDeps)) {
-            // exact same set of dependencies: changes are sieblings
-            Map<Integer, Integer> offsets = computeOffset(newBase);
-            boolean conflictFree = true;
-            String newBaseRev = newBase.getRevision();
+            try {
+                // exact same set of dependencies: changes are sieblings
+                Map<Integer, Integer> offsets = computeOffset(newBase);
+                boolean conflictFree = true;
+                String newBaseRev = newBase.getRevision();
 
-            logger.debug("Rebase Sieblings: " + change + " on " + newBase
-                + " with offset " + offsets);
+                logger.trace("Rebase Sieblings: " + change + " on " + newBase
+                    + " with offset " + offsets);
 
-            conflictFree = shift(change, offsets, true) && conflictFree;
-            conflictFree = propagateOffsets(changes, change,
-                offsets, true, newBaseRev) && conflictFree;
+                conflictFree = shift(change, offsets, true) && conflictFree;
+                conflictFree = propagateOffsets(changes, change,
+                    offsets, true, newBaseRev) && conflictFree;
 
-            // Update parents after rebase/propagation step
-            change.setBasedOn(Set.of(newBase.getRevision()));
-            logger.trace(" -> " + change);
-            return conflictFree;
+                // Update parents after rebase/propagation step
+                change.setBasedOn(Set.of(newBase.getRevision()));
+                logger.trace(" -> " + change);
+                return conflictFree;
+            } catch (StackOverflowError e) {
+                logger.warn("Major issue: fail to propagate offset");
+                printDebugData();
+                throw e;
+            }
         } else if (setsEqual(Set.of(change.getRevision()), newBase.getBasedOn())) {
-            logger.debug("Inverse hierarchy : " + change + " on " + newBase);
+            logger.trace("Inverse hierarchy : " + change + " on " + newBase);
             // [x] -> change -> newBase
             // ==>[x] ->  newBase -> change
 
@@ -611,7 +623,7 @@ public class LiveUpdates implements Serializable {
             return conflictFree;
         } else if (changeDeps.containsAll(baseDeps)) {
             // nothing to do as all deps are already known
-            logger.info("Nothing to do: change includes all base parents");
+            logger.trace("Nothing to do: change includes all base parents");
             return true;
         } else {
             logger.error("Not yet implemented: Changes: {} Change: {} NewBase: {} BaseDeps: {} ChangeDeps: {}", changes, change.getRevision(), newBase.getRevision(), baseDeps, changeDeps);
@@ -620,7 +632,7 @@ public class LiveUpdates implements Serializable {
     }
 
     /**
-     * FIlter list of change and return only those which match the given live session
+     * Filter list of change and return only those which match the given live session
      *
      * @param changes list of changes
      * @param author  live-session id
@@ -646,6 +658,9 @@ public class LiveUpdates implements Serializable {
      * @return up-to date content
      */
     public LiveResult process(boolean strict) {
+        initDebugData();
+        logger.debug("Debug Data {}", this.debugData);
+
         StringBuilder buffer = new StringBuilder();
         if (this.content != null) {
             buffer.append(this.content);
@@ -667,7 +682,7 @@ public class LiveUpdates implements Serializable {
             if (!children.isEmpty()) {
                 //Map<Integer, Integer> offsets = new HashMap<>();
                 //logger.trace("new empty offsets " + offsets);
-                logger.debug("All @{} children: {}", currentRevision, mapChangesRevision(children));
+                logger.trace("All @{} children: {}", currentRevision, mapChangesRevision(children));
 
                 // find a child which depends only only already applied changes
                 // NB: as I understand the algorithm, I can't figure out a case
@@ -681,7 +696,7 @@ public class LiveUpdates implements Serializable {
                     changes.remove(change);
                     children.remove(change);
 
-                    logger.debug("Process: {}", change);
+                    logger.trace("Process: {}", change);
 
                     List<MicroChange> muChanges = change.getMicrochanges();
                     for (int i = muChanges.size() - 1; i >= 0; i--) {
@@ -689,7 +704,7 @@ public class LiveUpdates implements Serializable {
                         logger.trace("  " + i + ")" + buffer);
                     }
 
-                    logger.debug(" -> {}", buffer);
+                    logger.trace(" -> {}", buffer);
                     // logger.trace("Offsets" + offsets);
                     // rebase others children
 
@@ -704,12 +719,16 @@ public class LiveUpdates implements Serializable {
                     }
                     currentRevision = change.getRevision();
                 } else {
+                    //TODO add full tree JSON formated full tree
                     logger.error("No child found in {}", children);
+                    printDebugData();
                     break;
                 }
 
             } else {
+                //TODO add full tree JSON formated full tree
                 logger.error("Some children without any parents left: {}", changes);
+                printDebugData();
                 break;
             }
         }
@@ -720,5 +739,44 @@ public class LiveUpdates implements Serializable {
     @Override
     public String toString() {
         return "LiveUpdates{" + "targetClass=" + targetClass + ", targetId=" + targetId + ", revision=" + revision + ", content=" + content + ", pendingChanges=" + pendingChanges + '}';
+    }
+
+    /**
+     * Build log message that can be easily used to reproduces the process in a test
+     */
+    public void initDebugData() {
+
+        StringBuilder sb = new StringBuilder();
+        sb.append("test('A Test', () => {")
+            .append(System.lineSeparator())
+            .append("const initialValue = \"")
+            .append(StringEscapeUtils.escapeEcmaScript(this.content))
+            .append("\";").append(System.lineSeparator())
+            .append("const initialRevision = \"")
+            .append(StringEscapeUtils.escapeEcmaScript(this.revision))
+            .append("\";").append(System.lineSeparator())
+            .append(System.lineSeparator())
+            .append(System.lineSeparator())
+            .append("const changes =[")
+            .append(System.lineSeparator());
+
+        this.pendingChanges.forEach(change -> {
+            sb.append(change.toDebugStatement()).append(", ").append(System.lineSeparator());
+        });
+
+        sb.append("];").append(System.lineSeparator())
+            .append(System.lineSeparator())
+            .append("const newValue = LiveHelper.process(initialValue, initialRevision, changes);")
+            .append(System.lineSeparator())
+            .append("});");
+
+        this.debugData = sb.toString();
+    }
+
+    /**
+     * Print debug message
+     */
+    public void printDebugData() {
+        logger.warn("Debug Data {}", this.debugData);
     }
 }

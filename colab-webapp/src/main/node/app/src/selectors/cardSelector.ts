@@ -9,6 +9,7 @@ import { Card, CardContent, InvolvementLevel, Project } from 'colab-rest-client'
 import { mapValues, uniq } from 'lodash';
 import * as React from 'react';
 import * as API from '../API/api';
+import { sortCardContents } from '../helper';
 import logger from '../logger';
 import { CardContentDetail, CardDetail } from '../store/card';
 import {
@@ -28,7 +29,8 @@ export const useProjectRootCard = (project: Project | null | undefined): Card | 
     if (project != null) {
       if (typeof state.cards.rootCardId === 'string') {
         if (state.cards.rootCardId === 'NOT_INITIALIZED') {
-          dispatch(API.getRootCardOfProject(project.id!));
+          dispatch(API.getProjectStructure(project.id!));
+          // dispatch(API.getRootCardOfProject(project.id!));
         }
         return 'LOADING';
       } else {
@@ -42,7 +44,8 @@ export const useProjectRootCard = (project: Project | null | undefined): Card | 
             return 'LOADING';
           }
         } else {
-          dispatch(API.getRootCardOfProject(project.id!));
+          dispatch(API.getProjectStructure(project.id!));
+          // dispatch(API.getRootCardOfProject(project.id!));
           return 'LOADING';
         }
       }
@@ -82,10 +85,12 @@ export function useVariantsOrLoad(card?: Card): CardContent[] | null | undefined
         return null;
       } else {
         const contentState = state.cards.contents;
-        return cardState.contents.flatMap(contentId => {
-          const content = contentState[contentId];
-          return content && content.content ? [content.content] : [];
-        });
+        return sortCardContents(
+          cardState.contents.flatMap(contentId => {
+            const content = contentState[contentId];
+            return content && content.content ? [content.content] : [];
+          }),
+        );
       }
     } else {
       return null;
@@ -134,6 +139,7 @@ export const useCardContent = (
 export interface Ancestor {
   card: Card | number | undefined | 'LOADING';
   content: CardContent | number | 'LOADING';
+  last?: boolean;
 }
 
 export const useAncestors = (contentId: number | null | undefined): Ancestor[] => {
@@ -393,15 +399,15 @@ export const useAndLoadCardACL = (cardId: number | null | undefined): CardAcl =>
 };
 
 export type MyCardAcl = {
-  status: {
-    cardId: number | null | undefined;
-    missingCardId: number | undefined;
-    missingCardContentId: number | undefined;
-    missingAclCardId: number | undefined;
-  };
-  mine: InvolvementLevel | undefined;
-  read: boolean;
-  write: boolean;
+  // status: {
+  //   cardId: number | null | undefined;
+  //   missingCardId: number | undefined;
+  //   missingCardContentId: number | undefined;
+  //   missingAclCardId: number | undefined;
+  // };
+  // mine: InvolvementLevel | undefined;
+  canRead: boolean | undefined;
+  canWrite: boolean | undefined;
 };
 
 const levelOrder: Record<InvolvementLevel, { order: number; write: boolean }> = {
@@ -433,23 +439,65 @@ export const useCardACLForCurrentUser = (cardId: number | null | undefined): MyC
 
   const member = useMyMember(project?.id, currentUser?.id);
 
+  if (currentUser?.admin) {
+    return {
+      canRead: true,
+      canWrite: true,
+    };
+  }
+
   if (member?.id != null) {
     const levels = acl.effective.members[member.id];
     if (levels) {
       const resolved = resolveAcl(levels);
       return {
-        status: acl.status,
-        mine: resolved,
-        read: resolved !== 'OUT_OF_THE_LOOP',
-        write: levelOrder[resolved].write,
+        // status: acl.status,
+        // mine: resolved,
+        canRead: resolved !== 'OUT_OF_THE_LOOP',
+        canWrite: levelOrder[resolved].write,
       };
     }
   }
 
   return {
-    status: acl.status,
-    mine: undefined,
-    read: false,
-    write: false,
+    // status: acl.status,
+    // mine: undefined,
+    canRead: undefined,
+    canWrite: undefined,
   };
+};
+
+export const useSubCards = (cardContentId: number | null | undefined) => {
+  return useAppSelector(state => {
+    if (cardContentId) {
+      const contentState = state.cards.contents[cardContentId];
+      if (contentState != null) {
+        if (contentState.subs != null) {
+          return contentState.subs.flatMap(cardId => {
+            const cardState = state.cards.cards[cardId];
+            return cardState && cardState.card ? [cardState.card] : [];
+          });
+        } else {
+          return contentState.subs;
+        }
+      }
+    } else {
+      return [];
+    }
+  }, shallowEqual);
+};
+
+export const useAndLoadSubCards = (cardContentId: number | null | undefined) => {
+  const dispatch = useAppDispatch();
+  const subCards = useSubCards(cardContentId);
+
+  React.useEffect(() => {
+    if (subCards === undefined) {
+      if (cardContentId) {
+        dispatch(API.getSubCards(cardContentId));
+      }
+    }
+  }, [subCards, dispatch, cardContentId]);
+
+  return subCards;
 };

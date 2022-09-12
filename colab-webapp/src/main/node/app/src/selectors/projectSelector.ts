@@ -5,7 +5,7 @@
  * Licensed under the MIT License
  */
 
-import { Project, TeamMember, TeamRole } from 'colab-rest-client';
+import { entityIs, Project, TeamMember, TeamRole } from 'colab-rest-client';
 import * as React from 'react';
 import * as API from '../API/api';
 import {
@@ -14,41 +14,50 @@ import {
   useAppDispatch,
   useAppSelector,
 } from '../store/hooks';
-import { StateStatus } from '../store/project';
+import { StateStatus } from '../store/slice/projectSlice';
 import { AvailabilityStatus } from '../store/store';
 
 export interface UsedProject {
   project: Project | null | undefined;
-  status: StateStatus;
+  status: AvailabilityStatus;
 }
 
 export const useProject = (id: number): UsedProject => {
   return useAppSelector(state => {
     const project = state.projects.projects[id];
-    if (project) {
+    if (entityIs(project, 'Project')) {
       // project is known
       return {
         project: project,
-        status: 'INITIALIZED',
+        status: 'READY',
       };
     } else {
-      // project is not knwon
-      if (state.projects.status === 'INITIALIZED') {
-        // state is up to date, such project just does not exist
+      if (project === 'ERROR') {
         return {
           project: null,
-          status: `INITIALIZED`,
+          status: 'ERROR',
         };
       } else {
-        // this project may or may not exist...
         return {
-          project: undefined,
-          status: state.projects.status,
+          project: null,
+          status: project || 'NOT_INITIALIZED',
         };
       }
     }
   }, shallowEqual);
 };
+
+export function useAndLoadProject(id: number): UsedProject {
+  const dispatch = useAppDispatch();
+
+  const { project, status } = useProject(id);
+
+  if (status === 'NOT_INITIALIZED') {
+    dispatch(API.getProject(id));
+  }
+
+  return { project, status };
+}
 
 export const useProjectBeingEdited = (): {
   project: Project | null;
@@ -58,7 +67,7 @@ export const useProjectBeingEdited = (): {
     if (state.projects.editing != null) {
       const project = state.projects.projects[state.projects.editing];
       return {
-        project: project || null,
+        project: entityIs(project, 'Project') ? project : null,
         status: state.projects.editingStatus,
       };
     } else {
@@ -137,7 +146,7 @@ function useModelProjects(): ProjectsAndStatus {
     return Object.values(
       state.projects.mine.flatMap(id => {
         const proj = state.projects.projects[id];
-        return proj ? [proj] : [];
+        return entityIs(proj, 'Project') ? [proj] : [];
       }),
     );
   }, shallowEqual);

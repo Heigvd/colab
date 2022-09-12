@@ -33,7 +33,6 @@ import org.glassfish.jersey.media.multipart.FormDataBodyPart;
  * Handles DocumentFiles instances both DB and Jcr persistence
  *
  * @author xaviergood
- *
  */
 @LocalBean
 @Stateless
@@ -72,7 +71,7 @@ public class FileManager {
      *
      * @throws RepositoryException in case of a JCR issue
      */
-    public void updateFile(
+    public void updateOrCreateFile(
         Long docId,
         Long fileSize,
         InputStream file,
@@ -80,7 +79,7 @@ public class FileManager {
         throws RepositoryException {
         FormDataContentDisposition details = body.getFormDataContentDisposition();
 
-        //charset black magic
+        // charset black magic
         var fileNameBytes = details.getFileName().getBytes(StandardCharsets.ISO_8859_1);
         var fileName = new String(fileNameBytes, StandardCharsets.UTF_8);
 
@@ -118,6 +117,26 @@ public class FileManager {
     }
 
     /**
+     * Update or create the file for the given document
+     *
+     * @param documentId  document id
+     * @param fileContent file content
+     *
+     * @throws RepositoryException in case of JCR problem
+     */
+    public void updateOrCreateFile(Long documentId, InputStream fileContent)
+        throws RepositoryException {
+        Document doc = documentDao.findDocument(documentId);
+        if (!(doc instanceof DocumentFile)) {
+            throw HttpErrorMessage.notFound();
+        }
+
+        Project project = doc.getProject();
+
+        this.jcrManager.updateOrCreateFile(project, documentId, fileContent);
+    }
+
+    /**
      * Delete the file contents, and resets size and mime type
      *
      * @param docId id of document
@@ -133,7 +152,8 @@ public class FileManager {
 
         Project project = doc.getProject();
         DocumentFile hostedDoc = (DocumentFile) doc;
-        FileManager.logger.debug("Deleting file '{}' with id {}", hostedDoc.getFileName(), doc.getId());
+        FileManager.logger.debug("Deleting file '{}' with id {}", hostedDoc.getFileName(),
+            doc.getId());
 
         hostedDoc.setFileName(null);
         hostedDoc.setFileSize(0L);
@@ -144,7 +164,29 @@ public class FileManager {
     }
 
     /**
-     * Retrieves the file content. Not used yet
+     * Tells if a file exists for the given identifier
+     *
+     * @param documentId id of the requested document
+     *
+     * @return true if there is a corresponding file
+     *
+     * @throws RepositoryException in case of a JCR issue
+     */
+    public boolean hasFile(Long documentId) throws RepositoryException {
+        var doc = this.documentDao.findDocument(documentId);
+
+        if (!(doc instanceof DocumentFile)) {
+            throw HttpErrorMessage.notFound();
+        }
+
+        Project project = doc.getProject();
+
+        return jcrManager.nodeExists(project, documentId);
+
+    }
+
+    /**
+     * Retrieves the file content.
      *
      * @param documentId id of the requested document
      *
@@ -165,7 +207,7 @@ public class FileManager {
     }
 
     /**
-     * Encore path as URI component
+     * Encode path as URI component
      *
      * @param path path to encode
      *
@@ -190,7 +232,8 @@ public class FileManager {
      *
      * @throws RepositoryException in case of a JCR issue
      */
-    public ImmutableTriple<BufferedInputStream, String, MediaType> getDownloadFileInfo(Long documentId) throws RepositoryException {
+    public ImmutableTriple<BufferedInputStream, String, MediaType> getDownloadFileInfo(
+        Long documentId) throws RepositoryException {
         var doc = this.documentDao.findDocument(documentId);
 
         if (!(doc instanceof DocumentFile)) {

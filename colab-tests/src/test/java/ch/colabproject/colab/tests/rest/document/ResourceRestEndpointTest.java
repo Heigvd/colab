@@ -74,7 +74,7 @@ public class ResourceRestEndpointTest extends AbstractArquillianTest {
         Assertions.assertFalse(persistedResource.isPublished());
         Assertions.assertFalse(persistedResource.isRequestingForGlory());
         Assertions.assertFalse(persistedResource.isDeprecated());
-
+        Assertions.assertEquals(category, persistedResource.getCategory());
         List<Document> persistedDocs = client.resourceRestEndpoint
             .getDocumentsOfResource(resourceId);
         Assertions.assertNotNull(persistedDocs);
@@ -124,6 +124,7 @@ public class ResourceRestEndpointTest extends AbstractArquillianTest {
         Assertions.assertTrue(persistedResource.isPublished());
         Assertions.assertFalse(persistedResource.isRequestingForGlory());
         Assertions.assertFalse(persistedResource.isDeprecated());
+        Assertions.assertNull(persistedResource.getCategory());
 
         List<Document> persistedDocs = client.resourceRestEndpoint
             .getDocumentsOfResource(resourceId);
@@ -150,10 +151,11 @@ public class ResourceRestEndpointTest extends AbstractArquillianTest {
         String category = "awesome resources #" + ((int) (Math.random() * 1000));
 
         persistedResource.setTitle(title);
-        persistedResource.setCategory(category);
 
         persistedResource.setRequestingForGlory(true);
 
+        // published is not updatable via resourceRestEndpoint.updateResource
+        persistedResource.setCategory(category);
         // published is not updatable via resourceRestEndpoint.updateResource
         persistedResource.setPublished(false);
         // deprecated is not updatable via resourceRestEndpoint.updateResource
@@ -167,8 +169,9 @@ public class ResourceRestEndpointTest extends AbstractArquillianTest {
         Assertions.assertEquals(resourceId, persistedResource.getId());
         Assertions.assertEquals(title, persistedResource.getTitle());
         Assertions.assertTrue(persistedResource.isRequestingForGlory());
-        Assertions.assertEquals(category, persistedResource.getCategory());
 
+        // deprecated is not updatable via resourceRestEndpoint.updateResource
+        Assertions.assertNull(persistedResource.getCategory());
         // published is not updatable via resourceRestEndpoint.updateResource
         Assertions.assertTrue(persistedResource.isPublished());
         // deprecated is not updatable via resourceRestEndpoint.updateResource
@@ -416,6 +419,7 @@ public class ResourceRestEndpointTest extends AbstractArquillianTest {
 
         String category = "category " + ((int) (Math.random() * 1000));
 
+        // refused is not updatable via resourceRestEndpoint.updateResourceRef
         persistedResourceRef.setCategory(category);
 
         // refused is not updatable via resourceRestEndpoint.updateResourceRef
@@ -431,9 +435,10 @@ public class ResourceRestEndpointTest extends AbstractArquillianTest {
         Assertions.assertTrue(persistedAbstractResourceRef instanceof ResourceRef);
 
         persistedResourceRef = (ResourceRef) persistedAbstractResourceRef;
-        Assertions.assertEquals(category, persistedResourceRef.getCategory());
         Assertions.assertEquals(cardId, persistedResourceRef.getCardId());
 
+        // refused is not updatable via resourceRestEndpoint.updateResourceRef
+        Assertions.assertNull(persistedResourceRef.getCategory());
         // refused is not updatable via resourceRestEndpoint.updateResourceRef
         Assertions.assertFalse(persistedResourceRef.isRefused());
         // residual is not updatable via resourceRestEndpoint.updateResourceRef

@@ -10,6 +10,7 @@ import ch.colabproject.colab.api.controller.DuplicationManager;
 import ch.colabproject.colab.api.controller.RequestManager;
 import ch.colabproject.colab.api.controller.card.CardManager;
 import ch.colabproject.colab.api.controller.card.CardTypeManager;
+import ch.colabproject.colab.api.controller.document.FileManager;
 import ch.colabproject.colab.api.controller.document.ResourceReferenceSpreadingHelper;
 import ch.colabproject.colab.api.controller.security.SecurityManager;
 import ch.colabproject.colab.api.controller.team.TeamManager;
@@ -25,6 +26,7 @@ import ch.colabproject.colab.api.model.team.TeamMember;
 import ch.colabproject.colab.api.model.team.acl.HierarchicalPosition;
 import ch.colabproject.colab.api.model.user.User;
 import ch.colabproject.colab.api.persistence.jpa.project.ProjectDao;
+import ch.colabproject.colab.api.rest.project.bean.ProjectStructure;
 import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
 import java.util.ArrayList;
 import java.util.List;
@@ -101,6 +103,12 @@ public class ProjectManager {
      */
     @Inject
     private ResourceReferenceSpreadingHelper resourceReferenceSpreadingHelper;
+
+    /**
+     * File persistence management
+     */
+    @Inject
+    private FileManager fileManager;
 
     // *********************************************************************************************
     // find projects
@@ -268,10 +276,18 @@ public class ProjectManager {
     public Project duplicateProject(Long projectId, DuplicationParam params) {
         Project originalProject = assertAndGetProject(projectId);
 
-        Project newProject = new DuplicationManager(params, resourceReferenceSpreadingHelper)
-            .duplicateProject(originalProject);
+        DuplicationManager duplicator = new DuplicationManager(params,
+            resourceReferenceSpreadingHelper, fileManager);
 
-        return createProject(newProject);
+        Project newProjectJavaObject = duplicator.duplicateProject(originalProject);
+
+        Project newProject = createProject(newProjectJavaObject);
+
+        duplicator.duplicateDataIntoJCR();
+
+        duplicator.clear();
+
+        return newProject;
     }
 
     // *********************************************************************************************
@@ -321,6 +337,32 @@ public class ProjectManager {
         Project project = assertAndGetProject(projectId);
 
         return cardManager.getAllCardContents(project.getRootCard());
+    }
+
+    /**
+     * Get project whole structure
+     *
+     * @param projectId id of the project
+     *
+     * @return project structure
+     */
+    public ProjectStructure getStructure(Long projectId) {
+        logger.debug("get all card contents of project #{}", projectId);
+
+        Project project = assertAndGetProject(projectId);
+
+        ProjectStructure structure = new ProjectStructure();
+        Card rootCard = project.getRootCard();
+
+        if (rootCard != null) {
+            structure.setRootCardId(rootCard.getId());
+        }
+
+        structure.setCards(cardManager.getAllCards(rootCard));
+
+        structure.setCardContents(cardManager.getAllCardContents(rootCard));
+
+        return structure;
     }
 
     /**

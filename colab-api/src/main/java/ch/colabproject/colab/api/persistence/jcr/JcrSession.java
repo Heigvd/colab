@@ -21,10 +21,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- *
  * @author maxence
  */
 public class JcrSession implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     /**
      * logger
@@ -63,8 +64,8 @@ public class JcrSession implements Serializable {
      */
     public JcrSession(Repository repository, Project project) throws RepositoryException {
         logger.trace("Create JCR Session for {}", project);
-        //TODO create user if not present in
-        //TODO long term :
+        // TODO create user if not present in
+        // TODO long term :
         this.session = repository.login(credentials);
         this.workspace = "project_" + project.getId();
         this.workspacePath = "/" + this.workspace;
@@ -171,7 +172,8 @@ public class JcrSession implements Serializable {
         if (this.session != null && this.session.isLive()) {
             session.getRootNode();
         } else {
-            logger.warn("PrepareForCommit failed: session does not exists or has already been closed ");
+            logger.warn(
+                "PrepareForCommit failed: session does not exists or has already been closed ");
             // TODO throw something else, but what ?
             throw HttpErrorMessage.dataIntegrityFailure();
         }
@@ -197,7 +199,9 @@ public class JcrSession implements Serializable {
         try {
             session.save();
         } catch (RepositoryException ex) {
-            logger.error("Error occured while saving changes despite prepareForCommit did not throw anything !", ex);
+            logger.error(
+                "Error occured while saving changes despite prepareForCommit did not throw anything !",
+                ex);
             /* no-op */
         }
         session.logout();

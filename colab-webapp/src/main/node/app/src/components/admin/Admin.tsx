@@ -7,16 +7,20 @@
 
 import { css } from '@emotion/css';
 import * as React from 'react';
+import useTranslations from '../../i18n/I18nContext';
 import GlobalCardTypeList from '../cards/cardtypes/GlobalCardTypeList';
 import Tabs, { Tab } from '../common/layout/Tabs';
 import { AllProjects } from '../projects/ProjectList';
 import { space_L } from '../styling/style';
 import AllUsers from './AllUsers';
+import LiveMonitor from './LiveMonitor';
 import LoggersConfig from './LoggersConfig';
 import MainPanel from './MainPanel';
 import Who from './Who';
 
 export default function Admin(): JSX.Element {
+  const i18n = useTranslations();
+
   React.useEffect(() => {
     if (window && window.top && window.top.document) {
       window.top.document.title = 'co.LAB';
@@ -27,7 +31,7 @@ export default function Admin(): JSX.Element {
     <div className={css({ padding: space_L })}>
       <h2>Admin Page</h2>
       <div>
-        <Tabs>
+        <Tabs routed>
           <Tab name="main" label="Admin">
             <MainPanel />
           </Tab>
@@ -43,8 +47,11 @@ export default function Admin(): JSX.Element {
           <Tab name="onlineusers" label="Online Users">
             <Who />
           </Tab>
-          <Tab name="types" label="Card Types">
+          <Tab name="cardtypes" label={i18n.modules.cardType.cardTypesLongWay}>
             <GlobalCardTypeList />
+          </Tab>
+          <Tab name="liveMonitor" label="Live Monitor">
+            <LiveMonitor />
           </Tab>
         </Tabs>
       </div>

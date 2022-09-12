@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.Set;
 import javax.json.bind.annotation.JsonbTransient;
 import javax.validation.constraints.NotNull;
+import org.apache.commons.text.StringEscapeUtils;
 
 /**
  * A change is an atomic set of microchanges.
@@ -214,5 +215,34 @@ public class Change implements Serializable, WithWebsocketChannels {
         return "Patch{rev@" + this.revision
             + " basedOn@" + this.basedOn + " µ: "
             + this.microchanges + "}";
+    }
+
+    /**
+     * Get debug code
+     *
+     * @return debug code
+     */
+    public String toDebugStatement() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("createChange(\"").append(
+            StringEscapeUtils.escapeEcmaScript(this.liveSession)
+        ).append("\", [");
+
+        this.basedOn.forEach(base -> {
+            sb.append("\"")
+                .append(StringEscapeUtils.escapeEcmaScript(base))
+                .append("\", ");
+        });
+
+        sb.append("], \"")
+            .append(StringEscapeUtils.escapeEcmaScript(this.revision))
+            .append("\"");
+
+        this.microchanges.forEach(mu -> {
+            sb.append(", ").append(mu.getDebugStatement());
+        });
+        sb.append(")");
+
+        return sb.toString();
     }
 }

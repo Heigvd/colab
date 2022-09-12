@@ -64,17 +64,21 @@ export default function ProjectCreator({
   const [showCreateButton, setShowCreateButton] = React.useState<boolean>(false);
 
   const [readOnly, setReadOnly] = React.useState<boolean>(false);
-  const {isLoading, startLoading, stopLoading} = useLoadingState();
+  const { isLoading, startLoading, stopLoading } = useLoadingState();
 
   React.useEffect(() => {
     if (status === 'chooseModel') {
-      setTitle('Create new project : choose a model');
+      setTitle(
+        i18n.modules.project.actions.createAProject +
+          ' : ' +
+          i18n.modules.project.actions.chooseAModel,
+      );
     } else if (status === 'fillBasisData' && data.projectModel) {
-      setTitle('Create new project : ' + data.projectModel.name);
+      setTitle(i18n.modules.project.actions.createAProjectFrom(data.projectModel.name));
     } else {
-      setTitle('Create new project');
+      setTitle(i18n.modules.project.actions.createAProject);
     }
-  }, [status, data.projectModel]);
+  }, [status, i18n, data.projectModel]);
 
   React.useEffect(() => {
     if (status === 'chooseModel') {
@@ -120,7 +124,7 @@ export default function ProjectCreator({
       heightMax
       collapsedChildren={
         <Button className={collapsedButtonClassName} icon={faPlus} clickable={!disabled}>
-          New project
+          {i18n.modules.project.actions.createProject}
         </Button>
       }
       footer={close => (

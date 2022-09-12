@@ -6,9 +6,9 @@
  */
 package ch.colabproject.colab.api.model.token;
 
-import ch.colabproject.colab.api.controller.RequestManager;
+import ch.colabproject.colab.api.controller.token.TokenManager;
+import ch.colabproject.colab.api.model.token.tools.ResetLocalAccountPasswordMessageBuilder;
 import ch.colabproject.colab.api.model.user.LocalAccount;
-import java.text.MessageFormat;
 import javax.json.bind.annotation.JsonbTransient;
 import javax.persistence.Entity;
 import javax.persistence.Index;
@@ -81,19 +81,20 @@ public class ResetLocalAccountPasswordToken extends Token {
     @Override
     public String getRedirectTo() {
         if (localAccount != null) {
-            return "/settings/account/" + localAccount.getId();
+            return "/settings/user"; // "/settings/account/" + localAccount.getId();
         } else {
             return "";
         }
     }
 
-    /**
-     * auto-login
-     */
     @Override
-    public void consume(RequestManager requestManager) {
-        requestManager.login(localAccount);
+    public boolean consume(TokenManager tokenManager) {
+        return tokenManager.consumeResetPasswordToken(localAccount);
     }
+
+    // ---------------------------------------------------------------------------------------------
+    // to build a message
+    // ---------------------------------------------------------------------------------------------
 
     @JsonbTransient
     @Override
@@ -103,9 +104,7 @@ public class ResetLocalAccountPasswordToken extends Token {
 
     @Override
     public String getEmailBody(String link) {
-        return MessageFormat.format("Hi {0},<br /><br />"
-            + "Click <a href=\"{1}\">here</a> to reset your password.<br /><br />",
-            localAccount.getUser().getDisplayName(), link);
+        return ResetLocalAccountPasswordMessageBuilder.build(this, link);
     }
 
     // ---------------------------------------------------------------------------------------------

@@ -8,7 +8,7 @@
 import { cx } from '@emotion/css';
 import * as React from 'react';
 import { Suspense } from 'react';
-import { render } from 'react-dom';
+import { createRoot } from 'react-dom/client';
 import { Provider } from 'react-redux';
 import { HashRouter, Route, Routes, useParams } from 'react-router-dom';
 import { I18nCtx, Language } from '../i18n/I18nContext';
@@ -22,6 +22,8 @@ import Notifier from './common/toplevel/Notifier';
 import MainApp from './MainApp';
 import { lightTheme, normalThemeMode } from './styling/style';
 import Token from './token/Token';
+
+import 'inter-ui/inter.css';
 
 /**
  * To read parameters from hash
@@ -39,6 +41,7 @@ function App(): JSX.Element {
     NEWS: true,
     TIPS: true,
     WIP: false,
+    DEBUG: false,
   });
 
   const setTodoCb = React.useCallback(
@@ -73,6 +76,15 @@ function App(): JSX.Element {
       setTipsConfig(state => ({
         ...state,
         WIP: v,
+      })),
+    [setTipsConfig],
+  );
+
+  const setDebugCb = React.useCallback(
+    (v: boolean) =>
+      setTipsConfig(state => ({
+        ...state,
+        DEBUG: v,
       })),
     [setTipsConfig],
   );
@@ -115,6 +127,10 @@ function App(): JSX.Element {
                       value: tipsConfig.WIP,
                       set: setWipCb,
                     },
+                    DEBUG: {
+                      value: tipsConfig.DEBUG,
+                      set: setDebugCb,
+                    },
                   }}
                 >
                   <Notifier />
@@ -136,7 +152,9 @@ function App(): JSX.Element {
 }
 
 function mount() {
-  return render(<App />, document.getElementById('root'));
+  const container = document.getElementById('root');
+  const root = createRoot(container!);
+  return root.render(<App />);
 }
 
 init();

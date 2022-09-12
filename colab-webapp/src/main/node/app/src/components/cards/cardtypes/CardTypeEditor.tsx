@@ -27,12 +27,21 @@ import Button from '../../common/element/Button';
 import IconButton from '../../common/element/IconButton';
 import { DiscreetInput, LabeledTextArea } from '../../common/element/Input';
 import Tips from '../../common/element/Tips';
-import Toggler from '../../common/Form/Toggler';
+import Toggler from '../../common/element/Toggler';
 import ConfirmDeleteModal from '../../common/layout/ConfirmDeleteModal';
 import Flex from '../../common/layout/Flex';
 import { DocTextWrapper } from '../../documents/DocTextItem';
-import ResourcesWrapper from '../../resources/ResourcesWrapper';
-import { cardStyle, errorColor, localTitleStyle, space_M, space_S } from '../../styling/style';
+import { ResourceCallContext } from '../../resources/resourcesCommonType';
+import ResourcesMainView from '../../resources/ResourcesMainView';
+import { ResourceListNb } from '../../resources/summary/ResourcesListSummary';
+import {
+  cardStyle,
+  errorColor,
+  localTitleStyle,
+  space_M,
+  space_S,
+  textSmall,
+} from '../../styling/style';
 import SideCollapsiblePanel from './../SideCollapsiblePanel';
 
 interface CardTypeEditorProps {
@@ -57,6 +66,11 @@ export default function CardTypeEditor({ className, usage }: CardTypeEditorProps
     value: tag,
   }));
 
+  const resourceContext: ResourceCallContext = {
+    kind: 'CardType',
+    cardTypeId: cardType?.ownId,
+  };
+
   if (status !== 'READY' || !cardType) {
     return <AvailabilityStatusIndicator status={status} />;
   } else {
@@ -69,7 +83,7 @@ export default function CardTypeEditor({ className, usage }: CardTypeEditorProps
       >
         <IconButton
           icon={faArrowLeft}
-          title={'Back to card types'}
+          title={i18n.modules.cardType.route.backToCardType}
           iconColor="var(--darkGray)"
           onClick={() => navigate('../')}
           className={css({ display: 'block', marginBottom: space_M })}
@@ -110,7 +124,7 @@ export default function CardTypeEditor({ className, usage }: CardTypeEditorProps
                 >
                   <DiscreetInput
                     value={cardType.title || ''}
-                    placeholder={i18n.modules.cardType.cardType}
+                    placeholder={i18n.modules.cardType.titlePlaceholder}
                     onChange={newValue =>
                       dispatch(API.updateCardTypeTitle({ ...cardType, title: newValue }))
                     }
@@ -128,7 +142,7 @@ export default function CardTypeEditor({ className, usage }: CardTypeEditorProps
                         <LabeledTextArea
                           label={i18n.modules.cardType.purpose}
                           value={text || ''}
-                          placeholder={i18n.modules.cardType.explainPurpose}
+                          placeholder={i18n.modules.cardType.info.explainPurpose}
                           onChange={(newValue: string) => {
                             if (cardType.purposeId) {
                               dispatch(
@@ -170,7 +184,7 @@ export default function CardTypeEditor({ className, usage }: CardTypeEditorProps
                   <Toggler
                     value={cardType.published || undefined}
                     label={i18n.common.published}
-                    tip={i18n.modules.cardType.infos.infoPublished}
+                    tip={i18n.modules.cardType.info.infoPublished(usage === 'currentProject')}
                     onChange={() =>
                       dispatch(
                         API.updateCardTypePublished({
@@ -183,7 +197,7 @@ export default function CardTypeEditor({ className, usage }: CardTypeEditorProps
                   <Toggler
                     value={cardType.deprecated || undefined}
                     label={i18n.common.deprecated}
-                    tip={i18n.modules.cardType.infos.infoDeprecated}
+                    tip={i18n.modules.cardType.info.infoDeprecated}
                     onChange={() =>
                       dispatch(
                         API.updateCardTypeDeprecated({
@@ -195,8 +209,12 @@ export default function CardTypeEditor({ className, usage }: CardTypeEditorProps
                   />
                   <ConfirmDeleteModal
                     buttonLabel={
-                      <Button invertedButton className={cx(css({ color: errorColor, borderColor: errorColor }))} clickable>
-                        <FontAwesomeIcon icon={faTrash} /> {i18n.modules.cardType.deleteType}
+                      <Button
+                        invertedButton
+                        className={cx(css({ color: errorColor, borderColor: errorColor }))}
+                        clickable
+                      >
+                        <FontAwesomeIcon icon={faTrash} /> {i18n.common.delete}
                       </Button>
                     }
                     className={css({
@@ -207,10 +225,10 @@ export default function CardTypeEditor({ className, usage }: CardTypeEditorProps
                     message={
                       <p>
                         <Tips tipsType="TODO">
-                          Make test if type is used in card(s). Disable or hide this delete option
+                          Make test if model is used in card(s). Disable or hide this delete option
                           if used.
                         </Tips>
-                        {i18n.modules.cardType.confirmDeleteType}
+                        {i18n.modules.cardType.action.confirmDeleteType}
                       </p>
                     }
                     onConfirm={() => {
@@ -219,7 +237,7 @@ export default function CardTypeEditor({ className, usage }: CardTypeEditorProps
                         navigate('../');
                       }
                     }}
-                    confirmButtonLabel={i18n.modules.cardType.deleteType}
+                    confirmButtonLabel={i18n.modules.cardType.action.deleteType}
                   />
                 </Flex>
               </Flex>
@@ -235,22 +253,23 @@ export default function CardTypeEditor({ className, usage }: CardTypeEditorProps
                 openKey={'resources'}
                 items={{
                   resources: {
-                    children: (
-                      <>
-                        {cardType.ownId && (
-                          <ResourcesWrapper
-                            kind={'CardType'}
-                            //accessLevel={ userAcl.write ? 'WRITE' : userAcl.read ? 'READ' : 'DENIED'}
-                            // TODO manage the user rights for editing resources
-                            // TODO work in progress
-                            accessLevel="WRITE"
-                            cardTypeId={cardType.ownId}
-                          />
-                        )}
-                      </>
-                    ),
                     icon: faPaperclip,
+                    nextToIconElement: (
+                      <div className={textSmall}>
+                        {' '}
+                        (<ResourceListNb context={resourceContext} />)
+                      </div>
+                    ),
                     title: i18n.modules.resource.documentation,
+                    children: (
+                      <ResourcesMainView
+                        contextData={resourceContext}
+                        //accessLevel={ userAcl.write ? 'WRITE' : userAcl.read ? 'READ' : 'DENIED'}
+                        // TODO manage the user rights for editing resources
+                        // TODO work in progress
+                        accessLevel="WRITE"
+                      />
+                    ),
                   },
                 }}
                 defaultOpenKey={'resources'}

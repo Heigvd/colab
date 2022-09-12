@@ -310,7 +310,7 @@ export function justifyDropMenu(
   }
 }
 
-interface Entry<T> {
+export interface Entry<T> {
   value: T;
   label: React.ReactNode;
   action?: () => void;
@@ -318,7 +318,7 @@ interface Entry<T> {
   modal?: boolean;
 }
 
-interface DropDownMenuProps<T> {
+export interface DropDownMenuProps<T> {
   icon?: IconProp;
   layerForIcon?: { layerIcon: IconProp; transform: string | Transform };
   title?: string;
@@ -406,13 +406,8 @@ export default function DropDownMenu<T extends string | number | symbol>({
               ' dropDownButton'
             }
           >
-            {current.label && (
-              <>
-                {menuIcon === 'BURGER' && (
-                  <span className={open ? openButtonStyle : buttonStyle}></span>
-                )}
-                {current.label}
-              </>
+            {menuIcon === 'BURGER' && (
+              <span className={open ? openButtonStyle : buttonStyle}></span>
             )}
             {icon &&
               (layerForIcon ? (
@@ -426,7 +421,7 @@ export default function DropDownMenu<T extends string | number | symbol>({
               ) : (
                 <FontAwesomeIcon icon={icon} className={css({ fontSize: '16px' })} />
               ))}
-            {current.label}
+            {current.label && current.label}
             {menuIcon === 'CARET' && (
               <FontAwesomeIcon icon={faCaretDown} className={css({ marginLeft: space_S })} />
             )}

@@ -10,12 +10,13 @@ import {
   faChainBroken,
   faExternalLinkAlt,
   faLink,
+  faPen,
   faSync,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { ExternalLink } from 'colab-rest-client';
 import * as React from 'react';
-import { refreshUrlMetadata, updateDocument } from '../../../API/api';
+import { refreshUrlMetadata } from '../../../API/api';
+import useTranslations from '../../../i18n/I18nContext';
 import { useUrlMetadata } from '../../../selectors/externalDataSelector';
 import { useAppDispatch } from '../../../store/hooks';
 import { lightIconButtonStyle, space_M, space_S } from '../../styling/style';
@@ -59,20 +60,32 @@ const imageStyle = css({
 
 export interface OpenGraphProps {
   url: string;
-  editCb?: () => void;
+  editCb?: (newUrl: string) => void;
   editingStatus: boolean;
   setEditingState: (editMode: boolean) => void;
-  document: ExternalLink;
+  readOnly: boolean;
+}
+
+function sanitizeUrl(rawUrl: string, defaultProtocol?: string): string {
+  if (!rawUrl.match(/[a-zA-Z0-9]*:\/\/.*/)) {
+    return `${defaultProtocol || 'http'}://${rawUrl}`;
+  }
+  return rawUrl;
 }
 
 export default function OpenGraphLink({
   url,
   editingStatus,
   setEditingState,
-  document,
+  editCb,
+  readOnly,
 }: OpenGraphProps): JSX.Element {
   const dispatch = useAppDispatch();
+  const i18n = useTranslations();
+
   const metadata = useUrlMetadata(url);
+
+  const sanitizedUrl = sanitizeUrl(url);
 
   const refreshCb = React.useCallback(
     (e: React.UIEvent) => {
@@ -82,37 +95,50 @@ export default function OpenGraphLink({
     [url, dispatch],
   );
   const openUrl = React.useCallback(() => {
-    window.open(url);
-  }, [url]);
-  const updateDocCb = React.useCallback(
-    (newValue: string) => {
-      dispatch(updateDocument({ ...document, url: newValue }));
-    },
-    [dispatch, document],
-  );
+    window.open(sanitizedUrl);
+  }, [sanitizedUrl]);
+
   const saveLink = React.useCallback(
     (newValue: string) => {
       setEditingState(false);
-      updateDocCb(newValue);
+      if (editCb && !readOnly) {
+        editCb(newValue);
+      }
     },
-    [setEditingState, updateDocCb],
+    [setEditingState, editCb, readOnly],
+  );
+
+  const setEditCb = React.useCallback(() => {
+    setEditingState(true);
+  }, [setEditingState]);
+
+  const editIcon = !readOnly && (
+    <IconButton className={lightIconButtonStyle} icon={faPen} onClick={setEditCb} title="" />
   );
 
   if (metadata == 'LOADING') {
     return <InlineLoading />;
-  } else if (metadata == 'NO_URL') {
+  }
+
+  if (!readOnly && editingStatus) {
     return (
-      <Flex grow={1} className={css({ padding: space_S })} align="center">
-        {editingStatus ? (
-          <EditLink onChange={saveLink} url={url} onCancel={() => setEditingState(false)} />
-        ) : (
-          <>
-            <FontAwesomeIcon icon={faLink} size="lg" color="var(--lightGray)" />
-            <span className={cx(emptyLightTextStyle, css({ marginLeft: space_S }))}>
-              Empty link
-            </span>
-          </>
-        )}
+      <Flex className={cardStyle} title={url} align="center">
+        <EditLink
+          onChange={saveLink}
+          url={url}
+          onCancel={() => setEditingState(false)}
+          refreshCb={refreshCb}
+        />
+      </Flex>
+    );
+  }
+
+  if (metadata == 'NO_URL') {
+    return (
+      <Flex className={cardStyle} title={url} align="center">
+        <FontAwesomeIcon icon={faLink} size="lg" color="var(--lightGray)" />
+        <span className={cx(emptyLightTextStyle, css({ marginLeft: space_S }))}>Empty link</span>
+        {editIcon}
       </Flex>
     );
   } else {
@@ -123,68 +149,60 @@ export default function OpenGraphLink({
 
     if (metadata.broken) {
       return (
-        <>
-          {editingStatus ? (
-            <Flex grow={1} align="center" className={css({ padding: space_S })}>
-              <EditLink
-                onChange={saveLink}
-                url={url}
-                onCancel={() => setEditingState(false)}
-                refreshCb={refreshCb}
-              />
-            </Flex>
-          ) : (
-            <div title={url} className={css({ padding: space_S })}>
-              <FontAwesomeIcon
-                icon={faChainBroken}
-                size="lg"
-                className={css({ marginRight: space_S })}
-              />
-              {url}
-            </div>
-          )}
-        </>
+        <Flex className={cardStyle} title={url} align="center">
+          <div title={url} className={css({ padding: space_S })}>
+            <FontAwesomeIcon
+              icon={faChainBroken}
+              size="lg"
+              className={css({ marginRight: space_S })}
+            />
+            {url}
+            {editIcon}
+          </div>
+        </Flex>
       );
     } else {
+      const toolbar = (
+        <Flex>
+          <IconButton
+            icon={faExternalLinkAlt}
+            title={i18n.modules.document.openInNewTab}
+            className={cx(lightIconButtonStyle, css({ marginLeft: space_M, cursor: 'pointer' }))}
+            onClick={openUrl}
+          />
+          {editIcon}
+        </Flex>
+      );
+
       return (
-        <>
-          {editingStatus ? (
-            <Flex grow={1} className={css({ padding: space_S })} align="center">
-              <EditLink
-                onChange={saveLink}
-                url={url}
-                onCancel={() => setEditingState(false)}
-                refreshCb={refreshCb}
-              />
-            </Flex>
-          ) : (
-            <Flex className={cardStyle} title={url} align="center">
-              {imageUrl && <img className={imageStyle} src={imageUrl} />}
-              <div className={legendStyle}>
+        <Flex className={cardStyle} title={url} align="center">
+          {imageUrl && <img className={imageStyle} src={imageUrl} />}
+          <div className={legendStyle}>
+            {siteName ? (
+              <>
                 <Flex
                   className={css({ fontWeight: 'bold' })}
                   justify="space-between"
                   align="flex-start"
                 >
-                  {siteName || 'Untitled site'}
-                  <IconButton
-                    icon={faExternalLinkAlt}
-                    title="Open site in new tab"
-                    className={cx(
-                      lightIconButtonStyle,
-                      css({ marginLeft: space_M, cursor: 'pointer' }),
-                    )}
-                    onClick={openUrl}
-                  />
+                  {siteName}
+                  {toolbar}
                 </Flex>
                 {title && <p>{title}</p>}
-                <a href={url} target="_blank" rel="noreferrer" className={urlStyle}>
+                <a href={sanitizedUrl} target="_blank" rel="noreferrer" className={urlStyle}>
                   {url}
                 </a>
-              </div>
-            </Flex>
-          )}
-        </>
+              </>
+            ) : (
+              <Flex>
+                <a href={sanitizedUrl} target="_blank" rel="noreferrer" className={urlStyle}>
+                  {url}
+                </a>
+                {toolbar}
+              </Flex>
+            )}
+          </div>
+        </Flex>
       );
     }
   }
@@ -207,8 +225,8 @@ function EditLink({ url, onChange, refreshCb, onCancel }: EditLinkProps): JSX.El
         placeholder="Empty link"
         onChange={onChange}
         onCancel={onCancel}
-        containerClassName={css({flexGrow: 1})}
-        saveMode='ON_BLUR'
+        containerClassName={css({ flexGrow: 1 })}
+        saveMode="ON_BLUR"
       />
       {refreshCb && (
         <IconButton

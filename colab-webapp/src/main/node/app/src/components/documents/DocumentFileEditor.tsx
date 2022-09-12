@@ -16,14 +16,14 @@ import InlineLoading from '../common/element/InlineLoading';
 
 export interface DocumentFileProps {
   document: DocumentFile;
-  allowEdition?: boolean;
+  readOnly: boolean;
   editingStatus: boolean;
   setEditingState: (editMode: boolean) => void;
 }
 
 export default function DocumentFileEditor({
   document,
-  allowEdition,
+  readOnly,
   editingStatus,
   setEditingState,
 }: DocumentFileProps): JSX.Element {
@@ -35,14 +35,14 @@ export default function DocumentFileEditor({
 
   const onChangeCb = React.useMemo(
     () =>
-      allowEdition
+      !readOnly
         ? (file: File) => {
             dispatch(API.uploadFile({ docId: document.id!, file: file, fileSize: file.size })).then(
               () => setState('DONE'),
             );
           }
         : undefined,
-    [dispatch, document.id, allowEdition],
+    [dispatch, document.id, readOnly],
   );
 
   const downloadUrl = API.getRestClient().DocumentFileRestEndPoint.getFileContentPath(document.id!);
@@ -70,7 +70,11 @@ export default function DocumentFileEditor({
       accept="*"
       onChange={onChangeCb}
       onDownload={downloadCb}
-      currentPreviewImgUrl={document.mimeType.startsWith('image/') ? downloadUrl : undefined}
+      currentPreviewImgUrl={
+        document.mimeType.startsWith('image/')
+          ? downloadUrl + '?t=' + document.trackingData?.modificationDate
+          : undefined
+      }
       currentFilename={
         state === 'LOADING' ? (
           <InlineLoading />
@@ -83,6 +87,7 @@ export default function DocumentFileEditor({
       currentMimetype={document.mimeType}
       editingStatus={editingStatus}
       setEditingState={setEditingState}
+      readOnly={readOnly}
     />
   );
 }

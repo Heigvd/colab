@@ -6,33 +6,62 @@
  */
 
 import { css } from '@emotion/css';
+import { entityIs, WithJsonDiscriminator } from 'colab-rest-client';
 import * as React from 'react';
-import { Link, Navigate, useLocation } from 'react-router-dom';
+import { Navigate, useLocation, useNavigate } from 'react-router-dom';
 import { getRestClient, reloadCurrentUser } from '../../API/api';
+import useTranslations from '../../i18n/I18nContext';
 import logger from '../../logger';
 import { useCurrentUser } from '../../selectors/userSelector';
 import { useAppDispatch } from '../../store/hooks';
+import PublicEntranceContainer from '../authentication/PublicEntranceContainer';
 import SignInForm from '../authentication/SignIn';
+import Button from '../common/element/Button';
+import Flex from '../common/layout/Flex';
 import Loading from '../common/layout/Loading';
 import Overlay from '../common/layout/Overlay';
+import { prettyPrint } from '../common/toplevel/Notifier';
+import { space_M } from '../styling/style';
 
 interface TokenProps {
   tokenId: string | undefined;
   token: string | undefined;
 }
 
-type STATE_TYPE = 'LOADING' | 'AUTH_REQUIRED' | 'NO_TOKEN' | 'ERROR' | 'DONE' | 'UNCOMPLETE_URL';
+type STATE_TYPE = 'LOADING' | 'AUTH_REQUIRED' | 'NO_TOKEN' | 'ERROR' | 'DONE';
 
-// When user follows link in invitation mail.
+/** when user follows a link from a mail co.LAB sent */
 export default function Token(props: TokenProps): JSX.Element {
-  const user = useCurrentUser();
   const dispatch = useAppDispatch();
-
+  const i18n = useTranslations();
+  const navigate = useNavigate();
   const location = useLocation();
+  const user = useCurrentUser();
 
   // WARNING REPLACE AUTH REQUIRED BY LOADING. AFTER TEST FINISHED
   const [state, setState] = React.useState<STATE_TYPE>('LOADING');
   const [redirectTo, setRedirectTo] = React.useState('');
+
+  const [error, setError] = React.useState<Error | WithJsonDiscriminator | string | null>(null);
+
+  function getTokenErrorHandler(error: WithJsonDiscriminator | Error) {
+    if (error) {
+      if (
+        entityIs<'HttpErrorMessage'>(error, 'HttpErrorMessage') &&
+        error.messageCode === 'ACCESS_DENIED'
+      ) {
+        setError(i18n.common.error.tryToLogOut);
+      } else {
+        setError(error);
+      }
+    }
+  }
+
+  function defaultErrorHandler(error: WithJsonDiscriminator | Error) {
+    if (error) {
+      setError(error);
+    }
+  }
 
   React.useEffect(() => {
     if (props.tokenId && props.token) {
@@ -44,35 +73,40 @@ export default function Token(props: TokenProps): JSX.Element {
         dispatch(reloadCurrentUser());
         logger.debug('reload current user');
       } else if (user.status !== 'LOADING') {
-        // null user means unauthenticated
         const loadToken = async () => {
           logger.debug('load token #', tokenId);
-          const token = await getRestClient().TokenRestEndpoint.getToken(+tokenId);
-          if (token != null) {
-            logger.debug('Got token', token);
-            setRedirectTo(token.redirectTo || '');
-            if (user.currentUser === null && token.authenticationRequired) {
-              logger.debug('Token requires authentication, current user is not');
-              setState('AUTH_REQUIRED');
-            } else {
-              logger.debug('Ready to process the token');
-              try {
+          try {
+            const token = await getRestClient().TokenRestEndpoint.getToken(
+              +tokenId,
+              getTokenErrorHandler,
+            );
+            if (token != null) {
+              logger.debug('Got token', token);
+              setRedirectTo(token.redirectTo || '');
+              if (user.currentUser === null && token.authenticationRequired) {
+                logger.debug('Token requires authentication, current user is not');
+                setState('AUTH_REQUIRED');
+              } else {
+                logger.debug('Ready to process the token');
+                setError(null);
+
                 const processedToken = await getRestClient().TokenRestEndpoint.consumeToken(
                   +tokenId,
                   tokenHash,
+                  defaultErrorHandler,
                 );
                 setRedirectTo(processedToken.redirectTo || '');
                 // some token may change authentication status: force to reload current user/account
                 dispatch(reloadCurrentUser());
                 setState('DONE');
-              } catch (e) {
-                setState('ERROR');
               }
+            } else {
+              // token not found
+              logger.debug('Got no token...');
+              setState('NO_TOKEN');
             }
-          } else {
-            // token not found
-            logger.debug('Got no token...');
-            setState('NO_TOKEN');
+          } catch (e) {
+            setState('ERROR');
           }
         };
         loadToken();
@@ -81,9 +115,19 @@ export default function Token(props: TokenProps): JSX.Element {
         //clean}
       };
     } else {
-      setState('UNCOMPLETE_URL');
+      setState('NO_TOKEN');
     }
+    // it seems that there is a problem with getTokenErrorHandler
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dispatch, user, props.tokenId, props.token]);
+
+  const errorMessage = React.useMemo(() => {
+    if (error) {
+      return prettyPrint(error, i18n);
+    } else {
+      return null;
+    }
+  }, [error, i18n]);
 
   if (state === 'LOADING') {
     return <Loading />;
@@ -115,39 +159,31 @@ export default function Token(props: TokenProps): JSX.Element {
     );
   } else if (state === 'NO_TOKEN') {
     return (
-      <Overlay>
-        <div>
-          <b>Oops! The link you got is uncomplete.</b>
-        </div>
-        <Link to={'../'}>Back to colab home</Link>
-      </Overlay>
+      <PublicEntranceContainer>
+        <Flex direction="column">
+          <h3>Invalid or deprecated link</h3>
+          <p>Please try to refresh or contact the admin of your co.LAB project.</p>
+          <Button onClick={() => navigate('../')} className={css({ marginTop: space_M })}>
+            {i18n.common.action.backToHome}
+          </Button>
+        </Flex>
+      </PublicEntranceContainer>
     );
   } else {
     return (
-      <Overlay>
-        {state === 'UNCOMPLETE_URL' ? (
-          <div>
-            {/* Error while processing token. Please try to refresh or contact the admin of your colab
-          project. */}
-            <b>Oops! The link you got is uncomplete.</b>
-            <p>Please check again your mail or contact the person who sent you the invitation.</p>
-            <Link to={'../'} className={css({ display: 'block' })}>
-              Back to colab home
-            </Link>
-          </div>
-        ) : (
-          <div>
-            <b> Oops! There was an error. </b>
-            <p>
-              Invalid or deprecated link. Please try to refresh. If not working, maybe your
-              invitation has been deleted by the host.
-            </p>
-            <Link to={'../'} className={css({ display: 'block' })}>
-              Back to colab home
-            </Link>
-          </div>
-        )}
-      </Overlay>
+      <PublicEntranceContainer>
+        <Flex direction="column">
+          <h3> Oops! There was an error</h3>
+          {errorMessage != null ? (
+            <p>{errorMessage}</p>
+          ) : (
+            <p>Please try to refresh or contact the admin of your co.LAB project.</p>
+          )}
+          <Button onClick={() => navigate('../')} className={css({ marginTop: space_M })}>
+            {i18n.common.action.backToHome}
+          </Button>
+        </Flex>
+      </PublicEntranceContainer>
     );
   }
 }

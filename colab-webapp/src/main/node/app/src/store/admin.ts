@@ -6,6 +6,7 @@
  */
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import {
+  BlockMonitoring,
   ChannelOverview,
   entityIs,
   LevelDescriptor,
@@ -13,13 +14,14 @@ import {
   WebsocketChannel,
 } from 'colab-rest-client';
 import * as API from '../API/api';
-import { LoadingStatus } from './store';
+import { InlineAvailabilityStatus, LoadingStatus } from './store';
 
 export interface AdminState {
   loggers: { [key: string]: LevelDescriptor } | undefined | null;
   userStatus: LoadingStatus;
   occupiedChannels: ChannelOverview[] | 'NOT_INITIALIZED' | 'LOADING';
   versionStatus: LoadingStatus;
+  liveMonitoring: InlineAvailabilityStatus<BlockMonitoring[]>;
   version: VersionDetails;
 }
 
@@ -29,6 +31,7 @@ const initialState: AdminState = {
   occupiedChannels: 'NOT_INITIALIZED',
   versionStatus: 'NOT_INITIALIZED',
   version: { buildNumber: '', dockerImages: '' },
+  liveMonitoring: 'NOT_INITIALIZED',
 };
 
 const adminSlice = createSlice({
@@ -112,6 +115,15 @@ const adminSlice = createSlice({
       })
       .addCase(API.getOccupiedChannels.fulfilled, (state, action) => {
         state.occupiedChannels = action.payload;
+      })
+      .addCase(API.getLiveMonitoringData.pending, state => {
+        state.liveMonitoring = 'LOADING';
+      })
+      .addCase(API.getLiveMonitoringData.fulfilled, (state, action) => {
+        state.liveMonitoring = action.payload;
+      })
+      .addCase(API.getLiveMonitoringData.rejected, state => {
+        state.liveMonitoring = 'ERROR';
       })
       .addCase(API.signOut.fulfilled, () => {
         return initialState;

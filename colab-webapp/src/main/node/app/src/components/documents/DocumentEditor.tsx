@@ -8,15 +8,16 @@
 import { css, cx } from '@emotion/css';
 import { Document, entityIs } from 'colab-rest-client';
 import * as React from 'react';
+import { updateDocument } from '../../API/api';
 import { useLastInsertedDocId } from '../../selectors/documentSelector';
 import * as DocumentActions from '../../store/documentSlice';
 import { useAppDispatch } from '../../store/hooks';
 import { BlockEditorWrapper } from '../blocks/BlockEditorWrapper';
-import { CardEditorCTX } from '../cards/CardEditor';
 import OpenGraphLink from '../common/element/OpenGraphLink';
 import Flex from '../common/layout/Flex';
 import { editableBlockStyle } from '../styling/style';
 import { DocumentOwnership } from './documentCommonType';
+import { DocEditorCTX } from './DocumentEditorToolbox';
 import DocumentFileEditor from './DocumentFileEditor';
 
 const selectedStyle = css({
@@ -35,13 +36,13 @@ const noBorderStyle = css({
 
 export interface DocumentEditorProps {
   doc: Document;
-  allowEdition?: boolean;
+  readOnly?: boolean;
   docOwnership: DocumentOwnership;
 }
 
 export default function DocumentEditor({
   doc,
-  allowEdition = true,
+  readOnly = false,
   docOwnership,
 }: DocumentEditorProps): JSX.Element {
   const dispatch = useAppDispatch();
@@ -54,8 +55,8 @@ export default function DocumentEditor({
 
   const dropRef = React.useRef<HTMLDivElement>(null);
 
-  const { setSelectedDocId, selectedDocId, setSelectedOwnKind, editMode, setEditMode, TXToptions } =
-    React.useContext(CardEditorCTX);
+  const { setSelectedDocId, selectedDocId, editMode, setEditMode, TXToptions } =
+    React.useContext(DocEditorCTX);
 
   const selected = doc.id === selectedDocId;
   const editing = editMode && selected;
@@ -65,8 +66,7 @@ export default function DocumentEditor({
       setEditMode(false);
     }
     setSelectedDocId(doc.id);
-    setSelectedOwnKind(docOwnership.kind);
-  }, [doc.id, docOwnership.kind, selectedDocId, setEditMode, setSelectedDocId, setSelectedOwnKind]);
+  }, [doc.id, selectedDocId, setEditMode, setSelectedDocId]);
 
   React.useEffect(() => {
     if (lastInsertedDocId === doc.id) {
@@ -88,17 +88,18 @@ export default function DocumentEditor({
             justifyContent: 'space-between',
             flexGrow: 1,
             padding: 0,
+            maxWidth: '21cm',
           }),
           { [selectedStyle]: selected && !isTextDataBlock },
           { [noBorderStyle]: isTextDataBlock },
         )}
         onClick={onSelect}
-        onDoubleClick={() => setEditMode(true)}
+        onDoubleClick={readOnly ? undefined : () => setEditMode(true)}
       >
         {isTextDataBlock ? (
           <BlockEditorWrapper
             blockId={doc.id!}
-            allowEdition={allowEdition}
+            readOnly={readOnly}
             editingStatus={true}
             showTree={TXToptions?.showTree}
             markDownEditor={TXToptions?.markDownMode}
@@ -109,7 +110,7 @@ export default function DocumentEditor({
         ) : isDocumentFile ? (
           <DocumentFileEditor
             document={doc}
-            allowEdition={allowEdition}
+            readOnly={readOnly}
             editingStatus={editing}
             setEditingState={setEditMode}
           />
@@ -117,7 +118,10 @@ export default function DocumentEditor({
           <OpenGraphLink
             url={doc.url || ''}
             editingStatus={editing}
-            document={doc}
+            readOnly={readOnly}
+            editCb={newUrl => {
+              dispatch(updateDocument({ ...doc, url: newUrl }));
+            }}
             setEditingState={setEditMode}
           />
         ) : (

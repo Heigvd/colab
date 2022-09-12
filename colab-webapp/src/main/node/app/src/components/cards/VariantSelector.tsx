@@ -19,6 +19,7 @@ import { space_S } from '../styling/style';
 
 interface VariantSelectorProps {
   card: Card;
+  className?: string;
   children: (variant: CardContent | undefined, list: CardContent[]) => JSX.Element;
 }
 
@@ -44,7 +45,11 @@ export const computeNav = (
   }
 };
 
-export default function VariantSelector({ card, children }: VariantSelectorProps): JSX.Element {
+export default function VariantSelector({
+  card,
+  className,
+  children,
+}: VariantSelectorProps): JSX.Element {
   const [displayedVariantId, setDisplayedVariantId] = React.useState<number | undefined>();
 
   const contents = useVariantsOrLoad(card);
@@ -71,6 +76,7 @@ export default function VariantSelector({ card, children }: VariantSelectorProps
               flexGrow: 1,
             },
           }),
+          className,
         )}
       >
         {variantPager != null && variantPager.previous != variantPager.current ? (

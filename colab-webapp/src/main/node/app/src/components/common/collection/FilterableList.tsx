@@ -17,7 +17,7 @@ import {
   noOutlineStyle,
   space_S,
 } from '../../styling/style';
-import Checkbox from '../Form/Checkbox';
+import Checkbox from '../element/Checkbox';
 import Clickable from '../layout/Clickable';
 import Flex from '../layout/Flex';
 

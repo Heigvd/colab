@@ -13,7 +13,9 @@ import ch.colabproject.colab.api.model.card.AbstractCardType;
 import ch.colabproject.colab.api.model.card.Card;
 import ch.colabproject.colab.api.model.card.CardContent;
 import ch.colabproject.colab.api.model.document.AbstractResource;
+import ch.colabproject.colab.api.model.document.ResourceRef;
 import ch.colabproject.colab.api.persistence.jpa.card.CardTypeDao;
+import ch.colabproject.colab.api.persistence.jpa.document.ResourceDao;
 import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
 import java.util.List;
 import java.util.Objects;
@@ -38,6 +40,12 @@ public class ResourceCategoryHelper {
 
     // *********************************************************************************************
     // injections
+
+    /**
+     * Resource persistence handler
+     */
+    @Inject
+    private ResourceDao resourceDao;
 
     /**
      * Card type persistence handler
@@ -74,22 +82,34 @@ public class ResourceCategoryHelper {
     // *********************************************************************************************
 
     /**
-     * Set the category of the resource
+     * Set the category of the resource.
+     * <p>
+     * Also update the resources that reference this one, as long as we stay in the same project and
+     * the category is synchronized
      *
      * @param resourceOrRefId the id of the resource / resource reference
      * @param categoryName    the name of the category that apply to the resource / resource
      *                        reference
      */
-    public void setCategory(Long resourceOrRefId, String categoryName) {
+    public void changeCategory(Long resourceOrRefId, String categoryName) {
         logger.debug("set category {} to abstract resource #{}", categoryName, resourceOrRefId);
 
-        if (StringUtils.isBlank(categoryName)) {
-            removeCategory(resourceOrRefId);
-        } else {
-            AbstractResource resourceOrRef = resourceManager
-                .assertAndGetResourceOrRef(resourceOrRefId);
+        AbstractResource resourceOrRef = resourceManager.assertAndGetResourceOrRef(resourceOrRefId);
 
-            resourceOrRef.setCategory(categoryName);
+        String oldCategoryName = resourceOrRef.getCategory();
+        String newCategoryName = StringUtils.trimToNull(categoryName);
+
+        resourceOrRef.setCategory(newCategoryName);
+
+        // the resources based on the one changed will be change
+        // but only if it is in the same project and the category is still synchronized
+        List<ResourceRef> directRefs = resourceDao.findDirectReferences(resourceOrRef);
+        for (ResourceRef ref : directRefs) {
+            if (ref.getProject() == resourceOrRef.getProject()
+                && StringUtils.equals(ref.getCategory(), oldCategoryName)) {
+                changeCategory(ref.getId(), newCategoryName);
+            }
+
         }
     }
 
@@ -100,46 +120,14 @@ public class ResourceCategoryHelper {
      * @param categoryName     the name of the category that apply to the resource / resource
      *                         reference
      */
-    public void setCategory(List<Long> resourceOrRefIds, String categoryName) {
+    public void changeCategory(List<Long> resourceOrRefIds, String categoryName) {
         logger.debug("set category {} to abstract resources #{}", categoryName, resourceOrRefIds);
-
-        if (StringUtils.isBlank(categoryName)) {
-            removeCategory(resourceOrRefIds);
-        } else {
-            if (resourceOrRefIds == null) {
-                throw HttpErrorMessage.relatedObjectNotFoundError();
-            }
-
-            resourceOrRefIds.stream().forEach(resOrRefId -> setCategory(resOrRefId, categoryName));
-        }
-    }
-
-    /**
-     * Remove the category of the resource / resource reference
-     *
-     * @param resourceOrRefId the id of the resource / resource reference
-     */
-    public void removeCategory(Long resourceOrRefId) {
-        logger.debug("remove category of abstract resource #{}", resourceOrRefId);
-
-        AbstractResource resourceOrRef = resourceManager.assertAndGetResourceOrRef(resourceOrRefId);
-
-        resourceOrRef.setCategory(null);
-    }
-
-    /**
-     * Remove the category of a list of resources / resource references
-     *
-     * @param resourceOrRefIds the id of the resources / resource references
-     */
-    public void removeCategory(List<Long> resourceOrRefIds) {
-        logger.debug("remove category to abstract resources #{}", resourceOrRefIds);
 
         if (resourceOrRefIds == null) {
             throw HttpErrorMessage.relatedObjectNotFoundError();
         }
 
-        resourceOrRefIds.stream().forEach(resOrRefId -> removeCategory(resOrRefId));
+        resourceOrRefIds.stream().forEach(resOrRefId -> changeCategory(resOrRefId, categoryName));
     }
 
     /**

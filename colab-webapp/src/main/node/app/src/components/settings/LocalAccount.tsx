@@ -15,8 +15,8 @@ import useTranslations from '../../i18n/I18nContext';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import PasswordFeedbackDisplay from '../authentication/PasswordFeedbackDisplay';
 import Button from '../common/element/Button';
+import { PasswordScore } from '../common/element/Form';
 import IconButton from '../common/element/IconButton';
-import { PasswordScore } from '../common/Form/Form';
 import { space_S } from '../styling/style';
 
 export interface LocalAccountProps {

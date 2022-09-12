@@ -8,6 +8,7 @@ package ch.colabproject.colab.api.microchanges.model;
 
 import java.io.Serializable;
 import javax.validation.constraints.NotNull;
+import org.apache.commons.text.StringEscapeUtils;
 
 /**
  * A microchange.
@@ -15,6 +16,8 @@ import javax.validation.constraints.NotNull;
  * @author maxence
  */
 public class MicroChange implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     /**
      * microChange Type
@@ -134,6 +137,19 @@ public class MicroChange implements Serializable {
             return "MicroChange{"
                 + "INSERT '" + v + "' at " + o
                 + '}';
+        }
+    }
+
+    /**
+     * Get debug code
+     *
+     * @return debug code
+     */
+    public String getDebugStatement() {
+        if (t == Type.D) {
+            return "del(" + o + ", " + l + ")";
+        } else {
+            return "ins(" + o + ", \"" + StringEscapeUtils.escapeEcmaScript(v)+ "\")";
         }
     }
 }

@@ -45,7 +45,7 @@ export default function ConfirmDeleteModal({
   const onInternalConfirm = (close: () => void) => {
     onConfirm();
     close();
-  }
+  };
   return (
     <OpenCloseModal
       title={title ? title : ''}
@@ -63,17 +63,13 @@ export default function ConfirmDeleteModal({
             {message}
           </Flex>
           <Flex justify="flex-end">
-            <Button
-              title={cancelButtonLabel ? cancelButtonLabel : 'Cancel delete'}
-              onClick={() => collapse()}
-              invertedButton
-            >
+            <Button onClick={() => collapse()} invertedButton>
               {cancelButtonLabel ? cancelButtonLabel : i18n.common.cancel}
             </Button>
             <ButtonWithLoader
               ref={mainButtonRef}
               title={confirmButtonLabel ? confirmButtonLabel : 'Delete'}
-              onClick={() => onInternalConfirm(() => collapse)}
+              onClick={() => onInternalConfirm(collapse)}
               className={css({
                 backgroundColor: errorColor,
                 marginLeft: space_M,

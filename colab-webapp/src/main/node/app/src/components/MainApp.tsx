@@ -5,6 +5,8 @@
  * Licensed under the MIT License
  */
 import { css, cx } from '@emotion/css';
+import { faSkullCrossbones } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import * as React from 'react';
 import { Navigate, Route, Routes, useLocation, useParams } from 'react-router-dom';
 import * as API from '../API/api';
@@ -36,25 +38,39 @@ const EditorWrapper = () => {
   const { project, status } = useProject(+id!);
   const { project: editedProject, status: editingStatus } = useProjectBeingEdited();
 
-  React.useEffect(() => {
-    if (
-      project != null &&
-      (editingStatus === 'NOT_EDITING' || (editedProject != null && editedProject.id !== +id))
-    ) {
-      dispatch(API.startProjectEdition(project));
-    }
-  }, [dispatch, editingStatus, editedProject, project, id]);
+  const webSocketId = useAppSelector(state => state.websockets.sessionId);
+  const socketIdRef = React.useRef<string | undefined>(undefined);
 
   React.useEffect(() => {
-    if (project === undefined && status === 'NOT_INITIALIZED') {
-      dispatch(API.getUserProjects());
+    if (webSocketId && project != null) {
+      if (editingStatus === 'NOT_EDITING' || (editedProject != null && editedProject.id !== +id)) {
+        socketIdRef.current = webSocketId;
+        dispatch(API.startProjectEdition(project));
+      } else if (editingStatus === 'READY') {
+        if (webSocketId !== socketIdRef.current) {
+          // ws reconnection occured => reconnect
+          socketIdRef.current = webSocketId;
+          dispatch(API.reconnectToProjectChannel(project));
+        }
+      }
     }
-  }, [project, status, dispatch]);
+  }, [dispatch, editingStatus, editedProject, project, id, webSocketId]);
 
-  if (project === undefined) {
+  React.useEffect(() => {
+    if (project == null && status === 'NOT_INITIALIZED') {
+      dispatch(API.getProject(id));
+    }
+  }, [project, status, dispatch, id]);
+
+  if (status === 'NOT_INITIALIZED' || status === 'LOADING') {
     return <InlineLoading />;
-  } else if (project == null) {
-    return <div>There is no project yet</div>;
+  } else if (project == null || status === 'ERROR') {
+    return (
+      <div>
+        <FontAwesomeIcon icon={faSkullCrossbones} />
+        <span>There is no project yet</span>
+      </div>
+    );
   } else {
     if (editingStatus === 'NOT_EDITING' || (editedProject != null && editedProject.id !== +id)) {
       return <InlineLoading />;
@@ -88,11 +104,18 @@ export default function MainApp(): JSX.Element {
   }, [currentUserStatus, dispatch]);
 
   const reconnecting = socketId == null && (
-    <Overlay>
+    <Overlay
+      backgroundStyle={css({
+        backgroundColor: '#dfdfdf20',
+        userSelect: 'none',
+      })}
+    >
       <div
         className={css({
           display: 'flex',
           alignItems: 'center',
+          backgroundColor: 'var(--bgColor)',
+          boxShadow: '0 0 30px 30px var(--bgColor)',
         })}
       >
         <InlineLoading colour={true} /> <span>{i18n.authentication.info.reconnecting}</span>

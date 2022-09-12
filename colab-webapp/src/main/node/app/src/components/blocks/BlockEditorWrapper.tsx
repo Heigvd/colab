@@ -11,11 +11,11 @@ import useTranslations from '../../i18n/I18nContext';
 import InlineLoading from '../common/element/InlineLoading';
 import LiveEditor from '../live/LiveEditor';
 import { useBlock } from '../live/LiveTextEditor';
-import { TXTFormatToolbarProps } from './markdown/WysiwygEditorCustom';
+import { TXTFormatToolbarProps } from './markdown/WysiwygEditor';
 
 export interface BlockEditorProps {
   blockId: number;
-  allowEdition?: boolean;
+  readOnly: boolean;
   editingStatus?: boolean;
   showTree?: boolean;
   markDownEditor?: boolean;
@@ -27,7 +27,7 @@ export interface BlockEditorProps {
 
 export function BlockEditorWrapper({
   blockId,
-  allowEdition,
+  readOnly,
   editingStatus,
   showTree,
   markDownEditor,
@@ -46,9 +46,10 @@ export function BlockEditorWrapper({
         case 'text/markdown':
           return (
             <LiveEditor
-              allowEdition={allowEdition}
+              readOnly={readOnly}
               atClass={block['@class']}
               atId={blockId}
+              healthy={block.healthy}
               value={block.textData || ''}
               revision={block.revision}
               editingStatus={editingStatus}

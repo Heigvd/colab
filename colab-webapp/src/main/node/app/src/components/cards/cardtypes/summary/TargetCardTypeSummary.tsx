@@ -6,12 +6,13 @@
  */
 
 import { css } from '@emotion/css';
-import { IconName, IconPrefix } from '@fortawesome/fontawesome-svg-core';
+import { IconName } from '@fortawesome/fontawesome-svg-core';
 import { faCircleDot } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { entityIs } from 'colab-rest-client';
 import * as React from 'react';
 import useTranslations from '../../../../i18n/I18nContext';
-import { useProject } from '../../../../selectors/projectSelector';
+import { useAndLoadProject } from '../../../../selectors/projectSelector';
 import { CardTypeAllInOne as CardType } from '../../../../types/cardTypeDefinition';
 import { space_S } from '../../../styling/style';
 
@@ -39,7 +40,7 @@ export default function TargetCardTypeSummary({
           <FontAwesomeIcon
             icon={referenceIcon}
             color={'var(--secondaryColor)'}
-            title={i18n.modules.cardType.infos.isIsglobalType}
+            title={i18n.modules.cardType.info.isGlobalType}
             className={targetProjectIconStyle}
           />
         ))}
@@ -52,14 +53,15 @@ interface TargetProjectSummaryProps {
 }
 
 function TargetProjectSummary({ projectId }: TargetProjectSummaryProps): JSX.Element {
-  const { project, status } = useProject(projectId);
+  const { project } = useAndLoadProject(projectId);
   const i18n = useTranslations();
+
   return (
     <FontAwesomeIcon
       icon={
         project?.illustration
           ? {
-              prefix: project.illustration.iconLibrary as IconPrefix,
+              prefix: project.illustration.iconLibrary === 'FONT_AWESOME_REGULAR' ? 'far' : 'fas',
               iconName: project.illustration.iconKey as IconName,
             }
           : referenceIcon
@@ -67,9 +69,9 @@ function TargetProjectSummary({ projectId }: TargetProjectSummaryProps): JSX.Ele
       className={targetProjectIconStyle}
       color={project?.illustration ? project.illustration.iconBkgdColor : 'var(--lightGray)'}
       title={
-        status === 'INITIALIZED' && project?.name
-          ? `${i18n.modules.cardType.infos.fromProject} ` + project.name + '"'
-          : `${i18n.modules.cardType.infos.fromAProject}`
+        entityIs(project, 'Project') && project?.name
+          ? i18n.modules.cardType.info.fromProject(project.name)
+          : i18n.modules.cardType.info.fromAProject
       }
     />
   );

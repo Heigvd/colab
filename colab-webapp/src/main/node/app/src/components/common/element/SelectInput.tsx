@@ -11,6 +11,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import * as React from 'react';
 import Select, { MultiValue, OnChangeValue, SingleValue } from 'react-select';
 import Creatable from 'react-select/creatable';
+import useTranslations from '../../../i18n/I18nContext';
 import {
   errorStyle,
   labelStyle,
@@ -19,8 +20,8 @@ import {
   textSmall,
   warningStyle,
 } from '../../styling/style';
-import Tips, { TipsProps } from '../element/Tips';
 import Flex from '../layout/Flex';
+import Tips, { TipsProps } from './Tips';
 
 interface Opt<T> {
   label: string;
@@ -32,17 +33,17 @@ type ValueType<T, IsMulti> = IsMulti extends true ? T[] : T | undefined;
 interface SelectInputProps<T, IsMulti extends boolean> {
   label?: React.ReactNode;
   value?: T;
-  placeholder?: string;
+  placeholder?: React.ReactNode;
   mandatory?: boolean;
   readOnly?: boolean;
   isMulti: IsMulti;
   canCreateOption?: boolean;
   options: Opt<T>[];
-  onChange: (newValue: ValueType<T, IsMulti>) => void;
+  onChange: (newValue: ValueType<T, IsMulti> | null) => void;
   tip?: TipsProps['children'];
-  fieldFooter?: React.ReactNode;
-  warning?: React.ReactNode;
-  error?: React.ReactNode;
+  footer?: React.ReactNode;
+  warningMessage?: React.ReactNode;
+  errorMessage?: React.ReactNode;
   className?: string;
   bottomClassName?: string;
 }
@@ -50,7 +51,7 @@ interface SelectInputProps<T, IsMulti extends boolean> {
 export default function SelectInput<T, IsMulti extends boolean>({
   label,
   value,
-  placeholder = 'no value',
+  placeholder,
   mandatory,
   readOnly = false,
   isMulti,
@@ -58,18 +59,17 @@ export default function SelectInput<T, IsMulti extends boolean>({
   options,
   onChange,
   tip,
-  fieldFooter,
-  warning,
-  error,
+  footer,
+  warningMessage,
+  errorMessage,
   className,
   bottomClassName,
 }: SelectInputProps<T, IsMulti>): JSX.Element {
-  const [state, setState] = React.useState<T | undefined>(value);
-  const currentValue = options.find(o => o.value === state);
+  const i18n = useTranslations();
 
-  React.useEffect(() => {
-    setState(value);
-  }, [value]);
+  const currentValue = React.useMemo(() => {
+    return options.find(o => o.value === value);
+  }, [value, options]);
 
   const onInternalChange = React.useCallback(
     (data: OnChangeValue<{ label: string; value: T }, IsMulti>) => {
@@ -81,7 +81,10 @@ export default function SelectInput<T, IsMulti extends boolean>({
         if (v != null) {
           onChange(v.value as ValueType<T, IsMulti>);
         }
+      } else {
+        onChange(null);
       }
+
       return undefined;
     },
     [isMulti, onChange],
@@ -104,18 +107,20 @@ export default function SelectInput<T, IsMulti extends boolean>({
         {canCreateOption ? (
           <Creatable
             value={currentValue}
-            placeholder={placeholder}
+            placeholder={placeholder || i18n.basicComponent.selectInput.selectOrCreate}
             isDisabled={readOnly}
             isMulti={isMulti}
             options={options}
-            isClearable
+            isClearable={!isMulti}
             menuPortalTarget={document.body}
-            openMenuOnClick
-            openMenuOnFocus
             onChange={onInternalChange}
+            noOptionsMessage={() => {
+              return i18n.basicComponent.selectInput.noItemTypeToCreate;
+            }}
             formatCreateLabel={(inputValue: string) => (
               <div className={cx(selectCreatorStyle, textSmall)}>
-                <FontAwesomeIcon icon={faPlus} /> {' Create "' + inputValue + '"'}
+                <FontAwesomeIcon icon={faPlus} />{' '}
+                {i18n.basicComponent.selectInput.create(inputValue)}
               </div>
             )}
             styles={{
@@ -128,24 +133,29 @@ export default function SelectInput<T, IsMulti extends boolean>({
         ) : (
           <Select
             value={currentValue}
-            placeholder={placeholder}
+            placeholder={placeholder || i18n.basicComponent.selectInput.select}
             isDisabled={readOnly}
             isMulti={isMulti}
             options={options}
-            onChange={onInternalChange}
+            isClearable={!isMulti}
             menuPortalTarget={document.body}
+            onChange={onInternalChange}
+            noOptionsMessage={() => {
+              return i18n.basicComponent.selectInput.noMatch;
+            }}
             styles={{
               menuPortal: base => ({ ...base, zIndex: 9999 }),
               menu: base => ({ ...base, marginTop: '0px' }),
               container: base => ({ ...base, textAlign: 'initial' }),
+              option: base => ({ ...base, fontSize: '.9em' }),
             }}
           />
         )}
       </Flex>
-      {fieldFooter != null && <div className={textSmall}>{fieldFooter}</div>}
+      {footer != null && <div className={textSmall}>{footer}</div>}
       <Flex direction="column" align="center" className={cx(textSmall, bottomClassName)}>
-        {warning != null && <div className={warningStyle}>{warning}</div>}
-        {error != null && <div className={errorStyle}>{error}</div>}
+        {warningMessage != null && <div className={warningStyle}>{warningMessage}</div>}
+        {errorMessage != null && <div className={errorStyle}>{errorMessage}</div>}
       </Flex>
     </Flex>
   );

@@ -50,6 +50,7 @@ interface EntityBag {
   acl: Updates<AccessControl>;
   activityFlowLinks: Updates<ActivityFlowLink>;
   cards: Updates<Card>;
+  cardTypes: Updates<AbstractCardType>;
   changes: Updates<Change>;
   contents: Updates<CardContent>;
   documents: Updates<Document>;
@@ -59,7 +60,6 @@ interface EntityBag {
   resources: Updates<AbstractResource>;
   roles: Updates<TeamRole>;
   stickynotelinks: Updates<StickyNoteLink>;
-  types: Updates<AbstractCardType>;
   users: Updates<User>;
   notifications: ColabNotification[];
 }
@@ -70,6 +70,7 @@ function createBag(): EntityBag {
     acl: { updated: [], deleted: [] },
     activityFlowLinks: { updated: [], deleted: [] },
     cards: { updated: [], deleted: [] },
+    cardTypes: { updated: [], deleted: [] },
     changes: { updated: [], deleted: [] },
     contents: { updated: [], deleted: [] },
     documents: { updated: [], deleted: [] },
@@ -79,7 +80,6 @@ function createBag(): EntityBag {
     resources: { updated: [], deleted: [] },
     roles: { updated: [], deleted: [] },
     stickynotelinks: { updated: [], deleted: [] },
-    types: { updated: [], deleted: [] },
     users: { updated: [], deleted: [] },
     notifications: [],
   };
@@ -101,6 +101,8 @@ export const processMessage = createAsyncThunk(
           bag.activityFlowLinks.deleted.push(item);
         } else if (indexEntryIs(item, 'Card')) {
           bag.cards.deleted.push(item);
+        } else if (indexEntryIs(item, 'AbstractCardType')) {
+          bag.cardTypes.deleted.push(item);
         } else if (indexEntryIs(item, 'Change')) {
           bag.changes.deleted.push(item);
         } else if (indexEntryIs(item, 'CardContent')) {
@@ -119,8 +121,6 @@ export const processMessage = createAsyncThunk(
           bag.resources.deleted.push(item);
         } else if (indexEntryIs(item, 'StickyNoteLink')) {
           bag.stickynotelinks.deleted.push(item);
-        } else if (indexEntryIs(item, 'AbstractCardType')) {
-          bag.types.deleted.push(item);
         } else if (indexEntryIs(item, 'User')) {
           bag.users.deleted.push(item);
         } else {
@@ -141,6 +141,8 @@ export const processMessage = createAsyncThunk(
           bag.activityFlowLinks.updated.push(item);
         } else if (entityIs(item, 'Card')) {
           bag.cards.updated.push(item);
+        } else if (entityIs(item, 'AbstractCardType')) {
+          bag.cardTypes.updated.push(item);
         } else if (entityIs(item, 'Change')) {
           bag.changes.updated.push(item);
         } else if (entityIs(item, 'CardContent')) {
@@ -159,8 +161,6 @@ export const processMessage = createAsyncThunk(
           bag.roles.updated.push(item);
         } else if (entityIs(item, 'StickyNoteLink')) {
           bag.stickynotelinks.updated.push(item);
-        } else if (entityIs(item, 'AbstractCardType')) {
-          bag.types.updated.push(item);
         } else if (entityIs(item, 'User')) {
           bag.users.updated.push(item);
         } else {

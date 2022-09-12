@@ -23,6 +23,67 @@ interface DomParserContext {
   list: ('ul' | 'ol')[];
 }
 
+export interface Position {
+  element: Node;
+  offset: number;
+}
+
+function escapeText(text: string | null): string {
+  if (!text) {
+    return '';
+  }
+
+  const result: string[] = [];
+  for (const char of text) {
+    if (
+      char === '*' ||
+      char === '_' ||
+      char === '~' ||
+      char == '/' ||
+      char === '[' ||
+      char === ']' ||
+      char === '(' ||
+      char === ')'
+    ) {
+      result.push('\\');
+    }
+
+    result.push(char);
+  }
+  return result.join('');
+}
+
+function convertTable(table: Element) {
+  const md: string[] = [];
+  const line: string[] = [];
+
+  function processElement(element: Element) {
+    element.childNodes.forEach(child => {
+      if (child instanceof Element) {
+        const tag = child.tagName;
+        if (tag === 'TH') {
+          line.push(`*${child.textContent ?? ''}*`);
+        } else if (tag === 'TD') {
+          line.push(child.textContent ?? '');
+        } else if (tag === 'TR') {
+          processElement(child);
+
+          if (md.length > 0) {
+            md.push('\n');
+          }
+          md.push(line.join(' '));
+          line.length = 0;
+        } else {
+          processElement(child);
+        }
+      }
+    });
+  }
+  processElement(table);
+
+  return md.join('');
+}
+
 function processChildren(
   element: Element,
   selection: Selection | null,
@@ -30,7 +91,17 @@ function processChildren(
 ): string {
   const md: string[] = [];
 
-  element.childNodes.forEach(node => {
+  const anchorElemOffset = selection?.anchorNode === element ? selection.anchorOffset : undefined;
+  const focusElemOffset = selection?.focusNode === element ? selection.focusOffset : undefined;
+
+  element.childNodes.forEach((node, nodeIndex) => {
+    if (anchorElemOffset === nodeIndex) {
+      context.anchor = context.current;
+    }
+    if (focusElemOffset === nodeIndex) {
+      context.focus = context.current;
+    }
+
     if (node instanceof Text) {
       if (node.textContent) {
         const anchor = selection?.anchorNode === node ? selection.anchorOffset : undefined;
@@ -49,7 +120,16 @@ function processChildren(
             logger.trace('Reach Focus: ', i, context, anchor, focus);
           }
 
-          if (char === '*' || char === '_' || char === '~' || char == '/') {
+          if (
+            char === '*' ||
+            char === '_' ||
+            char === '~' ||
+            char == '/' ||
+            char === '[' ||
+            char === ']' ||
+            char === '(' ||
+            char === ')'
+          ) {
             context.current++;
             logger.trace('Escaped: ', i, context, anchor, focus);
             md.push('\\');
@@ -67,9 +147,20 @@ function processChildren(
         }
       }
     } else if (node instanceof Element) {
-      md.push(_domToMarkdown(node, selection, context));
+      // detect and skip emptiness (<p><br/></p> is quite normal to reprensent one single empty line)
+      // if last child is a <BR />, it should be ignored
+      if (node != element.lastChild || node instanceof HTMLBRElement === false) {
+        md.push(_domToMarkdown(node, selection, context));
+      }
     }
   });
+
+  if (anchorElemOffset === element.childNodes.length) {
+    context.anchor = context.current;
+  }
+  if (focusElemOffset === element.childNodes.length) {
+    context.focus = context.current;
+  }
 
   return md.join('');
 }
@@ -120,6 +211,41 @@ function _domToMarkdown(
     }
   }
 
+  function processUnformatable(element: Element, escape: boolean = false) {
+    // Consume the whole text as-is and detect selection
+    const children = [...element.childNodes];
+    children.forEach((child, index) => {
+      if (element === selection?.anchorNode && selection.anchorOffset === index) {
+        context.anchor = context.current;
+      }
+      if (child === selection?.anchorNode) {
+        context.anchor = context.current + selection.anchorOffset;
+      }
+
+      if (element === selection?.focusNode && selection.focusOffset === index) {
+        context.focus = context.current;
+      }
+      if (child === selection?.focusNode) {
+        context.focus = context.current + selection.focusOffset;
+      }
+      if (escape) {
+        push(escapeText(child.textContent || ''));
+      } else {
+        push(child.textContent || '');
+      }
+
+      if (child instanceof HTMLBRElement) {
+        push('\n');
+      }
+    });
+    if (element === selection?.anchorNode && selection.anchorOffset === children.length) {
+      context.anchor = context.current;
+    }
+    if (element === selection?.focusNode && selection.focusOffset === children.length) {
+      context.focus = context.current;
+    }
+  }
+
   logger.trace('Parser: ', tag);
 
   const headerLevel = isHeader(tag);
@@ -129,11 +255,33 @@ function _domToMarkdown(
     }
     process('heading', `${'#'.repeat(headerLevel)} `, '');
   } else {
-    if (tag === 'SPAN') {
+    if (tag === 'A') {
+      // convert links to markdown: [link label](url)
+      const url = element.getAttribute('href');
+      const label = element.textContent;
+      const data = `[${label}](${url})`;
+      push(data);
+    } else if (tag === 'SPAN' && element.getAttribute('DATA-TYPE') === 'link') {
+      // convert custom links to markdown: [link label](url)
+      const url = element.getAttribute('data-link-href');
+      push('[');
+      processUnformatable(element);
+      push(`](${url})`);
+    } else if (tag === 'SPAN') {
       md.push(processChildren(element, selection, context));
-    } else if (tag === 'P' || tag === 'DIV') {
+    } else if (
+      tag === 'P' ||
+      tag === 'DIV' ||
+      tag === 'SECTION' ||
+      tag === 'ARTICLE' ||
+      tag === 'HEADER' ||
+      tag === 'FOOTER'
+    ) {
       if (context.current > 0) {
-        push('\n');
+        // hack no newline within lists
+        if (context.list.length === 0) {
+          push('\n');
+        }
       }
       md.push(processChildren(element, selection, context));
     } else if (tag === 'STRONG' || tag === 'B') {
@@ -167,11 +315,11 @@ function _domToMarkdown(
           push('\n');
         }
         push('  '.repeat(context.list.length - 1));
-        if (currentList === 'ol') {
-          // TODO: fetch start number
+        const listType = element.getAttribute('data-list-type');
+        if (listType === 'OL') {
           push('1. ');
         } else {
-          const checked = elementArg.getAttribute('data-checked');
+          const checked = element.getAttribute('data-checked');
           if (checked == null) {
             push('- ');
           } else {
@@ -186,10 +334,22 @@ function _domToMarkdown(
       }
       const lang = element.getAttribute('data-lang') || '';
       push(`\`\`\`${lang}\n`);
-      push(elementArg.textContent || '');
+      processUnformatable(element);
       push('\n```');
     } else if (tag === 'BR') {
       push('\n ');
+    } else if (tag === 'IMG') {
+      // convert links to markdown: [link label](url)
+      const src = element.getAttribute('src');
+      const label = element.getAttribute('alt');
+      const data = `![${label}](${src})`;
+      push(data);
+    } else if (tag === 'TABLE') {
+      logger.warn('TABLE');
+      const text = convertTable(element);
+      push(text);
+    } else {
+      logger.info('Unhandled tag', tag, '=>', element.textContent, '<=');
     }
   }
   return md.join('');

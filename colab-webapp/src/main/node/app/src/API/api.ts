@@ -18,6 +18,7 @@ import {
   Document,
   DuplicationParam,
   entityIs,
+  ErrorHandler,
   HierarchicalPosition,
   HttpSession,
   InvolvementLevel,
@@ -35,9 +36,9 @@ import {
   User,
   WsSessionIdentifier,
 } from 'colab-rest-client';
-import { PasswordScore } from '../components/common/Form/Form';
+import { PasswordScore } from '../components/common/element/Form';
 import { DocumentKind } from '../components/documents/documentCommonType';
-import { ResourceAndRef } from '../components/resources/ResourceCommonType';
+import { ResourceAndRef } from '../components/resources/resourcesCommonType';
 import { hashPassword } from '../SecurityHelper';
 import { addNotification } from '../store/notification';
 import { ColabState, getStore } from '../store/store';
@@ -54,7 +55,8 @@ export const getApplicationPath = () => {
 };
 
 const restClient = ColabClient(getApplicationPath(), error => {
-  if (entityIs(error, 'HttpException')) {
+  // TODO see how it could be auto generated as everything that is handled by ColabNotification.message
+  if (entityIs(error, 'HttpException') || error instanceof Error || typeof error === 'string') {
     getStore().dispatch(
       addNotification({
         status: 'OPEN',
@@ -62,20 +64,12 @@ const restClient = ColabClient(getApplicationPath(), error => {
         message: error,
       }),
     );
-  } else if (error instanceof Error) {
-    getStore().dispatch(
-      addNotification({
-        status: 'OPEN',
-        type: 'ERROR',
-        message: `${error.name}: ${error.message}`,
-      }),
-    );
   } else {
     getStore().dispatch(
       addNotification({
         status: 'OPEN',
         type: 'ERROR',
-        message: 'Something went wrong', // TODO i18n
+        message: null,
       }),
     );
   }
@@ -144,6 +138,10 @@ export const getVersionDetails = createAsyncThunk('monitoring/getVersionDetails'
   return await restClient.MonitoringRestEndpoint.getVersion();
 });
 
+export const getLiveMonitoringData = createAsyncThunk('monitoring/getLive', async () => {
+  return await restClient.ChangeRestEndpoint.getMonitoringData();
+});
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Authentication
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -154,10 +152,12 @@ export const signInWithLocalAccount = createAsyncThunk(
     {
       identifier,
       password /*, passwordScore*/,
+      errorHandler,
     }: {
       identifier: string;
       password: string;
       passwordScore: PasswordScore;
+      errorHandler?: ErrorHandler;
     },
     thunkApi,
   ) => {
@@ -170,7 +170,7 @@ export const signInWithLocalAccount = createAsyncThunk(
       mandatoryHash: await hashPassword(authMethod.mandatoryMethod, authMethod.salt, password),
     };
 
-    await restClient.UserRestEndpoint.signIn(authInfo);
+    await restClient.UserRestEndpoint.signIn(authInfo, errorHandler);
 
     thunkApi.dispatch(reloadCurrentUser());
   },
@@ -184,11 +184,13 @@ export const signUp = createAsyncThunk(
       email,
       password,
       passwordScore,
+      errorHandler,
     }: {
       username: string;
       email: string;
       password: string;
       passwordScore: PasswordScore;
+      errorHandler?: ErrorHandler;
     },
     thunkApi,
   ) => {
@@ -204,7 +206,7 @@ export const signUp = createAsyncThunk(
       hash: await hashPassword(authMethod.mandatoryMethod, authMethod.salt, password),
     };
 
-    await restClient.UserRestEndpoint.signUp(signUpInfo);
+    await restClient.UserRestEndpoint.signUp(signUpInfo, errorHandler);
 
     // go back to sign in page
     thunkApi.dispatch(
@@ -326,6 +328,10 @@ export const forceLogout = createAsyncThunk('user/forceLogout', async (session: 
 // Projects
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
+export const getProject = createAsyncThunk('project/get', async (id: number) => {
+  return await restClient.ProjectRestEndpoint.getProject(id);
+});
+
 export const getUserProjects = createAsyncThunk('project/users', async () => {
   return await restClient.ProjectRestEndpoint.getUserProjects();
 });
@@ -358,6 +364,25 @@ export const getRootCardOfProject = createAsyncThunk<Card, number>(
   },
 );
 
+export const reconnectToProjectChannel = createAsyncThunk(
+  'project/reconnect',
+  async (project: Project, thunkApi) => {
+    const state = thunkApi.getState() as ColabState;
+    if (state.websockets.sessionId != null && project.id != null) {
+      // Subscribe to new project channel
+      await restClient.WebsocketRestEndpoint.subscribeToProjectChannel(project.id, {
+        '@class': 'WsSessionIdentifier',
+        sessionId: state.websockets.sessionId,
+      });
+
+      // initialized project content
+      //await thunkApi.dispatch(getRootCardOfProject(project.id)); // LAZY
+      await thunkApi.dispatch(getProjectStructure(project.id)); // GREEDY
+    }
+    return project;
+  },
+);
+
 export const startProjectEdition = createAsyncThunk(
   'project/startEditing',
   async (project: Project, thunkApi) => {
@@ -375,7 +400,8 @@ export const startProjectEdition = createAsyncThunk(
       });
 
       // initialized project content
-      await thunkApi.dispatch(getRootCardOfProject(project.id));
+      //await thunkApi.dispatch(getRootCardOfProject(project.id)); // LAZY
+      await thunkApi.dispatch(getProjectStructure(project.id)); // GREEDY
     }
     return project;
   },
@@ -705,6 +731,10 @@ export const getCard = createAsyncThunk('card/get', async (id: number) => {
   return await restClient.CardRestEndpoint.getCard(id);
 });
 
+export const getProjectStructure = createAsyncThunk('project/getStructure', async (id: number) => {
+  return await restClient.ProjectRestEndpoint.getStructureOfProject(id);
+});
+
 export const getAllProjectCards = createAsyncThunk(
   'card/getAllProjectCards',
   async (id: number) => {
@@ -726,6 +756,7 @@ export const createSubCardWithTextDataBlock = createAsyncThunk(
       const firstDeliverable: TextDataBlock = {
         '@class': 'TextDataBlock',
         mimeType: 'text/markdown',
+        healthy: true,
         revision: '0',
       };
 
@@ -797,6 +828,7 @@ export const createCardContentVariantWithBlockDoc = createAsyncThunk(
       '@class': 'TextDataBlock',
       mimeType: 'text/markdown',
       revision: '0',
+      healthy: true,
     };
     return await restClient.CardContentRestEndpoint.createNewCardContentWithDeliverable(
       cardId,
@@ -975,7 +1007,7 @@ export const deleteResource = createAsyncThunk('resource/delete', async (resourc
   }
 });
 
-function getResourceToEdit(resource: ResourceAndRef): ResourceRef | Resource {
+export function getResourceToEdit(resource: ResourceAndRef): ResourceRef | Resource {
   if (resource.isDirectResource) {
     return resource.targetResource;
   }
@@ -1006,6 +1038,21 @@ export const removeAccessToResource = createAsyncThunk(
     const resourceToDisable = getResourceToEdit(resource);
     if (resourceToDisable.id != null) {
       return await restClient.ResourceRestEndpoint.discardResourceOrRef(resourceToDisable.id);
+    }
+  },
+);
+
+export const changeResourceCategory = createAsyncThunk(
+  'resource/changeCategory',
+  async ({
+    resourceOrRef,
+    categoryName,
+  }: {
+    resourceOrRef: AbstractResource;
+    categoryName: string;
+  }) => {
+    if (resourceOrRef && resourceOrRef.id) {
+      return await restClient.ResourceRestEndpoint.changeCategory(resourceOrRef.id, categoryName);
     }
   },
 );
@@ -1120,27 +1167,26 @@ export const moveDocumentDown = createAsyncThunk('document/moveDown', async (doc
   return await restClient.DocumentRestEndpoint.moveDocumentDown(docId);
 });
 
-function makeNewDocument(docKind: DocumentKind) {
-  let document = null;
+function makeNewDocument(docKind: DocumentKind): Document {
   if (docKind == 'DocumentFile') {
-    document = {
+    return {
       '@class': docKind,
       fileSize: 0,
       mimeType: 'application/octet-stream',
     };
   } else if (docKind == 'TextDataBlock') {
-    document = {
+    return {
       '@class': docKind,
       mimeType: 'text/markdown',
+      healthy: true,
       revision: '0',
     };
-  } else {
-    document = {
+  } else if (docKind == 'ExternalLink') {
+    return {
       '@class': docKind,
     };
   }
-
-  return document;
+  throw new Error('Unreachable code');
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1158,6 +1204,8 @@ export const subscribeToBlockChannel = createAsyncThunk(
         '@class': 'WsSessionIdentifier',
         sessionId: sessionId,
       });
+      // once registerd, make sur to sync pending changes
+      thunkApi.dispatch(getBlockPendingChanges(id));
     }
   },
 );

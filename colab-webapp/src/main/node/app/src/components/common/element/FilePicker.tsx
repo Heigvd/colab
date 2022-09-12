@@ -18,12 +18,21 @@ import {
   faFileVideo,
   faFileWord,
 } from '@fortawesome/free-regular-svg-icons';
-import { faFileCsv, faSkullCrossbones, faUpload } from '@fortawesome/free-solid-svg-icons';
+import {
+  faDownload,
+  faFileCsv,
+  faMagnifyingGlassPlus,
+  faSkullCrossbones,
+  faUpload,
+} from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import * as React from 'react';
-import { invertedButtonStyle, space_M, space_S } from '../../styling/style';
+import useTranslations from '../../../i18n/I18nContext';
+import { invertedButtonStyle, lightIconButtonStyle, space_M, space_S } from '../../styling/style';
 import Flex from '../layout/Flex';
+import Overlay from '../layout/Overlay';
 import Button from './Button';
+import IconButton from './IconButton';
 
 const contains = (value: string, ...values: string[]): boolean => {
   return !!values.find(needle => value.includes(needle));
@@ -144,6 +153,12 @@ const displayImageStyle = css({
   maxHeight: '300px',
 });
 
+const zoomImageStyle = css({
+  cursor: 'zoom-out',
+  maxWidth: '90vw',
+  maxHeight: '90vh',
+});
+
 export interface FilePickerProps {
   accept?: string;
   onChange?: (file: File) => void;
@@ -153,6 +168,7 @@ export interface FilePickerProps {
   currentPreviewImgUrl?: string;
   editingStatus: boolean;
   setEditingState: (editMode: boolean) => void;
+  readOnly: boolean;
 }
 
 export default function FilePicker({
@@ -164,7 +180,10 @@ export default function FilePicker({
   onDownload,
   editingStatus,
   setEditingState,
+  readOnly,
 }: FilePickerProps): JSX.Element {
+  const i18n = useTranslations();
+
   const [dragging, setDragging] = React.useState(false);
 
   const onInputCb = React.useMemo(
@@ -225,7 +244,7 @@ export default function FilePicker({
   const [coord, setCoord] = React.useState<[number, number] | undefined>(undefined);
   const [displayed, setDisplayed] = React.useState(false);
   const timerRef = React.useRef<number>();
-  const hasNoFile = currentFilename === null || currentFilename === undefined;
+  const hasNoFile = currentFilename == null;
   const isImageToDisplay =
     currentMimetype && (currentMimetype === 'image/png' || currentMimetype === 'image/jpeg');
 
@@ -268,6 +287,16 @@ export default function FilePicker({
     }
   }, [hasPreview]);
 
+  const [zoom, setZoom] = React.useState(false);
+
+  const zoomCb = React.useCallback(() => {
+    setZoom(true);
+  }, []);
+
+  const unZoomCb = React.useCallback(() => {
+    setZoom(false);
+  }, []);
+
   return (
     <Flex className={css({ padding: space_S })} align="center">
       <Flex
@@ -284,7 +313,16 @@ export default function FilePicker({
         onMouseMove={onMoveCb}
       >
         {isImageToDisplay && !editingStatus ? (
-          <img className={displayImageStyle} src={currentPreviewImgUrl} />
+          <>
+            {zoom ? (
+              <Overlay onClickOutside={unZoomCb}>
+                <img onClick={unZoomCb} className={zoomImageStyle} src={currentPreviewImgUrl} />
+              </Overlay>
+            ) : (
+              <img className={displayImageStyle} src={currentPreviewImgUrl} />
+            )}
+            <IconButton onClick={zoomCb} icon={faMagnifyingGlassPlus} title="" />
+          </>
         ) : (
           <>
             {getMimeTypeIcon(currentMimetype, hasNoFile)}
@@ -297,7 +335,15 @@ export default function FilePicker({
             </div>
           </>
         )}
-        {onChange && editingStatus && (
+        {!hasNoFile && !editingStatus && (
+          <IconButton
+            icon={faDownload}
+            title={i18n.modules.content.dlFile}
+            className={lightIconButtonStyle}
+            onClick={onDownload}
+          />
+        )}
+        {!readOnly && onChange && editingStatus && (
           <div className={css({ paddingLeft: space_M })} onClick={e => e.stopPropagation()}>
             <label>
               <Button onClick={() => {}}>

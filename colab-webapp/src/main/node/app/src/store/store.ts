@@ -18,9 +18,9 @@ import configReducer from './configuration';
 import documentReducer from './documentSlice';
 import externalDataReducer from './externalData';
 import notifReducer from './notification';
-import projectReducer from './project';
 import resourceReducer from './resource';
 import cardTypeReducer from './slice/cardTypeSlice';
+import projectReducer from './slice/projectSlice';
 import stickyNoteLinkReducer from './stickynotelink';
 import userReducer from './user';
 import websocketReducer from './websocket';
@@ -60,3 +60,5 @@ export type AppDispatch = typeof store.dispatch;
 export type LoadingStatus = 'NOT_INITIALIZED' | 'LOADING' | 'READY';
 
 export type AvailabilityStatus = 'NOT_INITIALIZED' | 'LOADING' | 'READY' | 'ERROR';
+
+export type InlineAvailabilityStatus<T> = 'NOT_INITIALIZED' | 'LOADING' | 'ERROR' | T;

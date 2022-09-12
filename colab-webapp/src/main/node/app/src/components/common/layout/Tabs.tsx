@@ -6,31 +6,12 @@
  */
 import { css, cx } from '@emotion/css';
 import * as React from 'react';
+import { Location, Route, Routes, useLocation, useNavigate } from 'react-router-dom';
 import useTranslations from '../../../i18n/I18nContext';
+import logger from '../../../logger';
 import { space_L, space_M, space_S } from '../../styling/style';
 import Clickable from './Clickable';
 import Flex from './Flex';
-
-interface TabProps {
-  invisible?: boolean;
-  name: string;
-  label: string;
-  children: React.ReactNode;
-}
-
-export function Tab({ children }: TabProps): JSX.Element {
-  return <>{children}</>;
-}
-
-interface TabsProps {
-  className?: string;
-  tabsClassName?: string;
-  selectedLabelClassName?: string;
-  notselectedLabelClassName?: string;
-  bodyClassName?: string;
-  children: React.ReactElement<TabProps>[] | React.ReactElement<TabProps>;
-  onSelect?: (name: string) => void;
-}
 
 const headerStyle = css({
   flexShrink: 0,
@@ -76,45 +57,108 @@ const defaultBodyStyle = css({
   alignSelf: 'stretch',
 });
 
+function defaultTabFactory(
+  routed: boolean | undefined,
+  location: Location,
+  defaultTab: string | undefined,
+): string {
+  if (routed) {
+    return location.pathname.split('/').pop() || '';
+  } else if (defaultTab != null) {
+    return defaultTab;
+  } else {
+    return '';
+  }
+}
+
+interface TabProps {
+  name: string;
+  label: string;
+  invisible?: boolean;
+  children: React.ReactNode;
+}
+
+export function Tab({ children }: TabProps): JSX.Element {
+  return <>{children}</>;
+}
+
+interface TabsProps {
+  routed?: boolean;
+  defaultTab?: string;
+  onSelect?: (name: string) => void;
+  children: React.ReactElement<TabProps>[] | React.ReactElement<TabProps>;
+  className?: string;
+  tabsClassName?: string;
+  selectedLabelClassName?: string;
+  notselectedLabelClassName?: string;
+  bodyClassName?: string;
+}
+
 export default function Tabs({
+  routed,
+  defaultTab,
+  onSelect,
+  children,
   className,
   tabsClassName,
   selectedLabelClassName,
   notselectedLabelClassName,
   bodyClassName,
-  children,
-  onSelect,
 }: TabsProps): JSX.Element {
+  const navigate = useNavigate();
+  const location = useLocation();
   const i18n = useTranslations();
 
-  const mappedChildren: Record<
-    string,
-    { label: string; child: React.ReactElement<TabProps>; invisible?: boolean }
-  > = {};
-  const names: string[] = [];
+  const mappedChildren = React.useMemo(() => {
+    const map: Record<
+      string,
+      { label: string; child: React.ReactElement<TabProps>; invisible?: boolean }
+    > = {};
 
-  React.Children.forEach(children, child => {
-    mappedChildren[child.props.name] = {
-      label: child.props.label,
-      child: child,
-      invisible: child.props.invisible,
-    };
-    names.push(child.props.name);
-  });
+    React.Children.forEach(children, child => {
+      map[child.props.name] = {
+        label: child.props.label,
+        child: child,
+        invisible: child.props.invisible,
+      };
+    });
 
-  const [selectedTab, setTab] = React.useState<string>(names[0] || '');
+    return map;
+  }, [children]);
+
+  const [selectedTab, setTab] = React.useState<string>(
+    defaultTabFactory(routed, location, defaultTab),
+  );
 
   const onSelectTab = React.useCallback(
     (name: string) => {
       setTab(name);
+
+      if (routed) {
+        navigate(name);
+      }
+
       if (onSelect) {
         onSelect(name);
       }
     },
-    [onSelect],
+    [navigate, onSelect, routed],
   );
 
   const child = mappedChildren[selectedTab]?.child;
+
+  React.useEffect(() => {
+    if (routed) {
+      const path = location.pathname.split('/');
+
+      const tabName = path[path.length - 1] || '';
+
+      if (Object.keys(mappedChildren).includes(tabName)) {
+        logger.info(tabName);
+        setTab(tabName);
+      }
+    }
+  }, [location.pathname, mappedChildren, routed]);
 
   return (
     <Flex
@@ -124,7 +168,7 @@ export default function Tabs({
       className={cx(css({ alignSelf: 'stretch' }), className)}
     >
       <Flex justify="space-evenly" className={headerStyle}>
-        {names.map(name => {
+        {Object.keys(mappedChildren).map(name => {
           if (!mappedChildren[name]!.invisible) {
             return (
               <Clickable
@@ -148,7 +192,19 @@ export default function Tabs({
         overflow="auto"
         className={cx(defaultBodyStyle, bodyClassName)}
       >
-        {child != null ? child : <i>{i18n.common.error.missingContent}</i>}
+        {routed ? (
+          <Routes>
+            <Route path={`/*`} element={child} />
+            {mappedChildren &&
+              Object.entries(mappedChildren).map(([key, value]) => {
+                return <Route key={key} path={`${key}`} element={value.child} />;
+              })}
+          </Routes>
+        ) : child != null ? (
+          child
+        ) : (
+          <i>{i18n.common.error.missingContent}</i>
+        )}
       </Flex>
     </Flex>
   );

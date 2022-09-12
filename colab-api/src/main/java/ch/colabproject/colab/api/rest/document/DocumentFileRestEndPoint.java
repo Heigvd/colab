@@ -87,7 +87,7 @@ public class DocumentFileRestEndPoint {
         @FormDataParam("file") FormDataBodyPart bodypart
     ) {
         try {
-            fileManager.updateFile(docId, fileSize, file, bodypart);
+            fileManager.updateOrCreateFile(docId, fileSize, file, bodypart);
         } catch (RepositoryException ex) {
             logger.debug("Could not update file with id {} : {}", docId, ex);
             throw HttpErrorMessage.internalServerError();

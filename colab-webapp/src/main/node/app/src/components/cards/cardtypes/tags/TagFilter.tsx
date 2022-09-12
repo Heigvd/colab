@@ -8,7 +8,7 @@
 import { css, cx } from '@emotion/css';
 import * as React from 'react';
 import useTranslations from '../../../../i18n/I18nContext';
-import Checkbox from '../../../common/Form/Checkbox';
+import Checkbox from '../../../common/element/Checkbox';
 import Flex from '../../../common/layout/Flex';
 import {
   borderRadius,

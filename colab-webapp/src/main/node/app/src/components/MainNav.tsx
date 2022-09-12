@@ -7,6 +7,7 @@
 
 import { css, cx } from '@emotion/css';
 import {
+  faCircleInfo,
   faCog,
   faExclamationTriangle,
   faMeteor,
@@ -25,13 +26,15 @@ import InlineLoading from './common/element/InlineLoading';
 import { MainMenuLink } from './common/element/Link';
 import Clickable from './common/layout/Clickable';
 import DropDownMenu from './common/layout/DropDownMenu';
+import Monkeys from './debugger/monkey/Monkeys';
 import Picto from './styling/Picto';
 import { flex, invertedThemeMode, paddingAroundStyle, space_M, space_S } from './styling/style';
 
 export default function MainNav(): JSX.Element {
+  const navigate = useNavigate();
   return (
     <>
-      <Clickable onClick={() => window.open(`#/about-colab`, '_blank')}>
+      <Clickable onClick={() => navigate(`/`)}>
         <Picto
           className={cx(
             css({
@@ -75,6 +78,7 @@ export default function MainNav(): JSX.Element {
           flexGrow: 1,
         })}
       ></div>
+      <Monkeys />
       <UserDropDown />
     </>
   );
@@ -84,10 +88,12 @@ export function UserDropDown({ onlyLogout }: { onlyLogout?: boolean }): JSX.Elem
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const i18n = useTranslations();
+
   const { currentUser, status: currentUserStatus } = useCurrentUser();
+
   const logout = React.useCallback(() => {
-    dispatch(API.signOut());
-  }, [dispatch]);
+    dispatch(API.signOut()).then(() => navigate(`/`));
+  }, [dispatch, navigate]);
 
   React.useEffect(() => {
     if (currentUserStatus == 'NOT_INITIALIZED') {
@@ -95,7 +101,9 @@ export function UserDropDown({ onlyLogout }: { onlyLogout?: boolean }): JSX.Elem
       dispatch(API.reloadCurrentUser());
     }
   }, [currentUserStatus, dispatch]);
+
   const passwordScore = useAppSelector(state => state.auth.localAccountPasswordScore);
+
   if (currentUser != null) {
     return (
       <>
@@ -114,7 +122,7 @@ export function UserDropDown({ onlyLogout }: { onlyLogout?: boolean }): JSX.Elem
                       padding: space_S,
                     })}
                   >
-                    <FontAwesomeIcon icon={faUser} />
+                    <FontAwesomeIcon icon={faUser} />{' '}
                     {currentUser.firstname && currentUser.lastname
                       ? currentUser.firstname + ' ' + currentUser.lastname
                       : currentUser.username}
@@ -129,10 +137,10 @@ export function UserDropDown({ onlyLogout }: { onlyLogout?: boolean }): JSX.Elem
                     value: 'settings',
                     label: (
                       <>
-                        <FontAwesomeIcon icon={faCog} /> Settings
+                        <FontAwesomeIcon icon={faCog} /> {i18n.common.settings}
                       </>
                     ),
-                    action: () => navigate('/settings'),
+                    action: () => navigate('/settings/user'),
                   },
                 ]
               : []),
@@ -142,10 +150,23 @@ export function UserDropDown({ onlyLogout }: { onlyLogout?: boolean }): JSX.Elem
                     value: 'admin',
                     label: (
                       <>
-                        <FontAwesomeIcon icon={faMeteor} /> Admin
+                        <FontAwesomeIcon icon={faMeteor} /> {i18n.admin.admin}
                       </>
                     ),
-                    action: () => navigate('/admin'),
+                    action: () => navigate('/admin/main'),
+                  },
+                ]
+              : []),
+            ...(!onlyLogout
+              ? [
+                  {
+                    value: 'about',
+                    label: (
+                      <>
+                        <FontAwesomeIcon icon={faCircleInfo} /> {i18n.common.about}
+                      </>
+                    ),
+                    action: () => navigate('/about-colab'),
                   },
                 ]
               : []),
@@ -153,7 +174,7 @@ export function UserDropDown({ onlyLogout }: { onlyLogout?: boolean }): JSX.Elem
               value: 'logout',
               label: (
                 <>
-                  Logout <FontAwesomeIcon icon={faSignOutAlt} />
+                  <FontAwesomeIcon icon={faSignOutAlt} /> {i18n.common.logout}
                 </>
               ),
               action: logout,

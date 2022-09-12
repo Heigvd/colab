@@ -5,10 +5,11 @@
  * Licensed under the MIT License
  */
 import { createSlice } from '@reduxjs/toolkit';
-import { Project, TeamMember, TeamRole } from 'colab-rest-client';
-import * as API from '../API/api';
-import { mapById } from '../helper';
-import { processMessage } from '../ws/wsThunkActions';
+import { entityIs, Project, TeamMember, TeamRole } from 'colab-rest-client';
+import * as API from '../../API/api';
+import { mapById } from '../../helper';
+import { processMessage } from '../../ws/wsThunkActions';
+import { AvailabilityStatus } from '../store';
 
 /**
  * NOT_SET: the state is not fully set. It may contain some data (received by websocket) but there
@@ -30,7 +31,7 @@ export interface ProjectState {
   allStatus: StateStatus;
   mine: number[];
   projects: {
-    [id: number]: Project;
+    [id: number]: Project | AvailabilityStatus;
   };
   teams: Record<number, TeamState>;
   editing: number | null;
@@ -153,6 +154,19 @@ const projectsSlice = createSlice({
         state.currentUserId = action.payload.currentUser
           ? action.payload.currentUser.id || undefined
           : undefined;
+      })
+      .addCase(API.getProject.pending, (state, action) => {
+        state.projects[action.meta.arg] = 'LOADING';
+      })
+      .addCase(API.getProject.fulfilled, (state, action) => {
+        if (entityIs(action.payload, 'Project')) {
+          state.projects[action.meta.arg] = action.payload;
+        } else {
+          state.projects[action.meta.arg] = 'ERROR';
+        }
+      })
+      .addCase(API.getProject.rejected, (state, action) => {
+        state.projects[action.meta.arg] = 'ERROR';
       })
       .addCase(API.getUserProjects.pending, state => {
         state.status = 'LOADING';

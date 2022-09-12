@@ -8,6 +8,7 @@
 import { css, cx } from '@emotion/css';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { WithJsonDiscriminator } from 'colab-rest-client';
 import * as React from 'react';
 import { useNavigate } from 'react-router-dom';
 import * as API from '../../API/api';
@@ -15,10 +16,11 @@ import { buildLinkWithQueryParam } from '../../helper';
 import useTranslations from '../../i18n/I18nContext';
 import { useAccountConfig } from '../../selectors/configSelector';
 import { useAppDispatch, useLoadingState } from '../../store/hooks';
+import Form, { Field, PasswordScore } from '../common/element/Form';
 import { InlineLink } from '../common/element/Link';
-import Form, { Field, PasswordScore } from '../common/Form/Form';
 import Flex from '../common/layout/Flex';
-import { errorColor, lightLinkStyle, space_M, space_S, textSmall } from '../styling/style';
+import { prettyPrint } from '../common/toplevel/Notifier';
+import { lightLinkStyle, space_M, space_S } from '../styling/style';
 import PublicEntranceContainer from './PublicEntranceContainer';
 
 interface SignInFormProps {
@@ -48,8 +50,10 @@ export default function SignInForm({ redirectTo, message }: SignInFormProps): JS
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const i18n = useTranslations();
-  const [loginFailed, setLoginFailed] = React.useState<boolean>(false);
-  const {isLoading, startLoading, stopLoading} = useLoadingState();
+
+  const [error, setError] = React.useState<Error | WithJsonDiscriminator | null>(null);
+
+  const { isLoading, startLoading, stopLoading } = useLoadingState();
 
   const accountConfig = useAccountConfig();
 
@@ -69,39 +73,50 @@ export default function SignInForm({ redirectTo, message }: SignInFormProps): JS
       strengthProp: 'passwordScore',
     },
   ];
+
   const signIn = React.useCallback(
     (credentials: Credentials) => {
       startLoading();
+      setError(null);
+
       dispatch(
         API.signInWithLocalAccount({
           identifier: credentials.identifier,
           password: credentials.password,
           passwordScore: credentials.passwordScore,
+          errorHandler: error => {
+            if (error) {
+              setError(error);
+            }
+          },
         }),
       ).then(action => {
         stopLoading();
-        if (redirectTo && action.meta.requestStatus === 'fulfilled') {
+
+        if (action.meta.requestStatus === 'fulfilled' && redirectTo) {
           navigate(redirectTo);
-        } else if (action.meta.requestStatus === 'rejected') {
-          setLoginFailed(true);
         }
       });
     },
     [dispatch, navigate, redirectTo, startLoading, stopLoading],
   );
 
+  const errorMessage = React.useMemo(() => {
+    if (error) {
+      return prettyPrint(error, i18n);
+    } else {
+      return null;
+    }
+  }, [error, i18n]);
+
   return (
     <PublicEntranceContainer>
-      {loginFailed && (
-        <Flex className={cx(css({ color: errorColor, textAlign: 'left' }), textSmall)}>
-          {i18n.authentication.error.emailOrUserNotValid}
-        </Flex>
-      )}
-      {message && <div>{message}</div>}
+      {message && <Flex className={css({ marginBottom: space_M })}>{message}</Flex>}
       <Form
         fields={formFields}
         value={defaultCredentials}
         onSubmit={signIn}
+        globalErrorMessage={errorMessage}
         submitLabel={i18n.authentication.action.login}
         buttonClassName={css({ margin: space_M + ' auto' })}
         isSubmitInProcess={isLoading}
