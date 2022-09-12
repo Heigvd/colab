@@ -66,10 +66,9 @@ import org.slf4j.LoggerFactory;
      * @param presence presence data
      */
     @PUT
-    @Path(&quot;{projectId: [0-9]*}&quot;)
     public void updateUserPresence(TouchUserPresence presence) {
-<span class="nc" id="L71">        presenceManager.updateUserPresence(presence);</span>
-<span class="nc" id="L72">    }</span>
+<span class="nc" id="L70">        presenceManager.updateUserPresence(presence);</span>
+<span class="nc" id="L71">    }</span>
 
     /**
      * Clear presence list for the given project
@@ -79,16 +78,16 @@ import org.slf4j.LoggerFactory;
     @DELETE
     @Path(&quot;{projectId: [0-9]*}&quot;)
     public void clearProjectPresenceList(@PathParam(&quot;projectId&quot;) Long projectId) {
-<span class="nc" id="L82">        presenceManager.clearProjectPresenceList(projectId);</span>
-<span class="nc" id="L83">    }</span>
+<span class="nc" id="L81">        presenceManager.clearProjectPresenceList(projectId);</span>
+<span class="nc" id="L82">    }</span>
 
     /**
      * Clear all presence lists
      */
     @DELETE
     @AdminResource
-    public void clearAlltPresenceList() {
-<span class="nc" id="L91">        presenceManager.clearAllPresenceLists();</span>
-<span class="nc" id="L92">    }</span>
+    public void clearAllPresenceList() {
+<span class="nc" id="L90">        presenceManager.clearAllPresenceLists();</span>
+<span class="nc" id="L91">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>
