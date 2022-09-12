@@ -5,17 +5,14 @@
  * Licensed under the MIT License
  */
 
-import { css } from '@emotion/css';
+import { css, cx } from '@emotion/css';
 import * as React from 'react';
 import useTranslations from '../../i18n/I18nContext';
 import { useAndLoadTextOfDocument } from '../../selectors/documentSelector';
 import Tips from '../common/element/Tips';
 import Flex from '../common/layout/Flex';
-import { marginAroundStyle, space_M, space_S } from '../styling/style';
+import { marginAroundStyle, oneLineEllipsis, space_M, space_S } from '../styling/style';
 import { getKey, getTheDirectResource, ResourceAndRef } from './resourcesCommonType';
-
-// TODO UI : allow to have more thant 150px for the texts
-// => solution à l'arrache de mettre 300. mais pas pas satisfaisant
 
 /**
  * List of ResourceAndRef grouped by category
@@ -98,13 +95,13 @@ function TocHeader({ category }: TocHeaderProps): JSX.Element {
       {category && (
         <div className={marginAroundStyle([1, 2, 4], space_M)}>
           <h3
-            className={css({
-              maxWidth: '300px',
-              whiteSpace: 'nowrap',
-              overflow: 'hidden',
-              textOverflow: 'ellipsis',
-              flexGrow: 1,
-            })}
+            className={cx(
+              css({
+                minWidth: '50px',
+                flexGrow: 1,
+              }),
+              oneLineEllipsis,
+            )}
           >
             {category}
           </h3>
@@ -154,13 +151,13 @@ function TocEntry({ resource, selectResource, displayResource }: TocEntryProps):
             className={css({ padding: space_S + ' ' + space_M })}
           >
             <div
-              className={css({
-                maxWidth: '300px',
-                whiteSpace: 'nowrap',
-                overflow: 'hidden',
-                textOverflow: 'ellipsis',
-                flexGrow: 1,
-              })}
+              className={cx(
+                css({
+                  minWidth: '50px',
+                  flexGrow: 1,
+                }),
+                oneLineEllipsis,
+              )}
             >
               {resource.targetResource.title || i18n.modules.resource.untitled}
             </div>
