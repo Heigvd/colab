@@ -8,7 +8,6 @@
 import { faCircle, faCircleDot } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Resource } from 'colab-rest-client';
-import _ from 'lodash';
 import * as React from 'react';
 import useTranslations from '../../../i18n/I18nContext';
 

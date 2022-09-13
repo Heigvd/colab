@@ -17,7 +17,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { User } from 'colab-rest-client';
 import * as React from 'react';
 import { grantAdminRight, revokeAdminRight } from '../../API/api';
-import { regexFilter} from '../../helper';
+import { regexFilter } from '../../helper';
 import useTranslations from '../../i18n/I18nContext';
 import { useCurrentUser } from '../../selectors/userSelector';
 import { useAppDispatch } from '../../store/hooks';
@@ -125,16 +125,14 @@ const Headers = () => {
   );
 };
 
-
-
-function matchFn (regex :RegExp, user: User) : boolean {
-    return !!(
-        (user.username && user.username.match(regex) != null) ||
-        (user.firstname && user.firstname.match(regex) != null) ||
-        (user.lastname && user.lastname.match(regex) != null) ||
-        (user.commonname && user.commonname.match(regex) != null)
-    );
-};
+function matchFn(regex: RegExp, user: User): boolean {
+  return !!(
+    (user.username && user.username.match(regex) != null) ||
+    (user.firstname && user.firstname.match(regex) != null) ||
+    (user.lastname && user.lastname.match(regex) != null) ||
+    (user.commonname && user.commonname.match(regex) != null)
+  );
+}
 
 export default function UserList({ users }: UserListProps): JSX.Element {
   const [search, setSearch] = React.useState('');
@@ -171,8 +169,7 @@ export default function UserList({ users }: UserListProps): JSX.Element {
     }
   };
 
-  const filterSortedList = (search ? regexFilter(users, search, matchFn) : users)
-    .sort(sortFn);
+  const filterSortedList = (search ? regexFilter(users, search, matchFn) : users).sort(sortFn);
 
   return (
     <>

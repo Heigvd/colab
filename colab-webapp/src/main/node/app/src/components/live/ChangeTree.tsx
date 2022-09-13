@@ -200,7 +200,9 @@ export function ChangeTreeRaw({
   return (
     <div>
       <h4>{i18n.modules.content.tree}</h4>
-      {onDelete ? <IconButton icon={faTrash} title={i18n.common.delete} onClick={onDelete} /> : null}
+      {onDelete ? (
+        <IconButton icon={faTrash} title={i18n.common.delete} onClick={onDelete} />
+      ) : null}
       <div
         ref={ref => {
           if (ref != null) {

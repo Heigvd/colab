@@ -67,8 +67,8 @@ export default function IllustrationDisplay({
         />
       ) : (
         <p>
-          {i18n.modules.project.settings.missingIcon}
-          ({currentIllustration.iconKey} of lib {currentIllustration.iconLibrary})
+          {i18n.modules.project.settings.missingIcon}({currentIllustration.iconKey} of lib{' '}
+          {currentIllustration.iconLibrary})
         </p>
       )}
     </Flex>
@@ -99,8 +99,8 @@ export function IllustrationIconDisplay({
         />
       ) : (
         <p>
-           {i18n.modules.project.settings.missingIcon}
-          ({currentIllustration.iconKey} of lib {currentIllustration.iconLibrary})
+          {i18n.modules.project.settings.missingIcon}({currentIllustration.iconKey} of lib{' '}
+          {currentIllustration.iconLibrary})
         </p>
       )}
     </>

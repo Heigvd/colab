@@ -87,7 +87,11 @@ export default function ProjectModelSelector({
 
               <div className={css({ padding: '10px' })}>
                 <h3 className={css({ marginTop: space_S })}>
-                  {!isEmptyProject ? (item.name ? item.name : i18n.modules.project.actions.newProject) : i18n.modules.project.info.emptyProject}
+                  {!isEmptyProject
+                    ? item.name
+                      ? item.name
+                      : i18n.modules.project.actions.newProject
+                    : i18n.modules.project.info.emptyProject}
                 </h3>
                 <p className={cx(textSmall, lightText, multiLineEllipsis)}>
                   {!isEmptyProject

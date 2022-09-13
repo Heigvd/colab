@@ -162,7 +162,7 @@ export function TipsSettings(): JSX.Element {
           className={css({ display: 'inline-block', marginRight: space_S })}
         />
         <Tips tipsType="DEBUG">
-        <h4>{i18n.tips.example.debug.title}</h4>
+          <h4>{i18n.tips.example.debug.title}</h4>
           {i18n.tips.example.debug.content}
         </Tips>
       </div>

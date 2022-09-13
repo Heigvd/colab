@@ -5,8 +5,8 @@
  * Licensed under the MIT License
  */
 
-import { escapeRegExp } from 'lodash';
 import { CardContent, User, WithId } from 'colab-rest-client';
+import { escapeRegExp } from 'lodash';
 import logger from './logger';
 
 export const emailFormat = /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
@@ -104,9 +104,8 @@ export function sortCardContents(contents: CardContent[], lang: string): CardCon
 export function regexFilter<T>(
   list: T[],
   search: string,
-  matchFn: (regex: RegExp, item: T) => boolean
-  ) : T[] {
-
+  matchFn: (regex: RegExp, item: T) => boolean,
+): T[] {
   if (search.length <= 0) {
     return list;
   }
@@ -115,10 +114,10 @@ export function regexFilter<T>(
 
   return list.filter(item => {
     return regexes.reduce<boolean>((acc, regex) => {
-      if (acc == false){
+      if (acc == false) {
         return false;
       }
-      return matchFn(regex, item)
+      return matchFn(regex, item);
     }, true);
-  })
+  });
 }

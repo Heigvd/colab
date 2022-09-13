@@ -177,7 +177,7 @@ export default function ProjectCreator({
               }}
               isLoading={isLoading}
             >
-             {i18n.modules.project.actions.createProject}
+              {i18n.modules.project.actions.createProject}
             </ButtonWithLoader>
           )}
         </Flex>

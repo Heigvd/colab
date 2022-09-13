@@ -18,9 +18,7 @@ export default function LanguageSelector(): JSX.Element {
     { value: 'FR', label: <div>Français</div> },
   ];
   const valueComp: { value: Language; label: React.ReactNode } =
-    lang == 'EN'
-      ? { value: 'EN', label: <div>EN</div> }
-      : { value: 'FR', label: <div>FR</div> };
+    lang == 'EN' ? { value: 'EN', label: <div>EN</div> } : { value: 'FR', label: <div>FR</div> };
 
   return (
     <DropDownMenu

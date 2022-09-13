@@ -43,11 +43,10 @@ interface ItemThumbnailsSelectionProps<T> {
   disableOnEnter?: boolean;
 }
 
-
 const gridStyle = css({
   display: 'grid',
-  gridTemplateColumns : 'repeat(auto-fill, minmax(300px, 1fr))',
-})
+  gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))',
+});
 /**
  * to display the items as thumbnails so that one can be selected
  */
@@ -78,7 +77,7 @@ export default function ItemThumbnailsSelection<T extends { id?: number | undefi
     }
   }, [items, addEmptyItem]);
 
-    //<Flex wrap="wrap" className={cx(css({ width: '100%', overflow: 'auto' }), className)}>
+  //<Flex wrap="wrap" className={cx(css({ width: '100%', overflow: 'auto' }), className)}>
   return (
     <div className={cx(className, gridStyle)}>
       {effectiveItemList.map(item => (

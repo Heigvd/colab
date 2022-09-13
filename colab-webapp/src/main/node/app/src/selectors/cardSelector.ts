@@ -10,7 +10,7 @@ import { mapValues, uniq } from 'lodash';
 import * as React from 'react';
 import * as API from '../API/api';
 import { sortCardContents } from '../helper';
-import {useLanguage} from '../i18n/I18nContext';
+import { useLanguage } from '../i18n/I18nContext';
 import logger from '../logger';
 import { CardContentDetail, CardDetail } from '../store/card';
 import {

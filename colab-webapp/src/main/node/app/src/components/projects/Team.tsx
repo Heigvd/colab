@@ -299,11 +299,7 @@ const Member = ({ member, roles, isTheOnlyOwner }: MemberProps) => {
                     display: 'flex',
                     alignItems: 'center',
                   })}
-                  message={
-                    <p>
-                      {i18n.team.sureDeleteMember}
-                    </p>
-                  }
+                  message={<p>{i18n.team.sureDeleteMember}</p>}
                   onConfirm={() => {
                     startLoading();
                     dispatch(API.deleteMember(member)).then(stopLoading);

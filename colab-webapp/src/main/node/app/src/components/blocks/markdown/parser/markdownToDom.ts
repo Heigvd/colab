@@ -725,11 +725,11 @@ function rebuildHierarchy(domTrees: DomTree[]): DomTree[] {
           return level > itemLevel;
         });
         // no greater level found, keep same level
-        if (level < 0){
+        if (level < 0) {
           level = listContext.length;
         }
         // make sure not to kill the top-level list
-        if (level < 1){
+        if (level < 1) {
           level = 1;
         }
 

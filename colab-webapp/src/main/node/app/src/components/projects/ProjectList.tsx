@@ -151,11 +151,7 @@ const ProjectDisplay = ({ project }: ProjectDisplayProps) => {
                       display: 'flex',
                       alignItems: 'center',
                     })}
-                    message={
-                      <p>
-                       {i18n.modules.project.info.deleteConfirmation}
-                      </p>
-                    }
+                    message={<p>{i18n.modules.project.info.deleteConfirmation}</p>}
                     onConfirm={() => {
                       startLoading();
                       dispatch(API.deleteProject(project)).then(stopLoading);

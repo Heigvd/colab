@@ -7,7 +7,7 @@
 
 import { css, cx } from '@emotion/css';
 import * as React from 'react';
-import useTranslations, {useLanguage} from '../../i18n/I18nContext';
+import useTranslations, { useLanguage } from '../../i18n/I18nContext';
 import { useAndLoadTextOfDocument } from '../../selectors/documentSelector';
 import Tips from '../common/element/Tips';
 import Flex from '../common/layout/Flex';
@@ -20,12 +20,12 @@ import { getKey, getTheDirectResource, ResourceAndRef } from './resourcesCommonT
 
 // for the moment, the resources are ordered by id (= creation date)
 function sortResources(lang: string) {
-  return (a: ResourceAndRef, b: ResourceAndRef,): number => {
+  return (a: ResourceAndRef, b: ResourceAndRef): number => {
     return (a.targetResource.title || '').localeCompare(b.targetResource.title || '', lang, {
       numeric: true,
     });
-  // return (a.targetResource.id || 0) - (b.targetResource.id || 0);
-}
+    // return (a.targetResource.id || 0) - (b.targetResource.id || 0);
+  };
 }
 
 // ********************************************************************************************** //

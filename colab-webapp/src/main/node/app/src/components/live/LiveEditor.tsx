@@ -109,8 +109,10 @@ export default function LiveEditor({
   } else if (!healthy) {
     return (
       <Flex direction="column">
-        <Disclaimer md=""><p>{i18n.modules.content.liveEditor.updatesWillBeLost}</p>
-          <p>{i18n.modules.content.liveEditor.clickRollback}</p></Disclaimer>
+        <Disclaimer md="">
+          <p>{i18n.modules.content.liveEditor.updatesWillBeLost}</p>
+          <p>{i18n.modules.content.liveEditor.clickRollback}</p>
+        </Disclaimer>
         <Button
           title={i18n.modules.content.liveEditor.restorePrevVersion}
           icon={faRotateLeft}
@@ -128,8 +130,10 @@ export default function LiveEditor({
   } else if (status === 'ERROR') {
     return (
       <Flex direction="column">
-        <Disclaimer md=""><p>{i18n.modules.content.liveEditor.updatesWillBeLost}</p>
-          <p>{i18n.modules.content.liveEditor.clickRollback}</p></Disclaimer>
+        <Disclaimer md="">
+          <p>{i18n.modules.content.liveEditor.updatesWillBeLost}</p>
+          <p>{i18n.modules.content.liveEditor.clickRollback}</p>
+        </Disclaimer>
         <Button
           title={i18n.modules.content.liveEditor.restorePrevVersion}
           icon={faRotateLeft}

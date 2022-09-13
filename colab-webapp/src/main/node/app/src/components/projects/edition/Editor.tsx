@@ -199,7 +199,7 @@ interface CardWrapperProps {
   children: (card: Card, variant: CardContent) => JSX.Element;
   backButtonPath: (card: Card, variant: CardContent) => string;
   backButtonTitle: string;
-  touchMode: 'zoom' | 'edit',
+  touchMode: 'zoom' | 'edit';
   grow?: number;
   align?: 'center' | 'normal';
 }
@@ -370,41 +370,44 @@ function EditorNav({ project, setShowProjectDetails }: EditorNavProps): JSX.Elem
             </Flex>
           </Button>
           <Tips tipsType="TODO">
-          <DropDownMenu
-            icon={faEye}
-            valueComp={{ value: '', label: '' }}
-            entries={[
-              {
-                value: 'board',
-                label: (
-                  <>
-                    <FontAwesomeIcon icon={faClone} />{i18n.common.views.board}
-                  </>
-                ),
-                action: () => navigate('./'),
-              },
-              {
-                value: 'hierarchy',
-                label: (
-                  <>
-                    <FontAwesomeIcon icon={faNetworkWired} />{i18n.common.views.hierarchy}
-                  </>
-                ),
-                action: () => navigate('./hierarchy'),
-              },
-              {
-                value: 'flow',
-                label: (
-                  <>
-                    <FontAwesomeIcon icon={faProjectDiagram} />{i18n.common.views.activityFlow}
-                  </>
-                ),
-                action: () => navigate('./flow'),
-              },
-            ]}
-            buttonClassName={css({ textAlign: 'right', alignSelf: 'center', marginLeft: 'auto' })}
-            menuIcon="CARET"
-          />
+            <DropDownMenu
+              icon={faEye}
+              valueComp={{ value: '', label: '' }}
+              entries={[
+                {
+                  value: 'board',
+                  label: (
+                    <>
+                      <FontAwesomeIcon icon={faClone} />
+                      {i18n.common.views.board}
+                    </>
+                  ),
+                  action: () => navigate('./'),
+                },
+                {
+                  value: 'hierarchy',
+                  label: (
+                    <>
+                      <FontAwesomeIcon icon={faNetworkWired} />
+                      {i18n.common.views.hierarchy}
+                    </>
+                  ),
+                  action: () => navigate('./hierarchy'),
+                },
+                {
+                  value: 'flow',
+                  label: (
+                    <>
+                      <FontAwesomeIcon icon={faProjectDiagram} />
+                      {i18n.common.views.activityFlow}
+                    </>
+                  ),
+                  action: () => navigate('./flow'),
+                },
+              ]}
+              buttonClassName={css({ textAlign: 'right', alignSelf: 'center', marginLeft: 'auto' })}
+              menuIcon="CARET"
+            />
           </Tips>
         </div>
         <Flex align="center">
@@ -520,8 +523,13 @@ export default function Editor(): JSX.Element {
                     {project.description}
                   </div>
                   <div>
-                  <p>{i18n.common.createdBy}: {project.trackingData?.createdBy}</p>
-                  <p>{i18n.common.createdAt}: {i18n.common.datetime(project.trackingData?.creationDate)}</p>
+                    <p>
+                      {i18n.common.createdBy}: {project.trackingData?.createdBy}
+                    </p>
+                    <p>
+                      {i18n.common.createdAt}:{' '}
+                      {i18n.common.datetime(project.trackingData?.creationDate)}
+                    </p>
                   </div>
                 </div>
               </Flex>
@@ -558,7 +566,7 @@ export default function Editor(): JSX.Element {
                     align="center"
                     backButtonPath={parentPathFn}
                     backButtonTitle={i18n.common.action.backProjectRoot}
-                    touchMode='zoom'
+                    touchMode="zoom"
                   >
                     {cardThumbFactory}
                   </CardWrapper>
@@ -573,7 +581,7 @@ export default function Editor(): JSX.Element {
                   <CardWrapper
                     backButtonPath={(card, variant) => `../card/${card.id}/v/${variant.id}`}
                     backButtonTitle={i18n.common.action.backCardView}
-                    touchMode='edit'
+                    touchMode="edit"
                   >
                     {(card, variant) => <CardEditor card={card} variant={variant} showSubcards />}
                   </CardWrapper>

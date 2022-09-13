@@ -11,7 +11,7 @@ import { fr } from './fr';
 
 export const languages = ['FR', 'EN'] as const;
 
-export type Language = typeof languages[number]
+export type Language = typeof languages[number];
 
 export interface I18nState {
   lang: Language;
