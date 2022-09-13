@@ -106,7 +106,7 @@ export default function SignUpForm({ redirectTo }: SignUpFormProps): JSX.Element
       dispatch(
         API.signUp({
           ...data,
-          errorHandler: error => {
+          errorHandler: (error: WithJsonDiscriminator | Error) => {
             if (error) {
               setError(error);
             }

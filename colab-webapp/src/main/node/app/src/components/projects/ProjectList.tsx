@@ -108,7 +108,7 @@ const ProjectDisplay = ({ project }: ProjectDisplayProps) => {
                 value: 'settings',
                 label: (
                   <OpenCloseModal
-                    title="Project display settings"
+                    title={i18n.modules.project.labels.projectDisplaySettings}
                     showCloseButton
                     className={css({
                       '&:hover': { textDecoration: 'none' },
@@ -153,15 +153,14 @@ const ProjectDisplay = ({ project }: ProjectDisplayProps) => {
                     })}
                     message={
                       <p>
-                        Are you <strong>sure</strong> you want to delete the whole project? This
-                        will delete all cards inside.
+                       {i18n.modules.project.info.deleteConfirmation}
                       </p>
                     }
                     onConfirm={() => {
                       startLoading();
                       dispatch(API.deleteProject(project)).then(stopLoading);
                     }}
-                    confirmButtonLabel="Delete project"
+                    confirmButtonLabel={i18n.modules.project.actions.deleteProject}
                     isConfirmButtonLoading={isLoading}
                   />
                 ),
@@ -212,6 +211,7 @@ interface ProjectListProps {
 }
 
 function ProjectList({ projects, status, reload }: ProjectListProps) {
+  const i18n = useTranslations();
   const dispatch = useAppDispatch();
 
   React.useEffect(() => {
@@ -229,8 +229,8 @@ function ProjectList({ projects, status, reload }: ProjectListProps) {
       <div className={css({ padding: '4vw' })}>
         {(!projects || projects.length === 0) && (
           <div className={voidStyle}>
-            <h2>Welcome ! </h2>
-            <h3>You don't have any project yet</h3>
+            <h2>{i18n.common.welcome}</h2>
+            <h3>{i18n.modules.project.info.noProjectYet}</h3>
           </div>
         )}
         {/* {projects

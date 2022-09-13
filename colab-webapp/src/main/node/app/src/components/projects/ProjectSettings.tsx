@@ -37,14 +37,14 @@ export function ProjectSettings({ project }: ProjectSettingsProps): JSX.Element 
       <Flex align="center">
         <IconButton
           icon={faArrowLeft}
-          title={'Back'}
-          onClick={() => navigate(-1)}
+          title={i18n.common.back}
+          onClick={() => navigate('..')}
           className={cx(css({ display: 'block' }), lightIconButtonStyle)}
         />
-        <h2>Project settings</h2>
+        <h2>{i18n.modules.project.labels.projectSettings}</h2>
       </Flex>
       <Tabs routed>
-        <Tab name="general" label="General">
+        <Tab name="general" label={i18n.common.general}>
           <Flex className={css({ alignSelf: 'stretch' })}>
             <Flex
               direction="column"
@@ -52,14 +52,14 @@ export function ProjectSettings({ project }: ProjectSettingsProps): JSX.Element 
               className={css({ width: '45%', minWidth: '45%', marginRight: space_L })}
             >
               <LabeledInput
-                label="Name"
-                placeholder="New project"
+                label={i18n.common.name}
+                placeholder={i18n.modules.project.actions.newProject}
                 value={project.name || ''}
                 onChange={newValue => dispatch(API.updateProject({ ...project, name: newValue }))}
               />
               <LabeledTextArea
-                label="Description"
-                placeholder="Write a description here"
+                label={i18n.common.description}
+                placeholder={i18n.common.info.writeDescription}
                 value={project.description || ''}
                 onChange={newValue =>
                   dispatch(API.updateProject({ ...project, description: newValue }))
@@ -87,7 +87,7 @@ export function ProjectSettings({ project }: ProjectSettingsProps): JSX.Element 
             </Flex>
           </Flex>
         </Tab>
-        <Tab name="team" label="Team">
+        <Tab name="team" label={i18n.team.team}>
           <Team project={project} />
         </Tab>
         <Tab name="cardtypes" label={i18n.modules.cardType.cardTypesLongWay}>

@@ -156,13 +156,14 @@ export function TipsSettings(): JSX.Element {
       </div>
       <div>
         <Checkbox
-          label="Display debug info"
+          label={i18n.tips.label.debug}
           value={config.DEBUG.value}
           onChange={config.DEBUG.set}
           className={css({ display: 'inline-block', marginRight: space_S })}
         />
         <Tips tipsType="DEBUG">
-          <h4>Debug Example</h4>Some internal data useful to debug
+        <h4>{i18n.tips.example.debug.title}</h4>
+          {i18n.tips.example.debug.content}
         </Tips>
       </div>
     </div>

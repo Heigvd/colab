@@ -94,7 +94,7 @@ export function ResourceDisplay({
         >
           <IconButton
             icon={faArrowLeft}
-            title="Back to the list"
+            title={i18n.modules.resource.backList}
             onClick={goBackToList}
             className={lightIconButtonStyle}
           />
@@ -131,7 +131,7 @@ export function ResourceDisplay({
                         label: (
                           <>
                             <FontAwesomeIcon icon={faInfoCircle} />{' '}
-                            {`${showTeaser ? i18n.common.hide : i18n.common.show} teaser`}
+                            {`${showTeaser ? i18n.common.hide : i18n.common.show} ${i18n.modules.resource.teaser}`}
                           </>
                         ),
                         action: () => setShowTeaser(showTeaser => !showTeaser),
@@ -146,7 +146,7 @@ export function ResourceDisplay({
                         label: (
                           <>
                             <FontAwesomeIcon icon={faTools} />{' '}
-                            {`${openToolbox ? i18n.common.hide : i18n.common.show} toolbox`}
+                            {`${openToolbox ? i18n.common.hide : i18n.common.show} ${i18n.modules.card.editor.toolbox}`}
                           </>
                         ),
                         action: () => setOpenToolbox(openToolbox => !openToolbox),
@@ -254,7 +254,7 @@ function ResourceSettingsModal({ resource, isButton }: ResourceSettingsModalProp
 
   return (
     <OpenCloseModal
-      title="Document settings"
+      title={i18n.modules.content.documentSettings}
       showCloseButton
       className={css({
         '&:hover': { textDecoration: 'none' },

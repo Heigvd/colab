@@ -40,7 +40,7 @@ export default function LocalAccount(props: LocalAccountProps): JSX.Element {
   if (account) {
     return (
       <div>
-        <h3>Account</h3>
+        <h3>{i18n.user.account}</h3>
         <div>
           <span>{account.email} </span>
         </div>
@@ -53,12 +53,12 @@ export default function LocalAccount(props: LocalAccountProps): JSX.Element {
                 setPwState('CHANGE_PASSWORD');
               }}
             >
-              Change password
+              {i18n.authentication.action.changePassword}
             </Button>
           ) : (
             <div>
               <label>
-                New password:
+                {i18n.authentication.action.newPassword}:
                 <input
                   type="password"
                   autoComplete="new-password"
@@ -97,7 +97,7 @@ export default function LocalAccount(props: LocalAccountProps): JSX.Element {
                     }),
                   );
                 }}
-                title="Save"
+                title={i18n.common.save}
               />
             </div>
           )}
@@ -107,7 +107,7 @@ export default function LocalAccount(props: LocalAccountProps): JSX.Element {
   } else {
     return (
       <div>
-        <i>You must be authenticated</i>
+        <i>{i18n.authentication.error.mustBeAuthenticated}</i>
       </div>
     );
   }

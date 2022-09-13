@@ -10,6 +10,7 @@ import { faCaretLeft, faCaretRight } from '@fortawesome/free-solid-svg-icons';
 import { Card, CardContent } from 'colab-rest-client';
 import * as React from 'react';
 import { useNavigate } from 'react-router-dom';
+import useTranslations from '../../i18n/I18nContext';
 import { useVariantsOrLoad } from '../../selectors/cardSelector';
 import IconButton from '../common/element/IconButton';
 import InlineLoading from '../common/element/InlineLoading';
@@ -51,13 +52,13 @@ export default function VariantSelector({
   children,
 }: VariantSelectorProps): JSX.Element {
   const [displayedVariantId, setDisplayedVariantId] = React.useState<number | undefined>();
-
+  const i18n = useTranslations();
   const contents = useVariantsOrLoad(card);
 
   const defaultVariant = useDefaultVariant(card.id!);
 
   if (card.id == null) {
-    return <i>Card without id is invalid...</i>;
+    return <i>{i18n.modules.card.error.withoutId}</i>;
   } else if (defaultVariant === 'LOADING') {
     return <InlineLoading />;
   } else {
@@ -120,6 +121,7 @@ interface PagerProps {
 }
 
 export function VariantPager({ card, current }: PagerProps): JSX.Element {
+  const i18n = useTranslations();
   const navigate = useNavigate();
 
   const contents = useVariantsOrLoad(card);
@@ -134,7 +136,7 @@ export function VariantPager({ card, current }: PagerProps): JSX.Element {
   );
 
   if (card.id == null) {
-    return <i>Card without id is invalid...</i>;
+    return <i>{i18n.modules.card.error.withoutId}</i>;
   } else {
     return (
       <Flex justify="center" className={css({ marginTop: space_S })}>
