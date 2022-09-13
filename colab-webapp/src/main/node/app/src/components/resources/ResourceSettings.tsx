@@ -9,6 +9,7 @@ import { entityIs } from 'colab-rest-client';
 import * as React from 'react';
 import * as API from '../../API/api';
 import { useAppDispatch } from '../../store/hooks';
+import { BlockInput } from '../common/element/Input';
 import Toggler from '../common/element/Toggler';
 import { ResourceAndRef } from './resourcesCommonType';
 
@@ -26,27 +27,43 @@ export default function ResourceSettings({ resource }: ResourceSettingsProps): J
   return (
     <>
       {entityIs(updatableResource, 'Resource') && (
-        <Toggler
-          label="Published"
-          value={updatableResource.published}
-          onChange={() => {
-            if (updatableResource.id) {
+        <>
+          <Toggler
+            label="Published"
+            value={updatableResource.published}
+            onChange={() => {
+              if (updatableResource.id) {
+                updatableResource.published
+                  ? dispatch(API.unpublishResource(updatableResource.id))
+                  : dispatch(API.publishResource(updatableResource.id));
+              }
+            }}
+            tip={
               updatableResource.published
-                ? dispatch(API.unpublishResource(updatableResource.id))
-                : dispatch(API.publishResource(updatableResource.id));
+                ? 'Unpublish the resource to make it private for this card'
+                : 'Publish the resource to make it available for subcards'
             }
-          }}
-          tip={
-            updatableResource.published
-              ? 'Unpublish the resource to make it private for this card'
-              : 'Publish the resource to make it available for subcards'
-          }
-          footer={
-            updatableResource.published
-              ? 'A published resource is available for subcards'
-              : 'An unpublished resource is private for this card'
-          }
-        />
+            footer={
+              updatableResource.published
+                ? 'A published resource is available for subcards'
+                : 'An unpublished resource is private for this card'
+            }
+          />
+          <BlockInput
+            type="text"
+            label="Category"
+            value={updatableResource.category || undefined}
+            saveMode={'ON_BLUR'}
+            onChange={newValue => {
+              dispatch(
+                API.changeResourceCategory({
+                  resourceOrRef: updatableResource,
+                  categoryName: newValue || '',
+                }),
+              );
+            }}
+          />
+        </>
       )}
     </>
   );

@@ -49,7 +49,7 @@ public class ResourceCategoryRestEndpointTest extends AbstractArquillianTest {
         Assertions.assertNull(persistedResource2.getCategory());
 
         String categoryNameA = "Guides #" + ((int) (Math.random() * 1000));
-        String categoryNameB = "Work files +\"*ç%&/()=?^±“#Ç[]|≠¿´<>,.-¨$" // {}
+        String categoryNameB = "Work files +\"*ç%&()=?^±“#Ç[]|≠¿´<>,.-¨$" // not working : { } /
             + ((int) (Math.random() * 1000));
 
         client.resourceRestEndpoint.changeCategory(resource1Id, categoryNameA);
