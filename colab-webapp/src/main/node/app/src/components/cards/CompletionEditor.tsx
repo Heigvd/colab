@@ -9,6 +9,7 @@ import { css } from '@emotion/css';
 import { CardContent } from 'colab-rest-client';
 import * as React from 'react';
 import * as API from '../../API/api';
+import useTranslations from '../../i18n/I18nContext';
 import { useAppDispatch } from '../../store/hooks';
 import { BlockInput } from '../common/element/Input';
 import Flex from '../common/layout/Flex';
@@ -20,13 +21,14 @@ interface CompletionEditorProps {
 }
 
 export default function CompletionEditor({ variant }: CompletionEditorProps): JSX.Element {
+  const i18n = useTranslations();
   const dispatch = useAppDispatch();
 
   return (
     <>
       <BlockInput
         type="range"
-        label="Completion level"
+        label={i18n.modules.card.completion}
         value={variant.completionLevel == 0 ? 0 : variant.completionLevel}
         placeholder="0"
         onChange={newValue =>

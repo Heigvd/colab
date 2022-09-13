@@ -78,13 +78,13 @@ export default function ProjectDataInitialization({
         className={css({ width: '45%', minWidth: '45%', marginRight: space_L })}
       >
         <FormInput
-          label="Name"
+          label={i18n.common.name}
           value={data.name}
           readOnly={readOnly}
           onChange={name => setName(name)}
         />
         <FormInput
-          label="Description"
+          label={i18n.common.description}
           inputType="textarea"
           value={data.description}
           readOnly={readOnly}

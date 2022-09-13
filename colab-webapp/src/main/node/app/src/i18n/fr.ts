@@ -5,7 +5,7 @@
  * Licensed under the MIT License
  */
 
-import { MessageI18nKey } from 'colab-rest-client';
+import { CardContentStatus, MessageI18nKey } from 'colab-rest-client';
 import { ColabTranslations } from './I18nContext';
 
 export const fr  : ColabTranslations = {
@@ -49,6 +49,7 @@ export const fr  : ColabTranslations = {
     langSettings: 'Langues',
     changeLanguage: 'Changer de langue',
     sortBy: 'Trier par: ',
+    filter: 'Filtrer',
     createdBy: 'Créé par',
     createdOn: 'Créé sur',
     createdAt: 'Créé à',
@@ -171,7 +172,7 @@ export const fr  : ColabTranslations = {
     account: 'Compte',
     missingFirstname: 'Veuillez entrer votre prénom',
     missingLastname: 'Veuillez entrer votre nom',
-    userProfile: 'Profile utilisateur',
+    userProfile: 'Profil utilisateur',
     editProfile: 'Éditer le profil',
     viewProfile: 'Voir le profil',
     updatePassword: 'Mettre à jour le mot de passe',
@@ -249,10 +250,10 @@ export const fr  : ColabTranslations = {
       emailAddress: 'Adresse e-mail',
       username: 'Nom d\'utilisateur',
       password: 'Mot de passe',
-      passwordConfirmation: 'Répéter mot de passe',
+      passwordConfirmation: 'Répétez le mot de passe',
     },
     placeholder: {
-      min7Char: 'Min. 7 charactères',
+      min7Char: 'Min. 7 caractères',
     },
     action: {
       login: 'Connexion',
@@ -317,9 +318,10 @@ export const fr  : ColabTranslations = {
         emptyProject: 'Projet vide',
         useBlankProject: "Utilisez ce projet vide et vous serez libre de créer un monde nouveau.",
         deleteConfirmation:
-          'Êtes-vous sûr-e-s de vouloir supprimer tout le projet? Cela va également supprimer toutes les cartes à l\'intérieur',
+          'Êtes-vous sûr-e-s de vouloir supprimer tout le projet? Cela va également supprimer toutes les cartes à l\'intérieur.',
       },
       settings: {
+        icon: 'Icône',
         missingIcon:
           'Oh une nouvelle bibliothèque d\'icônes, cher développeur s\'il vous plaît faites ce qui est nécessaire pour afficher l\'icône.',
       },
@@ -367,12 +369,18 @@ export const fr  : ColabTranslations = {
         locked: 'Verouillé',
         color: 'Couleur',
         status: 'Statut',
-        statusTooltip: (status: string) => `Statut: ${status.toLocaleLowerCase('fr')}`,
-        completionLevelMode: 'Mode de niveasu d\'avancement',
+        statusTooltip: (status: CardContentStatus) => `Statut: ${fr.modules.card.settings.statuses[status].toLocaleLowerCase('fr')}`,
+        statuses:{
+          ACTIVE: 'Actif',
+          POSTPONED: 'Reporté',
+          ARCHIVED: 'Archivé',
+          REJECTED: 'Rejeté',
+        },
+        completionLevelMode: 'Mode de niveau d\'avancement',
         cardPosition: 'Position de la carte',
       },
       infos: {
-        createFirstCard: 'Créer la premier carte',
+        createFirstCard: 'Créer la première carte',
         noCardYetPleaseCreate:
           'Ce projet n\'a pas encore de carte. Créez-en pour commencer votre voyage de co-design !',
         cardLocked: 'Carte verouillée. Pour la déverouiller, allez dans les paramètres de la carte et décochez "Verrouillé"',
@@ -552,10 +560,10 @@ export const fr  : ColabTranslations = {
     forAll: ' pour tous types de profils utilisateurs.',
     slogan: 'Nous voulons créer une plateforme pour toutes et tous, qui vous permette d\'imaginer et de concevoir le jeu sérieux (serious game) dont vous avez besoin !',
     contactUs: 'N\'hésitez pas à nous contacter pour toute recommandation que vous pourriez avoir.',
-    whatColabProject: 'Qu\'est-ce que le projet confirm.LAB?',
+    whatColabProject: 'Qu\'est-ce que le projet co.LAB?',
     colabProjectDescription: 'L\'objectif du projet co.LAB est d\'améliorer la conception, le développement et les usages des jeux d\'apprentissage numériques. Ce but sera atteint par le développement d\'un cadre méthodologique collaboratif associé à une plateforme numérique collaborative dédiée à la co-conception, au co-développement et à la co-évaluation de jeux sérieux. Le projet co.LAB est financé par le Fonds national suisse pour la recherche scientifique (FNS) dans le cadre du programme PNR 77 "Transformation numérique".',
     futherInfo: 'Pour de plus amples informations et/ou nous contacter: ',
-    colabProject: 'Projet co.LAB',
+    colabProject: 'site du projet co.LAB',
     version: 'Version',
     },
   //////////////////////////////////////////////////////////////////////////////////////////////////

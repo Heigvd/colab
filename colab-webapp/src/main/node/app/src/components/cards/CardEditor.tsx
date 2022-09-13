@@ -16,9 +16,8 @@ import {
   faLock,
   faPaperclip,
   faPercent,
-  faStickyNote,
+  //faStickyNote,
   faTimes,
-  faTools,
   faTrash,
   faUsers,
 } from '@fortawesome/free-solid-svg-icons';
@@ -32,9 +31,8 @@ import * as API from '../../API/api';
 import useTranslations from '../../i18n/I18nContext';
 import { useCardACLForCurrentUser, useVariantsOrLoad } from '../../selectors/cardSelector';
 import { useAndLoadCardType } from '../../selectors/cardTypeSelector';
-import { useStickyNoteLinksForDest } from '../../selectors/stickyNoteLinkSelector';
+//import { useStickyNoteLinksForDest } from '../../selectors/stickyNoteLinkSelector';
 import { useAppDispatch, useLoadingState } from '../../store/hooks';
-import { idleStyle, toggledStyle } from '../blocks/markdown/WysiwygEditor';
 import Button from '../common/element/Button';
 import IconButton from '../common/element/IconButton';
 import { DiscreetInput } from '../common/element/Input';
@@ -54,7 +52,7 @@ import DocumentList from '../documents/DocumentList';
 import { ResourceCallContext } from '../resources/resourcesCommonType';
 import ResourcesMainView from '../resources/ResourcesMainView';
 import { ResourceListNb } from '../resources/summary/ResourcesListSummary';
-import StickyNoteWrapper from '../stickynotes/StickyNoteWrapper';
+//import StickyNoteWrapper from '../stickynotes/StickyNoteWrapper';
 import {
   cardStyle,
   errorColor,
@@ -169,7 +167,6 @@ export default function CardEditor({
   const readOnly = !canWrite || variant.frozen;
   const [showTypeDetails, setShowTypeDetails] = React.useState(false);
   const [fullScreen, setFullScreen] = React.useState(false);
-  const [openToolbox, setOpenToolbox] = React.useState(true);
   const [selectedDocId, setSelectedDocId] = React.useState<number | undefined | null>(undefined);
   const [editMode, setEditMode] = React.useState(defaultDocEditorContext.editMode);
   const [showTree, setShowTree] = React.useState(false);
@@ -192,7 +189,7 @@ export default function CardEditor({
     hasSeveralVariants: hasVariants,
   };
 
-  const { stickyNotesForDest } = useStickyNoteLinksForDest(card.id);
+  //const { stickyNotesForDest } = useStickyNoteLinksForDest(card.id);
   const closeRouteCb = React.useCallback(
     (route: string) => {
       navigate(location.pathname.replace(new RegExp(route + '$'), ''));
@@ -384,14 +381,6 @@ export default function CardEditor({
                                 }
                               />
                             </Routes>
-                            {!readOnly && (
-                              <IconButton
-                                icon={faTools}
-                                title={i18n.modules.card.editor.toggleToolbox}
-                                className={openToolbox ? toggledStyle : idleStyle}
-                                onClick={() => setOpenToolbox(openToolbox => !openToolbox)}
-                              />
-                            )}
                             <IconButton
                               title={i18n.modules.card.editor.fullScreen}
                               icon={fullScreen ? faCompressArrowsAlt : faExpandArrowsAlt}
@@ -510,7 +499,7 @@ export default function CardEditor({
                         </Flex>
                         {!readOnly && variant.id && (
                           <DocEditorToolbox
-                            open={openToolbox}
+                            open={true}
                             docOwnership={{
                               kind: 'DeliverableOfCardContent',
                               ownerId: variant.id,
@@ -630,7 +619,7 @@ export default function CardEditor({
                       ),
                       className: css({ overflow: 'auto' }),
                     },
-                    'Sticky Notes': {
+                    /* 'Sticky Notes': {
                       icon: faStickyNote,
                       nextToIconElement: (
                         <div className={textSmall}> ({stickyNotesForDest.length})</div>
@@ -644,7 +633,7 @@ export default function CardEditor({
                       ),
                       children: <StickyNoteWrapper destCardId={card.id} showSrc />,
                       className: css({ overflow: 'auto' }),
-                    },
+                    }, */
                   }}
                   direction="RIGHT"
                   className={css({ flexGrow: 1 })}

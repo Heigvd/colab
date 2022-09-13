@@ -26,7 +26,7 @@ export default function AboutColab(): JSX.Element {
     <Flex direction="column" className={cx(fullPageStyle, paddedContainerStyle)} align="stretch">
       <IconButton
         icon={faArrowLeft}
-        title={'Back'}
+        title={i18n.common.back}
         onClick={() => {
           navigate(-1);
         }}
