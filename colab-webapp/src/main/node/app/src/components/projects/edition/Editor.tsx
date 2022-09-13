@@ -492,7 +492,7 @@ export default function Editor(): JSX.Element {
   } else if (project == null || project.id == null) {
     return (
       <div>
-        <i>Error: no project selected</i>
+        <i>{i18n.modules.project.info.noProjectSelected}</i>
       </div>
     );
   } else if (status != 'READY' || typeof root === 'string' || root.id == null) {
@@ -554,7 +554,7 @@ export default function Editor(): JSX.Element {
                     grow={0}
                     align="center"
                     backButtonPath={parentPathFn}
-                    backButtonTitle="Back to root project"
+                    backButtonTitle={i18n.common.action.backProjectRoot}
                     touchMode='zoom'
                   >
                     {cardThumbFactory}
@@ -569,7 +569,7 @@ export default function Editor(): JSX.Element {
                 element={
                   <CardWrapper
                     backButtonPath={(card, variant) => `../card/${card.id}/v/${variant.id}`}
-                    backButtonTitle="Back to card view"
+                    backButtonTitle={i18n.common.action.backCardView}
                     touchMode='edit'
                   >
                     {(card, variant) => <CardEditor card={card} variant={variant} showSubcards />}
