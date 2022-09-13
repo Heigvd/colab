@@ -106,7 +106,7 @@ public class WebsocketEndpoint {
         logger.info("WebSocket opened: {}", session.getId());
         sessions.add(session);
         FlakeIdGenerator idGenerator = hzInstance.getFlakeIdGenerator("WS_SESSION_ID_GENERATOR");
-        String sessionId = "ws-" + Helper.generateHexSalt(32) + idGenerator.newId();
+        String sessionId = "ws-" + Helper.generateHexSalt(8) + idGenerator.newId();
         sessionToIds.put(session, sessionId);
         idsToSessions.put(sessionId, session);
         session.getBasicRemote().sendObject(new WsSessionIdentifier(sessionId));
@@ -158,7 +158,7 @@ public class WebsocketEndpoint {
         String id = sessionToIds.get(session);
         idsToSessions.remove(id);
         sessionToIds.remove(session);
-        websocketManager.unsubscribeFromAll(session);
+        websocketManager.unsubscribeFromAll(session, id);
     }
 
     /**

@@ -33,6 +33,7 @@ import {
   TeamMember,
   TeamRole,
   TextDataBlock,
+  TouchUserPresence,
   User,
   WsSessionIdentifier,
 } from 'colab-rest-client';
@@ -563,6 +564,30 @@ export const clearRoleInvolvement = createAsyncThunk(
     await restClient.TeamRestEndpoint.clearRoleInvolvement(cardId, roleId);
   },
 );
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Presence
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+export const getPresenceList = createAsyncThunk('presence/getList', async (projectId: number) => {
+  return await restClient.PresenceRestEndpoint.getProjectPresence(projectId);
+});
+
+export const makePresenceKnown = createAsyncThunk(
+  'presence/touch',
+  async (presence: TouchUserPresence) => {
+    return await restClient.PresenceRestEndpoint.updateUserPresence(presence);
+  },
+);
+
+export const clearPresenceList = createAsyncThunk('presence/clear', async (projectId: number) => {
+  return await restClient.PresenceRestEndpoint.clearProjectPresenceList(projectId);
+});
+
+
+export const clearAllPresenceLists = createAsyncThunk('presence/clearAll', async () => {
+  return await restClient.PresenceRestEndpoint.clearAllPresenceList();
+});
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Card Types

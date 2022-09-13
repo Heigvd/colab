@@ -238,8 +238,8 @@ public class CardTypeRestEndpointTest extends AbstractArquillianTest {
         client.websocketRestEndpoint.subscribeToProjectChannel(projectOne.getId(),
             wsClient.getSessionId());
 
-        // wait for propagation
-        TestHelper.waitForMessagesAndAssert(wsClient, 1, 5, WsUpdateMessage.class).get(0);
+        // wait for propagation : the project and the user presence on the presence list
+        List<WsUpdateMessage> messages = TestHelper.waitForMessagesAndAssert(wsClient, 2, 5, WsUpdateMessage.class);
 
         // -----
         // Create type in project one
@@ -289,7 +289,7 @@ public class CardTypeRestEndpointTest extends AbstractArquillianTest {
         this.client.websocketRestEndpoint.subscribeToProjectChannel(projectTwo.getId(),
             wsClient.getSessionId());
 
-        // pizza consume 1 websocket message (new team member)
+        // pizza consume 2 websocket messages (new team member & user presence)
         TestHelper.waitForMessagesAndAssert(pizzaWsClient, 1, 5, WsUpdateMessage.class).get(0);
 
         pizzaHttpClient.websocketRestEndpoint.subscribeToProjectChannel(projectTwo.getId(),
@@ -301,8 +301,8 @@ public class CardTypeRestEndpointTest extends AbstractArquillianTest {
 
         // it is visible for goulash
         Assertions.assertEquals(1l, client.cardTypeRestEndpoint.getPublishedCardTypesOfReachableProjects().size());
-        // consume websocket messages (one through project channel, other through user channel)
-        TestHelper.waitForMessagesAndAssert(wsClient, 2, 5, WsUpdateMessage.class).get(0);
+        // consume websocket messages (two through project channel, other through user channel)
+        TestHelper.waitForMessagesAndAssert(wsClient, 4, 5, WsUpdateMessage.class).get(0);
 
         // but not for pizzaiolo
         Assertions.assertEquals(0,
@@ -314,7 +314,7 @@ public class CardTypeRestEndpointTest extends AbstractArquillianTest {
         // consume websocket messages (overview update; project 1 update; project 2 update)
         TestHelper.waitForMessagesAndAssert(wsClient, 2, 5, WsUpdateMessage.class).get(0);
         // consume websocket messages (overview update; project 2 update)
-        TestHelper.waitForMessagesAndAssert(pizzaWsClient, 2, 5, WsUpdateMessage.class).get(0);
+        TestHelper.waitForMessagesAndAssert(pizzaWsClient, 3, 5, WsUpdateMessage.class).get(0);
 
         // goulash and pizzaiolo can now access the type through the reference from projectTwo
         Set<AbstractCardType> goulashTypes = client.projectRestEndpoint

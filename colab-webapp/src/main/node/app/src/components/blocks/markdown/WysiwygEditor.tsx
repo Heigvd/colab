@@ -21,10 +21,13 @@ import { uniq } from 'lodash';
 import * as React from 'react';
 import * as LiveHelper from '../../../LiveHelper';
 import { getLogger } from '../../../logger';
+import { usePresenceOnDocument } from '../../../selectors/presenceSelector';
 import OpenGraphLink from '../../common/element/OpenGraphLink';
 import DropDownMenu, { Entry } from '../../common/layout/DropDownMenu';
 import Flex from '../../common/layout/Flex';
 import { DocEditorCTX } from '../../documents/DocumentEditorToolbox';
+import { createCaret, getUserColor } from '../../projects/presence/Presence';
+import { PresenceContext } from '../../projects/presence/PresenceContext';
 import { borderRadius, lightIconButtonStyle, space_S } from '../../styling/style';
 import {
   areAllLeafsWrappedByTag,
@@ -251,33 +254,6 @@ function mergeMardown(md: MarkdownWithSelection, toInsert: string): MarkdownWith
   return result;
 }
 
-/**
- * Convert markdown to dom and put thre resulting tree in given dom.
- * Optionally, restore the selection to match the range in markdown, if any.
- */
-function putMarkdownInDom(
-  div: HTMLDivElement,
-  markdown: MarkdownWithSelection,
-  restoreSelection: boolean,
-) {
-  const hacked = markdown.data.replace(/ $/gm, '\u00A0');
-  logger.info('Markdown:>', hacked, '<');
-  const newDom = markdownToDom(hacked);
-
-  logger.info('DOM:', newDom);
-
-  // make sure div is empty
-  while (div.firstChild != null) {
-    div.removeChild(div.firstChild);
-  }
-  newDom.nodes.forEach(n => div.appendChild(n));
-
-  if (restoreSelection) {
-    restoreMarkdownRange(newDom, markdown.range);
-  }
-  return newDom;
-}
-
 /*************************************************
  *    STYLES
  *************************************************/
@@ -334,6 +310,10 @@ const editorStyle = cx(
   }),
 );
 
+const positionOverlayStyle = css({
+  pointerEvents: 'none',
+});
+
 /*************************************************
  *    TYPES
  *************************************************/
@@ -377,6 +357,7 @@ export interface WysiwygEditorProps {
   /** new markdown text */
   onChange: (newValue: string) => void;
   className?: string;
+  docToTouchId?: number;
   flyingToolBar?: boolean;
   //ToolBar?: React.FunctionComponent<TXTFormatToolbarProps>;
   ToolBar?: React.FunctionComponent<TXTFormatToolbarProps>;
@@ -575,6 +556,7 @@ export default function WysiwygEditor({
   value,
   onChange,
   className,
+  docToTouchId,
   flyingToolBar,
   ToolBar = TXTFormatToolbar,
   selected,
@@ -582,11 +564,134 @@ export default function WysiwygEditor({
   // use a ref to manage editor content
   const divRef = React.useRef<HTMLDivElement>(null);
 
+  const positionOverlayRef = React.useRef<HTMLDivElement>(null);
+
   // to detect is composition in on going
   const compositionRef = React.useRef(false);
   const { setEditToolbar } = React.useContext(DocEditorCTX);
 
   const selectionRef = React.useRef<SavedSelection | null>(null);
+
+  const { touch } = React.useContext(PresenceContext);
+
+  const touchCb = React.useMemo(() => {
+    if (docToTouchId != null) {
+      return (start: number, end: number) => {
+        touch(current => {
+          return {
+            ...current,
+            documentId: docToTouchId,
+            selectionStart: start,
+            selectionEnd: end,
+          };
+        });
+      };
+    } else {
+      return undefined;
+    }
+  }, [touch, docToTouchId]);
+
+  const domOffsetRef = React.useRef<NodesAndOffsets | undefined>(undefined);
+
+  const presenceOnDoc = usePresenceOnDocument(docToTouchId);
+
+  React.useEffect(() => {
+    if (domOffsetRef.current && positionOverlayRef.current && divRef.current) {
+      const divText = divRef.current;
+      const textBound = divText.getBoundingClientRect();
+
+      const divPos = positionOverlayRef.current;
+      while (divPos.firstChild) {
+        divPos.removeChild(divPos.firstChild);
+      }
+
+      presenceOnDoc.forEach(p => {
+        if (p.selectionEnd != null && p.selectionStart != null) {
+          const range = convertRange(domOffsetRef.current!, {
+            anchor: p.selectionStart ?? undefined,
+            focus: p.selectionEnd ?? undefined,
+          });
+
+          const rect = range.getBoundingClientRect();
+          const left = rect.left - textBound.left;
+          const top = rect.top - textBound.top;
+          const color = getUserColor(p);
+
+          if (p.selectionEnd === p.selectionStart) {
+            // single caret
+            divPos.append(createCaret(top, left, rect.height, color, 'down'));
+          } else {
+            const pDiv = document.createElement('DIV');
+
+            pDiv.style.position = 'absolute';
+            pDiv.style.top = `${top}px`;
+            pDiv.style.left = `${left}px`;
+            pDiv.style.width = `${rect.width}px`;
+            pDiv.style.height = `${rect.height}px`;
+            pDiv.style.backgroundColor = color;
+            pDiv.style.opacity = '0.2';
+            divPos.append(pDiv);
+
+            const startLocation = new Range();
+            startLocation.setStart(range.startContainer, range.startOffset);
+            startLocation.setEnd(range.startContainer, range.startOffset);
+            const startPos = startLocation.getBoundingClientRect();
+
+            divPos.append(
+              createCaret(
+                startPos.top - textBound.top,
+                startPos.left - textBound.left,
+                startPos.height,
+                color,
+                'right',
+              ),
+            );
+
+            const endLocation = new Range();
+            endLocation.setStart(range.endContainer, range.endOffset);
+            endLocation.setEnd(range.endContainer, range.endOffset);
+            const endPos = endLocation.getBoundingClientRect();
+
+            divPos.append(
+              createCaret(
+                endPos.top - textBound.top,
+                endPos.left - textBound.left,
+                endPos.height,
+                color,
+                'left',
+              ),
+            );
+          }
+        }
+      });
+    }
+  }, [presenceOnDoc]);
+
+  /**
+   * Convert markdown to dom and put thre resulting tree in given dom.
+   * Optionally, restore the selection to match the range in markdown, if any.
+   */
+  const putMarkdownInDom = React.useCallback(
+    (div: HTMLDivElement, markdown: MarkdownWithSelection, restoreSelection: boolean) => {
+      const hacked = markdown.data.replace(/ $/gm, '\u00A0');
+      logger.info('Markdown:>', hacked, '<');
+      const newDom = markdownToDom(hacked);
+
+      logger.info('DOM:', newDom);
+
+      // make sure div is empty
+      while (div.firstChild != null) {
+        div.removeChild(div.firstChild);
+      }
+      newDom.nodes.forEach(n => div.appendChild(n));
+
+      if (restoreSelection) {
+        restoreMarkdownRange(newDom, markdown.range);
+      }
+      domOffsetRef.current = newDom;
+    },
+    [],
+  );
 
   const [toolbarState, setToolbarState] = React.useState<ToolbarState>({
     bold: false,
@@ -627,7 +732,7 @@ export default function WysiwygEditor({
         putMarkdownInDom(div, { data: value, range: md.range }, true);
       }
     }
-  }, [value]);
+  }, [value, putMarkdownInDom]);
 
   const getAllSelectedMajorElements = React.useCallback(() => {
     const majorNodes: Element[] = [];
@@ -748,6 +853,12 @@ export default function WysiwygEditor({
       // since getSelection return a mutable object, make sure to make a copy
       selectionRef.current = selection;
       updateToolbar();
+      if (touchCb) {
+        const { range } = domToMarkdown(divRef.current);
+        if (range.anchor != null && range.focus != null) {
+          touchCb(Math.min(range.anchor, range.focus), Math.max(range.anchor, range.focus));
+        }
+      }
 
       if (selection.type === 'Caret' && selection.focusNode != null) {
         const node =
@@ -797,7 +908,7 @@ export default function WysiwygEditor({
       //        ghost.remove();
       //      }
     }
-  }, [updateToolbar]);
+  }, [updateToolbar, touchCb]);
 
   /* Register onSelectionChange event listener */
   React.useEffect(() => {
@@ -821,8 +932,14 @@ export default function WysiwygEditor({
   const onInputCb = React.useCallback(
     (e: React.FormEvent) => {
       if ('isComposing' in e.nativeEvent) {
+        // Firefox and chrome expose isComposing in native inputEvent
         const tE = e.nativeEvent as unknown as { isComposing: boolean };
         if (tE.isComposing === false) {
+          onInternalChangeCb();
+        }
+      } else {
+        // Safari do not
+        if (compositionRef.current === false) {
           onInternalChangeCb();
         }
       }
@@ -1332,7 +1449,7 @@ export default function WysiwygEditor({
 
       e.preventDefault();
     },
-    [onInternalChangeCb],
+    [onInternalChangeCb, putMarkdownInDom],
   );
 
   return (
@@ -1340,7 +1457,13 @@ export default function WysiwygEditor({
       {!flyingToolBar && (
         <ToolBar toolbarState={toolbarState} toolbarFormatFeatures={toolbarFormatFeatures} />
       )}
-      <Flex direction="column" align="stretch">
+      <Flex
+        className={css({
+          position: 'relative',
+        })}
+        direction="column"
+        align="stretch"
+      >
         <div
           onCopy={copyCb}
           onPaste={pasteCb}
@@ -1354,6 +1477,7 @@ export default function WysiwygEditor({
           onCompositionEnd={logCompEnd}
           contentEditable={true}
         ></div>
+        <div className={positionOverlayStyle} ref={positionOverlayRef}></div>
         {linkOverlay && (
           <div className={'linkOverlay ' + computeOverlayPosition(linkOverlay.node)}>
             <OpenGraphLink

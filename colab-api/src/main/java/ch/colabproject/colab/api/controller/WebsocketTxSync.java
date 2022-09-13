@@ -6,6 +6,7 @@
  */
 package ch.colabproject.colab.api.controller;
 
+import javax.transaction.Status;
 import javax.transaction.Synchronization;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -78,4 +79,11 @@ public class WebsocketTxSync implements Synchronization {
         }
     }
 
+    /**
+     * Force sending websocket messages now
+     */
+    public void flush() {
+        this.beforeCompletion();
+        this.afterCompletion(Status.STATUS_COMMITTED);
+    }
 }

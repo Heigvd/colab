@@ -58,6 +58,7 @@ public class WebsocketTxManager implements Serializable {
             if (synchronizer == null) {
                 logger.trace("Create Sync");
                 synchronizer = new WebsocketTxSync(bean);
+                bean.setSynchronizer(synchronizer);
                 jtaSyncRegistry.registerInterposedSynchronization(synchronizer);
             } else {
                 logger.trace("Synchronizer already registered");

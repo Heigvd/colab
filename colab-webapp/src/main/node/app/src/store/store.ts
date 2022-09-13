@@ -20,6 +20,7 @@ import externalDataReducer from './externalData';
 import notifReducer from './notification';
 import resourceReducer from './resource';
 import cardTypeReducer from './slice/cardTypeSlice';
+import presenceReducer from './slice/presenceSlice';
 import projectReducer from './slice/projectSlice';
 import stickyNoteLinkReducer from './stickynotelink';
 import userReducer from './user';
@@ -37,6 +38,7 @@ const rootReducer = combineReducers({
   document: documentReducer,
   externalData: externalDataReducer,
   notifications: notifReducer,
+  presences: presenceReducer,
   projects: projectReducer,
   resources: resourceReducer,
   stickynotelinks: stickyNoteLinkReducer,
