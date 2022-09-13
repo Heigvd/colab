@@ -90,7 +90,13 @@ export default function ResourcesLoserKeeper({
         </Flex>
       </Flex>
     ),
-    [dispatch, i18n.common.display, i18n.common.finalDelete, i18n.common.restore, i18n.modules.content.document],
+    [
+      dispatch,
+      i18n.common.display,
+      i18n.common.finalDelete,
+      i18n.common.restore,
+      i18n.modules.content.document,
+    ],
   );
 
   return (
@@ -102,7 +108,7 @@ export default function ResourcesLoserKeeper({
           <span className={css({ marginRight: space_S, fontSize: '0.8em' })}>
             {resources.length}
           </span>
-          <FontAwesomeIcon title={i18n.modules.content.desertedDocuments} icon={faGhost} />
+          <FontAwesomeIcon title={i18n.modules.content.removedDocuments} icon={faGhost} />
         </Flex>
       }
       className={css({ '&:hover': { textDecoration: 'none' } })}

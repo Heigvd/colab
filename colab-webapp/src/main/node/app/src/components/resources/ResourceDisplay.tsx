@@ -134,7 +134,11 @@ export function ResourceDisplay({
                         label: (
                           <>
                             <FontAwesomeIcon icon={faInfoCircle} />{' '}
-                            {`${showTeaser ? i18n.common.hide : i18n.common.show} ${i18n.modules.resource.teaser}`}
+                            {`${
+                              showTeaser
+                                ? i18n.modules.resource.hideTeaser
+                                : i18n.modules.resource.showTeaser
+                            }`}
                           </>
                         ),
                         action: () => setShowTeaser(showTeaser => !showTeaser),
@@ -149,7 +153,11 @@ export function ResourceDisplay({
                         label: (
                           <>
                             <FontAwesomeIcon icon={faTools} />{' '}
-                            {`${openToolbox ? i18n.common.hide : i18n.common.show} ${i18n.modules.card.editor.toolbox}`}
+                            {`${
+                              openToolbox
+                                ? i18n.modules.card.editor.hideToolbox
+                                : i18n.modules.card.editor.showToolbox
+                            } `}
                           </>
                         ),
                         action: () => setOpenToolbox(openToolbox => !openToolbox),

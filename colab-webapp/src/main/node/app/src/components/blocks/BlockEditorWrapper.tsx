@@ -64,14 +64,14 @@ export function BlockEditorWrapper({
         default:
           return (
             <span>
-              {`${i18n.common.error.unknown} ${i18n.modules.content.mimeType}:`} {block.mimeType}
+              {`${i18n.modules.content.unknownMimeType}:`} {block.mimeType}
             </span>
           );
       }
     } else {
       return (
         <div>
-          <i>{`${i18n.common.error.unknown} ${i18n.modules.content.document}`}</i>
+          <i>{`${i18n.modules.content.unknownDocument}`}</i>
         </div>
       );
     }

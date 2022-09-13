@@ -347,7 +347,8 @@ export default function FilePicker({
           <div className={css({ paddingLeft: space_M })} onClick={e => e.stopPropagation()}>
             <label>
               <Button onClick={() => {}}>
-                <FontAwesomeIcon icon={faUpload} /> {hasNoFile ? i18n.common.upload : i18n.common.replace} {i18n.modules.content.file}
+                <FontAwesomeIcon icon={faUpload} />{' '}
+                {hasNoFile ? i18n.modules.content.uploadFile : i18n.modules.content.replaceFile}
               </Button>
               <input className={inputStyle} type="file" accept={accept} onChange={onInputCb} />
             </label>
@@ -355,7 +356,7 @@ export default function FilePicker({
               onClick={() => setEditingState(false)}
               className={cx(invertedButtonStyle, css({ marginLeft: space_S }))}
             >
-              Done
+              {i18n.common.ok}
             </Button>
           </div>
         )}
