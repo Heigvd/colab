@@ -12,6 +12,7 @@ import {
   faPaperPlane,
   faPen,
   faPlus,
+  faSkullCrossbones,
   faTimes,
   faTrash,
   faUser,
@@ -259,8 +260,10 @@ const Member = ({ member, roles, isTheOnlyOwner }: MemberProps) => {
   } else if (member.userId == null) {
     // no user, no dn
     username = <span>{i18n.authentication.info.pendingInvitation}</span>;
-  } else if (user == null) {
+  } else if (user == 'LOADING' || user == null) {
     username = <InlineLoading />;
+  } else if (user == 'ERROR') {
+    username = <FontAwesomeIcon icon={faSkullCrossbones} />;
   } else {
     const cn = getDisplayName(user);
     username = (

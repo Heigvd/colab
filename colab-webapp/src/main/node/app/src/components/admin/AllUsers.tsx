@@ -5,6 +5,7 @@
  * Licensed under the MIT License
  */
 
+import { entityIs } from 'colab-rest-client';
 import * as React from 'react';
 import { getAllUsers } from '../../API/api';
 import { shallowEqual, useAppDispatch, useAppSelector } from '../../store/hooks';
@@ -18,8 +19,8 @@ export default function AllUsers(): JSX.Element {
 
   const users = useAppSelector(state => {
     // common sense would use a "filter(u => u != null)"
-    // but resulting list will be typed (User | null)[]
-    return Object.values(state.users.users).flatMap(user => (user != null ? [user] : []));
+    // but resulting list will be typed (User | 'LOADING')[]
+    return Object.values(state.users.users).flatMap(user => (entityIs(user, 'User') ? [user] : []));
   }, shallowEqual);
 
   const title = <h3>Users</h3>;

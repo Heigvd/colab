@@ -64,7 +64,7 @@ export default function Who(): JSX.Element {
     const onlineUsers = userChannels.flatMap(overview => {
       if (overview.channel.userId != null) {
         const u = users[overview.channel.userId];
-        if (u != null) {
+        if (entityIs(u, 'User')) {
           return [u];
         }
       }

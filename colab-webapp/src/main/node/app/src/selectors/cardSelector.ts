@@ -10,6 +10,7 @@ import { mapValues, uniq } from 'lodash';
 import * as React from 'react';
 import * as API from '../API/api';
 import { sortCardContents } from '../helper';
+import {useLanguage} from '../i18n/I18nContext';
 import logger from '../logger';
 import { CardContentDetail, CardDetail } from '../store/card';
 import {
@@ -25,12 +26,11 @@ import { useCurrentUser } from './userSelector';
 export const useProjectRootCard = (project: Project | null | undefined): Card | LoadingStatus => {
   const dispatch = useAppDispatch();
 
-  return useAppSelector(state => {
+  const rootCard = useAppSelector(state => {
     if (project != null) {
       if (typeof state.cards.rootCardId === 'string') {
         if (state.cards.rootCardId === 'NOT_INITIALIZED') {
-          dispatch(API.getProjectStructure(project.id!));
-          // dispatch(API.getRootCardOfProject(project.id!));
+          return 'NOT_INITIALIZED';
         }
         return 'LOADING';
       } else {
@@ -44,14 +44,22 @@ export const useProjectRootCard = (project: Project | null | undefined): Card | 
             return 'LOADING';
           }
         } else {
-          dispatch(API.getProjectStructure(project.id!));
-          // dispatch(API.getRootCardOfProject(project.id!));
-          return 'LOADING';
+          return 'NOT_INITIALIZED';
         }
       }
     }
     return 'NOT_INITIALIZED';
   });
+
+  const projectId = project?.id;
+
+  React.useEffect(() => {
+    if (rootCard === 'NOT_INITIALIZED' && projectId != null) {
+      dispatch(API.getProjectStructure(projectId!));
+    }
+  }, [rootCard, projectId, dispatch]);
+
+  return rootCard;
 };
 
 export const useAllProjectCards = (): Card[] => {
@@ -74,6 +82,7 @@ export const useAllProjectCardTypes = (): number[] => {
 
 export function useVariantsOrLoad(card?: Card): CardContent[] | null | undefined {
   const dispatch = useAppDispatch();
+  const lang = useLanguage();
 
   return useAppSelector(state => {
     if (card?.id && state.cards.cards[card.id]) {
@@ -90,6 +99,7 @@ export function useVariantsOrLoad(card?: Card): CardContent[] | null | undefined
             const content = contentState[contentId];
             return content && content.content ? [content.content] : [];
           }),
+          lang,
         );
       }
     } else {
