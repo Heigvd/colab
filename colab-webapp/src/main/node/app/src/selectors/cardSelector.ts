@@ -51,11 +51,13 @@ export const useProjectRootCard = (project: Project | null | undefined): Card | 
     return 'NOT_INITIALIZED';
   });
 
+  const projectId = project?.id;
+
   React.useEffect(() => {
-    if (rootCard === 'NOT_INITIALIZED' && project?.id != null) {
-      dispatch(API.getProjectStructure(project.id!));
+    if (rootCard === 'NOT_INITIALIZED' && projectId != null) {
+      dispatch(API.getProjectStructure(projectId!));
     }
-  }, [rootCard, project?.id!]);
+  }, [rootCard, projectId, dispatch]);
 
   return rootCard;
 };
