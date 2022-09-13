@@ -5,6 +5,7 @@
  * Licensed under the MIT License
  */
 
+import { escapeRegExp } from 'lodash';
 import { CardContent, User, WithId } from 'colab-rest-client';
 import logger from './logger';
 
@@ -98,4 +99,26 @@ export function sortCardContents(contents: CardContent[]): CardContent[] {
       return aStatus - bStatus;
     }
   });
+}
+
+export function regexFilter<T>(
+  list: T[],
+  search: string,
+  matchFn: (regex: RegExp, item: T) => boolean
+  ) : T[] {
+
+  if (search.length <= 0) {
+    return list;
+  }
+
+  const regexes = search.split(/\s+/).map(token => new RegExp(escapeRegExp(token), 'i'));
+
+  return list.filter(item => {
+    return regexes.reduce<boolean>((acc, regex) => {
+      if (acc == false){
+        return false;
+      }
+      return matchFn(regex, item)
+    }, true);
+  })
 }
