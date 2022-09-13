@@ -40,7 +40,7 @@ import {
   space_S,
   textSmall,
 } from '../styling/style';
-import { ResourceAndRef } from './resourcesCommonType';
+import { getTheDirectResource, ResourceAndRef } from './resourcesCommonType';
 import ResourceSettings from './ResourceSettings';
 import TargetResourceSummary from './summary/TargetResourceSummary';
 
@@ -78,6 +78,8 @@ export function ResourceDisplay({
 
   const effectiveReadOnly = readOnly || !resource.isDirectResource;
 
+  const category = getTheDirectResource(resource).category;
+
   const { text: teaser } = useAndLoadTextOfDocument(targetResource.teaserId);
 
   const alwaysShowTeaser = effectiveReadOnly && teaser;
@@ -103,6 +105,7 @@ export function ResourceDisplay({
               resource={targetResource}
               iconClassName={css({ color: 'var(--lightGray)' })}
             />
+            {category && `${category} / `}
             <DiscreetInput
               value={targetResource.title || ''}
               placeholder={i18n.modules.resource.untitled}

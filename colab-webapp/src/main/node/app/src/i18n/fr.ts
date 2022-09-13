@@ -322,6 +322,12 @@ export const fr  : ColabTranslations = {
       },
       settings: {
         icon: 'Icône',
+        involvements: {
+          label: 'Involvements',
+        },
+        resources: {
+          label: 'Project Documentation',
+        },
         missingIcon:
           'Oh une nouvelle bibliothèque d\'icônes, cher développeur s\'il vous plaît faites ce qui est nécessaire pour afficher l\'icône.',
       },

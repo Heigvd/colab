@@ -88,13 +88,13 @@ function statusOrder(c: CardContent) {
   }
 }
 
-export function sortCardContents(contents: CardContent[]): CardContent[] {
+export function sortCardContents(contents: CardContent[], lang: string): CardContent[] {
   return contents.sort((a, b) => {
     const aStatus = statusOrder(a);
     const bStatus = statusOrder(b);
 
     if (aStatus === bStatus) {
-      return (a.title || '').localeCompare(b.title || '', 'en', { numeric: true });
+      return (a.title || '').localeCompare(b.title || '', lang, { numeric: true });
     } else {
       return aStatus - bStatus;
     }

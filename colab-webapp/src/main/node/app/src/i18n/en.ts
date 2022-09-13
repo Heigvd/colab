@@ -321,6 +321,12 @@ export const en = {
       },
       settings: {
         icon: 'Icon',
+        involvements: {
+          label: 'Involvements',
+        },
+        resources: {
+          label: 'Project Documentation',
+        },
         missingIcon:
           'Oh a new icon library, dear developer please make what is needed to display the icon.',
       },
