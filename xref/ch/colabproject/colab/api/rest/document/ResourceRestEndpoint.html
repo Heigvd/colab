@@ -400,9 +400,9 @@
 <a class="jxr_linenumber" name="L392" href="#L392">392</a> <em class="jxr_javadoccomment">     *                        reference</em>
 <a class="jxr_linenumber" name="L393" href="#L393">393</a> <em class="jxr_javadoccomment">     */</em>
 <a class="jxr_linenumber" name="L394" href="#L394">394</a>     @PUT
-<a class="jxr_linenumber" name="L395" href="#L395">395</a>     @Path(<span class="jxr_string">"changeCategory/{resourceOrRefId}"</span>)
+<a class="jxr_linenumber" name="L395" href="#L395">395</a>     @Path(<span class="jxr_string">"changeCategory/{resourceOrRefId}/{category}"</span>)
 <a class="jxr_linenumber" name="L396" href="#L396">396</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> changeCategory(@PathParam(<span class="jxr_string">"resourceOrRefId"</span>) Long resourceOrRefId,
-<a class="jxr_linenumber" name="L397" href="#L397">397</a>         String categoryName) {
+<a class="jxr_linenumber" name="L397" href="#L397">397</a>         @PathParam(<span class="jxr_string">"category"</span>) String categoryName) {
 <a class="jxr_linenumber" name="L398" href="#L398">398</a>         logger.debug(<span class="jxr_string">"add resource/ref #{} to category {}"</span>, resourceOrRefId, categoryName);
 <a class="jxr_linenumber" name="L399" href="#L399">399</a>         resourceCategoryHelper.changeCategory(resourceOrRefId, categoryName);
 <a class="jxr_linenumber" name="L400" href="#L400">400</a>     }
@@ -455,10 +455,10 @@
 <a class="jxr_linenumber" name="L447" href="#L447">447</a> <em class="jxr_javadoccomment">     * @param newName         the new name of the category</em>
 <a class="jxr_linenumber" name="L448" href="#L448">448</a> <em class="jxr_javadoccomment">     */</em>
 <a class="jxr_linenumber" name="L449" href="#L449">449</a>     @PUT
-<a class="jxr_linenumber" name="L450" href="#L450">450</a>     @Path(<span class="jxr_string">"renameCategory/cardType/{projectId}/{cardTypeId}/{oldName}"</span>)
+<a class="jxr_linenumber" name="L450" href="#L450">450</a>     @Path(<span class="jxr_string">"renameCategory/cardType/{projectId}/{cardTypeId}/{oldName}/{newName}"</span>)
 <a class="jxr_linenumber" name="L451" href="#L451">451</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> renameCategoryForCardType(@PathParam(<span class="jxr_string">"projectId"</span>) Long projectId,
 <a class="jxr_linenumber" name="L452" href="#L452">452</a>         @PathParam(<span class="jxr_string">"cardTypeId"</span>) Long cardTypeOrRefId, @PathParam(<span class="jxr_string">"oldName"</span>) String oldName,
-<a class="jxr_linenumber" name="L453" href="#L453">453</a>         String newName) {
+<a class="jxr_linenumber" name="L453" href="#L453">453</a>         @PathParam(<span class="jxr_string">"newName"</span>) String newName) {
 <a class="jxr_linenumber" name="L454" href="#L454">454</a>         logger.debug(<span class="jxr_string">"rename category {} to {} for card type #{} in the project {}"</span>, oldName,
 <a class="jxr_linenumber" name="L455" href="#L455">455</a>             newName, cardTypeOrRefId, projectId);
 <a class="jxr_linenumber" name="L456" href="#L456">456</a>         resourceCategoryHelper.renameCategoryInCardType(cardTypeOrRefId, projectId, oldName,
@@ -473,9 +473,9 @@
 <a class="jxr_linenumber" name="L465" href="#L465">465</a> <em class="jxr_javadoccomment">     * @param newName the new name of the category</em>
 <a class="jxr_linenumber" name="L466" href="#L466">466</a> <em class="jxr_javadoccomment">     */</em>
 <a class="jxr_linenumber" name="L467" href="#L467">467</a>     @PUT
-<a class="jxr_linenumber" name="L468" href="#L468">468</a>     @Path(<span class="jxr_string">"renameCategory/card/{cardId}/{oldName}"</span>)
+<a class="jxr_linenumber" name="L468" href="#L468">468</a>     @Path(<span class="jxr_string">"renameCategory/card/{cardId}/{oldName}/{newName}"</span>)
 <a class="jxr_linenumber" name="L469" href="#L469">469</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> renameCategoryForCard(@PathParam(<span class="jxr_string">"cardId"</span>) Long cardId,
-<a class="jxr_linenumber" name="L470" href="#L470">470</a>         @PathParam(<span class="jxr_string">"oldName"</span>) String oldName, String newName) {
+<a class="jxr_linenumber" name="L470" href="#L470">470</a>         @PathParam(<span class="jxr_string">"oldName"</span>) String oldName, @PathParam(<span class="jxr_string">"newName"</span>) String newName) {
 <a class="jxr_linenumber" name="L471" href="#L471">471</a>         logger.debug(<span class="jxr_string">"rename category {} to {} for card #{}"</span>, oldName, newName, cardId);
 <a class="jxr_linenumber" name="L472" href="#L472">472</a>         resourceCategoryHelper.renameCategoryInCard(cardId, oldName, newName);
 <a class="jxr_linenumber" name="L473" href="#L473">473</a>     }
@@ -488,9 +488,9 @@
 <a class="jxr_linenumber" name="L480" href="#L480">480</a> <em class="jxr_javadoccomment">     * @param newName       the new name of the category</em>
 <a class="jxr_linenumber" name="L481" href="#L481">481</a> <em class="jxr_javadoccomment">     */</em>
 <a class="jxr_linenumber" name="L482" href="#L482">482</a>     @PUT
-<a class="jxr_linenumber" name="L483" href="#L483">483</a>     @Path(<span class="jxr_string">"renameCategory/cardContent/{cardContentId}/{oldName}"</span>)
+<a class="jxr_linenumber" name="L483" href="#L483">483</a>     @Path(<span class="jxr_string">"renameCategory/cardContent/{cardContentId}/{oldName}/{newName}"</span>)
 <a class="jxr_linenumber" name="L484" href="#L484">484</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> renameCategoryForCardContent(@PathParam(<span class="jxr_string">"cardContentId"</span>) Long cardContentId,
-<a class="jxr_linenumber" name="L485" href="#L485">485</a>         @PathParam(<span class="jxr_string">"oldName"</span>) String oldName, String newName) {
+<a class="jxr_linenumber" name="L485" href="#L485">485</a>         @PathParam(<span class="jxr_string">"oldName"</span>) String oldName, @PathParam(<span class="jxr_string">"newName"</span>) String newName) {
 <a class="jxr_linenumber" name="L486" href="#L486">486</a>         logger.debug(<span class="jxr_string">"rename category {} to {} for card content #{}"</span>, oldName, newName,
 <a class="jxr_linenumber" name="L487" href="#L487">487</a>             cardContentId);
 <a class="jxr_linenumber" name="L488" href="#L488">488</a>         resourceCategoryHelper.renameCategoryInCardContent(cardContentId, oldName, newName);

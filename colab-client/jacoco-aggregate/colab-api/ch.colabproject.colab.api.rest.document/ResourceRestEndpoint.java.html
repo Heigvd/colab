@@ -392,9 +392,9 @@ import org.slf4j.LoggerFactory;
      *                        reference
      */
     @PUT
-    @Path(&quot;changeCategory/{resourceOrRefId}&quot;)
+    @Path(&quot;changeCategory/{resourceOrRefId}/{category}&quot;)
     public void changeCategory(@PathParam(&quot;resourceOrRefId&quot;) Long resourceOrRefId,
-        String categoryName) {
+        @PathParam(&quot;category&quot;) String categoryName) {
 <span class="nc" id="L398">        logger.debug(&quot;add resource/ref #{} to category {}&quot;, resourceOrRefId, categoryName);</span>
 <span class="nc" id="L399">        resourceCategoryHelper.changeCategory(resourceOrRefId, categoryName);</span>
 <span class="nc" id="L400">    }</span>
@@ -447,10 +447,10 @@ import org.slf4j.LoggerFactory;
      * @param newName         the new name of the category
      */
     @PUT
-    @Path(&quot;renameCategory/cardType/{projectId}/{cardTypeId}/{oldName}&quot;)
+    @Path(&quot;renameCategory/cardType/{projectId}/{cardTypeId}/{oldName}/{newName}&quot;)
     public void renameCategoryForCardType(@PathParam(&quot;projectId&quot;) Long projectId,
         @PathParam(&quot;cardTypeId&quot;) Long cardTypeOrRefId, @PathParam(&quot;oldName&quot;) String oldName,
-        String newName) {
+        @PathParam(&quot;newName&quot;) String newName) {
 <span class="nc" id="L454">        logger.debug(&quot;rename category {} to {} for card type #{} in the project {}&quot;, oldName,</span>
             newName, cardTypeOrRefId, projectId);
 <span class="nc" id="L456">        resourceCategoryHelper.renameCategoryInCardType(cardTypeOrRefId, projectId, oldName,</span>
@@ -465,9 +465,9 @@ import org.slf4j.LoggerFactory;
      * @param newName the new name of the category
      */
     @PUT
-    @Path(&quot;renameCategory/card/{cardId}/{oldName}&quot;)
+    @Path(&quot;renameCategory/card/{cardId}/{oldName}/{newName}&quot;)
     public void renameCategoryForCard(@PathParam(&quot;cardId&quot;) Long cardId,
-        @PathParam(&quot;oldName&quot;) String oldName, String newName) {
+        @PathParam(&quot;oldName&quot;) String oldName, @PathParam(&quot;newName&quot;) String newName) {
 <span class="nc" id="L471">        logger.debug(&quot;rename category {} to {} for card #{}&quot;, oldName, newName, cardId);</span>
 <span class="nc" id="L472">        resourceCategoryHelper.renameCategoryInCard(cardId, oldName, newName);</span>
 <span class="nc" id="L473">    }</span>
@@ -480,9 +480,9 @@ import org.slf4j.LoggerFactory;
      * @param newName       the new name of the category
      */
     @PUT
-    @Path(&quot;renameCategory/cardContent/{cardContentId}/{oldName}&quot;)
+    @Path(&quot;renameCategory/cardContent/{cardContentId}/{oldName}/{newName}&quot;)
     public void renameCategoryForCardContent(@PathParam(&quot;cardContentId&quot;) Long cardContentId,
-        @PathParam(&quot;oldName&quot;) String oldName, String newName) {
+        @PathParam(&quot;oldName&quot;) String oldName, @PathParam(&quot;newName&quot;) String newName) {
 <span class="nc" id="L486">        logger.debug(&quot;rename category {} to {} for card content #{}&quot;, oldName, newName,</span>
             cardContentId);
 <span class="nc" id="L488">        resourceCategoryHelper.renameCategoryInCardContent(cardContentId, oldName, newName);</span>
