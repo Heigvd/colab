@@ -20,6 +20,7 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import * as API from '../API/api';
 import useTranslations from '../i18n/I18nContext';
+import LanguageSelector from '../i18n/LanguageSelector';
 import { useCurrentUser } from '../selectors/userSelector';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
 import InlineLoading from './common/element/InlineLoading';
@@ -108,6 +109,7 @@ export function UserDropDown({ onlyLogout }: { onlyLogout?: boolean }): JSX.Elem
   if (currentUser != null) {
     return (
       <>
+        <LanguageSelector />
         <DropDownMenu
           icon={faUserCircle}
           title={currentUser.username}
