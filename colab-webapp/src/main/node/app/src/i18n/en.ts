@@ -5,7 +5,7 @@
  * Licensed under the MIT License
  */
 
-import { MessageI18nKey } from 'colab-rest-client';
+import { CardContentStatus, MessageI18nKey } from 'colab-rest-client';
 
 export const en = {
   //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -48,6 +48,7 @@ export const en = {
     langSettings: 'Languages',
     changeLanguage: 'Change language',
     sortBy: 'Sort by: ',
+    filter: 'Filter',
     createdBy: 'created by',
     createdOn: 'Created on',
     createdAt: 'Created at',
@@ -319,6 +320,7 @@ export const en = {
           'Are you sure you want to delete the whole project? This will delete all cards inside.',
       },
       settings: {
+        icon: 'Icon',
         missingIcon:
           'Oh a new icon library, dear developer please make what is needed to display the icon.',
       },
@@ -366,7 +368,13 @@ export const en = {
         locked: 'Locked',
         color: 'Color',
         status: 'Status',
-        statusTooltip: (status: string) => `Status: ${status.toLocaleLowerCase('en')}`,
+        statusTooltip: (status: CardContentStatus) => `Status: ${en.modules.card.settings.statuses[status].toLocaleLowerCase('en')}`,
+        statuses:{
+          ACTIVE: 'ACTIVE',
+          POSTPONED: 'POSTPONED',
+          ARCHIVED: 'ARCHIVED',
+          REJECTED: 'REJECTED',
+        },
         completionLevelMode: 'Completion level mode',
         cardPosition: 'Card position',
       },

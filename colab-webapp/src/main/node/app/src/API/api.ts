@@ -425,13 +425,12 @@ export const closeCurrentProject = createAsyncThunk(
   },
 );
 
-// TODO sandra work in progress
 export const duplicateProject = createAsyncThunk('project/duplicate', async (project: Project) => {
   if (project.id) {
     const parameters: DuplicationParam = {
       '@class': 'DuplicationParam',
       withRoles: true,
-      withTeamMembers: true,
+      withTeamMembers: false,
       withCardTypes: true,
       withCardsStructure: true,
       withDeliverables: true,
@@ -583,7 +582,6 @@ export const makePresenceKnown = createAsyncThunk(
 export const clearPresenceList = createAsyncThunk('presence/clear', async (projectId: number) => {
   return await restClient.PresenceRestEndpoint.clearProjectPresenceList(projectId);
 });
-
 
 export const clearAllPresenceLists = createAsyncThunk('presence/clearAll', async () => {
   return await restClient.PresenceRestEndpoint.clearAllPresenceList();
