@@ -10,6 +10,7 @@ import { IconName } from '@fortawesome/free-solid-svg-icons';
 import { Illustration } from 'colab-rest-client';
 import * as React from 'react';
 import { CirclePicker } from 'react-color';
+import useTranslations from '../../i18n/I18nContext';
 import IconButton from '../common/element/IconButton';
 import Flex from '../common/layout/Flex';
 import { borderRadius, labelStyle, space_M, space_S } from '../styling/style';
@@ -80,11 +81,12 @@ export function ProjectIllustrationMaker({
   colorContainerClassName,
   className,
 }: ProjectIllustrationMakerProps): JSX.Element {
+  const i18n = useTranslations();
   const illustrationCurrent = illustration ? illustration : defaultProjectIllustration;
   return (
     <Flex direction="column" align="stretch" className={className}>
       <div className={cx(css({ marginTop: space_S }), colorContainerClassName)}>
-        <label className={labelStyle}>Color</label>
+        <label className={labelStyle}>{i18n.modules.card.settings.color}</label>
         <CirclePicker
           colors={projectColors}
           onChangeComplete={c => setIllustration({ ...illustrationCurrent, iconBkgdColor: c.hex })}
@@ -94,7 +96,7 @@ export function ProjectIllustrationMaker({
         />
       </div>
       <div className={cx(css({ marginTop: space_S }))}>
-        <label className={labelStyle}>Icon</label>
+        <label className={labelStyle}>{i18n.modules.project.settings.icon}</label>
         <ProjectIconPicker
           bgColor={illustrationCurrent.iconBkgdColor}
           iconActive={illustrationCurrent.iconKey}

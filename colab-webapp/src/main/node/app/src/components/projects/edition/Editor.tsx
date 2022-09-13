@@ -43,6 +43,7 @@ import IllustrationDisplay, {
   IllustrationIconDisplay,
 } from '../../common/element/IllustrationDisplay';
 import InlineLoading from '../../common/element/InlineLoading';
+import Tips from '../../common/element/Tips';
 import Clickable from '../../common/layout/Clickable';
 import DropDownMenu from '../../common/layout/DropDownMenu';
 import Flex from '../../common/layout/Flex';
@@ -368,6 +369,7 @@ function EditorNav({ project, setShowProjectDetails }: EditorNavProps): JSX.Elem
               </div>
             </Flex>
           </Button>
+          <Tips tipsType="TODO">
           <DropDownMenu
             icon={faEye}
             valueComp={{ value: '', label: '' }}
@@ -403,6 +405,7 @@ function EditorNav({ project, setShowProjectDetails }: EditorNavProps): JSX.Elem
             buttonClassName={css({ textAlign: 'right', alignSelf: 'center', marginLeft: 'auto' })}
             menuIcon="CARET"
           />
+          </Tips>
         </div>
         <Flex align="center">
           <Presence projectId={project.id!} />

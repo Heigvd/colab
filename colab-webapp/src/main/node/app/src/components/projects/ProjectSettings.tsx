@@ -38,7 +38,7 @@ export function ProjectSettings({ project }: ProjectSettingsProps): JSX.Element 
         <IconButton
           icon={faArrowLeft}
           title={i18n.common.back}
-          onClick={() => navigate(-1)}
+          onClick={() => navigate('..')}
           className={cx(css({ display: 'block' }), lightIconButtonStyle)}
         />
         <h2>{i18n.modules.project.labels.projectSettings}</h2>
