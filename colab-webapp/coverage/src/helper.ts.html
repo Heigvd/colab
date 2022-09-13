@@ -23,30 +23,30 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">39.13% </span>
+                <span class="strong">35.08% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>18/46</span>
+                <span class='fraction'>20/57</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">3.57% </span>
+                <span class="strong">3.33% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>1/28</span>
+                <span class='fraction'>1/30</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">14.28% </span>
+                <span class="strong">11.11% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>2/14</span>
+                <span class='fraction'>2/18</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">32.5% </span>
+                <span class="strong">30% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>13/40</span>
+                <span class='fraction'>15/50</span>
             </div>
         
             
@@ -164,13 +164,37 @@
 <a name='L99'></a><a href='#L99'>99</a>
 <a name='L100'></a><a href='#L100'>100</a>
 <a name='L101'></a><a href='#L101'>101</a>
-<a name='L102'></a><a href='#L102'>102</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L102'></a><a href='#L102'>102</a>
+<a name='L103'></a><a href='#L103'>103</a>
+<a name='L104'></a><a href='#L104'>104</a>
+<a name='L105'></a><a href='#L105'>105</a>
+<a name='L106'></a><a href='#L106'>106</a>
+<a name='L107'></a><a href='#L107'>107</a>
+<a name='L108'></a><a href='#L108'>108</a>
+<a name='L109'></a><a href='#L109'>109</a>
+<a name='L110'></a><a href='#L110'>110</a>
+<a name='L111'></a><a href='#L111'>111</a>
+<a name='L112'></a><a href='#L112'>112</a>
+<a name='L113'></a><a href='#L113'>113</a>
+<a name='L114'></a><a href='#L114'>114</a>
+<a name='L115'></a><a href='#L115'>115</a>
+<a name='L116'></a><a href='#L116'>116</a>
+<a name='L117'></a><a href='#L117'>117</a>
+<a name='L118'></a><a href='#L118'>118</a>
+<a name='L119'></a><a href='#L119'>119</a>
+<a name='L120'></a><a href='#L120'>120</a>
+<a name='L121'></a><a href='#L121'>121</a>
+<a name='L122'></a><a href='#L122'>122</a>
+<a name='L123'></a><a href='#L123'>123</a>
+<a name='L124'></a><a href='#L124'>124</a>
+<a name='L125'></a><a href='#L125'>125</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -265,6 +289,28 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">/*
  * The coLAB project
  * Copyright (C) 2021 AlbaSim, MEI, HEIG-VD, HES-SO
@@ -272,6 +318,7 @@
  * Licensed under the MIT License
  */
 &nbsp;
+import { escapeRegExp } from 'lodash';
 import { CardContent, User, WithId } from 'colab-rest-client';
 import logger from './logger';
 &nbsp;
@@ -354,17 +401,39 @@ function <span class="fstat-no" title="function not covered" >statusOrder(</span
   }
 }
 &nbsp;
-export function <span class="fstat-no" title="function not covered" >sortCardContents(</span>contents: CardContent[]): CardContent[] {
+export function <span class="fstat-no" title="function not covered" >sortCardContents(</span>contents: CardContent[], lang: string): CardContent[] {
 <span class="cstat-no" title="statement not covered" >  return contents.sort(<span class="fstat-no" title="function not covered" >(a</span>, b) =&gt; {</span>
     const aStatus = <span class="cstat-no" title="statement not covered" >statusOrder(a);</span>
     const bStatus = <span class="cstat-no" title="statement not covered" >statusOrder(b);</span>
 &nbsp;
 <span class="cstat-no" title="statement not covered" >    if (aStatus === bStatus) {</span>
-<span class="cstat-no" title="statement not covered" >      return (a.title || '').localeCompare(b.title || '', 'en', { numeric: true });</span>
+<span class="cstat-no" title="statement not covered" >      return (a.title || '').localeCompare(b.title || '', lang, { numeric: true });</span>
     } else {
 <span class="cstat-no" title="statement not covered" >      return aStatus - bStatus;</span>
     }
   });
+}
+&nbsp;
+export function <span class="fstat-no" title="function not covered" >regexFilter&lt;</span>T&gt;(
+  list: T[],
+  search: string,
+  matchFn: (regex: RegExp, item: T) =&gt; boolean
+  ) : T[] {
+&nbsp;
+<span class="cstat-no" title="statement not covered" >  <span class="missing-if-branch" title="if path not taken" >I</span>if (search.length &lt;= 0) {</span>
+<span class="cstat-no" title="statement not covered" >    return list;</span>
+  }
+&nbsp;
+  const regexes = <span class="cstat-no" title="statement not covered" >search.split(/\s+/).map(<span class="fstat-no" title="function not covered" >token </span>=&gt; <span class="cstat-no" title="statement not covered" >new RegExp(escapeRegExp(token), 'i'))</span>;</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >  return list.filter(<span class="fstat-no" title="function not covered" >item </span>=&gt; {</span>
+<span class="cstat-no" title="statement not covered" >    return regexes.reduce&lt;boolean&gt;(<span class="fstat-no" title="function not covered" >(a</span>cc, regex) =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >      <span class="missing-if-branch" title="if path not taken" >I</span>if (acc == false){</span>
+<span class="cstat-no" title="statement not covered" >        return false;</span>
+      }
+<span class="cstat-no" title="statement not covered" >      return matchFn(regex, item)</span>
+    }, true);
+  })
 }
 &nbsp;</pre></td></tr></table></pre>
 
@@ -373,7 +442,7 @@ export function <span class="fstat-no" title="function not covered" >sortCardCon
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2022-09-13T18:46:39.508Z
+                at 2022-09-13T19:52:44.763Z
             </div>
         <script src="../prettify.js"></script>
         <script>

@@ -146,11 +146,11 @@ public class RestClient {
 <span class="nc bnc" id="L146" title="All 2 branches missed.">                if (entity instanceof InputStream) {</span>
 <span class="nc" id="L147">                    InputStream stream = (InputStream) entity;</span>
 <span class="nc" id="L148">                    String contentType = response.getHeaderString(&quot;Content-Type&quot;);</span>
-<span class="nc bnc" id="L149" title="All 2 branches missed.">                    if (contentType.equals(&quot;application/json&quot;)</span>
-<span class="nc bnc" id="L150" title="All 2 branches missed.">                        || contentType.equals(&quot;text/json&quot;)) {</span>
+<span class="nc bnc" id="L149" title="All 2 branches missed.">                    if (contentType.startsWith(&quot;application/json&quot;)</span>
+<span class="nc bnc" id="L150" title="All 2 branches missed.">                        || contentType.startsWith(&quot;text/json&quot;)) {</span>
 <span class="nc" id="L151">                        return readEntity(stream, type);</span>
-<span class="nc bnc" id="L152" title="All 2 branches missed.">                    } else if (contentType.equals(&quot;text/plain&quot;)</span>
-<span class="nc bnc" id="L153" title="All 2 branches missed.">                        || contentType.equals(&quot;text/html&quot;)) {</span>
+<span class="nc bnc" id="L152" title="All 2 branches missed.">                    } else if (contentType.startsWith(&quot;text/plain&quot;)</span>
+<span class="nc bnc" id="L153" title="All 2 branches missed.">                        || contentType.startsWith(&quot;text/html&quot;)) {</span>
 <span class="nc bnc" id="L154" title="All 2 branches missed.">                        if (type.getRawType() == String.class) {</span>
 <span class="nc" id="L155">                            return (T) readTextualEntity(stream);</span>
                         } else {

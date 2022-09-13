@@ -154,11 +154,11 @@
 <a class="jxr_linenumber" name="L146" href="#L146">146</a>                 <strong class="jxr_keyword">if</strong> (entity instanceof InputStream) {
 <a class="jxr_linenumber" name="L147" href="#L147">147</a>                     InputStream stream = (InputStream) entity;
 <a class="jxr_linenumber" name="L148" href="#L148">148</a>                     String contentType = response.getHeaderString(<span class="jxr_string">"Content-Type"</span>);
-<a class="jxr_linenumber" name="L149" href="#L149">149</a>                     <strong class="jxr_keyword">if</strong> (contentType.equals(<span class="jxr_string">"application/json"</span>)
-<a class="jxr_linenumber" name="L150" href="#L150">150</a>                         || contentType.equals(<span class="jxr_string">"text/json"</span>)) {
+<a class="jxr_linenumber" name="L149" href="#L149">149</a>                     <strong class="jxr_keyword">if</strong> (contentType.startsWith(<span class="jxr_string">"application/json"</span>)
+<a class="jxr_linenumber" name="L150" href="#L150">150</a>                         || contentType.startsWith(<span class="jxr_string">"text/json"</span>)) {
 <a class="jxr_linenumber" name="L151" href="#L151">151</a>                         <strong class="jxr_keyword">return</strong> readEntity(stream, type);
-<a class="jxr_linenumber" name="L152" href="#L152">152</a>                     } <strong class="jxr_keyword">else</strong> <strong class="jxr_keyword">if</strong> (contentType.equals(<span class="jxr_string">"text/plain"</span>)
-<a class="jxr_linenumber" name="L153" href="#L153">153</a>                         || contentType.equals(<span class="jxr_string">"text/html"</span>)) {
+<a class="jxr_linenumber" name="L152" href="#L152">152</a>                     } <strong class="jxr_keyword">else</strong> <strong class="jxr_keyword">if</strong> (contentType.startsWith(<span class="jxr_string">"text/plain"</span>)
+<a class="jxr_linenumber" name="L153" href="#L153">153</a>                         || contentType.startsWith(<span class="jxr_string">"text/html"</span>)) {
 <a class="jxr_linenumber" name="L154" href="#L154">154</a>                         <strong class="jxr_keyword">if</strong> (type.getRawType() == String.<strong class="jxr_keyword">class</strong>) {
 <a class="jxr_linenumber" name="L155" href="#L155">155</a>                             <strong class="jxr_keyword">return</strong> (T) readTextualEntity(stream);
 <a class="jxr_linenumber" name="L156" href="#L156">156</a>                         } <strong class="jxr_keyword">else</strong> {
