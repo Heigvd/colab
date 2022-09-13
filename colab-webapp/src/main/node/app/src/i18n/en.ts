@@ -19,6 +19,7 @@ export const en = {
     close: 'Close',
     delete: 'Delete',
     remove: 'Remove',
+    finalDelete: 'Irremediately delete',
     ok: 'OK',
     open: 'Open',
     show: 'Show',
@@ -34,6 +35,8 @@ export const en = {
     replace: 'Replace',
     refresh: 'Refresh',
     change: 'Change',
+    display: 'Display',
+    restore: 'Restore',
     send: 'Send',
     empty: 'Empty',
     loading: 'Loading...',
@@ -60,6 +63,7 @@ export const en = {
     deprecated: 'Deprecated',
     published: 'Published',
     project: 'Project',
+    title: 'Title',
     views: {
       board: 'Board',
       hierarchy: 'Hierarchy',
@@ -144,13 +148,19 @@ export const en = {
       lastname: 'Lastname',
       affiliation: 'Affiliation',
     },
+    user: 'User',
+    account: 'Account',
     missingFirstname: 'Please enter your firstname',
     missingLastname: 'Please enter your lastname',
+    userProfile: 'User profile',
     editProfile: 'Edit profile',
     viewProfile: 'View profile',
     updatePassword: 'Update pasword',
     passwordEditionImpossible: 'You cannot update your password',
+    noUserSelected: 'No user selected',
     editUser: 'Edit user',
+    activeSessions: 'Active sessions',
+    current: 'Current',
   },
   team: {
     team: 'Team',
@@ -191,6 +201,7 @@ export const en = {
     lastSeenAtKey: 'Last seen',
     lastSeenAt: 'Last seen: ',
     lastActivityDate: 'Activity date: ',
+    inconsistentState: 'Inconsistent state',
     notifications: {
       error: 'Oops! An error',
       warning: 'Warning!',
@@ -208,6 +219,7 @@ export const en = {
     users: 'Users',
     loggers: 'Loggers',
     stats: 'Stats',
+    debugger: 'Debugger',
   },
 
   //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -226,8 +238,10 @@ export const en = {
     action: {
       login: 'Login',
       resetPassword: 'Forgot your password ?',
+      changePassword: 'Change password',
       createAnAccount: 'Create an account',
       sendMePassword: 'Send me a new password',
+      newPassword: 'New password',
     },
     info: {
       resetPasswordSent:
@@ -238,6 +252,7 @@ export const en = {
       logoutForPrivacy: 'To ensure your privacy, you have to log out',
       logoutToContinue: 'In order to continue, you have to log out',
       butCraftedFor: (user: string): string => `but your link/token has been crafted for "${user}"`,
+      invitationCoLab: 'Hi! You have been invited to collaborate on a project in co.LAB. Sign in or create your very own account. Happy colabbin\'!',
     },
     error: {
       emailAddressNotValid: 'E-mail address is not valid',
@@ -248,6 +263,9 @@ export const en = {
       passwordsMismatch: 'Passwords do not match',
       yourPasswordIsWeak: 'Your password is weak',
       invalidToken: 'Invalid Token',
+      mustBeAuthenticated: 'You must be authenticated',
+      invalidLink: 'Invalid or deprecated link',
+      pleaseRefresh: 'Please try to refresh or contact the admin of your co.LAB project.',
     },
     aai: {
       aaiAccount: 'AAI Account',
@@ -262,6 +280,7 @@ export const en = {
       labels: {
         projectDisplaySettings: 'Project display settings',
         projectSettings: 'Project settings',
+        projects: 'Projects',
       },
       actions: {
         createProject: 'Create project',
@@ -317,6 +336,7 @@ export const en = {
         chooseACardType: 'Choose a model',
       },
       editor: {
+        toolbox: 'toolbox',
         toggleToolbox: 'Toggle toolbox',
         fullScreen: 'Full screen mode',
       },
@@ -351,6 +371,9 @@ export const en = {
       untitled: 'New version',
       mimeType: 'MIME type',
       document: 'Document',
+      documentSettings: 'Document settings',
+      removedDocuments: 'Removed documents',
+      desertedDocuments: 'Deserted documents',
       mdMode: 'Markdown mode',
       showTree: 'Show tree',
       tree: 'Tree',
@@ -392,6 +415,7 @@ export const en = {
     },
     resource: {
       untitled: 'New document',
+      teaser: 'teaser',
       noTeaser: 'There is no teaser',
       noTeaserForNow: 'There is no teaser for the moment. Feel free to fill it.',
       category: 'Category',
@@ -399,10 +423,16 @@ export const en = {
       docDescription: 'Documentation related to the card.',
       docDescriptionWithType:
         'Documentation related to the card. The model may provide basic documentation.',
+      categorytip: 'Group of documents',
       noResource:  'It does not contain any resource',
       oneResource: 'It contains 1 resource',
       xResources: (nbR: number): string => `It contains ${nbR} resources`,
       onlyForVariant: 'Available only for this variant',
+      backList: 'Back to the list',
+      unpublishMakePrivate: 'Unpublish the resource to make it private for this card',
+      publishMakeAvailableSubs: 'Publish the resource to make it available for subcards',
+      publishedInfo: 'A published resource is available for subcards',
+      unpublishedInfo: 'An unpublished resource is private for this card',
     },
     cardType: {
       cardType: 'Model',
@@ -487,6 +517,25 @@ export const en = {
     },
     info: { wip: 'Work in progress feature below' },
   },
+
+  //////////////////////////////////////////////////////////////////////////////////////////////////
+  //Co.LAB info page
+
+  colabPage: {
+    whatColab: 'What is the co.LAB design platform ?',
+     colabDescription: 'The design platform is one of the deliverables of the co.LAB project. Our goal is to create an intuitive, friendly and meaningful web platform, that should facilitate the collaboration during serious games design. Two main ingredients are at the heart of the platform:',
+    colabFramework: 'co.LAB framework',
+    supportsCoDesign: 'that supports the co-design serious games.',
+    freindlyInterfaces: 'Friendly and intuitive interfaces',
+    forAll: ' for all user profiles.',
+    slogan: 'We want to create a platform for all of you, that let to imagine and design the serious game you need !',
+    contactUs: 'Do not hesitate to contact us for any recommendation you may have.',
+    whatColabProject: 'What is the co.LAB project ?',
+    colabProjectDescription: 'The goal of the co.LAB project is to improve the design, development and uses of digital learning games. This goal will be achieved by the development of a collaborative methodological framework associated with a ollaborative digital platform dedicated to co-design, co-development and co-evaluation of digital learning games. The co.LAB project is founded by the Swiss National Science Foundation (SNF) in the frame of the NRP 77 program “Digital Transformation”.',
+    futherInfo: 'For futher information and to contact us: ',
+    colabProject: 'co.LAB project',
+    version: 'Version',
+    },
   //////////////////////////////////////////////////////////////////////////////////////////////////
   // Terms of use + data management policy
   dataPolicy: {

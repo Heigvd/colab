@@ -53,26 +53,26 @@ export default function ResourceCreator({
   const fields: Field<ResourceCreationType>[] = [
     {
       key: 'title',
-      label: 'Title',
+      label: i18n.common.title,
       type: 'text',
       isMandatory: true,
     },
     createSelectField({
       key: 'category',
-      label: 'Category',
+      label: i18n.modules.resource.category,
       type: 'select',
       isMandatory: false,
       isMulti: false,
       canCreateOption: true,
       options: allCategories.map(c => ({ label: c, value: c })),
-      tip: 'Group of documents',
+      tip: i18n.modules.resource.categorytip,
     }),
   ];
 
   if (contextInfo.kind === 'CardOrCardContent' && contextInfo.hasSeveralVariants) {
     fields.push({
       key: 'atCardContentLevel',
-      label: 'Is only for the present variant',
+      label: i18n.modules.resource.onlyForVariant,
       type: 'boolean',
       isMandatory: false,
       showAs: 'checkbox',

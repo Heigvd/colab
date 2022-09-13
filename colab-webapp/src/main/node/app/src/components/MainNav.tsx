@@ -31,6 +31,7 @@ import Picto from './styling/Picto';
 import { flex, invertedThemeMode, paddingAroundStyle, space_M, space_S } from './styling/style';
 
 export default function MainNav(): JSX.Element {
+  const i18n = useTranslations();
   const navigate = useNavigate();
   return (
     <>
@@ -47,7 +48,7 @@ export default function MainNav(): JSX.Element {
         />
       </Clickable>
       <nav className={flex}>
-        <MainMenuLink to="/">Projects</MainMenuLink>
+        <MainMenuLink to="/">{i18n.modules.project.labels.projects}</MainMenuLink>
         {/* {projectBeingEdited != null && (
       <MainMenuLink to={`/editor/${projectBeingEdited.id}`}>
         {projectBeingEdited.name || 'New project'}

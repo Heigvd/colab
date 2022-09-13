@@ -33,7 +33,7 @@ const EditorWrapper = () => {
   const { id: sId } = useParams<'id'>();
 
   const id = +sId!;
-
+  const i18n = useTranslations();
   const dispatch = useAppDispatch();
   const { project, status } = useProject(+id!);
   const { project: editedProject, status: editingStatus } = useProjectBeingEdited();
@@ -70,7 +70,7 @@ const EditorWrapper = () => {
     return (
       <div>
         <FontAwesomeIcon icon={faSkullCrossbones} />
-        <span>There is no project yet</span>
+        <span>{i18n.modules.project.info.noProjectYet}</span>
       </div>
     );
   } else {
@@ -208,7 +208,7 @@ export default function MainApp(): JSX.Element {
   } else {
     return (
       <Overlay>
-        <i>Inconsistent state</i>
+        <i>{i18n.activity.inconsistentState}</i>
       </Overlay>
     );
   }

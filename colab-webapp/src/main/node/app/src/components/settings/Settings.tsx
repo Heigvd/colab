@@ -7,6 +7,7 @@
 
 import { css } from '@emotion/css';
 import * as React from 'react';
+import useTranslations from '../../i18n/I18nContext';
 import { useCurrentUser, useCurrentUserAccounts } from '../../selectors/userSelector';
 import Flex from '../common/layout/Flex';
 import Tabs, { Tab } from '../common/layout/Tabs';
@@ -18,6 +19,7 @@ import UserProfile from './UserProfile';
 import UserSessions from './UserSessions';
 
 export default function Settings(): JSX.Element {
+  const i18n = useTranslations();
   const accounts = useCurrentUserAccounts();
   const { currentUser } = useCurrentUser();
 
@@ -30,9 +32,9 @@ export default function Settings(): JSX.Element {
   if (currentUser && accounts != 'LOADING') {
     return (
       <div className={css({ padding: space_L })}>
-        <h2>Settings</h2>
+        <h2>{i18n.common.settings}</h2>
         <Tabs routed>
-          <Tab name="user" label="User">
+          <Tab name="user" label={i18n.user.user}>
             <Flex direction="row" className={css({ gap: space_L })}>
               <UserProfile user={currentUser} />
               {accounts.map(account => {
@@ -46,13 +48,13 @@ export default function Settings(): JSX.Element {
               })}
             </Flex>
           </Tab>
-          <Tab name="display" label="Display">
+          <Tab name="display" label={i18n.common.display}>
             <DisplaySettings />
           </Tab>
-          <Tab name="activeSess" label="Active Sessions">
+          <Tab name="activeSess" label={i18n.user.activeSessions}>
             <UserSessions user={currentUser} />
           </Tab>
-          <Tab name="debugger" label="Debugger" invisible={!currentUser.admin}>
+          <Tab name="debugger" label={i18n.admin.debugger} invisible={!currentUser.admin}>
             <Debugger />
           </Tab>
         </Tabs>
@@ -61,7 +63,7 @@ export default function Settings(): JSX.Element {
   } else {
     return (
       <div className={css({ padding: space_L })}>
-        <i>You must be authenticated</i>
+        <i>{i18n.authentication.error.mustBeAuthenticated}</i>
       </div>
     );
   }
