@@ -44,39 +44,34 @@ export default function AboutColab(): JSX.Element {
         <Flex direction="column" gap={space_M} className={css({ maxWidth: '800px' })}>
           <div>
             <h2>{i18n.colabPage.whatColab}</h2>
-            <p>
-              {i18n.colabPage.colabDescription}
-            </p>
+            <p>{i18n.colabPage.colabDescription}</p>
             <ul>
               <li>
                 <b>
                   <a href="https://games.jmir.org/2021/3/e28674/" target="_blank" rel="noreferrer">
-                  {i18n.colabPage.colabFramework}
+                    {i18n.colabPage.colabFramework}
                   </a>
                 </b>{' '}
                 {i18n.colabPage.supportsCoDesign}
               </li>
               <li>
-                <b>{i18n.colabPage.freindlyInterfaces}</b>{i18n.colabPage.forAll}
+                <b>{i18n.colabPage.friendlyInterfaces}</b>
+                {i18n.colabPage.forAll}
               </li>
             </ul>
-            <p>
-            {i18n.colabPage.slogan}
-            </p>
+            <p>{i18n.colabPage.slogan}</p>
             <p>{i18n.colabPage.contactUs}</p>
           </div>
           <div>
             <h2>{i18n.colabPage.whatColabProject}</h2>
-            <p>
-            {i18n.colabPage.colabProjectDescription}
-            </p>
+            <p>{i18n.colabPage.colabProjectDescription}</p>
           </div>
           <div>
             <p>
               <b>
-              {i18n.colabPage.futherInfo}
+                {i18n.colabPage.futherInfo}
                 <a href="https://www.colab-project.ch/" target="_blank" rel="noreferrer">
-                {i18n.colabPage.colabProject}
+                  {i18n.colabPage.colabProject}
                 </a>
               </b>
             </p>

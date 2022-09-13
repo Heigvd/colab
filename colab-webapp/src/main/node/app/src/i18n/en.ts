@@ -131,7 +131,6 @@ export const en = {
     info: {
       pleaseWait: 'Please wait...',
       processing: 'Processing...',
-      tokenNotFound: 'Token not found',
       youAreConnectedAsUser: (user: string): string => `You are currently logged in as "${user}"`,
       nameIsRequired: 'Name is required',
       accessKeyIsRequired: 'Access key is required',
@@ -207,9 +206,9 @@ export const en = {
     sureChangeOwnRights: 'Are you sure you want to change your own rights?',
     sureDeleteMember: 'Are you sure you want to delete this team member ?',
     changeOwnRights: 'Change my own rights',
-    oneOwnerPerProject: 'You cannot change this right. There must be at least one Owner of the project.',
+    oneOwnerPerProject:
+      'You cannot change this right. There must be at least one Owner of the project.',
     memberAlreadyExist: 'Member with same email already in team',
-
   },
   //////////////////////////////////////////////////////////////////////////////////////////////////
   // ACTIVITY
@@ -217,7 +216,6 @@ export const en = {
     pendingChanges: 'Some changes were not saved...',
     nothingToDisplay: 'There is nothing to display...',
     anonymous: 'Anonymous',
-    lastSeenAtKey: 'Last seen',
     lastSeenAt: 'Last seen: ',
     lastActivityDate: 'Activity date: ',
     inconsistentState: 'Inconsistent state',
@@ -268,10 +266,8 @@ export const en = {
       pendingInvitation: 'Pending invitation',
       reconnecting: 'Reconnecting...',
       checkYourMailbox: 'Check your mailbox!',
-      logoutForPrivacy: 'To ensure your privacy, you have to log out',
-      logoutToContinue: 'In order to continue, you have to log out',
-      butCraftedFor: (user: string): string => `but your link/token has been crafted for "${user}"`,
-      invitationCoLab: 'Hi! You have been invited to collaborate on a project in co.LAB. Sign in or create your very own account. Happy colabbin\'!',
+      invitationCoLab:
+        "Hi! You have been invited to collaborate on a project in co.LAB. Sign in or create your very own account. Happy colabbin'!",
     },
     error: {
       emailAddressNotValid: 'E-mail address is not valid',
@@ -281,7 +277,6 @@ export const en = {
       passwordTooWeak: 'Password is not strong enough',
       passwordsMismatch: 'Passwords do not match',
       yourPasswordIsWeak: 'Your password is weak',
-      invalidToken: 'Invalid Token',
       mustBeAuthenticated: 'You must be authenticated',
       invalidLink: 'Invalid or deprecated link',
       pleaseRefresh: 'Please try to refresh or contact the admin of your co.LAB project.',
@@ -357,6 +352,8 @@ export const en = {
       },
       editor: {
         toolbox: 'toolbox',
+        showToolbox: 'Show toolbox',
+        hideToolbox: 'Hide toolbox',
         toggleToolbox: 'Toggle toolbox',
         fullScreen: 'Full screen mode',
       },
@@ -368,8 +365,9 @@ export const en = {
         locked: 'Locked',
         color: 'Color',
         status: 'Status',
-        statusTooltip: (status: CardContentStatus) => `Status: ${en.modules.card.settings.statuses[status].toLocaleLowerCase('en')}`,
-        statuses:{
+        statusTooltip: (status: CardContentStatus) =>
+          `Status: ${en.modules.card.settings.statuses[status].toLocaleLowerCase('en')}`,
+        statuses: {
           ACTIVE: 'ACTIVE',
           POSTPONED: 'POSTPONED',
           ARCHIVED: 'ARCHIVED',
@@ -396,16 +394,18 @@ export const en = {
       none: 'no version',
       untitled: 'New version',
       mimeType: 'MIME type',
+      unknownMimeType: 'Unknown MIME type',
       document: 'Document',
+      unknownDocument: 'Unknown document',
       documentSettings: 'Document settings',
       removedDocuments: 'Removed documents',
-      desertedDocuments: 'Deserted documents',
       mdMode: 'Markdown mode',
       showTree: 'Show tree',
       tree: 'Tree',
       orphans: 'Orphans',
       result: 'Result',
-      file: 'file',
+      uploadFile: 'Upload file',
+      replaceFile: 'Replace file',
       dlFile: 'Download file',
       editBlock: 'Edit block',
       deleteBlock: 'Delete block',
@@ -442,6 +442,8 @@ export const en = {
     resource: {
       untitled: 'New document',
       teaser: 'teaser',
+      showTeaser: 'Show teaser',
+      hideTeaser: 'Hide teaser',
       noTeaser: 'There is no teaser',
       noTeaserForNow: 'There is no teaser for the moment. Feel free to fill it.',
       category: 'Category',
@@ -450,7 +452,7 @@ export const en = {
       docDescriptionWithType:
         'Documentation related to the card. The model may provide basic documentation.',
       categorytip: 'Group of documents',
-      noResource:  'It does not contain any resource',
+      noResource: 'It does not contain any resource',
       oneResource: 'It contains 1 resource',
       xResources: (nbR: number): string => `It contains ${nbR} resources`,
       onlyForVariant: 'Available only for this variant',
@@ -552,19 +554,22 @@ export const en = {
 
   colabPage: {
     whatColab: 'What is the co.LAB design platform ?',
-     colabDescription: 'The design platform is one of the deliverables of the co.LAB project. Our goal is to create an intuitive, friendly and meaningful web platform, that should facilitate the collaboration during serious games design. Two main ingredients are at the heart of the platform:',
+    colabDescription:
+      'The design platform is one of the deliverables of the co.LAB project. Our goal is to create an intuitive, friendly and meaningful web platform, that should facilitate the collaboration during serious games design. Two main ingredients are at the heart of the platform:',
     colabFramework: 'co.LAB framework',
     supportsCoDesign: 'that supports the co-design serious games.',
-    freindlyInterfaces: 'Friendly and intuitive interfaces',
+    friendlyInterfaces: 'Friendly and intuitive interfaces',
     forAll: ' for all user profiles.',
-    slogan: 'We want to create a platform for all of you, that let to imagine and design the serious game you need !',
+    slogan:
+      'We want to create a platform for all of you, that let to imagine and design the serious game you need !',
     contactUs: 'Do not hesitate to contact us for any recommendation you may have.',
     whatColabProject: 'What is the co.LAB project ?',
-    colabProjectDescription: 'The goal of the co.LAB project is to improve the design, development and uses of digital learning games. This goal will be achieved by the development of a collaborative methodological framework associated with a ollaborative digital platform dedicated to co-design, co-development and co-evaluation of digital learning games. The co.LAB project is founded by the Swiss National Science Foundation (SNF) in the frame of the NRP 77 program “Digital Transformation”.',
+    colabProjectDescription:
+      'The goal of the co.LAB project is to improve the design, development and uses of digital learning games. This goal will be achieved by the development of a collaborative methodological framework associated with a ollaborative digital platform dedicated to co-design, co-development and co-evaluation of digital learning games. The co.LAB project is founded by the Swiss National Science Foundation (SNF) in the frame of the NRP 77 program “Digital Transformation”.',
     futherInfo: 'For futher information and to contact us: ',
     colabProject: 'co.LAB project',
     version: 'Version',
-    },
+  },
   //////////////////////////////////////////////////////////////////////////////////////////////////
   // Terms of use + data management policy
   dataPolicy: {
