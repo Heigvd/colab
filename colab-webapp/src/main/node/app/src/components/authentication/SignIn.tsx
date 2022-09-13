@@ -26,6 +26,7 @@ import PublicEntranceContainer from './PublicEntranceContainer';
 interface SignInFormProps {
   redirectTo: string | null;
   message?: string | React.ReactNode;
+  forceShowCreateAccountButton?: boolean;
 }
 
 interface Credentials {
@@ -46,7 +47,11 @@ const defaultCredentials: Credentials = {
   },
 };
 
-export default function SignInForm({ redirectTo, message }: SignInFormProps): JSX.Element {
+export default function SignInForm({
+  redirectTo,
+  message,
+  forceShowCreateAccountButton,
+}: SignInFormProps): JSX.Element {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const i18n = useTranslations();
@@ -84,7 +89,7 @@ export default function SignInForm({ redirectTo, message }: SignInFormProps): JS
           identifier: credentials.identifier,
           password: credentials.password,
           passwordScore: credentials.passwordScore,
-          errorHandler: error => {
+          errorHandler: (error: WithJsonDiscriminator | Error) => {
             if (error) {
               setError(error);
             }
@@ -128,7 +133,7 @@ export default function SignInForm({ redirectTo, message }: SignInFormProps): JS
         >
           {i18n.authentication.action.resetPassword}
         </InlineLink>
-        {accountConfig.showCreateAccountButton && (
+        {(forceShowCreateAccountButton || accountConfig.showCreateAccountButton) && (
           <InlineLink
             to={buildLinkWithQueryParam('/SignUp', { redirectTo: redirectTo })}
             className={cx(lightLinkStyle, css({ padding: space_S }))}

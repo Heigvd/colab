@@ -140,6 +140,7 @@ export default function Token(props: TokenProps): JSX.Element {
         <SignInForm
           redirectTo={backToTokenUrl}
           message={i18n.authentication.info.invitationCoLab}
+          forceShowCreateAccountButton
         />
         {/* <Flex direction="column" className={cx(cardStyle, paddedContainerStyle)}>
           <h2>Authentication required</h2>
