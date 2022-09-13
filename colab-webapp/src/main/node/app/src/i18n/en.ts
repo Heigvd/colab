@@ -93,6 +93,24 @@ export const en = {
         return 'never';
       }
     },
+    ago: (timestamp: number | null | undefined) => {
+      if (timestamp == null) {
+        return 'never';
+      }
+      const now = new Date().getTime();
+      const delta = now - timestamp;
+      if (delta < 5000) {
+        return 'now';
+      } else if (delta < 60000) {
+        return `${Math.floor(delta / 1000)}s ago`;
+      } else if (delta < 3600000) {
+        return `${Math.floor(delta / 60000)}m ago`;
+      } else if (delta < 3600000 * 12) {
+        return `${Math.floor(delta / 3600000)}h ago`;
+      } else {
+        return en.common.datetime(timestamp);
+      }
+    },
     action: {
       backToHome: 'Back to co.LAB home',
       backToProjects: 'Back to projects',
@@ -475,6 +493,9 @@ export const en = {
         fromProject: (projectName: string): string => `It comes from project "${projectName}"`,
         fromAProject: 'It comes from a project',
       },
+    },
+    presence: {
+      date: (name: string, date: number) => `${name} is online (${en.common.ago(date)})`,
     },
     stickyNotes: {
       stickyNotes: 'Sticky notes',

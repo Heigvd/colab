@@ -25,6 +25,7 @@ import {
   TeamRole,
   TypeMap,
   User,
+  UserPresence,
   WsUpdateMessage,
 } from 'colab-rest-client';
 import { checkUnreachable } from '../helper';
@@ -56,6 +57,7 @@ interface EntityBag {
   documents: Updates<Document>;
   httpSessions: Updates<HttpSession>;
   members: Updates<TeamMember>;
+  presences: Updates<UserPresence>;
   projects: Updates<Project>;
   resources: Updates<AbstractResource>;
   roles: Updates<TeamRole>;
@@ -76,6 +78,7 @@ function createBag(): EntityBag {
     documents: { updated: [], deleted: [] },
     httpSessions: { updated: [], deleted: [] },
     members: { updated: [], deleted: [] },
+    presences: { updated: [], deleted: [] },
     projects: { updated: [], deleted: [] },
     resources: { updated: [], deleted: [] },
     roles: { updated: [], deleted: [] },
@@ -123,6 +126,8 @@ export const processMessage = createAsyncThunk(
           bag.stickynotelinks.deleted.push(item);
         } else if (indexEntryIs(item, 'User')) {
           bag.users.deleted.push(item);
+        } else if (indexEntryIs(item, 'UserPresence')) {
+          bag.presences.deleted.push(item);
         } else {
           bag.notifications.push({
             status: 'OPEN',
@@ -163,8 +168,10 @@ export const processMessage = createAsyncThunk(
           bag.stickynotelinks.updated.push(item);
         } else if (entityIs(item, 'User')) {
           bag.users.updated.push(item);
+        } else if (entityIs(item, 'UserPresence')) {
+          bag.presences.updated.push(item);
         } else {
-          //If next line is erroneous, it means a type of WsMessage is not handled
+          //If next line is erroneous, it means a type of entity is not handled
           checkUnreachable(item);
         }
       }

@@ -164,12 +164,16 @@ export default function DocumentCreatorButton({
           entries={[
             {
               value: selectedDocumentId != null ? 'before' : 'begin',
-              label: selectedDocumentId != null ? i18n.modules.content.before : i18n.modules.content.onTop,
+              label:
+                selectedDocumentId != null
+                  ? i18n.modules.content.before
+                  : i18n.modules.content.onTop,
               action: () => createDoc('BEFORE'),
             },
             {
-              value: selectedDocumentId != null  ? 'after' : 'end',
-              label: selectedDocumentId != null ? i18n.modules.content.after  : i18n.modules.content.end,
+              value: selectedDocumentId != null ? 'after' : 'end',
+              label:
+                selectedDocumentId != null ? i18n.modules.content.after : i18n.modules.content.end,
               action: () => createDoc('AFTER'),
             },
           ]}

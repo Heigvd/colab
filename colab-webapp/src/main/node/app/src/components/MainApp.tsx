@@ -56,8 +56,6 @@ const EditorWrapper = () => {
     }
   }, [dispatch, editingStatus, editedProject, project, id, webSocketId]);
 
-
-
   React.useEffect(() => {
     if (project == null && status === 'NOT_INITIALIZED') {
       dispatch(API.getProject(id));
@@ -106,16 +104,18 @@ export default function MainApp(): JSX.Element {
   }, [currentUserStatus, dispatch]);
 
   const reconnecting = socketId == null && (
-    <Overlay backgroundStyle={css({
-      backgroundColor: '#dfdfdf20',
-      userSelect: 'none',
-    })}>
+    <Overlay
+      backgroundStyle={css({
+        backgroundColor: '#dfdfdf20',
+        userSelect: 'none',
+      })}
+    >
       <div
         className={css({
           display: 'flex',
           alignItems: 'center',
-          backgroundColor: "var(--bgColor)",
-          boxShadow: "0 0 30px 30px var(--bgColor)",
+          backgroundColor: 'var(--bgColor)',
+          boxShadow: '0 0 30px 30px var(--bgColor)',
         })}
       >
         <InlineLoading colour={true} /> <span>{i18n.authentication.info.reconnecting}</span>

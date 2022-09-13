@@ -181,6 +181,7 @@ export default function LiveEditor({
                 <WysiwygEditor
                   className={css({ alignItems: 'stretch' })}
                   value={currentValue}
+                  docToTouchId={atClass === 'TextDataBlock' ? atId : undefined}
                   onChange={onChange}
                   selected={selected}
                   flyingToolBar={flyingToolBar}

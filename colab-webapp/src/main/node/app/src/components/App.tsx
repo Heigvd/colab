@@ -11,7 +11,7 @@ import { Suspense } from 'react';
 import { createRoot } from 'react-dom/client';
 import { Provider } from 'react-redux';
 import { HashRouter, Route, Routes, useParams } from 'react-router-dom';
-import { I18nCtx, Language } from '../i18n/I18nContext';
+import { I18nCtx, Language, languages } from '../i18n/I18nContext';
 import { useLocalStorage } from '../preferences';
 import { getStore } from '../store/store';
 import { init } from '../ws/websocket';
@@ -23,7 +23,7 @@ import MainApp from './MainApp';
 import { lightTheme, normalThemeMode } from './styling/style';
 import Token from './token/Token';
 
-import "inter-ui/inter.css"
+import 'inter-ui/inter.css';
 
 /**
  * To read parameters from hash
@@ -35,7 +35,15 @@ function TokenWrapper() {
 }
 
 function App(): JSX.Element {
-  const [lang, setLang] = useLocalStorage<Language>('colab-language', 'EN');
+
+  const defaultLanguage = navigator.languages.map(l => {
+    // remove variant part and turn uppercase
+    return (l.split('-')[0] || '').toUpperCase();
+  }).find(lang => {
+    return languages.includes(lang as Language);
+  }) as Language || 'EN';
+
+  const [lang, setLang] = useLocalStorage<Language>('colab-language', defaultLanguage);
   const [tipsConfig, setTipsConfig] = useLocalStorage<TipsConfig>('colab-tips-config', {
     TODO: false,
     NEWS: true,
