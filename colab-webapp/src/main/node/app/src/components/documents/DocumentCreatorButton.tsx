@@ -9,6 +9,7 @@ import { IconProp } from '@fortawesome/fontawesome-svg-core';
 import { faFile, faFrog, faLink, faParagraph, faPlus } from '@fortawesome/free-solid-svg-icons';
 import * as React from 'react';
 import * as API from '../../API/api';
+import useTranslations from '../../i18n/I18nContext';
 import { useAppDispatch } from '../../store/hooks';
 import IconButton, { IconButtonProps } from '../common/element/IconButton';
 import DropDownMenu from '../common/layout/DropDownMenu';
@@ -62,6 +63,7 @@ export default function DocumentCreatorButton({
   className,
 }: DocumentCreatorButtonProps): JSX.Element {
   const dispatch = useAppDispatch();
+  const i18n = useTranslations();
 
   const createDoc = React.useCallback(
     (place?: 'BEFORE' | 'AFTER') => {
@@ -162,12 +164,16 @@ export default function DocumentCreatorButton({
           entries={[
             {
               value: selectedDocumentId != null ? 'before' : 'begin',
-              label: selectedDocumentId != null ? 'Before' : 'On top',
+              label:
+                selectedDocumentId != null
+                  ? i18n.modules.content.before
+                  : i18n.modules.content.onTop,
               action: () => createDoc('BEFORE'),
             },
             {
               value: selectedDocumentId != null ? 'after' : 'end',
-              label: selectedDocumentId != null ? 'After' : 'At the end',
+              label:
+                selectedDocumentId != null ? i18n.modules.content.after : i18n.modules.content.end,
               action: () => createDoc('AFTER'),
             },
           ]}

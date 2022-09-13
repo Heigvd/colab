@@ -20,6 +20,7 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import * as API from '../API/api';
 import useTranslations from '../i18n/I18nContext';
+import LanguageSelector from '../i18n/LanguageSelector';
 import { useCurrentUser } from '../selectors/userSelector';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
 import InlineLoading from './common/element/InlineLoading';
@@ -31,6 +32,7 @@ import Picto from './styling/Picto';
 import { flex, invertedThemeMode, paddingAroundStyle, space_M, space_S } from './styling/style';
 
 export default function MainNav(): JSX.Element {
+  const i18n = useTranslations();
   const navigate = useNavigate();
   return (
     <>
@@ -47,7 +49,7 @@ export default function MainNav(): JSX.Element {
         />
       </Clickable>
       <nav className={flex}>
-        <MainMenuLink to="/">Projects</MainMenuLink>
+        <MainMenuLink to="/">{i18n.modules.project.labels.projects}</MainMenuLink>
         {/* {projectBeingEdited != null && (
       <MainMenuLink to={`/editor/${projectBeingEdited.id}`}>
         {projectBeingEdited.name || 'New project'}
@@ -107,6 +109,7 @@ export function UserDropDown({ onlyLogout }: { onlyLogout?: boolean }): JSX.Elem
   if (currentUser != null) {
     return (
       <>
+        <LanguageSelector />
         <DropDownMenu
           icon={faUserCircle}
           title={currentUser.username}

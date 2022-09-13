@@ -9,6 +9,7 @@ import { css } from '@emotion/css';
 import { Project } from 'colab-rest-client';
 import * as React from 'react';
 import * as API from '../../API/api';
+import useTranslations from '../../i18n/I18nContext';
 import { dispatch } from '../../store/store';
 import { LabeledInput, LabeledTextArea } from '../common/element/Input';
 import Flex from '../common/layout/Flex';
@@ -19,17 +20,18 @@ interface ProjectDisplaySettingsProps {
 }
 // Display one project and allow to edit it
 export function ProjectDisplaySettings({ project }: ProjectDisplaySettingsProps): JSX.Element {
+  const i18n = useTranslations();
   return (
     <Flex align="stretch" direction="column" className={css({ alignSelf: 'stretch' })}>
       <LabeledInput
-        label="Name"
-        placeholder="New project"
+        label={i18n.common.name}
+        placeholder={i18n.modules.project.actions.newProject}
         value={project.name || ''}
         onChange={newValue => dispatch(API.updateProject({ ...project, name: newValue }))}
       />
       <LabeledTextArea
-        label="Description"
-        placeholder="Write a description here"
+        label={i18n.common.description}
+        placeholder={i18n.common.info.writeDescription}
         value={project.description || ''}
         onChange={newValue => dispatch(API.updateProject({ ...project, description: newValue }))}
       />

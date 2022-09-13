@@ -139,9 +139,7 @@ export default function Token(props: TokenProps): JSX.Element {
       <Overlay>
         <SignInForm
           redirectTo={backToTokenUrl}
-          message={
-            "Hi! You have been invited to collaborate on a project in co.LAB. Sign in or create your very own account. Happy colabbin'!"
-          }
+          message={i18n.authentication.info.invitationCoLab}
         />
         {/* <Flex direction="column" className={cx(cardStyle, paddedContainerStyle)}>
           <h2>Authentication required</h2>
@@ -161,8 +159,8 @@ export default function Token(props: TokenProps): JSX.Element {
     return (
       <PublicEntranceContainer>
         <Flex direction="column">
-          <h3>Invalid or deprecated link</h3>
-          <p>Please try to refresh or contact the admin of your co.LAB project.</p>
+          <h3>{i18n.authentication.error.invalidLink}</h3>
+          <p>{i18n.authentication.error.pleaseRefresh}</p>
           <Button onClick={() => navigate('../')} className={css({ marginTop: space_M })}>
             {i18n.common.action.backToHome}
           </Button>
@@ -173,11 +171,11 @@ export default function Token(props: TokenProps): JSX.Element {
     return (
       <PublicEntranceContainer>
         <Flex direction="column">
-          <h3> Oops! There was an error</h3>
+          <h3>{i18n.common.error.sorryError}</h3>
           {errorMessage != null ? (
             <p>{errorMessage}</p>
           ) : (
-            <p>Please try to refresh or contact the admin of your co.LAB project.</p>
+            <p>{i18n.authentication.error.pleaseRefresh}</p>
           )}
           <Button onClick={() => navigate('../')} className={css({ marginTop: space_M })}>
             {i18n.common.action.backToHome}

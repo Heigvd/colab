@@ -12,6 +12,7 @@ import { fas } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Illustration } from 'colab-rest-client';
 import React from 'react';
+import useTranslations from '../../../i18n/I18nContext';
 import { defaultProjectIllustration } from '../../projects/ProjectCommon';
 import { space_S } from '../../styling/style';
 import Flex, { FlexProps } from '../layout/Flex';
@@ -35,6 +36,7 @@ export default function IllustrationDisplay({
 }: IllustrationDisplayProps): JSX.Element {
   library.add(fas, far); // TODO sandra work in progress // or just the icon we need
   const currentIllustration = illustration || defaultProjectIllustration;
+  const i18n = useTranslations();
   return (
     <Flex
       align={align != null ? align : 'center'}
@@ -65,8 +67,8 @@ export default function IllustrationDisplay({
         />
       ) : (
         <p>
-          Oh a new icon library, dear developer please make what is needed to display the icon{' '}
-          {currentIllustration.iconKey} of library {currentIllustration.iconLibrary}
+          {i18n.modules.project.settings.missingIcon}
+          ({currentIllustration.iconKey} of lib {currentIllustration.iconLibrary})
         </p>
       )}
     </Flex>
@@ -81,6 +83,7 @@ export function IllustrationIconDisplay({
 }: IllustrationDisplayProps): JSX.Element {
   library.add(fas, far); // TODO sandra work in progress // or just the icon we need
   const currentIllustration = illustration || defaultProjectIllustration;
+  const i18n = useTranslations();
   return (
     <>
       {currentIllustration.iconLibrary === 'FONT_AWESOME_SOLID' ||
@@ -96,8 +99,8 @@ export function IllustrationIconDisplay({
         />
       ) : (
         <p>
-          Oh a new icon library, dear developer please make what is needed to display the icon{' '}
-          {currentIllustration.iconKey} of library {currentIllustration.iconLibrary}
+           {i18n.modules.project.settings.missingIcon}
+          ({currentIllustration.iconKey} of lib {currentIllustration.iconLibrary})
         </p>
       )}
     </>
