@@ -10,6 +10,7 @@ import * as React from 'react';
 import * as API from '../../API/api';
 import useTranslations from '../../i18n/I18nContext';
 import { useAppDispatch } from '../../store/hooks';
+import { BlockInput } from '../common/element/Input';
 import Toggler from '../common/element/Toggler';
 import { ResourceAndRef } from './resourcesCommonType';
 
@@ -28,27 +29,43 @@ export default function ResourceSettings({ resource }: ResourceSettingsProps): J
   return (
     <>
       {entityIs(updatableResource, 'Resource') && (
-        <Toggler
-          label={i18n.common.published}
-          value={updatableResource.published}
-          onChange={() => {
-            if (updatableResource.id) {
+        <>
+          <Toggler
+            label={i18n.common.published}
+            value={updatableResource.published}
+            onChange={() => {
+              if (updatableResource.id) {
+                updatableResource.published
+                  ? dispatch(API.unpublishResource(updatableResource.id))
+                  : dispatch(API.publishResource(updatableResource.id));
+              }
+            }}
+            tip={
               updatableResource.published
-                ? dispatch(API.unpublishResource(updatableResource.id))
-                : dispatch(API.publishResource(updatableResource.id));
+                ? i18n.modules.resource.unpublishMakePrivate
+                : i18n.modules.resource.publishMakeAvailableSubs
             }
-          }}
-          tip={
-            updatableResource.published
-              ? i18n.modules.resource.unpublishMakePrivate
-              : i18n.modules.resource.publishMakeAvailableSubs
-          }
-          footer={
-            updatableResource.published
-              ? i18n.modules.resource.publishedInfo
-              : i18n.modules.resource.unpublishedInfo
-          }
-        />
+            footer={
+              updatableResource.published
+                ? i18n.modules.resource.publishedInfo
+                : i18n.modules.resource.unpublishedInfo
+            }
+          />
+          <BlockInput
+            type="text"
+            label="Category"
+            value={updatableResource.category || undefined}
+            saveMode={'ON_BLUR'}
+            onChange={newValue => {
+              dispatch(
+                API.changeResourceCategory({
+                  resourceOrRef: updatableResource,
+                  categoryName: newValue || '',
+                }),
+              );
+            }}
+          />
+        </>
       )}
     </>
   );
