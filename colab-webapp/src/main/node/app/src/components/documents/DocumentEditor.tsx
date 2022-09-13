@@ -9,6 +9,7 @@ import { css, cx } from '@emotion/css';
 import { Document, entityIs } from 'colab-rest-client';
 import * as React from 'react';
 import { updateDocument } from '../../API/api';
+import useTranslations from '../../i18n/I18nContext';
 import { useLastInsertedDocId } from '../../selectors/documentSelector';
 import * as DocumentActions from '../../store/documentSlice';
 import { useAppDispatch } from '../../store/hooks';
@@ -46,6 +47,7 @@ export default function DocumentEditor({
   docOwnership,
 }: DocumentEditorProps): JSX.Element {
   const dispatch = useAppDispatch();
+  const i18n = useTranslations();
 
   const lastInsertedDocId = useLastInsertedDocId(docOwnership);
 
@@ -126,7 +128,7 @@ export default function DocumentEditor({
           />
         ) : (
           <div>
-            <i>Unknown document</i>
+            <i>{i18n.modules.document.unknownDocument}</i>
           </div>
         )}
       </div>

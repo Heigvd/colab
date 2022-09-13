@@ -218,11 +218,12 @@ interface EditLinkProps {
 }
 
 function EditLink({ url, onChange, refreshCb, onCancel }: EditLinkProps): JSX.Element {
+  const i18n = useTranslations();
   return (
     <>
       <BlockInput
         value={url}
-        placeholder="Empty link"
+        placeholder={i18n.modules.content.emptyLink}
         onChange={onChange}
         onCancel={onCancel}
         containerClassName={css({ flexGrow: 1 })}
@@ -230,7 +231,7 @@ function EditLink({ url, onChange, refreshCb, onCancel }: EditLinkProps): JSX.El
       />
       {refreshCb && (
         <IconButton
-          title="refresh"
+          title={i18n.common.refresh}
           onClick={refreshCb}
           icon={faSync}
           className={lightIconButtonStyle}

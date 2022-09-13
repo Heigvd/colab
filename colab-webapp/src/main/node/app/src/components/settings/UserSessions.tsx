@@ -31,7 +31,7 @@ export default function UserProfile({ user }: UserProfileProps): JSX.Element {
     if (sessions != 'LOADING') {
       return (
         <div>
-          <h3>Active Sessions</h3>
+          <h3>{i18n.user.activeSessions}</h3>
           <div>
             {sessions.map(s => {
               return (
@@ -48,7 +48,7 @@ export default function UserProfile({ user }: UserProfileProps): JSX.Element {
                         css({ display: 'inline-block', marginLeft: space_S }),
                       )}
                     >
-                      Current
+                      {i18n.user.current}
                     </div>
                   )}
                 </div>
@@ -63,7 +63,7 @@ export default function UserProfile({ user }: UserProfileProps): JSX.Element {
   } else {
     return (
       <div>
-        <i>No user selected</i>
+        <i>{i18n.user.noUserSelected}</i>
       </div>
     );
   }

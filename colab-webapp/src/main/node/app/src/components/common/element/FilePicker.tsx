@@ -331,14 +331,14 @@ export default function FilePicker({
                 [emptyLightTextStyle]: hasNoFile,
               })}
             >
-              {currentFilename || 'No file uploaded'}
+              {currentFilename || i18n.modules.content.dlFile}
             </div>
           </>
         )}
         {!hasNoFile && !editingStatus && (
           <IconButton
             icon={faDownload}
-            title={i18n.modules.content.dlFile}
+            title={i18n.modules.content.noFileUploaded}
             className={lightIconButtonStyle}
             onClick={onDownload}
           />
@@ -347,7 +347,7 @@ export default function FilePicker({
           <div className={css({ paddingLeft: space_M })} onClick={e => e.stopPropagation()}>
             <label>
               <Button onClick={() => {}}>
-                <FontAwesomeIcon icon={faUpload} /> {hasNoFile ? 'Upload' : 'Replace'} file
+                <FontAwesomeIcon icon={faUpload} /> {hasNoFile ? i18n.common.upload : i18n.common.replace} {i18n.modules.content.file}
               </Button>
               <input className={inputStyle} type="file" accept={accept} onChange={onInputCb} />
             </label>

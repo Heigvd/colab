@@ -8,6 +8,7 @@
 import { faPaperclip } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import * as React from 'react';
+import useTranslations from '../../../i18n/I18nContext';
 import { useAndLoadNbActiveResources } from '../../../selectors/resourceSelector';
 import AvailabilityStatusIndicator from '../../common/element/AvailabilityStatusIndicator';
 import { ResourceCallContext } from '../resourcesCommonType';
@@ -17,6 +18,7 @@ interface ResourceListSummaryProps {
 }
 
 export default function ResourcesListSummary({ context }: ResourceListSummaryProps): JSX.Element {
+  const i18n = useTranslations();
   const { nb, status } = useAndLoadNbActiveResources(context);
 
   if (status !== 'READY') {
@@ -29,10 +31,10 @@ export default function ResourcesListSummary({ context }: ResourceListSummaryPro
         icon={faPaperclip}
         title={
           !nb
-            ? 'It does not contain any resource'
+            ? i18n.modules.resource.noResource
             : nb == 1
-            ? 'It contains 1 resource'
-            : 'It contains ' + nb + ' resources'
+            ? i18n.modules.resource.oneResource
+            : i18n.modules.resource.xResources(nb)
         }
       />
       &nbsp;{nb}

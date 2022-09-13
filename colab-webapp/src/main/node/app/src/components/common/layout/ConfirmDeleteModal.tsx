@@ -68,7 +68,7 @@ export default function ConfirmDeleteModal({
             </Button>
             <ButtonWithLoader
               ref={mainButtonRef}
-              title={confirmButtonLabel ? confirmButtonLabel : 'Delete'}
+              title={confirmButtonLabel ? confirmButtonLabel : i18n.common.delete}
               onClick={() => onInternalConfirm(collapse)}
               className={css({
                 backgroundColor: errorColor,
@@ -76,7 +76,7 @@ export default function ConfirmDeleteModal({
               })}
               isLoading={isConfirmButtonLoading}
             >
-              {confirmButtonLabel ? confirmButtonLabel : 'Delete'}
+              {confirmButtonLabel ? confirmButtonLabel : i18n.common.delete}
             </ButtonWithLoader>
           </Flex>
         </Flex>
