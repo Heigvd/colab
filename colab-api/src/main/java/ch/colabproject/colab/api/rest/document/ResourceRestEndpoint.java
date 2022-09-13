@@ -392,9 +392,9 @@ public class ResourceRestEndpoint {
      *                        reference
      */
     @PUT
-    @Path("changeCategory/{resourceOrRefId}")
+    @Path("changeCategory/{resourceOrRefId}/{category}")
     public void changeCategory(@PathParam("resourceOrRefId") Long resourceOrRefId,
-        String categoryName) {
+        @PathParam("category") String categoryName) {
         logger.debug("add resource/ref #{} to category {}", resourceOrRefId, categoryName);
         resourceCategoryHelper.changeCategory(resourceOrRefId, categoryName);
     }
@@ -447,10 +447,10 @@ public class ResourceRestEndpoint {
      * @param newName         the new name of the category
      */
     @PUT
-    @Path("renameCategory/cardType/{projectId}/{cardTypeId}/{oldName}")
+    @Path("renameCategory/cardType/{projectId}/{cardTypeId}/{oldName}/{newName}")
     public void renameCategoryForCardType(@PathParam("projectId") Long projectId,
         @PathParam("cardTypeId") Long cardTypeOrRefId, @PathParam("oldName") String oldName,
-        String newName) {
+        @PathParam("newName") String newName) {
         logger.debug("rename category {} to {} for card type #{} in the project {}", oldName,
             newName, cardTypeOrRefId, projectId);
         resourceCategoryHelper.renameCategoryInCardType(cardTypeOrRefId, projectId, oldName,
@@ -465,9 +465,9 @@ public class ResourceRestEndpoint {
      * @param newName the new name of the category
      */
     @PUT
-    @Path("renameCategory/card/{cardId}/{oldName}")
+    @Path("renameCategory/card/{cardId}/{oldName}/{newName}")
     public void renameCategoryForCard(@PathParam("cardId") Long cardId,
-        @PathParam("oldName") String oldName, String newName) {
+        @PathParam("oldName") String oldName, @PathParam("newName") String newName) {
         logger.debug("rename category {} to {} for card #{}", oldName, newName, cardId);
         resourceCategoryHelper.renameCategoryInCard(cardId, oldName, newName);
     }
@@ -480,9 +480,9 @@ public class ResourceRestEndpoint {
      * @param newName       the new name of the category
      */
     @PUT
-    @Path("renameCategory/cardContent/{cardContentId}/{oldName}")
+    @Path("renameCategory/cardContent/{cardContentId}/{oldName}/{newName}")
     public void renameCategoryForCardContent(@PathParam("cardContentId") Long cardContentId,
-        @PathParam("oldName") String oldName, String newName) {
+        @PathParam("oldName") String oldName, @PathParam("newName") String newName) {
         logger.debug("rename category {} to {} for card content #{}", oldName, newName,
             cardContentId);
         resourceCategoryHelper.renameCategoryInCardContent(cardContentId, oldName, newName);
