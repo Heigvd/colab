@@ -29,8 +29,13 @@ export default function useTranslations(): typeof en {
   const { lang } = React.useContext(I18nCtx);
 
   if (lang === 'FR') {
-    return fr; 
+    return fr;
   } else {
     return en;
   }
+}
+
+export function useLanguage(): Language {
+  const { lang } = React.useContext(I18nCtx);
+  return lang;
 }

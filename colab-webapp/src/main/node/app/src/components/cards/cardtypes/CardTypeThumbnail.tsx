@@ -67,7 +67,7 @@ export default function CardTypeThumbnail({
   editable = false,
   usage,
 }: CardTypeThumbnailProps): JSX.Element {
-  const isEmpty = cardType === null || cardType === undefined;
+  const isEmpty = cardType == null;
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const i18n = useTranslations();

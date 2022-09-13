@@ -7,7 +7,7 @@
 
 import { css, cx } from '@emotion/css';
 import { ReactJSXElement } from '@emotion/react/types/jsx-namespace';
-import { faCog, faPlus } from '@fortawesome/free-solid-svg-icons';
+import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import { CardContent } from 'colab-rest-client';
 import * as React from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -22,18 +22,12 @@ import ButtonWithLoader from '../common/element/ButtonWithLoader';
 import IconButton from '../common/element/IconButton';
 import Flex from '../common/layout/Flex';
 import OpenCloseModal from '../common/layout/OpenCloseModal';
-import {
-  greyIconButtonChipStyle,
-  lightIconButtonStyle,
-  marginAroundStyle,
-  space_M,
-  space_S,
-} from '../styling/style';
+import { greyIconButtonChipStyle, marginAroundStyle, space_M, space_S } from '../styling/style';
 import CardTypeThumbnail from './cardtypes/CardTypeThumbnail';
 
 export const cardTypeThumbnailStyle = css({
   padding: space_M,
-  width: `calc(50% - 8px - 4*${space_S} - ${space_M})`,
+  //width: `calc(50% - 8px - 4*${space_S} - ${space_M})`,
   minHeight: '85px',
   maxHeight: '85px',
   margin: space_S,
@@ -102,31 +96,34 @@ export default function CardCreator({
       widthMax
       footer={close => (
         <Flex
-          justify="flex-end"
+          justify="space-between"
           align="center"
           grow={1}
           className={css({ padding: space_M, alignSelf: 'stretch' })}
         >
-          <IconButton
+          <Button
             onClick={() => {
               navigate('project-settings/cardtypes');
             }}
-            title={i18n.modules.cardType.route.manageTypes}
-            icon={faCog}
-            className={lightIconButtonStyle}
-          />
-          <Button onClick={close} invertedButton className={marginAroundStyle([2], space_S)}>
-            {i18n.common.cancel}
-          </Button>
-
-          <ButtonWithLoader
-            onClick={() => {
-              createCard(close);
-            }}
-            isLoading={isLoading}
+            invertedButton
+            className={cx(marginAroundStyle([2], space_S), css({ justifySelf: 'flex-start' }))}
           >
-            {i18n.modules.card.createCard}
-          </ButtonWithLoader>
+            {i18n.modules.cardType.route.manageTypes}
+          </Button>
+          <Flex>
+            <Button onClick={close} invertedButton className={marginAroundStyle([2], space_S)}>
+              {i18n.common.cancel}
+            </Button>
+
+            <ButtonWithLoader
+              onClick={() => {
+                createCard(close);
+              }}
+              isLoading={isLoading}
+            >
+              {i18n.modules.card.createCard}
+            </ButtonWithLoader>
+          </Flex>
         </Flex>
       )}
       showCloseButton

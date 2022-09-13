@@ -13,7 +13,7 @@ import { LoadingStatus } from './store';
 
 export interface UserState {
   // null user means loading
-  users: Record<number, User | null>;
+  users: Record<number, User | 'LOADING' | 'ERROR'>;
   accounts: Record<number, Account>;
   currentUserSessionState: LoadingStatus;
   sessions: Record<number, HttpSession>;
@@ -90,7 +90,7 @@ const userSlice = createSlice({
       .addCase(API.getUser.pending, (state, action) => {
         const userId = action.meta.arg;
         if (userId != null) {
-          state.users[userId] = null;
+          state.users[userId] = 'LOADING';
         }
       })
       .addCase(API.getUser.fulfilled, (state, action) => {
@@ -98,6 +98,10 @@ const userSlice = createSlice({
         if (userId != null) {
           state.users[userId] = action.payload;
         }
+      })
+      .addCase(API.getUser.rejected, (state, action) => {
+        const userId = action.meta.arg;
+        state.users[userId] = 'ERROR';
       })
       .addCase(API.getAllUsers.fulfilled, (state, action) => {
         state.users = mapById(action.payload);

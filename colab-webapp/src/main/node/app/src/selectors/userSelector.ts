@@ -4,7 +4,7 @@
  *
  * Licensed under the MIT License
  */
-import { Account, HttpSession, User } from 'colab-rest-client';
+import { Account, entityIs, HttpSession, User } from 'colab-rest-client';
 import * as API from '../API/api';
 import { shallowEqual, useAppDispatch, useAppSelector } from '../store/hooks';
 import { ColabState } from '../store/store';
@@ -18,7 +18,7 @@ export const useCurrentUser = (): {
       state.auth.currentUserId != null ? state.users.users[state.auth.currentUserId] : null;
 
     return {
-      currentUser: user || null,
+      currentUser: entityIs(user, 'User') ? user : null,
       status: state.auth.status,
     };
   }, shallowEqual);
