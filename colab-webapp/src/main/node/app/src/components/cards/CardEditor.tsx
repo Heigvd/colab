@@ -172,7 +172,7 @@ export default function CardEditor({
   const [showTree, setShowTree] = React.useState(false);
   const [markDownMode, setMarkDownMode] = React.useState(false);
   const [editToolbar, setEditToolbar] = React.useState(defaultDocEditorContext.editToolbar);
-  const [openKey, setOpenKey] = React.useState<string | undefined>(undefined);
+  const [openKey, setOpenKey] = React.useState<string | undefined>('resources');
 
   const TXToptions = {
     showTree: showTree,
@@ -594,6 +594,9 @@ export default function CardEditor({
                 <SideCollapsiblePanel
                   openKey={openKey}
                   setOpenKey={setOpenKey}
+                  defaultOpenKey={'resources'}
+                  direction="RIGHT"
+                  className={css({ flexGrow: 1 })}
                   items={{
                     resources: {
                       icon: faPaperclip,
@@ -635,8 +638,6 @@ export default function CardEditor({
                       className: css({ overflow: 'auto' }),
                     }, */
                   }}
-                  direction="RIGHT"
-                  className={css({ flexGrow: 1 })}
                 />
               </ReflexElement>
             </ReflexContainer>

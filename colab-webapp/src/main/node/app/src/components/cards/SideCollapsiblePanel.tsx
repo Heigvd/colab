@@ -27,35 +27,36 @@ const bgActiveStyleLeft = css({
 
 export interface Item {
   icon: IconProp;
-  children: React.ReactNode;
-  className?: string;
+  nextToIconElement?: React.ReactNode;
   title: string;
   nextToTitleElement?: React.ReactNode;
-  nextToIconElement?: React.ReactNode;
+  className?: string;
+  children: React.ReactNode;
 }
 
 export interface SideCollapsiblePanelProps<T extends { [key: string]: Item }> {
   items: T;
-  openKey?: keyof T | string;
   defaultOpenKey?: keyof T | string;
-  setOpenKey?: React.Dispatch<React.SetStateAction<keyof T | string | undefined>>;
-  className?: string;
   direction?: 'LEFT' | 'RIGHT';
   cannotClose?: boolean;
+  openKey?: keyof T | string;
+  setOpenKey?: React.Dispatch<React.SetStateAction<keyof T | string | undefined>>;
+  className?: string;
 }
 
 export default function SideCollapsiblePanel<T extends { [key: string]: Item }>({
-  openKey,
-  defaultOpenKey,
-  setOpenKey,
   items,
-  className,
+  defaultOpenKey,
   direction = 'LEFT',
   cannotClose,
+  openKey,
+  setOpenKey,
+  className,
 }: SideCollapsiblePanelProps<T>): JSX.Element {
   const i18n = useTranslations();
 
   const [itemKeyOpen, setItemKeyOpen] = React.useState<keyof T | undefined>(defaultOpenKey);
+
   const itemOpen = setOpenKey
     ? openKey == null
       ? null
@@ -63,6 +64,7 @@ export default function SideCollapsiblePanel<T extends { [key: string]: Item }>(
     : itemKeyOpen == null
     ? null
     : items[itemKeyOpen];
+
   return (
     <Flex
       direction="row"
