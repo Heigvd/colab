@@ -24,7 +24,7 @@ import { useProjectBeingEdited } from '../../../selectors/projectSelector';
 import { useAppDispatch, useLoadingState } from '../../../store/hooks';
 import { CardTypeAllInOne as CardType } from '../../../types/cardTypeDefinition';
 import Button from '../../common/element/Button';
-import ConfirmDeleteModal from '../../common/layout/ConfirmDeleteModal';
+import ConfirmDeleteOpenCloseModal from '../../common/layout/ConfirmDeleteModal';
 import DropDownMenu, { modalEntryStyle } from '../../common/layout/DropDownMenu';
 import Flex from '../../common/layout/Flex';
 import OpenCloseModal from '../../common/layout/OpenCloseModal';
@@ -227,7 +227,7 @@ export default function CardTypeThumbnail({
                           label: (
                             <>
                               {!isUsedInProject(cardType.id) ? (
-                                <ConfirmDeleteModal
+                                <ConfirmDeleteOpenCloseModal
                                   buttonLabel={
                                     <div
                                       className={cx(css({ color: errorColor }), modalEntryStyle)}

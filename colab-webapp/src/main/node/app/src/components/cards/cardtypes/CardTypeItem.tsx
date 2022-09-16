@@ -21,7 +21,7 @@ import useTranslations from '../../../i18n/I18nContext';
 import { useProjectBeingEdited } from '../../../selectors/projectSelector';
 import { useAppDispatch } from '../../../store/hooks';
 import { CardTypeAllInOne as CardType } from '../../../types/cardTypeDefinition';
-import ConfirmDeleteModal from '../../common/layout/ConfirmDeleteModal';
+import ConfirmDeleteOpenCloseModal from '../../common/layout/ConfirmDeleteModal';
 import DropDownMenu, { modalEntryStyle } from '../../common/layout/DropDownMenu';
 import Flex from '../../common/layout/Flex';
 import { DocTextDisplay } from '../../documents/DocTextItem';
@@ -133,7 +133,7 @@ export default function CardTypeItem({ cardType, usage }: CardTypeItemProps): JS
                   {
                     value: 'delete',
                     label: (
-                      <ConfirmDeleteModal
+                      <ConfirmDeleteOpenCloseModal
                         buttonLabel={
                           <div className={cx(css({ color: errorColor }), modalEntryStyle)}>
                             <FontAwesomeIcon icon={faTrash} /> {i18n.common.delete}

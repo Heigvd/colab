@@ -25,8 +25,8 @@ import { useAndLoadSubCards } from '../../selectors/cardSelector';
 import { useAppDispatch, useLoadingState } from '../../store/hooks';
 import Button from '../common/element/Button';
 import InlineLoading from '../common/element/InlineLoading';
-import ConfirmDeleteModal from '../common/layout/ConfirmDeleteModal';
-import DropDownMenu, { modalEntryStyle } from '../common/layout/DropDownMenu';
+import { ConfirmDeleteModal } from '../common/layout/ConfirmDeleteModal';
+import DropDownMenu from '../common/layout/DropDownMenu';
 import Flex from '../common/layout/Flex';
 import Modal from '../common/layout/Modal';
 import {
@@ -276,6 +276,29 @@ export default function CardThumb({
                       </Modal>
                     }
                   />
+                  <Route
+                    path={`delete`}
+                    element={
+                      <ConfirmDeleteModal
+                        title={i18n.modules.card.settings.cardPosition}
+                        message={<p>{i18n.modules.card.confirmDeleteCardVariant(hasVariants)}</p>}
+                        onCancel={() => closeRouteCb(`delete`)}
+                        onConfirm={() => {
+                          startLoading();
+                          if (hasVariants) {
+                            dispatch(API.deleteCardContent(variant)).then(stopLoading);
+                          } else {
+                            dispatch(API.deleteCard(card)).then(() => {
+                              stopLoading();
+                              navigate('../');
+                            });
+                          }
+                        }}
+                        confirmButtonLabel={i18n.modules.card.deleteCardVariant(hasVariants)}
+                        isConfirmButtonLoading={isLoading}
+                      />
+                    }
+                  />
                 </Routes>
                 <DropDownMenu
                   icon={faEllipsisV}
@@ -336,35 +359,12 @@ export default function CardThumb({
                     {
                       value: 'delete',
                       label: (
-                        <ConfirmDeleteModal
-                          buttonLabel={
-                            <div className={cx(css({ color: errorColor }), modalEntryStyle)}>
-                              <FontAwesomeIcon icon={faTrash} />
-                              {i18n.modules.card.deleteCardVariant(hasVariants)}
-                            </div>
-                          }
-                          className={css({
-                            '&:hover': { textDecoration: 'none' },
-                            display: 'flex',
-                            alignItems: 'center',
-                          })}
-                          message={i18n.modules.card.confirmDeleteCardVariant(hasVariants)}
-                          onConfirm={() => {
-                            startLoading();
-                            if (hasVariants) {
-                              dispatch(API.deleteCardContent(variant)).then(stopLoading);
-                            } else {
-                              dispatch(API.deleteCard(card)).then(() => {
-                                stopLoading();
-                                navigate('../');
-                              });
-                            }
-                          }}
-                          confirmButtonLabel={i18n.modules.card.deleteCardVariant(hasVariants)}
-                          isConfirmButtonLoading={isLoading}
-                        />
+                        <>
+                          <FontAwesomeIcon color={errorColor} icon={faTrash} />{' '}
+                          {i18n.modules.card.deleteCardVariant(hasVariants)}
+                        </>
                       ),
-                      modal: true,
+                      action: () => navigate(`delete`),
                     },
                   ]}
                 />
