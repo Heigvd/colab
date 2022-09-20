@@ -14,6 +14,7 @@ import useTranslations from '../../i18n/I18nContext';
 import { useAndLoadSubCards } from '../../selectors/cardSelector';
 import Button from '../common/element/Button';
 import InlineLoading from '../common/element/InlineLoading';
+import Ellipsis from '../common/layout/Ellipsis';
 import Flex from '../common/layout/Flex';
 import { depthMax } from '../projects/edition/Editor';
 import { fixedButtonStyle, voidStyle } from '../styling/style';
@@ -173,25 +174,11 @@ export default function ContentSubs({
           </Flex>
         </div>
       ) : (
-        <div
-          className={css({
-            position: 'relative',
-            width: '100%',
-            overflow: 'hidden',
-          })}
-        >
-          <div
-            className={css({
-              position: 'absolute',
-              display: 'flex',
-              justifyContent: 'space-evenly',
-            })}
-          >
-            {subCards.map(sub => (
-              <TinyCard key={sub.id} card={sub} />
-            ))}
-          </div>
-        </div>
+        <Ellipsis
+          items={subCards}
+          alignEllipsis='flex-end'
+          itemComp={sub => <TinyCard key={sub.id} card={sub} />}
+        />
       );
     }
   }
