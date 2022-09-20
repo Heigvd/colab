@@ -57,12 +57,20 @@ export const getApplicationPath = () => {
 
 const restClient = ColabClient(getApplicationPath(), error => {
   // TODO see how it could be auto generated as everything that is handled by ColabNotification.message
-  if (entityIs(error, 'HttpException') || error instanceof Error || typeof error === 'string') {
+  if (entityIs(error, 'HttpException') || typeof error === 'string') {
     getStore().dispatch(
       addNotification({
         status: 'OPEN',
         type: 'ERROR',
         message: error,
+      }),
+    );
+  } else if (error instanceof Error) {
+    getStore().dispatch(
+      addNotification({
+        status: 'OPEN',
+        type: 'ERROR',
+        message: `${error.name}: ${error.message}`,
       }),
     );
   } else {
