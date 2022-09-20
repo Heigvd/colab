@@ -5,14 +5,14 @@
  * Licensed under the MIT License
  */
 
-import { faCircle, faCircleDot } from '@fortawesome/free-solid-svg-icons';
+import { faCircle, faCircleDot, faSquare } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { Resource } from 'colab-rest-client';
 import * as React from 'react';
 import useTranslations from '../../../i18n/I18nContext';
+import { ResourceAndRef } from '../resourcesCommonType';
 
 interface TargetResourceSummaryProps {
-  resource: Resource;
+  resource: ResourceAndRef;
   iconClassName?: string;
 }
 
@@ -20,35 +20,34 @@ export default function TargetResourceSummary({
   resource,
   iconClassName,
 }: TargetResourceSummaryProps): JSX.Element {
+  const i18n = useTranslations();
+
   return (
     <>
-      {resource.cardContentId && <ResourceOfCardContentSummary className={iconClassName} />}
-      {/* at card leved is the nothing-special way */}
-      {resource.abstractCardTypeId && <ResourceOfCardTypeSummary className={iconClassName} />}
+      {/* only on card content => show "only for variant" */}
+      {resource.isDirectResource && resource.targetResource.cardContentId != null && (
+        <FontAwesomeIcon
+          icon={faCircle}
+          size="xs"
+          title={i18n.modules.resource.onlyForVariant}
+          className={iconClassName}
+        />
+      )}
+      {/* not direct => say where it comes from */}
+      {!resource.isDirectResource &&
+        (resource.targetResource.abstractCardTypeId != null ? (
+          <FontAwesomeIcon
+            icon={faCircleDot}
+            title={i18n.modules.resource.info.providedByCardType}
+            className={iconClassName}
+          />
+        ) : (
+          <FontAwesomeIcon
+            icon={faSquare}
+            title={i18n.modules.resource.info.providedByUpperCard}
+            className={iconClassName}
+          />
+        ))}
     </>
-  );
-}
-
-function ResourceOfCardContentSummary({ className }: { className?: string }): JSX.Element {
-  const i18n = useTranslations();
-  return (
-    <FontAwesomeIcon
-      icon={faCircle}
-      size="xs"
-      title={i18n.modules.resource.onlyForVariant}
-      className={className}
-    />
-  );
-}
-
-function ResourceOfCardTypeSummary({ className }: { className?: string }): JSX.Element {
-  const i18n = useTranslations();
-
-  return (
-    <FontAwesomeIcon
-      icon={faCircleDot}
-      title={i18n.modules.cardType.info.providedByCardType}
-      className={className}
-    />
   );
 }
