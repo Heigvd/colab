@@ -6,6 +6,7 @@
  */
 package ch.colabproject.colab.api.rest.config.bean;
 
+import ch.colabproject.colab.generator.model.annotations.ExtractJavaDoc;
 import javax.validation.constraints.NotNull;
 
 /**
@@ -13,7 +14,8 @@ import javax.validation.constraints.NotNull;
  *
  * @author maxence
  */
-<span class="nc" id="L16">public class AccountConfig {</span>
+@ExtractJavaDoc
+<span class="nc" id="L18">public class AccountConfig {</span>
 
     /**
      * Indicated whether or not the &quot;create an account&quot; button should be displayed
@@ -27,7 +29,7 @@ import javax.validation.constraints.NotNull;
      * @return the value of displayCreateLocalAccountButton
      */
     public boolean isDisplayCreateLocalAccountButton() {
-<span class="nc" id="L30">        return displayCreateLocalAccountButton;</span>
+<span class="nc" id="L32">        return displayCreateLocalAccountButton;</span>
     }
 
     /**
@@ -36,8 +38,8 @@ import javax.validation.constraints.NotNull;
      * @param displayCreateLocalAccountButton new value of displayCreateLocalAccountButton
      */
     public void setDisplayCreateLocalAccountButton(boolean displayCreateLocalAccountButton) {
-<span class="nc" id="L39">        this.displayCreateLocalAccountButton = displayCreateLocalAccountButton;</span>
-<span class="nc" id="L40">    }</span>
+<span class="nc" id="L41">        this.displayCreateLocalAccountButton = displayCreateLocalAccountButton;</span>
+<span class="nc" id="L42">    }</span>
 
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

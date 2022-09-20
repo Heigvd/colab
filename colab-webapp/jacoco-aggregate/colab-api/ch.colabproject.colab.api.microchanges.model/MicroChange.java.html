@@ -6,6 +6,7 @@
  */
 package ch.colabproject.colab.api.microchanges.model;
 
+import ch.colabproject.colab.generator.model.annotations.ExtractJavaDoc;
 import java.io.Serializable;
 import javax.validation.constraints.NotNull;
 import org.apache.commons.text.StringEscapeUtils;
@@ -15,22 +16,23 @@ import org.apache.commons.text.StringEscapeUtils;
  *
  * @author maxence
  */
-<span class="nc" id="L18">public class MicroChange implements Serializable {</span>
+@ExtractJavaDoc
+<span class="nc" id="L20">public class MicroChange implements Serializable {</span>
 
     private static final long serialVersionUID = 1L;
 
     /**
      * microChange Type
      */
-<span class="nc" id="L25">    public enum Type {</span>
+<span class="nc" id="L27">    public enum Type {</span>
         /**
          * Insert
          */
-<span class="nc" id="L29">        I,</span>
+<span class="nc" id="L31">        I,</span>
         /**
          * Delete
          */
-<span class="nc" id="L33">        D</span>
+<span class="nc" id="L35">        D</span>
     }
 
     /**
@@ -61,7 +63,7 @@ import org.apache.commons.text.StringEscapeUtils;
      * @return offset value
      */
     public Integer getO() {
-<span class="nc" id="L64">        return o;</span>
+<span class="nc" id="L66">        return o;</span>
     }
 
     /**
@@ -70,8 +72,8 @@ import org.apache.commons.text.StringEscapeUtils;
      * @param o offset value
      */
     public void setO(Integer o) {
-<span class="nc" id="L73">        this.o = o;</span>
-<span class="nc" id="L74">    }</span>
+<span class="nc" id="L75">        this.o = o;</span>
+<span class="nc" id="L76">    }</span>
 
     /**
      * get type
@@ -79,7 +81,7 @@ import org.apache.commons.text.StringEscapeUtils;
      * @return change type
      */
     public Type getT() {
-<span class="nc" id="L82">        return t;</span>
+<span class="nc" id="L84">        return t;</span>
     }
 
     /**
@@ -88,8 +90,8 @@ import org.apache.commons.text.StringEscapeUtils;
      * @param t type
      */
     public void setT(Type t) {
-<span class="nc" id="L91">        this.t = t;</span>
-<span class="nc" id="L92">    }</span>
+<span class="nc" id="L93">        this.t = t;</span>
+<span class="nc" id="L94">    }</span>
 
     /**
      * Get change value
@@ -97,7 +99,7 @@ import org.apache.commons.text.StringEscapeUtils;
      * @return value
      */
     public String getV() {
-<span class="nc" id="L100">        return v;</span>
+<span class="nc" id="L102">        return v;</span>
     }
 
     /**
@@ -106,8 +108,8 @@ import org.apache.commons.text.StringEscapeUtils;
      * @param v value
      */
     public void setV(String v) {
-<span class="nc" id="L109">        this.v = v;</span>
-<span class="nc" id="L110">    }</span>
+<span class="nc" id="L111">        this.v = v;</span>
+<span class="nc" id="L112">    }</span>
 
     /**
      * get length.
@@ -115,7 +117,7 @@ import org.apache.commons.text.StringEscapeUtils;
      * @return length
      */
     public Integer getL() {
-<span class="nc" id="L118">        return l;</span>
+<span class="nc" id="L120">        return l;</span>
     }
 
     /**
@@ -124,17 +126,17 @@ import org.apache.commons.text.StringEscapeUtils;
      * @param l length
      */
     public void setL(Integer l) {
-<span class="nc" id="L127">        this.l = l;</span>
-<span class="nc" id="L128">    }</span>
+<span class="nc" id="L129">        this.l = l;</span>
+<span class="nc" id="L130">    }</span>
 
     @Override
     public String toString() {
-<span class="nc bnc" id="L132" title="All 2 branches missed.">        if (t == Type.D) {</span>
-<span class="nc" id="L133">            return &quot;MicroChange{&quot;</span>
+<span class="nc bnc" id="L134" title="All 2 branches missed.">        if (t == Type.D) {</span>
+<span class="nc" id="L135">            return &quot;MicroChange{&quot;</span>
                 + &quot;DELETE &quot; + l + &quot; from &quot; + o
                 + '}';
         } else {
-<span class="nc" id="L137">            return &quot;MicroChange{&quot;</span>
+<span class="nc" id="L139">            return &quot;MicroChange{&quot;</span>
                 + &quot;INSERT '&quot; + v + &quot;' at &quot; + o
                 + '}';
         }
@@ -146,10 +148,10 @@ import org.apache.commons.text.StringEscapeUtils;
      * @return debug code
      */
     public String getDebugStatement() {
-<span class="nc bnc" id="L149" title="All 2 branches missed.">        if (t == Type.D) {</span>
-<span class="nc" id="L150">            return &quot;del(&quot; + o + &quot;, &quot; + l + &quot;)&quot;;</span>
+<span class="nc bnc" id="L151" title="All 2 branches missed.">        if (t == Type.D) {</span>
+<span class="nc" id="L152">            return &quot;del(&quot; + o + &quot;, &quot; + l + &quot;)&quot;;</span>
         } else {
-<span class="nc" id="L152">            return &quot;ins(&quot; + o + &quot;, \&quot;&quot; + StringEscapeUtils.escapeEcmaScript(v)+ &quot;\&quot;)&quot;;</span>
+<span class="nc" id="L154">            return &quot;ins(&quot; + o + &quot;, \&quot;&quot; + StringEscapeUtils.escapeEcmaScript(v)+ &quot;\&quot;)&quot;;</span>
         }
     }
 }

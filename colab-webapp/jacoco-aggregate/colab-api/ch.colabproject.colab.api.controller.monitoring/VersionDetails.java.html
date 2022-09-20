@@ -6,6 +6,7 @@
  */
 package ch.colabproject.colab.api.controller.monitoring;
 
+import ch.colabproject.colab.generator.model.annotations.ExtractJavaDoc;
 import javax.validation.constraints.NotNull;
 
 /**
@@ -13,7 +14,8 @@ import javax.validation.constraints.NotNull;
  *
  * @author maxence
  */
-<span class="nc" id="L16">public class VersionDetails {</span>
+@ExtractJavaDoc
+<span class="nc" id="L18">public class VersionDetails {</span>
 
     /**
      * The current build number (aka the github action run number)
@@ -33,7 +35,7 @@ import javax.validation.constraints.NotNull;
      * @return the value of dockerImages
      */
     public String getDockerImages() {
-<span class="nc" id="L36">        return dockerImages;</span>
+<span class="nc" id="L38">        return dockerImages;</span>
     }
 
     /**
@@ -42,8 +44,8 @@ import javax.validation.constraints.NotNull;
      * @param dockerImages new value of dockerImages
      */
     public void setDockerImages(String dockerImages) {
-<span class="nc" id="L45">        this.dockerImages = dockerImages;</span>
-<span class="nc" id="L46">    }</span>
+<span class="nc" id="L47">        this.dockerImages = dockerImages;</span>
+<span class="nc" id="L48">    }</span>
 
     /**
      * Get the value of buildNumber.
@@ -51,7 +53,7 @@ import javax.validation.constraints.NotNull;
      * @return current build number or empty if running version is a snapshot
      */
     public String getBuildNumber() {
-<span class="nc" id="L54">        return buildNumber;</span>
+<span class="nc" id="L56">        return buildNumber;</span>
     }
 
     /**
@@ -60,8 +62,8 @@ import javax.validation.constraints.NotNull;
      * @param buildNumber new value of buildNumber
      */
     public void setBuildNumber(String buildNumber) {
-<span class="nc" id="L63">        this.buildNumber = buildNumber;</span>
-<span class="nc" id="L64">    }</span>
+<span class="nc" id="L65">        this.buildNumber = buildNumber;</span>
+<span class="nc" id="L66">    }</span>
 
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

@@ -9,6 +9,7 @@ package ch.colabproject.colab.api.presence.model;
 import ch.colabproject.colab.api.model.WithWebsocketChannels;
 import ch.colabproject.colab.api.ws.channel.tool.ChannelsBuilders;
 import ch.colabproject.colab.api.ws.channel.tool.ChannelsBuilders.ChannelsBuilder;
+import ch.colabproject.colab.generator.model.annotations.ExtractJavaDoc;
 import ch.colabproject.colab.generator.model.tools.DateSerDe;
 import java.io.Serializable;
 import java.time.OffsetDateTime;
@@ -21,6 +22,7 @@ import javax.validation.constraints.NotNull;
  *
  * @author maxence
  */
+@ExtractJavaDoc
 public class UserPresence extends TouchUserPresence implements Serializable, WithWebsocketChannels {
 
     private static final long serialVersionUID = 1L;
@@ -39,36 +41,36 @@ public class UserPresence extends TouchUserPresence implements Serializable, Wit
     /**
      * new empty user presence instance
      */
-<span class="nc" id="L42">    public UserPresence() {</span>
+<span class="nc" id="L44">    public UserPresence() {</span>
         /** empty default constructor */
-<span class="nc" id="L44">    }</span>
+<span class="nc" id="L46">    }</span>
 
     /**
      * Create a userPresence instance by copying a TouchUserPresence
      *
      * @param touch the presence to copy
      */
-<span class="nc" id="L51">    public UserPresence(TouchUserPresence touch) {</span>
-<span class="nc" id="L52">        this.setProjectId(touch.getProjectId());</span>
-<span class="nc" id="L53">        this.setCardId(touch.getCardId());</span>
-<span class="nc" id="L54">        this.setCardContentId(touch.getCardContentId());</span>
-<span class="nc" id="L55">        this.setContext(touch.getContext());</span>
-<span class="nc" id="L56">        this.setDocumentId(touch.getDocumentId());</span>
-<span class="nc" id="L57">        this.setSelectionStart(touch.getSelectionStart());</span>
-<span class="nc" id="L58">        this.setSelectionEnd(touch.getSelectionEnd());</span>
-<span class="nc" id="L59">        this.setProjectId(touch.getProjectId());</span>
-<span class="nc" id="L60">        this.setWsSessionId(touch.getWsSessionId());</span>
-<span class="nc" id="L61">        this.setDate(OffsetDateTime.now());</span>
-<span class="nc" id="L62">    }</span>
+<span class="nc" id="L53">    public UserPresence(TouchUserPresence touch) {</span>
+<span class="nc" id="L54">        this.setProjectId(touch.getProjectId());</span>
+<span class="nc" id="L55">        this.setCardId(touch.getCardId());</span>
+<span class="nc" id="L56">        this.setCardContentId(touch.getCardContentId());</span>
+<span class="nc" id="L57">        this.setContext(touch.getContext());</span>
+<span class="nc" id="L58">        this.setDocumentId(touch.getDocumentId());</span>
+<span class="nc" id="L59">        this.setSelectionStart(touch.getSelectionStart());</span>
+<span class="nc" id="L60">        this.setSelectionEnd(touch.getSelectionEnd());</span>
+<span class="nc" id="L61">        this.setProjectId(touch.getProjectId());</span>
+<span class="nc" id="L62">        this.setWsSessionId(touch.getWsSessionId());</span>
+<span class="nc" id="L63">        this.setDate(OffsetDateTime.now());</span>
+<span class="nc" id="L64">    }</span>
 
     @Override
     public Long getId() {
-<span class="nc" id="L66">        return this.getProjectId();</span>
+<span class="nc" id="L68">        return this.getProjectId();</span>
     }
 
     @Override
     public Object getIndexEntryPayload() {
-<span class="nc" id="L71">        return this.getWsSessionId();</span>
+<span class="nc" id="L73">        return this.getWsSessionId();</span>
     }
 
     /**
@@ -77,7 +79,7 @@ public class UserPresence extends TouchUserPresence implements Serializable, Wit
      * @return the value of date
      */
     public OffsetDateTime getDate() {
-<span class="nc" id="L80">        return date;</span>
+<span class="nc" id="L82">        return date;</span>
     }
 
     /**
@@ -86,8 +88,8 @@ public class UserPresence extends TouchUserPresence implements Serializable, Wit
      * @param date new value of date
      */
     public void setDate(OffsetDateTime date) {
-<span class="nc" id="L89">        this.date = date;</span>
-<span class="nc" id="L90">    }</span>
+<span class="nc" id="L91">        this.date = date;</span>
+<span class="nc" id="L92">    }</span>
 
     /**
      * Get the value of teamMemberId
@@ -95,7 +97,7 @@ public class UserPresence extends TouchUserPresence implements Serializable, Wit
      * @return the value of teamMemberId. If null, it means an admin is spying
      */
     public Long getTeamMemberId() {
-<span class="nc" id="L98">        return teamMemberId;</span>
+<span class="nc" id="L100">        return teamMemberId;</span>
     }
 
     /**
@@ -104,15 +106,15 @@ public class UserPresence extends TouchUserPresence implements Serializable, Wit
      * @param teamMemberId new value of teamMemberId
      */
     public void setTeamMemberId(Long teamMemberId) {
-<span class="nc" id="L107">        this.teamMemberId = teamMemberId;</span>
-<span class="nc" id="L108">    }</span>
+<span class="nc" id="L109">        this.teamMemberId = teamMemberId;</span>
+<span class="nc" id="L110">    }</span>
 
     /////////////////////
     // Websockets
     /////////////////////
     @Override
     public ChannelsBuilder getChannelsBuilder() {
-<span class="nc" id="L115">        return new ChannelsBuilders.ProjectContentChannelBuilder(this.getProjectId());</span>
+<span class="nc" id="L117">        return new ChannelsBuilders.ProjectContentChannelBuilder(this.getProjectId());</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

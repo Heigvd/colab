@@ -6,6 +6,7 @@
  */
 package ch.colabproject.colab.api.model;
 
+import ch.colabproject.colab.generator.model.annotations.ExtractJavaDoc;
 import ch.colabproject.colab.generator.model.interfaces.WithJsonDiscriminator;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
@@ -15,7 +16,8 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
  *
  * @author sandra
  */
-<span class="nc" id="L18">public class DuplicationParam implements WithJsonDiscriminator {</span>
+@ExtractJavaDoc
+<span class="nc" id="L20">public class DuplicationParam implements WithJsonDiscriminator {</span>
 
     private static final long serialVersionUID = 1L;
 
@@ -71,38 +73,38 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
      * @return Default instance for a project duplication
      */
     public static DuplicationParam buildDefaultForCopyOfProject() {
-<span class="nc" id="L74">        DuplicationParam defaultInstance = new DuplicationParam();</span>
+<span class="nc" id="L76">        DuplicationParam defaultInstance = new DuplicationParam();</span>
 
-<span class="nc" id="L76">        defaultInstance.setWithRoles(true);</span>
-<span class="nc" id="L77">        defaultInstance.setWithTeamMembers(true);</span>
-<span class="nc" id="L78">        defaultInstance.setWithCardTypes(true);</span>
-<span class="nc" id="L79">        defaultInstance.setWithCardsStructure(true);</span>
-<span class="nc" id="L80">        defaultInstance.setWithDeliverables(true);</span>
-<span class="nc" id="L81">        defaultInstance.setWithStickyNotes(true);</span>
-<span class="nc" id="L82">        defaultInstance.setWithActivityFlow(true);</span>
+<span class="nc" id="L78">        defaultInstance.setWithRoles(true);</span>
+<span class="nc" id="L79">        defaultInstance.setWithTeamMembers(true);</span>
+<span class="nc" id="L80">        defaultInstance.setWithCardTypes(true);</span>
+<span class="nc" id="L81">        defaultInstance.setWithCardsStructure(true);</span>
+<span class="nc" id="L82">        defaultInstance.setWithDeliverables(true);</span>
+<span class="nc" id="L83">        defaultInstance.setWithStickyNotes(true);</span>
+<span class="nc" id="L84">        defaultInstance.setWithActivityFlow(true);</span>
 
-<span class="nc" id="L84">        defaultInstance.setMakeOnlyCardTypeReferences(false);</span>
+<span class="nc" id="L86">        defaultInstance.setMakeOnlyCardTypeReferences(false);</span>
 
-<span class="nc" id="L86">        return defaultInstance;</span>
+<span class="nc" id="L88">        return defaultInstance;</span>
     }
 
     /**
      * @return Default instance for a project created from a project model
      */
     public static DuplicationParam buildForCreationFromModel() {
-<span class="nc" id="L93">        DuplicationParam defaultInstance = new DuplicationParam();</span>
+<span class="nc" id="L95">        DuplicationParam defaultInstance = new DuplicationParam();</span>
 
-<span class="nc" id="L95">        defaultInstance.setWithRoles(true);</span>
-<span class="nc" id="L96">        defaultInstance.setWithCardTypes(true);</span>
-<span class="nc" id="L97">        defaultInstance.setWithCardsStructure(true);</span>
-<span class="nc" id="L98">        defaultInstance.setWithDeliverables(true);</span>
-<span class="nc" id="L99">        defaultInstance.setWithStickyNotes(true);</span>
-<span class="nc" id="L100">        defaultInstance.setWithActivityFlow(true);</span>
-<span class="nc" id="L101">        defaultInstance.setMakeOnlyCardTypeReferences(true);</span>
+<span class="nc" id="L97">        defaultInstance.setWithRoles(true);</span>
+<span class="nc" id="L98">        defaultInstance.setWithCardTypes(true);</span>
+<span class="nc" id="L99">        defaultInstance.setWithCardsStructure(true);</span>
+<span class="nc" id="L100">        defaultInstance.setWithDeliverables(true);</span>
+<span class="nc" id="L101">        defaultInstance.setWithStickyNotes(true);</span>
+<span class="nc" id="L102">        defaultInstance.setWithActivityFlow(true);</span>
+<span class="nc" id="L103">        defaultInstance.setMakeOnlyCardTypeReferences(true);</span>
 
-<span class="nc" id="L103">        defaultInstance.setWithTeamMembers(false);</span>
+<span class="nc" id="L105">        defaultInstance.setWithTeamMembers(false);</span>
 
-<span class="nc" id="L105">        return defaultInstance;</span>
+<span class="nc" id="L107">        return defaultInstance;</span>
     }
 
     // ---------------------------------------------------------------------------------------------
@@ -113,113 +115,113 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
      * @return the withRoles
      */
     public boolean isWithRoles() {
-<span class="nc" id="L116">        return withRoles;</span>
+<span class="nc" id="L118">        return withRoles;</span>
     }
 
     /**
      * @param withRoles the withRoles
      */
     public void setWithRoles(boolean withRoles) {
-<span class="nc" id="L123">        this.withRoles = withRoles;</span>
-<span class="nc" id="L124">    }</span>
+<span class="nc" id="L125">        this.withRoles = withRoles;</span>
+<span class="nc" id="L126">    }</span>
 
     /**
      * @return the withTeamMembers
      */
     public boolean isWithTeamMembers() {
-<span class="nc" id="L130">        return withTeamMembers;</span>
+<span class="nc" id="L132">        return withTeamMembers;</span>
     }
 
     /**
      * @param withTeamMembers the withTeamMembers
      */
     public void setWithTeamMembers(boolean withTeamMembers) {
-<span class="nc" id="L137">        this.withTeamMembers = withTeamMembers;</span>
-<span class="nc" id="L138">    }</span>
+<span class="nc" id="L139">        this.withTeamMembers = withTeamMembers;</span>
+<span class="nc" id="L140">    }</span>
 
     /**
      * @return the withCardTypes
      */
     public boolean isWithCardTypes() {
-<span class="nc" id="L144">        return withCardTypes;</span>
+<span class="nc" id="L146">        return withCardTypes;</span>
     }
 
     /**
      * @param withCardTypes the withCardTypes
      */
     public void setWithCardTypes(boolean withCardTypes) {
-<span class="nc" id="L151">        this.withCardTypes = withCardTypes;</span>
-<span class="nc" id="L152">    }</span>
+<span class="nc" id="L153">        this.withCardTypes = withCardTypes;</span>
+<span class="nc" id="L154">    }</span>
 
     /**
      * @return the withCardsStructure
      */
     public boolean isWithCardsStructure() {
-<span class="nc" id="L158">        return withCardsStructure;</span>
+<span class="nc" id="L160">        return withCardsStructure;</span>
     }
 
     /**
      * @param withCardsStructure the withCardsStructure
      */
     public void setWithCardsStructure(boolean withCardsStructure) {
-<span class="nc" id="L165">        this.withCardsStructure = withCardsStructure;</span>
-<span class="nc" id="L166">    }</span>
+<span class="nc" id="L167">        this.withCardsStructure = withCardsStructure;</span>
+<span class="nc" id="L168">    }</span>
 
     /**
      * @return the withDeliverables
      */
     public boolean isWithDeliverables() {
-<span class="nc" id="L172">        return withDeliverables;</span>
+<span class="nc" id="L174">        return withDeliverables;</span>
     }
 
     /**
      * @param withDeliverables the withDeliverables
      */
     public void setWithDeliverables(boolean withDeliverables) {
-<span class="nc" id="L179">        this.withDeliverables = withDeliverables;</span>
-<span class="nc" id="L180">    }</span>
+<span class="nc" id="L181">        this.withDeliverables = withDeliverables;</span>
+<span class="nc" id="L182">    }</span>
 
     /**
      * @return the withStickyNotes
      */
     public boolean isWithStickyNotes() {
-<span class="nc" id="L186">        return withStickyNotes;</span>
+<span class="nc" id="L188">        return withStickyNotes;</span>
     }
 
     /**
      * @param withStickyNotes the withStickyNotes
      */
     public void setWithStickyNotes(boolean withStickyNotes) {
-<span class="nc" id="L193">        this.withStickyNotes = withStickyNotes;</span>
-<span class="nc" id="L194">    }</span>
+<span class="nc" id="L195">        this.withStickyNotes = withStickyNotes;</span>
+<span class="nc" id="L196">    }</span>
 
     /**
      * @return the withActivityFlow
      */
     public boolean isWithActivityFlow() {
-<span class="nc" id="L200">        return withActivityFlow;</span>
+<span class="nc" id="L202">        return withActivityFlow;</span>
     }
 
     /**
      * @param withActivityFlow the withActivityFlow
      */
     public void setWithActivityFlow(boolean withActivityFlow) {
-<span class="nc" id="L207">        this.withActivityFlow = withActivityFlow;</span>
-<span class="nc" id="L208">    }</span>
+<span class="nc" id="L209">        this.withActivityFlow = withActivityFlow;</span>
+<span class="nc" id="L210">    }</span>
 
     /**
      * @return the makeOnlyCardTypeReferences
      */
     public boolean isMakeOnlyCardTypeReferences() {
-<span class="nc" id="L214">        return makeOnlyCardTypeReferences;</span>
+<span class="nc" id="L216">        return makeOnlyCardTypeReferences;</span>
     }
 
     /**
      * @param makeOnlyCardTypeReferences the makeOnlyCardTypeReferences
      */
     public void setMakeOnlyCardTypeReferences(boolean makeOnlyCardTypeReferences) {
-<span class="nc" id="L221">        this.makeOnlyCardTypeReferences = makeOnlyCardTypeReferences;</span>
-<span class="nc" id="L222">    }</span>
+<span class="nc" id="L223">        this.makeOnlyCardTypeReferences = makeOnlyCardTypeReferences;</span>
+<span class="nc" id="L224">    }</span>
 
     // ---------------------------------------------------------------------------------------------
     // concerning the whole class
@@ -227,40 +229,40 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 
     @Override
     public int hashCode() {
-<span class="nc" id="L230">        return new HashCodeBuilder()</span>
-<span class="nc" id="L231">            .append(this.withRoles)</span>
-<span class="nc" id="L232">            .append(this.withTeamMembers)</span>
-<span class="nc" id="L233">            .append(this.withCardTypes)</span>
-<span class="nc" id="L234">            .append(this.withCardsStructure)</span>
-<span class="nc" id="L235">            .append(this.withDeliverables)</span>
-<span class="nc" id="L236">            .append(this.withStickyNotes)</span>
-<span class="nc" id="L237">            .append(this.withActivityFlow)</span>
-<span class="nc" id="L238">            .append(this.makeOnlyCardTypeReferences)</span>
-<span class="nc" id="L239">            .toHashCode();</span>
+<span class="nc" id="L232">        return new HashCodeBuilder()</span>
+<span class="nc" id="L233">            .append(this.withRoles)</span>
+<span class="nc" id="L234">            .append(this.withTeamMembers)</span>
+<span class="nc" id="L235">            .append(this.withCardTypes)</span>
+<span class="nc" id="L236">            .append(this.withCardsStructure)</span>
+<span class="nc" id="L237">            .append(this.withDeliverables)</span>
+<span class="nc" id="L238">            .append(this.withStickyNotes)</span>
+<span class="nc" id="L239">            .append(this.withActivityFlow)</span>
+<span class="nc" id="L240">            .append(this.makeOnlyCardTypeReferences)</span>
+<span class="nc" id="L241">            .toHashCode();</span>
     }
 
     @Override
     public boolean equals(Object obj) {
-<span class="nc bnc" id="L244" title="All 2 branches missed.">        if (this == obj) {</span>
-<span class="nc" id="L245">            return true;</span>
+<span class="nc bnc" id="L246" title="All 2 branches missed.">        if (this == obj) {</span>
+<span class="nc" id="L247">            return true;</span>
         }
-<span class="nc bnc" id="L247" title="All 2 branches missed.">        if (obj == null) {</span>
-<span class="nc" id="L248">            return false;</span>
+<span class="nc bnc" id="L249" title="All 2 branches missed.">        if (obj == null) {</span>
+<span class="nc" id="L250">            return false;</span>
         }
-<span class="nc bnc" id="L250" title="All 2 branches missed.">        if (getClass() != obj.getClass()) {</span>
-<span class="nc" id="L251">            return false;</span>
+<span class="nc bnc" id="L252" title="All 2 branches missed.">        if (getClass() != obj.getClass()) {</span>
+<span class="nc" id="L253">            return false;</span>
         }
-<span class="nc" id="L253">        final DuplicationParam other = (DuplicationParam) obj;</span>
-<span class="nc" id="L254">        return new EqualsBuilder()</span>
-<span class="nc" id="L255">            .append(this.withRoles, other.withRoles)</span>
-<span class="nc" id="L256">            .append(this.withTeamMembers, other.withTeamMembers)</span>
-<span class="nc" id="L257">            .append(this.withCardTypes, other.withCardTypes)</span>
-<span class="nc" id="L258">            .append(this.withCardsStructure, other.withCardsStructure)</span>
-<span class="nc" id="L259">            .append(this.withDeliverables, other.withDeliverables)</span>
-<span class="nc" id="L260">            .append(this.withStickyNotes, other.withStickyNotes)</span>
-<span class="nc" id="L261">            .append(this.withActivityFlow, other.withActivityFlow)</span>
-<span class="nc" id="L262">            .append(this.makeOnlyCardTypeReferences, other.makeOnlyCardTypeReferences)</span>
-<span class="nc" id="L263">            .isEquals();</span>
+<span class="nc" id="L255">        final DuplicationParam other = (DuplicationParam) obj;</span>
+<span class="nc" id="L256">        return new EqualsBuilder()</span>
+<span class="nc" id="L257">            .append(this.withRoles, other.withRoles)</span>
+<span class="nc" id="L258">            .append(this.withTeamMembers, other.withTeamMembers)</span>
+<span class="nc" id="L259">            .append(this.withCardTypes, other.withCardTypes)</span>
+<span class="nc" id="L260">            .append(this.withCardsStructure, other.withCardsStructure)</span>
+<span class="nc" id="L261">            .append(this.withDeliverables, other.withDeliverables)</span>
+<span class="nc" id="L262">            .append(this.withStickyNotes, other.withStickyNotes)</span>
+<span class="nc" id="L263">            .append(this.withActivityFlow, other.withActivityFlow)</span>
+<span class="nc" id="L264">            .append(this.makeOnlyCardTypeReferences, other.makeOnlyCardTypeReferences)</span>
+<span class="nc" id="L265">            .isEquals();</span>
     }
 
 }

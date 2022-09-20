@@ -6,6 +6,8 @@
  */
 package ch.colabproject.colab.api.ws.channel.model;
 
+import ch.colabproject.colab.generator.model.annotations.ExtractJavaDoc;
+
 /**
  * The channel to be used to transmit data to all online users.&lt;br&gt;
  * &lt;p&gt;
@@ -18,14 +20,15 @@ package ch.colabproject.colab.api.ws.channel.model;
  *
  * @author maxence
  */
-<span class="nc" id="L21">public class BroadcastChannel implements WebsocketChannel {</span>
+@ExtractJavaDoc
+<span class="nc" id="L24">public class BroadcastChannel implements WebsocketChannel {</span>
 
     private static final long serialVersionUID = 1L;
 
     @Override
     public int hashCode() {
-<span class="nc" id="L27">        int hash = 23;</span>
-<span class="nc" id="L28">        return hash;</span>
+<span class="nc" id="L30">        int hash = 23;</span>
+<span class="nc" id="L31">        return hash;</span>
     }
 
     /**
@@ -37,21 +40,21 @@ package ch.colabproject.colab.api.ws.channel.model;
      */
     @Override
     public boolean equals(Object obj) {
-<span class="nc bnc" id="L40" title="All 2 branches missed.">        if (this == obj) {</span>
-<span class="nc" id="L41">            return true;</span>
+<span class="nc bnc" id="L43" title="All 2 branches missed.">        if (this == obj) {</span>
+<span class="nc" id="L44">            return true;</span>
         }
-<span class="nc bnc" id="L43" title="All 2 branches missed.">        if (obj == null) {</span>
-<span class="nc" id="L44">            return false;</span>
-        }
-<span class="nc bnc" id="L46" title="All 2 branches missed.">        if (getClass() != obj.getClass()) {</span>
+<span class="nc bnc" id="L46" title="All 2 branches missed.">        if (obj == null) {</span>
 <span class="nc" id="L47">            return false;</span>
         }
-<span class="nc" id="L49">        return true;</span>
+<span class="nc bnc" id="L49" title="All 2 branches missed.">        if (getClass() != obj.getClass()) {</span>
+<span class="nc" id="L50">            return false;</span>
+        }
+<span class="nc" id="L52">        return true;</span>
     }
 
     @Override
     public String toString() {
-<span class="nc" id="L54">        return &quot;BroadcastChannel{}&quot;;</span>
+<span class="nc" id="L57">        return &quot;BroadcastChannel{}&quot;;</span>
     }
 
     /**
@@ -60,7 +63,7 @@ package ch.colabproject.colab.api.ws.channel.model;
      * @return the broadcast channel
      */
     public static BroadcastChannel build() {
-<span class="nc" id="L63">        return new BroadcastChannel();</span>
+<span class="nc" id="L66">        return new BroadcastChannel();</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

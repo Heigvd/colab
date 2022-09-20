@@ -6,11 +6,14 @@
  */
 package ch.colabproject.colab.api.ws.message;
 
+import ch.colabproject.colab.generator.model.annotations.ExtractJavaDoc;
+
 /**
  * Pong message
  *
  * @author maxence
  */
+@ExtractJavaDoc
 public class WsPong extends WsMessage {
 
     private static final long serialVersionUID = 1L;
@@ -18,13 +21,13 @@ public class WsPong extends WsMessage {
     /**
      * Default constructor
      */
-<span class="nc" id="L21">    public WsPong() {</span>
+<span class="nc" id="L24">    public WsPong() {</span>
         /* no-op */
-<span class="nc" id="L23">    }</span>
+<span class="nc" id="L26">    }</span>
 
     @Override
     public String toString() {
-<span class="nc" id="L27">        return &quot;WsPing&quot;;</span>
+<span class="nc" id="L30">        return &quot;WsPing&quot;;</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

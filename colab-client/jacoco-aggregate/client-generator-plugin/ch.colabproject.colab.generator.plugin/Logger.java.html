@@ -61,18 +61,32 @@ public class Logger {
 <span class="nc" id="L61">    }</span>
 
     /**
+     * Print a info message.
+     *
+     * @param msg the message
+     */
+    @SuppressWarnings(&quot;PMD.SystemPrintln&quot;)
+    public static void info(String msg) {
+<span class="nc bnc" id="L70" title="All 2 branches missed.">        if (log != null) {</span>
+<span class="nc" id="L71">            log.info(msg);</span>
+        } else {
+<span class="nc" id="L73">            System.out.println(msg);</span>
+        }
+<span class="nc" id="L75">    }</span>
+
+    /**
      * Print a warn message.
      *
      * @param msg the message
      */
     @SuppressWarnings(&quot;PMD.SystemPrintln&quot;)
     public static void warn(String msg) {
-<span class="nc bnc" id="L70" title="All 2 branches missed.">        if (log != null) {</span>
-<span class="nc" id="L71">            log.warn(msg);</span>
+<span class="nc bnc" id="L84" title="All 2 branches missed.">        if (log != null) {</span>
+<span class="nc" id="L85">            log.warn(msg);</span>
         } else {
-<span class="nc" id="L73">            System.err.println(msg);</span>
+<span class="nc" id="L87">            System.err.println(msg);</span>
         }
-<span class="nc" id="L75">    }</span>
+<span class="nc" id="L89">    }</span>
 
     /**
      * Print an error message.
@@ -81,11 +95,11 @@ public class Logger {
      */
     @SuppressWarnings(&quot;PMD.SystemPrintln&quot;)
     public static void error(String msg) {
-<span class="nc bnc" id="L84" title="All 2 branches missed.">        if (log != null) {</span>
-<span class="nc" id="L85">            log.error(msg);</span>
+<span class="nc bnc" id="L98" title="All 2 branches missed.">        if (log != null) {</span>
+<span class="nc" id="L99">            log.error(msg);</span>
         } else {
-<span class="nc" id="L87">            System.err.println(msg);</span>
+<span class="nc" id="L101">            System.err.println(msg);</span>
         }
-<span class="nc" id="L89">    }</span>
+<span class="nc" id="L103">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

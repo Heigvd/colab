@@ -161,7 +161,7 @@
 <a class="jxr_linenumber" name="L153" href="#L153">153</a>         imports.put(<span class="jxr_string">"void"</span>, <strong class="jxr_keyword">null</strong>); <em class="jxr_comment">// null means no import statement</em>
 <a class="jxr_linenumber" name="L154" href="#L154">154</a> 
 <a class="jxr_linenumber" name="L155" href="#L155">155</a>         String innerClasses = <strong class="jxr_keyword">this</strong>.restEndpoints.stream().map(controller -&gt; {
-<a class="jxr_linenumber" name="L156" href="#L156">156</a>             String javaCode = controller.generateJavaClient(
+<a class="jxr_linenumber" name="L156" href="#L156">156</a>         String javaCode = controller.generateJavaClient(
 <a class="jxr_linenumber" name="L157" href="#L157">157</a>                 imports,
 <a class="jxr_linenumber" name="L158" href="#L158">158</a>                 clientName,
 <a class="jxr_linenumber" name="L159" href="#L159">159</a>                 javadoc,

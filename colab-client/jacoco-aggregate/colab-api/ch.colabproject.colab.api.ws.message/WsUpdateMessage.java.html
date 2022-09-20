@@ -7,6 +7,7 @@
 package ch.colabproject.colab.api.ws.message;
 
 import ch.colabproject.colab.api.model.WithWebsocketChannels;
+import ch.colabproject.colab.generator.model.annotations.ExtractJavaDoc;
 import java.util.HashSet;
 import java.util.Set;
 import javax.validation.constraints.NotNull;
@@ -16,6 +17,7 @@ import javax.validation.constraints.NotNull;
  *
  * @author maxence
  */
+@ExtractJavaDoc
 public class WsUpdateMessage extends WsMessage {
 
     private static final long serialVersionUID = 1L;
@@ -35,16 +37,16 @@ public class WsUpdateMessage extends WsMessage {
     /**
      * Default constructor
      */
-<span class="nc" id="L38">    public WsUpdateMessage() {</span>
-<span class="nc" id="L39">        this.updated = new HashSet&lt;&gt;();</span>
-<span class="nc" id="L40">        this.deleted = new HashSet&lt;&gt;();</span>
-<span class="nc" id="L41">    }</span>
+<span class="nc" id="L40">    public WsUpdateMessage() {</span>
+<span class="nc" id="L41">        this.updated = new HashSet&lt;&gt;();</span>
+<span class="nc" id="L42">        this.deleted = new HashSet&lt;&gt;();</span>
+<span class="nc" id="L43">    }</span>
 
     /**
      * @return the list of new or updated objects to send to clients
      */
     public Set&lt;WithWebsocketChannels&gt; getUpdated() {
-<span class="nc" id="L47">        return updated;</span>
+<span class="nc" id="L49">        return updated;</span>
     }
 
     /**
@@ -53,8 +55,8 @@ public class WsUpdateMessage extends WsMessage {
      * @param updated list of updated elements
      */
     public void setUpdated(Set&lt;WithWebsocketChannels&gt; updated) {
-<span class="nc" id="L56">        this.updated = updated;</span>
-<span class="nc" id="L57">    }</span>
+<span class="nc" id="L58">        this.updated = updated;</span>
+<span class="nc" id="L59">    }</span>
 
     /**
      * Get the list of deleted objects
@@ -62,7 +64,7 @@ public class WsUpdateMessage extends WsMessage {
      * @return all deleted objects
      */
     public Set&lt;IndexEntry&gt; getDeleted() {
-<span class="nc" id="L65">        return deleted;</span>
+<span class="nc" id="L67">        return deleted;</span>
     }
 
     /**
@@ -71,12 +73,12 @@ public class WsUpdateMessage extends WsMessage {
      * @param deleted index
      */
     public void setDeleted(Set&lt;IndexEntry&gt; deleted) {
-<span class="nc" id="L74">        this.deleted = deleted;</span>
-<span class="nc" id="L75">    }</span>
+<span class="nc" id="L76">        this.deleted = deleted;</span>
+<span class="nc" id="L77">    }</span>
 
     @Override
     public String toString() {
-<span class="nc" id="L79">        return &quot;WsUpdateMessage{&quot; + &quot;updated=&quot; + updated + &quot;, deleted=&quot; + deleted + '}';</span>
+<span class="nc" id="L81">        return &quot;WsUpdateMessage{&quot; + &quot;updated=&quot; + updated + &quot;, deleted=&quot; + deleted + '}';</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

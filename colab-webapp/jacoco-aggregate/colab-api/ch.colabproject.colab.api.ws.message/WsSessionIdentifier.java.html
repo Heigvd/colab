@@ -6,6 +6,7 @@
  */
 package ch.colabproject.colab.api.ws.message;
 
+import ch.colabproject.colab.generator.model.annotations.ExtractJavaDoc;
 import javax.validation.constraints.NotNull;
 
 /**
@@ -13,6 +14,7 @@ import javax.validation.constraints.NotNull;
  *
  * @author maxence
  */
+@ExtractJavaDoc
 public class WsSessionIdentifier extends WsMessage {
 
     private static final long serialVersionUID = 1L;
@@ -26,24 +28,24 @@ public class WsSessionIdentifier extends WsMessage {
     /**
      * Default constructor
      */
-<span class="nc" id="L29">    public WsSessionIdentifier() {</span>
+<span class="nc" id="L31">    public WsSessionIdentifier() {</span>
         /* no-op */
-<span class="nc" id="L31">    }</span>
+<span class="nc" id="L33">    }</span>
 
     /**
      * create a message based on a websocket session
      *
      * @param sessionId client session id
      */
-<span class="nc" id="L38">    public WsSessionIdentifier(String sessionId) {</span>
-<span class="nc" id="L39">        this.sessionId = sessionId;</span>
-<span class="nc" id="L40">    }</span>
+<span class="nc" id="L40">    public WsSessionIdentifier(String sessionId) {</span>
+<span class="nc" id="L41">        this.sessionId = sessionId;</span>
+<span class="nc" id="L42">    }</span>
 
     /**
      * @return the socket ID to send to the client
      */
     public String getSessionId() {
-<span class="nc" id="L46">        return sessionId;</span>
+<span class="nc" id="L48">        return sessionId;</span>
     }
 
     /**
@@ -52,12 +54,12 @@ public class WsSessionIdentifier extends WsMessage {
      * @param sessionId session id
      */
     public void setSessionId(String sessionId) {
-<span class="nc" id="L55">        this.sessionId = sessionId;</span>
-<span class="nc" id="L56">    }</span>
+<span class="nc" id="L57">        this.sessionId = sessionId;</span>
+<span class="nc" id="L58">    }</span>
 
     @Override
     public String toString() {
-<span class="nc" id="L60">        return &quot;WsSessionIdentifier{&quot; + &quot;sessionId=&quot; + sessionId + '}';</span>
+<span class="nc" id="L62">        return &quot;WsSessionIdentifier{&quot; + &quot;sessionId=&quot; + sessionId + '}';</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

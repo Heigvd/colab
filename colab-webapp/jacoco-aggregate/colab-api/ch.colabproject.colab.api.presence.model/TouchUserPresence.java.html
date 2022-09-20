@@ -6,6 +6,7 @@
  */
 package ch.colabproject.colab.api.presence.model;
 
+import ch.colabproject.colab.generator.model.annotations.ExtractJavaDoc;
 import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
 import java.io.Serializable;
 import javax.validation.constraints.NotNull;
@@ -14,7 +15,8 @@ import javax.validation.constraints.NotNull;
  *
  * @author maxence
  */
-<span class="nc" id="L17">public class TouchUserPresence implements Serializable {</span>
+@ExtractJavaDoc
+<span class="nc" id="L19">public class TouchUserPresence implements Serializable {</span>
 
     /**
      * Id of the project
@@ -54,7 +56,7 @@ import javax.validation.constraints.NotNull;
      * @return the value of selectionStart
      */
     public Long getSelectionStart() {
-<span class="nc" id="L57">        return selectionStart;</span>
+<span class="nc" id="L59">        return selectionStart;</span>
     }
 
     /**
@@ -63,8 +65,8 @@ import javax.validation.constraints.NotNull;
      * @param selectionStart new value of selectionStart
      */
     public void setSelectionStart(Long selectionStart) {
-<span class="nc" id="L66">        this.selectionStart = selectionStart;</span>
-<span class="nc" id="L67">    }</span>
+<span class="nc" id="L68">        this.selectionStart = selectionStart;</span>
+<span class="nc" id="L69">    }</span>
 
     /**
      * Get the value of selectionEnd
@@ -72,7 +74,7 @@ import javax.validation.constraints.NotNull;
      * @return the value of selectionEnd
      */
     public Long getSelectionEnd() {
-<span class="nc" id="L75">        return selectionEnd;</span>
+<span class="nc" id="L77">        return selectionEnd;</span>
     }
 
     /**
@@ -81,8 +83,8 @@ import javax.validation.constraints.NotNull;
      * @param selectionEnd new value of selectionEnd
      */
     public void setSelectionEnd(Long selectionEnd) {
-<span class="nc" id="L84">        this.selectionEnd = selectionEnd;</span>
-<span class="nc" id="L85">    }</span>
+<span class="nc" id="L86">        this.selectionEnd = selectionEnd;</span>
+<span class="nc" id="L87">    }</span>
 
     /**
      * Get the value of cardId
@@ -90,7 +92,7 @@ import javax.validation.constraints.NotNull;
      * @return the value of cardId
      */
     public Long getCardId() {
-<span class="nc" id="L93">        return cardId;</span>
+<span class="nc" id="L95">        return cardId;</span>
     }
 
     /**
@@ -99,8 +101,8 @@ import javax.validation.constraints.NotNull;
      * @param cardId new value of cardId
      */
     public void setCardId(Long cardId) {
-<span class="nc" id="L102">        this.cardId = cardId;</span>
-<span class="nc" id="L103">    }</span>
+<span class="nc" id="L104">        this.cardId = cardId;</span>
+<span class="nc" id="L105">    }</span>
 
     /**
      * Get the value of documentId
@@ -108,7 +110,7 @@ import javax.validation.constraints.NotNull;
      * @return the value of documentId
      */
     public Long getDocumentId() {
-<span class="nc" id="L111">        return documentId;</span>
+<span class="nc" id="L113">        return documentId;</span>
     }
 
     /**
@@ -117,8 +119,8 @@ import javax.validation.constraints.NotNull;
      * @param documentId new value of documentId
      */
     public void setDocumentId(Long documentId) {
-<span class="nc" id="L120">        this.documentId = documentId;</span>
-<span class="nc" id="L121">    }</span>
+<span class="nc" id="L122">        this.documentId = documentId;</span>
+<span class="nc" id="L123">    }</span>
 
     /**
      * Get the value of cardContentId
@@ -126,7 +128,7 @@ import javax.validation.constraints.NotNull;
      * @return the value of cardContentId
      */
     public Long getCardContentId() {
-<span class="nc" id="L129">        return cardContentId;</span>
+<span class="nc" id="L131">        return cardContentId;</span>
     }
 
     /**
@@ -135,8 +137,8 @@ import javax.validation.constraints.NotNull;
      * @param cardContentId new value of cardContentId
      */
     public void setCardContentId(Long cardContentId) {
-<span class="nc" id="L138">        this.cardContentId = cardContentId;</span>
-<span class="nc" id="L139">    }</span>
+<span class="nc" id="L140">        this.cardContentId = cardContentId;</span>
+<span class="nc" id="L141">    }</span>
 
     /**
      * Get the value of projectId
@@ -144,7 +146,7 @@ import javax.validation.constraints.NotNull;
      * @return the value of projectId
      */
     public Long getProjectId() {
-<span class="nc" id="L147">        return projectId;</span>
+<span class="nc" id="L149">        return projectId;</span>
     }
 
     /**
@@ -153,8 +155,8 @@ import javax.validation.constraints.NotNull;
      * @param projectId new value of projectId
      */
     public void setProjectId(Long projectId) {
-<span class="nc" id="L156">        this.projectId = projectId;</span>
-<span class="nc" id="L157">    }</span>
+<span class="nc" id="L158">        this.projectId = projectId;</span>
+<span class="nc" id="L159">    }</span>
 
     /**
      * Get the value of wsSessionId
@@ -162,7 +164,7 @@ import javax.validation.constraints.NotNull;
      * @return the value of wsSessionId, never null
      */
     public String getWsSessionId() {
-<span class="nc" id="L165">        return wsSessionId;</span>
+<span class="nc" id="L167">        return wsSessionId;</span>
     }
 
     /**
@@ -173,11 +175,11 @@ import javax.validation.constraints.NotNull;
      * @throws HttpErrorMessage if wsSessionId is null (dataIntegrityFailure)
      */
     public void setWsSessionId(String wsSessionId) {
-<span class="nc bnc" id="L176" title="All 2 branches missed.">        if (wsSessionId == null) {</span>
-<span class="nc" id="L177">            throw HttpErrorMessage.dataIntegrityFailure();</span>
+<span class="nc bnc" id="L178" title="All 2 branches missed.">        if (wsSessionId == null) {</span>
+<span class="nc" id="L179">            throw HttpErrorMessage.dataIntegrityFailure();</span>
         }
-<span class="nc" id="L179">        this.wsSessionId = wsSessionId;</span>
-<span class="nc" id="L180">    }</span>
+<span class="nc" id="L181">        this.wsSessionId = wsSessionId;</span>
+<span class="nc" id="L182">    }</span>
 
     /**
      * Get the context
@@ -185,7 +187,7 @@ import javax.validation.constraints.NotNull;
      * @return the context
      */
     public String getContext() {
-<span class="nc" id="L188">        return context;</span>
+<span class="nc" id="L190">        return context;</span>
     }
 
     /**
@@ -194,8 +196,8 @@ import javax.validation.constraints.NotNull;
      * @param context new context
      */
     public void setContext(String context) {
-<span class="nc" id="L197">        this.context = context;</span>
-<span class="nc" id="L198">    }</span>
+<span class="nc" id="L199">        this.context = context;</span>
+<span class="nc" id="L200">    }</span>
 
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

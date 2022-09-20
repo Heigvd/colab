@@ -7,10 +7,12 @@
 package ch.colabproject.colab.generator.model.tools;
 
 
+import ch.colabproject.colab.generator.model.annotations.ExtractJavaDoc;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Writer;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Stream;
@@ -39,12 +41,12 @@ import javax.ws.rs.Path;
  */
 @SupportedSourceVersion(SourceVersion.RELEASE_11)
 @SupportedAnnotationTypes({&quot;javax.ws.rs.Path&quot;, &quot;javax.persistence.Entity&quot;})
-<span class="nc" id="L42">public class JavaDocExtractor extends AbstractProcessor {</span>
+<span class="nc" id="L44">public class JavaDocExtractor extends AbstractProcessor {</span>
 
     /**
      * Store
      */
-<span class="nc" id="L47">    private final Map&lt;String, ClassDoc&gt; data = new HashMap&lt;&gt;();</span>
+<span class="nc" id="L49">    private final Map&lt;String, ClassDoc&gt; data = new HashMap&lt;&gt;();</span>
 
     /**
      *
@@ -53,11 +55,11 @@ import javax.ws.rs.Path;
      * @return the javadoc
      */
     private String getJavaDoc(Element element) {
-<span class="nc" id="L56">        String docComment = processingEnv.getElementUtils().getDocComment(element);</span>
-<span class="nc bnc" id="L57" title="All 2 branches missed.">        if (docComment != null) {</span>
-<span class="nc" id="L58">            return docComment.replaceAll(&quot;@author[^\n]*\n&quot;, &quot;&quot;);</span>
+<span class="nc" id="L58">        String docComment = processingEnv.getElementUtils().getDocComment(element);</span>
+<span class="nc bnc" id="L59" title="All 2 branches missed.">        if (docComment != null) {</span>
+<span class="nc" id="L60">            return docComment.replaceAll(&quot;@author[^\n]*\n&quot;, &quot;&quot;);</span>
         } else {
-<span class="nc" id="L60">            return null;</span>
+<span class="nc" id="L62">            return null;</span>
         }
     }
 
@@ -69,36 +71,36 @@ import javax.ws.rs.Path;
      * @return the classDoc to use for {@code element}
      */
     private ClassDoc getClassDoc(Element element) {
-<span class="nc bnc" id="L72" title="All 2 branches missed.">        if (element instanceof TypeElement) {</span>
-<span class="nc" id="L73">            final TypeElement typeElement = (TypeElement) element;</span>
-<span class="nc" id="L74">            final PackageElement packageElement</span>
-<span class="nc" id="L75">                = (PackageElement) typeElement.getEnclosingElement();</span>
-<span class="nc" id="L76">            String packageName = packageElement.getQualifiedName().toString();</span>
-<span class="nc" id="L77">            String className = typeElement.getSimpleName().toString();</span>
+<span class="nc bnc" id="L74" title="All 2 branches missed.">        if (element instanceof TypeElement) {</span>
+<span class="nc" id="L75">            final TypeElement typeElement = (TypeElement) element;</span>
+<span class="nc" id="L76">            final PackageElement packageElement</span>
+<span class="nc" id="L77">                = (PackageElement) typeElement.getEnclosingElement();</span>
+<span class="nc" id="L78">            String packageName = packageElement.getQualifiedName().toString();</span>
+<span class="nc" id="L79">            String className = typeElement.getSimpleName().toString();</span>
 
-<span class="nc" id="L79">            String fullName = packageName + &quot;.&quot; + className;</span>
+<span class="nc" id="L81">            String fullName = packageName + &quot;.&quot; + className;</span>
 
-<span class="nc bnc" id="L81" title="All 2 branches missed.">            if (!this.data.containsKey(fullName)) {</span>
-<span class="nc" id="L82">                String javadoc = this.getJavaDoc(element);</span>
+<span class="nc bnc" id="L83" title="All 2 branches missed.">            if (!this.data.containsKey(fullName)) {</span>
+<span class="nc" id="L84">                String javadoc = this.getJavaDoc(element);</span>
 
-<span class="nc" id="L84">                ClassDoc classDoc = new ClassDoc();</span>
+<span class="nc" id="L86">                ClassDoc classDoc = new ClassDoc();</span>
 
-<span class="nc" id="L86">                classDoc.setDoc(javadoc);</span>
-<span class="nc" id="L87">                classDoc.setPackageName(packageName);</span>
-<span class="nc" id="L88">                classDoc.setClassName(className);</span>
+<span class="nc" id="L88">                classDoc.setDoc(javadoc);</span>
+<span class="nc" id="L89">                classDoc.setPackageName(packageName);</span>
+<span class="nc" id="L90">                classDoc.setClassName(className);</span>
 
-<span class="nc" id="L90">                this.data.put(fullName, classDoc);</span>
+<span class="nc" id="L92">                this.data.put(fullName, classDoc);</span>
             }
 
-<span class="nc" id="L93">            return this.data.get(fullName);</span>
+<span class="nc" id="L95">            return this.data.get(fullName);</span>
 
-<span class="nc bnc" id="L95" title="All 2 branches missed.">        } else if (element != null) {</span>
-<span class="nc" id="L96">            return getClassDoc(element.getEnclosingElement());</span>
+<span class="nc bnc" id="L97" title="All 2 branches missed.">        } else if (element != null) {</span>
+<span class="nc" id="L98">            return getClassDoc(element.getEnclosingElement());</span>
         } else {
-<span class="nc" id="L98">            processingEnv.getMessager().printMessage(</span>
+<span class="nc" id="L100">            processingEnv.getMessager().printMessage(</span>
                 Kind.ERROR,
                 &quot;Error while extracting class javadoc&quot;);
-<span class="nc" id="L101">            return null;</span>
+<span class="nc" id="L103">            return null;</span>
         }
     }
 
@@ -107,76 +109,81 @@ import javax.ws.rs.Path;
         /*
          * Process REST endpoints
          */
-<span class="nc bnc" id="L110" title="All 2 branches missed.">        for (final Element element : roundEnv.getElementsAnnotatedWith(Path.class)) {</span>
-<span class="nc" id="L111">            final ClassDoc classDoc = this.getClassDoc(element);</span>
-<span class="nc" id="L112">            final Map&lt;String, String&gt; methods = classDoc.getMethods();</span>
+<span class="nc bnc" id="L112" title="All 2 branches missed.">        for (final Element element : roundEnv.getElementsAnnotatedWith(Path.class)) {</span>
+<span class="nc" id="L113">            final ClassDoc classDoc = this.getClassDoc(element);</span>
+<span class="nc" id="L114">            final Map&lt;String, String&gt; methods = classDoc.getMethods();</span>
 
-<span class="nc bnc" id="L114" title="All 2 branches missed.">            if (element instanceof TypeElement) {</span>
-<span class="nc" id="L115">                final TypeElement typeElement = (TypeElement) element;</span>
-<span class="nc" id="L116">                typeElement.getEnclosedElements().stream().flatMap(elem -&gt; {</span>
-<span class="nc bnc" id="L117" title="All 2 branches missed.">                    if (elem instanceof ExecutableElement) {</span>
-<span class="nc" id="L118">                        return Stream.of((ExecutableElement) elem);</span>
+<span class="nc bnc" id="L116" title="All 2 branches missed.">            if (element instanceof TypeElement) {</span>
+<span class="nc" id="L117">                final TypeElement typeElement = (TypeElement) element;</span>
+<span class="nc" id="L118">                typeElement.getEnclosedElements().stream().flatMap(elem -&gt; {</span>
+<span class="nc bnc" id="L119" title="All 2 branches missed.">                    if (elem instanceof ExecutableElement) {</span>
+<span class="nc" id="L120">                        return Stream.of((ExecutableElement) elem);</span>
                     } else {
-<span class="nc" id="L120">                        return Stream.of();</span>
+<span class="nc" id="L122">                        return Stream.of();</span>
                     }
-<span class="nc" id="L122">                }).forEach(methodElement -&gt; {</span>
-<span class="nc" id="L123">                    String name = methodElement.getSimpleName().toString();</span>
-<span class="nc bnc" id="L124" title="All 2 branches missed.">                    if (methods.containsKey(name)) {</span>
-<span class="nc" id="L125">                        processingEnv.getMessager().printMessage(</span>
+<span class="nc" id="L124">                }).forEach(methodElement -&gt; {</span>
+<span class="nc" id="L125">                    String name = methodElement.getSimpleName().toString();</span>
+<span class="nc bnc" id="L126" title="All 2 branches missed.">                    if (methods.containsKey(name)) {</span>
+<span class="nc" id="L127">                        processingEnv.getMessager().printMessage(</span>
                             Kind.ERROR,
-<span class="nc" id="L127">                            &quot;Duplicate methods: &quot; + classDoc.getFullName() + &quot;::&quot; + name);</span>
+<span class="nc" id="L129">                            &quot;Duplicate methods: &quot; + classDoc.getFullName() + &quot;::&quot; + name);</span>
                     } else {
-<span class="nc" id="L129">                        methods.put(name, getJavaDoc(methodElement));</span>
+<span class="nc" id="L131">                        methods.put(name, getJavaDoc(methodElement));</span>
                     }
-<span class="nc" id="L131">                });</span>
+<span class="nc" id="L133">                });</span>
             }
-<span class="nc" id="L133">        }</span>
+<span class="nc" id="L135">        }</span>
 
         /*
-         * Process @Entity
+         * Process @Entity &amp; @ExtractJavadoc
          */
-<span class="nc bnc" id="L138" title="All 2 branches missed.">        for (final Element element : roundEnv.getElementsAnnotatedWith(Entity.class)) {</span>
-<span class="nc bnc" id="L139" title="All 2 branches missed.">            if (element instanceof TypeElement) {</span>
-<span class="nc" id="L140">                final ClassDoc classDoc = this.getClassDoc(element);</span>
-<span class="nc" id="L141">                final Map&lt;String, String&gt; fields = classDoc.getFields();</span>
-<span class="nc" id="L142">                element.getEnclosedElements().stream().flatMap(elem -&gt; {</span>
-<span class="nc bnc" id="L143" title="All 2 branches missed.">                    if (elem instanceof VariableElement) {</span>
-<span class="nc" id="L144">                        return Stream.of((VariableElement) elem);</span>
-                    } else {
-<span class="nc" id="L146">                        return Stream.of();</span>
-                    }
-<span class="nc" id="L148">                }).forEach(methodElement -&gt; {</span>
-<span class="nc" id="L149">                    String name = methodElement.getSimpleName().toString();</span>
-<span class="nc bnc" id="L150" title="All 2 branches missed.">                    if (fields.containsKey(name)) {</span>
-<span class="nc" id="L151">                        processingEnv.getMessager().printMessage(</span>
-                            Kind.ERROR,
-<span class="nc" id="L153">                            &quot;Duplicate field: &quot; + classDoc.getFullName() + &quot;::&quot; + name);</span>
-                    } else {
-<span class="nc" id="L155">                        fields.put(name, getJavaDoc(methodElement));</span>
-                    }
-<span class="nc" id="L157">                });</span>
-            }
-<span class="nc" id="L159">        }</span>
 
-<span class="nc bnc" id="L161" title="All 2 branches missed.">        if (roundEnv.processingOver()) {</span>
-<span class="nc" id="L162">            processingEnv.getMessager().printMessage(Kind.MANDATORY_WARNING, &quot;WRITE IT&quot;);</span>
+<span class="nc" id="L141">        Set&lt;Element&gt; elements = new HashSet&lt;&gt;();</span>
+<span class="nc" id="L142">        elements.addAll(roundEnv.getElementsAnnotatedWith(Entity.class));</span>
+<span class="nc" id="L143">        elements.addAll(roundEnv.getElementsAnnotatedWith(ExtractJavaDoc.class));</span>
+
+<span class="nc bnc" id="L145" title="All 2 branches missed.">        for (final Element element : elements) {</span>
+<span class="nc bnc" id="L146" title="All 2 branches missed.">            if (element instanceof TypeElement) {</span>
+<span class="nc" id="L147">                final ClassDoc classDoc = this.getClassDoc(element);</span>
+<span class="nc" id="L148">                final Map&lt;String, String&gt; fields = classDoc.getFields();</span>
+<span class="nc" id="L149">                element.getEnclosedElements().stream().flatMap(elem -&gt; {</span>
+<span class="nc bnc" id="L150" title="All 2 branches missed.">                    if (elem instanceof VariableElement) {</span>
+<span class="nc" id="L151">                        return Stream.of((VariableElement) elem);</span>
+                    } else {
+<span class="nc" id="L153">                        return Stream.of();</span>
+                    }
+<span class="nc" id="L155">                }).forEach(methodElement -&gt; {</span>
+<span class="nc" id="L156">                    String name = methodElement.getSimpleName().toString();</span>
+<span class="nc bnc" id="L157" title="All 2 branches missed.">                    if (fields.containsKey(name)) {</span>
+<span class="nc" id="L158">                        processingEnv.getMessager().printMessage(</span>
+                            Kind.ERROR,
+<span class="nc" id="L160">                            &quot;Duplicate field: &quot; + classDoc.getFullName() + &quot;::&quot; + name);</span>
+                    } else {
+<span class="nc" id="L162">                        fields.put(name, getJavaDoc(methodElement));</span>
+                    }
+<span class="nc" id="L164">                });</span>
+            }
+<span class="nc" id="L166">        }</span>
+
+<span class="nc bnc" id="L168" title="All 2 branches missed.">        if (roundEnv.processingOver()) {</span>
+<span class="nc" id="L169">            processingEnv.getMessager().printMessage(Kind.NOTE, &quot;WRITE IT&quot;);</span>
 
             try {
-<span class="nc" id="L165">                final FileObject fileObject = processingEnv.getFiler().createResource(</span>
+<span class="nc" id="L172">                final FileObject fileObject = processingEnv.getFiler().createResource(</span>
                     StandardLocation.SOURCE_OUTPUT,
                     &quot;ch.colabproject.colab.generator.json&quot;, &quot;javadoc.json&quot;);
 
-<span class="nc" id="L169">                try (Writer writer = fileObject.openWriter()) {</span>
-<span class="nc" id="L170">                    Jsonb jsonb = JsonbProvider.getJsonb();</span>
-<span class="nc" id="L171">                    writer.append(jsonb.toJson(this.data));</span>
+<span class="nc" id="L176">                try (Writer writer = fileObject.openWriter()) {</span>
+<span class="nc" id="L177">                    Jsonb jsonb = JsonbProvider.getJsonb();</span>
+<span class="nc" id="L178">                    writer.append(jsonb.toJson(this.data));</span>
                 }
-<span class="nc" id="L173">            } catch (IOException ex) {</span>
-<span class="nc" id="L174">                processingEnv.getMessager().printMessage(</span>
+<span class="nc" id="L180">            } catch (IOException ex) {</span>
+<span class="nc" id="L181">                processingEnv.getMessager().printMessage(</span>
                     Kind.ERROR,
                     &quot;Error while writing javadoc to JSON file&quot;);
-<span class="nc" id="L177">            }</span>
+<span class="nc" id="L184">            }</span>
         }
-<span class="nc" id="L179">        return true;</span>
+<span class="nc" id="L186">        return true;</span>
     }
 
     /**
@@ -185,12 +192,12 @@ import javax.ws.rs.Path;
      * @return class doc maps by full class names
      */
     public static Map&lt;String, ClassDoc&gt; loadJavaDocFromJson() {
-<span class="fc" id="L188">        InputStream resourceAsStream = JavaDocExtractor.class</span>
-<span class="fc" id="L189">            .getClassLoader()</span>
-<span class="fc" id="L190">            .getResourceAsStream(&quot;ch/colabproject/colab/generator/json/javadoc.json&quot;);</span>
-<span class="fc" id="L191">        return JsonbProvider.getJsonb().fromJson(resourceAsStream,</span>
-<span class="fc" id="L192">            (new TypeLiteral&lt;HashMap&lt;String, ClassDoc&gt;&gt;() {</span>
-<span class="fc" id="L193">            }).getType());</span>
+<span class="fc" id="L195">        InputStream resourceAsStream = JavaDocExtractor.class</span>
+<span class="fc" id="L196">            .getClassLoader()</span>
+<span class="fc" id="L197">            .getResourceAsStream(&quot;ch/colabproject/colab/generator/json/javadoc.json&quot;);</span>
+<span class="fc" id="L198">        return JsonbProvider.getJsonb().fromJson(resourceAsStream,</span>
+<span class="fc" id="L199">            (new TypeLiteral&lt;HashMap&lt;String, ClassDoc&gt;&gt;() {</span>
+<span class="fc" id="L200">            }).getType());</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

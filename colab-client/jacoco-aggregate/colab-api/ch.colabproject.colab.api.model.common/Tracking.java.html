@@ -6,6 +6,7 @@
  */
 package ch.colabproject.colab.api.model.common;
 
+import ch.colabproject.colab.generator.model.annotations.ExtractJavaDoc;
 import ch.colabproject.colab.generator.model.interfaces.WithJsonDiscriminator;
 import ch.colabproject.colab.generator.model.tools.DateSerDe;
 import java.time.OffsetDateTime;
@@ -20,7 +21,8 @@ import javax.validation.constraints.Size;
  * @author maxence
  */
 @Embeddable
-<span class="nc" id="L23">public class Tracking implements WithJsonDiscriminator {</span>
+@ExtractJavaDoc
+<span class="nc" id="L25">public class Tracking implements WithJsonDiscriminator {</span>
 
     private static final long serialVersionUID = 1L;
 
@@ -56,7 +58,7 @@ import javax.validation.constraints.Size;
      * @return creation date
      */
     public OffsetDateTime getCreationDate() {
-<span class="nc" id="L59">        return creationDate;</span>
+<span class="nc" id="L61">        return creationDate;</span>
     }
 
     /**
@@ -65,8 +67,8 @@ import javax.validation.constraints.Size;
      * @param creationDate creation date
      */
     public void setCreationDate(OffsetDateTime creationDate) {
-<span class="nc" id="L68">        this.creationDate = creationDate;</span>
-<span class="nc" id="L69">    }</span>
+<span class="nc" id="L70">        this.creationDate = creationDate;</span>
+<span class="nc" id="L71">    }</span>
 
     /**
      * get created by
@@ -74,7 +76,7 @@ import javax.validation.constraints.Size;
      * @return created by
      */
     public String getCreatedBy() {
-<span class="nc" id="L77">        return createdBy;</span>
+<span class="nc" id="L79">        return createdBy;</span>
     }
 
     /**
@@ -83,8 +85,8 @@ import javax.validation.constraints.Size;
      * @param createdBy created by value
      */
     public void setCreatedBy(String createdBy) {
-<span class="nc" id="L86">        this.createdBy = createdBy;</span>
-<span class="nc" id="L87">    }</span>
+<span class="nc" id="L88">        this.createdBy = createdBy;</span>
+<span class="nc" id="L89">    }</span>
 
     /**
      * get modification date
@@ -92,7 +94,7 @@ import javax.validation.constraints.Size;
      * @return date of most recent modification
      */
     public OffsetDateTime getModificationDate() {
-<span class="nc" id="L95">        return modificationDate;</span>
+<span class="nc" id="L97">        return modificationDate;</span>
     }
 
     /**
@@ -101,8 +103,8 @@ import javax.validation.constraints.Size;
      * @param modificationDate the date
      */
     public void setModificationDate(OffsetDateTime modificationDate) {
-<span class="nc" id="L104">        this.modificationDate = modificationDate;</span>
-<span class="nc" id="L105">    }</span>
+<span class="nc" id="L106">        this.modificationDate = modificationDate;</span>
+<span class="nc" id="L107">    }</span>
 
     /**
      * Get name of last user who touch the entity
@@ -110,7 +112,7 @@ import javax.validation.constraints.Size;
      * @return username
      */
     public String getModifiedBy() {
-<span class="nc" id="L113">        return modifiedBy;</span>
+<span class="nc" id="L115">        return modifiedBy;</span>
     }
 
     /**
@@ -119,7 +121,7 @@ import javax.validation.constraints.Size;
      * @param modifiedBy username
      */
     public void setModifiedBy(String modifiedBy) {
-<span class="nc" id="L122">        this.modifiedBy = modifiedBy;</span>
-<span class="nc" id="L123">    }</span>
+<span class="nc" id="L124">        this.modifiedBy = modifiedBy;</span>
+<span class="nc" id="L125">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

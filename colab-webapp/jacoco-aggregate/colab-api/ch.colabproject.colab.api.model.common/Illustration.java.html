@@ -6,6 +6,7 @@
  */
 package ch.colabproject.colab.api.model.common;
 
+import ch.colabproject.colab.generator.model.annotations.ExtractJavaDoc;
 import ch.colabproject.colab.generator.model.interfaces.WithJsonDiscriminator;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
@@ -24,7 +25,8 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
  * @author sandra
  */
 @Embeddable
-<span class="nc" id="L27">public class Illustration implements WithJsonDiscriminator {</span>
+@ExtractJavaDoc
+<span class="nc" id="L29">public class Illustration implements WithJsonDiscriminator {</span>
 
     private static final long serialVersionUID = 1L;
 
@@ -35,7 +37,7 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
     /**
      * Which library of icons contains the key
      */
-<span class="nc" id="L38">    @Column(length = 128)</span>
+<span class="nc" id="L40">    @Column(length = 128)</span>
     @Enumerated(value = EnumType.STRING)
     @NotNull
     private IconLibrary iconLibrary = IconLibrary.FONT_AWESOME_SOLID;
@@ -62,43 +64,43 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
      * @return which library of icons contains the key
      */
     public IconLibrary getIconLibrary() {
-<span class="nc" id="L65">        return iconLibrary;</span>
+<span class="nc" id="L67">        return iconLibrary;</span>
     }
 
     /**
      * @param iconLibrary which library of icons contains the key
      */
     public void setIconLibrary(IconLibrary iconLibrary) {
-<span class="nc" id="L72">        this.iconLibrary = iconLibrary;</span>
-<span class="nc" id="L73">    }</span>
+<span class="nc" id="L74">        this.iconLibrary = iconLibrary;</span>
+<span class="nc" id="L75">    }</span>
 
     /**
      * @return the key of the icon within the library of icons
      */
     public String getIconKey() {
-<span class="nc" id="L79">        return iconKey;</span>
+<span class="nc" id="L81">        return iconKey;</span>
     }
 
     /**
      * @param iconKey the key of the icon within the library of icons
      */
     public void setIconKey(String iconKey) {
-<span class="nc" id="L86">        this.iconKey = iconKey;</span>
-<span class="nc" id="L87">    }</span>
+<span class="nc" id="L88">        this.iconKey = iconKey;</span>
+<span class="nc" id="L89">    }</span>
 
     /**
      * @return the background color to set behind the icon
      */
     public String getIconBkgdColor() {
-<span class="nc" id="L93">        return iconBkgdColor;</span>
+<span class="nc" id="L95">        return iconBkgdColor;</span>
     }
 
     /**
      * @param iconBkgdColor the background color to set behind the icon
      */
     public void setIconBkgdColor(String iconBkgdColor) {
-<span class="nc" id="L100">        this.iconBkgdColor = iconBkgdColor;</span>
-<span class="nc" id="L101">    }</span>
+<span class="nc" id="L102">        this.iconBkgdColor = iconBkgdColor;</span>
+<span class="nc" id="L103">    }</span>
 
     // ---------------------------------------------------------------------------------------------
     // concerning the whole class
@@ -106,35 +108,35 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 
     @Override
     public int hashCode() {
-<span class="nc" id="L109">        return new HashCodeBuilder()</span>
-<span class="nc" id="L110">            .append(this.iconLibrary)</span>
-<span class="nc" id="L111">            .append(this.iconKey)</span>
-<span class="nc" id="L112">            .append(this.iconBkgdColor)</span>
-<span class="nc" id="L113">            .toHashCode();</span>
+<span class="nc" id="L111">        return new HashCodeBuilder()</span>
+<span class="nc" id="L112">            .append(this.iconLibrary)</span>
+<span class="nc" id="L113">            .append(this.iconKey)</span>
+<span class="nc" id="L114">            .append(this.iconBkgdColor)</span>
+<span class="nc" id="L115">            .toHashCode();</span>
     }
 
     @Override
     public boolean equals(Object obj) {
-<span class="nc bnc" id="L118" title="All 2 branches missed.">        if (this == obj) {</span>
-<span class="nc" id="L119">            return true;</span>
+<span class="nc bnc" id="L120" title="All 2 branches missed.">        if (this == obj) {</span>
+<span class="nc" id="L121">            return true;</span>
         }
-<span class="nc bnc" id="L121" title="All 2 branches missed.">        if (obj == null) {</span>
-<span class="nc" id="L122">            return false;</span>
+<span class="nc bnc" id="L123" title="All 2 branches missed.">        if (obj == null) {</span>
+<span class="nc" id="L124">            return false;</span>
         }
-<span class="nc bnc" id="L124" title="All 2 branches missed.">        if (getClass() != obj.getClass()) {</span>
-<span class="nc" id="L125">            return false;</span>
+<span class="nc bnc" id="L126" title="All 2 branches missed.">        if (getClass() != obj.getClass()) {</span>
+<span class="nc" id="L127">            return false;</span>
         }
-<span class="nc" id="L127">        final Illustration other = (Illustration) obj;</span>
-<span class="nc" id="L128">        return new EqualsBuilder()</span>
-<span class="nc" id="L129">            .append(this.iconLibrary, other.iconLibrary)</span>
-<span class="nc" id="L130">            .append(this.iconKey, other.iconKey)</span>
-<span class="nc" id="L131">            .append(this.iconBkgdColor, other.iconBkgdColor)</span>
-<span class="nc" id="L132">            .isEquals();</span>
+<span class="nc" id="L129">        final Illustration other = (Illustration) obj;</span>
+<span class="nc" id="L130">        return new EqualsBuilder()</span>
+<span class="nc" id="L131">            .append(this.iconLibrary, other.iconLibrary)</span>
+<span class="nc" id="L132">            .append(this.iconKey, other.iconKey)</span>
+<span class="nc" id="L133">            .append(this.iconBkgdColor, other.iconBkgdColor)</span>
+<span class="nc" id="L134">            .isEquals();</span>
     }
 
     @Override
     public String toString() {
-<span class="nc" id="L137">        return &quot;Illustration{&quot; + &quot; iconLibrary=&quot; + iconLibrary + &quot;, iconKey=&quot; + iconKey</span>
+<span class="nc" id="L139">        return &quot;Illustration{&quot; + &quot; iconLibrary=&quot; + iconLibrary + &quot;, iconKey=&quot; + iconKey</span>
             + &quot;, iconBkgdColor=&quot; + iconBkgdColor + &quot; }&quot;;
     }
 

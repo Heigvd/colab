@@ -6,6 +6,7 @@
  */
 package ch.colabproject.colab.api.model.user;
 
+import ch.colabproject.colab.generator.model.annotations.ExtractJavaDoc;
 import ch.colabproject.colab.generator.model.interfaces.WithJsonDiscriminator;
 import javax.validation.constraints.NotNull;
 
@@ -14,7 +15,8 @@ import javax.validation.constraints.NotNull;
  *
  * @author maxence
  */
-<span class="nc" id="L17">public class SignUpInfo implements WithJsonDiscriminator {</span>
+@ExtractJavaDoc
+<span class="nc" id="L19">public class SignUpInfo implements WithJsonDiscriminator {</span>
 
     private static final long serialVersionUID = 1L;
 
@@ -52,7 +54,7 @@ import javax.validation.constraints.NotNull;
      * @return the email
      */
     public String getEmail() {
-<span class="nc" id="L55">        return email;</span>
+<span class="nc" id="L57">        return email;</span>
     }
 
     /**
@@ -61,14 +63,14 @@ import javax.validation.constraints.NotNull;
      * @param email email
      */
     public void setEmail(String email) {
-<span class="nc" id="L64">        this.email = email;</span>
-<span class="nc" id="L65">    }</span>
+<span class="nc" id="L66">        this.email = email;</span>
+<span class="nc" id="L67">    }</span>
 
     /**
      * @return username
      */
     public String getUsername() {
-<span class="nc" id="L71">        return username;</span>
+<span class="nc" id="L73">        return username;</span>
     }
 
     /**
@@ -77,14 +79,14 @@ import javax.validation.constraints.NotNull;
      * @param username username
      */
     public void setUsername(String username) {
-<span class="nc" id="L80">        this.username = username;</span>
-<span class="nc" id="L81">    }</span>
+<span class="nc" id="L82">        this.username = username;</span>
+<span class="nc" id="L83">    }</span>
 
     /**
      * @return hash method
      */
     public HashMethod getHashMethod() {
-<span class="nc" id="L87">        return hashMethod;</span>
+<span class="nc" id="L89">        return hashMethod;</span>
     }
 
     /**
@@ -93,15 +95,15 @@ import javax.validation.constraints.NotNull;
      * @param hashMethod hashMethod
      */
     public void setHashMethod(HashMethod hashMethod) {
-<span class="nc" id="L96">        this.hashMethod = hashMethod;</span>
-<span class="nc" id="L97">    }</span>
+<span class="nc" id="L98">        this.hashMethod = hashMethod;</span>
+<span class="nc" id="L99">    }</span>
 
     /**
      *
      * @return the salt the user use to salt its plain password
      */
     public String getSalt() {
-<span class="nc" id="L104">        return salt;</span>
+<span class="nc" id="L106">        return salt;</span>
     }
 
     /**
@@ -110,21 +112,21 @@ import javax.validation.constraints.NotNull;
      * @param salt the salt
      */
     public void setSalt(String salt) {
-<span class="nc" id="L113">        this.salt = salt;</span>
-<span class="nc" id="L114">    }</span>
+<span class="nc" id="L115">        this.salt = salt;</span>
+<span class="nc" id="L116">    }</span>
 
     /**
      * @return the hash
      */
     public String getHash() {
-<span class="nc" id="L120">        return hash;</span>
+<span class="nc" id="L122">        return hash;</span>
     }
 
     /**
      * @param hash the hash
      */
     public void setHash(String hash) {
-<span class="nc" id="L127">        this.hash = hash;</span>
-<span class="nc" id="L128">    }</span>
+<span class="nc" id="L129">        this.hash = hash;</span>
+<span class="nc" id="L130">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

@@ -6,6 +6,7 @@
  */
 package ch.colabproject.colab.api.ws.channel.model;
 
+import ch.colabproject.colab.generator.model.annotations.ExtractJavaDoc;
 import java.util.Objects;
 
 /**
@@ -20,7 +21,8 @@ import java.util.Objects;
  *
  * @author maxence
  */
-<span class="nc" id="L23">public class BlockChannel implements WebsocketChannel {</span>
+@ExtractJavaDoc
+<span class="nc" id="L25">public class BlockChannel implements WebsocketChannel {</span>
 
     private static final long serialVersionUID = 1L;
 
@@ -35,7 +37,7 @@ import java.util.Objects;
      * @return the blockId
      */
     public Long getBlockId() {
-<span class="nc" id="L38">        return blockId;</span>
+<span class="nc" id="L40">        return blockId;</span>
     }
 
     /**
@@ -44,14 +46,14 @@ import java.util.Objects;
      * @param blockId new blockId
      */
     public void setBlockId(Long blockId) {
-<span class="nc" id="L47">        this.blockId = blockId;</span>
-<span class="nc" id="L48">    }</span>
+<span class="nc" id="L49">        this.blockId = blockId;</span>
+<span class="nc" id="L50">    }</span>
 
     @Override
     public int hashCode() {
-<span class="nc" id="L52">        int hash = 11;</span>
-<span class="nc" id="L53">        hash = 57 * hash + Objects.hashCode(this.blockId);</span>
-<span class="nc" id="L54">        return hash;</span>
+<span class="nc" id="L54">        int hash = 11;</span>
+<span class="nc" id="L55">        hash = 57 * hash + Objects.hashCode(this.blockId);</span>
+<span class="nc" id="L56">        return hash;</span>
     }
 
     /**
@@ -63,23 +65,23 @@ import java.util.Objects;
      */
     @Override
     public boolean equals(Object obj) {
-<span class="nc bnc" id="L66" title="All 2 branches missed.">        if (this == obj) {</span>
-<span class="nc" id="L67">            return true;</span>
+<span class="nc bnc" id="L68" title="All 2 branches missed.">        if (this == obj) {</span>
+<span class="nc" id="L69">            return true;</span>
         }
-<span class="nc bnc" id="L69" title="All 2 branches missed.">        if (obj == null) {</span>
-<span class="nc" id="L70">            return false;</span>
+<span class="nc bnc" id="L71" title="All 2 branches missed.">        if (obj == null) {</span>
+<span class="nc" id="L72">            return false;</span>
         }
-<span class="nc bnc" id="L72" title="All 2 branches missed.">        if (getClass() != obj.getClass()) {</span>
-<span class="nc" id="L73">            return false;</span>
+<span class="nc bnc" id="L74" title="All 2 branches missed.">        if (getClass() != obj.getClass()) {</span>
+<span class="nc" id="L75">            return false;</span>
         }
-<span class="nc" id="L75">        final BlockChannel other = (BlockChannel) obj;</span>
+<span class="nc" id="L77">        final BlockChannel other = (BlockChannel) obj;</span>
 
-<span class="nc" id="L77">        return Objects.equals(this.blockId, other.blockId);</span>
+<span class="nc" id="L79">        return Objects.equals(this.blockId, other.blockId);</span>
     }
 
     @Override
     public String toString() {
-<span class="nc" id="L82">        return &quot;BlockChannel{&quot; + &quot;blockId=&quot; + this.blockId + '}';</span>
+<span class="nc" id="L84">        return &quot;BlockChannel{&quot; + &quot;blockId=&quot; + this.blockId + '}';</span>
     }
 
     /**
@@ -90,9 +92,9 @@ import java.util.Objects;
      * @return the block very own channel
      */
     public static BlockChannel build(Long blockId) {
-<span class="nc" id="L93">        BlockChannel channel = new BlockChannel();</span>
-<span class="nc" id="L94">        channel.setBlockId(blockId);</span>
-<span class="nc" id="L95">        return channel;</span>
+<span class="nc" id="L95">        BlockChannel channel = new BlockChannel();</span>
+<span class="nc" id="L96">        channel.setBlockId(blockId);</span>
+<span class="nc" id="L97">        return channel;</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

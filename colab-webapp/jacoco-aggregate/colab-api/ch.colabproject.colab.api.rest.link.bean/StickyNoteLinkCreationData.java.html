@@ -7,6 +7,7 @@
 package ch.colabproject.colab.api.rest.link.bean;
 
 import ch.colabproject.colab.api.model.document.TextDataBlock;
+import ch.colabproject.colab.generator.model.annotations.ExtractJavaDoc;
 import java.io.Serializable;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
@@ -16,7 +17,8 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
  *
  * @author sandra
  */
-<span class="nc" id="L19">public class StickyNoteLinkCreationData implements Serializable {</span>
+@ExtractJavaDoc
+<span class="nc" id="L21">public class StickyNoteLinkCreationData implements Serializable {</span>
 
     private static final long serialVersionUID = 1L;
 
@@ -67,99 +69,99 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
      * @return the srcCardId
      */
     public Long getSrcCardId() {
-<span class="nc" id="L70">        return srcCardId;</span>
+<span class="nc" id="L72">        return srcCardId;</span>
     }
 
     /**
      * @param srcCardId the srcCardId
      */
     public void setSrcCardId(Long srcCardId) {
-<span class="nc" id="L77">        this.srcCardId = srcCardId;</span>
-<span class="nc" id="L78">    }</span>
+<span class="nc" id="L79">        this.srcCardId = srcCardId;</span>
+<span class="nc" id="L80">    }</span>
 
     /**
      * @return the srcCardContentId
      */
     public Long getSrcCardContentId() {
-<span class="nc" id="L84">        return srcCardContentId;</span>
+<span class="nc" id="L86">        return srcCardContentId;</span>
     }
 
     /**
      * @param srcCardContentId the srcCardContentId
      */
     public void setSrcCardContentId(Long srcCardContentId) {
-<span class="nc" id="L91">        this.srcCardContentId = srcCardContentId;</span>
-<span class="nc" id="L92">    }</span>
+<span class="nc" id="L93">        this.srcCardContentId = srcCardContentId;</span>
+<span class="nc" id="L94">    }</span>
 
     /**
      * @return the srcResourceOrRefId
      */
     public Long getSrcResourceOrRefId() {
-<span class="nc" id="L98">        return srcResourceOrRefId;</span>
+<span class="nc" id="L100">        return srcResourceOrRefId;</span>
     }
 
     /**
      * @param srcResourceOrRefId the srcResourceOrRefId
      */
     public void setSrcResourceOrRefId(Long srcResourceOrRefId) {
-<span class="nc" id="L105">        this.srcResourceOrRefId = srcResourceOrRefId;</span>
-<span class="nc" id="L106">    }</span>
+<span class="nc" id="L107">        this.srcResourceOrRefId = srcResourceOrRefId;</span>
+<span class="nc" id="L108">    }</span>
 
     /**
      * @return the srcDocumentId
      */
     public Long getSrcDocumentId() {
-<span class="nc" id="L112">        return srcDocumentId;</span>
+<span class="nc" id="L114">        return srcDocumentId;</span>
     }
 
     /**
      * @param srcDocumentId the srcDocumentId
      */
     public void setSrcDocumentId(Long srcDocumentId) {
-<span class="nc" id="L119">        this.srcDocumentId = srcDocumentId;</span>
-<span class="nc" id="L120">    }</span>
+<span class="nc" id="L121">        this.srcDocumentId = srcDocumentId;</span>
+<span class="nc" id="L122">    }</span>
 
     /**
      * @return the destinationCardId
      */
     public Long getDestinationCardId() {
-<span class="nc" id="L126">        return destinationCardId;</span>
+<span class="nc" id="L128">        return destinationCardId;</span>
     }
 
     /**
      * @param destinationCardId the destinationCardId
      */
     public void setDestinationCardId(Long destinationCardId) {
-<span class="nc" id="L133">        this.destinationCardId = destinationCardId;</span>
-<span class="nc" id="L134">    }</span>
+<span class="nc" id="L135">        this.destinationCardId = destinationCardId;</span>
+<span class="nc" id="L136">    }</span>
 
     /**
      * @return the teaser
      */
     public String getTeaser() {
-<span class="nc" id="L140">        return teaser;</span>
+<span class="nc" id="L142">        return teaser;</span>
     }
 
     /**
      * @param teaser the teaser
      */
     public void setTeaser(String teaser) {
-<span class="nc" id="L147">        this.teaser = teaser;</span>
-<span class="nc" id="L148">    }</span>
+<span class="nc" id="L149">        this.teaser = teaser;</span>
+<span class="nc" id="L150">    }</span>
 
     /**
      * @return the explanation
      */
     public TextDataBlock getExplanation() {
-<span class="nc" id="L154">        return explanation;</span>
+<span class="nc" id="L156">        return explanation;</span>
     }
 
     /**
      * @param explanation the explanation
      */
     public void setExplanation(TextDataBlock explanation) {
-<span class="nc" id="L161">        this.explanation = explanation;</span>
-<span class="nc" id="L162">    }</span>
+<span class="nc" id="L163">        this.explanation = explanation;</span>
+<span class="nc" id="L164">    }</span>
 
     // ---------------------------------------------------------------------------------------------
     // concerning the whole class
@@ -167,41 +169,41 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 
     @Override
     public int hashCode() {
-<span class="nc" id="L170">        return new HashCodeBuilder()</span>
-<span class="nc" id="L171">            .append(this.srcCardId)</span>
-<span class="nc" id="L172">            .append(this.srcCardContentId)</span>
-<span class="nc" id="L173">            .append(this.srcResourceOrRefId)</span>
-<span class="nc" id="L174">            .append(this.srcDocumentId)</span>
-<span class="nc" id="L175">            .append(this.destinationCardId)</span>
-<span class="nc" id="L176">            .append(this.teaser)</span>
-<span class="nc" id="L177">            .toHashCode();</span>
+<span class="nc" id="L172">        return new HashCodeBuilder()</span>
+<span class="nc" id="L173">            .append(this.srcCardId)</span>
+<span class="nc" id="L174">            .append(this.srcCardContentId)</span>
+<span class="nc" id="L175">            .append(this.srcResourceOrRefId)</span>
+<span class="nc" id="L176">            .append(this.srcDocumentId)</span>
+<span class="nc" id="L177">            .append(this.destinationCardId)</span>
+<span class="nc" id="L178">            .append(this.teaser)</span>
+<span class="nc" id="L179">            .toHashCode();</span>
     }
 
     @Override
     public boolean equals(Object obj) {
-<span class="nc bnc" id="L182" title="All 2 branches missed.">        if (this == obj) {</span>
-<span class="nc" id="L183">            return true;</span>
+<span class="nc bnc" id="L184" title="All 2 branches missed.">        if (this == obj) {</span>
+<span class="nc" id="L185">            return true;</span>
         }
-<span class="nc bnc" id="L185" title="All 2 branches missed.">        if (obj == null) {</span>
-<span class="nc" id="L186">            return false;</span>
+<span class="nc bnc" id="L187" title="All 2 branches missed.">        if (obj == null) {</span>
+<span class="nc" id="L188">            return false;</span>
         }
-<span class="nc bnc" id="L188" title="All 2 branches missed.">        if (getClass() != obj.getClass()) {</span>
-<span class="nc" id="L189">            return false;</span>
+<span class="nc bnc" id="L190" title="All 2 branches missed.">        if (getClass() != obj.getClass()) {</span>
+<span class="nc" id="L191">            return false;</span>
         }
-<span class="nc" id="L191">        final StickyNoteLinkCreationData other = (StickyNoteLinkCreationData) obj;</span>
-<span class="nc" id="L192">        return new EqualsBuilder()</span>
-<span class="nc" id="L193">            .append(this.srcCardId, other.srcCardId)</span>
-<span class="nc" id="L194">            .append(this.srcCardContentId, other.srcCardContentId)</span>
-<span class="nc" id="L195">            .append(this.srcResourceOrRefId, other.srcResourceOrRefId)</span>
-<span class="nc" id="L196">            .append(this.srcDocumentId, other.srcDocumentId)</span>
-<span class="nc" id="L197">            .append(this.destinationCardId, other.destinationCardId)</span>
-<span class="nc" id="L198">            .append(this.teaser, other.teaser)</span>
-<span class="nc" id="L199">            .isEquals();</span>
+<span class="nc" id="L193">        final StickyNoteLinkCreationData other = (StickyNoteLinkCreationData) obj;</span>
+<span class="nc" id="L194">        return new EqualsBuilder()</span>
+<span class="nc" id="L195">            .append(this.srcCardId, other.srcCardId)</span>
+<span class="nc" id="L196">            .append(this.srcCardContentId, other.srcCardContentId)</span>
+<span class="nc" id="L197">            .append(this.srcResourceOrRefId, other.srcResourceOrRefId)</span>
+<span class="nc" id="L198">            .append(this.srcDocumentId, other.srcDocumentId)</span>
+<span class="nc" id="L199">            .append(this.destinationCardId, other.destinationCardId)</span>
+<span class="nc" id="L200">            .append(this.teaser, other.teaser)</span>
+<span class="nc" id="L201">            .isEquals();</span>
     }
 
     @Override
     public String toString() {
-<span class="nc" id="L204">        return &quot;StickyNoteLinkCreationData{&quot; + &quot;srcCardId=&quot; + srcCardId</span>
+<span class="nc" id="L206">        return &quot;StickyNoteLinkCreationData{&quot; + &quot;srcCardId=&quot; + srcCardId</span>
             + &quot;, srcCardContentId=&quot; + srcCardContentId
             + &quot;, srcResourceOrRefId=&quot; + srcResourceOrRefId + &quot;, srcDocumentId=&quot; + srcDocumentId
             + &quot;, destinationCardId=&quot; + destinationCardId + &quot;, teaser=&quot; + teaser + &quot;}&quot;;

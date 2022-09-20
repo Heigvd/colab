@@ -6,6 +6,7 @@
  */
 package ch.colabproject.colab.api.rest.document.bean;
 
+import ch.colabproject.colab.generator.model.annotations.ExtractJavaDoc;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
@@ -15,7 +16,8 @@ import javax.validation.constraints.NotNull;
  *
  * @author maxence
  */
-<span class="nc" id="L18">public class UrlMetadata implements Serializable {</span>
+@ExtractJavaDoc
+<span class="nc" id="L20">public class UrlMetadata implements Serializable {</span>
 
     private static final long serialVersionUID = 1L;
 
@@ -33,7 +35,7 @@ import javax.validation.constraints.NotNull;
     /**
      * Metadata
      */
-<span class="nc" id="L36">    @NotNull</span>
+<span class="nc" id="L38">    @NotNull</span>
     private Map&lt;String, String&gt; metadata = new HashMap&lt;&gt;();
 
     /**
@@ -42,7 +44,7 @@ import javax.validation.constraints.NotNull;
      * @return the mime-type or null if unknown
      */
     public String getContentType() {
-<span class="nc" id="L45">        return contentType;</span>
+<span class="nc" id="L47">        return contentType;</span>
     }
 
     /**
@@ -51,8 +53,8 @@ import javax.validation.constraints.NotNull;
      * @param contentType the mime type. Null means unknown
      */
     public void setContentType(String contentType) {
-<span class="nc" id="L54">        this.contentType = contentType;</span>
-<span class="nc" id="L55">    }</span>
+<span class="nc" id="L56">        this.contentType = contentType;</span>
+<span class="nc" id="L57">    }</span>
 
     /**
      * Get the metadata
@@ -60,7 +62,7 @@ import javax.validation.constraints.NotNull;
      * @return metadata
      */
     public Map&lt;String, String&gt; getMetadata() {
-<span class="nc" id="L63">        return metadata;</span>
+<span class="nc" id="L65">        return metadata;</span>
     }
 
     /**
@@ -69,8 +71,8 @@ import javax.validation.constraints.NotNull;
      * @param metadata new metadata
      */
     public void setMetadata(Map&lt;String, String&gt; metadata) {
-<span class="nc" id="L72">        this.metadata = metadata;</span>
-<span class="nc" id="L73">    }</span>
+<span class="nc" id="L74">        this.metadata = metadata;</span>
+<span class="nc" id="L75">    }</span>
 
     /**
      * Is the url broken ? It means 404
@@ -78,7 +80,7 @@ import javax.validation.constraints.NotNull;
      * @return if the link is broken
      */
     public Boolean isBroken() {
-<span class="nc" id="L81">        return broken;</span>
+<span class="nc" id="L83">        return broken;</span>
     }
 
     /**
@@ -87,7 +89,7 @@ import javax.validation.constraints.NotNull;
      * @param broken new broken balue
      */
     public void setBroken(Boolean broken) {
-<span class="nc" id="L90">        this.broken = broken;</span>
-<span class="nc" id="L91">    }</span>
+<span class="nc" id="L92">        this.broken = broken;</span>
+<span class="nc" id="L93">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

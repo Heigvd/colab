@@ -9,6 +9,7 @@ package ch.colabproject.colab.api.microchanges.model;
 import ch.colabproject.colab.api.model.WithWebsocketChannels;
 import ch.colabproject.colab.api.ws.channel.tool.ChannelsBuilders.BlockChannelBuilder;
 import ch.colabproject.colab.api.ws.channel.tool.ChannelsBuilders.ChannelsBuilder;
+import ch.colabproject.colab.generator.model.annotations.ExtractJavaDoc;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -22,7 +23,8 @@ import org.apache.commons.text.StringEscapeUtils;
  *
  * @author maxence
  */
-<span class="nc" id="L25">public class Change implements Serializable, WithWebsocketChannels {</span>
+@ExtractJavaDoc
+<span class="nc" id="L27">public class Change implements Serializable, WithWebsocketChannels {</span>
 
     private static final long serialVersionUID = 1L;
 
@@ -59,7 +61,7 @@ import org.apache.commons.text.StringEscapeUtils;
     /**
      * List of micro microchanges which compose this change
      */
-<span class="nc" id="L62">    @NotNull</span>
+<span class="nc" id="L64">    @NotNull</span>
     private List&lt;MicroChange&gt; microchanges = new ArrayList&lt;&gt;();
 
     /**
@@ -71,7 +73,7 @@ import org.apache.commons.text.StringEscapeUtils;
 
     @Override
     public Long getId() {
-<span class="nc" id="L74">        return atId;</span>
+<span class="nc" id="L76">        return atId;</span>
     }
 
     /**
@@ -80,7 +82,7 @@ import org.apache.commons.text.StringEscapeUtils;
      * @return set of microchanges
      */
     public List&lt;MicroChange&gt; getMicrochanges() {
-<span class="nc" id="L83">        return microchanges;</span>
+<span class="nc" id="L85">        return microchanges;</span>
     }
 
     /**
@@ -89,8 +91,8 @@ import org.apache.commons.text.StringEscapeUtils;
      * @param microchanges microchanges
      */
     public void setMicrochanges(List&lt;MicroChange&gt; microchanges) {
-<span class="nc" id="L92">        this.microchanges = microchanges;</span>
-<span class="nc" id="L93">    }</span>
+<span class="nc" id="L94">        this.microchanges = microchanges;</span>
+<span class="nc" id="L95">    }</span>
 
     /**
      * Get the JSON discriminator
@@ -98,7 +100,7 @@ import org.apache.commons.text.StringEscapeUtils;
      * @return JSON discriminator
      */
     public String getAtClass() {
-<span class="nc" id="L101">        return atClass;</span>
+<span class="nc" id="L103">        return atClass;</span>
     }
 
     /**
@@ -107,8 +109,8 @@ import org.apache.commons.text.StringEscapeUtils;
      * @param atClass new discriminator
      */
     public void setAtClass(String atClass) {
-<span class="nc" id="L110">        this.atClass = atClass;</span>
-<span class="nc" id="L111">    }</span>
+<span class="nc" id="L112">        this.atClass = atClass;</span>
+<span class="nc" id="L113">    }</span>
 
     /**
      * The object id.
@@ -116,7 +118,7 @@ import org.apache.commons.text.StringEscapeUtils;
      * @return the id of the object
      */
     public Long getAtId() {
-<span class="nc" id="L119">        return atId;</span>
+<span class="nc" id="L121">        return atId;</span>
     }
 
     /**
@@ -125,8 +127,8 @@ import org.apache.commons.text.StringEscapeUtils;
      * @param atId object id
      */
     public void setAtId(Long atId) {
-<span class="nc" id="L128">        this.atId = atId;</span>
-<span class="nc" id="L129">    }</span>
+<span class="nc" id="L130">        this.atId = atId;</span>
+<span class="nc" id="L131">    }</span>
 
     /**
      * Get the revision hash this change is based on
@@ -134,7 +136,7 @@ import org.apache.commons.text.StringEscapeUtils;
      * @return the revision hash
      */
     public Set&lt;String&gt; getBasedOn() {
-<span class="nc" id="L137">        return basedOn;</span>
+<span class="nc" id="L139">        return basedOn;</span>
     }
 
     /**
@@ -143,8 +145,8 @@ import org.apache.commons.text.StringEscapeUtils;
      * @param basedOn list of revision hash
      */
     public void setBasedOn(Set&lt;String&gt; basedOn) {
-<span class="nc" id="L146">        this.basedOn = basedOn;</span>
-<span class="nc" id="L147">    }</span>
+<span class="nc" id="L148">        this.basedOn = basedOn;</span>
+<span class="nc" id="L149">    }</span>
 
     /**
      * the review to which this change leads.
@@ -152,7 +154,7 @@ import org.apache.commons.text.StringEscapeUtils;
      * @return the revision hash
      */
     public String getRevision() {
-<span class="nc" id="L155">        return revision;</span>
+<span class="nc" id="L157">        return revision;</span>
     }
 
     /**
@@ -161,8 +163,8 @@ import org.apache.commons.text.StringEscapeUtils;
      * @param revision revision hash
      */
     public void setRevision(String revision) {
-<span class="nc" id="L164">        this.revision = revision;</span>
-<span class="nc" id="L165">    }</span>
+<span class="nc" id="L166">        this.revision = revision;</span>
+<span class="nc" id="L167">    }</span>
 
     /**
      * The live session who authored this change
@@ -170,7 +172,7 @@ import org.apache.commons.text.StringEscapeUtils;
      * @return live session id (ie. websocket session id)
      */
     public String getLiveSession() {
-<span class="nc" id="L173">        return liveSession;</span>
+<span class="nc" id="L175">        return liveSession;</span>
     }
 
     /**
@@ -179,8 +181,8 @@ import org.apache.commons.text.StringEscapeUtils;
      * @param liveSession the live session id
      */
     public void setLiveSession(String liveSession) {
-<span class="nc" id="L182">        this.liveSession = liveSession;</span>
-<span class="nc" id="L183">    }</span>
+<span class="nc" id="L184">        this.liveSession = liveSession;</span>
+<span class="nc" id="L185">    }</span>
 
     /**
      * Get the project id
@@ -188,12 +190,12 @@ import org.apache.commons.text.StringEscapeUtils;
      * @return id of the project
      */
     public Long getBlockId() {
-<span class="nc" id="L191">        return blockId;</span>
+<span class="nc" id="L193">        return blockId;</span>
     }
 
     @Override
     public Object getIndexEntryPayload() {
-<span class="nc" id="L196">        return this;</span>
+<span class="nc" id="L198">        return this;</span>
     }
 
     /**
@@ -202,17 +204,17 @@ import org.apache.commons.text.StringEscapeUtils;
      * @param blockId the id
      */
     public void setBlockId(Long blockId) {
-<span class="nc" id="L205">        this.blockId = blockId;</span>
-<span class="nc" id="L206">    }</span>
+<span class="nc" id="L207">        this.blockId = blockId;</span>
+<span class="nc" id="L208">    }</span>
 
     @Override
     public ChannelsBuilder getChannelsBuilder() {
-<span class="nc" id="L210">        return new BlockChannelBuilder(blockId);</span>
+<span class="nc" id="L212">        return new BlockChannelBuilder(blockId);</span>
     }
 
     @Override
     public String toString() {
-<span class="nc" id="L215">        return &quot;Patch{rev@&quot; + this.revision</span>
+<span class="nc" id="L217">        return &quot;Patch{rev@&quot; + this.revision</span>
             + &quot; basedOn@&quot; + this.basedOn + &quot; µ: &quot;
             + this.microchanges + &quot;}&quot;;
     }
@@ -223,27 +225,27 @@ import org.apache.commons.text.StringEscapeUtils;
      * @return debug code
      */
     public String toDebugStatement() {
-<span class="nc" id="L226">        StringBuilder sb = new StringBuilder();</span>
-<span class="nc" id="L227">        sb.append(&quot;createChange(\&quot;&quot;).append(</span>
-<span class="nc" id="L228">            StringEscapeUtils.escapeEcmaScript(this.liveSession)</span>
-<span class="nc" id="L229">        ).append(&quot;\&quot;, [&quot;);</span>
+<span class="nc" id="L228">        StringBuilder sb = new StringBuilder();</span>
+<span class="nc" id="L229">        sb.append(&quot;createChange(\&quot;&quot;).append(</span>
+<span class="nc" id="L230">            StringEscapeUtils.escapeEcmaScript(this.liveSession)</span>
+<span class="nc" id="L231">        ).append(&quot;\&quot;, [&quot;);</span>
 
-<span class="nc" id="L231">        this.basedOn.forEach(base -&gt; {</span>
-<span class="nc" id="L232">            sb.append(&quot;\&quot;&quot;)</span>
-<span class="nc" id="L233">                .append(StringEscapeUtils.escapeEcmaScript(base))</span>
-<span class="nc" id="L234">                .append(&quot;\&quot;, &quot;);</span>
-<span class="nc" id="L235">        });</span>
+<span class="nc" id="L233">        this.basedOn.forEach(base -&gt; {</span>
+<span class="nc" id="L234">            sb.append(&quot;\&quot;&quot;)</span>
+<span class="nc" id="L235">                .append(StringEscapeUtils.escapeEcmaScript(base))</span>
+<span class="nc" id="L236">                .append(&quot;\&quot;, &quot;);</span>
+<span class="nc" id="L237">        });</span>
 
-<span class="nc" id="L237">        sb.append(&quot;], \&quot;&quot;)</span>
-<span class="nc" id="L238">            .append(StringEscapeUtils.escapeEcmaScript(this.revision))</span>
-<span class="nc" id="L239">            .append(&quot;\&quot;&quot;);</span>
+<span class="nc" id="L239">        sb.append(&quot;], \&quot;&quot;)</span>
+<span class="nc" id="L240">            .append(StringEscapeUtils.escapeEcmaScript(this.revision))</span>
+<span class="nc" id="L241">            .append(&quot;\&quot;&quot;);</span>
 
-<span class="nc" id="L241">        this.microchanges.forEach(mu -&gt; {</span>
-<span class="nc" id="L242">            sb.append(&quot;, &quot;).append(mu.getDebugStatement());</span>
-<span class="nc" id="L243">        });</span>
-<span class="nc" id="L244">        sb.append(&quot;)&quot;);</span>
+<span class="nc" id="L243">        this.microchanges.forEach(mu -&gt; {</span>
+<span class="nc" id="L244">            sb.append(&quot;, &quot;).append(mu.getDebugStatement());</span>
+<span class="nc" id="L245">        });</span>
+<span class="nc" id="L246">        sb.append(&quot;)&quot;);</span>
 
-<span class="nc" id="L246">        return sb.toString();</span>
+<span class="nc" id="L248">        return sb.toString();</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

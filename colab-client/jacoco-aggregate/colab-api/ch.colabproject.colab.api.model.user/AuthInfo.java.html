@@ -6,6 +6,7 @@
  */
 package ch.colabproject.colab.api.model.user;
 
+import ch.colabproject.colab.generator.model.annotations.ExtractJavaDoc;
 import ch.colabproject.colab.generator.model.interfaces.WithJsonDiscriminator;
 import javax.validation.constraints.NotNull;
 
@@ -14,7 +15,8 @@ import javax.validation.constraints.NotNull;
  *
  * @author maxence
  */
-<span class="nc" id="L17">public class AuthInfo implements WithJsonDiscriminator {</span>
+@ExtractJavaDoc
+<span class="nc" id="L19">public class AuthInfo implements WithJsonDiscriminator {</span>
 
     private static final long serialVersionUID = 1L;
 
@@ -39,7 +41,7 @@ import javax.validation.constraints.NotNull;
      * @return identifier that should match a LocalAccount email or user username
      */
     public String getIdentifier() {
-<span class="nc" id="L42">        return identifier;</span>
+<span class="nc" id="L44">        return identifier;</span>
     }
 
     /**
@@ -48,14 +50,14 @@ import javax.validation.constraints.NotNull;
      * @param identifier email address or username
      */
     public void setIdentifier(String identifier) {
-<span class="nc" id="L51">        this.identifier = identifier;</span>
-<span class="nc" id="L52">    }</span>
+<span class="nc" id="L53">        this.identifier = identifier;</span>
+<span class="nc" id="L54">    }</span>
 
     /**
      * @return the hash
      */
     public String getMandatoryHash() {
-<span class="nc" id="L58">        return mandatoryHash;</span>
+<span class="nc" id="L60">        return mandatoryHash;</span>
     }
 
     /**
@@ -64,14 +66,14 @@ import javax.validation.constraints.NotNull;
      * @param mandatoryHash hash
      */
     public void setMandatoryHash(String mandatoryHash) {
-<span class="nc" id="L67">        this.mandatoryHash = mandatoryHash;</span>
-<span class="nc" id="L68">    }</span>
+<span class="nc" id="L69">        this.mandatoryHash = mandatoryHash;</span>
+<span class="nc" id="L70">    }</span>
 
     /**
      * @return optional hash
      */
     public String getOptionalHash() {
-<span class="nc" id="L74">        return optionalHash;</span>
+<span class="nc" id="L76">        return optionalHash;</span>
     }
 
     /**
@@ -80,8 +82,8 @@ import javax.validation.constraints.NotNull;
      * @param optionalHash hash
      */
     public void setOptionalHash(String optionalHash) {
-<span class="nc" id="L83">        this.optionalHash = optionalHash;</span>
-<span class="nc" id="L84">    }</span>
+<span class="nc" id="L85">        this.optionalHash = optionalHash;</span>
+<span class="nc" id="L86">    }</span>
 
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

@@ -153,7 +153,7 @@ public class Generator {
 <span class="nc" id="L153">        imports.put(&quot;void&quot;, null); // null means no import statement</span>
 
 <span class="nc" id="L155">        String innerClasses = this.restEndpoints.stream().map(controller -&gt; {</span>
-<span class="nc" id="L156">            String javaCode = controller.generateJavaClient(</span>
+<span class="nc" id="L156">        String javaCode = controller.generateJavaClient(</span>
                 imports,
                 clientName,
                 javadoc,

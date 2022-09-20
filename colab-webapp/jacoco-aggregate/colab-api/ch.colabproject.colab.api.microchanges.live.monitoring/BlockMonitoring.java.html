@@ -6,6 +6,7 @@
  */
 package ch.colabproject.colab.api.microchanges.live.monitoring;
 
+import ch.colabproject.colab.generator.model.annotations.ExtractJavaDoc;
 import javax.validation.constraints.NotNull;
 
 /**
@@ -13,23 +14,24 @@ import javax.validation.constraints.NotNull;
  *
  * @author maxence
  */
-<span class="nc" id="L16">public class BlockMonitoring {</span>
+@ExtractJavaDoc
+<span class="nc" id="L18">public class BlockMonitoring {</span>
 
     /**
      * Status of the block
      */
-<span class="nc" id="L21">    public enum BlockStatus {</span>
+<span class="nc" id="L23">    public enum BlockStatus {</span>
         /** everything looks fine */
-<span class="nc" id="L23">        HEALTHY,</span>
+<span class="nc" id="L25">        HEALTHY,</span>
         /** pending changes are inconsistent */
-<span class="nc" id="L25">        UNHEALTHY,</span>
+<span class="nc" id="L27">        UNHEALTHY,</span>
         /** unable to restore data from live cache */
-<span class="nc" id="L27">        DATA_ERROR,</span>
+<span class="nc" id="L29">        DATA_ERROR,</span>
         /** no pending changes */
-<span class="nc" id="L29">        PROCESSED,</span>
+<span class="nc" id="L31">        PROCESSED,</span>
         /** some
          * pending changes exists but block has been deleted in the meantime */
-<span class="nc" id="L32">        DELETED;</span>
+<span class="nc" id="L34">        DELETED;</span>
     }
 
     /** Id of the block being live-edited */
@@ -50,7 +52,7 @@ import javax.validation.constraints.NotNull;
      * @return the id of the block
      */
     public Long getBlockId() {
-<span class="nc" id="L53">        return blockId;</span>
+<span class="nc" id="L55">        return blockId;</span>
     }
 
     /**
@@ -59,8 +61,8 @@ import javax.validation.constraints.NotNull;
      * @param blockId new block id
      */
     public void setBlockId(Long blockId) {
-<span class="nc" id="L62">        this.blockId = blockId;</span>
-<span class="nc" id="L63">    }</span>
+<span class="nc" id="L64">        this.blockId = blockId;</span>
+<span class="nc" id="L65">    }</span>
 
     /**
      * status of the live-edition
@@ -68,7 +70,7 @@ import javax.validation.constraints.NotNull;
      * @return the status
      */
     public BlockStatus getStatus() {
-<span class="nc" id="L71">        return status;</span>
+<span class="nc" id="L73">        return status;</span>
     }
 
     /**
@@ -77,8 +79,8 @@ import javax.validation.constraints.NotNull;
      * @param status the status
      */
     public void setStatus(BlockStatus status) {
-<span class="nc" id="L80">        this.status = status;</span>
-<span class="nc" id="L81">    }</span>
+<span class="nc" id="L82">        this.status = status;</span>
+<span class="nc" id="L83">    }</span>
 
     /**
      * Get human description
@@ -86,7 +88,7 @@ import javax.validation.constraints.NotNull;
      * @return the description
      */
     public String getTitle() {
-<span class="nc" id="L89">        return title;</span>
+<span class="nc" id="L91">        return title;</span>
     }
 
     /**
@@ -95,7 +97,7 @@ import javax.validation.constraints.NotNull;
      * @param title new text
      */
     public void setTitle(String title) {
-<span class="nc" id="L98">        this.title = title;</span>
-<span class="nc" id="L99">    }</span>
+<span class="nc" id="L100">        this.title = title;</span>
+<span class="nc" id="L101">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>
