@@ -21,8 +21,8 @@ import useTranslations from '../../../i18n/I18nContext';
 import { useProjectBeingEdited } from '../../../selectors/projectSelector';
 import { useAppDispatch } from '../../../store/hooks';
 import { CardTypeAllInOne as CardType } from '../../../types/cardTypeDefinition';
-import ConfirmDeleteOpenCloseModal from '../../common/layout/ConfirmDeleteModal';
-import DropDownMenu, { modalEntryStyle } from '../../common/layout/DropDownMenu';
+import { ConfirmDeleteModal } from '../../common/layout/ConfirmDeleteModal';
+import DropDownMenu from '../../common/layout/DropDownMenu';
 import Flex from '../../common/layout/Flex';
 import { DocTextDisplay } from '../../documents/DocTextItem';
 import {
@@ -65,6 +65,8 @@ export default function CardTypeItem({ cardType, usage }: CardTypeItemProps): JS
 
   const editedProject = useProjectBeingEdited().project;
   const editedProjectId = editedProject?.id;
+
+  const [showDelete, setShowDelete] = React.useState(false);
 
   return (
     <Flex direction="column" align="stretch" className={style}>
@@ -133,29 +135,27 @@ export default function CardTypeItem({ cardType, usage }: CardTypeItemProps): JS
                   {
                     value: 'delete',
                     label: (
-                      <ConfirmDeleteOpenCloseModal
-                        buttonLabel={
-                          <div className={cx(css({ color: errorColor }), modalEntryStyle)}>
-                            <FontAwesomeIcon icon={faTrash} /> {i18n.common.delete}
-                          </div>
-                        }
-                        className={css({
-                          '&:hover': { textDecoration: 'none' },
-                          display: 'flex',
-                          alignItems: 'center',
-                        })}
-                        message={<p>{i18n.modules.cardType.action.confirmDeleteType}</p>}
-                        onConfirm={() => dispatch(API.deleteCardType(cardType))}
-                        confirmButtonLabel={i18n.modules.cardType.action.deleteType}
-                      />
+                      <>
+                        <FontAwesomeIcon icon={faTrash} color={errorColor} /> {i18n.common.delete}
+                      </>
                     ),
-                    modal: true,
+                    action: () => setShowDelete(true),
                   },
                 ]
               : []),
           ]}
         />
       </Flex>
+      {showDelete && cardType.kind === 'own' && (
+        <>
+          <ConfirmDeleteModal
+            message={<p>{i18n.modules.cardType.action.confirmDeleteType}</p>}
+            onCancel={() => setShowDelete(false)}
+            onConfirm={() => dispatch(API.deleteCardType(cardType))}
+            confirmButtonLabel={i18n.modules.cardType.action.deleteType}
+          />
+        </>
+      )}
       <Flex grow={1}>
         <p className={lightItalicText}>
           <DocTextDisplay id={cardType.purposeId} />
