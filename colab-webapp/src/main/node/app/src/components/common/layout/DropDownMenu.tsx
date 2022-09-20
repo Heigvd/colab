@@ -39,6 +39,10 @@ const entryStyle = css({
 const dropDownEntryPadding = css({
   padding: space_S,
 });
+
+/**
+ * @deprecated nesed modals within drop down menu leads to navigations issues
+ */
 export const modalEntryStyle = css({
   margin: space_S,
   display: 'flex',
@@ -315,6 +319,7 @@ export interface Entry<T> {
   label: React.ReactNode;
   action?: () => void;
   disabled?: boolean;
+  /** @deprecated nesed modals within drop down menu leads to navigations issues */
   modal?: boolean;
 }
 
