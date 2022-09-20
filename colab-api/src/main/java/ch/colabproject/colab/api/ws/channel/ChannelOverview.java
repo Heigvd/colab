@@ -7,6 +7,7 @@
 package ch.colabproject.colab.api.ws.channel;
 
 import ch.colabproject.colab.api.ws.channel.model.WebsocketChannel;
+import ch.colabproject.colab.generator.model.annotations.ExtractJavaDoc;
 import ch.colabproject.colab.generator.model.interfaces.WithJsonDiscriminator;
 import java.util.Objects;
 import javax.validation.constraints.NotNull;
@@ -16,6 +17,7 @@ import javax.validation.constraints.NotNull;
  *
  * @author maxence
  */
+@ExtractJavaDoc
 public class ChannelOverview implements WithJsonDiscriminator {
 
     private static final long serialVersionUID = 1L;

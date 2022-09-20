@@ -59,8 +59,10 @@ public class TypeScriptHelper {
         if (WithJsonDiscriminator.class.isAssignableFrom(javaClass)) {
             return WithJsonDiscriminator.getJsonDiscriminator(javaClass);
         } else {
-            Logger.warn("Consider to implement WithJsonDiscriminator: "
-                + javaClass.getSimpleName());
+            if (javaClass.getPackageName().startsWith("ch.colabproject")){
+                Logger.info("Consider to implement WithJsonDiscriminator: "
+                    + javaClass.getSimpleName());
+            }
             return javaClass.getSimpleName();
         }
     }
