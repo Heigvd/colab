@@ -30,11 +30,12 @@ export default function TargetResourceSummary({
 }
 
 function ResourceOfCardContentSummary({ className }: { className?: string }): JSX.Element {
+  const i18n = useTranslations();
   return (
     <FontAwesomeIcon
       icon={faCircle}
       size="xs"
-      title={'Available only for this variant'}
+      title={i18n.modules.resource.onlyForVariant}
       className={className}
     />
   );

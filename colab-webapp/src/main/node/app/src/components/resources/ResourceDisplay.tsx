@@ -40,7 +40,7 @@ import {
   space_S,
   textSmall,
 } from '../styling/style';
-import { ResourceAndRef } from './resourcesCommonType';
+import { getTheDirectResource, ResourceAndRef } from './resourcesCommonType';
 import ResourceSettings from './ResourceSettings';
 import TargetResourceSummary from './summary/TargetResourceSummary';
 
@@ -78,6 +78,8 @@ export function ResourceDisplay({
 
   const effectiveReadOnly = readOnly || !resource.isDirectResource;
 
+  const category = getTheDirectResource(resource).category;
+
   const { text: teaser } = useAndLoadTextOfDocument(targetResource.teaserId);
 
   const alwaysShowTeaser = effectiveReadOnly && teaser;
@@ -94,7 +96,7 @@ export function ResourceDisplay({
         >
           <IconButton
             icon={faArrowLeft}
-            title="Back to the list"
+            title={i18n.modules.resource.backList}
             onClick={goBackToList}
             className={lightIconButtonStyle}
           />
@@ -103,6 +105,7 @@ export function ResourceDisplay({
               resource={targetResource}
               iconClassName={css({ color: 'var(--lightGray)' })}
             />
+            {category && `${category} / `}
             <DiscreetInput
               value={targetResource.title || ''}
               placeholder={i18n.modules.resource.untitled}
@@ -131,7 +134,11 @@ export function ResourceDisplay({
                         label: (
                           <>
                             <FontAwesomeIcon icon={faInfoCircle} />{' '}
-                            {`${showTeaser ? i18n.common.hide : i18n.common.show} teaser`}
+                            {`${
+                              showTeaser
+                                ? i18n.modules.resource.hideTeaser
+                                : i18n.modules.resource.showTeaser
+                            }`}
                           </>
                         ),
                         action: () => setShowTeaser(showTeaser => !showTeaser),
@@ -146,7 +153,11 @@ export function ResourceDisplay({
                         label: (
                           <>
                             <FontAwesomeIcon icon={faTools} />{' '}
-                            {`${openToolbox ? i18n.common.hide : i18n.common.show} toolbox`}
+                            {`${
+                              openToolbox
+                                ? i18n.modules.card.editor.hideToolbox
+                                : i18n.modules.card.editor.showToolbox
+                            } `}
                           </>
                         ),
                         action: () => setOpenToolbox(openToolbox => !openToolbox),
@@ -254,7 +265,7 @@ function ResourceSettingsModal({ resource, isButton }: ResourceSettingsModalProp
 
   return (
     <OpenCloseModal
-      title="Document settings"
+      title={i18n.modules.content.documentSettings}
       showCloseButton
       className={css({
         '&:hover': { textDecoration: 'none' },

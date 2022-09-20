@@ -58,7 +58,7 @@ export default function UserProfile({ user }: UserProfileProps): JSX.Element {
   if (user) {
     return (
       <div>
-        <h3>User Profile</h3>
+        <h3>{i18n.user.userProfile}</h3>
         <div>
           <Form
             fields={fields}
@@ -77,7 +77,7 @@ export default function UserProfile({ user }: UserProfileProps): JSX.Element {
   } else {
     return (
       <div>
-        <i>No user selected</i>
+        <i>{i18n.user.noUserSelected}</i>
       </div>
     );
   }

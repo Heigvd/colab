@@ -9,6 +9,7 @@ import { css, cx } from '@emotion/css';
 import { faCaretDown, faCaretUp, faFilter } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React from 'react';
+import useTranslations from '../../../i18n/I18nContext';
 import {
   borderRadius,
   lightIconButtonStyle,
@@ -60,6 +61,7 @@ export default function FilterableList({
   stateSelectAll,
   toggleAllTags,
 }: FilterableListProps): JSX.Element {
+  const i18n = useTranslations();
   const [filterOpen, setFilterOpen] = React.useState<boolean>(false);
   return (
     <Flex className={className} direction="column" align="stretch">
@@ -71,7 +73,7 @@ export default function FilterableList({
         onClick={() => setFilterOpen(filterOpen => !filterOpen)}
       >
         <FontAwesomeIcon icon={faFilter} size="sm" />
-        {' Filter '}
+        {i18n.common.filter}
         <FontAwesomeIcon icon={filterOpen ? faCaretUp : faCaretDown} />
       </Clickable>
 
@@ -106,7 +108,7 @@ export default function FilterableList({
             </Flex>
             <Checkbox
               key={'toggle all'}
-              label={'Select all'}
+              label={i18n.common.selectAll}
               value={stateSelectAll}
               onChange={t => toggleAllTags(t)}
               className={cx(lightLinkStyle, css({ '&:hover': { textDecoration: 'none' } }))}

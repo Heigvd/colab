@@ -9,6 +9,7 @@ import { css } from '@emotion/css';
 import { faRotateLeft } from '@fortawesome/free-solid-svg-icons';
 import * as React from 'react';
 import * as API from '../../API/api';
+import useTranslations from '../../i18n/I18nContext';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import MarkdownViewer from '../blocks/markdown/MarkdownViewer';
 import WysiwygEditor, { TXTFormatToolbarProps } from '../blocks/markdown/WysiwygEditor';
@@ -44,21 +45,12 @@ interface LiveEditorProps {
   toolBar?: React.FunctionComponent<TXTFormatToolbarProps>;
 }
 
-const unsupportedText =
-  'Your browser does not support to display this text in its pretty form. Our technicians are on the case.';
-
-const unhealthyText = (
-  <>
-    <p>Some updates could not be taken into account and will be lost.</p>
-    <p>Click on the "rollback" button to restore the previous version</p>
-  </>
-);
-
 function Disclaimer({ children, md }: { children?: React.ReactNode; md: string }) {
+  const i18n = useTranslations();
   return (
     <div>
       <div className={css({ margin: '5px', padding: '5px', border: '1px solid red' })}>
-        <em>{children || unsupportedText}</em>
+        <em>{children || i18n.modules.content.liveEditor.browserNotDisplay}</em>
       </div>
       <pre>{md}</pre>
     </div>
@@ -80,6 +72,7 @@ export default function LiveEditor({
   flyingToolBar,
   toolBar,
 }: LiveEditorProps): JSX.Element {
+  const i18n = useTranslations();
   const dispatch = useAppDispatch();
   const liveSession = useAppSelector(state => state.websockets.sessionId);
 
@@ -98,7 +91,7 @@ export default function LiveEditor({
     return (
       <div>
         <div>
-          <em>disconnected...</em>
+          <em>{i18n.modules.content.liveEditor.disconnected}</em>
         </div>
         <ErrorBoundary fallback={<Disclaimer md={currentValue} />}>
           <MarkdownViewer md={currentValue} />
@@ -116,15 +109,18 @@ export default function LiveEditor({
   } else if (!healthy) {
     return (
       <Flex direction="column">
-        <Disclaimer md="">{unhealthyText}</Disclaimer>
+        <Disclaimer md="">
+          <p>{i18n.modules.content.liveEditor.updatesWillBeLost}</p>
+          <p>{i18n.modules.content.liveEditor.clickRollback}</p>
+        </Disclaimer>
         <Button
-          title="Restore previous version"
+          title={i18n.modules.content.liveEditor.restorePrevVersion}
           icon={faRotateLeft}
           onClick={() => {
             dispatch(API.deletePendingChanges(atId));
           }}
         >
-          Restore previous version
+          {i18n.modules.content.liveEditor.restorePrevVersion}
         </Button>
         <ErrorBoundary fallback={<Disclaimer md={currentValue} />}>
           <MarkdownViewer md={currentValue} />
@@ -134,15 +130,18 @@ export default function LiveEditor({
   } else if (status === 'ERROR') {
     return (
       <Flex direction="column">
-        <Disclaimer md="">{unhealthyText}</Disclaimer>
+        <Disclaimer md="">
+          <p>{i18n.modules.content.liveEditor.updatesWillBeLost}</p>
+          <p>{i18n.modules.content.liveEditor.clickRollback}</p>
+        </Disclaimer>
         <Button
-          title="Restore previous version"
+          title={i18n.modules.content.liveEditor.restorePrevVersion}
           icon={faRotateLeft}
           onClick={() => {
             dispatch(API.deletePendingChanges(atId));
           }}
         >
-          Restore previous version
+          {i18n.modules.content.liveEditor.restorePrevVersion}
         </Button>
         <ErrorBoundary fallback={<Disclaimer md={currentValue} />}>
           <MarkdownViewer md={currentValue} />
@@ -204,5 +203,5 @@ export default function LiveEditor({
       );
     }
   }
-  return <div>not yet implemented</div>;
+  return <div>{i18n.common.error.notImplemented}</div>;
 }

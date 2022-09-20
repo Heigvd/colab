@@ -35,13 +35,15 @@ function TokenWrapper() {
 }
 
 function App(): JSX.Element {
-
-  const defaultLanguage = navigator.languages.map(l => {
-    // remove variant part and turn uppercase
-    return (l.split('-')[0] || '').toUpperCase();
-  }).find(lang => {
-    return languages.includes(lang as Language);
-  }) as Language || 'EN';
+  const defaultLanguage =
+    (navigator.languages
+      .map(l => {
+        // remove variant part and turn uppercase
+        return (l.split('-')[0] || '').toUpperCase();
+      })
+      .find(lang => {
+        return languages.includes(lang as Language);
+      }) as Language) || 'EN';
 
   const [lang, setLang] = useLocalStorage<Language>('colab-language', defaultLanguage);
   const [tipsConfig, setTipsConfig] = useLocalStorage<TipsConfig>('colab-tips-config', {

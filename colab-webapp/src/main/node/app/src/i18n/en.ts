@@ -5,7 +5,7 @@
  * Licensed under the MIT License
  */
 
-import { MessageI18nKey } from 'colab-rest-client';
+import { CardContentStatus, MessageI18nKey } from 'colab-rest-client';
 
 export const en = {
   //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -19,6 +19,7 @@ export const en = {
     close: 'Close',
     delete: 'Delete',
     remove: 'Remove',
+    finalDelete: 'Irremediately delete',
     ok: 'OK',
     open: 'Open',
     show: 'Show',
@@ -30,6 +31,13 @@ export const en = {
     next: 'Next',
     back: 'Back',
     updated: 'Updated',
+    upload: 'Upload',
+    replace: 'Replace',
+    refresh: 'Refresh',
+    change: 'Change',
+    display: 'Display',
+    restore: 'Restore',
+    send: 'Send',
     empty: 'Empty',
     loading: 'Loading...',
     copiedToClipboard: 'Copied to clipboard',
@@ -40,16 +48,29 @@ export const en = {
     langSettings: 'Languages',
     changeLanguage: 'Change language',
     sortBy: 'Sort by: ',
+    filter: 'Filter',
     createdBy: 'created by',
     createdOn: 'Created on',
+    createdAt: 'Created at',
     name: 'Name',
     date: 'Date',
     by: 'By',
     settings: 'Settings',
+    general: 'General',
     about: 'About co.LAB',
     blank: 'Blank',
+    description: 'Description',
+    noDescription: 'No description',
     deprecated: 'Deprecated',
     published: 'Published',
+    project: 'Project',
+    title: 'Title',
+    views: {
+      board: 'Board',
+      hierarchy: 'Hierarchy',
+      activityFlow: 'Activity Flow',
+    },
+    welcome: 'Welcome!',
     //comments: 'comments',
     //commentsAreOptional: 'Comments are optional',
     dateFn: (timestamp: number | null | undefined) => {
@@ -93,6 +114,10 @@ export const en = {
     },
     action: {
       backToHome: 'Back to co.LAB home',
+      backToProjects: 'Back to projects',
+      backProjectRoot: 'Back to project root',
+      backCardView: 'Back to card view',
+      showProjectDetails: 'Show project details',
     },
     error: {
       accessDenied: 'Unfortunately you are not allowed to see this',
@@ -100,15 +125,17 @@ export const en = {
       missingContent: 'Oh there is nothing to display, dear developer please fix it',
       somethingWentWrong: 'Something went wrong',
       unknown: 'Unknown',
+      sorryError: 'Sorry... There was an error',
+      notImplemented: 'Not implemented yet',
     },
     info: {
       pleaseWait: 'Please wait...',
       processing: 'Processing...',
-      tokenNotFound: 'Token not found',
       youAreConnectedAsUser: (user: string): string => `You are currently logged in as "${user}"`,
       nameIsRequired: 'Name is required',
       accessKeyIsRequired: 'Access key is required',
       nothingMatchTag: 'Nothing matches tag selection',
+      writeDescription: 'Write a description here',
     },
   },
 
@@ -139,20 +166,49 @@ export const en = {
       lastname: 'Lastname',
       affiliation: 'Affiliation',
     },
+    user: 'User',
+    account: 'Account',
     missingFirstname: 'Please enter your firstname',
     missingLastname: 'Please enter your lastname',
+    userProfile: 'User profile',
     editProfile: 'Edit profile',
     viewProfile: 'View profile',
     updatePassword: 'Update pasword',
     passwordEditionImpossible: 'You cannot update your password',
+    noUserSelected: 'No user selected',
     editUser: 'Edit user',
+    activeSessions: 'Active sessions',
+    current: 'Current',
   },
   team: {
+    team: 'Team',
     roles: 'Roles',
+    rights: 'Rights',
     members: 'Members',
     generalInvolvement: 'General involvement',
+    resetInvolvement: 'Reset involvement',
     involvementHelper:
       'Add or select an involvement level for all members and roles. You can fine-tune it below by choosing indiviually a different level.  When undefined, the involvement level is calculated based on parent(s) card(s), and then on your rights in the project.',
+    inviteMembers: 'Invite members',
+    inviteNewMember: 'Invite new member',
+    deleteMember: 'Delete team member',
+    removeGuest: 'Remove guest',
+    removeRole: 'Remove role',
+    giveRole: 'Give role',
+    fillRoleName: 'Fill the role name',
+    me: 'me',
+    rolesNames: {
+      owner: 'Owner',
+      projectLeader: 'Project leader',
+      member: 'Member',
+      guest: 'Guest',
+    },
+    sureChangeOwnRights: 'Are you sure you want to change your own rights?',
+    sureDeleteMember: 'Are you sure you want to delete this team member ?',
+    changeOwnRights: 'Change my own rights',
+    oneOwnerPerProject:
+      'You cannot change this right. There must be at least one Owner of the project.',
+    memberAlreadyExist: 'Member with same email already in team',
   },
   //////////////////////////////////////////////////////////////////////////////////////////////////
   // ACTIVITY
@@ -160,9 +216,9 @@ export const en = {
     pendingChanges: 'Some changes were not saved...',
     nothingToDisplay: 'There is nothing to display...',
     anonymous: 'Anonymous',
-    lastSeenAtKey: 'Last seen',
     lastSeenAt: 'Last seen: ',
     lastActivityDate: 'Activity date: ',
+    inconsistentState: 'Inconsistent state',
     notifications: {
       error: 'Oops! An error',
       warning: 'Warning!',
@@ -180,6 +236,7 @@ export const en = {
     users: 'Users',
     loggers: 'Loggers',
     stats: 'Stats',
+    debugger: 'Debugger',
   },
 
   //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -198,8 +255,10 @@ export const en = {
     action: {
       login: 'Login',
       resetPassword: 'Forgot your password ?',
+      changePassword: 'Change password',
       createAnAccount: 'Create an account',
       sendMePassword: 'Send me a new password',
+      newPassword: 'New password',
     },
     info: {
       resetPasswordSent:
@@ -207,9 +266,8 @@ export const en = {
       pendingInvitation: 'Pending invitation',
       reconnecting: 'Reconnecting...',
       checkYourMailbox: 'Check your mailbox!',
-      logoutForPrivacy: 'To ensure your privacy, you have to log out',
-      logoutToContinue: 'In order to continue, you have to log out',
-      butCraftedFor: (user: string): string => `but your link/token has been crafted for "${user}"`,
+      invitationCoLab:
+        "Hi! You have been invited to collaborate on a project in co.LAB. Sign in or create your very own account. Happy colabbin'!",
     },
     error: {
       emailAddressNotValid: 'E-mail address is not valid',
@@ -219,7 +277,9 @@ export const en = {
       passwordTooWeak: 'Password is not strong enough',
       passwordsMismatch: 'Passwords do not match',
       yourPasswordIsWeak: 'Your password is weak',
-      invalidToken: 'Invalid Token',
+      mustBeAuthenticated: 'You must be authenticated',
+      invalidLink: 'Invalid or deprecated link',
+      pleaseRefresh: 'Please try to refresh or contact the admin of your co.LAB project.',
     },
     aai: {
       aaiAccount: 'AAI Account',
@@ -231,15 +291,39 @@ export const en = {
   // MODULES
   modules: {
     project: {
+      labels: {
+        projectDisplaySettings: 'Project display settings',
+        projectSettings: 'Project settings',
+        projects: 'Projects',
+      },
       actions: {
         createProject: 'Create project',
         createAProject: 'Create a project',
+        deleteProject: 'Delete project',
         chooseAModel: 'Choose a model',
         createAProjectFrom: (templateTitle?: string | null): string =>
           `Create a project from ${'"' + templateTitle + '"'}`,
+        editIllustration: 'Edit project illustration',
+        newProject: 'New project',
       },
       info: {
         noProjectSelected: 'No project selected',
+        noProjectYet: "You don't have any project yet",
+        emptyProject: 'Empty project',
+        useBlankProject: "Use this empty project and you'll be free to create a whole new world",
+        deleteConfirmation:
+          'Are you sure you want to delete the whole project? This will delete all cards inside.',
+      },
+      settings: {
+        icon: 'Icon',
+        involvements: {
+          label: 'Involvements',
+        },
+        resources: {
+          label: 'Project Documentation',
+        },
+        missingIcon:
+          'Oh a new icon library, dear developer please make what is needed to display the icon.',
       },
     },
     team: {
@@ -273,6 +357,9 @@ export const en = {
         chooseACardType: 'Choose a model',
       },
       editor: {
+        toolbox: 'toolbox',
+        showToolbox: 'Show toolbox',
+        hideToolbox: 'Hide toolbox',
         toggleToolbox: 'Toggle toolbox',
         fullScreen: 'Full screen mode',
       },
@@ -284,7 +371,14 @@ export const en = {
         locked: 'Locked',
         color: 'Color',
         status: 'Status',
-        statusTooltip: (status: string) => `Status: ${status.toLocaleLowerCase('en')}`,
+        statusTooltip: (status: CardContentStatus) =>
+          `Status: ${en.modules.card.settings.statuses[status].toLocaleLowerCase('en')}`,
+        statuses: {
+          ACTIVE: 'ACTIVE',
+          POSTPONED: 'POSTPONED',
+          ARCHIVED: 'ARCHIVED',
+          REJECTED: 'REJECTED',
+        },
         completionLevelMode: 'Completion level mode',
         cardPosition: 'Card position',
       },
@@ -306,29 +400,56 @@ export const en = {
       none: 'no version',
       untitled: 'New version',
       mimeType: 'MIME type',
+      unknownMimeType: 'Unknown MIME type',
       document: 'Document',
+      unknownDocument: 'Unknown document',
+      documentSettings: 'Document settings',
+      removedDocuments: 'Removed documents',
       mdMode: 'Markdown mode',
       showTree: 'Show tree',
+      tree: 'Tree',
+      orphans: 'Orphans',
+      result: 'Result',
+      uploadFile: 'Upload file',
+      replaceFile: 'Replace file',
       dlFile: 'Download file',
       editBlock: 'Edit block',
       deleteBlock: 'Delete block',
       createText: 'Create text block',
       createFile: 'Create file',
       createLink: 'Create link',
+      emptyLink: 'Empty link',
       moveBlockUpDown: (direction: string): string =>
         `Move block ${direction === 'up' ? 'up' : 'down'}`,
       deleteBlockType: (isText: boolean, isLink: boolean): string =>
         `Delete ${isText ? 'text' : isLink ? 'link' : 'doc'}`,
       confirmDeleteBlock:
         'Are you sure you want to delete this whole block? This will be lost forever.',
+      noFileUploaded: 'No file uploaded',
+      before: 'Before',
+      onTop: 'OnTop',
+      after: 'After',
+      end: 'At the end',
+      liveEditor: {
+        browserNotDisplay:
+          'Your browser does not support to display this text in its pretty form. Our technicians are on the case.',
+        updatesWillBeLost: 'Some updates could not be taken into account and will be lost.',
+        clickRollback: 'Click on the "rollback" button to restore the previous version',
+        disconnected: 'Disconnected...',
+        restorePrevVersion: 'Restore previous version',
+      },
     },
     document: {
       createDocument: 'Create document',
       createADocument: 'Create a document',
       openInNewTab: 'Open in new tab',
+      unknownDocument: 'Unknown document',
     },
     resource: {
       untitled: 'New document',
+      teaser: 'teaser',
+      showTeaser: 'Show teaser',
+      hideTeaser: 'Hide teaser',
       noTeaser: 'There is no teaser',
       noTeaserForNow: 'There is no teaser for the moment. Feel free to fill it.',
       category: 'Category',
@@ -336,6 +457,16 @@ export const en = {
       docDescription: 'Documentation related to the card.',
       docDescriptionWithType:
         'Documentation related to the card. The model may provide basic documentation.',
+      categorytip: 'Group of documents',
+      noResource: 'It does not contain any resource',
+      oneResource: 'It contains 1 resource',
+      xResources: (nbR: number): string => `It contains ${nbR} resources`,
+      onlyForVariant: 'Available only for this variant',
+      backList: 'Back to the list',
+      unpublishMakePrivate: 'Unpublish the resource to make it private for this card',
+      publishMakeAvailableSubs: 'Publish the resource to make it available for subcards',
+      publishedInfo: 'A published resource is available for subcards',
+      unpublishedInfo: 'An unpublished resource is private for this card',
     },
     cardType: {
       cardType: 'Model',
@@ -397,6 +528,7 @@ export const en = {
       tips: 'Display Tips',
       news: 'Display News',
       wip: 'Display work in progress elements',
+      debug: 'Display debug info',
     },
     example: {
       todo: {
@@ -415,8 +547,34 @@ export const en = {
         title: 'WIP Example',
         content: 'Some features not completely finished yet',
       },
+      debug: {
+        title: 'Debug Example',
+        content: 'Some internal data useful to debug',
+      },
     },
     info: { wip: 'Work in progress feature below' },
+  },
+
+  //////////////////////////////////////////////////////////////////////////////////////////////////
+  //Co.LAB info page
+
+  colabPage: {
+    whatColab: 'What is the co.LAB design platform ?',
+    colabDescription:
+      'The design platform is one of the deliverables of the co.LAB project. Our goal is to create an intuitive, friendly and meaningful web platform, that should facilitate the collaboration during serious games design. Two main ingredients are at the heart of the platform:',
+    colabFramework: 'co.LAB framework',
+    supportsCoDesign: 'that supports the co-design serious games.',
+    friendlyInterfaces: 'Friendly and intuitive interfaces',
+    forAll: ' for all user profiles.',
+    slogan:
+      'We want to create a platform for all of you, that let to imagine and design the serious game you need !',
+    contactUs: 'Do not hesitate to contact us for any recommendation you may have.',
+    whatColabProject: 'What is the co.LAB project ?',
+    colabProjectDescription:
+      'The goal of the co.LAB project is to improve the design, development and uses of digital learning games. This goal will be achieved by the development of a collaborative methodological framework associated with a ollaborative digital platform dedicated to co-design, co-development and co-evaluation of digital learning games. The co.LAB project is founded by the Swiss National Science Foundation (SNF) in the frame of the NRP 77 program “Digital Transformation”.',
+    futherInfo: 'For futher information and to contact us: ',
+    colabProject: 'co.LAB project',
+    version: 'Version',
   },
   //////////////////////////////////////////////////////////////////////////////////////////////////
   // Terms of use + data management policy

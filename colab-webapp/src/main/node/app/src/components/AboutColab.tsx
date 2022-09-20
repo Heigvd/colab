@@ -9,6 +9,7 @@ import { css, cx } from '@emotion/css';
 import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import useTranslations from '../i18n/I18nContext';
 import { useVersionDetails } from '../selectors/configSelector';
 import IconButton from './common/element/IconButton';
 import Flex from './common/layout/Flex';
@@ -16,6 +17,7 @@ import Logo from './styling/Logo';
 import { fullPageStyle, paddedContainerStyle, space_M } from './styling/style';
 
 export default function AboutColab(): JSX.Element {
+  const i18n = useTranslations();
   const navigate = useNavigate();
 
   const version = useVersionDetails();
@@ -24,7 +26,7 @@ export default function AboutColab(): JSX.Element {
     <Flex direction="column" className={cx(fullPageStyle, paddedContainerStyle)} align="stretch">
       <IconButton
         icon={faArrowLeft}
-        title={'Back'}
+        title={i18n.common.back}
         onClick={() => {
           navigate(-1);
         }}
@@ -41,56 +43,36 @@ export default function AboutColab(): JSX.Element {
         />
         <Flex direction="column" gap={space_M} className={css({ maxWidth: '800px' })}>
           <div>
-            <h2>What is the co.LAB design platform ?</h2>
-            <p>
-              The design platform is one of the deliverables of the co.LAB project. Our goal is to
-              create an intuitive, friendly and meaningful web platform, that should facilitate the
-              collaboration during serious games design. Two main ingredients are at the heart of
-              the platform:
-            </p>
+            <h2>{i18n.colabPage.whatColab}</h2>
+            <p>{i18n.colabPage.colabDescription}</p>
             <ul>
               <li>
                 <b>
-                  The{' '}
                   <a href="https://games.jmir.org/2021/3/e28674/" target="_blank" rel="noreferrer">
-                    co.LAB framework
+                    {i18n.colabPage.colabFramework}
                   </a>
                 </b>{' '}
-                that support the co-design serious games.
+                {i18n.colabPage.supportsCoDesign}
               </li>
               <li>
-                <b>Friendly and intuitive interfaces</b> for all user profiles.
+                <b>{i18n.colabPage.friendlyInterfaces}</b>
+                {i18n.colabPage.forAll}
               </li>
             </ul>
-            <p>
-              We want to create a platform for all of you, that let to imagine and design the
-              serious game you need !
-            </p>
-            <p>Do not hesitate to contact us for any recommendation you may have.</p>
+            <p>{i18n.colabPage.slogan}</p>
+            <p>{i18n.colabPage.contactUs}</p>
           </div>
           <div>
-            <h2>What is the co.LAB project ?</h2>
-            <p>
-              The goal of the co.LAB project is to improve the design, development and uses of
-              digital learning games. This goal will be achieved by the development of a
-              collaborative methodological framework associated with a ollaborative digital platform
-              dedicated to co-design, co-development and co-evaluation of digital learning games.
-              The co.LAB project is founded by the Swiss National Science Foundation (SNF) in the
-              frame of the NRP 77 program “Digital Transformation”.
-            </p>
+            <h2>{i18n.colabPage.whatColabProject}</h2>
+            <p>{i18n.colabPage.colabProjectDescription}</p>
           </div>
           <div>
             <p>
               <b>
-                Do you want to learn more about the{' '}
+                {i18n.colabPage.futherInfo}
                 <a href="https://www.colab-project.ch/" target="_blank" rel="noreferrer">
-                  co.LAB project
-                </a>{' '}
-                or{' '}
-                <a href="https://www.colab-project.ch/about" target="_blank" rel="noreferrer">
-                  contact us
+                  {i18n.colabPage.colabProject}
                 </a>
-                ?
               </b>
             </p>
           </div>
@@ -105,7 +87,7 @@ export default function AboutColab(): JSX.Element {
             color: 'var(--darkDisabledGray)',
           })}
         >
-          version {version.dockerImages ? version.dockerImages : 'dev'} (build #
+          {i18n.colabPage.version} {version.dockerImages ? version.dockerImages : 'dev'} (build #
           {version.buildNumber ? version.buildNumber : 'ninja'})
         </div>
       )}

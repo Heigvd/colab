@@ -8,6 +8,7 @@
 import { css, cx } from '@emotion/css';
 import { Project } from 'colab-rest-client';
 import * as React from 'react';
+import useTranslations from '../../i18n/I18nContext';
 import { useAndLoadProjectModels } from '../../selectors/projectSelector';
 import ItemThumbnailsSelection from '../common/collection/ItemThumbnailsSelection';
 import AvailabilityStatusIndicator from '../common/element/AvailabilityStatusIndicator';
@@ -41,6 +42,7 @@ export default function ProjectModelSelector({
   onSelect,
   whenDone,
 }: ProjectModelSelectorProps): JSX.Element {
+  const i18n = useTranslations();
   const { projects, status } = useAndLoadProjectModels();
 
   const sortedProjects = projects.sort(sortResources);
@@ -85,14 +87,18 @@ export default function ProjectModelSelector({
 
               <div className={css({ padding: '10px' })}>
                 <h3 className={css({ marginTop: space_S })}>
-                  {!isEmptyProject ? (item.name ? item.name : 'New project') : 'Empty project'}
+                  {!isEmptyProject
+                    ? item.name
+                      ? item.name
+                      : i18n.modules.project.actions.newProject
+                    : i18n.modules.project.info.emptyProject}
                 </h3>
                 <p className={cx(textSmall, lightText, multiLineEllipsis)}>
                   {!isEmptyProject
                     ? item.description
                       ? item.description
-                      : 'No description'
-                    : "Use this empty project and you'll be free to create a whole new world"}
+                      : i18n.common.noDescription
+                    : i18n.modules.project.info.useBlankProject}
                 </p>
               </div>
             </>

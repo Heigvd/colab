@@ -66,7 +66,6 @@ public class PresenceRestEndpoint {
      * @param presence presence data
      */
     @PUT
-    @Path("{projectId: [0-9]*}")
     public void updateUserPresence(TouchUserPresence presence) {
         presenceManager.updateUserPresence(presence);
     }
@@ -87,7 +86,7 @@ public class PresenceRestEndpoint {
      */
     @DELETE
     @AdminResource
-    public void clearAlltPresenceList() {
+    public void clearAllPresenceList() {
         presenceManager.clearAllPresenceLists();
     }
 }

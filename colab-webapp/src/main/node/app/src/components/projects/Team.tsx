@@ -12,6 +12,7 @@ import {
   faPaperPlane,
   faPen,
   faPlus,
+  faSkullCrossbones,
   faTimes,
   faTrash,
   faUser,
@@ -64,33 +65,6 @@ const titleCellStyle = css({
   borderBottom: '1px solid var(--lightGray)',
 });
 
-function prettyPrint(position: HierarchicalPosition) {
-  switch (position) {
-    case 'OWNER':
-      return 'Owner';
-    case 'LEADER':
-      return 'Project leader';
-    case 'INTERNAL':
-      return 'Member';
-    case 'GUEST':
-      return 'Guest';
-  }
-}
-
-function buildOption(position: HierarchicalPosition) {
-  return {
-    value: position,
-    label: prettyPrint(position),
-  };
-}
-
-const options = [
-  buildOption('OWNER'),
-  buildOption('LEADER'),
-  buildOption('INTERNAL'),
-  buildOption('GUEST'),
-];
-
 export function PositionSelector({
   value,
   onChange,
@@ -111,24 +85,48 @@ export function PositionSelector({
     },
     [onChange],
   );
+  function prettyPrint(position: HierarchicalPosition) {
+    switch (position) {
+      case 'OWNER':
+        return i18n.team.rolesNames.owner;
+      case 'LEADER':
+        return i18n.team.rolesNames.projectLeader;
+      case 'INTERNAL':
+        return i18n.team.rolesNames.member;
+      case 'GUEST':
+        return i18n.team.rolesNames.guest;
+    }
+  }
+  function buildOption(position: HierarchicalPosition) {
+    return {
+      value: position,
+      label: prettyPrint(position),
+    };
+  }
+  const options = [
+    buildOption('OWNER'),
+    buildOption('LEADER'),
+    buildOption('INTERNAL'),
+    buildOption('GUEST'),
+  ];
   const currentValue = buildOption(value);
 
   return (
     <div>
       {isMyRights && (
         <OpenCloseModal
-          title={'Change my own rights'}
+          title={i18n.team.changeOwnRights}
           collapsedChildren={<></>}
           status={open ? 'EXPANDED' : 'COLLAPSED'}
         >
           {collapse => (
             <Flex direction="column" align="stretch" grow={1}>
               <Flex grow={1} direction="column">
-                Are you sure you want to change your own rights?
+                {i18n.team.sureChangeOwnRights}
               </Flex>
               <Flex justify="flex-end">
                 <Button
-                  title={'Cancel'}
+                  title={i18n.common.cancel}
                   onClick={() => {
                     collapse();
                     setOpen(false);
@@ -138,7 +136,7 @@ export function PositionSelector({
                   {i18n.common.cancel}
                 </Button>
                 <Button
-                  title={'Change'}
+                  title={i18n.common.change}
                   onClick={() => {
                     collapse();
                   }}
@@ -147,7 +145,7 @@ export function PositionSelector({
                     marginLeft: space_M,
                   })}
                 >
-                  {'Change'}
+                  {i18n.common.change}
                 </Button>
               </Flex>
             </Flex>
@@ -216,15 +214,14 @@ const Member = ({ member, roles, isTheOnlyOwner }: MemberProps) => {
           addNotification({
             status: 'OPEN',
             type: 'WARN',
-            message:
-              'You cannot change this right. There must be at least one Owner of the project.',
+            message: i18n.team.oneOwnerPerProject,
           }),
         );
       } else {
         dispatch(API.setMemberPosition({ memberId: member.id!, position: newPosition }));
       }
     },
-    [dispatch, isTheOnlyOwner, member.id],
+    [dispatch, i18n.team.oneOwnerPerProject, isTheOnlyOwner, member.id],
   );
 
   /*
@@ -243,7 +240,7 @@ const Member = ({ member, roles, isTheOnlyOwner }: MemberProps) => {
         {/* TODO: Can edit only our name if not owner or PL. */}
         <DiscreetInput
           value={member.displayName || ''}
-          placeholder="username"
+          placeholder={i18n.authentication.field.username}
           onChange={updateDisplayName}
         />
       </>
@@ -263,15 +260,17 @@ const Member = ({ member, roles, isTheOnlyOwner }: MemberProps) => {
   } else if (member.userId == null) {
     // no user, no dn
     username = <span>{i18n.authentication.info.pendingInvitation}</span>;
-  } else if (user == null) {
+  } else if (user == 'LOADING' || user == null) {
     username = <InlineLoading />;
+  } else if (user == 'ERROR') {
+    username = <FontAwesomeIcon icon={faSkullCrossbones} />;
   } else {
     const cn = getDisplayName(user);
     username = (
       <>
         {cn}
         {user.affiliation ? ` (${user.affiliation})` : ''}
-        <IconButton icon={faPen} title="Edit" onClick={() => updateDisplayName(cn)} />
+        <IconButton icon={faPen} title={i18n.common.edit} onClick={() => updateDisplayName(cn)} />
       </>
     );
   }
@@ -300,16 +299,12 @@ const Member = ({ member, roles, isTheOnlyOwner }: MemberProps) => {
                     display: 'flex',
                     alignItems: 'center',
                   })}
-                  message={
-                    <p>
-                      Are you <strong>sure</strong> you want to delete this team member ?
-                    </p>
-                  }
+                  message={<p>{i18n.team.sureDeleteMember}</p>}
                   onConfirm={() => {
                     startLoading();
                     dispatch(API.deleteMember(member)).then(stopLoading);
                   }}
-                  confirmButtonLabel={'Delete team member'}
+                  confirmButtonLabel={i18n.team.deleteMember}
                   isConfirmButtonLoading={isLoading}
                 />
               ),
@@ -318,7 +313,7 @@ const Member = ({ member, roles, isTheOnlyOwner }: MemberProps) => {
           ]}
         />
       ) : (
-        <FontAwesomeIcon icon={faUser} title="me" />
+        <FontAwesomeIcon icon={faUser} title={i18n.team.me} />
       )}
       {/*       <OpenCloseModal
         title="Change your own rightd"
@@ -340,7 +335,7 @@ const Member = ({ member, roles, isTheOnlyOwner }: MemberProps) => {
             key={role.id}
             icon={hasRole ? faCheck : faTimes}
             iconColor={hasRole ? successColor : errorColor}
-            title={hasRole ? 'Remove role' : 'Give role'}
+            title={hasRole ? i18n.team.removeRole : i18n.team.giveRole}
             onClick={() => {
               if (hasRole) {
                 dispatch(API.removeRole({ roleId: role.id!, memberId: member.id! }));
@@ -375,7 +370,7 @@ function CreateRole({ project }: { project: Project }): JSX.Element {
         <>
           <InlineInput
             value={name}
-            placeholder="Fill the role name"
+            placeholder={i18n.team.fillRoleName}
             autoWidth
             saveMode="ON_CONFIRM"
             onChange={newValue =>
@@ -407,6 +402,7 @@ export interface RoleProps {
 }
 
 const RoleDisplay = ({ role }: RoleProps) => {
+  const i18n = useTranslations();
   const dispatch = useAppDispatch();
 
   const saveCb = React.useCallback(
@@ -433,7 +429,7 @@ const RoleDisplay = ({ role }: RoleProps) => {
     >
       <DiscreetInput
         value={role.name || ''}
-        placeholder="Fill the role name"
+        placeholder={i18n.team.fillRoleName}
         onChange={saveCb}
         maxWidth="150px"
       />
@@ -446,6 +442,7 @@ export interface TeamProps {
 }
 
 export default function Team({ project }: TeamProps): JSX.Element {
+  const i18n = useTranslations();
   const dispatch = useAppDispatch();
   const projectId = project.id;
 
@@ -488,11 +485,11 @@ export default function Team({ project }: TeamProps): JSX.Element {
           })}
         >
           <div className={cx(titleCellStyle, css({ gridColumnStart: 1, gridColumnEnd: 3 }))}>
-            Members
+            {i18n.team.members}
           </div>
-          <div className={titleCellStyle}>Rights</div>
+          <div className={titleCellStyle}>{i18n.team.rights}</div>
           <div className={cx(titleCellStyle, css({ gridColumnStart: 4, gridColumnEnd: 'end' }))}>
-            Roles
+            {i18n.team.roles}
           </div>
           <div />
           <div />
@@ -518,9 +515,9 @@ export default function Team({ project }: TeamProps): JSX.Element {
           })}
         </div>
         <div>
-          <p className={textSmall}>Invite new member</p>
+          <p className={textSmall}>{i18n.team.inviteNewMember}</p>
           <input
-            placeholder="email"
+            placeholder={i18n.authentication.field.emailAddress}
             type="text"
             onChange={e => setInvite(e.target.value)}
             value={invite}
@@ -529,7 +526,7 @@ export default function Team({ project }: TeamProps): JSX.Element {
           <IconButtonWithLoader
             className={linkStyle}
             icon={faPaperPlane}
-            title="Send"
+            title={i18n.common.send}
             isLoading={isValidNewMember}
             onClick={() => {
               if (isValidNewMember) {
@@ -541,9 +538,9 @@ export default function Team({ project }: TeamProps): JSX.Element {
                   }),
                 ).then(() => setInvite(''));
               } else if (!isNewMember(invite)) {
-                setError('Member with same email already in team');
+                setError(i18n.team.memberAlreadyExist);
               } else {
-                setError('Not an email adress');
+                setError(i18n.authentication.error.emailAddressNotValid);
               }
             }}
           />

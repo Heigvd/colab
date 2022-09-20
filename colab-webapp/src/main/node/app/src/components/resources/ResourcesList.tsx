@@ -7,7 +7,7 @@
 
 import { css, cx } from '@emotion/css';
 import * as React from 'react';
-import useTranslations from '../../i18n/I18nContext';
+import useTranslations, { useLanguage } from '../../i18n/I18nContext';
 import { useAndLoadTextOfDocument } from '../../selectors/documentSelector';
 import Tips from '../common/element/Tips';
 import Flex from '../common/layout/Flex';
@@ -19,9 +19,13 @@ import { getKey, getTheDirectResource, ResourceAndRef } from './resourcesCommonT
  */
 
 // for the moment, the resources are ordered by id (= creation date)
-function sortResources(a: ResourceAndRef, b: ResourceAndRef): number {
-  return (a.targetResource.title || '').localeCompare(b.targetResource.title || '');
-  // return (a.targetResource.id || 0) - (b.targetResource.id || 0);
+function sortResources(lang: string) {
+  return (a: ResourceAndRef, b: ResourceAndRef): number => {
+    return (a.targetResource.title || '').localeCompare(b.targetResource.title || '', lang, {
+      numeric: true,
+    });
+    // return (a.targetResource.id || 0) - (b.targetResource.id || 0);
+  };
 }
 
 // ********************************************************************************************** //
@@ -37,6 +41,8 @@ export default function ResourcesList({
   selectResource,
   displayResourceItem,
 }: ResourcesListProps): JSX.Element {
+  const lang = useLanguage();
+
   const listsByCategories: Record<string, ResourceAndRef[]> = React.useMemo(() => {
     const reducedByCategory = resources.reduce<Record<string, ResourceAndRef[]>>((acc, current) => {
       const category = getTheDirectResource(current).category || '';
@@ -48,11 +54,11 @@ export default function ResourcesList({
     }, {});
 
     Object.values(reducedByCategory).forEach(list => {
-      list.sort(sortResources);
+      list.sort(sortResources(lang));
     });
 
     return reducedByCategory;
-  }, [resources]);
+  }, [resources, lang]);
 
   return (
     <Flex

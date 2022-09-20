@@ -6,7 +6,7 @@
  */
 
 import { css, cx } from '@emotion/css';
-import { Card, InvolvementLevel, TeamMember, TeamRole } from 'colab-rest-client';
+import { Card, entityIs, InvolvementLevel, TeamMember, TeamRole } from 'colab-rest-client';
 import * as React from 'react';
 import * as API from '../../API/api';
 import { getDisplayName } from '../../helper';
@@ -115,7 +115,7 @@ export function MemberACL({ member, acl }: { member: TeamMember; acl: CardAcl })
 
   return (
     <Flex align="center">
-      <div className={labelStyle}>{user != null ? getDisplayName(user) : member.id}:</div>
+      <div className={labelStyle}>{entityIs(user, 'User') ? getDisplayName(user) : member.id}:</div>
       <InvolvementSelector self={self} effectives={effective} onChange={onChangeCb} />
     </Flex>
   );

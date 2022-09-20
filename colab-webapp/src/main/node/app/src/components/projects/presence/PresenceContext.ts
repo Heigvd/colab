@@ -9,18 +9,18 @@ import * as React from 'react';
 
 import { TouchUserPresence } from 'colab-rest-client';
 import { throttle } from 'lodash';
-import { getLogger } from '../../../logger';
 import * as API from '../../../API/api';
-import { useAppDispatch, useAppSelector } from '../../../store/hooks';
+import { getLogger } from '../../../logger';
 import { useProjectBeingEdited } from '../../../selectors/projectSelector';
+import { useAppDispatch, useAppSelector } from '../../../store/hooks';
 
 type ShortTouchUserPresence = Omit<TouchUserPresence, 'wsSessionId' | 'projectId'>;
 
-type TouchFnParam = ShortTouchUserPresence | ((current: ShortTouchUserPresence) => ShortTouchUserPresence);
+type TouchFnParam =
+  | ShortTouchUserPresence
+  | ((current: ShortTouchUserPresence) => ShortTouchUserPresence);
 
-type TouchFn = (
-  presence: TouchFnParam,
-) => void;
+type TouchFn = (presence: TouchFnParam) => void;
 
 interface PresenceContext {
   touch: TouchFn;
@@ -45,7 +45,7 @@ export function usePresenceContext(): PresenceContext {
 
   const touch: (presence: ShortTouchUserPresence) => void = React.useMemo(() => {
     if (projectId != null && wsSessionId != null) {
-      logger.warn('Rebuild Presence Throttle');
+      logger.debug('Rebuild Presence Throttle');
       return throttle((presence: ShortTouchUserPresence) => {
         dispatch(
           API.makePresenceKnown({ ...presence, projectId: projectId, wsSessionId: wsSessionId }),
@@ -59,7 +59,7 @@ export function usePresenceContext(): PresenceContext {
 
   const touchCb = React.useCallback(
     (presence: TouchFnParam) => {
-      if (typeof presence === 'function'){
+      if (typeof presence === 'function') {
         presenceRef.current = presence(presenceRef.current);
       } else {
         presenceRef.current = presence;

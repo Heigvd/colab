@@ -682,6 +682,7 @@ function rebuildHierarchy(domTrees: DomTree[]): DomTree[] {
   let rootTree: DomTree | undefined = undefined;
 
   const listContext: (HTMLUListElement | HTMLOListElement)[] = [];
+  const listLevels: number[] = [];
 
   domTrees.forEach(child => {
     if (child.root.combined.tag == 'LI') {
@@ -694,6 +695,7 @@ function rebuildHierarchy(domTrees: DomTree[]): DomTree[] {
         //const listType = liMajor.tagType === 'UListItem' ? 'UL' : 'OL';
         const listTag = document.createElement('UL') as HTMLUListElement | HTMLOListElement;
         listContext.push(listTag);
+        listLevels.push(itemLevel);
         rootTree = {
           root: {
             ...child.root,
@@ -716,8 +718,23 @@ function rebuildHierarchy(domTrees: DomTree[]): DomTree[] {
 
         listContext.push(listTag);
         currentListLevel = itemLevel;
+        listLevels.push(itemLevel);
       } else if (itemLevel < currentListLevel) {
-        listContext.pop();
+        // How far back should we go?
+        let level = listLevels.findIndex(level => {
+          return level > itemLevel;
+        });
+        // no greater level found, keep same level
+        if (level < 0) {
+          level = listContext.length;
+        }
+        // make sure not to kill the top-level list
+        if (level < 1) {
+          level = 1;
+        }
+
+        listLevels.length = level;
+        listContext.length = level;
         currentListLevel = itemLevel;
       }
 

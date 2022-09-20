@@ -7,11 +7,11 @@
 
 import * as React from 'react';
 import { en } from './en';
-//import { fr } from './fr';
+import { fr } from './fr';
 
 export const languages = ['FR', 'EN'] as const;
 
-export type Language = typeof languages[number]
+export type Language = typeof languages[number];
 
 export interface I18nState {
   lang: Language;
@@ -29,8 +29,13 @@ export default function useTranslations(): typeof en {
   const { lang } = React.useContext(I18nCtx);
 
   if (lang === 'FR') {
-    return en; // TODO
+    return fr;
   } else {
     return en;
   }
+}
+
+export function useLanguage(): Language {
+  const { lang } = React.useContext(I18nCtx);
+  return lang;
 }

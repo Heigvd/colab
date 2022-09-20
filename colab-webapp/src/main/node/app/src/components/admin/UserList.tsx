@@ -5,7 +5,7 @@
  * Licensed under the MIT License
  */
 
-import { css } from '@emotion/css';
+import { css, cx } from '@emotion/css';
 import {
   faCheck,
   faSearch,
@@ -17,11 +17,11 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { User } from 'colab-rest-client';
 import * as React from 'react';
 import { grantAdminRight, revokeAdminRight } from '../../API/api';
+import { regexFilter } from '../../helper';
 import useTranslations from '../../i18n/I18nContext';
 import { useCurrentUser } from '../../selectors/userSelector';
 import { useAppDispatch } from '../../store/hooks';
-import Button from '../common/element/Button';
-import IconButton from '../common/element/IconButton';
+import { ConfirmIconButton } from '../common/element/ConfirmIconButton';
 
 const UserComp = ({ user }: { user: User }) => {
   const i18n = useTranslations();
@@ -39,9 +39,9 @@ const UserComp = ({ user }: { user: User }) => {
       <div>{user.commonname}</div>
       <div>{i18n.common.ago(user.activityDate)}</div>
       <div>
-        <IconButton
+        <ConfirmIconButton
           icon={user.admin ? faCheck : faTimes}
-          onClick={() => {
+          onConfirm={() => {
             dispatch(user.admin ? revokeAdminRight(user) : grantAdminRight(user));
           }}
           title={user.admin ? 'Grant right' : 'Revoke right'}
@@ -67,6 +67,18 @@ interface UserListProps {
   users: User[];
 }
 
+const headerStyle = css({
+  fontWeight: 'bold',
+  borderBottom: '1px solid',
+});
+
+const sortableHeaderStyle = cx(
+  headerStyle,
+  css({
+    cursor: 'pointer',
+  }),
+);
+
 interface HeaderProps {
   text: string;
   sortKey?: keyof User;
@@ -85,12 +97,13 @@ const Header = ({ sortKey, text }: HeaderProps) => {
     const colour = sortKey === sortBy.key ? 'black' : 'lightgrey';
     const icon = sortBy.direction > 0 || sortKey != sortBy.key ? faSortAlphaDown : faSortAlphaUp;
     return (
-      <Button reverseOrder icon={icon} iconColor={colour} onClick={onClickCk}>
+      <div className={sortableHeaderStyle} onClick={onClickCk}>
         {text}
-      </Button>
+        <FontAwesomeIcon icon={icon} color={colour} />
+      </div>
     );
   } else {
-    return <div>{text}</div>;
+    return <div className={headerStyle}>{text}</div>;
   }
 };
 
@@ -99,7 +112,6 @@ const Headers = () => {
     <div
       className={css({
         display: 'contents',
-        fontWeight: 'bold',
       })}
     >
       <Header sortKey="username" text="Username" />
@@ -112,6 +124,15 @@ const Headers = () => {
     </div>
   );
 };
+
+function matchFn(regex: RegExp, user: User): boolean {
+  return !!(
+    (user.username && user.username.match(regex) != null) ||
+    (user.firstname && user.firstname.match(regex) != null) ||
+    (user.lastname && user.lastname.match(regex) != null) ||
+    (user.commonname && user.commonname.match(regex) != null)
+  );
+}
 
 export default function UserList({ users }: UserListProps): JSX.Element {
   const [search, setSearch] = React.useState('');
@@ -137,19 +158,6 @@ export default function UserList({ users }: UserListProps): JSX.Element {
     });
   }, []);
 
-  const matchSearch = (user: User) => {
-    if (search) {
-      return (
-        (user.username && user.username.match(search) != null) ||
-        (user.firstname && user.firstname.match(search) != null) ||
-        (user.lastname && user.lastname.match(search) != null) ||
-        (user.commonname && user.commonname.match(search) != null)
-      );
-    } else {
-      return true;
-    }
-  };
-
   const sortFn = (a: User, b: User): number => {
     const vA = a[sortBy.key] || '';
     const vB = b[sortBy.key] || '';
@@ -161,7 +169,7 @@ export default function UserList({ users }: UserListProps): JSX.Element {
     }
   };
 
-  const filterSortedList = users.filter(matchSearch).sort(sortFn);
+  const filterSortedList = (search ? regexFilter(users, search, matchFn) : users).sort(sortFn);
 
   return (
     <>

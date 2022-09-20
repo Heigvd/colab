@@ -9,6 +9,7 @@ import { CardType as CardTypeOnly, CardTypeRef, entityIs } from 'colab-rest-clie
 import { uniq } from 'lodash';
 import * as React from 'react';
 import * as API from '../API/api';
+import { useLanguage } from '../i18n/I18nContext';
 import { customColabStateEquals, useAppDispatch, useAppSelector } from '../store/hooks';
 import { AvailabilityStatus, ColabState } from '../store/store';
 import { CardTypeAllInOne, CardTypeAndStatus } from '../types/cardTypeDefinition';
@@ -224,6 +225,8 @@ export function useAndLoadCardType(id: number | null | undefined): CardTypeAndSt
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 function useProjectCardTypes(): CardTypeAllInOne[] {
+  const lang = useLanguage();
+
   return useAppSelector(state => {
     const result: CardTypeAllInOne[] = [];
 
@@ -248,7 +251,9 @@ function useProjectCardTypes(): CardTypeAllInOne[] {
       });
     }
 
-    return result;
+    return result.sort((a, b) => {
+      return (a.title ?? '').localeCompare(b.title ?? '', lang);
+    });
   }, customColabStateEquals);
 }
 

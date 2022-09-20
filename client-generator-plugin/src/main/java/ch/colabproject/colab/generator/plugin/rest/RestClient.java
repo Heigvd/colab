@@ -146,11 +146,11 @@ public class RestClient {
                 if (entity instanceof InputStream) {
                     InputStream stream = (InputStream) entity;
                     String contentType = response.getHeaderString("Content-Type");
-                    if (contentType.equals("application/json")
-                        || contentType.equals("text/json")) {
+                    if (contentType.startsWith("application/json")
+                        || contentType.startsWith("text/json")) {
                         return readEntity(stream, type);
-                    } else if (contentType.equals("text/plain")
-                        || contentType.equals("text/html")) {
+                    } else if (contentType.startsWith("text/plain")
+                        || contentType.startsWith("text/html")) {
                         if (type.getRawType() == String.class) {
                             return (T) readTextualEntity(stream);
                         } else {

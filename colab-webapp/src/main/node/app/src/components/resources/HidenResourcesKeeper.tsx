@@ -11,6 +11,7 @@ import { faArrowUp, faBoxArchive, faGhost, faTrash } from '@fortawesome/free-sol
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import * as React from 'react';
 import * as API from '../../API/api';
+import useTranslations from '../../i18n/I18nContext';
 import { useAppDispatch } from '../../store/hooks';
 import IconButton from '../common/element/IconButton';
 import Flex from '../common/layout/Flex';
@@ -31,6 +32,7 @@ export default function ResourcesLoserKeeper({
   resources,
   collapsedClassName,
 }: ResourcesLoserKeeperProps): JSX.Element {
+  const i18n = useTranslations();
   const dispatch = useAppDispatch();
 
   const displayResourceItem = React.useCallback(
@@ -47,10 +49,10 @@ export default function ResourcesLoserKeeper({
         {resource.targetResource.title}
         <Flex>
           <OpenCloseModal
-            title="Document"
+            title={i18n.modules.content.document}
             collapsedChildren={
               <FontAwesomeIcon
-                title="Display"
+                title={i18n.common.display}
                 icon={faEye}
                 className={cx(iconButton, lightIconButtonStyle)}
               />
@@ -65,7 +67,7 @@ export default function ResourcesLoserKeeper({
             }}
           </OpenCloseModal>
           <IconButton
-            title="Restore"
+            title={i18n.common.restore}
             icon={faBoxArchive}
             layer={{ layerIcon: faArrowUp, transform: 'shrink-6 up-10' }}
             onClick={() => dispatch(API.giveAccessToResource(resource))}
@@ -74,7 +76,7 @@ export default function ResourcesLoserKeeper({
           />
           {resource.isDirectResource ? (
             <IconButton
-              title="Irremediately delete"
+              title={i18n.common.finalDelete}
               icon={faTrash}
               onClick={() => dispatch(API.deleteResource(resource.targetResource))}
               className={lightIconButtonStyle}
@@ -88,19 +90,25 @@ export default function ResourcesLoserKeeper({
         </Flex>
       </Flex>
     ),
-    [dispatch],
+    [
+      dispatch,
+      i18n.common.display,
+      i18n.common.finalDelete,
+      i18n.common.restore,
+      i18n.modules.content.document,
+    ],
   );
 
   return (
     <OpenCloseModal
-      title="Removed documents"
+      title={i18n.modules.content.removedDocuments}
       showCloseButton
       collapsedChildren={
         <Flex justify="center" align="center" className={collapsedClassName}>
           <span className={css({ marginRight: space_S, fontSize: '0.8em' })}>
             {resources.length}
           </span>
-          <FontAwesomeIcon title="Deserted documents" icon={faGhost} />
+          <FontAwesomeIcon title={i18n.modules.content.removedDocuments} icon={faGhost} />
         </Flex>
       }
       className={css({ '&:hover': { textDecoration: 'none' } })}

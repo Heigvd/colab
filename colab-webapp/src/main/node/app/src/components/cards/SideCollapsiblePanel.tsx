@@ -130,7 +130,7 @@ export default function SideCollapsiblePanel<T extends { [key: string]: Item }>(
             justify="center"
             align="center"
             className={cx(
-              css({ color: 'var(--lightGray)', padding: space_M }),
+              css({ padding: space_M }),
               {
                 [bgActiveStyleRight]: setOpenKey
                   ? openKey === key && direction === 'RIGHT'

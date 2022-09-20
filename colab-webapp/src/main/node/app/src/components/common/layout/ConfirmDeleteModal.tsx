@@ -5,8 +5,6 @@
  * Licensed under the MIT License
  */
 import { css, cx } from '@emotion/css';
-import { faExclamationTriangle } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import * as React from 'react';
 import useTranslations from '../../../i18n/I18nContext';
 import { errorColor, space_M } from '../../styling/style';
@@ -54,21 +52,14 @@ export default function ConfirmDeleteModal({
     >
       {collapse => (
         <Flex direction="column" align="stretch" grow={1}>
-          <Flex grow={1} direction="column">
-            <div>
-              <FontAwesomeIcon icon={faExclamationTriangle} />
-              <FontAwesomeIcon icon={faExclamationTriangle} />
-              <FontAwesomeIcon icon={faExclamationTriangle} />
-            </div>
-            {message}
-          </Flex>
+          {message}
           <Flex justify="flex-end">
             <Button onClick={() => collapse()} invertedButton>
               {cancelButtonLabel ? cancelButtonLabel : i18n.common.cancel}
             </Button>
             <ButtonWithLoader
               ref={mainButtonRef}
-              title={confirmButtonLabel ? confirmButtonLabel : 'Delete'}
+              title={confirmButtonLabel ? confirmButtonLabel : i18n.common.delete}
               onClick={() => onInternalConfirm(collapse)}
               className={css({
                 backgroundColor: errorColor,
@@ -76,7 +67,7 @@ export default function ConfirmDeleteModal({
               })}
               isLoading={isConfirmButtonLoading}
             >
-              {confirmButtonLabel ? confirmButtonLabel : 'Delete'}
+              {confirmButtonLabel ? confirmButtonLabel : i18n.common.delete}
             </ButtonWithLoader>
           </Flex>
         </Flex>

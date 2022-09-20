@@ -13,6 +13,7 @@ import {
   faPen,
   faPercent,
   faTrash,
+  faUsers,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Card, CardContent } from 'colab-rest-client';
@@ -37,6 +38,7 @@ import {
   variantTitle,
 } from '../styling/style';
 import CardContentStatus from './CardContentStatus';
+import CardInvolvement from './CardInvolvement';
 import CardLayout from './CardLayout';
 import CardSettings from './CardSettings';
 import CompletionEditor from './CompletionEditor';
@@ -225,6 +227,19 @@ export default function CardThumb({
                     }
                   />
                   <Route
+                    path={`${cardId}/involvements`}
+                    element={
+                      <Modal
+                        title={i18n.modules.card.involvements}
+                        onClose={() => closeRouteCb('involvements')}
+                        showCloseButton
+                        className={css({ height: '580px', width: '600px' })}
+                      >
+                        {() => <CardInvolvement card={card} />}
+                      </Modal>
+                    }
+                  />
+                  <Route
                     path={`${cardId}/v/${variant?.id}/completion`}
                     element={
                       <Modal
@@ -286,6 +301,15 @@ export default function CardThumb({
                       action: () => {
                         navigate(`${cardId}/settings`);
                       },
+                    },
+                    {
+                      value: 'involvements',
+                      label: (
+                        <>
+                          <FontAwesomeIcon icon={faUsers} /> {i18n.modules.card.involvements}
+                        </>
+                      ),
+                      action: () => navigate(`${cardId}/involvements`),
                     },
                     {
                       value: 'completion',

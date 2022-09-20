@@ -6,6 +6,7 @@
  */
 
 import { CardContent, User, WithId } from 'colab-rest-client';
+import { escapeRegExp } from 'lodash';
 import logger from './logger';
 
 export const emailFormat = /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
@@ -87,15 +88,36 @@ function statusOrder(c: CardContent) {
   }
 }
 
-export function sortCardContents(contents: CardContent[]): CardContent[] {
+export function sortCardContents(contents: CardContent[], lang: string): CardContent[] {
   return contents.sort((a, b) => {
     const aStatus = statusOrder(a);
     const bStatus = statusOrder(b);
 
     if (aStatus === bStatus) {
-      return (a.title || '').localeCompare(b.title || '', 'en', { numeric: true });
+      return (a.title || '').localeCompare(b.title || '', lang, { numeric: true });
     } else {
       return aStatus - bStatus;
     }
+  });
+}
+
+export function regexFilter<T>(
+  list: T[],
+  search: string,
+  matchFn: (regex: RegExp, item: T) => boolean,
+): T[] {
+  if (search.length <= 0) {
+    return list;
+  }
+
+  const regexes = search.split(/\s+/).map(token => new RegExp(escapeRegExp(token), 'i'));
+
+  return list.filter(item => {
+    return regexes.reduce<boolean>((acc, regex) => {
+      if (acc == false) {
+        return false;
+      }
+      return matchFn(regex, item);
+    }, true);
   });
 }

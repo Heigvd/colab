@@ -57,12 +57,20 @@ export const getApplicationPath = () => {
 
 const restClient = ColabClient(getApplicationPath(), error => {
   // TODO see how it could be auto generated as everything that is handled by ColabNotification.message
-  if (entityIs(error, 'HttpException') || error instanceof Error || typeof error === 'string') {
+  if (entityIs(error, 'HttpException') || typeof error === 'string') {
     getStore().dispatch(
       addNotification({
         status: 'OPEN',
         type: 'ERROR',
         message: error,
+      }),
+    );
+  } else if (error instanceof Error) {
+    getStore().dispatch(
+      addNotification({
+        status: 'OPEN',
+        type: 'ERROR',
+        message: `${error.name}: ${error.message}`,
       }),
     );
   } else {
@@ -425,13 +433,12 @@ export const closeCurrentProject = createAsyncThunk(
   },
 );
 
-// TODO sandra work in progress
 export const duplicateProject = createAsyncThunk('project/duplicate', async (project: Project) => {
   if (project.id) {
     const parameters: DuplicationParam = {
       '@class': 'DuplicationParam',
       withRoles: true,
-      withTeamMembers: true,
+      withTeamMembers: false,
       withCardTypes: true,
       withCardsStructure: true,
       withDeliverables: true,
@@ -584,9 +591,8 @@ export const clearPresenceList = createAsyncThunk('presence/clear', async (proje
   return await restClient.PresenceRestEndpoint.clearProjectPresenceList(projectId);
 });
 
-
 export const clearAllPresenceLists = createAsyncThunk('presence/clearAll', async () => {
-  return await restClient.PresenceRestEndpoint.clearAlltPresenceList();
+  return await restClient.PresenceRestEndpoint.clearAllPresenceList();
 });
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////

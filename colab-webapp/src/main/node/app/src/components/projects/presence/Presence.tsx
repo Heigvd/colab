@@ -6,14 +6,17 @@
  */
 
 import { css, cx } from '@emotion/css';
-import { TeamMember, UserPresence } from 'colab-rest-client';
+import { entityIs, TeamMember, UserPresence } from 'colab-rest-client';
 import * as React from 'react';
 import { useNavigate } from 'react-router-dom';
+import { getUser } from '../../../API/api';
+import { getDisplayName } from '../../../helper';
 import useTranslations from '../../../i18n/I18nContext';
 import { usePresence } from '../../../selectors/presenceSelector';
 import { useAndLoadProjectTeam } from '../../../selectors/projectSelector';
+import { useAppDispatch, useAppSelector } from '../../../store/hooks';
 import Flex from '../../common/layout/Flex';
-import { normalThemeMode } from '../../styling/style';
+import { normalThemeMode, space_M } from '../../styling/style';
 
 const presenceIconStyle = (color: string) =>
   cx(
@@ -126,10 +129,30 @@ interface PresenceIconProps {
   member: TeamMember | undefined;
 }
 
+function hoverPos(hover: false | [number, number]): string | undefined {
+  if (hover) {
+    return cx(
+      normalThemeMode,
+      css({
+        background: 'var(--bgColor)',
+        zIndex: 6,
+        position: 'fixed',
+        padding: space_M,
+        border: '1px solid grey',
+        borderRadius: '6px',
+        top: hover[1],
+        left: hover[0],
+      }),
+    );
+  }
+}
+
 function PresenceIcon({ presence, member }: PresenceIconProps): JSX.Element {
-  const displayName = member?.displayName || 'Anonymous';
-  const letter = (displayName && displayName[0]) || 'A';
+  const dispatch = useAppDispatch();
+
   const i18n = useTranslations();
+
+  const [hover, setHover] = React.useState<false | [number, number]>(false);
 
   //  const debug = `
   //  card: ${presence.cardId}
@@ -137,9 +160,33 @@ function PresenceIcon({ presence, member }: PresenceIconProps): JSX.Element {
   //  doc: ${presence.documentId} [${presence.selectionStart || 0} ; ${presence.selectionEnd || 0} ]
   //  `;
 
-  const tooltip = i18n.modules.presence.date(displayName, presence.date);
-
   const navigate = useNavigate();
+
+  const userId = member?.userId;
+
+  const user = useAppSelector(state => {
+    if (userId != null) {
+      return state.users.users[userId];
+    } else {
+      // no user id looks like a pending invitation
+      return null;
+    }
+  });
+
+  React.useEffect(() => {
+    if (userId != null && user === undefined) {
+      // member is linked to a user. This user is not yet known
+      // load it
+      dispatch(getUser(userId));
+    }
+  }, [userId, user, dispatch]);
+
+  const displayName =
+    member?.displayName || (entityIs(user, 'User') ? getDisplayName(user) : '') || 'Anonymous';
+
+  const letter = (displayName && displayName[0]) || 'A';
+
+  const tooltip = i18n.modules.presence.date(displayName, presence.date);
 
   const onClickCb = React.useCallback(() => {
     if (presence.cardId != null && presence.cardContentId != null) {
@@ -154,10 +201,25 @@ function PresenceIcon({ presence, member }: PresenceIconProps): JSX.Element {
     }
   }, [presence, navigate]);
 
+  const enterCb = React.useCallback((e: React.MouseEvent) => {
+    setHover([e.clientX, e.clientY]);
+  }, []);
+
+  const leaveCb = React.useCallback(() => setHover(false), []);
+
   return (
-    <div title={tooltip} onClick={onClickCb} className={presenceIconStyle(getUserColor(presence))}>
-      {letter}
-    </div>
+    <>
+      <div
+        className={presenceIconStyle(getUserColor(presence))}
+        onClick={onClickCb}
+        onMouseEnter={enterCb}
+        onMouseLeave={leaveCb}
+      >
+        {letter}
+      </div>
+
+      {hover !== false ? <div className={hoverPos(hover)}>{tooltip}</div> : null}
+    </>
   );
 }
 
