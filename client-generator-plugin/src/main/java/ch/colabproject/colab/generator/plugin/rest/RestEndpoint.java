@@ -167,6 +167,25 @@ public class RestEndpoint {
     }
 
     /**
+     * Add a new line and indent next line.
+     *
+     * @param sb sink
+     */
+    private void newLineNoIndent(StringBuilder sb) {
+        sb.append(System.lineSeparator());
+    }
+
+/**
+     * add two new line
+     *
+     * @param sb sink
+     */
+    private void twoNewLine(StringBuilder sb) {
+        sb.append(System.lineSeparator());
+        newLine(sb);
+    }
+
+    /**
      * Guess a Class based on its simple name.
      *
      * @param simpleName  simple name of the class
@@ -401,8 +420,7 @@ public class RestEndpoint {
         StringBuilder sb = new StringBuilder();
         Logger.debug("Generate client class " + this);
 
-        newLine(sb);
-        newLine(sb);
+        twoNewLine(sb);
         sb.append("/**");
         ClassDoc classDoc = javadoc.get(this.className);
         if (classDoc != null) {
@@ -413,18 +431,21 @@ public class RestEndpoint {
         }
         sb.append(" * {@link ").append(this.className).append(" } client");
         newLine(sb);
-        sb.append(" */")
-            .append("public ").append(this.simpleClassName).append("ClientImpl ")
+        sb.append(" */");
+
+        newLine(sb);
+        sb.append("public ").append(this.simpleClassName).append("ClientImpl ")
             .append(camelcasify(this.simpleClassName))
             .append(" = new ").append(this.simpleClassName).append("ClientImpl();");
-        newLine(sb);
+        twoNewLine(sb);
 
         sb.append("/**");
         newLine(sb);
         sb.append(" * {@link ").append(this.className).append("} client implementation");
         newLine(sb);
-        sb.append(" */")
-            .append("public class ")
+        sb.append(" */");
+        newLine(sb);
+        sb.append("public class ")
             .append(this.simpleClassName).append("ClientImpl").append(" {");
         indent++;
 
@@ -434,8 +455,7 @@ public class RestEndpoint {
             // JAVADOC
             ////////////////////////////////////////////////////////////////////////////////////////
             // @TODO extract effective java doc from api and reuse it here
-            newLine(sb);
-            newLine(sb);
+            twoNewLine(sb);
             sb.append("/**");
             newLine(sb);
             sb.append(" * ").append(method.getHttpMethod()).append(" ")
@@ -459,6 +479,12 @@ public class RestEndpoint {
             newLine(sb);
             sb.append(" */");
             newLine(sb);
+
+            if (method.isDeprecated()){
+                sb.append("@Deprecated");
+                newLine(sb);
+            }
+
             ////////////////////////////////////////////////////////////////////////////////////////
             // SIGNATURE
             ////////////////////////////////////////////////////////////////////////////////////////
@@ -627,7 +653,7 @@ public class RestEndpoint {
         sb.append(" * ").append(method.getHttpMethod()).append(" ")
             .append(method.getFullPath());
         newLine(sb);
-        sb.append(" * <p> ");
+        sb.append(" * <p>");
         String methodDoc = classDoc != null
             ? classDoc.getMethods().getOrDefault(method.getName(), "")
             : "";
@@ -691,7 +717,7 @@ public class RestEndpoint {
         newLine(sb);
         sb.append(this.simpleClassName).append(" : {");
         indent++;
-        newLine(sb);
+        newLineNoIndent(sb);
 
         restMethods.forEach(method -> {
 
@@ -702,7 +728,7 @@ public class RestEndpoint {
 
             Runnable buildPath = () -> {
                 sb.append("const queryString : string[] = [];");
-                newLine(sb);
+                newLineNoIndent(sb);
 
                 method.getQueryParameters().forEach(queryParam -> {
                     sb.append("if (").append(queryParam.getName()).append(" != null){");
@@ -787,7 +813,7 @@ public class RestEndpoint {
                             indent--;
                             newLine(sb);
                             sb.append("}");
-                            newLine(sb);
+                            newLineNoIndent(sb);
                         });
                         newLine(sb);
                     }
@@ -823,6 +849,7 @@ public class RestEndpoint {
         });
 
         indent--;
+        newLine(sb);
         sb.append("},");
         return sb.toString();
     }
@@ -958,6 +985,8 @@ public class RestEndpoint {
 
                     restMethod
                         .setAdminResource(method.getAnnotation(AdminResource.class) != null);
+                    restMethod
+                        .setDeprecated(method.getAnnotation(Deprecated.class) != null);
                     restMethod.setAuthenticationRequired(
                         method.getAnnotation(AuthenticationRequired.class) != null);
 

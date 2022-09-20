@@ -6,6 +6,7 @@
  */
 package ch.colabproject.colab.api.microchanges.model;
 
+import ch.colabproject.colab.generator.model.annotations.ExtractJavaDoc;
 import java.io.Serializable;
 import javax.validation.constraints.NotNull;
 import org.apache.commons.text.StringEscapeUtils;
@@ -15,6 +16,7 @@ import org.apache.commons.text.StringEscapeUtils;
  *
  * @author maxence
  */
+@ExtractJavaDoc
 public class MicroChange implements Serializable {
 
     private static final long serialVersionUID = 1L;

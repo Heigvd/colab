@@ -7,10 +7,12 @@
 package ch.colabproject.colab.generator.model.tools;
 
 
+import ch.colabproject.colab.generator.model.annotations.ExtractJavaDoc;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Writer;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Stream;
@@ -133,9 +135,14 @@ public class JavaDocExtractor extends AbstractProcessor {
         }
 
         /*
-         * Process @Entity
+         * Process @Entity & @ExtractJavadoc
          */
-        for (final Element element : roundEnv.getElementsAnnotatedWith(Entity.class)) {
+
+        Set<Element> elements = new HashSet<>();
+        elements.addAll(roundEnv.getElementsAnnotatedWith(Entity.class));
+        elements.addAll(roundEnv.getElementsAnnotatedWith(ExtractJavaDoc.class));
+
+        for (final Element element : elements) {
             if (element instanceof TypeElement) {
                 final ClassDoc classDoc = this.getClassDoc(element);
                 final Map<String, String> fields = classDoc.getFields();
@@ -159,7 +166,7 @@ public class JavaDocExtractor extends AbstractProcessor {
         }
 
         if (roundEnv.processingOver()) {
-            processingEnv.getMessager().printMessage(Kind.MANDATORY_WARNING, "WRITE IT");
+            processingEnv.getMessager().printMessage(Kind.NOTE, "WRITE IT");
 
             try {
                 final FileObject fileObject = processingEnv.getFiler().createResource(

@@ -6,11 +6,14 @@
  */
 package ch.colabproject.colab.api.ws.message;
 
+import ch.colabproject.colab.generator.model.annotations.ExtractJavaDoc;
+
 /**
  * Ping message
  *
  * @author maxence
  */
+@ExtractJavaDoc
 public class WsPing extends WsMessage {
 
     private static final long serialVersionUID = 1L;

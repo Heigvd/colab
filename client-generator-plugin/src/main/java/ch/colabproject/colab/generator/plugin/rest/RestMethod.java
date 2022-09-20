@@ -74,6 +74,11 @@ public class RestMethod {
     private boolean adminResource;
 
     /**
+     * Is the method deprecated?
+     */
+    private boolean deprecated;
+
+    /**
      * does this class restricted to authenticated users ?
      */
     private boolean authenticationRequired;
@@ -122,6 +127,24 @@ public class RestMethod {
      */
     public void setAdminResource(boolean adminResource) {
         this.adminResource = adminResource;
+    }
+
+    /**
+     * Get the value of deprecated
+     *
+     * @return the value of deprecated
+     */
+    public boolean isDeprecated() {
+        return deprecated;
+    }
+
+    /**
+     * Set the value of deprecated
+     *
+     * @param deprecated new value of deprecated
+     */
+    public void setDeprecated(boolean deprecated) {
+        this.deprecated = deprecated;
     }
 
     /**

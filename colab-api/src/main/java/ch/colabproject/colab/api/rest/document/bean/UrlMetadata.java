@@ -6,6 +6,7 @@
  */
 package ch.colabproject.colab.api.rest.document.bean;
 
+import ch.colabproject.colab.generator.model.annotations.ExtractJavaDoc;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
@@ -15,6 +16,7 @@ import javax.validation.constraints.NotNull;
  *
  * @author maxence
  */
+@ExtractJavaDoc
 public class UrlMetadata implements Serializable {
 
     private static final long serialVersionUID = 1L;

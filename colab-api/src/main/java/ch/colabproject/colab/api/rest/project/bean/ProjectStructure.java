@@ -8,6 +8,7 @@ package ch.colabproject.colab.api.rest.project.bean;
 
 import ch.colabproject.colab.api.model.card.Card;
 import ch.colabproject.colab.api.model.card.CardContent;
+import ch.colabproject.colab.generator.model.annotations.ExtractJavaDoc;
 import java.util.Set;
 import javax.validation.constraints.NotNull;
 
@@ -16,6 +17,7 @@ import javax.validation.constraints.NotNull;
  *
  * @author maxence
  */
+@ExtractJavaDoc
 public class ProjectStructure {
 
     /** Id of the root card */
