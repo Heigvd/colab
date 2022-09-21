@@ -6,10 +6,9 @@
  */
 
 import { css, cx } from '@emotion/css';
-import { faArrowLeft, faPaperclip, faTrash } from '@fortawesome/free-solid-svg-icons';
+import { faArrowLeft, faTrash } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import * as React from 'react';
-import { ReflexContainer, ReflexElement } from 'react-reflex';
 import { useNavigate, useParams } from 'react-router-dom';
 import Creatable from 'react-select/creatable';
 import * as API from '../../../API/api';
@@ -33,16 +32,7 @@ import Flex from '../../common/layout/Flex';
 import { DocTextWrapper } from '../../documents/DocTextItem';
 import { ResourceCallContext } from '../../resources/resourcesCommonType';
 import ResourcesMainView from '../../resources/ResourcesMainView';
-import { ResourceListNb } from '../../resources/summary/ResourcesListSummary';
-import {
-  cardStyle,
-  errorColor,
-  localTitleStyle,
-  space_M,
-  space_S,
-  textSmall,
-} from '../../styling/style';
-import SideCollapsiblePanel from './../SideCollapsiblePanel';
+import { cardStyle, errorColor, localTitleStyle, space_M, space_S } from '../../styling/style';
 
 interface CardTypeEditorProps {
   className?: string;
@@ -100,184 +90,143 @@ export default function CardTypeEditor({ className, usage }: CardTypeEditorProps
             }),
           )}
         >
-          <ReflexContainer orientation={'vertical'}>
-            <ReflexElement
-              className={'left-pane ' + css({ display: 'flex' })}
-              resizeHeight={false}
-              minSize={150}
+          <Flex
+            direction="column"
+            grow={1}
+            className={css({
+              padding: '10px',
+              overflow: 'auto',
+            })}
+            align="stretch"
+          >
+            <Flex
+              justify="space-between"
+              className={css({
+                paddingBottom: space_S,
+                borderBottom: '1px solid var(--lightGray)',
+              })}
             >
-              <Flex
-                direction="column"
-                grow={1}
-                className={css({
-                  padding: '10px',
-                  overflow: 'auto',
-                })}
-                align="stretch"
-              >
-                <Flex
-                  justify="space-between"
-                  className={css({
-                    paddingBottom: space_S,
-                    borderBottom: '1px solid var(--lightGray)',
-                  })}
-                >
-                  <DiscreetInput
-                    value={cardType.title || ''}
-                    placeholder={i18n.modules.cardType.titlePlaceholder}
-                    onChange={newValue =>
-                      dispatch(API.updateCardTypeTitle({ ...cardType, title: newValue }))
-                    }
-                    inputDisplayClassName={localTitleStyle}
-                  />
-                </Flex>
-                <Flex direction="column" grow={1} align="stretch">
-                  <Flex
-                    className={css({ margin: space_M + ' 0' })}
-                    direction="column"
-                    align="stretch"
-                  >
-                    <DocTextWrapper id={cardType.purposeId}>
-                      {text => (
-                        <LabeledTextArea
-                          label={i18n.modules.cardType.purpose}
-                          value={text || ''}
-                          placeholder={i18n.modules.cardType.info.explainPurpose}
-                          onChange={(newValue: string) => {
-                            if (cardType.purposeId) {
-                              dispatch(
-                                updateDocumentText({ id: cardType.purposeId, textData: newValue }),
-                              );
-                            }
-                          }}
-                          rows={8}
-                          inputDisplayClassName={css({ minWidth: '100%' })}
-                        />
-                      )}
-                    </DocTextWrapper>
-                  </Flex>
-                  <Flex
-                    direction="column"
-                    align="stretch"
-                    className={css({
-                      alignSelf: 'flex-start',
-                      minWidth: '40%',
-                      margin: space_S + ' 0',
-                    })}
-                  >
-                    <Creatable
-                      isMulti={true}
-                      value={cardType.tags.map(tag => ({ label: tag, value: tag }))}
-                      options={options}
-                      onChange={tagsOptions => {
-                        if (tagsOptions.length > 0) {
+              <DiscreetInput
+                value={cardType.title || ''}
+                placeholder={i18n.modules.cardType.titlePlaceholder}
+                onChange={newValue =>
+                  dispatch(API.updateCardTypeTitle({ ...cardType, title: newValue }))
+                }
+                inputDisplayClassName={localTitleStyle}
+              />
+            </Flex>
+            <Flex direction="column" grow={1} align="stretch">
+              <Flex className={css({ margin: space_M + ' 0' })} direction="column" align="stretch">
+                <DocTextWrapper id={cardType.purposeId}>
+                  {text => (
+                    <LabeledTextArea
+                      label={i18n.modules.cardType.purpose}
+                      value={text || ''}
+                      placeholder={i18n.modules.cardType.info.explainPurpose}
+                      onChange={(newValue: string) => {
+                        if (cardType.purposeId) {
                           dispatch(
-                            API.updateCardTypeTags({
-                              ...cardType,
-                              tags: tagsOptions.map(o => o.value),
+                            updateDocumentText({
+                              id: cardType.purposeId,
+                              textData: newValue,
                             }),
                           );
                         }
                       }}
+                      rows={8}
+                      inputDisplayClassName={css({ minWidth: '100%' })}
                     />
-                  </Flex>
-                  <Toggler
-                    value={cardType.published || undefined}
-                    label={i18n.common.published}
-                    tip={i18n.modules.cardType.info.infoPublished(usage === 'currentProject')}
-                    onChange={() =>
-                      dispatch(
-                        API.updateCardTypePublished({
-                          ...cardType,
-                          published: !cardType.published,
-                        }),
-                      )
-                    }
-                  />
-                  <Toggler
-                    value={cardType.deprecated || undefined}
-                    label={i18n.common.deprecated}
-                    tip={i18n.modules.cardType.info.infoDeprecated}
-                    onChange={() =>
-                      dispatch(
-                        API.updateCardTypeDeprecated({
-                          ...cardType,
-                          deprecated: !cardType.deprecated,
-                        }),
-                      )
-                    }
-                  />
-                  <ConfirmDeleteModal
-                    buttonLabel={
-                      <Button
-                        invertedButton
-                        className={cx(css({ color: errorColor, borderColor: errorColor }))}
-                        clickable
-                      >
-                        <FontAwesomeIcon icon={faTrash} /> {i18n.common.delete}
-                      </Button>
-                    }
-                    className={css({
-                      '&:hover': { textDecoration: 'none' },
-                      display: 'flex',
-                      alignItems: 'center',
-                    })}
-                    message={
-                      <p>
-                        <Tips tipsType="TODO">
-                          Make test if model is used in card(s). Disable or hide this delete option
-                          if used.
-                        </Tips>
-                        {i18n.modules.cardType.action.confirmDeleteType}
-                      </p>
-                    }
-                    onConfirm={() => {
-                      if (project && cardType.kind === 'own') {
-                        dispatch(API.deleteCardType(cardType));
-                        navigate('../');
-                      }
-                    }}
-                    confirmButtonLabel={i18n.modules.cardType.action.deleteType}
-                  />
-                </Flex>
+                  )}
+                </DocTextWrapper>
               </Flex>
-            </ReflexElement>
-            <ReflexElement
-              className={'right-pane ' + css({ display: 'flex', minWidth: '50%' })}
-              resizeHeight={false}
-              resizeWidth={false}
-              maxSize={50}
-            >
-              <SideCollapsiblePanel
-                direction="RIGHT"
-                openKey={'resources'}
-                items={{
-                  resources: {
-                    icon: faPaperclip,
-                    nextToIconElement: (
-                      <div className={textSmall}>
-                        {' '}
-                        (<ResourceListNb context={resourceContext} />)
-                      </div>
-                    ),
-                    title: i18n.modules.resource.documentation,
-                    children: (
-                      <ResourcesMainView
-                        contextData={resourceContext}
-                        //accessLevel={ userAcl.write ? 'WRITE' : userAcl.read ? 'READ' : 'DENIED'}
-                        // TODO manage the user rights for editing resources
-                        // TODO work in progress
-                        accessLevel="WRITE"
-                      />
-                    ),
-                  },
-                }}
-                defaultOpenKey={'resources'}
-                className={css({ flexGrow: 1 })}
-                cannotClose
+              <Flex
+                direction="column"
+                align="stretch"
+                className={css({
+                  alignSelf: 'flex-start',
+                  minWidth: '40%',
+                  margin: space_S + ' 0',
+                })}
+              >
+                <Creatable
+                  isMulti={true}
+                  value={cardType.tags.map(tag => ({ label: tag, value: tag }))}
+                  options={options}
+                  onChange={tagsOptions => {
+                    if (tagsOptions.length > 0) {
+                      dispatch(
+                        API.updateCardTypeTags({
+                          ...cardType,
+                          tags: tagsOptions.map(o => o.value),
+                        }),
+                      );
+                    }
+                  }}
+                />
+              </Flex>
+              <Toggler
+                value={cardType.published || undefined}
+                label={i18n.common.published}
+                tip={i18n.modules.cardType.info.infoPublished(usage === 'currentProject')}
+                onChange={() =>
+                  dispatch(
+                    API.updateCardTypePublished({
+                      ...cardType,
+                      published: !cardType.published,
+                    }),
+                  )
+                }
               />
-            </ReflexElement>
-          </ReflexContainer>
+              <Toggler
+                value={cardType.deprecated || undefined}
+                label={i18n.common.deprecated}
+                tip={i18n.modules.cardType.info.infoDeprecated}
+                onChange={() =>
+                  dispatch(
+                    API.updateCardTypeDeprecated({
+                      ...cardType,
+                      deprecated: !cardType.deprecated,
+                    }),
+                  )
+                }
+              />
+              <ConfirmDeleteModal
+                buttonLabel={
+                  <Button
+                    invertedButton
+                    className={cx(css({ color: errorColor, borderColor: errorColor }))}
+                    clickable
+                  >
+                    <FontAwesomeIcon icon={faTrash} /> {i18n.common.delete}
+                  </Button>
+                }
+                className={css({
+                  '&:hover': { textDecoration: 'none' },
+                  display: 'flex',
+                  alignItems: 'center',
+                })}
+                message={
+                  <p>
+                    <Tips tipsType="TODO">
+                      Make test if model is used in card(s). Disable or hide this delete option if
+                      used.
+                    </Tips>
+                    {i18n.modules.cardType.action.confirmDeleteType}
+                  </p>
+                }
+                onConfirm={() => {
+                  if (project && cardType.kind === 'own') {
+                    dispatch(API.deleteCardType(cardType));
+                    navigate('../');
+                  }
+                }}
+                confirmButtonLabel={i18n.modules.cardType.action.deleteType}
+              />
+            </Flex>
+          </Flex>
+          <Flex className={css({ borderLeft: '1px solid var(--lightGray)', width: '50%' })}>
+            <ResourcesMainView contextData={resourceContext} accessLevel="WRITE" />
+          </Flex>
         </Flex>
       </Flex>
     );

@@ -56,7 +56,6 @@ const commonStyle = cx(
     overflow: 'auto',
     maxHeight: '500px',
     maxWidth: '500px',
-    whiteSpace: 'nowrap',
   }),
 );
 

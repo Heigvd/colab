@@ -68,7 +68,11 @@ import CardInvolvement from './CardInvolvement';
 import CardSettings from './CardSettings';
 import CompletionEditor from './CompletionEditor';
 import ContentSubs from './ContentSubs';
-import SideCollapsiblePanel from './SideCollapsiblePanel';
+import {
+  SideCollapsibleCTX,
+  SideCollapsibleMenu,
+  SideCollapsiblePanelBody,
+} from './SideCollapsiblePanel';
 import { computeNav, VariantPager } from './VariantSelector';
 
 interface CardEditorProps {
@@ -173,7 +177,6 @@ export default function CardEditor({
   const [markDownMode, setMarkDownMode] = React.useState(false);
   const [editToolbar, setEditToolbar] = React.useState(defaultDocEditorContext.editToolbar);
   const [openKey, setOpenKey] = React.useState<string | undefined>(undefined);
-
   const TXToptions = {
     showTree: showTree,
     setShowTree: setShowTree,
@@ -188,7 +191,32 @@ export default function CardEditor({
     cardContentId: variant.id,
     hasSeveralVariants: hasVariants,
   };
-
+  const sideBarItems = {
+    resources: {
+      icon: faPaperclip,
+      nextToIconElement: (
+        <div className={textSmall}>
+          {' '}
+          (<ResourceListNb context={resourceContext} />)
+        </div>
+      ),
+      title: i18n.modules.resource.documentation,
+      nextToTitleElement: (
+        <Tips>
+          {card.cardTypeId
+            ? i18n.modules.resource.docDescriptionWithType
+            : i18n.modules.resource.docDescription}
+        </Tips>
+      ),
+      children: (
+        <ResourcesMainView
+          contextData={resourceContext}
+          accessLevel={!readOnly ? 'WRITE' : canRead ? 'READ' : 'DENIED'}
+        />
+      ),
+      className: css({ overflow: 'auto' }),
+    },
+  };
   //const { stickyNotesForDest } = useStickyNoteLinksForDest(card.id);
   const closeRouteCb = React.useCallback(
     (route: string) => {
@@ -218,8 +246,7 @@ export default function CardEditor({
         >
           <Flex
             grow={1}
-            direction="row"
-            justify="space-between"
+            direction="column"
             align="stretch"
             className={cx(
               cardStyle,
@@ -230,348 +257,107 @@ export default function CardEditor({
               }),
             )}
           >
-            <ReflexContainer orientation={'vertical'}>
-              <ReflexElement
-                className={'left-pane ' + css({ display: 'flex' })}
-                resizeHeight={false}
-                minSize={150}
-              >
-                <DocEditorCTX.Provider
-                  value={{
-                    selectedDocId,
-                    setSelectedDocId,
-                    editMode,
-                    setEditMode,
-                    editToolbar,
-                    setEditToolbar,
-                    TXToptions,
-                  }}
-                >
-                  <Flex direction="column" grow={1} align="stretch">
-                    <Flex
-                      direction="column"
-                      grow={1}
-                      className={css({
-                        overflow: 'auto',
-                      })}
-                      align="stretch"
-                    >
-                      <Flex direction="column" align="stretch">
-                        <Flex
-                          justify="space-between"
-                          className={css({
-                            alignItems: 'center',
-                            padding: space_S,
-                            borderBottom:
-                              card.color && card.color != '#ffffff'
-                                ? '5px solid ' + card.color
-                                : '1px solid var(--lightGray)',
-                          })}
-                        >
-                          <Flex align="center">
-                            {variant.frozen && (
-                              <FontAwesomeIcon
-                                className={css({ padding: `0 ${space_S}` })}
-                                icon={faLock}
-                                title={i18n.modules.card.infos.cardLocked}
-                                color={'var(--darkGray)'}
-                              />
-                            )}
-                            <CardContentStatus mode="icon" status={variant.status} />
-                            <DiscreetInput
-                              value={card.title || ''}
-                              placeholder={i18n.modules.card.untitled}
-                              readOnly={readOnly}
-                              onChange={newValue =>
-                                dispatch(API.updateCard({ ...card, title: newValue }))
-                              }
-                              inputDisplayClassName={localTitleStyle}
-                            />
-                            {hasVariants && (
-                              <>
-                                <span className={variantTitle}>&#xFE58;</span>
-                                <DiscreetInput
-                                  value={
-                                    variant.title && variant.title.length > 0
-                                      ? variant.title
-                                      : i18n.modules.card.variant + `${variantNumber}`
-                                  }
-                                  placeholder={i18n.modules.content.untitled}
-                                  readOnly={readOnly}
-                                  onChange={newValue =>
-                                    dispatch(API.updateCardContent({ ...variant, title: newValue }))
-                                  }
-                                  inputDisplayClassName={variantTitle}
-                                />
-                              </>
-                            )}
-                            {hasCardType && (
-                              <IconButton
-                                icon={faInfoCircle}
-                                title={i18n.modules.card.showCardType}
-                                className={cx(lightIconButtonStyle)}
-                                onClick={() =>
-                                  setShowTypeDetails(showTypeDetails => !showTypeDetails)
-                                }
-                              />
-                            )}
-                          </Flex>
-                          <Flex>
-                            {/* handle modal routes*/}
-                            <Routes>
-                              <Route
-                                path="settings"
-                                element={
-                                  <Modal
-                                    title={i18n.modules.card.settings.title}
-                                    onClose={() => closeRouteCb('settings')}
-                                    showCloseButton
-                                    className={css({ height: '580px' })}
-                                  >
-                                    {closeModal => (
-                                      <CardSettings
-                                        onClose={closeModal}
-                                        card={card}
-                                        variant={variant}
-                                      />
-                                    )}
-                                  </Modal>
-                                }
-                              />
-                              <Route
-                                path="involvements"
-                                element={
-                                  <Modal
-                                    title={i18n.modules.card.involvements}
-                                    onClose={() => closeRouteCb('involvements')}
-                                    showCloseButton
-                                    className={css({ height: '580px', width: '600px' })}
-                                  >
-                                    {() => <CardInvolvement card={card} />}
-                                  </Modal>
-                                }
-                              />
-                              <Route
-                                path="completion"
-                                element={
-                                  <Modal
-                                    title={i18n.modules.card.editCompletion}
-                                    onClose={() => closeRouteCb('completion')}
-                                    showCloseButton
-                                    modalBodyClassName={css({ alignItems: 'center' })}
-                                    onEnter={close => close()}
-                                    footer={close => (
-                                      <Flex
-                                        grow={1}
-                                        justify="center"
-                                        className={css({ margin: space_S })}
-                                      >
-                                        <Button onClick={close}>{i18n.common.ok}</Button>
-                                      </Flex>
-                                    )}
-                                  >
-                                    {() =>
-                                      variant && (
-                                        <Flex direction="column" justify="center" align="center">
-                                          <CompletionEditor variant={variant} />
-                                        </Flex>
-                                      )
-                                    }
-                                  </Modal>
-                                }
-                              />
-                            </Routes>
-                            <IconButton
-                              title={i18n.modules.card.editor.fullScreen}
-                              icon={fullScreen ? faCompressArrowsAlt : faExpandArrowsAlt}
-                              onClick={() => setFullScreen(fullScreen => !fullScreen)}
-                              className={cx(lightIconButtonStyle, css({ padding: space_S }))}
-                            />
-                            <DropDownMenu
-                              icon={faEllipsisV}
-                              valueComp={{ value: '', label: '' }}
-                              buttonClassName={cx(
-                                lightIconButtonStyle,
-                                css({ marginLeft: space_S, padding: space_S }),
-                              )}
-                              entries={[
-                                {
-                                  value: 'settings',
-                                  label: (
-                                    <>
-                                      <FontAwesomeIcon icon={faCog} /> {i18n.common.settings}
-                                    </>
-                                  ),
-                                  action: () => navigate('settings'),
-                                },
-                                {
-                                  value: 'involvements',
-                                  label: (
-                                    <>
-                                      <FontAwesomeIcon icon={faUsers} />{' '}
-                                      {i18n.modules.card.involvements}
-                                    </>
-                                  ),
-                                  action: () => navigate('involvements'),
-                                },
-                                {
-                                  value: 'completion',
-                                  label: (
-                                    <>
-                                      <FontAwesomeIcon icon={faPercent} />{' '}
-                                      {i18n.modules.card.completion}
-                                    </>
-                                  ),
-                                  action: () => navigate('completion'),
-                                },
-                                {
-                                  value: 'createVariant',
-                                  label: (
-                                    <>
-                                      <FontAwesomeIcon icon={faWindowRestore} />{' '}
-                                      {i18n.modules.card.createVariant}
-                                    </>
-                                  ),
-                                  action: () => {
-                                    dispatch(API.createCardContentVariantWithBlockDoc(cardId)).then(
-                                      payload => {
-                                        if (payload.meta.requestStatus === 'fulfilled') {
-                                          if (entityIs(payload.payload, 'CardContent')) {
-                                            goto(card, payload.payload);
-                                          }
-                                        }
-                                      },
-                                    );
-                                  },
-                                },
-                                {
-                                  value: 'delete',
-                                  label: (
-                                    <ConfirmDeleteModal
-                                      buttonLabel={
-                                        <div
-                                          className={cx(
-                                            css({ color: errorColor }),
-                                            modalEntryStyle,
-                                          )}
-                                        >
-                                          <FontAwesomeIcon icon={faTrash} />
-                                          {i18n.modules.card.deleteCardVariant(hasVariants)}
-                                        </div>
-                                      }
-                                      className={css({
-                                        '&:hover': { textDecoration: 'none' },
-                                        display: 'flex',
-                                        alignItems: 'center',
-                                      })}
-                                      message={
-                                        <p>
-                                          {i18n.modules.card.confirmDeleteCardVariant(hasVariants)}
-                                        </p>
-                                      }
-                                      onConfirm={() => {
-                                        startLoading();
-                                        if (hasVariants) {
-                                          dispatch(API.deleteCardContent(variant)).then(() => {
-                                            navigate(
-                                              `../edit/${card.id}/v/${variantPager?.next.id}`,
-                                            );
-                                            stopLoading();
-                                          });
-                                        } else {
-                                          dispatch(API.deleteCard(card)).then(() => {
-                                            navigate('../');
-                                            stopLoading();
-                                          });
-                                        }
-                                      }}
-                                      confirmButtonLabel={i18n.modules.card.deleteCardVariant(
-                                        hasVariants,
-                                      )}
-                                      isConfirmButtonLoading={isLoading}
-                                    />
-                                  ),
-                                  modal: true,
-                                },
-                              ]}
-                            />
-                          </Flex>
-                        </Flex>
-                        {!readOnly && variant.id && (
-                          <DocEditorToolbox
-                            open={true}
-                            docOwnership={{
-                              kind: 'DeliverableOfCardContent',
-                              ownerId: variant.id,
-                            }}
-                          />
-                        )}
-                        {cardType && (
-                          <div className={showTypeDetails ? openDetails : closeDetails}>
-                            <div>
-                              <p>
-                                <b>{i18n.modules.cardType.cardType}</b>: {cardType.title || ''}
-                              </p>
-                              <p>
-                                <b>{i18n.modules.cardType.purpose}</b>:{' '}
-                                <DocTextDisplay id={cardType.purposeId} />
-                              </p>
-                            </div>
-                            <IconButton
-                              icon={faTimes}
-                              title={i18n.common.close}
-                              onClick={() => setShowTypeDetails(false)}
-                            />
-                          </div>
-                        )}
-                      </Flex>
-                      <Flex
-                        direction="column"
-                        grow={1}
-                        align="stretch"
-                        className={css({ overflow: 'auto', padding: space_S })}
+            <Flex
+              justify="space-between"
+              className={css({
+                alignItems: 'center',
+                padding: space_S,
+                borderBottom: '1px solid var(--lightGray)',
+                borderTop:
+                  card.color && card.color != '#ffffff'
+                    ? '6px solid ' + card.color
+                    : '1px solid var(--lightGray)',
+              })}
+            >
+              <Flex align="center">
+                {variant.frozen && (
+                  <FontAwesomeIcon
+                    className={css({ padding: `0 ${space_S}` })}
+                    icon={faLock}
+                    title={i18n.modules.card.infos.cardLocked}
+                    color={'var(--darkGray)'}
+                  />
+                )}
+                <CardContentStatus mode="icon" status={variant.status} />
+                <DiscreetInput
+                  value={card.title || ''}
+                  placeholder={i18n.modules.card.untitled}
+                  readOnly={readOnly}
+                  onChange={newValue => dispatch(API.updateCard({ ...card, title: newValue }))}
+                  inputDisplayClassName={localTitleStyle}
+                />
+                {hasVariants && (
+                  <>
+                    <span className={variantTitle}>&#xFE58;</span>
+                    <DiscreetInput
+                      value={
+                        variant.title && variant.title.length > 0
+                          ? variant.title
+                          : i18n.modules.card.variant + `${variantNumber}`
+                      }
+                      placeholder={i18n.modules.content.untitled}
+                      readOnly={readOnly}
+                      onChange={newValue =>
+                        dispatch(API.updateCardContent({ ...variant, title: newValue }))
+                      }
+                      inputDisplayClassName={variantTitle}
+                    />
+                  </>
+                )}
+                {hasCardType && (
+                  <IconButton
+                    icon={faInfoCircle}
+                    title={i18n.modules.card.showCardType}
+                    className={cx(lightIconButtonStyle)}
+                    onClick={() => setShowTypeDetails(showTypeDetails => !showTypeDetails)}
+                  />
+                )}
+              </Flex>
+              <Flex>
+                {/* handle modal routes*/}
+                <Routes>
+                  <Route
+                    path="settings"
+                    element={
+                      <Modal
+                        title={i18n.modules.card.settings.title}
+                        onClose={() => closeRouteCb('settings')}
+                        showCloseButton
+                        className={css({ height: '580px' })}
                       >
-                        {canRead != undefined &&
-                          (canRead ? (
-                            variant.id ? (
-                              <DocumentList
-                                docOwnership={{
-                                  kind: 'DeliverableOfCardContent',
-                                  ownerId: variant.id,
-                                }}
-                                readOnly={readOnly}
-                              />
-                            ) : (
-                              <span>{i18n.modules.card.infos.noDeliverable}</span>
-                            )
-                          ) : (
-                            <span>{i18n.httpErrorMessage.ACCESS_DENIED}</span>
-                          ))}
-                      </Flex>
-                    </Flex>
-
-                    <Flex align="center">
-                      <OpenCloseModal
+                        {closeModal => (
+                          <CardSettings onClose={closeModal} card={card} variant={variant} />
+                        )}
+                      </Modal>
+                    }
+                  />
+                  <Route
+                    path="involvements"
+                    element={
+                      <Modal
+                        title={i18n.modules.card.involvements}
+                        onClose={() => closeRouteCb('involvements')}
+                        showCloseButton
+                        className={css({ height: '580px', width: '600px' })}
+                      >
+                        {() => <CardInvolvement card={card} />}
+                      </Modal>
+                    }
+                  />
+                  <Route
+                    path="completion"
+                    element={
+                      <Modal
                         title={i18n.modules.card.editCompletion}
-                        className={css({ width: '100%' })}
+                        onClose={() => closeRouteCb('completion')}
+                        showCloseButton
                         modalBodyClassName={css({ alignItems: 'center' })}
-                        collapsedChildren={
-                          <ProgressBar
-                            variant={variant}
-                            className={css({
-                              '&:hover': {
-                                cursor: 'pointer',
-                                opacity: 0.6,
-                              },
-                            })}
-                          />
-                        }
+                        onEnter={close => close()}
                         footer={close => (
                           <Flex grow={1} justify="center" className={css({ margin: space_S })}>
                             <Button onClick={close}>{i18n.common.ok}</Button>
                           </Flex>
                         )}
-                        onEnter={close => close()}
                       >
                         {() =>
                           variant && (
@@ -580,66 +366,248 @@ export default function CardEditor({
                             </Flex>
                           )
                         }
-                      </OpenCloseModal>
-                    </Flex>
-                  </Flex>
-                </DocEditorCTX.Provider>
-              </ReflexElement>
-              {openKey && <ReflexSplitter className={css({ zIndex: 0 })} />}
-              <ReflexElement
-                className={'right-pane ' + css({ display: 'flex', minWidth: 'min-content' })}
-                resizeHeight={false}
-                maxSize={openKey ? undefined : 40}
-              >
-                <SideCollapsiblePanel
-                  openKey={openKey}
-                  setOpenKey={setOpenKey}
-                  items={{
-                    resources: {
-                      icon: faPaperclip,
-                      nextToIconElement: (
-                        <div className={textSmall}>
-                          {' '}
-                          (<ResourceListNb context={resourceContext} />)
-                        </div>
+                      </Modal>
+                    }
+                  />
+                </Routes>
+                <IconButton
+                  title={i18n.modules.card.editor.fullScreen}
+                  icon={fullScreen ? faCompressArrowsAlt : faExpandArrowsAlt}
+                  onClick={() => setFullScreen(fullScreen => !fullScreen)}
+                  className={cx(lightIconButtonStyle, css({ padding: space_S }))}
+                />
+                <DropDownMenu
+                  icon={faEllipsisV}
+                  valueComp={{ value: '', label: '' }}
+                  buttonClassName={cx(
+                    lightIconButtonStyle,
+                    css({ marginLeft: space_S, padding: space_S }),
+                  )}
+                  entries={[
+                    {
+                      value: 'settings',
+                      label: (
+                        <>
+                          <FontAwesomeIcon icon={faCog} /> {i18n.common.settings}
+                        </>
                       ),
-                      title: i18n.modules.resource.documentation,
-                      nextToTitleElement: (
-                        <Tips>
-                          {card.cardTypeId
-                            ? i18n.modules.resource.docDescriptionWithType
-                            : i18n.modules.resource.docDescription}
-                        </Tips>
+                      action: () => navigate('settings'),
+                    },
+                    {
+                      value: 'involvements',
+                      label: (
+                        <>
+                          <FontAwesomeIcon icon={faUsers} /> {i18n.modules.card.involvements}
+                        </>
                       ),
-                      children: (
-                        <ResourcesMainView
-                          contextData={resourceContext}
-                          accessLevel={!readOnly ? 'WRITE' : canRead ? 'READ' : 'DENIED'}
+                      action: () => navigate('involvements'),
+                    },
+                    {
+                      value: 'completion',
+                      label: (
+                        <>
+                          <FontAwesomeIcon icon={faPercent} /> {i18n.modules.card.completion}
+                        </>
+                      ),
+                      action: () => navigate('completion'),
+                    },
+                    {
+                      value: 'createVariant',
+                      label: (
+                        <>
+                          <FontAwesomeIcon icon={faWindowRestore} />{' '}
+                          {i18n.modules.card.createVariant}
+                        </>
+                      ),
+                      action: () => {
+                        dispatch(API.createCardContentVariantWithBlockDoc(cardId)).then(payload => {
+                          if (payload.meta.requestStatus === 'fulfilled') {
+                            if (entityIs(payload.payload, 'CardContent')) {
+                              goto(card, payload.payload);
+                            }
+                          }
+                        });
+                      },
+                    },
+                    {
+                      value: 'delete',
+                      label: (
+                        <ConfirmDeleteModal
+                          buttonLabel={
+                            <div className={cx(css({ color: errorColor }), modalEntryStyle)}>
+                              <FontAwesomeIcon icon={faTrash} />
+                              {i18n.modules.card.deleteCardVariant(hasVariants)}
+                            </div>
+                          }
+                          className={css({
+                            '&:hover': { textDecoration: 'none' },
+                            display: 'flex',
+                            alignItems: 'center',
+                          })}
+                          message={<p>{i18n.modules.card.confirmDeleteCardVariant(hasVariants)}</p>}
+                          onConfirm={() => {
+                            startLoading();
+                            if (hasVariants) {
+                              dispatch(API.deleteCardContent(variant)).then(() => {
+                                navigate(`../edit/${card.id}/v/${variantPager?.next.id}`);
+                                stopLoading();
+                              });
+                            } else {
+                              dispatch(API.deleteCard(card)).then(() => {
+                                navigate('../');
+                                stopLoading();
+                              });
+                            }
+                          }}
+                          confirmButtonLabel={i18n.modules.card.deleteCardVariant(hasVariants)}
+                          isConfirmButtonLoading={isLoading}
                         />
                       ),
-                      className: css({ overflow: 'auto' }),
+                      modal: true,
                     },
-                    /* 'Sticky Notes': {
-                      icon: faStickyNote,
-                      nextToIconElement: (
-                        <div className={textSmall}> ({stickyNotesForDest.length})</div>
-                      ),
-                      title: i18n.modules.stickyNotes.stickyNotes,
-                      nextToTitleElement: (
-                        <Tips>
-                          <h5>{i18n.modules.stickyNotes.listStickyNotes}</h5>
-                          <div>{i18n.modules.stickyNotes.snDescription}</div>
-                        </Tips>
-                      ),
-                      children: <StickyNoteWrapper destCardId={card.id} showSrc />,
-                      className: css({ overflow: 'auto' }),
-                    }, */
-                  }}
-                  direction="RIGHT"
-                  className={css({ flexGrow: 1 })}
+                  ]}
                 />
-              </ReflexElement>
-            </ReflexContainer>
+              </Flex>
+            </Flex>
+            <SideCollapsibleCTX.Provider
+              value={{
+                items: sideBarItems,
+                openKey,
+                setOpenKey,
+              }}
+            >
+              <Flex grow={1} align="stretch">
+                <ReflexContainer orientation={'vertical'}>
+                  <ReflexElement
+                    className={'left-pane ' + css({ display: 'flex' })}
+                    resizeHeight={false}
+                    minSize={150}
+                  >
+                    <DocEditorCTX.Provider
+                      value={{
+                        selectedDocId,
+                        setSelectedDocId,
+                        editMode,
+                        setEditMode,
+                        editToolbar,
+                        setEditToolbar,
+                        TXToptions,
+                      }}
+                    >
+                      <Flex direction="column" grow={1} align="stretch">
+                        <Flex
+                          direction="column"
+                          grow={1}
+                          className={css({
+                            overflow: 'auto',
+                          })}
+                          align="stretch"
+                        >
+                          <Flex direction="column" align="stretch">
+                            {!readOnly && variant.id && (
+                              <DocEditorToolbox
+                                open={true}
+                                docOwnership={{
+                                  kind: 'DeliverableOfCardContent',
+                                  ownerId: variant.id,
+                                }}
+                              />
+                            )}
+                            {cardType && (
+                              <div className={showTypeDetails ? openDetails : closeDetails}>
+                                <div>
+                                  <p>
+                                    <b>{i18n.modules.cardType.cardType}</b>: {cardType.title || ''}
+                                  </p>
+                                  <p>
+                                    <b>{i18n.modules.cardType.purpose}</b>:{' '}
+                                    <DocTextDisplay id={cardType.purposeId} />
+                                  </p>
+                                </div>
+                                <IconButton
+                                  icon={faTimes}
+                                  title={i18n.common.close}
+                                  onClick={() => setShowTypeDetails(false)}
+                                />
+                              </div>
+                            )}
+                          </Flex>
+                          <Flex
+                            direction="column"
+                            grow={1}
+                            align="stretch"
+                            className={css({ overflow: 'auto', padding: space_S })}
+                          >
+                            {canRead != undefined &&
+                              (canRead ? (
+                                variant.id ? (
+                                  <DocumentList
+                                    docOwnership={{
+                                      kind: 'DeliverableOfCardContent',
+                                      ownerId: variant.id,
+                                    }}
+                                    readOnly={readOnly}
+                                  />
+                                ) : (
+                                  <span>{i18n.modules.card.infos.noDeliverable}</span>
+                                )
+                              ) : (
+                                <span>{i18n.httpErrorMessage.ACCESS_DENIED}</span>
+                              ))}
+                          </Flex>
+                        </Flex>
+                      </Flex>
+                    </DocEditorCTX.Provider>
+                  </ReflexElement>
+                  {openKey && <ReflexSplitter className={css({ zIndex: 0 })} />}
+                  <ReflexElement
+                    className={'right-pane ' + css({ display: 'flex' })}
+                    resizeHeight={false}
+                    maxSize={openKey ? undefined : 0.1}
+                    minSize={50}
+                    flex={0.2}
+                  >
+                    <SideCollapsiblePanelBody />
+                  </ReflexElement>
+                </ReflexContainer>
+                <SideCollapsibleMenu
+                  defaultOpenKey="resources"
+                  className={css({ borderLeft: '1px solid var(--lightGray)' })}
+                />
+              </Flex>
+            </SideCollapsibleCTX.Provider>
+            <Flex align="center">
+              <OpenCloseModal
+                title={i18n.modules.card.editCompletion}
+                className={css({ width: '100%' })}
+                modalBodyClassName={css({ alignItems: 'center' })}
+                collapsedChildren={
+                  <ProgressBar
+                    variant={variant}
+                    className={css({
+                      '&:hover': {
+                        cursor: 'pointer',
+                        opacity: 0.6,
+                      },
+                    })}
+                  />
+                }
+                footer={close => (
+                  <Flex grow={1} justify="center" className={css({ margin: space_S })}>
+                    <Button onClick={close}>{i18n.common.ok}</Button>
+                  </Flex>
+                )}
+                onEnter={close => close()}
+              >
+                {() =>
+                  variant && (
+                    <Flex direction="column" justify="center" align="center">
+                      <CompletionEditor variant={variant} />
+                    </Flex>
+                  )
+                }
+              </OpenCloseModal>
+            </Flex>
           </Flex>
         </Flex>
         <VariantPager allowCreation={!!canWrite} card={card} current={variant} />
