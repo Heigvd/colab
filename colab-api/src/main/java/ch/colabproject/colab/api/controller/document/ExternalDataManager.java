@@ -39,6 +39,7 @@ import org.slf4j.LoggerFactory;
 @LocalBean
 public class ExternalDataManager {
 
+    /** duration an entry may stay in cache before being drop or refreshed */
     private static final int CACHE_TTL_HOUR = 24;
 
     /** Logger */
@@ -104,11 +105,9 @@ public class ExternalDataManager {
     public UrlMetadata getUrlMetadata(String url) {
         try {
             UrlMetadata cached = metadataCache.get(url);
-            if (cached != null) {
-                if (!isOutdated(cached)) {
-                    logger.trace("Get {} from cache", url);
-                    return cached;
-                }
+            if (cached != null && !isOutdated(cached)) {
+                logger.trace("Get {} from cache", url);
+                return cached;
             }
         } catch (Throwable t) {
             logger.trace("Failed to fetch {} from cache {}", url, t);
