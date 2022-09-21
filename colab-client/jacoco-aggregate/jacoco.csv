@@ -23,7 +23,7 @@ colab-client/colab-api,ch.colabproject.colab.api.security.permissions,Conditions
 colab-client/colab-api,ch.colabproject.colab.api.security.permissions,Conditions.IsCurrentUserOwnerOfProject,56,0,8,0,18,0,9,0,5,0
 colab-client/colab-api,ch.colabproject.colab.api.security.permissions,Conditions.IsCurrentUserLeaderOfProject,56,0,8,0,18,0,9,0,5,0
 colab-client/colab-api,ch.colabproject.colab.api.security.permissions,Conditions.IsCurrentUserMemberOfProject,56,0,8,0,18,0,9,0,5,0
-colab-client/colab-api,ch.colabproject.colab.api.rest.document.bean,UrlMetadata,29,0,0,0,11,0,7,0,7,0
+colab-client/colab-api,ch.colabproject.colab.api.rest.document.bean,UrlMetadata,36,0,0,0,14,0,9,0,9,0
 colab-client/colab-api,ch.colabproject.colab.api.rest.document.bean,ResourceCreationData,138,0,6,0,45,0,21,0,18,0
 colab-client/colab-api,ch.colabproject.colab.api.microchanges.live,LiveUpdates,1294,0,148,0,278,0,112,0,38,0
 colab-client/colab-api,ch.colabproject.colab.api.microchanges.live,LiveResult,29,0,0,0,11,0,6,0,6,0
@@ -145,7 +145,7 @@ colab-client/colab-api,ch.colabproject.colab.api.controller,SubscriptionRequest,
 colab-client/colab-api,ch.colabproject.colab.api.controller,DuplicationManager,1323,0,144,0,349,0,91,0,19,0
 colab-client/colab-api,ch.colabproject.colab.api.controller,WebsocketManager,836,0,56,0,228,0,66,0,38,0
 colab-client/colab-api,ch.colabproject.colab.api.controller,CdiBridgeSingleton,26,0,0,0,8,0,6,0,6,0
-colab-client/colab-api,ch.colabproject.colab.api.controller,CronTab,21,0,0,0,8,0,4,0,4,0
+colab-client/colab-api,ch.colabproject.colab.api.controller,CronTab,28,0,0,0,11,0,5,0,5,0
 colab-client/colab-api,ch.colabproject.colab.api.controller,EntityGatheringBagForPropagation,225,0,11,0,63,0,22,0,16,0
 colab-client/colab-api,ch.colabproject.colab.api.persistence.jpa.document,ResourceDao,120,0,0,0,33,0,10,0,10,0
 colab-client/colab-api,ch.colabproject.colab.api.persistence.jpa.document,DocumentDao,87,0,0,0,25,0,8,0,8,0
@@ -157,7 +157,7 @@ colab-client/colab-api,ch.colabproject.colab.api.model.team,TeamRole,590,0,62,0,
 colab-client/colab-api,ch.colabproject.colab.api.model.team,TeamMember,834,0,100,0,78,0,133,0,83,0
 colab-client/colab-api,ch.colabproject.colab.api.controller.document,ResourceManager,672,0,82,0,171,0,69,0,27,0
 colab-client/colab-api,ch.colabproject.colab.api.controller.document,BlockManager,80,0,10,0,25,0,13,0,8,0
-colab-client/colab-api,ch.colabproject.colab.api.controller.document,ExternalDataManager,239,0,28,0,65,0,21,0,7,0
+colab-client/colab-api,ch.colabproject.colab.api.controller.document,ExternalDataManager,295,0,38,0,82,0,28,0,9,0
 colab-client/colab-api,ch.colabproject.colab.api.controller.document,FileManager,272,0,22,0,71,0,22,0,11,0
 colab-client/colab-api,ch.colabproject.colab.api.controller.document,IndexGeneratorHelper,443,0,46,0,111,0,39,0,16,0
 colab-client/colab-api,ch.colabproject.colab.api.controller.document,RelatedPosition,44,0,0,0,5,0,1,0,1,0
