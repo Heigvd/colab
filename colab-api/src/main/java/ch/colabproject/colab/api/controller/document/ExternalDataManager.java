@@ -11,7 +11,9 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
+import java.time.OffsetDateTime;
 import java.util.HashMap;
+import java.util.Iterator;
 import javax.cache.Cache;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
@@ -36,6 +38,9 @@ import org.slf4j.LoggerFactory;
 @Stateless
 @LocalBean
 public class ExternalDataManager {
+
+    /** duration an entry may stay in cache before being drop or refreshed */
+    private static final int CACHE_TTL_HOUR = 24;
 
     /** Logger */
     private static final Logger logger = LoggerFactory.getLogger(UrlMetadata.class);
@@ -72,6 +77,25 @@ public class ExternalDataManager {
     }
 
     /**
+     * Is the given data outdated?
+     *
+     * @param data metadata to check
+     *
+     * @return true if data is outdated
+     */
+    private boolean isOutdated(UrlMetadata data) {
+        OffsetDateTime date = data.getDate();
+        if (date != null) {
+            OffsetDateTime endOfLife = date.plusHours(CACHE_TTL_HOUR);
+            if (endOfLife.isAfter(OffsetDateTime.now())) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    /**
      * Get cached Url metadata. if exists of build fresh
      *
      * @param url url to fetch metadata for
@@ -81,10 +105,12 @@ public class ExternalDataManager {
     public UrlMetadata getUrlMetadata(String url) {
         try {
             UrlMetadata cached = metadataCache.get(url);
-            if (cached != null) {
+            if (cached != null && !isOutdated(cached)) {
+                logger.trace("Get {} from cache", url);
                 return cached;
             }
         } catch (Throwable t) {
+            logger.trace("Failed to fetch {} from cache {}", url, t);
             metadataCache.remove(url);
         }
         return this.refreshAndGetUrlMetadata(url);
@@ -93,16 +119,16 @@ public class ExternalDataManager {
     /**
      * Make sure url starts with a protocol
      *
-     * @param                 url to sanitize
+     * @param url             to sanitize
      * @param defaultProtocol default protocol to use. http is the default defaultProtocol
      *
      * @return url with protocol
      *
      */
     private String sanitizeUrl(String rawUrl, String defaultProtocol) {
-        if (!rawUrl.matches("[a-z-A-Z0-9]*://.*")){
+        if (!rawUrl.matches("[a-z-A-Z0-9]*://.*")) {
             //There is no protocol, add default one
-            if (StringUtils.isEmpty(defaultProtocol)){
+            if (StringUtils.isEmpty(defaultProtocol)) {
                 return "http://" + rawUrl;
             } else {
                 return defaultProtocol + "://" + rawUrl;
@@ -125,7 +151,7 @@ public class ExternalDataManager {
         urlMetadata.setMetadata(metadata);
 
         logger.trace("Raw URL {}", url);
-        try (var client = HttpClients.createDefault()) {
+        try ( var client = HttpClients.createDefault()) {
             String sanitizedUrl = sanitizeUrl(url, null);
 
             URIBuilder uriBuilder = new URIBuilder(sanitizedUrl, StandardCharsets.UTF_8);
@@ -144,7 +170,7 @@ public class ExternalDataManager {
             }
 
             var get = new HttpGet(uri);
-            try (var response = client.execute(get)) {
+            try ( var response = client.execute(get)) {
 
                 HttpEntity entity = response.getEntity();
                 int statusCode = response.getCode();
@@ -185,9 +211,24 @@ public class ExternalDataManager {
             logger.debug("Major Failure", e);
             urlMetadata.setBroken(true);
         }
+        urlMetadata.setDate(OffsetDateTime.now());
         // cache metadata
         metadataCache.put(url, urlMetadata);
         return urlMetadata;
+    }
+
+    /**
+     * Drop outdated entries from cache
+     */
+    public void clearOutdated() {
+        Iterator<Cache.Entry<String, UrlMetadata>> iterator = metadataCache.iterator();
+        while (iterator.hasNext()) {
+            Cache.Entry<String, UrlMetadata> entry = iterator.next();
+            UrlMetadata data = entry.getValue();
+            if (isOutdated(data)){
+                iterator.remove();
+            }
+        }
     }
 
 }

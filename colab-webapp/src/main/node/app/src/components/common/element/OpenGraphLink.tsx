@@ -6,19 +6,11 @@
  */
 
 import { css, cx } from '@emotion/css';
-import {
-  faChainBroken,
-  faExternalLinkAlt,
-  faLink,
-  faPen,
-  faSync,
-} from '@fortawesome/free-solid-svg-icons';
+import { faChainBroken, faExternalLinkAlt, faLink, faPen } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import * as React from 'react';
-import { refreshUrlMetadata } from '../../../API/api';
 import useTranslations from '../../../i18n/I18nContext';
 import { useUrlMetadata } from '../../../selectors/externalDataSelector';
-import { useAppDispatch } from '../../../store/hooks';
 import { lightIconButtonStyle, space_M, space_S } from '../../styling/style';
 import Flex from '../layout/Flex';
 import { emptyLightTextStyle } from './FilePicker';
@@ -28,6 +20,7 @@ import { BlockInput } from './Input';
 
 const cardStyle = css({
   flexWrap: 'nowrap',
+  flexGrow: 1,
   boxShadow: '0px 0px 5px 2px var(--lightGray)',
   backgroundColor: 'var(--bgColor)',
   padding: space_S,
@@ -80,20 +73,12 @@ export default function OpenGraphLink({
   editCb,
   readOnly,
 }: OpenGraphProps): JSX.Element {
-  const dispatch = useAppDispatch();
   const i18n = useTranslations();
 
   const metadata = useUrlMetadata(url);
 
   const sanitizedUrl = sanitizeUrl(url);
 
-  const refreshCb = React.useCallback(
-    (e: React.UIEvent) => {
-      e.stopPropagation();
-      dispatch(refreshUrlMetadata(url));
-    },
-    [url, dispatch],
-  );
   const openUrl = React.useCallback(() => {
     window.open(sanitizedUrl);
   }, [sanitizedUrl]);
@@ -123,12 +108,7 @@ export default function OpenGraphLink({
   if (!readOnly && editingStatus) {
     return (
       <Flex className={cardStyle} title={url} align="center">
-        <EditLink
-          onChange={saveLink}
-          url={url}
-          onCancel={() => setEditingState(false)}
-          refreshCb={refreshCb}
-        />
+        <EditLink onChange={saveLink} url={url} onCancel={() => setEditingState(false)} />
       </Flex>
     );
   }
@@ -212,31 +192,18 @@ interface EditLinkProps {
   url: string;
   onChange: (newValue: string) => void;
   onCancel: () => void;
-  refreshCb?: (
-    e: React.MouseEvent<HTMLSpanElement, MouseEvent> | React.KeyboardEvent<HTMLSpanElement>,
-  ) => void;
 }
 
-function EditLink({ url, onChange, refreshCb, onCancel }: EditLinkProps): JSX.Element {
+function EditLink({ url, onChange, onCancel }: EditLinkProps): JSX.Element {
   const i18n = useTranslations();
   return (
-    <>
-      <BlockInput
-        value={url}
-        placeholder={i18n.modules.content.emptyLink}
-        onChange={onChange}
-        onCancel={onCancel}
-        containerClassName={css({ flexGrow: 1 })}
-        saveMode="ON_BLUR"
-      />
-      {refreshCb && (
-        <IconButton
-          title={i18n.common.refresh}
-          onClick={refreshCb}
-          icon={faSync}
-          className={lightIconButtonStyle}
-        />
-      )}
-    </>
+    <BlockInput
+      value={url}
+      placeholder={i18n.modules.content.emptyLink}
+      onChange={onChange}
+      onCancel={onCancel}
+      containerClassName={css({ flexGrow: 1 })}
+      saveMode="ON_BLUR"
+    />
   );
 }

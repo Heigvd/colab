@@ -8,8 +8,10 @@ package ch.colabproject.colab.api.rest.document.bean;
 
 import ch.colabproject.colab.generator.model.annotations.ExtractJavaDoc;
 import java.io.Serializable;
+import java.time.OffsetDateTime;
 import java.util.HashMap;
 import java.util.Map;
+import javax.json.bind.annotation.JsonbTransient;
 import javax.validation.constraints.NotNull;
 
 /**
@@ -31,6 +33,12 @@ public class UrlMetadata implements Serializable {
      * Effective MIME type fetched from http header
      */
     private String contentType;
+
+    /**
+     * Date of snapshot
+     */
+    @JsonbTransient
+    private OffsetDateTime date;
 
     /**
      * Metadata
@@ -91,4 +99,22 @@ public class UrlMetadata implements Serializable {
     public void setBroken(Boolean broken) {
         this.broken = broken;
     }
+
+    /**
+     * Get the date
+     *
+     * @return the date
+     */
+    public OffsetDateTime getDate() {
+        return date;
+    }
+
+    /** Set the date
+     *
+     * @param date the date
+     */
+    public void setDate(OffsetDateTime date) {
+        this.date = date;
+    }
+
 }
