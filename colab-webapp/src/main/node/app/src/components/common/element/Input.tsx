@@ -53,6 +53,7 @@ interface InputProps {
   autoFocus?: HTMLInputElement['autofocus'] | HTMLTextAreaElement['autofocus'];
   min?: HTMLInputElement['min'];
   max?: HTMLInputElement['max'];
+  step?: HTMLInputElement['step'];
   rows?: HTMLTextAreaElement['rows'];
   autoWidth?: boolean;
   maxWidth?: string;
@@ -88,6 +89,7 @@ function Input({
   autoFocus,
   min,
   max,
+  step,
   rows,
   autoWidth,
   maxWidth = '100%',
@@ -255,6 +257,7 @@ function Input({
           autoFocus={autoFocus}
           min={min}
           max={max}
+          step={step}
           onFocus={setEditMode}
           onInput={updateSize}
           onChange={changeInternal}

@@ -25,6 +25,7 @@ import {
 } from '../../../store/hooks';
 import CardCreator from '../../cards/CardCreator';
 import InlineLoading from '../../common/element/InlineLoading';
+import { BlockInput } from '../../common/element/Input';
 import Flex from '../../common/layout/Flex';
 import { cardShadow } from '../../styling/style';
 
@@ -37,7 +38,7 @@ const cardStyle = (color: string | null | undefined): string =>
     flexDirection: 'column',
     padding: '0px',
     margin: '0px',
-    backgroundColor: color || undefined,
+    border: `1px solid ${color || 'lightgray'}`,
     //  flexWrap: 'wrap',
     borderRadius: '5px',
     ':hover': {
@@ -55,7 +56,7 @@ const cardStyle = (color: string | null | undefined): string =>
 //})
 
 const subsStyle = css({
-  flexWrap: 'wrap',
+  // flexWrap: 'wrap',
   minWidth: '100%',
   //  borderStyle: 'dashed',
   //  borderColor: 'lightgrey',
@@ -344,6 +345,7 @@ function SubContainer({ parent, subcards, divRefs, cRefs, jsPlumb }: SubContaine
       data-cardcontent={parent.id || ''}
       className={`SubContainer SubContainer-${parent.id} ${css({
         display: 'flex',
+        flexWrap: 'wrap',
       })}`}
       key={`cc${parent.id!}`}
     >
@@ -758,36 +760,76 @@ export default function Hierarchy({ rootId }: HierarchyDisplayProps): JSX.Elemen
     [rootId, dispatch, throttleRepaint, jsPlumb],
   );
 
+  const [zoom, setZoom] = React.useState(1);
+
+  if (jsPlumb) {
+    jsPlumb.setZoom(zoom);
+  }
+
   return (
     <div
-      className={`${css({
-        padding: '50px',
-        '& .jtk-drag': {
-          position: 'absolute',
-        },
-        '& .dnd-target-group': {
-          boxShadow: '0px 0px 4px 1px #000000',
-        },
-      })}`}
-      ref={ref => {
-        setThisNode(ref);
-        assignDiv(plumbRefs.current.divs, ref, 'root');
-      }}
-      onMouseUp={mouseHandler}
-      onMouseDownCapture={mouseHandler}
-      onMouseMove={mouseHandler}
-      onMouseLeave={mouseHandler}
+      className={css({
+        display: 'flex',
+        flexDirection: 'column',
+        height: '100%',
+      })}
     >
-      {jsPlumb != null && cardStatus === 'READY' && contentStatus == 'READY' ? (
-        <CardHierarchy
-          rootId={rootId}
-          jsPlumb={jsPlumb}
-          divRefs={plumbRefs.current.divs}
-          cRefs={plumbRefs.current.connections}
+      <div className={css({ width: '200px' })}>
+        <BlockInput
+          type="range"
+          label="zoom"
+          value={zoom}
+          placeholder="0"
+          min="0.5"
+          max="2"
+          step="0.1"
+          onChange={newValue => setZoom(Number(newValue))}
+          saveMode="SILLY_FLOWING"
         />
-      ) : (
-        <InlineLoading />
-      )}
+      </div>
+      <div
+        className={css({
+          width: '100%',
+          overflow: 'auto',
+          position: 'relative',
+          flexGrow: '1',
+        })}
+      >
+        <div
+          className={`${css({
+            '& .jtk-drag': {
+              position: 'absolute',
+            },
+            '& .dnd-target-group': {
+              boxShadow: '0px 0px 4px 1px #000000',
+            },
+            scale: `${zoom}`,
+            display: 'flex',
+            '.SubContainer .SubContainer': {
+              flexWrap: 'nowrap',
+            },
+          })}`}
+          ref={ref => {
+            setThisNode(ref);
+            assignDiv(plumbRefs.current.divs, ref, 'root');
+          }}
+          onMouseUp={mouseHandler}
+          onMouseDownCapture={mouseHandler}
+          onMouseMove={mouseHandler}
+          onMouseLeave={mouseHandler}
+        >
+          {jsPlumb != null && cardStatus === 'READY' && contentStatus == 'READY' ? (
+            <CardHierarchy
+              rootId={rootId}
+              jsPlumb={jsPlumb}
+              divRefs={plumbRefs.current.divs}
+              cRefs={plumbRefs.current.connections}
+            />
+          ) : (
+            <InlineLoading />
+          )}
+        </div>
+      </div>
     </div>
   );
 }
