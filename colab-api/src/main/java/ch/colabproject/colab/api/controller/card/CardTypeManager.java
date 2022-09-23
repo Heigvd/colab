@@ -460,8 +460,17 @@ public class CardTypeManager {
      * @return the ids of the matching card types or references
      */
     public List<Long> findCurrentUserReadableProjectsCardTypesIds() {
+        List<Long> result = Lists.newArrayList();
+
         List<Long> directInOwnProjects = findCurrentUserDirectProjectsCardTypesIds();
-        return retrieveDirectAndTransitiveCardTypesOrRefs(directInOwnProjects);
+        List<Long> above = retrieveDirectAndTransitiveAboveCardTypesOrRefs(directInOwnProjects);
+        List<Long> below = retrieveDirectAndTransitiveBelowCardTypesOrRefs(directInOwnProjects);
+
+        result.addAll(directInOwnProjects);
+        result.addAll(above);
+        result.addAll(below);
+
+        return result;
     }
 
     /**
@@ -485,10 +494,12 @@ public class CardTypeManager {
      *
      * @param cardTypeOrRefIds
      *
-     * @return
+     * @return the ids of the matching card types or references
      */
-    private List<Long> retrieveDirectAndTransitiveCardTypesOrRefs(List<Long> cardTypeOrRefIds) {
-        return retrieveDirectAndTransitiveCardTypesOrRefs(cardTypeOrRefIds, Lists.newArrayList());
+    private List<Long> retrieveDirectAndTransitiveAboveCardTypesOrRefs(
+        List<Long> cardTypeOrRefIds) {
+        return retrieveDirectAndTransitiveAboveCardTypesOrRefs(cardTypeOrRefIds,
+            Lists.newArrayList());
     }
 
     /**
@@ -499,7 +510,7 @@ public class CardTypeManager {
      *
      * @return the ids of the matching card types or references
      */
-    private List<Long> retrieveDirectAndTransitiveCardTypesOrRefs(List<Long> toProcess,
+    private List<Long> retrieveDirectAndTransitiveAboveCardTypesOrRefs(List<Long> toProcess,
         List<Long> alreadyDone) {
         List<Long> remainsToProcess = ListUtils.removeAll(toProcess, alreadyDone);
         if (CollectionUtils.isEmpty(remainsToProcess)) {
@@ -509,7 +520,7 @@ public class CardTypeManager {
         alreadyDone.addAll(remainsToProcess);
 
         List<Long> directTargets = findDirectTargets(remainsToProcess);
-        retrieveDirectAndTransitiveCardTypesOrRefs(directTargets, alreadyDone);
+        retrieveDirectAndTransitiveAboveCardTypesOrRefs(directTargets, alreadyDone);
 
         return alreadyDone;
     }
@@ -524,6 +535,55 @@ public class CardTypeManager {
     private List<Long> findDirectTargets(List<Long> cardTypeOrRefIds) {
         List<Long> result = cardTypeDao.findTargetIdsOf(cardTypeOrRefIds);
         logger.debug("found targets : {} ", result);
+        return result;
+    }
+
+    /**
+     * Retrieve the ids of the card types or references with their direct and transitive references.
+     *
+     * @param cardTypeOrRefIds
+     *
+     * @return the ids of the matching card types or references
+     */
+    private List<Long> retrieveDirectAndTransitiveBelowCardTypesOrRefs(
+        List<Long> cardTypeOrRefIds) {
+        return retrieveDirectAndTransitiveBelowCardTypesOrRefs(cardTypeOrRefIds,
+            Lists.newArrayList());
+    }
+
+    /**
+     * Retrieve the ids of the card types or references with their direct and transitive references.
+     *
+     * @param toProcess   the ids of card types and references
+     * @param alreadyDone the already processed ids
+     *
+     * @return the ids of the matching card types or references
+     */
+    private List<Long> retrieveDirectAndTransitiveBelowCardTypesOrRefs(List<Long> toProcess,
+        List<Long> alreadyDone) {
+        List<Long> remainsToProcess = ListUtils.removeAll(toProcess, alreadyDone);
+        if (CollectionUtils.isEmpty(remainsToProcess)) {
+            return alreadyDone;
+        }
+
+        alreadyDone.addAll(remainsToProcess);
+
+        List<Long> directRefs = findDirectRefs(remainsToProcess);
+        retrieveDirectAndTransitiveBelowCardTypesOrRefs(directRefs, alreadyDone);
+
+        return alreadyDone;
+    }
+
+    /**
+     * Retrieve the ids of the direct references of each card type or reference
+     *
+     * @param cardTypeOrRefIds the ids of card types and references
+     *
+     * @return the ids of the matching card types or references
+     */
+    private List<Long> findDirectRefs(List<Long> cardTypeOrRefIds) {
+        List<Long> result = cardTypeDao.findDirectReferencesIdsOf(cardTypeOrRefIds);
+        logger.debug("found refs : {}", result);
         return result;
     }
 

@@ -35,6 +35,9 @@ import javax.validation.constraints.NotNull;
 @NamedQuery(name = "CardTypeRef.findDirectReferences",
     query = "SELECT ctr FROM CardTypeRef ctr "
         + "WHERE ctr.target IS NOT NULL AND ctr.target.id = :targetId")
+@NamedQuery(name = "CardTypeRef.findDirectReferencesIds",
+    query = "SELECT ctr.id FROM CardTypeRef ctr "
+        + "WHERE ctr.target IS NOT NULL AND ctr.target.id IN :initIds")
 public class CardTypeRef extends AbstractCardType {
 
     private static final long serialVersionUID = 1L;
