@@ -5,10 +5,10 @@
  * Licensed under the MIT License
  */
 
-import { css } from '@emotion/css';
-import { faProjectDiagram } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { BrowserJsPlumbInstance, newInstance } from '@jsplumb/browser-ui';
+import {css} from '@emotion/css';
+import {faProjectDiagram} from '@fortawesome/free-solid-svg-icons';
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
+import {BrowserJsPlumbInstance, newInstance} from '@jsplumb/browser-ui';
 import {
   BeforeDropParams,
   Connection,
@@ -16,17 +16,20 @@ import {
   EVENT_CONNECTION,
   INTERCEPT_BEFORE_DROP,
 } from '@jsplumb/core';
-import { ActivityFlowLink, Card, CardContent } from 'colab-rest-client';
-import { uniq } from 'lodash';
+import {ActivityFlowLink, Card, CardContent} from 'colab-rest-client';
+import {uniq} from 'lodash';
 import * as React from 'react';
 import * as API from '../../../API/api';
 import useTranslations from '../../../i18n/I18nContext';
-import { getLogger } from '../../../logger';
-import { useProjectBeingEdited } from '../../../selectors/projectSelector';
-import { shallowEqual, useAppDispatch, useAppSelector } from '../../../store/hooks';
-import { ProgressBar } from '../../cards/CardLayout';
+import {getLogger} from '../../../logger';
+import {useProjectBeingEdited} from '../../../selectors/projectSelector';
+import {shallowEqual, useAppDispatch, useAppSelector} from '../../../store/hooks';
+import CardContentStatus from '../../cards/CardContentStatus';
+import CardLayout from '../../cards/CardLayout';
+import VariantSelector from '../../cards/VariantSelector';
 import InlineLoading from '../../common/element/InlineLoading';
 import Flex from '../../common/layout/Flex';
+import {space_M, space_S, variantTitle} from '../../styling/style';
 
 const logger = getLogger('ActivityFlow');
 logger.setLevel(4);
@@ -47,48 +50,22 @@ function getChildrenDeep(card: Card, cards: Card[], cardContents: CardContent[])
   return children;
 }
 
-//function getPreviousCards(nextCard: Card, links: ActivityFlowLink[], cards: Card[]) {
-//  links
-//    .filter(link => link.nextCardId === nextCard.id) // links to the given nextCard
-//    .map(link => cards.find(card => card.id === link.previousCardId));
-//}
-
-const cardStyle = (color: string | null | undefined): string =>
-  css({
-    display: 'flex',
-    userSelect: 'none',
-    flexDirection: 'column',
-    margin: '20px',
-    backgroundColor: color || undefined,
-    //  flexWrap: 'wrap',
-    borderRadius: '5px',
-    minHeight: '100px',
-    minWidth: '180px',
-    justifyContent: 'space-between',
-    zIndex: 1,
-  });
-
-const padding = css({
-  padding: '5px',
+const cardStyle= css({
+  zIndex: 1,
+  userSelect: "none",
 });
 
 interface CardProps {
   card: Card;
-  allVariants: CardContent[];
-  extraTools?: React.ReactNode;
-  showProgressBar?: boolean;
   plumbRefs: PlumbRef;
   jsPlumb: BrowserJsPlumbInstance;
 }
 
 export function Card({
   card,
-  allVariants,
-  showProgressBar,
   jsPlumb,
   plumbRefs,
 }: CardProps): JSX.Element {
-  const color = card.color || 'white';
   const i18n = useTranslations();
 
   const refCb = React.useCallback(
@@ -98,29 +75,58 @@ export function Card({
     [jsPlumb, plumbRefs, card.id],
   );
 
-  const variants = getVariantsOfCard(card, allVariants);
-
   return (
-    <div ref={refCb} data-cardid={card.id} className={`CardSource CardTarget ${cardStyle(color)}`}>
-      <Flex justify="space-between">
-        <div className={padding}>{card.title || i18n.modules.card.untitled}</div>
-        <FontAwesomeIcon className="CardSourceHandle" icon={faProjectDiagram} />
-      </Flex>
-      <Flex className={css({ width: '100%' })}>
-        {variants.map(variant => (
-          <Flex
-            key={variant.id}
-            direction="column"
-            justify="space-between"
-            className={css({ width: '100%' })}
-          >
-            {variants.length > 1 ? (
-              <div className={padding}>{variant.title || i18n.modules.content.untitled}</div>
-            ) : null}
-            {showProgressBar ? <ProgressBar variant={variant} /> : null}
-          </Flex>
-        ))}
-      </Flex>
+    <div ref={refCb} data-cardid={card.id} className={`CardSource CardTarget ${cardStyle}`}>
+      <VariantSelector card={card}>
+        {(variant, variants) => (
+          <CardLayout card={card} variant={variant} variants={variants}>
+            <div
+              className={css({
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'space-around',
+                borderBottom:
+                  card.color && card.color != '#ffffff'
+                    ? '3px solid ' + card.color
+                    : '1px solid var(--lightGray)',
+                width: '100%',
+              })}
+            >
+              <div
+                className={css({
+                  padding: space_S + ' ' + space_S + ' ' + space_S + ' ' + space_M,
+                })}
+              >
+                <div
+                  className={css({
+                    display: 'flex',
+                    flexDirection: 'row',
+                    justifyContent: 'space-between',
+                  })}
+                >
+                  <div>
+                    <CardContentStatus mode="icon" status={variant?.status || 'ACTIVE'} />
+                    <span className={css({fontWeight: 'bold'})}>
+                      {card.title || i18n.modules.card.untitled}
+                    </span>
+                    {variants.length > 1 && (
+                      <span className={variantTitle}>
+                        &#xFE58;
+                        {variant?.title && variant.title.length > 0
+                          ? variant.title
+                          : `${i18n.modules.card.variant} ${variants.indexOf(variant!) + 1}`}
+                      </span>
+                    )}
+                  </div>
+                  <div className={`CardSourceHandle`}>
+                    <FontAwesomeIcon icon={faProjectDiagram} />
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div className={css({minHeight: '1.5rem'})}></div>
+          </CardLayout>)}
+      </VariantSelector>
     </div>
   );
 }
@@ -132,9 +138,9 @@ interface PlumbRef {
 
 export default function ActivityFlowChart(): JSX.Element {
   const dispatch = useAppDispatch();
-  const { project, status } = useProjectBeingEdited();
+  const {project, status} = useProjectBeingEdited();
 
-  const plumbRefs = React.useRef<PlumbRef>({ divs: {}, connections: {} });
+  const plumbRefs = React.useRef<PlumbRef>({divs: {}, connections: {}});
 
   const [rootNode, setRootNode] = React.useState<HTMLDivElement | null>(null);
   const [jsPlumb, setJsPlumb] = React.useState<BrowserJsPlumbInstance | undefined>(undefined);
@@ -145,24 +151,25 @@ export default function ActivityFlowChart(): JSX.Element {
       logger.debug('Init JsPlumb');
       const plumb = newInstance({
         container: rootNode,
-        connector: { type: 'Straight', options: { gap: 5 } },
-        paintStyle: { strokeWidth: 1, stroke: 'black' },
-        anchor: { type: 'Perimeter', options: { shape: 'Rectangle' } },
-        //        anchors: ['Right', 'Left'],
+        connector: {type: 'Straight', options: {gap: 5}},
+        paintStyle: {strokeWidth: 1, stroke: 'black'},
+        anchor: {type: 'Perimeter', options: {shape: 'Rectangle'}},
+        anchors: ['Right', 'Left'],
         endpoints: [
-          { type: 'Dot', options: { radius: 3 } },
-          { type: 'Dot', options: { radius: 3 } },
+          {type: 'Dot', options: {radius: 3}},
+          {type: 'Dot', options: {radius: 3}},
         ],
         connectionOverlays: [
           {
             type: 'Arrow',
-            options: { location: 1, width: 10, length: 5 },
+            options: {location: 1, width: 10, length: 5},
           },
         ],
       });
 
-      plumb.addSourceSelector('.CardSource, .CardSourceHandle', {
+      plumb.addSourceSelector('.CardSource *, .CardSourceHandle *', {
         allowLoopback: false,
+        parentSelector: ".CardSource",
         anchors: ['Right', 'Left'],
       });
 
@@ -339,8 +346,12 @@ export default function ActivityFlowChart(): JSX.Element {
               const connection = jsPlumb.connect({
                 source: source,
                 target: target,
-                data: { link },
+                data: {link},
                 reattach: true,
+                anchors: [
+                  [1, 0.5, 0, 0, -30],
+                  [0, 0.5, 0, 0, 30],
+                ]
               });
               plumbRefs.current.connections[cId] = connection;
             }
@@ -444,57 +455,57 @@ export default function ActivityFlowChart(): JSX.Element {
     }
 
     return (
-      <Flex
-        direction="column"
-        theRef={ref => setRootNode(ref)}
-        className={css({
-          '& .jtk-endpoint': {
-            zIndex: 2,
-          },
-          '& .jtk-drag-hover': {
-            boxShadow: '0 0 1px 1px hotpink',
-          },
-        })}
-      >
-        {jsPlumb != null ? (
-          <>
-            <span>Activity Flow</span>
-            <Flex direction="row">
-              {cardGroups.map((group, i) => (
-                <Flex
-                  direction="column"
-                  justify="space-evenly"
-                  className={css({ padding: '20px' })}
-                  key={`group-${i}`}
-                >
-                  {group.map(card => (
-                    <Card
-                      key={`Card-${card.id!}`}
-                      card={card}
-                      allVariants={cardContents}
-                      jsPlumb={jsPlumb}
-                      plumbRefs={plumbRefs.current}
-                      showProgressBar
-                    />
-                  ))}
-                </Flex>
-              ))}
-            </Flex>
-            <span>Not in flow</span>
-            <Flex direction="row">
-              {notInFlow.map(card => (
-                <Card
-                  key={`Card-${card.id!}`}
-                  card={card}
-                  allVariants={cardContents}
-                  jsPlumb={jsPlumb}
-                  plumbRefs={plumbRefs.current}
-                  showProgressBar
-                />
-              ))}
-            </Flex>
-          </>
-        ) : null}
+      <Flex>
+        <Flex
+          direction="column"
+          theRef={ref => setRootNode(ref)}
+          className={css({
+            '& .jtk-endpoint': {
+              zIndex: 2,
+            },
+            scale: "1",
+            '& .jtk-drag-hover': {
+              boxShadow: '0 0 1px 1px hotpink',
+            },
+          })}
+        >
+          {jsPlumb != null ? (
+            <>
+              <span>Activity Flow</span>
+              <Flex direction="row">
+                {cardGroups.map((group, i) => (
+                  <Flex
+                    direction="column"
+                    justify="space-evenly"
+                    align='stretch'
+                    className={css({padding: '20px'})}
+                    key={`group-${i}`}
+                  >
+                    {group.map(card => (
+                      <Card
+                        key={`Card-${card.id!}`}
+                        card={card}
+                        jsPlumb={jsPlumb}
+                        plumbRefs={plumbRefs.current}
+                      />
+                    ))}
+                  </Flex>
+                ))}
+              </Flex>
+              <span>Not in flow</span>
+              <Flex direction="row" wrap='wrap'>
+                {notInFlow.map(card => (
+                  <Card
+                    key={`Card-${card.id!}`}
+                    card={card}
+                    jsPlumb={jsPlumb}
+                    plumbRefs={plumbRefs.current}
+                  />
+                ))}
+              </Flex>
+            </>
+          ) : null}
+        </Flex>
       </Flex>
     );
   } else {
@@ -502,9 +513,11 @@ export default function ActivityFlowChart(): JSX.Element {
   }
 }
 
-function getVariantsOfCard(card: Card, variants: CardContent[]) {
-  return variants.filter(content => content.cardId === card.id);
-}
+//function getVariantsOfCard(card: Card, variants: CardContent[], lang: string) {
+//  return sortCardContents(
+//    variants.filter(content => content.cardId === card.id),
+//    lang);
+//}
 
 const assignDiv = (
   jsPlumb: BrowserJsPlumbInstance,
