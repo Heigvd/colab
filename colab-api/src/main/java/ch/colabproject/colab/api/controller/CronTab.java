@@ -6,6 +6,7 @@
  */
 package ch.colabproject.colab.api.controller;
 
+import ch.colabproject.colab.api.controller.document.ExternalDataManager;
 import ch.colabproject.colab.api.security.SessionManager;
 import javax.ejb.Schedule;
 import javax.ejb.Singleton;
@@ -30,6 +31,10 @@ public class CronTab {
     @Inject
     private SessionManager sessionManager;
 
+    /** To manager OpenGraph cache */
+    @Inject
+    private ExternalDataManager externalDataManager;
+
     /**
      * Each minutes
      */
@@ -39,13 +44,21 @@ public class CronTab {
         sessionManager.writeActivityDatesToDatabase();
     }
 
-
     /**
-     * each midnight
+     * each midnight, clear expired sessions
      */
     @Schedule(hour = "0", minute = "0")
     public void dropOldHttpSession() {
         logger.info("CRON: drop expired http session");
         sessionManager.clearExpiredSessions();
+    }
+
+    /**
+     * each 00:30, clean outdated UrlMetadata
+     */
+    @Schedule(hour = "0", minute = "30")
+    public void dropOldUrlMetadata() {
+        logger.info("CRON: clean url metadata cache");
+        externalDataManager.clearOutdated();
     }
 }

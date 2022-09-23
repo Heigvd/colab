@@ -7,6 +7,7 @@
 package ch.colabproject.colab.api.rest.card.bean;
 
 import ch.colabproject.colab.api.model.document.TextDataBlock;
+import ch.colabproject.colab.generator.model.annotations.ExtractJavaDoc;
 import java.io.Serializable;
 import java.util.Set;
 import org.apache.commons.lang3.builder.EqualsBuilder;
@@ -17,6 +18,7 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
  *
  * @author sandra
  */
+@ExtractJavaDoc
 public class CardTypeCreationData implements Serializable {
 
     private static final long serialVersionUID = 1L;

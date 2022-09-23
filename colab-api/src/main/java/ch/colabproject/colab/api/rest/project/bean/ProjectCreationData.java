@@ -7,6 +7,7 @@
 package ch.colabproject.colab.api.rest.project.bean;
 
 import ch.colabproject.colab.api.model.common.Illustration;
+import ch.colabproject.colab.generator.model.annotations.ExtractJavaDoc;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -18,6 +19,7 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
  *
  * @author sandra
  */
+@ExtractJavaDoc
 public class ProjectCreationData implements Serializable {
 
     private static final long serialVersionUID = 1L;

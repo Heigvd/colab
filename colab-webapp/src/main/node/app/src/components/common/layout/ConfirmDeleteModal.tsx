@@ -11,9 +11,74 @@ import { errorColor, space_M } from '../../styling/style';
 import Button from '../element/Button';
 import ButtonWithLoader from '../element/ButtonWithLoader';
 import Flex from './Flex';
+import Modal from './Modal';
 import OpenCloseModal from './OpenCloseModal';
 
-interface ConfirmDeleteModalProps {
+interface ConfirmDeleteProps {
+  message: string | React.ReactNode;
+  onCancel: () => void;
+  cancelButtonLabel?: string;
+  onConfirm: () => void;
+  confirmButtonLabel?: string;
+  isConfirmButtonLoading?: boolean;
+}
+
+export function ConfirmDelete({
+  onCancel,
+  cancelButtonLabel,
+  onConfirm,
+  confirmButtonLabel,
+  message,
+  isConfirmButtonLoading,
+}: ConfirmDeleteProps): JSX.Element {
+  const i18n = useTranslations();
+
+  const mainButtonRef = React.useRef<HTMLSpanElement>(null);
+  React.useEffect(() => {
+    mainButtonRef.current?.focus();
+  }, []);
+
+  return (
+    <Flex direction="column" align="stretch" grow={1}>
+      {message}
+      <Flex justify="flex-end">
+        <Button onClick={() => onCancel()} invertedButton>
+          {cancelButtonLabel ? cancelButtonLabel : i18n.common.cancel}
+        </Button>
+        <ButtonWithLoader
+          ref={mainButtonRef}
+          title={confirmButtonLabel ? confirmButtonLabel : i18n.common.delete}
+          onClick={onConfirm}
+          className={css({
+            backgroundColor: errorColor,
+            marginLeft: space_M,
+          })}
+          isLoading={isConfirmButtonLoading}
+        >
+          {confirmButtonLabel ? confirmButtonLabel : i18n.common.delete}
+        </ButtonWithLoader>
+      </Flex>
+    </Flex>
+  );
+}
+
+interface ConfirmDeleteModalProps extends ConfirmDeleteProps {
+  title?: string;
+}
+
+export function ConfirmDeleteModal({ title, onCancel, ...restProps }: ConfirmDeleteModalProps) {
+  const onClose = React.useCallback(() => {
+    onCancel();
+  }, [onCancel]);
+
+  return (
+    <Modal title={title} onClose={onClose}>
+      {collapse => <ConfirmDelete {...restProps} onCancel={collapse} />}
+    </Modal>
+  );
+}
+
+interface ConfirmDeleteOpenCloseModalProps {
   buttonLabel: React.ReactNode;
   confirmButtonLabel?: string;
   cancelButtonLabel?: string;
@@ -24,7 +89,7 @@ interface ConfirmDeleteModalProps {
   isConfirmButtonLoading?: boolean;
 }
 
-export default function ConfirmDeleteModal({
+export default function ConfirmDeleteOpenCloseModal({
   buttonLabel,
   confirmButtonLabel,
   cancelButtonLabel,
@@ -33,44 +98,30 @@ export default function ConfirmDeleteModal({
   title,
   className,
   isConfirmButtonLoading,
-}: ConfirmDeleteModalProps): JSX.Element {
-  const mainButtonRef = React.useRef<HTMLSpanElement>(null);
-  React.useEffect(() => {
-    mainButtonRef.current?.focus();
-  }, []);
+}: ConfirmDeleteOpenCloseModalProps): JSX.Element {
+  const onInternalConfirm = React.useCallback(
+    (close: () => void) => {
+      onConfirm();
+      close();
+    },
+    [onConfirm],
+  );
 
-  const i18n = useTranslations();
-  const onInternalConfirm = (close: () => void) => {
-    onConfirm();
-    close();
-  };
   return (
     <OpenCloseModal
       title={title ? title : ''}
       collapsedChildren={<>{buttonLabel}</>}
       className={cx(css({ '&:hover': { textDecoration: 'none' } }), className)}
     >
-      {collapse => (
-        <Flex direction="column" align="stretch" grow={1}>
-          {message}
-          <Flex justify="flex-end">
-            <Button onClick={() => collapse()} invertedButton>
-              {cancelButtonLabel ? cancelButtonLabel : i18n.common.cancel}
-            </Button>
-            <ButtonWithLoader
-              ref={mainButtonRef}
-              title={confirmButtonLabel ? confirmButtonLabel : i18n.common.delete}
-              onClick={() => onInternalConfirm(collapse)}
-              className={css({
-                backgroundColor: errorColor,
-                marginLeft: space_M,
-              })}
-              isLoading={isConfirmButtonLoading}
-            >
-              {confirmButtonLabel ? confirmButtonLabel : i18n.common.delete}
-            </ButtonWithLoader>
-          </Flex>
-        </Flex>
+      {closeModal => (
+        <ConfirmDelete
+          message={message}
+          cancelButtonLabel={cancelButtonLabel}
+          onCancel={closeModal}
+          onConfirm={() => onInternalConfirm(closeModal)}
+          confirmButtonLabel={confirmButtonLabel}
+          isConfirmButtonLoading={isConfirmButtonLoading}
+        />
       )}
     </OpenCloseModal>
   );

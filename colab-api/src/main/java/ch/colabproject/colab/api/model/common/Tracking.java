@@ -6,6 +6,7 @@
  */
 package ch.colabproject.colab.api.model.common;
 
+import ch.colabproject.colab.generator.model.annotations.ExtractJavaDoc;
 import ch.colabproject.colab.generator.model.interfaces.WithJsonDiscriminator;
 import ch.colabproject.colab.generator.model.tools.DateSerDe;
 import java.time.OffsetDateTime;
@@ -20,6 +21,7 @@ import javax.validation.constraints.Size;
  * @author maxence
  */
 @Embeddable
+@ExtractJavaDoc
 public class Tracking implements WithJsonDiscriminator {
 
     private static final long serialVersionUID = 1L;

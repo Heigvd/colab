@@ -9,6 +9,7 @@ package ch.colabproject.colab.api.microchanges.model;
 import ch.colabproject.colab.api.model.WithWebsocketChannels;
 import ch.colabproject.colab.api.ws.channel.tool.ChannelsBuilders.BlockChannelBuilder;
 import ch.colabproject.colab.api.ws.channel.tool.ChannelsBuilders.ChannelsBuilder;
+import ch.colabproject.colab.generator.model.annotations.ExtractJavaDoc;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -22,6 +23,7 @@ import org.apache.commons.text.StringEscapeUtils;
  *
  * @author maxence
  */
+@ExtractJavaDoc
 public class Change implements Serializable, WithWebsocketChannels {
 
     private static final long serialVersionUID = 1L;

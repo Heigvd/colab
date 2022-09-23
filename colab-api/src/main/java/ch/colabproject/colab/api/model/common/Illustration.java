@@ -6,6 +6,7 @@
  */
 package ch.colabproject.colab.api.model.common;
 
+import ch.colabproject.colab.generator.model.annotations.ExtractJavaDoc;
 import ch.colabproject.colab.generator.model.interfaces.WithJsonDiscriminator;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
@@ -24,6 +25,7 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
  * @author sandra
  */
 @Embeddable
+@ExtractJavaDoc
 public class Illustration implements WithJsonDiscriminator {
 
     private static final long serialVersionUID = 1L;
