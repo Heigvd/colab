@@ -108,18 +108,6 @@ export function TipsSettings(): JSX.Element {
     <div>
       <div>
         <Checkbox
-          label={i18n.tips.label.todo}
-          value={config.TODO.value}
-          onChange={config.TODO.set}
-          className={css({ display: 'inline-block', marginRight: space_S })}
-        />
-        <Tips tipsType="TODO">
-          <h4>{i18n.tips.example.todo.title}</h4>
-          {i18n.tips.example.todo.content}
-        </Tips>
-      </div>
-      <div>
-        <Checkbox
           label={i18n.tips.label.tips}
           value={config.TIPS.value}
           onChange={config.TIPS.set}
@@ -152,6 +140,18 @@ export function TipsSettings(): JSX.Element {
         <Tips tipsType="WIP">
           <h4>{i18n.tips.example.wip.title}</h4>
           {i18n.tips.example.wip.content}
+        </Tips>
+      </div>
+      <div>
+        <Checkbox
+          label={i18n.tips.label.todo}
+          value={config.TODO.value}
+          onChange={config.TODO.set}
+          className={css({ display: 'inline-block', marginRight: space_S })}
+        />
+        <Tips tipsType="TODO">
+          <h4>{i18n.tips.example.todo.title}</h4>
+          {i18n.tips.example.todo.content}
         </Tips>
       </div>
       <div>
