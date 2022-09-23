@@ -167,7 +167,7 @@ export default function CardTypeThumbnail({
                         {
                           label: (
                             <>
-                              <FontAwesomeIcon color={errorColor} icon={faExchangeAlt} />
+                              <FontAwesomeIcon color={errorColor} icon={faExchangeAlt} />{' '}
                               {i18n.modules.cardType.action.removeFromProject}
                             </>
                           ),
@@ -235,26 +235,28 @@ export default function CardTypeThumbnail({
                     </Modal>
                   );
                 case 'TYPE_USED':
-                  return;
-                  <Modal
-                    title={i18n.modules.cardType.action.deleteType}
-                    onClose={() => setShowModal(undefined)}
-                    footer={collapse => (
-                      <Flex
-                        justify={'center'}
-                        grow={1}
-                        className={css({ padding: space_M, columnGap: space_S })}
-                      >
-                        <Button onClick={collapse}> {i18n.common.ok}</Button>
-                      </Flex>
-                    )}
-                  >
-                    {() => <div>{i18n.modules.cardType.info.cannotDeleteType}</div>}
-                  </Modal>;
+                  return (
+                    <Modal
+                      title={i18n.modules.cardType.action.deleteType}
+                      onClose={() => setShowModal(undefined)}
+                      footer={collapse => (
+                        <Flex
+                          justify={'center'}
+                          grow={1}
+                          className={css({ padding: space_M, columnGap: space_S })}
+                        >
+                          <Button onClick={collapse}> {i18n.common.ok}</Button>
+                        </Flex>
+                      )}
+                    >
+                      {() => <div>{i18n.modules.cardType.info.cannotDeleteType}</div>}
+                    </Modal>
+                  );
                 case 'DELETE':
                   if (cardType.kind === 'own') {
                     return (
                       <ConfirmDeleteModal
+                        title={i18n.modules.cardType.action.deleteType}
                         onCancel={() => setShowModal(undefined)}
                         message={<p>{i18n.modules.cardType.action.confirmDeleteType}</p>}
                         onConfirm={() => {

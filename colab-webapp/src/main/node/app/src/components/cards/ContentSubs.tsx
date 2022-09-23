@@ -176,7 +176,7 @@ export default function ContentSubs({
       ) : (
         <Ellipsis
           items={subCards}
-          alignEllipsis='flex-end'
+          alignEllipsis="flex-end"
           itemComp={sub => <TinyCard key={sub.id} card={sub} />}
         />
       );

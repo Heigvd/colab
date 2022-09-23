@@ -309,6 +309,7 @@ export const en = {
       info: {
         noProjectSelected: 'No project selected',
         noProjectYet: "You don't have any project yet",
+        noProject: 'The project could not be loaded',
         emptyProject: 'Empty project',
         useBlankProject: "Use this empty project and you'll be free to create a whole new world",
         deleteConfirmation:
@@ -415,9 +416,9 @@ export const en = {
       dlFile: 'Download file',
       editBlock: 'Edit block',
       deleteBlock: 'Delete block',
-      createText: 'Create text block',
-      createFile: 'Create file',
-      createLink: 'Create link',
+      addText: 'Add text block',
+      addFile: 'Add file',
+      addLink: 'Add link',
       emptyLink: 'Empty link',
       moveBlockUpDown: (direction: string): string =>
         `Move block ${direction === 'up' ? 'up' : 'down'}`,
