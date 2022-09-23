@@ -12,12 +12,7 @@ import * as React from 'react';
 import useTranslations from '../../i18n/I18nContext';
 import IconButton from '../common/element/IconButton';
 import Flex from '../common/layout/Flex';
-import {
-  lightIconButtonStyle,
-  marginAroundStyle,
-  space_M,
-  space_S,
-} from '../styling/style';
+import { lightIconButtonStyle, marginAroundStyle, space_M, space_S } from '../styling/style';
 
 const bgActiveStyleRight = css({
   backgroundImage: 'linear-gradient( to right, transparent 90%, #444 91%, #444 100%)',
@@ -62,7 +57,7 @@ export function SideCollapsiblePanelBody({
         {itemOpen.title && (
           <Flex
             justify="space-between"
-            align='center'
+            align="center"
             className={css({
               padding: space_S + ' ' + space_M,
               borderBottom: '1px solid var(--lightGray)',
@@ -118,7 +113,7 @@ export function SideCollapsibleMenu({
           justify="center"
           align="center"
           className={cx(
-            css({ padding: space_M, '&:hover': {cursor: 'pointer'}}),
+            css({ padding: space_M, '&:hover': { cursor: 'pointer' } }),
             {
               [bgActiveStyleRight]: openKey === key,
             },
@@ -135,7 +130,7 @@ export function SideCollapsibleMenu({
             icon={item.icon}
             title={item.title}
             size="lg"
-            className={css({ paddingLeft: 0, paddingRight: '1px'})}
+            className={css({ paddingLeft: 0, paddingRight: '1px' })}
           />
           {item.nextToIconElement}
         </Flex>
