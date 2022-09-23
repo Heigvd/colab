@@ -19,8 +19,8 @@ colab-client/colab-api,ch.colabproject.colab.api.security.permissions,Conditions
 colab-client/colab-api,ch.colabproject.colab.api.security.permissions,Conditions.Or,86,0,12,0,21,0,11,0,5,0
 colab-client/colab-api,ch.colabproject.colab.api.security.permissions,Conditions.AlwaysFalse,19,0,0,0,6,0,4,0,4,0
 colab-client/colab-api,ch.colabproject.colab.api.security.permissions,Conditions.IsCurrentUserInternalToProject,56,0,8,0,18,0,9,0,5,0
-colab-client/colab-api,ch.colabproject.colab.api.security.permissions,Conditions.HasCardReadRight,63,0,8,0,21,0,10,0,6,0
 colab-client/colab-api,ch.colabproject.colab.api.security.permissions,Conditions.IsCurrentUserOwnerOfProject,56,0,8,0,18,0,9,0,5,0
+colab-client/colab-api,ch.colabproject.colab.api.security.permissions,Conditions.HasCardReadRight,63,0,8,0,21,0,10,0,6,0
 colab-client/colab-api,ch.colabproject.colab.api.security.permissions,Conditions.IsCurrentUserLeaderOfProject,56,0,8,0,18,0,9,0,5,0
 colab-client/colab-api,ch.colabproject.colab.api.security.permissions,Conditions.IsCurrentUserMemberOfProject,56,0,8,0,18,0,9,0,5,0
 colab-client/colab-api,ch.colabproject.colab.api.rest.document.bean,UrlMetadata,36,0,0,0,14,0,9,0,9,0
@@ -46,8 +46,8 @@ colab-client/colab-api,ch.colabproject.colab.api.model.token.tools,VerifyLocalAc
 colab-client/colab-api,ch.colabproject.colab.api.model.token.tools,ResetLocalAccountPasswordMessageBuilder,47,0,4,0,16,0,3,0,1,0
 colab-client/colab-api,ch.colabproject.colab.api.setup,StaticContentCacheControlFilter,42,0,4,0,12,0,7,0,5,0
 colab-client/colab-api,ch.colabproject.colab.api.setup,ColabConfiguration,116,0,2,0,31,0,19,0,18,0
-colab-client/colab-api,ch.colabproject.colab.api.setup,ApplicationLifecycle,80,0,4,0,27,0,7,0,5,0
 colab-client/colab-api,ch.colabproject.colab.api.setup,DataSourceDefinitionProvider,5,0,0,0,2,0,2,0,2,0
+colab-client/colab-api,ch.colabproject.colab.api.setup,ApplicationLifecycle,80,0,4,0,27,0,7,0,5,0
 colab-client/colab-api,ch.colabproject.colab.api.setup,ApplicationConfig,16,0,0,0,4,0,1,0,1,0
 colab-client/colab-api,ch.colabproject.colab.api.setup,LiquibaseProducer,22,0,0,0,6,0,4,0,4,0
 colab-client/colab-api,ch.colabproject.colab.api.setup,ApplicationLifecycle.new Thread() {...},13,0,0,0,4,0,2,0,2,0
@@ -228,8 +228,8 @@ colab-client/client-generator-plugin,ch.colabproject.colab.generator.plugin,Gene
 colab-client/client-generator-plugin,ch.colabproject.colab.generator.plugin.rest,RestClient.CookieFilter,56,0,6,0,16,0,6,0,3,0
 colab-client/client-generator-plugin,ch.colabproject.colab.generator.plugin.rest,ServerException,8,0,0,0,4,0,2,0,2,0
 colab-client/client-generator-plugin,ch.colabproject.colab.generator.plugin.rest,Param,41,0,0,0,17,0,11,0,11,0
-colab-client/client-generator-plugin,ch.colabproject.colab.generator.plugin.rest,ClientException,8,0,0,0,4,0,2,0,2,0
 colab-client/client-generator-plugin,ch.colabproject.colab.generator.plugin.rest,RestClient,369,0,42,0,85,0,36,0,15,0
+colab-client/client-generator-plugin,ch.colabproject.colab.generator.plugin.rest,ClientException,8,0,0,0,4,0,2,0,2,0
 colab-client/client-generator-plugin,ch.colabproject.colab.generator.plugin.rest,FormField,17,0,0,0,7,0,5,0,5,0
 colab-client/client-generator-plugin,ch.colabproject.colab.generator.plugin.rest,RestEndpoint,2097,0,130,0,506,0,117,0,52,0
 colab-client/client-generator-plugin,ch.colabproject.colab.generator.plugin.rest,RestMethod,276,0,10,0,86,0,41,0,36,0
