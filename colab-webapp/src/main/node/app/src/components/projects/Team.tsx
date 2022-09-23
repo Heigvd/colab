@@ -34,8 +34,8 @@ import IconButton from '../common/element/IconButton';
 import IconButtonWithLoader from '../common/element/IconButtonWithLoader';
 import InlineLoading from '../common/element/InlineLoading';
 import { DiscreetInput, InlineInput } from '../common/element/Input';
-import ConfirmDeleteModal from '../common/layout/ConfirmDeleteModal';
-import DropDownMenu, { modalEntryStyle } from '../common/layout/DropDownMenu';
+import { ConfirmDeleteModal } from '../common/layout/ConfirmDeleteModal';
+import DropDownMenu from '../common/layout/DropDownMenu';
 import Flex from '../common/layout/Flex';
 import OpenClose from '../common/layout/OpenClose';
 import OpenCloseModal from '../common/layout/OpenCloseModal';
@@ -275,40 +275,40 @@ const Member = ({ member, roles, isTheOnlyOwner }: MemberProps) => {
     );
   }
 
+  const [showModal, setShowModal] = React.useState('');
+
   const roleIds = member.roleIds || [];
   return (
     <>
+      {showModal === 'delete' && (
+        <ConfirmDeleteModal
+          message={<p>{i18n.team.sureDeleteMember}</p>}
+          onCancel={() => {
+            setShowModal('');
+          }}
+          onConfirm={() => {
+            startLoading();
+            dispatch(API.deleteMember(member)).then(stopLoading);
+          }}
+          confirmButtonLabel={i18n.team.deleteMember}
+          isConfirmButtonLoading={isLoading}
+        />
+      )}
       <div className={gridNewLine}>{username}</div>
       {currentUser?.id != member.userId ? (
         <DropDownMenu
           icon={faEllipsisV}
           valueComp={{ value: '', label: '' }}
           buttonClassName={cx(lightIconButtonStyle, css({ marginLeft: space_S }))}
+          onSelect={value => setShowModal(value.value)}
           entries={[
             {
               value: 'delete',
               label: (
-                <ConfirmDeleteModal
-                  buttonLabel={
-                    <div className={cx(css({ color: errorColor }), modalEntryStyle)}>
-                      <FontAwesomeIcon icon={faTrash} /> {i18n.common.delete}
-                    </div>
-                  }
-                  className={css({
-                    '&:hover': { textDecoration: 'none' },
-                    display: 'flex',
-                    alignItems: 'center',
-                  })}
-                  message={<p>{i18n.team.sureDeleteMember}</p>}
-                  onConfirm={() => {
-                    startLoading();
-                    dispatch(API.deleteMember(member)).then(stopLoading);
-                  }}
-                  confirmButtonLabel={i18n.team.deleteMember}
-                  isConfirmButtonLoading={isLoading}
-                />
+                <>
+                  <FontAwesomeIcon icon={faTrash} color={errorColor} /> {i18n.common.delete}
+                </>
               ),
-              modal: true,
             },
           ]}
         />
@@ -321,7 +321,6 @@ const Member = ({ member, roles, isTheOnlyOwner }: MemberProps) => {
         status={open}
         >
         {() => <div>Are you sure you want to change your own rights? </div>}
-        
       </OpenCloseModal> */}
       <PositionSelector
         value={member.position}

@@ -27,7 +27,7 @@ import IconButton from '../../common/element/IconButton';
 import { DiscreetInput, LabeledTextArea } from '../../common/element/Input';
 import Tips from '../../common/element/Tips';
 import Toggler from '../../common/element/Toggler';
-import ConfirmDeleteModal from '../../common/layout/ConfirmDeleteModal';
+import ConfirmDeleteOpenCloseModal from '../../common/layout/ConfirmDeleteModal';
 import Flex from '../../common/layout/Flex';
 import { DocTextWrapper } from '../../documents/DocTextItem';
 import { ResourceCallContext } from '../../resources/resourcesCommonType';
@@ -150,7 +150,7 @@ export default function CardTypeEditor({ className, usage }: CardTypeEditorProps
               >
                 <Creatable
                   isMulti={true}
-                  value={cardType.tags.map(tag => ({ label: tag, value: tag }))}
+                  value={cardType.tags.map((tag: string) => ({ label: tag, value: tag }))}
                   options={options}
                   onChange={tagsOptions => {
                     if (tagsOptions.length > 0) {
@@ -190,7 +190,7 @@ export default function CardTypeEditor({ className, usage }: CardTypeEditorProps
                   )
                 }
               />
-              <ConfirmDeleteModal
+              <ConfirmDeleteOpenCloseModal
                 buttonLabel={
                   <Button
                     invertedButton

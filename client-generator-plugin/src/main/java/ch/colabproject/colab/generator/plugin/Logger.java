@@ -61,6 +61,20 @@ public class Logger {
     }
 
     /**
+     * Print a info message.
+     *
+     * @param msg the message
+     */
+    @SuppressWarnings("PMD.SystemPrintln")
+    public static void info(String msg) {
+        if (log != null) {
+            log.info(msg);
+        } else {
+            System.out.println(msg);
+        }
+    }
+
+    /**
      * Print a warn message.
      *
      * @param msg the message
