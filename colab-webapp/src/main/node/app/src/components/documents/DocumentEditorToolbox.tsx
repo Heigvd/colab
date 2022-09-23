@@ -260,6 +260,7 @@ DocEditorToolboxProps): JSX.Element {
             ]}
           /> */}
           <ConfirmDeleteOpenCloseModal
+            title={i18n.modules.content.deleteBlock}
             confirmButtonLabel={i18n.modules.content.deleteBlockType(isText, isLink)}
             buttonLabel={
               <>

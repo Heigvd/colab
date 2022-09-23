@@ -191,6 +191,7 @@ export default function CardTypeEditor({ className, usage }: CardTypeEditorProps
                 }
               />
               <ConfirmDeleteOpenCloseModal
+                title={i18n.modules.cardType.action.deleteType}
                 buttonLabel={
                   <Button
                     invertedButton

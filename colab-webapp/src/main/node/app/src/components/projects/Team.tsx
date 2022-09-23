@@ -282,6 +282,7 @@ const Member = ({ member, roles, isTheOnlyOwner }: MemberProps) => {
     <>
       {showModal === 'delete' && (
         <ConfirmDeleteModal
+          title={i18n.team.deleteMember}
           message={<p>{i18n.team.sureDeleteMember}</p>}
           onCancel={() => {
             setShowModal('');
