@@ -12,6 +12,7 @@ import ch.colabproject.colab.api.model.card.CardType;
 import ch.colabproject.colab.api.model.link.StickyNoteLink;
 import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.api.model.tools.EntityHelper;
+import ch.colabproject.colab.api.security.permissions.Conditions;
 import ch.colabproject.colab.api.ws.channel.tool.ChannelsBuilders.ChannelsBuilder;
 import ch.colabproject.colab.api.ws.channel.tool.ChannelsBuilders.EmptyChannelBuilder;
 import javax.json.bind.annotation.JsonbTransient;
@@ -273,52 +274,54 @@ public class TextDataBlock extends Document {
     }
 
 // TODO sandra work in progress - ACL on text data blocks
-//    @Override
-//    @JsonbTransient
-//    public Conditions.Condition getReadCondition() {
-//        if (getOwningCardContent() != null) {
-//            // The document is a deliverable of a card content
-//            return new Conditions.HasCardReadRight(getOwningCardContent());
-//        } else if (getOwningResource() != null) {
-//            // The document is part of a resource
-//            return getOwningResource().getReadCondition();
-//        } else if (this.purposingCardType != null) {
-//            // It is the purpose of a card type
-//            return this.purposingCardType.getReadCondition();
-//        } else if (this.teasingResource != null) {
-//            // It is the teaser of a resource
-//            return this.teasingResource.getReadCondition();
-//        } else if (this.explainingStickyNoteLink != null) {
-//            // It is the explanation of a sticky note link
-//            return this.explainingStickyNoteLink.getReadCondition();
-//        } else {
-//            // such an orphan shouldn't exist...
-//            return Conditions.defaultForOrphan;
-//        }
-//    }
-//
-//    @Override
-//    public Conditions.Condition getUpdateCondition() {
-//        if (getOwningCardContent() != null) {
-//            // The document is a deliverable of a card content
-//            return getOwningCardContent().getUpdateCondition();
-//        } else if (getOwningResource() != null) {
-//            // The document is part of a resource
-//            return getOwningResource().getUpdateCondition();
-//        } else if (this.purposingCardType != null) {
-//            // It is the purpose of a card type
-//            return this.purposingCardType.getUpdateCondition();
-//        } else if (this.teasingResource != null) {
-//            // It is the teaser of a resource
-//            return this.teasingResource.getUpdateCondition();
-//        } else if (this.explainingStickyNoteLink != null) {
-//            // It is the explanation of a sticky note link
-//            return this.explainingStickyNoteLink.getUpdateCondition();
-//        } else {
-//            // such an orphan shouldn't exist...
-//            return Conditions.defaultForOrphan;
-//        }
-//    }
+    @Override
+    @JsonbTransient
+    public Conditions.Condition getReadCondition() {
+        if (getOwningCardContent() != null) {
+            // The document is a deliverable of a card content
+            return new Conditions.HasCardReadRight(getOwningCardContent());
+        } else if (getOwningResource() != null) {
+            // The document is part of a resource
+            return getOwningResource().getReadCondition();
+        } else if (this.purposingCardType != null) {
+            // It is the purpose of a card type
+            return this.purposingCardType.getReadCondition();
+        } else if (this.teasingResource != null) {
+            // It is the teaser of a resource
+            return this.teasingResource.getReadCondition();
+        } else if (this.explainingStickyNoteLink != null) {
+            // It is the explanation of a sticky note link
+            return this.explainingStickyNoteLink.getReadCondition();
+        } else {
+            // such an orphan shouldn't exist...
+            return Conditions.defaultForOrphan;
+        }
+    }
+
+    @Override
+    @JsonbTransient
+    public Conditions.Condition getUpdateCondition() {
+        if (getOwningCardContent() != null) {
+            // The document is a deliverable of a card content
+            return getOwningCardContent().getUpdateCondition();
+        } else if (getOwningResource() != null) {
+            // The document is part of a resource
+            return getOwningResource().getUpdateCondition();
+        } else if (this.purposingCardType != null) {
+            // It is the purpose of a card type
+            return this.purposingCardType.getUpdateCondition();
+        } else if (this.teasingResource != null) {
+            // It is the teaser of a resource
+            return this.teasingResource.getUpdateCondition();
+        } else if (this.explainingStickyNoteLink != null) {
+            // It is the explanation of a sticky note link
+            return this.explainingStickyNoteLink.getUpdateCondition();
+        } else {
+            // such an orphan shouldn't exist...
+            return Conditions.defaultForOrphan;
+        }
+    }
+
     @Override
     public int hashCode() {
         return EntityHelper.hashCode(this);
