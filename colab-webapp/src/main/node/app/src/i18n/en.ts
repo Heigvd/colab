@@ -309,6 +309,7 @@ export const en = {
       info: {
         noProjectSelected: 'No project selected',
         noProjectYet: "You don't have any project yet",
+        noProject: 'The project could not be loaded',
         emptyProject: 'Empty project',
         useBlankProject: "Use this empty project and you'll be free to create a whole new world",
         deleteConfirmation:

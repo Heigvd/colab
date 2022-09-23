@@ -314,6 +314,7 @@ export const fr: ColabTranslations = {
       info: {
         noProjectSelected: 'Aucun projet sélectionné',
         noProjectYet: "Vous n'avez aucun projet pour le moment",
+        noProject: "Le projet n'a pas pu être chargé",
         emptyProject: 'Projet vide',
         useBlankProject: 'Utilisez ce projet vide et vous serez libre de créer un monde nouveau.',
         deleteConfirmation:
