@@ -374,8 +374,7 @@ function EditorNav({ project, setShowProjectDetails }: EditorNavProps): JSX.Elem
                   value: 'board',
                   label: (
                     <>
-                      <FontAwesomeIcon icon={faClone} />
-                      {i18n.common.views.board}
+                      <FontAwesomeIcon icon={faClone} /> {i18n.common.views.board}
                     </>
                   ),
                   action: () => navigate('./'),
@@ -384,8 +383,7 @@ function EditorNav({ project, setShowProjectDetails }: EditorNavProps): JSX.Elem
                   value: 'hierarchy',
                   label: (
                     <>
-                      <FontAwesomeIcon icon={faNetworkWired} />
-                      {i18n.common.views.hierarchy}
+                      <FontAwesomeIcon icon={faNetworkWired} /> {i18n.common.views.hierarchy}
                     </>
                   ),
                   action: () => navigate('./hierarchy'),
@@ -394,8 +392,7 @@ function EditorNav({ project, setShowProjectDetails }: EditorNavProps): JSX.Elem
                   value: 'flow',
                   label: (
                     <>
-                      <FontAwesomeIcon icon={faProjectDiagram} />
-                      {i18n.common.views.activityFlow}
+                      <FontAwesomeIcon icon={faProjectDiagram} /> {i18n.common.views.activityFlow}
                     </>
                   ),
                   action: () => navigate('./flow'),

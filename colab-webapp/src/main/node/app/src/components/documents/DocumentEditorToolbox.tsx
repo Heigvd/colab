@@ -192,7 +192,7 @@ DocEditorToolboxProps): JSX.Element {
                       <>
                         {showTree && (
                           <FontAwesomeIcon icon={faCheck} size="xs" color="var(--lightGray)" />
-                        )}
+                        )}{' '}
                         {i18n.modules.content.showTree}
                       </>
                     ),
@@ -241,7 +241,7 @@ DocEditorToolboxProps): JSX.Element {
                 value: 'decision',
                 label: (
                   <>
-                    <FontAwesomeIcon icon={faCheck} size="xs" color="var(--lightGray)" />
+                    <FontAwesomeIcon icon={faCheck} size="xs" color="var(--lightGray)" />{' '}
                     Decision
                   </>
                 ),
@@ -251,7 +251,7 @@ DocEditorToolboxProps): JSX.Element {
                 value: 'validation',
                 label: (
                   <>
-                    <FontAwesomeIcon icon={faCheck} size="xs" color="var(--lightGray)" />
+                    <FontAwesomeIcon icon={faCheck} size="xs" color="var(--lightGray)" />{' '}
                     Validation
                   </>
                 ),
