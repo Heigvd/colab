@@ -416,9 +416,9 @@ export const en = {
       dlFile: 'Download file',
       editBlock: 'Edit block',
       deleteBlock: 'Delete block',
-      createText: 'Create text block',
-      createFile: 'Create file',
-      createLink: 'Create link',
+      addText: 'Add text block',
+      addFile: 'Add file',
+      addLink: 'Add link',
       emptyLink: 'Empty link',
       moveBlockUpDown: (direction: string): string =>
         `Move block ${direction === 'up' ? 'up' : 'down'}`,

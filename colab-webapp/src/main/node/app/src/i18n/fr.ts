@@ -422,9 +422,9 @@ export const fr: ColabTranslations = {
       dlFile: 'Télécharger un fichier',
       editBlock: 'Éditer le bloc',
       deleteBlock: 'Supprimer le bloc',
-      createText: 'Créer un bloc texte',
-      createFile: 'Créer un fichier',
-      createLink: 'Créer un lien',
+      addText: 'Ajouter un bloc de texte',
+      addFile: 'Ajouter un fichier',
+      addLink: 'Ajouter un lien',
       emptyLink: 'Lien vide',
       moveBlockUpDown: (direction: string): string =>
         `Déplacer le bloc vers le ${direction === 'up' ? 'haut' : 'bas'}`,
