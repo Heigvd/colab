@@ -27,7 +27,7 @@ import { useUrlMetadata } from '../../selectors/externalDataSelector';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { idleStyle, toggledStyle } from '../blocks/markdown/WysiwygEditor';
 import IconButton from '../common/element/IconButton';
-import ConfirmDeleteModal from '../common/layout/ConfirmDeleteModal';
+import ConfirmDeleteOpenCloseModal from '../common/layout/ConfirmDeleteModal';
 import DropDownMenu from '../common/layout/DropDownMenu';
 import Flex from '../common/layout/Flex';
 import { lightIconButtonStyle, space_M, space_S } from '../styling/style';
@@ -259,7 +259,8 @@ DocEditorToolboxProps): JSX.Element {
               },
             ]}
           /> */}
-          <ConfirmDeleteModal
+          <ConfirmDeleteOpenCloseModal
+            title={i18n.modules.content.deleteBlock}
             confirmButtonLabel={i18n.modules.content.deleteBlockType(isText, isLink)}
             buttonLabel={
               <>
@@ -342,7 +343,7 @@ export function BlockCreatorButtons({
           docOwnership={docOwnership}
           docKind="TextDataBlock"
           selectedDocumentId={selectedBlockId}
-          title={i18n.modules.content.createText}
+          title={i18n.modules.content.addText}
           className={toolboxButtonStyle}
           isAdditionAlwaysAtEnd={nb < 1}
         />
@@ -350,7 +351,7 @@ export function BlockCreatorButtons({
           docOwnership={docOwnership}
           docKind="DocumentFile"
           selectedDocumentId={selectedBlockId}
-          title={i18n.modules.content.createFile}
+          title={i18n.modules.content.addFile}
           className={toolboxButtonStyle}
           isAdditionAlwaysAtEnd={nb < 1}
         />
@@ -358,7 +359,7 @@ export function BlockCreatorButtons({
           docOwnership={docOwnership}
           docKind="ExternalLink"
           selectedDocumentId={selectedBlockId}
-          title={i18n.modules.content.createLink}
+          title={i18n.modules.content.addLink}
           className={toolboxButtonStyle}
           isAdditionAlwaysAtEnd={nb < 1}
         />

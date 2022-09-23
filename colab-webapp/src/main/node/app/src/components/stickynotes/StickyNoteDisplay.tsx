@@ -19,8 +19,8 @@ import { BlockEditorWrapper } from '../blocks/BlockEditorWrapper';
 import CardThumbWithSelector from '../cards/CardThumbWithSelector';
 import Button from '../common/element/Button';
 import { DiscreetInput } from '../common/element/Input';
-import ConfirmDeleteModal from '../common/layout/ConfirmDeleteModal';
-import DropDownMenu, { modalEntryStyle } from '../common/layout/DropDownMenu';
+import { ConfirmDeleteModal } from '../common/layout/ConfirmDeleteModal';
+import DropDownMenu from '../common/layout/DropDownMenu';
 import Flex from '../common/layout/Flex';
 import { cardStyle, errorColor, lightIconButtonStyle, space_M, space_S } from '../styling/style';
 
@@ -44,6 +44,8 @@ export default function StickyNoteDisplay({
   const srcCard = useCard(stickyNote.srcCardId || 0);
   const destCard = useCard(stickyNote.destinationCardId || 0);
 
+  const [showModal, setShowModal] = React.useState('');
+
   React.useEffect(() => {
     if (showSrc && stickyNote.srcCardId && srcCard === undefined) {
       dispatch(API.getCard(stickyNote.srcCardId));
@@ -66,6 +68,24 @@ export default function StickyNoteDisplay({
         justify="space-between"
         className={css({ borderBottom: '1px solid var(--lightGray)', padding: space_S })}
       >
+        {showModal === 'delete' && (
+          <ConfirmDeleteModal
+            title={'Delete sticky note'}
+            message={
+              <p>
+                Are you <strong>sure</strong> you want to delete this sticky note? This will remove
+                it one the source as well.
+              </p>
+            }
+            onCancel={() => {
+              setShowModal('');
+            }}
+            onConfirm={() => {
+              dispatch(API.deleteStickyNote(stickyNote));
+            }}
+            confirmButtonLabel={'Delete sticky note'}
+          />
+        )}
         <DiscreetInput
           value={stickyNote.teaser || ''}
           placeholder="There is no teaser for the moment. Feel free to fill it."
@@ -76,34 +96,15 @@ export default function StickyNoteDisplay({
           icon={faEllipsisV}
           valueComp={{ value: '', label: '' }}
           buttonClassName={cx(lightIconButtonStyle, css({ marginLeft: space_S }))}
+          onSelect={value => setShowModal(value.value)}
           entries={[
             {
               value: 'delete',
               label: (
-                <ConfirmDeleteModal
-                  buttonLabel={
-                    <div className={cx(css({ color: errorColor }), modalEntryStyle)}>
-                      <FontAwesomeIcon icon={faTrash} /> {i18n.common.delete}
-                    </div>
-                  }
-                  className={css({
-                    '&:hover': { textDecoration: 'none' },
-                    display: 'flex',
-                    alignItems: 'center',
-                  })}
-                  message={
-                    <p>
-                      Are you <strong>sure</strong> you want to delete this sticky note? This will
-                      remove it one the source as well.
-                    </p>
-                  }
-                  onConfirm={() => {
-                    dispatch(API.deleteStickyNote(stickyNote));
-                  }}
-                  confirmButtonLabel={'Delete sticky note'}
-                />
+                <>
+                  <FontAwesomeIcon icon={faTrash} color={errorColor} /> {i18n.common.delete}
+                </>
               ),
-              modal: true,
             },
           ]}
         />

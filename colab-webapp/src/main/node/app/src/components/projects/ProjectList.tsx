@@ -11,18 +11,19 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { AsyncThunk } from '@reduxjs/toolkit';
 import { entityIs, Project } from 'colab-rest-client';
 import * as React from 'react';
-//import { useNavigate } from 'react-router-dom';
+import { Route, Routes, useNavigate, useParams } from 'react-router-dom';
 import * as API from '../../API/api';
 import useTranslations from '../../i18n/I18nContext';
+import { useAndLoadProject } from '../../selectors/projectSelector';
 import { shallowEqual, useAppDispatch, useAppSelector, useLoadingState } from '../../store/hooks';
 import { StateStatus } from '../../store/slice/projectSlice';
 import ItemThumbnailsSelection from '../common/collection/ItemThumbnailsSelection';
 import IllustrationDisplay from '../common/element/IllustrationDisplay';
 import InlineLoading from '../common/element/InlineLoading';
-import ConfirmDeleteModal from '../common/layout/ConfirmDeleteModal';
-import DropDownMenu, { modalEntryStyle } from '../common/layout/DropDownMenu';
+import { ConfirmDeleteModal } from '../common/layout/ConfirmDeleteModal';
+import DropDownMenu from '../common/layout/DropDownMenu';
 import Flex from '../common/layout/Flex';
-import OpenCloseModal from '../common/layout/OpenCloseModal';
+import Modal from '../common/layout/Modal';
 import {
   ellipsis,
   errorColor,
@@ -37,6 +38,73 @@ import {
 import { defaultProjectIllustration } from './ProjectCommon';
 import ProjectCreator from './ProjectCreator';
 import { ProjectDisplaySettings } from './ProjectDisplaySettings';
+
+function ProjectSettingWrapper(): JSX.Element {
+  const { projectId } = useParams<'projectId'>();
+  const i18n = useTranslations();
+  const project = useAndLoadProject(projectId ? +projectId : undefined);
+  const navigate = useNavigate();
+
+  return (
+    <Modal
+      title={i18n.modules.project.labels.projectDisplaySettings}
+      showCloseButton
+      onClose={() => {
+        navigate('/');
+      }}
+      className={css({
+        '&:hover': { textDecoration: 'none' },
+        display: 'flex',
+        width: '800px',
+        height: '580px',
+      })}
+    >
+      {() => {
+        if (project.project != null) {
+          return <ProjectDisplaySettings project={project.project} key={projectId} />;
+        } else {
+          return <InlineLoading />;
+        }
+      }}
+    </Modal>
+  );
+}
+
+function DeleteProjectWrapper(): JSX.Element {
+  const dispatch = useAppDispatch();
+  const navigate = useNavigate();
+
+  const { projectId } = useParams<'projectId'>();
+  const i18n = useTranslations();
+  const { project } = useAndLoadProject(projectId ? +projectId : undefined);
+
+  const { isLoading, startLoading, stopLoading } = useLoadingState();
+
+  const onCancelCb = React.useCallback(() => {
+    navigate('/');
+  }, [navigate]);
+
+  const onConfirmCb = React.useCallback(() => {
+    if (project) {
+      startLoading();
+      dispatch(API.deleteProject(project)).then(() => {
+        stopLoading();
+        navigate('/');
+      });
+    }
+  }, [dispatch, navigate, project, startLoading, stopLoading]);
+
+  return (
+    <ConfirmDeleteModal
+      title={i18n.modules.project.actions.deleteProject}
+      message={<p>{i18n.modules.project.info.deleteConfirmation}</p>}
+      onCancel={onCancelCb}
+      onConfirm={onConfirmCb}
+      confirmButtonLabel={i18n.modules.project.actions.deleteProject}
+      isConfirmButtonLoading={isLoading}
+    />
+  );
+}
 
 const projectListStyle = css({
   margin: 'auto',
@@ -55,8 +123,7 @@ interface ProjectDisplayProps {
 const ProjectDisplay = ({ project }: ProjectDisplayProps) => {
   const dispatch = useAppDispatch();
   const i18n = useTranslations();
-
-  const { isLoading, startLoading, stopLoading } = useLoadingState();
+  const navigate = useNavigate();
 
   return (
     <Flex direction="column" align="stretch">
@@ -107,26 +174,11 @@ const ProjectDisplay = ({ project }: ProjectDisplayProps) => {
               {
                 value: 'settings',
                 label: (
-                  <OpenCloseModal
-                    title={i18n.modules.project.labels.projectDisplaySettings}
-                    showCloseButton
-                    className={css({
-                      '&:hover': { textDecoration: 'none' },
-                      display: 'flex',
-                      alignItems: 'center',
-                    })}
-                    collapsedChildren={
-                      <div className={modalEntryStyle}>
-                        <FontAwesomeIcon icon={faCog} /> {i18n.common.settings}
-                      </div>
-                    }
-                    widthMax
-                    heightMax
-                  >
-                    {() => <ProjectDisplaySettings project={project} key={project.id} />}
-                  </OpenCloseModal>
+                  <>
+                    <FontAwesomeIcon icon={faCog} /> {i18n.common.settings}
+                  </>
                 ),
-                modal: true,
+                action: () => navigate(`projectsettings/${project.id}`),
               },
               {
                 value: 'duplicate',
@@ -140,27 +192,11 @@ const ProjectDisplay = ({ project }: ProjectDisplayProps) => {
               {
                 value: 'delete',
                 label: (
-                  <ConfirmDeleteModal
-                    buttonLabel={
-                      <div className={cx(css({ color: errorColor }), modalEntryStyle)}>
-                        <FontAwesomeIcon icon={faTrash} /> {i18n.common.delete}
-                      </div>
-                    }
-                    className={css({
-                      '&:hover': { textDecoration: 'none' },
-                      display: 'flex',
-                      alignItems: 'center',
-                    })}
-                    message={<p>{i18n.modules.project.info.deleteConfirmation}</p>}
-                    onConfirm={() => {
-                      startLoading();
-                      dispatch(API.deleteProject(project)).then(stopLoading);
-                    }}
-                    confirmButtonLabel={i18n.modules.project.actions.deleteProject}
-                    isConfirmButtonLoading={isLoading}
-                  />
+                  <>
+                    <FontAwesomeIcon icon={faTrash} color={errorColor} /> {i18n.common.delete}
+                  </>
                 ),
-                modal: true,
+                action: () => navigate(`deleteproject/${project.id}`),
               },
             ]}
           />
@@ -260,6 +296,10 @@ function ProjectList({ projects, status, reload }: ProjectListProps) {
         />
         {/* Note : any authenticated user can create a project */}
         <ProjectCreator collapsedButtonClassName={fixedButtonStyle} />
+        <Routes>
+          <Route path="projectsettings/:projectId" element={<ProjectSettingWrapper />} />
+          <Route path="deleteproject/:projectId" element={<DeleteProjectWrapper />} />
+        </Routes>
       </div>
     );
   }

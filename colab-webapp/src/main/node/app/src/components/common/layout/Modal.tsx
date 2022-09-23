@@ -85,7 +85,11 @@ export default function Modal({
   const handleEnter = (event: KeyboardEvent) => {
     if (event.key === 'Enter') {
       if (onEnter) {
-        onEnter(() => onClose());
+        onEnter(onClose);
+      }
+    } else if (event.key === 'Escape') {
+      if (showCloseButton) {
+        onClose();
       }
     }
   };
@@ -99,20 +103,24 @@ export default function Modal({
   return (
     <Overlay backgroundStyle={backgroundStyle} onClickOutside={onClose}>
       <div className={cx(modalStyle, className || '')}>
-        <div className={modalHeader}>
-          <Flex grow={1} align={'center'} className={titleStyle}>
-            {title}
-          </Flex>
-          {showCloseButton && (
-            <IconButton
-              icon={faTimes}
-              title={i18n.common.close}
-              iconSize="lg"
-              onClick={onClose}
-              className={cx(closeIconStyle, lightIconButtonStyle)}
-            />
-          )}
-        </div>
+        {(title || showCloseButton) && (
+          <>
+            <div className={modalHeader}>
+              <Flex grow={1} align={'center'} className={titleStyle}>
+                {title}
+              </Flex>
+              {showCloseButton && (
+                <IconButton
+                  icon={faTimes}
+                  title={i18n.common.close}
+                  iconSize="lg"
+                  onClick={onClose}
+                  className={cx(closeIconStyle, lightIconButtonStyle)}
+                />
+              )}
+            </div>
+          </>
+        )}
         <Flex
           grow={1}
           direction="column"
