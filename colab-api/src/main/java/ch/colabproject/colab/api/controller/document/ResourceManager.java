@@ -433,7 +433,7 @@ public class ResourceManager {
                 resource.setDeprecated(false);
             }
 
-            // if resource in card and has only one variant, refuse also the resource in the variant
+            // if resource in card and has only one variant, un refuse also the resource in the variant
             if (resource.getCard() != null) {
                 List<ResourceRef> references = resourceDao.findDirectReferences(resource);
                 if (references.size() == 1) {
