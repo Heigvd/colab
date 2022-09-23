@@ -309,6 +309,7 @@ export const en = {
       info: {
         noProjectSelected: 'No project selected',
         noProjectYet: "You don't have any project yet",
+        noProject: 'The project could not be loaded',
         emptyProject: 'Empty project',
         useBlankProject: "Use this empty project and you'll be free to create a whole new world",
         deleteConfirmation:
@@ -415,9 +416,9 @@ export const en = {
       dlFile: 'Download file',
       editBlock: 'Edit block',
       deleteBlock: 'Delete block',
-      createText: 'Create text block',
-      createFile: 'Create file',
-      createLink: 'Create link',
+      addText: 'Add text block',
+      addFile: 'Add file',
+      addLink: 'Add link',
       emptyLink: 'Empty link',
       moveBlockUpDown: (direction: string): string =>
         `Move block ${direction === 'up' ? 'up' : 'down'}`,
@@ -467,6 +468,10 @@ export const en = {
       publishMakeAvailableSubs: 'Publish the resource to make it available for subcards',
       publishedInfo: 'A published resource is available for subcards',
       unpublishedInfo: 'An unpublished resource is private for this card',
+      info: {
+        providedByCardType: 'Provided by the model',
+        providedByUpperCard: 'Provided by an upper card',
+      },
     },
     cardType: {
       cardType: 'Model',
@@ -494,7 +499,6 @@ export const en = {
           }`,
         infoDeprecated: 'Should not be used anymore',
         explainPurpose: 'Explain the purpose',
-        providedByCardType: 'Provided by the model',
         cannotRemoveCardType: 'Cannot remove model',
         cannotRemoveFromProject: 'Impossible to remove this model. It is used by some cards.',
         cannotDeleteType: 'Impossible to delete this model. It is used in this project.',

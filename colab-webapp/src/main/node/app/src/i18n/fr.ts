@@ -314,6 +314,7 @@ export const fr: ColabTranslations = {
       info: {
         noProjectSelected: 'Aucun projet sélectionné',
         noProjectYet: "Vous n'avez aucun projet pour le moment",
+        noProject: "Le projet n'a pas pu être chargé",
         emptyProject: 'Projet vide',
         useBlankProject: 'Utilisez ce projet vide et vous serez libre de créer un monde nouveau.',
         deleteConfirmation:
@@ -421,9 +422,9 @@ export const fr: ColabTranslations = {
       dlFile: 'Télécharger un fichier',
       editBlock: 'Éditer le bloc',
       deleteBlock: 'Supprimer le bloc',
-      createText: 'Créer un bloc texte',
-      createFile: 'Créer un fichier',
-      createLink: 'Créer un lien',
+      addText: 'Ajouter un bloc de texte',
+      addFile: 'Ajouter un fichier',
+      addLink: 'Ajouter un lien',
       emptyLink: 'Lien vide',
       moveBlockUpDown: (direction: string): string =>
         `Déplacer le bloc vers le ${direction === 'up' ? 'haut' : 'bas'}`,
@@ -476,6 +477,10 @@ export const fr: ColabTranslations = {
         'Publier la documentation pour la rendre disponible pour les sous-cartes',
       publishedInfo: 'Une documentation publiée est disponible pour les sous-cartes',
       unpublishedInfo: 'Une documentation non publiée est privée pour cette carte',
+      info: {
+        providedByCardType: 'Fourni par le modèle',
+        providedByUpperCard: 'Fourni par une carte parente',
+      },
     },
     cardType: {
       cardType: 'Modèle',
@@ -505,7 +510,6 @@ export const fr: ColabTranslations = {
           }`,
         infoDeprecated: 'Ne devrait plus être utilisé',
         explainPurpose: "Expliquez l'objectif",
-        providedByCardType: 'Fourni par le modèle',
         cannotRemoveCardType: 'Impossible de retirer le modèle',
         cannotRemoveFromProject:
           'Impossible de retirer le modèle. Il est utilisé par une/des cartes.',
@@ -623,7 +627,7 @@ export const fr: ColabTranslations = {
   },
 
   httpErrorMessage: {
-    AUTHENTICATION_FAILED: "L'uthentification a échoué",
+    AUTHENTICATION_FAILED: "L'authentification a échoué",
     AUTHENTICATION_REQUIRED: 'Veuillez vous authentifier',
     ACCESS_DENIED: 'Accès refusé',
     NOT_FOUND: 'Introuvable',

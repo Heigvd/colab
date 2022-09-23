@@ -7,27 +7,22 @@
 
 import { css, cx } from '@emotion/css';
 import { faFile } from '@fortawesome/free-regular-svg-icons';
-import {
-  faEllipsisV,
-  faExchangeAlt,
-  faMapPin,
-  faPen,
-  faTrash,
-} from '@fortawesome/free-solid-svg-icons';
+import { faEllipsisV, faExchangeAlt, faMapPin, faPen } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import * as React from 'react';
 import { useNavigate } from 'react-router-dom';
 import * as API from '../../../API/api';
+import { checkUnreachable } from '../../../helper';
 import useTranslations from '../../../i18n/I18nContext';
 import { useAllProjectCardTypes } from '../../../selectors/cardSelector';
 import { useProjectBeingEdited } from '../../../selectors/projectSelector';
 import { useAppDispatch, useLoadingState } from '../../../store/hooks';
 import { CardTypeAllInOne as CardType } from '../../../types/cardTypeDefinition';
 import Button from '../../common/element/Button';
-import ConfirmDeleteModal from '../../common/layout/ConfirmDeleteModal';
-import DropDownMenu, { modalEntryStyle } from '../../common/layout/DropDownMenu';
+import { ConfirmDeleteModal } from '../../common/layout/ConfirmDeleteModal';
+import DropDownMenu from '../../common/layout/DropDownMenu';
 import Flex from '../../common/layout/Flex';
-import OpenCloseModal from '../../common/layout/OpenCloseModal';
+import Modal from '../../common/layout/Modal';
 import { DocTextDisplay } from '../../documents/DocTextItem';
 import {
   borderRadius,
@@ -62,6 +57,8 @@ interface CardTypeThumbnailProps {
 
 // TODO : make functional Flex/div
 
+type ModalType = 'DELETE' | 'REF_USED' | 'TYPE_USED';
+
 export default function CardTypeThumbnail({
   cardType,
   editable = false,
@@ -80,6 +77,9 @@ export default function CardTypeThumbnail({
     }
   };
   const { isLoading, startLoading, stopLoading } = useLoadingState();
+
+  const [showModal, setShowModal] = React.useState<ModalType | undefined>();
+
   return (
     <>
       {isEmpty ? (
@@ -165,55 +165,24 @@ export default function CardTypeThumbnail({
                   cardType.kind === 'referenced'
                     ? [
                         {
-                          value: 'removeFromProject',
                           label: (
                             <>
-                              {!isUsedInProject(cardType.id) ? (
-                                <div className={cx(css({ color: errorColor }), modalEntryStyle)}>
-                                  <FontAwesomeIcon icon={faExchangeAlt} />
-                                  {i18n.modules.cardType.action.removeFromProject}
-                                </div>
-                              ) : (
-                                <OpenCloseModal
-                                  title={i18n.modules.cardType.info.cannotRemoveCardType}
-                                  className={css({
-                                    '&:hover': { textDecoration: 'none' },
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                  })}
-                                  collapsedChildren={
-                                    <div
-                                      className={cx(css({ color: errorColor }), modalEntryStyle)}
-                                    >
-                                      <FontAwesomeIcon icon={faExchangeAlt} />{' '}
-                                      {i18n.modules.cardType.action.removeFromProject}
-                                    </div>
-                                  }
-                                  footer={collapse => (
-                                    <Flex
-                                      justify={'center'}
-                                      grow={1}
-                                      className={css({ padding: space_M, columnGap: space_S })}
-                                    >
-                                      <Button onClick={collapse}> {i18n.common.ok}</Button>
-                                    </Flex>
-                                  )}
-                                >
-                                  {() => (
-                                    <div>{i18n.modules.cardType.info.cannotRemoveFromProject}</div>
-                                  )}
-                                </OpenCloseModal>
-                              )}
+                              <FontAwesomeIcon color={errorColor} icon={faExchangeAlt} />{' '}
+                              {i18n.modules.cardType.action.removeFromProject}
                             </>
                           ),
-                          modal: true,
-                          action: () =>
-                            dispatch(
-                              API.removeCardTypeRefFromProject({
-                                cardType,
-                                project: editedProject,
-                              }),
-                            ),
+                          value: 'refUsed',
+                          action: isUsedInProject(cardType.id)
+                            ? () => {
+                                setShowModal('REF_USED');
+                              }
+                            : () =>
+                                dispatch(
+                                  API.removeCardTypeRefFromProject({
+                                    cardType,
+                                    project: editedProject,
+                                  }),
+                                ),
                         },
                       ]
                     : []),
@@ -223,62 +192,20 @@ export default function CardTypeThumbnail({
                     usage === 'global')
                     ? [
                         {
-                          value: 'delete',
                           label: (
                             <>
-                              {!isUsedInProject(cardType.id) ? (
-                                <ConfirmDeleteModal
-                                  buttonLabel={
-                                    <div
-                                      className={cx(css({ color: errorColor }), modalEntryStyle)}
-                                    >
-                                      <FontAwesomeIcon icon={faTrash} /> {i18n.common.delete}
-                                    </div>
-                                  }
-                                  className={css({
-                                    '&:hover': { textDecoration: 'none' },
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                  })}
-                                  message={<p>{i18n.modules.cardType.action.confirmDeleteType}</p>}
-                                  onConfirm={() => {
-                                    startLoading();
-                                    dispatch(API.deleteCardType(cardType)).then(stopLoading);
-                                  }}
-                                  confirmButtonLabel={i18n.modules.cardType.action.deleteType}
-                                  isConfirmButtonLoading={isLoading}
-                                />
-                              ) : (
-                                <OpenCloseModal
-                                  title={i18n.modules.cardType.action.deleteType}
-                                  className={css({
-                                    '&:hover': { textDecoration: 'none' },
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                  })}
-                                  collapsedChildren={
-                                    <div
-                                      className={cx(css({ color: errorColor }), modalEntryStyle)}
-                                    >
-                                      <FontAwesomeIcon icon={faTrash} /> {i18n.common.delete}
-                                    </div>
-                                  }
-                                  footer={collapse => (
-                                    <Flex
-                                      justify={'center'}
-                                      grow={1}
-                                      className={css({ padding: space_M, columnGap: space_S })}
-                                    >
-                                      <Button onClick={collapse}> {i18n.common.ok}</Button>
-                                    </Flex>
-                                  )}
-                                >
-                                  {() => <div>{i18n.modules.cardType.info.cannotDeleteType}</div>}
-                                </OpenCloseModal>
-                              )}
+                              <FontAwesomeIcon color={errorColor} icon={faExchangeAlt} />{' '}
+                              {i18n.common.delete}
                             </>
                           ),
-                          modal: true,
+                          value: 'typeUsed',
+                          action: isUsedInProject(cardType.id)
+                            ? () => {
+                                setShowModal('TYPE_USED');
+                              }
+                            : () => {
+                                setShowModal('DELETE');
+                              },
                         },
                       ]
                     : []),
@@ -286,6 +213,68 @@ export default function CardTypeThumbnail({
               />
             )}
           </Flex>
+          {showModal != undefined &&
+            (() => {
+              switch (showModal) {
+                case 'REF_USED':
+                  return (
+                    <Modal
+                      title={i18n.modules.cardType.info.cannotRemoveCardType}
+                      onClose={() => setShowModal(undefined)}
+                      footer={collapse => (
+                        <Flex
+                          justify={'center'}
+                          grow={1}
+                          className={css({ padding: space_M, columnGap: space_S })}
+                        >
+                          <Button onClick={collapse}> {i18n.common.ok}</Button>
+                        </Flex>
+                      )}
+                    >
+                      {() => <div>{i18n.modules.cardType.info.cannotRemoveFromProject}</div>}
+                    </Modal>
+                  );
+                case 'TYPE_USED':
+                  return (
+                    <Modal
+                      title={i18n.modules.cardType.action.deleteType}
+                      onClose={() => setShowModal(undefined)}
+                      footer={collapse => (
+                        <Flex
+                          justify={'center'}
+                          grow={1}
+                          className={css({ padding: space_M, columnGap: space_S })}
+                        >
+                          <Button onClick={collapse}> {i18n.common.ok}</Button>
+                        </Flex>
+                      )}
+                    >
+                      {() => <div>{i18n.modules.cardType.info.cannotDeleteType}</div>}
+                    </Modal>
+                  );
+                case 'DELETE':
+                  if (cardType.kind === 'own') {
+                    return (
+                      <ConfirmDeleteModal
+                        title={i18n.modules.cardType.action.deleteType}
+                        onCancel={() => setShowModal(undefined)}
+                        message={<p>{i18n.modules.cardType.action.confirmDeleteType}</p>}
+                        onConfirm={() => {
+                          startLoading();
+                          dispatch(API.deleteCardType(cardType)).then(stopLoading);
+                        }}
+                        confirmButtonLabel={i18n.modules.cardType.action.deleteType}
+                        isConfirmButtonLoading={isLoading}
+                      />
+                    );
+                  } else {
+                    // impossible case
+                    return <></>;
+                  }
+                default:
+                  checkUnreachable(showModal);
+              }
+            })()}
           <TagsDisplay tags={cardType.tags} className={tagStyle} />
         </Flex>
       )}
