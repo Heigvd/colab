@@ -468,6 +468,10 @@ export const en = {
       publishMakeAvailableSubs: 'Publish the resource to make it available for subcards',
       publishedInfo: 'A published resource is available for subcards',
       unpublishedInfo: 'An unpublished resource is private for this card',
+      info: {
+        providedByCardType: 'Provided by the model',
+        providedByUpperCard: 'Provided by an upper card',
+      },
     },
     cardType: {
       cardType: 'Model',
@@ -495,7 +499,6 @@ export const en = {
           }`,
         infoDeprecated: 'Should not be used anymore',
         explainPurpose: 'Explain the purpose',
-        providedByCardType: 'Provided by the model',
         cannotRemoveCardType: 'Cannot remove model',
         cannotRemoveFromProject: 'Impossible to remove this model. It is used by some cards.',
         cannotDeleteType: 'Impossible to delete this model. It is used in this project.',

@@ -104,7 +104,7 @@ export function ResourceDisplay({
           />
           <Flex wrap="nowrap" align="center">
             <TargetResourceSummary
-              resource={targetResource}
+              resource={resource}
               iconClassName={css({ color: 'var(--lightGray)' })}
             />
             {category && (

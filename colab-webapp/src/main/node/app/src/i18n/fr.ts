@@ -477,6 +477,10 @@ export const fr: ColabTranslations = {
         'Publier la documentation pour la rendre disponible pour les sous-cartes',
       publishedInfo: 'Une documentation publiée est disponible pour les sous-cartes',
       unpublishedInfo: 'Une documentation non publiée est privée pour cette carte',
+      info: {
+        providedByCardType: 'Fourni par le modèle',
+        providedByUpperCard: 'Fourni par une carte parente',
+      },
     },
     cardType: {
       cardType: 'Modèle',
@@ -506,7 +510,6 @@ export const fr: ColabTranslations = {
           }`,
         infoDeprecated: 'Ne devrait plus être utilisé',
         explainPurpose: "Expliquez l'objectif",
-        providedByCardType: 'Fourni par le modèle',
         cannotRemoveCardType: 'Impossible de retirer le modèle',
         cannotRemoveFromProject:
           'Impossible de retirer le modèle. Il est utilisé par une/des cartes.',
@@ -624,7 +627,7 @@ export const fr: ColabTranslations = {
   },
 
   httpErrorMessage: {
-    AUTHENTICATION_FAILED: "L'uthentification a échoué",
+    AUTHENTICATION_FAILED: "L'authentification a échoué",
     AUTHENTICATION_REQUIRED: 'Veuillez vous authentifier',
     ACCESS_DENIED: 'Accès refusé',
     NOT_FOUND: 'Introuvable',
