@@ -7,7 +7,7 @@
 
 import { css } from '@emotion/css';
 import { CardContent } from 'colab-rest-client';
-import {debounce} from 'lodash';
+import { debounce } from 'lodash';
 import * as React from 'react';
 import * as API from '../../API/api';
 import useTranslations from '../../i18n/I18nContext';
@@ -28,22 +28,25 @@ export default function CompletionEditor({ variant }: CompletionEditorProps): JS
 
   const debouncedOnChange = React.useMemo(() => {
     return debounce((value: number) => {
-           dispatch(
-            API.updateCardContent({
-              ...variant,
-              completionLevel: value,
-            }),
-          )
+      dispatch(
+        API.updateCardContent({
+          ...variant,
+          completionLevel: value,
+        }),
+      );
     }, 250);
   }, [dispatch, variant]);
 
-  const onInternalChange = React.useCallback((v: string) => {
-    const nValue = +v;
-    if (!Number.isNaN(nValue)) {
-      setValue(nValue);
-      debouncedOnChange(nValue);
-    }
-  }, [debouncedOnChange]);
+  const onInternalChange = React.useCallback(
+    (v: string) => {
+      const nValue = +v;
+      if (!Number.isNaN(nValue)) {
+        setValue(nValue);
+        debouncedOnChange(nValue);
+      }
+    },
+    [debouncedOnChange],
+  );
 
   return (
     <>
