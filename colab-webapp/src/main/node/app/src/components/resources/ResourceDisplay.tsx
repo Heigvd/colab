@@ -23,9 +23,9 @@ import { useAndLoadTextOfDocument } from '../../selectors/documentSelector';
 import { useAppDispatch } from '../../store/hooks';
 import IconButton from '../common/element/IconButton';
 import { DiscreetInput, DiscreetTextArea } from '../common/element/Input';
-import DropDownMenu, { modalEntryStyle } from '../common/layout/DropDownMenu';
+import DropDownMenu from '../common/layout/DropDownMenu';
 import Flex from '../common/layout/Flex';
-import OpenCloseModal from '../common/layout/OpenCloseModal';
+import Modal from '../common/layout/Modal';
 import { DocTextWrapper } from '../documents/DocTextItem';
 import DocEditorToolbox, {
   defaultDocEditorContext,
@@ -84,6 +84,8 @@ export function ResourceDisplay({
 
   const alwaysShowTeaser = effectiveReadOnly && teaser;
   const alwaysHideTeaser = effectiveReadOnly && !teaser;
+
+  const [showSettings, setShowSettings] = React.useState(false);
 
   return (
     <Flex align="stretch" direction="column" grow={1}>
@@ -169,8 +171,12 @@ export function ResourceDisplay({
                   ? [
                       {
                         value: 'settings',
-                        label: <ResourceSettingsModal resource={resource} />,
-                        modal: true,
+                        label: (
+                          <>
+                            <FontAwesomeIcon icon={faCog} /> {i18n.common.settings}{' '}
+                          </>
+                        ),
+                        action: () => setShowSettings(true),
                       },
                     ]
                   : []),
@@ -196,6 +202,9 @@ export function ResourceDisplay({
           )}
         </Flex>
         <div>
+          {showSettings && (
+            <ResourceSettingsModal resource={resource} onClose={() => setShowSettings(false)} />
+          )}
           {(alwaysShowTeaser || showTeaser) && !alwaysHideTeaser && (
             <DocTextWrapper id={targetResource.teaserId}>
               {text => (
@@ -257,14 +266,14 @@ export function ResourceDisplay({
 
 interface ResourceSettingsModalProps {
   resource: ResourceAndRef;
-  isButton?: boolean;
+  onClose: () => void;
 }
 
-function ResourceSettingsModal({ resource, isButton }: ResourceSettingsModalProps): JSX.Element {
+function ResourceSettingsModal({ resource, onClose }: ResourceSettingsModalProps): JSX.Element {
   const i18n = useTranslations();
 
   return (
-    <OpenCloseModal
+    <Modal
       title={i18n.modules.content.documentSettings}
       showCloseButton
       className={css({
@@ -272,23 +281,9 @@ function ResourceSettingsModal({ resource, isButton }: ResourceSettingsModalProp
         display: 'flex',
         alignItems: 'center',
       })}
-      collapsedChildren={
-        <>
-          {isButton ? (
-            <IconButton
-              icon={faCog}
-              className={lightIconButtonStyle}
-              title={i18n.common.settings}
-            />
-          ) : (
-            <div className={modalEntryStyle}>
-              <FontAwesomeIcon icon={faCog} /> {i18n.common.settings}
-            </div>
-          )}
-        </>
-      }
+      onClose={onClose}
     >
       {() => <ResourceSettings resource={resource} />}
-    </OpenCloseModal>
+    </Modal>
   );
 }

@@ -27,7 +27,7 @@ import { useUrlMetadata } from '../../selectors/externalDataSelector';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { idleStyle, toggledStyle } from '../blocks/markdown/WysiwygEditor';
 import IconButton from '../common/element/IconButton';
-import ConfirmDeleteModal from '../common/layout/ConfirmDeleteModal';
+import ConfirmDeleteOpenCloseModal from '../common/layout/ConfirmDeleteModal';
 import DropDownMenu from '../common/layout/DropDownMenu';
 import Flex from '../common/layout/Flex';
 import { lightIconButtonStyle, space_M, space_S } from '../styling/style';
@@ -259,7 +259,7 @@ DocEditorToolboxProps): JSX.Element {
               },
             ]}
           /> */}
-          <ConfirmDeleteModal
+          <ConfirmDeleteOpenCloseModal
             confirmButtonLabel={i18n.modules.content.deleteBlockType(isText, isLink)}
             buttonLabel={
               <>
