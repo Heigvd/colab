@@ -7,7 +7,6 @@
 
 import { css, cx } from '@emotion/css';
 import {
-  faArrowLeft,
   faChevronRight,
   faClone,
   faCog,
@@ -209,8 +208,6 @@ const CardWrapper = ({
   grow = 1,
   align = 'normal',
   touchMode,
-  backButtonPath,
-  backButtonTitle,
 }: CardWrapperProps): JSX.Element => {
   const { id, vId } = useParams<'id' | 'vId'>();
   const cardId = +id!;
@@ -226,7 +223,6 @@ const CardWrapper = ({
   const { project } = useProjectBeingEdited();
 
   const ancestors = useAncestors(parentId);
-  const navigate = useNavigate();
 
   const { touch } = React.useContext(PresenceContext);
 
@@ -255,14 +251,14 @@ const CardWrapper = ({
   } else {
     return (
       <>
-        <Flex className={css({ paddingBottom: space_M })}>
-          <IconButton
+        <Flex className={css({ paddingBottom: '10px', marginTop: '-10px' })}>
+          {/* <IconButton
             icon={faArrowLeft}
             title={backButtonTitle}
             iconColor="var(--darkGray)"
             onClick={() => navigate(backButtonPath(card, content))}
             className={css({ marginRight: space_M })}
-          />
+          /> */}
           {ancestors.map((ancestor, x) => (
             <Ancestor key={x} card={ancestor.card} content={ancestor.content} />
           ))}

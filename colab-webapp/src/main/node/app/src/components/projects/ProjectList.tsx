@@ -96,6 +96,7 @@ function DeleteProjectWrapper(): JSX.Element {
 
   return (
     <ConfirmDeleteModal
+      title={i18n.modules.project.actions.deleteProject}
       message={<p>{i18n.modules.project.info.deleteConfirmation}</p>}
       onCancel={onCancelCb}
       onConfirm={onConfirmCb}

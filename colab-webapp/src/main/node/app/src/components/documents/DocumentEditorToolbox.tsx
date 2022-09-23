@@ -260,6 +260,7 @@ DocEditorToolboxProps): JSX.Element {
             ]}
           /> */}
           <ConfirmDeleteOpenCloseModal
+            title={i18n.modules.content.deleteBlock}
             confirmButtonLabel={i18n.modules.content.deleteBlockType(isText, isLink)}
             buttonLabel={
               <>
@@ -342,7 +343,7 @@ export function BlockCreatorButtons({
           docOwnership={docOwnership}
           docKind="TextDataBlock"
           selectedDocumentId={selectedBlockId}
-          title={i18n.modules.content.createText}
+          title={i18n.modules.content.addText}
           className={toolboxButtonStyle}
           isAdditionAlwaysAtEnd={nb < 1}
         />
@@ -350,7 +351,7 @@ export function BlockCreatorButtons({
           docOwnership={docOwnership}
           docKind="DocumentFile"
           selectedDocumentId={selectedBlockId}
-          title={i18n.modules.content.createFile}
+          title={i18n.modules.content.addFile}
           className={toolboxButtonStyle}
           isAdditionAlwaysAtEnd={nb < 1}
         />
@@ -358,7 +359,7 @@ export function BlockCreatorButtons({
           docOwnership={docOwnership}
           docKind="ExternalLink"
           selectedDocumentId={selectedBlockId}
-          title={i18n.modules.content.createLink}
+          title={i18n.modules.content.addLink}
           className={toolboxButtonStyle}
           isAdditionAlwaysAtEnd={nb < 1}
         />

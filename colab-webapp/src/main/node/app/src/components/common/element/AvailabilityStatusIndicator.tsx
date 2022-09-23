@@ -14,8 +14,6 @@ interface AvailabilityStatusIndicatorProps {
   status: AvailabilityStatus;
 }
 
-// TODO Audrey what should be done for each status
-
 export default function AvailabilityStatusIndicator({
   status,
 }: AvailabilityStatusIndicatorProps): JSX.Element {

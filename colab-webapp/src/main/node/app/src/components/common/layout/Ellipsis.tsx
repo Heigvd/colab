@@ -5,12 +5,11 @@
  * Licensed under the MIT License
  */
 
-import {css} from '@emotion/css';
-import {faEllipsis} from '@fortawesome/free-solid-svg-icons';
-import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
+import { css } from '@emotion/css';
+import { faEllipsis } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import * as React from 'react';
-import {FlexProps} from './Flex';
-
+import { FlexProps } from './Flex';
 
 interface EllipsisProps<T> {
   items: T[];
@@ -20,7 +19,7 @@ interface EllipsisProps<T> {
 }
 
 const containerStyle = css({
-  width: "100%",
+  width: '100%',
   position: 'relative',
 });
 
@@ -29,20 +28,24 @@ const itemsStyle = css({
   position: 'absolute',
 });
 
-const defaultEllipsis = <FontAwesomeIcon color={"var(--lightGray)"} icon={faEllipsis}/>;
+const defaultEllipsis = <FontAwesomeIcon color={'var(--lightGray)'} icon={faEllipsis} />;
 
 /**
  * items comp: the must all be the same size
  */
-export default function Ellipsis<T>({items, itemComp, alignEllipsis, ellipsis = defaultEllipsis}: EllipsisProps<T>): JSX.Element {
-
+export default function Ellipsis<T>({
+  items,
+  itemComp,
+  alignEllipsis,
+  ellipsis = defaultEllipsis,
+}: EllipsisProps<T>): JSX.Element {
   const containerRef = React.useRef<HTMLDivElement>();
   const itemsRef = React.useRef<HTMLDivElement>(null);
   const ellipsisRef = React.useRef<HTMLDivElement>(null);
 
   const resizeObserver = React.useRef<ResizeObserver | undefined>();
 
-  const [num, setNum] = React.useState(items.length)
+  const [num, setNum] = React.useState(items.length);
 
   const visibleItems = items.slice(0, Math.min(num, items.length));
 
@@ -53,11 +56,11 @@ export default function Ellipsis<T>({items, itemComp, alignEllipsis, ellipsis = 
       const ellipsisBox = ellipsisRef.current.getBoundingClientRect();
 
       if (
-        itemsBox.width > bbox.width // item overflow
-        || num < items.length // maybe some room to display more item
-        ) {
+        itemsBox.width > bbox.width || // item overflow
+        num < items.length // maybe some room to display more item
+      ) {
         const itemWidth = (itemsBox.width - ellipsisBox.width) / num;
-        if (itemWidth * items.length < bbox.width){
+        if (itemWidth * items.length < bbox.width) {
           setNum(items.length);
         } else {
           const itemsCount = Math.floor((bbox.width - ellipsisBox.width) / itemWidth);
@@ -71,38 +74,41 @@ export default function Ellipsis<T>({items, itemComp, alignEllipsis, ellipsis = 
     sync();
   }, [sync]);
 
-  const setContainerRef = React.useCallback((container : HTMLDivElement | null) => {
-    if (resizeObserver.current != null){
-      resizeObserver.current.disconnect();
-    }
-    if (container) {
-      const ro = new ResizeObserver(() => {
-        sync();
-      });
+  const setContainerRef = React.useCallback(
+    (container: HTMLDivElement | null) => {
+      if (resizeObserver.current != null) {
+        resizeObserver.current.disconnect();
+      }
+      if (container) {
+        const ro = new ResizeObserver(() => {
+          sync();
+        });
 
-      ro.observe(container);
-      resizeObserver.current = ro;
-    }
+        ro.observe(container);
+        resizeObserver.current = ro;
+      }
 
-    containerRef.current = container || undefined;
-  }, [sync]);
+      containerRef.current = container || undefined;
+    },
+    [sync],
+  );
 
   const showEllipsis = num < items.length;
 
-  return (<div className={containerStyle + " CONTAINER"}
-    ref={setContainerRef}
-  >
-    <div className={itemsStyle + " ITEMS"}
-      ref={itemsRef}>
-      {visibleItems.map(item => itemComp(item))}
-      <div
-        ref={ellipsisRef}
-        className={css({
-          visibility: showEllipsis ? 'visible' : 'hidden',
-          alignSelf: alignEllipsis,
-        })}>
-        {ellipsis}
+  return (
+    <div className={containerStyle + ' CONTAINER'} ref={setContainerRef}>
+      <div className={itemsStyle + ' ITEMS'} ref={itemsRef}>
+        {visibleItems.map(item => itemComp(item))}
+        <div
+          ref={ellipsisRef}
+          className={css({
+            visibility: showEllipsis ? 'visible' : 'hidden',
+            alignSelf: alignEllipsis,
+          })}
+        >
+          {ellipsis}
+        </div>
       </div>
     </div>
-  </div>)
+  );
 }

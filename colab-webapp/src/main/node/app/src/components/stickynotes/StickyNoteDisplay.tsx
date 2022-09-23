@@ -70,6 +70,7 @@ export default function StickyNoteDisplay({
       >
         {showModal === 'delete' && (
           <ConfirmDeleteModal
+            title={'Delete sticky note'}
             message={
               <p>
                 Are you <strong>sure</strong> you want to delete this sticky note? This will remove

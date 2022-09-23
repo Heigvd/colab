@@ -280,7 +280,7 @@ export default function CardThumb({
                     path={`delete`}
                     element={
                       <ConfirmDeleteModal
-                        title={i18n.modules.card.settings.cardPosition}
+                        title={i18n.modules.card.deleteCardVariant(hasVariants)}
                         message={<p>{i18n.modules.card.confirmDeleteCardVariant(hasVariants)}</p>}
                         onCancel={() => closeRouteCb(`delete`)}
                         onConfirm={() => {

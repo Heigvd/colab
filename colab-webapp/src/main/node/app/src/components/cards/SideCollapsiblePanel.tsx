@@ -7,22 +7,15 @@
 import { css, cx } from '@emotion/css';
 import { IconProp } from '@fortawesome/fontawesome-svg-core';
 import { faTimes } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import * as React from 'react';
 import useTranslations from '../../i18n/I18nContext';
 import IconButton from '../common/element/IconButton';
 import Flex from '../common/layout/Flex';
-import {
-  lightIconButtonStyle,
-  marginAroundStyle,
-  paddingAroundStyle,
-  space_M,
-} from '../styling/style';
+import { lightIconButtonStyle, marginAroundStyle, space_M, space_S } from '../styling/style';
 
 const bgActiveStyleRight = css({
   backgroundImage: 'linear-gradient( to right, transparent 90%, #444 91%, #444 100%)',
-});
-const bgActiveStyleLeft = css({
-  backgroundImage: 'linear-gradient( to left, transparent 90%, #444 91%, #444 100%)',
 });
 
 export interface Item {
@@ -34,176 +27,114 @@ export interface Item {
   nextToIconElement?: React.ReactNode;
 }
 
-export interface SideCollapsiblePanelProps<T extends { [key: string]: Item }> {
+interface SideCollapsibleContext<T extends { [key: string]: Item }> {
   items: T;
-  openKey?: keyof T | string;
-  defaultOpenKey?: keyof T | string;
-  setOpenKey?: React.Dispatch<React.SetStateAction<keyof T | string | undefined>>;
-  className?: string;
-  direction?: 'LEFT' | 'RIGHT';
-  cannotClose?: boolean;
+  openKey?: string | undefined;
+  setOpenKey?: React.Dispatch<React.SetStateAction<string | undefined>>;
 }
 
-export default function SideCollapsiblePanel<T extends { [key: string]: Item }>({
-  openKey,
-  defaultOpenKey,
-  setOpenKey,
-  items,
-  className,
-  direction = 'LEFT',
-  cannotClose,
-}: SideCollapsiblePanelProps<T>): JSX.Element {
-  const i18n = useTranslations();
+export const defaultSideCollapsibleContext: SideCollapsibleContext<{ [key: string]: Item }> = {
+  items: {},
+  openKey: undefined,
+  setOpenKey: () => {},
+};
 
-  const [itemKeyOpen, setItemKeyOpen] = React.useState<keyof T | undefined>(defaultOpenKey);
-  const itemOpen = setOpenKey
-    ? openKey == null
-      ? null
-      : items[openKey]
-    : itemKeyOpen == null
-    ? null
-    : items[itemKeyOpen];
-  return (
-    <Flex
-      direction="row"
-      align="stretch"
-      className={cx(
-        direction === 'LEFT'
-          ? css({ borderRight: '1px solid var(--lightGray)' })
-          : css({ borderLeft: '1px solid var(--lightGray)' }),
-        className,
-      )}
-    >
-      {direction === 'RIGHT' && itemOpen && (
-        <Flex
-          align="stretch"
-          justify="stretch"
-          direction="column"
-          grow={1}
-          className={css({ height: '100%' })}
-        >
+export const SideCollapsibleCTX = React.createContext(defaultSideCollapsibleContext);
+
+export interface SideCollapsiblePanelBodyProps {
+  className?: string;
+}
+
+export function SideCollapsiblePanelBody({
+  className,
+}: SideCollapsiblePanelBodyProps): JSX.Element {
+  const { items, openKey, setOpenKey } = React.useContext(SideCollapsibleCTX);
+  const itemOpen = openKey == null ? null : items[openKey];
+  const i18n = useTranslations();
+  if (itemOpen) {
+    return (
+      <Flex align="stretch" direction="column" grow={1} className={className}>
+        {itemOpen.title && (
           <Flex
             justify="space-between"
+            align="center"
             className={css({
-              padding: space_M,
-              paddingBottom: '3px',
+              padding: space_S + ' ' + space_M,
               borderBottom: '1px solid var(--lightGray)',
             })}
           >
-            <Flex align="center">
+            <Flex align="flex-end">
               <h3>{itemOpen.title}</h3>
               {itemOpen.nextToTitleElement}
             </Flex>
-            {!cannotClose && (
-              <IconButton
-                icon={faTimes}
-                title={i18n.common.close}
-                onClick={() => {
-                  if (setOpenKey) {
-                    setOpenKey(undefined);
-                  } else {
-                    setItemKeyOpen(undefined);
-                  }
-                }}
-                className={cx(lightIconButtonStyle, marginAroundStyle([4], space_M))}
-              />
-            )}
-          </Flex>
-          <Flex align="stretch" grow={1} className={itemOpen.className}>
-            {itemOpen.children}
-          </Flex>
-        </Flex>
-      )}
-      <Flex
-        direction="column"
-        justify="flex-start"
-        align="stretch"
-        className={cx(
-          direction === 'LEFT'
-            ? css({ borderRight: '1px solid var(--lightGray)' })
-            : css({ borderLeft: '1px solid var(--lightGray)' }),
-        )}
-      >
-        {Object.entries(items).map(([key, item]) => (
-          <Flex
-            key={key}
-            justify="center"
-            align="center"
-            className={cx(
-              css({ padding: space_M }),
-              {
-                [bgActiveStyleRight]: setOpenKey
-                  ? openKey === key && direction === 'RIGHT'
-                  : itemKeyOpen === key && direction === 'RIGHT',
-              },
-              {
-                [bgActiveStyleLeft]: setOpenKey
-                  ? openKey === key && direction === 'LEFT'
-                  : itemKeyOpen === key && direction === 'LEFT',
-              },
-            )}
-          >
             <IconButton
-              icon={item.icon}
-              title={item.title}
+              icon={faTimes}
+              title={i18n.common.close}
               onClick={() => {
-                if (!cannotClose) {
-                  if (setOpenKey) {
-                    setOpenKey(itemKey => (itemKey === key ? undefined : key));
-                  } else {
-                    setItemKeyOpen(itemKey => (itemKey === key ? undefined : key));
-                  }
-                } else {
-                  if (setOpenKey) {
-                    setOpenKey(key);
-                  } else {
-                    setItemKeyOpen(key);
-                  }
+                if (setOpenKey) {
+                  setOpenKey(undefined);
                 }
               }}
-              iconColor={
-                setOpenKey
-                  ? openKey === key
-                    ? 'var(--fgColor)'
-                    : undefined
-                  : itemKeyOpen === key
-                  ? 'var(--fgColor)'
-                  : undefined
-              }
-              iconSize="lg"
-              className={cx(lightIconButtonStyle, css({ paddingLeft: 0 }), {
-                [css({ cursor: 'default' })]: cannotClose && Object.entries(items).length === 1,
-              })}
+              className={cx(lightIconButtonStyle, marginAroundStyle([4], space_M))}
             />
-            {item.nextToIconElement}
           </Flex>
-        ))}
+        )}
+        {itemOpen.children}
       </Flex>
-      {direction === 'LEFT' && itemOpen && (
-        /*         <Resizable
-          defaultSize={{
-            width: 'auto',
-            height: 'auto',
+    );
+  } else return <></>;
+}
+
+export interface SideCollapsibleMenuProps {
+  defaultOpenKey?: string;
+  cannotClose?: boolean;
+  className?: string;
+  itemClassName?: string;
+}
+
+export function SideCollapsibleMenu({
+  defaultOpenKey,
+  cannotClose,
+  className,
+  itemClassName,
+}: SideCollapsibleMenuProps): JSX.Element {
+  const { items, openKey, setOpenKey } = React.useContext(SideCollapsibleCTX);
+
+  React.useEffect(() => {
+    if (defaultOpenKey && setOpenKey) {
+      setOpenKey(defaultOpenKey);
+    }
+  }, [defaultOpenKey, setOpenKey]);
+  return (
+    <Flex direction="column" justify="flex-start" align="stretch" className={className}>
+      {Object.entries(items).map(([key, item]) => (
+        <Flex
+          key={key}
+          justify="center"
+          align="center"
+          className={cx(
+            css({ padding: space_M, '&:hover': { cursor: 'pointer' } }),
+            {
+              [bgActiveStyleRight]: openKey === key,
+            },
+            lightIconButtonStyle,
+            itemClassName,
+          )}
+          onClick={() => {
+            if (!cannotClose && setOpenKey) {
+              setOpenKey(itemKey => (itemKey === key ? undefined : key));
+            }
           }}
-          minWidth={280}
-          maxWidth={'100%'}
-          bounds={'parent'}
-          enable={{
-            top: false,
-            right: true,
-            bottom: false,
-            left: false,
-            topRight: false,
-            bottomRight: false,
-            bottomLeft: false,
-            topLeft: false,
-          }}
-        > */
-        <Flex align="stretch" className={cx(paddingAroundStyle([1], space_M), itemOpen.className)}>
-          {itemOpen.children}
+        >
+          <FontAwesomeIcon
+            icon={item.icon}
+            title={item.title}
+            size="lg"
+            className={css({ paddingLeft: 0, paddingRight: '1px' })}
+          />
+          {item.nextToIconElement}
         </Flex>
-        /*         </Resizable> */
-      )}
+      ))}
     </Flex>
   );
 }

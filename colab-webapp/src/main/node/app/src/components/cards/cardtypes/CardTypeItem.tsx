@@ -149,6 +149,7 @@ export default function CardTypeItem({ cardType, usage }: CardTypeItemProps): JS
       {showDelete && cardType.kind === 'own' && (
         <>
           <ConfirmDeleteModal
+            title={i18n.modules.cardType.action.deleteType}
             message={<p>{i18n.modules.cardType.action.confirmDeleteType}</p>}
             onCancel={() => setShowDelete(false)}
             onConfirm={() => dispatch(API.deleteCardType(cardType))}
