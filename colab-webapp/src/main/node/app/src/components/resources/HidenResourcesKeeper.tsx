@@ -21,8 +21,6 @@ import { ResourceDisplay } from './ResourceDisplay';
 import { ResourceAndRef } from './resourcesCommonType';
 import ResourcesList from './ResourcesList';
 
-// TODO nice display
-
 interface ResourcesLoserKeeperProps {
   resources: ResourceAndRef[];
   collapsedClassName?: string;
