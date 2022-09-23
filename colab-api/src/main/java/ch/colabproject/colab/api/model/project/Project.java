@@ -344,6 +344,7 @@ public class Project implements ColabEntity, WithWebsocketChannels {
     }
 
     @Override
+    @JsonbTransient
     public Conditions.Condition getUpdateCondition() {
         return new Conditions.IsCurrentUserInternalToProject(this);
     }

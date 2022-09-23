@@ -576,6 +576,7 @@ public class StickyNoteLink implements ColabEntity, WithWebsocketChannels {
     }
 
     @Override
+    @JsonbTransient
     public Conditions.Condition getUpdateCondition() {
         return this.getSrc().getUpdateCondition();
     }

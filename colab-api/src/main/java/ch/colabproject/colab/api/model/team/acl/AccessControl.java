@@ -291,6 +291,7 @@ public class AccessControl implements ColabEntity, WithWebsocketChannels {
     }
 
     @Override
+    @JsonbTransient
     public Conditions.Condition getUpdateCondition() {
         if (this.getCard() != null) {
             return this.getCard().getUpdateCondition();

@@ -639,6 +639,7 @@ public class Card
     }
 
     @Override
+    @JsonbTransient
     public Conditions.Condition getUpdateCondition() {
         return new Conditions.HasCardWriteRight(this);
     }
