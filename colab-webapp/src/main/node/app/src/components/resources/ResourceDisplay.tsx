@@ -107,7 +107,23 @@ export function ResourceDisplay({
               resource={targetResource}
               iconClassName={css({ color: 'var(--lightGray)' })}
             />
-            {category && `${category} / `}
+            {category && (
+              <>
+                <DiscreetInput
+                  value={category}
+                  readOnly={effectiveReadOnly}
+                  onChange={newValue =>
+                    dispatch(
+                      API.changeResourceCategory({
+                        resourceOrRef: API.getResourceToEdit(resource),
+                        categoryName: newValue || '',
+                      }),
+                    )
+                  }
+                />
+                {' / '}
+              </>
+            )}
             <DiscreetInput
               value={targetResource.title || ''}
               placeholder={i18n.modules.resource.untitled}
