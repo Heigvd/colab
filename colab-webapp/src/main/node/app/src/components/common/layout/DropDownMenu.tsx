@@ -36,6 +36,10 @@ const entryStyle = css({
   },
 });
 
+const dropDownEntryPadding = css({
+  padding: space_S,
+});
+
 const commonStyle = cx(
   normalThemeMode,
   css({
@@ -423,7 +427,13 @@ export default function DropDownMenu<T extends string | number | symbol>({
             >
               {entries.map(entry => (
                 <div
-                  className={cx(entryStyle, { [disabledStyle]: entry.disabled })}
+                  className={cx(
+                    entryStyle,
+                    {
+                      [disabledStyle]: entry.disabled,
+                    },
+                    dropDownEntryPadding,
+                  )}
                   key={String(entry.value)}
                   onClick={() => {
                     if (entry.action) {
