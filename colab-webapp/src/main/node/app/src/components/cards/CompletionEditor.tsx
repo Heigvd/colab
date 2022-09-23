@@ -7,6 +7,7 @@
 
 import { css } from '@emotion/css';
 import { CardContent } from 'colab-rest-client';
+import {debounce} from 'lodash';
 import * as React from 'react';
 import * as API from '../../API/api';
 import useTranslations from '../../i18n/I18nContext';
@@ -23,38 +24,44 @@ interface CompletionEditorProps {
 export default function CompletionEditor({ variant }: CompletionEditorProps): JSX.Element {
   const i18n = useTranslations();
   const dispatch = useAppDispatch();
+  const [value, setValue] = React.useState(variant.completionLevel ?? 0);
+
+  const debouncedOnChange = React.useMemo(() => {
+    return debounce((value: number) => {
+           dispatch(
+            API.updateCardContent({
+              ...variant,
+              completionLevel: value,
+            }),
+          )
+    }, 250);
+  }, [dispatch, variant]);
+
+  const onInternalChange = React.useCallback((v: string) => {
+    const nValue = +v;
+    if (!Number.isNaN(nValue)) {
+      setValue(nValue);
+      debouncedOnChange(nValue);
+    }
+  }, [debouncedOnChange]);
 
   return (
     <>
       <BlockInput
         type="range"
         label={i18n.modules.card.completion}
-        value={variant.completionLevel == 0 ? 0 : variant.completionLevel}
+        value={value}
         placeholder="0"
-        onChange={newValue =>
-          dispatch(
-            API.updateCardContent({
-              ...variant,
-              completionLevel: Number(newValue),
-            }),
-          )
-        }
+        onChange={onInternalChange}
         autoFocus={true}
         saveMode="SILLY_FLOWING"
       />
       <Flex align="center">
         <BlockInput
           type="number"
-          value={variant.completionLevel == 0 ? undefined : variant.completionLevel}
+          value={value}
           saveMode="SILLY_FLOWING"
-          onChange={newValue =>
-            dispatch(
-              API.updateCardContent({
-                ...variant,
-                completionLevel: +newValue,
-              }),
-            )
-          }
+          onChange={onInternalChange}
           placeholder={'0'}
           autoFocus
           inputDisplayClassName={css({ width: '90px' })}
