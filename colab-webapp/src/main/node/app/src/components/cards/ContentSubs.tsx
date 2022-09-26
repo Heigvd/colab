@@ -151,6 +151,7 @@ export default function ContentSubs({
                 className={css({
                   gridColumn: column,
                   gridRow: row,
+                  maxHeight: '100%',
                 })}
                 depth={depth - 1}
                 key={card.id}
