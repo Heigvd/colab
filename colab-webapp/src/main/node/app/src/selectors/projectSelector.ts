@@ -22,8 +22,14 @@ export interface UsedProject {
   status: AvailabilityStatus;
 }
 
-export const useProject = (id: number): UsedProject => {
+export const useProject = (id: number | undefined): UsedProject => {
   return useAppSelector(state => {
+    if (id == null) {
+      return {
+        project: null,
+        status: 'ERROR',
+      };
+    }
     const project = state.projects.projects[id];
     if (entityIs(project, 'Project')) {
       // project is known
@@ -47,12 +53,12 @@ export const useProject = (id: number): UsedProject => {
   }, shallowEqual);
 };
 
-export function useAndLoadProject(id: number): UsedProject {
+export function useAndLoadProject(id: number | undefined): UsedProject {
   const dispatch = useAppDispatch();
 
   const { project, status } = useProject(id);
 
-  if (status === 'NOT_INITIALIZED') {
+  if (status === 'NOT_INITIALIZED' && id != null) {
     dispatch(API.getProject(id));
   }
 

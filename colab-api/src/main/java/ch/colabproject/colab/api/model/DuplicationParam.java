@@ -6,6 +6,7 @@
  */
 package ch.colabproject.colab.api.model;
 
+import ch.colabproject.colab.generator.model.annotations.ExtractJavaDoc;
 import ch.colabproject.colab.generator.model.interfaces.WithJsonDiscriminator;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
@@ -15,6 +16,7 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
  *
  * @author sandra
  */
+@ExtractJavaDoc
 public class DuplicationParam implements WithJsonDiscriminator {
 
     private static final long serialVersionUID = 1L;

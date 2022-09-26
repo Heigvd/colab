@@ -34,7 +34,7 @@ export default function IllustrationDisplay({
   justify,
   className,
 }: IllustrationDisplayProps): JSX.Element {
-  library.add(fas, far); // TODO sandra work in progress // or just the icon we need
+  library.add(fas, far);
   const currentIllustration = illustration || defaultProjectIllustration;
   const i18n = useTranslations();
   return (
@@ -81,7 +81,7 @@ export function IllustrationIconDisplay({
   iconColor,
   className,
 }: IllustrationDisplayProps): JSX.Element {
-  library.add(fas, far); // TODO sandra work in progress // or just the icon we need
+  library.add(fas, far);
   const currentIllustration = illustration || defaultProjectIllustration;
   const i18n = useTranslations();
   return (
@@ -105,18 +105,4 @@ export function IllustrationIconDisplay({
       )}
     </>
   );
-}
-
-{
-  /* TODO sandra work in progress : remove tries */
-}
-{
-  /* A<FontAwesomeIcon icon={illustration.iconKey as IconName} />
-      B<FontAwesomeIcon icon={illustration.iconKey as IconProp} />
-      1 <FontAwesomeIcon icon={faTractor} />
-      2 <FontAwesomeIcon icon={'tractor' as IconName} />
-      3 <FontAwesomeIcon icon={'fa-tractor' as IconName} />
-      4 <FontAwesomeIcon icon={'tractor' as IconProp} />
-      5 <FontAwesomeIcon icon={'fa-tractor' as IconProp} />
-      6 <FontAwesomeIcon icon={{ prefix: 'fas', iconName: 'tractor' }} /> */
 }

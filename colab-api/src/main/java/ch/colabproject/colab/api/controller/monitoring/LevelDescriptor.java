@@ -6,6 +6,7 @@
  */
 package ch.colabproject.colab.api.controller.monitoring;
 
+import ch.colabproject.colab.generator.model.annotations.ExtractJavaDoc;
 import ch.qos.logback.classic.Logger;
 
 /**
@@ -13,6 +14,7 @@ import ch.qos.logback.classic.Logger;
  *
  * @author maxence
  */
+@ExtractJavaDoc
 public class LevelDescriptor {
 
     /**

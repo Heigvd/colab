@@ -57,6 +57,7 @@ export const computeOverlayPosition = (node: Element) => {
       position: 'fixed',
       top: top + height,
       left,
+      width: '20cm',
     });
   } else {
     return css({ display: 'none' });

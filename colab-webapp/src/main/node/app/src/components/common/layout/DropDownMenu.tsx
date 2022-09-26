@@ -42,12 +42,6 @@ const entryStyle = css({
 const dropDownEntryPadding = css({
   padding: space_S,
 });
-export const modalEntryStyle = css({
-  margin: space_S,
-  display: 'flex',
-  alignItems: 'center',
-  gap: '5px',
-});
 
 const commonStyle = cx(
   normalThemeMode,
@@ -59,6 +53,7 @@ const commonStyle = cx(
     overflow: 'auto',
     maxHeight: '500px',
     maxWidth: '500px',
+    whiteSpace: 'nowrap',
   }),
 );
 
@@ -317,7 +312,6 @@ export interface Entry<T> {
   label: React.ReactNode;
   action?: () => void;
   disabled?: boolean;
-  modal?: boolean;
 }
 
 export interface DropDownMenuProps<T> {
@@ -439,8 +433,10 @@ export default function DropDownMenu<T extends string | number | symbol>({
                 <div
                   className={cx(
                     entryStyle,
-                    { [disabledStyle]: entry.disabled },
-                    { [dropDownEntryPadding]: !entry.modal },
+                    {
+                      [disabledStyle]: entry.disabled,
+                    },
+                    dropDownEntryPadding,
                   )}
                   key={String(entry.value)}
                   onClick={() => {
