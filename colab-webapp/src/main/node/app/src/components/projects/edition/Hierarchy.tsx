@@ -6,6 +6,7 @@
  */
 
 import { css, cx } from '@emotion/css';
+import { faRefresh } from '@fortawesome/free-solid-svg-icons';
 import { BrowserJsPlumbInstance, newInstance } from '@jsplumb/browser-ui';
 import '@jsplumb/connector-flowchart';
 import { Connection } from '@jsplumb/core';
@@ -24,28 +25,24 @@ import {
   useAppSelector,
 } from '../../../store/hooks';
 import CardCreator from '../../cards/CardCreator';
+import CardLayout from '../../cards/CardLayout';
+import IconButton from '../../common/element/IconButton';
 import InlineLoading from '../../common/element/InlineLoading';
+import { BlockInput } from '../../common/element/Input';
 import Flex from '../../common/layout/Flex';
 import { cardShadow } from '../../styling/style';
 
 const logger = getLogger('JsPlumb');
-//logger.setLevel(4);
+//logger.setLevel(3);
 
-const cardStyle = (color: string | null | undefined): string =>
-  css({
-    display: 'flex',
-    flexDirection: 'column',
-    padding: '0px',
-    margin: '0px',
-    backgroundColor: color || undefined,
-    //  flexWrap: 'wrap',
-    borderRadius: '5px',
-    ':hover': {
-      '& > div >  .variant-creator': {
-        visibility: 'visible',
-      },
+const cardGroupStyle = css({
+  ':hover': {
+    '& .variant-creator': {
+      visibility: 'visible',
     },
-  });
+  },
+  cursor: 'grab',
+});
 
 //
 //const addStyle = css({
@@ -55,7 +52,7 @@ const cardStyle = (color: string | null | undefined): string =>
 //})
 
 const subsStyle = css({
-  flexWrap: 'wrap',
+  // flexWrap: 'wrap',
   minWidth: '100%',
   //  borderStyle: 'dashed',
   //  borderColor: 'lightgrey',
@@ -65,49 +62,30 @@ const subsStyle = css({
 interface PlumbRef {
   divs: Record<string, Element>;
   connections: Record<string, Connection>;
+  assignDiv: (element: Element | null, key: string) => void;
+  assignConnection: (connection: Connection | null, key: string) => void;
 }
 
-const assignDiv = (refs: PlumbRef['divs'], element: Element | null, key: string) => {
-  logger.debug('Assign div ', key, ' to ', element);
-  if (element != null) {
-    refs[key] = element;
-  } else {
-    delete refs[key];
-  }
-};
-
-const assignConnection = (
-  refs: PlumbRef['connections'],
-  connection: Connection | null,
-  key: string,
-) => {
-  logger.debug('Assign connection ', key, ' to ', connection);
-  if (connection != null) {
-    refs[key] = connection;
-  } else {
-    delete refs[key];
-  }
-};
+const PlumbContext = React.createContext<PlumbRef>({
+  divs: {},
+  connections: {},
+  assignConnection: () => {},
+  assignDiv: () => {},
+});
 
 interface CardContentThumbProps {
   id: string;
   name: string;
   className?: string;
   onClick?: () => void;
-  divRefs: PlumbRef['divs'];
 }
 
-function CardContentThumb({
-  id,
-  name,
-  className,
-  onClick,
-  divRefs,
-}: CardContentThumbProps): JSX.Element {
+function CardContentThumb({ id, name, className, onClick }: CardContentThumbProps): JSX.Element {
+  const { assignDiv } = React.useContext(PlumbContext);
   return (
     <div
       ref={r => {
-        assignDiv(divRefs, r, `CardContent-${id}`);
+        assignDiv(r, `CardContent-${id}`);
       }}
       className={cx(
         css({
@@ -127,10 +105,9 @@ function CardContentThumb({
 
 interface CardGroupProps {
   card: Card;
-  divRefs: PlumbRef['divs'];
 }
 
-function CardGroup({ card, divRefs }: CardGroupProps) {
+function CardGroup({ card }: CardGroupProps) {
   const dispatch = useAppDispatch();
 
   const root = useAppSelector(state => {
@@ -165,54 +142,75 @@ function CardGroup({ card, divRefs }: CardGroupProps) {
     }
   }, shallowEqual);
 
-  return (
-    <div className={`CardGroup ${cardStyle(card.color)}`} key={`CardGroupc${card.id!}`}>
-      <div>{card.title || <i>no title</i>}</div>
-      {contents != null ? (
-        <Flex
-          direction="row"
-          theRef={ref => {
-            assignDiv(divRefs, ref, `CardGroup-${card.id}`);
-          }}
-        >
-          {contents.map((v, i) =>
-            v?.content != null ? (
-              <CardContentThumb
-                divRefs={divRefs}
-                id={String(v.content.id)}
-                key={v.content.id}
-                name={v.content.title || ''}
-              />
-            ) : (
-              <InlineLoading key={`loader-${i}`} />
-            ),
-          )}
+  const { assignDiv } = React.useContext(PlumbContext);
 
-          <CardContentThumb
-            divRefs={divRefs}
-            id={`new-for-${card.id}`}
-            name="(+)"
-            className={`variant-creator ${css({
-              visibility: 'hidden',
-              //              position: 'absolute',
-              //              left: '100%',
-            })}`}
-            onClick={() => {
-              dispatch(API.createCardContentVariantWithBlockDoc(card.id!));
+  // <div className={`CardGroup ${cardStyle(card.color)}`} key={`CardGroupc${card.id!}`}>
+  return (
+    <div className={`CardGroup ${cardGroupStyle}`} key={`CardGroupc${card.id!}`}>
+      <CardLayout card={card} variant={undefined} variants={[]}>
+        <div
+          className={css({
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'space-around',
+            borderBottom:
+              card.color && card.color != '#ffffff'
+                ? '3px solid ' + card.color
+                : '1px solid var(--lightGray)',
+            width: '100%',
+          })}
+        >
+          {card.title || <i>no title</i>}
+        </div>
+        {contents != null ? (
+          <Flex
+            className={
+              contents.length === 1
+                ? css({
+                    visibility: 'hidden',
+                  })
+                : undefined
+            }
+            direction="row"
+            theRef={ref => {
+              assignDiv(ref, `CardGroup-${card.id}`);
             }}
-          />
-        </Flex>
-      ) : (
-        <InlineLoading />
-      )}
+          >
+            {contents.map((v, i) =>
+              v?.content != null ? (
+                <CardContentThumb
+                  id={String(v.content.id)}
+                  key={v.content.id}
+                  name={v.content.title || ''}
+                />
+              ) : (
+                <InlineLoading key={`loader-${i}`} />
+              ),
+            )}
+
+            <CardContentThumb
+              id={`new-for-${card.id}`}
+              name="(+)"
+              className={`variant-creator ${css({
+                visibility: 'hidden',
+                //              position: 'absolute',
+                //              left: '100%',
+              })}`}
+              onClick={() => {
+                dispatch(API.createCardContentVariantWithBlockDoc(card.id!));
+              }}
+            />
+          </Flex>
+        ) : (
+          <InlineLoading />
+        )}
+      </CardLayout>
     </div>
   );
 }
 
 export interface SubCardCreatorProps {
   parent: CardContent;
-  divRefs: PlumbRef['divs'];
-  cRefs: PlumbRef['connections'];
   jsPlumb: BrowserJsPlumbInstance;
 }
 
@@ -221,12 +219,14 @@ function manageConnection({
   source,
   target,
   cRefs,
+  assignConnection,
   key,
 }: {
   jsPlumb: BrowserJsPlumbInstance;
   source: Element | undefined;
   target: Element | undefined;
   cRefs: PlumbRef['connections'];
+  assignConnection: PlumbRef['assignConnection'];
   key: string;
 }) {
   let connection: Connection | undefined = cRefs[key];
@@ -239,7 +239,7 @@ function manageConnection({
         target: target,
       });
       jsPlumb.setDraggable(source, false);
-      assignConnection(cRefs, connection, key);
+      assignConnection(connection, key);
       try {
         jsPlumb.repaintEverything();
       } catch {
@@ -259,35 +259,39 @@ function manageConnection({
   }
 }
 
-function SubCardCreator({ divRefs, cRefs, jsPlumb, parent }: SubCardCreatorProps) {
-  const parentNode = divRefs[`CardContent-${parent.id}`];
+function SubCardCreator({ jsPlumb, parent }: SubCardCreatorProps) {
+  const { divs, assignDiv, connections, assignConnection } = React.useContext(PlumbContext);
+
+  const parentNode = divs[`CardContent-${parent.id}`];
   //  const thisNode = divRefs[`CreateSubCard-${parent.id}`];
   const [thisNode, setThisNode] = React.useState<HTMLDivElement | undefined>(undefined);
 
   React.useEffect(() => {
-    logger.debug('Redraw connection', thisNode, parentNode);
+    logger.info('Redraw (+) connection', thisNode, parentNode);
     manageConnection({
       jsPlumb,
       source: thisNode,
       target: parentNode,
-      cRefs: cRefs,
+      cRefs: connections,
+      assignConnection: assignConnection,
       key: `NewCardForContent-${parent.id}`,
     });
-  }, [jsPlumb, cRefs, parentNode, thisNode, parent.id]);
+  }, [jsPlumb, connections, assignConnection, parentNode, thisNode, parent.id]);
 
   return (
     <div
       className={cx(
-        cardStyle(undefined),
+        'SubCardCreator',
         css({
           border: '1px grey dashed',
           alignSelf: 'flex-start',
           margin: '30px',
           padding: '20px',
+          borderRadius: '5px',
         }),
       )}
       ref={ref => {
-        assignDiv(divRefs, ref, `CreateSubCard-${parent.id!}`);
+        assignDiv(ref, `CreateSubCard-${parent.id!}`);
         setThisNode(ref || undefined);
       }}
     >
@@ -299,12 +303,10 @@ function SubCardCreator({ divRefs, cRefs, jsPlumb, parent }: SubCardCreatorProps
 interface AllSubsContainerProps {
   contents: (CardContentDetail | undefined)[];
   subs: { [contentId: number]: (Card | undefined)[] | null | undefined };
-  divRefs: PlumbRef['divs'];
-  cRefs: PlumbRef['connections'];
   jsPlumb: BrowserJsPlumbInstance;
 }
 
-function AllSubsContainer({ contents, subs, divRefs, cRefs, jsPlumb }: AllSubsContainerProps) {
+function AllSubsContainer({ contents, subs, jsPlumb }: AllSubsContainerProps) {
   return (
     <Flex className={subsStyle} justify="space-evenly">
       {contents.map((v, i) => {
@@ -315,8 +317,6 @@ function AllSubsContainer({ contents, subs, divRefs, cRefs, jsPlumb }: AllSubsCo
               <SubContainer
                 key={`sub-${v.content.id}`}
                 parent={v.content}
-                divRefs={divRefs}
-                cRefs={cRefs}
                 jsPlumb={jsPlumb}
                 subcards={subcards}
               />
@@ -332,57 +332,41 @@ function AllSubsContainer({ contents, subs, divRefs, cRefs, jsPlumb }: AllSubsCo
 
 interface SubContainerProps {
   parent: CardContent;
-  divRefs: PlumbRef['divs'];
-  cRefs: PlumbRef['connections'];
   jsPlumb: BrowserJsPlumbInstance;
   subcards: (Card | undefined)[];
 }
 
-function SubContainer({ parent, subcards, divRefs, cRefs, jsPlumb }: SubContainerProps) {
+function SubContainer({ parent, subcards, jsPlumb }: SubContainerProps) {
   return (
     <div
       data-cardcontent={parent.id || ''}
       className={`SubContainer SubContainer-${parent.id} ${css({
         display: 'flex',
+        flexWrap: 'wrap',
       })}`}
       key={`cc${parent.id!}`}
     >
       {subcards.map((sub, i) => {
         if (sub?.id != null) {
-          return (
-            <CardHierarchy
-              key={`subcard-${sub.id}`}
-              rootId={sub.id}
-              divRefs={divRefs}
-              cRefs={cRefs}
-              jsPlumb={jsPlumb}
-            />
-          );
+          return <CardHierarchy key={`subcard-${sub.id}`} rootId={sub.id} jsPlumb={jsPlumb} />;
         } else {
-          return <InlineLoading key={`subcard-${i}`} />;
+          return <InlineLoading key={`subcard-i-${i}`} />;
         }
       })}
-      <SubCardCreator parent={parent} divRefs={divRefs} cRefs={cRefs} jsPlumb={jsPlumb} />
+      <SubCardCreator parent={parent} jsPlumb={jsPlumb} />
     </div>
   );
 }
 
 interface CardHierarchyProps {
   rootId: number;
-  divRefs: PlumbRef['divs'];
-  cRefs: PlumbRef['connections'];
   jsPlumb: BrowserJsPlumbInstance;
 }
 
 /**
  *
  */
-export function CardHierarchy({
-  rootId,
-  divRefs,
-  cRefs,
-  jsPlumb,
-}: CardHierarchyProps): JSX.Element {
+export function CardHierarchy({ rootId, jsPlumb }: CardHierarchyProps): JSX.Element {
   const dispatch = useAppDispatch();
 
   const { project, status } = useProjectBeingEdited();
@@ -463,19 +447,23 @@ export function CardHierarchy({
     }
   }, [contents, subs, dispatch]);
 
-  const parentNode = divRefs[`CardContent-${root?.card?.parentId}`];
-  const thisNode = divRefs[`CardHierarchy-${rootId}`];
+  const { divs, connections, assignDiv, assignConnection } = React.useContext(PlumbContext);
+
+  const parentNode = divs[`CardContent-${root?.card?.parentId}`];
+  const [thisNode, setThisNode] = React.useState<HTMLDivElement | undefined>(undefined);
 
   React.useEffect(() => {
     const connectionId = `Card-${rootId}`;
+    logger.info('Redraw Card connection', thisNode, parentNode);
     manageConnection({
       jsPlumb,
       source: thisNode,
       target: parentNode,
-      cRefs: cRefs,
+      cRefs: connections,
+      assignConnection: assignConnection,
       key: connectionId,
     });
-  }, [jsPlumb, parentNode, thisNode, cRefs, rootId]);
+  }, [jsPlumb, parentNode, thisNode, connections, assignConnection, rootId]);
 
   if (contents == null) {
     return <InlineLoading />;
@@ -498,17 +486,12 @@ export function CardHierarchy({
           margin: '30px',
         })}`}
         ref={ref => {
-          assignDiv(divRefs, ref, `CardHierarchy-${rootId}`);
+          assignDiv(ref, `CardHierarchy-${rootId}`);
+          setThisNode(ref || undefined);
         }}
       >
-        {projectRootCardId !== rootId ? <CardGroup card={root.card} divRefs={divRefs} /> : null}
-        <AllSubsContainer
-          contents={contents}
-          subs={subs}
-          divRefs={divRefs}
-          cRefs={cRefs}
-          jsPlumb={jsPlumb}
-        />
+        {projectRootCardId !== rootId ? <CardGroup card={root.card} /> : null}
+        <AllSubsContainer contents={contents} subs={subs} jsPlumb={jsPlumb} />
       </div>
     );
   }
@@ -521,7 +504,33 @@ interface HierarchyDisplayProps {
 export default function Hierarchy({ rootId }: HierarchyDisplayProps): JSX.Element {
   const dispatch = useAppDispatch();
 
-  const plumbRefs = React.useRef<PlumbRef>({ divs: {}, connections: {} });
+  const [plumbState, setPlumbState] = React.useState<Pick<PlumbRef, 'divs' | 'connections'>>({
+    divs: {},
+    connections: {},
+  });
+
+  const assignDiv = React.useCallback((div: Element | null, key: string) => {
+    setPlumbState(state => {
+      if (div != null) {
+        state.divs[key] = div;
+      } else {
+        delete state.divs[key];
+      }
+      return state;
+    });
+  }, []);
+
+  const assignConnection = React.useCallback((connection: Connection | null, key: string) => {
+    setPlumbState(state => {
+      logger.debug('Assign connection ', key, ' to ', connection);
+      if (connection != null) {
+        state.connections[key] = connection;
+      } else {
+        delete state.connections[key];
+      }
+      return state;
+    });
+  }, []);
 
   const [thisNode, setThisNode] = React.useState<HTMLDivElement | null>(null);
   const [jsPlumb, setJsPlumb] = React.useState<BrowserJsPlumbInstance | undefined>(undefined);
@@ -603,13 +612,22 @@ export default function Hierarchy({ rootId }: HierarchyDisplayProps): JSX.Elemen
   //  const [, toggleIt] = React.useState(true);
 
   const dndRef = React.useRef<{
+    draggedInPlace?: HTMLElement;
     dragged?: HTMLElement;
-    hoverGroup?: HTMLElement;
+    hoverGroup?: Element;
     connection?: Connection;
-    tmpConnection?: Connection;
+    //tmpConnection?: Connection;
     delta: [number, number];
     status: 'idle' | 'dragging';
   }>({ status: 'idle', delta: [0, 0] });
+
+  const [zoom, setZoom] = React.useState(1);
+  const zoomRef = React.useRef(zoom);
+  zoomRef.current = zoom;
+
+  if (jsPlumb) {
+    jsPlumb.setZoom(zoom);
+  }
 
   const throttleRepaint = React.useMemo(() => {
     if (jsPlumb) {
@@ -632,11 +650,15 @@ export default function Hierarchy({ rootId }: HierarchyDisplayProps): JSX.Elemen
   const mouseHandler = React.useCallback(
     (e: React.MouseEvent) => {
       if (e.type === 'mouseup') {
+        (jsPlumb?.getContainer() as Element).classList.remove('draggin');
         if (dndRef.current.status === 'dragging') {
           if (dndRef.current.hoverGroup && dndRef.current.dragged) {
             const newParentId = dndRef.current.hoverGroup.getAttribute('data-cardcontent');
             const cardId = dndRef.current.dragged.getAttribute('data-card');
             if (newParentId && cardId) {
+              //              if (jsPlumb && dndRef.current.connection) {
+              //                jsPlumb.deleteConnection(dndRef.current.connection);
+              //              }
               logger.debug('Move Card ', cardId, ' to ', newParentId);
               dispatch(
                 API.moveCard({
@@ -645,6 +667,7 @@ export default function Hierarchy({ rootId }: HierarchyDisplayProps): JSX.Elemen
                 }),
               ).then(() => {
                 if (jsPlumb) {
+                  throttleRepaint();
                   //jsPlumb.reset();
                   //                Object.values(plumbRefs.current.connections).forEach(c => c.destroy());
                   //                plumbRefs.current.connections = {};
@@ -654,12 +677,16 @@ export default function Hierarchy({ rootId }: HierarchyDisplayProps): JSX.Elemen
             }
           }
         }
+
+        dndRef.current.draggedInPlace?.classList.remove('being-dragged');
+
         if (dndRef.current.dragged) {
           dndRef.current.dragged.style.left = '';
           dndRef.current.dragged.style.top = '';
           dndRef.current.dragged.style.position = '';
           dndRef.current.dragged.style.pointerEvents = '';
 
+          dndRef.current.dragged.remove();
           throttleRepaint();
         }
 
@@ -668,17 +695,18 @@ export default function Hierarchy({ rootId }: HierarchyDisplayProps): JSX.Elemen
         }
 
         if (dndRef.current.connection) {
-          dndRef.current.connection.setVisible(true);
+          //dndRef.current.connection.setVisible(true);
           throttleRepaint();
         }
 
-        if (dndRef.current.tmpConnection) {
-          if (jsPlumb) {
-            logger.debug('Destroy TMP connection');
-            jsPlumb.deleteConnection(dndRef.current.tmpConnection);
-            dndRef.current.tmpConnection = undefined;
-          }
-        }
+        //        if (dndRef.current.tmpConnection) {
+        //          if (jsPlumb) {
+        //            logger.debug('Destroy TMP connection');
+        //            jsPlumb.deleteConnection(dndRef.current.tmpConnection);
+        //            dndRef.current.tmpConnection = undefined;
+        //            throttleRepaint();
+        //          }
+        //        }
 
         dndRef.current.status = 'idle';
       } else if (e.type === 'mousedown') {
@@ -687,23 +715,42 @@ export default function Hierarchy({ rootId }: HierarchyDisplayProps): JSX.Elemen
           if (elGroup) {
             const el = findAncestorWithSelector(elGroup, 'CardHierarchy');
             if (el && !hasClass(el, `CardHierarchy-${rootId}`)) {
-              const pos = coord(e);
+              const container = jsPlumb!.getContainer() as Element;
+              container.classList.add('draggin');
+              const bbox = container.getBoundingClientRect();
+              const elBbox = el.getBoundingClientRect();
+
+              //const pos = coord(e);
               dndRef.current.status = 'dragging';
               dndRef.current.hoverGroup = undefined;
-              dndRef.current.dragged = el;
-              dndRef.current.dragged.style.left = el.getBoundingClientRect().left + 'px';
-              dndRef.current.dragged.style.top = el.getBoundingClientRect().right + 'px';
-              dndRef.current.delta = [
-                pos[0] - el.getBoundingClientRect().left,
-                pos[1] - el.getBoundingClientRect().top,
-              ];
+
+              const clone = el.cloneNode(true) as HTMLElement;
+              thisNode!.append(clone);
+              el.classList.add('being-dragged');
+
+              dndRef.current.draggedInPlace = el;
+
+              clone.classList.add('clone-dragged');
+              clone.setAttribute('data-jtk-managed', '');
+
+              const left = elBbox.left - bbox.left;
+              const top = elBbox.top - bbox.top;
+
+              dndRef.current.delta = [e.clientX - left, e.clientY - top];
+
+              dndRef.current.dragged = clone;
+              dndRef.current.dragged.style.left =
+                (e.clientX - dndRef.current.delta[0]) / zoomRef.current + 'px';
+              dndRef.current.dragged.style.top =
+                (e.clientY - dndRef.current.delta[1]) / zoomRef.current + 'px';
 
               dndRef.current.dragged.style.position = `fixed`;
 
               const cardId = dndRef.current.dragged.getAttribute('data-card');
-              dndRef.current.connection = plumbRefs.current.connections[`Card-${cardId}`];
+              dndRef.current.connection = plumbState.connections[`Card-${cardId}`];
               if (dndRef.current.connection) {
-                dndRef.current.connection.setVisible(false);
+                dndRef.current.connection.setPaintStyle({ dashstyle: '5 5' });
+                // dndRef.current.connection.setVisible(false);
               }
 
               throttleRepaint();
@@ -712,41 +759,67 @@ export default function Hierarchy({ rootId }: HierarchyDisplayProps): JSX.Elemen
         }
       } else if (e.type === 'mousemove') {
         if (dndRef.current.status === 'dragging' && e.buttons === 1 && dndRef.current.dragged) {
-          const pos = coord(e);
+          //const pos = coord(e);
           const delta = dndRef.current.delta;
-          dndRef.current.dragged.style.left = `${pos[0] - delta[0]}px`;
-          dndRef.current.dragged.style.top = `${pos[1] - delta[1]}px`;
+          dndRef.current.dragged.style.left = `${(e.clientX - delta[0]) / zoomRef.current}px`;
+          dndRef.current.dragged.style.top = `${(e.clientY - delta[1]) / zoomRef.current}px`;
           dndRef.current.dragged.style.position = `fixed`;
           dndRef.current.dragged.style.pointerEvents = `none`;
 
-          const subsContainer = findAncestorWithSelector(e.target, 'SubContainer');
-
+          //const cardGroup = findAncestorWithSelector(e.target, 'CardGroup');
+          //if (cardGroup) {
+          //logger.warn("CardGroup", cardGroup);
+          //const subsContainer = cardGroup.parentElement?.querySelector(".SubContainer");
           if (dndRef.current.hoverGroup) {
             dndRef.current.hoverGroup.classList.remove('dnd-target-group');
           }
 
-          if (subsContainer != null) {
-            const newParentId = subsContainer.getAttribute('data-cardcontent');
-            const newParentTarget = plumbRefs.current.divs[`CardContent-${newParentId}`];
+          const plusButton = findAncestorWithSelector(e.target, 'SubCardCreator');
+          if (plusButton) {
+            const subsContainer = findAncestorWithSelector(e.target, 'SubContainer');
 
-            if (dndRef.current.hoverGroup !== subsContainer && jsPlumb) {
-              if (newParentTarget != null) {
-                if (dndRef.current.tmpConnection == null) {
-                  logger.debug('Create tmp connection');
-                  dndRef.current.tmpConnection = jsPlumb.connect({
-                    source: dndRef.current.dragged,
-                    target: newParentTarget,
-                  });
-                } else {
-                  logger.debug('Move TMP connection');
-                  if (dndRef.current.tmpConnection.target !== newParentTarget) {
-                    jsPlumb.setTarget(dndRef.current.tmpConnection, newParentTarget);
-                  }
-                }
-              }
+            if (subsContainer != null) {
+              //              const child = Array.from(subsContainer.children).find(child => child.contains(e.target as Node));
+              //              if (child != null) {
+              //                subsContainer.insertBefore(dndRef.current.dragged, child);
+              //              } else {
+              //                subsContainer.append(dndRef.current.dragged);
+              //              }
+              //              dndRef.current.dragged.style.position = ``;
+
+              //              const newParentId = subsContainer.getAttribute('data-cardcontent');
+              //              const newParentTarget = plumbState.divs[`CardContent-${newParentId}`];
+
+              //              if (dndRef.current.hoverGroup !== subsContainer && jsPlumb) {
+              //                if (newParentTarget != null) {
+              //                  if (dndRef.current.tmpConnection == null) {
+              //                    logger.debug('Create tmp connection');
+              //                    dndRef.current.tmpConnection = jsPlumb.connect({
+              //                      source: dndRef.current.dragged,
+              //                      target: newParentTarget,
+              //                    });
+              //                  } else {
+              //                    logger.debug('Move TMP connection');
+              //                    if (dndRef.current.tmpConnection.target !== newParentTarget) {
+              //                      jsPlumb.setTarget(dndRef.current.tmpConnection, newParentTarget);
+              //                    }
+              //                  }
+              //                } else {
+              //                  if (dndRef.current.tmpConnection) {
+              //                    jsPlumb.deleteConnection(dndRef.current.tmpConnection);
+              //                    dndRef.current.tmpConnection = undefined;
+              //                  }
+              //                }
+              //              }
+              dndRef.current.hoverGroup = subsContainer;
+              subsContainer.classList.add('dnd-target-group');
             }
-            dndRef.current.hoverGroup = subsContainer;
-            subsContainer.classList.add('dnd-target-group');
+          } else {
+            dndRef.current.hoverGroup = undefined;
+            //            if (dndRef.current.tmpConnection) {
+            //              jsPlumb?.deleteConnection(dndRef.current.tmpConnection);
+            //              dndRef.current.tmpConnection = undefined;
+            //            }
           }
 
           throttleRepaint();
@@ -755,40 +828,93 @@ export default function Hierarchy({ rootId }: HierarchyDisplayProps): JSX.Elemen
         }
       }
     },
-    [rootId, dispatch, throttleRepaint, jsPlumb],
+    [rootId, dispatch, throttleRepaint, jsPlumb, thisNode, plumbState.connections],
   );
 
+  React.useEffect(() => {
+    logger.info('MainEffect');
+  });
+
   return (
-    <div
-      className={`${css({
-        padding: '50px',
-        '& .jtk-drag': {
-          position: 'absolute',
-        },
-        '& .dnd-target-group': {
-          boxShadow: '0px 0px 4px 1px #000000',
-        },
-      })}`}
-      ref={ref => {
-        setThisNode(ref);
-        assignDiv(plumbRefs.current.divs, ref, 'root');
+    <PlumbContext.Provider
+      value={{
+        divs: plumbState.divs,
+        connections: plumbState.connections,
+        assignDiv,
+        assignConnection,
       }}
-      onMouseUp={mouseHandler}
-      onMouseDownCapture={mouseHandler}
-      onMouseMove={mouseHandler}
-      onMouseLeave={mouseHandler}
     >
-      {jsPlumb != null && cardStatus === 'READY' && contentStatus == 'READY' ? (
-        <CardHierarchy
-          rootId={rootId}
-          jsPlumb={jsPlumb}
-          divRefs={plumbRefs.current.divs}
-          cRefs={plumbRefs.current.connections}
-        />
-      ) : (
-        <InlineLoading />
-      )}
-    </div>
+      <div
+        className={css({
+          display: 'flex',
+          flexDirection: 'column',
+          height: '100%',
+          userSelect: 'none',
+        })}
+      >
+        <div className={css({ width: '200px' })}>
+          <BlockInput
+            type="range"
+            label="zoom"
+            value={zoom}
+            placeholder="0"
+            min="0.5"
+            max="2"
+            step="0.1"
+            onChange={newValue => setZoom(Number(newValue))}
+            saveMode="SILLY_FLOWING"
+          />
+          <IconButton icon={faRefresh} onClick={throttleRepaint} title="" />
+        </div>
+        <div
+          className={css({
+            width: '100%',
+            overflow: 'auto',
+            position: 'relative',
+            flexGrow: '1',
+          })}
+        >
+          <div
+            className={`${css({
+              '& .jtk-drag': {
+                position: 'absolute',
+              },
+              '&.draggin .SubCardCreator': {
+                boxShadow: '0px 0px 4px 1px pink',
+              },
+              '& .dnd-target-group > .SubCardCreator': {
+                boxShadow: '0px 0px 4px 1px hotpink',
+              },
+              scale: `${zoom}`,
+              display: 'flex',
+              '.SubContainer .SubContainer': {
+                flexWrap: 'nowrap',
+              },
+              '.being-dragged': {
+                opacity: 0.5,
+              },
+              '.clone-dragged': {
+                color: 'hotpink',
+              },
+            })}`}
+            ref={ref => {
+              setThisNode(ref);
+              assignDiv(ref, 'root');
+            }}
+            onMouseUp={mouseHandler}
+            onMouseDownCapture={mouseHandler}
+            onMouseMove={mouseHandler}
+            onMouseLeave={mouseHandler}
+          >
+            {jsPlumb != null && cardStatus === 'READY' && contentStatus == 'READY' ? (
+              <CardHierarchy rootId={rootId} jsPlumb={jsPlumb} />
+            ) : (
+              <InlineLoading />
+            )}
+          </div>
+        </div>
+      </div>
+    </PlumbContext.Provider>
   );
 }
 
@@ -806,11 +932,4 @@ function findAncestorWithSelector(target: EventTarget, klass: string) {
     }
   }
   return null;
-}
-
-function coord(e: React.MouseEvent): [number, number] {
-  const rect = e.currentTarget.getBoundingClientRect();
-  const x = e.clientX - rect.left; //x position within the element.
-  const y = e.clientY - rect.top;
-  return [x, y];
 }
