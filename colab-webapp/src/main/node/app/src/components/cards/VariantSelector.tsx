@@ -46,6 +46,10 @@ export const computeNav = (
   }
 };
 
+const invisible = css({
+  visibility: 'hidden',
+});
+
 export default function VariantSelector({
   card,
   className,
@@ -80,34 +84,40 @@ export default function VariantSelector({
           className,
         )}
       >
-        {variantPager != null && variantPager.previous != variantPager.current ? (
-          <IconButton
-            icon={faCaretLeft}
-            iconSize="2x"
-            title={variantPager.previous.title || ''}
-            onClick={e => {
-              e.stopPropagation();
-              if (variantPager.previous.id) {
-                setDisplayedVariantId(variantPager.previous.id);
-              }
-            }}
-          />
-        ) : null}
+        <IconButton
+          className={
+            variantPager != null && variantPager.previous != variantPager.current
+              ? undefined
+              : invisible
+          }
+          icon={faCaretLeft}
+          iconSize="2x"
+          title={variantPager?.previous.title || ''}
+          onClick={e => {
+            e.stopPropagation();
+            if (variantPager?.previous.id) {
+              setDisplayedVariantId(variantPager.previous.id);
+            }
+          }}
+        />
         {children(variantPager?.current, contents || [])}
 
-        {variantPager != null && variantPager.next != variantPager.current ? (
-          <IconButton
-            icon={faCaretRight}
-            iconSize="2x"
-            title={variantPager.next.title || ''}
-            onClick={e => {
-              e.stopPropagation();
-              if (variantPager.next.id) {
-                setDisplayedVariantId(variantPager.next.id);
-              }
-            }}
-          />
-        ) : null}
+        <IconButton
+          className={
+            variantPager != null && variantPager.next != variantPager.current
+              ? undefined
+              : invisible
+          }
+          icon={faCaretRight}
+          iconSize="2x"
+          title={variantPager?.next.title || ''}
+          onClick={e => {
+            e.stopPropagation();
+            if (variantPager?.next.id) {
+              setDisplayedVariantId(variantPager.next.id);
+            }
+          }}
+        />
       </div>
     );
   }
