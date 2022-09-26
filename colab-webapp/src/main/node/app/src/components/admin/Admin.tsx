@@ -6,12 +6,16 @@
  */
 
 import { css } from '@emotion/css';
+import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
 import * as React from 'react';
+import { useNavigate } from 'react-router-dom';
 import useTranslations from '../../i18n/I18nContext';
 import GlobalCardTypeList from '../cards/cardtypes/GlobalCardTypeList';
+import IconButton from '../common/element/IconButton';
+import Flex from '../common/layout/Flex';
 import Tabs, { Tab } from '../common/layout/Tabs';
 import { AllProjects } from '../projects/ProjectList';
-import { space_L } from '../styling/style';
+import { lightIconButtonStyle, space_L } from '../styling/style';
 import AllUsers from './AllUsers';
 import LiveMonitor from './LiveMonitor';
 import LoggersConfig from './LoggersConfig';
@@ -20,6 +24,7 @@ import Who from './Who';
 
 export default function Admin(): JSX.Element {
   const i18n = useTranslations();
+  const navigate = useNavigate();
 
   React.useEffect(() => {
     if (window && window.top && window.top.document) {
@@ -29,7 +34,15 @@ export default function Admin(): JSX.Element {
 
   return (
     <div className={css({ padding: space_L })}>
-      <h2>Admin Page</h2>
+      <Flex>
+        <IconButton
+          title="Back"
+          icon={faArrowLeft}
+          onClick={() => navigate('..')}
+          className={lightIconButtonStyle}
+        ></IconButton>
+        <h2>Admin Page</h2>
+      </Flex>
       <div>
         <Tabs routed>
           <Tab name="main" label="Admin">

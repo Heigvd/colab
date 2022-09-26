@@ -32,6 +32,7 @@ import {
 } from '../../../selectors/cardSelector';
 import { useProjectBeingEdited } from '../../../selectors/projectSelector';
 import { useAppDispatch, useAppSelector } from '../../../store/hooks';
+import Admin from '../../admin/Admin';
 import CardEditor from '../../cards/CardEditor';
 import CardThumbWithSelector from '../../cards/CardThumbWithSelector';
 import ProjectCardTypeList from '../../cards/cardtypes/ProjectCardTypeList';
@@ -48,6 +49,7 @@ import DropDownMenu from '../../common/layout/DropDownMenu';
 import Flex from '../../common/layout/Flex';
 import Monkeys from '../../debugger/monkey/Monkeys';
 import { UserDropDown } from '../../MainNav';
+import Settings from '../../settings/Settings';
 import Picto from '../../styling/Picto';
 import {
   fullPageStyle,
@@ -414,8 +416,8 @@ function EditorNav({ project, setShowProjectDetails }: EditorNavProps): JSX.Elem
             title={i18n.common.settings}
             icon={faCog}
             className={css({ textAlign: 'right', alignSelf: 'center', marginLeft: 'auto' })}
-          />{' '}
-          <UserDropDown onlyLogout />{' '}
+          />
+          <UserDropDown />
         </Flex>
       </div>
     </>
@@ -546,8 +548,9 @@ export default function Editor(): JSX.Element {
             })}
           >
             <Routes>
-              <Route path="settings" element={<ProjectSettings project={project} />} />
+              <Route path="settings/*" element={<Settings />} />
               <Route path="project-settings/*" element={<ProjectSettings project={project} />} />
+              <Route path="admin/*" element={<Admin />} />
               <Route path="team" element={<Team project={project} />} />
               <Route path="hierarchy" element={<Hierarchy rootId={root.id} />} />
               <Route path="flow" element={<ActivityFlowChart />} />

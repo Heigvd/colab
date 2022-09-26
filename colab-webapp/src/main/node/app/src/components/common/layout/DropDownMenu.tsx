@@ -25,6 +25,9 @@ export const itemStyle = css({
 });
 
 const entryStyle = css({
+  display: 'flex',
+  gap: space_S,
+  alignItems: 'center',
   textDecoration: 'none',
   color: 'var(--fgColor)',
   ':focus': {

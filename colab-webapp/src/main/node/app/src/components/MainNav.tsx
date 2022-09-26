@@ -143,7 +143,7 @@ export function UserDropDown({ onlyLogout }: { onlyLogout?: boolean }): JSX.Elem
                         <FontAwesomeIcon icon={faCog} /> {i18n.common.settings}
                       </>
                     ),
-                    action: () => navigate('/settings/user'),
+                    action: () => navigate('./settings/user'),
                   },
                 ]
               : []),
@@ -156,7 +156,7 @@ export function UserDropDown({ onlyLogout }: { onlyLogout?: boolean }): JSX.Elem
                         <FontAwesomeIcon icon={faMeteor} /> {i18n.admin.admin}
                       </>
                     ),
-                    action: () => navigate('/admin/main'),
+                    action: () => navigate('./admin/main'),
                   },
                 ]
               : []),
