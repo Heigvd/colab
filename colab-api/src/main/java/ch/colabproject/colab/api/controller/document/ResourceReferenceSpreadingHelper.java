@@ -371,9 +371,11 @@ public class ResourceReferenceSpreadingHelper {
      * @param resource the resource
      */
     public void spreadDisableResourceDown(Resource resource) {
-        for (ResourceRef childRef : resourceDao.findDirectReferences(resource)) {
-            markAsResidualRecursively(childRef, false);
-        }
+        requestManager.sudo(() -> {
+            for (ResourceRef childRef : resourceDao.findDirectReferences(resource)) {
+                markAsResidualRecursively(childRef, false);
+            }
+        });
     }
 
     /**
@@ -388,9 +390,11 @@ public class ResourceReferenceSpreadingHelper {
             resourceReference.setResidual(true);
         }
 
-        for (ResourceRef childRef : resourceDao.findDirectReferences(resourceReference)) {
-            markAsResidualRecursively(childRef, alwaysMark);
-        }
+        requestManager.sudo(() -> {
+            for (ResourceRef childRef : resourceDao.findDirectReferences(resourceReference)) {
+                markAsResidualRecursively(childRef, alwaysMark);
+            }
+        });
     }
 
     // *********************************************************************************************
@@ -405,9 +409,11 @@ public class ResourceReferenceSpreadingHelper {
     public void refuseRecursively(ResourceRef resourceReference) {
         resourceReference.setRefused(true);
 
-        for (ResourceRef childRef : resourceDao.findDirectReferences(resourceReference)) {
-            refuseRecursively(childRef);
-        }
+        requestManager.sudo(() -> {
+            for (ResourceRef childRef : resourceDao.findDirectReferences(resourceReference)) {
+                refuseRecursively(childRef);
+            }
+        });
     }
 
     /**
@@ -418,9 +424,11 @@ public class ResourceReferenceSpreadingHelper {
     public void unRefuseRecursively(ResourceRef resourceReference) {
         resourceReference.setRefused(false);
 
-        for (ResourceRef childRef : resourceDao.findDirectReferences(resourceReference)) {
-            unRefuseRecursively(childRef);
-        }
+        requestManager.sudo(() -> {
+            for (ResourceRef childRef : resourceDao.findDirectReferences(resourceReference)) {
+                unRefuseRecursively(childRef);
+            }
+        });
     }
 
     /**
@@ -434,9 +442,11 @@ public class ResourceReferenceSpreadingHelper {
             resourceReference.setResidual(false);
         }
 
-        for (ResourceRef childRef : resourceDao.findDirectReferences(resourceReference)) {
-            reviveRecursively(childRef);
-        }
+        requestManager.sudo(() -> {
+            for (ResourceRef childRef : resourceDao.findDirectReferences(resourceReference)) {
+                reviveRecursively(childRef);
+            }
+        });
     }
 
     // *********************************************************************************************

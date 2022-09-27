@@ -6,6 +6,7 @@
  */
 package ch.colabproject.colab.api.controller.document;
 
+import ch.colabproject.colab.api.controller.RequestManager;
 import ch.colabproject.colab.api.controller.card.CardContentManager;
 import ch.colabproject.colab.api.controller.card.CardManager;
 import ch.colabproject.colab.api.controller.card.CardTypeManager;
@@ -76,6 +77,11 @@ public class ResourceCategoryHelper {
      */
     @Inject
     private CardContentManager cardContentManager;
+    /**
+     * TO sudo
+     */
+    @Inject
+    private RequestManager requestManager;
 
     // *********************************************************************************************
     // Category management
@@ -101,16 +107,18 @@ public class ResourceCategoryHelper {
 
         resourceOrRef.setCategory(newCategoryName);
 
-        // the resources based on the one changed will be change
-        // but only if it is in the same project and the category is still synchronized
-        List<ResourceRef> directRefs = resourceDao.findDirectReferences(resourceOrRef);
-        for (ResourceRef ref : directRefs) {
-            if (ref.getProject() == resourceOrRef.getProject()
-                && StringUtils.equals(ref.getCategory(), oldCategoryName)) {
-                changeCategory(ref.getId(), newCategoryName);
-            }
+        requestManager.sudo(() -> {
+            // the resources based on the one changed will be change
+            // but only if it is in the same project and the category is still synchronized
+            List<ResourceRef> directRefs = resourceDao.findDirectReferences(resourceOrRef);
+            for (ResourceRef ref : directRefs) {
+                if (ref.getProject() == resourceOrRef.getProject()
+                    && StringUtils.equals(ref.getCategory(), oldCategoryName)) {
+                    changeCategory(ref.getId(), newCategoryName);
+                }
 
-        }
+            }
+        });
     }
 
     /**
