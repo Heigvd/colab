@@ -41,7 +41,7 @@ const config = {
   devServer: {
     host: '0.0.0.0',
     port: 3004,
-    server: 'https',
+    //server: 'https', // uncomment this to use safari
     proxy: {
       '/favicon_128.png': 'http://localhost:8080',
       '/api': 'http://localhost:8080',
