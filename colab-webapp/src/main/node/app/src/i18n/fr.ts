@@ -323,10 +323,10 @@ export const fr: ColabTranslations = {
       settings: {
         icon: 'Icône',
         involvements: {
-          label: 'Involvements',
+          label: 'Implications',
         },
         resources: {
-          label: 'Project Documentation',
+          label: 'Documentation du projet',
         },
         missingIcon:
           "Oh une nouvelle bibliothèque d'icônes, cher développeur s'il vous plaît faites ce qui est nécessaire pour afficher l'icône.",
@@ -398,6 +398,7 @@ export const fr: ColabTranslations = {
         noDeliverable: 'Aucun livrable disponible',
         completionModeInfo:
           "Sélectionnez le mode d'avancement (manuel | auto | no-op). Manuel: entrez une valeur pour changer l'avancement; Auto: basé sur les enfants; Aucune: n'affiche pas de barre d'avancement",
+        noBlockYet: 'Il n\'y a aucun bloc pour l\'instant. Ajoutez-en un:',
       },
       error: {
         withoutId: 'Une carte sans id est invalide...',

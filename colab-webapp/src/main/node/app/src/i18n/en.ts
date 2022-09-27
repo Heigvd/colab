@@ -392,6 +392,7 @@ export const en = {
         noDeliverable: 'No deliverable available',
         completionModeInfo:
           'Select completion mode (MANUAL | AUTO | NO_OP). Manual: input to set completion; Auto: based on children; No: do not event diplay the bar',
+        noBlockYet:'You have nothing in here for now. Add your first block:',
       },
       error: {
         withoutId: 'Card without id is invalid...',
