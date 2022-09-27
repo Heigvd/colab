@@ -335,6 +335,8 @@ export const fr: ColabTranslations = {
     team: {
       actions: {
         createRole: 'Créer un rôle',
+        resendInvitation: 'Renvoyer le mail d\'invitation',
+        invitationResent: 'L\'invitation a bien été renvoyée',
       },
     },
     card: {

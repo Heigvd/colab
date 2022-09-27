@@ -330,6 +330,8 @@ export const en = {
     team: {
       actions: {
         createRole: 'Create role',
+        resendInvitation: 'Resend invitation mail',
+        invitationResent: 'Invitation has been sent again.',
       },
     },
     card: {

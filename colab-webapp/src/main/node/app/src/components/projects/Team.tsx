@@ -8,12 +8,13 @@ import { css, cx } from '@emotion/css';
 import {
   faCheck,
   faEllipsisV,
+  faEnvelope,
   faHourglassHalf,
+  faMinus,
   faPaperPlane,
   faPen,
   faPlus,
   faSkullCrossbones,
-  faTimes,
   faTrash,
   faUser,
 } from '@fortawesome/free-solid-svg-icons';
@@ -303,6 +304,37 @@ const Member = ({ member, roles, isTheOnlyOwner }: MemberProps) => {
           buttonClassName={cx(lightIconButtonStyle, css({ marginLeft: space_S }))}
           onSelect={value => setShowModal(value.value)}
           entries={[
+            ...(member.userId == null
+              ? [
+                  {
+                    value: 'resend',
+                    label: (
+                      <>
+                        <FontAwesomeIcon icon={faEnvelope} />{' '}
+                        {i18n.modules.team.actions.resendInvitation}
+                      </>
+                    ),
+                    action: () => {
+                      if (member.projectId && member.displayName) {
+                        dispatch(
+                          API.sendInvitation({
+                            projectId: member.projectId,
+                            recipient: member.displayName,
+                          }),
+                        ).then(() =>
+                          dispatch(
+                            addNotification({
+                              status: 'OPEN',
+                              type: 'INFO',
+                              message: i18n.modules.team.actions.invitationResent,
+                            }),
+                          ),
+                        );
+                      }
+                    },
+                  },
+                ]
+              : []),
             {
               value: 'delete',
               label: (
@@ -333,8 +365,8 @@ const Member = ({ member, roles, isTheOnlyOwner }: MemberProps) => {
         return (
           <IconButton
             key={role.id}
-            icon={hasRole ? faCheck : faTimes}
-            iconColor={hasRole ? successColor : errorColor}
+            icon={hasRole ? faCheck : faMinus}
+            iconColor={hasRole ? successColor : 'var(--darkGray)'}
             title={hasRole ? i18n.team.removeRole : i18n.team.giveRole}
             onClick={() => {
               if (hasRole) {
