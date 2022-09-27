@@ -337,6 +337,7 @@ public abstract class AbstractCardType implements ColabEntity, WithWebsocketChan
     }
 
     @Override
+    @JsonbTransient
     public Conditions.Condition getUpdateCondition() {
         if (this.project != null) {
             // type belongs to a project

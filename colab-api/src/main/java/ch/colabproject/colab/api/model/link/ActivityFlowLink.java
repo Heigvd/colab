@@ -234,6 +234,7 @@ public class ActivityFlowLink implements ColabEntity, WithWebsocketChannels {
 
     // TODO what is best : And / Or ?
     @Override
+    @JsonbTransient
     public Conditions.Condition getUpdateCondition() {
         return new Conditions.Or(
             this.previousCard.getUpdateCondition(),

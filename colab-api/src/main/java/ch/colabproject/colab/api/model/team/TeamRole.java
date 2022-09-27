@@ -300,6 +300,7 @@ public class TeamRole implements ColabEntity, WithWebsocketChannels {
     }
 
     @Override
+    @JsonbTransient
     public Conditions.Condition getUpdateCondition() {
         if (this.project != null) {
             return new Conditions.IsCurrentUserLeaderOfProject(this.project);

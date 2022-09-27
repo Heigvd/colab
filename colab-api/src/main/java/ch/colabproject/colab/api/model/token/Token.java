@@ -288,11 +288,13 @@ public abstract class Token implements ColabEntity {
     }
 
     @Override
+    @JsonbTransient
     public Conditions.Condition getReadCondition() {
         return Conditions.alwaysTrue;
     }
 
     @Override
+    @JsonbTransient
     public Conditions.Condition getUpdateCondition() {
         // TODO: decide what to do
         return Conditions.alwaysTrue;

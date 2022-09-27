@@ -6,6 +6,7 @@
  */
 package ch.colabproject.colab.api.controller.document;
 
+import ch.colabproject.colab.api.controller.RequestManager;
 import ch.colabproject.colab.api.controller.card.CardContentManager;
 import ch.colabproject.colab.api.controller.card.CardManager;
 import ch.colabproject.colab.api.controller.card.CardTypeManager;
@@ -99,6 +100,11 @@ public class ResourceManager {
      */
     @Inject
     private ProjectManager projectManager;
+    /**
+     * TO sudo
+     */
+    @Inject
+    private RequestManager requestManager;
 
     /**
      * Index generation specific logic management
@@ -371,6 +377,7 @@ public class ResourceManager {
      * @param resourceOrRef The initial abstract resource to delete
      */
     private void deleteResourceAndRefs(AbstractResource resourceOrRef) {
+        requestManager.sudo(() -> {
         List<ResourceRef> references = resourceDao.findDirectReferences(resourceOrRef);
         if (references != null) {
             references.stream().forEach(ref -> deleteResourceAndRefs(ref));
@@ -384,6 +391,7 @@ public class ResourceManager {
         resourceDao.deleteResourceOrRef(resourceOrRef.getId());
 
         // Note : the document is deleted by cascade
+        });
     }
 
     // *********************************************************************************************
@@ -433,7 +441,7 @@ public class ResourceManager {
                 resource.setDeprecated(false);
             }
 
-            // if resource in card and has only one variant, refuse also the resource in the variant
+            // if resource in card and has only one variant, un refuse also the resource in the variant
             if (resource.getCard() != null) {
                 List<ResourceRef> references = resourceDao.findDirectReferences(resource);
                 if (references.size() == 1) {

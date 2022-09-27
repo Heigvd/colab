@@ -6,6 +6,7 @@
  */
 package ch.colabproject.colab.api.controller.document;
 
+import ch.colabproject.colab.api.controller.RequestManager;
 import ch.colabproject.colab.api.model.card.AbstractCardType;
 import ch.colabproject.colab.api.model.card.Card;
 import ch.colabproject.colab.api.model.card.CardContent;
@@ -46,6 +47,12 @@ public class ResourceReferenceSpreadingHelper {
     @Inject
     private CardTypeDao cardTypeDao;
 
+    /**
+     * TO sudo
+     */
+    @Inject
+    private RequestManager requestManager;
+
     // *********************************************************************************************
     // when a resource / resource reference is added, spread it down stream with references
     // *********************************************************************************************
@@ -57,15 +64,18 @@ public class ResourceReferenceSpreadingHelper {
      */
     public void spreadAvailableResourceDown(AbstractResource resourceOrRef) {
         if (resourceOrRef.getAbstractCardType() != null) {
-            AbstractCardType resourceOwner = resourceOrRef.getAbstractCardType();
+            requestManager.sudo(() -> {
+                AbstractCardType resourceOwner = resourceOrRef.getAbstractCardType();
 
-            for (AbstractCardType cardTypeRef : cardTypeDao.findDirectReferences(resourceOwner)) {
-                makeActiveReference(cardTypeRef, resourceOrRef);
-            }
+                for (AbstractCardType cardTypeRef : cardTypeDao
+                    .findDirectReferences(resourceOwner)) {
+                    makeActiveReference(cardTypeRef, resourceOrRef);
+                }
 
-            for (Card implementingCard : resourceOwner.getImplementingCards()) {
-                makeActiveReference(implementingCard, resourceOrRef);
-            }
+                for (Card implementingCard : resourceOwner.getImplementingCards()) {
+                    makeActiveReference(implementingCard, resourceOrRef);
+                }
+            });
         }
 
         if (resourceOrRef.getCard() != null) {
@@ -361,9 +371,11 @@ public class ResourceReferenceSpreadingHelper {
      * @param resource the resource
      */
     public void spreadDisableResourceDown(Resource resource) {
-        for (ResourceRef childRef : resourceDao.findDirectReferences(resource)) {
-            markAsResidualRecursively(childRef, false);
-        }
+        requestManager.sudo(() -> {
+            for (ResourceRef childRef : resourceDao.findDirectReferences(resource)) {
+                markAsResidualRecursively(childRef, false);
+            }
+        });
     }
 
     /**
@@ -378,9 +390,11 @@ public class ResourceReferenceSpreadingHelper {
             resourceReference.setResidual(true);
         }
 
-        for (ResourceRef childRef : resourceDao.findDirectReferences(resourceReference)) {
-            markAsResidualRecursively(childRef, alwaysMark);
-        }
+        requestManager.sudo(() -> {
+            for (ResourceRef childRef : resourceDao.findDirectReferences(resourceReference)) {
+                markAsResidualRecursively(childRef, alwaysMark);
+            }
+        });
     }
 
     // *********************************************************************************************
@@ -395,9 +409,11 @@ public class ResourceReferenceSpreadingHelper {
     public void refuseRecursively(ResourceRef resourceReference) {
         resourceReference.setRefused(true);
 
-        for (ResourceRef childRef : resourceDao.findDirectReferences(resourceReference)) {
-            refuseRecursively(childRef);
-        }
+        requestManager.sudo(() -> {
+            for (ResourceRef childRef : resourceDao.findDirectReferences(resourceReference)) {
+                refuseRecursively(childRef);
+            }
+        });
     }
 
     /**
@@ -408,9 +424,11 @@ public class ResourceReferenceSpreadingHelper {
     public void unRefuseRecursively(ResourceRef resourceReference) {
         resourceReference.setRefused(false);
 
-        for (ResourceRef childRef : resourceDao.findDirectReferences(resourceReference)) {
-            unRefuseRecursively(childRef);
-        }
+        requestManager.sudo(() -> {
+            for (ResourceRef childRef : resourceDao.findDirectReferences(resourceReference)) {
+                unRefuseRecursively(childRef);
+            }
+        });
     }
 
     /**
@@ -424,9 +442,11 @@ public class ResourceReferenceSpreadingHelper {
             resourceReference.setResidual(false);
         }
 
-        for (ResourceRef childRef : resourceDao.findDirectReferences(resourceReference)) {
-            reviveRecursively(childRef);
-        }
+        requestManager.sudo(() -> {
+            for (ResourceRef childRef : resourceDao.findDirectReferences(resourceReference)) {
+                reviveRecursively(childRef);
+            }
+        });
     }
 
     // *********************************************************************************************

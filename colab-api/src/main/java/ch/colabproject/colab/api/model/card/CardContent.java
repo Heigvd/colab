@@ -409,6 +409,7 @@ public class CardContent implements ColabEntity, WithWebsocketChannels,
     }
 
     @Override
+    @JsonbTransient
     public Conditions.Condition getUpdateCondition() {
         if (this.card != null) {
             return this.card.getUpdateCondition();

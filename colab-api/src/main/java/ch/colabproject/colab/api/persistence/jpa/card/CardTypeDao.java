@@ -128,6 +128,27 @@ public class CardTypeDao {
     }
 
     /**
+     * Retrieve the direct references ids of each card type or reference.
+     * <p>
+     * Done for several entities to be more efficient.
+     *
+     * @param cardTypeOrRefIds the ids of the card types or references
+     *
+     * @return the ids of matching card types references
+     */
+    public List<Long> findDirectReferencesIdsOf(List<Long> cardTypeOrRefIds) {
+        logger.debug("get the refs' ids");
+        if (CollectionUtils.isEmpty(cardTypeOrRefIds)) {
+            return Lists.newArrayList();
+        }
+        TypedQuery<Long> query = em.createNamedQuery("CardTypeRef.findDirectReferencesIds",
+            Long.class);
+        query.setParameter("initIds", cardTypeOrRefIds);
+        return query.getResultList();
+
+    }
+
+    /**
      * Retrieve the projects owning the card types or references.
      * <p>
      * Done for several entities to be more efficient.
