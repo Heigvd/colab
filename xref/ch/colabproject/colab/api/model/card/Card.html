@@ -647,27 +647,28 @@
 <a class="jxr_linenumber" name="L639" href="#L639">639</a>     }
 <a class="jxr_linenumber" name="L640" href="#L640">640</a> 
 <a class="jxr_linenumber" name="L641" href="#L641">641</a>     @Override
-<a class="jxr_linenumber" name="L642" href="#L642">642</a>     <strong class="jxr_keyword">public</strong> Conditions.Condition getUpdateCondition() {
-<a class="jxr_linenumber" name="L643" href="#L643">643</a>         <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">new</strong> Conditions.HasCardWriteRight(<strong class="jxr_keyword">this</strong>);
-<a class="jxr_linenumber" name="L644" href="#L644">644</a>     }
-<a class="jxr_linenumber" name="L645" href="#L645">645</a> 
-<a class="jxr_linenumber" name="L646" href="#L646">646</a>     @Override
-<a class="jxr_linenumber" name="L647" href="#L647">647</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">int</strong> hashCode() {
-<a class="jxr_linenumber" name="L648" href="#L648">648</a>         <strong class="jxr_keyword">return</strong> EntityHelper.hashCode(<strong class="jxr_keyword">this</strong>);
-<a class="jxr_linenumber" name="L649" href="#L649">649</a>     }
-<a class="jxr_linenumber" name="L650" href="#L650">650</a> 
-<a class="jxr_linenumber" name="L651" href="#L651">651</a>     @Override
-<a class="jxr_linenumber" name="L652" href="#L652">652</a>     @SuppressWarnings(<span class="jxr_string">"EqualsWhichDoesntCheckParameterClass"</span>)
-<a class="jxr_linenumber" name="L653" href="#L653">653</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">boolean</strong> equals(Object obj) {
-<a class="jxr_linenumber" name="L654" href="#L654">654</a>         <strong class="jxr_keyword">return</strong> EntityHelper.equals(<strong class="jxr_keyword">this</strong>, obj);
-<a class="jxr_linenumber" name="L655" href="#L655">655</a>     }
-<a class="jxr_linenumber" name="L656" href="#L656">656</a> 
-<a class="jxr_linenumber" name="L657" href="#L657">657</a>     @Override
-<a class="jxr_linenumber" name="L658" href="#L658">658</a>     <strong class="jxr_keyword">public</strong> String toString() {
-<a class="jxr_linenumber" name="L659" href="#L659">659</a>         <strong class="jxr_keyword">return</strong> <span class="jxr_string">"Card{"</span> + <span class="jxr_string">"id="</span> + id + <span class="jxr_string">", index="</span> + index + <span class="jxr_string">", color="</span> + color + <span class="jxr_string">", cardTypeId="</span>
-<a class="jxr_linenumber" name="L660" href="#L660">660</a>             + cardTypeId + <span class="jxr_string">", parentId="</span> + parentId + <span class="jxr_string">"}"</span>;
-<a class="jxr_linenumber" name="L661" href="#L661">661</a>     }
-<a class="jxr_linenumber" name="L662" href="#L662">662</a> }
+<a class="jxr_linenumber" name="L642" href="#L642">642</a>     @JsonbTransient
+<a class="jxr_linenumber" name="L643" href="#L643">643</a>     <strong class="jxr_keyword">public</strong> Conditions.Condition getUpdateCondition() {
+<a class="jxr_linenumber" name="L644" href="#L644">644</a>         <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">new</strong> Conditions.HasCardWriteRight(<strong class="jxr_keyword">this</strong>);
+<a class="jxr_linenumber" name="L645" href="#L645">645</a>     }
+<a class="jxr_linenumber" name="L646" href="#L646">646</a> 
+<a class="jxr_linenumber" name="L647" href="#L647">647</a>     @Override
+<a class="jxr_linenumber" name="L648" href="#L648">648</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">int</strong> hashCode() {
+<a class="jxr_linenumber" name="L649" href="#L649">649</a>         <strong class="jxr_keyword">return</strong> EntityHelper.hashCode(<strong class="jxr_keyword">this</strong>);
+<a class="jxr_linenumber" name="L650" href="#L650">650</a>     }
+<a class="jxr_linenumber" name="L651" href="#L651">651</a> 
+<a class="jxr_linenumber" name="L652" href="#L652">652</a>     @Override
+<a class="jxr_linenumber" name="L653" href="#L653">653</a>     @SuppressWarnings(<span class="jxr_string">"EqualsWhichDoesntCheckParameterClass"</span>)
+<a class="jxr_linenumber" name="L654" href="#L654">654</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">boolean</strong> equals(Object obj) {
+<a class="jxr_linenumber" name="L655" href="#L655">655</a>         <strong class="jxr_keyword">return</strong> EntityHelper.equals(<strong class="jxr_keyword">this</strong>, obj);
+<a class="jxr_linenumber" name="L656" href="#L656">656</a>     }
+<a class="jxr_linenumber" name="L657" href="#L657">657</a> 
+<a class="jxr_linenumber" name="L658" href="#L658">658</a>     @Override
+<a class="jxr_linenumber" name="L659" href="#L659">659</a>     <strong class="jxr_keyword">public</strong> String toString() {
+<a class="jxr_linenumber" name="L660" href="#L660">660</a>         <strong class="jxr_keyword">return</strong> <span class="jxr_string">"Card{"</span> + <span class="jxr_string">"id="</span> + id + <span class="jxr_string">", index="</span> + index + <span class="jxr_string">", color="</span> + color + <span class="jxr_string">", cardTypeId="</span>
+<a class="jxr_linenumber" name="L661" href="#L661">661</a>             + cardTypeId + <span class="jxr_string">", parentId="</span> + parentId + <span class="jxr_string">"}"</span>;
+<a class="jxr_linenumber" name="L662" href="#L662">662</a>     }
+<a class="jxr_linenumber" name="L663" href="#L663">663</a> }
 </pre>
 <hr/>
 <div id="footer">Copyright &#169; 2022 <a href="https://www.colab-project.ch">AlbaSim, MEI, HEIG-VD, HES-SO</a>. All rights reserved.</div>

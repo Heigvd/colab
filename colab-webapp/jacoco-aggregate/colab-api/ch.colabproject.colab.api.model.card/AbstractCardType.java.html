@@ -337,25 +337,26 @@ import javax.persistence.Transient;
     }
 
     @Override
+    @JsonbTransient
     public Conditions.Condition getUpdateCondition() {
-<span class="nc bnc" id="L341" title="All 2 branches missed.">        if (this.project != null) {</span>
+<span class="nc bnc" id="L342" title="All 2 branches missed.">        if (this.project != null) {</span>
             // type belongs to a project
-<span class="nc" id="L343">            return this.project.getUpdateCondition();</span>
+<span class="nc" id="L344">            return this.project.getUpdateCondition();</span>
         } else {
             // only admin can edit global types
-<span class="nc" id="L346">            return Conditions.alwaysFalse;</span>
+<span class="nc" id="L347">            return Conditions.alwaysFalse;</span>
         }
     }
 
     @Override
     public int hashCode() {
-<span class="nc" id="L352">        return EntityHelper.hashCode(this);</span>
+<span class="nc" id="L353">        return EntityHelper.hashCode(this);</span>
     }
 
     @Override
     @SuppressWarnings(&quot;EqualsWhichDoesntCheckParameterClass&quot;)
     public boolean equals(Object obj) {
-<span class="nc" id="L358">        return EntityHelper.equals(this, obj);</span>
+<span class="nc" id="L359">        return EntityHelper.equals(this, obj);</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

@@ -344,31 +344,32 @@ import javax.validation.constraints.Size;
     }
 
     @Override
+    @JsonbTransient
     public Conditions.Condition getUpdateCondition() {
-<span class="nc" id="L348">        return new Conditions.IsCurrentUserInternalToProject(this);</span>
+<span class="nc" id="L349">        return new Conditions.IsCurrentUserInternalToProject(this);</span>
     }
 
     @Override
     @JsonbTransient
     public Conditions.Condition getCreateCondition() {
         // anybody can create a project
-<span class="nc" id="L355">        return Conditions.alwaysTrue;</span>
+<span class="nc" id="L356">        return Conditions.alwaysTrue;</span>
     }
 
     @Override
     public int hashCode() {
-<span class="nc" id="L360">        return EntityHelper.hashCode(this);</span>
+<span class="nc" id="L361">        return EntityHelper.hashCode(this);</span>
     }
 
     @Override
     @SuppressWarnings(&quot;EqualsWhichDoesntCheckParameterClass&quot;)
     public boolean equals(Object obj) {
-<span class="nc" id="L366">        return EntityHelper.equals(this, obj);</span>
+<span class="nc" id="L367">        return EntityHelper.equals(this, obj);</span>
     }
 
     @Override
     public String toString() {
-<span class="nc" id="L371">        return &quot;Project{&quot; + &quot;id=&quot; + id + &quot;, name=&quot; + name + &quot;, descr=&quot; + description + '}';</span>
+<span class="nc" id="L372">        return &quot;Project{&quot; + &quot;id=&quot; + id + &quot;, name=&quot; + name + &quot;, descr=&quot; + description + '}';</span>
     }
 
 }

@@ -245,49 +245,52 @@ import javax.validation.constraints.Size;
     }
 
     @Override
+    @JsonbTransient
     public Conditions.Condition getReadCondition() {
-<span class="nc bnc" id="L249" title="All 2 branches missed.">        if (this.account != null) {</span>
+<span class="nc bnc" id="L250" title="All 2 branches missed.">        if (this.account != null) {</span>
             // same
-<span class="nc" id="L251">            return this.account.getReadCondition();</span>
+<span class="nc" id="L252">            return this.account.getReadCondition();</span>
         } else {
             // not linked to any account, nothing to hide
             // This case may only exists when the session is about to be destroyed
-<span class="nc" id="L255">            return Conditions.alwaysTrue;</span>
+<span class="nc" id="L256">            return Conditions.alwaysTrue;</span>
         }
     }
 
     @Override
+    @JsonbTransient
     public Conditions.Condition getUpdateCondition() {
-<span class="nc bnc" id="L261" title="All 2 branches missed.">        if (this.account != null) {</span>
+<span class="nc bnc" id="L263" title="All 2 branches missed.">        if (this.account != null) {</span>
             // same
-<span class="nc" id="L263">            return this.account.getUpdateCondition();</span>
+<span class="nc" id="L265">            return this.account.getUpdateCondition();</span>
         } else {
             // not linked to any account, nothing to hide
             // This case may only exists when the session is about to be destroyed
-<span class="nc" id="L267">            return Conditions.alwaysTrue;</span>
+<span class="nc" id="L269">            return Conditions.alwaysTrue;</span>
         }
     }
 
     @Override
+    @JsonbTransient
     public Conditions.Condition getCreateCondition() {
         // anyone can create a session
-<span class="nc" id="L274">        return Conditions.alwaysTrue;</span>
+<span class="nc" id="L277">        return Conditions.alwaysTrue;</span>
     }
 
     @Override
     public int hashCode() {
-<span class="nc" id="L279">        return EntityHelper.hashCode(this);</span>
+<span class="nc" id="L282">        return EntityHelper.hashCode(this);</span>
     }
 
     @Override
     @SuppressWarnings(&quot;EqualsWhichDoesntCheckParameterClass&quot;)
     public boolean equals(Object obj) {
-<span class="nc" id="L285">        return EntityHelper.equals(this, obj);</span>
+<span class="nc" id="L288">        return EntityHelper.equals(this, obj);</span>
     }
 
     @Override
     public String toString() {
-<span class="nc" id="L290">        return &quot;HttpSession{&quot; + &quot;id=&quot; + id + &quot;, account=&quot; + account + &quot;, lastSeen=&quot; + lastSeen + '}';</span>
+<span class="nc" id="L293">        return &quot;HttpSession{&quot; + &quot;id=&quot; + id + &quot;, account=&quot; + account + &quot;, lastSeen=&quot; + lastSeen + '}';</span>
     }
 
 }

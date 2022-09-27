@@ -206,11 +206,12 @@ import javax.persistence.Transient;
     }
 
     @Override
+    @JsonbTransient
     public Conditions.Condition getUpdateCondition() {
-<span class="nc bnc" id="L210" title="All 2 branches missed.">        if (this.user != null) {</span>
-<span class="nc" id="L211">            return this.user.getUpdateCondition();</span>
+<span class="nc bnc" id="L211" title="All 2 branches missed.">        if (this.user != null) {</span>
+<span class="nc" id="L212">            return this.user.getUpdateCondition();</span>
         } else {
-<span class="nc" id="L213">            return Conditions.alwaysFalse;</span>
+<span class="nc" id="L214">            return Conditions.alwaysFalse;</span>
         }
     }
 
@@ -218,18 +219,18 @@ import javax.persistence.Transient;
     @JsonbTransient
     public Conditions.Condition getCreateCondition() {
         // anyone can create an account
-<span class="nc" id="L221">        return Conditions.alwaysTrue;</span>
+<span class="nc" id="L222">        return Conditions.alwaysTrue;</span>
     }
 
     @Override
     public int hashCode() {
-<span class="nc" id="L226">        return EntityHelper.hashCode(this);</span>
+<span class="nc" id="L227">        return EntityHelper.hashCode(this);</span>
     }
 
     @Override
     @SuppressWarnings(&quot;EqualsWhichDoesntCheckParameterClass&quot;)
     public boolean equals(Object obj) {
-<span class="nc" id="L232">        return EntityHelper.equals(this, obj);</span>
+<span class="nc" id="L233">        return EntityHelper.equals(this, obj);</span>
     }
 
 }

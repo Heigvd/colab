@@ -576,24 +576,25 @@ import javax.validation.constraints.Size;
     }
 
     @Override
+    @JsonbTransient
     public Conditions.Condition getUpdateCondition() {
-<span class="nc" id="L580">        return this.getSrc().getUpdateCondition();</span>
+<span class="nc" id="L581">        return this.getSrc().getUpdateCondition();</span>
     }
 
     @Override
     public int hashCode() {
-<span class="nc" id="L585">        return EntityHelper.hashCode(this);</span>
+<span class="nc" id="L586">        return EntityHelper.hashCode(this);</span>
     }
 
     @Override
     @SuppressWarnings(&quot;EqualsWhichDoesntCheckParameterClass&quot;)
     public boolean equals(Object obj) {
-<span class="nc" id="L591">        return EntityHelper.equals(this, obj);</span>
+<span class="nc" id="L592">        return EntityHelper.equals(this, obj);</span>
     }
 
     @Override
     public String toString() {
-<span class="nc" id="L596">        return &quot;StickyNoteLink{&quot; + &quot;id=&quot; + id + &quot;, srcCardId=&quot; + srcCardId</span>
+<span class="nc" id="L597">        return &quot;StickyNoteLink{&quot; + &quot;id=&quot; + id + &quot;, srcCardId=&quot; + srcCardId</span>
             + &quot;, srcCardContentId=&quot; + srcCardContentId + &quot;, srcResourceOrRefId=&quot;
             + srcResourceOrRefId + &quot;, srcDocId=&quot; + srcDocumentId + &quot;, destinationCardId=&quot;
             + destinationCardId + &quot;, teaser=&quot; + teaser + &quot;}&quot;;

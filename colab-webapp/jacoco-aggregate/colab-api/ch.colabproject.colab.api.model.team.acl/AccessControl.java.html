@@ -291,11 +291,12 @@ import javax.validation.constraints.NotNull;
     }
 
     @Override
+    @JsonbTransient
     public Conditions.Condition getUpdateCondition() {
-<span class="nc bnc" id="L295" title="All 2 branches missed.">        if (this.getCard() != null) {</span>
-<span class="nc" id="L296">            return this.getCard().getUpdateCondition();</span>
+<span class="nc bnc" id="L296" title="All 2 branches missed.">        if (this.getCard() != null) {</span>
+<span class="nc" id="L297">            return this.getCard().getUpdateCondition();</span>
         } else {
-<span class="nc" id="L298">            return Conditions.alwaysTrue;</span>
+<span class="nc" id="L299">            return Conditions.alwaysTrue;</span>
         }
     }
 

@@ -409,29 +409,30 @@ import javax.validation.constraints.Size;
     }
 
     @Override
+    @JsonbTransient
     public Conditions.Condition getUpdateCondition() {
-<span class="nc bnc" id="L413" title="All 2 branches missed.">        if (this.card != null) {</span>
-<span class="nc" id="L414">            return this.card.getUpdateCondition();</span>
+<span class="nc bnc" id="L414" title="All 2 branches missed.">        if (this.card != null) {</span>
+<span class="nc" id="L415">            return this.card.getUpdateCondition();</span>
         } else {
             // orphan content should never happen
-<span class="nc" id="L417">            return Conditions.defaultForOrphan;</span>
+<span class="nc" id="L418">            return Conditions.defaultForOrphan;</span>
         }
     }
 
     @Override
     public int hashCode() {
-<span class="nc" id="L423">        return EntityHelper.hashCode(this);</span>
+<span class="nc" id="L424">        return EntityHelper.hashCode(this);</span>
     }
 
     @Override
     @SuppressWarnings(&quot;EqualsWhichDoesntCheckParameterClass&quot;)
     public boolean equals(Object obj) {
-<span class="nc" id="L429">        return EntityHelper.equals(this, obj);</span>
+<span class="nc" id="L430">        return EntityHelper.equals(this, obj);</span>
     }
 
     @Override
     public String toString() {
-<span class="nc" id="L434">        return &quot;CardContent{&quot; + &quot;id=&quot; + id + &quot;, title=&quot; + title + &quot;, status=&quot; + status</span>
+<span class="nc" id="L435">        return &quot;CardContent{&quot; + &quot;id=&quot; + id + &quot;, title=&quot; + title + &quot;, status=&quot; + status</span>
             + &quot;, completion=&quot; + completionLevel + &quot;, completionMode=&quot; + completionMode
             + &quot;, frozen=&quot; + frozen + &quot;, cardId=&quot; + cardId + &quot;}&quot;;
     }

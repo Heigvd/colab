@@ -584,30 +584,31 @@
 <a class="jxr_linenumber" name="L576" href="#L576">576</a>     }
 <a class="jxr_linenumber" name="L577" href="#L577">577</a> 
 <a class="jxr_linenumber" name="L578" href="#L578">578</a>     @Override
-<a class="jxr_linenumber" name="L579" href="#L579">579</a>     <strong class="jxr_keyword">public</strong> Conditions.Condition getUpdateCondition() {
-<a class="jxr_linenumber" name="L580" href="#L580">580</a>         <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">this</strong>.getSrc().getUpdateCondition();
-<a class="jxr_linenumber" name="L581" href="#L581">581</a>     }
-<a class="jxr_linenumber" name="L582" href="#L582">582</a> 
-<a class="jxr_linenumber" name="L583" href="#L583">583</a>     @Override
-<a class="jxr_linenumber" name="L584" href="#L584">584</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">int</strong> hashCode() {
-<a class="jxr_linenumber" name="L585" href="#L585">585</a>         <strong class="jxr_keyword">return</strong> EntityHelper.hashCode(<strong class="jxr_keyword">this</strong>);
-<a class="jxr_linenumber" name="L586" href="#L586">586</a>     }
-<a class="jxr_linenumber" name="L587" href="#L587">587</a> 
-<a class="jxr_linenumber" name="L588" href="#L588">588</a>     @Override
-<a class="jxr_linenumber" name="L589" href="#L589">589</a>     @SuppressWarnings(<span class="jxr_string">"EqualsWhichDoesntCheckParameterClass"</span>)
-<a class="jxr_linenumber" name="L590" href="#L590">590</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">boolean</strong> equals(Object obj) {
-<a class="jxr_linenumber" name="L591" href="#L591">591</a>         <strong class="jxr_keyword">return</strong> EntityHelper.equals(<strong class="jxr_keyword">this</strong>, obj);
-<a class="jxr_linenumber" name="L592" href="#L592">592</a>     }
-<a class="jxr_linenumber" name="L593" href="#L593">593</a> 
-<a class="jxr_linenumber" name="L594" href="#L594">594</a>     @Override
-<a class="jxr_linenumber" name="L595" href="#L595">595</a>     <strong class="jxr_keyword">public</strong> String toString() {
-<a class="jxr_linenumber" name="L596" href="#L596">596</a>         <strong class="jxr_keyword">return</strong> <span class="jxr_string">"StickyNoteLink{"</span> + <span class="jxr_string">"id="</span> + id + <span class="jxr_string">", srcCardId="</span> + srcCardId
-<a class="jxr_linenumber" name="L597" href="#L597">597</a>             + <span class="jxr_string">", srcCardContentId="</span> + srcCardContentId + <span class="jxr_string">", srcResourceOrRefId="</span>
-<a class="jxr_linenumber" name="L598" href="#L598">598</a>             + srcResourceOrRefId + <span class="jxr_string">", srcDocId="</span> + srcDocumentId + <span class="jxr_string">", destinationCardId="</span>
-<a class="jxr_linenumber" name="L599" href="#L599">599</a>             + destinationCardId + <span class="jxr_string">", teaser="</span> + teaser + <span class="jxr_string">"}"</span>;
-<a class="jxr_linenumber" name="L600" href="#L600">600</a>     }
-<a class="jxr_linenumber" name="L601" href="#L601">601</a> 
-<a class="jxr_linenumber" name="L602" href="#L602">602</a> }
+<a class="jxr_linenumber" name="L579" href="#L579">579</a>     @JsonbTransient
+<a class="jxr_linenumber" name="L580" href="#L580">580</a>     <strong class="jxr_keyword">public</strong> Conditions.Condition getUpdateCondition() {
+<a class="jxr_linenumber" name="L581" href="#L581">581</a>         <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">this</strong>.getSrc().getUpdateCondition();
+<a class="jxr_linenumber" name="L582" href="#L582">582</a>     }
+<a class="jxr_linenumber" name="L583" href="#L583">583</a> 
+<a class="jxr_linenumber" name="L584" href="#L584">584</a>     @Override
+<a class="jxr_linenumber" name="L585" href="#L585">585</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">int</strong> hashCode() {
+<a class="jxr_linenumber" name="L586" href="#L586">586</a>         <strong class="jxr_keyword">return</strong> EntityHelper.hashCode(<strong class="jxr_keyword">this</strong>);
+<a class="jxr_linenumber" name="L587" href="#L587">587</a>     }
+<a class="jxr_linenumber" name="L588" href="#L588">588</a> 
+<a class="jxr_linenumber" name="L589" href="#L589">589</a>     @Override
+<a class="jxr_linenumber" name="L590" href="#L590">590</a>     @SuppressWarnings(<span class="jxr_string">"EqualsWhichDoesntCheckParameterClass"</span>)
+<a class="jxr_linenumber" name="L591" href="#L591">591</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">boolean</strong> equals(Object obj) {
+<a class="jxr_linenumber" name="L592" href="#L592">592</a>         <strong class="jxr_keyword">return</strong> EntityHelper.equals(<strong class="jxr_keyword">this</strong>, obj);
+<a class="jxr_linenumber" name="L593" href="#L593">593</a>     }
+<a class="jxr_linenumber" name="L594" href="#L594">594</a> 
+<a class="jxr_linenumber" name="L595" href="#L595">595</a>     @Override
+<a class="jxr_linenumber" name="L596" href="#L596">596</a>     <strong class="jxr_keyword">public</strong> String toString() {
+<a class="jxr_linenumber" name="L597" href="#L597">597</a>         <strong class="jxr_keyword">return</strong> <span class="jxr_string">"StickyNoteLink{"</span> + <span class="jxr_string">"id="</span> + id + <span class="jxr_string">", srcCardId="</span> + srcCardId
+<a class="jxr_linenumber" name="L598" href="#L598">598</a>             + <span class="jxr_string">", srcCardContentId="</span> + srcCardContentId + <span class="jxr_string">", srcResourceOrRefId="</span>
+<a class="jxr_linenumber" name="L599" href="#L599">599</a>             + srcResourceOrRefId + <span class="jxr_string">", srcDocId="</span> + srcDocumentId + <span class="jxr_string">", destinationCardId="</span>
+<a class="jxr_linenumber" name="L600" href="#L600">600</a>             + destinationCardId + <span class="jxr_string">", teaser="</span> + teaser + <span class="jxr_string">"}"</span>;
+<a class="jxr_linenumber" name="L601" href="#L601">601</a>     }
+<a class="jxr_linenumber" name="L602" href="#L602">602</a> 
+<a class="jxr_linenumber" name="L603" href="#L603">603</a> }
 </pre>
 <hr/>
 <div id="footer">Copyright &#169; 2022 <a href="https://www.colab-project.ch">AlbaSim, MEI, HEIG-VD, HES-SO</a>. All rights reserved.</div>

@@ -234,27 +234,28 @@ import javax.validation.constraints.NotNull;
 
     // TODO what is best : And / Or ?
     @Override
+    @JsonbTransient
     public Conditions.Condition getUpdateCondition() {
-<span class="nc" id="L238">        return new Conditions.Or(</span>
-<span class="nc" id="L239">            this.previousCard.getUpdateCondition(),</span>
-<span class="nc" id="L240">            this.nextCard.getUpdateCondition()</span>
+<span class="nc" id="L239">        return new Conditions.Or(</span>
+<span class="nc" id="L240">            this.previousCard.getUpdateCondition(),</span>
+<span class="nc" id="L241">            this.nextCard.getUpdateCondition()</span>
         );
     }
 
     @Override
     public int hashCode() {
-<span class="nc" id="L246">        return EntityHelper.hashCode(this);</span>
+<span class="nc" id="L247">        return EntityHelper.hashCode(this);</span>
     }
 
     @Override
     @SuppressWarnings(&quot;EqualsWhichDoesntCheckParameterClass&quot;)
     public boolean equals(Object obj) {
-<span class="nc" id="L252">        return EntityHelper.equals(this, obj);</span>
+<span class="nc" id="L253">        return EntityHelper.equals(this, obj);</span>
     }
 
     @Override
     public String toString() {
-<span class="nc" id="L257">        return &quot;ActivityFlowLink{&quot; + &quot;id=&quot; + id + &quot;, previousCardId=&quot; + previousCardId</span>
+<span class="nc" id="L258">        return &quot;ActivityFlowLink{&quot; + &quot;id=&quot; + id + &quot;, previousCardId=&quot; + previousCardId</span>
             + &quot;, nextCardId=&quot; + nextCardId + &quot;}&quot;;
     }
 

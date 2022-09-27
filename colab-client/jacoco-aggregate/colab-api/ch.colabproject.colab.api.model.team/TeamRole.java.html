@@ -300,29 +300,30 @@ import org.apache.commons.collections4.CollectionUtils;
     }
 
     @Override
+    @JsonbTransient
     public Conditions.Condition getUpdateCondition() {
-<span class="nc bnc" id="L304" title="All 2 branches missed.">        if (this.project != null) {</span>
-<span class="nc" id="L305">            return new Conditions.IsCurrentUserLeaderOfProject(this.project);</span>
+<span class="nc bnc" id="L305" title="All 2 branches missed.">        if (this.project != null) {</span>
+<span class="nc" id="L306">            return new Conditions.IsCurrentUserLeaderOfProject(this.project);</span>
         } else {
             // should not exist
-<span class="nc" id="L308">            return Conditions.alwaysTrue;</span>
+<span class="nc" id="L309">            return Conditions.alwaysTrue;</span>
         }
     }
 
     @Override
     public int hashCode() {
-<span class="nc" id="L314">        return EntityHelper.hashCode(this);</span>
+<span class="nc" id="L315">        return EntityHelper.hashCode(this);</span>
     }
 
     @Override
     @SuppressWarnings(&quot;EqualsWhichDoesntCheckParameterClass&quot;)
     public boolean equals(Object obj) {
-<span class="nc" id="L320">        return EntityHelper.equals(this, obj);</span>
+<span class="nc" id="L321">        return EntityHelper.equals(this, obj);</span>
     }
 
     @Override
     public String toString() {
-<span class="nc" id="L325">        return &quot;Role{&quot; + &quot;id=&quot; + id + &quot;, name=&quot; + name + &quot;, projectId=&quot; + projectId + '}';</span>
+<span class="nc" id="L326">        return &quot;Role{&quot; + &quot;id=&quot; + id + &quot;, name=&quot; + name + &quot;, projectId=&quot; + projectId + '}';</span>
     }
 
 }

@@ -288,25 +288,27 @@ import javax.validation.constraints.NotNull;
 <span class="nc" id="L288">    }</span>
 
     @Override
+    @JsonbTransient
     public Conditions.Condition getReadCondition() {
-<span class="nc" id="L292">        return Conditions.alwaysTrue;</span>
+<span class="nc" id="L293">        return Conditions.alwaysTrue;</span>
     }
 
     @Override
+    @JsonbTransient
     public Conditions.Condition getUpdateCondition() {
         // TODO: decide what to do
-<span class="nc" id="L298">        return Conditions.alwaysTrue;</span>
+<span class="nc" id="L300">        return Conditions.alwaysTrue;</span>
     }
 
     @Override
     public int hashCode() {
-<span class="nc" id="L303">        return EntityHelper.hashCode(this);</span>
+<span class="nc" id="L305">        return EntityHelper.hashCode(this);</span>
     }
 
     @Override
     @SuppressWarnings(&quot;EqualsWhichDoesntCheckParameterClass&quot;)
     public boolean equals(Object obj) {
-<span class="nc" id="L309">        return EntityHelper.equals(this, obj);</span>
+<span class="nc" id="L311">        return EntityHelper.equals(this, obj);</span>
     }
 
 }

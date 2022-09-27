@@ -329,28 +329,29 @@ import javax.persistence.Transient;
     }
 
     @Override
+    @JsonbTransient
     public Conditions.Condition getUpdateCondition() {
-<span class="nc bnc" id="L333" title="All 2 branches missed.">        if (this.owningCardContent != null) {</span>
+<span class="nc bnc" id="L334" title="All 2 branches missed.">        if (this.owningCardContent != null) {</span>
             // The document is a deliverable of a card content
-<span class="nc" id="L335">            return this.owningCardContent.getUpdateCondition();</span>
-<span class="nc bnc" id="L336" title="All 2 branches missed.">        } else if (this.owningResource != null) {</span>
+<span class="nc" id="L336">            return this.owningCardContent.getUpdateCondition();</span>
+<span class="nc bnc" id="L337" title="All 2 branches missed.">        } else if (this.owningResource != null) {</span>
             // The document is part of a resource
-<span class="nc" id="L338">            return this.owningResource.getUpdateCondition();</span>
+<span class="nc" id="L339">            return this.owningResource.getUpdateCondition();</span>
         } else {
             // such an orphan shouldn't exist...
-<span class="nc" id="L341">            return Conditions.defaultForOrphan;</span>
+<span class="nc" id="L342">            return Conditions.defaultForOrphan;</span>
         }
     }
 
     @Override
     public int hashCode() {
-<span class="nc" id="L347">        return EntityHelper.hashCode(this);</span>
+<span class="nc" id="L348">        return EntityHelper.hashCode(this);</span>
     }
 
     @Override
     @SuppressWarnings(&quot;EqualsWhichDoesntCheckParameterClass&quot;)
     public boolean equals(Object obj) {
-<span class="nc" id="L353">        return EntityHelper.equals(this, obj);</span>
+<span class="nc" id="L354">        return EntityHelper.equals(this, obj);</span>
     }
 
     @Override
@@ -360,7 +361,7 @@ import javax.persistence.Transient;
      * @return This abstract class fields to mention in the toString implementations
      */
     protected String toPartialString() {
-<span class="nc" id="L363">        return &quot;id=&quot; + id + &quot;, index=&quot; + index;</span>
+<span class="nc" id="L364">        return &quot;id=&quot; + id + &quot;, index=&quot; + index;</span>
     }
 
 }

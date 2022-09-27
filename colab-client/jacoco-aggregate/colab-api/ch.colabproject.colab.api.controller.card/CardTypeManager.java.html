@@ -460,8 +460,17 @@ import com.google.common.collect.Lists;
      * @return the ids of the matching card types or references
      */
     public List&lt;Long&gt; findCurrentUserReadableProjectsCardTypesIds() {
-<span class="nc" id="L463">        List&lt;Long&gt; directInOwnProjects = findCurrentUserDirectProjectsCardTypesIds();</span>
-<span class="nc" id="L464">        return retrieveDirectAndTransitiveCardTypesOrRefs(directInOwnProjects);</span>
+<span class="nc" id="L463">        List&lt;Long&gt; result = Lists.newArrayList();</span>
+
+<span class="nc" id="L465">        List&lt;Long&gt; directInOwnProjects = findCurrentUserDirectProjectsCardTypesIds();</span>
+<span class="nc" id="L466">        List&lt;Long&gt; above = retrieveDirectAndTransitiveAboveCardTypesOrRefs(directInOwnProjects);</span>
+<span class="nc" id="L467">        List&lt;Long&gt; below = retrieveDirectAndTransitiveBelowCardTypesOrRefs(directInOwnProjects);</span>
+
+<span class="nc" id="L469">        result.addAll(directInOwnProjects);</span>
+<span class="nc" id="L470">        result.addAll(above);</span>
+<span class="nc" id="L471">        result.addAll(below);</span>
+
+<span class="nc" id="L473">        return result;</span>
     }
 
     /**
@@ -471,13 +480,13 @@ import com.google.common.collect.Lists;
      * @return the ids of the matching card types or references
      */
     private List&lt;Long&gt; findCurrentUserDirectProjectsCardTypesIds() {
-<span class="nc" id="L474">        User user = securityManager.assertAndGetCurrentUser();</span>
+<span class="nc" id="L483">        User user = securityManager.assertAndGetCurrentUser();</span>
 
-<span class="nc" id="L476">        List&lt;Long&gt; cardTypeOrRefIds = cardTypeDao.findIdsOfProjectCardType(user.getId());</span>
+<span class="nc" id="L485">        List&lt;Long&gt; cardTypeOrRefIds = cardTypeDao.findIdsOfProjectCardType(user.getId());</span>
 
-<span class="nc" id="L478">        logger.debug(&quot;found direct project's card types' id : {} &quot;, cardTypeOrRefIds);</span>
+<span class="nc" id="L487">        logger.debug(&quot;found direct project's card types' id : {} &quot;, cardTypeOrRefIds);</span>
 
-<span class="nc" id="L480">        return cardTypeOrRefIds;</span>
+<span class="nc" id="L489">        return cardTypeOrRefIds;</span>
     }
 
     /**
@@ -485,10 +494,12 @@ import com.google.common.collect.Lists;
      *
      * @param cardTypeOrRefIds
      *
-     * @return
+     * @return the ids of the matching card types or references
      */
-    private List&lt;Long&gt; retrieveDirectAndTransitiveCardTypesOrRefs(List&lt;Long&gt; cardTypeOrRefIds) {
-<span class="nc" id="L491">        return retrieveDirectAndTransitiveCardTypesOrRefs(cardTypeOrRefIds, Lists.newArrayList());</span>
+    private List&lt;Long&gt; retrieveDirectAndTransitiveAboveCardTypesOrRefs(
+        List&lt;Long&gt; cardTypeOrRefIds) {
+<span class="nc" id="L501">        return retrieveDirectAndTransitiveAboveCardTypesOrRefs(cardTypeOrRefIds,</span>
+<span class="nc" id="L502">            Lists.newArrayList());</span>
     }
 
     /**
@@ -499,19 +510,19 @@ import com.google.common.collect.Lists;
      *
      * @return the ids of the matching card types or references
      */
-    private List&lt;Long&gt; retrieveDirectAndTransitiveCardTypesOrRefs(List&lt;Long&gt; toProcess,
+    private List&lt;Long&gt; retrieveDirectAndTransitiveAboveCardTypesOrRefs(List&lt;Long&gt; toProcess,
         List&lt;Long&gt; alreadyDone) {
-<span class="nc" id="L504">        List&lt;Long&gt; remainsToProcess = ListUtils.removeAll(toProcess, alreadyDone);</span>
-<span class="nc bnc" id="L505" title="All 2 branches missed.">        if (CollectionUtils.isEmpty(remainsToProcess)) {</span>
-<span class="nc" id="L506">            return alreadyDone;</span>
+<span class="nc" id="L515">        List&lt;Long&gt; remainsToProcess = ListUtils.removeAll(toProcess, alreadyDone);</span>
+<span class="nc bnc" id="L516" title="All 2 branches missed.">        if (CollectionUtils.isEmpty(remainsToProcess)) {</span>
+<span class="nc" id="L517">            return alreadyDone;</span>
         }
 
-<span class="nc" id="L509">        alreadyDone.addAll(remainsToProcess);</span>
+<span class="nc" id="L520">        alreadyDone.addAll(remainsToProcess);</span>
 
-<span class="nc" id="L511">        List&lt;Long&gt; directTargets = findDirectTargets(remainsToProcess);</span>
-<span class="nc" id="L512">        retrieveDirectAndTransitiveCardTypesOrRefs(directTargets, alreadyDone);</span>
+<span class="nc" id="L522">        List&lt;Long&gt; directTargets = findDirectTargets(remainsToProcess);</span>
+<span class="nc" id="L523">        retrieveDirectAndTransitiveAboveCardTypesOrRefs(directTargets, alreadyDone);</span>
 
-<span class="nc" id="L514">        return alreadyDone;</span>
+<span class="nc" id="L525">        return alreadyDone;</span>
     }
 
     /**
@@ -522,9 +533,58 @@ import com.google.common.collect.Lists;
      * @return the ids of the matching card types or references
      */
     private List&lt;Long&gt; findDirectTargets(List&lt;Long&gt; cardTypeOrRefIds) {
-<span class="nc" id="L525">        List&lt;Long&gt; result = cardTypeDao.findTargetIdsOf(cardTypeOrRefIds);</span>
-<span class="nc" id="L526">        logger.debug(&quot;found targets : {} &quot;, result);</span>
-<span class="nc" id="L527">        return result;</span>
+<span class="nc" id="L536">        List&lt;Long&gt; result = cardTypeDao.findTargetIdsOf(cardTypeOrRefIds);</span>
+<span class="nc" id="L537">        logger.debug(&quot;found targets : {} &quot;, result);</span>
+<span class="nc" id="L538">        return result;</span>
+    }
+
+    /**
+     * Retrieve the ids of the card types or references with their direct and transitive references.
+     *
+     * @param cardTypeOrRefIds
+     *
+     * @return the ids of the matching card types or references
+     */
+    private List&lt;Long&gt; retrieveDirectAndTransitiveBelowCardTypesOrRefs(
+        List&lt;Long&gt; cardTypeOrRefIds) {
+<span class="nc" id="L550">        return retrieveDirectAndTransitiveBelowCardTypesOrRefs(cardTypeOrRefIds,</span>
+<span class="nc" id="L551">            Lists.newArrayList());</span>
+    }
+
+    /**
+     * Retrieve the ids of the card types or references with their direct and transitive references.
+     *
+     * @param toProcess   the ids of card types and references
+     * @param alreadyDone the already processed ids
+     *
+     * @return the ids of the matching card types or references
+     */
+    private List&lt;Long&gt; retrieveDirectAndTransitiveBelowCardTypesOrRefs(List&lt;Long&gt; toProcess,
+        List&lt;Long&gt; alreadyDone) {
+<span class="nc" id="L564">        List&lt;Long&gt; remainsToProcess = ListUtils.removeAll(toProcess, alreadyDone);</span>
+<span class="nc bnc" id="L565" title="All 2 branches missed.">        if (CollectionUtils.isEmpty(remainsToProcess)) {</span>
+<span class="nc" id="L566">            return alreadyDone;</span>
+        }
+
+<span class="nc" id="L569">        alreadyDone.addAll(remainsToProcess);</span>
+
+<span class="nc" id="L571">        List&lt;Long&gt; directRefs = findDirectRefs(remainsToProcess);</span>
+<span class="nc" id="L572">        retrieveDirectAndTransitiveBelowCardTypesOrRefs(directRefs, alreadyDone);</span>
+
+<span class="nc" id="L574">        return alreadyDone;</span>
+    }
+
+    /**
+     * Retrieve the ids of the direct references of each card type or reference
+     *
+     * @param cardTypeOrRefIds the ids of card types and references
+     *
+     * @return the ids of the matching card types or references
+     */
+    private List&lt;Long&gt; findDirectRefs(List&lt;Long&gt; cardTypeOrRefIds) {
+<span class="nc" id="L585">        List&lt;Long&gt; result = cardTypeDao.findDirectReferencesIdsOf(cardTypeOrRefIds);</span>
+<span class="nc" id="L586">        logger.debug(&quot;found refs : {}&quot;, result);</span>
+<span class="nc" id="L587">        return result;</span>
     }
 
     /**
@@ -535,7 +595,7 @@ import com.google.common.collect.Lists;
      * @return the ids of the matching projects
      */
     public List&lt;Long&gt; findProjectIdsFromCardTypeIds(List&lt;Long&gt; cardTypeOrRefIds) {
-<span class="nc" id="L538">        return cardTypeDao.findProjectIdsOf(cardTypeOrRefIds);</span>
+<span class="nc" id="L598">        return cardTypeDao.findProjectIdsOf(cardTypeOrRefIds);</span>
     }
 
     // *********************************************************************************************
@@ -550,21 +610,21 @@ import com.google.common.collect.Lists;
      * @return true iff the project is complete and safe
      */
     public boolean checkIntegrity(AbstractCardType cardTypeOrRef) {
-<span class="nc bnc" id="L553" title="All 2 branches missed.">        if (cardTypeOrRef == null) {</span>
-<span class="nc" id="L554">            return false;</span>
+<span class="nc bnc" id="L613" title="All 2 branches missed.">        if (cardTypeOrRef == null) {</span>
+<span class="nc" id="L614">            return false;</span>
         }
 
-<span class="nc bnc" id="L557" title="All 2 branches missed.">        if (cardTypeOrRef instanceof CardTypeRef) {</span>
-<span class="nc" id="L558">            CardTypeRef reference = (CardTypeRef) cardTypeOrRef;</span>
-<span class="nc" id="L559">            CardType finalTarget = reference.resolve();</span>
-<span class="nc bnc" id="L560" title="All 2 branches missed.">            if (finalTarget == null) {</span>
-<span class="nc" id="L561">                return false;</span>
+<span class="nc bnc" id="L617" title="All 2 branches missed.">        if (cardTypeOrRef instanceof CardTypeRef) {</span>
+<span class="nc" id="L618">            CardTypeRef reference = (CardTypeRef) cardTypeOrRef;</span>
+<span class="nc" id="L619">            CardType finalTarget = reference.resolve();</span>
+<span class="nc bnc" id="L620" title="All 2 branches missed.">            if (finalTarget == null) {</span>
+<span class="nc" id="L621">                return false;</span>
             }
         }
 
         // just one ref by target/project
 
-<span class="nc" id="L567">        return true;</span>
+<span class="nc" id="L627">        return true;</span>
     }
 
     // *********************************************************************************************

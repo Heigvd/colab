@@ -472,8 +472,8 @@ import javax.validation.constraints.Size;
         }
     }
 
-    @JsonbTransient
     @Override
+    @JsonbTransient
     public Conditions.Condition getReadCondition() {
 <span class="nc bnc" id="L478" title="All 2 branches missed.">        if (this.abstractCardType != null) {</span>
             // the abstract resource is linked to a card type / card type reference
@@ -491,38 +491,39 @@ import javax.validation.constraints.Size;
     }
 
     @Override
+    @JsonbTransient
     public Conditions.Condition getUpdateCondition() {
-<span class="nc bnc" id="L495" title="All 2 branches missed.">        if (this.abstractCardType != null) {</span>
+<span class="nc bnc" id="L496" title="All 2 branches missed.">        if (this.abstractCardType != null) {</span>
             // the abstract resource is linked to a card type / card type reference
-<span class="nc" id="L497">            return this.abstractCardType.getUpdateCondition();</span>
-<span class="nc bnc" id="L498" title="All 2 branches missed.">        } else if (this.card != null) {</span>
+<span class="nc" id="L498">            return this.abstractCardType.getUpdateCondition();</span>
+<span class="nc bnc" id="L499" title="All 2 branches missed.">        } else if (this.card != null) {</span>
             // the abstract resource is linked to a card
-<span class="nc" id="L500">            return this.card.getUpdateCondition();</span>
-<span class="nc bnc" id="L501" title="All 2 branches missed.">        } else if (this.cardContent != null) {</span>
+<span class="nc" id="L501">            return this.card.getUpdateCondition();</span>
+<span class="nc bnc" id="L502" title="All 2 branches missed.">        } else if (this.cardContent != null) {</span>
             // the abstract resource is linked to a card content
-<span class="nc" id="L503">            return this.cardContent.getUpdateCondition();</span>
+<span class="nc" id="L504">            return this.cardContent.getUpdateCondition();</span>
         } else {
             // such an orphan shouldn't exist...
-<span class="nc" id="L506">            return Conditions.defaultForOrphan;</span>
+<span class="nc" id="L507">            return Conditions.defaultForOrphan;</span>
         }
     }
 
     @Override
     public int hashCode() {
-<span class="nc" id="L512">        return EntityHelper.hashCode(this);</span>
+<span class="nc" id="L513">        return EntityHelper.hashCode(this);</span>
     }
 
     @Override
     @SuppressWarnings(&quot;EqualsWhichDoesntCheckParameterClass&quot;)
     public boolean equals(Object obj) {
-<span class="nc" id="L518">        return EntityHelper.equals(this, obj);</span>
+<span class="nc" id="L519">        return EntityHelper.equals(this, obj);</span>
     }
 
     /**
      * @return string representation of its fields
      */
     protected String toPartialString() {
-<span class="nc" id="L525">        return &quot;id=&quot; + id + &quot;, abstractCardTypeId=&quot; + abstractCardTypeId + &quot;, cardId=&quot; + cardId</span>
+<span class="nc" id="L526">        return &quot;id=&quot; + id + &quot;, abstractCardTypeId=&quot; + abstractCardTypeId + &quot;, cardId=&quot; + cardId</span>
             + &quot;, cardContentId=&quot; + cardContentId + &quot;, category=&quot; + category;
     }
 

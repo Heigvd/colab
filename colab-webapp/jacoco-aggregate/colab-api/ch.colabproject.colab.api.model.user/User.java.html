@@ -410,31 +410,32 @@ import org.apache.commons.lang3.StringUtils;
     }
 
     @Override
+    @JsonbTransient
     public Conditions.Condition getUpdateCondition() {
-<span class="nc" id="L414">        return new Conditions.IsCurrentUserThisUser(this);</span>
+<span class="nc" id="L415">        return new Conditions.IsCurrentUserThisUser(this);</span>
     }
 
     @Override
     @JsonbTransient
     public Conditions.Condition getCreateCondition() {
         // anyone can create a user
-<span class="nc" id="L421">        return Conditions.alwaysTrue;</span>
+<span class="nc" id="L422">        return Conditions.alwaysTrue;</span>
     }
 
     @Override
     public int hashCode() {
-<span class="nc" id="L426">        return EntityHelper.hashCode(this);</span>
+<span class="nc" id="L427">        return EntityHelper.hashCode(this);</span>
     }
 
     @Override
     @SuppressWarnings(&quot;EqualsWhichDoesntCheckParameterClass&quot;)
     public boolean equals(Object obj) {
-<span class="nc" id="L432">        return EntityHelper.equals(this, obj);</span>
+<span class="nc" id="L433">        return EntityHelper.equals(this, obj);</span>
     }
 
     @Override
     public String toString() {
-<span class="nc" id="L437">        return &quot;User{&quot; + &quot;id=&quot; + id + &quot;, isAdmin=&quot; + isAdmin + &quot;, username=&quot; + username + '}';</span>
+<span class="nc" id="L438">        return &quot;User{&quot; + &quot;id=&quot; + id + &quot;, isAdmin=&quot; + isAdmin + &quot;, username=&quot; + username + '}';</span>
     }
 
 }

@@ -128,6 +128,27 @@ import com.google.common.collect.Lists;
     }
 
     /**
+     * Retrieve the direct references ids of each card type or reference.
+     * &lt;p&gt;
+     * Done for several entities to be more efficient.
+     *
+     * @param cardTypeOrRefIds the ids of the card types or references
+     *
+     * @return the ids of matching card types references
+     */
+    public List&lt;Long&gt; findDirectReferencesIdsOf(List&lt;Long&gt; cardTypeOrRefIds) {
+<span class="nc" id="L140">        logger.debug(&quot;get the refs' ids&quot;);</span>
+<span class="nc bnc" id="L141" title="All 2 branches missed.">        if (CollectionUtils.isEmpty(cardTypeOrRefIds)) {</span>
+<span class="nc" id="L142">            return Lists.newArrayList();</span>
+        }
+<span class="nc" id="L144">        TypedQuery&lt;Long&gt; query = em.createNamedQuery(&quot;CardTypeRef.findDirectReferencesIds&quot;,</span>
+            Long.class);
+<span class="nc" id="L146">        query.setParameter(&quot;initIds&quot;, cardTypeOrRefIds);</span>
+<span class="nc" id="L147">        return query.getResultList();</span>
+
+    }
+
+    /**
      * Retrieve the projects owning the card types or references.
      * &lt;p&gt;
      * Done for several entities to be more efficient.
@@ -137,13 +158,13 @@ import com.google.common.collect.Lists;
      * @return the ids of the matching projects
      */
     public List&lt;Long&gt; findProjectIdsOf(List&lt;Long&gt; cardTypeOrRefIds) {
-<span class="nc" id="L140">        logger.debug(&quot;get the project's id&quot;);</span>
-<span class="nc bnc" id="L141" title="All 2 branches missed.">        if (CollectionUtils.isEmpty(cardTypeOrRefIds)) {</span>
-<span class="nc" id="L142">            return Lists.newArrayList();</span>
+<span class="nc" id="L161">        logger.debug(&quot;get the project's id&quot;);</span>
+<span class="nc bnc" id="L162" title="All 2 branches missed.">        if (CollectionUtils.isEmpty(cardTypeOrRefIds)) {</span>
+<span class="nc" id="L163">            return Lists.newArrayList();</span>
         }
-<span class="nc" id="L144">        TypedQuery&lt;Long&gt; query = em.createNamedQuery(&quot;AbstractCardType.findProjectId&quot;, Long.class);</span>
-<span class="nc" id="L145">        query.setParameter(&quot;listId&quot;, cardTypeOrRefIds);</span>
-<span class="nc" id="L146">        return query.getResultList();</span>
+<span class="nc" id="L165">        TypedQuery&lt;Long&gt; query = em.createNamedQuery(&quot;AbstractCardType.findProjectId&quot;, Long.class);</span>
+<span class="nc" id="L166">        query.setParameter(&quot;listId&quot;, cardTypeOrRefIds);</span>
+<span class="nc" id="L167">        return query.getResultList();</span>
     }
 
     /**
@@ -154,14 +175,14 @@ import com.google.common.collect.Lists;
      * @return the matching references
      */
     public List&lt;CardTypeRef&gt; findDirectReferences(AbstractCardType target) {
-<span class="nc" id="L157">        logger.debug(&quot;find the direct references of the target {}&quot;, target);</span>
+<span class="nc" id="L178">        logger.debug(&quot;find the direct references of the target {}&quot;, target);</span>
 
-<span class="nc" id="L159">        TypedQuery&lt;CardTypeRef&gt; query = em.createNamedQuery(&quot;CardTypeRef.findDirectReferences&quot;,</span>
+<span class="nc" id="L180">        TypedQuery&lt;CardTypeRef&gt; query = em.createNamedQuery(&quot;CardTypeRef.findDirectReferences&quot;,</span>
             CardTypeRef.class);
 
-<span class="nc" id="L162">        query.setParameter(&quot;targetId&quot;, target.getId());</span>
+<span class="nc" id="L183">        query.setParameter(&quot;targetId&quot;, target.getId());</span>
 
-<span class="nc" id="L164">        return query.getResultList();</span>
+<span class="nc" id="L185">        return query.getResultList();</span>
     }
 
     /**
@@ -170,8 +191,8 @@ import com.google.common.collect.Lists;
      * @return the card type with the given id or null if such a card type does not exists
      */
     public AbstractCardType findAbstractCardType(Long id) {
-<span class="nc" id="L173">        logger.debug(&quot;get abstract card type #{}&quot;, id);</span>
-<span class="nc" id="L174">        return em.find(AbstractCardType.class, id);</span>
+<span class="nc" id="L194">        logger.debug(&quot;get abstract card type #{}&quot;, id);</span>
+<span class="nc" id="L195">        return em.find(AbstractCardType.class, id);</span>
     }
 
     /**
@@ -186,11 +207,11 @@ import com.google.common.collect.Lists;
      */
     public &lt;T extends AbstractCardType&gt; T updateAbstractCardType(T cardTypeOrRef)
         throws ColabMergeException {
-<span class="nc" id="L189">        logger.debug(&quot;update card type {}&quot;, cardTypeOrRef);</span>
+<span class="nc" id="L210">        logger.debug(&quot;update card type {}&quot;, cardTypeOrRef);</span>
         @SuppressWarnings(&quot;unchecked&quot;)
-<span class="nc" id="L191">        T mCardType = (T) this.findAbstractCardType(cardTypeOrRef.getId());</span>
-<span class="nc" id="L192">        mCardType.merge(cardTypeOrRef);</span>
-<span class="nc" id="L193">        return mCardType;</span>
+<span class="nc" id="L212">        T mCardType = (T) this.findAbstractCardType(cardTypeOrRef.getId());</span>
+<span class="nc" id="L213">        mCardType.merge(cardTypeOrRef);</span>
+<span class="nc" id="L214">        return mCardType;</span>
     }
 
     /**
@@ -202,9 +223,9 @@ import com.google.common.collect.Lists;
      * @return the new persisted card type
      */
     public &lt;T extends AbstractCardType&gt; T persistAbstractCardType(T cardTypeOrRef) {
-<span class="nc" id="L205">        logger.debug(&quot;persist card type {}&quot;, cardTypeOrRef);</span>
-<span class="nc" id="L206">        em.persist(cardTypeOrRef);</span>
-<span class="nc" id="L207">        return cardTypeOrRef;</span>
+<span class="nc" id="L226">        logger.debug(&quot;persist card type {}&quot;, cardTypeOrRef);</span>
+<span class="nc" id="L227">        em.persist(cardTypeOrRef);</span>
+<span class="nc" id="L228">        return cardTypeOrRef;</span>
     }
 
     /**
@@ -215,11 +236,11 @@ import com.google.common.collect.Lists;
      * @return just deleted card type
      */
     public AbstractCardType deleteAbstractCardType(Long id) {
-<span class="nc" id="L218">        logger.debug(&quot;delete card type #{}&quot;, id);</span>
+<span class="nc" id="L239">        logger.debug(&quot;delete card type #{}&quot;, id);</span>
         // TODO: move to recycle bin first
-<span class="nc" id="L220">        AbstractCardType cardType = this.findAbstractCardType(id);</span>
-<span class="nc" id="L221">        em.remove(cardType);</span>
-<span class="nc" id="L222">        return cardType;</span>
+<span class="nc" id="L241">        AbstractCardType cardType = this.findAbstractCardType(id);</span>
+<span class="nc" id="L242">        em.remove(cardType);</span>
+<span class="nc" id="L243">        return cardType;</span>
     }
 
 }

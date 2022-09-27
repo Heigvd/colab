@@ -352,34 +352,35 @@
 <a class="jxr_linenumber" name="L344" href="#L344">344</a>     }
 <a class="jxr_linenumber" name="L345" href="#L345">345</a> 
 <a class="jxr_linenumber" name="L346" href="#L346">346</a>     @Override
-<a class="jxr_linenumber" name="L347" href="#L347">347</a>     <strong class="jxr_keyword">public</strong> Conditions.Condition getUpdateCondition() {
-<a class="jxr_linenumber" name="L348" href="#L348">348</a>         <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">new</strong> Conditions.IsCurrentUserInternalToProject(<strong class="jxr_keyword">this</strong>);
-<a class="jxr_linenumber" name="L349" href="#L349">349</a>     }
-<a class="jxr_linenumber" name="L350" href="#L350">350</a> 
-<a class="jxr_linenumber" name="L351" href="#L351">351</a>     @Override
-<a class="jxr_linenumber" name="L352" href="#L352">352</a>     @JsonbTransient
-<a class="jxr_linenumber" name="L353" href="#L353">353</a>     <strong class="jxr_keyword">public</strong> Conditions.Condition getCreateCondition() {
-<a class="jxr_linenumber" name="L354" href="#L354">354</a>         <em class="jxr_comment">// anybody can create a project</em>
-<a class="jxr_linenumber" name="L355" href="#L355">355</a>         <strong class="jxr_keyword">return</strong> Conditions.alwaysTrue;
-<a class="jxr_linenumber" name="L356" href="#L356">356</a>     }
-<a class="jxr_linenumber" name="L357" href="#L357">357</a> 
-<a class="jxr_linenumber" name="L358" href="#L358">358</a>     @Override
-<a class="jxr_linenumber" name="L359" href="#L359">359</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">int</strong> hashCode() {
-<a class="jxr_linenumber" name="L360" href="#L360">360</a>         <strong class="jxr_keyword">return</strong> EntityHelper.hashCode(<strong class="jxr_keyword">this</strong>);
-<a class="jxr_linenumber" name="L361" href="#L361">361</a>     }
-<a class="jxr_linenumber" name="L362" href="#L362">362</a> 
-<a class="jxr_linenumber" name="L363" href="#L363">363</a>     @Override
-<a class="jxr_linenumber" name="L364" href="#L364">364</a>     @SuppressWarnings(<span class="jxr_string">"EqualsWhichDoesntCheckParameterClass"</span>)
-<a class="jxr_linenumber" name="L365" href="#L365">365</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">boolean</strong> equals(Object obj) {
-<a class="jxr_linenumber" name="L366" href="#L366">366</a>         <strong class="jxr_keyword">return</strong> EntityHelper.equals(<strong class="jxr_keyword">this</strong>, obj);
-<a class="jxr_linenumber" name="L367" href="#L367">367</a>     }
-<a class="jxr_linenumber" name="L368" href="#L368">368</a> 
-<a class="jxr_linenumber" name="L369" href="#L369">369</a>     @Override
-<a class="jxr_linenumber" name="L370" href="#L370">370</a>     <strong class="jxr_keyword">public</strong> String toString() {
-<a class="jxr_linenumber" name="L371" href="#L371">371</a>         <strong class="jxr_keyword">return</strong> <span class="jxr_string">"Project{"</span> + <span class="jxr_string">"id="</span> + id + <span class="jxr_string">", name="</span> + name + <span class="jxr_string">", descr="</span> + description + '}';
-<a class="jxr_linenumber" name="L372" href="#L372">372</a>     }
-<a class="jxr_linenumber" name="L373" href="#L373">373</a> 
-<a class="jxr_linenumber" name="L374" href="#L374">374</a> }
+<a class="jxr_linenumber" name="L347" href="#L347">347</a>     @JsonbTransient
+<a class="jxr_linenumber" name="L348" href="#L348">348</a>     <strong class="jxr_keyword">public</strong> Conditions.Condition getUpdateCondition() {
+<a class="jxr_linenumber" name="L349" href="#L349">349</a>         <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">new</strong> Conditions.IsCurrentUserInternalToProject(<strong class="jxr_keyword">this</strong>);
+<a class="jxr_linenumber" name="L350" href="#L350">350</a>     }
+<a class="jxr_linenumber" name="L351" href="#L351">351</a> 
+<a class="jxr_linenumber" name="L352" href="#L352">352</a>     @Override
+<a class="jxr_linenumber" name="L353" href="#L353">353</a>     @JsonbTransient
+<a class="jxr_linenumber" name="L354" href="#L354">354</a>     <strong class="jxr_keyword">public</strong> Conditions.Condition getCreateCondition() {
+<a class="jxr_linenumber" name="L355" href="#L355">355</a>         <em class="jxr_comment">// anybody can create a project</em>
+<a class="jxr_linenumber" name="L356" href="#L356">356</a>         <strong class="jxr_keyword">return</strong> Conditions.alwaysTrue;
+<a class="jxr_linenumber" name="L357" href="#L357">357</a>     }
+<a class="jxr_linenumber" name="L358" href="#L358">358</a> 
+<a class="jxr_linenumber" name="L359" href="#L359">359</a>     @Override
+<a class="jxr_linenumber" name="L360" href="#L360">360</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">int</strong> hashCode() {
+<a class="jxr_linenumber" name="L361" href="#L361">361</a>         <strong class="jxr_keyword">return</strong> EntityHelper.hashCode(<strong class="jxr_keyword">this</strong>);
+<a class="jxr_linenumber" name="L362" href="#L362">362</a>     }
+<a class="jxr_linenumber" name="L363" href="#L363">363</a> 
+<a class="jxr_linenumber" name="L364" href="#L364">364</a>     @Override
+<a class="jxr_linenumber" name="L365" href="#L365">365</a>     @SuppressWarnings(<span class="jxr_string">"EqualsWhichDoesntCheckParameterClass"</span>)
+<a class="jxr_linenumber" name="L366" href="#L366">366</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">boolean</strong> equals(Object obj) {
+<a class="jxr_linenumber" name="L367" href="#L367">367</a>         <strong class="jxr_keyword">return</strong> EntityHelper.equals(<strong class="jxr_keyword">this</strong>, obj);
+<a class="jxr_linenumber" name="L368" href="#L368">368</a>     }
+<a class="jxr_linenumber" name="L369" href="#L369">369</a> 
+<a class="jxr_linenumber" name="L370" href="#L370">370</a>     @Override
+<a class="jxr_linenumber" name="L371" href="#L371">371</a>     <strong class="jxr_keyword">public</strong> String toString() {
+<a class="jxr_linenumber" name="L372" href="#L372">372</a>         <strong class="jxr_keyword">return</strong> <span class="jxr_string">"Project{"</span> + <span class="jxr_string">"id="</span> + id + <span class="jxr_string">", name="</span> + name + <span class="jxr_string">", descr="</span> + description + '}';
+<a class="jxr_linenumber" name="L373" href="#L373">373</a>     }
+<a class="jxr_linenumber" name="L374" href="#L374">374</a> 
+<a class="jxr_linenumber" name="L375" href="#L375">375</a> }
 </pre>
 <hr/>
 <div id="footer">Copyright &#169; 2022 <a href="https://www.colab-project.ch">AlbaSim, MEI, HEIG-VD, HES-SO</a>. All rights reserved.</div>
