@@ -5,41 +5,57 @@
  * Licensed under the MIT License
  */
 
-import { css } from '@emotion/css';
+import { css, cx } from '@emotion/css';
 import { IconProp } from '@fortawesome/fontawesome-svg-core';
-import {
-  faArchive,
-  faPause,
-  faPencilRuler,
-  faSkullCrossbones,
-} from '@fortawesome/free-solid-svg-icons';
+import { faArchive, faPause, faPencilRuler, faTimes } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { CardContentStatus } from 'colab-rest-client';
 import * as React from 'react';
 import useTranslations from '../../i18n/I18nContext';
-import { space_S } from '../styling/style';
+import { borderRadius, errorColor, space_S, successColor } from '../styling/style';
+
+const badgeStyle = (color: string) => {
+  return css({
+    display: 'flex',
+    alignItems: 'center',
+    border: `1px solid ${color}`,
+    color: `${color}`,
+    borderRadius: borderRadius,
+    margin: '0 2px',
+    padding: '3px',
+    fontSize: '0.8em',
+    textTransform: 'uppercase',
+    gap: space_S,
+  });
+};
 
 export interface CardContentStatusProps {
   status: CardContentStatus;
-  mode: 'icon' | 'full';
+  mode: 'icon' | 'semi' | 'full';
+  className?: string;
 }
+type StatusIconAndColorType = {
+  icon: IconProp;
+  color: string;
+};
 
-export function getStatusIcon(status: CardContentStatus): IconProp {
+export function getStatusIconAndColor(status: CardContentStatus): StatusIconAndColorType {
   switch (status) {
     case 'ACTIVE':
-      return faPencilRuler;
+      return { icon: faPencilRuler, color: successColor };
     case 'POSTPONED':
-      return faPause;
+      return { icon: faPause, color: 'orange' };
     case 'ARCHIVED':
-      return faArchive;
+      return { icon: faArchive, color: '#9C9C9C' };
     case 'REJECTED':
-      return faSkullCrossbones;
+      return { icon: faTimes, color: errorColor };
   }
 }
 
 export default function CardContentStatusDisplay({
   status,
   mode,
+  className,
 }: CardContentStatusProps): JSX.Element {
   const i18n = useTranslations();
 
@@ -51,11 +67,25 @@ export default function CardContentStatusDisplay({
     }
     return (
       <FontAwesomeIcon
-        className={css({ paddingRight: space_S })}
-        icon={getStatusIcon(status)}
-        color={'var(--darkGray)'}
+        className={cx(css({ paddingRight: space_S }), className)}
+        icon={getStatusIconAndColor(status).icon}
+        color={getStatusIconAndColor(status).color}
         title={tooltip}
       />
+    );
+  } else if (mode === 'semi') {
+    if (status === 'ACTIVE') {
+      return <></>;
+    }
+    return (
+      <div className={cx(badgeStyle(getStatusIconAndColor(status).color), className)}>
+        <FontAwesomeIcon
+          icon={getStatusIconAndColor(status).icon}
+          size={'sm'}
+          title={tooltip}
+        />
+        {i18n.modules.card.settings.statuses[status]}
+      </div>
     );
   } else {
     return (
@@ -63,11 +93,11 @@ export default function CardContentStatusDisplay({
         {status != 'ACTIVE' && (
           <FontAwesomeIcon
             className={css({ paddingRight: space_S })}
-            icon={getStatusIcon(status)}
-            color={'var(--darkGray)'}
+            icon={getStatusIconAndColor(status).icon}
+            color={getStatusIconAndColor(status).color}
           />
         )}
-        <span className={css({})}>{status.toLocaleLowerCase()}</span>
+        <span>{i18n.modules.card.settings.statuses[status]}</span>
       </div>
     );
   }
