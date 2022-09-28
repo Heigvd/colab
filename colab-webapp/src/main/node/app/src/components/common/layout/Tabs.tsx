@@ -8,7 +8,6 @@ import { css, cx } from '@emotion/css';
 import * as React from 'react';
 import { Location, Route, Routes, useLocation, useNavigate } from 'react-router-dom';
 import useTranslations from '../../../i18n/I18nContext';
-import logger from '../../../logger';
 import { space_L, space_M, space_S } from '../../styling/style';
 import Clickable from './Clickable';
 import Flex from './Flex';
@@ -154,7 +153,6 @@ export default function Tabs({
       const tabName = path[path.length - 1] || '';
 
       if (Object.keys(mappedChildren).includes(tabName)) {
-        logger.info(tabName);
         setTab(tabName);
       }
     }

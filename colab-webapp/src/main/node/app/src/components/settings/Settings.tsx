@@ -6,13 +6,16 @@
  */
 
 import { css } from '@emotion/css';
+import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
 import * as React from 'react';
+import { useNavigate } from 'react-router-dom';
 import useTranslations from '../../i18n/I18nContext';
 import { useCurrentUser, useCurrentUserAccounts } from '../../selectors/userSelector';
+import IconButton from '../common/element/IconButton';
 import Flex from '../common/layout/Flex';
 import Tabs, { Tab } from '../common/layout/Tabs';
 import Debugger from '../debugger/debugger';
-import { space_L } from '../styling/style';
+import { lightIconButtonStyle, space_L } from '../styling/style';
 import DisplaySettings from './DisplaySettings';
 import LocalAccount from './LocalAccount';
 import UserProfile from './UserProfile';
@@ -22,6 +25,7 @@ export default function Settings(): JSX.Element {
   const i18n = useTranslations();
   const accounts = useCurrentUserAccounts();
   const { currentUser } = useCurrentUser();
+  const navigate = useNavigate();
 
   React.useEffect(() => {
     if (window && window.top && window.top.document) {
@@ -32,7 +36,15 @@ export default function Settings(): JSX.Element {
   if (currentUser && accounts != 'LOADING') {
     return (
       <div className={css({ padding: space_L })}>
-        <h2>{i18n.common.settings}</h2>
+        <Flex>
+          <IconButton
+            title="Back"
+            icon={faArrowLeft}
+            onClick={() => navigate('..')}
+            className={lightIconButtonStyle}
+          ></IconButton>
+          <h2>{i18n.common.settings}</h2>
+        </Flex>
         <Tabs routed>
           <Tab name="user" label={i18n.user.user}>
             <Flex direction="row" className={css({ gap: space_L })}>

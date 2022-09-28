@@ -12,7 +12,6 @@ import {
   faCog,
   faEllipsisV,
   faInfoCircle,
-  faTools,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import * as React from 'react';
@@ -72,7 +71,6 @@ export function ResourceDisplay({
   };
 
   const [showTeaser, setShowTeaser] = React.useState(false);
-  const [openToolbox, setOpenToolbox] = React.useState(true);
 
   const targetResource = resource.targetResource;
 
@@ -163,26 +161,6 @@ export function ResourceDisplay({
                       },
                     ]
                   : []),
-
-                ...(!effectiveReadOnly
-                  ? [
-                      {
-                        value: 'toolbox',
-                        label: (
-                          <>
-                            <FontAwesomeIcon icon={faTools} />{' '}
-                            {`${
-                              openToolbox
-                                ? i18n.modules.card.editor.hideToolbox
-                                : i18n.modules.card.editor.showToolbox
-                            } `}
-                          </>
-                        ),
-                        action: () => setOpenToolbox(openToolbox => !openToolbox),
-                      },
-                    ]
-                  : []),
-
                 ...(!effectiveReadOnly
                   ? [
                       {
@@ -264,7 +242,7 @@ export function ResourceDisplay({
         >
           {!effectiveReadOnly && (
             <DocEditorToolbox
-              open={openToolbox}
+              open={true}
               docOwnership={{ kind: 'PartOfResource', ownerId: targetResource.id }}
             />
           )}

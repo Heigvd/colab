@@ -278,7 +278,7 @@ export default function CardEditor({
                     color={'var(--darkGray)'}
                   />
                 )}
-                <CardContentStatus mode="icon" status={variant.status} />
+                <CardContentStatus mode="semi" status={variant.status}/>
                 <DiscreetInput
                   value={card.title || ''}
                   placeholder={i18n.modules.card.untitled}

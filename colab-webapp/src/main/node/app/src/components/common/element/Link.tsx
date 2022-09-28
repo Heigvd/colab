@@ -42,7 +42,6 @@ export const mainLinkActiveClass = cx(
   mainMenuLink,
   css({
     backgroundColor: 'var(--pictoSteelBlue)',
-    pointerEvents: 'none',
     ':hover': {
       backgroundColor: 'var(--pictoSteelBlue)',
     },
@@ -74,15 +73,16 @@ interface LinkProps {
   to: string;
   children: React.ReactNode;
   className?: NavLinkProps['className'];
+  end?: boolean;
 }
 
 function defaultClassName({ isActive }: { isActive: boolean }): string {
   return isActive ? mainLinkActiveClass : mainMenuLink;
 }
 
-export const MainMenuLink = ({ to, children, className }: LinkProps): JSX.Element => {
+export const MainMenuLink = ({ to, children, end, className }: LinkProps): JSX.Element => {
   return (
-    <NavLink className={className || defaultClassName} to={to}>
+    <NavLink end={end} className={className || defaultClassName} to={to}>
       {children}
     </NavLink>
   );
