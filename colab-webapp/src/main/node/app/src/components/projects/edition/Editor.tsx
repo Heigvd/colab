@@ -371,7 +371,11 @@ function EditorNav({ project, setShowProjectDetails }: EditorNavProps): JSX.Elem
             })}
             wrap="nowrap"
           >
-          <MainMenuLink to="./team/roles">
+          <MainMenuLink to="./team/roles" className={active =>
+                active.isActive || location.pathname.match(/^\/editor\/\d+\/team/)
+                  ? mainLinkActiveClass
+                  : mainMenuLink
+              }>
             <FontAwesomeIcon
               icon={faUserGroup}
               title={i18n.modules.project.settings.resources.label}

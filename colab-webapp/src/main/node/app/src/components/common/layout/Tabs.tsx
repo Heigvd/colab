@@ -60,13 +60,13 @@ function defaultTabFactory(
   routed: boolean | undefined,
   location: Location,
   defaultTab: string | undefined,
-): string {
+): string | undefined {
   if (routed) {
     return location.pathname.split('/').pop() || '';
   } else if (defaultTab != null) {
     return defaultTab;
   } else {
-    return '';
+    return undefined;
   }
 }
 
@@ -85,7 +85,7 @@ interface TabsProps {
   routed?: boolean;
   defaultTab?: string;
   onSelect?: (name: string) => void;
-  children: React.ReactElement<TabProps>[] | React.ReactElement<TabProps>;
+  children: React.ReactElement<TabProps>[];
   className?: string;
   tabsClassName?: string;
   selectedLabelClassName?: string;
@@ -126,7 +126,7 @@ export default function Tabs({
   }, [children]);
 
   const [selectedTab, setTab] = React.useState<string>(
-    defaultTabFactory(routed, location, defaultTab),
+    defaultTabFactory(routed, location, defaultTab) || children[0]?.props.name || ''
   );
 
   const onSelectTab = React.useCallback(
