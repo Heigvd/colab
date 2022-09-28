@@ -116,8 +116,12 @@ export default function SignUpForm({ redirectTo }: SignUpFormProps): JSX.Element
         stopLoading();
 
         // is that a hack or not ???
-        if (redirectTo && action.meta.requestStatus === 'fulfilled') {
-          navigate(redirectTo);
+        if (action.meta.requestStatus === 'fulfilled') {
+          if (redirectTo) {
+            navigate(redirectTo);
+          } else {
+            navigate('/');
+          }
         }
       });
     },

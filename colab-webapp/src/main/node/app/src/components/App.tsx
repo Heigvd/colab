@@ -121,10 +121,6 @@ function App(): JSX.Element {
               <I18nCtx.Provider value={{ lang: lang, setLang: setLang }}>
                 <TipsCtx.Provider
                   value={{
-                    TODO: {
-                      value: tipsConfig.TODO,
-                      set: setTodoCb,
-                    },
                     TIPS: {
                       value: tipsConfig.TIPS,
                       set: setTipsCb,
@@ -136,6 +132,10 @@ function App(): JSX.Element {
                     WIP: {
                       value: tipsConfig.WIP,
                       set: setWipCb,
+                    },
+                    TODO: {
+                      value: tipsConfig.TODO,
+                      set: setTodoCb,
                     },
                     DEBUG: {
                       value: tipsConfig.DEBUG,

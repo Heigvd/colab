@@ -12,5 +12,5 @@ export const defaultProjectIllustration: Illustration = {
   '@class': 'Illustration',
   iconLibrary: 'FONT_AWESOME_SOLID',
   iconKey: 'gamepad' as IconName,
-  iconBkgdColor: '#68A8C3',
+  iconBkgdColor: '#50BFD5',
 };
