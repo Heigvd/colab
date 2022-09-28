@@ -206,6 +206,7 @@ public abstract class Account implements ColabEntity, WithWebsocketChannels {
     }
 
     @Override
+    @JsonbTransient
     public Conditions.Condition getUpdateCondition() {
         if (this.user != null) {
             return this.user.getUpdateCondition();

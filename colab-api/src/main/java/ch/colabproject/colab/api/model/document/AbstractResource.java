@@ -472,8 +472,8 @@ public abstract class AbstractResource
         }
     }
 
-    @JsonbTransient
     @Override
+    @JsonbTransient
     public Conditions.Condition getReadCondition() {
         if (this.abstractCardType != null) {
             // the abstract resource is linked to a card type / card type reference
@@ -491,6 +491,7 @@ public abstract class AbstractResource
     }
 
     @Override
+    @JsonbTransient
     public Conditions.Condition getUpdateCondition() {
         if (this.abstractCardType != null) {
             // the abstract resource is linked to a card type / card type reference

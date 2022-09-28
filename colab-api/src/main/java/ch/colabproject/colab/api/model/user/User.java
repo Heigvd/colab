@@ -410,6 +410,7 @@ public class User implements ColabEntity, WithWebsocketChannels {
     }
 
     @Override
+    @JsonbTransient
     public Conditions.Condition getUpdateCondition() {
         return new Conditions.IsCurrentUserThisUser(this);
     }

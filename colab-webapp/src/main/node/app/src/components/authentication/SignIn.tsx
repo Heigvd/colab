@@ -98,8 +98,12 @@ export default function SignInForm({
       ).then(action => {
         stopLoading();
 
-        if (action.meta.requestStatus === 'fulfilled' && redirectTo) {
-          navigate(redirectTo);
+        if (action.meta.requestStatus === 'fulfilled') {
+          if (redirectTo) {
+            navigate(redirectTo);
+          } else {
+            navigate('/');
+          }
         }
       });
     },
