@@ -7,6 +7,7 @@
 package ch.colabproject.colab.api.rest.project.bean;
 
 import ch.colabproject.colab.api.model.common.Illustration;
+import ch.colabproject.colab.api.model.project.ProjectType;
 import ch.colabproject.colab.generator.model.annotations.ExtractJavaDoc;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -27,6 +28,11 @@ public class ProjectCreationData implements Serializable {
     // ---------------------------------------------------------------------------------------------
     // fields
     // ---------------------------------------------------------------------------------------------
+
+    /**
+     * The kind : project or model
+     */
+    private ProjectType type = ProjectType.PROJECT;
 
     /**
      * The name of the project
@@ -56,6 +62,20 @@ public class ProjectCreationData implements Serializable {
     // ---------------------------------------------------------------------------------------------
     // getters and setters
     // ---------------------------------------------------------------------------------------------
+
+    /**
+     * @return the kind : project or model
+     */
+    public ProjectType getType() {
+        return type;
+    }
+
+    /**
+     * @param type the kind : project or model
+     */
+    public void setType(ProjectType type) {
+        this.type = type;
+    }
 
     /**
      * @return the name of the project
@@ -134,6 +154,7 @@ public class ProjectCreationData implements Serializable {
     @Override
     public int hashCode() {
         return new HashCodeBuilder()
+            .append(this.type)
             .append(this.name)
             .append(this.description)
             .append(this.illustration)
@@ -154,6 +175,7 @@ public class ProjectCreationData implements Serializable {
         }
         final ProjectCreationData other = (ProjectCreationData) obj;
         return new EqualsBuilder()
+            .append(this.type, other.type)
             .append(this.name, other.name)
             .append(this.description, other.description)
             .append(this.illustration, other.illustration)
@@ -163,7 +185,7 @@ public class ProjectCreationData implements Serializable {
 
     @Override
     public String toString() {
-        return "ProjectCreationData{" + " name=" + name + ", description=" + description
+        return "ProjectCreationData{" + " type=" + type.name() + ", name=" + name + ", description=" + description
             + ", illustration=" + illustration + ", modelId=" + modelId
             + ", guestsEmail=" + guestsEmail + "}";
     }

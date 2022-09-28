@@ -121,6 +121,7 @@ public class ProjectRestEndpoint {
 
         if (creationData.getModelId() == null) {
             project = new Project();
+            project.setType(creationData.getType());
             project.setName(creationData.getName());
             project.setDescription(creationData.getDescription());
             project.setIllustration(creationData.getIllustration());

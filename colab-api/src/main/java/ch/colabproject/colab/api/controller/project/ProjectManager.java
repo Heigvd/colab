@@ -22,6 +22,7 @@ import ch.colabproject.colab.api.model.card.CardContent;
 import ch.colabproject.colab.api.model.common.Illustration;
 import ch.colabproject.colab.api.model.link.ActivityFlowLink;
 import ch.colabproject.colab.api.model.project.Project;
+import ch.colabproject.colab.api.model.project.ProjectType;
 import ch.colabproject.colab.api.model.team.TeamMember;
 import ch.colabproject.colab.api.model.team.acl.HierarchicalPosition;
 import ch.colabproject.colab.api.model.user.User;
@@ -217,6 +218,7 @@ public class ProjectManager {
                 Project project = duplicateProject(modelId,
                     DuplicationParam.buildForCreationFromModel());
 
+                project.setType(ProjectType.PROJECT);
                 project.setName(name);
                 project.setDescription(description);
                 project.setIllustration(illustration);

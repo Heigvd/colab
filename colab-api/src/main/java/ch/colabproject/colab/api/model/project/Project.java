@@ -1,6 +1,6 @@
 /*
  * The coLAB project
- * Copyright (C) 2021 AlbaSim, MEI, HEIG-VD, HES-SO
+ * Copyright (C) 2021-2022 AlbaSim, MEI, HEIG-VD, HES-SO
  *
  * Licensed under the MIT License
  */
@@ -28,6 +28,8 @@ import javax.json.bind.annotation.JsonbTransient;
 import javax.persistence.CascadeType;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -38,6 +40,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 /**
@@ -82,6 +85,13 @@ public class Project implements ColabEntity, WithWebsocketChannels {
      */
     @Embedded
     private Tracking trackingData;
+
+    /**
+     * The kind : project or model
+     */
+    @NotNull
+    @Enumerated(EnumType.STRING)
+    private ProjectType type = ProjectType.PROJECT;
 
     /**
      * The name
@@ -170,6 +180,20 @@ public class Project implements ColabEntity, WithWebsocketChannels {
     @Override
     public void setTrackingData(Tracking trackingData) {
         this.trackingData = trackingData;
+    }
+
+    /**
+     * @return the kind : project or model
+     */
+    public ProjectType getType() {
+        return type;
+    }
+
+    /**
+     * @param type the kind : project or model
+     */
+    public void setType(ProjectType type) {
+        this.type = type;
     }
 
     /**
@@ -319,6 +343,20 @@ public class Project implements ColabEntity, WithWebsocketChannels {
     public void merge(ColabEntity other) throws ColabMergeException {
         if (other instanceof Project) {
             Project o = (Project) other;
+            // type cannot be changed alone manually
+            this.setName(o.getName());
+            this.setDescription(o.getDescription());
+            this.setIllustration(o.getIllustration());
+        } else {
+            throw new ColabMergeException(this, other);
+        }
+    }
+
+    @Override
+    public void duplicate(ColabEntity other) throws ColabMergeException {
+        if (other instanceof Project) {
+            Project o = (Project) other;
+            this.setType(o.getType());
             this.setName(o.getName());
             this.setDescription(o.getDescription());
             this.setIllustration(o.getIllustration());
@@ -369,7 +407,7 @@ public class Project implements ColabEntity, WithWebsocketChannels {
 
     @Override
     public String toString() {
-        return "Project{" + "id=" + id + ", name=" + name + ", descr=" + description + '}';
+        return "Project{" + "id=" + id + ", type=" + type.name() +", name=" + name + ", descr=" + description + '}';
     }
 
 }
