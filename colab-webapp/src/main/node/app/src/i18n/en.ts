@@ -66,6 +66,7 @@ export const en = {
     project: 'Project',
     title: 'Title',
     views: {
+      view: 'View',
       board: 'Board',
       hierarchy: 'Hierarchy',
       activityFlow: 'Activity Flow',

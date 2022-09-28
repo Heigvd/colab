@@ -67,6 +67,7 @@ export const fr: ColabTranslations = {
     project: 'Projet',
     title: 'Titre',
     views: {
+      view: 'Vue',
       board: 'Cartes',
       hierarchy: 'Hiérarchie',
       activityFlow: "Réseau d'activité",

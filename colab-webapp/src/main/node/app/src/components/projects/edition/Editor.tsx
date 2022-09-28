@@ -7,10 +7,9 @@
 
 import { css, cx } from '@emotion/css';
 import {
+  faBookOpen,
   faChevronRight,
-  faClone,
   faCog,
-  faEye,
   faGrip,
   faNetworkWired,
   faProjectDiagram,
@@ -19,7 +18,7 @@ import {
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Card, CardContent, entityIs, Project } from 'colab-rest-client';
 import * as React from 'react';
-import { Navigate, Route, Routes, useNavigate, useParams } from 'react-router-dom';
+import { Navigate, Route, Routes, useLocation, useNavigate, useParams } from 'react-router-dom';
 import * as API from '../../../API/api';
 import useTranslations from '../../../i18n/I18nContext';
 import {
@@ -37,15 +36,13 @@ import CardEditor from '../../cards/CardEditor';
 import CardThumbWithSelector from '../../cards/CardThumbWithSelector';
 import ProjectCardTypeList from '../../cards/cardtypes/ProjectCardTypeList';
 import ContentSubs from '../../cards/ContentSubs';
-import Button from '../../common/element/Button';
 import IconButton from '../../common/element/IconButton';
 import IllustrationDisplay, {
   IllustrationIconDisplay,
 } from '../../common/element/IllustrationDisplay';
 import InlineLoading from '../../common/element/InlineLoading';
-import Tips from '../../common/element/Tips';
+import { mainLinkActiveClass, mainMenuLink, MainMenuLink } from '../../common/element/Link';
 import Clickable from '../../common/layout/Clickable';
-import DropDownMenu from '../../common/layout/DropDownMenu';
 import Flex from '../../common/layout/Flex';
 import Monkeys from '../../debugger/monkey/Monkeys';
 import { UserDropDown } from '../../MainNav';
@@ -289,6 +286,7 @@ function EditorNav({ project, setShowProjectDetails }: EditorNavProps): JSX.Elem
   const i18n = useTranslations();
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
+  const location = useLocation();
   return (
     <>
       <div
@@ -298,7 +296,7 @@ function EditorNav({ project, setShowProjectDetails }: EditorNavProps): JSX.Elem
             display: 'inline-grid',
             gridTemplateColumns: '1fr 3fr 1fr',
             flexGrow: 0,
-            padding: `${space_S} ${space_M}`,
+            padding: `0 ${space_M}`,
             //backgroundColor: 'var(--hoverBgColor)',
           }),
         )}
@@ -323,15 +321,47 @@ function EditorNav({ project, setShowProjectDetails }: EditorNavProps): JSX.Elem
               })}
             />
           </Clickable>
-          <IconButton
-            icon={faGrip}
-            title={i18n.common.action.backProjectRoot}
-            onClick={event => {
-              event.preventDefault();
-              navigate(`/editor/${project.id}`);
-            }}
-            className={css({ display: 'flex', alignItems: 'center' })}
-          />
+          <Flex
+            className={css({
+              borderLeft: '1px solid var(--lightGray)',
+              borderRight: '1px solid var(--lightGray)',
+              marginRight: space_S,
+            })}
+            wrap="nowrap"
+          >
+            <MainMenuLink
+              end
+              to={`/editor/${project.id}`}
+              className={active =>
+                active.isActive || location.pathname.match(/^\/editor\/\d+\/(edit|card)/)
+                  ? mainLinkActiveClass
+                  : mainMenuLink
+              }
+            >
+              <FontAwesomeIcon
+                icon={faGrip}
+                title={i18n.common.views.view + ' ' + i18n.common.views.board}
+              />
+            </MainMenuLink>
+            <MainMenuLink to="./hierarchy">
+              <FontAwesomeIcon
+                icon={faNetworkWired}
+                title={i18n.common.views.view + ' ' + i18n.common.views.hierarchy}
+              />
+            </MainMenuLink>
+            <MainMenuLink to="./flow">
+              <FontAwesomeIcon
+                icon={faProjectDiagram}
+                title={i18n.common.views.view + ' ' + i18n.common.views.activityFlow}
+              />
+            </MainMenuLink>
+          </Flex>
+          <MainMenuLink to="./project-documentation">
+            <FontAwesomeIcon
+              icon={faBookOpen}
+              title={i18n.modules.project.settings.resources.label}
+            />
+          </MainMenuLink>
         </Flex>
         <div
           className={css({
@@ -341,10 +371,10 @@ function EditorNav({ project, setShowProjectDetails }: EditorNavProps): JSX.Elem
             alignItems: 'center',
           })}
         >
-          <Button
+          <Flex
             onClick={() => setShowProjectDetails(showProjectDetails => !showProjectDetails)}
             title={i18n.common.action.showProjectDetails}
-            className={css({ padding: '2px' })}
+            className={cx(mainMenuLink, css({ textTransform: 'initial', margin: `0 ${space_S}` }))}
           >
             <Flex align="stretch">
               <Flex
@@ -366,47 +396,7 @@ function EditorNav({ project, setShowProjectDetails }: EditorNavProps): JSX.Elem
                 {project.name || i18n.modules.project.actions.newProject}
               </div>
             </Flex>
-          </Button>
-          <Tips tipsType="TODO">
-            <DropDownMenu
-              icon={faEye}
-              valueComp={{ value: '', label: '' }}
-              entries={[
-                {
-                  value: 'board',
-                  label: (
-                    <>
-                      <FontAwesomeIcon icon={faClone} />
-                      {i18n.common.views.board}
-                    </>
-                  ),
-                  action: () => navigate('./'),
-                },
-                {
-                  value: 'hierarchy',
-                  label: (
-                    <>
-                      <FontAwesomeIcon icon={faNetworkWired} />
-                      {i18n.common.views.hierarchy}
-                    </>
-                  ),
-                  action: () => navigate('./hierarchy'),
-                },
-                {
-                  value: 'flow',
-                  label: (
-                    <>
-                      <FontAwesomeIcon icon={faProjectDiagram} />
-                      {i18n.common.views.activityFlow}
-                    </>
-                  ),
-                  action: () => navigate('./flow'),
-                },
-              ]}
-              buttonClassName={css({ textAlign: 'right', alignSelf: 'center', marginLeft: 'auto' })}
-              menuIcon="CARET"
-            />
-          </Tips>
+          </Flex>
         </div>
         <Flex align="center">
           <Presence projectId={project.id!} />
@@ -554,7 +544,7 @@ export default function Editor(): JSX.Element {
               <Route path="team" element={<Team project={project} />} />
               <Route path="hierarchy" element={<Hierarchy rootId={root.id} />} />
               <Route path="flow" element={<ActivityFlowChart />} />
-              <Route path="types/*" element={<ProjectCardTypeList />} />
+              <Route path="project-documentation/*" element={<ProjectCardTypeList />} />
               <Route path="card/:id" element={<DefaultVariantDetector />} />
               {/* Zooom on a card */}
               <Route
