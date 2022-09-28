@@ -14,6 +14,7 @@ import {
   faNetworkWired,
   faProjectDiagram,
   faTimes,
+  faUserGroup,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Card, CardContent, entityIs, Project } from 'colab-rest-client';
@@ -60,7 +61,7 @@ import Presence from '../presence/Presence';
 import { PresenceContext, usePresenceContext } from '../presence/PresenceContext';
 import { defaultProjectIllustration } from '../ProjectCommon';
 import { ProjectSettings } from '../ProjectSettings';
-import Team from '../Team';
+import Team from '../team/Team';
 import ActivityFlowChart from './ActivityFlowChart';
 import Hierarchy from './Hierarchy';
 
@@ -362,6 +363,21 @@ function EditorNav({ project, setShowProjectDetails }: EditorNavProps): JSX.Elem
               title={i18n.modules.project.settings.resources.label}
             />
           </MainMenuLink>
+          <Flex
+            className={css({
+              borderLeft: '1px solid var(--lightGray)',
+              margin: `0 ${space_S}`,
+              padding: `0 ${space_S}`,
+            })}
+            wrap="nowrap"
+          >
+          <MainMenuLink to="./team/roles">
+            <FontAwesomeIcon
+              icon={faUserGroup}
+              title={i18n.modules.project.settings.resources.label}
+            />
+          </MainMenuLink>
+          </Flex>
         </Flex>
         <div
           className={css({
@@ -541,7 +557,7 @@ export default function Editor(): JSX.Element {
               <Route path="settings/*" element={<Settings />} />
               <Route path="project-settings/*" element={<ProjectSettings project={project} />} />
               <Route path="admin/*" element={<Admin />} />
-              <Route path="team" element={<Team project={project} />} />
+              <Route path="team/*" element={<Team project={project} />} />
               <Route path="hierarchy" element={<Hierarchy rootId={root.id} />} />
               <Route path="flow" element={<ActivityFlowChart />} />
               <Route path="project-documentation/*" element={<ProjectCardTypeList />} />

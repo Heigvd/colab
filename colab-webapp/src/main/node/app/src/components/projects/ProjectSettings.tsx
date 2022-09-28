@@ -16,7 +16,6 @@ import { useCardACLForCurrentUser, useProjectRootCard } from '../../selectors/ca
 import { useAppSelector } from '../../store/hooks';
 import { dispatch } from '../../store/store';
 import CardInvolvement from '../cards/CardInvolvement';
-import ProjectCardTypeList from '../cards/cardtypes/ProjectCardTypeList';
 import IconButton from '../common/element/IconButton';
 import IllustrationDisplay from '../common/element/IllustrationDisplay';
 import InlineLoading from '../common/element/InlineLoading';
@@ -27,7 +26,6 @@ import { AccessLevel, ResourceCallContext } from '../resources/resourcesCommonTy
 import ResourcesMainView from '../resources/ResourcesMainView';
 import { lightIconButtonStyle, space_L } from '../styling/style';
 import { ProjectIllustrationMaker } from './ProjectIllustrationMaker';
-import Team from './Team';
 
 interface ProjectSettingsProps {
   project: Project;
@@ -132,12 +130,6 @@ export function ProjectSettings({ project }: ProjectSettingsProps): JSX.Element 
               />
             </Flex>
           </Flex>
-        </Tab>
-        <Tab name="team" label={i18n.team.team}>
-          <Team project={project} />
-        </Tab>
-        <Tab name="cardtypes" label={i18n.modules.cardType.cardTypesLongWay}>
-          <ProjectCardTypeList />
         </Tab>
         <Tab name="projectResources" label={i18n.modules.project.settings.resources.label}>
           <div
