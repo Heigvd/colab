@@ -66,6 +66,7 @@ export const en = {
     project: 'Project',
     title: 'Title',
     views: {
+      view: 'View',
       board: 'Board',
       hierarchy: 'Hierarchy',
       activityFlow: 'Activity Flow',
@@ -330,6 +331,8 @@ export const en = {
     team: {
       actions: {
         createRole: 'Create role',
+        resendInvitation: 'Resend invitation mail',
+        invitationResent: 'Invitation has been sent again.',
       },
     },
     card: {
@@ -392,6 +395,7 @@ export const en = {
         noDeliverable: 'No deliverable available',
         completionModeInfo:
           'Select completion mode (MANUAL | AUTO | NO_OP). Manual: input to set completion; Auto: based on children; No: do not event diplay the bar',
+        noBlockYet:'You have nothing in here for now. Add your first block:',
       },
       error: {
         withoutId: 'Card without id is invalid...',
