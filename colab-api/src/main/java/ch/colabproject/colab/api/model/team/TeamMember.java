@@ -415,6 +415,7 @@ public class TeamMember implements ColabEntity, WithWebsocketChannels {
     }
 
     @Override
+    @JsonbTransient
     public Conditions.Condition getUpdateCondition() {
         if (this.user != null && this.project != null) {
             if (this.position == HierarchicalPosition.OWNER) {

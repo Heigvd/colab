@@ -329,6 +329,7 @@ public abstract class Document
     }
 
     @Override
+    @JsonbTransient
     public Conditions.Condition getUpdateCondition() {
         if (this.owningCardContent != null) {
             // The document is a deliverable of a card content

@@ -245,6 +245,7 @@ public class HttpSession implements WithId, WithJsonDiscriminator, WithPermissio
     }
 
     @Override
+    @JsonbTransient
     public Conditions.Condition getReadCondition() {
         if (this.account != null) {
             // same
@@ -257,6 +258,7 @@ public class HttpSession implements WithId, WithJsonDiscriminator, WithPermissio
     }
 
     @Override
+    @JsonbTransient
     public Conditions.Condition getUpdateCondition() {
         if (this.account != null) {
             // same
@@ -269,6 +271,7 @@ public class HttpSession implements WithId, WithJsonDiscriminator, WithPermissio
     }
 
     @Override
+    @JsonbTransient
     public Conditions.Condition getCreateCondition() {
         // anyone can create a session
         return Conditions.alwaysTrue;
