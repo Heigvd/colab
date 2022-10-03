@@ -16,6 +16,7 @@ import {
   space_S,
 } from '../../styling/style';
 import MemberCreator from './MemberCreator';
+import TeamRACI from './Raci';
 import TeamRights from './Rights';
 import TeamRoles from './Roles';
 
@@ -54,8 +55,8 @@ export default function Team({ project }: TeamProps): JSX.Element {
           <Tab name="rights" label={i18n.team.rights}>
             <TeamRights project={project} />
           </Tab>
-          <Tab name="projectACL" label={i18n.team.raci}>
-            WIP RACI matrix
+          <Tab name="projectACL" label={i18n.team.raci} invisible>
+            <TeamRACI project={project} />
           </Tab>
         </Tabs>
       </>

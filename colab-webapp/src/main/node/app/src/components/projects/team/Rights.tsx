@@ -10,113 +10,52 @@ import { useAndLoadProjectTeam } from '../../../selectors/projectSelector';
 import { useCurrentUser } from '../../../selectors/userSelector';
 import { useAppDispatch, useAppSelector } from '../../../store/hooks';
 import { addNotification } from '../../../store/notification';
-import Button from '../../common/element/Button';
+import Checkbox from '../../common/element/Checkbox';
 import IconButton from '../../common/element/IconButton';
 import InlineLoading from '../../common/element/InlineLoading';
 import { DiscreetInput } from '../../common/element/Input';
-import Flex from '../../common/layout/Flex';
-import OpenCloseModal from '../../common/layout/OpenCloseModal';
-import { errorColor, lightItalicText, space_L, space_M, space_S, textSmall } from '../../styling/style';
+import {
+  lightItalicText,
+  space_L,
+  space_M,
+  space_S,
+  textSmall,
+} from '../../styling/style';
 import { gridNewLine, titleCellStyle } from './Team';
-import Select from 'react-select';
 
-export function PositionSelector({
-    value,
-    onChange,
-    isMyRights,
-  }: {
-    value: HierarchicalPosition;
-    onChange: (value: HierarchicalPosition) => void;
-    isMyRights: boolean;
-  }): JSX.Element {
-    const i18n = useTranslations();
-    const [open, setOpen] = React.useState<boolean>(false);
-    const onChangeCb = React.useCallback(
-      (option: { value: HierarchicalPosition } | null) => {
-        if (option != null) {
-          onChange(option.value);
-          setOpen(false);
-        }
-      },
-      [onChange],
-    );
-    function prettyPrint(position: HierarchicalPosition) {
-      switch (position) {
-        case 'OWNER':
-          return i18n.team.rolesNames.owner;
-        case 'LEADER':
-          return i18n.team.rolesNames.projectLeader;
-        case 'INTERNAL':
-          return i18n.team.rolesNames.member;
-        case 'GUEST':
-          return i18n.team.rolesNames.guest;
-      }
+const options: HierarchicalPosition[] = ['GUEST', 'INTERNAL', 'LEADER', 'OWNER'];
+
+export function PositionColumns(): JSX.Element {
+  const i18n = useTranslations();
+  function prettyPrint(position: HierarchicalPosition) {
+    switch (position) {
+      case 'OWNER':
+        return i18n.team.rolesNames.owner;
+      case 'LEADER':
+        return i18n.team.rolesNames.projectLeader;
+      case 'INTERNAL':
+        return i18n.team.rolesNames.member;
+      case 'GUEST':
+        return i18n.team.rolesNames.guest;
     }
-    function buildOption(position: HierarchicalPosition) {
-      return {
-        value: position,
-        label: prettyPrint(position),
-      };
-    }
-    const options = [
-      buildOption('OWNER'),
-      buildOption('LEADER'),
-      buildOption('INTERNAL'),
-      buildOption('GUEST'),
-    ];
-    const currentValue = buildOption(value);
-  
-    return (
-      <div>
-        {isMyRights && (
-          <OpenCloseModal
-            title={i18n.team.changeOwnRights}
-            collapsedChildren={<></>}
-            status={open ? 'EXPANDED' : 'COLLAPSED'}
-          >
-            {collapse => (
-              <Flex direction="column" align="stretch" grow={1}>
-                <Flex grow={1} direction="column">
-                  {i18n.team.sureChangeOwnRights}
-                </Flex>
-                <Flex justify="flex-end">
-                  <Button
-                    title={i18n.common.cancel}
-                    onClick={() => {
-                      collapse();
-                      setOpen(false);
-                    }}
-                    invertedButton
-                  >
-                    {i18n.common.cancel}
-                  </Button>
-                  <Button
-                    title={i18n.common.change}
-                    onClick={() => {
-                      collapse();
-                    }}
-                    className={css({
-                      backgroundColor: errorColor,
-                      marginLeft: space_M,
-                    })}
-                  >
-                    {i18n.common.change}
-                  </Button>
-                </Flex>
-              </Flex>
-            )}
-          </OpenCloseModal>
-        )}
-        <Select
-          className={css({ minWidth: '160px' })}
-          options={options}
-          value={currentValue}
-          onChange={onChangeCb}
-          onMenuOpen={() => setOpen(true)}
-        />
-      </div>
-    );
   }
+  function buildOption(position: HierarchicalPosition) {
+    return {
+      value: position,
+      label: prettyPrint(position),
+    };
+  }
+
+  return (
+    <>
+      {options.map(option => (
+        <div key={buildOption(option).value} className={cx(textSmall, css({ lineHeight: '2em' }))}>
+          {buildOption(option).label}
+        </div>
+      ))}
+    </>
+  );
+}
 
 export interface MemberWithProjectRightsProps {
   member: TeamMember;
@@ -126,20 +65,22 @@ export interface MemberWithProjectRightsProps {
 const MemberWithProjectRights = ({ member, isTheOnlyOwner }: MemberWithProjectRightsProps) => {
   const dispatch = useAppDispatch();
   const i18n = useTranslations();
-  const { currentUser, status: currentUserStatus } = useCurrentUser();
+  const { status: currentUserStatus } = useCurrentUser();
 
   const changeRights = React.useCallback(
-    (newPosition: HierarchicalPosition) => {
-      if (isTheOnlyOwner) {
-        dispatch(
-          addNotification({
-            status: 'OPEN',
-            type: 'WARN',
-            message: i18n.team.oneOwnerPerProject,
-          }),
-        );
-      } else {
-        dispatch(API.setMemberPosition({ memberId: member.id!, position: newPosition }));
+    (checked: boolean, newPosition: HierarchicalPosition) => {
+      if (checked) {
+        if (isTheOnlyOwner) {
+          dispatch(
+            addNotification({
+              status: 'OPEN',
+              type: 'WARN',
+              message: i18n.team.oneOwnerPerProject,
+            }),
+          );
+        } else {
+          dispatch(API.setMemberPosition({ memberId: member.id!, position: newPosition }));
+        }
       }
     },
     [dispatch, i18n.team.oneOwnerPerProject, isTheOnlyOwner, member.id],
@@ -215,12 +156,14 @@ const MemberWithProjectRights = ({ member, isTheOnlyOwner }: MemberWithProjectRi
   }
   return (
     <>
-      <div className={gridNewLine}>{username}</div>
-      <PositionSelector
-        value={member.position}
-        onChange={newPosition => changeRights(newPosition)}
-        isMyRights={currentUser?.id === member.userId}
-      />
+      <div className={cx(gridNewLine, textSmall)}>{username}</div>
+      {options.map(option => (
+        <Checkbox
+          onChange={newPosition => changeRights(newPosition, option)}
+          value={member.position === option}
+          key={username + option}
+        />
+      ))}
     </>
   );
 };
@@ -235,9 +178,9 @@ export default function TeamRights({ project }: { project: Project }): JSX.Eleme
       <div
         className={css({
           display: 'grid',
-          gridTemplateColumns: `repeat(2, max-content)`,
+          gridTemplateColumns: `repeat(${options.length + 2}, max-content)`,
           justifyItems: 'center',
-          alignItems: 'center',
+          alignItems: 'flex-end',
           '& > div': {
             marginLeft: '5px',
             marginRight: '5px',
@@ -248,12 +191,15 @@ export default function TeamRights({ project }: { project: Project }): JSX.Eleme
           gap: space_S,
         })}
       >
-        <div className={titleCellStyle}>
+        <div className={cx(titleCellStyle, css({ gridColumnStart: 1, gridColumnEnd: 2 }))}>
           {i18n.team.members}
         </div>
-        <div className={titleCellStyle}>
+        <div className={cx(titleCellStyle, css({ gridColumnStart: 2, gridColumnEnd: 'end' }))}>
           {i18n.team.rights}
         </div>
+        <div />
+        <PositionColumns />
+
         {members.map(member => {
           return (
             <MemberWithProjectRights

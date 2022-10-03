@@ -210,7 +210,7 @@ const MemberWithProjectRole = ({ member, roles }: MemberWithProjectRoleProps) =>
             isConfirmButtonLoading={isLoading}
           />
         )}
-        <div className={gridNewLine}>{username}</div>
+        <div className={cx(gridNewLine, textSmall)}>{username}</div>
         {currentUser?.id != member.userId ? (
           <DropDownMenu
             icon={faEllipsisV}
@@ -297,7 +297,7 @@ export default function TeamRoles({ project }: { project: Project }): JSX.Elemen
           display: 'grid',
           gridTemplateColumns: `repeat(${roles.length + 2}, max-content)`,
           justifyItems: 'center',
-          alignItems: 'center',
+          alignItems: 'flex-end',
           '& > div': {
             marginLeft: '5px',
             marginRight: '5px',
@@ -311,7 +311,6 @@ export default function TeamRoles({ project }: { project: Project }): JSX.Elemen
         <div className={cx(titleCellStyle, css({ gridColumnStart: 1, gridColumnEnd: 3 }))}>
           {i18n.team.members}
         </div>
-        {/* <div className={titleCellStyle}>{i18n.team.rights}</div> */}
         <div className={cx(titleCellStyle, css({ gridColumnStart: 3, gridColumnEnd: 'end' }))}>
           {i18n.team.roles}
         </div>
