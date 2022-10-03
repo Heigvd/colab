@@ -277,12 +277,12 @@ export default function CardThumb({
                     }
                   />
                   <Route
-                    path={`delete`}
+                    path={`${cardId}/delete`}
                     element={
                       <ConfirmDeleteModal
                         title={i18n.modules.card.deleteCardVariant(hasVariants)}
                         message={<p>{i18n.modules.card.confirmDeleteCardVariant(hasVariants)}</p>}
-                        onCancel={() => closeRouteCb(`delete`)}
+                        onCancel={() => closeRouteCb(`${cardId}/delete`)}
                         onConfirm={() => {
                           startLoading();
                           if (hasVariants) {
@@ -364,7 +364,7 @@ export default function CardThumb({
                           {i18n.modules.card.deleteCardVariant(hasVariants)}
                         </>
                       ),
-                      action: () => navigate(`delete`),
+                      action: () => navigate(`${cardId}/delete`),
                     },
                   ]}
                 />
