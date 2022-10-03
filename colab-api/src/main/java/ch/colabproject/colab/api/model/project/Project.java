@@ -343,19 +343,6 @@ public class Project implements ColabEntity, WithWebsocketChannels {
     public void merge(ColabEntity other) throws ColabMergeException {
         if (other instanceof Project) {
             Project o = (Project) other;
-            // type cannot be changed alone manually
-            this.setName(o.getName());
-            this.setDescription(o.getDescription());
-            this.setIllustration(o.getIllustration());
-        } else {
-            throw new ColabMergeException(this, other);
-        }
-    }
-
-    @Override
-    public void duplicate(ColabEntity other) throws ColabMergeException {
-        if (other instanceof Project) {
-            Project o = (Project) other;
             this.setType(o.getType());
             this.setName(o.getName());
             this.setDescription(o.getDescription());
