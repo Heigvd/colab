@@ -17,6 +17,7 @@ import ch.colabproject.colab.api.model.document.ResourceRef;
 import ch.colabproject.colab.api.model.link.StickyNoteLink;
 import ch.colabproject.colab.api.persistence.jpa.document.ResourceDao;
 import ch.colabproject.colab.api.rest.document.bean.ResourceCreationData;
+import ch.colabproject.colab.api.rest.document.bean.ResourceExternalReference;
 import ch.colabproject.colab.generator.model.annotations.AuthenticationRequired;
 import java.util.List;
 import javax.inject.Inject;
@@ -152,6 +153,21 @@ public class ResourceRestEndpoint {
         return resourceManager.getDirectAbstractResourcesOfProject(projectId);
     }
 
+    /**
+     * Get the list of project which reference the given resource, excluding the project which owns
+     * the resource.
+     *
+     * @param abstractResourceId if of the targeted resource
+     *
+     * @return list of externalReference
+     */
+    @GET
+    @Path("externalReference/{abstractResourceId}")
+    public List<ResourceExternalReference> getResourceExternalReferences(
+        @PathParam("abstractResourceId") Long abstractResourceId) {
+        return resourceManager.getResourceExternalReferences(abstractResourceId);
+    }
+
     // *********************************************************************************************
     // update
     // *********************************************************************************************
@@ -239,6 +255,32 @@ public class ResourceRestEndpoint {
     public void unpublishResource(Long resourceId) {
         logger.debug("Unpublish resource #{}", resourceId);
         resourceManager.changeResourcePublication(resourceId, false);
+    }
+
+    // *********************************************************************************************
+    // move a resource / document
+    // *********************************************************************************************
+
+
+    /**
+     * Move a resource to a new resourceable.
+     *
+     * @param resourceId id of the resource to move
+     * @param parentType the new owner
+     * @param parentId   if of the new owner
+     * @param published   new publication status
+     */
+    @PUT
+    @Path("move/{resourceId}/to/{parentType: (Card|CardContent|CardType)}/{parentId}/{published}")
+    public void moveResource(
+        @PathParam("resourceId") Long resourceId,
+        @PathParam("parentType") String parentType,
+        @PathParam("parentId") Long parentId,
+        @PathParam("published") Boolean published) {
+        logger.debug("Move resource #{} to {}#{}; published={}",
+            resourceId, parentType, parentId, published);
+
+        resourceManager.moveResource(resourceId, parentType, parentId, published);
     }
 
     // *********************************************************************************************

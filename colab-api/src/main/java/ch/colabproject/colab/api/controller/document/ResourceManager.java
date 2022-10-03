@@ -22,10 +22,15 @@ import ch.colabproject.colab.api.model.document.Resourceable;
 import ch.colabproject.colab.api.model.document.TextDataBlock;
 import ch.colabproject.colab.api.model.link.StickyNoteLink;
 import ch.colabproject.colab.api.model.project.Project;
+import ch.colabproject.colab.api.persistence.jpa.card.CardContentDao;
+import ch.colabproject.colab.api.persistence.jpa.card.CardDao;
+import ch.colabproject.colab.api.persistence.jpa.card.CardTypeDao;
 import ch.colabproject.colab.api.persistence.jpa.document.DocumentDao;
 import ch.colabproject.colab.api.persistence.jpa.document.ResourceDao;
+import ch.colabproject.colab.api.rest.document.bean.ResourceExternalReference;
 import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -77,17 +82,27 @@ public class ResourceManager {
     @Inject
     private CardTypeManager cardTypeManager;
 
+    /** to load cardTypes */
+    @Inject
+    private CardTypeDao cardTypeDao;
+
     /**
      * Card specific logic management
      */
     @Inject
     private CardManager cardManager;
 
-    /**
-     * Card content specific logic management
-     */
+    /** to load cards */
+    @Inject
+    private CardDao cardDao;
+
+    /** to load cardContents */
     @Inject
     private CardContentManager cardContentManager;
+
+    /** to load cards */
+    @Inject
+    private CardContentDao cardContentDao;
 
     /**
      * Block specific logic management
@@ -287,6 +302,71 @@ public class ResourceManager {
         return allDirectResources;
     }
 
+    /**
+     * Get the list of project which reference the given resource, excluding the project which owns
+     * the resource.
+     *
+     * @param abstractResourceId if of the targeted resource
+     *
+     * @return list of externalReference
+     */
+    public List<ResourceExternalReference> getResourceExternalReferences(Long abstractResourceId) {
+        AbstractResource resource = resourceDao.findResourceOrRef(abstractResourceId);
+        Project owner = resource.getProject();
+
+        HashMap<Project, List<ResourceRef>> perProject = new HashMap<>();
+
+        resourceDao.findAllReferences(resource)
+            .stream()
+            .filter(res -> {
+                // onky keep ones not linked to current project
+                return res != null && !res.getProject().equals(owner);
+            })
+            .forEach(res -> {
+                Project p = res.getProject();
+                if (p != null) {
+                    // group resource by project
+                    var list = perProject.get(res.getProject());
+                    if (list == null) {
+                        list = new ArrayList<>();
+                        perProject.put(p, list);
+                    }
+                    list.add(res);
+                }
+            });
+
+        return perProject.entrySet().stream().map(entry -> {
+            Project p = entry.getKey();
+
+            ResourceExternalReference extRef = new ResourceExternalReference();
+            extRef.setProject(p);
+
+            List<ResourceRef> leaves = entry.getValue().stream().filter(res -> {
+                return res.getCardContentId() != null || res.getCardId() != null;
+            }).collect(Collectors.toList());
+
+            if (leaves.isEmpty()) {
+                // even if the project references the resource through the cardType,
+                // not a single card or card content references the resource
+                extRef.setUsage(ResourceExternalReference.Usage.UNUSED);
+                return extRef;
+            }
+
+            // if at least one leaf is not refused, this is globally not refused
+            boolean used = leaves.stream().anyMatch(res -> {
+                return !res.isRefused();
+            });
+
+            if (used) {
+                extRef.setUsage(ResourceExternalReference.Usage.USED);
+            } else {
+                extRef.setUsage(ResourceExternalReference.Usage.REFUSED);
+            }
+
+            return extRef;
+        }).collect(Collectors.toList());
+    }
+
     // *********************************************************************************************
     // life cycle
     // *********************************************************************************************
@@ -484,6 +564,66 @@ public class ResourceManager {
         }
     }
 
+    /**
+     * Move a resource to a new resourceable
+     *
+     * @param resourceId id of the resource to move
+     * @param newOwner   the new owner
+     * @param published  new publication status
+     */
+    public void moveResource(Long resourceId, Resourceable newOwner, boolean published) {
+        Resource resource = assertAndGetResource(resourceId);
+
+        if (newOwner == null) {
+            throw HttpErrorMessage.relatedObjectNotFoundError();
+        }
+
+        Resourceable previousOwner = resource.getOwner();
+
+        if (newOwner.equals(previousOwner)) {
+            // not realy a move...
+            this.changeResourcePublication(resourceId, published);
+        } else {
+
+            // mark all references as residual
+            resourceReferenceSpreadingHelper.spreadDisableResourceDown(resource, true);
+
+            // move the resource
+            if (previousOwner != null) {
+                previousOwner.getDirectAbstractResources().remove(resource);
+            }
+
+            newOwner.getDirectAbstractResources().add(resource);
+            resource.setOwner(newOwner);
+            resource.setPublished(published);
+
+            // init or revive new references
+            resourceReferenceSpreadingHelper.spreadAvailableResourceDown(resource);
+        }
+    }
+
+    /**
+     * Move a resource to a new resourceable.
+     *
+     * @param resourceId id of the resource to move
+     * @param parentType the new owner
+     * @param parentId   if of the new owner
+     * @param published   new publication status
+     */
+    public void moveResource(Long resourceId, String parentType, Long parentId, boolean published) {
+        Resourceable parent = null;
+        // not that happy with this resourceable resolver
+        // todo: normalize it
+        if ("Card".equals(parentType)){
+            parent = cardDao.findCard(parentId);
+        } else if ("CardContent".equals(parentType)){
+            parent = cardContentDao.findCardContent(parentId);
+        } else if ("CardType".equals(parentType)){
+            parent = cardTypeDao.findAbstractCardType(parentId);
+        }
+        this.moveResource(resourceId, parent, published);
+    }
+
     // *********************************************************************************************
     // add a document to a resource
     // *********************************************************************************************
@@ -599,7 +739,6 @@ public class ResourceManager {
     // *********************************************************************************************
     // retrieve the elements of a resource
     // *********************************************************************************************
-
     /**
      * Get the documents of the resource
      *

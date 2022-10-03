@@ -1018,6 +1018,28 @@ export const unpublishResource = createAsyncThunk(
   },
 );
 
+export const moveResource = createAsyncThunk(
+  'resource/move',
+  async ({
+    resource,
+    newParentType,
+    newParentId,
+    published,
+  }: {
+    resource: AbstractResource;
+    newParentType: 'Card' | 'CardContent' | 'CardType';
+    newParentId: number;
+    published: boolean;
+  }) => {
+    return await restClient.ResourceRestEndpoint.moveResource(
+      resource.id!,
+      newParentType,
+      newParentId,
+      published,
+    );
+  },
+);
+
 export const updateResourceRef = createAsyncThunk(
   'resource/updateResourceRef',
   async (resourceRef: ResourceRef) => {

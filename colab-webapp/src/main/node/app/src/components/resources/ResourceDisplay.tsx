@@ -11,7 +11,9 @@ import {
   faBoxArchive,
   faCog,
   faEllipsisV,
+  faEye,
   faInfoCircle,
+  faPen,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import * as React from 'react';
@@ -20,11 +22,14 @@ import { updateDocumentText } from '../../API/api';
 import useTranslations from '../../i18n/I18nContext';
 import { useAndLoadTextOfDocument } from '../../selectors/documentSelector';
 import { useAppDispatch } from '../../store/hooks';
+import { ConfirmIconButton } from '../common/element/ConfirmIconButton';
 import IconButton from '../common/element/IconButton';
 import { DiscreetInput, DiscreetTextArea } from '../common/element/Input';
+import { FeaturePreview } from '../common/element/Tips';
 import DropDownMenu from '../common/layout/DropDownMenu';
 import Flex from '../common/layout/Flex';
 import Modal from '../common/layout/Modal';
+import OpenCloseModal from '../common/layout/OpenCloseModal';
 import { DocTextWrapper } from '../documents/DocTextItem';
 import DocEditorToolbox, {
   defaultDocEditorContext,
@@ -39,8 +44,13 @@ import {
   space_S,
   textSmall,
 } from '../styling/style';
-import { getTheDirectResource, ResourceAndRef } from './resourcesCommonType';
+import {
+  getTheDirectResource,
+  ResourceAndRef,
+  useResourceAccessLevelForCurrentUser,
+} from './resourcesCommonType';
 import ResourceSettings from './ResourceSettings';
+import ResourceScope from './summary/ResourceScope';
 import TargetResourceSummary from './summary/TargetResourceSummary';
 
 export interface ResourceDisplayProps {
@@ -74,7 +84,20 @@ export function ResourceDisplay({
 
   const targetResource = resource.targetResource;
 
-  const effectiveReadOnly = readOnly || !resource.isDirectResource;
+  // get the effective access level on targetResource
+  const accesLevel = useResourceAccessLevelForCurrentUser(resource.targetResource);
+
+  const [forceWrite, setForce] = React.useState(false);
+
+  // acces level from current point of view is readonly, but user has a write acces on the
+  // target resource
+  const canForce = accesLevel === 'WRITE' && (readOnly || !resource.isDirectResource);
+
+  const toggleForceCb = React.useCallback(() => {
+    setForce(current => !current);
+  }, []);
+
+  const effectiveReadOnly = !forceWrite && (readOnly || !resource.isDirectResource);
 
   const category = getTheDirectResource(resource).category;
 
@@ -101,10 +124,7 @@ export function ResourceDisplay({
             className={lightIconButtonStyle}
           />
           <Flex wrap="nowrap" align="center">
-            <TargetResourceSummary
-              resource={resource}
-              iconClassName={css({ color: 'var(--lightGray)' })}
-            />
+            <TargetResourceSummary resource={resource} showText="tooltip" />
             {category && (
               <>
                 <DiscreetInput
@@ -132,6 +152,35 @@ export function ResourceDisplay({
               inputDisplayClassName={localTitleStyle}
             />
           </Flex>
+          {(canForce || resource.isDirectResource) && (
+            <FeaturePreview>
+              <OpenCloseModal
+                modalClassName={css({
+                  minWidth: '50vw',
+                  minHeight: '50vh',
+                  maxWidth: '80vw',
+                  maxHeight: '80vh',
+                })}
+                modalBodyClassName={css({
+                  padding: 0,
+                  alignItems: 'stretch',
+                })}
+                title=""
+                collapsedChildren={<FontAwesomeIcon icon={faEye} />}
+              >
+                {close => <ResourceScope onCancel={close} resource={resource} />}
+              </OpenCloseModal>
+            </FeaturePreview>
+          )}
+          {canForce && !forceWrite && (
+            <ConfirmIconButton
+              icon={faPen}
+              title={i18n.modules.resource.info.forceTooltip}
+              onConfirm={toggleForceCb}
+            />
+          )}
+
+          {canForce && forceWrite && <span onClick={toggleForceCb}>done</span>}
           {/* {effectiveReadOnly && !teaser ? (
             <ResourceSettingsModal resource={resource} isButton />
           ) : ( */}
@@ -267,16 +316,7 @@ function ResourceSettingsModal({ resource, onClose }: ResourceSettingsModalProps
   const i18n = useTranslations();
 
   return (
-    <Modal
-      title={i18n.modules.content.documentSettings}
-      showCloseButton
-      className={css({
-        '&:hover': { textDecoration: 'none' },
-        display: 'flex',
-        alignItems: 'center',
-      })}
-      onClose={onClose}
-    >
+    <Modal title={i18n.modules.content.documentSettings} showCloseButton onClose={onClose}>
       {() => <ResourceSettings resource={resource} />}
     </Modal>
   );

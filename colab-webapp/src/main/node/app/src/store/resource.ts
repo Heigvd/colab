@@ -38,32 +38,6 @@ const initialState: ResourceState = {
   allOfProjectStatus: 'NOT_INITIALIZED',
 };
 
-const updateResource = (state: ResourceState, resource: AbstractResource) => {
-  if (resource.id) {
-    state.resources[resource.id] = resource;
-
-    if (resource.cardContentId != null) {
-      const cardContentId = resource.cardContentId;
-      const stateForCardContent = state.byCardContent[cardContentId];
-      if (Array.isArray(stateForCardContent)) {
-        if (stateForCardContent.indexOf(resource.id) < 0) {
-          stateForCardContent.push(resource.id);
-        }
-      }
-    }
-
-    if (resource.abstractCardTypeId != null) {
-      const cardTypeId = resource.abstractCardTypeId;
-      const stateForCardType = state.byCardType[cardTypeId];
-      if (Array.isArray(stateForCardType)) {
-        if (stateForCardType.indexOf(resource.id) < 0) {
-          stateForCardType.push(resource.id);
-        }
-      }
-    }
-  }
-};
-
 const removeResource = (state: ResourceState, resourceId: number) => {
   const resourceOrRef = state.resources[resourceId];
 
@@ -92,6 +66,38 @@ const removeResource = (state: ResourceState, resourceId: number) => {
   }
 
   delete state.resources[resourceId];
+};
+
+const updateResource = (state: ResourceState, resource: AbstractResource) => {
+  if (resource.id) {
+    const currentResource = state.resources[resource.id];
+    if (entityIs(currentResource, 'AbstractResource')) {
+      // remove pre-existing resource cleanly
+      //
+      removeResource(state, currentResource.id!);
+    }
+    state.resources[resource.id] = resource;
+
+    if (resource.cardContentId != null) {
+      const cardContentId = resource.cardContentId;
+      const stateForCardContent = state.byCardContent[cardContentId];
+      if (Array.isArray(stateForCardContent)) {
+        if (stateForCardContent.indexOf(resource.id) < 0) {
+          stateForCardContent.push(resource.id);
+        }
+      }
+    }
+
+    if (resource.abstractCardTypeId != null) {
+      const cardTypeId = resource.abstractCardTypeId;
+      const stateForCardType = state.byCardType[cardTypeId];
+      if (Array.isArray(stateForCardType)) {
+        if (stateForCardType.indexOf(resource.id) < 0) {
+          stateForCardType.push(resource.id);
+        }
+      }
+    }
+  }
 };
 
 const resourcesSlice = createSlice({

@@ -50,7 +50,7 @@ import DocEditorToolbox, {
 } from '../documents/DocumentEditorToolbox';
 import DocumentList from '../documents/DocumentList';
 import { ResourceCallContext } from '../resources/resourcesCommonType';
-import ResourcesMainView from '../resources/ResourcesMainView';
+import ResourcesMainView, { TocDisplayToggler } from '../resources/ResourcesMainView';
 import { ResourceListNb } from '../resources/summary/ResourcesListSummary';
 //import StickyNoteWrapper from '../stickynotes/StickyNoteWrapper';
 import {
@@ -69,6 +69,7 @@ import CardSettings from './CardSettings';
 import CompletionEditor from './CompletionEditor';
 import ContentSubs from './ContentSubs';
 import {
+  Item,
   SideCollapsibleCTX,
   SideCollapsibleMenu,
   SideCollapsiblePanelBody,
@@ -191,7 +192,7 @@ export default function CardEditor({
     cardContentId: variant.id,
     hasSeveralVariants: hasVariants,
   };
-  const sideBarItems = {
+  const sideBarItems: Record<string, Item> = {
     resources: {
       icon: faPaperclip,
       nextToIconElement: (
@@ -202,11 +203,14 @@ export default function CardEditor({
       ),
       title: i18n.modules.resource.documentation,
       nextToTitleElement: (
-        <Tips>
-          {card.cardTypeId
-            ? i18n.modules.resource.docDescriptionWithType
-            : i18n.modules.resource.docDescription}
-        </Tips>
+        <>
+          <Tips>
+            {card.cardTypeId
+              ? i18n.modules.resource.docDescriptionWithType
+              : i18n.modules.resource.docDescription}
+          </Tips>
+          <TocDisplayToggler />
+        </>
       ),
       children: (
         <ResourcesMainView
@@ -278,7 +282,7 @@ export default function CardEditor({
                     color={'var(--darkGray)'}
                   />
                 )}
-                <CardContentStatus mode="semi" status={variant.status}/>
+                <CardContentStatus mode="semi" status={variant.status} />
                 <DiscreetInput
                   value={card.title || ''}
                   placeholder={i18n.modules.card.untitled}
@@ -615,6 +619,7 @@ export default function CardEditor({
           <Collapsible label={i18n.modules.card.subcards}>
             <ContentSubs
               depth={1}
+              mayOrganize={false}
               cardContent={variant}
               className={css({ alignItems: 'flex-start', overflow: 'auto', width: '100%' })}
               subcardsContainerStyle={css({

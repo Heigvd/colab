@@ -13,6 +13,8 @@ import Tips from '../common/element/Tips';
 import Flex from '../common/layout/Flex';
 import { marginAroundStyle, oneLineEllipsis, space_M, space_S } from '../styling/style';
 import { getKey, getTheDirectResource, ResourceAndRef } from './resourcesCommonType';
+import { TocDisplayCtx } from './ResourcesMainView';
+import TargetResourceSummary from './summary/TargetResourceSummary';
 
 /**
  * List of ResourceAndRef grouped by category
@@ -34,12 +36,14 @@ export interface ResourcesListProps {
   resources: ResourceAndRef[];
   selectResource?: (resource: ResourceAndRef) => void;
   displayResourceItem?: (resource: ResourceAndRef) => React.ReactNode;
+  showLocationIcon?: boolean;
 }
 
-export default function ResourcesList({
+function ResourcesListByCategory({
   resources,
   selectResource,
   displayResourceItem,
+  showLocationIcon = true,
 }: ResourcesListProps): JSX.Element {
   const lang = useLanguage();
 
@@ -80,6 +84,7 @@ export default function ResourcesList({
                   resource={resource}
                   selectResource={selectResource}
                   displayResource={displayResourceItem}
+                  showLocationIcon={showLocationIcon}
                 />
               ))}
             </Flex>
@@ -89,10 +94,87 @@ export default function ResourcesList({
   );
 }
 
+function getSourceKey(current: ResourceAndRef) {
+  return (
+    `ct-${current.targetResource.abstractCardTypeId || 'Z'}` +
+    `card-${current.targetResource.cardId || 'Z'}` +
+    `cardC-${current.targetResource.abstractCardTypeId || 'Z'}`
+  );
+}
+
+function ResourcesListBySource({
+  resources,
+  selectResource,
+  displayResourceItem,
+}: ResourcesListProps): JSX.Element {
+  const lang = useLanguage();
+
+  const bySources: Record<string, ResourceAndRef[]> = React.useMemo(() => {
+    const reducedBySource = resources.reduce<Record<string, ResourceAndRef[]>>((acc, current) => {
+      const sourceKey = getSourceKey(current);
+
+      acc[sourceKey] = acc[sourceKey] || [];
+      acc[sourceKey]!.push(current);
+
+      return acc;
+    }, {});
+
+    Object.values(reducedBySource).forEach(list => {
+      list.sort(sortResources(lang));
+    });
+
+    return reducedBySource;
+  }, [resources, lang]);
+
+  return (
+    <Flex
+      direction="column"
+      align="stretch"
+      grow={1}
+      className={css({ overflow: 'auto', paddingRight: '2px' })}
+    >
+      {Object.keys(bySources)
+        .sort()
+        .map(source => (
+          <div key={source} className={marginAroundStyle([3], space_S)}>
+            <TocHeader
+              category={
+                <TargetResourceSummary resource={bySources[source]![0]!} showText="short" />
+              }
+            />
+
+            <Flex className={css({ marginLeft: space_S })} direction="column" align="stretch">
+              <ResourcesListByCategory
+                resources={bySources[source]!}
+                selectResource={selectResource}
+                displayResourceItem={displayResourceItem}
+                showLocationIcon={false}
+              />
+            </Flex>
+          </div>
+        ))}
+    </Flex>
+  );
+}
+
+export default function ResourcesList(props: ResourcesListProps): JSX.Element {
+  const { mode } = React.useContext(TocDisplayCtx);
+
+  return (
+    <Flex direction="column" align="stretch" grow={1}>
+      {mode === 'CATEGORY' ? (
+        <ResourcesListByCategory {...props} />
+      ) : (
+        <ResourcesListBySource {...props} />
+      )}
+    </Flex>
+  );
+}
+
 // ********************************************************************************************** //
 
 interface TocHeaderProps {
-  category: string;
+  category: React.ReactNode;
 }
 
 function TocHeader({ category }: TocHeaderProps): JSX.Element {
@@ -133,9 +215,15 @@ interface TocEntryProps {
   resource: ResourceAndRef;
   selectResource?: (resource: ResourceAndRef) => void;
   displayResource?: (resource: ResourceAndRef) => React.ReactNode;
+  showLocationIcon: boolean;
 }
 
-function TocEntry({ resource, selectResource, displayResource }: TocEntryProps): JSX.Element {
+function TocEntry({
+  resource,
+  selectResource,
+  displayResource,
+  showLocationIcon,
+}: TocEntryProps): JSX.Element {
   const i18n = useTranslations();
 
   const { text: teaser } = useAndLoadTextOfDocument(resource.targetResource.teaserId);
@@ -165,6 +253,11 @@ function TocEntry({ resource, selectResource, displayResource }: TocEntryProps):
                 oneLineEllipsis,
               )}
             >
+              {showLocationIcon && (
+                <>
+                  <TargetResourceSummary resource={resource} />{' '}
+                </>
+              )}
               {resource.targetResource.title || i18n.modules.resource.untitled}
             </div>
           </Flex>

@@ -83,10 +83,10 @@ export default function CardTypeThumbnail({
   return (
     <>
       {isEmpty ? (
-        <Flex title={i18n.common.blank} align="center" justify="center" grow={1}>
+        <Flex title={i18n.common.none} align="center" justify="center" grow={1}>
           <FontAwesomeIcon icon={faFile} size="3x" />
           <div className={css({ paddingLeft: space_M })}>
-            <h3>{i18n.common.blank}</h3>
+            <h3>{i18n.common.none}</h3>
           </div>
         </Flex>
       ) : (

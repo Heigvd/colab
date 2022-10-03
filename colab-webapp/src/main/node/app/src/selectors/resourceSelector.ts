@@ -327,3 +327,23 @@ export function useAndLoadResourceCategories(): {
     return { categories: [], status };
   }
 }
+
+export function useAndLoadProjectResourcesStatus(): {
+  status: AvailabilityStatus;
+} {
+  const dispatch = useAppDispatch();
+
+  const status = useAppSelector(state => state.resources.allOfProjectStatus);
+  const { project } = useProjectBeingEdited();
+  React.useEffect(() => {
+    if (status === 'NOT_INITIALIZED' && project) {
+      dispatch(API.getDirectResourcesOfProject(project));
+    }
+  }, [dispatch, project, status]);
+
+  if (status === 'READY') {
+    return { status };
+  } else {
+    return { status };
+  }
+}

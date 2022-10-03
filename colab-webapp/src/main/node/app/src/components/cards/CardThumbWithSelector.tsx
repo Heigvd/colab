@@ -14,12 +14,14 @@ interface CardThumbWithSelectorProps {
   className?: string;
   card: Card;
   depth?: number;
+  mayOrganize?: boolean;
 }
 
 export default function CardThumbWithSelector({
   card,
   className,
   depth = 1,
+  mayOrganize,
 }: CardThumbWithSelectorProps): JSX.Element {
   if (card.id == null) {
     return <i>Card without id is invalid...</i>;
@@ -34,6 +36,7 @@ export default function CardThumbWithSelector({
               variants={list}
               showSubcards={true}
               depth={depth}
+              mayOrganize={mayOrganize}
             />
           </>
         )}

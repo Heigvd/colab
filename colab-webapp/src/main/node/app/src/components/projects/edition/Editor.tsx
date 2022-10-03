@@ -34,7 +34,6 @@ import { useAppDispatch, useAppSelector } from '../../../store/hooks';
 import Admin from '../../admin/Admin';
 import CardEditor from '../../cards/CardEditor';
 import CardThumbWithSelector from '../../cards/CardThumbWithSelector';
-import ProjectCardTypeList from '../../cards/cardtypes/ProjectCardTypeList';
 import ContentSubs from '../../cards/ContentSubs';
 import IconButton from '../../common/element/IconButton';
 import IllustrationDisplay, {
@@ -56,6 +55,7 @@ import {
   space_M,
   space_S,
 } from '../../styling/style';
+import DocumentationTab from '../DocumentationTab';
 import Presence from '../presence/Presence';
 import { PresenceContext, usePresenceContext } from '../presence/PresenceContext';
 import { defaultProjectIllustration } from '../ProjectCommon';
@@ -98,7 +98,7 @@ function parentPathFn() {
 }
 
 function cardThumbFactory(card: Card) {
-  return <CardThumbWithSelector depth={2} card={card} />;
+  return <CardThumbWithSelector depth={2} card={card} mayOrganize />;
 }
 const Ancestor = ({ card, content, last }: Ancestor): JSX.Element => {
   const i18n = useTranslations();
@@ -282,6 +282,13 @@ interface EditorNavProps {
   setShowProjectDetails: (value: React.SetStateAction<boolean>) => void;
 }
 
+const pictoLinkStyle = cx(
+  mainMenuLink,
+  css({
+    padding: '8px 15px',
+  }),
+);
+
 function EditorNav({ project, setShowProjectDetails }: EditorNavProps): JSX.Element {
   const i18n = useTranslations();
   const navigate = useNavigate();
@@ -296,31 +303,28 @@ function EditorNav({ project, setShowProjectDetails }: EditorNavProps): JSX.Elem
             display: 'inline-grid',
             gridTemplateColumns: '1fr 3fr 1fr',
             flexGrow: 0,
-            padding: `0 ${space_M}`,
+            padding: `0 ${space_M} 0 0`,
             //backgroundColor: 'var(--hoverBgColor)',
           }),
         )}
       >
         <Flex align="center">
-          <Clickable
-            title={i18n.common.action.backToProjects}
-            onClick={event => {
-              event.preventDefault();
-              navigate('../../');
-              dispatch(API.closeCurrentProject());
-            }}
-          >
-            <Picto
-              className={css({
-                height: '22px',
-                width: 'auto',
-                paddingRight: space_M,
-                paddingTop: '0px',
-                paddingBottom: '0px',
-                paddingLeft: space_S,
-              })}
-            />
-          </Clickable>
+          <MainMenuLink className={pictoLinkStyle} to="../..">
+            <span
+              title={i18n.common.action.backToProjects}
+              onClickCapture={() => {
+                dispatch(API.closeCurrentProject());
+              }}
+            >
+              <Picto
+                className={css({
+                  height: '30px',
+                  width: 'auto',
+                  padding: '0',
+                })}
+              />
+            </span>
+          </MainMenuLink>
           <Flex
             className={css({
               borderLeft: '1px solid var(--lightGray)',
@@ -356,7 +360,7 @@ function EditorNav({ project, setShowProjectDetails }: EditorNavProps): JSX.Elem
               />
             </MainMenuLink>
           </Flex>
-          <MainMenuLink to="./project-documentation">
+          <MainMenuLink to="./docs">
             <FontAwesomeIcon
               icon={faBookOpen}
               title={i18n.modules.project.settings.resources.label}
@@ -424,7 +428,7 @@ function RootView({ rootContent }: { rootContent: CardContent | null | undefined
   return (
     <div>
       {rootContent != null ? (
-        <ContentSubs showEmptiness={true} depth={depthMax} cardContent={rootContent} />
+        <ContentSubs showEmptiness={true} depth={depthMax} cardContent={rootContent} mayOrganize />
       ) : (
         <InlineLoading />
       )}
@@ -544,7 +548,7 @@ export default function Editor(): JSX.Element {
               <Route path="team" element={<Team project={project} />} />
               <Route path="hierarchy" element={<Hierarchy rootId={root.id} />} />
               <Route path="flow" element={<ActivityFlowChart />} />
-              <Route path="project-documentation/*" element={<ProjectCardTypeList />} />
+              <Route path="docs/*" element={<DocumentationTab project={project} />} />
               <Route path="card/:id" element={<DefaultVariantDetector />} />
               {/* Zooom on a card */}
               <Route

@@ -385,6 +385,7 @@ export default function ActivityFlowChart(): JSX.Element {
           delete plumbRefs.current.connections[key];
         }
       });
+      jsPlumb.repaintEverything();
     }
   }, [jsPlumb, rootNode, links]);
 
@@ -399,12 +400,17 @@ export default function ActivityFlowChart(): JSX.Element {
   }, [jsPlumb]);
 
   React.useEffect(() => {
-    const r = reflow;
-    window.addEventListener('resize', r);
-    () => {
-      window.removeEventListener('resize', r);
-    };
-  }, [reflow]);
+    if (rootNode) {
+      const r = reflow;
+      const ro = new ResizeObserver(() => {
+        r();
+      });
+      ro.observe(rootNode);
+      () => {
+        ro.disconnect();
+      };
+    }
+  }, [reflow, rootNode]);
 
   if (status === 'READY' && project == null) {
     return <i>Error: no project selected</i>;

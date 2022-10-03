@@ -26,6 +26,7 @@ export type FlexProps = DivProps & {
   align?:
     | 'center'
     | 'stretch'
+    | 'baseline'
     | 'flex-start'
     | 'flex-end'
     | 'self-start'

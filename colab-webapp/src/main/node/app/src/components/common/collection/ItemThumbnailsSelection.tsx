@@ -10,7 +10,7 @@ import * as React from 'react';
 import { borderRadius, space_S } from '../../styling/style';
 import Thumbnail from './Thumbnail';
 
-const defaultThumbnailStyle = css({
+export const defaultThumbnailStyle = css({
   display: 'flex',
   outline: '4px solid transparent',
   outlineOffset: '-1px',

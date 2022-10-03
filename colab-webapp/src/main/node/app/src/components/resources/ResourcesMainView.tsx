@@ -10,6 +10,7 @@ import * as React from 'react';
 import useTranslations from '../../i18n/I18nContext';
 import { useAndLoadResources } from '../../selectors/resourceSelector';
 import AvailabilityStatusIndicator from '../common/element/AvailabilityStatusIndicator';
+import DropDownMenu from '../common/layout/DropDownMenu';
 import Flex from '../common/layout/Flex';
 import { lightIconButtonStyle, space_S } from '../styling/style';
 import HidenResourcesKeeper from './HidenResourcesKeeper';
@@ -22,6 +23,38 @@ import {
   ResourceCallContext,
 } from './resourcesCommonType';
 import ResourcesList from './ResourcesList';
+
+export type TocMode = 'CATEGORY' | 'SOURCE';
+
+export interface TocDisplayContext {
+  mode: TocMode;
+  setMode: (newMode: TocMode) => void;
+}
+
+export const TocDisplayCtx = React.createContext<TocDisplayContext>({
+  mode: 'CATEGORY',
+  setMode: () => {},
+});
+
+export function TocDisplayToggler(): JSX.Element {
+  const i18n = useTranslations();
+  const { mode, setMode } = React.useContext(TocDisplayCtx);
+
+  const entries: { value: TocMode; label: React.ReactNode }[] = [
+    {value: 'CATEGORY', label: <div>{i18n.modules.resource.sortByCategory}</div> },
+    {value: 'SOURCE', label: <div>{i18n.modules.resource.sortByProvider}</div> },
+  ];
+
+  return (
+    <DropDownMenu
+      value={mode}
+      entries={entries}
+      onSelect={entry => setMode(entry.value)}
+      //idleHoverStyle="BACKGROUND"
+      menuIcon='CARET'
+    />
+  );
+}
 
 /**
  * Main component to show resources.

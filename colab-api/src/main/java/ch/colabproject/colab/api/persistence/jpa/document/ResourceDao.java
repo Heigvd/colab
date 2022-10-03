@@ -11,6 +11,7 @@ import ch.colabproject.colab.api.model.document.AbstractResource;
 import ch.colabproject.colab.api.model.document.Resource;
 import ch.colabproject.colab.api.model.document.ResourceRef;
 import java.util.List;
+import java.util.stream.Collectors;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -53,7 +54,7 @@ public class ResourceDao {
     }
 
     /**
-     * Retrieve the card type references that have the given target
+     * Retrieve the resources references that have the given target
      *
      * @param target the target
      *
@@ -68,6 +69,26 @@ public class ResourceDao {
         query.setParameter("targetId", target.getId());
 
         return query.getResultList();
+    }
+
+    /**
+     * Retrieve all resources which transitively references the given target
+     *
+     * @param target the target
+     *
+     * @return the matching references
+     */
+    public List<ResourceRef> findAllReferences(AbstractResource target) {
+        logger.debug("find all references to the target {}", target);
+        // first, fetch direct references
+        List<ResourceRef> list = findDirectReferences(target);
+
+        // and recurse
+        list.addAll(list.stream().flatMap(res -> {
+            return findAllReferences(res).stream();
+        }).collect(Collectors.toList()));
+
+        return list;
     }
 
     /**

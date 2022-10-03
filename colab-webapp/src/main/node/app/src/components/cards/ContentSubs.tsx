@@ -14,8 +14,11 @@ import useTranslations from '../../i18n/I18nContext';
 import { useAndLoadSubCards } from '../../selectors/cardSelector';
 import Button from '../common/element/Button';
 import InlineLoading from '../common/element/InlineLoading';
+import { WIPContainer } from '../common/element/Tips';
+import Toggler from '../common/element/Toggler';
 import Ellipsis from '../common/layout/Ellipsis';
 import Flex from '../common/layout/Flex';
+import GridOrganizer from '../debugger/GridOrganizer';
 import { depthMax } from '../projects/edition/Editor';
 import { fixedButtonStyle, voidStyle } from '../styling/style';
 import CardCreator from './CardCreator';
@@ -30,6 +33,7 @@ interface ContentSubsProps {
   showEmptiness?: boolean;
   className?: string;
   subcardsContainerStyle?: string;
+  mayOrganize?: boolean;
 }
 /* const tinyCard = css({
   width: '30px',
@@ -83,9 +87,12 @@ export default function ContentSubs({
   showEmptiness = false,
   className,
   subcardsContainerStyle,
+  mayOrganize = false,
 }: ContentSubsProps): JSX.Element {
   const location = useLocation();
   const i18n = useTranslations();
+
+  const [organize, setOrganize] = React.useState(false);
 
   const subCards = useAndLoadSubCards(cardContent.id);
 
@@ -145,34 +152,76 @@ export default function ContentSubs({
             className,
           )}
         >
-          <div className={cx(gridCardsStyle(indexedSubCards.max), subcardsContainerStyle)}>
-            {indexedSubCards.subCardWithIndex.map(({ card, row, column }) => (
-              <CardThumbWithSelector
-                className={css({
-                  gridColumn: column,
-                  gridRow: row,
-                  maxHeight: '100%',
-                })}
-                depth={depth - 1}
-                key={card.id}
-                card={card}
+          {mayOrganize && (
+            <WIPContainer>
+              <Toggler
+                className={css({ alignSelf: 'flex-end' })}
+                label={i18n.modules.card.positionning.toggleText}
+                value={organize}
+                onChange={setOrganize}
               />
-            ))}
-          </div>
-          <Flex justify="center">
-            <CardCreator
-              parentCardContent={cardContent}
-              customButton={
-                depth === depthMax ? (
-                  location.pathname.match(/card\/\d+\/v\/\d+/) ? undefined : (
-                    <Button icon={faPlus} className={fixedButtonStyle} clickable>
-                      {i18n.modules.card.createCard}
-                    </Button>
-                  )
-                ) : undefined
-              }
+            </WIPContainer>
+          )}
+          {organize ? (
+            <GridOrganizer
+              cells={indexedSubCards.subCardWithIndex.map(iCard => ({
+                height: 1,
+                width: 1,
+                id: iCard.card.id!,
+                x: iCard.column,
+                y: iCard.row,
+                card: iCard.card,
+              }))}
+              gap="6px"
+              handleSize="33px"
+              onResize={() => {}}
+              background={cell => {
+                return (
+                  <CardThumbWithSelector
+                    className={css({
+                      height: '100%',
+                      minHeight: '100px',
+                      margin: 0,
+                    })}
+                    depth={0}
+                    key={cell.card.id}
+                    card={cell.card}
+                  />
+                );
+              }}
             />
-          </Flex>
+          ) : (
+            <>
+              <div className={cx(gridCardsStyle(indexedSubCards.max), subcardsContainerStyle)}>
+                {indexedSubCards.subCardWithIndex.map(({ card, row, column }) => (
+                  <CardThumbWithSelector
+                    className={css({
+                      gridColumn: column,
+                      gridRow: row,
+                      maxHeight: '100%',
+                    })}
+                    depth={depth - 1}
+                    key={card.id}
+                    card={card}
+                  />
+                ))}
+              </div>
+              <Flex justify="center">
+                <CardCreator
+                  parentCardContent={cardContent}
+                  customButton={
+                    depth === depthMax ? (
+                      location.pathname.match(/card\/\d+\/v\/\d+/) ? undefined : (
+                        <Button icon={faPlus} className={fixedButtonStyle} clickable>
+                          {i18n.modules.card.createCard}
+                        </Button>
+                      )
+                    ) : undefined
+                  }
+                />
+              </Flex>
+            </>
+          )}
         </div>
       ) : (
         <Ellipsis

@@ -81,6 +81,7 @@ export interface CardThumbProps {
   variants: CardContent[];
   showSubcards?: boolean;
   depth?: number;
+  mayOrganize?: boolean;
 }
 
 export default function CardThumb({
@@ -89,6 +90,7 @@ export default function CardThumb({
   showSubcards = true,
   variant,
   variants,
+  mayOrganize,
 }: CardThumbProps): JSX.Element {
   const i18n = useTranslations();
   const dispatch = useAppDispatch();
@@ -405,7 +407,7 @@ export default function CardThumb({
           >
             {showSubcards ? (
               variant != null ? (
-                <ContentSubs depth={depth} cardContent={variant} />
+                <ContentSubs depth={depth} cardContent={variant} mayOrganize={mayOrganize} />
               ) : (
                 <i>{i18n.modules.content.none}</i>
               )

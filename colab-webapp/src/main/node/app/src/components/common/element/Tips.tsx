@@ -12,10 +12,11 @@ import { faGhost, faStethoscope, faTools } from '@fortawesome/free-solid-svg-ico
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import * as React from 'react';
 import useTranslations from '../../../i18n/I18nContext';
-import { lightIconButtonStyle, space_S, textSmall } from '../../styling/style';
+import { space_S } from '../../styling/style';
 import Checkbox from './Checkbox';
+import { overlayStyle } from './Tooltip';
 
-export type TipsType = 'TODO' | 'NEWS' | 'TIPS' | 'WIP' | 'DEBUG';
+export type TipsType = 'TODO' | 'NEWS' | 'TIPS' | 'WIP' | 'DEBUG' | 'FEATURE_PREVIEW';
 
 export type TipsConfig = Record<TipsType, boolean>;
 export type TipsContextType = Record<
@@ -37,6 +38,10 @@ export const TipsCtx = React.createContext<TipsContextType>({
     set: () => {},
   },
   WIP: {
+    value: false,
+    set: () => {},
+  },
+  FEATURE_PREVIEW: {
     value: false,
     set: () => {},
   },
@@ -79,26 +84,6 @@ function getStyle(t: TipsProps['interactionType']) {
 
 const iconStyle = css({ padding: space_S });
 
-const ttWidth = 200;
-const ttPadding = 10;
-
-const fullWidth = ttWidth + 2 * ttPadding;
-
-function overlayStyle(coord: [number, number]) {
-  const x = window.innerWidth < coord[0] + fullWidth ? window.innerWidth - fullWidth - 5 : coord[0];
-  return css({
-    position: 'fixed',
-    left: x,
-    top: coord[1],
-    padding: `${ttPadding}px`,
-    border: '1px solid ',
-    backgroundColor: 'var(--bgColor)',
-    width: `${ttWidth}px`,
-    zIndex: 1,
-    whiteSpace: 'initial',
-  });
-}
-
 export function TipsSettings(): JSX.Element {
   const i18n = useTranslations();
 
@@ -128,6 +113,18 @@ export function TipsSettings(): JSX.Element {
         <Tips tipsType="NEWS">
           <h4>{i18n.tips.example.news.title}</h4>
           {i18n.tips.example.news.content}
+        </Tips>
+      </div>
+      <div>
+        <Checkbox
+          label={i18n.tips.label.feature_preview}
+          value={config.FEATURE_PREVIEW.value}
+          onChange={config.FEATURE_PREVIEW.set}
+          className={css({ display: 'inline-block', marginRight: space_S })}
+        />
+        <Tips tipsType="FEATURE_PREVIEW">
+          <h4>{i18n.tips.example.feature_preview.title}</h4>
+          {i18n.tips.example.feature_preview.content}
         </Tips>
       </div>
       <div>
@@ -257,6 +254,16 @@ export default function Tips({
   }
 }
 
+export function FeaturePreview({ children }: TipsProps): JSX.Element {
+  const config = React.useContext(TipsCtx);
+
+  if (config['FEATURE_PREVIEW'].value) {
+    return <>{children}</>;
+  } else {
+    return <></>;
+  }
+}
+
 export function WIPContainer({ children }: TipsProps): JSX.Element {
   const i18n = useTranslations();
 
@@ -264,10 +271,13 @@ export function WIPContainer({ children }: TipsProps): JSX.Element {
 
   if (config['WIP'].value) {
     return (
-      <>
-        <p className={cx(textSmall, lightIconButtonStyle)}>--- {i18n.tips.info.wip} ---</p>
+      <span
+        title={i18n.tips.info.wip}
+        className={css({ display: 'contents', '& > *': { boxShadow: '0 0 20px 2px yellow' } })}
+      >
+        {/*<p className={cx(textSmall, lightIconButtonStyle)}>--- {i18n.tips.info.wip} ---</p>*/}
         {children}
-      </>
+      </span>
     );
   } else {
     return <></>;

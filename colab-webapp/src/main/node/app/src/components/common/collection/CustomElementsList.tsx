@@ -8,14 +8,12 @@
 import { css } from '@emotion/css';
 import { uniq } from 'lodash';
 import * as React from 'react';
-import { AvailabilityStatus } from '../../../store/store';
 import FilterableList from './FilterableList';
 import ItemThumbnailsSelection from './ItemThumbnailsSelection';
 
 interface CustomElementsListProps<T> {
   thumbnailContent: (item: T | null, highlighted: boolean) => React.ReactNode;
   items: T[];
-  loadingStatus: AvailabilityStatus;
   customThumbnailStyle?: string;
   customSelectedClassName?: string;
   customListClassName?: string;
@@ -34,7 +32,6 @@ export default function CustomElementsList<
 >({
   thumbnailContent,
   items,
-  loadingStatus,
   customThumbnailStyle,
   customSelectedClassName,
   customListClassName,
@@ -44,16 +41,25 @@ export default function CustomElementsList<
   customOnDblClick,
   selectionnable = true,
 }: CustomElementsListProps<T>): JSX.Element {
+
+
   const tags = uniq([...items].flatMap(it => (it ? it.tags : [])));
-  const [tagState, setTagState] = React.useState<Record<string, boolean> | undefined>();
-  const [selectAllTags, setSelectAllTags] = React.useState<boolean>(true);
+  const [tagState, setTagState] = React.useState<Record<string, boolean>>({});
+  //const [selectAllTags, setSelectAllTags] = React.useState<boolean>(true);
+
+
   const [selectedElement, setSelectedElement] = React.useState<number | null>(null);
-  const eTags = Object.keys(tagState || []).filter(tag => tagState && tagState[tag]);
-  const elementsFilteredByTag = items.filter(it => it.tags.find(tag => eTags.includes(tag)));
+
+
+  const activeTags = Object.keys(tagState || []).filter(tag => tagState[tag]);
+
+  const elementsFilteredByTag = activeTags.length > 0 ?
+  items.filter(it => it.tags.find(tag => activeTags.includes(tag)))
+  : items;
 
   const toggleAllTags = React.useCallback(
     (val: boolean) => {
-      setSelectAllTags(val);
+      //setSelectAllTags(val);
       setTagState(
         tags.reduce<Record<string, boolean>>((acc, cur) => {
           acc[cur] = val;
@@ -63,13 +69,6 @@ export default function CustomElementsList<
     },
     [tags],
   );
-
-  React.useEffect(() => {
-    if (loadingStatus === 'READY') {
-      toggleAllTags(true);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [loadingStatus /* no effect when toggleAllTags changes */]);
 
   const onSelect = React.useCallback(
     (value: T | null) => {
@@ -115,7 +114,6 @@ export default function CustomElementsList<
             })
           }
           tagState={tagState}
-          stateSelectAll={selectAllTags}
           toggleAllTags={toggleAllTags}
           tagClassName={customTagClassName}
           className={css({
