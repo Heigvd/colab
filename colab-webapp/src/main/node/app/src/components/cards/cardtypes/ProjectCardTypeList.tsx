@@ -54,7 +54,7 @@ export default function ProjectCardTypeList(): JSX.Element {
     if (lastCreated) {
       projectCardTypes.forEach(cardType => {
         if (cardType.id === lastCreated) {
-          navigate(`./editt/${cardType.id}`);
+          navigate(`./edit/${cardType.id}`);
           setLastCreated(null);
         }
       });
