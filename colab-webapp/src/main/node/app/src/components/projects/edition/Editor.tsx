@@ -329,6 +329,7 @@ function EditorNav({ project, setShowProjectDetails }: EditorNavProps): JSX.Elem
             className={css({
               borderLeft: '1px solid var(--lightGray)',
               borderRight: '1px solid var(--lightGray)',
+              padding: '0 ' + space_S,
               marginRight: space_S,
             })}
             wrap="nowrap"
