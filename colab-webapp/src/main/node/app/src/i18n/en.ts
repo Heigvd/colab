@@ -355,8 +355,10 @@ export const en = {
       involvements: 'Involvements',
       completion: 'Completion',
       position: 'Position',
-      positionning: {
+      positioning: {
         toggleText: 'Organize cards',
+        width: 'Width',
+        height: 'Height',
       },
       showCardType: 'Show theme description',
       editCompletion: 'Edit card completion',

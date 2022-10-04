@@ -19,6 +19,7 @@ import {
   DuplicationParam,
   entityIs,
   ErrorHandler,
+  GridPosition,
   HierarchicalPosition,
   HttpSession,
   InvolvementLevel,
@@ -811,11 +812,11 @@ export const updateCard = createAsyncThunk('card/update', async (card: Card) => 
   await restClient.CardRestEndpoint.updateCard(card);
 });
 
-export const changeCardIndex = createAsyncThunk(
+export const changeCardPosition = createAsyncThunk(
   'card/changecardindex',
-  async ({ cardId, newIndex }: { cardId: number; newIndex: number }) => {
+  async ({ cardId, newPosition }: { cardId: number; newPosition: GridPosition }) => {
     // change the index and review other cards index
-    await restClient.CardRestEndpoint.changeCardIndex(cardId, newIndex);
+    await restClient.CardRestEndpoint.changeCardPosition(cardId, newPosition);
   },
 );
 

@@ -5,23 +5,261 @@
  * Licensed under the MIT License
  */
 
-import {ClassNamesArg, css, cx} from '@emotion/css';
-import {faBan} from '@fortawesome/free-solid-svg-icons';
-import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
-import {isEqual} from 'lodash';
+import { ClassNamesArg, css, cx } from '@emotion/css';
+import { faBan } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { GridPosition } from 'colab-rest-client';
+import { isEqual } from 'lodash';
 import * as React from 'react';
-import logger from '../../logger';
+import { getLogger } from '../../logger';
+
+const logger = getLogger('GridOrganizer');
 
 const handles = ['N', 'S', 'E', 'W', 'NE', 'SE', 'NW', 'SW', 'M'] as const;
 
 type Handle = typeof handles[number];
 
-export interface Cell {
+export interface Cell<T> extends GridPosition {
   id: number;
+  payload: T;
+}
+
+interface Extent {
+  minX: number;
+  maxX: number;
+  minY: number;
+  maxY: number;
+}
+
+function computeExtent<T>(cells: Cell<T>[]): Extent {
+  return cells.reduce<Extent>(
+    (extent, cell) => {
+      extent.minX = Math.min(extent.minX, cell.x);
+      extent.minY = Math.min(extent.minY, cell.y);
+
+      extent.maxX = Math.max(extent.maxX, cell.x + cell.width - 1);
+      extent.maxY = Math.max(extent.maxY, cell.y + cell.height - 1);
+      return extent;
+    },
+    {
+      minX: Infinity,
+      minY: Infinity,
+      maxX: -Infinity,
+      maxY: -Infinity,
+    },
+  );
+}
+
+type Matrix = (number | undefined)[][];
+
+/**
+ * return a nbColumn x nbRow matric
+ */
+function getEmptyMatrix(nbColumn: number, nbRow: number): Matrix {
+  const matrix = Array.from<(number | undefined)[]>({ length: nbColumn });
+  matrix.forEach((_, i) => {
+    matrix[i] = Array.from<number | undefined>({ length: nbRow }).fill(undefined);
+  });
+  return matrix;
+  return [];
+}
+
+interface Shift {
   x: number;
   y: number;
-  width: number;
-  height: number;
+}
+
+function markPosition<T>(matrix: Matrix, cell: Cell<T>, shift: Shift) {
+  const x = cell.x + shift.x - 1; // -1 because matrix starts at 0
+  const y = cell.y + shift.y - 1; // -1 because matrix starts at 0
+
+  for (let i = 0; i < cell.width; i++) {
+    for (let j = 0; j < cell.height; j++) {
+      logger.debug('Fill: ', x, y, i, j);
+      const column = matrix[x + i];
+      if (column == null) {
+        matrix[x + i] = [];
+      }
+      matrix[x + i]![y + j] = cell.id;
+    }
+  }
+  const nbRow = matrix.reduce((maxRow, currentColun) => Math.max(maxRow, currentColun.length), 0);
+
+  matrix.forEach(column => {
+    if (column.length < nbRow) {
+      column[nbRow - 1] = undefined;
+    }
+  });
+}
+
+function initMatrix<T>(matrix: Matrix, cells: Cell<T>[], shift: Shift) {
+  cells.forEach(cell => {
+    markPosition(matrix, cell, shift);
+  });
+
+  return matrix;
+}
+
+function isFree<T>(matrix: Matrix, cell: Cell<T>, shift: Shift): boolean {
+  const xMin = cell.x + shift.x;
+  const xMax = xMin + cell.width - 1;
+
+  const yMin = cell.y + shift.y;
+  const yMax = yMin + cell.height - 1;
+
+  for (let x = xMin - 1 /* grid start at 1, matrix at 0 */; x < xMax; x++) {
+    const line = matrix[x];
+    if (line) {
+      for (let y = yMin - 1 /** the same */; y < yMax; y++) {
+        if (line[y] != null && line[y] !== cell.id) {
+          return false;
+        }
+      }
+    }
+  }
+  return true;
+}
+
+interface Coord {
+  x: number;
+  y: number;
+}
+
+function findLastOccupiedCell(matrix: Matrix): Coord | undefined {
+  const nbRow = matrix[0]?.length;
+  if (nbRow != null) {
+    for (let y = nbRow - 1; y >= 0; y--) {
+      for (let x = matrix.length - 1; x >= 0; x--) {
+        const column = matrix[x];
+        if (column && column[y] != null) {
+          return { x, y };
+        }
+      }
+    }
+  }
+
+  return undefined;
+}
+
+function findLastOccupiedColumn(matrix: Matrix): number | undefined {
+  for (let x = matrix.length - 1; x >= 0; x--) {
+    const column = matrix[x];
+    if (column != null) {
+      for (let y = column.length - 1; y >= 0; y--) {
+        if (column[y] != null) {
+          return x;
+        }
+      }
+    }
+  }
+
+  return undefined;
+}
+
+/**
+ * Retrun a new cell with valid position
+ */
+function findPosition<T>(matrix: Matrix, cell: Cell<T>, shift: Shift): Cell<T> {
+  const lastOccupiedCoord = findLastOccupiedCell(matrix);
+  const lastOccupiedColumn = findLastOccupiedColumn(matrix) || -1;
+
+  logger.debug('Last Occupied coord', lastOccupiedCoord);
+  logger.debug('Last Occupied columns', lastOccupiedColumn);
+
+  // defaut use first celll
+  const coord = { x: 0, y: 0 };
+  if (lastOccupiedCoord != null) {
+    if (cell.width === 1 && cell.height === 1) {
+      if (lastOccupiedCoord.x < lastOccupiedColumn || lastOccupiedColumn < 2) {
+        // enough free space on the line
+        coord.x = lastOccupiedCoord.x + 1;
+        coord.y = lastOccupiedCoord.y;
+      } else {
+        // end of line => create new line
+        coord.x = 0;
+        coord.y = lastOccupiedCoord.y + 1;
+      }
+    } else if (cell.height > cell.width) {
+      // tall cell => add on top right
+      const column = findLastOccupiedColumn(matrix) || -1;
+      coord.x = column + 1;
+      coord.y = 0;
+    } else {
+      // wide or square cell
+      // add to bottom left
+      coord.x = 0;
+      coord.y = lastOccupiedCoord.y + 1;
+    }
+  }
+  // convert matrix coord to grid
+  return { ...cell, x: coord.x - shift.x + 1, y: coord.y - shift.y + 1 };
+}
+
+export function fixGrid<T>(cells: Readonly<Cell<T>>[]): { cells: Cell<T>[]; nbColumns: number } {
+  const extent = computeExtent(cells);
+
+  const shift = {
+    x: 1 - extent.minX,
+    y: 1 - extent.minY,
+  };
+
+  const nbColumn = Math.max(3, extent.maxX - extent.minX + 1);
+  const nbRow = Math.max(3, extent.maxY - extent.minY + 1);
+
+  const matrix = getEmptyMatrix(nbColumn, nbRow);
+
+  // process cell in fixed order to fix position always in the same way
+  const sortedList: Cell<T>[] = [...cells].sort((a, b) => {
+    const sameWidth = a.width === b.width;
+    const sameHeight = a.height === b.height;
+
+    const aArea = a.width * a.height;
+    const bArea = b.width * b.height;
+
+    if (sameHeight && sameWidth) {
+      // same size: sort by id
+      return a.id - b.id;
+    } else if (sameWidth) {
+      // same heigth, sort short to tall
+      return a.height - b.height;
+    } else if (sameHeight) {
+      // same heigth, sort thin to thick
+      return a.width - b.width;
+    } else if (aArea === bArea) {
+      // same area, different shape (eg 3x2 vs 2x3)
+      // same heigth, sort short to tall
+      return a.height - b.width;
+    } else {
+      // differant area, sort smaller first
+      return aArea - bArea;
+    }
+  });
+
+  const result: Cell<T>[] = [];
+  const conflictual: Cell<T>[] = [];
+
+  sortedList.forEach(cell => {
+    if (isFree(matrix, cell, shift)) {
+      markPosition(matrix, cell, shift);
+      result.push(cell);
+    } else {
+      conflictual.push(cell);
+    }
+  });
+
+  conflictual.forEach(cCell => {
+    logger.info('Resolve ', cCell);
+    const newPos = findPosition(matrix, cCell, shift);
+    markPosition(matrix, newPos, shift);
+    result.push(newPos);
+  });
+
+  const finalNbColumns = (findLastOccupiedColumn(matrix) || 2) + 1;
+
+  return {
+    cells: result,
+    nbColumns: finalNbColumns,
+  };
 }
 
 interface Idle {
@@ -29,34 +267,34 @@ interface Idle {
   tmpCell: undefined;
 }
 
-interface Move<T extends Cell> {
+interface Move<T> {
   status: 'move';
   mode: 'M';
   cellColumn: number;
   cellRow: number;
-  cell: T;
+  cell: Cell<T>;
   inCellDelta: {
     x: number;
     y: number;
   };
-  tmpCell: Cell | undefined;
+  tmpCell: Cell<void> | undefined;
 }
 
-interface Resize<T extends Cell> {
+interface Resize<T> {
   status: 'resize';
   mode: Omit<Handle, 'M'>;
   anchorColumn: number;
   anchorRow: number;
-  cell: T;
-  tmpCell: Cell | undefined;
+  cell: Cell<T>;
+  tmpCell: Cell<void> | undefined;
 }
 
-type DndRef<T extends Cell> = Idle | Move<T> | Resize<T>;
+type DndRef<T> = Idle | Move<T> | Resize<T>;
 
-const findCell = <T extends Cell>(
+function findCell<T>(
   e: EventTarget,
-  cells: T[],
-): {x: number; y: number; cell: T | undefined} | undefined => {
+  cells: Cell<T>[],
+): { x: number; y: number; cell: Cell<T> | undefined } | undefined {
   if (e instanceof Element) {
     const cell = e.closest('.Cell');
     if (cell) {
@@ -70,9 +308,9 @@ const findCell = <T extends Cell>(
     }
     return undefined;
   }
-};
+}
 
-const findCoordinate = (e: EventTarget): {x: number; y: number} | undefined => {
+const findCoordinate = (e: EventTarget): { x: number; y: number } | undefined => {
   if (e instanceof Element) {
     const cell = e.closest('.InvisibleCell');
     if (cell) {
@@ -111,7 +349,7 @@ const invalidIconStyle = css({
   maxWidth: '66px',
 });
 
-function computeCellStyle(cell: Cell, shiftX: number, shiftY: number) {
+function computeCellStyle<T>(cell: Cell<T>, shiftX: number, shiftY: number) {
   const x = cell.x + shiftX;
   const y = cell.y + shiftY;
 
@@ -173,17 +411,17 @@ const handleStyle = cx(
 );
 
 const cursors: Record<Handle, ClassNamesArg> = {
-  NW: css({cursor: 'nw-resize'}),
-  N: css({cursor: 'n-resize'}),
-  NE: css({cursor: 'ne-resize'}),
+  NW: css({ cursor: 'nw-resize' }),
+  N: css({ cursor: 'n-resize' }),
+  NE: css({ cursor: 'ne-resize' }),
 
-  W: css({cursor: 'w-resize'}),
-  M: css({cursor: 'grab'}),
-  E: css({cursor: 'e-resize'}),
+  W: css({ cursor: 'w-resize' }),
+  M: css({ cursor: 'grab' }),
+  E: css({ cursor: 'e-resize' }),
 
-  SW: css({cursor: 'sw-resize'}),
-  S: css({cursor: 's-resize'}),
-  SE: css({cursor: 'se-resize'}),
+  SW: css({ cursor: 'sw-resize' }),
+  S: css({ cursor: 's-resize' }),
+  SE: css({ cursor: 'se-resize' }),
 };
 
 const topLeftStyle = cx(handleStyle, cursors.NW);
@@ -242,21 +480,15 @@ function stopPropagation(e: React.MouseEvent) {
   e.stopPropagation();
 }
 
-interface CellDisplayProps<T extends Cell> {
-  cell: T;
+interface CellDisplayProps<T> {
+  cell: Cell<T>;
   shiftX: number;
   shiftY: number;
   handleSize?: string;
-  background: (cell: T) => React.ReactNode;
+  background: (cell: Cell<T>) => React.ReactNode;
 }
 
-function CellDisplay<T extends Cell>({
-  cell,
-  shiftX,
-  shiftY,
-  background,
-  handleSize,
-}: CellDisplayProps<T>) {
+function CellDisplay<T>({ cell, shiftX, shiftY, background, handleSize }: CellDisplayProps<T>) {
   return (
     <div
       className={computeCellStyle(cell, shiftX, shiftY)}
@@ -287,24 +519,24 @@ interface VoidDisplayProps {
   y: number;
 }
 
-function VoidDisplay({x, y}: VoidDisplayProps) {
+function VoidDisplay({ x, y }: VoidDisplayProps) {
   return <div className={computeVoidStyle(x, y)} data-column={x} data-row={y}></div>;
 }
 
-function InvisibleGridDisplay({x, y}: VoidDisplayProps) {
+function InvisibleGridDisplay({ x, y }: VoidDisplayProps) {
   return <div className={computeInvisibleCellStyle(x, y)} data-column={x} data-row={y}></div>;
 }
 
-interface TmpCellDisplayProps<T extends Cell> {
-  cell: Cell;
-  cells: T[];
+interface TmpCellDisplayProps<T> {
+  cell: Cell<void>;
+  cells: Cell<T>[];
   shiftX: number;
   shiftY: number;
-  background: (cell: T) => React.ReactNode;
+  background: (cell: Cell<T>) => React.ReactNode;
   invalid: boolean;
 }
 
-function TmpCellDisplay<T extends Cell>({
+function TmpCellDisplay<T>({
   cell,
   cells,
   shiftX,
@@ -338,22 +570,15 @@ function TmpCellDisplay<T extends Cell>({
   );
 }
 
-interface GridOrganizerProps<T extends Cell> {
-  cells: T[];
-  background: (cell: T) => React.ReactNode;
-  onResize: (cell: T, newPosition: Cell) => void;
+interface GridOrganizerProps<T> {
+  cells: Cell<T>[];
+  background: (payload: Cell<T>) => React.ReactNode;
+  onResize: (cell: Cell<T>, newPosition: GridPosition) => void;
   handleSize?: string;
   gap?: string;
 }
 
-interface Extent {
-  minX: number;
-  maxX: number;
-  minY: number;
-  maxY: number;
-}
-
-export default function GridOrganizer<T extends Cell>({
+export default function GridOrganizer<T>({
   cells,
   background,
   onResize,
@@ -362,44 +587,30 @@ export default function GridOrganizer<T extends Cell>({
 }: GridOrganizerProps<T>): JSX.Element {
   const overlayRef = React.useRef<HTMLDivElement>(null);
 
-  const dndRef = React.useRef<DndRef<T>>({status: 'idle', tmpCell: undefined});
+  const dndRef = React.useRef<DndRef<T>>({ status: 'idle', tmpCell: undefined });
 
-  const [tmpCell, setTmpCell] = React.useState<Cell>();
+  const [tmpCell, setTmpCell] = React.useState<Cell<void>>();
   dndRef.current.tmpCell = tmpCell;
 
   // 1) get "bounding box"
-  const extent = cells.reduce<Extent>(
-    (extent, cell) => {
-      extent.minX = Math.min(extent.minX, cell.x);
-      extent.minY = Math.min(extent.minY, cell.y);
-
-      extent.maxX = Math.max(extent.maxX, cell.x + cell.width - 1);
-      extent.maxY = Math.max(extent.maxY, cell.y + cell.height - 1);
-      return extent;
-    },
-    {
-      minX: Infinity,
-      minY: Infinity,
-      maxX: -Infinity,
-      maxY: -Infinity,
-    },
-  );
+  const extent = computeExtent(cells);
 
   if (tmpCell) {
-    // // once, when moving tmpCell to farwest or farnorth, default extent behaviour is scary
-    // // it will expand the grid to -Infinity
-    // // hack: only show 5 extra rows/columns
-    //    logger.info('Extent Before', extent);
-    //    if (tmpCell.x < extent.minX) {
-    //      //extent.minX = tmpCell.x;
-    //      extent.minX -= 5;
-    //    }
-    //
-    //    if (tmpCell.y < extent.minY) {
-    //      extent.minY -= 5;
-    //    }
-    extent.minX = Math.min(extent.minX, tmpCell.x);
-    extent.minY = Math.min(extent.minY, tmpCell.y);
+    // once, when moving tmpCell to farwest or farnorth, default extent behaviour is scary
+    // it will expand the grid to -Infinity
+    // hack: only show 5 extra rows/columns
+    logger.info('Extent Before', extent);
+    if (tmpCell.x < extent.minX) {
+      //extent.minX = tmpCell.x;
+      extent.minX -= 5;
+    }
+
+    if (tmpCell.y < extent.minY) {
+      extent.minY -= 5;
+    }
+
+    //extent.minX = Math.min(extent.minX, tmpCell.x);
+    //extent.minY = Math.min(extent.minY, tmpCell.y);
 
     // when moving tmpCell to fareast or farsouth, defautl extent computation is fine
     extent.maxX = Math.max(extent.maxX, tmpCell.x + tmpCell.width - 1);
@@ -433,28 +644,16 @@ export default function GridOrganizer<T extends Cell>({
   //  1) detect empty spaces
   //  2) avoid collision when resizing
   //  3) detect cell when moving (move within)
-  const matrix = Array.from<(number | undefined)[]>({length: nbColumn});
-  matrix.forEach((_, i) => {
-    matrix[i] = Array.from<number | undefined>({length: nbRow}).fill(undefined);
-  });
+  const matrix = getEmptyMatrix(nbColumn, nbRow);
+  initMatrix(matrix, cells, { x: shiftX, y: shiftY });
 
-  cells.forEach(cell => {
-    const x = cell.x + shiftX - 1; // -1 because matrix starts at 0
-    const y = cell.y + shiftY - 1; // -1 because matrix starts at 0
-    for (let i = 0; i < cell.width; i++) {
-      for (let j = 0; j < cell.height; j++) {
-        logger.debug('Fill: ', x, y, i, j);
-        matrix[x + i]![y + j] = cell.id;
-      }
-    }
-  });
   logger.getLevel() > 3 && printMatrix(matrix);
 
-  const voidSpaces: {x: number; y: number}[] = [];
+  const voidSpaces: { x: number; y: number }[] = [];
   // 1) extract empty cells
   for (let x = 0; x < nbColumn; x++) {
     for (let y = 0; y < nbRow; y++) {
-      if (matrix[x]![y] == null) {
+      if (matrix[x] == null || matrix[x]![y] == null) {
         // empty space detected
         voidSpaces.push({
           x: x + 1,
@@ -467,27 +666,9 @@ export default function GridOrganizer<T extends Cell>({
   const matrixRef = React.useRef(matrix);
   matrixRef.current = matrix;
 
-  const checkMatrix = React.useCallback((cell: Cell, shiftX: number, shiftY: number) => {
+  const checkMatrix = React.useCallback((cell: Cell<unknown>, shiftX: number, shiftY: number) => {
     // printMatrix(matrixRef.current);
-
-    const matrix = matrixRef.current;
-    const xMin = cell.x + shiftX;
-    const xMax = xMin + cell.width - 1;
-
-    const yMin = cell.y + shiftY;
-    const yMax = yMin + cell.height - 1;
-
-    for (let x = xMin - 1 /* grid start at 1, matrix at 0 */; x < xMax; x++) {
-      const line = matrix[x];
-      if (line) {
-        for (let y = yMin - 1; y < yMax; y++) {
-          if (line[y] != null && line[y] !== cell.id) {
-            return false;
-          }
-        }
-      }
-    }
-    return true;
+    return isFree(matrixRef.current, cell, { x: shiftX, y: shiftY });
   }, []);
 
   const cellsRef = React.useRef(cells);
@@ -505,7 +686,7 @@ export default function GridOrganizer<T extends Cell>({
             setCursor(handle);
             if (handle === 'M') {
               logger.debug('MouseDown: Init move', cell);
-              const delta = {x: 0, y: 0};
+              const delta = { x: 0, y: 0 };
               if (e.target instanceof Element) {
                 const cellBbox = e.target.getBoundingClientRect();
                 const inBoxPointerPos = {
@@ -551,7 +732,7 @@ export default function GridOrganizer<T extends Cell>({
                 width: realCell.width,
                 height: realCell.height,
                 id: realCell.id,
-                title: '',
+                payload: undefined,
               };
 
               if (isEqual(tmpCell, newCell)) {
@@ -627,8 +808,8 @@ export default function GridOrganizer<T extends Cell>({
               //                height = realCell.height;
               //              }
 
-              logger.debug('Resize', coord, realCell, {shiftX, shiftY});
-              logger.debug('=>', {xMin, yMin, width, height});
+              logger.debug('Resize', coord, realCell, { shiftX, shiftY });
+              logger.debug('=>', { xMin, yMin, width, height });
 
               const newCell = {
                 x: x - shiftX,
@@ -636,7 +817,7 @@ export default function GridOrganizer<T extends Cell>({
                 width,
                 height,
                 id: realCell.id,
-                title: '',
+                payload: undefined,
               };
 
               if (isEqual(tmpCell, newCell)) {
@@ -650,24 +831,23 @@ export default function GridOrganizer<T extends Cell>({
       } else if (e.type === 'mouseup') {
         if (dndRef.current.tmpCell) {
           if (checkMatrix(dndRef.current.tmpCell, shiftX, shiftY)) {
-            const theCell: T = dndRef.current.cell;
-            const cleanCell: Cell = {
-              id: dndRef.current.tmpCell.id,
+            const theCell = dndRef.current.cell;
+            const newPosition: GridPosition = {
               x: dndRef.current.tmpCell.x,
               y: dndRef.current.tmpCell.y,
               width: dndRef.current.tmpCell.width,
               height: dndRef.current.tmpCell.height,
             };
-            onResize(theCell, cleanCell);
+            onResize(theCell, newPosition);
           }
         }
-        dndRef.current = {status: 'idle', tmpCell: undefined};
+        dndRef.current = { status: 'idle', tmpCell: undefined };
         setCursor(undefined);
         setTmpCell(undefined);
         // if current tempCell is valid, invoke onChange(cell: T, newPosition: Cell);
       } else {
         // for all other events (eg mouseLeave) => cancel the operation
-        dndRef.current = {status: 'idle', tmpCell: undefined};
+        dndRef.current = { status: 'idle', tmpCell: undefined };
         setCursor(undefined);
         setTmpCell(undefined);
       }
@@ -727,8 +907,8 @@ export default function GridOrganizer<T extends Cell>({
       >
         {(() => {
           // invisible underlying grid position pointer
-          return Array.from({length: nbRow}).flatMap((_, y) => {
-            return Array.from({length: nbColumn}).map((_, x) => {
+          return Array.from({ length: nbRow }).flatMap((_, y) => {
+            return Array.from({ length: nbColumn }).map((_, x) => {
               return <InvisibleGridDisplay key={`${x + 1};${y + 1}`} x={x + 1} y={y + 1} />;
             });
           });
@@ -744,7 +924,7 @@ export default function GridOrganizer<T extends Cell>({
             handleSize={handleSize}
           />
         ))}
-        {voidSpaces.map(({x, y}) => (
+        {voidSpaces.map(({ x, y }) => (
           // highlight empty cell with dashed border to visually identify drop-zones
           <VoidDisplay key={`${x};${y}`} x={x} y={y} />
         ))}
@@ -765,9 +945,7 @@ export default function GridOrganizer<T extends Cell>({
   );
 }
 
-interface PlayCell extends Cell {
-  title: string;
-}
+type PlayCell = Cell<{ id: number; title: string }>;
 
 const playCellStyle = css({
   border: '1px solid lightgrey',
@@ -781,20 +959,34 @@ const playCellStyle = css({
 
 export function PlayGridOrganizer(): JSX.Element {
   const [cells, setCells] = React.useState<PlayCell[]>([
-    {id: 1, x: 2, y: 1, width: 1, height: 1, title: 'top cell'},
-    {id: 2, x: 1, y: 2, width: 1, height: 1, title: 'left cell'},
-    {id: 3, x: 3, y: 2, width: 1, height: 1, title: 'right cell'},
-    {id: 4, x: 2, y: 3, width: 1, height: 1, title: 'bottom cell'},
-    {id: 5, x: 1, y: 4, width: 3, height: 1, title: 'support cell'},
-    {id: 6, x: 5, y: 1, width: 1, height: 3, title: 'side cell'},
+    { id: 1, x: 1, y: 1, width: 1, height: 1, payload: { id: 1, title: 'top cell' } },
+    { id: 2, x: 2, y: 1, width: 1, height: 1, payload: { id: 2, title: 'left cell' } },
+    { id: 3, x: 3, y: 1, width: 1, height: 1, payload: { id: 3, title: 'right cell' } },
+    { id: 4, x: 1, y: 2, width: 1, height: 1, payload: { id: 4, title: 'bottom cell' } },
+    { id: 5, x: 1, y: 1, width: 3, height: 1, payload: { id: 5, title: 'support cell' } },
+    { id: 6, x: 1, y: 1, width: 1, height: 3, payload: { id: 6, title: 'side cell' } },
+    { id: 7, x: 1, y: 1, width: 4, height: 1, payload: { id: 7, title: 'subsupport cell' } },
+    { id: 8, x: 1, y: 1, width: 1, height: 4, payload: { id: 8, title: 'uberside cell' } },
   ]);
 
+  const fixed = fixGrid(cells);
+  logger.info('Fixed: ', fixed);
+
   const updateCellCb = React.useCallback(
-    (cell: PlayCell, newPosition: Cell) => {
+    (cell: PlayCell, newPosition: GridPosition) => {
       const cellIndex = cells.findIndex(c => cell.id === c.id);
       if (cellIndex >= 0) {
         const newCells = [...cells];
-        newCells.splice(cellIndex, 1, {...cell, ...newPosition});
+        newCells.splice(cellIndex, 1, {
+          ...cell,
+          ...newPosition,
+          payload: {
+            id: cell.id,
+            title: cell.payload.title.startsWith('[x]')
+              ? cell.payload.title
+              : `[x] ${cell.payload.title}`,
+          },
+        });
         setCells(newCells);
       }
     },
@@ -803,11 +995,11 @@ export function PlayGridOrganizer(): JSX.Element {
 
   return (
     <GridOrganizer
-      cells={cells}
+      cells={fixed.cells}
       onResize={updateCellCb}
       background={cell => (
         <div className={playCellStyle}>
-          <div>{cell.title}</div>
+          <div>{cell.payload.title}</div>
           <div>
             Pos({cell.x};{cell.y})
           </div>

@@ -360,8 +360,10 @@ export const fr: ColabTranslations = {
       involvements: 'Implications',
       completion: 'Avancement',
       position: 'Position',
-      positionning: {
+      positioning: {
         toggleText: 'Organiser les cartes',
+        width: 'Largeur',
+        height: 'Hauteur',
       },
       showCardType: 'Afficher les informations du thème',
       editCompletion: "Éditer l'avancement",

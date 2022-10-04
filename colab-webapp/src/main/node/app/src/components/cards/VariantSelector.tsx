@@ -46,9 +46,19 @@ export const computeNav = (
   }
 };
 
-const invisible = css({
-  visibility: 'hidden',
-});
+const arrowStyle = cx(
+  'VariantPagerArrow',
+  css({
+    alignSelf: 'center',
+  }),
+);
+
+const invisible = cx(
+  arrowStyle,
+  css({
+    visibility: 'hidden',
+  }),
+);
 
 export default function VariantSelector({
   card,
@@ -73,12 +83,15 @@ export default function VariantSelector({
       <div
         className={cx(
           css({
-            margin: '10px',
+            margin: '16px 0',
             display: 'flex',
             flexGrow: 1,
             minWidth: '120px',
             '& > div': {
               flexGrow: 1,
+            },
+            '&:hover > .VariantPagerArrow path': {
+              color: 'grey',
             },
           }),
           className,
@@ -87,11 +100,12 @@ export default function VariantSelector({
         <IconButton
           className={
             variantPager != null && variantPager.previous != variantPager.current
-              ? undefined
+              ? arrowStyle
               : invisible
           }
           icon={faCaretLeft}
           iconSize="2x"
+          iconColor="lightgrey"
           title={variantPager?.previous.title || ''}
           onClick={e => {
             e.stopPropagation();
@@ -105,11 +119,12 @@ export default function VariantSelector({
         <IconButton
           className={
             variantPager != null && variantPager.next != variantPager.current
-              ? undefined
+              ? arrowStyle
               : invisible
           }
           icon={faCaretRight}
           iconSize="2x"
+          iconColor="lightgrey"
           title={variantPager?.next.title || ''}
           onClick={e => {
             e.stopPropagation();

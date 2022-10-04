@@ -10,15 +10,17 @@ import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import { CardContent } from 'colab-rest-client';
 import * as React from 'react';
 import { useLocation } from 'react-router-dom';
+import { changeCardPosition } from '../../API/api';
 import useTranslations from '../../i18n/I18nContext';
 import { useAndLoadSubCards } from '../../selectors/cardSelector';
+import { useAppDispatch } from '../../store/hooks';
 import Button from '../common/element/Button';
 import InlineLoading from '../common/element/InlineLoading';
-import { WIPContainer } from '../common/element/Tips';
+import { FeaturePreview } from '../common/element/Tips';
 import Toggler from '../common/element/Toggler';
 import Ellipsis from '../common/layout/Ellipsis';
 import Flex from '../common/layout/Flex';
-import GridOrganizer from '../debugger/GridOrganizer';
+import GridOrganizer, { fixGrid } from '../debugger/GridOrganizer';
 import { depthMax } from '../projects/edition/Editor';
 import { fixedButtonStyle, voidStyle } from '../styling/style';
 import CardCreator from './CardCreator';
@@ -57,22 +59,10 @@ const flexWrap = css({
   justifyItems: 'stretch', 
   alignItems: 'stretch'}); */
 
-function gridPosFromIndex(index: number): { row: number; column: number } {
-  return {
-    row: Math.ceil(index / 3),
-    column: ((index - 1) % 3) + 1,
-  };
-}
-
-interface MaxSize {
-  maxColumn: number;
-  maxRow: number;
-}
-
-export function gridCardsStyle(max: MaxSize) {
+export function gridCardsStyle(nbColumn: number) {
   return css({
     display: 'grid',
-    gridTemplateColumns: `repeat(${max.maxColumn}, minmax(min-content, 1fr))`,
+    gridTemplateColumns: `repeat(${nbColumn}, minmax(min-content, 1fr))`,
     justifyContent: 'strech',
     alignContent: 'stretch',
     justifyItems: 'stretch',
@@ -91,6 +81,7 @@ export default function ContentSubs({
 }: ContentSubsProps): JSX.Element {
   const location = useLocation();
   const i18n = useTranslations();
+  const dispatch = useAppDispatch();
 
   const [organize, setOrganize] = React.useState(false);
 
@@ -98,31 +89,21 @@ export default function ContentSubs({
 
   const indexedSubCards = React.useMemo(() => {
     if (subCards != null) {
-      const maxIndex = subCards.reduce<number>((acc, cur) => {
-        return Math.max(acc, cur.index ?? 0);
-      }, 1);
-
-      const cards = subCards.map((card, index) => {
-        const { row, column } = gridPosFromIndex(card.index || index + maxIndex);
+      const cards = subCards.map(card => {
         return {
-          card: card,
-          row: row,
-          column: column,
+          id: card.id!,
+          x: card.x,
+          y: card.y,
+          width: card.width,
+          height: card.height,
+          payload: card,
         };
       });
-      const max = cards.reduce<MaxSize>(
-        (max, cur) => {
-          max.maxColumn = Math.max(max.maxColumn, cur.column);
-          max.maxRow = Math.max(max.maxRow, cur.row);
-          return max;
-        },
-        { maxRow: 0, maxColumn: 0 },
-      );
 
-      return { subCardWithIndex: cards, max: max };
+      return fixGrid(cards);
     }
 
-    return { subCardWithIndex: [], max: { maxColumn: 1, maxRow: 1 } };
+    return { cells: [], nbColumns: 1 };
   }, [subCards]);
 
   if (subCards == null) {
@@ -153,28 +134,28 @@ export default function ContentSubs({
           )}
         >
           {mayOrganize && (
-            <WIPContainer>
+            <FeaturePreview>
               <Toggler
                 className={css({ alignSelf: 'flex-end' })}
-                label={i18n.modules.card.positionning.toggleText}
+                label={i18n.modules.card.positioning.toggleText}
                 value={organize}
                 onChange={setOrganize}
               />
-            </WIPContainer>
+            </FeaturePreview>
           )}
           {organize ? (
             <GridOrganizer
-              cells={indexedSubCards.subCardWithIndex.map(iCard => ({
-                height: 1,
-                width: 1,
-                id: iCard.card.id!,
-                x: iCard.column,
-                y: iCard.row,
-                card: iCard.card,
-              }))}
+              cells={indexedSubCards.cells}
               gap="6px"
               handleSize="33px"
-              onResize={() => {}}
+              onResize={(cell, newPosition) => {
+                dispatch(
+                  changeCardPosition({
+                    cardId: cell.payload.id!,
+                    newPosition: newPosition,
+                  }),
+                );
+              }}
               background={cell => {
                 return (
                   <CardThumbWithSelector
@@ -182,27 +163,34 @@ export default function ContentSubs({
                       height: '100%',
                       minHeight: '100px',
                       margin: 0,
+                      '.VariantPagerArrow': {
+                        display: 'none',
+                      },
                     })}
                     depth={0}
-                    key={cell.card.id}
-                    card={cell.card}
+                    key={cell.payload.id}
+                    card={cell.payload}
                   />
                 );
               }}
             />
           ) : (
             <>
-              <div className={cx(gridCardsStyle(indexedSubCards.max), subcardsContainerStyle)}>
-                {indexedSubCards.subCardWithIndex.map(({ card, row, column }) => (
+              <div
+                className={cx(gridCardsStyle(indexedSubCards.nbColumns), subcardsContainerStyle)}
+              >
+                {indexedSubCards.cells.map(({ payload, y, x, width, height }) => (
                   <CardThumbWithSelector
                     className={css({
-                      gridColumn: column,
-                      gridRow: row,
+                      gridColumnStart: x,
+                      gridColumnEnd: x + width,
+                      gridRowStart: y,
+                      gridRowEnd: y + height,
                       maxHeight: '100%',
                     })}
                     depth={depth - 1}
-                    key={card.id}
-                    card={card}
+                    key={payload.id}
+                    card={payload}
                   />
                 ))}
               </div>
