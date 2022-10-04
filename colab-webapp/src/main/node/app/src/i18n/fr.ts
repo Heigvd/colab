@@ -51,8 +51,7 @@ export const fr: ColabTranslations = {
     sortBy: 'Trier par: ',
     filter: 'Filtrer',
     createdBy: 'Créé par',
-    createdOn: 'Créé sur',
-    createdAt: 'Créé à',
+    createdOn: 'Créé le',
     name: 'Nom',
     date: 'Date',
     by: 'Par',
@@ -512,10 +511,13 @@ export const fr: ColabTranslations = {
         cancel: 'annuler',
         showAllCards: 'afficher toutes les cartes',
         alsoUsedByExternalProject: 'Aussi visible par ces autres projets',
-        projectDocDesc:'Un document peut être lié au projet entier. Ansi, il sera visible par toutes les cartes',
-        thematicDesc:'Un document peut être lié à un thème spécifique. Ainsi, il ne sera visible que par les cartes relevant de ce thème.',
+        projectDocDesc:
+          'Un document peut être lié au projet entier. Ansi, il sera visible par toutes les cartes',
+        thematicDesc:
+          'Un document peut être lié à un thème spécifique. Ainsi, il ne sera visible que par les cartes relevant de ce thème.',
         mainViewTitle: 'Cartes du projet',
-        mainViewDesc: 'Un document peut être lié à une carte précise. Ainsi, il ne sera visible que par cette carte, ou par cette carte et tous ses descendants si le document est publié.',
+        mainViewDesc:
+          'Un document peut être lié à une carte précise. Ainsi, il ne sera visible que par cette carte, ou par cette carte et tous ses descendants si le document est publié.',
       },
       sortByCategory: 'by category',
       sortByProvider: 'by source',

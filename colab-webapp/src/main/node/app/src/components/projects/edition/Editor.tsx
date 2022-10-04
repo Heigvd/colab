@@ -380,9 +380,8 @@ function EditorNav({ project, setShowProjectDetails }: EditorNavProps): JSX.Elem
             title={i18n.common.action.showProjectDetails}
             className={cx(mainMenuLink, css({ textTransform: 'initial', margin: `0 ${space_S}` }))}
           >
-            <Flex align="stretch">
+            <Flex align="center">
               <Flex
-                align="center"
                 className={css({
                   backgroundColor: project.illustration?.iconBkgdColor,
                   padding: '3px 5px',
@@ -512,14 +511,17 @@ export default function Editor(): JSX.Element {
                 <div>
                   <div>
                     <h3>{project.name}</h3>
-                    {project.description}
+                    <p>{project.description}</p>
                   </div>
                   <div>
                     <p>
-                      {i18n.common.createdBy}: {project.trackingData?.createdBy}
+                      {i18n.common.createdBy}
+                      {' : '}
+                      {project.trackingData?.createdBy}
                     </p>
                     <p>
-                      {i18n.common.createdAt}:{' '}
+                      {i18n.common.createdOn}
+                      {' : '}
                       {i18n.common.datetime(project.trackingData?.creationDate)}
                     </p>
                   </div>

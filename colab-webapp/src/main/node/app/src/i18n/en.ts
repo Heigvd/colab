@@ -49,9 +49,8 @@ export const en = {
     changeLanguage: 'Change language',
     sortBy: 'Sort by: ',
     filter: 'Filter',
-    createdBy: 'created by',
+    createdBy: 'Created by',
     createdOn: 'Created on',
-    createdAt: 'Created at',
     name: 'Name',
     date: 'Date',
     by: 'By',
@@ -503,10 +502,13 @@ export const en = {
         cancel: 'cancel',
         showAllCards: 'show all cards',
         alsoUsedByExternalProject: 'Also used visible for others projects',
-        projectDocDesc: 'A document can be linked to the whole project. Thus, it will be visible for all cards',
-        thematicDesc:'A document can be linked to a specific theme. Thus, it will only be visible to cards withiu that theme',
+        projectDocDesc:
+          'A document can be linked to the whole project. Thus, it will be visible for all cards',
+        thematicDesc:
+          'A document can be linked to a specific theme. Thus, it will only be visible to cards withiu that theme',
         mainViewTitle: 'Project Cards',
-        mainViewDesc: 'A document can be linked to a specific card. Thus, it will only be visible for this card, or for this card and its descendants if the document is published.',
+        mainViewDesc:
+          'A document can be linked to a specific card. Thus, it will only be visible for this card, or for this card and its descendants if the document is published.',
       },
       sortByCategory: 'by category',
       sortByProvider: 'by source',
