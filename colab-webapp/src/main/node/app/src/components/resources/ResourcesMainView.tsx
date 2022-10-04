@@ -125,7 +125,7 @@ export default function ResourcesMainView({
 
   // nothing selected : show the list with some actions
   return (
-    <Flex direction="column" align="stretch" grow={1}>
+    <Flex direction="column" align="stretch" grow={1} className={css({overflow: 'auto'})}>
       <ResourcesList resources={activeResources} selectResource={selectResource} />
 
       {!isReadOnly(accessLevel) && (
