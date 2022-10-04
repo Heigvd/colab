@@ -168,6 +168,7 @@ export default function CardThumb({
       <CardLayout card={card} variant={variant} variants={variants}>
         <>
           <div
+            onClick={clickOnCardTitleCb}
             className={css({
               display: 'flex',
               flexDirection: 'column',
@@ -177,6 +178,7 @@ export default function CardThumb({
                   ? '3px solid ' + card.color
                   : '1px solid var(--lightGray)',
               width: '100%',
+              cursor: 'pointer',
             })}
           >
             <div
@@ -191,10 +193,7 @@ export default function CardThumb({
                   justifyContent: 'space-between',
                 })}
               >
-                <div
-                  className={css({ flexGrow: 1, cursor: 'pointer' })}
-                  onClick={clickOnCardTitleCb}
-                >
+                <div className={css({ flexGrow: 1 })}>
                   <CardContentStatus mode="icon" status={variant?.status || 'ACTIVE'} />
                   <span className={css({ fontWeight: 'bold' })}>
                     {card.title || i18n.modules.card.untitled}
