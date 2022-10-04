@@ -209,7 +209,7 @@ export default function CardTypeEditor({ className, usage }: CardTypeEditorProps
                 message={
                   <p>
                     <Tips tipsType="TODO">
-                      Make test if model is used in card(s). Disable or hide this delete option if
+                      Make test if theme is used in card(s). Disable or hide this delete option if
                       used.
                     </Tips>
                     {i18n.modules.cardType.action.confirmDeleteType}

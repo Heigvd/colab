@@ -266,8 +266,8 @@ function TocEntry({
               {resource.targetResource && (
                 <div>
                   {resource.targetResource.cardId != null && <p> on card </p>}
-                  {resource.targetResource.cardContentId != null && <p> on var </p>}
-                  {resource.targetResource.abstractCardTypeId != null && <p> on model </p>}
+                  {resource.targetResource.cardContentId != null && <p> on variant </p>}
+                  {resource.targetResource.abstractCardTypeId != null && <p> on theme </p>}
                   <p>- {resource.targetResource.published ? 'is' : 'not'} published </p>
                   <p>- {resource.targetResource.deprecated ? 'is' : 'not'} deprecated </p>
                   <p>- "{resource.targetResource.category}"</p>
@@ -276,10 +276,11 @@ function TocEntry({
               )}
               {resource.cardTypeResourceRef && (
                 <div>
-                  <p>type ref</p>
+                  <p>theme ref</p>
                   <p>- {resource.cardTypeResourceRef.residual ? 'is' : 'not'} residual </p>
                   <p>- {resource.cardTypeResourceRef.refused ? 'is' : 'not'} refused </p>
                   <p>- "{resource.cardTypeResourceRef.category}"</p>
+                  <br />
                 </div>
               )}
               {resource.cardResourceRef && (
@@ -288,14 +289,16 @@ function TocEntry({
                   <p>- {resource.cardResourceRef.residual ? 'is' : 'not'} residual </p>
                   <p>- {resource.cardResourceRef.refused ? 'is' : 'not'} refused </p>
                   <p>- "{resource.cardResourceRef.category}"</p>
+                  <br />
                 </div>
               )}
               {resource.cardContentResourceRef && (
                 <div>
-                  <p>var ref</p>
+                  <p>variant ref</p>
                   <p>- {resource.cardContentResourceRef.residual ? 'is' : 'not'} residual </p>
                   <p>- {resource.cardContentResourceRef.refused ? 'is' : 'not'} refused </p>
                   <p>- "{resource.cardContentResourceRef.category}"</p>
+                  <br />
                 </div>
               )}
             </div>
