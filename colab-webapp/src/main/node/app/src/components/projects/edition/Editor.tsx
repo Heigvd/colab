@@ -406,7 +406,7 @@ function EditorNav({ project, setShowProjectDetails }: EditorNavProps): JSX.Elem
           <Presence projectId={project.id!} />
           <Monkeys />
           <IconButton
-            onClick={() => navigate('./project-settings/general')}
+            onClick={() => navigate('./project-settings')}
             title={i18n.common.settings}
             icon={faCog}
             className={css({ textAlign: 'right', alignSelf: 'center', marginLeft: 'auto' })}

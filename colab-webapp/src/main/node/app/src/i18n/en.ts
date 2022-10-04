@@ -322,7 +322,7 @@ export const en = {
           label: 'Involvements',
         },
         resources: {
-          label: 'Project Documentation',
+          label: 'Project documentation',
         },
         missingIcon:
           'Oh a new icon library, dear developer please make what is needed to display the icon.',
