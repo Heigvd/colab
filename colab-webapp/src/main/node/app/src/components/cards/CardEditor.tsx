@@ -480,7 +480,7 @@ export default function CardEditor({
                 setOpenKey,
               }}
             >
-              <Flex grow={1} align="stretch">
+              <Flex grow={1} align="stretch" className={css({overflow: 'hidden'})}>
                 <ReflexContainer orientation={'vertical'}>
                   <ReflexElement
                     className={'left-pane ' + css({ display: 'flex' })}
@@ -571,7 +571,7 @@ export default function CardEditor({
                     minSize={50}
                     flex={0.2}
                   >
-                    <SideCollapsiblePanelBody />
+                    <SideCollapsiblePanelBody className={css({overflow: 'hidden'})} />
                   </ReflexElement>
                 </ReflexContainer>
                 <SideCollapsibleMenu
