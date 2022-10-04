@@ -34,6 +34,11 @@ import { flex, invertedThemeMode, paddingAroundStyle, space_M, space_S } from '.
 export default function MainNav(): JSX.Element {
   const i18n = useTranslations();
   const navigate = useNavigate();
+  const entries = [
+    { value: 'EN', label: <div>English</div> },
+    { value: 'FR', label: <div>Français</div> },
+  ];
+  const valueComp = { value: 'EN', label: <div>EN</div> };
   return (
     <>
       <Clickable onClick={() => navigate(`/`)}>
@@ -50,6 +55,16 @@ export default function MainNav(): JSX.Element {
       </Clickable>
       <nav className={flex}>
         <MainMenuLink to="/">{i18n.modules.project.labels.projects}</MainMenuLink>
+        <DropDownMenu
+          //height={mainHeaderHeight}
+          //icon={faGlobeAmericas}
+          value={'PROJECTS'}
+          valueComp={valueComp}
+          entries={entries}
+          onSelect={() => {}}
+          idleHoverStyle="BACKGROUND"
+          //buttonClassName={buttonStyle}
+        />
         {/* {projectBeingEdited != null && (
       <MainMenuLink to={`/editor/${projectBeingEdited.id}`}>
         {projectBeingEdited.name || 'New project'}
