@@ -205,6 +205,7 @@ export default function CardTypeEditor({ className, usage }: CardTypeEditorProps
                   '&:hover': { textDecoration: 'none' },
                   display: 'flex',
                   alignItems: 'center',
+                  alignSelf: 'flex-start',
                 })}
                 message={
                   <p>
