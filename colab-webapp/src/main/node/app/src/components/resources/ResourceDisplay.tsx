@@ -192,6 +192,19 @@ export function ResourceDisplay({
               valueComp={{ value: '', label: '' }}
               buttonClassName={cx(lightIconButtonStyle, css({ marginLeft: space_S }))}
               entries={[
+                ...(!effectiveReadOnly
+                  ? [
+                      {
+                        value: 'settings',
+                        label: (
+                          <>
+                            <FontAwesomeIcon icon={faCog} /> {i18n.common.settings}{' '}
+                          </>
+                        ),
+                        action: () => setShowSettings(true),
+                      },
+                    ]
+                  : []),
                 ...(!alwaysShowTeaser && !alwaysHideTeaser
                   ? [
                       {
@@ -207,19 +220,6 @@ export function ResourceDisplay({
                           </>
                         ),
                         action: () => setShowTeaser(showTeaser => !showTeaser),
-                      },
-                    ]
-                  : []),
-                ...(!effectiveReadOnly
-                  ? [
-                      {
-                        value: 'settings',
-                        label: (
-                          <>
-                            <FontAwesomeIcon icon={faCog} /> {i18n.common.settings}{' '}
-                          </>
-                        ),
-                        action: () => setShowSettings(true),
                       },
                     ]
                   : []),
