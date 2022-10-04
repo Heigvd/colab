@@ -86,7 +86,7 @@ export function ResourceDisplay({
   const [showSettings, setShowSettings] = React.useState(false);
 
   return (
-    <Flex align="stretch" direction="column" grow={1}>
+    <Flex align="stretch" direction="column" grow={1} className={css({overflow: 'auto'})}>
       <Flex direction="column" align="normal" className={paddingAroundStyle([1, 2, 4], space_M)}>
         <Flex
           justify="space-between"
