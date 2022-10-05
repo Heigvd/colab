@@ -62,8 +62,8 @@ public class CardRestEndpointTest extends AbstractArquillianTest {
         Assertions.assertNotNull(card);
         Assertions.assertNotNull(card.getId());
         Assertions.assertNull(card.getColor());
-        Assertions.assertEquals(1, card.getX());
         Assertions.assertEquals(2, card.getX());
+        Assertions.assertEquals(1, card.getY());
         Assertions.assertEquals(parentId, card.getParentId());
         Assertions.assertEquals(cardTypeId, card.getCardTypeId());
 
