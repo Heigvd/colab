@@ -36,7 +36,7 @@ export default function Admin(): JSX.Element {
     <div className={css({ padding: space_L })}>
       <Flex>
         <IconButton
-          title="Back"
+          title={i18n.common.back}
           icon={faArrowLeft}
           onClick={() => navigate('..')}
           className={lightIconButtonStyle}

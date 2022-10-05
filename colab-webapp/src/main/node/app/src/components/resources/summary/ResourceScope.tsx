@@ -919,7 +919,7 @@ export default function ResourceScope({ onCancel, resource }: ResourceScopeProps
             />
             <BlockInput
               type="range"
-              label="zoom"
+              label={i18n.common.zoom}
               value={zoom}
               placeholder="1"
               max="2"
@@ -930,7 +930,7 @@ export default function ResourceScope({ onCancel, resource }: ResourceScopeProps
             />
           </Flex>
           <Flex gap={space_M}>
-            <Flex direction="column" align='flex-end'>
+            <Flex direction="column" align="flex-end">
               <Toggler
                 label={i18n.common.published}
                 value={owner.published}

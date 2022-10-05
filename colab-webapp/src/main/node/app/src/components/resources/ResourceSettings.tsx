@@ -53,7 +53,7 @@ export default function ResourceSettings({ resource }: ResourceSettingsProps): J
           />
           <BlockInput
             type="text"
-            label="Category"
+            label={i18n.modules.resource.category}
             value={updatableResource.category || undefined}
             saveMode={'ON_BLUR'}
             onChange={newValue => {

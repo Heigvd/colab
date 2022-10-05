@@ -72,6 +72,7 @@ export const en = {
       activityFlow: 'Activity Flow',
     },
     welcome: 'Welcome!',
+    zoom: 'zoom',
     //comments: 'comments',
     //commentsAreOptional: 'Comments are optional',
     dateFn: (timestamp: number | null | undefined) => {

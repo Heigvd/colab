@@ -73,6 +73,7 @@ export const fr: ColabTranslations = {
       activityFlow: "Réseau d'activité",
     },
     welcome: 'Bienvenue!',
+    zoom: 'zoom',
     //comments: 'comments',
     //commentsAreOptional: 'Comments are optional',
     dateFn: (timestamp: number | null | undefined) => {
@@ -521,8 +522,8 @@ export const fr: ColabTranslations = {
         mainViewDesc:
           'Un document peut être lié à une carte précise. Ainsi, il ne sera visible que par cette carte, ou par cette carte et tous ses descendants si le document est publié.',
       },
-      sortByCategory: 'by category',
-      sortByProvider: 'by source',
+      sortByCategory: 'par catégorie',
+      sortByProvider: 'par source',
     },
     cardType: {
       cardType: 'Thème',

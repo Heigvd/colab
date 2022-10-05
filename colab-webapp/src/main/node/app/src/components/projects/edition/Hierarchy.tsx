@@ -14,6 +14,7 @@ import { Card, CardContent, entityIs } from 'colab-rest-client';
 import { throttle } from 'lodash';
 import * as React from 'react';
 import * as API from '../../../API/api';
+import useTranslations from '../../../i18n/I18nContext';
 import { getLogger } from '../../../logger';
 import { useProjectRootCard } from '../../../selectors/cardSelector';
 import { useProjectBeingEdited } from '../../../selectors/projectSelector';
@@ -605,6 +606,7 @@ export default function Hierarchy({
   onContentClick,
   forceZoom,
 }: HierarchyDisplayProps): JSX.Element {
+  const i18n = useTranslations();
   const dispatch = useAppDispatch();
 
   const [plumbState, setPlumbState] = React.useState<Pick<PlumbRef, 'divs' | 'connections'>>({
@@ -988,18 +990,19 @@ export default function Hierarchy({
       >
         {showTools && (
           <div className={css({ width: '200px' })}>
-            {forceZoom ==null && <BlockInput
-              type="range"
-              label="zoom"
-              value={zoomRef.current}
-              placeholder="0"
-              max="2"
-              min="0.5"
-              step="0.1"
-              onChange={newValue => setZoom(Number(newValue))}
-              saveMode="SILLY_FLOWING"
-            />
-            }
+            {forceZoom == null && (
+              <BlockInput
+                type="range"
+                label={i18n.common.zoom}
+                value={zoomRef.current}
+                placeholder="0"
+                max="2"
+                min="0.5"
+                step="0.1"
+                onChange={newValue => setZoom(Number(newValue))}
+                saveMode="SILLY_FLOWING"
+              />
+            )}
             <FeaturePreview>
               <IconButton icon={faRefresh} onClick={throttleRepaint} title="" />
               <IconButton icon={faRefresh} onClick={cleanCb} title="" />
