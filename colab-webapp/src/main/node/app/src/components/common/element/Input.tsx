@@ -404,9 +404,6 @@ const inlineInputDisplayStyle = css({
   whiteSpace: 'nowrap',
   overflow: 'hidden',
   gridArea: 1 / 2,
-  '&:hover': {
-    borderColor: 'var(--lightGray)',
-  },
 });
 
 const inlineTextAreaStyle = {
@@ -429,6 +426,9 @@ const inlineTextareaEditingStyle = css({
 const inlineTextareaDisplayStyle = css({
   ...inlineTextAreaStyle,
   border: '1px solid transparent',
+});
+
+const inlineInputHoverStyle = css({
   '&:hover': {
     borderColor: 'var(--lightGray)',
   },
@@ -447,6 +447,7 @@ export function InlineInput(props: InputProps): JSX.Element {
       )}
       inputDisplayClassName={cx(
         props.inputType === 'input' ? inlineInputDisplayStyle : inlineTextareaDisplayStyle,
+        { [inlineInputHoverStyle]: !props.readOnly },
         props.inputDisplayClassName,
       )}
       inputEditClassName={cx(
