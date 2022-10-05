@@ -6,6 +6,7 @@
  */
 package ch.colabproject.colab.api.ws.channel.model;
 
+import ch.colabproject.colab.api.Helper;
 import ch.colabproject.colab.generator.model.annotations.ExtractJavaDoc;
 
 /**
@@ -24,6 +25,11 @@ import ch.colabproject.colab.generator.model.annotations.ExtractJavaDoc;
 public class BroadcastChannel implements WebsocketChannel {
 
     private static final long serialVersionUID = 1L;
+
+    @Override
+    public String getUrn() {
+        return Helper.getColabBaseUrn(this);
+    }
 
     @Override
     public int hashCode() {

@@ -120,7 +120,7 @@ interface ProjectDisplayProps {
 }
 
 // Display one project and allow to edit it
-const ProjectDisplay = ({ project }: ProjectDisplayProps) => {
+export const ProjectDisplay = ({ project }: ProjectDisplayProps) => {
   const dispatch = useAppDispatch();
   const i18n = useTranslations();
   const navigate = useNavigate();

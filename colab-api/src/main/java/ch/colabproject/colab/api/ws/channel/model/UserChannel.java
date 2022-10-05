@@ -6,6 +6,7 @@
  */
 package ch.colabproject.colab.api.ws.channel.model;
 
+import ch.colabproject.colab.api.Helper;
 import ch.colabproject.colab.api.model.user.User;
 import ch.colabproject.colab.generator.model.annotations.ExtractJavaDoc;
 import java.util.Objects;
@@ -52,6 +53,11 @@ public class UserChannel implements WebsocketChannel {
      */
     public void setUserId(Long userId) {
         this.userId = userId;
+    }
+
+    @Override
+    public String getUrn() {
+        return Helper.getColabBaseUrn(this) + "/" + userId;
     }
 
     @Override

@@ -12,18 +12,24 @@ import Thumbnail from './Thumbnail';
 
 export const defaultThumbnailStyle = css({
   display: 'flex',
-  outline: '4px solid transparent',
-  outlineOffset: '-1px',
   border: '1px solid var(--lightGray)',
   borderRadius: borderRadius,
   padding: space_S,
   columnGap: space_S,
-  transition: 'outline .3s ease',
   overflow: 'hidden',
-  '&:hover': {
-    border: '1px solid var(--darkGray)',
-  },
 });
+
+export const selecatableThumbnailStyle = cx(
+  defaultThumbnailStyle,
+  css({
+    outline: '4px solid transparent',
+    outlineOffset: '-1px',
+    transition: 'outline .3s ease',
+    '&:hover': {
+      border: '1px solid var(--darkGray)',
+    },
+  }),
+);
 
 const selectedStyle = css({
   outline: '4px solid var(--primaryColor)',
@@ -101,7 +107,7 @@ export default function ItemThumbnailsSelection<T extends { id?: number | undefi
               onItemDblClick(item);
             }
           }}
-          className={cx(defaultThumbnailStyle, thumbnailClassName, {
+          className={cx(selecatableThumbnailStyle, thumbnailClassName, {
             [selectedThumbnailClassName]: selected === item?.id,
           })}
           disableOnEnter={disableOnEnter}

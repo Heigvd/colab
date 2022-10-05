@@ -8,7 +8,6 @@ package ch.colabproject.colab.api.ws.utils;
 
 import ch.colabproject.colab.api.Helper;
 import ch.colabproject.colab.api.controller.CdiBridgeSingleton;
-import ch.colabproject.colab.api.ws.channel.model.WebsocketChannel;
 import java.io.Serializable;
 import java.util.Map;
 import java.util.concurrent.Callable;
@@ -21,12 +20,12 @@ import java.util.concurrent.Callable;
 public class CallableGetChannel
     implements
     Serializable,
-    Callable<Map<WebsocketChannel, Integer>> {
+    Callable<Map<String, Integer>> {
 
     private static final long serialVersionUID = 1L;
 
     @Override
-    public Map<WebsocketChannel, Integer> call() throws Exception {
+    public Map<String, Integer> call() throws Exception {
         CdiBridgeSingleton cdiBridge = Helper.lookup(CdiBridgeSingleton.class);
         if (cdiBridge != null) {
             return cdiBridge.getSubscriptionsCount();
