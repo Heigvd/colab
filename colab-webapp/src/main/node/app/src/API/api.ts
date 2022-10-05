@@ -1,6 +1,6 @@
 /*
  * The coLAB project
- * Copyright (C) 2021 AlbaSim, MEI, HEIG-VD, HES-SO
+ * Copyright (C) 2021-2022 AlbaSim, MEI, HEIG-VD, HES-SO
  *
  * Licensed under the MIT License
  */
@@ -1106,7 +1106,11 @@ export const changeResourceCategory = createAsyncThunk(
     categoryName: string;
   }) => {
     if (resourceOrRef && resourceOrRef.id) {
-      return await restClient.ResourceRestEndpoint.changeCategory(resourceOrRef.id, categoryName);
+      if (categoryName) {
+        return await restClient.ResourceRestEndpoint.changeCategory(resourceOrRef.id, categoryName);
+      } else {
+        return await restClient.ResourceRestEndpoint.removeCategory(resourceOrRef.id);
+      }
     }
   },
 );

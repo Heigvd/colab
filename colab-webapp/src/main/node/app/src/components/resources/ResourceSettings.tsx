@@ -1,6 +1,6 @@
 /*
  * The coLAB project
- * Copyright (C) 2021 AlbaSim, MEI, HEIG-VD, HES-SO
+ * Copyright (C) 2021-2022 AlbaSim, MEI, HEIG-VD, HES-SO
  *
  * Licensed under the MIT License
  */
@@ -9,8 +9,9 @@ import { entityIs } from 'colab-rest-client';
 import * as React from 'react';
 import * as API from '../../API/api';
 import useTranslations from '../../i18n/I18nContext';
+import { useAndLoadResourceCategories } from '../../selectors/resourceSelector';
 import { useAppDispatch } from '../../store/hooks';
-import { BlockInput } from '../common/element/Input';
+import SelectInput from '../common/element/SelectInput';
 import Toggler from '../common/element/Toggler';
 import { ResourceAndRef } from './resourcesCommonType';
 
@@ -25,6 +26,24 @@ export default function ResourceSettings({ resource }: ResourceSettingsProps): J
   const updatableResource = React.useMemo(() => {
     return API.getResourceToEdit(resource);
   }, [resource]);
+
+  const { categories } = useAndLoadResourceCategories();
+
+  const allCategories = React.useMemo(() => {
+    return categories.map(cat => ({ label: cat, value: cat }));
+  }, [categories]);
+
+  const onChangeCategory = React.useCallback(
+    (newValue: string | null | undefined) => {
+      dispatch(
+        API.changeResourceCategory({
+          resourceOrRef: updatableResource,
+          categoryName: newValue || '',
+        }),
+      );
+    },
+    [dispatch, updatableResource],
+  );
 
   return (
     <>
@@ -51,19 +70,12 @@ export default function ResourceSettings({ resource }: ResourceSettingsProps): J
                 : i18n.modules.resource.unpublishedInfo
             }
           />
-          <BlockInput
-            type="text"
-            label={i18n.modules.resource.category}
+          <SelectInput
             value={updatableResource.category || undefined}
-            saveMode={'ON_BLUR'}
-            onChange={newValue => {
-              dispatch(
-                API.changeResourceCategory({
-                  resourceOrRef: updatableResource,
-                  categoryName: newValue || '',
-                }),
-              );
-            }}
+            isMulti={false}
+            canCreateOption={true}
+            options={allCategories}
+            onChange={onChangeCategory}
           />
         </>
       )}

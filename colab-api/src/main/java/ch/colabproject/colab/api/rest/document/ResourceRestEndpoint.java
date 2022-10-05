@@ -433,7 +433,7 @@ public class ResourceRestEndpoint {
      *                        reference
      */
     @PUT
-    @Path("changeCategory/{resourceOrRefId}/{category}")
+    @Path("changeCategory/{resourceOrRefId}/{category : .*}")
     public void changeCategory(@PathParam("resourceOrRefId") Long resourceOrRefId,
         @PathParam("category") String categoryName) {
         logger.debug("add resource/ref #{} to category {}", resourceOrRefId, categoryName);
@@ -448,7 +448,7 @@ public class ResourceRestEndpoint {
      *                         reference
      */
     @PUT
-    @Path("changeCategory/list/{newName}")
+    @Path("changeCategory/list/{newName : .*}")
     public void changeCategoryForList(@PathParam("newName") String categoryName,
         List<Long> resourceOrRefIds) {
         logger.debug("add resource/ref #{} to category {}", resourceOrRefIds, categoryName);
@@ -487,7 +487,7 @@ public class ResourceRestEndpoint {
      * @param newName         the new name of the category
      */
     @PUT
-    @Path("renameCategory/cardType/{cardTypeId}/{oldName}/{newName}")
+    @Path("renameCategory/cardType/{cardTypeId}/{oldName : .*}/{newName : .*}")
     public void renameCategoryForCardType(
         @PathParam("cardTypeId") Long cardTypeOrRefId, @PathParam("oldName") String oldName,
         @PathParam("newName") String newName) {
@@ -504,7 +504,7 @@ public class ResourceRestEndpoint {
      * @param newName the new name of the category
      */
     @PUT
-    @Path("renameCategory/card/{cardId}/{oldName}/{newName}")
+    @Path("renameCategory/card/{cardId}/{oldName : .*}/{newName : .*}")
     public void renameCategoryForCard(@PathParam("cardId") Long cardId,
         @PathParam("oldName") String oldName, @PathParam("newName") String newName) {
         logger.debug("rename category {} to {} for card #{}", oldName, newName, cardId);
@@ -519,7 +519,7 @@ public class ResourceRestEndpoint {
      * @param newName       the new name of the category
      */
     @PUT
-    @Path("renameCategory/cardContent/{cardContentId}/{oldName}/{newName}")
+    @Path("renameCategory/cardContent/{cardContentId}/{oldName : .*}/{newName : .*}")
     public void renameCategoryForCardContent(@PathParam("cardContentId") Long cardContentId,
         @PathParam("oldName") String oldName, @PathParam("newName") String newName) {
         logger.debug("rename category {} to {} for card content #{}", oldName, newName,
