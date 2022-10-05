@@ -83,7 +83,7 @@ export default function DocumentEditor({
       <div
         ref={dropRef}
         className={cx(
-          editableBlockStyle,
+          { [editableBlockStyle]: !readOnly },
           css({
             display: 'flex',
             flexDirection: 'row',
