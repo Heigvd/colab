@@ -6,6 +6,7 @@
  */
 package ch.colabproject.colab.api.controller.card.grid;
 
+import ch.colabproject.colab.generator.model.annotations.ExtractJavaDoc;
 import javax.validation.constraints.NotNull;
 
 /**
@@ -13,6 +14,7 @@ import javax.validation.constraints.NotNull;
  *
  * @author maxence
  */
+@ExtractJavaDoc
 public class GridPosition implements GridCell {
 
     /**
