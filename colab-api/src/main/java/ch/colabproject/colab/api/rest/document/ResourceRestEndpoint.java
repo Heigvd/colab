@@ -1,6 +1,6 @@
 /*
  * The coLAB project
- * Copyright (C) 2021 AlbaSim, MEI, HEIG-VD, HES-SO
+ * Copyright (C) 2021-2022 AlbaSim, MEI, HEIG-VD, HES-SO
  *
  * Licensed under the MIT License
  */
@@ -261,14 +261,13 @@ public class ResourceRestEndpoint {
     // move a resource / document
     // *********************************************************************************************
 
-
     /**
      * Move a resource to a new resourceable.
      *
      * @param resourceId id of the resource to move
      * @param parentType the new owner
      * @param parentId   if of the new owner
-     * @param published   new publication status
+     * @param published  new publication status
      */
     @PUT
     @Path("move/{resourceId}/to/{parentType: (Card|CardContent|CardType)}/{parentId}/{published}")
@@ -484,19 +483,17 @@ public class ResourceRestEndpoint {
      * Rename the category in a card type / card type reference
      *
      * @param cardTypeOrRefId the id of the card type / card type reference (scope of the renaming)
-     * @param projectId       the id of the project concerned (scope of the renaming)
      * @param oldName         the old name of the category
      * @param newName         the new name of the category
      */
     @PUT
-    @Path("renameCategory/cardType/{projectId}/{cardTypeId}/{oldName}/{newName}")
-    public void renameCategoryForCardType(@PathParam("projectId") Long projectId,
+    @Path("renameCategory/cardType/{cardTypeId}/{oldName}/{newName}")
+    public void renameCategoryForCardType(
         @PathParam("cardTypeId") Long cardTypeOrRefId, @PathParam("oldName") String oldName,
         @PathParam("newName") String newName) {
-        logger.debug("rename category {} to {} for card type #{} in the project {}", oldName,
-            newName, cardTypeOrRefId, projectId);
-        resourceCategoryHelper.renameCategoryInCardType(cardTypeOrRefId, projectId, oldName,
-            newName);
+        logger.debug("rename category {} to {} for card type #{}", oldName,
+            newName, cardTypeOrRefId);
+        resourceCategoryHelper.renameCategoryInCardType(cardTypeOrRefId, oldName, newName);
     }
 
     /**
