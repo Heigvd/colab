@@ -5,6 +5,7 @@
  * Licensed under the MIT License
  */
 
+import { css } from '@emotion/css';
 import { entityIs } from 'colab-rest-client';
 import * as React from 'react';
 import * as API from '../../API/api';
@@ -49,6 +50,15 @@ export default function ResourceSettings({ resource }: ResourceSettingsProps): J
     <>
       {entityIs(updatableResource, 'Resource') && (
         <>
+          <SelectInput
+            label={i18n.modules.resource.category}
+            value={updatableResource.category || undefined}
+            isMulti={false}
+            canCreateOption={true}
+            options={allCategories}
+            onChange={onChangeCategory}
+            className={css({ minWidht: '60%', width: '100%' })}
+          />
           <Toggler
             label={i18n.common.published}
             value={updatableResource.published}
@@ -69,13 +79,6 @@ export default function ResourceSettings({ resource }: ResourceSettingsProps): J
                 ? i18n.modules.resource.publishedInfo
                 : i18n.modules.resource.unpublishedInfo
             }
-          />
-          <SelectInput
-            value={updatableResource.category || undefined}
-            isMulti={false}
-            canCreateOption={true}
-            options={allCategories}
-            onChange={onChangeCategory}
           />
         </>
       )}
