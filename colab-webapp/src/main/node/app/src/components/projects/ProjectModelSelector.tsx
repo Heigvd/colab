@@ -19,7 +19,7 @@ import { defaultProjectIllustration } from './ProjectCommon';
 
 const projectThumbnailStyle = css({
   padding: 0,
-  width: `calc(50% - 8px - 2*${space_S})`,
+  //width: `calc(50% - 8px - 2*${space_S})`,
   minHeight: '80px',
   maxHeight: '80px',
   margin: space_S,
