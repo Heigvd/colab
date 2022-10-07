@@ -1,6 +1,6 @@
 /*
  * The coLAB project
- * Copyright (C) 2021 AlbaSim, MEI, HEIG-VD, HES-SO
+ * Copyright (C) 2021-2022 AlbaSim, MEI, HEIG-VD, HES-SO
  *
  * Licensed under the MIT License
  */
@@ -458,19 +458,19 @@ public class ResourceManager {
      */
     private void deleteResourceAndRefs(AbstractResource resourceOrRef) {
         requestManager.sudo(() -> {
-        List<ResourceRef> references = resourceDao.findDirectReferences(resourceOrRef);
-        if (references != null) {
-            references.stream().forEach(ref -> deleteResourceAndRefs(ref));
-        }
+            List<ResourceRef> references = resourceDao.findDirectReferences(resourceOrRef);
+            if (references != null) {
+                references.stream().forEach(ref -> deleteResourceAndRefs(ref));
+            }
 
-        if (resourceOrRef.getOwner() != null) {
-            Resourceable owner = resourceOrRef.getOwner();
-            owner.getDirectAbstractResources().remove(resourceOrRef);
-        }
+            if (resourceOrRef.getOwner() != null) {
+                Resourceable owner = resourceOrRef.getOwner();
+                owner.getDirectAbstractResources().remove(resourceOrRef);
+            }
 
-        resourceDao.deleteResourceOrRef(resourceOrRef.getId());
+            resourceDao.deleteResourceOrRef(resourceOrRef.getId());
 
-        // Note : the document is deleted by cascade
+            // Note : the document is deleted by cascade
         });
     }
 
@@ -490,11 +490,10 @@ public class ResourceManager {
             Resource resource = (Resource) resourceOrRef;
             resource.setDeprecated(true);
 
-            // if resource in card and has only one variant, refuse also the resource in the variant
+            // if resource in card, refuse also the resource in the variants
             if (resource.getCard() != null) {
                 List<ResourceRef> references = resourceDao.findDirectReferences(resource);
-                if (references.size() == 1) {
-                    ResourceRef ref = references.get(0);
+                for (ResourceRef ref : references) {
                     if (Objects.equals(resource.getCard(), ref.getCardContent().getCard())) {
                         resourceReferenceSpreadingHelper.refuseRecursively(ref);
                     }
@@ -521,11 +520,10 @@ public class ResourceManager {
                 resource.setDeprecated(false);
             }
 
-            // if resource in card and has only one variant, un refuse also the resource in the variant
+            // if resource in card, un refuse also the resource in the variants
             if (resource.getCard() != null) {
                 List<ResourceRef> references = resourceDao.findDirectReferences(resource);
-                if (references.size() == 1) {
-                    ResourceRef ref = references.get(0);
+                for (ResourceRef ref : references) {
                     if (Objects.equals(resource.getCard(), ref.getCardContent().getCard())) {
                         resourceReferenceSpreadingHelper.unRefuseRecursively(ref);
                     }
@@ -608,17 +606,17 @@ public class ResourceManager {
      * @param resourceId id of the resource to move
      * @param parentType the new owner
      * @param parentId   if of the new owner
-     * @param published   new publication status
+     * @param published  new publication status
      */
     public void moveResource(Long resourceId, String parentType, Long parentId, boolean published) {
         Resourceable parent = null;
         // not that happy with this resourceable resolver
         // todo: normalize it
-        if ("Card".equals(parentType)){
+        if ("Card".equals(parentType)) {
             parent = cardDao.findCard(parentId);
-        } else if ("CardContent".equals(parentType)){
+        } else if ("CardContent".equals(parentType)) {
             parent = cardContentDao.findCardContent(parentId);
-        } else if ("CardType".equals(parentType)){
+        } else if ("CardType".equals(parentType)) {
             parent = cardTypeDao.findAbstractCardType(parentId);
         }
         this.moveResource(resourceId, parent, published);
