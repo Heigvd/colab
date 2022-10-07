@@ -8,9 +8,16 @@
 import { css, cx } from '@emotion/css';
 import { IconProp } from '@fortawesome/fontawesome-svg-core';
 import { faNewspaper, faQuestionCircle } from '@fortawesome/free-regular-svg-icons';
-import { faGhost, faStethoscope, faTools } from '@fortawesome/free-solid-svg-icons';
+import {
+  faDizzy,
+  faGhost,
+  faRocket,
+  faStethoscope,
+  faTools,
+} from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import * as React from 'react';
+import { checkUnreachable } from '../../../helper';
 import useTranslations from '../../../i18n/I18nContext';
 import { space_S } from '../../styling/style';
 import Checkbox from './Checkbox';
@@ -68,9 +75,14 @@ function getIconProp(tipsType: TipsProps['tipsType']): IconProp {
       return faGhost;
     case 'DEBUG':
       return faStethoscope;
+    case 'FEATURE_PREVIEW':
+      return faRocket;
     case 'TIPS':
-    default:
+    case undefined:
       return faQuestionCircle;
+    default:
+      checkUnreachable(tipsType);
+      return faDizzy;
   }
 }
 
