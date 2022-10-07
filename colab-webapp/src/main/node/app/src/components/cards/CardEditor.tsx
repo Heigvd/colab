@@ -568,7 +568,7 @@ export default function CardEditor({
                     className={'right-pane ' + css({ display: 'flex' })}
                     resizeHeight={false}
                     maxSize={openKey ? undefined : 0.1}
-                    minSize={50}
+                    minSize={360}
                     flex={0.2}
                   >
                     <SideCollapsiblePanelBody className={css({ overflow: 'hidden' })} />
