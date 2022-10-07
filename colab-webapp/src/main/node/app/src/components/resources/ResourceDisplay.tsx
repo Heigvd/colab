@@ -11,16 +11,20 @@ import {
   faBoxArchive,
   faCog,
   faEllipsisV,
-  faEye,
+  faGlasses,
   faInfoCircle,
   faPen,
+  faPersonDigging,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { entityIs } from 'colab-rest-client';
 import * as React from 'react';
 import * as API from '../../API/api';
 import { updateDocumentText } from '../../API/api';
 import useTranslations from '../../i18n/I18nContext';
+import { useProjectRootCard } from '../../selectors/cardSelector';
 import { useAndLoadTextOfDocument } from '../../selectors/documentSelector';
+import { useProjectBeingEdited } from '../../selectors/projectSelector';
 import { useAppDispatch } from '../../store/hooks';
 import { ConfirmIconButton } from '../common/element/ConfirmIconButton';
 import IconButton from '../common/element/IconButton';
@@ -67,6 +71,9 @@ export function ResourceDisplay({
   const dispatch = useAppDispatch();
   const i18n = useTranslations();
 
+  const { project } = useProjectBeingEdited();
+  const rootCard = useProjectRootCard(project);
+
   const [selectedDocId, setSelectedDocId] = React.useState<number | undefined | null>(undefined);
   const [editMode, setEditMode] = React.useState(defaultDocEditorContext.editMode);
   const [showTree, setShowTree] = React.useState(false);
@@ -109,7 +116,7 @@ export function ResourceDisplay({
   const [showSettings, setShowSettings] = React.useState(false);
 
   return (
-    <Flex align="stretch" direction="column" grow={1} className={css({overflow: 'auto'})}>
+    <Flex align="stretch" direction="column" grow={1} className={css({ overflow: 'auto' })}>
       <Flex direction="column" align="normal" className={paddingAroundStyle([1, 2, 4], space_M)}>
         <Flex
           justify="space-between"
@@ -166,12 +173,22 @@ export function ResourceDisplay({
                   alignItems: 'stretch',
                 })}
                 title=""
-                collapsedChildren={<FontAwesomeIcon icon={faEye} />}
+                collapsedChildren={<FontAwesomeIcon icon={faGlasses} />}
               >
                 {close => <ResourceScope onCancel={close} resource={resource} />}
               </OpenCloseModal>
             </FeaturePreview>
           )}
+          {!resource.targetResource.published &&
+            (resource.targetResource.abstractCardTypeId != null ||
+              (resource.targetResource.cardId != null &&
+                entityIs(rootCard, 'Card') &&
+                resource.targetResource.cardId === rootCard.id)) && (
+              <FontAwesomeIcon
+                icon={faPersonDigging}
+                title={i18n.modules.resource.unpublishedInfoType}
+              />
+            )}
           {canForce && !forceWrite && (
             <ConfirmIconButton
               icon={faPen}

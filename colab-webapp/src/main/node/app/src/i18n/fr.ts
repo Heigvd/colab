@@ -524,6 +524,7 @@ export const fr: ColabTranslations = {
       },
       sortByCategory: 'par catégorie',
       sortByProvider: 'par source',
+      noDocumentationYet: "Il n'y a pas encore de documentation",
     },
     cardType: {
       cardType: 'Thème',

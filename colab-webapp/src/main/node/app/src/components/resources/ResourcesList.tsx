@@ -6,11 +6,18 @@
  */
 
 import { css, cx } from '@emotion/css';
+import { faPersonDigging } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { entityIs } from 'colab-rest-client';
 import * as React from 'react';
 import useTranslations, { useLanguage } from '../../i18n/I18nContext';
+import { useProjectRootCard } from '../../selectors/cardSelector';
 import { useAndLoadTextOfDocument } from '../../selectors/documentSelector';
+import { useProjectBeingEdited } from '../../selectors/projectSelector';
 import Tips from '../common/element/Tips';
+import Tooltip from '../common/element/Tooltip';
 import Flex from '../common/layout/Flex';
+import DocumentPreview from '../documents/preview/DocumentPreview';
 import { marginAroundStyle, oneLineEllipsis, space_M, space_S } from '../styling/style';
 import { getKey, getTheDirectResource, ResourceAndRef } from './resourcesCommonType';
 import { TocDisplayCtx } from './ResourcesMainView';
@@ -228,6 +235,9 @@ function TocEntry({
 
   const { text: teaser } = useAndLoadTextOfDocument(resource.targetResource.teaserId);
 
+  const { project } = useProjectBeingEdited();
+  const rootCard = useProjectRootCard(project);
+
   return (
     <Flex className={tocEntryStyle} justify="space-between">
       {displayResource != null ? (
@@ -258,9 +268,49 @@ function TocEntry({
                   <TargetResourceSummary resource={resource} />{' '}
                 </>
               )}
-              {resource.targetResource.title || i18n.modules.resource.untitled}
+              <Tooltip
+                tooltipClassName={css({
+                  width: '400px',
+                  height: '600px',
+                  overflow: 'hidden',
+                  padding: '20px',
+                })}
+                tooltip={
+                  <Flex direction="column" align="stretch">
+                    <h3>{resource.targetResource.title}</h3>
+                    <Flex className={css({ paddingBottom: '5px' })}>
+                      <em>
+                        <TargetResourceSummary resource={resource} showText="full" />
+                      </em>
+                    </Flex>
+                    <div
+                      className={css({ marginBottom: '5px', borderBottom: '1px solid lightgrey' })}
+                    />
+                    <DocumentPreview
+                      docOwnership={{
+                        kind: 'PartOfResource',
+                        ownerId: resource.targetResource.id!,
+                      }}
+                    />
+                  </Flex>
+                }
+              >
+                {resource.targetResource.title || i18n.modules.resource.untitled}
+              </Tooltip>
             </div>
           </Flex>
+
+          {!resource.targetResource.published &&
+            (resource.targetResource.abstractCardTypeId != null ||
+              (resource.targetResource.cardId != null &&
+                entityIs(rootCard, 'Card') &&
+                resource.targetResource.cardId === rootCard.id)) && (
+              <FontAwesomeIcon
+                icon={faPersonDigging}
+                title={i18n.modules.resource.unpublishedInfoType}
+              />
+            )}
+
           <Tips tipsType="DEBUG" interactionType="CLICK">
             <div className={css({ fontSize: '0.8em' })}>
               {resource.targetResource && (

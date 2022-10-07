@@ -67,9 +67,6 @@ export default function DocumentationTab({ project }: DocumentationTabProps): JS
 
   return (
     <Flex align="stretch" direction="column" grow={1} className={css({ alignSelf: 'stretch' })}>
-      <Flex align="center">
-        <h2>{i18n.modules.documentation.tabTitle}</h2>
-      </Flex>
       <Tabs routed defaultTab="cardTypes">
         <Tab name="project" label={i18n.modules.project.settings.resources.label}>
           <div
@@ -86,7 +83,11 @@ export default function DocumentationTab({ project }: DocumentationTabProps): JS
                   <h2>{i18n.modules.project.settings.resources.label}</h2>
                   <TocDisplayToggler />
                 </Flex>
-                <ResourcesMainView accessLevel={accessLevel} contextData={resourceContext} />
+                <ResourcesMainView
+                  accessLevel={accessLevel}
+                  contextData={resourceContext}
+                  showVoidIndicator
+                />
               </>
             ) : (
               <InlineLoading />

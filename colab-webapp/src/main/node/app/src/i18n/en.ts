@@ -515,6 +515,7 @@ export const en = {
       },
       sortByCategory: 'by category',
       sortByProvider: 'by source',
+      noDocumentationYet: 'There is not documentation yet!',
     },
     cardType: {
       cardType: 'Theme',
