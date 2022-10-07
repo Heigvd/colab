@@ -18,7 +18,7 @@ import Button from '../common/element/Button';
 import InlineLoading from '../common/element/InlineLoading';
 import Ellipsis from '../common/layout/Ellipsis';
 import Flex from '../common/layout/Flex';
-import GridOrganizer, { fixGrid } from '../debugger/GridOrganizer';
+import GridOrganizer, { fixGrid } from '../common/GridOrganizer';
 import { depthMax } from '../projects/edition/Editor';
 import { fixedButtonStyle, space_L, voidStyle } from '../styling/style';
 import CardCreator from './CardCreator';

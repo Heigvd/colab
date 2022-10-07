@@ -9,7 +9,7 @@ import * as React from 'react';
 import Tabs, { Tab } from '../common/layout/Tabs';
 import DebugForm from './debugForm';
 import DebugInput from './DebugInput';
-import { PlayGridOrganizer } from './GridOrganizer';
+import PlayWithGridOrganizer from './PlayWithGridOrganizer';
 import IconAsImage from './IconAsImage';
 
 export default function Debugger(): JSX.Element {
@@ -22,7 +22,7 @@ export default function Debugger(): JSX.Element {
         <DebugForm />
       </Tab>
       <Tab name="grid" label="Grid">
-        <PlayGridOrganizer />
+        <PlayWithGridOrganizer />
       </Tab>
       <Tab name="icons" label="Icons">
         <IconAsImage />
