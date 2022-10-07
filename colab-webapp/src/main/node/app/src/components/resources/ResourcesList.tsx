@@ -245,7 +245,6 @@ function TocEntry({
       ) : (
         <>
           <Flex
-            title={teaser || ''}
             onClick={() => {
               if (selectResource != null) {
                 selectResource(resource);
@@ -286,6 +285,16 @@ function TocEntry({
                     <div
                       className={css({ marginBottom: '5px', borderBottom: '1px solid lightgrey' })}
                     />
+                    {teaser && (
+                      <div
+                        className={css({
+                          marginBottom: '5px',
+                          borderBottom: '1px solid lightgrey',
+                        })}
+                      >
+                        {teaser}
+                      </div>
+                    )}
                     <DocumentPreview
                       docOwnership={{
                         kind: 'PartOfResource',
