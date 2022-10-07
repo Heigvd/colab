@@ -485,6 +485,7 @@ export const en = {
       publishedInfoType: 'A published document is available for cards',
       unpublishedInfoType: 'An unpublished document is not visible for any cards',
       info: {
+        noContent: 'The document is empty',
         providedByCardType: (cardTypeName: string) => `Provided by "${cardTypeName}" theme`,
         ownedByThisCardType: 'Owned by this theme',
         providedByUpperCard: (name: string) => `Provided by the "${name}" upper card`,

@@ -494,6 +494,7 @@ export const fr: ColabTranslations = {
       publishedInfoRootCard: 'Une documentation publiée est disponible pour toutes les cartes',
       unpublishedInfoType: "Une documentation non publiée n'est pas visible par les cartes",
       info: {
+        noContent: 'Le document est vide',
         providedByCardType: (cardTypeName: string) => `Fournie par le thème «${cardTypeName}»`,
         ownedByThisCardType: 'Appartient à ce thème',
         providedByUpperCard: (name: string) => `Fournie par la carte parente «${name}»`,

@@ -6,19 +6,19 @@
  */
 
 import { css, cx } from '@emotion/css';
-import { faPersonDigging } from '@fortawesome/free-solid-svg-icons';
+import { faMinus, faPersonDigging } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { entityIs } from 'colab-rest-client';
 import * as React from 'react';
 import useTranslations, { useLanguage } from '../../i18n/I18nContext';
 import { useProjectRootCard } from '../../selectors/cardSelector';
-import { useAndLoadTextOfDocument } from '../../selectors/documentSelector';
+import { useAndLoadNbDocuments, useAndLoadTextOfDocument } from '../../selectors/documentSelector';
 import { useProjectBeingEdited } from '../../selectors/projectSelector';
 import Tips from '../common/element/Tips';
 import Tooltip from '../common/element/Tooltip';
 import Flex from '../common/layout/Flex';
 import DocumentPreview from '../documents/preview/DocumentPreview';
-import { marginAroundStyle, oneLineEllipsis, space_M, space_S } from '../styling/style';
+import { iconStyle, marginAroundStyle, oneLineEllipsis, space_M, space_S } from '../styling/style';
 import { getKey, getTheDirectResource, ResourceAndRef } from './resourcesCommonType';
 import { TocDisplayCtx } from './ResourcesMainView';
 import TargetResourceSummary from './summary/TargetResourceSummary';
@@ -235,6 +235,11 @@ function TocEntry({
 
   const { text: teaser } = useAndLoadTextOfDocument(resource.targetResource.teaserId);
 
+  const { nb: nbDocs } = useAndLoadNbDocuments({
+    kind: 'PartOfResource',
+    ownerId: resource.targetResource.id || 0,
+  });
+
   const { project } = useProjectBeingEdited();
   const rootCard = useProjectRootCard(project);
 
@@ -314,13 +319,20 @@ function TocEntry({
                 (resource.targetResource.cardId != null &&
                   entityIs(rootCard, 'Card') &&
                   resource.targetResource.cardId === rootCard.id)) && (
-                <Flex align="center">
-                  <FontAwesomeIcon
-                    icon={faPersonDigging}
-                    title={i18n.modules.resource.unpublishedInfoType}
-                  />
-                </Flex>
+                <FontAwesomeIcon
+                  icon={faPersonDigging}
+                  title={i18n.modules.resource.unpublishedInfoType}
+                  className={iconStyle}
+                />
               )}
+
+            {nbDocs < 1 && (
+              <FontAwesomeIcon
+                icon={faMinus}
+                title={i18n.modules.resource.info.noContent}
+                className={iconStyle}
+              />
+            )}
           </Flex>
 
           <Tips tipsType="DEBUG" interactionType="CLICK">
