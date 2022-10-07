@@ -468,9 +468,6 @@ export const en = {
       noTeaserForNow: 'There is no teaser for the moment. Feel free to fill it.',
       category: 'Category',
       documentation: 'Documentation',
-      docDescription: 'Documentation related to the card.',
-      docDescriptionWithType:
-        'Documentation related to the card. The theme may provide basic documentation.',
       categorytip: 'Group of documents',
       noResource: 'It does not contain any document',
       oneResource: 'It contains 1 document',
@@ -484,6 +481,9 @@ export const en = {
       unpublishedInfo: 'An unpublished document is private for this card',
       publishedInfoType: 'A published document is available for cards',
       unpublishedInfoType: 'An unpublished document is not visible for any cards',
+      help: {
+        documentationExplanation: 'Useful documents to complete the card',
+      },
       info: {
         noContent: 'The document is empty',
         providedByCardType: (cardTypeName: string) => `Provided by "${cardTypeName}" theme`,

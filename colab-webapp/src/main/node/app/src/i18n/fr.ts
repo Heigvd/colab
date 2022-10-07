@@ -476,9 +476,6 @@ export const fr: ColabTranslations = {
         "Il n'y a aucun résumé pour le moment. Vous pouvez en ajouter si vous le souhaitez",
       category: 'Catégorie',
       documentation: 'Documentation',
-      docDescription: 'Documentation liée à la carte',
-      docDescriptionWithType:
-        'Documentation liée à la carte. Le modèle peut fournir de la documentation de base.',
       categorytip: 'Groupe de documents',
       noResource: 'Contient aucune documentation',
       oneResource: 'Contient 1 document',
@@ -493,6 +490,9 @@ export const fr: ColabTranslations = {
       publishedInfoType: 'Une documentation publiée est disponible pour les cartes',
       publishedInfoRootCard: 'Une documentation publiée est disponible pour toutes les cartes',
       unpublishedInfoType: "Une documentation non publiée n'est pas visible par les cartes",
+      help: {
+        documentationExplanation: 'Les documents utiles pour compléter la carte',
+      },
       info: {
         noContent: 'Le document est vide',
         providedByCardType: (cardTypeName: string) => `Fournie par le thème «${cardTypeName}»`,

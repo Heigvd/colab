@@ -204,11 +204,7 @@ export default function CardEditor({
       title: i18n.modules.resource.documentation,
       nextToTitleElement: (
         <>
-          <Tips>
-            {card.cardTypeId
-              ? i18n.modules.resource.docDescriptionWithType
-              : i18n.modules.resource.docDescription}
-          </Tips>
+          <Tips>{i18n.modules.resource.help.documentationExplanation}</Tips>
           <TocDisplayToggler />
         </>
       ),
