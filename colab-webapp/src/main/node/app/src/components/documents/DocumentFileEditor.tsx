@@ -37,9 +37,10 @@ export default function DocumentFileEditor({
     () =>
       !readOnly
         ? (file: File) => {
-            dispatch(API.uploadFile({ docId: document.id!, file: file, fileSize: file.size })).then(
-              () => setState('DONE'),
-            );
+            setState('LOADING');
+            return dispatch(
+              API.uploadFile({ docId: document.id!, file: file, fileSize: file.size }),
+            ).then(() => setState('DONE'));
           }
         : undefined,
     [dispatch, document.id, readOnly],
