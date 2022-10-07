@@ -10,6 +10,7 @@ import Tabs, { Tab } from '../common/layout/Tabs';
 import DebugForm from './debugForm';
 import DebugInput from './DebugInput';
 import { PlayGridOrganizer } from './GridOrganizer';
+import IconAsImage from './IconAsImage';
 
 export default function Debugger(): JSX.Element {
   return (
@@ -22,6 +23,9 @@ export default function Debugger(): JSX.Element {
       </Tab>
       <Tab name="grid" label="Grid">
         <PlayGridOrganizer />
+      </Tab>
+      <Tab name="icons" label="Icons">
+        <IconAsImage />
       </Tab>
     </Tabs>
   );

@@ -25,11 +25,15 @@ export default function Overlay({
     }
   }, []);
 
-  const clickOut = React.useCallback(() => {
-    if (onClickOutside) {
-      onClickOutside();
-    }
-  }, [onClickOutside]);
+  const clickOut = React.useCallback(
+    (e: React.MouseEvent) => {
+      e.stopPropagation();
+      if (onClickOutside) {
+        onClickOutside();
+      }
+    },
+    [onClickOutside],
+  );
 
   //  /**
   //   * Pressing escape simulate clickOutside()

@@ -20,11 +20,12 @@ export function overlayStyle(coord: [number, number]) {
     left: x,
     top: coord[1],
     padding: `${ttPadding}px`,
-    border: '1px solid ',
+    border: '1px solid grey',
     backgroundColor: 'var(--bgColor)',
     width: `${ttWidth}px`,
     zIndex: 1,
     whiteSpace: 'initial',
+    borderRadius: '6px',
   });
 }
 

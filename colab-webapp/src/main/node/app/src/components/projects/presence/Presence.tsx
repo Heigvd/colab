@@ -137,7 +137,6 @@ const tooltipStyle = cx(
     zIndex: 6,
     padding: space_M,
     border: '1px solid grey',
-    borderRadius: '6px',
     //top: hover[1],
     //left: hover[0],
   }),
