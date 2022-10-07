@@ -123,7 +123,7 @@ export default function CardTypeThumbnail({
               <DropDownMenu
                 icon={faEllipsisV}
                 valueComp={{ value: '', label: '' }}
-                buttonClassName={cx(lightIconButtonStyle, css({ marginLeft: '40px' }))}
+                buttonClassName={cx(lightIconButtonStyle)}
                 entries={[
                   ...((usage === 'currentProject' && cardType.projectId === editedProjectId) ||
                   usage === 'global'
