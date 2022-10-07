@@ -19,7 +19,7 @@ export const en = {
     close: 'Close',
     delete: 'Delete',
     remove: 'Remove',
-    finalDelete: 'Irremediately delete',
+    finalDelete: 'Irremediably delete',
     ok: 'OK',
     open: 'Open',
     show: 'Show',
