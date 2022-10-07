@@ -160,6 +160,12 @@ export default function Form<T>({
     [submit],
   );
 
+  const doNotPropagateEnter = React.useCallback((event: React.KeyboardEvent<HTMLElement>) => {
+    if (event.key === 'Enter') {
+      event.stopPropagation();
+    }
+  }, []);
+
   const fieldComps = fields.map(field => {
     const isFieldErroneous = field.isErroneous != null ? field.isErroneous(state) : false;
     const isFieldEmptyError = field.isMandatory
@@ -185,7 +191,7 @@ export default function Form<T>({
 
     if (field.type === 'text' || field.type === 'textarea') {
       return (
-        <div key={fieldKey}>
+        <div key={fieldKey} onKeyDown={field.type === 'textarea' ? doNotPropagateEnter : undefined}>
           <FormInput
             label={field.label}
             value={String(state[field.key] || '')}
@@ -265,7 +271,7 @@ export default function Form<T>({
       );
     } else if (field.type === 'select') {
       return (
-        <div key={fieldKey}>
+        <div key={fieldKey} onKeyDown={doNotPropagateEnter}>
           <SelectInput
             label={field.label}
             value={String(state[field.key])}
@@ -285,7 +291,7 @@ export default function Form<T>({
     } else if (field.type === 'selectnumber') {
       // TODO see if really useful to have a selection of a number
       return (
-        <div key={fieldKey}>
+        <div key={fieldKey} onKeyDown={doNotPropagateEnter}>
           <SelectInput
             label={field.label}
             value={Number(state[field.key])}
