@@ -25,10 +25,13 @@ import { useAndLoadSubCards } from '../../selectors/cardSelector';
 import { useAppDispatch, useLoadingState } from '../../store/hooks';
 import Button from '../common/element/Button';
 import InlineLoading from '../common/element/InlineLoading';
+import { FeaturePreview } from '../common/element/Tips';
+import Toggler from '../common/element/Toggler';
 import { ConfirmDeleteModal } from '../common/layout/ConfirmDeleteModal';
 import DropDownMenu from '../common/layout/DropDownMenu';
 import Flex from '../common/layout/Flex';
 import Modal from '../common/layout/Modal';
+import DocumentPreview from '../documents/preview/DocumentPreview';
 import {
   errorColor,
   lightIconButtonStyle,
@@ -82,6 +85,7 @@ export interface CardThumbProps {
   showSubcards?: boolean;
   depth?: number;
   mayOrganize?: boolean;
+  showPreview: boolean;
 }
 
 export default function CardThumb({
@@ -91,6 +95,7 @@ export default function CardThumb({
   variant,
   variants,
   mayOrganize,
+  showPreview,
 }: CardThumbProps): JSX.Element {
   const i18n = useTranslations();
   const dispatch = useAppDispatch();
@@ -161,6 +166,8 @@ export default function CardThumb({
     [shouldZoomOnClick, navigateToZoomPageCb, navigateToEditPageCb],
   );
 
+  const [organize, setOrganize] = React.useState(false);
+
   if (cardId == null) {
     return <i>{i18n.modules.card.error.withoutId}</i>;
   } else {
@@ -176,7 +183,7 @@ export default function CardThumb({
               borderBottom:
                 card.color && card.color != '#ffffff'
                   ? '3px solid ' + card.color
-                  : '1px solid var(--lightGray)',
+                  : '3px solid var(--lightGray)',
               width: '100%',
               cursor: 'pointer',
             })}
@@ -394,6 +401,7 @@ export default function CardThumb({
           <Flex
             grow={1}
             align="stretch"
+            direction="column"
             onClick={clickOnCardContentCb}
             className={cx({
               [css({ minHeight: space_L, cursor: shouldZoomOnClick ? 'zoom-in' : 'pointer' })]:
@@ -404,9 +412,54 @@ export default function CardThumb({
             })}
             justify="center"
           >
+            {mayOrganize && (
+              <FeaturePreview>
+                <Toggler
+                  className={css({ alignSelf: 'flex-end' })}
+                  label={i18n.modules.card.positioning.toggleText}
+                  value={organize}
+                  onChange={setOrganize}
+                />
+              </FeaturePreview>
+            )}
+
+            {showPreview && variant && (
+              <FeaturePreview>
+                <DocumentPreview
+                  className={css({
+                    flexShrink: '1',
+                    flexGrow: '1',
+                    flexBasis: '1px',
+                    position: 'relative',
+                    overflow: 'hidden',
+                    '::before': {
+                      content: '" "',
+                      background: 'linear-gradient(#FFF0, #fff 100%)',
+                      position: 'absolute',
+                      width: '100%',
+                      bottom: '0',
+                      top: '75%',
+                      pointerEvents: 'none',
+                    },
+                    ':empty': {
+                      display: 'none',
+                    },
+                  })}
+                  docOwnership={{
+                    kind: 'DeliverableOfCardContent',
+                    ownerId: variant.id!,
+                  }}
+                />
+              </FeaturePreview>
+            )}
             {showSubcards ? (
               variant != null ? (
-                <ContentSubs depth={depth} cardContent={variant} mayOrganize={mayOrganize} />
+                <ContentSubs
+                  depth={depth}
+                  cardContent={variant}
+                  organize={organize}
+                  showPreview={false}
+                />
               ) : (
                 <i>{i18n.modules.content.none}</i>
               )

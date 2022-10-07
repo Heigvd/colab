@@ -20,6 +20,7 @@ export interface ClickableProps {
   className?: string;
   clickableClassName?: string;
   ref?: React.RefObject<HTMLSpanElement>;
+  stopPropagation?: boolean;
 }
 
 export default function Clickable({
@@ -32,6 +33,7 @@ export default function Clickable({
   className = '',
   clickableClassName = linkStyle,
   ref,
+  stopPropagation,
 }: ClickableProps): JSX.Element {
   /**
    * Pressing space simulates click.<br/>
@@ -39,6 +41,9 @@ export default function Clickable({
    */
   const keyDownCb = React.useCallback(
     (event: React.KeyboardEvent<HTMLSpanElement>) => {
+      if (stopPropagation) {
+        event.stopPropagation();
+      }
       if (event.code === 'Space') {
         if (onClick != null) {
           onClick(event);
@@ -55,25 +60,31 @@ export default function Clickable({
         }
       }
     },
-    [onClick, onDoubleClick, enterKeyBehaviour],
+    [onClick, onDoubleClick, enterKeyBehaviour, stopPropagation],
   );
 
   const onClickCb = React.useCallback(
     (e: React.MouseEvent<HTMLSpanElement>) => {
+      if (stopPropagation) {
+        e.stopPropagation();
+      }
       if (onClick != null) {
         onClick(e);
       }
     },
-    [onClick],
+    [onClick, stopPropagation],
   );
 
   const onDoubleClickCb = React.useCallback(
     (e: React.MouseEvent<HTMLSpanElement>) => {
+      if (stopPropagation) {
+        e.stopPropagation();
+      }
       if (onDoubleClick != null) {
         onDoubleClick(e);
       }
     },
-    [onDoubleClick],
+    [onDoubleClick, stopPropagation],
   );
 
   return (

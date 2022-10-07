@@ -321,7 +321,7 @@ export default function FilePicker({
             ) : (
               <img className={displayImageStyle} src={currentPreviewImgUrl} />
             )}
-            <IconButton onClick={zoomCb} icon={faMagnifyingGlassPlus} title="" />
+            <IconButton onClick={zoomCb} icon={faMagnifyingGlassPlus} title="" stopPropagation />
           </>
         ) : (
           <>
@@ -341,6 +341,7 @@ export default function FilePicker({
             title={i18n.modules.content.noFileUploaded}
             className={lightIconButtonStyle}
             onClick={onDownload}
+            stopPropagation
           />
         )}
         {!readOnly && onChange && editingStatus && (

@@ -16,13 +16,11 @@ import { useAndLoadSubCards } from '../../selectors/cardSelector';
 import { useAppDispatch } from '../../store/hooks';
 import Button from '../common/element/Button';
 import InlineLoading from '../common/element/InlineLoading';
-import { FeaturePreview } from '../common/element/Tips';
-import Toggler from '../common/element/Toggler';
 import Ellipsis from '../common/layout/Ellipsis';
 import Flex from '../common/layout/Flex';
 import GridOrganizer, { fixGrid } from '../debugger/GridOrganizer';
 import { depthMax } from '../projects/edition/Editor';
-import { fixedButtonStyle, voidStyle } from '../styling/style';
+import { fixedButtonStyle, space_L, voidStyle } from '../styling/style';
 import CardCreator from './CardCreator';
 import { TinyCard } from './CardThumb';
 import CardThumbWithSelector from './CardThumbWithSelector';
@@ -35,7 +33,8 @@ interface ContentSubsProps {
   showEmptiness?: boolean;
   className?: string;
   subcardsContainerStyle?: string;
-  mayOrganize?: boolean;
+  organize?: boolean;
+  showPreview: boolean;
 }
 /* const tinyCard = css({
   width: '30px',
@@ -45,30 +44,44 @@ interface ContentSubsProps {
   margin: '0 2px',
 }); */
 
-const flexWrap = css({
+const subCardsContainerStyle = css({
   display: 'flex',
-  justifyContent: 'space-evenly',
-  flexWrap: 'wrap',
+  justifyContent: 'flex-end',
+  alignItems: 'stretch',
+  flexDirection: 'column',
+  marginTop: space_L,
+});
+
+const flexGrow = css({
+  flexGrow: '1',
 });
 
 /* const gridCardsStyle = css({
-  display: 'grid', 
-  gridTemplateColumns: 'repeat(3, minmax(min-content, 1fr))', 
-  justifyContent: 'stretch', 
+  display: 'grid',
+  gridTemplateColumns: 'repeat(3, minmax(min-content, 1fr))',
+  justifyContent: 'stretch',
   alignContent: 'stretch',
-  justifyItems: 'stretch', 
+  justifyItems: 'stretch',
   alignItems: 'stretch'}); */
 
-export function gridCardsStyle(nbColumn: number) {
+export function gridCardsStyle(nbColumns: number, _nbRows: number) {
   return css({
+    flexGrow: '1',
     display: 'grid',
-    gridTemplateColumns: `repeat(${nbColumn}, minmax(min-content, 1fr))`,
+    gridTemplateColumns: `repeat(${nbColumns}, minmax(min-content, auto))`,
+    // gridTemplateRows: `repeat(${nbRows}, 1fr)`,
     justifyContent: 'strech',
     alignContent: 'stretch',
     justifyItems: 'stretch',
     alignItems: 'stretch',
   });
 }
+
+const hideEmptyGridStyle = css({
+  ':empty': {
+    display: 'none',
+  },
+});
 
 // Display sub cards of a parent
 export default function ContentSubs({
@@ -77,13 +90,12 @@ export default function ContentSubs({
   showEmptiness = false,
   className,
   subcardsContainerStyle,
-  mayOrganize = false,
+  organize = false,
+  showPreview,
 }: ContentSubsProps): JSX.Element {
   const location = useLocation();
   const i18n = useTranslations();
   const dispatch = useAppDispatch();
-
-  const [organize, setOrganize] = React.useState(false);
 
   const subCards = useAndLoadSubCards(cardContent.id);
 
@@ -103,7 +115,7 @@ export default function ContentSubs({
       return fixGrid(cards);
     }
 
-    return { cells: [], nbColumns: 1 };
+    return { cells: [], nbColumns: 3, nbRows: 1 };
   }, [subCards]);
 
   if (subCards == null) {
@@ -111,7 +123,15 @@ export default function ContentSubs({
   } else {
     if (subCards.length === 0 && showEmptiness) {
       return (
-        <div className={voidStyle}>
+        <div
+          className={cx(
+            voidStyle,
+            css({
+              height: '200px',
+              width: '100%',
+            }),
+          )}
+        >
           <p>{i18n.modules.card.infos.noCardYetPleaseCreate}</p>
           <CardCreator
             parentCardContent={cardContent}
@@ -128,23 +148,17 @@ export default function ContentSubs({
       return depth > 0 ? (
         <div
           className={cx(
-            flexWrap,
-            css({ flexDirection: 'column', alignItems: 'stretch', flexGrow: 1 }),
+            subCardsContainerStyle,
             className,
+            indexedSubCards.cells.length > 0 ? flexGrow : undefined,
           )}
         >
-          {mayOrganize && (
-            <FeaturePreview>
-              <Toggler
-                className={css({ alignSelf: 'flex-end' })}
-                label={i18n.modules.card.positioning.toggleText}
-                value={organize}
-                onChange={setOrganize}
-              />
-            </FeaturePreview>
-          )}
           {organize ? (
             <GridOrganizer
+              className={css({
+                height: '100%',
+                width: '100%',
+              })}
               cells={indexedSubCards.cells}
               gap="6px"
               handleSize="33px"
@@ -170,6 +184,7 @@ export default function ContentSubs({
                     depth={0}
                     key={cell.payload.id}
                     card={cell.payload}
+                    showPreview={false}
                   />
                 );
               }}
@@ -177,7 +192,11 @@ export default function ContentSubs({
           ) : (
             <>
               <div
-                className={cx(gridCardsStyle(indexedSubCards.nbColumns), subcardsContainerStyle)}
+                className={cx(
+                  gridCardsStyle(indexedSubCards.nbColumns, indexedSubCards.nbRows),
+                  subcardsContainerStyle,
+                  hideEmptyGridStyle,
+                )}
               >
                 {indexedSubCards.cells.map(({ payload, y, x, width, height }) => (
                   <CardThumbWithSelector
@@ -191,6 +210,7 @@ export default function ContentSubs({
                     depth={depth - 1}
                     key={payload.id}
                     card={payload}
+                    showPreview={showPreview}
                   />
                 ))}
               </div>

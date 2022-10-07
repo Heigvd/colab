@@ -195,7 +195,11 @@ function findPosition<T>(matrix: Matrix, cell: Cell<T>, shift: Shift): Cell<T> {
   return { ...cell, x: coord.x - shift.x + 1, y: coord.y - shift.y + 1 };
 }
 
-export function fixGrid<T>(cells: Readonly<Cell<T>>[]): { cells: Cell<T>[]; nbColumns: number } {
+export function fixGrid<T>(cells: Readonly<Cell<T>>[]): {
+  cells: Cell<T>[];
+  nbColumns: number;
+  nbRows: number;
+} {
   const extent = computeExtent(cells);
 
   const shift = {
@@ -254,11 +258,16 @@ export function fixGrid<T>(cells: Readonly<Cell<T>>[]): { cells: Cell<T>[]; nbCo
     result.push(newPos);
   });
 
-  const finalNbColumns = (findLastOccupiedColumn(matrix) || 2) + 1;
+  const finalNbColumns = (findLastOccupiedColumn(matrix) || 0) + 1;
+  const lastCell = findLastOccupiedCell(matrix);
+  const lastRow = lastCell?.y || 0;
+
+  const finalNbRows = lastRow + 1;
 
   return {
     cells: result,
     nbColumns: finalNbColumns,
+    nbRows: finalNbRows,
   };
 }
 
@@ -571,6 +580,7 @@ function TmpCellDisplay<T>({
 }
 
 interface GridOrganizerProps<T> {
+  className?: string;
   cells: Cell<T>[];
   background: (payload: Cell<T>) => React.ReactNode;
   onResize: (cell: Cell<T>, newPosition: GridPosition) => void;
@@ -579,14 +589,13 @@ interface GridOrganizerProps<T> {
 }
 
 export default function GridOrganizer<T>({
+  className,
   cells,
   background,
   onResize,
   handleSize,
   gap = '20px',
 }: GridOrganizerProps<T>): JSX.Element {
-  const overlayRef = React.useRef<HTMLDivElement>(null);
-
   const dndRef = React.useRef<DndRef<T>>({ status: 'idle', tmpCell: undefined });
 
   const [tmpCell, setTmpCell] = React.useState<Cell<void>>();
@@ -866,82 +875,80 @@ export default function GridOrganizer<T>({
   logger.debug('CellSelector: ', tmpCellSelector);
 
   return (
-    <>
-      <div
-        onClick={/*make sure not to trigger click event on mouseUp*/ stopPropagation}
-        className={cx(
-          cursorStyle,
-          modeClass,
-          css({
-            display: 'grid',
-            gridTemplateColumns: `repeat(${nbColumn}, minmax(min-content, 1fr))`,
-            justifyContent: 'strech',
-            alignContent: 'stretch',
-            justifyItems: 'stretch',
-            alignItems: 'stretch',
-            gridGap: gap,
-            '&.not-dragging .Cell:hover .handle': {
-              backgroundColor: 'lightgrey',
-              border: '1px solid grey',
-              opacity: 0.2,
-            },
-            '&.not-dragging .Cell .handle:hover': {
-              //backgroundColor: 'lightgrey',
-              opacity: '0.5',
-            },
-            '&.dragging .Cell .handle': {
-              cursor: 'unset',
-            },
-            [tmpCellSelector]: {
-              opacity: '0.25',
-            },
-            '&.dragging .Cell': {
-              pointerEvents: 'none',
-            },
-          }),
-        )}
-        onMouseUp={enableDragAndDrop ? mouseHandler : undefined}
-        onMouseDownCapture={enableDragAndDrop ? mouseHandler : undefined}
-        onMouseMove={enableDragAndDrop ? mouseHandler : undefined}
-        onMouseLeave={enableDragAndDrop ? mouseHandler : undefined}
-      >
-        {(() => {
-          // invisible underlying grid position pointer
-          return Array.from({ length: nbRow }).flatMap((_, y) => {
-            return Array.from({ length: nbColumn }).map((_, x) => {
-              return <InvisibleGridDisplay key={`${x + 1};${y + 1}`} x={x + 1} y={y + 1} />;
-            });
+    <div
+      onClick={/*make sure not to trigger click event on mouseUp*/ stopPropagation}
+      className={cx(
+        className,
+        cursorStyle,
+        modeClass,
+        css({
+          display: 'grid',
+          gridTemplateColumns: `repeat(${nbColumn}, minmax(min-content, 1fr))`,
+          justifyContent: 'strech',
+          alignContent: 'stretch',
+          justifyItems: 'stretch',
+          alignItems: 'stretch',
+          gridGap: gap,
+          '&.not-dragging .Cell:hover .handle': {
+            backgroundColor: 'lightgrey',
+            border: '1px solid grey',
+            opacity: 0.2,
+          },
+          '&.not-dragging .Cell .handle:hover': {
+            //backgroundColor: 'lightgrey',
+            opacity: '0.5',
+          },
+          '&.dragging .Cell .handle': {
+            cursor: 'unset',
+          },
+          [tmpCellSelector]: {
+            opacity: '0.25',
+          },
+          '&.dragging .Cell': {
+            pointerEvents: 'none',
+          },
+        }),
+      )}
+      onMouseUp={enableDragAndDrop ? mouseHandler : undefined}
+      onMouseDownCapture={enableDragAndDrop ? mouseHandler : undefined}
+      onMouseMove={enableDragAndDrop ? mouseHandler : undefined}
+      onMouseLeave={enableDragAndDrop ? mouseHandler : undefined}
+    >
+      {(() => {
+        // invisible underlying grid position pointer
+        return Array.from({ length: nbRow }).flatMap((_, y) => {
+          return Array.from({ length: nbColumn }).map((_, x) => {
+            return <InvisibleGridDisplay key={`${x + 1};${y + 1}`} x={x + 1} y={y + 1} />;
           });
-        })()}
-        {cells.map(cell => (
-          // effective cell to display
-          <CellDisplay
-            key={cell.id}
-            cell={cell}
-            shiftX={shiftX}
-            shiftY={shiftY}
-            background={background}
-            handleSize={handleSize}
-          />
-        ))}
-        {voidSpaces.map(({ x, y }) => (
-          // highlight empty cell with dashed border to visually identify drop-zones
-          <VoidDisplay key={`${x};${y}`} x={x} y={y} />
-        ))}
-        {tmpCell && (
-          // the cell being moved or resized
-          <TmpCellDisplay
-            cell={tmpCell}
-            cells={cells}
-            shiftX={shiftX}
-            shiftY={shiftY}
-            background={background}
-            invalid={!tmpValid}
-          />
-        )}
-      </div>
-      <div ref={overlayRef}></div>
-    </>
+        });
+      })()}
+      {cells.map(cell => (
+        // effective cell to display
+        <CellDisplay
+          key={cell.id}
+          cell={cell}
+          shiftX={shiftX}
+          shiftY={shiftY}
+          background={background}
+          handleSize={handleSize}
+        />
+      ))}
+      {voidSpaces.map(({ x, y }) => (
+        // highlight empty cell with dashed border to visually identify drop-zones
+        <VoidDisplay key={`${x};${y}`} x={x} y={y} />
+      ))}
+      {tmpCell && (
+        // the cell being moved or resized
+        <TmpCellDisplay
+          cell={tmpCell}
+          cells={cells}
+          shiftX={shiftX}
+          shiftY={shiftY}
+          background={background}
+          invalid={!tmpValid}
+        />
+      )}
+    </div>
   );
 }
 

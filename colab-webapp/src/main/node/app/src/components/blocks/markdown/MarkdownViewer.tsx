@@ -67,9 +67,14 @@ export const computeOverlayPosition = (node: Element) => {
 export interface MarkdownViewerProps {
   md: string;
   className?: string;
+  showEmptiness?: boolean;
 }
 
-export default function MarkdownViewer({ md, className }: MarkdownViewerProps): JSX.Element {
+export default function MarkdownViewer({
+  md,
+  className,
+  showEmptiness = true,
+}: MarkdownViewerProps): JSX.Element {
   const divRef = React.useRef<HTMLDivElement>(null);
   const i18n = useTranslations();
 
@@ -119,9 +124,13 @@ export default function MarkdownViewer({ md, className }: MarkdownViewerProps): 
     }
   }, []);
 
+  if (md == '' && !showEmptiness) {
+    return <></>;
+  }
+
   return (
     <div className={cx(css({ p: { margin: space_S + ' 0' } }), colabFlavouredMarkdown, className)}>
-      {md === '' ? (
+      {md === '' && showEmptiness ? (
         <p className={css({ color: 'var(--lightGray)' })}>
           <i>{i18n.common.empty}</i>
         </p>

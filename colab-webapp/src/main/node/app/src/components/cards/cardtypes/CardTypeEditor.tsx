@@ -229,9 +229,13 @@ export default function CardTypeEditor({ className, usage }: CardTypeEditorProps
           <Flex
             direction="column"
             align="stretch"
-            className={css({ borderLeft: '1px solid var(--lightGray)', width: '50%' })}
+            className={css({
+              borderLeft: '1px solid var(--lightGray)',
+              width: '50%',
+              padding: space_S,
+            })}
           >
-            <Flex align="flex-end">
+            <Flex align="baseline">
               <h3>{i18n.modules.resource.documentation}</h3>
               <TocDisplayToggler />
             </Flex>

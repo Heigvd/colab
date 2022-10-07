@@ -24,6 +24,7 @@ export interface IconButtonProps {
   onClick?: (e: React.MouseEvent<HTMLSpanElement> | React.KeyboardEvent<HTMLSpanElement>) => void;
   className?: string;
   IconClassName?: string;
+  stopPropagation?: boolean;
 }
 
 export default function IconButton({
@@ -37,6 +38,7 @@ export default function IconButton({
   onClick,
   className,
   IconClassName,
+  stopPropagation,
 }: IconButtonProps): JSX.Element {
   return (
     <Clickable
@@ -45,6 +47,7 @@ export default function IconButton({
       className={className}
       clickableClassName={cx(linkStyle, iconButton, className)}
       clickable
+      stopPropagation={stopPropagation}
     >
       {layer ? (
         <span className="fa-layers fa-fw">

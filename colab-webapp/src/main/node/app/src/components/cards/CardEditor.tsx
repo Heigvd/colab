@@ -480,7 +480,7 @@ export default function CardEditor({
                 setOpenKey,
               }}
             >
-              <Flex grow={1} align="stretch" className={css({overflow: 'hidden'})}>
+              <Flex grow={1} align="stretch" className={css({ overflow: 'hidden' })}>
                 <ReflexContainer orientation={'vertical'}>
                   <ReflexElement
                     className={'left-pane ' + css({ display: 'flex' })}
@@ -571,7 +571,7 @@ export default function CardEditor({
                     minSize={50}
                     flex={0.2}
                   >
-                    <SideCollapsiblePanelBody className={css({overflow: 'hidden'})} />
+                    <SideCollapsiblePanelBody className={css({ overflow: 'hidden' })} />
                   </ReflexElement>
                 </ReflexContainer>
                 <SideCollapsibleMenu
@@ -619,9 +619,9 @@ export default function CardEditor({
           <Collapsible label={i18n.modules.card.subcards}>
             <ContentSubs
               depth={1}
-              mayOrganize={false}
               cardContent={variant}
               className={css({ alignItems: 'flex-start', overflow: 'auto', width: '100%' })}
+              showPreview
               subcardsContainerStyle={css({
                 overflow: 'auto',
                 width: '100%',

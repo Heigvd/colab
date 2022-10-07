@@ -15,6 +15,7 @@ interface CardThumbWithSelectorProps {
   card: Card;
   depth?: number;
   mayOrganize?: boolean;
+  showPreview: boolean;
 }
 
 export default function CardThumbWithSelector({
@@ -22,6 +23,7 @@ export default function CardThumbWithSelector({
   className,
   depth = 1,
   mayOrganize,
+  showPreview,
 }: CardThumbWithSelectorProps): JSX.Element {
   if (card.id == null) {
     return <i>Card without id is invalid...</i>;
@@ -37,6 +39,7 @@ export default function CardThumbWithSelector({
               showSubcards={true}
               depth={depth}
               mayOrganize={mayOrganize}
+              showPreview={showPreview}
             />
           </>
         )}
