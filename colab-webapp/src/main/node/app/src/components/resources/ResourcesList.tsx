@@ -245,6 +245,7 @@ function TocEntry({
       ) : (
         <>
           <Flex
+            align="center"
             onClick={() => {
               if (selectResource != null) {
                 selectResource(resource);
@@ -307,18 +308,20 @@ function TocEntry({
                 {resource.targetResource.title || i18n.modules.resource.untitled}
               </Tooltip>
             </div>
-          </Flex>
 
-          {!resource.targetResource.published &&
-            (resource.targetResource.abstractCardTypeId != null ||
-              (resource.targetResource.cardId != null &&
-                entityIs(rootCard, 'Card') &&
-                resource.targetResource.cardId === rootCard.id)) && (
-              <FontAwesomeIcon
-                icon={faPersonDigging}
-                title={i18n.modules.resource.unpublishedInfoType}
-              />
-            )}
+            {!resource.targetResource.published &&
+              (resource.targetResource.abstractCardTypeId != null ||
+                (resource.targetResource.cardId != null &&
+                  entityIs(rootCard, 'Card') &&
+                  resource.targetResource.cardId === rootCard.id)) && (
+                <Flex align="center">
+                  <FontAwesomeIcon
+                    icon={faPersonDigging}
+                    title={i18n.modules.resource.unpublishedInfoType}
+                  />
+                </Flex>
+              )}
+          </Flex>
 
           <Tips tipsType="DEBUG" interactionType="CLICK">
             <div className={css({ fontSize: '0.8em' })}>

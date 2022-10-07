@@ -179,11 +179,11 @@ export function ResourceDisplay({
               </OpenCloseModal>
             </FeaturePreview>
           )}
-          {!resource.targetResource.published &&
-            (resource.targetResource.abstractCardTypeId != null ||
-              (resource.targetResource.cardId != null &&
+          {!targetResource.published &&
+            (targetResource.abstractCardTypeId != null ||
+              (targetResource.cardId != null &&
                 entityIs(rootCard, 'Card') &&
-                resource.targetResource.cardId === rootCard.id)) && (
+                targetResource.cardId === rootCard.id)) && (
               <FontAwesomeIcon
                 icon={faPersonDigging}
                 title={i18n.modules.resource.unpublishedInfoType}
