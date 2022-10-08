@@ -379,6 +379,22 @@ public class ResourceReferenceSpreadingHelper {
     }
 
     /**
+     * Disable = mark as residual.
+     * <p>
+     * Mark the resource's references as residual. Do it as well for all descendants.
+     *
+     * @param resource the resource
+     * @param alwaysMark        if the reference must for sure be marked as residual
+     */
+    public void spreadDisableResourceDown(Resource resource, boolean alwaysMark) {
+        requestManager.sudo(() -> {
+            for (ResourceRef childRef : resourceDao.findDirectReferences(resource)) {
+                markAsResidualRecursively(childRef, alwaysMark);
+            }
+        });
+    }
+
+    /**
      * Mark the resource reference as residual. Do it as well for all its descendants.
      *
      * @param resourceReference the reference to update

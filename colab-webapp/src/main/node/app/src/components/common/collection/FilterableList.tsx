@@ -47,8 +47,7 @@ export interface FilterableListProps {
   tagClassName?: string;
   tags: string[];
   onChange: (t: boolean, cat: string) => void;
-  tagState?: Record<string, boolean>;
-  stateSelectAll: boolean;
+  tagState: Record<string, boolean>;
   toggleAllTags: (t: boolean) => void;
 }
 
@@ -58,11 +57,13 @@ export default function FilterableList({
   tags,
   onChange,
   tagState,
-  stateSelectAll,
   toggleAllTags,
 }: FilterableListProps): JSX.Element {
   const i18n = useTranslations();
   const [filterOpen, setFilterOpen] = React.useState<boolean>(false);
+
+  const allSelected = tags.findIndex(tag => !tagState[tag]) < 0;
+
   return (
     <Flex className={className} direction="column" align="stretch">
       <Clickable
@@ -109,7 +110,7 @@ export default function FilterableList({
             <Checkbox
               key={'toggle all'}
               label={i18n.common.selectAll}
-              value={stateSelectAll}
+              value={allSelected}
               onChange={t => toggleAllTags(t)}
               className={cx(lightLinkStyle, css({ '&:hover': { textDecoration: 'none' } }))}
             />

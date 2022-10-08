@@ -63,7 +63,7 @@ export function SideCollapsiblePanelBody({
               borderBottom: '1px solid var(--lightGray)',
             })}
           >
-            <Flex align="flex-end">
+            <Flex align="baseline">
               <h3>{itemOpen.title}</h3>
               {itemOpen.nextToTitleElement}
             </Flex>

@@ -39,6 +39,9 @@ public class JcrSession implements Serializable {
         "admin",
         "admin".toCharArray());
 
+    /** Global workspace name */
+    private static final String GLOBAL_WORKSPACE = "global_workspace";
+
     /**
      * The session itself
      */
@@ -63,11 +66,16 @@ public class JcrSession implements Serializable {
      * @throws javax.jcr.RepositoryException in case of JCR issue
      */
     public JcrSession(Repository repository, Project project) throws RepositoryException {
-        logger.trace("Create JCR Session for {}", project);
+        logger.trace("Create JCR Session for {}", project == null ? GLOBAL_WORKSPACE : project);
         // TODO create user if not present in
         // TODO long term :
         this.session = repository.login(credentials);
-        this.workspace = "project_" + project.getId();
+
+        if (project != null){
+            this.workspace = "project_" + project.getId();
+        } else {
+            this.workspace = GLOBAL_WORKSPACE;
+        }
         this.workspacePath = "/" + this.workspace;
 
         // make sure root node exists

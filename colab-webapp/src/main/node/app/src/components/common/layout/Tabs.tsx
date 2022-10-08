@@ -61,10 +61,10 @@ function defaultTabFactory(
   location: Location,
   defaultTab: string | undefined,
 ): string {
-  if (routed) {
-    return location.pathname.split('/').pop() || '';
-  } else if (defaultTab != null) {
+  if (defaultTab != null) {
     return defaultTab;
+  } else if (routed) {
+    return location.pathname.split('/').pop() || '';
   } else {
     return '';
   }

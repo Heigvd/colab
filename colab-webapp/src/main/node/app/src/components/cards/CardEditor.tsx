@@ -50,7 +50,7 @@ import DocEditorToolbox, {
 } from '../documents/DocumentEditorToolbox';
 import DocumentList from '../documents/DocumentList';
 import { ResourceCallContext } from '../resources/resourcesCommonType';
-import ResourcesMainView from '../resources/ResourcesMainView';
+import ResourcesMainView, { TocDisplayToggler } from '../resources/ResourcesMainView';
 import { ResourceListNb } from '../resources/summary/ResourcesListSummary';
 //import StickyNoteWrapper from '../stickynotes/StickyNoteWrapper';
 import {
@@ -69,6 +69,7 @@ import CardSettings from './CardSettings';
 import CompletionEditor from './CompletionEditor';
 import ContentSubs from './ContentSubs';
 import {
+  Item,
   SideCollapsibleCTX,
   SideCollapsibleMenu,
   SideCollapsiblePanelBody,
@@ -191,7 +192,7 @@ export default function CardEditor({
     cardContentId: variant.id,
     hasSeveralVariants: hasVariants,
   };
-  const sideBarItems = {
+  const sideBarItems: Record<string, Item> = {
     resources: {
       icon: faPaperclip,
       nextToIconElement: (
@@ -202,11 +203,10 @@ export default function CardEditor({
       ),
       title: i18n.modules.resource.documentation,
       nextToTitleElement: (
-        <Tips>
-          {card.cardTypeId
-            ? i18n.modules.resource.docDescriptionWithType
-            : i18n.modules.resource.docDescription}
-        </Tips>
+        <>
+          <Tips>{i18n.modules.resource.help.documentationExplanation}</Tips>
+          <TocDisplayToggler />
+        </>
       ),
       children: (
         <ResourcesMainView
@@ -278,7 +278,7 @@ export default function CardEditor({
                     color={'var(--darkGray)'}
                   />
                 )}
-                <CardContentStatus mode="semi" status={variant.status}/>
+                <CardContentStatus mode="semi" status={variant.status} />
                 <DiscreetInput
                   value={card.title || ''}
                   placeholder={i18n.modules.card.untitled}
@@ -476,7 +476,7 @@ export default function CardEditor({
                 setOpenKey,
               }}
             >
-              <Flex grow={1} align="stretch" className={css({overflow: 'hidden'})}>
+              <Flex grow={1} align="stretch" className={css({ overflow: 'hidden' })}>
                 <ReflexContainer orientation={'vertical'}>
                   <ReflexElement
                     className={'left-pane ' + css({ display: 'flex' })}
@@ -564,10 +564,10 @@ export default function CardEditor({
                     className={'right-pane ' + css({ display: 'flex' })}
                     resizeHeight={false}
                     maxSize={openKey ? undefined : 0.1}
-                    minSize={50}
+                    minSize={360}
                     flex={0.2}
                   >
-                    <SideCollapsiblePanelBody className={css({overflow: 'hidden'})} />
+                    <SideCollapsiblePanelBody className={css({ overflow: 'hidden' })} />
                   </ReflexElement>
                 </ReflexContainer>
                 <SideCollapsibleMenu
@@ -617,6 +617,7 @@ export default function CardEditor({
               depth={1}
               cardContent={variant}
               className={css({ alignItems: 'flex-start', overflow: 'auto', width: '100%' })}
+              showPreview
               subcardsContainerStyle={css({
                 overflow: 'auto',
                 width: '100%',

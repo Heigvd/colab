@@ -36,12 +36,14 @@ interface ResourceCreatorProps {
   contextInfo: ResourceCallContext;
   onCreated: (newId: number) => void;
   collapsedClassName?: string;
+  customButton?: React.ReactNode;
 }
 
 export default function ResourceCreator({
   contextInfo,
   onCreated,
   collapsedClassName,
+  customButton,
 }: ResourceCreatorProps): JSX.Element {
   const dispatch = useAppDispatch();
   const i18n = useTranslations();
@@ -126,19 +128,23 @@ export default function ResourceCreator({
     <OpenCloseModal
       title={i18n.modules.document.createADocument}
       collapsedChildren={
-        <Flex
-          justify="center"
-          className={cx(
-            css({
-              borderTop: '1px solid var(--lightGray)',
-              padding: space_S,
-              '&:hover': { backgroundColor: 'var(--lightGray)', cursor: 'pointer' },
-            }),
-            collapsedClassName,
-          )}
-        >
-          <FontAwesomeIcon icon={faPlus} title={i18n.modules.document.createDocument} />
-        </Flex>
+        customButton ? (
+          customButton
+        ) : (
+          <Flex
+            justify="center"
+            className={cx(
+              css({
+                borderTop: '1px solid var(--lightGray)',
+                padding: space_S,
+                '&:hover': { backgroundColor: 'var(--lightGray)', cursor: 'pointer' },
+              }),
+              collapsedClassName,
+            )}
+          >
+            <FontAwesomeIcon icon={faPlus} title={i18n.modules.document.createDocument} />
+          </Flex>
+        )
       }
       className={css({ display: 'block', width: '100%', textAlign: 'center' })}
     >

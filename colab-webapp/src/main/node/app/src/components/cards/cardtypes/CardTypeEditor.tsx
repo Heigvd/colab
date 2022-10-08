@@ -31,7 +31,7 @@ import ConfirmDeleteOpenCloseModal from '../../common/layout/ConfirmDeleteModal'
 import Flex from '../../common/layout/Flex';
 import { DocTextWrapper } from '../../documents/DocTextItem';
 import { ResourceCallContext } from '../../resources/resourcesCommonType';
-import ResourcesMainView from '../../resources/ResourcesMainView';
+import ResourcesMainView, { TocDisplayToggler } from '../../resources/ResourcesMainView';
 import { cardStyle, errorColor, localTitleStyle, space_M, space_S } from '../../styling/style';
 
 interface CardTypeEditorProps {
@@ -205,11 +205,12 @@ export default function CardTypeEditor({ className, usage }: CardTypeEditorProps
                   '&:hover': { textDecoration: 'none' },
                   display: 'flex',
                   alignItems: 'center',
+                  alignSelf: 'flex-start',
                 })}
                 message={
                   <p>
                     <Tips tipsType="TODO">
-                      Make test if model is used in card(s). Disable or hide this delete option if
+                      Make test if theme is used in card(s). Disable or hide this delete option if
                       used.
                     </Tips>
                     {i18n.modules.cardType.action.confirmDeleteType}
@@ -225,7 +226,19 @@ export default function CardTypeEditor({ className, usage }: CardTypeEditorProps
               />
             </Flex>
           </Flex>
-          <Flex className={css({ borderLeft: '1px solid var(--lightGray)', width: '50%' })}>
+          <Flex
+            direction="column"
+            align="stretch"
+            className={css({
+              borderLeft: '1px solid var(--lightGray)',
+              width: '50%',
+              padding: space_S,
+            })}
+          >
+            <Flex align="baseline">
+              <h3>{i18n.modules.resource.documentation}</h3>
+              <TocDisplayToggler />
+            </Flex>
             <ResourcesMainView contextData={resourceContext} accessLevel="WRITE" />
           </Flex>
         </Flex>

@@ -6,7 +6,6 @@
  */
 
 import { css, cx } from '@emotion/css';
-import { IconProp, SizeProp } from '@fortawesome/fontawesome-svg-core';
 import { faSpinner } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import * as React from 'react';
@@ -16,10 +15,10 @@ import {
   inactiveInvertedButtonStyle,
   invertedButtonStyle,
   space_S,
-  spinningStyle,
 } from '../../styling/style';
-import Clickable, { ClickableProps } from '../layout/Clickable';
+import Clickable from '../layout/Clickable';
 import Flex from '../layout/Flex';
+import { ButtonProps } from './Button';
 
 const relative = css({
   position: 'relative',
@@ -36,13 +35,8 @@ const overlayIconStyle = css({
   height: '100%',
 });
 
-export interface ButtonWithLoaderProps extends Omit<ClickableProps, 'clickableClassName'> {
-  icon?: IconProp;
-  iconColor?: string;
-  iconSize?: SizeProp;
-  reverseOrder?: boolean;
+export interface ButtonWithLoaderProps extends ButtonProps {
   isLoading?: boolean;
-  invertedButton?: boolean;
 }
 
 export default function ButtonWithLoader({
@@ -88,14 +82,33 @@ export default function ButtonWithLoader({
       </Flex>
       {isLoading && (
         <div className={cx({ [overlayIconStyle]: isLoading })}>
-          <FontAwesomeIcon
-            icon={faSpinner}
-            color={iconColor}
-            size={iconSize}
-            className={cx(spinningStyle)}
-          />
+          <FontAwesomeIcon icon={faSpinner} color={iconColor} size={iconSize} pulse />
         </div>
       )}
     </Clickable>
   );
+}
+
+interface AsyncButtonWithLoaderProps extends ButtonProps {
+  onClick?: (
+    e: React.MouseEvent<HTMLSpanElement> | React.KeyboardEvent<HTMLSpanElement>,
+  ) => Promise<unknown>;
+}
+
+export function AsyncButtonWithLoader(props: AsyncButtonWithLoaderProps) {
+  const { onClick, ...restProps } = props;
+  const [loading, setLoading] = React.useState(false);
+
+  const onClickCb = React.useMemo(() => {
+    if (onClick) {
+      return (e: React.MouseEvent<HTMLSpanElement> | React.KeyboardEvent<HTMLSpanElement>) => {
+        setLoading(true);
+        onClick(e).then(() => {
+          setLoading(false);
+        });
+      };
+    }
+  }, [onClick]);
+
+  return <ButtonWithLoader {...restProps} onClick={onClickCb} isLoading={loading} />;
 }

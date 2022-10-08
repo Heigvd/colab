@@ -1,0 +1,42 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:pro="http://www.liquibase.org/xml/ns/pro" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-4.1.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.1.xsd">
+    <changeSet author="maxence" id="1664886448317-1">
+        <addColumn tableName="card">
+            <column name="height" type="int4"/>
+        </addColumn>
+        <addColumn tableName="card">
+            <column name="width" type="int4"/>
+        </addColumn>
+        <addColumn tableName="card">
+            <column name="x" type="int4"/>
+        </addColumn>
+        <addColumn tableName="card">
+            <column name="y" type="int4"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet author="maxence (generated)" id="1664886448317-2">
+        <sql>
+            UPDATE card 
+            SET 
+                x=newPos.x,
+                y=newPos.y,
+                width=newPos.width,
+                height=newPos.height
+            FROM (
+                SELECT 
+                    id, 
+                    ((greatest(index, 1) - 1) % 3 + 1) as x, 
+                    ceil(greatest(index, 1) / 3.0) as y,
+                    1 AS width, 
+                    1 AS height 
+                FROM card
+            ) AS newPos 
+            WHERE newPos.id = card.id
+        </sql>
+    </changeSet>
+
+    <changeSet author="maxence (generated)" id="1664886448317-3">
+        <dropColumn columnName="index" tableName="card"/>
+    </changeSet>
+</databaseChangeLog>

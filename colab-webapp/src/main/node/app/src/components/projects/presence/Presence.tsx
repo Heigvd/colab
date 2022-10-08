@@ -15,6 +15,7 @@ import useTranslations from '../../../i18n/I18nContext';
 import { usePresence } from '../../../selectors/presenceSelector';
 import { useAndLoadProjectTeam } from '../../../selectors/projectSelector';
 import { useAppDispatch, useAppSelector } from '../../../store/hooks';
+import Tooltip from '../../common/element/Tooltip';
 import Flex from '../../common/layout/Flex';
 import { normalThemeMode, space_M } from '../../styling/style';
 
@@ -129,36 +130,22 @@ interface PresenceIconProps {
   member: TeamMember | undefined;
 }
 
-function hoverPos(hover: false | [number, number]): string | undefined {
-  if (hover) {
-    return cx(
-      normalThemeMode,
-      css({
-        background: 'var(--bgColor)',
-        zIndex: 6,
-        position: 'fixed',
-        padding: space_M,
-        border: '1px solid grey',
-        borderRadius: '6px',
-        top: hover[1],
-        left: hover[0],
-      }),
-    );
-  }
-}
+const tooltipStyle = cx(
+  normalThemeMode,
+  css({
+    background: 'var(--bgColor)',
+    zIndex: 6,
+    padding: space_M,
+    border: '1px solid grey',
+    //top: hover[1],
+    //left: hover[0],
+  }),
+);
 
 function PresenceIcon({ presence, member }: PresenceIconProps): JSX.Element {
   const dispatch = useAppDispatch();
 
   const i18n = useTranslations();
-
-  const [hover, setHover] = React.useState<false | [number, number]>(false);
-
-  //  const debug = `
-  //  card: ${presence.cardId}
-  //  content: ${presence.cardContentId}
-  //  doc: ${presence.documentId} [${presence.selectionStart || 0} ; ${presence.selectionEnd || 0} ]
-  //  `;
 
   const navigate = useNavigate();
 
@@ -186,8 +173,6 @@ function PresenceIcon({ presence, member }: PresenceIconProps): JSX.Element {
 
   const letter = (displayName && displayName[0]) || 'A';
 
-  const tooltip = i18n.modules.presence.date(displayName, presence.date);
-
   const onClickCb = React.useCallback(() => {
     if (presence.cardId != null && presence.cardContentId != null) {
       navigate(
@@ -201,25 +186,15 @@ function PresenceIcon({ presence, member }: PresenceIconProps): JSX.Element {
     }
   }, [presence, navigate]);
 
-  const enterCb = React.useCallback((e: React.MouseEvent) => {
-    setHover([e.clientX, e.clientY]);
-  }, []);
-
-  const leaveCb = React.useCallback(() => setHover(false), []);
-
   return (
-    <>
-      <div
-        className={presenceIconStyle(getUserColor(presence))}
-        onClick={onClickCb}
-        onMouseEnter={enterCb}
-        onMouseLeave={leaveCb}
-      >
+    <Tooltip
+      tooltipClassName={tooltipStyle}
+      tooltip={() => <div>{i18n.modules.presence.date(displayName, presence.date)}</div>}
+    >
+      <div className={presenceIconStyle(getUserColor(presence))} onClick={onClickCb}>
         {letter}
       </div>
-
-      {hover !== false ? <div className={hoverPos(hover)}>{tooltip}</div> : null}
-    </>
+    </Tooltip>
   );
 }
 

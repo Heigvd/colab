@@ -38,14 +38,14 @@ export default function Settings(): JSX.Element {
       <div className={css({ padding: space_L })}>
         <Flex>
           <IconButton
-            title="Back"
+            title={i18n.common.back}
             icon={faArrowLeft}
             onClick={() => navigate('..')}
             className={lightIconButtonStyle}
           ></IconButton>
           <h2>{i18n.common.settings}</h2>
         </Flex>
-        <Tabs routed>
+        <Tabs routed defaultTab="user">
           <Tab name="user" label={i18n.user.user}>
             <Flex direction="row" className={css({ gap: space_L })}>
               <UserProfile user={currentUser} />

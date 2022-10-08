@@ -16,8 +16,10 @@ import javax.validation.constraints.NotNull;
  * Channel overview.
  *
  * @author maxence
+ * @deprecated not used any longer
  */
 @ExtractJavaDoc
+@Deprecated
 public class ChannelOverview implements WithJsonDiscriminator {
 
     private static final long serialVersionUID = 1L;

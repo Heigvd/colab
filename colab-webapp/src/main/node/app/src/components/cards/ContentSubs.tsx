@@ -10,14 +10,17 @@ import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import { CardContent } from 'colab-rest-client';
 import * as React from 'react';
 import { useLocation } from 'react-router-dom';
+import { changeCardPosition } from '../../API/api';
 import useTranslations from '../../i18n/I18nContext';
 import { useAndLoadSubCards } from '../../selectors/cardSelector';
+import { useAppDispatch } from '../../store/hooks';
 import Button from '../common/element/Button';
 import InlineLoading from '../common/element/InlineLoading';
 import Ellipsis from '../common/layout/Ellipsis';
 import Flex from '../common/layout/Flex';
+import GridOrganizer, { fixGrid } from '../common/GridOrganizer';
 import { depthMax } from '../projects/edition/Editor';
-import { fixedButtonStyle, voidStyle } from '../styling/style';
+import { fixedButtonStyle, space_L, voidStyle } from '../styling/style';
 import CardCreator from './CardCreator';
 import { TinyCard } from './CardThumb';
 import CardThumbWithSelector from './CardThumbWithSelector';
@@ -30,6 +33,8 @@ interface ContentSubsProps {
   showEmptiness?: boolean;
   className?: string;
   subcardsContainerStyle?: string;
+  organize?: boolean;
+  showPreview: boolean;
 }
 /* const tinyCard = css({
   width: '30px',
@@ -39,42 +44,44 @@ interface ContentSubsProps {
   margin: '0 2px',
 }); */
 
-const flexWrap = css({
+const subCardsContainerStyle = css({
   display: 'flex',
-  justifyContent: 'space-evenly',
-  flexWrap: 'wrap',
+  justifyContent: 'flex-end',
+  alignItems: 'stretch',
+  flexDirection: 'column',
+  marginTop: space_L,
+});
+
+const flexGrow = css({
+  flexGrow: '1',
 });
 
 /* const gridCardsStyle = css({
-  display: 'grid', 
-  gridTemplateColumns: 'repeat(3, minmax(min-content, 1fr))', 
-  justifyContent: 'stretch', 
+  display: 'grid',
+  gridTemplateColumns: 'repeat(3, minmax(min-content, 1fr))',
+  justifyContent: 'stretch',
   alignContent: 'stretch',
-  justifyItems: 'stretch', 
+  justifyItems: 'stretch',
   alignItems: 'stretch'}); */
 
-function gridPosFromIndex(index: number): { row: number; column: number } {
-  return {
-    row: Math.ceil(index / 3),
-    column: ((index - 1) % 3) + 1,
-  };
-}
-
-interface MaxSize {
-  maxColumn: number;
-  maxRow: number;
-}
-
-export function gridCardsStyle(max: MaxSize) {
+export function gridCardsStyle(nbColumns: number, _nbRows: number) {
   return css({
+    flexGrow: '1',
     display: 'grid',
-    gridTemplateColumns: `repeat(${max.maxColumn}, minmax(min-content, 1fr))`,
+    gridTemplateColumns: `repeat(${nbColumns}, minmax(min-content, auto))`,
+    // gridTemplateRows: `repeat(${nbRows}, 1fr)`,
     justifyContent: 'strech',
     alignContent: 'stretch',
     justifyItems: 'stretch',
     alignItems: 'stretch',
   });
 }
+
+const hideEmptyGridStyle = css({
+  ':empty': {
+    display: 'none',
+  },
+});
 
 // Display sub cards of a parent
 export default function ContentSubs({
@@ -83,39 +90,32 @@ export default function ContentSubs({
   showEmptiness = false,
   className,
   subcardsContainerStyle,
+  organize = false,
+  showPreview,
 }: ContentSubsProps): JSX.Element {
   const location = useLocation();
   const i18n = useTranslations();
+  const dispatch = useAppDispatch();
 
   const subCards = useAndLoadSubCards(cardContent.id);
 
   const indexedSubCards = React.useMemo(() => {
     if (subCards != null) {
-      const maxIndex = subCards.reduce<number>((acc, cur) => {
-        return Math.max(acc, cur.index ?? 0);
-      }, 1);
-
-      const cards = subCards.map((card, index) => {
-        const { row, column } = gridPosFromIndex(card.index || index + maxIndex);
+      const cards = subCards.map(card => {
         return {
-          card: card,
-          row: row,
-          column: column,
+          id: card.id!,
+          x: card.x,
+          y: card.y,
+          width: card.width,
+          height: card.height,
+          payload: card,
         };
       });
-      const max = cards.reduce<MaxSize>(
-        (max, cur) => {
-          max.maxColumn = Math.max(max.maxColumn, cur.column);
-          max.maxRow = Math.max(max.maxRow, cur.row);
-          return max;
-        },
-        { maxRow: 0, maxColumn: 0 },
-      );
 
-      return { subCardWithIndex: cards, max: max };
+      return fixGrid(cards);
     }
 
-    return { subCardWithIndex: [], max: { maxColumn: 1, maxRow: 1 } };
+    return { cells: [], nbColumns: 3, nbRows: 1 };
   }, [subCards]);
 
   if (subCards == null) {
@@ -123,7 +123,15 @@ export default function ContentSubs({
   } else {
     if (subCards.length === 0 && showEmptiness) {
       return (
-        <div className={voidStyle}>
+        <div
+          className={cx(
+            voidStyle,
+            css({
+              height: '200px',
+              width: '100%',
+            }),
+          )}
+        >
           <p>{i18n.modules.card.infos.noCardYetPleaseCreate}</p>
           <CardCreator
             parentCardContent={cardContent}
@@ -140,39 +148,88 @@ export default function ContentSubs({
       return depth > 0 ? (
         <div
           className={cx(
-            flexWrap,
-            css({ flexDirection: 'column', alignItems: 'stretch', flexGrow: 1 }),
+            subCardsContainerStyle,
             className,
+            indexedSubCards.cells.length > 0 ? flexGrow : undefined,
           )}
         >
-          <div className={cx(gridCardsStyle(indexedSubCards.max), subcardsContainerStyle)}>
-            {indexedSubCards.subCardWithIndex.map(({ card, row, column }) => (
-              <CardThumbWithSelector
-                className={css({
-                  gridColumn: column,
-                  gridRow: row,
-                  maxHeight: '100%',
-                })}
-                depth={depth - 1}
-                key={card.id}
-                card={card}
-              />
-            ))}
-          </div>
-          <Flex justify="center">
-            <CardCreator
-              parentCardContent={cardContent}
-              customButton={
-                depth === depthMax ? (
-                  location.pathname.match(/card\/\d+\/v\/\d+/) ? undefined : (
-                    <Button icon={faPlus} className={fixedButtonStyle} clickable>
-                      {i18n.modules.card.createCard}
-                    </Button>
-                  )
-                ) : undefined
-              }
+          {organize ? (
+            <GridOrganizer
+              className={css({
+                height: '100%',
+                width: '100%',
+              })}
+              cells={indexedSubCards.cells}
+              gap="6px"
+              handleSize="33px"
+              onResize={(cell, newPosition) => {
+                dispatch(
+                  changeCardPosition({
+                    cardId: cell.payload.id!,
+                    newPosition: newPosition,
+                  }),
+                );
+              }}
+              background={cell => {
+                return (
+                  <CardThumbWithSelector
+                    className={css({
+                      height: '100%',
+                      minHeight: '100px',
+                      margin: 0,
+                      '.VariantPagerArrow': {
+                        display: 'none',
+                      },
+                    })}
+                    depth={0}
+                    key={cell.payload.id}
+                    card={cell.payload}
+                    showPreview={false}
+                  />
+                );
+              }}
             />
-          </Flex>
+          ) : (
+            <>
+              <div
+                className={cx(
+                  gridCardsStyle(indexedSubCards.nbColumns, indexedSubCards.nbRows),
+                  subcardsContainerStyle,
+                  hideEmptyGridStyle,
+                )}
+              >
+                {indexedSubCards.cells.map(({ payload, y, x, width, height }) => (
+                  <CardThumbWithSelector
+                    className={css({
+                      gridColumnStart: x,
+                      gridColumnEnd: x + width,
+                      gridRowStart: y,
+                      gridRowEnd: y + height,
+                      maxHeight: '100%',
+                    })}
+                    depth={depth - 1}
+                    key={payload.id}
+                    card={payload}
+                    showPreview={showPreview}
+                  />
+                ))}
+              </div>
+              <Flex justify="center">
+                <CardCreator
+                  parentCardContent={cardContent}
+                  customButton={
+                    depth === depthMax ? (
+                      location.pathname.match(/card\/\d+\/v\/\d+/) ? undefined : (
+                        <Button icon={faPlus} className={fixedButtonStyle} clickable>
+                          {i18n.modules.card.createCard}
+                        </Button>
+                      )
+                    ) : undefined
+                  }
+                />
+              </Flex>
+            </>
+          )}
         </div>
       ) : (
         <Ellipsis

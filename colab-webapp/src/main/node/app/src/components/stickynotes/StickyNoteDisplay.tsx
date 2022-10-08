@@ -143,7 +143,7 @@ export default function StickyNoteDisplay({
           {showDest && (
             <div>
               {destCard && typeof destCard === 'object' && (
-                <CardThumbWithSelector card={destCard} depth={0} />
+                <CardThumbWithSelector card={destCard} depth={0} showPreview />
               )}
             </div>
           )}

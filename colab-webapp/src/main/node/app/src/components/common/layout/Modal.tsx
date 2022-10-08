@@ -63,10 +63,10 @@ const closeIconStyle = css({
   padding: 0,
 });
 
-const modalBody = css({
+export const modalBody = css({
   padding: space_L,
 });
-const modalFooter = css({
+export const modalFooter = css({
   borderTop: modalSeparatorBorder,
 });
 

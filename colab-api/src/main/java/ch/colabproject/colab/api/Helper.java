@@ -7,6 +7,7 @@
 package ch.colabproject.colab.api;
 
 import ch.colabproject.colab.api.model.user.HashMethod;
+import ch.colabproject.colab.api.ws.channel.model.WebsocketChannel;
 import java.security.SecureRandom;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -19,6 +20,11 @@ import javax.naming.NamingException;
  * @author maxence
  */
 public class Helper {
+
+    /**
+     * The co.LAB base uniform resource name
+     */
+    public static final String COLAB_BASE_URN = "urn:coLAB:/";
 
     /**
      * pattern to check if a string looks like an email address
@@ -164,7 +170,7 @@ public class Helper {
     }
 
     /**
-     * Convert camel-case string to userscrore-separated-lower-case-string
+     * Convert camelCase string to userscrore_separated_lower_case_string
      *
      * @param camelCase eg myAsewomeIdentifier
      *
@@ -176,6 +182,17 @@ public class Helper {
             // prefix all uppercase char preceded by something with an underscore
             .replaceAll("(?<!^)[A-Z](?!$)", "_$0")
             .toLowerCase();
+    }
+
+    /**
+     * Get base urn to identify websocket channel.
+     *
+     * @param channel the channel to identify
+     *
+     * @return uniform resource name for the given channel
+     */
+    public static String getColabBaseUrn(WebsocketChannel channel) {
+        return COLAB_BASE_URN + "WebsocketChannel/" + channel.getJsonDiscriminator();
     }
 
     /**

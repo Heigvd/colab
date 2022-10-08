@@ -56,14 +56,19 @@ public class JcrSessionManager implements Serializable {
      * @throws javax.jcr.RepositoryException if something went wring
      */
     public JcrSession getSession(Project project) throws RepositoryException {
-        if (sessions.containsKey(project.getId())) {
-            logger.trace("GetExisting session: project #{}", project.getId());
-            return sessions.get(project.getId());
+        Long id = -1l; // hack: id -1 means global data
+        if (project != null){
+            id = project.getId();
+        }
+
+        if (sessions.containsKey(id)) {
+            logger.trace("GetExisting session: project #{}", id);
+            return sessions.get(id);
         } else {
-            logger.trace("Create new session: project #{}", project.getId());
+            logger.trace("Create new session: project #{}", id);
             Repository repo = jcrRepository.getRepository();
             JcrSession session = new JcrSession(repo, project);
-            sessions.put(project.getId(), session);
+            sessions.put(id, session);
 
             JcrSynchronizer jcrSynchronizer = new JcrSynchronizer(session);
             jtaSyncRegistry.registerInterposedSynchronization(jcrSynchronizer);

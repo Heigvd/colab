@@ -296,11 +296,24 @@ function useResourceCategories(): string[] {
     return uniq(
       Object.values(state.resources.resources).flatMap(res => {
         if (entityIs(res, 'AbstractResource') && res.category) {
-          // TODO sandra work in progress get only the resources directly linked to the current project
-          return res.category;
-        } else {
-          return [];
+          const cardTypeOwnerOfRes = res.abstractCardTypeId;
+
+          if (cardTypeOwnerOfRes == null) {
+            // in case of card resource, add the category as it is in same project
+            return res.category;
+          } else {
+            // in case of card type resource, add only if in same project
+            const cardType = state.cardType.cardtypes[cardTypeOwnerOfRes];
+
+            if (entityIs(cardType, 'AbstractCardType')) {
+              if (cardType.projectId === state.projects.editing) {
+                return res.category;
+              }
+            }
+          }
         }
+
+        return [];
       }),
     ).sort();
   });
@@ -315,6 +328,7 @@ export function useAndLoadResourceCategories(): {
   const categories = useResourceCategories();
   const status = useAppSelector(state => state.resources.allOfProjectStatus);
   const { project } = useProjectBeingEdited();
+
   React.useEffect(() => {
     if (status === 'NOT_INITIALIZED' && project) {
       dispatch(API.getDirectResourcesOfProject(project));
@@ -325,5 +339,25 @@ export function useAndLoadResourceCategories(): {
     return { categories, status };
   } else {
     return { categories: [], status };
+  }
+}
+
+export function useAndLoadProjectResourcesStatus(): {
+  status: AvailabilityStatus;
+} {
+  const dispatch = useAppDispatch();
+
+  const status = useAppSelector(state => state.resources.allOfProjectStatus);
+  const { project } = useProjectBeingEdited();
+  React.useEffect(() => {
+    if (status === 'NOT_INITIALIZED' && project) {
+      dispatch(API.getDirectResourcesOfProject(project));
+    }
+  }, [dispatch, project, status]);
+
+  if (status === 'READY') {
+    return { status };
+  } else {
+    return { status };
   }
 }

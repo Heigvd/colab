@@ -6,12 +6,15 @@
  */
 
 import { css, cx } from '@emotion/css';
+import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import * as React from 'react';
 import useTranslations from '../../i18n/I18nContext';
 import { useAndLoadResources } from '../../selectors/resourceSelector';
 import AvailabilityStatusIndicator from '../common/element/AvailabilityStatusIndicator';
+import Button from '../common/element/Button';
+import DropDownMenu from '../common/layout/DropDownMenu';
 import Flex from '../common/layout/Flex';
-import { lightIconButtonStyle, space_S } from '../styling/style';
+import { lightIconButtonStyle, space_S, voidStyle } from '../styling/style';
 import HidenResourcesKeeper from './HidenResourcesKeeper';
 import ResourceCreator from './ResourceCreator';
 import { ResourceDisplay } from './ResourceDisplay';
@@ -22,6 +25,38 @@ import {
   ResourceCallContext,
 } from './resourcesCommonType';
 import ResourcesList from './ResourcesList';
+
+export type TocMode = 'CATEGORY' | 'SOURCE';
+
+export interface TocDisplayContext {
+  mode: TocMode;
+  setMode: (newMode: TocMode) => void;
+}
+
+export const TocDisplayCtx = React.createContext<TocDisplayContext>({
+  mode: 'CATEGORY',
+  setMode: () => {},
+});
+
+export function TocDisplayToggler(): JSX.Element {
+  const i18n = useTranslations();
+  const { mode, setMode } = React.useContext(TocDisplayCtx);
+
+  const entries: { value: TocMode; label: React.ReactNode }[] = [
+    { value: 'CATEGORY', label: <div>{i18n.modules.resource.sortByCategory}</div> },
+    { value: 'SOURCE', label: <div>{i18n.modules.resource.sortByProvider}</div> },
+  ];
+
+  return (
+    <DropDownMenu
+      value={mode}
+      entries={entries}
+      onSelect={entry => setMode(entry.value)}
+      //idleHoverStyle="BACKGROUND"
+      menuIcon='CARET'
+    />
+  );
+}
 
 /**
  * Main component to show resources.
@@ -34,11 +69,13 @@ import ResourcesList from './ResourcesList';
 interface ResourcesMainViewProps {
   contextData: ResourceCallContext;
   accessLevel: AccessLevel;
+  showVoidIndicator?: boolean;
 }
 
 export default function ResourcesMainView({
   contextData,
   accessLevel,
+  showVoidIndicator,
 }: ResourcesMainViewProps): JSX.Element {
   const i18n = useTranslations();
 
@@ -125,7 +162,25 @@ export default function ResourcesMainView({
 
   // nothing selected : show the list with some actions
   return (
-    <Flex direction="column" align="stretch" grow={1} className={css({overflow: 'auto'})}>
+    <Flex direction="column" align="stretch" grow={1} className={css({ overflow: 'auto' })}>
+      {showVoidIndicator && activeResources.length === 0 && (
+        <div className={cx(voidStyle, css({}))}>
+          <p>{i18n.modules.resource.noDocumentationYet}</p>
+          {!isReadOnly(accessLevel) && (
+            <ResourceCreator
+              contextInfo={contextData}
+              onCreated={setLastCreated}
+              collapsedClassName={lightIconButtonStyle}
+              customButton={
+                <Button icon={faPlus} clickable>
+                  {i18n.modules.document.createDocument}
+                </Button>
+              }
+            />
+          )}
+        </div>
+      )}
+
       <ResourcesList resources={activeResources} selectResource={selectResource} />
 
       {!isReadOnly(accessLevel) && (
