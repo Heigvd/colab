@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>ResourceManager.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">colab-client</a> &gt; <a href="../index.html" class="el_bundle">colab-api</a> &gt; <a href="index.source.html" class="el_package">ch.colabproject.colab.api.controller.document</a> &gt; <span class="el_source">ResourceManager.java</span></div><h1>ResourceManager.java</h1><pre class="source lang-java linenums">/*
  * The coLAB project
- * Copyright (C) 2021 AlbaSim, MEI, HEIG-VD, HES-SO
+ * Copyright (C) 2021-2022 AlbaSim, MEI, HEIG-VD, HES-SO
  *
  * Licensed under the MIT License
  */
@@ -22,10 +22,15 @@ import ch.colabproject.colab.api.model.document.Resourceable;
 import ch.colabproject.colab.api.model.document.TextDataBlock;
 import ch.colabproject.colab.api.model.link.StickyNoteLink;
 import ch.colabproject.colab.api.model.project.Project;
+import ch.colabproject.colab.api.persistence.jpa.card.CardContentDao;
+import ch.colabproject.colab.api.persistence.jpa.card.CardDao;
+import ch.colabproject.colab.api.persistence.jpa.card.CardTypeDao;
 import ch.colabproject.colab.api.persistence.jpa.document.DocumentDao;
 import ch.colabproject.colab.api.persistence.jpa.document.ResourceDao;
+import ch.colabproject.colab.api.rest.document.bean.ResourceExternalReference;
 import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -44,10 +49,10 @@ import org.slf4j.LoggerFactory;
 // TODO requestingForGlory handling
 @Stateless
 @LocalBean
-<span class="nc" id="L47">public class ResourceManager {</span>
+<span class="nc" id="L52">public class ResourceManager {</span>
 
     /** logger */
-<span class="nc" id="L50">    private static final Logger logger = LoggerFactory.getLogger(ResourceManager.class);</span>
+<span class="nc" id="L55">    private static final Logger logger = LoggerFactory.getLogger(ResourceManager.class);</span>
 
     // *********************************************************************************************
     // injections
@@ -77,17 +82,27 @@ import org.slf4j.LoggerFactory;
     @Inject
     private CardTypeManager cardTypeManager;
 
+    /** to load cardTypes */
+    @Inject
+    private CardTypeDao cardTypeDao;
+
     /**
      * Card specific logic management
      */
     @Inject
     private CardManager cardManager;
 
-    /**
-     * Card content specific logic management
-     */
+    /** to load cards */
+    @Inject
+    private CardDao cardDao;
+
+    /** to load cardContents */
     @Inject
     private CardContentManager cardContentManager;
+
+    /** to load cards */
+    @Inject
+    private CardContentDao cardContentDao;
 
     /**
      * Block specific logic management
@@ -132,14 +147,14 @@ import org.slf4j.LoggerFactory;
      * @throws HttpErrorMessage if the resource or reference was not found
      */
     public AbstractResource assertAndGetResourceOrRef(Long resourceOrRefId) {
-<span class="nc" id="L135">        AbstractResource resourceOrRef = resourceDao.findResourceOrRef(resourceOrRefId);</span>
+<span class="nc" id="L150">        AbstractResource resourceOrRef = resourceDao.findResourceOrRef(resourceOrRefId);</span>
 
-<span class="nc bnc" id="L137" title="All 2 branches missed.">        if (resourceOrRef == null) {</span>
-<span class="nc" id="L138">            logger.error(&quot;resource or reference #{} not found&quot;, resourceOrRefId);</span>
-<span class="nc" id="L139">            throw HttpErrorMessage.relatedObjectNotFoundError();</span>
+<span class="nc bnc" id="L152" title="All 2 branches missed.">        if (resourceOrRef == null) {</span>
+<span class="nc" id="L153">            logger.error(&quot;resource or reference #{} not found&quot;, resourceOrRefId);</span>
+<span class="nc" id="L154">            throw HttpErrorMessage.relatedObjectNotFoundError();</span>
         }
 
-<span class="nc" id="L142">        return resourceOrRef;</span>
+<span class="nc" id="L157">        return resourceOrRef;</span>
     }
 
     /**
@@ -152,13 +167,13 @@ import org.slf4j.LoggerFactory;
      * @throws HttpErrorMessage if the resource was not found
      */
     public Resource assertAndGetResource(Long resourceId) {
-<span class="nc" id="L155">        AbstractResource abstractResource = assertAndGetResourceOrRef(resourceId);</span>
+<span class="nc" id="L170">        AbstractResource abstractResource = assertAndGetResourceOrRef(resourceId);</span>
 
-<span class="nc bnc" id="L157" title="All 2 branches missed.">        if (!(abstractResource instanceof Resource)) {</span>
-<span class="nc" id="L158">            throw HttpErrorMessage.relatedObjectNotFoundError();</span>
+<span class="nc bnc" id="L172" title="All 2 branches missed.">        if (!(abstractResource instanceof Resource)) {</span>
+<span class="nc" id="L173">            throw HttpErrorMessage.relatedObjectNotFoundError();</span>
         }
 
-<span class="nc" id="L161">        return (Resource) abstractResource;</span>
+<span class="nc" id="L176">        return (Resource) abstractResource;</span>
     }
 
     /**
@@ -171,13 +186,13 @@ import org.slf4j.LoggerFactory;
      * @throws HttpErrorMessage if the resource reference was not found
      */
     public ResourceRef assertAndGetResourceRef(Long resourceRefId) {
-<span class="nc" id="L174">        AbstractResource abstractResource = assertAndGetResourceOrRef(resourceRefId);</span>
+<span class="nc" id="L189">        AbstractResource abstractResource = assertAndGetResourceOrRef(resourceRefId);</span>
 
-<span class="nc bnc" id="L176" title="All 2 branches missed.">        if (!(abstractResource instanceof ResourceRef)) {</span>
-<span class="nc" id="L177">            throw HttpErrorMessage.relatedObjectNotFoundError();</span>
+<span class="nc bnc" id="L191" title="All 2 branches missed.">        if (!(abstractResource instanceof ResourceRef)) {</span>
+<span class="nc" id="L192">            throw HttpErrorMessage.relatedObjectNotFoundError();</span>
         }
 
-<span class="nc" id="L180">        return (ResourceRef) abstractResource;</span>
+<span class="nc" id="L195">        return (ResourceRef) abstractResource;</span>
 
     }
 
@@ -195,13 +210,13 @@ import org.slf4j.LoggerFactory;
      */
     public List&lt;List&lt;AbstractResource&gt;&gt; getExpandedResourcesForAbstractCardType(
         Long cardTypeOrRefId) {
-<span class="nc" id="L198">        logger.debug(&quot;get expanded resources linked to abstract card type #{}&quot;, cardTypeOrRefId);</span>
+<span class="nc" id="L213">        logger.debug(&quot;get expanded resources linked to abstract card type #{}&quot;, cardTypeOrRefId);</span>
 
-<span class="nc" id="L200">        AbstractCardType cardTypeOrRef = cardTypeManager.assertAndGetCardTypeOrRef(cardTypeOrRefId);</span>
+<span class="nc" id="L215">        AbstractCardType cardTypeOrRef = cardTypeManager.assertAndGetCardTypeOrRef(cardTypeOrRefId);</span>
 
-<span class="nc" id="L202">        List&lt;AbstractResource&gt; directResourcesAndRefs = cardTypeOrRef.getDirectAbstractResources();</span>
+<span class="nc" id="L217">        List&lt;AbstractResource&gt; directResourcesAndRefs = cardTypeOrRef.getDirectAbstractResources();</span>
 
-<span class="nc" id="L204">        return expandCompleteChains(directResourcesAndRefs);</span>
+<span class="nc" id="L219">        return expandCompleteChains(directResourcesAndRefs);</span>
     }
 
     /**
@@ -213,13 +228,13 @@ import org.slf4j.LoggerFactory;
      * @return For each direct abstract resource, the chain of abstract resources to the resource
      */
     public List&lt;List&lt;AbstractResource&gt;&gt; getExpandedResourcesForCard(Long cardId) {
-<span class="nc" id="L216">        logger.debug(&quot;get expanded resources linked to card #{}&quot;, cardId);</span>
+<span class="nc" id="L231">        logger.debug(&quot;get expanded resources linked to card #{}&quot;, cardId);</span>
 
-<span class="nc" id="L218">        Card card = cardManager.assertAndGetCard(cardId);</span>
+<span class="nc" id="L233">        Card card = cardManager.assertAndGetCard(cardId);</span>
 
-<span class="nc" id="L220">        List&lt;AbstractResource&gt; directResourcesAndRefs = card.getDirectAbstractResources();</span>
+<span class="nc" id="L235">        List&lt;AbstractResource&gt; directResourcesAndRefs = card.getDirectAbstractResources();</span>
 
-<span class="nc" id="L222">        return expandCompleteChains(directResourcesAndRefs);</span>
+<span class="nc" id="L237">        return expandCompleteChains(directResourcesAndRefs);</span>
     }
 
     /**
@@ -231,13 +246,13 @@ import org.slf4j.LoggerFactory;
      * @return For each direct abstract resource, the chain of abstract resources to the resource
      */
     public List&lt;List&lt;AbstractResource&gt;&gt; getExpandedResourcesForCardContent(Long cardContentId) {
-<span class="nc" id="L234">        logger.debug(&quot;get expanded resources linked to card content #{}&quot;, cardContentId);</span>
+<span class="nc" id="L249">        logger.debug(&quot;get expanded resources linked to card content #{}&quot;, cardContentId);</span>
 
-<span class="nc" id="L236">        CardContent cardContent = cardContentManager.assertAndGetCardContent(cardContentId);</span>
+<span class="nc" id="L251">        CardContent cardContent = cardContentManager.assertAndGetCardContent(cardContentId);</span>
 
-<span class="nc" id="L238">        List&lt;AbstractResource&gt; directResourcesAndRefs = cardContent.getDirectAbstractResources();</span>
+<span class="nc" id="L253">        List&lt;AbstractResource&gt; directResourcesAndRefs = cardContent.getDirectAbstractResources();</span>
 
-<span class="nc" id="L240">        return expandCompleteChains(directResourcesAndRefs);</span>
+<span class="nc" id="L255">        return expandCompleteChains(directResourcesAndRefs);</span>
     }
 
     /**
@@ -248,10 +263,10 @@ import org.slf4j.LoggerFactory;
      */
     private List&lt;List&lt;AbstractResource&gt;&gt; expandCompleteChains(
         List&lt;AbstractResource&gt; directResourcesAndRefs) {
-<span class="nc" id="L251">        return directResourcesAndRefs</span>
-<span class="nc" id="L252">            .stream()</span>
-<span class="nc" id="L253">            .map(resourceOrRef -&gt; resourceOrRef.expand())</span>
-<span class="nc" id="L254">            .collect(Collectors.toList());</span>
+<span class="nc" id="L266">        return directResourcesAndRefs</span>
+<span class="nc" id="L267">            .stream()</span>
+<span class="nc" id="L268">            .map(resourceOrRef -&gt; resourceOrRef.expand())</span>
+<span class="nc" id="L269">            .collect(Collectors.toList());</span>
     }
 
     // *********************************************************************************************
@@ -268,23 +283,88 @@ import org.slf4j.LoggerFactory;
      * @return resources directly linked to the given project
      */
     public List&lt;AbstractResource&gt; getDirectAbstractResourcesOfProject(Long projectId) {
-<span class="nc" id="L271">        logger.debug(&quot;get all the resources directly linked to the project #{}&quot;, projectId);</span>
+<span class="nc" id="L286">        logger.debug(&quot;get all the resources directly linked to the project #{}&quot;, projectId);</span>
 
-<span class="nc" id="L273">        Project project = projectManager.assertAndGetProject(projectId);</span>
+<span class="nc" id="L288">        Project project = projectManager.assertAndGetProject(projectId);</span>
 
-<span class="nc" id="L275">        List&lt;Resourceable&gt; allResourceables = new ArrayList&lt;&gt;();</span>
+<span class="nc" id="L290">        List&lt;Resourceable&gt; allResourceables = new ArrayList&lt;&gt;();</span>
 
-<span class="nc" id="L277">        allResourceables.addAll(project.getElementsToBeDefined());</span>
-<span class="nc" id="L278">        allResourceables.addAll(projectManager.getCards(projectId));</span>
-<span class="nc" id="L279">        allResourceables.addAll(projectManager.getCardContents(projectId));</span>
+<span class="nc" id="L292">        allResourceables.addAll(project.getElementsToBeDefined());</span>
+<span class="nc" id="L293">        allResourceables.addAll(projectManager.getCards(projectId));</span>
+<span class="nc" id="L294">        allResourceables.addAll(projectManager.getCardContents(projectId));</span>
 
-<span class="nc" id="L281">        List&lt;AbstractResource&gt; allDirectResources = new ArrayList&lt;&gt;();</span>
+<span class="nc" id="L296">        List&lt;AbstractResource&gt; allDirectResources = new ArrayList&lt;&gt;();</span>
 
-<span class="nc" id="L283">        allDirectResources.addAll(allResourceables.stream().flatMap(card -&gt; {</span>
-<span class="nc" id="L284">            return card.getDirectAbstractResources().stream();</span>
-<span class="nc" id="L285">        }).collect(Collectors.toList()));</span>
+<span class="nc" id="L298">        allDirectResources.addAll(allResourceables.stream().flatMap(card -&gt; {</span>
+<span class="nc" id="L299">            return card.getDirectAbstractResources().stream();</span>
+<span class="nc" id="L300">        }).collect(Collectors.toList()));</span>
 
-<span class="nc" id="L287">        return allDirectResources;</span>
+<span class="nc" id="L302">        return allDirectResources;</span>
+    }
+
+    /**
+     * Get the list of project which reference the given resource, excluding the project which owns
+     * the resource.
+     *
+     * @param abstractResourceId if of the targeted resource
+     *
+     * @return list of externalReference
+     */
+    public List&lt;ResourceExternalReference&gt; getResourceExternalReferences(Long abstractResourceId) {
+<span class="nc" id="L314">        AbstractResource resource = resourceDao.findResourceOrRef(abstractResourceId);</span>
+<span class="nc" id="L315">        Project owner = resource.getProject();</span>
+
+<span class="nc" id="L317">        HashMap&lt;Project, List&lt;ResourceRef&gt;&gt; perProject = new HashMap&lt;&gt;();</span>
+
+<span class="nc" id="L319">        resourceDao.findAllReferences(resource)</span>
+<span class="nc" id="L320">            .stream()</span>
+<span class="nc" id="L321">            .filter(res -&gt; {</span>
+                // onky keep ones not linked to current project
+<span class="nc bnc" id="L323" title="All 4 branches missed.">                return res != null &amp;&amp; !res.getProject().equals(owner);</span>
+            })
+<span class="nc" id="L325">            .forEach(res -&gt; {</span>
+<span class="nc" id="L326">                Project p = res.getProject();</span>
+<span class="nc bnc" id="L327" title="All 2 branches missed.">                if (p != null) {</span>
+                    // group resource by project
+<span class="nc" id="L329">                    var list = perProject.get(res.getProject());</span>
+<span class="nc bnc" id="L330" title="All 2 branches missed.">                    if (list == null) {</span>
+<span class="nc" id="L331">                        list = new ArrayList&lt;&gt;();</span>
+<span class="nc" id="L332">                        perProject.put(p, list);</span>
+                    }
+<span class="nc" id="L334">                    list.add(res);</span>
+                }
+<span class="nc" id="L336">            });</span>
+
+<span class="nc" id="L338">        return perProject.entrySet().stream().map(entry -&gt; {</span>
+<span class="nc" id="L339">            Project p = entry.getKey();</span>
+
+<span class="nc" id="L341">            ResourceExternalReference extRef = new ResourceExternalReference();</span>
+<span class="nc" id="L342">            extRef.setProject(p);</span>
+
+<span class="nc" id="L344">            List&lt;ResourceRef&gt; leaves = entry.getValue().stream().filter(res -&gt; {</span>
+<span class="nc bnc" id="L345" title="All 4 branches missed.">                return res.getCardContentId() != null || res.getCardId() != null;</span>
+<span class="nc" id="L346">            }).collect(Collectors.toList());</span>
+
+<span class="nc bnc" id="L348" title="All 2 branches missed.">            if (leaves.isEmpty()) {</span>
+                // even if the project references the resource through the cardType,
+                // not a single card or card content references the resource
+<span class="nc" id="L351">                extRef.setUsage(ResourceExternalReference.Usage.UNUSED);</span>
+<span class="nc" id="L352">                return extRef;</span>
+            }
+
+            // if at least one leaf is not refused, this is globally not refused
+<span class="nc" id="L356">            boolean used = leaves.stream().anyMatch(res -&gt; {</span>
+<span class="nc bnc" id="L357" title="All 2 branches missed.">                return !res.isRefused();</span>
+            });
+
+<span class="nc bnc" id="L360" title="All 2 branches missed.">            if (used) {</span>
+<span class="nc" id="L361">                extRef.setUsage(ResourceExternalReference.Usage.USED);</span>
+            } else {
+<span class="nc" id="L363">                extRef.setUsage(ResourceExternalReference.Usage.REFUSED);</span>
+            }
+
+<span class="nc" id="L366">            return extRef;</span>
+<span class="nc" id="L367">        }).collect(Collectors.toList());</span>
     }
 
     // *********************************************************************************************
@@ -302,13 +382,13 @@ import org.slf4j.LoggerFactory;
      * @return the brand new resource
      */
     public Resource createResource(Resource resource) {
-<span class="nc" id="L305">        logger.debug(&quot;create resource {}&quot;, resource);</span>
+<span class="nc" id="L385">        logger.debug(&quot;create resource {}&quot;, resource);</span>
 
-<span class="nc bnc" id="L307" title="All 2 branches missed.">        if (resource.getTeaser() == null) {</span>
-<span class="nc" id="L308">            TextDataBlock teaserTextDataBlock = blockManager.makeNewTextDataBlock();</span>
+<span class="nc bnc" id="L387" title="All 2 branches missed.">        if (resource.getTeaser() == null) {</span>
+<span class="nc" id="L388">            TextDataBlock teaserTextDataBlock = blockManager.makeNewTextDataBlock();</span>
 
-<span class="nc" id="L310">            resource.setTeaser(teaserTextDataBlock);</span>
-<span class="nc" id="L311">            teaserTextDataBlock.setTeasingResource(resource);</span>
+<span class="nc" id="L390">            resource.setTeaser(teaserTextDataBlock);</span>
+<span class="nc" id="L391">            teaserTextDataBlock.setTeasingResource(resource);</span>
         }
 
         // implicitly resource.setPublished(false);
@@ -316,25 +396,25 @@ import org.slf4j.LoggerFactory;
         // implicitly resource.setDeprecated(false);
 
         Resourceable owner;
-<span class="nc bnc" id="L319" title="All 2 branches missed.">        if (resource.getAbstractCardTypeId() != null) {</span>
-<span class="nc" id="L320">            owner = cardTypeManager.assertAndGetCardTypeOrRef(resource.getAbstractCardTypeId());</span>
+<span class="nc bnc" id="L399" title="All 2 branches missed.">        if (resource.getAbstractCardTypeId() != null) {</span>
+<span class="nc" id="L400">            owner = cardTypeManager.assertAndGetCardTypeOrRef(resource.getAbstractCardTypeId());</span>
 
-<span class="nc bnc" id="L322" title="All 2 branches missed.">        } else if (resource.getCardId() != null) {</span>
-<span class="nc" id="L323">            owner = cardManager.assertAndGetCard(resource.getCardId());</span>
+<span class="nc bnc" id="L402" title="All 2 branches missed.">        } else if (resource.getCardId() != null) {</span>
+<span class="nc" id="L403">            owner = cardManager.assertAndGetCard(resource.getCardId());</span>
 
-<span class="nc bnc" id="L325" title="All 2 branches missed.">        } else if (resource.getCardContentId() != null) {</span>
-<span class="nc" id="L326">            owner = cardContentManager.assertAndGetCardContent(resource.getCardContentId());</span>
+<span class="nc bnc" id="L405" title="All 2 branches missed.">        } else if (resource.getCardContentId() != null) {</span>
+<span class="nc" id="L406">            owner = cardContentManager.assertAndGetCardContent(resource.getCardContentId());</span>
 
         } else {
-<span class="nc" id="L329">            throw HttpErrorMessage.dataIntegrityFailure();</span>
+<span class="nc" id="L409">            throw HttpErrorMessage.dataIntegrityFailure();</span>
         }
 
-<span class="nc" id="L332">        resource.setOwner(owner);</span>
-<span class="nc" id="L333">        owner.getDirectAbstractResources().add(resource);</span>
+<span class="nc" id="L412">        resource.setOwner(owner);</span>
+<span class="nc" id="L413">        owner.getDirectAbstractResources().add(resource);</span>
 
-<span class="nc" id="L335">        resourceReferenceSpreadingHelper.spreadAvailableResourceDown(resource);</span>
+<span class="nc" id="L415">        resourceReferenceSpreadingHelper.spreadAvailableResourceDown(resource);</span>
 
-<span class="nc" id="L337">        return resourceDao.persistResource(resource);</span>
+<span class="nc" id="L417">        return resourceDao.persistResource(resource);</span>
     }
 
     /**
@@ -343,16 +423,16 @@ import org.slf4j.LoggerFactory;
      * @param resourceId the id of the resource to delete
      */
     public void deleteResource(Long resourceId) {
-<span class="nc" id="L346">        logger.debug(&quot;delete resource #{}&quot;, resourceId);</span>
+<span class="nc" id="L426">        logger.debug(&quot;delete resource #{}&quot;, resourceId);</span>
 
-<span class="nc" id="L348">        AbstractResource resource = assertAndGetResourceOrRef(resourceId);</span>
+<span class="nc" id="L428">        AbstractResource resource = assertAndGetResourceOrRef(resourceId);</span>
 
-<span class="nc bnc" id="L350" title="All 2 branches missed.">        if (!checkDeletionAcceptability(resource)) {</span>
-<span class="nc" id="L351">            throw HttpErrorMessage.dataIntegrityFailure();</span>
+<span class="nc bnc" id="L430" title="All 2 branches missed.">        if (!checkDeletionAcceptability(resource)) {</span>
+<span class="nc" id="L431">            throw HttpErrorMessage.dataIntegrityFailure();</span>
         }
 
-<span class="nc" id="L354">        deleteResourceAndRefs(resource);</span>
-<span class="nc" id="L355">    }</span>
+<span class="nc" id="L434">        deleteResourceAndRefs(resource);</span>
+<span class="nc" id="L435">    }</span>
 
     /**
      * Ascertain that the resource can be deleted.
@@ -363,11 +443,11 @@ import org.slf4j.LoggerFactory;
      */
     private boolean checkDeletionAcceptability(AbstractResource resourceOrRef) {
         // the only resources we delete manually are the concrete resources
-<span class="nc bnc" id="L366" title="All 2 branches missed.">        if (!(resourceOrRef instanceof Resource)) {</span>
-<span class="nc" id="L367">            return false;</span>
+<span class="nc bnc" id="L446" title="All 2 branches missed.">        if (!(resourceOrRef instanceof Resource)) {</span>
+<span class="nc" id="L447">            return false;</span>
         }
 
-<span class="nc" id="L370">        return true;</span>
+<span class="nc" id="L450">        return true;</span>
     }
 
     /**
@@ -377,22 +457,22 @@ import org.slf4j.LoggerFactory;
      * @param resourceOrRef The initial abstract resource to delete
      */
     private void deleteResourceAndRefs(AbstractResource resourceOrRef) {
-<span class="nc" id="L380">        requestManager.sudo(() -&gt; {</span>
-<span class="nc" id="L381">        List&lt;ResourceRef&gt; references = resourceDao.findDirectReferences(resourceOrRef);</span>
-<span class="nc bnc" id="L382" title="All 2 branches missed.">        if (references != null) {</span>
-<span class="nc" id="L383">            references.stream().forEach(ref -&gt; deleteResourceAndRefs(ref));</span>
-        }
+<span class="nc" id="L460">        requestManager.sudo(() -&gt; {</span>
+<span class="nc" id="L461">            List&lt;ResourceRef&gt; references = resourceDao.findDirectReferences(resourceOrRef);</span>
+<span class="nc bnc" id="L462" title="All 2 branches missed.">            if (references != null) {</span>
+<span class="nc" id="L463">                references.stream().forEach(ref -&gt; deleteResourceAndRefs(ref));</span>
+            }
 
-<span class="nc bnc" id="L386" title="All 2 branches missed.">        if (resourceOrRef.getOwner() != null) {</span>
-<span class="nc" id="L387">            Resourceable owner = resourceOrRef.getOwner();</span>
-<span class="nc" id="L388">            owner.getDirectAbstractResources().remove(resourceOrRef);</span>
-        }
+<span class="nc bnc" id="L466" title="All 2 branches missed.">            if (resourceOrRef.getOwner() != null) {</span>
+<span class="nc" id="L467">                Resourceable owner = resourceOrRef.getOwner();</span>
+<span class="nc" id="L468">                owner.getDirectAbstractResources().remove(resourceOrRef);</span>
+            }
 
-<span class="nc" id="L391">        resourceDao.deleteResourceOrRef(resourceOrRef.getId());</span>
+<span class="nc" id="L471">            resourceDao.deleteResourceOrRef(resourceOrRef.getId());</span>
 
-        // Note : the document is deleted by cascade
-<span class="nc" id="L394">        });</span>
-<span class="nc" id="L395">    }</span>
+            // Note : the document is deleted by cascade
+<span class="nc" id="L474">        });</span>
+<span class="nc" id="L475">    }</span>
 
     // *********************************************************************************************
     // state cycle
@@ -404,28 +484,27 @@ import org.slf4j.LoggerFactory;
      * @param resourceOrRefId the id of the resource or reference
      */
     public void discardResourceOrRef(Long resourceOrRefId) {
-<span class="nc" id="L407">        AbstractResource resourceOrRef = assertAndGetResourceOrRef(resourceOrRefId);</span>
+<span class="nc" id="L487">        AbstractResource resourceOrRef = assertAndGetResourceOrRef(resourceOrRefId);</span>
 
-<span class="nc bnc" id="L409" title="All 2 branches missed.">        if (resourceOrRef instanceof Resource) {</span>
-<span class="nc" id="L410">            Resource resource = (Resource) resourceOrRef;</span>
-<span class="nc" id="L411">            resource.setDeprecated(true);</span>
+<span class="nc bnc" id="L489" title="All 2 branches missed.">        if (resourceOrRef instanceof Resource) {</span>
+<span class="nc" id="L490">            Resource resource = (Resource) resourceOrRef;</span>
+<span class="nc" id="L491">            resource.setDeprecated(true);</span>
 
-            // if resource in card and has only one variant, refuse also the resource in the variant
-<span class="nc bnc" id="L414" title="All 2 branches missed.">            if (resource.getCard() != null) {</span>
-<span class="nc" id="L415">                List&lt;ResourceRef&gt; references = resourceDao.findDirectReferences(resource);</span>
-<span class="nc bnc" id="L416" title="All 2 branches missed.">                if (references.size() == 1) {</span>
-<span class="nc" id="L417">                    ResourceRef ref = references.get(0);</span>
-<span class="nc bnc" id="L418" title="All 2 branches missed.">                    if (Objects.equals(resource.getCard(), ref.getCardContent().getCard())) {</span>
-<span class="nc" id="L419">                        resourceReferenceSpreadingHelper.refuseRecursively(ref);</span>
+            // if resource in card, refuse also the resource in the variants
+<span class="nc bnc" id="L494" title="All 2 branches missed.">            if (resource.getCard() != null) {</span>
+<span class="nc" id="L495">                List&lt;ResourceRef&gt; references = resourceDao.findDirectReferences(resource);</span>
+<span class="nc bnc" id="L496" title="All 2 branches missed.">                for (ResourceRef ref : references) {</span>
+<span class="nc bnc" id="L497" title="All 2 branches missed.">                    if (Objects.equals(resource.getCard(), ref.getCardContent().getCard())) {</span>
+<span class="nc" id="L498">                        resourceReferenceSpreadingHelper.refuseRecursively(ref);</span>
                     }
-                }
+<span class="nc" id="L500">                }</span>
             }
 
-<span class="nc bnc" id="L424" title="All 2 branches missed.">        } else if (resourceOrRef instanceof ResourceRef) {</span>
-<span class="nc" id="L425">            ResourceRef resourceRef = (ResourceRef) resourceOrRef;</span>
-<span class="nc" id="L426">            resourceReferenceSpreadingHelper.refuseRecursively(resourceRef);</span>
+<span class="nc bnc" id="L503" title="All 2 branches missed.">        } else if (resourceOrRef instanceof ResourceRef) {</span>
+<span class="nc" id="L504">            ResourceRef resourceRef = (ResourceRef) resourceOrRef;</span>
+<span class="nc" id="L505">            resourceReferenceSpreadingHelper.refuseRecursively(resourceRef);</span>
         }
-<span class="nc" id="L428">    }</span>
+<span class="nc" id="L507">    }</span>
 
     /**
      * Restore the resource (or reference) so that it can be visible again
@@ -433,38 +512,37 @@ import org.slf4j.LoggerFactory;
      * @param resourceOrRefId the id of the resource or reference
      */
     public void restoreResourceOrRef(Long resourceOrRefId) {
-<span class="nc" id="L436">        AbstractResource resourceOrRef = assertAndGetResourceOrRef(resourceOrRefId);</span>
+<span class="nc" id="L515">        AbstractResource resourceOrRef = assertAndGetResourceOrRef(resourceOrRefId);</span>
 
-<span class="nc bnc" id="L438" title="All 2 branches missed.">        if (resourceOrRef instanceof Resource) {</span>
-<span class="nc" id="L439">            Resource resource = (Resource) resourceOrRef;</span>
-<span class="nc bnc" id="L440" title="All 2 branches missed.">            if (resource.isDeprecated()) {</span>
-<span class="nc" id="L441">                resource.setDeprecated(false);</span>
+<span class="nc bnc" id="L517" title="All 2 branches missed.">        if (resourceOrRef instanceof Resource) {</span>
+<span class="nc" id="L518">            Resource resource = (Resource) resourceOrRef;</span>
+<span class="nc bnc" id="L519" title="All 2 branches missed.">            if (resource.isDeprecated()) {</span>
+<span class="nc" id="L520">                resource.setDeprecated(false);</span>
             }
 
-            // if resource in card and has only one variant, un refuse also the resource in the variant
-<span class="nc bnc" id="L445" title="All 2 branches missed.">            if (resource.getCard() != null) {</span>
-<span class="nc" id="L446">                List&lt;ResourceRef&gt; references = resourceDao.findDirectReferences(resource);</span>
-<span class="nc bnc" id="L447" title="All 2 branches missed.">                if (references.size() == 1) {</span>
-<span class="nc" id="L448">                    ResourceRef ref = references.get(0);</span>
-<span class="nc bnc" id="L449" title="All 2 branches missed.">                    if (Objects.equals(resource.getCard(), ref.getCardContent().getCard())) {</span>
-<span class="nc" id="L450">                        resourceReferenceSpreadingHelper.unRefuseRecursively(ref);</span>
+            // if resource in card, un refuse also the resource in the variants
+<span class="nc bnc" id="L524" title="All 2 branches missed.">            if (resource.getCard() != null) {</span>
+<span class="nc" id="L525">                List&lt;ResourceRef&gt; references = resourceDao.findDirectReferences(resource);</span>
+<span class="nc bnc" id="L526" title="All 2 branches missed.">                for (ResourceRef ref : references) {</span>
+<span class="nc bnc" id="L527" title="All 2 branches missed.">                    if (Objects.equals(resource.getCard(), ref.getCardContent().getCard())) {</span>
+<span class="nc" id="L528">                        resourceReferenceSpreadingHelper.unRefuseRecursively(ref);</span>
                     }
-                }
+<span class="nc" id="L530">                }</span>
             }
 
-<span class="nc bnc" id="L455" title="All 2 branches missed.">        } else if (resourceOrRef instanceof ResourceRef) {</span>
-<span class="nc" id="L456">            ResourceRef resourceRef = (ResourceRef) resourceOrRef;</span>
-<span class="nc bnc" id="L457" title="All 2 branches missed.">            if (resourceRef.isRefused()) {</span>
-<span class="nc" id="L458">                resourceReferenceSpreadingHelper.unRefuseRecursively(resourceRef);</span>
+<span class="nc bnc" id="L533" title="All 2 branches missed.">        } else if (resourceOrRef instanceof ResourceRef) {</span>
+<span class="nc" id="L534">            ResourceRef resourceRef = (ResourceRef) resourceOrRef;</span>
+<span class="nc bnc" id="L535" title="All 2 branches missed.">            if (resourceRef.isRefused()) {</span>
+<span class="nc" id="L536">                resourceReferenceSpreadingHelper.unRefuseRecursively(resourceRef);</span>
 
             }
 
-<span class="nc bnc" id="L462" title="All 2 branches missed.">            if (resourceRef.isResidual()) {</span>
-<span class="nc" id="L463">                resourceReferenceSpreadingHelper.reviveRecursively(resourceRef);</span>
+<span class="nc bnc" id="L540" title="All 2 branches missed.">            if (resourceRef.isResidual()) {</span>
+<span class="nc" id="L541">                resourceReferenceSpreadingHelper.reviveRecursively(resourceRef);</span>
 
             }
         }
-<span class="nc" id="L467">    }</span>
+<span class="nc" id="L545">    }</span>
 
     /**
      * Set the resource as published or not
@@ -473,16 +551,76 @@ import org.slf4j.LoggerFactory;
      * @param newPublishedValue if it is published or not
      */
     public void changeResourcePublication(Long resourceId, boolean newPublishedValue) {
-<span class="nc" id="L476">        Resource resource = assertAndGetResource(resourceId);</span>
+<span class="nc" id="L554">        Resource resource = assertAndGetResource(resourceId);</span>
 
-<span class="nc" id="L478">        resource.setPublished(newPublishedValue);</span>
+<span class="nc" id="L556">        resource.setPublished(newPublishedValue);</span>
 
-<span class="nc bnc" id="L480" title="All 2 branches missed.">        if (newPublishedValue) {</span>
-<span class="nc" id="L481">            resourceReferenceSpreadingHelper.spreadAvailableResourceDown(resource);</span>
+<span class="nc bnc" id="L558" title="All 2 branches missed.">        if (newPublishedValue) {</span>
+<span class="nc" id="L559">            resourceReferenceSpreadingHelper.spreadAvailableResourceDown(resource);</span>
         } else {
-<span class="nc" id="L483">            resourceReferenceSpreadingHelper.spreadDisableResourceDown(resource);</span>
+<span class="nc" id="L561">            resourceReferenceSpreadingHelper.spreadDisableResourceDown(resource);</span>
         }
-<span class="nc" id="L485">    }</span>
+<span class="nc" id="L563">    }</span>
+
+    /**
+     * Move a resource to a new resourceable
+     *
+     * @param resourceId id of the resource to move
+     * @param newOwner   the new owner
+     * @param published  new publication status
+     */
+    public void moveResource(Long resourceId, Resourceable newOwner, boolean published) {
+<span class="nc" id="L573">        Resource resource = assertAndGetResource(resourceId);</span>
+
+<span class="nc bnc" id="L575" title="All 2 branches missed.">        if (newOwner == null) {</span>
+<span class="nc" id="L576">            throw HttpErrorMessage.relatedObjectNotFoundError();</span>
+        }
+
+<span class="nc" id="L579">        Resourceable previousOwner = resource.getOwner();</span>
+
+<span class="nc bnc" id="L581" title="All 2 branches missed.">        if (newOwner.equals(previousOwner)) {</span>
+            // not realy a move...
+<span class="nc" id="L583">            this.changeResourcePublication(resourceId, published);</span>
+        } else {
+
+            // mark all references as residual
+<span class="nc" id="L587">            resourceReferenceSpreadingHelper.spreadDisableResourceDown(resource, true);</span>
+
+            // move the resource
+<span class="nc bnc" id="L590" title="All 2 branches missed.">            if (previousOwner != null) {</span>
+<span class="nc" id="L591">                previousOwner.getDirectAbstractResources().remove(resource);</span>
+            }
+
+<span class="nc" id="L594">            newOwner.getDirectAbstractResources().add(resource);</span>
+<span class="nc" id="L595">            resource.setOwner(newOwner);</span>
+<span class="nc" id="L596">            resource.setPublished(published);</span>
+
+            // init or revive new references
+<span class="nc" id="L599">            resourceReferenceSpreadingHelper.spreadAvailableResourceDown(resource);</span>
+        }
+<span class="nc" id="L601">    }</span>
+
+    /**
+     * Move a resource to a new resourceable.
+     *
+     * @param resourceId id of the resource to move
+     * @param parentType the new owner
+     * @param parentId   if of the new owner
+     * @param published  new publication status
+     */
+    public void moveResource(Long resourceId, String parentType, Long parentId, boolean published) {
+<span class="nc" id="L612">        Resourceable parent = null;</span>
+        // not that happy with this resourceable resolver
+        // todo: normalize it
+<span class="nc bnc" id="L615" title="All 2 branches missed.">        if (&quot;Card&quot;.equals(parentType)) {</span>
+<span class="nc" id="L616">            parent = cardDao.findCard(parentId);</span>
+<span class="nc bnc" id="L617" title="All 2 branches missed.">        } else if (&quot;CardContent&quot;.equals(parentType)) {</span>
+<span class="nc" id="L618">            parent = cardContentDao.findCardContent(parentId);</span>
+<span class="nc bnc" id="L619" title="All 2 branches missed.">        } else if (&quot;CardType&quot;.equals(parentType)) {</span>
+<span class="nc" id="L620">            parent = cardTypeDao.findAbstractCardType(parentId);</span>
+        }
+<span class="nc" id="L622">        this.moveResource(resourceId, parent, published);</span>
+<span class="nc" id="L623">    }</span>
 
     // *********************************************************************************************
     // add a document to a resource
@@ -497,9 +635,9 @@ import org.slf4j.LoggerFactory;
      * @return the newly created document
      */
     public Document addDocument(Long resourceId, Document document) {
-<span class="nc" id="L500">        logger.debug(&quot;add document {} to resource #{}&quot;, document, resourceId);</span>
+<span class="nc" id="L638">        logger.debug(&quot;add document {} to resource #{}&quot;, document, resourceId);</span>
 
-<span class="nc" id="L502">        return addDocument(resourceId, document, RelatedPosition.AT_END);</span>
+<span class="nc" id="L640">        return addDocument(resourceId, document, RelatedPosition.AT_END);</span>
     }
 
     /**
@@ -513,9 +651,9 @@ import org.slf4j.LoggerFactory;
      */
     public Document addDocument(Long resourceId, Document document,
         RelatedPosition relatedPosition) {
-<span class="nc" id="L516">        logger.debug(&quot;add document {} {} to resource #{}&quot;, document, relatedPosition, resourceId);</span>
+<span class="nc" id="L654">        logger.debug(&quot;add document {} {} to resource #{}&quot;, document, relatedPosition, resourceId);</span>
 
-<span class="nc" id="L518">        return addDocument(resourceId, document, relatedPosition, null);</span>
+<span class="nc" id="L656">        return addDocument(resourceId, document, relatedPosition, null);</span>
     }
 
     /**
@@ -531,47 +669,47 @@ import org.slf4j.LoggerFactory;
      */
     public Document addDocument(Long resourceId, Document document, RelatedPosition relatedPosition,
         Long neighbourDocId) {
-<span class="nc" id="L534">        logger.debug(&quot;add document {} to resource #{} {} doc #{}&quot;, document, resourceId,</span>
+<span class="nc" id="L672">        logger.debug(&quot;add document {} to resource #{} {} doc #{}&quot;, document, resourceId,</span>
             relatedPosition, neighbourDocId);
 
-<span class="nc" id="L537">        Resource resource = assertAndGetResource(resourceId);</span>
+<span class="nc" id="L675">        Resource resource = assertAndGetResource(resourceId);</span>
 
-<span class="nc bnc" id="L539" title="All 2 branches missed.">        if (document == null) {</span>
-<span class="nc" id="L540">            throw HttpErrorMessage.dataIntegrityFailure();</span>
+<span class="nc bnc" id="L677" title="All 2 branches missed.">        if (document == null) {</span>
+<span class="nc" id="L678">            throw HttpErrorMessage.dataIntegrityFailure();</span>
         }
 
-<span class="nc bnc" id="L543" title="All 4 branches missed.">        if (document.hasOwningResource() || document.hasOwningCardContent()) {</span>
-<span class="nc" id="L544">            throw HttpErrorMessage.dataIntegrityFailure();</span>
+<span class="nc bnc" id="L681" title="All 4 branches missed.">        if (document.hasOwningResource() || document.hasOwningCardContent()) {</span>
+<span class="nc" id="L682">            throw HttpErrorMessage.dataIntegrityFailure();</span>
         }
 
-<span class="nc bnc" id="L547" title="All 2 branches missed.">        if (resource.getDocuments().contains(document)) {</span>
-<span class="nc" id="L548">            throw HttpErrorMessage.dataIntegrityFailure();</span>
+<span class="nc bnc" id="L685" title="All 2 branches missed.">        if (resource.getDocuments().contains(document)) {</span>
+<span class="nc" id="L686">            throw HttpErrorMessage.dataIntegrityFailure();</span>
         }
 
-<span class="nc bnc" id="L551" title="All 4 branches missed.">        switch (relatedPosition) {</span>
+<span class="nc bnc" id="L689" title="All 4 branches missed.">        switch (relatedPosition) {</span>
             case BEFORE:
-<span class="nc" id="L553">                Document neighbourBDocument = documentManager.assertAndGetDocument(neighbourDocId);</span>
-<span class="nc" id="L554">                indexGenerator.moveItemBefore(document, neighbourBDocument,</span>
-<span class="nc" id="L555">                    resource.getDocuments());</span>
-<span class="nc" id="L556">                break;</span>
+<span class="nc" id="L691">                Document neighbourBDocument = documentManager.assertAndGetDocument(neighbourDocId);</span>
+<span class="nc" id="L692">                indexGenerator.moveItemBefore(document, neighbourBDocument,</span>
+<span class="nc" id="L693">                    resource.getDocuments());</span>
+<span class="nc" id="L694">                break;</span>
             case AFTER:
-<span class="nc" id="L558">                Document neighbourADocument = documentManager.assertAndGetDocument(neighbourDocId);</span>
-<span class="nc" id="L559">                indexGenerator.moveItemAfter(document, neighbourADocument,</span>
-<span class="nc" id="L560">                    resource.getDocuments());</span>
-<span class="nc" id="L561">                break;</span>
+<span class="nc" id="L696">                Document neighbourADocument = documentManager.assertAndGetDocument(neighbourDocId);</span>
+<span class="nc" id="L697">                indexGenerator.moveItemAfter(document, neighbourADocument,</span>
+<span class="nc" id="L698">                    resource.getDocuments());</span>
+<span class="nc" id="L699">                break;</span>
             case AT_BEGINNING:
-<span class="nc" id="L563">                indexGenerator.moveItemToBeginning(document, resource.getDocuments());</span>
-<span class="nc" id="L564">                break;</span>
+<span class="nc" id="L701">                indexGenerator.moveItemToBeginning(document, resource.getDocuments());</span>
+<span class="nc" id="L702">                break;</span>
             case AT_END:
             default:
-<span class="nc" id="L567">                indexGenerator.moveItemToEnd(document, resource.getDocuments());</span>
+<span class="nc" id="L705">                indexGenerator.moveItemToEnd(document, resource.getDocuments());</span>
                 break;
         }
 
-<span class="nc" id="L571">        resource.getDocuments().add(document);</span>
-<span class="nc" id="L572">        document.setOwningResource(resource);</span>
+<span class="nc" id="L709">        resource.getDocuments().add(document);</span>
+<span class="nc" id="L710">        document.setOwningResource(resource);</span>
 
-<span class="nc" id="L574">        return documentDao.persistDocument(document);</span>
+<span class="nc" id="L712">        return documentDao.persistDocument(document);</span>
     }
 
     /**
@@ -581,25 +719,24 @@ import org.slf4j.LoggerFactory;
      * @param documentId the id of the document to remove
      */
     public void removeDocument(Long resourceId, Long documentId) {
-<span class="nc" id="L584">        logger.debug(&quot;remove document #{} of resource #{}&quot;, documentId, resourceId);</span>
+<span class="nc" id="L722">        logger.debug(&quot;remove document #{} of resource #{}&quot;, documentId, resourceId);</span>
 
-<span class="nc" id="L586">        Resource resource = assertAndGetResource(resourceId);</span>
+<span class="nc" id="L724">        Resource resource = assertAndGetResource(resourceId);</span>
 
-<span class="nc" id="L588">        Document document = documentManager.assertAndGetDocument(documentId);</span>
+<span class="nc" id="L726">        Document document = documentManager.assertAndGetDocument(documentId);</span>
 
-<span class="nc bnc" id="L590" title="All 2 branches missed.">        if (!(resource.getDocuments().contains(document))) {</span>
-<span class="nc" id="L591">            throw HttpErrorMessage.dataIntegrityFailure();</span>
+<span class="nc bnc" id="L728" title="All 2 branches missed.">        if (!(resource.getDocuments().contains(document))) {</span>
+<span class="nc" id="L729">            throw HttpErrorMessage.dataIntegrityFailure();</span>
         }
 
-<span class="nc" id="L594">        resource.getDocuments().remove(document);</span>
+<span class="nc" id="L732">        resource.getDocuments().remove(document);</span>
 
-<span class="nc" id="L596">        documentDao.deleteDocument(document.getId());</span>
-<span class="nc" id="L597">    }</span>
+<span class="nc" id="L734">        documentDao.deleteDocument(document.getId());</span>
+<span class="nc" id="L735">    }</span>
 
     // *********************************************************************************************
     // retrieve the elements of a resource
     // *********************************************************************************************
-
     /**
      * Get the documents of the resource
      *
@@ -608,11 +745,11 @@ import org.slf4j.LoggerFactory;
      * @return the documents linked to the resource
      */
     public List&lt;Document&gt; getDocumentsOfResource(Long resourceId) {
-<span class="nc" id="L611">        logger.debug(&quot;get documents of resource #{}&quot;, resourceId);</span>
+<span class="nc" id="L748">        logger.debug(&quot;get documents of resource #{}&quot;, resourceId);</span>
 
-<span class="nc" id="L613">        Resource resource = assertAndGetResource(resourceId);</span>
+<span class="nc" id="L750">        Resource resource = assertAndGetResource(resourceId);</span>
 
-<span class="nc" id="L615">        return resource.getDocuments();</span>
+<span class="nc" id="L752">        return resource.getDocuments();</span>
     }
 
     /**
@@ -623,12 +760,12 @@ import org.slf4j.LoggerFactory;
      * @return all sticky note links linked to the resource / resource reference
      */
     public List&lt;StickyNoteLink&gt; getStickyNoteLinkAsSrc(Long resourceOrRefId) {
-<span class="nc" id="L626">        logger.debug(&quot;get sticky note links where the abstract resource #{} is the source&quot;,</span>
+<span class="nc" id="L763">        logger.debug(&quot;get sticky note links where the abstract resource #{} is the source&quot;,</span>
             resourceOrRefId);
 
-<span class="nc" id="L629">        AbstractResource resource = assertAndGetResourceOrRef(resourceOrRefId);</span>
+<span class="nc" id="L766">        AbstractResource resource = assertAndGetResourceOrRef(resourceOrRefId);</span>
 
-<span class="nc" id="L631">        return resource.getStickyNoteLinksAsSrc();</span>
+<span class="nc" id="L768">        return resource.getStickyNoteLinksAsSrc();</span>
     }
 
     // *********************************************************************************************
@@ -647,33 +784,33 @@ import org.slf4j.LoggerFactory;
      * @return true iff the project is complete and safe
      */
     public boolean checkIntegrity(AbstractResource resourceOrRef) {
-<span class="nc bnc" id="L650" title="All 2 branches missed.">        if (resourceOrRef == null) {</span>
-<span class="nc" id="L651">            return false;</span>
+<span class="nc bnc" id="L787" title="All 2 branches missed.">        if (resourceOrRef == null) {</span>
+<span class="nc" id="L788">            return false;</span>
         }
 
-<span class="nc bnc" id="L654" title="All 2 branches missed.">        if (resourceOrRef instanceof Resource) {</span>
-<span class="nc" id="L655">            Resource resource = (Resource) resourceOrRef;</span>
-<span class="nc bnc" id="L656" title="All 2 branches missed.">            if (CollectionUtils.isEmpty(resource.getDocuments())) {</span>
-<span class="nc" id="L657">                return false;</span>
+<span class="nc bnc" id="L791" title="All 2 branches missed.">        if (resourceOrRef instanceof Resource) {</span>
+<span class="nc" id="L792">            Resource resource = (Resource) resourceOrRef;</span>
+<span class="nc bnc" id="L793" title="All 2 branches missed.">            if (CollectionUtils.isEmpty(resource.getDocuments())) {</span>
+<span class="nc" id="L794">                return false;</span>
             }
         }
 
-<span class="nc bnc" id="L661" title="All 2 branches missed.">        if (resourceOrRef instanceof ResourceRef) {</span>
-<span class="nc" id="L662">            ResourceRef reference = (ResourceRef) resourceOrRef;</span>
-<span class="nc" id="L663">            Resource finalTarget = reference.resolve();</span>
-<span class="nc bnc" id="L664" title="All 2 branches missed.">            if (finalTarget == null) {</span>
-<span class="nc" id="L665">                return false;</span>
+<span class="nc bnc" id="L798" title="All 2 branches missed.">        if (resourceOrRef instanceof ResourceRef) {</span>
+<span class="nc" id="L799">            ResourceRef reference = (ResourceRef) resourceOrRef;</span>
+<span class="nc" id="L800">            Resource finalTarget = reference.resolve();</span>
+<span class="nc bnc" id="L801" title="All 2 branches missed.">            if (finalTarget == null) {</span>
+<span class="nc" id="L802">                return false;</span>
             }
         }
 
-<span class="nc bnc" id="L669" title="All 2 branches missed.">        int nbCardType = resourceOrRef.getAbstractCardType() == null ? 0 : 1;</span>
-<span class="nc bnc" id="L670" title="All 2 branches missed.">        int nbCard = resourceOrRef.getCard() == null ? 0 : 1;</span>
-<span class="nc bnc" id="L671" title="All 2 branches missed.">        int nbCardContent = resourceOrRef.getCardContent() == null ? 0 : 1;</span>
-<span class="nc bnc" id="L672" title="All 2 branches missed.">        if ((nbCardType + nbCard + nbCardContent) != 1) {</span>
-<span class="nc" id="L673">            return false;</span>
+<span class="nc bnc" id="L806" title="All 2 branches missed.">        int nbCardType = resourceOrRef.getAbstractCardType() == null ? 0 : 1;</span>
+<span class="nc bnc" id="L807" title="All 2 branches missed.">        int nbCard = resourceOrRef.getCard() == null ? 0 : 1;</span>
+<span class="nc bnc" id="L808" title="All 2 branches missed.">        int nbCardContent = resourceOrRef.getCardContent() == null ? 0 : 1;</span>
+<span class="nc bnc" id="L809" title="All 2 branches missed.">        if ((nbCardType + nbCard + nbCardContent) != 1) {</span>
+<span class="nc" id="L810">            return false;</span>
         }
 
-<span class="nc" id="L676">        return true;</span>
+<span class="nc" id="L813">        return true;</span>
     }
 
     // *********************************************************************************************

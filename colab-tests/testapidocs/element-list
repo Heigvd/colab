@@ -10,4 +10,5 @@ ch.colabproject.colab.tests.rest.document
 ch.colabproject.colab.tests.rest.link
 ch.colabproject.colab.tests.rest.team
 ch.colabproject.colab.tests.tests
+ch.colabproject.colab.tests.tests.grid
 ch.colabproject.colab.tests.ws

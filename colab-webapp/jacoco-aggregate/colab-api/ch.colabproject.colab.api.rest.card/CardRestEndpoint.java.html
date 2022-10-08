@@ -8,6 +8,7 @@ package ch.colabproject.colab.api.rest.card;
 
 import ch.colabproject.colab.api.controller.card.CardContentManager;
 import ch.colabproject.colab.api.controller.card.CardManager;
+import ch.colabproject.colab.api.controller.card.grid.GridPosition;
 import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.model.card.Card;
 import ch.colabproject.colab.api.model.card.CardContent;
@@ -41,10 +42,10 @@ import org.slf4j.LoggerFactory;
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
 @AuthenticationRequired
-<span class="nc" id="L44">public class CardRestEndpoint {</span>
+<span class="nc" id="L45">public class CardRestEndpoint {</span>
 
     /** logger */
-<span class="nc" id="L47">    private static final Logger logger = LoggerFactory.getLogger(CardRestEndpoint.class);</span>
+<span class="nc" id="L48">    private static final Logger logger = LoggerFactory.getLogger(CardRestEndpoint.class);</span>
 
     /**
      * The card persistence manager
@@ -74,8 +75,8 @@ import org.slf4j.LoggerFactory;
     @GET
     @Path(&quot;{id}&quot;)
     public Card getCard(@PathParam(&quot;id&quot;) Long id) {
-<span class="nc" id="L77">        logger.debug(&quot;get card #{}&quot;, id);</span>
-<span class="nc" id="L78">        return cardDao.findCard(id);</span>
+<span class="nc" id="L78">        logger.debug(&quot;get card #{}&quot;, id);</span>
+<span class="nc" id="L79">        return cardDao.findCard(id);</span>
     }
 
     /**
@@ -88,8 +89,8 @@ import org.slf4j.LoggerFactory;
     @POST
     @Path(&quot;create/{parentId}&quot;)
     public Card createNewCardWithoutType(@PathParam(&quot;parentId&quot;) Long parentId) {
-<span class="nc" id="L91">        logger.debug(&quot;create a new card for the parent #{} without type&quot;, parentId);</span>
-<span class="nc" id="L92">        return cardManager.createNewCard(parentId, null);</span>
+<span class="nc" id="L92">        logger.debug(&quot;create a new card for the parent #{} without type&quot;, parentId);</span>
+<span class="nc" id="L93">        return cardManager.createNewCard(parentId, null);</span>
     }
 
     /**
@@ -104,9 +105,9 @@ import org.slf4j.LoggerFactory;
     @Path(&quot;create/{parentId}/{cardTypeId}&quot;)
     public Card createNewCard(@PathParam(&quot;parentId&quot;) Long parentId,
         @PathParam(&quot;cardTypeId&quot;) Long cardTypeId) {
-<span class="nc" id="L107">        logger.debug(&quot;create a new card for the parent #{} and the type #{}&quot;, parentId,</span>
+<span class="nc" id="L108">        logger.debug(&quot;create a new card for the parent #{} and the type #{}&quot;, parentId,</span>
             cardTypeId);
-<span class="nc" id="L109">        return cardManager.createNewCard(parentId, cardTypeId);</span>
+<span class="nc" id="L110">        return cardManager.createNewCard(parentId, cardTypeId);</span>
     }
 
     /**
@@ -121,18 +122,18 @@ import org.slf4j.LoggerFactory;
     @Path(&quot;createWithDeliverable/{parentId}&quot;)
     public Card createNewCardWithDeliverableWithoutType(@PathParam(&quot;parentId&quot;) Long parentId,
         Document document) {
-<span class="nc" id="L124">        logger.debug(&quot;create a new card in the parent #{} without type with the deliverable {}&quot;,</span>
+<span class="nc" id="L125">        logger.debug(&quot;create a new card in the parent #{} without type with the deliverable {}&quot;,</span>
             parentId, document);
-<span class="nc" id="L126">        Card card = cardManager.createNewCard(parentId, null);</span>
+<span class="nc" id="L127">        Card card = cardManager.createNewCard(parentId, null);</span>
 
-<span class="nc" id="L128">        List&lt;CardContent&gt; variants = card.getContentVariants();</span>
-<span class="nc bnc" id="L129" title="All 6 branches missed.">        if (variants != null &amp;&amp; variants.size() == 1 &amp;&amp; variants.get(0) != null) {</span>
-<span class="nc" id="L130">            cardContentManager.addDeliverable(variants.get(0).getId(), document);</span>
+<span class="nc" id="L129">        List&lt;CardContent&gt; variants = card.getContentVariants();</span>
+<span class="nc bnc" id="L130" title="All 6 branches missed.">        if (variants != null &amp;&amp; variants.size() == 1 &amp;&amp; variants.get(0) != null) {</span>
+<span class="nc" id="L131">            cardContentManager.addDeliverable(variants.get(0).getId(), document);</span>
         } else {
-<span class="nc" id="L132">            throw HttpErrorMessage.dataIntegrityFailure();</span>
+<span class="nc" id="L133">            throw HttpErrorMessage.dataIntegrityFailure();</span>
         }
 
-<span class="nc" id="L135">        return card;</span>
+<span class="nc" id="L136">        return card;</span>
     }
 
     /**
@@ -148,18 +149,18 @@ import org.slf4j.LoggerFactory;
     @Path(&quot;createWithDeliverable/{parentId}/{cardTypeId}&quot;)
     public Card createNewCardWithDeliverable(@PathParam(&quot;parentId&quot;) Long parentId,
         @PathParam(&quot;cardTypeId&quot;) Long cardTypeId, Document document) {
-<span class="nc" id="L151">        logger.debug(&quot;create a new card in the parent #{} for the type #{} with the deliverable {}&quot;,</span>
+<span class="nc" id="L152">        logger.debug(&quot;create a new card in the parent #{} for the type #{} with the deliverable {}&quot;,</span>
             parentId, cardTypeId, document);
-<span class="nc" id="L153">        Card card = cardManager.createNewCard(parentId, cardTypeId);</span>
+<span class="nc" id="L154">        Card card = cardManager.createNewCard(parentId, cardTypeId);</span>
 
-<span class="nc" id="L155">        List&lt;CardContent&gt; variants = card.getContentVariants();</span>
-<span class="nc bnc" id="L156" title="All 6 branches missed.">        if (variants != null &amp;&amp; variants.size() == 1 &amp;&amp; variants.get(0) != null) {</span>
-<span class="nc" id="L157">            cardContentManager.addDeliverable(variants.get(0).getId(), document);</span>
+<span class="nc" id="L156">        List&lt;CardContent&gt; variants = card.getContentVariants();</span>
+<span class="nc bnc" id="L157" title="All 6 branches missed.">        if (variants != null &amp;&amp; variants.size() == 1 &amp;&amp; variants.get(0) != null) {</span>
+<span class="nc" id="L158">            cardContentManager.addDeliverable(variants.get(0).getId(), document);</span>
         } else {
-<span class="nc" id="L159">            throw HttpErrorMessage.dataIntegrityFailure();</span>
+<span class="nc" id="L160">            throw HttpErrorMessage.dataIntegrityFailure();</span>
         }
 
-<span class="nc" id="L162">        return card;</span>
+<span class="nc" id="L163">        return card;</span>
     }
 
     /**
@@ -171,22 +172,21 @@ import org.slf4j.LoggerFactory;
      */
     @PUT
     public void updateCard(Card card) throws ColabMergeException {
-<span class="nc" id="L174">        logger.debug(&quot;update card {}&quot;, card);</span>
-<span class="nc" id="L175">        cardDao.updateCard(card);</span>
-<span class="nc" id="L176">    }</span>
+<span class="nc" id="L175">        logger.debug(&quot;update card {}&quot;, card);</span>
+<span class="nc" id="L176">        cardDao.updateCard(card);</span>
+<span class="nc" id="L177">    }</span>
 
     /**
-     * Change the position of the card (stay in the same parent, change the index)&lt;p&gt;
-     * Recompute the indexes of all the sister cards
+     * Change the position of the card (stay in the same parent)&lt;p&gt;
+     * Recompute the position of all the sister cards
      *
      * @param cardId the id of the card
-     * @param index  the new index to set
+     * @param position the new position of the card
      */
     @PUT
-    @Path(&quot;{cardId}/changeIndex/{newIndex}&quot;)
-    public void changeCardIndex(@PathParam(&quot;cardId&quot;) Long cardId,
-        @PathParam(&quot;newIndex&quot;) Integer index) {
-<span class="nc" id="L189">        cardManager.changeCardIndex(cardId, index);</span>
+    @Path(&quot;{cardId}/changePosition&quot;)
+    public void changeCardPosition(@PathParam(&quot;cardId&quot;) Long cardId, GridPosition position) {
+<span class="nc" id="L189">        cardManager.changeCardPosition(cardId, position);</span>
 <span class="nc" id="L190">    }</span>
 
     /**

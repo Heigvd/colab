@@ -8,7 +8,6 @@ package ch.colabproject.colab.api.ws.utils;
 
 import ch.colabproject.colab.api.Helper;
 import ch.colabproject.colab.api.controller.CdiBridgeSingleton;
-import ch.colabproject.colab.api.ws.channel.model.WebsocketChannel;
 import java.io.Serializable;
 import java.util.Map;
 import java.util.concurrent.Callable;
@@ -18,20 +17,20 @@ import java.util.concurrent.Callable;
  *
  * @author maxence
  */
-<span class="nc" id="L21">public class CallableGetChannel</span>
+<span class="nc" id="L20">public class CallableGetChannel</span>
     implements
     Serializable,
-    Callable&lt;Map&lt;WebsocketChannel, Integer&gt;&gt; {
+    Callable&lt;Map&lt;String, Integer&gt;&gt; {
 
     private static final long serialVersionUID = 1L;
 
     @Override
-    public Map&lt;WebsocketChannel, Integer&gt; call() throws Exception {
-<span class="nc" id="L30">        CdiBridgeSingleton cdiBridge = Helper.lookup(CdiBridgeSingleton.class);</span>
-<span class="nc bnc" id="L31" title="All 2 branches missed.">        if (cdiBridge != null) {</span>
-<span class="nc" id="L32">            return cdiBridge.getSubscriptionsCount();</span>
+    public Map&lt;String, Integer&gt; call() throws Exception {
+<span class="nc" id="L29">        CdiBridgeSingleton cdiBridge = Helper.lookup(CdiBridgeSingleton.class);</span>
+<span class="nc bnc" id="L30" title="All 2 branches missed.">        if (cdiBridge != null) {</span>
+<span class="nc" id="L31">            return cdiBridge.getSubscriptionsCount();</span>
         } else {
-<span class="nc" id="L34">            return Map.of();</span>
+<span class="nc" id="L33">            return Map.of();</span>
         }
     }
 

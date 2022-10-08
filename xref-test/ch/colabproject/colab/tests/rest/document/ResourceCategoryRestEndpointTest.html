@@ -8,7 +8,7 @@
 <div id="overview"><a href="../../../../../../../testapidocs/ch/colabproject/colab/tests/rest/document/ResourceCategoryRestEndpointTest.html">View Javadoc</a></div><pre>
 <a class="jxr_linenumber" name="L1" href="#L1">1</a>   <em class="jxr_comment">/*</em>
 <a class="jxr_linenumber" name="L2" href="#L2">2</a>   <em class="jxr_comment"> * The coLAB project</em>
-<a class="jxr_linenumber" name="L3" href="#L3">3</a>   <em class="jxr_comment"> * Copyright (C) 2021 AlbaSim, MEI, HEIG-VD, HES-SO</em>
+<a class="jxr_linenumber" name="L3" href="#L3">3</a>   <em class="jxr_comment"> * Copyright (C) 2021-2022 AlbaSim, MEI, HEIG-VD, HES-SO</em>
 <a class="jxr_linenumber" name="L4" href="#L4">4</a>   <em class="jxr_comment"> *</em>
 <a class="jxr_linenumber" name="L5" href="#L5">5</a>   <em class="jxr_comment"> * Licensed under the MIT License</em>
 <a class="jxr_linenumber" name="L6" href="#L6">6</a>   <em class="jxr_comment"> */</em>
@@ -149,14 +149,14 @@
 <a class="jxr_linenumber" name="L141" href="#L141">141</a> 
 <a class="jxr_linenumber" name="L142" href="#L142">142</a>         Long subCardContent2Id = ColabFactory.getCardContent(client, subCard2Id).getId();
 <a class="jxr_linenumber" name="L143" href="#L143">143</a> 
-<a class="jxr_linenumber" name="L144" href="#L144">144</a> <em class="jxr_comment">//        // another project with a card using a cardType of the previous project</em>
-<a class="jxr_linenumber" name="L145" href="#L145">145</a> <em class="jxr_comment">//        Project projectII = ColabFactory.createProject(client,</em>
-<a class="jxr_linenumber" name="L146" href="#L146">146</a> <em class="jxr_comment">//            "projectII #" + ((int) (Math.random() * 1000)));</em>
-<a class="jxr_linenumber" name="L147" href="#L147">147</a> <em class="jxr_comment">//</em>
-<a class="jxr_linenumber" name="L148" href="#L148">148</a> <em class="jxr_comment">//        Long rootCardContentIIId = ColabFactory.getRootContent(client, projectII).getId();</em>
-<a class="jxr_linenumber" name="L149" href="#L149">149</a> <em class="jxr_comment">//</em>
-<a class="jxr_linenumber" name="L150" href="#L150">150</a> <em class="jxr_comment">//        Long cardIIId = ColabFactory.createNewCard(client, rootCardContentIIId, cardType1Id)</em>
-<a class="jxr_linenumber" name="L151" href="#L151">151</a> <em class="jxr_comment">//            .getId();</em>
+<a class="jxr_linenumber" name="L144" href="#L144">144</a>         <em class="jxr_comment">// another project with a card using a cardType of the previous project</em>
+<a class="jxr_linenumber" name="L145" href="#L145">145</a>         Project projectII = ColabFactory.createProject(client,
+<a class="jxr_linenumber" name="L146" href="#L146">146</a>             <span class="jxr_string">"projectII #"</span> + ((<strong class="jxr_keyword">int</strong>) (Math.random() * 1000)));
+<a class="jxr_linenumber" name="L147" href="#L147">147</a> 
+<a class="jxr_linenumber" name="L148" href="#L148">148</a>         Long rootCardContentIIId = ColabFactory.getRootContent(client, projectII).getId();
+<a class="jxr_linenumber" name="L149" href="#L149">149</a> 
+<a class="jxr_linenumber" name="L150" href="#L150">150</a>         Long cardIIId = ColabFactory.createNewCard(client, rootCardContentIIId, cardType1Id)
+<a class="jxr_linenumber" name="L151" href="#L151">151</a>             .getId();
 <a class="jxr_linenumber" name="L152" href="#L152">152</a> 
 <a class="jxr_linenumber" name="L153" href="#L153">153</a>         <em class="jxr_comment">// set and retrieve the resources / resources references</em>
 <a class="jxr_linenumber" name="L154" href="#L154">154</a>         Resource resourceOfCardType1 = createResourceForAbstractCardType(cardType1Id);
@@ -177,8 +177,8 @@
 <a class="jxr_linenumber" name="L169" href="#L169">169</a>             subCardContent2Id);
 <a class="jxr_linenumber" name="L170" href="#L170">170</a>         Long resourceRefOfSubCardContent2Id = resourceRefOfSubCardContent2.getId();
 <a class="jxr_linenumber" name="L171" href="#L171">171</a> 
-<a class="jxr_linenumber" name="L172" href="#L172">172</a> <em class="jxr_comment">//        ResourceRef resourceRefOfCardII = retrieveResourceRefForCard(cardIIId);</em>
-<a class="jxr_linenumber" name="L173" href="#L173">173</a> <em class="jxr_comment">//        Long resourceRefOfCardIIId = resourceRefOfCardII.getId();</em>
+<a class="jxr_linenumber" name="L172" href="#L172">172</a>         ResourceRef resourceRefOfCardII = retrieveResourceRefForCard(cardIIId);
+<a class="jxr_linenumber" name="L173" href="#L173">173</a>         Long resourceRefOfCardIIId = resourceRefOfCardII.getId();
 <a class="jxr_linenumber" name="L174" href="#L174">174</a> 
 <a class="jxr_linenumber" name="L175" href="#L175">175</a>         Resource persistedResource3 = createResourceForAbstractCardType(cardType1Id);
 <a class="jxr_linenumber" name="L176" href="#L176">176</a>         Long resource3Id = persistedResource3.getId();
@@ -191,194 +191,176 @@
 <a class="jxr_linenumber" name="L183" href="#L183">183</a>         String categoryNameC = <span class="jxr_string">"Nice guidelines #"</span> + ((<strong class="jxr_keyword">int</strong>) (Math.random() * 1000));
 <a class="jxr_linenumber" name="L184" href="#L184">184</a>         String categoryNameD = <span class="jxr_string">"Awesome guidelines #"</span> + ((<strong class="jxr_keyword">int</strong>) (Math.random() * 1000));
 <a class="jxr_linenumber" name="L185" href="#L185">185</a>         String categoryNameE = <span class="jxr_string">"Valuable guidelines #"</span> + ((<strong class="jxr_keyword">int</strong>) (Math.random() * 1000));
-<a class="jxr_linenumber" name="L186" href="#L186">186</a> <em class="jxr_comment">//        String categoryNameF = "No interest guidelines #" + ((int) (Math.random() * 1000));</em>
-<a class="jxr_linenumber" name="L187" href="#L187">187</a> 
-<a class="jxr_linenumber" name="L188" href="#L188">188</a>         String categoryNameO = <span class="jxr_string">"work files #"</span> + ((<strong class="jxr_keyword">int</strong>) (Math.random() * 1000));
+<a class="jxr_linenumber" name="L186" href="#L186">186</a> 
+<a class="jxr_linenumber" name="L187" href="#L187">187</a>         String categoryNameO = <span class="jxr_string">"work files #"</span> + ((<strong class="jxr_keyword">int</strong>) (Math.random() * 1000));
+<a class="jxr_linenumber" name="L188" href="#L188">188</a>         String categoryNameX = <span class="jxr_string">"particular #"</span> + ((<strong class="jxr_keyword">int</strong>) (Math.random() * 1000));
 <a class="jxr_linenumber" name="L189" href="#L189">189</a> 
 <a class="jxr_linenumber" name="L190" href="#L190">190</a>         client.resourceRestEndpoint.changeCategory(resource3Id, categoryNameO);
 <a class="jxr_linenumber" name="L191" href="#L191">191</a>         persistedResource3 = (Resource) client.resourceRestEndpoint
 <a class="jxr_linenumber" name="L192" href="#L192">192</a>             .getAbstractResource(resource3Id);
 <a class="jxr_linenumber" name="L193" href="#L193">193</a>         Assertions.assertEquals(categoryNameO, persistedResource3.getCategory());
 <a class="jxr_linenumber" name="L194" href="#L194">194</a> 
-<a class="jxr_linenumber" name="L195" href="#L195">195</a>         <em class="jxr_comment">// set categoryNameA for each</em>
-<a class="jxr_linenumber" name="L196" href="#L196">196</a> 
-<a class="jxr_linenumber" name="L197" href="#L197">197</a>         client.resourceRestEndpoint.changeCategory(resourceOfCardType1Id, categoryNameA);
-<a class="jxr_linenumber" name="L198" href="#L198">198</a> 
-<a class="jxr_linenumber" name="L199" href="#L199">199</a>         resourceOfCardType1 = (Resource) client.resourceRestEndpoint
-<a class="jxr_linenumber" name="L200" href="#L200">200</a>             .getAbstractResource(resourceOfCardType1Id);
-<a class="jxr_linenumber" name="L201" href="#L201">201</a>         Assertions.assertEquals(categoryNameA, resourceOfCardType1.getCategory());
-<a class="jxr_linenumber" name="L202" href="#L202">202</a>         resourceRefOfCard1 = (ResourceRef) client.resourceRestEndpoint
-<a class="jxr_linenumber" name="L203" href="#L203">203</a>             .getAbstractResource(resourceRefOfCard1Id);
-<a class="jxr_linenumber" name="L204" href="#L204">204</a>         Assertions.assertEquals(categoryNameA, resourceRefOfCard1.getCategory());
-<a class="jxr_linenumber" name="L205" href="#L205">205</a>         resourceRefOfCardContent1 = (ResourceRef) client.resourceRestEndpoint
-<a class="jxr_linenumber" name="L206" href="#L206">206</a>             .getAbstractResource(resourceRefOfCardContent1Id);
-<a class="jxr_linenumber" name="L207" href="#L207">207</a>         Assertions.assertEquals(categoryNameA, resourceRefOfCardContent1.getCategory());
-<a class="jxr_linenumber" name="L208" href="#L208">208</a>         resourceRefOfSubCard2 = (ResourceRef) client.resourceRestEndpoint
-<a class="jxr_linenumber" name="L209" href="#L209">209</a>             .getAbstractResource(resourceRefOfSubCard2Id);
-<a class="jxr_linenumber" name="L210" href="#L210">210</a>         Assertions.assertEquals(categoryNameA, resourceRefOfSubCard2.getCategory());
-<a class="jxr_linenumber" name="L211" href="#L211">211</a>         resourceRefOfSubCardContent2 = (ResourceRef) client.resourceRestEndpoint
-<a class="jxr_linenumber" name="L212" href="#L212">212</a>             .getAbstractResource(resourceRefOfSubCardContent2Id);
-<a class="jxr_linenumber" name="L213" href="#L213">213</a>         Assertions.assertEquals(categoryNameA, resourceRefOfSubCardContent2.getCategory());
-<a class="jxr_linenumber" name="L214" href="#L214">214</a> <em class="jxr_comment">//        resourceRefOfCardII = client.resourceRestEndpoint.getAbstractResource(resourceRefOfCardIIId);</em>
-<a class="jxr_linenumber" name="L215" href="#L215">215</a> <em class="jxr_comment">//        Assertions.assertEquals(categoryNameA, resourceRefOfCardII.getCategory());</em>
-<a class="jxr_linenumber" name="L216" href="#L216">216</a> 
-<a class="jxr_linenumber" name="L217" href="#L217">217</a>         <em class="jxr_comment">// rename category A -&gt; B at card type level</em>
-<a class="jxr_linenumber" name="L218" href="#L218">218</a>         client.resourceRestEndpoint.renameCategoryForCardType(project.getId(), cardType1Id,
-<a class="jxr_linenumber" name="L219" href="#L219">219</a>             categoryNameA, categoryNameB);
-<a class="jxr_linenumber" name="L220" href="#L220">220</a> 
-<a class="jxr_linenumber" name="L221" href="#L221">221</a>         resourceOfCardType1 = (Resource) client.resourceRestEndpoint
-<a class="jxr_linenumber" name="L222" href="#L222">222</a>             .getAbstractResource(resourceOfCardType1Id);
-<a class="jxr_linenumber" name="L223" href="#L223">223</a>         Assertions.assertEquals(categoryNameB, resourceOfCardType1.getCategory());
-<a class="jxr_linenumber" name="L224" href="#L224">224</a>         resourceRefOfCard1 = (ResourceRef) client.resourceRestEndpoint
-<a class="jxr_linenumber" name="L225" href="#L225">225</a>             .getAbstractResource(resourceRefOfCard1Id);
-<a class="jxr_linenumber" name="L226" href="#L226">226</a>         Assertions.assertEquals(categoryNameB, resourceRefOfCard1.getCategory());
-<a class="jxr_linenumber" name="L227" href="#L227">227</a>         resourceRefOfCardContent1 = (ResourceRef) client.resourceRestEndpoint
-<a class="jxr_linenumber" name="L228" href="#L228">228</a>             .getAbstractResource(resourceRefOfCardContent1Id);
-<a class="jxr_linenumber" name="L229" href="#L229">229</a>         Assertions.assertEquals(categoryNameB, resourceRefOfCardContent1.getCategory());
-<a class="jxr_linenumber" name="L230" href="#L230">230</a>         resourceRefOfSubCard2 = (ResourceRef) client.resourceRestEndpoint
-<a class="jxr_linenumber" name="L231" href="#L231">231</a>             .getAbstractResource(resourceRefOfSubCard2Id);
-<a class="jxr_linenumber" name="L232" href="#L232">232</a>         Assertions.assertEquals(categoryNameB, resourceRefOfSubCard2.getCategory());
-<a class="jxr_linenumber" name="L233" href="#L233">233</a>         resourceRefOfSubCardContent2 = (ResourceRef) client.resourceRestEndpoint
-<a class="jxr_linenumber" name="L234" href="#L234">234</a>             .getAbstractResource(resourceRefOfSubCardContent2Id);
-<a class="jxr_linenumber" name="L235" href="#L235">235</a>         Assertions.assertEquals(categoryNameB, resourceRefOfSubCardContent2.getCategory());
-<a class="jxr_linenumber" name="L236" href="#L236">236</a>         <em class="jxr_comment">// in another project, stay category A</em>
-<a class="jxr_linenumber" name="L237" href="#L237">237</a> <em class="jxr_comment">//        resourceRefOfCardII = client.resourceRestEndpoint.getAbstractResource(resourceRefOfCardIIId);</em>
-<a class="jxr_linenumber" name="L238" href="#L238">238</a> <em class="jxr_comment">//        Assertions.assertEquals(categoryNameA, resourceRefOfCardII.getCategory());</em>
-<a class="jxr_linenumber" name="L239" href="#L239">239</a> 
-<a class="jxr_linenumber" name="L240" href="#L240">240</a>         <em class="jxr_comment">// rename category B -&gt; C at card 1 level</em>
-<a class="jxr_linenumber" name="L241" href="#L241">241</a>         client.resourceRestEndpoint.renameCategoryForCard(card1Id, categoryNameB,
-<a class="jxr_linenumber" name="L242" href="#L242">242</a>             categoryNameC);
+<a class="jxr_linenumber" name="L195" href="#L195">195</a>         client.resourceRestEndpoint.changeCategory(resourceRefOfSubCardContent2Id, categoryNameX);
+<a class="jxr_linenumber" name="L196" href="#L196">196</a>         resourceRefOfSubCardContent2 = (ResourceRef) client.resourceRestEndpoint
+<a class="jxr_linenumber" name="L197" href="#L197">197</a>             .getAbstractResource(resourceRefOfSubCardContent2Id);
+<a class="jxr_linenumber" name="L198" href="#L198">198</a>         Assertions.assertEquals(categoryNameX, resourceRefOfSubCardContent2.getCategory());
+<a class="jxr_linenumber" name="L199" href="#L199">199</a> 
+<a class="jxr_linenumber" name="L200" href="#L200">200</a>         <em class="jxr_comment">// set categoryNameA for each</em>
+<a class="jxr_linenumber" name="L201" href="#L201">201</a> 
+<a class="jxr_linenumber" name="L202" href="#L202">202</a>         client.resourceRestEndpoint.changeCategory(resourceOfCardType1Id, categoryNameA);
+<a class="jxr_linenumber" name="L203" href="#L203">203</a> 
+<a class="jxr_linenumber" name="L204" href="#L204">204</a>         resourceOfCardType1 = (Resource) client.resourceRestEndpoint
+<a class="jxr_linenumber" name="L205" href="#L205">205</a>             .getAbstractResource(resourceOfCardType1Id);
+<a class="jxr_linenumber" name="L206" href="#L206">206</a>         Assertions.assertEquals(categoryNameA, resourceOfCardType1.getCategory());
+<a class="jxr_linenumber" name="L207" href="#L207">207</a>         resourceRefOfCard1 = (ResourceRef) client.resourceRestEndpoint
+<a class="jxr_linenumber" name="L208" href="#L208">208</a>             .getAbstractResource(resourceRefOfCard1Id);
+<a class="jxr_linenumber" name="L209" href="#L209">209</a>         Assertions.assertEquals(categoryNameA, resourceRefOfCard1.getCategory());
+<a class="jxr_linenumber" name="L210" href="#L210">210</a>         resourceRefOfCardContent1 = (ResourceRef) client.resourceRestEndpoint
+<a class="jxr_linenumber" name="L211" href="#L211">211</a>             .getAbstractResource(resourceRefOfCardContent1Id);
+<a class="jxr_linenumber" name="L212" href="#L212">212</a>         Assertions.assertEquals(categoryNameA, resourceRefOfCardContent1.getCategory());
+<a class="jxr_linenumber" name="L213" href="#L213">213</a>         resourceRefOfSubCard2 = (ResourceRef) client.resourceRestEndpoint
+<a class="jxr_linenumber" name="L214" href="#L214">214</a>             .getAbstractResource(resourceRefOfSubCard2Id);
+<a class="jxr_linenumber" name="L215" href="#L215">215</a>         Assertions.assertEquals(categoryNameA, resourceRefOfSubCard2.getCategory());
+<a class="jxr_linenumber" name="L216" href="#L216">216</a>         resourceRefOfSubCardContent2 = (ResourceRef) client.resourceRestEndpoint
+<a class="jxr_linenumber" name="L217" href="#L217">217</a>             .getAbstractResource(resourceRefOfSubCardContent2Id);
+<a class="jxr_linenumber" name="L218" href="#L218">218</a>         Assertions.assertEquals(categoryNameX, resourceRefOfSubCardContent2.getCategory());
+<a class="jxr_linenumber" name="L219" href="#L219">219</a>         resourceRefOfCardII = (ResourceRef)client.resourceRestEndpoint.getAbstractResource(resourceRefOfCardIIId);
+<a class="jxr_linenumber" name="L220" href="#L220">220</a>         Assertions.assertEquals(categoryNameA, resourceRefOfCardII.getCategory());
+<a class="jxr_linenumber" name="L221" href="#L221">221</a> 
+<a class="jxr_linenumber" name="L222" href="#L222">222</a>         <em class="jxr_comment">// rename category A -&gt; B at card type level</em>
+<a class="jxr_linenumber" name="L223" href="#L223">223</a>         client.resourceRestEndpoint.renameCategoryForCardType(cardType1Id, categoryNameA,
+<a class="jxr_linenumber" name="L224" href="#L224">224</a>             categoryNameB);
+<a class="jxr_linenumber" name="L225" href="#L225">225</a> 
+<a class="jxr_linenumber" name="L226" href="#L226">226</a>         resourceOfCardType1 = (Resource) client.resourceRestEndpoint
+<a class="jxr_linenumber" name="L227" href="#L227">227</a>             .getAbstractResource(resourceOfCardType1Id);
+<a class="jxr_linenumber" name="L228" href="#L228">228</a>         Assertions.assertEquals(categoryNameB, resourceOfCardType1.getCategory());
+<a class="jxr_linenumber" name="L229" href="#L229">229</a>         resourceRefOfCard1 = (ResourceRef) client.resourceRestEndpoint
+<a class="jxr_linenumber" name="L230" href="#L230">230</a>             .getAbstractResource(resourceRefOfCard1Id);
+<a class="jxr_linenumber" name="L231" href="#L231">231</a>         Assertions.assertEquals(categoryNameB, resourceRefOfCard1.getCategory());
+<a class="jxr_linenumber" name="L232" href="#L232">232</a>         resourceRefOfCardContent1 = (ResourceRef) client.resourceRestEndpoint
+<a class="jxr_linenumber" name="L233" href="#L233">233</a>             .getAbstractResource(resourceRefOfCardContent1Id);
+<a class="jxr_linenumber" name="L234" href="#L234">234</a>         Assertions.assertEquals(categoryNameB, resourceRefOfCardContent1.getCategory());
+<a class="jxr_linenumber" name="L235" href="#L235">235</a>         resourceRefOfSubCard2 = (ResourceRef) client.resourceRestEndpoint
+<a class="jxr_linenumber" name="L236" href="#L236">236</a>             .getAbstractResource(resourceRefOfSubCard2Id);
+<a class="jxr_linenumber" name="L237" href="#L237">237</a>         Assertions.assertEquals(categoryNameB, resourceRefOfSubCard2.getCategory());
+<a class="jxr_linenumber" name="L238" href="#L238">238</a>         resourceRefOfSubCardContent2 = (ResourceRef) client.resourceRestEndpoint
+<a class="jxr_linenumber" name="L239" href="#L239">239</a>             .getAbstractResource(resourceRefOfSubCardContent2Id);
+<a class="jxr_linenumber" name="L240" href="#L240">240</a>         Assertions.assertEquals(categoryNameX, resourceRefOfSubCardContent2.getCategory());
+<a class="jxr_linenumber" name="L241" href="#L241">241</a>         resourceRefOfCardII = (ResourceRef) client.resourceRestEndpoint.getAbstractResource(resourceRefOfCardIIId);
+<a class="jxr_linenumber" name="L242" href="#L242">242</a>         Assertions.assertEquals(categoryNameB, resourceRefOfCardII.getCategory());
 <a class="jxr_linenumber" name="L243" href="#L243">243</a> 
-<a class="jxr_linenumber" name="L244" href="#L244">244</a>         resourceOfCardType1 = (Resource) client.resourceRestEndpoint
-<a class="jxr_linenumber" name="L245" href="#L245">245</a>             .getAbstractResource(resourceOfCardType1Id);
-<a class="jxr_linenumber" name="L246" href="#L246">246</a>         Assertions.assertEquals(categoryNameB, resourceOfCardType1.getCategory());
-<a class="jxr_linenumber" name="L247" href="#L247">247</a>         resourceRefOfCard1 = (ResourceRef) client.resourceRestEndpoint
-<a class="jxr_linenumber" name="L248" href="#L248">248</a>             .getAbstractResource(resourceRefOfCard1Id);
-<a class="jxr_linenumber" name="L249" href="#L249">249</a>         Assertions.assertEquals(categoryNameC, resourceRefOfCard1.getCategory());
-<a class="jxr_linenumber" name="L250" href="#L250">250</a>         resourceRefOfCardContent1 = (ResourceRef) client.resourceRestEndpoint
-<a class="jxr_linenumber" name="L251" href="#L251">251</a>             .getAbstractResource(resourceRefOfCardContent1Id);
-<a class="jxr_linenumber" name="L252" href="#L252">252</a>         Assertions.assertEquals(categoryNameC, resourceRefOfCardContent1.getCategory());
-<a class="jxr_linenumber" name="L253" href="#L253">253</a>         resourceRefOfSubCard2 = (ResourceRef) client.resourceRestEndpoint
-<a class="jxr_linenumber" name="L254" href="#L254">254</a>             .getAbstractResource(resourceRefOfSubCard2Id);
-<a class="jxr_linenumber" name="L255" href="#L255">255</a>         Assertions.assertEquals(categoryNameC, resourceRefOfSubCard2.getCategory());
-<a class="jxr_linenumber" name="L256" href="#L256">256</a>         resourceRefOfSubCardContent2 = (ResourceRef) client.resourceRestEndpoint
-<a class="jxr_linenumber" name="L257" href="#L257">257</a>             .getAbstractResource(resourceRefOfSubCardContent2Id);
-<a class="jxr_linenumber" name="L258" href="#L258">258</a>         Assertions.assertEquals(categoryNameC, resourceRefOfSubCardContent2.getCategory());
-<a class="jxr_linenumber" name="L259" href="#L259">259</a> 
-<a class="jxr_linenumber" name="L260" href="#L260">260</a>         <em class="jxr_comment">// rename category C -&gt; D at card content 1 level</em>
-<a class="jxr_linenumber" name="L261" href="#L261">261</a>         client.resourceRestEndpoint.renameCategoryForCardContent(cardContent1Id, categoryNameC,
-<a class="jxr_linenumber" name="L262" href="#L262">262</a>             categoryNameD);
+<a class="jxr_linenumber" name="L244" href="#L244">244</a>         <em class="jxr_comment">// rename category B -&gt; C at card 1 level</em>
+<a class="jxr_linenumber" name="L245" href="#L245">245</a>         client.resourceRestEndpoint.renameCategoryForCard(card1Id, categoryNameB,
+<a class="jxr_linenumber" name="L246" href="#L246">246</a>             categoryNameC);
+<a class="jxr_linenumber" name="L247" href="#L247">247</a> 
+<a class="jxr_linenumber" name="L248" href="#L248">248</a>         resourceOfCardType1 = (Resource) client.resourceRestEndpoint
+<a class="jxr_linenumber" name="L249" href="#L249">249</a>             .getAbstractResource(resourceOfCardType1Id);
+<a class="jxr_linenumber" name="L250" href="#L250">250</a>         Assertions.assertEquals(categoryNameB, resourceOfCardType1.getCategory());
+<a class="jxr_linenumber" name="L251" href="#L251">251</a>         resourceRefOfCard1 = (ResourceRef) client.resourceRestEndpoint
+<a class="jxr_linenumber" name="L252" href="#L252">252</a>             .getAbstractResource(resourceRefOfCard1Id);
+<a class="jxr_linenumber" name="L253" href="#L253">253</a>         Assertions.assertEquals(categoryNameC, resourceRefOfCard1.getCategory());
+<a class="jxr_linenumber" name="L254" href="#L254">254</a>         resourceRefOfCardContent1 = (ResourceRef) client.resourceRestEndpoint
+<a class="jxr_linenumber" name="L255" href="#L255">255</a>             .getAbstractResource(resourceRefOfCardContent1Id);
+<a class="jxr_linenumber" name="L256" href="#L256">256</a>         Assertions.assertEquals(categoryNameC, resourceRefOfCardContent1.getCategory());
+<a class="jxr_linenumber" name="L257" href="#L257">257</a>         resourceRefOfSubCard2 = (ResourceRef) client.resourceRestEndpoint
+<a class="jxr_linenumber" name="L258" href="#L258">258</a>             .getAbstractResource(resourceRefOfSubCard2Id);
+<a class="jxr_linenumber" name="L259" href="#L259">259</a>         Assertions.assertEquals(categoryNameC, resourceRefOfSubCard2.getCategory());
+<a class="jxr_linenumber" name="L260" href="#L260">260</a>         resourceRefOfSubCardContent2 = (ResourceRef) client.resourceRestEndpoint
+<a class="jxr_linenumber" name="L261" href="#L261">261</a>             .getAbstractResource(resourceRefOfSubCardContent2Id);
+<a class="jxr_linenumber" name="L262" href="#L262">262</a>         Assertions.assertEquals(categoryNameX, resourceRefOfSubCardContent2.getCategory());
 <a class="jxr_linenumber" name="L263" href="#L263">263</a> 
-<a class="jxr_linenumber" name="L264" href="#L264">264</a>         resourceRefOfCard1 = (ResourceRef) client.resourceRestEndpoint
-<a class="jxr_linenumber" name="L265" href="#L265">265</a>             .getAbstractResource(resourceRefOfCard1Id);
-<a class="jxr_linenumber" name="L266" href="#L266">266</a>         Assertions.assertEquals(categoryNameC, resourceRefOfCard1.getCategory());
-<a class="jxr_linenumber" name="L267" href="#L267">267</a>         resourceRefOfCardContent1 = (ResourceRef) client.resourceRestEndpoint
-<a class="jxr_linenumber" name="L268" href="#L268">268</a>             .getAbstractResource(resourceRefOfCardContent1Id);
-<a class="jxr_linenumber" name="L269" href="#L269">269</a>         Assertions.assertEquals(categoryNameD, resourceRefOfCardContent1.getCategory());
-<a class="jxr_linenumber" name="L270" href="#L270">270</a>         resourceRefOfSubCard2 = (ResourceRef) client.resourceRestEndpoint
-<a class="jxr_linenumber" name="L271" href="#L271">271</a>             .getAbstractResource(resourceRefOfSubCard2Id);
-<a class="jxr_linenumber" name="L272" href="#L272">272</a>         Assertions.assertEquals(categoryNameD, resourceRefOfSubCard2.getCategory());
-<a class="jxr_linenumber" name="L273" href="#L273">273</a>         resourceRefOfSubCardContent2 = (ResourceRef) client.resourceRestEndpoint
-<a class="jxr_linenumber" name="L274" href="#L274">274</a>             .getAbstractResource(resourceRefOfSubCardContent2Id);
-<a class="jxr_linenumber" name="L275" href="#L275">275</a>         Assertions.assertEquals(categoryNameD, resourceRefOfSubCardContent2.getCategory());
-<a class="jxr_linenumber" name="L276" href="#L276">276</a> 
-<a class="jxr_linenumber" name="L277" href="#L277">277</a>         <em class="jxr_comment">// rename category D -&gt; E at sub card 2 level</em>
-<a class="jxr_linenumber" name="L278" href="#L278">278</a>         client.resourceRestEndpoint.renameCategoryForCard(subCard2Id, categoryNameD,
-<a class="jxr_linenumber" name="L279" href="#L279">279</a>             categoryNameE);
+<a class="jxr_linenumber" name="L264" href="#L264">264</a>         <em class="jxr_comment">// rename category C -&gt; D at card content 1 level</em>
+<a class="jxr_linenumber" name="L265" href="#L265">265</a>         client.resourceRestEndpoint.renameCategoryForCardContent(cardContent1Id, categoryNameC,
+<a class="jxr_linenumber" name="L266" href="#L266">266</a>             categoryNameD);
+<a class="jxr_linenumber" name="L267" href="#L267">267</a> 
+<a class="jxr_linenumber" name="L268" href="#L268">268</a>         resourceRefOfCard1 = (ResourceRef) client.resourceRestEndpoint
+<a class="jxr_linenumber" name="L269" href="#L269">269</a>             .getAbstractResource(resourceRefOfCard1Id);
+<a class="jxr_linenumber" name="L270" href="#L270">270</a>         Assertions.assertEquals(categoryNameC, resourceRefOfCard1.getCategory());
+<a class="jxr_linenumber" name="L271" href="#L271">271</a>         resourceRefOfCardContent1 = (ResourceRef) client.resourceRestEndpoint
+<a class="jxr_linenumber" name="L272" href="#L272">272</a>             .getAbstractResource(resourceRefOfCardContent1Id);
+<a class="jxr_linenumber" name="L273" href="#L273">273</a>         Assertions.assertEquals(categoryNameD, resourceRefOfCardContent1.getCategory());
+<a class="jxr_linenumber" name="L274" href="#L274">274</a>         resourceRefOfSubCard2 = (ResourceRef) client.resourceRestEndpoint
+<a class="jxr_linenumber" name="L275" href="#L275">275</a>             .getAbstractResource(resourceRefOfSubCard2Id);
+<a class="jxr_linenumber" name="L276" href="#L276">276</a>         Assertions.assertEquals(categoryNameD, resourceRefOfSubCard2.getCategory());
+<a class="jxr_linenumber" name="L277" href="#L277">277</a>         resourceRefOfSubCardContent2 = (ResourceRef) client.resourceRestEndpoint
+<a class="jxr_linenumber" name="L278" href="#L278">278</a>             .getAbstractResource(resourceRefOfSubCardContent2Id);
+<a class="jxr_linenumber" name="L279" href="#L279">279</a>         Assertions.assertEquals(categoryNameX, resourceRefOfSubCardContent2.getCategory());
 <a class="jxr_linenumber" name="L280" href="#L280">280</a> 
-<a class="jxr_linenumber" name="L281" href="#L281">281</a>         resourceRefOfCardContent1 = (ResourceRef) client.resourceRestEndpoint
-<a class="jxr_linenumber" name="L282" href="#L282">282</a>             .getAbstractResource(resourceRefOfCardContent1Id);
-<a class="jxr_linenumber" name="L283" href="#L283">283</a>         Assertions.assertEquals(categoryNameD, resourceRefOfCardContent1.getCategory());
-<a class="jxr_linenumber" name="L284" href="#L284">284</a>         resourceRefOfSubCard2 = (ResourceRef) client.resourceRestEndpoint
-<a class="jxr_linenumber" name="L285" href="#L285">285</a>             .getAbstractResource(resourceRefOfSubCard2Id);
-<a class="jxr_linenumber" name="L286" href="#L286">286</a>         Assertions.assertEquals(categoryNameE, resourceRefOfSubCard2.getCategory());
-<a class="jxr_linenumber" name="L287" href="#L287">287</a>         resourceRefOfSubCardContent2 = (ResourceRef) client.resourceRestEndpoint
-<a class="jxr_linenumber" name="L288" href="#L288">288</a>             .getAbstractResource(resourceRefOfSubCardContent2Id);
-<a class="jxr_linenumber" name="L289" href="#L289">289</a>         Assertions.assertEquals(categoryNameE, resourceRefOfSubCardContent2.getCategory());
-<a class="jxr_linenumber" name="L290" href="#L290">290</a> 
-<a class="jxr_linenumber" name="L291" href="#L291">291</a>         <em class="jxr_comment">// recapitulation at this point</em>
-<a class="jxr_linenumber" name="L292" href="#L292">292</a> <em class="jxr_comment">//        resourceRefOfCardII = client.resourceRestEndpoint.getAbstractResource(resourceRefOfCardIIId);</em>
-<a class="jxr_linenumber" name="L293" href="#L293">293</a> <em class="jxr_comment">//        Assertions.assertEquals(categoryNameA, resourceRefOfCardII.getCategory());</em>
-<a class="jxr_linenumber" name="L294" href="#L294">294</a>         resourceOfCardType1 = (Resource) client.resourceRestEndpoint
-<a class="jxr_linenumber" name="L295" href="#L295">295</a>             .getAbstractResource(resourceOfCardType1Id);
-<a class="jxr_linenumber" name="L296" href="#L296">296</a>         Assertions.assertEquals(categoryNameB, resourceOfCardType1.getCategory());
-<a class="jxr_linenumber" name="L297" href="#L297">297</a>         resourceRefOfCard1 = (ResourceRef) client.resourceRestEndpoint
-<a class="jxr_linenumber" name="L298" href="#L298">298</a>             .getAbstractResource(resourceRefOfCard1Id);
-<a class="jxr_linenumber" name="L299" href="#L299">299</a>         Assertions.assertEquals(categoryNameC, resourceRefOfCard1.getCategory());
-<a class="jxr_linenumber" name="L300" href="#L300">300</a>         resourceRefOfCardContent1 = (ResourceRef) client.resourceRestEndpoint
-<a class="jxr_linenumber" name="L301" href="#L301">301</a>             .getAbstractResource(resourceRefOfCardContent1Id);
-<a class="jxr_linenumber" name="L302" href="#L302">302</a>         Assertions.assertEquals(categoryNameD, resourceRefOfCardContent1.getCategory());
-<a class="jxr_linenumber" name="L303" href="#L303">303</a>         resourceRefOfSubCard2 = (ResourceRef) client.resourceRestEndpoint
-<a class="jxr_linenumber" name="L304" href="#L304">304</a>             .getAbstractResource(resourceRefOfSubCard2Id);
-<a class="jxr_linenumber" name="L305" href="#L305">305</a>         Assertions.assertEquals(categoryNameE, resourceRefOfSubCard2.getCategory());
-<a class="jxr_linenumber" name="L306" href="#L306">306</a>         resourceRefOfSubCardContent2 = (ResourceRef) client.resourceRestEndpoint
-<a class="jxr_linenumber" name="L307" href="#L307">307</a>             .getAbstractResource(resourceRefOfSubCardContent2Id);
-<a class="jxr_linenumber" name="L308" href="#L308">308</a>         Assertions.assertEquals(categoryNameE, resourceRefOfSubCardContent2.getCategory());
-<a class="jxr_linenumber" name="L309" href="#L309">309</a>         persistedResource3 = (Resource) client.resourceRestEndpoint
-<a class="jxr_linenumber" name="L310" href="#L310">310</a>             .getAbstractResource(resource3Id);
-<a class="jxr_linenumber" name="L311" href="#L311">311</a>         Assertions.assertEquals(categoryNameO, persistedResource3.getCategory());
-<a class="jxr_linenumber" name="L312" href="#L312">312</a> 
-<a class="jxr_linenumber" name="L313" href="#L313">313</a>         <em class="jxr_comment">// rename category A -&gt; B at card type level</em>
-<a class="jxr_linenumber" name="L314" href="#L314">314</a> <em class="jxr_comment">//        client.resourceRestEndpoint.renameCategoryForCardType(projectII.getId(), cardType1Id,</em>
-<a class="jxr_linenumber" name="L315" href="#L315">315</a> <em class="jxr_comment">//            categoryNameA, categoryNameF);</em>
-<a class="jxr_linenumber" name="L316" href="#L316">316</a> <em class="jxr_comment">//</em>
-<a class="jxr_linenumber" name="L317" href="#L317">317</a> <em class="jxr_comment">//        resourceRefOfCardII = (ResourceRef) client.resourceRestEndpoint.getAbstractResource(resourceRefOfCardIIId);</em>
-<a class="jxr_linenumber" name="L318" href="#L318">318</a> <em class="jxr_comment">//        Assertions.assertEquals(categoryNameF, resourceRefOfCardII.getCategory());</em>
-<a class="jxr_linenumber" name="L319" href="#L319">319</a> <em class="jxr_comment">//        resourceOfCardType1 = (ResourceRef) client.resourceRestEndpoint.getAbstractResource(resourceOfCardType1Id);</em>
-<a class="jxr_linenumber" name="L320" href="#L320">320</a> <em class="jxr_comment">//        Assertions.assertEquals(categoryNameB, resourceOfCardType1.getCategory());</em>
-<a class="jxr_linenumber" name="L321" href="#L321">321</a> <em class="jxr_comment">//        resourceRefOfCard1 = (ResourceRef) client.resourceRestEndpoint.getAbstractResource(resourceRefOfCard1Id);</em>
-<a class="jxr_linenumber" name="L322" href="#L322">322</a> <em class="jxr_comment">//        Assertions.assertEquals(categoryNameC, resourceRefOfCard1.getCategory());</em>
-<a class="jxr_linenumber" name="L323" href="#L323">323</a> <em class="jxr_comment">//        resourceRefOfCardContent1 = (ResourceRef) client.resourceRestEndpoint</em>
-<a class="jxr_linenumber" name="L324" href="#L324">324</a> <em class="jxr_comment">//            .getAbstractResource(resourceRefOfCardContent1Id);</em>
-<a class="jxr_linenumber" name="L325" href="#L325">325</a> <em class="jxr_comment">//        Assertions.assertEquals(categoryNameD, resourceRefOfCardContent1.getCategory());</em>
-<a class="jxr_linenumber" name="L326" href="#L326">326</a> <em class="jxr_comment">//        resourceRefOfSubCard2 = (ResourceRef) client.resourceRestEndpoint</em>
-<a class="jxr_linenumber" name="L327" href="#L327">327</a> <em class="jxr_comment">//            .getAbstractResource(resourceRefOfSubCard2Id);</em>
-<a class="jxr_linenumber" name="L328" href="#L328">328</a> <em class="jxr_comment">//        Assertions.assertEquals(categoryNameE, resourceRefOfSubCard2.getCategory());</em>
-<a class="jxr_linenumber" name="L329" href="#L329">329</a> <em class="jxr_comment">//        resourceRefOfSubCardContent2 = (ResourceRef) client.resourceRestEndpoint</em>
-<a class="jxr_linenumber" name="L330" href="#L330">330</a> <em class="jxr_comment">//            .getAbstractResource(resourceRefOfSubCardContent2Id);</em>
-<a class="jxr_linenumber" name="L331" href="#L331">331</a> <em class="jxr_comment">//        Assertions.assertNull(resourceRefOfSubCardContent2.getCategory());</em>
-<a class="jxr_linenumber" name="L332" href="#L332">332</a> <em class="jxr_comment">//        persistedResource3 = (ResourceRef) client.resourceRestEndpoint.getAbstractResource(resource3Id);</em>
-<a class="jxr_linenumber" name="L333" href="#L333">333</a> <em class="jxr_comment">//        Assertions.assertEquals(categoryNameO, persistedResource3.getCategory());</em>
-<a class="jxr_linenumber" name="L334" href="#L334">334</a>     }
-<a class="jxr_linenumber" name="L335" href="#L335">335</a> 
-<a class="jxr_linenumber" name="L336" href="#L336">336</a>     <em class="jxr_comment">// TODO check propagation with particular attention with multiple projects / sub card / card +</em>
-<a class="jxr_linenumber" name="L337" href="#L337">337</a>     <em class="jxr_comment">// type + content consistency</em>
+<a class="jxr_linenumber" name="L281" href="#L281">281</a>         <em class="jxr_comment">// rename category D -&gt; E at sub card 2 level</em>
+<a class="jxr_linenumber" name="L282" href="#L282">282</a>         client.resourceRestEndpoint.renameCategoryForCard(subCard2Id, categoryNameD,
+<a class="jxr_linenumber" name="L283" href="#L283">283</a>             categoryNameE);
+<a class="jxr_linenumber" name="L284" href="#L284">284</a> 
+<a class="jxr_linenumber" name="L285" href="#L285">285</a>         resourceRefOfCardContent1 = (ResourceRef) client.resourceRestEndpoint
+<a class="jxr_linenumber" name="L286" href="#L286">286</a>             .getAbstractResource(resourceRefOfCardContent1Id);
+<a class="jxr_linenumber" name="L287" href="#L287">287</a>         Assertions.assertEquals(categoryNameD, resourceRefOfCardContent1.getCategory());
+<a class="jxr_linenumber" name="L288" href="#L288">288</a>         resourceRefOfSubCard2 = (ResourceRef) client.resourceRestEndpoint
+<a class="jxr_linenumber" name="L289" href="#L289">289</a>             .getAbstractResource(resourceRefOfSubCard2Id);
+<a class="jxr_linenumber" name="L290" href="#L290">290</a>         Assertions.assertEquals(categoryNameE, resourceRefOfSubCard2.getCategory());
+<a class="jxr_linenumber" name="L291" href="#L291">291</a>         resourceRefOfSubCardContent2 = (ResourceRef) client.resourceRestEndpoint
+<a class="jxr_linenumber" name="L292" href="#L292">292</a>             .getAbstractResource(resourceRefOfSubCardContent2Id);
+<a class="jxr_linenumber" name="L293" href="#L293">293</a>         Assertions.assertEquals(categoryNameX, resourceRefOfSubCardContent2.getCategory());
+<a class="jxr_linenumber" name="L294" href="#L294">294</a> 
+<a class="jxr_linenumber" name="L295" href="#L295">295</a>         <em class="jxr_comment">// recapitulation at this point</em>
+<a class="jxr_linenumber" name="L296" href="#L296">296</a>         resourceOfCardType1 = (Resource) client.resourceRestEndpoint
+<a class="jxr_linenumber" name="L297" href="#L297">297</a>             .getAbstractResource(resourceOfCardType1Id);
+<a class="jxr_linenumber" name="L298" href="#L298">298</a>         Assertions.assertEquals(categoryNameB, resourceOfCardType1.getCategory());
+<a class="jxr_linenumber" name="L299" href="#L299">299</a>         resourceRefOfCard1 = (ResourceRef) client.resourceRestEndpoint
+<a class="jxr_linenumber" name="L300" href="#L300">300</a>             .getAbstractResource(resourceRefOfCard1Id);
+<a class="jxr_linenumber" name="L301" href="#L301">301</a>         Assertions.assertEquals(categoryNameC, resourceRefOfCard1.getCategory());
+<a class="jxr_linenumber" name="L302" href="#L302">302</a>         resourceRefOfCardContent1 = (ResourceRef) client.resourceRestEndpoint
+<a class="jxr_linenumber" name="L303" href="#L303">303</a>             .getAbstractResource(resourceRefOfCardContent1Id);
+<a class="jxr_linenumber" name="L304" href="#L304">304</a>         Assertions.assertEquals(categoryNameD, resourceRefOfCardContent1.getCategory());
+<a class="jxr_linenumber" name="L305" href="#L305">305</a>         resourceRefOfSubCard2 = (ResourceRef) client.resourceRestEndpoint
+<a class="jxr_linenumber" name="L306" href="#L306">306</a>             .getAbstractResource(resourceRefOfSubCard2Id);
+<a class="jxr_linenumber" name="L307" href="#L307">307</a>         Assertions.assertEquals(categoryNameE, resourceRefOfSubCard2.getCategory());
+<a class="jxr_linenumber" name="L308" href="#L308">308</a>         resourceRefOfSubCardContent2 = (ResourceRef) client.resourceRestEndpoint
+<a class="jxr_linenumber" name="L309" href="#L309">309</a>             .getAbstractResource(resourceRefOfSubCardContent2Id);
+<a class="jxr_linenumber" name="L310" href="#L310">310</a>         Assertions.assertEquals(categoryNameX, resourceRefOfSubCardContent2.getCategory());
+<a class="jxr_linenumber" name="L311" href="#L311">311</a>         persistedResource3 = (Resource) client.resourceRestEndpoint
+<a class="jxr_linenumber" name="L312" href="#L312">312</a>             .getAbstractResource(resource3Id);
+<a class="jxr_linenumber" name="L313" href="#L313">313</a>         Assertions.assertEquals(categoryNameO, persistedResource3.getCategory());
+<a class="jxr_linenumber" name="L314" href="#L314">314</a>         resourceRefOfCardII = (ResourceRef) client.resourceRestEndpoint.getAbstractResource(resourceRefOfCardIIId);
+<a class="jxr_linenumber" name="L315" href="#L315">315</a>         Assertions.assertEquals(categoryNameB, resourceRefOfCardII.getCategory());
+<a class="jxr_linenumber" name="L316" href="#L316">316</a>     }
+<a class="jxr_linenumber" name="L317" href="#L317">317</a> 
+<a class="jxr_linenumber" name="L318" href="#L318">318</a>     <em class="jxr_comment">// TODO check propagation with particular attention with multiple projects / sub card / card +</em>
+<a class="jxr_linenumber" name="L319" href="#L319">319</a>     <em class="jxr_comment">// type + content consistency</em>
+<a class="jxr_linenumber" name="L320" href="#L320">320</a> 
+<a class="jxr_linenumber" name="L321" href="#L321">321</a>     <strong class="jxr_keyword">private</strong> Resource createResourceForAbstractCardType(Long cardTypeId) {
+<a class="jxr_linenumber" name="L322" href="#L322">322</a>         String title = <span class="jxr_string">"All you need to know part #"</span> + ((<strong class="jxr_keyword">int</strong>) (Math.random() * 1000));
+<a class="jxr_linenumber" name="L323" href="#L323">323</a>         String teaser = <span class="jxr_string">"and even more #"</span> + ((<strong class="jxr_keyword">int</strong>) (Math.random() * 1000));
+<a class="jxr_linenumber" name="L324" href="#L324">324</a>         String url = <span class="jxr_string">"http://www.123soleil.chameau/Allyouneed.pdf"</span>;
+<a class="jxr_linenumber" name="L325" href="#L325">325</a> 
+<a class="jxr_linenumber" name="L326" href="#L326">326</a>         TextDataBlock teaserBlock = <strong class="jxr_keyword">new</strong> TextDataBlock();
+<a class="jxr_linenumber" name="L327" href="#L327">327</a>         teaserBlock.setMimeType(<span class="jxr_string">"text/markdown"</span>);
+<a class="jxr_linenumber" name="L328" href="#L328">328</a>         teaserBlock.setTextData(teaser);
+<a class="jxr_linenumber" name="L329" href="#L329">329</a> 
+<a class="jxr_linenumber" name="L330" href="#L330">330</a>         ExternalLink document = <strong class="jxr_keyword">new</strong> ExternalLink();
+<a class="jxr_linenumber" name="L331" href="#L331">331</a>         document.setUrl(url);
+<a class="jxr_linenumber" name="L332" href="#L332">332</a> 
+<a class="jxr_linenumber" name="L333" href="#L333">333</a>         ResourceCreationData resourceCreationData = <strong class="jxr_keyword">new</strong> ResourceCreationData();
+<a class="jxr_linenumber" name="L334" href="#L334">334</a>         resourceCreationData.setTitle(title);
+<a class="jxr_linenumber" name="L335" href="#L335">335</a>         resourceCreationData.setTeaser(teaserBlock);
+<a class="jxr_linenumber" name="L336" href="#L336">336</a>         resourceCreationData.setDocuments(List.of(document));
+<a class="jxr_linenumber" name="L337" href="#L337">337</a>         resourceCreationData.setAbstractCardTypeId(cardTypeId);
 <a class="jxr_linenumber" name="L338" href="#L338">338</a> 
-<a class="jxr_linenumber" name="L339" href="#L339">339</a>     <strong class="jxr_keyword">private</strong> Resource createResourceForAbstractCardType(Long cardTypeId) {
-<a class="jxr_linenumber" name="L340" href="#L340">340</a>         String title = <span class="jxr_string">"All you need to know part #"</span> + ((<strong class="jxr_keyword">int</strong>) (Math.random() * 1000));
-<a class="jxr_linenumber" name="L341" href="#L341">341</a>         String teaser = <span class="jxr_string">"and even more #"</span> + ((<strong class="jxr_keyword">int</strong>) (Math.random() * 1000));
-<a class="jxr_linenumber" name="L342" href="#L342">342</a>         String url = <span class="jxr_string">"http://www.123soleil.chameau/Allyouneed.pdf"</span>;
-<a class="jxr_linenumber" name="L343" href="#L343">343</a> 
-<a class="jxr_linenumber" name="L344" href="#L344">344</a>         TextDataBlock teaserBlock = <strong class="jxr_keyword">new</strong> TextDataBlock();
-<a class="jxr_linenumber" name="L345" href="#L345">345</a>         teaserBlock.setMimeType(<span class="jxr_string">"text/markdown"</span>);
-<a class="jxr_linenumber" name="L346" href="#L346">346</a>         teaserBlock.setTextData(teaser);
-<a class="jxr_linenumber" name="L347" href="#L347">347</a> 
-<a class="jxr_linenumber" name="L348" href="#L348">348</a>         ExternalLink document = <strong class="jxr_keyword">new</strong> ExternalLink();
-<a class="jxr_linenumber" name="L349" href="#L349">349</a>         document.setUrl(url);
-<a class="jxr_linenumber" name="L350" href="#L350">350</a> 
-<a class="jxr_linenumber" name="L351" href="#L351">351</a>         ResourceCreationData resourceCreationData = <strong class="jxr_keyword">new</strong> ResourceCreationData();
-<a class="jxr_linenumber" name="L352" href="#L352">352</a>         resourceCreationData.setTitle(title);
-<a class="jxr_linenumber" name="L353" href="#L353">353</a>         resourceCreationData.setTeaser(teaserBlock);
-<a class="jxr_linenumber" name="L354" href="#L354">354</a>         resourceCreationData.setDocuments(List.of(document));
-<a class="jxr_linenumber" name="L355" href="#L355">355</a>         resourceCreationData.setAbstractCardTypeId(cardTypeId);
-<a class="jxr_linenumber" name="L356" href="#L356">356</a> 
-<a class="jxr_linenumber" name="L357" href="#L357">357</a>         Long persistedResourceId = client.resourceRestEndpoint.createResource(resourceCreationData);
-<a class="jxr_linenumber" name="L358" href="#L358">358</a>         client.resourceRestEndpoint.publishResource(persistedResourceId);
-<a class="jxr_linenumber" name="L359" href="#L359">359</a> 
-<a class="jxr_linenumber" name="L360" href="#L360">360</a>         <strong class="jxr_keyword">return</strong> (Resource) client.resourceRestEndpoint.getAbstractResource(persistedResourceId);
-<a class="jxr_linenumber" name="L361" href="#L361">361</a>     }
-<a class="jxr_linenumber" name="L362" href="#L362">362</a> 
-<a class="jxr_linenumber" name="L363" href="#L363">363</a>     <strong class="jxr_keyword">private</strong> ResourceRef retrieveResourceRefForCard(Long cardId) {
-<a class="jxr_linenumber" name="L364" href="#L364">364</a>         <strong class="jxr_keyword">return</strong> (ResourceRef) client.resourceRestEndpoint.getResourceChainForCard(cardId)
-<a class="jxr_linenumber" name="L365" href="#L365">365</a>             .get(0).get(0);
-<a class="jxr_linenumber" name="L366" href="#L366">366</a>     }
-<a class="jxr_linenumber" name="L367" href="#L367">367</a> 
-<a class="jxr_linenumber" name="L368" href="#L368">368</a>     <strong class="jxr_keyword">private</strong> ResourceRef retrieveResourceRefForCardContent(Long cardContentId) {
-<a class="jxr_linenumber" name="L369" href="#L369">369</a>         <strong class="jxr_keyword">return</strong> (ResourceRef) client.resourceRestEndpoint
-<a class="jxr_linenumber" name="L370" href="#L370">370</a>             .getResourceChainForCardContent(cardContentId).get(0).get(0);
-<a class="jxr_linenumber" name="L371" href="#L371">371</a>     }
-<a class="jxr_linenumber" name="L372" href="#L372">372</a> 
-<a class="jxr_linenumber" name="L373" href="#L373">373</a> }
+<a class="jxr_linenumber" name="L339" href="#L339">339</a>         Long persistedResourceId = client.resourceRestEndpoint.createResource(resourceCreationData);
+<a class="jxr_linenumber" name="L340" href="#L340">340</a>         client.resourceRestEndpoint.publishResource(persistedResourceId);
+<a class="jxr_linenumber" name="L341" href="#L341">341</a> 
+<a class="jxr_linenumber" name="L342" href="#L342">342</a>         <strong class="jxr_keyword">return</strong> (Resource) client.resourceRestEndpoint.getAbstractResource(persistedResourceId);
+<a class="jxr_linenumber" name="L343" href="#L343">343</a>     }
+<a class="jxr_linenumber" name="L344" href="#L344">344</a> 
+<a class="jxr_linenumber" name="L345" href="#L345">345</a>     <strong class="jxr_keyword">private</strong> ResourceRef retrieveResourceRefForCard(Long cardId) {
+<a class="jxr_linenumber" name="L346" href="#L346">346</a>         <strong class="jxr_keyword">return</strong> (ResourceRef) client.resourceRestEndpoint.getResourceChainForCard(cardId)
+<a class="jxr_linenumber" name="L347" href="#L347">347</a>             .get(0).get(0);
+<a class="jxr_linenumber" name="L348" href="#L348">348</a>     }
+<a class="jxr_linenumber" name="L349" href="#L349">349</a> 
+<a class="jxr_linenumber" name="L350" href="#L350">350</a>     <strong class="jxr_keyword">private</strong> ResourceRef retrieveResourceRefForCardContent(Long cardContentId) {
+<a class="jxr_linenumber" name="L351" href="#L351">351</a>         <strong class="jxr_keyword">return</strong> (ResourceRef) client.resourceRestEndpoint
+<a class="jxr_linenumber" name="L352" href="#L352">352</a>             .getResourceChainForCardContent(cardContentId).get(0).get(0);
+<a class="jxr_linenumber" name="L353" href="#L353">353</a>     }
+<a class="jxr_linenumber" name="L354" href="#L354">354</a> 
+<a class="jxr_linenumber" name="L355" href="#L355">355</a> }
 </pre>
 <hr/>
 <div id="footer">Copyright &#169; 2022 <a href="https://www.colab-project.ch">AlbaSim, MEI, HEIG-VD, HES-SO</a>. All rights reserved.</div>

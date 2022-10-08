@@ -56,19 +56,24 @@ import org.slf4j.LoggerFactory;
      * @throws javax.jcr.RepositoryException if something went wring
      */
     public JcrSession getSession(Project project) throws RepositoryException {
-<span class="nc bnc" id="L59" title="All 2 branches missed.">        if (sessions.containsKey(project.getId())) {</span>
-<span class="nc" id="L60">            logger.trace(&quot;GetExisting session: project #{}&quot;, project.getId());</span>
-<span class="nc" id="L61">            return sessions.get(project.getId());</span>
+<span class="nc" id="L59">        Long id = -1l; // hack: id -1 means global data</span>
+<span class="nc bnc" id="L60" title="All 2 branches missed.">        if (project != null){</span>
+<span class="nc" id="L61">            id = project.getId();</span>
+        }
+
+<span class="nc bnc" id="L64" title="All 2 branches missed.">        if (sessions.containsKey(id)) {</span>
+<span class="nc" id="L65">            logger.trace(&quot;GetExisting session: project #{}&quot;, id);</span>
+<span class="nc" id="L66">            return sessions.get(id);</span>
         } else {
-<span class="nc" id="L63">            logger.trace(&quot;Create new session: project #{}&quot;, project.getId());</span>
-<span class="nc" id="L64">            Repository repo = jcrRepository.getRepository();</span>
-<span class="nc" id="L65">            JcrSession session = new JcrSession(repo, project);</span>
-<span class="nc" id="L66">            sessions.put(project.getId(), session);</span>
+<span class="nc" id="L68">            logger.trace(&quot;Create new session: project #{}&quot;, id);</span>
+<span class="nc" id="L69">            Repository repo = jcrRepository.getRepository();</span>
+<span class="nc" id="L70">            JcrSession session = new JcrSession(repo, project);</span>
+<span class="nc" id="L71">            sessions.put(id, session);</span>
 
-<span class="nc" id="L68">            JcrSynchronizer jcrSynchronizer = new JcrSynchronizer(session);</span>
-<span class="nc" id="L69">            jtaSyncRegistry.registerInterposedSynchronization(jcrSynchronizer);</span>
+<span class="nc" id="L73">            JcrSynchronizer jcrSynchronizer = new JcrSynchronizer(session);</span>
+<span class="nc" id="L74">            jtaSyncRegistry.registerInterposedSynchronization(jcrSynchronizer);</span>
 
-<span class="nc" id="L71">            return session;</span>
+<span class="nc" id="L76">            return session;</span>
         }
     }
 }

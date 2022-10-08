@@ -2,6 +2,7 @@ ch.albasim.html.report
 ch.colabproject.colab.api
 ch.colabproject.colab.api.controller
 ch.colabproject.colab.api.controller.card
+ch.colabproject.colab.api.controller.card.grid
 ch.colabproject.colab.api.controller.common
 ch.colabproject.colab.api.controller.config
 ch.colabproject.colab.api.controller.document

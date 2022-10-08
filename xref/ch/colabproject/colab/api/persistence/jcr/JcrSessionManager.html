@@ -64,22 +64,27 @@
 <a class="jxr_linenumber" name="L56" href="#L56">56</a>  <em class="jxr_javadoccomment">     * @throws javax.jcr.RepositoryException if something went wring</em>
 <a class="jxr_linenumber" name="L57" href="#L57">57</a>  <em class="jxr_javadoccomment">     */</em>
 <a class="jxr_linenumber" name="L58" href="#L58">58</a>      <strong class="jxr_keyword">public</strong> <a name="JcrSession" href="../../../../../../ch/colabproject/colab/api/persistence/jcr/JcrSession.html#JcrSession">JcrSession</a> getSession(Project project) <strong class="jxr_keyword">throws</strong> RepositoryException {
-<a class="jxr_linenumber" name="L59" href="#L59">59</a>          <strong class="jxr_keyword">if</strong> (sessions.containsKey(project.getId())) {
-<a class="jxr_linenumber" name="L60" href="#L60">60</a>              logger.trace(<span class="jxr_string">"GetExisting session: project #{}"</span>, project.getId());
-<a class="jxr_linenumber" name="L61" href="#L61">61</a>              <strong class="jxr_keyword">return</strong> sessions.get(project.getId());
-<a class="jxr_linenumber" name="L62" href="#L62">62</a>          } <strong class="jxr_keyword">else</strong> {
-<a class="jxr_linenumber" name="L63" href="#L63">63</a>              logger.trace(<span class="jxr_string">"Create new session: project #{}"</span>, project.getId());
-<a class="jxr_linenumber" name="L64" href="#L64">64</a>              Repository repo = jcrRepository.getRepository();
-<a class="jxr_linenumber" name="L65" href="#L65">65</a>              <a name="JcrSession" href="../../../../../../ch/colabproject/colab/api/persistence/jcr/JcrSession.html#JcrSession">JcrSession</a> session = <strong class="jxr_keyword">new</strong> <a name="JcrSession" href="../../../../../../ch/colabproject/colab/api/persistence/jcr/JcrSession.html#JcrSession">JcrSession</a>(repo, project);
-<a class="jxr_linenumber" name="L66" href="#L66">66</a>              sessions.put(project.getId(), session);
-<a class="jxr_linenumber" name="L67" href="#L67">67</a>  
-<a class="jxr_linenumber" name="L68" href="#L68">68</a>              <a name="JcrSynchronizer" href="../../../../../../ch/colabproject/colab/api/persistence/jcr/JcrSynchronizer.html#JcrSynchronizer">JcrSynchronizer</a> jcrSynchronizer = <strong class="jxr_keyword">new</strong> <a name="JcrSynchronizer" href="../../../../../../ch/colabproject/colab/api/persistence/jcr/JcrSynchronizer.html#JcrSynchronizer">JcrSynchronizer</a>(session);
-<a class="jxr_linenumber" name="L69" href="#L69">69</a>              jtaSyncRegistry.registerInterposedSynchronization(jcrSynchronizer);
-<a class="jxr_linenumber" name="L70" href="#L70">70</a>  
-<a class="jxr_linenumber" name="L71" href="#L71">71</a>              <strong class="jxr_keyword">return</strong> session;
-<a class="jxr_linenumber" name="L72" href="#L72">72</a>          }
-<a class="jxr_linenumber" name="L73" href="#L73">73</a>      }
-<a class="jxr_linenumber" name="L74" href="#L74">74</a>  }
+<a class="jxr_linenumber" name="L59" href="#L59">59</a>          Long id = -1l; <em class="jxr_comment">// hack: id -1 means global data</em>
+<a class="jxr_linenumber" name="L60" href="#L60">60</a>          <strong class="jxr_keyword">if</strong> (project != <strong class="jxr_keyword">null</strong>){
+<a class="jxr_linenumber" name="L61" href="#L61">61</a>              id = project.getId();
+<a class="jxr_linenumber" name="L62" href="#L62">62</a>          }
+<a class="jxr_linenumber" name="L63" href="#L63">63</a>  
+<a class="jxr_linenumber" name="L64" href="#L64">64</a>          <strong class="jxr_keyword">if</strong> (sessions.containsKey(id)) {
+<a class="jxr_linenumber" name="L65" href="#L65">65</a>              logger.trace(<span class="jxr_string">"GetExisting session: project #{}"</span>, id);
+<a class="jxr_linenumber" name="L66" href="#L66">66</a>              <strong class="jxr_keyword">return</strong> sessions.get(id);
+<a class="jxr_linenumber" name="L67" href="#L67">67</a>          } <strong class="jxr_keyword">else</strong> {
+<a class="jxr_linenumber" name="L68" href="#L68">68</a>              logger.trace(<span class="jxr_string">"Create new session: project #{}"</span>, id);
+<a class="jxr_linenumber" name="L69" href="#L69">69</a>              Repository repo = jcrRepository.getRepository();
+<a class="jxr_linenumber" name="L70" href="#L70">70</a>              <a name="JcrSession" href="../../../../../../ch/colabproject/colab/api/persistence/jcr/JcrSession.html#JcrSession">JcrSession</a> session = <strong class="jxr_keyword">new</strong> <a name="JcrSession" href="../../../../../../ch/colabproject/colab/api/persistence/jcr/JcrSession.html#JcrSession">JcrSession</a>(repo, project);
+<a class="jxr_linenumber" name="L71" href="#L71">71</a>              sessions.put(id, session);
+<a class="jxr_linenumber" name="L72" href="#L72">72</a>  
+<a class="jxr_linenumber" name="L73" href="#L73">73</a>              <a name="JcrSynchronizer" href="../../../../../../ch/colabproject/colab/api/persistence/jcr/JcrSynchronizer.html#JcrSynchronizer">JcrSynchronizer</a> jcrSynchronizer = <strong class="jxr_keyword">new</strong> <a name="JcrSynchronizer" href="../../../../../../ch/colabproject/colab/api/persistence/jcr/JcrSynchronizer.html#JcrSynchronizer">JcrSynchronizer</a>(session);
+<a class="jxr_linenumber" name="L74" href="#L74">74</a>              jtaSyncRegistry.registerInterposedSynchronization(jcrSynchronizer);
+<a class="jxr_linenumber" name="L75" href="#L75">75</a>  
+<a class="jxr_linenumber" name="L76" href="#L76">76</a>              <strong class="jxr_keyword">return</strong> session;
+<a class="jxr_linenumber" name="L77" href="#L77">77</a>          }
+<a class="jxr_linenumber" name="L78" href="#L78">78</a>      }
+<a class="jxr_linenumber" name="L79" href="#L79">79</a>  }
 </pre>
 <hr/>
 <div id="footer">Copyright &#169; 2022 <a href="https://www.colab-project.ch">AlbaSim, MEI, HEIG-VD, HES-SO</a>. All rights reserved.</div>

@@ -16,9 +16,11 @@ import javax.validation.constraints.NotNull;
  * Channel overview.
  *
  * @author maxence
+ * @deprecated not used any longer
  */
 @ExtractJavaDoc
-<span class="nc" id="L21">public class ChannelOverview implements WithJsonDiscriminator {</span>
+@Deprecated
+<span class="nc" id="L23">public class ChannelOverview implements WithJsonDiscriminator {</span>
 
     private static final long serialVersionUID = 1L;
 
@@ -40,7 +42,7 @@ import javax.validation.constraints.NotNull;
      * @return the value of count
      */
     public Integer getCount() {
-<span class="nc" id="L43">        return count;</span>
+<span class="nc" id="L45">        return count;</span>
     }
 
     /**
@@ -49,8 +51,8 @@ import javax.validation.constraints.NotNull;
      * @param count new value of count
      */
     public void setCount(Integer count) {
-<span class="nc" id="L52">        this.count = count;</span>
-<span class="nc" id="L53">    }</span>
+<span class="nc" id="L54">        this.count = count;</span>
+<span class="nc" id="L55">    }</span>
 
     /**
      * Get the value of channel
@@ -58,7 +60,7 @@ import javax.validation.constraints.NotNull;
      * @return the value of channel
      */
     public WebsocketChannel getChannel() {
-<span class="nc" id="L61">        return channel;</span>
+<span class="nc" id="L63">        return channel;</span>
     }
 
     /**
@@ -67,40 +69,40 @@ import javax.validation.constraints.NotNull;
      * @param channel new value of channel
      */
     public void setChannel(WebsocketChannel channel) {
-<span class="nc" id="L70">        this.channel = channel;</span>
-<span class="nc" id="L71">    }</span>
+<span class="nc" id="L72">        this.channel = channel;</span>
+<span class="nc" id="L73">    }</span>
 
     @Override
     public int hashCode() {
-<span class="nc" id="L75">        int hash = 5;</span>
-<span class="nc" id="L76">        hash = 37 * hash + Objects.hashCode(this.channel);</span>
-<span class="nc" id="L77">        return hash;</span>
+<span class="nc" id="L77">        int hash = 5;</span>
+<span class="nc" id="L78">        hash = 37 * hash + Objects.hashCode(this.channel);</span>
+<span class="nc" id="L79">        return hash;</span>
     }
 
     @Override
     public boolean equals(Object obj) {
-<span class="nc bnc" id="L82" title="All 2 branches missed.">        if (this == obj) {</span>
-<span class="nc" id="L83">            return true;</span>
+<span class="nc bnc" id="L84" title="All 2 branches missed.">        if (this == obj) {</span>
+<span class="nc" id="L85">            return true;</span>
         }
-<span class="nc bnc" id="L85" title="All 2 branches missed.">        if (obj == null) {</span>
-<span class="nc" id="L86">            return false;</span>
+<span class="nc bnc" id="L87" title="All 2 branches missed.">        if (obj == null) {</span>
+<span class="nc" id="L88">            return false;</span>
         }
-<span class="nc bnc" id="L88" title="All 2 branches missed.">        if (getClass() != obj.getClass()) {</span>
-<span class="nc" id="L89">            return false;</span>
+<span class="nc bnc" id="L90" title="All 2 branches missed.">        if (getClass() != obj.getClass()) {</span>
+<span class="nc" id="L91">            return false;</span>
         }
-<span class="nc" id="L91">        final ChannelOverview other = (ChannelOverview) obj;</span>
-<span class="nc bnc" id="L92" title="All 2 branches missed.">        if (!Objects.equals(this.channel, other.channel)) {</span>
-<span class="nc" id="L93">            return false;</span>
+<span class="nc" id="L93">        final ChannelOverview other = (ChannelOverview) obj;</span>
+<span class="nc bnc" id="L94" title="All 2 branches missed.">        if (!Objects.equals(this.channel, other.channel)) {</span>
+<span class="nc" id="L95">            return false;</span>
         }
-<span class="nc bnc" id="L95" title="All 2 branches missed.">        if (!Objects.equals(this.count, other.count)) {</span>
-<span class="nc" id="L96">            return false;</span>
+<span class="nc bnc" id="L97" title="All 2 branches missed.">        if (!Objects.equals(this.count, other.count)) {</span>
+<span class="nc" id="L98">            return false;</span>
         }
-<span class="nc" id="L98">        return true;</span>
+<span class="nc" id="L100">        return true;</span>
     }
 
     @Override
     public String toString() {
-<span class="nc" id="L103">        return &quot;ChannelOverview{&quot; + &quot;channel=&quot; + channel + &quot;, count=&quot; + count + '}';</span>
+<span class="nc" id="L105">        return &quot;ChannelOverview{&quot; + &quot;channel=&quot; + channel + &quot;, count=&quot; + count + '}';</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

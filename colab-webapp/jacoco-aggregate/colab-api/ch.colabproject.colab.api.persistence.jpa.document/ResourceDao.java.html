@@ -11,6 +11,7 @@ import ch.colabproject.colab.api.model.document.AbstractResource;
 import ch.colabproject.colab.api.model.document.Resource;
 import ch.colabproject.colab.api.model.document.ResourceRef;
 import java.util.List;
+import java.util.stream.Collectors;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -26,10 +27,10 @@ import org.slf4j.LoggerFactory;
  */
 @Stateless
 @LocalBean
-<span class="nc" id="L29">public class ResourceDao {</span>
+<span class="nc" id="L30">public class ResourceDao {</span>
 
     /** logger */
-<span class="nc" id="L32">    private static final Logger logger = LoggerFactory.getLogger(ResourceDao.class);</span>
+<span class="nc" id="L33">    private static final Logger logger = LoggerFactory.getLogger(ResourceDao.class);</span>
 
     /**
      * Access to the persistence unit
@@ -45,29 +46,49 @@ import org.slf4j.LoggerFactory;
      */
     public AbstractResource findResourceOrRef(Long id) {
         try {
-<span class="nc" id="L48">            logger.debug(&quot;find abstract resource #{}&quot;, id);</span>
-<span class="nc" id="L49">            return em.find(AbstractResource.class, id);</span>
-<span class="nc" id="L50">        } catch (IllegalArgumentException ex) {</span>
-<span class="nc" id="L51">            return null;</span>
+<span class="nc" id="L49">            logger.debug(&quot;find abstract resource #{}&quot;, id);</span>
+<span class="nc" id="L50">            return em.find(AbstractResource.class, id);</span>
+<span class="nc" id="L51">        } catch (IllegalArgumentException ex) {</span>
+<span class="nc" id="L52">            return null;</span>
         }
     }
 
     /**
-     * Retrieve the card type references that have the given target
+     * Retrieve the resources references that have the given target
      *
      * @param target the target
      *
      * @return the matching references
      */
     public List&lt;ResourceRef&gt; findDirectReferences(AbstractResource target) {
-<span class="nc" id="L63">        logger.debug(&quot;find the direct references of the target {}&quot;, target);</span>
+<span class="nc" id="L64">        logger.debug(&quot;find the direct references of the target {}&quot;, target);</span>
 
-<span class="nc" id="L65">        TypedQuery&lt;ResourceRef&gt; query = em.createNamedQuery(&quot;ResourceRef.findDirectReferences&quot;,</span>
+<span class="nc" id="L66">        TypedQuery&lt;ResourceRef&gt; query = em.createNamedQuery(&quot;ResourceRef.findDirectReferences&quot;,</span>
             ResourceRef.class);
 
-<span class="nc" id="L68">        query.setParameter(&quot;targetId&quot;, target.getId());</span>
+<span class="nc" id="L69">        query.setParameter(&quot;targetId&quot;, target.getId());</span>
 
-<span class="nc" id="L70">        return query.getResultList();</span>
+<span class="nc" id="L71">        return query.getResultList();</span>
+    }
+
+    /**
+     * Retrieve all resources which transitively references the given target
+     *
+     * @param target the target
+     *
+     * @return the matching references
+     */
+    public List&lt;ResourceRef&gt; findAllReferences(AbstractResource target) {
+<span class="nc" id="L82">        logger.debug(&quot;find all references to the target {}&quot;, target);</span>
+        // first, fetch direct references
+<span class="nc" id="L84">        List&lt;ResourceRef&gt; list = findDirectReferences(target);</span>
+
+        // and recurse
+<span class="nc" id="L87">        list.addAll(list.stream().flatMap(res -&gt; {</span>
+<span class="nc" id="L88">            return findAllReferences(res).stream();</span>
+<span class="nc" id="L89">        }).collect(Collectors.toList()));</span>
+
+<span class="nc" id="L91">        return list;</span>
     }
 
     /**
@@ -77,10 +98,10 @@ import org.slf4j.LoggerFactory;
      */
     private Resource findResource(Long id) {
         try {
-<span class="nc" id="L80">            logger.debug(&quot;find resource #{}&quot;, id);</span>
-<span class="nc" id="L81">            return em.find(Resource.class, id);</span>
-<span class="nc" id="L82">        } catch (IllegalArgumentException ex) {</span>
-<span class="nc" id="L83">            return null;</span>
+<span class="nc" id="L101">            logger.debug(&quot;find resource #{}&quot;, id);</span>
+<span class="nc" id="L102">            return em.find(Resource.class, id);</span>
+<span class="nc" id="L103">        } catch (IllegalArgumentException ex) {</span>
+<span class="nc" id="L104">            return null;</span>
         }
     }
 
@@ -92,10 +113,10 @@ import org.slf4j.LoggerFactory;
      */
     private ResourceRef findResourceRef(Long id) {
         try {
-<span class="nc" id="L95">            logger.debug(&quot;find resource reference #{}&quot;, id);</span>
-<span class="nc" id="L96">            return em.find(ResourceRef.class, id);</span>
-<span class="nc" id="L97">        } catch (IllegalArgumentException ex) {</span>
-<span class="nc" id="L98">            return null;</span>
+<span class="nc" id="L116">            logger.debug(&quot;find resource reference #{}&quot;, id);</span>
+<span class="nc" id="L117">            return em.find(ResourceRef.class, id);</span>
+<span class="nc" id="L118">        } catch (IllegalArgumentException ex) {</span>
+<span class="nc" id="L119">            return null;</span>
         }
     }
 
@@ -109,10 +130,10 @@ import org.slf4j.LoggerFactory;
      * @throws ColabMergeException if updating the resource failed
      */
     public Resource updateResource(Resource resource) throws ColabMergeException {
-<span class="nc" id="L112">        logger.debug(&quot;update resource {}&quot;, resource);</span>
-<span class="nc" id="L113">        Resource mResource = this.findResource(resource.getId());</span>
-<span class="nc" id="L114">        mResource.merge(resource);</span>
-<span class="nc" id="L115">        return mResource;</span>
+<span class="nc" id="L133">        logger.debug(&quot;update resource {}&quot;, resource);</span>
+<span class="nc" id="L134">        Resource mResource = this.findResource(resource.getId());</span>
+<span class="nc" id="L135">        mResource.merge(resource);</span>
+<span class="nc" id="L136">        return mResource;</span>
     }
 
     /**
@@ -125,10 +146,10 @@ import org.slf4j.LoggerFactory;
      * @throws ColabMergeException if updating the resource reference failed
      */
     public ResourceRef updateResourceRef(ResourceRef resourceRef) throws ColabMergeException {
-<span class="nc" id="L128">        logger.debug(&quot;update resource reference {}&quot;, resourceRef);</span>
-<span class="nc" id="L129">        ResourceRef mResourceRef = this.findResourceRef(resourceRef.getId());</span>
-<span class="nc" id="L130">        mResourceRef.merge(resourceRef);</span>
-<span class="nc" id="L131">        return mResourceRef;</span>
+<span class="nc" id="L149">        logger.debug(&quot;update resource reference {}&quot;, resourceRef);</span>
+<span class="nc" id="L150">        ResourceRef mResourceRef = this.findResourceRef(resourceRef.getId());</span>
+<span class="nc" id="L151">        mResourceRef.merge(resourceRef);</span>
+<span class="nc" id="L152">        return mResourceRef;</span>
     }
 
     /**
@@ -139,9 +160,9 @@ import org.slf4j.LoggerFactory;
      * @return the new persisted resource
      */
     public Resource persistResource(Resource resource) {
-<span class="nc" id="L142">        logger.debug(&quot;persist resource {}&quot;, resource);</span>
-<span class="nc" id="L143">        em.persist(resource);</span>
-<span class="nc" id="L144">        return resource;</span>
+<span class="nc" id="L163">        logger.debug(&quot;persist resource {}&quot;, resource);</span>
+<span class="nc" id="L164">        em.persist(resource);</span>
+<span class="nc" id="L165">        return resource;</span>
     }
 
     // Note : there is no persistResourceRef because they are automatically generated
@@ -155,11 +176,11 @@ import org.slf4j.LoggerFactory;
      * @return just deleted resource / resource reference
      */
     public AbstractResource deleteResourceOrRef(Long id) {
-<span class="nc" id="L158">        logger.debug(&quot;delete abstract resource reference #{}&quot;, id);</span>
+<span class="nc" id="L179">        logger.debug(&quot;delete abstract resource reference #{}&quot;, id);</span>
         // TODO: move to recycle bin first
-<span class="nc" id="L160">        AbstractResource resourceRef = this.findResourceOrRef(id);</span>
-<span class="nc" id="L161">        em.remove(resourceRef);</span>
-<span class="nc" id="L162">        return resourceRef;</span>
+<span class="nc" id="L181">        AbstractResource resourceRef = this.findResourceOrRef(id);</span>
+<span class="nc" id="L182">        em.remove(resourceRef);</span>
+<span class="nc" id="L183">        return resourceRef;</span>
     }
 
 }

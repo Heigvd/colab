@@ -6,6 +6,7 @@
  */
 package ch.colabproject.colab.api.ws.channel.model;
 
+import ch.colabproject.colab.api.Helper;
 import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.generator.model.annotations.ExtractJavaDoc;
 import java.util.Objects;
@@ -26,7 +27,7 @@ import java.util.Objects;
  * @author maxence
  */
 @ExtractJavaDoc
-<span class="nc" id="L29">public class ProjectContentChannel implements WebsocketChannel {</span>
+<span class="nc" id="L30">public class ProjectContentChannel implements WebsocketChannel {</span>
 
     private static final long serialVersionUID = 1L;
 
@@ -41,7 +42,7 @@ import java.util.Objects;
      * @return the projectId
      */
     public Long getProjectId() {
-<span class="nc" id="L44">        return projectId;</span>
+<span class="nc" id="L45">        return projectId;</span>
     }
 
     /**
@@ -50,14 +51,19 @@ import java.util.Objects;
      * @param projectId new projectId
      */
     public void setProjectId(Long projectId) {
-<span class="nc" id="L53">        this.projectId = projectId;</span>
-<span class="nc" id="L54">    }</span>
+<span class="nc" id="L54">        this.projectId = projectId;</span>
+<span class="nc" id="L55">    }</span>
+
+    @Override
+    public String getUrn() {
+<span class="nc" id="L59">        return Helper.getColabBaseUrn(this) + &quot;/&quot; + projectId;</span>
+    }
 
     @Override
     public int hashCode() {
-<span class="nc" id="L58">        int hash = 7;</span>
-<span class="nc" id="L59">        hash = 53 * hash + Objects.hashCode(this.projectId);</span>
-<span class="nc" id="L60">        return hash;</span>
+<span class="nc" id="L64">        int hash = 7;</span>
+<span class="nc" id="L65">        hash = 53 * hash + Objects.hashCode(this.projectId);</span>
+<span class="nc" id="L66">        return hash;</span>
     }
 
     /**
@@ -69,23 +75,23 @@ import java.util.Objects;
      */
     @Override
     public boolean equals(Object obj) {
-<span class="nc bnc" id="L72" title="All 2 branches missed.">        if (this == obj) {</span>
-<span class="nc" id="L73">            return true;</span>
+<span class="nc bnc" id="L78" title="All 2 branches missed.">        if (this == obj) {</span>
+<span class="nc" id="L79">            return true;</span>
         }
-<span class="nc bnc" id="L75" title="All 2 branches missed.">        if (obj == null) {</span>
-<span class="nc" id="L76">            return false;</span>
+<span class="nc bnc" id="L81" title="All 2 branches missed.">        if (obj == null) {</span>
+<span class="nc" id="L82">            return false;</span>
         }
-<span class="nc bnc" id="L78" title="All 2 branches missed.">        if (getClass() != obj.getClass()) {</span>
-<span class="nc" id="L79">            return false;</span>
+<span class="nc bnc" id="L84" title="All 2 branches missed.">        if (getClass() != obj.getClass()) {</span>
+<span class="nc" id="L85">            return false;</span>
         }
-<span class="nc" id="L81">        final ProjectContentChannel other = (ProjectContentChannel) obj;</span>
+<span class="nc" id="L87">        final ProjectContentChannel other = (ProjectContentChannel) obj;</span>
 
-<span class="nc" id="L83">        return Objects.equals(this.projectId, other.projectId);</span>
+<span class="nc" id="L89">        return Objects.equals(this.projectId, other.projectId);</span>
     }
 
     @Override
     public String toString() {
-<span class="nc" id="L88">        return &quot;ProjectContentChannel{&quot; + &quot;projectId=&quot; + this.projectId + '}';</span>
+<span class="nc" id="L94">        return &quot;ProjectContentChannel{&quot; + &quot;projectId=&quot; + this.projectId + '}';</span>
     }
 
     /**
@@ -96,7 +102,7 @@ import java.util.Objects;
      * @return the project very own channel
      */
     public static ProjectContentChannel build(Project project) {
-<span class="nc" id="L99">        return build(project.getId());</span>
+<span class="nc" id="L105">        return build(project.getId());</span>
     }
 
     /**
@@ -107,9 +113,9 @@ import java.util.Objects;
      * @return the project very own channel
      */
     public static ProjectContentChannel build(Long projectId) {
-<span class="nc" id="L110">        ProjectContentChannel channel = new ProjectContentChannel();</span>
-<span class="nc" id="L111">        channel.setProjectId(projectId);</span>
-<span class="nc" id="L112">        return channel;</span>
+<span class="nc" id="L116">        ProjectContentChannel channel = new ProjectContentChannel();</span>
+<span class="nc" id="L117">        channel.setProjectId(projectId);</span>
+<span class="nc" id="L118">        return channel;</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

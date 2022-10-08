@@ -6,6 +6,7 @@
  */
 package ch.colabproject.colab.api.ws.channel.model;
 
+import ch.colabproject.colab.api.Helper;
 import ch.colabproject.colab.generator.model.annotations.ExtractJavaDoc;
 import java.util.Objects;
 
@@ -22,7 +23,7 @@ import java.util.Objects;
  * @author maxence
  */
 @ExtractJavaDoc
-<span class="nc" id="L25">public class BlockChannel implements WebsocketChannel {</span>
+<span class="nc" id="L26">public class BlockChannel implements WebsocketChannel {</span>
 
     private static final long serialVersionUID = 1L;
 
@@ -37,7 +38,7 @@ import java.util.Objects;
      * @return the blockId
      */
     public Long getBlockId() {
-<span class="nc" id="L40">        return blockId;</span>
+<span class="nc" id="L41">        return blockId;</span>
     }
 
     /**
@@ -46,14 +47,19 @@ import java.util.Objects;
      * @param blockId new blockId
      */
     public void setBlockId(Long blockId) {
-<span class="nc" id="L49">        this.blockId = blockId;</span>
-<span class="nc" id="L50">    }</span>
+<span class="nc" id="L50">        this.blockId = blockId;</span>
+<span class="nc" id="L51">    }</span>
+
+    @Override
+    public String getUrn() {
+<span class="nc" id="L55">        return Helper.getColabBaseUrn(this) + &quot;/&quot; + this.blockId;</span>
+    }
 
     @Override
     public int hashCode() {
-<span class="nc" id="L54">        int hash = 11;</span>
-<span class="nc" id="L55">        hash = 57 * hash + Objects.hashCode(this.blockId);</span>
-<span class="nc" id="L56">        return hash;</span>
+<span class="nc" id="L60">        int hash = 11;</span>
+<span class="nc" id="L61">        hash = 57 * hash + Objects.hashCode(this.blockId);</span>
+<span class="nc" id="L62">        return hash;</span>
     }
 
     /**
@@ -65,23 +71,23 @@ import java.util.Objects;
      */
     @Override
     public boolean equals(Object obj) {
-<span class="nc bnc" id="L68" title="All 2 branches missed.">        if (this == obj) {</span>
-<span class="nc" id="L69">            return true;</span>
+<span class="nc bnc" id="L74" title="All 2 branches missed.">        if (this == obj) {</span>
+<span class="nc" id="L75">            return true;</span>
         }
-<span class="nc bnc" id="L71" title="All 2 branches missed.">        if (obj == null) {</span>
-<span class="nc" id="L72">            return false;</span>
+<span class="nc bnc" id="L77" title="All 2 branches missed.">        if (obj == null) {</span>
+<span class="nc" id="L78">            return false;</span>
         }
-<span class="nc bnc" id="L74" title="All 2 branches missed.">        if (getClass() != obj.getClass()) {</span>
-<span class="nc" id="L75">            return false;</span>
+<span class="nc bnc" id="L80" title="All 2 branches missed.">        if (getClass() != obj.getClass()) {</span>
+<span class="nc" id="L81">            return false;</span>
         }
-<span class="nc" id="L77">        final BlockChannel other = (BlockChannel) obj;</span>
+<span class="nc" id="L83">        final BlockChannel other = (BlockChannel) obj;</span>
 
-<span class="nc" id="L79">        return Objects.equals(this.blockId, other.blockId);</span>
+<span class="nc" id="L85">        return Objects.equals(this.blockId, other.blockId);</span>
     }
 
     @Override
     public String toString() {
-<span class="nc" id="L84">        return &quot;BlockChannel{&quot; + &quot;blockId=&quot; + this.blockId + '}';</span>
+<span class="nc" id="L90">        return &quot;BlockChannel{&quot; + &quot;blockId=&quot; + this.blockId + '}';</span>
     }
 
     /**
@@ -92,9 +98,9 @@ import java.util.Objects;
      * @return the block very own channel
      */
     public static BlockChannel build(Long blockId) {
-<span class="nc" id="L95">        BlockChannel channel = new BlockChannel();</span>
-<span class="nc" id="L96">        channel.setBlockId(blockId);</span>
-<span class="nc" id="L97">        return channel;</span>
+<span class="nc" id="L101">        BlockChannel channel = new BlockChannel();</span>
+<span class="nc" id="L102">        channel.setBlockId(blockId);</span>
+<span class="nc" id="L103">        return channel;</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

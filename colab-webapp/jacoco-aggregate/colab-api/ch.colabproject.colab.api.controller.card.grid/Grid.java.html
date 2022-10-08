@@ -1,0 +1,363 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>Grid.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">colab-webapp</a> &gt; <a href="../index.html" class="el_bundle">colab-api</a> &gt; <a href="index.source.html" class="el_package">ch.colabproject.colab.api.controller.card.grid</a> &gt; <span class="el_source">Grid.java</span></div><h1>Grid.java</h1><pre class="source lang-java linenums">/*
+ * The coLAB project
+ * Copyright (C) 2022 AlbaSim, MEI, HEIG-VD, HES-SO
+ *
+ * Licensed under the MIT License
+ */
+package ch.colabproject.colab.api.controller.card.grid;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+/**
+ * Utility class to help resolving cell positioning
+ *
+ * @author maxence
+ */
+<span class="nc" id="L22">public final class Grid {</span>
+
+    /** to store cells positions */
+<span class="nc" id="L25">    private Map&lt;Integer, Map&lt;Integer, GridCellWithId&gt;&gt; matrix = new HashMap&lt;&gt;();</span>
+
+    /** List of managed cells */
+<span class="nc" id="L28">    private Set&lt;GridCellWithId&gt; cells = new HashSet&lt;&gt;();</span>
+
+    /** left of the grid */
+<span class="nc" id="L31">    private Integer xMin = null;</span>
+    /** top of the grid */
+<span class="nc" id="L33">    private Integer yMin = null;</span>
+
+    /** right of the grid */
+<span class="nc" id="L36">    private Integer xMax = null;</span>
+    /** bottom of the grid */
+<span class="nc" id="L38">    private Integer yMax = null;</span>
+
+    /**
+     * Is the cell position free?
+     *
+     * @param x the x coordinate
+     * @param y the y coordinate
+     *
+     * @return true if the targeted cell is free
+     */
+    public boolean isFree(Integer x, Integer y) {
+<span class="nc" id="L49">        var column = matrix.get(x);</span>
+<span class="nc bnc" id="L50" title="All 2 branches missed.">        if (column != null) {</span>
+<span class="nc bnc" id="L51" title="All 2 branches missed.">            return column.get(y) == null;</span>
+        }
+<span class="nc" id="L53">        return true;</span>
+    }
+
+    /**
+     * Get the cell at the position if any
+     *
+     * @param x the x coordinate
+     * @param y the y coordinate
+     *
+     * @return the cell ou null
+     */
+    public GridCellWithId getCellAt(Integer x, Integer y) {
+<span class="nc" id="L65">        var column = matrix.get(x);</span>
+<span class="nc bnc" id="L66" title="All 2 branches missed.">        if (column != null) {</span>
+<span class="nc" id="L67">            GridCellWithId cell = column.get(y);</span>
+<span class="nc bnc" id="L68" title="All 2 branches missed.">            if (cell != null) {</span>
+<span class="nc" id="L69">                return cell;</span>
+            }
+        }
+<span class="nc" id="L72">        return null;</span>
+    }
+
+    /**
+     * Make sure cell has a size and a position
+     *
+     * @param cell the cell to initialize
+     */
+    private void initCell(GridCellWithId cell) {
+<span class="nc bnc" id="L81" title="All 2 branches missed.">        if (cell.getX() == null) {</span>
+<span class="nc" id="L82">            cell.setX(1);</span>
+        }
+
+<span class="nc bnc" id="L85" title="All 2 branches missed.">        if (cell.getY() == null) {</span>
+<span class="nc" id="L86">            cell.setY(1);</span>
+        }
+        // make sure cell has a positive size
+<span class="nc bnc" id="L89" title="All 4 branches missed.">        if (cell.getWidth() == null || cell.getWidth() &lt; 1) {</span>
+<span class="nc" id="L90">            cell.setWidth(1);</span>
+        }
+<span class="nc bnc" id="L92" title="All 4 branches missed.">        if (cell.getHeight() == null || cell.getHeight() &lt; 1) {</span>
+<span class="nc" id="L93">            cell.setHeight(1);</span>
+        }
+<span class="nc" id="L95">    }</span>
+
+    /**
+     * Is the cell position free?
+     *
+     * @param cell the cell to check
+     *
+     * @return true if the targeted cell is free
+     */
+    public boolean isFree(GridCellWithId cell) {
+<span class="nc" id="L105">        initCell(cell);</span>
+<span class="nc" id="L106">        int cxMin = cell.getX();</span>
+<span class="nc" id="L107">        int cxMax = cxMin + cell.getWidth() - 1;</span>
+
+<span class="nc" id="L109">        int cyMin = cell.getY();</span>
+<span class="nc" id="L110">        int cyMax = cyMin + cell.getHeight() - 1;</span>
+
+<span class="nc bnc" id="L112" title="All 2 branches missed.">        for (int x = cxMin; x &lt;= cxMax; x++) {</span>
+<span class="nc" id="L113">            var column = matrix.get(x);</span>
+<span class="nc bnc" id="L114" title="All 2 branches missed.">            if (column != null) {</span>
+<span class="nc bnc" id="L115" title="All 2 branches missed.">                for (int y = cyMin; y &lt;= cyMax; y++) {</span>
+<span class="nc" id="L116">                    var c = column.get(y);</span>
+<span class="nc bnc" id="L117" title="All 4 branches missed.">                    if (c != null &amp;&amp; c != cell) {</span>
+<span class="nc" id="L118">                        return false;</span>
+                    }
+                }
+            }
+        }
+<span class="nc" id="L123">        return true;</span>
+    }
+
+    /**
+     * Make cell location within the matrix
+     *
+     * @param cell the cell to process
+     */
+    private void markCells(GridCellWithId cell) {
+<span class="nc" id="L132">        initCell(cell);</span>
+<span class="nc" id="L133">        cells.add(cell);</span>
+
+<span class="nc" id="L135">        int cxMin = cell.getX();</span>
+<span class="nc" id="L136">        int cxMax = cxMin + cell.getWidth() - 1;</span>
+
+<span class="nc" id="L138">        int cyMin = cell.getY();</span>
+<span class="nc" id="L139">        int cyMax = cyMin + cell.getHeight() - 1;</span>
+
+<span class="nc bnc" id="L141" title="All 2 branches missed.">        if (this.xMin == null) {</span>
+<span class="nc" id="L142">            this.xMin = cxMin;</span>
+        } else {
+<span class="nc" id="L144">            this.xMin = Math.min(this.xMin, cxMin);</span>
+        }
+
+<span class="nc bnc" id="L147" title="All 2 branches missed.">        if (this.xMax == null) {</span>
+<span class="nc" id="L148">            this.xMax = cxMax;</span>
+        } else {
+<span class="nc" id="L150">            this.xMax = Math.max(this.xMax, cxMax);</span>
+        }
+
+<span class="nc bnc" id="L153" title="All 2 branches missed.">        if (this.yMin == null) {</span>
+<span class="nc" id="L154">            this.yMin = cyMin;</span>
+        } else {
+<span class="nc" id="L156">            this.yMin = Math.min(this.yMin, cyMin);</span>
+        }
+
+<span class="nc bnc" id="L159" title="All 2 branches missed.">        if (this.yMax == null) {</span>
+<span class="nc" id="L160">            this.yMax = cyMax;</span>
+        } else {
+<span class="nc" id="L162">            this.yMax = Math.max(this.yMax, cyMax);</span>
+        }
+
+<span class="nc bnc" id="L165" title="All 2 branches missed.">        for (int x = cxMin; x &lt;= cxMax; x++) {</span>
+<span class="nc" id="L166">            var column = matrix.get(x);</span>
+
+<span class="nc bnc" id="L168" title="All 2 branches missed.">            if (column == null) {</span>
+<span class="nc" id="L169">                column = new HashMap&lt;&gt;();</span>
+<span class="nc" id="L170">                matrix.put(x, column);</span>
+            }
+
+<span class="nc bnc" id="L173" title="All 2 branches missed.">            for (int y = cyMin; y &lt;= cyMax; y++) {</span>
+<span class="nc" id="L174">                column.put(y, cell);</span>
+            }
+        }
+<span class="nc" id="L177">    }</span>
+
+    /**
+     * Last position, reading the from left to right, top to bottom
+     *
+     * @return the position of the last used coordinate or null if the grid is empty
+     */
+    private Coord findLastUsedPosition() {
+<span class="nc bnc" id="L185" title="All 2 branches missed.">        for (int y = yMax; y &gt;= yMin; y--) {</span>
+<span class="nc bnc" id="L186" title="All 2 branches missed.">            for (int x = this.xMax; x &gt;= xMin; x--) {</span>
+<span class="nc" id="L187">                var column = matrix.get(x);</span>
+<span class="nc bnc" id="L188" title="All 4 branches missed.">                if (column != null &amp;&amp; column.get(y) != null) {</span>
+<span class="nc" id="L189">                    return new Coord(x, y);</span>
+                }
+            }
+        }
+<span class="nc" id="L193">        return null;</span>
+    }
+
+    /**
+     * Find a new position for the given cell
+     *
+     * @param cell
+     */
+    private void findNewPosition(GridCellWithId cell) {
+<span class="nc" id="L202">        Coord lastCoord = findLastUsedPosition();</span>
+<span class="nc" id="L203">        initCell(cell);</span>
+
+<span class="nc bnc" id="L205" title="All 2 branches missed.">        if (lastCoord != null) {</span>
+            // matrix is empty, use first position
+<span class="nc" id="L207">            cell.setX(1);</span>
+<span class="nc" id="L208">            cell.setY(1);</span>
+        }
+<span class="nc bnc" id="L210" title="All 4 branches missed.">        if (cell.getWidth() == 1 &amp;&amp; cell.getHeight() == 1) {</span>
+<span class="nc bnc" id="L211" title="All 4 branches missed.">            if (lastCoord.x &lt; xMax || xMax - xMin &lt; 2) {</span>
+                // enough free space on current row
+<span class="nc" id="L213">                cell.setX(lastCoord.x + 1);</span>
+<span class="nc" id="L214">                cell.setY(lastCoord.y);</span>
+            } else {
+                // end of line =&gt; append as first cell of a new row
+<span class="nc" id="L217">                cell.setX(xMin);</span>
+<span class="nc" id="L218">                cell.setY(lastCoord.y + 1);</span>
+            }
+<span class="nc bnc" id="L220" title="All 2 branches missed.">        } else if (cell.getWidth() &gt; cell.getHeight()) {</span>
+            // wide or square cell
+            // add to bottom left
+<span class="nc" id="L223">            cell.setX(xMin);</span>
+<span class="nc" id="L224">            cell.setY(yMax + 1);</span>
+        } else {
+            // tall cell =&gt; add on top right
+<span class="nc" id="L227">            cell.setX(xMax + 1);</span>
+<span class="nc" id="L228">            cell.setY(yMin);</span>
+        }
+
+<span class="nc" id="L231">    }</span>
+
+    /**
+     * Add a cell within the matrix. Fix any conflict
+     *
+     * @param cell the cell to add
+     */
+    public void addCell(GridCellWithId cell) {
+<span class="nc bnc" id="L239" title="All 2 branches missed.">        if (isFree(cell)) {</span>
+<span class="nc" id="L240">            markCells(cell);</span>
+        } else {
+<span class="nc" id="L242">            findNewPosition(cell);</span>
+<span class="nc" id="L243">            markCells(cell);</span>
+        }
+<span class="nc" id="L245">    }</span>
+
+    /**
+     * Update all cell coordinates to have (xMin,yMin) = (1,1)
+     */
+    public void shift() {
+        // amount to add to each card
+<span class="nc" id="L252">        Integer shiftX = 1 - xMin;</span>
+<span class="nc" id="L253">        Integer shiftY = 1 - yMin;</span>
+
+<span class="nc" id="L255">        cells.forEach(cell -&gt; {</span>
+<span class="nc" id="L256">            cell.setX(cell.getX() + shiftX);</span>
+<span class="nc" id="L257">            cell.setY(cell.getY() + shiftY);</span>
+<span class="nc" id="L258">        });</span>
+
+<span class="nc" id="L260">        xMin = 1;</span>
+<span class="nc" id="L261">        yMin = 1;</span>
+<span class="nc" id="L262">        xMax += shiftX;</span>
+<span class="nc" id="L263">        yMax += shiftY;</span>
+<span class="nc" id="L264">    }</span>
+
+    /**
+     * Process all cells and fix any conflicts
+     *
+     * @param cells the cells
+     *
+     * @return the grid
+     */
+    public static Grid resolveConflicts(Collection&lt;? extends GridCellWithId&gt; cells) {
+<span class="nc" id="L274">        ArrayList&lt;GridCellWithId&gt; list = new ArrayList&lt;&gt;();</span>
+<span class="nc" id="L275">        list.addAll(cells);</span>
+
+<span class="nc" id="L277">        list.forEach(cell -&gt; {</span>
+            // make sure each cell has a size
+<span class="nc bnc" id="L279" title="All 2 branches missed.">            if (cell.getWidth() == null) {</span>
+<span class="nc" id="L280">                cell.setWidth(1);</span>
+            }
+<span class="nc bnc" id="L282" title="All 2 branches missed.">            if (cell.getHeight() == null) {</span>
+<span class="nc" id="L283">                cell.setHeight(1);</span>
+            }
+<span class="nc" id="L285">        });</span>
+
+<span class="nc" id="L287">        list.sort((a, b) -&gt; {</span>
+<span class="nc" id="L288">            boolean sameWidth = a.getWidth().equals(b.getWidth());</span>
+<span class="nc" id="L289">            boolean sameHeight = a.getHeight().equals(b.getHeight());</span>
+
+<span class="nc" id="L291">            Integer aArea = a.getWidth() * a.getHeight();</span>
+<span class="nc" id="L292">            Integer bArea = b.getWidth() * b.getHeight();</span>
+
+<span class="nc bnc" id="L294" title="All 4 branches missed.">            if (sameHeight &amp;&amp; sameWidth) {</span>
+                // same size: sort by id
+<span class="nc bnc" id="L296" title="All 2 branches missed.">                if (a.getId() &lt; b.getId()) {</span>
+<span class="nc" id="L297">                    return -1;</span>
+<span class="nc bnc" id="L298" title="All 2 branches missed.">                } else if (a.getId() &lt; b.getId()) {</span>
+<span class="nc" id="L299">                    return 1;</span>
+                } else {
+<span class="nc" id="L301">                    return 0;</span>
+                }
+<span class="nc bnc" id="L303" title="All 2 branches missed.">            } else if (sameWidth) {</span>
+                // same heigth, sort short to tall
+<span class="nc" id="L305">                return a.getHeight() - b.getHeight();</span>
+<span class="nc bnc" id="L306" title="All 2 branches missed.">            } else if (sameHeight) {</span>
+                // same heigth, sort thin to thick
+<span class="nc" id="L308">                return a.getWidth() - b.getWidth();</span>
+<span class="nc bnc" id="L309" title="All 2 branches missed.">            } else if (aArea.equals(bArea)) {</span>
+                // same area, different shape (eg 3x2 vs 2x3)
+                // same heigth, sort short to tall
+<span class="nc" id="L312">                return a.getHeight() - b.getHeight();</span>
+            } else {
+                // differant area, sort smaller first
+<span class="nc" id="L315">                return aArea - bArea;</span>
+            }
+        });
+
+<span class="nc" id="L319">        List&lt;GridCellWithId&gt; conflictual = new ArrayList&lt;&gt;();</span>
+<span class="nc" id="L320">        Grid grid = new Grid();</span>
+
+<span class="nc" id="L322">        list.forEach(cell -&gt; {</span>
+<span class="nc bnc" id="L323" title="All 2 branches missed.">            if (grid.isFree(cell)) {</span>
+<span class="nc" id="L324">                grid.markCells(cell);</span>
+            } else {
+<span class="nc" id="L326">                conflictual.add(cell);</span>
+            }
+<span class="nc" id="L328">        });</span>
+<span class="nc" id="L329">        conflictual.forEach(cell -&gt; {</span>
+<span class="nc" id="L330">            grid.findNewPosition(cell);</span>
+<span class="nc" id="L331">            grid.markCells(cell);</span>
+<span class="nc" id="L332">        });</span>
+<span class="nc" id="L333">        return grid;</span>
+    }
+
+    /**
+     * Simple class to depict a single coord
+     */
+    public static class Coord {
+
+        /** x coord */
+        private Integer x;
+
+        /** y coord */
+        private Integer y;
+
+        /**
+         * simple constructor
+         * @param x x coordinate
+         * @param y y coordinate
+         */
+<span class="nc" id="L352">        public Coord(Integer x, Integer y) {</span>
+<span class="nc" id="L353">            this.x = x;</span>
+<span class="nc" id="L354">            this.y = y;</span>
+<span class="nc" id="L355">        }</span>
+
+        @Override
+        public String toString() {
+<span class="nc" id="L359">            return &quot;Coord{&quot; + x + &quot;,&quot; + y + '}';</span>
+        }
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

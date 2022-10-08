@@ -7,7 +7,6 @@
 package ch.colabproject.colab.api.controller;
 
 import ch.colabproject.colab.api.microchanges.live.LiveManager;
-import ch.colabproject.colab.api.ws.channel.model.WebsocketChannel;
 import java.util.Map;
 import javax.ejb.Singleton;
 import javax.ejb.Startup;
@@ -22,12 +21,12 @@ import org.slf4j.LoggerFactory;
  */
 @Singleton
 @Startup
-<span class="nc" id="L25">public class CdiBridgeSingleton {</span>
+<span class="nc" id="L24">public class CdiBridgeSingleton {</span>
 
     /**
      * Logger. Default level, set in logback.xml, is INFO
      */
-<span class="nc" id="L30">    private static final Logger logger = LoggerFactory.getLogger(CdiBridgeSingleton.class);</span>
+<span class="nc" id="L29">    private static final Logger logger = LoggerFactory.getLogger(CdiBridgeSingleton.class);</span>
 
     /**
      * Websockets
@@ -46,16 +45,16 @@ import org.slf4j.LoggerFactory;
      */
     public void init() {
         /* no iop */
-<span class="nc" id="L49">    }</span>
+<span class="nc" id="L48">    }</span>
 
     /**
      * Bridge to {@link WebsocketManager#getSubscriptionsCount() }
      *
      * @return the list of channels and the number of sessions subscribed to each of them
      */
-    public Map&lt;WebsocketChannel, Integer&gt; getSubscriptionsCount() {
-<span class="nc" id="L57">        logger.debug(&quot;Get bridged Subscriptions&quot;);</span>
-<span class="nc" id="L58">        return websocketManager.getSubscriptionsCount();</span>
+    public Map&lt;String, Integer&gt; getSubscriptionsCount() {
+<span class="nc" id="L56">        logger.debug(&quot;Get bridged Subscriptions&quot;);</span>
+<span class="nc" id="L57">        return websocketManager.getSubscriptionsCount();</span>
     }
 
     /**
@@ -68,7 +67,7 @@ import org.slf4j.LoggerFactory;
      * @return true if there was something to cancel
      */
     public Boolean cancelDebounce(Long id) {
-<span class="nc" id="L71">        return liveManager.cancelDebounce(id);</span>
+<span class="nc" id="L70">        return liveManager.cancelDebounce(id);</span>
     }
 
     /**
@@ -79,8 +78,8 @@ import org.slf4j.LoggerFactory;
      * @param id id of the block to process
      */
     public void processMicroChanges(Long id) {
-<span class="nc" id="L82">        liveManager.process(id);</span>
-<span class="nc" id="L83">    }</span>
+<span class="nc" id="L81">        liveManager.process(id);</span>
+<span class="nc" id="L82">    }</span>
 
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>
