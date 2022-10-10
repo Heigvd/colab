@@ -20,7 +20,7 @@ export default function TextDataBlockPreview({ block }: TextDataBlockPreviewProp
     case 'text/markdown':
       return (
         <ErrorBoundary fallback={<></>}>
-          <MarkdownViewer md={block.textData || ''} showEmptiness={false} />;
+          <MarkdownViewer md={block.textData || ''} showEmptiness={false} />
         </ErrorBoundary>);
     default:
       return <>{block.textData}</>;
