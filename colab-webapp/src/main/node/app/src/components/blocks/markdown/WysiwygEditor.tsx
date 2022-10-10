@@ -50,7 +50,7 @@ import {
   computeOverlayPosition,
   LinkOverlay,
 } from './MarkdownViewer';
-import domToMarkdown, { MarkdownRange, MarkdownWithSelection } from './parser/domToMarkdown';
+import domToMarkdown, { escapeText, MarkdownRange, MarkdownWithSelection } from './parser/domToMarkdown';
 import markdownToDom, {
   convertRange,
   getFirstMajorTag,
@@ -1428,7 +1428,8 @@ export default function WysiwygEditor({
       if (!mdToInsert && plainText) {
         // plain text is fallback
         // TODO or not TODO? escape plain text
-        mdToInsert = plainText;
+        //mdToInsert = plainText;
+        mdToInsert = escapeText(plainText);
       } else {
         logger.warn('No eligible MIME type', e.clipboardData.types);
       }

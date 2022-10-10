@@ -28,7 +28,7 @@ export interface Position {
   offset: number;
 }
 
-function escapeText(text: string | null): string {
+export function escapeText(text: string | null): string {
   if (!text) {
     return '';
   }
