@@ -21,7 +21,6 @@ import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.text.StringEscapeUtils;
 import org.apache.hc.client5.http.classic.methods.HttpGet;
 import org.apache.hc.client5.http.impl.classic.HttpClients;
 import org.apache.hc.core5.http.Header;
@@ -63,6 +62,7 @@ public class ExternalDataManager {
     @Inject
     private Cache<String, UrlMetadata> metadataCache;
 
+    /** get the baseUrl of the application */
     @Inject
     private RequestManager requestManager;
 
