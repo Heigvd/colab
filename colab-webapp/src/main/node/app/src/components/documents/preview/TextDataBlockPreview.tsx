@@ -8,6 +8,7 @@
 import { TextDataBlock } from 'colab-rest-client';
 import * as React from 'react';
 import MarkdownViewer from '../../blocks/markdown/MarkdownViewer';
+import ErrorBoundary from '../../common/toplevel/ErrorBoundary';
 
 export interface TextDataBlockPreviewProps {
   block: TextDataBlock;
@@ -17,7 +18,10 @@ export interface TextDataBlockPreviewProps {
 export default function TextDataBlockPreview({ block }: TextDataBlockPreviewProps): JSX.Element {
   switch (block.mimeType) {
     case 'text/markdown':
-      return <MarkdownViewer md={block.textData || ''} showEmptiness={false} />;
+      return (
+        <ErrorBoundary fallback={<></>}>
+          <MarkdownViewer md={block.textData || ''} showEmptiness={false} />;
+        </ErrorBoundary>);
     default:
       return <>{block.textData}</>;
   }
