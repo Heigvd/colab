@@ -159,7 +159,7 @@ colab-webapp/colab-api,ch.colabproject.colab.api.model.team,TeamRole,590,0,62,0,
 colab-webapp/colab-api,ch.colabproject.colab.api.model.team,TeamMember,834,0,100,0,78,0,133,0,83,0
 colab-webapp/colab-api,ch.colabproject.colab.api.controller.document,ResourceManager,900,0,112,0,229,0,93,0,36,0
 colab-webapp/colab-api,ch.colabproject.colab.api.controller.document,BlockManager,80,0,10,0,25,0,13,0,8,0
-colab-webapp/colab-api,ch.colabproject.colab.api.controller.document,ExternalDataManager,295,0,38,0,82,0,28,0,9,0
+colab-webapp/colab-api,ch.colabproject.colab.api.controller.document,ExternalDataManager,326,0,40,0,89,0,29,0,9,0
 colab-webapp/colab-api,ch.colabproject.colab.api.controller.document,FileManager,274,0,24,0,72,0,23,0,11,0
 colab-webapp/colab-api,ch.colabproject.colab.api.controller.document,IndexGeneratorHelper,443,0,46,0,111,0,39,0,16,0
 colab-webapp/colab-api,ch.colabproject.colab.api.controller.document,RelatedPosition,44,0,0,0,5,0,1,0,1,0
