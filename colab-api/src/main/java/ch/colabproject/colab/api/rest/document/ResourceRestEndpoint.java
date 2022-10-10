@@ -1,6 +1,6 @@
 /*
  * The coLAB project
- * Copyright (C) 2021 AlbaSim, MEI, HEIG-VD, HES-SO
+ * Copyright (C) 2021-2022 AlbaSim, MEI, HEIG-VD, HES-SO
  *
  * Licensed under the MIT License
  */
@@ -17,6 +17,7 @@ import ch.colabproject.colab.api.model.document.ResourceRef;
 import ch.colabproject.colab.api.model.link.StickyNoteLink;
 import ch.colabproject.colab.api.persistence.jpa.document.ResourceDao;
 import ch.colabproject.colab.api.rest.document.bean.ResourceCreationData;
+import ch.colabproject.colab.api.rest.document.bean.ResourceExternalReference;
 import ch.colabproject.colab.generator.model.annotations.AuthenticationRequired;
 import java.util.List;
 import javax.inject.Inject;
@@ -152,6 +153,21 @@ public class ResourceRestEndpoint {
         return resourceManager.getDirectAbstractResourcesOfProject(projectId);
     }
 
+    /**
+     * Get the list of project which reference the given resource, excluding the project which owns
+     * the resource.
+     *
+     * @param abstractResourceId if of the targeted resource
+     *
+     * @return list of externalReference
+     */
+    @GET
+    @Path("externalReference/{abstractResourceId}")
+    public List<ResourceExternalReference> getResourceExternalReferences(
+        @PathParam("abstractResourceId") Long abstractResourceId) {
+        return resourceManager.getResourceExternalReferences(abstractResourceId);
+    }
+
     // *********************************************************************************************
     // update
     // *********************************************************************************************
@@ -239,6 +255,31 @@ public class ResourceRestEndpoint {
     public void unpublishResource(Long resourceId) {
         logger.debug("Unpublish resource #{}", resourceId);
         resourceManager.changeResourcePublication(resourceId, false);
+    }
+
+    // *********************************************************************************************
+    // move a resource / document
+    // *********************************************************************************************
+
+    /**
+     * Move a resource to a new resourceable.
+     *
+     * @param resourceId id of the resource to move
+     * @param parentType the new owner
+     * @param parentId   if of the new owner
+     * @param published  new publication status
+     */
+    @PUT
+    @Path("move/{resourceId}/to/{parentType: (Card|CardContent|CardType)}/{parentId}/{published}")
+    public void moveResource(
+        @PathParam("resourceId") Long resourceId,
+        @PathParam("parentType") String parentType,
+        @PathParam("parentId") Long parentId,
+        @PathParam("published") Boolean published) {
+        logger.debug("Move resource #{} to {}#{}; published={}",
+            resourceId, parentType, parentId, published);
+
+        resourceManager.moveResource(resourceId, parentType, parentId, published);
     }
 
     // *********************************************************************************************
@@ -392,7 +433,7 @@ public class ResourceRestEndpoint {
      *                        reference
      */
     @PUT
-    @Path("changeCategory/{resourceOrRefId}/{category}")
+    @Path("changeCategory/{resourceOrRefId}/{category : .*}")
     public void changeCategory(@PathParam("resourceOrRefId") Long resourceOrRefId,
         @PathParam("category") String categoryName) {
         logger.debug("add resource/ref #{} to category {}", resourceOrRefId, categoryName);
@@ -407,7 +448,7 @@ public class ResourceRestEndpoint {
      *                         reference
      */
     @PUT
-    @Path("changeCategory/list/{newName}")
+    @Path("changeCategory/list/{newName : .*}")
     public void changeCategoryForList(@PathParam("newName") String categoryName,
         List<Long> resourceOrRefIds) {
         logger.debug("add resource/ref #{} to category {}", resourceOrRefIds, categoryName);
@@ -442,19 +483,17 @@ public class ResourceRestEndpoint {
      * Rename the category in a card type / card type reference
      *
      * @param cardTypeOrRefId the id of the card type / card type reference (scope of the renaming)
-     * @param projectId       the id of the project concerned (scope of the renaming)
      * @param oldName         the old name of the category
      * @param newName         the new name of the category
      */
     @PUT
-    @Path("renameCategory/cardType/{projectId}/{cardTypeId}/{oldName}/{newName}")
-    public void renameCategoryForCardType(@PathParam("projectId") Long projectId,
+    @Path("renameCategory/cardType/{cardTypeId}/{oldName : .*}/{newName : .*}")
+    public void renameCategoryForCardType(
         @PathParam("cardTypeId") Long cardTypeOrRefId, @PathParam("oldName") String oldName,
         @PathParam("newName") String newName) {
-        logger.debug("rename category {} to {} for card type #{} in the project {}", oldName,
-            newName, cardTypeOrRefId, projectId);
-        resourceCategoryHelper.renameCategoryInCardType(cardTypeOrRefId, projectId, oldName,
-            newName);
+        logger.debug("rename category {} to {} for card type #{}", oldName,
+            newName, cardTypeOrRefId);
+        resourceCategoryHelper.renameCategoryInCardType(cardTypeOrRefId, oldName, newName);
     }
 
     /**
@@ -465,7 +504,7 @@ public class ResourceRestEndpoint {
      * @param newName the new name of the category
      */
     @PUT
-    @Path("renameCategory/card/{cardId}/{oldName}/{newName}")
+    @Path("renameCategory/card/{cardId}/{oldName : .*}/{newName : .*}")
     public void renameCategoryForCard(@PathParam("cardId") Long cardId,
         @PathParam("oldName") String oldName, @PathParam("newName") String newName) {
         logger.debug("rename category {} to {} for card #{}", oldName, newName, cardId);
@@ -480,7 +519,7 @@ public class ResourceRestEndpoint {
      * @param newName       the new name of the category
      */
     @PUT
-    @Path("renameCategory/cardContent/{cardContentId}/{oldName}/{newName}")
+    @Path("renameCategory/cardContent/{cardContentId}/{oldName : .*}/{newName : .*}")
     public void renameCategoryForCardContent(@PathParam("cardContentId") Long cardContentId,
         @PathParam("oldName") String oldName, @PathParam("newName") String newName) {
         logger.debug("rename category {} to {} for card content #{}", oldName, newName,

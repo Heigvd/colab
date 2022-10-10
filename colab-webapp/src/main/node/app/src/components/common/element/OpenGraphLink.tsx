@@ -66,6 +66,39 @@ function sanitizeUrl(rawUrl: string, defaultProtocol?: string): string {
   return rawUrl;
 }
 
+/**
+ * Escape uri component + escape parenthesis too.
+ *
+ */
+function encodeSegment(seg: string | undefined): string {
+  if (!seg) {
+    return '';
+  }
+  let x = seg;
+  let y = seg;
+  do {
+    x = y;
+    y = decodeURIComponent(x);
+  } while (x != y);
+
+  return encodeURIComponent(x).replace(/\(/g, '%28').replace(/\)/g, '%29');
+}
+
+function encodePath(path: string | undefined) {
+  return (path || '').split('/').map(encodeSegment).join('/');
+}
+
+export function encode(rawUrl: string) {
+  const split = rawUrl.split('://');
+  if (split.length === 2) {
+    return `${split[0]}://${encodePath(split[1])}`;
+  } else if (split.length === 1) {
+    return encodePath(split[0]);
+  } else {
+    return '';
+  }
+}
+
 export default function OpenGraphLink({
   url,
   editingStatus,
@@ -78,6 +111,7 @@ export default function OpenGraphLink({
   const metadata = useUrlMetadata(url);
 
   const sanitizedUrl = sanitizeUrl(url);
+  const decodedUrl = decodeURIComponent(url);
 
   const openUrl = React.useCallback(() => {
     window.open(sanitizedUrl);
@@ -87,7 +121,7 @@ export default function OpenGraphLink({
     (newValue: string) => {
       setEditingState(false);
       if (editCb && !readOnly) {
-        editCb(newValue);
+        editCb(encode(newValue));
       }
     },
     [setEditingState, editCb, readOnly],
@@ -97,7 +131,7 @@ export default function OpenGraphLink({
     setEditingState(true);
   }, [setEditingState]);
 
-  const editIcon = !readOnly && (
+  const editIcon = !readOnly && editCb && (
     <IconButton className={lightIconButtonStyle} icon={faPen} onClick={setEditCb} title="" />
   );
 
@@ -105,17 +139,17 @@ export default function OpenGraphLink({
     return <InlineLoading />;
   }
 
-  if (!readOnly && editingStatus) {
+  if (!readOnly && editingStatus && editCb) {
     return (
-      <Flex className={cardStyle} title={url} align="center">
-        <EditLink onChange={saveLink} url={url} onCancel={() => setEditingState(false)} />
+      <Flex className={cardStyle} title={decodedUrl} align="center">
+        <EditLink onChange={saveLink} url={decodedUrl} onCancel={() => setEditingState(false)} />
       </Flex>
     );
   }
 
   if (metadata == 'NO_URL') {
     return (
-      <Flex className={cardStyle} title={url} align="center">
+      <Flex className={cardStyle} title={decodedUrl} align="center">
         <FontAwesomeIcon icon={faLink} size="lg" color="var(--lightGray)" />
         <span className={cx(emptyLightTextStyle, css({ marginLeft: space_S }))}>Empty link</span>
         {editIcon}
@@ -129,14 +163,14 @@ export default function OpenGraphLink({
 
     if (metadata.broken) {
       return (
-        <Flex className={cardStyle} title={url} align="center">
-          <div title={url} className={css({ padding: space_S })}>
+        <Flex className={cardStyle} title={decodedUrl} align="center">
+          <div title={decodedUrl} className={css({ padding: space_S })}>
             <FontAwesomeIcon
               icon={faChainBroken}
               size="lg"
               className={css({ marginRight: space_S })}
             />
-            {url}
+            {decodedUrl}
             {editIcon}
           </div>
         </Flex>
@@ -155,7 +189,7 @@ export default function OpenGraphLink({
       );
 
       return (
-        <Flex className={cardStyle} title={url} align="center">
+        <Flex className={cardStyle} title={decodedUrl} align="center">
           {imageUrl && <img className={imageStyle} src={imageUrl} />}
           <div className={legendStyle}>
             {siteName ? (
@@ -170,13 +204,13 @@ export default function OpenGraphLink({
                 </Flex>
                 {title && <p>{title}</p>}
                 <a href={sanitizedUrl} target="_blank" rel="noreferrer" className={urlStyle}>
-                  {url}
+                  {decodedUrl}
                 </a>
               </>
             ) : (
               <Flex>
                 <a href={sanitizedUrl} target="_blank" rel="noreferrer" className={urlStyle}>
-                  {url}
+                  {decodedUrl}
                 </a>
                 {toolbar}
               </Flex>

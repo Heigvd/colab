@@ -16,7 +16,7 @@ import { useAppDispatch } from '../../store/hooks';
 import IconButton from '../common/element/IconButton';
 import Flex from '../common/layout/Flex';
 import OpenCloseModal from '../common/layout/OpenCloseModal';
-import { iconButton, lightIconButtonStyle, space_M, space_S } from '../styling/style';
+import { errorColor, iconButton, lightIconButtonStyle, space_M, space_S } from '../styling/style';
 import { ResourceDisplay } from './ResourceDisplay';
 import { ResourceAndRef } from './resourcesCommonType';
 import ResourcesList from './ResourcesList';
@@ -46,6 +46,14 @@ export default function ResourcesLoserKeeper({
       >
         {resource.targetResource.title}
         <Flex>
+          <IconButton
+            title={i18n.common.restore}
+            icon={faBoxArchive}
+            layer={{ layerIcon: faArrowUp, transform: 'shrink-6 up-10' }}
+            onClick={() => dispatch(API.giveAccessToResource(resource))}
+            className={cx(lightIconButtonStyle)}
+            IconClassName={iconButton}
+          />
           <OpenCloseModal
             title={i18n.modules.content.document}
             collapsedChildren={
@@ -64,26 +72,27 @@ export default function ResourcesLoserKeeper({
               return <ResourceDisplay resource={resource} goBackToList={close} readOnly />;
             }}
           </OpenCloseModal>
-          <IconButton
-            title={i18n.common.restore}
-            icon={faBoxArchive}
-            layer={{ layerIcon: faArrowUp, transform: 'shrink-6 up-10' }}
-            onClick={() => dispatch(API.giveAccessToResource(resource))}
-            className={cx(lightIconButtonStyle)}
-            IconClassName={iconButton}
-          />
           {resource.isDirectResource ? (
-            <IconButton
-              title={i18n.common.finalDelete}
-              icon={faTrash}
-              onClick={() => dispatch(API.deleteResource(resource.targetResource))}
-              className={lightIconButtonStyle}
-              IconClassName={iconButton}
-            />
+            <Flex
+              className={css({
+                borderLeft: '1px solid var(--lightGray)',
+                margin: '0 ' + space_S,
+              })}
+              wrap="nowrap"
+            >
+              <IconButton
+                title={i18n.common.finalDelete}
+                icon={faTrash}
+                iconColor={errorColor}
+                onClick={() => dispatch(API.deleteResource(resource.targetResource))}
+                className={lightIconButtonStyle}
+                IconClassName={iconButton}
+              />
+            </Flex>
           ) : (
             // a way to have space and not all icons shifted if no deletion possible
             // I'm not proud of it, but it works
-            <div className={css({ minWidth: '34px' })}>&nbsp;</div>
+            <div className={css({ minWidth: '45px' })}>&nbsp;</div>
           )}
         </Flex>
       </Flex>

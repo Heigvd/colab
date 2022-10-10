@@ -34,14 +34,16 @@ import { useAppDispatch, useAppSelector } from '../../../store/hooks';
 import Admin from '../../admin/Admin';
 import CardEditor from '../../cards/CardEditor';
 import CardThumbWithSelector from '../../cards/CardThumbWithSelector';
-import ProjectCardTypeList from '../../cards/cardtypes/ProjectCardTypeList';
 import ContentSubs from '../../cards/ContentSubs';
+import Checkbox from '../../common/element/Checkbox';
 import IconButton from '../../common/element/IconButton';
 import IllustrationDisplay, {
   IllustrationIconDisplay,
 } from '../../common/element/IllustrationDisplay';
 import InlineLoading from '../../common/element/InlineLoading';
 import { mainLinkActiveClass, mainMenuLink, MainMenuLink } from '../../common/element/Link';
+import Tips, { FeaturePreview, TipsCtx } from '../../common/element/Tips';
+import Toggler from '../../common/element/Toggler';
 import Clickable from '../../common/layout/Clickable';
 import Flex from '../../common/layout/Flex';
 import Monkeys from '../../debugger/monkey/Monkeys';
@@ -49,6 +51,7 @@ import { UserDropDown } from '../../MainNav';
 import Settings from '../../settings/Settings';
 import Picto from '../../styling/Picto';
 import {
+  fullHeightStyle,
   fullPageStyle,
   invertedThemeMode,
   linkStyle,
@@ -56,6 +59,7 @@ import {
   space_M,
   space_S,
 } from '../../styling/style';
+import DocumentationTab from '../DocumentationTab';
 import Presence from '../presence/Presence';
 import { PresenceContext, usePresenceContext } from '../presence/PresenceContext';
 import { defaultProjectIllustration } from '../ProjectCommon';
@@ -97,9 +101,6 @@ function parentPathFn() {
   return '../';
 }
 
-function cardThumbFactory(card: Card) {
-  return <CardThumbWithSelector depth={2} card={card} />;
-}
 const Ancestor = ({ card, content, last }: Ancestor): JSX.Element => {
   const i18n = useTranslations();
   const navigate = useNavigate();
@@ -282,11 +283,21 @@ interface EditorNavProps {
   setShowProjectDetails: (value: React.SetStateAction<boolean>) => void;
 }
 
+const pictoLinkStyle = cx(
+  mainMenuLink,
+  css({
+    padding: '8px 15px',
+  }),
+);
+
 function EditorNav({ project, setShowProjectDetails }: EditorNavProps): JSX.Element {
   const i18n = useTranslations();
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const location = useLocation();
+
+  const tipsConfig = React.useContext(TipsCtx);
+
   return (
     <>
       <div
@@ -296,35 +307,33 @@ function EditorNav({ project, setShowProjectDetails }: EditorNavProps): JSX.Elem
             display: 'inline-grid',
             gridTemplateColumns: '1fr 3fr 1fr',
             flexGrow: 0,
-            padding: `0 ${space_M}`,
+            padding: `0 ${space_M} 0 0`,
             //backgroundColor: 'var(--hoverBgColor)',
           }),
         )}
       >
         <Flex align="center">
-          <Clickable
-            title={i18n.common.action.backToProjects}
-            onClick={event => {
-              event.preventDefault();
-              navigate('../../');
-              dispatch(API.closeCurrentProject());
-            }}
-          >
-            <Picto
-              className={css({
-                height: '22px',
-                width: 'auto',
-                paddingRight: space_M,
-                paddingTop: '0px',
-                paddingBottom: '0px',
-                paddingLeft: space_S,
-              })}
-            />
-          </Clickable>
+          <MainMenuLink className={pictoLinkStyle} to="../..">
+            <span
+              title={i18n.common.action.backToProjects}
+              onClickCapture={() => {
+                dispatch(API.closeCurrentProject());
+              }}
+            >
+              <Picto
+                className={css({
+                  height: '30px',
+                  width: 'auto',
+                  padding: '0',
+                })}
+              />
+            </span>
+          </MainMenuLink>
           <Flex
             className={css({
               borderLeft: '1px solid var(--lightGray)',
               borderRight: '1px solid var(--lightGray)',
+              padding: '0 ' + space_S,
               marginRight: space_S,
             })}
             wrap="nowrap"
@@ -356,7 +365,7 @@ function EditorNav({ project, setShowProjectDetails }: EditorNavProps): JSX.Elem
               />
             </MainMenuLink>
           </Flex>
-          <MainMenuLink to="./project-documentation">
+          <MainMenuLink to="./docs">
             <FontAwesomeIcon
               icon={faBookOpen}
               title={i18n.modules.project.settings.resources.label}
@@ -376,9 +385,8 @@ function EditorNav({ project, setShowProjectDetails }: EditorNavProps): JSX.Elem
             title={i18n.common.action.showProjectDetails}
             className={cx(mainMenuLink, css({ textTransform: 'initial', margin: `0 ${space_S}` }))}
           >
-            <Flex align="stretch">
+            <Flex align="center">
               <Flex
-                align="center"
                 className={css({
                   backgroundColor: project.illustration?.iconBkgdColor,
                   padding: '3px 5px',
@@ -402,11 +410,21 @@ function EditorNav({ project, setShowProjectDetails }: EditorNavProps): JSX.Elem
           <Presence projectId={project.id!} />
           <Monkeys />
           <IconButton
-            onClick={() => navigate('./project-settings/general')}
+            onClick={() => navigate('./project-settings')}
             title={i18n.common.settings}
             icon={faCog}
             className={css({ textAlign: 'right', alignSelf: 'center', marginLeft: 'auto' })}
           />
+          <Tips tipsType="FEATURE_PREVIEW">
+            <Flex>
+              <Checkbox
+                label={i18n.tips.label.feature_preview}
+                value={tipsConfig.FEATURE_PREVIEW.value}
+                onChange={tipsConfig.FEATURE_PREVIEW.set}
+                className={css({ display: 'inline-block', marginRight: space_S })}
+              />
+            </Flex>
+          </Tips>
           <UserDropDown />
         </Flex>
       </div>
@@ -416,15 +434,38 @@ function EditorNav({ project, setShowProjectDetails }: EditorNavProps): JSX.Elem
 
 function RootView({ rootContent }: { rootContent: CardContent | null | undefined }) {
   const { touch } = React.useContext(PresenceContext);
+  const [organize, setOrganize] = React.useState(false);
+  const i18n = useTranslations();
 
   React.useEffect(() => {
     touch({});
   }, [touch]);
 
   return (
-    <div>
+    <div
+      className={css({ display: 'flex', flexGrow: '1', flexDirection: 'column', height: '100%' })}
+    >
       {rootContent != null ? (
-        <ContentSubs showEmptiness={true} depth={depthMax} cardContent={rootContent} />
+        <>
+          <FeaturePreview>
+            <Toggler
+              className={css({ alignSelf: 'flex-end' })}
+              label={i18n.modules.card.positioning.toggleText}
+              value={organize}
+              onChange={setOrganize}
+            />
+          </FeaturePreview>
+
+          <ContentSubs
+            showEmptiness={true}
+            depth={depthMax}
+            cardContent={rootContent}
+            organize={organize}
+            showPreview
+            className={organize ? fullHeightStyle : undefined}
+            subcardsContainerStyle={fullHeightStyle}
+          />
+        </>
       ) : (
         <InlineLoading />
       )}
@@ -508,14 +549,17 @@ export default function Editor(): JSX.Element {
                 <div>
                   <div>
                     <h3>{project.name}</h3>
-                    {project.description}
+                    <p>{project.description}</p>
                   </div>
                   <div>
                     <p>
-                      {i18n.common.createdBy}: {project.trackingData?.createdBy}
+                      {i18n.common.createdBy}
+                      {' : '}
+                      {project.trackingData?.createdBy}
                     </p>
                     <p>
-                      {i18n.common.createdAt}:{' '}
+                      {i18n.common.createdOn}
+                      {' : '}
                       {i18n.common.datetime(project.trackingData?.creationDate)}
                     </p>
                   </div>
@@ -544,7 +588,7 @@ export default function Editor(): JSX.Element {
               <Route path="team" element={<Team project={project} />} />
               <Route path="hierarchy" element={<Hierarchy rootId={root.id} />} />
               <Route path="flow" element={<ActivityFlowChart />} />
-              <Route path="project-documentation/*" element={<ProjectCardTypeList />} />
+              <Route path="docs/*" element={<DocumentationTab project={project} />} />
               <Route path="card/:id" element={<DefaultVariantDetector />} />
               {/* Zooom on a card */}
               <Route
@@ -557,7 +601,9 @@ export default function Editor(): JSX.Element {
                     backButtonTitle={i18n.common.action.backProjectRoot}
                     touchMode="zoom"
                   >
-                    {cardThumbFactory}
+                    {card => (
+                      <CardThumbWithSelector depth={2} card={card} mayOrganize showPreview />
+                    )}
                   </CardWrapper>
                 }
               />

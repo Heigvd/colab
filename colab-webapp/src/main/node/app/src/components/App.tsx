@@ -24,6 +24,7 @@ import { lightTheme, normalThemeMode } from './styling/style';
 import Token from './token/Token';
 
 import 'inter-ui/inter.css';
+import { TocDisplayCtx, TocMode } from './resources/ResourcesMainView';
 
 /**
  * To read parameters from hash
@@ -46,12 +47,15 @@ function App(): JSX.Element {
       }) as Language) || 'EN';
 
   const [lang, setLang] = useLocalStorage<Language>('colab-language', defaultLanguage);
+  const [tocMode, setTocMode] = useLocalStorage<TocMode>('colab-resource-toc-mode', 'CATEGORY');
+
   const [tipsConfig, setTipsConfig] = useLocalStorage<TipsConfig>('colab-tips-config', {
     TODO: false,
     NEWS: true,
     TIPS: true,
     WIP: false,
     DEBUG: false,
+    FEATURE_PREVIEW: false,
   });
 
   const setTodoCb = React.useCallback(
@@ -90,6 +94,15 @@ function App(): JSX.Element {
     [setTipsConfig],
   );
 
+  const setFeaturePreviewCb = React.useCallback(
+    (v: boolean) =>
+      setTipsConfig(state => ({
+        ...state,
+        FEATURE_PREVIEW: v,
+      })),
+    [setTipsConfig],
+  );
+
   const setDebugCb = React.useCallback(
     (v: boolean) =>
       setTipsConfig(state => ({
@@ -118,41 +131,47 @@ function App(): JSX.Element {
         <ErrorBoundary>
           <Suspense fallback={<Loading />}>
             <Provider store={getStore()}>
-              <I18nCtx.Provider value={{ lang: lang, setLang: setLang }}>
-                <TipsCtx.Provider
-                  value={{
-                    TIPS: {
-                      value: tipsConfig.TIPS,
-                      set: setTipsCb,
-                    },
-                    NEWS: {
-                      value: tipsConfig.NEWS,
-                      set: setNewsCb,
-                    },
-                    WIP: {
-                      value: tipsConfig.WIP,
-                      set: setWipCb,
-                    },
-                    TODO: {
-                      value: tipsConfig.TODO,
-                      set: setTodoCb,
-                    },
-                    DEBUG: {
-                      value: tipsConfig.DEBUG,
-                      set: setDebugCb,
-                    },
-                  }}
-                >
-                  <Notifier />
-                  <HashRouter>
-                    <Routes>
-                      <Route path="/token/:id/:token" element={<TokenWrapper />} />
-                      <Route path="/token/*" element={<TokenWrapper />} />
-                      <Route path="*" element={<MainApp />} />
-                    </Routes>
-                  </HashRouter>
-                </TipsCtx.Provider>
-              </I18nCtx.Provider>
+              <TocDisplayCtx.Provider value={{ mode: tocMode, setMode: setTocMode }}>
+                <I18nCtx.Provider value={{ lang: lang, setLang: setLang }}>
+                  <TipsCtx.Provider
+                    value={{
+                      TIPS: {
+                        value: tipsConfig.TIPS,
+                        set: setTipsCb,
+                      },
+                      NEWS: {
+                        value: tipsConfig.NEWS,
+                        set: setNewsCb,
+                      },
+                      WIP: {
+                        value: tipsConfig.WIP,
+                        set: setWipCb,
+                      },
+                      TODO: {
+                        value: tipsConfig.TODO,
+                        set: setTodoCb,
+                      },
+                      FEATURE_PREVIEW: {
+                        value: tipsConfig.FEATURE_PREVIEW,
+                        set: setFeaturePreviewCb,
+                      },
+                      DEBUG: {
+                        value: tipsConfig.DEBUG,
+                        set: setDebugCb,
+                      },
+                    }}
+                  >
+                    <Notifier />
+                    <HashRouter>
+                      <Routes>
+                        <Route path="/token/:id/:token" element={<TokenWrapper />} />
+                        <Route path="/token/*" element={<TokenWrapper />} />
+                        <Route path="*" element={<MainApp />} />
+                      </Routes>
+                    </HashRouter>
+                  </TipsCtx.Provider>
+                </I18nCtx.Provider>
+              </TocDisplayCtx.Provider>
             </Provider>
           </Suspense>
         </ErrorBoundary>

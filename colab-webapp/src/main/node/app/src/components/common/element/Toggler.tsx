@@ -11,6 +11,10 @@ import { errorStyle, space_S, successColor, textSmall, warningStyle } from '../.
 import Flex from '../layout/Flex';
 import Tips, { TipsProps } from './Tips';
 
+const toggleAndLabelStyle = css({
+  cursor: 'pointer',
+});
+
 const containerStyle = css({
   width: '28px',
   height: '16px',
@@ -56,6 +60,7 @@ interface TogglerProps {
   errorMessage?: React.ReactNode;
   className?: string;
   bottomClassName?: string;
+  stopPropagation?: boolean;
 }
 
 export default function Toggler({
@@ -69,7 +74,17 @@ export default function Toggler({
   errorMessage,
   className,
   bottomClassName,
+  stopPropagation = true,
 }: TogglerProps): JSX.Element {
+  const onClickCb = React.useCallback(
+    (e: React.MouseEvent) => {
+      onChange(!value);
+      if (stopPropagation) {
+        e.stopPropagation();
+      }
+    },
+    [value, stopPropagation, onChange],
+  );
   return (
     <Flex
       direction="column"
@@ -77,13 +92,12 @@ export default function Toggler({
       className={cx(css({ padding: space_S + ' 0' }), className)}
     >
       <Flex align="center" justify="flex-start">
-        <Flex
-          onClick={readOnly ? undefined : () => onChange(!value)}
-          className={cx(containerStyle, className)}
-        >
-          <div className={value ? onStyle : offStyle}></div>
+        <Flex onClick={readOnly ? undefined : onClickCb} className={toggleAndLabelStyle}>
+          <Flex className={cx(containerStyle, className)}>
+            <div className={value ? onStyle : offStyle}></div>
+          </Flex>
+          <div>&nbsp;{label}</div>
         </Flex>
-        <div>&nbsp;{label}</div>
         {tip != null && <Tips interactionType="CLICK">{tip}</Tips>}
       </Flex>
       {footer != null && <div className={textSmall}>{footer}</div>}

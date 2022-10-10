@@ -9,15 +9,23 @@ import * as React from 'react';
 import Tabs, { Tab } from '../common/layout/Tabs';
 import DebugForm from './debugForm';
 import DebugInput from './DebugInput';
+import PlayWithGridOrganizer from './PlayWithGridOrganizer';
+import IconAsImage from './IconAsImage';
 
 export default function Debugger(): JSX.Element {
   return (
-    <Tabs>
+    <Tabs defaultTab="grid">
       <Tab name="input" label="input">
         <DebugInput />
       </Tab>
       <Tab name="form" label="form">
         <DebugForm />
+      </Tab>
+      <Tab name="grid" label="Grid">
+        <PlayWithGridOrganizer />
+      </Tab>
+      <Tab name="icons" label="Icons">
+        <IconAsImage />
       </Tab>
     </Tabs>
   );

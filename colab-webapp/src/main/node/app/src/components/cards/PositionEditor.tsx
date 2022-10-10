@@ -5,18 +5,14 @@
  * Licensed under the MIT License
  */
 
-import { css } from '@emotion/css';
-import { Card } from 'colab-rest-client';
+import { Card, GridPosition } from 'colab-rest-client';
 import * as React from 'react';
 import { useNavigate } from 'react-router-dom';
 import * as API from '../../API/api';
 import useTranslations from '../../i18n/I18nContext';
 import { useAppDispatch } from '../../store/hooks';
 import Form from '../common/element/Form';
-import Flex from '../common/layout/Flex';
-import { space_L, space_S } from '../styling/style';
 
-// TODO : affiner tips
 // TODO : do something against not number input
 
 interface PositionEditorProps {
@@ -29,114 +25,34 @@ export default function PositionEditor({ card }: PositionEditorProps): JSX.Eleme
   const i18n = useTranslations();
 
   return (
-    <Form
+    <Form<GridPosition>
       fields={[
+        { key: 'x', label: 'x', placeholder: '1', type: 'text', isMandatory: true },
+        { key: 'y', label: 'y', placeholder: '1', type: 'text', isMandatory: true },
         {
-          key: 'index',
-          label: 'Position index',
-          placeholder: '0',
+          key: 'width',
+          label: i18n.modules.card.positioning.width,
+          placeholder: '1',
           type: 'text',
-          isMandatory: false,
-          tip: (
-            <Flex direction="row">
-              <Flex grow={1} className={css({ padding: space_S })}>
-                <p>The indexes are determined as follows</p>
-              </Flex>
-              <Flex direction="column" className={css({ padding: space_S })}>
-                <Flex>
-                  <Flex
-                    align="center"
-                    justify="center"
-                    className={css({ border: '1px solid black', width: space_L, height: space_L })}
-                  >
-                    1
-                  </Flex>
-                  <Flex
-                    align="center"
-                    justify="center"
-                    className={css({ border: '1px solid black', width: space_L, height: space_L })}
-                  >
-                    2
-                  </Flex>
-                  <Flex
-                    align="center"
-                    justify="center"
-                    className={css({ border: '1px solid black', width: space_L, height: space_L })}
-                  >
-                    3
-                  </Flex>
-                </Flex>
-                <Flex>
-                  <Flex
-                    align="center"
-                    justify="center"
-                    className={css({ border: '1px solid black', width: space_L, height: space_L })}
-                  >
-                    4
-                  </Flex>
-                  <Flex
-                    align="center"
-                    justify="center"
-                    className={css({ border: '1px solid black', width: space_L, height: space_L })}
-                  >
-                    5
-                  </Flex>
-                  <Flex
-                    align="center"
-                    justify="center"
-                    className={css({ border: '1px solid black', width: space_L, height: space_L })}
-                  >
-                    6
-                  </Flex>
-                </Flex>
-                <Flex>
-                  <Flex
-                    align="center"
-                    justify="center"
-                    className={css({ border: '1px solid black', width: space_L, height: space_L })}
-                  >
-                    7
-                  </Flex>
-                  <Flex
-                    align="center"
-                    justify="center"
-                    className={css({ border: '1px solid black', width: space_L, height: space_L })}
-                  >
-                    8
-                  </Flex>
-                  <Flex
-                    align="center"
-                    justify="center"
-                    className={css({ border: '1px solid black', width: space_L, height: space_L })}
-                  >
-                    9
-                  </Flex>
-                </Flex>
-                <Flex>
-                  <Flex
-                    align="center"
-                    justify="center"
-                    className={css({ border: '1px solid black', width: space_L, height: space_L })}
-                  >
-                    10
-                  </Flex>
-                  <Flex
-                    align="center"
-                    justify="center"
-                    className={css({ border: '1px solid black', width: space_L, height: space_L })}
-                  >
-                    ...
-                  </Flex>
-                </Flex>
-              </Flex>
-            </Flex>
-          ),
+          isMandatory: true,
+        },
+        {
+          key: 'height',
+          label: i18n.modules.card.positioning.height,
+          placeholder: '1',
+          type: 'text',
+          isMandatory: true,
         },
       ]}
-      value={{ index: card.index == 0 ? undefined : card.index }}
+      value={{
+        x: card.x ?? 1,
+        y: card.y ?? 1,
+        width: card.width ?? 1,
+        height: card.height ?? 1,
+      }}
       onSubmit={fields => {
-        if (card && card.id && fields.index != null && fields.index > 0) {
-          dispatch(API.changeCardIndex({ cardId: card.id, newIndex: fields.index }));
+        if (card && card.id) {
+          dispatch(API.changeCardPosition({ cardId: card.id, newPosition: { ...fields } }));
           navigate('../');
         }
       }}

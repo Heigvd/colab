@@ -1,6 +1,6 @@
 /*
  * The coLAB project
- * Copyright (C) 2021 AlbaSim, MEI, HEIG-VD, HES-SO
+ * Copyright (C) 2021-2022 AlbaSim, MEI, HEIG-VD, HES-SO
  *
  * Licensed under the MIT License
  */
@@ -90,8 +90,7 @@ public class ResourceCategoryHelper {
     /**
      * Set the category of the resource.
      * <p>
-     * Also update the resources that reference this one, as long as we stay in the same project and
-     * the category is synchronized
+     * Also update the resources that reference this one, as long as the category is synchronized
      *
      * @param resourceOrRefId the id of the resource / resource reference
      * @param categoryName    the name of the category that apply to the resource / resource
@@ -108,12 +107,11 @@ public class ResourceCategoryHelper {
         resourceOrRef.setCategory(newCategoryName);
 
         requestManager.sudo(() -> {
-            // the resources based on the one changed will be change
-            // but only if it is in the same project and the category is still synchronized
+            // also change the resources based on the given one
+            // but only if the category is still synchronized
             List<ResourceRef> directRefs = resourceDao.findDirectReferences(resourceOrRef);
             for (ResourceRef ref : directRefs) {
-                if (ref.getProject() == resourceOrRef.getProject()
-                    && StringUtils.equals(ref.getCategory(), oldCategoryName)) {
+                if (StringUtils.equals(ref.getCategory(), oldCategoryName)) {
                     changeCategory(ref.getId(), newCategoryName);
                 }
 
@@ -142,23 +140,19 @@ public class ResourceCategoryHelper {
      * Rename the category in a card type / card type reference
      *
      * @param cardTypeOrRefId the id of the card type / card type reference (scope of the renaming)
-     * @param projectId       the id of the project concerned (scope of the renaming)
      * @param oldName         the old name of the category
      * @param newName         the new name of the category
      */
-    public void renameCategoryInCardType(Long cardTypeOrRefId, Long projectId, String oldName,
+    public void renameCategoryInCardType(Long cardTypeOrRefId, String oldName,
         String newName) {
         logger.debug("rename category {} to {} in the abstract card type #{}", oldName, newName,
             cardTypeOrRefId);
 
         AbstractCardType cardTypeOrRef = cardTypeManager.assertAndGetCardTypeOrRef(cardTypeOrRefId);
 
-        Long effectiveProjectId = projectId;
-        if (projectId == null) {
-            effectiveProjectId = cardTypeOrRef.getProjectId();
-        }
-
-        renameCategory(cardTypeOrRef, effectiveProjectId, oldName, newName);
+        requestManager.sudo(() -> {
+            renameCategory(cardTypeOrRef, oldName, newName);
+        });
     }
 
     /**
@@ -173,7 +167,9 @@ public class ResourceCategoryHelper {
 
         Card card = cardManager.assertAndGetCard(cardId);
 
-        renameCategory(card, oldName, newName);
+        requestManager.sudo(() -> {
+            renameCategory(card, oldName, newName);
+        });
     }
 
     /**
@@ -189,31 +185,29 @@ public class ResourceCategoryHelper {
 
         CardContent cardContent = cardContentManager.assertAndGetCardContent(cardContentId);
 
-        renameCategory(cardContent, oldName, newName);
+        requestManager.sudo(() -> {
+            renameCategory(cardContent, oldName, newName);
+        });
     }
-
-    // Note : the sub cards card type / card type reference are not changed. Should they ?
 
     /**
      * Rename the category in a card type / card type reference<br>
-     * And do it also for the implementing cards as long as they are of the same project
+     * And do it also for the implementing cards and for its reference card types
      *
      * @param cardTypeOrRef the card type / card type reference (scope of the renaming)
-     * @param projectId     the id of the project concerned (scope of the renaming)
      * @param oldName       the old name of the category
      * @param newName       the new name of the category
      */
     private void renameCategory(AbstractCardType cardTypeOrRef,
-        Long projectId, String oldName, String newName) {
+        String oldName, String newName) {
         cardTypeOrRef.getDirectAbstractResources().stream()
             .forEach(resourceOrRef -> renameCategoryIfMatch(resourceOrRef, oldName, newName));
 
         cardTypeOrRef.getImplementingCards().stream()
-            .filter(card -> Objects.equals(projectId, card.getProject().getId()))
             .forEach(card -> renameCategory(card, oldName, newName));
 
         cardTypeDao.findDirectReferences(cardTypeOrRef).stream()
-            .forEach(cardRef -> renameCategory(cardRef, projectId, oldName, newName));
+            .forEach(cardRef -> renameCategory(cardRef, oldName, newName));
     }
 
     /**
@@ -256,12 +250,10 @@ public class ResourceCategoryHelper {
      */
     private void renameCategoryIfMatch(AbstractResource resourceOrRef, String oldName,
         String newName) {
-        if (Objects.equals(resourceOrRef.getCategory(), oldName)) {
-            if (StringUtils.isBlank(newName)) {
-                resourceOrRef.setCategory(null);
-            } else {
-                resourceOrRef.setCategory(StringUtils.trim(newName));
-            }
+        if (Objects.equals(
+            StringUtils.trimToNull(resourceOrRef.getCategory()),
+            StringUtils.trimToNull(oldName))) {
+            resourceOrRef.setCategory(StringUtils.trimToNull(newName));
         }
     }
 }

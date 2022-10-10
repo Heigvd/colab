@@ -120,13 +120,22 @@ interface ProjectDisplayProps {
 }
 
 // Display one project and allow to edit it
-const ProjectDisplay = ({ project }: ProjectDisplayProps) => {
+export const ProjectDisplay = ({ project }: ProjectDisplayProps) => {
   const dispatch = useAppDispatch();
   const i18n = useTranslations();
   const navigate = useNavigate();
 
   return (
-    <Flex direction="column" align="stretch">
+    <Flex
+      onMouseDown={e => {
+        // ultimate hack to open a project in the very same tab: use middle mouse button
+        if (e.button === 1) {
+          navigate(`/editor/${project.id}`);
+        }
+      }}
+      direction="column"
+      align="stretch"
+    >
       <Flex
         className={css({
           height: '80px',

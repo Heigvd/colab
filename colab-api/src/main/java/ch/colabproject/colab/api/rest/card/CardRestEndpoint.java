@@ -8,6 +8,7 @@ package ch.colabproject.colab.api.rest.card;
 
 import ch.colabproject.colab.api.controller.card.CardContentManager;
 import ch.colabproject.colab.api.controller.card.CardManager;
+import ch.colabproject.colab.api.controller.card.grid.GridPosition;
 import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.model.card.Card;
 import ch.colabproject.colab.api.model.card.CardContent;
@@ -176,17 +177,16 @@ public class CardRestEndpoint {
     }
 
     /**
-     * Change the position of the card (stay in the same parent, change the index)<p>
-     * Recompute the indexes of all the sister cards
+     * Change the position of the card (stay in the same parent)<p>
+     * Recompute the position of all the sister cards
      *
      * @param cardId the id of the card
-     * @param index  the new index to set
+     * @param position the new position of the card
      */
     @PUT
-    @Path("{cardId}/changeIndex/{newIndex}")
-    public void changeCardIndex(@PathParam("cardId") Long cardId,
-        @PathParam("newIndex") Integer index) {
-        cardManager.changeCardIndex(cardId, index);
+    @Path("{cardId}/changePosition")
+    public void changeCardPosition(@PathParam("cardId") Long cardId, GridPosition position) {
+        cardManager.changeCardPosition(cardId, position);
     }
 
     /**

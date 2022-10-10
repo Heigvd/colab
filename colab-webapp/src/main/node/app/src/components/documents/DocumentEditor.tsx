@@ -55,7 +55,7 @@ export default function DocumentEditor({
   const isDocumentFile = entityIs(doc, 'DocumentFile');
   const isExternalLink = entityIs(doc, 'ExternalLink');
 
-  const dropRef = React.useRef<HTMLDivElement>(null);
+  //const dropRef = React.useRef<HTMLDivElement>(null);
 
   const { setSelectedDocId, selectedDocId, editMode, setEditMode, TXToptions } =
     React.useContext(DocEditorCTX);
@@ -81,9 +81,9 @@ export default function DocumentEditor({
   return (
     <Flex>
       <div
-        ref={dropRef}
+        ref={undefined /*dropRef*/}
         className={cx(
-          editableBlockStyle,
+          { [editableBlockStyle]: !readOnly },
           css({
             display: 'flex',
             flexDirection: 'row',

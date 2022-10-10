@@ -51,8 +51,7 @@ export const fr: ColabTranslations = {
     sortBy: 'Trier par: ',
     filter: 'Filtrer',
     createdBy: 'Créé par',
-    createdOn: 'Créé sur',
-    createdAt: 'Créé à',
+    createdOn: 'Créé le',
     name: 'Nom',
     date: 'Date',
     by: 'Par',
@@ -60,6 +59,7 @@ export const fr: ColabTranslations = {
     general: 'Général',
     about: 'À propos de co.LAB',
     blank: 'Vide',
+    none: 'Aucun',
     description: 'Description',
     noDescription: 'Aucune description',
     deprecated: 'Déprécié',
@@ -73,6 +73,7 @@ export const fr: ColabTranslations = {
       activityFlow: "Réseau d'activité",
     },
     welcome: 'Bienvenue!',
+    zoom: 'zoom',
     //comments: 'comments',
     //commentsAreOptional: 'Comments are optional',
     dateFn: (timestamp: number | null | undefined) => {
@@ -336,8 +337,8 @@ export const fr: ColabTranslations = {
     team: {
       actions: {
         createRole: 'Créer un rôle',
-        resendInvitation: 'Renvoyer le mail d\'invitation',
-        invitationResent: 'L\'invitation a bien été renvoyée',
+        resendInvitation: "Renvoyer le mail d'invitation",
+        invitationResent: "L'invitation a bien été renvoyée",
       },
     },
     card: {
@@ -360,10 +361,15 @@ export const fr: ColabTranslations = {
       involvements: 'Implications',
       completion: 'Avancement',
       position: 'Position',
-      showCardType: 'Afficher les informations du modèle',
+      positioning: {
+        toggleText: 'Organiser les cartes',
+        width: 'Largeur',
+        height: 'Hauteur',
+      },
+      showCardType: 'Afficher les informations du thème',
       editCompletion: "Éditer l'avancement",
       action: {
-        chooseACardType: 'Choisissez un modèle',
+        chooseACardType: 'Quel est le thème de votre carte ?',
       },
       editor: {
         toolbox: 'Boîte à outils',
@@ -401,7 +407,7 @@ export const fr: ColabTranslations = {
         noDeliverable: 'Aucun livrable disponible',
         completionModeInfo:
           "Sélectionnez le mode d'avancement (manuel | auto | no-op). Manuel: entrez une valeur pour changer l'avancement; Auto: basé sur les enfants; Aucune: n'affiche pas de barre d'avancement",
-        noBlockYet: 'Il n\'y a aucun bloc pour l\'instant. Ajoutez-en un:',
+        noBlockYet: "Il n'y a aucun bloc pour l'instant. Ajoutez-en un:",
       },
       error: {
         withoutId: 'Une carte sans id est invalide...',
@@ -457,6 +463,9 @@ export const fr: ColabTranslations = {
       openInNewTab: 'Ouvrir dans un nouvel onglet',
       unknownDocument: 'Document inconnu',
     },
+    documentation: {
+      tabTitle: 'Documentation',
+    },
     resource: {
       untitled: 'Nouveau document',
       teaser: 'Résumé',
@@ -467,9 +476,6 @@ export const fr: ColabTranslations = {
         "Il n'y a aucun résumé pour le moment. Vous pouvez en ajouter si vous le souhaitez",
       category: 'Catégorie',
       documentation: 'Documentation',
-      docDescription: 'Documentation liée à la carte',
-      docDescriptionWithType:
-        'Documentation liée à la carte. Le modèle peut fournir de la documentation de base.',
       categorytip: 'Groupe de documents',
       noResource: 'Contient aucune documentation',
       oneResource: 'Contient 1 document',
@@ -481,29 +487,64 @@ export const fr: ColabTranslations = {
         'Publier la documentation pour la rendre disponible pour les sous-cartes',
       publishedInfo: 'Une documentation publiée est disponible pour les sous-cartes',
       unpublishedInfo: 'Une documentation non publiée est privée pour cette carte',
-      info: {
-        providedByCardType: 'Fourni par le modèle',
-        providedByUpperCard: 'Fourni par une carte parente',
+      publishedInfoType: 'Une documentation publiée est disponible pour les cartes',
+      publishedInfoRootCard: 'Une documentation publiée est disponible pour toutes les cartes',
+      unpublishedInfoType: "Une documentation non publiée n'est pas visible par les cartes",
+      help: {
+        documentationExplanation: 'Les documents utiles pour compléter la carte',
       },
+      info: {
+        noContent: 'Le document est vide',
+        providedByCardType: (cardTypeName: string) => `Fournie par le thème «${cardTypeName}»`,
+        ownedByThisCardType: 'Appartient à ce thème',
+        providedByUpperCard: (name: string) => `Fournie par la carte parente «${name}»`,
+        ownedByThisCard: 'Appartient à la carte courante',
+        ownedByThisCardContent: 'Appartient à la variante courante',
+        providedByTheCurrentProject: 'Fournie par la documentation du projet',
+        providedByExternalCardType: (cardTypeName: string, projectName: string) =>
+          `Fournie par le thème «${cardTypeName}» du projet «${projectName}»`,
+        providedByGlobalCardType: (cardTypeName: string) =>
+          `Fournie par la thème globale «${cardTypeName}»`,
+        forceTooltip:
+          "Cette documentation provient d'ailleurs, vous pouvez néanmoins l'éditer depuis ici",
+      },
+      scope: {
+        disclaimer: '', // TODO
+        confirm: 'déplacer',
+        reset: "retourner à l'état inital",
+        cancel: 'annuler',
+        showAllCards: 'afficher toutes les cartes',
+        alsoUsedByExternalProject: 'Aussi visible par ces autres projets',
+        projectDocDesc:
+          'Un document peut être lié au projet entier. Ansi, il sera visible par toutes les cartes',
+        thematicDesc:
+          'Un document peut être lié à un thème spécifique. Ainsi, il ne sera visible que par les cartes relevant de ce thème.',
+        mainViewTitle: 'Cartes du projet',
+        mainViewDesc:
+          'Un document peut être lié à une carte précise. Ainsi, il ne sera visible que par cette carte, ou par cette carte et tous ses descendants si le document est publié.',
+      },
+      sortByCategory: 'par catégorie',
+      sortByProvider: 'par source',
+      noDocumentationYet: "Il n'y a pas encore de documentation",
     },
     cardType: {
-      cardType: 'Modèle',
-      cardTypesLongWay: 'Modèle de carte',
-      titlePlaceholder: 'Nouveau modèle',
-      purpose: 'Objectif',
-      globalTypes: 'Modèles globaux',
-      sharedAvailableTypes: 'Modèles disponibles partagés',
+      cardType: 'Thème',
+      cardTypesLongWay: 'Documentation thématique',
+      titlePlaceholder: 'Nouveau thème',
+      purpose: 'Description',
+      globalTypes: 'Thèmes globaux',
+      sharedAvailableTypes: 'Thèmes disponibles partagés',
       action: {
-        createType: 'Créer un modèle',
-        createAType: 'Créer un modèle',
-        deleteType: 'Supprimer le modèle',
-        confirmDeleteType: 'Êtes-vous sûr-e-s de vouloir supprimer ce modèle',
+        createType: 'Créer un thème',
+        createAType: 'Créer un thème',
+        deleteType: 'Supprimer le thème',
+        confirmDeleteType: 'Êtes-vous sûr-e-s de vouloir supprimer ce thème',
         useInProject: 'Utiliser dans le projet',
         removeFromProject: 'Retirer du projet',
       },
       route: {
-        backToCardType: 'Retour aux modèles',
-        manageTypes: 'Gérer les modèles',
+        backToCardType: 'Retour aux thèmes',
+        manageTypes: 'Gérer les thèmes',
       },
       info: {
         infoPublished: (usageInAProject: boolean): string =>
@@ -514,19 +555,19 @@ export const fr: ColabTranslations = {
           }`,
         infoDeprecated: 'Ne devrait plus être utilisé',
         explainPurpose: "Expliquez l'objectif",
-        cannotRemoveCardType: 'Impossible de retirer le modèle',
+        cannotRemoveCardType: 'Impossible de retirer le thème',
         cannotRemoveFromProject:
-          'Impossible de retirer le modèle. Il est utilisé par une/des cartes.',
-        cannotDeleteType: 'Impossible de supprimer le modèle. Il est utilisé dans le projet.',
-        createFirstGlobalType: 'Créer le premier modèle global',
-        createFirstProjectType: 'Créer le premier modèle',
-        createEmptyType: 'Vous pouvez créer un modèle vide grâce à ce bouton',
-        orAddSharedType: 'ou ajouter un "modèle disponible partagé".',
-        noExternalType: "Il n'y a aucun modèle externe disponible",
+          'Impossible de retirer le thème. Il est utilisé par une/des cartes.',
+        cannotDeleteType: 'Impossible de supprimer le thème. Il est utilisé dans le projet.',
+        createFirstGlobalType: 'Créer le premier thème global',
+        createFirstProjectType: 'Créer le premier thème',
+        createEmptyType: 'Vous pouvez créer un thème vide grâce à ce bouton',
+        orAddSharedType: 'ou ajouter un "thème disponible partagé".',
+        noExternalType: "Il n'y a aucun thème externe disponible",
         referencedByOther:
           "Peut être référencé par d'autres projets (en ce qui concerne les droits d'accès).",
         shouldNotBeUsed: 'Ne devrait plus être utilisé',
-        isGlobalType: "Provient d'un modèle global",
+        isGlobalType: "Provient d'un thème global",
         fromProject: (projectName: string): string => `Provient du projet "${projectName}"`,
         fromAProject: "Provient d'un projet",
       },
@@ -548,6 +589,7 @@ export const fr: ColabTranslations = {
       todo: 'Afficher les éléments à faire',
       tips: 'Afficher les conseils',
       news: 'Afficher les actualités',
+      feature_preview: 'Afficher les nouvelles fonctionnalités à venir',
       wip: 'Afficher les éléments de travail en cours',
       debug: "Afficher l'information de déboguage",
     },
@@ -563,6 +605,10 @@ export const fr: ColabTranslations = {
       news: {
         title: "Exemple d'actualité",
         content: 'Quelques nouvelles fonctionnalités à souligner',
+      },
+      feature_preview: {
+        title: "Exemple d'avant-première",
+        content: 'Pour afficher les prochaines nouvelles fonctionnalités en avant-première',
       },
       wip: {
         title: 'Exemple de travail en cours',

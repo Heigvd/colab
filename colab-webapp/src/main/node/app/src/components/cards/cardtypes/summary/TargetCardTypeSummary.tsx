@@ -7,7 +7,7 @@
 
 import { css } from '@emotion/css';
 import { IconName } from '@fortawesome/fontawesome-svg-core';
-import { faCircleDot } from '@fortawesome/free-solid-svg-icons';
+import { faCircleDot, faGlobe } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { entityIs } from 'colab-rest-client';
 import * as React from 'react';
@@ -16,13 +16,14 @@ import { useAndLoadProject } from '../../../../selectors/projectSelector';
 import { CardTypeAllInOne as CardType } from '../../../../types/cardTypeDefinition';
 import { space_S } from '../../../styling/style';
 
-const referenceIcon = faCircleDot;
+export const referenceIcon = faCircleDot;
 
-const targetProjectIconStyle = css({
+export const targetProjectIconStyle = css({
   fontSize: '.8rem',
   marginRight: space_S,
   marginBottom: space_S,
 });
+
 interface TargetCardTypeSummaryProps {
   cardType: CardType;
 }
@@ -38,7 +39,7 @@ export default function TargetCardTypeSummary({
           <TargetProjectSummary projectId={cardType.projectIdCT} />
         ) : (
           <FontAwesomeIcon
-            icon={referenceIcon}
+            icon={faGlobe}
             color={'var(--secondaryColor)'}
             title={i18n.modules.cardType.info.isGlobalType}
             className={targetProjectIconStyle}

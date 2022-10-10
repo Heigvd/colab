@@ -6,7 +6,8 @@
  */
 package ch.colabproject.colab.api.controller.card;
 
-import ch.colabproject.colab.api.controller.common.IndexWithEmptySlotManager;
+import ch.colabproject.colab.api.controller.card.grid.Grid;
+import ch.colabproject.colab.api.controller.card.grid.GridPosition;
 import ch.colabproject.colab.api.controller.document.ResourceReferenceSpreadingHelper;
 import ch.colabproject.colab.api.model.card.AbstractCardType;
 import ch.colabproject.colab.api.model.card.Card;
@@ -18,6 +19,7 @@ import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.api.model.team.acl.AccessControl;
 import ch.colabproject.colab.api.persistence.jpa.card.CardDao;
 import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -69,12 +71,6 @@ public class CardManager {
      */
     @Inject
     private ResourceReferenceSpreadingHelper resourceReferenceSpreadingHelper;
-
-    /**
-     * Index handling specific logic management
-     */
-    @Inject
-    private IndexWithEmptySlotManager<Card> indexManager;
 
     // *********************************************************************************************
     // find cards
@@ -200,8 +196,16 @@ public class CardManager {
     private Card initNewCard(CardContent parent, AbstractCardType cardType) {
         Card card = initNewCard();
 
+
+        List<Card> subcards = parent.getSubCards();
+        // resolve any conflict in the current situation
+        Grid grid = Grid.resolveConflicts(subcards);
+        // then add the card in the grid
+        grid.addCell(card);
+        grid.shift();
+
         card.setParent(parent);
-        parent.getSubCards().add(card);
+        subcards.add(card);
 
         Project project = parent.getProject();
         if (project != null && cardType != null) {
@@ -296,17 +300,33 @@ public class CardManager {
     }
 
     /**
-     * Change the position of the card (stay in the same parent, change the index)
+     * Change the position of the card (stay in the same parent, just change positon within grid)
      * <p>
-     * Recompute the indexes of all the sister cards
+     * Recompute the position of all the sister cards
      *
      * @param cardId the id of the card
-     * @param index  the new index to set
+     *
+     * @param position  the new position to set
      */
-    public void changeCardIndex(Long cardId, int index) {
+    public void changeCardPosition(Long cardId, GridPosition position) {
         Card card = this.assertAndGetCard(cardId);
+        CardContent parent = card.getParent();
+        if (parent != null){
+            List<Card> subCards = new ArrayList<>(parent.getSubCards());
+            // make sure thre is no conflict in the current situation
+            Grid.resolveConflicts(subCards);
 
-        indexManager.changeItemPosition(card, index, card.getParent().getSubCards());
+            // compute the grid without the cell to move
+            subCards.remove(card);
+            Grid grid = Grid.resolveConflicts(subCards);
+
+            card.moveTo(position);
+            grid.addCell(card);
+
+            grid.shift();
+        }
+
+        //indexManager.changeItemPosition(card, index, card.getParent().getSubCards());
     }
 
     /**
@@ -348,6 +368,13 @@ public class CardManager {
 
                 previousParent.getSubCards().remove(card);
             }
+
+            List<Card> nweParentSubcards = newParent.getSubCards();
+            // resolve any conflict in the current situation
+            Grid grid = Grid.resolveConflicts(nweParentSubcards);
+            // then add the card in the grid
+            grid.addCell(card);
+            grid.shift();
 
             card.setParent(newParent);
             newParent.getSubCards().add(card);

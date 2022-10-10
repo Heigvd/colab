@@ -6,6 +6,7 @@
  */
 package ch.colabproject.colab.tests.rest.card;
 
+import ch.colabproject.colab.api.controller.card.grid.GridPosition;
 import ch.colabproject.colab.api.model.card.Card;
 import ch.colabproject.colab.api.model.card.CardContent;
 import ch.colabproject.colab.api.model.card.CardType;
@@ -42,7 +43,8 @@ public class CardRestEndpointTest extends AbstractArquillianTest {
         Assertions.assertNotNull(card);
         Assertions.assertNotNull(card.getId());
         Assertions.assertNull(card.getColor());
-        Assertions.assertEquals(0, card.getIndex());
+        Assertions.assertEquals(1, card.getX()); // first card take the first cell
+        Assertions.assertEquals(1, card.getY());
         Assertions.assertEquals(parentId, card.getParentId());
         Assertions.assertEquals(cardTypeId, card.getCardTypeId());
 
@@ -60,7 +62,8 @@ public class CardRestEndpointTest extends AbstractArquillianTest {
         Assertions.assertNotNull(card);
         Assertions.assertNotNull(card.getId());
         Assertions.assertNull(card.getColor());
-        Assertions.assertEquals(0, card.getIndex());
+        Assertions.assertEquals(2, card.getX());
+        Assertions.assertEquals(1, card.getY());
         Assertions.assertEquals(parentId, card.getParentId());
         Assertions.assertEquals(cardTypeId, card.getCardTypeId());
 
@@ -87,18 +90,52 @@ public class CardRestEndpointTest extends AbstractArquillianTest {
         Long cardId = card.getId();
 
         Assertions.assertNull(card.getColor());
-        Assertions.assertEquals(0, card.getIndex());
+        Assertions.assertEquals(1, card.getX());
 
         String color = "blue " + ((int) (Math.random() * 1000));
         int index = (int) (Math.random() * 100);
 
         card.setColor(color);
-        card.setIndex(index);
+        card.setX(index);
         client.cardRestEndpoint.updateCard(card);
 
         Card persistedCard = client.cardRestEndpoint.getCard(cardId);
+        // color has been updated
         Assertions.assertEquals(color, persistedCard.getColor());
-        Assertions.assertEquals(index, persistedCard.getIndex());
+        // position has not been updated
+        Assertions.assertEquals(1, persistedCard.getX());
+    }
+
+
+    @Test
+    public void testMoveCards() {
+        Project project = ColabFactory.createProject(client, "testUpdateCard");
+
+        Card card = ColabFactory.createNewCard(client, project);
+        Long cardId = card.getId();
+
+        Assertions.assertEquals(1, card.getX());
+        Assertions.assertEquals(1, card.getY());
+        Assertions.assertEquals(1, card.getWidth());
+        Assertions.assertEquals(1, card.getHeight());
+
+        client.cardRestEndpoint.changeCardPosition(card.getId(), new GridPosition(2, 3, 4, 5));
+
+        Card persistedCard = client.cardRestEndpoint.getCard(cardId);
+
+        Assertions.assertEquals(1, persistedCard.getX()); // shifted to start at (1;1)
+        Assertions.assertEquals(1, persistedCard.getY());
+        Assertions.assertEquals(4, persistedCard.getWidth());
+        Assertions.assertEquals(5, persistedCard.getHeight());
+
+
+        Card otherCard = ColabFactory.createNewCard(client, project);
+        Long otherCardId = card.getId();
+
+        Assertions.assertEquals(1, otherCard.getX());
+        Assertions.assertEquals(6, otherCard.getY());
+        Assertions.assertEquals(1, otherCard.getWidth());
+        Assertions.assertEquals(1, otherCard.getHeight());
     }
 
     @Test

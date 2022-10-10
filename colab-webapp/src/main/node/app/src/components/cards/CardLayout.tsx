@@ -9,7 +9,7 @@ import { css, cx } from '@emotion/css';
 import { Card, CardContent } from 'colab-rest-client';
 import * as React from 'react';
 import useTranslations from '../../i18n/I18nContext';
-import { cardShadow, cardStyle } from '../styling/style';
+import { cardStyle } from '../styling/style';
 
 const progressBarContainer = css({
   height: '5px',
@@ -45,7 +45,6 @@ interface CardLayoutProps {
 export default function CardLayout({
   card,
   variant,
-  variants,
   children,
   extraTools,
   showProgressBar = true,
@@ -91,10 +90,10 @@ export default function CardLayout({
           cardStyle,
           css({
             backgroundColor: 'white',
-            boxShadow:
-              variants.length > 1
-                ? `${cardShadow}, 4px 4px 0px 0px white, 4px 4px 4px 1px var(--darkGray)`
-                : undefined,
+            //            boxShadow:
+            //              variants.length > 1
+            //                ? `${cardShadow}, 4px 4px 0px 0px white, 4px 4px 4px 1px var(--darkGray)`
+            //                : undefined,
             flexDirection: 'column',
             justifyContent: 'space-between',
             display: 'flex',

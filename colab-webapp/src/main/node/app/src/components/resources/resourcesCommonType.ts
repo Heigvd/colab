@@ -6,6 +6,10 @@
  */
 
 import { entityIs, Resource, ResourceRef } from 'colab-rest-client';
+import { useCardACLForCurrentUser, useCardContent } from '../../selectors/cardSelector';
+import { useAndLoadCardType } from '../../selectors/cardTypeSelector';
+import { useMyMember, useProjectBeingEdited } from '../../selectors/projectSelector';
+import { useCurrentUser } from '../../selectors/userSelector';
 
 // ---------------------------------------------------------------------------------------------- //
 
@@ -94,6 +98,56 @@ export function isResourceActive(resource: Resource): boolean {
 
 export function isResourceRefActive(resourceRef: ResourceRef): boolean {
   return !resourceRef.refused && !resourceRef.residual;
+}
+
+/**
+ * Get access level the current user has on the given resource
+ */
+export function useResourceAccessLevelForCurrentUser(resource: Resource): AccessLevel {
+  const { currentUser } = useCurrentUser();
+  const { project } = useProjectBeingEdited();
+
+  const member = useMyMember(project?.id, currentUser?.id);
+
+  const cardContent = useCardContent(resource.cardContentId);
+
+  const cardId = entityIs(cardContent, 'CardContent') ? cardContent.cardId : resource.cardId;
+  //const card = useCard(cardId);
+
+  const cardACL = useCardACLForCurrentUser(cardId);
+
+  const { cardType } = useAndLoadCardType(resource.abstractCardTypeId);
+
+  if (cardId != null && cardACL.canRead != null && cardACL.canWrite != null) {
+    // resource belongs to a card (possibly through a CardContent)
+    // and ACL is known
+    if (cardACL.canWrite) {
+      return 'WRITE';
+    } else if (cardACL.canRead) {
+      return 'READ';
+    } else {
+      return 'DENIED';
+    }
+  } else if (cardType != null) {
+    // resource belongs to a cardType
+    if (cardType.projectId != null && cardType.projectId === project?.id) {
+      // cardType belongs to this very project
+      // acces is based on user position
+      if (member) {
+        switch (member.position) {
+          case 'GUEST':
+            return 'READ';
+          default:
+            return 'WRITE';
+        }
+      }
+    } else {
+      // cardType is either global or belongs to an external project
+      return 'READ';
+    }
+  }
+
+  return 'UNKNOWN';
 }
 
 // ---------------------------------------------------------------------------------------------- //

@@ -7,12 +7,11 @@
 package ch.colabproject.colab.api.rest;
 
 import ch.colabproject.colab.api.controller.WebsocketManager;
-import ch.colabproject.colab.api.ws.channel.ChannelOverview;
 import ch.colabproject.colab.api.ws.channel.model.WebsocketChannel;
 import ch.colabproject.colab.api.ws.message.WsSessionIdentifier;
 import ch.colabproject.colab.generator.model.annotations.AdminResource;
 import ch.colabproject.colab.generator.model.annotations.AuthenticationRequired;
-import java.util.Set;
+import java.util.Map;
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -56,7 +55,7 @@ public class WebsocketRestEndpoint {
      */
     @GET
     @AdminResource
-    public Set<ChannelOverview> getExistingChannels() {
+    public Map<String, Integer> getExistingChannels() {
         logger.debug("Get all existing channels");
         return wsManager.getExistingChannels();
     }

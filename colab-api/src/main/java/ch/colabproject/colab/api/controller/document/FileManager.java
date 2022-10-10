@@ -100,12 +100,14 @@ public class FileManager {
 
         // Check quota limit
         Project project = doc.getProject();
-        var usedQuota = getUsage(project.getId());
-        if (usedQuota + fileSize > getQuota()) {
-            FileManager.logger.debug("Quota exceeded. Used : {}, Authorized : {}",
-                usedQuota + fileSize, ColabConfiguration.getJcrRepositoryProjectQuota());
+        if (project != null) {
+            var usedQuota = getUsage(project.getId());
+            if (usedQuota + fileSize > getQuota()) {
+                FileManager.logger.debug("Quota exceeded. Used : {}, Authorized : {}",
+                    usedQuota + fileSize, ColabConfiguration.getJcrRepositoryProjectQuota());
 
-            throw HttpErrorMessage.projectQuotaExceededError();
+                throw HttpErrorMessage.projectQuotaExceededError();
+            }
         }
 
         DocumentFile hostedDoc = (DocumentFile) doc;

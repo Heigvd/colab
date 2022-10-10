@@ -1,7 +1,8 @@
 package ch.colabproject.colab.tests.rest.card;
 
 import ch.colabproject.colab.api.controller.common.IndexWithEmptySlotManager;
-import ch.colabproject.colab.api.model.card.Card;
+import ch.colabproject.colab.api.model.WithIndex;
+import ch.colabproject.colab.generator.model.interfaces.WithId;
 import java.util.Collection;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -14,25 +15,57 @@ import com.google.common.collect.Sets;
  */
 public class IndexWithEmptySlotManagerTest {
 
+    private static class TestCard implements WithId, WithIndex {
+
+        /**
+         * id
+         */
+        Long id;
+
+        /** index */
+        Integer index;
+
+        @Override
+        public Long getId() {
+            return id;
+        }
+
+        @Override
+        public int getIndex() {
+            return index;
+        }
+
+        @Override
+        public void setIndex(int index) {
+            this.index = index;
+        }
+
+        /** set index */
+        private void setId(Long id) {
+            this.id = id;
+        }
+
+    }
+
     @SuppressWarnings("static-method")
     @Test
     public void testIt() {
 
-        Card cardD = initCard(20, 0);
-        Card cardX = initCard(30, 4);
-        Card cardB = initCard(40, 4);
-        Card cardA = initCard(50, 2);
-        Card cardE = initCard(60, 0);
-        Card cardF = initCard(70, 0);
-        Card cardC = initCard(80, 4);
+        TestCard cardD = initTestCard(20, 0);
+        TestCard cardX = initTestCard(30, 4);
+        TestCard cardB = initTestCard(40, 4);
+        TestCard cardA = initTestCard(50, 2);
+        TestCard cardE = initTestCard(60, 0);
+        TestCard cardF = initTestCard(70, 0);
+        TestCard cardC = initTestCard(80, 4);
 
         // 1 2 3 4 5 6 7 8 9
         // - A - X B C D E F
 
-        Collection<Card> collection = Sets.newHashSet(cardD, cardX, cardB, cardA, cardE, cardF,
+        Collection<TestCard> collection = Sets.newHashSet(cardD, cardX, cardB, cardA, cardE, cardF,
             cardC);
 
-        IndexWithEmptySlotManager<Card> indexManager = new IndexWithEmptySlotManager<>();
+        IndexWithEmptySlotManager<TestCard> indexManager = new IndexWithEmptySlotManager<>();
 
         // init the indexes
         indexManager.changeItemPosition(cardX, 8, collection);
@@ -125,8 +158,8 @@ public class IndexWithEmptySlotManagerTest {
         Assertions.assertEquals(9, cardF.getIndex());
     }
 
-    private static Card initCard(long id, int index) {
-        Card card = new Card();
+    private static TestCard initTestCard(long id, int index) {
+        TestCard card = new TestCard();
         card.setId(id);
         card.setIndex(index);
         return card;

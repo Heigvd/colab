@@ -18,7 +18,6 @@ import ch.colabproject.colab.api.presence.model.TouchUserPresence;
 import ch.colabproject.colab.api.security.permissions.Conditions;
 import ch.colabproject.colab.api.ws.WebsocketEndpoint;
 import ch.colabproject.colab.api.ws.WebsocketMessagePreparer;
-import ch.colabproject.colab.api.ws.channel.ChannelOverview;
 import ch.colabproject.colab.api.ws.channel.model.BlockChannel;
 import ch.colabproject.colab.api.ws.channel.model.BroadcastChannel;
 import ch.colabproject.colab.api.ws.channel.model.ProjectContentChannel;
@@ -38,7 +37,6 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -185,14 +183,14 @@ public class WebsocketManager {
      * This method is cluster-aware. In short, {@link #getSubscriptionsCount() } will be called for
      * each instance of the cluster.
      *
-     * @return list of all occupied channels mapped to the number of subscribers
+     * @return list of all occupied channels URN mapped to the number of subscribers
      */
-    public Set<ChannelOverview> getExistingChannels() {
+    public Map<String, Integer> getExistingChannels() {
         IExecutorService executorService = hzInstance.getExecutorService("COLAB_WS");
-        Map<Member, Future<Map<WebsocketChannel, Integer>>> results = executorService
+        Map<Member, Future<Map<String, Integer>>> results = executorService
             .submitToAllMembers(new CallableGetChannel());
 
-        Map<WebsocketChannel, Integer> aggregate = new HashMap<>();
+        Map<String, Integer> map = new HashMap<>();
 
         results.values().stream()
             .flatMap((result) -> {
@@ -203,19 +201,16 @@ public class WebsocketManager {
                 }
             })
             .forEach(entry -> {
-                if (aggregate.containsKey(entry.getKey())) {
-                    aggregate.put(entry.getKey(), aggregate.get(entry.getKey()) + entry.getValue());
+                String key = entry.getKey();
+                var currentCount = map.get(entry.getKey());
+                if (currentCount != null){
+                    map.put(key, currentCount + entry.getValue());
                 } else {
-                    aggregate.put(entry.getKey(), entry.getValue());
+                    map.put(key, entry.getValue());
                 }
             });
 
-        return aggregate.entrySet().stream().map(entry -> {
-            ChannelOverview channelOverview = new ChannelOverview();
-            channelOverview.setChannel(entry.getKey());
-            channelOverview.setCount(entry.getValue());
-            return channelOverview;
-        }).collect(Collectors.toSet());
+        return map;
     }
 
     /**
@@ -223,9 +218,9 @@ public class WebsocketManager {
      *
      * @return the list of channels and the number of sessions subscribed to each of them
      */
-    public Map<WebsocketChannel, Integer> getSubscriptionsCount() {
+    public Map<String, Integer> getSubscriptionsCount() {
         return this.subscriptions.entrySet().stream()
-            .collect(Collectors.toMap(Entry::getKey, entry -> entry.getValue().size()));
+            .collect(Collectors.toMap(entry -> entry.getKey().getUrn(), entry -> entry.getValue().size()));
     }
 
     /**

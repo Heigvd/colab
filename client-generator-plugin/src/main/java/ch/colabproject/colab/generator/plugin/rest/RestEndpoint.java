@@ -309,7 +309,8 @@ public class RestEndpoint {
      *
      * @return the name to use
      */
-    private String resolveSimpleImport(String name, Map<String, String> imports) {
+    private String resolveSimpleImport(String nameArg, Map<String, String> imports) {
+        String name = nameArg.strip();
         String[] split = name.split("\\.");
         String simpleName = split[split.length - 1];
 

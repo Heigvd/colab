@@ -108,8 +108,11 @@ export function useVariantsOrLoad(card?: Card): CardContent[] | null | undefined
   }, shallowEqual);
 }
 
-export const useCard = (id: number): Card | 'LOADING' | undefined => {
+export const useCard = (id: number | null | undefined): Card | 'LOADING' | undefined => {
   return useAppSelector(state => {
+    if (id == null) {
+      return undefined;
+    }
     const cardDetail = state.cards.cards[id];
 
     if (cardDetail != null) {
