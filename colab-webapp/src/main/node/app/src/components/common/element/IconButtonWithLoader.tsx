@@ -10,7 +10,7 @@ import { IconProp, SizeProp, Transform } from '@fortawesome/fontawesome-svg-core
 import { faSpinner } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import * as React from 'react';
-import { iconButton, linkStyle, spinningStyle } from '../../styling/style';
+import { iconButton, linkStyle } from '../../styling/style';
 import Clickable from '../layout/Clickable';
 
 export interface IconButtonWithLoaderProps {
@@ -63,7 +63,8 @@ export default function IconButtonWithLoader({
                 color={iconColor}
                 size={iconSize}
                 mask={mask}
-                className={cx(spinningStyle, IconClassName)}
+                pulse
+                className={IconClassName}
               />
             </>
           ) : (
@@ -90,7 +91,8 @@ export default function IconButtonWithLoader({
           color={iconColor}
           size={iconSize}
           mask={mask}
-          className={cx({ [spinningStyle]: loading }, IconClassName)}
+          pulse={loading}
+          className={IconClassName}
         />
       )}
     </Clickable>

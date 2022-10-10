@@ -1,6 +1,6 @@
 /*
  * The coLAB project
- * Copyright (C) 2021 AlbaSim, MEI, HEIG-VD, HES-SO
+ * Copyright (C) 2021-2022 AlbaSim, MEI, HEIG-VD, HES-SO
  *
  * Licensed under the MIT License
  */
@@ -19,6 +19,7 @@ import {
   DuplicationParam,
   entityIs,
   ErrorHandler,
+  GridPosition,
   HierarchicalPosition,
   HttpSession,
   InvolvementLevel,
@@ -811,11 +812,11 @@ export const updateCard = createAsyncThunk('card/update', async (card: Card) => 
   await restClient.CardRestEndpoint.updateCard(card);
 });
 
-export const changeCardIndex = createAsyncThunk(
+export const changeCardPosition = createAsyncThunk(
   'card/changecardindex',
-  async ({ cardId, newIndex }: { cardId: number; newIndex: number }) => {
+  async ({ cardId, newPosition }: { cardId: number; newPosition: GridPosition }) => {
     // change the index and review other cards index
-    await restClient.CardRestEndpoint.changeCardIndex(cardId, newIndex);
+    await restClient.CardRestEndpoint.changeCardPosition(cardId, newPosition);
   },
 );
 
@@ -1018,6 +1019,28 @@ export const unpublishResource = createAsyncThunk(
   },
 );
 
+export const moveResource = createAsyncThunk(
+  'resource/move',
+  async ({
+    resource,
+    newParentType,
+    newParentId,
+    published,
+  }: {
+    resource: AbstractResource;
+    newParentType: 'Card' | 'CardContent' | 'CardType';
+    newParentId: number;
+    published: boolean;
+  }) => {
+    return await restClient.ResourceRestEndpoint.moveResource(
+      resource.id!,
+      newParentType,
+      newParentId,
+      published,
+    );
+  },
+);
+
 export const updateResourceRef = createAsyncThunk(
   'resource/updateResourceRef',
   async (resourceRef: ResourceRef) => {
@@ -1083,7 +1106,11 @@ export const changeResourceCategory = createAsyncThunk(
     categoryName: string;
   }) => {
     if (resourceOrRef && resourceOrRef.id) {
-      return await restClient.ResourceRestEndpoint.changeCategory(resourceOrRef.id, categoryName);
+      if (categoryName) {
+        return await restClient.ResourceRestEndpoint.changeCategory(resourceOrRef.id, categoryName);
+      } else {
+        return await restClient.ResourceRestEndpoint.removeCategory(resourceOrRef.id);
+      }
     }
   },
 );

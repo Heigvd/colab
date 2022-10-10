@@ -54,7 +54,7 @@ export default function ProjectCardTypeList(): JSX.Element {
     if (lastCreated) {
       projectCardTypes.forEach(cardType => {
         if (cardType.id === lastCreated) {
-          navigate(`./editt/${cardType.id}`);
+          navigate(`./edit/${cardType.id}`);
           setLastCreated(null);
         }
       });
@@ -83,7 +83,6 @@ export default function ProjectCardTypeList(): JSX.Element {
             ) : projectCardTypes.length > 0 ? (
               <CustomElementsList
                 items={projectCardTypes}
-                loadingStatus={projectCTStatus}
                 thumbnailContent={item => {
                   return <CardTypeThumbnail cardType={item} usage="currentProject" editable />;
                 }}
@@ -116,7 +115,6 @@ export default function ProjectCardTypeList(): JSX.Element {
               ) : availableCardTypes.length > 0 ? (
                 <CustomElementsList
                   items={availableCardTypes}
-                  loadingStatus={availableCTStatus}
                   thumbnailContent={item => {
                     return <CardTypeThumbnail cardType={item} usage="available" editable />;
                   }}

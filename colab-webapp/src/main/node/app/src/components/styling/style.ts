@@ -430,6 +430,10 @@ export const defaultColumnContainerStyle = cx(
 
 export const mainHeaderHeight = '50px';
 
+export const fullHeightStyle = css({
+  height: '100%',
+});
+
 export const labelStyle = css({
   fontWeight: 500,
 });
@@ -560,6 +564,7 @@ export const voidStyle = css({
   flexDirection: 'column',
   alignItems: 'center',
   justifyContent: 'center',
+  padding: space_L,
 });
 
 export const selectCreatorStyle = css({

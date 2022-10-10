@@ -7,8 +7,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import {
   BlockMonitoring,
-  ChannelOverview,
-  entityIs,
   LevelDescriptor,
   VersionDetails,
   WebsocketChannel,
@@ -19,7 +17,7 @@ import { InlineAvailabilityStatus, LoadingStatus } from './store';
 export interface AdminState {
   loggers: { [key: string]: LevelDescriptor } | undefined | null;
   userStatus: LoadingStatus;
-  occupiedChannels: ChannelOverview[] | 'NOT_INITIALIZED' | 'LOADING';
+  occupiedChannels: Record<string, number> | 'NOT_INITIALIZED' | 'LOADING';
   versionStatus: LoadingStatus;
   liveMonitoring: InlineAvailabilityStatus<BlockMonitoring[]>;
   version: VersionDetails;
@@ -33,6 +31,21 @@ const initialState: AdminState = {
   version: { buildNumber: '', dockerImages: '' },
   liveMonitoring: 'NOT_INITIALIZED',
 };
+
+function getChannelUrn(channel: WebsocketChannel): string {
+  const baseUrn = 'urn:coLAB:WebsocketChannel/' + channel['@class'];
+
+  switch (channel['@class']) {
+    case 'BlockChannel':
+      return baseUrn + '/' + channel.blockId;
+    case 'BroadcastChannel':
+      return baseUrn;
+    case 'ProjectContentChannel':
+      return baseUrn + '/' + channel.projectId;
+    case 'UserChannel':
+      return baseUrn + '/' + channel.userId;
+  }
+}
 
 const adminSlice = createSlice({
   name: 'admin',
@@ -48,38 +61,19 @@ const adminSlice = createSlice({
           const channel = message.channel;
           const count = message.diff;
 
-          const index = channels.findIndex(item => {
-            if (entityIs(channel, 'UserChannel') && entityIs(item.channel, 'UserChannel')) {
-              return channel.userId === item.channel.userId;
-            } else if (
-              entityIs(channel, 'ProjectContentChannel') &&
-              entityIs(item.channel, 'ProjectContentChannel')
-            ) {
-              return channel.projectId === item.channel.projectId;
+          const urn = getChannelUrn(channel);
+          const found = channels[urn];
+          if (found != null) {
+            const newCount = found + count;
+            if (newCount > 0) {
+              // update channel
+              channels[urn] = newCount;
             } else {
-              return false;
-            }
-          });
-
-          if (index >= 0) {
-            const found = channels[index];
-            if (found != null) {
-              // channel exists
-              const newCount = found.count + count;
-              if (newCount > 0) {
-                // update channel
-                found.count = newCount;
-              } else {
-                // remove channel
-                channels.splice(index, 1);
-              }
+              // remove channel
+              delete channels[urn];
             }
           } else if (count > 0) {
-            channels.push({
-              '@class': 'ChannelOverview',
-              channel: channel,
-              count: count,
-            });
+            channels[urn] = count;
           }
         });
       }

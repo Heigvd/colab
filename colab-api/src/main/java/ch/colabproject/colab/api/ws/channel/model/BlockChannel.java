@@ -6,6 +6,7 @@
  */
 package ch.colabproject.colab.api.ws.channel.model;
 
+import ch.colabproject.colab.api.Helper;
 import ch.colabproject.colab.generator.model.annotations.ExtractJavaDoc;
 import java.util.Objects;
 
@@ -47,6 +48,11 @@ public class BlockChannel implements WebsocketChannel {
      */
     public void setBlockId(Long blockId) {
         this.blockId = blockId;
+    }
+
+    @Override
+    public String getUrn() {
+        return Helper.getColabBaseUrn(this) + "/" + this.blockId;
     }
 
     @Override

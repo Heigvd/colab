@@ -20,8 +20,8 @@ import { useProjectBeingEdited } from './projectSelector';
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 /**
- * Turn a card type from a server side model
- * into a convenient model for the client side
+ * Turn a card type from a server side theme
+ * into a convenient theme for the client side
  *
  * @param cardType the card type, as seen by the server side (it is on it's own, no reference)
  *
@@ -50,8 +50,8 @@ function makeCardTypeOnOneSOwn(cardType: CardTypeOnly): CardTypeAllInOne {
 }
 
 /**
- * Turn a card type with a reference from a server side model
- * into a convenient model for the client side
+ * Turn a card type with a reference from a server side theme
+ * into a convenient theme for the client side
  *
  * @param ref      the starting reference as seen by the server side
  * @param refChain the references chain from the start reference to the concrete card type

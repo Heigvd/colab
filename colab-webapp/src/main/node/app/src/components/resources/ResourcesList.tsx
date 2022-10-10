@@ -6,13 +6,22 @@
  */
 
 import { css, cx } from '@emotion/css';
+import { faMinus, faPersonDigging } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { entityIs } from 'colab-rest-client';
 import * as React from 'react';
 import useTranslations, { useLanguage } from '../../i18n/I18nContext';
-import { useAndLoadTextOfDocument } from '../../selectors/documentSelector';
+import { useProjectRootCard } from '../../selectors/cardSelector';
+import { useAndLoadNbDocuments, useAndLoadTextOfDocument } from '../../selectors/documentSelector';
+import { useProjectBeingEdited } from '../../selectors/projectSelector';
 import Tips from '../common/element/Tips';
+import Tooltip from '../common/element/Tooltip';
 import Flex from '../common/layout/Flex';
-import { marginAroundStyle, oneLineEllipsis, space_M, space_S } from '../styling/style';
+import DocumentPreview from '../documents/preview/DocumentPreview';
+import { iconStyle, marginAroundStyle, oneLineEllipsis, space_M, space_S } from '../styling/style';
 import { getKey, getTheDirectResource, ResourceAndRef } from './resourcesCommonType';
+import { TocDisplayCtx } from './ResourcesMainView';
+import TargetResourceSummary from './summary/TargetResourceSummary';
 
 /**
  * List of ResourceAndRef grouped by category
@@ -34,12 +43,14 @@ export interface ResourcesListProps {
   resources: ResourceAndRef[];
   selectResource?: (resource: ResourceAndRef) => void;
   displayResourceItem?: (resource: ResourceAndRef) => React.ReactNode;
+  showLocationIcon?: boolean;
 }
 
-export default function ResourcesList({
+function ResourcesListByCategory({
   resources,
   selectResource,
   displayResourceItem,
+  showLocationIcon = true,
 }: ResourcesListProps): JSX.Element {
   const lang = useLanguage();
 
@@ -80,6 +91,7 @@ export default function ResourcesList({
                   resource={resource}
                   selectResource={selectResource}
                   displayResource={displayResourceItem}
+                  showLocationIcon={showLocationIcon}
                 />
               ))}
             </Flex>
@@ -89,10 +101,87 @@ export default function ResourcesList({
   );
 }
 
+function getSourceKey(current: ResourceAndRef) {
+  return (
+    `ct-${current.targetResource.abstractCardTypeId || 'Z'}` +
+    `card-${current.targetResource.cardId || 'Z'}` +
+    `cardC-${current.targetResource.abstractCardTypeId || 'Z'}`
+  );
+}
+
+function ResourcesListBySource({
+  resources,
+  selectResource,
+  displayResourceItem,
+}: ResourcesListProps): JSX.Element {
+  const lang = useLanguage();
+
+  const bySources: Record<string, ResourceAndRef[]> = React.useMemo(() => {
+    const reducedBySource = resources.reduce<Record<string, ResourceAndRef[]>>((acc, current) => {
+      const sourceKey = getSourceKey(current);
+
+      acc[sourceKey] = acc[sourceKey] || [];
+      acc[sourceKey]!.push(current);
+
+      return acc;
+    }, {});
+
+    Object.values(reducedBySource).forEach(list => {
+      list.sort(sortResources(lang));
+    });
+
+    return reducedBySource;
+  }, [resources, lang]);
+
+  return (
+    <Flex
+      direction="column"
+      align="stretch"
+      grow={1}
+      className={css({ overflow: 'auto', paddingRight: '2px' })}
+    >
+      {Object.keys(bySources)
+        .sort()
+        .map(source => (
+          <div key={source} className={marginAroundStyle([3], space_S)}>
+            <TocHeader
+              category={
+                <TargetResourceSummary resource={bySources[source]![0]!} showText="short" />
+              }
+            />
+
+            <Flex className={css({ marginLeft: space_S })} direction="column" align="stretch">
+              <ResourcesListByCategory
+                resources={bySources[source]!}
+                selectResource={selectResource}
+                displayResourceItem={displayResourceItem}
+                showLocationIcon={false}
+              />
+            </Flex>
+          </div>
+        ))}
+    </Flex>
+  );
+}
+
+export default function ResourcesList(props: ResourcesListProps): JSX.Element {
+  const { mode } = React.useContext(TocDisplayCtx);
+
+  return (
+    <Flex direction="column" align="stretch" grow={1}>
+      {mode === 'CATEGORY' ? (
+        <ResourcesListByCategory {...props} />
+      ) : (
+        <ResourcesListBySource {...props} />
+      )}
+    </Flex>
+  );
+}
+
 // ********************************************************************************************** //
 
 interface TocHeaderProps {
-  category: string;
+  category: React.ReactNode;
 }
 
 function TocHeader({ category }: TocHeaderProps): JSX.Element {
@@ -133,12 +222,26 @@ interface TocEntryProps {
   resource: ResourceAndRef;
   selectResource?: (resource: ResourceAndRef) => void;
   displayResource?: (resource: ResourceAndRef) => React.ReactNode;
+  showLocationIcon: boolean;
 }
 
-function TocEntry({ resource, selectResource, displayResource }: TocEntryProps): JSX.Element {
+function TocEntry({
+  resource,
+  selectResource,
+  displayResource,
+  showLocationIcon,
+}: TocEntryProps): JSX.Element {
   const i18n = useTranslations();
 
   const { text: teaser } = useAndLoadTextOfDocument(resource.targetResource.teaserId);
+
+  const { nb: nbDocs } = useAndLoadNbDocuments({
+    kind: 'PartOfResource',
+    ownerId: resource.targetResource.id || 0,
+  });
+
+  const { project } = useProjectBeingEdited();
+  const rootCard = useProjectRootCard(project);
 
   return (
     <Flex className={tocEntryStyle} justify="space-between">
@@ -147,7 +250,7 @@ function TocEntry({ resource, selectResource, displayResource }: TocEntryProps):
       ) : (
         <>
           <Flex
-            title={teaser || ''}
+            align="center"
             onClick={() => {
               if (selectResource != null) {
                 selectResource(resource);
@@ -165,16 +268,80 @@ function TocEntry({ resource, selectResource, displayResource }: TocEntryProps):
                 oneLineEllipsis,
               )}
             >
-              {resource.targetResource.title || i18n.modules.resource.untitled}
+              {showLocationIcon && (
+                <>
+                  <TargetResourceSummary resource={resource} />{' '}
+                </>
+              )}
+              <Tooltip
+                tooltipClassName={css({
+                  width: '400px',
+                  height: '600px',
+                  overflow: 'hidden',
+                  padding: '20px',
+                })}
+                tooltip={
+                  <Flex direction="column" align="stretch">
+                    <h3>{resource.targetResource.title}</h3>
+                    <Flex className={css({ paddingBottom: '5px' })}>
+                      <em>
+                        <TargetResourceSummary resource={resource} showText="full" />
+                      </em>
+                    </Flex>
+                    <div
+                      className={css({ marginBottom: '5px', borderBottom: '1px solid lightgrey' })}
+                    />
+                    {teaser && (
+                      <div
+                        className={css({
+                          marginBottom: '5px',
+                          borderBottom: '1px solid lightgrey',
+                        })}
+                      >
+                        {teaser}
+                      </div>
+                    )}
+                    <DocumentPreview
+                      docOwnership={{
+                        kind: 'PartOfResource',
+                        ownerId: resource.targetResource.id!,
+                      }}
+                    />
+                  </Flex>
+                }
+              >
+                {resource.targetResource.title || i18n.modules.resource.untitled}
+              </Tooltip>
             </div>
+
+            {!resource.targetResource.published &&
+              (resource.targetResource.abstractCardTypeId != null ||
+                (resource.targetResource.cardId != null &&
+                  entityIs(rootCard, 'Card') &&
+                  resource.targetResource.cardId === rootCard.id)) && (
+                <FontAwesomeIcon
+                  icon={faPersonDigging}
+                  title={i18n.modules.resource.unpublishedInfoType}
+                  className={iconStyle}
+                />
+              )}
+
+            {nbDocs < 1 && (
+              <FontAwesomeIcon
+                icon={faMinus}
+                title={i18n.modules.resource.info.noContent}
+                className={iconStyle}
+              />
+            )}
           </Flex>
+
           <Tips tipsType="DEBUG" interactionType="CLICK">
             <div className={css({ fontSize: '0.8em' })}>
               {resource.targetResource && (
                 <div>
                   {resource.targetResource.cardId != null && <p> on card </p>}
-                  {resource.targetResource.cardContentId != null && <p> on var </p>}
-                  {resource.targetResource.abstractCardTypeId != null && <p> on model </p>}
+                  {resource.targetResource.cardContentId != null && <p> on variant </p>}
+                  {resource.targetResource.abstractCardTypeId != null && <p> on theme </p>}
                   <p>- {resource.targetResource.published ? 'is' : 'not'} published </p>
                   <p>- {resource.targetResource.deprecated ? 'is' : 'not'} deprecated </p>
                   <p>- "{resource.targetResource.category}"</p>
@@ -183,10 +350,11 @@ function TocEntry({ resource, selectResource, displayResource }: TocEntryProps):
               )}
               {resource.cardTypeResourceRef && (
                 <div>
-                  <p>type ref</p>
+                  <p>theme ref</p>
                   <p>- {resource.cardTypeResourceRef.residual ? 'is' : 'not'} residual </p>
                   <p>- {resource.cardTypeResourceRef.refused ? 'is' : 'not'} refused </p>
                   <p>- "{resource.cardTypeResourceRef.category}"</p>
+                  <br />
                 </div>
               )}
               {resource.cardResourceRef && (
@@ -195,14 +363,16 @@ function TocEntry({ resource, selectResource, displayResource }: TocEntryProps):
                   <p>- {resource.cardResourceRef.residual ? 'is' : 'not'} residual </p>
                   <p>- {resource.cardResourceRef.refused ? 'is' : 'not'} refused </p>
                   <p>- "{resource.cardResourceRef.category}"</p>
+                  <br />
                 </div>
               )}
               {resource.cardContentResourceRef && (
                 <div>
-                  <p>var ref</p>
+                  <p>variant ref</p>
                   <p>- {resource.cardContentResourceRef.residual ? 'is' : 'not'} residual </p>
                   <p>- {resource.cardContentResourceRef.refused ? 'is' : 'not'} refused </p>
                   <p>- "{resource.cardContentResourceRef.category}"</p>
+                  <br />
                 </div>
               )}
             </div>

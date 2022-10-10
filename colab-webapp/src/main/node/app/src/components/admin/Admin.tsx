@@ -36,7 +36,7 @@ export default function Admin(): JSX.Element {
     <div className={css({ padding: space_L })}>
       <Flex>
         <IconButton
-          title="Back"
+          title={i18n.common.back}
           icon={faArrowLeft}
           onClick={() => navigate('..')}
           className={lightIconButtonStyle}
@@ -44,7 +44,7 @@ export default function Admin(): JSX.Element {
         <h2>Admin Page</h2>
       </Flex>
       <div>
-        <Tabs routed>
+        <Tabs routed defaultTab="main">
           <Tab name="main" label="Admin">
             <MainPanel />
           </Tab>

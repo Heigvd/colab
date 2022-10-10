@@ -14,6 +14,7 @@ import { Card, CardContent, entityIs } from 'colab-rest-client';
 import { throttle } from 'lodash';
 import * as React from 'react';
 import * as API from '../../../API/api';
+import useTranslations from '../../../i18n/I18nContext';
 import { getLogger } from '../../../logger';
 import { useProjectRootCard } from '../../../selectors/cardSelector';
 import { useProjectBeingEdited } from '../../../selectors/projectSelector';
@@ -29,19 +30,27 @@ import CardLayout from '../../cards/CardLayout';
 import IconButton from '../../common/element/IconButton';
 import InlineLoading from '../../common/element/InlineLoading';
 import { BlockInput } from '../../common/element/Input';
+import { FeaturePreview } from '../../common/element/Tips';
 import Flex from '../../common/layout/Flex';
-import { cardShadow } from '../../styling/style';
+import { cardShadow, space_M, space_S } from '../../styling/style';
 
 const logger = getLogger('JsPlumb');
 //logger.setLevel(3);
 
-const cardGroupStyle = css({
+const showAddVariantStyle = css({
   ':hover': {
     '& .variant-creator': {
       visibility: 'visible',
     },
   },
+});
+
+const grabGroupStyle = css({
   cursor: 'grab',
+});
+
+const clickGroupStyle = css({
+  cursor: 'pointer',
 });
 
 //
@@ -64,24 +73,45 @@ interface PlumbRef {
   connections: Record<string, Connection>;
   assignDiv: (element: Element | null, key: string) => void;
   assignConnection: (connection: Connection | null, key: string) => void;
+  showCreatorButton: boolean;
+  showOnlyCard: number[] | undefined;
+  variantDecorator?: (card: Card, cardContent: CardContent) => React.ReactNode;
+  cardDecorator?: (card: Card) => React.ReactNode;
+  onCardClick?: (card: Card) => void;
+  onContentClick?: (card: Card, cardContent: CardContent) => void;
+  dnd: boolean;
 }
 
-const PlumbContext = React.createContext<PlumbRef>({
+const HierarchyContext = React.createContext<PlumbRef>({
   divs: {},
   connections: {},
   assignConnection: () => {},
   assignDiv: () => {},
+  showCreatorButton: true,
+  showOnlyCard: undefined,
+  dnd: true,
 });
 
 interface CardContentThumbProps {
   id: string;
   name: string;
   className?: string;
-  onClick?: () => void;
+  onClick?: (e: React.MouseEvent) => void;
+  onMouseDown?: (e: React.MouseEvent) => void;
+  card?: Card;
+  cardContent?: CardContent;
 }
 
-function CardContentThumb({ id, name, className, onClick }: CardContentThumbProps): JSX.Element {
-  const { assignDiv } = React.useContext(PlumbContext);
+function CardContentThumb({
+  id,
+  name,
+  className,
+  onClick,
+  onMouseDown,
+  card,
+  cardContent,
+}: CardContentThumbProps): JSX.Element {
+  const { assignDiv, variantDecorator } = React.useContext(HierarchyContext);
   return (
     <div
       ref={r => {
@@ -93,12 +123,15 @@ function CardContentThumb({ id, name, className, onClick }: CardContentThumbProp
           boxShadow: cardShadow,
           cursor: onClick != null ? 'pointer' : 'default',
           padding: '10px',
+          flexGrow: 1,
         }),
         className,
+        id ? `CardContent-${id}` : undefined,
       )}
       onClick={onClick}
+      onMouseDown={onMouseDown}
     >
-      {name || <i>untitled</i>}
+      {variantDecorator && card && cardContent ? variantDecorator(card, cardContent) : name}
     </div>
   );
 }
@@ -142,13 +175,30 @@ function CardGroup({ card }: CardGroupProps) {
     }
   }, shallowEqual);
 
-  const { assignDiv } = React.useContext(PlumbContext);
+  const { assignDiv, showCreatorButton, cardDecorator, onCardClick, onContentClick, dnd } =
+    React.useContext(HierarchyContext);
 
   // <div className={`CardGroup ${cardStyle(card.color)}`} key={`CardGroupc${card.id!}`}>
   return (
-    <div className={`CardGroup ${cardGroupStyle}`} key={`CardGroupc${card.id!}`}>
+    <div
+      className={cx({
+        CardGroup: true,
+        [`CardType-${card.cardTypeId}`]: card.cardTypeId != null,
+        [showAddVariantStyle]: showCreatorButton,
+        [grabGroupStyle]: dnd,
+        [clickGroupStyle]: onCardClick != null,
+      })}
+      key={`CardGroupc${card.id!}`}
+    >
       <CardLayout card={card} variant={undefined} variants={[]}>
         <div
+          onClick={
+            onCardClick
+              ? () => {
+                  onCardClick(card);
+                }
+              : undefined
+          }
           className={css({
             display: 'flex',
             flexDirection: 'column',
@@ -160,18 +210,29 @@ function CardGroup({ card }: CardGroupProps) {
             width: '100%',
           })}
         >
-          {card.title || <i>no title</i>}
+          <div
+            className={css({
+              padding: space_S + ' ' + space_S + ' ' + space_S + ' ' + space_M,
+            })}
+          >
+            {cardDecorator ? (
+              cardDecorator(card)
+            ) : (
+              <span className={css({ fontWeight: 'bold' })}>{card.title || <i>no title</i>}</span>
+            )}
+          </div>
         </div>
         {contents != null ? (
           <Flex
             className={
               contents.length === 1
                 ? css({
-                    visibility: 'hidden',
+                    //visibility: 'hidden',
                   })
                 : undefined
             }
             direction="row"
+            align="stretch"
             theRef={ref => {
               assignDiv(ref, `CardGroup-${card.id}`);
             }}
@@ -182,24 +243,41 @@ function CardGroup({ card }: CardGroupProps) {
                   id={String(v.content.id)}
                   key={v.content.id}
                   name={v.content.title || ''}
+                  card={card}
+                  cardContent={v.content}
+                  onClick={
+                    onContentClick
+                      ? e => {
+                          onContentClick(card, v.content!);
+                          e.stopPropagation();
+                        }
+                      : undefined
+                  }
                 />
               ) : (
                 <InlineLoading key={`loader-${i}`} />
               ),
             )}
 
-            <CardContentThumb
-              id={`new-for-${card.id}`}
-              name="(+)"
-              className={`variant-creator ${css({
-                visibility: 'hidden',
-                //              position: 'absolute',
-                //              left: '100%',
-              })}`}
-              onClick={() => {
-                dispatch(API.createCardContentVariantWithBlockDoc(card.id!));
-              }}
-            />
+            {showCreatorButton && (
+              <CardContentThumb
+                id={`new-for-${card.id}`}
+                name="(+)"
+                className={`variant-creator ${css({
+                  visibility: 'hidden',
+                  //              position: 'absolute',
+                  //              left: '100%',
+                })}`}
+                onMouseDown={e => {
+                  e.stopPropagation();
+                  e.preventDefault();
+                }}
+                onClick={e => {
+                  e.stopPropagation();
+                  dispatch(API.createCardContentVariantWithBlockDoc(card.id!));
+                }}
+              />
+            )}
           </Flex>
         ) : (
           <InlineLoading />
@@ -260,7 +338,7 @@ function manageConnection({
 }
 
 function SubCardCreator({ jsPlumb, parent }: SubCardCreatorProps) {
-  const { divs, assignDiv, connections, assignConnection } = React.useContext(PlumbContext);
+  const { divs, assignDiv, connections, assignConnection } = React.useContext(HierarchyContext);
 
   const parentNode = divs[`CardContent-${parent.id}`];
   //  const thisNode = divRefs[`CreateSubCard-${parent.id}`];
@@ -337,6 +415,12 @@ interface SubContainerProps {
 }
 
 function SubContainer({ parent, subcards, jsPlumb }: SubContainerProps) {
+  const { showCreatorButton, showOnlyCard } = React.useContext(HierarchyContext);
+
+  const filterdSubCards = showOnlyCard
+    ? subcards.filter(card => card && showOnlyCard.includes(card.id!))
+    : subcards;
+
   return (
     <div
       data-cardcontent={parent.id || ''}
@@ -346,14 +430,14 @@ function SubContainer({ parent, subcards, jsPlumb }: SubContainerProps) {
       })}`}
       key={`cc${parent.id!}`}
     >
-      {subcards.map((sub, i) => {
+      {filterdSubCards.map((sub, i) => {
         if (sub?.id != null) {
           return <CardHierarchy key={`subcard-${sub.id}`} rootId={sub.id} jsPlumb={jsPlumb} />;
         } else {
           return <InlineLoading key={`subcard-i-${i}`} />;
         }
       })}
-      <SubCardCreator parent={parent} jsPlumb={jsPlumb} />
+      {showCreatorButton && <SubCardCreator parent={parent} jsPlumb={jsPlumb} />}
     </div>
   );
 }
@@ -447,7 +531,7 @@ export function CardHierarchy({ rootId, jsPlumb }: CardHierarchyProps): JSX.Elem
     }
   }, [contents, subs, dispatch]);
 
-  const { divs, connections, assignDiv, assignConnection } = React.useContext(PlumbContext);
+  const { divs, connections, assignDiv, assignConnection } = React.useContext(HierarchyContext);
 
   const parentNode = divs[`CardContent-${root?.card?.parentId}`];
   const [thisNode, setThisNode] = React.useState<HTMLDivElement | undefined>(undefined);
@@ -499,9 +583,30 @@ export function CardHierarchy({ rootId, jsPlumb }: CardHierarchyProps): JSX.Elem
 
 interface HierarchyDisplayProps {
   rootId: number;
+  enableDragAndDrop?: boolean;
+  showAdd?: boolean;
+  showOnlyCard?: number[];
+  showTools?: boolean;
+  variantDecorator?: (card: Card, cardContent: CardContent) => React.ReactNode;
+  cardDecorator?: (card: Card) => React.ReactNode;
+  onCardClick?: (card: Card) => void;
+  onContentClick?: (card: Card, cardContent: CardContent) => void;
+  forceZoom?: number;
 }
 
-export default function Hierarchy({ rootId }: HierarchyDisplayProps): JSX.Element {
+export default function Hierarchy({
+  rootId,
+  enableDragAndDrop = true,
+  showAdd = false,
+  showOnlyCard,
+  showTools = true,
+  variantDecorator,
+  cardDecorator,
+  onCardClick,
+  onContentClick,
+  forceZoom,
+}: HierarchyDisplayProps): JSX.Element {
+  const i18n = useTranslations();
   const dispatch = useAppDispatch();
 
   const [plumbState, setPlumbState] = React.useState<Pick<PlumbRef, 'divs' | 'connections'>>({
@@ -582,12 +687,17 @@ export default function Hierarchy({ rootId }: HierarchyDisplayProps): JSX.Elemen
   }, [jsPlumb]);
 
   React.useEffect(() => {
-    const r = reflow;
-    window.addEventListener('resize', r);
-    () => {
-      window.removeEventListener('resize', r);
-    };
-  }, [reflow]);
+    if (thisNode) {
+      const r = reflow;
+      const ro = new ResizeObserver(() => {
+        r();
+      });
+      ro.observe(thisNode);
+      () => {
+        ro.disconnect();
+      };
+    }
+  }, [reflow, thisNode]);
 
   // make sure to have all cards
   //const cards = useAllProjectCards();
@@ -623,11 +733,30 @@ export default function Hierarchy({ rootId }: HierarchyDisplayProps): JSX.Elemen
 
   const [zoom, setZoom] = React.useState(1);
   const zoomRef = React.useRef(zoom);
-  zoomRef.current = zoom;
+  zoomRef.current = forceZoom ?? zoom;
 
   if (jsPlumb) {
-    jsPlumb.setZoom(zoom);
+    jsPlumb.setZoom(zoomRef.current);
   }
+
+  const cleanCb = React.useCallback(() => {
+    if (jsPlumb) {
+      Object.entries(plumbState.connections).forEach(([key, value]) => {
+        if (
+          (value.source instanceof Element && value.source.isConnected === false) ||
+          (value.target instanceof Element && value.target.isConnected === false)
+        ) {
+          jsPlumb.deleteConnection(value);
+          delete plumbState.connections[key];
+        }
+      });
+      jsPlumb.repaintEverything();
+    }
+  }, [jsPlumb, plumbState]);
+
+  React.useEffect(() => {
+    cleanCb();
+  }, [cleanCb, showOnlyCard]);
 
   const throttleRepaint = React.useMemo(() => {
     if (jsPlumb) {
@@ -836,12 +965,19 @@ export default function Hierarchy({ rootId }: HierarchyDisplayProps): JSX.Elemen
   });
 
   return (
-    <PlumbContext.Provider
+    <HierarchyContext.Provider
       value={{
         divs: plumbState.divs,
         connections: plumbState.connections,
         assignDiv,
         assignConnection,
+        showCreatorButton: enableDragAndDrop || showAdd,
+        showOnlyCard,
+        variantDecorator,
+        cardDecorator,
+        onCardClick,
+        onContentClick,
+        dnd: enableDragAndDrop,
       }}
     >
       <div
@@ -852,20 +988,27 @@ export default function Hierarchy({ rootId }: HierarchyDisplayProps): JSX.Elemen
           userSelect: 'none',
         })}
       >
-        <div className={css({ width: '200px' })}>
-          <BlockInput
-            type="range"
-            label="zoom"
-            value={zoom}
-            placeholder="0"
-            min="0.5"
-            max="2"
-            step="0.1"
-            onChange={newValue => setZoom(Number(newValue))}
-            saveMode="SILLY_FLOWING"
-          />
-          <IconButton icon={faRefresh} onClick={throttleRepaint} title="" />
-        </div>
+        {showTools && (
+          <div className={css({ width: '200px' })}>
+            {forceZoom == null && (
+              <BlockInput
+                type="range"
+                label={i18n.common.zoom}
+                value={zoomRef.current}
+                placeholder="0"
+                max="2"
+                min="0.5"
+                step="0.1"
+                onChange={newValue => setZoom(Number(newValue))}
+                saveMode="SILLY_FLOWING"
+              />
+            )}
+            <FeaturePreview>
+              <IconButton icon={faRefresh} onClick={throttleRepaint} title="" />
+              <IconButton icon={faRefresh} onClick={cleanCb} title="" />
+            </FeaturePreview>
+          </div>
+        )}
         <div
           className={css({
             width: '100%',
@@ -885,7 +1028,8 @@ export default function Hierarchy({ rootId }: HierarchyDisplayProps): JSX.Elemen
               '& .dnd-target-group > .SubCardCreator': {
                 boxShadow: '0px 0px 4px 1px hotpink',
               },
-              scale: `${zoom}`,
+              transformOrigin: 'top left',
+              scale: `${zoomRef.current}`,
               display: 'flex',
               '.SubContainer .SubContainer': {
                 flexWrap: 'nowrap',
@@ -901,10 +1045,10 @@ export default function Hierarchy({ rootId }: HierarchyDisplayProps): JSX.Elemen
               setThisNode(ref);
               assignDiv(ref, 'root');
             }}
-            onMouseUp={mouseHandler}
-            onMouseDownCapture={mouseHandler}
-            onMouseMove={mouseHandler}
-            onMouseLeave={mouseHandler}
+            onMouseUp={enableDragAndDrop ? mouseHandler : undefined}
+            onMouseDownCapture={enableDragAndDrop ? mouseHandler : undefined}
+            onMouseMove={enableDragAndDrop ? mouseHandler : undefined}
+            onMouseLeave={enableDragAndDrop ? mouseHandler : undefined}
           >
             {jsPlumb != null && cardStatus === 'READY' && contentStatus == 'READY' ? (
               <CardHierarchy rootId={rootId} jsPlumb={jsPlumb} />
@@ -914,7 +1058,7 @@ export default function Hierarchy({ rootId }: HierarchyDisplayProps): JSX.Elemen
           </div>
         </div>
       </div>
-    </PlumbContext.Provider>
+    </HierarchyContext.Provider>
   );
 }
 

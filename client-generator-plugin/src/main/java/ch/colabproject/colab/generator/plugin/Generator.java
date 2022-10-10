@@ -168,6 +168,7 @@ public class Generator {
             .append(
                 imports.values().stream()
                     .filter(pkg -> pkg != null)
+                    .filter(pkg -> !pkg.startsWith("java.lang")) // do not import java.lang
                     .sorted()
                     .map(pkg -> "import " + pkg + ";")
                     .collect(Collectors.joining(System.lineSeparator()))

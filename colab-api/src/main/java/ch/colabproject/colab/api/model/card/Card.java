@@ -6,9 +6,10 @@
  */
 package ch.colabproject.colab.api.model.card;
 
+import ch.colabproject.colab.api.controller.card.grid.GridCellWithId;
+import ch.colabproject.colab.api.controller.card.grid.GridPosition;
 import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.model.ColabEntity;
-import ch.colabproject.colab.api.model.WithIndex;
 import ch.colabproject.colab.api.model.WithWebsocketChannels;
 import ch.colabproject.colab.api.model.common.Tracking;
 import ch.colabproject.colab.api.model.document.AbstractResource;
@@ -46,6 +47,7 @@ import javax.persistence.OneToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Transient;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 /**
@@ -63,7 +65,7 @@ import javax.validation.constraints.Size;
     }
 )
 public class Card
-    implements ColabEntity, WithWebsocketChannels, Resourceable, StickyNoteSourceable, WithIndex {
+    implements ColabEntity, WithWebsocketChannels, Resourceable, StickyNoteSourceable, GridCellWithId {
 
     private static final long serialVersionUID = 1L;
 
@@ -101,9 +103,28 @@ public class Card
     private String color;
 
     /**
-     * The index of the card within its parent
+     * The x coordinate of the card within its parent
      */
-    private int index;
+    @NotNull
+    private Integer x = 1;
+
+    /**
+     * The y coordinate of the card within its parent
+     */
+    @NotNull
+    private Integer y = 1;
+
+    /**
+     * The width of the card within its parent
+     */
+    @NotNull
+    private Integer width = 1;
+
+    /**
+     * The height of the card within its parent
+     */
+    @NotNull
+    private Integer height = 1;
 
     /**
      * CAIRO level (RACI + out_of_the_loop)
@@ -274,20 +295,56 @@ public class Card
         this.color = color;
     }
 
-    /**
-     * @return the index of the card in its parent
-     */
     @Override
-    public int getIndex() {
-        return index;
+    public Integer getX() {
+        return x;
+    }
+
+    @Override
+    public void setX(Integer x) {
+        this.x = x;
+    }
+
+    @Override
+    public Integer getY() {
+        return y;
+    }
+
+    @Override
+    public void setY(Integer y) {
+        this.y = y;
+    }
+
+    @Override
+    public Integer getWidth() {
+        return width;
+    }
+
+    @Override
+    public void setWidth(Integer width) {
+        this.width = width;
+    }
+
+    @Override
+    public Integer getHeight() {
+        return height;
+    }
+
+    @Override
+    public void setHeight(Integer height) {
+        this.height = height;
     }
 
     /**
-     * @param index the new index of the card in its parent
+     * Move the card to the given position
+     *
+     * @param position new position
      */
-    @Override
-    public void setIndex(int index) {
-        this.index = index;
+    public void moveTo(GridPosition position) {
+        this.setX(position.getX());
+        this.setY(position.getY());
+        this.setWidth(position.getWidth());
+        this.setHeight(position.getHeight());
     }
 
     /**
@@ -583,10 +640,23 @@ public class Card
             Card o = (Card) other;
             this.setTitle(o.getTitle());
             this.setColor(o.getColor());
-            this.setIndex(o.getIndex());
             this.setDefaultInvolvementLevel(o.getDefaultInvolvementLevel());
+            // do not update position
         } else {
             throw new ColabMergeException(this, other);
+        }
+    }
+
+    @Override
+    public void duplicate(ColabEntity other) throws ColabMergeException {
+        // same as merge but copy position too
+        this.merge(other);
+        if (other instanceof Card) {
+            Card o = (Card) other;
+            this.setX(o.getX());
+            this.setY(o.getY());
+            this.setWidth(o.getWidth());
+            this.setHeight(o.getHeight());
         }
     }
 
@@ -657,7 +727,7 @@ public class Card
 
     @Override
     public String toString() {
-        return "Card{" + "id=" + id + ", index=" + index + ", color=" + color + ", cardTypeId="
-            + cardTypeId + ", parentId=" + parentId + "}";
+        return "Card{" + "id=" + id + ", xy=(" + x + "," + y + "), size=" + width + "x" + height
+            + ", color=" + color + ", cardTypeId=" + cardTypeId + ", parentId=" + parentId + "}";
     }
 }

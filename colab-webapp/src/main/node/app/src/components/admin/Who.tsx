@@ -5,14 +5,37 @@
  * Licensed under the MIT License
  */
 
+import { css, cx } from '@emotion/css';
 import { faSync } from '@fortawesome/free-solid-svg-icons';
 import { entityIs, ProjectContentChannel, UserChannel } from 'colab-rest-client';
 import * as React from 'react';
 import { getAllUsers, getOccupiedChannels } from '../../API/api';
+import { useAndLoadProject } from '../../selectors/projectSelector';
 import { shallowEqual, useAppDispatch, useAppSelector } from '../../store/hooks';
+import { defaultThumbnailStyle } from '../common/collection/ItemThumbnailsSelection';
 import IconButton from '../common/element/IconButton';
 import InlineLoading from '../common/element/InlineLoading';
+import Flex from '../common/layout/Flex';
+import { ProjectDisplay } from '../projects/ProjectList';
+import { space_M } from '../styling/style';
 import UserList from './UserList';
+
+interface ProjectDisplayProps {
+  projectId: number;
+}
+const projectThumbnailStyle = cx(defaultThumbnailStyle, css({ padding: 0 }));
+
+function ProjectDisplayWrapper({ projectId }: ProjectDisplayProps) {
+  const { project } = useAndLoadProject(projectId);
+  if (entityIs(project, 'Project')) {
+    return (
+      <div className={projectThumbnailStyle}>
+        <ProjectDisplay project={project} />
+      </div>
+    );
+  }
+  return <InlineLoading />;
+}
 
 export default function Who(): JSX.Element {
   const dispatch = useAppDispatch();
@@ -43,15 +66,32 @@ export default function Who(): JSX.Element {
       </div>
     );
   } else {
-    const { userChannels, projectChannels } = channels.reduce<{
+    const { userChannels, projectChannels } = Object.entries(channels).reduce<{
       userChannels: { channel: UserChannel; count: number }[];
       projectChannels: { channel: ProjectContentChannel; count: number }[];
     }>(
-      (acc, current) => {
-        if (entityIs(current.channel, 'UserChannel')) {
-          acc.userChannels.push({ channel: current.channel, count: current.count });
-        } else if (entityIs(current.channel, 'ProjectContentChannel')) {
-          acc.projectChannels.push({ channel: current.channel, count: current.count });
+      (acc, [channelUrn, count]) => {
+        const match = /urn:coLAB:\/WebsocketChannel\/(.*)\/(\d+)/.exec(channelUrn);
+        if (match) {
+          const atClass = match[1];
+          const id = match[2];
+          if (atClass === 'UserChannel' && id != null) {
+            acc.userChannels.push({
+              channel: {
+                '@class': atClass,
+                userId: +id,
+              },
+              count: count,
+            });
+          } else if (atClass === 'ProjectContentChannel' && id != null) {
+            acc.projectChannels.push({
+              channel: {
+                '@class': atClass,
+                projectId: +id,
+              },
+              count: count,
+            });
+          }
         }
         return acc;
       },
@@ -86,13 +126,14 @@ export default function Who(): JSX.Element {
           <UserList users={onlineUsers} />
         </div>
         <h3>Opened Projects</h3>
-        <div>
+        <Flex gap={space_M} wrap="wrap">
           {projectChannels.map(overview => (
-            <div key={`channel-project-${overview.channel.projectId}`}>
-              {overview.channel.projectId}
-            </div>
+            <ProjectDisplayWrapper
+              key={`channel-project-${overview.channel.projectId}`}
+              projectId={overview.channel.projectId!}
+            />
           ))}
-        </div>
+        </Flex>
       </div>
     );
   }
