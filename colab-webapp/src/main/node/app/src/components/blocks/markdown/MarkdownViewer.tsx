@@ -89,7 +89,7 @@ export default function MarkdownViewer({
       const dom = markdownToDom(md);
       dom.nodes.forEach(node => div.append(node));
     } else {
-      logger.error('Div ref is null');
+      logger.trace('Div ref is null');
     }
   }, [md]);
 
