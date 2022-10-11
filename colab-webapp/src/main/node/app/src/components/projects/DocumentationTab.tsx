@@ -67,7 +67,7 @@ export default function DocumentationTab({ project }: DocumentationTabProps): JS
 
   return (
     <Flex align="stretch" direction="column" grow={1} className={css({ alignSelf: 'stretch' })}>
-      <Tabs routed defaultTab="cardTypes">
+      <Tabs routed defaultTab="project">
         <Tab name="project" label={i18n.modules.project.settings.resources.label}>
           <div
             className={css({

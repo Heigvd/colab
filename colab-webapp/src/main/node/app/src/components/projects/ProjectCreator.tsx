@@ -127,6 +127,7 @@ export default function ProjectCreator({
           {i18n.modules.project.actions.createProject}
         </Button>
       }
+      modalBodyClassName={css({ alignItems: 'stretch' })}
       footer={close => (
         <Flex
           justify={'flex-end'}

@@ -5,18 +5,18 @@
  * Licensed under the MIT License
  */
 
-import { css, cx } from '@emotion/css';
-import { faChainBroken, faExternalLinkAlt, faLink, faPen } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import {css, cx} from '@emotion/css';
+import {faChainBroken, faExternalLinkAlt, faLink, faPen} from '@fortawesome/free-solid-svg-icons';
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import * as React from 'react';
 import useTranslations from '../../../i18n/I18nContext';
-import { useUrlMetadata } from '../../../selectors/externalDataSelector';
-import { lightIconButtonStyle, space_M, space_S } from '../../styling/style';
+import {useUrlMetadata} from '../../../selectors/externalDataSelector';
+import {lightIconButtonStyle, space_M, space_S} from '../../styling/style';
 import Flex from '../layout/Flex';
-import { emptyLightTextStyle } from './FilePicker';
+import {emptyLightTextStyle} from './FilePicker';
 import IconButton from './IconButton';
 import InlineLoading from './InlineLoading';
-import { BlockInput } from './Input';
+import {BlockInput} from './Input';
 
 const cardStyle = css({
   flexWrap: 'nowrap',
@@ -89,14 +89,19 @@ function encodePath(path: string | undefined) {
 }
 
 export function encode(rawUrl: string) {
-  const split = rawUrl.split('://');
-  if (split.length === 2) {
-    return `${split[0]}://${encodePath(split[1])}`;
-  } else if (split.length === 1) {
-    return encodePath(split[0]);
-  } else {
-    return '';
+
+  if (rawUrl) {
+    const url = new URL(rawUrl);
+    if (url.hash.length > 0){
+      const hash = url.hash.substring(1);
+      url.hash = encodePath(hash);
+    }
+    url.hostname = encodePath(url.hostname);
+    url.pathname = encodePath(url.pathname);
+    return url.toString();
   }
+
+  return '';
 }
 
 export default function OpenGraphLink({
@@ -151,7 +156,7 @@ export default function OpenGraphLink({
     return (
       <Flex className={cardStyle} title={decodedUrl} align="center">
         <FontAwesomeIcon icon={faLink} size="lg" color="var(--lightGray)" />
-        <span className={cx(emptyLightTextStyle, css({ marginLeft: space_S }))}>Empty link</span>
+        <span className={cx(emptyLightTextStyle, css({marginLeft: space_S}))}>Empty link</span>
         {editIcon}
       </Flex>
     );
@@ -164,11 +169,11 @@ export default function OpenGraphLink({
     if (metadata.broken) {
       return (
         <Flex className={cardStyle} title={decodedUrl} align="center">
-          <div title={decodedUrl} className={css({ padding: space_S })}>
+          <div title={decodedUrl} className={css({padding: space_S})}>
             <FontAwesomeIcon
               icon={faChainBroken}
               size="lg"
-              className={css({ marginRight: space_S })}
+              className={css({marginRight: space_S})}
             />
             {decodedUrl}
             {editIcon}
@@ -181,7 +186,7 @@ export default function OpenGraphLink({
           <IconButton
             icon={faExternalLinkAlt}
             title={i18n.modules.document.openInNewTab}
-            className={cx(lightIconButtonStyle, css({ marginLeft: space_M, cursor: 'pointer' }))}
+            className={cx(lightIconButtonStyle, css({marginLeft: space_M, cursor: 'pointer'}))}
             onClick={openUrl}
           />
           {editIcon}
@@ -195,7 +200,7 @@ export default function OpenGraphLink({
             {siteName ? (
               <>
                 <Flex
-                  className={css({ fontWeight: 'bold' })}
+                  className={css({fontWeight: 'bold'})}
                   justify="space-between"
                   align="flex-start"
                 >
@@ -228,7 +233,7 @@ interface EditLinkProps {
   onCancel: () => void;
 }
 
-function EditLink({ url, onChange, onCancel }: EditLinkProps): JSX.Element {
+function EditLink({url, onChange, onCancel}: EditLinkProps): JSX.Element {
   const i18n = useTranslations();
   return (
     <BlockInput
@@ -236,7 +241,7 @@ function EditLink({ url, onChange, onCancel }: EditLinkProps): JSX.Element {
       placeholder={i18n.modules.content.emptyLink}
       onChange={onChange}
       onCancel={onCancel}
-      containerClassName={css({ flexGrow: 1 })}
+      containerClassName={css({flexGrow: 1})}
       saveMode="ON_BLUR"
     />
   );

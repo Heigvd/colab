@@ -744,6 +744,7 @@ function rebuildHierarchy(domTrees: DomTree[]): DomTree[] {
     } else {
       rootTree = undefined;
       listContext.length = 0;
+      listLevels.length = 0;
       currentListLevel = 0;
       domTreeWithList.push(child);
     }
