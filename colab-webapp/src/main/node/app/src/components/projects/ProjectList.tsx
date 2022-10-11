@@ -6,7 +6,14 @@
  */
 
 import { css, cx } from '@emotion/css';
-import { faCog, faCopy, faEdit, faEllipsisV, faTrash } from '@fortawesome/free-solid-svg-icons';
+import {
+  faCog,
+  faCopy,
+  faEdit,
+  faEllipsisV,
+  faGraduationCap,
+  faTrash,
+} from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { AsyncThunk } from '@reduxjs/toolkit';
 import { entityIs, Project } from 'colab-rest-client';
@@ -20,6 +27,7 @@ import { StateStatus } from '../../store/slice/projectSlice';
 import ItemThumbnailsSelection from '../common/collection/ItemThumbnailsSelection';
 import IllustrationDisplay from '../common/element/IllustrationDisplay';
 import InlineLoading from '../common/element/InlineLoading';
+import Tips, { TipsCtx, WIPContainer } from '../common/element/Tips';
 import { ConfirmDeleteModal } from '../common/layout/ConfirmDeleteModal';
 import DropDownMenu from '../common/layout/DropDownMenu';
 import Flex from '../common/layout/Flex';
@@ -38,6 +46,7 @@ import {
 import { defaultProjectIllustration } from './ProjectCommon';
 import ProjectCreator from './ProjectCreator';
 import { ProjectDisplaySettings } from './ProjectDisplaySettings';
+import { ProjectModelExtractor } from './ProjectModelExtractor';
 
 function ProjectSettingWrapper(): JSX.Element {
   const { projectId } = useParams<'projectId'>();
@@ -67,6 +76,37 @@ function ProjectSettingWrapper(): JSX.Element {
         }
       }}
     </Modal>
+  );
+}
+
+function ExtractModelWrapper(): JSX.Element {
+  const { projectId } = useParams<'projectId'>();
+
+  const i18n = useTranslations();
+  const navigate = useNavigate();
+
+  return (
+    <WIPContainer>
+      <Modal
+        title={i18n.modules.project.actions.extractAModel}
+        showCloseButton
+        onClose={() => {
+          navigate('/');
+        }}
+        className={css({
+          '&:hover': { textDecoration: 'none' },
+          display: 'flex',
+          width: '800px',
+          height: '580px',
+        })}
+      >
+        {() => {
+          return (
+            <ProjectModelExtractor projectId={projectId ? +projectId : undefined} key={projectId} />
+          );
+        }}
+      </Modal>
+    </WIPContainer>
   );
 }
 
@@ -124,6 +164,8 @@ export const ProjectDisplay = ({ project }: ProjectDisplayProps) => {
   const dispatch = useAppDispatch();
   const i18n = useTranslations();
   const navigate = useNavigate();
+
+  const tipsConfig = React.useContext(TipsCtx);
 
   return (
     <Flex
@@ -198,6 +240,25 @@ export const ProjectDisplay = ({ project }: ProjectDisplayProps) => {
                 ),
                 action: () => dispatch(API.duplicateProject(project)),
               },
+              ...(tipsConfig.WIP.value
+                ? [
+                    {
+                      value: 'extractModel',
+                      label: (
+                        <>
+                          <WIPContainer>
+                            <FontAwesomeIcon icon={faGraduationCap} />{' '}
+                            {i18n.modules.project.actions.extractModel}
+                            <Tips tipsType="TODO">
+                              voir si cette action doit être disponible à l'édition du projet
+                            </Tips>
+                          </WIPContainer>
+                        </>
+                      ),
+                      action: () => navigate(`extractModel/${project.id}`),
+                    },
+                  ]
+                : []),
               {
                 value: 'delete',
                 label: (
@@ -308,6 +369,7 @@ function ProjectList({ projects, status, reload }: ProjectListProps) {
         <Routes>
           <Route path="projectsettings/:projectId" element={<ProjectSettingWrapper />} />
           <Route path="deleteproject/:projectId" element={<DeleteProjectWrapper />} />
+          <Route path="extractModel/:projectId" element={<ExtractModelWrapper />} />
         </Routes>
       </div>
     );

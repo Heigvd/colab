@@ -312,6 +312,8 @@ export const fr: ColabTranslations = {
           `Créer un projet à partir de ${'"' + templateTitle + '"'}`,
         editIllustration: "Éditer l'illustration du projet",
         newProject: 'Nouveau projet',
+        extractModel: 'Extraire un modèle',
+        extractAModel: "Extraire un modèle à partir d'un projet",
       },
       info: {
         noProjectSelected: 'Aucun projet sélectionné',

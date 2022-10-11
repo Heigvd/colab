@@ -307,6 +307,8 @@ export const en = {
           `Create a project from ${'"' + templateTitle + '"'}`,
         editIllustration: 'Edit project illustration',
         newProject: 'New project',
+        extractModel: 'Extract model',
+        extractAModel: 'Extract a model from a project',
       },
       info: {
         noProjectSelected: 'No project selected',
