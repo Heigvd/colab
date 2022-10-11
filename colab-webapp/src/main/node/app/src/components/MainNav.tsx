@@ -16,15 +16,16 @@ import {
   faUserCircle,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { entityIs } from 'colab-rest-client';
 import React from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import * as API from '../API/api';
 import useTranslations from '../i18n/I18nContext';
 import LanguageSelector from '../i18n/LanguageSelector';
 import { useCurrentUser } from '../selectors/userSelector';
-import { useAppDispatch, useAppSelector } from '../store/hooks';
+import { shallowEqual, useAppDispatch, useAppSelector } from '../store/hooks';
 import InlineLoading from './common/element/InlineLoading';
-import { mainMenuLink } from './common/element/Link';
+import { MainMenuLink, mainMenuLink } from './common/element/Link';
 import Clickable from './common/layout/Clickable';
 import DropDownMenu from './common/layout/DropDownMenu';
 import Monkeys from './debugger/monkey/Monkeys';
@@ -35,10 +36,22 @@ export default function MainNav(): JSX.Element {
   const i18n = useTranslations();
   const navigate = useNavigate();
   const location = useLocation();
+  const userModels = useAppSelector(
+    state =>
+      state.projects.mine.flatMap(projectId => {
+        const p = state.projects.projects[projectId];
+        //&& p.type === 'projects'
+        if (entityIs(p, 'Project')) {
+          return [p];
+        } else {
+          return [];
+        }
+      }),
+    shallowEqual,
+  );
   const entries = [
-    { value: '/', label: <div>{i18n.modules.project.labels.projects}</div>},
+    { value: '/', label: <div>{i18n.modules.project.labels.projects}</div> },
     { value: '/models', label: <div>{i18n.modules.project.labels.models}</div> },
-    
   ];
   const value = location.pathname;
   return (
@@ -55,15 +68,19 @@ export default function MainNav(): JSX.Element {
           )}
         />
       </Clickable>
-      <nav className={flex}>
-        <DropDownMenu
-          value={value}
-          entries={entries}
-          onSelect={(e) => navigate(e.value)}
-          menuIcon='BURGER'
-          buttonClassName={cx(mainMenuLink, css({gap: space_M}))}
-        />
-      </nav>
+      {userModels && userModels.length > 0 ? (
+        <nav className={flex}>
+          <DropDownMenu
+            value={value}
+            entries={entries}
+            onSelect={e => navigate(e.value)}
+            menuIcon="BURGER"
+            buttonClassName={cx(mainMenuLink, css({ gap: space_M }))}
+          />
+        </nav>
+      ) : (
+        <MainMenuLink to="/">{i18n.modules.project.labels.projects}</MainMenuLink>
+      )}
       <div
         className={css({
           flexGrow: 1,
