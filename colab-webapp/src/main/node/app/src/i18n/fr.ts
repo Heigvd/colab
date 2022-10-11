@@ -324,6 +324,7 @@ export const fr: ColabTranslations = {
         useBlankProject: 'Utilisez ce projet vide et vous serez libre de créer un monde nouveau.',
         deleteConfirmation:
           "Êtes-vous sûr-e-s de vouloir supprimer tout le projet? Cela va également supprimer toutes les cartes à l'intérieur.",
+          isAModel: 'Ceci est un modèle de projet',
       },
       settings: {
         icon: 'Icône',

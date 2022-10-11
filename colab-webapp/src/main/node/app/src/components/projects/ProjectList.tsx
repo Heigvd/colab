@@ -6,7 +6,7 @@
  */
 
 import { css, cx } from '@emotion/css';
-import { faCog, faCopy, faEdit, faEllipsisV, faTrash } from '@fortawesome/free-solid-svg-icons';
+import { faCog, faCopy, faEdit, faEllipsisV, faStar, faTrash } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { AsyncThunk } from '@reduxjs/toolkit';
 import { entityIs, Project } from 'colab-rest-client';
@@ -39,6 +39,14 @@ import { defaultProjectIllustration } from './ProjectCommon';
 import ProjectCreator from './ProjectCreator';
 import { ProjectDisplaySettings } from './ProjectDisplaySettings';
 
+const modelChipStyle = css({
+ position: 'absolute', 
+ top: 0, 
+ right: 0,
+ padding: '10px 10px 12px 12px',
+ borderRadius: '0 0 0 50%',
+ backgroundColor: 'var(--primaryColor)'
+});
 function ProjectSettingWrapper(): JSX.Element {
   const { projectId } = useParams<'projectId'>();
   const i18n = useTranslations();
@@ -117,10 +125,12 @@ const projectListStyle = css({
 
 interface ProjectDisplayProps {
   project: Project;
+  className?: string;
+  isModel?: boolean;
 }
 
 // Display one project and allow to edit it
-export const ProjectDisplay = ({ project }: ProjectDisplayProps) => {
+export const ProjectDisplay = ({ project, className, isModel }: ProjectDisplayProps) => {
   const dispatch = useAppDispatch();
   const i18n = useTranslations();
   const navigate = useNavigate();
@@ -135,12 +145,15 @@ export const ProjectDisplay = ({ project }: ProjectDisplayProps) => {
       }}
       direction="column"
       align="stretch"
+      className={className}
     >
       <Flex
         className={css({
           height: '80px',
+          position: 'relative',
         })}
       >
+        {isModel && <Flex align='center' justify='center' className={modelChipStyle} title={i18n.modules.project.info.isAModel}><FontAwesomeIcon icon={faStar} color='white' size='sm'/></Flex>}
         <IllustrationDisplay illustration={project.illustration || defaultProjectIllustration} />
       </Flex>
       <div
@@ -415,7 +428,6 @@ interface ModelListProps {
             margin: '4px',
             display: 'block',
             backgroundColor: 'var(--bgColor)',
-            filter: 'blur(3px)',
           })}
           onItemDblClick={item => {
             if (item) {
@@ -424,7 +436,7 @@ interface ModelListProps {
           }}
           fillThumbnail={item => {
             if (item === null) return <></>;
-            else return <ProjectDisplay project={item} />;
+            else return <ProjectDisplay project={item} isModel className={css({boxShadow: ` 0px -5px 0px 0px ${item.illustration?.iconBkgdColor} inset`,})} />;
           }}
           disableOnEnter
         />
