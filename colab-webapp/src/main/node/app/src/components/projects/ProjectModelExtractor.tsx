@@ -5,6 +5,7 @@
  * Licensed under the MIT License
  */
 
+import { css } from '@emotion/css';
 import * as React from 'react';
 import * as API from '../../API/api';
 import useTranslations from '../../i18n/I18nContext';
@@ -83,6 +84,7 @@ export function ProjectModelExtractor({ projectId }: ProjectModelExtractorProps)
               dispatch(API.updateProject({ ...project, type: 'MODEL' }));
             }}
             submitLabel={i18n.modules.project.actions.createModel}
+            className={css({width: 'auto'})}
           />
           - for the moment just set type to MODEL
         </Flex>

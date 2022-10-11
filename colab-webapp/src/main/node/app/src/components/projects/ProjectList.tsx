@@ -99,6 +99,9 @@ function ExtractModelWrapper(): JSX.Element {
           width: '800px',
           height: '580px',
         })}
+        modalBodyClassName={css({
+          alignItems: 'stretch'
+        })}
       >
         {() => {
           return (
