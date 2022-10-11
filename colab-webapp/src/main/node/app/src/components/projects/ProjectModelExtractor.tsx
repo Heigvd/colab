@@ -6,10 +6,12 @@
  */
 
 import * as React from 'react';
+import * as API from '../../API/api';
 import useTranslations from '../../i18n/I18nContext';
 import { useAndLoadProject } from '../../selectors/projectSelector';
+import { useAppDispatch } from '../../store/hooks';
+import AvailabilityStatusIndicator from '../common/element/AvailabilityStatusIndicator';
 import Form, { Field } from '../common/element/Form';
-import InlineLoading from '../common/element/InlineLoading';
 import Tips, { WIPContainer } from '../common/element/Tips';
 import Flex from '../common/layout/Flex';
 
@@ -33,7 +35,9 @@ const defaultValue: FormData = {
 
 export function ProjectModelExtractor({ projectId }: ProjectModelExtractorProps): JSX.Element {
   const i18n = useTranslations();
-  const project = useAndLoadProject(projectId || undefined);
+  const dispatch = useAppDispatch();
+
+  const { status, project } = useAndLoadProject(projectId || undefined);
 
   const formFields: Field<FormData>[] = [
     {
@@ -66,20 +70,28 @@ export function ProjectModelExtractor({ projectId }: ProjectModelExtractorProps)
     },
   ];
 
-  return project == null ? (
-    <InlineLoading />
+  return status !== 'READY' || !project ? (
+    <AvailabilityStatusIndicator status={status} />
   ) : (
     <>
       <WIPContainer>
-        <Tips tipsType="TODO">voir où mettre le nom du projet initial</Tips>
         <Flex direction="column">
           <Form
             fields={formFields}
             value={defaultValue}
-            onSubmit={() => undefined}
+            onSubmit={() => {
+              dispatch(API.updateProject({ ...project, type: 'MODEL' }));
+            }}
             submitLabel={i18n.modules.project.actions.createModel}
           />
+          - for the moment just set type to MODEL
         </Flex>
+        <Tips tipsType="TODO" />
+        voir où mettre le nom du projet initial
+        <Tips tipsType="TODO" />
+        pouvoir définir un nouveau nom ?
+        <Tips tipsType="TODO" />
+        pouvoir changer l'icône ?
       </WIPContainer>
     </>
   );
