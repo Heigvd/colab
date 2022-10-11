@@ -277,16 +277,11 @@ export function FeaturePreview({ children }: TipsProps): JSX.Element {
 }
 
 export function WIPContainer({ children }: TipsProps): JSX.Element {
-  const i18n = useTranslations();
-
   const config = React.useContext(TipsCtx);
 
   if (config['WIP'].value) {
     return (
-      <span
-        title={i18n.tips.info.wip}
-        className={css({ display: 'contents', '& > *': { boxShadow: '0 0 20px 2px yellow' } })}
-      >
+      <span className={css({ display: 'contents', '& > *': { boxShadow: '0 0 20px 2px yellow' } })}>
         {/*<p className={cx(textSmall, lightIconButtonStyle)}>--- {i18n.tips.info.wip} ---</p>*/}
         {children}
       </span>
