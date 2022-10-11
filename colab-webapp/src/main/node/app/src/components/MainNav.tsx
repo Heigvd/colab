@@ -17,14 +17,14 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import * as API from '../API/api';
 import useTranslations from '../i18n/I18nContext';
 import LanguageSelector from '../i18n/LanguageSelector';
 import { useCurrentUser } from '../selectors/userSelector';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
 import InlineLoading from './common/element/InlineLoading';
-import { MainMenuLink } from './common/element/Link';
+import { mainMenuLink } from './common/element/Link';
 import Clickable from './common/layout/Clickable';
 import DropDownMenu from './common/layout/DropDownMenu';
 import Monkeys from './debugger/monkey/Monkeys';
@@ -34,11 +34,13 @@ import { flex, invertedThemeMode, paddingAroundStyle, space_M, space_S } from '.
 export default function MainNav(): JSX.Element {
   const i18n = useTranslations();
   const navigate = useNavigate();
+  const location = useLocation();
   const entries = [
-    { value: 'EN', label: <div>English</div> },
-    { value: 'FR', label: <div>Français</div> },
+    { value: '/', label: <div>{i18n.modules.project.labels.projects}</div>},
+    { value: '/models', label: <div>{i18n.modules.project.labels.models}</div> },
+    
   ];
-  const valueComp = { value: 'EN', label: <div>EN</div> };
+  const value = location.pathname;
   return (
     <>
       <Clickable onClick={() => navigate(`/`)}>
@@ -54,41 +56,13 @@ export default function MainNav(): JSX.Element {
         />
       </Clickable>
       <nav className={flex}>
-        <MainMenuLink to="/">{i18n.modules.project.labels.projects}</MainMenuLink>
         <DropDownMenu
-          //height={mainHeaderHeight}
-          //icon={faGlobeAmericas}
-          value={'PROJECTS'}
-          valueComp={valueComp}
+          value={value}
           entries={entries}
-          onSelect={() => {}}
-          idleHoverStyle="BACKGROUND"
-          //buttonClassName={buttonStyle}
+          onSelect={(e) => navigate(e.value)}
+          menuIcon='BURGER'
+          buttonClassName={cx(mainMenuLink, css({gap: space_M}))}
         />
-        {/* {projectBeingEdited != null && (
-      <MainMenuLink to={`/editor/${projectBeingEdited.id}`}>
-        {projectBeingEdited.name || 'New project'}
-        <IconButton
-          onClick={events => {
-            // make sure to go back to projects page before closing project
-            // to avoid infinite loop
-            events.preventDefault();
-            navigate('/');
-            dispatch(API.closeCurrentProject());
-          }}
-          icon={faTimes}
-          title="Close current project"
-          className={css({
-            pointerEvents: 'auto',
-            marginLeft: space_M,
-            padding: 0,
-            ':hover': {
-              backgroundColor: 'transparent',
-            },
-          })}
-        />
-      </MainMenuLink>
-    )} */}
       </nav>
       <div
         className={css({

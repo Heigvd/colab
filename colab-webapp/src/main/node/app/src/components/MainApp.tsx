@@ -25,7 +25,7 @@ import Loading from './common/layout/Loading';
 import Overlay from './common/layout/Overlay';
 import MainNav from './MainNav';
 import Editor from './projects/edition/Editor';
-import { UserProjects } from './projects/ProjectList';
+import { UserModels, UserProjects } from './projects/ProjectList';
 import Settings from './settings/Settings';
 import { fullPageStyle, invertedThemeMode, space_M } from './styling/style';
 
@@ -186,6 +186,7 @@ export default function MainApp(): JSX.Element {
                     <Routes>
                       <Route path="/*" element={<UserProjects />} />
                       <Route path="/projects" element={<UserProjects />} />
+                      <Route path="/models" element={<UserModels />} />
                       <Route path="/settings/*" element={<Settings />} />
                       <Route path="/admin/*" element={<Admin />} />
                       <Route path="/editor/:id/*" element={<EditorWrapper />} />

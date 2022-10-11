@@ -355,3 +355,86 @@ export const AllProjects = (): JSX.Element => {
 
   return <ProjectList projects={projects} status={status} reload={API.getAllProjects} />;
 };
+
+export const UserModels = (): JSX.Element => {
+  const status = useAppSelector(state => state.projects.status);
+
+  React.useEffect(() => {
+    if (window && window.top && window.top.document) {
+      window.top.document.title = 'co.LAB';
+    }
+  }, []);
+
+  return <ModelsList status={status} reload={API.getUserProjects} />;
+};
+
+interface ModelListProps {
+  status: StateStatus;
+  // eslint-disable-next-line @typescript-eslint/ban-types
+  reload: AsyncThunk<Project[], void, {}>;
+}
+ function ModelsList({ status, reload }: ModelListProps) {
+  const i18n = useTranslations();
+  const dispatch = useAppDispatch();
+  const models = useAppSelector(
+    state =>
+      Object.values(state.projects.projects).flatMap(p => {
+        // ADD TEST IF p == model
+        if (entityIs(p, 'Project')) {
+          return [p];
+        } else {
+          return [];
+        }
+      }),
+    shallowEqual,
+  );
+  React.useEffect(() => {
+    if (status === 'NOT_INITIALIZED') {
+      dispatch(reload());
+    }
+  }, [status, reload, dispatch]);
+
+  if (status === 'NOT_INITIALIZED') {
+    return <InlineLoading />;
+  } else if (status === 'LOADING') {
+    return <InlineLoading />;
+  } else {
+    return (
+      <div className={css({ padding: '4vw' })}>
+        {(!models || models.length === 0) && (
+          <div className={voidStyle}>
+            <h2>{i18n.common.welcome}</h2>
+            <h3>{i18n.modules.project.info.noProjectYet}</h3>
+          </div>
+        )}
+        <ItemThumbnailsSelection<Project>
+          items={models.sort((a, b) => (a.id || 0) - (b.id || 0))}
+          className={projectListStyle}
+          thumbnailClassName={css({
+            padding: 0,
+            margin: '4px',
+            display: 'block',
+            backgroundColor: 'var(--bgColor)',
+            filter: 'blur(3px)',
+          })}
+          onItemDblClick={item => {
+            if (item) {
+              window.open(`#/editor/${item.id}`, '_blank');
+            }
+          }}
+          fillThumbnail={item => {
+            if (item === null) return <></>;
+            else return <ProjectDisplay project={item} />;
+          }}
+          disableOnEnter
+        />
+        {/* Note : any authenticated user can create a project */}
+        {/* <ProjectCreator collapsedButtonClassName={fixedButtonStyle} /> */}
+        <Routes>
+          <Route path="projectsettings/:projectId" element={<ProjectSettingWrapper />} />
+          <Route path="deleteproject/:projectId" element={<DeleteProjectWrapper />} />
+        </Routes>
+      </div>
+    );
+  }
+}

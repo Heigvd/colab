@@ -297,6 +297,9 @@ export const en = {
         projectDisplaySettings: 'Project display settings',
         projectSettings: 'Project settings',
         projects: 'Projects',
+        modelDisplaySettings: 'Project display settings',
+        modelSettings: 'Project settings',
+        models: 'Models',
       },
       actions: {
         createProject: 'Create project',
