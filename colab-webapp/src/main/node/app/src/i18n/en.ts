@@ -297,6 +297,10 @@ export const en = {
         projectDisplaySettings: 'Project display settings',
         projectSettings: 'Project settings',
         projects: 'Projects',
+        extractNewFromProject: 'Extract a new model from this project',
+        extractRoles: 'Extract the roles',
+        extractDeliverables: 'Extract the card contents',
+        extractDocuments: 'Extract the documents',
       },
       actions: {
         createProject: 'Create project',
@@ -309,6 +313,7 @@ export const en = {
         newProject: 'New project',
         extractModel: 'Extract model',
         extractAModel: 'Extract a model from a project',
+        createModel: 'Create model',
       },
       info: {
         noProjectSelected: 'No project selected',

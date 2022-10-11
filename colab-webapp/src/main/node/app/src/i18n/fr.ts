@@ -302,6 +302,10 @@ export const fr: ColabTranslations = {
         projectDisplaySettings: "Paramètres d'affichage du projet",
         projectSettings: 'Paramètres du projet',
         projects: 'Projets',
+        extractNewFromProject: 'Extraire un nouveau modèle à partir du projet',
+        extractRoles: 'Extraire les roles',
+        extractDeliverables: 'Extraire le contenu des cartes',
+        extractDocuments: 'Extraire les documents',
       },
       actions: {
         createProject: 'Créer projet',
@@ -314,6 +318,7 @@ export const fr: ColabTranslations = {
         newProject: 'Nouveau projet',
         extractModel: 'Extraire un modèle',
         extractAModel: "Extraire un modèle à partir d'un projet",
+        createModel: 'Créer le modèle',
       },
       info: {
         noProjectSelected: 'Aucun projet sélectionné',
