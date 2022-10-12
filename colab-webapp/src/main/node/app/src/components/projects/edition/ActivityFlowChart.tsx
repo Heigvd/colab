@@ -16,20 +16,23 @@ import {
   EVENT_CONNECTION,
   INTERCEPT_BEFORE_DROP,
 } from '@jsplumb/core';
-import { ActivityFlowLink, Card, CardContent } from 'colab-rest-client';
+import { ActivityFlowLink, Card, CardContent, entityIs } from 'colab-rest-client';
 import { uniq } from 'lodash';
 import * as React from 'react';
 import * as API from '../../../API/api';
 import useTranslations from '../../../i18n/I18nContext';
 import { getLogger } from '../../../logger';
+import { useProjectRootCard } from '../../../selectors/cardSelector';
 import { useProjectBeingEdited } from '../../../selectors/projectSelector';
 import { shallowEqual, useAppDispatch, useAppSelector } from '../../../store/hooks';
 import CardContentStatus from '../../cards/CardContentStatus';
 import CardLayout from '../../cards/CardLayout';
 import VariantSelector from '../../cards/VariantSelector';
 import InlineLoading from '../../common/element/InlineLoading';
+import { WIPContainer } from '../../common/element/Tips';
 import Flex from '../../common/layout/Flex';
 import { space_M, space_S, variantTitle } from '../../styling/style';
+import Hierarchy from './Hierarchy';
 
 const logger = getLogger('ActivityFlow');
 logger.setLevel(4);
@@ -136,6 +139,7 @@ interface PlumbRef {
 export default function ActivityFlowChart(): JSX.Element {
   const dispatch = useAppDispatch();
   const { project, status } = useProjectBeingEdited();
+  const rootCard = useProjectRootCard(project);
 
   const plumbRefs = React.useRef<PlumbRef>({ divs: {}, connections: {} });
 
@@ -427,6 +431,7 @@ export default function ActivityFlowChart(): JSX.Element {
     const notInFlow = cards.filter(
       card => !inFlow.includes(card) && !inFlowChildren.includes(card),
     );
+    const notInFlowIds = notInFlow.map(card => card.id!);
 
     const cardsToProcess = [...inFlow];
     const cardGroups: Card[][] = [];
@@ -474,7 +479,7 @@ export default function ActivityFlowChart(): JSX.Element {
         >
           {jsPlumb != null ? (
             <>
-              <span>Activity Flow</span>
+              <h3>Activity Flow</h3>
               <Flex direction="row">
                 {cardGroups.map((group, i) => (
                   <Flex
@@ -495,7 +500,7 @@ export default function ActivityFlowChart(): JSX.Element {
                   </Flex>
                 ))}
               </Flex>
-              <span>Not in flow</span>
+              <h3>Not in flow</h3>
               <Flex direction="row" wrap="wrap">
                 {notInFlow.map(card => (
                   <Card
@@ -506,6 +511,18 @@ export default function ActivityFlowChart(): JSX.Element {
                   />
                 ))}
               </Flex>
+              <WIPContainer>
+                <h3>Not in flow</h3>
+                {entityIs(rootCard, 'Card') && (
+                  <Hierarchy
+                    rootId={rootCard.id!}
+                    enableDragAndDrop={false}
+                    showAdd={false}
+                    showTools={false}
+                    showOnlyCard={notInFlowIds}
+                  />
+                )}
+              </WIPContainer>
             </>
           ) : null}
         </Flex>
