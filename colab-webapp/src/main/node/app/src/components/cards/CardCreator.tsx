@@ -15,14 +15,14 @@ import * as API from '../../API/api';
 import useTranslations from '../../i18n/I18nContext';
 import { useAndLoadProjectCardTypes } from '../../selectors/cardTypeSelector';
 import { useProjectBeingEdited } from '../../selectors/projectSelector';
-import { useAppDispatch, useLoadingState } from '../../store/hooks';
+import { useAppDispatch } from '../../store/hooks';
 import CustomElementsList from '../common/collection/CustomElementsList';
 import AvailabilityStatusIndicator from '../common/element/AvailabilityStatusIndicator';
 import Button from '../common/element/Button';
-import ButtonWithLoader from '../common/element/ButtonWithLoader';
+import { AsyncButtonWithLoader } from '../common/element/ButtonWithLoader';
 import IconButton from '../common/element/IconButton';
 import Flex from '../common/layout/Flex';
-import OpenCloseModal from '../common/layout/OpenCloseModal';
+import Modal from '../common/layout/Modal';
 import { greyIconButtonChipStyle, marginAroundStyle, space_M, space_S } from '../styling/style';
 import CardTypeThumbnail from './cardtypes/CardTypeThumbnail';
 
@@ -51,113 +51,118 @@ export default function CardCreator({
 
   const { cardTypes, status } = useAndLoadProjectCardTypes();
   const { project } = useProjectBeingEdited();
-
-  const { isLoading, startLoading, stopLoading } = useLoadingState();
+  const [showCardTypeSelector, setShowCardTypeSelector] = React.useState(false);
 
   const [selectedType, setSelectedType] = React.useState<number | null>(null);
   //const mainButtonRef = React.useRef<HTMLDivElement>(null);
-
-  const createCard = (close: () => void) => {
-    startLoading();
-
-    dispatch(
-      API.createSubCardWithTextDataBlock({
-        parent: parentCardContent,
-        cardTypeId: selectedType,
-      }),
-    ).then(() => {
-      stopLoading();
-
-      resetData();
-
-      close();
-    });
-  };
 
   const resetData = React.useCallback(() => {
     setSelectedType(null);
   }, []);
 
-  return (
-    <OpenCloseModal
-      title={i18n.modules.card.createNew(parentCardContent.title)}
-      collapsedChildren={
-        customButton ? (
-          customButton
-        ) : (
-          <IconButton
-            icon={faPlus}
-            className={greyIconButtonChipStyle}
-            title={i18n.modules.card.createCard}
-          />
-        )
-      }
-      className={className}
-      modalClassName={css({ height: '580px' })}
-      modalBodyClassName={css({ paddingTop: space_S })}
-      widthMax
-      footer={close => (
-        <Flex
-          justify="space-between"
-          align="center"
-          grow={1}
-          className={css({ padding: space_M, alignSelf: 'stretch' })}
-        >
-          <Button
-            onClick={() => {
-              if (project?.id) {
-                navigate(`/editor/${project.id}/docs/cardTypes`);
-              }
-            }}
-            invertedButton
-            className={cx(marginAroundStyle([2], space_S), css({ justifySelf: 'flex-start' }))}
-          >
-            {i18n.modules.cardType.route.manageTypes}
-          </Button>
-          <Flex>
-            <Button onClick={close} invertedButton className={marginAroundStyle([2], space_S)}>
-              {i18n.common.cancel}
-            </Button>
+  const createCard = React.useCallback(async () => {
+    return dispatch(
+      API.createSubCardWithTextDataBlock({
+        parent: parentCardContent,
+        cardTypeId: selectedType,
+      }),
+    ).then(() => {
+      resetData();
+    });
+  }, [dispatch, parentCardContent, resetData, selectedType]);
 
-            <ButtonWithLoader
-              onClick={() => {
-                createCard(close);
-              }}
-              isLoading={isLoading}
-            >
-              {i18n.modules.card.createCard}
-            </ButtonWithLoader>
-          </Flex>
-        </Flex>
-      )}
-      showCloseButton
-    >
-      {close => {
-        if (status !== 'READY') {
-          return <AvailabilityStatusIndicator status={status} />;
-        } else {
-          return (
-            <div className={css({ width: '100%', textAlign: 'left' })}>
-              <Flex grow={1} className={css({ paddingTop: space_S })}>
-                <h2>{i18n.modules.card.action.chooseACardType}</h2>
-              </Flex>
-              <CustomElementsList
-                items={cardTypes}
-                thumbnailContent={item => {
-                  return <CardTypeThumbnail cardType={item} usage="currentProject" />;
-                }}
-                customThumbnailStyle={cx(cardTypeThumbnailStyle)}
-                customOnClick={item => setSelectedType(item?.id ? item.id : null)}
-                customOnDblClick={() => {
-                  createCard(close);
-                }}
-                addEmptyItem
-                selectionnable
-              />
-            </div>
-          );
-        }
-      }}
-    </OpenCloseModal>
+  const onClickCb = React.useCallback(
+    (e: React.MouseEvent | React.KeyboardEvent) => {
+      if (e.ctrlKey) {
+        setShowCardTypeSelector(true);
+      } else {
+        createCard();
+      }
+      e.stopPropagation();
+    },
+    [createCard],
   );
+
+  if (showCardTypeSelector) {
+    // modalClassName={css({height: '580px'})}
+    return (
+      <Modal
+        title={i18n.modules.card.createNew(parentCardContent.title)}
+        className={cx(className, css({ width: '800px' }))}
+        onClose={() => {
+          resetData();
+          setShowCardTypeSelector(false);
+        }}
+        modalBodyClassName={css({ paddingTop: space_S })}
+        footer={close => (
+          <Flex
+            justify="space-between"
+            align="center"
+            grow={1}
+            className={css({ padding: space_M, alignSelf: 'stretch' })}
+          >
+            <Button
+              onClick={() => {
+                if (project?.id) {
+                  navigate(`/editor/${project.id}/docs/cardTypes`);
+                }
+              }}
+              invertedButton
+              className={cx(marginAroundStyle([2], space_S), css({ justifySelf: 'flex-start' }))}
+            >
+              {i18n.modules.cardType.route.manageTypes}
+            </Button>
+            <Flex>
+              <Button onClick={close} invertedButton className={marginAroundStyle([2], space_S)}>
+                {i18n.common.cancel}
+              </Button>
+
+              <AsyncButtonWithLoader onClick={createCard}>
+                {i18n.modules.card.createCard}
+              </AsyncButtonWithLoader>
+            </Flex>
+          </Flex>
+        )}
+        showCloseButton
+      >
+        {close => {
+          if (status !== 'READY') {
+            return <AvailabilityStatusIndicator status={status} />;
+          } else {
+            return (
+              <div className={css({ width: '100%', textAlign: 'left' })}>
+                <Flex grow={1} className={css({ paddingTop: space_S })}>
+                  <h2>{i18n.modules.card.action.chooseACardType}</h2>
+                </Flex>
+                <CustomElementsList
+                  items={cardTypes}
+                  thumbnailContent={item => {
+                    return <CardTypeThumbnail cardType={item} usage="currentProject" />;
+                  }}
+                  customThumbnailStyle={cx(cardTypeThumbnailStyle)}
+                  customOnClick={item => setSelectedType(item?.id ? item.id : null)}
+                  customOnDblClick={() => {
+                    createCard().then(() => close());
+                  }}
+                  addEmptyItem
+                  selectionnable
+                />
+              </div>
+            );
+          }
+        }}
+      </Modal>
+    );
+  } else {
+    return customButton ? (
+      customButton
+    ) : (
+      <IconButton
+        icon={faPlus}
+        onClick={onClickCb}
+        className={greyIconButtonChipStyle}
+        title={i18n.modules.card.createCard}
+      />
+    );
+  }
 }
