@@ -459,6 +459,7 @@ export default function CardThumb({
                   cardContent={variant}
                   organize={organize}
                   showPreview={false}
+                  minCardWidth={100}
                 />
               ) : (
                 <i>{i18n.modules.content.none}</i>

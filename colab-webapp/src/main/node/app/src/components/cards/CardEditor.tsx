@@ -623,6 +623,7 @@ export default function CardEditor({
                 width: '100%',
                 flexWrap: 'nowrap',
               })}
+              minCardWidth={80}
             />
           </Collapsible>
         ) : null}

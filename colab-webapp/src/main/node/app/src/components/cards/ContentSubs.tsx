@@ -16,9 +16,9 @@ import { useAndLoadSubCards } from '../../selectors/cardSelector';
 import { useAppDispatch } from '../../store/hooks';
 import Button from '../common/element/Button';
 import InlineLoading from '../common/element/InlineLoading';
+import GridOrganizer, { fixGrid } from '../common/GridOrganizer';
 import Ellipsis from '../common/layout/Ellipsis';
 import Flex from '../common/layout/Flex';
-import GridOrganizer, { fixGrid } from '../common/GridOrganizer';
 import { depthMax } from '../projects/edition/Editor';
 import { fixedButtonStyle, space_L, voidStyle } from '../styling/style';
 import CardCreator from './CardCreator';
@@ -35,6 +35,7 @@ interface ContentSubsProps {
   subcardsContainerStyle?: string;
   organize?: boolean;
   showPreview: boolean;
+  minCardWidth: number;
 }
 /* const tinyCard = css({
   width: '30px',
@@ -92,6 +93,7 @@ export default function ContentSubs({
   subcardsContainerStyle,
   organize = false,
   showPreview,
+  minCardWidth,
 }: ContentSubsProps): JSX.Element {
   const location = useLocation();
   const i18n = useTranslations();
@@ -205,6 +207,7 @@ export default function ContentSubs({
                       gridColumnEnd: x + width,
                       gridRowStart: y,
                       gridRowEnd: y + height,
+                      minWidth: `${width * minCardWidth}px`,
                       maxHeight: '100%',
                     })}
                     depth={depth - 1}

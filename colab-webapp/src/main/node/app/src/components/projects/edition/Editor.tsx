@@ -464,6 +464,7 @@ function RootView({ rootContent }: { rootContent: CardContent | null | undefined
             showPreview
             className={organize ? fullHeightStyle : undefined}
             subcardsContainerStyle={fullHeightStyle}
+            minCardWidth={150}
           />
         </>
       ) : (
