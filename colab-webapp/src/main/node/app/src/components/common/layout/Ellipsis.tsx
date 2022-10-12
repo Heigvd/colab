@@ -21,6 +21,7 @@ interface EllipsisProps<T> {
 const containerStyle = css({
   width: '100%',
   position: 'relative',
+  minHeight: 'inherit',
 });
 
 const itemsStyle = css({
