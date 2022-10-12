@@ -50,13 +50,30 @@ const arrowStyle = cx(
   'VariantPagerArrow',
   css({
     alignSelf: 'center',
+    display: 'none',
+    position: 'absolute',
+  }),
+);
+
+const leftArrowStyle = cx(
+  arrowStyle,
+  css({
+    left: 0,
+  }),
+);
+
+const rightArrowStyle = cx(
+  arrowStyle,
+  css({
+    right: 0,
   }),
 );
 
 const invisible = cx(
-  arrowStyle,
+  //arrowStyle,
   css({
-    visibility: 'hidden',
+    //visibility: 'hidden',
+    display: 'none',
   }),
 );
 
@@ -83,12 +100,16 @@ export default function VariantSelector({
       <div
         className={cx(
           css({
-            margin: '16px 0',
+            margin: '10px',
             display: 'flex',
             flexGrow: 1,
             minWidth: '120px',
+            position: 'relative',
             '& > div': {
               flexGrow: 1,
+            },
+            '&:hover > .VariantPagerArrow ': {
+              display: 'block',
             },
             '&:hover > .VariantPagerArrow path': {
               color: 'grey',
@@ -100,7 +121,7 @@ export default function VariantSelector({
         <IconButton
           className={
             variantPager != null && variantPager.previous != variantPager.current
-              ? arrowStyle
+              ? leftArrowStyle
               : invisible
           }
           icon={faCaretLeft}
@@ -119,7 +140,7 @@ export default function VariantSelector({
         <IconButton
           className={
             variantPager != null && variantPager.next != variantPager.current
-              ? arrowStyle
+              ? rightArrowStyle
               : invisible
           }
           icon={faCaretRight}
