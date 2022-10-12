@@ -6,7 +6,7 @@
  */
 
 import { css, cx } from '@emotion/css';
-import { faCog, faCopy, faEdit, faEllipsisV, faStar, faTrash } from '@fortawesome/free-solid-svg-icons';
+import { faCog, faCopy, faEdit, faEllipsisV, faGlobe, faStar, faTrash } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { AsyncThunk } from '@reduxjs/toolkit';
 import { entityIs, Project } from 'colab-rest-client';
@@ -127,10 +127,11 @@ interface ProjectDisplayProps {
   project: Project;
   className?: string;
   isModel?: boolean;
+  isAdminModel?: boolean;
 }
 
 // Display one project and allow to edit it
-export const ProjectDisplay = ({ project, className, isModel }: ProjectDisplayProps) => {
+export const ProjectDisplay = ({ project, className, isModel, isAdminModel }: ProjectDisplayProps) => {
   const dispatch = useAppDispatch();
   const i18n = useTranslations();
   const navigate = useNavigate();
@@ -153,7 +154,10 @@ export const ProjectDisplay = ({ project, className, isModel }: ProjectDisplayPr
           position: 'relative',
         })}
       >
-        {isModel && <Flex align='center' justify='center' className={modelChipStyle} title={i18n.modules.project.info.isAModel}><FontAwesomeIcon icon={faStar} color='white' size='sm'/></Flex>}
+        {isModel && <Flex align='center' justify='center' className={modelChipStyle} title={i18n.modules.project.info.isAModel}>
+          {isAdminModel ? <FontAwesomeIcon icon={faGlobe} color='white' size='sm'/> : <FontAwesomeIcon icon={faStar} color='white' size='sm'/>
+          }
+        </Flex>}
         <IllustrationDisplay illustration={project.illustration || defaultProjectIllustration} />
       </Flex>
       <div

@@ -31,6 +31,11 @@ import DropDownMenu from './common/layout/DropDownMenu';
 import Monkeys from './debugger/monkey/Monkeys';
 import Picto from './styling/Picto';
 import { flex, invertedThemeMode, paddingAroundStyle, space_M, space_S } from './styling/style';
+const dropLabelsStyle = css({
+//width: '100%',
+textTransform: 'uppercase',
+padding: space_M,
+})
 
 export default function MainNav(): JSX.Element {
   const i18n = useTranslations();
@@ -50,8 +55,8 @@ export default function MainNav(): JSX.Element {
     shallowEqual,
   );
   const entries = [
-    { value: '/', label: <div>{i18n.modules.project.labels.projects}</div> },
-    { value: '/models', label: <div>{i18n.modules.project.labels.models}</div> },
+    { value: '/', label: <div className={dropLabelsStyle}>{i18n.modules.project.labels.projects}</div> },
+    { value: '/models', label: <div className={dropLabelsStyle}>{i18n.modules.project.labels.models}</div> },
   ];
   const value = location.pathname;
   return (
@@ -75,7 +80,7 @@ export default function MainNav(): JSX.Element {
             entries={entries}
             onSelect={e => navigate(e.value)}
             menuIcon="BURGER"
-            buttonClassName={cx(mainMenuLink, css({ gap: space_M }))}
+            buttonClassName={cx(mainMenuLink, css({ padding: '0 0 0 ' + space_M}))}
           />
         </nav>
       ) : (
