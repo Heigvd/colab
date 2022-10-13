@@ -79,19 +79,23 @@ public class ResourceReferenceSpreadingHelper {
         }
 
         if (resourceOrRef.getCard() != null) {
-            Card resourceOwner = resourceOrRef.getCard();
+            requestManager.sudo(() -> {
+                Card resourceOwner = resourceOrRef.getCard();
 
-            for (CardContent variant : resourceOwner.getContentVariants()) {
-                makeActiveReference(variant, resourceOrRef);
-            }
+                for (CardContent variant : resourceOwner.getContentVariants()) {
+                    makeActiveReference(variant, resourceOrRef);
+                }
+            });
         }
 
         if (resourceOrRef.getCardContent() != null) {
-            CardContent resourceOwner = resourceOrRef.getCardContent();
+            requestManager.sudo(() -> {
+                CardContent resourceOwner = resourceOrRef.getCardContent();
 
-            for (Card subCard : resourceOwner.getSubCards()) {
-                makeActiveReference(subCard, resourceOrRef);
-            }
+                for (Card subCard : resourceOwner.getSubCards()) {
+                    makeActiveReference(subCard, resourceOrRef);
+                }
+            });
         }
     }
 
@@ -383,8 +387,8 @@ public class ResourceReferenceSpreadingHelper {
      * <p>
      * Mark the resource's references as residual. Do it as well for all descendants.
      *
-     * @param resource the resource
-     * @param alwaysMark        if the reference must for sure be marked as residual
+     * @param resource   the resource
+     * @param alwaysMark if the reference must for sure be marked as residual
      */
     public void spreadDisableResourceDown(Resource resource, boolean alwaysMark) {
         requestManager.sudo(() -> {
