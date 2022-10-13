@@ -322,6 +322,7 @@ export const fr: ColabTranslations = {
         extractModel: 'Extraire un modèle',
         extractAModel: "Extraire un modèle à partir d'un projet",
         createModel: 'Créer le modèle',
+        convertToProject: 'Convertir en un simple projet',
       },
       info: {
         noProjectSelected: 'Aucun projet sélectionné',

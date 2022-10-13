@@ -45,8 +45,7 @@ export default function MainNav(): JSX.Element {
     state =>
       state.projects.mine.flatMap(projectId => {
         const p = state.projects.projects[projectId];
-        //&& p.type === 'projects'
-        if (entityIs(p, 'Project')) {
+        if (entityIs(p, 'Project') && p.type === 'MODEL') {
           return [p];
         } else {
           return [];

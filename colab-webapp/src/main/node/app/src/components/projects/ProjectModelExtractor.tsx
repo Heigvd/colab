@@ -7,6 +7,7 @@
 
 import { css } from '@emotion/css';
 import * as React from 'react';
+import { useNavigate } from 'react-router-dom';
 import * as API from '../../API/api';
 import useTranslations from '../../i18n/I18nContext';
 import { useAndLoadProject } from '../../selectors/projectSelector';
@@ -37,6 +38,7 @@ const defaultValue: FormData = {
 export function ProjectModelExtractor({ projectId }: ProjectModelExtractorProps): JSX.Element {
   const i18n = useTranslations();
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
 
   const { status, project } = useAndLoadProject(projectId || undefined);
 
@@ -82,18 +84,19 @@ export function ProjectModelExtractor({ projectId }: ProjectModelExtractorProps)
             value={defaultValue}
             onSubmit={() => {
               dispatch(API.updateProject({ ...project, type: 'MODEL' }));
+              navigate('/models');
             }}
-            submitLabel={i18n.modules.project.actions.createModel}
-            className={css({width: 'auto'})}
+            submitLabel={
+              i18n.modules.project.actions.createModel + ' - for the moment just set type to MODEL'
+            }
+            className={css({ width: 'auto' })}
           />
-          - for the moment just set type to MODEL
         </Flex>
-        <Tips tipsType="TODO" />
-        voir où mettre le nom du projet initial
-        <Tips tipsType="TODO" />
-        pouvoir définir un nouveau nom ?
-        <Tips tipsType="TODO" />
-        pouvoir changer l'icône ?
+        <Flex direction="row">
+          <Tips tipsType="TODO">voir où mettre le nom du projet initial</Tips>
+          <Tips tipsType="TODO">pouvoir définir un nouveau nom ?</Tips>
+          <Tips tipsType="TODO">pouvoir changer l'icône ?</Tips>
+        </Flex>
       </WIPContainer>
     </>
   );

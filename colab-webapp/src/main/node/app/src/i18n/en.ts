@@ -317,6 +317,7 @@ export const en = {
         extractModel: 'Extract model',
         extractAModel: 'Extract a model from a project',
         createModel: 'Create model',
+        convertToProject: 'Convert to a simple project',
       },
       info: {
         noProjectSelected: 'No project selected',

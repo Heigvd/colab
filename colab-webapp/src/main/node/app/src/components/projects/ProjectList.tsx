@@ -13,6 +13,7 @@ import {
   faEllipsisV,
   faGlobe,
   faGraduationCap,
+  faSeedling,
   faStar,
   faTrash,
 } from '@fortawesome/free-solid-svg-icons';
@@ -101,7 +102,7 @@ function ExtractModelWrapper(): JSX.Element {
         title={i18n.modules.project.actions.extractAModel}
         showCloseButton
         onClose={() => {
-          navigate('/');
+          navigate('/models');
         }}
         className={css({
           '&:hover': { textDecoration: 'none' },
@@ -277,7 +278,7 @@ export const ProjectDisplay = ({
                 ),
                 action: () => dispatch(API.duplicateProject(project)),
               },
-              ...(tipsConfig.WIP.value
+              ...(tipsConfig.WIP.value && project.type !== 'MODEL'
                 ? [
                     {
                       value: 'extractModel',
@@ -293,6 +294,25 @@ export const ProjectDisplay = ({
                         </>
                       ),
                       action: () => navigate(`extractModel/${project.id}`),
+                    },
+                  ]
+                : []),
+              ...(tipsConfig.WIP.value && project.type !== 'PROJECT'
+                ? [
+                    {
+                      value: 'convertToProject',
+                      label: (
+                        <>
+                          <WIPContainer>
+                            <FontAwesomeIcon icon={faSeedling} />{' '}
+                            {i18n.modules.project.actions.convertToProject}
+                          </WIPContainer>
+                        </>
+                      ),
+                      action: () => {
+                        dispatch(API.updateProject({ ...project, type: 'PROJECT' }));
+                        navigate('/');
+                      },
                     },
                   ]
                 : []),
@@ -418,7 +438,7 @@ export const UserProjects = (): JSX.Element => {
     state =>
       state.projects.mine.flatMap(projectId => {
         const p = state.projects.projects[projectId];
-        if (entityIs(p, 'Project')) {
+        if (entityIs(p, 'Project') && p.type !== 'MODEL') {
           return [p];
         } else {
           return [];
@@ -464,7 +484,9 @@ export const UserModels = (): JSX.Element => {
     }
   }, []);
 
-  return <ModelsList status={status} reload={API.getUserProjects} />;
+  return (
+    <ModelsList status={status} reload={API.getUserProjects} />
+  ); /* TODO see if another loader for models than projects */
 };
 
 interface ModelListProps {
@@ -472,14 +494,14 @@ interface ModelListProps {
   // eslint-disable-next-line @typescript-eslint/ban-types
   reload: AsyncThunk<Project[], void, {}>;
 }
+
 function ModelsList({ status, reload }: ModelListProps) {
   const i18n = useTranslations();
   const dispatch = useAppDispatch();
   const models = useAppSelector(
     state =>
       Object.values(state.projects.projects).flatMap(p => {
-        // ADD TEST IF p == model
-        if (entityIs(p, 'Project')) {
+        if (entityIs(p, 'Project') && p.type === 'MODEL') {
           return [p];
         } else {
           return [];
