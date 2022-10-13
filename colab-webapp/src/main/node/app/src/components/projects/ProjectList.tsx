@@ -11,7 +11,9 @@ import {
   faCopy,
   faEdit,
   faEllipsisV,
+  faGlobe,
   faGraduationCap,
+  faStar,
   faTrash,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -48,6 +50,14 @@ import ProjectCreator from './ProjectCreator';
 import { ProjectDisplaySettings } from './ProjectDisplaySettings';
 import { ProjectModelExtractor } from './ProjectModelExtractor';
 
+const modelChipStyle = css({
+  position: 'absolute',
+  top: 0,
+  right: 0,
+  padding: '10px 10px 12px 12px',
+  borderRadius: '0 0 0 50%',
+  backgroundColor: 'var(--primaryColor)',
+});
 function ProjectSettingWrapper(): JSX.Element {
   const { projectId } = useParams<'projectId'>();
   const i18n = useTranslations();
@@ -100,7 +110,7 @@ function ExtractModelWrapper(): JSX.Element {
           height: '580px',
         })}
         modalBodyClassName={css({
-          alignItems: 'stretch'
+          alignItems: 'stretch',
         })}
       >
         {() => {
@@ -160,10 +170,18 @@ const projectListStyle = css({
 
 interface ProjectDisplayProps {
   project: Project;
+  className?: string;
+  isModel?: boolean;
+  isAdminModel?: boolean;
 }
 
 // Display one project and allow to edit it
-export const ProjectDisplay = ({ project }: ProjectDisplayProps) => {
+export const ProjectDisplay = ({
+  project,
+  className,
+  isModel,
+  isAdminModel,
+}: ProjectDisplayProps) => {
   const dispatch = useAppDispatch();
   const i18n = useTranslations();
   const navigate = useNavigate();
@@ -180,12 +198,28 @@ export const ProjectDisplay = ({ project }: ProjectDisplayProps) => {
       }}
       direction="column"
       align="stretch"
+      className={className}
     >
       <Flex
         className={css({
           height: '80px',
+          position: 'relative',
         })}
       >
+        {isModel && (
+          <Flex
+            align="center"
+            justify="center"
+            className={modelChipStyle}
+            title={i18n.modules.project.info.isAModel}
+          >
+            {isAdminModel ? (
+              <FontAwesomeIcon icon={faGlobe} color="white" size="sm" />
+            ) : (
+              <FontAwesomeIcon icon={faStar} color="white" size="sm" />
+            )}
+          </Flex>
+        )}
         <IllustrationDisplay illustration={project.illustration || defaultProjectIllustration} />
       </Flex>
       <div
@@ -438,7 +472,7 @@ interface ModelListProps {
   // eslint-disable-next-line @typescript-eslint/ban-types
   reload: AsyncThunk<Project[], void, {}>;
 }
- function ModelsList({ status, reload }: ModelListProps) {
+function ModelsList({ status, reload }: ModelListProps) {
   const i18n = useTranslations();
   const dispatch = useAppDispatch();
   const models = useAppSelector(
@@ -480,7 +514,6 @@ interface ModelListProps {
             margin: '4px',
             display: 'block',
             backgroundColor: 'var(--bgColor)',
-            filter: 'blur(3px)',
           })}
           onItemDblClick={item => {
             if (item) {
@@ -489,7 +522,16 @@ interface ModelListProps {
           }}
           fillThumbnail={item => {
             if (item === null) return <></>;
-            else return <ProjectDisplay project={item} />;
+            else
+              return (
+                <ProjectDisplay
+                  project={item}
+                  isModel
+                  className={css({
+                    boxShadow: ` 0px -5px 0px 0px ${item.illustration?.iconBkgdColor} inset`,
+                  })}
+                />
+              );
           }}
           disableOnEnter
         />

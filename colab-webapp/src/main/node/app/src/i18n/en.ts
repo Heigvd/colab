@@ -326,6 +326,7 @@ export const en = {
         useBlankProject: "Use this empty project and you'll be free to create a whole new world",
         deleteConfirmation:
           'Are you sure you want to delete the whole project? This will delete all cards inside.',
+        isAModel: 'This is a project model',
       },
       settings: {
         icon: 'Icon',
