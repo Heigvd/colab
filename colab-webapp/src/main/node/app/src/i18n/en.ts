@@ -304,6 +304,7 @@ export const en = {
         extractRoles: 'Extract the roles',
         extractDeliverables: 'Extract the card contents',
         extractDocuments: 'Extract the documents',
+        shareTheProject: 'Share the project',
       },
       actions: {
         createProject: 'Create project',
@@ -336,6 +337,9 @@ export const en = {
         },
         resources: {
           label: 'Project documentation',
+        },
+        sharing: {
+          label: 'Model sharing',
         },
         missingIcon:
           'Oh a new icon library, dear developer please make what is needed to display the icon.',

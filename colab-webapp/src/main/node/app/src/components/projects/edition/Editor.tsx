@@ -11,6 +11,7 @@ import {
   faChevronRight,
   faCog,
   faGrip,
+  faMicrophone,
   faNetworkWired,
   faProjectDiagram,
   faTimes,
@@ -42,7 +43,7 @@ import IllustrationDisplay, {
 } from '../../common/element/IllustrationDisplay';
 import InlineLoading from '../../common/element/InlineLoading';
 import { mainLinkActiveClass, mainMenuLink, MainMenuLink } from '../../common/element/Link';
-import Tips, { FeaturePreview, TipsCtx } from '../../common/element/Tips';
+import Tips, { FeaturePreview, TipsCtx, WIPContainer } from '../../common/element/Tips';
 import Toggler from '../../common/element/Toggler';
 import Clickable from '../../common/layout/Clickable';
 import Flex from '../../common/layout/Flex';
@@ -64,6 +65,7 @@ import Presence from '../presence/Presence';
 import { PresenceContext, usePresenceContext } from '../presence/PresenceContext';
 import { defaultProjectIllustration } from '../ProjectCommon';
 import { ProjectSettings } from '../ProjectSettings';
+import ProjectSharing from '../ProjectSharing';
 import Team from '../Team';
 import ActivityFlowChart from './ActivityFlowChart';
 import Hierarchy from './Hierarchy';
@@ -332,9 +334,7 @@ function EditorNav({ project, setShowProjectDetails }: EditorNavProps): JSX.Elem
           <Flex
             className={css({
               borderLeft: '1px solid var(--lightGray)',
-              borderRight: '1px solid var(--lightGray)',
               padding: '0 ' + space_S,
-              marginRight: space_S,
             })}
             wrap="nowrap"
           >
@@ -365,12 +365,38 @@ function EditorNav({ project, setShowProjectDetails }: EditorNavProps): JSX.Elem
               />
             </MainMenuLink>
           </Flex>
-          <MainMenuLink to="./docs">
-            <FontAwesomeIcon
-              icon={faBookOpen}
-              title={i18n.modules.project.settings.resources.label}
-            />
-          </MainMenuLink>
+          <Flex
+            className={css({
+              borderLeft: '1px solid var(--lightGray)',
+              padding: '0 ' + space_S,
+            })}
+            wrap="nowrap"
+          >
+            <MainMenuLink to="./docs">
+              <FontAwesomeIcon
+                icon={faBookOpen}
+                title={i18n.modules.project.settings.resources.label}
+              />
+            </MainMenuLink>
+          </Flex>
+          {project.type === 'MODEL' && (
+            <WIPContainer>
+              <Flex
+                className={css({
+                  borderLeft: '1px solid var(--lightGray)',
+                  padding: '0 ' + space_S,
+                })}
+                wrap="nowrap"
+              >
+                <MainMenuLink to="./sharing">
+                  <FontAwesomeIcon
+                    icon={faMicrophone}
+                    title={i18n.modules.project.settings.sharing.label}
+                  />
+                </MainMenuLink>
+              </Flex>
+            </WIPContainer>
+          )}
         </Flex>
         <div
           className={css({
@@ -589,6 +615,7 @@ export default function Editor(): JSX.Element {
               <Route path="hierarchy" element={<Hierarchy rootId={root.id} />} />
               <Route path="flow" element={<ActivityFlowChart />} />
               <Route path="docs/*" element={<DocumentationTab project={project} />} />
+              <Route path="sharing/*" element={<ProjectSharing projectId={project.id} />} />
               <Route path="card/:id" element={<DefaultVariantDetector />} />
               {/* Zooom on a card */}
               <Route

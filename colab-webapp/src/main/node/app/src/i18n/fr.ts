@@ -309,11 +309,12 @@ export const fr: ColabTranslations = {
         extractRoles: 'Extraire les roles',
         extractDeliverables: 'Extraire le contenu des cartes',
         extractDocuments: 'Extraire les documents',
+        shareTheProject: 'Partager le projet',
       },
       actions: {
         createProject: 'Créer projet',
         createAProject: 'Créer un projet',
-        deleteProject: 'Supprimer project',
+        deleteProject: 'Supprimer projet',
         chooseAModel: 'Choisissez un modèle',
         createAProjectFrom: (templateTitle?: string | null): string =>
           `Créer un projet à partir de ${'"' + templateTitle + '"'}`,
@@ -332,7 +333,7 @@ export const fr: ColabTranslations = {
         useBlankProject: 'Utilisez ce projet vide et vous serez libre de créer un monde nouveau.',
         deleteConfirmation:
           "Êtes-vous sûr-e-s de vouloir supprimer tout le projet? Cela va également supprimer toutes les cartes à l'intérieur.",
-          isAModel: 'Ceci est un modèle de projet',
+        isAModel: 'Ceci est un modèle de projet',
       },
       settings: {
         icon: 'Icône',
@@ -341,6 +342,9 @@ export const fr: ColabTranslations = {
         },
         resources: {
           label: 'Documentation du projet',
+        },
+        sharing: {
+          label: 'Partage du modèle',
         },
         missingIcon:
           "Oh une nouvelle bibliothèque d'icônes, cher développeur s'il vous plaît faites ce qui est nécessaire pour afficher l'icône.",
