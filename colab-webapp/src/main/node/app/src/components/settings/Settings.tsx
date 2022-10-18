@@ -43,10 +43,10 @@ export default function Settings(): JSX.Element {
             onClick={() => navigate('..')}
             className={lightIconButtonStyle}
           ></IconButton>
-          <h2>{i18n.common.settings}</h2>
+          <h2>{i18n.user.settings}</h2>
         </Flex>
         <Tabs routed defaultTab="user">
-          <Tab name="user" label={i18n.user.user}>
+          <Tab name="user" label={i18n.user.profile}>
             <Flex direction="row" className={css({ gap: space_L })}>
               <UserProfile user={currentUser} />
               {accounts.map(account => {
@@ -65,6 +65,12 @@ export default function Settings(): JSX.Element {
           </Tab>
           <Tab name="activeSess" label={i18n.user.activeSessions}>
             <UserSessions user={currentUser} />
+          </Tab>
+          <Tab name="sharedModels" label="Shared models">
+            <h2>my shared models</h2>
+            <p>(imagine a view with the thumbnails)</p>
+            <p>I can remove one. No more use</p>
+            <p>ask the model owner if I can be editor of it</p>
           </Tab>
           <Tab name="debugger" label={i18n.admin.debugger} invisible={!currentUser.admin}>
             <Debugger />

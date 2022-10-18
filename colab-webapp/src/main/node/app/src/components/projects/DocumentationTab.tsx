@@ -16,7 +16,7 @@ import InlineLoading from '../common/element/InlineLoading';
 import Flex from '../common/layout/Flex';
 import Tabs, { Tab } from '../common/layout/Tabs';
 import { AccessLevel, ResourceCallContext } from '../resources/resourcesCommonType';
-import ResourcesMainView, { TocDisplayToggler } from '../resources/ResourcesMainView';
+import ResourcesMainView from '../resources/ResourcesMainView';
 
 interface DocumentationTabProps {
   project: Project;
@@ -81,7 +81,7 @@ export default function DocumentationTab({ project }: DocumentationTabProps): JS
               <>
                 <Flex>
                   <h2>{i18n.modules.project.settings.resources.label}</h2>
-                  <TocDisplayToggler />
+                  {/* <TocDisplayToggler /> */}
                 </Flex>
                 <ResourcesMainView
                   accessLevel={accessLevel}

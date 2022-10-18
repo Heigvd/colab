@@ -31,7 +31,7 @@ import ConfirmDeleteOpenCloseModal from '../../common/layout/ConfirmDeleteModal'
 import Flex from '../../common/layout/Flex';
 import { DocTextWrapper } from '../../documents/DocTextItem';
 import { ResourceCallContext } from '../../resources/resourcesCommonType';
-import ResourcesMainView, { TocDisplayToggler } from '../../resources/ResourcesMainView';
+import ResourcesMainView from '../../resources/ResourcesMainView';
 import { cardStyle, errorColor, localTitleStyle, space_M, space_S } from '../../styling/style';
 
 interface CardTypeEditorProps {
@@ -237,7 +237,7 @@ export default function CardTypeEditor({ className, usage }: CardTypeEditorProps
           >
             <Flex align="baseline">
               <h3>{i18n.modules.resource.documentation}</h3>
-              <TocDisplayToggler />
+              {/* <TocDisplayToggler /> */}
             </Flex>
             <ResourcesMainView contextData={resourceContext} accessLevel="WRITE" />
           </Flex>

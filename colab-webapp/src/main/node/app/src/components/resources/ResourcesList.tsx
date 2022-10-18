@@ -6,19 +6,12 @@
  */
 
 import { css, cx } from '@emotion/css';
-import { faMinus, faPersonDigging } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { entityIs } from 'colab-rest-client';
 import * as React from 'react';
 import useTranslations, { useLanguage } from '../../i18n/I18nContext';
-import { useProjectRootCard } from '../../selectors/cardSelector';
-import { useAndLoadNbDocuments, useAndLoadTextOfDocument } from '../../selectors/documentSelector';
-import { useProjectBeingEdited } from '../../selectors/projectSelector';
+import { useAndLoadNbDocuments } from '../../selectors/documentSelector';
 import Tips from '../common/element/Tips';
-import Tooltip from '../common/element/Tooltip';
 import Flex from '../common/layout/Flex';
-import DocumentPreview from '../documents/preview/DocumentPreview';
-import { iconStyle, marginAroundStyle, oneLineEllipsis, space_M, space_S } from '../styling/style';
+import { marginAroundStyle, oneLineEllipsis, space_M, space_S } from '../styling/style';
 import { getKey, getTheDirectResource, ResourceAndRef } from './resourcesCommonType';
 import { TocDisplayCtx } from './ResourcesMainView';
 import TargetResourceSummary from './summary/TargetResourceSummary';
@@ -233,15 +226,15 @@ function TocEntry({
 }: TocEntryProps): JSX.Element {
   const i18n = useTranslations();
 
-  const { text: teaser } = useAndLoadTextOfDocument(resource.targetResource.teaserId);
+  // const { text: teaser } = useAndLoadTextOfDocument(resource.targetResource.teaserId);
 
   const { nb: nbDocs } = useAndLoadNbDocuments({
     kind: 'PartOfResource',
     ownerId: resource.targetResource.id || 0,
   });
 
-  const { project } = useProjectBeingEdited();
-  const rootCard = useProjectRootCard(project);
+  // const { project } = useProjectBeingEdited();
+  // const rootCard = useProjectRootCard(project);
 
   return (
     <Flex className={tocEntryStyle} justify="space-between">
@@ -273,7 +266,7 @@ function TocEntry({
                   <TargetResourceSummary resource={resource} />{' '}
                 </>
               )}
-              <Tooltip
+              {/* <Tooltip
                 tooltipClassName={css({
                   width: '400px',
                   height: '600px',
@@ -309,12 +302,13 @@ function TocEntry({
                     />
                   </Flex>
                 }
-              >
-                {resource.targetResource.title || i18n.modules.resource.untitled}
-              </Tooltip>
+              > */}
+              {resource.targetResource.title || i18n.modules.resource.untitled}
+              {nbDocs < 1 && <i className={css({ fontWeight: 200 })}> - {i18n.common.empty}</i>}
+              {/* </Tooltip> */}
             </div>
 
-            {!resource.targetResource.published &&
+            {/* {!resource.targetResource.published &&
               (resource.targetResource.abstractCardTypeId != null ||
                 (resource.targetResource.cardId != null &&
                   entityIs(rootCard, 'Card') &&
@@ -324,15 +318,15 @@ function TocEntry({
                   title={i18n.modules.resource.unpublishedInfoType}
                   className={iconStyle}
                 />
-              )}
+              )} */}
 
-            {nbDocs < 1 && (
+            {/* {nbDocs < 1 && (
               <FontAwesomeIcon
                 icon={faMinus}
                 title={i18n.modules.resource.info.noContent}
                 className={iconStyle}
               />
-            )}
+            )} */}
           </Flex>
 
           <Tips tipsType="DEBUG" interactionType="CLICK">

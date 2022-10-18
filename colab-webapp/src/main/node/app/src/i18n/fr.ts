@@ -175,6 +175,7 @@ export const fr: ColabTranslations = {
     account: 'Compte',
     missingFirstname: 'Veuillez entrer votre prénom',
     missingLastname: 'Veuillez entrer votre nom',
+    profile: 'Profil',
     userProfile: 'Profil utilisateur',
     editProfile: 'Éditer le profil',
     viewProfile: 'Voir le profil',
@@ -184,6 +185,7 @@ export const fr: ColabTranslations = {
     editUser: "Éditer l'utilisateur",
     activeSessions: 'Sessions actives',
     current: 'Actuel',
+    settings: "Paramètres de l'utilisateur",
   },
   team: {
     team: 'Équipe',
@@ -309,6 +311,7 @@ export const fr: ColabTranslations = {
         extractRoles: 'Extraire les roles',
         extractDeliverables: 'Extraire le contenu des cartes',
         extractDocuments: 'Extraire les documents',
+        keepTheSimpleProject: 'Garder le projet simple',
         shareTheProject: 'Partager le projet',
       },
       actions: {
@@ -322,6 +325,7 @@ export const fr: ColabTranslations = {
         newProject: 'Nouveau projet',
         extractModel: 'Extraire un modèle',
         extractAModel: "Extraire un modèle à partir d'un projet",
+        extractAModelFromProject: 'Extraire un modèle à partir du projet ',
         createModel: 'Créer le modèle',
         convertToProject: 'Convertir en un simple projet',
       },

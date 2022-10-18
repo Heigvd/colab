@@ -455,6 +455,7 @@ export default function CardThumb({
             {showSubcards ? (
               variant != null ? (
                 <ContentSubs
+                  minCardWidth={100}
                   depth={depth}
                   cardContent={variant}
                   organize={organize}

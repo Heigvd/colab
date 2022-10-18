@@ -15,6 +15,7 @@ import {
   faNetworkWired,
   faProjectDiagram,
   faTimes,
+  faUserGroup,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Card, CardContent, entityIs, Project } from 'colab-rest-client';
@@ -80,11 +81,11 @@ const descriptionStyle = {
   fontSize: '0.9em',
   flexGrow: 0,
 };
-const openDetails = css({
-  ...descriptionStyle,
-  maxHeight: '1000px',
-  padding: space_L,
-});
+// const openDetails = css({
+//   ...descriptionStyle,
+//   maxHeight: '1000px',
+//   padding: space_L,
+// });
 const closeDetails = css({
   ...descriptionStyle,
   maxHeight: '0px',
@@ -282,7 +283,7 @@ const CardWrapper = ({
 
 interface EditorNavProps {
   project: Project;
-  setShowProjectDetails: (value: React.SetStateAction<boolean>) => void;
+  // setShowProjectDetails: (value: React.SetStateAction<boolean>) => void;
 }
 
 const pictoLinkStyle = cx(
@@ -292,9 +293,9 @@ const pictoLinkStyle = cx(
   }),
 );
 
-function EditorNav({ project, setShowProjectDetails }: EditorNavProps): JSX.Element {
+function EditorNav({ project }: EditorNavProps): JSX.Element {
   const i18n = useTranslations();
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const location = useLocation();
 
@@ -379,6 +380,27 @@ function EditorNav({ project, setShowProjectDetails }: EditorNavProps): JSX.Elem
               />
             </MainMenuLink>
           </Flex>
+          <Flex
+            className={css({
+              borderLeft: '1px solid var(--lightGray)',
+              padding: '0 ' + space_S,
+            })}
+            wrap="nowrap"
+          >
+            <MainMenuLink
+              to="./team"
+              className={active =>
+                active.isActive || location.pathname.match(/^\/editor\/\d+\/team/)
+                  ? mainLinkActiveClass
+                  : mainMenuLink
+              }
+            >
+              <FontAwesomeIcon
+                icon={faUserGroup}
+                title={i18n.modules.project.settings.resources.label}
+              />
+            </MainMenuLink>
+          </Flex>
           {project.type === 'MODEL' && (
             <WIPContainer>
               <Flex
@@ -397,6 +419,17 @@ function EditorNav({ project, setShowProjectDetails }: EditorNavProps): JSX.Elem
               </Flex>
             </WIPContainer>
           )}
+          <Flex
+            className={css({
+              borderLeft: '1px solid var(--lightGray)',
+              padding: '0 ' + space_S,
+            })}
+            wrap="nowrap"
+          >
+            <MainMenuLink to="./project-settings">
+              <FontAwesomeIcon title={i18n.modules.project.labels.projectSettings} icon={faCog} />
+            </MainMenuLink>
+          </Flex>
         </Flex>
         <div
           className={css({
@@ -406,11 +439,7 @@ function EditorNav({ project, setShowProjectDetails }: EditorNavProps): JSX.Elem
             alignItems: 'center',
           })}
         >
-          <Flex
-            onClick={() => setShowProjectDetails(showProjectDetails => !showProjectDetails)}
-            title={i18n.common.action.showProjectDetails}
-            className={cx(mainMenuLink, css({ textTransform: 'initial', margin: `0 ${space_S}` }))}
-          >
+          <Flex className={cx(css({ textTransform: 'initial', margin: `0 ${space_S}` }))}>
             <Flex align="center">
               <Flex
                 className={css({
@@ -432,15 +461,9 @@ function EditorNav({ project, setShowProjectDetails }: EditorNavProps): JSX.Elem
             </Flex>
           </Flex>
         </div>
-        <Flex align="center">
+        <Flex align="center" justify="flex-end">
           <Presence projectId={project.id!} />
           <Monkeys />
-          <IconButton
-            onClick={() => navigate('./project-settings')}
-            title={i18n.common.settings}
-            icon={faCog}
-            className={css({ textAlign: 'right', alignSelf: 'center', marginLeft: 'auto' })}
-          />
           <Tips tipsType="FEATURE_PREVIEW">
             <Flex>
               <Checkbox
@@ -483,6 +506,7 @@ function RootView({ rootContent }: { rootContent: CardContent | null | undefined
           </FeaturePreview>
 
           <ContentSubs
+            minCardWidth={150}
             showEmptiness={true}
             depth={depthMax}
             cardContent={rootContent}
@@ -506,7 +530,7 @@ export default function Editor(): JSX.Element {
   const { project, status } = useProjectBeingEdited();
 
   const root = useProjectRootCard(project);
-  const [showProjectDetails, setShowProjectDetails] = React.useState(false);
+  //const [showProjectDetails, setShowProjectDetails] = React.useState(false);
 
   const presenceContext = usePresenceContext();
 
@@ -562,8 +586,8 @@ export default function Editor(): JSX.Element {
     return (
       <PresenceContext.Provider value={presenceContext}>
         <Flex direction="column" align="stretch" grow={1} className={fullPageStyle}>
-          <EditorNav project={project} setShowProjectDetails={setShowProjectDetails} />
-          <Flex className={showProjectDetails ? openDetails : closeDetails}>
+          <EditorNav project={project} />
+          <Flex className={closeDetails}>
             <Flex justify="space-between" grow={1}>
               <Flex gap={space_M}>
                 <IllustrationDisplay
@@ -591,11 +615,7 @@ export default function Editor(): JSX.Element {
                   </div>
                 </div>
               </Flex>
-              <IconButton
-                icon={faTimes}
-                title={i18n.common.close}
-                onClick={() => setShowProjectDetails(false)}
-              />
+              <IconButton icon={faTimes} title={i18n.common.close} />
             </Flex>
           </Flex>
           <Flex

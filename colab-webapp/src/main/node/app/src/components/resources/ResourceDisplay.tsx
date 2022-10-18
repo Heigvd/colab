@@ -14,17 +14,13 @@ import {
   faGlasses,
   faInfoCircle,
   faPen,
-  faPersonDigging,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { entityIs } from 'colab-rest-client';
 import * as React from 'react';
 import * as API from '../../API/api';
 import { updateDocumentText } from '../../API/api';
 import useTranslations from '../../i18n/I18nContext';
-import { useProjectRootCard } from '../../selectors/cardSelector';
 import { useAndLoadTextOfDocument } from '../../selectors/documentSelector';
-import { useProjectBeingEdited } from '../../selectors/projectSelector';
 import { useAppDispatch } from '../../store/hooks';
 import { ConfirmIconButton } from '../common/element/ConfirmIconButton';
 import IconButton from '../common/element/IconButton';
@@ -71,8 +67,8 @@ export function ResourceDisplay({
   const dispatch = useAppDispatch();
   const i18n = useTranslations();
 
-  const { project } = useProjectBeingEdited();
-  const rootCard = useProjectRootCard(project);
+  // const { project } = useProjectBeingEdited();
+  // const rootCard = useProjectRootCard(project);
 
   const [selectedDocId, setSelectedDocId] = React.useState<number | undefined | null>(undefined);
   const [editMode, setEditMode] = React.useState(defaultDocEditorContext.editMode);
@@ -179,7 +175,7 @@ export function ResourceDisplay({
               </OpenCloseModal>
             </FeaturePreview>
           )}
-          {!targetResource.published &&
+          {/* {!targetResource.published &&
             (targetResource.abstractCardTypeId != null ||
               (targetResource.cardId != null &&
                 entityIs(rootCard, 'Card') &&
@@ -188,7 +184,7 @@ export function ResourceDisplay({
                 icon={faPersonDigging}
                 title={i18n.modules.resource.unpublishedInfoType}
               />
-            )}
+            )} */}
           {canForce && !forceWrite && (
             <ConfirmIconButton
               icon={faPen}

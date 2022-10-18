@@ -19,16 +19,18 @@ import {
   faUser,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { HierarchicalPosition, Project, TeamMember, TeamRole } from 'colab-rest-client';
+import { entityIs, HierarchicalPosition, Project, TeamMember, TeamRole } from 'colab-rest-client';
 import * as React from 'react';
 import Select from 'react-select';
 import * as API from '../../API/api';
 import { emailFormat, getDisplayName } from '../../helper';
 import useTranslations from '../../i18n/I18nContext';
+import { useProjectRootCard } from '../../selectors/cardSelector';
 import { useAndLoadProjectTeam } from '../../selectors/projectSelector';
 import { useCurrentUser } from '../../selectors/userSelector';
 import { useAppDispatch, useAppSelector, useLoadingState } from '../../store/hooks';
 import { addNotification } from '../../store/notification';
+import CardInvolvement from '../cards/CardInvolvement';
 import { Destroyer } from '../common/Destroyer';
 import Button from '../common/element/Button';
 import IconButton from '../common/element/IconButton';
@@ -40,6 +42,7 @@ import DropDownMenu from '../common/layout/DropDownMenu';
 import Flex from '../common/layout/Flex';
 import OpenClose from '../common/layout/OpenClose';
 import OpenCloseModal from '../common/layout/OpenCloseModal';
+import Tabs, { Tab } from '../common/layout/Tabs';
 import WithToolbar from '../common/WithToolbar';
 import {
   errorColor,
@@ -483,6 +486,8 @@ export default function Team({ project }: TeamProps): JSX.Element {
   const [invite, setInvite] = React.useState('');
   const [error, setError] = React.useState<boolean | string>(false);
 
+  const root = useProjectRootCard(project);
+
   const isNewMember = (newMail: string) => {
     let isNew = true;
     members.forEach(m => {
@@ -500,84 +505,127 @@ export default function Team({ project }: TeamProps): JSX.Element {
   if (status === 'INITIALIZED') {
     return (
       <>
-        <div
-          className={css({
-            display: 'grid',
-            gridTemplateColumns: `repeat(${roles.length + 3}, max-content)`,
-            justifyItems: 'center',
-            alignItems: 'center',
-            '& > div': {
-              marginLeft: '5px',
-              marginRight: '5px',
-            },
-            marginBottom: space_L,
-            paddingBottom: space_M,
-            borderBottom: '1px solid var(--lightGray)',
-            gap: space_S,
-          })}
-        >
-          <div className={cx(titleCellStyle, css({ gridColumnStart: 1, gridColumnEnd: 3 }))}>
-            {i18n.team.members}
-          </div>
-          <div className={titleCellStyle}>{i18n.team.rights}</div>
-          <div className={cx(titleCellStyle, css({ gridColumnStart: 4, gridColumnEnd: 'end' }))}>
-            {i18n.team.roles}
-          </div>
-          <div />
-          <div />
-          <div />
-
-          {roles.map(role => (
-            <div key={'role-' + role.id}>
-              <RoleDisplay role={role} />
-            </div>
-          ))}
-          <div>
-            <CreateRole project={project} />
-          </div>
-          {members.map(member => {
-            return (
-              <Member
-                key={member.id}
-                member={member}
-                roles={roles}
-                isTheOnlyOwner={projectOwners.length < 2 && projectOwners.includes(member)}
+        <Tabs defaultTab={project.type === 'PROJECT' ? 'team' : 'modelSharing'}>
+          <Tab name="modelSharing" invisible={project.type === 'PROJECT'} label="Share the model">
+            <div>
+              <p className={textSmall}>Share to</p>
+              <input
+                placeholder={i18n.authentication.field.emailAddress}
+                type="text"
+                // onChange={e => setInvite(e.target.value)}
+                // value={invite}
+                className={inputStyle}
               />
-            );
-          })}
-        </div>
-        <div>
-          <p className={textSmall}>{i18n.team.inviteNewMember}</p>
-          <input
-            placeholder={i18n.authentication.field.emailAddress}
-            type="text"
-            onChange={e => setInvite(e.target.value)}
-            value={invite}
-            className={inputStyle}
-          />
-          <IconButtonWithLoader
-            className={linkStyle}
-            icon={faPaperPlane}
-            title={i18n.common.send}
-            isLoading={isValidNewMember}
-            onClick={() => {
-              if (isValidNewMember) {
-                setError(false);
-                dispatch(
-                  API.sendInvitation({
-                    projectId: project.id!,
-                    recipient: invite,
-                  }),
-                ).then(() => setInvite(''));
-              } else if (!isNewMember(invite)) {
-                setError(i18n.team.memberAlreadyExist);
-              } else {
-                setError(i18n.authentication.error.emailAddressNotValid);
-              }
-            }}
-          />
-          {error && <div className={cx(css({ color: warningColor }), textSmall)}>{error}</div>}
-        </div>
+              <IconButtonWithLoader
+                className={linkStyle}
+                icon={faPaperPlane}
+                title={i18n.common.send}
+                isLoading={isValidNewMember}
+                onClick={() => {
+                  // if (isValidNewMember) {
+                  //   setError(false);
+                  //   dispatch(
+                  //     API.sendInvitation({
+                  //       projectId: project.id!,
+                  //       recipient: invite,
+                  //     }),
+                  //   ).then(() => setInvite(''));
+                  // } else if (!isNewMember(invite)) {
+                  //   setError(i18n.team.memberAlreadyExist);
+                  // } else {
+                  //   setError(i18n.authentication.error.emailAddressNotValid);
+                  // }
+                }}
+              />
+              {error && <div className={cx(css({ color: warningColor }), textSmall)}>{error}</div>}
+            </div>
+          </Tab>
+          <Tab name="team" label={i18n.team.team}>
+            <div
+              className={css({
+                display: 'grid',
+                gridTemplateColumns: `repeat(${roles.length + 3}, max-content)`,
+                justifyItems: 'center',
+                alignItems: 'center',
+                '& > div': {
+                  marginLeft: '5px',
+                  marginRight: '5px',
+                },
+                marginBottom: space_L,
+                paddingBottom: space_M,
+                borderBottom: '1px solid var(--lightGray)',
+                gap: space_S,
+              })}
+            >
+              <div className={cx(titleCellStyle, css({ gridColumnStart: 1, gridColumnEnd: 3 }))}>
+                {i18n.team.members}
+              </div>
+              <div className={titleCellStyle}>{i18n.team.rights}</div>
+              <div
+                className={cx(titleCellStyle, css({ gridColumnStart: 4, gridColumnEnd: 'end' }))}
+              >
+                {i18n.team.roles}
+              </div>
+              <div />
+              <div />
+              <div />
+
+              {roles.map(role => (
+                <div key={'role-' + role.id}>
+                  <RoleDisplay role={role} />
+                </div>
+              ))}
+              <div>
+                <CreateRole project={project} />
+              </div>
+              {members.map(member => {
+                return (
+                  <Member
+                    key={member.id}
+                    member={member}
+                    roles={roles}
+                    isTheOnlyOwner={projectOwners.length < 2 && projectOwners.includes(member)}
+                  />
+                );
+              })}
+            </div>
+            <div>
+              <p className={textSmall}>{i18n.team.inviteNewMember}</p>
+              <input
+                placeholder={i18n.authentication.field.emailAddress}
+                type="text"
+                onChange={e => setInvite(e.target.value)}
+                value={invite}
+                className={inputStyle}
+              />
+              <IconButtonWithLoader
+                className={linkStyle}
+                icon={faPaperPlane}
+                title={i18n.common.send}
+                isLoading={isValidNewMember}
+                onClick={() => {
+                  if (isValidNewMember) {
+                    setError(false);
+                    dispatch(
+                      API.sendInvitation({
+                        projectId: project.id!,
+                        recipient: invite,
+                      }),
+                    ).then(() => setInvite(''));
+                  } else if (!isNewMember(invite)) {
+                    setError(i18n.team.memberAlreadyExist);
+                  } else {
+                    setError(i18n.authentication.error.emailAddressNotValid);
+                  }
+                }}
+              />
+              {error && <div className={cx(css({ color: warningColor }), textSmall)}>{error}</div>}
+            </div>
+          </Tab>
+          <Tab name="projectACL" label={i18n.modules.project.settings.involvements.label}>
+            {entityIs(root, 'Card') ? <CardInvolvement card={root} /> : <InlineLoading />}
+          </Tab>
+        </Tabs>
       </>
     );
   } else {

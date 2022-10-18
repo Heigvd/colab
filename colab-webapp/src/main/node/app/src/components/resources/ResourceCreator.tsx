@@ -11,10 +11,9 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import * as React from 'react';
 import * as API from '../../API/api';
 import useTranslations from '../../i18n/I18nContext';
-import { useAndLoadResourceCategories } from '../../selectors/resourceSelector';
 import { useAppDispatch, useLoadingState } from '../../store/hooks';
 import Button from '../common/element/Button';
-import Form, { createSelectField, Field } from '../common/element/Form';
+import Form, { Field } from '../common/element/Form';
 import Flex from '../common/layout/Flex';
 import OpenCloseModal from '../common/layout/OpenCloseModal';
 import { space_M, space_S } from '../styling/style';
@@ -22,13 +21,13 @@ import { ResourceCallContext } from './resourcesCommonType';
 
 interface ResourceCreationType {
   title: string;
-  category: string;
+  // category: string;
   atCardContentLevel: boolean;
 }
 
 const defaultData: ResourceCreationType = {
   title: '',
-  category: '',
+  // category: '',
   atCardContentLevel: false,
 };
 
@@ -50,7 +49,7 @@ export default function ResourceCreator({
 
   const { isLoading, startLoading, stopLoading } = useLoadingState();
 
-  const { categories: allCategories } = useAndLoadResourceCategories();
+  // const { categories: allCategories } = useAndLoadResourceCategories();
 
   const fields: Field<ResourceCreationType>[] = [
     {
@@ -59,16 +58,16 @@ export default function ResourceCreator({
       type: 'text',
       isMandatory: true,
     },
-    createSelectField({
-      key: 'category',
-      label: i18n.modules.resource.category,
-      type: 'select',
-      isMandatory: false,
-      isMulti: false,
-      canCreateOption: true,
-      options: allCategories.map(c => ({ label: c, value: c })),
-      tip: i18n.modules.resource.categorytip,
-    }),
+    // createSelectField({
+    //   key: 'category',
+    //   label: i18n.modules.resource.category,
+    //   type: 'select',
+    //   isMandatory: false,
+    //   isMulti: false,
+    //   canCreateOption: true,
+    //   options: allCategories.map(c => ({ label: c, value: c })),
+    //   tip: i18n.modules.resource.categorytip,
+    // }),
   ];
 
   if (contextInfo.kind === 'CardOrCardContent' && contextInfo.hasSeveralVariants) {
@@ -105,7 +104,7 @@ export default function ResourceCreator({
           cardContentId: cardContentId,
           documents: [],
           title: resourceToCreate.title,
-          category: resourceToCreate.category,
+          category: null, //resourceToCreate.category,
         }),
       ).then(action => {
         stopLoading();

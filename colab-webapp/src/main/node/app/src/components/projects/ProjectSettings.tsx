@@ -7,23 +7,19 @@
 
 import { css, cx } from '@emotion/css';
 import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
-import { entityIs, Project } from 'colab-rest-client';
+import { Project } from 'colab-rest-client';
 import * as React from 'react';
 import { useNavigate } from 'react-router-dom';
 import * as API from '../../API/api';
 import useTranslations from '../../i18n/I18nContext';
-import { useProjectRootCard } from '../../selectors/cardSelector';
 import { dispatch } from '../../store/store';
-import CardInvolvement from '../cards/CardInvolvement';
 import IconButton from '../common/element/IconButton';
 import IllustrationDisplay from '../common/element/IllustrationDisplay';
-import InlineLoading from '../common/element/InlineLoading';
 import { LabeledInput, LabeledTextArea } from '../common/element/Input';
 import Flex from '../common/layout/Flex';
 import Tabs, { Tab } from '../common/layout/Tabs';
 import { lightIconButtonStyle, space_L } from '../styling/style';
 import { ProjectIllustrationMaker } from './ProjectIllustrationMaker';
-import Team from './Team';
 
 interface ProjectSettingsProps {
   project: Project;
@@ -33,8 +29,6 @@ interface ProjectSettingsProps {
 export function ProjectSettings({ project }: ProjectSettingsProps): JSX.Element {
   const navigate = useNavigate();
   const i18n = useTranslations();
-
-  const root = useProjectRootCard(project);
 
   return (
     <Flex align="stretch" direction="column" grow={1} className={css({ alignSelf: 'stretch' })}>
@@ -90,12 +84,6 @@ export function ProjectSettings({ project }: ProjectSettingsProps): JSX.Element 
               />
             </Flex>
           </Flex>
-        </Tab>
-        <Tab name="team" label={i18n.team.team}>
-          <Team project={project} />
-        </Tab>
-        <Tab name="projectACL" label={i18n.modules.project.settings.involvements.label}>
-          {entityIs(root, 'Card') ? <CardInvolvement card={root} /> : <InlineLoading />}
         </Tab>
       </Tabs>
     </Flex>

@@ -93,35 +93,7 @@ function ProjectSettingWrapper(): JSX.Element {
 function ExtractModelWrapper(): JSX.Element {
   const { projectId } = useParams<'projectId'>();
 
-  const i18n = useTranslations();
-  const navigate = useNavigate();
-
-  return (
-    <WIPContainer>
-      <Modal
-        title={i18n.modules.project.actions.extractAModel}
-        showCloseButton
-        onClose={() => {
-          navigate('/models');
-        }}
-        className={css({
-          '&:hover': { textDecoration: 'none' },
-          display: 'flex',
-          width: '800px',
-          height: '580px',
-        })}
-        modalBodyClassName={css({
-          alignItems: 'stretch',
-        })}
-      >
-        {() => {
-          return (
-            <ProjectModelExtractor projectId={projectId ? +projectId : undefined} key={projectId} />
-          );
-        }}
-      </Modal>
-    </WIPContainer>
-  );
+  return <ProjectModelExtractor projectId={projectId ? +projectId : undefined} />;
 }
 
 function DeleteProjectWrapper(): JSX.Element {

@@ -6,7 +6,6 @@
  */
 
 import { css, cx } from '@emotion/css';
-import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import { CardContent } from 'colab-rest-client';
 import * as React from 'react';
 import { useLocation } from 'react-router-dom';
@@ -14,13 +13,12 @@ import { changeCardPosition } from '../../API/api';
 import useTranslations from '../../i18n/I18nContext';
 import { useAndLoadSubCards } from '../../selectors/cardSelector';
 import { useAppDispatch } from '../../store/hooks';
-import Button from '../common/element/Button';
 import InlineLoading from '../common/element/InlineLoading';
+import GridOrganizer, { fixGrid } from '../common/GridOrganizer';
 import Ellipsis from '../common/layout/Ellipsis';
 import Flex from '../common/layout/Flex';
-import GridOrganizer, { fixGrid } from '../common/GridOrganizer';
 import { depthMax } from '../projects/edition/Editor';
-import { fixedButtonStyle, space_L, voidStyle } from '../styling/style';
+import { space_L, voidStyle } from '../styling/style';
 import CardCreator from './CardCreator';
 import { TinyCard } from './CardThumb';
 import CardThumbWithSelector from './CardThumbWithSelector';
@@ -35,6 +33,7 @@ interface ContentSubsProps {
   subcardsContainerStyle?: string;
   organize?: boolean;
   showPreview: boolean;
+  minCardWidth: number;
 }
 /* const tinyCard = css({
   width: '30px',
@@ -92,6 +91,7 @@ export default function ContentSubs({
   subcardsContainerStyle,
   organize = false,
   showPreview,
+  minCardWidth,
 }: ContentSubsProps): JSX.Element {
   const location = useLocation();
   const i18n = useTranslations();
@@ -135,11 +135,7 @@ export default function ContentSubs({
           <p>{i18n.modules.card.infos.noCardYetPleaseCreate}</p>
           <CardCreator
             parentCardContent={cardContent}
-            customButton={
-              <Button icon={faPlus} clickable>
-                {i18n.modules.card.infos.createFirstCard}
-              </Button>
-            }
+            display="2"
             className={css({ display: 'block' })}
           />
         </div>
@@ -205,6 +201,7 @@ export default function ContentSubs({
                       gridColumnEnd: x + width,
                       gridRowStart: y,
                       gridRowEnd: y + height,
+                      minWidth: `${width * minCardWidth}px`,
                       maxHeight: '100%',
                     })}
                     depth={depth - 1}
@@ -217,14 +214,12 @@ export default function ContentSubs({
               <Flex justify="center">
                 <CardCreator
                   parentCardContent={cardContent}
-                  customButton={
-                    depth === depthMax ? (
-                      location.pathname.match(/card\/\d+\/v\/\d+/) ? undefined : (
-                        <Button icon={faPlus} className={fixedButtonStyle} clickable>
-                          {i18n.modules.card.createCard}
-                        </Button>
-                      )
-                    ) : undefined
+                  display={
+                    depth === depthMax
+                      ? location.pathname.match(/card\/\d+\/v\/\d+/)
+                        ? undefined
+                        : '1'
+                      : undefined
                   }
                 />
               </Flex>

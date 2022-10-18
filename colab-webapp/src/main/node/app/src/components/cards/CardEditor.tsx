@@ -50,7 +50,7 @@ import DocEditorToolbox, {
 } from '../documents/DocumentEditorToolbox';
 import DocumentList from '../documents/DocumentList';
 import { ResourceCallContext } from '../resources/resourcesCommonType';
-import ResourcesMainView, { TocDisplayToggler } from '../resources/ResourcesMainView';
+import ResourcesMainView from '../resources/ResourcesMainView';
 import { ResourceListNb } from '../resources/summary/ResourcesListSummary';
 //import StickyNoteWrapper from '../stickynotes/StickyNoteWrapper';
 import {
@@ -205,7 +205,7 @@ export default function CardEditor({
       nextToTitleElement: (
         <>
           <Tips>{i18n.modules.resource.help.documentationExplanation}</Tips>
-          <TocDisplayToggler />
+          {/* <TocDisplayToggler /> */}
         </>
       ),
       children: (
@@ -614,6 +614,7 @@ export default function CardEditor({
         {showSubcards ? (
           <Collapsible label={i18n.modules.card.subcards}>
             <ContentSubs
+              minCardWidth={80}
               depth={1}
               cardContent={variant}
               className={css({ alignItems: 'flex-start', overflow: 'auto', width: '100%' })}

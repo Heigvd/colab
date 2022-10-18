@@ -172,6 +172,7 @@ export const en = {
     account: 'Account',
     missingFirstname: 'Please enter your firstname',
     missingLastname: 'Please enter your lastname',
+    profile: 'Profile',
     userProfile: 'User profile',
     editProfile: 'Edit profile',
     viewProfile: 'View profile',
@@ -181,6 +182,7 @@ export const en = {
     editUser: 'Edit user',
     activeSessions: 'Active sessions',
     current: 'Current',
+    settings: 'User settings',
   },
   team: {
     team: 'Team',
@@ -304,6 +306,7 @@ export const en = {
         extractRoles: 'Extract the roles',
         extractDeliverables: 'Extract the card contents',
         extractDocuments: 'Extract the documents',
+        keepTheSimpleProject: 'Keep the simple project',
         shareTheProject: 'Share the project',
       },
       actions: {
@@ -317,6 +320,7 @@ export const en = {
         newProject: 'New project',
         extractModel: 'Extract model',
         extractAModel: 'Extract a model from a project',
+        extractAModelFromProject: 'Extract a model from project ',
         createModel: 'Create model',
         convertToProject: 'Convert to a simple project',
       },
