@@ -13,7 +13,6 @@ import {
   faEllipsisV,
   faGlasses,
   faInfoCircle,
-  faPen,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import * as React from 'react';
@@ -21,8 +20,8 @@ import * as API from '../../API/api';
 import { updateDocumentText } from '../../API/api';
 import useTranslations from '../../i18n/I18nContext';
 import { useAndLoadTextOfDocument } from '../../selectors/documentSelector';
+import { useProjectBeingEdited } from '../../selectors/projectSelector';
 import { useAppDispatch } from '../../store/hooks';
-import { ConfirmIconButton } from '../common/element/ConfirmIconButton';
 import IconButton from '../common/element/IconButton';
 import { DiscreetInput, DiscreetTextArea } from '../common/element/Input';
 import { FeaturePreview } from '../common/element/Tips';
@@ -67,7 +66,7 @@ export function ResourceDisplay({
   const dispatch = useAppDispatch();
   const i18n = useTranslations();
 
-  // const { project } = useProjectBeingEdited();
+  const { project } = useProjectBeingEdited();
   // const rootCard = useProjectRootCard(project);
 
   const [selectedDocId, setSelectedDocId] = React.useState<number | undefined | null>(undefined);
@@ -90,17 +89,22 @@ export function ResourceDisplay({
   // get the effective access level on targetResource
   const accesLevel = useResourceAccessLevelForCurrentUser(resource.targetResource);
 
-  const [forceWrite, setForce] = React.useState(false);
+  // const [forceWrite, setForce] = React.useState(false);
 
   // acces level from current point of view is readonly, but user has a write acces on the
   // target resource
-  const canForce = accesLevel === 'WRITE' && (readOnly || !resource.isDirectResource);
+  const couldWriteButNotDirect = accesLevel === 'WRITE' && (readOnly || !resource.isDirectResource);
 
-  const toggleForceCb = React.useCallback(() => {
-    setForce(current => !current);
-  }, []);
+  // const toggleForceCb = React.useCallback(() => {
+  //   setForce(current => !current);
+  // }, []);
 
-  const effectiveReadOnly = !forceWrite && (readOnly || !resource.isDirectResource);
+  const canEdit =
+    !readOnly &&
+    ((project && project.type === 'PROJECT' && resource.isDirectResource) ||
+      (project && project.type === 'MODEL' && accesLevel === 'WRITE'));
+
+  const effectiveReadOnly = !canEdit; // !forceWrite && (readOnly || !resource.isDirectResource);
 
   const category = getTheDirectResource(resource).category;
 
@@ -155,7 +159,7 @@ export function ResourceDisplay({
               inputDisplayClassName={localTitleStyle}
             />
           </Flex>
-          {(canForce || resource.isDirectResource) && (
+          {(couldWriteButNotDirect || resource.isDirectResource) && (
             <FeaturePreview>
               <OpenCloseModal
                 modalClassName={css({
@@ -185,15 +189,15 @@ export function ResourceDisplay({
                 title={i18n.modules.resource.unpublishedInfoType}
               />
             )} */}
-          {canForce && !forceWrite && (
+          {/* {canForce && !forceWrite && (
             <ConfirmIconButton
               icon={faPen}
               title={i18n.modules.resource.info.forceTooltip}
               onConfirm={toggleForceCb}
             />
-          )}
+          )} */}
 
-          {canForce && forceWrite && <span onClick={toggleForceCb}>done</span>}
+          {/* {canForce && forceWrite && <span onClick={toggleForceCb}>done</span>} */}
           {/* {effectiveReadOnly && !teaser ? (
             <ResourceSettingsModal resource={resource} isButton />
           ) : ( */}
