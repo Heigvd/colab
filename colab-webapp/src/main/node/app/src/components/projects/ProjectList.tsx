@@ -269,7 +269,7 @@ export const ProjectDisplay = ({
                     },
                   ]
                 : []),
-              ...(tipsConfig.WIP.value && project.type !== 'PROJECT'
+              ...(tipsConfig.WIP.value && project.type === 'MODEL'
                 ? [
                     {
                       value: 'convertToProject',
