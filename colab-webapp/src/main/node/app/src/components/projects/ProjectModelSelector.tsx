@@ -9,7 +9,7 @@ import { css, cx } from '@emotion/css';
 import { Project } from 'colab-rest-client';
 import * as React from 'react';
 import useTranslations from '../../i18n/I18nContext';
-import { useAndLoadProjectModels } from '../../selectors/projectSelector';
+import { useAndLoadModelProjects } from '../../selectors/projectSelector';
 import ItemThumbnailsSelection from '../common/collection/ItemThumbnailsSelection';
 import AvailabilityStatusIndicator from '../common/element/AvailabilityStatusIndicator';
 import IllustrationDisplay from '../common/element/IllustrationDisplay';
@@ -43,7 +43,7 @@ export default function ProjectModelSelector({
   whenDone,
 }: ProjectModelSelectorProps): JSX.Element {
   const i18n = useTranslations();
-  const { projects, status } = useAndLoadProjectModels();
+  const { projects, status } = useAndLoadModelProjects();
 
   const sortedProjects = projects.sort(sortResources);
 

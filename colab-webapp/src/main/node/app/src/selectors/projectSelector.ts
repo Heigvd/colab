@@ -146,22 +146,22 @@ interface ProjectsAndStatus {
   status: AvailabilityStatus;
 }
 
-// TODO sandra work in progress : do what is needed
 function useModelProjects(): ProjectsAndStatus {
   const projects = useAppSelector(state => {
     return Object.values(
-      state.projects.mine.flatMap(id => {
-        const proj = state.projects.projects[id];
-        return entityIs(proj, 'Project') ? [proj] : [];
-      }),
+      state.projects.mine
+        .flatMap(id => {
+          const proj = state.projects.projects[id];
+          return entityIs(proj, 'Project') ? [proj] : [];
+        })
+        .filter(proj => proj.type === 'MODEL'),
     );
   }, shallowEqual);
 
   return { projects, status: 'READY' };
 }
 
-// TODO sandra work in progress : really fetch the project models
-export function useAndLoadProjectModels(): ProjectsAndStatus {
+export function useAndLoadModelProjects(): ProjectsAndStatus {
   const dispatch = useAppDispatch();
 
   const { projects, status } = useModelProjects();
