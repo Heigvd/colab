@@ -222,6 +222,29 @@ export function ResourceDisplay({
                       },
                     ]
                   : []),
+                ...(!readOnly && resource.isDirectResource && resource.targetResource.id // TODO see conditions
+                  ? [
+                      {
+                        value: 'publishStatus',
+                        label: (
+                          <>
+                            {resource.targetResource.published
+                              ? i18n.modules.resource.actions.makePrivate
+                              : i18n.modules.resource.actions.shareWithChildren}
+                          </>
+                        ),
+                        action: () => {
+                          if (resource.targetResource.id) {
+                            if (resource.targetResource.published) {
+                              dispatch(API.unpublishResource(resource.targetResource.id));
+                            } else {
+                              dispatch(API.publishResource(resource.targetResource.id));
+                            }
+                          }
+                        },
+                      },
+                    ]
+                  : []),
                 ...(!alwaysShowTeaser && !alwaysHideTeaser
                   ? [
                       {

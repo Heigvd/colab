@@ -513,6 +513,11 @@ export const fr: ColabTranslations = {
       help: {
         documentationExplanation: 'Les documents utiles pour compléter la carte',
       },
+      actions: {
+        makeOwnCopy: 'Avoir ma propre copie',
+        shareWithChildren: 'Partage dans les enfants',
+        makePrivate: 'Rend privé',
+      },
       info: {
         noContent: 'Le document est vide',
         providedByCardType: (cardTypeName: string) => `Fournie par le thème «${cardTypeName}»`,

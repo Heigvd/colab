@@ -519,6 +519,11 @@ export const en = {
         forceTooltip:
           'This documentation is provided from another place, but you can edit it from here',
       },
+      actions: {
+        makeOwnCopy: 'Copy to have my own',
+        shareWithChildren: 'Share within children',
+        makePrivate: 'Make private',
+      },
       scope: {
         disclaimer: '', // TODO
         confirm: 'move',
