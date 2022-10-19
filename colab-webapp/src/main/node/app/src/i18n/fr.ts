@@ -523,7 +523,7 @@ export const fr: ColabTranslations = {
       actions: {
         makeOwnCopy: 'Avoir ma propre copie',
         shareWithChildren: 'Partage dans les enfants',
-        makePrivate: 'Rend privé',
+        makePrivate: 'Rendre privé',
       },
       info: {
         noContent: 'Le document est vide',
