@@ -16,11 +16,14 @@ import { useAppDispatch, useLoadingState } from '../../store/hooks';
 import AvailabilityStatusIndicator from '../common/element/AvailabilityStatusIndicator';
 import Button from '../common/element/Button';
 import ButtonWithLoader from '../common/element/ButtonWithLoader';
-import { WIPContainer } from '../common/element/Tips';
+import Checkbox from '../common/element/Checkbox';
+import IllustrationDisplay from '../common/element/IllustrationDisplay';
+import { LabeledInput, LabeledTextArea } from '../common/element/Input';
 import Flex from '../common/layout/Flex';
 import Modal from '../common/layout/Modal';
-import { space_M, space_S } from '../styling/style';
+import { space_L, space_M, space_S } from '../styling/style';
 import { defaultProjectIllustration } from './ProjectCommon';
+import { ProjectIllustrationMaker } from './ProjectIllustrationMaker';
 
 interface ProjectModelExtractorProps {
   projectId: number | null | undefined;
@@ -138,6 +141,17 @@ export function ProjectModelExtractor({ projectId }: ProjectModelExtractorProps)
   //   },
   // ];
 
+  React.useEffect(() => {
+    if (project) {
+      setData({
+        ...data,
+        name: project.name || data.name,
+        description: project.description || data.description,
+        illustration: project.illustration || data.illustration,
+      });
+    }
+  }, [project, data, setData]);
+
   return projectStatus !== 'READY' || !project ? (
     <AvailabilityStatusIndicator status={projectStatus} />
   ) : (
@@ -149,9 +163,7 @@ export function ProjectModelExtractor({ projectId }: ProjectModelExtractorProps)
           </span>
         }
         showCloseButton
-        onClose={() => {
-          navigate('/models');
-        }}
+        onClose={() => navigate('../')}
         className={css({
           '&:hover': { textDecoration: 'none' },
           display: 'flex',
@@ -204,8 +216,9 @@ export function ProjectModelExtractor({ projectId }: ProjectModelExtractorProps)
                 }}
                 isLoading={isLoading}
               >
-                {i18n.modules.project.actions.createModel +
-                  ' - for the moment just set type to MODEL'}
+                {i18n.modules.project.actions.createModel}
+                {/* +
+                  ' - for the moment just set type to MODEL'} */}
               </ButtonWithLoader>
             )}
           </Flex>
@@ -213,15 +226,15 @@ export function ProjectModelExtractor({ projectId }: ProjectModelExtractorProps)
       >
         {() => {
           return (
-            <>
-              <WIPContainer>
-                {status === 'parameters' ? (
-                  <ProjectModelParameters />
-                ) : (
-                  <ProjectModelDataInitialization />
-                )}
-              </WIPContainer>
-            </>
+            // <WIPContainer>
+            <Flex direction="column">
+              {status === 'parameters' ? (
+                <ProjectModelParameters data={data} setData={setData} />
+              ) : (
+                <ProjectModelDataInitialization data={data} />
+              )}
+            </Flex>
+            // </WIPContainer>
           );
         }}
       </Modal>
@@ -229,31 +242,73 @@ export function ProjectModelExtractor({ projectId }: ProjectModelExtractorProps)
   );
 }
 
-function ProjectModelParameters(): JSX.Element {
+function ProjectModelParameters({
+  data,
+  setData,
+}: {
+  data: ModelCreationData;
+  setData: React.Dispatch<React.SetStateAction<ModelCreationData>>;
+}): JSX.Element {
   const i18n = useTranslations();
   return (
     <>
-      <h2>Paramètres du projet</h2>
-      <h3>Extract</h3>
-      <ul>
-        <li>roles</li>
-        <li>card contents</li>
-        <li>documentation</li>
-      </ul>
-      <h3>{i18n.modules.project.labels.keepTheSimpleProject}</h3>
+      <h2>{i18n.projectParameters}</h2>
+      <Flex direction="column" className={css({ padding: '10px' })}>
+        <h3>{i18n.extract}</h3>
+        <Checkbox
+          label={i18n.roles}
+          onChange={function (newValue: boolean): void {
+            setData({ ...data, withRoles: newValue });
+          }}
+        />
+        <Checkbox label={i18n.cardContent} onChange={function (_newValue: boolean): void {}} />
+        <Checkbox label={i18n.documentation} onChange={function (_newValue: boolean): void {}} />
+      </Flex>
+      <Flex direction="column" className={css({ padding: '10px' })}>
+        <h3>{i18n.whatToDoWithOriginalSimpleProject}</h3>
+        <Checkbox label={i18n.keep} onChange={function (_newValue: boolean): void {}} />
+      </Flex>
     </>
   );
 }
 
-function ProjectModelDataInitialization(): JSX.Element {
+function ProjectModelDataInitialization({ data }: { data: ModelCreationData }): JSX.Element {
+  const i18n = useTranslations();
+
   return (
     <>
-      <h2>Données du projet</h2>
-      <ul>
-        <li>name</li>
-        <li>description</li>
-        <li>illustration</li>
-      </ul>
+      <Flex className={css({ alignSelf: 'stretch' })}>
+        <Flex
+          direction="column"
+          align="stretch"
+          className={css({ width: '45%', minWidth: '45%', marginRight: space_L })}
+        >
+          <LabeledInput
+            label={i18n.common.name}
+            placeholder={i18n.modules.project.actions.newProject}
+            value={data.name || ''}
+            onChange={() => {}}
+          />
+          <LabeledTextArea
+            label={i18n.common.description}
+            placeholder={i18n.common.info.writeDescription}
+            value={data.description || ''}
+            onChange={() => {}}
+          />
+        </Flex>
+        <Flex
+          direction="column"
+          align="stretch"
+          justify="flex-end"
+          className={css({ width: '55%' })}
+        >
+          <IllustrationDisplay illustration={data.illustration} />
+          <ProjectIllustrationMaker
+            illustration={data.illustration}
+            setIllustration={i => (data.illustration = i)}
+          />
+        </Flex>
+      </Flex>
     </>
   );
 }

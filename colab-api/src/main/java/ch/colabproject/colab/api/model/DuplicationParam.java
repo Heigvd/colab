@@ -89,6 +89,25 @@ public class DuplicationParam implements WithJsonDiscriminator {
     }
 
     /**
+     * @return Default instance for a resource duplication
+     */
+    public static DuplicationParam buildDefaultForCopyOfResource() {
+        DuplicationParam defaultInstance = new DuplicationParam();
+
+        defaultInstance.setWithRoles(false);
+        defaultInstance.setWithTeamMembers(false);
+        defaultInstance.setWithCardTypes(false);
+        defaultInstance.setWithCardsStructure(false);
+        defaultInstance.setWithDeliverables(false);
+        defaultInstance.setWithStickyNotes(false);
+        defaultInstance.setWithActivityFlow(false);
+
+        defaultInstance.setMakeOnlyCardTypeReferences(false);
+
+        return defaultInstance;
+    }
+
+    /**
      * @return Default instance for a project created from a project model
      */
     public static DuplicationParam buildForCreationFromModel() {

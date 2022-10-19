@@ -9,6 +9,13 @@ import { CardContentStatus, MessageI18nKey } from 'colab-rest-client';
 import { ColabTranslations } from './I18nContext';
 
 export const fr: ColabTranslations = {
+  projectParameters: 'Paramètres du projet',
+  extract: 'Extraire',
+  roles: 'Rôles',
+  cardContent: 'Contenu des cartes',
+  documentation: 'Documentation',
+  keep: 'Garder',
+  whatToDoWithOriginalSimpleProject: 'Que fait-on du projet initial',
   //////////////////////////////////////////////////////////////////////////////////////////////////
   // COMMON
   common: {
@@ -512,6 +519,11 @@ export const fr: ColabTranslations = {
       unpublishedInfoType: "Une documentation non publiée n'est pas visible par les cartes",
       help: {
         documentationExplanation: 'Les documents utiles pour compléter la carte',
+      },
+      actions: {
+        makeOwnCopy: 'Avoir ma propre copie',
+        shareWithChildren: 'Partage dans les enfants',
+        makePrivate: 'Rend privé',
       },
       info: {
         noContent: 'Le document est vide',

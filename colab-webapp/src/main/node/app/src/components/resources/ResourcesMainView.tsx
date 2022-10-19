@@ -53,7 +53,7 @@ export function TocDisplayToggler(): JSX.Element {
       entries={entries}
       onSelect={entry => setMode(entry.value)}
       //idleHoverStyle="BACKGROUND"
-      menuIcon='CARET'
+      menuIcon="CARET"
     />
   );
 }
@@ -181,7 +181,11 @@ export default function ResourcesMainView({
         </div>
       )}
 
-      <ResourcesList resources={activeResources} selectResource={selectResource} />
+      <ResourcesList
+        resources={activeResources}
+        selectResource={selectResource}
+        contextData={contextData}
+      />
 
       {!isReadOnly(accessLevel) && (
         <Flex>

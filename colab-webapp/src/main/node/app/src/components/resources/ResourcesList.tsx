@@ -6,13 +6,29 @@
  */
 
 import { css, cx } from '@emotion/css';
+import { faCopy, faEllipsisV } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import * as React from 'react';
+import * as API from '../../API/api';
 import useTranslations, { useLanguage } from '../../i18n/I18nContext';
 import { useAndLoadNbDocuments } from '../../selectors/documentSelector';
+import { dispatch } from '../../store/store';
 import Tips from '../common/element/Tips';
+import DropDownMenu from '../common/layout/DropDownMenu';
 import Flex from '../common/layout/Flex';
-import { marginAroundStyle, oneLineEllipsis, space_M, space_S } from '../styling/style';
-import { getKey, getTheDirectResource, ResourceAndRef } from './resourcesCommonType';
+import {
+  lightIconButtonStyle,
+  marginAroundStyle,
+  oneLineEllipsis,
+  space_M,
+  space_S,
+} from '../styling/style';
+import {
+  getKey,
+  getTheDirectResource,
+  ResourceAndRef,
+  ResourceCallContext,
+} from './resourcesCommonType';
 import { TocDisplayCtx } from './ResourcesMainView';
 import TargetResourceSummary from './summary/TargetResourceSummary';
 
@@ -37,6 +53,7 @@ export interface ResourcesListProps {
   selectResource?: (resource: ResourceAndRef) => void;
   displayResourceItem?: (resource: ResourceAndRef) => React.ReactNode;
   showLocationIcon?: boolean;
+  contextData?: ResourceCallContext;
 }
 
 function ResourcesListByCategory({
@@ -44,6 +61,7 @@ function ResourcesListByCategory({
   selectResource,
   displayResourceItem,
   showLocationIcon = true,
+  contextData,
 }: ResourcesListProps): JSX.Element {
   const lang = useLanguage();
 
@@ -85,6 +103,7 @@ function ResourcesListByCategory({
                   selectResource={selectResource}
                   displayResource={displayResourceItem}
                   showLocationIcon={showLocationIcon}
+                  contextData={contextData}
                 />
               ))}
             </Flex>
@@ -216,6 +235,7 @@ interface TocEntryProps {
   selectResource?: (resource: ResourceAndRef) => void;
   displayResource?: (resource: ResourceAndRef) => React.ReactNode;
   showLocationIcon: boolean;
+  contextData?: ResourceCallContext;
 }
 
 function TocEntry({
@@ -223,6 +243,7 @@ function TocEntry({
   selectResource,
   displayResource,
   //showLocationIcon,
+  contextData,
 }: TocEntryProps): JSX.Element {
   const i18n = useTranslations();
 
@@ -327,6 +348,38 @@ function TocEntry({
                 className={iconStyle}
               />
             )} */}
+            <DropDownMenu
+              icon={faEllipsisV}
+              valueComp={{ value: '', label: '' }}
+              buttonClassName={cx(lightIconButtonStyle, css({ marginLeft: space_S }))}
+              entries={[
+                ...(!resource.isDirectResource && contextData // TODO voir quelles conditions
+                  ? [
+                      {
+                        value: 'ownCopy',
+                        label: (
+                          <>
+                            <FontAwesomeIcon icon={faCopy} />{' '}
+                            {i18n.modules.resource.actions.makeOwnCopy}
+                          </>
+                        ),
+                        action: () => {
+                          dispatch(
+                            API.duplicateAndMoveResource({
+                              resourceOrRef: resource.targetResource,
+                              newParentType: contextData.kind === 'CardType' ? 'CardType' : 'Card',
+                              newParentId:
+                                contextData.kind === 'CardType'
+                                  ? contextData.cardTypeId || 0
+                                  : contextData.cardId || 0,
+                            }),
+                          );
+                        },
+                      },
+                    ]
+                  : []),
+              ]}
+            />
           </Flex>
 
           <Tips tipsType="DEBUG" interactionType="CLICK">
