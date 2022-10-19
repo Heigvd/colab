@@ -13,6 +13,7 @@ import {
   faEllipsisV,
   //faGlasses,
   faInfoCircle,
+  faTurnDown,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import * as React from 'react';
@@ -151,6 +152,7 @@ export function ResourceDisplay({
                 {' / '}
               </>
             )} */}
+            {resource.targetResource.published && <FontAwesomeIcon icon={faTurnDown} title={i18n.common.published} size='xs' color='var(--darkGray)' />}
             <DiscreetInput
               value={targetResource.title || ''}
               placeholder={i18n.modules.resource.untitled}

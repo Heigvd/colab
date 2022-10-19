@@ -6,7 +6,7 @@
  */
 
 import { css, cx } from '@emotion/css';
-import { faCopy, faEllipsisV } from '@fortawesome/free-solid-svg-icons';
+import { faCopy, faEllipsisV, faTurnDown } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import * as React from 'react';
 import * as API from '../../API/api';
@@ -282,6 +282,7 @@ function TocEntry({
                 oneLineEllipsis,
               )}
             >
+              {resource.targetResource.published && <FontAwesomeIcon icon={faTurnDown} size='xs' className={css({marginRight: '3px'})}/>}
               {/* {showLocationIcon && (
                 <>
                   <TargetResourceSummary resource={resource} />{' '}
