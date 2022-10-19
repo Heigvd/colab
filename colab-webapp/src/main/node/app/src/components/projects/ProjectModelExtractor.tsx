@@ -110,37 +110,6 @@ export function ProjectModelExtractor({ projectId }: ProjectModelExtractorProps)
 
   const { status: projectStatus, project } = useAndLoadProject(projectId || undefined);
 
-  // const formFields: Field<FormData>[] = [
-  //   {
-  //     key: 'withRoles',
-  //     label: i18n.modules.project.labels.extractRoles,
-  //     type: 'boolean',
-  //     showAs: 'checkbox',
-  //     isMandatory: true,
-  //   },
-  //   {
-  //     key: 'withDeliverables',
-  //     label: i18n.modules.project.labels.extractDeliverables,
-  //     type: 'boolean',
-  //     showAs: 'checkbox',
-  //     isMandatory: true,
-  //   },
-  //   {
-  //     key: 'withDocuments',
-  //     label: i18n.modules.project.labels.extractDocuments,
-  //     type: 'boolean',
-  //     showAs: 'checkbox',
-  //     isMandatory: true,
-  //   },
-  //   {
-  //     key: 'justConvert',
-  //     label: i18n.modules.project.labels.keepTheSimpleProject,
-  //     type: 'boolean',
-  //     showAs: 'checkbox',
-  //     isMandatory: true,
-  //   },
-  // ];
-
   React.useEffect(() => {
     if (project) {
       setData({
