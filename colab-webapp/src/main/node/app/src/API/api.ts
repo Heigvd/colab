@@ -1061,6 +1061,27 @@ export const deleteResource = createAsyncThunk('resource/delete', async (resourc
   }
 });
 
+export const duplicateAndMoveResource = createAsyncThunk(
+  'resource/duplicateAndMove',
+  async ({
+    resourceOrRef,
+    newParentType,
+    newParentId,
+  }: {
+    resourceOrRef: AbstractResource;
+    newParentType: 'Card' | 'CardContent' | 'CardType';
+    newParentId: number;
+  }) => {
+    if (resourceOrRef.id) {
+      return await restClient.ResourceRestEndpoint.damr1(
+        resourceOrRef.id,
+        newParentType,
+        newParentId,
+      );
+    }
+  },
+);
+
 export function getResourceToEdit(resource: ResourceAndRef): ResourceRef | Resource {
   if (resource.isDirectResource) {
     return resource.targetResource;
