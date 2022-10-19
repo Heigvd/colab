@@ -33,7 +33,7 @@ export interface ModelCreationData {
   justConvert: boolean;
   withRoles: boolean;
   withDeliverables: boolean;
-  withDocuments: boolean;
+  withResources: boolean;
   name: string;
   description: string;
   illustration: Illustration;
@@ -45,7 +45,7 @@ const defaultData: ModelCreationData = {
   justConvert: true,
   withRoles: true,
   withDeliverables: true,
-  withDocuments: true,
+  withResources: true,
   name: '',
   description: '',
   illustration: { ...defaultProjectIllustration },
@@ -159,7 +159,8 @@ export function ProjectModelExtractor({ projectId }: ProjectModelExtractorProps)
       <Modal
         title={
           <span>
-            {i18n.modules.project.actions.extractAModelFromProject} <b>{project?.name || ''}</b>
+            {i18n.modules.project.actions.saveProjectAsModelPart1} <b>{project?.name || ''}</b>{' '}
+            {i18n.modules.project.actions.saveProjectAsModelPart2}
           </span>
         }
         showCloseButton
@@ -205,18 +206,18 @@ export function ProjectModelExtractor({ projectId }: ProjectModelExtractorProps)
                   if (!readOnly) {
                     setReadOnly(true);
                     startLoading();
+                    // TODO duplicate and
                     dispatch(API.updateProject({ ...project, type: 'MODEL' })).then(() => {
                       resetCb();
                       close();
                       navigate('/models');
-                      // window.open(`#/editor/${payload.payload}`, '_blank');
                       stopLoading();
                     });
                   }
                 }}
                 isLoading={isLoading}
               >
-                {i18n.modules.project.actions.createModel}
+                {i18n.common.save}
                 {/* +
                   ' - for the moment just set type to MODEL'} */}
               </ButtonWithLoader>
@@ -250,24 +251,31 @@ function ProjectModelParameters({
   setData: React.Dispatch<React.SetStateAction<ModelCreationData>>;
 }): JSX.Element {
   const i18n = useTranslations();
+
   return (
     <>
-      <h2>{i18n.projectParameters}</h2>
-      <Flex direction="column" className={css({ padding: '10px' })}>
-        <h3>{i18n.extract}</h3>
-        <Checkbox
-          label={i18n.roles}
-          onChange={function (newValue: boolean): void {
-            setData({ ...data, withRoles: newValue });
-          }}
-        />
-        <Checkbox label={i18n.cardContent} onChange={function (_newValue: boolean): void {}} />
-        <Checkbox label={i18n.documentation} onChange={function (_newValue: boolean): void {}} />
-      </Flex>
-      <Flex direction="column" className={css({ padding: '10px' })}>
-        <h3>{i18n.whatToDoWithOriginalSimpleProject}</h3>
-        <Checkbox label={i18n.keep} onChange={function (_newValue: boolean): void {}} />
-      </Flex>
+      <h3>{i18n.modules.project.labels.include}</h3>
+      <Checkbox
+        value={data.withRoles}
+        label={i18n.modules.project.labels.roles}
+        onChange={(newValue: boolean) => {
+          setData({ ...data, withRoles: newValue });
+        }}
+      />
+      <Checkbox
+        value={data.withDeliverables}
+        label={i18n.modules.project.labels.cardContents}
+        onChange={(newValue: boolean) => {
+          setData({ ...data, withDeliverables: newValue });
+        }}
+      />
+      <Checkbox
+        value={data.withResources}
+        label={i18n.modules.project.labels.documentation}
+        onChange={(newValue: boolean) => {
+          setData({ ...data, withResources: newValue });
+        }}
+      />
     </>
   );
 }
