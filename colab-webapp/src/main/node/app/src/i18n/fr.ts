@@ -317,6 +317,8 @@ export const fr: ColabTranslations = {
         roles: 'Rôles',
         cardContents: 'Contenu des cartes',
         documentation: 'Documentation',
+        connect: 'Connecter',
+        keepConnectionBetweenModelAndProject: 'Garder les nouveaux projets connectés au modèle',
       },
       actions: {
         createProject: 'Créer projet',

@@ -312,6 +312,8 @@ export const en = {
         roles: 'Roles',
         cardContents: 'Card contents',
         documentation: 'Documentation',
+        connect: 'Connect',
+        keepConnectionBetweenModelAndProject: 'Keep new projects connected to the model',
       },
       actions: {
         createProject: 'Create project',
