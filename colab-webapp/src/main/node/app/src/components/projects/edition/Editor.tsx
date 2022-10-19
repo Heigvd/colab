@@ -11,7 +11,6 @@ import {
   faChevronRight,
   faCog,
   faGrip,
-  faMicrophone,
   faNetworkWired,
   faProjectDiagram,
   faTimes,
@@ -44,7 +43,7 @@ import IllustrationDisplay, {
 } from '../../common/element/IllustrationDisplay';
 import InlineLoading from '../../common/element/InlineLoading';
 import { mainLinkActiveClass, mainMenuLink, MainMenuLink } from '../../common/element/Link';
-import Tips, { FeaturePreview, TipsCtx, WIPContainer } from '../../common/element/Tips';
+import Tips, { FeaturePreview, TipsCtx } from '../../common/element/Tips';
 import Toggler from '../../common/element/Toggler';
 import Clickable from '../../common/layout/Clickable';
 import Flex from '../../common/layout/Flex';
@@ -401,7 +400,7 @@ function EditorNav({ project }: EditorNavProps): JSX.Element {
               />
             </MainMenuLink>
           </Flex>
-          {project.type === 'MODEL' && (
+          {/* {project.type === 'MODEL' && (
             <WIPContainer>
               <Flex
                 className={css({
@@ -418,7 +417,7 @@ function EditorNav({ project }: EditorNavProps): JSX.Element {
                 </MainMenuLink>
               </Flex>
             </WIPContainer>
-          )}
+          )} */}
           <Flex
             className={css({
               borderLeft: '1px solid var(--lightGray)',

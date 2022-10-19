@@ -30,7 +30,7 @@ import { StateStatus } from '../../store/slice/projectSlice';
 import ItemThumbnailsSelection from '../common/collection/ItemThumbnailsSelection';
 import IllustrationDisplay from '../common/element/IllustrationDisplay';
 import InlineLoading from '../common/element/InlineLoading';
-import Tips, { TipsCtx, WIPContainer } from '../common/element/Tips';
+import { TipsCtx, WIPContainer } from '../common/element/Tips';
 import { ConfirmDeleteModal } from '../common/layout/ConfirmDeleteModal';
 import DropDownMenu from '../common/layout/DropDownMenu';
 import Flex from '../common/layout/Flex';
@@ -259,9 +259,6 @@ export const ProjectDisplay = ({
                           <WIPContainer>
                             <FontAwesomeIcon icon={faGraduationCap} />{' '}
                             {i18n.modules.project.actions.extractModel}
-                            <Tips tipsType="TODO">
-                              voir si cette action doit être disponible à l'édition du projet
-                            </Tips>
                           </WIPContainer>
                         </>
                       ),
