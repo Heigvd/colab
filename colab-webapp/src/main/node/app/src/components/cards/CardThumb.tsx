@@ -35,7 +35,7 @@ import DocumentPreview from '../documents/preview/DocumentPreview';
 import {
   errorColor,
   lightIconButtonStyle,
-  linkStyle,
+  //linkStyle,
   space_L,
   space_M,
   space_S,

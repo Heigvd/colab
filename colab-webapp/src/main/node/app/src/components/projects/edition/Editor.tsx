@@ -13,6 +13,7 @@ import {
   faGrip,
   faNetworkWired,
   faProjectDiagram,
+  faStar,
   faTimes,
   faUserGroup,
 } from '@fortawesome/free-solid-svg-icons';
@@ -59,6 +60,7 @@ import {
   invertedButtonStyle,
   invertedThemeMode,
   linkStyle,
+  modelBGColor,
   space_L,
   space_M,
   space_S,
@@ -83,6 +85,13 @@ const descriptionStyle = {
   fontSize: '0.9em',
   flexGrow: 0,
 };
+const modelPictoCornerStyle = css({
+  position: 'absolute',
+  top: 0,
+  left: 0,
+  padding: '10px 10px 12px 12px',
+  borderRadius: '0 0 50% 0',
+});
 // const openDetails = css({
 //   ...descriptionStyle,
 //   maxHeight: '1000px',
@@ -593,7 +602,12 @@ export default function Editor(): JSX.Element {
   } else {
     return (
       <PresenceContext.Provider value={presenceContext}>
-        <Flex direction="column" align="stretch" grow={1} className={fullPageStyle}>
+        <Flex
+          direction="column"
+          align="stretch"
+          grow={1}
+          className={cx(fullPageStyle, { [modelBGColor]: project.type === 'MODEL' })}
+        >
           <EditorNav project={project} />
           <Flex className={closeDetails}>
             <Flex justify="space-between" grow={1}>
@@ -633,8 +647,23 @@ export default function Editor(): JSX.Element {
             className={css({
               padding: space_L,
               overflow: 'auto',
+              position: 'relative',
             })}
           >
+            {project.type === 'MODEL' && (
+              <Flex
+                align="center"
+                justify="center"
+                className={cx(modelPictoCornerStyle, invertedThemeMode)}
+                title={i18n.modules.project.info.isAModel}
+              >
+                {/*             {isAdminModel ? (
+              <FontAwesomeIcon icon={faGlobe} color="white" size="sm" />
+            ) : ( */}
+                <FontAwesomeIcon icon={faStar} />
+              </Flex>
+            )}
+
             <Routes>
               <Route path="settings/*" element={<Settings />} />
               <Route path="project-settings/*" element={<ProjectSettings project={project} />} />

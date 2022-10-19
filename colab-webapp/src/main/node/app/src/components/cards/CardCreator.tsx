@@ -15,7 +15,7 @@ import useTranslations from '../../i18n/I18nContext';
 import { useAppDispatch, useLoadingState } from '../../store/hooks';
 import Button from '../common/element/Button';
 import IconButton from '../common/element/IconButton';
-import { fixedButtonStyle, greyIconButtonChipStyle, invertedButtonStyle, space_M, space_S } from '../styling/style';
+import { greyIconButtonChipStyle, invertedButtonStyle, space_M, space_S } from '../styling/style';
 
 export const cardTypeThumbnailStyle = css({
   padding: space_M,
