@@ -8,6 +8,13 @@
 import { CardContentStatus, MessageI18nKey } from 'colab-rest-client';
 
 export const en = {
+  projectParameters: 'Project parameters',
+  extract: 'Extract',
+  roles: 'Roles',
+  cardContent: 'Card content',
+  documentation: 'Documentation',
+  keep: 'Keep',
+  whatToDoWithOriginalSimpleProject: 'What do we do with original project',
   //////////////////////////////////////////////////////////////////////////////////////////////////
   // COMMON
   common: {

@@ -9,6 +9,13 @@ import { CardContentStatus, MessageI18nKey } from 'colab-rest-client';
 import { ColabTranslations } from './I18nContext';
 
 export const fr: ColabTranslations = {
+  projectParameters: 'Paramètres du projet',
+  extract: 'Extraire',
+  roles: 'Rôles',
+  cardContent: 'Contenu des cartes',
+  documentation: 'Documentation',
+  keep: 'Garder',
+  whatToDoWithOriginalSimpleProject: 'Que fait-on du projet initial',
   //////////////////////////////////////////////////////////////////////////////////////////////////
   // COMMON
   common: {
