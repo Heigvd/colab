@@ -163,9 +163,7 @@ export function ProjectModelExtractor({ projectId }: ProjectModelExtractorProps)
           </span>
         }
         showCloseButton
-        onClose={() => {
-          navigate('/models');
-        }}
+        onClose={() => navigate('../')}
         className={css({
           '&:hover': { textDecoration: 'none' },
           display: 'flex',
