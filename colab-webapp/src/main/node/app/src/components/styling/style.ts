@@ -321,9 +321,8 @@ export const sideTabButton = css({
 
 export const fixedButtonStyle = css({
   position: 'fixed',
-  bottom: '2rem',
+  top: '3.8rem',
   right: '4vw',
-  boxShadow: boxShadow,
 });
 
 export const lightIconButtonStyle = css({

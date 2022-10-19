@@ -8,7 +8,7 @@
 import { css, cx } from '@emotion/css';
 import { CardContent } from 'colab-rest-client';
 import * as React from 'react';
-import { useLocation } from 'react-router-dom';
+//import { useLocation } from 'react-router-dom';
 import { changeCardPosition } from '../../API/api';
 import useTranslations from '../../i18n/I18nContext';
 import { useAndLoadSubCards } from '../../selectors/cardSelector';
@@ -17,7 +17,7 @@ import InlineLoading from '../common/element/InlineLoading';
 import GridOrganizer, { fixGrid } from '../common/GridOrganizer';
 import Ellipsis from '../common/layout/Ellipsis';
 import Flex from '../common/layout/Flex';
-import { depthMax } from '../projects/edition/Editor';
+//import { depthMax } from '../projects/edition/Editor';
 import { space_L, voidStyle } from '../styling/style';
 import CardCreator from './CardCreator';
 import { TinyCard } from './CardThumb';
@@ -51,9 +51,9 @@ const subCardsContainerStyle = css({
   marginTop: space_L,
 });
 
-const flexGrow = css({
+/* const flexGrow = css({
   flexGrow: '1',
-});
+}); */
 
 /* const gridCardsStyle = css({
   display: 'grid',
@@ -63,16 +63,19 @@ const flexGrow = css({
   justifyItems: 'stretch',
   alignItems: 'stretch'}); */
 
-export function gridCardsStyle(nbColumns: number, _nbRows: number) {
+export function gridCardsStyle(_nbRows: number) {
   return css({
     flexGrow: '1',
     display: 'grid',
-    gridTemplateColumns: `repeat(${nbColumns}, minmax(min-content, auto))`,
+    gridTemplateColumns: `repeat(3, minmax(min-content, auto))`,
+    gridTemplateRows: `repeat(3, auto)`,
+    //height: '50%'
+    //gridTemplateColumns: `repeat(${nbColumns}, minmax(min-content, auto))`,
     // gridTemplateRows: `repeat(${nbRows}, 1fr)`,
-    justifyContent: 'strech',
+    /* justifyContent: 'stretch',
     alignContent: 'stretch',
     justifyItems: 'stretch',
-    alignItems: 'stretch',
+    alignItems: 'stretch', */
   });
 }
 
@@ -93,7 +96,7 @@ export default function ContentSubs({
   showPreview,
   minCardWidth,
 }: ContentSubsProps): JSX.Element {
-  const location = useLocation();
+  //const location = useLocation();
   const i18n = useTranslations();
   const dispatch = useAppDispatch();
 
@@ -146,7 +149,7 @@ export default function ContentSubs({
           className={cx(
             subCardsContainerStyle,
             className,
-            indexedSubCards.cells.length > 0 ? flexGrow : undefined,
+            //indexedSubCards.cells.length > 0 ? flexGrow : undefined,
           )}
         >
           {organize ? (
@@ -189,7 +192,7 @@ export default function ContentSubs({
             <>
               <div
                 className={cx(
-                  gridCardsStyle(indexedSubCards.nbColumns, indexedSubCards.nbRows),
+                  gridCardsStyle(indexedSubCards.nbRows),
                   subcardsContainerStyle,
                   hideEmptyGridStyle,
                 )}
@@ -212,7 +215,7 @@ export default function ContentSubs({
                 ))}
               </div>
               <Flex justify="center">
-                <CardCreator
+                {/* <CardCreator
                   parentCardContent={cardContent}
                   display={
                     depth === depthMax
@@ -221,7 +224,7 @@ export default function ContentSubs({
                         : '1'
                       : undefined
                   }
-                />
+                /> */}
               </Flex>
             </>
           )}

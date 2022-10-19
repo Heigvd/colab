@@ -39,6 +39,7 @@ import {
   ellipsis,
   errorColor,
   fixedButtonStyle,
+  invertedButtonStyle,
   lightIconButtonStyle,
   multiLineEllipsis,
   space_M,
@@ -394,7 +395,7 @@ function ProjectList({ projects, status, reload }: ProjectListProps) {
           disableOnEnter
         />
         {/* Note : any authenticated user can create a project */}
-        <ProjectCreator collapsedButtonClassName={fixedButtonStyle} />
+        <ProjectCreator collapsedButtonClassName={cx(fixedButtonStyle, invertedButtonStyle)} />
         <Routes>
           <Route path="projectsettings/:projectId" element={<ProjectSettingWrapper />} />
           <Route path="deleteproject/:projectId" element={<DeleteProjectWrapper />} />

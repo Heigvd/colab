@@ -11,7 +11,7 @@ import {
   faBoxArchive,
   faCog,
   faEllipsisV,
-  faGlasses,
+  //faGlasses,
   faInfoCircle,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -24,11 +24,11 @@ import { useProjectBeingEdited } from '../../selectors/projectSelector';
 import { useAppDispatch } from '../../store/hooks';
 import IconButton from '../common/element/IconButton';
 import { DiscreetInput, DiscreetTextArea } from '../common/element/Input';
-import { FeaturePreview } from '../common/element/Tips';
+//import { FeaturePreview } from '../common/element/Tips';
 import DropDownMenu from '../common/layout/DropDownMenu';
 import Flex from '../common/layout/Flex';
 import Modal from '../common/layout/Modal';
-import OpenCloseModal from '../common/layout/OpenCloseModal';
+//import OpenCloseModal from '../common/layout/OpenCloseModal';
 import { DocTextWrapper } from '../documents/DocTextItem';
 import DocEditorToolbox, {
   defaultDocEditorContext,
@@ -44,13 +44,13 @@ import {
   textSmall,
 } from '../styling/style';
 import {
-  getTheDirectResource,
+  //getTheDirectResource,
   ResourceAndRef,
   useResourceAccessLevelForCurrentUser,
 } from './resourcesCommonType';
 import ResourceSettings from './ResourceSettings';
-import ResourceScope from './summary/ResourceScope';
-import TargetResourceSummary from './summary/TargetResourceSummary';
+//import ResourceScope from './summary/ResourceScope';
+//import TargetResourceSummary from './summary/TargetResourceSummary';
 
 export interface ResourceDisplayProps {
   resource: ResourceAndRef;
@@ -93,7 +93,7 @@ export function ResourceDisplay({
 
   // acces level from current point of view is readonly, but user has a write acces on the
   // target resource
-  const couldWriteButNotDirect = accesLevel === 'WRITE' && (readOnly || !resource.isDirectResource);
+  //const couldWriteButNotDirect = accesLevel === 'WRITE' && (readOnly || !resource.isDirectResource);
 
   // const toggleForceCb = React.useCallback(() => {
   //   setForce(current => !current);
@@ -106,7 +106,7 @@ export function ResourceDisplay({
 
   const effectiveReadOnly = !canEdit; // !forceWrite && (readOnly || !resource.isDirectResource);
 
-  const category = getTheDirectResource(resource).category;
+  //const category = getTheDirectResource(resource).category;
 
   const { text: teaser } = useAndLoadTextOfDocument(targetResource.teaserId);
 
@@ -131,8 +131,10 @@ export function ResourceDisplay({
             className={lightIconButtonStyle}
           />
           <Flex wrap="nowrap" align="center">
-            <TargetResourceSummary resource={resource} showText="tooltip" />
-            {category && (
+            {(!resource.isDirectResource || resource.targetResource.abstractCardTypeId != null) &&
+            <div className={css({fontSize: '0.7em', color: 'var(--lightGray)', border: '1px solid var(--lightGray)', borderRadius: '10px', padding: '3px'})}>Read only</div>}
+            {/* <TargetResourceSummary resource={resource} showText="tooltip" /> */}
+            {/* {category && (
               <>
                 <DiscreetInput
                   value={category}
@@ -148,7 +150,7 @@ export function ResourceDisplay({
                 />
                 {' / '}
               </>
-            )}
+            )} */}
             <DiscreetInput
               value={targetResource.title || ''}
               placeholder={i18n.modules.resource.untitled}
@@ -159,7 +161,7 @@ export function ResourceDisplay({
               inputDisplayClassName={localTitleStyle}
             />
           </Flex>
-          {(couldWriteButNotDirect || resource.isDirectResource) && (
+          {/* {(couldWriteButNotDirect || resource.isDirectResource) && (
             <FeaturePreview>
               <OpenCloseModal
                 modalClassName={css({
@@ -178,7 +180,7 @@ export function ResourceDisplay({
                 {close => <ResourceScope onCancel={close} resource={resource} />}
               </OpenCloseModal>
             </FeaturePreview>
-          )}
+          )} */}
           {/* {!targetResource.published &&
             (targetResource.abstractCardTypeId != null ||
               (targetResource.cardId != null &&

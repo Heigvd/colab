@@ -34,6 +34,7 @@ import {
 import { useProjectBeingEdited } from '../../../selectors/projectSelector';
 import { useAppDispatch, useAppSelector } from '../../../store/hooks';
 import Admin from '../../admin/Admin';
+import CardCreator from '../../cards/CardCreator';
 import CardEditor from '../../cards/CardEditor';
 import CardThumbWithSelector from '../../cards/CardThumbWithSelector';
 import ContentSubs from '../../cards/ContentSubs';
@@ -53,8 +54,10 @@ import { UserDropDown } from '../../MainNav';
 import Settings from '../../settings/Settings';
 import Picto from '../../styling/Picto';
 import {
+  fixedButtonStyle,
   fullHeightStyle,
   fullPageStyle,
+  invertedButtonStyle,
   invertedThemeMode,
   linkStyle,
   space_L,
@@ -496,15 +499,21 @@ function RootView({ rootContent }: { rootContent: CardContent | null | undefined
     >
       {rootContent != null ? (
         <>
-          <FeaturePreview>
-            <Toggler
-              className={css({ alignSelf: 'flex-end' })}
-              label={i18n.modules.card.positioning.toggleText}
-              value={organize}
-              onChange={setOrganize}
+          <Flex className={fixedButtonStyle} gap={space_M}>
+            <FeaturePreview className={fixedButtonStyle}>
+              <Toggler
+                className={css({ alignSelf: 'flex-end' })}
+                label={i18n.modules.card.positioning.toggleText}
+                value={organize}
+                onChange={setOrganize}
+              />
+            </FeaturePreview>
+            <CardCreator
+              parentCardContent={rootContent}
+              display="1"
+              className={invertedButtonStyle}
             />
-          </FeaturePreview>
-
+          </Flex>
           <ContentSubs
             minCardWidth={150}
             showEmptiness={true}

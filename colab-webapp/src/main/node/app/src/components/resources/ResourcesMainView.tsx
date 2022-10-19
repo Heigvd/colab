@@ -14,8 +14,8 @@ import AvailabilityStatusIndicator from '../common/element/AvailabilityStatusInd
 import Button from '../common/element/Button';
 import DropDownMenu from '../common/layout/DropDownMenu';
 import Flex from '../common/layout/Flex';
-import { lightIconButtonStyle, space_S, voidStyle } from '../styling/style';
-import HidenResourcesKeeper from './HidenResourcesKeeper';
+import { lightIconButtonStyle, voidStyle } from '../styling/style';
+//import HidenResourcesKeeper from './HidenResourcesKeeper';
 import ResourceCreator from './ResourceCreator';
 import { ResourceDisplay } from './ResourceDisplay';
 import {
@@ -79,7 +79,7 @@ export default function ResourcesMainView({
 }: ResourcesMainViewProps): JSX.Element {
   const i18n = useTranslations();
 
-  const { activeResources, ghostResources, status } = useAndLoadResources(contextData);
+  const { activeResources, status } = useAndLoadResources(contextData);
 
   const [selectedResource, selectResource] = React.useState<ResourceAndRef | null>(null);
 
@@ -185,35 +185,12 @@ export default function ResourcesMainView({
 
       {!isReadOnly(accessLevel) && (
         <Flex>
-          <ResourceCreator
+          {/* <ResourceCreator
             contextInfo={contextData}
             onCreated={setLastCreated}
             collapsedClassName={lightIconButtonStyle}
-          />
+          /> */}
 
-          {ghostResources != null && ghostResources.length > 0 && (
-            // note : we can imagine that a read access level allows to see the ghost resources
-            <>
-              <span
-                className={css({
-                  width: '1px',
-                  height: '100%',
-                  backgroundColor: 'var(--lightGray)',
-                })}
-              />
-              <HidenResourcesKeeper
-                resources={ghostResources}
-                collapsedClassName={cx(
-                  css({
-                    borderTop: '1px solid var(--lightGray)',
-                    padding: space_S,
-                    '&:hover': { backgroundColor: 'var(--lightGray)', cursor: 'pointer' },
-                  }),
-                  lightIconButtonStyle,
-                )}
-              />
-            </>
-          )}
         </Flex>
       )}
     </Flex>

@@ -35,12 +35,14 @@ import DocumentPreview from '../documents/preview/DocumentPreview';
 import {
   errorColor,
   lightIconButtonStyle,
+  linkStyle,
   space_L,
   space_M,
   space_S,
   variantTitle,
 } from '../styling/style';
 import CardContentStatus from './CardContentStatus';
+import CardCreator from './CardCreator';
 import CardInvolvement from './CardInvolvement';
 import CardLayout from './CardLayout';
 import CardSettings from './CardSettings';
@@ -332,6 +334,18 @@ export default function CardThumb({
                       action: () => {
                         navigate(`${cardId}/settings`);
                       },
+                    },
+                    {
+                      value: 'newSubcard',
+                      label: (
+                        <>
+                          {variant && <CardCreator
+                            parentCardContent={variant}
+                            display="1"
+                            //className={}
+                          />}
+                        </>
+                      ),
                     },
                     {
                       value: 'involvements',

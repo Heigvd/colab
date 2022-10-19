@@ -31,6 +31,7 @@ import * as API from '../../API/api';
 import useTranslations from '../../i18n/I18nContext';
 import { useCardACLForCurrentUser, useVariantsOrLoad } from '../../selectors/cardSelector';
 import { useAndLoadCardType } from '../../selectors/cardTypeSelector';
+import { useAndLoadResources } from '../../selectors/resourceSelector';
 //import { useStickyNoteLinksForDest } from '../../selectors/stickyNoteLinkSelector';
 import { useAppDispatch, useLoadingState } from '../../store/hooks';
 import Button from '../common/element/Button';
@@ -49,6 +50,8 @@ import DocEditorToolbox, {
   DocEditorCTX,
 } from '../documents/DocumentEditorToolbox';
 import DocumentList from '../documents/DocumentList';
+import HidenResourcesKeeper from '../resources/HidenResourcesKeeper';
+import ResourceCreator from '../resources/ResourceCreator';
 import { ResourceCallContext } from '../resources/resourcesCommonType';
 import ResourcesMainView from '../resources/ResourcesMainView';
 import { ResourceListNb } from '../resources/summary/ResourcesListSummary';
@@ -192,6 +195,7 @@ export default function CardEditor({
     cardContentId: variant.id,
     hasSeveralVariants: hasVariants,
   };
+  const { ghostResources } = useAndLoadResources(resourceContext);
   const sideBarItems: Record<string, Item> = {
     resources: {
       icon: faPaperclip,
@@ -202,10 +206,38 @@ export default function CardEditor({
         </div>
       ),
       title: i18n.modules.resource.documentation,
-      nextToTitleElement: (
+      header: (
         <>
+          <h3>{i18n.modules.resource.documentation}</h3>
           <Tips>{i18n.modules.resource.help.documentationExplanation}</Tips>
-          {/* <TocDisplayToggler /> */}
+          <ResourceCreator
+            contextInfo={resourceContext}
+            onCreated={() => {}}
+            collapsedClassName={lightIconButtonStyle}
+          />
+          {ghostResources != null && ghostResources.length > 0 && (
+            // note : we can imagine that a read access level allows to see the ghost resources
+            <>
+              <span
+                className={css({
+                  width: '1px',
+                  height: '100%',
+                  backgroundColor: 'var(--lightGray)',
+                })}
+              />
+              <HidenResourcesKeeper
+                resources={ghostResources}
+                collapsedClassName={cx(
+                  css({
+                    borderTop: '1px solid var(--lightGray)',
+                    padding: space_S,
+                    '&:hover': { backgroundColor: 'var(--lightGray)', cursor: 'pointer' },
+                  }),
+                  lightIconButtonStyle,
+                )}
+              />
+            </>
+          )}
         </>
       ),
       children: (

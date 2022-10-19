@@ -5,7 +5,7 @@
  * Licensed under the MIT License
  */
 
-import { css } from '@emotion/css';
+import { css, cx } from '@emotion/css';
 import { ReactJSXElement } from '@emotion/react/types/jsx-namespace';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import { CardContent } from 'colab-rest-client';
@@ -15,7 +15,7 @@ import useTranslations from '../../i18n/I18nContext';
 import { useAppDispatch, useLoadingState } from '../../store/hooks';
 import Button from '../common/element/Button';
 import IconButton from '../common/element/IconButton';
-import { fixedButtonStyle, greyIconButtonChipStyle, space_M, space_S } from '../styling/style';
+import { fixedButtonStyle, greyIconButtonChipStyle, invertedButtonStyle, space_M, space_S } from '../styling/style';
 
 export const cardTypeThumbnailStyle = css({
   padding: space_M,
@@ -74,7 +74,7 @@ CardCreatorProps): JSX.Element {
   return display === '1' ? (
     <Button
       icon={faPlus}
-      className={fixedButtonStyle}
+      className={invertedButtonStyle}
       clickable
       onClick={e => {
         e.stopPropagation();
@@ -98,7 +98,7 @@ CardCreatorProps): JSX.Element {
   ) : (
     <IconButton
       icon={faPlus}
-      className={greyIconButtonChipStyle}
+      className={cx(greyIconButtonChipStyle, css({display: 'none'}))}
       title={i18n.modules.card.createCard}
       onClick={e => {
         e.stopPropagation();

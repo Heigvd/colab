@@ -222,7 +222,7 @@ function TocEntry({
   resource,
   selectResource,
   displayResource,
-  showLocationIcon,
+  //showLocationIcon,
 }: TocEntryProps): JSX.Element {
   const i18n = useTranslations();
 
@@ -261,11 +261,11 @@ function TocEntry({
                 oneLineEllipsis,
               )}
             >
-              {showLocationIcon && (
+              {/* {showLocationIcon && (
                 <>
                   <TargetResourceSummary resource={resource} />{' '}
                 </>
-              )}
+              )} */}
               {/* <Tooltip
                 tooltipClassName={css({
                   width: '400px',

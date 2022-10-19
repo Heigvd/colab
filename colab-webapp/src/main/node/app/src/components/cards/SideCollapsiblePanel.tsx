@@ -20,6 +20,7 @@ export interface Item {
   children: React.ReactNode;
   className?: string;
   title: string;
+  header?: React.ReactNode;
   nextToTitleElement?: React.ReactNode;
   nextToIconElement?: React.ReactNode;
 }
@@ -61,7 +62,8 @@ export function SideCollapsiblePanelBody({
             })}
           >
             <Flex align="baseline">
-              <h3>{itemOpen.title}</h3>
+              {itemOpen.header ? itemOpen.header : <h3>{itemOpen.title}</h3>}
+
               {itemOpen.nextToTitleElement}
             </Flex>
             {/* <IconButton
