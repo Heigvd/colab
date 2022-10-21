@@ -1,23 +1,23 @@
 /*
  * The coLAB project
- * Copyright (C) 2021 AlbaSim, MEI, HEIG-VD, HES-SO
+ * Copyright (C) 2021-2022 AlbaSim, MEI, HEIG-VD, HES-SO
  *
  * Licensed under the MIT License
  */
 package ch.colabproject.colab.api.controller.team;
 
+import ch.colabproject.colab.api.controller.card.CardManager;
+import ch.colabproject.colab.api.controller.project.ProjectManager;
 import ch.colabproject.colab.api.controller.token.TokenManager;
 import ch.colabproject.colab.api.exceptions.ColabMergeException;
-import ch.colabproject.colab.api.model.team.acl.AccessControl;
-import ch.colabproject.colab.api.model.team.acl.InvolvementLevel;
 import ch.colabproject.colab.api.model.card.Card;
 import ch.colabproject.colab.api.model.project.Project;
-import ch.colabproject.colab.api.model.team.TeamRole;
 import ch.colabproject.colab.api.model.team.TeamMember;
+import ch.colabproject.colab.api.model.team.TeamRole;
+import ch.colabproject.colab.api.model.team.acl.AccessControl;
 import ch.colabproject.colab.api.model.team.acl.HierarchicalPosition;
+import ch.colabproject.colab.api.model.team.acl.InvolvementLevel;
 import ch.colabproject.colab.api.model.user.User;
-import ch.colabproject.colab.api.persistence.jpa.card.CardDao;
-import ch.colabproject.colab.api.persistence.jpa.project.ProjectDao;
 import ch.colabproject.colab.api.persistence.jpa.team.TeamDao;
 import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
 import java.util.List;
@@ -42,19 +42,19 @@ public class TeamManager {
     /** logger */
     private static final Logger logger = LoggerFactory.getLogger(TeamManager.class);
 
-    /** * Project persistence */
-    @Inject
-    private ProjectDao projectDao;
-
-    /** * Card persistence */
-    @Inject
-    private CardDao cardDao;
-
     /** Team persistence */
     @Inject
     private TeamDao teamDao;
 
-    /** * Token Facade */
+    /** Project specific logic handling */
+    @Inject
+    private ProjectManager projectManager;
+
+    /** Card specific logic handling */
+    @Inject
+    private CardManager cardManager;
+
+    /** Token Facade */
     @Inject
     private TokenManager tokenManager;
 
@@ -114,12 +114,8 @@ public class TeamManager {
      * @return all members of the project team
      */
     public List<TeamMember> getTeamMembers(Long id) {
-        Project project = projectDao.findProject(id);
+        Project project = projectManager.assertAndGetProject(id);
         logger.debug("Get team members: {}", project);
-
-        if (project == null) {
-            throw HttpErrorMessage.relatedObjectNotFoundError();
-        }
 
         return project.getTeamMembers();
     }
@@ -133,7 +129,7 @@ public class TeamManager {
      * @return the pending new teamMember
      */
     public TeamMember invite(Long projectId, String email) {
-        Project project = projectDao.findProject(projectId);
+        Project project = projectManager.assertAndGetProject(projectId);
         logger.debug("Invite {} to join {}", email, project);
         return tokenManager.sendMembershipInvitation(project, email);
     }
@@ -149,12 +145,8 @@ public class TeamManager {
      * @return list of roles
      */
     public List<TeamRole> getProjectRoles(Long id) {
-        Project project = projectDao.findProject(id);
-        if (project != null) {
-            return project.getRoles();
-        } else {
-            throw HttpErrorMessage.relatedObjectNotFoundError();
-        }
+        Project project = projectManager.assertAndGetProject(id);
+        return project.getRoles();
     }
 
     /**
@@ -166,9 +158,8 @@ public class TeamManager {
      */
     public TeamRole createRole(TeamRole role) {
         if (role.getProjectId() != null) {
-            Project project = projectDao.findProject(role.getProjectId());
-            if (project != null
-                && project.getRoleByName(role.getName()) == null) {
+            Project project = projectManager.assertAndGetProject(role.getProjectId());
+            if (project.getRoleByName(role.getName()) == null) {
                 project.getRoles().add(role);
                 role.setProject(project);
                 return role;
@@ -295,7 +286,7 @@ public class TeamManager {
      * @param level    the level
      */
     public void setInvolvementLevelForMember(Long cardId, Long memberId, InvolvementLevel level) {
-        Card card = cardDao.findCard(cardId);
+        Card card = cardManager.assertAndGetCard(cardId);
         TeamMember member = teamDao.findTeamMember(memberId);
         if (card != null && member != null) {
             AccessControl ac = card.getAcByMember(member);
@@ -321,15 +312,15 @@ public class TeamManager {
     }
 
     /**
-     ** Change a role involvement level regarding to a card. If the given level is null,
-     * involvement will be destroyed and effective involvement will be inherited super-card
+     ** Change a role involvement level regarding to a card. If the given level is null, involvement
+     * will be destroyed and effective involvement will be inherited super-card
      *
      * @param cardId id of the card
      * @param roleId id of the role
      * @param level  the level
      */
     public void setInvolvementLevelForRole(Long cardId, Long roleId, InvolvementLevel level) {
-        Card card = cardDao.findCard(cardId);
+        Card card = cardManager.assertAndGetCard(cardId);
         TeamRole role = teamDao.findRole(roleId);
         if (card != null && role != null) {
             AccessControl ac = card.getAcByRole(role);
@@ -405,15 +396,13 @@ public class TeamManager {
 
         // no involvement found, neither for the member, nor for any of its roles
         // Is the a default one for the card?
-        if (card.getDefaultInvolvementLevel()
-            != null) {
+        if (card.getDefaultInvolvementLevel() != null) {
             // got it, use it !
             return card.getDefaultInvolvementLevel();
         }
 
         // No involvement found, neither for the member, nor its roles, nor a default one
-        if (card.getParent()
-            != null) {
+        if (card.getParent() != null) {
             // the card is a sub-card, let's fetch inherit involvement from the card parent
             Card parentCard = card.getParent().getCard();
             if (parentCard != null) {
@@ -437,12 +426,8 @@ public class TeamManager {
      * @throws HttpErrorMessage 404 if the card does not exist
      */
     public List<AccessControl> getAccessControlList(Long cardId) {
-        Card card = cardDao.findCard(cardId);
-        if (card != null) {
-            return card.getAccessControlList();
-        } else {
-            throw HttpErrorMessage.relatedObjectNotFoundError();
-        }
+        Card card = cardManager.assertAndGetCard(cardId);
+        return card.getAccessControlList();
     }
 
     /**
@@ -511,7 +496,8 @@ public class TeamManager {
      */
     public boolean checkDeletionAcceptability(TeamMember teamMember) {
         if (teamMember.getPosition() == HierarchicalPosition.OWNER &&
-            teamMember.getProject().getTeamMembersByPosition(HierarchicalPosition.OWNER).size() > 2) {
+            teamMember.getProject().getTeamMembersByPosition(HierarchicalPosition.OWNER)
+                .size() > 2) {
             return false;
         }
 
