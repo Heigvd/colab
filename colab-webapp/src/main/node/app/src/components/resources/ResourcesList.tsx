@@ -6,12 +6,19 @@
  */
 
 import { css, cx } from '@emotion/css';
-import { faCopy, faEllipsisV, faTurnDown } from '@fortawesome/free-solid-svg-icons';
+import {
+  faBoxArchive,
+  faCog,
+  faCopy,
+  faEllipsisV,
+  faTurnDown,
+} from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import * as React from 'react';
 import * as API from '../../API/api';
 import useTranslations, { useLanguage } from '../../i18n/I18nContext';
 import { useAndLoadNbDocuments } from '../../selectors/documentSelector';
+import { useProjectBeingEdited } from '../../selectors/projectSelector';
 import { dispatch } from '../../store/store';
 import Tips from '../common/element/Tips';
 import Collapsible from '../common/layout/Collapsible';
@@ -24,11 +31,13 @@ import {
   space_M,
   space_S,
 } from '../styling/style';
+import { ResourceSettingsModal } from './ResourceDisplay';
 import {
   getKey,
   getTheDirectResource,
   ResourceAndRef,
   ResourceCallContext,
+  useResourceAccessLevelForCurrentUser,
 } from './resourcesCommonType';
 import TargetResourceSummary from './summary/TargetResourceSummary';
 
@@ -76,6 +85,7 @@ export interface ResourcesListProps {
   displayResourceItem?: (resource: ResourceAndRef) => React.ReactNode;
   showLocationIcon?: boolean;
   contextData?: ResourceCallContext;
+  readOnly?: boolean;
 }
 function ResourcesListSimple({
   resources,
@@ -83,6 +93,7 @@ function ResourcesListSimple({
   displayResourceItem,
   showLocationIcon = true,
   contextData,
+  readOnly,
 }: ResourcesListProps): JSX.Element {
   const lang = useLanguage();
 
@@ -101,6 +112,7 @@ function ResourcesListSimple({
           displayResource={displayResourceItem}
           showLocationIcon={showLocationIcon}
           contextData={contextData}
+          readOnly={readOnly}
         />
       ))}
     </Flex>
@@ -113,6 +125,7 @@ function ResourcesListByCategory({
   displayResourceItem,
   showLocationIcon = true,
   contextData,
+  readOnly,
 }: ResourcesListProps): JSX.Element {
   const lang = useLanguage();
 
@@ -155,6 +168,7 @@ function ResourcesListByCategory({
                   displayResource={displayResourceItem}
                   showLocationIcon={showLocationIcon}
                   contextData={contextData}
+                  readOnly={readOnly}
                 />
               ))}
             </Flex>
@@ -350,6 +364,7 @@ export function ResourcesListBySource({
   resources,
   selectResource,
   displayResourceItem,
+  readOnly,
 }: ResourcesListProps): JSX.Element {
   const lang = useLanguage();
 
@@ -404,6 +419,7 @@ export function ResourcesListBySource({
                 selectResource={selectResource}
                 displayResourceItem={displayResourceItem}
                 showLocationIcon={false}
+                readOnly={readOnly}
               />
             </Collapsible>
           </div>
@@ -474,6 +490,7 @@ interface TocEntryProps {
   displayResource?: (resource: ResourceAndRef) => React.ReactNode;
   showLocationIcon: boolean;
   contextData?: ResourceCallContext;
+  readOnly?: boolean;
 }
 
 function TocEntry({
@@ -482,15 +499,27 @@ function TocEntry({
   displayResource,
   //showLocationIcon,
   contextData,
+  readOnly,
 }: TocEntryProps): JSX.Element {
   const i18n = useTranslations();
 
+  const [showSettings, setShowSettings] = React.useState(false);
+
   // const { text: teaser } = useAndLoadTextOfDocument(resource.targetResource.teaserId);
+  const { project } = useProjectBeingEdited();
 
   const { nb: nbDocs } = useAndLoadNbDocuments({
     kind: 'PartOfResource',
     ownerId: resource.targetResource.id || 0,
   });
+  const accesLevel = useResourceAccessLevelForCurrentUser(resource.targetResource);
+
+  const canEdit =
+    !readOnly &&
+    ((project && project.type === 'PROJECT' && resource.isDirectResource) ||
+      (project && project.type === 'MODEL' && accesLevel === 'WRITE'));
+
+  const effectiveReadOnly = !canEdit; // !forceWrite && (readOnly || !resource.isDirectResource);
 
   // const { project } = useProjectBeingEdited();
   // const rootCard = useProjectRootCard(project);
@@ -598,6 +627,42 @@ function TocEntry({
               valueComp={{ value: '', label: '' }}
               buttonClassName={cx(lightIconButtonStyle, css({ marginLeft: space_S }))}
               entries={[
+                ...(!effectiveReadOnly
+                  ? [
+                      {
+                        value: 'settings',
+                        label: (
+                          <>
+                            <FontAwesomeIcon icon={faCog} /> {i18n.common.settings}{' '}
+                          </>
+                        ),
+                        action: () => setShowSettings(true),
+                      },
+                    ]
+                  : []),
+                ...(!readOnly && resource.isDirectResource && resource.targetResource.id // TODO see conditions
+                  ? [
+                      {
+                        value: 'publishStatus',
+                        label: (
+                          <>
+                            {resource.targetResource.published
+                              ? i18n.modules.resource.actions.makePrivate
+                              : i18n.modules.resource.actions.shareWithChildren}
+                          </>
+                        ),
+                        action: () => {
+                          if (resource.targetResource.id) {
+                            if (resource.targetResource.published) {
+                              dispatch(API.unpublishResource(resource.targetResource.id));
+                            } else {
+                              dispatch(API.publishResource(resource.targetResource.id));
+                            }
+                          }
+                        },
+                      },
+                    ]
+                  : []),
                 ...(!resource.isDirectResource && contextData // TODO voir quelles conditions
                   ? [
                       {
@@ -619,6 +684,21 @@ function TocEntry({
                                   : contextData.cardId || 0,
                             }),
                           );
+                        },
+                      },
+                    ]
+                  : []),
+                ...(!readOnly
+                  ? [
+                      {
+                        value: 'remove',
+                        label: (
+                          <>
+                            <FontAwesomeIcon icon={faBoxArchive} /> {i18n.common.remove}
+                          </>
+                        ),
+                        action: () => {
+                          dispatch(API.removeAccessToResource(resource));
                         },
                       },
                     ]
@@ -669,6 +749,9 @@ function TocEntry({
               )}
             </div>
           </Tips>
+          {showSettings && (
+            <ResourceSettingsModal resource={resource} onClose={() => setShowSettings(false)} />
+          )}
         </>
       )}
     </Flex>

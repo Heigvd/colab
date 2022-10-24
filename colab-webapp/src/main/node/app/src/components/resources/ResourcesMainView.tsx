@@ -189,6 +189,7 @@ export default function ResourcesMainView({
         resources={activeResources}
         selectResource={selectResource}
         contextData={contextData}
+        readOnly={isReadOnly(accessLevel)}
       />
 
       {!isReadOnly(accessLevel) && (
