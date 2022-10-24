@@ -215,6 +215,7 @@ export default function CardEditor({
             onCreated={() => {}}
             collapsedClassName={lightIconButtonStyle}
           />
+          {/* <TocDisplayToggler /> */}
           {ghostResources != null && ghostResources.length > 0 && (
             // note : we can imagine that a read access level allows to see the ghost resources
             <>

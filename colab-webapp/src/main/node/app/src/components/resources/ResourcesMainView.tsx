@@ -12,6 +12,7 @@ import useTranslations from '../../i18n/I18nContext';
 import { useAndLoadResources } from '../../selectors/resourceSelector';
 import AvailabilityStatusIndicator from '../common/element/AvailabilityStatusIndicator';
 import Button from '../common/element/Button';
+import { WIPContainer } from '../common/element/Tips';
 import DropDownMenu from '../common/layout/DropDownMenu';
 import Flex from '../common/layout/Flex';
 import { lightIconButtonStyle, voidStyle } from '../styling/style';
@@ -26,7 +27,7 @@ import {
 } from './resourcesCommonType';
 import ResourcesList from './ResourcesList';
 
-export type TocMode = 'CATEGORY' | 'SOURCE';
+export type TocMode = 'CATEGORY' | 'SOURCE' | '3_STACKS';
 
 export interface TocDisplayContext {
   mode: TocMode;
@@ -39,22 +40,25 @@ export const TocDisplayCtx = React.createContext<TocDisplayContext>({
 });
 
 export function TocDisplayToggler(): JSX.Element {
-  const i18n = useTranslations();
+  // const i18n = useTranslations();
   const { mode, setMode } = React.useContext(TocDisplayCtx);
 
   const entries: { value: TocMode; label: React.ReactNode }[] = [
-    { value: 'CATEGORY', label: <div>{i18n.modules.resource.sortByCategory}</div> },
-    { value: 'SOURCE', label: <div>{i18n.modules.resource.sortByProvider}</div> },
+    { value: 'CATEGORY', label: <div>cat</div> },
+    { value: 'SOURCE', label: <div>src</div> },
+    { value: '3_STACKS', label: <div>3</div> },
   ];
 
   return (
-    <DropDownMenu
-      value={mode}
-      entries={entries}
-      onSelect={entry => setMode(entry.value)}
-      //idleHoverStyle="BACKGROUND"
-      menuIcon="CARET"
-    />
+    <WIPContainer>
+      <DropDownMenu
+        value={mode}
+        entries={entries}
+        onSelect={entry => setMode(entry.value)}
+        //idleHoverStyle="BACKGROUND"
+        menuIcon="CARET"
+      />
+    </WIPContainer>
   );
 }
 
@@ -194,7 +198,6 @@ export default function ResourcesMainView({
             onCreated={setLastCreated}
             collapsedClassName={lightIconButtonStyle}
           /> */}
-
         </Flex>
       )}
     </Flex>

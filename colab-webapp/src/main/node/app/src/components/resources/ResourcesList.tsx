@@ -14,6 +14,7 @@ import useTranslations, { useLanguage } from '../../i18n/I18nContext';
 import { useAndLoadNbDocuments } from '../../selectors/documentSelector';
 import { dispatch } from '../../store/store';
 import Tips from '../common/element/Tips';
+import Collapsible from '../common/layout/Collapsible';
 import DropDownMenu from '../common/layout/DropDownMenu';
 import Flex from '../common/layout/Flex';
 import {
@@ -29,7 +30,6 @@ import {
   ResourceAndRef,
   ResourceCallContext,
 } from './resourcesCommonType';
-import { TocDisplayCtx } from './ResourcesMainView';
 import TargetResourceSummary from './summary/TargetResourceSummary';
 
 /**
@@ -46,6 +46,28 @@ function sortResources(lang: string) {
   };
 }
 
+type StackType = 'CARD' | 'PROJECT' | 'MODEL' | 'OUTSIDE';
+
+// function stackKeyOrder(c: string) {
+//   switch (c) {
+//     case 'CARD':
+//       return 1;
+//     case 'PROJECT':
+//       return 2;
+//     case 'MODEL':
+//       return 3;
+//     default:
+//       return 4;
+//   }
+// }
+
+// function sortStacks(a: string, b: string): number {
+//   const aO = stackKeyOrder(a);
+//   const bO = stackKeyOrder(b);
+
+//   return aO - bO;
+// }
+
 // ********************************************************************************************** //
 
 export interface ResourcesListProps {
@@ -54,6 +76,35 @@ export interface ResourcesListProps {
   displayResourceItem?: (resource: ResourceAndRef) => React.ReactNode;
   showLocationIcon?: boolean;
   contextData?: ResourceCallContext;
+}
+function ResourcesListSimple({
+  resources,
+  selectResource,
+  displayResourceItem,
+  showLocationIcon = true,
+  contextData,
+}: ResourcesListProps): JSX.Element {
+  const lang = useLanguage();
+
+  return (
+    <Flex
+      direction="column"
+      align="stretch"
+      grow={1}
+      className={css({ overflow: 'auto', paddingRight: '2px' })}
+    >
+      {resources.sort(sortResources(lang)).map(resource => (
+        <TocEntry
+          key={getKey(resource)}
+          resource={resource}
+          selectResource={selectResource}
+          displayResource={displayResourceItem}
+          showLocationIcon={showLocationIcon}
+          contextData={contextData}
+        />
+      ))}
+    </Flex>
+  );
 }
 
 function ResourcesListByCategory({
@@ -113,15 +164,189 @@ function ResourcesListByCategory({
   );
 }
 
+function ResourcesListBy3Stacks({
+  resources,
+  selectResource,
+  displayResourceItem,
+}: ResourcesListProps): JSX.Element {
+  const lang = useLanguage();
+
+  function get3StackKey(current: ResourceAndRef): StackType {
+    if (current.isDirectResource) {
+      return 'CARD';
+    }
+
+    if (current.targetResource.cardId != null || current.targetResource.cardContentId != null) {
+      return 'PROJECT';
+    }
+
+    // if (current.targetResource.abstractCardTypeId != null && useIsInCurrentProject(current.targetResource.abstractCardTypeId)) {
+    //   return 'PROJECT';
+    // }
+
+    return 'MODEL';
+  }
+
+  // function useIsInCurrentProject1(abstractCardTypeId: number) {
+
+  //   const { cardType } = useAndLoadCardType(abstractCardTypeId);
+  //   const projectId = cardType?.projectId;
+
+  //   const { project: currentProject } = useProjectBeingEdited();
+
+  //   return projectId === currentProject?.id;
+  // };
+
+  // const isInCurrentProject= React.useCallback((abstractCardTypeId: number) => {
+
+  //   const { cardType } = useAndLoadCardType(abstractCardTypeId);
+  //   const projectId = cardType?.projectId;
+
+  //   const { project: currentProject } = useProjectBeingEdited();
+
+  //   return projectId === currentProject?.id;
+  // }, []);
+
+  const bySources: Record<string, ResourceAndRef[]> = React.useMemo(() => {
+    const reducedBySource = resources.reduce<Record<string, ResourceAndRef[]>>((acc, current) => {
+      const sourceKey = get3StackKey(current);
+
+      acc[sourceKey] = acc[sourceKey] || [];
+      acc[sourceKey]!.push(current);
+
+      return acc;
+    }, {});
+
+    Object.values(reducedBySource).forEach(list => {
+      list.sort(sortResources(lang));
+    });
+
+    return reducedBySource;
+  }, [resources, lang]);
+
+  return (
+    <Flex
+      direction="column"
+      align="stretch"
+      grow={1}
+      className={css({ overflow: 'auto', paddingRight: '2px' })}
+    >
+      {/*Object.keys(bySources)
+        .sort(sortStacks)
+        .map(source => (
+          <div key={source} className={marginAroundStyle([3], space_S)}>
+            {source === 'CARD' && (
+              <Collapsible label="Card" open>
+                <ResourcesListByCategory
+                  resources={bySources[source]!}
+                  selectResource={selectResource}
+                  displayResourceItem={displayResourceItem}
+                  showLocationIcon={false}
+                />
+              </Collapsible>
+            )}
+            {source === 'PROJECT' && (
+              <Collapsible label="Project" open>
+                <ResourcesListSimple
+                  resources={bySources[source]!}
+                  selectResource={selectResource}
+                  displayResourceItem={displayResourceItem}
+                  showLocationIcon={false}
+                />
+              </Collapsible>
+            )}
+            {source === 'MODEL' && (
+              <Collapsible label="Model" open>
+                <ResourcesListSimple
+                  resources={bySources[source]!}
+                  selectResource={selectResource}
+                  displayResourceItem={displayResourceItem}
+                  showLocationIcon={false}
+                />
+              </Collapsible>
+            )}
+            {source === 'OUTSIDE' && (
+              <Collapsible label="From outer space" open>
+                <ResourcesListSimple
+                  resources={bySources[source]!}
+                  selectResource={selectResource}
+                  displayResourceItem={displayResourceItem}
+                  showLocationIcon={false}
+                />
+              </Collapsible>
+            )}
+          </div>
+        ))*/}
+      {bySources['CARD'] ? (
+        <div className={marginAroundStyle([3], space_S)}>
+          <Collapsible label="Card" open>
+            <ResourcesListByCategory
+              resources={bySources['CARD']}
+              selectResource={selectResource}
+              displayResourceItem={displayResourceItem}
+              showLocationIcon={false}
+            />
+          </Collapsible>
+        </div>
+      ) : (
+        <></>
+      )}
+      {bySources['PROJECT'] ? (
+        <div className={marginAroundStyle([3], space_S)}>
+          <Collapsible label="Project" open>
+            <ResourcesListSimple
+              resources={bySources['PROJECT']}
+              selectResource={selectResource}
+              displayResourceItem={displayResourceItem}
+              showLocationIcon={false}
+            />
+          </Collapsible>
+        </div>
+      ) : (
+        <></>
+      )}
+      {bySources['MODEL'] ? (
+        <div className={marginAroundStyle([3], space_S)}>
+          <Collapsible label="Model" open>
+            <ResourcesListSimple
+              resources={bySources['MODEL']}
+              selectResource={selectResource}
+              displayResourceItem={displayResourceItem}
+              showLocationIcon={false}
+            />
+          </Collapsible>
+        </div>
+      ) : (
+        <></>
+      )}
+      {bySources['OUTSIDE'] ? (
+        <div className={marginAroundStyle([3], space_S)}>
+          <Collapsible label="From outer space" open>
+            <ResourcesListSimple
+              resources={bySources['OUTSIDE']}
+              selectResource={selectResource}
+              displayResourceItem={displayResourceItem}
+              showLocationIcon={false}
+            />
+          </Collapsible>
+        </div>
+      ) : (
+        <></>
+      )}
+    </Flex>
+  );
+}
+
 function getSourceKey(current: ResourceAndRef) {
   return (
     `ct-${current.targetResource.abstractCardTypeId || 'Z'}` +
     `card-${current.targetResource.cardId || 'Z'}` +
-    `cardC-${current.targetResource.abstractCardTypeId || 'Z'}`
+    `cardC-${current.targetResource.cardContentId || 'Z'}`
   );
 }
 
-function ResourcesListBySource({
+// not an export. just to avoid linter help
+export function ResourcesListBySource({
   resources,
   selectResource,
   displayResourceItem,
@@ -156,20 +381,31 @@ function ResourcesListBySource({
         .sort()
         .map(source => (
           <div key={source} className={marginAroundStyle([3], space_S)}>
-            <TocHeader
-              category={
-                <TargetResourceSummary resource={bySources[source]![0]!} showText="short" />
+            <Collapsible
+              open
+              label={
+                <div className={marginAroundStyle([1, 2, 4], space_M)}>
+                  <h3
+                    className={cx(
+                      css({
+                        minWidth: '50px',
+                        flexGrow: 1,
+                      }),
+                      oneLineEllipsis,
+                    )}
+                  >
+                    <TargetResourceSummary resource={bySources[source]![0]!} showText="short" />
+                  </h3>
+                </div>
               }
-            />
-
-            <Flex className={css({ marginLeft: space_S })} direction="column" align="stretch">
+            >
               <ResourcesListByCategory
                 resources={bySources[source]!}
                 selectResource={selectResource}
                 displayResourceItem={displayResourceItem}
                 showLocationIcon={false}
               />
-            </Flex>
+            </Collapsible>
           </div>
         ))}
     </Flex>
@@ -177,15 +413,17 @@ function ResourcesListBySource({
 }
 
 export default function ResourcesList(props: ResourcesListProps): JSX.Element {
-  const { mode } = React.useContext(TocDisplayCtx);
+  //const { mode } = React.useContext(TocDisplayCtx);
 
   return (
     <Flex direction="column" align="stretch" grow={1}>
-      {mode === 'CATEGORY' ? (
+      {/* {mode === 'CATEGORY' ? (
         <ResourcesListByCategory {...props} />
-      ) : (
+      ) : mode === '3_STACKS' ? ( */}
+      <ResourcesListBy3Stacks {...props} />
+      {/* ) : (
         <ResourcesListBySource {...props} />
-      )}
+      )} */}
     </Flex>
   );
 }
@@ -282,7 +520,13 @@ function TocEntry({
                 oneLineEllipsis,
               )}
             >
-              {resource.targetResource.published && <FontAwesomeIcon icon={faTurnDown} size='xs' className={css({marginRight: '3px'})}/>}
+              {resource.targetResource.published && (
+                <FontAwesomeIcon
+                  icon={faTurnDown}
+                  size="xs"
+                  className={css({ marginRight: '3px' })}
+                />
+              )}
               {/* {showLocationIcon && (
                 <>
                   <TargetResourceSummary resource={resource} />{' '}
