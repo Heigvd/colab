@@ -8,21 +8,25 @@
 import { css } from '@emotion/css';
 import { entityIs, Project } from 'colab-rest-client';
 import * as React from 'react';
+import * as API from '../../API/api';
 import useTranslations from '../../i18n/I18nContext';
 import { useCardACLForCurrentUser, useProjectRootCard } from '../../selectors/cardSelector';
-import { useAppSelector } from '../../store/hooks';
+import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import ProjectCardTypeList from '../cards/cardtypes/ProjectCardTypeList';
 import InlineLoading from '../common/element/InlineLoading';
 import Flex from '../common/layout/Flex';
 import Tabs, { Tab } from '../common/layout/Tabs';
+import ResourceCreator from '../resources/ResourceCreator';
 import { AccessLevel, ResourceCallContext } from '../resources/resourcesCommonType';
 import ResourcesMainView from '../resources/ResourcesMainView';
+import { lightIconButtonStyle } from '../styling/style';
 
 interface DocumentationTabProps {
   project: Project;
 }
 
 export default function DocumentationTab({ project }: DocumentationTabProps): JSX.Element {
+  const dispatch = useAppDispatch();
   const i18n = useTranslations();
 
   const root = useProjectRootCard(project);
@@ -82,11 +86,19 @@ export default function DocumentationTab({ project }: DocumentationTabProps): JS
                 <Flex>
                   <h2>{i18n.modules.project.settings.resources.label}</h2>
                   {/* <TocDisplayToggler /> */}
+                  <ResourceCreator
+                    contextInfo={resourceContext}
+                    onCreated={newId => {
+                      dispatch(API.publishResource(newId));
+                    }}
+                    collapsedClassName={lightIconButtonStyle}
+                  />
                 </Flex>
                 <ResourcesMainView
                   accessLevel={accessLevel}
                   contextData={resourceContext}
                   showVoidIndicator
+                  publishNew
                 />
               </>
             ) : (

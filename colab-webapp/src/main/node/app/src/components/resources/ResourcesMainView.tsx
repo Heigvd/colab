@@ -8,8 +8,10 @@
 import { css, cx } from '@emotion/css';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import * as React from 'react';
+import * as API from '../../API/api';
 import useTranslations from '../../i18n/I18nContext';
 import { useAndLoadResources } from '../../selectors/resourceSelector';
+import { useAppDispatch } from '../../store/hooks';
 import AvailabilityStatusIndicator from '../common/element/AvailabilityStatusIndicator';
 import Button from '../common/element/Button';
 import { WIPContainer } from '../common/element/Tips';
@@ -74,13 +76,16 @@ interface ResourcesMainViewProps {
   contextData: ResourceCallContext;
   accessLevel: AccessLevel;
   showVoidIndicator?: boolean;
+  publishNew?: boolean;
 }
 
 export default function ResourcesMainView({
   contextData,
   accessLevel,
   showVoidIndicator,
+  publishNew,
 }: ResourcesMainViewProps): JSX.Element {
+  const dispatch = useAppDispatch();
   const i18n = useTranslations();
 
   const { activeResources, status } = useAndLoadResources(contextData);
@@ -173,7 +178,12 @@ export default function ResourcesMainView({
           {!isReadOnly(accessLevel) && (
             <ResourceCreator
               contextInfo={contextData}
-              onCreated={setLastCreated}
+              onCreated={newId => {
+                setLastCreated(newId);
+                if (publishNew) {
+                  dispatch(API.publishResource(newId));
+                }
+              }}
               collapsedClassName={lightIconButtonStyle}
               customButton={
                 <Button icon={faPlus} clickable>
