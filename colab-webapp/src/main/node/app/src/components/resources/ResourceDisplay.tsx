@@ -11,7 +11,7 @@ import {
   faBoxArchive,
   faCog,
   faEllipsisV,
-  //faGlasses,
+  faGlasses,
   faInfoCircle,
   faTurnDown,
 } from '@fortawesome/free-solid-svg-icons';
@@ -25,11 +25,11 @@ import { useProjectBeingEdited } from '../../selectors/projectSelector';
 import { useAppDispatch } from '../../store/hooks';
 import IconButton from '../common/element/IconButton';
 import { DiscreetInput, DiscreetTextArea } from '../common/element/Input';
-//import { FeaturePreview } from '../common/element/Tips';
+import { FeaturePreview } from '../common/element/Tips';
 import DropDownMenu from '../common/layout/DropDownMenu';
 import Flex from '../common/layout/Flex';
 import Modal from '../common/layout/Modal';
-//import OpenCloseModal from '../common/layout/OpenCloseModal';
+import OpenCloseModal from '../common/layout/OpenCloseModal';
 import { DocTextWrapper } from '../documents/DocTextItem';
 import DocEditorToolbox, {
   defaultDocEditorContext,
@@ -50,7 +50,7 @@ import {
   useResourceAccessLevelForCurrentUser,
 } from './resourcesCommonType';
 import ResourceSettings from './ResourceSettings';
-//import ResourceScope from './summary/ResourceScope';
+import ResourceScope from './summary/ResourceScope';
 //import TargetResourceSummary from './summary/TargetResourceSummary';
 
 export interface ResourceDisplayProps {
@@ -94,7 +94,7 @@ export function ResourceDisplay({
 
   // acces level from current point of view is readonly, but user has a write acces on the
   // target resource
-  //const couldWriteButNotDirect = accesLevel === 'WRITE' && (readOnly || !resource.isDirectResource);
+  // const couldWriteButNotDirect = accesLevel === 'WRITE' && (readOnly || !resource.isDirectResource);
 
   // const toggleForceCb = React.useCallback(() => {
   //   setForce(current => !current);
@@ -181,26 +181,26 @@ export function ResourceDisplay({
               inputDisplayClassName={localTitleStyle}
             />
           </Flex>
-          {/* {(couldWriteButNotDirect || resource.isDirectResource) && (
-            <FeaturePreview>
-              <OpenCloseModal
-                modalClassName={css({
-                  minWidth: '50vw',
-                  minHeight: '50vh',
-                  maxWidth: '80vw',
-                  maxHeight: '80vh',
-                })}
-                modalBodyClassName={css({
-                  padding: 0,
-                  alignItems: 'stretch',
-                })}
-                title=""
-                collapsedChildren={<FontAwesomeIcon icon={faGlasses} />}
-              >
-                {close => <ResourceScope onCancel={close} resource={resource} />}
-              </OpenCloseModal>
-            </FeaturePreview>
-          )} */}
+          {/* {(couldWriteButNotDirect || resource.isDirectResource) && ( */}
+          <FeaturePreview>
+            <OpenCloseModal
+              modalClassName={css({
+                minWidth: '50vw',
+                minHeight: '50vh',
+                maxWidth: '80vw',
+                maxHeight: '80vh',
+              })}
+              modalBodyClassName={css({
+                padding: 0,
+                alignItems: 'stretch',
+              })}
+              title=""
+              collapsedChildren={<FontAwesomeIcon icon={faGlasses} />}
+            >
+              {close => <ResourceScope onCancel={close} resource={resource} />}
+            </OpenCloseModal>
+          </FeaturePreview>
+          {/* )} */}
           {/* {!targetResource.published &&
             (targetResource.abstractCardTypeId != null ||
               (targetResource.cardId != null &&

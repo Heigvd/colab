@@ -87,6 +87,7 @@ export interface ResourcesListProps {
   contextData?: ResourceCallContext;
   readOnly?: boolean;
 }
+
 function ResourcesListSimple({
   resources,
   selectResource,
@@ -182,7 +183,9 @@ function ResourcesListBy3Stacks({
   resources,
   selectResource,
   displayResourceItem,
-}: ResourcesListProps): JSX.Element {
+  contextData,
+}: //readOnly,
+ResourcesListProps): JSX.Element {
   const lang = useLanguage();
 
   function get3StackKey(current: ResourceAndRef): StackType {
@@ -298,6 +301,7 @@ function ResourcesListBy3Stacks({
               resources={bySources['CARD']}
               selectResource={selectResource}
               displayResourceItem={displayResourceItem}
+              contextData={contextData}
               showLocationIcon={false}
             />
           </Collapsible>
@@ -312,6 +316,7 @@ function ResourcesListBy3Stacks({
               resources={bySources['PROJECT']}
               selectResource={selectResource}
               displayResourceItem={displayResourceItem}
+              contextData={contextData}
               showLocationIcon={false}
             />
           </Collapsible>
@@ -326,6 +331,7 @@ function ResourcesListBy3Stacks({
               resources={bySources['MODEL']}
               selectResource={selectResource}
               displayResourceItem={displayResourceItem}
+              contextData={contextData}
               showLocationIcon={false}
             />
           </Collapsible>
@@ -340,6 +346,7 @@ function ResourcesListBy3Stacks({
               resources={bySources['OUTSIDE']}
               selectResource={selectResource}
               displayResourceItem={displayResourceItem}
+              contextData={contextData}
               showLocationIcon={false}
             />
           </Collapsible>
