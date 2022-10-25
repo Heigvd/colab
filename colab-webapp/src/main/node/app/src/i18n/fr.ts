@@ -9,13 +9,6 @@ import { CardContentStatus, MessageI18nKey } from 'colab-rest-client';
 import { ColabTranslations } from './I18nContext';
 
 export const fr: ColabTranslations = {
-  projectParameters: 'Paramètres du projet',
-  extract: 'Extraire',
-  roles: 'Rôles',
-  cardContent: 'Contenu des cartes',
-  documentation: 'Documentation',
-  keep: 'Garder',
-  whatToDoWithOriginalSimpleProject: 'Que fait-on du projet initial',
   //////////////////////////////////////////////////////////////////////////////////////////////////
   // COMMON
   common: {
@@ -320,6 +313,12 @@ export const fr: ColabTranslations = {
         extractDocuments: 'Extraire les documents',
         keepTheSimpleProject: 'Garder le projet simple',
         shareTheProject: 'Partager le projet',
+        include: 'Inclure',
+        roles: 'Rôles',
+        cardContents: 'Contenu des cartes',
+        documentation: 'Documentation',
+        connect: 'Connecter',
+        keepConnectionBetweenModelAndProject: 'Garder les nouveaux projets connectés au modèle',
       },
       actions: {
         createProject: 'Créer projet',
@@ -330,6 +329,9 @@ export const fr: ColabTranslations = {
           `Créer un projet à partir de ${'"' + templateTitle + '"'}`,
         editIllustration: "Éditer l'illustration du projet",
         newProject: 'Nouveau projet',
+        saveAsModel: 'Enregistrer comme modèle',
+        saveProjectAsModelPart1: 'Enregistrer le projet',
+        saveProjectAsModelPart2: 'en tant que modèle',
         extractModel: 'Extraire un modèle',
         extractAModel: "Extraire un modèle à partir d'un projet",
         extractAModelFromProject: 'Extraire un modèle à partir du projet ',

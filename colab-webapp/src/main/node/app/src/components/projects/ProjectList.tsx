@@ -259,7 +259,7 @@ export const ProjectDisplay = ({
                         <>
                           <WIPContainer>
                             <FontAwesomeIcon icon={faGraduationCap} />{' '}
-                            {i18n.modules.project.actions.extractModel}
+                            {i18n.modules.project.actions.saveAsModel}
                           </WIPContainer>
                         </>
                       ),

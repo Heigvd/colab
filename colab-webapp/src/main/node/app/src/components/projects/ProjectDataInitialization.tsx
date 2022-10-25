@@ -13,6 +13,7 @@ import * as React from 'react';
 import { emailFormat } from '../../helper';
 import useTranslations from '../../i18n/I18nContext';
 import Button from '../common/element/Button';
+import Checkbox from '../common/element/Checkbox';
 import { ConfirmIconButton } from '../common/element/ConfirmIconButton';
 import Form from '../common/element/Form';
 import IllustrationDisplay from '../common/element/IllustrationDisplay';
@@ -54,6 +55,7 @@ interface ProjectDataInitializationProps {
   setIllustration: (value: Illustration) => void;
   addGuest: (emailAddress: string) => void;
   removeGuest: (emailAddress: string) => void;
+  setKeepWiredToModel: (value: boolean) => void;
 }
 
 export default function ProjectDataInitialization({
@@ -64,6 +66,7 @@ export default function ProjectDataInitialization({
   setIllustration,
   addGuest,
   removeGuest,
+  setKeepWiredToModel,
 }: ProjectDataInitializationProps): JSX.Element {
   const i18n = useTranslations();
   const [editIllustration, setEditIllustration] = React.useState<boolean>(false);
@@ -94,6 +97,16 @@ export default function ProjectDataInitialization({
         />
 
         {/* <IllustrationPicker data={data.illustration} onChange={setIllustration} /> */}
+
+        {data.projectModel != null && (
+          <Flex>
+            <Checkbox
+              value={data.keepWiredToModel}
+              label="Keep resources from the model up to date"
+              onChange={(newValue: boolean) => setKeepWiredToModel(newValue)}
+            />
+          </Flex>
+        )}
 
         <Form
           fields={[

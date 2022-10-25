@@ -8,13 +8,6 @@
 import { CardContentStatus, MessageI18nKey } from 'colab-rest-client';
 
 export const en = {
-  projectParameters: 'Project parameters',
-  extract: 'Extract',
-  roles: 'Roles',
-  cardContent: 'Card content',
-  documentation: 'Documentation',
-  keep: 'Keep',
-  whatToDoWithOriginalSimpleProject: 'What do we do with original project',
   //////////////////////////////////////////////////////////////////////////////////////////////////
   // COMMON
   common: {
@@ -315,6 +308,12 @@ export const en = {
         extractDocuments: 'Extract the documents',
         keepTheSimpleProject: 'Keep the simple project',
         shareTheProject: 'Share the project',
+        include: 'Include',
+        roles: 'Roles',
+        cardContents: 'Card contents',
+        documentation: 'Documentation',
+        connect: 'Connect',
+        keepConnectionBetweenModelAndProject: 'Keep new projects connected to the model',
       },
       actions: {
         createProject: 'Create project',
@@ -325,6 +324,9 @@ export const en = {
           `Create a project from ${'"' + templateTitle + '"'}`,
         editIllustration: 'Edit project illustration',
         newProject: 'New project',
+        saveAsModel: 'Save as model',
+        saveProjectAsModelPart1: 'Save project',
+        saveProjectAsModelPart2: 'as model',
         extractModel: 'Extract model',
         extractAModel: 'Extract a model from a project',
         extractAModelFromProject: 'Extract a model from project ',

@@ -132,8 +132,19 @@ export function ResourceDisplay({
             className={lightIconButtonStyle}
           />
           <Flex wrap="nowrap" align="center">
-            {(!resource.isDirectResource || resource.targetResource.abstractCardTypeId != null) &&
-            <div className={css({fontSize: '0.7em', color: 'var(--lightGray)', border: '1px solid var(--lightGray)', borderRadius: '10px', padding: '3px'})}>Read only</div>}
+            {(!resource.isDirectResource || resource.targetResource.abstractCardTypeId != null) && (
+              <div
+                className={css({
+                  fontSize: '0.7em',
+                  color: 'var(--lightGray)',
+                  border: '1px solid var(--lightGray)',
+                  borderRadius: '10px',
+                  padding: '3px',
+                })}
+              >
+                Read only
+              </div>
+            )}
             {/* <TargetResourceSummary resource={resource} showText="tooltip" /> */}
             {/* {category && (
               <>
@@ -152,7 +163,14 @@ export function ResourceDisplay({
                 {' / '}
               </>
             )} */}
-            {resource.targetResource.published && <FontAwesomeIcon icon={faTurnDown} title={i18n.common.published} size='xs' color='var(--darkGray)' />}
+            {resource.targetResource.published && (
+              <FontAwesomeIcon
+                icon={faTurnDown}
+                title={i18n.common.published}
+                size="xs"
+                color="var(--darkGray)"
+              />
+            )}
             <DiscreetInput
               value={targetResource.title || ''}
               placeholder={i18n.modules.resource.untitled}
@@ -356,7 +374,10 @@ interface ResourceSettingsModalProps {
   onClose: () => void;
 }
 
-function ResourceSettingsModal({ resource, onClose }: ResourceSettingsModalProps): JSX.Element {
+export function ResourceSettingsModal({
+  resource,
+  onClose,
+}: ResourceSettingsModalProps): JSX.Element {
   const i18n = useTranslations();
 
   return (
