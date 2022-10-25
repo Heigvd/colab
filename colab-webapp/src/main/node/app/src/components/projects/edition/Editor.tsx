@@ -55,7 +55,7 @@ import Settings from '../../settings/Settings';
 import Picto from '../../styling/Picto';
 import {
   fixedButtonStyle,
-  fullHeightStyle,
+  //fullHeightStyle,
   fullPageStyle,
   invertedButtonStyle,
   invertedThemeMode,
@@ -507,7 +507,18 @@ function RootView({ rootContent }: { rootContent: CardContent | null | undefined
     >
       {rootContent != null ? (
         <>
-          <Flex className={fixedButtonStyle} gap={space_M}>
+          <Flex
+            className={cx(
+              fixedButtonStyle,
+              css({
+                backgroundColor: 'var(--bgColor)',
+                zIndex: 10,
+                fontSize: '0.8em',
+                padding: space_S,
+              }),
+            )}
+            gap={space_M}
+          >
             <FeaturePreview className={fixedButtonStyle}>
               <Toggler
                 className={css({ alignSelf: 'flex-end' })}
@@ -528,9 +539,10 @@ function RootView({ rootContent }: { rootContent: CardContent | null | undefined
             depth={depthMax}
             cardContent={rootContent}
             organize={organize}
-            showPreview
-            className={organize ? fullHeightStyle : undefined}
-            subcardsContainerStyle={fullHeightStyle}
+            className={css({ marginTop: space_L })}
+            //showPreview
+            //className={organize ? fullHeightStyle : undefined}
+            //subcardsContainerStyle={fullHeightStyle}
           />
         </>
       ) : (
@@ -679,14 +691,19 @@ export default function Editor(): JSX.Element {
                 path="card/:id/v/:vId/*"
                 element={
                   <CardWrapper
-                    grow={0}
-                    align="center"
+                    grow={1}
+                    //align="center"
                     backButtonPath={parentPathFn}
                     backButtonTitle={i18n.common.action.backProjectRoot}
                     touchMode="zoom"
                   >
                     {card => (
-                      <CardThumbWithSelector depth={2} card={card} mayOrganize showPreview />
+                      <CardThumbWithSelector
+                        depth={2}
+                        card={card}
+                        mayOrganize
+                        //showPreview
+                      />
                     )}
                   </CardWrapper>
                 }

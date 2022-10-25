@@ -5,20 +5,17 @@
  * Licensed under the MIT License
  */
 
-import { css, cx } from '@emotion/css';
-import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
+import { css} from '@emotion/css';
 import { Project } from 'colab-rest-client';
 import * as React from 'react';
-import { useNavigate } from 'react-router-dom';
 import * as API from '../../API/api';
 import useTranslations from '../../i18n/I18nContext';
 import { dispatch } from '../../store/store';
-import IconButton from '../common/element/IconButton';
 import IllustrationDisplay from '../common/element/IllustrationDisplay';
 import { LabeledInput, LabeledTextArea } from '../common/element/Input';
 import Flex from '../common/layout/Flex';
 import Tabs, { Tab } from '../common/layout/Tabs';
-import { lightIconButtonStyle, space_L } from '../styling/style';
+import { space_L } from '../styling/style';
 import { ProjectIllustrationMaker } from './ProjectIllustrationMaker';
 
 interface ProjectSettingsProps {
@@ -27,20 +24,10 @@ interface ProjectSettingsProps {
 
 // Display one project and allow to edit it
 export function ProjectSettings({ project }: ProjectSettingsProps): JSX.Element {
-  const navigate = useNavigate();
   const i18n = useTranslations();
 
   return (
     <Flex align="stretch" direction="column" grow={1} className={css({ alignSelf: 'stretch' })}>
-      <Flex align="center">
-        <IconButton
-          icon={faArrowLeft}
-          title={i18n.common.back}
-          onClick={() => navigate(-1)}
-          className={cx(css({ display: 'block' }), lightIconButtonStyle)}
-        />
-        <h2>{i18n.modules.project.labels.projectSettings}</h2>
-      </Flex>
       <Tabs defaultTab="general">
         <Tab name="general" label={i18n.common.general}>
           <Flex className={css({ alignSelf: 'stretch' })}>

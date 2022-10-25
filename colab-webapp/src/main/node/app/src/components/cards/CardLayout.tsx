@@ -97,6 +97,7 @@ export default function CardLayout({
             flexDirection: 'column',
             justifyContent: 'space-between',
             display: 'flex',
+            overflow: 'auto',
             //cursor: 'default',
           }),
         )}

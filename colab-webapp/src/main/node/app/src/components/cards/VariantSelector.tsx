@@ -16,12 +16,13 @@ import IconButton from '../common/element/IconButton';
 import InlineLoading from '../common/element/InlineLoading';
 import Flex from '../common/layout/Flex';
 import { useDefaultVariant } from '../projects/edition/Editor';
-import { space_S } from '../styling/style';
+import { paddingAroundStyle, space_S } from '../styling/style';
 
 interface VariantSelectorProps {
   card: Card;
   className?: string;
   children: (variant: CardContent | undefined, list: CardContent[]) => JSX.Element;
+  depth?: number;
 }
 
 export const computeNav = (
@@ -50,6 +51,12 @@ const arrowStyle = cx(
   'VariantPagerArrow',
   css({
     alignSelf: 'center',
+    position: 'absolute',
+    top: '50%',
+    transform: 'translateY(-50%)',
+    alignItems: 'center',
+    padding: space_S,
+    zIndex: 10,
   }),
 );
 
@@ -60,10 +67,26 @@ const invisible = cx(
   }),
 );
 
+const variantSelectorStyle = (depth?: number) => {
+  switch (depth) {
+    case 0:
+      return css({
+        margin: space_S,
+      });
+    case 1:
+      return css({
+        margin: '10px',
+      });
+    default:
+      return undefined;
+  }
+};
+
 export default function VariantSelector({
   card,
   className,
   children,
+  depth,
 }: VariantSelectorProps): JSX.Element {
   const [displayedVariantId, setDisplayedVariantId] = React.useState<number | undefined>();
   const i18n = useTranslations();
@@ -83,56 +106,90 @@ export default function VariantSelector({
       <div
         className={cx(
           css({
-            margin: '16px 0',
+            //margin: space_M,
             display: 'flex',
             flexGrow: 1,
-            minWidth: '120px',
+            position: 'relative',
+            //minWidth: '120px',
             '& > div': {
               flexGrow: 1,
+            },
+            '&:hover > .VariantPagerArrow': {
+              backgroundColor: 'rgba(0, 0, 0, 0.08)',
+              cursor: 'pointer',
+            },
+            '&:hover > .VariantPagerArrow:active': {
+              backgroundColor: 'rgba(0, 0, 0, 0.15)',
             },
             '&:hover > .VariantPagerArrow path': {
               color: 'grey',
             },
           }),
+          variantSelectorStyle(depth),
           className,
         )}
       >
-        <IconButton
-          className={
-            variantPager != null && variantPager.previous != variantPager.current
+        <Flex
+          align="center"
+          className={cx(
+            variantPager != null && variantPager.next != variantPager.current
               ? arrowStyle
-              : invisible
-          }
-          icon={faCaretLeft}
-          iconSize="2x"
-          iconColor="lightgrey"
-          title={variantPager?.previous.title || ''}
+              : invisible,
+            css({
+              left: 0,
+            }),
+          )}
           onClick={e => {
             e.stopPropagation();
             if (variantPager?.previous.id) {
               setDisplayedVariantId(variantPager.previous.id);
             }
           }}
-        />
-        {children(variantPager?.current, contents || [])}
-
-        <IconButton
-          className={
-            variantPager != null && variantPager.next != variantPager.current
+        >
+          <IconButton
+            className={paddingAroundStyle([2, 4], '3px')}
+            /* className={
+            variantPager != null && variantPager.previous != variantPager.current
               ? arrowStyle
               : invisible
-          }
-          icon={faCaretRight}
-          iconSize="2x"
-          iconColor="lightgrey"
-          title={variantPager?.next.title || ''}
+          } */
+            icon={faCaretLeft}
+            iconSize="1x"
+            iconColor="transparent"
+            title={variantPager?.previous.title || ''}
+          />
+        </Flex>
+        {children(variantPager?.current, contents || [])}
+        <Flex
+          align="center"
+          className={cx(
+            variantPager != null && variantPager.next != variantPager.current
+              ? arrowStyle
+              : invisible,
+            css({
+              right: 0,
+            }),
+          )}
           onClick={e => {
             e.stopPropagation();
             if (variantPager?.next.id) {
               setDisplayedVariantId(variantPager.next.id);
             }
           }}
-        />
+        >
+          <IconButton
+            /* className={
+            variantPager != null && variantPager.next != variantPager.current
+              ? arrowStyle
+              : invisible
+          } */
+            className={paddingAroundStyle([2, 4], '3px')}
+            icon={faCaretRight}
+            iconSize="1x"
+            iconColor="transparent"
+            title={variantPager?.next.title || ''}
+          />
+        </Flex>
       </div>
     );
   }

@@ -321,7 +321,7 @@ export const sideTabButton = css({
 
 export const fixedButtonStyle = css({
   position: 'fixed',
-  top: '3.8rem',
+  top: '3.2rem',
   right: '4vw',
 });
 

@@ -16,9 +16,9 @@ import { useAppDispatch } from '../../store/hooks';
 import InlineLoading from '../common/element/InlineLoading';
 import GridOrganizer, { fixGrid } from '../common/GridOrganizer';
 import Ellipsis from '../common/layout/Ellipsis';
-import Flex from '../common/layout/Flex';
+//import Flex from '../common/layout/Flex';
 //import { depthMax } from '../projects/edition/Editor';
-import { space_L, voidStyle } from '../styling/style';
+import { voidStyle } from '../styling/style';
 import CardCreator from './CardCreator';
 import { TinyCard } from './CardThumb';
 import CardThumbWithSelector from './CardThumbWithSelector';
@@ -32,7 +32,7 @@ interface ContentSubsProps {
   className?: string;
   subcardsContainerStyle?: string;
   organize?: boolean;
-  showPreview: boolean;
+  showPreview?: boolean;
   minCardWidth: number;
 }
 /* const tinyCard = css({
@@ -45,15 +45,11 @@ interface ContentSubsProps {
 
 const subCardsContainerStyle = css({
   display: 'flex',
-  justifyContent: 'flex-end',
   alignItems: 'stretch',
   flexDirection: 'column',
-  marginTop: space_L,
+    //justifyContent: 'flex-end',
+  //marginTop: space_L,
 });
-
-/* const flexGrow = css({
-  flexGrow: '1',
-}); */
 
 /* const gridCardsStyle = css({
   display: 'grid',
@@ -63,20 +59,25 @@ const subCardsContainerStyle = css({
   justifyItems: 'stretch',
   alignItems: 'stretch'}); */
 
-export function gridCardsStyle(_nbRows: number) {
-  return css({
-    flexGrow: '1',
-    display: 'grid',
-    gridTemplateColumns: `repeat(3, minmax(min-content, auto))`,
-    gridTemplateRows: `repeat(3, auto)`,
-    //height: '50%'
-    //gridTemplateColumns: `repeat(${nbColumns}, minmax(min-content, auto))`,
-    // gridTemplateRows: `repeat(${nbRows}, 1fr)`,
-    /* justifyContent: 'stretch',
+export function gridCardsStyle(nbRows: number, nbColumns: number, depth?: number) {
+  const gridStyle = { flexGrow: '1', display: 'grid' };
+  if (depth === 1) {
+    return css({
+      ...gridStyle,
+      gridTemplateColumns: `repeat(3, minmax(100px, 1fr))`,
+      gridAutoRows: `minmax(65px, 1fr)`,
+    });
+  } else {
+    return css({
+      ...gridStyle,
+      gridTemplateColumns: `repeat(${nbColumns >= 2 ? nbColumns : 2}, minmax(250px, 1fr))`,
+      gridTemplateRows: `repeat(${nbRows >= 2 ? nbRows : 2}, minmax(100px, 1fr))`,
+      /* justifyContent: 'stretch',
     alignContent: 'stretch',
     justifyItems: 'stretch',
     alignItems: 'stretch', */
-  });
+    });
+  }
 }
 
 const hideEmptyGridStyle = css({
@@ -192,14 +193,15 @@ export default function ContentSubs({
             <>
               <div
                 className={cx(
-                  gridCardsStyle(indexedSubCards.nbRows),
+                  gridCardsStyle(indexedSubCards.nbRows, indexedSubCards.nbColumns, depth),
                   subcardsContainerStyle,
                   hideEmptyGridStyle,
                 )}
               >
                 {indexedSubCards.cells.map(({ payload, y, x, width, height }) => (
                   <CardThumbWithSelector
-                    className={css({
+                    // ICI IF DEOTH === 1 Alors faire en sorte que 3 sur une meme ligne ou non
+                    className={depth === 1 ? undefined : css({
                       gridColumnStart: x,
                       gridColumnEnd: x + width,
                       gridRowStart: y,
@@ -214,8 +216,9 @@ export default function ContentSubs({
                   />
                 ))}
               </div>
+              {/*
               <Flex justify="center">
-                {/* <CardCreator
+                 <CardCreator
                   parentCardContent={cardContent}
                   display={
                     depth === depthMax
@@ -224,8 +227,8 @@ export default function ContentSubs({
                         : '1'
                       : undefined
                   }
-                /> */}
-              </Flex>
+                />
+              </Flex> */}
             </>
           )}
         </div>
@@ -234,6 +237,7 @@ export default function ContentSubs({
           items={subCards}
           alignEllipsis="flex-end"
           itemComp={sub => <TinyCard key={sub.id} card={sub} />}
+          containerClassName={subCards.length > 0 ? css({height: '20px'}) : undefined}
         />
       );
     }

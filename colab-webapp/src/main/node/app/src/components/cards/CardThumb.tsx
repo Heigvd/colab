@@ -34,9 +34,10 @@ import Modal from '../common/layout/Modal';
 import DocumentPreview from '../documents/preview/DocumentPreview';
 import {
   errorColor,
+  invertedButtonStyle,
   lightIconButtonStyle,
+  oneLineEllipsis,
   //linkStyle,
-  space_L,
   space_M,
   space_S,
   variantTitle,
@@ -49,6 +50,36 @@ import CardSettings from './CardSettings';
 import CompletionEditor from './CompletionEditor';
 import ContentSubs from './ContentSubs';
 import PositionEditor from './PositionEditor';
+
+const cardThumbTitleStyle = (depth?: number) => {
+  switch (depth) {
+    case 0:
+      return css({
+        fontSize: '0.8em',
+      });
+    case 1:
+      return css({
+        fontSize: '0.9em',
+      });
+    default:
+      return undefined;
+  }
+};
+
+const cardThumbContentStyle = (depth?: number) => {
+  switch (depth) {
+    case 0:
+      return css({
+        //height: '20px'
+      });
+    case 1:
+      return css({
+        height: 'auto',
+      });
+    default:
+      return undefined;
+  }
+};
 
 export interface TinyCardProps {
   card: Card;
@@ -65,7 +96,7 @@ export function TinyCard({ card, width = '15px', height = '10px' }: TinyCardProp
         height: height,
         border: `2px solid var(--lightGray)`,
         borderRadius: '4px',
-        margin: '5px',
+        margin: '3px',
       })}
       title={(card.title && i18n.modules.card.subcardTooltip(card.title)) || undefined}
     >
@@ -87,7 +118,7 @@ export interface CardThumbProps {
   showSubcards?: boolean;
   depth?: number;
   mayOrganize?: boolean;
-  showPreview: boolean;
+  showPreview?: boolean;
 }
 
 export default function CardThumb({
@@ -178,7 +209,7 @@ export default function CardThumb({
         <>
           <div
             onClick={clickOnCardTitleCb}
-            className={css({
+            className={cx(css({
               display: 'flex',
               flexDirection: 'column',
               justifyContent: 'space-around',
@@ -188,7 +219,7 @@ export default function CardThumb({
                   : '3px solid var(--lightGray)',
               width: '100%',
               cursor: 'pointer',
-            })}
+            }))}
           >
             <div
               className={css({
@@ -202,20 +233,20 @@ export default function CardThumb({
                   justifyContent: 'space-between',
                 })}
               >
-                <div className={css({ flexGrow: 1 })}>
+                <Flex className={cx(cardThumbTitleStyle(depth), css({ flexGrow: 1 }))}>
                   <CardContentStatus mode="icon" status={variant?.status || 'ACTIVE'} />
-                  <span className={css({ fontWeight: 'bold' })}>
+                  <span className={cx(css({ fontWeight: 'bold', minWidth: '50px' }), oneLineEllipsis)}>
                     {card.title || i18n.modules.card.untitled}
                   </span>
                   {hasVariants && (
-                    <span className={variantTitle}>
+                    <span className={cx(variantTitle, oneLineEllipsis, css({ minWidth: '50px' }))}>
                       &#xFE58;
                       {variant?.title && variant.title.length > 0
                         ? variant.title
                         : `${i18n.modules.card.variant} ${variantNumber}`}
                     </span>
                   )}
-                </div>
+                </Flex>
                 {/* handle modal routes*/}
                 <Routes>
                   <Route
@@ -339,11 +370,13 @@ export default function CardThumb({
                       value: 'newSubcard',
                       label: (
                         <>
-                          {variant && <CardCreator
-                            parentCardContent={variant}
-                            display="1"
-                            //className={}
-                          />}
+                          {variant && (
+                            <CardCreator
+                              parentCardContent={variant}
+                              display="1"
+                              //className={}
+                            />
+                          )}
                         </>
                       ),
                     },
@@ -417,16 +450,18 @@ export default function CardThumb({
             align="stretch"
             direction="column"
             onClick={clickOnCardContentCb}
-            className={cx({
-              [css({ minHeight: space_L, cursor: shouldZoomOnClick ? 'zoom-in' : 'pointer' })]:
+            className={cx(cardThumbContentStyle(depth), {
+              [css({ //minHeight: space_L, 
+                cursor: shouldZoomOnClick ? 'zoom-in' : 'pointer' })]:
                 true,
               [css({
                 padding: space_M,
               })]: depth > 0,
-            })}
-            justify="center"
+            }, css({overflow: 'auto'}))}
+            justify="stretch"
           >
-            {mayOrganize && (
+            {mayOrganize && variant && (
+              <Flex gap={space_M} justify='flex-end'>
               <FeaturePreview>
                 <Toggler
                   className={css({ alignSelf: 'flex-end' })}
@@ -435,6 +470,12 @@ export default function CardThumb({
                   onChange={setOrganize}
                 />
               </FeaturePreview>
+              <CardCreator
+                parentCardContent={variant}
+                display="1"
+                className={invertedButtonStyle}
+              />
+            </Flex>
             )}
 
             {showPreview && variant && (

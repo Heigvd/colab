@@ -307,7 +307,7 @@ export const en = {
         projectSettings: 'Project settings',
         projects: 'Projects',
         modelDisplaySettings: 'Project display settings',
-        modelSettings: 'Project settings',
+        modelSettings: 'Model settings',
         models: 'Models',
         extractNewFromProject: 'Extract a new model from this project',
         extractRoles: 'Extract the roles',

@@ -15,7 +15,7 @@ interface CardThumbWithSelectorProps {
   card: Card;
   depth?: number;
   mayOrganize?: boolean;
-  showPreview: boolean;
+  showPreview?: boolean;
 }
 
 export default function CardThumbWithSelector({
@@ -29,7 +29,7 @@ export default function CardThumbWithSelector({
     return <i>Card without id is invalid...</i>;
   } else {
     return (
-      <VariantSelector className={className} card={card}>
+      <VariantSelector className={className} card={card} depth={depth}>
         {(variant, list) => (
           <>
             <CardThumb
