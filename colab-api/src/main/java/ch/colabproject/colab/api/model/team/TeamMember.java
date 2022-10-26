@@ -433,12 +433,11 @@ public class TeamMember implements ColabEntity, WithWebsocketChannels {
     @Override
     @JsonbTransient
     public Conditions.Condition getCreateCondition() {
-        if (this.user != null && this.project != null) {
+        if (this.project != null) {
             // any "internal" may invite somebody
             return new Conditions.IsCurrentUserInternalToProject(project);
         } else {
-            // anyone can read a pending invitation
-            return Conditions.alwaysTrue;
+            return Conditions.alwaysFalse;
         }
     }
 
