@@ -54,7 +54,7 @@ public class TeamManager {
     @Inject
     private CardManager cardManager;
 
-    /** * Token Facade */
+    /** Token Facade */
     @Inject
     private TokenManager tokenManager;
 
