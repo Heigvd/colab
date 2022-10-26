@@ -18,6 +18,8 @@ import javax.validation.constraints.NotNull;
 @ExtractJavaDoc
 public class TouchUserPresence implements Serializable {
 
+    private static final long serialVersionUID = 1L;
+
     /**
      * Id of the project
      */

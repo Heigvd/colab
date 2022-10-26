@@ -289,6 +289,7 @@ public class Helper {
      *
      * @throws NamingException if lookup failed
      */
+    @SuppressWarnings("unchecked")
     public static <T> T lookup(Class<T> klass) throws NamingException {
         return (T) new InitialContext().lookup(
             "java:global/coLAB/" + klass.getSimpleName() + "!" + klass.getName());
