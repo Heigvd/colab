@@ -92,6 +92,11 @@ public class ResetLocalAccountPasswordToken extends Token {
         return tokenManager.consumeResetPasswordToken(localAccount);
     }
 
+    @Override
+    public ExpirationPolicy getExpirationPolicy() {
+        return ExpirationPolicy.ONE_SHOT;
+    }
+
     // ---------------------------------------------------------------------------------------------
     // to build a message
     // ---------------------------------------------------------------------------------------------

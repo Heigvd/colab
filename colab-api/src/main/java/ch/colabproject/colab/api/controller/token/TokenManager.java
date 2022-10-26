@@ -14,6 +14,7 @@ import ch.colabproject.colab.api.controller.user.UserManager;
 import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.api.model.team.TeamMember;
 import ch.colabproject.colab.api.model.team.acl.HierarchicalPosition;
+import ch.colabproject.colab.api.model.token.ExpirationPolicy;
 import ch.colabproject.colab.api.model.token.InvitationToken;
 import ch.colabproject.colab.api.model.token.ResetLocalAccountPasswordToken;
 import ch.colabproject.colab.api.model.token.Token;
@@ -47,7 +48,7 @@ import org.slf4j.LoggerFactory;
 public class TokenManager {
 
     /** logger */
-    private static final Logger logger = LoggerFactory.getLogger(TokenDao.class);
+    private static final Logger logger = LoggerFactory.getLogger(TokenManager.class);
 
     /**
      * to create team member
@@ -119,18 +120,21 @@ public class TokenManager {
     /**
      * Consume the token
      *
-     * @param id         id of the token to consume
+     * @param id         the id of the token to consume
      * @param plainToken the plain secret token as sent by e-mail
      *
      * @return the consumed token
      *
-     * @throws HttpErrorMessage notFound if the token does not exists; badRequest if token does not
-     *                          match; authenticationRequired if token requires authentication but
-     *                          current user id not
+     * @throws HttpErrorMessage notFound if the token does not exists;<br>
+     *                          badRequest if token does not match;<br>
+     *                          authenticationRequired if token requires authentication but current
+     *                          user is not
      */
     public Token consume(Long id, String plainToken) {
         logger.debug("Consume token #{}", id);
-        Token token = tokenDao.getToken(id);
+
+        Token token = tokenDao.findToken(id);
+
         if (token != null) {
             if (token.isAuthenticationRequired() && !requestManager.isAuthenticated()) {
                 logger.debug("Token requires an authenticated user");
@@ -139,7 +143,9 @@ public class TokenManager {
                 if (token.checkHash(plainToken)) {
                     requestManager.sudo(() -> {
                         boolean isConsumed = token.consume(this);
-                        if (isConsumed) {
+
+                        if (isConsumed
+                            && token.getExpirationPolicy() == ExpirationPolicy.ONE_SHOT) {
                             tokenDao.deleteToken(token);
                         }
                     });
@@ -149,6 +155,7 @@ public class TokenManager {
                     throw HttpErrorMessage.badRequest();
                 }
             }
+
         } else {
             logger.debug("There is no token #{}", id);
             throw HttpErrorMessage.notFound();
@@ -169,7 +176,7 @@ public class TokenManager {
      *
      * @return a brand new token or a refresh
      */
-    public VerifyLocalAccountToken getOrCreateVerifyAccountToken(LocalAccount account) {
+    private VerifyLocalAccountToken getOrCreateVerifyAccountToken(LocalAccount account) {
         logger.debug("getOrCreate VerifyToken for {}", account);
         VerifyLocalAccountToken token = tokenDao.findVerifyTokenByAccount(account);
 
@@ -378,12 +385,13 @@ public class TokenManager {
      * @return token if it exists and is not outdated, null otherwise
      */
     public Token getNotExpiredToken(Long id) {
-        Token token = tokenDao.getToken(id);
+        Token token = tokenDao.findToken(id);
+
         if (token != null && token.isOutdated()) {
             requestManager.sudo(() -> tokenDao.deleteToken(token));
             return null;
-        } else {
-            return token;
         }
+
+        return token;
     }
 }

@@ -88,6 +88,11 @@ public class VerifyLocalAccountToken extends Token {
         return tokenManager.consumeVerifyAccountToken(localAccount);
     }
 
+    @Override
+    public ExpirationPolicy getExpirationPolicy() {
+        return ExpirationPolicy.ONE_SHOT;
+    }
+
     // ---------------------------------------------------------------------------------------------
     // to build a message
     // ---------------------------------------------------------------------------------------------

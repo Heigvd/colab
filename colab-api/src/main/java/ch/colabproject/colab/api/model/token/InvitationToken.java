@@ -154,6 +154,11 @@ public class InvitationToken extends Token {
         return tokenManager.consumeInvitationToken(teamMember);
     }
 
+    @Override
+    public ExpirationPolicy getExpirationPolicy() {
+        return ExpirationPolicy.ONE_SHOT;
+    }
+
     // ---------------------------------------------------------------------------------------------
     // to build a message
     // ---------------------------------------------------------------------------------------------

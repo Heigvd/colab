@@ -22,6 +22,7 @@ import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 
 /**
+ * Token persistence
  *
  * @author maxence
  */
@@ -42,7 +43,7 @@ public class TokenDao {
      *
      * @return the token if found or null
      */
-    public Token getToken(Long id) {
+    public Token findToken(Long id) {
         return em.find(Token.class, id);
     }
 
@@ -122,7 +123,7 @@ public class TokenDao {
      * @param token token to persist
      */
     public void persistToken(Token token) {
-        // set something to respect notNull contraints
+        // set something to respect notNull constraints
         // otherwise persist will fail
         // These values will be reset when the e-mail is sent.
         if (token.getHashMethod() == null) {
