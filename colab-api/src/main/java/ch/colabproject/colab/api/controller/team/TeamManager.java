@@ -54,7 +54,7 @@ public class TeamManager {
     @Inject
     private CardManager cardManager;
 
-    /** Token Facade */
+    /** * Token Facade */
     @Inject
     private TokenManager tokenManager;
 
@@ -96,13 +96,18 @@ public class TeamManager {
      */
     public TeamMember addMember(Project project, User user, HierarchicalPosition position) {
         logger.debug("Add member {} in {}", user, project);
+
+        if (project != null && user != null && findMemberByUserAndProject(project, user) != null) {
+            throw HttpErrorMessage.dataIntegrityFailure();
+        }
+
         TeamMember teamMember = new TeamMember();
 
-        // todo check if user is already member of the team
         teamMember.setUser(user);
         teamMember.setProject(project);
         teamMember.setPosition(position);
         project.getTeamMembers().add(teamMember);
+
         return teamMember;
     }
 
@@ -123,7 +128,7 @@ public class TeamManager {
     /**
      * Send invitation
      *
-     * @param projectId if of the project
+     * @param projectId id of the project
      * @param email     send invitation to this address
      *
      * @return the pending new teamMember

@@ -1,6 +1,6 @@
 /*
  * The coLAB project
- * Copyright (C) 2021 AlbaSim, MEI, HEIG-VD, HES-SO
+ * Copyright (C) 2021-2022 AlbaSim, MEI, HEIG-VD, HES-SO
  *
  * Licensed under the MIT License
  */
@@ -329,7 +329,7 @@ public class TokenManager {
         try {
             sendTokenByEmail(token, recipient);
         } catch (MessagingException ex) {
-            logger.error("Failed to send pssword reset email", ex);
+            logger.error("Failed to send membership invitation email", ex);
             throw HttpErrorMessage.smtpError();
         }
         return token.getTeamMember();
@@ -362,12 +362,12 @@ public class TokenManager {
                 .tokenProcessingFailure(MessageI18nKey.INVITATION_CONSUMING_BY_TEAMMEMBER);
         }
 
-        if (user != null) {
-            teamMember.setUser(user);
-            teamMember.setDisplayName(null);
-        } else {
+        if (user == null) {
             throw HttpErrorMessage.authenticationRequired();
         }
+
+        teamMember.setUser(user);
+        teamMember.setDisplayName(null);
 
         return true;
     }

@@ -1,6 +1,6 @@
 /*
  * The coLAB project
- * Copyright (C) 2021 AlbaSim, MEI, HEIG-VD, HES-SO
+ * Copyright (C) 2021-2022 AlbaSim, MEI, HEIG-VD, HES-SO
  *
  * Licensed under the MIT License
  */
@@ -52,6 +52,7 @@ import org.apache.commons.collections4.CollectionUtils;
 @Entity
 @Table(
     indexes = {
+        @Index(columnList = "project_id,user_id", unique = true),
         @Index(columnList = "project_id"),
         @Index(columnList = "user_id")
     }
