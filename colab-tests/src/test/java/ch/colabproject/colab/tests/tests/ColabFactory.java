@@ -1,6 +1,6 @@
 /*
  * The coLAB project
- * Copyright (C) 2021 AlbaSim, MEI, HEIG-VD, HES-SO
+ * Copyright (C) 2021-2022 AlbaSim, MEI, HEIG-VD, HES-SO
  *
  * Licensed under the MIT License
  */
@@ -16,6 +16,7 @@ import ch.colabproject.colab.api.model.document.Resource;
 import ch.colabproject.colab.api.model.document.TextDataBlock;
 import ch.colabproject.colab.api.model.link.ActivityFlowLink;
 import ch.colabproject.colab.api.model.project.Project;
+import ch.colabproject.colab.api.model.project.ProjectType;
 import ch.colabproject.colab.api.model.team.TeamMember;
 import ch.colabproject.colab.api.model.team.TeamRole;
 import ch.colabproject.colab.api.model.token.InvitationToken;
@@ -184,6 +185,28 @@ public class ColabFactory {
         p.setName(name);
         Long id = client.projectRestEndpoint.createProject(p);
         return client.projectRestEndpoint.getProject(id);
+    }
+
+    /**
+     * Create a brand new project model
+     *
+     * @param client rest client to execute HTTP requests
+     * @param name   name of the new project model
+     *
+     * @return the new project model
+     */
+    public static Project createProjectModel(ColabClient client, String name) {
+        ProjectCreationData p = new ProjectCreationData();
+        p.setName(name);
+
+        Long projectId = client.projectRestEndpoint.createProject(p);
+
+        Project projectModel = client.projectRestEndpoint.getProject(projectId);
+        projectModel.setType(ProjectType.MODEL);
+
+        client.projectRestEndpoint.updateProject(projectModel);
+
+        return client.projectRestEndpoint.getProject(projectId);
     }
 
     /**

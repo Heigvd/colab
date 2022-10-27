@@ -19,6 +19,7 @@ import {
   entityIs,
   HttpSession,
   IndexEntry,
+  InstanceMaker,
   Project,
   StickyNoteLink,
   TeamMember,
@@ -56,6 +57,7 @@ interface EntityBag {
   contents: Updates<CardContent>;
   documents: Updates<Document>;
   httpSessions: Updates<HttpSession>;
+  instanceMakers: Updates<InstanceMaker>;
   members: Updates<TeamMember>;
   presences: Updates<UserPresence>;
   projects: Updates<Project>;
@@ -77,6 +79,7 @@ function createBag(): EntityBag {
     contents: { updated: [], deleted: [] },
     documents: { updated: [], deleted: [] },
     httpSessions: { updated: [], deleted: [] },
+    instanceMakers: { updated: [], deleted: [] },
     members: { updated: [], deleted: [] },
     presences: { updated: [], deleted: [] },
     projects: { updated: [], deleted: [] },
@@ -114,6 +117,8 @@ export const processMessage = createAsyncThunk(
           bag.documents.deleted.push(item);
         } else if (indexEntryIs(item, 'HttpSession')) {
           bag.httpSessions.deleted.push(item);
+        } else if (indexEntryIs(item, 'InstanceMaker')) {
+          bag.instanceMakers.deleted.push(item);
         } else if (indexEntryIs(item, 'TeamMember')) {
           bag.members.deleted.push(item);
         } else if (indexEntryIs(item, 'TeamRole')) {
@@ -156,6 +161,8 @@ export const processMessage = createAsyncThunk(
           bag.documents.updated.push(item);
         } else if (entityIs(item, 'HttpSession')) {
           bag.httpSessions.updated.push(item);
+        } else if (entityIs(item, 'InstanceMaker')) {
+          bag.instanceMakers.updated.push(item);
         } else if (entityIs(item, 'TeamMember')) {
           bag.members.updated.push(item);
         } else if (entityIs(item, 'Project')) {

@@ -1,6 +1,6 @@
 /*
  * The coLAB project
- * Copyright (C) 2021 AlbaSim, MEI, HEIG-VD, HES-SO
+ * Copyright (C) 2021-2022 AlbaSim, MEI, HEIG-VD, HES-SO
  *
  * Licensed under the MIT License
  */
@@ -14,6 +14,7 @@ import ch.colabproject.colab.api.model.card.AbstractCardType;
 import ch.colabproject.colab.api.model.card.Card;
 import ch.colabproject.colab.api.model.card.CardContent;
 import ch.colabproject.colab.api.model.link.ActivityFlowLink;
+import ch.colabproject.colab.api.model.project.InstanceMaker;
 import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.api.model.team.TeamMember;
 import ch.colabproject.colab.api.model.team.TeamRole;
@@ -186,6 +187,22 @@ public class ProjectRestEndpoint {
         return projectManager.duplicateProject(projectId, effectiveParams).getId();
     }
 
+//    /**
+//     * Share the model to someone
+//     *
+//     * @param modelId the id of the model
+//     * @param email   the recipient address
+//     *
+//     * @return the pending potential instance maker
+//     */
+//    @PUT
+//    @Path("shareModel/{id: [0-9]+}/{email}")
+//    public InstanceMaker shareModel(@PathParam("id") Long modelId,
+//        @PathParam("email") String email) {
+//        logger.debug("Share model #{} to {}", modelId, email);
+//        return projectManager.shareModel(modelId, email);
+//    }
+
     /**
      * Get the root card of the project
      *
@@ -296,6 +313,20 @@ public class ProjectRestEndpoint {
     public Set<ActivityFlowLink> getActivityFlowLinks(@PathParam("id") Long id) {
         logger.debug("Get project #{} activityflowlinks", id);
         return projectManager.getActivityFlowLinks(id);
+    }
+
+    /**
+     * Get all instance makers of the given project
+     *
+     * @param id the id of the project
+     *
+     * @return all instance makers linked to the project
+     */
+    @GET
+    @Path("{id}/instanceMakers")
+    public List<InstanceMaker> getInstanceMakers(@PathParam("id") Long id) {
+        logger.debug("Get project #{} instance makers", id);
+        return projectManager.getInstanceMakers(id);
     }
 
 }

@@ -1,6 +1,6 @@
 /*
  * The coLAB project
- * Copyright (C) 2021 AlbaSim, MEI, HEIG-VD, HES-SO
+ * Copyright (C) 2021-2022 AlbaSim, MEI, HEIG-VD, HES-SO
  *
  * Licensed under the MIT License
  */
@@ -21,11 +21,13 @@ import ch.colabproject.colab.api.model.card.Card;
 import ch.colabproject.colab.api.model.card.CardContent;
 import ch.colabproject.colab.api.model.common.Illustration;
 import ch.colabproject.colab.api.model.link.ActivityFlowLink;
+import ch.colabproject.colab.api.model.project.InstanceMaker;
 import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.api.model.project.ProjectType;
 import ch.colabproject.colab.api.model.team.TeamMember;
 import ch.colabproject.colab.api.model.team.acl.HierarchicalPosition;
 import ch.colabproject.colab.api.model.user.User;
+import ch.colabproject.colab.api.persistence.jpa.project.InstanceMakerDao;
 import ch.colabproject.colab.api.persistence.jpa.project.ProjectDao;
 import ch.colabproject.colab.api.rest.project.bean.ProjectStructure;
 import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
@@ -74,6 +76,18 @@ public class ProjectManager {
      */
     @Inject
     private ProjectDao projectDao;
+
+    /**
+     * Instance maker persistence handler
+     */
+    @Inject
+    private InstanceMakerDao instanceMakerDao;
+
+//    /**
+//     * Project specific logic handling
+//     */
+//    @Inject
+//    private ProjectManager projectManager;
 
     /**
      * Team specific logic management
@@ -244,6 +258,7 @@ public class ProjectManager {
 //            throw HttpErrorMessage.dataIntegrityFailure();
 //        }
 
+//      tokenManager.deleteTokensByProject(project);
         project.getTeamMembers().stream()
             .forEach(member -> tokenManager.deleteInvitationsByTeamMember(member));
 
@@ -291,6 +306,59 @@ public class ProjectManager {
 
         return newProject;
     }
+
+    // *********************************************************************************************
+    // share
+    // *********************************************************************************************
+
+//    /**
+//     * Send an invitation to use the model.
+//     *
+//     * @param modelId the id of the model
+//     * @param email   the address to send the invitation
+//     *
+//     * @return the pending potential instance maker
+//     */
+//    public InstanceMaker shareModel(Long modelId, String email) {
+//        logger.debug("Invite {} to use model #{}", email, modelId);
+//        Project model = projectManager.assertAndGetProject(modelId);
+//        return tokenManager.sendModelShareToken(model, email);
+//    }
+//
+//    /**
+//     * Add given user the right to instantiate a project from the given model
+//     *
+//     * @param user  the user
+//     * @param model the model
+//     *
+//     * @return the brand new potential instance maker
+//     */
+//    public InstanceMaker addInstanceMaker(Project model, User user) {
+//        logger.debug("Add instance maker {} for model {}", user, model);
+//
+//        if (findInstanceMakerByUserAndProject(model, user) != null) {
+//            throw HttpErrorMessage.dataIntegrityFailure();
+//        }
+//
+//        InstanceMaker instanceMaker = new InstanceMaker();
+//
+//        instanceMaker.setUser(user);
+//        instanceMaker.setProject(model);
+//
+//        return instanceMaker;
+//    }
+//
+//    /**
+//     * Find the instanceMaker who match the given project and the given user
+//     *
+//     * @param model the model
+//     * @param user  the user
+//     *
+//     * @return the instanceMaker or null
+//     */
+//    public InstanceMaker findInstanceMakerByUserAndProject(Project model, User user) {
+//        return projectDao.findInstanceMakerByUserAndProject(model, user);
+//    }
 
     // *********************************************************************************************
     // retrieve the elements of a project
@@ -399,6 +467,21 @@ public class ProjectManager {
             .stream().flatMap(card -> {
                 return card.getActivityFlowLinksAsPrevious().stream();
             }).collect(Collectors.toSet());
+    }
+
+    /**
+     * Get all instance makers linked to the given project.
+     *
+     * @param projectId the id of the project
+     *
+     * @return all instance makers linked to the project
+     */
+    public List<InstanceMaker> getInstanceMakers(Long projectId) {
+        logger.debug("Get instance makers of project #{}", projectId);
+
+        Project project = assertAndGetProject(projectId);
+
+        return instanceMakerDao.findInstanceMakersByProject(project);
     }
 
     // *********************************************************************************************
