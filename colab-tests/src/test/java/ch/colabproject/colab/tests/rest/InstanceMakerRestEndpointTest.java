@@ -78,21 +78,21 @@ public class InstanceMakerRestEndpointTest extends AbstractArquillianTest {
         Matcher matcher = TestHelper.extractToken(modelSharingMessage);
         Assertions.assertTrue(matcher.matches());
 
-        Long tokenId = Long.getLong(matcher.group(1));
+        Long tokenId = Long.parseLong(matcher.group(1));
         String plainToken = matcher.group(2);
 
         this.mailClient.deleteMessage(modelSharingMessage.getId());
 
-//        ////////////////////////////////////////////////////////////////////////////////////////////
-//        // With its own http client 'pietroClient', Pietro fetches the token
-//        ////////////////////////////////////////////////////////////////////////////////////////////
-//        ColabClient pietroClient = this.createRestClient();
-//
-//        Token token = pietroClient.tokenRestEndpoint.getToken(tokenId);
-//
-//        Assertions.assertTrue(token instanceof ModelSharingToken);
-//        Assertions.assertTrue(token.isAuthenticationRequired());
-//
+        ////////////////////////////////////////////////////////////////////////////////////////////
+        // With its own http client 'pietroClient', Pietro fetches the token
+        ////////////////////////////////////////////////////////////////////////////////////////////
+        ColabClient pietroClient = this.createRestClient();
+
+        Token token = pietroClient.tokenRestEndpoint.getToken(tokenId);
+
+        Assertions.assertTrue(token instanceof ModelSharingToken);
+        Assertions.assertTrue(token.isAuthenticationRequired());
+
 //        // a try to consume the token without being unauthenticated
 //        TestHelper.assertThrows(HttpErrorMessage.MessageCode.AUTHENTICATION_REQUIRED, () -> {
 //            // consuming the token without being authenticated is not possible

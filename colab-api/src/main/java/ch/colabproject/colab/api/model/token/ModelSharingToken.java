@@ -125,12 +125,18 @@ public class ModelSharingToken extends Token {
 
     @Override
     public String getRedirectTo() {
-        Project project = getProject();
-        if (project != null && project.getId() != null) {
-            return "/newModelShared/" + project.getId();
+        if (this.instanceMaker != null && this.instanceMaker.getUser() != null) {
+            // if link from user to project is not set, do not even try to read the project
+            // on the one hand it won't be useful
+            // and on the other hand it could lead to an access denied exception
+
+            Project project = getProject();
+            if (project != null && project.getId() != null) {
+                return "/newModelShared/" + project.getId();
+            }
         }
 
-        return "/newModelShared/";
+        return "";
     }
 
     @Override
@@ -167,6 +173,7 @@ public class ModelSharingToken extends Token {
      *
      * @return the model project
      */
+    @JsonbTransient
     public Project getProject() {
         if (instanceMaker != null) {
             return instanceMaker.getProject();
