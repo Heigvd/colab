@@ -187,21 +187,21 @@ public class ProjectRestEndpoint {
         return projectManager.duplicateProject(projectId, effectiveParams).getId();
     }
 
-//    /**
-//     * Share the model to someone
-//     *
-//     * @param modelId the id of the model
-//     * @param email   the recipient address
-//     *
-//     * @return the pending potential instance maker
-//     */
-//    @PUT
-//    @Path("shareModel/{id: [0-9]+}/{email}")
-//    public InstanceMaker shareModel(@PathParam("id") Long modelId,
-//        @PathParam("email") String email) {
-//        logger.debug("Share model #{} to {}", modelId, email);
-//        return projectManager.shareModel(modelId, email);
-//    }
+    /**
+     * Share the model to someone
+     *
+     * @param modelId the id of the model
+     * @param email   the recipient address
+     *
+     * @return the pending potential instance maker
+     */
+    @PUT
+    @Path("shareModel/{id: [0-9]+}/{email}")
+    public InstanceMaker shareModel(@PathParam("id") Long modelId,
+        @PathParam("email") String email) {
+        logger.debug("Share model #{} to {}", modelId, email);
+        return projectManager.shareModel(modelId, email);
+    }
 
     /**
      * Get the root card of the project

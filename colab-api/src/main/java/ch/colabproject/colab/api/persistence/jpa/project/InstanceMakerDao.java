@@ -8,12 +8,16 @@ package ch.colabproject.colab.api.persistence.jpa.project;
 
 import ch.colabproject.colab.api.model.project.InstanceMaker;
 import ch.colabproject.colab.api.model.project.Project;
+import ch.colabproject.colab.api.model.user.User;
 import java.util.List;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Instance maker persistence
@@ -23,6 +27,9 @@ import javax.persistence.TypedQuery;
 @Stateless
 @LocalBean
 public class InstanceMakerDao {
+
+    /** logger */
+    private static final Logger logger = LoggerFactory.getLogger(InstanceMakerDao.class);
 
     /**
      * Access to the persistence unit
@@ -60,6 +67,19 @@ public class InstanceMakerDao {
 //
 //        return managedInstanceMaker;
 //    }
+
+    /**
+     * Persist a brand new instance maker to database
+     *
+     * @param instancemaker new instance maker to persist
+     *
+     * @return the new persisted instance maker
+     */
+    public InstanceMaker persistInstanceMaker(InstanceMaker instancemaker) {
+        logger.debug("persist instance maker {}", instancemaker);
+        em.persist(instancemaker);
+        return instancemaker;
+    }
 //
 //    /**
 //     * Remove the given instance maker from database
@@ -69,29 +89,29 @@ public class InstanceMakerDao {
 //    public void removeInstanceMaker(InstanceMaker instanceMaker) {
 //        em.remove(instanceMaker);
 //    }
-//
-//    /**
-//     * Find the instance maker who match the given project and the given user.
-//     *
-//     * @param project the project
-//     * @param user    the user
-//     *
-//     * @return the instance maker or null
-//     */
-//    public InstanceMaker findInstanceMakerByProjectAndUser(Project project, User user) {
-//        try {
-//            TypedQuery<InstanceMaker> query = em.createNamedQuery(
-//                "InstanceMaker.findByProjectAndUser",
-//                InstanceMaker.class);
-//
-//            query.setParameter("projectId", project.getId());
-//            query.setParameter("userId", user.getId());
-//
-//            return query.getSingleResult();
-//        } catch (NoResultException ex) {
-//            return null;
-//        }
-//    }
+
+    /**
+     * Find the instance maker who match the given project and the given user.
+     *
+     * @param project the project
+     * @param user    the user
+     *
+     * @return the instance maker or null
+     */
+    public InstanceMaker findInstanceMakerByProjectAndUser(Project project, User user) {
+        try {
+            TypedQuery<InstanceMaker> query = em.createNamedQuery(
+                "InstanceMaker.findByProjectAndUser",
+                InstanceMaker.class);
+
+            query.setParameter("projectId", project.getId());
+            query.setParameter("userId", user.getId());
+
+            return query.getSingleResult();
+        } catch (NoResultException ex) {
+            return null;
+        }
+    }
 //
 //    /**
 //     * Find the instance makers related to the given user

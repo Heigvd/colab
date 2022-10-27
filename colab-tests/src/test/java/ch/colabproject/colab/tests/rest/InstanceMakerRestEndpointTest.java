@@ -8,10 +8,18 @@ package ch.colabproject.colab.tests.rest;
 
 import ch.colabproject.colab.api.model.project.InstanceMaker;
 import ch.colabproject.colab.api.model.project.Project;
+import ch.colabproject.colab.api.model.token.ModelSharingToken;
+import ch.colabproject.colab.api.model.token.Token;
+import ch.colabproject.colab.api.model.user.User;
+import ch.colabproject.colab.client.ColabClient;
+import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
+import ch.colabproject.colab.tests.mailhog.model.Message;
 import ch.colabproject.colab.tests.tests.AbstractArquillianTest;
 import ch.colabproject.colab.tests.tests.ColabFactory;
+import ch.colabproject.colab.tests.tests.TestHelper;
 import ch.colabproject.colab.tests.tests.TestUser;
 import java.util.List;
+import java.util.regex.Matcher;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -24,7 +32,7 @@ public class InstanceMakerRestEndpointTest extends AbstractArquillianTest {
 
     @Test
     public void testShareModelToSomeone() {
-//        String mateAddress = "pietro" + ((int) (Math.random() * 1000)) + "@junittest.local";
+        String mateAddress = "pietro" + ((int) (Math.random() * 1000)) + "@junittest.local";
 
         ////////////////////////////////////////////////////////////////////////////////////////////
         // this.client sign up as MasterOfModel
@@ -46,35 +54,35 @@ public class InstanceMakerRestEndpointTest extends AbstractArquillianTest {
         Assertions.assertEquals(0, instanceMakers.size());
 
         ////////////////////////////////////////////////////////////////////////////////////////////
-        // MasterOfModel share its project to Pietro
+        // MasterOfModel shares its project to Pietro
         // A pending instance maker is created
         ////////////////////////////////////////////////////////////////////////////////////////////
         mailClient.deleteAllMessages();
-//        client.projectRestEndpoint.shareModel(projectModelId, mateAddress);
-//
-//        instanceMakers = client.projectRestEndpoint.getInstanceMakers(projectModelId);
-//        Assertions.assertEquals(1, instanceMakers.size());
-//
-//        InstanceMaker theInstanceMaker = instanceMakers.get(0);
-//        Assertions.assertEquals(projectModelId, theInstanceMaker.getProjectId());
-//        Assertions.assertNull(theInstanceMaker.getUserId());
-//        Assertions.assertEquals(mateAddress, theInstanceMaker.getDisplayName());
-//
-//        ////////////////////////////////////////////////////////////////////////////////////////////
-//        // Fetch e-mail and extract the token
-//        ////////////////////////////////////////////////////////////////////////////////////////////
-//        List<Message> messages = TestHelper.getMessageByRecipient(mailClient, mateAddress);
-//        Assertions.assertEquals(1, messages.size());
-//        Message modelSharingMessage = messages.get(0);
-//
-//        Matcher matcher = TestHelper.extractToken(modelSharingMessage);
-//        Assertions.assertTrue(matcher.matches());
-//
-//        Long tokenId = Long.getLong(matcher.group(1));
-//        String plainToken = matcher.group(2);
-//
-//        this.mailClient.deleteMessage(modelSharingMessage.getId());
-//
+        client.projectRestEndpoint.shareModel(projectModelId, mateAddress);
+
+        instanceMakers = client.projectRestEndpoint.getInstanceMakers(projectModelId);
+        Assertions.assertEquals(1, instanceMakers.size());
+
+        InstanceMaker theInstanceMaker = instanceMakers.get(0);
+        Assertions.assertEquals(projectModelId, theInstanceMaker.getProjectId());
+        Assertions.assertNull(theInstanceMaker.getUserId());
+        Assertions.assertEquals(mateAddress, theInstanceMaker.getDisplayName());
+
+        ////////////////////////////////////////////////////////////////////////////////////////////
+        // Fetch e-mail and extract the token
+        ////////////////////////////////////////////////////////////////////////////////////////////
+        List<Message> messages = TestHelper.getMessageByRecipient(mailClient, mateAddress);
+        Assertions.assertEquals(1, messages.size());
+        Message modelSharingMessage = messages.get(0);
+
+        Matcher matcher = TestHelper.extractToken(modelSharingMessage);
+        Assertions.assertTrue(matcher.matches());
+
+        Long tokenId = Long.getLong(matcher.group(1));
+        String plainToken = matcher.group(2);
+
+        this.mailClient.deleteMessage(modelSharingMessage.getId());
+
 //        ////////////////////////////////////////////////////////////////////////////////////////////
 //        // With its own http client 'pietroClient', Pietro fetches the token
 //        ////////////////////////////////////////////////////////////////////////////////////////////
@@ -82,7 +90,7 @@ public class InstanceMakerRestEndpointTest extends AbstractArquillianTest {
 //
 //        Token token = pietroClient.tokenRestEndpoint.getToken(tokenId);
 //
-//        Assertions.assertTrue(token instanceof ModelShareToken);
+//        Assertions.assertTrue(token instanceof ModelSharingToken);
 //        Assertions.assertTrue(token.isAuthenticationRequired());
 //
 //        // a try to consume the token without being unauthenticated

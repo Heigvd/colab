@@ -8,14 +8,17 @@ package ch.colabproject.colab.api.controller.token;
 
 import ch.colabproject.colab.api.Helper;
 import ch.colabproject.colab.api.controller.RequestManager;
+import ch.colabproject.colab.api.controller.project.ProjectManager;
 import ch.colabproject.colab.api.controller.security.SecurityManager;
 import ch.colabproject.colab.api.controller.team.TeamManager;
 import ch.colabproject.colab.api.controller.user.UserManager;
+import ch.colabproject.colab.api.model.project.InstanceMaker;
 import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.api.model.team.TeamMember;
 import ch.colabproject.colab.api.model.team.acl.HierarchicalPosition;
 import ch.colabproject.colab.api.model.token.ExpirationPolicy;
 import ch.colabproject.colab.api.model.token.InvitationToken;
+import ch.colabproject.colab.api.model.token.ModelSharingToken;
 import ch.colabproject.colab.api.model.token.ResetLocalAccountPasswordToken;
 import ch.colabproject.colab.api.model.token.Token;
 import ch.colabproject.colab.api.model.token.VerifyLocalAccountToken;
@@ -73,6 +76,12 @@ public class TokenManager {
      */
     @Inject
     private TokenDao tokenDao;
+
+    /**
+     * Project specific logic handling
+     */
+    @Inject
+    private ProjectManager projectManager;
 
     /**
      * request context
@@ -326,12 +335,14 @@ public class TokenManager {
         }
 
         token.setSender(currentUser.getDisplayName());
+
         try {
             sendTokenByEmail(token, recipient);
         } catch (MessagingException ex) {
             logger.error("Failed to send membership invitation email", ex);
             throw HttpErrorMessage.smtpError();
         }
+
         return token.getTeamMember();
     }
 
@@ -373,8 +384,104 @@ public class TokenManager {
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////
+    // Share a model to someone
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+
+    /**
+     * Send a model sharing token to register the project as a model to use
+     * <p>
+     * If the token does not exist yet, create it and link to it a new pending instance maker.
+     *
+     * @param model     the id of the model
+     * @param recipient the address to send the sharing token to
+     *
+     * @return the pending instance maker
+     */
+    public InstanceMaker sendModelSharingToken(Project model, String recipient) {
+        User currentUser = securityManager.assertAndGetCurrentUser();
+
+        ModelSharingToken token = tokenDao.findModelShareByProjectAndRecipient(model, recipient);
+
+        if (token == null) {
+            // create an instance maker and link it to the project, but do not link it to any user
+            // this link will be set during token consumption
+            InstanceMaker newInstanceMaker = projectManager.addAndPersistInstanceMaker(model, null);
+
+            token = new ModelSharingToken();
+
+            token.setInstanceMaker(newInstanceMaker);
+            token.setExpirationDate(null);
+            token.setAuthenticationRequired(Boolean.TRUE);
+            token.setRecipient(recipient);
+
+            newInstanceMaker.setDisplayName(recipient);
+
+            tokenDao.persistToken(token);
+        }
+
+        token.setSender(currentUser.getDisplayName());
+
+        try {
+            sendTokenByEmail(token, recipient);
+        } catch (MessagingException ex) {
+            logger.error("Failed to send model sharing email", ex);
+            throw HttpErrorMessage.smtpError();
+        }
+
+        return token.getInstanceMaker();
+    }
+
+//    /**
+//     * Delete all model sharing tokens linked to the instance maker
+//     *
+//     * @param instanceMaker the instance maker for which we delete all invitations
+//     */
+//    public void deleteModelSharingTokenByInstanceMaker(InstanceMaker instanceMaker) {
+//        List<ModelSharingToken> tokens = tokenDao.findModelSharingByInstanceMaker(instanceMaker);
+//        tokens.stream().forEach(token -> tokenDao.deleteToken(token));
+//    }
+
+    /**
+     * Consume the model sharing token
+     *
+     * @param instanceMaker the instance maker related to the token
+     *
+     * @return true if the token can be consumed
+     */
+    public boolean consumeModelSharingToken(InstanceMaker instanceMaker) {
+//        User user = requestManager.getCurrentUser();
+//        Project model = instanceMaker.getProject();
+//
+//        InstanceMaker existingInstanceMaker = projectManager
+//            .findInstanceMakerByUserAndProject(model, user);
+//        if (existingInstanceMaker != null) {
+//            throw HttpErrorMessage.tokenProcessingFailure(
+//                MessageI18nKey.MODEL_SHARE_INVITATION_CONSUMING_BY_INSTANCEMAKER);
+//        }
+//
+//        if (user == null) {
+//            throw HttpErrorMessage.authenticationRequired();
+//        }
+//
+//        instanceMaker.setUser(user);
+//        instanceMaker.setProject(model);
+
+        return true;
+    }
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////
     // for each token
     ////////////////////////////////////////////////////////////////////////////////////////////////
+
+//    /**
+//     * Delete all invitations linked to the project
+//     *
+//     * @param project the project for which we delete all tokens
+//     */
+//    public void deleteTokensByProject(Project project) {
+//        List<Token> tokens = tokenDao.findTokensByProject(project);
+//        tokens.stream().forEach(token -> tokenDao.deleteToken(token));
+//    }
 
     /**
      * Fetch token with given id from DAO. If it's outdated, it will be destroyed and null will be

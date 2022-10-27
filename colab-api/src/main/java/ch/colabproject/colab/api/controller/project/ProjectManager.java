@@ -83,12 +83,6 @@ public class ProjectManager {
     @Inject
     private InstanceMakerDao instanceMakerDao;
 
-//    /**
-//     * Project specific logic handling
-//     */
-//    @Inject
-//    private ProjectManager projectManager;
-
     /**
      * Team specific logic management
      */
@@ -308,57 +302,64 @@ public class ProjectManager {
     }
 
     // *********************************************************************************************
-    // share
+    // sharing
     // *********************************************************************************************
 
-//    /**
-//     * Send an invitation to use the model.
-//     *
-//     * @param modelId the id of the model
-//     * @param email   the address to send the invitation
-//     *
-//     * @return the pending potential instance maker
-//     */
-//    public InstanceMaker shareModel(Long modelId, String email) {
-//        logger.debug("Invite {} to use model #{}", email, modelId);
-//        Project model = projectManager.assertAndGetProject(modelId);
-//        return tokenManager.sendModelShareToken(model, email);
-//    }
-//
-//    /**
-//     * Add given user the right to instantiate a project from the given model
-//     *
-//     * @param user  the user
-//     * @param model the model
-//     *
-//     * @return the brand new potential instance maker
-//     */
-//    public InstanceMaker addInstanceMaker(Project model, User user) {
-//        logger.debug("Add instance maker {} for model {}", user, model);
-//
-//        if (findInstanceMakerByUserAndProject(model, user) != null) {
-//            throw HttpErrorMessage.dataIntegrityFailure();
-//        }
-//
-//        InstanceMaker instanceMaker = new InstanceMaker();
-//
-//        instanceMaker.setUser(user);
-//        instanceMaker.setProject(model);
-//
-//        return instanceMaker;
-//    }
-//
-//    /**
-//     * Find the instanceMaker who match the given project and the given user
-//     *
-//     * @param model the model
-//     * @param user  the user
-//     *
-//     * @return the instanceMaker or null
-//     */
-//    public InstanceMaker findInstanceMakerByUserAndProject(Project model, User user) {
-//        return projectDao.findInstanceMakerByUserAndProject(model, user);
-//    }
+    /**
+     * Send a token by email to grant access to use the model.
+     *
+     * @param modelId the id of the model
+     * @param email   the address to send the sharing token to
+     *
+     * @return the pending potential instance maker
+     */
+    public InstanceMaker shareModel(Long modelId, String email) {
+        logger.debug("Share the model #{} to {}", modelId, email);
+        Project model = assertAndGetProject(modelId);
+
+        return tokenManager.sendModelSharingToken(model, email);
+    }
+
+    /**
+     * Create an instance maker for the model and the user and then persist it in database
+     *
+     * @param user  the user
+     * @param model the model
+     *
+     * @return the brand new potential instance maker
+     */
+    public InstanceMaker addAndPersistInstanceMaker(Project model, User user) {
+        logger.debug("Add and persist instance maker to user {} for model {}", user, model);
+
+        InstanceMaker instanceMaker = addInstanceMaker(model, user);
+        instanceMakerDao.persistInstanceMaker(instanceMaker);
+
+        return instanceMaker;
+    }
+
+    /**
+     * Create an instance maker for the model and the user
+     *
+     * @param user  the user
+     * @param model the model
+     *
+     * @return the brand new potential instance maker
+     */
+    public InstanceMaker addInstanceMaker(Project model, User user) {
+        logger.debug("Add instance maker to user {} for model {}", user, model);
+
+        if (model != null && user != null
+            && instanceMakerDao.findInstanceMakerByProjectAndUser(model, user) != null) {
+            throw HttpErrorMessage.dataIntegrityFailure();
+        }
+
+        InstanceMaker instanceMaker = new InstanceMaker();
+
+        instanceMaker.setUser(user);
+        instanceMaker.setProject(model);
+
+        return instanceMaker;
+    }
 
     // *********************************************************************************************
     // retrieve the elements of a project

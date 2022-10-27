@@ -1,6 +1,6 @@
 /*
  * The coLAB project
- * Copyright (C) 2021 AlbaSim, MEI, HEIG-VD, HES-SO
+ * Copyright (C) 2021-2022 AlbaSim, MEI, HEIG-VD, HES-SO
  *
  * Licensed under the MIT License
  */
@@ -25,6 +25,7 @@ import Loading from './common/layout/Loading';
 import Overlay from './common/layout/Overlay';
 import MainNav from './MainNav';
 import Editor from './projects/edition/Editor';
+import NewModelShared from './projects/NewModelShared';
 import { UserModels, UserProjects } from './projects/ProjectList';
 import Settings from './settings/Settings';
 import { fullPageStyle, invertedThemeMode, space_M } from './styling/style';
@@ -185,6 +186,7 @@ export default function MainApp(): JSX.Element {
                   >
                     <Routes>
                       <Route path="/*" element={<UserProjects />} />
+                      <Route path="/newModelShared" element={<NewModelShared />} />
                       <Route path="/projects" element={<UserProjects />} />
                       <Route path="/models" element={<UserModels />} />
                       <Route path="/settings/*" element={<Settings />} />
