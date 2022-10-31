@@ -61,6 +61,16 @@ import javax.validation.constraints.Size;
     query = "SELECT p FROM Project p JOIN p.teamMembers members WHERE members.user.id = :userId")
 @NamedQuery(name = "Project.findIdsByTeamMemberUser",
     query = "SELECT p.id FROM Project p JOIN p.teamMembers m WHERE m.user.id = :userId")
+@NamedQuery(name = "Project.findIdsByInstanceMakerUser",
+    query = "SELECT p.id FROM Project p JOIN InstanceMaker im WHERE im.project.id = p.id AND im.user.id = :userId")
+@NamedQuery(name = "Project.doUsersHaveACommonProject",
+    query = "SELECT TRUE FROM Project p WHERE ("
+        + "   ( p.id IN ( SELECT tm.project.id FROM TeamMember tm WHERE tm.user.id = :aUserId ) "
+        + "  OR p.id IN ( SELECT im.project.id FROM InstanceMaker im WHERE im.user.id = :aUserId ) ) "
+        + "AND "
+        + "   ( p.id IN ( SELECT tm.project.id FROM TeamMember tm WHERE tm.user.id = :bUserId ) "
+        + "  OR p.id IN ( SELECT im.project.id FROM InstanceMaker im WHERE im.user.id = :bUserId ) ) "
+        + ")")
 public class Project implements ColabEntity, WithWebsocketChannels {
 
     private static final long serialVersionUID = 1L;
@@ -394,7 +404,8 @@ public class Project implements ColabEntity, WithWebsocketChannels {
 
     @Override
     public String toString() {
-        return "Project{" + "id=" + id + ", type=" + type.name() +", name=" + name + ", descr=" + description + '}';
+        return "Project{" + "id=" + id + ", type=" + type.name() + ", name=" + name + ", descr="
+            + description + '}';
     }
 
 }

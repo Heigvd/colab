@@ -1,6 +1,6 @@
 /*
  * The coLAB project
- * Copyright (C) 2021 AlbaSim, MEI, HEIG-VD, HES-SO
+ * Copyright (C) 2021-2022 AlbaSim, MEI, HEIG-VD, HES-SO
  *
  * Licensed under the MIT License
  */
@@ -17,6 +17,7 @@ public enum MessageI18nKey {
     EMAIL_NOT_VALID,
     IDENTIFIER_ALREADY_TAKEN,
     // token
-    INVITATION_CONSUMING_BY_TEAMMEMBER,
+    USER_IS_ALREADY_A_TEAM_MEMBER,
+    CURRENT_USER_CAN_ALREADY_USE_MODEL,
 
 }

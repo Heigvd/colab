@@ -93,42 +93,45 @@ public class InstanceMakerRestEndpointTest extends AbstractArquillianTest {
         Assertions.assertTrue(token instanceof ModelSharingToken);
         Assertions.assertTrue(token.isAuthenticationRequired());
 
-//        // a try to consume the token without being unauthenticated
-//        TestHelper.assertThrows(HttpErrorMessage.MessageCode.AUTHENTICATION_REQUIRED, () -> {
-//            // consuming the token without being authenticated is not possible
-//            pietroClient.tokenRestEndpoint.consumeToken(tokenId, plainToken);
-//        });
-//
-//        ////////////////////////////////////////////////////////////////////////////////////////////
-//        // Pietro sign up as Pietrolino
-//        // and tries to fetch the model, but got an access denied
-//        ////////////////////////////////////////////////////////////////////////////////////////////
-//        TestUser mateUser = this.signup("Pietrolino", "pietrolino@cat.local", "SoSoSoSecure");
-//        signIn(pietroClient, mateUser);
-//
-//        TestHelper.assertThrows(HttpErrorMessage.MessageCode.ACCESS_DENIED, () -> {
-//            pietroClient.projectRestEndpoint.getProject(projectModelId);
-//        });
-//
-//        ////////////////////////////////////////////////////////////////////////////////////////////
-//        // Pietro consumes the model sharing tokens
-//        // The instance maker is then linked to Pietro
-//        // and, thus, Pietro can read the project model
-//        ////////////////////////////////////////////////////////////////////////////////////////////
-//        pietroClient.tokenRestEndpoint.consumeToken(tokenId, plainToken);
-//
-//        instanceMakers = client.projectRestEndpoint.getInstanceMakers(projectModelId);
-//        Assertions.assertEquals(1, instanceMakers.size());
-//
-//        theInstanceMaker = instanceMakers.get(0);
-//        Assertions.assertEquals(projectModelId, theInstanceMaker.getProjectId());
-//
-//        User pietroUser = pietroClient.userRestEndpoint.getCurrentUser();
-//        Assertions.assertEquals(pietroUser.getId(), theInstanceMaker.getUserId());
-//        Assertions.assertNull(theInstanceMaker.getDisplayName());
-//
-//        Project modelProjectForPietro = pietroClient.projectRestEndpoint.getProject(projectModelId);
-//        Assertions.assertNotNull(modelProjectForPietro);
+        // a try to consume the token without being unauthenticated
+        TestHelper.assertThrows(HttpErrorMessage.MessageCode.AUTHENTICATION_REQUIRED, () -> {
+            // consuming the token without being authenticated is not possible
+            pietroClient.tokenRestEndpoint.consumeToken(tokenId, plainToken);
+        });
+
+        ////////////////////////////////////////////////////////////////////////////////////////////
+        // Pietro sign up as Pietrolino
+        // and tries to fetch the model, but got an access denied
+        ////////////////////////////////////////////////////////////////////////////////////////////
+        TestUser mateUser = this.signup("Pietrolino", "pietrolino@cat.local", "SoSoSoSecure");
+        signIn(pietroClient, mateUser);
+
+        TestHelper.assertThrows(HttpErrorMessage.MessageCode.ACCESS_DENIED, () -> {
+            pietroClient.projectRestEndpoint.getProject(projectModelId);
+        });
+
+        ////////////////////////////////////////////////////////////////////////////////////////////
+        // Pietro consumes the model sharing tokens
+        // The instance maker is then linked to Pietro
+        // and, thus, Pietro can read the project model
+        ////////////////////////////////////////////////////////////////////////////////////////////
+        pietroClient.tokenRestEndpoint.consumeToken(tokenId, plainToken);
+
+        instanceMakers = pietroClient.projectRestEndpoint.getInstanceMakers(projectModelId);
+        Assertions.assertEquals(1, instanceMakers.size());
+
+        theInstanceMaker = instanceMakers.get(0);
+        Assertions.assertEquals(projectModelId, theInstanceMaker.getProjectId());
+
+        User pietroUser = pietroClient.userRestEndpoint.getCurrentUser();
+        Assertions.assertEquals(pietroUser.getId(), theInstanceMaker.getUserId());
+        Assertions.assertNull(theInstanceMaker.getDisplayName());
+
+        instanceMakers = client.projectRestEndpoint.getInstanceMakers(projectModelId);
+        Assertions.assertEquals(1, instanceMakers.size());
+
+        Project modelProjectForPietro = pietroClient.projectRestEndpoint.getProject(projectModelId);
+        Assertions.assertNotNull(modelProjectForPietro);
     }
 
 }

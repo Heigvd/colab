@@ -7,7 +7,6 @@
 package ch.colabproject.colab.api.persistence.jpa.token;
 
 import ch.colabproject.colab.api.Helper;
-import ch.colabproject.colab.api.model.project.InstanceMaker;
 import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.api.model.team.TeamMember;
 import ch.colabproject.colab.api.model.token.InvitationToken;

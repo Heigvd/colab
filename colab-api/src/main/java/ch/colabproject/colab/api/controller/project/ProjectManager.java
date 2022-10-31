@@ -349,7 +349,7 @@ public class ProjectManager {
         logger.debug("Add instance maker to user {} for model {}", user, model);
 
         if (model != null && user != null
-            && instanceMakerDao.findInstanceMakerByProjectAndUser(model, user) != null) {
+            && findInstanceMakerByProjectAndUser(model, user) != null) {
             throw HttpErrorMessage.dataIntegrityFailure();
         }
 
@@ -359,6 +359,18 @@ public class ProjectManager {
         instanceMaker.setProject(model);
 
         return instanceMaker;
+    }
+
+    /**
+     * Find the instance maker linked to the given project and the given user.
+     *
+     * @param project the project
+     * @param user    the user
+     *
+     * @return the matching instance makers
+     */
+    public InstanceMaker findInstanceMakerByProjectAndUser(Project project, User user) {
+        return instanceMakerDao.findInstanceMakerByProjectAndUser(project, user);
     }
 
     // *********************************************************************************************
@@ -497,12 +509,31 @@ public class ProjectManager {
      *
      * @return the ids of the matching projects
      */
-    public List<Long> findIdsOfProjectsOfCurrentUser() {
+    public List<Long> findIdsOfProjectsCurrentUserIsMemberOf() {
         User user = securityManager.assertAndGetCurrentUser();
 
         List<Long> projectsIds = projectDao.findIdsOfProjectUserIsMemberOf(user.getId());
 
         logger.debug("found projects' id where the user {} is a team member : {}", user,
+            projectsIds);
+
+        return projectsIds;
+    }
+
+    /**
+     * Retrieve the ids of the projects the current user is an instance maker for.
+     * <p>
+     * We do not load the java objects. Just work with the ids. Two reasons : 1. the ids are enough,
+     * so it is lighter + 2. prevent from loading object the user is not allowed to read
+     *
+     * @return the ids of the matching projects
+     */
+    public List<Long> findIdsOfProjectsCurrentUserIsInstanceMakerFor() {
+        User user = securityManager.assertAndGetCurrentUser();
+
+        List<Long> projectsIds = projectDao.findIdsOfModelUserIsInstanceMaker(user.getId());
+
+        logger.debug("found projects' id for which the user {} is an instance maker : {}", user,
             projectsIds);
 
         return projectsIds;
@@ -526,6 +557,18 @@ public class ProjectManager {
             projectsIds);
 
         return projectsIds;
+    }
+
+    /**
+     * Do the two users have common project ?
+     *
+     * @param a one user
+     * @param b another user
+     *
+     * @return true if both users are related to the same project
+     */
+    public boolean doUsersHaveCommonProject(User a, User b) {
+        return projectDao.doUsersHaveCommonProject(a, b);
     }
 
     // *********************************************************************************************

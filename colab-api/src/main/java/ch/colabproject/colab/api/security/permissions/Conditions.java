@@ -64,7 +64,7 @@ public final class Conditions {
         /**
          * Evaluate the condition
          *
-         * @param requestManager the request Manager
+         * @param requestManager  the request Manager
          * @param securityManager the security manager
          *
          * @return evaluation result
@@ -85,7 +85,7 @@ public final class Conditions {
         /**
          * Evaluate the condition
          *
-         * @param requestManager the request Manager
+         * @param requestManager  the request Manager
          * @param securityManager the security manager
          *
          * @return evaluation result
@@ -650,6 +650,62 @@ public final class Conditions {
                 return false;
             }
             final IsCurrentUserTeamMateOfUser other = (IsCurrentUserTeamMateOfUser) obj;
+            if (!Objects.equals(this.user, other.user)) {
+                return false;
+            }
+            return true;
+        }
+    }
+
+    /**
+     * Do current and given user work on a common project ?
+     */
+    public static class DoCurrentUserWorkOnSameProjectThanUser extends Condition {
+
+        /** the other user */
+        private final User user;
+
+        /**
+         * Create a are teammate statement
+         *
+         * @param user the user to check against
+         */
+        public DoCurrentUserWorkOnSameProjectThanUser(User user) {
+            this.user = user;
+        }
+
+        @Override
+        protected boolean internalEval(RequestManager requestManager,
+            SecurityManager securityManager) {
+            User currentUser = requestManager.getCurrentUser();
+            return currentUser != null
+                && securityManager.doUsersHaveCommonProject(currentUser, this.user);
+        }
+
+        @Override
+        public String toString() {
+            return "DoCurrentUserWorkOnSameProjectThanUser(" + user + ")";
+        }
+
+        @Override
+        public int hashCode() {
+            int hash = 3;
+            hash = 31 * hash + Objects.hashCode(this.user);
+            return hash;
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (this == obj) {
+                return true;
+            }
+            if (obj == null) {
+                return false;
+            }
+            if (getClass() != obj.getClass()) {
+                return false;
+            }
+            final DoCurrentUserWorkOnSameProjectThanUser other = (DoCurrentUserWorkOnSameProjectThanUser) obj;
             if (!Objects.equals(this.user, other.user)) {
                 return false;
             }

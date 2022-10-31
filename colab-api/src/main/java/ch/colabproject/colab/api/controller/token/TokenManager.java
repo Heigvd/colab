@@ -365,16 +365,17 @@ public class TokenManager {
      */
     public boolean consumeInvitationToken(TeamMember teamMember) {
         User user = requestManager.getCurrentUser();
+
+        if (user == null) {
+            throw HttpErrorMessage.authenticationRequired();
+        }
+
         Project project = teamMember.getProject();
 
         TeamMember existingTeamMember = teamManager.findMemberByUserAndProject(project, user);
         if (existingTeamMember != null) {
             throw HttpErrorMessage
-                .tokenProcessingFailure(MessageI18nKey.INVITATION_CONSUMING_BY_TEAMMEMBER);
-        }
-
-        if (user == null) {
-            throw HttpErrorMessage.authenticationRequired();
+                .tokenProcessingFailure(MessageI18nKey.USER_IS_ALREADY_A_TEAM_MEMBER);
         }
 
         teamMember.setUser(user);
@@ -449,22 +450,23 @@ public class TokenManager {
      * @return true if the token can be consumed
      */
     public boolean consumeModelSharingToken(InstanceMaker instanceMaker) {
-//        User user = requestManager.getCurrentUser();
-//        Project model = instanceMaker.getProject();
-//
-//        InstanceMaker existingInstanceMaker = projectManager
-//            .findInstanceMakerByUserAndProject(model, user);
-//        if (existingInstanceMaker != null) {
-//            throw HttpErrorMessage.tokenProcessingFailure(
-//                MessageI18nKey.MODEL_SHARE_INVITATION_CONSUMING_BY_INSTANCEMAKER);
-//        }
-//
-//        if (user == null) {
-//            throw HttpErrorMessage.authenticationRequired();
-//        }
-//
-//        instanceMaker.setUser(user);
-//        instanceMaker.setProject(model);
+        User user = requestManager.getCurrentUser();
+
+        if (user == null) {
+            throw HttpErrorMessage.authenticationRequired();
+        }
+
+        Project model = instanceMaker.getProject();
+
+        InstanceMaker existingInstanceMaker = projectManager
+            .findInstanceMakerByProjectAndUser(model, user);
+        if (existingInstanceMaker != null) {
+            throw HttpErrorMessage.tokenProcessingFailure(
+                MessageI18nKey.CURRENT_USER_CAN_ALREADY_USE_MODEL);
+        }
+
+        instanceMaker.setUser(user);
+        instanceMaker.setDisplayName(null);
 
         return true;
     }
