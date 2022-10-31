@@ -25,9 +25,6 @@ import ch.colabproject.colab.api.model.document.Resourceable;
 import ch.colabproject.colab.api.model.document.TextDataBlock;
 import ch.colabproject.colab.api.model.link.StickyNoteLink;
 import ch.colabproject.colab.api.model.project.Project;
-import ch.colabproject.colab.api.persistence.jpa.card.CardContentDao;
-import ch.colabproject.colab.api.persistence.jpa.card.CardDao;
-import ch.colabproject.colab.api.persistence.jpa.card.CardTypeDao;
 import ch.colabproject.colab.api.persistence.jpa.document.DocumentDao;
 import ch.colabproject.colab.api.persistence.jpa.document.ResourceDao;
 import ch.colabproject.colab.api.rest.document.bean.ResourceExternalReference;
@@ -85,27 +82,15 @@ public class ResourceManager {
     @Inject
     private CardTypeManager cardTypeManager;
 
-    /** to load cardTypes */
-    @Inject
-    private CardTypeDao cardTypeDao;
-
     /**
      * Card specific logic management
      */
     @Inject
     private CardManager cardManager;
 
-    /** to load cards */
-    @Inject
-    private CardDao cardDao;
-
     /** to load cardContents */
     @Inject
     private CardContentManager cardContentManager;
-
-    /** to load cards */
-    @Inject
-    private CardContentDao cardContentDao;
 
     /**
      * Block specific logic management
@@ -683,11 +668,11 @@ public class ResourceManager {
         // not that happy with this resourceable resolver
         // todo: normalize it
         if ("Card".equals(parentType)) {
-            parent = cardDao.findCard(parentId);
+            parent = cardManager.assertAndGetCard(parentId);
         } else if ("CardContent".equals(parentType)) {
-            parent = cardContentDao.findCardContent(parentId);
+            parent = cardContentManager.assertAndGetCardContent(parentId);
         } else if ("CardType".equals(parentType)) {
-            parent = cardTypeDao.findAbstractCardType(parentId);
+            parent = cardTypeManager.assertAndGetCardTypeOrRef(parentId);
         }
         this.moveResource(resourceId, parent, published);
     }

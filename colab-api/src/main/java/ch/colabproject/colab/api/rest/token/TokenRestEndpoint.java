@@ -18,7 +18,9 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 /**
- * API to fetch an consume tokens sent by e-mail
+ * API to fetch and consume tokens sent by e-mail.
+ * <p>
+ * A token grants access to a specific action.
  *
  * @author maxence
  */
@@ -34,12 +36,13 @@ public class TokenRestEndpoint {
     private TokenManager tokenManager;
 
     /**
-     * Fetch a token by id. Once fetched, the client should decide what to do. If the token does not
-     * require authentication, client may consume the token directly. If the token require
-     * authentication, the client should ask the user to sing in/up and consume the token
-     * eventually.
+     * Fetch a token by id.
+     * <p>
+     * Once fetched, the client should decide what to do. If the token does not require
+     * authentication, client may consume the token directly. If the token require authentication,
+     * the client should ask the user to sing in/up and consume the token eventually.
      *
-     * @param id of the token to fetch.
+     * @param id the id of the token to fetch
      *
      * @return the token
      */
@@ -52,16 +55,17 @@ public class TokenRestEndpoint {
     /**
      * Consume and destroy the token
      *
-     * @param id         if of the token to consume
-     * @param plainToken plain token as receive by e-mail
+     * @param id         the if of the token to consume
+     * @param plainToken the plain token as receive by e-mail
      *
      * @return the consumed token
      *
-     * @throws ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage <ul>
-     * <li>notFound if the token does not exists;
-     * <li>bad request if token does not match;
-     * <li>authenticationRequired if token requires authentication but current user id not
-     * </ul>
+     * @throws ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage
+     *  <ul>
+     *      <li>notFound if the token does not exists;
+     *      <li>bad request if token does not match;
+     *      <li>authenticationRequired if token requires authentication but current user is not
+     *  </ul>
      */
     @PUT
     @Path("{id}/{token: [a-fA-F0-9]+}")

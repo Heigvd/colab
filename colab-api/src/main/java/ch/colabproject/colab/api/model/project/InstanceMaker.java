@@ -1,95 +1,77 @@
 /*
  * The coLAB project
- * Copyright (C) 2021-2022 AlbaSim, MEI, HEIG-VD, HES-SO
+ * Copyright (C) 2022 AlbaSim, MEI, HEIG-VD, HES-SO
  *
  * Licensed under the MIT License
  */
-package ch.colabproject.colab.api.model.team;
+package ch.colabproject.colab.api.model.project;
 
 import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.model.ColabEntity;
 import ch.colabproject.colab.api.model.WithWebsocketChannels;
 import ch.colabproject.colab.api.model.common.Tracking;
-import ch.colabproject.colab.api.model.project.Project;
-import ch.colabproject.colab.api.model.team.acl.AccessControl;
-import ch.colabproject.colab.api.model.team.acl.HierarchicalPosition;
+import ch.colabproject.colab.api.model.team.TeamMember;
 import ch.colabproject.colab.api.model.tools.EntityHelper;
 import ch.colabproject.colab.api.model.user.User;
 import ch.colabproject.colab.api.security.permissions.Conditions;
 import ch.colabproject.colab.api.ws.channel.tool.ChannelsBuilders.ChannelsBuilder;
 import ch.colabproject.colab.api.ws.channel.tool.ChannelsBuilders.EmptyChannelBuilder;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
 import javax.json.bind.annotation.JsonbTransient;
-import javax.persistence.CascadeType;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Index;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQuery;
-import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import org.apache.commons.collections4.CollectionUtils;
 
 /**
- * A member is a {@link User user} which work on a {@link Project project}
+ * An instance maker is a user that can use a project model to initiate a new project
  *
- * @author maxence
+ * @author sandra
  */
 @Entity
 @Table(
     indexes = {
         @Index(columnList = "project_id,user_id", unique = true),
         @Index(columnList = "project_id"),
-        @Index(columnList = "user_id")
+        @Index(columnList = "user_id"),
     }
 )
 @NamedQuery(
-    name = "TeamMember.areUserTeammate",
-    // SELECT true FROM TeamMember a, TeamMember b WHERE ...
-    query = "SELECT true FROM TeamMember a "
-        + "JOIN TeamMember b ON a.project.id = b.project.id "
-        + "WHERE a.user.id = :aUserId AND b.user.id = :bUserId")
+    name = "InstanceMaker.findByProjectAndUser",
+    query = "SELECT i from InstanceMaker i "
+        + "WHERE i.project.id = :projectId "
+        + "AND i.user IS NOT NULL AND i.user.id = :userId")
+//@NamedQuery(
+//    name = "InstanceMaker.findByUser",
+//    query = "SELECT i FROM InstanceMaker i "
+//        + "WHERE i.user IS NOT NULL AND i.user.id = :userId")
 @NamedQuery(
-    name = "TeamMember.findByUserAndProject",
-    query = "SELECT m FROM TeamMember m "
-        + "WHERE m.project.id = :projectId "
-        + "AND m.user IS NOT NULL AND m.user.id = :userId"
-)
-@NamedQuery(
-    name = "TeamMember.findByUser",
-    query = "SELECT m FROM TeamMember m "
-        + "WHERE m.user IS NOT NULL AND m.user.id = :userId")
-public class TeamMember implements ColabEntity, WithWebsocketChannels {
+    name = "InstanceMaker.findByProject",
+    query = "SELECT i FROM InstanceMaker i "
+        + "WHERE i.project.id = :projectId")
+public class InstanceMaker implements ColabEntity, WithWebsocketChannels {
 
     private static final long serialVersionUID = 1L;
-
-    /** project team sequence name */
-    public static final String TEAM_SEQUENCE_NAME = "team_seq";
 
     // ---------------------------------------------------------------------------------------------
     // fields
     // ---------------------------------------------------------------------------------------------
 
     /**
-     * Member ID
+     * Instance maker ID
      */
     @Id
-    @SequenceGenerator(name = TEAM_SEQUENCE_NAME, allocationSize = 20)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = TEAM_SEQUENCE_NAME)
+    @SequenceGenerator(name = TeamMember.TEAM_SEQUENCE_NAME, allocationSize = 20)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = TeamMember.TEAM_SEQUENCE_NAME)
     private Long id;
 
     /**
@@ -105,13 +87,6 @@ public class TeamMember implements ColabEntity, WithWebsocketChannels {
     private String displayName;
 
     /**
-     * Hierarchical position of the member
-     */
-    @NotNull
-    @Enumerated(value = EnumType.STRING)
-    private HierarchicalPosition position = HierarchicalPosition.INTERNAL;
-
-    /**
      * The user
      */
     @ManyToOne(fetch = FetchType.LAZY)
@@ -125,7 +100,7 @@ public class TeamMember implements ColabEntity, WithWebsocketChannels {
     private Long userId;
 
     /**
-     * The project
+     * The model
      */
     @ManyToOne(fetch = FetchType.LAZY)
     @NotNull
@@ -133,42 +108,17 @@ public class TeamMember implements ColabEntity, WithWebsocketChannels {
     private Project project;
 
     /**
-     * The project ID (serialization sugar)
+     * The model ID (serialization sugar)
      */
     @Transient
     private Long projectId;
-
-    /**
-     * The roles
-     */
-    @ManyToMany
-    @JoinTable(indexes = {
-        @Index(columnList = "members_id"),
-        @Index(columnList = "roles_id"),
-    })
-    @JsonbTransient
-    private List<TeamRole> roles = new ArrayList<>();
-
-    /**
-     * Id of the roles. For deserialization only
-     */
-    @NotNull
-    @Transient
-    private List<Long> roleIds = new ArrayList<>();
-
-    /**
-     * List of access control relative to this member
-     */
-    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
-    @JsonbTransient
-    private List<AccessControl> accessControlList = new ArrayList<>();
 
     // ---------------------------------------------------------------------------------------------
     // getters and setters
     // ---------------------------------------------------------------------------------------------
 
     /**
-     * @return the member ID
+     * @return the instance maker ID
      */
     @Override
     public Long getId() {
@@ -176,7 +126,7 @@ public class TeamMember implements ColabEntity, WithWebsocketChannels {
     }
 
     /**
-     * @param id the member ID
+     * @param id the instance maker ID
      */
     public void setId(Long id) {
         this.id = id;
@@ -203,39 +153,21 @@ public class TeamMember implements ColabEntity, WithWebsocketChannels {
     }
 
     /**
-     * Get the value of displayName
+     * Get the display name
      *
-     * @return the value of displayName
+     * @return the display name
      */
     public String getDisplayName() {
         return displayName;
     }
 
     /**
-     * Set the value of displayName
+     * Set the display name
      *
-     * @param displayName new value of displayName
+     * @param displayName new display name
      */
     public void setDisplayName(String displayName) {
         this.displayName = displayName;
-    }
-
-    /**
-     * Get the hierarchical position of the member
-     *
-     * @return member's position
-     */
-    public HierarchicalPosition getPosition() {
-        return position;
-    }
-
-    /**
-     * Set hierarchical position of member
-     *
-     * @param position new position
-     */
-    public void setPosition(HierarchicalPosition position) {
-        this.position = position;
     }
 
     /**
@@ -275,21 +207,21 @@ public class TeamMember implements ColabEntity, WithWebsocketChannels {
     }
 
     /**
-     * @return the project
+     * @return the project model
      */
     public Project getProject() {
         return project;
     }
 
     /**
-     * @param project the project
+     * @param project the project model
      */
     public void setProject(Project project) {
         this.project = project;
     }
 
     /**
-     * get the project id. To be sent to client
+     * get the project model id. To be sent to client
      *
      * @return id of the project or null
      */
@@ -302,71 +234,12 @@ public class TeamMember implements ColabEntity, WithWebsocketChannels {
     }
 
     /**
-     * set the project id. For serialization only
+     * set the project model id. For serialization only
      *
      * @param id the id of the project
      */
     public void setProjectId(Long id) {
         this.projectId = id;
-    }
-
-    /**
-     * Get roles
-     *
-     * @return roles
-     */
-    public List<TeamRole> getRoles() {
-        return roles;
-    }
-
-    /**
-     * Set the list of roles
-     *
-     * @param roles list of roles
-     */
-    public void setRoles(List<TeamRole> roles) {
-        this.roles = roles;
-    }
-
-    /**
-     * Get ids of the roles.
-     *
-     * @return list of ids
-     */
-    public List<Long> getRoleIds() {
-        if (!CollectionUtils.isEmpty(this.roles)) {
-            return roles.stream()
-                .map(role -> role.getId())
-                .collect(Collectors.toList());
-        }
-        return roleIds;
-    }
-
-    /**
-     * The the list of roleId
-     *
-     * @param roleIds id of roles
-     */
-    public void setRoleIds(List<Long> roleIds) {
-        this.roleIds = roleIds;
-    }
-
-    /**
-     * Get the list of access control
-     *
-     * @return access control list
-     */
-    public List<AccessControl> getAccessControlList() {
-        return accessControlList;
-    }
-
-    /**
-     * Set the list of access control
-     *
-     * @param accessControlList new list of access control
-     */
-    public void setAccessControlList(List<AccessControl> accessControlList) {
-        this.accessControlList = accessControlList;
     }
 
     // ---------------------------------------------------------------------------------------------
@@ -375,20 +248,11 @@ public class TeamMember implements ColabEntity, WithWebsocketChannels {
 
     @Override
     public void merge(ColabEntity other) throws ColabMergeException {
-        if (other instanceof TeamMember) {
-            TeamMember t = (TeamMember) other;
+        if (other instanceof InstanceMaker) {
+            InstanceMaker t = (InstanceMaker) other;
             this.setDisplayName(t.getDisplayName());
-        } else {
-            throw new ColabMergeException(this, other);
-        }
-    }
-
-    @Override
-    public void duplicate(ColabEntity other) throws ColabMergeException {
-        if (other instanceof TeamMember) {
-            TeamMember t = (TeamMember) other;
-            this.setDisplayName(t.getDisplayName());
-            this.setPosition(t.getPosition());
+            // project cannot be changed as easily
+            // user cannot be changed as easily
         } else {
             throw new ColabMergeException(this, other);
         }
@@ -408,33 +272,29 @@ public class TeamMember implements ColabEntity, WithWebsocketChannels {
     @JsonbTransient
     public Conditions.Condition getReadCondition() {
         if (this.user != null && this.project != null) {
-            return new Conditions.IsCurrentUserMemberOfProject(project);
-        } else {
-            // anyone can read a pending invitation
-            return Conditions.alwaysTrue;
+            return new Conditions.Or(new Conditions.IsCurrentUserThisUser(user),
+                new Conditions.IsCurrentUserInternalToProject(project));
         }
+        // anyone can read a pending model sharing
+        return Conditions.alwaysTrue;
     }
 
     @Override
     @JsonbTransient
     public Conditions.Condition getUpdateCondition() {
         if (this.user != null && this.project != null) {
-            if (this.position == HierarchicalPosition.OWNER) {
-                return new Conditions.IsCurrentUserOwnerOfProject(project);
-            } else {
-                return new Conditions.IsCurrentUserLeaderOfProject(project);
-            }
-        } else {
-            // anyone can read a pending invitation
-            return Conditions.alwaysTrue;
+            return new Conditions.Or(new Conditions.IsCurrentUserThisUser(user),
+                new Conditions.IsCurrentUserInternalToProject(project));
         }
+        // anyone can read a pending model sharing
+        return Conditions.alwaysTrue;
     }
 
     @Override
     @JsonbTransient
     public Conditions.Condition getCreateCondition() {
         if (this.project != null) {
-            // any "internal" may invite somebody
+            // any "internal" may share the model
             return new Conditions.IsCurrentUserInternalToProject(project);
         } else {
             return Conditions.alwaysFalse;
@@ -455,9 +315,9 @@ public class TeamMember implements ColabEntity, WithWebsocketChannels {
     @Override
     public String toString() {
         if (user == null) {
-            return "TeamMember{pending}";
+            return "InstanceMaker{pending}";
         } else {
-            return "TeamMember{" + "id=" + id + ", userId=" + userId + ", projectId="
+            return "InstanceMaker{" + "id=" + id + ", userId=" + userId + ", projectId="
                 + projectId + "}";
         }
     }

@@ -1,6 +1,6 @@
 /*
  * The coLAB project
- * Copyright (C) 2021 AlbaSim, MEI, HEIG-VD, HES-SO
+ * Copyright (C) 2021-2022 AlbaSim, MEI, HEIG-VD, HES-SO
  *
  * Licensed under the MIT License
  */
@@ -705,8 +705,10 @@ export const fr: ColabTranslations = {
         return 'Adresse e-mail invalide';
       case 'IDENTIFIER_ALREADY_TAKEN':
         return 'Veuillez choisir un autre identifiant';
-      case 'INVITATION_CONSUMING_BY_TEAMMEMBER':
+      case 'USER_IS_ALREADY_A_TEAM_MEMBER':
         return "L'utilisateur actuel est déjà un membre de l'équipe";
+      case 'CURRENT_USER_CAN_ALREADY_USE_MODEL':
+        return "L'utilisateur actuel peut déjà utiliser le modèle";
     }
   },
 

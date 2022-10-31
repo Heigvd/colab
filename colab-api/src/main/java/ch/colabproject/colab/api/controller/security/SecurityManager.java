@@ -233,6 +233,18 @@ public class SecurityManager {
     }
 
     /**
+     * Do the two users have common project ?
+     *
+     * @param a one user
+     * @param b another user
+     *
+     * @return true if both users are related to the same project
+     */
+    public boolean doUsersHaveCommonProject(User a, User b) {
+        return projectManager.doUsersHaveCommonProject(a, b);
+    }
+
+    /**
      * Has the current user read/write access to the given card
      *
      * @param card the card
@@ -265,7 +277,7 @@ public class SecurityManager {
         TeamMember member = teamManager.findMemberByUserAndProject(card.getProject(), currentUser);
         return member != null && (member.getPosition() == HierarchicalPosition.OWNER
             || teamManager.getEffectiveInvolvementLevel(card, member)
-            != InvolvementLevel.OUT_OF_THE_LOOP);
+                != InvolvementLevel.OUT_OF_THE_LOOP);
     }
 
     /**
@@ -383,8 +395,15 @@ public class SecurityManager {
             return false;
         }
 
-        List<Long> directProjects = projectManager.findIdsOfProjectsOfCurrentUser();
-        if (directProjects.contains(projectId)) {
+        List<Long> projectsWhereMemberOf = projectManager
+            .findIdsOfProjectsCurrentUserIsMemberOf();
+        if (projectsWhereMemberOf.contains(projectId)) {
+            return true;
+        }
+
+        List<Long> projectsWhereInstanceMakerFor = projectManager
+            .findIdsOfProjectsCurrentUserIsInstanceMakerFor();
+        if (projectsWhereInstanceMakerFor.contains(projectId)) {
             return true;
         }
 

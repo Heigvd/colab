@@ -1,6 +1,6 @@
 /*
  * The coLAB project
- * Copyright (C) 2021 AlbaSim, MEI, HEIG-VD, HES-SO
+ * Copyright (C) 2021-2022 AlbaSim, MEI, HEIG-VD, HES-SO
  *
  * Licensed under the MIT License
  */
@@ -35,6 +35,8 @@ import javax.persistence.SequenceGenerator;
 import javax.validation.constraints.NotNull;
 
 /**
+ * A token grants access to a specific action.
+ *
  * @author maxence
  */
 @Entity
@@ -207,7 +209,7 @@ public abstract class Token implements ColabEntity {
     }
 
     /**
-     * Set the value of expirationDate. Null never expires.
+     * Set the value of expirationDate. Null have no time-related expiration.
      *
      * @param expirationDate new value of expirationDate
      */
@@ -236,6 +238,14 @@ public abstract class Token implements ColabEntity {
      * @throws HttpException if consumption fails
      */
     public abstract boolean consume(TokenManager tokenManager);
+
+    /**
+     * Does it have to be destroyed after one consumption, or can it live indefinitely.
+     *
+     * @return the expiration policy
+     */
+    @JsonbTransient
+    public abstract ExpirationPolicy getExpirationPolicy();
 
     /**
      * Generate email body

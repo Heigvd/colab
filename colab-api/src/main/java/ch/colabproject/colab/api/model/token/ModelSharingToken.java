@@ -1,15 +1,15 @@
 /*
  * The coLAB project
- * Copyright (C) 2021-2022 AlbaSim, MEI, HEIG-VD, HES-SO
+ * Copyright (C) 2022 AlbaSim, MEI, HEIG-VD, HES-SO
  *
  * Licensed under the MIT License
  */
 package ch.colabproject.colab.api.model.token;
 
 import ch.colabproject.colab.api.controller.token.TokenManager;
+import ch.colabproject.colab.api.model.project.InstanceMaker;
 import ch.colabproject.colab.api.model.project.Project;
-import ch.colabproject.colab.api.model.team.TeamMember;
-import ch.colabproject.colab.api.model.token.tools.InvitationMessageBuilder;
+import ch.colabproject.colab.api.model.token.tools.ModelSharingMessageBuilder;
 import ch.colabproject.colab.api.security.permissions.Conditions;
 import javax.json.bind.annotation.JsonbTransient;
 import javax.persistence.Entity;
@@ -21,54 +21,53 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 /**
- * A token to invite to be a team member of a project
+ * A token to share a model to a user
  *
- * @author maxence
+ * @author sandra
  */
 @Entity
 @Table(
     indexes = {
-        @Index(columnList = "teammember_id"),
+        @Index(columnList = "instancemaker_id"),
     }
 )
 @NamedQuery(
-    name = "InvitationToken.findByProjectAndRecipient",
-    query = "SELECT t from InvitationToken t "
-        + "WHERE t.teamMember.project.id = :projectId AND t.recipient = :recipient")
-@NamedQuery(
-    name = "InvitationToken.findByTeamMember",
-    query = "SELECT t from InvitationToken t "
-        + "WHERE t.teamMember.id = :teamMemberId")
-public class InvitationToken extends Token {
+    name = "ModelSharingToken.findByProjectAndRecipient",
+    query = "SELECT t from ModelSharingToken t "
+        + "WHERE t.instanceMaker.project.id = :projectId AND t.recipient = :recipient")
+//@NamedQuery(
+//    name = "ModelSharingToken.findByInstanceMaker",
+//    query = "SELECT t from ModelSharingToken t WHERE t.instanceMaker.id = :instanceMakerId")
+public class ModelSharingToken extends Token {
 
     private static final long serialVersionUID = 1L;
 
     /**
      * Email subject
      */
-    private static final String EMAIL_SUBJECT = "Invitation to collaborate on a co.LAB project";
+    private static final String EMAIL_SUBJECT = "Co.LAB model sharing";
 
     // ---------------------------------------------------------------------------------------------
     // fields
     // ---------------------------------------------------------------------------------------------
 
     /**
-     * The member of the project
+     * The pending instance maker
      */
-    @OneToOne // FetchType.EAGER is fine
+    @OneToOne
     @NotNull
     @JsonbTransient
-    private TeamMember teamMember;
+    private InstanceMaker instanceMaker;
 
     /**
-     * Invitation sender
+     * The sender name
      */
     @Size(max = 255)
     @JsonbTransient
     private String sender;
 
     /**
-     * email address to send the invitation to
+     * The email address to send the sharing to
      */
     @Size(max = 255)
     @JsonbTransient
@@ -79,54 +78,42 @@ public class InvitationToken extends Token {
     // ---------------------------------------------------------------------------------------------
 
     /**
-     * Get the teamMemebr for which the invitation is pending.
-     *
-     * @return team member
+     * @return the pending instance maker
      */
-    public TeamMember getTeamMember() {
-        return teamMember;
+    public InstanceMaker getInstanceMaker() {
+        return instanceMaker;
     }
 
     /**
-     * set the team member this invitation is for
-     *
-     * @param teamMember the team member for which this invitation is pending
+     * @param instanceMaker the pending instance maker
      */
-    public void setTeamMember(TeamMember teamMember) {
-        this.teamMember = teamMember;
+    public void setInstanceMaker(InstanceMaker instanceMaker) {
+        this.instanceMaker = instanceMaker;
     }
 
     /**
-     * Get sender name
-     *
-     * @return name of sender
+     * @return the sender name
      */
     public String getSender() {
         return sender;
     }
 
     /**
-     * Set the sender name
-     *
-     * @param sender name of the sender
+     * @param sender the sender name
      */
     public void setSender(String sender) {
         this.sender = sender;
     }
 
     /**
-     * Email address to send the invitation to
-     *
-     * @return email address
+     * @return the email address to send the sharing to
      */
     public String getRecipient() {
         return recipient;
     }
 
     /**
-     * Set the email address to send this invitation to
-     *
-     * @param recipient recipient email address
+     * @param recipient the email address to send the sharing to
      */
     public void setRecipient(String recipient) {
         this.recipient = recipient;
@@ -138,20 +125,23 @@ public class InvitationToken extends Token {
 
     @Override
     public String getRedirectTo() {
-        if (this.teamMember != null && this.teamMember.getUser() != null) {
+        if (this.instanceMaker != null && this.instanceMaker.getUser() != null) {
             // if link from user to project is not set, do not even try to read the project
-            // as it will lead to an access denied exception
+            // on the one hand it won't be useful
+            // and on the other hand it could lead to an access denied exception
+
             Project project = getProject();
             if (project != null && project.getId() != null) {
-                return "/editor/" + project.getId();
+                return "/newModelShared/" + project.getId();
             }
         }
+
         return "";
     }
 
     @Override
     public boolean consume(TokenManager tokenManager) {
-        return tokenManager.consumeInvitationToken(teamMember);
+        return tokenManager.consumeModelSharingToken(instanceMaker);
     }
 
     @Override
@@ -171,7 +161,7 @@ public class InvitationToken extends Token {
 
     @Override
     public String getEmailBody(String link) {
-        return InvitationMessageBuilder.build(this, link);
+        return ModelSharingMessageBuilder.build(this, link);
     }
 
     // ---------------------------------------------------------------------------------------------
@@ -179,14 +169,14 @@ public class InvitationToken extends Token {
     // ---------------------------------------------------------------------------------------------
 
     /**
-     * If team member is set, return the associated project.
+     * If instance maker is set, return the associated project
      *
-     * @return the project
+     * @return the model project
      */
     @JsonbTransient
     public Project getProject() {
-        if (teamMember != null) {
-            return teamMember.getProject();
+        if (instanceMaker != null) {
+            return instanceMaker.getProject();
         }
         return null;
     }
@@ -199,7 +189,7 @@ public class InvitationToken extends Token {
 
     @Override
     public String toString() {
-        return "InvitationToken{" + "id=" + getId() + '}';
+        return "ModelSharingToken{" + "id=" + getId() + ", sender=" + sender + '}';
     }
 
 }
