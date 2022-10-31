@@ -508,11 +508,11 @@ public class ResourceManager {
 
         Resourceable owner = null;
         if ("Card".equals(parentType)) {
-            owner = cardDao.findCard(parentId);
+            owner = cardManager.assertAndGetCard(parentId);
         } else if ("CardContent".equals(parentType)) {
-            owner = cardContentDao.findCardContent(parentId);
+            owner = cardContentManager.assertAndGetCardContent(parentId);
         } else if ("CardType".equals(parentType)) {
-            owner = cardTypeDao.findAbstractCardType(parentId);
+            owner = cardTypeManager.assertAndGetCardTypeOrRef(parentId);
         }
         newResourceJavaObject.setOwner(owner);
         owner.getDirectAbstractResources().add(newResourceJavaObject);
