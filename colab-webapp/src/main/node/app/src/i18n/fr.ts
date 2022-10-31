@@ -436,7 +436,7 @@ export const fr: ColabTranslations = {
         noDeliverable: 'Aucun livrable disponible',
         completionModeInfo:
           "Sélectionnez le mode d'avancement (manuel | auto | no-op). Manuel: entrez une valeur pour changer l'avancement; Auto: basé sur les enfants; Aucune: n'affiche pas de barre d'avancement",
-        noBlockYet: "Il n'y a aucun bloc pour l'instant. Ajoutez-en un:",
+        noBlockYet: "Document vide",
       },
       error: {
         withoutId: 'Une carte sans id est invalide...',

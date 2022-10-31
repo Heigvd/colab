@@ -16,9 +16,8 @@ import { useAppDispatch } from '../../store/hooks';
 import InlineLoading from '../common/element/InlineLoading';
 import GridOrganizer, { fixGrid } from '../common/GridOrganizer';
 import Ellipsis from '../common/layout/Ellipsis';
-//import Flex from '../common/layout/Flex';
-//import { depthMax } from '../projects/edition/Editor';
-import { voidStyle } from '../styling/style';
+import Flex from '../common/layout/Flex';
+import { invertedButtonStyle, space_L } from '../styling/style';
 import CardCreator from './CardCreator';
 import { TinyCard } from './CardThumb';
 import CardThumbWithSelector from './CardThumbWithSelector';
@@ -127,22 +126,17 @@ export default function ContentSubs({
   } else {
     if (subCards.length === 0 && showEmptiness) {
       return (
-        <div
-          className={cx(
-            voidStyle,
-            css({
-              height: '200px',
-              width: '100%',
-            }),
-          )}
+        <Flex justify='center' align='center' direction='column' className={css({
+          padding: space_L
+        })}
         >
-          <p>{i18n.modules.card.infos.noCardYetPleaseCreate}</p>
+          <h3>{i18n.modules.card.infos.noCardYetPleaseCreate}</h3>
           <CardCreator
             parentCardContent={cardContent}
             display="2"
-            className={css({ display: 'block' })}
+            className={invertedButtonStyle}
           />
-        </div>
+        </Flex>
       );
     } else {
       return depth > 0 ? (

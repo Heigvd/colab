@@ -35,6 +35,7 @@ export interface CardCreatorProps {
 export default function CardCreator({
   parentCardContent,
   display,
+  className,
 }: // customButton,
 // className,
 CardCreatorProps): JSX.Element {
@@ -74,7 +75,7 @@ CardCreatorProps): JSX.Element {
   return display === '1' ? (
     <Button
       icon={faPlus}
-      className={invertedButtonStyle}
+      className={cx(invertedButtonStyle, className)}
       clickable
       onClick={e => {
         e.stopPropagation();
@@ -87,6 +88,7 @@ CardCreatorProps): JSX.Element {
   ) : display === '2' ? (
     <Button
       icon={faPlus}
+      className={cx(invertedButtonStyle, className)}
       clickable
       onClick={e => {
         e.stopPropagation();

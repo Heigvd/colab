@@ -5,18 +5,17 @@
  * Licensed under the MIT License
  */
 
-import { css, cx } from '@emotion/css';
+import { css } from '@emotion/css';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import * as React from 'react';
 import * as API from '../../API/api';
 import useTranslations from '../../i18n/I18nContext';
 import { useAppDispatch, useLoadingState } from '../../store/hooks';
 import Button from '../common/element/Button';
 import Form, { Field } from '../common/element/Form';
-import Flex from '../common/layout/Flex';
+import IconButton from '../common/element/IconButton';
 import OpenCloseModal from '../common/layout/OpenCloseModal';
-import { space_M, space_S } from '../styling/style';
+import { lightIconButtonStyle, space_M, } from '../styling/style';
 import { ResourceCallContext } from './resourcesCommonType';
 
 interface ResourceCreationType {
@@ -41,7 +40,6 @@ interface ResourceCreatorProps {
 export default function ResourceCreator({
   contextInfo,
   onCreated,
-  collapsedClassName,
   customButton,
 }: ResourceCreatorProps): JSX.Element {
   const dispatch = useAppDispatch();
@@ -130,22 +128,14 @@ export default function ResourceCreator({
         customButton ? (
           customButton
         ) : (
-          <Flex
-            justify="center"
-            className={cx(
-              css({
-                borderTop: '1px solid var(--lightGray)',
-                padding: space_S,
-                '&:hover': { backgroundColor: 'var(--lightGray)', cursor: 'pointer' },
-              }),
-              collapsedClassName,
-            )}
-          >
-            <FontAwesomeIcon icon={faPlus} title={i18n.modules.document.createDocument} />
-          </Flex>
+          <IconButton
+            icon={faPlus}
+            title={i18n.modules.document.createDocument}
+            className={lightIconButtonStyle}
+          />
         )
       }
-      className={css({ display: 'block', width: '100%', textAlign: 'center' })}
+      className={css({ display: 'block', textAlign: 'center', alignSelf: 'center' })}
     >
       {close => (
         <Form

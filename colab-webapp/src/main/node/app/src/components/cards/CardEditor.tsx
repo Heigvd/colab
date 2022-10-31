@@ -8,6 +8,7 @@
 import { css, cx } from '@emotion/css';
 import { faWindowRestore } from '@fortawesome/free-regular-svg-icons';
 import {
+  faArrowLeft,
   faCog,
   faCompressArrowsAlt,
   faEllipsisV,
@@ -181,6 +182,8 @@ export default function CardEditor({
   const [markDownMode, setMarkDownMode] = React.useState(false);
   const [editToolbar, setEditToolbar] = React.useState(defaultDocEditorContext.editToolbar);
   const [openKey, setOpenKey] = React.useState<string | undefined>(undefined);
+  const [docOpen, setDocOpen] = React.useState<boolean>(false);
+  const [backToList, setBackToList] = React.useState<() => void>(() => {});
   const TXToptions = {
     showTree: showTree,
     setShowTree: setShowTree,
@@ -208,35 +211,45 @@ export default function CardEditor({
       title: i18n.modules.resource.documentation,
       header: (
         <>
+          {docOpen && <IconButton
+            icon={faArrowLeft}
+            title={i18n.modules.resource.backList}
+            onClick={backToList}
+            className={lightIconButtonStyle}
+          />}
           <h3>{i18n.modules.resource.documentation}</h3>
           <Tips>{i18n.modules.resource.help.documentationExplanation}</Tips>
-          <ResourceCreator
-            contextInfo={resourceContext}
-            onCreated={() => {}}
-            collapsedClassName={lightIconButtonStyle}
-          />
-          {/* <TocDisplayToggler /> */}
-          {ghostResources != null && ghostResources.length > 0 && (
-            // note : we can imagine that a read access level allows to see the ghost resources
+          {!docOpen && (
             <>
-              <span
-                className={css({
-                  width: '1px',
-                  height: '100%',
-                  backgroundColor: 'var(--lightGray)',
-                })}
+              <ResourceCreator
+                contextInfo={resourceContext}
+                onCreated={() => {}}
+                collapsedClassName={lightIconButtonStyle}
               />
-              <HidenResourcesKeeper
-                resources={ghostResources}
-                collapsedClassName={cx(
-                  css({
-                    borderTop: '1px solid var(--lightGray)',
-                    padding: space_S,
-                    '&:hover': { backgroundColor: 'var(--lightGray)', cursor: 'pointer' },
-                  }),
-                  lightIconButtonStyle,
-                )}
-              />
+              {/* <TocDisplayToggler /> */}
+              {ghostResources != null && ghostResources.length > 0 && (
+                // note : we can imagine that a read access level allows to see the ghost resources
+                <>
+                  <span
+                    className={css({
+                      width: '1px',
+                      height: '100%',
+                      backgroundColor: 'var(--lightGray)',
+                    })}
+                  />
+                  <HidenResourcesKeeper
+                    resources={ghostResources}
+                    collapsedClassName={cx(
+                      css({
+                        borderTop: '1px solid var(--lightGray)',
+                        padding: space_S,
+                        '&:hover': { backgroundColor: 'var(--lightGray)', cursor: 'pointer' },
+                      }),
+                      lightIconButtonStyle,
+                    )}
+                  />
+                </>
+              )}
             </>
           )}
         </>
@@ -507,6 +520,10 @@ export default function CardEditor({
                 items: sideBarItems,
                 openKey,
                 setOpenKey,
+                insideState: docOpen,
+                setInsideState: setDocOpen,
+                extraNavFunction: backToList,
+                setExtraNavFunction: setBackToList
               }}
             >
               <Flex grow={1} align="stretch" className={css({ overflow: 'hidden' })}>

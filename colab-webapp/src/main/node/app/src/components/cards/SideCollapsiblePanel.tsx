@@ -29,6 +29,10 @@ interface SideCollapsibleContext<T extends { [key: string]: Item }> {
   items: T;
   openKey?: string | undefined;
   setOpenKey?: React.Dispatch<React.SetStateAction<string | undefined>>;
+  insideState?: boolean;
+  setInsideState?:  React.Dispatch<React.SetStateAction<boolean>>;
+  extraNavFunction?: () => void;
+  setExtraNavFunction?: React.Dispatch<React.SetStateAction<() => void>> 
 }
 
 export const defaultSideCollapsibleContext: SideCollapsibleContext<{ [key: string]: Item }> = {

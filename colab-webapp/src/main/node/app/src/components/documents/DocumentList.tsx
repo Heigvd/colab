@@ -13,7 +13,6 @@ import AvailabilityStatusIndicator from '../common/element/AvailabilityStatusInd
 import { lightText, space_M, space_S, textSmall } from '../styling/style';
 import { DocumentOwnership } from './documentCommonType';
 import DocumentEditor from './DocumentEditor';
-import { BlockCreatorButtons } from './DocumentEditorToolbox';
 
 export interface DocumentListProps {
   docOwnership: DocumentOwnership;
@@ -36,15 +35,14 @@ export default function DocumentList({ docOwnership, readOnly }: DocumentListPro
             textSmall,
             lightText,
             css({
-              backgroundColor: 'var(--primaryColorContrastShade)',
-              border: '1px solid var(--lightGray)',
+              fontStyle: 'italic',
               marginTop: space_M,
               padding: space_S,
             }),
           )}
         >
           {i18n.modules.card.infos.noBlockYet}
-          <BlockCreatorButtons docOwnership={docOwnership} selectedBlockId={null} />
+          {/* <BlockCreatorButtons docOwnership={docOwnership} selectedBlockId={null} /> */}
         </div>
       )}
       {documents

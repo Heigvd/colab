@@ -7,7 +7,6 @@
 
 import { css, cx } from '@emotion/css';
 import {
-  faArrowLeft,
   faBoxArchive,
   faCog,
   faEllipsisV,
@@ -23,7 +22,6 @@ import useTranslations from '../../i18n/I18nContext';
 import { useAndLoadTextOfDocument } from '../../selectors/documentSelector';
 import { useProjectBeingEdited } from '../../selectors/projectSelector';
 import { useAppDispatch } from '../../store/hooks';
-import IconButton from '../common/element/IconButton';
 import { DiscreetInput, DiscreetTextArea } from '../common/element/Input';
 import { FeaturePreview } from '../common/element/Tips';
 import DropDownMenu from '../common/layout/DropDownMenu';
@@ -125,12 +123,12 @@ export function ResourceDisplay({
           grow={1}
           className={css({ marginBottom: space_S })}
         >
-          <IconButton
+          {/* <IconButton
             icon={faArrowLeft}
             title={i18n.modules.resource.backList}
             onClick={goBackToList}
             className={lightIconButtonStyle}
-          />
+          /> */}
           <Flex wrap="nowrap" align="center">
             {(!resource.isDirectResource || resource.targetResource.abstractCardTypeId != null) && (
               <div

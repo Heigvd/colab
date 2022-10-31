@@ -26,6 +26,7 @@ import useTranslations from '../../../i18n/I18nContext';
 import {
   Ancestor,
   useAncestors,
+  useAndLoadSubCards,
   useCard,
   useCardContent,
   useProjectRootCard,
@@ -495,7 +496,6 @@ function EditorNav({ project }: EditorNavProps): JSX.Element {
 function RootView({ rootContent }: { rootContent: CardContent | null | undefined }) {
   const { touch } = React.useContext(PresenceContext);
   const [organize, setOrganize] = React.useState(false);
-  const i18n = useTranslations();
 
   React.useEffect(() => {
     touch({});
@@ -507,32 +507,8 @@ function RootView({ rootContent }: { rootContent: CardContent | null | undefined
     >
       {rootContent != null ? (
         <>
-          <Flex
-            className={cx(
-              fixedButtonStyle,
-              css({
-                backgroundColor: 'var(--bgColor)',
-                zIndex: 10,
-                fontSize: '0.8em',
-                padding: space_S,
-              }),
-            )}
-            gap={space_M}
-          >
-            <FeaturePreview className={fixedButtonStyle}>
-              <Toggler
-                className={css({ alignSelf: 'flex-end' })}
-                label={i18n.modules.card.positioning.toggleText}
-                value={organize}
-                onChange={setOrganize}
-              />
-            </FeaturePreview>
-            <CardCreator
-              parentCardContent={rootContent}
-              display="1"
-              className={invertedButtonStyle}
-            />
-          </Flex>
+          <CardCreatorAndOrganize rootContent={rootContent} organize={{organize: organize, setOrganize: setOrganize}} />
+
           <ContentSubs
             minCardWidth={150}
             showEmptiness={true}
@@ -731,4 +707,40 @@ export default function Editor(): JSX.Element {
       </PresenceContext.Provider>
     );
   }
+}
+interface CardCreatorAndOrganizeProps {
+  rootContent: CardContent;
+  organize: {
+    organize: boolean;
+    setOrganize: React.Dispatch<React.SetStateAction<boolean>>;
+  }
+}
+function CardCreatorAndOrganize({ rootContent, organize }: CardCreatorAndOrganizeProps) {
+  const i18n = useTranslations();
+  const subCards = useAndLoadSubCards(rootContent.id);
+  return (<>
+    {subCards && subCards.length > 0 && <Flex
+      className={cx(
+        fixedButtonStyle,
+        css({
+          backgroundColor: 'var(--hoverBgColor)',
+          zIndex: 10,
+          fontSize: '0.8em',
+          padding: space_S,
+        }),
+      )}
+      gap={space_M}
+    >
+      <FeaturePreview className={fixedButtonStyle}>
+        <Toggler
+          className={css({ alignSelf: 'flex-end' })}
+          label={i18n.modules.card.positioning.toggleText}
+          value={organize.organize}
+          onChange={organize.setOrganize}
+        />
+      </FeaturePreview>
+      <CardCreator parentCardContent={rootContent} display="1" className={invertedButtonStyle}  />
+    </Flex>}
+    </>
+  );
 }

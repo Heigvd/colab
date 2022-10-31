@@ -5,19 +5,20 @@
  * Licensed under the MIT License
  */
 
-import { css, cx } from '@emotion/css';
+import { css } from '@emotion/css';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import * as React from 'react';
 import * as API from '../../API/api';
 import useTranslations from '../../i18n/I18nContext';
 import { useAndLoadResources } from '../../selectors/resourceSelector';
 import { useAppDispatch } from '../../store/hooks';
+import { SideCollapsibleCTX } from '../cards/SideCollapsiblePanel';
 import AvailabilityStatusIndicator from '../common/element/AvailabilityStatusIndicator';
 import Button from '../common/element/Button';
 import { WIPContainer } from '../common/element/Tips';
 import DropDownMenu from '../common/layout/DropDownMenu';
 import Flex from '../common/layout/Flex';
-import { lightIconButtonStyle, voidStyle } from '../styling/style';
+import { invertedButtonStyle, lightIconButtonStyle, space_L } from '../styling/style';
 //import HidenResourcesKeeper from './HidenResourcesKeeper';
 import ResourceCreator from './ResourceCreator';
 import { ResourceDisplay } from './ResourceDisplay';
@@ -91,6 +92,7 @@ export default function ResourcesMainView({
   const { activeResources, status } = useAndLoadResources(contextData);
 
   const [selectedResource, selectResource] = React.useState<ResourceAndRef | null>(null);
+  const { setInsideState, setExtraNavFunction } = React.useContext(SideCollapsibleCTX);
 
   const [lastCreated, setLastCreated] = React.useState<number | null>(null);
 
@@ -98,6 +100,15 @@ export default function ResourcesMainView({
   const [currentContext, setCurrentContext] = React.useState<ResourceCallContext>(contextData);
 
   const showList = React.useCallback(() => selectResource(null), []);
+
+  React.useEffect(() => {
+    if(setExtraNavFunction) setExtraNavFunction(() => showList);
+    if (selectedResource && setInsideState) {
+      setInsideState(true);
+    } else if (setInsideState) {
+      setInsideState(false);
+    }
+  }, [selectedResource, setExtraNavFunction, setInsideState, showList]);
 
   React.useEffect(() => {
     // show the list if the context changed
@@ -173,8 +184,13 @@ export default function ResourcesMainView({
   return (
     <Flex direction="column" align="stretch" grow={1} className={css({ overflow: 'auto' })}>
       {showVoidIndicator && activeResources.length === 0 && (
-        <div className={cx(voidStyle, css({}))}>
-          <p>{i18n.modules.resource.noDocumentationYet}</p>
+        <Flex
+          justify="center"
+          direction="column"
+          align="center"
+          className={css({ padding: space_L })}
+        >
+          <h3>{i18n.modules.resource.noDocumentationYet}</h3>
           {!isReadOnly(accessLevel) && (
             <ResourceCreator
               contextInfo={contextData}
@@ -186,13 +202,13 @@ export default function ResourcesMainView({
               }}
               collapsedClassName={lightIconButtonStyle}
               customButton={
-                <Button icon={faPlus} clickable>
+                <Button icon={faPlus} clickable className={invertedButtonStyle}>
                   {i18n.modules.document.createDocument}
                 </Button>
               }
             />
           )}
-        </div>
+        </Flex>
       )}
 
       <ResourcesList
