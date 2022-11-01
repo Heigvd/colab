@@ -109,6 +109,7 @@ export interface FormProps<T> {
   value: T;
   onSubmit: (data: T) => void;
   submitLabel: string;
+  resetDataAfterSubmit?: boolean;
   children?: React.ReactNode;
   isSubmitInProcess?: boolean;
   globalErrorMessage?: React.ReactNode;
@@ -122,6 +123,7 @@ export default function Form<T>({
   value,
   onSubmit,
   submitLabel,
+  resetDataAfterSubmit,
   children,
   isSubmitInProcess,
   globalErrorMessage,
@@ -146,10 +148,14 @@ export default function Form<T>({
   const submit = React.useCallback(() => {
     if (!isFormErroneous) {
       onSubmit(state);
+
+      if (resetDataAfterSubmit) {
+        setState(value);
+      }
     } else {
       setShowErrors(true);
     }
-  }, [isFormErroneous, onSubmit, state]);
+  }, [isFormErroneous, onSubmit, state, resetDataAfterSubmit, value]);
 
   const onEnter = React.useCallback(
     (event: React.KeyboardEvent<HTMLElement>) => {
