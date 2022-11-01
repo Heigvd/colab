@@ -153,6 +153,8 @@ public class ProjectManager {
 
         List<Project> projects = projectDao.findProjectsUserIsMemberOf(user.getId());
 
+        projects.addAll(projectDao.findProjectsUserIsInstanceMakerFor(user.getId()));
+
         logger.debug("found projects where the user {} is a team member : {}", user, projects);
 
         return projects;
@@ -531,7 +533,7 @@ public class ProjectManager {
     public List<Long> findIdsOfProjectsCurrentUserIsInstanceMakerFor() {
         User user = securityManager.assertAndGetCurrentUser();
 
-        List<Long> projectsIds = projectDao.findIdsOfModelUserIsInstanceMaker(user.getId());
+        List<Long> projectsIds = projectDao.findIdsOfProjectUserIsInstanceMaker(user.getId());
 
         logger.debug("found projects' id for which the user {} is an instance maker : {}", user,
             projectsIds);

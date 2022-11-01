@@ -61,6 +61,8 @@ import javax.validation.constraints.Size;
     query = "SELECT p FROM Project p JOIN p.teamMembers members WHERE members.user.id = :userId")
 @NamedQuery(name = "Project.findIdsByTeamMemberUser",
     query = "SELECT p.id FROM Project p JOIN p.teamMembers m WHERE m.user.id = :userId")
+@NamedQuery(name = "Project.findByInstanceMakerUser",
+    query = "SELECT p FROM Project p JOIN InstanceMaker im WHERE im.project.id = p.id AND im.user.id = :userId")
 @NamedQuery(name = "Project.findIdsByInstanceMakerUser",
     query = "SELECT p.id FROM Project p JOIN InstanceMaker im WHERE im.project.id = p.id AND im.user.id = :userId")
 @NamedQuery(name = "Project.doUsersHaveACommonProject",

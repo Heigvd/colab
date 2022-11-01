@@ -70,13 +70,27 @@ public class ProjectDao {
     }
 
     /**
+     * Get all projects the user is an instance maker for
+     *
+     * @param userId the id of the user
+     *
+     * @return list of project
+     */
+    public List<Project> findProjectsUserIsInstanceMakerFor(Long userId) {
+        TypedQuery<Project> query = em.createNamedQuery("Project.findByInstanceMakerUser",
+            Project.class);
+        query.setParameter("userId", userId);
+        return query.getResultList();
+    }
+
+    /**
      * Get the ids of the models the user is an instance maker for
      *
      * @param userId the id of the user
      *
      * @return list of ids of models
      */
-    public List<Long> findIdsOfModelUserIsInstanceMaker(Long userId) {
+    public List<Long> findIdsOfProjectUserIsInstanceMaker(Long userId) {
         TypedQuery<Long> query = em.createNamedQuery("Project.findIdsByInstanceMakerUser",
             Long.class);
         query.setParameter("userId", userId);
