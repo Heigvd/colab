@@ -97,7 +97,7 @@ public class TeamManager {
     public TeamMember addMember(Project project, User user, HierarchicalPosition position) {
         logger.debug("Add member {} in {}", user, project);
 
-        if (project != null && user != null && findMemberByUserAndProject(project, user) != null) {
+        if (project != null && user != null && findMemberByProjectAndUser(project, user) != null) {
             throw HttpErrorMessage.dataIntegrityFailure();
         }
 
@@ -265,8 +265,8 @@ public class TeamManager {
      *
      * @return the teamMember or null
      */
-    public TeamMember findMemberByUserAndProject(Project project, User user) {
-        return teamDao.findMemberByUserAndProject(project, user);
+    public TeamMember findMemberByProjectAndUser(Project project, User user) {
+        return teamDao.findMemberByProjectAndUser(project, user);
     }
 
     /**

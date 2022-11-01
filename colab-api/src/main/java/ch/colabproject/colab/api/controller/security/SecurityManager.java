@@ -256,7 +256,7 @@ public class SecurityManager {
         if (card == null || currentUser == null) {
             return false;
         }
-        TeamMember member = teamManager.findMemberByUserAndProject(card.getProject(), currentUser);
+        TeamMember member = teamManager.findMemberByProjectAndUser(card.getProject(), currentUser);
         return member != null && (member.getPosition() == HierarchicalPosition.OWNER
             || teamManager.getEffectiveInvolvementLevel(card, member).isRw());
     }
@@ -274,7 +274,7 @@ public class SecurityManager {
         if (card == null || currentUser == null) {
             return false;
         }
-        TeamMember member = teamManager.findMemberByUserAndProject(card.getProject(), currentUser);
+        TeamMember member = teamManager.findMemberByProjectAndUser(card.getProject(), currentUser);
         return member != null && (member.getPosition() == HierarchicalPosition.OWNER
             || teamManager.getEffectiveInvolvementLevel(card, member)
                 != InvolvementLevel.OUT_OF_THE_LOOP);
@@ -292,7 +292,7 @@ public class SecurityManager {
         if (project == null || currentUser == null) {
             return false;
         }
-        TeamMember member = teamManager.findMemberByUserAndProject(project, currentUser);
+        TeamMember member = teamManager.findMemberByProjectAndUser(project, currentUser);
         return member != null;
     }
 
@@ -308,7 +308,7 @@ public class SecurityManager {
         if (project == null || currentUser == null) {
             return false;
         }
-        TeamMember member = teamManager.findMemberByUserAndProject(project, currentUser);
+        TeamMember member = teamManager.findMemberByProjectAndUser(project, currentUser);
         return member != null && member.getPosition() == HierarchicalPosition.OWNER;
     }
 
@@ -324,7 +324,7 @@ public class SecurityManager {
         if (project == null || currentUser == null) {
             return false;
         }
-        TeamMember member = teamManager.findMemberByUserAndProject(project, currentUser);
+        TeamMember member = teamManager.findMemberByProjectAndUser(project, currentUser);
         return member != null && (member.getPosition() == HierarchicalPosition.OWNER
             || member.getPosition() == HierarchicalPosition.LEADER);
     }
@@ -341,7 +341,7 @@ public class SecurityManager {
         if (project == null || currentUser == null) {
             return false;
         }
-        TeamMember member = teamManager.findMemberByUserAndProject(project, currentUser);
+        TeamMember member = teamManager.findMemberByProjectAndUser(project, currentUser);
         return member != null && member.getPosition() != HierarchicalPosition.GUEST;
     }
 

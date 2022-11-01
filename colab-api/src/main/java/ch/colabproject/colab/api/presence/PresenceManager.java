@@ -118,7 +118,7 @@ public class PresenceManager {
 
             Project project = projectDao.findProject(projectId);
             User currentUser = requestManager.getCurrentUser();
-            TeamMember member = teamManager.findMemberByUserAndProject(project, currentUser);
+            TeamMember member = teamManager.findMemberByProjectAndUser(project, currentUser);
 
             String wsSessionId = touch.getWsSessionId();
             FencedLock lock = getLock(projectId);

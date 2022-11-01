@@ -372,7 +372,7 @@ public class TokenManager {
 
         Project project = teamMember.getProject();
 
-        TeamMember existingTeamMember = teamManager.findMemberByUserAndProject(project, user);
+        TeamMember existingTeamMember = teamManager.findMemberByProjectAndUser(project, user);
         if (existingTeamMember != null) {
             throw HttpErrorMessage
                 .tokenProcessingFailure(MessageI18nKey.USER_IS_ALREADY_A_TEAM_MEMBER);
