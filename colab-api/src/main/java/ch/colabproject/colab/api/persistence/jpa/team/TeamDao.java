@@ -124,9 +124,9 @@ public class TeamDao {
      *
      * @return the teamMember or null
      */
-    public TeamMember findMemberByUserAndProject(Project project, User user) {
+    public TeamMember findMemberByProjectAndUser(Project project, User user) {
         try {
-            TypedQuery<TeamMember> query = em.createNamedQuery("TeamMember.findByUserAndProject",
+            TypedQuery<TeamMember> query = em.createNamedQuery("TeamMember.findByProjectAndUser",
                 TeamMember.class);
 
             query.setParameter("projectId", project.getId());

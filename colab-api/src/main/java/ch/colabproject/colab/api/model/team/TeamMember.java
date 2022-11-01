@@ -64,7 +64,7 @@ import org.apache.commons.collections4.CollectionUtils;
         + "JOIN TeamMember b ON a.project.id = b.project.id "
         + "WHERE a.user.id = :aUserId AND b.user.id = :bUserId")
 @NamedQuery(
-    name = "TeamMember.findByUserAndProject",
+    name = "TeamMember.findByProjectAndUser",
     query = "SELECT m FROM TeamMember m "
         + "WHERE m.project.id = :projectId "
         + "AND m.user IS NOT NULL AND m.user.id = :userId"
