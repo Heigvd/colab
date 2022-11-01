@@ -1,6 +1,6 @@
 /*
  * The coLAB project
- * Copyright (C) 2021 AlbaSim, MEI, HEIG-VD, HES-SO
+ * Copyright (C) 2021-2022 AlbaSim, MEI, HEIG-VD, HES-SO
  *
  * Licensed under the MIT License
  */
@@ -57,6 +57,7 @@ import {
   textSmall,
   warningColor,
 } from '../styling/style';
+import ProjectModelSharing from './ProjectModelSharing';
 
 const gridNewLine = css({
   gridColumnStart: 1,
@@ -505,127 +506,102 @@ export default function Team({ project }: TeamProps): JSX.Element {
   if (status === 'INITIALIZED') {
     return (
       <>
-        <Tabs defaultTab={project.type === 'PROJECT' ? 'team' : 'modelSharing'}>
-          <Tab name="modelSharing" invisible={project.type === 'PROJECT'} label="Share the model">
-            <div>
-              <p className={textSmall}>Share to</p>
-              <input
-                placeholder={i18n.authentication.field.emailAddress}
-                type="text"
-                // onChange={e => setInvite(e.target.value)}
-                // value={invite}
-                className={inputStyle}
-              />
-              <IconButtonWithLoader
-                className={linkStyle}
-                icon={faPaperPlane}
-                title={i18n.common.send}
-                isLoading={isValidNewMember}
-                onClick={() => {
-                  // if (isValidNewMember) {
-                  //   setError(false);
-                  //   dispatch(
-                  //     API.sendInvitation({
-                  //       projectId: project.id!,
-                  //       recipient: invite,
-                  //     }),
-                  //   ).then(() => setInvite(''));
-                  // } else if (!isNewMember(invite)) {
-                  //   setError(i18n.team.memberAlreadyExist);
-                  // } else {
-                  //   setError(i18n.authentication.error.emailAddressNotValid);
-                  // }
-                }}
-              />
-              {error && <div className={cx(css({ color: warningColor }), textSmall)}>{error}</div>}
-            </div>
-          </Tab>
-          <Tab name="team" label={i18n.team.team}>
-            <div
-              className={css({
-                display: 'grid',
-                gridTemplateColumns: `repeat(${roles.length + 3}, max-content)`,
-                justifyItems: 'center',
-                alignItems: 'center',
-                '& > div': {
-                  marginLeft: '5px',
-                  marginRight: '5px',
-                },
-                marginBottom: space_L,
-                paddingBottom: space_M,
-                borderBottom: '1px solid var(--lightGray)',
-                gap: space_S,
-              })}
-            >
-              <div className={cx(titleCellStyle, css({ gridColumnStart: 1, gridColumnEnd: 3 }))}>
-                {i18n.team.members}
-              </div>
-              <div className={titleCellStyle}>{i18n.team.rights}</div>
+        {project.id != null ? (
+          <Tabs defaultTab={project.type === 'PROJECT' ? 'team' : 'modelSharing'}>
+            <Tab name="modelSharing" invisible={project.type === 'PROJECT'} label="Share the model">
+              <ProjectModelSharing projectId={project.id} />
+            </Tab>
+            <Tab name="team" label={i18n.team.team}>
               <div
-                className={cx(titleCellStyle, css({ gridColumnStart: 4, gridColumnEnd: 'end' }))}
+                className={css({
+                  display: 'grid',
+                  gridTemplateColumns: `repeat(${roles.length + 3}, max-content)`,
+                  justifyItems: 'center',
+                  alignItems: 'center',
+                  '& > div': {
+                    marginLeft: '5px',
+                    marginRight: '5px',
+                  },
+                  marginBottom: space_L,
+                  paddingBottom: space_M,
+                  borderBottom: '1px solid var(--lightGray)',
+                  gap: space_S,
+                })}
               >
-                {i18n.team.roles}
-              </div>
-              <div />
-              <div />
-              <div />
-
-              {roles.map(role => (
-                <div key={'role-' + role.id}>
-                  <RoleDisplay role={role} />
+                <div className={cx(titleCellStyle, css({ gridColumnStart: 1, gridColumnEnd: 3 }))}>
+                  {i18n.team.members}
                 </div>
-              ))}
-              <div>
-                <CreateRole project={project} />
+                <div className={titleCellStyle}>{i18n.team.rights}</div>
+                <div
+                  className={cx(titleCellStyle, css({ gridColumnStart: 4, gridColumnEnd: 'end' }))}
+                >
+                  {i18n.team.roles}
+                </div>
+                <div />
+                <div />
+                <div />
+
+                {roles.map(role => (
+                  <div key={'role-' + role.id}>
+                    <RoleDisplay role={role} />
+                  </div>
+                ))}
+                <div>
+                  <CreateRole project={project} />
+                </div>
+                {members.map(member => {
+                  return (
+                    <Member
+                      key={member.id}
+                      member={member}
+                      roles={roles}
+                      isTheOnlyOwner={projectOwners.length < 2 && projectOwners.includes(member)}
+                    />
+                  );
+                })}
               </div>
-              {members.map(member => {
-                return (
-                  <Member
-                    key={member.id}
-                    member={member}
-                    roles={roles}
-                    isTheOnlyOwner={projectOwners.length < 2 && projectOwners.includes(member)}
-                  />
-                );
-              })}
-            </div>
-            <div>
-              <p className={textSmall}>{i18n.team.inviteNewMember}</p>
-              <input
-                placeholder={i18n.authentication.field.emailAddress}
-                type="text"
-                onChange={e => setInvite(e.target.value)}
-                value={invite}
-                className={inputStyle}
-              />
-              <IconButtonWithLoader
-                className={linkStyle}
-                icon={faPaperPlane}
-                title={i18n.common.send}
-                isLoading={isValidNewMember}
-                onClick={() => {
-                  if (isValidNewMember) {
-                    setError(false);
-                    dispatch(
-                      API.sendInvitation({
-                        projectId: project.id!,
-                        recipient: invite,
-                      }),
-                    ).then(() => setInvite(''));
-                  } else if (!isNewMember(invite)) {
-                    setError(i18n.team.memberAlreadyExist);
-                  } else {
-                    setError(i18n.authentication.error.emailAddressNotValid);
-                  }
-                }}
-              />
-              {error && <div className={cx(css({ color: warningColor }), textSmall)}>{error}</div>}
-            </div>
-          </Tab>
-          <Tab name="projectACL" label={i18n.modules.project.settings.involvements.label}>
-            {entityIs(root, 'Card') ? <CardInvolvement card={root} /> : <InlineLoading />}
-          </Tab>
-        </Tabs>
+              <div>
+                <p className={textSmall}>{i18n.team.inviteNewMember}</p>
+                <input
+                  placeholder={i18n.authentication.field.emailAddress}
+                  type="text"
+                  onChange={e => setInvite(e.target.value)}
+                  value={invite}
+                  className={inputStyle}
+                />
+                <IconButtonWithLoader
+                  className={linkStyle}
+                  icon={faPaperPlane}
+                  title={i18n.common.send}
+                  isLoading={isValidNewMember}
+                  onClick={() => {
+                    if (isValidNewMember) {
+                      setError(false);
+                      dispatch(
+                        API.sendInvitation({
+                          projectId: project.id!,
+                          recipient: invite,
+                        }),
+                      ).then(() => setInvite(''));
+                    } else if (!isNewMember(invite)) {
+                      setError(i18n.team.memberAlreadyExist);
+                    } else {
+                      setError(i18n.authentication.error.emailAddressNotValid);
+                    }
+                  }}
+                />
+                {error && (
+                  <div className={cx(css({ color: warningColor }), textSmall)}>{error}</div>
+                )}
+              </div>
+            </Tab>
+            <Tab name="projectACL" label={i18n.modules.project.settings.involvements.label}>
+              {entityIs(root, 'Card') ? <CardInvolvement card={root} /> : <InlineLoading />}
+            </Tab>
+          </Tabs>
+        ) : (
+          <div>No project, no team info</div>
+        )}
       </>
     );
   } else {

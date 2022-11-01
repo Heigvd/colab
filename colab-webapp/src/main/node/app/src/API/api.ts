@@ -452,6 +452,15 @@ export const duplicateProject = createAsyncThunk('project/duplicate', async (pro
   }
 });
 
+export const shareModel = createAsyncThunk(
+  'project/share',
+  async (payload: { projectId: number; recipient: string }) => {
+    if (payload.recipient) {
+      await restClient.ProjectRestEndpoint.shareModel(payload.projectId, payload.recipient);
+    }
+  },
+);
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Project team
 ////////////////////////////////////////////////////////////////////////////////////////////////////

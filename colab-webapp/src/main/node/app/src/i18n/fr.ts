@@ -337,6 +337,7 @@ export const fr: ColabTranslations = {
         extractAModelFromProject: 'Extraire un modèle à partir du projet ',
         createModel: 'Créer le modèle',
         convertToProject: 'Convertir en un simple projet',
+        shareTo: 'Partager avec',
       },
       info: {
         noProjectSelected: 'Aucun projet sélectionné',
@@ -347,6 +348,8 @@ export const fr: ColabTranslations = {
         deleteConfirmation:
           "Êtes-vous sûr-e-s de vouloir supprimer tout le projet? Cela va également supprimer toutes les cartes à l'intérieur.",
         isAModel: 'Ceci est un modèle de projet',
+        mailSentToShare: (recipientAddress: string): string =>
+          `${recipientAddress} va recevoir un email l'invitant à utiliser le modèle`,
       },
       settings: {
         icon: 'Icône',
@@ -436,7 +439,7 @@ export const fr: ColabTranslations = {
         noDeliverable: 'Aucun livrable disponible',
         completionModeInfo:
           "Sélectionnez le mode d'avancement (manuel | auto | no-op). Manuel: entrez une valeur pour changer l'avancement; Auto: basé sur les enfants; Aucune: n'affiche pas de barre d'avancement",
-        noBlockYet: "Document vide",
+        noBlockYet: 'Document vide',
       },
       error: {
         withoutId: 'Une carte sans id est invalide...',

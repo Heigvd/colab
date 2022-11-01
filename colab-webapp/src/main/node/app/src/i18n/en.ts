@@ -332,6 +332,7 @@ export const en = {
         extractAModelFromProject: 'Extract a model from project ',
         createModel: 'Create model',
         convertToProject: 'Convert to a simple project',
+        shareTo: 'Share to',
       },
       info: {
         noProjectSelected: 'No project selected',
@@ -342,6 +343,8 @@ export const en = {
         deleteConfirmation:
           'Are you sure you want to delete the whole project? This will delete all cards inside.',
         isAModel: 'This is a project model',
+        mailSentToShare: (recipientAddress: string): string =>
+          `${recipientAddress} will get an email inviting to use the model`,
       },
       settings: {
         icon: 'Icon',
