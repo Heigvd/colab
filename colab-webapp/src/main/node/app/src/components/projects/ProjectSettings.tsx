@@ -5,7 +5,7 @@
  * Licensed under the MIT License
  */
 
-import { css} from '@emotion/css';
+import { css } from '@emotion/css';
 import { Project } from 'colab-rest-client';
 import * as React from 'react';
 import * as API from '../../API/api';
@@ -73,43 +73,45 @@ export function ProjectSettings({ project }: ProjectSettingsProps): JSX.Element 
                 />
               </Flex>
             </Flex>
-            <Flex direction="column">
-              <h2>Sharing parameters</h2>
+            {project.type === 'MODEL' && (
               <Flex direction="column">
-                <h3>{i18n.modules.project.labels.include}</h3>
-                <Checkbox
-                  value={true} //{data.withRoles}
-                  label={i18n.modules.project.labels.roles}
-                  onChange={(_newValue: boolean) => {
-                    //setData({ ...data, withRoles: newValue });
-                  }}
-                />
-                <Checkbox
-                  value={true} //{data.withDeliverables}
-                  label={i18n.modules.project.labels.cardContents}
-                  onChange={(_newValue: boolean) => {
-                    // setData({ ...data, withDeliverables: newValue });
-                  }}
-                />
-                <Checkbox
-                  value={true} //{data.withResources}
-                  label={i18n.modules.project.labels.documentation}
-                  onChange={(_newValue: boolean) => {
-                    //setData({ ...data, withResources: newValue });
-                  }}
-                />
+                <h2>Sharing parameters</h2>
+                <Flex direction="column">
+                  <h3>{i18n.modules.project.labels.include}</h3>
+                  <Checkbox
+                    value={true} //{data.withRoles}
+                    label={i18n.modules.project.labels.roles}
+                    onChange={(_newValue: boolean) => {
+                      //setData({ ...data, withRoles: newValue });
+                    }}
+                  />
+                  <Checkbox
+                    value={true} //{data.withDeliverables}
+                    label={i18n.modules.project.labels.cardContents}
+                    onChange={(_newValue: boolean) => {
+                      // setData({ ...data, withDeliverables: newValue });
+                    }}
+                  />
+                  <Checkbox
+                    value={true} //{data.withResources}
+                    label={i18n.modules.project.labels.documentation}
+                    onChange={(_newValue: boolean) => {
+                      //setData({ ...data, withResources: newValue });
+                    }}
+                  />
+                </Flex>
+                <Flex direction="column">
+                  <h3>{i18n.modules.project.labels.connect}</h3>
+                  <Checkbox
+                    value={true} //{data.withResources}
+                    label={i18n.modules.project.labels.keepConnectionBetweenModelAndProject}
+                    onChange={(_newValue: boolean) => {
+                      //setData({ ...data, withResources: newValue });
+                    }}
+                  />
+                </Flex>
               </Flex>
-              <Flex direction="column">
-                <h3>{i18n.modules.project.labels.connect}</h3>
-                <Checkbox
-                  value={true} //{data.withResources}
-                  label={i18n.modules.project.labels.keepConnectionBetweenModelAndProject}
-                  onChange={(_newValue: boolean) => {
-                    //setData({ ...data, withResources: newValue });
-                  }}
-                />
-              </Flex>
-            </Flex>
+            )}
           </Flex>
         </Tab>
       </Tabs>
