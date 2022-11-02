@@ -236,7 +236,7 @@ export function ResourceDisplay({
               valueComp={{ value: '', label: '' }}
               buttonClassName={cx(lightIconButtonStyle, css({ marginLeft: space_S }))}
               entries={[
-                ...(!effectiveReadOnly
+                ...(!effectiveReadOnly && resource.isDirectResource
                   ? [
                       {
                         value: 'settings',
