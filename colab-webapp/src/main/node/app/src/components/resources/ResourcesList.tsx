@@ -55,7 +55,7 @@ function sortResources(lang: string) {
   };
 }
 
-type StackType = 'CARD' | 'PROJECT' | 'MODEL' | 'OUTSIDE';
+type StackType = 'CARD' | 'THEME' | 'PROJECT' | 'MODEL' | 'OUTSIDE';
 
 // function stackKeyOrder(c: string) {
 //   switch (c) {
@@ -190,7 +190,11 @@ ResourcesListProps): JSX.Element {
 
   function get3StackKey(current: ResourceAndRef): StackType {
     if (current.isDirectResource) {
-      return 'CARD';
+      if (current.targetResource.cardId != null || current.targetResource.cardContentId != null) {
+        return 'CARD';
+      }
+
+      return 'THEME';
     }
 
     if (current.targetResource.cardId != null || current.targetResource.cardContentId != null) {
@@ -299,6 +303,21 @@ ResourcesListProps): JSX.Element {
           <Collapsible label="Card" open>
             <ResourcesListByCategory
               resources={bySources['CARD']}
+              selectResource={selectResource}
+              displayResourceItem={displayResourceItem}
+              contextData={contextData}
+              showLocationIcon={false}
+            />
+          </Collapsible>
+        </div>
+      ) : (
+        <></>
+      )}
+      {bySources['THEME'] ? (
+        <div className={marginAroundStyle([3], space_S)}>
+          <Collapsible label="Theme" open>
+            <ResourcesListByCategory
+              resources={bySources['THEME']}
               selectResource={selectResource}
               displayResourceItem={displayResourceItem}
               contextData={contextData}
