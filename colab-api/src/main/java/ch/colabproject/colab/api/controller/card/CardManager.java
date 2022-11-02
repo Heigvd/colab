@@ -29,6 +29,7 @@ import java.util.stream.Collectors;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import javax.ws.rs.PathParam;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -71,6 +72,7 @@ public class CardManager {
      */
     @Inject
     private ResourceReferenceSpreadingHelper resourceReferenceSpreadingHelper;
+
 
     // *********************************************************************************************
     // find cards
@@ -550,4 +552,26 @@ public class CardManager {
     // *********************************************************************************************
     //
     // *********************************************************************************************
+
+
+    /**
+     *
+     * @param cardId test
+     */
+    public void createCardType(@PathParam("cardId") Long cardId) {
+        Card card = assertAndGetCard(cardId);
+        if (card.getCardType() != null) {
+            throw HttpErrorMessage.dataIntegrityFailure();
+        }
+
+        CardType newCardType = new CardType();
+        newCardType.setProject(card.getProject());
+        newCardType.setTitle(card.getTitle());
+
+        cardTypeManager.createCardType(newCardType);
+
+        card.getProject().getElementsToBeDefined().add(newCardType);
+
+        card.setCardType(newCardType);
+    }
 }

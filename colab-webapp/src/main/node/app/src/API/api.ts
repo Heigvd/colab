@@ -842,6 +842,13 @@ export const deleteCard = createAsyncThunk('card/delete', async (card: Card) => 
   }
 });
 
+export const createCardCardType = createAsyncThunk(
+  'card/createCardType',
+  async (cardId: number) => {
+    await restClient.CardRestEndpoint.createCardType(cardId);
+  },
+);
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Access Control List
 ////////////////////////////////////////////////////////////////////////////////////////////////////

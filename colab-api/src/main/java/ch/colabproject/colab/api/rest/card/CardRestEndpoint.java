@@ -177,10 +177,11 @@ public class CardRestEndpoint {
     }
 
     /**
-     * Change the position of the card (stay in the same parent)<p>
+     * Change the position of the card (stay in the same parent)
+     * <p>
      * Recompute the position of all the sister cards
      *
-     * @param cardId the id of the card
+     * @param cardId   the id of the card
      * @param position the new position of the card
      */
     @PUT
@@ -299,5 +300,14 @@ public class CardRestEndpoint {
     public List<AccessControl> getAcls(@PathParam("cardId") Long cardId) {
         logger.debug("Get Card #{} access-control list", cardId);
         return cardManager.getAcls(cardId);
+    }
+
+    /**
+     * @param cardId test
+     */
+    @POST
+    @Path("createCardType/{cardId}")
+    public void createCardType(@PathParam("cardId") Long cardId) {
+        cardManager.createCardType(cardId);
     }
 }

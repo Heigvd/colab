@@ -11,6 +11,7 @@ import {
   faArrowLeft,
   faCog,
   faCompressArrowsAlt,
+  faDrumstickBite,
   faEllipsisV,
   faExpandArrowsAlt,
   faInfoCircle,
@@ -211,12 +212,14 @@ export default function CardEditor({
       title: i18n.modules.resource.documentation,
       header: (
         <>
-          {docOpen && <IconButton
-            icon={faArrowLeft}
-            title={i18n.modules.resource.backList}
-            onClick={backToList}
-            className={lightIconButtonStyle}
-          />}
+          {docOpen && (
+            <IconButton
+              icon={faArrowLeft}
+              title={i18n.modules.resource.backList}
+              onClick={backToList}
+              className={lightIconButtonStyle}
+            />
+          )}
           <h3>{i18n.modules.resource.documentation}</h3>
           <Tips>{i18n.modules.resource.help.documentationExplanation}</Tips>
           {!docOpen && (
@@ -483,6 +486,22 @@ export default function CardEditor({
                       ),
                       action: () => navigate('completion'),
                     },
+                    ...(card.cardTypeId == null
+                      ? [
+                          {
+                            value: 'createType',
+                            label: (
+                              <>
+                                <FontAwesomeIcon icon={faDrumstickBite} />{' '}
+                                {i18n.modules.cardType.action.createAType}
+                              </>
+                            ),
+                            action: () => {
+                              dispatch(API.createCardCardType(cardId));
+                            },
+                          },
+                        ]
+                      : []),
                     {
                       value: 'createVariant',
                       label: (
@@ -523,7 +542,7 @@ export default function CardEditor({
                 insideState: docOpen,
                 setInsideState: setDocOpen,
                 extraNavFunction: backToList,
-                setExtraNavFunction: setBackToList
+                setExtraNavFunction: setBackToList,
               }}
             >
               <Flex grow={1} align="stretch" className={css({ overflow: 'hidden' })}>
