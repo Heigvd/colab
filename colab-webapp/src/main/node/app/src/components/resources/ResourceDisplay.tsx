@@ -101,6 +101,8 @@ export function ResourceDisplay({
   const canEdit =
     !readOnly &&
     ((project && project.type === 'PROJECT' && resource.isDirectResource) ||
+      resource.targetResource.cardId != null ||
+      resource.targetResource.cardContentId != null ||
       (project && project.type === 'MODEL' && accesLevel === 'WRITE'));
 
   const effectiveReadOnly = !canEdit; // !forceWrite && (readOnly || !resource.isDirectResource);
@@ -130,7 +132,12 @@ export function ResourceDisplay({
             className={lightIconButtonStyle}
           /> */}
           <Flex wrap="nowrap" align="center">
-            {(!resource.isDirectResource || resource.targetResource.abstractCardTypeId != null) && (
+            {(!(
+              resource.isDirectResource ||
+              resource.targetResource.cardId != null ||
+              resource.targetResource.cardContentId != null
+            ) ||
+              resource.targetResource.abstractCardTypeId != null) && (
               <div
                 className={css({
                   fontSize: '0.7em',

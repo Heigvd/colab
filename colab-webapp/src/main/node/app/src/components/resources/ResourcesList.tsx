@@ -523,7 +523,11 @@ function TocEntry({
 
   const canEdit =
     !readOnly &&
-    ((project && project.type === 'PROJECT' && resource.isDirectResource) ||
+    ((project &&
+      project.type === 'PROJECT' &&
+      (resource.isDirectResource ||
+        resource.targetResource.cardId != null ||
+        resource.targetResource.cardContentId != null)) ||
       (project && project.type === 'MODEL' && accesLevel === 'WRITE'));
 
   const effectiveReadOnly = !canEdit; // !forceWrite && (readOnly || !resource.isDirectResource);
