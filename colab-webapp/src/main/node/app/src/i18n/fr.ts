@@ -526,7 +526,7 @@ export const fr: ColabTranslations = {
         documentationExplanation: 'Les documents utiles pour compléter la carte',
       },
       actions: {
-        makeOwnCopy: 'Avoir ma propre copie',
+        makeOwnCopy: 'Copier dans la carte',
         shareWithChildren: 'Partage dans les enfants',
         makePrivate: 'Rendre privé',
       },
