@@ -14,9 +14,11 @@ import {
   faTurnDown,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { entityIs } from 'colab-rest-client';
 import * as React from 'react';
 import * as API from '../../API/api';
 import useTranslations, { useLanguage } from '../../i18n/I18nContext';
+import { useProjectRootCard } from '../../selectors/cardSelector';
 import { useAndLoadNbDocuments } from '../../selectors/documentSelector';
 import { useProjectBeingEdited } from '../../selectors/projectSelector';
 import { dispatch } from '../../store/store';
@@ -55,7 +57,7 @@ function sortResources(lang: string) {
   };
 }
 
-type StackType = 'CARD' | 'THEME' | 'PROJECT' | 'MODEL' | 'OUTSIDE';
+type StackType = 'OWN' | 'INHERITED' | 'PROJECT'; //'CARD' | 'THEME' | 'INHERITED' | 'PROJECT' | 'MODEL' | 'OUTSIDE';
 
 // function stackKeyOrder(c: string) {
 //   switch (c) {
@@ -89,37 +91,37 @@ export interface ResourcesListProps {
   readOnly?: boolean;
 }
 
-function ResourcesListSimple({
-  resources,
-  selectResource,
-  displayResourceItem,
-  showLocationIcon = true,
-  contextData,
-  readOnly,
-}: ResourcesListProps): JSX.Element {
-  const lang = useLanguage();
+// function ResourcesListSimple({
+//   resources,
+//   selectResource,
+//   displayResourceItem,
+//   showLocationIcon = true,
+//   contextData,
+//   readOnly,
+// }: ResourcesListProps): JSX.Element {
+//   const lang = useLanguage();
 
-  return (
-    <Flex
-      direction="column"
-      align="stretch"
-      grow={1}
-      className={css({ overflow: 'auto', paddingRight: '2px' })}
-    >
-      {resources.sort(sortResources(lang)).map(resource => (
-        <TocEntry
-          key={getKey(resource)}
-          resource={resource}
-          selectResource={selectResource}
-          displayResource={displayResourceItem}
-          showLocationIcon={showLocationIcon}
-          contextData={contextData}
-          readOnly={readOnly}
-        />
-      ))}
-    </Flex>
-  );
-}
+//   return (
+//     <Flex
+//       direction="column"
+//       align="stretch"
+//       grow={1}
+//       className={css({ overflow: 'auto', paddingRight: '2px' })}
+//     >
+//       {resources.sort(sortResources(lang)).map(resource => (
+//         <TocEntry
+//           key={getKey(resource)}
+//           resource={resource}
+//           selectResource={selectResource}
+//           displayResource={displayResourceItem}
+//           showLocationIcon={showLocationIcon}
+//           contextData={contextData}
+//           readOnly={readOnly}
+//         />
+//       ))}
+//     </Flex>
+//   );
+// }
 
 function ResourcesListByCategory({
   resources,
@@ -189,25 +191,8 @@ function ResourcesListBy3Stacks({
 ResourcesListProps): JSX.Element {
   const lang = useLanguage();
 
-  function get3StackKey(current: ResourceAndRef): StackType {
-    if (current.isDirectResource) {
-      if (current.targetResource.cardId != null || current.targetResource.cardContentId != null) {
-        return 'CARD';
-      }
-
-      return 'THEME';
-    }
-
-    if (current.targetResource.cardId != null || current.targetResource.cardContentId != null) {
-      return 'PROJECT';
-    }
-
-    // if (current.targetResource.abstractCardTypeId != null && useIsInCurrentProject(current.targetResource.abstractCardTypeId)) {
-    //   return 'PROJECT';
-    // }
-
-    return 'MODEL';
-  }
+  const { project: currentProject } = useProjectBeingEdited();
+  const root = useProjectRootCard(currentProject);
 
   // function useIsInCurrentProject1(abstractCardTypeId: number) {
 
@@ -230,6 +215,42 @@ ResourcesListProps): JSX.Element {
   // }, []);
 
   const bySources: Record<string, ResourceAndRef[]> = React.useMemo(() => {
+    function get3StackKey(current: ResourceAndRef): StackType {
+      // if (current.isDirectResource) {
+      //   if (current.targetResource.cardId != null || current.targetResource.cardContentId != null) {
+      //     return 'CARD';
+      //   }
+
+      //   return 'THEME';
+      // }
+
+      if (current.targetResource.cardId != null || current.targetResource.cardContentId != null) {
+        if (current.isDirectResource) {
+          return 'OWN';
+        }
+
+        if (entityIs(root, 'Card') && current.targetResource.cardId === root.id) {
+          return 'PROJECT';
+        }
+      }
+
+      // if (current.targetResource.cardId != null || current.targetResource.cardContentId != null) {
+
+      return 'INHERITED';
+      // }
+
+      // return 'THEME';
+
+      // if (
+      //   current.targetResource.abstractCardTypeId != null &&
+      //   useIsInCurrentProject(current.targetResource.abstractCardTypeId)
+      // ) {
+      //   return 'PROJECT';
+      // }
+
+      // return 'MODEL';
+    }
+
     const reducedBySource = resources.reduce<Record<string, ResourceAndRef[]>>((acc, current) => {
       const sourceKey = get3StackKey(current);
 
@@ -244,7 +265,7 @@ ResourcesListProps): JSX.Element {
     });
 
     return reducedBySource;
-  }, [resources, lang]);
+  }, [resources, root, lang]);
 
   return (
     <Flex
@@ -253,11 +274,11 @@ ResourcesListProps): JSX.Element {
       grow={1}
       className={css({ overflow: 'auto', paddingRight: '2px' })}
     >
-      {bySources['CARD'] ? (
+      {bySources['OWN'] ? (
         <div className={marginAroundStyle([3], space_S)}>
-          <Collapsible label="Card" open>
+          <Collapsible label={contextData?.kind === 'CardType' ? 'Theme' : 'Card'} open>
             <ResourcesListByCategory
-              resources={bySources['CARD']}
+              resources={bySources['OWN']}
               selectResource={selectResource}
               displayResourceItem={displayResourceItem}
               contextData={contextData}
@@ -268,11 +289,11 @@ ResourcesListProps): JSX.Element {
       ) : (
         <></>
       )}
-      {bySources['THEME'] ? (
+      {bySources['INHERITED'] ? (
         <div className={marginAroundStyle([3], space_S)}>
-          <Collapsible label="Theme" open>
+          <Collapsible label="Inherited" open>
             <ResourcesListByCategory
-              resources={bySources['THEME']}
+              resources={bySources['INHERITED']}
               selectResource={selectResource}
               displayResourceItem={displayResourceItem}
               contextData={contextData}
@@ -298,36 +319,81 @@ ResourcesListProps): JSX.Element {
       ) : (
         <></>
       )}
-      {bySources['MODEL'] ? (
-        <div className={marginAroundStyle([3], space_S)}>
-          <Collapsible label="Model" open>
-            <ResourcesListByCategory
-              resources={bySources['MODEL']}
-              selectResource={selectResource}
-              displayResourceItem={displayResourceItem}
-              contextData={contextData}
-              showLocationIcon={false}
-            />
-          </Collapsible>
-        </div>
-      ) : (
-        <></>
-      )}
-      {bySources['OUTSIDE'] ? (
-        <div className={marginAroundStyle([3], space_S)}>
-          <Collapsible label="From outer space" open>
-            <ResourcesListSimple
-              resources={bySources['OUTSIDE']}
-              selectResource={selectResource}
-              displayResourceItem={displayResourceItem}
-              contextData={contextData}
-              showLocationIcon={false}
-            />
-          </Collapsible>
-        </div>
-      ) : (
-        <></>
-      )}
+      {/* //   {bySources['CARD'] ? (
+    //     <div className={marginAroundStyle([3], space_S)}>
+    //       <Collapsible label="Card" open>
+    //         <ResourcesListByCategory
+    //           resources={bySources['CARD']}
+    //           selectResource={selectResource}
+    //           displayResourceItem={displayResourceItem}
+    //           contextData={contextData}
+    //           showLocationIcon={false}
+    //         />
+    //       </Collapsible>
+    //     </div>
+    //   ) : (
+    //     <></>
+    //   )}
+    //   {bySources['THEME'] ? (
+    //     <div className={marginAroundStyle([3], space_S)}>
+    //       <Collapsible label="Theme" open>
+    //         <ResourcesListByCategory
+    //           resources={bySources['THEME']}
+    //           selectResource={selectResource}
+    //           displayResourceItem={displayResourceItem}
+    //           contextData={contextData}
+    //           showLocationIcon={false}
+    //         />
+    //       </Collapsible>
+    //     </div>
+    //   ) : (
+    //     <></>
+    //   )}
+    //   {bySources['PROJECT'] ? (
+    //     <div className={marginAroundStyle([3], space_S)}>
+    //       <Collapsible label="Project" open>
+    //         <ResourcesListByCategory
+    //           resources={bySources['PROJECT']}
+    //           selectResource={selectResource}
+    //           displayResourceItem={displayResourceItem}
+    //           contextData={contextData}
+    //           showLocationIcon={false}
+    //         />
+    //       </Collapsible>
+    //     </div>
+    //   ) : (
+    //     <></>
+    //   )}
+    //   {bySources['MODEL'] ? (
+    //     <div className={marginAroundStyle([3], space_S)}>
+    //       <Collapsible label="Model" open>
+    //         <ResourcesListByCategory
+    //           resources={bySources['MODEL']}
+    //           selectResource={selectResource}
+    //           displayResourceItem={displayResourceItem}
+    //           contextData={contextData}
+    //           showLocationIcon={false}
+    //         />
+    //       </Collapsible>
+    //     </div>
+    //   ) : (
+    //     <></>
+    //   )}
+    //   {bySources['OUTSIDE'] ? (
+    //     <div className={marginAroundStyle([3], space_S)}>
+    //       <Collapsible label="From outer space" open>
+    //         <ResourcesListSimple
+    //           resources={bySources['OUTSIDE']}
+    //           selectResource={selectResource}
+    //           displayResourceItem={displayResourceItem}
+    //           contextData={contextData}
+    //           showLocationIcon={false}
+    //         />
+    //       </Collapsible>
+    //     </div>
+    //   ) : (
+    //     <></>
+    //   )} */}
     </Flex>
   );
 }
