@@ -168,7 +168,7 @@ export function ResourceDisplay({
                 {' / '}
               </>
             )} */}
-            {resource.targetResource.published && (
+            {resource.targetResource.published && resource.isDirectResource && (
               <FontAwesomeIcon
                 icon={faTurnDown}
                 title={i18n.common.published}

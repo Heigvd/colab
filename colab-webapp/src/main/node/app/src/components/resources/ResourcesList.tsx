@@ -252,52 +252,6 @@ ResourcesListProps): JSX.Element {
       grow={1}
       className={css({ overflow: 'auto', paddingRight: '2px' })}
     >
-      {/*Object.keys(bySources)
-        .sort(sortStacks)
-        .map(source => (
-          <div key={source} className={marginAroundStyle([3], space_S)}>
-            {source === 'CARD' && (
-              <Collapsible label="Card" open>
-                <ResourcesListByCategory
-                  resources={bySources[source]!}
-                  selectResource={selectResource}
-                  displayResourceItem={displayResourceItem}
-                  showLocationIcon={false}
-                />
-              </Collapsible>
-            )}
-            {source === 'PROJECT' && (
-              <Collapsible label="Project" open>
-                <ResourcesListSimple
-                  resources={bySources[source]!}
-                  selectResource={selectResource}
-                  displayResourceItem={displayResourceItem}
-                  showLocationIcon={false}
-                />
-              </Collapsible>
-            )}
-            {source === 'MODEL' && (
-              <Collapsible label="Model" open>
-                <ResourcesListSimple
-                  resources={bySources[source]!}
-                  selectResource={selectResource}
-                  displayResourceItem={displayResourceItem}
-                  showLocationIcon={false}
-                />
-              </Collapsible>
-            )}
-            {source === 'OUTSIDE' && (
-              <Collapsible label="From outer space" open>
-                <ResourcesListSimple
-                  resources={bySources[source]!}
-                  selectResource={selectResource}
-                  displayResourceItem={displayResourceItem}
-                  showLocationIcon={false}
-                />
-              </Collapsible>
-            )}
-          </div>
-        ))*/}
       {bySources['CARD'] ? (
         <div className={marginAroundStyle([3], space_S)}>
           <Collapsible label="Card" open>
@@ -331,7 +285,7 @@ ResourcesListProps): JSX.Element {
       {bySources['PROJECT'] ? (
         <div className={marginAroundStyle([3], space_S)}>
           <Collapsible label="Project" open>
-            <ResourcesListSimple
+            <ResourcesListByCategory
               resources={bySources['PROJECT']}
               selectResource={selectResource}
               displayResourceItem={displayResourceItem}
@@ -346,7 +300,7 @@ ResourcesListProps): JSX.Element {
       {bySources['MODEL'] ? (
         <div className={marginAroundStyle([3], space_S)}>
           <Collapsible label="Model" open>
-            <ResourcesListSimple
+            <ResourcesListByCategory
               resources={bySources['MODEL']}
               selectResource={selectResource}
               displayResourceItem={displayResourceItem}
@@ -579,7 +533,7 @@ function TocEntry({
                 oneLineEllipsis,
               )}
             >
-              {resource.targetResource.published && (
+              {resource.targetResource.published && resource.isDirectResource && (
                 <FontAwesomeIcon
                   icon={faTurnDown}
                   size="xs"
