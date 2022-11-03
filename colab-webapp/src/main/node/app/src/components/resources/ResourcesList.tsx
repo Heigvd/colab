@@ -568,12 +568,12 @@ function TocEntry({
 
   const canEdit =
     !readOnly &&
-    ((project &&
-      project.type === 'PROJECT' &&
-      (resource.isDirectResource ||
-        resource.targetResource.cardId != null ||
-        resource.targetResource.cardContentId != null)) ||
-      (project && project.type === 'MODEL' && accesLevel === 'WRITE'));
+    project &&
+    ((project && project.type === 'MODEL') ||
+      (project.type === 'PROJECT' && resource.isDirectResource) ||
+      resource.targetResource.cardId != null ||
+      resource.targetResource.cardContentId != null) &&
+    accesLevel === 'WRITE';
 
   const effectiveReadOnly = !canEdit; // !forceWrite && (readOnly || !resource.isDirectResource);
 
@@ -594,7 +594,11 @@ function TocEntry({
               }
             }}
             grow={1}
-            className={css({ padding: space_S + ' ' + space_M })}
+            className={cx(
+              css({ padding: space_S + ' ' + space_M }),
+              { [css({ color: 'lightgray' })]: effectiveReadOnly },
+              { [css({ color: 'dimgray' })]: !effectiveReadOnly },
+            )}
           >
             <div
               className={cx(
