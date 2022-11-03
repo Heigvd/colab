@@ -177,10 +177,11 @@ export function ProjectModelExtractor({ projectId }: ProjectModelExtractorProps)
                     startLoading();
                     // TODO duplicate and
                     dispatch(API.updateProject({ ...project, type: 'MODEL' })).then(() => {
+                      stopLoading();
                       resetCb();
                       close();
-                      navigate('/models');
-                      stopLoading();
+                      // Dom choice : do not navigate to the model list when created
+                      //navigate('/models');
                     });
                   }
                 }}
