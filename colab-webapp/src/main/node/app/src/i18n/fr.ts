@@ -528,7 +528,7 @@ export const fr: ColabTranslations = {
       actions: {
         makeOwnCopy: 'Copier dans la carte',
         shareWithChildren: 'Partage dans les enfants',
-        makePrivate: 'Rendre privé',
+        makePrivate: 'Rattacher à la carte',
       },
       info: {
         noContent: 'Le document est vide',

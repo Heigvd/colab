@@ -534,7 +534,7 @@ export const en = {
       actions: {
         makeOwnCopy: 'Copy to card',
         shareWithChildren: 'Share within children',
-        makePrivate: 'Make private',
+        makePrivate: 'Attach to card',
       },
       scope: {
         disclaimer: '', // TODO
