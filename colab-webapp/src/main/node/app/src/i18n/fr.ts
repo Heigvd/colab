@@ -192,6 +192,7 @@ export const fr: ColabTranslations = {
     roles: 'Rôles',
     rights: 'Droits',
     members: 'Membres',
+    teamManagement: "Gestion de l'équipe",
     generalInvolvement: 'Implication générale',
     resetInvolvement: 'Réinitialiser implication',
     involvementHelper:

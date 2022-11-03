@@ -407,10 +407,7 @@ function EditorNav({ project }: EditorNavProps): JSX.Element {
                   : mainMenuLink
               }
             >
-              <FontAwesomeIcon
-                icon={faUserGroup}
-                title={i18n.modules.project.settings.resources.label}
-              />
+              <FontAwesomeIcon icon={faUserGroup} title={i18n.team.teamManagement} />
             </MainMenuLink>
           </Flex>
           {/* {project.type === 'MODEL' && (
@@ -507,7 +504,10 @@ function RootView({ rootContent }: { rootContent: CardContent | null | undefined
     >
       {rootContent != null ? (
         <>
-          <CardCreatorAndOrganize rootContent={rootContent} organize={{organize: organize, setOrganize: setOrganize}} />
+          <CardCreatorAndOrganize
+            rootContent={rootContent}
+            organize={{ organize: organize, setOrganize: setOrganize }}
+          />
 
           <ContentSubs
             minCardWidth={150}
@@ -713,34 +713,41 @@ interface CardCreatorAndOrganizeProps {
   organize: {
     organize: boolean;
     setOrganize: React.Dispatch<React.SetStateAction<boolean>>;
-  }
+  };
 }
 function CardCreatorAndOrganize({ rootContent, organize }: CardCreatorAndOrganizeProps) {
   const i18n = useTranslations();
   const subCards = useAndLoadSubCards(rootContent.id);
-  return (<>
-    {subCards && subCards.length > 0 && <Flex
-      className={cx(
-        fixedButtonStyle,
-        css({
-          backgroundColor: 'var(--hoverBgColor)',
-          zIndex: 10,
-          fontSize: '0.8em',
-          padding: space_S,
-        }),
+  return (
+    <>
+      {subCards && subCards.length > 0 && (
+        <Flex
+          className={cx(
+            fixedButtonStyle,
+            css({
+              backgroundColor: 'var(--hoverBgColor)',
+              zIndex: 10,
+              fontSize: '0.8em',
+              padding: space_S,
+            }),
+          )}
+          gap={space_M}
+        >
+          <FeaturePreview className={fixedButtonStyle}>
+            <Toggler
+              className={css({ alignSelf: 'flex-end' })}
+              label={i18n.modules.card.positioning.toggleText}
+              value={organize.organize}
+              onChange={organize.setOrganize}
+            />
+          </FeaturePreview>
+          <CardCreator
+            parentCardContent={rootContent}
+            display="1"
+            className={invertedButtonStyle}
+          />
+        </Flex>
       )}
-      gap={space_M}
-    >
-      <FeaturePreview className={fixedButtonStyle}>
-        <Toggler
-          className={css({ alignSelf: 'flex-end' })}
-          label={i18n.modules.card.positioning.toggleText}
-          value={organize.organize}
-          onChange={organize.setOrganize}
-        />
-      </FeaturePreview>
-      <CardCreator parentCardContent={rootContent} display="1" className={invertedButtonStyle}  />
-    </Flex>}
     </>
   );
 }

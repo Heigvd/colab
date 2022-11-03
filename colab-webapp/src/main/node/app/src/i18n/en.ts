@@ -189,6 +189,7 @@ export const en = {
     roles: 'Roles',
     rights: 'Rights',
     members: 'Members',
+    teamManagement: 'Team management',
     generalInvolvement: 'General involvement',
     resetInvolvement: 'Reset involvement',
     involvementHelper:
