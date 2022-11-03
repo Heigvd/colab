@@ -78,6 +78,7 @@ interface ResourcesMainViewProps {
   accessLevel: AccessLevel;
   showVoidIndicator?: boolean;
   publishNew?: boolean;
+  showLevels?: boolean;
 }
 
 export default function ResourcesMainView({
@@ -85,6 +86,7 @@ export default function ResourcesMainView({
   accessLevel,
   showVoidIndicator,
   publishNew,
+  showLevels,
 }: ResourcesMainViewProps): JSX.Element {
   const dispatch = useAppDispatch();
   const i18n = useTranslations();
@@ -102,7 +104,7 @@ export default function ResourcesMainView({
   const showList = React.useCallback(() => selectResource(null), []);
 
   React.useEffect(() => {
-    if(setExtraNavFunction) setExtraNavFunction(() => showList);
+    if (setExtraNavFunction) setExtraNavFunction(() => showList);
     if (selectedResource && setInsideState) {
       setInsideState(true);
     } else if (setInsideState) {
@@ -216,6 +218,7 @@ export default function ResourcesMainView({
         selectResource={selectResource}
         contextData={contextData}
         readOnly={isReadOnly(accessLevel)}
+        showLevels={showLevels}
       />
 
       {!isReadOnly(accessLevel) && (

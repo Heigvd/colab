@@ -94,14 +94,14 @@ export default function DocumentationTab({ project }: DocumentationTabProps): JS
           >
             {resourceContext != null ? (
               <>
-                <Flex align='center'>
+                <Flex align="center">
                   <h2>{i18n.modules.project.settings.resources.label}</h2>
                   <ResourceCreator
                     contextInfo={resourceContext}
                     onCreated={newId => {
                       dispatch(API.publishResource(newId));
                     }}
-                    collapsedClassName={cx(lightIconButtonStyle, css({marginLeft: space_S}))}
+                    collapsedClassName={cx(lightIconButtonStyle, css({ marginLeft: space_S }))}
                   />
                   {ghostResources != null && ghostResources.length > 0 && (
                     // note : we can imagine that a read access level allows to see the ghost resources
@@ -132,6 +132,7 @@ export default function DocumentationTab({ project }: DocumentationTabProps): JS
                   contextData={resourceContext}
                   showVoidIndicator
                   publishNew
+                  showLevels
                 />
               </>
             ) : (

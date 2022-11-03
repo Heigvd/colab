@@ -261,6 +261,7 @@ export default function CardEditor({
         <ResourcesMainView
           contextData={resourceContext}
           accessLevel={!readOnly ? 'WRITE' : canRead ? 'READ' : 'DENIED'}
+          showLevels
         />
       ),
       className: css({ overflow: 'auto' }),

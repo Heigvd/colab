@@ -84,6 +84,7 @@ export interface ResourcesListProps {
   selectResource?: (resource: ResourceAndRef) => void;
   displayResourceItem?: (resource: ResourceAndRef) => React.ReactNode;
   showLocationIcon?: boolean;
+  showLevels?: boolean;
   contextData?: ResourceCallContext;
   readOnly?: boolean;
 }
@@ -413,11 +414,16 @@ export default function ResourcesList(props: ResourcesListProps): JSX.Element {
 
   return (
     <Flex direction="column" align="stretch" grow={1}>
+      {props.showLevels ? (
+        <ResourcesListBy3Stacks {...props} />
+      ) : (
+        <ResourcesListByCategory {...props} />
+      )}
       {/* {mode === 'CATEGORY' ? (
         <ResourcesListByCategory {...props} />
-      ) : mode === '3_STACKS' ? ( */}
+      ) : mode === '3_STACKS' ? ( 
       <ResourcesListBy3Stacks {...props} />
-      {/* ) : (
+      ) : (
         <ResourcesListBySource {...props} />
       )} */}
     </Flex>
