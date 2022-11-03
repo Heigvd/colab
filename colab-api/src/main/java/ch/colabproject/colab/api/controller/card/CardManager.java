@@ -573,5 +573,7 @@ public class CardManager {
         card.getProject().getElementsToBeDefined().add(newCardType);
 
         card.setCardType(newCardType);
+
+        newCardType.getImplementingCards().add(card);
     }
 }
