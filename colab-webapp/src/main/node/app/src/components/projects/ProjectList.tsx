@@ -25,6 +25,7 @@ import { Route, Routes, useNavigate, useParams } from 'react-router-dom';
 import * as API from '../../API/api';
 import useTranslations from '../../i18n/I18nContext';
 import { useAndLoadProject } from '../../selectors/projectSelector';
+import { useCurrentUser } from '../../selectors/userSelector';
 import { shallowEqual, useAppDispatch, useAppSelector, useLoadingState } from '../../store/hooks';
 import { StateStatus } from '../../store/slice/projectSlice';
 import ItemThumbnailsSelection from '../common/collection/ItemThumbnailsSelection';
@@ -160,6 +161,8 @@ export const ProjectDisplay = ({
   const i18n = useTranslations();
   const navigate = useNavigate();
 
+  const { currentUser } = useCurrentUser();
+
   const tipsConfig = React.useContext(TipsCtx);
 
   return (
@@ -267,7 +270,7 @@ export const ProjectDisplay = ({
                     },
                   ]
                 : []),
-              ...(tipsConfig.WIP.value && project.type === 'MODEL'
+              ...(currentUser?.admin && tipsConfig.WIP.value && project.type === 'MODEL'
                 ? [
                     {
                       value: 'convertToProject',
@@ -356,14 +359,18 @@ function ProjectList({ projects, status, reload }: ProjectListProps) {
   } else {
     return (
       <div className={css({ padding: '4vw' })}>
-        {(!projects || projects.length === 0) ? (
-          <Flex justify='center' align='center' direction='column'>
+        {!projects || projects.length === 0 ? (
+          <Flex justify="center" align="center" direction="column">
             <h2>{i18n.common.welcome}</h2>
             <h3>{i18n.modules.project.info.noProjectYet}</h3>
-            <ProjectCreator collapsedButtonClassName={cx(invertedButtonStyle, css({marginTop: space_S}))} />
+            <ProjectCreator
+              collapsedButtonClassName={cx(invertedButtonStyle, css({ marginTop: space_S }))}
+            />
           </Flex>
-        ): <ProjectCreator collapsedButtonClassName={cx(fixedButtonStyle, invertedButtonStyle)} />}
-        
+        ) : (
+          <ProjectCreator collapsedButtonClassName={cx(fixedButtonStyle, invertedButtonStyle)} />
+        )}
+
         {/* {projects
             .sort((a, b) => (a.id || 0) - (b.id || 0))
             .map(project => {
@@ -394,7 +401,7 @@ function ProjectList({ projects, status, reload }: ProjectListProps) {
           disableOnEnter
         />
         {/* Note : any authenticated user can create a project */}
-        
+
         <Routes>
           <Route path="projectsettings/:projectId" element={<ProjectSettingWrapper />} />
           <Route path="deleteproject/:projectId" element={<DeleteProjectWrapper />} />
