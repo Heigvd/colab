@@ -20,6 +20,7 @@ import {
   useGlobalCardTypeTags,
 } from '../../../selectors/cardTypeSelector';
 import { useProjectBeingEdited } from '../../../selectors/projectSelector';
+import { useAndLoadResources } from '../../../selectors/resourceSelector';
 import { dispatch } from '../../../store/store';
 import AvailabilityStatusIndicator from '../../common/element/AvailabilityStatusIndicator';
 import Button from '../../common/element/Button';
@@ -30,9 +31,18 @@ import Toggler from '../../common/element/Toggler';
 import ConfirmDeleteOpenCloseModal from '../../common/layout/ConfirmDeleteModal';
 import Flex from '../../common/layout/Flex';
 import { DocTextWrapper } from '../../documents/DocTextItem';
+import HidenResourcesKeeper from '../../resources/HidenResourcesKeeper';
+import ResourceCreator from '../../resources/ResourceCreator';
 import { ResourceCallContext } from '../../resources/resourcesCommonType';
 import ResourcesMainView from '../../resources/ResourcesMainView';
-import { cardStyle, errorColor, localTitleStyle, space_M, space_S } from '../../styling/style';
+import {
+  cardStyle,
+  errorColor,
+  lightIconButtonStyle,
+  localTitleStyle,
+  space_M,
+  space_S,
+} from '../../styling/style';
 
 interface CardTypeEditorProps {
   className?: string;
@@ -60,6 +70,8 @@ export default function CardTypeEditor({ className, usage }: CardTypeEditorProps
     kind: 'CardType',
     cardTypeId: cardType?.ownId,
   };
+
+  const { ghostResources } = useAndLoadResources(resourceContext);
 
   if (status !== 'READY' || !cardType) {
     return <AvailabilityStatusIndicator status={status} />;
@@ -237,7 +249,40 @@ export default function CardTypeEditor({ className, usage }: CardTypeEditorProps
           >
             <Flex align="baseline">
               <h3>{i18n.modules.resource.documentation}</h3>
-              {/* <TocDisplayToggler /> */}
+              <Tips>{i18n.modules.resource.help.documentationExplanation}</Tips>
+              {
+                <>
+                  <ResourceCreator
+                    contextInfo={resourceContext}
+                    onCreated={() => {}}
+                    collapsedClassName={lightIconButtonStyle}
+                  />
+                  {/* <TocDisplayToggler /> */}
+                  {ghostResources != null && ghostResources.length > 0 && (
+                    // note : we can imagine that a read access level allows to see the ghost resources
+                    <>
+                      <span
+                        className={css({
+                          width: '1px',
+                          height: '100%',
+                          backgroundColor: 'var(--lightGray)',
+                        })}
+                      />
+                      <HidenResourcesKeeper
+                        resources={ghostResources}
+                        collapsedClassName={cx(
+                          css({
+                            borderTop: '1px solid var(--lightGray)',
+                            padding: space_S,
+                            '&:hover': { backgroundColor: 'var(--lightGray)', cursor: 'pointer' },
+                          }),
+                          lightIconButtonStyle,
+                        )}
+                      />
+                    </>
+                  )}
+                </>
+              }
             </Flex>
             <ResourcesMainView contextData={resourceContext} accessLevel="WRITE" />
           </Flex>
