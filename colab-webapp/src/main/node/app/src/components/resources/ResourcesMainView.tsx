@@ -1,46 +1,59 @@
 /*
  * The coLAB project
- * Copyright (C) 2021 AlbaSim, MEI, HEIG-VD, HES-SO
+ * Copyright (C) 2021-2022 AlbaSim, MEI, HEIG-VD, HES-SO
  *
  * Licensed under the MIT License
  */
 
-import { css } from '@emotion/css';
-import { faPlus } from '@fortawesome/free-solid-svg-icons';
+import { css, cx } from '@emotion/css';
+import { faArrowLeft, faPlus } from '@fortawesome/free-solid-svg-icons';
 import * as React from 'react';
-import * as API from '../../API/api';
 import useTranslations from '../../i18n/I18nContext';
 import { useAndLoadResources } from '../../selectors/resourceSelector';
-import { useAppDispatch } from '../../store/hooks';
-import { SideCollapsibleCTX } from '../cards/SideCollapsiblePanel';
 import AvailabilityStatusIndicator from '../common/element/AvailabilityStatusIndicator';
 import Button from '../common/element/Button';
-import { WIPContainer } from '../common/element/Tips';
+import IconButton from '../common/element/IconButton';
+import Tips, { WIPContainer } from '../common/element/Tips';
 import DropDownMenu from '../common/layout/DropDownMenu';
 import Flex from '../common/layout/Flex';
-import { invertedButtonStyle, lightIconButtonStyle, space_L } from '../styling/style';
-//import HidenResourcesKeeper from './HidenResourcesKeeper';
+import { invertedButtonStyle, lightIconButtonStyle, space_L, space_S } from '../styling/style';
+import HidenResourcesKeeper from './HidenResourcesKeeper';
 import ResourceCreator from './ResourceCreator';
 import { ResourceDisplay } from './ResourceDisplay';
 import {
   AccessLevel,
+  defaultResourceOwnerShip,
   isReadOnly,
   ResourceAndRef,
-  ResourceCallContext,
+  ResourceOwnership,
 } from './resourcesCommonType';
-import ResourcesList from './ResourcesList';
+import ResourcesList, { TocDisplayCtx, TocMode } from './ResourcesList';
 
-export type TocMode = 'CATEGORY' | 'SOURCE' | '3_STACKS';
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Resource Context
+////////////////////////////////////////////////////////////////////////////////////////////////////
 
-export interface TocDisplayContext {
-  mode: TocMode;
-  setMode: (newMode: TocMode) => void;
+interface ResourcesContext {
+  resourceOwnership: ResourceOwnership;
+  selectedResource: ResourceAndRef | null; // TODO number
+  selectResource: (resource: ResourceAndRef | null) => void;
+  publishNewResource?: boolean;
 }
 
-export const TocDisplayCtx = React.createContext<TocDisplayContext>({
-  mode: 'CATEGORY',
-  setMode: () => {},
-});
+const defaultResourcesContext: ResourcesContext = {
+  resourceOwnership: defaultResourceOwnerShip,
+  selectedResource: null,
+  selectResource: () => {},
+  publishNewResource: false,
+};
+
+export const ResourcesCtx = React.createContext<ResourcesContext>(defaultResourcesContext);
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+type DisplayMode = 'LIST' | 'ONE_RESOURCE';
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
 
 export function TocDisplayToggler(): JSX.Element {
   // const i18n = useTranslations();
@@ -65,6 +78,70 @@ export function TocDisplayToggler(): JSX.Element {
   );
 }
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+interface ResourcesMainViewHeaderProps {
+  title: React.ReactNode;
+  helpTip?: React.ReactNode;
+}
+
+export function ResourcesMainViewHeader({
+  title,
+  helpTip,
+}: ResourcesMainViewHeaderProps): JSX.Element {
+  const i18n = useTranslations();
+
+  const { selectedResource, selectResource } = React.useContext(ResourcesCtx);
+
+  const displayMode: DisplayMode = React.useMemo(() => {
+    if (selectedResource != null) {
+      return 'ONE_RESOURCE';
+    }
+
+    return 'LIST';
+  }, [selectedResource]);
+
+  const displayList = React.useCallback(() => {
+    selectResource(null);
+  }, [selectResource]);
+
+  return (
+    <>
+      {displayMode !== 'LIST' && (
+        <IconButton
+          icon={faArrowLeft}
+          title={i18n.modules.resource.backList}
+          onClick={displayList}
+          className={lightIconButtonStyle}
+        />
+      )}
+
+      {title}
+
+      {helpTip && <Tips>{helpTip}</Tips>}
+
+      {displayMode === 'LIST' && (
+        <>
+          <ResourceCreator onCreated={() => {}} collapsedClassName={lightIconButtonStyle} />
+          {/* <TocDisplayToggler /> */}
+          {/* Note : we can imagine that a read access level allows to see the ghost resources */}
+          <HidenResourcesKeeper
+            collapsedClassName={cx(
+              css({
+                padding: space_S,
+                '&:hover': { cursor: 'pointer' },
+              }),
+              lightIconButtonStyle,
+            )}
+          />
+        </>
+      )}
+    </>
+  );
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
 /**
  * Main component to show resources.
  * It handles a list of resources fetched according to the contextData.
@@ -73,66 +150,74 @@ export function TocDisplayToggler(): JSX.Element {
  * It can allow to display and revive a deprecated, refused or residual resource.
  */
 
-interface ResourcesMainViewProps {
-  contextData: ResourceCallContext;
+interface ResourcesMainPanelProps {
   accessLevel: AccessLevel;
   showVoidIndicator?: boolean;
-  publishNew?: boolean;
   showLevels?: boolean;
 }
 
-export default function ResourcesMainView({
-  contextData,
+export function ResourcesMainViewPanel({
   accessLevel,
   showVoidIndicator,
-  publishNew,
   showLevels,
-}: ResourcesMainViewProps): JSX.Element {
-  const dispatch = useAppDispatch();
+}: ResourcesMainPanelProps): JSX.Element {
   const i18n = useTranslations();
 
-  const { activeResources, status } = useAndLoadResources(contextData);
+  const { resourceOwnership, selectedResource, selectResource } = React.useContext(ResourcesCtx);
 
-  const [selectedResource, selectResource] = React.useState<ResourceAndRef | null>(null);
-  const { setInsideState, setExtraNavFunction } = React.useContext(SideCollapsibleCTX);
+  const { activeResources, status } = useAndLoadResources(resourceOwnership);
 
   const [lastCreated, setLastCreated] = React.useState<number | null>(null);
 
   // just to see if it changes
-  const [currentContext, setCurrentContext] = React.useState<ResourceCallContext>(contextData);
+  const [currentContext, setCurrentContext] = React.useState<ResourceOwnership>(resourceOwnership);
 
-  const showList = React.useCallback(() => selectResource(null), []);
+  const displayMode: DisplayMode = React.useMemo(() => {
+    if (selectedResource != null) {
+      return 'ONE_RESOURCE';
+    }
+
+    return 'LIST';
+  }, [selectedResource]);
 
   React.useEffect(() => {
-    if (setExtraNavFunction) setExtraNavFunction(() => showList);
-    if (selectedResource && setInsideState) {
-      setInsideState(true);
-    } else if (setInsideState) {
-      setInsideState(false);
+    if (displayMode === 'LIST') {
+      selectResource(null);
     }
-  }, [selectedResource, setExtraNavFunction, setInsideState, showList]);
+  }, [displayMode, selectResource]);
+
+  const showList = React.useCallback(() => {
+    selectResource(null);
+  }, [selectResource]);
+
+  const showSelectedResource = React.useCallback(
+    (resource: ResourceAndRef) => {
+      selectResource(resource);
+    },
+    [selectResource],
+  );
 
   React.useEffect(() => {
     // show the list if the context changed
-    if (contextData.kind !== currentContext.kind) {
+    if (resourceOwnership.kind !== currentContext.kind) {
       showList();
     } else if (
-      contextData.kind === 'CardOrCardContent' &&
+      resourceOwnership.kind === 'CardOrCardContent' &&
       currentContext.kind === 'CardOrCardContent' &&
-      (contextData.cardId !== currentContext.cardId ||
-        contextData.cardContentId !== currentContext.cardContentId)
+      (resourceOwnership.cardId !== currentContext.cardId ||
+        resourceOwnership.cardContentId !== currentContext.cardContentId)
     ) {
       showList();
     } else if (
-      contextData.kind === 'CardType' &&
+      resourceOwnership.kind === 'CardType' &&
       currentContext.kind === 'CardType' &&
-      contextData.cardTypeId !== currentContext.cardTypeId
+      resourceOwnership.cardTypeId !== currentContext.cardTypeId
     ) {
       showList();
     }
 
-    setCurrentContext(contextData);
-  }, [contextData, currentContext, setCurrentContext, showList]);
+    setCurrentContext(resourceOwnership);
+  }, [resourceOwnership, currentContext, setCurrentContext, showList]);
 
   // when a resource is just created, select it to display it
   React.useEffect(() => {
@@ -142,11 +227,11 @@ export default function ResourcesMainView({
       );
 
       if (matchingResource != null) {
-        selectResource(matchingResource);
+        showSelectedResource(matchingResource);
         setLastCreated(null);
       }
     }
-  }, [lastCreated, activeResources, selectResource, setLastCreated]);
+  }, [lastCreated, activeResources, showSelectedResource, setLastCreated]);
 
   /**
    * Quick Fix: keep selectedResource up-to-date
@@ -158,10 +243,10 @@ export default function ResourcesMainView({
         ar => ar.targetResource.id === selectedResource.targetResource.id,
       );
       if (found && found.targetResource != selectedResource.targetResource) {
-        selectResource(found);
+        showSelectedResource(found);
       }
     }
-  }, [activeResources, selectedResource, selectResource]);
+  }, [activeResources, selectedResource, showSelectedResource]);
 
   if (accessLevel === 'DENIED') {
     return <div>{i18n.common.error.accessDenied}</div>;
@@ -171,7 +256,7 @@ export default function ResourcesMainView({
     return <AvailabilityStatusIndicator status={status} />;
   }
 
-  if (selectedResource) {
+  if (displayMode === 'ONE_RESOURCE' && selectedResource) {
     // show selected resource
     return (
       <ResourceDisplay
@@ -195,12 +280,8 @@ export default function ResourcesMainView({
           <h3>{i18n.modules.resource.noDocumentationYet}</h3>
           {!isReadOnly(accessLevel) && (
             <ResourceCreator
-              contextInfo={contextData}
               onCreated={newId => {
                 setLastCreated(newId);
-                if (publishNew) {
-                  dispatch(API.publishResource(newId));
-                }
               }}
               collapsedClassName={lightIconButtonStyle}
               customButton={
@@ -215,8 +296,7 @@ export default function ResourcesMainView({
 
       <ResourcesList
         resources={activeResources}
-        selectResource={selectResource}
-        contextData={contextData}
+        selectResource={showSelectedResource}
         readOnly={isReadOnly(accessLevel)}
         showLevels={showLevels}
       />

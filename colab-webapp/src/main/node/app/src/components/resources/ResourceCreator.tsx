@@ -1,6 +1,6 @@
 /*
  * The coLAB project
- * Copyright (C) 2021 AlbaSim, MEI, HEIG-VD, HES-SO
+ * Copyright (C) 2021-2022 AlbaSim, MEI, HEIG-VD, HES-SO
  *
  * Licensed under the MIT License
  */
@@ -15,8 +15,8 @@ import Button from '../common/element/Button';
 import Form, { Field } from '../common/element/Form';
 import IconButton from '../common/element/IconButton';
 import OpenCloseModal from '../common/layout/OpenCloseModal';
-import { lightIconButtonStyle, space_M, } from '../styling/style';
-import { ResourceCallContext } from './resourcesCommonType';
+import { lightIconButtonStyle, space_M } from '../styling/style';
+import { ResourcesCtx } from './ResourcesMainView';
 
 interface ResourceCreationType {
   title: string;
@@ -31,19 +31,19 @@ const defaultData: ResourceCreationType = {
 };
 
 interface ResourceCreatorProps {
-  contextInfo: ResourceCallContext;
   onCreated: (newId: number) => void;
   collapsedClassName?: string;
   customButton?: React.ReactNode;
 }
 
 export default function ResourceCreator({
-  contextInfo,
   onCreated,
   customButton,
 }: ResourceCreatorProps): JSX.Element {
   const dispatch = useAppDispatch();
   const i18n = useTranslations();
+
+  const { resourceOwnership, publishNewResource } = React.useContext(ResourcesCtx);
 
   const { isLoading, startLoading, stopLoading } = useLoadingState();
 
@@ -68,7 +68,7 @@ export default function ResourceCreator({
     // }),
   ];
 
-  if (contextInfo.kind === 'CardOrCardContent' && contextInfo.hasSeveralVariants) {
+  if (resourceOwnership.kind === 'CardOrCardContent' && resourceOwnership.hasSeveralVariants) {
     fields.push({
       key: 'atCardContentLevel',
       label: i18n.modules.resource.onlyForVariant,
@@ -85,13 +85,13 @@ export default function ResourceCreator({
       let cardTypeId: number | null | undefined = null;
       let cardId: number | null = null;
       let cardContentId: number | null = null;
-      if (contextInfo.kind == 'CardType') {
-        cardTypeId = contextInfo.cardTypeId;
+      if (resourceOwnership.kind == 'CardType') {
+        cardTypeId = resourceOwnership.cardTypeId;
       } else {
         if (resourceToCreate.atCardContentLevel) {
-          cardContentId = contextInfo.cardContentId || null;
+          cardContentId = resourceOwnership.cardContentId || null;
         } else {
-          cardId = contextInfo.cardId || null;
+          cardId = resourceOwnership.cardId || null;
         }
       }
 
@@ -103,6 +103,7 @@ export default function ResourceCreator({
           documents: [],
           title: resourceToCreate.title,
           category: null, //resourceToCreate.category,
+          published: !!publishNewResource,
         }),
       ).then(action => {
         stopLoading();
@@ -118,7 +119,7 @@ export default function ResourceCreator({
         close();
       });
     },
-    [contextInfo, startLoading, dispatch, onCreated, stopLoading],
+    [startLoading, resourceOwnership, dispatch, publishNewResource, stopLoading, onCreated],
   );
 
   return (

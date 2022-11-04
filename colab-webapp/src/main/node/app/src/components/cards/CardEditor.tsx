@@ -1,6 +1,6 @@
 /*
  * The coLAB project
- * Copyright (C) 2021 AlbaSim, MEI, HEIG-VD, HES-SO
+ * Copyright (C) 2021-2022 AlbaSim, MEI, HEIG-VD, HES-SO
  *
  * Licensed under the MIT License
  */
@@ -8,7 +8,6 @@
 import { css, cx } from '@emotion/css';
 import { faWindowRestore } from '@fortawesome/free-regular-svg-icons';
 import {
-  faArrowLeft,
   faCog,
   faCompressArrowsAlt,
   faDrumstickBite,
@@ -33,13 +32,11 @@ import * as API from '../../API/api';
 import useTranslations from '../../i18n/I18nContext';
 import { useCardACLForCurrentUser, useVariantsOrLoad } from '../../selectors/cardSelector';
 import { useAndLoadCardType } from '../../selectors/cardTypeSelector';
-import { useAndLoadResources } from '../../selectors/resourceSelector';
 //import { useStickyNoteLinksForDest } from '../../selectors/stickyNoteLinkSelector';
 import { useAppDispatch, useLoadingState } from '../../store/hooks';
 import Button from '../common/element/Button';
 import IconButton from '../common/element/IconButton';
 import { DiscreetInput } from '../common/element/Input';
-import Tips from '../common/element/Tips';
 import Collapsible from '../common/layout/Collapsible';
 import { ConfirmDeleteModal } from '../common/layout/ConfirmDeleteModal';
 import DropDownMenu from '../common/layout/DropDownMenu';
@@ -52,11 +49,13 @@ import DocEditorToolbox, {
   DocEditorCTX,
 } from '../documents/DocumentEditorToolbox';
 import DocumentList from '../documents/DocumentList';
-import HidenResourcesKeeper from '../resources/HidenResourcesKeeper';
-import ResourceCreator from '../resources/ResourceCreator';
-import { ResourceCallContext } from '../resources/resourcesCommonType';
-import ResourcesMainView from '../resources/ResourcesMainView';
-import { ResourceListNb } from '../resources/summary/ResourcesListSummary';
+import { ResourceAndRef, ResourceOwnership } from '../resources/resourcesCommonType';
+import {
+  ResourcesCtx,
+  ResourcesMainViewHeader,
+  ResourcesMainViewPanel,
+} from '../resources/ResourcesMainView';
+import { ResourcesListNb } from '../resources/summary/ResourcesListSummary';
 //import StickyNoteWrapper from '../stickynotes/StickyNoteWrapper';
 import {
   cardStyle,
@@ -183,8 +182,9 @@ export default function CardEditor({
   const [markDownMode, setMarkDownMode] = React.useState(false);
   const [editToolbar, setEditToolbar] = React.useState(defaultDocEditorContext.editToolbar);
   const [openKey, setOpenKey] = React.useState<string | undefined>(undefined);
-  const [docOpen, setDocOpen] = React.useState<boolean>(false);
-  const [backToList, setBackToList] = React.useState<() => void>(() => {});
+
+  const [selectedResource, selectResource] = React.useState<ResourceAndRef | null>(null);
+
   const TXToptions = {
     showTree: showTree,
     setShowTree: setShowTree,
@@ -193,73 +193,31 @@ export default function CardEditor({
   };
   const { isLoading, startLoading, stopLoading } = useLoadingState();
 
-  const resourceContext: ResourceCallContext = {
+  const resourceOwnership: ResourceOwnership = {
     kind: 'CardOrCardContent',
     cardId: card.id || undefined,
     cardContentId: variant.id,
     hasSeveralVariants: hasVariants,
   };
-  const { ghostResources } = useAndLoadResources(resourceContext);
+
   const sideBarItems: Record<string, Item> = {
     resources: {
       icon: faPaperclip,
       nextToIconElement: (
         <div className={textSmall}>
           {' '}
-          (<ResourceListNb context={resourceContext} />)
+          (<ResourcesListNb resourcesOwnership={resourceOwnership} />)
         </div>
       ),
       title: i18n.modules.resource.documentation,
       header: (
-        <>
-          {docOpen && (
-            <IconButton
-              icon={faArrowLeft}
-              title={i18n.modules.resource.backList}
-              onClick={backToList}
-              className={lightIconButtonStyle}
-            />
-          )}
-          <h3>{i18n.modules.resource.documentation}</h3>
-          <Tips>{i18n.modules.resource.help.documentationExplanation}</Tips>
-          {!docOpen && (
-            <>
-              <ResourceCreator
-                contextInfo={resourceContext}
-                onCreated={() => {}}
-                collapsedClassName={lightIconButtonStyle}
-              />
-              {/* <TocDisplayToggler /> */}
-              {ghostResources != null && ghostResources.length > 0 && (
-                // note : we can imagine that a read access level allows to see the ghost resources
-                <>
-                  <span
-                    className={css({
-                      width: '1px',
-                      height: '100%',
-                      backgroundColor: 'var(--lightGray)',
-                    })}
-                  />
-                  <HidenResourcesKeeper
-                    resources={ghostResources}
-                    collapsedClassName={cx(
-                      css({
-                        borderTop: '1px solid var(--lightGray)',
-                        padding: space_S,
-                        '&:hover': { backgroundColor: 'var(--lightGray)', cursor: 'pointer' },
-                      }),
-                      lightIconButtonStyle,
-                    )}
-                  />
-                </>
-              )}
-            </>
-          )}
-        </>
+        <ResourcesMainViewHeader
+          title={<h3>{i18n.modules.resource.documentation}</h3>}
+          helpTip={i18n.modules.resource.help.documentationExplanation}
+        />
       ),
       children: (
-        <ResourcesMainView
-          contextData={resourceContext}
+        <ResourcesMainViewPanel
           accessLevel={!readOnly ? 'WRITE' : canRead ? 'READ' : 'DENIED'}
           showLevels
         />
@@ -267,6 +225,7 @@ export default function CardEditor({
       className: css({ overflow: 'auto' }),
     },
   };
+
   //const { stickyNotesForDest } = useStickyNoteLinksForDest(card.id);
   const closeRouteCb = React.useCallback(
     (route: string) => {
@@ -540,111 +499,116 @@ export default function CardEditor({
                 items: sideBarItems,
                 openKey,
                 setOpenKey,
-                insideState: docOpen,
-                setInsideState: setDocOpen,
-                extraNavFunction: backToList,
-                setExtraNavFunction: setBackToList,
               }}
             >
-              <Flex grow={1} align="stretch" className={css({ overflow: 'hidden' })}>
-                <ReflexContainer orientation={'vertical'}>
-                  <ReflexElement
-                    className={'left-pane ' + css({ display: 'flex' })}
-                    resizeHeight={false}
-                    minSize={150}
-                  >
-                    <DocEditorCTX.Provider
-                      value={{
-                        selectedDocId,
-                        setSelectedDocId,
-                        editMode,
-                        setEditMode,
-                        editToolbar,
-                        setEditToolbar,
-                        TXToptions,
-                      }}
+              <ResourcesCtx.Provider
+                value={{
+                  resourceOwnership,
+                  selectedResource,
+                  selectResource,
+                }}
+              >
+                <Flex grow={1} align="stretch" className={css({ overflow: 'hidden' })}>
+                  <ReflexContainer orientation={'vertical'}>
+                    <ReflexElement
+                      className={'left-pane ' + css({ display: 'flex' })}
+                      resizeHeight={false}
+                      minSize={150}
                     >
-                      <Flex direction="column" grow={1} align="stretch">
-                        <Flex
-                          direction="column"
-                          grow={1}
-                          className={css({
-                            overflow: 'auto',
-                          })}
-                          align="stretch"
-                        >
-                          <Flex direction="column" align="stretch">
-                            {!readOnly && variant.id && (
-                              <DocEditorToolbox
-                                open={true}
-                                docOwnership={{
-                                  kind: 'DeliverableOfCardContent',
-                                  ownerId: variant.id,
-                                }}
-                              />
-                            )}
-                            {cardType && (
-                              <div className={showTypeDetails ? openDetails : closeDetails}>
-                                <div>
-                                  <p>
-                                    <b>{i18n.modules.cardType.cardType}</b>: {cardType.title || ''}
-                                  </p>
-                                  <p>
-                                    <b>{i18n.modules.cardType.purpose}</b>:{' '}
-                                    <DocTextDisplay id={cardType.purposeId} />
-                                  </p>
-                                </div>
-                                <IconButton
-                                  icon={faTimes}
-                                  title={i18n.common.close}
-                                  onClick={() => setShowTypeDetails(false)}
-                                />
-                              </div>
-                            )}
-                          </Flex>
+                      <DocEditorCTX.Provider
+                        value={{
+                          selectedDocId,
+                          setSelectedDocId,
+                          editMode,
+                          setEditMode,
+                          editToolbar,
+                          setEditToolbar,
+                          TXToptions,
+                        }}
+                      >
+                        <Flex direction="column" grow={1} align="stretch">
                           <Flex
                             direction="column"
                             grow={1}
+                            className={css({
+                              overflow: 'auto',
+                            })}
                             align="stretch"
-                            className={css({ overflow: 'auto', padding: space_S })}
                           >
-                            {canRead != undefined &&
-                              (canRead ? (
-                                variant.id ? (
-                                  <DocumentList
-                                    docOwnership={{
-                                      kind: 'DeliverableOfCardContent',
-                                      ownerId: variant.id,
-                                    }}
-                                    readOnly={readOnly}
+                            <Flex direction="column" align="stretch">
+                              {!readOnly && variant.id && (
+                                <DocEditorToolbox
+                                  open={true}
+                                  docOwnership={{
+                                    kind: 'DeliverableOfCardContent',
+                                    ownerId: variant.id,
+                                  }}
+                                />
+                              )}
+                              {cardType && (
+                                <div className={showTypeDetails ? openDetails : closeDetails}>
+                                  <div>
+                                    <p>
+                                      <b>{i18n.modules.cardType.cardType}</b>:{' '}
+                                      {cardType.title || ''}
+                                    </p>
+                                    <p>
+                                      <b>{i18n.modules.cardType.purpose}</b>:{' '}
+                                      <DocTextDisplay id={cardType.purposeId} />
+                                    </p>
+                                  </div>
+                                  <IconButton
+                                    icon={faTimes}
+                                    title={i18n.common.close}
+                                    onClick={() => setShowTypeDetails(false)}
                                   />
+                                </div>
+                              )}
+                            </Flex>
+                            <Flex
+                              direction="column"
+                              grow={1}
+                              align="stretch"
+                              className={css({ overflow: 'auto', padding: space_S })}
+                            >
+                              {canRead != undefined &&
+                                (canRead ? (
+                                  variant.id ? (
+                                    <DocumentList
+                                      docOwnership={{
+                                        kind: 'DeliverableOfCardContent',
+                                        ownerId: variant.id,
+                                      }}
+                                      readOnly={readOnly}
+                                    />
+                                  ) : (
+                                    <span>{i18n.modules.card.infos.noDeliverable}</span>
+                                  )
                                 ) : (
-                                  <span>{i18n.modules.card.infos.noDeliverable}</span>
-                                )
-                              ) : (
-                                <span>{i18n.httpErrorMessage.ACCESS_DENIED}</span>
-                              ))}
+                                  <span>{i18n.httpErrorMessage.ACCESS_DENIED}</span>
+                                ))}
+                            </Flex>
                           </Flex>
                         </Flex>
-                      </Flex>
-                    </DocEditorCTX.Provider>
-                  </ReflexElement>
-                  {openKey && <ReflexSplitter className={css({ zIndex: 0 })} />}
-                  <ReflexElement
-                    className={'right-pane ' + css({ display: 'flex' })}
-                    resizeHeight={false}
-                    maxSize={openKey ? undefined : 0.1}
-                    minSize={360}
-                    flex={0.2}
-                  >
-                    <SideCollapsiblePanelBody className={css({ overflow: 'hidden' })} />
-                  </ReflexElement>
-                </ReflexContainer>
-                <SideCollapsibleMenu
-                  defaultOpenKey="resources"
-                  className={css({ borderLeft: '1px solid var(--lightGray)' })}
-                />
-              </Flex>
+                      </DocEditorCTX.Provider>
+                    </ReflexElement>
+                    {openKey && <ReflexSplitter className={css({ zIndex: 0 })} />}
+                    <ReflexElement
+                      className={'right-pane ' + css({ display: 'flex' })}
+                      resizeHeight={false}
+                      maxSize={openKey ? undefined : 0.1}
+                      minSize={360}
+                      flex={0.2}
+                    >
+                      <SideCollapsiblePanelBody className={css({ overflow: 'hidden' })} />
+                    </ReflexElement>
+                  </ReflexContainer>
+                  <SideCollapsibleMenu
+                    defaultOpenKey="resources"
+                    className={css({ borderLeft: '1px solid var(--lightGray)' })}
+                  />
+                </Flex>
+              </ResourcesCtx.Provider>
             </SideCollapsibleCTX.Provider>
             <Flex align="center">
               <OpenCloseModal

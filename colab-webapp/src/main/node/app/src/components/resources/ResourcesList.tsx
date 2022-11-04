@@ -1,6 +1,6 @@
 /*
  * The coLAB project
- * Copyright (C) 2021 AlbaSim, MEI, HEIG-VD, HES-SO
+ * Copyright (C) 2021-2022 AlbaSim, MEI, HEIG-VD, HES-SO
  *
  * Licensed under the MIT License
  */
@@ -38,10 +38,28 @@ import {
   getKey,
   getTheDirectResource,
   ResourceAndRef,
-  ResourceCallContext,
   useResourceAccessLevelForCurrentUser,
 } from './resourcesCommonType';
+import { ResourcesCtx } from './ResourcesMainView';
 import TargetResourceSummary from './summary/TargetResourceSummary';
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Resource TOC Context
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+export type TocMode = 'CATEGORY' | 'SOURCE' | '3_STACKS';
+
+export interface TocDisplayContext {
+  mode: TocMode;
+  setMode: (newMode: TocMode) => void;
+}
+
+export const TocDisplayCtx = React.createContext<TocDisplayContext>({
+  mode: 'CATEGORY',
+  setMode: () => {},
+});
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
 
 /**
  * List of ResourceAndRef grouped by category
@@ -87,7 +105,6 @@ export interface ResourcesListProps {
   displayResourceItem?: (resource: ResourceAndRef) => React.ReactNode;
   showLocationIcon?: boolean;
   showLevels?: boolean;
-  contextData?: ResourceCallContext;
   readOnly?: boolean;
 }
 
@@ -96,7 +113,6 @@ export interface ResourcesListProps {
 //   selectResource,
 //   displayResourceItem,
 //   showLocationIcon = true,
-//   contextData,
 //   readOnly,
 // }: ResourcesListProps): JSX.Element {
 //   const lang = useLanguage();
@@ -115,7 +131,6 @@ export interface ResourcesListProps {
 //           selectResource={selectResource}
 //           displayResource={displayResourceItem}
 //           showLocationIcon={showLocationIcon}
-//           contextData={contextData}
 //           readOnly={readOnly}
 //         />
 //       ))}
@@ -128,7 +143,6 @@ function ResourcesListByCategory({
   selectResource,
   displayResourceItem,
   showLocationIcon = true,
-  contextData,
   readOnly,
 }: ResourcesListProps): JSX.Element {
   const lang = useLanguage();
@@ -171,7 +185,6 @@ function ResourcesListByCategory({
                   selectResource={selectResource}
                   displayResource={displayResourceItem}
                   showLocationIcon={showLocationIcon}
-                  contextData={contextData}
                   readOnly={readOnly}
                 />
               ))}
@@ -186,10 +199,11 @@ function ResourcesListBy3Stacks({
   resources,
   selectResource,
   displayResourceItem,
-  contextData,
 }: //readOnly,
 ResourcesListProps): JSX.Element {
   const lang = useLanguage();
+
+  const { resourceOwnership } = React.useContext(ResourcesCtx);
 
   const { project: currentProject } = useProjectBeingEdited();
   const root = useProjectRootCard(currentProject);
@@ -276,12 +290,11 @@ ResourcesListProps): JSX.Element {
     >
       {bySources['OWN'] ? (
         <div className={marginAroundStyle([3], space_S)}>
-          <Collapsible label={contextData?.kind === 'CardType' ? 'Theme' : 'Card'} open>
+          <Collapsible label={resourceOwnership.kind === 'CardType' ? 'Theme' : 'Card'} open>
             <ResourcesListByCategory
               resources={bySources['OWN']}
               selectResource={selectResource}
               displayResourceItem={displayResourceItem}
-              contextData={contextData}
               showLocationIcon={false}
             />
           </Collapsible>
@@ -296,7 +309,6 @@ ResourcesListProps): JSX.Element {
               resources={bySources['INHERITED']}
               selectResource={selectResource}
               displayResourceItem={displayResourceItem}
-              contextData={contextData}
               showLocationIcon={false}
             />
           </Collapsible>
@@ -311,7 +323,6 @@ ResourcesListProps): JSX.Element {
               resources={bySources['PROJECT']}
               selectResource={selectResource}
               displayResourceItem={displayResourceItem}
-              contextData={contextData}
               showLocationIcon={false}
             />
           </Collapsible>
@@ -326,7 +337,6 @@ ResourcesListProps): JSX.Element {
     //           resources={bySources['CARD']}
     //           selectResource={selectResource}
     //           displayResourceItem={displayResourceItem}
-    //           contextData={contextData}
     //           showLocationIcon={false}
     //         />
     //       </Collapsible>
@@ -341,7 +351,6 @@ ResourcesListProps): JSX.Element {
     //           resources={bySources['THEME']}
     //           selectResource={selectResource}
     //           displayResourceItem={displayResourceItem}
-    //           contextData={contextData}
     //           showLocationIcon={false}
     //         />
     //       </Collapsible>
@@ -356,7 +365,6 @@ ResourcesListProps): JSX.Element {
     //           resources={bySources['PROJECT']}
     //           selectResource={selectResource}
     //           displayResourceItem={displayResourceItem}
-    //           contextData={contextData}
     //           showLocationIcon={false}
     //         />
     //       </Collapsible>
@@ -371,7 +379,6 @@ ResourcesListProps): JSX.Element {
     //           resources={bySources['MODEL']}
     //           selectResource={selectResource}
     //           displayResourceItem={displayResourceItem}
-    //           contextData={contextData}
     //           showLocationIcon={false}
     //         />
     //       </Collapsible>
@@ -386,7 +393,6 @@ ResourcesListProps): JSX.Element {
     //           resources={bySources['OUTSIDE']}
     //           selectResource={selectResource}
     //           displayResourceItem={displayResourceItem}
-    //           contextData={contextData}
     //           showLocationIcon={false}
     //         />
     //       </Collapsible>
@@ -541,7 +547,6 @@ interface TocEntryProps {
   selectResource?: (resource: ResourceAndRef) => void;
   displayResource?: (resource: ResourceAndRef) => React.ReactNode;
   showLocationIcon: boolean;
-  contextData?: ResourceCallContext;
   readOnly?: boolean;
 }
 
@@ -550,12 +555,13 @@ function TocEntry({
   selectResource,
   displayResource,
   //showLocationIcon,
-  contextData,
   readOnly,
 }: TocEntryProps): JSX.Element {
   const i18n = useTranslations();
 
   const [showSettings, setShowSettings] = React.useState(false);
+
+  const { resourceOwnership } = React.useContext(ResourcesCtx);
 
   // const { text: teaser } = useAndLoadTextOfDocument(resource.targetResource.teaserId);
 
@@ -713,7 +719,7 @@ function TocEntry({
                       },
                     ]
                   : []),
-                ...(!resource.isDirectResource && contextData // TODO voir quelles conditions
+                ...(!resource.isDirectResource && resourceOwnership // TODO voir quelles conditions
                   ? [
                       {
                         value: 'ownCopy',
@@ -727,11 +733,12 @@ function TocEntry({
                           dispatch(
                             API.duplicateAndMoveResource({
                               resourceOrRef: resource.targetResource,
-                              newParentType: contextData.kind === 'CardType' ? 'CardType' : 'Card',
+                              newParentType:
+                                resourceOwnership.kind === 'CardType' ? 'CardType' : 'Card',
                               newParentId:
-                                contextData.kind === 'CardType'
-                                  ? contextData.cardTypeId || 0
-                                  : contextData.cardId || 0,
+                                resourceOwnership.kind === 'CardType'
+                                  ? resourceOwnership.cardTypeId || 0
+                                  : resourceOwnership.cardId || 0,
                             }),
                           );
                         },

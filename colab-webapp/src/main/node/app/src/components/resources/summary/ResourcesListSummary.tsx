@@ -1,6 +1,6 @@
 /*
  * The coLAB project
- * Copyright (C) 2021 AlbaSim, MEI, HEIG-VD, HES-SO
+ * Copyright (C) 2021-2022 AlbaSim, MEI, HEIG-VD, HES-SO
  *
  * Licensed under the MIT License
  */
@@ -10,15 +10,18 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import * as React from 'react';
 import useTranslations from '../../../i18n/I18nContext';
 import { useAndLoadNbActiveResources } from '../../../selectors/resourceSelector';
-import { ResourceCallContext } from '../resourcesCommonType';
+import { ResourceOwnership } from '../resourcesCommonType';
 
-interface ResourceListSummaryProps {
-  context: ResourceCallContext;
+interface ResourcesListSummaryProps {
+  resourcesOwnership: ResourceOwnership;
 }
 
-export default function ResourcesListSummary({ context }: ResourceListSummaryProps): JSX.Element {
+export default function ResourcesListSummary({
+  resourcesOwnership,
+}: ResourcesListSummaryProps): JSX.Element {
   const i18n = useTranslations();
-  const { nb, status } = useAndLoadNbActiveResources(context);
+
+  const { nb, status } = useAndLoadNbActiveResources(resourcesOwnership);
 
   if (status !== 'READY') {
     return <></>;
@@ -40,12 +43,13 @@ export default function ResourcesListSummary({ context }: ResourceListSummaryPro
     </>
   );
 }
-interface ResourceListNbProps {
-  context: ResourceCallContext;
+
+interface ResourcesListNbProps {
+  resourcesOwnership: ResourceOwnership;
 }
 
-export function ResourceListNb({ context }: ResourceListNbProps): JSX.Element {
-  const { nb, status } = useAndLoadNbActiveResources(context);
+export function ResourcesListNb({ resourcesOwnership }: ResourcesListNbProps): JSX.Element {
+  const { nb, status } = useAndLoadNbActiveResources(resourcesOwnership);
 
   if (status !== 'READY') {
     return <></>;

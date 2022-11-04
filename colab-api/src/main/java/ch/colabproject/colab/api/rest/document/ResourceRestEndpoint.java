@@ -334,6 +334,7 @@ public class ResourceRestEndpoint {
         resource.setAbstractCardTypeId(resourceCreationData.getAbstractCardTypeId());
         resource.setCardId(resourceCreationData.getCardId());
         resource.setCardContentId(resourceCreationData.getCardContentId());
+        resource.setPublished(resourceCreationData.isPublished());
 
         Resource newResource = resourceManager.createResource(resource);
 

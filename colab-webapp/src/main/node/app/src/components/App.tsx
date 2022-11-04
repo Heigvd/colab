@@ -1,6 +1,6 @@
 /*
  * The coLAB project
- * Copyright (C) 2021 AlbaSim, MEI, HEIG-VD, HES-SO
+ * Copyright (C) 2021-2022 AlbaSim, MEI, HEIG-VD, HES-SO
  *
  * Licensed under the MIT License
  */
@@ -24,7 +24,7 @@ import { lightTheme, normalThemeMode } from './styling/style';
 import Token from './token/Token';
 
 import 'inter-ui/inter.css';
-import { TocDisplayCtx, TocMode } from './resources/ResourcesMainView';
+import { TocDisplayCtx, TocMode } from './resources/ResourcesList';
 
 /**
  * To read parameters from hash
