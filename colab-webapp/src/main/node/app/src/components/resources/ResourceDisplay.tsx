@@ -20,7 +20,6 @@ import * as API from '../../API/api';
 import { updateDocumentText } from '../../API/api';
 import useTranslations from '../../i18n/I18nContext';
 import { useAndLoadTextOfDocument } from '../../selectors/documentSelector';
-import { useProjectBeingEdited } from '../../selectors/projectSelector';
 import { useAppDispatch } from '../../store/hooks';
 import { DiscreetInput, DiscreetTextArea } from '../common/element/Input';
 import { FeaturePreview } from '../common/element/Tips';
@@ -65,7 +64,6 @@ export function ResourceDisplay({
   const dispatch = useAppDispatch();
   const i18n = useTranslations();
 
-  const { project } = useProjectBeingEdited();
   // const rootCard = useProjectRootCard(project);
 
   const [selectedDocId, setSelectedDocId] = React.useState<number | undefined | null>(undefined);
@@ -98,16 +96,7 @@ export function ResourceDisplay({
   //   setForce(current => !current);
   // }, []);
 
-  const canEdit =
-    !readOnly &&
-    project &&
-    ((project && project.type === 'MODEL') ||
-      (project.type === 'PROJECT' && resource.isDirectResource) ||
-      resource.targetResource.cardId != null ||
-      resource.targetResource.cardContentId != null) &&
-    accesLevel === 'WRITE';
-
-  const effectiveReadOnly = !canEdit; // !forceWrite && (readOnly || !resource.isDirectResource);
+  const effectiveReadOnly = readOnly || accesLevel !== 'WRITE'; // !forceWrite && (readOnly || !resource.isDirectResource);
 
   //const category = getTheDirectResource(resource).category;
 

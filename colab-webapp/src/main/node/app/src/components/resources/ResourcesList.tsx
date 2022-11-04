@@ -558,7 +558,6 @@ function TocEntry({
   const [showSettings, setShowSettings] = React.useState(false);
 
   // const { text: teaser } = useAndLoadTextOfDocument(resource.targetResource.teaserId);
-  const { project } = useProjectBeingEdited();
 
   const { nb: nbDocs } = useAndLoadNbDocuments({
     kind: 'PartOfResource',
@@ -566,16 +565,7 @@ function TocEntry({
   });
   const accesLevel = useResourceAccessLevelForCurrentUser(resource.targetResource);
 
-  const canEdit =
-    !readOnly &&
-    project &&
-    ((project && project.type === 'MODEL') ||
-      (project.type === 'PROJECT' && resource.isDirectResource) ||
-      resource.targetResource.cardId != null ||
-      resource.targetResource.cardContentId != null) &&
-    accesLevel === 'WRITE';
-
-  const effectiveReadOnly = !canEdit; // !forceWrite && (readOnly || !resource.isDirectResource);
+  const effectiveReadOnly = readOnly || accesLevel !== 'WRITE'; // !forceWrite && (readOnly || !resource.isDirectResource);
 
   // const { project } = useProjectBeingEdited();
   // const rootCard = useProjectRootCard(project);
