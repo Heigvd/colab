@@ -72,7 +72,7 @@ function ProjectSettingWrapper(): JSX.Element {
       title={i18n.modules.project.labels.projectDisplaySettings}
       showCloseButton
       onClose={() => {
-        navigate('/');
+        navigate('..');
       }}
       className={css({
         '&:hover': { textDecoration: 'none' },
@@ -358,7 +358,7 @@ function ProjectList({ projects, status, reload }: ProjectListProps) {
     return <InlineLoading />;
   } else {
     return (
-      <div className={css({ padding: '4vw' })}>
+      <div className={css({ padding: '3rem' })}>
         {!projects || projects.length === 0 ? (
           <Flex justify="center" align="center" direction="column">
             <h2>{i18n.common.welcome}</h2>
@@ -500,7 +500,7 @@ function ModelsList({ status, reload }: ModelListProps) {
     return <InlineLoading />;
   } else {
     return (
-      <div className={css({ padding: '4vw' })}>
+      <div className={css({ padding: '2rem'})}>
         {(!models || models.length === 0) && (
           <div className={voidStyle}>
             <h2>{i18n.common.welcome}</h2>

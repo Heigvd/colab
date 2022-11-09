@@ -12,6 +12,7 @@ export const fr: ColabTranslations = {
   //////////////////////////////////////////////////////////////////////////////////////////////////
   // COMMON
   common: {
+    advanced: 'Avancé',
     cancel: 'Annuler',
     create: 'Créer',
     save: 'Sauvegarder',
@@ -362,6 +363,7 @@ export const fr: ColabTranslations = {
         },
         sharing: {
           label: 'Partage du modèle',
+          parameters: 'Paramètres de partage'
         },
         missingIcon:
           "Oh une nouvelle bibliothèque d'icônes, cher développeur s'il vous plaît faites ce qui est nécessaire pour afficher l'icône.",

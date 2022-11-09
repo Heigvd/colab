@@ -187,7 +187,7 @@ export default function MainApp(): JSX.Element {
                       <Route path="/*" element={<UserProjects />} />
                       <Route path="/newModelShared" element={<NewModelShared />} />
                       <Route path="/projects" element={<UserProjects />} />
-                      <Route path="/models" element={<UserModels />} />
+                      <Route path="/models/*" element={<UserModels />} />
                       <Route path="/settings/*" element={<Settings />} />
                       <Route path="/admin/*" element={<Admin />} />
                       <Route path="/editor/:id/*" element={<EditorWrapper />} />

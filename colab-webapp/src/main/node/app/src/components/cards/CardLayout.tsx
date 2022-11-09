@@ -13,7 +13,7 @@ import { cardStyle } from '../styling/style';
 
 const progressBarContainer = css({
   height: '5px',
-  backgroundColor: 'var(--pictoGrey)',
+  backgroundColor: '#bbb',
   width: '100%',
 });
 

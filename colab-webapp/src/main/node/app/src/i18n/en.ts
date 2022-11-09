@@ -11,6 +11,7 @@ export const en = {
   //////////////////////////////////////////////////////////////////////////////////////////////////
   // COMMON
   common: {
+    advanced: 'Advanced',
     cancel: 'Cancel',
     create: 'Create',
     save: 'Save',
@@ -357,6 +358,7 @@ export const en = {
         },
         sharing: {
           label: 'Model sharing',
+          parameters: 'Sharing parameters'
         },
         missingIcon:
           'Oh a new icon library, dear developer please make what is needed to display the icon.',
