@@ -72,7 +72,7 @@ export function gridCardsStyle(nbRows: number, nbColumns: number, depth?: number
       ...gridStyle,
       gridTemplateColumns: `repeat(${nbColumns >= 3 ? nbColumns : 3}, minmax(250px, 1fr))`,
       //gridTemplateColumns: `repeat(${nbColumns}, minmax(250px, 1fr))`,
-      gridTemplateRows: `repeat(${nbRows >= 3 ? nbRows : 3}, minmax(100px, 1fr))`,
+      gridTemplateRows: `repeat(${nbRows >= 3 ? nbRows : 3}, minmax(150px, 1fr))`,
       /* justifyContent: 'stretch',
     alignContent: 'stretch',
     justifyItems: 'stretch',

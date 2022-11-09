@@ -46,7 +46,6 @@ import DropDownMenu from '../common/layout/DropDownMenu';
 import Ellipsis from '../common/layout/Ellipsis';
 import Flex from '../common/layout/Flex';
 import Modal from '../common/layout/Modal';
-import OpenCloseModal from '../common/layout/OpenCloseModal';
 import { DocTextDisplay } from '../documents/DocTextItem';
 import DocEditorToolbox, {
   defaultDocEditorContext,
@@ -111,22 +110,6 @@ const closeDetails = css({
   maxHeight: '0px',
   padding: '0 ' + space_M,
 });
-const barHeight = '18px';
-
-const progressBarContainer = css({
-  height: barHeight,
-  lineHeight: barHeight,
-  backgroundColor: '#949494',
-  width: '100%',
-  position: 'relative',
-});
-
-const valueStyle = css({
-  position: 'absolute',
-  color: 'white',
-  width: '100%',
-  textAlign: 'center',
-});
 
 const fullScreenStyle = css({
   position: 'absolute',
@@ -136,29 +119,6 @@ const fullScreenStyle = css({
   height: '100%',
   borderRadius: 0,
 });
-
-const progressBar = (width: number) =>
-  css({
-    width: `${width}%`,
-    height: 'inherit',
-    backgroundColor: '#00DDB3',
-  });
-
-function ProgressBar({
-  variant,
-  className,
-}: {
-  variant: CardContent | undefined;
-  className?: string;
-}) {
-  const percent = variant != null ? variant.completionLevel : 0;
-  return (
-    <div className={cx(progressBarContainer, className)}>
-      <div className={valueStyle}>{percent}%</div>
-      <div className={progressBar(percent)}></div>
-    </div>
-  );
-}
 
 export default function CardEditor({
   card,
@@ -616,37 +576,8 @@ export default function CardEditor({
                 </Flex>
               </ResourcesCtx.Provider>
             </SideCollapsibleCTX.Provider>
-            <Flex align="center">
-              <OpenCloseModal
-                title={i18n.modules.card.editCompletion}
-                className={css({ width: '100%' })}
-                modalBodyClassName={css({ alignItems: 'center' })}
-                collapsedChildren={
-                  <ProgressBar
-                    variant={variant}
-                    className={css({
-                      '&:hover': {
-                        cursor: 'pointer',
-                        opacity: 0.6,
-                      },
-                    })}
-                  />
-                }
-                footer={close => (
-                  <Flex grow={1} justify="center" className={css({ margin: space_S })}>
-                    <Button onClick={close}>{i18n.common.ok}</Button>
-                  </Flex>
-                )}
-                onEnter={close => close()}
-              >
-                {() =>
-                  variant && (
-                    <Flex direction="column" justify="center" align="center">
-                      <CompletionEditor variant={variant} />
-                    </Flex>
-                  )
-                }
-              </OpenCloseModal>
+            <Flex direction="column" align="stretch">
+              <CompletionEditor variant={variant} />
             </Flex>
           </Flex>
         </Flex>
@@ -660,7 +591,7 @@ export default function CardEditor({
     );
   }
 }
-function SubcardsDisplay({ variant }: {variant: CardContent;}): JSX.Element {
+function SubcardsDisplay({ variant }: { variant: CardContent }): JSX.Element {
   const i18n = useTranslations();
   const subCards = useAndLoadSubCards(variant.id);
   const [detailed, setDetailed] = React.useState<boolean>(false);
@@ -676,7 +607,7 @@ function SubcardsDisplay({ variant }: {variant: CardContent;}): JSX.Element {
             //navigate(`../card/${card.id}/v/${variant.id}`);
           }}
           title="View card structure"
-          className={cx(lightIconButtonStyle, {[css({color: 'black'})]: detailed} )}
+          className={cx(lightIconButtonStyle, { [css({ color: 'black' })]: detailed })}
         />
       </Flex>
       {subCards != null && subCards.length > 0 && (
