@@ -9,7 +9,6 @@ import { css, cx } from '@emotion/css';
 import {
   faBookOpen,
   faChevronRight,
-  faCog,
   faGrip,
   faHouse,
   faNetworkWired,
@@ -74,7 +73,7 @@ import { PresenceContext, usePresenceContext } from '../presence/PresenceContext
 import { defaultProjectIllustration } from '../ProjectCommon';
 import { ProjectSettings } from '../ProjectSettings';
 import ProjectSharing from '../ProjectSharing';
-import Team from '../Team';
+import Team from '../team/Team';
 import ActivityFlowChart from './ActivityFlowChart';
 import Hierarchy from './Hierarchy';
 
@@ -379,73 +378,73 @@ function EditorNav({ project }: EditorNavProps): JSX.Element {
           )}
         /> */}
           </MainMenuLink>
-          <Flex
-            className={css({
-              borderLeft: '1px solid var(--lightGray)',
-              padding: '0 ' + space_S,
-            })}
-            wrap="nowrap"
+        <Flex
+          className={css({
+            borderLeft: '1px solid var(--lightGray)',
+            padding: '0 ' + space_S,
+          })}
+          wrap="nowrap"
+        >
+          <MainMenuLink
+            end
+            to={`/editor/${project.id}`}
+            className={active =>
+              active.isActive || location.pathname.match(/^\/editor\/\d+\/(edit|card)/)
+                ? mainLinkActiveClass
+                : mainMenuLink
+            }
           >
-            <MainMenuLink
-              end
-              to={`/editor/${project.id}`}
-              className={active =>
-                active.isActive || location.pathname.match(/^\/editor\/\d+\/(edit|card)/)
-                  ? mainLinkActiveClass
-                  : mainMenuLink
-              }
-            >
-              <FontAwesomeIcon
-                icon={faGrip}
-                title={i18n.common.views.view + ' ' + i18n.common.views.board}
-              />
-            </MainMenuLink>
-            <MainMenuLink to="./hierarchy">
-              <FontAwesomeIcon
-                icon={faNetworkWired}
-                title={i18n.common.views.view + ' ' + i18n.common.views.hierarchy}
-              />
-            </MainMenuLink>
-            <MainMenuLink to="./flow">
-              <FontAwesomeIcon
-                icon={faProjectDiagram}
-                title={i18n.common.views.view + ' ' + i18n.common.views.activityFlow}
-              />
-            </MainMenuLink>
-          </Flex>
-          <Flex
-            className={css({
-              borderLeft: '1px solid var(--lightGray)',
-              padding: '0 ' + space_S,
-            })}
-            wrap="nowrap"
+            <FontAwesomeIcon
+              icon={faGrip}
+              title={i18n.common.views.view + ' ' + i18n.common.views.board}
+            />
+          </MainMenuLink>
+          <MainMenuLink to="./hierarchy">
+            <FontAwesomeIcon
+              icon={faNetworkWired}
+              title={i18n.common.views.view + ' ' + i18n.common.views.hierarchy}
+            />
+          </MainMenuLink>
+          <MainMenuLink to="./flow">
+            <FontAwesomeIcon
+              icon={faProjectDiagram}
+              title={i18n.common.views.view + ' ' + i18n.common.views.activityFlow}
+            />
+          </MainMenuLink>
+        </Flex>
+        <Flex
+          className={css({
+            borderLeft: '1px solid var(--lightGray)',
+            padding: '0 ' + space_S,
+          })}
+          wrap="nowrap"
+        >
+          <MainMenuLink to="./docs">
+            <FontAwesomeIcon
+              icon={faBookOpen}
+              title={i18n.modules.project.settings.resources.label}
+            />
+          </MainMenuLink>
+        </Flex>
+        <Flex
+          className={css({
+            borderLeft: '1px solid var(--lightGray)',
+            padding: '0 ' + space_S,
+          })}
+          wrap="nowrap"
+        >
+          <MainMenuLink
+            to="./team"
+            className={active =>
+              active.isActive || location.pathname.match(/^\/editor\/\d+\/team/)
+                ? mainLinkActiveClass
+                : mainMenuLink
+            }
           >
-            <MainMenuLink to="./docs">
-              <FontAwesomeIcon
-                icon={faBookOpen}
-                title={i18n.modules.project.settings.resources.label}
-              />
-            </MainMenuLink>
-          </Flex>
-          <Flex
-            className={css({
-              borderLeft: '1px solid var(--lightGray)',
-              padding: '0 ' + space_S,
-            })}
-            wrap="nowrap"
-          >
-            <MainMenuLink
-              to="./team"
-              className={active =>
-                active.isActive || location.pathname.match(/^\/editor\/\d+\/team/)
-                  ? mainLinkActiveClass
-                  : mainMenuLink
-              }
-            >
-              <FontAwesomeIcon icon={faUserGroup} title={i18n.team.teamManagement} />
-            </MainMenuLink>
-          </Flex>
-          {/* {project.type === 'MODEL' && (
+            <FontAwesomeIcon icon={faUserGroup} title={i18n.team.teamManagement} />
+          </MainMenuLink>
+        </Flex>
+        {/* {project.type === 'MODEL' && (
             <WIPContainer>
               <Flex
                 className={css({
@@ -463,18 +462,7 @@ function EditorNav({ project }: EditorNavProps): JSX.Element {
               </Flex>
             </WIPContainer>
           )} */}
-          <Flex
-            className={css({
-              borderLeft: '1px solid var(--lightGray)',
-              padding: '0 ' + space_S,
-            })}
-            wrap="nowrap"
-          >
-            <MainMenuLink to="./project-settings">
-              <FontAwesomeIcon title={i18n.modules.project.labels.projectSettings} icon={faCog} />
-            </MainMenuLink>
           </Flex>
-        </Flex>
         <div
           className={css({
             gridColumn: '2/3',
@@ -697,7 +685,7 @@ export default function Editor(): JSX.Element {
               <Route path="settings/*" element={<Settings />} />
               <Route path="project-settings/*" element={<ProjectSettings project={project} />} />
               <Route path="admin/*" element={<Admin />} />
-              <Route path="team" element={<Team project={project} />} />
+              <Route path="team/*" element={<Team project={project} />} />
               <Route path="hierarchy" element={<Hierarchy rootId={root.id} />} />
               <Route path="flow" element={<ActivityFlowChart />} />
               <Route path="docs/*" element={<DocumentationTab project={project} />} />

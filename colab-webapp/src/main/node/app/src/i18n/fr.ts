@@ -192,6 +192,7 @@ export const fr: ColabTranslations = {
     team: 'Équipe',
     roles: 'Rôles',
     rights: 'Droits',
+    raci: 'RACI',
     members: 'Membres',
     teamManagement: "Gestion de l'équipe",
     generalInvolvement: 'Implication générale',
@@ -218,6 +219,7 @@ export const fr: ColabTranslations = {
     oneOwnerPerProject:
       'Vous ne pouvez pas modifier ces droits. Il doit y avoir au moins un propriétaire du projet.',
     memberAlreadyExist: 'Un membre avec la même adresse e-mail est déjà dans le projet.',
+    mailInvited: 'a été invité à l\'équipe du projet',
   },
   //////////////////////////////////////////////////////////////////////////////////////////////////
   // ACTIVITY

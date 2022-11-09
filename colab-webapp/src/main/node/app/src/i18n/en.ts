@@ -189,6 +189,7 @@ export const en = {
     team: 'Team',
     roles: 'Roles',
     rights: 'Rights',
+    raci: 'RACI',
     members: 'Members',
     teamManagement: 'Team management',
     generalInvolvement: 'General involvement',
@@ -215,6 +216,7 @@ export const en = {
     oneOwnerPerProject:
       'You cannot change this right. There must be at least one Owner of the project.',
     memberAlreadyExist: 'Member with same email already in team',
+    mailInvited: 'has been invited to the project team',
   },
   //////////////////////////////////////////////////////////////////////////////////////////////////
   // ACTIVITY

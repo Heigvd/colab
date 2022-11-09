@@ -15,6 +15,8 @@ import useTranslations from '../../i18n/I18nContext';
 import { dispatch } from '../../store/store';
 import Button from '../common/element/Button';
 import Checkbox from '../common/element/Checkbox';
+import CardInvolvement from '../cards/CardInvolvement';
+import IconButton from '../common/element/IconButton';
 import IllustrationDisplay from '../common/element/IllustrationDisplay';
 import { LabeledInput, LabeledTextArea } from '../common/element/Input';
 import ConfirmDeleteOpenCloseModal from '../common/layout/ConfirmDeleteModal';
