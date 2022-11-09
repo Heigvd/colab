@@ -31,19 +31,16 @@ const defaultData: ResourceCreationType = {
 };
 
 interface ResourceCreatorProps {
-  onCreated: (newId: number) => void;
   collapsedClassName?: string;
   customButton?: React.ReactNode;
 }
 
-export default function ResourceCreator({
-  onCreated,
-  customButton,
-}: ResourceCreatorProps): JSX.Element {
+export default function ResourceCreator({ customButton }: ResourceCreatorProps): JSX.Element {
   const dispatch = useAppDispatch();
   const i18n = useTranslations();
 
-  const { resourceOwnership, publishNewResource } = React.useContext(ResourcesCtx);
+  const { resourceOwnership, publishNewResource, setLastCreatedId } =
+    React.useContext(ResourcesCtx);
 
   const { isLoading, startLoading, stopLoading } = useLoadingState();
 
@@ -108,10 +105,10 @@ export default function ResourceCreator({
       ).then(action => {
         stopLoading();
 
-        if (onCreated != null) {
+        if (setLastCreatedId != null) {
           if (action.meta.requestStatus === 'fulfilled') {
             if (typeof action.payload === 'number') {
-              onCreated(action.payload);
+              setLastCreatedId(action.payload);
             }
           }
         }
@@ -119,7 +116,7 @@ export default function ResourceCreator({
         close();
       });
     },
-    [startLoading, resourceOwnership, dispatch, publishNewResource, stopLoading, onCreated],
+    [startLoading, resourceOwnership, dispatch, publishNewResource, stopLoading, setLastCreatedId],
   );
 
   return (

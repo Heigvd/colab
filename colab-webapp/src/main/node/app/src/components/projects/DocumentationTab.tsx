@@ -32,6 +32,7 @@ export default function DocumentationTab({ project }: DocumentationTabProps): JS
   const root = useProjectRootCard(project);
 
   const [selectedResource, selectResource] = React.useState<ResourceAndRef | null>(null);
+  const [lastCreatedResourceId, setLastCreatedResourceId] = React.useState<number | null>(null);
 
   const rootState = useAppSelector(state => {
     if (entityIs(root, 'Card')) {
@@ -90,6 +91,8 @@ export default function DocumentationTab({ project }: DocumentationTabProps): JS
                     resourceOwnership,
                     selectedResource,
                     selectResource,
+                    lastCreatedId: lastCreatedResourceId,
+                    setLastCreatedId: setLastCreatedResourceId,
                     publishNewResource: true,
                   }}
                 >

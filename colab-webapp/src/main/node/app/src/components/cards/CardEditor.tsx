@@ -49,7 +49,7 @@ import Modal from '../common/layout/Modal';
 import { DocTextDisplay } from '../documents/DocTextItem';
 import DocEditorToolbox, {
   defaultDocEditorContext,
-  DocEditorCTX,
+  DocEditorCtx,
 } from '../documents/DocumentEditorToolbox';
 import DocumentList from '../documents/DocumentList';
 import { ResourceAndRef, ResourceOwnership } from '../resources/resourcesCommonType';
@@ -79,7 +79,7 @@ import CompletionEditor from './CompletionEditor';
 import ContentSubs from './ContentSubs';
 import {
   Item,
-  SideCollapsibleCTX,
+  SideCollapsibleCtx,
   SideCollapsibleMenu,
   SideCollapsiblePanelBody,
 } from './SideCollapsiblePanel';
@@ -142,7 +142,8 @@ export default function CardEditor({
   const readOnly = !canWrite || variant.frozen;
   const [showTypeDetails, setShowTypeDetails] = React.useState(false);
   const [fullScreen, setFullScreen] = React.useState(false);
-  const [selectedDocId, setSelectedDocId] = React.useState<number | undefined | null>(undefined);
+  const [selectedDocId, setSelectedDocId] = React.useState<number | null>(null);
+  const [lastCreatedDocId, setLastCreatedDocId] = React.useState<number | null>(null);
   const [editMode, setEditMode] = React.useState(defaultDocEditorContext.editMode);
   const [showTree, setShowTree] = React.useState(false);
   const [markDownMode, setMarkDownMode] = React.useState(false);
@@ -150,6 +151,7 @@ export default function CardEditor({
   const [openKey, setOpenKey] = React.useState<string | undefined>(undefined);
 
   const [selectedResource, selectResource] = React.useState<ResourceAndRef | null>(null);
+  const [lastCreatedResourceId, setLastCreatedResourceId] = React.useState<number | null>(null);
 
   const TXToptions = {
     showTree: showTree,
@@ -460,7 +462,7 @@ export default function CardEditor({
                 />
               </Flex>
             </Flex>
-            <SideCollapsibleCTX.Provider
+            <SideCollapsibleCtx.Provider
               value={{
                 items: sideBarItems,
                 openKey,
@@ -472,6 +474,8 @@ export default function CardEditor({
                   resourceOwnership,
                   selectedResource,
                   selectResource,
+                  lastCreatedId: lastCreatedResourceId,
+                  setLastCreatedId: setLastCreatedResourceId,
                 }}
               >
                 <Flex grow={1} align="stretch" className={css({ overflow: 'hidden' })}>
@@ -481,10 +485,12 @@ export default function CardEditor({
                       resizeHeight={false}
                       minSize={150}
                     >
-                      <DocEditorCTX.Provider
+                      <DocEditorCtx.Provider
                         value={{
                           selectedDocId,
                           setSelectedDocId,
+                          lastCreatedId: lastCreatedDocId,
+                          setLastCreatedId: setLastCreatedDocId,
                           editMode,
                           setEditMode,
                           editToolbar,
@@ -556,7 +562,7 @@ export default function CardEditor({
                             </Flex>
                           </Flex>
                         </Flex>
-                      </DocEditorCTX.Provider>
+                      </DocEditorCtx.Provider>
                     </ReflexElement>
                     {openKey && <ReflexSplitter className={css({ zIndex: 0 })} />}
                     <ReflexElement
@@ -575,7 +581,7 @@ export default function CardEditor({
                   />
                 </Flex>
               </ResourcesCtx.Provider>
-            </SideCollapsibleCTX.Provider>
+            </SideCollapsibleCtx.Provider>
             <Flex direction="column" align="stretch">
               <CompletionEditor variant={variant} />
             </Flex>

@@ -33,9 +33,9 @@ interface SideCollapsibleContext<T extends { [key: string]: Item }> {
   openKey?: string | undefined;
   setOpenKey?: React.Dispatch<React.SetStateAction<string | undefined>>;
   insideState?: boolean;
-  setInsideState?:  React.Dispatch<React.SetStateAction<boolean>>;
+  setInsideState?: React.Dispatch<React.SetStateAction<boolean>>;
   extraNavFunction?: () => void;
-  setExtraNavFunction?: React.Dispatch<React.SetStateAction<() => void>> 
+  setExtraNavFunction?: React.Dispatch<React.SetStateAction<() => void>>;
 }
 
 export const defaultSideCollapsibleContext: SideCollapsibleContext<{ [key: string]: Item }> = {
@@ -44,7 +44,7 @@ export const defaultSideCollapsibleContext: SideCollapsibleContext<{ [key: strin
   setOpenKey: () => {},
 };
 
-export const SideCollapsibleCTX = React.createContext(defaultSideCollapsibleContext);
+export const SideCollapsibleCtx = React.createContext(defaultSideCollapsibleContext);
 
 export interface SideCollapsiblePanelBodyProps {
   className?: string;
@@ -53,7 +53,7 @@ export interface SideCollapsiblePanelBodyProps {
 export function SideCollapsiblePanelBody({
   className,
 }: SideCollapsiblePanelBodyProps): JSX.Element {
-  const { items, openKey, setOpenKey } = React.useContext(SideCollapsibleCTX);
+  const { items, openKey, setOpenKey } = React.useContext(SideCollapsibleCtx);
   const itemOpen = openKey == null ? null : items[openKey];
   const i18n = useTranslations();
   if (itemOpen) {
@@ -104,7 +104,7 @@ export function SideCollapsibleMenu({
   className,
   itemClassName,
 }: SideCollapsibleMenuProps): JSX.Element {
-  const { items, openKey, setOpenKey } = React.useContext(SideCollapsibleCTX);
+  const { items, openKey, setOpenKey } = React.useContext(SideCollapsibleCtx);
 
   React.useEffect(() => {
     if (defaultOpenKey && setOpenKey) {
@@ -112,7 +112,14 @@ export function SideCollapsibleMenu({
     }
   }, [defaultOpenKey, setOpenKey]);
   return (
-    <Flex direction="column" justify="flex-start" align="stretch" className={cx(className, {[css({width: '0px', overflow: 'hidden', transition: '0.5s'})]: openKey !== undefined })}>
+    <Flex
+      direction="column"
+      justify="flex-start"
+      align="stretch"
+      className={cx(className, {
+        [css({ width: '0px', overflow: 'hidden', transition: '0.5s' })]: openKey !== undefined,
+      })}
+    >
       {Object.entries(items).map(([key, item]) => (
         <Flex
           key={key}
