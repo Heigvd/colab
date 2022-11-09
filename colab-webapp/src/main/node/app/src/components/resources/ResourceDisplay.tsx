@@ -30,7 +30,7 @@ import OpenCloseModal from '../common/layout/OpenCloseModal';
 import { DocTextWrapper } from '../documents/DocTextItem';
 import DocEditorToolbox, {
   defaultDocEditorContext,
-  DocEditorCTX,
+  DocEditorCtx,
 } from '../documents/DocumentEditorToolbox';
 import DocumentList from '../documents/DocumentList';
 import {
@@ -66,7 +66,8 @@ export function ResourceDisplay({
 
   // const rootCard = useProjectRootCard(project);
 
-  const [selectedDocId, setSelectedDocId] = React.useState<number | undefined | null>(undefined);
+  const [selectedDocId, setSelectedDocId] = React.useState<number | null>(null);
+  const [lastCreatedDocId, setLastCreatedDocId] = React.useState<number | null>(null);
   const [editMode, setEditMode] = React.useState(defaultDocEditorContext.editMode);
   const [showTree, setShowTree] = React.useState(false);
   const [markDownMode, setMarkDownMode] = React.useState(false);
@@ -178,27 +179,27 @@ export function ResourceDisplay({
             )}
           </Flex>
           {/* {(couldWriteButNotDirect || resource.isDirectResource) && ( */}
-          <Flex align='center' wrap='nowrap'>
-          <FeaturePreview>
-            <OpenCloseModal
-              modalClassName={css({
-                minWidth: '50vw',
-                minHeight: '50vh',
-                maxWidth: '80vw',
-                maxHeight: '80vh',
-              })}
-              modalBodyClassName={css({
-                padding: 0,
-                alignItems: 'stretch',
-              })}
-              title=""
-              collapsedChildren={<FontAwesomeIcon icon={faGlasses} />}
-            >
-              {close => <ResourceScope onCancel={close} resource={resource} />}
-            </OpenCloseModal>
-          </FeaturePreview>
-          {/* )} */}
-          {/* {!targetResource.published &&
+          <Flex align="center" wrap="nowrap">
+            <FeaturePreview>
+              <OpenCloseModal
+                modalClassName={css({
+                  minWidth: '50vw',
+                  minHeight: '50vh',
+                  maxWidth: '80vw',
+                  maxHeight: '80vh',
+                })}
+                modalBodyClassName={css({
+                  padding: 0,
+                  alignItems: 'stretch',
+                })}
+                title=""
+                collapsedChildren={<FontAwesomeIcon icon={faGlasses} />}
+              >
+                {close => <ResourceScope onCancel={close} resource={resource} />}
+              </OpenCloseModal>
+            </FeaturePreview>
+            {/* )} */}
+            {/* {!targetResource.published &&
             (targetResource.abstractCardTypeId != null ||
               (targetResource.cardId != null &&
                 entityIs(rootCard, 'Card') &&
@@ -208,7 +209,7 @@ export function ResourceDisplay({
                 title={i18n.modules.resource.unpublishedInfoType}
               />
             )} */}
-          {/* {canForce && !forceWrite && (
+            {/* {canForce && !forceWrite && (
             <ConfirmIconButton
               icon={faPen}
               title={i18n.modules.resource.info.forceTooltip}
@@ -216,92 +217,92 @@ export function ResourceDisplay({
             />
           )} */}
 
-          {/* {canForce && forceWrite && <span onClick={toggleForceCb}>done</span>} */}
-          {/* {effectiveReadOnly && !teaser ? (
+            {/* {canForce && forceWrite && <span onClick={toggleForceCb}>done</span>} */}
+            {/* {effectiveReadOnly && !teaser ? (
             <ResourceSettingsModal resource={resource} isButton />
           ) : ( */}
-          {readOnly ? (
-            <div></div>
-          ) : (
-            <DropDownMenu
-              icon={faEllipsisV}
-              valueComp={{ value: '', label: '' }}
-              buttonClassName={cx(lightIconButtonStyle, css({ marginLeft: space_S }))}
-              entries={[
-                ...(!effectiveReadOnly && resource.isDirectResource
-                  ? [
-                      {
-                        value: 'settings',
-                        label: (
-                          <>
-                            <FontAwesomeIcon icon={faCog} /> {i18n.common.settings}{' '}
-                          </>
-                        ),
-                        action: () => setShowSettings(true),
-                      },
-                    ]
-                  : []),
-                ...(!readOnly && resource.isDirectResource && resource.targetResource.id // TODO see conditions
-                  ? [
-                      {
-                        value: 'publishStatus',
-                        label: (
-                          <>
-                            {resource.targetResource.published
-                              ? i18n.modules.resource.actions.makePrivate
-                              : i18n.modules.resource.actions.shareWithChildren}
-                          </>
-                        ),
-                        action: () => {
-                          if (resource.targetResource.id) {
-                            if (resource.targetResource.published) {
-                              dispatch(API.unpublishResource(resource.targetResource.id));
-                            } else {
-                              dispatch(API.publishResource(resource.targetResource.id));
+            {readOnly ? (
+              <div></div>
+            ) : (
+              <DropDownMenu
+                icon={faEllipsisV}
+                valueComp={{ value: '', label: '' }}
+                buttonClassName={cx(lightIconButtonStyle, css({ marginLeft: space_S }))}
+                entries={[
+                  ...(!effectiveReadOnly && resource.isDirectResource
+                    ? [
+                        {
+                          value: 'settings',
+                          label: (
+                            <>
+                              <FontAwesomeIcon icon={faCog} /> {i18n.common.settings}{' '}
+                            </>
+                          ),
+                          action: () => setShowSettings(true),
+                        },
+                      ]
+                    : []),
+                  ...(!readOnly && resource.isDirectResource && resource.targetResource.id // TODO see conditions
+                    ? [
+                        {
+                          value: 'publishStatus',
+                          label: (
+                            <>
+                              {resource.targetResource.published
+                                ? i18n.modules.resource.actions.makePrivate
+                                : i18n.modules.resource.actions.shareWithChildren}
+                            </>
+                          ),
+                          action: () => {
+                            if (resource.targetResource.id) {
+                              if (resource.targetResource.published) {
+                                dispatch(API.unpublishResource(resource.targetResource.id));
+                              } else {
+                                dispatch(API.publishResource(resource.targetResource.id));
+                              }
                             }
-                          }
+                          },
                         },
-                      },
-                    ]
-                  : []),
-                ...(!alwaysShowTeaser && !alwaysHideTeaser
-                  ? [
-                      {
-                        value: 'teaser',
-                        label: (
-                          <>
-                            <FontAwesomeIcon icon={faInfoCircle} />{' '}
-                            {`${
-                              showTeaser
-                                ? i18n.modules.resource.hideTeaser
-                                : i18n.modules.resource.showTeaser
-                            }`}
-                          </>
-                        ),
-                        action: () => setShowTeaser(showTeaser => !showTeaser),
-                      },
-                    ]
-                  : []),
+                      ]
+                    : []),
+                  ...(!alwaysShowTeaser && !alwaysHideTeaser
+                    ? [
+                        {
+                          value: 'teaser',
+                          label: (
+                            <>
+                              <FontAwesomeIcon icon={faInfoCircle} />{' '}
+                              {`${
+                                showTeaser
+                                  ? i18n.modules.resource.hideTeaser
+                                  : i18n.modules.resource.showTeaser
+                              }`}
+                            </>
+                          ),
+                          action: () => setShowTeaser(showTeaser => !showTeaser),
+                        },
+                      ]
+                    : []),
 
-                ...(!readOnly
-                  ? [
-                      {
-                        value: 'remove',
-                        label: (
-                          <>
-                            <FontAwesomeIcon icon={faBoxArchive} /> {i18n.common.remove}
-                          </>
-                        ),
-                        action: () => {
-                          dispatch(API.removeAccessToResource(resource));
-                          goBackToList();
+                  ...(!readOnly
+                    ? [
+                        {
+                          value: 'remove',
+                          label: (
+                            <>
+                              <FontAwesomeIcon icon={faBoxArchive} /> {i18n.common.remove}
+                            </>
+                          ),
+                          action: () => {
+                            dispatch(API.removeAccessToResource(resource));
+                            goBackToList();
+                          },
                         },
-                      },
-                    ]
-                  : []),
-              ]}
-            />
-          )}
+                      ]
+                    : []),
+                ]}
+              />
+            )}
           </Flex>
         </Flex>
         <div>
@@ -338,10 +339,12 @@ export function ResourceDisplay({
       </Flex>
 
       {targetResource.id && (
-        <DocEditorCTX.Provider
+        <DocEditorCtx.Provider
           value={{
             selectedDocId,
             setSelectedDocId,
+            lastCreatedId: lastCreatedDocId,
+            setLastCreatedId: setLastCreatedDocId,
             editMode,
             setEditMode,
             editToolbar,
@@ -361,7 +364,7 @@ export function ResourceDisplay({
               readOnly={effectiveReadOnly}
             />
           </div>
-        </DocEditorCTX.Provider>
+        </DocEditorCtx.Provider>
       )}
     </Flex>
   );

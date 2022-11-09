@@ -25,7 +25,7 @@ import { usePresenceOnDocument } from '../../../selectors/presenceSelector';
 import OpenGraphLink from '../../common/element/OpenGraphLink';
 import DropDownMenu, { Entry } from '../../common/layout/DropDownMenu';
 import Flex from '../../common/layout/Flex';
-import { DocEditorCTX } from '../../documents/DocumentEditorToolbox';
+import { DocEditorCtx } from '../../documents/DocumentEditorToolbox';
 import { createCaret, getUserColor } from '../../projects/presence/Presence';
 import { PresenceContext } from '../../projects/presence/PresenceContext';
 import { borderRadius, lightIconButtonStyle, space_S } from '../../styling/style';
@@ -50,7 +50,11 @@ import {
   computeOverlayPosition,
   LinkOverlay,
 } from './MarkdownViewer';
-import domToMarkdown, { escapeText, MarkdownRange, MarkdownWithSelection } from './parser/domToMarkdown';
+import domToMarkdown, {
+  escapeText,
+  MarkdownRange,
+  MarkdownWithSelection,
+} from './parser/domToMarkdown';
 import markdownToDom, {
   convertRange,
   getFirstMajorTag,
@@ -568,7 +572,7 @@ export default function WysiwygEditor({
 
   // to detect is composition in on going
   const compositionRef = React.useRef(false);
-  const { setEditToolbar } = React.useContext(DocEditorCTX);
+  const { setEditToolbar } = React.useContext(DocEditorCtx);
 
   const selectionRef = React.useRef<SavedSelection | null>(null);
 

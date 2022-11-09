@@ -79,8 +79,10 @@ interface TXToptionsType {
 }
 
 interface DocEditorContext {
-  selectedDocId?: number | null;
-  setSelectedDocId: (id: number | undefined | null) => void;
+  selectedDocId: number | null;
+  setSelectedDocId: (id: number | null) => void;
+  lastCreatedId: number | null;
+  setLastCreatedId: (id: number | null) => void;
   editMode: boolean;
   setEditMode: (editMode: boolean) => void;
   TXToptions?: TXToptionsType;
@@ -89,25 +91,30 @@ interface DocEditorContext {
 }
 
 export const defaultDocEditorContext: DocEditorContext = {
+  selectedDocId: null,
   setSelectedDocId: () => {},
+  lastCreatedId: null,
+  setLastCreatedId: () => {},
   editMode: false,
   setEditMode: () => {},
   editToolbar: <></>,
   setEditToolbar: () => {},
 };
 
-export const DocEditorCTX = React.createContext<DocEditorContext>(defaultDocEditorContext);
+export const DocEditorCtx = React.createContext<DocEditorContext>(defaultDocEditorContext);
 
 export default function DocEditorToolbox({
   open,
   docOwnership,
 }: //prefixElement,
 DocEditorToolboxProps): JSX.Element {
-  const { setSelectedDocId, selectedDocId, setEditMode, TXToptions, editToolbar } =
-    React.useContext(DocEditorCTX);
-  const showTree = TXToptions?.showTree || false;
   const dispatch = useAppDispatch();
   const i18n = useTranslations();
+
+  const { setSelectedDocId, selectedDocId, setEditMode, TXToptions, editToolbar } =
+    React.useContext(DocEditorCtx);
+
+  const showTree = TXToptions?.showTree || false;
 
   const selectedDocument = useAppSelector(state => {
     if (selectedDocId) {
@@ -291,7 +298,7 @@ DocEditorToolboxProps): JSX.Element {
                   );
                 }
               }
-              setSelectedDocId(undefined);
+              setSelectedDocId(null);
             }}
           />
           <div

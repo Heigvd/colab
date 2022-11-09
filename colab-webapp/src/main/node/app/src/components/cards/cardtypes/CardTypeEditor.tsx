@@ -51,6 +51,7 @@ export default function CardTypeEditor({ className, usage }: CardTypeEditorProps
   const typeId = +id.id!;
 
   const [selectedResource, selectResource] = React.useState<ResourceAndRef | null>(null);
+  const [lastCreatedResourceId, setLastCreatedResourceId] = React.useState<number | null>(null);
 
   const { cardType, status } = useAndLoadCardType(typeId);
   const { project } = useProjectBeingEdited();
@@ -241,7 +242,15 @@ export default function CardTypeEditor({ className, usage }: CardTypeEditorProps
               padding: space_S,
             })}
           >
-            <ResourcesCtx.Provider value={{ resourceOwnership, selectedResource, selectResource }}>
+            <ResourcesCtx.Provider
+              value={{
+                resourceOwnership,
+                selectedResource,
+                selectResource,
+                lastCreatedId: lastCreatedResourceId,
+                setLastCreatedId: setLastCreatedResourceId,
+              }}
+            >
               <Flex align="baseline">
                 <ResourcesMainViewHeader
                   title={<h3>{i18n.modules.resource.documentation}</h3>}

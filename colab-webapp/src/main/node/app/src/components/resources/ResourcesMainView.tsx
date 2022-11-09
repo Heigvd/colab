@@ -37,6 +37,8 @@ interface ResourcesContext {
   resourceOwnership: ResourceOwnership;
   selectedResource: ResourceAndRef | null; // TODO number
   selectResource: (resource: ResourceAndRef | null) => void;
+  lastCreatedId: number | null;
+  setLastCreatedId: (id: number | null) => void;
   publishNewResource?: boolean;
 }
 
@@ -44,6 +46,8 @@ const defaultResourcesContext: ResourcesContext = {
   resourceOwnership: defaultResourceOwnerShip,
   selectedResource: null,
   selectResource: () => {},
+  lastCreatedId: null,
+  setLastCreatedId: () => {},
   publishNewResource: false,
 };
 
@@ -122,7 +126,7 @@ export function ResourcesMainViewHeader({
 
       {displayMode === 'LIST' && (
         <>
-          <ResourceCreator onCreated={() => {}} collapsedClassName={lightIconButtonStyle} />
+          <ResourceCreator collapsedClassName={lightIconButtonStyle} />
           {/* <TocDisplayToggler /> */}
           {/* Note : we can imagine that a read access level allows to see the ghost resources */}
           <HidenResourcesKeeper
@@ -163,11 +167,10 @@ export function ResourcesMainViewPanel({
 }: ResourcesMainPanelProps): JSX.Element {
   const i18n = useTranslations();
 
-  const { resourceOwnership, selectedResource, selectResource } = React.useContext(ResourcesCtx);
+  const { resourceOwnership, selectedResource, selectResource, lastCreatedId, setLastCreatedId } =
+    React.useContext(ResourcesCtx);
 
   const { activeResources, status } = useAndLoadResources(resourceOwnership);
-
-  const [lastCreated, setLastCreated] = React.useState<number | null>(null);
 
   // just to see if it changes
   const [currentContext, setCurrentContext] = React.useState<ResourceOwnership>(resourceOwnership);
@@ -221,17 +224,17 @@ export function ResourcesMainViewPanel({
 
   // when a resource is just created, select it to display it
   React.useEffect(() => {
-    if (lastCreated != null) {
+    if (lastCreatedId != null) {
       const matchingResource = activeResources.find(
-        resource => resource.targetResource.id === lastCreated,
+        resource => resource.targetResource.id === lastCreatedId,
       );
 
       if (matchingResource != null) {
         showSelectedResource(matchingResource);
-        setLastCreated(null);
+        setLastCreatedId(null);
       }
     }
-  }, [lastCreated, activeResources, showSelectedResource, setLastCreated]);
+  }, [activeResources, showSelectedResource, lastCreatedId, setLastCreatedId]);
 
   /**
    * Quick Fix: keep selectedResource up-to-date
@@ -280,9 +283,6 @@ export function ResourcesMainViewPanel({
           <h3>{i18n.modules.resource.noDocumentationYet}</h3>
           {!isReadOnly(accessLevel) && (
             <ResourceCreator
-              onCreated={newId => {
-                setLastCreated(newId);
-              }}
               collapsedClassName={lightIconButtonStyle}
               customButton={
                 <Button icon={faPlus} clickable className={invertedButtonStyle}>
@@ -305,7 +305,6 @@ export function ResourcesMainViewPanel({
         <Flex>
           {/* <ResourceCreator
             contextInfo={contextData}
-            onCreated={setLastCreated}
             collapsedClassName={lightIconButtonStyle}
           /> */}
         </Flex>

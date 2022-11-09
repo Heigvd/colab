@@ -20,8 +20,9 @@ export interface DocumentListProps {
 }
 
 export default function DocumentList({ docOwnership, readOnly }: DocumentListProps): JSX.Element {
-  const { documents, status } = useAndLoadDocuments(docOwnership);
   const i18n = useTranslations();
+
+  const { documents, status } = useAndLoadDocuments(docOwnership);
 
   if (status !== 'READY') {
     return <AvailabilityStatusIndicator status={status} />;
@@ -42,13 +43,13 @@ export default function DocumentList({ docOwnership, readOnly }: DocumentListPro
           )}
         >
           {i18n.modules.card.infos.noBlockYet}
-          {/* <BlockCreatorButtons docOwnership={docOwnership} selectedBlockId={null} /> */}
+          {/* <BlockCreatorButtons selectedBlockId={null} /> */}
         </div>
       )}
       {documents
         .sort((a, b) => (a.index || 0) - (b.index || 0))
         .map(doc => (
-          <DocumentEditor key={doc.id} doc={doc} readOnly={readOnly} docOwnership={docOwnership} />
+          <DocumentEditor key={doc.id} doc={doc} readOnly={readOnly} />
         ))}
     </>
   );
