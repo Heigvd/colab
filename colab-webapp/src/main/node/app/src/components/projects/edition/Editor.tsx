@@ -11,6 +11,7 @@ import {
   faChevronRight,
   faCog,
   faGrip,
+  faHouse,
   faNetworkWired,
   faPlus,
   faProjectDiagram,
@@ -55,7 +56,6 @@ import Flex from '../../common/layout/Flex';
 import Monkeys from '../../debugger/monkey/Monkeys';
 import { UserDropDown } from '../../MainNav';
 import Settings from '../../settings/Settings';
-import Picto from '../../styling/Picto';
 import {
   fixedButtonStyle,
   //fullHeightStyle,
@@ -320,12 +320,12 @@ interface EditorNavProps {
   // setShowProjectDetails: (value: React.SetStateAction<boolean>) => void;
 }
 
-const pictoLinkStyle = cx(
+/* const pictoLinkStyle = cx(
   mainMenuLink,
   css({
     padding: '8px 15px',
   }),
-);
+); */
 
 function EditorNav({ project }: EditorNavProps): JSX.Element {
   const i18n = useTranslations();
@@ -350,7 +350,7 @@ function EditorNav({ project }: EditorNavProps): JSX.Element {
         )}
       >
         <Flex align="center">
-          <MainMenuLink className={pictoLinkStyle} to="../..">
+          {/* <MainMenuLink className={pictoLinkStyle} to="../..">
             <span
               title={i18n.common.action.backToProjects}
               onClickCapture={() => {
@@ -365,6 +365,19 @@ function EditorNav({ project }: EditorNavProps): JSX.Element {
                 })}
               />
             </span>
+          </MainMenuLink> */}
+          <MainMenuLink to={`/`} className={mainMenuLink}>
+            <FontAwesomeIcon icon={faHouse} size="lg" />
+            {/* <Picto
+          className={cx(
+            css({
+              height: '30px',
+              width: 'auto',
+              paddingRight: space_M,
+            }),
+            paddingAroundStyle([1, 3, 4], space_S),
+          )}
+        /> */}
           </MainMenuLink>
           <Flex
             className={css({
@@ -487,11 +500,11 @@ function EditorNav({ project }: EditorNavProps): JSX.Element {
                 />
               </Flex>
               <DiscreetInput
-                  value={project.name || i18n.modules.project.actions.newProject}
-                  placeholder={i18n.modules.project.actions.newProject}
-                  // TO DO ? readOnly={readOnly}
-                  onChange={newValue => dispatch(API.updateProject({ ...project, name: newValue }))}
-                />
+                value={project.name || i18n.modules.project.actions.newProject}
+                placeholder={i18n.modules.project.actions.newProject}
+                // TO DO ? readOnly={readOnly}
+                onChange={newValue => dispatch(API.updateProject({ ...project, name: newValue }))}
+              />
               {/* <div className={css({ padding: '0 ' + space_S })}>
                 {project.name || i18n.modules.project.actions.newProject}
               </div> */}
@@ -780,12 +793,13 @@ function CardCreatorAndOrganize({ rootContent, organize }: CardCreatorAndOrganiz
           />
         </Flex>
       )}
-      <Flex align='center' className={cx({[css({ borderLeft: '1px solid var(--lighterGray)', paddingLeft: space_S })]: open})}>
-        <IconButton
-          title="open"
-          onClick={() => setOpen(e => !e)}
-          icon={open ? faTimes : faPlus}
-        />
+      <Flex
+        align="center"
+        className={cx({
+          [css({ borderLeft: '1px solid var(--lighterGray)', paddingLeft: space_S })]: open,
+        })}
+      >
+        <IconButton title="open" onClick={() => setOpen(e => !e)} icon={open ? faTimes : faPlus} />
       </Flex>
     </Flex>
   );

@@ -894,6 +894,7 @@ export default function GridOrganizer<T>({
         css({
           display: 'grid',
           gridTemplateColumns: `repeat(${nbColumn}, minmax(min-content, 1fr))`,
+          gridAutoRows: `minmax(55px, 1fr)`,
           justifyContent: 'strech',
           alignContent: 'stretch',
           justifyItems: 'stretch',

@@ -156,14 +156,14 @@ export default function ContentSubs({
         >
           {organize ? (
             <>
-              <Flex>
-                {/* <LabeledInput
+              {/* <Flex>
+                <LabeledInput
                   label={'Number of columns'}
                   type='number'
                   value={nbColumns}
                   onChange={(c) => {setNbColumns(Number(c))}}
-                /> */}
-              </Flex>
+                />
+              </Flex> */}
               <GridOrganizer
                 className={css({
                   height: '100%',

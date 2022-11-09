@@ -26,11 +26,9 @@ import { useCurrentUser } from '../selectors/userSelector';
 import { shallowEqual, useAppDispatch, useAppSelector } from '../store/hooks';
 import InlineLoading from './common/element/InlineLoading';
 import { MainMenuLink, mainMenuLink } from './common/element/Link';
-import Clickable from './common/layout/Clickable';
 import DropDownMenu from './common/layout/DropDownMenu';
 import Monkeys from './debugger/monkey/Monkeys';
-import Picto from './styling/Picto';
-import { flex, invertedThemeMode, paddingAroundStyle, space_M, space_S } from './styling/style';
+import { flex, invertedThemeMode, space_M, space_S } from './styling/style';
 const dropLabelsStyle = css({
   //width: '100%',
   textTransform: 'uppercase',
@@ -66,8 +64,9 @@ export default function MainNav(): JSX.Element {
   const value = location.pathname;
   return (
     <>
-      <Clickable onClick={() => navigate(`/`)}>
-        <Picto
+      {/* <MainMenuLink to={`/`} className={mainMenuLink}>
+        <FontAwesomeIcon icon={faHouse} size='lg'/>
+      <Picto
           className={cx(
             css({
               height: '30px',
@@ -77,7 +76,7 @@ export default function MainNav(): JSX.Element {
             paddingAroundStyle([1, 3, 4], space_S),
           )}
         />
-      </Clickable>
+      </MainMenuLink> */}
       {userModels && userModels.length > 0 ? (
         <nav className={flex}>
           <DropDownMenu

@@ -13,12 +13,10 @@ import {
   faDrumstickBite,
   faEllipsisV,
   faExpandArrowsAlt,
-  faInfoCircle,
   faLock,
   faPaperclip,
   faPercent,
   //faStickyNote,
-  faTimes,
   faTrash,
   faUsers,
 } from '@fortawesome/free-solid-svg-icons';
@@ -35,7 +33,6 @@ import {
   useCardACLForCurrentUser,
   useVariantsOrLoad,
 } from '../../selectors/cardSelector';
-import { useAndLoadCardType } from '../../selectors/cardTypeSelector';
 //import { useStickyNoteLinksForDest } from '../../selectors/stickyNoteLinkSelector';
 import { useAppDispatch, useLoadingState } from '../../store/hooks';
 import Button from '../common/element/Button';
@@ -46,7 +43,6 @@ import DropDownMenu from '../common/layout/DropDownMenu';
 import Ellipsis from '../common/layout/Ellipsis';
 import Flex from '../common/layout/Flex';
 import Modal from '../common/layout/Modal';
-import { DocTextDisplay } from '../documents/DocTextItem';
 import DocEditorToolbox, {
   defaultDocEditorContext,
   DocEditorCtx,
@@ -65,7 +61,6 @@ import {
   errorColor,
   lightIconButtonStyle,
   localTitleStyle,
-  space_M,
   space_S,
   textSmall,
   variantTitle,
@@ -90,7 +85,7 @@ interface CardEditorProps {
   variant: CardContent;
   showSubcards?: boolean;
 }
-const descriptionStyle = {
+/* const descriptionStyle = {
   backgroundColor: 'var(--lightGray)',
   color: 'var(--darkGray)',
   transition: 'all 1s ease',
@@ -99,8 +94,8 @@ const descriptionStyle = {
   flexGrow: 0,
   display: 'flex',
   justifyContent: 'space-between',
-};
-const openDetails = css({
+}; */
+/* const openDetails = css({
   ...descriptionStyle,
   maxHeight: '600px',
   padding: space_M,
@@ -109,7 +104,7 @@ const closeDetails = css({
   ...descriptionStyle,
   maxHeight: '0px',
   padding: '0 ' + space_M,
-});
+}); */
 
 const fullScreenStyle = css({
   position: 'absolute',
@@ -129,8 +124,8 @@ export default function CardEditor({
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const location = useLocation();
-  const { cardType } = useAndLoadCardType(card.cardTypeId);
-  const hasCardType = cardType != null;
+  //const { cardType } = useAndLoadCardType(card.cardTypeId);
+  //const hasCardType = cardType != null;
 
   const variants = useVariantsOrLoad(card) || [];
   const hasVariants = variants.length > 1 && variant != null;
@@ -140,7 +135,7 @@ export default function CardEditor({
   const variantPager = computeNav(contents, variant.id);
   const { canRead, canWrite } = useCardACLForCurrentUser(card.id);
   const readOnly = !canWrite || variant.frozen;
-  const [showTypeDetails, setShowTypeDetails] = React.useState(false);
+  //const [showTypeDetails, setShowTypeDetails] = React.useState(false);
   const [fullScreen, setFullScreen] = React.useState(false);
   const [selectedDocId, setSelectedDocId] = React.useState<number | null>(null);
   const [lastCreatedDocId, setLastCreatedDocId] = React.useState<number | null>(null);
@@ -281,14 +276,14 @@ export default function CardEditor({
                     />
                   </>
                 )}
-                {hasCardType && (
+                {/* {hasCardType && (
                   <IconButton
                     icon={faInfoCircle}
                     title={i18n.modules.card.showCardType}
                     className={cx(lightIconButtonStyle)}
                     onClick={() => setShowTypeDetails(showTypeDetails => !showTypeDetails)}
                   />
-                )}
+                )} */}
               </Flex>
               <Flex>
                 {/* handle modal routes*/}
@@ -517,7 +512,7 @@ export default function CardEditor({
                                   }}
                                 />
                               )}
-                              {cardType && (
+                              {/* {cardType && (
                                 <div className={showTypeDetails ? openDetails : closeDetails}>
                                   <div>
                                     <p>
@@ -535,7 +530,7 @@ export default function CardEditor({
                                     onClick={() => setShowTypeDetails(false)}
                                   />
                                 </div>
-                              )}
+                              )} */}
                             </Flex>
                             <Flex
                               direction="column"
