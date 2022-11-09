@@ -119,6 +119,7 @@ export interface CardThumbProps {
   depth?: number;
   mayOrganize?: boolean;
   showPreview?: boolean;
+  className?: string;
 }
 
 export default function CardThumb({
@@ -129,6 +130,7 @@ export default function CardThumb({
   variants,
   mayOrganize,
   showPreview,
+  className,
 }: CardThumbProps): JSX.Element {
   const i18n = useTranslations();
   const dispatch = useAppDispatch();
@@ -205,7 +207,7 @@ export default function CardThumb({
     return <i>{i18n.modules.card.error.withoutId}</i>;
   } else {
     return (
-      <CardLayout card={card} variant={variant} variants={variants}>
+      <CardLayout card={card} variant={variant} variants={variants} className={className}>
         <>
           <div
             onClick={clickOnCardTitleCb}

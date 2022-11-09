@@ -12,7 +12,7 @@ export const pictoColours = css({
   '--pictoYellow': '#FFE527', // main yellow
   '--pictoLightBlue': '#8CE9FB', // blue-yellow intersection
   '--pictoPeach': '#FCC08B', // yellow-orange intersection
-  '--pictoSteelBlue': '#68A8C3', // blue-orange intersection
+  '--pictoSteelBlue': '#50BFD5', // blue-orange intersection
   '--pictoGrey': '#9AA4B1', // center colour
 });
 
@@ -321,8 +321,8 @@ export const sideTabButton = css({
 
 export const fixedButtonStyle = css({
   position: 'fixed',
-  top: '3.4rem',
-  right: '4vw',
+  top: '3.1rem',
+  right: '1rem',
 });
 
 export const lightIconButtonStyle = css({
@@ -428,7 +428,7 @@ export const defaultColumnContainerStyle = cx(
 );
 
 export const modelBGColor = css({
-  backgroundColor: '#68A8C3B5',
+  backgroundColor: '#50BFD5B5',
 
 }); 
 

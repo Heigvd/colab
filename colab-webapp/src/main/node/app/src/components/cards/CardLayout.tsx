@@ -40,6 +40,7 @@ interface CardLayoutProps {
   children: React.ReactNode;
   extraTools?: React.ReactNode;
   showProgressBar?: boolean;
+  className?: string;
 }
 
 export default function CardLayout({
@@ -48,6 +49,7 @@ export default function CardLayout({
   children,
   extraTools,
   showProgressBar = true,
+  className,
 }: CardLayoutProps): JSX.Element {
   //const navigate = useNavigate();
   //const location = useLocation();
@@ -100,6 +102,7 @@ export default function CardLayout({
             overflow: 'auto',
             //cursor: 'default',
           }),
+          className
         )}
       >
         {extraTools}

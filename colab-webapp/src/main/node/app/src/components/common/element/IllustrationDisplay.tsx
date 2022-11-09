@@ -46,7 +46,7 @@ export default function IllustrationDisplay({
           backgroundColor: `${
             currentIllustration.iconBkgdColor
               ? currentIllustration.iconBkgdColor
-              : 'var(--secondaryColor)'
+              : '#50BFD5'
           }`,
           height: `calc(100% - 2*${space_S})`,
           width: `calc(100% - 2*${space_S})`,

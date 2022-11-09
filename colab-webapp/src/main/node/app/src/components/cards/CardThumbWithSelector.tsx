@@ -12,6 +12,7 @@ import VariantSelector from './VariantSelector';
 
 interface CardThumbWithSelectorProps {
   className?: string;
+  cardThumbClassName?: string;
   card: Card;
   depth?: number;
   mayOrganize?: boolean;
@@ -21,6 +22,7 @@ interface CardThumbWithSelectorProps {
 export default function CardThumbWithSelector({
   card,
   className,
+  cardThumbClassName,
   depth = 1,
   mayOrganize,
   showPreview,
@@ -40,6 +42,7 @@ export default function CardThumbWithSelector({
               depth={depth}
               mayOrganize={mayOrganize}
               showPreview={showPreview}
+              className={cardThumbClassName}
             />
           </>
         )}

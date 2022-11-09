@@ -26,6 +26,7 @@ import OpenCloseModal from '../common/layout/OpenCloseModal';
 import {
   greyIconButtonChipStyle,
   invertedButtonStyle,
+  lightIconButtonStyle,
   marginAroundStyle,
   space_M,
   space_S,
@@ -120,7 +121,7 @@ CardCreatorProps): JSX.Element {
     ) : (
       <IconButton
         icon={faPlus}
-        className={cx(greyIconButtonChipStyle, css({ display: 'none' }))}
+        className={cx(lightIconButtonStyle)}
         title={i18n.modules.card.createCard}
         onClick={e => {
           e.stopPropagation();

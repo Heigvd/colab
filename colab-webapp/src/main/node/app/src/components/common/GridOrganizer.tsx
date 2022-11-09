@@ -207,8 +207,8 @@ export function fixGrid<T>(cells: Readonly<Cell<T>>[]): {
     y: 1 - extent.minY,
   };
 
-  const nbColumn = Math.max(3, extent.maxX - extent.minX + 1);
-  const nbRow = Math.max(3, extent.maxY - extent.minY + 1);
+  const nbColumn = Math.max(4, extent.maxX - extent.minX + 1);
+  const nbRow = Math.max(4, extent.maxY - extent.minY + 1);
 
   const matrix = getEmptyMatrix(nbColumn, nbRow);
 
@@ -586,6 +586,10 @@ interface GridOrganizerProps<T> {
   onResize: (cell: Cell<T>, newPosition: GridPosition) => void;
   handleSize?: string;
   gap?: string;
+  /* nbColumns?: {
+    nbColumns: number;
+    setNbColumns: React.Dispatch<React.SetStateAction<number>>
+  }; */
 }
 
 export default function GridOrganizer<T>({
@@ -595,6 +599,7 @@ export default function GridOrganizer<T>({
   onResize,
   handleSize,
   gap = '20px',
+  //nbColumns = { nbColumns: 3, setNbColumns: () => {}},
 }: GridOrganizerProps<T>): JSX.Element {
   const dndRef = React.useRef<DndRef<T>>({ status: 'idle', tmpCell: undefined });
 
@@ -629,18 +634,23 @@ export default function GridOrganizer<T>({
   }
 
   // 2) add contour
+  // !! changes made HERE
   const extentWithContour: Extent = {
-    minX: extent.minX - 1,
+    minX: extent.minX -1,
     minY: extent.minY - 1,
     maxX: extent.maxX + 1,
     maxY: extent.maxY + 1,
   };
 
   // 3) compute shiftX, shiftY to have contour starting at one
+  // !! changes made here
   const shiftX = 1 - extentWithContour.minX;
   const shiftY = 1 - extentWithContour.minY;
-  const nbColumn = Math.max(3, extentWithContour.maxX - extentWithContour.minX + 1);
-  const nbRow = Math.max(3, extentWithContour.maxY - extentWithContour.minY + 1);
+  //nbColumns?.nbColumns || 
+  const nbColumn = Math.max(5, extentWithContour.maxX - extentWithContour.minX + 1);
+  //const nbColumn = nbColumns.nbColumns + 2;
+
+  const nbRow = Math.max(5, extentWithContour.maxY - extentWithContour.minY + 1);
 
   logger.debug('Extent: ', extent);
   logger.debug('ExtentWithContour: ', extentWithContour);

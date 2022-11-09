@@ -123,24 +123,6 @@ export function ResourceDisplay({
             className={lightIconButtonStyle}
           /> */}
           <Flex wrap="nowrap" align="center">
-            {(!(
-              resource.isDirectResource ||
-              resource.targetResource.cardId != null ||
-              resource.targetResource.cardContentId != null
-            ) ||
-              resource.targetResource.abstractCardTypeId != null) && (
-              <div
-                className={css({
-                  fontSize: '0.7em',
-                  color: 'var(--lightGray)',
-                  border: '1px solid var(--lightGray)',
-                  borderRadius: '10px',
-                  padding: '3px',
-                })}
-              >
-                Read only
-              </div>
-            )}
             {/* <TargetResourceSummary resource={resource} showText="tooltip" /> */}
             {/* {category && (
               <>
@@ -176,8 +158,27 @@ export function ResourceDisplay({
               }
               inputDisplayClassName={localTitleStyle}
             />
+            {(!(
+              resource.isDirectResource ||
+              resource.targetResource.cardId != null ||
+              resource.targetResource.cardContentId != null
+            ) ||
+              resource.targetResource.abstractCardTypeId != null) && (
+              <div
+                className={css({
+                  fontSize: '0.7em',
+                  color: 'var(--lightGray)',
+                  border: '1px solid var(--lightGray)',
+                  borderRadius: '10px',
+                  padding: '3px',
+                })}
+              >
+                Read only
+              </div>
+            )}
           </Flex>
           {/* {(couldWriteButNotDirect || resource.isDirectResource) && ( */}
+          <Flex align='center' wrap='nowrap'>
           <FeaturePreview>
             <OpenCloseModal
               modalClassName={css({
@@ -301,6 +302,7 @@ export function ResourceDisplay({
               ]}
             />
           )}
+          </Flex>
         </Flex>
         <div>
           {showSettings && (

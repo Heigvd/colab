@@ -6,7 +6,7 @@
  */
 
 import { css, cx } from '@emotion/css';
-import { faWindowRestore } from '@fortawesome/free-regular-svg-icons';
+import { faRectangleList, faWindowRestore } from '@fortawesome/free-regular-svg-icons';
 import {
   faCog,
   faCompressArrowsAlt,
@@ -30,16 +30,20 @@ import 'react-reflex/styles.css';
 import { Route, Routes, useLocation, useNavigate } from 'react-router-dom';
 import * as API from '../../API/api';
 import useTranslations from '../../i18n/I18nContext';
-import { useCardACLForCurrentUser, useVariantsOrLoad } from '../../selectors/cardSelector';
+import {
+  useAndLoadSubCards,
+  useCardACLForCurrentUser,
+  useVariantsOrLoad,
+} from '../../selectors/cardSelector';
 import { useAndLoadCardType } from '../../selectors/cardTypeSelector';
 //import { useStickyNoteLinksForDest } from '../../selectors/stickyNoteLinkSelector';
 import { useAppDispatch, useLoadingState } from '../../store/hooks';
 import Button from '../common/element/Button';
 import IconButton from '../common/element/IconButton';
 import { DiscreetInput } from '../common/element/Input';
-import Collapsible from '../common/layout/Collapsible';
 import { ConfirmDeleteModal } from '../common/layout/ConfirmDeleteModal';
 import DropDownMenu from '../common/layout/DropDownMenu';
+import Ellipsis from '../common/layout/Ellipsis';
 import Flex from '../common/layout/Flex';
 import Modal from '../common/layout/Modal';
 import OpenCloseModal from '../common/layout/OpenCloseModal';
@@ -68,8 +72,10 @@ import {
   variantTitle,
 } from '../styling/style';
 import CardContentStatus from './CardContentStatus';
+import CardCreator from './CardCreator';
 import CardInvolvement from './CardInvolvement';
 import CardSettings from './CardSettings';
+import { TinyCard } from './CardThumb';
 import CompletionEditor from './CompletionEditor';
 import ContentSubs from './ContentSubs';
 import {
@@ -646,9 +652,38 @@ export default function CardEditor({
         </Flex>
         <VariantPager allowCreation={!!canWrite} card={card} current={variant} />
         {showSubcards ? (
-          <Collapsible label={i18n.modules.card.subcards}>
+          <Flex direction="column" align="stretch">
+            <SubcardsDisplay variant={variant} />
+          </Flex>
+        ) : null}
+      </Flex>
+    );
+  }
+}
+function SubcardsDisplay({ variant }: {variant: CardContent;}): JSX.Element {
+  const i18n = useTranslations();
+  const subCards = useAndLoadSubCards(variant.id);
+  const [detailed, setDetailed] = React.useState<boolean>(false);
+  return (
+    <>
+      <Flex align="center" className={css({ borderBottom: '1px solid var(--lightGray)' })}>
+        <h3>{i18n.modules.card.subcards}</h3>
+        <CardCreator parentCardContent={variant} display="0" className={lightIconButtonStyle} />
+        <IconButton
+          icon={faRectangleList}
+          onClick={() => {
+            setDetailed(e => !e);
+            //navigate(`../card/${card.id}/v/${variant.id}`);
+          }}
+          title="View card structure"
+          className={cx(lightIconButtonStyle, {[css({color: 'black'})]: detailed} )}
+        />
+      </Flex>
+      {subCards != null && subCards.length > 0 && (
+        <>
+          {detailed ? (
             <ContentSubs
-              minCardWidth={80}
+              minCardWidth={60}
               depth={1}
               cardContent={variant}
               className={css({ alignItems: 'flex-start', overflow: 'auto', width: '100%' })}
@@ -657,11 +692,37 @@ export default function CardEditor({
                 overflow: 'auto',
                 width: '100%',
                 flexWrap: 'nowrap',
+                gridTemplateColumns: `repeat(5, minmax(100px, 1fr))`,
+                gridAutoRows: `minmax(65px, 1fr)`,
               })}
             />
-          </Collapsible>
-        ) : null}
-      </Flex>
-    );
-  }
+          ) : (
+            <Ellipsis
+              containerClassName={
+                subCards.length > 0 ? css({ height: '20px', padding: space_S + ' 0' }) : undefined
+              }
+              items={subCards}
+              alignEllipsis="flex-end"
+              itemComp={sub => <TinyCard key={sub.id} card={sub} width="50px" height="30px" />}
+            />
+          )}
+        </>
+      )}
+
+      {/* <Collapsible label={i18n.modules.card.subcards}> */}
+      {/* <ContentSubs
+  minCardWidth={80}
+  depth={0}
+  cardContent={variant}
+  className={css({ alignItems: 'flex-start', overflow: 'auto', width: '100%' })}
+  showPreview
+  subcardsContainerStyle={css({
+    overflow: 'auto',
+    width: '100%',
+    flexWrap: 'nowrap',
+  })}
+/> */}
+      {/* </Collapsible> */}
+    </>
+  );
 }

@@ -11,6 +11,7 @@ import {
   faCog,
   faCopy,
   faEllipsisV,
+  faEye,
   faTurnDown,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -195,6 +196,16 @@ function ResourcesListByCategory({
   );
 }
 
+const resourcesStackLabelStyle = css({
+  fontWeight: 'bold',
+  backgroundColor: 'var(--hoverBgColor)',
+  marginTop: 0,
+  paddingLeft: space_M,
+  fontSize: '0.8rem',
+  textTransform: 'uppercase'
+
+})
+
 function ResourcesListBy3Stacks({
   resources,
   selectResource,
@@ -227,7 +238,6 @@ ResourcesListProps): JSX.Element {
 
   //   return projectId === currentProject?.id;
   // }, []);
-
   const bySources: Record<string, ResourceAndRef[]> = React.useMemo(() => {
     function get3StackKey(current: ResourceAndRef): StackType {
       // if (current.isDirectResource) {
@@ -289,8 +299,7 @@ ResourcesListProps): JSX.Element {
       className={css({ overflow: 'auto', paddingRight: '2px' })}
     >
       {bySources['OWN'] ? (
-        <div className={marginAroundStyle([3], space_S)}>
-          <Collapsible label={resourceOwnership.kind === 'CardType' ? 'Theme' : 'Card'} open>
+          <Collapsible label={resourceOwnership.kind === 'CardType' ? 'Theme' : 'Card'} open labelClassName={resourcesStackLabelStyle}>
             <ResourcesListByCategory
               resources={bySources['OWN']}
               selectResource={selectResource}
@@ -298,13 +307,12 @@ ResourcesListProps): JSX.Element {
               showLocationIcon={false}
             />
           </Collapsible>
-        </div>
       ) : (
         <></>
       )}
       {bySources['INHERITED'] ? (
         <div className={marginAroundStyle([3], space_S)}>
-          <Collapsible label="Inherited" open>
+          <Collapsible label="Inherited" open labelClassName={resourcesStackLabelStyle}>
             <ResourcesListByCategory
               resources={bySources['INHERITED']}
               selectResource={selectResource}
@@ -318,7 +326,7 @@ ResourcesListProps): JSX.Element {
       )}
       {bySources['PROJECT'] ? (
         <div className={marginAroundStyle([3], space_S)}>
-          <Collapsible label="Project" open>
+          <Collapsible label="Project" open labelClassName={resourcesStackLabelStyle}>
             <ResourcesListByCategory
               resources={bySources['PROJECT']}
               selectResource={selectResource}
@@ -512,18 +520,22 @@ function TocHeader({ category }: TocHeaderProps): JSX.Element {
   return (
     <>
       {category && (
-        <div className={marginAroundStyle([1, 2, 4], space_M)}>
-          <h3
-            className={cx(
-              css({
-                minWidth: '50px',
-                flexGrow: 1,
-              }),
-              oneLineEllipsis,
-            )}
-          >
+        <div className={cx(
+          css({
+            minWidth: '50px',
+            flexGrow: 1,
+            textTransform: 'uppercase',
+            marginBottom: 0,
+            marginTop: space_S,
+            marginLeft: space_M,
+            marginRight: space_M,
+            borderBottom: '1px solid var(--lightGray)',
+            fontWeight: 'bold',
+            fontSize: '0.75rem',
+          }),
+          oneLineEllipsis,
+        )}>
             {category}
-          </h3>
         </div>
       )}
     </>
@@ -591,9 +603,9 @@ function TocEntry({
             }}
             grow={1}
             className={cx(
-              css({ padding: space_S + ' ' + space_M }),
-              { [css({ color: 'lightgray' })]: effectiveReadOnly },
-              { [css({ color: 'dimgray' })]: !effectiveReadOnly },
+              css({ padding: '3px ' + space_M }),
+              { [css({ color: 'var(--darkGray)' })]: effectiveReadOnly },
+              { [css({ color: 'var(--darkGray)' })]: !effectiveReadOnly },
             )}
           >
             <div
@@ -605,11 +617,20 @@ function TocEntry({
                 oneLineEllipsis,
               )}
             >
+              {effectiveReadOnly && (
+                <FontAwesomeIcon
+                  icon={faEye}
+                  size="xs"
+                  className={css({ marginRight: '3px' })}
+                  color='var(--lightGray)'
+                />
+              )}
               {resource.targetResource.published && resource.isDirectResource && (
                 <FontAwesomeIcon
                   icon={faTurnDown}
                   size="xs"
                   className={css({ marginRight: '3px' })}
+                  color='var(--lightGray)'
                 />
               )}
               {/* {showLocationIcon && (

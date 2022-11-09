@@ -17,7 +17,7 @@ import InlineLoading from '../common/element/InlineLoading';
 import GridOrganizer, { fixGrid } from '../common/GridOrganizer';
 import Ellipsis from '../common/layout/Ellipsis';
 import Flex from '../common/layout/Flex';
-import { invertedButtonStyle, space_L } from '../styling/style';
+import { invertedButtonStyle, lightIconButtonStyle, space_L } from '../styling/style';
 import CardCreator from './CardCreator';
 import { TinyCard } from './CardThumb';
 import CardThumbWithSelector from './CardThumbWithSelector';
@@ -46,7 +46,7 @@ const subCardsContainerStyle = css({
   display: 'flex',
   alignItems: 'stretch',
   flexDirection: 'column',
-    //justifyContent: 'flex-end',
+  //justifyContent: 'flex-end',
   //marginTop: space_L,
 });
 
@@ -63,14 +63,16 @@ export function gridCardsStyle(nbRows: number, nbColumns: number, depth?: number
   if (depth === 1) {
     return css({
       ...gridStyle,
-      gridTemplateColumns: `repeat(3, minmax(100px, 1fr))`,
-      gridAutoRows: `minmax(65px, 1fr)`,
+      gridTemplateColumns: `repeat(3, minmax(65px, 1fr))`,
+      //gridTemplateRows: 'repeat(2, 1fr)',
+      gridAutoRows: `minmax(55px, 1fr)`,
     });
   } else {
     return css({
       ...gridStyle,
-      gridTemplateColumns: `repeat(${nbColumns >= 2 ? nbColumns : 2}, minmax(250px, 1fr))`,
-      gridTemplateRows: `repeat(${nbRows >= 2 ? nbRows : 2}, minmax(100px, 1fr))`,
+      gridTemplateColumns: `repeat(${nbColumns >= 3 ? nbColumns : 3}, minmax(250px, 1fr))`,
+      //gridTemplateColumns: `repeat(${nbColumns}, minmax(250px, 1fr))`,
+      gridTemplateRows: `repeat(${nbRows >= 3 ? nbRows : 3}, minmax(100px, 1fr))`,
       /* justifyContent: 'stretch',
     alignContent: 'stretch',
     justifyItems: 'stretch',
@@ -101,6 +103,7 @@ export default function ContentSubs({
   const dispatch = useAppDispatch();
 
   const subCards = useAndLoadSubCards(cardContent.id);
+  //const [nbColumns, setNbColumns] = React.useState<number>(3);
 
   const indexedSubCards = React.useMemo(() => {
     if (subCards != null) {
@@ -126,9 +129,13 @@ export default function ContentSubs({
   } else {
     if (subCards.length === 0 && showEmptiness) {
       return (
-        <Flex justify='center' align='center' direction='column' className={css({
-          padding: space_L
-        })}
+        <Flex
+          justify="center"
+          align="center"
+          direction="column"
+          className={css({
+            padding: space_L,
+          })}
         >
           <h3>{i18n.modules.card.infos.noCardYetPleaseCreate}</h3>
           <CardCreator
@@ -148,67 +155,105 @@ export default function ContentSubs({
           )}
         >
           {organize ? (
-            <GridOrganizer
-              className={css({
-                height: '100%',
-                width: '100%',
-              })}
-              cells={indexedSubCards.cells}
-              gap="6px"
-              handleSize="33px"
-              onResize={(cell, newPosition) => {
-                dispatch(
-                  changeCardPosition({
-                    cardId: cell.payload.id!,
-                    newPosition: newPosition,
-                  }),
-                );
-              }}
-              background={cell => {
-                return (
-                  <CardThumbWithSelector
-                    className={css({
-                      height: '100%',
-                      minHeight: '100px',
-                      margin: 0,
-                      '.VariantPagerArrow': {
-                        display: 'none',
-                      },
-                    })}
-                    depth={0}
-                    key={cell.payload.id}
-                    card={cell.payload}
-                    showPreview={false}
-                  />
-                );
-              }}
-            />
+            <>
+              <Flex>
+                {/* <LabeledInput
+                  label={'Number of columns'}
+                  type='number'
+                  value={nbColumns}
+                  onChange={(c) => {setNbColumns(Number(c))}}
+                /> */}
+              </Flex>
+              <GridOrganizer
+                className={css({
+                  height: '100%',
+                  //width: '100%',
+                  alignSelf: 'stretch',
+                  padding: '0 ' + space_L,
+                })}
+                //nbColumns={{nbColumns, setNbColumns}}
+                cells={indexedSubCards.cells}
+                gap="6px"
+                handleSize="33px"
+                onResize={(cell, newPosition) => {
+                  dispatch(
+                    changeCardPosition({
+                      cardId: cell.payload.id!,
+                      newPosition: newPosition,
+                    }),
+                  );
+                }}
+                background={cell => {
+                  return (
+                    <CardThumbWithSelector
+                      className={css({
+                        height: '100%',
+                        minHeight: '100px',
+                        margin: 0,
+                        '.VariantPagerArrow': {
+                          display: 'none',
+                        },
+                      })}
+                      depth={0}
+                      key={cell.payload.id}
+                      card={cell.payload}
+                      showPreview={false}
+                    />
+                  );
+                }}
+              />
+            </>
           ) : (
             <>
               <div
                 className={cx(
                   gridCardsStyle(indexedSubCards.nbRows, indexedSubCards.nbColumns, depth),
+                  //gridCardsStyle(indexedSubCards.nbRows, nbColumns, depth),
                   subcardsContainerStyle,
                   hideEmptyGridStyle,
                 )}
               >
-                {indexedSubCards.cells.map(({ payload, y, x, width, height }) => (
-                  <CardThumbWithSelector
-                    // ICI IF DEOTH === 1 Alors faire en sorte que 3 sur une meme ligne ou non
-                    className={depth === 1 ? undefined : css({
-                      gridColumnStart: x,
-                      gridColumnEnd: x + width,
-                      gridRowStart: y,
-                      gridRowEnd: y + height,
-                      minWidth: `${width * minCardWidth}px`,
-                      maxHeight: '100%',
-                    })}
-                    depth={depth - 1}
-                    key={payload.id}
-                    card={payload}
-                    showPreview={showPreview}
-                  />
-                ))}
+                {depth === 1 && subCards.length > 5 ? (
+                  <>
+                    {indexedSubCards.cells.slice(0, 5).map(({ payload }) => (
+                      <CardThumbWithSelector
+                        // ICI IF DEOTH === 1 Alors faire en sorte que 3 sur une meme ligne ou non
+                        cardThumbClassName={
+                          css({overflow: 'hidden'})
+                        }
+                        depth={depth - 1}
+                        key={payload.id}
+                        card={payload}
+                        showPreview={showPreview}
+                      />
+                    ))}
+                    <Flex justify='center' align='center' grow={1} className={cx(lightIconButtonStyle, css({border: '1px dashed var(--lightGray)'}))}><h3>+ {subCards.length - 5}</h3></Flex>
+                  </>
+                ) : (
+                  <>
+                    {indexedSubCards.cells.map(({ payload, y, x, width, height }) => (
+                      <CardThumbWithSelector
+                        // ICI IF DEOTH === 1 Alors faire en sorte que 3 sur une meme ligne ou non
+                        className={
+                          depth === 1
+                            ? undefined
+                            : css({
+                                gridColumnStart: x,
+                                gridColumnEnd: x + width,
+                                gridRowStart: y,
+                                gridRowEnd: y + height,
+                                minWidth: `${width * minCardWidth}px`,
+                                maxHeight: '100%',
+                              })
+                        }
+                        depth={depth - 1}
+                        key={payload.id}
+                        card={payload}
+                        showPreview={showPreview}
+                      />
+                    ))}
+                  </>
+                )}
               </div>
               {/*
               <Flex justify="center">
@@ -231,7 +276,7 @@ export default function ContentSubs({
           items={subCards}
           alignEllipsis="flex-end"
           itemComp={sub => <TinyCard key={sub.id} card={sub} />}
-          containerClassName={subCards.length > 0 ? css({height: '20px'}) : undefined}
+          containerClassName={subCards.length > 0 ? css({ height: '20px' }) : undefined}
         />
       );
     }

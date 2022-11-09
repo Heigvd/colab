@@ -6,10 +6,13 @@
  */
 import { css, cx } from '@emotion/css';
 import { IconProp } from '@fortawesome/fontawesome-svg-core';
+import { faTimes } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import * as React from 'react';
+import useTranslations from '../../i18n/I18nContext';
+import IconButton from '../common/element/IconButton';
 import Flex from '../common/layout/Flex';
-import { lightIconButtonStyle, space_M, space_S } from '../styling/style';
+import { lightIconButtonStyle, marginAroundStyle, space_M, space_S } from '../styling/style';
 
 const bgActiveStyleRight = css({
   backgroundImage: 'linear-gradient( to right, transparent 90%, #444 91%, #444 100%)',
@@ -50,9 +53,9 @@ export interface SideCollapsiblePanelBodyProps {
 export function SideCollapsiblePanelBody({
   className,
 }: SideCollapsiblePanelBodyProps): JSX.Element {
-  const { items, openKey /* setOpenKey*/ } = React.useContext(SideCollapsibleCTX);
+  const { items, openKey, setOpenKey } = React.useContext(SideCollapsibleCTX);
   const itemOpen = openKey == null ? null : items[openKey];
-  // const i18n = useTranslations();
+  const i18n = useTranslations();
   if (itemOpen) {
     return (
       <Flex align="stretch" direction="column" grow={1} className={className}>
@@ -66,11 +69,11 @@ export function SideCollapsiblePanelBody({
             })}
           >
             <Flex align="baseline">
-              {itemOpen.header ? itemOpen.header : <h3>{itemOpen.title}</h3>}
+              {itemOpen.header ? itemOpen.header : <h2>{itemOpen.title}</h2>}
 
               {itemOpen.nextToTitleElement}
             </Flex>
-            {/* <IconButton
+            <IconButton
               icon={faTimes}
               title={i18n.common.close}
               onClick={() => {
@@ -79,7 +82,7 @@ export function SideCollapsiblePanelBody({
                 }
               }}
               className={cx(lightIconButtonStyle, marginAroundStyle([4], space_M))}
-            /> */}
+            />
           </Flex>
         )}
         {itemOpen.children}
@@ -109,7 +112,7 @@ export function SideCollapsibleMenu({
     }
   }, [defaultOpenKey, setOpenKey]);
   return (
-    <Flex direction="column" justify="flex-start" align="stretch" className={className}>
+    <Flex direction="column" justify="flex-start" align="stretch" className={cx(className, {[css({width: '0px', overflow: 'hidden', transition: '0.5s'})]: openKey !== undefined })}>
       {Object.entries(items).map(([key, item]) => (
         <Flex
           key={key}

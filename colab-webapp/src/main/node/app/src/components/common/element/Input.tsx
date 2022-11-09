@@ -271,6 +271,7 @@ function Input({
           }}
           className={cx(
             inputEditClassName && mode === 'EDIT' ? inputEditClassName : inputDisplayClassName,
+            css({color: 'var(--fgColor)'})
           )}
         />
       ) : (

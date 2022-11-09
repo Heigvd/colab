@@ -12,6 +12,7 @@ import {
   faCog,
   faGrip,
   faNetworkWired,
+  faPlus,
   faProjectDiagram,
   faStar,
   faTimes,
@@ -45,6 +46,7 @@ import IllustrationDisplay, {
   IllustrationIconDisplay,
 } from '../../common/element/IllustrationDisplay';
 import InlineLoading from '../../common/element/InlineLoading';
+import { DiscreetInput } from '../../common/element/Input';
 import { mainLinkActiveClass, mainMenuLink, MainMenuLink } from '../../common/element/Link';
 import Tips, { FeaturePreview, TipsCtx } from '../../common/element/Tips';
 import Toggler from '../../common/element/Toggler';
@@ -90,7 +92,7 @@ const modelPictoCornerStyle = css({
   position: 'absolute',
   top: 0,
   left: 0,
-  padding: '10px 10px 12px 12px',
+  padding: '5px 7px 7px 5px',
   borderRadius: '0 0 50% 0',
 });
 // const openDetails = css({
@@ -116,7 +118,7 @@ function parentPathFn() {
   return '../';
 }
 
-const Ancestor = ({ card, content, last }: Ancestor): JSX.Element => {
+const Ancestor = ({ card, content, last, className }: Ancestor): JSX.Element => {
   const i18n = useTranslations();
   const navigate = useNavigate();
   //const location = useLocation();
@@ -139,11 +141,15 @@ const Ancestor = ({ card, content, last }: Ancestor): JSX.Element => {
           onClick={() => {
             navigate('..');
           }}
-          clickableClassName={cx(linkStyle, breadCrumbsStyle)}
+          clickableClassName={cx(linkStyle, breadCrumbsStyle, className)}
         >
           {i18n.common.project}
         </Clickable>
-        <FontAwesomeIcon icon={faChevronRight} size="xs" className={breadCrumbsStyle} />
+        <FontAwesomeIcon
+          icon={faChevronRight}
+          size="xs"
+          className={cx(breadCrumbsStyle, className)}
+        />
       </>
     );
   } else if (entityIs(card, 'Card') && entityIs(content, 'CardContent')) {
@@ -157,11 +163,17 @@ const Ancestor = ({ card, content, last }: Ancestor): JSX.Element => {
           onClick={() => {
             navigate(`../${t}/${content.cardId}/v/${content.id}`);
           }}
-          clickableClassName={cx(linkStyle, breadCrumbsStyle)}
+          clickableClassName={cx(linkStyle, breadCrumbsStyle, className)}
         >
           {card.title ? card.title : i18n.modules.card.untitled}
         </Clickable>
-        {!last && <FontAwesomeIcon icon={faChevronRight} size="xs" className={breadCrumbsStyle} />}
+        {!last && (
+          <FontAwesomeIcon
+            icon={faChevronRight}
+            size="xs"
+            className={cx(breadCrumbsStyle, className)}
+          />
+        )}
       </>
     );
   } else {
@@ -266,7 +278,7 @@ const CardWrapper = ({
   } else {
     return (
       <>
-        <Flex className={css({ paddingBottom: '10px', marginTop: '-10px' })}>
+        <Flex className={css({ paddingBottom: '7px', marginTop: '-10px' })}>
           {/* <IconButton
             icon={faArrowLeft}
             title={backButtonTitle}
@@ -275,9 +287,19 @@ const CardWrapper = ({
             className={css({ marginRight: space_M })}
           /> */}
           {ancestors.map((ancestor, x) => (
-            <Ancestor key={x} card={ancestor.card} content={ancestor.content} />
+            <Ancestor
+              key={x}
+              card={ancestor.card}
+              content={ancestor.content}
+              className={cx({ [css({ color: 'var(--primaryColor)' })]: project.type === 'MODEL' })}
+            />
           ))}
-          <Ancestor card={card} content={content} last />
+          <Ancestor
+            card={card}
+            content={content}
+            last
+            className={cx({ [css({ color: 'var(--primaryColor)' })]: project.type === 'MODEL' })}
+          />
           {/* TODO bouton navigation carte*/}
         </Flex>
         <Flex
@@ -464,9 +486,15 @@ function EditorNav({ project }: EditorNavProps): JSX.Element {
                   iconColor="#fff"
                 />
               </Flex>
-              <div className={css({ padding: '0 ' + space_S })}>
+              <DiscreetInput
+                  value={project.name || i18n.modules.project.actions.newProject}
+                  placeholder={i18n.modules.project.actions.newProject}
+                  // TO DO ? readOnly={readOnly}
+                  onChange={newValue => dispatch(API.updateProject({ ...project, name: newValue }))}
+                />
+              {/* <div className={css({ padding: '0 ' + space_S })}>
                 {project.name || i18n.modules.project.actions.newProject}
-              </div>
+              </div> */}
             </Flex>
           </Flex>
         </div>
@@ -515,7 +543,7 @@ function RootView({ rootContent }: { rootContent: CardContent | null | undefined
             depth={depthMax}
             cardContent={rootContent}
             organize={organize}
-            className={css({ marginTop: space_L })}
+            className={organize ? undefined : css({ marginTop: space_L })}
             //showPreview
             //className={organize ? fullHeightStyle : undefined}
             //subcardsContainerStyle={fullHeightStyle}
@@ -648,7 +676,7 @@ export default function Editor(): JSX.Element {
                 {/*             {isAdminModel ? (
               <FontAwesomeIcon icon={faGlobe} color="white" size="sm" />
             ) : ( */}
-                <FontAwesomeIcon icon={faStar} />
+                <FontAwesomeIcon icon={faStar} size="xs" />
               </Flex>
             )}
 
@@ -718,21 +746,25 @@ interface CardCreatorAndOrganizeProps {
 function CardCreatorAndOrganize({ rootContent, organize }: CardCreatorAndOrganizeProps) {
   const i18n = useTranslations();
   const subCards = useAndLoadSubCards(rootContent.id);
+  const [open, setOpen] = React.useState<boolean>(true);
   return (
-    <>
+    <Flex
+      align="stretch"
+      className={cx(
+        fixedButtonStyle,
+        css({
+          backgroundColor: 'var(--bgColor)',
+          zIndex: 1,
+          fontSize: '0.8em',
+          padding: '8px',
+          borderRadius: '0px 0px 5px 5px',
+          border: '1px solid var(--lightGray)',
+          gap: space_S,
+        }),
+      )}
+    >
       {subCards && subCards.length > 0 && (
-        <Flex
-          className={cx(
-            fixedButtonStyle,
-            css({
-              backgroundColor: 'var(--hoverBgColor)',
-              zIndex: 10,
-              fontSize: '0.8em',
-              padding: space_S,
-            }),
-          )}
-          gap={space_M}
-        >
+        <Flex className={cx({ [css({ display: 'none' })]: !open })} gap={space_M} wrap="nowrap">
           <FeaturePreview className={fixedButtonStyle}>
             <Toggler
               className={css({ alignSelf: 'flex-end' })}
@@ -748,6 +780,13 @@ function CardCreatorAndOrganize({ rootContent, organize }: CardCreatorAndOrganiz
           />
         </Flex>
       )}
-    </>
+      <Flex align='center' className={cx({[css({ borderLeft: '1px solid var(--lighterGray)', paddingLeft: space_S })]: open})}>
+        <IconButton
+          title="open"
+          onClick={() => setOpen(e => !e)}
+          icon={open ? faTimes : faPlus}
+        />
+      </Flex>
+    </Flex>
   );
 }

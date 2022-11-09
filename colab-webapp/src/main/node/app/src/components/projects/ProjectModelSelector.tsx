@@ -78,7 +78,7 @@ export default function ProjectModelSelector({
                           '@class': 'Illustration',
                           iconLibrary: 'FONT_AWESOME_REGULAR',
                           iconKey: 'file',
-                          iconBkgdColor: '#68A8C3',
+                          iconBkgdColor: '#50BFD5',
                         }
                       : item.illustration || { ...defaultProjectIllustration }
                   }

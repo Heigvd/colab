@@ -98,7 +98,7 @@ export default function DocumentationTab({ project }: DocumentationTabProps): JS
                       title={<h2>{i18n.modules.project.settings.resources.label}</h2>}
                     />
                   </Flex>
-                  <ResourcesMainViewPanel accessLevel={accessLevel} showVoidIndicator showLevels />
+                  <ResourcesMainViewPanel accessLevel={accessLevel} showLevels />
                 </ResourcesCtx.Provider>
               </>
             ) : (
