@@ -23,7 +23,7 @@ export function overlayStyle(coord: [number, number]) {
     border: '1px solid grey',
     backgroundColor: 'var(--bgColor)',
     width: `${ttWidth}px`,
-    zIndex: 1,
+    zIndex: 10,
     whiteSpace: 'initial',
     borderRadius: '6px',
   });
