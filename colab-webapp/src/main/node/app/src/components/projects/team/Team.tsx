@@ -17,6 +17,7 @@ import Tabs, { Tab } from '../../common/layout/Tabs';
 import {
   space_S,
 } from '../../styling/style';
+import ProjectModelSharing from '../ProjectModelSharing';
 import MemberCreator from './MemberCreator';
 import TeamRACI from './Raci';
 import TeamRights from './Rights';
@@ -43,7 +44,7 @@ export default function Team({ project }: TeamProps): JSX.Element {
   const root = useProjectRootCard(project);
   const { members, status } = useAndLoadProjectTeam(projectId);
 
-  if (status === 'INITIALIZED') {
+  if (status === 'INITIALIZED' && project.id != null) {
     return (
       <>
         <Flex justify="space-between">
@@ -62,6 +63,9 @@ export default function Team({ project }: TeamProps): JSX.Element {
           </Tab>
           <Tab name="projectACL" label={i18n.modules.project.settings.involvements.label}>
               {entityIs(root, 'Card') ? <CardInvolvement card={root} /> : <InlineLoading />}
+          </Tab>
+          <Tab name="modelSharing" invisible={project.type === 'PROJECT'} label="Share the model">
+              <ProjectModelSharing projectId={project.id} />
             </Tab>
         </Tabs>
       </>

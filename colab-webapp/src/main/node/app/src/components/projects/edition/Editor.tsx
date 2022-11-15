@@ -13,11 +13,9 @@ import {
   faGrip,
   faHouse,
   faNetworkWired,
-  faPlus,
   faProjectDiagram,
   faStar,
   faTableCells,
-  faTimes,
   faUserGroup,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -44,25 +42,20 @@ import CardThumbWithSelector from '../../cards/CardThumbWithSelector';
 import ContentSubs from '../../cards/ContentSubs';
 import Checkbox from '../../common/element/Checkbox';
 import IconButton from '../../common/element/IconButton';
-import {
-  IllustrationIconDisplay,
-} from '../../common/element/IllustrationDisplay';
+import { IllustrationIconDisplay } from '../../common/element/IllustrationDisplay';
 import InlineLoading from '../../common/element/InlineLoading';
 import { DiscreetInput } from '../../common/element/Input';
 import { mainLinkActiveClass, mainMenuLink, MainMenuLink } from '../../common/element/Link';
 import Tips, { FeaturePreview, TipsCtx } from '../../common/element/Tips';
-import Toggler from '../../common/element/Toggler';
 import Clickable from '../../common/layout/Clickable';
 import Flex from '../../common/layout/Flex';
 import Monkeys from '../../debugger/monkey/Monkeys';
 import { UserDropDown } from '../../MainNav';
 import Settings from '../../settings/Settings';
 import {
-  fixedButtonStyle,
   //fullHeightStyle,
   fullPageStyle,
   greyIconButtonChipStyle,
-  invertedButtonStyle,
   invertedThemeMode,
   linkStyle,
   modelBGColor,
@@ -382,73 +375,73 @@ function EditorNav({ project }: EditorNavProps): JSX.Element {
           )}
         /> */}
           </MainMenuLink>
-        <Flex
-          className={css({
-            borderLeft: '1px solid var(--lightGray)',
-            padding: '0 ' + space_S,
-          })}
-          wrap="nowrap"
-        >
-          <MainMenuLink
-            end
-            to={`/editor/${project.id}`}
-            className={active =>
-              active.isActive || location.pathname.match(/^\/editor\/\d+\/(edit|card)/)
-                ? mainLinkActiveClass
-                : mainMenuLink
-            }
+          <Flex
+            className={css({
+              borderLeft: '1px solid var(--lightGray)',
+              padding: '0 ' + space_S,
+            })}
+            wrap="nowrap"
           >
-            <FontAwesomeIcon
-              icon={faGrip}
-              title={i18n.common.views.view + ' ' + i18n.common.views.board}
-            />
-          </MainMenuLink>
-          <MainMenuLink to="./hierarchy">
-            <FontAwesomeIcon
-              icon={faNetworkWired}
-              title={i18n.common.views.view + ' ' + i18n.common.views.hierarchy}
-            />
-          </MainMenuLink>
-          <MainMenuLink to="./flow">
-            <FontAwesomeIcon
-              icon={faProjectDiagram}
-              title={i18n.common.views.view + ' ' + i18n.common.views.activityFlow}
-            />
-          </MainMenuLink>
-        </Flex>
-        <Flex
-          className={css({
-            borderLeft: '1px solid var(--lightGray)',
-            padding: '0 ' + space_S,
-          })}
-          wrap="nowrap"
-        >
-          <MainMenuLink to="./docs">
-            <FontAwesomeIcon
-              icon={faBookOpen}
-              title={i18n.modules.project.settings.resources.label}
-            />
-          </MainMenuLink>
-        </Flex>
-        <Flex
-          className={css({
-            borderLeft: '1px solid var(--lightGray)',
-            padding: '0 ' + space_S,
-          })}
-          wrap="nowrap"
-        >
-          <MainMenuLink
-            to="./team"
-            className={active =>
-              active.isActive || location.pathname.match(/^\/editor\/\d+\/team/)
-                ? mainLinkActiveClass
-                : mainMenuLink
-            }
+            <MainMenuLink
+              end
+              to={`/editor/${project.id}`}
+              className={active =>
+                active.isActive || location.pathname.match(/^\/editor\/\d+\/(edit|card)/)
+                  ? mainLinkActiveClass
+                  : mainMenuLink
+              }
+            >
+              <FontAwesomeIcon
+                icon={faGrip}
+                title={i18n.common.views.view + ' ' + i18n.common.views.board}
+              />
+            </MainMenuLink>
+            <MainMenuLink to="./hierarchy">
+              <FontAwesomeIcon
+                icon={faNetworkWired}
+                title={i18n.common.views.view + ' ' + i18n.common.views.hierarchy}
+              />
+            </MainMenuLink>
+            <MainMenuLink to="./flow">
+              <FontAwesomeIcon
+                icon={faProjectDiagram}
+                title={i18n.common.views.view + ' ' + i18n.common.views.activityFlow}
+              />
+            </MainMenuLink>
+          </Flex>
+          <Flex
+            className={css({
+              borderLeft: '1px solid var(--lightGray)',
+              padding: '0 ' + space_S,
+            })}
+            wrap="nowrap"
           >
-            <FontAwesomeIcon icon={faUserGroup} title={i18n.team.teamManagement} />
-          </MainMenuLink>
-        </Flex>
-        <Flex
+            <MainMenuLink to="./docs">
+              <FontAwesomeIcon
+                icon={faBookOpen}
+                title={i18n.modules.project.settings.resources.label}
+              />
+            </MainMenuLink>
+          </Flex>
+          <Flex
+            className={css({
+              borderLeft: '1px solid var(--lightGray)',
+              padding: '0 ' + space_S,
+            })}
+            wrap="nowrap"
+          >
+            <MainMenuLink
+              to="./team"
+              className={active =>
+                active.isActive || location.pathname.match(/^\/editor\/\d+\/team/)
+                  ? mainLinkActiveClass
+                  : mainMenuLink
+              }
+            >
+              <FontAwesomeIcon icon={faUserGroup} title={i18n.team.teamManagement} />
+            </MainMenuLink>
+          </Flex>
+          <Flex
             className={css({
               borderLeft: '1px solid var(--lightGray)',
               padding: '0 ' + space_S,
@@ -459,7 +452,7 @@ function EditorNav({ project }: EditorNavProps): JSX.Element {
               <FontAwesomeIcon title={i18n.modules.project.labels.projectSettings} icon={faCog} />
             </MainMenuLink>
           </Flex>
-        {/* {project.type === 'MODEL' && (
+          {/* {project.type === 'MODEL' && (
             <WIPContainer>
               <Flex
                 className={css({
@@ -477,7 +470,7 @@ function EditorNav({ project }: EditorNavProps): JSX.Element {
               </Flex>
             </WIPContainer>
           )} */}
-          </Flex>
+        </Flex>
         <div
           className={css({
             gridColumn: '2/3',
@@ -762,25 +755,37 @@ interface CardCreatorAndOrganizeProps {
 function CardCreatorAndOrganize({ rootContent, organize }: CardCreatorAndOrganizeProps) {
   const i18n = useTranslations();
   const subCards = useAndLoadSubCards(rootContent.id);
-  return (<>
+  return (
+    <>
       {subCards && subCards.length > 0 && (
-        <Flex gap={space_S} wrap="nowrap" justify="flex-end" align="center" className={css({marginTop: '-10px', paddingRight: space_S})}>
+        <Flex
+          gap={space_S}
+          wrap="nowrap"
+          justify="flex-end"
+          align="center"
+          className={css({ marginTop: '-10px', paddingRight: space_S })}
+        >
           <FeaturePreview>
             <IconButton
-              className={cx(greyIconButtonChipStyle, css({ alignSelf: 'flex-end'}), organize.organize && css({backgroundColor: successColor, color: 'var(--bgColor)', border: successColor}) )}
+              className={cx(
+                greyIconButtonChipStyle,
+                css({ alignSelf: 'flex-end' }),
+                organize.organize &&
+                  css({
+                    backgroundColor: successColor,
+                    color: 'var(--bgColor)',
+                    border: successColor,
+                  }),
+              )}
               title={i18n.modules.card.positioning.toggleText}
               icon={faTableCells}
               //value={organize.organize}
               onClick={() => organize.setOrganize(e => !e)}
-
             />
           </FeaturePreview>
-          <CardCreator
-            parentCardContent={rootContent}
-            className={greyIconButtonChipStyle}
-          />
+          <CardCreator parentCardContent={rootContent} className={greyIconButtonChipStyle} />
         </Flex>
       )}
-      </>
+    </>
   );
 }

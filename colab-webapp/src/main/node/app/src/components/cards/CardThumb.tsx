@@ -211,17 +211,20 @@ export default function CardThumb({
         <>
           <div
             onClick={clickOnCardTitleCb}
-            className={cx(css({
-              display: 'flex',
-              flexDirection: 'column',
-              justifyContent: 'space-around',
-              borderBottom:
-                card.color && card.color != '#ffffff'
-                  ? '3px solid ' + card.color
-                  : '3px solid var(--lightGray)',
-              width: '100%',
-              cursor: 'pointer',
-            }))}
+            className={cx(
+              css({
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'space-around',
+                borderTop:
+                  card.color && card.color != '#ffffff'
+                    ? '5px solid ' + card.color
+                    : '3px solid var(--bgColor)',
+                borderBottom: '1px solid var(--lighterGray)',
+                width: '100%',
+                cursor: 'pointer',
+              }),
+            )}
           >
             <div
               className={css({
@@ -237,7 +240,9 @@ export default function CardThumb({
               >
                 <Flex className={cx(cardThumbTitleStyle(depth), css({ flexGrow: 1 }))}>
                   <CardContentStatus mode="icon" status={variant?.status || 'ACTIVE'} />
-                  <span className={cx(css({ fontWeight: 'bold', minWidth: '50px' }), oneLineEllipsis)}>
+                  <span
+                    className={cx(css({ fontWeight: 'bold', minWidth: '50px' }), oneLineEllipsis)}
+                  >
                     {card.title || i18n.modules.card.untitled}
                   </span>
                   {hasVariants && (
@@ -452,32 +457,37 @@ export default function CardThumb({
             align="stretch"
             direction="column"
             onClick={clickOnCardContentCb}
-            className={cx(cardThumbContentStyle(depth), {
-              [css({ //minHeight: space_L, 
-                cursor: shouldZoomOnClick ? 'zoom-in' : 'pointer' })]:
-                true,
-              [css({
-                padding: space_M,
-              })]: depth > 0,
-            }, css({overflow: 'auto'}))}
+            className={cx(
+              cardThumbContentStyle(depth),
+              {
+                [css({
+                  //minHeight: space_L,
+                  cursor: shouldZoomOnClick ? 'zoom-in' : 'pointer',
+                })]: true,
+                [css({
+                  padding: space_M,
+                })]: depth > 0,
+              },
+              css({ overflow: 'auto' }),
+            )}
             justify="stretch"
           >
             {mayOrganize && variant && (
-              <Flex gap={space_M} justify='flex-end'>
-              <FeaturePreview>
-                <Toggler
-                  className={css({ alignSelf: 'flex-end' })}
-                  label={i18n.modules.card.positioning.toggleText}
-                  value={organize}
-                  onChange={setOrganize}
+              <Flex gap={space_M} justify="flex-end">
+                <FeaturePreview>
+                  <Toggler
+                    className={css({ alignSelf: 'flex-end' })}
+                    label={i18n.modules.card.positioning.toggleText}
+                    value={organize}
+                    onChange={setOrganize}
+                  />
+                </FeaturePreview>
+                <CardCreator
+                  parentCardContent={variant}
+                  display="1"
+                  className={invertedButtonStyle}
                 />
-              </FeaturePreview>
-              <CardCreator
-                parentCardContent={variant}
-                display="1"
-                className={invertedButtonStyle}
-              />
-            </Flex>
+              </Flex>
             )}
 
             {showPreview && variant && (

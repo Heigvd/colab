@@ -63,6 +63,7 @@ export interface TipsProps {
   interactionType?: 'CLICK' | 'HOVER';
   children?: React.ReactNode;
   className?: string;
+  iconClassName?: string;
 }
 
 function getIconProp(tipsType: TipsProps['tipsType']): IconProp {
@@ -183,6 +184,7 @@ export default function Tips({
   tipsType = 'TIPS',
   interactionType = 'HOVER',
   children,
+  iconClassName,
   className,
 }: TipsProps): JSX.Element {
   const [coord, setCoord] = React.useState<[number, number] | undefined>(undefined);
@@ -257,7 +259,7 @@ export default function Tips({
         onMouseMove={onMoveCb}
         onClick={onClickCb}
       >
-        <FontAwesomeIcon icon={getIconProp(tipsType)} />
+        <FontAwesomeIcon icon={getIconProp(tipsType)} className={iconClassName}/>
         {coord && displayed && <div className={overlayStyle(coord)}>{children}</div>}
       </span>
     );

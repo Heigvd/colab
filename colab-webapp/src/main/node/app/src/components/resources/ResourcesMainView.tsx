@@ -16,7 +16,7 @@ import IconButton from '../common/element/IconButton';
 import Tips, { WIPContainer } from '../common/element/Tips';
 import DropDownMenu from '../common/layout/DropDownMenu';
 import Flex from '../common/layout/Flex';
-import { invertedButtonStyle, lightIconButtonStyle, space_L, space_S } from '../styling/style';
+import { invertedButtonStyle, lightIconButtonStyle, lightText, space_L, space_S, textSmall } from '../styling/style';
 import HidenResourcesKeeper from './HidenResourcesKeeper';
 import ResourceCreator from './ResourceCreator';
 import { ResourceDisplay } from './ResourceDisplay';
@@ -122,7 +122,7 @@ export function ResourcesMainViewHeader({
 
       {title}
 
-      {helpTip && <Tips>{helpTip}</Tips>}
+      {helpTip && <Tips iconClassName={cx(textSmall, lightText )}>{helpTip}</Tips>}
 
       {displayMode === 'LIST' && (
         <>

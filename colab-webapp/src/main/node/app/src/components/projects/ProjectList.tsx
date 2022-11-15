@@ -39,7 +39,6 @@ import Modal from '../common/layout/Modal';
 import {
   ellipsis,
   errorColor,
-  fixedButtonStyle,
   invertedButtonStyle,
   lightIconButtonStyle,
   multiLineEllipsis,
@@ -135,12 +134,11 @@ function DeleteProjectWrapper(): JSX.Element {
 }
 
 const projectListStyle = css({
-  margin: 'auto',
   width: '100%',
   display: 'inline-grid',
   gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))',
-  gridColumnGap: '40px',
-  gridRowGap: '40px',
+  gridColumnGap: '30px',
+  gridRowGap: '30px',
 });
 
 interface ProjectDisplayProps {
@@ -358,7 +356,7 @@ function ProjectList({ projects, status, reload }: ProjectListProps) {
     return <InlineLoading />;
   } else {
     return (
-      <div className={css({ padding: '3rem' })}>
+      <Flex className={css({ padding: '.5rem 2rem 2rem 2rem' })} direction={'column'}>
         {!projects || projects.length === 0 ? (
           <Flex justify="center" align="center" direction="column">
             <h2>{i18n.common.welcome}</h2>
@@ -368,7 +366,14 @@ function ProjectList({ projects, status, reload }: ProjectListProps) {
             />
           </Flex>
         ) : (
-          <ProjectCreator collapsedButtonClassName={cx(fixedButtonStyle, invertedButtonStyle)} />
+          <Flex className={css({ alignSelf: 'flex-end', padding: space_S })}>
+            <ProjectCreator
+              collapsedButtonClassName={cx(
+                invertedButtonStyle,
+                css({ fontSize: '0.8em' }),
+              )}
+            />
+          </Flex>
         )}
 
         {/* {projects
@@ -407,7 +412,7 @@ function ProjectList({ projects, status, reload }: ProjectListProps) {
           <Route path="deleteproject/:projectId" element={<DeleteProjectWrapper />} />
           <Route path="extractModel/:projectId" element={<ExtractModelWrapper />} />
         </Routes>
-      </div>
+      </Flex>
     );
   }
 }
@@ -500,7 +505,7 @@ function ModelsList({ status, reload }: ModelListProps) {
     return <InlineLoading />;
   } else {
     return (
-      <div className={css({ padding: '2rem'})}>
+      <div className={css({ padding: '2rem' })}>
         {(!models || models.length === 0) && (
           <div className={voidStyle}>
             <h2>{i18n.common.welcome}</h2>

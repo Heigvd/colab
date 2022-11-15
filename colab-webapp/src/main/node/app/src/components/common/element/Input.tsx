@@ -72,6 +72,7 @@ interface InputProps {
   bottomClassName?: string;
   footerClassName?: string;
   validationClassName?: string;
+  title?: string;
 }
 
 const confirmButtonsStyle = css({
@@ -108,6 +109,7 @@ function Input({
   bottomClassName,
   footerClassName,
   validationClassName,
+  title,
 }: InputProps): JSX.Element {
   const i18n = useTranslations();
 
@@ -233,7 +235,7 @@ function Input({
   const updated = currentInternalValue !== initialValue;
 
   return (
-    <Flex direction="column" className={containerClassName} style={{ maxWidth: maxWidth }}>
+    <Flex direction="column" className={containerClassName} style={{ maxWidth: maxWidth }} title={title}>
       {/* //</Flex> <Flex theRef={containerRef} direction='column'> */}
       {label && (
         <Flex align="center">
