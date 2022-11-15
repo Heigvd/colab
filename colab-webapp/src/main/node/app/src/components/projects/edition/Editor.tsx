@@ -9,12 +9,14 @@ import { css, cx } from '@emotion/css';
 import {
   faBookOpen,
   faChevronRight,
+  faCog,
   faGrip,
   faHouse,
   faNetworkWired,
   faPlus,
   faProjectDiagram,
   faStar,
+  faTableCells,
   faTimes,
   faUserGroup,
 } from '@fortawesome/free-solid-svg-icons';
@@ -42,7 +44,7 @@ import CardThumbWithSelector from '../../cards/CardThumbWithSelector';
 import ContentSubs from '../../cards/ContentSubs';
 import Checkbox from '../../common/element/Checkbox';
 import IconButton from '../../common/element/IconButton';
-import IllustrationDisplay, {
+import {
   IllustrationIconDisplay,
 } from '../../common/element/IllustrationDisplay';
 import InlineLoading from '../../common/element/InlineLoading';
@@ -59,6 +61,7 @@ import {
   fixedButtonStyle,
   //fullHeightStyle,
   fullPageStyle,
+  greyIconButtonChipStyle,
   invertedButtonStyle,
   invertedThemeMode,
   linkStyle,
@@ -66,6 +69,7 @@ import {
   space_L,
   space_M,
   space_S,
+  successColor,
 } from '../../styling/style';
 import DocumentationTab from '../DocumentationTab';
 import Presence from '../presence/Presence';
@@ -78,7 +82,7 @@ import ActivityFlowChart from './ActivityFlowChart';
 import Hierarchy from './Hierarchy';
 
 export const depthMax = 2;
-const descriptionStyle = {
+/* const descriptionStyle = {
   backgroundColor: 'var(--fgColor)',
   color: 'var(--bgColor)',
   gap: space_L,
@@ -86,7 +90,7 @@ const descriptionStyle = {
   overflow: 'visible',
   fontSize: '0.9em',
   flexGrow: 0,
-};
+}; */
 const modelPictoCornerStyle = css({
   position: 'absolute',
   top: 0,
@@ -99,12 +103,12 @@ const modelPictoCornerStyle = css({
 //   maxHeight: '1000px',
 //   padding: space_L,
 // });
-const closeDetails = css({
+/* const closeDetails = css({
   ...descriptionStyle,
   maxHeight: '0px',
   padding: '0 ' + space_L,
   overflow: 'hidden',
-});
+}); */
 
 const breadCrumbsStyle = css({
   fontSize: '.8em',
@@ -444,6 +448,17 @@ function EditorNav({ project }: EditorNavProps): JSX.Element {
             <FontAwesomeIcon icon={faUserGroup} title={i18n.team.teamManagement} />
           </MainMenuLink>
         </Flex>
+        <Flex
+            className={css({
+              borderLeft: '1px solid var(--lightGray)',
+              padding: '0 ' + space_S,
+            })}
+            wrap="nowrap"
+          >
+            <MainMenuLink to="./project-settings">
+              <FontAwesomeIcon title={i18n.modules.project.labels.projectSettings} icon={faCog} />
+            </MainMenuLink>
+          </Flex>
         {/* {project.type === 'MODEL' && (
             <WIPContainer>
               <Flex
@@ -544,7 +559,7 @@ function RootView({ rootContent }: { rootContent: CardContent | null | undefined
             depth={depthMax}
             cardContent={rootContent}
             organize={organize}
-            className={organize ? undefined : css({ marginTop: space_L })}
+            //className={organize ? undefined : css({ marginTop: space_L })}
             //showPreview
             //className={organize ? fullHeightStyle : undefined}
             //subcardsContainerStyle={fullHeightStyle}
@@ -626,7 +641,7 @@ export default function Editor(): JSX.Element {
           className={cx(fullPageStyle, { [modelBGColor]: project.type === 'MODEL' })}
         >
           <EditorNav project={project} />
-          <Flex className={closeDetails}>
+          {/* <Flex className={closeDetails}>
             <Flex justify="space-between" grow={1}>
               <Flex gap={space_M}>
                 <IllustrationDisplay
@@ -656,7 +671,7 @@ export default function Editor(): JSX.Element {
               </Flex>
               <IconButton icon={faTimes} title={i18n.common.close} />
             </Flex>
-          </Flex>
+          </Flex> */}
           <Flex
             direction="column"
             grow={1}
@@ -747,48 +762,25 @@ interface CardCreatorAndOrganizeProps {
 function CardCreatorAndOrganize({ rootContent, organize }: CardCreatorAndOrganizeProps) {
   const i18n = useTranslations();
   const subCards = useAndLoadSubCards(rootContent.id);
-  const [open, setOpen] = React.useState<boolean>(true);
-  return (
-    <Flex
-      align="stretch"
-      className={cx(
-        fixedButtonStyle,
-        css({
-          backgroundColor: 'var(--bgColor)',
-          zIndex: 1,
-          fontSize: '0.8em',
-          padding: '8px',
-          borderRadius: '0px 0px 5px 5px',
-          border: '1px solid var(--lightGray)',
-          gap: space_S,
-        }),
-      )}
-    >
+  return (<>
       {subCards && subCards.length > 0 && (
-        <Flex className={cx({ [css({ display: 'none' })]: !open })} gap={space_M} wrap="nowrap">
-          <FeaturePreview className={fixedButtonStyle}>
-            <Toggler
-              className={css({ alignSelf: 'flex-end' })}
-              label={i18n.modules.card.positioning.toggleText}
-              value={organize.organize}
-              onChange={organize.setOrganize}
+        <Flex gap={space_S} wrap="nowrap" justify="flex-end" align="center" className={css({marginTop: '-10px', paddingRight: space_S})}>
+          <FeaturePreview>
+            <IconButton
+              className={cx(greyIconButtonChipStyle, css({ alignSelf: 'flex-end'}), organize.organize && css({backgroundColor: successColor, color: 'var(--bgColor)', border: successColor}) )}
+              title={i18n.modules.card.positioning.toggleText}
+              icon={faTableCells}
+              //value={organize.organize}
+              onClick={() => organize.setOrganize(e => !e)}
+
             />
           </FeaturePreview>
           <CardCreator
             parentCardContent={rootContent}
-            display="1"
-            className={invertedButtonStyle}
+            className={greyIconButtonChipStyle}
           />
         </Flex>
       )}
-      <Flex
-        align="center"
-        className={cx({
-          [css({ borderLeft: '1px solid var(--lighterGray)', paddingLeft: space_S })]: open,
-        })}
-      >
-        <IconButton title="open" onClick={() => setOpen(e => !e)} icon={open ? faTimes : faPlus} />
-      </Flex>
-    </Flex>
+      </>
   );
 }

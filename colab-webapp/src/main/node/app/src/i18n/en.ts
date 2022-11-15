@@ -379,7 +379,8 @@ export const en = {
       subcardTooltip: (name: string) => `Subcard: ${name}`,
       subcards: 'Subcards',
       untitled: 'New card',
-      createCard: 'Create card',
+      createCard: 'Create card', 
+      createSubcard: 'Create subcard', 
       createACard: 'Create a card',
       createVariant: 'Create variant',
       createNew: (parentTitle?: string | null): string =>
@@ -421,10 +422,12 @@ export const en = {
         statusTooltip: (status: CardContentStatus) =>
           `Status: ${en.modules.card.settings.statuses[status].toLocaleLowerCase('en')}`,
         statuses: {
-          ACTIVE: 'ACTIVE',
-          POSTPONED: 'POSTPONED',
-          ARCHIVED: 'ARCHIVED',
-          REJECTED: 'REJECTED',
+          ACTIVE: 'Active',
+          POSTPONED: 'Postoned',
+          ARCHIVED: 'Archived',
+          REJECTED: 'Rejected',
+          PREPARATION: 'In preparation',
+          VALIDATED: 'Validated',
         },
         completionLevelMode: 'Completion level mode',
         cardPosition: 'Card position',

@@ -7,7 +7,7 @@
 
 import { css, cx } from '@emotion/css';
 import { faEye } from '@fortawesome/free-regular-svg-icons';
-import { faArrowUp, faBoxArchive, faGhost, faTrash } from '@fortawesome/free-solid-svg-icons';
+import { faArchive, faArrowUp, faBoxArchive, faTrash } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import * as React from 'react';
 import * as API from '../../API/api';
@@ -117,10 +117,10 @@ export default function HidenResourcesKeeper({
       collapsedChildren={
         resources != null && resources.length > 0 ? (
           <Flex justify="center" align="center" className={collapsedClassName}>
-            <span className={css({ marginRight: space_S, fontSize: '0.8em' })}>
+            {/* <span className={css({ marginRight: space_S, fontSize: '0.8em' })}>
               {resources.length}
-            </span>
-            <FontAwesomeIcon title={i18n.modules.content.removedDocuments} icon={faGhost} />
+            </span> */}
+            <FontAwesomeIcon title={i18n.modules.content.removedDocuments} icon={faArchive} />
           </Flex>
         ) : (
           <></>

@@ -79,7 +79,7 @@ export const normalThemeMode = css({
     margin: '0 0 5px 0',
   },
   'h1, h2, h3, h4': {
-    margin: '0 0 5px 0',
+    margin: '0 0 0 0',
   },
   h1: {
     fontSize: '1.5rem',

@@ -6,6 +6,8 @@
  */
 
 import { css, cx } from '@emotion/css';
+import { faGlobe } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Project } from 'colab-rest-client';
 import * as React from 'react';
 import useTranslations from '../../i18n/I18nContext';
@@ -14,8 +16,22 @@ import ItemThumbnailsSelection from '../common/collection/ItemThumbnailsSelectio
 import AvailabilityStatusIndicator from '../common/element/AvailabilityStatusIndicator';
 import IllustrationDisplay from '../common/element/IllustrationDisplay';
 import Flex from '../common/layout/Flex';
-import { lightText, multiLineEllipsis, space_S, textSmall } from '../styling/style';
+import {
+  invertedThemeMode,
+  lightText,
+  multiLineEllipsis,
+  space_S,
+  textSmall,
+} from '../styling/style';
 import { defaultProjectIllustration } from './ProjectCommon';
+
+const modelPictoCornerStyle = css({
+  position: 'absolute',
+  top: 0,
+  left: 0,
+  padding: '5px 7px 7px 5px',
+  borderRadius: '0 0 50% 0',
+});
 
 const projectThumbnailStyle = css({
   padding: 0,
@@ -23,6 +39,7 @@ const projectThumbnailStyle = css({
   minHeight: '80px',
   maxHeight: '80px',
   margin: space_S,
+  position: 'relative',
 });
 
 function sortResources(a: Project, b: Project): number {
@@ -101,6 +118,18 @@ export default function ProjectModelSelector({
                     : i18n.modules.project.info.useBlankProject}
                 </p>
               </div>
+
+              {item?.type === 'MODEL' && false && (
+                //item.type === 'GLOBAL' &&
+                <Flex
+                  align="center"
+                  justify="center"
+                  className={cx(modelPictoCornerStyle, invertedThemeMode)}
+                  title={i18n.modules.project.info.isAModel}
+                >
+                  <FontAwesomeIcon icon={faGlobe} size="2xs" />
+                </Flex>
+              )}
             </>
           );
         }}

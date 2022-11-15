@@ -12,7 +12,7 @@ import useTranslations from '../../i18n/I18nContext';
 import { cardStyle } from '../styling/style';
 
 const progressBarContainer = css({
-  height: '5px',
+  height: '8px',
   backgroundColor: '#bbb',
   width: '100%',
 });
@@ -92,15 +92,10 @@ export default function CardLayout({
           cardStyle,
           css({
             backgroundColor: 'white',
-            //            boxShadow:
-            //              variants.length > 1
-            //                ? `${cardShadow}, 4px 4px 0px 0px white, 4px 4px 4px 1px var(--darkGray)`
-            //                : undefined,
             flexDirection: 'column',
             justifyContent: 'space-between',
             display: 'flex',
             overflow: 'auto',
-            //cursor: 'default',
           }),
           className
         )}

@@ -25,6 +25,8 @@ const options = [
   buildOption('POSTPONED'),
   buildOption('ARCHIVED'),
   buildOption('REJECTED'),
+  buildOption('PREPARATION'),
+  buildOption('VALIDATED'),
 ];
 
 export default function ContentStatusSelector({

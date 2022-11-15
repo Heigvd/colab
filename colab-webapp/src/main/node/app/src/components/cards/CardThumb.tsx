@@ -349,6 +349,20 @@ export default function CardThumb({
                   buttonClassName={cx(lightIconButtonStyle, css({ marginLeft: space_S }))}
                   entries={[
                     {
+                      value: 'newSubcard',
+                      label: (
+                        <>
+                          {variant && (
+                            <CardCreator
+                              parentCardContent={variant}
+                              display="dropdown"
+                              customLabel={i18n.modules.card.createSubcard}
+                            />
+                          )}
+                        </>
+                      ),
+                    },
+                    {
                       value: 'edit',
                       label: (
                         <>
@@ -367,20 +381,6 @@ export default function CardThumb({
                       action: () => {
                         navigate(`${cardId}/settings`);
                       },
-                    },
-                    {
-                      value: 'newSubcard',
-                      label: (
-                        <>
-                          {variant && (
-                            <CardCreator
-                              parentCardContent={variant}
-                              display="1"
-                              //className={}
-                            />
-                          )}
-                        </>
-                      ),
                     },
                     {
                       value: 'involvements',

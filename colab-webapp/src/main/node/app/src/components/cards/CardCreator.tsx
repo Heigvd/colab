@@ -8,6 +8,7 @@
 import { css, cx } from '@emotion/css';
 import { ReactJSXElement } from '@emotion/react/types/jsx-namespace';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { CardContent } from 'colab-rest-client';
 import * as React from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -47,6 +48,7 @@ export interface CardCreatorProps {
   customButton?: ReactJSXElement;
   className?: string;
   withCardTypeChoice?: boolean;
+  customLabel?: string;
 }
 
 export default function CardCreator({
@@ -54,6 +56,7 @@ export default function CardCreator({
   display,
   className,
   withCardTypeChoice,
+  customLabel
 }: // customButton,
 // className,
 CardCreatorProps): JSX.Element {
@@ -104,7 +107,7 @@ CardCreatorProps): JSX.Element {
         }}
         // isLoading={isLoading}
       >
-        {i18n.modules.card.createCard}
+        {customLabel ? customLabel : i18n.modules.card.createCard}
       </Button>
     ) : display === '2' ? (
       <Button
@@ -118,11 +121,19 @@ CardCreatorProps): JSX.Element {
       >
         {i18n.modules.card.infos.createFirstCard}
       </Button>
+    ) : display === 'dropdown' ? (
+      <div onClick={e => {
+        e.stopPropagation();
+        createCard(close);
+      }}>
+        <FontAwesomeIcon icon={faPlus} className={css({marginRight: space_S})} />
+        {customLabel ? customLabel : i18n.modules.card.createCard}
+      </div>
     ) : (
       <IconButton
         icon={faPlus}
-        className={cx(lightIconButtonStyle)}
-        title={i18n.modules.card.createCard}
+        className={cx(lightIconButtonStyle, className)}
+        title={customLabel ? customLabel : i18n.modules.card.createCard}
         onClick={e => {
           e.stopPropagation();
           createCard(close);
@@ -139,7 +150,7 @@ CardCreatorProps): JSX.Element {
         <IconButton
           icon={faPlus}
           className={greyIconButtonChipStyle}
-          title={i18n.modules.card.createCard}
+          title={customLabel ? customLabel : i18n.modules.card.createCard}
         />
         //)
       }

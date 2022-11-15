@@ -385,6 +385,7 @@ export const fr: ColabTranslations = {
       subcards: 'Sous-cartes',
       untitled: 'Nouvelle carte',
       createCard: 'Créer carte',
+      createSubcard: 'Créer sous-carte',
       createACard: 'Créer une carte',
       createVariant: 'Créer une variante',
       createNew: (parentTitle?: string | null): string =>
@@ -430,6 +431,8 @@ export const fr: ColabTranslations = {
           POSTPONED: 'Reporté',
           ARCHIVED: 'Archivé',
           REJECTED: 'Rejeté',
+          PREPARATION: 'En préparation',
+          VALIDATED: 'Validé',
         },
         completionLevelMode: "Mode de niveau d'avancement",
         cardPosition: 'Position de la carte',
