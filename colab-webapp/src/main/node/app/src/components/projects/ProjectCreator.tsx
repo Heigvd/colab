@@ -78,7 +78,7 @@ export default function ProjectCreator({
     } else if (status === 'fillBasisData' && data.projectModel) {
       setTitle(i18n.modules.project.actions.createAProjectFrom(data.projectModel.name));
     } else {
-      setTitle(i18n.modules.project.actions.createAProject);
+      setTitle(i18n.modules.project.actions.createAProjectFrom(i18n.modules.project.info.emptyProject));
     }
   }, [status, i18n, data.projectModel]);
 

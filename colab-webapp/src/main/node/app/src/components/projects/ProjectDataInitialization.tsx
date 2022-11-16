@@ -22,8 +22,8 @@ import Flex from '../common/layout/Flex';
 import {
   borderRadius,
   invertedButtonStyle,
+  labelStyle,
   lightIconButtonStyle,
-  space_L,
   space_M,
   space_S,
   textSmall,
@@ -74,40 +74,92 @@ export default function ProjectDataInitialization({
     data.projectModel?.illustration || defaultProjectIllustration,
   );
   return (
-    <Flex className={css({ alignSelf: 'stretch' })}>
+    <Flex align="stretch" className={css({ alignSelf: 'stretch' })} direction="column">
+      <div className={labelStyle}>{i18n.modules.project.settings.icon}</div>
+      {editIllustration ? (
+        <Flex
+          direction="column"
+          align="stretch"
+          className={css({
+            padding: space_M,
+            border: '1px solid var(--secondaryColor)',
+            borderRadius: borderRadius,
+            marginBottom: space_M,
+          })}
+        >
+          <ProjectIllustrationMaker
+            illustration={
+              currentIllustration || data.projectModel?.illustration || defaultProjectIllustration
+            }
+            setIllustration={setCurrentIllustration}
+            iconContainerClassName={css({ marginBottom: space_S, maxHeight: '100px' })}
+          />
+          <Flex justify="flex-end" className={css({ gap: space_S })}>
+            <Button onClick={() => setEditIllustration(false)} invertedButton>
+              {i18n.common.cancel}
+            </Button>
+            <Button
+              onClick={() => {
+                setIllustration(currentIllustration);
+                setEditIllustration(false);
+              }}
+            >
+              {i18n.common.ok}
+            </Button>
+          </Flex>
+        </Flex>
+      ) : (
+        <Flex
+          className={css({
+            minWidth: '100%',
+            height: '80px',
+            marginBottom: space_S,
+            position: 'relative',
+          })}
+          onClick={() => setEditIllustration(true)}
+        >
+          <IllustrationDisplay illustration={currentIllustration} />
+          <Flex
+            align="flex-end"
+            justify="flex-end"
+            className={projectIllustrationOverlay}
+            title={i18n.modules.project.actions.editIllustration}
+          >
+            <FontAwesomeIcon icon={faPen} color={'var(--bgColor)'} />
+          </Flex>
+        </Flex>
+      )}
+      <FormInput
+        label={i18n.common.name}
+        value={data.name}
+        readOnly={readOnly}
+        onChange={name => setName(name)}
+      />
+      <FormInput
+        label={i18n.common.description}
+        inputType="textarea"
+        value={data.description}
+        readOnly={readOnly}
+        onChange={description => {
+          setDescription(description);
+        }}
+      />
+
+      {/* <IllustrationPicker data={data.illustration} onChange={setIllustration} /> */}
+
+      {data.projectModel != null && (
+        <Flex>
+          <Checkbox
+            value={data.keepWiredToModel}
+            label="Keep resources from the model up to date"
+            onChange={(newValue: boolean) => setKeepWiredToModel(newValue)}
+          />
+        </Flex>
+      )}
       <Flex
         direction="column"
-        align="stretch"
-        className={css({ width: '45%', minWidth: '45%', marginRight: space_L })}
+        className={css({ paddingTop: space_M, marginTop: space_M, borderTop: '1px solid var(--lightGray)' })}
       >
-        <FormInput
-          label={i18n.common.name}
-          value={data.name}
-          readOnly={readOnly}
-          onChange={name => setName(name)}
-        />
-        <FormInput
-          label={i18n.common.description}
-          inputType="textarea"
-          value={data.description}
-          readOnly={readOnly}
-          onChange={description => {
-            setDescription(description);
-          }}
-        />
-
-        {/* <IllustrationPicker data={data.illustration} onChange={setIllustration} /> */}
-
-        {data.projectModel != null && (
-          <Flex>
-            <Checkbox
-              value={data.keepWiredToModel}
-              label="Keep resources from the model up to date"
-              onChange={(newValue: boolean) => setKeepWiredToModel(newValue)}
-            />
-          </Flex>
-        )}
-
         <Form
           fields={[
             {
@@ -148,74 +200,6 @@ export default function ProjectDataInitialization({
               )}
             </Flex>
           ))}
-        </Flex>
-      </Flex>
-      <Flex direction="column" align="stretch" className={css({ width: '55%' })}>
-        <Flex
-          className={css({
-            minWidth: '100%',
-            height: '80px',
-            marginBottom: space_M,
-            position: 'relative',
-          })}
-          onClick={() => setEditIllustration(true)}
-        >
-          <IllustrationDisplay illustration={currentIllustration} />
-          <Flex
-            align="flex-end"
-            justify="flex-end"
-            className={projectIllustrationOverlay}
-            title={i18n.modules.project.actions.editIllustration}
-          >
-            <FontAwesomeIcon icon={faPen} color={'var(--bgColor)'} />
-          </Flex>
-        </Flex>
-        {editIllustration && (
-          <Flex
-            direction="column"
-            align="stretch"
-            className={css({
-              padding: space_M,
-              border: '1px solid var(--lightGray)',
-              borderRadius: borderRadius,
-              marginBottom: space_M,
-            })}
-          >
-            <ProjectIllustrationMaker
-              illustration={
-                currentIllustration || data.projectModel?.illustration || defaultProjectIllustration
-              }
-              setIllustration={setCurrentIllustration}
-              iconContainerClassName={css({ marginBottom: space_S, maxHeight: '100px' })}
-            />
-            <Flex justify="flex-end" className={css({ gap: space_S })}>
-              <Button onClick={() => setEditIllustration(false)} invertedButton>
-                {i18n.common.cancel}
-              </Button>
-              <Button
-                onClick={() => {
-                  setIllustration(currentIllustration);
-                  setEditIllustration(false);
-                }}
-              >
-                {i18n.common.ok}
-              </Button>
-            </Flex>
-          </Flex>
-        )}
-        <h2>
-          {data.projectModel
-            ? data.projectModel.name
-              ? data.projectModel.name
-              : i18n.modules.project.actions.newProject
-            : i18n.modules.project.info.emptyProject}
-        </h2>
-        <Flex className={textSmall}>
-          {data.projectModel
-            ? data.projectModel.description
-              ? data.projectModel.description
-              : i18n.common.noDescription
-            : i18n.modules.project.info.useBlankProject}
         </Flex>
       </Flex>
     </Flex>
