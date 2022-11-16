@@ -12,6 +12,7 @@ import {
   faFrog,
   faPen,
   faPercent,
+  faTableCells,
   faTrash,
   faUsers,
 } from '@fortawesome/free-solid-svg-icons';
@@ -24,9 +25,9 @@ import useTranslations from '../../i18n/I18nContext';
 import { useAndLoadSubCards } from '../../selectors/cardSelector';
 import { useAppDispatch, useLoadingState } from '../../store/hooks';
 import Button from '../common/element/Button';
+import IconButton from '../common/element/IconButton';
 import InlineLoading from '../common/element/InlineLoading';
 import { FeaturePreview } from '../common/element/Tips';
-import Toggler from '../common/element/Toggler';
 import { ConfirmDeleteModal } from '../common/layout/ConfirmDeleteModal';
 import DropDownMenu from '../common/layout/DropDownMenu';
 import Flex from '../common/layout/Flex';
@@ -34,12 +35,13 @@ import Modal from '../common/layout/Modal';
 import DocumentPreview from '../documents/preview/DocumentPreview';
 import {
   errorColor,
-  invertedButtonStyle,
+  greyIconButtonChipStyle,
   lightIconButtonStyle,
   oneLineEllipsis,
   //linkStyle,
   space_M,
   space_S,
+  successColor,
   variantTitle,
 } from '../styling/style';
 import CardContentStatus from './CardContentStatus';
@@ -348,7 +350,7 @@ export default function CardThumb({
                     }
                   />
                 </Routes>
-                <DropDownMenu
+                {depth === 1 && <DropDownMenu
                   icon={faEllipsisV}
                   valueComp={{ value: '', label: '' }}
                   buttonClassName={cx(lightIconButtonStyle, css({ marginLeft: space_S }))}
@@ -430,6 +432,7 @@ export default function CardThumb({
                     },
                   ]}
                 />
+  }
               </div>
               {/*
               // Show nb of sticky notes and resources under card title.
@@ -473,20 +476,35 @@ export default function CardThumb({
             justify="stretch"
           >
             {mayOrganize && variant && (
-              <Flex gap={space_M} justify="flex-end">
+              <Flex
+                gap={space_S}
+                wrap="nowrap"
+                justify="flex-end"
+                align="center"
+                className={css({ marginTop: '-10px', paddingRight: space_S })}
+              >
                 <FeaturePreview>
-                  <Toggler
-                    className={css({ alignSelf: 'flex-end' })}
-                    label={i18n.modules.card.positioning.toggleText}
-                    value={organize}
-                    onChange={setOrganize}
+                  <IconButton
+                    className={cx(
+                      greyIconButtonChipStyle,
+                      css({ alignSelf: 'flex-end' }),
+                      organize &&
+                        css({
+                          backgroundColor: successColor,
+                          color: 'var(--bgColor)',
+                          border: successColor,
+                        }),
+                    )}
+                    title={i18n.modules.card.positioning.toggleText}
+                    icon={faTableCells}
+                    //value={organize.organize}
+                    onClick={e => {
+                      e.stopPropagation();
+                      setOrganize(v => !v);
+                    }}
                   />
                 </FeaturePreview>
-                <CardCreator
-                  parentCardContent={variant}
-                  display="1"
-                  className={invertedButtonStyle}
-                />
+                <CardCreator parentCardContent={variant} className={greyIconButtonChipStyle} />
               </Flex>
             )}
 
@@ -525,6 +543,7 @@ export default function CardThumb({
                   minCardWidth={100}
                   depth={depth}
                   cardContent={variant}
+                  cardSize={{ width: card.width, height: card.height }}
                   organize={organize}
                   showPreview={false}
                 />

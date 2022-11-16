@@ -26,6 +26,10 @@ import CardThumbWithSelector from './CardThumbWithSelector';
 
 interface ContentSubsProps {
   cardContent: CardContent;
+  cardSize?: {
+    width: number;
+    height: number;
+  };
   depth?: number;
   showEmptiness?: boolean;
   className?: string;
@@ -58,12 +62,17 @@ const subCardsContainerStyle = css({
   justifyItems: 'stretch',
   alignItems: 'stretch'}); */
 
-export function gridCardsStyle(nbRows: number, nbColumns: number, depth?: number) {
+export function gridCardsStyle(
+  nbRows: number,
+  nbColumns: number,
+  depth?: number,
+  cardWidth?: number,
+) {
   const gridStyle = { flexGrow: '1', display: 'grid' };
   if (depth === 1) {
     return css({
       ...gridStyle,
-      gridTemplateColumns: `repeat(3, minmax(65px, 1fr))`,
+      gridTemplateColumns: `repeat(${cardWidth ? cardWidth * 3 : 3}, minmax(65px, 1fr))`,
       //gridTemplateRows: 'repeat(2, 1fr)',
       gridAutoRows: `minmax(55px, 1fr)`,
     });
@@ -90,6 +99,7 @@ const hideEmptyGridStyle = css({
 // Display sub cards of a parent
 export default function ContentSubs({
   cardContent,
+  cardSize,
   depth = 1,
   showEmptiness = false,
   className,
@@ -103,6 +113,9 @@ export default function ContentSubs({
   const dispatch = useAppDispatch();
 
   const subCards = useAndLoadSubCards(cardContent.id);
+  const nbSubDisplayed = cardSize
+    ? cardSize?.width * cardSize.height * 6 + 3 * cardSize.width * (cardSize.height - 1)
+    : undefined;
   //const [nbColumns, setNbColumns] = React.useState<number>(3);
 
   const indexedSubCards = React.useMemo(() => {
@@ -207,33 +220,46 @@ export default function ContentSubs({
             <>
               <div
                 className={cx(
-                  gridCardsStyle(indexedSubCards.nbRows, indexedSubCards.nbColumns, depth),
+                  gridCardsStyle(
+                    indexedSubCards.nbRows,
+                    indexedSubCards.nbColumns,
+                    depth,
+                    cardSize?.width,
+                  ),
                   //gridCardsStyle(indexedSubCards.nbRows, nbColumns, depth),
                   subcardsContainerStyle,
                   hideEmptyGridStyle,
                 )}
               >
-                {depth === 1 && subCards.length > 5 ? (
+                {depth === 1 && nbSubDisplayed && subCards.length > nbSubDisplayed ? (
                   <>
-                    {indexedSubCards.cells.slice(0, 5).map(({ payload }) => (
-                      <CardThumbWithSelector
-                        // ICI IF DEOTH === 1 Alors faire en sorte que 3 sur une meme ligne ou non
-                        cardThumbClassName={
-                          css({overflow: 'hidden'})
-                        }
-                        depth={depth - 1}
-                        key={payload.id}
-                        card={payload}
-                        showPreview={showPreview}
-                      />
-                    ))}
-                    <Flex justify='center' align='center' grow={1} className={cx(lightIconButtonStyle, css({border: '1px dashed var(--lightGray)'}))}><h3>+ {subCards.length - 5}</h3></Flex>
+                    {indexedSubCards.cells.slice(0, nbSubDisplayed - 1).map(({ payload }) => {
+                      return (
+                        <CardThumbWithSelector
+                          cardThumbClassName={css({ overflow: 'hidden' })}
+                          depth={depth - 1}
+                          key={payload.id}
+                          card={payload}
+                          showPreview={showPreview}
+                        />
+                      );
+                    })}
+                    <Flex
+                      justify="center"
+                      align="center"
+                      grow={1}
+                      className={cx(
+                        lightIconButtonStyle,
+                        css({ border: '1px dashed var(--lightGray)' }),
+                      )}
+                    >
+                      <h3>+ {subCards.length - (nbSubDisplayed - 1)}</h3>
+                    </Flex>
                   </>
                 ) : (
                   <>
                     {indexedSubCards.cells.map(({ payload, y, x, width, height }) => (
                       <CardThumbWithSelector
-                        // ICI IF DEOTH === 1 Alors faire en sorte que 3 sur une meme ligne ou non
                         className={
                           depth === 1
                             ? undefined
@@ -276,7 +302,7 @@ export default function ContentSubs({
           items={subCards}
           alignEllipsis="flex-end"
           itemComp={sub => <TinyCard key={sub.id} card={sub} />}
-          containerClassName={subCards.length > 0 ? css({ height: '20px' }) : undefined}
+          containerClassName={css({ height: '20px' })}
         />
       );
     }
