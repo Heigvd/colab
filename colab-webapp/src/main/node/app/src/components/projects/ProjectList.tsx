@@ -49,8 +49,8 @@ import {
 } from '../styling/style';
 import { defaultProjectIllustration } from './ProjectCommon';
 import ProjectCreator from './ProjectCreator';
-import { ProjectDisplaySettings } from './ProjectDisplaySettings';
 import { ProjectModelExtractor } from './ProjectModelExtractor';
+import { ProjectSettings } from './ProjectSettings';
 
 const modelChipStyle = css({
   position: 'absolute',
@@ -82,7 +82,7 @@ function ProjectSettingWrapper(): JSX.Element {
     >
       {() => {
         if (project.project != null) {
-          return <ProjectDisplaySettings project={project.project} key={projectId} />;
+          return <ProjectSettings project={project.project} />;
         } else {
           return <InlineLoading />;
         }
@@ -368,10 +368,7 @@ function ProjectList({ projects, status, reload }: ProjectListProps) {
         ) : (
           <Flex className={css({ alignSelf: 'flex-end', padding: space_S })}>
             <ProjectCreator
-              collapsedButtonClassName={cx(
-                invertedButtonStyle,
-                css({ fontSize: '0.8em' }),
-              )}
+              collapsedButtonClassName={cx(invertedButtonStyle, css({ fontSize: '0.8em' }))}
             />
           </Flex>
         )}
