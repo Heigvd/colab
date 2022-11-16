@@ -1,3 +1,4 @@
+import { Slider, SliderFilledTrack, SliderThumb, SliderTrack, Tooltip } from '@chakra-ui/react';
 import { css, cx } from '@emotion/css';
 import { faHourglassHalf, faPen, faSkullCrossbones } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -10,12 +11,13 @@ import { useAndLoadProjectTeam } from '../../../selectors/projectSelector';
 import { useCurrentUser } from '../../../selectors/userSelector';
 import { useAppDispatch, useAppSelector } from '../../../store/hooks';
 import { addNotification } from '../../../store/notification';
-import Checkbox from '../../common/element/Checkbox';
 import IconButton from '../../common/element/IconButton';
 import InlineLoading from '../../common/element/InlineLoading';
 import { DiscreetInput } from '../../common/element/Input';
 import {
+  borderRadius,
   lightItalicText,
+  primaryColor,
   space_L,
   space_M,
   space_S,
@@ -49,7 +51,13 @@ export function PositionColumns(): JSX.Element {
   return (
     <>
       {options.map(option => (
-        <div key={buildOption(option).value} className={cx(textSmall, css({ lineHeight: '2em' }))}>
+        <div
+          key={buildOption(option).value}
+          className={cx(
+            textSmall,
+            css({ lineHeight: '2em', gridColumn: 'span 2', fontWeight: 'bold' }),
+          )}
+        >
           {buildOption(option).label}
         </div>
       ))}
@@ -66,10 +74,22 @@ const MemberWithProjectRights = ({ member, isTheOnlyOwner }: MemberWithProjectRi
   const dispatch = useAppDispatch();
   const i18n = useTranslations();
   const { status: currentUserStatus } = useCurrentUser();
-
+  const [showTooltip, setShowTooltip] = React.useState(false);
+  function prettyPrint(position: HierarchicalPosition) {
+    switch (position) {
+      case 'OWNER':
+        return i18n.team.rolesNames.owner;
+      case 'LEADER':
+        return i18n.team.rolesNames.projectLeader;
+      case 'INTERNAL':
+        return i18n.team.rolesNames.member;
+      case 'GUEST':
+        return i18n.team.rolesNames.guest;
+    }
+  }
   const changeRights = React.useCallback(
-    (checked: boolean, newPosition: HierarchicalPosition) => {
-      if (checked) {
+    (newPosition: HierarchicalPosition | undefined) => {
+      if (newPosition) {
         if (isTheOnlyOwner) {
           dispatch(
             addNotification({
@@ -156,14 +176,57 @@ const MemberWithProjectRights = ({ member, isTheOnlyOwner }: MemberWithProjectRi
   }
   return (
     <>
-      <div className={cx(gridNewLine, textSmall)}>{username}</div>
-      {options.map(option => (
+      <div className={cx(gridNewLine, textSmall, css({ gridColumn: '1 / 3', maxWidth: '300px' }))}>
+        {username}
+      </div>
+      <Slider
+        id="slider"
+        defaultValue={options.indexOf(member.position)}
+        value={options.indexOf(member.position)}
+        style={{ display: 'none' }}
+        min={0}
+        max={options.length - 1}
+        step={1}
+        onChange={newPosition => changeRights(options[newPosition])}
+        onMouseEnter={() => setShowTooltip(true)}
+        onMouseLeave={() => setShowTooltip(false)}
+        cursor="pointer"
+        className={css({ width: '100%', height: '17px', gridColumn: '4 / 10' })}
+      >
+        <SliderTrack height={'17px'} bg="#bbb">
+          <SliderFilledTrack
+            className={css({ backgroundColor: 'var(--secondaryColor)', height: '100%' })}
+          />
+        </SliderTrack>
+        <Tooltip
+          hasArrow
+          placement="top"
+          color="white"
+          bg={primaryColor}
+          isOpen={showTooltip}
+          label={`${prettyPrint(member.position)}`}
+          className={css({ padding: space_S, borderRadius: borderRadius })}
+        >
+          <SliderThumb
+            height="17px"
+            width="17px"
+            borderRadius={'50%'}
+            className={css({
+              backgroundColor: 'var(--bgColor)',
+              border: '1px solid var(--lightGray)',
+              marginTop: '-1px',
+              '&:focus-visible': { outline: 'none' },
+            })}
+          />
+        </Tooltip>
+      </Slider>
+      {/* {options.map(option => (
         <Checkbox
           onChange={newPosition => changeRights(newPosition, option)}
           value={member.position === option}
           key={username + option}
         />
-      ))}
+      ))} */}
     </>
   );
 };
@@ -178,7 +241,7 @@ export default function TeamRights({ project }: { project: Project }): JSX.Eleme
       <div
         className={css({
           display: 'grid',
-          gridTemplateColumns: `repeat(${options.length + 2}, max-content)`,
+          gridTemplateColumns: `repeat(${options.length * 2 + 2}, 1fr)`,
           justifyItems: 'center',
           alignItems: 'flex-end',
           '& > div': {
@@ -191,12 +254,13 @@ export default function TeamRights({ project }: { project: Project }): JSX.Eleme
           gap: space_S,
         })}
       >
-        <div className={cx(titleCellStyle, css({ gridColumnStart: 1, gridColumnEnd: 2 }))}>
+        <div className={cx(titleCellStyle, css({ gridColumnStart: 1, gridColumnEnd: 3 }))}>
           {i18n.team.members}
         </div>
-        <div className={cx(titleCellStyle, css({ gridColumnStart: 2, gridColumnEnd: 'end' }))}>
+        <div className={cx(titleCellStyle, css({ gridColumnStart: 3, gridColumnEnd: 'end' }))}>
           {i18n.team.rights}
         </div>
+        <div />
         <div />
         <PositionColumns />
 

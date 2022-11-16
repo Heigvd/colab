@@ -19,6 +19,8 @@ export const pictoColours = css({
 export const errorColor = '#e51c23';
 export const warningColor = '#ff9800';
 export const successColor = '#4caf50';
+export const primaryColor = '#333';
+export const secondaryColor = '#50BFD5';
 
 export const errorStyle = css({
   color: 'var(--warningColor)',
@@ -35,12 +37,12 @@ export const successStyle = css({
 export const lightTheme = cx(
   pictoColours,
   css({
-    '--primaryColor': '#333',
+    '--primaryColor': primaryColor,
     '--primaryColorShade': '#494949',
     '--primaryColorContrast': '#fff',
     '--primaryColorContrastShade': '#FCF9F9',
 
-    '--secondaryColor': 'var(--pictoSteelBlue)',
+    '--secondaryColor': secondaryColor,
     '--secondaryColorShade': 'var(--pictoBlue)',
     '--secondaryColorContrast': '#FFF',
     '--secondaryColorContrastShade': '#FFF',
