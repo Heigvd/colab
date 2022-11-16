@@ -13,9 +13,11 @@ import {
   faGrip,
   faHouse,
   faNetworkWired,
+  faPen,
   faProjectDiagram,
   faStar,
   faTableCells,
+  faTableCellsLarge,
   faUserGroup,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -57,6 +59,7 @@ import {
   fullPageStyle,
   greyIconButtonChipStyle,
   invertedThemeMode,
+  lightIconButtonStyle,
   linkStyle,
   modelBGColor,
   space_L,
@@ -237,6 +240,7 @@ const CardWrapper = ({
   const cardContentId = +vId!;
 
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
 
   const card = useCard(cardId);
   const content = useCardContent(cardContentId);
@@ -246,6 +250,7 @@ const CardWrapper = ({
   const { project } = useProjectBeingEdited();
 
   const ancestors = useAncestors(parentId);
+  const location = useLocation();
 
   const { touch } = React.useContext(PresenceContext);
 
@@ -274,29 +279,37 @@ const CardWrapper = ({
   } else {
     return (
       <>
-        <Flex className={css({ paddingBottom: '7px', marginTop: '-10px' })}>
-          {/* <IconButton
-            icon={faArrowLeft}
-            title={backButtonTitle}
-            iconColor="var(--darkGray)"
-            onClick={() => navigate(backButtonPath(card, content))}
-            className={css({ marginRight: space_M })}
-          /> */}
-          {ancestors.map((ancestor, x) => (
+        <Flex className={css({ paddingBottom: '7px', marginTop: '-10px' })} justify='space-between'>
+          <Flex align='center'>
+            {ancestors.map((ancestor, x) => (
+              <Ancestor
+                key={x}
+                card={ancestor.card}
+                content={ancestor.content}
+                className={cx({
+                  [css({ color: 'var(--primaryColor)' })]: project.type === 'MODEL',
+                })}
+              />
+            ))}
             <Ancestor
-              key={x}
-              card={ancestor.card}
-              content={ancestor.content}
+              card={card}
+              content={content}
+              last
               className={cx({ [css({ color: 'var(--primaryColor)' })]: project.type === 'MODEL' })}
             />
-          ))}
-          <Ancestor
-            card={card}
-            content={content}
-            last
-            className={cx({ [css({ color: 'var(--primaryColor)' })]: project.type === 'MODEL' })}
+          </Flex>
+          <IconButton
+            title="toggle view edit"
+            icon={location.pathname.includes('card') ? faPen : faTableCellsLarge}
+            onClick={() => {
+              navigate(
+                `../${location.pathname.includes('card') ? 'edit' : 'card'}/${content.cardId}/v/${
+                  content.id
+                }`,
+              );
+            }}
+            className={lightIconButtonStyle}
           />
-          {/* TODO bouton navigation carte*/}
         </Flex>
         <Flex
           direction="column"

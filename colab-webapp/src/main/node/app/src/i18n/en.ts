@@ -121,6 +121,8 @@ export const en = {
       backProjectRoot: 'Back to project root',
       backCardView: 'Back to card view',
       showProjectDetails: 'Show project details',
+      exportProjectData: 'Export project data',
+      exportDataDescription: 'Export the project data allows you to save all your contents on your own stockage tools (ex. external hard drive).',
     },
     error: {
       accessDenied: 'Unfortunately you are not allowed to see this',

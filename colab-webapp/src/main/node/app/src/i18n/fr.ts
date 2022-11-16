@@ -122,6 +122,8 @@ export const fr: ColabTranslations = {
       backProjectRoot: 'Retour à la racine du projet',
       backCardView: 'Retour à la vue carte',
       showProjectDetails: 'Afficher les détails du projet',
+      exportProjectData: 'Exporter les données',
+      exportDataDescription: 'Exporter les données du projet permet de sauvegarder de tous vos contenus sur vos propres outils de sauvegardes (ex. disque dur externe).',
     },
     error: {
       accessDenied: "Malheureusement, vous n'êtres pas autorisé à voir cela",
