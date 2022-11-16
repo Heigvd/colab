@@ -14,11 +14,12 @@ import { Destroyer } from '../../common/Destroyer';
 import IconButton from '../../common/element/IconButton';
 import InlineLoading from '../../common/element/InlineLoading';
 import { DiscreetInput, InlineInput } from '../../common/element/Input';
+import Tips from '../../common/element/Tips';
 import { ConfirmDeleteModal } from '../../common/layout/ConfirmDeleteModal';
 import DropDownMenu from '../../common/layout/DropDownMenu';
 import OpenClose from '../../common/layout/OpenClose';
 import WithToolbar from '../../common/WithToolbar';
-import { errorColor, lightIconButtonStyle, lightItalicText, space_L, space_M, space_S, successColor, textSmall } from '../../styling/style';
+import { errorColor, lightIconButtonStyle, lightItalicText, lightText, space_L, space_M, space_S, successColor, textSmall } from '../../styling/style';
 import { gridNewLine, titleCellStyle } from './Team';
 
 export interface RoleProps {
@@ -313,6 +314,7 @@ export default function TeamRoles({ project }: { project: Project }): JSX.Elemen
         </div>
         <div className={cx(titleCellStyle, css({ gridColumnStart: 3, gridColumnEnd: 'end' }))}>
           {i18n.team.roles}
+          <Tips iconClassName={cx(textSmall, lightText )} className={cx(textSmall, css({fontWeight: 'normal'}))}>{i18n.team.rolesHelper}</Tips>
         </div>
         <div />
         {/* <div /> */}

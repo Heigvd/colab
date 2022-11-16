@@ -14,9 +14,11 @@ import { addNotification } from '../../../store/notification';
 import IconButton from '../../common/element/IconButton';
 import InlineLoading from '../../common/element/InlineLoading';
 import { DiscreetInput } from '../../common/element/Input';
+import Tips from '../../common/element/Tips';
 import {
   borderRadius,
   lightItalicText,
+  lightText,
   primaryColor,
   space_L,
   space_M,
@@ -259,6 +261,7 @@ export default function TeamRights({ project }: { project: Project }): JSX.Eleme
         </div>
         <div className={cx(titleCellStyle, css({ gridColumnStart: 3, gridColumnEnd: 'end' }))}>
           {i18n.team.rights}
+          <Tips iconClassName={cx(textSmall, lightText )} className={cx(textSmall, css({fontWeight: 'normal'}))}>{i18n.team.rightssHelper}</Tips>
         </div>
         <div />
         <div />

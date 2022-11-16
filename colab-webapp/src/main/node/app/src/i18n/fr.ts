@@ -213,7 +213,11 @@ export const fr: ColabTranslations = {
       member: 'Membre',
       guest: 'Invité',
     },
-    sureChangeOwnRights: 'Êtes-vous sûr-e-s de vouloir changer vos propres droits?',
+    rolesHelper:
+      'Créez et assignez un ou plusieurs rôles aux membres de l\'équipe.Ex. Designer, professeur, développeur-euse. Cela peut être utile pour affiner l\'implication de chacun-e, ou simplement pour informer l\'ensemble de l\'équipe des compétences engagées dans le projet.',
+    rightssHelper:
+      'Invité: Lecture seule sur tous les contenus. Membre (par défaut): Peut éditer les contenus, et inviter de nouveaux membres. Project leader: Peut éditer les contenus, inviter de nouveaux membres et changer leurs droits et rôles. Propriétaire: A tous les droits sur le projet',
+      sureChangeOwnRights: 'Êtes-vous sûr-e-s de vouloir changer vos propres droits?',
     sureDeleteMember: "Êtes-vous sûr-e-s de vouloir supprimer ce membre de l'équipe?",
     changeOwnRights: 'Changer mes propres droits',
     oneOwnerPerProject:
