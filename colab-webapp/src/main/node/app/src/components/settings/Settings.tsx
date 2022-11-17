@@ -49,7 +49,7 @@ export default function Settings(): JSX.Element {
           ></IconButton>
           <h2>{i18n.user.settings}</h2>
         </Flex>
-        <Tabs routed defaultTab="user">
+        <Tabs routed>
           <Tab name="user" label={i18n.user.profile}>
             <Flex direction="row" className={css({ gap: space_L })}>
               <UserProfile user={currentUser} />

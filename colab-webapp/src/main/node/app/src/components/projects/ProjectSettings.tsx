@@ -47,7 +47,7 @@ export function ProjectSettings({ project }: ProjectSettingsProps): JSX.Element 
 
   return (
     <Flex align="stretch" direction="column" grow={1} className={css({ alignSelf: 'stretch' })}>
-      <Tabs defaultTab="general">
+      <Tabs routed>
         <Tab name="general" label={i18n.common.general}>
           <Flex direction="column" className={css({ alignSelf: 'stretch' })}>
             <Flex className={css({ alignSelf: 'stretch' })}>

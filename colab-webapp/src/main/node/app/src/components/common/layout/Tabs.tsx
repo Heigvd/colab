@@ -6,7 +6,7 @@
  */
 import { css, cx } from '@emotion/css';
 import * as React from 'react';
-import { Location, Route, Routes, useLocation, useNavigate } from 'react-router-dom';
+import { Route, Routes, useLocation, useNavigate } from 'react-router-dom';
 import useTranslations from '../../../i18n/I18nContext';
 import { space_L, space_M, space_S } from '../../styling/style';
 import Clickable from './Clickable';
@@ -57,14 +57,15 @@ const defaultBodyStyle = css({
 });
 
 function defaultTabFactory(
-  routed: boolean | undefined,
-  location: Location,
   defaultTab: string | undefined,
+  children: TabsProps['children'],
 ): string | undefined {
   if (defaultTab != null) {
     return defaultTab;
-  } else if (routed) {
-    return location.pathname.split('/').pop() || '';
+  } else if (children && Array.isArray(children)) {
+    return children[0]?.props.name || undefined;
+  } else if (children && typeof children === 'object') {
+    return children.props.name || undefined;
   } else {
     return undefined;
   }
@@ -85,7 +86,7 @@ interface TabsProps {
   routed?: boolean;
   defaultTab?: string;
   onSelect?: (name: string) => void;
-  children: React.ReactElement<TabProps>[];
+  children: React.ReactElement<TabProps>[] | React.ReactElement<TabProps>;
   className?: string;
   tabsClassName?: string;
   selectedLabelClassName?: string;
@@ -126,7 +127,7 @@ export default function Tabs({
   }, [children]);
 
   const [selectedTab, setTab] = React.useState<string>(
-    defaultTabFactory(routed, location, defaultTab) || children[0]?.props.name || '',
+    defaultTabFactory(defaultTab, children) || '',
   );
 
   const onSelectTab = React.useCallback(

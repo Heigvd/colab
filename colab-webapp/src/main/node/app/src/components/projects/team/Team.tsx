@@ -49,7 +49,7 @@ export default function Team({ project }: TeamProps): JSX.Element {
           <h2>{i18n.team.team}</h2>
           <MemberCreator members={members} project={project} />
         </Flex>
-        <Tabs defaultTab="roles" routed>
+        <Tabs routed>
           <Tab name="roles" label={i18n.team.members}>
             <TeamRoles project={project} />
           </Tab>

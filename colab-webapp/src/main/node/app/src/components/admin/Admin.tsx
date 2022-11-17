@@ -44,7 +44,7 @@ export default function Admin(): JSX.Element {
         <h2>Admin Page</h2>
       </Flex>
       <div>
-        <Tabs routed defaultTab="main">
+        <Tabs routed>
           <Tab name="main" label="Admin">
             <MainPanel />
           </Tab>
