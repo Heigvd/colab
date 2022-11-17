@@ -123,7 +123,8 @@ export const fr: ColabTranslations = {
       backCardView: 'Retour à la vue carte',
       showProjectDetails: 'Afficher les détails du projet',
       exportProjectData: 'Exporter les données',
-      exportDataDescription: 'Exporter les données du projet permet de sauvegarder de tous vos contenus sur vos propres outils de sauvegardes (ex. disque dur externe).',
+      exportDataDescription:
+        'Exporter les données du projet permet de sauvegarder de tous vos contenus sur vos propres outils de sauvegardes (ex. disque dur externe).',
     },
     error: {
       accessDenied: "Malheureusement, vous n'êtres pas autorisé à voir cela",
@@ -216,16 +217,16 @@ export const fr: ColabTranslations = {
       guest: 'Invité',
     },
     rolesHelper:
-      'Créez et assignez un ou plusieurs rôles aux membres de l\'équipe.Ex. Designer, professeur, développeur-euse. Cela peut être utile pour affiner l\'implication de chacun-e, ou simplement pour informer l\'ensemble de l\'équipe des compétences engagées dans le projet.',
+      "Créez et assignez un ou plusieurs rôles aux membres de l'équipe.Ex. Designer, professeur, développeur-euse. Cela peut être utile pour affiner l'implication de chacun-e, ou simplement pour informer l'ensemble de l'équipe des compétences engagées dans le projet.",
     rightssHelper:
       'Invité: Lecture seule sur tous les contenus. Membre (par défaut): Peut éditer les contenus, et inviter de nouveaux membres. Project leader: Peut éditer les contenus, inviter de nouveaux membres et changer leurs droits et rôles. Propriétaire: A tous les droits sur le projet',
-      sureChangeOwnRights: 'Êtes-vous sûr-e-s de vouloir changer vos propres droits?',
+    sureChangeOwnRights: 'Êtes-vous sûr-e-s de vouloir changer vos propres droits?',
     sureDeleteMember: "Êtes-vous sûr-e-s de vouloir supprimer ce membre de l'équipe?",
     changeOwnRights: 'Changer mes propres droits',
     oneOwnerPerProject:
       'Vous ne pouvez pas modifier ces droits. Il doit y avoir au moins un propriétaire du projet.',
     memberAlreadyExist: 'Un membre avec la même adresse e-mail est déjà dans le projet.',
-    mailInvited: 'a été invité à l\'équipe du projet',
+    mailInvited: "a été invité à l'équipe du projet",
   },
   //////////////////////////////////////////////////////////////////////////////////////////////////
   // ACTIVITY
@@ -371,7 +372,7 @@ export const fr: ColabTranslations = {
         },
         sharing: {
           label: 'Partage du modèle',
-          parameters: 'Paramètres de partage'
+          parameters: 'Paramètres de partage',
         },
         missingIcon:
           "Oh une nouvelle bibliothèque d'icônes, cher développeur s'il vous plaît faites ce qui est nécessaire pour afficher l'icône.",

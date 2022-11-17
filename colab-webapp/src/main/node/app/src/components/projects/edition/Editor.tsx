@@ -279,8 +279,8 @@ const CardWrapper = ({
   } else {
     return (
       <>
-        <Flex className={css({ paddingBottom: '7px', marginTop: '-10px' })} justify='space-between'>
-          <Flex align='center'>
+        <Flex className={css({ paddingBottom: '7px', marginTop: '-10px' })} justify="space-between">
+          <Flex align="center">
             {ancestors.map((ancestor, x) => (
               <Ancestor
                 key={x}

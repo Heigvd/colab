@@ -350,89 +350,90 @@ export default function CardThumb({
                     }
                   />
                 </Routes>
-                {depth === 1 && <DropDownMenu
-                  icon={faEllipsisV}
-                  valueComp={{ value: '', label: '' }}
-                  buttonClassName={cx(lightIconButtonStyle, css({ marginLeft: space_S }))}
-                  entries={[
-                    {
-                      value: 'newSubcard',
-                      label: (
-                        <>
-                          {variant && (
-                            <CardCreator
-                              parentCardContent={variant}
-                              display="dropdown"
-                              customLabel={i18n.modules.card.createSubcard}
-                            />
-                          )}
-                        </>
-                      ),
-                    },
-                    {
-                      value: 'edit',
-                      label: (
-                        <>
-                          <FontAwesomeIcon icon={faPen} /> {i18n.common.edit}
-                        </>
-                      ),
-                      action: navigateToEditPageCb,
-                    },
-                    {
-                      value: 'settings',
-                      label: (
-                        <>
-                          <FontAwesomeIcon icon={faCog} /> {i18n.common.settings}
-                        </>
-                      ),
-                      action: () => {
-                        navigate(`${cardId}/settings`);
+                {depth === 1 && (
+                  <DropDownMenu
+                    icon={faEllipsisV}
+                    valueComp={{ value: '', label: '' }}
+                    buttonClassName={cx(lightIconButtonStyle, css({ marginLeft: space_S }))}
+                    entries={[
+                      {
+                        value: 'newSubcard',
+                        label: (
+                          <>
+                            {variant && (
+                              <CardCreator
+                                parentCardContent={variant}
+                                display="dropdown"
+                                customLabel={i18n.modules.card.createSubcard}
+                              />
+                            )}
+                          </>
+                        ),
                       },
-                    },
-                    {
-                      value: 'involvements',
-                      label: (
-                        <>
-                          <FontAwesomeIcon icon={faUsers} /> {i18n.modules.card.involvements}
-                        </>
-                      ),
-                      action: () => navigate(`${cardId}/involvements`),
-                    },
-                    {
-                      value: 'completion',
-                      label: (
-                        <>
-                          <FontAwesomeIcon icon={faPercent} /> {i18n.modules.card.completion}
-                        </>
-                      ),
-                      action: () => {
-                        navigate(`${cardId}/v/${variant!.id}/completion`);
+                      {
+                        value: 'edit',
+                        label: (
+                          <>
+                            <FontAwesomeIcon icon={faPen} /> {i18n.common.edit}
+                          </>
+                        ),
+                        action: navigateToEditPageCb,
                       },
-                    },
-                    {
-                      value: 'position',
-                      label: (
-                        <>
-                          <FontAwesomeIcon icon={faFrog} /> {i18n.modules.card.position}
-                        </>
-                      ),
-                      action: () => {
-                        navigate(`${cardId}/position`);
+                      {
+                        value: 'settings',
+                        label: (
+                          <>
+                            <FontAwesomeIcon icon={faCog} /> {i18n.common.settings}
+                          </>
+                        ),
+                        action: () => {
+                          navigate(`${cardId}/settings`);
+                        },
                       },
-                    },
-                    {
-                      value: 'delete',
-                      label: (
-                        <>
-                          <FontAwesomeIcon color={errorColor} icon={faTrash} />{' '}
-                          {i18n.modules.card.deleteCardVariant(hasVariants)}
-                        </>
-                      ),
-                      action: () => navigate(`${cardId}/delete`),
-                    },
-                  ]}
-                />
-  }
+                      {
+                        value: 'involvements',
+                        label: (
+                          <>
+                            <FontAwesomeIcon icon={faUsers} /> {i18n.modules.card.involvements}
+                          </>
+                        ),
+                        action: () => navigate(`${cardId}/involvements`),
+                      },
+                      {
+                        value: 'completion',
+                        label: (
+                          <>
+                            <FontAwesomeIcon icon={faPercent} /> {i18n.modules.card.completion}
+                          </>
+                        ),
+                        action: () => {
+                          navigate(`${cardId}/v/${variant!.id}/completion`);
+                        },
+                      },
+                      {
+                        value: 'position',
+                        label: (
+                          <>
+                            <FontAwesomeIcon icon={faFrog} /> {i18n.modules.card.position}
+                          </>
+                        ),
+                        action: () => {
+                          navigate(`${cardId}/position`);
+                        },
+                      },
+                      {
+                        value: 'delete',
+                        label: (
+                          <>
+                            <FontAwesomeIcon color={errorColor} icon={faTrash} />{' '}
+                            {i18n.modules.card.deleteCardVariant(hasVariants)}
+                          </>
+                        ),
+                        action: () => navigate(`${cardId}/delete`),
+                      },
+                    ]}
+                  />
+                )}
               </div>
               {/*
               // Show nb of sticky notes and resources under card title.

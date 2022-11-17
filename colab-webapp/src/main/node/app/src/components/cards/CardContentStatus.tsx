@@ -49,7 +49,7 @@ export function getStatusIconAndColor(status: CardContentStatus): StatusIconAndC
       return { icon: faArchive, color: '#9C9C9C' };
     case 'REJECTED':
       return { icon: faTimes, color: errorColor };
-/*     case 'PREPARATION':
+    /*     case 'PREPARATION':
       return { icon: faPen, color: '#B54BB2' };
     case 'VALIDATED':
       return { icon: faCheck, color: successColor }; */
@@ -83,11 +83,7 @@ export default function CardContentStatusDisplay({
     }
     return (
       <div className={cx(badgeStyle(getStatusIconAndColor(status).color), className)}>
-        <FontAwesomeIcon
-          icon={getStatusIconAndColor(status).icon}
-          size={'sm'}
-          title={tooltip}
-        />
+        <FontAwesomeIcon icon={getStatusIconAndColor(status).icon} size={'sm'} title={tooltip} />
         {i18n.modules.card.settings.statuses[status]}
       </div>
     );

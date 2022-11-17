@@ -158,7 +158,11 @@ export default function ProjectDataInitialization({
       )}
       <Flex
         direction="column"
-        className={css({ paddingTop: space_M, marginTop: space_M, borderTop: '1px solid var(--lightGray)' })}
+        className={css({
+          paddingTop: space_M,
+          marginTop: space_M,
+          borderTop: '1px solid var(--lightGray)',
+        })}
       >
         <Form
           fields={[

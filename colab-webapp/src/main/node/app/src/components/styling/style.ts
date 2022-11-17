@@ -431,8 +431,7 @@ export const defaultColumnContainerStyle = cx(
 
 export const modelBGColor = css({
   backgroundColor: '#50BFD5B5',
-
-}); 
+});
 
 export const mainHeaderHeight = '50px';
 

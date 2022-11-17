@@ -142,7 +142,14 @@ export function ProjectSettings({ project }: ProjectSettingsProps): JSX.Element 
             <p className={textSmall}>{i18n.common.action.exportDataDescription}</p>
             <Flex gap={space_S}>
               {/* <Button className={invertedButtonStyle}>.json</Button> */}
-              <Button className={disabledStyle} onClick={() => {logger.info(state)}}>.csv</Button>
+              <Button
+                className={disabledStyle}
+                onClick={() => {
+                  logger.info(state);
+                }}
+              >
+                .csv
+              </Button>
               {/* <CSVLink data={csvData}>Download me</CSVLink> */}
             </Flex>
           </Flex>

@@ -126,7 +126,7 @@ export default function Tabs({
   }, [children]);
 
   const [selectedTab, setTab] = React.useState<string>(
-    defaultTabFactory(routed, location, defaultTab) || children[0]?.props.name || ''
+    defaultTabFactory(routed, location, defaultTab) || children[0]?.props.name || '',
   );
 
   const onSelectTab = React.useCallback(

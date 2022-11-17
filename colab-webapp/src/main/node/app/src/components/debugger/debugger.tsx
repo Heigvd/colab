@@ -9,8 +9,8 @@ import * as React from 'react';
 import Tabs, { Tab } from '../common/layout/Tabs';
 import DebugForm from './debugForm';
 import DebugInput from './DebugInput';
-import PlayWithGridOrganizer from './PlayWithGridOrganizer';
 import IconAsImage from './IconAsImage';
+import PlayWithGridOrganizer from './PlayWithGridOrganizer';
 
 export default function Debugger(): JSX.Element {
   return (

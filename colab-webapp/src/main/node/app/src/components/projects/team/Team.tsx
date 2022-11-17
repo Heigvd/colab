@@ -14,9 +14,7 @@ import CardInvolvement from '../../cards/CardInvolvement';
 import InlineLoading from '../../common/element/InlineLoading';
 import Flex from '../../common/layout/Flex';
 import Tabs, { Tab } from '../../common/layout/Tabs';
-import {
-  space_S,
-} from '../../styling/style';
+import { space_S } from '../../styling/style';
 import ProjectModelSharing from '../ProjectModelSharing';
 import MemberCreator from './MemberCreator';
 import TeamRACI from './Raci';
@@ -51,7 +49,7 @@ export default function Team({ project }: TeamProps): JSX.Element {
           <h2>{i18n.team.team}</h2>
           <MemberCreator members={members} project={project} />
         </Flex>
-        <Tabs defaultTab='roles' routed>
+        <Tabs defaultTab="roles" routed>
           <Tab name="roles" label={i18n.team.members}>
             <TeamRoles project={project} />
           </Tab>
@@ -62,11 +60,11 @@ export default function Team({ project }: TeamProps): JSX.Element {
             <TeamRACI project={project} />
           </Tab>
           <Tab name="projectACL" label={i18n.modules.project.settings.involvements.label}>
-              {entityIs(root, 'Card') ? <CardInvolvement card={root} /> : <InlineLoading />}
+            {entityIs(root, 'Card') ? <CardInvolvement card={root} /> : <InlineLoading />}
           </Tab>
           <Tab name="modelSharing" invisible={project.type === 'PROJECT'} label="Share the model">
-              <ProjectModelSharing projectId={project.id} />
-            </Tab>
+            <ProjectModelSharing projectId={project.id} />
+          </Tab>
         </Tabs>
       </>
     );

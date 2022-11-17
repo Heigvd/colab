@@ -41,21 +41,18 @@ export default function CustomElementsList<
   customOnDblClick,
   selectionnable = true,
 }: CustomElementsListProps<T>): JSX.Element {
-
-
   const tags = uniq([...items].flatMap(it => (it ? it.tags : [])));
   const [tagState, setTagState] = React.useState<Record<string, boolean>>({});
   //const [selectAllTags, setSelectAllTags] = React.useState<boolean>(true);
 
-
   const [selectedElement, setSelectedElement] = React.useState<number | null>(null);
-
 
   const activeTags = Object.keys(tagState || []).filter(tag => tagState[tag]);
 
-  const elementsFilteredByTag = activeTags.length > 0 ?
-  items.filter(it => it.tags.find(tag => activeTags.includes(tag)))
-  : items;
+  const elementsFilteredByTag =
+    activeTags.length > 0
+      ? items.filter(it => it.tags.find(tag => activeTags.includes(tag)))
+      : items;
 
   const toggleAllTags = React.useCallback(
     (val: boolean) => {

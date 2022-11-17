@@ -56,7 +56,7 @@ export default function CardCreator({
   display,
   className,
   withCardTypeChoice,
-  customLabel
+  customLabel,
 }: // customButton,
 // className,
 CardCreatorProps): JSX.Element {
@@ -122,11 +122,13 @@ CardCreatorProps): JSX.Element {
         {i18n.modules.card.infos.createFirstCard}
       </Button>
     ) : display === 'dropdown' ? (
-      <div onClick={e => {
-        e.stopPropagation();
-        createCard(close);
-      }}>
-        <FontAwesomeIcon icon={faPlus} className={css({marginRight: space_S})} />
+      <div
+        onClick={e => {
+          e.stopPropagation();
+          createCard(close);
+        }}
+      >
+        <FontAwesomeIcon icon={faPlus} className={css({ marginRight: space_S })} />
         {customLabel ? customLabel : i18n.modules.card.createCard}
       </div>
     ) : (

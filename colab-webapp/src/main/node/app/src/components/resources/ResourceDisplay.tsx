@@ -124,7 +124,7 @@ export function ResourceDisplay({
             onClick={goBackToList}
             className={lightIconButtonStyle}
           /> */}
-          <Flex wrap="nowrap" align="center" className={css({maxWidth: '80%'})}>
+          <Flex wrap="nowrap" align="center" className={css({ maxWidth: '80%' })}>
             {/* <TargetResourceSummary resource={resource} showText="tooltip" /> */}
             {/* {category && (
               <>
@@ -158,7 +158,11 @@ export function ResourceDisplay({
               onChange={newValue =>
                 dispatch(API.updateResource({ ...targetResource, title: newValue }))
               }
-              inputDisplayClassName={cx(localTitleStyle, oneLineEllipsis, css({textOverflow: 'ellipsis'}))}
+              inputDisplayClassName={cx(
+                localTitleStyle,
+                oneLineEllipsis,
+                css({ textOverflow: 'ellipsis' }),
+              )}
               title={targetResource.title || ''}
             />
             {(!(
@@ -250,7 +254,7 @@ export function ResourceDisplay({
                           value: 'publishStatus',
                           label: (
                             <>
-                            <FontAwesomeIcon icon={faTurnDown}/>
+                              <FontAwesomeIcon icon={faTurnDown} />
                               {resource.targetResource.published
                                 ? i18n.modules.resource.actions.makePrivate
                                 : i18n.modules.resource.actions.shareWithChildren}

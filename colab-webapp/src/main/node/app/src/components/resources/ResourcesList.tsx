@@ -202,9 +202,8 @@ const resourcesStackLabelStyle = css({
   marginTop: 0,
   paddingLeft: space_M,
   fontSize: '0.8rem',
-  textTransform: 'uppercase'
-
-})
+  textTransform: 'uppercase',
+});
 
 function ResourcesListBy3Stacks({
   resources,
@@ -299,14 +298,18 @@ ResourcesListProps): JSX.Element {
       className={css({ overflow: 'auto', paddingRight: '2px' })}
     >
       {bySources['OWN'] ? (
-          <Collapsible label={resourceOwnership.kind === 'CardType' ? 'Theme' : 'Card'} open labelClassName={resourcesStackLabelStyle}>
-            <ResourcesListByCategory
-              resources={bySources['OWN']}
-              selectResource={selectResource}
-              displayResourceItem={displayResourceItem}
-              showLocationIcon={false}
-            />
-          </Collapsible>
+        <Collapsible
+          label={resourceOwnership.kind === 'CardType' ? 'Theme' : 'Card'}
+          open
+          labelClassName={resourcesStackLabelStyle}
+        >
+          <ResourcesListByCategory
+            resources={bySources['OWN']}
+            selectResource={selectResource}
+            displayResourceItem={displayResourceItem}
+            showLocationIcon={false}
+          />
+        </Collapsible>
       ) : (
         <></>
       )}
@@ -520,22 +523,24 @@ function TocHeader({ category }: TocHeaderProps): JSX.Element {
   return (
     <>
       {category && (
-        <div className={cx(
-          css({
-            minWidth: '50px',
-            flexGrow: 1,
-            textTransform: 'uppercase',
-            marginBottom: 0,
-            marginTop: space_S,
-            marginLeft: space_M,
-            marginRight: space_M,
-            borderBottom: '1px solid var(--lightGray)',
-            fontWeight: 'bold',
-            fontSize: '0.75rem',
-          }),
-          oneLineEllipsis,
-        )}>
-            {category}
+        <div
+          className={cx(
+            css({
+              minWidth: '50px',
+              flexGrow: 1,
+              textTransform: 'uppercase',
+              marginBottom: 0,
+              marginTop: space_S,
+              marginLeft: space_M,
+              marginRight: space_M,
+              borderBottom: '1px solid var(--lightGray)',
+              fontWeight: 'bold',
+              fontSize: '0.75rem',
+            }),
+            oneLineEllipsis,
+          )}
+        >
+          {category}
         </div>
       )}
     </>
@@ -622,7 +627,7 @@ function TocEntry({
                   icon={faEye}
                   size="xs"
                   className={css({ marginRight: '3px' })}
-                  color='var(--lightGray)'
+                  color="var(--lightGray)"
                 />
               )}
               {resource.targetResource.published && resource.isDirectResource && (
@@ -630,7 +635,7 @@ function TocEntry({
                   icon={faTurnDown}
                   size="xs"
                   className={css({ marginRight: '3px' })}
-                  color='var(--lightGray)'
+                  color="var(--lightGray)"
                 />
               )}
               {/* {showLocationIcon && (

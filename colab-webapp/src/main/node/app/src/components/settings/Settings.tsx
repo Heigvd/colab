@@ -8,8 +8,8 @@
 import { css } from '@emotion/css';
 import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
 import * as React from 'react';
-import * as API from '../../API/api';
 import { useNavigate } from 'react-router-dom';
+import * as API from '../../API/api';
 import useTranslations from '../../i18n/I18nContext';
 import { useCurrentUser, useCurrentUserAccounts } from '../../selectors/userSelector';
 import { useAppSelector } from '../../store/hooks';
@@ -75,7 +75,7 @@ export default function Settings(): JSX.Element {
             <p>(imagine a view with the thumbnails)</p>
             <p>I can remove one. No more use</p>
             <p>ask the model owner if I can be editor of it</p> */}
-            <SharedModelsList reload={API.getUserProjects} loadingStatus={status}/>
+            <SharedModelsList reload={API.getUserProjects} loadingStatus={status} />
           </Tab>
           <Tab name="debugger" label={i18n.admin.debugger} invisible={!currentUser.admin}>
             <Debugger />

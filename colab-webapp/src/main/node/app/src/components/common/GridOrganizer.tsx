@@ -599,8 +599,8 @@ export default function GridOrganizer<T>({
   onResize,
   handleSize,
   gap = '20px',
-  //nbColumns = { nbColumns: 3, setNbColumns: () => {}},
-}: GridOrganizerProps<T>): JSX.Element {
+}: //nbColumns = { nbColumns: 3, setNbColumns: () => {}},
+GridOrganizerProps<T>): JSX.Element {
   const dndRef = React.useRef<DndRef<T>>({ status: 'idle', tmpCell: undefined });
 
   const [tmpCell, setTmpCell] = React.useState<Cell<void>>();
@@ -636,7 +636,7 @@ export default function GridOrganizer<T>({
   // 2) add contour
   // !! changes made HERE
   const extentWithContour: Extent = {
-    minX: extent.minX -1,
+    minX: extent.minX - 1,
     minY: extent.minY - 1,
     maxX: extent.maxX + 1,
     maxY: extent.maxY + 1,
@@ -646,7 +646,7 @@ export default function GridOrganizer<T>({
   // !! changes made here
   const shiftX = 1 - extentWithContour.minX;
   const shiftY = 1 - extentWithContour.minY;
-  //nbColumns?.nbColumns || 
+  //nbColumns?.nbColumns ||
   const nbColumn = Math.max(5, extentWithContour.maxX - extentWithContour.minX + 1);
   //const nbColumn = nbColumns.nbColumns + 2;
 

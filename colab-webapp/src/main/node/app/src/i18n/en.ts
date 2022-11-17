@@ -122,7 +122,8 @@ export const en = {
       backCardView: 'Back to card view',
       showProjectDetails: 'Show project details',
       exportProjectData: 'Export project data',
-      exportDataDescription: 'Export the project data allows you to save all your contents on your own stockage tools (ex. external hard drive).',
+      exportDataDescription:
+        'Export the project data allows you to save all your contents on your own stockage tools (ex. external hard drive).',
     },
     error: {
       accessDenied: 'Unfortunately you are not allowed to see this',
@@ -366,7 +367,7 @@ export const en = {
         },
         sharing: {
           label: 'Model sharing',
-          parameters: 'Sharing parameters'
+          parameters: 'Sharing parameters',
         },
         missingIcon:
           'Oh a new icon library, dear developer please make what is needed to display the icon.',
@@ -385,8 +386,8 @@ export const en = {
       subcardTooltip: (name: string) => `Subcard: ${name}`,
       subcards: 'Subcards',
       untitled: 'New card',
-      createCard: 'Create card', 
-      createSubcard: 'Create subcard', 
+      createCard: 'Create card',
+      createSubcard: 'Create subcard',
       createACard: 'Create a card',
       createVariant: 'Create variant',
       createNew: (parentTitle?: string | null): string =>

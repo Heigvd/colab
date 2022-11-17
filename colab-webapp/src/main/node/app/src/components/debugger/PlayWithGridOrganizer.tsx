@@ -4,13 +4,13 @@
  *
  * Licensed under the MIT License
  */
+import { css } from '@emotion/css';
+import { GridPosition } from 'colab-rest-client';
 import * as React from 'react';
-import {css} from "@emotion/css";
-import GridOrganizer, {Cell, fixGrid} from "../common/GridOrganizer";
-import {getLogger} from '../../logger';
-import {GridPosition} from 'colab-rest-client';
+import { getLogger } from '../../logger';
+import GridOrganizer, { Cell, fixGrid } from '../common/GridOrganizer';
 
-const logger = getLogger("PlayWithGridOrganizer");
+const logger = getLogger('PlayWithGridOrganizer');
 
 type PlayCell = Cell<{ id: number; title: string }>;
 

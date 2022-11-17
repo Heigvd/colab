@@ -235,7 +235,12 @@ function Input({
   const updated = currentInternalValue !== initialValue;
 
   return (
-    <Flex direction="column" className={containerClassName} style={{ maxWidth: maxWidth }} title={title}>
+    <Flex
+      direction="column"
+      className={containerClassName}
+      style={{ maxWidth: maxWidth }}
+      title={title}
+    >
       {/* //</Flex> <Flex theRef={containerRef} direction='column'> */}
       {label && (
         <Flex align="center">
@@ -273,7 +278,7 @@ function Input({
           }}
           className={cx(
             inputEditClassName && mode === 'EDIT' ? inputEditClassName : inputDisplayClassName,
-            css({color: 'var(--fgColor)'})
+            css({ color: 'var(--fgColor)' }),
           )}
         />
       ) : (

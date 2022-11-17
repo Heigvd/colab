@@ -97,7 +97,7 @@ export default function CardLayout({
             display: 'flex',
             overflow: 'auto',
           }),
-          className
+          className,
         )}
       >
         {extraTools}

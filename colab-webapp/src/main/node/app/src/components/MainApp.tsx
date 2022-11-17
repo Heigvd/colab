@@ -118,7 +118,8 @@ export default function MainApp(): JSX.Element {
           flexDirection: 'column',
         })}
       >
-        <InlineLoading colour={true} size='50px' /> <span>{i18n.authentication.info.reconnecting}</span>
+        <InlineLoading colour={true} size="50px" />{' '}
+        <span>{i18n.authentication.info.reconnecting}</span>
       </div>
     </Overlay>
   );

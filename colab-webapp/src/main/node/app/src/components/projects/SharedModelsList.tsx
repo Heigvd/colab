@@ -54,11 +54,14 @@ interface SharedModelsListProps {
   // eslint-disable-next-line @typescript-eslint/ban-types
   reload: AsyncThunk<Project[], void, {}>;
 }
-export default function SharedModelsList({loadingStatus, reload}: SharedModelsListProps): JSX.Element {
+export default function SharedModelsList({
+  loadingStatus,
+  reload,
+}: SharedModelsListProps): JSX.Element {
   const i18n = useTranslations();
   const dispatch = useAppDispatch();
   const { projects, status } = useAndLoadModelProjects();
-  
+
   const sortedProjects = projects.sort(sortResources);
 
   React.useEffect(() => {
@@ -68,10 +71,15 @@ export default function SharedModelsList({loadingStatus, reload}: SharedModelsLi
   }, [loadingStatus, reload, dispatch]);
 
   if (loadingStatus === 'NOT_INITIALIZED' || loadingStatus === 'LOADING' || status !== 'READY') {
-    return <div>{loadingStatus}<InlineLoading /></div>;
+    return (
+      <div>
+        {loadingStatus}
+        <InlineLoading />
+      </div>
+    );
   } else {
     return (
-      <Flex wrap='wrap'>
+      <Flex wrap="wrap">
         {sortedProjects.map((project, index) => {
           const isEmptyProject = project === null;
           return (
@@ -95,8 +103,13 @@ export default function SharedModelsList({loadingStatus, reload}: SharedModelsLi
                   }
                 />
               </Flex>
-              <Flex grow={1} align='stretch' direction='column' className={css({ padding: '10px' })}>
-                <Flex justify='space-between'>
+              <Flex
+                grow={1}
+                align="stretch"
+                direction="column"
+                className={css({ padding: '10px' })}
+              >
+                <Flex justify="space-between">
                   <h3 className={cx(css({ marginTop: space_S }), oneLineEllipsis)}>
                     {!isEmptyProject
                       ? project.name

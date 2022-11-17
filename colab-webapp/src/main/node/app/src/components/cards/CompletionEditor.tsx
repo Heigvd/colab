@@ -14,8 +14,6 @@ import * as API from '../../API/api';
 import { useAppDispatch } from '../../store/hooks';
 import { borderRadius, space_S, successColor } from '../styling/style';
 
-
-
 interface CompletionEditorProps {
   variant: CardContent;
 }
@@ -23,7 +21,7 @@ interface CompletionEditorProps {
 export default function CompletionEditor({ variant }: CompletionEditorProps): JSX.Element {
   const dispatch = useAppDispatch();
   const [value, setValue] = React.useState(variant.completionLevel ?? 0);
-    const [showTooltip, setShowTooltip] = React.useState(false);
+  const [showTooltip, setShowTooltip] = React.useState(false);
 
   const debouncedOnChange = React.useMemo(() => {
     return debounce((value: number) => {
@@ -59,7 +57,7 @@ export default function CompletionEditor({ variant }: CompletionEditorProps): JS
         onChange={onInternalChange}
         onMouseEnter={() => setShowTooltip(true)}
         onMouseLeave={() => setShowTooltip(false)}
-        cursor='pointer'
+        cursor="pointer"
         className={css({ height: '20px', padding: '0px !important' })}
       >
         <SliderTrack height={'20px'} bg="#bbb">
