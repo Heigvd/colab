@@ -511,7 +511,7 @@ public class TeamManager {
      */
     public boolean checkDeletionAcceptability(TeamMember teamMember) {
         if (teamMember.getPosition() == HierarchicalPosition.OWNER &&
-            teamMember.getProject().getTeamMembersByPosition(HierarchicalPosition.OWNER).size() > 2) {
+            teamMember.getProject().getTeamMembersByPosition(HierarchicalPosition.OWNER).size() < 2) {
             return false;
         }
 
