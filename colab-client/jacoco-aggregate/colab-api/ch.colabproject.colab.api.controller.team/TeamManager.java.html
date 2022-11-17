@@ -511,7 +511,7 @@ import org.slf4j.LoggerFactory;
      */
     public boolean checkDeletionAcceptability(TeamMember teamMember) {
 <span class="nc bnc" id="L513" title="All 2 branches missed.">        if (teamMember.getPosition() == HierarchicalPosition.OWNER &amp;&amp;</span>
-<span class="nc bnc" id="L514" title="All 2 branches missed.">            teamMember.getProject().getTeamMembersByPosition(HierarchicalPosition.OWNER).size() &gt; 2) {</span>
+<span class="nc bnc" id="L514" title="All 2 branches missed.">            teamMember.getProject().getTeamMembersByPosition(HierarchicalPosition.OWNER).size() &lt; 2) {</span>
 <span class="nc" id="L515">            return false;</span>
         }
 
