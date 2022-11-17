@@ -1,6 +1,6 @@
 /*
  * The coLAB project
- * Copyright (C) 2022 maxence
+ * Copyright (C) 2022 maxence, AlbaSim, MEI, HEIG-VD, HES-SO
  *
  * Licensed under the MIT License
  */
