@@ -118,7 +118,7 @@ export const fr: ColabTranslations = {
     },
     action: {
       backToHome: "Retour à l'accueil co.LAB",
-      backToProjects: 'Retour aux projets',
+      backToProjects: 'Retour à la liste de projets',
       backProjectRoot: 'Retour à la racine du projet',
       backCardView: 'Retour à la vue carte',
       showProjectDetails: 'Afficher les détails du projet',

@@ -55,7 +55,6 @@ import Monkeys from '../../debugger/monkey/Monkeys';
 import { UserDropDown } from '../../MainNav';
 import Settings from '../../settings/Settings';
 import {
-  //fullHeightStyle,
   fullPageStyle,
   greyIconButtonChipStyle,
   invertedThemeMode,
@@ -78,15 +77,6 @@ import ActivityFlowChart from './ActivityFlowChart';
 import Hierarchy from './Hierarchy';
 
 export const depthMax = 2;
-/* const descriptionStyle = {
-  backgroundColor: 'var(--fgColor)',
-  color: 'var(--bgColor)',
-  gap: space_L,
-  transition: 'all 1s ease',
-  overflow: 'visible',
-  fontSize: '0.9em',
-  flexGrow: 0,
-}; */
 const modelPictoCornerStyle = css({
   position: 'absolute',
   top: 0,
@@ -94,17 +84,6 @@ const modelPictoCornerStyle = css({
   padding: '5px 7px 7px 5px',
   borderRadius: '0 0 50% 0',
 });
-// const openDetails = css({
-//   ...descriptionStyle,
-//   maxHeight: '1000px',
-//   padding: space_L,
-// });
-/* const closeDetails = css({
-  ...descriptionStyle,
-  maxHeight: '0px',
-  padding: '0 ' + space_L,
-  overflow: 'hidden',
-}); */
 
 const breadCrumbsStyle = css({
   fontSize: '.8em',
@@ -120,7 +99,6 @@ function parentPathFn() {
 const Ancestor = ({ card, content, last, className }: Ancestor): JSX.Element => {
   const i18n = useTranslations();
   const navigate = useNavigate();
-  //const location = useLocation();
   const dispatch = useAppDispatch();
 
   React.useEffect(() => {
@@ -326,19 +304,10 @@ const CardWrapper = ({
 
 interface EditorNavProps {
   project: Project;
-  // setShowProjectDetails: (value: React.SetStateAction<boolean>) => void;
 }
-
-/* const pictoLinkStyle = cx(
-  mainMenuLink,
-  css({
-    padding: '8px 15px',
-  }),
-); */
 
 function EditorNav({ project }: EditorNavProps): JSX.Element {
   const i18n = useTranslations();
-  // const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const location = useLocation();
 
@@ -354,39 +323,26 @@ function EditorNav({ project }: EditorNavProps): JSX.Element {
             gridTemplateColumns: '1fr 3fr 1fr',
             flexGrow: 0,
             padding: `0 ${space_M} 0 0`,
-            //backgroundColor: 'var(--hoverBgColor)',
           }),
         )}
       >
         <Flex align="center">
-          {/* <MainMenuLink className={pictoLinkStyle} to="../..">
+          <MainMenuLink to={`/`} className={mainMenuLink}>
+            {/* TODO : close current project - check if it really works (local + send to server) */}
             <span
               title={i18n.common.action.backToProjects}
               onClickCapture={() => {
                 dispatch(API.closeCurrentProject());
               }}
             >
-              <Picto
-                className={css({
-                  height: '30px',
-                  width: 'auto',
-                  padding: '0',
-                })}
+              <FontAwesomeIcon
+                icon={faHouse}
+                size="lg"
+                onClick={() => {
+                  dispatch(API.closeCurrentProject());
+                }}
               />
             </span>
-          </MainMenuLink> */}
-          <MainMenuLink to={`/`} className={mainMenuLink}>
-            <FontAwesomeIcon icon={faHouse} size="lg" />
-            {/* <Picto
-          className={cx(
-            css({
-              height: '30px',
-              width: 'auto',
-              paddingRight: space_M,
-            }),
-            paddingAroundStyle([1, 3, 4], space_S),
-          )}
-        /> */}
           </MainMenuLink>
           <Flex
             className={css({
@@ -514,9 +470,6 @@ function EditorNav({ project }: EditorNavProps): JSX.Element {
                 // TO DO ? readOnly={readOnly}
                 onChange={newValue => dispatch(API.updateProject({ ...project, name: newValue }))}
               />
-              {/* <div className={css({ padding: '0 ' + space_S })}>
-                {project.name || i18n.modules.project.actions.newProject}
-              </div> */}
             </Flex>
           </Flex>
         </div>
@@ -585,7 +538,6 @@ export default function Editor(): JSX.Element {
   const { project, status } = useProjectBeingEdited();
 
   const root = useProjectRootCard(project);
-  //const [showProjectDetails, setShowProjectDetails] = React.useState(false);
 
   const presenceContext = usePresenceContext();
 
@@ -647,37 +599,6 @@ export default function Editor(): JSX.Element {
           className={cx(fullPageStyle, { [modelBGColor]: project.type === 'MODEL' })}
         >
           <EditorNav project={project} />
-          {/* <Flex className={closeDetails}>
-            <Flex justify="space-between" grow={1}>
-              <Flex gap={space_M}>
-                <IllustrationDisplay
-                  illustration={
-                    project.illustration ? project.illustration : defaultProjectIllustration
-                  }
-                  className={css({ width: 'auto', padding: space_L, borderRadius: '50%' })}
-                />
-                <div>
-                  <div>
-                    <h3>{project.name}</h3>
-                    <p>{project.description}</p>
-                  </div>
-                  <div>
-                    <p>
-                      {i18n.common.createdBy}
-                      {' : '}
-                      {project.trackingData?.createdBy}
-                    </p>
-                    <p>
-                      {i18n.common.createdOn}
-                      {' : '}
-                      {i18n.common.datetime(project.trackingData?.creationDate)}
-                    </p>
-                  </div>
-                </div>
-              </Flex>
-              <IconButton icon={faTimes} title={i18n.common.close} />
-            </Flex>
-          </Flex> */}
           <Flex
             direction="column"
             grow={1}

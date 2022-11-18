@@ -117,7 +117,7 @@ export const en = {
     },
     action: {
       backToHome: 'Back to co.LAB home',
-      backToProjects: 'Back to projects',
+      backToProjects: 'Back to projects list',
       backProjectRoot: 'Back to project root',
       backCardView: 'Back to card view',
       showProjectDetails: 'Show project details',
