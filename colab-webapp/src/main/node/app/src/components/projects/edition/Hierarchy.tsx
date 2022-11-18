@@ -32,7 +32,7 @@ import InlineLoading from '../../common/element/InlineLoading';
 import { BlockInput } from '../../common/element/Input';
 import { FeaturePreview } from '../../common/element/Tips';
 import Flex from '../../common/layout/Flex';
-import { cardShadow, space_M, space_S } from '../../styling/style';
+import { cardShadow, greyIconButtonChipStyle, space_M, space_S } from '../../styling/style';
 
 const logger = getLogger('JsPlumb');
 //logger.setLevel(3);
@@ -373,7 +373,7 @@ function SubCardCreator({ jsPlumb, parent }: SubCardCreatorProps) {
         setThisNode(ref || undefined);
       }}
     >
-      <CardCreator parentCardContent={parent} />
+      <CardCreator parentCardContent={parent} className={greyIconButtonChipStyle} />
     </div>
   );
 }

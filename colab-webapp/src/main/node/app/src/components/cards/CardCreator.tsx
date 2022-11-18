@@ -6,7 +6,6 @@
  */
 
 import { css, cx } from '@emotion/css';
-import { ReactJSXElement } from '@emotion/react/types/jsx-namespace';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { CardContent } from 'colab-rest-client';
@@ -26,7 +25,6 @@ import Flex from '../common/layout/Flex';
 import OpenCloseModal from '../common/layout/OpenCloseModal';
 import {
   greyIconButtonChipStyle,
-  invertedButtonStyle,
   lightIconButtonStyle,
   marginAroundStyle,
   space_M,
@@ -45,10 +43,9 @@ export const cardTypeThumbnailStyle = css({
 export interface CardCreatorProps {
   parentCardContent: CardContent;
   display?: string;
-  customButton?: ReactJSXElement;
-  className?: string;
   withCardTypeChoice?: boolean;
   customLabel?: string;
+  className?: string;
 }
 
 export default function CardCreator({
@@ -57,9 +54,7 @@ export default function CardCreator({
   className,
   withCardTypeChoice,
   customLabel,
-}: // customButton,
-// className,
-CardCreatorProps): JSX.Element {
+}: CardCreatorProps): JSX.Element {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const i18n = useTranslations();
@@ -96,32 +91,7 @@ CardCreatorProps): JSX.Element {
   }, []);
 
   return !withCardTypeChoice ? (
-    display === '1' ? (
-      <Button
-        icon={faPlus}
-        className={cx(invertedButtonStyle, className)}
-        clickable
-        onClick={e => {
-          e.stopPropagation();
-          createCard(close);
-        }}
-        // isLoading={isLoading}
-      >
-        {customLabel ? customLabel : i18n.modules.card.createCard}
-      </Button>
-    ) : display === '2' ? (
-      <Button
-        icon={faPlus}
-        className={cx(invertedButtonStyle, className)}
-        clickable
-        onClick={e => {
-          e.stopPropagation();
-          createCard(close);
-        }}
-      >
-        {i18n.modules.card.infos.createFirstCard}
-      </Button>
-    ) : display === 'dropdown' ? (
+    display === 'dropdown' ? (
       <div
         onClick={e => {
           e.stopPropagation();
@@ -146,15 +116,11 @@ CardCreatorProps): JSX.Element {
     <OpenCloseModal
       title={i18n.modules.card.createNew(parentCardContent.title)}
       collapsedChildren={
-        // customButton ? (
-        //   customButton
-        // ) : (
         <IconButton
           icon={faPlus}
           className={greyIconButtonChipStyle}
           title={customLabel ? customLabel : i18n.modules.card.createCard}
         />
-        //)
       }
       className={className}
       modalClassName={css({ height: '580px' })}

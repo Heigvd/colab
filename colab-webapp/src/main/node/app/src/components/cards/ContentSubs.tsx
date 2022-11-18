@@ -17,7 +17,7 @@ import InlineLoading from '../common/element/InlineLoading';
 import GridOrganizer, { fixGrid } from '../common/GridOrganizer';
 import Ellipsis from '../common/layout/Ellipsis';
 import Flex from '../common/layout/Flex';
-import { invertedButtonStyle, lightIconButtonStyle, space_L } from '../styling/style';
+import { greyIconButtonChipStyle, lightIconButtonStyle, space_L, space_M } from '../styling/style';
 import CardCreator from './CardCreator';
 import { TinyCard } from './CardThumb';
 import CardThumbWithSelector from './CardThumbWithSelector';
@@ -153,8 +153,8 @@ export default function ContentSubs({
           <h3>{i18n.modules.card.infos.noCardYetPleaseCreate}</h3>
           <CardCreator
             parentCardContent={cardContent}
-            display="2"
-            className={invertedButtonStyle}
+            customLabel={i18n.modules.card.infos.createFirstCard}
+            className={cx(greyIconButtonChipStyle, css({ margin: space_M }))}
           />
         </Flex>
       );
@@ -281,19 +281,6 @@ export default function ContentSubs({
                   </>
                 )}
               </div>
-              {/*
-              <Flex justify="center">
-                 <CardCreator
-                  parentCardContent={cardContent}
-                  display={
-                    depth === depthMax
-                      ? location.pathname.match(/card\/\d+\/v\/\d+/)
-                        ? undefined
-                        : '1'
-                      : undefined
-                  }
-                />
-              </Flex> */}
             </>
           )}
         </div>

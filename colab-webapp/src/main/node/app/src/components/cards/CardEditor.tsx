@@ -600,7 +600,7 @@ function SubcardsDisplay({ variant }: { variant: CardContent }): JSX.Element {
     <>
       <Flex align="center" className={css({ borderBottom: '1px solid var(--lightGray)' })}>
         <h3>{i18n.modules.card.subcards}</h3>
-        <CardCreator parentCardContent={variant} display="0" className={lightIconButtonStyle} />
+        <CardCreator parentCardContent={variant} className={lightIconButtonStyle} />
         <IconButton
           icon={faRectangleList}
           onClick={() => {
