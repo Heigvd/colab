@@ -272,7 +272,7 @@ export default function TeamRights({ project }: { project: Project }): JSX.Eleme
             iconClassName={cx(textSmall, lightText)}
             className={cx(textSmall, css({ fontWeight: 'normal' }))}
           >
-            {i18n.team.rightssHelper}
+            {i18n.team.rightsHelper}
           </Tips>
         </div>
         <div />

@@ -215,7 +215,7 @@ export const en = {
     },
     rolesHelper:
       'Create and assign roles to the team members. Ex. Designer, teacher, developper. It can be used to fine-tune the involvement of each member, or to keep all prject members aware of the skills involved.',
-    rightssHelper:
+    rightsHelper:
       'Guest: Read only on all contents. Member (default): Can edit contents and invite new members. Project leader: Can edit anything, invite new members and change rights and roles. Owner: Has full rights on the project',
     sureChangeOwnRights: 'Are you sure you want to change your own rights?',
     sureDeleteMember: 'Are you sure you want to delete this team member ?',
