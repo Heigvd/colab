@@ -4,6 +4,7 @@
  *
  * Licensed under the MIT License
  */
+
 import { css, cx } from '@emotion/css';
 import { IconProp } from '@fortawesome/fontawesome-svg-core';
 import { faTimes } from '@fortawesome/free-solid-svg-icons';
@@ -20,22 +21,17 @@ const bgActiveStyleRight = css({
 
 export interface Item {
   icon: IconProp;
-  children: React.ReactNode;
-  className?: string;
+  nextToIconElement?: React.ReactNode;
   title: string;
   header?: React.ReactNode;
-  nextToTitleElement?: React.ReactNode;
-  nextToIconElement?: React.ReactNode;
+  children: React.ReactNode;
+  className?: string;
 }
 
 interface SideCollapsibleContext<T extends { [key: string]: Item }> {
   items: T;
   openKey?: string | undefined;
   setOpenKey?: React.Dispatch<React.SetStateAction<string | undefined>>;
-  insideState?: boolean;
-  setInsideState?: React.Dispatch<React.SetStateAction<boolean>>;
-  extraNavFunction?: () => void;
-  setExtraNavFunction?: React.Dispatch<React.SetStateAction<() => void>>;
 }
 
 export const defaultSideCollapsibleContext: SideCollapsibleContext<{ [key: string]: Item }> = {
@@ -53,38 +49,37 @@ export interface SideCollapsiblePanelBodyProps {
 export function SideCollapsiblePanelBody({
   className,
 }: SideCollapsiblePanelBodyProps): JSX.Element {
-  const { items, openKey, setOpenKey } = React.useContext(SideCollapsibleCtx);
-  const itemOpen = openKey == null ? null : items[openKey];
   const i18n = useTranslations();
+
+  const { items, openKey, setOpenKey } = React.useContext(SideCollapsibleCtx);
+
+  const itemOpen = openKey == null ? null : items[openKey];
+
   if (itemOpen) {
     return (
       <Flex align="stretch" direction="column" grow={1} className={className}>
-        {itemOpen.title && (
-          <Flex
-            justify="space-between"
-            align="center"
-            className={css({
-              padding: space_S + ' ' + space_M,
-              borderBottom: '1px solid var(--lightGray)',
-            })}
-          >
-            <Flex align="baseline">
-              {itemOpen.header ? itemOpen.header : <h2>{itemOpen.title}</h2>}
-
-              {itemOpen.nextToTitleElement}
-            </Flex>
-            <IconButton
-              icon={faTimes}
-              title={i18n.common.close}
-              onClick={() => {
-                if (setOpenKey) {
-                  setOpenKey(undefined);
-                }
-              }}
-              className={cx(lightIconButtonStyle, marginAroundStyle([4], space_M))}
-            />
+        <Flex
+          justify="space-between"
+          align="center"
+          className={css({
+            padding: space_S + ' ' + space_M,
+            borderBottom: '1px solid var(--lightGray)',
+          })}
+        >
+          <Flex align="baseline">
+            {itemOpen.header ? itemOpen.header : <h2>{itemOpen.title}</h2>}
           </Flex>
-        )}
+          <IconButton
+            icon={faTimes}
+            title={i18n.common.close}
+            onClick={() => {
+              if (setOpenKey) {
+                setOpenKey(undefined);
+              }
+            }}
+            className={cx(lightIconButtonStyle, marginAroundStyle([4], space_M))}
+          />
+        </Flex>
         {itemOpen.children}
       </Flex>
     );
@@ -111,6 +106,7 @@ export function SideCollapsibleMenu({
       setOpenKey(defaultOpenKey);
     }
   }, [defaultOpenKey, setOpenKey]);
+
   return (
     <Flex
       direction="column"
