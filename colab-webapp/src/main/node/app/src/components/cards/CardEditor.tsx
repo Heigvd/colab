@@ -57,6 +57,12 @@ import {
 import { ResourcesListNb } from '../resources/summary/ResourcesListSummary';
 //import StickyNoteWrapper from '../stickynotes/StickyNoteWrapper';
 import {
+  Item,
+  SideCollapsibleCtx,
+  SideCollapsibleMenu,
+  SideCollapsiblePanelBody,
+} from '../common/layout/SideCollapsiblePanel';
+import {
   cardStyle,
   errorColor,
   lightIconButtonStyle,
@@ -72,12 +78,6 @@ import CardSettings from './CardSettings';
 import { TinyCard } from './CardThumb';
 import CompletionEditor from './CompletionEditor';
 import ContentSubs from './ContentSubs';
-import {
-  Item,
-  SideCollapsibleCtx,
-  SideCollapsibleMenu,
-  SideCollapsiblePanelBody,
-} from './SideCollapsiblePanel';
 import { computeNav, VariantPager } from './VariantSelector';
 
 interface CardEditorProps {
