@@ -1,3 +1,10 @@
+/*
+ * The coLAB project
+ * Copyright (C) 2021-2022 AlbaSim, MEI, HEIG-VD, HES-SO
+ *
+ * Licensed under the MIT License
+ */
+
 import { css, cx } from '@emotion/css';
 import { faPaperPlane } from '@fortawesome/free-solid-svg-icons';
 import { Project, TeamMember } from 'colab-rest-client';

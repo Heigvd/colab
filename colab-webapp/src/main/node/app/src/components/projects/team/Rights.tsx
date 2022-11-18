@@ -1,3 +1,10 @@
+/*
+ * The coLAB project
+ * Copyright (C) 2021-2022 AlbaSim, MEI, HEIG-VD, HES-SO
+ *
+ * Licensed under the MIT License
+ */
+
 import { Slider, SliderFilledTrack, SliderThumb, SliderTrack, Tooltip } from '@chakra-ui/react';
 import { css, cx } from '@emotion/css';
 import { faHourglassHalf, faPen, faSkullCrossbones } from '@fortawesome/free-solid-svg-icons';

@@ -1,3 +1,10 @@
+/*
+ * The coLAB project
+ * Copyright (C) 2021-2022 AlbaSim, MEI, HEIG-VD, HES-SO
+ *
+ * Licensed under the MIT License
+ */
+
 import { css, cx } from '@emotion/css';
 import { CardContent, entityIs, Project, TeamMember } from 'colab-rest-client';
 import React from 'react';
