@@ -88,14 +88,12 @@ export function SideCollapsiblePanelBody({
 
 export interface SideCollapsibleMenuProps {
   defaultOpenKey?: string;
-  cannotClose?: boolean;
   className?: string;
   itemClassName?: string;
 }
 
 export function SideCollapsibleMenu({
   defaultOpenKey,
-  cannotClose,
   className,
   itemClassName,
 }: SideCollapsibleMenuProps): JSX.Element {
@@ -130,7 +128,7 @@ export function SideCollapsibleMenu({
             itemClassName,
           )}
           onClick={() => {
-            if (!cannotClose && setOpenKey) {
+            if (setOpenKey) {
               setOpenKey(itemKey => (itemKey === key ? undefined : key));
             }
           }}
