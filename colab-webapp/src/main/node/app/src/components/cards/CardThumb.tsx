@@ -340,7 +340,7 @@ export default function CardThumb({
                           } else {
                             dispatch(API.deleteCard(card)).then(() => {
                               stopLoading();
-                              navigate('../');
+                              closeRouteCb(`${cardId}/delete`);
                             });
                           }
                         }}
