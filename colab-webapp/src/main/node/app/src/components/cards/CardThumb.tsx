@@ -10,7 +10,6 @@ import {
   faCog,
   faEllipsisV,
   faPen,
-  faPercent,
   faTableCells,
   faTrash,
   faUsers,
@@ -23,7 +22,6 @@ import * as API from '../../API/api';
 import useTranslations from '../../i18n/I18nContext';
 import { useAndLoadSubCards } from '../../selectors/cardSelector';
 import { useAppDispatch, useLoadingState } from '../../store/hooks';
-import Button from '../common/element/Button';
 import IconButton from '../common/element/IconButton';
 import InlineLoading from '../common/element/InlineLoading';
 import { FeaturePreview } from '../common/element/Tips';
@@ -48,7 +46,6 @@ import CardCreator from './CardCreator';
 import CardInvolvement from './CardInvolvement';
 import CardLayout from './CardLayout';
 import CardSettings from './CardSettings';
-import CompletionEditor from './CompletionEditor';
 import ContentSubs from './ContentSubs';
 
 const cardThumbTitleStyle = (depth?: number) => {
@@ -288,31 +285,6 @@ export default function CardThumb({
                     }
                   />
                   <Route
-                    path={`${cardId}/v/${variant?.id}/completion`}
-                    element={
-                      <Modal
-                        title={i18n.modules.card.editCompletion}
-                        onClose={() => closeRouteCb(`${cardId}/v/${variant?.id}/completion`)}
-                        showCloseButton
-                        modalBodyClassName={css({ alignItems: 'center' })}
-                        onEnter={close => close()}
-                        footer={close => (
-                          <Flex grow={1} justify="center" className={css({ margin: space_S })}>
-                            <Button onClick={close}>{i18n.common.ok}</Button>
-                          </Flex>
-                        )}
-                      >
-                        {() =>
-                          variant && (
-                            <Flex direction="column" justify="center" align="center">
-                              <CompletionEditor variant={variant} />
-                            </Flex>
-                          )
-                        }
-                      </Modal>
-                    }
-                  />
-                  <Route
                     path={`${cardId}/delete`}
                     element={
                       <ConfirmDeleteModal
@@ -384,17 +356,6 @@ export default function CardThumb({
                           </>
                         ),
                         action: () => navigate(`${cardId}/involvements`),
-                      },
-                      {
-                        value: 'completion',
-                        label: (
-                          <>
-                            <FontAwesomeIcon icon={faPercent} /> {i18n.modules.card.completion}
-                          </>
-                        ),
-                        action: () => {
-                          navigate(`${cardId}/v/${variant!.id}/completion`);
-                        },
                       },
                       {
                         value: 'delete',
