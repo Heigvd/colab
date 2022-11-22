@@ -10,13 +10,13 @@ import { faRectangleList, faWindowRestore } from '@fortawesome/free-regular-svg-
 import {
   faCog,
   faCompressArrowsAlt,
-  faDrumstickBite,
   faEllipsisV,
   faExpandArrowsAlt,
   faLock,
   faPaperclip,
   //faStickyNote,
   faTrash,
+  faTree,
   faUsers,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -54,6 +54,7 @@ import {
 } from '../resources/ResourcesMainView';
 import { ResourcesListNb } from '../resources/summary/ResourcesListSummary';
 //import StickyNoteWrapper from '../stickynotes/StickyNoteWrapper';
+import { TipsCtx } from '../common/element/Tips';
 import {
   Item,
   SideCollapsibleCtx,
@@ -124,6 +125,8 @@ export default function CardEditor({
   const location = useLocation();
   //const { cardType } = useAndLoadCardType(card.cardTypeId);
   //const hasCardType = cardType != null;
+
+  const tipsConfig = React.useContext(TipsCtx);
 
   const variants = useVariantsOrLoad(card) || [];
   const hasVariants = variants.length > 1 && variant != null;
@@ -373,13 +376,13 @@ export default function CardEditor({
                       ),
                       action: () => navigate('involvements'),
                     },
-                    ...(card.cardTypeId == null
+                    ...(tipsConfig.WIP.value && card.cardTypeId == null
                       ? [
                           {
                             value: 'createType',
                             label: (
                               <>
-                                <FontAwesomeIcon icon={faDrumstickBite} />{' '}
+                                <FontAwesomeIcon icon={faTree} />{' '}
                                 {i18n.modules.cardType.action.createAType}
                               </>
                             ),
