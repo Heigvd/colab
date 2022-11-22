@@ -47,7 +47,8 @@ export function ProjectSettings({ project }: ProjectSettingsProps): JSX.Element 
 
   return (
     <Flex align="stretch" direction="column" grow={1} className={css({ alignSelf: 'stretch' })}>
-      <Tabs routed>
+      <Tabs>
+        {/* not routed because does not work well when opened from projects' list as a modal */}
         <Tab name="general" label={i18n.common.general}>
           <Flex direction="column" className={css({ alignSelf: 'stretch' })}>
             <Flex className={css({ alignSelf: 'stretch' })}>
