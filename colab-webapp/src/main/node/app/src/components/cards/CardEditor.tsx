@@ -15,7 +15,6 @@ import {
   faExpandArrowsAlt,
   faLock,
   faPaperclip,
-  faPercent,
   //faStickyNote,
   faTrash,
   faUsers,
@@ -35,7 +34,6 @@ import {
 } from '../../selectors/cardSelector';
 //import { useStickyNoteLinksForDest } from '../../selectors/stickyNoteLinkSelector';
 import { useAppDispatch, useLoadingState } from '../../store/hooks';
-import Button from '../common/element/Button';
 import IconButton from '../common/element/IconButton';
 import { DiscreetInput } from '../common/element/Input';
 import { ConfirmDeleteModal } from '../common/layout/ConfirmDeleteModal';
@@ -317,31 +315,6 @@ export default function CardEditor({
                     }
                   />
                   <Route
-                    path="completion"
-                    element={
-                      <Modal
-                        title={i18n.modules.card.editCompletion}
-                        onClose={() => closeRouteCb('completion')}
-                        showCloseButton
-                        modalBodyClassName={css({ alignItems: 'center' })}
-                        onEnter={close => close()}
-                        footer={close => (
-                          <Flex grow={1} justify="center" className={css({ margin: space_S })}>
-                            <Button onClick={close}>{i18n.common.ok}</Button>
-                          </Flex>
-                        )}
-                      >
-                        {() =>
-                          variant && (
-                            <Flex direction="column" justify="center" align="center">
-                              <CompletionEditor variant={variant} />
-                            </Flex>
-                          )
-                        }
-                      </Modal>
-                    }
-                  />
-                  <Route
                     path="delete"
                     element={
                       <ConfirmDeleteModal
@@ -399,15 +372,6 @@ export default function CardEditor({
                         </>
                       ),
                       action: () => navigate('involvements'),
-                    },
-                    {
-                      value: 'completion',
-                      label: (
-                        <>
-                          <FontAwesomeIcon icon={faPercent} /> {i18n.modules.card.completion}
-                        </>
-                      ),
-                      action: () => navigate('completion'),
                     },
                     ...(card.cardTypeId == null
                       ? [
