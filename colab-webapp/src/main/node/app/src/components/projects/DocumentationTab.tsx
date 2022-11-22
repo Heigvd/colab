@@ -13,6 +13,7 @@ import { useCardACLForCurrentUser, useProjectRootCard } from '../../selectors/ca
 import { useAppSelector } from '../../store/hooks';
 import ProjectCardTypeList from '../cards/cardtypes/ProjectCardTypeList';
 import InlineLoading from '../common/element/InlineLoading';
+import { TipsCtx } from '../common/element/Tips';
 import Flex from '../common/layout/Flex';
 import Tabs, { Tab } from '../common/layout/Tabs';
 import { AccessLevel, ResourceAndRef, ResourceOwnership } from '../resources/resourcesCommonType';
@@ -28,6 +29,8 @@ interface DocumentationTabProps {
 
 export default function DocumentationTab({ project }: DocumentationTabProps): JSX.Element {
   const i18n = useTranslations();
+
+  const tipsConfig = React.useContext(TipsCtx);
 
   const root = useProjectRootCard(project);
 
@@ -109,7 +112,11 @@ export default function DocumentationTab({ project }: DocumentationTabProps): JS
             )}
           </div>
         </Tab>
-        <Tab name="cardTypes" label={i18n.modules.cardType.cardTypesLongWay}>
+        <Tab
+          name="cardTypes"
+          label={i18n.modules.cardType.cardTypesLongWay}
+          invisible={!tipsConfig.WIP.value}
+        >
           <ProjectCardTypeList />
         </Tab>
       </Tabs>
