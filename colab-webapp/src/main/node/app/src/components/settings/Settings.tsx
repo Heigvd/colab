@@ -14,6 +14,7 @@ import useTranslations from '../../i18n/I18nContext';
 import { useCurrentUser, useCurrentUserAccounts } from '../../selectors/userSelector';
 import { useAppSelector } from '../../store/hooks';
 import IconButton from '../common/element/IconButton';
+import { TipsCtx } from '../common/element/Tips';
 import Flex from '../common/layout/Flex';
 import Tabs, { Tab } from '../common/layout/Tabs';
 import Debugger from '../debugger/debugger';
@@ -30,6 +31,8 @@ export default function Settings(): JSX.Element {
   const { currentUser } = useCurrentUser();
   const navigate = useNavigate();
   const status = useAppSelector(state => state.projects.status);
+
+  const tipsConfig = React.useContext(TipsCtx);
 
   React.useEffect(() => {
     if (window && window.top && window.top.document) {
@@ -70,7 +73,7 @@ export default function Settings(): JSX.Element {
           <Tab name="activeSess" label={i18n.user.activeSessions}>
             <UserSessions user={currentUser} />
           </Tab>
-          <Tab name="sharedModels" label="Shared models">
+          <Tab name="sharedModels" label="Shared models" invisible={!tipsConfig.WIP.value}>
             {/* <h2>my shared models</h2>
             <p>(imagine a view with the thumbnails)</p>
             <p>I can remove one. No more use</p>
