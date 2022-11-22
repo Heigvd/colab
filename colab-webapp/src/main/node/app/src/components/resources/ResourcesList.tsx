@@ -728,6 +728,7 @@ function TocEntry({
                         value: 'publishStatus',
                         label: (
                           <>
+                            <FontAwesomeIcon icon={faTurnDown} />
                             {resource.targetResource.published
                               ? i18n.modules.resource.actions.makePrivate
                               : i18n.modules.resource.actions.shareWithChildren}
