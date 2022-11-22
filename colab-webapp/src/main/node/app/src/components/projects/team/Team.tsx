@@ -62,7 +62,7 @@ export default function Team({ project }: TeamProps): JSX.Element {
           <Tab name="projectACL" label={i18n.modules.project.settings.involvements.label}>
             {entityIs(root, 'Card') ? <CardInvolvement card={root} /> : <InlineLoading />}
           </Tab>
-          <Tab name="modelSharing" invisible={project.type === 'PROJECT'} label="Share the model">
+          <Tab name="modelSharing" label="Share the model" invisible={project.type !== 'MODEL'}>
             <ProjectModelSharing projectId={project.id} />
           </Tab>
         </Tabs>
