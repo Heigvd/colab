@@ -9,7 +9,6 @@ import { css, cx } from '@emotion/css';
 import {
   faCog,
   faEllipsisV,
-  faFrog,
   faPen,
   faPercent,
   faTableCells,
@@ -51,7 +50,6 @@ import CardLayout from './CardLayout';
 import CardSettings from './CardSettings';
 import CompletionEditor from './CompletionEditor';
 import ContentSubs from './ContentSubs';
-import PositionEditor from './PositionEditor';
 
 const cardThumbTitleStyle = (depth?: number) => {
   switch (depth) {
@@ -315,18 +313,6 @@ export default function CardThumb({
                     }
                   />
                   <Route
-                    path={`${cardId}/position`}
-                    element={
-                      <Modal
-                        title={i18n.modules.card.settings.cardPosition}
-                        onClose={() => closeRouteCb(`${cardId}/position`)}
-                        showCloseButton
-                      >
-                        {() => <PositionEditor card={card} />}
-                      </Modal>
-                    }
-                  />
-                  <Route
                     path={`${cardId}/delete`}
                     element={
                       <ConfirmDeleteModal
@@ -408,17 +394,6 @@ export default function CardThumb({
                         ),
                         action: () => {
                           navigate(`${cardId}/v/${variant!.id}/completion`);
-                        },
-                      },
-                      {
-                        value: 'position',
-                        label: (
-                          <>
-                            <FontAwesomeIcon icon={faFrog} /> {i18n.modules.card.position}
-                          </>
-                        ),
-                        action: () => {
-                          navigate(`${cardId}/position`);
                         },
                       },
                       {
