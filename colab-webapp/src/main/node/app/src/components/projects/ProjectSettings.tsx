@@ -20,6 +20,7 @@ import Button from '../common/element/Button';
 import Checkbox from '../common/element/Checkbox';
 import IllustrationDisplay from '../common/element/IllustrationDisplay';
 import { LabeledInput, LabeledTextArea } from '../common/element/Input';
+import { TipsCtx, WIPContainer } from '../common/element/Tips';
 import ConfirmDeleteOpenCloseModal from '../common/layout/ConfirmDeleteModal';
 import Flex from '../common/layout/Flex';
 import Tabs, { Tab } from '../common/layout/Tabs';
@@ -44,6 +45,8 @@ export function ProjectSettings({ project }: ProjectSettingsProps): JSX.Element 
   const i18n = useTranslations();
   const state = useAppSelector(state => state);
   const [isProjectGlobal, setIsProjectGlobal] = React.useState<boolean>(false);
+
+  const tipsConfig = React.useContext(TipsCtx);
 
   return (
     <Flex align="stretch" direction="column" grow={1} className={css({ alignSelf: 'stretch' })}>
@@ -97,7 +100,7 @@ export function ProjectSettings({ project }: ProjectSettingsProps): JSX.Element 
         <Tab
           name="share"
           label={i18n.modules.project.settings.sharing.parameters}
-          invisible={project.type === 'PROJECT'}
+          invisible={project.type !== 'MODEL'}
         >
           <Flex direction="column">
             <h2>{i18n.modules.project.settings.sharing.parameters}</h2>
@@ -137,23 +140,25 @@ export function ProjectSettings({ project }: ProjectSettingsProps): JSX.Element 
             </Flex>
           </Flex>
         </Tab>
-        <Tab name="Advanced" label={i18n.common.advanced}>
-          <Flex direction="column">
-            <div className={labelStyle}>{i18n.common.action.exportProjectData}</div>
-            <p className={textSmall}>{i18n.common.action.exportDataDescription}</p>
-            <Flex gap={space_S}>
-              {/* <Button className={invertedButtonStyle}>.json</Button> */}
-              <Button
-                className={disabledStyle}
-                onClick={() => {
-                  logger.info(state);
-                }}
-              >
-                .csv
-              </Button>
-              {/* <CSVLink data={csvData}>Download me</CSVLink> */}
+        <Tab name="Advanced" label={i18n.common.advanced} invisible={!tipsConfig.WIP.value}>
+          <WIPContainer>
+            <Flex direction="column">
+              <div className={labelStyle}>{i18n.common.action.exportProjectData}</div>
+              <p className={textSmall}>{i18n.common.action.exportDataDescription}</p>
+              <Flex gap={space_S}>
+                {/* <Button className={invertedButtonStyle}>.json</Button> */}
+                <Button
+                  className={disabledStyle}
+                  onClick={() => {
+                    logger.info(state);
+                  }}
+                >
+                  .csv
+                </Button>
+                {/* <CSVLink data={csvData}>Download me</CSVLink> */}
+              </Flex>
             </Flex>
-          </Flex>
+          </WIPContainer>
           {project.type === 'MODEL' && (
             <Flex
               align="stretch"

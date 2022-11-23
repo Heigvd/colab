@@ -13,7 +13,7 @@ import { useCardACLForCurrentUser, useProjectRootCard } from '../../selectors/ca
 import { useAppSelector } from '../../store/hooks';
 import ProjectCardTypeList from '../cards/cardtypes/ProjectCardTypeList';
 import InlineLoading from '../common/element/InlineLoading';
-import { TipsCtx } from '../common/element/Tips';
+import { TipsCtx, WIPContainer } from '../common/element/Tips';
 import Flex from '../common/layout/Flex';
 import Tabs, { Tab } from '../common/layout/Tabs';
 import { AccessLevel, ResourceAndRef, ResourceOwnership } from '../resources/resourcesCommonType';
@@ -117,7 +117,9 @@ export default function DocumentationTab({ project }: DocumentationTabProps): JS
           label={i18n.modules.cardType.cardTypesLongWay}
           invisible={!tipsConfig.WIP.value}
         >
-          <ProjectCardTypeList />
+          <WIPContainer>
+            <ProjectCardTypeList />
+          </WIPContainer>
         </Tab>
       </Tabs>
     </Flex>

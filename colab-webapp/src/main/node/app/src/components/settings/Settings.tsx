@@ -14,7 +14,7 @@ import useTranslations from '../../i18n/I18nContext';
 import { useCurrentUser, useCurrentUserAccounts } from '../../selectors/userSelector';
 import { useAppSelector } from '../../store/hooks';
 import IconButton from '../common/element/IconButton';
-import { TipsCtx } from '../common/element/Tips';
+import { TipsCtx, WIPContainer } from '../common/element/Tips';
 import Flex from '../common/layout/Flex';
 import Tabs, { Tab } from '../common/layout/Tabs';
 import Debugger from '../debugger/debugger';
@@ -78,7 +78,9 @@ export default function Settings(): JSX.Element {
             <p>(imagine a view with the thumbnails)</p>
             <p>I can remove one. No more use</p>
             <p>ask the model owner if I can be editor of it</p> */}
-            <SharedModelsList reload={API.getUserProjects} loadingStatus={status} />
+            <WIPContainer>
+              <SharedModelsList reload={API.getUserProjects} loadingStatus={status} />
+            </WIPContainer>
           </Tab>
           <Tab name="debugger" label={i18n.admin.debugger} invisible={!currentUser.admin}>
             <Debugger />

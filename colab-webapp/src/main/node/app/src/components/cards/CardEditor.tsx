@@ -54,7 +54,7 @@ import {
 } from '../resources/ResourcesMainView';
 import { ResourcesListNb } from '../resources/summary/ResourcesListSummary';
 //import StickyNoteWrapper from '../stickynotes/StickyNoteWrapper';
-import { TipsCtx } from '../common/element/Tips';
+import { TipsCtx, WIPContainer } from '../common/element/Tips';
 import {
   Item,
   SideCollapsibleCtx,
@@ -382,8 +382,10 @@ export default function CardEditor({
                             value: 'createType',
                             label: (
                               <>
-                                <FontAwesomeIcon icon={faTree} />{' '}
-                                {i18n.modules.cardType.action.createAType}
+                                <WIPContainer>
+                                  <FontAwesomeIcon icon={faTree} />{' '}
+                                  {i18n.modules.cardType.action.createAType}
+                                </WIPContainer>
                               </>
                             ),
                             action: () => {
