@@ -18,6 +18,7 @@ import { ConfirmIconButton } from '../common/element/ConfirmIconButton';
 import Form from '../common/element/Form';
 import IllustrationDisplay from '../common/element/IllustrationDisplay';
 import { FormInput } from '../common/element/Input';
+import { TipsCtx, WIPContainer } from '../common/element/Tips';
 import Flex from '../common/layout/Flex';
 import {
   borderRadius,
@@ -69,10 +70,13 @@ export default function ProjectDataInitialization({
   setKeepWiredToModel,
 }: ProjectDataInitializationProps): JSX.Element {
   const i18n = useTranslations();
+  const tipsConfig = React.useContext(TipsCtx);
+
   const [editIllustration, setEditIllustration] = React.useState<boolean>(false);
   const [currentIllustration, setCurrentIllustration] = React.useState<Illustration>(
     data.projectModel?.illustration || defaultProjectIllustration,
   );
+
   return (
     <Flex align="stretch" className={css({ alignSelf: 'stretch' })} direction="column">
       <div className={labelStyle}>{i18n.modules.project.settings.icon}</div>
@@ -147,14 +151,18 @@ export default function ProjectDataInitialization({
 
       {/* <IllustrationPicker data={data.illustration} onChange={setIllustration} /> */}
 
-      {data.projectModel != null && (
-        <Flex>
-          <Checkbox
-            value={data.keepWiredToModel}
-            label="Keep resources from the model up to date"
-            onChange={(newValue: boolean) => setKeepWiredToModel(newValue)}
-          />
-        </Flex>
+      {tipsConfig.WIP.value && data.projectModel != null && (
+        <WIPContainer>
+          <Flex>
+            <Checkbox
+              value={data.keepWiredToModel}
+              label="Keep resources from the model up to date"
+              readOnly={true}
+              footer={<span>This feature is not yet available</span>}
+              onChange={(newValue: boolean) => setKeepWiredToModel(newValue)}
+            />
+          </Flex>
+        </WIPContainer>
       )}
       <Flex
         direction="column"
