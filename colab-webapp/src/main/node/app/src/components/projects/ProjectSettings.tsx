@@ -100,45 +100,47 @@ export function ProjectSettings({ project }: ProjectSettingsProps): JSX.Element 
         <Tab
           name="share"
           label={i18n.modules.project.settings.sharing.parameters}
-          invisible={project.type !== 'MODEL'}
+          invisible={project.type !== 'MODEL' || !tipsConfig.WIP.value}
         >
-          <Flex direction="column">
-            <h2>{i18n.modules.project.settings.sharing.parameters}</h2>
+          <WIPContainer>
             <Flex direction="column">
-              <h3>{i18n.modules.project.labels.include}</h3>
-              <Checkbox
-                value={true} //{data.withRoles}
-                label={i18n.modules.project.labels.roles}
-                onChange={(_newValue: boolean) => {
-                  //setData({ ...data, withRoles: newValue });
-                }}
-              />
-              <Checkbox
-                value={true} //{data.withDeliverables}
-                label={i18n.modules.project.labels.cardContents}
-                onChange={(_newValue: boolean) => {
-                  // setData({ ...data, withDeliverables: newValue });
-                }}
-              />
-              <Checkbox
-                value={true} //{data.withResources}
-                label={i18n.modules.project.labels.documentation}
-                onChange={(_newValue: boolean) => {
-                  //setData({ ...data, withResources: newValue });
-                }}
-              />
+              <h2>{i18n.modules.project.settings.sharing.parameters}</h2>
+              <Flex direction="column">
+                <h3>{i18n.modules.project.labels.include}</h3>
+                <Checkbox
+                  value={true} //{data.withRoles}
+                  label={i18n.modules.project.labels.roles}
+                  onChange={(_newValue: boolean) => {
+                    //setData({ ...data, withRoles: newValue });
+                  }}
+                />
+                <Checkbox
+                  value={true} //{data.withDeliverables}
+                  label={i18n.modules.project.labels.cardContents}
+                  onChange={(_newValue: boolean) => {
+                    // setData({ ...data, withDeliverables: newValue });
+                  }}
+                />
+                <Checkbox
+                  value={true} //{data.withResources}
+                  label={i18n.modules.project.labels.documentation}
+                  onChange={(_newValue: boolean) => {
+                    //setData({ ...data, withResources: newValue });
+                  }}
+                />
+              </Flex>
+              <Flex direction="column">
+                <h3>{i18n.modules.project.labels.connect}</h3>
+                <Checkbox
+                  value={true} //{data.withResources}
+                  label={i18n.modules.project.labels.keepConnectionBetweenModelAndProject}
+                  onChange={(_newValue: boolean) => {
+                    //setData({ ...data, withResources: newValue });
+                  }}
+                />
+              </Flex>
             </Flex>
-            <Flex direction="column">
-              <h3>{i18n.modules.project.labels.connect}</h3>
-              <Checkbox
-                value={true} //{data.withResources}
-                label={i18n.modules.project.labels.keepConnectionBetweenModelAndProject}
-                onChange={(_newValue: boolean) => {
-                  //setData({ ...data, withResources: newValue });
-                }}
-              />
-            </Flex>
-          </Flex>
+          </WIPContainer>
         </Tab>
         <Tab name="Advanced" label={i18n.common.advanced} invisible={!tipsConfig.WIP.value}>
           <WIPContainer>
@@ -160,90 +162,93 @@ export function ProjectSettings({ project }: ProjectSettingsProps): JSX.Element 
             </Flex>
           </WIPContainer>
           {project.type === 'MODEL' && (
-            <Flex
-              align="stretch"
-              className={css({ border: '1px solid var(--fgColor)', borderRadius: borderRadius })}
-            >
+            <WIPContainer>
               <Flex
-                justify="center"
-                align="center"
-                className={css({ backgroundColor: 'var(--fgColor)', width: '80px' })}
+                align="stretch"
+                className={css({ border: '1px solid var(--fgColor)', borderRadius: borderRadius })}
               >
-                <FontAwesomeIcon
-                  icon={isProjectGlobal ? faGlobe : faStar}
-                  className={css({ color: 'var(--bgColor)' })}
-                  size="2x"
-                />
+                <Flex
+                  justify="center"
+                  align="center"
+                  className={css({ backgroundColor: 'var(--fgColor)', width: '80px' })}
+                >
+                  <FontAwesomeIcon
+                    icon={isProjectGlobal ? faGlobe : faStar}
+                    className={css({ color: 'var(--bgColor)' })}
+                    size="2x"
+                  />
+                </Flex>
+                <Flex direction="column" align="stretch" className={css({ padding: space_M })}>
+                  {isProjectGlobal ? (
+                    <>
+                      <h3>This model is global</h3>
+                      <p>Everyone with a co.LAB account can create a project base on this model.</p>
+                      <p>Want to make it private?</p>
+                      <ConfirmDeleteOpenCloseModal
+                        title="Make private"
+                        buttonLabel={
+                          <Button
+                            invertedButton
+                            className={cx(css({ color: errorColor, borderColor: errorColor }))}
+                            clickable
+                          >
+                            <FontAwesomeIcon icon={faStar} /> Make private
+                          </Button>
+                        }
+                        className={css({
+                          '&:hover': { textDecoration: 'none' },
+                          display: 'flex',
+                          alignItems: 'center',
+                          alignSelf: 'flex-end',
+                        })}
+                        message={
+                          <p>
+                            Are you sure you want to make this model private? Once private, no one
+                            will be able to create a project from this model except the people you
+                            share it with.
+                          </p>
+                        }
+                        onConfirm={() => setIsProjectGlobal(e => !e)}
+                        confirmButtonLabel="Make private"
+                      />
+                    </>
+                  ) : (
+                    <>
+                      <h3>This model is private</h3>
+                      <p>You can share it for edition or usage to create prjects based on it.</p>
+                      <p>Want to make it global?</p>
+                      <ConfirmDeleteOpenCloseModal
+                        title="Make global"
+                        buttonLabel={
+                          <Button
+                            invertedButton
+                            className={cx(css({ color: errorColor, borderColor: errorColor }))}
+                            clickable
+                          >
+                            <FontAwesomeIcon icon={faGlobe} /> Make global
+                          </Button>
+                        }
+                        className={css({
+                          '&:hover': { textDecoration: 'none' },
+                          display: 'flex',
+                          alignItems: 'center',
+                          alignSelf: 'flex-end',
+                        })}
+                        message={
+                          <p>
+                            Are you sure you want to make this model global? Once global, everyone
+                            with a co.LAB account will be able to create a project base on this
+                            model.
+                          </p>
+                        }
+                        onConfirm={() => setIsProjectGlobal(e => !e)}
+                        confirmButtonLabel="Make global"
+                      />
+                    </>
+                  )}
+                </Flex>
               </Flex>
-              <Flex direction="column" align="stretch" className={css({ padding: space_M })}>
-                {isProjectGlobal ? (
-                  <>
-                    <h3>This model is global</h3>
-                    <p>Everyone with a co.LAB account can create a project base on this model.</p>
-                    <p>Want to make it private?</p>
-                    <ConfirmDeleteOpenCloseModal
-                      title="Make private"
-                      buttonLabel={
-                        <Button
-                          invertedButton
-                          className={cx(css({ color: errorColor, borderColor: errorColor }))}
-                          clickable
-                        >
-                          <FontAwesomeIcon icon={faStar} /> Make private
-                        </Button>
-                      }
-                      className={css({
-                        '&:hover': { textDecoration: 'none' },
-                        display: 'flex',
-                        alignItems: 'center',
-                        alignSelf: 'flex-end',
-                      })}
-                      message={
-                        <p>
-                          Are you sure you want to make this model private? Once private, no one
-                          will be able to create a project from this model except the people you
-                          share it with.
-                        </p>
-                      }
-                      onConfirm={() => setIsProjectGlobal(e => !e)}
-                      confirmButtonLabel="Make private"
-                    />
-                  </>
-                ) : (
-                  <>
-                    <h3>This model is private</h3>
-                    <p>You can share it for edition or usage to create prjects based on it.</p>
-                    <p>Want to make it global?</p>
-                    <ConfirmDeleteOpenCloseModal
-                      title="Make global"
-                      buttonLabel={
-                        <Button
-                          invertedButton
-                          className={cx(css({ color: errorColor, borderColor: errorColor }))}
-                          clickable
-                        >
-                          <FontAwesomeIcon icon={faGlobe} /> Make global
-                        </Button>
-                      }
-                      className={css({
-                        '&:hover': { textDecoration: 'none' },
-                        display: 'flex',
-                        alignItems: 'center',
-                        alignSelf: 'flex-end',
-                      })}
-                      message={
-                        <p>
-                          Are you sure you want to make this model global? Once global, everyone
-                          with a co.LAB account will be able to create a project base on this model.
-                        </p>
-                      }
-                      onConfirm={() => setIsProjectGlobal(e => !e)}
-                      confirmButtonLabel="Make global"
-                    />
-                  </>
-                )}
-              </Flex>
-            </Flex>
+            </WIPContainer>
           )}
         </Tab>
       </Tabs>
