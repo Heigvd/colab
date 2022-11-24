@@ -87,18 +87,17 @@ export function ProjectModelExtractor({ projectId }: ProjectModelExtractorProps)
     return step === 'fillBasisData';
   }, [step]);
 
-  // TODO init with project data.
-  // But not that way !
-  // React.useEffect(() => {
-  //   if (project) {
-  //     setData({
-  //       ...data,
-  //       name: project.name || data.name,
-  //       description: project.description || data.description,
-  //       illustration: project.illustration || data.illustration,
-  //     });
-  //   }
-  // }, [project, data]);
+  React.useEffect(() => {
+    if (project) {
+      setData({
+        ...data,
+        name: project.name || data.name,
+        description: project.description || data.description,
+        illustration: project.illustration || data.illustration,
+      });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [project]); // state must not be set
 
   const oneStepBack = React.useCallback(() => {
     if (!readOnly && step === 'fillBasisData') {
