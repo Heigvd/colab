@@ -268,16 +268,14 @@ export const ProjectDisplay = ({
                     },
                   ]
                 : []),
-              ...(currentUser?.admin && tipsConfig.WIP.value && project.type === 'MODEL'
+              ...(currentUser?.admin && project.type === 'MODEL'
                 ? [
                     {
                       value: 'convertToProject',
                       label: (
                         <>
-                          <WIPContainer>
-                            <FontAwesomeIcon icon={faSeedling} />{' '}
-                            {i18n.modules.project.actions.convertToProject}
-                          </WIPContainer>
+                          <FontAwesomeIcon icon={faSeedling} />{' '}
+                          {i18n.modules.project.actions.convertToProject}
                         </>
                       ),
                       action: () => {
