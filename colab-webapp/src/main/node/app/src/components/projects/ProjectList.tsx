@@ -12,7 +12,6 @@ import {
   faEdit,
   faEllipsisV,
   faGlobe,
-  faGraduationCap,
   faSeedling,
   faStar,
   faTrash,
@@ -60,6 +59,7 @@ const modelChipStyle = css({
   borderRadius: '0 0 0 50%',
   backgroundColor: 'var(--primaryColor)',
 });
+
 function ProjectSettingWrapper(): JSX.Element {
   const { projectId } = useParams<'projectId'>();
   const i18n = useTranslations();
@@ -259,7 +259,7 @@ export const ProjectDisplay = ({
                       label: (
                         <>
                           <WIPContainer>
-                            <FontAwesomeIcon icon={faGraduationCap} />{' '}
+                            <FontAwesomeIcon icon={faStar} />{' '}
                             {i18n.modules.project.actions.saveAsModel}
                           </WIPContainer>
                         </>
@@ -268,7 +268,24 @@ export const ProjectDisplay = ({
                     },
                   ]
                 : []),
-              ...(currentUser?.admin && project.type === 'MODEL'
+              ...(currentUser?.admin && project.type !== 'MODEL'
+                ? [
+                    {
+                      value: 'convertToModel',
+                      label: (
+                        <>
+                          <FontAwesomeIcon icon={faStar} />{' '}
+                          {i18n.modules.project.actions.convertToModel}
+                        </>
+                      ),
+                      action: () => {
+                        dispatch(API.updateProject({ ...project, type: 'MODEL' }));
+                        navigate('/models');
+                      },
+                    },
+                  ]
+                : []),
+              ...(currentUser?.admin && project.type !== 'PROJECT'
                 ? [
                     {
                       value: 'convertToProject',
