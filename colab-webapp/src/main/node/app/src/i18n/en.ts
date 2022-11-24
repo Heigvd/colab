@@ -574,6 +574,7 @@ export const en = {
       cardType: 'Theme',
       cardTypesLongWay: 'Thematic documentation',
       titlePlaceholder: 'New Theme',
+      noCardType: 'No theme',
       purpose: 'Description',
       globalTypes: 'Global Themes',
       sharedAvailableTypes: 'Shared available themes',

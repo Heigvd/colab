@@ -583,6 +583,7 @@ export const fr: ColabTranslations = {
       cardType: 'Thème',
       cardTypesLongWay: 'Documentation thématique',
       titlePlaceholder: 'Nouveau thème',
+      noCardType: 'Aucun thème',
       purpose: 'Description',
       globalTypes: 'Thèmes globaux',
       sharedAvailableTypes: 'Thèmes disponibles partagés',
