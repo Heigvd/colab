@@ -48,7 +48,7 @@ import { IllustrationIconDisplay } from '../../common/element/IllustrationDispla
 import InlineLoading from '../../common/element/InlineLoading';
 import { DiscreetInput } from '../../common/element/Input';
 import { mainLinkActiveClass, mainMenuLink, MainMenuLink } from '../../common/element/Link';
-import Tips, { FeaturePreview, TipsCtx } from '../../common/element/Tips';
+import Tips, { TipsCtx } from '../../common/element/Tips';
 import Clickable from '../../common/layout/Clickable';
 import Flex from '../../common/layout/Flex';
 import Monkeys from '../../debugger/monkey/Monkeys';
@@ -699,24 +699,22 @@ function CardCreatorAndOrganize({ rootContent, organize }: CardCreatorAndOrganiz
           align="center"
           className={css({ marginTop: '-10px', paddingRight: space_S })}
         >
-          <FeaturePreview>
-            <IconButton
-              className={cx(
-                greyIconButtonChipStyle,
-                css({ alignSelf: 'flex-end' }),
-                organize.organize &&
-                  css({
-                    backgroundColor: successColor,
-                    color: 'var(--bgColor)',
-                    border: successColor,
-                  }),
-              )}
-              title={i18n.modules.card.positioning.toggleText}
-              icon={faTableCells}
-              //value={organize.organize}
-              onClick={() => organize.setOrganize(e => !e)}
-            />
-          </FeaturePreview>
+          <IconButton
+            className={cx(
+              greyIconButtonChipStyle,
+              css({ alignSelf: 'flex-end' }),
+              organize.organize &&
+                css({
+                  backgroundColor: successColor,
+                  color: 'var(--bgColor)',
+                  border: successColor,
+                }),
+            )}
+            title={i18n.modules.card.positioning.toggleText}
+            icon={faTableCells}
+            //value={organize.organize}
+            onClick={() => organize.setOrganize(e => !e)}
+          />
           <CardCreator parentCardContent={rootContent} className={greyIconButtonChipStyle} />
         </Flex>
       )}
