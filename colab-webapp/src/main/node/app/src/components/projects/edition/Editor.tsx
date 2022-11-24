@@ -71,7 +71,6 @@ import Presence from '../presence/Presence';
 import { PresenceContext, usePresenceContext } from '../presence/PresenceContext';
 import { defaultProjectIllustration } from '../ProjectCommon';
 import { ProjectSettings } from '../ProjectSettings';
-import ProjectSharing from '../ProjectSharing';
 import Team from '../team/Team';
 import ActivityFlowChart from './ActivityFlowChart';
 import Hierarchy from './Hierarchy';
@@ -421,24 +420,6 @@ function EditorNav({ project }: EditorNavProps): JSX.Element {
               <FontAwesomeIcon title={i18n.modules.project.labels.projectSettings} icon={faCog} />
             </MainMenuLink>
           </Flex>
-          {/* {project.type === 'MODEL' && (
-            <WIPContainer>
-              <Flex
-                className={css({
-                  borderLeft: '1px solid var(--lightGray)',
-                  padding: '0 ' + space_S,
-                })}
-                wrap="nowrap"
-              >
-                <MainMenuLink to="./sharing">
-                  <FontAwesomeIcon
-                    icon={faMicrophone}
-                    title={i18n.modules.project.settings.sharing.label}
-                  />
-                </MainMenuLink>
-              </Flex>
-            </WIPContainer>
-          )} */}
         </Flex>
         <div
           className={css({
@@ -631,7 +612,6 @@ export default function Editor(): JSX.Element {
               <Route path="hierarchy" element={<Hierarchy rootId={root.id} />} />
               <Route path="flow" element={<ActivityFlowChart />} />
               <Route path="docs/*" element={<DocumentationTab project={project} />} />
-              <Route path="sharing/*" element={<ProjectSharing projectId={project.id} />} />
               <Route path="card/:id" element={<DefaultVariantDetector />} />
               {/* Zooom on a card */}
               <Route
