@@ -12,10 +12,10 @@ import { useNavigate } from 'react-router-dom';
 import * as API from '../../API/api';
 import useTranslations from '../../i18n/I18nContext';
 import { useAndLoadProject } from '../../selectors/projectSelector';
-import { useAppDispatch, useLoadingState } from '../../store/hooks';
+import { useAppDispatch } from '../../store/hooks';
 import AvailabilityStatusIndicator from '../common/element/AvailabilityStatusIndicator';
 import Button from '../common/element/Button';
-import ButtonWithLoader from '../common/element/ButtonWithLoader';
+import { AsyncButtonWithLoader } from '../common/element/ButtonWithLoader';
 import Checkbox from '../common/element/Checkbox';
 import IllustrationDisplay from '../common/element/IllustrationDisplay';
 import { LabeledInput, LabeledTextArea } from '../common/element/Input';
@@ -29,8 +29,15 @@ interface ProjectModelExtractorProps {
   projectId: number | null | undefined;
 }
 
+const modalStyle = css({
+  '&:hover': { textDecoration: 'none' },
+  display: 'flex',
+  width: '800px',
+  height: '580px',
+});
+
 export interface ModelCreationData {
-  justConvert: boolean;
+  simpleProject: Project | null;
   withRoles: boolean;
   withDeliverables: boolean;
   withResources: boolean;
@@ -38,11 +45,10 @@ export interface ModelCreationData {
   description: string;
   illustration: Illustration;
   guests: string[];
-  simpleProject: Project | null;
 }
 
 const defaultData: ModelCreationData = {
-  justConvert: true,
+  simpleProject: null,
   withRoles: true,
   withDeliverables: true,
   withResources: true,
@@ -50,45 +56,64 @@ const defaultData: ModelCreationData = {
   description: '',
   illustration: { ...defaultProjectIllustration },
   guests: [],
-  simpleProject: null,
 };
 
-type ProgressionStatus = 'parameters' | 'fillBasisData';
+type ProgressionStep = 'parameters' | 'fillBasisData';
+
+const initialProgressionStep = 'parameters';
 
 export function ProjectModelExtractor({ projectId }: ProjectModelExtractorProps): JSX.Element {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const i18n = useTranslations();
 
-  const [status, setStatus] = React.useState<ProgressionStatus>('parameters');
+  const { status: projectStatus, project } = useAndLoadProject(projectId || undefined);
 
   const [data, setData] = React.useState<ModelCreationData>({ ...defaultData });
 
-  const [showBackButton, setShowBackButton] = React.useState<boolean>(false);
-  const [showNextButton, setShowNextButton] = React.useState<boolean>(false);
-  const [showCreateButton, setShowCreateButton] = React.useState<boolean>(false);
-
   const [readOnly, setReadOnly] = React.useState<boolean>(false);
-  const { isLoading, startLoading, stopLoading } = useLoadingState();
 
-  React.useEffect(() => {
-    if (status === 'parameters') {
-      setShowBackButton(false);
-      setShowNextButton(true);
-      setShowCreateButton(false);
-    } else if (status === 'fillBasisData') {
-      setShowBackButton(true);
-      setShowNextButton(false);
-      setShowCreateButton(true);
-    } else {
-      setShowBackButton(false);
-      setShowNextButton(false);
-      setShowCreateButton(false);
+  const [step, setStep] = React.useState<ProgressionStep>(initialProgressionStep);
+
+  const showBackButton: boolean = React.useMemo(() => {
+    return step === 'fillBasisData';
+  }, [step]);
+
+  const showNextButton: boolean = React.useMemo(() => {
+    return step === 'parameters';
+  }, [step]);
+
+  const showCreateButton: boolean = React.useMemo(() => {
+    return step === 'fillBasisData';
+  }, [step]);
+
+  // TODO init with project data.
+  // But not that way !
+  // React.useEffect(() => {
+  //   if (project) {
+  //     setData({
+  //       ...data,
+  //       name: project.name || data.name,
+  //       description: project.description || data.description,
+  //       illustration: project.illustration || data.illustration,
+  //     });
+  //   }
+  // }, [project, data]);
+
+  const oneStepBack = React.useCallback(() => {
+    if (!readOnly && step === 'fillBasisData') {
+      setStep('parameters');
     }
-  }, [status]);
+  }, [readOnly, step]);
 
-  const resetCb = React.useCallback(() => {
-    setStatus('parameters');
+  const oneStepForward = React.useCallback(() => {
+    if (!readOnly && step === 'parameters') {
+      setStep('fillBasisData');
+    }
+  }, [readOnly, step]);
+
+  const reset = React.useCallback(() => {
+    setStep(initialProgressionStep);
 
     setReadOnly(false);
 
@@ -96,130 +121,136 @@ export function ProjectModelExtractor({ projectId }: ProjectModelExtractorProps)
     setData({ ...defaultData });
   }, [data.guests]);
 
-  const oneStepBackCb = React.useCallback(() => {
-    if (!readOnly && status === 'fillBasisData') {
-      setStatus('parameters');
-    }
-  }, [readOnly, status]);
+  const modalTitle = React.useMemo(() => {
+    return (
+      <span>
+        {i18n.modules.project.actions.saveProjectAsModelPart1} <b>{project?.name || ''}</b>{' '}
+        {i18n.modules.project.actions.saveProjectAsModelPart2}
+      </span>
+    );
+  }, [i18n, project]);
 
-  const oneStepForwardCb = React.useCallback(() => {
-    if (!readOnly && status === 'parameters') {
-      setStatus('fillBasisData');
-    }
-  }, [readOnly, status]);
-
-  const { status: projectStatus, project } = useAndLoadProject(projectId || undefined);
-
-  React.useEffect(() => {
-    if (project) {
-      setData({
-        ...data,
-        name: project.name || data.name,
-        description: project.description || data.description,
-        illustration: project.illustration || data.illustration,
-      });
-    }
-  }, [project, data, setData]);
-
-  return projectStatus !== 'READY' || !project ? (
-    <AvailabilityStatusIndicator status={projectStatus} />
-  ) : (
-    <>
+  if (projectStatus !== 'READY' || !project) {
+    return (
       <Modal
-        title={
-          <span>
-            {i18n.modules.project.actions.saveProjectAsModelPart1} <b>{project?.name || ''}</b>{' '}
-            {i18n.modules.project.actions.saveProjectAsModelPart2}
-          </span>
-        }
+        title={modalTitle}
         showCloseButton
         onClose={() => navigate('../')}
-        className={css({
-          '&:hover': { textDecoration: 'none' },
-          display: 'flex',
-          width: '800px',
-          height: '580px',
-        })}
+        className={modalStyle}
         modalBodyClassName={css({
-          alignItems: 'stretch',
+          alignItems: 'center',
+          justifyContent: 'center',
         })}
-        footer={close => (
-          <Flex
-            justify={'flex-end'}
-            grow={1}
-            className={css({ padding: space_M, columnGap: space_S })}
-          >
-            <Button
-              invertedButton
-              onClick={() => {
-                if (!readOnly) {
-                  resetCb();
-                  close();
-                }
-              }}
-            >
-              {i18n.common.cancel}
-            </Button>
-
-            {showBackButton && (
-              <Button invertedButton onClick={oneStepBackCb}>
-                {i18n.common.back}
-              </Button>
-            )}
-
-            {showNextButton && <Button onClick={oneStepForwardCb}>{i18n.common.next}</Button>}
-
-            {showCreateButton && (
-              <ButtonWithLoader
-                onClick={() => {
-                  if (!readOnly) {
-                    setReadOnly(true);
-                    startLoading();
-                    // TODO duplicate and
-                    dispatch(API.updateProject({ ...project, type: 'MODEL' })).then(() => {
-                      stopLoading();
-                      resetCb();
-                      close();
-                      // Dom choice : do not navigate to the model list when created
-                      //navigate('/models');
-                    });
-                  }
-                }}
-                isLoading={isLoading}
-              >
-                {i18n.common.save}
-                {/* +
-                  ' - for the moment just set type to MODEL'} */}
-              </ButtonWithLoader>
-            )}
-          </Flex>
-        )}
       >
         {() => {
           return (
-            // <WIPContainer>
-            <Flex direction="column">
-              {status === 'parameters' ? (
-                <ProjectModelParameters data={data} setData={setData} />
-              ) : (
-                <ProjectModelDataInitialization data={data} />
-              )}
-            </Flex>
-            // </WIPContainer>
+            <>
+              <AvailabilityStatusIndicator status={projectStatus} />
+              {projectStatus === 'ERROR' && <div>Initial project not found</div>}
+            </>
           );
         }}
       </Modal>
-    </>
+    );
+  }
+
+  return (
+    <Modal
+      title={modalTitle}
+      showCloseButton
+      onClose={() => navigate('../')}
+      className={modalStyle}
+      modalBodyClassName={css({
+        alignItems: 'stretch',
+      })}
+      footer={close => (
+        <Flex
+          justify={'flex-end'}
+          grow={1}
+          className={css({ padding: space_M, columnGap: space_S })}
+        >
+          <Button
+            invertedButton
+            onClick={() => {
+              if (!readOnly) {
+                reset();
+                close();
+              }
+            }}
+          >
+            {i18n.common.cancel}
+          </Button>
+
+          {showBackButton && (
+            <Button invertedButton onClick={oneStepBack}>
+              {i18n.common.back}
+            </Button>
+          )}
+
+          {showNextButton && <Button onClick={oneStepForward}>{i18n.common.next}</Button>}
+
+          {showCreateButton && (
+            <AsyncButtonWithLoader
+              onClick={async () => {
+                if (!readOnly) {
+                  setReadOnly(true);
+                  // TODO duplicate and
+                  dispatch(API.updateProject({ ...project, type: 'MODEL' })).then(() => {
+                    reset();
+                    close();
+                    // Dom choice : do not navigate to the model list when created
+                    //navigate('/models');
+                  });
+                }
+              }}
+            >
+              {i18n.common.save}
+            </AsyncButtonWithLoader>
+          )}
+        </Flex>
+      )}
+    >
+      {() => {
+        return (
+          <Flex direction="column">
+            {step === 'parameters' ? (
+              <ProjectModelParameters data={data} setData={setData} readOnly={readOnly} />
+            ) : (
+              <ProjectModelDataInitialization data={data} setData={setData} readOnly={readOnly} />
+            )}
+
+            {/* <div className={css({ fontSize: '0.8em' })}>
+              data
+              <div>
+                <p>simpleProject : {data.simpleProject?.id} </p>
+                <p>withRoles : {data.withRoles ? 'yes' : 'no'} </p>
+                <p>withDeliverables : {data.withDeliverables ? 'yes' : 'no'} </p>
+                <p>withResources : {data.withResources ? 'yes' : 'no'} </p>
+                <p>name : {data.name} </p>
+                <p>description : {data.description} </p>
+                <p>
+                  illustration : {data.illustration.iconKey} - {data.illustration.iconBkgdColor}{' '}
+                </p>
+              </div>
+            </div> */}
+          </Flex>
+        );
+      }}
+    </Modal>
   );
+}
+
+interface ProjectModelParametersProps {
+  data: ModelCreationData;
+  setData: React.Dispatch<React.SetStateAction<ModelCreationData>>;
+  readOnly?: boolean;
 }
 
 function ProjectModelParameters({
   data,
   setData,
-}: {
-  data: ModelCreationData;
-  setData: React.Dispatch<React.SetStateAction<ModelCreationData>>;
-}): JSX.Element {
+  readOnly,
+}: ProjectModelParametersProps): JSX.Element {
   const i18n = useTranslations();
 
   return (
@@ -228,65 +259,91 @@ function ProjectModelParameters({
       <Checkbox
         value={data.withRoles}
         label={i18n.modules.project.labels.roles}
+        readOnly={readOnly}
         onChange={(newValue: boolean) => {
-          setData({ ...data, withRoles: newValue });
+          if (!readOnly) {
+            setData({ ...data, withRoles: newValue });
+          }
         }}
       />
       <Checkbox
         value={data.withDeliverables}
         label={i18n.modules.project.labels.cardContents}
+        readOnly={readOnly}
         onChange={(newValue: boolean) => {
-          setData({ ...data, withDeliverables: newValue });
+          if (!readOnly) {
+            setData({ ...data, withDeliverables: newValue });
+          }
         }}
       />
       <Checkbox
         value={data.withResources}
         label={i18n.modules.project.labels.documentation}
+        readOnly={readOnly}
         onChange={(newValue: boolean) => {
-          setData({ ...data, withResources: newValue });
+          if (!readOnly) {
+            setData({ ...data, withResources: newValue });
+          }
         }}
       />
     </>
   );
 }
 
-function ProjectModelDataInitialization({ data }: { data: ModelCreationData }): JSX.Element {
+interface ProjectModelDataInitializationProps {
+  data: ModelCreationData;
+  setData: React.Dispatch<React.SetStateAction<ModelCreationData>>;
+  readOnly?: boolean;
+}
+
+function ProjectModelDataInitialization({
+  data,
+  setData,
+  readOnly,
+}: ProjectModelDataInitializationProps): JSX.Element {
   const i18n = useTranslations();
 
   return (
-    <>
-      <Flex className={css({ alignSelf: 'stretch' })}>
-        <Flex
-          direction="column"
-          align="stretch"
-          className={css({ width: '45%', minWidth: '45%', marginRight: space_L })}
-        >
-          <LabeledInput
-            label={i18n.common.name}
-            placeholder={i18n.modules.project.actions.newProject}
-            value={data.name || ''}
-            onChange={() => {}}
-          />
-          <LabeledTextArea
-            label={i18n.common.description}
-            placeholder={i18n.common.info.writeDescription}
-            value={data.description || ''}
-            onChange={() => {}}
-          />
-        </Flex>
-        <Flex
-          direction="column"
-          align="stretch"
-          justify="flex-end"
-          className={css({ width: '55%' })}
-        >
-          <IllustrationDisplay illustration={data.illustration} />
-          <ProjectIllustrationMaker
-            illustration={data.illustration}
-            setIllustration={i => (data.illustration = i)}
-          />
-        </Flex>
+    <Flex className={css({ alignSelf: 'stretch' })}>
+      <Flex
+        direction="column"
+        align="stretch"
+        className={css({ width: '45%', minWidth: '45%', marginRight: space_L })}
+      >
+        <LabeledInput
+          label={i18n.common.name}
+          placeholder={i18n.modules.project.actions.newProject}
+          value={data.name || ''}
+          readOnly={readOnly}
+          onChange={(newValue: string) => {
+            if (!readOnly) {
+              setData({ ...data, name: newValue });
+            }
+          }}
+        />
+        <LabeledTextArea
+          label={i18n.common.description}
+          placeholder={i18n.common.info.writeDescription}
+          value={data.description || ''}
+          readOnly={readOnly}
+          onChange={(newValue: string) => {
+            if (!readOnly) {
+              setData({ ...data, description: newValue });
+            }
+          }}
+        />
       </Flex>
-    </>
+      <Flex direction="column" align="stretch" justify="flex-end" className={css({ width: '55%' })}>
+        <IllustrationDisplay illustration={data.illustration} />
+        <ProjectIllustrationMaker
+          illustration={data.illustration}
+          setIllustration={(newValue: Illustration) => {
+            if (!readOnly) {
+              setData({ ...data, illustration: newValue });
+            }
+          }}
+        />
+      </Flex>
+    </Flex>
   );
 }
