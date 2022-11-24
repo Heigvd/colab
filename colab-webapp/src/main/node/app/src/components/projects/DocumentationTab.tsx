@@ -1,6 +1,6 @@
 /*
  * The coLAB project
- * Copyright (C) 2021 AlbaSim, MEI, HEIG-VD, HES-SO
+ * Copyright (C) 2021-2022 AlbaSim, MEI, HEIG-VD, HES-SO
  *
  * Licensed under the MIT License
  */
@@ -13,10 +13,15 @@ import { useCardACLForCurrentUser, useProjectRootCard } from '../../selectors/ca
 import { useAppSelector } from '../../store/hooks';
 import ProjectCardTypeList from '../cards/cardtypes/ProjectCardTypeList';
 import InlineLoading from '../common/element/InlineLoading';
+import { TipsCtx, WIPContainer } from '../common/element/Tips';
 import Flex from '../common/layout/Flex';
 import Tabs, { Tab } from '../common/layout/Tabs';
-import { AccessLevel, ResourceCallContext } from '../resources/resourcesCommonType';
-import ResourcesMainView, { TocDisplayToggler } from '../resources/ResourcesMainView';
+import { AccessLevel, ResourceAndRef, ResourceOwnership } from '../resources/resourcesCommonType';
+import {
+  ResourcesCtx,
+  ResourcesMainViewHeader,
+  ResourcesMainViewPanel,
+} from '../resources/ResourcesMainView';
 
 interface DocumentationTabProps {
   project: Project;
@@ -25,7 +30,12 @@ interface DocumentationTabProps {
 export default function DocumentationTab({ project }: DocumentationTabProps): JSX.Element {
   const i18n = useTranslations();
 
+  const tipsConfig = React.useContext(TipsCtx);
+
   const root = useProjectRootCard(project);
+
+  const [selectedResource, selectResource] = React.useState<ResourceAndRef | null>(null);
+  const [lastCreatedResourceId, setLastCreatedResourceId] = React.useState<number | null>(null);
 
   const rootState = useAppSelector(state => {
     if (entityIs(root, 'Card')) {
@@ -40,7 +50,7 @@ export default function DocumentationTab({ project }: DocumentationTabProps): JS
     return undefined;
   });
 
-  const resourceContext: ResourceCallContext | undefined = React.useMemo(() => {
+  const resourceOwnership: ResourceOwnership | undefined = React.useMemo(() => {
     if (rootState != null) {
       return {
         kind: 'CardOrCardContent',
@@ -67,7 +77,7 @@ export default function DocumentationTab({ project }: DocumentationTabProps): JS
 
   return (
     <Flex align="stretch" direction="column" grow={1} className={css({ alignSelf: 'stretch' })}>
-      <Tabs routed defaultTab="project">
+      <Tabs routed>
         <Tab name="project" label={i18n.modules.project.settings.resources.label}>
           <div
             className={css({
@@ -77,25 +87,39 @@ export default function DocumentationTab({ project }: DocumentationTabProps): JS
               flexGrow: 1,
             })}
           >
-            {resourceContext != null ? (
+            {resourceOwnership != null ? (
               <>
-                <Flex>
-                  <h2>{i18n.modules.project.settings.resources.label}</h2>
-                  <TocDisplayToggler />
-                </Flex>
-                <ResourcesMainView
-                  accessLevel={accessLevel}
-                  contextData={resourceContext}
-                  showVoidIndicator
-                />
+                <ResourcesCtx.Provider
+                  value={{
+                    resourceOwnership,
+                    selectedResource,
+                    selectResource,
+                    lastCreatedId: lastCreatedResourceId,
+                    setLastCreatedId: setLastCreatedResourceId,
+                    publishNewResource: true,
+                  }}
+                >
+                  <Flex align="baseline">
+                    <ResourcesMainViewHeader
+                      title={<h2>{i18n.modules.project.settings.resources.label}</h2>}
+                    />
+                  </Flex>
+                  <ResourcesMainViewPanel accessLevel={accessLevel} showLevels />
+                </ResourcesCtx.Provider>
               </>
             ) : (
               <InlineLoading />
             )}
           </div>
         </Tab>
-        <Tab name="cardTypes" label={i18n.modules.cardType.cardTypesLongWay}>
-          <ProjectCardTypeList />
+        <Tab
+          name="cardTypes"
+          label={i18n.modules.cardType.cardTypesLongWay}
+          invisible={!tipsConfig.WIP.value}
+        >
+          <WIPContainer>
+            <ProjectCardTypeList />
+          </WIPContainer>
         </Tab>
       </Tabs>
     </Flex>

@@ -9,9 +9,8 @@ import { css, cx } from '@emotion/css';
 import {
   faCog,
   faEllipsisV,
-  faFrog,
   faPen,
-  faPercent,
+  faTableCells,
   faTrash,
   faUsers,
 } from '@fortawesome/free-solid-svg-icons';
@@ -23,10 +22,9 @@ import * as API from '../../API/api';
 import useTranslations from '../../i18n/I18nContext';
 import { useAndLoadSubCards } from '../../selectors/cardSelector';
 import { useAppDispatch, useLoadingState } from '../../store/hooks';
-import Button from '../common/element/Button';
+import IconButton from '../common/element/IconButton';
 import InlineLoading from '../common/element/InlineLoading';
 import { FeaturePreview } from '../common/element/Tips';
-import Toggler from '../common/element/Toggler';
 import { ConfirmDeleteModal } from '../common/layout/ConfirmDeleteModal';
 import DropDownMenu from '../common/layout/DropDownMenu';
 import Flex from '../common/layout/Flex';
@@ -34,19 +32,51 @@ import Modal from '../common/layout/Modal';
 import DocumentPreview from '../documents/preview/DocumentPreview';
 import {
   errorColor,
+  greyIconButtonChipStyle,
   lightIconButtonStyle,
-  space_L,
+  oneLineEllipsis,
+  //linkStyle,
   space_M,
   space_S,
+  successColor,
   variantTitle,
 } from '../styling/style';
 import CardContentStatus from './CardContentStatus';
+import CardCreator from './CardCreator';
 import CardInvolvement from './CardInvolvement';
 import CardLayout from './CardLayout';
 import CardSettings from './CardSettings';
-import CompletionEditor from './CompletionEditor';
 import ContentSubs from './ContentSubs';
-import PositionEditor from './PositionEditor';
+
+const cardThumbTitleStyle = (depth?: number) => {
+  switch (depth) {
+    case 0:
+      return css({
+        fontSize: '0.8em',
+      });
+    case 1:
+      return css({
+        fontSize: '0.9em',
+      });
+    default:
+      return undefined;
+  }
+};
+
+const cardThumbContentStyle = (depth?: number) => {
+  switch (depth) {
+    case 0:
+      return css({
+        //height: '20px'
+      });
+    case 1:
+      return css({
+        height: 'auto',
+      });
+    default:
+      return undefined;
+  }
+};
 
 export interface TinyCardProps {
   card: Card;
@@ -63,7 +93,7 @@ export function TinyCard({ card, width = '15px', height = '10px' }: TinyCardProp
         height: height,
         border: `2px solid var(--lightGray)`,
         borderRadius: '4px',
-        margin: '5px',
+        margin: '3px',
       })}
       title={(card.title && i18n.modules.card.subcardTooltip(card.title)) || undefined}
     >
@@ -85,7 +115,8 @@ export interface CardThumbProps {
   showSubcards?: boolean;
   depth?: number;
   mayOrganize?: boolean;
-  showPreview: boolean;
+  showPreview?: boolean;
+  className?: string;
 }
 
 export default function CardThumb({
@@ -96,6 +127,7 @@ export default function CardThumb({
   variants,
   mayOrganize,
   showPreview,
+  className,
 }: CardThumbProps): JSX.Element {
   const i18n = useTranslations();
   const dispatch = useAppDispatch();
@@ -172,21 +204,24 @@ export default function CardThumb({
     return <i>{i18n.modules.card.error.withoutId}</i>;
   } else {
     return (
-      <CardLayout card={card} variant={variant} variants={variants}>
+      <CardLayout card={card} variant={variant} variants={variants} className={className}>
         <>
           <div
             onClick={clickOnCardTitleCb}
-            className={css({
-              display: 'flex',
-              flexDirection: 'column',
-              justifyContent: 'space-around',
-              borderBottom:
-                card.color && card.color != '#ffffff'
-                  ? '3px solid ' + card.color
-                  : '3px solid var(--lightGray)',
-              width: '100%',
-              cursor: 'pointer',
-            })}
+            className={cx(
+              css({
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'space-around',
+                borderTop:
+                  card.color && card.color != '#ffffff'
+                    ? '5px solid ' + card.color
+                    : '3px solid var(--bgColor)',
+                borderBottom: '1px solid var(--lighterGray)',
+                width: '100%',
+                cursor: 'pointer',
+              }),
+            )}
           >
             <div
               className={css({
@@ -200,20 +235,22 @@ export default function CardThumb({
                   justifyContent: 'space-between',
                 })}
               >
-                <div className={css({ flexGrow: 1 })}>
+                <Flex className={cx(cardThumbTitleStyle(depth), css({ flexGrow: 1 }))}>
                   <CardContentStatus mode="icon" status={variant?.status || 'ACTIVE'} />
-                  <span className={css({ fontWeight: 'bold' })}>
+                  <span
+                    className={cx(css({ fontWeight: 'bold', minWidth: '50px' }), oneLineEllipsis)}
+                  >
                     {card.title || i18n.modules.card.untitled}
                   </span>
                   {hasVariants && (
-                    <span className={variantTitle}>
+                    <span className={cx(variantTitle, oneLineEllipsis, css({ minWidth: '50px' }))}>
                       &#xFE58;
                       {variant?.title && variant.title.length > 0
                         ? variant.title
                         : `${i18n.modules.card.variant} ${variantNumber}`}
                     </span>
                   )}
-                </div>
+                </Flex>
                 {/* handle modal routes*/}
                 <Routes>
                   <Route
@@ -248,43 +285,6 @@ export default function CardThumb({
                     }
                   />
                   <Route
-                    path={`${cardId}/v/${variant?.id}/completion`}
-                    element={
-                      <Modal
-                        title={i18n.modules.card.editCompletion}
-                        onClose={() => closeRouteCb(`${cardId}/v/${variant?.id}/completion`)}
-                        showCloseButton
-                        modalBodyClassName={css({ alignItems: 'center' })}
-                        onEnter={close => close()}
-                        footer={close => (
-                          <Flex grow={1} justify="center" className={css({ margin: space_S })}>
-                            <Button onClick={close}>{i18n.common.ok}</Button>
-                          </Flex>
-                        )}
-                      >
-                        {() =>
-                          variant && (
-                            <Flex direction="column" justify="center" align="center">
-                              <CompletionEditor variant={variant} />
-                            </Flex>
-                          )
-                        }
-                      </Modal>
-                    }
-                  />
-                  <Route
-                    path={`${cardId}/position`}
-                    element={
-                      <Modal
-                        title={i18n.modules.card.settings.cardPosition}
-                        onClose={() => closeRouteCb(`${cardId}/position`)}
-                        showCloseButton
-                      >
-                        {() => <PositionEditor card={card} />}
-                      </Modal>
-                    }
-                  />
-                  <Route
                     path={`${cardId}/delete`}
                     element={
                       <ConfirmDeleteModal
@@ -298,7 +298,7 @@ export default function CardThumb({
                           } else {
                             dispatch(API.deleteCard(card)).then(() => {
                               stopLoading();
-                              navigate('../');
+                              closeRouteCb(`${cardId}/delete`);
                             });
                           }
                         }}
@@ -308,74 +308,68 @@ export default function CardThumb({
                     }
                   />
                 </Routes>
-                <DropDownMenu
-                  icon={faEllipsisV}
-                  valueComp={{ value: '', label: '' }}
-                  buttonClassName={cx(lightIconButtonStyle, css({ marginLeft: space_S }))}
-                  entries={[
-                    {
-                      value: 'edit',
-                      label: (
-                        <>
-                          <FontAwesomeIcon icon={faPen} /> {i18n.common.edit}
-                        </>
-                      ),
-                      action: navigateToEditPageCb,
-                    },
-                    {
-                      value: 'settings',
-                      label: (
-                        <>
-                          <FontAwesomeIcon icon={faCog} /> {i18n.common.settings}
-                        </>
-                      ),
-                      action: () => {
-                        navigate(`${cardId}/settings`);
+                {depth === 1 && (
+                  <DropDownMenu
+                    icon={faEllipsisV}
+                    valueComp={{ value: '', label: '' }}
+                    buttonClassName={cx(lightIconButtonStyle, css({ marginLeft: space_S }))}
+                    entries={[
+                      {
+                        value: 'newSubcard',
+                        label: (
+                          <>
+                            {variant && (
+                              <CardCreator
+                                parentCardContent={variant}
+                                display="dropdown"
+                                customLabel={i18n.modules.card.createSubcard}
+                              />
+                            )}
+                          </>
+                        ),
                       },
-                    },
-                    {
-                      value: 'involvements',
-                      label: (
-                        <>
-                          <FontAwesomeIcon icon={faUsers} /> {i18n.modules.card.involvements}
-                        </>
-                      ),
-                      action: () => navigate(`${cardId}/involvements`),
-                    },
-                    {
-                      value: 'completion',
-                      label: (
-                        <>
-                          <FontAwesomeIcon icon={faPercent} /> {i18n.modules.card.completion}
-                        </>
-                      ),
-                      action: () => {
-                        navigate(`${cardId}/v/${variant!.id}/completion`);
+                      {
+                        value: 'edit',
+                        label: (
+                          <>
+                            <FontAwesomeIcon icon={faPen} /> {i18n.common.edit}
+                          </>
+                        ),
+                        action: navigateToEditPageCb,
                       },
-                    },
-                    {
-                      value: 'position',
-                      label: (
-                        <>
-                          <FontAwesomeIcon icon={faFrog} /> {i18n.modules.card.position}
-                        </>
-                      ),
-                      action: () => {
-                        navigate(`${cardId}/position`);
+                      {
+                        value: 'settings',
+                        label: (
+                          <>
+                            <FontAwesomeIcon icon={faCog} /> {i18n.common.settings}
+                          </>
+                        ),
+                        action: () => {
+                          navigate(`${cardId}/settings`);
+                        },
                       },
-                    },
-                    {
-                      value: 'delete',
-                      label: (
-                        <>
-                          <FontAwesomeIcon color={errorColor} icon={faTrash} />{' '}
-                          {i18n.modules.card.deleteCardVariant(hasVariants)}
-                        </>
-                      ),
-                      action: () => navigate(`${cardId}/delete`),
-                    },
-                  ]}
-                />
+                      {
+                        value: 'involvements',
+                        label: (
+                          <>
+                            <FontAwesomeIcon icon={faUsers} /> {i18n.modules.card.involvements}
+                          </>
+                        ),
+                        action: () => navigate(`${cardId}/involvements`),
+                      },
+                      {
+                        value: 'delete',
+                        label: (
+                          <>
+                            <FontAwesomeIcon color={errorColor} icon={faTrash} />{' '}
+                            {i18n.modules.card.deleteCardVariant(hasVariants)}
+                          </>
+                        ),
+                        action: () => navigate(`${cardId}/delete`),
+                      },
+                    ]}
+                  />
+                )}
               </div>
               {/*
               // Show nb of sticky notes and resources under card title.
@@ -403,24 +397,50 @@ export default function CardThumb({
             align="stretch"
             direction="column"
             onClick={clickOnCardContentCb}
-            className={cx({
-              [css({ minHeight: space_L, cursor: shouldZoomOnClick ? 'zoom-in' : 'pointer' })]:
-                true,
-              [css({
-                padding: space_M,
-              })]: depth > 0,
-            })}
-            justify="center"
+            className={cx(
+              cardThumbContentStyle(depth),
+              {
+                [css({
+                  //minHeight: space_L,
+                  cursor: shouldZoomOnClick ? 'zoom-in' : 'pointer',
+                })]: true,
+                [css({
+                  padding: space_M,
+                })]: depth > 0,
+              },
+              css({ overflow: 'auto' }),
+            )}
+            justify="stretch"
           >
-            {mayOrganize && (
-              <FeaturePreview>
-                <Toggler
-                  className={css({ alignSelf: 'flex-end' })}
-                  label={i18n.modules.card.positioning.toggleText}
-                  value={organize}
-                  onChange={setOrganize}
+            {mayOrganize && variant && (
+              <Flex
+                gap={space_S}
+                wrap="nowrap"
+                justify="flex-end"
+                align="center"
+                className={css({ marginTop: '-10px', paddingRight: space_S })}
+              >
+                <IconButton
+                  className={cx(
+                    greyIconButtonChipStyle,
+                    css({ alignSelf: 'flex-end' }),
+                    organize &&
+                      css({
+                        backgroundColor: successColor,
+                        color: 'var(--bgColor)',
+                        border: successColor,
+                      }),
+                  )}
+                  title={i18n.modules.card.positioning.toggleText}
+                  icon={faTableCells}
+                  //value={organize.organize}
+                  onClick={e => {
+                    e.stopPropagation();
+                    setOrganize(v => !v);
+                  }}
                 />
-              </FeaturePreview>
+                <CardCreator parentCardContent={variant} className={greyIconButtonChipStyle} />
+              </Flex>
             )}
 
             {showPreview && variant && (
@@ -455,8 +475,10 @@ export default function CardThumb({
             {showSubcards ? (
               variant != null ? (
                 <ContentSubs
+                  minCardWidth={100}
                   depth={depth}
                   cardContent={variant}
+                  cardSize={{ width: card.width, height: card.height }}
                   organize={organize}
                   showPreview={false}
                 />

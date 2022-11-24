@@ -12,15 +12,17 @@ import VariantSelector from './VariantSelector';
 
 interface CardThumbWithSelectorProps {
   className?: string;
+  cardThumbClassName?: string;
   card: Card;
   depth?: number;
   mayOrganize?: boolean;
-  showPreview: boolean;
+  showPreview?: boolean;
 }
 
 export default function CardThumbWithSelector({
   card,
   className,
+  cardThumbClassName,
   depth = 1,
   mayOrganize,
   showPreview,
@@ -29,7 +31,7 @@ export default function CardThumbWithSelector({
     return <i>Card without id is invalid...</i>;
   } else {
     return (
-      <VariantSelector className={className} card={card}>
+      <VariantSelector className={className} card={card} depth={depth}>
         {(variant, list) => (
           <>
             <CardThumb
@@ -40,6 +42,7 @@ export default function CardThumbWithSelector({
               depth={depth}
               mayOrganize={mayOrganize}
               showPreview={showPreview}
+              className={cardThumbClassName}
             />
           </>
         )}

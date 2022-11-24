@@ -1,27 +1,66 @@
 /*
  * The coLAB project
- * Copyright (C) 2021 AlbaSim, MEI, HEIG-VD, HES-SO
+ * Copyright (C) 2021-2022 AlbaSim, MEI, HEIG-VD, HES-SO
  *
  * Licensed under the MIT License
  */
 
 import { css, cx } from '@emotion/css';
-import { faMinus, faPersonDigging } from '@fortawesome/free-solid-svg-icons';
+import {
+  faBoxArchive,
+  faCog,
+  faCopy,
+  faEllipsisV,
+  faEye,
+  faTurnDown,
+} from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { entityIs } from 'colab-rest-client';
 import * as React from 'react';
+import * as API from '../../API/api';
 import useTranslations, { useLanguage } from '../../i18n/I18nContext';
 import { useProjectRootCard } from '../../selectors/cardSelector';
-import { useAndLoadNbDocuments, useAndLoadTextOfDocument } from '../../selectors/documentSelector';
+import { useAndLoadNbDocuments } from '../../selectors/documentSelector';
 import { useProjectBeingEdited } from '../../selectors/projectSelector';
+import { dispatch } from '../../store/store';
 import Tips from '../common/element/Tips';
-import Tooltip from '../common/element/Tooltip';
+import Collapsible from '../common/layout/Collapsible';
+import DropDownMenu from '../common/layout/DropDownMenu';
 import Flex from '../common/layout/Flex';
-import DocumentPreview from '../documents/preview/DocumentPreview';
-import { iconStyle, marginAroundStyle, oneLineEllipsis, space_M, space_S } from '../styling/style';
-import { getKey, getTheDirectResource, ResourceAndRef } from './resourcesCommonType';
-import { TocDisplayCtx } from './ResourcesMainView';
+import {
+  lightIconButtonStyle,
+  marginAroundStyle,
+  oneLineEllipsis,
+  space_M,
+  space_S,
+} from '../styling/style';
+import { ResourceSettingsModal } from './ResourceDisplay';
+import {
+  getKey,
+  getTheDirectResource,
+  ResourceAndRef,
+  useResourceAccessLevelForCurrentUser,
+} from './resourcesCommonType';
+import { ResourcesCtx } from './ResourcesMainView';
 import TargetResourceSummary from './summary/TargetResourceSummary';
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Resource TOC Context
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+export type TocMode = 'CATEGORY' | 'SOURCE' | '3_STACKS';
+
+export interface TocDisplayContext {
+  mode: TocMode;
+  setMode: (newMode: TocMode) => void;
+}
+
+export const TocDisplayCtx = React.createContext<TocDisplayContext>({
+  mode: 'CATEGORY',
+  setMode: () => {},
+});
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
 
 /**
  * List of ResourceAndRef grouped by category
@@ -37,6 +76,28 @@ function sortResources(lang: string) {
   };
 }
 
+type StackType = 'OWN' | 'INHERITED' | 'PROJECT'; //'CARD' | 'THEME' | 'INHERITED' | 'PROJECT' | 'MODEL' | 'OUTSIDE';
+
+// function stackKeyOrder(c: string) {
+//   switch (c) {
+//     case 'CARD':
+//       return 1;
+//     case 'PROJECT':
+//       return 2;
+//     case 'MODEL':
+//       return 3;
+//     default:
+//       return 4;
+//   }
+// }
+
+// function sortStacks(a: string, b: string): number {
+//   const aO = stackKeyOrder(a);
+//   const bO = stackKeyOrder(b);
+
+//   return aO - bO;
+// }
+
 // ********************************************************************************************** //
 
 export interface ResourcesListProps {
@@ -44,13 +105,46 @@ export interface ResourcesListProps {
   selectResource?: (resource: ResourceAndRef) => void;
   displayResourceItem?: (resource: ResourceAndRef) => React.ReactNode;
   showLocationIcon?: boolean;
+  showLevels?: boolean;
+  readOnly?: boolean;
 }
+
+// function ResourcesListSimple({
+//   resources,
+//   selectResource,
+//   displayResourceItem,
+//   showLocationIcon = true,
+//   readOnly,
+// }: ResourcesListProps): JSX.Element {
+//   const lang = useLanguage();
+
+//   return (
+//     <Flex
+//       direction="column"
+//       align="stretch"
+//       grow={1}
+//       className={css({ overflow: 'auto', paddingRight: '2px' })}
+//     >
+//       {resources.sort(sortResources(lang)).map(resource => (
+//         <TocEntry
+//           key={getKey(resource)}
+//           resource={resource}
+//           selectResource={selectResource}
+//           displayResource={displayResourceItem}
+//           showLocationIcon={showLocationIcon}
+//           readOnly={readOnly}
+//         />
+//       ))}
+//     </Flex>
+//   );
+// }
 
 function ResourcesListByCategory({
   resources,
   selectResource,
   displayResourceItem,
   showLocationIcon = true,
+  readOnly,
 }: ResourcesListProps): JSX.Element {
   const lang = useLanguage();
 
@@ -92,6 +186,7 @@ function ResourcesListByCategory({
                   selectResource={selectResource}
                   displayResource={displayResourceItem}
                   showLocationIcon={showLocationIcon}
+                  readOnly={readOnly}
                 />
               ))}
             </Flex>
@@ -101,18 +196,239 @@ function ResourcesListByCategory({
   );
 }
 
+const resourcesStackLabelStyle = css({
+  fontWeight: 'bold',
+  backgroundColor: 'var(--hoverBgColor)',
+  marginTop: 0,
+  paddingLeft: space_M,
+  fontSize: '0.8rem',
+  textTransform: 'uppercase',
+});
+
+function ResourcesListBy3Stacks({
+  resources,
+  selectResource,
+  displayResourceItem,
+}: //readOnly,
+ResourcesListProps): JSX.Element {
+  const lang = useLanguage();
+
+  const { resourceOwnership } = React.useContext(ResourcesCtx);
+
+  const { project: currentProject } = useProjectBeingEdited();
+  const root = useProjectRootCard(currentProject);
+
+  // function useIsInCurrentProject1(abstractCardTypeId: number) {
+
+  //   const { cardType } = useAndLoadCardType(abstractCardTypeId);
+  //   const projectId = cardType?.projectId;
+
+  //   const { project: currentProject } = useProjectBeingEdited();
+
+  //   return projectId === currentProject?.id;
+  // };
+
+  // const isInCurrentProject= React.useCallback((abstractCardTypeId: number) => {
+
+  //   const { cardType } = useAndLoadCardType(abstractCardTypeId);
+  //   const projectId = cardType?.projectId;
+
+  //   const { project: currentProject } = useProjectBeingEdited();
+
+  //   return projectId === currentProject?.id;
+  // }, []);
+  const bySources: Record<string, ResourceAndRef[]> = React.useMemo(() => {
+    function get3StackKey(current: ResourceAndRef): StackType {
+      // if (current.isDirectResource) {
+      //   if (current.targetResource.cardId != null || current.targetResource.cardContentId != null) {
+      //     return 'CARD';
+      //   }
+
+      //   return 'THEME';
+      // }
+
+      if (current.targetResource.cardId != null || current.targetResource.cardContentId != null) {
+        if (current.isDirectResource) {
+          return 'OWN';
+        }
+
+        if (entityIs(root, 'Card') && current.targetResource.cardId === root.id) {
+          return 'PROJECT';
+        }
+      }
+
+      // if (current.targetResource.cardId != null || current.targetResource.cardContentId != null) {
+
+      return 'INHERITED';
+      // }
+
+      // return 'THEME';
+
+      // if (
+      //   current.targetResource.abstractCardTypeId != null &&
+      //   useIsInCurrentProject(current.targetResource.abstractCardTypeId)
+      // ) {
+      //   return 'PROJECT';
+      // }
+
+      // return 'MODEL';
+    }
+
+    const reducedBySource = resources.reduce<Record<string, ResourceAndRef[]>>((acc, current) => {
+      const sourceKey = get3StackKey(current);
+
+      acc[sourceKey] = acc[sourceKey] || [];
+      acc[sourceKey]!.push(current);
+
+      return acc;
+    }, {});
+
+    Object.values(reducedBySource).forEach(list => {
+      list.sort(sortResources(lang));
+    });
+
+    return reducedBySource;
+  }, [resources, root, lang]);
+
+  return (
+    <Flex
+      direction="column"
+      align="stretch"
+      grow={1}
+      className={css({ overflow: 'auto', paddingRight: '2px' })}
+    >
+      {bySources['OWN'] ? (
+        <Collapsible
+          label={resourceOwnership.kind === 'CardType' ? 'Theme' : 'Card'}
+          open
+          labelClassName={resourcesStackLabelStyle}
+        >
+          <ResourcesListByCategory
+            resources={bySources['OWN']}
+            selectResource={selectResource}
+            displayResourceItem={displayResourceItem}
+            showLocationIcon={false}
+          />
+        </Collapsible>
+      ) : (
+        <></>
+      )}
+      {bySources['INHERITED'] ? (
+        <div className={marginAroundStyle([3], space_S)}>
+          <Collapsible label="Inherited" open labelClassName={resourcesStackLabelStyle}>
+            <ResourcesListByCategory
+              resources={bySources['INHERITED']}
+              selectResource={selectResource}
+              displayResourceItem={displayResourceItem}
+              showLocationIcon={false}
+            />
+          </Collapsible>
+        </div>
+      ) : (
+        <></>
+      )}
+      {bySources['PROJECT'] ? (
+        <div className={marginAroundStyle([3], space_S)}>
+          <Collapsible label="Project" open labelClassName={resourcesStackLabelStyle}>
+            <ResourcesListByCategory
+              resources={bySources['PROJECT']}
+              selectResource={selectResource}
+              displayResourceItem={displayResourceItem}
+              showLocationIcon={false}
+            />
+          </Collapsible>
+        </div>
+      ) : (
+        <></>
+      )}
+      {/* //   {bySources['CARD'] ? (
+    //     <div className={marginAroundStyle([3], space_S)}>
+    //       <Collapsible label="Card" open>
+    //         <ResourcesListByCategory
+    //           resources={bySources['CARD']}
+    //           selectResource={selectResource}
+    //           displayResourceItem={displayResourceItem}
+    //           showLocationIcon={false}
+    //         />
+    //       </Collapsible>
+    //     </div>
+    //   ) : (
+    //     <></>
+    //   )}
+    //   {bySources['THEME'] ? (
+    //     <div className={marginAroundStyle([3], space_S)}>
+    //       <Collapsible label="Theme" open>
+    //         <ResourcesListByCategory
+    //           resources={bySources['THEME']}
+    //           selectResource={selectResource}
+    //           displayResourceItem={displayResourceItem}
+    //           showLocationIcon={false}
+    //         />
+    //       </Collapsible>
+    //     </div>
+    //   ) : (
+    //     <></>
+    //   )}
+    //   {bySources['PROJECT'] ? (
+    //     <div className={marginAroundStyle([3], space_S)}>
+    //       <Collapsible label="Project" open>
+    //         <ResourcesListByCategory
+    //           resources={bySources['PROJECT']}
+    //           selectResource={selectResource}
+    //           displayResourceItem={displayResourceItem}
+    //           showLocationIcon={false}
+    //         />
+    //       </Collapsible>
+    //     </div>
+    //   ) : (
+    //     <></>
+    //   )}
+    //   {bySources['MODEL'] ? (
+    //     <div className={marginAroundStyle([3], space_S)}>
+    //       <Collapsible label="Model" open>
+    //         <ResourcesListByCategory
+    //           resources={bySources['MODEL']}
+    //           selectResource={selectResource}
+    //           displayResourceItem={displayResourceItem}
+    //           showLocationIcon={false}
+    //         />
+    //       </Collapsible>
+    //     </div>
+    //   ) : (
+    //     <></>
+    //   )}
+    //   {bySources['OUTSIDE'] ? (
+    //     <div className={marginAroundStyle([3], space_S)}>
+    //       <Collapsible label="From outer space" open>
+    //         <ResourcesListSimple
+    //           resources={bySources['OUTSIDE']}
+    //           selectResource={selectResource}
+    //           displayResourceItem={displayResourceItem}
+    //           showLocationIcon={false}
+    //         />
+    //       </Collapsible>
+    //     </div>
+    //   ) : (
+    //     <></>
+    //   )} */}
+    </Flex>
+  );
+}
+
 function getSourceKey(current: ResourceAndRef) {
   return (
     `ct-${current.targetResource.abstractCardTypeId || 'Z'}` +
     `card-${current.targetResource.cardId || 'Z'}` +
-    `cardC-${current.targetResource.abstractCardTypeId || 'Z'}`
+    `cardC-${current.targetResource.cardContentId || 'Z'}`
   );
 }
 
-function ResourcesListBySource({
+// not an export. just to avoid linter help
+export function ResourcesListBySource({
   resources,
   selectResource,
   displayResourceItem,
+  readOnly,
 }: ResourcesListProps): JSX.Element {
   const lang = useLanguage();
 
@@ -144,20 +460,32 @@ function ResourcesListBySource({
         .sort()
         .map(source => (
           <div key={source} className={marginAroundStyle([3], space_S)}>
-            <TocHeader
-              category={
-                <TargetResourceSummary resource={bySources[source]![0]!} showText="short" />
+            <Collapsible
+              open
+              label={
+                <div className={marginAroundStyle([1, 2, 4], space_M)}>
+                  <h3
+                    className={cx(
+                      css({
+                        minWidth: '50px',
+                        flexGrow: 1,
+                      }),
+                      oneLineEllipsis,
+                    )}
+                  >
+                    <TargetResourceSummary resource={bySources[source]![0]!} showText="short" />
+                  </h3>
+                </div>
               }
-            />
-
-            <Flex className={css({ marginLeft: space_S })} direction="column" align="stretch">
+            >
               <ResourcesListByCategory
                 resources={bySources[source]!}
                 selectResource={selectResource}
                 displayResourceItem={displayResourceItem}
                 showLocationIcon={false}
+                readOnly={readOnly}
               />
-            </Flex>
+            </Collapsible>
           </div>
         ))}
     </Flex>
@@ -165,15 +493,22 @@ function ResourcesListBySource({
 }
 
 export default function ResourcesList(props: ResourcesListProps): JSX.Element {
-  const { mode } = React.useContext(TocDisplayCtx);
+  //const { mode } = React.useContext(TocDisplayCtx);
 
   return (
     <Flex direction="column" align="stretch" grow={1}>
-      {mode === 'CATEGORY' ? (
+      {props.showLevels ? (
+        <ResourcesListBy3Stacks {...props} />
+      ) : (
         <ResourcesListByCategory {...props} />
+      )}
+      {/* {mode === 'CATEGORY' ? (
+        <ResourcesListByCategory {...props} />
+      ) : mode === '3_STACKS' ? ( 
+      <ResourcesListBy3Stacks {...props} />
       ) : (
         <ResourcesListBySource {...props} />
-      )}
+      )} */}
     </Flex>
   );
 }
@@ -188,18 +523,24 @@ function TocHeader({ category }: TocHeaderProps): JSX.Element {
   return (
     <>
       {category && (
-        <div className={marginAroundStyle([1, 2, 4], space_M)}>
-          <h3
-            className={cx(
-              css({
-                minWidth: '50px',
-                flexGrow: 1,
-              }),
-              oneLineEllipsis,
-            )}
-          >
-            {category}
-          </h3>
+        <div
+          className={cx(
+            css({
+              minWidth: '50px',
+              flexGrow: 1,
+              textTransform: 'uppercase',
+              marginBottom: 0,
+              marginTop: space_S,
+              marginLeft: space_M,
+              marginRight: space_M,
+              borderBottom: '1px solid var(--lightGray)',
+              fontWeight: 'bold',
+              fontSize: '0.75rem',
+            }),
+            oneLineEllipsis,
+          )}
+        >
+          {category}
         </div>
       )}
     </>
@@ -223,25 +564,34 @@ interface TocEntryProps {
   selectResource?: (resource: ResourceAndRef) => void;
   displayResource?: (resource: ResourceAndRef) => React.ReactNode;
   showLocationIcon: boolean;
+  readOnly?: boolean;
 }
 
 function TocEntry({
   resource,
   selectResource,
   displayResource,
-  showLocationIcon,
+  //showLocationIcon,
+  readOnly,
 }: TocEntryProps): JSX.Element {
   const i18n = useTranslations();
 
-  const { text: teaser } = useAndLoadTextOfDocument(resource.targetResource.teaserId);
+  const [showSettings, setShowSettings] = React.useState(false);
+
+  const { resourceOwnership } = React.useContext(ResourcesCtx);
+
+  // const { text: teaser } = useAndLoadTextOfDocument(resource.targetResource.teaserId);
 
   const { nb: nbDocs } = useAndLoadNbDocuments({
     kind: 'PartOfResource',
     ownerId: resource.targetResource.id || 0,
   });
+  const accesLevel = useResourceAccessLevelForCurrentUser(resource.targetResource);
 
-  const { project } = useProjectBeingEdited();
-  const rootCard = useProjectRootCard(project);
+  const effectiveReadOnly = readOnly || accesLevel !== 'WRITE'; // !forceWrite && (readOnly || !resource.isDirectResource);
+
+  // const { project } = useProjectBeingEdited();
+  // const rootCard = useProjectRootCard(project);
 
   return (
     <Flex className={tocEntryStyle} justify="space-between">
@@ -257,7 +607,11 @@ function TocEntry({
               }
             }}
             grow={1}
-            className={css({ padding: space_S + ' ' + space_M })}
+            className={cx(
+              css({ padding: '3px ' + space_M }),
+              { [css({ color: 'var(--darkGray)' })]: effectiveReadOnly },
+              { [css({ color: 'var(--darkGray)' })]: !effectiveReadOnly },
+            )}
           >
             <div
               className={cx(
@@ -268,12 +622,28 @@ function TocEntry({
                 oneLineEllipsis,
               )}
             >
-              {showLocationIcon && (
+              {effectiveReadOnly && (
+                <FontAwesomeIcon
+                  icon={faEye}
+                  size="xs"
+                  className={css({ marginRight: '3px' })}
+                  color="var(--lightGray)"
+                />
+              )}
+              {resource.targetResource.published && resource.isDirectResource && (
+                <FontAwesomeIcon
+                  icon={faTurnDown}
+                  size="xs"
+                  className={css({ marginRight: '3px' })}
+                  color="var(--lightGray)"
+                />
+              )}
+              {/* {showLocationIcon && (
                 <>
                   <TargetResourceSummary resource={resource} />{' '}
                 </>
-              )}
-              <Tooltip
+              )} */}
+              {/* <Tooltip
                 tooltipClassName={css({
                   width: '400px',
                   height: '600px',
@@ -309,12 +679,13 @@ function TocEntry({
                     />
                   </Flex>
                 }
-              >
-                {resource.targetResource.title || i18n.modules.resource.untitled}
-              </Tooltip>
+              > */}
+              {resource.targetResource.title || i18n.modules.resource.untitled}
+              {nbDocs < 1 && <i className={css({ fontWeight: 200 })}> - {i18n.common.empty}</i>}
+              {/* </Tooltip> */}
             </div>
 
-            {!resource.targetResource.published &&
+            {/* {!resource.targetResource.published &&
               (resource.targetResource.abstractCardTypeId != null ||
                 (resource.targetResource.cardId != null &&
                   entityIs(rootCard, 'Card') &&
@@ -324,15 +695,100 @@ function TocEntry({
                   title={i18n.modules.resource.unpublishedInfoType}
                   className={iconStyle}
                 />
-              )}
+              )} */}
 
-            {nbDocs < 1 && (
+            {/* {nbDocs < 1 && (
               <FontAwesomeIcon
                 icon={faMinus}
                 title={i18n.modules.resource.info.noContent}
                 className={iconStyle}
               />
-            )}
+            )} */}
+            <DropDownMenu
+              icon={faEllipsisV}
+              valueComp={{ value: '', label: '' }}
+              buttonClassName={cx(lightIconButtonStyle, css({ marginLeft: space_S }))}
+              entries={[
+                ...(!effectiveReadOnly && resource.isDirectResource
+                  ? [
+                      {
+                        value: 'settings',
+                        label: (
+                          <>
+                            <FontAwesomeIcon icon={faCog} /> {i18n.common.settings}{' '}
+                          </>
+                        ),
+                        action: () => setShowSettings(true),
+                      },
+                    ]
+                  : []),
+                ...(!readOnly && resource.isDirectResource && resource.targetResource.id // TODO see conditions
+                  ? [
+                      {
+                        value: 'publishStatus',
+                        label: (
+                          <>
+                            <FontAwesomeIcon icon={faTurnDown} />
+                            {resource.targetResource.published
+                              ? i18n.modules.resource.actions.makePrivate
+                              : i18n.modules.resource.actions.shareWithChildren}
+                          </>
+                        ),
+                        action: () => {
+                          if (resource.targetResource.id) {
+                            if (resource.targetResource.published) {
+                              dispatch(API.unpublishResource(resource.targetResource.id));
+                            } else {
+                              dispatch(API.publishResource(resource.targetResource.id));
+                            }
+                          }
+                        },
+                      },
+                    ]
+                  : []),
+                ...(!resource.isDirectResource && resourceOwnership // TODO voir quelles conditions
+                  ? [
+                      {
+                        value: 'ownCopy',
+                        label: (
+                          <>
+                            <FontAwesomeIcon icon={faCopy} />{' '}
+                            {i18n.modules.resource.actions.makeOwnCopy}
+                          </>
+                        ),
+                        action: () => {
+                          dispatch(
+                            API.duplicateAndMoveResource({
+                              resourceOrRef: resource.targetResource,
+                              newParentType:
+                                resourceOwnership.kind === 'CardType' ? 'CardType' : 'Card',
+                              newParentId:
+                                resourceOwnership.kind === 'CardType'
+                                  ? resourceOwnership.cardTypeId || 0
+                                  : resourceOwnership.cardId || 0,
+                            }),
+                          );
+                        },
+                      },
+                    ]
+                  : []),
+                ...(!readOnly
+                  ? [
+                      {
+                        value: 'remove',
+                        label: (
+                          <>
+                            <FontAwesomeIcon icon={faBoxArchive} /> {i18n.common.remove}
+                          </>
+                        ),
+                        action: () => {
+                          dispatch(API.removeAccessToResource(resource));
+                        },
+                      },
+                    ]
+                  : []),
+              ]}
+            />
           </Flex>
 
           <Tips tipsType="DEBUG" interactionType="CLICK">
@@ -377,6 +833,9 @@ function TocEntry({
               )}
             </div>
           </Tips>
+          {showSettings && (
+            <ResourceSettingsModal resource={resource} onClose={() => setShowSettings(false)} />
+          )}
         </>
       )}
     </Flex>

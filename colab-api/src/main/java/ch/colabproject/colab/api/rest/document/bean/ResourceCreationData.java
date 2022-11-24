@@ -1,6 +1,6 @@
 /*
  * The coLAB project
- * Copyright (C) 2021 AlbaSim, MEI, HEIG-VD, HES-SO
+ * Copyright (C) 2021-2022 AlbaSim, MEI, HEIG-VD, HES-SO
  *
  * Licensed under the MIT License
  */
@@ -58,6 +58,11 @@ public class ResourceCreationData implements Serializable {
      * The card content id
      */
     private Long cardContentId;
+
+    /**
+     * Is it at the disposal of the inheritors
+     */
+    private boolean published;
 
     /**
      * The document
@@ -153,6 +158,20 @@ public class ResourceCreationData implements Serializable {
     }
 
     /**
+     * @return if it is at the disposal of the inheritors
+     */
+    public boolean isPublished() {
+        return published;
+    }
+
+    /**
+     * @param published if it is at the disposal of the inheritors
+     */
+    public void setPublished(boolean published) {
+        this.published = published;
+    }
+
+    /**
      * @return the documents
      */
     public List<Document> getDocuments() {
@@ -178,6 +197,7 @@ public class ResourceCreationData implements Serializable {
             .append(this.abstractCardTypeId)
             .append(this.cardId)
             .append(this.cardContentId)
+            .append(this.published)
             .toHashCode();
     }
 
@@ -199,6 +219,7 @@ public class ResourceCreationData implements Serializable {
             .append(this.abstractCardTypeId, other.abstractCardTypeId)
             .append(this.cardId, other.cardId)
             .append(this.cardContentId, other.cardContentId)
+            .append(this.published, other.published)
             .isEquals();
     }
 
@@ -206,7 +227,7 @@ public class ResourceCreationData implements Serializable {
     public String toString() {
         return "ResourceCreationData{" + "title=" + title + ", category=" + category
             + ", abstractCardTypeId=" + abstractCardTypeId + ", cardId=" + cardId
-            + ", cardContentId=" + cardContentId + "}";
+            + ", cardContentId=" + cardContentId + ", published=" + published + "}";
     }
 
 }

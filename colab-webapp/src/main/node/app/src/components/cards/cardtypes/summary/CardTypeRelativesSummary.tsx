@@ -1,6 +1,6 @@
 /*
  * The coLAB project
- * Copyright (C) 2021 AlbaSim, MEI, HEIG-VD, HES-SO
+ * Copyright (C) 2021-2022 AlbaSim, MEI, HEIG-VD, HES-SO
  *
  * Licensed under the MIT License
  */
@@ -46,7 +46,7 @@ export default function CardTypeRelativesSummary({
       {displayChoices.showResources && (
         <Flex className={itemStyle}>
           <ResourcesListSummary
-            context={{
+            resourcesOwnership={{
               kind: 'CardType',
               cardTypeId: cardType.ownId,
             }}

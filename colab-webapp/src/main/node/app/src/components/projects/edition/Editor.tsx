@@ -11,9 +11,14 @@ import {
   faChevronRight,
   faCog,
   faGrip,
+  faHouse,
   faNetworkWired,
+  faPen,
   faProjectDiagram,
-  faTimes,
+  faStar,
+  faTableCells,
+  faTableCellsLarge,
+  faUserGroup,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Card, CardContent, entityIs, Project } from 'colab-rest-client';
@@ -24,6 +29,7 @@ import useTranslations from '../../../i18n/I18nContext';
 import {
   Ancestor,
   useAncestors,
+  useAndLoadSubCards,
   useCard,
   useCardContent,
   useProjectRootCard,
@@ -32,62 +38,50 @@ import {
 import { useProjectBeingEdited } from '../../../selectors/projectSelector';
 import { useAppDispatch, useAppSelector } from '../../../store/hooks';
 import Admin from '../../admin/Admin';
+import CardCreator from '../../cards/CardCreator';
 import CardEditor from '../../cards/CardEditor';
 import CardThumbWithSelector from '../../cards/CardThumbWithSelector';
 import ContentSubs from '../../cards/ContentSubs';
 import Checkbox from '../../common/element/Checkbox';
 import IconButton from '../../common/element/IconButton';
-import IllustrationDisplay, {
-  IllustrationIconDisplay,
-} from '../../common/element/IllustrationDisplay';
+import { IllustrationIconDisplay } from '../../common/element/IllustrationDisplay';
 import InlineLoading from '../../common/element/InlineLoading';
+import { DiscreetInput } from '../../common/element/Input';
 import { mainLinkActiveClass, mainMenuLink, MainMenuLink } from '../../common/element/Link';
-import Tips, { FeaturePreview, TipsCtx } from '../../common/element/Tips';
-import Toggler from '../../common/element/Toggler';
+import Tips, { TipsCtx } from '../../common/element/Tips';
 import Clickable from '../../common/layout/Clickable';
 import Flex from '../../common/layout/Flex';
 import Monkeys from '../../debugger/monkey/Monkeys';
 import { UserDropDown } from '../../MainNav';
 import Settings from '../../settings/Settings';
-import Picto from '../../styling/Picto';
 import {
-  fullHeightStyle,
   fullPageStyle,
+  greyIconButtonChipStyle,
   invertedThemeMode,
+  lightIconButtonStyle,
   linkStyle,
+  modelBGColor,
   space_L,
   space_M,
   space_S,
+  successColor,
 } from '../../styling/style';
 import DocumentationTab from '../DocumentationTab';
 import Presence from '../presence/Presence';
 import { PresenceContext, usePresenceContext } from '../presence/PresenceContext';
 import { defaultProjectIllustration } from '../ProjectCommon';
 import { ProjectSettings } from '../ProjectSettings';
-import Team from '../Team';
+import Team from '../team/Team';
 import ActivityFlowChart from './ActivityFlowChart';
 import Hierarchy from './Hierarchy';
 
 export const depthMax = 2;
-const descriptionStyle = {
-  backgroundColor: 'var(--fgColor)',
-  color: 'var(--bgColor)',
-  gap: space_L,
-  transition: 'all 1s ease',
-  overflow: 'visible',
-  fontSize: '0.9em',
-  flexGrow: 0,
-};
-const openDetails = css({
-  ...descriptionStyle,
-  maxHeight: '1000px',
-  padding: space_L,
-});
-const closeDetails = css({
-  ...descriptionStyle,
-  maxHeight: '0px',
-  padding: '0 ' + space_L,
-  overflow: 'hidden',
+const modelPictoCornerStyle = css({
+  position: 'absolute',
+  top: 0,
+  left: 0,
+  padding: '5px 7px 7px 5px',
+  borderRadius: '0 0 50% 0',
 });
 
 const breadCrumbsStyle = css({
@@ -101,10 +95,9 @@ function parentPathFn() {
   return '../';
 }
 
-const Ancestor = ({ card, content, last }: Ancestor): JSX.Element => {
+const Ancestor = ({ card, content, last, className }: Ancestor): JSX.Element => {
   const i18n = useTranslations();
   const navigate = useNavigate();
-  //const location = useLocation();
   const dispatch = useAppDispatch();
 
   React.useEffect(() => {
@@ -124,11 +117,15 @@ const Ancestor = ({ card, content, last }: Ancestor): JSX.Element => {
           onClick={() => {
             navigate('..');
           }}
-          clickableClassName={cx(linkStyle, breadCrumbsStyle)}
+          clickableClassName={cx(linkStyle, breadCrumbsStyle, className)}
         >
           {i18n.common.project}
         </Clickable>
-        <FontAwesomeIcon icon={faChevronRight} size="xs" className={breadCrumbsStyle} />
+        <FontAwesomeIcon
+          icon={faChevronRight}
+          size="xs"
+          className={cx(breadCrumbsStyle, className)}
+        />
       </>
     );
   } else if (entityIs(card, 'Card') && entityIs(content, 'CardContent')) {
@@ -142,11 +139,17 @@ const Ancestor = ({ card, content, last }: Ancestor): JSX.Element => {
           onClick={() => {
             navigate(`../${t}/${content.cardId}/v/${content.id}`);
           }}
-          clickableClassName={cx(linkStyle, breadCrumbsStyle)}
+          clickableClassName={cx(linkStyle, breadCrumbsStyle, className)}
         >
           {card.title ? card.title : i18n.modules.card.untitled}
         </Clickable>
-        {!last && <FontAwesomeIcon icon={faChevronRight} size="xs" className={breadCrumbsStyle} />}
+        {!last && (
+          <FontAwesomeIcon
+            icon={faChevronRight}
+            size="xs"
+            className={cx(breadCrumbsStyle, className)}
+          />
+        )}
       </>
     );
   } else {
@@ -214,6 +217,7 @@ const CardWrapper = ({
   const cardContentId = +vId!;
 
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
 
   const card = useCard(cardId);
   const content = useCardContent(cardContentId);
@@ -223,6 +227,7 @@ const CardWrapper = ({
   const { project } = useProjectBeingEdited();
 
   const ancestors = useAncestors(parentId);
+  const location = useLocation();
 
   const { touch } = React.useContext(PresenceContext);
 
@@ -251,19 +256,37 @@ const CardWrapper = ({
   } else {
     return (
       <>
-        <Flex className={css({ paddingBottom: '10px', marginTop: '-10px' })}>
-          {/* <IconButton
-            icon={faArrowLeft}
-            title={backButtonTitle}
-            iconColor="var(--darkGray)"
-            onClick={() => navigate(backButtonPath(card, content))}
-            className={css({ marginRight: space_M })}
-          /> */}
-          {ancestors.map((ancestor, x) => (
-            <Ancestor key={x} card={ancestor.card} content={ancestor.content} />
-          ))}
-          <Ancestor card={card} content={content} last />
-          {/* TODO bouton navigation carte*/}
+        <Flex className={css({ paddingBottom: '7px', marginTop: '-10px' })} justify="space-between">
+          <Flex align="center">
+            {ancestors.map((ancestor, x) => (
+              <Ancestor
+                key={x}
+                card={ancestor.card}
+                content={ancestor.content}
+                className={cx({
+                  [css({ color: 'var(--primaryColor)' })]: project.type === 'MODEL',
+                })}
+              />
+            ))}
+            <Ancestor
+              card={card}
+              content={content}
+              last
+              className={cx({ [css({ color: 'var(--primaryColor)' })]: project.type === 'MODEL' })}
+            />
+          </Flex>
+          <IconButton
+            title="toggle view edit"
+            icon={location.pathname.includes('card') ? faPen : faTableCellsLarge}
+            onClick={() => {
+              navigate(
+                `../${location.pathname.includes('card') ? 'edit' : 'card'}/${content.cardId}/v/${
+                  content.id
+                }`,
+              );
+            }}
+            className={lightIconButtonStyle}
+          />
         </Flex>
         <Flex
           direction="column"
@@ -280,19 +303,10 @@ const CardWrapper = ({
 
 interface EditorNavProps {
   project: Project;
-  setShowProjectDetails: (value: React.SetStateAction<boolean>) => void;
 }
 
-const pictoLinkStyle = cx(
-  mainMenuLink,
-  css({
-    padding: '8px 15px',
-  }),
-);
-
-function EditorNav({ project, setShowProjectDetails }: EditorNavProps): JSX.Element {
+function EditorNav({ project }: EditorNavProps): JSX.Element {
   const i18n = useTranslations();
-  const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const location = useLocation();
 
@@ -308,33 +322,31 @@ function EditorNav({ project, setShowProjectDetails }: EditorNavProps): JSX.Elem
             gridTemplateColumns: '1fr 3fr 1fr',
             flexGrow: 0,
             padding: `0 ${space_M} 0 0`,
-            //backgroundColor: 'var(--hoverBgColor)',
           }),
         )}
       >
         <Flex align="center">
-          <MainMenuLink className={pictoLinkStyle} to="../..">
+          <MainMenuLink to={`/`} className={mainMenuLink}>
+            {/* TODO : close current project - check if it really works (local + send to server) */}
             <span
               title={i18n.common.action.backToProjects}
               onClickCapture={() => {
                 dispatch(API.closeCurrentProject());
               }}
             >
-              <Picto
-                className={css({
-                  height: '30px',
-                  width: 'auto',
-                  padding: '0',
-                })}
+              <FontAwesomeIcon
+                icon={faHouse}
+                size="lg"
+                onClick={() => {
+                  dispatch(API.closeCurrentProject());
+                }}
               />
             </span>
           </MainMenuLink>
           <Flex
             className={css({
               borderLeft: '1px solid var(--lightGray)',
-              borderRight: '1px solid var(--lightGray)',
               padding: '0 ' + space_S,
-              marginRight: space_S,
             })}
             wrap="nowrap"
           >
@@ -365,12 +377,49 @@ function EditorNav({ project, setShowProjectDetails }: EditorNavProps): JSX.Elem
               />
             </MainMenuLink>
           </Flex>
-          <MainMenuLink to="./docs">
-            <FontAwesomeIcon
-              icon={faBookOpen}
-              title={i18n.modules.project.settings.resources.label}
-            />
-          </MainMenuLink>
+          <Flex
+            className={css({
+              borderLeft: '1px solid var(--lightGray)',
+              padding: '0 ' + space_S,
+            })}
+            wrap="nowrap"
+          >
+            <MainMenuLink to="./docs">
+              <FontAwesomeIcon
+                icon={faBookOpen}
+                title={i18n.modules.project.settings.resources.label}
+              />
+            </MainMenuLink>
+          </Flex>
+          <Flex
+            className={css({
+              borderLeft: '1px solid var(--lightGray)',
+              padding: '0 ' + space_S,
+            })}
+            wrap="nowrap"
+          >
+            <MainMenuLink
+              to="./team"
+              className={active =>
+                active.isActive || location.pathname.match(/^\/editor\/\d+\/team/)
+                  ? mainLinkActiveClass
+                  : mainMenuLink
+              }
+            >
+              <FontAwesomeIcon icon={faUserGroup} title={i18n.team.teamManagement} />
+            </MainMenuLink>
+          </Flex>
+          <Flex
+            className={css({
+              borderLeft: '1px solid var(--lightGray)',
+              padding: '0 ' + space_S,
+            })}
+            wrap="nowrap"
+          >
+            <MainMenuLink to="./project-settings">
+              <FontAwesomeIcon title={i18n.modules.project.labels.projectSettings} icon={faCog} />
+            </MainMenuLink>
+          </Flex>
         </Flex>
         <div
           className={css({
@@ -380,11 +429,7 @@ function EditorNav({ project, setShowProjectDetails }: EditorNavProps): JSX.Elem
             alignItems: 'center',
           })}
         >
-          <Flex
-            onClick={() => setShowProjectDetails(showProjectDetails => !showProjectDetails)}
-            title={i18n.common.action.showProjectDetails}
-            className={cx(mainMenuLink, css({ textTransform: 'initial', margin: `0 ${space_S}` }))}
-          >
+          <Flex className={cx(css({ textTransform: 'initial', margin: `0 ${space_S}` }))}>
             <Flex align="center">
               <Flex
                 className={css({
@@ -400,21 +445,18 @@ function EditorNav({ project, setShowProjectDetails }: EditorNavProps): JSX.Elem
                   iconColor="#fff"
                 />
               </Flex>
-              <div className={css({ padding: '0 ' + space_S })}>
-                {project.name || i18n.modules.project.actions.newProject}
-              </div>
+              <DiscreetInput
+                value={project.name || i18n.modules.project.actions.newProject}
+                placeholder={i18n.modules.project.actions.newProject}
+                // TO DO ? readOnly={readOnly}
+                onChange={newValue => dispatch(API.updateProject({ ...project, name: newValue }))}
+              />
             </Flex>
           </Flex>
         </div>
-        <Flex align="center">
+        <Flex align="center" justify="flex-end">
           <Presence projectId={project.id!} />
           <Monkeys />
-          <IconButton
-            onClick={() => navigate('./project-settings')}
-            title={i18n.common.settings}
-            icon={faCog}
-            className={css({ textAlign: 'right', alignSelf: 'center', marginLeft: 'auto' })}
-          />
           <Tips tipsType="FEATURE_PREVIEW">
             <Flex>
               <Checkbox
@@ -435,7 +477,6 @@ function EditorNav({ project, setShowProjectDetails }: EditorNavProps): JSX.Elem
 function RootView({ rootContent }: { rootContent: CardContent | null | undefined }) {
   const { touch } = React.useContext(PresenceContext);
   const [organize, setOrganize] = React.useState(false);
-  const i18n = useTranslations();
 
   React.useEffect(() => {
     touch({});
@@ -447,23 +488,21 @@ function RootView({ rootContent }: { rootContent: CardContent | null | undefined
     >
       {rootContent != null ? (
         <>
-          <FeaturePreview>
-            <Toggler
-              className={css({ alignSelf: 'flex-end' })}
-              label={i18n.modules.card.positioning.toggleText}
-              value={organize}
-              onChange={setOrganize}
-            />
-          </FeaturePreview>
+          <CardCreatorAndOrganize
+            rootContent={rootContent}
+            organize={{ organize: organize, setOrganize: setOrganize }}
+          />
 
           <ContentSubs
+            minCardWidth={150}
             showEmptiness={true}
             depth={depthMax}
             cardContent={rootContent}
             organize={organize}
-            showPreview
-            className={organize ? fullHeightStyle : undefined}
-            subcardsContainerStyle={fullHeightStyle}
+            //className={organize ? undefined : css({ marginTop: space_L })}
+            //showPreview
+            //className={organize ? fullHeightStyle : undefined}
+            //subcardsContainerStyle={fullHeightStyle}
           />
         </>
       ) : (
@@ -480,7 +519,6 @@ export default function Editor(): JSX.Element {
   const { project, status } = useProjectBeingEdited();
 
   const root = useProjectRootCard(project);
-  const [showProjectDetails, setShowProjectDetails] = React.useState(false);
 
   const presenceContext = usePresenceContext();
 
@@ -535,43 +573,13 @@ export default function Editor(): JSX.Element {
   } else {
     return (
       <PresenceContext.Provider value={presenceContext}>
-        <Flex direction="column" align="stretch" grow={1} className={fullPageStyle}>
-          <EditorNav project={project} setShowProjectDetails={setShowProjectDetails} />
-          <Flex className={showProjectDetails ? openDetails : closeDetails}>
-            <Flex justify="space-between" grow={1}>
-              <Flex gap={space_M}>
-                <IllustrationDisplay
-                  illustration={
-                    project.illustration ? project.illustration : defaultProjectIllustration
-                  }
-                  className={css({ width: 'auto', padding: space_L, borderRadius: '50%' })}
-                />
-                <div>
-                  <div>
-                    <h3>{project.name}</h3>
-                    <p>{project.description}</p>
-                  </div>
-                  <div>
-                    <p>
-                      {i18n.common.createdBy}
-                      {' : '}
-                      {project.trackingData?.createdBy}
-                    </p>
-                    <p>
-                      {i18n.common.createdOn}
-                      {' : '}
-                      {i18n.common.datetime(project.trackingData?.creationDate)}
-                    </p>
-                  </div>
-                </div>
-              </Flex>
-              <IconButton
-                icon={faTimes}
-                title={i18n.common.close}
-                onClick={() => setShowProjectDetails(false)}
-              />
-            </Flex>
-          </Flex>
+        <Flex
+          direction="column"
+          align="stretch"
+          grow={1}
+          className={cx(fullPageStyle, { [modelBGColor]: project.type === 'MODEL' })}
+        >
+          <EditorNav project={project} />
           <Flex
             direction="column"
             grow={1}
@@ -579,13 +587,28 @@ export default function Editor(): JSX.Element {
             className={css({
               padding: space_L,
               overflow: 'auto',
+              position: 'relative',
             })}
           >
+            {project.type === 'MODEL' && (
+              <Flex
+                align="center"
+                justify="center"
+                className={cx(modelPictoCornerStyle, invertedThemeMode)}
+                title={i18n.modules.project.info.isAModel}
+              >
+                {/*             {isAdminModel ? (
+              <FontAwesomeIcon icon={faGlobe} color="white" size="sm" />
+            ) : ( */}
+                <FontAwesomeIcon icon={faStar} size="xs" />
+              </Flex>
+            )}
+
             <Routes>
               <Route path="settings/*" element={<Settings />} />
               <Route path="project-settings/*" element={<ProjectSettings project={project} />} />
               <Route path="admin/*" element={<Admin />} />
-              <Route path="team" element={<Team project={project} />} />
+              <Route path="team/*" element={<Team project={project} />} />
               <Route path="hierarchy" element={<Hierarchy rootId={root.id} />} />
               <Route path="flow" element={<ActivityFlowChart />} />
               <Route path="docs/*" element={<DocumentationTab project={project} />} />
@@ -595,14 +618,19 @@ export default function Editor(): JSX.Element {
                 path="card/:id/v/:vId/*"
                 element={
                   <CardWrapper
-                    grow={0}
-                    align="center"
+                    grow={1}
+                    //align="center"
                     backButtonPath={parentPathFn}
                     backButtonTitle={i18n.common.action.backProjectRoot}
                     touchMode="zoom"
                   >
                     {card => (
-                      <CardThumbWithSelector depth={2} card={card} mayOrganize showPreview />
+                      <CardThumbWithSelector
+                        depth={2}
+                        card={card}
+                        mayOrganize
+                        //showPreview
+                      />
                     )}
                   </CardWrapper>
                 }
@@ -630,4 +658,46 @@ export default function Editor(): JSX.Element {
       </PresenceContext.Provider>
     );
   }
+}
+interface CardCreatorAndOrganizeProps {
+  rootContent: CardContent;
+  organize: {
+    organize: boolean;
+    setOrganize: React.Dispatch<React.SetStateAction<boolean>>;
+  };
+}
+function CardCreatorAndOrganize({ rootContent, organize }: CardCreatorAndOrganizeProps) {
+  const i18n = useTranslations();
+  const subCards = useAndLoadSubCards(rootContent.id);
+  return (
+    <>
+      {subCards && subCards.length > 0 && (
+        <Flex
+          gap={space_S}
+          wrap="nowrap"
+          justify="flex-end"
+          align="center"
+          className={css({ marginTop: '-10px', paddingRight: space_S })}
+        >
+          <IconButton
+            className={cx(
+              greyIconButtonChipStyle,
+              css({ alignSelf: 'flex-end' }),
+              organize.organize &&
+                css({
+                  backgroundColor: successColor,
+                  color: 'var(--bgColor)',
+                  border: successColor,
+                }),
+            )}
+            title={i18n.modules.card.positioning.toggleText}
+            icon={faTableCells}
+            //value={organize.organize}
+            onClick={() => organize.setOrganize(e => !e)}
+          />
+          <CardCreator parentCardContent={rootContent} className={greyIconButtonChipStyle} />
+        </Flex>
+      )}
+    </>
+  );
 }

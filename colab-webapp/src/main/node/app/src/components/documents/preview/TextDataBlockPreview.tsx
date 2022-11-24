@@ -1,6 +1,6 @@
 /*
  * The coLAB project
- * Copyright (C) 2021 AlbaSim, MEI, HEIG-VD, HES-SO
+ * Copyright (C) 2021-2022 AlbaSim, MEI, HEIG-VD, HES-SO
  *
  * Licensed under the MIT License
  */
@@ -21,7 +21,8 @@ export default function TextDataBlockPreview({ block }: TextDataBlockPreviewProp
       return (
         <ErrorBoundary fallback={<></>}>
           <MarkdownViewer md={block.textData || ''} showEmptiness={false} />
-        </ErrorBoundary>);
+        </ErrorBoundary>
+      );
     default:
       return <>{block.textData}</>;
   }

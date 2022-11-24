@@ -1,24 +1,22 @@
 /*
  * The coLAB project
- * Copyright (C) 2021 AlbaSim, MEI, HEIG-VD, HES-SO
+ * Copyright (C) 2021-2022 AlbaSim, MEI, HEIG-VD, HES-SO
  *
  * Licensed under the MIT License
  */
 
 import { css, cx } from '@emotion/css';
-import { faWindowRestore } from '@fortawesome/free-regular-svg-icons';
+import { faRectangleList, faWindowRestore } from '@fortawesome/free-regular-svg-icons';
 import {
   faCog,
   faCompressArrowsAlt,
   faEllipsisV,
   faExpandArrowsAlt,
-  faInfoCircle,
   faLock,
   faPaperclip,
-  faPercent,
   //faStickyNote,
-  faTimes,
   faTrash,
+  faTree,
   faUsers,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -29,51 +27,56 @@ import 'react-reflex/styles.css';
 import { Route, Routes, useLocation, useNavigate } from 'react-router-dom';
 import * as API from '../../API/api';
 import useTranslations from '../../i18n/I18nContext';
-import { useCardACLForCurrentUser, useVariantsOrLoad } from '../../selectors/cardSelector';
-import { useAndLoadCardType } from '../../selectors/cardTypeSelector';
+import {
+  useAndLoadSubCards,
+  useCardACLForCurrentUser,
+  useVariantsOrLoad,
+} from '../../selectors/cardSelector';
 //import { useStickyNoteLinksForDest } from '../../selectors/stickyNoteLinkSelector';
 import { useAppDispatch, useLoadingState } from '../../store/hooks';
-import Button from '../common/element/Button';
 import IconButton from '../common/element/IconButton';
 import { DiscreetInput } from '../common/element/Input';
-import Tips from '../common/element/Tips';
-import Collapsible from '../common/layout/Collapsible';
 import { ConfirmDeleteModal } from '../common/layout/ConfirmDeleteModal';
 import DropDownMenu from '../common/layout/DropDownMenu';
+import Ellipsis from '../common/layout/Ellipsis';
 import Flex from '../common/layout/Flex';
 import Modal from '../common/layout/Modal';
-import OpenCloseModal from '../common/layout/OpenCloseModal';
-import { DocTextDisplay } from '../documents/DocTextItem';
 import DocEditorToolbox, {
   defaultDocEditorContext,
-  DocEditorCTX,
+  DocEditorCtx,
 } from '../documents/DocumentEditorToolbox';
 import DocumentList from '../documents/DocumentList';
-import { ResourceCallContext } from '../resources/resourcesCommonType';
-import ResourcesMainView, { TocDisplayToggler } from '../resources/ResourcesMainView';
-import { ResourceListNb } from '../resources/summary/ResourcesListSummary';
+import { ResourceAndRef, ResourceOwnership } from '../resources/resourcesCommonType';
+import {
+  ResourcesCtx,
+  ResourcesMainViewHeader,
+  ResourcesMainViewPanel,
+} from '../resources/ResourcesMainView';
+import { ResourcesListNb } from '../resources/summary/ResourcesListSummary';
 //import StickyNoteWrapper from '../stickynotes/StickyNoteWrapper';
+import { useCurrentUser } from '../../selectors/userSelector';
+import {
+  Item,
+  SideCollapsibleCtx,
+  SideCollapsibleMenu,
+  SideCollapsiblePanelBody,
+} from '../common/layout/SideCollapsiblePanel';
 import {
   cardStyle,
   errorColor,
   lightIconButtonStyle,
   localTitleStyle,
-  space_M,
   space_S,
   textSmall,
   variantTitle,
 } from '../styling/style';
 import CardContentStatus from './CardContentStatus';
+import CardCreator from './CardCreator';
 import CardInvolvement from './CardInvolvement';
 import CardSettings from './CardSettings';
+import { TinyCard } from './CardThumb';
 import CompletionEditor from './CompletionEditor';
 import ContentSubs from './ContentSubs';
-import {
-  Item,
-  SideCollapsibleCTX,
-  SideCollapsibleMenu,
-  SideCollapsiblePanelBody,
-} from './SideCollapsiblePanel';
 import { computeNav, VariantPager } from './VariantSelector';
 
 interface CardEditorProps {
@@ -81,7 +84,7 @@ interface CardEditorProps {
   variant: CardContent;
   showSubcards?: boolean;
 }
-const descriptionStyle = {
+/* const descriptionStyle = {
   backgroundColor: 'var(--lightGray)',
   color: 'var(--darkGray)',
   transition: 'all 1s ease',
@@ -90,8 +93,8 @@ const descriptionStyle = {
   flexGrow: 0,
   display: 'flex',
   justifyContent: 'space-between',
-};
-const openDetails = css({
+}; */
+/* const openDetails = css({
   ...descriptionStyle,
   maxHeight: '600px',
   padding: space_M,
@@ -100,23 +103,7 @@ const closeDetails = css({
   ...descriptionStyle,
   maxHeight: '0px',
   padding: '0 ' + space_M,
-});
-const barHeight = '18px';
-
-const progressBarContainer = css({
-  height: barHeight,
-  lineHeight: barHeight,
-  backgroundColor: '#949494',
-  width: '100%',
-  position: 'relative',
-});
-
-const valueStyle = css({
-  position: 'absolute',
-  color: 'white',
-  width: '100%',
-  textAlign: 'center',
-});
+}); */
 
 const fullScreenStyle = css({
   position: 'absolute',
@@ -127,29 +114,6 @@ const fullScreenStyle = css({
   borderRadius: 0,
 });
 
-const progressBar = (width: number) =>
-  css({
-    width: `${width}%`,
-    height: 'inherit',
-    backgroundColor: '#00DDB3',
-  });
-
-function ProgressBar({
-  variant,
-  className,
-}: {
-  variant: CardContent | undefined;
-  className?: string;
-}) {
-  const percent = variant != null ? variant.completionLevel : 0;
-  return (
-    <div className={cx(progressBarContainer, className)}>
-      <div className={valueStyle}>{percent}%</div>
-      <div className={progressBar(percent)}></div>
-    </div>
-  );
-}
-
 export default function CardEditor({
   card,
   variant,
@@ -159,8 +123,8 @@ export default function CardEditor({
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const location = useLocation();
-  const { cardType } = useAndLoadCardType(card.cardTypeId);
-  const hasCardType = cardType != null;
+
+  const { currentUser } = useCurrentUser();
 
   const variants = useVariantsOrLoad(card) || [];
   const hasVariants = variants.length > 1 && variant != null;
@@ -170,14 +134,19 @@ export default function CardEditor({
   const variantPager = computeNav(contents, variant.id);
   const { canRead, canWrite } = useCardACLForCurrentUser(card.id);
   const readOnly = !canWrite || variant.frozen;
-  const [showTypeDetails, setShowTypeDetails] = React.useState(false);
+  //const [showTypeDetails, setShowTypeDetails] = React.useState(false);
   const [fullScreen, setFullScreen] = React.useState(false);
-  const [selectedDocId, setSelectedDocId] = React.useState<number | undefined | null>(undefined);
+  const [selectedDocId, setSelectedDocId] = React.useState<number | null>(null);
+  const [lastCreatedDocId, setLastCreatedDocId] = React.useState<number | null>(null);
   const [editMode, setEditMode] = React.useState(defaultDocEditorContext.editMode);
   const [showTree, setShowTree] = React.useState(false);
   const [markDownMode, setMarkDownMode] = React.useState(false);
   const [editToolbar, setEditToolbar] = React.useState(defaultDocEditorContext.editToolbar);
   const [openKey, setOpenKey] = React.useState<string | undefined>(undefined);
+
+  const [selectedResource, selectResource] = React.useState<ResourceAndRef | null>(null);
+  const [lastCreatedResourceId, setLastCreatedResourceId] = React.useState<number | null>(null);
+
   const TXToptions = {
     showTree: showTree,
     setShowTree: setShowTree,
@@ -186,37 +155,39 @@ export default function CardEditor({
   };
   const { isLoading, startLoading, stopLoading } = useLoadingState();
 
-  const resourceContext: ResourceCallContext = {
+  const resourceOwnership: ResourceOwnership = {
     kind: 'CardOrCardContent',
     cardId: card.id || undefined,
     cardContentId: variant.id,
     hasSeveralVariants: hasVariants,
   };
+
   const sideBarItems: Record<string, Item> = {
     resources: {
       icon: faPaperclip,
       nextToIconElement: (
         <div className={textSmall}>
           {' '}
-          (<ResourceListNb context={resourceContext} />)
+          (<ResourcesListNb resourcesOwnership={resourceOwnership} />)
         </div>
       ),
       title: i18n.modules.resource.documentation,
-      nextToTitleElement: (
-        <>
-          <Tips>{i18n.modules.resource.help.documentationExplanation}</Tips>
-          <TocDisplayToggler />
-        </>
+      header: (
+        <ResourcesMainViewHeader
+          title={<h3>{i18n.modules.resource.documentation}</h3>}
+          helpTip={i18n.modules.resource.help.documentationExplanation}
+        />
       ),
       children: (
-        <ResourcesMainView
-          contextData={resourceContext}
+        <ResourcesMainViewPanel
           accessLevel={!readOnly ? 'WRITE' : canRead ? 'READ' : 'DENIED'}
+          showLevels
         />
       ),
       className: css({ overflow: 'auto' }),
     },
   };
+
   //const { stickyNotesForDest } = useStickyNoteLinksForDest(card.id);
   const closeRouteCb = React.useCallback(
     (route: string) => {
@@ -304,14 +275,14 @@ export default function CardEditor({
                     />
                   </>
                 )}
-                {hasCardType && (
+                {/* {hasCardType && (
                   <IconButton
                     icon={faInfoCircle}
                     title={i18n.modules.card.showCardType}
                     className={cx(lightIconButtonStyle)}
                     onClick={() => setShowTypeDetails(showTypeDetails => !showTypeDetails)}
                   />
-                )}
+                )} */}
               </Flex>
               <Flex>
                 {/* handle modal routes*/}
@@ -341,31 +312,6 @@ export default function CardEditor({
                         className={css({ height: '580px', width: '600px' })}
                       >
                         {() => <CardInvolvement card={card} />}
-                      </Modal>
-                    }
-                  />
-                  <Route
-                    path="completion"
-                    element={
-                      <Modal
-                        title={i18n.modules.card.editCompletion}
-                        onClose={() => closeRouteCb('completion')}
-                        showCloseButton
-                        modalBodyClassName={css({ alignItems: 'center' })}
-                        onEnter={close => close()}
-                        footer={close => (
-                          <Flex grow={1} justify="center" className={css({ margin: space_S })}>
-                            <Button onClick={close}>{i18n.common.ok}</Button>
-                          </Flex>
-                        )}
-                      >
-                        {() =>
-                          variant && (
-                            <Flex direction="column" justify="center" align="center">
-                              <CompletionEditor variant={variant} />
-                            </Flex>
-                          )
-                        }
                       </Modal>
                     }
                   />
@@ -428,15 +374,22 @@ export default function CardEditor({
                       ),
                       action: () => navigate('involvements'),
                     },
-                    {
-                      value: 'completion',
-                      label: (
-                        <>
-                          <FontAwesomeIcon icon={faPercent} /> {i18n.modules.card.completion}
-                        </>
-                      ),
-                      action: () => navigate('completion'),
-                    },
+                    ...(currentUser?.admin && card.cardTypeId == null
+                      ? [
+                          {
+                            value: 'createType',
+                            label: (
+                              <>
+                                <FontAwesomeIcon icon={faTree} />{' '}
+                                {i18n.modules.cardType.action.createAType}
+                              </>
+                            ),
+                            action: () => {
+                              dispatch(API.createCardCardType(cardId));
+                            },
+                          },
+                        ]
+                      : []),
                     {
                       value: 'createVariant',
                       label: (
@@ -469,151 +422,165 @@ export default function CardEditor({
                 />
               </Flex>
             </Flex>
-            <SideCollapsibleCTX.Provider
+            <SideCollapsibleCtx.Provider
               value={{
                 items: sideBarItems,
                 openKey,
                 setOpenKey,
               }}
             >
-              <Flex grow={1} align="stretch" className={css({ overflow: 'hidden' })}>
-                <ReflexContainer orientation={'vertical'}>
-                  <ReflexElement
-                    className={'left-pane ' + css({ display: 'flex' })}
-                    resizeHeight={false}
-                    minSize={150}
-                  >
-                    <DocEditorCTX.Provider
-                      value={{
-                        selectedDocId,
-                        setSelectedDocId,
-                        editMode,
-                        setEditMode,
-                        editToolbar,
-                        setEditToolbar,
-                        TXToptions,
-                      }}
+              <ResourcesCtx.Provider
+                value={{
+                  resourceOwnership,
+                  selectedResource,
+                  selectResource,
+                  lastCreatedId: lastCreatedResourceId,
+                  setLastCreatedId: setLastCreatedResourceId,
+                }}
+              >
+                <Flex grow={1} align="stretch" className={css({ overflow: 'hidden' })}>
+                  <ReflexContainer orientation={'vertical'}>
+                    <ReflexElement
+                      className={'left-pane ' + css({ display: 'flex' })}
+                      resizeHeight={false}
+                      minSize={150}
                     >
-                      <Flex direction="column" grow={1} align="stretch">
-                        <Flex
-                          direction="column"
-                          grow={1}
-                          className={css({
-                            overflow: 'auto',
-                          })}
-                          align="stretch"
-                        >
-                          <Flex direction="column" align="stretch">
-                            {!readOnly && variant.id && (
-                              <DocEditorToolbox
-                                open={true}
-                                docOwnership={{
-                                  kind: 'DeliverableOfCardContent',
-                                  ownerId: variant.id,
-                                }}
-                              />
-                            )}
-                            {cardType && (
-                              <div className={showTypeDetails ? openDetails : closeDetails}>
-                                <div>
-                                  <p>
-                                    <b>{i18n.modules.cardType.cardType}</b>: {cardType.title || ''}
-                                  </p>
-                                  <p>
-                                    <b>{i18n.modules.cardType.purpose}</b>:{' '}
-                                    <DocTextDisplay id={cardType.purposeId} />
-                                  </p>
-                                </div>
-                                <IconButton
-                                  icon={faTimes}
-                                  title={i18n.common.close}
-                                  onClick={() => setShowTypeDetails(false)}
-                                />
-                              </div>
-                            )}
-                          </Flex>
+                      <DocEditorCtx.Provider
+                        value={{
+                          selectedDocId,
+                          setSelectedDocId,
+                          lastCreatedId: lastCreatedDocId,
+                          setLastCreatedId: setLastCreatedDocId,
+                          editMode,
+                          setEditMode,
+                          editToolbar,
+                          setEditToolbar,
+                          TXToptions,
+                        }}
+                      >
+                        <Flex direction="column" grow={1} align="stretch">
                           <Flex
                             direction="column"
                             grow={1}
+                            className={css({
+                              overflow: 'auto',
+                            })}
                             align="stretch"
-                            className={css({ overflow: 'auto', padding: space_S })}
                           >
-                            {canRead != undefined &&
-                              (canRead ? (
-                                variant.id ? (
-                                  <DocumentList
-                                    docOwnership={{
-                                      kind: 'DeliverableOfCardContent',
-                                      ownerId: variant.id,
-                                    }}
-                                    readOnly={readOnly}
+                            <Flex direction="column" align="stretch">
+                              {!readOnly && variant.id && (
+                                <DocEditorToolbox
+                                  open={true}
+                                  docOwnership={{
+                                    kind: 'DeliverableOfCardContent',
+                                    ownerId: variant.id,
+                                  }}
+                                />
+                              )}
+                              {/* {cardType && (
+                                <div className={showTypeDetails ? openDetails : closeDetails}>
+                                  <div>
+                                    <p>
+                                      <b>{i18n.modules.cardType.cardType}</b>:{' '}
+                                      {cardType.title || ''}
+                                    </p>
+                                    <p>
+                                      <b>{i18n.modules.cardType.purpose}</b>:{' '}
+                                      <DocTextDisplay id={cardType.purposeId} />
+                                    </p>
+                                  </div>
+                                  <IconButton
+                                    icon={faTimes}
+                                    title={i18n.common.close}
+                                    onClick={() => setShowTypeDetails(false)}
                                   />
+                                </div>
+                              )} */}
+                            </Flex>
+                            <Flex
+                              direction="column"
+                              grow={1}
+                              align="stretch"
+                              className={css({ overflow: 'auto', padding: space_S })}
+                            >
+                              {canRead != undefined &&
+                                (canRead ? (
+                                  variant.id ? (
+                                    <DocumentList
+                                      docOwnership={{
+                                        kind: 'DeliverableOfCardContent',
+                                        ownerId: variant.id,
+                                      }}
+                                      readOnly={readOnly}
+                                    />
+                                  ) : (
+                                    <span>{i18n.modules.card.infos.noDeliverable}</span>
+                                  )
                                 ) : (
-                                  <span>{i18n.modules.card.infos.noDeliverable}</span>
-                                )
-                              ) : (
-                                <span>{i18n.httpErrorMessage.ACCESS_DENIED}</span>
-                              ))}
+                                  <span>{i18n.httpErrorMessage.ACCESS_DENIED}</span>
+                                ))}
+                            </Flex>
                           </Flex>
                         </Flex>
-                      </Flex>
-                    </DocEditorCTX.Provider>
-                  </ReflexElement>
-                  {openKey && <ReflexSplitter className={css({ zIndex: 0 })} />}
-                  <ReflexElement
-                    className={'right-pane ' + css({ display: 'flex' })}
-                    resizeHeight={false}
-                    maxSize={openKey ? undefined : 0.1}
-                    minSize={360}
-                    flex={0.2}
-                  >
-                    <SideCollapsiblePanelBody className={css({ overflow: 'hidden' })} />
-                  </ReflexElement>
-                </ReflexContainer>
-                <SideCollapsibleMenu
-                  defaultOpenKey="resources"
-                  className={css({ borderLeft: '1px solid var(--lightGray)' })}
-                />
-              </Flex>
-            </SideCollapsibleCTX.Provider>
-            <Flex align="center">
-              <OpenCloseModal
-                title={i18n.modules.card.editCompletion}
-                className={css({ width: '100%' })}
-                modalBodyClassName={css({ alignItems: 'center' })}
-                collapsedChildren={
-                  <ProgressBar
-                    variant={variant}
-                    className={css({
-                      '&:hover': {
-                        cursor: 'pointer',
-                        opacity: 0.6,
-                      },
-                    })}
+                      </DocEditorCtx.Provider>
+                    </ReflexElement>
+                    {openKey && <ReflexSplitter className={css({ zIndex: 0 })} />}
+                    <ReflexElement
+                      className={'right-pane ' + css({ display: 'flex' })}
+                      resizeHeight={false}
+                      maxSize={openKey ? undefined : 0.1}
+                      minSize={360}
+                      flex={0.2}
+                    >
+                      <SideCollapsiblePanelBody className={css({ overflow: 'hidden' })} />
+                    </ReflexElement>
+                  </ReflexContainer>
+                  <SideCollapsibleMenu
+                    defaultOpenKey="resources"
+                    className={css({ borderLeft: '1px solid var(--lightGray)' })}
                   />
-                }
-                footer={close => (
-                  <Flex grow={1} justify="center" className={css({ margin: space_S })}>
-                    <Button onClick={close}>{i18n.common.ok}</Button>
-                  </Flex>
-                )}
-                onEnter={close => close()}
-              >
-                {() =>
-                  variant && (
-                    <Flex direction="column" justify="center" align="center">
-                      <CompletionEditor variant={variant} />
-                    </Flex>
-                  )
-                }
-              </OpenCloseModal>
+                </Flex>
+              </ResourcesCtx.Provider>
+            </SideCollapsibleCtx.Provider>
+            <Flex direction="column" align="stretch">
+              <CompletionEditor variant={variant} />
             </Flex>
           </Flex>
         </Flex>
         <VariantPager allowCreation={!!canWrite} card={card} current={variant} />
         {showSubcards ? (
-          <Collapsible label={i18n.modules.card.subcards}>
+          <Flex direction="column" align="stretch">
+            <SubcardsDisplay variant={variant} />
+          </Flex>
+        ) : null}
+      </Flex>
+    );
+  }
+}
+function SubcardsDisplay({ variant }: { variant: CardContent }): JSX.Element {
+  const i18n = useTranslations();
+  const subCards = useAndLoadSubCards(variant.id);
+  const [detailed, setDetailed] = React.useState<boolean>(false);
+  return (
+    <>
+      <Flex align="center" className={css({ borderBottom: '1px solid var(--lightGray)' })}>
+        <h3>{i18n.modules.card.subcards}</h3>
+        <CardCreator parentCardContent={variant} className={lightIconButtonStyle} />
+        <IconButton
+          icon={faRectangleList}
+          onClick={() => {
+            setDetailed(e => !e);
+            //navigate(`../card/${card.id}/v/${variant.id}`);
+          }}
+          title="View card structure"
+          className={cx(lightIconButtonStyle, { [css({ color: 'black' })]: detailed })}
+        />
+      </Flex>
+      {subCards != null && subCards.length > 0 && (
+        <>
+          {detailed ? (
             <ContentSubs
+              minCardWidth={60}
               depth={1}
               cardContent={variant}
               className={css({ alignItems: 'flex-start', overflow: 'auto', width: '100%' })}
@@ -622,11 +589,37 @@ export default function CardEditor({
                 overflow: 'auto',
                 width: '100%',
                 flexWrap: 'nowrap',
+                gridTemplateColumns: `repeat(5, minmax(100px, 1fr))`,
+                gridAutoRows: `minmax(65px, 1fr)`,
               })}
             />
-          </Collapsible>
-        ) : null}
-      </Flex>
-    );
-  }
+          ) : (
+            <Ellipsis
+              containerClassName={
+                subCards.length > 0 ? css({ height: '20px', padding: space_S + ' 0' }) : undefined
+              }
+              items={subCards}
+              alignEllipsis="flex-end"
+              itemComp={sub => <TinyCard key={sub.id} card={sub} width="50px" height="30px" />}
+            />
+          )}
+        </>
+      )}
+
+      {/* <Collapsible label={i18n.modules.card.subcards}> */}
+      {/* <ContentSubs
+  minCardWidth={80}
+  depth={0}
+  cardContent={variant}
+  className={css({ alignItems: 'flex-start', overflow: 'auto', width: '100%' })}
+  showPreview
+  subcardsContainerStyle={css({
+    overflow: 'auto',
+    width: '100%',
+    flexWrap: 'nowrap',
+  })}
+/> */}
+      {/* </Collapsible> */}
+    </>
+  );
 }

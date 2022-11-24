@@ -1,14 +1,14 @@
 /*
  * The coLAB project
- * Copyright (C) 2021 AlbaSim, MEI, HEIG-VD, HES-SO
+ * Copyright (C) 2021-2022 AlbaSim, MEI, HEIG-VD, HES-SO
  *
  * Licensed under the MIT License
  */
 package ch.colabproject.colab.api.controller.link;
 
+import ch.colabproject.colab.api.controller.card.CardManager;
 import ch.colabproject.colab.api.model.card.Card;
 import ch.colabproject.colab.api.model.link.ActivityFlowLink;
-import ch.colabproject.colab.api.persistence.jpa.card.CardDao;
 import ch.colabproject.colab.api.persistence.jpa.link.ActivityFlowLinkDao;
 import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
 import java.util.Objects;
@@ -41,10 +41,10 @@ public class ActivityFlowLinkManager {
     private ActivityFlowLinkDao linkDao;
 
     /**
-     * Card persistence handling
+     * Card specific logic handling
      */
     @Inject
-    private CardDao cardDao;
+    private CardManager cardManager;
 
     // *********************************************************************************************
     //
@@ -65,15 +65,9 @@ public class ActivityFlowLinkManager {
         }
 
         // fetch all objects and so ensure that they exist
-        Card previousCard = cardDao.findCard(link.getPreviousCardId());
-        if (previousCard == null) {
-            throw HttpErrorMessage.relatedObjectNotFoundError();
-        }
+        Card previousCard = cardManager.assertAndGetCard(link.getPreviousCardId());
 
-        Card nextCard = cardDao.findCard(link.getNextCardId());
-        if (nextCard == null) {
-            throw HttpErrorMessage.relatedObjectNotFoundError();
-        }
+        Card nextCard = cardManager.assertAndGetCard(link.getNextCardId());
 
         if (!previousCard.getProject().equals(nextCard.getProject())) {
             // prevent cross-project dependencies
@@ -173,15 +167,9 @@ public class ActivityFlowLinkManager {
             throw HttpErrorMessage.dataIntegrityFailure();
         }
 
-        Card oldPreviousCard = cardDao.findCard(link.getPreviousCardId());
-        if (oldPreviousCard == null) {
-            throw HttpErrorMessage.dataIntegrityFailure();
-        }
+        Card oldPreviousCard = cardManager.assertAndGetCard(link.getPreviousCardId());
 
-        Card newPreviousCard = cardDao.findCard(newPreviousCardId);
-        if (newPreviousCard == null) {
-            throw HttpErrorMessage.relatedObjectNotFoundError();
-        }
+        Card newPreviousCard = cardManager.assertAndGetCard(newPreviousCardId);
 
         ActivityFlowLink existingLink = getLink(newPreviousCard, link.getNextCard());
         if (existingLink != null) {
@@ -218,15 +206,9 @@ public class ActivityFlowLinkManager {
             throw HttpErrorMessage.dataIntegrityFailure();
         }
 
-        Card oldNext = cardDao.findCard(link.getNextCardId());
-        if (oldNext == null) {
-            throw HttpErrorMessage.dataIntegrityFailure();
-        }
+        Card oldNext = cardManager.assertAndGetCard(link.getNextCardId());
 
-        Card newNext = cardDao.findCard(newNextCardId);
-        if (newNext == null) {
-            throw HttpErrorMessage.relatedObjectNotFoundError();
-        }
+        Card newNext = cardManager.assertAndGetCard(newNextCardId);
 
         ActivityFlowLink existingLink = getLink(link.getPreviousCard(), newNext);
         if (existingLink != null) {

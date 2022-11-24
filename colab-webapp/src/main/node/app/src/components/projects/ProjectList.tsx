@@ -6,7 +6,17 @@
  */
 
 import { css, cx } from '@emotion/css';
-import { faCog, faCopy, faEdit, faEllipsisV, faTrash } from '@fortawesome/free-solid-svg-icons';
+import {
+  faCog,
+  faCopy,
+  faEdit,
+  faEllipsisV,
+  faGlobe,
+  faGraduationCap,
+  faSeedling,
+  faStar,
+  faTrash,
+} from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { AsyncThunk } from '@reduxjs/toolkit';
 import { entityIs, Project } from 'colab-rest-client';
@@ -15,11 +25,13 @@ import { Route, Routes, useNavigate, useParams } from 'react-router-dom';
 import * as API from '../../API/api';
 import useTranslations from '../../i18n/I18nContext';
 import { useAndLoadProject } from '../../selectors/projectSelector';
+import { useCurrentUser } from '../../selectors/userSelector';
 import { shallowEqual, useAppDispatch, useAppSelector, useLoadingState } from '../../store/hooks';
 import { StateStatus } from '../../store/slice/projectSlice';
 import ItemThumbnailsSelection from '../common/collection/ItemThumbnailsSelection';
 import IllustrationDisplay from '../common/element/IllustrationDisplay';
 import InlineLoading from '../common/element/InlineLoading';
+import { TipsCtx, WIPContainer } from '../common/element/Tips';
 import { ConfirmDeleteModal } from '../common/layout/ConfirmDeleteModal';
 import DropDownMenu from '../common/layout/DropDownMenu';
 import Flex from '../common/layout/Flex';
@@ -27,7 +39,7 @@ import Modal from '../common/layout/Modal';
 import {
   ellipsis,
   errorColor,
-  fixedButtonStyle,
+  invertedButtonStyle,
   lightIconButtonStyle,
   multiLineEllipsis,
   space_M,
@@ -37,8 +49,17 @@ import {
 } from '../styling/style';
 import { defaultProjectIllustration } from './ProjectCommon';
 import ProjectCreator from './ProjectCreator';
-import { ProjectDisplaySettings } from './ProjectDisplaySettings';
+import { ProjectModelExtractor } from './ProjectModelExtractor';
+import { ProjectSettings } from './ProjectSettings';
 
+const modelChipStyle = css({
+  position: 'absolute',
+  top: 0,
+  right: 0,
+  padding: '10px 10px 12px 12px',
+  borderRadius: '0 0 0 50%',
+  backgroundColor: 'var(--primaryColor)',
+});
 function ProjectSettingWrapper(): JSX.Element {
   const { projectId } = useParams<'projectId'>();
   const i18n = useTranslations();
@@ -50,7 +71,7 @@ function ProjectSettingWrapper(): JSX.Element {
       title={i18n.modules.project.labels.projectDisplaySettings}
       showCloseButton
       onClose={() => {
-        navigate('/');
+        navigate('..');
       }}
       className={css({
         '&:hover': { textDecoration: 'none' },
@@ -61,13 +82,19 @@ function ProjectSettingWrapper(): JSX.Element {
     >
       {() => {
         if (project.project != null) {
-          return <ProjectDisplaySettings project={project.project} key={projectId} />;
+          return <ProjectSettings project={project.project} />;
         } else {
           return <InlineLoading />;
         }
       }}
     </Modal>
   );
+}
+
+function ExtractModelWrapper(): JSX.Element {
+  const { projectId } = useParams<'projectId'>();
+
+  return <ProjectModelExtractor projectId={projectId ? +projectId : undefined} />;
 }
 
 function DeleteProjectWrapper(): JSX.Element {
@@ -107,23 +134,34 @@ function DeleteProjectWrapper(): JSX.Element {
 }
 
 const projectListStyle = css({
-  margin: 'auto',
   width: '100%',
   display: 'inline-grid',
   gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))',
-  gridColumnGap: '40px',
-  gridRowGap: '40px',
+  gridColumnGap: '30px',
+  gridRowGap: '30px',
 });
 
 interface ProjectDisplayProps {
   project: Project;
+  className?: string;
+  isModel?: boolean;
+  isAdminModel?: boolean;
 }
 
 // Display one project and allow to edit it
-export const ProjectDisplay = ({ project }: ProjectDisplayProps) => {
+export const ProjectDisplay = ({
+  project,
+  className,
+  isModel,
+  isAdminModel,
+}: ProjectDisplayProps) => {
   const dispatch = useAppDispatch();
   const i18n = useTranslations();
   const navigate = useNavigate();
+
+  const { currentUser } = useCurrentUser();
+
+  const tipsConfig = React.useContext(TipsCtx);
 
   return (
     <Flex
@@ -135,12 +173,28 @@ export const ProjectDisplay = ({ project }: ProjectDisplayProps) => {
       }}
       direction="column"
       align="stretch"
+      className={className}
     >
       <Flex
         className={css({
           height: '80px',
+          position: 'relative',
         })}
       >
+        {isModel && (
+          <Flex
+            align="center"
+            justify="center"
+            className={modelChipStyle}
+            title={i18n.modules.project.info.isAModel}
+          >
+            {isAdminModel ? (
+              <FontAwesomeIcon icon={faGlobe} color="white" size="sm" />
+            ) : (
+              <FontAwesomeIcon icon={faStar} color="white" size="sm" />
+            )}
+          </Flex>
+        )}
         <IllustrationDisplay illustration={project.illustration || defaultProjectIllustration} />
       </Flex>
       <div
@@ -198,6 +252,39 @@ export const ProjectDisplay = ({ project }: ProjectDisplayProps) => {
                 ),
                 action: () => dispatch(API.duplicateProject(project)),
               },
+              ...(tipsConfig.WIP.value && project.type !== 'MODEL'
+                ? [
+                    {
+                      value: 'extractModel',
+                      label: (
+                        <>
+                          <WIPContainer>
+                            <FontAwesomeIcon icon={faGraduationCap} />{' '}
+                            {i18n.modules.project.actions.saveAsModel}
+                          </WIPContainer>
+                        </>
+                      ),
+                      action: () => navigate(`extractModel/${project.id}`),
+                    },
+                  ]
+                : []),
+              ...(currentUser?.admin && project.type === 'MODEL'
+                ? [
+                    {
+                      value: 'convertToProject',
+                      label: (
+                        <>
+                          <FontAwesomeIcon icon={faSeedling} />{' '}
+                          {i18n.modules.project.actions.convertToProject}
+                        </>
+                      ),
+                      action: () => {
+                        dispatch(API.updateProject({ ...project, type: 'PROJECT' }));
+                        navigate('/');
+                      },
+                    },
+                  ]
+                : []),
               {
                 value: 'delete',
                 label: (
@@ -267,13 +354,23 @@ function ProjectList({ projects, status, reload }: ProjectListProps) {
     return <InlineLoading />;
   } else {
     return (
-      <div className={css({ padding: '4vw' })}>
-        {(!projects || projects.length === 0) && (
-          <div className={voidStyle}>
+      <Flex className={css({ padding: '.5rem 2rem 2rem 2rem' })} direction={'column'}>
+        {!projects || projects.length === 0 ? (
+          <Flex justify="center" align="center" direction="column">
             <h2>{i18n.common.welcome}</h2>
             <h3>{i18n.modules.project.info.noProjectYet}</h3>
-          </div>
+            <ProjectCreator
+              collapsedButtonClassName={cx(invertedButtonStyle, css({ marginTop: space_S }))}
+            />
+          </Flex>
+        ) : (
+          <Flex className={css({ alignSelf: 'flex-end', padding: space_S })}>
+            <ProjectCreator
+              collapsedButtonClassName={cx(invertedButtonStyle, css({ fontSize: '0.8em' }))}
+            />
+          </Flex>
         )}
+
         {/* {projects
             .sort((a, b) => (a.id || 0) - (b.id || 0))
             .map(project => {
@@ -304,12 +401,13 @@ function ProjectList({ projects, status, reload }: ProjectListProps) {
           disableOnEnter
         />
         {/* Note : any authenticated user can create a project */}
-        <ProjectCreator collapsedButtonClassName={fixedButtonStyle} />
+
         <Routes>
           <Route path="projectsettings/:projectId" element={<ProjectSettingWrapper />} />
           <Route path="deleteproject/:projectId" element={<DeleteProjectWrapper />} />
+          <Route path="extractModel/:projectId" element={<ExtractModelWrapper />} />
         </Routes>
-      </div>
+      </Flex>
     );
   }
 }
@@ -319,7 +417,7 @@ export const UserProjects = (): JSX.Element => {
     state =>
       state.projects.mine.flatMap(projectId => {
         const p = state.projects.projects[projectId];
-        if (entityIs(p, 'Project')) {
+        if (entityIs(p, 'Project') && p.type !== 'MODEL') {
           return [p];
         } else {
           return [];
@@ -355,3 +453,96 @@ export const AllProjects = (): JSX.Element => {
 
   return <ProjectList projects={projects} status={status} reload={API.getAllProjects} />;
 };
+
+export const UserModels = (): JSX.Element => {
+  const status = useAppSelector(state => state.projects.status);
+
+  React.useEffect(() => {
+    if (window && window.top && window.top.document) {
+      window.top.document.title = 'co.LAB';
+    }
+  }, []);
+
+  return (
+    <ModelsList status={status} reload={API.getUserProjects} />
+  ); /* TODO see if another loader for models than projects */
+};
+
+interface ModelListProps {
+  status: StateStatus;
+  // eslint-disable-next-line @typescript-eslint/ban-types
+  reload: AsyncThunk<Project[], void, {}>;
+}
+
+function ModelsList({ status, reload }: ModelListProps) {
+  const i18n = useTranslations();
+  const dispatch = useAppDispatch();
+  const models = useAppSelector(
+    state =>
+      Object.values(state.projects.projects).flatMap(p => {
+        if (entityIs(p, 'Project') && p.type === 'MODEL') {
+          return [p];
+        } else {
+          return [];
+        }
+      }),
+    shallowEqual,
+  );
+  React.useEffect(() => {
+    if (status === 'NOT_INITIALIZED') {
+      dispatch(reload());
+    }
+  }, [status, reload, dispatch]);
+
+  if (status === 'NOT_INITIALIZED') {
+    return <InlineLoading />;
+  } else if (status === 'LOADING') {
+    return <InlineLoading />;
+  } else {
+    return (
+      <div className={css({ padding: '2rem' })}>
+        {(!models || models.length === 0) && (
+          <div className={voidStyle}>
+            <h2>{i18n.common.welcome}</h2>
+            <h3>{i18n.modules.project.info.noProjectYet}</h3>
+          </div>
+        )}
+        <ItemThumbnailsSelection<Project>
+          items={models.sort((a, b) => (a.id || 0) - (b.id || 0))}
+          className={projectListStyle}
+          thumbnailClassName={css({
+            padding: 0,
+            margin: '4px',
+            display: 'block',
+            backgroundColor: 'var(--bgColor)',
+          })}
+          onItemDblClick={item => {
+            if (item) {
+              window.open(`#/editor/${item.id}`, '_blank');
+            }
+          }}
+          fillThumbnail={item => {
+            if (item === null) return <></>;
+            else
+              return (
+                <ProjectDisplay
+                  project={item}
+                  isModel
+                  className={css({
+                    boxShadow: ` 0px -5px 0px 0px ${item.illustration?.iconBkgdColor} inset`,
+                  })}
+                />
+              );
+          }}
+          disableOnEnter
+        />
+        {/* Note : any authenticated user can create a project */}
+        {/* <ProjectCreator collapsedButtonClassName={fixedButtonStyle} /> */}
+        <Routes>
+          <Route path="projectsettings/:projectId" element={<ProjectSettingWrapper />} />
+          <Route path="deleteproject/:projectId" element={<DeleteProjectWrapper />} />
+        </Routes>
+      </div>
+    );
+  }
+}

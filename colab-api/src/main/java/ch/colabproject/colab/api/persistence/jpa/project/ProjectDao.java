@@ -8,6 +8,7 @@ package ch.colabproject.colab.api.persistence.jpa.project;
 
 import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.model.project.Project;
+import ch.colabproject.colab.api.model.user.User;
 import java.util.List;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
@@ -55,7 +56,7 @@ public class ProjectDao {
     }
 
     /**
-     * Get the ids of the projects the user is member of
+     * Get the ids of the projects the user is a member of
      *
      * @param userId the id of the user
      *
@@ -66,6 +67,55 @@ public class ProjectDao {
             Long.class);
         query.setParameter("userId", userId);
         return query.getResultList();
+    }
+
+    /**
+     * Get all projects the user is an instance maker for
+     *
+     * @param userId the id of the user
+     *
+     * @return list of project
+     */
+    public List<Project> findProjectsUserIsInstanceMakerFor(Long userId) {
+        TypedQuery<Project> query = em.createNamedQuery("Project.findByInstanceMakerUser",
+            Project.class);
+        query.setParameter("userId", userId);
+        return query.getResultList();
+    }
+
+    /**
+     * Get the ids of the models the user is an instance maker for
+     *
+     * @param userId the id of the user
+     *
+     * @return list of ids of models
+     */
+    public List<Long> findIdsOfProjectUserIsInstanceMaker(Long userId) {
+        TypedQuery<Long> query = em.createNamedQuery("Project.findIdsByInstanceMakerUser",
+            Long.class);
+        query.setParameter("userId", userId);
+        return query.getResultList();
+    }
+
+    /**
+     * Do two users work with a common project ?
+     *
+     * @param a a user
+     * @param b another user
+     *
+     * @return true if both user are both member or instance maker of the same project
+     */
+    public boolean doUsersHaveCommonProject(User a, User b) {
+        TypedQuery<Boolean> query = em.createNamedQuery(
+            "Project.doUsersHaveACommonProject",
+            Boolean.class);
+
+        query.setParameter(
+            "aUserId", a.getId());
+        query.setParameter(
+            "bUserId", b.getId());
+
+        return !query.getResultList().isEmpty();
     }
 
     /**

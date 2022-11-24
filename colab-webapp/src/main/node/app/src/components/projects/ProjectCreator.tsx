@@ -29,6 +29,7 @@ export interface ProjectCreationData {
   illustration: Illustration;
   guests: string[];
   projectModel: Project | null;
+  keepWiredToModel: boolean;
 }
 
 const defaultData: ProjectCreationData = {
@@ -37,6 +38,7 @@ const defaultData: ProjectCreationData = {
   illustration: { ...defaultProjectIllustration },
   guests: [],
   projectModel: null,
+  keepWiredToModel: true,
 };
 
 type ProgressionStatus = 'chooseModel' | 'fillBasisData';
@@ -76,7 +78,9 @@ export default function ProjectCreator({
     } else if (status === 'fillBasisData' && data.projectModel) {
       setTitle(i18n.modules.project.actions.createAProjectFrom(data.projectModel.name));
     } else {
-      setTitle(i18n.modules.project.actions.createAProject);
+      setTitle(
+        i18n.modules.project.actions.createAProjectFrom(i18n.modules.project.info.emptyProject),
+      );
     }
   }, [status, i18n, data.projectModel]);
 
@@ -221,6 +225,9 @@ export default function ProjectCreator({
                   guests.splice(index, 1);
                   setData({ ...data, guests: guests });
                 }}
+                setKeepWiredToModel={keepWiredToModel =>
+                  setData({ ...data, keepWiredToModel: keepWiredToModel })
+                }
               />
             )}
             {/* debug mode */}

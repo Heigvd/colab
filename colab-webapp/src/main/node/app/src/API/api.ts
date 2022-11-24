@@ -452,6 +452,15 @@ export const duplicateProject = createAsyncThunk('project/duplicate', async (pro
   }
 });
 
+export const shareModel = createAsyncThunk(
+  'project/share',
+  async (payload: { projectId: number; recipient: string }) => {
+    if (payload.recipient) {
+      await restClient.ProjectRestEndpoint.shareModel(payload.projectId, payload.recipient);
+    }
+  },
+);
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Project team
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -833,6 +842,13 @@ export const deleteCard = createAsyncThunk('card/delete', async (card: Card) => 
   }
 });
 
+export const createCardCardType = createAsyncThunk(
+  'card/createCardType',
+  async (cardId: number) => {
+    await restClient.CardRestEndpoint.createCardType(cardId);
+  },
+);
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Access Control List
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1060,6 +1076,27 @@ export const deleteResource = createAsyncThunk('resource/delete', async (resourc
     return await restClient.ResourceRestEndpoint.deleteResource(resource.id);
   }
 });
+
+export const duplicateAndMoveResource = createAsyncThunk(
+  'resource/duplicateAndMove',
+  async ({
+    resourceOrRef,
+    newParentType,
+    newParentId,
+  }: {
+    resourceOrRef: AbstractResource;
+    newParentType: 'Card' | 'CardContent' | 'CardType';
+    newParentId: number;
+  }) => {
+    if (resourceOrRef.id) {
+      return await restClient.ResourceRestEndpoint.damr1(
+        resourceOrRef.id,
+        newParentType,
+        newParentId,
+      );
+    }
+  },
+);
 
 export function getResourceToEdit(resource: ResourceAndRef): ResourceRef | Resource {
   if (resource.isDirectResource) {

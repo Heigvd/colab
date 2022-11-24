@@ -1,6 +1,6 @@
 /*
  * The coLAB project
- * Copyright (C) 2021 AlbaSim, MEI, HEIG-VD, HES-SO
+ * Copyright (C) 2021-2022 AlbaSim, MEI, HEIG-VD, HES-SO
  *
  * Licensed under the MIT License
  */
@@ -44,9 +44,7 @@ export default function IllustrationDisplay({
       className={cx(
         css({
           backgroundColor: `${
-            currentIllustration.iconBkgdColor
-              ? currentIllustration.iconBkgdColor
-              : 'var(--secondaryColor)'
+            currentIllustration.iconBkgdColor ? currentIllustration.iconBkgdColor : '#50BFD5'
           }`,
           height: `calc(100% - 2*${space_S})`,
           width: `calc(100% - 2*${space_S})`,

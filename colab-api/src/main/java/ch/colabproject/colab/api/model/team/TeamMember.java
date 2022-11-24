@@ -1,6 +1,6 @@
 /*
  * The coLAB project
- * Copyright (C) 2021 AlbaSim, MEI, HEIG-VD, HES-SO
+ * Copyright (C) 2021-2022 AlbaSim, MEI, HEIG-VD, HES-SO
  *
  * Licensed under the MIT License
  */
@@ -52,6 +52,7 @@ import org.apache.commons.collections4.CollectionUtils;
 @Entity
 @Table(
     indexes = {
+        @Index(columnList = "project_id,user_id", unique = true),
         @Index(columnList = "project_id"),
         @Index(columnList = "user_id")
     }
@@ -63,7 +64,7 @@ import org.apache.commons.collections4.CollectionUtils;
         + "JOIN TeamMember b ON a.project.id = b.project.id "
         + "WHERE a.user.id = :aUserId AND b.user.id = :bUserId")
 @NamedQuery(
-    name = "TeamMember.findByUserAndProject",
+    name = "TeamMember.findByProjectAndUser",
     query = "SELECT m FROM TeamMember m "
         + "WHERE m.project.id = :projectId "
         + "AND m.user IS NOT NULL AND m.user.id = :userId"
@@ -432,12 +433,11 @@ public class TeamMember implements ColabEntity, WithWebsocketChannels {
     @Override
     @JsonbTransient
     public Conditions.Condition getCreateCondition() {
-        if (this.user != null && this.project != null) {
+        if (this.project != null) {
             // any "internal" may invite somebody
             return new Conditions.IsCurrentUserInternalToProject(project);
         } else {
-            // anyone can read a pending invitation
-            return Conditions.alwaysTrue;
+            return Conditions.alwaysFalse;
         }
     }
 

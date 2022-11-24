@@ -1,6 +1,6 @@
 /*
  * The coLAB project
- * Copyright (C) 2021 AlbaSim, MEI, HEIG-VD, HES-SO
+ * Copyright (C) 2021-2022 AlbaSim, MEI, HEIG-VD, HES-SO
  *
  * Licensed under the MIT License
  */
@@ -11,6 +11,7 @@ import ch.colabproject.colab.api.model.card.CardContent;
 import ch.colabproject.colab.api.model.common.IconLibrary;
 import ch.colabproject.colab.api.model.common.Illustration;
 import ch.colabproject.colab.api.model.project.Project;
+import ch.colabproject.colab.api.model.project.ProjectType;
 import ch.colabproject.colab.api.model.team.TeamMember;
 import ch.colabproject.colab.api.model.team.TeamRole;
 import ch.colabproject.colab.api.model.token.InvitationToken;
@@ -43,6 +44,7 @@ public class ProjectRestEndpointTest extends AbstractArquillianTest {
 
     @Test
     public void testCreateDeleteProject() {
+        ProjectType type = ProjectType.PROJECT;
         String name = "my first new project";
         String description = "everything is awesome";
         IconLibrary iconLibrary = IconLibrary.FONT_AWESOME_SOLID;
@@ -55,6 +57,7 @@ public class ProjectRestEndpointTest extends AbstractArquillianTest {
         User currentUser = client.userRestEndpoint.getCurrentUser();
 
         ProjectCreationData project = new ProjectCreationData();
+        project.setType(type);
         project.setName(name);
         project.setDescription(description);
         Illustration illustration = new Illustration();
@@ -69,12 +72,14 @@ public class ProjectRestEndpointTest extends AbstractArquillianTest {
         Assertions.assertNotNull(persistedProject);
         Assertions.assertNotNull(persistedProject.getId());
         Assertions.assertEquals(projectId, persistedProject.getId());
+        Assertions.assertEquals(type, persistedProject.getType());
         Assertions.assertEquals(name, persistedProject.getName());
         Assertions.assertEquals(description, persistedProject.getDescription());
         Assertions.assertNotNull(persistedProject.getIllustration());
         Assertions.assertEquals(iconLibrary, persistedProject.getIllustration().getIconLibrary());
         Assertions.assertEquals(iconKey, persistedProject.getIllustration().getIconKey());
-        Assertions.assertEquals(iconBkgdColor, persistedProject.getIllustration().getIconBkgdColor());
+        Assertions.assertEquals(iconBkgdColor,
+            persistedProject.getIllustration().getIconBkgdColor());
 
         Card rootCard = client.projectRestEndpoint.getRootCardOfProject(projectId);
         Assertions.assertNotNull(rootCard);
@@ -147,10 +152,12 @@ public class ProjectRestEndpointTest extends AbstractArquillianTest {
 
         Project project = client.projectRestEndpoint.getProject(projectId);
 
+        Assertions.assertEquals(ProjectType.PROJECT, project.getType());
         Assertions.assertNull(project.getName());
         Assertions.assertNull(project.getDescription());
         Assertions.assertNull(project.getIllustration());
 
+        project.setType(ProjectType.MODEL);
         project.setName("The Hitchhiker's Guide to the Serious-Game");
         project.setDescription("So Long, and Thanks for All the Games");
         Illustration illustration = new Illustration();
@@ -162,12 +169,16 @@ public class ProjectRestEndpointTest extends AbstractArquillianTest {
         client.projectRestEndpoint.updateProject(project);
 
         Project project2 = client.projectRestEndpoint.getProject(projectId);
+        Assertions.assertEquals(project.getType(), project2.getType());
         Assertions.assertEquals(project.getName(), project2.getName());
         Assertions.assertEquals(project.getDescription(), project2.getDescription());
         Assertions.assertNotNull(project.getIllustration());
-        Assertions.assertEquals(project.getIllustration().getIconLibrary(), project2.getIllustration().getIconLibrary());
-        Assertions.assertEquals(project.getIllustration().getIconKey(), project2.getIllustration().getIconKey());
-        Assertions.assertEquals(project.getIllustration().getIconBkgdColor(), project2.getIllustration().getIconBkgdColor());
+        Assertions.assertEquals(project.getIllustration().getIconLibrary(),
+            project2.getIllustration().getIconLibrary());
+        Assertions.assertEquals(project.getIllustration().getIconKey(),
+            project2.getIllustration().getIconKey());
+        Assertions.assertEquals(project.getIllustration().getIconBkgdColor(),
+            project2.getIllustration().getIconBkgdColor());
     }
 
     @Test

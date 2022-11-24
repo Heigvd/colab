@@ -1,6 +1,6 @@
 /*
  * The coLAB project
- * Copyright (C) 2021 AlbaSim, MEI, HEIG-VD, HES-SO
+ * Copyright (C) 2021-2022 AlbaSim, MEI, HEIG-VD, HES-SO
  *
  * Licensed under the MIT License
  */
@@ -12,6 +12,7 @@ export const fr: ColabTranslations = {
   //////////////////////////////////////////////////////////////////////////////////////////////////
   // COMMON
   common: {
+    advanced: 'Avancé',
     cancel: 'Annuler',
     create: 'Créer',
     save: 'Sauvegarder',
@@ -117,10 +118,13 @@ export const fr: ColabTranslations = {
     },
     action: {
       backToHome: "Retour à l'accueil co.LAB",
-      backToProjects: 'Retour aux projets',
+      backToProjects: 'Retour à la liste de projets',
       backProjectRoot: 'Retour à la racine du projet',
       backCardView: 'Retour à la vue carte',
       showProjectDetails: 'Afficher les détails du projet',
+      exportProjectData: 'Exporter les données',
+      exportDataDescription:
+        'Exporter les données du projet permet de sauvegarder de tous vos contenus sur vos propres outils de sauvegardes (ex. disque dur externe).',
     },
     error: {
       accessDenied: "Malheureusement, vous n'êtres pas autorisé à voir cela",
@@ -175,6 +179,7 @@ export const fr: ColabTranslations = {
     account: 'Compte',
     missingFirstname: 'Veuillez entrer votre prénom',
     missingLastname: 'Veuillez entrer votre nom',
+    profile: 'Profil',
     userProfile: 'Profil utilisateur',
     editProfile: 'Éditer le profil',
     viewProfile: 'Voir le profil',
@@ -184,12 +189,15 @@ export const fr: ColabTranslations = {
     editUser: "Éditer l'utilisateur",
     activeSessions: 'Sessions actives',
     current: 'Actuel',
+    settings: "Paramètres de l'utilisateur",
   },
   team: {
     team: 'Équipe',
     roles: 'Rôles',
     rights: 'Droits',
+    raci: 'RACI',
     members: 'Membres',
+    teamManagement: "Gestion de l'équipe",
     generalInvolvement: 'Implication générale',
     resetInvolvement: 'Réinitialiser implication',
     involvementHelper:
@@ -208,12 +216,17 @@ export const fr: ColabTranslations = {
       member: 'Membre',
       guest: 'Invité',
     },
+    rolesHelper:
+      "Créez et assignez un ou plusieurs rôles aux membres de l'équipe.Ex. Designer, professeur, développeur-euse. Cela peut être utile pour affiner l'implication de chacun-e, ou simplement pour informer l'ensemble de l'équipe des compétences engagées dans le projet.",
+    rightsHelper:
+      'Invité: Lecture seule sur tous les contenus. Membre (par défaut): Peut éditer les contenus, et inviter de nouveaux membres. Project leader: Peut éditer les contenus, inviter de nouveaux membres et changer leurs droits et rôles. Propriétaire: A tous les droits sur le projet',
     sureChangeOwnRights: 'Êtes-vous sûr-e-s de vouloir changer vos propres droits?',
     sureDeleteMember: "Êtes-vous sûr-e-s de vouloir supprimer ce membre de l'équipe?",
     changeOwnRights: 'Changer mes propres droits',
     oneOwnerPerProject:
       'Vous ne pouvez pas modifier ces droits. Il doit y avoir au moins un propriétaire du projet.',
     memberAlreadyExist: 'Un membre avec la même adresse e-mail est déjà dans le projet.',
+    mailInvited: "a été invité à l'équipe du projet",
   },
   //////////////////////////////////////////////////////////////////////////////////////////////////
   // ACTIVITY
@@ -302,16 +315,40 @@ export const fr: ColabTranslations = {
         projectDisplaySettings: "Paramètres d'affichage du projet",
         projectSettings: 'Paramètres du projet',
         projects: 'Projets',
+        modelDisplaySettings: "Paramètres d'affichage du modèle",
+        modelSettings: 'Paramètres du modèle',
+        models: 'Modèles',
+        extractNewFromProject: 'Extraire un nouveau modèle à partir du projet',
+        extractRoles: 'Extraire les roles',
+        extractDeliverables: 'Extraire le contenu des cartes',
+        extractDocuments: 'Extraire les documents',
+        keepTheSimpleProject: 'Garder le projet simple',
+        shareTheProject: 'Partager le projet',
+        include: 'Inclure',
+        roles: 'Rôles',
+        cardContents: 'Contenu des cartes',
+        documentation: 'Documentation',
+        connect: 'Connecter',
+        keepConnectionBetweenModelAndProject: 'Garder les nouveaux projets connectés au modèle',
       },
       actions: {
         createProject: 'Créer projet',
         createAProject: 'Créer un projet',
-        deleteProject: 'Supprimer project',
+        deleteProject: 'Supprimer projet',
         chooseAModel: 'Choisissez un modèle',
         createAProjectFrom: (templateTitle?: string | null): string =>
           `Créer un projet à partir de ${'"' + templateTitle + '"'}`,
         editIllustration: "Éditer l'illustration du projet",
         newProject: 'Nouveau projet',
+        saveAsModel: 'Enregistrer comme modèle',
+        saveProjectAsModelPart1: 'Enregistrer le projet',
+        saveProjectAsModelPart2: 'en tant que modèle',
+        extractModel: 'Extraire un modèle',
+        extractAModel: "Extraire un modèle à partir d'un projet",
+        extractAModelFromProject: 'Extraire un modèle à partir du projet ',
+        createModel: 'Créer le modèle',
+        convertToProject: 'Convertir en un simple projet',
+        shareTo: 'Partager avec',
       },
       info: {
         noProjectSelected: 'Aucun projet sélectionné',
@@ -321,6 +358,9 @@ export const fr: ColabTranslations = {
         useBlankProject: 'Utilisez ce projet vide et vous serez libre de créer un monde nouveau.',
         deleteConfirmation:
           "Êtes-vous sûr-e-s de vouloir supprimer tout le projet? Cela va également supprimer toutes les cartes à l'intérieur.",
+        isAModel: 'Ceci est un modèle de projet',
+        mailSentToShare: (recipientAddress: string): string =>
+          `${recipientAddress} va recevoir un email l'invitant à utiliser le modèle`,
       },
       settings: {
         icon: 'Icône',
@@ -329,6 +369,10 @@ export const fr: ColabTranslations = {
         },
         resources: {
           label: 'Documentation du projet',
+        },
+        sharing: {
+          label: 'Partage du modèle',
+          parameters: 'Paramètres de partage',
         },
         missingIcon:
           "Oh une nouvelle bibliothèque d'icônes, cher développeur s'il vous plaît faites ce qui est nécessaire pour afficher l'icône.",
@@ -348,6 +392,7 @@ export const fr: ColabTranslations = {
       subcards: 'Sous-cartes',
       untitled: 'Nouvelle carte',
       createCard: 'Créer carte',
+      createSubcard: 'Créer sous-carte',
       createACard: 'Créer une carte',
       createVariant: 'Créer une variante',
       createNew: (parentTitle?: string | null): string =>
@@ -393,6 +438,8 @@ export const fr: ColabTranslations = {
           POSTPONED: 'Reporté',
           ARCHIVED: 'Archivé',
           REJECTED: 'Rejeté',
+          PREPARATION: 'En préparation',
+          VALIDATED: 'Validé',
         },
         completionLevelMode: "Mode de niveau d'avancement",
         cardPosition: 'Position de la carte',
@@ -407,7 +454,7 @@ export const fr: ColabTranslations = {
         noDeliverable: 'Aucun livrable disponible',
         completionModeInfo:
           "Sélectionnez le mode d'avancement (manuel | auto | no-op). Manuel: entrez une valeur pour changer l'avancement; Auto: basé sur les enfants; Aucune: n'affiche pas de barre d'avancement",
-        noBlockYet: "Il n'y a aucun bloc pour l'instant. Ajoutez-en un:",
+        noBlockYet: 'Document vide',
       },
       error: {
         withoutId: 'Une carte sans id est invalide...',
@@ -493,6 +540,11 @@ export const fr: ColabTranslations = {
       help: {
         documentationExplanation: 'Les documents utiles pour compléter la carte',
       },
+      actions: {
+        makeOwnCopy: 'Copier dans la carte',
+        shareWithChildren: 'Partager dans les enfants',
+        makePrivate: 'Rattacher à la carte',
+      },
       info: {
         noContent: 'Le document est vide',
         providedByCardType: (cardTypeName: string) => `Fournie par le thème «${cardTypeName}»`,
@@ -531,6 +583,7 @@ export const fr: ColabTranslations = {
       cardType: 'Thème',
       cardTypesLongWay: 'Documentation thématique',
       titlePlaceholder: 'Nouveau thème',
+      noCardType: 'Aucun thème',
       purpose: 'Description',
       globalTypes: 'Thèmes globaux',
       sharedAvailableTypes: 'Thèmes disponibles partagés',
@@ -671,8 +724,10 @@ export const fr: ColabTranslations = {
         return 'Adresse e-mail invalide';
       case 'IDENTIFIER_ALREADY_TAKEN':
         return 'Veuillez choisir un autre identifiant';
-      case 'INVITATION_CONSUMING_BY_TEAMMEMBER':
+      case 'USER_IS_ALREADY_A_TEAM_MEMBER':
         return "L'utilisateur actuel est déjà un membre de l'équipe";
+      case 'CURRENT_USER_CAN_ALREADY_USE_MODEL':
+        return "L'utilisateur actuel peut déjà utiliser le modèle";
     }
   },
 

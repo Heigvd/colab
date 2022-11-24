@@ -1,6 +1,6 @@
 /*
  * The coLAB project
- * Copyright (C) 2021 AlbaSim, MEI, HEIG-VD, HES-SO
+ * Copyright (C) 2021-2022 AlbaSim, MEI, HEIG-VD, HES-SO
  *
  * Licensed under the MIT License
  */
@@ -52,6 +52,7 @@ export default function Checkbox({
     >
       <Flex align="center" justify="flex-start">
         <Flex
+          align="center"
           onClick={readOnly ? undefined : () => onChange(!value)}
           className={readOnly ? disabledStyle : enabledStyle}
         >

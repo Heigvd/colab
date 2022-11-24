@@ -41,7 +41,7 @@ public class TeamDao {
      *
      * @param roleId id of the role
      *
-     * @return the role or null if it does no exist
+     * @return the role or null if it does not exist
      */
     public TeamRole findRole(Long roleId) {
         return em.find(TeamRole.class, roleId);
@@ -52,7 +52,7 @@ public class TeamDao {
      *
      * @param memberId id of the member
      *
-     * @return the member or null if it does no exist
+     * @return the member or null if it does not exist
      */
     public TeamMember findTeamMember(Long memberId) {
         return em.find(TeamMember.class, memberId);
@@ -124,9 +124,9 @@ public class TeamDao {
      *
      * @return the teamMember or null
      */
-    public TeamMember findMemberByUserAndProject(Project project, User user) {
+    public TeamMember findMemberByProjectAndUser(Project project, User user) {
         try {
-            TypedQuery<TeamMember> query = em.createNamedQuery("TeamMember.findByUserAndProject",
+            TypedQuery<TeamMember> query = em.createNamedQuery("TeamMember.findByProjectAndUser",
                 TeamMember.class);
 
             query.setParameter("projectId", project.getId());

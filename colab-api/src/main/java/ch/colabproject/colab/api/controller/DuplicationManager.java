@@ -496,7 +496,16 @@ public class DuplicationManager {
         return newDocumentFile;
     }
 
-    private AbstractResource duplicateResource(AbstractResource original)
+    /**
+     * Duplicate the given resource. No database action is provided.
+     *
+     * @param original the resource to duplicate
+     *
+     * @return the duplicated resource
+     *
+     * @throws ColabMergeException if merging is not possible
+     */
+    public AbstractResource duplicateResource(AbstractResource original)
         throws ColabMergeException {
         if (original instanceof Resource) {
             Resource originalResource = (Resource) original;

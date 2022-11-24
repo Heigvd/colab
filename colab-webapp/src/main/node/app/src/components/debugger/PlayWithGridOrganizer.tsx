@@ -1,16 +1,16 @@
 /*
  * The coLAB project
- * Copyright (C) 2021 AlbaSim, MEI, HEIG-VD, HES-SO
+ * Copyright (C) 2021-2022 AlbaSim, MEI, HEIG-VD, HES-SO
  *
  * Licensed under the MIT License
  */
+import { css } from '@emotion/css';
+import { GridPosition } from 'colab-rest-client';
 import * as React from 'react';
-import {css} from "@emotion/css";
-import GridOrganizer, {Cell, fixGrid} from "../common/GridOrganizer";
-import {getLogger} from '../../logger';
-import {GridPosition} from 'colab-rest-client';
+import { getLogger } from '../../logger';
+import GridOrganizer, { Cell, fixGrid } from '../common/GridOrganizer';
 
-const logger = getLogger("PlayWithGridOrganizer");
+const logger = getLogger('PlayWithGridOrganizer');
 
 type PlayCell = Cell<{ id: number; title: string }>;
 

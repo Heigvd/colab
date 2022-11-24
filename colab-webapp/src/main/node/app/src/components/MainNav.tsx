@@ -16,28 +16,57 @@ import {
   faUserCircle,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { entityIs } from 'colab-rest-client';
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import * as API from '../API/api';
 import useTranslations from '../i18n/I18nContext';
 import LanguageSelector from '../i18n/LanguageSelector';
 import { useCurrentUser } from '../selectors/userSelector';
-import { useAppDispatch, useAppSelector } from '../store/hooks';
+import { shallowEqual, useAppDispatch, useAppSelector } from '../store/hooks';
 import InlineLoading from './common/element/InlineLoading';
-import { MainMenuLink } from './common/element/Link';
-import Clickable from './common/layout/Clickable';
+import { MainMenuLink, mainMenuLink } from './common/element/Link';
 import DropDownMenu from './common/layout/DropDownMenu';
 import Monkeys from './debugger/monkey/Monkeys';
-import Picto from './styling/Picto';
-import { flex, invertedThemeMode, paddingAroundStyle, space_M, space_S } from './styling/style';
+import { flex, invertedThemeMode, space_M, space_S } from './styling/style';
+const dropLabelsStyle = css({
+  //width: '100%',
+  textTransform: 'uppercase',
+  padding: space_M,
+});
 
 export default function MainNav(): JSX.Element {
   const i18n = useTranslations();
   const navigate = useNavigate();
+  const location = useLocation();
+  const userModels = useAppSelector(
+    state =>
+      state.projects.mine.flatMap(projectId => {
+        const p = state.projects.projects[projectId];
+        if (entityIs(p, 'Project') && p.type === 'MODEL') {
+          return [p];
+        } else {
+          return [];
+        }
+      }),
+    shallowEqual,
+  );
+  const entries = [
+    {
+      value: '/',
+      label: <div className={dropLabelsStyle}>{i18n.modules.project.labels.projects}</div>,
+    },
+    {
+      value: '/models',
+      label: <div className={dropLabelsStyle}>{i18n.modules.project.labels.models}</div>,
+    },
+  ];
+  const value = location.pathname;
   return (
     <>
-      <Clickable onClick={() => navigate(`/`)}>
-        <Picto
+      {/* <MainMenuLink to={`/`} className={mainMenuLink}>
+        <FontAwesomeIcon icon={faHouse} size='lg'/>
+      <Picto
           className={cx(
             css({
               height: '30px',
@@ -47,34 +76,20 @@ export default function MainNav(): JSX.Element {
             paddingAroundStyle([1, 3, 4], space_S),
           )}
         />
-      </Clickable>
-      <nav className={flex}>
+      </MainMenuLink> */}
+      {userModels && userModels.length > 0 ? (
+        <nav className={flex}>
+          <DropDownMenu
+            value={value}
+            entries={entries}
+            onSelect={e => navigate(e.value)}
+            menuIcon="BURGER"
+            buttonClassName={cx(mainMenuLink, css({ padding: '0 0 0 ' + space_M }))}
+          />
+        </nav>
+      ) : (
         <MainMenuLink to="/">{i18n.modules.project.labels.projects}</MainMenuLink>
-        {/* {projectBeingEdited != null && (
-      <MainMenuLink to={`/editor/${projectBeingEdited.id}`}>
-        {projectBeingEdited.name || 'New project'}
-        <IconButton
-          onClick={events => {
-            // make sure to go back to projects page before closing project
-            // to avoid infinite loop
-            events.preventDefault();
-            navigate('/');
-            dispatch(API.closeCurrentProject());
-          }}
-          icon={faTimes}
-          title="Close current project"
-          className={css({
-            pointerEvents: 'auto',
-            marginLeft: space_M,
-            padding: 0,
-            ':hover': {
-              backgroundColor: 'transparent',
-            },
-          })}
-        />
-      </MainMenuLink>
-    )} */}
-      </nav>
+      )}
       <div
         className={css({
           flexGrow: 1,
@@ -140,7 +155,7 @@ export function UserDropDown({ onlyLogout }: { onlyLogout?: boolean }): JSX.Elem
                     value: 'settings',
                     label: (
                       <>
-                        <FontAwesomeIcon icon={faCog} /> {i18n.common.settings}
+                        <FontAwesomeIcon icon={faCog} /> {i18n.user.settings}
                       </>
                     ),
                     action: () => navigate('./settings'),

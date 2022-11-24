@@ -10,15 +10,12 @@ import { Document, entityIs } from 'colab-rest-client';
 import * as React from 'react';
 import { updateDocument } from '../../API/api';
 import useTranslations from '../../i18n/I18nContext';
-import { useLastInsertedDocId } from '../../selectors/documentSelector';
-import * as DocumentActions from '../../store/documentSlice';
 import { useAppDispatch } from '../../store/hooks';
 import { BlockEditorWrapper } from '../blocks/BlockEditorWrapper';
 import OpenGraphLink from '../common/element/OpenGraphLink';
 import Flex from '../common/layout/Flex';
 import { editableBlockStyle } from '../styling/style';
-import { DocumentOwnership } from './documentCommonType';
-import { DocEditorCTX } from './DocumentEditorToolbox';
+import { DocEditorCtx } from './DocumentEditorToolbox';
 import DocumentFileEditor from './DocumentFileEditor';
 
 const selectedStyle = css({
@@ -38,18 +35,16 @@ const noBorderStyle = css({
 export interface DocumentEditorProps {
   doc: Document;
   readOnly?: boolean;
-  docOwnership: DocumentOwnership;
 }
 
 export default function DocumentEditor({
   doc,
   readOnly = false,
-  docOwnership,
 }: DocumentEditorProps): JSX.Element {
   const dispatch = useAppDispatch();
   const i18n = useTranslations();
 
-  const lastInsertedDocId = useLastInsertedDocId(docOwnership);
+  const { lastCreatedId, setLastCreatedId } = React.useContext(DocEditorCtx);
 
   const isTextDataBlock = entityIs(doc, 'TextDataBlock');
   const isDocumentFile = entityIs(doc, 'DocumentFile');
@@ -58,7 +53,7 @@ export default function DocumentEditor({
   //const dropRef = React.useRef<HTMLDivElement>(null);
 
   const { setSelectedDocId, selectedDocId, editMode, setEditMode, TXToptions } =
-    React.useContext(DocEditorCTX);
+    React.useContext(DocEditorCtx);
 
   const selected = doc.id === selectedDocId;
   const editing = editMode && selected;
@@ -67,16 +62,18 @@ export default function DocumentEditor({
     if (doc.id != selectedDocId) {
       setEditMode(false);
     }
-    setSelectedDocId(doc.id);
+    if (doc.id != null) {
+      setSelectedDocId(doc.id);
+    }
   }, [doc.id, selectedDocId, setEditMode, setSelectedDocId]);
 
   React.useEffect(() => {
-    if (lastInsertedDocId === doc.id) {
-      setSelectedDocId(lastInsertedDocId);
+    if (lastCreatedId === doc.id) {
+      setSelectedDocId(lastCreatedId);
       setEditMode(true);
-      dispatch(DocumentActions.resetLastInsertedDocId({ docOwnership }));
+      setLastCreatedId(null);
     }
-  }, [dispatch, doc.id, docOwnership, lastInsertedDocId, setEditMode, setSelectedDocId]);
+  }, [lastCreatedId, doc.id, setSelectedDocId, setEditMode, setLastCreatedId]);
 
   return (
     <Flex>

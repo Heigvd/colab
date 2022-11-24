@@ -1,6 +1,6 @@
 /*
  * The coLAB project
- * Copyright (C) 2021 AlbaSim, MEI, HEIG-VD, HES-SO
+ * Copyright (C) 2021-2022 AlbaSim, MEI, HEIG-VD, HES-SO
  *
  * Licensed under the MIT License
  */
@@ -21,10 +21,13 @@ import ch.colabproject.colab.api.model.card.Card;
 import ch.colabproject.colab.api.model.card.CardContent;
 import ch.colabproject.colab.api.model.common.Illustration;
 import ch.colabproject.colab.api.model.link.ActivityFlowLink;
+import ch.colabproject.colab.api.model.project.InstanceMaker;
 import ch.colabproject.colab.api.model.project.Project;
+import ch.colabproject.colab.api.model.project.ProjectType;
 import ch.colabproject.colab.api.model.team.TeamMember;
 import ch.colabproject.colab.api.model.team.acl.HierarchicalPosition;
 import ch.colabproject.colab.api.model.user.User;
+import ch.colabproject.colab.api.persistence.jpa.project.InstanceMakerDao;
 import ch.colabproject.colab.api.persistence.jpa.project.ProjectDao;
 import ch.colabproject.colab.api.rest.project.bean.ProjectStructure;
 import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
@@ -73,6 +76,12 @@ public class ProjectManager {
      */
     @Inject
     private ProjectDao projectDao;
+
+    /**
+     * Instance maker persistence handler
+     */
+    @Inject
+    private InstanceMakerDao instanceMakerDao;
 
     /**
      * Team specific logic management
@@ -143,6 +152,8 @@ public class ProjectManager {
         User user = securityManager.assertAndGetCurrentUser();
 
         List<Project> projects = projectDao.findProjectsUserIsMemberOf(user.getId());
+
+        projects.addAll(projectDao.findProjectsUserIsInstanceMakerFor(user.getId()));
 
         logger.debug("found projects where the user {} is a team member : {}", user, projects);
 
@@ -217,6 +228,7 @@ public class ProjectManager {
                 Project project = duplicateProject(modelId,
                     DuplicationParam.buildForCreationFromModel());
 
+                project.setType(ProjectType.PROJECT);
                 project.setName(name);
                 project.setDescription(description);
                 project.setIllustration(illustration);
@@ -242,6 +254,7 @@ public class ProjectManager {
 //            throw HttpErrorMessage.dataIntegrityFailure();
 //        }
 
+//      tokenManager.deleteTokensByProject(project);
         project.getTeamMembers().stream()
             .forEach(member -> tokenManager.deleteInvitationsByTeamMember(member));
 
@@ -288,6 +301,78 @@ public class ProjectManager {
         duplicator.clear();
 
         return newProject;
+    }
+
+    // *********************************************************************************************
+    // sharing
+    // *********************************************************************************************
+
+    /**
+     * Send a token by email to grant access to use the model.
+     *
+     * @param modelId the id of the model
+     * @param email   the address to send the sharing token to
+     *
+     * @return the pending potential instance maker
+     */
+    public InstanceMaker shareModel(Long modelId, String email) {
+        logger.debug("Share the model #{} to {}", modelId, email);
+        Project model = assertAndGetProject(modelId);
+
+        return tokenManager.sendModelSharingToken(model, email);
+    }
+
+    /**
+     * Create an instance maker for the model and the user and then persist it in database
+     *
+     * @param user  the user
+     * @param model the model
+     *
+     * @return the brand new potential instance maker
+     */
+    public InstanceMaker addAndPersistInstanceMaker(Project model, User user) {
+        logger.debug("Add and persist instance maker to user {} for model {}", user, model);
+
+        InstanceMaker instanceMaker = addInstanceMaker(model, user);
+        instanceMakerDao.persistInstanceMaker(instanceMaker);
+
+        return instanceMaker;
+    }
+
+    /**
+     * Create an instance maker for the model and the user
+     *
+     * @param user  the user
+     * @param model the model
+     *
+     * @return the brand new potential instance maker
+     */
+    public InstanceMaker addInstanceMaker(Project model, User user) {
+        logger.debug("Add instance maker to user {} for model {}", user, model);
+
+        if (model != null && user != null
+            && findInstanceMakerByProjectAndUser(model, user) != null) {
+            throw HttpErrorMessage.dataIntegrityFailure();
+        }
+
+        InstanceMaker instanceMaker = new InstanceMaker();
+
+        instanceMaker.setUser(user);
+        instanceMaker.setProject(model);
+
+        return instanceMaker;
+    }
+
+    /**
+     * Find the instance maker linked to the given project and the given user.
+     *
+     * @param project the project
+     * @param user    the user
+     *
+     * @return the matching instance makers
+     */
+    public InstanceMaker findInstanceMakerByProjectAndUser(Project project, User user) {
+        return instanceMakerDao.findInstanceMakerByProjectAndUser(project, user);
     }
 
     // *********************************************************************************************
@@ -399,6 +484,21 @@ public class ProjectManager {
             }).collect(Collectors.toSet());
     }
 
+    /**
+     * Get all instance makers linked to the given project.
+     *
+     * @param projectId the id of the project
+     *
+     * @return all instance makers linked to the project
+     */
+    public List<InstanceMaker> getInstanceMakers(Long projectId) {
+        logger.debug("Get instance makers of project #{}", projectId);
+
+        Project project = assertAndGetProject(projectId);
+
+        return instanceMakerDao.findInstanceMakersByProject(project);
+    }
+
     // *********************************************************************************************
     // dedicated to access control
     // *********************************************************************************************
@@ -411,12 +511,31 @@ public class ProjectManager {
      *
      * @return the ids of the matching projects
      */
-    public List<Long> findIdsOfProjectsOfCurrentUser() {
+    public List<Long> findIdsOfProjectsCurrentUserIsMemberOf() {
         User user = securityManager.assertAndGetCurrentUser();
 
         List<Long> projectsIds = projectDao.findIdsOfProjectUserIsMemberOf(user.getId());
 
         logger.debug("found projects' id where the user {} is a team member : {}", user,
+            projectsIds);
+
+        return projectsIds;
+    }
+
+    /**
+     * Retrieve the ids of the projects the current user is an instance maker for.
+     * <p>
+     * We do not load the java objects. Just work with the ids. Two reasons : 1. the ids are enough,
+     * so it is lighter + 2. prevent from loading object the user is not allowed to read
+     *
+     * @return the ids of the matching projects
+     */
+    public List<Long> findIdsOfProjectsCurrentUserIsInstanceMakerFor() {
+        User user = securityManager.assertAndGetCurrentUser();
+
+        List<Long> projectsIds = projectDao.findIdsOfProjectUserIsInstanceMaker(user.getId());
+
+        logger.debug("found projects' id for which the user {} is an instance maker : {}", user,
             projectsIds);
 
         return projectsIds;
@@ -440,6 +559,18 @@ public class ProjectManager {
             projectsIds);
 
         return projectsIds;
+    }
+
+    /**
+     * Do the two users have common project ?
+     *
+     * @param a one user
+     * @param b another user
+     *
+     * @return true if both users are related to the same project
+     */
+    public boolean doUsersHaveCommonProject(User a, User b) {
+        return projectDao.doUsersHaveCommonProject(a, b);
     }
 
     // *********************************************************************************************

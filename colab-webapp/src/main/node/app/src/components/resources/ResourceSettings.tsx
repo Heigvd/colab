@@ -13,7 +13,6 @@ import useTranslations from '../../i18n/I18nContext';
 import { useAndLoadResourceCategories } from '../../selectors/resourceSelector';
 import { useAppDispatch } from '../../store/hooks';
 import SelectInput from '../common/element/SelectInput';
-import Toggler from '../common/element/Toggler';
 import { ResourceAndRef } from './resourcesCommonType';
 
 interface ResourceSettingsProps {
@@ -58,27 +57,6 @@ export default function ResourceSettings({ resource }: ResourceSettingsProps): J
             options={allCategories}
             onChange={onChangeCategory}
             className={css({ minWidht: '60%', width: '100%' })}
-          />
-          <Toggler
-            label={i18n.common.published}
-            value={updatableResource.published}
-            onChange={() => {
-              if (updatableResource.id) {
-                updatableResource.published
-                  ? dispatch(API.unpublishResource(updatableResource.id))
-                  : dispatch(API.publishResource(updatableResource.id));
-              }
-            }}
-            tip={
-              updatableResource.published
-                ? i18n.modules.resource.unpublishMakePrivate
-                : i18n.modules.resource.publishMakeAvailableSubs
-            }
-            footer={
-              updatableResource.published
-                ? i18n.modules.resource.publishedInfo
-                : i18n.modules.resource.unpublishedInfo
-            }
           />
         </>
       )}

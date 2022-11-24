@@ -1,6 +1,6 @@
 /*
  * The coLAB project
- * Copyright (C) 2021 AlbaSim, MEI, HEIG-VD, HES-SO
+ * Copyright (C) 2021-2022 AlbaSim, MEI, HEIG-VD, HES-SO
  *
  * Licensed under the MIT License
  */
@@ -11,6 +11,7 @@ export const en = {
   //////////////////////////////////////////////////////////////////////////////////////////////////
   // COMMON
   common: {
+    advanced: 'Advanced',
     cancel: 'Cancel',
     create: 'Create',
     save: 'Save',
@@ -116,10 +117,13 @@ export const en = {
     },
     action: {
       backToHome: 'Back to co.LAB home',
-      backToProjects: 'Back to projects',
+      backToProjects: 'Back to projects list',
       backProjectRoot: 'Back to project root',
       backCardView: 'Back to card view',
       showProjectDetails: 'Show project details',
+      exportProjectData: 'Export project data',
+      exportDataDescription:
+        'Export the project data allows you to save all your contents on your own stockage tools (ex. external hard drive).',
     },
     error: {
       accessDenied: 'Unfortunately you are not allowed to see this',
@@ -172,6 +176,7 @@ export const en = {
     account: 'Account',
     missingFirstname: 'Please enter your firstname',
     missingLastname: 'Please enter your lastname',
+    profile: 'Profile',
     userProfile: 'User profile',
     editProfile: 'Edit profile',
     viewProfile: 'View profile',
@@ -181,12 +186,15 @@ export const en = {
     editUser: 'Edit user',
     activeSessions: 'Active sessions',
     current: 'Current',
+    settings: 'User settings',
   },
   team: {
     team: 'Team',
     roles: 'Roles',
     rights: 'Rights',
+    raci: 'RACI',
     members: 'Members',
+    teamManagement: 'Team management',
     generalInvolvement: 'General involvement',
     resetInvolvement: 'Reset involvement',
     involvementHelper:
@@ -205,12 +213,17 @@ export const en = {
       member: 'Member',
       guest: 'Guest',
     },
+    rolesHelper:
+      'Create and assign roles to the team members. Ex. Designer, teacher, developper. It can be used to fine-tune the involvement of each member, or to keep all prject members aware of the skills involved.',
+    rightsHelper:
+      'Guest: Read only on all contents. Member (default): Can edit contents and invite new members. Project leader: Can edit anything, invite new members and change rights and roles. Owner: Has full rights on the project',
     sureChangeOwnRights: 'Are you sure you want to change your own rights?',
     sureDeleteMember: 'Are you sure you want to delete this team member ?',
     changeOwnRights: 'Change my own rights',
     oneOwnerPerProject:
       'You cannot change this right. There must be at least one Owner of the project.',
     memberAlreadyExist: 'Member with same email already in team',
+    mailInvited: 'has been invited to the project team',
   },
   //////////////////////////////////////////////////////////////////////////////////////////////////
   // ACTIVITY
@@ -297,6 +310,21 @@ export const en = {
         projectDisplaySettings: 'Project display settings',
         projectSettings: 'Project settings',
         projects: 'Projects',
+        modelDisplaySettings: 'Project display settings',
+        modelSettings: 'Model settings',
+        models: 'Models',
+        extractNewFromProject: 'Extract a new model from this project',
+        extractRoles: 'Extract the roles',
+        extractDeliverables: 'Extract the card contents',
+        extractDocuments: 'Extract the documents',
+        keepTheSimpleProject: 'Keep the simple project',
+        shareTheProject: 'Share the project',
+        include: 'Include',
+        roles: 'Roles',
+        cardContents: 'Card contents',
+        documentation: 'Documentation',
+        connect: 'Connect',
+        keepConnectionBetweenModelAndProject: 'Keep new projects connected to the model',
       },
       actions: {
         createProject: 'Create project',
@@ -307,6 +335,15 @@ export const en = {
           `Create a project from ${'"' + templateTitle + '"'}`,
         editIllustration: 'Edit project illustration',
         newProject: 'New project',
+        saveAsModel: 'Save as model',
+        saveProjectAsModelPart1: 'Save project',
+        saveProjectAsModelPart2: 'as model',
+        extractModel: 'Extract model',
+        extractAModel: 'Extract a model from a project',
+        extractAModelFromProject: 'Extract a model from project ',
+        createModel: 'Create model',
+        convertToProject: 'Convert to a simple project',
+        shareTo: 'Share to',
       },
       info: {
         noProjectSelected: 'No project selected',
@@ -316,6 +353,9 @@ export const en = {
         useBlankProject: "Use this empty project and you'll be free to create a whole new world",
         deleteConfirmation:
           'Are you sure you want to delete the whole project? This will delete all cards inside.',
+        isAModel: 'This is a project model',
+        mailSentToShare: (recipientAddress: string): string =>
+          `${recipientAddress} will get an email inviting to use the model`,
       },
       settings: {
         icon: 'Icon',
@@ -324,6 +364,10 @@ export const en = {
         },
         resources: {
           label: 'Project documentation',
+        },
+        sharing: {
+          label: 'Model sharing',
+          parameters: 'Sharing parameters',
         },
         missingIcon:
           'Oh a new icon library, dear developer please make what is needed to display the icon.',
@@ -343,6 +387,7 @@ export const en = {
       subcards: 'Subcards',
       untitled: 'New card',
       createCard: 'Create card',
+      createSubcard: 'Create subcard',
       createACard: 'Create a card',
       createVariant: 'Create variant',
       createNew: (parentTitle?: string | null): string =>
@@ -384,10 +429,12 @@ export const en = {
         statusTooltip: (status: CardContentStatus) =>
           `Status: ${en.modules.card.settings.statuses[status].toLocaleLowerCase('en')}`,
         statuses: {
-          ACTIVE: 'ACTIVE',
-          POSTPONED: 'POSTPONED',
-          ARCHIVED: 'ARCHIVED',
-          REJECTED: 'REJECTED',
+          ACTIVE: 'Active',
+          POSTPONED: 'Postoned',
+          ARCHIVED: 'Archived',
+          REJECTED: 'Rejected',
+          PREPARATION: 'In preparation',
+          VALIDATED: 'Validated',
         },
         completionLevelMode: 'Completion level mode',
         cardPosition: 'Card position',
@@ -401,7 +448,7 @@ export const en = {
         noDeliverable: 'No deliverable available',
         completionModeInfo:
           'Select completion mode (MANUAL | AUTO | NO_OP). Manual: input to set completion; Auto: based on children; No: do not event diplay the bar',
-        noBlockYet: 'You have nothing in here for now. Add your first block:',
+        noBlockYet: 'Empty doc',
       },
       error: {
         withoutId: 'Card without id is invalid...',
@@ -499,6 +546,11 @@ export const en = {
         forceTooltip:
           'This documentation is provided from another place, but you can edit it from here',
       },
+      actions: {
+        makeOwnCopy: 'Copy to card',
+        shareWithChildren: 'Share within children',
+        makePrivate: 'Attach to card',
+      },
       scope: {
         disclaimer: '', // TODO
         confirm: 'move',
@@ -522,6 +574,7 @@ export const en = {
       cardType: 'Theme',
       cardTypesLongWay: 'Thematic documentation',
       titlePlaceholder: 'New Theme',
+      noCardType: 'No theme',
       purpose: 'Description',
       globalTypes: 'Global Themes',
       sharedAvailableTypes: 'Shared available themes',
@@ -658,8 +711,10 @@ export const en = {
         return 'E-mail address is not valid';
       case 'IDENTIFIER_ALREADY_TAKEN':
         return 'Please choose another identifier';
-      case 'INVITATION_CONSUMING_BY_TEAMMEMBER':
+      case 'USER_IS_ALREADY_A_TEAM_MEMBER':
         return 'The current user is already a team member';
+      case 'CURRENT_USER_CAN_ALREADY_USE_MODEL':
+        return 'The current user can already use the model';
     }
   },
 

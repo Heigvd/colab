@@ -42,7 +42,7 @@ import Flex from '../../common/layout/Flex';
 import { modalBody, modalFooter } from '../../common/layout/Modal';
 import Hierarchy from '../../projects/edition/Hierarchy';
 import { space_M, textSmall } from '../../styling/style';
-import { getTheRef, ResourceAndRef } from '../resourcesCommonType';
+import { getTheDirectResource, ResourceAndRef } from '../resourcesCommonType';
 import TargetResourceSummary from './TargetResourceSummary';
 
 const thumbStyle = cx(
@@ -352,7 +352,7 @@ function buildCardAndVariant(
 
 function useStructure(resource: ResourceAndRef, owner: ResourceOwner, all: boolean): Structure {
   return useAppSelector(state => {
-    const theRef = getTheRef(resource) || resource.targetResource;
+    const theRef = getTheDirectResource(resource);
 
     // first fetch involved cardType(s)
     const cardTypes: AbstractCardType[] = [];
@@ -651,7 +651,7 @@ export default function ResourceScope({ onCancel, resource }: ResourceScopeProps
   const restClient = getRestClient();
   useAndLoadProjectResourcesStatus();
 
-  const pointOfView = getTheRef(resource) || resource.targetResource;
+  const pointOfView = getTheDirectResource(resource);
 
   const [showAll, setShowAll] = React.useState(false);
   const [zoom, setZoom] = React.useState(1);

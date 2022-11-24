@@ -1,62 +1,157 @@
 /*
  * The coLAB project
- * Copyright (C) 2021 AlbaSim, MEI, HEIG-VD, HES-SO
+ * Copyright (C) 2021-2022 AlbaSim, MEI, HEIG-VD, HES-SO
  *
  * Licensed under the MIT License
  */
 
 import { css, cx } from '@emotion/css';
-import { faPlus } from '@fortawesome/free-solid-svg-icons';
+import { faArrowLeft, faPlus } from '@fortawesome/free-solid-svg-icons';
 import * as React from 'react';
 import useTranslations from '../../i18n/I18nContext';
 import { useAndLoadResources } from '../../selectors/resourceSelector';
 import AvailabilityStatusIndicator from '../common/element/AvailabilityStatusIndicator';
 import Button from '../common/element/Button';
+import IconButton from '../common/element/IconButton';
+import Tips, { WIPContainer } from '../common/element/Tips';
 import DropDownMenu from '../common/layout/DropDownMenu';
 import Flex from '../common/layout/Flex';
-import { lightIconButtonStyle, space_S, voidStyle } from '../styling/style';
+import {
+  invertedButtonStyle,
+  lightIconButtonStyle,
+  lightText,
+  space_L,
+  space_S,
+  textSmall,
+} from '../styling/style';
 import HidenResourcesKeeper from './HidenResourcesKeeper';
 import ResourceCreator from './ResourceCreator';
 import { ResourceDisplay } from './ResourceDisplay';
 import {
   AccessLevel,
+  defaultResourceOwnerShip,
   isReadOnly,
   ResourceAndRef,
-  ResourceCallContext,
+  ResourceOwnership,
 } from './resourcesCommonType';
-import ResourcesList from './ResourcesList';
+import ResourcesList, { TocDisplayCtx, TocMode } from './ResourcesList';
 
-export type TocMode = 'CATEGORY' | 'SOURCE';
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Resource Context
+////////////////////////////////////////////////////////////////////////////////////////////////////
 
-export interface TocDisplayContext {
-  mode: TocMode;
-  setMode: (newMode: TocMode) => void;
+interface ResourcesContext {
+  resourceOwnership: ResourceOwnership;
+  selectedResource: ResourceAndRef | null; // TODO number
+  selectResource: (resource: ResourceAndRef | null) => void;
+  lastCreatedId: number | null;
+  setLastCreatedId: (id: number | null) => void;
+  publishNewResource?: boolean;
 }
 
-export const TocDisplayCtx = React.createContext<TocDisplayContext>({
-  mode: 'CATEGORY',
-  setMode: () => {},
-});
+const defaultResourcesContext: ResourcesContext = {
+  resourceOwnership: defaultResourceOwnerShip,
+  selectedResource: null,
+  selectResource: () => {},
+  lastCreatedId: null,
+  setLastCreatedId: () => {},
+  publishNewResource: false,
+};
+
+export const ResourcesCtx = React.createContext<ResourcesContext>(defaultResourcesContext);
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+type DisplayMode = 'LIST' | 'ONE_RESOURCE';
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
 
 export function TocDisplayToggler(): JSX.Element {
-  const i18n = useTranslations();
+  // const i18n = useTranslations();
   const { mode, setMode } = React.useContext(TocDisplayCtx);
 
   const entries: { value: TocMode; label: React.ReactNode }[] = [
-    { value: 'CATEGORY', label: <div>{i18n.modules.resource.sortByCategory}</div> },
-    { value: 'SOURCE', label: <div>{i18n.modules.resource.sortByProvider}</div> },
+    { value: 'CATEGORY', label: <div>cat</div> },
+    { value: 'SOURCE', label: <div>src</div> },
+    { value: '3_STACKS', label: <div>3</div> },
   ];
 
   return (
-    <DropDownMenu
-      value={mode}
-      entries={entries}
-      onSelect={entry => setMode(entry.value)}
-      //idleHoverStyle="BACKGROUND"
-      menuIcon='CARET'
-    />
+    <WIPContainer>
+      <DropDownMenu
+        value={mode}
+        entries={entries}
+        onSelect={entry => setMode(entry.value)}
+        //idleHoverStyle="BACKGROUND"
+        menuIcon="CARET"
+      />
+    </WIPContainer>
   );
 }
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+interface ResourcesMainViewHeaderProps {
+  title: React.ReactNode;
+  helpTip?: React.ReactNode;
+}
+
+export function ResourcesMainViewHeader({
+  title,
+  helpTip,
+}: ResourcesMainViewHeaderProps): JSX.Element {
+  const i18n = useTranslations();
+
+  const { selectedResource, selectResource } = React.useContext(ResourcesCtx);
+
+  const displayMode: DisplayMode = React.useMemo(() => {
+    if (selectedResource != null) {
+      return 'ONE_RESOURCE';
+    }
+
+    return 'LIST';
+  }, [selectedResource]);
+
+  const displayList = React.useCallback(() => {
+    selectResource(null);
+  }, [selectResource]);
+
+  return (
+    <>
+      {displayMode !== 'LIST' && (
+        <IconButton
+          icon={faArrowLeft}
+          title={i18n.modules.resource.backList}
+          onClick={displayList}
+          className={lightIconButtonStyle}
+        />
+      )}
+
+      {title}
+
+      {helpTip && <Tips iconClassName={cx(textSmall, lightText)}>{helpTip}</Tips>}
+
+      {displayMode === 'LIST' && (
+        <>
+          <ResourceCreator collapsedClassName={lightIconButtonStyle} />
+          {/* <TocDisplayToggler /> */}
+          {/* Note : we can imagine that a read access level allows to see the ghost resources */}
+          <HidenResourcesKeeper
+            collapsedClassName={cx(
+              css({
+                padding: space_S,
+                '&:hover': { cursor: 'pointer' },
+              }),
+              lightIconButtonStyle,
+            )}
+          />
+        </>
+      )}
+    </>
+  );
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
 
 /**
  * Main component to show resources.
@@ -66,65 +161,87 @@ export function TocDisplayToggler(): JSX.Element {
  * It can allow to display and revive a deprecated, refused or residual resource.
  */
 
-interface ResourcesMainViewProps {
-  contextData: ResourceCallContext;
+interface ResourcesMainPanelProps {
   accessLevel: AccessLevel;
   showVoidIndicator?: boolean;
+  showLevels?: boolean;
 }
 
-export default function ResourcesMainView({
-  contextData,
+export function ResourcesMainViewPanel({
   accessLevel,
   showVoidIndicator,
-}: ResourcesMainViewProps): JSX.Element {
+  showLevels,
+}: ResourcesMainPanelProps): JSX.Element {
   const i18n = useTranslations();
 
-  const { activeResources, ghostResources, status } = useAndLoadResources(contextData);
+  const { resourceOwnership, selectedResource, selectResource, lastCreatedId, setLastCreatedId } =
+    React.useContext(ResourcesCtx);
 
-  const [selectedResource, selectResource] = React.useState<ResourceAndRef | null>(null);
-
-  const [lastCreated, setLastCreated] = React.useState<number | null>(null);
+  const { activeResources, status } = useAndLoadResources(resourceOwnership);
 
   // just to see if it changes
-  const [currentContext, setCurrentContext] = React.useState<ResourceCallContext>(contextData);
+  const [currentContext, setCurrentContext] = React.useState<ResourceOwnership>(resourceOwnership);
 
-  const showList = React.useCallback(() => selectResource(null), []);
+  const displayMode: DisplayMode = React.useMemo(() => {
+    if (selectedResource != null) {
+      return 'ONE_RESOURCE';
+    }
+
+    return 'LIST';
+  }, [selectedResource]);
+
+  React.useEffect(() => {
+    if (displayMode === 'LIST') {
+      selectResource(null);
+    }
+  }, [displayMode, selectResource]);
+
+  const showList = React.useCallback(() => {
+    selectResource(null);
+  }, [selectResource]);
+
+  const showSelectedResource = React.useCallback(
+    (resource: ResourceAndRef) => {
+      selectResource(resource);
+    },
+    [selectResource],
+  );
 
   React.useEffect(() => {
     // show the list if the context changed
-    if (contextData.kind !== currentContext.kind) {
+    if (resourceOwnership.kind !== currentContext.kind) {
       showList();
     } else if (
-      contextData.kind === 'CardOrCardContent' &&
+      resourceOwnership.kind === 'CardOrCardContent' &&
       currentContext.kind === 'CardOrCardContent' &&
-      (contextData.cardId !== currentContext.cardId ||
-        contextData.cardContentId !== currentContext.cardContentId)
+      (resourceOwnership.cardId !== currentContext.cardId ||
+        resourceOwnership.cardContentId !== currentContext.cardContentId)
     ) {
       showList();
     } else if (
-      contextData.kind === 'CardType' &&
+      resourceOwnership.kind === 'CardType' &&
       currentContext.kind === 'CardType' &&
-      contextData.cardTypeId !== currentContext.cardTypeId
+      resourceOwnership.cardTypeId !== currentContext.cardTypeId
     ) {
       showList();
     }
 
-    setCurrentContext(contextData);
-  }, [contextData, currentContext, setCurrentContext, showList]);
+    setCurrentContext(resourceOwnership);
+  }, [resourceOwnership, currentContext, setCurrentContext, showList]);
 
   // when a resource is just created, select it to display it
   React.useEffect(() => {
-    if (lastCreated != null) {
+    if (lastCreatedId != null) {
       const matchingResource = activeResources.find(
-        resource => resource.targetResource.id === lastCreated,
+        resource => resource.targetResource.id === lastCreatedId,
       );
 
       if (matchingResource != null) {
-        selectResource(matchingResource);
-        setLastCreated(null);
+        showSelectedResource(matchingResource);
+        setLastCreatedId(null);
       }
     }
-  }, [lastCreated, activeResources, selectResource, setLastCreated]);
+  }, [activeResources, showSelectedResource, lastCreatedId, setLastCreatedId]);
 
   /**
    * Quick Fix: keep selectedResource up-to-date
@@ -136,10 +253,10 @@ export default function ResourcesMainView({
         ar => ar.targetResource.id === selectedResource.targetResource.id,
       );
       if (found && found.targetResource != selectedResource.targetResource) {
-        selectResource(found);
+        showSelectedResource(found);
       }
     }
-  }, [activeResources, selectedResource, selectResource]);
+  }, [activeResources, selectedResource, showSelectedResource]);
 
   if (accessLevel === 'DENIED') {
     return <div>{i18n.common.error.accessDenied}</div>;
@@ -149,7 +266,7 @@ export default function ResourcesMainView({
     return <AvailabilityStatusIndicator status={status} />;
   }
 
-  if (selectedResource) {
+  if (displayMode === 'ONE_RESOURCE' && selectedResource) {
     // show selected resource
     return (
       <ResourceDisplay
@@ -164,56 +281,39 @@ export default function ResourcesMainView({
   return (
     <Flex direction="column" align="stretch" grow={1} className={css({ overflow: 'auto' })}>
       {showVoidIndicator && activeResources.length === 0 && (
-        <div className={cx(voidStyle, css({}))}>
-          <p>{i18n.modules.resource.noDocumentationYet}</p>
+        <Flex
+          justify="center"
+          direction="column"
+          align="center"
+          className={css({ padding: space_L })}
+        >
+          <h3>{i18n.modules.resource.noDocumentationYet}</h3>
           {!isReadOnly(accessLevel) && (
             <ResourceCreator
-              contextInfo={contextData}
-              onCreated={setLastCreated}
               collapsedClassName={lightIconButtonStyle}
               customButton={
-                <Button icon={faPlus} clickable>
+                <Button icon={faPlus} clickable className={invertedButtonStyle}>
                   {i18n.modules.document.createDocument}
                 </Button>
               }
             />
           )}
-        </div>
+        </Flex>
       )}
 
-      <ResourcesList resources={activeResources} selectResource={selectResource} />
+      <ResourcesList
+        resources={activeResources}
+        selectResource={showSelectedResource}
+        readOnly={isReadOnly(accessLevel)}
+        showLevels={showLevels}
+      />
 
       {!isReadOnly(accessLevel) && (
         <Flex>
-          <ResourceCreator
+          {/* <ResourceCreator
             contextInfo={contextData}
-            onCreated={setLastCreated}
             collapsedClassName={lightIconButtonStyle}
-          />
-
-          {ghostResources != null && ghostResources.length > 0 && (
-            // note : we can imagine that a read access level allows to see the ghost resources
-            <>
-              <span
-                className={css({
-                  width: '1px',
-                  height: '100%',
-                  backgroundColor: 'var(--lightGray)',
-                })}
-              />
-              <HidenResourcesKeeper
-                resources={ghostResources}
-                collapsedClassName={cx(
-                  css({
-                    borderTop: '1px solid var(--lightGray)',
-                    padding: space_S,
-                    '&:hover': { backgroundColor: 'var(--lightGray)', cursor: 'pointer' },
-                  }),
-                  lightIconButtonStyle,
-                )}
-              />
-            </>
-          )}
+          /> */}
         </Flex>
       )}
     </Flex>

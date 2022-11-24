@@ -70,7 +70,7 @@ const projectColors = [
   '#e0c600', // main yellow
   '#573CB9', // main violet
   '#57B279', // green
-  '#DE4D86', // green
+  '#DE4D86', // pink
   '#685044', // brown
 ];
 

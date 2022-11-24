@@ -1,56 +1,50 @@
 /*
  * The coLAB project
- * Copyright (C) 2021 AlbaSim, MEI, HEIG-VD, HES-SO
+ * Copyright (C) 2021-2022 AlbaSim, MEI, HEIG-VD, HES-SO
  *
  * Licensed under the MIT License
  */
 
-import { css, cx } from '@emotion/css';
+import { css } from '@emotion/css';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import * as React from 'react';
 import * as API from '../../API/api';
 import useTranslations from '../../i18n/I18nContext';
-import { useAndLoadResourceCategories } from '../../selectors/resourceSelector';
 import { useAppDispatch, useLoadingState } from '../../store/hooks';
 import Button from '../common/element/Button';
-import Form, { createSelectField, Field } from '../common/element/Form';
-import Flex from '../common/layout/Flex';
+import Form, { Field } from '../common/element/Form';
+import IconButton from '../common/element/IconButton';
 import OpenCloseModal from '../common/layout/OpenCloseModal';
-import { space_M, space_S } from '../styling/style';
-import { ResourceCallContext } from './resourcesCommonType';
+import { lightIconButtonStyle, space_M } from '../styling/style';
+import { ResourcesCtx } from './ResourcesMainView';
 
 interface ResourceCreationType {
   title: string;
-  category: string;
+  // category: string;
   atCardContentLevel: boolean;
 }
 
 const defaultData: ResourceCreationType = {
   title: '',
-  category: '',
+  // category: '',
   atCardContentLevel: false,
 };
 
 interface ResourceCreatorProps {
-  contextInfo: ResourceCallContext;
-  onCreated: (newId: number) => void;
   collapsedClassName?: string;
   customButton?: React.ReactNode;
 }
 
-export default function ResourceCreator({
-  contextInfo,
-  onCreated,
-  collapsedClassName,
-  customButton,
-}: ResourceCreatorProps): JSX.Element {
+export default function ResourceCreator({ customButton }: ResourceCreatorProps): JSX.Element {
   const dispatch = useAppDispatch();
   const i18n = useTranslations();
 
+  const { resourceOwnership, publishNewResource, setLastCreatedId } =
+    React.useContext(ResourcesCtx);
+
   const { isLoading, startLoading, stopLoading } = useLoadingState();
 
-  const { categories: allCategories } = useAndLoadResourceCategories();
+  // const { categories: allCategories } = useAndLoadResourceCategories();
 
   const fields: Field<ResourceCreationType>[] = [
     {
@@ -59,19 +53,19 @@ export default function ResourceCreator({
       type: 'text',
       isMandatory: true,
     },
-    createSelectField({
-      key: 'category',
-      label: i18n.modules.resource.category,
-      type: 'select',
-      isMandatory: false,
-      isMulti: false,
-      canCreateOption: true,
-      options: allCategories.map(c => ({ label: c, value: c })),
-      tip: i18n.modules.resource.categorytip,
-    }),
+    // createSelectField({
+    //   key: 'category',
+    //   label: i18n.modules.resource.category,
+    //   type: 'select',
+    //   isMandatory: false,
+    //   isMulti: false,
+    //   canCreateOption: true,
+    //   options: allCategories.map(c => ({ label: c, value: c })),
+    //   tip: i18n.modules.resource.categorytip,
+    // }),
   ];
 
-  if (contextInfo.kind === 'CardOrCardContent' && contextInfo.hasSeveralVariants) {
+  if (resourceOwnership.kind === 'CardOrCardContent' && resourceOwnership.hasSeveralVariants) {
     fields.push({
       key: 'atCardContentLevel',
       label: i18n.modules.resource.onlyForVariant,
@@ -88,13 +82,13 @@ export default function ResourceCreator({
       let cardTypeId: number | null | undefined = null;
       let cardId: number | null = null;
       let cardContentId: number | null = null;
-      if (contextInfo.kind == 'CardType') {
-        cardTypeId = contextInfo.cardTypeId;
+      if (resourceOwnership.kind == 'CardType') {
+        cardTypeId = resourceOwnership.cardTypeId;
       } else {
         if (resourceToCreate.atCardContentLevel) {
-          cardContentId = contextInfo.cardContentId || null;
+          cardContentId = resourceOwnership.cardContentId || null;
         } else {
-          cardId = contextInfo.cardId || null;
+          cardId = resourceOwnership.cardId || null;
         }
       }
 
@@ -105,15 +99,16 @@ export default function ResourceCreator({
           cardContentId: cardContentId,
           documents: [],
           title: resourceToCreate.title,
-          category: resourceToCreate.category,
+          category: null, //resourceToCreate.category,
+          published: !!publishNewResource,
         }),
       ).then(action => {
         stopLoading();
 
-        if (onCreated != null) {
+        if (setLastCreatedId != null) {
           if (action.meta.requestStatus === 'fulfilled') {
             if (typeof action.payload === 'number') {
-              onCreated(action.payload);
+              setLastCreatedId(action.payload);
             }
           }
         }
@@ -121,7 +116,7 @@ export default function ResourceCreator({
         close();
       });
     },
-    [contextInfo, startLoading, dispatch, onCreated, stopLoading],
+    [startLoading, resourceOwnership, dispatch, publishNewResource, stopLoading, setLastCreatedId],
   );
 
   return (
@@ -131,22 +126,14 @@ export default function ResourceCreator({
         customButton ? (
           customButton
         ) : (
-          <Flex
-            justify="center"
-            className={cx(
-              css({
-                borderTop: '1px solid var(--lightGray)',
-                padding: space_S,
-                '&:hover': { backgroundColor: 'var(--lightGray)', cursor: 'pointer' },
-              }),
-              collapsedClassName,
-            )}
-          >
-            <FontAwesomeIcon icon={faPlus} title={i18n.modules.document.createDocument} />
-          </Flex>
+          <IconButton
+            icon={faPlus}
+            title={i18n.modules.document.createDocument}
+            className={lightIconButtonStyle}
+          />
         )
       }
-      className={css({ display: 'block', width: '100%', textAlign: 'center' })}
+      className={css({ display: 'block', textAlign: 'center', alignSelf: 'center' })}
     >
       {close => (
         <Form

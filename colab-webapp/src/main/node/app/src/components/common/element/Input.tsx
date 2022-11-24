@@ -1,6 +1,6 @@
 /*
  * The coLAB project
- * Copyright (C) 2021 AlbaSim, MEI, HEIG-VD, HES-SO
+ * Copyright (C) 2021-2022 AlbaSim, MEI, HEIG-VD, HES-SO
  *
  * Licensed under the MIT License
  */
@@ -72,6 +72,7 @@ interface InputProps {
   bottomClassName?: string;
   footerClassName?: string;
   validationClassName?: string;
+  title?: string;
 }
 
 const confirmButtonsStyle = css({
@@ -108,6 +109,7 @@ function Input({
   bottomClassName,
   footerClassName,
   validationClassName,
+  title,
 }: InputProps): JSX.Element {
   const i18n = useTranslations();
 
@@ -233,7 +235,12 @@ function Input({
   const updated = currentInternalValue !== initialValue;
 
   return (
-    <Flex direction="column" className={containerClassName} style={{ maxWidth: maxWidth }}>
+    <Flex
+      direction="column"
+      className={containerClassName}
+      style={{ maxWidth: maxWidth }}
+      title={title}
+    >
       {/* //</Flex> <Flex theRef={containerRef} direction='column'> */}
       {label && (
         <Flex align="center">
@@ -271,6 +278,7 @@ function Input({
           }}
           className={cx(
             inputEditClassName && mode === 'EDIT' ? inputEditClassName : inputDisplayClassName,
+            css({ color: 'var(--fgColor)' }),
           )}
         />
       ) : (

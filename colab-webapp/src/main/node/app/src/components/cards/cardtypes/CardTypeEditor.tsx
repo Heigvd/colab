@@ -1,6 +1,6 @@
 /*
  * The coLAB project
- * Copyright (C) 2021 AlbaSim, MEI, HEIG-VD, HES-SO
+ * Copyright (C) 2021-2022 AlbaSim, MEI, HEIG-VD, HES-SO
  *
  * Licensed under the MIT License
  */
@@ -30,8 +30,12 @@ import Toggler from '../../common/element/Toggler';
 import ConfirmDeleteOpenCloseModal from '../../common/layout/ConfirmDeleteModal';
 import Flex from '../../common/layout/Flex';
 import { DocTextWrapper } from '../../documents/DocTextItem';
-import { ResourceCallContext } from '../../resources/resourcesCommonType';
-import ResourcesMainView, { TocDisplayToggler } from '../../resources/ResourcesMainView';
+import { ResourceAndRef, ResourceOwnership } from '../../resources/resourcesCommonType';
+import {
+  ResourcesCtx,
+  ResourcesMainViewHeader,
+  ResourcesMainViewPanel,
+} from '../../resources/ResourcesMainView';
 import { cardStyle, errorColor, localTitleStyle, space_M, space_S } from '../../styling/style';
 
 interface CardTypeEditorProps {
@@ -46,6 +50,9 @@ export default function CardTypeEditor({ className, usage }: CardTypeEditorProps
   const id = useParams<'id'>();
   const typeId = +id.id!;
 
+  const [selectedResource, selectResource] = React.useState<ResourceAndRef | null>(null);
+  const [lastCreatedResourceId, setLastCreatedResourceId] = React.useState<number | null>(null);
+
   const { cardType, status } = useAndLoadCardType(typeId);
   const { project } = useProjectBeingEdited();
 
@@ -56,7 +63,7 @@ export default function CardTypeEditor({ className, usage }: CardTypeEditorProps
     value: tag,
   }));
 
-  const resourceContext: ResourceCallContext = {
+  const resourceOwnership: ResourceOwnership = {
     kind: 'CardType',
     cardTypeId: cardType?.ownId,
   };
@@ -235,11 +242,23 @@ export default function CardTypeEditor({ className, usage }: CardTypeEditorProps
               padding: space_S,
             })}
           >
-            <Flex align="baseline">
-              <h3>{i18n.modules.resource.documentation}</h3>
-              <TocDisplayToggler />
-            </Flex>
-            <ResourcesMainView contextData={resourceContext} accessLevel="WRITE" />
+            <ResourcesCtx.Provider
+              value={{
+                resourceOwnership,
+                selectedResource,
+                selectResource,
+                lastCreatedId: lastCreatedResourceId,
+                setLastCreatedId: setLastCreatedResourceId,
+              }}
+            >
+              <Flex align="baseline">
+                <ResourcesMainViewHeader
+                  title={<h3>{i18n.modules.resource.documentation}</h3>}
+                  helpTip={i18n.modules.resource.help.documentationExplanation}
+                />
+              </Flex>
+              <ResourcesMainViewPanel accessLevel="WRITE" />
+            </ResourcesCtx.Provider>
           </Flex>
         </Flex>
       </Flex>

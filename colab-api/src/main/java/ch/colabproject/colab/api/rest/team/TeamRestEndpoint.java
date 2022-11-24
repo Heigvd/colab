@@ -43,7 +43,7 @@ public class TeamRestEndpoint {
     /** logger */
     private static final Logger logger = LoggerFactory.getLogger(TeamRestEndpoint.class);
 
-    /** * Team manager */
+    /** Team manager */
     @Inject
     private TeamManager teamManager;
 

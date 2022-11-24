@@ -1,6 +1,6 @@
 /*
  * The coLAB project
- * Copyright (C) 2021 AlbaSim, MEI, HEIG-VD, HES-SO
+ * Copyright (C) 2021-2022 AlbaSim, MEI, HEIG-VD, HES-SO
  *
  * Licensed under the MIT License
  */
@@ -207,8 +207,8 @@ export function fixGrid<T>(cells: Readonly<Cell<T>>[]): {
     y: 1 - extent.minY,
   };
 
-  const nbColumn = Math.max(3, extent.maxX - extent.minX + 1);
-  const nbRow = Math.max(3, extent.maxY - extent.minY + 1);
+  const nbColumn = Math.max(4, extent.maxX - extent.minX + 1);
+  const nbRow = Math.max(4, extent.maxY - extent.minY + 1);
 
   const matrix = getEmptyMatrix(nbColumn, nbRow);
 
@@ -586,6 +586,10 @@ interface GridOrganizerProps<T> {
   onResize: (cell: Cell<T>, newPosition: GridPosition) => void;
   handleSize?: string;
   gap?: string;
+  /* nbColumns?: {
+    nbColumns: number;
+    setNbColumns: React.Dispatch<React.SetStateAction<number>>
+  }; */
 }
 
 export default function GridOrganizer<T>({
@@ -595,7 +599,8 @@ export default function GridOrganizer<T>({
   onResize,
   handleSize,
   gap = '20px',
-}: GridOrganizerProps<T>): JSX.Element {
+}: //nbColumns = { nbColumns: 3, setNbColumns: () => {}},
+GridOrganizerProps<T>): JSX.Element {
   const dndRef = React.useRef<DndRef<T>>({ status: 'idle', tmpCell: undefined });
 
   const [tmpCell, setTmpCell] = React.useState<Cell<void>>();
@@ -629,6 +634,7 @@ export default function GridOrganizer<T>({
   }
 
   // 2) add contour
+  // !! changes made HERE
   const extentWithContour: Extent = {
     minX: extent.minX - 1,
     minY: extent.minY - 1,
@@ -637,10 +643,14 @@ export default function GridOrganizer<T>({
   };
 
   // 3) compute shiftX, shiftY to have contour starting at one
+  // !! changes made here
   const shiftX = 1 - extentWithContour.minX;
   const shiftY = 1 - extentWithContour.minY;
-  const nbColumn = Math.max(3, extentWithContour.maxX - extentWithContour.minX + 1);
-  const nbRow = Math.max(3, extentWithContour.maxY - extentWithContour.minY + 1);
+  //nbColumns?.nbColumns ||
+  const nbColumn = Math.max(5, extentWithContour.maxX - extentWithContour.minX + 1);
+  //const nbColumn = nbColumns.nbColumns + 2;
+
+  const nbRow = Math.max(5, extentWithContour.maxY - extentWithContour.minY + 1);
 
   logger.debug('Extent: ', extent);
   logger.debug('ExtentWithContour: ', extentWithContour);
@@ -884,6 +894,7 @@ export default function GridOrganizer<T>({
         css({
           display: 'grid',
           gridTemplateColumns: `repeat(${nbColumn}, minmax(min-content, 1fr))`,
+          gridAutoRows: `minmax(55px, 1fr)`,
           justifyContent: 'strech',
           alignContent: 'stretch',
           justifyItems: 'stretch',

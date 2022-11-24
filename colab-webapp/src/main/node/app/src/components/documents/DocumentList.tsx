@@ -13,7 +13,6 @@ import AvailabilityStatusIndicator from '../common/element/AvailabilityStatusInd
 import { lightText, space_M, space_S, textSmall } from '../styling/style';
 import { DocumentOwnership } from './documentCommonType';
 import DocumentEditor from './DocumentEditor';
-import { BlockCreatorButtons } from './DocumentEditorToolbox';
 
 export interface DocumentListProps {
   docOwnership: DocumentOwnership;
@@ -21,8 +20,9 @@ export interface DocumentListProps {
 }
 
 export default function DocumentList({ docOwnership, readOnly }: DocumentListProps): JSX.Element {
-  const { documents, status } = useAndLoadDocuments(docOwnership);
   const i18n = useTranslations();
+
+  const { documents, status } = useAndLoadDocuments(docOwnership);
 
   if (status !== 'READY') {
     return <AvailabilityStatusIndicator status={status} />;
@@ -36,21 +36,20 @@ export default function DocumentList({ docOwnership, readOnly }: DocumentListPro
             textSmall,
             lightText,
             css({
-              backgroundColor: 'var(--primaryColorContrastShade)',
-              border: '1px solid var(--lightGray)',
+              fontStyle: 'italic',
               marginTop: space_M,
               padding: space_S,
             }),
           )}
         >
           {i18n.modules.card.infos.noBlockYet}
-          <BlockCreatorButtons docOwnership={docOwnership} selectedBlockId={null} />
+          {/* <BlockCreatorButtons selectedBlockId={null} /> */}
         </div>
       )}
       {documents
         .sort((a, b) => (a.index || 0) - (b.index || 0))
         .map(doc => (
-          <DocumentEditor key={doc.id} doc={doc} readOnly={readOnly} docOwnership={docOwnership} />
+          <DocumentEditor key={doc.id} doc={doc} readOnly={readOnly} />
         ))}
     </>
   );

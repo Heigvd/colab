@@ -1,6 +1,6 @@
 /*
  * The coLAB project
- * Copyright (C) 2021 AlbaSim, MEI, HEIG-VD, HES-SO
+ * Copyright (C) 2021-2022 AlbaSim, MEI, HEIG-VD, HES-SO
  *
  * Licensed under the MIT License
  */
@@ -8,13 +8,17 @@ package ch.colabproject.colab.api.controller.token;
 
 import ch.colabproject.colab.api.Helper;
 import ch.colabproject.colab.api.controller.RequestManager;
+import ch.colabproject.colab.api.controller.project.ProjectManager;
 import ch.colabproject.colab.api.controller.security.SecurityManager;
 import ch.colabproject.colab.api.controller.team.TeamManager;
 import ch.colabproject.colab.api.controller.user.UserManager;
+import ch.colabproject.colab.api.model.project.InstanceMaker;
 import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.api.model.team.TeamMember;
 import ch.colabproject.colab.api.model.team.acl.HierarchicalPosition;
+import ch.colabproject.colab.api.model.token.ExpirationPolicy;
 import ch.colabproject.colab.api.model.token.InvitationToken;
+import ch.colabproject.colab.api.model.token.ModelSharingToken;
 import ch.colabproject.colab.api.model.token.ResetLocalAccountPasswordToken;
 import ch.colabproject.colab.api.model.token.Token;
 import ch.colabproject.colab.api.model.token.VerifyLocalAccountToken;
@@ -47,7 +51,7 @@ import org.slf4j.LoggerFactory;
 public class TokenManager {
 
     /** logger */
-    private static final Logger logger = LoggerFactory.getLogger(TokenDao.class);
+    private static final Logger logger = LoggerFactory.getLogger(TokenManager.class);
 
     /**
      * to create team member
@@ -72,6 +76,12 @@ public class TokenManager {
      */
     @Inject
     private TokenDao tokenDao;
+
+    /**
+     * Project specific logic handling
+     */
+    @Inject
+    private ProjectManager projectManager;
 
     /**
      * request context
@@ -119,18 +129,21 @@ public class TokenManager {
     /**
      * Consume the token
      *
-     * @param id         id of the token to consume
+     * @param id         the id of the token to consume
      * @param plainToken the plain secret token as sent by e-mail
      *
      * @return the consumed token
      *
-     * @throws HttpErrorMessage notFound if the token does not exists; badRequest if token does not
-     *                          match; authenticationRequired if token requires authentication but
-     *                          current user id not
+     * @throws HttpErrorMessage notFound if the token does not exists;<br>
+     *                          badRequest if token does not match;<br>
+     *                          authenticationRequired if token requires authentication but current
+     *                          user is not
      */
     public Token consume(Long id, String plainToken) {
         logger.debug("Consume token #{}", id);
-        Token token = tokenDao.getToken(id);
+
+        Token token = tokenDao.findToken(id);
+
         if (token != null) {
             if (token.isAuthenticationRequired() && !requestManager.isAuthenticated()) {
                 logger.debug("Token requires an authenticated user");
@@ -139,7 +152,9 @@ public class TokenManager {
                 if (token.checkHash(plainToken)) {
                     requestManager.sudo(() -> {
                         boolean isConsumed = token.consume(this);
-                        if (isConsumed) {
+
+                        if (isConsumed
+                            && token.getExpirationPolicy() == ExpirationPolicy.ONE_SHOT) {
                             tokenDao.deleteToken(token);
                         }
                     });
@@ -149,6 +164,7 @@ public class TokenManager {
                     throw HttpErrorMessage.badRequest();
                 }
             }
+
         } else {
             logger.debug("There is no token #{}", id);
             throw HttpErrorMessage.notFound();
@@ -169,7 +185,7 @@ public class TokenManager {
      *
      * @return a brand new token or a refresh
      */
-    public VerifyLocalAccountToken getOrCreateVerifyAccountToken(LocalAccount account) {
+    private VerifyLocalAccountToken getOrCreateVerifyAccountToken(LocalAccount account) {
         logger.debug("getOrCreate VerifyToken for {}", account);
         VerifyLocalAccountToken token = tokenDao.findVerifyTokenByAccount(account);
 
@@ -319,12 +335,14 @@ public class TokenManager {
         }
 
         token.setSender(currentUser.getDisplayName());
+
         try {
             sendTokenByEmail(token, recipient);
         } catch (MessagingException ex) {
-            logger.error("Failed to send pssword reset email", ex);
+            logger.error("Failed to send membership invitation email", ex);
             throw HttpErrorMessage.smtpError();
         }
+
         return token.getTeamMember();
     }
 
@@ -347,20 +365,108 @@ public class TokenManager {
      */
     public boolean consumeInvitationToken(TeamMember teamMember) {
         User user = requestManager.getCurrentUser();
-        Project project = teamMember.getProject();
 
-        TeamMember existingTeamMember = teamManager.findMemberByUserAndProject(project, user);
-        if (existingTeamMember != null) {
-            throw HttpErrorMessage
-                .tokenProcessingFailure(MessageI18nKey.INVITATION_CONSUMING_BY_TEAMMEMBER);
-        }
-
-        if (user != null) {
-            teamMember.setUser(user);
-            teamMember.setDisplayName(null);
-        } else {
+        if (user == null) {
             throw HttpErrorMessage.authenticationRequired();
         }
+
+        Project project = teamMember.getProject();
+
+        TeamMember existingTeamMember = teamManager.findMemberByProjectAndUser(project, user);
+        if (existingTeamMember != null) {
+            throw HttpErrorMessage
+                .tokenProcessingFailure(MessageI18nKey.USER_IS_ALREADY_A_TEAM_MEMBER);
+        }
+
+        teamMember.setUser(user);
+        teamMember.setDisplayName(null);
+
+        return true;
+    }
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+    // Share a model to someone
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+
+    /**
+     * Send a model sharing token to register the project as a model to use
+     * <p>
+     * If the token does not exist yet, create it and link to it a new pending instance maker.
+     *
+     * @param model     the id of the model
+     * @param recipient the address to send the sharing token to
+     *
+     * @return the pending instance maker
+     */
+    public InstanceMaker sendModelSharingToken(Project model, String recipient) {
+        User currentUser = securityManager.assertAndGetCurrentUser();
+
+        ModelSharingToken token = tokenDao.findModelShareByProjectAndRecipient(model, recipient);
+
+        if (token == null) {
+            // create an instance maker and link it to the project, but do not link it to any user
+            // this link will be set during token consumption
+            InstanceMaker newInstanceMaker = projectManager.addAndPersistInstanceMaker(model, null);
+
+            token = new ModelSharingToken();
+
+            token.setInstanceMaker(newInstanceMaker);
+            token.setExpirationDate(null);
+            token.setAuthenticationRequired(Boolean.TRUE);
+            token.setRecipient(recipient);
+
+            newInstanceMaker.setDisplayName(recipient);
+
+            tokenDao.persistToken(token);
+        }
+
+        token.setSender(currentUser.getDisplayName());
+
+        try {
+            sendTokenByEmail(token, recipient);
+        } catch (MessagingException ex) {
+            logger.error("Failed to send model sharing email", ex);
+            throw HttpErrorMessage.smtpError();
+        }
+
+        return token.getInstanceMaker();
+    }
+
+//    /**
+//     * Delete all model sharing tokens linked to the instance maker
+//     *
+//     * @param instanceMaker the instance maker for which we delete all invitations
+//     */
+//    public void deleteModelSharingTokenByInstanceMaker(InstanceMaker instanceMaker) {
+//        List<ModelSharingToken> tokens = tokenDao.findModelSharingByInstanceMaker(instanceMaker);
+//        tokens.stream().forEach(token -> tokenDao.deleteToken(token));
+//    }
+
+    /**
+     * Consume the model sharing token
+     *
+     * @param instanceMaker the instance maker related to the token
+     *
+     * @return true if the token can be consumed
+     */
+    public boolean consumeModelSharingToken(InstanceMaker instanceMaker) {
+        User user = requestManager.getCurrentUser();
+
+        if (user == null) {
+            throw HttpErrorMessage.authenticationRequired();
+        }
+
+        Project model = instanceMaker.getProject();
+
+        InstanceMaker existingInstanceMaker = projectManager
+            .findInstanceMakerByProjectAndUser(model, user);
+        if (existingInstanceMaker != null) {
+            throw HttpErrorMessage.tokenProcessingFailure(
+                MessageI18nKey.CURRENT_USER_CAN_ALREADY_USE_MODEL);
+        }
+
+        instanceMaker.setUser(user);
+        instanceMaker.setDisplayName(null);
 
         return true;
     }
@@ -368,6 +474,16 @@ public class TokenManager {
     ////////////////////////////////////////////////////////////////////////////////////////////////
     // for each token
     ////////////////////////////////////////////////////////////////////////////////////////////////
+
+//    /**
+//     * Delete all invitations linked to the project
+//     *
+//     * @param project the project for which we delete all tokens
+//     */
+//    public void deleteTokensByProject(Project project) {
+//        List<Token> tokens = tokenDao.findTokensByProject(project);
+//        tokens.stream().forEach(token -> tokenDao.deleteToken(token));
+//    }
 
     /**
      * Fetch token with given id from DAO. If it's outdated, it will be destroyed and null will be
@@ -378,12 +494,13 @@ public class TokenManager {
      * @return token if it exists and is not outdated, null otherwise
      */
     public Token getNotExpiredToken(Long id) {
-        Token token = tokenDao.getToken(id);
+        Token token = tokenDao.findToken(id);
+
         if (token != null && token.isOutdated()) {
             requestManager.sudo(() -> tokenDao.deleteToken(token));
             return null;
-        } else {
-            return token;
         }
+
+        return token;
     }
 }

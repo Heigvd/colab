@@ -191,22 +191,3 @@ export const useAndLoadNbDocuments = (
 
   return { nb: documents.length, status };
 };
-
-/**
- * fetch the id of the last document that was inserted
- *
- * @param context all needed data to know what to fetch
- * @returns the last inserted document id
- */
-export const useLastInsertedDocId = (context: DocumentOwnership): number | null => {
-  return useAppSelector(state => {
-    if (context.kind === 'DeliverableOfCardContent') {
-      return state.document.lastInsertedByCardContent[context.ownerId] || null;
-    } else if (context.kind === 'PartOfResource') {
-      return state.document.lastInsertedByResource[context.ownerId] || null;
-    } else {
-      // error
-      return null;
-    }
-  });
-};

@@ -1,6 +1,6 @@
 /*
  * The coLAB project
- * Copyright (C) 2021 AlbaSim, MEI, HEIG-VD, HES-SO
+ * Copyright (C) 2021-2022 AlbaSim, MEI, HEIG-VD, HES-SO
  *
  * Licensed under the MIT License
  */
@@ -10,6 +10,7 @@ import ch.colabproject.colab.api.Helper;
 import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.api.model.team.TeamMember;
 import ch.colabproject.colab.api.model.token.InvitationToken;
+import ch.colabproject.colab.api.model.token.ModelSharingToken;
 import ch.colabproject.colab.api.model.token.ResetLocalAccountPasswordToken;
 import ch.colabproject.colab.api.model.token.Token;
 import ch.colabproject.colab.api.model.token.VerifyLocalAccountToken;
@@ -22,6 +23,7 @@ import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 
 /**
+ * Token persistence
  *
  * @author maxence
  */
@@ -42,7 +44,7 @@ public class TokenDao {
      *
      * @return the token if found or null
      */
-    public Token getToken(Long id) {
+    public Token findToken(Long id) {
         return em.find(Token.class, id);
     }
 
@@ -83,7 +85,7 @@ public class TokenDao {
     }
 
     /**
-     * Find if an pending invitation has already be sent to recipient to join the project
+     * Find if a pending invitation has already be sent to recipient to join the project
      *
      * @param project   the project
      * @param recipient recipient
@@ -117,12 +119,32 @@ public class TokenDao {
     }
 
     /**
+     * Find if a pending model sharing token has already be sent to recipient to join the project
+     *
+     * @param project   the project
+     * @param recipient recipient
+     *
+     * @return model sharing if there is a pending one, null otherwise
+     */
+    public ModelSharingToken findModelShareByProjectAndRecipient(Project project, String recipient) {
+        try {
+            return em.createNamedQuery("ModelSharingToken.findByProjectAndRecipient",
+                ModelSharingToken.class)
+                .setParameter("projectId", project.getId())
+                .setParameter("recipient", recipient)
+                .getSingleResult();
+        } catch (NoResultException ex) {
+            return null;
+        }
+    }
+
+    /**
      * Persist the token
      *
      * @param token token to persist
      */
     public void persistToken(Token token) {
-        // set something to respect notNull contraints
+        // set something to respect notNull constraints
         // otherwise persist will fail
         // These values will be reset when the e-mail is sent.
         if (token.getHashMethod() == null) {
@@ -143,4 +165,14 @@ public class TokenDao {
     public void deleteToken(Token token) {
         em.remove(token);
     }
+
+//    public List<ModelSharingToken> findModelSharingByInstanceMaker(InstanceMaker instanceMaker) {
+//        // TODO Auto-generated method stub
+//        return null;
+//    }
+//
+//    public List<Token> findTokensByProject(Project project) {
+//        // TODO Auto-generated method stub
+//        return null;
+//    }
 }

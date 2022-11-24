@@ -7,27 +7,20 @@
 
 import { css, cx } from '@emotion/css';
 import {
-  faArrowLeft,
   faBoxArchive,
   faCog,
   faEllipsisV,
   faGlasses,
   faInfoCircle,
-  faPen,
-  faPersonDigging,
+  faTurnDown,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { entityIs } from 'colab-rest-client';
 import * as React from 'react';
 import * as API from '../../API/api';
 import { updateDocumentText } from '../../API/api';
 import useTranslations from '../../i18n/I18nContext';
-import { useProjectRootCard } from '../../selectors/cardSelector';
 import { useAndLoadTextOfDocument } from '../../selectors/documentSelector';
-import { useProjectBeingEdited } from '../../selectors/projectSelector';
 import { useAppDispatch } from '../../store/hooks';
-import { ConfirmIconButton } from '../common/element/ConfirmIconButton';
-import IconButton from '../common/element/IconButton';
 import { DiscreetInput, DiscreetTextArea } from '../common/element/Input';
 import { FeaturePreview } from '../common/element/Tips';
 import DropDownMenu from '../common/layout/DropDownMenu';
@@ -37,25 +30,26 @@ import OpenCloseModal from '../common/layout/OpenCloseModal';
 import { DocTextWrapper } from '../documents/DocTextItem';
 import DocEditorToolbox, {
   defaultDocEditorContext,
-  DocEditorCTX,
+  DocEditorCtx,
 } from '../documents/DocumentEditorToolbox';
 import DocumentList from '../documents/DocumentList';
 import {
   lightIconButtonStyle,
   localTitleStyle,
+  oneLineEllipsis,
   paddingAroundStyle,
   space_M,
   space_S,
   textSmall,
 } from '../styling/style';
 import {
-  getTheDirectResource,
+  //getTheDirectResource,
   ResourceAndRef,
   useResourceAccessLevelForCurrentUser,
 } from './resourcesCommonType';
 import ResourceSettings from './ResourceSettings';
 import ResourceScope from './summary/ResourceScope';
-import TargetResourceSummary from './summary/TargetResourceSummary';
+//import TargetResourceSummary from './summary/TargetResourceSummary';
 
 export interface ResourceDisplayProps {
   resource: ResourceAndRef;
@@ -71,10 +65,10 @@ export function ResourceDisplay({
   const dispatch = useAppDispatch();
   const i18n = useTranslations();
 
-  const { project } = useProjectBeingEdited();
-  const rootCard = useProjectRootCard(project);
+  // const rootCard = useProjectRootCard(project);
 
-  const [selectedDocId, setSelectedDocId] = React.useState<number | undefined | null>(undefined);
+  const [selectedDocId, setSelectedDocId] = React.useState<number | null>(null);
+  const [lastCreatedDocId, setLastCreatedDocId] = React.useState<number | null>(null);
   const [editMode, setEditMode] = React.useState(defaultDocEditorContext.editMode);
   const [showTree, setShowTree] = React.useState(false);
   const [markDownMode, setMarkDownMode] = React.useState(false);
@@ -94,19 +88,19 @@ export function ResourceDisplay({
   // get the effective access level on targetResource
   const accesLevel = useResourceAccessLevelForCurrentUser(resource.targetResource);
 
-  const [forceWrite, setForce] = React.useState(false);
+  // const [forceWrite, setForce] = React.useState(false);
 
   // acces level from current point of view is readonly, but user has a write acces on the
   // target resource
-  const canForce = accesLevel === 'WRITE' && (readOnly || !resource.isDirectResource);
+  // const couldWriteButNotDirect = accesLevel === 'WRITE' && (readOnly || !resource.isDirectResource);
 
-  const toggleForceCb = React.useCallback(() => {
-    setForce(current => !current);
-  }, []);
+  // const toggleForceCb = React.useCallback(() => {
+  //   setForce(current => !current);
+  // }, []);
 
-  const effectiveReadOnly = !forceWrite && (readOnly || !resource.isDirectResource);
+  const effectiveReadOnly = readOnly || accesLevel !== 'WRITE'; // !forceWrite && (readOnly || !resource.isDirectResource);
 
-  const category = getTheDirectResource(resource).category;
+  //const category = getTheDirectResource(resource).category;
 
   const { text: teaser } = useAndLoadTextOfDocument(targetResource.teaserId);
 
@@ -124,15 +118,15 @@ export function ResourceDisplay({
           grow={1}
           className={css({ marginBottom: space_S })}
         >
-          <IconButton
+          {/* <IconButton
             icon={faArrowLeft}
             title={i18n.modules.resource.backList}
             onClick={goBackToList}
             className={lightIconButtonStyle}
-          />
-          <Flex wrap="nowrap" align="center">
-            <TargetResourceSummary resource={resource} showText="tooltip" />
-            {category && (
+          /> */}
+          <Flex wrap="nowrap" align="center" className={css({ maxWidth: '80%' })}>
+            {/* <TargetResourceSummary resource={resource} showText="tooltip" /> */}
+            {/* {category && (
               <>
                 <DiscreetInput
                   value={category}
@@ -148,6 +142,14 @@ export function ResourceDisplay({
                 />
                 {' / '}
               </>
+            )} */}
+            {resource.targetResource.published && resource.isDirectResource && (
+              <FontAwesomeIcon
+                icon={faTurnDown}
+                title={i18n.common.published}
+                size="xs"
+                color="var(--darkGray)"
+              />
             )}
             <DiscreetInput
               value={targetResource.title || ''}
@@ -156,10 +158,34 @@ export function ResourceDisplay({
               onChange={newValue =>
                 dispatch(API.updateResource({ ...targetResource, title: newValue }))
               }
-              inputDisplayClassName={localTitleStyle}
+              inputDisplayClassName={cx(
+                localTitleStyle,
+                oneLineEllipsis,
+                css({ textOverflow: 'ellipsis' }),
+              )}
+              title={targetResource.title || ''}
             />
+            {(!(
+              resource.isDirectResource ||
+              resource.targetResource.cardId != null ||
+              resource.targetResource.cardContentId != null
+            ) ||
+              resource.targetResource.abstractCardTypeId != null) && (
+              <div
+                className={css({
+                  fontSize: '0.7em',
+                  color: 'var(--lightGray)',
+                  border: '1px solid var(--lightGray)',
+                  borderRadius: '10px',
+                  padding: '3px',
+                })}
+              >
+                Read only
+              </div>
+            )}
           </Flex>
-          {(canForce || resource.isDirectResource) && (
+          {/* {(couldWriteButNotDirect || resource.isDirectResource) && ( */}
+          <Flex align="center" wrap="nowrap">
             <FeaturePreview>
               <OpenCloseModal
                 modalClassName={css({
@@ -178,8 +204,8 @@ export function ResourceDisplay({
                 {close => <ResourceScope onCancel={close} resource={resource} />}
               </OpenCloseModal>
             </FeaturePreview>
-          )}
-          {!targetResource.published &&
+            {/* )} */}
+            {/* {!targetResource.published &&
             (targetResource.abstractCardTypeId != null ||
               (targetResource.cardId != null &&
                 entityIs(rootCard, 'Card') &&
@@ -188,78 +214,103 @@ export function ResourceDisplay({
                 icon={faPersonDigging}
                 title={i18n.modules.resource.unpublishedInfoType}
               />
-            )}
-          {canForce && !forceWrite && (
+            )} */}
+            {/* {canForce && !forceWrite && (
             <ConfirmIconButton
               icon={faPen}
               title={i18n.modules.resource.info.forceTooltip}
               onConfirm={toggleForceCb}
             />
-          )}
+          )} */}
 
-          {canForce && forceWrite && <span onClick={toggleForceCb}>done</span>}
-          {/* {effectiveReadOnly && !teaser ? (
+            {/* {canForce && forceWrite && <span onClick={toggleForceCb}>done</span>} */}
+            {/* {effectiveReadOnly && !teaser ? (
             <ResourceSettingsModal resource={resource} isButton />
           ) : ( */}
-          {readOnly ? (
-            <div></div>
-          ) : (
-            <DropDownMenu
-              icon={faEllipsisV}
-              valueComp={{ value: '', label: '' }}
-              buttonClassName={cx(lightIconButtonStyle, css({ marginLeft: space_S }))}
-              entries={[
-                ...(!effectiveReadOnly
-                  ? [
-                      {
-                        value: 'settings',
-                        label: (
-                          <>
-                            <FontAwesomeIcon icon={faCog} /> {i18n.common.settings}{' '}
-                          </>
-                        ),
-                        action: () => setShowSettings(true),
-                      },
-                    ]
-                  : []),
-                ...(!alwaysShowTeaser && !alwaysHideTeaser
-                  ? [
-                      {
-                        value: 'teaser',
-                        label: (
-                          <>
-                            <FontAwesomeIcon icon={faInfoCircle} />{' '}
-                            {`${
-                              showTeaser
-                                ? i18n.modules.resource.hideTeaser
-                                : i18n.modules.resource.showTeaser
-                            }`}
-                          </>
-                        ),
-                        action: () => setShowTeaser(showTeaser => !showTeaser),
-                      },
-                    ]
-                  : []),
-
-                ...(!readOnly
-                  ? [
-                      {
-                        value: 'remove',
-                        label: (
-                          <>
-                            <FontAwesomeIcon icon={faBoxArchive} /> {i18n.common.remove}
-                          </>
-                        ),
-                        action: () => {
-                          dispatch(API.removeAccessToResource(resource));
-                          goBackToList();
+            {readOnly ? (
+              <div></div>
+            ) : (
+              <DropDownMenu
+                icon={faEllipsisV}
+                valueComp={{ value: '', label: '' }}
+                buttonClassName={cx(lightIconButtonStyle, css({ marginLeft: space_S }))}
+                entries={[
+                  ...(!effectiveReadOnly && resource.isDirectResource
+                    ? [
+                        {
+                          value: 'settings',
+                          label: (
+                            <>
+                              <FontAwesomeIcon icon={faCog} /> {i18n.common.settings}{' '}
+                            </>
+                          ),
+                          action: () => setShowSettings(true),
                         },
-                      },
-                    ]
-                  : []),
-              ]}
-            />
-          )}
+                      ]
+                    : []),
+                  ...(!readOnly && resource.isDirectResource && resource.targetResource.id // TODO see conditions
+                    ? [
+                        {
+                          value: 'publishStatus',
+                          label: (
+                            <>
+                              <FontAwesomeIcon icon={faTurnDown} />
+                              {resource.targetResource.published
+                                ? i18n.modules.resource.actions.makePrivate
+                                : i18n.modules.resource.actions.shareWithChildren}
+                            </>
+                          ),
+                          action: () => {
+                            if (resource.targetResource.id) {
+                              if (resource.targetResource.published) {
+                                dispatch(API.unpublishResource(resource.targetResource.id));
+                              } else {
+                                dispatch(API.publishResource(resource.targetResource.id));
+                              }
+                            }
+                          },
+                        },
+                      ]
+                    : []),
+                  ...(!alwaysShowTeaser && !alwaysHideTeaser
+                    ? [
+                        {
+                          value: 'teaser',
+                          label: (
+                            <>
+                              <FontAwesomeIcon icon={faInfoCircle} />{' '}
+                              {`${
+                                showTeaser
+                                  ? i18n.modules.resource.hideTeaser
+                                  : i18n.modules.resource.showTeaser
+                              }`}
+                            </>
+                          ),
+                          action: () => setShowTeaser(showTeaser => !showTeaser),
+                        },
+                      ]
+                    : []),
+
+                  ...(!readOnly
+                    ? [
+                        {
+                          value: 'remove',
+                          label: (
+                            <>
+                              <FontAwesomeIcon icon={faBoxArchive} /> {i18n.common.remove}
+                            </>
+                          ),
+                          action: () => {
+                            dispatch(API.removeAccessToResource(resource));
+                            goBackToList();
+                          },
+                        },
+                      ]
+                    : []),
+                ]}
+              />
+            )}
+          </Flex>
         </Flex>
         <div>
           {showSettings && (
@@ -295,10 +346,12 @@ export function ResourceDisplay({
       </Flex>
 
       {targetResource.id && (
-        <DocEditorCTX.Provider
+        <DocEditorCtx.Provider
           value={{
             selectedDocId,
             setSelectedDocId,
+            lastCreatedId: lastCreatedDocId,
+            setLastCreatedId: setLastCreatedDocId,
             editMode,
             setEditMode,
             editToolbar,
@@ -318,7 +371,7 @@ export function ResourceDisplay({
               readOnly={effectiveReadOnly}
             />
           </div>
-        </DocEditorCTX.Provider>
+        </DocEditorCtx.Provider>
       )}
     </Flex>
   );
@@ -329,7 +382,10 @@ interface ResourceSettingsModalProps {
   onClose: () => void;
 }
 
-function ResourceSettingsModal({ resource, onClose }: ResourceSettingsModalProps): JSX.Element {
+export function ResourceSettingsModal({
+  resource,
+  onClose,
+}: ResourceSettingsModalProps): JSX.Element {
   const i18n = useTranslations();
 
   return (

@@ -1,6 +1,6 @@
 /*
  * The coLAB project
- * Copyright (C) 2021 AlbaSim, MEI, HEIG-VD, HES-SO
+ * Copyright (C) 2021-2022 AlbaSim, MEI, HEIG-VD, HES-SO
  *
  * Licensed under the MIT License
  */
@@ -21,8 +21,6 @@ export function isReadOnly(accessLevel: AccessLevel) {
 
 // ---------------------------------------------------------------------------------------------- //
 
-export type ResourceOwnership = CardTypeContext | CardOrCardContentContext;
-
 export type CardTypeContext = {
   kind: 'CardType';
   cardTypeId: number | null | undefined;
@@ -36,6 +34,15 @@ export type CardOrCardContentContext = {
 };
 
 export type ResourceCallContext = CardTypeContext | CardOrCardContentContext;
+
+export type ResourceOwnership = CardTypeContext | CardOrCardContentContext;
+
+export const defaultResourceOwnerShip: ResourceOwnership = {
+  kind: 'CardOrCardContent',
+  cardId: undefined,
+  cardContentId: null,
+  hasSeveralVariants: false,
+};
 
 // ---------------------------------------------------------------------------------------------- //
 

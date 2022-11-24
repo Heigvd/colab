@@ -1,6 +1,6 @@
 /*
  * The coLAB project
- * Copyright (C) 2021 AlbaSim, MEI, HEIG-VD, HES-SO
+ * Copyright (C) 2021-2022 AlbaSim, MEI, HEIG-VD, HES-SO
  *
  * Licensed under the MIT License
  */
@@ -9,8 +9,8 @@ import * as React from 'react';
 import Tabs, { Tab } from '../common/layout/Tabs';
 import DebugForm from './debugForm';
 import DebugInput from './DebugInput';
-import PlayWithGridOrganizer from './PlayWithGridOrganizer';
 import IconAsImage from './IconAsImage';
+import PlayWithGridOrganizer from './PlayWithGridOrganizer';
 
 export default function Debugger(): JSX.Element {
   return (

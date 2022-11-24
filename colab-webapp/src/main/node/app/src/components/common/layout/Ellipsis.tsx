@@ -1,6 +1,6 @@
 /*
  * The coLAB project
- * Copyright (C) 2022 maxence
+ * Copyright (C) 2022 maxence, AlbaSim, MEI, HEIG-VD, HES-SO
  *
  * Licensed under the MIT License
  */
@@ -16,6 +16,7 @@ interface EllipsisProps<T> {
   itemComp: (item: T) => React.ReactNode;
   alignEllipsis: FlexProps['align'];
   ellipsis?: React.ReactNode;
+  containerClassName?: string;
 }
 
 const containerStyle = css({
@@ -38,6 +39,7 @@ export default function Ellipsis<T>({
   itemComp,
   alignEllipsis,
   ellipsis = defaultEllipsis,
+  containerClassName,
 }: EllipsisProps<T>): JSX.Element {
   const containerRef = React.useRef<HTMLDivElement>();
   const itemsRef = React.useRef<HTMLDivElement>(null);
@@ -96,7 +98,7 @@ export default function Ellipsis<T>({
   const showEllipsis = num < items.length;
 
   return (
-    <div className={containerStyle + ' CONTAINER'} ref={setContainerRef}>
+    <div className={containerStyle + ' CONTAINER ' + containerClassName} ref={setContainerRef}>
       <div className={itemsStyle + ' ITEMS'} ref={itemsRef}>
         {visibleItems.map(item => itemComp(item))}
         <div

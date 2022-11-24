@@ -10,6 +10,7 @@ import ch.colabproject.colab.api.controller.document.RelatedPosition;
 import ch.colabproject.colab.api.controller.document.ResourceCategoryHelper;
 import ch.colabproject.colab.api.controller.document.ResourceManager;
 import ch.colabproject.colab.api.exceptions.ColabMergeException;
+import ch.colabproject.colab.api.model.DuplicationParam;
 import ch.colabproject.colab.api.model.document.AbstractResource;
 import ch.colabproject.colab.api.model.document.Document;
 import ch.colabproject.colab.api.model.document.Resource;
@@ -199,6 +200,31 @@ public class ResourceRestEndpoint {
         resourceDao.updateResourceRef(resourceRef);
     }
 
+    /**
+     * Duplicate the given resource
+     *
+     * @param resourceId the id of the resource we want to duplicate
+     * @param parentType the new owner
+     * @param parentId   if of the new owner
+     *
+     * @return the id of the duplicated resource
+     */
+    @PUT
+    @Path("copyResource1/{resourceId}/to/{parentType: (Card|CardContent|CardType)}/{parentId}")
+    public Long damr1(
+        @PathParam("resourceId") Long resourceId,
+        @PathParam("parentType") String parentType,
+        @PathParam("parentId") Long parentId) {
+        logger.debug("duplicate the resource #{} to {}#{}", resourceId, parentType,
+            parentId);
+
+        DuplicationParam effectiveParams = DuplicationParam.buildDefaultForCopyOfResource();
+
+        Resource newResource = resourceManager.copyResourceTo(resourceId, effectiveParams, parentType, parentId, false);
+
+        return newResource.getId();
+    }
+
     // *********************************************************************************************
     // change state of a resource
     // *********************************************************************************************
@@ -308,6 +334,7 @@ public class ResourceRestEndpoint {
         resource.setAbstractCardTypeId(resourceCreationData.getAbstractCardTypeId());
         resource.setCardId(resourceCreationData.getCardId());
         resource.setCardContentId(resourceCreationData.getCardContentId());
+        resource.setPublished(resourceCreationData.isPublished());
 
         Resource newResource = resourceManager.createResource(resource);
 

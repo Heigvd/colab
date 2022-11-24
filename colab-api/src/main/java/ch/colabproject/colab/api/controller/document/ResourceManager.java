@@ -6,11 +6,14 @@
  */
 package ch.colabproject.colab.api.controller.document;
 
+import ch.colabproject.colab.api.controller.DuplicationManager;
 import ch.colabproject.colab.api.controller.RequestManager;
 import ch.colabproject.colab.api.controller.card.CardContentManager;
 import ch.colabproject.colab.api.controller.card.CardManager;
 import ch.colabproject.colab.api.controller.card.CardTypeManager;
 import ch.colabproject.colab.api.controller.project.ProjectManager;
+import ch.colabproject.colab.api.exceptions.ColabMergeException;
+import ch.colabproject.colab.api.model.DuplicationParam;
 import ch.colabproject.colab.api.model.card.AbstractCardType;
 import ch.colabproject.colab.api.model.card.Card;
 import ch.colabproject.colab.api.model.card.CardContent;
@@ -22,9 +25,6 @@ import ch.colabproject.colab.api.model.document.Resourceable;
 import ch.colabproject.colab.api.model.document.TextDataBlock;
 import ch.colabproject.colab.api.model.link.StickyNoteLink;
 import ch.colabproject.colab.api.model.project.Project;
-import ch.colabproject.colab.api.persistence.jpa.card.CardContentDao;
-import ch.colabproject.colab.api.persistence.jpa.card.CardDao;
-import ch.colabproject.colab.api.persistence.jpa.card.CardTypeDao;
 import ch.colabproject.colab.api.persistence.jpa.document.DocumentDao;
 import ch.colabproject.colab.api.persistence.jpa.document.ResourceDao;
 import ch.colabproject.colab.api.rest.document.bean.ResourceExternalReference;
@@ -82,27 +82,15 @@ public class ResourceManager {
     @Inject
     private CardTypeManager cardTypeManager;
 
-    /** to load cardTypes */
-    @Inject
-    private CardTypeDao cardTypeDao;
-
     /**
      * Card specific logic management
      */
     @Inject
     private CardManager cardManager;
 
-    /** to load cards */
-    @Inject
-    private CardDao cardDao;
-
     /** to load cardContents */
     @Inject
     private CardContentManager cardContentManager;
-
-    /** to load cards */
-    @Inject
-    private CardContentDao cardContentDao;
 
     /**
      * Block specific logic management
@@ -132,6 +120,12 @@ public class ResourceManager {
      */
     @Inject
     private ResourceReferenceSpreadingHelper resourceReferenceSpreadingHelper;
+
+    /**
+     * File persistence management
+     */
+    @Inject
+    private FileManager fileManager;
 
     // *********************************************************************************************
     // find resource
@@ -475,6 +469,67 @@ public class ResourceManager {
     }
 
     // *********************************************************************************************
+    // duplication
+    // *********************************************************************************************
+
+    /**
+     * Duplicate the given resource with the given parameters to fine tune the duplication
+     *
+     * @param resourceId the id of the project to duplicate
+     * @param params     the parameters to fine tune the duplication
+     * @param parentType the new owner
+     * @param parentId   if of the new owner
+     * @param published  new publication status
+     *
+     * @return the new project
+     */
+    public Resource copyResourceTo(Long resourceId, DuplicationParam params, String parentType,
+        Long parentId, boolean published) {
+        AbstractResource originalResourceOrRef = assertAndGetResourceOrRef(resourceId);
+
+        Resource originalResource;
+        if (originalResourceOrRef instanceof Resource) {
+            originalResource = (Resource) originalResourceOrRef;
+        } else if (originalResourceOrRef instanceof ResourceRef) {
+            originalResource = originalResourceOrRef.resolve();
+        } else {
+            throw new IllegalStateException("abstract card type implementation not handled");
+        }
+
+        DuplicationManager duplicator = new DuplicationManager(params,
+            resourceReferenceSpreadingHelper, fileManager);
+
+        Resource newResourceJavaObject;
+        try {
+            newResourceJavaObject = (Resource) duplicator.duplicateResource(originalResource);
+        } catch (ColabMergeException e) {
+            throw HttpErrorMessage.dataIntegrityFailure();
+        }
+
+        Resourceable owner = null;
+        if ("Card".equals(parentType)) {
+            owner = cardManager.assertAndGetCard(parentId);
+        } else if ("CardContent".equals(parentType)) {
+            owner = cardContentManager.assertAndGetCardContent(parentId);
+        } else if ("CardType".equals(parentType)) {
+            owner = cardTypeManager.assertAndGetCardTypeOrRef(parentId);
+        }
+        newResourceJavaObject.setOwner(owner);
+        owner.getDirectAbstractResources().add(newResourceJavaObject);
+
+        Resource newResource = createResource(newResourceJavaObject);
+
+        duplicator.duplicateDataIntoJCR();
+
+        duplicator.clear();
+
+        // init or revive new references
+        resourceReferenceSpreadingHelper.spreadAvailableResourceDown(newResource);
+
+        return newResource;
+    }
+
+    // *********************************************************************************************
     // state cycle
     // *********************************************************************************************
 
@@ -613,11 +668,11 @@ public class ResourceManager {
         // not that happy with this resourceable resolver
         // todo: normalize it
         if ("Card".equals(parentType)) {
-            parent = cardDao.findCard(parentId);
+            parent = cardManager.assertAndGetCard(parentId);
         } else if ("CardContent".equals(parentType)) {
-            parent = cardContentDao.findCardContent(parentId);
+            parent = cardContentManager.assertAndGetCardContent(parentId);
         } else if ("CardType".equals(parentType)) {
-            parent = cardTypeDao.findAbstractCardType(parentId);
+            parent = cardTypeManager.assertAndGetCardTypeOrRef(parentId);
         }
         this.moveResource(resourceId, parent, published);
     }

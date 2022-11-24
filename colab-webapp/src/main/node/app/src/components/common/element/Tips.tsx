@@ -1,6 +1,6 @@
 /*
  * The coLAB project
- * Copyright (C) 2021 AlbaSim, MEI, HEIG-VD, HES-SO
+ * Copyright (C) 2021-2022 AlbaSim, MEI, HEIG-VD, HES-SO
  *
  * Licensed under the MIT License
  */
@@ -63,6 +63,7 @@ export interface TipsProps {
   interactionType?: 'CLICK' | 'HOVER';
   children?: React.ReactNode;
   className?: string;
+  iconClassName?: string;
 }
 
 function getIconProp(tipsType: TipsProps['tipsType']): IconProp {
@@ -183,6 +184,7 @@ export default function Tips({
   tipsType = 'TIPS',
   interactionType = 'HOVER',
   children,
+  iconClassName,
   className,
 }: TipsProps): JSX.Element {
   const [coord, setCoord] = React.useState<[number, number] | undefined>(undefined);
@@ -257,7 +259,7 @@ export default function Tips({
         onMouseMove={onMoveCb}
         onClick={onClickCb}
       >
-        <FontAwesomeIcon icon={getIconProp(tipsType)} />
+        <FontAwesomeIcon icon={getIconProp(tipsType)} className={iconClassName} />
         {coord && displayed && <div className={overlayStyle(coord)}>{children}</div>}
       </span>
     );
@@ -277,16 +279,11 @@ export function FeaturePreview({ children }: TipsProps): JSX.Element {
 }
 
 export function WIPContainer({ children }: TipsProps): JSX.Element {
-  const i18n = useTranslations();
-
   const config = React.useContext(TipsCtx);
 
   if (config['WIP'].value) {
     return (
-      <span
-        title={i18n.tips.info.wip}
-        className={css({ display: 'contents', '& > *': { boxShadow: '0 0 20px 2px yellow' } })}
-      >
+      <span className={css({ display: 'contents', '& > *': { boxShadow: '0 0 20px 2px yellow' } })}>
         {/*<p className={cx(textSmall, lightIconButtonStyle)}>--- {i18n.tips.info.wip} ---</p>*/}
         {children}
       </span>

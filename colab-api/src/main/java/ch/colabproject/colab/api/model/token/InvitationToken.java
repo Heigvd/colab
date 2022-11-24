@@ -1,6 +1,6 @@
 /*
  * The coLAB project
- * Copyright (C) 2021 AlbaSim, MEI, HEIG-VD, HES-SO
+ * Copyright (C) 2021-2022 AlbaSim, MEI, HEIG-VD, HES-SO
  *
  * Licensed under the MIT License
  */
@@ -21,7 +21,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 /**
- * A token to validate the email address of a local account
+ * A token to invite to be a team member of a project
  *
  * @author maxence
  */
@@ -34,7 +34,7 @@ import javax.validation.constraints.Size;
 @NamedQuery(
     name = "InvitationToken.findByProjectAndRecipient",
     query = "SELECT t from InvitationToken t "
-        + "WHERE t.teamMember.project.id = :projectId AND t.recipient =:recipient")
+        + "WHERE t.teamMember.project.id = :projectId AND t.recipient = :recipient")
 @NamedQuery(
     name = "InvitationToken.findByTeamMember",
     query = "SELECT t from InvitationToken t "
@@ -152,6 +152,11 @@ public class InvitationToken extends Token {
     @Override
     public boolean consume(TokenManager tokenManager) {
         return tokenManager.consumeInvitationToken(teamMember);
+    }
+
+    @Override
+    public ExpirationPolicy getExpirationPolicy() {
+        return ExpirationPolicy.ONE_SHOT;
     }
 
     // ---------------------------------------------------------------------------------------------

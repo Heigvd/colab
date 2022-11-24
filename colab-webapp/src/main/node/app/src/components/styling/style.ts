@@ -12,13 +12,15 @@ export const pictoColours = css({
   '--pictoYellow': '#FFE527', // main yellow
   '--pictoLightBlue': '#8CE9FB', // blue-yellow intersection
   '--pictoPeach': '#FCC08B', // yellow-orange intersection
-  '--pictoSteelBlue': '#68A8C3', // blue-orange intersection
+  '--pictoSteelBlue': '#50BFD5', // blue-orange intersection
   '--pictoGrey': '#9AA4B1', // center colour
 });
 
 export const errorColor = '#e51c23';
 export const warningColor = '#ff9800';
 export const successColor = '#4caf50';
+export const primaryColor = '#333';
+export const secondaryColor = '#50BFD5';
 
 export const errorStyle = css({
   color: 'var(--warningColor)',
@@ -35,12 +37,12 @@ export const successStyle = css({
 export const lightTheme = cx(
   pictoColours,
   css({
-    '--primaryColor': '#333',
+    '--primaryColor': primaryColor,
     '--primaryColorShade': '#494949',
     '--primaryColorContrast': '#fff',
     '--primaryColorContrastShade': '#FCF9F9',
 
-    '--secondaryColor': 'var(--pictoSteelBlue)',
+    '--secondaryColor': secondaryColor,
     '--secondaryColorShade': 'var(--pictoBlue)',
     '--secondaryColorContrast': '#FFF',
     '--secondaryColorContrastShade': '#FFF',
@@ -79,7 +81,7 @@ export const normalThemeMode = css({
     margin: '0 0 5px 0',
   },
   'h1, h2, h3, h4': {
-    margin: '0 0 5px 0',
+    margin: '0 0 0 0',
   },
   h1: {
     fontSize: '1.5rem',
@@ -321,9 +323,8 @@ export const sideTabButton = css({
 
 export const fixedButtonStyle = css({
   position: 'fixed',
-  bottom: '2rem',
-  right: '4vw',
-  boxShadow: boxShadow,
+  top: '3rem',
+  right: '1rem',
 });
 
 export const lightIconButtonStyle = css({
@@ -427,6 +428,10 @@ export const defaultColumnContainerStyle = cx(
     flexDirection: 'column',
   }),
 );
+
+export const modelBGColor = css({
+  backgroundColor: '#50BFD5B5',
+});
 
 export const mainHeaderHeight = '50px';
 

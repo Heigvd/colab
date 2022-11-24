@@ -1,6 +1,6 @@
 /*
  * The coLAB project
- * Copyright (C) 2021 AlbaSim, MEI, HEIG-VD, HES-SO
+ * Copyright (C) 2021-2022 AlbaSim, MEI, HEIG-VD, HES-SO
  *
  * Licensed under the MIT License
  */
@@ -11,7 +11,7 @@ import { faChevronDown, faChevronUp } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import * as React from 'react';
 import useTranslations from '../../../i18n/I18nContext';
-import { paddingAroundStyle, space_M, space_S } from '../../styling/style';
+import { paddingAroundStyle, space_S } from '../../styling/style';
 import IconButton from '../element/IconButton';
 import Flex from './Flex';
 
@@ -31,11 +31,11 @@ const defaultLabelStyle = cx(
   css({
     padding: space_S,
     marginTop: space_S,
-    borderBottom: '1px solid var(--darkGray)',
+    borderBottom: '1px solid var(--lightGray)',
     color: 'var(--fgColor)',
     '&:hover': {
       color: 'var(--hoverfgColor)',
-      backgroundColor: 'var(--lightGray)',
+      backgroundColor: 'rgba(0, 0, 0, 0.05)',
       cursor: 'pointer',
     },
   }),
@@ -90,7 +90,7 @@ export default function Collapsible({
               ? i18n.common.close
               : i18n.common.open
           }
-          className={css({ marginLeft: space_M })}
+          className={css({ marginLeft: space_S })}
         />
       </Flex>
       <Flex className={cx(showContent ? openStyle : closeStyle, contentClassName)}>{children}</Flex>

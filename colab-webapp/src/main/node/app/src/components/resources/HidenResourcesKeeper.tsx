@@ -1,17 +1,18 @@
 /*
  * The coLAB project
- * Copyright (C) 2021 AlbaSim, MEI, HEIG-VD, HES-SO
+ * Copyright (C) 2021-2022 AlbaSim, MEI, HEIG-VD, HES-SO
  *
  * Licensed under the MIT License
  */
 
 import { css, cx } from '@emotion/css';
 import { faEye } from '@fortawesome/free-regular-svg-icons';
-import { faArrowUp, faBoxArchive, faGhost, faTrash } from '@fortawesome/free-solid-svg-icons';
+import { faArchive, faArrowUp, faBoxArchive, faTrash } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import * as React from 'react';
 import * as API from '../../API/api';
 import useTranslations from '../../i18n/I18nContext';
+import { useAndLoadResources } from '../../selectors/resourceSelector';
 import { useAppDispatch } from '../../store/hooks';
 import IconButton from '../common/element/IconButton';
 import Flex from '../common/layout/Flex';
@@ -20,18 +21,21 @@ import { errorColor, iconButton, lightIconButtonStyle, space_M, space_S } from '
 import { ResourceDisplay } from './ResourceDisplay';
 import { ResourceAndRef } from './resourcesCommonType';
 import ResourcesList from './ResourcesList';
+import { ResourcesCtx } from './ResourcesMainView';
 
-interface ResourcesLoserKeeperProps {
-  resources: ResourceAndRef[];
+interface HidenResourcesKeeperProps {
   collapsedClassName?: string;
 }
 
-export default function ResourcesLoserKeeper({
-  resources,
+export default function HidenResourcesKeeper({
   collapsedClassName,
-}: ResourcesLoserKeeperProps): JSX.Element {
-  const i18n = useTranslations();
+}: HidenResourcesKeeperProps): JSX.Element {
   const dispatch = useAppDispatch();
+  const i18n = useTranslations();
+
+  const { resourceOwnership } = React.useContext(ResourcesCtx);
+
+  const { ghostResources: resources } = useAndLoadResources(resourceOwnership);
 
   const displayResourceItem = React.useCallback(
     (resource: ResourceAndRef) => (
@@ -111,12 +115,16 @@ export default function ResourcesLoserKeeper({
       title={i18n.modules.content.removedDocuments}
       showCloseButton
       collapsedChildren={
-        <Flex justify="center" align="center" className={collapsedClassName}>
-          <span className={css({ marginRight: space_S, fontSize: '0.8em' })}>
-            {resources.length}
-          </span>
-          <FontAwesomeIcon title={i18n.modules.content.removedDocuments} icon={faGhost} />
-        </Flex>
+        resources != null && resources.length > 0 ? (
+          <Flex justify="center" align="center" className={collapsedClassName}>
+            {/* <span className={css({ marginRight: space_S, fontSize: '0.8em' })}>
+              {resources.length}
+            </span> */}
+            <FontAwesomeIcon title={i18n.modules.content.removedDocuments} icon={faArchive} />
+          </Flex>
+        ) : (
+          <></>
+        )
       }
       className={css({ '&:hover': { textDecoration: 'none' } })}
       modalBodyClassName={css({ alignItems: 'stretch' })}

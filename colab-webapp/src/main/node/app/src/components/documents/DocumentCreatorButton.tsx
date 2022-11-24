@@ -7,6 +7,7 @@
 
 import { IconProp } from '@fortawesome/fontawesome-svg-core';
 import { faFile, faFrog, faLink, faParagraph, faPlus } from '@fortawesome/free-solid-svg-icons';
+import { entityIs } from 'colab-rest-client';
 import * as React from 'react';
 import * as API from '../../API/api';
 import useTranslations from '../../i18n/I18nContext';
@@ -14,6 +15,7 @@ import { useAppDispatch } from '../../store/hooks';
 import IconButton, { IconButtonProps } from '../common/element/IconButton';
 import DropDownMenu from '../common/layout/DropDownMenu';
 import { DocumentKind, DocumentOwnership } from './documentCommonType';
+import { DocEditorCtx } from './DocumentEditorToolbox';
 
 function iconByType(docKind: DocumentKind): IconProp {
   if (docKind === 'DocumentFile') {
@@ -65,6 +67,8 @@ export default function DocumentCreatorButton({
   const dispatch = useAppDispatch();
   const i18n = useTranslations();
 
+  const { setLastCreatedId: setLastCreatedId } = React.useContext(DocEditorCtx);
+
   const createDoc = React.useCallback(
     (place?: 'BEFORE' | 'AFTER') => {
       if (selectedDocumentId != null) {
@@ -76,7 +80,15 @@ export default function DocumentCreatorButton({
                 neighbourDocId: selectedDocumentId,
                 docKind: docKind,
               }),
-            );
+            ).then(action => {
+              if (setLastCreatedId != null) {
+                if (action.meta.requestStatus === 'fulfilled') {
+                  if (entityIs(action.payload, 'Document') && action.payload.id != null) {
+                    setLastCreatedId(action.payload.id);
+                  }
+                }
+              }
+            });
           } else if (docOwnership.kind == 'PartOfResource') {
             dispatch(
               API.addDocumentToResourceBefore({
@@ -84,7 +96,15 @@ export default function DocumentCreatorButton({
                 neighbourDocId: selectedDocumentId,
                 docKind: docKind,
               }),
-            );
+            ).then(action => {
+              if (setLastCreatedId != null) {
+                if (action.meta.requestStatus === 'fulfilled') {
+                  if (entityIs(action.payload, 'Document') && action.payload.id != null) {
+                    setLastCreatedId(action.payload.id);
+                  }
+                }
+              }
+            });
           }
         } else if (place === 'AFTER') {
           if (docOwnership.kind == 'DeliverableOfCardContent') {
@@ -94,7 +114,15 @@ export default function DocumentCreatorButton({
                 neighbourDocId: selectedDocumentId,
                 docKind: docKind,
               }),
-            );
+            ).then(action => {
+              if (setLastCreatedId != null) {
+                if (action.meta.requestStatus === 'fulfilled') {
+                  if (entityIs(action.payload, 'Document') && action.payload.id != null) {
+                    setLastCreatedId(action.payload.id);
+                  }
+                }
+              }
+            });
           } else if (docOwnership.kind == 'PartOfResource') {
             dispatch(
               API.addDocumentToResourceAfter({
@@ -102,7 +130,15 @@ export default function DocumentCreatorButton({
                 neighbourDocId: selectedDocumentId,
                 docKind: docKind,
               }),
-            );
+            ).then(action => {
+              if (setLastCreatedId != null) {
+                if (action.meta.requestStatus === 'fulfilled') {
+                  if (entityIs(action.payload, 'Document') && action.payload.id != null) {
+                    setLastCreatedId(action.payload.id);
+                  }
+                }
+              }
+            });
           }
         }
       } else {
@@ -113,14 +149,30 @@ export default function DocumentCreatorButton({
                 cardContentId: docOwnership.ownerId,
                 docKind: docKind,
               }),
-            );
+            ).then(action => {
+              if (setLastCreatedId != null) {
+                if (action.meta.requestStatus === 'fulfilled') {
+                  if (entityIs(action.payload, 'Document') && action.payload.id != null) {
+                    setLastCreatedId(action.payload.id);
+                  }
+                }
+              }
+            });
           } else if (docOwnership.kind == 'PartOfResource') {
             dispatch(
               API.addDocumentToResourceAtBeginning({
                 resourceId: docOwnership.ownerId,
                 docKind: docKind,
               }),
-            );
+            ).then(action => {
+              if (setLastCreatedId != null) {
+                if (action.meta.requestStatus === 'fulfilled') {
+                  if (entityIs(action.payload, 'Document') && action.payload.id != null) {
+                    setLastCreatedId(action.payload.id);
+                  }
+                }
+              }
+            });
           }
         } else {
           if (docOwnership.kind == 'DeliverableOfCardContent') {
@@ -129,19 +181,35 @@ export default function DocumentCreatorButton({
                 cardContentId: docOwnership.ownerId,
                 docKind: docKind,
               }),
-            );
+            ).then(action => {
+              if (setLastCreatedId != null) {
+                if (action.meta.requestStatus === 'fulfilled') {
+                  if (entityIs(action.payload, 'Document') && action.payload.id != null) {
+                    setLastCreatedId(action.payload.id);
+                  }
+                }
+              }
+            });
           } else if (docOwnership.kind == 'PartOfResource') {
             dispatch(
               API.addDocumentToResourceAtEnd({
                 resourceId: docOwnership.ownerId,
                 docKind: docKind,
               }),
-            );
+            ).then(action => {
+              if (setLastCreatedId != null) {
+                if (action.meta.requestStatus === 'fulfilled') {
+                  if (entityIs(action.payload, 'Document') && action.payload.id != null) {
+                    setLastCreatedId(action.payload.id);
+                  }
+                }
+              }
+            });
           }
         }
       }
     },
-    [docOwnership.kind, docOwnership.ownerId, dispatch, selectedDocumentId, docKind],
+    [docOwnership, dispatch, selectedDocumentId, docKind, setLastCreatedId],
   );
 
   return (
