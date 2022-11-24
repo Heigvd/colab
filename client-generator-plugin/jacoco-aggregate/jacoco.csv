@@ -8,5 +8,5 @@ client-generator-plugin/client-generator-model,ch.colabproject.colab.generator.m
 client-generator-plugin/client-generator-model,ch.colabproject.colab.generator.model.interfaces,WithJsonDiscriminator,17,0,2,0,5,0,3,0,2,0
 client-generator-plugin/client-generator-model,ch.colabproject.colab.generator.model.exceptions,HttpErrorMessage,130,0,0,0,34,0,24,0,24,0
 client-generator-plugin/client-generator-model,ch.colabproject.colab.generator.model.exceptions,HttpException,19,0,0,0,8,0,5,0,5,0
-client-generator-plugin/client-generator-model,ch.colabproject.colab.generator.model.exceptions,MessageI18nKey,34,0,0,0,4,0,1,0,1,0
+client-generator-plugin/client-generator-model,ch.colabproject.colab.generator.model.exceptions,MessageI18nKey,44,0,0,0,5,0,1,0,1,0
 client-generator-plugin/client-generator-model,ch.colabproject.colab.generator.model.exceptions,HttpErrorMessage.MessageCode,154,0,0,0,16,0,1,0,1,0

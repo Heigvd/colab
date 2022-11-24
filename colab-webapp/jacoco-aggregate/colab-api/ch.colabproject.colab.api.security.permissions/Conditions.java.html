@@ -64,7 +64,7 @@ public final class Conditions {
         /**
          * Evaluate the condition
          *
-         * @param requestManager the request Manager
+         * @param requestManager  the request Manager
          * @param securityManager the security manager
          *
          * @return evaluation result
@@ -85,7 +85,7 @@ public final class Conditions {
         /**
          * Evaluate the condition
          *
-         * @param requestManager the request Manager
+         * @param requestManager  the request Manager
          * @param securityManager the security manager
          *
          * @return evaluation result
@@ -658,6 +658,62 @@ public final class Conditions {
     }
 
     /**
+     * Do current and given user work on a common project ?
+     */
+    public static class DoCurrentUserWorkOnSameProjectThanUser extends Condition {
+
+        /** the other user */
+        private final User user;
+
+        /**
+         * Create a are teammate statement
+         *
+         * @param user the user to check against
+         */
+<span class="nc" id="L673">        public DoCurrentUserWorkOnSameProjectThanUser(User user) {</span>
+<span class="nc" id="L674">            this.user = user;</span>
+<span class="nc" id="L675">        }</span>
+
+        @Override
+        protected boolean internalEval(RequestManager requestManager,
+            SecurityManager securityManager) {
+<span class="nc" id="L680">            User currentUser = requestManager.getCurrentUser();</span>
+<span class="nc bnc" id="L681" title="All 2 branches missed.">            return currentUser != null</span>
+<span class="nc bnc" id="L682" title="All 2 branches missed.">                &amp;&amp; securityManager.doUsersHaveCommonProject(currentUser, this.user);</span>
+        }
+
+        @Override
+        public String toString() {
+<span class="nc" id="L687">            return &quot;DoCurrentUserWorkOnSameProjectThanUser(&quot; + user + &quot;)&quot;;</span>
+        }
+
+        @Override
+        public int hashCode() {
+<span class="nc" id="L692">            int hash = 3;</span>
+<span class="nc" id="L693">            hash = 31 * hash + Objects.hashCode(this.user);</span>
+<span class="nc" id="L694">            return hash;</span>
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+<span class="nc bnc" id="L699" title="All 2 branches missed.">            if (this == obj) {</span>
+<span class="nc" id="L700">                return true;</span>
+            }
+<span class="nc bnc" id="L702" title="All 2 branches missed.">            if (obj == null) {</span>
+<span class="nc" id="L703">                return false;</span>
+            }
+<span class="nc bnc" id="L705" title="All 2 branches missed.">            if (getClass() != obj.getClass()) {</span>
+<span class="nc" id="L706">                return false;</span>
+            }
+<span class="nc" id="L708">            final DoCurrentUserWorkOnSameProjectThanUser other = (DoCurrentUserWorkOnSameProjectThanUser) obj;</span>
+<span class="nc bnc" id="L709" title="All 2 branches missed.">            if (!Objects.equals(this.user, other.user)) {</span>
+<span class="nc" id="L710">                return false;</span>
+            }
+<span class="nc" id="L712">            return true;</span>
+        }
+    }
+
+    /**
      * Is the current user authenticated ?
      */
     private static class IsAuthenticated extends Condition {
@@ -665,24 +721,24 @@ public final class Conditions {
         @Override
         protected boolean internalEval(RequestManager requestManager,
             SecurityManager securityManager) {
-<span class="nc" id="L668">            return requestManager.isAuthenticated();</span>
+<span class="nc" id="L724">            return requestManager.isAuthenticated();</span>
         }
 
         @Override
         public String toString() {
-<span class="nc" id="L673">            return &quot;IsAuthenticated&quot;;</span>
+<span class="nc" id="L729">            return &quot;IsAuthenticated&quot;;</span>
         }
 
         @Override
         public boolean equals(Object obj) {
-<span class="nc" id="L678">            return obj instanceof IsAuthenticated;</span>
+<span class="nc" id="L734">            return obj instanceof IsAuthenticated;</span>
         }
 
         @Override
         public int hashCode() {
-<span class="nc" id="L683">            int hash = 7;</span>
-<span class="nc" id="L684">            hash = 83 * hash;</span>
-<span class="nc" id="L685">            return hash;</span>
+<span class="nc" id="L739">            int hash = 7;</span>
+<span class="nc" id="L740">            hash = 83 * hash;</span>
+<span class="nc" id="L741">            return hash;</span>
         }
     }
 
@@ -699,53 +755,53 @@ public final class Conditions {
          *
          * @param card the card
          */
-<span class="nc" id="L702">        public HasCardWriteRight(Card card) {</span>
-<span class="nc" id="L703">            this.card = card;</span>
-<span class="nc" id="L704">        }</span>
+<span class="nc" id="L758">        public HasCardWriteRight(Card card) {</span>
+<span class="nc" id="L759">            this.card = card;</span>
+<span class="nc" id="L760">        }</span>
 
         /**
          * Create a has write access statement
          *
          * @param cardContent a card content
          */
-<span class="nc" id="L711">        public HasCardWriteRight(CardContent cardContent) {</span>
-<span class="nc" id="L712">            this.card = cardContent.getCard();</span>
-<span class="nc" id="L713">        }</span>
+<span class="nc" id="L767">        public HasCardWriteRight(CardContent cardContent) {</span>
+<span class="nc" id="L768">            this.card = cardContent.getCard();</span>
+<span class="nc" id="L769">        }</span>
 
         @Override
         protected boolean internalEval(RequestManager requestManager,
             SecurityManager securityManager) {
-<span class="nc" id="L718">            return securityManager.hasReadWriteAccess(card);</span>
+<span class="nc" id="L774">            return securityManager.hasReadWriteAccess(card);</span>
         }
 
         @Override
         public String toString() {
-<span class="nc" id="L723">            return &quot;HasCardWriteRight(&quot; + card + &quot;)&quot;;</span>
+<span class="nc" id="L779">            return &quot;HasCardWriteRight(&quot; + card + &quot;)&quot;;</span>
         }
 
         @Override
         public int hashCode() {
-<span class="nc" id="L728">            int hash = 7;</span>
-<span class="nc" id="L729">            hash = 47 * hash + Objects.hashCode(this.card);</span>
-<span class="nc" id="L730">            return hash;</span>
+<span class="nc" id="L784">            int hash = 7;</span>
+<span class="nc" id="L785">            hash = 47 * hash + Objects.hashCode(this.card);</span>
+<span class="nc" id="L786">            return hash;</span>
         }
 
         @Override
         public boolean equals(Object obj) {
-<span class="nc bnc" id="L735" title="All 2 branches missed.">            if (this == obj) {</span>
-<span class="nc" id="L736">                return true;</span>
+<span class="nc bnc" id="L791" title="All 2 branches missed.">            if (this == obj) {</span>
+<span class="nc" id="L792">                return true;</span>
             }
-<span class="nc bnc" id="L738" title="All 2 branches missed.">            if (obj == null) {</span>
-<span class="nc" id="L739">                return false;</span>
+<span class="nc bnc" id="L794" title="All 2 branches missed.">            if (obj == null) {</span>
+<span class="nc" id="L795">                return false;</span>
             }
-<span class="nc bnc" id="L741" title="All 2 branches missed.">            if (getClass() != obj.getClass()) {</span>
-<span class="nc" id="L742">                return false;</span>
+<span class="nc bnc" id="L797" title="All 2 branches missed.">            if (getClass() != obj.getClass()) {</span>
+<span class="nc" id="L798">                return false;</span>
             }
-<span class="nc" id="L744">            final HasCardWriteRight other = (HasCardWriteRight) obj;</span>
-<span class="nc bnc" id="L745" title="All 2 branches missed.">            if (!Objects.equals(this.card, other.card)) {</span>
-<span class="nc" id="L746">                return false;</span>
+<span class="nc" id="L800">            final HasCardWriteRight other = (HasCardWriteRight) obj;</span>
+<span class="nc bnc" id="L801" title="All 2 branches missed.">            if (!Objects.equals(this.card, other.card)) {</span>
+<span class="nc" id="L802">                return false;</span>
             }
-<span class="nc" id="L748">            return true;</span>
+<span class="nc" id="L804">            return true;</span>
         }
     }
 
@@ -762,53 +818,53 @@ public final class Conditions {
          *
          * @param card the card
          */
-<span class="nc" id="L765">        public HasCardReadRight(Card card) {</span>
-<span class="nc" id="L766">            this.card = card;</span>
-<span class="nc" id="L767">        }</span>
+<span class="nc" id="L821">        public HasCardReadRight(Card card) {</span>
+<span class="nc" id="L822">            this.card = card;</span>
+<span class="nc" id="L823">        }</span>
 
         /**
          * Create a has read access statement
          *
          * @param cardContent a card content
          */
-<span class="nc" id="L774">        public HasCardReadRight(CardContent cardContent) {</span>
-<span class="nc" id="L775">            this.card = cardContent.getCard();</span>
-<span class="nc" id="L776">        }</span>
+<span class="nc" id="L830">        public HasCardReadRight(CardContent cardContent) {</span>
+<span class="nc" id="L831">            this.card = cardContent.getCard();</span>
+<span class="nc" id="L832">        }</span>
 
         @Override
         protected boolean internalEval(RequestManager requestManager,
             SecurityManager securityManager) {
-<span class="nc" id="L781">            return securityManager.hasReadAccess(card);</span>
+<span class="nc" id="L837">            return securityManager.hasReadAccess(card);</span>
         }
 
         @Override
         public String toString() {
-<span class="nc" id="L786">            return &quot;HasCardReadRight(&quot; + card + &quot;)&quot;;</span>
+<span class="nc" id="L842">            return &quot;HasCardReadRight(&quot; + card + &quot;)&quot;;</span>
         }
 
         @Override
         public int hashCode() {
-<span class="nc" id="L791">            int hash = 3;</span>
-<span class="nc" id="L792">            hash = 71 * hash + Objects.hashCode(this.card);</span>
-<span class="nc" id="L793">            return hash;</span>
+<span class="nc" id="L847">            int hash = 3;</span>
+<span class="nc" id="L848">            hash = 71 * hash + Objects.hashCode(this.card);</span>
+<span class="nc" id="L849">            return hash;</span>
         }
 
         @Override
         public boolean equals(Object obj) {
-<span class="nc bnc" id="L798" title="All 2 branches missed.">            if (this == obj) {</span>
-<span class="nc" id="L799">                return true;</span>
+<span class="nc bnc" id="L854" title="All 2 branches missed.">            if (this == obj) {</span>
+<span class="nc" id="L855">                return true;</span>
             }
-<span class="nc bnc" id="L801" title="All 2 branches missed.">            if (obj == null) {</span>
-<span class="nc" id="L802">                return false;</span>
+<span class="nc bnc" id="L857" title="All 2 branches missed.">            if (obj == null) {</span>
+<span class="nc" id="L858">                return false;</span>
             }
-<span class="nc bnc" id="L804" title="All 2 branches missed.">            if (getClass() != obj.getClass()) {</span>
-<span class="nc" id="L805">                return false;</span>
+<span class="nc bnc" id="L860" title="All 2 branches missed.">            if (getClass() != obj.getClass()) {</span>
+<span class="nc" id="L861">                return false;</span>
             }
-<span class="nc" id="L807">            final HasCardReadRight other = (HasCardReadRight) obj;</span>
-<span class="nc bnc" id="L808" title="All 2 branches missed.">            if (!Objects.equals(this.card, other.card)) {</span>
-<span class="nc" id="L809">                return false;</span>
+<span class="nc" id="L863">            final HasCardReadRight other = (HasCardReadRight) obj;</span>
+<span class="nc bnc" id="L864" title="All 2 branches missed.">            if (!Objects.equals(this.card, other.card)) {</span>
+<span class="nc" id="L865">                return false;</span>
             }
-<span class="nc" id="L811">            return true;</span>
+<span class="nc" id="L867">            return true;</span>
         }
     }
 

@@ -118,7 +118,7 @@ import org.slf4j.LoggerFactory;
 
 <span class="nc" id="L119">            Project project = projectDao.findProject(projectId);</span>
 <span class="nc" id="L120">            User currentUser = requestManager.getCurrentUser();</span>
-<span class="nc" id="L121">            TeamMember member = teamManager.findMemberByUserAndProject(project, currentUser);</span>
+<span class="nc" id="L121">            TeamMember member = teamManager.findMemberByProjectAndUser(project, currentUser);</span>
 
 <span class="nc" id="L123">            String wsSessionId = touch.getWsSessionId();</span>
 <span class="nc" id="L124">            FencedLock lock = getLock(projectId);</span>

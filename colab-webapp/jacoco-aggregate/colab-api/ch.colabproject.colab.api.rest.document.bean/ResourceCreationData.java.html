@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>ResourceCreationData.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">colab-webapp</a> &gt; <a href="../index.html" class="el_bundle">colab-api</a> &gt; <a href="index.source.html" class="el_package">ch.colabproject.colab.api.rest.document.bean</a> &gt; <span class="el_source">ResourceCreationData.java</span></div><h1>ResourceCreationData.java</h1><pre class="source lang-java linenums">/*
  * The coLAB project
- * Copyright (C) 2021 AlbaSim, MEI, HEIG-VD, HES-SO
+ * Copyright (C) 2021-2022 AlbaSim, MEI, HEIG-VD, HES-SO
  *
  * Licensed under the MIT License
  */
@@ -60,9 +60,14 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
     private Long cardContentId;
 
     /**
+     * Is it at the disposal of the inheritors
+     */
+    private boolean published;
+
+    /**
      * The document
      */
-<span class="nc" id="L65">    private List&lt;Document&gt; documents = new ArrayList&lt;&gt;();</span>
+<span class="nc" id="L70">    private List&lt;Document&gt; documents = new ArrayList&lt;&gt;();</span>
 
     // ---------------------------------------------------------------------------------------------
     // getters and setters
@@ -72,99 +77,113 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
      * @return the title
      */
     public String getTitle() {
-<span class="nc" id="L75">        return title;</span>
+<span class="nc" id="L80">        return title;</span>
     }
 
     /**
      * @param title the title
      */
     public void setTitle(String title) {
-<span class="nc" id="L82">        this.title = title;</span>
-<span class="nc" id="L83">    }</span>
+<span class="nc" id="L87">        this.title = title;</span>
+<span class="nc" id="L88">    }</span>
 
     /**
      * @return the teaser
      */
     public TextDataBlock getTeaser() {
-<span class="nc" id="L89">        return teaser;</span>
+<span class="nc" id="L94">        return teaser;</span>
     }
 
     /**
      * @param teaser the teaser
      */
     public void setTeaser(TextDataBlock teaser) {
-<span class="nc" id="L96">        this.teaser = teaser;</span>
-<span class="nc" id="L97">    }</span>
+<span class="nc" id="L101">        this.teaser = teaser;</span>
+<span class="nc" id="L102">    }</span>
 
     /**
      * @return the category
      */
     public String getCategory() {
-<span class="nc" id="L103">        return category;</span>
+<span class="nc" id="L108">        return category;</span>
     }
 
     /**
      * @param category the category
      */
     public void setCategory(String category) {
-<span class="nc" id="L110">        this.category = category;</span>
-<span class="nc" id="L111">    }</span>
+<span class="nc" id="L115">        this.category = category;</span>
+<span class="nc" id="L116">    }</span>
 
     /**
      * @return the abstractCardTypeId
      */
     public Long getAbstractCardTypeId() {
-<span class="nc" id="L117">        return abstractCardTypeId;</span>
+<span class="nc" id="L122">        return abstractCardTypeId;</span>
     }
 
     /**
      * @param abstractCardTypeId the abstractCardTypeId
      */
     public void setAbstractCardTypeId(Long abstractCardTypeId) {
-<span class="nc" id="L124">        this.abstractCardTypeId = abstractCardTypeId;</span>
-<span class="nc" id="L125">    }</span>
+<span class="nc" id="L129">        this.abstractCardTypeId = abstractCardTypeId;</span>
+<span class="nc" id="L130">    }</span>
 
     /**
      * @return the cardId
      */
     public Long getCardId() {
-<span class="nc" id="L131">        return cardId;</span>
+<span class="nc" id="L136">        return cardId;</span>
     }
 
     /**
      * @param cardId the cardId
      */
     public void setCardId(Long cardId) {
-<span class="nc" id="L138">        this.cardId = cardId;</span>
-<span class="nc" id="L139">    }</span>
+<span class="nc" id="L143">        this.cardId = cardId;</span>
+<span class="nc" id="L144">    }</span>
 
     /**
      * @return the cardContentId
      */
     public Long getCardContentId() {
-<span class="nc" id="L145">        return cardContentId;</span>
+<span class="nc" id="L150">        return cardContentId;</span>
     }
 
     /**
      * @param cardContentId the cardContentId
      */
     public void setCardContentId(Long cardContentId) {
-<span class="nc" id="L152">        this.cardContentId = cardContentId;</span>
-<span class="nc" id="L153">    }</span>
+<span class="nc" id="L157">        this.cardContentId = cardContentId;</span>
+<span class="nc" id="L158">    }</span>
+
+    /**
+     * @return if it is at the disposal of the inheritors
+     */
+    public boolean isPublished() {
+<span class="nc" id="L164">        return published;</span>
+    }
+
+    /**
+     * @param published if it is at the disposal of the inheritors
+     */
+    public void setPublished(boolean published) {
+<span class="nc" id="L171">        this.published = published;</span>
+<span class="nc" id="L172">    }</span>
 
     /**
      * @return the documents
      */
     public List&lt;Document&gt; getDocuments() {
-<span class="nc" id="L159">        return documents;</span>
+<span class="nc" id="L178">        return documents;</span>
     }
 
     /**
      * @param documents the documents
      */
     public void setDocuments(List&lt;Document&gt; documents) {
-<span class="nc" id="L166">        this.documents = documents;</span>
-<span class="nc" id="L167">    }</span>
+<span class="nc" id="L185">        this.documents = documents;</span>
+<span class="nc" id="L186">    }</span>
 
     // ---------------------------------------------------------------------------------------------
     // concerning the whole class
@@ -172,41 +191,43 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 
     @Override
     public int hashCode() {
-<span class="nc" id="L175">        return new HashCodeBuilder()</span>
-<span class="nc" id="L176">            .append(this.title)</span>
-<span class="nc" id="L177">            .append(this.category)</span>
-<span class="nc" id="L178">            .append(this.abstractCardTypeId)</span>
-<span class="nc" id="L179">            .append(this.cardId)</span>
-<span class="nc" id="L180">            .append(this.cardContentId)</span>
-<span class="nc" id="L181">            .toHashCode();</span>
+<span class="nc" id="L194">        return new HashCodeBuilder()</span>
+<span class="nc" id="L195">            .append(this.title)</span>
+<span class="nc" id="L196">            .append(this.category)</span>
+<span class="nc" id="L197">            .append(this.abstractCardTypeId)</span>
+<span class="nc" id="L198">            .append(this.cardId)</span>
+<span class="nc" id="L199">            .append(this.cardContentId)</span>
+<span class="nc" id="L200">            .append(this.published)</span>
+<span class="nc" id="L201">            .toHashCode();</span>
     }
 
     @Override
     public boolean equals(Object obj) {
-<span class="nc bnc" id="L186" title="All 2 branches missed.">        if (this == obj) {</span>
-<span class="nc" id="L187">            return true;</span>
+<span class="nc bnc" id="L206" title="All 2 branches missed.">        if (this == obj) {</span>
+<span class="nc" id="L207">            return true;</span>
         }
-<span class="nc bnc" id="L189" title="All 2 branches missed.">        if (obj == null) {</span>
-<span class="nc" id="L190">            return false;</span>
+<span class="nc bnc" id="L209" title="All 2 branches missed.">        if (obj == null) {</span>
+<span class="nc" id="L210">            return false;</span>
         }
-<span class="nc bnc" id="L192" title="All 2 branches missed.">        if (getClass() != obj.getClass()) {</span>
-<span class="nc" id="L193">            return false;</span>
+<span class="nc bnc" id="L212" title="All 2 branches missed.">        if (getClass() != obj.getClass()) {</span>
+<span class="nc" id="L213">            return false;</span>
         }
-<span class="nc" id="L195">        final ResourceCreationData other = (ResourceCreationData) obj;</span>
-<span class="nc" id="L196">        return new EqualsBuilder()</span>
-<span class="nc" id="L197">            .append(this.title, other.title)</span>
-<span class="nc" id="L198">            .append(this.category, other.category)</span>
-<span class="nc" id="L199">            .append(this.abstractCardTypeId, other.abstractCardTypeId)</span>
-<span class="nc" id="L200">            .append(this.cardId, other.cardId)</span>
-<span class="nc" id="L201">            .append(this.cardContentId, other.cardContentId)</span>
-<span class="nc" id="L202">            .isEquals();</span>
+<span class="nc" id="L215">        final ResourceCreationData other = (ResourceCreationData) obj;</span>
+<span class="nc" id="L216">        return new EqualsBuilder()</span>
+<span class="nc" id="L217">            .append(this.title, other.title)</span>
+<span class="nc" id="L218">            .append(this.category, other.category)</span>
+<span class="nc" id="L219">            .append(this.abstractCardTypeId, other.abstractCardTypeId)</span>
+<span class="nc" id="L220">            .append(this.cardId, other.cardId)</span>
+<span class="nc" id="L221">            .append(this.cardContentId, other.cardContentId)</span>
+<span class="nc" id="L222">            .append(this.published, other.published)</span>
+<span class="nc" id="L223">            .isEquals();</span>
     }
 
     @Override
     public String toString() {
-<span class="nc" id="L207">        return &quot;ResourceCreationData{&quot; + &quot;title=&quot; + title + &quot;, category=&quot; + category</span>
+<span class="nc" id="L228">        return &quot;ResourceCreationData{&quot; + &quot;title=&quot; + title + &quot;, category=&quot; + category</span>
             + &quot;, abstractCardTypeId=&quot; + abstractCardTypeId + &quot;, cardId=&quot; + cardId
-            + &quot;, cardContentId=&quot; + cardContentId + &quot;}&quot;;
+            + &quot;, cardContentId=&quot; + cardContentId + &quot;, published=&quot; + published + &quot;}&quot;;
     }
 
 }

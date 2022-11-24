@@ -41,7 +41,7 @@ import javax.persistence.TypedQuery;
      *
      * @param roleId id of the role
      *
-     * @return the role or null if it does no exist
+     * @return the role or null if it does not exist
      */
     public TeamRole findRole(Long roleId) {
 <span class="nc" id="L47">        return em.find(TeamRole.class, roleId);</span>
@@ -52,7 +52,7 @@ import javax.persistence.TypedQuery;
      *
      * @param memberId id of the member
      *
-     * @return the member or null if it does no exist
+     * @return the member or null if it does not exist
      */
     public TeamMember findTeamMember(Long memberId) {
 <span class="nc" id="L58">        return em.find(TeamMember.class, memberId);</span>
@@ -124,9 +124,9 @@ import javax.persistence.TypedQuery;
      *
      * @return the teamMember or null
      */
-    public TeamMember findMemberByUserAndProject(Project project, User user) {
+    public TeamMember findMemberByProjectAndUser(Project project, User user) {
         try {
-<span class="nc" id="L129">            TypedQuery&lt;TeamMember&gt; query = em.createNamedQuery(&quot;TeamMember.findByUserAndProject&quot;,</span>
+<span class="nc" id="L129">            TypedQuery&lt;TeamMember&gt; query = em.createNamedQuery(&quot;TeamMember.findByProjectAndUser&quot;,</span>
                 TeamMember.class);
 
 <span class="nc" id="L132">            query.setParameter(&quot;projectId&quot;, project.getId());</span>

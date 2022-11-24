@@ -289,9 +289,10 @@ public class Helper {
      *
      * @throws NamingException if lookup failed
      */
+    @SuppressWarnings(&quot;unchecked&quot;)
     public static &lt;T&gt; T lookup(Class&lt;T&gt; klass) throws NamingException {
-<span class="nc" id="L293">        return (T) new InitialContext().lookup(</span>
-<span class="nc" id="L294">            &quot;java:global/coLAB/&quot; + klass.getSimpleName() + &quot;!&quot; + klass.getName());</span>
+<span class="nc" id="L294">        return (T) new InitialContext().lookup(</span>
+<span class="nc" id="L295">            &quot;java:global/coLAB/&quot; + klass.getSimpleName() + &quot;!&quot; + klass.getName());</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

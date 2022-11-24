@@ -49,7 +49,7 @@
 <a class="jxr_linenumber" name="L41" href="#L41">41</a>  <em class="jxr_javadoccomment">     *</em>
 <a class="jxr_linenumber" name="L42" href="#L42">42</a>  <em class="jxr_javadoccomment">     * @param roleId id of the role</em>
 <a class="jxr_linenumber" name="L43" href="#L43">43</a>  <em class="jxr_javadoccomment">     *</em>
-<a class="jxr_linenumber" name="L44" href="#L44">44</a>  <em class="jxr_javadoccomment">     * @return the role or null if it does no exist</em>
+<a class="jxr_linenumber" name="L44" href="#L44">44</a>  <em class="jxr_javadoccomment">     * @return the role or null if it does not exist</em>
 <a class="jxr_linenumber" name="L45" href="#L45">45</a>  <em class="jxr_javadoccomment">     */</em>
 <a class="jxr_linenumber" name="L46" href="#L46">46</a>      <strong class="jxr_keyword">public</strong> TeamRole findRole(Long roleId) {
 <a class="jxr_linenumber" name="L47" href="#L47">47</a>          <strong class="jxr_keyword">return</strong> em.find(TeamRole.<strong class="jxr_keyword">class</strong>, roleId);
@@ -60,7 +60,7 @@
 <a class="jxr_linenumber" name="L52" href="#L52">52</a>  <em class="jxr_javadoccomment">     *</em>
 <a class="jxr_linenumber" name="L53" href="#L53">53</a>  <em class="jxr_javadoccomment">     * @param memberId id of the member</em>
 <a class="jxr_linenumber" name="L54" href="#L54">54</a>  <em class="jxr_javadoccomment">     *</em>
-<a class="jxr_linenumber" name="L55" href="#L55">55</a>  <em class="jxr_javadoccomment">     * @return the member or null if it does no exist</em>
+<a class="jxr_linenumber" name="L55" href="#L55">55</a>  <em class="jxr_javadoccomment">     * @return the member or null if it does not exist</em>
 <a class="jxr_linenumber" name="L56" href="#L56">56</a>  <em class="jxr_javadoccomment">     */</em>
 <a class="jxr_linenumber" name="L57" href="#L57">57</a>      <strong class="jxr_keyword">public</strong> TeamMember findTeamMember(Long memberId) {
 <a class="jxr_linenumber" name="L58" href="#L58">58</a>          <strong class="jxr_keyword">return</strong> em.find(TeamMember.<strong class="jxr_keyword">class</strong>, memberId);
@@ -132,9 +132,9 @@
 <a class="jxr_linenumber" name="L124" href="#L124">124</a> <em class="jxr_javadoccomment">     *</em>
 <a class="jxr_linenumber" name="L125" href="#L125">125</a> <em class="jxr_javadoccomment">     * @return the teamMember or null</em>
 <a class="jxr_linenumber" name="L126" href="#L126">126</a> <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="L127" href="#L127">127</a>     <strong class="jxr_keyword">public</strong> TeamMember findMemberByUserAndProject(Project project, User user) {
+<a class="jxr_linenumber" name="L127" href="#L127">127</a>     <strong class="jxr_keyword">public</strong> TeamMember findMemberByProjectAndUser(Project project, User user) {
 <a class="jxr_linenumber" name="L128" href="#L128">128</a>         <strong class="jxr_keyword">try</strong> {
-<a class="jxr_linenumber" name="L129" href="#L129">129</a>             TypedQuery&lt;TeamMember&gt; query = em.createNamedQuery(<span class="jxr_string">"TeamMember.findByUserAndProject"</span>,
+<a class="jxr_linenumber" name="L129" href="#L129">129</a>             TypedQuery&lt;TeamMember&gt; query = em.createNamedQuery(<span class="jxr_string">"TeamMember.findByProjectAndUser"</span>,
 <a class="jxr_linenumber" name="L130" href="#L130">130</a>                 TeamMember.<strong class="jxr_keyword">class</strong>);
 <a class="jxr_linenumber" name="L131" href="#L131">131</a> 
 <a class="jxr_linenumber" name="L132" href="#L132">132</a>             query.setParameter(<span class="jxr_string">"projectId"</span>, project.getId());

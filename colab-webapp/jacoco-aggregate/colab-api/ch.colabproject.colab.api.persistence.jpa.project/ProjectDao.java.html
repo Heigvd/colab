@@ -8,6 +8,7 @@ package ch.colabproject.colab.api.persistence.jpa.project;
 
 import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.model.project.Project;
+import ch.colabproject.colab.api.model.user.User;
 import java.util.List;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
@@ -22,7 +23,7 @@ import javax.persistence.TypedQuery;
  */
 @Stateless
 @LocalBean
-<span class="nc" id="L25">public class ProjectDao {</span>
+<span class="nc" id="L26">public class ProjectDao {</span>
 
     /**
      * Access to the persistence unit
@@ -36,8 +37,8 @@ import javax.persistence.TypedQuery;
      * @return list of all projects
      */
     public List&lt;Project&gt; findAllProject() {
-<span class="nc" id="L39">        TypedQuery&lt;Project&gt; query = em.createNamedQuery(&quot;Project.findAll&quot;, Project.class);</span>
-<span class="nc" id="L40">        return query.getResultList();</span>
+<span class="nc" id="L40">        TypedQuery&lt;Project&gt; query = em.createNamedQuery(&quot;Project.findAll&quot;, Project.class);</span>
+<span class="nc" id="L41">        return query.getResultList();</span>
     }
 
     /**
@@ -48,24 +49,73 @@ import javax.persistence.TypedQuery;
      * @return list of project
      */
     public List&lt;Project&gt; findProjectsUserIsMemberOf(Long userId) {
-<span class="nc" id="L51">        TypedQuery&lt;Project&gt; query = em.createNamedQuery(&quot;Project.findByTeamMemberUser&quot;,</span>
+<span class="nc" id="L52">        TypedQuery&lt;Project&gt; query = em.createNamedQuery(&quot;Project.findByTeamMemberUser&quot;,</span>
             Project.class);
-<span class="nc" id="L53">        query.setParameter(&quot;userId&quot;, userId);</span>
-<span class="nc" id="L54">        return query.getResultList();</span>
+<span class="nc" id="L54">        query.setParameter(&quot;userId&quot;, userId);</span>
+<span class="nc" id="L55">        return query.getResultList();</span>
     }
 
     /**
-     * Get the ids of the projects the user is member of
+     * Get the ids of the projects the user is a member of
      *
      * @param userId the id of the user
      *
      * @return list of ids of projects
      */
     public List&lt;Long&gt; findIdsOfProjectUserIsMemberOf(Long userId) {
-<span class="nc" id="L65">        TypedQuery&lt;Long&gt; query = em.createNamedQuery(&quot;Project.findIdsByTeamMemberUser&quot;,</span>
+<span class="nc" id="L66">        TypedQuery&lt;Long&gt; query = em.createNamedQuery(&quot;Project.findIdsByTeamMemberUser&quot;,</span>
             Long.class);
-<span class="nc" id="L67">        query.setParameter(&quot;userId&quot;, userId);</span>
-<span class="nc" id="L68">        return query.getResultList();</span>
+<span class="nc" id="L68">        query.setParameter(&quot;userId&quot;, userId);</span>
+<span class="nc" id="L69">        return query.getResultList();</span>
+    }
+
+    /**
+     * Get all projects the user is an instance maker for
+     *
+     * @param userId the id of the user
+     *
+     * @return list of project
+     */
+    public List&lt;Project&gt; findProjectsUserIsInstanceMakerFor(Long userId) {
+<span class="nc" id="L80">        TypedQuery&lt;Project&gt; query = em.createNamedQuery(&quot;Project.findByInstanceMakerUser&quot;,</span>
+            Project.class);
+<span class="nc" id="L82">        query.setParameter(&quot;userId&quot;, userId);</span>
+<span class="nc" id="L83">        return query.getResultList();</span>
+    }
+
+    /**
+     * Get the ids of the models the user is an instance maker for
+     *
+     * @param userId the id of the user
+     *
+     * @return list of ids of models
+     */
+    public List&lt;Long&gt; findIdsOfProjectUserIsInstanceMaker(Long userId) {
+<span class="nc" id="L94">        TypedQuery&lt;Long&gt; query = em.createNamedQuery(&quot;Project.findIdsByInstanceMakerUser&quot;,</span>
+            Long.class);
+<span class="nc" id="L96">        query.setParameter(&quot;userId&quot;, userId);</span>
+<span class="nc" id="L97">        return query.getResultList();</span>
+    }
+
+    /**
+     * Do two users work with a common project ?
+     *
+     * @param a a user
+     * @param b another user
+     *
+     * @return true if both user are both member or instance maker of the same project
+     */
+    public boolean doUsersHaveCommonProject(User a, User b) {
+<span class="nc" id="L109">        TypedQuery&lt;Boolean&gt; query = em.createNamedQuery(</span>
+            &quot;Project.doUsersHaveACommonProject&quot;,
+            Boolean.class);
+
+<span class="nc" id="L113">        query.setParameter(</span>
+<span class="nc" id="L114">            &quot;aUserId&quot;, a.getId());</span>
+<span class="nc" id="L115">        query.setParameter(</span>
+<span class="nc" id="L116">            &quot;bUserId&quot;, b.getId());</span>
+
+<span class="nc bnc" id="L118" title="All 2 branches missed.">        return !query.getResultList().isEmpty();</span>
     }
 
     /**
@@ -74,7 +124,7 @@ import javax.persistence.TypedQuery;
      * @return the project with the given id or null is such a project does not exists
      */
     public Project findProject(Long id) {
-<span class="nc" id="L77">        return em.find(Project.class, id);</span>
+<span class="nc" id="L127">        return em.find(Project.class, id);</span>
     }
 
     /**
@@ -87,11 +137,11 @@ import javax.persistence.TypedQuery;
      * @throws ColabMergeException if updating the project failed
      */
     public Project updateProject(Project project) throws ColabMergeException {
-<span class="nc" id="L90">        Project managedProject = this.findProject(project.getId());</span>
+<span class="nc" id="L140">        Project managedProject = this.findProject(project.getId());</span>
 
-<span class="nc" id="L92">        managedProject.merge(project);</span>
+<span class="nc" id="L142">        managedProject.merge(project);</span>
 
-<span class="nc" id="L94">        return managedProject;</span>
+<span class="nc" id="L144">        return managedProject;</span>
     }
 
     /**
@@ -102,8 +152,8 @@ import javax.persistence.TypedQuery;
      * @return the new persisted project
      */
     public Project persistProject(Project project) {
-<span class="nc" id="L105">        em.persist(project);</span>
-<span class="nc" id="L106">        return project;</span>
+<span class="nc" id="L155">        em.persist(project);</span>
+<span class="nc" id="L156">        return project;</span>
     }
 
     /**
@@ -115,9 +165,9 @@ import javax.persistence.TypedQuery;
      */
     public Project deleteProject(Long id) {
         // TODO: move to recycle bin first
-<span class="nc" id="L118">        Project project = this.findProject(id);</span>
-<span class="nc" id="L119">        em.remove(project);</span>
-<span class="nc" id="L120">        return project;</span>
+<span class="nc" id="L168">        Project project = this.findProject(id);</span>
+<span class="nc" id="L169">        em.remove(project);</span>
+<span class="nc" id="L170">        return project;</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

@@ -88,6 +88,11 @@ import javax.validation.constraints.NotNull;
 <span class="nc" id="L88">        return tokenManager.consumeVerifyAccountToken(localAccount);</span>
     }
 
+    @Override
+    public ExpirationPolicy getExpirationPolicy() {
+<span class="nc" id="L93">        return ExpirationPolicy.ONE_SHOT;</span>
+    }
+
     // ---------------------------------------------------------------------------------------------
     // to build a message
     // ---------------------------------------------------------------------------------------------
@@ -95,12 +100,12 @@ import javax.validation.constraints.NotNull;
     @JsonbTransient
     @Override
     public String getSubject() {
-<span class="nc" id="L98">        return EMAIL_SUBJECT;</span>
+<span class="nc" id="L103">        return EMAIL_SUBJECT;</span>
     }
 
     @Override
     public String getEmailBody(String link) {
-<span class="nc" id="L103">        return VerifyLocalAccountMessageBuilder.build(this, link);</span>
+<span class="nc" id="L108">        return VerifyLocalAccountMessageBuilder.build(this, link);</span>
     }
 
     // ---------------------------------------------------------------------------------------------
@@ -109,7 +114,7 @@ import javax.validation.constraints.NotNull;
 
     @Override
     public String toString() {
-<span class="nc" id="L112">        return &quot;VerifyLocalAccountToken{&quot; + &quot;id=&quot; + getId()</span>
+<span class="nc" id="L117">        return &quot;VerifyLocalAccountToken{&quot; + &quot;id=&quot; + getId()</span>
             + &quot;, localAccount=&quot; + localAccount + '}';
     }
 

@@ -1,0 +1,200 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head><meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+<title>ModelSharingMessageBuilder xref</title>
+<link type="text/css" rel="stylesheet" href="../../../../../../../stylesheet.css" />
+</head>
+<body>
+<div id="overview"><a href="../../../../../../../../apidocs/ch/colabproject/colab/api/model/token/tools/ModelSharingMessageBuilder.html">View Javadoc</a></div><pre>
+<a class="jxr_linenumber" name="L1" href="#L1">1</a>   <em class="jxr_comment">/*</em>
+<a class="jxr_linenumber" name="L2" href="#L2">2</a>   <em class="jxr_comment"> * The coLAB project</em>
+<a class="jxr_linenumber" name="L3" href="#L3">3</a>   <em class="jxr_comment"> * Copyright (C) 2022 AlbaSim, MEI, HEIG-VD, HES-SO</em>
+<a class="jxr_linenumber" name="L4" href="#L4">4</a>   <em class="jxr_comment"> *</em>
+<a class="jxr_linenumber" name="L5" href="#L5">5</a>   <em class="jxr_comment"> * Licensed under the MIT License</em>
+<a class="jxr_linenumber" name="L6" href="#L6">6</a>   <em class="jxr_comment"> */</em>
+<a class="jxr_linenumber" name="L7" href="#L7">7</a>   <strong class="jxr_keyword">package</strong> ch.colabproject.colab.api.model.token.tools;
+<a class="jxr_linenumber" name="L8" href="#L8">8</a>   
+<a class="jxr_linenumber" name="L9" href="#L9">9</a>   <strong class="jxr_keyword">import</strong> ch.colabproject.colab.api.controller.token.TokenMessageBuilder;
+<a class="jxr_linenumber" name="L10" href="#L10">10</a>  <strong class="jxr_keyword">import</strong> ch.colabproject.colab.api.model.token.ModelSharingToken;
+<a class="jxr_linenumber" name="L11" href="#L11">11</a>  <strong class="jxr_keyword">import</strong> java.text.MessageFormat;
+<a class="jxr_linenumber" name="L12" href="#L12">12</a>  
+<a class="jxr_linenumber" name="L13" href="#L13">13</a>  <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L14" href="#L14">14</a>  <em class="jxr_javadoccomment"> * To build the body of the message to send for an model sharing token.</em>
+<a class="jxr_linenumber" name="L15" href="#L15">15</a>  <em class="jxr_javadoccomment"> *</em>
+<a class="jxr_linenumber" name="L16" href="#L16">16</a>  <em class="jxr_javadoccomment"> * @author sandra</em>
+<a class="jxr_linenumber" name="L17" href="#L17">17</a>  <em class="jxr_javadoccomment"> */</em>
+<a class="jxr_linenumber" name="L18" href="#L18">18</a>  <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">class</strong> <a name="ModelSharingMessageBuilder" href="../../../../../../../ch/colabproject/colab/api/model/token/tools/ModelSharingMessageBuilder.html#ModelSharingMessageBuilder">ModelSharingMessageBuilder</a> {
+<a class="jxr_linenumber" name="L19" href="#L19">19</a>  
+<a class="jxr_linenumber" name="L20" href="#L20">20</a>      <em class="jxr_comment">// TODO</em>
+<a class="jxr_linenumber" name="L21" href="#L21">21</a>  
+<a class="jxr_linenumber" name="L22" href="#L22">22</a>      <em class="jxr_javadoccomment">/** Title */</em>
+<a class="jxr_linenumber" name="L23" href="#L23">23</a>      <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">final</strong> String MESSAGE_HEAD_TITLE = <span class="jxr_string">"Co.LAB model sharing"</span>;
+<a class="jxr_linenumber" name="L24" href="#L24">24</a>  
+<a class="jxr_linenumber" name="L25" href="#L25">25</a>      <em class="jxr_javadoccomment">/** Picture */</em>
+<a class="jxr_linenumber" name="L26" href="#L26">26</a>      <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">final</strong> String MESSAGE_PICTURE = <span class="jxr_string">"&lt;svg\n"</span>
+<a class="jxr_linenumber" name="L27" href="#L27">27</a>          + <span class="jxr_string">"            width=\&quot;230\&quot;\n"</span>
+<a class="jxr_linenumber" name="L28" href="#L28">28</a>          + <span class="jxr_string">"            height=\&quot;245\&quot;\n"</span>
+<a class="jxr_linenumber" name="L29" href="#L29">29</a>          + <span class="jxr_string">"            id=\&quot;Layer_1\&quot;\n"</span>
+<a class="jxr_linenumber" name="L30" href="#L30">30</a>          + <span class="jxr_string">"            xmlns=\&quot;http://www.w3.org/2000/svg\&quot;\n"</span>
+<a class="jxr_linenumber" name="L31" href="#L31">31</a>          + <span class="jxr_string">"            viewBox=\&quot;0 0 384.66 396.62\&quot;\n"</span>
+<a class="jxr_linenumber" name="L32" href="#L32">32</a>          + <span class="jxr_string">"          &gt;\n"</span>
+<a class="jxr_linenumber" name="L33" href="#L33">33</a>          + <span class="jxr_string">"            &lt;g&gt;\n"</span>
+<a class="jxr_linenumber" name="L34" href="#L34">34</a>          + <span class="jxr_string">"              &lt;path\n"</span>
+<a class="jxr_linenumber" name="L35" href="#L35">35</a>          + <span class="jxr_string">"                d=\&quot;M384.66,208.42c0,103.94-82.83,188.2-185,188.2S14.66,312.37,14.66,208.42,97.49,20.21,199.66,20.21s185,84.26,185,188.21Z\&quot;\n"</span>
+<a class="jxr_linenumber" name="L36" href="#L36">36</a>          + <span class="jxr_string">"                style=\&quot;fill: #50bfd5\&quot;\n"</span>
+<a class="jxr_linenumber" name="L37" href="#L37">37</a>          + <span class="jxr_string">"              /&gt;\n"</span>
+<a class="jxr_linenumber" name="L38" href="#L38">38</a>          + <span class="jxr_string">"              &lt;g&gt;\n"</span>
+<a class="jxr_linenumber" name="L39" href="#L39">39</a>          + <span class="jxr_string">"                &lt;g&gt;\n"</span>
+<a class="jxr_linenumber" name="L40" href="#L40">40</a>          + <span class="jxr_string">"                  &lt;polygon\n"</span>
+<a class="jxr_linenumber" name="L41" href="#L41">41</a>          + <span class="jxr_string">"                    points=\&quot;58.1 155.05 195.45 41.22 332.81 155.05 332.81 316.09 58.1 316.09 58.1 155.05\&quot;\n"</span>
+<a class="jxr_linenumber" name="L42" href="#L42">42</a>          + <span class="jxr_string">"                    style=\&quot;fill: #e05d11; isolation: isolate; opacity: 0.9\&quot;\n"</span>
+<a class="jxr_linenumber" name="L43" href="#L43">43</a>          + <span class="jxr_string">"                  /&gt;\n"</span>
+<a class="jxr_linenumber" name="L44" href="#L44">44</a>          + <span class="jxr_string">"                  &lt;path\n"</span>
+<a class="jxr_linenumber" name="L45" href="#L45">45</a>          + <span class="jxr_string">"                    d=\&quot;M102.93,64.65h185.04c1.38,0,2.51,1.12,2.51,2.51V249.01c0,1.38-1.12,2.51-2.51,2.51H102.93c-1.38,0-2.51-1.12-2.51-2.51V67.15c0-1.38,1.12-2.51,2.51-2.51Z\&quot;\n"</span>
+<a class="jxr_linenumber" name="L46" href="#L46">46</a>          + <span class="jxr_string">"                    style=\&quot;fill: #f1f2f2\&quot;\n"</span>
+<a class="jxr_linenumber" name="L47" href="#L47">47</a>          + <span class="jxr_string">"                  /&gt;\n"</span>
+<a class="jxr_linenumber" name="L48" href="#L48">48</a>          + <span class="jxr_string">"                  &lt;polygon\n"</span>
+<a class="jxr_linenumber" name="L49" href="#L49">49</a>          + <span class="jxr_string">"                    points=\&quot;58.1 155.05 172 235.57 58.1 316.09 58.1 155.05\&quot;\n"</span>
+<a class="jxr_linenumber" name="L50" href="#L50">50</a>          + <span class="jxr_string">"                    style=\&quot;fill: #ffe20f; isolation: isolate\&quot;\n"</span>
+<a class="jxr_linenumber" name="L51" href="#L51">51</a>          + <span class="jxr_string">"                  /&gt;\n"</span>
+<a class="jxr_linenumber" name="L52" href="#L52">52</a>          + <span class="jxr_string">"                  &lt;polygon\n"</span>
+<a class="jxr_linenumber" name="L53" href="#L53">53</a>          + <span class="jxr_string">"                    points=\&quot;332.81 155.05 218.9 235.57 332.81 316.09 332.81 155.05\&quot;\n"</span>
+<a class="jxr_linenumber" name="L54" href="#L54">54</a>          + <span class="jxr_string">"                    style=\&quot;fill: #ffe20f; isolation: isolate\&quot;\n"</span>
+<a class="jxr_linenumber" name="L55" href="#L55">55</a>          + <span class="jxr_string">"                  /&gt;\n"</span>
+<a class="jxr_linenumber" name="L56" href="#L56">56</a>          + <span class="jxr_string">"                &lt;/g&gt;\n"</span>
+<a class="jxr_linenumber" name="L57" href="#L57">57</a>          + <span class="jxr_string">"                &lt;polygon\n"</span>
+<a class="jxr_linenumber" name="L58" href="#L58">58</a>          + <span class="jxr_string">"                  points=\&quot;219 235.57 172 235.57 172 235.5 58.1 316.09 332.81 316.09 219 235.57\&quot;\n"</span>
+<a class="jxr_linenumber" name="L59" href="#L59">59</a>          + <span class="jxr_string">"                  style=\&quot;fill: #d1b511; isolation: isolate\&quot;\n"</span>
+<a class="jxr_linenumber" name="L60" href="#L60">60</a>          + <span class="jxr_string">"                /&gt;\n"</span>
+<a class="jxr_linenumber" name="L61" href="#L61">61</a>          + <span class="jxr_string">"              &lt;/g&gt;\n"</span>
+<a class="jxr_linenumber" name="L62" href="#L62">62</a>          + <span class="jxr_string">"            &lt;/g&gt;\n"</span>
+<a class="jxr_linenumber" name="L63" href="#L63">63</a>          + <span class="jxr_string">"            &lt;g id=\&quot;Calque_1\&quot;&gt;\n"</span>
+<a class="jxr_linenumber" name="L64" href="#L64">64</a>          + <span class="jxr_string">"              &lt;path\n"</span>
+<a class="jxr_linenumber" name="L65" href="#L65">65</a>          + <span class="jxr_string">"                d=\&quot;M215.08,129.45c0,11.53-9.35,20.87-20.88,20.86-11.53,0-20.87-9.35-20.86-20.88,0-9,5.78-16.99,14.33-19.81,2.36,11.3,13.43,18.54,24.72,16.19,.76-.16,1.52-.36,2.26-.6,.29,1.4,.43,2.82,.43,4.24Z\&quot;\n"</span>
+<a class="jxr_linenumber" name="L66" href="#L66">66</a>          + <span class="jxr_string">"                style=\&quot;fill: #e05d11; isolation: isolate; opacity: 0.9\&quot;\n"</span>
+<a class="jxr_linenumber" name="L67" href="#L67">67</a>          + <span class="jxr_string">"              /&gt;\n"</span>
+<a class="jxr_linenumber" name="L68" href="#L68">68</a>          + <span class="jxr_string">"              &lt;path\n"</span>
+<a class="jxr_linenumber" name="L69" href="#L69">69</a>          + <span class="jxr_string">"                d=\&quot;M214.65,125.2c-7.08,2.33-14.87,.71-20.44-4.25,3.34-2.98,5.63-6.95,6.54-11.33,7.08,2.34,12.38,8.28,13.9,15.58Z\&quot;\n"</span>
+<a class="jxr_linenumber" name="L70" href="#L70">70</a>          + <span class="jxr_string">"                style=\&quot;fill: #589ebc; isolation: isolate; opacity: 0.9\&quot;\n"</span>
+<a class="jxr_linenumber" name="L71" href="#L71">71</a>          + <span class="jxr_string">"              /&gt;\n"</span>
+<a class="jxr_linenumber" name="L72" href="#L72">72</a>          + <span class="jxr_string">"              &lt;path\n"</span>
+<a class="jxr_linenumber" name="L73" href="#L73">73</a>          + <span class="jxr_string">"                d=\&quot;M228.98,105.38c0,9.01-5.78,17-14.33,19.82-2.35-11.29-13.4-18.54-24.69-16.19-.77,.16-1.54,.37-2.29,.61-2.34-11.29,4.91-22.34,16.2-24.68,11.29-2.34,22.34,4.91,24.68,16.2,.29,1.39,.44,2.81,.44,4.24Z\&quot;\n"</span>
+<a class="jxr_linenumber" name="L74" href="#L74">74</a>          + <span class="jxr_string">"                style=\&quot;fill: #50bfd5\&quot;\n"</span>
+<a class="jxr_linenumber" name="L75" href="#L75">75</a>          + <span class="jxr_string">"              /&gt;\n"</span>
+<a class="jxr_linenumber" name="L76" href="#L76">76</a>          + <span class="jxr_string">"              &lt;path\n"</span>
+<a class="jxr_linenumber" name="L77" href="#L77">77</a>          + <span class="jxr_string">"                d=\&quot;M200.75,109.62c-.91,4.38-3.2,8.35-6.54,11.33-3.34-2.98-5.63-6.95-6.54-11.33,4.25-1.4,8.84-1.4,13.09,0h0Z\&quot;\n"</span>
+<a class="jxr_linenumber" name="L78" href="#L78">78</a>          + <span class="jxr_string">"                style=\&quot;fill: #8f9aa8; isolation: isolate; opacity: 0.9\&quot;\n"</span>
+<a class="jxr_linenumber" name="L79" href="#L79">79</a>          + <span class="jxr_string">"              /&gt;\n"</span>
+<a class="jxr_linenumber" name="L80" href="#L80">80</a>          + <span class="jxr_string">"              &lt;path\n"</span>
+<a class="jxr_linenumber" name="L81" href="#L81">81</a>          + <span class="jxr_string">"                d=\&quot;M194.21,108.57c-2.22,0-4.43,.35-6.54,1.05,.91,4.38,3.2,8.35,6.55,11.33-8.58,7.65-21.74,6.9-29.39-1.69-7.65-8.58-6.9-21.74,1.69-29.39,8.58-7.65,21.74-6.9,29.39,1.69,4.38,4.91,6.18,11.61,4.85,18.06-2.11-.7-4.32-1.05-6.54-1.05Z\&quot;\n"</span>
+<a class="jxr_linenumber" name="L82" href="#L82">82</a>          + <span class="jxr_string">"                style=\&quot;fill: #ffe20f; isolation: isolate; opacity: 0.9\&quot;\n"</span>
+<a class="jxr_linenumber" name="L83" href="#L83">83</a>          + <span class="jxr_string">"              /&gt;\n"</span>
+<a class="jxr_linenumber" name="L84" href="#L84">84</a>          + <span class="jxr_string">"            &lt;/g&gt;\n"</span>
+<a class="jxr_linenumber" name="L85" href="#L85">85</a>          + <span class="jxr_string">"            &lt;g&gt;\n"</span>
+<a class="jxr_linenumber" name="L86" href="#L86">86</a>          + <span class="jxr_string">"              &lt;path\n"</span>
+<a class="jxr_linenumber" name="L87" href="#L87">87</a>          + <span class="jxr_string">"                d=\&quot;M154.84,186.11c1.13,.04,2.24-.34,3.12-1.05,.82-.67,1.32-1.66,1.36-2.72h1.71c-.04,.97-.37,1.9-.93,2.69-.58,.82-1.35,1.47-2.25,1.9-.94,.45-1.97,.69-3.02,.68-2.12,0-3.79-.74-5.03-2.2-1.24-1.47-1.85-3.45-1.85-5.93v-.54c-.03-1.45,.26-2.89,.83-4.22,.5-1.16,1.33-2.14,2.39-2.83,1.09-.68,2.36-1.03,3.64-1,1.77,0,3.22,.53,4.37,1.58s1.76,2.44,1.84,4.16h-1.71c-.05-2.38-2.02-4.27-4.4-4.22-.03,0-.06,0-.09,0-1.61,0-2.86,.58-3.75,1.74-.89,1.16-1.33,2.79-1.33,4.89v.52c0,2.05,.44,3.66,1.33,4.81s2.14,1.73,3.76,1.74Z\&quot;\n"</span>
+<a class="jxr_linenumber" name="L88" href="#L88">88</a>          + <span class="jxr_string">"                style=\&quot;fill: #333\&quot;\n"</span>
+<a class="jxr_linenumber" name="L89" href="#L89">89</a>          + <span class="jxr_string">"              /&gt;\n"</span>
+<a class="jxr_linenumber" name="L90" href="#L90">90</a>          + <span class="jxr_string">"              &lt;path\n"</span>
+<a class="jxr_linenumber" name="L91" href="#L91">91</a>          + <span class="jxr_string">"                d=\&quot;M163.61,179.01c-.02-1.44,.29-2.86,.9-4.16,1.13-2.44,3.59-3.99,6.28-3.93,2.14,0,3.88,.75,5.21,2.25s2,3.5,1.99,5.98v.37c.02,1.45-.29,2.89-.9,4.2-.55,1.19-1.43,2.19-2.54,2.88-1.13,.68-2.42,1.03-3.74,1-2.14,0-3.87-.75-5.21-2.26-1.34-1.51-2-3.5-2-5.98v-.36Zm1.79,.49c0,1.93,.5,3.51,1.5,4.75,1.77,2.16,4.96,2.48,7.13,.71,.26-.21,.5-.45,.71-.71,1-1.24,1.5-2.87,1.5-4.9v-.34c.01-1.16-.22-2.32-.69-3.38-.4-.96-1.07-1.78-1.92-2.38-.84-.56-1.82-.85-2.83-.83-1.52-.03-2.96,.66-3.88,1.87-1,1.25-1.51,2.88-1.51,4.89v.32Z\&quot;\n"</span>
+<a class="jxr_linenumber" name="L92" href="#L92">92</a>          + <span class="jxr_string">"                style=\&quot;fill: #333\&quot;\n"</span>
+<a class="jxr_linenumber" name="L93" href="#L93">93</a>          + <span class="jxr_string">"              /&gt;\n"</span>
+<a class="jxr_linenumber" name="L94" href="#L94">94</a>          + <span class="jxr_string">"              &lt;path\n"</span>
+<a class="jxr_linenumber" name="L95" href="#L95">95</a>          + <span class="jxr_string">"                d=\&quot;M179.3,185.2c-.02-.63,.23-1.24,.69-1.66,1-.85,2.48-.85,3.48,0,.46,.43,.72,1.04,.69,1.66,.02,.62-.23,1.22-.69,1.64-.48,.43-1.11,.66-1.76,.64-.64,.02-1.27-.2-1.74-.64-.46-.42-.71-1.02-.69-1.64Z\&quot;\n"</span>
+<a class="jxr_linenumber" name="L96" href="#L96">96</a>          + <span class="jxr_string">"                style=\&quot;fill: #8f9aa8; isolation: isolate; opacity: 0.9\&quot;\n"</span>
+<a class="jxr_linenumber" name="L97" href="#L97">97</a>          + <span class="jxr_string">"              /&gt;\n"</span>
+<a class="jxr_linenumber" name="L98" href="#L98">98</a>          + <span class="jxr_string">"              &lt;path d=\&quot;M191.58,183.72h9.49v3.61h-13.96v-21.7h4.47v18.1Z\&quot; style=\&quot;fill: #333\&quot; /&gt;\n"</span>
+<a class="jxr_linenumber" name="L99" href="#L99">99</a>          + <span class="jxr_string">"              &lt;path\n"</span>
+<a class="jxr_linenumber" name="L100" href="#L100">100</a>         + <span class="jxr_string">"                d=\&quot;M216.16,182.85h-7.84l-1.48,4.48h-4.75l8.07-21.69h4.14l8.12,21.69h-4.75l-1.5-4.48Zm-6.63-3.62h5.43l-2.73-8.12-2.7,8.12Z\&quot;\n"</span>
+<a class="jxr_linenumber" name="L101" href="#L101">101</a>         + <span class="jxr_string">"                style=\&quot;fill: #333\&quot;\n"</span>
+<a class="jxr_linenumber" name="L102" href="#L102">102</a>         + <span class="jxr_string">"              /&gt;\n"</span>
+<a class="jxr_linenumber" name="L103" href="#L103">103</a>         + <span class="jxr_string">"              &lt;path\n"</span>
+<a class="jxr_linenumber" name="L104" href="#L104">104</a>         + <span class="jxr_string">"                d=\&quot;M224.44,187.33v-21.7h7.6c2.63,0,4.63,.5,5.99,1.51,1.36,1.01,2.04,2.49,2.04,4.44,.02,1-.27,1.98-.83,2.81-.56,.82-1.35,1.44-2.28,1.78,1.05,.23,1.98,.83,2.63,1.68,.66,.89,1.01,1.99,.98,3.1,0,2.09-.67,3.66-2,4.74-1.33,1.07-3.23,1.62-5.69,1.64h-8.43Zm4.47-12.6h3.31c2.25-.04,3.38-.94,3.38-2.7,0-.98-.29-1.69-.86-2.12-.57-.43-1.47-.65-2.7-.65h-3.13v5.47Zm0,3.16v5.84h3.83c1.05,0,1.87-.25,2.47-.75,.6-.52,.92-1.29,.88-2.08,0-1.99-1.03-2.99-3.08-3.03h-4.1Z\&quot;\n"</span>
+<a class="jxr_linenumber" name="L105" href="#L105">105</a>         + <span class="jxr_string">"                style=\&quot;fill: #333\&quot;\n"</span>
+<a class="jxr_linenumber" name="L106" href="#L106">106</a>         + <span class="jxr_string">"              /&gt;\n"</span>
+<a class="jxr_linenumber" name="L107" href="#L107">107</a>         + <span class="jxr_string">"            &lt;/g&gt;\n"</span>
+<a class="jxr_linenumber" name="L108" href="#L108">108</a>         + <span class="jxr_string">"            &lt;g&gt;\n"</span>
+<a class="jxr_linenumber" name="L109" href="#L109">109</a>         + <span class="jxr_string">"              &lt;g style=\&quot;isolation: isolate; opacity: 0.9\&quot;&gt;\n"</span>
+<a class="jxr_linenumber" name="L110" href="#L110">110</a>         + <span class="jxr_string">"                &lt;path\n"</span>
+<a class="jxr_linenumber" name="L111" href="#L111">111</a>         + <span class="jxr_string">"                  d=\&quot;M224.36,34.38c.63-5.76,1.58-12.01,2.6-17.73,.52-2.92,.54-5.98,1.73-8.75,1.2-2.89,2.64-5.57,4.92-7.89l.58,.16c.45,1.66,.57,3.23,.6,4.77,.01,3.03-.31,6.02-1.49,8.81-1.07,2.38-2.36,5.86-3.25,8.34-1.58,4.05-3.34,8.49-5.11,12.45l-.58-.16h0Z\&quot;\n"</span>
+<a class="jxr_linenumber" name="L112" href="#L112">112</a>         + <span class="jxr_string">"                  style=\&quot;fill: #8f9aa8\&quot;\n"</span>
+<a class="jxr_linenumber" name="L113" href="#L113">113</a>         + <span class="jxr_string">"                /&gt;\n"</span>
+<a class="jxr_linenumber" name="L114" href="#L114">114</a>         + <span class="jxr_string">"              &lt;/g&gt;\n"</span>
+<a class="jxr_linenumber" name="L115" href="#L115">115</a>         + <span class="jxr_string">"              &lt;g style=\&quot;isolation: isolate; opacity: 0.9\&quot;&gt;\n"</span>
+<a class="jxr_linenumber" name="L116" href="#L116">116</a>         + <span class="jxr_string">"                &lt;path\n"</span>
+<a class="jxr_linenumber" name="L117" href="#L117">117</a>         + <span class="jxr_string">"                  d=\&quot;M311.63,58.85c3.09-4.2,6.64-8.65,9.99-12.65,3.28-4.56,6.88-8.34,12.49-10.2l.36,.35c-1.41,4.15-3.64,7.44-6.84,10.13-1.87,1.41-4.41,3.59-6.2,5.14-3.01,2.5-6.33,5.23-9.44,7.58l-.36-.35h0Z\&quot;\n"</span>
+<a class="jxr_linenumber" name="L118" href="#L118">118</a>         + <span class="jxr_string">"                  style=\&quot;fill: #8f9aa8\&quot;\n"</span>
+<a class="jxr_linenumber" name="L119" href="#L119">119</a>         + <span class="jxr_string">"                /&gt;\n"</span>
+<a class="jxr_linenumber" name="L120" href="#L120">120</a>         + <span class="jxr_string">"              &lt;/g&gt;\n"</span>
+<a class="jxr_linenumber" name="L121" href="#L121">121</a>         + <span class="jxr_string">"              &lt;g style=\&quot;isolation: isolate; opacity: 0.9\&quot;&gt;\n"</span>
+<a class="jxr_linenumber" name="L122" href="#L122">122</a>         + <span class="jxr_string">"                &lt;path\n"</span>
+<a class="jxr_linenumber" name="L123" href="#L123">123</a>         + <span class="jxr_string">"                  d=\&quot;M99.35,37.49c-1.59-1.63-3.1-3.32-4.61-5l-2.23-2.55-2.17-2.59c-.72-.87-1.51-1.68-2.29-2.52-.76-.84-1.41-1.76-1.91-2.77-.99-2.04-1.8-4.2-1.92-6.83l.41-.28c2.4,1.08,4.11,2.63,5.65,4.3,.75,.84,1.37,1.78,1.87,2.8,.49,1.02,.96,2.06,1.5,3.05l1.61,2.97,1.55,3.02c1.01,2.03,2.02,4.05,2.96,6.13l-.41,.28Z\&quot;\n"</span>
+<a class="jxr_linenumber" name="L124" href="#L124">124</a>         + <span class="jxr_string">"                  style=\&quot;fill: #8f9aa8\&quot;\n"</span>
+<a class="jxr_linenumber" name="L125" href="#L125">125</a>         + <span class="jxr_string">"                /&gt;\n"</span>
+<a class="jxr_linenumber" name="L126" href="#L126">126</a>         + <span class="jxr_string">"              &lt;/g&gt;\n"</span>
+<a class="jxr_linenumber" name="L127" href="#L127">127</a>         + <span class="jxr_string">"              &lt;g style=\&quot;isolation: isolate; opacity: 0.9\&quot;&gt;\n"</span>
+<a class="jxr_linenumber" name="L128" href="#L128">128</a>         + <span class="jxr_string">"                &lt;path\n"</span>
+<a class="jxr_linenumber" name="L129" href="#L129">129</a>         + <span class="jxr_string">"                  d=\&quot;M51.27,120.32c-4.37-.44-8.71-1.04-13.07-1.55l-6.51-.88-6.49-.97c-2.16-.33-4.35-.55-6.53-.81-2.18-.27-4.32-.7-6.42-1.33-2.1-.63-4.18-1.36-6.23-2.22-2.05-.88-4.07-1.84-6.03-3.14l.12-.59c2.32-.39,4.56-.44,6.79-.42,2.22,.05,4.42,.22,6.59,.5,2.17,.28,4.31,.75,6.4,1.39,2.09,.65,4.18,1.34,6.29,1.92l6.32,1.76,6.31,1.85c4.19,1.3,8.4,2.52,12.57,3.9l-.12,.59Z\&quot;\n"</span>
+<a class="jxr_linenumber" name="L130" href="#L130">130</a>         + <span class="jxr_string">"                  style=\&quot;fill: #8f9aa8\&quot;\n"</span>
+<a class="jxr_linenumber" name="L131" href="#L131">131</a>         + <span class="jxr_string">"                /&gt;\n"</span>
+<a class="jxr_linenumber" name="L132" href="#L132">132</a>         + <span class="jxr_string">"              &lt;/g&gt;\n"</span>
+<a class="jxr_linenumber" name="L133" href="#L133">133</a>         + <span class="jxr_string">"              &lt;g style=\&quot;isolation: isolate; opacity: 0.9\&quot;&gt;\n"</span>
+<a class="jxr_linenumber" name="L134" href="#L134">134</a>         + <span class="jxr_string">"                &lt;path\n"</span>
+<a class="jxr_linenumber" name="L135" href="#L135">135</a>         + <span class="jxr_string">"                  d=\&quot;M334.28,128.7c3.6-1.01,7.22-1.89,10.83-2.85l5.43-1.34,5.44-1.26c1.82-.42,3.62-.92,5.42-1.4,1.81-.47,3.64-.79,5.49-.95,3.72-.3,7.48-.38,11.37,.36l.08,.49c-3.44,1.98-7.01,3.14-10.62,4.08-1.81,.46-3.64,.75-5.5,.91-1.86,.14-3.73,.26-5.58,.46l-5.56,.6-5.57,.52c-3.72,.29-7.43,.65-11.16,.87l-.08-.49Z\&quot;\n"</span>
+<a class="jxr_linenumber" name="L136" href="#L136">136</a>         + <span class="jxr_string">"                  style=\&quot;fill: #8f9aa8\&quot;\n"</span>
+<a class="jxr_linenumber" name="L137" href="#L137">137</a>         + <span class="jxr_string">"                /&gt;\n"</span>
+<a class="jxr_linenumber" name="L138" href="#L138">138</a>         + <span class="jxr_string">"              &lt;/g&gt;\n"</span>
+<a class="jxr_linenumber" name="L139" href="#L139">139</a>         + <span class="jxr_string">"            &lt;/g&gt;\n"</span>
+<a class="jxr_linenumber" name="L140" href="#L140">140</a>         + <span class="jxr_string">"          &lt;/svg&gt;"</span>;
+<a class="jxr_linenumber" name="L141" href="#L141">141</a> 
+<a class="jxr_linenumber" name="L142" href="#L142">142</a>     <em class="jxr_javadoccomment">/** Header 1 */</em>
+<a class="jxr_linenumber" name="L143" href="#L143">143</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">final</strong> String MESSAGE_HEADING = <span class="jxr_string">"Hi ! You've got an invitation to use a model."</span>;
+<a class="jxr_linenumber" name="L144" href="#L144">144</a> 
+<a class="jxr_linenumber" name="L145" href="#L145">145</a>     <em class="jxr_javadoccomment">/** Header 2 */</em>
+<a class="jxr_linenumber" name="L146" href="#L146">146</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">final</strong> String MESSAGE_SUBHEADING = <span class="jxr_string">"{0} invites you to use {1}."</span>;
+<a class="jxr_linenumber" name="L147" href="#L147">147</a> 
+<a class="jxr_linenumber" name="L148" href="#L148">148</a>     <em class="jxr_javadoccomment">/** Information */</em>
+<a class="jxr_linenumber" name="L149" href="#L149">149</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">final</strong> String MESSAGE_INFO = <span class="jxr_string">"&lt;p&gt;Click on the link below to start colabbing with the model.&lt;/p&gt;"</span>;
+<a class="jxr_linenumber" name="L150" href="#L150">150</a> 
+<a class="jxr_linenumber" name="L151" href="#L151">151</a>     <em class="jxr_javadoccomment">/** Label of the link */</em>
+<a class="jxr_linenumber" name="L152" href="#L152">152</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">final</strong> String MESSAGE_LINK_LABEL = <span class="jxr_string">"Get the model"</span>;
+<a class="jxr_linenumber" name="L153" href="#L153">153</a> 
+<a class="jxr_linenumber" name="L154" href="#L154">154</a>     <strong class="jxr_keyword">private</strong> <a name="ModelSharingMessageBuilder" href="../../../../../../../ch/colabproject/colab/api/model/token/tools/ModelSharingMessageBuilder.html#ModelSharingMessageBuilder">ModelSharingMessageBuilder</a>() {
+<a class="jxr_linenumber" name="L155" href="#L155">155</a>         <em class="jxr_comment">// private constructor</em>
+<a class="jxr_linenumber" name="L156" href="#L156">156</a>     }
+<a class="jxr_linenumber" name="L157" href="#L157">157</a> 
+<a class="jxr_linenumber" name="L158" href="#L158">158</a>     <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L159" href="#L159">159</a> <em class="jxr_javadoccomment">     * Build a HTML body to send a message for the model sharing token</em>
+<a class="jxr_linenumber" name="L160" href="#L160">160</a> <em class="jxr_javadoccomment">     *</em>
+<a class="jxr_linenumber" name="L161" href="#L161">161</a> <em class="jxr_javadoccomment">     * @param token the model sharing token</em>
+<a class="jxr_linenumber" name="L162" href="#L162">162</a> <em class="jxr_javadoccomment">     * @param link  the link in order to consume the token</em>
+<a class="jxr_linenumber" name="L163" href="#L163">163</a> <em class="jxr_javadoccomment">     *</em>
+<a class="jxr_linenumber" name="L164" href="#L164">164</a> <em class="jxr_javadoccomment">     * @return the HTML body of the message to send</em>
+<a class="jxr_linenumber" name="L165" href="#L165">165</a> <em class="jxr_javadoccomment">     */</em>
+<a class="jxr_linenumber" name="L166" href="#L166">166</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> String build(ModelSharingToken token, String link) {
+<a class="jxr_linenumber" name="L167" href="#L167">167</a>         String subHeading = MessageFormat.format(MESSAGE_SUBHEADING,
+<a class="jxr_linenumber" name="L168" href="#L168">168</a>             token.getSender() != <strong class="jxr_keyword">null</strong>
+<a class="jxr_linenumber" name="L169" href="#L169">169</a>                 ? token.getSender()
+<a class="jxr_linenumber" name="L170" href="#L170">170</a>                 : <span class="jxr_string">"Someone"</span>,
+<a class="jxr_linenumber" name="L171" href="#L171">171</a>             token.getProject() != <strong class="jxr_keyword">null</strong>
+<a class="jxr_linenumber" name="L172" href="#L172">172</a>                 ? <span class="jxr_string">"the model &lt;i&gt;"</span> + token.getProject().getName() + <span class="jxr_string">"&lt;/i&gt;"</span>
+<a class="jxr_linenumber" name="L173" href="#L173">173</a>                 : <span class="jxr_string">"a co.LAB model"</span>);
+<a class="jxr_linenumber" name="L174" href="#L174">174</a> 
+<a class="jxr_linenumber" name="L175" href="#L175">175</a>         <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">new</strong> <a name="TokenMessageBuilder" href="../../../../../../../ch/colabproject/colab/api/controller/token/TokenMessageBuilder.html#TokenMessageBuilder">TokenMessageBuilder</a>(token)
+<a class="jxr_linenumber" name="L176" href="#L176">176</a>             .headTitle(MESSAGE_HEAD_TITLE)
+<a class="jxr_linenumber" name="L177" href="#L177">177</a>             .picture(MESSAGE_PICTURE)
+<a class="jxr_linenumber" name="L178" href="#L178">178</a>             .heading(MESSAGE_HEADING)
+<a class="jxr_linenumber" name="L179" href="#L179">179</a>             .subheading(subHeading)
+<a class="jxr_linenumber" name="L180" href="#L180">180</a>             .info(MESSAGE_INFO)
+<a class="jxr_linenumber" name="L181" href="#L181">181</a>             .linkHref(link)
+<a class="jxr_linenumber" name="L182" href="#L182">182</a>             .linkLabel(MESSAGE_LINK_LABEL)
+<a class="jxr_linenumber" name="L183" href="#L183">183</a>             <em class="jxr_comment">// let default footer</em>
+<a class="jxr_linenumber" name="L184" href="#L184">184</a>             .build();
+<a class="jxr_linenumber" name="L185" href="#L185">185</a>     }
+<a class="jxr_linenumber" name="L186" href="#L186">186</a> 
+<a class="jxr_linenumber" name="L187" href="#L187">187</a> }
+</pre>
+<hr/>
+<div id="footer">Copyright &#169; 2022 <a href="https://www.colab-project.ch">AlbaSim, MEI, HEIG-VD, HES-SO</a>. All rights reserved.</div>
+</body>
+</html>

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>ProjectRestEndpoint.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">colab-webapp</a> &gt; <a href="../index.html" class="el_bundle">colab-api</a> &gt; <a href="index.source.html" class="el_package">ch.colabproject.colab.api.rest.project</a> &gt; <span class="el_source">ProjectRestEndpoint.java</span></div><h1>ProjectRestEndpoint.java</h1><pre class="source lang-java linenums">/*
  * The coLAB project
- * Copyright (C) 2021 AlbaSim, MEI, HEIG-VD, HES-SO
+ * Copyright (C) 2021-2022 AlbaSim, MEI, HEIG-VD, HES-SO
  *
  * Licensed under the MIT License
  */
@@ -14,6 +14,7 @@ import ch.colabproject.colab.api.model.card.AbstractCardType;
 import ch.colabproject.colab.api.model.card.Card;
 import ch.colabproject.colab.api.model.card.CardContent;
 import ch.colabproject.colab.api.model.link.ActivityFlowLink;
+import ch.colabproject.colab.api.model.project.InstanceMaker;
 import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.api.model.team.TeamMember;
 import ch.colabproject.colab.api.model.team.TeamRole;
@@ -46,10 +47,10 @@ import org.slf4j.LoggerFactory;
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
 @AuthenticationRequired
-<span class="nc" id="L49">public class ProjectRestEndpoint {</span>
+<span class="nc" id="L50">public class ProjectRestEndpoint {</span>
 
     /** logger */
-<span class="nc" id="L52">    private static final Logger logger = LoggerFactory.getLogger(ProjectRestEndpoint.class);</span>
+<span class="nc" id="L53">    private static final Logger logger = LoggerFactory.getLogger(ProjectRestEndpoint.class);</span>
 
     /**
      * The Project business logic
@@ -75,8 +76,8 @@ import org.slf4j.LoggerFactory;
     @GET
     @AdminResource
     public List&lt;Project&gt; getAllProjects() {
-<span class="nc" id="L78">        logger.debug(&quot;Get all projects&quot;);</span>
-<span class="nc" id="L79">        return projectDao.findAllProject();</span>
+<span class="nc" id="L79">        logger.debug(&quot;Get all projects&quot;);</span>
+<span class="nc" id="L80">        return projectDao.findAllProject();</span>
     }
 
     /**
@@ -87,8 +88,8 @@ import org.slf4j.LoggerFactory;
     @GET
     @Path(&quot;MyOwn&quot;)
     public List&lt;Project&gt; getUserProjects() {
-<span class="nc" id="L90">        logger.debug(&quot;Get user projects&quot;);</span>
-<span class="nc" id="L91">        return projectManager.findProjectsOfCurrentUser();</span>
+<span class="nc" id="L91">        logger.debug(&quot;Get user projects&quot;);</span>
+<span class="nc" id="L92">        return projectManager.findProjectsOfCurrentUser();</span>
     }
 
     /**
@@ -101,8 +102,8 @@ import org.slf4j.LoggerFactory;
     @GET
     @Path(&quot;/{id}&quot;)
     public Project getProject(@PathParam(&quot;id&quot;) Long id) {
-<span class="nc" id="L104">        logger.debug(&quot;Get project #{}&quot;, id);</span>
-<span class="nc" id="L105">        return projectDao.findProject(id);</span>
+<span class="nc" id="L105">        logger.debug(&quot;Get project #{}&quot;, id);</span>
+<span class="nc" id="L106">        return projectDao.findProject(id);</span>
     }
 
     /**
@@ -115,28 +116,29 @@ import org.slf4j.LoggerFactory;
     @POST
     @Path(&quot;createWithModel&quot;)
     public Long createProject(ProjectCreationData creationData) {
-<span class="nc" id="L118">        logger.debug(&quot;Create a project with {}&quot;, creationData);</span>
+<span class="nc" id="L119">        logger.debug(&quot;Create a project with {}&quot;, creationData);</span>
 
         Project project;
 
-<span class="nc bnc" id="L122" title="All 2 branches missed.">        if (creationData.getModelId() == null) {</span>
-<span class="nc" id="L123">            project = new Project();</span>
-<span class="nc" id="L124">            project.setName(creationData.getName());</span>
-<span class="nc" id="L125">            project.setDescription(creationData.getDescription());</span>
-<span class="nc" id="L126">            project.setIllustration(creationData.getIllustration());</span>
+<span class="nc bnc" id="L123" title="All 2 branches missed.">        if (creationData.getModelId() == null) {</span>
+<span class="nc" id="L124">            project = new Project();</span>
+<span class="nc" id="L125">            project.setType(creationData.getType());</span>
+<span class="nc" id="L126">            project.setName(creationData.getName());</span>
+<span class="nc" id="L127">            project.setDescription(creationData.getDescription());</span>
+<span class="nc" id="L128">            project.setIllustration(creationData.getIllustration());</span>
 
-<span class="nc" id="L128">            projectManager.createProject(project);</span>
+<span class="nc" id="L130">            projectManager.createProject(project);</span>
         } else {
-<span class="nc" id="L130">            project = projectManager.createProjectFromModel(creationData.getName(),</span>
-<span class="nc" id="L131">                creationData.getDescription(), creationData.getIllustration(),</span>
-<span class="nc" id="L132">                creationData.getModelId());</span>
+<span class="nc" id="L132">            project = projectManager.createProjectFromModel(creationData.getName(),</span>
+<span class="nc" id="L133">                creationData.getDescription(), creationData.getIllustration(),</span>
+<span class="nc" id="L134">                creationData.getModelId());</span>
         }
 
-<span class="nc" id="L135">        creationData.getGuestsEmail().stream().forEach(email -&gt; {</span>
-<span class="nc" id="L136">            teamManager.invite(project.getId(), email);</span>
-<span class="nc" id="L137">        });</span>
+<span class="nc" id="L137">        creationData.getGuestsEmail().stream().forEach(email -&gt; {</span>
+<span class="nc" id="L138">            teamManager.invite(project.getId(), email);</span>
+<span class="nc" id="L139">        });</span>
 
-<span class="nc" id="L139">        return project.getId();</span>
+<span class="nc" id="L141">        return project.getId();</span>
     }
 
     /**
@@ -148,9 +150,9 @@ import org.slf4j.LoggerFactory;
      */
     @PUT
     public void updateProject(Project project) throws ColabMergeException {
-<span class="nc" id="L151">        logger.debug(&quot;Update project {}&quot;, project);</span>
-<span class="nc" id="L152">        projectDao.updateProject(project);</span>
-<span class="nc" id="L153">    }</span>
+<span class="nc" id="L153">        logger.debug(&quot;Update project {}&quot;, project);</span>
+<span class="nc" id="L154">        projectDao.updateProject(project);</span>
+<span class="nc" id="L155">    }</span>
 
     /**
      * Permanently delete a project.
@@ -160,9 +162,9 @@ import org.slf4j.LoggerFactory;
     @DELETE
     @Path(&quot;/{id}&quot;)
     public void deleteProject(@PathParam(&quot;id&quot;) Long id) {
-<span class="nc" id="L163">        logger.debug(&quot;Delete project #{}&quot;, id);</span>
-<span class="nc" id="L164">        projectManager.deleteProject(id);</span>
-<span class="nc" id="L165">    }</span>
+<span class="nc" id="L165">        logger.debug(&quot;Delete project #{}&quot;, id);</span>
+<span class="nc" id="L166">        projectManager.deleteProject(id);</span>
+<span class="nc" id="L167">    }</span>
 
     /**
      * Duplicate the given project
@@ -175,14 +177,30 @@ import org.slf4j.LoggerFactory;
     @PUT
     @Path(&quot;copyProject/{id}&quot;)
     public Long duplicateProject(@PathParam(&quot;id&quot;) Long projectId, DuplicationParam params) {
-<span class="nc" id="L178">        logger.debug(&quot;duplicate the project #{} with params {}&quot;, projectId, params);</span>
+<span class="nc" id="L180">        logger.debug(&quot;duplicate the project #{} with params {}&quot;, projectId, params);</span>
 
-<span class="nc" id="L180">        DuplicationParam effectiveParams = params;</span>
-<span class="nc bnc" id="L181" title="All 2 branches missed.">        if (effectiveParams == null) {</span>
-<span class="nc" id="L182">            effectiveParams = DuplicationParam.buildDefaultForCopyOfProject();</span>
+<span class="nc" id="L182">        DuplicationParam effectiveParams = params;</span>
+<span class="nc bnc" id="L183" title="All 2 branches missed.">        if (effectiveParams == null) {</span>
+<span class="nc" id="L184">            effectiveParams = DuplicationParam.buildDefaultForCopyOfProject();</span>
         }
 
-<span class="nc" id="L185">        return projectManager.duplicateProject(projectId, effectiveParams).getId();</span>
+<span class="nc" id="L187">        return projectManager.duplicateProject(projectId, effectiveParams).getId();</span>
+    }
+
+    /**
+     * Share the model to someone
+     *
+     * @param modelId the id of the model
+     * @param email   the recipient address
+     *
+     * @return the pending potential instance maker
+     */
+    @PUT
+    @Path(&quot;shareModel/{id: [0-9]+}/{email}&quot;)
+    public InstanceMaker shareModel(@PathParam(&quot;id&quot;) Long modelId,
+        @PathParam(&quot;email&quot;) String email) {
+<span class="nc" id="L202">        logger.debug(&quot;Share model #{} to {}&quot;, modelId, email);</span>
+<span class="nc" id="L203">        return projectManager.shareModel(modelId, email);</span>
     }
 
     /**
@@ -195,8 +213,8 @@ import org.slf4j.LoggerFactory;
     @GET
     @Path(&quot;{projectId}/RootCard&quot;)
     public Card getRootCardOfProject(@PathParam(&quot;projectId&quot;) Long projectId) {
-<span class="nc" id="L198">        logger.debug(&quot;get the root card of the project #{}&quot;, projectId);</span>
-<span class="nc" id="L199">        return projectManager.getRootCard(projectId);</span>
+<span class="nc" id="L216">        logger.debug(&quot;get the root card of the project #{}&quot;, projectId);</span>
+<span class="nc" id="L217">        return projectManager.getRootCard(projectId);</span>
     }
 
     /**
@@ -209,8 +227,8 @@ import org.slf4j.LoggerFactory;
     @GET
     @Path(&quot;{id}/Members&quot;)
     public List&lt;TeamMember&gt; getMembers(@PathParam(&quot;id&quot;) Long id) {
-<span class="nc" id="L212">        logger.debug(&quot;Get project #{} members&quot;, id);</span>
-<span class="nc" id="L213">        return teamManager.getTeamMembers(id);</span>
+<span class="nc" id="L230">        logger.debug(&quot;Get project #{} members&quot;, id);</span>
+<span class="nc" id="L231">        return teamManager.getTeamMembers(id);</span>
     }
 
     /**
@@ -223,8 +241,8 @@ import org.slf4j.LoggerFactory;
     @GET
     @Path(&quot;{projectId: [0-9]+}/roles&quot;)
     public List&lt;TeamRole&gt; getRoles(@PathParam(&quot;projectId&quot;) Long projectId) {
-<span class="nc" id="L226">        logger.debug(&quot;Get project #{} members&quot;, projectId);</span>
-<span class="nc" id="L227">        return teamManager.getProjectRoles(projectId);</span>
+<span class="nc" id="L244">        logger.debug(&quot;Get project #{} members&quot;, projectId);</span>
+<span class="nc" id="L245">        return teamManager.getProjectRoles(projectId);</span>
     }
 
     /**
@@ -237,8 +255,8 @@ import org.slf4j.LoggerFactory;
     @GET
     @Path(&quot;{id}/CardTypes&quot;)
     public Set&lt;AbstractCardType&gt; getCardTypesOfProject(@PathParam(&quot;id&quot;) Long id) {
-<span class="nc" id="L240">        logger.debug(&quot;Get project #{} card types&quot;, id);</span>
-<span class="nc" id="L241">        return projectManager.getCardTypes(id);</span>
+<span class="nc" id="L258">        logger.debug(&quot;Get project #{} card types&quot;, id);</span>
+<span class="nc" id="L259">        return projectManager.getCardTypes(id);</span>
     }
 
     /**
@@ -251,8 +269,8 @@ import org.slf4j.LoggerFactory;
     @GET
     @Path(&quot;{id}/Cards&quot;)
     public Set&lt;Card&gt; getCardsOfProject(@PathParam(&quot;id&quot;) Long id) {
-<span class="nc" id="L254">        logger.debug(&quot;Get project #{} cards&quot;, id);</span>
-<span class="nc" id="L255">        return projectManager.getCards(id);</span>
+<span class="nc" id="L272">        logger.debug(&quot;Get project #{} cards&quot;, id);</span>
+<span class="nc" id="L273">        return projectManager.getCards(id);</span>
     }
 
     /**
@@ -265,8 +283,8 @@ import org.slf4j.LoggerFactory;
     @GET
     @Path(&quot;{id}/CardContents&quot;)
     public Set&lt;CardContent&gt; getCardContentsOfProject(@PathParam(&quot;id&quot;) Long id) {
-<span class="nc" id="L268">        logger.debug(&quot;Get project #{} cardContents&quot;, id);</span>
-<span class="nc" id="L269">        return projectManager.getCardContents(id);</span>
+<span class="nc" id="L286">        logger.debug(&quot;Get project #{} cardContents&quot;, id);</span>
+<span class="nc" id="L287">        return projectManager.getCardContents(id);</span>
     }
 
     /**
@@ -279,8 +297,8 @@ import org.slf4j.LoggerFactory;
     @GET
     @Path(&quot;{id}/structure&quot;)
     public ProjectStructure getStructureOfProject(@PathParam(&quot;id&quot;) Long id) {
-<span class="nc" id="L282">        logger.debug(&quot;Get project #{} cardContents&quot;, id);</span>
-<span class="nc" id="L283">        return projectManager.getStructure(id);</span>
+<span class="nc" id="L300">        logger.debug(&quot;Get project #{} cardContents&quot;, id);</span>
+<span class="nc" id="L301">        return projectManager.getStructure(id);</span>
     }
 
     /**
@@ -293,8 +311,22 @@ import org.slf4j.LoggerFactory;
     @GET
     @Path(&quot;{id}/ActivityFlowLink&quot;)
     public Set&lt;ActivityFlowLink&gt; getActivityFlowLinks(@PathParam(&quot;id&quot;) Long id) {
-<span class="nc" id="L296">        logger.debug(&quot;Get project #{} activityflowlinks&quot;, id);</span>
-<span class="nc" id="L297">        return projectManager.getActivityFlowLinks(id);</span>
+<span class="nc" id="L314">        logger.debug(&quot;Get project #{} activityflowlinks&quot;, id);</span>
+<span class="nc" id="L315">        return projectManager.getActivityFlowLinks(id);</span>
+    }
+
+    /**
+     * Get all instance makers of the given project
+     *
+     * @param id the id of the project
+     *
+     * @return all instance makers linked to the project
+     */
+    @GET
+    @Path(&quot;{id}/instanceMakers&quot;)
+    public List&lt;InstanceMaker&gt; getInstanceMakers(@PathParam(&quot;id&quot;) Long id) {
+<span class="nc" id="L328">        logger.debug(&quot;Get project #{} instance makers&quot;, id);</span>
+<span class="nc" id="L329">        return projectManager.getInstanceMakers(id);</span>
     }
 
 }

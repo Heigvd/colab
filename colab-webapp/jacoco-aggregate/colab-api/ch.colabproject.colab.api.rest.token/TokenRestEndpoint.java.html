@@ -18,14 +18,16 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 /**
- * API to fetch an consume tokens sent by e-mail
+ * API to fetch and consume tokens sent by e-mail.
+ * &lt;p&gt;
+ * A token grants access to a specific action.
  *
  * @author maxence
  */
 @Path(&quot;tokens&quot;)
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
-<span class="nc" id="L28">public class TokenRestEndpoint {</span>
+<span class="nc" id="L30">public class TokenRestEndpoint {</span>
 
     /**
      * token manager
@@ -34,34 +36,36 @@ import javax.ws.rs.core.MediaType;
     private TokenManager tokenManager;
 
     /**
-     * Fetch a token by id. Once fetched, the client should decide what to do. If the token does not
-     * require authentication, client may consume the token directly. If the token require
-     * authentication, the client should ask the user to sing in/up and consume the token
-     * eventually.
+     * Fetch a token by id.
+     * &lt;p&gt;
+     * Once fetched, the client should decide what to do. If the token does not require
+     * authentication, client may consume the token directly. If the token require authentication,
+     * the client should ask the user to sing in/up and consume the token eventually.
      *
-     * @param id of the token to fetch.
+     * @param id the id of the token to fetch
      *
      * @return the token
      */
     @GET
     @Path(&quot;{id}&quot;)
     public Token getToken(@PathParam(&quot;id&quot;) Long id) {
-<span class="nc" id="L49">        return tokenManager.getNotExpiredToken(id);</span>
+<span class="nc" id="L52">        return tokenManager.getNotExpiredToken(id);</span>
     }
 
     /**
      * Consume and destroy the token
      *
-     * @param id         if of the token to consume
-     * @param plainToken plain token as receive by e-mail
+     * @param id         the if of the token to consume
+     * @param plainToken the plain token as receive by e-mail
      *
      * @return the consumed token
      *
-     * @throws ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage &lt;ul&gt;
-     * &lt;li&gt;notFound if the token does not exists;
-     * &lt;li&gt;bad request if token does not match;
-     * &lt;li&gt;authenticationRequired if token requires authentication but current user id not
-     * &lt;/ul&gt;
+     * @throws ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage
+     *  &lt;ul&gt;
+     *      &lt;li&gt;notFound if the token does not exists;
+     *      &lt;li&gt;bad request if token does not match;
+     *      &lt;li&gt;authenticationRequired if token requires authentication but current user is not
+     *  &lt;/ul&gt;
      */
     @PUT
     @Path(&quot;{id}/{token: [a-fA-F0-9]+}&quot;)
@@ -69,7 +73,7 @@ import javax.ws.rs.core.MediaType;
         @PathParam(&quot;id&quot;) Long id,
         @PathParam(&quot;token&quot;) String plainToken
     ) {
-<span class="nc" id="L72">        return tokenManager.consume(id, plainToken);</span>
+<span class="nc" id="L76">        return tokenManager.consume(id, plainToken);</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

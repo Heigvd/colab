@@ -297,11 +297,12 @@
 <a class="jxr_linenumber" name="L289" href="#L289">289</a> <em class="jxr_javadoccomment">     *</em>
 <a class="jxr_linenumber" name="L290" href="#L290">290</a> <em class="jxr_javadoccomment">     * @throws NamingException if lookup failed</em>
 <a class="jxr_linenumber" name="L291" href="#L291">291</a> <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="L292" href="#L292">292</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> &lt;T&gt; T lookup(Class&lt;T&gt; klass) <strong class="jxr_keyword">throws</strong> NamingException {
-<a class="jxr_linenumber" name="L293" href="#L293">293</a>         <strong class="jxr_keyword">return</strong> (T) <strong class="jxr_keyword">new</strong> InitialContext().lookup(
-<a class="jxr_linenumber" name="L294" href="#L294">294</a>             <span class="jxr_string">"java:global/coLAB/"</span> + klass.getSimpleName() + <span class="jxr_string">"!"</span> + klass.getName());
-<a class="jxr_linenumber" name="L295" href="#L295">295</a>     }
-<a class="jxr_linenumber" name="L296" href="#L296">296</a> }
+<a class="jxr_linenumber" name="L292" href="#L292">292</a>     @SuppressWarnings(<span class="jxr_string">"unchecked"</span>)
+<a class="jxr_linenumber" name="L293" href="#L293">293</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> &lt;T&gt; T lookup(Class&lt;T&gt; klass) <strong class="jxr_keyword">throws</strong> NamingException {
+<a class="jxr_linenumber" name="L294" href="#L294">294</a>         <strong class="jxr_keyword">return</strong> (T) <strong class="jxr_keyword">new</strong> InitialContext().lookup(
+<a class="jxr_linenumber" name="L295" href="#L295">295</a>             <span class="jxr_string">"java:global/coLAB/"</span> + klass.getSimpleName() + <span class="jxr_string">"!"</span> + klass.getName());
+<a class="jxr_linenumber" name="L296" href="#L296">296</a>     }
+<a class="jxr_linenumber" name="L297" href="#L297">297</a> }
 </pre>
 <hr/>
 <div id="footer">Copyright &#169; 2022 <a href="https://www.colab-project.ch">AlbaSim, MEI, HEIG-VD, HES-SO</a>. All rights reserved.</div>

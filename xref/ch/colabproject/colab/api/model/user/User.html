@@ -413,7 +413,7 @@
 <a class="jxr_linenumber" name="L405" href="#L405">405</a>             <em class="jxr_comment">// unauthenticated users shall read user data to authenticate</em>
 <a class="jxr_linenumber" name="L406" href="#L406">406</a>             <strong class="jxr_keyword">new</strong> Conditions.Not(Conditions.authenticated),
 <a class="jxr_linenumber" name="L407" href="#L407">407</a>             <strong class="jxr_keyword">new</strong> Conditions.IsCurrentUserThisUser(<strong class="jxr_keyword">this</strong>),
-<a class="jxr_linenumber" name="L408" href="#L408">408</a>             <strong class="jxr_keyword">new</strong> Conditions.IsCurrentUserTeamMateOfUser(<strong class="jxr_keyword">this</strong>)
+<a class="jxr_linenumber" name="L408" href="#L408">408</a>             <strong class="jxr_keyword">new</strong> Conditions.DoCurrentUserWorkOnSameProjectThanUser(<strong class="jxr_keyword">this</strong>)
 <a class="jxr_linenumber" name="L409" href="#L409">409</a>         );
 <a class="jxr_linenumber" name="L410" href="#L410">410</a>     }
 <a class="jxr_linenumber" name="L411" href="#L411">411</a> 

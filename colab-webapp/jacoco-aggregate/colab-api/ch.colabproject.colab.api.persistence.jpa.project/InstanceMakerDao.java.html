@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>InstanceMakerDao.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">colab-webapp</a> &gt; <a href="../index.html" class="el_bundle">colab-api</a> &gt; <a href="index.source.html" class="el_package">ch.colabproject.colab.api.persistence.jpa.project</a> &gt; <span class="el_source">InstanceMakerDao.java</span></div><h1>InstanceMakerDao.java</h1><pre class="source lang-java linenums">/*
+ * The coLAB project
+ * Copyright (C) 2022 AlbaSim, MEI, HEIG-VD, HES-SO
+ *
+ * Licensed under the MIT License
+ */
+package ch.colabproject.colab.api.persistence.jpa.project;
+
+import ch.colabproject.colab.api.model.project.InstanceMaker;
+import ch.colabproject.colab.api.model.project.Project;
+import ch.colabproject.colab.api.model.user.User;
+import java.util.List;
+import javax.ejb.LocalBean;
+import javax.ejb.Stateless;
+import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
+import javax.persistence.PersistenceContext;
+import javax.persistence.TypedQuery;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+/**
+ * Instance maker persistence
+ *
+ * @author sandra
+ */
+@Stateless
+@LocalBean
+<span class="nc" id="L29">public class InstanceMakerDao {</span>
+
+    /** logger */
+<span class="nc" id="L32">    private static final Logger logger = LoggerFactory.getLogger(InstanceMakerDao.class);</span>
+
+    /**
+     * Access to the persistence unit
+     */
+    @PersistenceContext(unitName = &quot;COLAB_PU&quot;)
+    private EntityManager em;
+
+//    /**
+//     * Find an instance maker by id
+//     *
+//     * @param instanceMakerId the id of the instance maker
+//     *
+//     * @return the instance maker or null if it does not exist
+//     */
+//    public InstanceMaker findInstanceMaker(Long instanceMakerId) {
+//        return em.find(InstanceMaker.class, instanceMakerId);
+//    }
+//
+//    /**
+//     * Update an instance maker
+//     *
+//     * @param instanceMaker new value
+//     *
+//     * @return updated instance maker
+//     *
+//     * @throws ColabMergeException if updated failed
+//     */
+//    public InstanceMaker updateInstanceMaker(InstanceMaker instanceMaker)
+//        throws ColabMergeException {
+//        InstanceMaker managedInstanceMaker = findInstanceMaker(instanceMaker.getId());
+//        if (managedInstanceMaker == null) {
+//            throw HttpErrorMessage.relatedObjectNotFoundError();
+//        }
+//        managedInstanceMaker.merge(instanceMaker);
+//
+//        return managedInstanceMaker;
+//    }
+
+    /**
+     * Persist a brand new instance maker to database
+     *
+     * @param instancemaker new instance maker to persist
+     *
+     * @return the new persisted instance maker
+     */
+    public InstanceMaker persistInstanceMaker(InstanceMaker instancemaker) {
+<span class="nc" id="L79">        logger.debug(&quot;persist instance maker {}&quot;, instancemaker);</span>
+<span class="nc" id="L80">        em.persist(instancemaker);</span>
+<span class="nc" id="L81">        return instancemaker;</span>
+    }
+//
+//    /**
+//     * Remove the given instance maker from database
+//     *
+//     * @param instanceMaker the instance maker to delete
+//     */
+//    public void removeInstanceMaker(InstanceMaker instanceMaker) {
+//        em.remove(instanceMaker);
+//    }
+
+    /**
+     * Find the instance maker who match the given project and the given user.
+     *
+     * @param project the project
+     * @param user    the user
+     *
+     * @return the instance maker or null
+     */
+    public InstanceMaker findInstanceMakerByProjectAndUser(Project project, User user) {
+        try {
+<span class="nc" id="L103">            TypedQuery&lt;InstanceMaker&gt; query = em.createNamedQuery(</span>
+                &quot;InstanceMaker.findByProjectAndUser&quot;,
+                InstanceMaker.class);
+
+<span class="nc" id="L107">            query.setParameter(&quot;projectId&quot;, project.getId());</span>
+<span class="nc" id="L108">            query.setParameter(&quot;userId&quot;, user.getId());</span>
+
+<span class="nc" id="L110">            return query.getSingleResult();</span>
+<span class="nc" id="L111">        } catch (NoResultException ex) {</span>
+<span class="nc" id="L112">            return null;</span>
+        }
+    }
+//
+//    /**
+//     * Find the instance makers related to the given user
+//     *
+//     * @param user the user
+//     *
+//     * @return the matching instance makers
+//     */
+//    public List&lt;InstanceMaker&gt; findInstanceMakersByUser(User user) {
+//        TypedQuery&lt;InstanceMaker&gt; query = em.createNamedQuery(&quot;InstanceMaker.findByUser&quot;,
+//            InstanceMaker.class);
+//
+//        query.setParameter(&quot;userId&quot;, user.getId());
+//
+//        return query.getResultList();
+//    }
+
+    /**
+     * Find the instance makers related to the given project
+     *
+     * @param project the project
+     *
+     * @return the matching instance makers
+     */
+    public List&lt;InstanceMaker&gt; findInstanceMakersByProject(Project project) {
+<span class="nc" id="L140">        TypedQuery&lt;InstanceMaker&gt; query = em.createNamedQuery(&quot;InstanceMaker.findByProject&quot;,</span>
+            InstanceMaker.class);
+
+<span class="nc" id="L143">        query.setParameter(&quot;projectId&quot;, project.getId());</span>
+
+<span class="nc" id="L145">        return query.getResultList();</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>
