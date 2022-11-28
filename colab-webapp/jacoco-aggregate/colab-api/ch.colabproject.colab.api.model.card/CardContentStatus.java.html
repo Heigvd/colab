@@ -19,17 +19,25 @@ package ch.colabproject.colab.api.model.card;
      */
 <span class="nc" id="L20">    ACTIVE,</span>
     /**
+     * This card content is not yet ready to be filled
+     */
+<span class="nc" id="L24">    PREPARATION,</span>
+    /**
+     * This card content has been validation
+     */
+<span class="nc" id="L28">    VALIDATED,</span>
+    /**
      * This card content has been rejected
      */
-<span class="nc" id="L24">    REJECTED,</span>
+<span class="nc" id="L32">    REJECTED,</span>
     /**
      * This card content has been postponed
      */
-<span class="nc" id="L28">    POSTPONED,</span>
+<span class="nc" id="L36">    POSTPONED,</span>
     /**
      * This card content has been archived
      */
-<span class="nc" id="L32">    ARCHIVED;</span>
+<span class="nc" id="L40">    ARCHIVED;</span>
 
     // WARNING ! DO NOT CHANGE THE ENUM NAMES, THEY ARE USED AS KEYS IN DB !!
 }
