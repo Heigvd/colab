@@ -78,13 +78,16 @@ function statusOrder(c: CardContent) {
   switch (c.status) {
     case 'ACTIVE':
       return 1;
-    case 'POSTPONED':
+    case 'PREPARATION':
       return 2;
-    case 'ARCHIVED':
+    case 'VALIDATED':
       return 3;
-    case 'REJECTED':
-    default:
+    case 'POSTPONED':
       return 4;
+    case 'ARCHIVED':
+      return 5;
+    case 'REJECTED':
+      return 6;
   }
 }
 

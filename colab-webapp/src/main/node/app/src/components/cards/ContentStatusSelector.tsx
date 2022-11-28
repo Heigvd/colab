@@ -22,11 +22,11 @@ function buildOption(status: Status) {
 
 const options = [
   buildOption('ACTIVE'),
+  buildOption('PREPARATION'),
+  buildOption('VALIDATED'),
   buildOption('POSTPONED'),
   buildOption('ARCHIVED'),
   buildOption('REJECTED'),
-  /* buildOption('PREPARATION'),
-  buildOption('VALIDATED'), */
 ];
 
 export default function ContentStatusSelector({

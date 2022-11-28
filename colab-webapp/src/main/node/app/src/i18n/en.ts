@@ -431,11 +431,11 @@ export const en = {
           `Status: ${en.modules.card.settings.statuses[status].toLocaleLowerCase('en')}`,
         statuses: {
           ACTIVE: 'Active',
+          PREPARATION: 'In preparation',
+          VALIDATED: 'Validated',
           POSTPONED: 'Postoned',
           ARCHIVED: 'Archived',
           REJECTED: 'Rejected',
-          PREPARATION: 'In preparation',
-          VALIDATED: 'Validated',
         },
         completionLevelMode: 'Completion level mode',
         cardPosition: 'Card position',
