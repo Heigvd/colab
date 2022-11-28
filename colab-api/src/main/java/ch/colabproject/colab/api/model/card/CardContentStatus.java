@@ -19,6 +19,14 @@ public enum CardContentStatus {
      */
     ACTIVE,
     /**
+     * This card content is not yet ready to be filled
+     */
+    PREPARATION,
+    /**
+     * This card content has been validation
+     */
+    VALIDATED,
+    /**
      * This card content has been rejected
      */
     REJECTED,

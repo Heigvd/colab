@@ -436,11 +436,11 @@ export const fr: ColabTranslations = {
           `Statut: ${fr.modules.card.settings.statuses[status].toLocaleLowerCase('fr')}`,
         statuses: {
           ACTIVE: 'Actif',
+          PREPARATION: 'En préparation',
+          VALIDATED: 'Validé',
           POSTPONED: 'Reporté',
           ARCHIVED: 'Archivé',
           REJECTED: 'Rejeté',
-          PREPARATION: 'En préparation',
-          VALIDATED: 'Validé',
         },
         completionLevelMode: "Mode de niveau d'avancement",
         cardPosition: 'Position de la carte',
