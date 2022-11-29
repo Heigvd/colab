@@ -420,27 +420,25 @@ export default function CardThumb({
                 align="center"
                 className={css({ marginTop: '-10px', paddingRight: space_S })}
               >
-                <FeaturePreview>
-                  <IconButton
-                    className={cx(
-                      greyIconButtonChipStyle,
-                      css({ alignSelf: 'flex-end' }),
-                      organize &&
-                        css({
-                          backgroundColor: successColor,
-                          color: 'var(--bgColor)',
-                          border: successColor,
-                        }),
-                    )}
-                    title={i18n.modules.card.positioning.toggleText}
-                    icon={faTableCells}
-                    //value={organize.organize}
-                    onClick={e => {
-                      e.stopPropagation();
-                      setOrganize(v => !v);
-                    }}
-                  />
-                </FeaturePreview>
+                <IconButton
+                  className={cx(
+                    greyIconButtonChipStyle,
+                    css({ alignSelf: 'flex-end' }),
+                    organize &&
+                      css({
+                        backgroundColor: successColor,
+                        color: 'var(--bgColor)',
+                        border: successColor,
+                      }),
+                  )}
+                  title={i18n.modules.card.positioning.toggleText}
+                  icon={faTableCells}
+                  //value={organize.organize}
+                  onClick={e => {
+                    e.stopPropagation();
+                    setOrganize(v => !v);
+                  }}
+                />
                 <CardCreator parentCardContent={variant} className={greyIconButtonChipStyle} />
               </Flex>
             )}

@@ -38,7 +38,7 @@ const defaultData: ProjectCreationData = {
   illustration: { ...defaultProjectIllustration },
   guests: [],
   projectModel: null,
-  keepWiredToModel: true,
+  keepWiredToModel: false,
 };
 
 type ProgressionStatus = 'chooseModel' | 'fillBasisData';

@@ -54,7 +54,7 @@ import {
 } from '../resources/ResourcesMainView';
 import { ResourcesListNb } from '../resources/summary/ResourcesListSummary';
 //import StickyNoteWrapper from '../stickynotes/StickyNoteWrapper';
-import { TipsCtx } from '../common/element/Tips';
+import { useCurrentUser } from '../../selectors/userSelector';
 import {
   Item,
   SideCollapsibleCtx,
@@ -125,10 +125,8 @@ export default function CardEditor({
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const location = useLocation();
-  //const { cardType } = useAndLoadCardType(card.cardTypeId);
-  //const hasCardType = cardType != null;
 
-  const tipsConfig = React.useContext(TipsCtx);
+  const { currentUser } = useCurrentUser();
 
   const variants = useVariantsOrLoad(card) || [];
   const hasVariants = variants.length > 1 && variant != null;
@@ -378,7 +376,7 @@ export default function CardEditor({
                       ),
                       action: () => navigate('involvements'),
                     },
-                    ...(tipsConfig.WIP.value && card.cardTypeId == null
+                    ...(currentUser?.admin && card.cardTypeId == null
                       ? [
                           {
                             value: 'createType',

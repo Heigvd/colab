@@ -72,7 +72,6 @@ import Presence from '../presence/Presence';
 import { PresenceContext, usePresenceContext } from '../presence/PresenceContext';
 import { defaultProjectIllustration } from '../ProjectCommon';
 import { ProjectSettings } from '../ProjectSettings';
-import ProjectSharing from '../ProjectSharing';
 import Team from '../team/Team';
 import ActivityFlowChart from './ActivityFlowChart';
 import Hierarchy from './Hierarchy';
@@ -611,7 +610,6 @@ export default function Editor(): JSX.Element {
               <Route path="hierarchy-old" element={<Hierarchy rootId={root.id} />} />
               <Route path="flow" element={<ActivityFlowChart />} />
               <Route path="docs/*" element={<DocumentationTab project={project} />} />
-              <Route path="sharing/*" element={<ProjectSharing projectId={project.id} />} />
               <Route path="card/:id" element={<DefaultVariantDetector />} />
               {/* Zooom on a card */}
               <Route

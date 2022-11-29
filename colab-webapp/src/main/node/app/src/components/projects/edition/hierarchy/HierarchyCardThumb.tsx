@@ -3,7 +3,6 @@ import { Card, CardContent } from 'colab-rest-client';
 import React from 'react';
 import { shallowEqual } from 'react-redux';
 import * as API from '../../../../API/api';
-import logger from '../../../../logger';
 import { useAppDispatch, useAppSelector } from '../../../../store/hooks';
 import { ProgressBar } from '../../../cards/CardLayout';
 import InlineLoading from '../../../common/element/InlineLoading';

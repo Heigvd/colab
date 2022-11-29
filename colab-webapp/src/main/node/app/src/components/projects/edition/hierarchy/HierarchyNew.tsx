@@ -109,7 +109,6 @@ export default function HierarchyNew({
   showTools = true,
   variantDecorator,
   cardDecorator,
-  onCardClick,
   onContentClick,
   forceZoom,
 }: HierarchyDisplayProps): JSX.Element {

@@ -7,7 +7,14 @@
 
 import { css, cx } from '@emotion/css';
 import { IconProp } from '@fortawesome/fontawesome-svg-core';
-import { faArchive, faPause, faPencilRuler, faTimes } from '@fortawesome/free-solid-svg-icons';
+import {
+  faArchive,
+  faCheck,
+  faPause,
+  faPen,
+  faPencilRuler,
+  faTimes,
+} from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { CardContentStatus } from 'colab-rest-client';
 import * as React from 'react';
@@ -43,16 +50,16 @@ export function getStatusIconAndColor(status: CardContentStatus): StatusIconAndC
   switch (status) {
     case 'ACTIVE':
       return { icon: faPencilRuler, color: successColor };
+    case 'PREPARATION':
+      return { icon: faPen, color: '#B54BB2' };
+    case 'VALIDATED':
+      return { icon: faCheck, color: successColor };
     case 'POSTPONED':
       return { icon: faPause, color: 'orange' };
     case 'ARCHIVED':
       return { icon: faArchive, color: '#9C9C9C' };
     case 'REJECTED':
       return { icon: faTimes, color: errorColor };
-    /*     case 'PREPARATION':
-      return { icon: faPen, color: '#B54BB2' };
-    case 'VALIDATED':
-      return { icon: faCheck, color: successColor }; */
   }
 }
 

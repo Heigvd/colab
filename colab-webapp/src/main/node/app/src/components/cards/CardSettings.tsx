@@ -13,12 +13,13 @@ import * as React from 'react';
 import { TwitterPicker } from 'react-color';
 import * as API from '../../API/api';
 import useTranslations from '../../i18n/I18nContext';
+import { useAndLoadCardType } from '../../selectors/cardTypeSelector';
 import { useAppDispatch } from '../../store/hooks';
 import Checkbox from '../common/element/Checkbox';
 import SelectInput from '../common/element/SelectInput';
 import Tips, { WIPContainer } from '../common/element/Tips';
 import Flex from '../common/layout/Flex';
-import { iconStyle, space_M } from '../styling/style';
+import { iconStyle, lightItalicText, lightText, space_M } from '../styling/style';
 import ContentStatusSelector from './ContentStatusSelector';
 
 const marginDownSmall = css({
@@ -34,6 +35,8 @@ interface CardSettingsProps {
 export default function CardSettings({ card, variant }: CardSettingsProps): JSX.Element {
   const dispatch = useAppDispatch();
   const i18n = useTranslations();
+
+  const { cardType } = useAndLoadCardType(card.cardTypeId);
 
   return (
     <Flex className={css({ gap: space_M })} direction="column" shrink={1}>
@@ -71,6 +74,16 @@ export default function CardSettings({ card, variant }: CardSettingsProps): JSX.
           onChange={status => dispatch(API.updateCardContent({ ...variant, status: status }))}
         />
       </div>
+      <WIPContainer>
+        <Flex>
+          <h3>{i18n.modules.cardType.cardType}</h3>
+        </Flex>
+        {cardType == null ? (
+          <span className={lightItalicText}>{i18n.modules.cardType.noCardType}</span>
+        ) : (
+          <span className={lightText}>{cardType.title}</span>
+        )}
+      </WIPContainer>
       <WIPContainer>
         <Flex>
           <h3 className={marginDownSmall}>{i18n.modules.card.settings.completionLevelMode}</h3>
