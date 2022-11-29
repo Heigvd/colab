@@ -29,7 +29,7 @@ import CardLayout from '../../cards/CardLayout';
 import VariantSelector from '../../cards/VariantSelector';
 import InlineLoading from '../../common/element/InlineLoading';
 import Flex from '../../common/layout/Flex';
-import { space_M, space_S, variantTitle } from '../../styling/style';
+import { space_L, space_M, space_S, variantTitle } from '../../styling/style';
 
 const logger = getLogger('ActivityFlow');
 logger.setLevel(4);
@@ -458,7 +458,7 @@ export default function ActivityFlowChart(): JSX.Element {
     }
 
     return (
-      <Flex>
+      <Flex className={css({padding: space_L})}>
         <Flex
           direction="column"
           theRef={ref => setRootNode(ref)}

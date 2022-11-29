@@ -5,14 +5,14 @@
  * Licensed under the MIT License
  */
 
-//import { css } from '@emotion/css';
-//import { entityIs, Project } from 'colab-rest-client';
+import { css } from '@emotion/css';
 import * as React from 'react';
 import useTranslations from '../../i18n/I18nContext';
 import { useProject } from '../../selectors/projectSelector';
 import AvailabilityStatusIndicator from '../common/element/AvailabilityStatusIndicator';
 import { WIPContainer } from '../common/element/Tips';
 import Flex from '../common/layout/Flex';
+import { space_L } from '../styling/style';
 
 interface ProjectSharingProps {
   projectId: number;
@@ -29,7 +29,7 @@ export default function ProjectSharing({ projectId }: ProjectSharingProps): JSX.
 
   return (
     <WIPContainer>
-      <Flex>
+      <Flex className={css({padding: space_L})}>
         <h2>{i18n.modules.project.labels.shareTheProject}</h2>
       </Flex>
     </WIPContainer>
