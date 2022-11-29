@@ -101,7 +101,7 @@ interface HierarchyDisplayProps {
   forceZoom?: number;
 }
 
-export default function HierarchyNew({
+export default function Hierarchy({
   rootId,
   enableDragAndDrop = true,
   showAdd = false,

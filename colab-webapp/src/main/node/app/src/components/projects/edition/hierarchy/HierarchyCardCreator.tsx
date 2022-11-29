@@ -6,7 +6,7 @@ import logger from "../../../../logger";
 import CardCreator from "../../../cards/CardCreator";
 import { Connection } from '@jsplumb/core';
 import { greyIconButtonChipStyle, space_M } from "../../../styling/style";
-import { HierarchyCTX, PlumbRef } from "./HierarchyNew";
+import { HierarchyCTX, PlumbRef } from "./Hierarchy";
 
 export interface SubCardCreatorProps {
     parent: CardContent;

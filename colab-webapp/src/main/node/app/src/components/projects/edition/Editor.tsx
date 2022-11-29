@@ -73,9 +73,8 @@ import { PresenceContext, usePresenceContext } from '../presence/PresenceContext
 import { defaultProjectIllustration } from '../ProjectCommon';
 import { ProjectSettings } from '../ProjectSettings';
 import Team from '../team/Team';
-import ActivityFlowChart from './ActivityFlowChart';
-import Hierarchy from './Hierarchy';
-import HierarchyNew from './hierarchy/HierarchyNew';
+import ActivityFlowChart from './activityFlow/ActivityFlowChart';
+import Hierarchy from './hierarchy/Hierarchy';
 
 export const depthMax = 2;
 const modelPictoCornerStyle = css({
@@ -606,8 +605,7 @@ export default function Editor(): JSX.Element {
               <Route path="project-settings/*" element={<ProjectSettings project={project} />} />
               <Route path="admin/*" element={<Admin />} />
               <Route path="team/*" element={<Team project={project} />} />
-              <Route path="hierarchy" element={<HierarchyNew rootId={root.id} />} />
-              <Route path="hierarchy-old" element={<Hierarchy rootId={root.id} />} />
+              <Route path="hierarchy" element={<Hierarchy rootId={root.id} />} />
               <Route path="flow" element={<ActivityFlowChart />} />
               <Route path="docs/*" element={<DocumentationTab project={project} />} />
               <Route path="card/:id" element={<DefaultVariantDetector />} />

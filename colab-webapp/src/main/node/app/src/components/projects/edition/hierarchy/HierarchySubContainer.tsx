@@ -5,7 +5,7 @@ import React from "react";
 import InlineLoading from "../../../common/element/InlineLoading";
 import HierarchyBranch from "./HierarchyBranch";
 import SubCardCreator from "./HierarchyCardCreator";
-import { HierarchyCTX } from "./HierarchyNew";
+import { HierarchyCTX } from "./Hierarchy";
 
 interface SubContainerProps {
     parent: CardContent;

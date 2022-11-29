@@ -11,7 +11,7 @@ import { customColabStateEquals, useAppDispatch, useAppSelector } from '../../..
 import InlineLoading from '../../../common/element/InlineLoading';
 import { manageConnection } from './HierarchyCardCreator';
 import CardGroup from './HierarchyCardThumb';
-import { AllSubsContainer, HierarchyCTX } from './HierarchyNew';
+import { AllSubsContainer, HierarchyCTX } from './Hierarchy';
 
 interface HierarchyRootViewProps {
   rootId: number;

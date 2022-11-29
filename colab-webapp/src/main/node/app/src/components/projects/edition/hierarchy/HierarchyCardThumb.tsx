@@ -3,12 +3,13 @@ import { Card, CardContent } from 'colab-rest-client';
 import React from 'react';
 import { shallowEqual } from 'react-redux';
 import * as API from '../../../../API/api';
+import useTranslations from '../../../../i18n/I18nContext';
 import { useAppDispatch, useAppSelector } from '../../../../store/hooks';
 import { ProgressBar } from '../../../cards/CardLayout';
 import InlineLoading from '../../../common/element/InlineLoading';
 import Flex from '../../../common/layout/Flex';
 import { cardStyle, lightText, space_M, space_S, textSmall } from '../../../styling/style';
-import { HierarchyCTX } from './HierarchyNew';
+import { HierarchyCTX } from './Hierarchy';
 
 const showAddVariantStyle = css({
   ':hover': {
@@ -79,6 +80,7 @@ interface CardGroupProps {
 
 export default function CardGroup({ card }: CardGroupProps) {
   const dispatch = useAppDispatch();
+  const i18n = useTranslations();
 
   const root = useAppSelector(state => {
     const rootState = state.cards.cards[card.id!];
@@ -128,7 +130,7 @@ export default function CardGroup({ card }: CardGroupProps) {
       <div
         onClick={
           onCardClick
-            ? (e) => {
+            ? e => {
                 e.preventDefault();
                 onCardClick(card);
               }
@@ -150,7 +152,9 @@ export default function CardGroup({ card }: CardGroupProps) {
           {cardDecorator ? (
             cardDecorator(card)
           ) : (
-            <span className={css({ fontWeight: 'bold' })}>{card.title || <i>no title</i>}</span>
+            <span className={css({ fontWeight: 'bold' })}>
+              {card.title || <i>{i18n.modules.card.untitled}</i>}
+            </span>
           )}
         </div>
       </div>
