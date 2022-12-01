@@ -1,6 +1,6 @@
 /*
  * The coLAB project
- * Copyright (C) 2021 AlbaSim, MEI, HEIG-VD, HES-SO
+ * Copyright (C) 2021-2022 AlbaSim, MEI, HEIG-VD, HES-SO
  *
  * Licensed under the MIT License
  */
@@ -108,7 +108,7 @@ function DeleteProjectWrapper(): JSX.Element {
   const { isLoading, startLoading, stopLoading } = useLoadingState();
 
   const onCancelCb = React.useCallback(() => {
-    navigate('/');
+    navigate('../');
   }, [navigate]);
 
   const onConfirmCb = React.useCallback(() => {
@@ -116,7 +116,7 @@ function DeleteProjectWrapper(): JSX.Element {
       startLoading();
       dispatch(API.deleteProject(project)).then(() => {
         stopLoading();
-        navigate('/');
+        navigate('../');
       });
     }
   }, [dispatch, navigate, project, startLoading, stopLoading]);
@@ -279,13 +279,14 @@ export const ProjectDisplay = ({
                         </>
                       ),
                       action: () => {
-                        dispatch(API.updateProject({ ...project, type: 'MODEL' }));
-                        navigate('/models');
+                        dispatch(API.updateProject({ ...project, type: 'MODEL' })).then(() => {
+                          navigate('/models');
+                        });
                       },
                     },
                   ]
                 : []),
-              ...(currentUser?.admin && project.type !== 'PROJECT'
+              ...(currentUser?.admin && project.type === 'MODEL'
                 ? [
                     {
                       value: 'convertToProject',
@@ -296,8 +297,9 @@ export const ProjectDisplay = ({
                         </>
                       ),
                       action: () => {
-                        dispatch(API.updateProject({ ...project, type: 'PROJECT' }));
-                        navigate('/');
+                        dispatch(API.updateProject({ ...project, type: 'PROJECT' })).then(() => {
+                          navigate('/');
+                        });
                       },
                     },
                   ]
