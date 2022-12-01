@@ -22,6 +22,7 @@ import {
   ResourcesMainViewHeader,
   ResourcesMainViewPanel,
 } from '../resources/ResourcesMainView';
+import { space_L } from '../styling/style';
 
 interface DocumentationTabProps {
   project: Project;
@@ -76,7 +77,7 @@ export default function DocumentationTab({ project }: DocumentationTabProps): JS
     : 'UNKNOWN';
 
   return (
-    <Flex align="stretch" direction="column" grow={1} className={css({ alignSelf: 'stretch' })}>
+    <Flex align="stretch" direction="column" grow={1} className={css({ alignSelf: 'stretch', padding: space_L })}>
       <Tabs routed>
         <Tab name="project" label={i18n.modules.project.settings.resources.label}>
           <div

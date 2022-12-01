@@ -66,6 +66,8 @@ import {
   errorColor,
   lightIconButtonStyle,
   localTitleStyle,
+  paddingAroundStyle,
+  space_L,
   space_S,
   textSmall,
   variantTitle,
@@ -208,7 +210,7 @@ export default function CardEditor({
   } else {
     const cardId = card.id;
     return (
-      <Flex direction="column" grow={1} align="stretch">
+      <Flex direction="column" grow={1} align="stretch" className={paddingAroundStyle([2, 3, 4], space_L)}>
         <Flex
           grow={1}
           direction="row"

@@ -40,7 +40,7 @@ import { BlockInput } from '../../common/element/Input';
 import Toggler from '../../common/element/Toggler';
 import Flex from '../../common/layout/Flex';
 import { modalBody, modalFooter } from '../../common/layout/Modal';
-import Hierarchy from '../../projects/edition/Hierarchy';
+import Hierarchy from '../../projects/edition/hierarchy/Hierarchy';
 import { space_M, textSmall } from '../../styling/style';
 import { getTheDirectResource, ResourceAndRef } from '../resourcesCommonType';
 import TargetResourceSummary from './TargetResourceSummary';

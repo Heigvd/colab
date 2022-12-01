@@ -6,8 +6,6 @@
  */
 
 import { css } from '@emotion/css';
-import { faProjectDiagram } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { BrowserJsPlumbInstance, newInstance } from '@jsplumb/browser-ui';
 import {
   BeforeDropParams,
@@ -19,17 +17,15 @@ import {
 import { ActivityFlowLink, Card, CardContent } from 'colab-rest-client';
 import { uniq } from 'lodash';
 import * as React from 'react';
-import * as API from '../../../API/api';
-import useTranslations from '../../../i18n/I18nContext';
-import { getLogger } from '../../../logger';
-import { useProjectBeingEdited } from '../../../selectors/projectSelector';
-import { shallowEqual, useAppDispatch, useAppSelector } from '../../../store/hooks';
-import CardContentStatus from '../../cards/CardContentStatus';
-import CardLayout from '../../cards/CardLayout';
-import VariantSelector from '../../cards/VariantSelector';
-import InlineLoading from '../../common/element/InlineLoading';
-import Flex from '../../common/layout/Flex';
-import { space_M, space_S, variantTitle } from '../../styling/style';
+import * as API from '../../../../API/api';
+import useTranslations from '../../../../i18n/I18nContext';
+import { getLogger } from '../../../../logger';
+import { useProjectBeingEdited } from '../../../../selectors/projectSelector';
+import { shallowEqual, useAppDispatch, useAppSelector } from '../../../../store/hooks';
+import InlineLoading from '../../../common/element/InlineLoading';
+import Flex from '../../../common/layout/Flex';
+import { borderRadius, space_L, space_M, space_S } from '../../../styling/style';
+import { AFCard } from './ActivityFlowCardThumb';
 
 const logger = getLogger('ActivityFlow');
 logger.setLevel(4);
@@ -50,94 +46,17 @@ function getChildrenDeep(card: Card, cards: Card[], cardContents: CardContent[])
   return children;
 }
 
-const cardStyle = css({
-  zIndex: 1,
-  userSelect: 'none',
-});
-
-interface CardProps {
-  card: Card;
-  plumbRefs: PlumbRef;
-  jsPlumb: BrowserJsPlumbInstance;
-}
-
-export function Card({ card, jsPlumb, plumbRefs }: CardProps): JSX.Element {
-  const i18n = useTranslations();
-
-  const refCb = React.useCallback(
-    (ref: HTMLDivElement | null) => {
-      assignDiv(jsPlumb, plumbRefs.divs, ref, `Card-${card.id}`);
-    },
-    [jsPlumb, plumbRefs, card.id],
-  );
-
-  return (
-    <div ref={refCb} data-cardid={card.id} className={`CardSource CardTarget ${cardStyle}`}>
-      <VariantSelector card={card}>
-        {(variant, variants) => (
-          <CardLayout card={card} variant={variant} variants={variants}>
-            <div
-              className={css({
-                display: 'flex',
-                flexDirection: 'column',
-                justifyContent: 'space-around',
-                borderBottom:
-                  card.color && card.color != '#ffffff'
-                    ? '3px solid ' + card.color
-                    : '1px solid var(--lightGray)',
-                width: '100%',
-              })}
-            >
-              <div
-                className={css({
-                  padding: space_S + ' ' + space_S + ' ' + space_S + ' ' + space_M,
-                })}
-              >
-                <div
-                  className={css({
-                    display: 'flex',
-                    flexDirection: 'row',
-                    justifyContent: 'space-between',
-                  })}
-                >
-                  <div>
-                    <CardContentStatus mode="icon" status={variant?.status || 'ACTIVE'} />
-                    <span className={css({ fontWeight: 'bold' })}>
-                      {card.title || i18n.modules.card.untitled}
-                    </span>
-                    {variants.length > 1 && (
-                      <span className={variantTitle}>
-                        &#xFE58;
-                        {variant?.title && variant.title.length > 0
-                          ? variant.title
-                          : `${i18n.modules.card.variant} ${variants.indexOf(variant!) + 1}`}
-                      </span>
-                    )}
-                  </div>
-                  <div className={`CardSourceHandle`}>
-                    <FontAwesomeIcon icon={faProjectDiagram} />
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div className={css({ minHeight: '1.5rem' })}></div>
-          </CardLayout>
-        )}
-      </VariantSelector>
-    </div>
-  );
-}
-
-interface PlumbRef {
+export interface AFPlumbRef {
   divs: Record<string, Element>;
   connections: Record<string, Connection>;
 }
 
 export default function ActivityFlowChart(): JSX.Element {
   const dispatch = useAppDispatch();
+  const i18n = useTranslations();
   const { project, status } = useProjectBeingEdited();
 
-  const plumbRefs = React.useRef<PlumbRef>({ divs: {}, connections: {} });
+  const plumbRefs = React.useRef<AFPlumbRef>({ divs: {}, connections: {} });
 
   const [rootNode, setRootNode] = React.useState<HTMLDivElement | null>(null);
   const [jsPlumb, setJsPlumb] = React.useState<BrowserJsPlumbInstance | undefined>(undefined);
@@ -148,8 +67,8 @@ export default function ActivityFlowChart(): JSX.Element {
       logger.debug('Init JsPlumb');
       const plumb = newInstance({
         container: rootNode,
-        connector: { type: 'Straight', options: { gap: 5 } },
-        paintStyle: { strokeWidth: 1, stroke: 'black' },
+        connector: { type: 'Straight', options: { stub: 15 } },
+        paintStyle: { strokeWidth: 1, stroke: 'var(--primaryColor)' },
         anchor: { type: 'Perimeter', options: { shape: 'Rectangle' } },
         anchors: ['Right', 'Left'],
         endpoints: [
@@ -187,7 +106,6 @@ export default function ActivityFlowChart(): JSX.Element {
         // Move existing link
         //        const prevCardId = params.connection.source.getAttribute("data-cardid")
         //        const nextCardId = params.newEndpoint.element.getAttribute("data-cardid")
-        logger.info('Before Drop');
         const data = params.connection.getData();
         if (data) {
           const link = data['link'] as ActivityFlowLink;
@@ -458,7 +376,7 @@ export default function ActivityFlowChart(): JSX.Element {
     }
 
     return (
-      <Flex>
+      <Flex align="stretch" direction="column" className={css({ padding: space_L })}>
         <Flex
           direction="column"
           theRef={ref => setRootNode(ref)}
@@ -474,7 +392,29 @@ export default function ActivityFlowChart(): JSX.Element {
         >
           {jsPlumb != null ? (
             <>
-              <span>Activity Flow</span>
+              <Flex
+                className={css({
+                  padding: space_M,
+                  border: '2px solid var(--lightGray)',
+                  borderRadius: borderRadius,
+                  alignSelf: 'stretch',
+                })}
+                direction="column"
+                align="stretch"
+              >
+                <h3 className={css({ margin: space_S + ' 0' })}>Not in flow</h3>
+                <Flex direction="row" wrap="wrap">
+                  {notInFlow.map(card => (
+                    <AFCard
+                      key={`Card-${card.id!}`}
+                      card={card}
+                      jsPlumb={jsPlumb}
+                      plumbRefs={plumbRefs.current}
+                    />
+                  ))}
+                </Flex>
+              </Flex>
+              <h3>{i18n.common.views.activityFlow}</h3>
               <Flex direction="row">
                 {cardGroups.map((group, i) => (
                   <Flex
@@ -485,7 +425,7 @@ export default function ActivityFlowChart(): JSX.Element {
                     key={`group-${i}`}
                   >
                     {group.map(card => (
-                      <Card
+                      <AFCard
                         key={`Card-${card.id!}`}
                         card={card}
                         jsPlumb={jsPlumb}
@@ -493,17 +433,6 @@ export default function ActivityFlowChart(): JSX.Element {
                       />
                     ))}
                   </Flex>
-                ))}
-              </Flex>
-              <span>Not in flow</span>
-              <Flex direction="row" wrap="wrap">
-                {notInFlow.map(card => (
-                  <Card
-                    key={`Card-${card.id!}`}
-                    card={card}
-                    jsPlumb={jsPlumb}
-                    plumbRefs={plumbRefs.current}
-                  />
                 ))}
               </Flex>
             </>
@@ -521,22 +450,6 @@ export default function ActivityFlowChart(): JSX.Element {
 //    variants.filter(content => content.cardId === card.id),
 //    lang);
 //}
-
-const assignDiv = (
-  jsPlumb: BrowserJsPlumbInstance,
-  refs: PlumbRef['divs'],
-  element: Element | null,
-  key: string,
-) => {
-  logger.debug('Assign div ', key, ' to ', element);
-  if (element != null) {
-    jsPlumb.manage(element);
-    jsPlumb.setDraggable(element, false);
-    refs[key] = element;
-  } else {
-    delete refs[key];
-  }
-};
 
 function removeAll<T>(list: T[], itemsToRemove: T[]) {
   itemsToRemove.forEach(item => {

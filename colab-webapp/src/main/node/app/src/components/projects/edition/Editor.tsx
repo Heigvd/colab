@@ -61,6 +61,7 @@ import {
   lightIconButtonStyle,
   linkStyle,
   modelBGColor,
+  paddingAroundStyle,
   space_L,
   space_M,
   space_S,
@@ -72,8 +73,8 @@ import { PresenceContext, usePresenceContext } from '../presence/PresenceContext
 import { defaultProjectIllustration } from '../ProjectCommon';
 import { ProjectSettings } from '../ProjectSettings';
 import Team from '../team/Team';
-import ActivityFlowChart from './ActivityFlowChart';
-import Hierarchy from './Hierarchy';
+import ActivityFlowChart from './activityFlow/ActivityFlowChart';
+import Hierarchy from './hierarchy/Hierarchy';
 
 export const depthMax = 2;
 const modelPictoCornerStyle = css({
@@ -99,6 +100,7 @@ const Ancestor = ({ card, content, last, className }: Ancestor): JSX.Element => 
   const i18n = useTranslations();
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
+  const location = useLocation();
 
   React.useEffect(() => {
     if (typeof card === 'number') {
@@ -115,7 +117,7 @@ const Ancestor = ({ card, content, last, className }: Ancestor): JSX.Element => 
       <>
         <Clickable
           onClick={() => {
-            navigate('..');
+            navigate(`../${location.pathname.includes('hierarchy') ? 'hierarchy' : ''}`);
           }}
           clickableClassName={cx(linkStyle, breadCrumbsStyle, className)}
         >
@@ -256,7 +258,7 @@ const CardWrapper = ({
   } else {
     return (
       <>
-        <Flex className={css({ paddingBottom: '7px', marginTop: '-10px' })} justify="space-between">
+        <Flex className={css({padding: space_S + ' ' + space_L})} justify="space-between">
           <Flex align="center">
             {ancestors.map((ancestor, x) => (
               <Ancestor
@@ -280,7 +282,7 @@ const CardWrapper = ({
             icon={location.pathname.includes('card') ? faPen : faTableCellsLarge}
             onClick={() => {
               navigate(
-                `../${location.pathname.includes('card') ? 'edit' : 'card'}/${content.cardId}/v/${
+                `../${location.pathname.includes('hierarchy') ? 'hierarchy': ''}/${location.pathname.includes('card') ? 'edit' : 'card'}/${content.cardId}/v/${
                   content.id
                 }`,
               );
@@ -448,7 +450,6 @@ function EditorNav({ project }: EditorNavProps): JSX.Element {
               <DiscreetInput
                 value={project.name || i18n.modules.project.actions.newProject}
                 placeholder={i18n.modules.project.actions.newProject}
-                // TO DO ? readOnly={readOnly}
                 onChange={newValue => dispatch(API.updateProject({ ...project, name: newValue }))}
               />
             </Flex>
@@ -484,7 +485,7 @@ function RootView({ rootContent }: { rootContent: CardContent | null | undefined
 
   return (
     <div
-      className={css({ display: 'flex', flexGrow: '1', flexDirection: 'column', height: '100%' })}
+      className={css({ display: 'flex', flexGrow: '1', flexDirection: 'column', height: '100%', padding: space_L })}
     >
       {rootContent != null ? (
         <>
@@ -499,10 +500,6 @@ function RootView({ rootContent }: { rootContent: CardContent | null | undefined
             depth={depthMax}
             cardContent={rootContent}
             organize={organize}
-            //className={organize ? undefined : css({ marginTop: space_L })}
-            //showPreview
-            //className={organize ? fullHeightStyle : undefined}
-            //subcardsContainerStyle={fullHeightStyle}
           />
         </>
       ) : (
@@ -585,7 +582,6 @@ export default function Editor(): JSX.Element {
             grow={1}
             align="stretch"
             className={css({
-              padding: space_L,
               overflow: 'auto',
               position: 'relative',
             })}
@@ -619,27 +615,46 @@ export default function Editor(): JSX.Element {
                 element={
                   <CardWrapper
                     grow={1}
-                    //align="center"
                     backButtonPath={parentPathFn}
                     backButtonTitle={i18n.common.action.backProjectRoot}
                     touchMode="zoom"
                   >
-                    {card => (
-                      <CardThumbWithSelector
-                        depth={2}
-                        card={card}
-                        mayOrganize
-                        //showPreview
-                      />
-                    )}
+                    {card => <CardThumbWithSelector depth={2} card={card} mayOrganize className={paddingAroundStyle([2, 3, 4], space_L)}/>}
                   </CardWrapper>
                 }
               />
               {/* Edit cart, send to default variant */}
               <Route path="edit/:id" element={<DefaultVariantDetector />} />
+              
               {/* Edit card */}
               <Route
-                path="edit/:id/v/:vId/*"
+                path={`/edit/:id/v/:vId/*`}
+                element={
+                  <CardWrapper
+                    backButtonPath={(card, variant) => `../card/${card.id}/v/${variant.id}`}
+                    backButtonTitle={i18n.common.action.backCardView}
+                    touchMode="edit"
+                  >
+                    {(card, variant) => <CardEditor card={card} variant={variant} showSubcards />}
+                  </CardWrapper>
+                }
+              />
+              <Route
+                path="hierarchy/card/:id/v/:vId/*"
+                element={
+                  <CardWrapper
+                    grow={1}
+                    backButtonPath={parentPathFn}
+                    backButtonTitle={i18n.common.action.backProjectRoot}
+                    touchMode="zoom"
+                  >
+                    {card => <CardThumbWithSelector depth={2} card={card} mayOrganize className={paddingAroundStyle([2, 3, 4], space_L)}/>}
+                  </CardWrapper>
+                }
+              />
+              <Route path="hierarchy/edit/:id" element={<DefaultVariantDetector />} />
+              <Route
+                path="hierarchy/edit/:id/v/:vId/*"
                 element={
                   <CardWrapper
                     backButtonPath={(card, variant) => `../card/${card.id}/v/${variant.id}`}
@@ -679,22 +694,21 @@ function CardCreatorAndOrganize({ rootContent, organize }: CardCreatorAndOrganiz
           align="center"
           className={css({ marginTop: '-10px', paddingRight: space_S })}
         >
-          <IconButton
-            className={cx(
-              greyIconButtonChipStyle,
-              css({ alignSelf: 'flex-end' }),
-              organize.organize &&
-                css({
-                  backgroundColor: successColor,
-                  color: 'var(--bgColor)',
-                  border: successColor,
-                }),
-            )}
-            title={i18n.modules.card.positioning.toggleText}
-            icon={faTableCells}
-            //value={organize.organize}
-            onClick={() => organize.setOrganize(e => !e)}
-          />
+            <IconButton
+              className={cx(
+                greyIconButtonChipStyle,
+                css({ alignSelf: 'flex-end' }),
+                organize.organize &&
+                  css({
+                    backgroundColor: successColor,
+                    color: 'var(--bgColor)',
+                    border: successColor,
+                  }),
+              )}
+              title={i18n.modules.card.positioning.toggleText}
+              icon={faTableCells}
+              onClick={() => organize.setOrganize(e => !e)}
+            />
           <CardCreator parentCardContent={rootContent} className={greyIconButtonChipStyle} />
         </Flex>
       )}

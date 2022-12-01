@@ -14,7 +14,7 @@ import CardInvolvement from '../../cards/CardInvolvement';
 import InlineLoading from '../../common/element/InlineLoading';
 import Flex from '../../common/layout/Flex';
 import Tabs, { Tab } from '../../common/layout/Tabs';
-import { space_S } from '../../styling/style';
+import { space_L, space_S } from '../../styling/style';
 import ProjectModelSharing from '../ProjectModelSharing';
 import MemberCreator from './MemberCreator';
 import TeamRACI from './Raci';
@@ -45,7 +45,7 @@ export default function Team({ project }: TeamProps): JSX.Element {
   if (status === 'INITIALIZED' && project.id != null) {
     return (
       <>
-        <Flex justify="space-between">
+        <Flex justify="space-between" className={css({padding: space_L})}>
           <h2>{i18n.team.team}</h2>
           <MemberCreator members={members} project={project} />
         </Flex>

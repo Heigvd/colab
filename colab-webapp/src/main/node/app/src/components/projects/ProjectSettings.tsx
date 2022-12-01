@@ -49,7 +49,7 @@ export function ProjectSettings({ project }: ProjectSettingsProps): JSX.Element 
   const tipsConfig = React.useContext(TipsCtx);
 
   return (
-    <Flex align="stretch" direction="column" grow={1} className={css({ alignSelf: 'stretch' })}>
+    <Flex align="stretch" direction="column" grow={1} className={css({ alignSelf: 'stretch', padding: space_L })}>
       <Tabs>
         {/* not routed because does not work well when opened from projects' list as a modal */}
         <Tab name="general" label={i18n.common.general}>
