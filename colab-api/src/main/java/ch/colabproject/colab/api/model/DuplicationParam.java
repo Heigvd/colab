@@ -51,6 +51,11 @@ public class DuplicationParam implements WithJsonDiscriminator {
     private boolean withDeliverables;
 
     /**
+     * Do we duplicate the resources
+     */
+    private boolean withResources;
+
+    /**
      * Do we duplicate the sticky notes
      */
     private boolean withStickyNotes;
@@ -80,6 +85,7 @@ public class DuplicationParam implements WithJsonDiscriminator {
         defaultInstance.setWithCardTypes(true);
         defaultInstance.setWithCardsStructure(true);
         defaultInstance.setWithDeliverables(true);
+        defaultInstance.setWithResources(true);
         defaultInstance.setWithStickyNotes(true);
         defaultInstance.setWithActivityFlow(true);
 
@@ -99,6 +105,7 @@ public class DuplicationParam implements WithJsonDiscriminator {
         defaultInstance.setWithCardTypes(false);
         defaultInstance.setWithCardsStructure(false);
         defaultInstance.setWithDeliverables(false);
+        defaultInstance.setWithResources(true);
         defaultInstance.setWithStickyNotes(false);
         defaultInstance.setWithActivityFlow(false);
 
@@ -117,6 +124,7 @@ public class DuplicationParam implements WithJsonDiscriminator {
         defaultInstance.setWithCardTypes(true);
         defaultInstance.setWithCardsStructure(true);
         defaultInstance.setWithDeliverables(true);
+        defaultInstance.setWithResources(true);
         defaultInstance.setWithStickyNotes(true);
         defaultInstance.setWithActivityFlow(true);
         defaultInstance.setMakeOnlyCardTypeReferences(true);
@@ -201,6 +209,20 @@ public class DuplicationParam implements WithJsonDiscriminator {
     }
 
     /**
+     * @return the withResources
+     */
+    public boolean isWithResources() {
+        return withResources;
+    }
+
+    /**
+     * @param withResources the withResources
+     */
+    public void setWithResources(boolean withResources) {
+        this.withResources = withResources;
+    }
+
+    /**
      * @return the withStickyNotes
      */
     public boolean isWithStickyNotes() {
@@ -254,6 +276,7 @@ public class DuplicationParam implements WithJsonDiscriminator {
             .append(this.withCardTypes)
             .append(this.withCardsStructure)
             .append(this.withDeliverables)
+            .append(this.withResources)
             .append(this.withStickyNotes)
             .append(this.withActivityFlow)
             .append(this.makeOnlyCardTypeReferences)
@@ -278,6 +301,7 @@ public class DuplicationParam implements WithJsonDiscriminator {
             .append(this.withCardTypes, other.withCardTypes)
             .append(this.withCardsStructure, other.withCardsStructure)
             .append(this.withDeliverables, other.withDeliverables)
+            .append(this.withResources, other.withResources)
             .append(this.withStickyNotes, other.withStickyNotes)
             .append(this.withActivityFlow, other.withActivityFlow)
             .append(this.makeOnlyCardTypeReferences, other.makeOnlyCardTypeReferences)

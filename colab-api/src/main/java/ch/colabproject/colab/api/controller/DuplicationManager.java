@@ -328,14 +328,18 @@ public class DuplicationManager {
                 throw new IllegalStateException("abstract card type implementation not handled");
             }
 
-            List<AbstractResource> originalResources = original.getDirectAbstractResources();
-            originalResources.sort(ID_COMPARATOR);
+            if (params.isWithResources()) {
+                List<AbstractResource> originalResources = original.getDirectAbstractResources();
+                originalResources.sort(ID_COMPARATOR);
 
-            for (AbstractResource originalResource : originalResources) {
-                AbstractResource newResource = duplicateResource(originalResource);
+                for (AbstractResource originalResource : originalResources) {
+                    AbstractResource newResource = duplicateResource(originalResource);
 
-                newResource.setAbstractCardType(newAbstractCardType);
-                newAbstractCardType.getDirectAbstractResources().add(newResource);
+                    newResource.setAbstractCardType(newAbstractCardType);
+                    newAbstractCardType.getDirectAbstractResources().add(newResource);
+                }
+            } else {
+                logger.info("param do not duplicate project's resources");
             }
 
             return newAbstractCardType;
@@ -359,14 +363,18 @@ public class DuplicationManager {
             newCard.setCardType(newCardType);
         }
 
-        List<AbstractResource> originalResources = original.getDirectAbstractResources();
-        originalResources.sort(ID_COMPARATOR);
+        if (params.isWithResources()) {
+            List<AbstractResource> originalResources = original.getDirectAbstractResources();
+            originalResources.sort(ID_COMPARATOR);
 
-        for (AbstractResource originalResource : originalResources) {
-            AbstractResource newResource = duplicateResource(originalResource);
+            for (AbstractResource originalResource : originalResources) {
+                AbstractResource newResource = duplicateResource(originalResource);
 
-            newResource.setCard(newCard);
-            newCard.getDirectAbstractResources().add(newResource);
+                newResource.setCard(newCard);
+                newCard.getDirectAbstractResources().add(newResource);
+            }
+        } else {
+            logger.info("param do not duplicate project's resources");
         }
 
         List<CardContent> originalContents = original.getContentVariants();
@@ -430,16 +438,22 @@ public class DuplicationManager {
                 newDoc.setOwningCardContent(newCardContent);
                 newCardContent.getDeliverables().add(newDoc);
             }
+        } else {
+            logger.info("param do not duplicate project's deliverables");
         }
 
-        List<AbstractResource> originalResources = original.getDirectAbstractResources();
-        originalResources.sort(ID_COMPARATOR);
+        if (params.isWithResources()) {
+            List<AbstractResource> originalResources = original.getDirectAbstractResources();
+            originalResources.sort(ID_COMPARATOR);
 
-        for (AbstractResource originalResource : originalResources) {
-            AbstractResource newResource = duplicateResource(originalResource);
+            for (AbstractResource originalResource : originalResources) {
+                AbstractResource newResource = duplicateResource(originalResource);
 
-            newResource.setCardContent(newCardContent);
-            newCardContent.getDirectAbstractResources().add(newResource);
+                newResource.setCardContent(newCardContent);
+                newCardContent.getDirectAbstractResources().add(newResource);
+            }
+        } else {
+            logger.info("param do not duplicate project's resources");
         }
 
         List<Card> originalSubCards = original.getSubCards();
