@@ -1,6 +1,6 @@
 /*
  * The coLAB project
- * Copyright (C) 2021 AlbaSim, MEI, HEIG-VD, HES-SO
+ * Copyright (C) 2021-2022 AlbaSim, MEI, HEIG-VD, HES-SO
  *
  * Licensed under the MIT License
  */
@@ -70,6 +70,11 @@ public class DuplicationParam implements WithJsonDiscriminator {
      */
     private boolean makeOnlyCardTypeReferences;
 
+    /**
+     * Do we reset the progression data : completion level, card content status, frozen
+     */
+    private boolean resetProgressionData;
+
     // ---------------------------------------------------------------------------------------------
     // initializer
     // ---------------------------------------------------------------------------------------------
@@ -91,6 +96,8 @@ public class DuplicationParam implements WithJsonDiscriminator {
 
         defaultInstance.setMakeOnlyCardTypeReferences(false);
 
+        defaultInstance.setResetProgressionData(false);
+
         return defaultInstance;
     }
 
@@ -111,6 +118,8 @@ public class DuplicationParam implements WithJsonDiscriminator {
 
         defaultInstance.setMakeOnlyCardTypeReferences(false);
 
+        defaultInstance.setResetProgressionData(false);
+
         return defaultInstance;
     }
 
@@ -130,6 +139,8 @@ public class DuplicationParam implements WithJsonDiscriminator {
         defaultInstance.setMakeOnlyCardTypeReferences(true);
 
         defaultInstance.setWithTeamMembers(false);
+
+        defaultInstance.setResetProgressionData(true);
 
         return defaultInstance;
     }
@@ -264,6 +275,21 @@ public class DuplicationParam implements WithJsonDiscriminator {
         this.makeOnlyCardTypeReferences = makeOnlyCardTypeReferences;
     }
 
+    /**
+     * @return Do we reset the progression data : completion level, card content status, frozen
+     */
+    public boolean isResetProgressionData() {
+        return resetProgressionData;
+    }
+
+    /**
+     * @param resetProgressionData Do we reset the progression data : completion level, card content
+     *                             status, frozen
+     */
+    public void setResetProgressionData(boolean resetProgressionData) {
+        this.resetProgressionData = resetProgressionData;
+    }
+
     // ---------------------------------------------------------------------------------------------
     // concerning the whole class
     // ---------------------------------------------------------------------------------------------
@@ -280,6 +306,7 @@ public class DuplicationParam implements WithJsonDiscriminator {
             .append(this.withStickyNotes)
             .append(this.withActivityFlow)
             .append(this.makeOnlyCardTypeReferences)
+            .append(this.resetProgressionData)
             .toHashCode();
     }
 
@@ -305,6 +332,7 @@ public class DuplicationParam implements WithJsonDiscriminator {
             .append(this.withStickyNotes, other.withStickyNotes)
             .append(this.withActivityFlow, other.withActivityFlow)
             .append(this.makeOnlyCardTypeReferences, other.makeOnlyCardTypeReferences)
+            .append(this.resetProgressionData, other.resetProgressionData)
             .isEquals();
     }
 

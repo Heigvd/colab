@@ -1,6 +1,6 @@
 /*
  * The coLAB project
- * Copyright (C) 2021 AlbaSim, MEI, HEIG-VD, HES-SO
+ * Copyright (C) 2021-2022 AlbaSim, MEI, HEIG-VD, HES-SO
  *
  * Licensed under the MIT License
  */
@@ -51,6 +51,11 @@ public class CardContentManager {
      * Initial card status
      */
     private static final CardContentStatus CARD_CONTENT_INITIAL_STATUS = CardContentStatus.ACTIVE;
+
+    /**
+     * Default value for frozen status
+     */
+    private static final boolean FROZEN_DEFAULT = false;
 
     // *********************************************************************************************
     // injections
@@ -151,13 +156,23 @@ public class CardContentManager {
     public CardContent initNewCardContentForCard(Card card) {
         CardContent cardContent = new CardContent();
 
-        cardContent.setStatus(CARD_CONTENT_INITIAL_STATUS);
-        cardContent.setCompletionLevel(MIN_COMPLETION_LEVEL);
+        resetProgression(cardContent);
 
         cardContent.setCard(card);
         card.getContentVariants().add(cardContent);
 
         return cardContent;
+    }
+
+    /**
+     * Reset progression data of the given card content : status, completion level and frozen
+     *
+     * @param cardContent the card content
+     */
+    public void resetProgression(CardContent cardContent) {
+        cardContent.setStatus(CARD_CONTENT_INITIAL_STATUS);
+        cardContent.setCompletionLevel(MIN_COMPLETION_LEVEL);
+        cardContent.setFrozen(FROZEN_DEFAULT);
     }
 
     /**

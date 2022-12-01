@@ -497,7 +497,7 @@ public class ResourceManager {
         }
 
         DuplicationManager duplicator = new DuplicationManager(params,
-            resourceReferenceSpreadingHelper, fileManager);
+            resourceReferenceSpreadingHelper, fileManager, cardContentManager);
 
         Resource newResourceJavaObject;
         try {

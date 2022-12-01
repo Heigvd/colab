@@ -8,6 +8,7 @@ package ch.colabproject.colab.api.controller.project;
 
 import ch.colabproject.colab.api.controller.DuplicationManager;
 import ch.colabproject.colab.api.controller.RequestManager;
+import ch.colabproject.colab.api.controller.card.CardContentManager;
 import ch.colabproject.colab.api.controller.card.CardManager;
 import ch.colabproject.colab.api.controller.card.CardTypeManager;
 import ch.colabproject.colab.api.controller.document.FileManager;
@@ -94,6 +95,10 @@ public class ProjectManager {
      */
     @Inject
     private CardManager cardManager;
+
+    /** to load cardContents */
+    @Inject
+    private CardContentManager cardContentManager;
 
     /**
      * Card type specific logic management
@@ -290,7 +295,7 @@ public class ProjectManager {
         Project originalProject = assertAndGetProject(projectId);
 
         DuplicationManager duplicator = new DuplicationManager(params,
-            resourceReferenceSpreadingHelper, fileManager);
+            resourceReferenceSpreadingHelper, fileManager, cardContentManager);
 
         Project newProjectJavaObject = duplicator.duplicateProject(originalProject);
 

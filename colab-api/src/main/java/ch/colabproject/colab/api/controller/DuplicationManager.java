@@ -1,11 +1,12 @@
 /*
  * The coLAB project
- * Copyright (C) 2021 AlbaSim, MEI, HEIG-VD, HES-SO
+ * Copyright (C) 2021-2022 AlbaSim, MEI, HEIG-VD, HES-SO
  *
  * Licensed under the MIT License
  */
 package ch.colabproject.colab.api.controller;
 
+import ch.colabproject.colab.api.controller.card.CardContentManager;
 import ch.colabproject.colab.api.controller.document.FileManager;
 import ch.colabproject.colab.api.controller.document.ResourceReferenceSpreadingHelper;
 import ch.colabproject.colab.api.exceptions.ColabMergeException;
@@ -74,6 +75,9 @@ public class DuplicationManager {
     /** File persistence management */
     private final FileManager fileManager;
 
+    /** Card content specific logic handling */
+    private final CardContentManager cardContentManager;
+
     /** Matching between the old id and the new team roles */
     private Map<Long, TeamRole> teamRoleMatching = new HashMap<>();
 
@@ -105,16 +109,18 @@ public class DuplicationManager {
     private Map<Long, DocumentFile> documentFilesToProcessOnceIds = new HashMap<>();
 
     /**
-     * @param params           Parameters to fine tune duplication
-     * @param resourceSpreader Helper for resource references
-     * @param fileManager      File persistence management
+     * @param params             Parameters to fine tune duplication
+     * @param resourceSpreader   Helper for resource references
+     * @param fileManager        File persistence management
+     * @param cardContentManager Card content specific logic handling
      */
     public DuplicationManager(DuplicationParam params,
         ResourceReferenceSpreadingHelper resourceSpreader,
-        FileManager fileManager) {
+        FileManager fileManager, CardContentManager cardContentManager) {
         this.params = params;
         this.resourceSpreader = resourceSpreader;
         this.fileManager = fileManager;
+        this.cardContentManager = cardContentManager;
     }
 
     // *********************************************************************************************
@@ -425,6 +431,10 @@ public class DuplicationManager {
     private CardContent duplicateCardContent(CardContent original) throws ColabMergeException {
         CardContent newCardContent = new CardContent();
         newCardContent.duplicate(original);
+
+        if (params.isResetProgressionData()) {
+            cardContentManager.resetProgression(newCardContent);
+        }
 
         cardContentMatching.put(original.getId(), newCardContent);
 
