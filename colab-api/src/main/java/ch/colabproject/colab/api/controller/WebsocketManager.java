@@ -7,11 +7,11 @@
 package ch.colabproject.colab.api.controller;
 
 import ch.colabproject.colab.api.controller.document.BlockManager;
+import ch.colabproject.colab.api.controller.project.ProjectManager;
 import ch.colabproject.colab.api.controller.security.SecurityManager;
 import ch.colabproject.colab.api.model.document.TextDataBlock;
 import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.api.model.user.User;
-import ch.colabproject.colab.api.persistence.jpa.project.ProjectDao;
 import ch.colabproject.colab.api.persistence.jpa.user.UserDao;
 import ch.colabproject.colab.api.presence.PresenceManager;
 import ch.colabproject.colab.api.presence.model.TouchUserPresence;
@@ -124,10 +124,10 @@ public class WebsocketManager {
     private RequestManager requestManager;
 
     /**
-     * Project DAO
+     * Project specific logic management
      */
     @Inject
-    private ProjectDao projectDao;
+    private ProjectManager projectManager;
 
     /**
      * Block specific logic management
@@ -203,7 +203,7 @@ public class WebsocketManager {
             .forEach(entry -> {
                 String key = entry.getKey();
                 var currentCount = map.get(entry.getKey());
-                if (currentCount != null){
+                if (currentCount != null) {
                     map.put(key, currentCount + entry.getValue());
                 } else {
                     map.put(key, entry.getValue());
@@ -220,7 +220,8 @@ public class WebsocketManager {
      */
     public Map<String, Integer> getSubscriptionsCount() {
         return this.subscriptions.entrySet().stream()
-            .collect(Collectors.toMap(entry -> entry.getKey().getUrn(), entry -> entry.getValue().size()));
+            .collect(Collectors.toMap(entry -> entry.getKey().getUrn(),
+                entry -> entry.getValue().size()));
     }
 
     /**
@@ -301,7 +302,7 @@ public class WebsocketManager {
      */
     public void subscribeToProjectChannel(WsSessionIdentifier sessionId, Long projectId) {
         logger.debug("Session {} want to subscribe to Project#{}", sessionId, projectId);
-        Project project = projectDao.findProject(projectId);
+        Project project = projectManager.assertAndGetProject(projectId);
         if (project != null) {
             securityManager.assertConditionTx(new Conditions.IsCurrentUserMemberOfProject(project),
                 "Subscribe to project channel: Permision denied");
@@ -333,7 +334,7 @@ public class WebsocketManager {
      */
     public void unsubscribeFromProjectChannel(WsSessionIdentifier sessionId, Long projectId) {
         logger.debug("Session {} want to unsubscribe from Project#{}", sessionId, projectId);
-        Project project = projectDao.findProject(projectId);
+        Project project = projectManager.assertAndGetProject(projectId);
         if (project != null) {
             securityManager.assertConditionTx(new Conditions.IsCurrentUserMemberOfProject(project),
                 "Subscribe to project channel: Permision denied");
@@ -516,10 +517,11 @@ public class WebsocketManager {
      */
     private void propagateChannelChange(WebsocketChannel channel, int diff) {
         try {
-            PrecomputedWsMessages prepareWsMessage = WebsocketMessagePreparer.prepareWsMessageForAdmins(
-                userDao,
-                WsChannelUpdate.build(channel, diff)
-            );
+            PrecomputedWsMessages prepareWsMessage = WebsocketMessagePreparer
+                .prepareWsMessageForAdmins(
+                    userDao,
+                    WsChannelUpdate.build(channel, diff)
+                );
             this.propagate(prepareWsMessage);
         } catch (EncodeException ex) {
             logger.error("Faild to propagate channel change :{}", channel);
@@ -535,7 +537,7 @@ public class WebsocketManager {
      */
     private WebsocketChannel getChannel(SubscriptionRequest request) {
         if (request.getChannelType() == SubscriptionRequest.ChannelType.PROJECT) {
-            Project project = projectDao.findProject(request.getChannelId());
+            Project project = projectManager.assertAndGetProject(request.getChannelId());
             if (project != null) {
                 return ProjectContentChannel.build(project.getId());
             }
@@ -586,7 +588,8 @@ public class WebsocketManager {
                 Set<Session> subscribers = this.subscriptions.get(channel);
                 if (subscribers != null) {
                     subscribers.forEach(session -> {
-                        List<String> list = mappedMessages.computeIfAbsent(session, (k) -> new LinkedList<>());
+                        List<String> list = mappedMessages.computeIfAbsent(session,
+                            (k) -> new LinkedList<>());
                         list.addAll(messages);
                     });
                 }
@@ -595,7 +598,8 @@ public class WebsocketManager {
             // send one big message to each session
             mappedMessages.entrySet().forEach(entry -> {
                 Session session = entry.getKey();
-                String jsonArray = entry.getValue().stream().collect(Collectors.joining(", ", "[", "]"));
+                String jsonArray = entry.getValue().stream()
+                    .collect(Collectors.joining(", ", "[", "]"));
                 try {
                     logger.debug("Send {} to {} ({})", jsonArray, session.getId());
                     if (session.isOpen()) {
@@ -664,7 +668,7 @@ public class WebsocketManager {
                 this.wsSessionMap.remove(session);
                 // flush changes ASAP
                 WebsocketTxSync synchronizer = bag.getSynchronizer();
-                if (synchronizer != null){
+                if (synchronizer != null) {
                     synchronizer.flush();
                 }
             }
