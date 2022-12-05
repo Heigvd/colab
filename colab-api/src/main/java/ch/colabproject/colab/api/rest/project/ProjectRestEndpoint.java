@@ -69,15 +69,17 @@ public class ProjectRestEndpoint {
     private ProjectDao projectDao;
 
     /**
-     * Retrieve the list of all projects. This is available to admin only
+     * Get project identified by the given id.
      *
-     * @return all known project
+     * @param id id of the project to fetch
+     *
+     * @return the project or null
      */
     @GET
-    @AdminResource
-    public List<Project> getAllProjects() {
-        logger.debug("Get all projects");
-        return projectDao.findAllProject();
+    @Path("/{id}")
+    public Project getProject(@PathParam("id") Long id) {
+        logger.debug("Get project #{}", id);
+        return projectDao.findProject(id);
     }
 
     /**
@@ -93,17 +95,15 @@ public class ProjectRestEndpoint {
     }
 
     /**
-     * Get project identified by the given id.
+     * Retrieve the list of all projects. This is available to admin only
      *
-     * @param id id of the project to fetch
-     *
-     * @return the project or null
+     * @return all known project
      */
     @GET
-    @Path("/{id}")
-    public Project getProject(@PathParam("id") Long id) {
-        logger.debug("Get project #{}", id);
-        return projectDao.findProject(id);
+    @AdminResource
+    public List<Project> getAllProjects() {
+        logger.debug("Get all projects");
+        return projectDao.findAllProject();
     }
 
     /**
