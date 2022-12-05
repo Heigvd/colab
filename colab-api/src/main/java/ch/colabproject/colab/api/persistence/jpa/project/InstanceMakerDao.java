@@ -21,6 +21,8 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Instance maker persistence
+ * <p>
+ * Note : Most of database operations are handled by managed entities and cascade.
  *
  * @author sandra
  */
@@ -40,54 +42,14 @@ public class InstanceMakerDao {
 //    /**
 //     * Find an instance maker by id
 //     *
-//     * @param instanceMakerId the id of the instance maker
+//     * @param id the id of the instance maker
 //     *
 //     * @return the instance maker or null if it does not exist
 //     */
-//    public InstanceMaker findInstanceMaker(Long instanceMakerId) {
-//        return em.find(InstanceMaker.class, instanceMakerId);
-//    }
+//    public InstanceMaker findInstanceMaker(Long id) {
+//        logger.trace("find instance maker #{}", id);
 //
-//    /**
-//     * Update an instance maker
-//     *
-//     * @param instanceMaker new value
-//     *
-//     * @return updated instance maker
-//     *
-//     * @throws ColabMergeException if updated failed
-//     */
-//    public InstanceMaker updateInstanceMaker(InstanceMaker instanceMaker)
-//        throws ColabMergeException {
-//        InstanceMaker managedInstanceMaker = findInstanceMaker(instanceMaker.getId());
-//        if (managedInstanceMaker == null) {
-//            throw HttpErrorMessage.relatedObjectNotFoundError();
-//        }
-//        managedInstanceMaker.merge(instanceMaker);
-//
-//        return managedInstanceMaker;
-//    }
-
-    /**
-     * Persist a brand new instance maker to database
-     *
-     * @param instancemaker new instance maker to persist
-     *
-     * @return the new persisted instance maker
-     */
-    public InstanceMaker persistInstanceMaker(InstanceMaker instancemaker) {
-        logger.debug("persist instance maker {}", instancemaker);
-        em.persist(instancemaker);
-        return instancemaker;
-    }
-//
-//    /**
-//     * Remove the given instance maker from database
-//     *
-//     * @param instanceMaker the instance maker to delete
-//     */
-//    public void removeInstanceMaker(InstanceMaker instanceMaker) {
-//        em.remove(instanceMaker);
+//        return em.find(InstanceMaker.class, id);
 //    }
 
     /**
@@ -112,7 +74,7 @@ public class InstanceMakerDao {
             return null;
         }
     }
-//
+
 //    /**
 //     * Find the instance makers related to the given user
 //     *
@@ -144,4 +106,57 @@ public class InstanceMakerDao {
 
         return query.getResultList();
     }
+
+//    /**
+//     * Update instance maker. Only fields which are editable by users will be impacted.
+//     *
+//     * @param instanceMaker the instance maker as supplied by clients (ie not managed by JPA)
+//     *
+//     * @return return updated managed instance maker
+//     *
+//     * @throws ColabMergeException if the update failed
+//     */
+//    public InstanceMaker updateInstanceMaker(InstanceMaker instanceMaker) throws ColabMergeException {
+//        logger.trace("update instance maker {}", instanceMaker);
+//
+//        InstanceMaker managedInstanceMaker = this.findInstanceMaker(instanceMaker.getId());
+//
+//        managedInstanceMaker.merge(instanceMaker);
+//
+//        return managedInstanceMaker;
+//    }
+
+    /**
+     * Persist a brand new instance maker to database
+     *
+     * @param instancemaker the new instance maker to persist
+     *
+     * @return the new persisted and managed instance maker
+     */
+    public InstanceMaker persistInstanceMaker(InstanceMaker instancemaker) {
+        logger.trace("persist instance maker {}", instancemaker);
+
+        em.persist(instancemaker);
+
+        return instancemaker;
+    }
+
+//    /**
+//     * Delete the instance maker from database. This can't be undone
+//     *
+//     * @param instanceMaker the instance maker to delete
+//     *
+//     * @return the just deleted instance maker
+//     */
+//    public InstanceMaker deleteInstanceMaker(Long id) {
+//        logger.trace("delete instance maker #{}", id);
+//
+//        // TODO: move to recycle bin first
+//
+//        InstanceMaker instanceMaker = findInstanceMaker(id);
+//
+//        em.remove(instanceMaker);
+//      return instanceMaker;
+//    }
+
 }

@@ -34,7 +34,7 @@ public class ConfigRestEndpoint {
     /**
      * Get account-related configuration
      *
-     * @return config
+     * @return configuration
      */
     @GET
     @Path("AccountConfig")

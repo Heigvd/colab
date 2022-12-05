@@ -142,7 +142,7 @@ public class ProjectRestEndpoint {
     }
 
     /**
-     * Save changes to database.
+     * Save changes to database. Only fields which are editable by users will be impacted.
      *
      * @param project project to update
      *
@@ -150,7 +150,8 @@ public class ProjectRestEndpoint {
      */
     @PUT
     public void updateProject(Project project) throws ColabMergeException {
-        logger.debug("Update project {}", project);
+        logger.debug("update project {}", project);
+
         projectDao.updateProject(project);
     }
 
@@ -302,9 +303,9 @@ public class ProjectRestEndpoint {
     }
 
     /**
-     * Get all activityflowlinks belonging to a project
+     * Get all activity flow links belonging to a project
      *
-     * @param id ID of the project activityflowlinks belong to
+     * @param id ID of the project activity flow links belong to
      *
      * @return all activityFlowLinks linked to the project
      */

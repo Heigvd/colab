@@ -8,9 +8,10 @@ package ch.colabproject.colab.api.controller;
 
 import ch.colabproject.colab.api.model.common.Tracking;
 import ch.colabproject.colab.api.model.user.Account;
-import ch.colabproject.colab.api.model.user.User;
-import ch.colabproject.colab.api.persistence.jpa.user.UserDao;
 import ch.colabproject.colab.api.model.user.HttpSession;
+import ch.colabproject.colab.api.model.user.User;
+import ch.colabproject.colab.api.persistence.jpa.user.AccountDao;
+import ch.colabproject.colab.api.persistence.jpa.user.HttpSessionDao;
 import ch.colabproject.colab.api.security.SessionManager;
 import ch.colabproject.colab.api.security.permissions.Conditions.Condition;
 import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
@@ -43,10 +44,16 @@ public class RequestManager {
     private EntityManager em;
 
     /**
-     * User-related business logic
+     * Account persistence handling
      */
     @Inject
-    private UserDao userDao;
+    private AccountDao accountDao;
+
+    /**
+     * Http session persistence handling
+     */
+    @Inject
+    private HttpSessionDao httpSessionDao;
 
     /**
      * Websocket business logic
@@ -54,7 +61,9 @@ public class RequestManager {
     @Inject
     private WebsocketManager websocketManager;
 
-    /** Session manager */
+    /**
+     * Session manager
+     */
     @Inject
     private SessionManager sessionManager;
 
@@ -135,7 +144,7 @@ public class RequestManager {
     public HttpSession getHttpSession() {
         if (this.httpSessionId != null) {
             // make sure to return a managed httpSession
-            return userDao.getHttpSessionById(this.httpSessionId);
+            return httpSessionDao.findHttpSession(this.httpSessionId);
         } else {
             return null;
         }
@@ -176,9 +185,8 @@ public class RequestManager {
         HttpSession httpSession = getHttpSession();
         if (httpSession != null) {
             return httpSession.getAccount();
-            //return userDao.findAccount(this.httpSession.getAccountId());
         } else if (this.currentAccountId != null) {
-            return userDao.findAccount(this.currentAccountId);
+            return accountDao.findAccount(this.currentAccountId);
         } else {
             return null;
         }
@@ -203,7 +211,6 @@ public class RequestManager {
      * set time the current request started
      *
      * @param timestamp start timestamp
-     *
      */
     public void setStartTime(long timestamp) {
         this.startTime = timestamp;

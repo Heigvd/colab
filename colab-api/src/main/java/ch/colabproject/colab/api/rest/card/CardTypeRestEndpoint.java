@@ -148,17 +148,16 @@ public class CardTypeRestEndpoint {
     }
 
     /**
-     * Save changes to database
+     * Save changes to database. Only fields which are editable by users will be impacted.
      *
-     * @param cardType the card type to update
+     * @param cardTypeOrRef the card type or reference to update
      *
      * @throws ColabMergeException if the merge is not possible
      */
     @PUT
-    public void updateCardType(AbstractCardType cardType) throws ColabMergeException {
-        logger.debug("update abstract card type {}", cardType);
-
-        cardTypeDao.updateAbstractCardType(cardType);
+    public void updateCardType(AbstractCardType cardTypeOrRef) throws ColabMergeException {
+        logger.debug("update abstract card type {}", cardTypeOrRef);
+        cardTypeDao.updateCardTypeOrRef(cardTypeOrRef);
     }
 
     /**
@@ -196,7 +195,8 @@ public class CardTypeRestEndpoint {
      * has no use. If the abstract card type is used, throws an error.
      *
      * @param cardTypeRefId the id of the card type reference no more useful for the project
-     * @param projectId  the id of the project in which we don't want to use the card type anymore
+     * @param projectId     the id of the project in which we don't want to use the card type
+     *                      anymore
      */
     @PUT
     @Path("removeCardTypeFromProject/{cardTypeId}/{projectId}")

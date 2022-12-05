@@ -71,7 +71,7 @@ public class UserRestEndpoint {
      *
      * @param identifier email address or username the user want to sign in with
      *
-     * @return Auth method to user
+     * @return Authentication method to user
      */
     @GET
     @Path("AuthMethod/{identifier : [^/]*}")
@@ -89,7 +89,7 @@ public class UserRestEndpoint {
     @AdminResource
     public List<User> getAllUsers() {
         logger.debug("get all users");
-        return userDao.getAllUsers();
+        return userDao.findAllUsers();
     }
 
     /**
@@ -211,7 +211,7 @@ public class UserRestEndpoint {
     }
 
     /**
-     * Update user names.
+     * Update user. Only fields which are editable by users will be impacted..
      *
      * @param user user to update
      *
@@ -251,7 +251,7 @@ public class UserRestEndpoint {
     }
 
     /**
-     * Update password of a localAccount. The password MUST be hasehd a first time by the client.
+     * Update password of a localAccount. The password MUST be hashed a first time by the client.
      * <p>
      * @param authInfo identifier and new password
      *

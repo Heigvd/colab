@@ -298,7 +298,7 @@ public class WebsocketManager {
      * @param sessionId websocket session identifier
      * @param projectId id of the project
      *
-     * @throws HttpErrorMessage notFound if the project does not exists
+     * @throws HttpErrorMessage notFound if the project does not exist
      */
     public void subscribeToProjectChannel(WsSessionIdentifier sessionId, Long projectId) {
         logger.debug("Session {} want to subscribe to Project#{}", sessionId, projectId);
@@ -330,7 +330,7 @@ public class WebsocketManager {
      * @param sessionId websocket session identifier
      * @param projectId id of the project
      *
-     * @throws HttpErrorMessage notFound if the project does not exists
+     * @throws HttpErrorMessage notFound if the project does not exist
      */
     public void unsubscribeFromProjectChannel(WsSessionIdentifier sessionId, Long projectId) {
         logger.debug("Session {} want to unsubscribe from Project#{}", sessionId, projectId);
@@ -359,7 +359,7 @@ public class WebsocketManager {
      * @param sessionId websocket session identifier
      * @param blockId   id of the block
      *
-     * @throws HttpErrorMessage notFound if the block does not exists
+     * @throws HttpErrorMessage notFound if the block does not exist
      */
     public void subscribeToBlockChannel(WsSessionIdentifier sessionId, Long blockId) {
         logger.debug("Session {} want to subscribe to Block#{}", sessionId, blockId);

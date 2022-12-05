@@ -70,22 +70,6 @@ public class CardContentRestEndpoint {
     }
 
     /**
-     * Persist the card content
-     *
-     * @param cardContent the card content to persist
-     *
-     * @return id of the persisted new card content
-     *
-     * @deprecated a priori there will be no need to directly create a card content
-     */
-    @Deprecated
-    @POST
-    public Long createCardContent(CardContent cardContent) {
-        logger.debug("Create card content {}", cardContent);
-        return cardContentDao.persistCardContent(cardContent).getId();
-    }
-
-    /**
      * Create and persist a new card content
      *
      * @param cardId id of the new card content's parent
@@ -122,7 +106,7 @@ public class CardContentRestEndpoint {
     }
 
     /**
-     * Save changes to database
+     * Save changes to database. Only fields which are editable by users will be impacted.
      *
      * @param cardContent card content to update
      *
@@ -130,7 +114,7 @@ public class CardContentRestEndpoint {
      */
     @PUT
     public void updateCardContent(CardContent cardContent) throws ColabMergeException {
-        logger.debug("Update card content {}", cardContent);
+        logger.debug("update card content {}", cardContent);
         cardContentDao.updateCardContent(cardContent);
     }
 

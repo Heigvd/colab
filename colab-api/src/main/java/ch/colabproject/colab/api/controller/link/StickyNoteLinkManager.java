@@ -178,7 +178,7 @@ public class StickyNoteLinkManager {
         sourceObject.getStickyNoteLinksAsSrc().remove(link);
         toCard.getStickyNoteLinksAsDest().remove(link);
 
-        linkDao.deleteStickyNoteLink(linkId);
+        linkDao.deleteStickyNoteLink(link);
     }
 
     /**

@@ -90,6 +90,29 @@ public class TokenManager {
     private RequestManager requestManager;
 
     /**
+     * Persist the token
+     *
+     * @param token token to persist
+     *
+     * @return the new persisted token
+     */
+    private Token persistToken(Token token) {
+        logger.debug("persist token {}", token);
+
+        // set something to respect notNull constraints
+        // otherwise persist will fail
+        // These values will be reset when the e-mail is sent.
+        if (token.getHashMethod() == null) {
+            token.setHashMethod(Helper.getDefaultHashMethod());
+        }
+        if (token.getHashedToken() == null) {
+            token.setHashedToken(new byte[0]);
+        }
+
+        return tokenDao.persistToken(token);
+    }
+
+    /**
      * Finalize initialization of the token and send it to the recipient.
      * <p>
      * As the plain token is not stored in the database, the token is regenerated in this method.
@@ -134,7 +157,7 @@ public class TokenManager {
      *
      * @return the consumed token
      *
-     * @throws HttpErrorMessage notFound if the token does not exists;<br>
+     * @throws HttpErrorMessage notFound if the token does not exist;<br>
      *                          badRequest if token does not match;<br>
      *                          authenticationRequired if token requires authentication but current
      *                          user is not
@@ -194,7 +217,7 @@ public class TokenManager {
             token = new VerifyLocalAccountToken();
             token.setAuthenticationRequired(false);
             token.setLocalAccount(account);
-            tokenDao.persistToken(token);
+            persistToken(token);
         }
         // token.setExpirationDate(OffsetDateTime.now().plus(1, ChronoUnit.WEEKS));
         token.setExpirationDate(null);
@@ -257,7 +280,7 @@ public class TokenManager {
             logger.debug("no token, create one");
             token.setAuthenticationRequired(false);
             token.setLocalAccount(account);
-            tokenDao.persistToken(token);
+            persistToken(token);
         }
         token.setExpirationDate(OffsetDateTime.now().plus(1, ChronoUnit.HOURS));
 
@@ -331,7 +354,7 @@ public class TokenManager {
 
             newMember.setDisplayName(recipient);
 
-            tokenDao.persistToken(token);
+            persistToken(token);
         }
 
         token.setSender(currentUser.getDisplayName());
@@ -417,7 +440,7 @@ public class TokenManager {
 
             newInstanceMaker.setDisplayName(recipient);
 
-            tokenDao.persistToken(token);
+            persistToken(token);
         }
 
         token.setSender(currentUser.getDisplayName());

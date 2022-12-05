@@ -22,6 +22,8 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Resource and resource reference persistence
+ * <p>
+ * Note : Most of database operations are handled by managed entities and cascade.
  *
  * @author sandra
  */
@@ -38,19 +40,43 @@ public class ResourceDao {
     @PersistenceContext(unitName = "COLAB_PU")
     private EntityManager em;
 
+//    /**
+//     * Find a resource by id
+//     *
+//     * @param id the id of the resource to fetch
+//     *
+//     * @return the resource with the given id or null if such a resource does not exist
+//     */
+//    private Resource findResource(Long id) {
+//        logger.trace("find resource #{}", id);
+//
+//        return em.find(Resource.class, id);
+//    }
+
+//    /**
+//     * Find a resource reference by id
+//     *
+//     * @param id the id of the resource reference to fetch
+//     *
+//     * @return the resource reference with the given id or null if such a resource reference does
+//     *         not exist
+//     */
+//    private ResourceRef findResourceRef(Long id) {
+//        logger.trace("find resource reference #{}", id);
+//
+//        return em.find(ResourceRef.class, id);
+//    }
+
     /**
      * @param id the id of the resource / resource reference to fetch
      *
      * @return the resource / resource reference with the given id or null if such a resource /
-     *         resource reference does not exists
+     *         resource reference does not exist
      */
     public AbstractResource findResourceOrRef(Long id) {
-        try {
-            logger.debug("find abstract resource #{}", id);
-            return em.find(AbstractResource.class, id);
-        } catch (IllegalArgumentException ex) {
-            return null;
-        }
+        logger.trace("find abstract resource #{}", id);
+
+        return em.find(AbstractResource.class, id);
     }
 
     /**
@@ -61,7 +87,7 @@ public class ResourceDao {
      * @return the matching references
      */
     public List<ResourceRef> findDirectReferences(AbstractResource target) {
-        logger.debug("find the direct references of the target {}", target);
+        logger.trace("find the direct references of the target {}", target);
 
         TypedQuery<ResourceRef> query = em.createNamedQuery("ResourceRef.findDirectReferences",
             ResourceRef.class);
@@ -79,7 +105,8 @@ public class ResourceDao {
      * @return the matching references
      */
     public List<ResourceRef> findAllReferences(AbstractResource target) {
-        logger.debug("find all references to the target {}", target);
+        logger.trace("find all references to the target {}", target);
+
         // first, fetch direct references
         List<ResourceRef> list = findDirectReferences(target);
 
@@ -92,64 +119,24 @@ public class ResourceDao {
     }
 
     /**
-     * @param id the id of the resource to fetch
+     * Update resource. Only fields which are editable by users will be impacted.
      *
-     * @return the resource with the given id or null if such a resource does not exists
+     * @param resourceOrRef the resource as supplied by clients (ie not managed by JPA)
+     *
+     * @return return updated managed resource
+     *
+     * @throws ColabMergeException if the update failed
      */
-    private Resource findResource(Long id) {
-        try {
-            logger.debug("find resource #{}", id);
-            return em.find(Resource.class, id);
-        } catch (IllegalArgumentException ex) {
-            return null;
-        }
-    }
+    public <T extends AbstractResource> T updateResourceOrRef(T resourceOrRef)
+        throws ColabMergeException {
+        logger.trace("update resource or ref {}", resourceOrRef);
 
-    /**
-     * @param id the id of the resource reference to fetch
-     *
-     * @return the resource reference with the given id or null if such a resource reference does
-     *         not exists
-     */
-    private ResourceRef findResourceRef(Long id) {
-        try {
-            logger.debug("find resource reference #{}", id);
-            return em.find(ResourceRef.class, id);
-        } catch (IllegalArgumentException ex) {
-            return null;
-        }
-    }
+        @SuppressWarnings("unchecked")
+        T managedResource = (T) this.findResourceOrRef(resourceOrRef.getId());
 
-    /**
-     * Update resource
-     *
-     * @param resource the resource as supply by clients (ie not managed)
-     *
-     * @return the updated managed resource
-     *
-     * @throws ColabMergeException if updating the resource failed
-     */
-    public Resource updateResource(Resource resource) throws ColabMergeException {
-        logger.debug("update resource {}", resource);
-        Resource mResource = this.findResource(resource.getId());
-        mResource.merge(resource);
-        return mResource;
-    }
+        managedResource.merge(resourceOrRef);
 
-    /**
-     * Update resource reference
-     *
-     * @param resourceRef the resource reference as supply by clients (ie not managed)
-     *
-     * @return the updated managed resource reference
-     *
-     * @throws ColabMergeException if updating the resource reference failed
-     */
-    public ResourceRef updateResourceRef(ResourceRef resourceRef) throws ColabMergeException {
-        logger.debug("update resource reference {}", resourceRef);
-        ResourceRef mResourceRef = this.findResourceRef(resourceRef.getId());
-        mResourceRef.merge(resourceRef);
-        return mResourceRef;
+        return managedResource;
     }
 
     /**
@@ -157,11 +144,13 @@ public class ResourceDao {
      *
      * @param resource the new resource to persist
      *
-     * @return the new persisted resource
+     * @return the new persisted and managed resource
      */
     public Resource persistResource(Resource resource) {
-        logger.debug("persist resource {}", resource);
+        logger.trace("persist resource {}", resource);
+
         em.persist(resource);
+
         return resource;
     }
 
@@ -169,18 +158,16 @@ public class ResourceDao {
     // and are persisted by cascade
 
     /**
-     * Delete a resource / resource reference from database. This can't be undone
+     * Delete the resource / resource reference from database. This can't be undone
      *
-     * @param id the id of the resource / resource reference to delete
-     *
-     * @return just deleted resource / resource reference
+     * @param resourceOrRef the resource / resource reference to delete
      */
-    public AbstractResource deleteResourceOrRef(Long id) {
-        logger.debug("delete abstract resource reference #{}", id);
+    public void deleteResourceOrRef(AbstractResource resourceOrRef) {
+        logger.trace("delete abstract resource {}", resourceOrRef);
+
         // TODO: move to recycle bin first
-        AbstractResource resourceRef = this.findResourceOrRef(id);
-        em.remove(resourceRef);
-        return resourceRef;
+
+        em.remove(resourceOrRef);
     }
 
 }

@@ -265,7 +265,7 @@ public class ProjectManager {
 
         // everything else is deleted by cascade
 
-        projectDao.deleteProject(projectId);
+        projectDao.deleteProject(project);
     }
 
 //    /**
@@ -339,9 +339,7 @@ public class ProjectManager {
         logger.debug("Add and persist instance maker to user {} for model {}", user, model);
 
         InstanceMaker instanceMaker = addInstanceMaker(model, user);
-        instanceMakerDao.persistInstanceMaker(instanceMaker);
-
-        return instanceMaker;
+        return instanceMakerDao.persistInstanceMaker(instanceMaker);
     }
 
     /**
@@ -575,7 +573,7 @@ public class ProjectManager {
      * @return true if both users are related to the same project
      */
     public boolean doUsersHaveCommonProject(User a, User b) {
-        return projectDao.doUsersHaveCommonProject(a, b);
+        return projectDao.findIfUsersHaveCommonProject(a, b);
     }
 
     // *********************************************************************************************

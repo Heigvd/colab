@@ -271,23 +271,19 @@ public class CardTypeManager {
      * Delete the given card type
      *
      * @param cardTypeId the id of the card type to delete
-     *
-     * @return the freshly deleted card type
      */
-    public CardType deleteCardType(Long cardTypeId) {
+    public void deleteCardType(Long cardTypeId) {
         CardType cardType = assertAndGetCardType(cardTypeId);
 
-        return (CardType) deleteCardTypeOrRef(cardType);
+        deleteCardTypeOrRef(cardType);
     }
 
     /**
      * Delete the given card type
      *
      * @param cardTypeId the id of the card type to delete
-     *
-     * @return the freshly deleted card
      */
-    private AbstractCardType deleteCardTypeOrRef(AbstractCardType cardTypeOrRef) {
+    private void deleteCardTypeOrRef(AbstractCardType cardTypeOrRef) {
         if (!checkDeletionAcceptability(cardTypeOrRef)) {
             throw HttpErrorMessage.dataIntegrityFailure();
         }
@@ -296,7 +292,7 @@ public class CardTypeManager {
             cardTypeOrRef.getProject().getElementsToBeDefined().remove(cardTypeOrRef);
         }
 
-        return cardTypeDao.deleteAbstractCardType(cardTypeOrRef.getId());
+        cardTypeDao.deleteAbstractCardType(cardTypeOrRef);
     }
 
     /**

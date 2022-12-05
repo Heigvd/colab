@@ -179,10 +179,8 @@ public class CardContentManager {
      * Delete the given card content
      *
      * @param cardContentId the id of the card content to delete
-     *
-     * @return the freshly deleted card content
      */
-    public CardContent deleteCardContent(Long cardContentId) {
+    public void deleteCardContent(Long cardContentId) {
         CardContent cardContent = assertAndGetCardContent(cardContentId);
 
         if (!checkDeletionAcceptability(cardContent)) {
@@ -191,7 +189,7 @@ public class CardContentManager {
 
         cardContent.getCard().getContentVariants().remove(cardContent);
 
-        return cardContentDao.deleteCardContent(cardContentId);
+        cardContentDao.deleteCardContent(cardContent);
     }
 
     /**
@@ -322,7 +320,7 @@ public class CardContentManager {
 
         cardContent.getDeliverables().remove(document);
 
-        documentDao.deleteDocument(document.getId());
+        documentDao.deleteDocument(document);
     }
 
     // *********************************************************************************************

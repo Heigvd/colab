@@ -8,7 +8,7 @@ package ch.colabproject.colab.api.controller;
 
 import ch.colabproject.colab.api.model.WithWebsocketChannels;
 import ch.colabproject.colab.api.persistence.jpa.card.CardTypeDao;
-import ch.colabproject.colab.api.persistence.jpa.team.TeamDao;
+import ch.colabproject.colab.api.persistence.jpa.team.TeamMemberDao;
 import ch.colabproject.colab.api.persistence.jpa.user.UserDao;
 import ch.colabproject.colab.api.ws.WebsocketMessagePreparer;
 import ch.colabproject.colab.api.ws.message.IndexEntry;
@@ -60,7 +60,7 @@ public class EntityGatheringBagForPropagation implements Serializable {
      * To resolve nested channels
      */
     @Inject
-    private TeamDao teamDao;
+    private TeamMemberDao teamDao;
 
     /**
      * To resolve nested channels

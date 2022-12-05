@@ -164,7 +164,7 @@ public class CardRestEndpoint {
     }
 
     /**
-     * Save changes to database
+     * Save changes to database. Only fields which are editable by users will be impacted.
      *
      * @param card card to update
      *

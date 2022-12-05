@@ -72,7 +72,7 @@ public class ApplicationLifecycleManager {
                     logger.info("New admin user: {}", admin);
                 } catch (HttpErrorMessage ex) {
                     logger.error(
-                        "Fails to create default amdin user. Does non-admin user exists with same username or email address");
+                        "Fails to create default admin user. Does non-admin user exist with same username or email address");
                 } catch (RuntimeException ex) {
                     logger.error(
                         "Fails to create default amdin user for some unknown reason. Please check config",

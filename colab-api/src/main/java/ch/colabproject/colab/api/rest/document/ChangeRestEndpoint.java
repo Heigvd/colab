@@ -80,7 +80,7 @@ public class ChangeRestEndpoint {
     /**
      * get data to monitor block with pending changes
      *
-     * @return list of block beiing edited and their status
+     * @return list of block being edited and their status
      */
     @GET
     @Path("/Monitoring")

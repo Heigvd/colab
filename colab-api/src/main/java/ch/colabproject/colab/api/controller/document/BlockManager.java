@@ -82,23 +82,23 @@ public class BlockManager {
     /**
      * @param id the id of the block to fetch
      *
-     * @return the block with the given id or null if such a block does not exists
+     * @return the block with the given id or null if such a block does not exist
      */
     public TextDataBlock findBlock(Long id) {
         return documentDao.findTextDataBlock(id);
     }
 
     /**
-     * Update block
+     * Update block. Only fields which are editable by users will be impacted.
      *
      * @param block the block as supply by clients (ie not managed)
      *
-     * @return the updated managed block
-     *
      * @throws ColabMergeException if updating the block failed
      */
-    public TextDataBlock updateBlock(TextDataBlock block) throws ColabMergeException {
-        return documentDao.updateTextDataBlock(block);
+    public void updateBlock(TextDataBlock block) throws ColabMergeException {
+        TextDataBlock managedDocument = documentManager.assertAndGetTextDataBlock(block.getId());
+
+        managedDocument.merge(block);
     }
 
     /**
@@ -128,7 +128,7 @@ public class BlockManager {
             throw HttpErrorMessage.dataIntegrityFailure();
         }
 
-        documentDao.deleteDocument(blockId);
+        documentDao.deleteDocument(block);
     }
 
     /**

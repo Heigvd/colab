@@ -30,7 +30,7 @@ public class BlockMonitoring {
         /** no pending changes */
         PROCESSED,
         /** some
-         * pending changes exists but block has been deleted in the meantime */
+         * pending changes exist but block has been deleted in the meantime */
         DELETED;
     }
 
