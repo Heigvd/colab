@@ -6,7 +6,6 @@
  */
 package ch.colabproject.colab.api.persistence.jpa.token;
 
-import ch.colabproject.colab.api.Helper;
 import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.api.model.team.TeamMember;
 import ch.colabproject.colab.api.model.token.InvitationToken;
@@ -21,15 +20,22 @@ import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Token persistence
+ * &lt;p&gt;
+ * Note : Most of database operations are handled by managed entities and cascade.
  *
  * @author maxence
  */
 @Stateless
 @LocalBean
-<span class="nc" id="L32">public class TokenDao {</span>
+<span class="nc" id="L35">public class TokenDao {</span>
+
+    /** logger */
+<span class="nc" id="L38">    private static final Logger logger = LoggerFactory.getLogger(TokenDao.class);</span>
 
     /**
      * Access to the persistence unit
@@ -40,12 +46,14 @@ import javax.persistence.PersistenceContext;
     /**
      * Find a token by id
      *
-     * @param id id of the token§
+     * @param id the id of the token to fetch
      *
-     * @return the token if found or null
+     * @return the token with the given id or null if such a token does not exist
      */
     public Token findToken(Long id) {
-<span class="nc" id="L48">        return em.find(Token.class, id);</span>
+<span class="nc" id="L54">        logger.trace(&quot;find token #{}&quot;, id);</span>
+
+<span class="nc" id="L56">        return em.find(Token.class, id);</span>
     }
 
     /**
@@ -57,12 +65,14 @@ import javax.persistence.PersistenceContext;
      */
     public VerifyLocalAccountToken findVerifyTokenByAccount(LocalAccount account) {
         try {
-<span class="nc" id="L60">            return em.createNamedQuery(&quot;VerifyLocalAccountToken.findByAccountId&quot;,</span>
+<span class="nc" id="L68">            return em.createNamedQuery(&quot;VerifyLocalAccountToken.findByAccountId&quot;,</span>
                 VerifyLocalAccountToken.class)
-<span class="nc" id="L62">                .setParameter(&quot;id&quot;, account.getId())</span>
-<span class="nc" id="L63">                .getSingleResult();</span>
-<span class="nc" id="L64">        } catch (NoResultException ex) {</span>
-<span class="nc" id="L65">            return null;</span>
+
+<span class="nc" id="L71">                .setParameter(&quot;id&quot;, account.getId())</span>
+
+<span class="nc" id="L73">                .getSingleResult();</span>
+<span class="nc" id="L74">        } catch (NoResultException ex) {</span>
+<span class="nc" id="L75">            return null;</span>
         }
     }
 
@@ -75,12 +85,14 @@ import javax.persistence.PersistenceContext;
      */
     public ResetLocalAccountPasswordToken findResetTokenByAccount(LocalAccount account) {
         try {
-<span class="nc" id="L78">            return em.createNamedQuery(&quot;ResetLocalAccountPasswordToken.findByAccountId&quot;,</span>
+<span class="nc" id="L88">            return em.createNamedQuery(&quot;ResetLocalAccountPasswordToken.findByAccountId&quot;,</span>
                 ResetLocalAccountPasswordToken.class)
-<span class="nc" id="L80">                .setParameter(&quot;id&quot;, account.getId())</span>
-<span class="nc" id="L81">                .getSingleResult();</span>
-<span class="nc" id="L82">        } catch (NoResultException ex) {</span>
-<span class="nc" id="L83">            return null;</span>
+
+<span class="nc" id="L91">                .setParameter(&quot;id&quot;, account.getId())</span>
+
+<span class="nc" id="L93">                .getSingleResult();</span>
+<span class="nc" id="L94">        } catch (NoResultException ex) {</span>
+<span class="nc" id="L95">            return null;</span>
         }
     }
 
@@ -94,13 +106,16 @@ import javax.persistence.PersistenceContext;
      */
     public InvitationToken findInvitationByProjectAndRecipient(Project project, String recipient) {
         try {
-<span class="nc" id="L97">            return em.createNamedQuery(&quot;InvitationToken.findByProjectAndRecipient&quot;,</span>
-                InvitationToken.class)
-<span class="nc" id="L99">                .setParameter(&quot;projectId&quot;, project.getId())</span>
-<span class="nc" id="L100">                .setParameter(&quot;recipient&quot;, recipient)</span>
-<span class="nc" id="L101">                .getSingleResult();</span>
-<span class="nc" id="L102">        } catch (NoResultException ex) {</span>
-<span class="nc" id="L103">            return null;</span>
+<span class="nc" id="L109">            return em</span>
+<span class="nc" id="L110">                .createNamedQuery(&quot;InvitationToken.findByProjectAndRecipient&quot;,</span>
+                    InvitationToken.class)
+
+<span class="nc" id="L113">                .setParameter(&quot;projectId&quot;, project.getId())</span>
+<span class="nc" id="L114">                .setParameter(&quot;recipient&quot;, recipient)</span>
+
+<span class="nc" id="L116">                .getSingleResult();</span>
+<span class="nc" id="L117">        } catch (NoResultException ex) {</span>
+<span class="nc" id="L118">            return null;</span>
         }
     }
 
@@ -112,10 +127,11 @@ import javax.persistence.PersistenceContext;
      * @return invitations for the team member
      */
     public List&lt;InvitationToken&gt; findInvitationByTeamMember(TeamMember teamMember) {
-<span class="nc" id="L115">        return em.createNamedQuery(&quot;InvitationToken.findByTeamMember&quot;,</span>
-            InvitationToken.class)
-<span class="nc" id="L117">            .setParameter(&quot;teamMemberId&quot;, teamMember.getId())</span>
-<span class="nc" id="L118">            .getResultList();</span>
+<span class="nc" id="L130">        return em.createNamedQuery(&quot;InvitationToken.findByTeamMember&quot;, InvitationToken.class)</span>
+
+<span class="nc" id="L132">            .setParameter(&quot;teamMemberId&quot;, teamMember.getId())</span>
+
+<span class="nc" id="L134">            .getResultList();</span>
     }
 
     /**
@@ -126,54 +142,75 @@ import javax.persistence.PersistenceContext;
      *
      * @return model sharing if there is a pending one, null otherwise
      */
-    public ModelSharingToken findModelShareByProjectAndRecipient(Project project, String recipient) {
+    public ModelSharingToken findModelSharingByProjectAndRecipient(Project project,
+        String recipient) {
         try {
-<span class="nc" id="L131">            return em.createNamedQuery(&quot;ModelSharingToken.findByProjectAndRecipient&quot;,</span>
+<span class="nc" id="L148">            return em.createNamedQuery(&quot;ModelSharingToken.findByProjectAndRecipient&quot;,</span>
                 ModelSharingToken.class)
-<span class="nc" id="L133">                .setParameter(&quot;projectId&quot;, project.getId())</span>
-<span class="nc" id="L134">                .setParameter(&quot;recipient&quot;, recipient)</span>
-<span class="nc" id="L135">                .getSingleResult();</span>
-<span class="nc" id="L136">        } catch (NoResultException ex) {</span>
-<span class="nc" id="L137">            return null;</span>
+
+<span class="nc" id="L151">                .setParameter(&quot;projectId&quot;, project.getId())</span>
+<span class="nc" id="L152">                .setParameter(&quot;recipient&quot;, recipient)</span>
+
+<span class="nc" id="L154">                .getSingleResult();</span>
+<span class="nc" id="L155">        } catch (NoResultException ex) {</span>
+<span class="nc" id="L156">            return null;</span>
         }
     }
+
+//  public List&lt;ModelSharingToken&gt; findModelSharingByInstanceMaker(InstanceMaker instanceMaker) {
+//      // TODO Auto-generated method stub
+//      return null;
+//  }
+//
+//  public List&lt;Token&gt; findTokensByProject(Project project) {
+//      // TODO Auto-generated method stub
+//      return null;
+//  }
+
+//    /**
+//     * Update token. Only fields which are editable by users will be impacted.
+//     *
+//     * @param token the token as supplied by clients (ie not managed by JPA)
+//     *
+//     * @return return updated managed token
+//     *
+//     * @throws ColabMergeException if the update failed
+//     */
+//    public Token updateToken(Token token) throws ColabMergeException {
+//        logger.trace(&quot;update token {}&quot;, token);
+//
+//        Token managedToken = this.findToken(token.getId());
+//
+//        managedToken.merge(token);
+//
+//        return managedToken;
+//    }
 
     /**
      * Persist the token
      *
      * @param token token to persist
+     *
+     * @return the new persisted and managed and managed token
      */
-    public void persistToken(Token token) {
-        // set something to respect notNull constraints
-        // otherwise persist will fail
-        // These values will be reset when the e-mail is sent.
-<span class="nc bnc" id="L150" title="All 2 branches missed.">        if (token.getHashMethod() == null) {</span>
-<span class="nc" id="L151">            token.setHashMethod(Helper.getDefaultHashMethod());</span>
-        }
-<span class="nc bnc" id="L153" title="All 2 branches missed.">        if (token.getHashedToken() == null) {</span>
-<span class="nc" id="L154">            token.setHashedToken(new byte[0]);</span>
-        }
+    public Token persistToken(Token token) {
+<span class="nc" id="L197">        logger.trace(&quot;persist token {}&quot;, token);</span>
 
-<span class="nc" id="L157">        em.persist(token);</span>
-<span class="nc" id="L158">    }</span>
+<span class="nc" id="L199">        em.persist(token);</span>
+
+<span class="nc" id="L201">        return token;</span>
+    }
 
     /**
-     * Delete the given token
+     * Delete the token from database. This can't be undone
      *
      * @param token token to remove
      */
     public void deleteToken(Token token) {
-<span class="nc" id="L166">        em.remove(token);</span>
-<span class="nc" id="L167">    }</span>
+<span class="nc" id="L210">        logger.trace(&quot;delete token {}&quot;, token);</span>
 
-//    public List&lt;ModelSharingToken&gt; findModelSharingByInstanceMaker(InstanceMaker instanceMaker) {
-//        // TODO Auto-generated method stub
-//        return null;
-//    }
-//
-//    public List&lt;Token&gt; findTokensByProject(Project project) {
-//        // TODO Auto-generated method stub
-//        return null;
-//    }
+<span class="nc" id="L212">        em.remove(token);</span>
+<span class="nc" id="L213">    }</span>
+
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

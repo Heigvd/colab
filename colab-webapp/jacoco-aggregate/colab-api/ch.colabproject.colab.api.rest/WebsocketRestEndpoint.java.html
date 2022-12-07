@@ -26,10 +26,10 @@ import org.slf4j.LoggerFactory;
 /**
  * API to manage subscription to {@link WebsocketChannel}.
  * &lt;p&gt;
- * &lt;u&gt;Note about un/subcriptions protocol:&lt;/u&gt; The link between HttpSessionId (cookie) and websocket
- * session id must be known. As the client has no access to its cookie (httpOnly cookie, for
- * security concerns), the subscription is made through the REST methods defined here. Thus, both
- * http session id and websocket session id are known at the same time.
+ * &lt;u&gt;Note about un/subscriptions protocol:&lt;/u&gt; The link between HttpSessionId (cookie) and
+ * websocket session id must be known. As the client has no access to its cookie (httpOnly cookie,
+ * for security concerns), the subscription is made through the REST methods defined here. Thus,
+ * both http session id and websocket session id are known at the same time.
  *
  * @author maxence
  */
@@ -88,27 +88,25 @@ import org.slf4j.LoggerFactory;
      * Subscribe to the currentUser channel
      *
      * @param sessionId websocket session id
-     *
      */
     @PUT
     @Path(&quot;SubscribeToUserChannel&quot;)
     public void subscribeToUserChannel(WsSessionIdentifier sessionId) {
-<span class="nc" id="L96">        logger.debug(&quot;Subscribe to its own userchanell with session id {}&quot;, sessionId);</span>
-<span class="nc" id="L97">        wsManager.subscribeToUserChannel(sessionId);</span>
-<span class="nc" id="L98">    }</span>
+<span class="nc" id="L95">        logger.debug(&quot;Subscribe to its own userchanell with session id {}&quot;, sessionId);</span>
+<span class="nc" id="L96">        wsManager.subscribeToUserChannel(sessionId);</span>
+<span class="nc" id="L97">    }</span>
 
     /**
      * Unsubscribe from the currentUser channel
      *
      * @param sessionId websocket session id
-     *
      */
     @PUT
     @Path(&quot;UnsubscribeFromUserChannel&quot;)
     public void unsubscribeFromUserChannel(WsSessionIdentifier sessionId) {
-<span class="nc" id="L109">        logger.debug(&quot;Unsubscribe from its own userchanell with session id {}&quot;, sessionId);</span>
-<span class="nc" id="L110">        wsManager.unsubscribeFromUserChannel(sessionId);</span>
-<span class="nc" id="L111">    }</span>
+<span class="nc" id="L107">        logger.debug(&quot;Unsubscribe from its own userchanell with session id {}&quot;, sessionId);</span>
+<span class="nc" id="L108">        wsManager.unsubscribeFromUserChannel(sessionId);</span>
+<span class="nc" id="L109">    }</span>
 
     /**
      * Subscribe to a ProjectContent channel.
@@ -122,10 +120,10 @@ import org.slf4j.LoggerFactory;
         @PathParam(&quot;projectId&quot;) Long projectId,
         WsSessionIdentifier sessionId
     ) {
-<span class="nc" id="L125">        logger.debug(&quot;Subscribe to project #{} channel with session id {}&quot;,</span>
+<span class="nc" id="L123">        logger.debug(&quot;Subscribe to project #{} channel with session id {}&quot;,</span>
             projectId, sessionId);
-<span class="nc" id="L127">        wsManager.subscribeToProjectChannel(sessionId, projectId);</span>
-<span class="nc" id="L128">    }</span>
+<span class="nc" id="L125">        wsManager.subscribeToProjectChannel(sessionId, projectId);</span>
+<span class="nc" id="L126">    }</span>
 
     /**
      * Unsubscribe from a ProjectContent channel.
@@ -139,10 +137,10 @@ import org.slf4j.LoggerFactory;
         @PathParam(&quot;projectId&quot;) Long projectId,
         WsSessionIdentifier sessionId
     ) {
-<span class="nc" id="L142">        logger.debug(&quot;Unsubscribe from project #{} channel with session id {}&quot;,</span>
+<span class="nc" id="L140">        logger.debug(&quot;Unsubscribe from project #{} channel with session id {}&quot;,</span>
             projectId, sessionId);
-<span class="nc" id="L144">        wsManager.unsubscribeFromProjectChannel(sessionId, projectId);</span>
-<span class="nc" id="L145">    }</span>
+<span class="nc" id="L142">        wsManager.unsubscribeFromProjectChannel(sessionId, projectId);</span>
+<span class="nc" id="L143">    }</span>
 
     /**
      * Subscribe to a BlockChannel.
@@ -156,9 +154,9 @@ import org.slf4j.LoggerFactory;
         @PathParam(&quot;blockId&quot;) Long blockId,
         WsSessionIdentifier sessionId
     ) {
-<span class="nc" id="L159">        logger.debug(&quot;Subscribe to block #{} channel with session id {}&quot;, blockId, sessionId);</span>
-<span class="nc" id="L160">        wsManager.subscribeToBlockChannel(sessionId, blockId);</span>
-<span class="nc" id="L161">    }</span>
+<span class="nc" id="L157">        logger.debug(&quot;Subscribe to block #{} channel with session id {}&quot;, blockId, sessionId);</span>
+<span class="nc" id="L158">        wsManager.subscribeToBlockChannel(sessionId, blockId);</span>
+<span class="nc" id="L159">    }</span>
 
     /**
      * Unsubscribe from a BlockContent channel.
@@ -172,8 +170,8 @@ import org.slf4j.LoggerFactory;
         @PathParam(&quot;blockId&quot;) Long blockId,
         WsSessionIdentifier sessionId
     ) {
-<span class="nc" id="L175">        logger.debug(&quot;Unsubscribe from block #{} channel with session id {}&quot;, blockId, sessionId);</span>
-<span class="nc" id="L176">        wsManager.unsubscribeFromBlockChannel(sessionId, blockId);</span>
-<span class="nc" id="L177">    }</span>
+<span class="nc" id="L173">        logger.debug(&quot;Unsubscribe from block #{} channel with session id {}&quot;, blockId, sessionId);</span>
+<span class="nc" id="L174">        wsManager.unsubscribeFromBlockChannel(sessionId, blockId);</span>
+<span class="nc" id="L175">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

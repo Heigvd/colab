@@ -8,16 +8,13 @@ package ch.colabproject.colab.api.presence;
 
 import ch.colabproject.colab.api.controller.EntityGatheringBagForPropagation;
 import ch.colabproject.colab.api.controller.RequestManager;
+import ch.colabproject.colab.api.controller.project.ProjectManager;
 import ch.colabproject.colab.api.controller.team.TeamManager;
 import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.api.model.team.TeamMember;
 import ch.colabproject.colab.api.model.user.User;
-import ch.colabproject.colab.api.persistence.jpa.project.ProjectDao;
 import ch.colabproject.colab.api.presence.model.TouchUserPresence;
 import ch.colabproject.colab.api.presence.model.UserPresence;
-import com.hazelcast.core.HazelcastInstance;
-import com.hazelcast.cp.lock.FencedLock;
-import com.hazelcast.map.IMap;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -27,6 +24,9 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import com.hazelcast.core.HazelcastInstance;
+import com.hazelcast.cp.lock.FencedLock;
+import com.hazelcast.map.IMap;
 
 /**
  * To manages user presence
@@ -50,9 +50,9 @@ import org.slf4j.LoggerFactory;
     @Inject
     private EntityGatheringBagForPropagation transactionManager;
 
-    /** To load project */
+    /** Project specific logic management */
     @Inject
-    private ProjectDao projectDao;
+    private ProjectManager projectManager;
 
     /** To fetch teamMembers */
     @Inject
@@ -91,7 +91,7 @@ import org.slf4j.LoggerFactory;
      */
     public Collection&lt;UserPresence&gt; getPresenceList(Long projectId) {
         // just to check read access to project
-<span class="nc" id="L94">        projectDao.findProject(projectId);</span>
+<span class="nc" id="L94">        projectManager.assertAndGetProject(projectId);</span>
 
 <span class="nc" id="L96">        Map&lt;String, UserPresence&gt; get = null;</span>
         try {
@@ -116,7 +116,7 @@ import org.slf4j.LoggerFactory;
 <span class="nc bnc" id="L116" title="All 6 branches missed.">        if (touch != null &amp;&amp; touch.getProjectId() != null &amp;&amp; touch.getWsSessionId() != null) {</span>
 <span class="nc" id="L117">            Long projectId = touch.getProjectId();</span>
 
-<span class="nc" id="L119">            Project project = projectDao.findProject(projectId);</span>
+<span class="nc" id="L119">            Project project = projectManager.assertAndGetProject(projectId);</span>
 <span class="nc" id="L120">            User currentUser = requestManager.getCurrentUser();</span>
 <span class="nc" id="L121">            TeamMember member = teamManager.findMemberByProjectAndUser(project, currentUser);</span>
 
@@ -184,7 +184,7 @@ import org.slf4j.LoggerFactory;
      */
     public void clearProjectPresenceList(Long projectId) {
         // laod project to check permissions
-<span class="nc" id="L187">        projectDao.findProject(projectId);</span>
+<span class="nc" id="L187">        projectManager.assertAndGetProject(projectId);</span>
 
 <span class="nc" id="L189">        FencedLock lock = getLock(projectId);</span>
 

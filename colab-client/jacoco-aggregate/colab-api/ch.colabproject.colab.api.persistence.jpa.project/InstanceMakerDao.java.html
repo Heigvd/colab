@@ -21,15 +21,17 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Instance maker persistence
+ * &lt;p&gt;
+ * Note : Most of database operations are handled by managed entities and cascade.
  *
  * @author sandra
  */
 @Stateless
 @LocalBean
-<span class="nc" id="L29">public class InstanceMakerDao {</span>
+<span class="nc" id="L31">public class InstanceMakerDao {</span>
 
     /** logger */
-<span class="nc" id="L32">    private static final Logger logger = LoggerFactory.getLogger(InstanceMakerDao.class);</span>
+<span class="nc" id="L34">    private static final Logger logger = LoggerFactory.getLogger(InstanceMakerDao.class);</span>
 
     /**
      * Access to the persistence unit
@@ -40,54 +42,14 @@ import org.slf4j.LoggerFactory;
 //    /**
 //     * Find an instance maker by id
 //     *
-//     * @param instanceMakerId the id of the instance maker
+//     * @param id the id of the instance maker
 //     *
 //     * @return the instance maker or null if it does not exist
 //     */
-//    public InstanceMaker findInstanceMaker(Long instanceMakerId) {
-//        return em.find(InstanceMaker.class, instanceMakerId);
-//    }
+//    public InstanceMaker findInstanceMaker(Long id) {
+//        logger.trace(&quot;find instance maker #{}&quot;, id);
 //
-//    /**
-//     * Update an instance maker
-//     *
-//     * @param instanceMaker new value
-//     *
-//     * @return updated instance maker
-//     *
-//     * @throws ColabMergeException if updated failed
-//     */
-//    public InstanceMaker updateInstanceMaker(InstanceMaker instanceMaker)
-//        throws ColabMergeException {
-//        InstanceMaker managedInstanceMaker = findInstanceMaker(instanceMaker.getId());
-//        if (managedInstanceMaker == null) {
-//            throw HttpErrorMessage.relatedObjectNotFoundError();
-//        }
-//        managedInstanceMaker.merge(instanceMaker);
-//
-//        return managedInstanceMaker;
-//    }
-
-    /**
-     * Persist a brand new instance maker to database
-     *
-     * @param instancemaker new instance maker to persist
-     *
-     * @return the new persisted instance maker
-     */
-    public InstanceMaker persistInstanceMaker(InstanceMaker instancemaker) {
-<span class="nc" id="L79">        logger.debug(&quot;persist instance maker {}&quot;, instancemaker);</span>
-<span class="nc" id="L80">        em.persist(instancemaker);</span>
-<span class="nc" id="L81">        return instancemaker;</span>
-    }
-//
-//    /**
-//     * Remove the given instance maker from database
-//     *
-//     * @param instanceMaker the instance maker to delete
-//     */
-//    public void removeInstanceMaker(InstanceMaker instanceMaker) {
-//        em.remove(instanceMaker);
+//        return em.find(InstanceMaker.class, id);
 //    }
 
     /**
@@ -100,19 +62,19 @@ import org.slf4j.LoggerFactory;
      */
     public InstanceMaker findInstanceMakerByProjectAndUser(Project project, User user) {
         try {
-<span class="nc" id="L103">            TypedQuery&lt;InstanceMaker&gt; query = em.createNamedQuery(</span>
+<span class="nc" id="L65">            TypedQuery&lt;InstanceMaker&gt; query = em.createNamedQuery(</span>
                 &quot;InstanceMaker.findByProjectAndUser&quot;,
                 InstanceMaker.class);
 
-<span class="nc" id="L107">            query.setParameter(&quot;projectId&quot;, project.getId());</span>
-<span class="nc" id="L108">            query.setParameter(&quot;userId&quot;, user.getId());</span>
+<span class="nc" id="L69">            query.setParameter(&quot;projectId&quot;, project.getId());</span>
+<span class="nc" id="L70">            query.setParameter(&quot;userId&quot;, user.getId());</span>
 
-<span class="nc" id="L110">            return query.getSingleResult();</span>
-<span class="nc" id="L111">        } catch (NoResultException ex) {</span>
-<span class="nc" id="L112">            return null;</span>
+<span class="nc" id="L72">            return query.getSingleResult();</span>
+<span class="nc" id="L73">        } catch (NoResultException ex) {</span>
+<span class="nc" id="L74">            return null;</span>
         }
     }
-//
+
 //    /**
 //     * Find the instance makers related to the given user
 //     *
@@ -137,12 +99,65 @@ import org.slf4j.LoggerFactory;
      * @return the matching instance makers
      */
     public List&lt;InstanceMaker&gt; findInstanceMakersByProject(Project project) {
-<span class="nc" id="L140">        TypedQuery&lt;InstanceMaker&gt; query = em.createNamedQuery(&quot;InstanceMaker.findByProject&quot;,</span>
+<span class="nc" id="L102">        TypedQuery&lt;InstanceMaker&gt; query = em.createNamedQuery(&quot;InstanceMaker.findByProject&quot;,</span>
             InstanceMaker.class);
 
-<span class="nc" id="L143">        query.setParameter(&quot;projectId&quot;, project.getId());</span>
+<span class="nc" id="L105">        query.setParameter(&quot;projectId&quot;, project.getId());</span>
 
-<span class="nc" id="L145">        return query.getResultList();</span>
+<span class="nc" id="L107">        return query.getResultList();</span>
     }
+
+//    /**
+//     * Update instance maker. Only fields which are editable by users will be impacted.
+//     *
+//     * @param instanceMaker the instance maker as supplied by clients (ie not managed by JPA)
+//     *
+//     * @return return updated managed instance maker
+//     *
+//     * @throws ColabMergeException if the update failed
+//     */
+//    public InstanceMaker updateInstanceMaker(InstanceMaker instanceMaker) throws ColabMergeException {
+//        logger.trace(&quot;update instance maker {}&quot;, instanceMaker);
+//
+//        InstanceMaker managedInstanceMaker = this.findInstanceMaker(instanceMaker.getId());
+//
+//        managedInstanceMaker.merge(instanceMaker);
+//
+//        return managedInstanceMaker;
+//    }
+
+    /**
+     * Persist a brand new instance maker to database
+     *
+     * @param instancemaker the new instance maker to persist
+     *
+     * @return the new persisted and managed instance maker
+     */
+    public InstanceMaker persistInstanceMaker(InstanceMaker instancemaker) {
+<span class="nc" id="L137">        logger.trace(&quot;persist instance maker {}&quot;, instancemaker);</span>
+
+<span class="nc" id="L139">        em.persist(instancemaker);</span>
+
+<span class="nc" id="L141">        return instancemaker;</span>
+    }
+
+//    /**
+//     * Delete the instance maker from database. This can't be undone
+//     *
+//     * @param instanceMaker the instance maker to delete
+//     *
+//     * @return the just deleted instance maker
+//     */
+//    public InstanceMaker deleteInstanceMaker(Long id) {
+//        logger.trace(&quot;delete instance maker #{}&quot;, id);
+//
+//        // TODO: move to recycle bin first
+//
+//        InstanceMaker instanceMaker = findInstanceMaker(id);
+//
+//        em.remove(instanceMaker);
+//      return instanceMaker;
+//    }
+
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

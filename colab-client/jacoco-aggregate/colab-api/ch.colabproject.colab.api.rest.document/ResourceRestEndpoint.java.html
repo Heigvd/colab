@@ -174,7 +174,7 @@ import org.slf4j.LoggerFactory;
     // *********************************************************************************************
 
     /**
-     * Save changes to database
+     * Save changes to database. Only fields which are editable by users will be impacted.
      *
      * @param resource the resource to update
      *
@@ -183,11 +183,11 @@ import org.slf4j.LoggerFactory;
     @PUT
     public void updateResource(Resource resource) throws ColabMergeException {
 <span class="nc" id="L185">        logger.debug(&quot;update resource {}&quot;, resource);</span>
-<span class="nc" id="L186">        resourceDao.updateResource(resource);</span>
+<span class="nc" id="L186">        resourceDao.updateResourceOrRef(resource);</span>
 <span class="nc" id="L187">    }</span>
 
     /**
-     * Save changes to database
+     * Save changes to database. Only fields which are editable by users will be impacted.
      *
      * @param resourceRef the resource reference to update
      *
@@ -197,7 +197,7 @@ import org.slf4j.LoggerFactory;
     @Path(&quot;ref&quot;)
     public void updateResourceRef(ResourceRef resourceRef) throws ColabMergeException {
 <span class="nc" id="L199">        logger.debug(&quot;update resource reference {}&quot;, resourceRef);</span>
-<span class="nc" id="L200">        resourceDao.updateResourceRef(resourceRef);</span>
+<span class="nc" id="L200">        resourceDao.updateResourceOrRef(resourceRef);</span>
 <span class="nc" id="L201">    }</span>
 
     /**

@@ -252,7 +252,7 @@ import javax.validation.constraints.Size;
 <span class="nc" id="L252">            return this.account.getReadCondition();</span>
         } else {
             // not linked to any account, nothing to hide
-            // This case may only exists when the session is about to be destroyed
+            // This case may only exist when the session is about to be destroyed
 <span class="nc" id="L256">            return Conditions.alwaysTrue;</span>
         }
     }
@@ -265,7 +265,7 @@ import javax.validation.constraints.Size;
 <span class="nc" id="L265">            return this.account.getUpdateCondition();</span>
         } else {
             // not linked to any account, nothing to hide
-            // This case may only exists when the session is about to be destroyed
+            // This case may only exist when the session is about to be destroyed
 <span class="nc" id="L269">            return Conditions.alwaysTrue;</span>
         }
     }

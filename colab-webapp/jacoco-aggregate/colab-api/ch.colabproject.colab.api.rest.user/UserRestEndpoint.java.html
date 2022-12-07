@@ -71,7 +71,7 @@ import org.slf4j.LoggerFactory;
      *
      * @param identifier email address or username the user want to sign in with
      *
-     * @return Auth method to user
+     * @return Authentication method to user
      */
     @GET
     @Path(&quot;AuthMethod/{identifier : [^/]*}&quot;)
@@ -89,7 +89,7 @@ import org.slf4j.LoggerFactory;
     @AdminResource
     public List&lt;User&gt; getAllUsers() {
 <span class="nc" id="L91">        logger.debug(&quot;get all users&quot;);</span>
-<span class="nc" id="L92">        return userDao.getAllUsers();</span>
+<span class="nc" id="L92">        return userDao.findAllUsers();</span>
     }
 
     /**
@@ -211,7 +211,7 @@ import org.slf4j.LoggerFactory;
 <span class="nc" id="L211">    }</span>
 
     /**
-     * Update user names.
+     * Update user. Only fields which are editable by users will be impacted..
      *
      * @param user user to update
      *
@@ -251,7 +251,7 @@ import org.slf4j.LoggerFactory;
 <span class="nc" id="L251">    }</span>
 
     /**
-     * Update password of a localAccount. The password MUST be hasehd a first time by the client.
+     * Update password of a localAccount. The password MUST be hashed a first time by the client.
      * &lt;p&gt;
      * @param authInfo identifier and new password
      *

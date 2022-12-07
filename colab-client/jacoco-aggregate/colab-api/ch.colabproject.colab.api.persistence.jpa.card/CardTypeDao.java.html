@@ -23,15 +23,17 @@ import com.google.common.collect.Lists;
 
 /**
  * Card type persistence
+ * &lt;p&gt;
+ * Note : Most of database operations are handled by managed entities and cascade.
  *
  * @author sandra
  */
 @Stateless
 @LocalBean
-<span class="nc" id="L31">public class CardTypeDao {</span>
+<span class="nc" id="L33">public class CardTypeDao {</span>
 
     /** logger */
-<span class="nc" id="L34">    private static final Logger logger = LoggerFactory.getLogger(CardTypeDao.class);</span>
+<span class="nc" id="L36">    private static final Logger logger = LoggerFactory.getLogger(CardTypeDao.class);</span>
 
     /**
      * Access to the persistence unit
@@ -40,14 +42,31 @@ import com.google.common.collect.Lists;
     private EntityManager em;
 
     /**
+     * Find a card type by id
+     *
+     * @param id the id of the card type to fetch
+     *
+     * @return the card type with the given id or null if such a card type does not exist
+     */
+    public AbstractCardType findAbstractCardType(Long id) {
+<span class="nc" id="L52">        AbstractCardType cardType = em.find(AbstractCardType.class, id);</span>
+
+<span class="nc" id="L54">        logger.trace(&quot;find abstract card type #{} =&gt; {}&quot;, id, cardType);</span>
+
+<span class="nc" id="L56">        return cardType;</span>
+    }
+
+    /**
      * Get the list of global card types
      *
      * @return list of global card types
      */
     public List&lt;CardType&gt; findGlobalCardTypes() {
-<span class="nc" id="L48">        logger.debug(&quot;get all global card types&quot;);</span>
-<span class="nc" id="L49">        TypedQuery&lt;CardType&gt; query = em.createNamedQuery(&quot;CardType.findGlobals&quot;, CardType.class);</span>
-<span class="nc" id="L50">        return query.getResultList();</span>
+<span class="nc" id="L65">        logger.trace(&quot;find all global card types&quot;);</span>
+
+<span class="nc" id="L67">        TypedQuery&lt;CardType&gt; query = em.createNamedQuery(&quot;CardType.findGlobals&quot;, CardType.class);</span>
+
+<span class="nc" id="L69">        return query.getResultList();</span>
     }
 
     /**
@@ -56,10 +75,12 @@ import com.google.common.collect.Lists;
      * @return list of published global card types
      */
     public List&lt;CardType&gt; findPublishedGlobalCardTypes() {
-<span class="nc" id="L59">        logger.debug(&quot;get published global card types&quot;);</span>
-<span class="nc" id="L60">        TypedQuery&lt;CardType&gt; query = em.createNamedQuery(&quot;CardType.findPublishedGlobals&quot;,</span>
+<span class="nc" id="L78">        logger.trace(&quot;find published global card types&quot;);</span>
+
+<span class="nc" id="L80">        TypedQuery&lt;CardType&gt; query = em.createNamedQuery(&quot;CardType.findPublishedGlobals&quot;,</span>
             CardType.class);
-<span class="nc" id="L62">        return query.getResultList();</span>
+
+<span class="nc" id="L83">        return query.getResultList();</span>
     }
 
     /**
@@ -68,10 +89,12 @@ import com.google.common.collect.Lists;
      * @return list of ids corresponding to the global published card types
      */
     public List&lt;Long&gt; findIdsOfPublishedGlobalCardTypes() {
-<span class="nc" id="L71">        logger.debug(&quot;get published global card type ids&quot;);</span>
-<span class="nc" id="L72">        TypedQuery&lt;Long&gt; query = em.createNamedQuery(&quot;CardType.findIdsOfPublishedGlobal&quot;,</span>
+<span class="nc" id="L92">        logger.trace(&quot;find published global card type ids&quot;);</span>
+
+<span class="nc" id="L94">        TypedQuery&lt;Long&gt; query = em.createNamedQuery(&quot;CardType.findIdsOfPublishedGlobal&quot;,</span>
             Long.class);
-<span class="nc" id="L74">        return query.getResultList();</span>
+
+<span class="nc" id="L97">        return query.getResultList();</span>
     }
 
     /**
@@ -82,13 +105,15 @@ import com.google.common.collect.Lists;
      * @return list of published non-global card types accessible to the current user
      */
     public List&lt;AbstractCardType&gt; findPublishedProjectCardTypes(Long userId) {
-<span class="nc" id="L85">        logger.debug(&quot;get published card types in the projects the user is a team member of&quot;);</span>
+<span class="nc" id="L108">        logger.trace(&quot;find published card types in the projects the user is a team member of&quot;);</span>
 
-<span class="nc" id="L87">        TypedQuery&lt;AbstractCardType&gt; query = em</span>
-<span class="nc" id="L88">            .createNamedQuery(&quot;AbstractCardType.findPublishedByProjectTeamMemberUser&quot;,</span>
+<span class="nc" id="L110">        TypedQuery&lt;AbstractCardType&gt; query = em</span>
+<span class="nc" id="L111">            .createNamedQuery(&quot;AbstractCardType.findPublishedByProjectTeamMemberUser&quot;,</span>
                 AbstractCardType.class);
-<span class="nc" id="L90">        query.setParameter(&quot;userId&quot;, userId);</span>
-<span class="nc" id="L91">        return query.getResultList();</span>
+
+<span class="nc" id="L114">        query.setParameter(&quot;userId&quot;, userId);</span>
+
+<span class="nc" id="L116">        return query.getResultList();</span>
     }
 
     /**
@@ -99,12 +124,14 @@ import com.google.common.collect.Lists;
      * @return the ids of the matching card types or references
      */
     public List&lt;Long&gt; findIdsOfProjectCardType(Long userId) {
-<span class="nc" id="L102">        logger.debug(&quot;get the ids of the card types in the projects the user is a team member of&quot;);</span>
+<span class="nc" id="L127">        logger.trace(&quot;find the ids of the card types in the projects the user is a team member of&quot;);</span>
 
-<span class="nc" id="L104">        TypedQuery&lt;Long&gt; query = em</span>
-<span class="nc" id="L105">            .createNamedQuery(&quot;AbstractCardType.findIdsByProjectTeamMemberUser&quot;, Long.class);</span>
-<span class="nc" id="L106">        query.setParameter(&quot;userId&quot;, userId);</span>
-<span class="nc" id="L107">        return query.getResultList();</span>
+<span class="nc" id="L129">        TypedQuery&lt;Long&gt; query = em</span>
+<span class="nc" id="L130">            .createNamedQuery(&quot;AbstractCardType.findIdsByProjectTeamMemberUser&quot;, Long.class);</span>
+
+<span class="nc" id="L132">        query.setParameter(&quot;userId&quot;, userId);</span>
+
+<span class="nc" id="L134">        return query.getResultList();</span>
     }
 
     /**
@@ -118,13 +145,17 @@ import com.google.common.collect.Lists;
      * @return the ids of matching card types or references
      */
     public List&lt;Long&gt; findTargetIdsOf(List&lt;Long&gt; cardTypeOrRefIds) {
-<span class="nc" id="L121">        logger.debug(&quot;get the target's ids&quot;);</span>
-<span class="nc bnc" id="L122" title="All 2 branches missed.">        if (CollectionUtils.isEmpty(cardTypeOrRefIds)) {</span>
-<span class="nc" id="L123">            return Lists.newArrayList();</span>
+<span class="nc" id="L148">        logger.trace(&quot;find the target's ids&quot;);</span>
+
+<span class="nc bnc" id="L150" title="All 2 branches missed.">        if (CollectionUtils.isEmpty(cardTypeOrRefIds)) {</span>
+<span class="nc" id="L151">            return Lists.newArrayList();</span>
         }
-<span class="nc" id="L125">        TypedQuery&lt;Long&gt; query = em.createNamedQuery(&quot;CardTypeRef.findTargetIds&quot;, Long.class);</span>
-<span class="nc" id="L126">        query.setParameter(&quot;initIds&quot;, cardTypeOrRefIds);</span>
-<span class="nc" id="L127">        return query.getResultList();</span>
+
+<span class="nc" id="L154">        TypedQuery&lt;Long&gt; query = em.createNamedQuery(&quot;CardTypeRef.findTargetIds&quot;, Long.class);</span>
+
+<span class="nc" id="L156">        query.setParameter(&quot;initIds&quot;, cardTypeOrRefIds);</span>
+
+<span class="nc" id="L158">        return query.getResultList();</span>
     }
 
     /**
@@ -137,14 +168,18 @@ import com.google.common.collect.Lists;
      * @return the ids of matching card types references
      */
     public List&lt;Long&gt; findDirectReferencesIdsOf(List&lt;Long&gt; cardTypeOrRefIds) {
-<span class="nc" id="L140">        logger.debug(&quot;get the refs' ids&quot;);</span>
-<span class="nc bnc" id="L141" title="All 2 branches missed.">        if (CollectionUtils.isEmpty(cardTypeOrRefIds)) {</span>
-<span class="nc" id="L142">            return Lists.newArrayList();</span>
+<span class="nc" id="L171">        logger.trace(&quot;find the refs' ids&quot;);</span>
+
+<span class="nc bnc" id="L173" title="All 2 branches missed.">        if (CollectionUtils.isEmpty(cardTypeOrRefIds)) {</span>
+<span class="nc" id="L174">            return Lists.newArrayList();</span>
         }
-<span class="nc" id="L144">        TypedQuery&lt;Long&gt; query = em.createNamedQuery(&quot;CardTypeRef.findDirectReferencesIds&quot;,</span>
+
+<span class="nc" id="L177">        TypedQuery&lt;Long&gt; query = em.createNamedQuery(&quot;CardTypeRef.findDirectReferencesIds&quot;,</span>
             Long.class);
-<span class="nc" id="L146">        query.setParameter(&quot;initIds&quot;, cardTypeOrRefIds);</span>
-<span class="nc" id="L147">        return query.getResultList();</span>
+
+<span class="nc" id="L180">        query.setParameter(&quot;initIds&quot;, cardTypeOrRefIds);</span>
+
+<span class="nc" id="L182">        return query.getResultList();</span>
 
     }
 
@@ -158,13 +193,17 @@ import com.google.common.collect.Lists;
      * @return the ids of the matching projects
      */
     public List&lt;Long&gt; findProjectIdsOf(List&lt;Long&gt; cardTypeOrRefIds) {
-<span class="nc" id="L161">        logger.debug(&quot;get the project's id&quot;);</span>
-<span class="nc bnc" id="L162" title="All 2 branches missed.">        if (CollectionUtils.isEmpty(cardTypeOrRefIds)) {</span>
-<span class="nc" id="L163">            return Lists.newArrayList();</span>
+<span class="nc" id="L196">        logger.trace(&quot;find the project's id&quot;);</span>
+
+<span class="nc bnc" id="L198" title="All 2 branches missed.">        if (CollectionUtils.isEmpty(cardTypeOrRefIds)) {</span>
+<span class="nc" id="L199">            return Lists.newArrayList();</span>
         }
-<span class="nc" id="L165">        TypedQuery&lt;Long&gt; query = em.createNamedQuery(&quot;AbstractCardType.findProjectId&quot;, Long.class);</span>
-<span class="nc" id="L166">        query.setParameter(&quot;listId&quot;, cardTypeOrRefIds);</span>
-<span class="nc" id="L167">        return query.getResultList();</span>
+
+<span class="nc" id="L202">        TypedQuery&lt;Long&gt; query = em.createNamedQuery(&quot;AbstractCardType.findProjectId&quot;, Long.class);</span>
+
+<span class="nc" id="L204">        query.setParameter(&quot;listId&quot;, cardTypeOrRefIds);</span>
+
+<span class="nc" id="L206">        return query.getResultList();</span>
     }
 
     /**
@@ -175,73 +214,66 @@ import com.google.common.collect.Lists;
      * @return the matching references
      */
     public List&lt;CardTypeRef&gt; findDirectReferences(AbstractCardType target) {
-<span class="nc" id="L178">        logger.debug(&quot;find the direct references of the target {}&quot;, target);</span>
+<span class="nc" id="L217">        logger.trace(&quot;find the direct references of the target {}&quot;, target);</span>
 
-<span class="nc" id="L180">        TypedQuery&lt;CardTypeRef&gt; query = em.createNamedQuery(&quot;CardTypeRef.findDirectReferences&quot;,</span>
+<span class="nc" id="L219">        TypedQuery&lt;CardTypeRef&gt; query = em.createNamedQuery(&quot;CardTypeRef.findDirectReferences&quot;,</span>
             CardTypeRef.class);
 
-<span class="nc" id="L183">        query.setParameter(&quot;targetId&quot;, target.getId());</span>
+<span class="nc" id="L222">        query.setParameter(&quot;targetId&quot;, target.getId());</span>
 
-<span class="nc" id="L185">        return query.getResultList();</span>
+<span class="nc" id="L224">        return query.getResultList();</span>
     }
 
     /**
-     * @param id id of the card type to fetch
-     *
-     * @return the card type with the given id or null if such a card type does not exists
-     */
-    public AbstractCardType findAbstractCardType(Long id) {
-<span class="nc" id="L194">        logger.debug(&quot;get abstract card type #{}&quot;, id);</span>
-<span class="nc" id="L195">        return em.find(AbstractCardType.class, id);</span>
-    }
-
-    /**
-     * Update card type
+     * Update card type. Only fields which are editable by users will be impacted.
      *
      * @param &lt;T&gt;           a sub type of AbstractCardType
-     * @param cardTypeOrRef card type as supply by clients (ie not managed)
+     * @param cardTypeOrRef the card type as supplied by clients (ie not managed by JPA)
      *
-     * @return updated managed card type
+     * @return return updated managed card type
      *
-     * @throws ColabMergeException if updating the card type failed
+     * @throws ColabMergeException if the update failed
      */
-    public &lt;T extends AbstractCardType&gt; T updateAbstractCardType(T cardTypeOrRef)
+    public &lt;T extends AbstractCardType&gt; T updateCardTypeOrRef(T cardTypeOrRef)
         throws ColabMergeException {
-<span class="nc" id="L210">        logger.debug(&quot;update card type {}&quot;, cardTypeOrRef);</span>
+<span class="nc" id="L239">        logger.trace(&quot;update card type or ref {}&quot;, cardTypeOrRef);</span>
+
         @SuppressWarnings(&quot;unchecked&quot;)
-<span class="nc" id="L212">        T mCardType = (T) this.findAbstractCardType(cardTypeOrRef.getId());</span>
-<span class="nc" id="L213">        mCardType.merge(cardTypeOrRef);</span>
-<span class="nc" id="L214">        return mCardType;</span>
+<span class="nc" id="L242">        T managedCardType = (T) this.findAbstractCardType(cardTypeOrRef.getId());</span>
+
+<span class="nc" id="L244">        managedCardType.merge(cardTypeOrRef);</span>
+
+<span class="nc" id="L246">        return managedCardType;</span>
     }
 
     /**
      * Persist a brand new card type to database
      *
      * @param &lt;T&gt;           a sub type of AbstractCardType
-     * @param cardTypeOrRef new card type to persist
+     * @param cardTypeOrRef the new card type to persist
      *
-     * @return the new persisted card type
+     * @return the new persisted and managed card type
      */
     public &lt;T extends AbstractCardType&gt; T persistAbstractCardType(T cardTypeOrRef) {
-<span class="nc" id="L226">        logger.debug(&quot;persist card type {}&quot;, cardTypeOrRef);</span>
-<span class="nc" id="L227">        em.persist(cardTypeOrRef);</span>
-<span class="nc" id="L228">        return cardTypeOrRef;</span>
+<span class="nc" id="L258">        logger.trace(&quot;persist card type {}&quot;, cardTypeOrRef);</span>
+
+<span class="nc" id="L260">        em.persist(cardTypeOrRef);</span>
+
+<span class="nc" id="L262">        return cardTypeOrRef;</span>
     }
 
     /**
-     * Delete card type from database. This can't be undone
+     * Delete the card type from database. This can't be undone
      *
-     * @param id id of the card type to delete
-     *
-     * @return just deleted card type
+     * @param cardTypeOrRef the card type (or reference) to delete
      */
-    public AbstractCardType deleteAbstractCardType(Long id) {
-<span class="nc" id="L239">        logger.debug(&quot;delete card type #{}&quot;, id);</span>
+    public void deleteAbstractCardType(AbstractCardType cardTypeOrRef) {
+<span class="nc" id="L271">        logger.trace(&quot;delete card type {}&quot;, cardTypeOrRef);</span>
+
         // TODO: move to recycle bin first
-<span class="nc" id="L241">        AbstractCardType cardType = this.findAbstractCardType(id);</span>
-<span class="nc" id="L242">        em.remove(cardType);</span>
-<span class="nc" id="L243">        return cardType;</span>
-    }
+
+<span class="nc" id="L275">        em.remove(cardTypeOrRef);</span>
+<span class="nc" id="L276">    }</span>
 
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

@@ -37,6 +37,7 @@ ch.colabproject.colab.api.persistence.jpa.document
 ch.colabproject.colab.api.persistence.jpa.link
 ch.colabproject.colab.api.persistence.jpa.project
 ch.colabproject.colab.api.persistence.jpa.team
+ch.colabproject.colab.api.persistence.jpa.team.acl
 ch.colabproject.colab.api.persistence.jpa.token
 ch.colabproject.colab.api.persistence.jpa.user
 ch.colabproject.colab.api.presence

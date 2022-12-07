@@ -7,17 +7,14 @@
 package ch.colabproject.colab.api.security;
 
 import ch.colabproject.colab.api.Helper;
-import ch.colabproject.colab.api.model.user.HttpSession;
 import ch.colabproject.colab.api.controller.RequestManager;
 import ch.colabproject.colab.api.model.user.Account;
+import ch.colabproject.colab.api.model.user.HttpSession;
 import ch.colabproject.colab.api.model.user.InternalHashMethod;
 import ch.colabproject.colab.api.model.user.LocalAccount;
 import ch.colabproject.colab.api.model.user.User;
+import ch.colabproject.colab.api.persistence.jpa.user.HttpSessionDao;
 import ch.colabproject.colab.api.persistence.jpa.user.UserDao;
-import com.hazelcast.core.HazelcastInstance;
-import com.hazelcast.cp.lock.FencedLock;
-import com.hazelcast.flakeidgen.FlakeIdGenerator;
-import com.hazelcast.map.IMap;
 import java.nio.charset.StandardCharsets;
 import java.security.NoSuchAlgorithmException;
 import java.time.OffsetDateTime;
@@ -33,6 +30,10 @@ import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import com.hazelcast.core.HazelcastInstance;
+import com.hazelcast.cp.lock.FencedLock;
+import com.hazelcast.flakeidgen.FlakeIdGenerator;
+import com.hazelcast.map.IMap;
 
 /**
  * Bean to manage HTTP sessions
@@ -41,18 +42,22 @@ import org.slf4j.LoggerFactory;
  */
 @Stateless
 @LocalBean
-<span class="nc" id="L44">public class SessionManager {</span>
+<span class="nc" id="L45">public class SessionManager {</span>
 
     /** logger */
-<span class="nc" id="L47">    private static final Logger logger = LoggerFactory.getLogger(SessionManager.class);</span>
+<span class="nc" id="L48">    private static final Logger logger = LoggerFactory.getLogger(SessionManager.class);</span>
 
     /** hazelcast instance */
     @Inject
     private HazelcastInstance hzInstance;
 
-    /** account DAO */
+    /** User persistence handling */
     @Inject
     private UserDao userDao;
+
+    /** Http session persistence handling */
+    @Inject
+    private HttpSessionDao httpSessionDao;
 
     /** request manager */
     @Inject
@@ -66,14 +71,14 @@ import org.slf4j.LoggerFactory;
      * get user activity date cache. Map user id with activity date
      */
     private IMap&lt;Long, OffsetDateTime&gt; getUserActivityCache() {
-<span class="nc" id="L69">        return hzInstance.getMap(&quot;USER_ACTIVITY_CACHE&quot;);</span>
+<span class="nc" id="L74">        return hzInstance.getMap(&quot;USER_ACTIVITY_CACHE&quot;);</span>
     }
 
     /**
      * get account activity date cache. Map account id with activity date
      */
     private IMap&lt;Long, OffsetDateTime&gt; getHttpSessionActivityCache() {
-<span class="nc" id="L76">        return hzInstance.getMap(&quot;HTTP_SESSION_ACTIVITY_CACHE&quot;);</span>
+<span class="nc" id="L81">        return hzInstance.getMap(&quot;HTTP_SESSION_ACTIVITY_CACHE&quot;);</span>
     }
 
     /**
@@ -85,23 +90,23 @@ import org.slf4j.LoggerFactory;
      * @return a session if it exists or null
      */
     public HttpSession getAndValidate(Long sessionId, String secret) {
-<span class="nc" id="L88">        HttpSession httpSession = userDao.getHttpSessionById(sessionId);</span>
+<span class="nc" id="L93">        HttpSession httpSession = httpSessionDao.findHttpSession(sessionId);</span>
 
-<span class="nc bnc" id="L90" title="All 2 branches missed.">        if (httpSession != null) {</span>
+<span class="nc bnc" id="L95" title="All 2 branches missed.">        if (httpSession != null) {</span>
             try {
                 // hash the secret sent by the client
-<span class="nc" id="L93">                byte[] hash = InternalHashMethod.SHA_512.hash(secret);</span>
-<span class="nc" id="L94">                httpSession.getSessionSecret();</span>
-<span class="nc bnc" id="L95" title="All 2 branches missed.">                if (Helper.constantTimeArrayEquals(hash, httpSession.getSessionSecret())) {</span>
-<span class="nc" id="L96">                    return httpSession;</span>
+<span class="nc" id="L98">                byte[] hash = InternalHashMethod.SHA_512.hash(secret);</span>
+<span class="nc" id="L99">                httpSession.getSessionSecret();</span>
+<span class="nc bnc" id="L100" title="All 2 branches missed.">                if (Helper.constantTimeArrayEquals(hash, httpSession.getSessionSecret())) {</span>
+<span class="nc" id="L101">                    return httpSession;</span>
                 } else {
-<span class="nc" id="L98">                    logger.error(&quot;Cookie secret does not match&quot;);</span>
+<span class="nc" id="L103">                    logger.error(&quot;Cookie secret does not match&quot;);</span>
                 }
-<span class="nc" id="L100">            } catch (NoSuchAlgorithmException ex) {</span>
-<span class="nc" id="L101">                logger.error(&quot;SHA_512 NOT FOUND, THIS IS NOT GOOD; PLEASE INVESTIGATE&quot;);</span>
-<span class="nc" id="L102">            }</span>
+<span class="nc" id="L105">            } catch (NoSuchAlgorithmException ex) {</span>
+<span class="nc" id="L106">                logger.error(&quot;SHA_512 NOT FOUND, THIS IS NOT GOOD; PLEASE INVESTIGATE&quot;);</span>
+<span class="nc" id="L107">            }</span>
         }
-<span class="nc" id="L104">        return null;</span>
+<span class="nc" id="L109">        return null;</span>
     }
 
     /**
@@ -113,35 +118,35 @@ import org.slf4j.LoggerFactory;
      * @return brand new persisted HTTPsession
      */
     public HttpSession createHttpSession(Account account, String userAgent) {
-<span class="nc" id="L116">        logger.debug(&quot;Creater new HttpSession for {}&quot;, account);</span>
-<span class="nc" id="L117">        FlakeIdGenerator idGenerator = hzInstance.getFlakeIdGenerator(&quot;HTTP_SESSION_ID_GENERATOR&quot;);</span>
+<span class="nc" id="L121">        logger.debug(&quot;Creater new HttpSession for {}&quot;, account);</span>
+<span class="nc" id="L122">        FlakeIdGenerator idGenerator = hzInstance.getFlakeIdGenerator(&quot;HTTP_SESSION_ID_GENERATOR&quot;);</span>
 
-<span class="nc" id="L119">        String rawSecret = Helper.generateHexSalt(64) + &quot;-&quot; + idGenerator.newId();</span>
+<span class="nc" id="L124">        String rawSecret = Helper.generateHexSalt(64) + &quot;-&quot; + idGenerator.newId();</span>
         byte[] secret;
 
         try {
-<span class="nc" id="L123">            secret = InternalHashMethod.SHA_512.hash(rawSecret);</span>
-<span class="nc" id="L124">        } catch (NoSuchAlgorithmException ex) {</span>
-<span class="nc" id="L125">            secret = rawSecret.getBytes(StandardCharsets.UTF_8);</span>
-<span class="nc" id="L126">            logger.error(&quot;SHA_512 NOT FOUND, THIS IS NOT GOOD; PLEASE INVESTIGATE&quot;);</span>
-<span class="nc" id="L127">        }</span>
+<span class="nc" id="L128">            secret = InternalHashMethod.SHA_512.hash(rawSecret);</span>
+<span class="nc" id="L129">        } catch (NoSuchAlgorithmException ex) {</span>
+<span class="nc" id="L130">            secret = rawSecret.getBytes(StandardCharsets.UTF_8);</span>
+<span class="nc" id="L131">            logger.error(&quot;SHA_512 NOT FOUND, THIS IS NOT GOOD; PLEASE INVESTIGATE&quot;);</span>
+<span class="nc" id="L132">        }</span>
 
-<span class="nc" id="L129">        HttpSession httpSession = new HttpSession();</span>
+<span class="nc" id="L134">        HttpSession httpSession = new HttpSession();</span>
 
-<span class="nc" id="L131">        httpSession.setRawSessionSecret(rawSecret);</span>
-<span class="nc" id="L132">        httpSession.setSessionSecret(secret);</span>
+<span class="nc" id="L136">        httpSession.setRawSessionSecret(rawSecret);</span>
+<span class="nc" id="L137">        httpSession.setSessionSecret(secret);</span>
 
-<span class="nc" id="L134">        httpSession.setAccount(account);</span>
-<span class="nc" id="L135">        account.getHttpSessions().add(httpSession);</span>
-<span class="nc" id="L136">        httpSession.setLastSeen(OffsetDateTime.now());</span>
+<span class="nc" id="L139">        httpSession.setAccount(account);</span>
+<span class="nc" id="L140">        account.getHttpSessions().add(httpSession);</span>
+<span class="nc" id="L141">        httpSession.setLastSeen(OffsetDateTime.now());</span>
 
-<span class="nc bnc" id="L138" title="All 2 branches missed.">        if (userAgent != null) {</span>
-<span class="nc" id="L139">            httpSession.setUserAgent(userAgent);</span>
+<span class="nc bnc" id="L143" title="All 2 branches missed.">        if (userAgent != null) {</span>
+<span class="nc" id="L144">            httpSession.setUserAgent(userAgent);</span>
         } else {
-<span class="nc" id="L141">            httpSession.setUserAgent(&quot;&quot;);</span>
+<span class="nc" id="L146">            httpSession.setUserAgent(&quot;&quot;);</span>
         }
 
-<span class="nc" id="L144">        return userDao.persistHttpSession(httpSession);</span>
+<span class="nc" id="L149">        return httpSessionDao.persistHttpSession(httpSession);</span>
     }
 
     /**
@@ -150,12 +155,14 @@ import org.slf4j.LoggerFactory;
      * @param session the httpSession to delete
      */
     public void deleteHttpSession(HttpSession session) {
-<span class="nc" id="L153">        Account account = session.getAccount();</span>
-<span class="nc bnc" id="L154" title="All 2 branches missed.">        if (account != null) {</span>
-<span class="nc" id="L155">            account.getHttpSessions().remove(session);</span>
+<span class="nc" id="L158">        Account account = session.getAccount();</span>
+
+<span class="nc bnc" id="L160" title="All 2 branches missed.">        if (account != null) {</span>
+<span class="nc" id="L161">            account.getHttpSessions().remove(session);</span>
         }
-<span class="nc" id="L157">        userDao.deleteHttpSession(session);</span>
-<span class="nc" id="L158">    }</span>
+
+<span class="nc" id="L164">        httpSessionDao.deleteHttpSession(session);</span>
+<span class="nc" id="L165">    }</span>
 
     /**
      * keep trace of failed authentication attempt
@@ -165,17 +172,18 @@ import org.slf4j.LoggerFactory;
      * @return the number of failed attempts in a row
      */
     public Long authenticationFailure(LocalAccount account) {
-<span class="nc" id="L168">        return this.authenticationFailureCache.invoke(account.getId(), (MutableEntry&lt;Long, AuthenticationFailure&gt; entry, Object... arguments) -&gt; {</span>
-<span class="nc bnc" id="L169" title="All 2 branches missed.">            if (entry.exists()) {</span>
-<span class="nc" id="L170">                AuthenticationFailure value = entry.getValue();</span>
-<span class="nc" id="L171">                value.inc();</span>
-<span class="nc" id="L172">                entry.setValue(value);</span>
-<span class="nc" id="L173">                return entry.getValue().getCounter();</span>
-            } else {
-<span class="nc" id="L175">                entry.setValue(new AuthenticationFailure());</span>
-<span class="nc" id="L176">                return 1l;</span>
-            }
-        });
+<span class="nc" id="L175">        return this.authenticationFailureCache.invoke(account.getId(),</span>
+            (MutableEntry&lt;Long, AuthenticationFailure&gt; entry, Object... arguments) -&gt; {
+<span class="nc bnc" id="L177" title="All 2 branches missed.">                if (entry.exists()) {</span>
+<span class="nc" id="L178">                    AuthenticationFailure value = entry.getValue();</span>
+<span class="nc" id="L179">                    value.inc();</span>
+<span class="nc" id="L180">                    entry.setValue(value);</span>
+<span class="nc" id="L181">                    return entry.getValue().getCounter();</span>
+                } else {
+<span class="nc" id="L183">                    entry.setValue(new AuthenticationFailure());</span>
+<span class="nc" id="L184">                    return 1l;</span>
+                }
+            });
     }
 
     /**
@@ -184,8 +192,8 @@ import org.slf4j.LoggerFactory;
      * @param account the account to clear attempts for
      */
     public void resetAuthenticationAttemptHistory(LocalAccount account) {
-<span class="nc" id="L187">        this.authenticationFailureCache.remove(account.getId());</span>
-<span class="nc" id="L188">    }</span>
+<span class="nc" id="L195">        this.authenticationFailureCache.remove(account.getId());</span>
+<span class="nc" id="L196">    }</span>
 
     /**
      * Get history of failed authentication attempts for an account
@@ -195,26 +203,26 @@ import org.slf4j.LoggerFactory;
      * @return authentication failure history or null
      */
     public AuthenticationFailure getAuthenticationAttempt(LocalAccount account) {
-<span class="nc" id="L198">        return this.authenticationFailureCache.get(account.getId());</span>
+<span class="nc" id="L206">        return this.authenticationFailureCache.get(account.getId());</span>
     }
 
     /**
      * Touch activity date for currentAccount
      */
     public void touchUserActivityDate() {
-<span class="nc" id="L205">        HttpSession httpSession = requestManager.getHttpSession();</span>
-<span class="nc" id="L206">        User user = requestManager.getCurrentUser();</span>
+<span class="nc" id="L213">        HttpSession httpSession = requestManager.getHttpSession();</span>
+<span class="nc" id="L214">        User user = requestManager.getCurrentUser();</span>
 
-<span class="nc" id="L208">        OffsetDateTime now = OffsetDateTime.now();</span>
-<span class="nc" id="L209">        logger.trace(&quot;Touch Activity ({}, {}) =&gt; {}&quot;, httpSession, user, now);</span>
-<span class="nc bnc" id="L210" title="All 2 branches missed.">        if (httpSession != null) {</span>
-<span class="nc" id="L211">            getHttpSessionActivityCache().set(httpSession.getId(), now);</span>
+<span class="nc" id="L216">        OffsetDateTime now = OffsetDateTime.now();</span>
+<span class="nc" id="L217">        logger.trace(&quot;Touch Activity ({}, {}) =&gt; {}&quot;, httpSession, user, now);</span>
+<span class="nc bnc" id="L218" title="All 2 branches missed.">        if (httpSession != null) {</span>
+<span class="nc" id="L219">            getHttpSessionActivityCache().set(httpSession.getId(), now);</span>
         }
-<span class="nc bnc" id="L213" title="All 4 branches missed.">        if (user != null &amp;&amp; user.getId() != null) {</span>
-<span class="nc" id="L214">            user.setActivityDate(now);</span>
-<span class="nc" id="L215">            getUserActivityCache().set(user.getId(), now);</span>
+<span class="nc bnc" id="L221" title="All 4 branches missed.">        if (user != null &amp;&amp; user.getId() != null) {</span>
+<span class="nc" id="L222">            user.setActivityDate(now);</span>
+<span class="nc" id="L223">            getUserActivityCache().set(user.getId(), now);</span>
         }
-<span class="nc" id="L217">    }</span>
+<span class="nc" id="L225">    }</span>
 
     /**
      * Get effective activity date for account
@@ -224,16 +232,16 @@ import org.slf4j.LoggerFactory;
      * @return effective activity date
      */
     public OffsetDateTime getActivityDate(User user) {
-<span class="nc bnc" id="L227" title="All 2 branches missed.">        if (user != null) {</span>
-<span class="nc bnc" id="L228" title="All 2 branches missed.">            if (user.getId() != null) {</span>
-<span class="nc" id="L229">                OffsetDateTime date = getUserActivityCache().get(user.getId());</span>
-<span class="nc bnc" id="L230" title="All 2 branches missed.">                if (date != null) {</span>
-<span class="nc" id="L231">                    return date;</span>
+<span class="nc bnc" id="L235" title="All 2 branches missed.">        if (user != null) {</span>
+<span class="nc bnc" id="L236" title="All 2 branches missed.">            if (user.getId() != null) {</span>
+<span class="nc" id="L237">                OffsetDateTime date = getUserActivityCache().get(user.getId());</span>
+<span class="nc bnc" id="L238" title="All 2 branches missed.">                if (date != null) {</span>
+<span class="nc" id="L239">                    return date;</span>
                 }
             }
-<span class="nc" id="L234">            return user.getActivityDate();</span>
+<span class="nc" id="L242">            return user.getActivityDate();</span>
         }
-<span class="nc" id="L236">        return null;</span>
+<span class="nc" id="L244">        return null;</span>
     }
 
     /**
@@ -241,84 +249,85 @@ import org.slf4j.LoggerFactory;
      */
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     public void writeActivityDatesToDatabase() {
-<span class="nc" id="L244">        logger.trace(&quot;Write Activity Date to DB&quot;);</span>
-<span class="nc" id="L245">        FencedLock lock = hzInstance.getCPSubsystem().getLock(&quot;CleanExpiredSession&quot;);</span>
-<span class="nc bnc" id="L246" title="All 2 branches missed.">        if (lock.tryLock()) {</span>
+<span class="nc" id="L252">        logger.trace(&quot;Write Activity Date to DB&quot;);</span>
+<span class="nc" id="L253">        FencedLock lock = hzInstance.getCPSubsystem().getLock(&quot;CleanExpiredSession&quot;);</span>
+<span class="nc bnc" id="L254" title="All 2 branches missed.">        if (lock.tryLock()) {</span>
             try {
-<span class="nc" id="L248">                requestManager.sudo(() -&gt; {</span>
+<span class="nc" id="L256">                requestManager.sudo(() -&gt; {</span>
                     // prevent updating tracking data (updated by and at)
-<span class="nc" id="L250">                    requestManager.setDoNotTrackChange(true);</span>
-<span class="nc" id="L251">                    IMap&lt;Long, OffsetDateTime&gt; userActivityCache = getUserActivityCache();</span>
-<span class="nc" id="L252">                    Iterator&lt;Map.Entry&lt;Long, OffsetDateTime&gt;&gt; iterator = userActivityCache.iterator();</span>
-<span class="nc bnc" id="L253" title="All 2 branches missed.">                    while (iterator.hasNext()) {</span>
-<span class="nc" id="L254">                        Map.Entry&lt;Long, OffsetDateTime&gt; next = iterator.next();</span>
-<span class="nc" id="L255">                        iterator.remove();</span>
-<span class="nc bnc" id="L256" title="All 2 branches missed.">                        if (next != null) {</span>
-<span class="nc" id="L257">                            Long userId = next.getKey();</span>
-<span class="nc bnc" id="L258" title="All 2 branches missed.">                            if (userId != null) {</span>
-<span class="nc" id="L259">                                User user = userDao.findUser(userId);</span>
-<span class="nc" id="L260">                                OffsetDateTime date = next.getValue();</span>
-<span class="nc bnc" id="L261" title="All 2 branches missed.">                                if (user != null) {</span>
-<span class="nc" id="L262">                                    logger.trace(&quot;Update User LastSeenAt: {}&quot;, date);</span>
-<span class="nc" id="L263">                                    user.setLastSeenAt(date);</span>
+<span class="nc" id="L258">                    requestManager.setDoNotTrackChange(true);</span>
+<span class="nc" id="L259">                    IMap&lt;Long, OffsetDateTime&gt; userActivityCache = getUserActivityCache();</span>
+<span class="nc" id="L260">                    Iterator&lt;Map.Entry&lt;Long, OffsetDateTime&gt;&gt; iterator = userActivityCache</span>
+<span class="nc" id="L261">                        .iterator();</span>
+<span class="nc bnc" id="L262" title="All 2 branches missed.">                    while (iterator.hasNext()) {</span>
+<span class="nc" id="L263">                        Map.Entry&lt;Long, OffsetDateTime&gt; next = iterator.next();</span>
+<span class="nc" id="L264">                        iterator.remove();</span>
+<span class="nc bnc" id="L265" title="All 2 branches missed.">                        if (next != null) {</span>
+<span class="nc" id="L266">                            Long userId = next.getKey();</span>
+<span class="nc bnc" id="L267" title="All 2 branches missed.">                            if (userId != null) {</span>
+<span class="nc" id="L268">                                User user = userDao.findUser(userId);</span>
+<span class="nc" id="L269">                                OffsetDateTime date = next.getValue();</span>
+<span class="nc bnc" id="L270" title="All 2 branches missed.">                                if (user != null) {</span>
+<span class="nc" id="L271">                                    logger.trace(&quot;Update User LastSeenAt: {}&quot;, date);</span>
+<span class="nc" id="L272">                                    user.setLastSeenAt(date);</span>
                                 }
                             }
                         }
-<span class="nc" id="L267">                    }</span>
+<span class="nc" id="L276">                    }</span>
 
-<span class="nc" id="L269">                    IMap&lt;Long, OffsetDateTime&gt; sessionActivityCache = getHttpSessionActivityCache();</span>
-<span class="nc" id="L270">                    iterator = sessionActivityCache.iterator();</span>
-<span class="nc bnc" id="L271" title="All 2 branches missed.">                    while (iterator.hasNext()) {</span>
-<span class="nc" id="L272">                        Map.Entry&lt;Long, OffsetDateTime&gt; next = iterator.next();</span>
-<span class="nc" id="L273">                        iterator.remove();</span>
-<span class="nc bnc" id="L274" title="All 2 branches missed.">                        if (next != null) {</span>
-<span class="nc" id="L275">                            Long id = next.getKey();</span>
-<span class="nc bnc" id="L276" title="All 2 branches missed.">                            if (id != null) {</span>
-<span class="nc" id="L277">                                HttpSession session = userDao.getHttpSessionById(id);</span>
-<span class="nc bnc" id="L278" title="All 2 branches missed.">                                if (session != null) {</span>
-<span class="nc" id="L279">                                    OffsetDateTime date = next.getValue();</span>
-<span class="nc" id="L280">                                    logger.trace(&quot;Update HTTP session LastSeen: {}&quot;, date);</span>
-<span class="nc" id="L281">                                    session.setLastSeen(date);</span>
+<span class="nc" id="L278">                    IMap&lt;Long, OffsetDateTime&gt; sessionActivityCache = getHttpSessionActivityCache();</span>
+<span class="nc" id="L279">                    iterator = sessionActivityCache.iterator();</span>
+<span class="nc bnc" id="L280" title="All 2 branches missed.">                    while (iterator.hasNext()) {</span>
+<span class="nc" id="L281">                        Map.Entry&lt;Long, OffsetDateTime&gt; next = iterator.next();</span>
+<span class="nc" id="L282">                        iterator.remove();</span>
+<span class="nc bnc" id="L283" title="All 2 branches missed.">                        if (next != null) {</span>
+<span class="nc" id="L284">                            Long id = next.getKey();</span>
+<span class="nc bnc" id="L285" title="All 2 branches missed.">                            if (id != null) {</span>
+<span class="nc" id="L286">                                HttpSession session = httpSessionDao.findHttpSession(id);</span>
+<span class="nc bnc" id="L287" title="All 2 branches missed.">                                if (session != null) {</span>
+<span class="nc" id="L288">                                    OffsetDateTime date = next.getValue();</span>
+<span class="nc" id="L289">                                    logger.trace(&quot;Update HTTP session LastSeen: {}&quot;, date);</span>
+<span class="nc" id="L290">                                    session.setLastSeen(date);</span>
                                 }
                             }
                         }
-<span class="nc" id="L285">                    }</span>
-<span class="nc" id="L286">                });</span>
+<span class="nc" id="L294">                    }</span>
+<span class="nc" id="L295">                });</span>
             } finally {
-<span class="nc" id="L288">                lock.unlock();</span>
+<span class="nc" id="L297">                lock.unlock();</span>
             }
         }
-<span class="nc" id="L291">    }</span>
+<span class="nc" id="L300">    }</span>
 
     /**
      * Clean database. Remove expired HttpSession.
      */
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     public void clearExpiredSessions() {
-<span class="nc" id="L298">        logger.trace(&quot;Clear expired HTTP session&quot;);</span>
-<span class="nc" id="L299">        requestManager.sudo(() -&gt; {</span>
-<span class="nc" id="L300">            FencedLock lock = hzInstance.getCPSubsystem().getLock(&quot;CleanExpiredSession&quot;);</span>
-<span class="nc bnc" id="L301" title="All 2 branches missed.">            if (lock.tryLock()) {</span>
+<span class="nc" id="L307">        logger.trace(&quot;Clear expired HTTP session&quot;);</span>
+<span class="nc" id="L308">        requestManager.sudo(() -&gt; {</span>
+<span class="nc" id="L309">            FencedLock lock = hzInstance.getCPSubsystem().getLock(&quot;CleanExpiredSession&quot;);</span>
+<span class="nc bnc" id="L310" title="All 2 branches missed.">            if (lock.tryLock()) {</span>
                 try {
-<span class="nc" id="L303">                    logger.trace(&quot;Got the lock, let's clear&quot;);</span>
-<span class="nc" id="L304">                    IMap&lt;Long, OffsetDateTime&gt; cache = getHttpSessionActivityCache();</span>
-<span class="nc" id="L305">                    List&lt;HttpSession&gt; list = userDao.getExpiredHttpSessions();</span>
-<span class="nc" id="L306">                    logger.trace(&quot;List of expired session: {}&quot;, list);</span>
-<span class="nc bnc" id="L307" title="All 2 branches missed.">                    for (HttpSession session : list) {</span>
-<span class="nc bnc" id="L308" title="All 2 branches missed.">                        if (!cache.containsKey(session.getId())) {</span>
-<span class="nc" id="L309">                            logger.trace(&quot;Delete the session {}&quot;, session);</span>
-<span class="nc" id="L310">                            userDao.deleteHttpSession(session);</span>
+<span class="nc" id="L312">                    logger.trace(&quot;Got the lock, let's clear&quot;);</span>
+<span class="nc" id="L313">                    IMap&lt;Long, OffsetDateTime&gt; cache = getHttpSessionActivityCache();</span>
+<span class="nc" id="L314">                    List&lt;HttpSession&gt; list = httpSessionDao.findExpiredHttpSessions();</span>
+<span class="nc" id="L315">                    logger.trace(&quot;List of expired session: {}&quot;, list);</span>
+<span class="nc bnc" id="L316" title="All 2 branches missed.">                    for (HttpSession session : list) {</span>
+<span class="nc bnc" id="L317" title="All 2 branches missed.">                        if (!cache.containsKey(session.getId())) {</span>
+<span class="nc" id="L318">                            logger.trace(&quot;Delete the session {}&quot;, session);</span>
+<span class="nc" id="L319">                            deleteHttpSession(session);</span>
                         } else {
-<span class="nc" id="L312">                            logger.trace(&quot;Seems httpSesion jsut waked up: {}&quot;, session);</span>
+<span class="nc" id="L321">                            logger.trace(&quot;Seems httpSesion jsut waked up: {}&quot;, session);</span>
                         }
-<span class="nc" id="L314">                    }</span>
+<span class="nc" id="L323">                    }</span>
                 } finally {
-<span class="nc" id="L316">                    lock.unlock();</span>
-<span class="nc" id="L317">                }</span>
+<span class="nc" id="L325">                    lock.unlock();</span>
+<span class="nc" id="L326">                }</span>
             } else {
-<span class="nc" id="L319">                logger.trace(&quot;Did not got the log&quot;);</span>
+<span class="nc" id="L328">                logger.trace(&quot;Did not got the log&quot;);</span>
             }
-<span class="nc" id="L321">        });</span>
-<span class="nc" id="L322">    }</span>
+<span class="nc" id="L330">        });</span>
+<span class="nc" id="L331">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

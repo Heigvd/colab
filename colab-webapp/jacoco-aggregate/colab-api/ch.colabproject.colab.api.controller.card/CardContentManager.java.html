@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>CardContentManager.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">colab-webapp</a> &gt; <a href="../index.html" class="el_bundle">colab-api</a> &gt; <a href="index.source.html" class="el_package">ch.colabproject.colab.api.controller.card</a> &gt; <span class="el_source">CardContentManager.java</span></div><h1>CardContentManager.java</h1><pre class="source lang-java linenums">/*
  * The coLAB project
- * Copyright (C) 2021 AlbaSim, MEI, HEIG-VD, HES-SO
+ * Copyright (C) 2021-2022 AlbaSim, MEI, HEIG-VD, HES-SO
  *
  * Licensed under the MIT License
  */
@@ -51,6 +51,11 @@ import org.slf4j.LoggerFactory;
      * Initial card status
      */
 <span class="nc" id="L53">    private static final CardContentStatus CARD_CONTENT_INITIAL_STATUS = CardContentStatus.ACTIVE;</span>
+
+    /**
+     * Default value for frozen status
+     */
+    private static final boolean FROZEN_DEFAULT = false;
 
     // *********************************************************************************************
     // injections
@@ -106,14 +111,14 @@ import org.slf4j.LoggerFactory;
      * @throws HttpErrorMessage if the card content was not found
      */
     public CardContent assertAndGetCardContent(Long cardContentId) {
-<span class="nc" id="L109">        CardContent cardContent = cardContentDao.findCardContent(cardContentId);</span>
+<span class="nc" id="L114">        CardContent cardContent = cardContentDao.findCardContent(cardContentId);</span>
 
-<span class="nc bnc" id="L111" title="All 2 branches missed.">        if (cardContent == null) {</span>
-<span class="nc" id="L112">            logger.error(&quot;card content #{} not found&quot;, cardContentId);</span>
-<span class="nc" id="L113">            throw HttpErrorMessage.relatedObjectNotFoundError();</span>
+<span class="nc bnc" id="L116" title="All 2 branches missed.">        if (cardContent == null) {</span>
+<span class="nc" id="L117">            logger.error(&quot;card content #{} not found&quot;, cardContentId);</span>
+<span class="nc" id="L118">            throw HttpErrorMessage.relatedObjectNotFoundError();</span>
         }
 
-<span class="nc" id="L116">        return cardContent;</span>
+<span class="nc" id="L121">        return cardContent;</span>
     }
 
     // *********************************************************************************************
@@ -130,15 +135,15 @@ import org.slf4j.LoggerFactory;
      * @return a new, initialized and persisted card content
      */
     public CardContent createNewCardContent(Long cardId) {
-<span class="nc" id="L133">        logger.debug(&quot;create a new card content for the card #{}&quot;, cardId);</span>
+<span class="nc" id="L138">        logger.debug(&quot;create a new card content for the card #{}&quot;, cardId);</span>
 
-<span class="nc" id="L135">        Card card = cardManager.assertAndGetCard(cardId);</span>
+<span class="nc" id="L140">        Card card = cardManager.assertAndGetCard(cardId);</span>
 
-<span class="nc" id="L137">        CardContent cardContent = initNewCardContentForCard(card);</span>
+<span class="nc" id="L142">        CardContent cardContent = initNewCardContentForCard(card);</span>
 
-<span class="nc" id="L139">        resourceReferenceSpreadingHelper.extractReferencesFromUp(cardContent);</span>
+<span class="nc" id="L144">        resourceReferenceSpreadingHelper.extractReferencesFromUp(cardContent);</span>
 
-<span class="nc" id="L141">        return cardContentDao.persistCardContent(cardContent);</span>
+<span class="nc" id="L146">        return cardContentDao.persistCardContent(cardContent);</span>
     }
 
     /**
@@ -149,35 +154,43 @@ import org.slf4j.LoggerFactory;
      * @return a new, initialized card content (just the object, no persistence)
      */
     public CardContent initNewCardContentForCard(Card card) {
-<span class="nc" id="L152">        CardContent cardContent = new CardContent();</span>
+<span class="nc" id="L157">        CardContent cardContent = new CardContent();</span>
 
-<span class="nc" id="L154">        cardContent.setStatus(CARD_CONTENT_INITIAL_STATUS);</span>
-<span class="nc" id="L155">        cardContent.setCompletionLevel(MIN_COMPLETION_LEVEL);</span>
+<span class="nc" id="L159">        resetProgression(cardContent);</span>
 
-<span class="nc" id="L157">        cardContent.setCard(card);</span>
-<span class="nc" id="L158">        card.getContentVariants().add(cardContent);</span>
+<span class="nc" id="L161">        cardContent.setCard(card);</span>
+<span class="nc" id="L162">        card.getContentVariants().add(cardContent);</span>
 
-<span class="nc" id="L160">        return cardContent;</span>
+<span class="nc" id="L164">        return cardContent;</span>
     }
+
+    /**
+     * Reset progression data of the given card content : status, completion level and frozen
+     *
+     * @param cardContent the card content
+     */
+    public void resetProgression(CardContent cardContent) {
+<span class="nc" id="L173">        cardContent.setStatus(CARD_CONTENT_INITIAL_STATUS);</span>
+<span class="nc" id="L174">        cardContent.setCompletionLevel(MIN_COMPLETION_LEVEL);</span>
+<span class="nc" id="L175">        cardContent.setFrozen(FROZEN_DEFAULT);</span>
+<span class="nc" id="L176">    }</span>
 
     /**
      * Delete the given card content
      *
      * @param cardContentId the id of the card content to delete
-     *
-     * @return the freshly deleted card content
      */
-    public CardContent deleteCardContent(Long cardContentId) {
-<span class="nc" id="L171">        CardContent cardContent = assertAndGetCardContent(cardContentId);</span>
+    public void deleteCardContent(Long cardContentId) {
+<span class="nc" id="L184">        CardContent cardContent = assertAndGetCardContent(cardContentId);</span>
 
-<span class="nc bnc" id="L173" title="All 2 branches missed.">        if (!checkDeletionAcceptability(cardContent)) {</span>
-<span class="nc" id="L174">            throw HttpErrorMessage.dataIntegrityFailure();</span>
+<span class="nc bnc" id="L186" title="All 2 branches missed.">        if (!checkDeletionAcceptability(cardContent)) {</span>
+<span class="nc" id="L187">            throw HttpErrorMessage.dataIntegrityFailure();</span>
         }
 
-<span class="nc" id="L177">        cardContent.getCard().getContentVariants().remove(cardContent);</span>
+<span class="nc" id="L190">        cardContent.getCard().getContentVariants().remove(cardContent);</span>
 
-<span class="nc" id="L179">        return cardContentDao.deleteCardContent(cardContentId);</span>
-    }
+<span class="nc" id="L192">        cardContentDao.deleteCardContent(cardContent);</span>
+<span class="nc" id="L193">    }</span>
 
     /**
      * Ascertain that the card content can be deleted.
@@ -188,11 +201,11 @@ import org.slf4j.LoggerFactory;
      */
     private boolean checkDeletionAcceptability(CardContent cardContent) {
         // A card must have at least one card content
-<span class="nc bnc" id="L191" title="All 2 branches missed.">        if (cardContent.getCard().getContentVariants().size() == 1) {</span>
-<span class="nc" id="L192">            return false;</span>
+<span class="nc bnc" id="L204" title="All 2 branches missed.">        if (cardContent.getCard().getContentVariants().size() == 1) {</span>
+<span class="nc" id="L205">            return false;</span>
         }
 
-<span class="nc" id="L195">        return true;</span>
+<span class="nc" id="L208">        return true;</span>
     }
 
     // *********************************************************************************************
@@ -208,9 +221,9 @@ import org.slf4j.LoggerFactory;
      * @return the newly created document
      */
     public Document addDeliverable(Long cardContentId, Document document) {
-<span class="nc" id="L211">        logger.debug(&quot;add deliverable {} to card content #{}&quot;, document, cardContentId);</span>
+<span class="nc" id="L224">        logger.debug(&quot;add deliverable {} to card content #{}&quot;, document, cardContentId);</span>
 
-<span class="nc" id="L213">        return addDeliverable(cardContentId, document, RelatedPosition.AT_END);</span>
+<span class="nc" id="L226">        return addDeliverable(cardContentId, document, RelatedPosition.AT_END);</span>
     }
 
     /**
@@ -225,10 +238,10 @@ import org.slf4j.LoggerFactory;
      */
     public Document addDeliverable(Long cardContentId, Document document,
         RelatedPosition relatedPosition) {
-<span class="nc" id="L228">        logger.debug(&quot;add deliverable {} {} to card content #{}&quot;, document, relatedPosition,</span>
+<span class="nc" id="L241">        logger.debug(&quot;add deliverable {} {} to card content #{}&quot;, document, relatedPosition,</span>
             cardContentId);
 
-<span class="nc" id="L231">        return addDeliverable(cardContentId, document, relatedPosition, null);</span>
+<span class="nc" id="L244">        return addDeliverable(cardContentId, document, relatedPosition, null);</span>
     }
 
     /**
@@ -245,47 +258,47 @@ import org.slf4j.LoggerFactory;
      */
     public Document addDeliverable(Long cardContentId, Document document,
         RelatedPosition relatedPosition, Long neighbourDocId) {
-<span class="nc" id="L248">        logger.debug(&quot;add deliverable {} to card content #{} {} doc #{}&quot;, document, cardContentId,</span>
+<span class="nc" id="L261">        logger.debug(&quot;add deliverable {} to card content #{} {} doc #{}&quot;, document, cardContentId,</span>
             relatedPosition, neighbourDocId);
 
-<span class="nc" id="L251">        CardContent cardContent = assertAndGetCardContent(cardContentId);</span>
+<span class="nc" id="L264">        CardContent cardContent = assertAndGetCardContent(cardContentId);</span>
 
-<span class="nc bnc" id="L253" title="All 2 branches missed.">        if (document == null) {</span>
-<span class="nc" id="L254">            throw HttpErrorMessage.dataIntegrityFailure();</span>
+<span class="nc bnc" id="L266" title="All 2 branches missed.">        if (document == null) {</span>
+<span class="nc" id="L267">            throw HttpErrorMessage.dataIntegrityFailure();</span>
         }
 
-<span class="nc bnc" id="L257" title="All 4 branches missed.">        if (document.hasOwningResource() || document.hasOwningCardContent()) {</span>
-<span class="nc" id="L258">            throw HttpErrorMessage.dataIntegrityFailure();</span>
+<span class="nc bnc" id="L270" title="All 4 branches missed.">        if (document.hasOwningResource() || document.hasOwningCardContent()) {</span>
+<span class="nc" id="L271">            throw HttpErrorMessage.dataIntegrityFailure();</span>
         }
 
-<span class="nc bnc" id="L261" title="All 2 branches missed.">        if (cardContent.getDeliverables().contains(document)) {</span>
-<span class="nc" id="L262">            throw HttpErrorMessage.dataIntegrityFailure();</span>
+<span class="nc bnc" id="L274" title="All 2 branches missed.">        if (cardContent.getDeliverables().contains(document)) {</span>
+<span class="nc" id="L275">            throw HttpErrorMessage.dataIntegrityFailure();</span>
         }
 
-<span class="nc bnc" id="L265" title="All 4 branches missed.">        switch (relatedPosition) {</span>
+<span class="nc bnc" id="L278" title="All 4 branches missed.">        switch (relatedPosition) {</span>
             case BEFORE:
-<span class="nc" id="L267">                Document neighbourBDocument = documentManager.assertAndGetDocument(neighbourDocId);</span>
-<span class="nc" id="L268">                indexGenerator.moveItemBefore(document, neighbourBDocument,</span>
-<span class="nc" id="L269">                    cardContent.getDeliverables());</span>
-<span class="nc" id="L270">                break;</span>
+<span class="nc" id="L280">                Document neighbourBDocument = documentManager.assertAndGetDocument(neighbourDocId);</span>
+<span class="nc" id="L281">                indexGenerator.moveItemBefore(document, neighbourBDocument,</span>
+<span class="nc" id="L282">                    cardContent.getDeliverables());</span>
+<span class="nc" id="L283">                break;</span>
             case AFTER:
-<span class="nc" id="L272">                Document neighbourADocument = documentManager.assertAndGetDocument(neighbourDocId);</span>
-<span class="nc" id="L273">                indexGenerator.moveItemAfter(document, neighbourADocument,</span>
-<span class="nc" id="L274">                    cardContent.getDeliverables());</span>
-<span class="nc" id="L275">                break;</span>
+<span class="nc" id="L285">                Document neighbourADocument = documentManager.assertAndGetDocument(neighbourDocId);</span>
+<span class="nc" id="L286">                indexGenerator.moveItemAfter(document, neighbourADocument,</span>
+<span class="nc" id="L287">                    cardContent.getDeliverables());</span>
+<span class="nc" id="L288">                break;</span>
             case AT_BEGINNING:
-<span class="nc" id="L277">                indexGenerator.moveItemToBeginning(document, cardContent.getDeliverables());</span>
-<span class="nc" id="L278">                break;</span>
+<span class="nc" id="L290">                indexGenerator.moveItemToBeginning(document, cardContent.getDeliverables());</span>
+<span class="nc" id="L291">                break;</span>
             case AT_END:
             default:
-<span class="nc" id="L281">                indexGenerator.moveItemToEnd(document, cardContent.getDeliverables());</span>
+<span class="nc" id="L294">                indexGenerator.moveItemToEnd(document, cardContent.getDeliverables());</span>
                 break;
         }
 
-<span class="nc" id="L285">        cardContent.getDeliverables().add(document);</span>
-<span class="nc" id="L286">        document.setOwningCardContent(cardContent);</span>
+<span class="nc" id="L298">        cardContent.getDeliverables().add(document);</span>
+<span class="nc" id="L299">        document.setOwningCardContent(cardContent);</span>
 
-<span class="nc" id="L288">        return documentDao.persistDocument(document);</span>
+<span class="nc" id="L301">        return documentDao.persistDocument(document);</span>
     }
 
     /**
@@ -295,20 +308,20 @@ import org.slf4j.LoggerFactory;
      * @param documentId    the id of the document to remove from the card content
      */
     public void removeDeliverable(Long cardContentId, Long documentId) {
-<span class="nc" id="L298">        logger.debug(&quot;remove deliverable #{} of card content #{}&quot;, documentId, cardContentId);</span>
+<span class="nc" id="L311">        logger.debug(&quot;remove deliverable #{} of card content #{}&quot;, documentId, cardContentId);</span>
 
-<span class="nc" id="L300">        CardContent cardContent = assertAndGetCardContent(cardContentId);</span>
+<span class="nc" id="L313">        CardContent cardContent = assertAndGetCardContent(cardContentId);</span>
 
-<span class="nc" id="L302">        Document document = documentManager.assertAndGetDocument(documentId);</span>
+<span class="nc" id="L315">        Document document = documentManager.assertAndGetDocument(documentId);</span>
 
-<span class="nc bnc" id="L304" title="All 2 branches missed.">        if (!(cardContent.getDeliverables().contains(document))) {</span>
-<span class="nc" id="L305">            throw HttpErrorMessage.dataIntegrityFailure();</span>
+<span class="nc bnc" id="L317" title="All 2 branches missed.">        if (!(cardContent.getDeliverables().contains(document))) {</span>
+<span class="nc" id="L318">            throw HttpErrorMessage.dataIntegrityFailure();</span>
         }
 
-<span class="nc" id="L308">        cardContent.getDeliverables().remove(document);</span>
+<span class="nc" id="L321">        cardContent.getDeliverables().remove(document);</span>
 
-<span class="nc" id="L310">        documentDao.deleteDocument(document.getId());</span>
-<span class="nc" id="L311">    }</span>
+<span class="nc" id="L323">        documentDao.deleteDocument(document);</span>
+<span class="nc" id="L324">    }</span>
 
     // *********************************************************************************************
     // retrieve the elements of a card content
@@ -322,11 +335,11 @@ import org.slf4j.LoggerFactory;
      * @return all cards of the card content
      */
     public List&lt;Card&gt; getSubCards(Long cardContentId) {
-<span class="nc" id="L325">        logger.debug(&quot;get all sub cards of card content #{}&quot;, cardContentId);</span>
+<span class="nc" id="L338">        logger.debug(&quot;get all sub cards of card content #{}&quot;, cardContentId);</span>
 
-<span class="nc" id="L327">        CardContent cardContent = assertAndGetCardContent(cardContentId);</span>
+<span class="nc" id="L340">        CardContent cardContent = assertAndGetCardContent(cardContentId);</span>
 
-<span class="nc" id="L329">        return cardContent.getSubCards();</span>
+<span class="nc" id="L342">        return cardContent.getSubCards();</span>
     }
 
     /**
@@ -337,11 +350,11 @@ import org.slf4j.LoggerFactory;
      * @return the deliverables linked to the card content
      */
     public List&lt;Document&gt; getDeliverablesOfCardContent(Long cardContentId) {
-<span class="nc" id="L340">        logger.debug(&quot;get deliverables of card content #{}&quot;, cardContentId);</span>
+<span class="nc" id="L353">        logger.debug(&quot;get deliverables of card content #{}&quot;, cardContentId);</span>
 
-<span class="nc" id="L342">        CardContent cardContent = assertAndGetCardContent(cardContentId);</span>
+<span class="nc" id="L355">        CardContent cardContent = assertAndGetCardContent(cardContentId);</span>
 
-<span class="nc" id="L344">        return cardContent.getDeliverables();</span>
+<span class="nc" id="L357">        return cardContent.getDeliverables();</span>
     }
 
     /**
@@ -352,12 +365,12 @@ import org.slf4j.LoggerFactory;
      * @return all sticky note links linked to the card content
      */
     public List&lt;StickyNoteLink&gt; getStickyNoteLinkAsSrcCardContent(Long cardContentId) {
-<span class="nc" id="L355">        logger.debug(&quot;get sticky note links where the card content #{} is the source&quot;,</span>
+<span class="nc" id="L368">        logger.debug(&quot;get sticky note links where the card content #{} is the source&quot;,</span>
             cardContentId);
 
-<span class="nc" id="L358">        CardContent cardContent = assertAndGetCardContent(cardContentId);</span>
+<span class="nc" id="L371">        CardContent cardContent = assertAndGetCardContent(cardContentId);</span>
 
-<span class="nc" id="L360">        return cardContent.getStickyNoteLinksAsSrc();</span>
+<span class="nc" id="L373">        return cardContent.getStickyNoteLinksAsSrc();</span>
     }
 
     // *********************************************************************************************
@@ -376,23 +389,23 @@ import org.slf4j.LoggerFactory;
      * @return true iff the card content is complete and safe
      */
     public boolean checkIntegrity(CardContent cardContent) {
-<span class="nc bnc" id="L379" title="All 2 branches missed.">        if (cardContent == null) {</span>
-<span class="nc" id="L380">            return false;</span>
+<span class="nc bnc" id="L392" title="All 2 branches missed.">        if (cardContent == null) {</span>
+<span class="nc" id="L393">            return false;</span>
         }
 
-<span class="nc bnc" id="L383" title="All 2 branches missed.">        if (cardContent.getCard() == null) {</span>
-<span class="nc" id="L384">            return false;</span>
+<span class="nc bnc" id="L396" title="All 2 branches missed.">        if (cardContent.getCard() == null) {</span>
+<span class="nc" id="L397">            return false;</span>
         }
 
-<span class="nc bnc" id="L387" title="All 2 branches missed.">        if (cardContent.getCompletionLevel() &lt; MIN_COMPLETION_LEVEL) {</span>
-<span class="nc" id="L388">            return false;</span>
+<span class="nc bnc" id="L400" title="All 2 branches missed.">        if (cardContent.getCompletionLevel() &lt; MIN_COMPLETION_LEVEL) {</span>
+<span class="nc" id="L401">            return false;</span>
         }
 
-<span class="nc bnc" id="L391" title="All 2 branches missed.">        if (cardContent.getCompletionLevel() &gt; MAX_COMPLETION_LEVEL) {</span>
-<span class="nc" id="L392">            return false;</span>
+<span class="nc bnc" id="L404" title="All 2 branches missed.">        if (cardContent.getCompletionLevel() &gt; MAX_COMPLETION_LEVEL) {</span>
+<span class="nc" id="L405">            return false;</span>
         }
 
-<span class="nc" id="L395">        return true;</span>
+<span class="nc" id="L408">        return true;</span>
     }
 
     // *********************************************************************************************

@@ -16,15 +16,17 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Activity flow link persistence
+ * &lt;p&gt;
+ * Note : Most of database operations are handled by managed entities and cascade.
  *
  * @author sandra
  */
 @Stateless
 @LocalBean
-<span class="nc" id="L24">public class ActivityFlowLinkDao {</span>
+<span class="nc" id="L26">public class ActivityFlowLinkDao {</span>
 
     /** logger */
-<span class="nc" id="L27">    private static final Logger logger = LoggerFactory.getLogger(ActivityFlowLinkDao.class);</span>
+<span class="nc" id="L29">    private static final Logger logger = LoggerFactory.getLogger(ActivityFlowLinkDao.class);</span>
 
     /**
      * Access to the persistence unit
@@ -33,34 +35,35 @@ import org.slf4j.LoggerFactory;
     private EntityManager em;
 
     /**
+     * Find a link by id
+     *
      * @param id the id of the link to fetch
      *
-     * @return the link with the given id or null if such a link does not exists
+     * @return the link with the given id or null if such a link does not exist
      */
     public ActivityFlowLink findActivityFlowLink(Long id) {
-        try {
-<span class="nc" id="L42">            logger.debug(&quot;find activity flow link #{}&quot;, id);</span>
-<span class="nc" id="L43">            return em.find(ActivityFlowLink.class, id);</span>
-<span class="nc" id="L44">        } catch (IllegalArgumentException ex) {</span>
-<span class="nc" id="L45">            return null;</span>
-        }
+<span class="nc" id="L45">        logger.trace(&quot;find activity flow link #{}&quot;, id);</span>
+
+<span class="nc" id="L47">        return em.find(ActivityFlowLink.class, id);</span>
     }
 
 //    /**
-//     * Update link
+//     * Update activity flow link. Only fields which are editable by users will be impacted.
 //     *
-//     * @param link the link as supply by clients (ie not managed)
+//     * @param link the activity flow link as supplied by clients (ie not managed by JPA)
 //     *
-//     * @return the updated managed link
+//     * @return return updated managed activity flow link
 //     *
-//     * @throws ColabMergeException if updating the link failed
+//     * @throws ColabMergeException if the update failed
 //     */
-//    public ActivityFlowLink updateActivityFlowLink(ActivityFlowLink link)
-//        throws ColabMergeException {
-//        logger.debug(&quot;update activity flow link {}&quot;, link);
-//        ActivityFlowLink mLink = this.findActivityFlowLink(link.getId());
-//        mLink.merge(link);
-//        return mLink;
+//    public ActivityFlowLink updateActivityFlowLink(ActivityFlowLink link) throws ColabMergeException {
+//        logger.trace(&quot;update activity flow link {}&quot;, link);
+//
+//        ActivityFlowLink managedActivityFlowLink = this.findActivityFlowLink(link.getId());
+//
+//        managedActivityFlowLink.merge(link);
+//
+//        return managedActivityFlowLink;
 //    }
 
     /**
@@ -68,28 +71,28 @@ import org.slf4j.LoggerFactory;
      *
      * @param link the new link to persist
      *
-     * @return the new persisted link
+     * @return the new persisted and managed link
      */
     public ActivityFlowLink persistActivityFlowLink(ActivityFlowLink link) {
-<span class="nc" id="L74">        logger.debug(&quot;persist activity flow link {}&quot;, link);</span>
-<span class="nc" id="L75">        em.persist(link);</span>
-<span class="nc" id="L76">        return link;</span>
+<span class="nc" id="L77">        logger.trace(&quot;persist activity flow link {}&quot;, link);</span>
+
+<span class="nc" id="L79">        em.persist(link);</span>
+
+<span class="nc" id="L81">        return link;</span>
     }
 
     /**
-     * Delete link from database. This can't be undone
+     * Delete the link from database. This can't be undone
      *
-     * @param id the id of the link to delete
-     *
-     * @return just deleted link
+     * @param link the link to delete
      */
-    public ActivityFlowLink deleteActivityFlowLink(Long id) {
-<span class="nc" id="L87">        logger.debug(&quot;delete activity flow link #{}&quot;, id);</span>
+    public void deleteActivityFlowLink(ActivityFlowLink link) {
+<span class="nc" id="L90">        logger.trace(&quot;delete activity flow link {}&quot;, link);</span>
+
         // TODO: move to recycle bin first
-<span class="nc" id="L89">        ActivityFlowLink link = this.findActivityFlowLink(id);</span>
-<span class="nc" id="L90">        em.remove(link);</span>
-<span class="nc" id="L91">        return link;</span>
-    }
+
+<span class="nc" id="L94">        em.remove(link);</span>
+<span class="nc" id="L95">    }</span>
 
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

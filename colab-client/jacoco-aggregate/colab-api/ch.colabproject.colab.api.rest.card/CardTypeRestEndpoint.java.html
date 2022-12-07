@@ -148,18 +148,17 @@ import org.slf4j.LoggerFactory;
     }
 
     /**
-     * Save changes to database
+     * Save changes to database. Only fields which are editable by users will be impacted.
      *
-     * @param cardType the card type to update
+     * @param cardTypeOrRef the card type or reference to update
      *
      * @throws ColabMergeException if the merge is not possible
      */
     @PUT
-    public void updateCardType(AbstractCardType cardType) throws ColabMergeException {
-<span class="nc" id="L159">        logger.debug(&quot;update abstract card type {}&quot;, cardType);</span>
-
-<span class="nc" id="L161">        cardTypeDao.updateAbstractCardType(cardType);</span>
-<span class="nc" id="L162">    }</span>
+    public void updateCardType(AbstractCardType cardTypeOrRef) throws ColabMergeException {
+<span class="nc" id="L159">        logger.debug(&quot;update abstract card type {}&quot;, cardTypeOrRef);</span>
+<span class="nc" id="L160">        cardTypeDao.updateCardTypeOrRef(cardTypeOrRef);</span>
+<span class="nc" id="L161">    }</span>
 
     /**
      * Permanently delete a card type
@@ -169,9 +168,9 @@ import org.slf4j.LoggerFactory;
     @DELETE
     @Path(&quot;{id}&quot;)
     public void deleteCardType(@PathParam(&quot;id&quot;) Long id) {
-<span class="nc" id="L172">        logger.debug(&quot;delete card type #{}&quot;, id);</span>
-<span class="nc" id="L173">        cardTypeManager.deleteCardType(id);</span>
-<span class="nc" id="L174">    }</span>
+<span class="nc" id="L171">        logger.debug(&quot;delete card type #{}&quot;, id);</span>
+<span class="nc" id="L172">        cardTypeManager.deleteCardType(id);</span>
+<span class="nc" id="L173">    }</span>
 
     /**
      * If the card type is not already in the project, create a reference to it. Else simply return
@@ -186,9 +185,9 @@ import org.slf4j.LoggerFactory;
     @Path(&quot;useCardTypeInProject/{cardTypeId}/{projectId}&quot;)
     public AbstractCardType useCardTypeInProject(@PathParam(&quot;cardTypeId&quot;) Long cardTypeId,
         @PathParam(&quot;projectId&quot;) Long projectId) {
-<span class="nc" id="L189">        logger.debug(&quot;use card type #{} in project #{}&quot;, cardTypeId, projectId);</span>
+<span class="nc" id="L188">        logger.debug(&quot;use card type #{} in project #{}&quot;, cardTypeId, projectId);</span>
 
-<span class="nc" id="L191">        return cardTypeManager.useCardTypeInProject(cardTypeId, projectId);</span>
+<span class="nc" id="L190">        return cardTypeManager.useCardTypeInProject(cardTypeId, projectId);</span>
     }
 
     /**
@@ -196,7 +195,8 @@ import org.slf4j.LoggerFactory;
      * has no use. If the abstract card type is used, throws an error.
      *
      * @param cardTypeRefId the id of the card type reference no more useful for the project
-     * @param projectId  the id of the project in which we don't want to use the card type anymore
+     * @param projectId     the id of the project in which we don't want to use the card type
+     *                      anymore
      */
     @PUT
     @Path(&quot;removeCardTypeFromProject/{cardTypeId}/{projectId}&quot;)

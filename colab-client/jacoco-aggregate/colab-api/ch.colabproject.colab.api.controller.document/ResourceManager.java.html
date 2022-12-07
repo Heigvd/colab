@@ -462,7 +462,7 @@ import org.slf4j.LoggerFactory;
 <span class="nc" id="L462">                owner.getDirectAbstractResources().remove(resourceOrRef);</span>
             }
 
-<span class="nc" id="L465">            resourceDao.deleteResourceOrRef(resourceOrRef.getId());</span>
+<span class="nc" id="L465">            resourceDao.deleteResourceOrRef(resourceOrRef);</span>
 
             // Note : the document is deleted by cascade
 <span class="nc" id="L468">        });</span>
@@ -497,7 +497,7 @@ import org.slf4j.LoggerFactory;
         }
 
 <span class="nc" id="L499">        DuplicationManager duplicator = new DuplicationManager(params,</span>
-            resourceReferenceSpreadingHelper, fileManager);
+            resourceReferenceSpreadingHelper, fileManager, cardContentManager);
 
         Resource newResourceJavaObject;
         try {
@@ -786,7 +786,7 @@ import org.slf4j.LoggerFactory;
 
 <span class="nc" id="L787">        resource.getDocuments().remove(document);</span>
 
-<span class="nc" id="L789">        documentDao.deleteDocument(document.getId());</span>
+<span class="nc" id="L789">        documentDao.deleteDocument(document);</span>
 <span class="nc" id="L790">    }</span>
 
     // *********************************************************************************************

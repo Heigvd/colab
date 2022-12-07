@@ -18,15 +18,17 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Document persistence
+ * &lt;p&gt;
+ * Note : Most of database operations are handled by managed entities and cascade.
  *
  * @author sandra
  */
 @Stateless
 @LocalBean
-<span class="nc" id="L26">public class DocumentDao {</span>
+<span class="nc" id="L28">public class DocumentDao {</span>
 
     /** logger */
-<span class="nc" id="L29">    private static final Logger logger = LoggerFactory.getLogger(DocumentDao.class);</span>
+<span class="nc" id="L31">    private static final Logger logger = LoggerFactory.getLogger(DocumentDao.class);</span>
 
     /**
      * Access to the persistence unit
@@ -35,92 +37,97 @@ import org.slf4j.LoggerFactory;
     private EntityManager em;
 
     /**
+     * Find a document by id
+     *
      * @param id the id of the document to fetch
      *
-     * @return the document with the given id or null if such a document does not exists
+     * @return the document with the given id or null if such a document does not exist
      */
     public Document findDocument(Long id) {
-        try {
-<span class="nc" id="L44">            logger.debug(&quot;find document #{}&quot;, id);</span>
-<span class="nc" id="L45">            return em.find(Document.class, id);</span>
-<span class="nc" id="L46">        } catch (IllegalArgumentException ex) {</span>
-<span class="nc" id="L47">            return null;</span>
-        }
+<span class="nc" id="L47">        logger.trace(&quot;find document #{}&quot;, id);</span>
+
+<span class="nc" id="L49">        return em.find(Document.class, id);</span>
     }
 
     /**
+     * Find a text data block by id
+     *
      * @param id the id of the text data block to fetch
      *
-     * @return the text data block with the given id or null if such a document does not exists
+     * @return the text data block with the given id or null if such a text data block does not
+     *         exist
      */
     public TextDataBlock findTextDataBlock(Long id) {
-        try {
-<span class="nc" id="L58">            logger.debug(&quot;find text data block #{}&quot;, id);</span>
-<span class="nc" id="L59">            return em.find(TextDataBlock.class, id);</span>
-<span class="nc" id="L60">        } catch (IllegalArgumentException ex) {</span>
-<span class="nc" id="L61">            return null;</span>
-        }
+<span class="nc" id="L61">        logger.trace(&quot;find text data block #{}&quot;, id);</span>
+
+<span class="nc" id="L63">        return em.find(TextDataBlock.class, id);</span>
     }
 
     /**
-     * Update document
+     * Update document. Only fields which are editable by users will be impacted.
      *
-     * @param document the document as supply by clients (ie not managed)
+     * @param document the document as supplied by clients (ie not managed by JPA)
      *
-     * @return the updated managed document
+     * @return return updated managed document
      *
-     * @throws ColabMergeException if updating the document failed
+     * @throws ColabMergeException if the update failed
      */
     public Document updateDocument(Document document) throws ColabMergeException {
-<span class="nc" id="L75">        logger.debug(&quot;update document {}&quot;, document);</span>
-<span class="nc" id="L76">        Document mDocument = this.findDocument(document.getId());</span>
-<span class="nc" id="L77">        mDocument.merge(document);</span>
-<span class="nc" id="L78">        return mDocument;</span>
+<span class="nc" id="L76">        logger.trace(&quot;update document {}&quot;, document);</span>
+
+<span class="nc" id="L78">        Document managedDocument = this.findDocument(document.getId());</span>
+
+<span class="nc" id="L80">        managedDocument.merge(document);</span>
+
+<span class="nc" id="L82">        return managedDocument;</span>
     }
 
-    /**
-     * Update text data block
-     *
-     * @param document the text data block as supply by clients (ie not managed)
-     *
-     * @return the updated managed text data block
-     *
-     * @throws ColabMergeException if updating the document failed
-     */
-    public TextDataBlock updateTextDataBlock(TextDataBlock document) throws ColabMergeException {
-<span class="nc" id="L91">        logger.debug(&quot;update text data block {}&quot;, document);</span>
-<span class="nc" id="L92">        TextDataBlock mDocument = this.findTextDataBlock(document.getId());</span>
-<span class="nc" id="L93">        mDocument.merge(document);</span>
-<span class="nc" id="L94">        return mDocument;</span>
-    }
+//    /**
+//     * Update text data block. Only fields which are editable by users will be impacted.
+//     *
+//     * @param textDataBlock the text data block as supplied by clients (ie not managed by JPA)
+//     *
+//     * @return return updated managed text data block
+//     *
+//     * @throws ColabMergeException if the update failed
+//     */
+//    public TextDataBlock updateTextDataBlock(TextDataBlock textDataBlock) throws ColabMergeException {
+//        logger.trace(&quot;update text data block {}&quot;, textDataBlock);
+//
+//        TextDataBlock managedTextDataBlock = this.findTextDataBlock(textDataBlock.getId());
+//
+//        managedTextDataBlock.merge(textDataBlock);
+//
+//        return managedTextDataBlock;
+//    }
 
     /**
      * Persist a brand new document to database
      *
      * @param document the new document to persist
      *
-     * @return the new persisted document
+     * @return the new persisted and managed document
      */
     public Document persistDocument(Document document) {
-<span class="nc" id="L105">        logger.debug(&quot;persist document {}&quot;, document);</span>
-<span class="nc" id="L106">        em.persist(document);</span>
-<span class="nc" id="L107">        return document;</span>
+<span class="nc" id="L112">        logger.trace(&quot;persist document {}&quot;, document);</span>
+
+<span class="nc" id="L114">        em.persist(document);</span>
+
+<span class="nc" id="L116">        return document;</span>
     }
 
     /**
-     * Delete document from database. This can't be undone
+     * Delete the document from database. This can't be undone
      *
-     * @param id the id of the document to delete
-     *
-     * @return just deleted document
+     * @param document the document to delete
      */
-    public Document deleteDocument(Long id) {
-<span class="nc" id="L118">        logger.debug(&quot;delete document #{}&quot;, id);</span>
+    public void deleteDocument(Document document) {
+<span class="nc" id="L125">        logger.trace(&quot;delete document {}&quot;, document);</span>
+
         // TODO: move to recycle bin first
-<span class="nc" id="L120">        Document document = this.findDocument(id);</span>
-<span class="nc" id="L121">        em.remove(document);</span>
-<span class="nc" id="L122">        return document;</span>
-    }
+
+<span class="nc" id="L129">        em.remove(document);</span>
+<span class="nc" id="L130">    }</span>
 
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

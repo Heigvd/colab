@@ -470,7 +470,7 @@
 <a class="jxr_linenumber" name="L462" href="#L462">462</a>                 owner.getDirectAbstractResources().remove(resourceOrRef);
 <a class="jxr_linenumber" name="L463" href="#L463">463</a>             }
 <a class="jxr_linenumber" name="L464" href="#L464">464</a> 
-<a class="jxr_linenumber" name="L465" href="#L465">465</a>             resourceDao.deleteResourceOrRef(resourceOrRef.getId());
+<a class="jxr_linenumber" name="L465" href="#L465">465</a>             resourceDao.deleteResourceOrRef(resourceOrRef);
 <a class="jxr_linenumber" name="L466" href="#L466">466</a> 
 <a class="jxr_linenumber" name="L467" href="#L467">467</a>             <em class="jxr_comment">// Note : the document is deleted by cascade</em>
 <a class="jxr_linenumber" name="L468" href="#L468">468</a>         });
@@ -505,7 +505,7 @@
 <a class="jxr_linenumber" name="L497" href="#L497">497</a>         }
 <a class="jxr_linenumber" name="L498" href="#L498">498</a> 
 <a class="jxr_linenumber" name="L499" href="#L499">499</a>         <a name="DuplicationManager" href="../../../../../../ch/colabproject/colab/api/controller/DuplicationManager.html#DuplicationManager">DuplicationManager</a> duplicator = <strong class="jxr_keyword">new</strong> <a name="DuplicationManager" href="../../../../../../ch/colabproject/colab/api/controller/DuplicationManager.html#DuplicationManager">DuplicationManager</a>(params,
-<a class="jxr_linenumber" name="L500" href="#L500">500</a>             resourceReferenceSpreadingHelper, fileManager);
+<a class="jxr_linenumber" name="L500" href="#L500">500</a>             resourceReferenceSpreadingHelper, fileManager, cardContentManager);
 <a class="jxr_linenumber" name="L501" href="#L501">501</a> 
 <a class="jxr_linenumber" name="L502" href="#L502">502</a>         Resource newResourceJavaObject;
 <a class="jxr_linenumber" name="L503" href="#L503">503</a>         <strong class="jxr_keyword">try</strong> {
@@ -794,7 +794,7 @@
 <a class="jxr_linenumber" name="L786" href="#L786">786</a> 
 <a class="jxr_linenumber" name="L787" href="#L787">787</a>         resource.getDocuments().remove(document);
 <a class="jxr_linenumber" name="L788" href="#L788">788</a> 
-<a class="jxr_linenumber" name="L789" href="#L789">789</a>         documentDao.deleteDocument(document.getId());
+<a class="jxr_linenumber" name="L789" href="#L789">789</a>         documentDao.deleteDocument(document);
 <a class="jxr_linenumber" name="L790" href="#L790">790</a>     }
 <a class="jxr_linenumber" name="L791" href="#L791">791</a> 
 <a class="jxr_linenumber" name="L792" href="#L792">792</a>     <em class="jxr_comment">// *********************************************************************************************</em>

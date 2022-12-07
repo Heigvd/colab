@@ -16,7 +16,7 @@
 <a class="jxr_linenumber" name="L8" href="#L8">8</a>   
 <a class="jxr_linenumber" name="L9" href="#L9">9</a>   <strong class="jxr_keyword">import</strong> ch.colabproject.colab.api.model.WithWebsocketChannels;
 <a class="jxr_linenumber" name="L10" href="#L10">10</a>  <strong class="jxr_keyword">import</strong> ch.colabproject.colab.api.persistence.jpa.card.CardTypeDao;
-<a class="jxr_linenumber" name="L11" href="#L11">11</a>  <strong class="jxr_keyword">import</strong> ch.colabproject.colab.api.persistence.jpa.team.TeamDao;
+<a class="jxr_linenumber" name="L11" href="#L11">11</a>  <strong class="jxr_keyword">import</strong> ch.colabproject.colab.api.persistence.jpa.team.TeamMemberDao;
 <a class="jxr_linenumber" name="L12" href="#L12">12</a>  <strong class="jxr_keyword">import</strong> ch.colabproject.colab.api.persistence.jpa.user.UserDao;
 <a class="jxr_linenumber" name="L13" href="#L13">13</a>  <strong class="jxr_keyword">import</strong> ch.colabproject.colab.api.ws.channel.model.WebsocketChannel;
 <a class="jxr_linenumber" name="L14" href="#L14">14</a>  <strong class="jxr_keyword">import</strong> ch.colabproject.colab.api.ws.channel.tool.ChannelsBuilders.ChannelsBuilder;
@@ -143,7 +143,7 @@
 <a class="jxr_linenumber" name="L135" href="#L135">135</a> <em class="jxr_javadoccomment">     */</em>
 <a class="jxr_linenumber" name="L136" href="#L136">136</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> <a name="PrecomputedWsMessages" href="../../../../../ch/colabproject/colab/api/ws/message/PrecomputedWsMessages.html#PrecomputedWsMessages">PrecomputedWsMessages</a> prepareWsMessage(
 <a class="jxr_linenumber" name="L137" href="#L137">137</a>         <a name="UserDao" href="../../../../../ch/colabproject/colab/api/persistence/jpa/user/UserDao.html#UserDao">UserDao</a> userDao,
-<a class="jxr_linenumber" name="L138" href="#L138">138</a>         <a name="TeamDao" href="../../../../../ch/colabproject/colab/api/persistence/jpa/team/TeamDao.html#TeamDao">TeamDao</a> teamDao,
+<a class="jxr_linenumber" name="L138" href="#L138">138</a>         <a name="TeamMemberDao" href="../../../../../ch/colabproject/colab/api/persistence/jpa/team/TeamMemberDao.html#TeamMemberDao">TeamMemberDao</a> teamDao,
 <a class="jxr_linenumber" name="L139" href="#L139">139</a>         <a name="CardTypeDao" href="../../../../../ch/colabproject/colab/api/persistence/jpa/card/CardTypeDao.html#CardTypeDao">CardTypeDao</a> cardTypeDao,
 <a class="jxr_linenumber" name="L140" href="#L140">140</a>         Set&lt;WithWebsocketChannels&gt; updated,
 <a class="jxr_linenumber" name="L141" href="#L141">141</a>         Set&lt;IndexEntry&gt; deleted
@@ -203,7 +203,7 @@
 <a class="jxr_linenumber" name="L195" href="#L195">195</a> <em class="jxr_javadoccomment">     */</em>
 <a class="jxr_linenumber" name="L196" href="#L196">196</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> <a name="PrecomputedWsMessages" href="../../../../../ch/colabproject/colab/api/ws/message/PrecomputedWsMessages.html#PrecomputedWsMessages">PrecomputedWsMessages</a> prepareWsMessage(
 <a class="jxr_linenumber" name="L197" href="#L197">197</a>         <a name="UserDao" href="../../../../../ch/colabproject/colab/api/persistence/jpa/user/UserDao.html#UserDao">UserDao</a> userDao,
-<a class="jxr_linenumber" name="L198" href="#L198">198</a>         <a name="TeamDao" href="../../../../../ch/colabproject/colab/api/persistence/jpa/team/TeamDao.html#TeamDao">TeamDao</a> teamDao,
+<a class="jxr_linenumber" name="L198" href="#L198">198</a>         <a name="TeamMemberDao" href="../../../../../ch/colabproject/colab/api/persistence/jpa/team/TeamMemberDao.html#TeamMemberDao">TeamMemberDao</a> teamDao,
 <a class="jxr_linenumber" name="L199" href="#L199">199</a>         <a name="CardTypeDao" href="../../../../../ch/colabproject/colab/api/persistence/jpa/card/CardTypeDao.html#CardTypeDao">CardTypeDao</a> cardTypeDao,
 <a class="jxr_linenumber" name="L200" href="#L200">200</a>         ChannelsBuilder channelBuilder,
 <a class="jxr_linenumber" name="L201" href="#L201">201</a>         <a name="WsMessage" href="../../../../../ch/colabproject/colab/api/ws/message/WsMessage.html#WsMessage">WsMessage</a> message

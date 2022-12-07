@@ -22,15 +22,17 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Resource and resource reference persistence
+ * &lt;p&gt;
+ * Note : Most of database operations are handled by managed entities and cascade.
  *
  * @author sandra
  */
 @Stateless
 @LocalBean
-<span class="nc" id="L30">public class ResourceDao {</span>
+<span class="nc" id="L32">public class ResourceDao {</span>
 
     /** logger */
-<span class="nc" id="L33">    private static final Logger logger = LoggerFactory.getLogger(ResourceDao.class);</span>
+<span class="nc" id="L35">    private static final Logger logger = LoggerFactory.getLogger(ResourceDao.class);</span>
 
     /**
      * Access to the persistence unit
@@ -38,19 +40,43 @@ import org.slf4j.LoggerFactory;
     @PersistenceContext(unitName = &quot;COLAB_PU&quot;)
     private EntityManager em;
 
+//    /**
+//     * Find a resource by id
+//     *
+//     * @param id the id of the resource to fetch
+//     *
+//     * @return the resource with the given id or null if such a resource does not exist
+//     */
+//    private Resource findResource(Long id) {
+//        logger.trace(&quot;find resource #{}&quot;, id);
+//
+//        return em.find(Resource.class, id);
+//    }
+
+//    /**
+//     * Find a resource reference by id
+//     *
+//     * @param id the id of the resource reference to fetch
+//     *
+//     * @return the resource reference with the given id or null if such a resource reference does
+//     *         not exist
+//     */
+//    private ResourceRef findResourceRef(Long id) {
+//        logger.trace(&quot;find resource reference #{}&quot;, id);
+//
+//        return em.find(ResourceRef.class, id);
+//    }
+
     /**
      * @param id the id of the resource / resource reference to fetch
      *
      * @return the resource / resource reference with the given id or null if such a resource /
-     *         resource reference does not exists
+     *         resource reference does not exist
      */
     public AbstractResource findResourceOrRef(Long id) {
-        try {
-<span class="nc" id="L49">            logger.debug(&quot;find abstract resource #{}&quot;, id);</span>
-<span class="nc" id="L50">            return em.find(AbstractResource.class, id);</span>
-<span class="nc" id="L51">        } catch (IllegalArgumentException ex) {</span>
-<span class="nc" id="L52">            return null;</span>
-        }
+<span class="nc" id="L77">        logger.trace(&quot;find abstract resource #{}&quot;, id);</span>
+
+<span class="nc" id="L79">        return em.find(AbstractResource.class, id);</span>
     }
 
     /**
@@ -61,14 +87,14 @@ import org.slf4j.LoggerFactory;
      * @return the matching references
      */
     public List&lt;ResourceRef&gt; findDirectReferences(AbstractResource target) {
-<span class="nc" id="L64">        logger.debug(&quot;find the direct references of the target {}&quot;, target);</span>
+<span class="nc" id="L90">        logger.trace(&quot;find the direct references of the target {}&quot;, target);</span>
 
-<span class="nc" id="L66">        TypedQuery&lt;ResourceRef&gt; query = em.createNamedQuery(&quot;ResourceRef.findDirectReferences&quot;,</span>
+<span class="nc" id="L92">        TypedQuery&lt;ResourceRef&gt; query = em.createNamedQuery(&quot;ResourceRef.findDirectReferences&quot;,</span>
             ResourceRef.class);
 
-<span class="nc" id="L69">        query.setParameter(&quot;targetId&quot;, target.getId());</span>
+<span class="nc" id="L95">        query.setParameter(&quot;targetId&quot;, target.getId());</span>
 
-<span class="nc" id="L71">        return query.getResultList();</span>
+<span class="nc" id="L97">        return query.getResultList();</span>
     }
 
     /**
@@ -79,77 +105,39 @@ import org.slf4j.LoggerFactory;
      * @return the matching references
      */
     public List&lt;ResourceRef&gt; findAllReferences(AbstractResource target) {
-<span class="nc" id="L82">        logger.debug(&quot;find all references to the target {}&quot;, target);</span>
+<span class="nc" id="L108">        logger.trace(&quot;find all references to the target {}&quot;, target);</span>
+
         // first, fetch direct references
-<span class="nc" id="L84">        List&lt;ResourceRef&gt; list = findDirectReferences(target);</span>
+<span class="nc" id="L111">        List&lt;ResourceRef&gt; list = findDirectReferences(target);</span>
 
         // and recurse
-<span class="nc" id="L87">        list.addAll(list.stream().flatMap(res -&gt; {</span>
-<span class="nc" id="L88">            return findAllReferences(res).stream();</span>
-<span class="nc" id="L89">        }).collect(Collectors.toList()));</span>
+<span class="nc" id="L114">        list.addAll(list.stream().flatMap(res -&gt; {</span>
+<span class="nc" id="L115">            return findAllReferences(res).stream();</span>
+<span class="nc" id="L116">        }).collect(Collectors.toList()));</span>
 
-<span class="nc" id="L91">        return list;</span>
+<span class="nc" id="L118">        return list;</span>
     }
 
     /**
-     * @param id the id of the resource to fetch
+     * Update resource. Only fields which are editable by users will be impacted.
      *
-     * @return the resource with the given id or null if such a resource does not exists
+     * @param &lt;T&gt;           a sub type of AbstractResource
+     * @param resourceOrRef the resource as supplied by clients (ie not managed by JPA)
+     *
+     * @return return updated managed resource
+     *
+     * @throws ColabMergeException if the update failed
      */
-    private Resource findResource(Long id) {
-        try {
-<span class="nc" id="L101">            logger.debug(&quot;find resource #{}&quot;, id);</span>
-<span class="nc" id="L102">            return em.find(Resource.class, id);</span>
-<span class="nc" id="L103">        } catch (IllegalArgumentException ex) {</span>
-<span class="nc" id="L104">            return null;</span>
-        }
-    }
+    public &lt;T extends AbstractResource&gt; T updateResourceOrRef(T resourceOrRef)
+        throws ColabMergeException {
+<span class="nc" id="L133">        logger.trace(&quot;update resource or ref {}&quot;, resourceOrRef);</span>
 
-    /**
-     * @param id the id of the resource reference to fetch
-     *
-     * @return the resource reference with the given id or null if such a resource reference does
-     *         not exists
-     */
-    private ResourceRef findResourceRef(Long id) {
-        try {
-<span class="nc" id="L116">            logger.debug(&quot;find resource reference #{}&quot;, id);</span>
-<span class="nc" id="L117">            return em.find(ResourceRef.class, id);</span>
-<span class="nc" id="L118">        } catch (IllegalArgumentException ex) {</span>
-<span class="nc" id="L119">            return null;</span>
-        }
-    }
+        @SuppressWarnings(&quot;unchecked&quot;)
+<span class="nc" id="L136">        T managedResource = (T) this.findResourceOrRef(resourceOrRef.getId());</span>
 
-    /**
-     * Update resource
-     *
-     * @param resource the resource as supply by clients (ie not managed)
-     *
-     * @return the updated managed resource
-     *
-     * @throws ColabMergeException if updating the resource failed
-     */
-    public Resource updateResource(Resource resource) throws ColabMergeException {
-<span class="nc" id="L133">        logger.debug(&quot;update resource {}&quot;, resource);</span>
-<span class="nc" id="L134">        Resource mResource = this.findResource(resource.getId());</span>
-<span class="nc" id="L135">        mResource.merge(resource);</span>
-<span class="nc" id="L136">        return mResource;</span>
-    }
+<span class="nc" id="L138">        managedResource.merge(resourceOrRef);</span>
 
-    /**
-     * Update resource reference
-     *
-     * @param resourceRef the resource reference as supply by clients (ie not managed)
-     *
-     * @return the updated managed resource reference
-     *
-     * @throws ColabMergeException if updating the resource reference failed
-     */
-    public ResourceRef updateResourceRef(ResourceRef resourceRef) throws ColabMergeException {
-<span class="nc" id="L149">        logger.debug(&quot;update resource reference {}&quot;, resourceRef);</span>
-<span class="nc" id="L150">        ResourceRef mResourceRef = this.findResourceRef(resourceRef.getId());</span>
-<span class="nc" id="L151">        mResourceRef.merge(resourceRef);</span>
-<span class="nc" id="L152">        return mResourceRef;</span>
+<span class="nc" id="L140">        return managedResource;</span>
     }
 
     /**
@@ -157,31 +145,31 @@ import org.slf4j.LoggerFactory;
      *
      * @param resource the new resource to persist
      *
-     * @return the new persisted resource
+     * @return the new persisted and managed resource
      */
     public Resource persistResource(Resource resource) {
-<span class="nc" id="L163">        logger.debug(&quot;persist resource {}&quot;, resource);</span>
-<span class="nc" id="L164">        em.persist(resource);</span>
-<span class="nc" id="L165">        return resource;</span>
+<span class="nc" id="L151">        logger.trace(&quot;persist resource {}&quot;, resource);</span>
+
+<span class="nc" id="L153">        em.persist(resource);</span>
+
+<span class="nc" id="L155">        return resource;</span>
     }
 
     // Note : there is no persistResourceRef because they are automatically generated
     // and are persisted by cascade
 
     /**
-     * Delete a resource / resource reference from database. This can't be undone
+     * Delete the resource / resource reference from database. This can't be undone
      *
-     * @param id the id of the resource / resource reference to delete
-     *
-     * @return just deleted resource / resource reference
+     * @param resourceOrRef the resource / resource reference to delete
      */
-    public AbstractResource deleteResourceOrRef(Long id) {
-<span class="nc" id="L179">        logger.debug(&quot;delete abstract resource reference #{}&quot;, id);</span>
+    public void deleteResourceOrRef(AbstractResource resourceOrRef) {
+<span class="nc" id="L167">        logger.trace(&quot;delete abstract resource {}&quot;, resourceOrRef);</span>
+
         // TODO: move to recycle bin first
-<span class="nc" id="L181">        AbstractResource resourceRef = this.findResourceOrRef(id);</span>
-<span class="nc" id="L182">        em.remove(resourceRef);</span>
-<span class="nc" id="L183">        return resourceRef;</span>
-    }
+
+<span class="nc" id="L171">        em.remove(resourceOrRef);</span>
+<span class="nc" id="L172">    }</span>
 
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

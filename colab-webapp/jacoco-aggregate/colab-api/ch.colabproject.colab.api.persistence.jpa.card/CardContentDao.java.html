@@ -17,15 +17,17 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Card content persistence
+ * &lt;p&gt;
+ * Note : Most of database operations are handled by managed entities and cascade.
  *
  * @author sandra
  */
 @Stateless
 @LocalBean
-<span class="nc" id="L25">public class CardContentDao {</span>
+<span class="nc" id="L27">public class CardContentDao {</span>
 
     /** logger */
-<span class="nc" id="L28">    private static final Logger logger = LoggerFactory.getLogger(CardContentDao.class);</span>
+<span class="nc" id="L30">    private static final Logger logger = LoggerFactory.getLogger(CardContentDao.class);</span>
 
     /**
      * Access to the persistence unit
@@ -34,58 +36,64 @@ import org.slf4j.LoggerFactory;
     private EntityManager em;
 
     /**
-     * @param id id of the card content to fetch
+     * Find a card content by id
      *
-     * @return the card content with the given id or null if such a card content does not exists
+     * @param id the id of the card content to fetch
+     *
+     * @return the card content with the given id or null if such a card content does not exist
      */
     public CardContent findCardContent(Long id) {
-<span class="nc" id="L42">        logger.debug(&quot;get card content #{}&quot;, id);</span>
-<span class="nc" id="L43">        return em.find(CardContent.class, id);</span>
+<span class="nc" id="L46">        logger.trace(&quot;find card content #{}&quot;, id);</span>
+
+<span class="nc" id="L48">        return em.find(CardContent.class, id);</span>
     }
 
     /**
-     * Update card content
+     * Update card content. Only fields which are editable by users will be impacted.
      *
-     * @param cardContent card content as supply by clients (ie not managed)
+     * @param cardContent the card content as supplied by clients (ie not managed by JPA)
      *
-     * @return updated managed card content
+     * @return return updated managed card content
      *
-     * @throws ColabMergeException if updating the card content failed
+     * @throws ColabMergeException if the update failed
      */
     public CardContent updateCardContent(CardContent cardContent) throws ColabMergeException {
-<span class="nc" id="L56">        logger.debug(&quot;update card content {}&quot;, cardContent);</span>
-<span class="nc" id="L57">        CardContent mCardContent = this.findCardContent(cardContent.getId());</span>
-<span class="nc" id="L58">        mCardContent.merge(cardContent);</span>
-<span class="nc" id="L59">        return mCardContent;</span>
+<span class="nc" id="L61">        logger.trace(&quot;update card content {}&quot;, cardContent);</span>
+
+<span class="nc" id="L63">        CardContent managedCardContent = this.findCardContent(cardContent.getId());</span>
+
+<span class="nc" id="L65">        managedCardContent.merge(cardContent);</span>
+
+<span class="nc" id="L67">        return managedCardContent;</span>
     }
 
     /**
      * Persist a brand new card content to database
      *
-     * @param cardContent new card content to persist
+     * @param cardContent the new card content to persist
      *
-     * @return the new persisted card content
+     * @return the new persisted and managed card content
      */
     public CardContent persistCardContent(CardContent cardContent) {
-<span class="nc" id="L70">        logger.debug(&quot;persist card content {}&quot;, cardContent);</span>
-<span class="nc" id="L71">        em.persist(cardContent);</span>
-<span class="nc" id="L72">        return cardContent;</span>
+<span class="nc" id="L78">        logger.trace(&quot;persist card content {}&quot;, cardContent);</span>
+
+<span class="nc" id="L80">        em.persist(cardContent);</span>
+
+<span class="nc" id="L82">        return cardContent;</span>
     }
 
     /**
-     * Delete card content from database. This can't be undone
+     * Delete the card content from database. This can't be undone
      *
-     * @param id id of the card content to delete
-     *
-     * @return just deleted card content
+     * @param cardContent the card content to delete
      */
-    public CardContent deleteCardContent(Long id) {
-<span class="nc" id="L83">        logger.debug(&quot;delete card content #{}&quot;, id);</span>
+    public void deleteCardContent(CardContent cardContent) {
+<span class="nc" id="L91">        logger.trace(&quot;delete card content {}&quot;, cardContent);</span>
+
         // TODO: move to recycle bin first
-<span class="nc" id="L85">        CardContent cardContent = this.findCardContent(id);</span>
-<span class="nc" id="L86">        em.remove(cardContent);</span>
-<span class="nc" id="L87">        return cardContent;</span>
-    }
+
+<span class="nc" id="L95">        em.remove(cardContent);</span>
+<span class="nc" id="L96">    }</span>
 
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

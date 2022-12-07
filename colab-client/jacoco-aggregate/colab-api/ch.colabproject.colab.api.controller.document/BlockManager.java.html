@@ -82,24 +82,24 @@ import org.slf4j.LoggerFactory;
     /**
      * @param id the id of the block to fetch
      *
-     * @return the block with the given id or null if such a block does not exists
+     * @return the block with the given id or null if such a block does not exist
      */
     public TextDataBlock findBlock(Long id) {
 <span class="nc" id="L88">        return documentDao.findTextDataBlock(id);</span>
     }
 
     /**
-     * Update block
+     * Update block. Only fields which are editable by users will be impacted.
      *
      * @param block the block as supply by clients (ie not managed)
      *
-     * @return the updated managed block
-     *
      * @throws ColabMergeException if updating the block failed
      */
-    public TextDataBlock updateBlock(TextDataBlock block) throws ColabMergeException {
-<span class="nc" id="L101">        return documentDao.updateTextDataBlock(block);</span>
-    }
+    public void updateBlock(TextDataBlock block) throws ColabMergeException {
+<span class="nc" id="L99">        TextDataBlock managedDocument = documentManager.assertAndGetTextDataBlock(block.getId());</span>
+
+<span class="nc" id="L101">        managedDocument.merge(block);</span>
+<span class="nc" id="L102">    }</span>
 
     /**
      * @return a new initialized text data block
@@ -128,7 +128,7 @@ import org.slf4j.LoggerFactory;
 <span class="nc" id="L128">            throw HttpErrorMessage.dataIntegrityFailure();</span>
         }
 
-<span class="nc" id="L131">        documentDao.deleteDocument(blockId);</span>
+<span class="nc" id="L131">        documentDao.deleteDocument(block);</span>
 <span class="nc" id="L132">    }</span>
 
     /**

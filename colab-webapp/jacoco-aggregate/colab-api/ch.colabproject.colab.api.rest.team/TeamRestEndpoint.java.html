@@ -8,12 +8,13 @@ package ch.colabproject.colab.api.rest.team;
 
 import ch.colabproject.colab.api.controller.team.TeamManager;
 import ch.colabproject.colab.api.exceptions.ColabMergeException;
-import ch.colabproject.colab.api.model.team.acl.AccessControl;
-import ch.colabproject.colab.api.model.team.acl.InvolvementLevel;
-import ch.colabproject.colab.api.persistence.jpa.team.TeamDao;
-import ch.colabproject.colab.api.model.team.TeamRole;
 import ch.colabproject.colab.api.model.team.TeamMember;
+import ch.colabproject.colab.api.model.team.TeamRole;
+import ch.colabproject.colab.api.model.team.acl.AccessControl;
 import ch.colabproject.colab.api.model.team.acl.HierarchicalPosition;
+import ch.colabproject.colab.api.model.team.acl.InvolvementLevel;
+import ch.colabproject.colab.api.persistence.jpa.team.TeamMemberDao;
+import ch.colabproject.colab.api.persistence.jpa.team.TeamRoleDao;
 import ch.colabproject.colab.generator.model.annotations.AuthenticationRequired;
 import java.util.List;
 import javax.inject.Inject;
@@ -38,18 +39,22 @@ import org.slf4j.LoggerFactory;
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
 @AuthenticationRequired
-<span class="nc" id="L41">public class TeamRestEndpoint {</span>
+<span class="nc" id="L42">public class TeamRestEndpoint {</span>
 
     /** logger */
-<span class="nc" id="L44">    private static final Logger logger = LoggerFactory.getLogger(TeamRestEndpoint.class);</span>
+<span class="nc" id="L45">    private static final Logger logger = LoggerFactory.getLogger(TeamRestEndpoint.class);</span>
 
     /** Team manager */
     @Inject
     private TeamManager teamManager;
 
-    /** Team persistence */
+    /** Team member persistence handling */
     @Inject
-    private TeamDao teamDao;
+    private TeamMemberDao teamMemberDao;
+
+    /** Team role persistence handling */
+    @Inject
+    private TeamRoleDao teamRoleDao;
 
     // *********************************************************************************************
     // TeamMembers
@@ -66,8 +71,8 @@ import org.slf4j.LoggerFactory;
     @Path(&quot;Invite/{projectId: [0-9]+}/{email}&quot;)
     public TeamMember inviteSomeone(@PathParam(&quot;projectId&quot;) Long projectId,
         @PathParam(&quot;email&quot;) String email) {
-<span class="nc" id="L69">        logger.debug(&quot;Invite {} to joint project #{}&quot;, email, projectId);</span>
-<span class="nc" id="L70">        return teamManager.invite(projectId, email);</span>
+<span class="nc" id="L74">        logger.debug(&quot;Invite {} to joint project #{}&quot;, email, projectId);</span>
+<span class="nc" id="L75">        return teamManager.invite(projectId, email);</span>
     }
 
     /**
@@ -80,24 +85,23 @@ import org.slf4j.LoggerFactory;
     @GET
     @Path(&quot;member/{memberId: [0-9]+}&quot;)
     public TeamMember getTeamMember(@PathParam(&quot;memberId&quot;) Long memberId) {
-<span class="nc" id="L83">        logger.debug(&quot;Get member #{}&quot;, memberId);</span>
-<span class="nc" id="L84">        return teamDao.findTeamMember(memberId);</span>
+<span class="nc" id="L88">        logger.debug(&quot;Get member #{}&quot;, memberId);</span>
+<span class="nc" id="L89">        return teamMemberDao.findTeamMember(memberId);</span>
     }
 
     /**
-     * Update a TeamMember
+     * Update a TeamMember. Only fields which are editable by users will be impacted.
      *
      * @param member new value
      *
-     * @return the team member
      * @throws ColabMergeException if update failed
      */
     @PUT
     @Path(&quot;member&quot;)
-    public TeamMember updateTeamMember(TeamMember member) throws ColabMergeException {
-<span class="nc" id="L98">        logger.debug(&quot;Update member {}&quot;, member);</span>
-<span class="nc" id="L99">        return teamDao.updateTeamMember(member);</span>
-    }
+    public void updateTeamMember(TeamMember member) throws ColabMergeException {
+<span class="nc" id="L102">        logger.debug(&quot;Update member {}&quot;, member);</span>
+<span class="nc" id="L103">        teamMemberDao.updateTeamMember(member);</span>
+<span class="nc" id="L104">    }</span>
 
     /**
      * Update hierarchical position of a member
@@ -111,8 +115,8 @@ import org.slf4j.LoggerFactory;
         @PathParam(&quot;memberId&quot;) Long memberId,
         @PathParam(&quot;position&quot;) HierarchicalPosition position
     ) {
-<span class="nc" id="L114">        teamManager.updatePosition(memberId, position);</span>
-<span class="nc" id="L115">    }</span>
+<span class="nc" id="L118">        teamManager.updatePosition(memberId, position);</span>
+<span class="nc" id="L119">    }</span>
 
     /**
      * Delete a team member
@@ -122,9 +126,9 @@ import org.slf4j.LoggerFactory;
     @DELETE
     @Path(&quot;member/{memberId}&quot;)
     public void deleteTeamMember(@PathParam(&quot;memberId&quot;) Long memberId) {
-<span class="nc" id="L125">        logger.debug(&quot;Delete team member #{}&quot;, memberId);</span>
-<span class="nc" id="L126">        teamManager.deleteTeamMember(memberId);</span>
-<span class="nc" id="L127">    }</span>
+<span class="nc" id="L129">        logger.debug(&quot;Delete team member #{}&quot;, memberId);</span>
+<span class="nc" id="L130">        teamManager.deleteTeamMember(memberId);</span>
+<span class="nc" id="L131">    }</span>
 
     // *********************************************************************************************
     // Roles
@@ -139,9 +143,9 @@ import org.slf4j.LoggerFactory;
     @POST
     @Path(&quot;role&quot;)
     public Long createRole(TeamRole role) {
-<span class="nc" id="L142">        logger.debug(&quot;Create role {}&quot;, role);</span>
-<span class="nc" id="L143">        teamManager.createRole(role);</span>
-<span class="nc" id="L144">        return role.getId();</span>
+<span class="nc" id="L146">        logger.debug(&quot;Create role {}&quot;, role);</span>
+<span class="nc" id="L147">        teamManager.createRole(role);</span>
+<span class="nc" id="L148">        return role.getId();</span>
     }
 
     /**
@@ -154,23 +158,23 @@ import org.slf4j.LoggerFactory;
     @GET
     @Path(&quot;role/{roleId: [0-9]+}&quot;)
     public TeamRole getRole(@PathParam(&quot;roleId&quot;) Long roleId) {
-<span class="nc" id="L157">        logger.debug(&quot;Get Role #{}&quot;, roleId);</span>
-<span class="nc" id="L158">        return teamDao.findRole(roleId);</span>
+<span class="nc" id="L161">        logger.debug(&quot;Get Role #{}&quot;, roleId);</span>
+<span class="nc" id="L162">        return teamRoleDao.findRole(roleId);</span>
     }
 
     /**
-     * Update a role.This will only affect the role name.
+     * Update a role. Only fields which are editable by users will be impacted.
      *
      * @param role the role to update
      *
-     * @throws ch.colabproject.colab.api.exceptions.ColabMergeException if update failed
+     * @throws ColabMergeException if update failed
      */
     @PUT
     @Path(&quot;role&quot;)
     public void updateRole(TeamRole role) throws ColabMergeException {
-<span class="nc" id="L171">        logger.debug(&quot;Update role {}&quot;, role);</span>
-<span class="nc" id="L172">        teamManager.updateRole(role);</span>
-<span class="nc" id="L173">    }</span>
+<span class="nc" id="L175">        logger.debug(&quot;Update role {}&quot;, role);</span>
+<span class="nc" id="L176">        teamRoleDao.updateRole(role);</span>
+<span class="nc" id="L177">    }</span>
 
     /**
      * Delete a role
@@ -182,9 +186,9 @@ import org.slf4j.LoggerFactory;
     @DELETE
     @Path(&quot;role/{roleId: [0-9]+}&quot;)
     public void deleteRole(@PathParam(&quot;roleId&quot;) Long roleId) {
-<span class="nc" id="L185">        logger.debug(&quot;Delete role #{}&quot;, roleId);</span>
-<span class="nc" id="L186">        teamManager.deleteRole(roleId);</span>
-<span class="nc" id="L187">    }</span>
+<span class="nc" id="L189">        logger.debug(&quot;Delete role #{}&quot;, roleId);</span>
+<span class="nc" id="L190">        teamManager.deleteRole(roleId);</span>
+<span class="nc" id="L191">    }</span>
 
     /**
      * Give a role to a member. Member and role must belong to the same project. CurrentUser must
@@ -199,9 +203,9 @@ import org.slf4j.LoggerFactory;
         @PathParam(&quot;roleId&quot;) Long roleId,
         @PathParam(&quot;memberId&quot;) Long memberId
     ) {
-<span class="nc" id="L202">        logger.debug(&quot;Give role #{} to member#{}&quot;, roleId, memberId);</span>
-<span class="nc" id="L203">        teamManager.giveRole(roleId, memberId);</span>
-<span class="nc" id="L204">    }</span>
+<span class="nc" id="L206">        logger.debug(&quot;Give role #{} to member#{}&quot;, roleId, memberId);</span>
+<span class="nc" id="L207">        teamManager.giveRole(roleId, memberId);</span>
+<span class="nc" id="L208">    }</span>
 
     /**
      * Remove a role from some team member. CurrentUser must have the right to edit the role.
@@ -215,9 +219,9 @@ import org.slf4j.LoggerFactory;
         @PathParam(&quot;roleId&quot;) Long roleId,
         @PathParam(&quot;memberId&quot;) Long memberId
     ) {
-<span class="nc" id="L218">        logger.debug(&quot;Remove role #{} to member#{}&quot;, roleId, memberId);</span>
-<span class="nc" id="L219">        teamManager.removeRole(roleId, memberId);</span>
-<span class="nc" id="L220">    }</span>
+<span class="nc" id="L222">        logger.debug(&quot;Remove role #{} to member#{}&quot;, roleId, memberId);</span>
+<span class="nc" id="L223">        teamManager.removeRole(roleId, memberId);</span>
+<span class="nc" id="L224">    }</span>
 
     /**
      * Get ACL for the card
@@ -229,7 +233,7 @@ import org.slf4j.LoggerFactory;
     @GET
     @Path(&quot;acl/{cardId: [0-9]+}&quot;)
     public List&lt;AccessControl&gt; getAcl(@PathParam(&quot;cardId&quot;) Long cardId) {
-<span class="nc" id="L232">        return teamManager.getAccessControlList(cardId);</span>
+<span class="nc" id="L236">        return teamManager.getAccessControlList(cardId);</span>
     }
 
     /**
@@ -246,8 +250,8 @@ import org.slf4j.LoggerFactory;
         @PathParam(&quot;memberId&quot;) Long memberId,
         @PathParam(&quot;level&quot;) InvolvementLevel level
     ) {
-<span class="nc" id="L249">        teamManager.setInvolvementLevelForMember(cardId, memberId, level);</span>
-<span class="nc" id="L250">    }</span>
+<span class="nc" id="L253">        teamManager.setInvolvementLevelForMember(cardId, memberId, level);</span>
+<span class="nc" id="L254">    }</span>
 
     /**
      * Clear access control for a member
@@ -261,8 +265,8 @@ import org.slf4j.LoggerFactory;
         @PathParam(&quot;cardId&quot;) Long cardId,
         @PathParam(&quot;memberId&quot;) Long memberId
     ) {
-<span class="nc" id="L264">        teamManager.setInvolvementLevelForMember(cardId, memberId, null);</span>
-<span class="nc" id="L265">    }</span>
+<span class="nc" id="L268">        teamManager.setInvolvementLevelForMember(cardId, memberId, null);</span>
+<span class="nc" id="L269">    }</span>
 
     /**
      * Update access control for a role
@@ -278,8 +282,8 @@ import org.slf4j.LoggerFactory;
         @PathParam(&quot;roleId&quot;) Long roleId,
         @PathParam(&quot;level&quot;) InvolvementLevel level
     ) {
-<span class="nc" id="L281">        teamManager.setInvolvementLevelForRole(cardId, roleId, level);</span>
-<span class="nc" id="L282">    }</span>
+<span class="nc" id="L285">        teamManager.setInvolvementLevelForRole(cardId, roleId, level);</span>
+<span class="nc" id="L286">    }</span>
 
     /**
      * Clear access control for a role
@@ -293,7 +297,7 @@ import org.slf4j.LoggerFactory;
         @PathParam(&quot;cardId&quot;) Long cardId,
         @PathParam(&quot;roleId&quot;) Long roleId
     ) {
-<span class="nc" id="L296">        teamManager.setInvolvementLevelForRole(cardId, roleId, null);</span>
-<span class="nc" id="L297">    }</span>
+<span class="nc" id="L300">        teamManager.setInvolvementLevelForRole(cardId, roleId, null);</span>
+<span class="nc" id="L301">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

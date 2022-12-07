@@ -7,13 +7,8 @@
 package ch.colabproject.colab.api.persistence.jpa.user;
 
 import ch.colabproject.colab.api.exceptions.ColabMergeException;
-import ch.colabproject.colab.api.model.user.Account;
-import ch.colabproject.colab.api.model.user.LocalAccount;
 import ch.colabproject.colab.api.model.user.User;
-import ch.colabproject.colab.api.model.user.HttpSession;
-import java.time.OffsetDateTime;
 import java.util.List;
-import java.util.Optional;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -24,16 +19,18 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Users persistence
+ * User persistence
+ * &lt;p&gt;
+ * Note : Most of database operations are handled by managed entities and cascade.
  *
  * @author maxence
  */
 @Stateless
 @LocalBean
-<span class="nc" id="L33">public class UserDao {</span>
+<span class="nc" id="L30">public class UserDao {</span>
 
     /** logger */
-<span class="nc" id="L36">    private static final Logger logger = LoggerFactory.getLogger(UserDao.class);</span>
+<span class="nc" id="L33">    private static final Logger logger = LoggerFactory.getLogger(UserDao.class);</span>
 
     /**
      * Access to the persistence unit
@@ -42,84 +39,29 @@ import org.slf4j.LoggerFactory;
     private EntityManager em;
 
     /**
-     * Find an account by Id.
+     * Find a user by id
      *
-     * @param accountId id of the account to look for
+     * @param id the id of the user to fetch
      *
-     * @return the account if it exists; null otherwise
+     * @return the user with the given id or null if such a user does not exist
      */
-    public Account findAccount(Long accountId) {
-<span class="nc bnc" id="L52" title="All 2 branches missed.">        if (accountId != null) {</span>
-            try {
-<span class="nc" id="L54">                return em.find(Account.class, accountId);</span>
-<span class="nc" id="L55">            } catch (IllegalArgumentException ex) {</span>
-<span class="nc" id="L56">                return null;</span>
-            }
-        } else {
-<span class="nc" id="L59">            return null;</span>
-        }
+    public User findUser(Long id) {
+<span class="nc" id="L49">        logger.trace(&quot;find user #{}&quot;, id);</span>
+
+<span class="nc" id="L51">        return em.find(User.class, id);</span>
     }
 
     /**
-     * Return the LocalAccount which match the given email address.
-     *
-     * @param email email address to search
-     *
-     * @return the matching LocalAccount or null
-     */
-    public LocalAccount findLocalAccountByEmail(String email) {
-        try {
-<span class="nc" id="L72">            TypedQuery&lt;LocalAccount&gt; query</span>
-<span class="nc" id="L73">                = em.createNamedQuery(&quot;LocalAccount.findByEmail&quot;, LocalAccount.class);</span>
-<span class="nc" id="L74">            query.setParameter(&quot;email&quot;, email);</span>
-<span class="nc" id="L75">            return query.getSingleResult();</span>
-<span class="nc" id="L76">        } catch (NoResultException ex) {</span>
-<span class="nc" id="L77">            return null;</span>
-        }
-    }
-
-    /**
-     * Get the list of all users
+     * Find all users
      *
      * @return list of all users
      */
-    public List&lt;User&gt; getAllUsers() {
-<span class="nc" id="L87">        TypedQuery&lt;User&gt; query = em.createNamedQuery(&quot;User.findAll&quot;, User.class);</span>
-<span class="nc" id="L88">        return query.getResultList();</span>
-    }
+    public List&lt;User&gt; findAllUsers() {
+<span class="nc" id="L60">        logger.trace(&quot;find all users&quot;);</span>
 
-    /**
-     * Find a user by id
-     *
-     * @param userId is of the user to search
-     *
-     * @return the user or null
-     */
-    public User findUser(Long userId) {
-        try {
-<span class="nc" id="L100">            return em.find(User.class, userId);</span>
-<span class="nc" id="L101">        } catch (IllegalArgumentException ex) {</span>
-<span class="nc" id="L102">            return null;</span>
-        }
-    }
+<span class="nc" id="L62">        TypedQuery&lt;User&gt; query = em.createNamedQuery(&quot;User.findAll&quot;, User.class);</span>
 
-    /**
-     * Find a user by username
-     *
-     * @param username needle
-     *
-     * @return the user which matching username or null if it not exists
-     */
-    public User findUserByUsername(String username) {
-        try {
-<span class="nc" id="L115">            TypedQuery&lt;User&gt; query</span>
-<span class="nc" id="L116">                = em.createNamedQuery(&quot;User.findByUsername&quot;, User.class);</span>
-<span class="nc" id="L117">            query.setParameter(&quot;username&quot;, username);</span>
-
-<span class="nc" id="L119">            return query.getSingleResult();</span>
-<span class="nc" id="L120">        } catch (NoResultException ex) {</span>
-<span class="nc" id="L121">            return null;</span>
-        }
+<span class="nc" id="L64">        return query.getResultList();</span>
     }
 
     /**
@@ -128,105 +70,66 @@ import org.slf4j.LoggerFactory;
      * @return list of all administrator
      */
     public List&lt;User&gt; findAllAdmin() {
-<span class="nc" id="L131">        TypedQuery&lt;User&gt; query = em.createNamedQuery(&quot;User.findAllAdmin&quot;, User.class);</span>
-<span class="nc" id="L132">        return query.getResultList();</span>
+<span class="nc" id="L73">        logger.trace(&quot;find all admin users&quot;);</span>
+
+<span class="nc" id="L75">        TypedQuery&lt;User&gt; query = em.createNamedQuery(&quot;User.findAllAdmin&quot;, User.class);</span>
+
+<span class="nc" id="L77">        return query.getResultList();</span>
     }
 
     /**
-     * Find local account by identifier.
+     * Find a user by username
      *
-     * @param identifier email address or username
+     * @param username needle
      *
-     * @return LocalAccount
+     * @return the user which matching username or null if it not exist
      */
-    public LocalAccount findLocalAccountByIdentifier(String identifier) {
-<span class="nc" id="L143">        LocalAccount account = this.findLocalAccountByEmail(identifier);</span>
-
-<span class="nc bnc" id="L145" title="All 2 branches missed.">        if (account == null) {</span>
-            // no localAccount with such an email addres
-            // try to find a user by username
-<span class="nc" id="L148">            User user = this.findUserByUsername(identifier);</span>
-<span class="nc bnc" id="L149" title="All 2 branches missed.">            if (user != null) {</span>
-                // User found, as authenticationMethod is only available for LocalAccount,
-                // try to find one
-<span class="nc" id="L152">                Optional&lt;Account&gt; optAccount = user.getAccounts().stream()</span>
-<span class="nc" id="L153">                    .filter(a -&gt; a instanceof LocalAccount)</span>
-<span class="nc" id="L154">                    .findFirst();</span>
-<span class="nc bnc" id="L155" title="All 2 branches missed.">                if (optAccount.isPresent()) {</span>
-<span class="nc" id="L156">                    account = (LocalAccount) optAccount.get();</span>
-                }
-            }
-        }
-<span class="nc" id="L160">        return account;</span>
-    }
-
-    /**
-     * Update the user with values provided in given user. Only field which are editable by users
-     * will be impacted.
-     *
-     * @param user object which contains id and new values
-     *
-     * @throws ColabMergeException if something went wrong
-     */
-    public void updateUser(User user) throws ColabMergeException {
-<span class="nc" id="L172">        User managedUser = this.findUser(user.getId());</span>
-
-<span class="nc" id="L174">        managedUser.merge(user);</span>
-<span class="nc" id="L175">    }</span>
-
-    /**
-     * Find a persisted HttpSession by id
-     *
-     * @param id id
-     *
-     * @return the session or null
-     */
-    public HttpSession getHttpSessionById(Long id) {
+    public User findUserByUsername(String username) {
+<span class="nc" id="L88">        logger.trace(&quot;find user with username {}&quot;, username);</span>
         try {
-<span class="nc" id="L186">            return this.em.find(HttpSession.class, id);</span>
-<span class="nc" id="L187">        } catch (IllegalArgumentException ex) {</span>
-<span class="nc" id="L188">            return null;</span>
+<span class="nc" id="L90">            TypedQuery&lt;User&gt; query = em.createNamedQuery(&quot;User.findByUsername&quot;, User.class);</span>
+
+<span class="nc" id="L92">            query.setParameter(&quot;username&quot;, username);</span>
+
+<span class="nc" id="L94">            return query.getSingleResult();</span>
+<span class="nc" id="L95">        } catch (NoResultException ex) {</span>
+<span class="nc" id="L96">            return null;</span>
         }
     }
 
     /**
-     * Persist HttpSession to database
+     * Update user. Only fields which are editable by users will be impacted.
      *
-     * @param session session to persist
+     * @param user the user as supplied by clients (ie not managed by JPA)
      *
-     * @return persisted and managed session
+     * @return return updated managed user
+     *
+     * @throws ColabMergeException if the update failed
      */
-    public HttpSession persistHttpSession(HttpSession session) {
-<span class="nc" id="L200">        em.persist(session);</span>
-<span class="nc" id="L201">        return session;</span>
+    public User updateUser(User user) throws ColabMergeException {
+<span class="nc" id="L110">        logger.trace(&quot;update user {}&quot;, user);</span>
+
+<span class="nc" id="L112">        User managedUser = this.findUser(user.getId());</span>
+
+<span class="nc" id="L114">        managedUser.merge(user);</span>
+
+<span class="nc" id="L116">        return managedUser;</span>
     }
 
     /**
-     * Delete an http session
+     * Persist a brand new user to database
      *
-     * @param session session to delete
+     * @param user the new user to persist
+     *
+     * @return the new persisted and managed user
      */
-    public void deleteHttpSession(HttpSession session) {
-<span class="nc" id="L210">        Account account = session.getAccount();</span>
-<span class="nc bnc" id="L211" title="All 2 branches missed.">        if (account != null){</span>
-<span class="nc" id="L212">            account.getHttpSessions().remove(session);</span>
-        }
-<span class="nc" id="L214">        em.remove(session);</span>
-<span class="nc" id="L215">    }</span>
+    public User persistUser(User user) {
+<span class="nc" id="L127">        logger.trace(&quot;persist user {}&quot;, user);</span>
 
-    /**
-     * Get list of http session inactive for at least 2 days
-     *
-     * @return list of old httpSessions
-     */
-    public List&lt;HttpSession&gt; getExpiredHttpSessions() {
-<span class="nc" id="L223">        TypedQuery&lt;HttpSession&gt; query = em.createNamedQuery(&quot;HttpSession.getOlderThan&quot;, HttpSession.class);</span>
-        //var time = OffsetDateTime.now().minusMinutes(10);
-<span class="nc" id="L225">        var time = OffsetDateTime.now().minusWeeks(1);</span>
-<span class="nc" id="L226">        query.setParameter(&quot;time&quot;, time);</span>
-<span class="nc" id="L227">        List&lt;HttpSession&gt; resultList = query.getResultList();</span>
-<span class="nc" id="L228">        logger.trace(&quot;Get expired HttpSession (&lt; {}) =&gt; {}&quot;, time, resultList);</span>
-<span class="nc" id="L229">        return resultList;</span>
+<span class="nc" id="L129">        em.persist(user);</span>
+
+<span class="nc" id="L131">        return user;</span>
     }
+
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

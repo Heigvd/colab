@@ -79,7 +79,7 @@
 <a class="jxr_linenumber" name="L71" href="#L71">71</a>  <em class="jxr_javadoccomment">     *</em>
 <a class="jxr_linenumber" name="L72" href="#L72">72</a>  <em class="jxr_javadoccomment">     * @param identifier email address or username the user want to sign in with</em>
 <a class="jxr_linenumber" name="L73" href="#L73">73</a>  <em class="jxr_javadoccomment">     *</em>
-<a class="jxr_linenumber" name="L74" href="#L74">74</a>  <em class="jxr_javadoccomment">     * @return Auth method to user</em>
+<a class="jxr_linenumber" name="L74" href="#L74">74</a>  <em class="jxr_javadoccomment">     * @return Authentication method to user</em>
 <a class="jxr_linenumber" name="L75" href="#L75">75</a>  <em class="jxr_javadoccomment">     */</em>
 <a class="jxr_linenumber" name="L76" href="#L76">76</a>      @GET
 <a class="jxr_linenumber" name="L77" href="#L77">77</a>      @Path(<span class="jxr_string">"AuthMethod/{identifier : [^/]*}"</span>)
@@ -97,7 +97,7 @@
 <a class="jxr_linenumber" name="L89" href="#L89">89</a>      @AdminResource
 <a class="jxr_linenumber" name="L90" href="#L90">90</a>      <strong class="jxr_keyword">public</strong> List&lt;User&gt; getAllUsers() {
 <a class="jxr_linenumber" name="L91" href="#L91">91</a>          logger.debug(<span class="jxr_string">"get all users"</span>);
-<a class="jxr_linenumber" name="L92" href="#L92">92</a>          <strong class="jxr_keyword">return</strong> userDao.getAllUsers();
+<a class="jxr_linenumber" name="L92" href="#L92">92</a>          <strong class="jxr_keyword">return</strong> userDao.findAllUsers();
 <a class="jxr_linenumber" name="L93" href="#L93">93</a>      }
 <a class="jxr_linenumber" name="L94" href="#L94">94</a>  
 <a class="jxr_linenumber" name="L95" href="#L95">95</a>      <em class="jxr_javadoccomment">/**</em>
@@ -219,7 +219,7 @@
 <a class="jxr_linenumber" name="L211" href="#L211">211</a>     }
 <a class="jxr_linenumber" name="L212" href="#L212">212</a> 
 <a class="jxr_linenumber" name="L213" href="#L213">213</a>     <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L214" href="#L214">214</a> <em class="jxr_javadoccomment">     * Update user names.</em>
+<a class="jxr_linenumber" name="L214" href="#L214">214</a> <em class="jxr_javadoccomment">     * Update user. Only fields which are editable by users will be impacted..</em>
 <a class="jxr_linenumber" name="L215" href="#L215">215</a> <em class="jxr_javadoccomment">     *</em>
 <a class="jxr_linenumber" name="L216" href="#L216">216</a> <em class="jxr_javadoccomment">     * @param user user to update</em>
 <a class="jxr_linenumber" name="L217" href="#L217">217</a> <em class="jxr_javadoccomment">     *</em>
@@ -259,7 +259,7 @@
 <a class="jxr_linenumber" name="L251" href="#L251">251</a>     }
 <a class="jxr_linenumber" name="L252" href="#L252">252</a> 
 <a class="jxr_linenumber" name="L253" href="#L253">253</a>     <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L254" href="#L254">254</a> <em class="jxr_javadoccomment">     * Update password of a localAccount. The password MUST be hasehd a first time by the client.</em>
+<a class="jxr_linenumber" name="L254" href="#L254">254</a> <em class="jxr_javadoccomment">     * Update password of a localAccount. The password MUST be hashed a first time by the client.</em>
 <a class="jxr_linenumber" name="L255" href="#L255">255</a> <em class="jxr_javadoccomment">     * &lt;p&gt;</em>
 <a class="jxr_linenumber" name="L256" href="#L256">256</a> <em class="jxr_javadoccomment">     * @param authInfo identifier and new password</em>
 <a class="jxr_linenumber" name="L257" href="#L257">257</a> <em class="jxr_javadoccomment">     *</em>

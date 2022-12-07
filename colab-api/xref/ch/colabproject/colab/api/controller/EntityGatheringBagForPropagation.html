@@ -16,7 +16,7 @@
 <a class="jxr_linenumber" name="L8" href="#L8">8</a>   
 <a class="jxr_linenumber" name="L9" href="#L9">9</a>   <strong class="jxr_keyword">import</strong> ch.colabproject.colab.api.model.WithWebsocketChannels;
 <a class="jxr_linenumber" name="L10" href="#L10">10</a>  <strong class="jxr_keyword">import</strong> ch.colabproject.colab.api.persistence.jpa.card.CardTypeDao;
-<a class="jxr_linenumber" name="L11" href="#L11">11</a>  <strong class="jxr_keyword">import</strong> ch.colabproject.colab.api.persistence.jpa.team.TeamDao;
+<a class="jxr_linenumber" name="L11" href="#L11">11</a>  <strong class="jxr_keyword">import</strong> ch.colabproject.colab.api.persistence.jpa.team.TeamMemberDao;
 <a class="jxr_linenumber" name="L12" href="#L12">12</a>  <strong class="jxr_keyword">import</strong> ch.colabproject.colab.api.persistence.jpa.user.UserDao;
 <a class="jxr_linenumber" name="L13" href="#L13">13</a>  <strong class="jxr_keyword">import</strong> ch.colabproject.colab.api.ws.WebsocketMessagePreparer;
 <a class="jxr_linenumber" name="L14" href="#L14">14</a>  <strong class="jxr_keyword">import</strong> ch.colabproject.colab.api.ws.message.IndexEntry;
@@ -68,7 +68,7 @@
 <a class="jxr_linenumber" name="L60" href="#L60">60</a>  <em class="jxr_javadoccomment">     * To resolve nested channels</em>
 <a class="jxr_linenumber" name="L61" href="#L61">61</a>  <em class="jxr_javadoccomment">     */</em>
 <a class="jxr_linenumber" name="L62" href="#L62">62</a>      @Inject
-<a class="jxr_linenumber" name="L63" href="#L63">63</a>      <strong class="jxr_keyword">private</strong> <a name="TeamDao" href="../../../../../ch/colabproject/colab/api/persistence/jpa/team/TeamDao.html#TeamDao">TeamDao</a> teamDao;
+<a class="jxr_linenumber" name="L63" href="#L63">63</a>      <strong class="jxr_keyword">private</strong> <a name="TeamMemberDao" href="../../../../../ch/colabproject/colab/api/persistence/jpa/team/TeamMemberDao.html#TeamMemberDao">TeamMemberDao</a> teamDao;
 <a class="jxr_linenumber" name="L64" href="#L64">64</a>  
 <a class="jxr_linenumber" name="L65" href="#L65">65</a>      <em class="jxr_javadoccomment">/**</em>
 <a class="jxr_linenumber" name="L66" href="#L66">66</a>  <em class="jxr_javadoccomment">     * To resolve nested channels</em>
