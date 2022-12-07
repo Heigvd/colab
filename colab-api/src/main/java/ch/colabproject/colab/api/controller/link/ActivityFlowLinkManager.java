@@ -143,7 +143,7 @@ public class ActivityFlowLinkManager {
         previousCard.getActivityFlowLinksAsPrevious().remove(link);
         nextCard.getActivityFlowLinksAsNext().remove(link);
 
-        linkDao.deleteActivityFlowLink(linkId);
+        linkDao.deleteActivityFlowLink(link);
     }
 
     /**

@@ -16,6 +16,8 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Activity flow link persistence
+ * <p>
+ * Note : Most of database operations are handled by managed entities and cascade.
  *
  * @author sandra
  */
@@ -33,34 +35,35 @@ public class ActivityFlowLinkDao {
     private EntityManager em;
 
     /**
+     * Find a link by id
+     *
      * @param id the id of the link to fetch
      *
-     * @return the link with the given id or null if such a link does not exists
+     * @return the link with the given id or null if such a link does not exist
      */
     public ActivityFlowLink findActivityFlowLink(Long id) {
-        try {
-            logger.debug("find activity flow link #{}", id);
-            return em.find(ActivityFlowLink.class, id);
-        } catch (IllegalArgumentException ex) {
-            return null;
-        }
+        logger.trace("find activity flow link #{}", id);
+
+        return em.find(ActivityFlowLink.class, id);
     }
 
 //    /**
-//     * Update link
+//     * Update activity flow link. Only fields which are editable by users will be impacted.
 //     *
-//     * @param link the link as supply by clients (ie not managed)
+//     * @param link the activity flow link as supplied by clients (ie not managed by JPA)
 //     *
-//     * @return the updated managed link
+//     * @return return updated managed activity flow link
 //     *
-//     * @throws ColabMergeException if updating the link failed
+//     * @throws ColabMergeException if the update failed
 //     */
-//    public ActivityFlowLink updateActivityFlowLink(ActivityFlowLink link)
-//        throws ColabMergeException {
-//        logger.debug("update activity flow link {}", link);
-//        ActivityFlowLink mLink = this.findActivityFlowLink(link.getId());
-//        mLink.merge(link);
-//        return mLink;
+//    public ActivityFlowLink updateActivityFlowLink(ActivityFlowLink link) throws ColabMergeException {
+//        logger.trace("update activity flow link {}", link);
+//
+//        ActivityFlowLink managedActivityFlowLink = this.findActivityFlowLink(link.getId());
+//
+//        managedActivityFlowLink.merge(link);
+//
+//        return managedActivityFlowLink;
 //    }
 
     /**
@@ -68,27 +71,27 @@ public class ActivityFlowLinkDao {
      *
      * @param link the new link to persist
      *
-     * @return the new persisted link
+     * @return the new persisted and managed link
      */
     public ActivityFlowLink persistActivityFlowLink(ActivityFlowLink link) {
-        logger.debug("persist activity flow link {}", link);
+        logger.trace("persist activity flow link {}", link);
+
         em.persist(link);
+
         return link;
     }
 
     /**
-     * Delete link from database. This can't be undone
+     * Delete the link from database. This can't be undone
      *
-     * @param id the id of the link to delete
-     *
-     * @return just deleted link
+     * @param link the link to delete
      */
-    public ActivityFlowLink deleteActivityFlowLink(Long id) {
-        logger.debug("delete activity flow link #{}", id);
+    public void deleteActivityFlowLink(ActivityFlowLink link) {
+        logger.trace("delete activity flow link {}", link);
+
         // TODO: move to recycle bin first
-        ActivityFlowLink link = this.findActivityFlowLink(id);
+
         em.remove(link);
-        return link;
     }
 
 }

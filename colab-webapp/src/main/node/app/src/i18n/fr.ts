@@ -30,6 +30,7 @@ export const fr: ColabTranslations = {
     edit: 'Éditer',
     select: 'Sélectionner',
     selectAll: 'Tout sélectionner',
+    share: 'Partager',
     next: 'Suivant',
     back: 'Retour',
     updated: 'Mis à jour',
@@ -330,6 +331,8 @@ export const fr: ColabTranslations = {
         documentation: 'Documentation',
         connect: 'Connecter',
         keepConnectionBetweenModelAndProject: 'Garder les nouveaux projets connectés au modèle',
+        sharing: 'Partage',
+        sharingParams: 'Paramètres de partage',
       },
       actions: {
         createProject: 'Créer projet',
@@ -370,10 +373,6 @@ export const fr: ColabTranslations = {
         },
         resources: {
           label: 'Documentation du projet',
-        },
-        sharing: {
-          label: 'Partage du modèle',
-          parameters: 'Paramètres de partage',
         },
         missingIcon:
           "Oh une nouvelle bibliothèque d'icônes, cher développeur s'il vous plaît faites ce qui est nécessaire pour afficher l'icône.",

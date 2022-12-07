@@ -62,7 +62,7 @@ public class TokenRestEndpoint {
      *
      * @throws ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage
      *  <ul>
-     *      <li>notFound if the token does not exists;
+     *      <li>notFound if the token does not exist;
      *      <li>bad request if token does not match;
      *      <li>authenticationRequired if token requires authentication but current user is not
      *  </ul>

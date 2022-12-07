@@ -174,7 +174,7 @@ public class ResourceRestEndpoint {
     // *********************************************************************************************
 
     /**
-     * Save changes to database
+     * Save changes to database. Only fields which are editable by users will be impacted.
      *
      * @param resource the resource to update
      *
@@ -183,11 +183,11 @@ public class ResourceRestEndpoint {
     @PUT
     public void updateResource(Resource resource) throws ColabMergeException {
         logger.debug("update resource {}", resource);
-        resourceDao.updateResource(resource);
+        resourceDao.updateResourceOrRef(resource);
     }
 
     /**
-     * Save changes to database
+     * Save changes to database. Only fields which are editable by users will be impacted.
      *
      * @param resourceRef the resource reference to update
      *
@@ -197,7 +197,7 @@ public class ResourceRestEndpoint {
     @Path("ref")
     public void updateResourceRef(ResourceRef resourceRef) throws ColabMergeException {
         logger.debug("update resource reference {}", resourceRef);
-        resourceDao.updateResourceRef(resourceRef);
+        resourceDao.updateResourceOrRef(resourceRef);
     }
 
     /**

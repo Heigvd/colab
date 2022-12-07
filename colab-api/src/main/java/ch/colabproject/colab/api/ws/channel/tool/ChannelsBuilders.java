@@ -11,7 +11,7 @@ import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.api.model.user.Account;
 import ch.colabproject.colab.api.model.user.User;
 import ch.colabproject.colab.api.persistence.jpa.card.CardTypeDao;
-import ch.colabproject.colab.api.persistence.jpa.team.TeamDao;
+import ch.colabproject.colab.api.persistence.jpa.team.TeamMemberDao;
 import ch.colabproject.colab.api.persistence.jpa.user.UserDao;
 import ch.colabproject.colab.api.ws.channel.model.BlockChannel;
 import ch.colabproject.colab.api.ws.channel.model.BroadcastChannel;
@@ -49,7 +49,7 @@ public final class ChannelsBuilders {
          *
          * @return all channels to use for propagation
          */
-        public Set<WebsocketChannel> computeChannels(UserDao userDao, TeamDao teamDao,
+        public Set<WebsocketChannel> computeChannels(UserDao userDao, TeamMemberDao teamDao,
             CardTypeDao cardTypeDao) {
             return build(userDao, teamDao, cardTypeDao);
         }
@@ -63,7 +63,7 @@ public final class ChannelsBuilders {
          *
          * @return all channels to use for propagation
          */
-        abstract protected Set<WebsocketChannel> build(UserDao userDao, TeamDao teamDao,
+        abstract protected Set<WebsocketChannel> build(UserDao userDao, TeamMemberDao teamDao,
             CardTypeDao cardTypeDao);
     }
 
@@ -72,7 +72,7 @@ public final class ChannelsBuilders {
      */
     public static class EmptyChannelBuilder extends ChannelsBuilder {
         @Override
-        protected Set<WebsocketChannel> build(UserDao userDao, TeamDao teamDao,
+        protected Set<WebsocketChannel> build(UserDao userDao, TeamMemberDao teamDao,
             CardTypeDao cardTypeDao) {
             return Set.of();
         }
@@ -95,7 +95,7 @@ public final class ChannelsBuilders {
         }
 
         @Override
-        protected Set<WebsocketChannel> build(UserDao userDao, TeamDao teamDao,
+        protected Set<WebsocketChannel> build(UserDao userDao, TeamMemberDao teamDao,
             CardTypeDao cardTypeDao) {
             return Set.of(BlockChannel.build(blockId));
         }
@@ -127,7 +127,7 @@ public final class ChannelsBuilders {
         }
 
         @Override
-        protected Set<WebsocketChannel> build(UserDao userDao, TeamDao teamDao,
+        protected Set<WebsocketChannel> build(UserDao userDao, TeamMemberDao teamDao,
             CardTypeDao cardTypeDao) {
             return Set.of(ProjectContentChannel.build(projectId));
         }
@@ -150,7 +150,7 @@ public final class ChannelsBuilders {
         }
 
         @Override
-        protected Set<WebsocketChannel> build(UserDao userDao, TeamDao teamDao,
+        protected Set<WebsocketChannel> build(UserDao userDao, TeamMemberDao teamDao,
             CardTypeDao cardTypeDao) {
             Set<WebsocketChannel> channels = new HashSet<>();
 
@@ -170,7 +170,7 @@ public final class ChannelsBuilders {
     public static class ForAdminChannelsBuilder extends ChannelsBuilder {
 
         @Override
-        protected Set<WebsocketChannel> build(UserDao userDao, TeamDao teamDao,
+        protected Set<WebsocketChannel> build(UserDao userDao, TeamMemberDao teamDao,
             CardTypeDao cardTypeDao) {
             return buildAdminChannels(userDao);
         }
@@ -193,7 +193,7 @@ public final class ChannelsBuilders {
         }
 
         @Override
-        protected Set<WebsocketChannel> build(UserDao userDao, TeamDao teamDao,
+        protected Set<WebsocketChannel> build(UserDao userDao, TeamMemberDao teamDao,
             CardTypeDao cardTypeDao) {
             Set<WebsocketChannel> channels = new HashSet<>();
 
@@ -226,7 +226,7 @@ public final class ChannelsBuilders {
         }
 
         @Override
-        protected Set<WebsocketChannel> build(UserDao userDao, TeamDao teamDao,
+        protected Set<WebsocketChannel> build(UserDao userDao, TeamMemberDao teamDao,
             CardTypeDao cardTypeDao) {
             Set<WebsocketChannel> channels = new HashSet<>();
 
@@ -257,7 +257,7 @@ public final class ChannelsBuilders {
         }
 
         @Override
-        protected Set<WebsocketChannel> build(UserDao userDao, TeamDao teamDao,
+        protected Set<WebsocketChannel> build(UserDao userDao, TeamMemberDao teamDao,
             CardTypeDao cardTypeDao) {
             return buildCardTypeInProjectChannel(cardType, userDao, cardTypeDao);
         }
@@ -286,7 +286,7 @@ public final class ChannelsBuilders {
      *
      * @return a set of channels : one user channel for each team member of each project
      */
-    private static Set<WebsocketChannel> buildTeammatesChannels(User user, TeamDao teamDao) {
+    private static Set<WebsocketChannel> buildTeammatesChannels(User user, TeamMemberDao teamDao) {
         Set<WebsocketChannel> channels = new HashSet<>();
 
         teamDao.findMemberByUser(user).forEach(member -> {

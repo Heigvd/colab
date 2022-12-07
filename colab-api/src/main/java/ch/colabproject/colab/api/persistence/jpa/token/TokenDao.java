@@ -6,7 +6,6 @@
  */
 package ch.colabproject.colab.api.persistence.jpa.token;
 
-import ch.colabproject.colab.api.Helper;
 import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.api.model.team.TeamMember;
 import ch.colabproject.colab.api.model.token.InvitationToken;
@@ -21,15 +20,22 @@ import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Token persistence
+ * <p>
+ * Note : Most of database operations are handled by managed entities and cascade.
  *
  * @author maxence
  */
 @Stateless
 @LocalBean
 public class TokenDao {
+
+    /** logger */
+    private static final Logger logger = LoggerFactory.getLogger(TokenDao.class);
 
     /**
      * Access to the persistence unit
@@ -40,11 +46,13 @@ public class TokenDao {
     /**
      * Find a token by id
      *
-     * @param id id of the token§
+     * @param id the id of the token to fetch
      *
-     * @return the token if found or null
+     * @return the token with the given id or null if such a token does not exist
      */
     public Token findToken(Long id) {
+        logger.trace("find token #{}", id);
+
         return em.find(Token.class, id);
     }
 
@@ -59,7 +67,9 @@ public class TokenDao {
         try {
             return em.createNamedQuery("VerifyLocalAccountToken.findByAccountId",
                 VerifyLocalAccountToken.class)
+
                 .setParameter("id", account.getId())
+
                 .getSingleResult();
         } catch (NoResultException ex) {
             return null;
@@ -77,7 +87,9 @@ public class TokenDao {
         try {
             return em.createNamedQuery("ResetLocalAccountPasswordToken.findByAccountId",
                 ResetLocalAccountPasswordToken.class)
+
                 .setParameter("id", account.getId())
+
                 .getSingleResult();
         } catch (NoResultException ex) {
             return null;
@@ -94,10 +106,13 @@ public class TokenDao {
      */
     public InvitationToken findInvitationByProjectAndRecipient(Project project, String recipient) {
         try {
-            return em.createNamedQuery("InvitationToken.findByProjectAndRecipient",
-                InvitationToken.class)
+            return em
+                .createNamedQuery("InvitationToken.findByProjectAndRecipient",
+                    InvitationToken.class)
+
                 .setParameter("projectId", project.getId())
                 .setParameter("recipient", recipient)
+
                 .getSingleResult();
         } catch (NoResultException ex) {
             return null;
@@ -112,9 +127,10 @@ public class TokenDao {
      * @return invitations for the team member
      */
     public List<InvitationToken> findInvitationByTeamMember(TeamMember teamMember) {
-        return em.createNamedQuery("InvitationToken.findByTeamMember",
-            InvitationToken.class)
+        return em.createNamedQuery("InvitationToken.findByTeamMember", InvitationToken.class)
+
             .setParameter("teamMemberId", teamMember.getId())
+
             .getResultList();
     }
 
@@ -126,53 +142,74 @@ public class TokenDao {
      *
      * @return model sharing if there is a pending one, null otherwise
      */
-    public ModelSharingToken findModelShareByProjectAndRecipient(Project project, String recipient) {
+    public ModelSharingToken findModelSharingByProjectAndRecipient(Project project,
+        String recipient) {
         try {
             return em.createNamedQuery("ModelSharingToken.findByProjectAndRecipient",
                 ModelSharingToken.class)
+
                 .setParameter("projectId", project.getId())
                 .setParameter("recipient", recipient)
+
                 .getSingleResult();
         } catch (NoResultException ex) {
             return null;
         }
     }
 
+//  public List<ModelSharingToken> findModelSharingByInstanceMaker(InstanceMaker instanceMaker) {
+//      // TODO Auto-generated method stub
+//      return null;
+//  }
+//
+//  public List<Token> findTokensByProject(Project project) {
+//      // TODO Auto-generated method stub
+//      return null;
+//  }
+
+//    /**
+//     * Update token. Only fields which are editable by users will be impacted.
+//     *
+//     * @param token the token as supplied by clients (ie not managed by JPA)
+//     *
+//     * @return return updated managed token
+//     *
+//     * @throws ColabMergeException if the update failed
+//     */
+//    public Token updateToken(Token token) throws ColabMergeException {
+//        logger.trace("update token {}", token);
+//
+//        Token managedToken = this.findToken(token.getId());
+//
+//        managedToken.merge(token);
+//
+//        return managedToken;
+//    }
+
     /**
      * Persist the token
      *
      * @param token token to persist
+     *
+     * @return the new persisted and managed and managed token
      */
-    public void persistToken(Token token) {
-        // set something to respect notNull constraints
-        // otherwise persist will fail
-        // These values will be reset when the e-mail is sent.
-        if (token.getHashMethod() == null) {
-            token.setHashMethod(Helper.getDefaultHashMethod());
-        }
-        if (token.getHashedToken() == null) {
-            token.setHashedToken(new byte[0]);
-        }
+    public Token persistToken(Token token) {
+        logger.trace("persist token {}", token);
 
         em.persist(token);
+
+        return token;
     }
 
     /**
-     * Delete the given token
+     * Delete the token from database. This can't be undone
      *
      * @param token token to remove
      */
     public void deleteToken(Token token) {
+        logger.trace("delete token {}", token);
+
         em.remove(token);
     }
 
-//    public List<ModelSharingToken> findModelSharingByInstanceMaker(InstanceMaker instanceMaker) {
-//        // TODO Auto-generated method stub
-//        return null;
-//    }
-//
-//    public List<Token> findTokensByProject(Project project) {
-//        // TODO Auto-generated method stub
-//        return null;
-//    }
 }

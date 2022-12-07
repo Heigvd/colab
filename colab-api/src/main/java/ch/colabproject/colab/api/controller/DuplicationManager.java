@@ -1,11 +1,12 @@
 /*
  * The coLAB project
- * Copyright (C) 2021 AlbaSim, MEI, HEIG-VD, HES-SO
+ * Copyright (C) 2021-2022 AlbaSim, MEI, HEIG-VD, HES-SO
  *
  * Licensed under the MIT License
  */
 package ch.colabproject.colab.api.controller;
 
+import ch.colabproject.colab.api.controller.card.CardContentManager;
 import ch.colabproject.colab.api.controller.document.FileManager;
 import ch.colabproject.colab.api.controller.document.ResourceReferenceSpreadingHelper;
 import ch.colabproject.colab.api.exceptions.ColabMergeException;
@@ -74,6 +75,9 @@ public class DuplicationManager {
     /** File persistence management */
     private final FileManager fileManager;
 
+    /** Card content specific logic handling */
+    private final CardContentManager cardContentManager;
+
     /** Matching between the old id and the new team roles */
     private Map<Long, TeamRole> teamRoleMatching = new HashMap<>();
 
@@ -105,16 +109,18 @@ public class DuplicationManager {
     private Map<Long, DocumentFile> documentFilesToProcessOnceIds = new HashMap<>();
 
     /**
-     * @param params           Parameters to fine tune duplication
-     * @param resourceSpreader Helper for resource references
-     * @param fileManager      File persistence management
+     * @param params             Parameters to fine tune duplication
+     * @param resourceSpreader   Helper for resource references
+     * @param fileManager        File persistence management
+     * @param cardContentManager Card content specific logic handling
      */
     public DuplicationManager(DuplicationParam params,
         ResourceReferenceSpreadingHelper resourceSpreader,
-        FileManager fileManager) {
+        FileManager fileManager, CardContentManager cardContentManager) {
         this.params = params;
         this.resourceSpreader = resourceSpreader;
         this.fileManager = fileManager;
+        this.cardContentManager = cardContentManager;
     }
 
     // *********************************************************************************************
@@ -328,14 +334,18 @@ public class DuplicationManager {
                 throw new IllegalStateException("abstract card type implementation not handled");
             }
 
-            List<AbstractResource> originalResources = original.getDirectAbstractResources();
-            originalResources.sort(ID_COMPARATOR);
+            if (params.isWithResources()) {
+                List<AbstractResource> originalResources = original.getDirectAbstractResources();
+                originalResources.sort(ID_COMPARATOR);
 
-            for (AbstractResource originalResource : originalResources) {
-                AbstractResource newResource = duplicateResource(originalResource);
+                for (AbstractResource originalResource : originalResources) {
+                    AbstractResource newResource = duplicateResource(originalResource);
 
-                newResource.setAbstractCardType(newAbstractCardType);
-                newAbstractCardType.getDirectAbstractResources().add(newResource);
+                    newResource.setAbstractCardType(newAbstractCardType);
+                    newAbstractCardType.getDirectAbstractResources().add(newResource);
+                }
+            } else {
+                logger.info("param do not duplicate project's resources");
             }
 
             return newAbstractCardType;
@@ -359,14 +369,18 @@ public class DuplicationManager {
             newCard.setCardType(newCardType);
         }
 
-        List<AbstractResource> originalResources = original.getDirectAbstractResources();
-        originalResources.sort(ID_COMPARATOR);
+        if (params.isWithResources()) {
+            List<AbstractResource> originalResources = original.getDirectAbstractResources();
+            originalResources.sort(ID_COMPARATOR);
 
-        for (AbstractResource originalResource : originalResources) {
-            AbstractResource newResource = duplicateResource(originalResource);
+            for (AbstractResource originalResource : originalResources) {
+                AbstractResource newResource = duplicateResource(originalResource);
 
-            newResource.setCard(newCard);
-            newCard.getDirectAbstractResources().add(newResource);
+                newResource.setCard(newCard);
+                newCard.getDirectAbstractResources().add(newResource);
+            }
+        } else {
+            logger.info("param do not duplicate project's resources");
         }
 
         List<CardContent> originalContents = original.getContentVariants();
@@ -418,6 +432,10 @@ public class DuplicationManager {
         CardContent newCardContent = new CardContent();
         newCardContent.duplicate(original);
 
+        if (params.isResetProgressionData()) {
+            cardContentManager.resetProgression(newCardContent);
+        }
+
         cardContentMatching.put(original.getId(), newCardContent);
 
         if (params.isWithDeliverables()) {
@@ -430,16 +448,22 @@ public class DuplicationManager {
                 newDoc.setOwningCardContent(newCardContent);
                 newCardContent.getDeliverables().add(newDoc);
             }
+        } else {
+            logger.info("param do not duplicate project's deliverables");
         }
 
-        List<AbstractResource> originalResources = original.getDirectAbstractResources();
-        originalResources.sort(ID_COMPARATOR);
+        if (params.isWithResources()) {
+            List<AbstractResource> originalResources = original.getDirectAbstractResources();
+            originalResources.sort(ID_COMPARATOR);
 
-        for (AbstractResource originalResource : originalResources) {
-            AbstractResource newResource = duplicateResource(originalResource);
+            for (AbstractResource originalResource : originalResources) {
+                AbstractResource newResource = duplicateResource(originalResource);
 
-            newResource.setCardContent(newCardContent);
-            newCardContent.getDirectAbstractResources().add(newResource);
+                newResource.setCardContent(newCardContent);
+                newCardContent.getDirectAbstractResources().add(newResource);
+            }
+        } else {
+            logger.info("param do not duplicate project's resources");
         }
 
         List<Card> originalSubCards = original.getSubCards();

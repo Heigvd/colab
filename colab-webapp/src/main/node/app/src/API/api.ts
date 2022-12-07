@@ -443,9 +443,11 @@ export const duplicateProject = createAsyncThunk('project/duplicate', async (pro
       withCardTypes: true,
       withCardsStructure: true,
       withDeliverables: true,
+      withResources: true,
       withStickyNotes: true,
       withActivityFlow: true,
       makeOnlyCardTypeReferences: false,
+      resetProgressionData: false,
     };
 
     return await restClient.ProjectRestEndpoint.duplicateProject(project.id, parameters);

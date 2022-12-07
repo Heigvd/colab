@@ -6,28 +6,28 @@
  */
 package ch.colabproject.colab.api.controller.document;
 
+import ch.colabproject.colab.api.controller.project.ProjectManager;
 import ch.colabproject.colab.api.model.document.Document;
 import ch.colabproject.colab.api.model.document.DocumentFile;
 import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.api.persistence.jcr.JcrManager;
 import ch.colabproject.colab.api.persistence.jpa.document.DocumentDao;
-import ch.colabproject.colab.api.persistence.jpa.project.ProjectDao;
 import ch.colabproject.colab.api.setup.ColabConfiguration;
+import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
+import java.io.BufferedInputStream;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.jcr.RepositoryException;
-import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
-import java.io.BufferedInputStream;
-import java.nio.charset.StandardCharsets;
 import javax.ws.rs.core.MediaType;
 import org.apache.commons.lang3.tuple.ImmutableTriple;
 import org.apache.hc.core5.net.URIBuilder;
 import org.glassfish.jersey.media.multipart.FormDataBodyPart;
+import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Handles DocumentFiles instances both DB and Jcr persistence
@@ -56,10 +56,10 @@ public class FileManager {
     private DocumentDao documentDao;
 
     /**
-     * Project persistence
+     * Project specific logic management
      */
     @Inject
-    private ProjectDao projectDao;
+    private ProjectManager projectManager;
 
     /**
      * Update an existing document's file content
@@ -277,7 +277,7 @@ public class FileManager {
      * @throws RepositoryException in case of a JCR issue
      */
     public Long getUsage(Long projectId) throws RepositoryException {
-        Project project = projectDao.findProject(projectId);
+        Project project = projectManager.assertAndGetProject(projectId);
         return jcrManager.computeMemoryUsage(project);
     }
 }

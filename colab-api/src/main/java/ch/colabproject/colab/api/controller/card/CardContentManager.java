@@ -1,6 +1,6 @@
 /*
  * The coLAB project
- * Copyright (C) 2021 AlbaSim, MEI, HEIG-VD, HES-SO
+ * Copyright (C) 2021-2022 AlbaSim, MEI, HEIG-VD, HES-SO
  *
  * Licensed under the MIT License
  */
@@ -51,6 +51,11 @@ public class CardContentManager {
      * Initial card status
      */
     private static final CardContentStatus CARD_CONTENT_INITIAL_STATUS = CardContentStatus.ACTIVE;
+
+    /**
+     * Default value for frozen status
+     */
+    private static final boolean FROZEN_DEFAULT = false;
 
     // *********************************************************************************************
     // injections
@@ -151,8 +156,7 @@ public class CardContentManager {
     public CardContent initNewCardContentForCard(Card card) {
         CardContent cardContent = new CardContent();
 
-        cardContent.setStatus(CARD_CONTENT_INITIAL_STATUS);
-        cardContent.setCompletionLevel(MIN_COMPLETION_LEVEL);
+        resetProgression(cardContent);
 
         cardContent.setCard(card);
         card.getContentVariants().add(cardContent);
@@ -161,13 +165,22 @@ public class CardContentManager {
     }
 
     /**
+     * Reset progression data of the given card content : status, completion level and frozen
+     *
+     * @param cardContent the card content
+     */
+    public void resetProgression(CardContent cardContent) {
+        cardContent.setStatus(CARD_CONTENT_INITIAL_STATUS);
+        cardContent.setCompletionLevel(MIN_COMPLETION_LEVEL);
+        cardContent.setFrozen(FROZEN_DEFAULT);
+    }
+
+    /**
      * Delete the given card content
      *
      * @param cardContentId the id of the card content to delete
-     *
-     * @return the freshly deleted card content
      */
-    public CardContent deleteCardContent(Long cardContentId) {
+    public void deleteCardContent(Long cardContentId) {
         CardContent cardContent = assertAndGetCardContent(cardContentId);
 
         if (!checkDeletionAcceptability(cardContent)) {
@@ -176,7 +189,7 @@ public class CardContentManager {
 
         cardContent.getCard().getContentVariants().remove(cardContent);
 
-        return cardContentDao.deleteCardContent(cardContentId);
+        cardContentDao.deleteCardContent(cardContent);
     }
 
     /**
@@ -307,7 +320,7 @@ public class CardContentManager {
 
         cardContent.getDeliverables().remove(document);
 
-        documentDao.deleteDocument(document.getId());
+        documentDao.deleteDocument(document);
     }
 
     // *********************************************************************************************

@@ -8,6 +8,7 @@ package ch.colabproject.colab.api.controller.project;
 
 import ch.colabproject.colab.api.controller.DuplicationManager;
 import ch.colabproject.colab.api.controller.RequestManager;
+import ch.colabproject.colab.api.controller.card.CardContentManager;
 import ch.colabproject.colab.api.controller.card.CardManager;
 import ch.colabproject.colab.api.controller.card.CardTypeManager;
 import ch.colabproject.colab.api.controller.document.FileManager;
@@ -95,6 +96,10 @@ public class ProjectManager {
     @Inject
     private CardManager cardManager;
 
+    /** to load cardContents */
+    @Inject
+    private CardContentManager cardContentManager;
+
     /**
      * Card type specific logic management
      */
@@ -151,9 +156,9 @@ public class ProjectManager {
     public List<Project> findProjectsOfCurrentUser() {
         User user = securityManager.assertAndGetCurrentUser();
 
-        List<Project> projects = projectDao.findProjectsUserIsMemberOf(user.getId());
+        List<Project> projects = projectDao.findProjectsByMember(user.getId());
 
-        projects.addAll(projectDao.findProjectsUserIsInstanceMakerFor(user.getId()));
+        projects.addAll(projectDao.findProjectsByInstanceMaker(user.getId()));
 
         logger.debug("found projects where the user {} is a team member : {}", user, projects);
 
@@ -260,7 +265,7 @@ public class ProjectManager {
 
         // everything else is deleted by cascade
 
-        projectDao.deleteProject(projectId);
+        projectDao.deleteProject(project);
     }
 
 //    /**
@@ -290,7 +295,7 @@ public class ProjectManager {
         Project originalProject = assertAndGetProject(projectId);
 
         DuplicationManager duplicator = new DuplicationManager(params,
-            resourceReferenceSpreadingHelper, fileManager);
+            resourceReferenceSpreadingHelper, fileManager, cardContentManager);
 
         Project newProjectJavaObject = duplicator.duplicateProject(originalProject);
 
@@ -334,9 +339,7 @@ public class ProjectManager {
         logger.debug("Add and persist instance maker to user {} for model {}", user, model);
 
         InstanceMaker instanceMaker = addInstanceMaker(model, user);
-        instanceMakerDao.persistInstanceMaker(instanceMaker);
-
-        return instanceMaker;
+        return instanceMakerDao.persistInstanceMaker(instanceMaker);
     }
 
     /**
@@ -514,7 +517,7 @@ public class ProjectManager {
     public List<Long> findIdsOfProjectsCurrentUserIsMemberOf() {
         User user = securityManager.assertAndGetCurrentUser();
 
-        List<Long> projectsIds = projectDao.findIdsOfProjectUserIsMemberOf(user.getId());
+        List<Long> projectsIds = projectDao.findProjectsIdsByMember(user.getId());
 
         logger.debug("found projects' id where the user {} is a team member : {}", user,
             projectsIds);
@@ -533,7 +536,7 @@ public class ProjectManager {
     public List<Long> findIdsOfProjectsCurrentUserIsInstanceMakerFor() {
         User user = securityManager.assertAndGetCurrentUser();
 
-        List<Long> projectsIds = projectDao.findIdsOfProjectUserIsInstanceMaker(user.getId());
+        List<Long> projectsIds = projectDao.findProjectsIdsByInstanceMaker(user.getId());
 
         logger.debug("found projects' id for which the user {} is an instance maker : {}", user,
             projectsIds);
@@ -570,7 +573,7 @@ public class ProjectManager {
      * @return true if both users are related to the same project
      */
     public boolean doUsersHaveCommonProject(User a, User b) {
-        return projectDao.doUsersHaveCommonProject(a, b);
+        return projectDao.findIfUsersHaveCommonProject(a, b);
     }
 
     // *********************************************************************************************

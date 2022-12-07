@@ -17,6 +17,8 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Card content persistence
+ * <p>
+ * Note : Most of database operations are handled by managed entities and cascade.
  *
  * @author sandra
  */
@@ -34,57 +36,63 @@ public class CardContentDao {
     private EntityManager em;
 
     /**
-     * @param id id of the card content to fetch
+     * Find a card content by id
      *
-     * @return the card content with the given id or null if such a card content does not exists
+     * @param id the id of the card content to fetch
+     *
+     * @return the card content with the given id or null if such a card content does not exist
      */
     public CardContent findCardContent(Long id) {
-        logger.debug("get card content #{}", id);
+        logger.trace("find card content #{}", id);
+
         return em.find(CardContent.class, id);
     }
 
     /**
-     * Update card content
+     * Update card content. Only fields which are editable by users will be impacted.
      *
-     * @param cardContent card content as supply by clients (ie not managed)
+     * @param cardContent the card content as supplied by clients (ie not managed by JPA)
      *
-     * @return updated managed card content
+     * @return return updated managed card content
      *
-     * @throws ColabMergeException if updating the card content failed
+     * @throws ColabMergeException if the update failed
      */
     public CardContent updateCardContent(CardContent cardContent) throws ColabMergeException {
-        logger.debug("update card content {}", cardContent);
-        CardContent mCardContent = this.findCardContent(cardContent.getId());
-        mCardContent.merge(cardContent);
-        return mCardContent;
+        logger.trace("update card content {}", cardContent);
+
+        CardContent managedCardContent = this.findCardContent(cardContent.getId());
+
+        managedCardContent.merge(cardContent);
+
+        return managedCardContent;
     }
 
     /**
      * Persist a brand new card content to database
      *
-     * @param cardContent new card content to persist
+     * @param cardContent the new card content to persist
      *
-     * @return the new persisted card content
+     * @return the new persisted and managed card content
      */
     public CardContent persistCardContent(CardContent cardContent) {
-        logger.debug("persist card content {}", cardContent);
+        logger.trace("persist card content {}", cardContent);
+
         em.persist(cardContent);
+
         return cardContent;
     }
 
     /**
-     * Delete card content from database. This can't be undone
+     * Delete the card content from database. This can't be undone
      *
-     * @param id id of the card content to delete
-     *
-     * @return just deleted card content
+     * @param cardContent the card content to delete
      */
-    public CardContent deleteCardContent(Long id) {
-        logger.debug("delete card content #{}", id);
+    public void deleteCardContent(CardContent cardContent) {
+        logger.trace("delete card content {}", cardContent);
+
         // TODO: move to recycle bin first
-        CardContent cardContent = this.findCardContent(id);
+
         em.remove(cardContent);
-        return cardContent;
     }
 
 }

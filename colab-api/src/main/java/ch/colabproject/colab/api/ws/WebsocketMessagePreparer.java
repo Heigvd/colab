@@ -8,7 +8,7 @@ package ch.colabproject.colab.api.ws;
 
 import ch.colabproject.colab.api.model.WithWebsocketChannels;
 import ch.colabproject.colab.api.persistence.jpa.card.CardTypeDao;
-import ch.colabproject.colab.api.persistence.jpa.team.TeamDao;
+import ch.colabproject.colab.api.persistence.jpa.team.TeamMemberDao;
 import ch.colabproject.colab.api.persistence.jpa.user.UserDao;
 import ch.colabproject.colab.api.ws.channel.model.WebsocketChannel;
 import ch.colabproject.colab.api.ws.channel.tool.ChannelsBuilders.ChannelsBuilder;
@@ -135,7 +135,7 @@ public class WebsocketMessagePreparer {
      */
     public static PrecomputedWsMessages prepareWsMessage(
         UserDao userDao,
-        TeamDao teamDao,
+        TeamMemberDao teamDao,
         CardTypeDao cardTypeDao,
         Set<WithWebsocketChannels> updated,
         Set<IndexEntry> deleted
@@ -195,7 +195,7 @@ public class WebsocketMessagePreparer {
      */
     public static PrecomputedWsMessages prepareWsMessage(
         UserDao userDao,
-        TeamDao teamDao,
+        TeamMemberDao teamDao,
         CardTypeDao cardTypeDao,
         ChannelsBuilder channelBuilder,
         WsMessage message

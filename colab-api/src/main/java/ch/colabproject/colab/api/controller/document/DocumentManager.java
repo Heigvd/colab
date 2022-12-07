@@ -71,6 +71,27 @@ public class DocumentManager {
     }
 
     /**
+     * Retrieve the text data block. If not found, throw a {@link HttpErrorMessage}.
+     *
+     * @param textDataBlockId the id of the text data block
+     *
+     * @return the text data block if found
+     *
+     * @throws HttpErrorMessage if the text data block was not found
+     */
+    public TextDataBlock assertAndGetTextDataBlock(Long textDataBlockId) {
+        Document document = documentDao.findDocument(textDataBlockId);
+
+        if (!(document instanceof TextDataBlock)) {
+            logger.error("#{} is not a text data block", document);
+            throw HttpErrorMessage.relatedObjectNotFoundError();
+        }
+
+        return (TextDataBlock) document;
+
+    }
+
+    /**
      * Retrieve the list of documents the given document is part of
      *
      * @param document the document

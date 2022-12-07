@@ -266,10 +266,8 @@ public class CardManager {
      * Delete the given card
      *
      * @param cardId the id of the card to delete
-     *
-     * @return the freshly deleted card
      */
-    public Card deleteCard(Long cardId) {
+    public void deleteCard(Long cardId) {
         Card card = assertAndGetCard(cardId);
 
         if (!checkDeletionAcceptability(card)) {
@@ -282,7 +280,7 @@ public class CardManager {
             card.getCardType().getImplementingCards().remove(card);
         }
 
-        return cardDao.deleteCard(cardId);
+        cardDao.deleteCard(card);
     }
 
     /**

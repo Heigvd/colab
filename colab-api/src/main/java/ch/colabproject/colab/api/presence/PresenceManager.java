@@ -8,16 +8,13 @@ package ch.colabproject.colab.api.presence;
 
 import ch.colabproject.colab.api.controller.EntityGatheringBagForPropagation;
 import ch.colabproject.colab.api.controller.RequestManager;
+import ch.colabproject.colab.api.controller.project.ProjectManager;
 import ch.colabproject.colab.api.controller.team.TeamManager;
 import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.api.model.team.TeamMember;
 import ch.colabproject.colab.api.model.user.User;
-import ch.colabproject.colab.api.persistence.jpa.project.ProjectDao;
 import ch.colabproject.colab.api.presence.model.TouchUserPresence;
 import ch.colabproject.colab.api.presence.model.UserPresence;
-import com.hazelcast.core.HazelcastInstance;
-import com.hazelcast.cp.lock.FencedLock;
-import com.hazelcast.map.IMap;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -27,6 +24,9 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import com.hazelcast.core.HazelcastInstance;
+import com.hazelcast.cp.lock.FencedLock;
+import com.hazelcast.map.IMap;
 
 /**
  * To manages user presence
@@ -50,9 +50,9 @@ public class PresenceManager {
     @Inject
     private EntityGatheringBagForPropagation transactionManager;
 
-    /** To load project */
+    /** Project specific logic management */
     @Inject
-    private ProjectDao projectDao;
+    private ProjectManager projectManager;
 
     /** To fetch teamMembers */
     @Inject
@@ -91,7 +91,7 @@ public class PresenceManager {
      */
     public Collection<UserPresence> getPresenceList(Long projectId) {
         // just to check read access to project
-        projectDao.findProject(projectId);
+        projectManager.assertAndGetProject(projectId);
 
         Map<String, UserPresence> get = null;
         try {
@@ -116,7 +116,7 @@ public class PresenceManager {
         if (touch != null && touch.getProjectId() != null && touch.getWsSessionId() != null) {
             Long projectId = touch.getProjectId();
 
-            Project project = projectDao.findProject(projectId);
+            Project project = projectManager.assertAndGetProject(projectId);
             User currentUser = requestManager.getCurrentUser();
             TeamMember member = teamManager.findMemberByProjectAndUser(project, currentUser);
 
@@ -184,7 +184,7 @@ public class PresenceManager {
      */
     public void clearProjectPresenceList(Long projectId) {
         // laod project to check permissions
-        projectDao.findProject(projectId);
+        projectManager.assertAndGetProject(projectId);
 
         FencedLock lock = getLock(projectId);
 

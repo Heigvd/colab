@@ -8,12 +8,13 @@ package ch.colabproject.colab.api.rest.team;
 
 import ch.colabproject.colab.api.controller.team.TeamManager;
 import ch.colabproject.colab.api.exceptions.ColabMergeException;
-import ch.colabproject.colab.api.model.team.acl.AccessControl;
-import ch.colabproject.colab.api.model.team.acl.InvolvementLevel;
-import ch.colabproject.colab.api.persistence.jpa.team.TeamDao;
-import ch.colabproject.colab.api.model.team.TeamRole;
 import ch.colabproject.colab.api.model.team.TeamMember;
+import ch.colabproject.colab.api.model.team.TeamRole;
+import ch.colabproject.colab.api.model.team.acl.AccessControl;
 import ch.colabproject.colab.api.model.team.acl.HierarchicalPosition;
+import ch.colabproject.colab.api.model.team.acl.InvolvementLevel;
+import ch.colabproject.colab.api.persistence.jpa.team.TeamMemberDao;
+import ch.colabproject.colab.api.persistence.jpa.team.TeamRoleDao;
 import ch.colabproject.colab.generator.model.annotations.AuthenticationRequired;
 import java.util.List;
 import javax.inject.Inject;
@@ -47,9 +48,13 @@ public class TeamRestEndpoint {
     @Inject
     private TeamManager teamManager;
 
-    /** Team persistence */
+    /** Team member persistence handling */
     @Inject
-    private TeamDao teamDao;
+    private TeamMemberDao teamMemberDao;
+
+    /** Team role persistence handling */
+    @Inject
+    private TeamRoleDao teamRoleDao;
 
     // *********************************************************************************************
     // TeamMembers
@@ -81,22 +86,21 @@ public class TeamRestEndpoint {
     @Path("member/{memberId: [0-9]+}")
     public TeamMember getTeamMember(@PathParam("memberId") Long memberId) {
         logger.debug("Get member #{}", memberId);
-        return teamDao.findTeamMember(memberId);
+        return teamMemberDao.findTeamMember(memberId);
     }
 
     /**
-     * Update a TeamMember
+     * Update a TeamMember. Only fields which are editable by users will be impacted.
      *
      * @param member new value
      *
-     * @return the team member
      * @throws ColabMergeException if update failed
      */
     @PUT
     @Path("member")
-    public TeamMember updateTeamMember(TeamMember member) throws ColabMergeException {
+    public void updateTeamMember(TeamMember member) throws ColabMergeException {
         logger.debug("Update member {}", member);
-        return teamDao.updateTeamMember(member);
+        teamMemberDao.updateTeamMember(member);
     }
 
     /**
@@ -155,21 +159,21 @@ public class TeamRestEndpoint {
     @Path("role/{roleId: [0-9]+}")
     public TeamRole getRole(@PathParam("roleId") Long roleId) {
         logger.debug("Get Role #{}", roleId);
-        return teamDao.findRole(roleId);
+        return teamRoleDao.findRole(roleId);
     }
 
     /**
-     * Update a role.This will only affect the role name.
+     * Update a role. Only fields which are editable by users will be impacted.
      *
      * @param role the role to update
      *
-     * @throws ch.colabproject.colab.api.exceptions.ColabMergeException if update failed
+     * @throws ColabMergeException if update failed
      */
     @PUT
     @Path("role")
     public void updateRole(TeamRole role) throws ColabMergeException {
         logger.debug("Update role {}", role);
-        teamManager.updateRole(role);
+        teamRoleDao.updateRole(role);
     }
 
     /**

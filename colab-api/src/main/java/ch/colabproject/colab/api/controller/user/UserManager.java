@@ -19,6 +19,8 @@ import ch.colabproject.colab.api.model.user.HttpSession;
 import ch.colabproject.colab.api.model.user.LocalAccount;
 import ch.colabproject.colab.api.model.user.SignUpInfo;
 import ch.colabproject.colab.api.model.user.User;
+import ch.colabproject.colab.api.persistence.jpa.user.AccountDao;
+import ch.colabproject.colab.api.persistence.jpa.user.HttpSessionDao;
 import ch.colabproject.colab.api.persistence.jpa.user.UserDao;
 import ch.colabproject.colab.api.security.AuthenticationFailure;
 import ch.colabproject.colab.api.security.SessionManager;
@@ -26,14 +28,13 @@ import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
 import ch.colabproject.colab.generator.model.exceptions.MessageI18nKey;
 import java.time.OffsetDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -86,17 +87,42 @@ public class UserManager {
     @Inject
     private ValidationManager validationManager;
 
-    /**
-     * User persistence
-     */
+    /** Account persistence handling */
+    @Inject
+    private AccountDao accountDao;
+
+    /** User persistence handling */
     @Inject
     private UserDao userDao;
 
+    /** Http session persistence handling */
+    @Inject
+    private HttpSessionDao httpSessionDao;
+
+
+    // *********************************************************************************************
+    // find user
+    // *********************************************************************************************
+
     /**
-     * Access to the persistence unit
+     * Retrieve the user. If not found, throw a {@link HttpErrorMessage}.
+     *
+     * @param userId the id of the user
+     *
+     * @return the user if found
+     *
+     * @throws HttpErrorMessage if the user was not found
      */
-    @PersistenceContext(unitName = "COLAB_PU")
-    private EntityManager em;
+    public User assertAndGetUser(Long userId) {
+        User user = userDao.findUser(userId);
+
+        if (user == null) {
+            logger.error("user #{} not found", userId);
+            throw HttpErrorMessage.relatedObjectNotFoundError();
+        }
+
+        return user;
+    }
 
     /**
      * Find a user by id
@@ -133,7 +159,7 @@ public class UserManager {
                 if (identifier == null || identifier.isBlank()) {
                     throw HttpErrorMessage.badRequest();
                 } else {
-                    LocalAccount account = userDao.findLocalAccountByIdentifier(identifier);
+                    LocalAccount account = findLocalAccountByIdentifier(identifier);
 
                     if (account != null) {
                         return new AuthMethod(account.getCurrentClientHashMethod(),
@@ -250,7 +276,7 @@ public class UserManager {
         User user = userDao.findUserByUsername(signup.getUsername());
         if (user == null) {
             // username not yet taken
-            LocalAccount account = userDao.findLocalAccountByEmail(signup.getEmail());
+            LocalAccount account = accountDao.findLocalAccountByEmail(signup.getEmail());
             // no local account with the given email address
 
             if (account == null) {
@@ -276,13 +302,13 @@ public class UserManager {
                 validationManager.assertValid(user);
                 validationManager.assertValid(account);
 
-                em.persist(user);
+                User persistedUser = userDao.persistUser(user);
                 // flush changes to DB to check DB constraint
                 // TODO: build some AfterTXCommit executor
-                em.flush();
+                requestManager.flush();
                 // new user with a local account should verify their e-mail address
                 tokenManager.requestEmailAddressVerification(account, false);
-                return user;
+                return persistedUser;
             } else {
                 // wait.... throwing something else here leaks account existence...
                 // for security reason, give as little useful information as possible
@@ -309,7 +335,7 @@ public class UserManager {
      * @throws HttpErrorMessage if authentication failed
      */
     public User authenticate(AuthInfo authInfo) {
-        LocalAccount account = userDao.findLocalAccountByIdentifier(authInfo.getIdentifier());
+        LocalAccount account = findLocalAccountByIdentifier(authInfo.getIdentifier());
 
         if (account != null) {
             HashMethod m = account.getCurrentDbHashMethod();
@@ -400,7 +426,7 @@ public class UserManager {
      * @throws HttpErrorMessage if currentUser is not allowed to update the given account
      */
     public void updatePassword(AuthInfo authInfo) {
-        LocalAccount account = userDao.findLocalAccountByIdentifier(authInfo.getIdentifier());
+        LocalAccount account = findLocalAccountByIdentifier(authInfo.getIdentifier());
 
         if (account != null) {
             String mandatoryHash = authInfo.getMandatoryHash();
@@ -451,11 +477,11 @@ public class UserManager {
      * @param sessionId id of session to logout
      */
     public void forceLogout(Long sessionId) {
-        HttpSession httpSession = userDao.getHttpSessionById(sessionId);
+        HttpSession httpSession = httpSessionDao.findHttpSession(sessionId);
         HttpSession currentSession = requestManager.getHttpSession();
         if (httpSession != null) {
             if (!httpSession.equals(currentSession)) {
-                userDao.deleteHttpSession(httpSession);
+                sessionManager.deleteHttpSession(httpSession);
             } else {
                 throw HttpErrorMessage.badRequest();
             }
@@ -512,7 +538,7 @@ public class UserManager {
      * @param id id of the LocalAccount
      */
     public void switchClientHashMethod(Long id) {
-        Account account = userDao.findAccount(id);
+        Account account = accountDao.findAccount(id);
         if (account instanceof LocalAccount) {
             LocalAccount localAccount = (LocalAccount) account;
             AuthMethod authMethod = getDefaultRandomAuthenticationMethod();
@@ -527,12 +553,40 @@ public class UserManager {
      * @param id id of the LocalAccount
      */
     public void switchServerHashMethod(Long id) {
-        Account account = userDao.findAccount(id);
+        Account account = accountDao.findAccount(id);
         if (account instanceof LocalAccount) {
             LocalAccount localAccount = (LocalAccount) account;
             AuthMethod authMethod = getDefaultRandomAuthenticationMethod();
             localAccount.setNextDbHashMethod(authMethod.getMandatoryMethod());
         }
+    }
+
+    /**
+     * Find local account by identifier.
+     *
+     * @param identifier email address or username
+     *
+     * @return LocalAccount
+     */
+    public LocalAccount findLocalAccountByIdentifier(String identifier) {
+        LocalAccount account = accountDao.findLocalAccountByEmail(identifier);
+
+        if (account == null) {
+            // no localAccount with such an email address
+            // try to find a user by username
+            User user = userDao.findUserByUsername(identifier);
+            if (user != null) {
+                // User found, as authenticationMethod is only available for LocalAccount,
+                // try to find one
+                Optional<Account> optAccount = user.getAccounts().stream()
+                    .filter(a -> a instanceof LocalAccount)
+                    .findFirst();
+                if (optAccount.isPresent()) {
+                    account = (LocalAccount) optAccount.get();
+                }
+            }
+        }
+        return account;
     }
 
     /**
@@ -543,7 +597,7 @@ public class UserManager {
      */
     public void requestPasswordReset(String email) {
         logger.debug("Request reset password: {}", email);
-        LocalAccount account = userDao.findLocalAccountByEmail(email);
+        LocalAccount account = accountDao.findLocalAccountByEmail(email);
         if (account != null) {
             // account exists, send the message
             tokenManager.sendResetPasswordToken(account, true);
@@ -564,7 +618,7 @@ public class UserManager {
     public LocalAccount updateLocalAccountEmailAddress(LocalAccount account)
         throws ColabMergeException {
         logger.debug("Update LocalAccount email address: {}", account);
-        LocalAccount managedAccount = (LocalAccount) userDao.findAccount(account.getId());
+        LocalAccount managedAccount = (LocalAccount) accountDao.findAccount(account.getId());
 
         String currentEmail = managedAccount.getEmail();
         String newEmail = account.getEmail();
@@ -578,7 +632,7 @@ public class UserManager {
                 managedAccount.setVerified(false);
                 managedAccount.setEmail(newEmail);
                 // make sure to flush changes to database. It will check index uniqueness
-                em.flush();
+                requestManager.flush();
                 tokenManager.requestEmailAddressVerification(account, false);
             } catch (Exception e) {
                 // address already used, do not send any email to this address

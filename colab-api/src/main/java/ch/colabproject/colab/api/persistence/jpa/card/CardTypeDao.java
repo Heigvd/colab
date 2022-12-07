@@ -23,6 +23,8 @@ import com.google.common.collect.Lists;
 
 /**
  * Card type persistence
+ * <p>
+ * Note : Most of database operations are handled by managed entities and cascade.
  *
  * @author sandra
  */
@@ -40,13 +42,30 @@ public class CardTypeDao {
     private EntityManager em;
 
     /**
+     * Find a card type by id
+     *
+     * @param id the id of the card type to fetch
+     *
+     * @return the card type with the given id or null if such a card type does not exist
+     */
+    public AbstractCardType findAbstractCardType(Long id) {
+        AbstractCardType cardType = em.find(AbstractCardType.class, id);
+
+        logger.trace("find abstract card type #{} => {}", id, cardType);
+
+        return cardType;
+    }
+
+    /**
      * Get the list of global card types
      *
      * @return list of global card types
      */
     public List<CardType> findGlobalCardTypes() {
-        logger.debug("get all global card types");
+        logger.trace("find all global card types");
+
         TypedQuery<CardType> query = em.createNamedQuery("CardType.findGlobals", CardType.class);
+
         return query.getResultList();
     }
 
@@ -56,9 +75,11 @@ public class CardTypeDao {
      * @return list of published global card types
      */
     public List<CardType> findPublishedGlobalCardTypes() {
-        logger.debug("get published global card types");
+        logger.trace("find published global card types");
+
         TypedQuery<CardType> query = em.createNamedQuery("CardType.findPublishedGlobals",
             CardType.class);
+
         return query.getResultList();
     }
 
@@ -68,9 +89,11 @@ public class CardTypeDao {
      * @return list of ids corresponding to the global published card types
      */
     public List<Long> findIdsOfPublishedGlobalCardTypes() {
-        logger.debug("get published global card type ids");
+        logger.trace("find published global card type ids");
+
         TypedQuery<Long> query = em.createNamedQuery("CardType.findIdsOfPublishedGlobal",
             Long.class);
+
         return query.getResultList();
     }
 
@@ -82,12 +105,14 @@ public class CardTypeDao {
      * @return list of published non-global card types accessible to the current user
      */
     public List<AbstractCardType> findPublishedProjectCardTypes(Long userId) {
-        logger.debug("get published card types in the projects the user is a team member of");
+        logger.trace("find published card types in the projects the user is a team member of");
 
         TypedQuery<AbstractCardType> query = em
             .createNamedQuery("AbstractCardType.findPublishedByProjectTeamMemberUser",
                 AbstractCardType.class);
+
         query.setParameter("userId", userId);
+
         return query.getResultList();
     }
 
@@ -99,11 +124,13 @@ public class CardTypeDao {
      * @return the ids of the matching card types or references
      */
     public List<Long> findIdsOfProjectCardType(Long userId) {
-        logger.debug("get the ids of the card types in the projects the user is a team member of");
+        logger.trace("find the ids of the card types in the projects the user is a team member of");
 
         TypedQuery<Long> query = em
             .createNamedQuery("AbstractCardType.findIdsByProjectTeamMemberUser", Long.class);
+
         query.setParameter("userId", userId);
+
         return query.getResultList();
     }
 
@@ -118,12 +145,16 @@ public class CardTypeDao {
      * @return the ids of matching card types or references
      */
     public List<Long> findTargetIdsOf(List<Long> cardTypeOrRefIds) {
-        logger.debug("get the target's ids");
+        logger.trace("find the target's ids");
+
         if (CollectionUtils.isEmpty(cardTypeOrRefIds)) {
             return Lists.newArrayList();
         }
+
         TypedQuery<Long> query = em.createNamedQuery("CardTypeRef.findTargetIds", Long.class);
+
         query.setParameter("initIds", cardTypeOrRefIds);
+
         return query.getResultList();
     }
 
@@ -137,13 +168,17 @@ public class CardTypeDao {
      * @return the ids of matching card types references
      */
     public List<Long> findDirectReferencesIdsOf(List<Long> cardTypeOrRefIds) {
-        logger.debug("get the refs' ids");
+        logger.trace("find the refs' ids");
+
         if (CollectionUtils.isEmpty(cardTypeOrRefIds)) {
             return Lists.newArrayList();
         }
+
         TypedQuery<Long> query = em.createNamedQuery("CardTypeRef.findDirectReferencesIds",
             Long.class);
+
         query.setParameter("initIds", cardTypeOrRefIds);
+
         return query.getResultList();
 
     }
@@ -158,12 +193,16 @@ public class CardTypeDao {
      * @return the ids of the matching projects
      */
     public List<Long> findProjectIdsOf(List<Long> cardTypeOrRefIds) {
-        logger.debug("get the project's id");
+        logger.trace("find the project's id");
+
         if (CollectionUtils.isEmpty(cardTypeOrRefIds)) {
             return Lists.newArrayList();
         }
+
         TypedQuery<Long> query = em.createNamedQuery("AbstractCardType.findProjectId", Long.class);
+
         query.setParameter("listId", cardTypeOrRefIds);
+
         return query.getResultList();
     }
 
@@ -175,7 +214,7 @@ public class CardTypeDao {
      * @return the matching references
      */
     public List<CardTypeRef> findDirectReferences(AbstractCardType target) {
-        logger.debug("find the direct references of the target {}", target);
+        logger.trace("find the direct references of the target {}", target);
 
         TypedQuery<CardTypeRef> query = em.createNamedQuery("CardTypeRef.findDirectReferences",
             CardTypeRef.class);
@@ -186,61 +225,54 @@ public class CardTypeDao {
     }
 
     /**
-     * @param id id of the card type to fetch
-     *
-     * @return the card type with the given id or null if such a card type does not exists
-     */
-    public AbstractCardType findAbstractCardType(Long id) {
-        logger.debug("get abstract card type #{}", id);
-        return em.find(AbstractCardType.class, id);
-    }
-
-    /**
-     * Update card type
+     * Update card type. Only fields which are editable by users will be impacted.
      *
      * @param <T>           a sub type of AbstractCardType
-     * @param cardTypeOrRef card type as supply by clients (ie not managed)
+     * @param cardTypeOrRef the card type as supplied by clients (ie not managed by JPA)
      *
-     * @return updated managed card type
+     * @return return updated managed card type
      *
-     * @throws ColabMergeException if updating the card type failed
+     * @throws ColabMergeException if the update failed
      */
-    public <T extends AbstractCardType> T updateAbstractCardType(T cardTypeOrRef)
+    public <T extends AbstractCardType> T updateCardTypeOrRef(T cardTypeOrRef)
         throws ColabMergeException {
-        logger.debug("update card type {}", cardTypeOrRef);
+        logger.trace("update card type or ref {}", cardTypeOrRef);
+
         @SuppressWarnings("unchecked")
-        T mCardType = (T) this.findAbstractCardType(cardTypeOrRef.getId());
-        mCardType.merge(cardTypeOrRef);
-        return mCardType;
+        T managedCardType = (T) this.findAbstractCardType(cardTypeOrRef.getId());
+
+        managedCardType.merge(cardTypeOrRef);
+
+        return managedCardType;
     }
 
     /**
      * Persist a brand new card type to database
      *
      * @param <T>           a sub type of AbstractCardType
-     * @param cardTypeOrRef new card type to persist
+     * @param cardTypeOrRef the new card type to persist
      *
-     * @return the new persisted card type
+     * @return the new persisted and managed card type
      */
     public <T extends AbstractCardType> T persistAbstractCardType(T cardTypeOrRef) {
-        logger.debug("persist card type {}", cardTypeOrRef);
+        logger.trace("persist card type {}", cardTypeOrRef);
+
         em.persist(cardTypeOrRef);
+
         return cardTypeOrRef;
     }
 
     /**
-     * Delete card type from database. This can't be undone
+     * Delete the card type from database. This can't be undone
      *
-     * @param id id of the card type to delete
-     *
-     * @return just deleted card type
+     * @param cardTypeOrRef the card type (or reference) to delete
      */
-    public AbstractCardType deleteAbstractCardType(Long id) {
-        logger.debug("delete card type #{}", id);
+    public void deleteAbstractCardType(AbstractCardType cardTypeOrRef) {
+        logger.trace("delete card type {}", cardTypeOrRef);
+
         // TODO: move to recycle bin first
-        AbstractCardType cardType = this.findAbstractCardType(id);
-        em.remove(cardType);
-        return cardType;
+
+        em.remove(cardTypeOrRef);
     }
 
 }

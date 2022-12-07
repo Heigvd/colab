@@ -23,6 +23,7 @@ import { LabeledInput, LabeledTextArea } from '../common/element/Input';
 import { TipsCtx, WIPContainer } from '../common/element/Tips';
 import ConfirmDeleteOpenCloseModal from '../common/layout/ConfirmDeleteModal';
 import Flex from '../common/layout/Flex';
+import OpenCloseModal from '../common/layout/OpenCloseModal';
 import Tabs, { Tab } from '../common/layout/Tabs';
 import {
   borderRadius,
@@ -35,6 +36,7 @@ import {
   textSmall,
 } from '../styling/style';
 import { ProjectIllustrationMaker } from './ProjectIllustrationMaker';
+import ProjectModelSharing from './ProjectModelSharing';
 
 interface ProjectSettingsProps {
   project: Project;
@@ -49,7 +51,12 @@ export function ProjectSettings({ project }: ProjectSettingsProps): JSX.Element 
   const tipsConfig = React.useContext(TipsCtx);
 
   return (
-    <Flex align="stretch" direction="column" grow={1} className={css({ alignSelf: 'stretch', padding: space_L })}>
+    <Flex
+      align="stretch"
+      direction="column"
+      grow={1}
+      className={css({ alignSelf: 'stretch', padding: space_L })}
+    >
       <Tabs>
         {/* not routed because does not work well when opened from projects' list as a modal */}
         <Tab name="general" label={i18n.common.general}>
@@ -99,48 +106,81 @@ export function ProjectSettings({ project }: ProjectSettingsProps): JSX.Element 
         </Tab>
         <Tab
           name="share"
-          label={i18n.modules.project.settings.sharing.parameters}
-          invisible={project.type !== 'MODEL' || !tipsConfig.WIP.value}
+          label={i18n.modules.project.labels.sharing}
+          invisible={project.type !== 'MODEL' || !project.id}
         >
-          <WIPContainer>
-            <Flex direction="column">
-              <h2>{i18n.modules.project.settings.sharing.parameters}</h2>
-              <Flex direction="column">
-                <h3>{i18n.modules.project.labels.include}</h3>
-                <Checkbox
-                  value={true} //{data.withRoles}
-                  label={i18n.modules.project.labels.roles}
-                  onChange={(_newValue: boolean) => {
-                    //setData({ ...data, withRoles: newValue });
-                  }}
-                />
-                <Checkbox
-                  value={true} //{data.withDeliverables}
-                  label={i18n.modules.project.labels.cardContents}
-                  onChange={(_newValue: boolean) => {
-                    // setData({ ...data, withDeliverables: newValue });
-                  }}
-                />
-                <Checkbox
-                  value={true} //{data.withResources}
-                  label={i18n.modules.project.labels.documentation}
-                  onChange={(_newValue: boolean) => {
-                    //setData({ ...data, withResources: newValue });
-                  }}
-                />
+          <Flex direction="column" className={css({ alignSelf: 'stretch' })}>
+            <Flex className={css({ alignSelf: 'stretch' })}>
+              <Flex
+                direction="column"
+                align="stretch"
+                className={css({ width: '45%', minWidth: '45%', marginRight: space_L })}
+              >
+                <div>
+                  <OpenCloseModal
+                    title={i18n.modules.project.labels.shareTheProject}
+                    collapsedChildren={
+                      <Button clickable>+ {i18n.modules.project.labels.shareTheProject}</Button>
+                    }
+                    modalBodyClassName={css({ padding: space_M })}
+                    showCloseButton
+                  >
+                    {close => (
+                      <>
+                        {project.id && (
+                          <ProjectModelSharing projectId={project.id} onClose={close} />
+                        )}
+                      </>
+                    )}
+                  </OpenCloseModal>
+                </div>
               </Flex>
-              <Flex direction="column">
-                <h3>{i18n.modules.project.labels.connect}</h3>
-                <Checkbox
-                  value={true} //{data.withResources}
-                  label={i18n.modules.project.labels.keepConnectionBetweenModelAndProject}
-                  onChange={(_newValue: boolean) => {
-                    //setData({ ...data, withResources: newValue });
-                  }}
-                />
-              </Flex>
+              <WIPContainer>
+                <Flex
+                  direction="column"
+                  align="stretch"
+                  justify="flex-end"
+                  className={css({ width: '55%' })}
+                >
+                  <h2>{i18n.modules.project.labels.sharingParams}</h2>
+                  <Flex direction="column">
+                    <h3>{i18n.modules.project.labels.include}</h3>
+                    <Checkbox
+                      value={true} //{data.withRoles}
+                      label={i18n.modules.project.labels.roles}
+                      onChange={(_newValue: boolean) => {
+                        //setData({ ...data, withRoles: newValue });
+                      }}
+                    />
+                    <Checkbox
+                      value={true} //{data.withDeliverables}
+                      label={i18n.modules.project.labels.cardContents}
+                      onChange={(_newValue: boolean) => {
+                        // setData({ ...data, withDeliverables: newValue });
+                      }}
+                    />
+                    <Checkbox
+                      value={true} //{data.withResources}
+                      label={i18n.modules.project.labels.documentation}
+                      onChange={(_newValue: boolean) => {
+                        //setData({ ...data, withResources: newValue });
+                      }}
+                    />
+                  </Flex>
+                  <Flex direction="column">
+                    <h3>{i18n.modules.project.labels.connect}</h3>
+                    <Checkbox
+                      value={true} //{data.withResources}
+                      label={i18n.modules.project.labels.keepConnectionBetweenModelAndProject}
+                      onChange={(_newValue: boolean) => {
+                        //setData({ ...data, withResources: newValue });
+                      }}
+                    />
+                  </Flex>
+                </Flex>
+              </WIPContainer>
             </Flex>
-          </WIPContainer>
+          </Flex>
         </Tab>
         <Tab name="Advanced" label={i18n.common.advanced} invisible={!tipsConfig.WIP.value}>
           <WIPContainer>

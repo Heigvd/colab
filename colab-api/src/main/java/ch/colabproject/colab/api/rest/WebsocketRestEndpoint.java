@@ -26,10 +26,10 @@ import org.slf4j.LoggerFactory;
 /**
  * API to manage subscription to {@link WebsocketChannel}.
  * <p>
- * <u>Note about un/subcriptions protocol:</u> The link between HttpSessionId (cookie) and websocket
- * session id must be known. As the client has no access to its cookie (httpOnly cookie, for
- * security concerns), the subscription is made through the REST methods defined here. Thus, both
- * http session id and websocket session id are known at the same time.
+ * <u>Note about un/subscriptions protocol:</u> The link between HttpSessionId (cookie) and
+ * websocket session id must be known. As the client has no access to its cookie (httpOnly cookie,
+ * for security concerns), the subscription is made through the REST methods defined here. Thus,
+ * both http session id and websocket session id are known at the same time.
  *
  * @author maxence
  */
@@ -88,7 +88,6 @@ public class WebsocketRestEndpoint {
      * Subscribe to the currentUser channel
      *
      * @param sessionId websocket session id
-     *
      */
     @PUT
     @Path("SubscribeToUserChannel")
@@ -101,7 +100,6 @@ public class WebsocketRestEndpoint {
      * Unsubscribe from the currentUser channel
      *
      * @param sessionId websocket session id
-     *
      */
     @PUT
     @Path("UnsubscribeFromUserChannel")

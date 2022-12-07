@@ -9,7 +9,6 @@ package ch.colabproject.colab.api.controller.team;
 import ch.colabproject.colab.api.controller.card.CardManager;
 import ch.colabproject.colab.api.controller.project.ProjectManager;
 import ch.colabproject.colab.api.controller.token.TokenManager;
-import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.model.card.Card;
 import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.api.model.team.TeamMember;
@@ -18,7 +17,9 @@ import ch.colabproject.colab.api.model.team.acl.AccessControl;
 import ch.colabproject.colab.api.model.team.acl.HierarchicalPosition;
 import ch.colabproject.colab.api.model.team.acl.InvolvementLevel;
 import ch.colabproject.colab.api.model.user.User;
-import ch.colabproject.colab.api.persistence.jpa.team.TeamDao;
+import ch.colabproject.colab.api.persistence.jpa.team.TeamMemberDao;
+import ch.colabproject.colab.api.persistence.jpa.team.TeamRoleDao;
+import ch.colabproject.colab.api.persistence.jpa.team.acl.AccessControlDao;
 import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
 import java.util.List;
 import java.util.Objects;
@@ -44,7 +45,15 @@ public class TeamManager {
 
     /** Team persistence */
     @Inject
-    private TeamDao teamDao;
+    private TeamMemberDao teamMemberDao;
+
+    /** Team persistence */
+    @Inject
+    private TeamRoleDao teamRoleDao;
+
+    /** Team persistence */
+    @Inject
+    private AccessControlDao accessControlDao;
 
     /** Project specific logic handling */
     @Inject
@@ -63,16 +72,16 @@ public class TeamManager {
     // *********************************************************************************************
 
     /**
-     * Retrieve the member. If not found, throw a {@link HttpErrorMessage}.
+     * Retrieve the team member. If not found, throw a {@link HttpErrorMessage}.
      *
-     * @param memberId the id of the card
+     * @param memberId the id of the team member
      *
-     * @return the card if found
+     * @return the team member if found
      *
-     * @throws HttpErrorMessage if the card was not found
+     * @throws HttpErrorMessage if the team member was not found
      */
     public TeamMember assertAndGetMember(Long memberId) {
-        TeamMember member = teamDao.findTeamMember(memberId);
+        TeamMember member = teamMemberDao.findTeamMember(memberId);
 
         if (member == null) {
             logger.error("team member #{} not found", memberId);
@@ -142,6 +151,27 @@ public class TeamManager {
     // *********************************************************************************************
     // Roles
     // *********************************************************************************************
+
+    /**
+     * Retrieve the role. If not found, throw a {@link HttpErrorMessage}.
+     *
+     * @param roleId the id of the role
+     *
+     * @return the role if found
+     *
+     * @throws HttpErrorMessage if the role was not found
+     */
+    public TeamRole assertAndGetRole(Long roleId) {
+        TeamRole role = teamRoleDao.findRole(roleId);
+
+        if (role == null) {
+            logger.error("team role #{} not found", roleId);
+            throw HttpErrorMessage.relatedObjectNotFoundError();
+        }
+
+        return role;
+    }
+
     /**
      * Get all the roles defined in the given project
      *
@@ -174,32 +204,12 @@ public class TeamManager {
     }
 
     /**
-     * Update role
-     *
-     * @param role role to update
-     *
-     * @return the managed and updated role
-     *
-     * @throws ch.colabproject.colab.api.exceptions.ColabMergeException if merge failed
-     */
-    public TeamRole updateRole(TeamRole role) throws ColabMergeException {
-        if (role != null) {
-            TeamRole managedRole = teamDao.findRole(role.getId());
-            if (managedRole != null) {
-                managedRole.merge(role);
-                return managedRole;
-            }
-        }
-        throw HttpErrorMessage.relatedObjectNotFoundError();
-    }
-
-    /**
      * Delete role
      *
      * @param roleId id of the role to delete
      */
     public void deleteRole(Long roleId) {
-        TeamRole role = teamDao.findRole(roleId);
+        TeamRole role = teamRoleDao.findRole(roleId);
         if (role != null) {
             Project project = role.getProject();
             if (project != null) {
@@ -211,7 +221,7 @@ public class TeamManager {
                     roles.remove(role);
                 }
             });
-            teamDao.removeRole(role);
+            teamRoleDao.deleteRole(role);
         }
     }
 
@@ -222,8 +232,8 @@ public class TeamManager {
      * @param memberId id of the teamMember
      */
     public void giveRole(Long roleId, Long memberId) {
-        TeamRole role = teamDao.findRole(roleId);
-        TeamMember member = teamDao.findTeamMember(memberId);
+        TeamRole role = teamRoleDao.findRole(roleId);
+        TeamMember member = teamMemberDao.findTeamMember(memberId);
         if (role != null && member != null) {
             if (Objects.equals(role.getProject(), member.getProject())) {
                 List<TeamMember> members = role.getMembers();
@@ -247,8 +257,8 @@ public class TeamManager {
      * @param memberId id of the member
      */
     public void removeRole(Long roleId, Long memberId) {
-        TeamRole role = teamDao.findRole(roleId);
-        TeamMember member = teamDao.findTeamMember(memberId);
+        TeamRole role = teamRoleDao.findRole(roleId);
+        TeamMember member = teamMemberDao.findTeamMember(memberId);
         if (role != null && member != null) {
             List<TeamMember> members = role.getMembers();
             List<TeamRole> roles = member.getRoles();
@@ -266,7 +276,7 @@ public class TeamManager {
      * @return the teamMember or null
      */
     public TeamMember findMemberByProjectAndUser(Project project, User user) {
-        return teamDao.findMemberByProjectAndUser(project, user);
+        return teamMemberDao.findMemberByProjectAndUser(project, user);
     }
 
     /**
@@ -278,7 +288,7 @@ public class TeamManager {
      * @return true if both user are both member of the same team
      */
     public boolean areUserTeammate(User a, User b) {
-        return teamDao.areUserTeammate(a, b);
+        return teamMemberDao.findIfUserAreTeammate(a, b);
     }
 
     /**
@@ -292,12 +302,12 @@ public class TeamManager {
      */
     public void setInvolvementLevelForMember(Long cardId, Long memberId, InvolvementLevel level) {
         Card card = cardManager.assertAndGetCard(cardId);
-        TeamMember member = teamDao.findTeamMember(memberId);
+        TeamMember member = teamMemberDao.findTeamMember(memberId);
         if (card != null && member != null) {
             AccessControl ac = card.getAcByMember(member);
             if (level == null) {
                 if (ac != null) {
-                    teamDao.removeAccessControl(ac);
+                    deleteAccessControl(ac);
                 }
             } else {
                 if (ac == null) {
@@ -326,12 +336,12 @@ public class TeamManager {
      */
     public void setInvolvementLevelForRole(Long cardId, Long roleId, InvolvementLevel level) {
         Card card = cardManager.assertAndGetCard(cardId);
-        TeamRole role = teamDao.findRole(roleId);
+        TeamRole role = teamRoleDao.findRole(roleId);
         if (card != null && role != null) {
             AccessControl ac = card.getAcByRole(role);
             if (level == null) {
                 if (ac != null) {
-                    teamDao.removeAccessControl(ac);
+                    deleteAccessControl(ac);
                 }
             } else {
                 if (ac == null) {
@@ -348,6 +358,29 @@ public class TeamManager {
         } else {
             throw HttpErrorMessage.relatedObjectNotFoundError();
         }
+    }
+
+    /**
+     * Delete an access control
+     *
+     * @param ac the access control to delete
+     */
+    private void deleteAccessControl(AccessControl ac) {
+        logger.trace("delete access control {}", ac);
+
+        if (ac.getMember() != null) {
+            ac.getMember().getAccessControlList().remove(ac);
+        }
+
+        if (ac.getRole() != null) {
+            ac.getRole().getAccessControl().remove(ac);
+        }
+
+        if (ac.getCard() != null) {
+            ac.getCard().getAccessControlList().remove(ac);
+        }
+
+        accessControlDao.deleteAccessControl(ac);
 
     }
 
@@ -442,7 +475,7 @@ public class TeamManager {
      * @param position new hierarchical position
      */
     public void updatePosition(Long memberId, HierarchicalPosition position) {
-        TeamMember member = teamDao.findTeamMember(memberId);
+        TeamMember member = teamMemberDao.findTeamMember(memberId);
         if (member != null && position != null) {
             member.setPosition(position);
             assertTeamIntegrity(member.getProject());
@@ -489,7 +522,7 @@ public class TeamManager {
             teamMember.getProject().getTeamMembers().remove(teamMember);
         }
 
-        teamDao.removeTeamMember(teamMember);
+        teamMemberDao.deleteTeamMember(teamMember);
     }
 
     /**

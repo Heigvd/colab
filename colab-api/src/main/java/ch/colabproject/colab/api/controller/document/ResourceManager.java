@@ -462,7 +462,7 @@ public class ResourceManager {
                 owner.getDirectAbstractResources().remove(resourceOrRef);
             }
 
-            resourceDao.deleteResourceOrRef(resourceOrRef.getId());
+            resourceDao.deleteResourceOrRef(resourceOrRef);
 
             // Note : the document is deleted by cascade
         });
@@ -497,7 +497,7 @@ public class ResourceManager {
         }
 
         DuplicationManager duplicator = new DuplicationManager(params,
-            resourceReferenceSpreadingHelper, fileManager);
+            resourceReferenceSpreadingHelper, fileManager, cardContentManager);
 
         Resource newResourceJavaObject;
         try {
@@ -786,7 +786,7 @@ public class ResourceManager {
 
         resource.getDocuments().remove(document);
 
-        documentDao.deleteDocument(document.getId());
+        documentDao.deleteDocument(document);
     }
 
     // *********************************************************************************************

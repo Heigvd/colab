@@ -7,17 +7,14 @@
 package ch.colabproject.colab.api.security;
 
 import ch.colabproject.colab.api.Helper;
-import ch.colabproject.colab.api.model.user.HttpSession;
 import ch.colabproject.colab.api.controller.RequestManager;
 import ch.colabproject.colab.api.model.user.Account;
+import ch.colabproject.colab.api.model.user.HttpSession;
 import ch.colabproject.colab.api.model.user.InternalHashMethod;
 import ch.colabproject.colab.api.model.user.LocalAccount;
 import ch.colabproject.colab.api.model.user.User;
+import ch.colabproject.colab.api.persistence.jpa.user.HttpSessionDao;
 import ch.colabproject.colab.api.persistence.jpa.user.UserDao;
-import com.hazelcast.core.HazelcastInstance;
-import com.hazelcast.cp.lock.FencedLock;
-import com.hazelcast.flakeidgen.FlakeIdGenerator;
-import com.hazelcast.map.IMap;
 import java.nio.charset.StandardCharsets;
 import java.security.NoSuchAlgorithmException;
 import java.time.OffsetDateTime;
@@ -33,6 +30,10 @@ import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import com.hazelcast.core.HazelcastInstance;
+import com.hazelcast.cp.lock.FencedLock;
+import com.hazelcast.flakeidgen.FlakeIdGenerator;
+import com.hazelcast.map.IMap;
 
 /**
  * Bean to manage HTTP sessions
@@ -50,9 +51,13 @@ public class SessionManager {
     @Inject
     private HazelcastInstance hzInstance;
 
-    /** account DAO */
+    /** User persistence handling */
     @Inject
     private UserDao userDao;
+
+    /** Http session persistence handling */
+    @Inject
+    private HttpSessionDao httpSessionDao;
 
     /** request manager */
     @Inject
@@ -85,7 +90,7 @@ public class SessionManager {
      * @return a session if it exists or null
      */
     public HttpSession getAndValidate(Long sessionId, String secret) {
-        HttpSession httpSession = userDao.getHttpSessionById(sessionId);
+        HttpSession httpSession = httpSessionDao.findHttpSession(sessionId);
 
         if (httpSession != null) {
             try {
@@ -141,7 +146,7 @@ public class SessionManager {
             httpSession.setUserAgent("");
         }
 
-        return userDao.persistHttpSession(httpSession);
+        return httpSessionDao.persistHttpSession(httpSession);
     }
 
     /**
@@ -151,10 +156,12 @@ public class SessionManager {
      */
     public void deleteHttpSession(HttpSession session) {
         Account account = session.getAccount();
+
         if (account != null) {
             account.getHttpSessions().remove(session);
         }
-        userDao.deleteHttpSession(session);
+
+        httpSessionDao.deleteHttpSession(session);
     }
 
     /**
@@ -165,17 +172,18 @@ public class SessionManager {
      * @return the number of failed attempts in a row
      */
     public Long authenticationFailure(LocalAccount account) {
-        return this.authenticationFailureCache.invoke(account.getId(), (MutableEntry<Long, AuthenticationFailure> entry, Object... arguments) -> {
-            if (entry.exists()) {
-                AuthenticationFailure value = entry.getValue();
-                value.inc();
-                entry.setValue(value);
-                return entry.getValue().getCounter();
-            } else {
-                entry.setValue(new AuthenticationFailure());
-                return 1l;
-            }
-        });
+        return this.authenticationFailureCache.invoke(account.getId(),
+            (MutableEntry<Long, AuthenticationFailure> entry, Object... arguments) -> {
+                if (entry.exists()) {
+                    AuthenticationFailure value = entry.getValue();
+                    value.inc();
+                    entry.setValue(value);
+                    return entry.getValue().getCounter();
+                } else {
+                    entry.setValue(new AuthenticationFailure());
+                    return 1l;
+                }
+            });
     }
 
     /**
@@ -249,7 +257,8 @@ public class SessionManager {
                     // prevent updating tracking data (updated by and at)
                     requestManager.setDoNotTrackChange(true);
                     IMap<Long, OffsetDateTime> userActivityCache = getUserActivityCache();
-                    Iterator<Map.Entry<Long, OffsetDateTime>> iterator = userActivityCache.iterator();
+                    Iterator<Map.Entry<Long, OffsetDateTime>> iterator = userActivityCache
+                        .iterator();
                     while (iterator.hasNext()) {
                         Map.Entry<Long, OffsetDateTime> next = iterator.next();
                         iterator.remove();
@@ -274,7 +283,7 @@ public class SessionManager {
                         if (next != null) {
                             Long id = next.getKey();
                             if (id != null) {
-                                HttpSession session = userDao.getHttpSessionById(id);
+                                HttpSession session = httpSessionDao.findHttpSession(id);
                                 if (session != null) {
                                     OffsetDateTime date = next.getValue();
                                     logger.trace("Update HTTP session LastSeen: {}", date);
@@ -302,12 +311,12 @@ public class SessionManager {
                 try {
                     logger.trace("Got the lock, let's clear");
                     IMap<Long, OffsetDateTime> cache = getHttpSessionActivityCache();
-                    List<HttpSession> list = userDao.getExpiredHttpSessions();
+                    List<HttpSession> list = httpSessionDao.findExpiredHttpSessions();
                     logger.trace("List of expired session: {}", list);
                     for (HttpSession session : list) {
                         if (!cache.containsKey(session.getId())) {
                             logger.trace("Delete the session {}", session);
-                            userDao.deleteHttpSession(session);
+                            deleteHttpSession(session);
                         } else {
                             logger.trace("Seems httpSesion jsut waked up: {}", session);
                         }

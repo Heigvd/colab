@@ -17,6 +17,8 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Card persistence
+ * <p>
+ * Note : Most of database operations are handled by managed entities and cascade.
  *
  * @author sandra
  */
@@ -34,57 +36,63 @@ public class CardDao {
     private EntityManager em;
 
     /**
-     * @param id id of the card to fetch
+     * Find a card by id
      *
-     * @return the card with the given id or null if such a card does not exists
+     * @param id the id of the card to fetch
+     *
+     * @return the card with the given id or null if such a card does not exist
      */
     public Card findCard(Long id) {
-        logger.debug("get card #{}", id);
+        logger.trace("find card #{}", id);
+
         return em.find(Card.class, id);
     }
 
     /**
-     * Update card
+     * Update card. Only fields which are editable by users will be impacted.
      *
-     * @param card card as supply by clients (ie not managed)
+     * @param card the card as supplied by clients (ie not managed by JPA)
      *
-     * @return updated managed card
+     * @return return updated managed card
      *
-     * @throws ColabMergeException if updating the card failed
+     * @throws ColabMergeException if the update failed
      */
     public Card updateCard(Card card) throws ColabMergeException {
-        logger.debug("update card {}", card);
-        Card mCard = this.findCard(card.getId());
-        mCard.merge(card);
-        return mCard;
+        logger.trace("update card {}", card);
+
+        Card managedCard = this.findCard(card.getId());
+
+        managedCard.merge(card);
+
+        return managedCard;
     }
 
     /**
      * Persist a brand new card to database
      *
-     * @param card new card to persist
+     * @param card the new card to persist
      *
-     * @return the new persisted card
+     * @return the new persisted and managed card
      */
     public Card persistCard(Card card) {
-        logger.debug("persist card {}", card);
+        logger.trace("persist card {}", card);
+
         em.persist(card);
+
         return card;
     }
 
     /**
-     * Delete card from database. This can't be undone
+     * Delete the card from database. This can't be undone
      *
-     * @param id id of the card to delete
-     *
-     * @return just deleted card
+     * @param card the card to delete
      */
-    public Card deleteCard(Long id) {
-        logger.debug("delete card #{}", id);
+    public void deleteCard(Card card) {
+        logger.trace("delete card {}", card);
+
         // TODO: move to recycle bin first
-        Card card = this.findCard(id);
+
         em.remove(card);
-        return card;
     }
 
 }

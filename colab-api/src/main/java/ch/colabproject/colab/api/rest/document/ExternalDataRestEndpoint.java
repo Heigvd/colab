@@ -27,7 +27,7 @@ import javax.ws.rs.core.MediaType;
 @AuthenticationRequired
 public class ExternalDataRestEndpoint {
 
-    /** ext data manager */
+    /** external data manager */
     @Inject
     private ExternalDataManager externalDataManager;
 

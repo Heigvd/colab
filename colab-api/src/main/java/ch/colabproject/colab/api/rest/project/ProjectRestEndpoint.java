@@ -69,15 +69,17 @@ public class ProjectRestEndpoint {
     private ProjectDao projectDao;
 
     /**
-     * Retrieve the list of all projects. This is available to admin only
+     * Get project identified by the given id.
      *
-     * @return all known project
+     * @param id id of the project to fetch
+     *
+     * @return the project or null
      */
     @GET
-    @AdminResource
-    public List<Project> getAllProjects() {
-        logger.debug("Get all projects");
-        return projectDao.findAllProject();
+    @Path("/{id}")
+    public Project getProject(@PathParam("id") Long id) {
+        logger.debug("Get project #{}", id);
+        return projectDao.findProject(id);
     }
 
     /**
@@ -93,17 +95,15 @@ public class ProjectRestEndpoint {
     }
 
     /**
-     * Get project identified by the given id.
+     * Retrieve the list of all projects. This is available to admin only
      *
-     * @param id id of the project to fetch
-     *
-     * @return the project or null
+     * @return all known project
      */
     @GET
-    @Path("/{id}")
-    public Project getProject(@PathParam("id") Long id) {
-        logger.debug("Get project #{}", id);
-        return projectDao.findProject(id);
+    @AdminResource
+    public List<Project> getAllProjects() {
+        logger.debug("Get all projects");
+        return projectDao.findAllProject();
     }
 
     /**
@@ -142,7 +142,7 @@ public class ProjectRestEndpoint {
     }
 
     /**
-     * Save changes to database.
+     * Save changes to database. Only fields which are editable by users will be impacted.
      *
      * @param project project to update
      *
@@ -150,7 +150,8 @@ public class ProjectRestEndpoint {
      */
     @PUT
     public void updateProject(Project project) throws ColabMergeException {
-        logger.debug("Update project {}", project);
+        logger.debug("update project {}", project);
+
         projectDao.updateProject(project);
     }
 
@@ -195,7 +196,7 @@ public class ProjectRestEndpoint {
      *
      * @return the pending potential instance maker
      */
-    @PUT
+    @POST
     @Path("shareModel/{id: [0-9]+}/{email}")
     public InstanceMaker shareModel(@PathParam("id") Long modelId,
         @PathParam("email") String email) {
@@ -302,9 +303,9 @@ public class ProjectRestEndpoint {
     }
 
     /**
-     * Get all activityflowlinks belonging to a project
+     * Get all activity flow links belonging to a project
      *
-     * @param id ID of the project activityflowlinks belong to
+     * @param id ID of the project activity flow links belong to
      *
      * @return all activityFlowLinks linked to the project
      */

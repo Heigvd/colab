@@ -252,7 +252,7 @@ public class HttpSession implements WithId, WithJsonDiscriminator, WithPermissio
             return this.account.getReadCondition();
         } else {
             // not linked to any account, nothing to hide
-            // This case may only exists when the session is about to be destroyed
+            // This case may only exist when the session is about to be destroyed
             return Conditions.alwaysTrue;
         }
     }
@@ -265,7 +265,7 @@ public class HttpSession implements WithId, WithJsonDiscriminator, WithPermissio
             return this.account.getUpdateCondition();
         } else {
             // not linked to any account, nothing to hide
-            // This case may only exists when the session is about to be destroyed
+            // This case may only exist when the session is about to be destroyed
             return Conditions.alwaysTrue;
         }
     }
