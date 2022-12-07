@@ -142,7 +142,7 @@ public class TokenDao {
      *
      * @return model sharing if there is a pending one, null otherwise
      */
-    public ModelSharingToken findModelShareByProjectAndRecipient(Project project,
+    public ModelSharingToken findModelSharingByProjectAndRecipient(Project project,
         String recipient) {
         try {
             return em.createNamedQuery("ModelSharingToken.findByProjectAndRecipient",

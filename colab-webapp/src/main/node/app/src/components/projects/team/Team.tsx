@@ -15,7 +15,6 @@ import InlineLoading from '../../common/element/InlineLoading';
 import Flex from '../../common/layout/Flex';
 import Tabs, { Tab } from '../../common/layout/Tabs';
 import { space_L, space_S } from '../../styling/style';
-import ProjectModelSharing from '../ProjectModelSharing';
 import MemberCreator from './MemberCreator';
 import TeamRACI from './Raci';
 import TeamRights from './Rights';
@@ -45,7 +44,7 @@ export default function Team({ project }: TeamProps): JSX.Element {
   if (status === 'INITIALIZED' && project.id != null) {
     return (
       <>
-        <Flex justify="space-between" className={css({padding: space_L})}>
+        <Flex justify="space-between" className={css({ padding: space_L })}>
           <h2>{i18n.team.team}</h2>
           <MemberCreator members={members} project={project} />
         </Flex>
@@ -61,9 +60,6 @@ export default function Team({ project }: TeamProps): JSX.Element {
           </Tab>
           <Tab name="projectACL" label={i18n.modules.project.settings.involvements.label}>
             {entityIs(root, 'Card') ? <CardInvolvement card={root} /> : <InlineLoading />}
-          </Tab>
-          <Tab name="modelSharing" label="Share the model" invisible={project.type !== 'MODEL'}>
-            <ProjectModelSharing projectId={project.id} />
           </Tab>
         </Tabs>
       </>

@@ -196,7 +196,7 @@ public class ProjectRestEndpoint {
      *
      * @return the pending potential instance maker
      */
-    @PUT
+    @POST
     @Path("shareModel/{id: [0-9]+}/{email}")
     public InstanceMaker shareModel(@PathParam("id") Long modelId,
         @PathParam("email") String email) {

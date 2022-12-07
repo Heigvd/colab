@@ -15,6 +15,7 @@ import Form, { Field } from '../common/element/Form';
 
 export interface ProjectModelSharingProps {
   projectId: number;
+  onClose?: () => void;
 }
 
 interface FormData {
@@ -23,7 +24,10 @@ interface FormData {
 
 const defaultData: FormData = { email: '' };
 
-export default function ProjectModelSharing({ projectId }: ProjectModelSharingProps): JSX.Element {
+export default function ProjectModelSharing({
+  projectId,
+  onClose,
+}: ProjectModelSharingProps): JSX.Element {
   const dispatch = useAppDispatch();
   const i18n = useTranslations();
 
@@ -44,9 +48,15 @@ export default function ProjectModelSharing({ projectId }: ProjectModelSharingPr
     ({ email }: FormData) => {
       startLoading();
 
-      dispatch(API.shareModel({ projectId, recipient: email })).then(() => {
-        stopLoading();
-      });
+      dispatch(API.shareModel({ projectId, recipient: email }))
+        .then(() => {
+          stopLoading();
+        })
+        .then(() => {
+          if (onClose) {
+            onClose();
+          }
+        });
 
       dispatch(
         addNotification({
@@ -56,7 +66,7 @@ export default function ProjectModelSharing({ projectId }: ProjectModelSharingPr
         }),
       );
     },
-    [dispatch, i18n.modules.project.info, projectId, startLoading, stopLoading],
+    [dispatch, i18n.modules.project.info, projectId, startLoading, stopLoading, onClose],
   );
 
   return (
@@ -67,7 +77,7 @@ export default function ProjectModelSharing({ projectId }: ProjectModelSharingPr
         resetDataAfterSubmit
         onSubmit={sendSharing}
         isSubmitInProcess={isLoading}
-        submitLabel="share"
+        submitLabel={i18n.common.share}
       />
     </div>
   );

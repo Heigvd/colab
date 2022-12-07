@@ -424,7 +424,7 @@ public class TokenManager {
     public InstanceMaker sendModelSharingToken(Project model, String recipient) {
         User currentUser = securityManager.assertAndGetCurrentUser();
 
-        ModelSharingToken token = tokenDao.findModelShareByProjectAndRecipient(model, recipient);
+        ModelSharingToken token = tokenDao.findModelSharingByProjectAndRecipient(model, recipient);
 
         if (token == null) {
             // create an instance maker and link it to the project, but do not link it to any user

@@ -29,6 +29,7 @@ export const en = {
     edit: 'Edit',
     select: 'Select',
     selectAll: 'Select all',
+    share: 'Share',
     next: 'Next',
     back: 'Back',
     updated: 'Updated',
@@ -325,6 +326,8 @@ export const en = {
         documentation: 'Documentation',
         connect: 'Connect',
         keepConnectionBetweenModelAndProject: 'Keep new projects connected to the model',
+        sharing: 'Sharing',
+        sharingParams: 'Sharing parameters',
       },
       actions: {
         createProject: 'Create project',
@@ -365,10 +368,6 @@ export const en = {
         },
         resources: {
           label: 'Project documentation',
-        },
-        sharing: {
-          label: 'Model sharing',
-          parameters: 'Sharing parameters',
         },
         missingIcon:
           'Oh a new icon library, dear developer please make what is needed to display the icon.',
