@@ -258,7 +258,7 @@ const CardWrapper = ({
   } else {
     return (
       <>
-        <Flex className={css({padding: space_S + ' ' + space_L})} justify="space-between">
+        <Flex className={css({ padding: space_S + ' ' + space_L })} justify="space-between">
           <Flex align="center">
             {ancestors.map((ancestor, x) => (
               <Ancestor
@@ -281,11 +281,12 @@ const CardWrapper = ({
             title="toggle view edit"
             icon={location.pathname.includes('card') ? faPen : faTableCellsLarge}
             onClick={() => {
-              navigate(
-                `../${location.pathname.includes('hierarchy') ? 'hierarchy': ''}/${location.pathname.includes('card') ? 'edit' : 'card'}/${content.cardId}/v/${
-                  content.id
-                }`,
-              );
+              // Note : functional but not so strong
+              if (location.pathname.includes('/card/')) {
+                navigate(`${location.pathname.replace('/card/', '/edit/')}`);
+              } else {
+                navigate(`${location.pathname.replace('/edit/', '/card/')}`);
+              }
             }}
             className={lightIconButtonStyle}
           />
@@ -485,7 +486,13 @@ function RootView({ rootContent }: { rootContent: CardContent | null | undefined
 
   return (
     <div
-      className={css({ display: 'flex', flexGrow: '1', flexDirection: 'column', height: '100%', padding: space_L })}
+      className={css({
+        display: 'flex',
+        flexGrow: '1',
+        flexDirection: 'column',
+        height: '100%',
+        padding: space_L,
+      })}
     >
       {rootContent != null ? (
         <>
@@ -619,13 +626,20 @@ export default function Editor(): JSX.Element {
                     backButtonTitle={i18n.common.action.backProjectRoot}
                     touchMode="zoom"
                   >
-                    {card => <CardThumbWithSelector depth={2} card={card} mayOrganize className={paddingAroundStyle([2, 3, 4], space_L)}/>}
+                    {card => (
+                      <CardThumbWithSelector
+                        depth={2}
+                        card={card}
+                        mayOrganize
+                        className={paddingAroundStyle([2, 3, 4], space_L)}
+                      />
+                    )}
                   </CardWrapper>
                 }
               />
               {/* Edit cart, send to default variant */}
               <Route path="edit/:id" element={<DefaultVariantDetector />} />
-              
+
               {/* Edit card */}
               <Route
                 path={`/edit/:id/v/:vId/*`}
@@ -648,7 +662,14 @@ export default function Editor(): JSX.Element {
                     backButtonTitle={i18n.common.action.backProjectRoot}
                     touchMode="zoom"
                   >
-                    {card => <CardThumbWithSelector depth={2} card={card} mayOrganize className={paddingAroundStyle([2, 3, 4], space_L)}/>}
+                    {card => (
+                      <CardThumbWithSelector
+                        depth={2}
+                        card={card}
+                        mayOrganize
+                        className={paddingAroundStyle([2, 3, 4], space_L)}
+                      />
+                    )}
                   </CardWrapper>
                 }
               />
@@ -694,21 +715,21 @@ function CardCreatorAndOrganize({ rootContent, organize }: CardCreatorAndOrganiz
           align="center"
           className={css({ marginTop: '-10px', paddingRight: space_S })}
         >
-            <IconButton
-              className={cx(
-                greyIconButtonChipStyle,
-                css({ alignSelf: 'flex-end' }),
-                organize.organize &&
-                  css({
-                    backgroundColor: successColor,
-                    color: 'var(--bgColor)',
-                    border: successColor,
-                  }),
-              )}
-              title={i18n.modules.card.positioning.toggleText}
-              icon={faTableCells}
-              onClick={() => organize.setOrganize(e => !e)}
-            />
+          <IconButton
+            className={cx(
+              greyIconButtonChipStyle,
+              css({ alignSelf: 'flex-end' }),
+              organize.organize &&
+                css({
+                  backgroundColor: successColor,
+                  color: 'var(--bgColor)',
+                  border: successColor,
+                }),
+            )}
+            title={i18n.modules.card.positioning.toggleText}
+            icon={faTableCells}
+            onClick={() => organize.setOrganize(e => !e)}
+          />
           <CardCreator parentCardContent={rootContent} className={greyIconButtonChipStyle} />
         </Flex>
       )}
