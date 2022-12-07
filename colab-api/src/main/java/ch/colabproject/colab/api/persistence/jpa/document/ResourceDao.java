@@ -121,6 +121,7 @@ public class ResourceDao {
     /**
      * Update resource. Only fields which are editable by users will be impacted.
      *
+     * @param <T>           a sub type of AbstractResource
      * @param resourceOrRef the resource as supplied by clients (ie not managed by JPA)
      *
      * @return return updated managed resource

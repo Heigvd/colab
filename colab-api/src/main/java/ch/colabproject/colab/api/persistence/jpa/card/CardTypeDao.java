@@ -227,6 +227,7 @@ public class CardTypeDao {
     /**
      * Update card type. Only fields which are editable by users will be impacted.
      *
+     * @param <T>           a sub type of AbstractCardType
      * @param cardTypeOrRef the card type as supplied by clients (ie not managed by JPA)
      *
      * @return return updated managed card type
