@@ -312,6 +312,7 @@ export const fr: ColabTranslations = {
   // MODULES
   modules: {
     project: {
+      projectCopy: (name: string) => name + ' - copie',
       labels: {
         projectDisplaySettings: "Paramètres d'affichage du projet",
         projectSettings: 'Paramètres du projet',
@@ -343,9 +344,8 @@ export const fr: ColabTranslations = {
           `Créer un projet à partir de ${'"' + templateTitle + '"'}`,
         editIllustration: "Éditer l'illustration du projet",
         newProject: 'Nouveau projet',
-        saveAsModel: 'Configurer comme modèle',
-        saveProjectAsModelPart1: 'Configurer le projet',
-        saveProjectAsModelPart2: 'en tant que modèle',
+        saveAsModel: 'Créer un modèle',
+        saveProjectAsModelPart: 'Créer un modèle à partir du projet',
         extractModel: 'Extraire un modèle',
         extractAModel: "Extraire un modèle à partir d'un projet",
         extractAModelFromProject: 'Extraire un modèle à partir du projet ',
@@ -365,6 +365,7 @@ export const fr: ColabTranslations = {
         isAModel: 'Ceci est un modèle de projet',
         mailSentToShare: (recipientAddress: string): string =>
           `${recipientAddress} va recevoir un email l'invitant à utiliser le modèle`,
+        initialProjectNotFound: "Le projet initial n'a pas pu être trouvé",
       },
       settings: {
         icon: 'Icône',

@@ -357,6 +357,29 @@ export const createProject = createAsyncThunk(
   },
 );
 
+export const duplicateProject = createAsyncThunk(
+  'project/duplicate',
+  async ({ project, newName }: { project: Project; newName: string }) => {
+    if (project.id) {
+      const parameters: DuplicationParam = {
+        '@class': 'DuplicationParam',
+        withRoles: true,
+        withTeamMembers: false,
+        withCardTypes: true,
+        withCardsStructure: true,
+        withDeliverables: true,
+        withResources: true,
+        withStickyNotes: true,
+        withActivityFlow: true,
+        makeOnlyCardTypeReferences: false,
+        resetProgressionData: false,
+      };
+
+      return await restClient.ProjectRestEndpoint.duplicateProject(project.id, newName, parameters);
+    }
+  },
+);
+
 export const updateProject = createAsyncThunk('project/update', async (project: Project) => {
   await restClient.ProjectRestEndpoint.updateProject(project);
 });
@@ -434,28 +457,12 @@ export const closeCurrentProject = createAsyncThunk(
   },
 );
 
-export const duplicateProject = createAsyncThunk('project/duplicate', async (project: Project) => {
-  if (project.id) {
-    const parameters: DuplicationParam = {
-      '@class': 'DuplicationParam',
-      withRoles: true,
-      withTeamMembers: false,
-      withCardTypes: true,
-      withCardsStructure: true,
-      withDeliverables: true,
-      withResources: true,
-      withStickyNotes: true,
-      withActivityFlow: true,
-      makeOnlyCardTypeReferences: false,
-      resetProgressionData: false,
-    };
-
-    return await restClient.ProjectRestEndpoint.duplicateProject(project.id, parameters);
-  }
-});
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Project model
+////////////////////////////////////////////////////////////////////////////////////////////////////
 
 export const shareModel = createAsyncThunk(
-  'project/share',
+  'model/share',
   async (payload: { projectId: number; recipient: string }) => {
     if (payload.recipient) {
       await restClient.ProjectRestEndpoint.shareModel(payload.projectId, payload.recipient);

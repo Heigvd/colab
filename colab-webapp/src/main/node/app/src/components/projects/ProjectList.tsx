@@ -250,7 +250,10 @@ export const ProjectDisplay = ({
                     <FontAwesomeIcon icon={faCopy} /> {i18n.common.duplicate}
                   </>
                 ),
-                action: () => dispatch(API.duplicateProject(project)),
+                action: () => {
+                  const newName = i18n.modules.project.projectCopy(project.name || '');
+                  dispatch(API.duplicateProject({ project, newName }));
+                },
               },
               ...(tipsConfig.WIP.value && project.type !== 'MODEL'
                 ? [

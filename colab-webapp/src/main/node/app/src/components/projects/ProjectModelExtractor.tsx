@@ -25,10 +25,6 @@ import { space_L, space_M, space_S } from '../styling/style';
 import { defaultProjectIllustration } from './ProjectCommon';
 import { ProjectIllustrationMaker } from './ProjectIllustrationMaker';
 
-interface ProjectModelExtractorProps {
-  projectId: number | null | undefined;
-}
-
 const modalStyle = css({
   '&:hover': { textDecoration: 'none' },
   display: 'flex',
@@ -61,6 +57,12 @@ const defaultData: ModelCreationData = {
 type ProgressionStep = 'parameters' | 'fillBasisData';
 
 const initialProgressionStep = 'parameters';
+
+/* ---------------------------------------------------------------------------------------------- */
+
+interface ProjectModelExtractorProps {
+  projectId: number | null | undefined;
+}
 
 export function ProjectModelExtractor({ projectId }: ProjectModelExtractorProps): JSX.Element {
   const dispatch = useAppDispatch();
@@ -123,8 +125,8 @@ export function ProjectModelExtractor({ projectId }: ProjectModelExtractorProps)
   const modalTitle = React.useMemo(() => {
     return (
       <span>
-        {i18n.modules.project.actions.saveProjectAsModelPart1} <b>{project?.name || ''}</b>{' '}
-        {i18n.modules.project.actions.saveProjectAsModelPart2}
+        {i18n.modules.project.actions.saveProjectAsModelPart}{' '}
+        <b>{project?.name ? ' ' + project.name : ''}</b>
       </span>
     );
   }, [i18n, project]);
@@ -145,7 +147,9 @@ export function ProjectModelExtractor({ projectId }: ProjectModelExtractorProps)
           return (
             <>
               <AvailabilityStatusIndicator status={projectStatus} />
-              {projectStatus === 'ERROR' && <div>Initial project not found</div>}
+              {projectStatus === 'ERROR' && (
+                <div>{i18n.modules.project.info.initialProjectNotFound}</div>
+              )}
             </>
           );
         }}
@@ -193,8 +197,29 @@ export function ProjectModelExtractor({ projectId }: ProjectModelExtractorProps)
               onClick={async () => {
                 if (!readOnly) {
                   setReadOnly(true);
-                  // TODO duplicate and
-                  dispatch(API.updateProject({ ...project, type: 'MODEL' })).then(() => {
+                  dispatch(
+                    API.createProject({
+                      type: 'MODEL',
+                      name: data.name,
+                      description: data.description,
+                      illustration: data.illustration,
+                      guestsEmail: data.guests,
+                      baseProjectId: projectId || null,
+                      duplicationParam: {
+                        '@class': 'DuplicationParam',
+                        withRoles: true,
+                        withTeamMembers: false,
+                        withCardTypes: true,
+                        withCardsStructure: true,
+                        withDeliverables: true,
+                        withResources: true,
+                        withStickyNotes: true,
+                        withActivityFlow: true,
+                        makeOnlyCardTypeReferences: false, // will need an option
+                        resetProgressionData: true,
+                      },
+                    }),
+                  ).then(() => {
                     reset();
                     close();
                     // Dom choice : do not navigate to the model list when created
@@ -238,6 +263,8 @@ export function ProjectModelExtractor({ projectId }: ProjectModelExtractorProps)
     </Modal>
   );
 }
+
+/* ---------------------------------------------------------------------------------------------- */
 
 interface ProjectModelParametersProps {
   data: ModelCreationData;
@@ -288,6 +315,8 @@ function ProjectModelParameters({
     </>
   );
 }
+
+/* ---------------------------------------------------------------------------------------------- */
 
 interface ProjectModelDataInitializationProps {
   data: ModelCreationData;

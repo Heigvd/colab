@@ -20,7 +20,6 @@ import ch.colabproject.colab.api.model.DuplicationParam;
 import ch.colabproject.colab.api.model.card.AbstractCardType;
 import ch.colabproject.colab.api.model.card.Card;
 import ch.colabproject.colab.api.model.card.CardContent;
-import ch.colabproject.colab.api.model.common.Illustration;
 import ch.colabproject.colab.api.model.link.ActivityFlowLink;
 import ch.colabproject.colab.api.model.project.InstanceMaker;
 import ch.colabproject.colab.api.model.project.Project;
@@ -30,6 +29,7 @@ import ch.colabproject.colab.api.model.team.acl.HierarchicalPosition;
 import ch.colabproject.colab.api.model.user.User;
 import ch.colabproject.colab.api.persistence.jpa.project.InstanceMakerDao;
 import ch.colabproject.colab.api.persistence.jpa.project.ProjectDao;
+import ch.colabproject.colab.api.rest.project.bean.ProjectCreationData;
 import ch.colabproject.colab.api.rest.project.bean.ProjectStructure;
 import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
 import java.util.ArrayList;
@@ -170,16 +170,57 @@ public class ProjectManager {
     // *********************************************************************************************
 
     /**
+     * Create a new project with the provided data and register current user as a member.
+     *
+     * @param creationData the data needed to fill the project
+     *
+     * @return the persisted new project
+     */
+    public Project createProject(ProjectCreationData creationData) {
+        if (creationData.getBaseProjectId() == null) {
+            return createProjectFromScratch(creationData);
+        } else {
+            return createProjectFromModel(creationData);
+        }
+    }
+
+    /**
+     * Create a new project from scratch with the provided data and register current user as a
+     * member.
+     *
+     * @param creationData the data needed to fill the project
+     *
+     * @return the persisted new project
+     */
+    private Project createProjectFromScratch(ProjectCreationData creationData) {
+        logger.debug("Create a project with {}", creationData);
+
+        Project project = new Project();
+        project.setType(creationData.getType());
+        project.setName(creationData.getName());
+        project.setDescription(creationData.getDescription());
+        project.setIllustration(creationData.getIllustration());
+
+        createNewProject(project);
+
+        creationData.getGuestsEmail().stream().forEach(email -> {
+            teamManager.invite(project.getId(), email);
+        });
+
+        return project;
+    }
+
+    /**
      * Complete and persist the given project and add the current user to the project team
      *
      * @param project project to persist
      *
      * @return the new persisted project
      */
-    public Project createProject(Project project) {
+    private Project createNewProject(Project project) {
         try {
             return requestManager.sudo(() -> {
-                logger.debug("Create project: {}", project);
+                logger.debug("Create project {}", project);
 
                 initProject(project);
 
@@ -217,29 +258,39 @@ public class ProjectManager {
     }
 
     /**
-     * Create a new project based on a model
+     * Create a new project from a model with the provided data and register current user as a
+     * member.
      *
-     * @param name         the name of the new project
-     * @param description  the description of the new project
-     * @param illustration the illustration of the new project
-     * @param modelId      the id of the model the new project is based on
+     * @param creationData the data needed to fill the project
      *
-     * @return the new project
+     * @return id of the persisted new project
      */
-    public Project createProjectFromModel(String name, String description,
-        Illustration illustration, Long modelId) {
+    private Project createProjectFromModel(ProjectCreationData creationData) {
+        logger.debug("Create a project with {}", creationData);
+
         try {
             return requestManager.sudo(() -> {
-                Project project = duplicateProject(modelId,
-                    DuplicationParam.buildForCreationFromModel());
 
-                project.setType(ProjectType.PROJECT);
-                project.setName(name);
-                project.setDescription(description);
-                project.setIllustration(illustration);
+                DuplicationParam effectiveParams = creationData.getDuplicationParam();
+                if (effectiveParams == null) {
+                    effectiveParams = DuplicationParam.buildForProjectCreationFromModel();
+                }
+
+                Project project = duplicateProject(creationData.getBaseProjectId(),
+                    effectiveParams);
+
+                project.setType(creationData.getType());
+                project.setName(creationData.getName());
+                project.setDescription(creationData.getDescription());
+                project.setIllustration(creationData.getIllustration());
+
+                creationData.getGuestsEmail().stream().forEach(email -> {
+                    teamManager.invite(project.getId(), email);
+                });
 
                 return project;
             });
+
         } catch (RuntimeException ex) {
             throw ex;
         } catch (Exception ex) {
@@ -292,20 +343,30 @@ public class ProjectManager {
      * @return the new project
      */
     public Project duplicateProject(Long projectId, DuplicationParam params) {
-        Project originalProject = assertAndGetProject(projectId);
 
-        DuplicationManager duplicator = new DuplicationManager(params,
-            resourceReferenceSpreadingHelper, fileManager, cardContentManager);
+        try {
+            return requestManager.sudo(() -> { // TODO ! move sudo where really useful
+                Project originalProject = assertAndGetProject(projectId);
 
-        Project newProjectJavaObject = duplicator.duplicateProject(originalProject);
+                DuplicationManager duplicator = new DuplicationManager(params,
+                    resourceReferenceSpreadingHelper, fileManager, cardContentManager);
 
-        Project newProject = createProject(newProjectJavaObject);
+                Project newProjectJavaObject = duplicator.duplicateProject(originalProject);
 
-        duplicator.duplicateDataIntoJCR();
+                Project newProject = createNewProject(newProjectJavaObject);
 
-        duplicator.clear();
+                duplicator.duplicateDataIntoJCR();
 
-        return newProject;
+                duplicator.clear();
+
+                return newProject;
+            });
+
+        } catch (RuntimeException ex) {
+            throw ex;
+        } catch (Exception ex) {
+            return null;
+        }
     }
 
     // *********************************************************************************************
@@ -339,7 +400,9 @@ public class ProjectManager {
         logger.debug("Add and persist instance maker to user {} for model {}", user, model);
 
         InstanceMaker instanceMaker = addInstanceMaker(model, user);
-        return instanceMakerDao.persistInstanceMaker(instanceMaker);
+        instanceMakerDao.persistInstanceMaker(instanceMaker);
+
+        return instanceMaker;
     }
 
     /**
