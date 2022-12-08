@@ -12,10 +12,10 @@ import { useNavigate } from 'react-router-dom';
 import * as API from '../../API/api';
 import useTranslations from '../../i18n/I18nContext';
 import { useAndLoadProject } from '../../selectors/projectSelector';
-import { useAppDispatch } from '../../store/hooks';
+import { useAppDispatch, useLoadingState } from '../../store/hooks';
 import AvailabilityStatusIndicator from '../common/element/AvailabilityStatusIndicator';
 import Button from '../common/element/Button';
-import { AsyncButtonWithLoader } from '../common/element/ButtonWithLoader';
+import ButtonWithLoader from '../common/element/ButtonWithLoader';
 import Checkbox from '../common/element/Checkbox';
 import IllustrationDisplay from '../common/element/IllustrationDisplay';
 import { LabeledInput, LabeledTextArea } from '../common/element/Input';
@@ -70,6 +70,8 @@ export function ProjectModelExtractor({ projectId }: ProjectModelExtractorProps)
   const i18n = useTranslations();
 
   const { status: projectStatus, project } = useAndLoadProject(projectId || undefined);
+
+  const { isLoading, startLoading, stopLoading } = useLoadingState();
 
   const [data, setData] = React.useState<ModelCreationData>({ ...defaultData });
 
@@ -193,10 +195,11 @@ export function ProjectModelExtractor({ projectId }: ProjectModelExtractorProps)
           {showNextButton && <Button onClick={oneStepForward}>{i18n.common.next}</Button>}
 
           {showCreateButton && (
-            <AsyncButtonWithLoader
+            <ButtonWithLoader
               onClick={async () => {
                 if (!readOnly) {
                   setReadOnly(true);
+                  startLoading();
                   dispatch(
                     API.createProject({
                       type: 'MODEL',
@@ -207,12 +210,12 @@ export function ProjectModelExtractor({ projectId }: ProjectModelExtractorProps)
                       baseProjectId: projectId || null,
                       duplicationParam: {
                         '@class': 'DuplicationParam',
-                        withRoles: true,
+                        withRoles: data.withRoles,
                         withTeamMembers: false,
                         withCardTypes: true,
                         withCardsStructure: true,
-                        withDeliverables: true,
-                        withResources: true,
+                        withDeliverables: data.withDeliverables,
+                        withResources: data.withResources,
                         withStickyNotes: true,
                         withActivityFlow: true,
                         makeOnlyCardTypeReferences: false, // will need an option
@@ -221,15 +224,17 @@ export function ProjectModelExtractor({ projectId }: ProjectModelExtractorProps)
                     }),
                   ).then(() => {
                     reset();
+                    stopLoading();
                     close();
                     // Dom choice : do not navigate to the model list when created
                     //navigate('/models');
                   });
                 }
               }}
+              isLoading={isLoading}
             >
               {i18n.common.save}
-            </AsyncButtonWithLoader>
+            </ButtonWithLoader>
           )}
         </Flex>
       )}

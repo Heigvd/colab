@@ -30,7 +30,6 @@ import { StateStatus } from '../../store/slice/projectSlice';
 import ItemThumbnailsSelection from '../common/collection/ItemThumbnailsSelection';
 import IllustrationDisplay from '../common/element/IllustrationDisplay';
 import InlineLoading from '../common/element/InlineLoading';
-import { TipsCtx, WIPContainer } from '../common/element/Tips';
 import { ConfirmDeleteModal } from '../common/layout/ConfirmDeleteModal';
 import DropDownMenu from '../common/layout/DropDownMenu';
 import Flex from '../common/layout/Flex';
@@ -161,8 +160,6 @@ export const ProjectDisplay = ({
 
   const { currentUser } = useCurrentUser();
 
-  const tipsConfig = React.useContext(TipsCtx);
-
   return (
     <Flex
       onMouseDown={e => {
@@ -255,16 +252,14 @@ export const ProjectDisplay = ({
                   dispatch(API.duplicateProject({ project, newName }));
                 },
               },
-              ...(tipsConfig.WIP.value && project.type !== 'MODEL'
+              ...(project.type !== 'MODEL'
                 ? [
                     {
                       value: 'extractModel',
                       label: (
                         <>
-                          <WIPContainer>
-                            <FontAwesomeIcon icon={faStar} />{' '}
-                            {i18n.modules.project.actions.saveAsModel}
-                          </WIPContainer>
+                          <FontAwesomeIcon icon={faStar} />{' '}
+                          {i18n.modules.project.actions.saveAsModel}
                         </>
                       ),
                       action: () => navigate(`extractModel/${project.id}`),
