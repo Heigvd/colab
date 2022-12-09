@@ -9,18 +9,18 @@ import { css } from '@emotion/css';
 import { entityIs } from 'colab-rest-client';
 import * as React from 'react';
 import * as API from '../../API/api';
-import useTranslations from '../../i18n/I18nContext';
 import { useAndLoadResourceCategories } from '../../selectors/resourceSelector';
 import { useAppDispatch } from '../../store/hooks';
 import SelectInput from '../common/element/SelectInput';
 import { ResourceAndRef } from './resourcesCommonType';
 
-interface ResourceSettingsProps {
+interface ResourceCategorySelectorProps {
   resource: ResourceAndRef;
 }
 
-export default function ResourceSettings({ resource }: ResourceSettingsProps): JSX.Element {
-  const i18n = useTranslations();
+export default function ResourceCategorySelector({
+  resource,
+}: ResourceCategorySelectorProps): JSX.Element {
   const dispatch = useAppDispatch();
 
   const updatableResource = React.useMemo(() => {
@@ -50,7 +50,6 @@ export default function ResourceSettings({ resource }: ResourceSettingsProps): J
       {entityIs(updatableResource, 'Resource') && (
         <>
           <SelectInput
-            label={i18n.modules.resource.category}
             value={updatableResource.category || undefined}
             isMulti={false}
             canCreateOption={true}
