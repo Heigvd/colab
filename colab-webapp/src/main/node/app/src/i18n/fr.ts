@@ -204,7 +204,7 @@ export const fr: ColabTranslations = {
     involvementHelper:
       "Ajoutez ou sélectionnez un niveau d'implication pour tous les membres et les rôles. Vous pouvez l'affiner ci-dessous en choisissant individuellement un niveau différent. Lorsqu'il n'est pas défini, le niveau d'implication est calculé en fonction de la carte du ou des parents, puis de vos droits dans le projet.",
     inviteMembers: 'Inviter des membres',
-    inviteNewMember: 'Inviter un nouveau membre',
+    inviteNewMember: 'Inviter un membre',
     deleteMember: "Supprimer un membre de l'équipe",
     removeGuest: 'Retirer un invité',
     removeRole: 'Retirer un rôle',
