@@ -49,7 +49,7 @@ export default function CompletionEditor({ variant }: CompletionEditorProps): JS
     <>
       <Slider
         id="slider"
-        defaultValue={value}
+        value={variant.completionLevel}
         style={{ display: 'none' }}
         min={0}
         max={100}
