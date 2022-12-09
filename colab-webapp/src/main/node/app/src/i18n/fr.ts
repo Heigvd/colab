@@ -559,6 +559,12 @@ export const fr: ColabTranslations = {
           `Fournie par la thème globale «${cardTypeName}»`,
         forceTooltip:
           "Cette documentation provient d'ailleurs, vous pouvez néanmoins l'éditer depuis ici",
+        source: {
+          card: 'Carte',
+          theme: 'Thème',
+          inherited: 'Hérité',
+          project: 'Projet',
+        },
       },
       scope: {
         disclaimer: '', // TODO
