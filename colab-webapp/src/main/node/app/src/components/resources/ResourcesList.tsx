@@ -34,7 +34,7 @@ import {
   space_M,
   space_S,
 } from '../styling/style';
-import { ResourceSettingsModal } from './ResourceDisplay';
+import { ResourceCategoryModal } from './ResourceDisplay';
 import {
   getKey,
   getTheDirectResource,
@@ -211,6 +211,7 @@ function ResourcesListBy3Stacks({
   displayResourceItem,
 }: //readOnly,
 ResourcesListProps): JSX.Element {
+  const i18n = useTranslations();
   const lang = useLanguage();
 
   const { resourceOwnership } = React.useContext(ResourcesCtx);
@@ -299,7 +300,11 @@ ResourcesListProps): JSX.Element {
     >
       {bySources['OWN'] ? (
         <Collapsible
-          label={resourceOwnership.kind === 'CardType' ? 'Theme' : 'Card'}
+          label={
+            resourceOwnership.kind === 'CardType'
+              ? i18n.modules.resource.info.source.theme
+              : i18n.modules.resource.info.source.card
+          }
           open
           labelClassName={resourcesStackLabelStyle}
         >
@@ -315,7 +320,11 @@ ResourcesListProps): JSX.Element {
       )}
       {bySources['INHERITED'] ? (
         <div className={marginAroundStyle([3], space_S)}>
-          <Collapsible label="Inherited" open labelClassName={resourcesStackLabelStyle}>
+          <Collapsible
+            label={i18n.modules.resource.info.source.inherited}
+            open
+            labelClassName={resourcesStackLabelStyle}
+          >
             <ResourcesListByCategory
               resources={bySources['INHERITED']}
               selectResource={selectResource}
@@ -329,7 +338,11 @@ ResourcesListProps): JSX.Element {
       )}
       {bySources['PROJECT'] ? (
         <div className={marginAroundStyle([3], space_S)}>
-          <Collapsible label="Project" open labelClassName={resourcesStackLabelStyle}>
+          <Collapsible
+            label={i18n.modules.resource.info.source.project}
+            open
+            labelClassName={resourcesStackLabelStyle}
+          >
             <ResourcesListByCategory
               resources={bySources['PROJECT']}
               selectResource={selectResource}
@@ -576,7 +589,7 @@ function TocEntry({
 }: TocEntryProps): JSX.Element {
   const i18n = useTranslations();
 
-  const [showSettings, setShowSettings] = React.useState(false);
+  const [showCategorySelector, setCategorySelector] = React.useState(false);
 
   const { resourceOwnership } = React.useContext(ResourcesCtx);
 
@@ -712,13 +725,13 @@ function TocEntry({
                 ...(!effectiveReadOnly && resource.isDirectResource
                   ? [
                       {
-                        value: 'settings',
+                        value: 'categorySelector',
                         label: (
                           <>
-                            <FontAwesomeIcon icon={faCog} /> {i18n.common.settings}{' '}
+                            <FontAwesomeIcon icon={faCog} /> {i18n.modules.resource.category}
                           </>
                         ),
-                        action: () => setShowSettings(true),
+                        action: () => setCategorySelector(true),
                       },
                     ]
                   : []),
@@ -833,8 +846,8 @@ function TocEntry({
               )}
             </div>
           </Tips>
-          {showSettings && (
-            <ResourceSettingsModal resource={resource} onClose={() => setShowSettings(false)} />
+          {showCategorySelector && (
+            <ResourceCategoryModal resource={resource} onClose={() => setCategorySelector(false)} />
           )}
         </>
       )}
