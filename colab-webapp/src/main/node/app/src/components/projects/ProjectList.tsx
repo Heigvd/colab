@@ -26,7 +26,7 @@ import useTranslations from '../../i18n/I18nContext';
 import { useAndLoadProject } from '../../selectors/projectSelector';
 import { useCurrentUser } from '../../selectors/userSelector';
 import { shallowEqual, useAppDispatch, useAppSelector, useLoadingState } from '../../store/hooks';
-import { StateStatus } from '../../store/slice/projectSlice';
+import { AvailabilityStatus } from '../../store/store';
 import ItemThumbnailsSelection from '../common/collection/ItemThumbnailsSelection';
 import IllustrationDisplay from '../common/element/IllustrationDisplay';
 import InlineLoading from '../common/element/InlineLoading';
@@ -350,7 +350,7 @@ export const ProjectDisplay = ({
 
 interface ProjectListProps {
   projects: Project[];
-  status: StateStatus;
+  status: AvailabilityStatus;
   // eslint-disable-next-line @typescript-eslint/ban-types
   reload: AsyncThunk<Project[], void, {}>;
 }
@@ -443,7 +443,7 @@ export const UserProjects = (): JSX.Element => {
     shallowEqual,
   );
 
-  const status = useAppSelector(state => state.projects.status);
+  const status = useAppSelector(state => state.projects.statusForCurrentUser);
 
   React.useEffect(() => {
     if (window && window.top && window.top.document) {
@@ -466,13 +466,13 @@ export const AllProjects = (): JSX.Element => {
       }),
     shallowEqual,
   );
-  const status = useAppSelector(state => state.projects.allStatus);
+  const status = useAppSelector(state => state.projects.statusForAll);
 
   return <ProjectList projects={projects} status={status} reload={API.getAllProjects} />;
 };
 
 export const UserModels = (): JSX.Element => {
-  const status = useAppSelector(state => state.projects.status);
+  const status = useAppSelector(state => state.projects.statusForCurrentUser);
 
   React.useEffect(() => {
     if (window && window.top && window.top.document) {
@@ -486,7 +486,7 @@ export const UserModels = (): JSX.Element => {
 };
 
 interface ModelListProps {
-  status: StateStatus;
+  status: AvailabilityStatus;
   // eslint-disable-next-line @typescript-eslint/ban-types
   reload: AsyncThunk<Project[], void, {}>;
 }

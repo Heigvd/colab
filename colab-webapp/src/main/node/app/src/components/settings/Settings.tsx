@@ -30,7 +30,7 @@ export default function Settings(): JSX.Element {
   const accounts = useCurrentUserAccounts();
   const { currentUser } = useCurrentUser();
   const navigate = useNavigate();
-  const status = useAppSelector(state => state.projects.status);
+  const status = useAppSelector(state => state.projects.statusForCurrentUser);
 
   const tipsConfig = React.useContext(TipsCtx);
 
