@@ -143,17 +143,11 @@ const projectListStyle = css({
 interface ProjectDisplayProps {
   project: Project;
   className?: string;
-  isModel?: boolean;
   isAdminModel?: boolean;
 }
 
 // Display one project and allow to edit it
-export const ProjectDisplay = ({
-  project,
-  className,
-  isModel,
-  isAdminModel,
-}: ProjectDisplayProps) => {
+export const ProjectDisplay = ({ project, className, isAdminModel }: ProjectDisplayProps) => {
   const dispatch = useAppDispatch();
   const i18n = useTranslations();
   const navigate = useNavigate();
@@ -178,7 +172,7 @@ export const ProjectDisplay = ({
           position: 'relative',
         })}
       >
-        {isModel && (
+        {project.type === 'MODEL' && (
           <Flex
             align="center"
             justify="center"
@@ -535,7 +529,6 @@ function ModelsList({ status, reload }: ModelListProps) {
               return (
                 <ProjectDisplay
                   project={item}
-                  isModel
                   className={css({
                     boxShadow: ` 0px -5px 0px 0px ${item.illustration?.iconBkgdColor} inset`,
                   })}
