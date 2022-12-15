@@ -30,7 +30,7 @@ export default function Settings(): JSX.Element {
   const accounts = useCurrentUserAccounts();
   const { currentUser } = useCurrentUser();
   const navigate = useNavigate();
-  const status = useAppSelector(state => state.projects.statusForCurrentUser);
+  const status = useAppSelector(state => state.projects.statusForInstanceableModels);
 
   const tipsConfig = React.useContext(TipsCtx);
 
@@ -79,7 +79,7 @@ export default function Settings(): JSX.Element {
             <p>I can remove one. No more use</p>
             <p>ask the model owner if I can be editor of it</p> */}
             <WIPContainer>
-              <SharedModelsList reload={API.getUserProjects} loadingStatus={status} />
+              <SharedModelsList reload={API.getInstanceableModels} loadingStatus={status} />
             </WIPContainer>
           </Tab>
           <Tab name="debugger" label={i18n.admin.debugger} invisible={!currentUser.admin}>

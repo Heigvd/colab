@@ -14,7 +14,7 @@ import { AsyncThunk } from '@reduxjs/toolkit';
 import { Project } from 'colab-rest-client';
 import * as React from 'react';
 import useTranslations from '../../i18n/I18nContext';
-import { useAndLoadModelProjects } from '../../selectors/projectSelector';
+import { useAndLoadInstanceableModels } from '../../selectors/projectSelector';
 import { useAppDispatch } from '../../store/hooks';
 import { AvailabilityStatus } from '../../store/store';
 import IllustrationDisplay from '../common/element/IllustrationDisplay';
@@ -60,7 +60,7 @@ export default function SharedModelsList({
 }: SharedModelsListProps): JSX.Element {
   const i18n = useTranslations();
   const dispatch = useAppDispatch();
-  const { projects, status } = useAndLoadModelProjects();
+  const { projects, status } = useAndLoadInstanceableModels();
 
   const sortedProjects = projects.sort(sortResources);
 

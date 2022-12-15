@@ -5,7 +5,7 @@
  * Licensed under the MIT License
  */
 import { createSlice } from '@reduxjs/toolkit';
-import { Project, TeamMember, TeamRole } from 'colab-rest-client';
+import { InstanceMaker, Project, TeamMember, TeamRole } from 'colab-rest-client';
 import * as API from '../../API/api';
 import { mapById } from '../../helper';
 import { processMessage } from '../../ws/wsThunkActions';
@@ -32,12 +32,16 @@ export interface ProjectState {
 
   /** did we load all the projects of the current user */
   statusForCurrentUser: AvailabilityStatus;
+  /** did we load all the models linked to the current user with an instance maker */
+  statusForInstanceableModels: AvailabilityStatus;
   /** did we load all the projects */
   statusForAll: AvailabilityStatus;
 
   currentUserId: number | undefined;
 
   mine: number[];
+
+  instanceableProjects: number[];
 
   teams: Record<number, TeamState>;
   editing: number | null;
@@ -48,10 +52,12 @@ const initialState: ProjectState = {
   projects: {},
 
   statusForCurrentUser: 'NOT_INITIALIZED',
+  statusForInstanceableModels: 'NOT_INITIALIZED',
   statusForAll: 'NOT_INITIALIZED',
 
   currentUserId: undefined,
   mine: [],
+  instanceableProjects: [],
   teams: {},
   editing: null,
   editingStatus: 'NOT_EDITING',
@@ -90,9 +96,33 @@ const updateTeamMember = (state: ProjectState, member: TeamMember) => {
 const removeTeamMember = (state: ProjectState, memberId: number) => {
   Object.values(state.teams).forEach(team => {
     if (team.members[memberId]) {
-      delete team.members[memberId];
+      const member = team.members[memberId];
+
+      if (member) {
+        const projectId = member.projectId;
+
+        if (projectId) {
+          const mineIndex = state.mine.indexOf(projectId);
+          if (mineIndex >= 0) {
+            state.mine.splice(mineIndex, 1);
+          }
+        }
+
+        delete team.members[memberId];
+      }
     }
   });
+};
+
+const updateInstanceMaker = (state: ProjectState, instanceMaker: InstanceMaker) => {
+  const projectId = instanceMaker.projectId;
+
+  const userId = instanceMaker.userId;
+  if (projectId != null && userId != null && userId === state.currentUserId) {
+    if (state.instanceableProjects.indexOf(projectId) == -1) {
+      state.instanceableProjects.push(projectId);
+    }
+  }
 };
 
 const updateRole = (state: ProjectState, role: TeamRole) => {
@@ -134,6 +164,11 @@ const projectsSlice = createSlice({
             state.mine.splice(mineIndex, 1);
           }
 
+          const instanceableProjectsIndex = state.instanceableProjects.indexOf(entry.id);
+          if (instanceableProjectsIndex >= 0) {
+            state.instanceableProjects.splice(instanceableProjectsIndex, 1);
+          }
+
           delete state.projects[entry.id];
         });
 
@@ -146,6 +181,16 @@ const projectsSlice = createSlice({
             removeTeamMember(state, entry.id);
           }
         });
+
+        action.payload.instanceMakers.updated.forEach(item => {
+          updateInstanceMaker(state, item);
+        });
+
+        // action.payload.instanceMakers.deleted.forEach(entry => {
+        //   if (entry.id != null) {
+        //     removeInstanceMaker(state, entry.id);
+        //   }
+        // });
 
         action.payload.roles.updated.forEach(item => {
           updateRole(state, item);
@@ -185,6 +230,20 @@ const projectsSlice = createSlice({
       })
       .addCase(API.getUserProjects.rejected, state => {
         state.statusForCurrentUser = 'ERROR';
+      })
+
+      .addCase(API.getInstanceableModels.pending, state => {
+        state.statusForInstanceableModels = 'LOADING';
+      })
+      .addCase(API.getInstanceableModels.fulfilled, (state, action) => {
+        state.instanceableProjects = action.payload.flatMap(project =>
+          project.id != null ? [project.id] : [],
+        );
+        state.projects = { ...state.projects, ...mapById(action.payload) };
+        state.statusForInstanceableModels = 'READY';
+      })
+      .addCase(API.getInstanceableModels.rejected, state => {
+        state.statusForInstanceableModels = 'ERROR';
       })
 
       .addCase(API.getAllProjects.pending, state => {

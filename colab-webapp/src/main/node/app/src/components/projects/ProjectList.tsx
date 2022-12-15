@@ -23,7 +23,7 @@ import * as React from 'react';
 import { Route, Routes, useNavigate, useParams } from 'react-router-dom';
 import * as API from '../../API/api';
 import useTranslations from '../../i18n/I18nContext';
-import { useAndLoadProject } from '../../selectors/projectSelector';
+import { useAndLoadModelProjects, useAndLoadProject } from '../../selectors/projectSelector';
 import { useCurrentUser } from '../../selectors/userSelector';
 import { shallowEqual, useAppDispatch, useAppSelector, useLoadingState } from '../../store/hooks';
 import { AvailabilityStatus } from '../../store/store';
@@ -494,17 +494,8 @@ interface ModelListProps {
 function ModelsList({ status, reload }: ModelListProps) {
   const i18n = useTranslations();
   const dispatch = useAppDispatch();
-  const models = useAppSelector(
-    state =>
-      Object.values(state.projects.projects).flatMap(p => {
-        if (entityIs(p, 'Project') && p.type === 'MODEL') {
-          return [p];
-        } else {
-          return [];
-        }
-      }),
-    shallowEqual,
-  );
+  const { projects: models } = useAndLoadModelProjects();
+
   React.useEffect(() => {
     if (status === 'NOT_INITIALIZED') {
       dispatch(reload());

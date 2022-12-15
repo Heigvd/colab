@@ -172,3 +172,85 @@ export function useAndLoadModelProjects(): ProjectsAndStatus {
 
   return { projects, status };
 }
+
+function useInstanceableModels(): ProjectsAndStatus {
+  return useAppSelector(
+    state => {
+      const projects = state.projects.instanceableProjects.flatMap(projectId => {
+        const p = state.projects.projects[projectId];
+        if (entityIs(p, 'Project') && p.type === 'MODEL') {
+          return [p];
+        } else {
+          return [];
+        }
+      });
+      return { projects, status: state.projects.statusForInstanceableModels };
+    },
+
+    shallowEqual,
+  );
+}
+
+export function useAndLoadInstanceableModels(): ProjectsAndStatus {
+  const dispatch = useAppDispatch();
+
+  const { projects, status } = useInstanceableModels();
+
+  if (status === 'NOT_INITIALIZED') {
+    dispatch(API.getInstanceableModels());
+  }
+
+  return { projects, status };
+}
+
+function useMyAndInstanceableModels(): ProjectsAndStatus {
+  return useAppSelector(
+    state => {
+      const projectsIM = state.projects.instanceableProjects.flatMap(projectId => {
+        const p = state.projects.projects[projectId];
+        if (entityIs(p, 'Project') && p.type === 'MODEL') {
+          return [p];
+        } else {
+          return [];
+        }
+      });
+
+      const projectsMine = Object.values(
+        state.projects.mine
+          .flatMap(id => {
+            const proj = state.projects.projects[id];
+            return entityIs(proj, 'Project') ? [proj] : [];
+          })
+          .filter(proj => proj.type === 'MODEL'),
+      );
+
+      const statusIM = state.projects.statusForInstanceableModels;
+      const statusMine = state.projects.statusForCurrentUser;
+      const status =
+        statusIM === 'NOT_INITIALIZED' || statusMine === 'NOT_INITIALIZED'
+          ? 'NOT_INITIALIZED'
+          : statusIM !== 'READY'
+          ? statusMine
+          : statusMine !== 'READY'
+          ? statusIM
+          : 'READY';
+
+      return { projects: projectsIM.concat(projectsMine), status: status };
+    },
+
+    shallowEqual,
+  );
+}
+
+export function useAndLoadMyAndInstanceableModels(): ProjectsAndStatus {
+  const dispatch = useAppDispatch();
+
+  const { projects, status } = useMyAndInstanceableModels();
+
+  if (status === 'NOT_INITIALIZED') {
+    dispatch(API.getInstanceableModels());
+    dispatch(API.getUserProjects());
+  }
+
+  return { projects, status };
+}

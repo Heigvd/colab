@@ -16,14 +16,14 @@ import {
   faUserCircle,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { entityIs } from 'colab-rest-client';
 import React from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import * as API from '../API/api';
 import useTranslations from '../i18n/I18nContext';
 import LanguageSelector from '../i18n/LanguageSelector';
+import { useAndLoadModelProjects } from '../selectors/projectSelector';
 import { useCurrentUser } from '../selectors/userSelector';
-import { shallowEqual, useAppDispatch, useAppSelector } from '../store/hooks';
+import { useAppDispatch, useAppSelector } from '../store/hooks';
 import InlineLoading from './common/element/InlineLoading';
 import { MainMenuLink, mainMenuLink } from './common/element/Link';
 import DropDownMenu from './common/layout/DropDownMenu';
@@ -39,18 +39,7 @@ export default function MainNav(): JSX.Element {
   const i18n = useTranslations();
   const navigate = useNavigate();
   const location = useLocation();
-  const userModels = useAppSelector(
-    state =>
-      state.projects.mine.flatMap(projectId => {
-        const p = state.projects.projects[projectId];
-        if (entityIs(p, 'Project') && p.type === 'MODEL') {
-          return [p];
-        } else {
-          return [];
-        }
-      }),
-    shallowEqual,
-  );
+  const { projects: userModels } = useAndLoadModelProjects();
   const entries = [
     {
       value: '/',
