@@ -23,7 +23,6 @@ import ch.colabproject.colab.api.model.card.CardContent;
 import ch.colabproject.colab.api.model.link.ActivityFlowLink;
 import ch.colabproject.colab.api.model.project.InstanceMaker;
 import ch.colabproject.colab.api.model.project.Project;
-import ch.colabproject.colab.api.model.project.ProjectType;
 import ch.colabproject.colab.api.model.team.TeamMember;
 import ch.colabproject.colab.api.model.team.acl.HierarchicalPosition;
 import ch.colabproject.colab.api.model.user.User;
@@ -149,18 +148,31 @@ public class ProjectManager {
     }
 
     /**
-     * Retrieve all projects the current user is member of
+     * Retrieve all projects the current user is a team member of
      *
      * @return list of matching projects
      */
     public List<Project> findProjectsOfCurrentUser() {
         User user = securityManager.assertAndGetCurrentUser();
 
-        List<Project> projects = projectDao.findProjectsByMember(user.getId());
-
-        projects.addAll(projectDao.findProjectsByInstanceMaker(user.getId()));
+        List<Project> projects = projectDao.findProjectsByTeamMember(user.getId());
 
         logger.debug("found projects where the user {} is a team member : {}", user, projects);
+
+        return projects;
+    }
+
+    /**
+     * Retrieve all projects the current user is an instance maker for
+     *
+     * @return list of matching projects
+     */
+    public List<Project> findInstanceableModelsForCurrentUser() {
+        User user = securityManager.assertAndGetCurrentUser();
+
+        List<Project> projects = projectDao.findProjectsByInstanceMaker(user.getId());
+
+        logger.debug("found models where the user {} is an instance maker : {}", user, projects);
 
         return projects;
     }
@@ -580,7 +592,7 @@ public class ProjectManager {
     public List<Long> findIdsOfProjectsCurrentUserIsMemberOf() {
         User user = securityManager.assertAndGetCurrentUser();
 
-        List<Long> projectsIds = projectDao.findProjectsIdsByMember(user.getId());
+        List<Long> projectsIds = projectDao.findProjectsIdsByTeamMember(user.getId());
 
         logger.debug("found projects' id where the user {} is a team member : {}", user,
             projectsIds);

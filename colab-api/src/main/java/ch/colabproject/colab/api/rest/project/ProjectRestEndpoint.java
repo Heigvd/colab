@@ -83,7 +83,7 @@ public class ProjectRestEndpoint {
     }
 
     /**
-     * Get all projects the current user is member of
+     * Get all projects the current user is a team member of
      *
      * @return list of projects
      */
@@ -92,6 +92,18 @@ public class ProjectRestEndpoint {
     public List<Project> getUserProjects() {
         logger.debug("Get user projects");
         return projectManager.findProjectsOfCurrentUser();
+    }
+
+    /**
+     * Get all projects the current user is an instance maker for
+     *
+     * @return list of matching projects
+     */
+    @GET
+    @Path("MyInstanceableModels")
+    public List<Project> getInstanceableModels() {
+        logger.debug("Get all models linked by a instancemaker to the current user");
+        return projectManager.findInstanceableModelsForCurrentUser();
     }
 
     /**

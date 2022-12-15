@@ -65,14 +65,14 @@ public class ProjectDao {
     }
 
     /**
-     * Get all projects the user is member of
+     * Get all projects the user is a team member of
      *
      * @param userId the id of the user
      *
-     * @return list of project
+     * @return list of projects
      */
-    public List<Project> findProjectsByMember(Long userId) {
-        logger.trace("find the projects user #{} is member of", userId);
+    public List<Project> findProjectsByTeamMember(Long userId) {
+        logger.trace("find the projects user #{} is team member of", userId);
 
         TypedQuery<Project> query = em.createNamedQuery("Project.findByTeamMemberUser",
             Project.class);
@@ -83,14 +83,14 @@ public class ProjectDao {
     }
 
     /**
-     * Get the ids of the projects the user is a member of
+     * Get the ids of the projects the user is a team member of
      *
      * @param userId the id of the user
      *
      * @return list of ids of projects
      */
-    public List<Long> findProjectsIdsByMember(Long userId) {
-        logger.trace("find the ids of the projects user #{} is member of", userId);
+    public List<Long> findProjectsIdsByTeamMember(Long userId) {
+        logger.trace("find the ids of the projects user #{} is team member of", userId);
 
         TypedQuery<Long> query = em.createNamedQuery("Project.findIdsByTeamMemberUser",
             Long.class);
@@ -105,7 +105,7 @@ public class ProjectDao {
      *
      * @param userId the id of the user
      *
-     * @return list of project
+     * @return list of projects
      */
     public List<Project> findProjectsByInstanceMaker(Long userId) {
         logger.trace("find the projects user #{} is an instance maker for", userId);

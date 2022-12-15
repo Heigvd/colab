@@ -346,6 +346,10 @@ export const getUserProjects = createAsyncThunk('project/users', async () => {
   return await restClient.ProjectRestEndpoint.getUserProjects();
 });
 
+export const getInstanceableModels = createAsyncThunk('project/baseModels', async () => {
+  return await restClient.ProjectRestEndpoint.getInstanceableModels();
+});
+
 export const getAllProjects = createAsyncThunk('project/all', async () => {
   return await restClient.ProjectRestEndpoint.getAllProjects();
 });

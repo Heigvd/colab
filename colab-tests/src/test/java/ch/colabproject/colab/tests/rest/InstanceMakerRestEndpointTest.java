@@ -133,7 +133,7 @@ public class InstanceMakerRestEndpointTest extends AbstractArquillianTest {
         Project modelProjectForPietro = pietroClient.projectRestEndpoint.getProject(projectModelId);
         Assertions.assertNotNull(modelProjectForPietro);
 
-        List<Project> pietroProjects = pietroClient.projectRestEndpoint.getUserProjects();
+        List<Project> pietroProjects = pietroClient.projectRestEndpoint.getInstanceableModels();
         Assertions.assertNotNull(pietroProjects);
         Assertions.assertEquals(1, pietroProjects.size());
         Assertions.assertEquals(projectModelId, pietroProjects.get(0).getId());
