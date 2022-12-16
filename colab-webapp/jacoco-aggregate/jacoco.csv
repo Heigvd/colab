@@ -50,8 +50,8 @@ colab-webapp/colab-api,ch.colabproject.colab.api.model.token.tools,ModelSharingM
 colab-webapp/colab-api,ch.colabproject.colab.api.model.token.tools,ResetLocalAccountPasswordMessageBuilder,47,0,4,0,16,0,3,0,1,0
 colab-webapp/colab-api,ch.colabproject.colab.api.setup,StaticContentCacheControlFilter,42,0,4,0,12,0,7,0,5,0
 colab-webapp/colab-api,ch.colabproject.colab.api.setup,ColabConfiguration,116,0,2,0,31,0,19,0,18,0
-colab-webapp/colab-api,ch.colabproject.colab.api.setup,ApplicationLifecycle,80,0,4,0,27,0,7,0,5,0
 colab-webapp/colab-api,ch.colabproject.colab.api.setup,DataSourceDefinitionProvider,5,0,0,0,2,0,2,0,2,0
+colab-webapp/colab-api,ch.colabproject.colab.api.setup,ApplicationLifecycle,80,0,4,0,27,0,7,0,5,0
 colab-webapp/colab-api,ch.colabproject.colab.api.setup,ApplicationConfig,16,0,0,0,4,0,1,0,1,0
 colab-webapp/colab-api,ch.colabproject.colab.api.setup,LiquibaseProducer,22,0,0,0,6,0,4,0,4,0
 colab-webapp/colab-api,ch.colabproject.colab.api.setup,ApplicationLifecycle.new Thread() {...},13,0,0,0,4,0,2,0,2,0
