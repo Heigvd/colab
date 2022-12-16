@@ -15,6 +15,7 @@ import {
   CardTypeCreationData,
   Change,
   ColabClient,
+  CopyParam,
   Document,
   DuplicationParam,
   entityIs,
@@ -471,6 +472,21 @@ export const shareModel = createAsyncThunk(
     if (payload.recipient) {
       await restClient.ProjectRestEndpoint.shareModel(payload.projectId, payload.recipient);
     }
+  },
+);
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Project copy param
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+export const getCopyParam = createAsyncThunk('copyParam/get', async (id: number) => {
+  return await restClient.ProjectRestEndpoint.getCopyParam(id);
+});
+
+export const updateCopyParam = createAsyncThunk(
+  'copyParam/update',
+  async (copyParam: CopyParam) => {
+    await restClient.ProjectRestEndpoint.updateCopyParam(copyParam);
   },
 );
 

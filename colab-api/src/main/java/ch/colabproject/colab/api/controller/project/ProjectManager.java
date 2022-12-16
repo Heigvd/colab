@@ -21,11 +21,13 @@ import ch.colabproject.colab.api.model.card.AbstractCardType;
 import ch.colabproject.colab.api.model.card.Card;
 import ch.colabproject.colab.api.model.card.CardContent;
 import ch.colabproject.colab.api.model.link.ActivityFlowLink;
+import ch.colabproject.colab.api.model.project.CopyParam;
 import ch.colabproject.colab.api.model.project.InstanceMaker;
 import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.api.model.team.TeamMember;
 import ch.colabproject.colab.api.model.team.acl.HierarchicalPosition;
 import ch.colabproject.colab.api.model.user.User;
+import ch.colabproject.colab.api.persistence.jpa.project.CopyParamDao;
 import ch.colabproject.colab.api.persistence.jpa.project.InstanceMakerDao;
 import ch.colabproject.colab.api.persistence.jpa.project.ProjectDao;
 import ch.colabproject.colab.api.rest.project.bean.ProjectCreationData;
@@ -76,6 +78,12 @@ public class ProjectManager {
      */
     @Inject
     private ProjectDao projectDao;
+
+    /**
+     * Copy parameter persistence handler
+     */
+    @Inject
+    private CopyParamDao copyParamDao;
 
     /**
      * Instance maker persistence handler
@@ -288,6 +296,14 @@ public class ProjectManager {
                     effectiveParams = DuplicationParam.buildForProjectCreationFromModel();
                 }
 
+                // override by model copy parameters
+                CopyParam copyParam = getCopyParam(creationData.getBaseProjectId());
+                if (copyParam != null) {
+                    effectiveParams.setWithRoles(copyParam.isWithRoles());
+                    effectiveParams.setWithDeliverables(copyParam.isWithDeliverables());
+                    effectiveParams.setWithResources(copyParam.isWithResources());
+                }
+
                 Project project = duplicateProject(creationData.getBaseProjectId(),
                     effectiveParams);
 
@@ -308,6 +324,15 @@ public class ProjectManager {
         } catch (Exception ex) {
             return null;
         }
+    }
+
+    /**
+     * @param projectId the id of the project
+     *
+     * @return the related copy parameter
+     */
+    public CopyParam getCopyParam(Long projectId) {
+        return copyParamDao.findCopyParamByProject(projectId);
     }
 
     /**

@@ -14,10 +14,12 @@ import ch.colabproject.colab.api.model.card.AbstractCardType;
 import ch.colabproject.colab.api.model.card.Card;
 import ch.colabproject.colab.api.model.card.CardContent;
 import ch.colabproject.colab.api.model.link.ActivityFlowLink;
+import ch.colabproject.colab.api.model.project.CopyParam;
 import ch.colabproject.colab.api.model.project.InstanceMaker;
 import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.api.model.team.TeamMember;
 import ch.colabproject.colab.api.model.team.TeamRole;
+import ch.colabproject.colab.api.persistence.jpa.project.CopyParamDao;
 import ch.colabproject.colab.api.persistence.jpa.project.ProjectDao;
 import ch.colabproject.colab.api.rest.project.bean.ProjectCreationData;
 import ch.colabproject.colab.api.rest.project.bean.ProjectStructure;
@@ -63,6 +65,10 @@ public class ProjectRestEndpoint {
     /** Project persistence */
     @Inject
     private ProjectDao projectDao;
+
+    /** Copy parameters persistence */
+    @Inject
+    private CopyParamDao copyParamDao;
 
     // *********************************************************************************************
     // get
@@ -142,7 +148,7 @@ public class ProjectRestEndpoint {
      * Duplicate the given project
      *
      * @param baseProjectId the id of the project we want to duplicate
-     * @param name the name of the new project
+     * @param name          the name of the new project
      * @param params        the parameters to fine tune the duplication
      *
      * @return the id of the duplicated project
@@ -189,6 +195,20 @@ public class ProjectRestEndpoint {
     public void updateProject(Project project) throws ColabMergeException {
         logger.debug("Update project {}", project);
         projectDao.updateProject(project);
+    }
+
+    /**
+     * Save changes to database.
+     *
+     * @param copyParam the copy parameters to update
+     *
+     * @throws ColabMergeException if the merge is not possible
+     */
+    @PUT
+    @Path("copyParam")
+    public void updateCopyParam(CopyParam copyParam) throws ColabMergeException {
+        logger.debug("Update copy param {}", copyParam);
+        copyParamDao.updateCopyParam(copyParam);
     }
 
     // *********************************************************************************************
@@ -355,6 +375,21 @@ public class ProjectRestEndpoint {
     public List<InstanceMaker> getInstanceMakers(@PathParam("id") Long projectId) {
         logger.debug("Get project #{} instance makers", projectId);
         return projectManager.getInstanceMakers(projectId);
+    }
+
+    /**
+     * Get the copy parameters of the project
+     *
+     * @param projectId the id of the project
+     *
+     * @return the related copy parameters
+     */
+    @GET
+    @Path("{id: [0-9]+}/copyParams")
+    public CopyParam getCopyParam(@PathParam("id") Long projectId) {
+        CopyParam copyParam = projectManager.getCopyParam(projectId);
+        logger.debug("Got project #{} copy param : {}", projectId, copyParam);
+        return copyParam;
     }
 
     // *********************************************************************************************
