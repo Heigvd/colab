@@ -411,6 +411,8 @@ export const en = {
       editCompletion: 'Edit card completion',
       action: {
         chooseACardType: 'What theme is your card about?',
+        createAType: 'Create a theme',
+        removeTheType: 'Remove the theme',
       },
       editor: {
         toolbox: 'toolbox',

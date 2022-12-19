@@ -12,6 +12,7 @@ import {
   faCompressArrowsAlt,
   faEllipsisV,
   faExpandArrowsAlt,
+  faLeaf,
   faLock,
   faPaperclip,
   //faStickyNote,
@@ -210,7 +211,12 @@ export default function CardEditor({
   } else {
     const cardId = card.id;
     return (
-      <Flex direction="column" grow={1} align="stretch" className={paddingAroundStyle([2, 3, 4], space_L)}>
+      <Flex
+        direction="column"
+        grow={1}
+        align="stretch"
+        className={paddingAroundStyle([2, 3, 4], space_L)}
+      >
         <Flex
           grow={1}
           direction="row"
@@ -383,11 +389,27 @@ export default function CardEditor({
                             label: (
                               <>
                                 <FontAwesomeIcon icon={faTree} />{' '}
-                                {i18n.modules.cardType.action.createAType}
+                                {i18n.modules.card.action.createAType}
                               </>
                             ),
                             action: () => {
                               dispatch(API.createCardCardType(cardId));
+                            },
+                          },
+                        ]
+                      : []),
+                    ...(currentUser?.admin && card.cardTypeId != null
+                      ? [
+                          {
+                            value: 'removeType',
+                            label: (
+                              <>
+                                <FontAwesomeIcon icon={faLeaf} />{' '}
+                                {i18n.modules.card.action.removeTheType}
+                              </>
+                            ),
+                            action: () => {
+                              dispatch(API.removeCardCardType(cardId));
                             },
                           },
                         ]

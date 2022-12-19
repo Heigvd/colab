@@ -416,6 +416,8 @@ export const fr: ColabTranslations = {
       editCompletion: "Éditer l'avancement",
       action: {
         chooseACardType: 'Quel est le thème de votre carte ?',
+        createAType: 'Créer un thème',
+        removeTheType: 'Enlever le thème',
       },
       editor: {
         toolbox: 'Boîte à outils',
