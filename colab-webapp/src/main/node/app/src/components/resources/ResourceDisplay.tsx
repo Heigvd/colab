@@ -42,12 +42,12 @@ import {
   space_S,
   textSmall,
 } from '../styling/style';
+import ResourceCategorySelector from './ResourceCategorySelector';
 import {
   //getTheDirectResource,
   ResourceAndRef,
   useResourceAccessLevelForCurrentUser,
 } from './resourcesCommonType';
-import ResourceSettings from './ResourceSettings';
 import ResourceScope from './summary/ResourceScope';
 //import TargetResourceSummary from './summary/TargetResourceSummary';
 
@@ -107,7 +107,7 @@ export function ResourceDisplay({
   const alwaysShowTeaser = effectiveReadOnly && teaser;
   const alwaysHideTeaser = effectiveReadOnly && !teaser;
 
-  const [showSettings, setShowSettings] = React.useState(false);
+  const [showCategorySelector, setShowCategorySelector] = React.useState(false);
 
   return (
     <Flex align="stretch" direction="column" grow={1} className={css({ overflow: 'auto' })}>
@@ -225,7 +225,7 @@ export function ResourceDisplay({
 
             {/* {canForce && forceWrite && <span onClick={toggleForceCb}>done</span>} */}
             {/* {effectiveReadOnly && !teaser ? (
-            <ResourceSettingsModal resource={resource} isButton />
+            <ResourceCategoryModal resource={resource} isButton />
           ) : ( */}
             {readOnly ? (
               <div></div>
@@ -238,13 +238,13 @@ export function ResourceDisplay({
                   ...(!effectiveReadOnly && resource.isDirectResource
                     ? [
                         {
-                          value: 'settings',
+                          value: 'categorySelector',
                           label: (
                             <>
-                              <FontAwesomeIcon icon={faCog} /> {i18n.common.settings}{' '}
+                              <FontAwesomeIcon icon={faCog} /> {i18n.modules.resource.category}
                             </>
                           ),
-                          action: () => setShowSettings(true),
+                          action: () => setShowCategorySelector(true),
                         },
                       ]
                     : []),
@@ -313,8 +313,11 @@ export function ResourceDisplay({
           </Flex>
         </Flex>
         <div>
-          {showSettings && (
-            <ResourceSettingsModal resource={resource} onClose={() => setShowSettings(false)} />
+          {showCategorySelector && (
+            <ResourceCategoryModal
+              resource={resource}
+              onClose={() => setShowCategorySelector(false)}
+            />
           )}
           {(alwaysShowTeaser || showTeaser) && !alwaysHideTeaser && (
             <DocTextWrapper id={targetResource.teaserId}>
@@ -377,20 +380,20 @@ export function ResourceDisplay({
   );
 }
 
-interface ResourceSettingsModalProps {
+interface ResourceCategoryModalProps {
   resource: ResourceAndRef;
   onClose: () => void;
 }
 
-export function ResourceSettingsModal({
+export function ResourceCategoryModal({
   resource,
   onClose,
-}: ResourceSettingsModalProps): JSX.Element {
+}: ResourceCategoryModalProps): JSX.Element {
   const i18n = useTranslations();
 
   return (
-    <Modal title={i18n.modules.content.documentSettings} showCloseButton onClose={onClose}>
-      {() => <ResourceSettings resource={resource} />}
+    <Modal title={i18n.modules.resource.category} showCloseButton onClose={onClose}>
+      {() => <ResourceCategorySelector resource={resource} />}
     </Modal>
   );
 }

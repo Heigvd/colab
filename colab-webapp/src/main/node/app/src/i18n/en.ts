@@ -546,6 +546,12 @@ export const en = {
           `Provided by "${cardTypeName}" global theme`,
         forceTooltip:
           'This documentation is provided from another place, but you can edit it from here',
+        source: {
+          card: 'Card',
+          theme: 'Theme',
+          inherited: 'Inherited',
+          project: 'Project',
+        },
       },
       actions: {
         makeOwnCopy: 'Copy to card',
