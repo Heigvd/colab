@@ -119,6 +119,12 @@
                 <artifactId>commons-collections4</artifactId>
                 <version>4.4</version>
             </dependency>
+            <!-- Additions to the standard JDK text handling -->
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-text</artifactId>
+                <version>1.10.0</version>
+            </dependency>
 
             <!-- Works well with a standard deployment but crashes during tests...-->
             <dependency>
