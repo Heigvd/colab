@@ -233,7 +233,7 @@ colab-webapp/colab-api,ch.colabproject.colab.api.model.common,IconLibrary,24,0,0
 colab-webapp/colab-api,ch.colabproject.colab.api.microchanges.model,MicroChange,64,0,4,0,19,0,13,0,11,0
 colab-webapp/colab-api,ch.colabproject.colab.api.microchanges.model,Change,135,0,0,0,44,0,22,0,22,0
 colab-webapp/colab-api,ch.colabproject.colab.api.microchanges.model,MicroChange.Type,24,0,0,0,3,0,1,0,1,0
-colab-webapp/colab-api,ch.colabproject.colab.api.persistence.jpa.project,CopyParamDao,51,0,0,0,12,0,5,0,5,0
+colab-webapp/colab-api,ch.colabproject.colab.api.persistence.jpa.project,CopyParamDao,54,0,0,0,14,0,5,0,5,0
 colab-webapp/colab-api,ch.colabproject.colab.api.persistence.jpa.project,ProjectDao,166,0,2,0,38,0,13,0,12,0
 colab-webapp/colab-api,ch.colabproject.colab.api.persistence.jpa.project,InstanceMakerDao,57,0,0,0,14,0,5,0,5,0
 colab-webapp/colab-api,ch.colabproject.colab.api.rest.link,StickyNoteLinkRestEndpoint,143,0,2,0,37,0,12,0,11,0

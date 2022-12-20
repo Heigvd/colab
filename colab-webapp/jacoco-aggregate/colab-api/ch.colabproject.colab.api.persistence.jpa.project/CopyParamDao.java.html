@@ -11,6 +11,7 @@ import ch.colabproject.colab.api.model.project.CopyParam;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 import org.slf4j.Logger;
@@ -25,10 +26,10 @@ import org.slf4j.LoggerFactory;
  */
 @Stateless
 @LocalBean
-<span class="nc" id="L28">public class CopyParamDao {</span>
+<span class="nc" id="L29">public class CopyParamDao {</span>
 
     /** logger */
-<span class="nc" id="L31">    private static final Logger logger = LoggerFactory.getLogger(CopyParamDao.class);</span>
+<span class="nc" id="L32">    private static final Logger logger = LoggerFactory.getLogger(CopyParamDao.class);</span>
 
     /**
      * Access to the persistence unit
@@ -44,9 +45,9 @@ import org.slf4j.LoggerFactory;
      * @return the copy parameter with the given id or null if it does not exist
      */
     private CopyParam findCopyParam(Long id) {
-<span class="nc" id="L47">        logger.trace(&quot;find copy parameter #{}&quot;, id);</span>
+<span class="nc" id="L48">        logger.trace(&quot;find copy parameter #{}&quot;, id);</span>
 
-<span class="nc" id="L49">        return em.find(CopyParam.class, id);</span>
+<span class="nc" id="L50">        return em.find(CopyParam.class, id);</span>
     }
 
     /**
@@ -57,14 +58,18 @@ import org.slf4j.LoggerFactory;
      * @return the copy parameter related to the project
      */
     public CopyParam findCopyParamByProject(Long projectId) {
-<span class="nc" id="L60">        logger.trace(&quot;find copy param of project #{}&quot;, projectId);</span>
+        try {
+<span class="nc" id="L62">            logger.trace(&quot;find copy param of project #{}&quot;, projectId);</span>
 
-<span class="nc" id="L62">        TypedQuery&lt;CopyParam&gt; query = em.createNamedQuery(&quot;CopyParam.findByProject&quot;,</span>
-            CopyParam.class);
+<span class="nc" id="L64">            TypedQuery&lt;CopyParam&gt; query = em.createNamedQuery(&quot;CopyParam.findByProject&quot;,</span>
+                CopyParam.class);
 
-<span class="nc" id="L65">        query.setParameter(&quot;projectId&quot;, projectId);</span>
+<span class="nc" id="L67">            query.setParameter(&quot;projectId&quot;, projectId);</span>
 
-<span class="nc" id="L67">        return query.getSingleResult();</span>
+<span class="nc" id="L69">            return query.getSingleResult();</span>
+<span class="nc" id="L70">        } catch (NoResultException ex) {</span>
+<span class="nc" id="L71">            return null;</span>
+        }
     }
 
     /**
@@ -77,13 +82,13 @@ import org.slf4j.LoggerFactory;
      * @throws ColabMergeException if the update failed
      */
     public CopyParam updateCopyParam(CopyParam param) throws ColabMergeException {
-<span class="nc" id="L80">        logger.trace(&quot;update copy param {}&quot;, param);</span>
+<span class="nc" id="L85">        logger.trace(&quot;update copy param {}&quot;, param);</span>
 
-<span class="nc" id="L82">        CopyParam managedCopyParam = this.findCopyParam(param.getId());</span>
+<span class="nc" id="L87">        CopyParam managedCopyParam = this.findCopyParam(param.getId());</span>
 
-<span class="nc" id="L84">        managedCopyParam.merge(param);</span>
+<span class="nc" id="L89">        managedCopyParam.merge(param);</span>
 
-<span class="nc" id="L86">        return managedCopyParam;</span>
+<span class="nc" id="L91">        return managedCopyParam;</span>
     }
 
 }
