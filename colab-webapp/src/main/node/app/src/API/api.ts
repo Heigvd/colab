@@ -15,6 +15,7 @@ import {
   CardTypeCreationData,
   Change,
   ColabClient,
+  CopyParam,
   Document,
   DuplicationParam,
   entityIs,
@@ -346,6 +347,10 @@ export const getUserProjects = createAsyncThunk('project/users', async () => {
   return await restClient.ProjectRestEndpoint.getUserProjects();
 });
 
+export const getInstanceableModels = createAsyncThunk('project/baseModels', async () => {
+  return await restClient.ProjectRestEndpoint.getInstanceableModels();
+});
+
 export const getAllProjects = createAsyncThunk('project/all', async () => {
   return await restClient.ProjectRestEndpoint.getAllProjects();
 });
@@ -354,6 +359,29 @@ export const createProject = createAsyncThunk(
   'project/create',
   async (creationData: ProjectCreationData) => {
     return await restClient.ProjectRestEndpoint.createProject(creationData);
+  },
+);
+
+export const duplicateProject = createAsyncThunk(
+  'project/duplicate',
+  async ({ project, newName }: { project: Project; newName: string }) => {
+    if (project.id) {
+      const parameters: DuplicationParam = {
+        '@class': 'DuplicationParam',
+        withRoles: true,
+        withTeamMembers: false,
+        withCardTypes: true,
+        withCardsStructure: true,
+        withDeliverables: true,
+        withResources: true,
+        withStickyNotes: true,
+        withActivityFlow: true,
+        makeOnlyCardTypeReferences: false,
+        resetProgressionData: false,
+      };
+
+      return await restClient.ProjectRestEndpoint.duplicateProject(project.id, newName, parameters);
+    }
   },
 );
 
@@ -434,32 +462,31 @@ export const closeCurrentProject = createAsyncThunk(
   },
 );
 
-export const duplicateProject = createAsyncThunk('project/duplicate', async (project: Project) => {
-  if (project.id) {
-    const parameters: DuplicationParam = {
-      '@class': 'DuplicationParam',
-      withRoles: true,
-      withTeamMembers: false,
-      withCardTypes: true,
-      withCardsStructure: true,
-      withDeliverables: true,
-      withResources: true,
-      withStickyNotes: true,
-      withActivityFlow: true,
-      makeOnlyCardTypeReferences: false,
-      resetProgressionData: false,
-    };
-
-    return await restClient.ProjectRestEndpoint.duplicateProject(project.id, parameters);
-  }
-});
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Project model
+////////////////////////////////////////////////////////////////////////////////////////////////////
 
 export const shareModel = createAsyncThunk(
-  'project/share',
+  'model/share',
   async (payload: { projectId: number; recipient: string }) => {
     if (payload.recipient) {
       await restClient.ProjectRestEndpoint.shareModel(payload.projectId, payload.recipient);
     }
+  },
+);
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Project copy param
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+export const getCopyParam = createAsyncThunk('copyParam/get', async (id: number) => {
+  return await restClient.ProjectRestEndpoint.getCopyParam(id);
+});
+
+export const updateCopyParam = createAsyncThunk(
+  'copyParam/update',
+  async (copyParam: CopyParam) => {
+    await restClient.ProjectRestEndpoint.updateCopyParam(copyParam);
   },
 );
 
@@ -849,6 +876,13 @@ export const createCardCardType = createAsyncThunk(
   async (cardId: number) => {
     await restClient.CardRestEndpoint.createCardType(cardId);
   },
+);
+
+export const removeCardCardType = createAsyncThunk(
+  'card/removeCardType',
+  async (cardId: number) => {
+    await restClient.CardRestEndpoint.removeCardType(cardId);
+  }
 );
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////

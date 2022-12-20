@@ -147,6 +147,7 @@ public class ProjectRestEndpointTest extends AbstractArquillianTest {
     @Test
     public void testUpdateProject() {
         ProjectCreationData projectCreationData = new ProjectCreationData();
+        projectCreationData.setType(ProjectType.PROJECT);
 
         Long projectId = client.projectRestEndpoint.createProject(projectCreationData);
 
@@ -184,10 +185,12 @@ public class ProjectRestEndpointTest extends AbstractArquillianTest {
     @Test
     public void testGetAllProjects() {
         ProjectCreationData project = new ProjectCreationData();
+        project.setType(ProjectType.PROJECT);
         project.setName("The Hitchhiker's Guide to the Serious-Game");
         client.projectRestEndpoint.createProject(project);
 
         project = new ProjectCreationData();
+        project.setType(ProjectType.PROJECT);
         project.setName("Don't Panic");
         client.projectRestEndpoint.createProject(project);
 
@@ -217,6 +220,7 @@ public class ProjectRestEndpointTest extends AbstractArquillianTest {
         // Goulash creates a projects
         ////////////////////////////////////////////////////////////////////////////////////////////
         ProjectCreationData p = new ProjectCreationData();
+        p.setType(ProjectType.PROJECT);
         p.setName("The Hitchhiker's Guide to the Serious-Game");
 
         Long projectId = client.projectRestEndpoint.createProject(p);
