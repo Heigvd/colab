@@ -1,0 +1,29 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:pro="http://www.liquibase.org/xml/ns/pro" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-latest.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+    <changeSet author="sandra" id="1671522862538-1">
+        <createTable tableName="copyparam">
+            <column name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="copyparam_pkey"/>
+            </column>
+            <column name="with_deliverables" type="BOOLEAN"/>
+            <column name="with_resources" type="BOOLEAN"/>
+            <column name="with_roles" type="BOOLEAN"/>
+            <column name="createdby" type="VARCHAR(255)"/>
+            <column name="creationdate" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="modificationdate" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="modifiedby" type="VARCHAR(255)"/>
+            <column name="project_id" type="BIGINT"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="sandra" id="1671522862538-2">
+        <createSequence cacheSize="1" cycle="false" dataType="bigint" incrementBy="1" maxValue="9223372036854775807" minValue="1" sequenceName="param_seq" startValue="1"/>
+    </changeSet>
+    <changeSet author="sandra" id="1671522862538-3">
+        <createIndex indexName="index_copyparam_project_id" tableName="copyparam" unique="true">
+            <column name="project_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="sandra" id="1671522862538-4">
+        <addForeignKeyConstraint baseColumnNames="project_id" baseTableName="copyparam" constraintName="fk_copyparam_project_id" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="project" validate="true"/>
+    </changeSet>
+</databaseChangeLog>
