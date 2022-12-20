@@ -81,5 +81,61 @@ public final class ProjectConditions {
         }
     }
 
+    /**
+     * Has the current user access to the copy parameters of a project ?
+     *
+     * @author sandra
+     */
+    public static class IsCopyParamReadable extends Condition {
+
+        /** the project id */
+        private final Long projectId;
+
+        /**
+         * Create a has project copy parameters read access statement
+         *
+         * @param projectId the project id
+         */
+<span class="nc" id="L99">        public IsCopyParamReadable(Long projectId) {</span>
+<span class="nc" id="L100">            this.projectId = projectId;</span>
+<span class="nc" id="L101">        }</span>
+
+        @Override
+        protected boolean internalEval(RequestManager requestManager,
+            SecurityManager securityManager) {
+<span class="nc" id="L106">            return securityManager.isCopyParamReadableByCurrentUser(this.projectId);</span>
+        }
+
+        @Override
+        public String toString() {
+<span class="nc" id="L111">            return &quot;IsCopyParamReadable(&quot; + projectId + &quot;)&quot;;</span>
+        }
+
+        @Override
+        public int hashCode() {
+<span class="nc" id="L116">            int hash = 3;</span>
+<span class="nc" id="L117">            hash = 53 * hash + Objects.hashCode(this.projectId);</span>
+<span class="nc" id="L118">            return hash;</span>
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+<span class="nc bnc" id="L123" title="All 2 branches missed.">            if (this == obj) {</span>
+<span class="nc" id="L124">                return true;</span>
+            }
+<span class="nc bnc" id="L126" title="All 2 branches missed.">            if (obj == null) {</span>
+<span class="nc" id="L127">                return false;</span>
+            }
+<span class="nc bnc" id="L129" title="All 2 branches missed.">            if (getClass() != obj.getClass()) {</span>
+<span class="nc" id="L130">                return false;</span>
+            }
+<span class="nc" id="L132">            final IsCopyParamReadable other = (IsCopyParamReadable) obj;</span>
+<span class="nc bnc" id="L133" title="All 2 branches missed.">            if (!Objects.equals(this.projectId, other.projectId)) {</span>
+<span class="nc" id="L134">                return false;</span>
+            }
+<span class="nc" id="L136">            return true;</span>
+        }
+    }
+
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

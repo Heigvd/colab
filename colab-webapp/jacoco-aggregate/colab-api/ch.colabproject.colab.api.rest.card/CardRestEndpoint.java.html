@@ -303,12 +303,24 @@ import org.slf4j.LoggerFactory;
     }
 
     /**
-     * @param cardId test
+     * @param cardId the card id
      */
     @POST
     @Path(&quot;createCardType/{cardId}&quot;)
     public void createCardType(@PathParam(&quot;cardId&quot;) Long cardId) {
 <span class="nc" id="L311">        cardManager.createCardType(cardId);</span>
 <span class="nc" id="L312">    }</span>
+
+    /**
+     * Remove the card type of the card. For now, it can be done only if there is no resource in the
+     * card type.
+     *
+     * @param cardId the card id
+     */
+    @POST
+    @Path(&quot;removeCardType/{cardId}&quot;)
+    public void removeCardType(@PathParam(&quot;cardId&quot;) Long cardId) {
+<span class="nc" id="L323">        cardManager.removeCardType(cardId);</span>
+<span class="nc" id="L324">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

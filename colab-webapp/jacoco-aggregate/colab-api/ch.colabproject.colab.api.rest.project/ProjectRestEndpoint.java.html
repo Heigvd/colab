@@ -14,10 +14,12 @@ import ch.colabproject.colab.api.model.card.AbstractCardType;
 import ch.colabproject.colab.api.model.card.Card;
 import ch.colabproject.colab.api.model.card.CardContent;
 import ch.colabproject.colab.api.model.link.ActivityFlowLink;
+import ch.colabproject.colab.api.model.project.CopyParam;
 import ch.colabproject.colab.api.model.project.InstanceMaker;
 import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.api.model.team.TeamMember;
 import ch.colabproject.colab.api.model.team.TeamRole;
+import ch.colabproject.colab.api.persistence.jpa.project.CopyParamDao;
 import ch.colabproject.colab.api.persistence.jpa.project.ProjectDao;
 import ch.colabproject.colab.api.rest.project.bean.ProjectCreationData;
 import ch.colabproject.colab.api.rest.project.bean.ProjectStructure;
@@ -47,14 +49,12 @@ import org.slf4j.LoggerFactory;
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
 @AuthenticationRequired
-<span class="nc" id="L50">public class ProjectRestEndpoint {</span>
+<span class="nc" id="L52">public class ProjectRestEndpoint {</span>
 
     /** logger */
-<span class="nc" id="L53">    private static final Logger logger = LoggerFactory.getLogger(ProjectRestEndpoint.class);</span>
+<span class="nc" id="L55">    private static final Logger logger = LoggerFactory.getLogger(ProjectRestEndpoint.class);</span>
 
-    /**
-     * The Project business logic
-     */
+    /** Project business logic */
     @Inject
     private ProjectManager projectManager;
 
@@ -62,11 +62,17 @@ import org.slf4j.LoggerFactory;
     @Inject
     private TeamManager teamManager;
 
-    /**
-     * The Project DAO
-     */
+    /** Project persistence */
     @Inject
     private ProjectDao projectDao;
+
+    /** Copy parameters persistence */
+    @Inject
+    private CopyParamDao copyParamDao;
+
+    // *********************************************************************************************
+    // get
+    // *********************************************************************************************
 
     /**
      * Get project identified by the given id.
@@ -76,22 +82,34 @@ import org.slf4j.LoggerFactory;
      * @return the project or null
      */
     @GET
-    @Path(&quot;/{id}&quot;)
+    @Path(&quot;/{id: [0-9]+}&quot;)
     public Project getProject(@PathParam(&quot;id&quot;) Long id) {
-<span class="nc" id="L81">        logger.debug(&quot;Get project #{}&quot;, id);</span>
-<span class="nc" id="L82">        return projectDao.findProject(id);</span>
+<span class="nc" id="L87">        logger.debug(&quot;Get project #{}&quot;, id);</span>
+<span class="nc" id="L88">        return projectDao.findProject(id);</span>
     }
 
     /**
-     * Get all projects the current user is member of
+     * Get all projects the current user is a team member of
      *
      * @return list of projects
      */
     @GET
     @Path(&quot;MyOwn&quot;)
     public List&lt;Project&gt; getUserProjects() {
-<span class="nc" id="L93">        logger.debug(&quot;Get user projects&quot;);</span>
-<span class="nc" id="L94">        return projectManager.findProjectsOfCurrentUser();</span>
+<span class="nc" id="L99">        logger.debug(&quot;Get user projects&quot;);</span>
+<span class="nc" id="L100">        return projectManager.findProjectsOfCurrentUser();</span>
+    }
+
+    /**
+     * Get all projects the current user is an instance maker for
+     *
+     * @return list of matching projects
+     */
+    @GET
+    @Path(&quot;MyInstanceableModels&quot;)
+    public List&lt;Project&gt; getInstanceableModels() {
+<span class="nc" id="L111">        logger.debug(&quot;Get all models linked by a instancemaker to the current user&quot;);</span>
+<span class="nc" id="L112">        return projectManager.findInstanceableModelsForCurrentUser();</span>
     }
 
     /**
@@ -102,47 +120,72 @@ import org.slf4j.LoggerFactory;
     @GET
     @AdminResource
     public List&lt;Project&gt; getAllProjects() {
-<span class="nc" id="L105">        logger.debug(&quot;Get all projects&quot;);</span>
-<span class="nc" id="L106">        return projectDao.findAllProject();</span>
+<span class="nc" id="L123">        logger.debug(&quot;Get all projects&quot;);</span>
+<span class="nc" id="L124">        return projectDao.findAllProject();</span>
     }
 
+    // *********************************************************************************************
+    // create
+    // *********************************************************************************************
+
     /**
-     * Create a new project with the provided data and register current user as a member.
+     * Create a new project from scratch with the provided data and register current user as a
+     * member.
      *
      * @param creationData the data needed to fill the project
      *
      * @return id of the persisted new project
      */
     @POST
-    @Path(&quot;createWithModel&quot;)
+    @Path(&quot;createProject&quot;)
     public Long createProject(ProjectCreationData creationData) {
-<span class="nc" id="L119">        logger.debug(&quot;Create a project with {}&quot;, creationData);</span>
+<span class="nc" id="L142">        logger.debug(&quot;Create a project with {}&quot;, creationData);</span>
 
-        Project project;
-
-<span class="nc bnc" id="L123" title="All 2 branches missed.">        if (creationData.getModelId() == null) {</span>
-<span class="nc" id="L124">            project = new Project();</span>
-<span class="nc" id="L125">            project.setType(creationData.getType());</span>
-<span class="nc" id="L126">            project.setName(creationData.getName());</span>
-<span class="nc" id="L127">            project.setDescription(creationData.getDescription());</span>
-<span class="nc" id="L128">            project.setIllustration(creationData.getIllustration());</span>
-
-<span class="nc" id="L130">            projectManager.createProject(project);</span>
-        } else {
-<span class="nc" id="L132">            project = projectManager.createProjectFromModel(creationData.getName(),</span>
-<span class="nc" id="L133">                creationData.getDescription(), creationData.getIllustration(),</span>
-<span class="nc" id="L134">                creationData.getModelId());</span>
-        }
-
-<span class="nc" id="L137">        creationData.getGuestsEmail().stream().forEach(email -&gt; {</span>
-<span class="nc" id="L138">            teamManager.invite(project.getId(), email);</span>
-<span class="nc" id="L139">        });</span>
-
-<span class="nc" id="L141">        return project.getId();</span>
+<span class="nc" id="L144">        return projectManager.createProject(creationData).getId();</span>
     }
 
     /**
-     * Save changes to database. Only fields which are editable by users will be impacted.
+     * Duplicate the given project
+     *
+     * @param baseProjectId the id of the project we want to duplicate
+     * @param name          the name of the new project
+     * @param params        the parameters to fine tune the duplication
+     *
+     * @return the id of the duplicated project
+     *
+     * @throws ColabMergeException if the name cannot be updated
+     */
+    @POST
+    @Path(&quot;copyProject/{id: [0-9]+}/{name}&quot;)
+    public Long duplicateProject(@PathParam(&quot;id&quot;) Long baseProjectId,
+        @PathParam(&quot;name&quot;) String name, DuplicationParam params) throws ColabMergeException {
+<span class="nc" id="L162">        logger.debug(&quot;duplicate the project #{} with params {}&quot;, baseProjectId, params);</span>
+
+<span class="nc" id="L164">        DuplicationParam effectiveParams = params;</span>
+<span class="nc bnc" id="L165" title="All 2 branches missed.">        if (effectiveParams == null) {</span>
+<span class="nc" id="L166">            effectiveParams = DuplicationParam.buildDefaultForProjectDuplication();</span>
+        }
+
+        // check forced parameters
+<span class="nc bnc" id="L170" title="All 2 branches missed.">        if (effectiveParams.isMakeOnlyCardTypeReferences()) {</span>
+<span class="nc" id="L171">            throw new IllegalArgumentException();</span>
+        }
+
+<span class="nc" id="L174">        Project newProject = projectManager.duplicateProject(baseProjectId, effectiveParams);</span>
+
+<span class="nc" id="L176">        newProject.setName(name);</span>
+
+<span class="nc" id="L178">        projectDao.updateProject(newProject);</span>
+
+<span class="nc" id="L180">        return newProject.getId();</span>
+    }
+
+    // *********************************************************************************************
+    // update
+    // *********************************************************************************************
+
+    /**
+     * Save changes to database.
      *
      * @param project project to update
      *
@@ -150,10 +193,27 @@ import org.slf4j.LoggerFactory;
      */
     @PUT
     public void updateProject(Project project) throws ColabMergeException {
-<span class="nc" id="L153">        logger.debug(&quot;update project {}&quot;, project);</span>
+<span class="nc" id="L196">        logger.debug(&quot;Update project {}&quot;, project);</span>
+<span class="nc" id="L197">        projectDao.updateProject(project);</span>
+<span class="nc" id="L198">    }</span>
 
-<span class="nc" id="L155">        projectDao.updateProject(project);</span>
-<span class="nc" id="L156">    }</span>
+    /**
+     * Save changes to database.
+     *
+     * @param copyParam the copy parameters to update
+     *
+     * @throws ColabMergeException if the merge is not possible
+     */
+    @PUT
+    @Path(&quot;copyParam&quot;)
+    public void updateCopyParam(CopyParam copyParam) throws ColabMergeException {
+<span class="nc" id="L210">        logger.debug(&quot;Update copy param {}&quot;, copyParam);</span>
+<span class="nc" id="L211">        copyParamDao.updateCopyParam(copyParam);</span>
+<span class="nc" id="L212">    }</span>
+
+    // *********************************************************************************************
+    // delete
+    // *********************************************************************************************
 
     /**
      * Permanently delete a project.
@@ -161,32 +221,15 @@ import org.slf4j.LoggerFactory;
      * @param id id of the project to delete
      */
     @DELETE
-    @Path(&quot;/{id}&quot;)
+    @Path(&quot;/{id: [0-9]+}&quot;)
     public void deleteProject(@PathParam(&quot;id&quot;) Long id) {
-<span class="nc" id="L166">        logger.debug(&quot;Delete project #{}&quot;, id);</span>
-<span class="nc" id="L167">        projectManager.deleteProject(id);</span>
-<span class="nc" id="L168">    }</span>
+<span class="nc" id="L226">        logger.debug(&quot;Delete project #{}&quot;, id);</span>
+<span class="nc" id="L227">        projectManager.deleteProject(id);</span>
+<span class="nc" id="L228">    }</span>
 
-    /**
-     * Duplicate the given project
-     *
-     * @param projectId the id of the project we want to duplicate
-     * @param params    the parameters to fine tune
-     *
-     * @return the id of the duplicated project
-     */
-    @PUT
-    @Path(&quot;copyProject/{id}&quot;)
-    public Long duplicateProject(@PathParam(&quot;id&quot;) Long projectId, DuplicationParam params) {
-<span class="nc" id="L181">        logger.debug(&quot;duplicate the project #{} with params {}&quot;, projectId, params);</span>
-
-<span class="nc" id="L183">        DuplicationParam effectiveParams = params;</span>
-<span class="nc bnc" id="L184" title="All 2 branches missed.">        if (effectiveParams == null) {</span>
-<span class="nc" id="L185">            effectiveParams = DuplicationParam.buildDefaultForCopyOfProject();</span>
-        }
-
-<span class="nc" id="L188">        return projectManager.duplicateProject(projectId, effectiveParams).getId();</span>
-    }
+    // *********************************************************************************************
+    // share
+    // *********************************************************************************************
 
     /**
      * Share the model to someone
@@ -200,9 +243,13 @@ import org.slf4j.LoggerFactory;
     @Path(&quot;shareModel/{id: [0-9]+}/{email}&quot;)
     public InstanceMaker shareModel(@PathParam(&quot;id&quot;) Long modelId,
         @PathParam(&quot;email&quot;) String email) {
-<span class="nc" id="L203">        logger.debug(&quot;Share model #{} to {}&quot;, modelId, email);</span>
-<span class="nc" id="L204">        return projectManager.shareModel(modelId, email);</span>
+<span class="nc" id="L246">        logger.debug(&quot;Share model #{} to {}&quot;, modelId, email);</span>
+<span class="nc" id="L247">        return projectManager.shareModel(modelId, email);</span>
     }
+
+    // *********************************************************************************************
+    // get project content
+    // *********************************************************************************************
 
     /**
      * Get the root card of the project
@@ -212,123 +259,142 @@ import org.slf4j.LoggerFactory;
      * @return the matching card
      */
     @GET
-    @Path(&quot;{projectId}/RootCard&quot;)
-    public Card getRootCardOfProject(@PathParam(&quot;projectId&quot;) Long projectId) {
-<span class="nc" id="L217">        logger.debug(&quot;get the root card of the project #{}&quot;, projectId);</span>
-<span class="nc" id="L218">        return projectManager.getRootCard(projectId);</span>
+    @Path(&quot;{id: [0-9]+}/RootCard&quot;)
+    public Card getRootCardOfProject(@PathParam(&quot;id&quot;) Long projectId) {
+<span class="nc" id="L264">        logger.debug(&quot;get the root card of the project #{}&quot;, projectId);</span>
+<span class="nc" id="L265">        return projectManager.getRootCard(projectId);</span>
     }
 
     /**
-     * Get all members of the project teams.
+     * Get all members of the project team
      *
-     * @param id id of the project
+     * @param projectId id of the project
      *
      * @return list of members
      */
     @GET
-    @Path(&quot;{id}/Members&quot;)
-    public List&lt;TeamMember&gt; getMembers(@PathParam(&quot;id&quot;) Long id) {
-<span class="nc" id="L231">        logger.debug(&quot;Get project #{} members&quot;, id);</span>
-<span class="nc" id="L232">        return teamManager.getTeamMembers(id);</span>
+    @Path(&quot;{id: [0-9]+}/Members&quot;)
+    public List&lt;TeamMember&gt; getMembers(@PathParam(&quot;id&quot;) Long projectId) {
+<span class="nc" id="L278">        logger.debug(&quot;Get project #{} members&quot;, projectId);</span>
+<span class="nc" id="L279">        return teamManager.getTeamMembers(projectId);</span>
     }
 
     /**
      * Get all roles defined in a project
      *
-     * @param projectId projectId of the project
+     * @param projectId the id of the project
      *
      * @return list of roles
      */
     @GET
-    @Path(&quot;{projectId: [0-9]+}/roles&quot;)
-    public List&lt;TeamRole&gt; getRoles(@PathParam(&quot;projectId&quot;) Long projectId) {
-<span class="nc" id="L245">        logger.debug(&quot;Get project #{} members&quot;, projectId);</span>
-<span class="nc" id="L246">        return teamManager.getProjectRoles(projectId);</span>
+    @Path(&quot;{id: [0-9]+}/roles&quot;)
+    public List&lt;TeamRole&gt; getRoles(@PathParam(&quot;id&quot;) Long projectId) {
+<span class="nc" id="L292">        logger.debug(&quot;Get project #{} members&quot;, projectId);</span>
+<span class="nc" id="L293">        return teamManager.getProjectRoles(projectId);</span>
     }
 
     /**
      * Get all card types belonging to a project
      *
-     * @param id ID of the project the card types belong to
+     * @param projectId the id of the project
      *
-     * @return the card types linked to the project
+     * @return list of card types
      */
     @GET
-    @Path(&quot;{id}/CardTypes&quot;)
-    public Set&lt;AbstractCardType&gt; getCardTypesOfProject(@PathParam(&quot;id&quot;) Long id) {
-<span class="nc" id="L259">        logger.debug(&quot;Get project #{} card types&quot;, id);</span>
-<span class="nc" id="L260">        return projectManager.getCardTypes(id);</span>
+    @Path(&quot;{id: [0-9]+}/CardTypes&quot;)
+    public Set&lt;AbstractCardType&gt; getCardTypesOfProject(@PathParam(&quot;id&quot;) Long projectId) {
+<span class="nc" id="L306">        logger.debug(&quot;Get project #{} card types&quot;, projectId);</span>
+<span class="nc" id="L307">        return projectManager.getCardTypes(projectId);</span>
     }
 
     /**
      * Get all cards belonging to a project
      *
-     * @param id ID of the project the cards belong to
+     * @param projectId the id of the project
      *
-     * @return the cards linked to the project
+     * @return list of cards
      */
     @GET
-    @Path(&quot;{id}/Cards&quot;)
-    public Set&lt;Card&gt; getCardsOfProject(@PathParam(&quot;id&quot;) Long id) {
-<span class="nc" id="L273">        logger.debug(&quot;Get project #{} cards&quot;, id);</span>
-<span class="nc" id="L274">        return projectManager.getCards(id);</span>
+    @Path(&quot;{id: [0-9]+}/Cards&quot;)
+    public Set&lt;Card&gt; getCardsOfProject(@PathParam(&quot;id&quot;) Long projectId) {
+<span class="nc" id="L320">        logger.debug(&quot;Get project #{} cards&quot;, projectId);</span>
+<span class="nc" id="L321">        return projectManager.getCards(projectId);</span>
     }
 
     /**
      * Get all cardContents belonging to a project
      *
-     * @param id ID of the project the cardContents belong to
+     * @param projectId the id of the project
      *
-     * @return the cardContents linked to the project
+     * @return list of cardContents
      */
     @GET
-    @Path(&quot;{id}/CardContents&quot;)
-    public Set&lt;CardContent&gt; getCardContentsOfProject(@PathParam(&quot;id&quot;) Long id) {
-<span class="nc" id="L287">        logger.debug(&quot;Get project #{} cardContents&quot;, id);</span>
-<span class="nc" id="L288">        return projectManager.getCardContents(id);</span>
+    @Path(&quot;{id: [0-9]+}/CardContents&quot;)
+    public Set&lt;CardContent&gt; getCardContentsOfProject(@PathParam(&quot;id&quot;) Long projectId) {
+<span class="nc" id="L334">        logger.debug(&quot;Get project #{} cardContents&quot;, projectId);</span>
+<span class="nc" id="L335">        return projectManager.getCardContents(projectId);</span>
     }
 
     /**
-     * Get all cards, cardContents and structure in one shot.
+     * Get all cards, cardContents and structure of a project in one shot.
      *
-     * @param id ID of the project data belong to
+     * @param projectId the id of the project
      *
      * @return full structure of the project
      */
     @GET
-    @Path(&quot;{id}/structure&quot;)
-    public ProjectStructure getStructureOfProject(@PathParam(&quot;id&quot;) Long id) {
-<span class="nc" id="L301">        logger.debug(&quot;Get project #{} cardContents&quot;, id);</span>
-<span class="nc" id="L302">        return projectManager.getStructure(id);</span>
+    @Path(&quot;{id: [0-9]+}/structure&quot;)
+    public ProjectStructure getStructureOfProject(@PathParam(&quot;id&quot;) Long projectId) {
+<span class="nc" id="L348">        logger.debug(&quot;Get project #{} cardContents&quot;, projectId);</span>
+<span class="nc" id="L349">        return projectManager.getStructure(projectId);</span>
     }
 
     /**
      * Get all activity flow links belonging to a project
      *
-     * @param id ID of the project activity flow links belong to
+     * @param projectId the id of the project
      *
-     * @return all activityFlowLinks linked to the project
+     * @return list of activity flow links
      */
     @GET
-    @Path(&quot;{id}/ActivityFlowLink&quot;)
-    public Set&lt;ActivityFlowLink&gt; getActivityFlowLinks(@PathParam(&quot;id&quot;) Long id) {
-<span class="nc" id="L315">        logger.debug(&quot;Get project #{} activityflowlinks&quot;, id);</span>
-<span class="nc" id="L316">        return projectManager.getActivityFlowLinks(id);</span>
+    @Path(&quot;{id: [0-9]+}/ActivityFlowLink&quot;)
+    public Set&lt;ActivityFlowLink&gt; getActivityFlowLinks(@PathParam(&quot;id&quot;) Long projectId) {
+<span class="nc" id="L362">        logger.debug(&quot;Get project #{} activityflowlinks&quot;, projectId);</span>
+<span class="nc" id="L363">        return projectManager.getActivityFlowLinks(projectId);</span>
     }
 
     /**
-     * Get all instance makers of the given project
+     * Get all instance makers linked to the project
      *
-     * @param id the id of the project
+     * @param projectId the id of the project
      *
-     * @return all instance makers linked to the project
+     * @return list of instance makers
      */
     @GET
-    @Path(&quot;{id}/instanceMakers&quot;)
-    public List&lt;InstanceMaker&gt; getInstanceMakers(@PathParam(&quot;id&quot;) Long id) {
-<span class="nc" id="L329">        logger.debug(&quot;Get project #{} instance makers&quot;, id);</span>
-<span class="nc" id="L330">        return projectManager.getInstanceMakers(id);</span>
+    @Path(&quot;{id: [0-9]+}/instanceMakers&quot;)
+    public List&lt;InstanceMaker&gt; getInstanceMakers(@PathParam(&quot;id&quot;) Long projectId) {
+<span class="nc" id="L376">        logger.debug(&quot;Get project #{} instance makers&quot;, projectId);</span>
+<span class="nc" id="L377">        return projectManager.getInstanceMakers(projectId);</span>
     }
+
+    /**
+     * Get the copy parameters of the project
+     *
+     * @param projectId the id of the project
+     *
+     * @return the related copy parameters
+     */
+    @GET
+    @Path(&quot;{id: [0-9]+}/copyParams&quot;)
+    public CopyParam getCopyParam(@PathParam(&quot;id&quot;) Long projectId) {
+<span class="nc" id="L390">        CopyParam copyParam = projectManager.getCopyParam(projectId);</span>
+<span class="nc" id="L391">        logger.debug(&quot;Got project #{} copy param : {}&quot;, projectId, copyParam);</span>
+<span class="nc" id="L392">        return copyParam;</span>
+    }
+
+    // *********************************************************************************************
+    //
+    // *********************************************************************************************
 
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

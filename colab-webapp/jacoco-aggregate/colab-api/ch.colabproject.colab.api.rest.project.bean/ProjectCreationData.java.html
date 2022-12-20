@@ -6,6 +6,7 @@
  */
 package ch.colabproject.colab.api.rest.project.bean;
 
+import ch.colabproject.colab.api.model.DuplicationParam;
 import ch.colabproject.colab.api.model.common.Illustration;
 import ch.colabproject.colab.api.model.project.ProjectType;
 import ch.colabproject.colab.generator.model.annotations.ExtractJavaDoc;
@@ -21,7 +22,7 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
  * @author sandra
  */
 @ExtractJavaDoc
-<span class="nc" id="L24">public class ProjectCreationData implements Serializable {</span>
+<span class="nc" id="L25">public class ProjectCreationData implements Serializable {</span>
 
     private static final long serialVersionUID = 1L;
 
@@ -32,7 +33,7 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
     /**
      * The kind : project or model
      */
-<span class="nc" id="L35">    private ProjectType type = ProjectType.PROJECT;</span>
+    private ProjectType type;
 
     /**
      * The name of the project
@@ -50,14 +51,19 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
     private Illustration illustration;
 
     /**
-     * The model used to create the project (optional)
+     * The project used as a base to create a new project
      */
-    private Long modelId;
+    private Long baseProjectId;
+
+    /**
+     * Duplication parameters to fine tune what is taken from baseProjectId
+     */
+    private DuplicationParam duplicationParam;
 
     /**
      * The email address of the people we want to invite
      */
-<span class="nc" id="L60">    private List&lt;String&gt; guestsEmail = new ArrayList&lt;&gt;();</span>
+<span class="nc" id="L66">    private List&lt;String&gt; guestsEmail = new ArrayList&lt;&gt;();</span>
 
     // ---------------------------------------------------------------------------------------------
     // getters and setters
@@ -67,85 +73,100 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
      * @return the kind : project or model
      */
     public ProjectType getType() {
-<span class="nc" id="L70">        return type;</span>
+<span class="nc" id="L76">        return type;</span>
     }
 
     /**
      * @param type the kind : project or model
      */
     public void setType(ProjectType type) {
-<span class="nc" id="L77">        this.type = type;</span>
-<span class="nc" id="L78">    }</span>
+<span class="nc" id="L83">        this.type = type;</span>
+<span class="nc" id="L84">    }</span>
 
     /**
      * @return the name of the project
      */
     public String getName() {
-<span class="nc" id="L84">        return name;</span>
+<span class="nc" id="L90">        return name;</span>
     }
 
     /**
      * @param name the name of the project
      */
     public void setName(String name) {
-<span class="nc" id="L91">        this.name = name;</span>
-<span class="nc" id="L92">    }</span>
+<span class="nc" id="L97">        this.name = name;</span>
+<span class="nc" id="L98">    }</span>
 
     /**
      * @return the description of the project
      */
     public String getDescription() {
-<span class="nc" id="L98">        return description;</span>
+<span class="nc" id="L104">        return description;</span>
     }
 
     /**
      * @param description the description of the project
      */
     public void setDescription(String description) {
-<span class="nc" id="L105">        this.description = description;</span>
-<span class="nc" id="L106">    }</span>
+<span class="nc" id="L111">        this.description = description;</span>
+<span class="nc" id="L112">    }</span>
 
     /**
      * @return the icon to illustrate the project
      */
     public Illustration getIllustration() {
-<span class="nc" id="L112">        return illustration;</span>
+<span class="nc" id="L118">        return illustration;</span>
     }
 
     /**
      * @param illustration the icon to illustrate the project
      */
     public void setIllustration(Illustration illustration) {
-<span class="nc" id="L119">        this.illustration = illustration;</span>
-<span class="nc" id="L120">    }</span>
+<span class="nc" id="L125">        this.illustration = illustration;</span>
+<span class="nc" id="L126">    }</span>
 
     /**
-     * @return the model used to create the project (optional)
+     * @return the project used as a base to create a new project
      */
-    public Long getModelId() {
-<span class="nc" id="L126">        return modelId;</span>
+    public Long getBaseProjectId() {
+<span class="nc" id="L132">        return baseProjectId;</span>
     }
 
     /**
-     * @param modelId the model used to create the project (optional)
+     * @param baseProjectId The project used as a base to create a new project
      */
-    public void setModelId(Long modelId) {
-<span class="nc" id="L133">        this.modelId = modelId;</span>
-<span class="nc" id="L134">    }</span>
+    public void setBaseProjectId(Long baseProjectId) {
+<span class="nc" id="L139">        this.baseProjectId = baseProjectId;</span>
+<span class="nc" id="L140">    }</span>
+
+    /**
+     * @return the duplication parameters to fine tune what is taken from baseProjectId
+     */
+    public DuplicationParam getDuplicationParam() {
+<span class="nc" id="L146">        return duplicationParam;</span>
+    }
+
+    /**
+     * @param duplicationParam the duplication parameters to fine tune what is taken from
+     *                         baseProjectId
+     */
+    public void setDuplicationParam(DuplicationParam duplicationParam) {
+<span class="nc" id="L154">        this.duplicationParam = duplicationParam;</span>
+<span class="nc" id="L155">    }</span>
 
     /**
      * @return the email address of the people we want to invite
      */
     public List&lt;String&gt; getGuestsEmail() {
-<span class="nc" id="L140">        return guestsEmail;</span>
+<span class="nc" id="L161">        return guestsEmail;</span>
     }
 
     /**
      * @param guestsEmail the email address of the people we want to invite
      */
     public void setGuestsEmail(List&lt;String&gt; guestsEmail) {
-<span class="nc" id="L147">        this.guestsEmail = guestsEmail;</span>
-<span class="nc" id="L148">    }</span>
+<span class="nc" id="L168">        this.guestsEmail = guestsEmail;</span>
+<span class="nc" id="L169">    }</span>
 
     // ---------------------------------------------------------------------------------------------
     // concerning the whole class
@@ -153,40 +174,43 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 
     @Override
     public int hashCode() {
-<span class="nc" id="L156">        return new HashCodeBuilder()</span>
-<span class="nc" id="L157">            .append(this.type)</span>
-<span class="nc" id="L158">            .append(this.name)</span>
-<span class="nc" id="L159">            .append(this.description)</span>
-<span class="nc" id="L160">            .append(this.illustration)</span>
-<span class="nc" id="L161">            .append(this.modelId)</span>
-<span class="nc" id="L162">            .toHashCode();</span>
+<span class="nc" id="L177">        return new HashCodeBuilder()</span>
+<span class="nc" id="L178">            .append(this.type)</span>
+<span class="nc" id="L179">            .append(this.name)</span>
+<span class="nc" id="L180">            .append(this.description)</span>
+<span class="nc" id="L181">            .append(this.illustration)</span>
+<span class="nc" id="L182">            .append(this.baseProjectId)</span>
+<span class="nc" id="L183">            .append(this.duplicationParam)</span>
+<span class="nc" id="L184">            .toHashCode();</span>
     }
 
     @Override
     public boolean equals(Object obj) {
-<span class="nc bnc" id="L167" title="All 2 branches missed.">        if (this == obj) {</span>
-<span class="nc" id="L168">            return true;</span>
+<span class="nc bnc" id="L189" title="All 2 branches missed.">        if (this == obj) {</span>
+<span class="nc" id="L190">            return true;</span>
         }
-<span class="nc bnc" id="L170" title="All 2 branches missed.">        if (obj == null) {</span>
-<span class="nc" id="L171">            return false;</span>
+<span class="nc bnc" id="L192" title="All 2 branches missed.">        if (obj == null) {</span>
+<span class="nc" id="L193">            return false;</span>
         }
-<span class="nc bnc" id="L173" title="All 2 branches missed.">        if (getClass() != obj.getClass()) {</span>
-<span class="nc" id="L174">            return false;</span>
+<span class="nc bnc" id="L195" title="All 2 branches missed.">        if (getClass() != obj.getClass()) {</span>
+<span class="nc" id="L196">            return false;</span>
         }
-<span class="nc" id="L176">        final ProjectCreationData other = (ProjectCreationData) obj;</span>
-<span class="nc" id="L177">        return new EqualsBuilder()</span>
-<span class="nc" id="L178">            .append(this.type, other.type)</span>
-<span class="nc" id="L179">            .append(this.name, other.name)</span>
-<span class="nc" id="L180">            .append(this.description, other.description)</span>
-<span class="nc" id="L181">            .append(this.illustration, other.illustration)</span>
-<span class="nc" id="L182">            .append(this.modelId, other.modelId)</span>
-<span class="nc" id="L183">            .isEquals();</span>
+<span class="nc" id="L198">        final ProjectCreationData other = (ProjectCreationData) obj;</span>
+<span class="nc" id="L199">        return new EqualsBuilder()</span>
+<span class="nc" id="L200">            .append(this.type, other.type)</span>
+<span class="nc" id="L201">            .append(this.name, other.name)</span>
+<span class="nc" id="L202">            .append(this.description, other.description)</span>
+<span class="nc" id="L203">            .append(this.illustration, other.illustration)</span>
+<span class="nc" id="L204">            .append(this.baseProjectId, other.baseProjectId)</span>
+<span class="nc" id="L205">            .append(this.duplicationParam, other.duplicationParam)</span>
+<span class="nc" id="L206">            .isEquals();</span>
     }
 
     @Override
     public String toString() {
-<span class="nc" id="L188">        return &quot;ProjectCreationData{&quot; + &quot; type=&quot; + type.name() + &quot;, name=&quot; + name + &quot;, description=&quot; + description</span>
-            + &quot;, illustration=&quot; + illustration + &quot;, modelId=&quot; + modelId
+<span class="nc" id="L211">        return &quot;ProjectCreationData{&quot; + &quot; type=&quot; + type.name() + &quot;, name=&quot; + name + &quot;, description=&quot; + description</span>
+            + &quot;, illustration=&quot; + illustration
+            + &quot;, baseProjectId=&quot; + baseProjectId + &quot;, duplicationParam=&quot; + duplicationParam
             + &quot;, guestsEmail=&quot; + guestsEmail + &quot;}&quot;;
     }
 

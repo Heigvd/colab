@@ -1,0 +1,281 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>CopyParam.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">colab-client</a> &gt; <a href="../index.html" class="el_bundle">colab-api</a> &gt; <a href="index.source.html" class="el_package">ch.colabproject.colab.api.model.project</a> &gt; <span class="el_source">CopyParam.java</span></div><h1>CopyParam.java</h1><pre class="source lang-java linenums">/*
+ * The coLAB project
+ * Copyright (C) 2022 AlbaSim, MEI, HEIG-VD, HES-SO
+ *
+ * Licensed under the MIT License
+ */
+package ch.colabproject.colab.api.model.project;
+
+import ch.colabproject.colab.api.exceptions.ColabMergeException;
+import ch.colabproject.colab.api.model.ColabEntity;
+import ch.colabproject.colab.api.model.WithWebsocketChannels;
+import ch.colabproject.colab.api.model.common.Tracking;
+import ch.colabproject.colab.api.model.tools.EntityHelper;
+import ch.colabproject.colab.api.security.permissions.Conditions;
+import ch.colabproject.colab.api.security.permissions.project.ProjectConditions;
+import ch.colabproject.colab.api.ws.channel.tool.ChannelsBuilders.ChannelsBuilder;
+import ch.colabproject.colab.api.ws.channel.tool.ChannelsBuilders.EmptyChannelBuilder;
+import javax.json.bind.annotation.JsonbTransient;
+import javax.persistence.Embedded;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Index;
+import javax.persistence.ManyToOne;
+import javax.persistence.NamedQuery;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
+import javax.persistence.Transient;
+import javax.validation.constraints.NotNull;
+
+/**
+ * Parameters to copy a project.
+ *
+ * @author sandra
+ */
+@Entity
+@Table(
+    indexes = {
+        @Index(columnList = &quot;project_id&quot;, unique = true),
+    }
+)
+@NamedQuery(
+    name = &quot;CopyParam.findByProject&quot;,
+    query = &quot;SELECT param FROM CopyParam param &quot;
+        + &quot;WHERE param.project.id = :projectId&quot;)
+<span class="nc" id="L48">public class CopyParam implements ColabEntity, WithWebsocketChannels {</span>
+
+    private static final long serialVersionUID = 1L;
+
+    /** parameters sequence name */
+    public static final String PARAM_SEQUENCE_NAME = &quot;param_seq&quot;;
+
+    // ---------------------------------------------------------------------------------------------
+    // fields
+    // ---------------------------------------------------------------------------------------------
+
+    /**
+     * Copy parameter id
+     */
+    @Id
+    @SequenceGenerator(name = PARAM_SEQUENCE_NAME, allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = PARAM_SEQUENCE_NAME)
+    private Long id;
+
+    /**
+     * creation + modification tracking data
+     */
+    @Embedded
+    private Tracking trackingData;
+
+    /**
+     * Must the roles also be copied
+     */
+    private boolean withRoles;
+
+    /**
+     * Must the deliverables also be copied
+     */
+    private boolean withDeliverables;
+
+    /**
+     * Must the resources also be copied
+     */
+    private boolean withResources;
+
+    /**
+     * The project
+     */
+    @ManyToOne(fetch = FetchType.LAZY)
+    @NotNull
+    @JsonbTransient
+    private Project project;
+
+    /**
+     * The project ID (serialization sugar)
+     */
+    @Transient
+    private Long projectId;
+
+    // ---------------------------------------------------------------------------------------------
+    // getters and setters
+    // ---------------------------------------------------------------------------------------------
+
+    /**
+     * @return the copy parameter ID
+     */
+    @Override
+    public Long getId() {
+<span class="nc" id="L111">        return id;</span>
+    }
+
+    /**
+     * @param id the copy parameter ID
+     */
+    public void setId(Long id) {
+<span class="nc" id="L118">        this.id = id;</span>
+<span class="nc" id="L119">    }</span>
+
+    /**
+     * @return tracking data
+     */
+    @Override
+    public Tracking getTrackingData() {
+<span class="nc" id="L126">        return trackingData;</span>
+    }
+
+    /**
+     * @param trackingData new tracking data
+     */
+    @Override
+    public void setTrackingData(Tracking trackingData) {
+<span class="nc" id="L134">        this.trackingData = trackingData;</span>
+<span class="nc" id="L135">    }</span>
+
+    /**
+     * @return If the roles must also be copied
+     */
+    public boolean isWithRoles() {
+<span class="nc" id="L141">        return withRoles;</span>
+    }
+
+    /**
+     * @param withRoles If the roles must also be copied
+     */
+    public void setWithRoles(boolean withRoles) {
+<span class="nc" id="L148">        this.withRoles = withRoles;</span>
+<span class="nc" id="L149">    }</span>
+
+    /**
+     * @return If the deliverables must also be copied
+     */
+    public boolean isWithDeliverables() {
+<span class="nc" id="L155">        return withDeliverables;</span>
+    }
+
+    /**
+     * @param withDeliverables If the deliverables must also be copied
+     */
+    public void setWithDeliverables(boolean withDeliverables) {
+<span class="nc" id="L162">        this.withDeliverables = withDeliverables;</span>
+<span class="nc" id="L163">    }</span>
+
+    /**
+     * @return If the resources must also be copied
+     */
+    public boolean isWithResources() {
+<span class="nc" id="L169">        return withResources;</span>
+    }
+
+    /**
+     * @param withResources If the resources must also be copied
+     */
+    public void setWithResources(boolean withResources) {
+<span class="nc" id="L176">        this.withResources = withResources;</span>
+<span class="nc" id="L177">    }</span>
+
+    /**
+     * @return the project it belongs to
+     */
+    public Project getProject() {
+<span class="nc" id="L183">        return project;</span>
+    }
+
+    /**
+     * @param project the project it belongs to
+     */
+    public void setProject(Project project) {
+<span class="nc" id="L190">        this.project = project;</span>
+<span class="nc" id="L191">    }</span>
+
+    /**
+     * get the project id. To be sent to client
+     *
+     * @return id of the project or null
+     */
+    public Long getProjectId() {
+<span class="nc bnc" id="L199" title="All 2 branches missed.">        if (this.project != null) {</span>
+<span class="nc" id="L200">            return this.project.getId();</span>
+        } else {
+<span class="nc" id="L202">            return projectId;</span>
+        }
+    }
+
+    /**
+     * set the project id. For serialization only
+     *
+     * @param id the id of the project
+     */
+    public void setProjectId(Long id) {
+<span class="nc" id="L212">        this.projectId = id;</span>
+<span class="nc" id="L213">    }</span>
+
+    // ---------------------------------------------------------------------------------------------
+    // concerning the whole class
+    // ---------------------------------------------------------------------------------------------
+
+    @Override
+    public void merge(ColabEntity other) throws ColabMergeException {
+<span class="nc bnc" id="L221" title="All 2 branches missed.">        if (other instanceof CopyParam) {</span>
+<span class="nc" id="L222">            CopyParam t = (CopyParam) other;</span>
+<span class="nc" id="L223">            this.setWithRoles(t.isWithRoles());</span>
+<span class="nc" id="L224">            this.setWithDeliverables(t.isWithDeliverables());</span>
+<span class="nc" id="L225">            this.setWithResources(t.isWithResources());</span>
+            // project cannot be changed as easily
+<span class="nc" id="L227">        } else {</span>
+<span class="nc" id="L228">            throw new ColabMergeException(this, other);</span>
+        }
+<span class="nc" id="L230">    }</span>
+
+    @Override
+    public ChannelsBuilder getChannelsBuilder() {
+<span class="nc bnc" id="L234" title="All 2 branches missed.">        if (this.project != null) {</span>
+<span class="nc" id="L235">            return this.project.getChannelsBuilder();</span>
+        } else {
+            // such an orphan shouldn't exist...
+<span class="nc" id="L238">            return new EmptyChannelBuilder();</span>
+        }
+    }
+
+    @Override
+    @JsonbTransient
+    public Conditions.Condition getReadCondition() {
+<span class="nc bnc" id="L245" title="All 2 branches missed.">        if (this.project != null) {</span>
+<span class="nc" id="L246">            return new ProjectConditions.IsCopyParamReadable(this.project.getId());</span>
+        } else {
+            // such an orphan shouldn't exist...
+<span class="nc" id="L249">            return Conditions.defaultForOrphan;</span>
+        }
+    }
+
+    @Override
+    @JsonbTransient
+    public Conditions.Condition getUpdateCondition() {
+<span class="nc bnc" id="L256" title="All 2 branches missed.">        if (this.project != null) {</span>
+<span class="nc" id="L257">            return this.project.getUpdateCondition();</span>
+        } else {
+            // such an orphan shouldn't exist...
+<span class="nc" id="L260">            return Conditions.defaultForOrphan;</span>
+        }
+    }
+
+    @Override
+    public int hashCode() {
+<span class="nc" id="L266">        return EntityHelper.hashCode(this);</span>
+    }
+
+    @Override
+    @SuppressWarnings(&quot;EqualsWhichDoesntCheckParameterClass&quot;)
+    public boolean equals(Object obj) {
+<span class="nc" id="L272">        return EntityHelper.equals(this, obj);</span>
+    }
+
+    @Override
+    public String toString() {
+<span class="nc" id="L277">        return &quot;CopyParam{&quot; + &quot;id=&quot; + id + &quot;, projectId=&quot; + projectId + '}';</span>
+    }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

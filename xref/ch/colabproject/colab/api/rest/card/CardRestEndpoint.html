@@ -311,14 +311,26 @@
 <a class="jxr_linenumber" name="L303" href="#L303">303</a>     }
 <a class="jxr_linenumber" name="L304" href="#L304">304</a> 
 <a class="jxr_linenumber" name="L305" href="#L305">305</a>     <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L306" href="#L306">306</a> <em class="jxr_javadoccomment">     * @param cardId test</em>
+<a class="jxr_linenumber" name="L306" href="#L306">306</a> <em class="jxr_javadoccomment">     * @param cardId the card id</em>
 <a class="jxr_linenumber" name="L307" href="#L307">307</a> <em class="jxr_javadoccomment">     */</em>
 <a class="jxr_linenumber" name="L308" href="#L308">308</a>     @POST
 <a class="jxr_linenumber" name="L309" href="#L309">309</a>     @Path(<span class="jxr_string">"createCardType/{cardId}"</span>)
 <a class="jxr_linenumber" name="L310" href="#L310">310</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> createCardType(@PathParam(<span class="jxr_string">"cardId"</span>) Long cardId) {
 <a class="jxr_linenumber" name="L311" href="#L311">311</a>         cardManager.createCardType(cardId);
 <a class="jxr_linenumber" name="L312" href="#L312">312</a>     }
-<a class="jxr_linenumber" name="L313" href="#L313">313</a> }
+<a class="jxr_linenumber" name="L313" href="#L313">313</a> 
+<a class="jxr_linenumber" name="L314" href="#L314">314</a>     <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L315" href="#L315">315</a> <em class="jxr_javadoccomment">     * Remove the card type of the card. For now, it can be done only if there is no resource in the</em>
+<a class="jxr_linenumber" name="L316" href="#L316">316</a> <em class="jxr_javadoccomment">     * card type.</em>
+<a class="jxr_linenumber" name="L317" href="#L317">317</a> <em class="jxr_javadoccomment">     *</em>
+<a class="jxr_linenumber" name="L318" href="#L318">318</a> <em class="jxr_javadoccomment">     * @param cardId the card id</em>
+<a class="jxr_linenumber" name="L319" href="#L319">319</a> <em class="jxr_javadoccomment">     */</em>
+<a class="jxr_linenumber" name="L320" href="#L320">320</a>     @POST
+<a class="jxr_linenumber" name="L321" href="#L321">321</a>     @Path(<span class="jxr_string">"removeCardType/{cardId}"</span>)
+<a class="jxr_linenumber" name="L322" href="#L322">322</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> removeCardType(@PathParam(<span class="jxr_string">"cardId"</span>) Long cardId) {
+<a class="jxr_linenumber" name="L323" href="#L323">323</a>         cardManager.removeCardType(cardId);
+<a class="jxr_linenumber" name="L324" href="#L324">324</a>     }
+<a class="jxr_linenumber" name="L325" href="#L325">325</a> }
 </pre>
 <hr/>
 <div id="footer">Copyright &#169; 2022 <a href="https://www.colab-project.ch">AlbaSim, MEI, HEIG-VD, HES-SO</a>. All rights reserved.</div>

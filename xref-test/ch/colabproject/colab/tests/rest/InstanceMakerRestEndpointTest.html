@@ -141,7 +141,7 @@
 <a class="jxr_linenumber" name="L133" href="#L133">133</a>         Project modelProjectForPietro = pietroClient.projectRestEndpoint.getProject(projectModelId);
 <a class="jxr_linenumber" name="L134" href="#L134">134</a>         Assertions.assertNotNull(modelProjectForPietro);
 <a class="jxr_linenumber" name="L135" href="#L135">135</a> 
-<a class="jxr_linenumber" name="L136" href="#L136">136</a>         List&lt;Project&gt; pietroProjects = pietroClient.projectRestEndpoint.getUserProjects();
+<a class="jxr_linenumber" name="L136" href="#L136">136</a>         List&lt;Project&gt; pietroProjects = pietroClient.projectRestEndpoint.getInstanceableModels();
 <a class="jxr_linenumber" name="L137" href="#L137">137</a>         Assertions.assertNotNull(pietroProjects);
 <a class="jxr_linenumber" name="L138" href="#L138">138</a>         Assertions.assertEquals(1, pietroProjects.size());
 <a class="jxr_linenumber" name="L139" href="#L139">139</a>         Assertions.assertEquals(projectModelId, pietroProjects.get(0).getId());
