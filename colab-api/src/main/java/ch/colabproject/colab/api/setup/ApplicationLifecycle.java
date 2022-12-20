@@ -12,11 +12,11 @@ import ch.colabproject.colab.generator.model.tools.PolymorphicDeserializer;
 import com.hazelcast.cluster.Member;
 import com.hazelcast.core.HazelcastInstance;
 import java.util.Set;
-import javax.inject.Inject;
-import javax.servlet.ServletConfig;
-import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
+import jakarta.inject.Inject;
+import jakarta.servlet.ServletConfig;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServlet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

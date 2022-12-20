@@ -7,9 +7,9 @@
 package ch.colabproject.colab.tests.mock;
 
 import ch.colabproject.colab.api.security.SessionManager;
-import javax.ejb.LocalBean;
-import javax.ejb.Stateless;
-import javax.enterprise.inject.Specializes;
+import jakarta.ejb.LocalBean;
+import jakarta.ejb.Stateless;
+import jakarta.enterprise.inject.Specializes;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

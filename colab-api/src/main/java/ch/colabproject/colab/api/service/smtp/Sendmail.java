@@ -13,16 +13,16 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Properties;
-import javax.mail.Address;
-import javax.mail.Authenticator;
-import javax.mail.Message.RecipientType;
-import javax.mail.MessagingException;
-import javax.mail.PasswordAuthentication;
-import javax.mail.Session;
-import javax.mail.Transport;
-import javax.mail.internet.AddressException;
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeMessage;
+import jakarta.mail.Address;
+import jakarta.mail.Authenticator;
+import jakarta.mail.Message.RecipientType;
+import jakarta.mail.MessagingException;
+import jakarta.mail.PasswordAuthentication;
+import jakarta.mail.Session;
+import jakarta.mail.Transport;
+import jakarta.mail.internet.AddressException;
+import jakarta.mail.internet.InternetAddress;
+import jakarta.mail.internet.MimeMessage;
 
 /**
  * Helper to send e-mails.
@@ -45,7 +45,7 @@ public class Sendmail {
      * @param message the message to sent
      *
      * @throws HttpErrorMessage             malformedMessage if supplied values are erroneous
-     * @throws javax.mail.MessagingException when something went wrong
+     * @throws jakarta.mail.MessagingException when something went wrong
      */
     public static void send(Message message) throws MessagingException {
 

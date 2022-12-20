@@ -6,7 +6,7 @@
  */
 package ch.colabproject.colab.generator.plugin.rest;
 
-import javax.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.MediaType;
 
 /**
  * Represents a form field

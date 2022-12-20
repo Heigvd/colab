@@ -6,8 +6,8 @@
  */
 package ch.colabproject.colab.api.setup;
 
-import javax.annotation.Resource;
-import javax.enterprise.inject.Produces;
+import jakarta.annotation.Resource;
+import jakarta.enterprise.inject.Produces;
 import javax.sql.DataSource;
 import liquibase.integration.cdi.CDILiquibaseConfig;
 import liquibase.integration.cdi.annotations.LiquibaseType;

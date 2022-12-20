@@ -7,7 +7,7 @@
 package ch.colabproject.colab.api.rest.config.bean;
 
 import ch.colabproject.colab.generator.model.annotations.ExtractJavaDoc;
-import javax.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotNull;
 
 /**
  * Bean to serialize account-related configuration.

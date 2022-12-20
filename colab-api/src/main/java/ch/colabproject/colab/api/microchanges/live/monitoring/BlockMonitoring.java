@@ -7,7 +7,7 @@
 package ch.colabproject.colab.api.microchanges.live.monitoring;
 
 import ch.colabproject.colab.generator.model.annotations.ExtractJavaDoc;
-import javax.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotNull;
 
 /**
  * Admin tool to monitor live block changes

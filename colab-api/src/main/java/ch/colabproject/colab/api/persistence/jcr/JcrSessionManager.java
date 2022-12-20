@@ -10,12 +10,12 @@ import ch.colabproject.colab.api.model.project.Project;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
-import javax.annotation.Resource;
-import javax.inject.Inject;
+import jakarta.annotation.Resource;
+import jakarta.inject.Inject;
 import javax.jcr.Repository;
 import javax.jcr.RepositoryException;
-import javax.transaction.TransactionScoped;
-import javax.transaction.TransactionSynchronizationRegistry;
+import jakarta.transaction.TransactionScoped;
+import jakarta.transaction.TransactionSynchronizationRegistry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

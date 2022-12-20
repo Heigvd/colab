@@ -9,7 +9,7 @@ package ch.colabproject.colab.api.presence.model;
 import ch.colabproject.colab.generator.model.annotations.ExtractJavaDoc;
 import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
 import java.io.Serializable;
-import javax.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotNull;
 
 /**
  *

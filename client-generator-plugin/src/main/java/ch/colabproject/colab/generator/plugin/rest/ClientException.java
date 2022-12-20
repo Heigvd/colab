@@ -7,7 +7,7 @@
 package ch.colabproject.colab.generator.plugin.rest;
 
 import ch.colabproject.colab.generator.model.exceptions.HttpException;
-import javax.ws.rs.core.Response;
+import jakarta.ws.rs.core.Response;
 
 /**
  * 4xx error

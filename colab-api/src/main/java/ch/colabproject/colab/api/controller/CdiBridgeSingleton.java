@@ -8,9 +8,9 @@ package ch.colabproject.colab.api.controller;
 
 import ch.colabproject.colab.api.microchanges.live.LiveManager;
 import java.util.Map;
-import javax.ejb.Singleton;
-import javax.ejb.Startup;
-import javax.inject.Inject;
+import jakarta.ejb.Singleton;
+import jakarta.ejb.Startup;
+import jakarta.inject.Inject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

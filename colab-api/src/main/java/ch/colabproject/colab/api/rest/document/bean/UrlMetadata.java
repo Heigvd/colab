@@ -11,8 +11,8 @@ import java.io.Serializable;
 import java.time.OffsetDateTime;
 import java.util.HashMap;
 import java.util.Map;
-import javax.json.bind.annotation.JsonbTransient;
-import javax.validation.constraints.NotNull;
+import jakarta.json.bind.annotation.JsonbTransient;
+import jakarta.validation.constraints.NotNull;
 
 /**
  *

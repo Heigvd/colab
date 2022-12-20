@@ -9,13 +9,13 @@ package ch.colabproject.colab.api.model.token;
 import ch.colabproject.colab.api.controller.token.TokenManager;
 import ch.colabproject.colab.api.model.token.tools.VerifyLocalAccountMessageBuilder;
 import ch.colabproject.colab.api.model.user.LocalAccount;
-import javax.json.bind.annotation.JsonbTransient;
-import javax.persistence.Entity;
-import javax.persistence.Index;
-import javax.persistence.NamedQuery;
-import javax.persistence.OneToOne;
-import javax.persistence.Table;
-import javax.validation.constraints.NotNull;
+import jakarta.json.bind.annotation.JsonbTransient;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Index;
+import jakarta.persistence.NamedQuery;
+import jakarta.persistence.OneToOne;
+import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotNull;
 
 /**
  * A token to validate the email address of a local account

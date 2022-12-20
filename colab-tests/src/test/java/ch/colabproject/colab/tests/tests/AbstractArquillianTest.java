@@ -30,13 +30,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.regex.Matcher;
-import javax.annotation.Resource;
-import javax.inject.Inject;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
+import jakarta.annotation.Resource;
+import jakarta.inject.Inject;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import javax.sql.DataSource;
-import javax.websocket.DeploymentException;
-import javax.ws.rs.ClientErrorException;
+import jakarta.websocket.DeploymentException;
+import jakarta.ws.rs.ClientErrorException;
 import org.eu.ingwar.tools.arquillian.extension.suite.annotations.ArquillianSuiteDeployment;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit5.ArquillianExtension;
@@ -196,10 +196,10 @@ public abstract class AbstractArquillianTest {
         addFiles(war, new File("target/test-classes"), "WEB-INF/classes");
 
         /* Log Levels */
-        java.util.logging.Logger.getLogger("javax.enterprise.system.tools.deployment")
+        java.util.logging.Logger.getLogger("jakarta.enterprise.system.tools.deployment")
             .setLevel(Level.WARNING);
-        java.util.logging.Logger.getLogger("javax.enterprise.system").setLevel(Level.FINE);
-        //java.util.logging.Logger.getLogger("javax.enterprise.system.core").setLevel(Level.FINE);
+        java.util.logging.Logger.getLogger("jakarta.enterprise.system").setLevel(Level.FINE);
+        //java.util.logging.Logger.getLogger("jakarta.enterprise.system.core").setLevel(Level.FINE);
         java.util.logging.Logger.getLogger("fish.payara.nucleus.healthcheck").setLevel(Level.SEVERE);
         org.glassfish.ejb.LogFacade.getLogger().setLevel(Level.SEVERE);
 

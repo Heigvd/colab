@@ -8,7 +8,7 @@ package ch.colabproject.colab.api.rest.document.bean;
 
 import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.generator.model.annotations.ExtractJavaDoc;
-import javax.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotNull;
 
 /**
  * Summary of project's use of a resource.

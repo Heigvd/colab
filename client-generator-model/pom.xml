@@ -17,6 +17,7 @@
     </organization>
 
     <dependencies>
+
         <!-- Java runtime metadata analysis -->
         <!-- reflections used for JSON deserialization -->
         <dependency>
@@ -30,6 +31,15 @@
             <groupId>org.eclipse</groupId>
             <artifactId>yasson</artifactId>
             <type>jar</type>
+        </dependency>
+        
+        <!--*****************************************************************-->
+        <!-- PROVIDED DEPENDENCIES -->
+
+        <!-- Jakarta EE Platform API -->
+        <dependency>
+            <groupId>jakarta.platform</groupId>
+            <artifactId>jakarta.jakartaee-api</artifactId>
         </dependency>
     </dependencies>
 </project>

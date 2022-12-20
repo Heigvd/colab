@@ -10,7 +10,7 @@
         <shared-cache-mode>ALL</shared-cache-mode>
         <properties>
             <property
-                name="javax.persistence.schema-generation.database.action"
+                name="jakarta.persistence.schema-generation.database.action"
                 value="drop-and-create" />
             <property name="eclipselink.session.customizer"
                       value="ch.colabproject.colab.api.model.tools.JpaCustomizer" />
@@ -22,8 +22,8 @@
             <property name="eclipselink.weaving" value="static"/>
             <property name="eclipselink.flush-clear.cache" value="Merge"/>
             <property name="eclipselink.cache.type.default" value="Soft"/>
-            <property name="javax.persistence.schema-generation.drop-source" value="script" />
-            <property name="javax.persistence.schema-generation.drop-script-source"
+            <property name="jakarta.persistence.schema-generation.drop-source" value="script" />
+            <property name="jakarta.persistence.schema-generation.drop-script-source"
                       value="META-INF/jpa/drop.sql" />
         </properties>
     </persistence-unit>

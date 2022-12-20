@@ -42,6 +42,17 @@
             <artifactId>jakarta.jakartaee-api</artifactId>
         </dependency>
 
+        <!-- To create Multipart form data REST path easily -->
+        <dependency>
+            <groupId>org.glassfish.jersey.media</groupId>
+            <artifactId>jersey-media-multipart</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.glassfish.jersey.core</groupId>
+            <artifactId>jersey-server</artifactId>
+        </dependency>
+
         <!--*****************************************************************-->
         <!-- DEPENDENCIES -->
 

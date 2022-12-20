@@ -8,7 +8,7 @@ package ch.colabproject.colab.api.model.user;
 
 import ch.colabproject.colab.generator.model.annotations.ExtractJavaDoc;
 import ch.colabproject.colab.generator.model.interfaces.WithJsonDiscriminator;
-import javax.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotNull;
 
 /**
  * Contains information sent by a user to create a new local account

@@ -13,9 +13,9 @@ import ch.colabproject.colab.generator.model.annotations.ExtractJavaDoc;
 import ch.colabproject.colab.generator.model.tools.DateSerDe;
 import java.io.Serializable;
 import java.time.OffsetDateTime;
-import javax.json.bind.annotation.JsonbTypeDeserializer;
-import javax.json.bind.annotation.JsonbTypeSerializer;
-import javax.validation.constraints.NotNull;
+import jakarta.json.bind.annotation.JsonbTypeDeserializer;
+import jakarta.json.bind.annotation.JsonbTypeSerializer;
+import jakarta.validation.constraints.NotNull;
 
 /**
  * Used to activity status of a user with the rest of the team

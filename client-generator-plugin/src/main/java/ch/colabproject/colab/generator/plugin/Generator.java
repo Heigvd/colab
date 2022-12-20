@@ -25,9 +25,9 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.stream.Collectors;
-import javax.json.bind.Jsonb;
-import javax.ws.rs.ApplicationPath;
-import javax.ws.rs.Path;
+import jakarta.json.bind.Jsonb;
+import jakarta.ws.rs.ApplicationPath;
+import jakarta.ws.rs.Path;
 import org.apache.maven.plugin.MojoFailureException;
 import org.reflections.Reflections;
 
@@ -146,8 +146,8 @@ public class Generator {
     public void generateJavaClient(String targetDir, boolean dryRun) throws MojoFailureException {
         Map<String, String> imports = new HashMap<>();
         imports.put("RestClient", "ch.colabproject.colab.generator.plugin.rest.RestClient");
-        imports.put("Jsonb", "javax.json.bind.Jsonb");
-        imports.put("GenericType", "javax.ws.rs.core.GenericType");
+        imports.put("Jsonb", "jakarta.json.bind.Jsonb");
+        imports.put("GenericType", "jakarta.ws.rs.core.GenericType");
         imports.put("PathPattern", "org.glassfish.jersey.uri.PathPattern");
         imports.put("UriTemplate", "org.glassfish.jersey.uri.UriTemplate");
         imports.put("void", null); // null means no import statement

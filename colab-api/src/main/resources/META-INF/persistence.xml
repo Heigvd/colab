@@ -10,7 +10,7 @@
         <shared-cache-mode>ALL</shared-cache-mode>
         <properties>
             <property
-                name="javax.persistence.schema-generation.database.action"
+                name="jakarta.persistence.schema-generation.database.action"
                 value="none" />
             <property name="eclipselink.session.customizer"
                       value="ch.colabproject.colab.api.model.tools.JpaCustomizer" />

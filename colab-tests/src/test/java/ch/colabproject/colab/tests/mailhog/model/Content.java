@@ -9,7 +9,7 @@ package ch.colabproject.colab.tests.mailhog.model;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import javax.json.bind.annotation.JsonbProperty;
+import jakarta.json.bind.annotation.JsonbProperty;
 
 /**
  *

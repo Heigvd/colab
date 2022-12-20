@@ -12,14 +12,14 @@ import java.io.StringReader;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
-import javax.json.Json;
-import javax.json.JsonException;
-import javax.json.JsonReader;
-import javax.json.bind.Jsonb;
-import javax.websocket.DecodeException;
-import javax.websocket.Decoder;
-import javax.websocket.EndpointConfig;
-import javax.ws.rs.core.GenericType;
+import jakarta.json.Json;
+import jakarta.json.JsonException;
+import jakarta.json.JsonReader;
+import jakarta.json.bind.Jsonb;
+import jakarta.websocket.DecodeException;
+import jakarta.websocket.Decoder;
+import jakarta.websocket.EndpointConfig;
+import jakarta.ws.rs.core.GenericType;
 
 /**
  * Convert JSON-encoded Websocket message received from clients

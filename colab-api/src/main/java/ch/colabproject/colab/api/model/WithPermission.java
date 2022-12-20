@@ -7,7 +7,7 @@
 package ch.colabproject.colab.api.model;
 
 import ch.colabproject.colab.api.security.permissions.Conditions.Condition;
-import javax.json.bind.annotation.JsonbTransient;
+import jakarta.json.bind.annotation.JsonbTransient;
 
 /**
  * Depict an entity which has access controls

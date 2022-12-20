@@ -10,10 +10,10 @@ import ch.colabproject.colab.generator.model.annotations.ExtractJavaDoc;
 import ch.colabproject.colab.generator.model.interfaces.WithJsonDiscriminator;
 import ch.colabproject.colab.generator.model.tools.DateSerDe;
 import java.time.OffsetDateTime;
-import javax.json.bind.annotation.JsonbTypeDeserializer;
-import javax.json.bind.annotation.JsonbTypeSerializer;
-import javax.persistence.Embeddable;
-import javax.validation.constraints.Size;
+import jakarta.json.bind.annotation.JsonbTypeDeserializer;
+import jakarta.json.bind.annotation.JsonbTypeSerializer;
+import jakarta.persistence.Embeddable;
+import jakarta.validation.constraints.Size;
 
 /**
  * To store the creation and modification dates as well as the user who initiate the action

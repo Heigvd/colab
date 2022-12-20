@@ -32,7 +32,7 @@ import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Set;
 import java.util.regex.Matcher;
-import javax.websocket.DeploymentException;
+import jakarta.websocket.DeploymentException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 

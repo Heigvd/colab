@@ -10,8 +10,8 @@ import ch.colabproject.colab.api.ws.channel.tool.ChannelsBuilders.ChannelsBuilde
 import ch.colabproject.colab.generator.model.interfaces.WithId;
 import ch.colabproject.colab.generator.model.interfaces.WithJsonDiscriminator;
 import ch.colabproject.colab.generator.model.tools.PolymorphicDeserializer;
-import javax.json.bind.annotation.JsonbTransient;
-import javax.json.bind.annotation.JsonbTypeDeserializer;
+import jakarta.json.bind.annotation.JsonbTransient;
+import jakarta.json.bind.annotation.JsonbTypeDeserializer;
 
 /**
  * Depict an entity which can be propagated through websocket.

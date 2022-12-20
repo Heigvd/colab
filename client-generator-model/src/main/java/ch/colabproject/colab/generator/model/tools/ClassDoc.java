@@ -8,7 +8,7 @@ package ch.colabproject.colab.generator.model.tools;
 
 import java.util.HashMap;
 import java.util.Map;
-import javax.json.bind.annotation.JsonbTransient;
+import jakarta.json.bind.annotation.JsonbTransient;
 
 /**
  * Represent javadoc of a class, with fields and methods javadocs.

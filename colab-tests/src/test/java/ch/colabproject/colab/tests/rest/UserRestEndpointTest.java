@@ -28,8 +28,8 @@ import java.net.URISyntaxException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-import javax.inject.Inject;
-import javax.websocket.DeploymentException;
+import jakarta.inject.Inject;
+import jakarta.websocket.DeploymentException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 

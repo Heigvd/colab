@@ -6,7 +6,7 @@
  */
 package ch.colabproject.colab.tests.mailhog.model;
 
-import javax.json.bind.annotation.JsonbProperty;
+import jakarta.json.bind.annotation.JsonbProperty;
 
 /**
  * A Mailhog Address

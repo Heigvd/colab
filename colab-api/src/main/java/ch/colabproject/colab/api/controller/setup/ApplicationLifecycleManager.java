@@ -12,9 +12,9 @@ import ch.colabproject.colab.api.model.user.User;
 import ch.colabproject.colab.api.persistence.jpa.user.UserDao;
 import ch.colabproject.colab.api.setup.ColabConfiguration;
 import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
-import javax.ejb.LocalBean;
-import javax.ejb.Stateless;
-import javax.inject.Inject;
+import jakarta.ejb.LocalBean;
+import jakarta.ejb.Stateless;
+import jakarta.inject.Inject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -23,8 +23,8 @@ import org.slf4j.LoggerFactory;
  * <p>
  * This is a required step. Without this step, beans injection and CCI context are quite messed up.
  * <p>
- * This beans shall only call methods with annotation {@link javax.ejb.TransactionAttribute} set to
- * {@link javax.ejb.TransactionAttributeType#REQUIRES_NEW}.
+ * This beans shall only call methods with annotation {@link jakarta.ejb.TransactionAttribute} set to
+ * {@link jakarta.ejb.TransactionAttributeType#REQUIRES_NEW}.
  * <p>
  * @author maxence
  */
