@@ -11,6 +11,7 @@ import ch.colabproject.colab.api.model.project.CopyParam;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 import org.slf4j.Logger;
@@ -57,14 +58,18 @@ public class CopyParamDao {
      * @return the copy parameter related to the project
      */
     public CopyParam findCopyParamByProject(Long projectId) {
-        logger.trace("find copy param of project #{}", projectId);
+        try {
+            logger.trace("find copy param of project #{}", projectId);
 
-        TypedQuery<CopyParam> query = em.createNamedQuery("CopyParam.findByProject",
-            CopyParam.class);
+            TypedQuery<CopyParam> query = em.createNamedQuery("CopyParam.findByProject",
+                CopyParam.class);
 
-        query.setParameter("projectId", projectId);
+            query.setParameter("projectId", projectId);
 
-        return query.getSingleResult();
+            return query.getSingleResult();
+        } catch (NoResultException ex) {
+            return null;
+        }
     }
 
     /**
