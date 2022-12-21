@@ -168,21 +168,29 @@ public class CookieFilter implements ContainerRequestFilter, ContainerResponseFi
                 cookieValue = "uid=" + session.getId() + ":v=" + session.getRawSessionSecret();
             }
 
-            NewCookie sessionCookie = new NewCookie(COOKIE_NAME, cookieValue,
-                "/", null, null, COOKIE_MAX_AGE, true, true);
-
-            //hack: SameSite not handled yet by jakarta rs library
-            //inject SameSite=Lax by hand
-            String theCookie = sessionCookie.toString() + ";SameSite=Lax";
+            NewCookie sessionCookie = new NewCookie.Builder(COOKIE_NAME)
+                .value(cookieValue)
+                .path("/")
+                .domain(null)
+                .comment(null)
+                .maxAge(COOKIE_MAX_AGE)
+                .secure(true)
+                .httpOnly(true)
+                .sameSite(NewCookie.SameSite.LAX)
+                .build();
 
             logger.trace("Request completed with session id {}", session.getId());
-            responseContext.getHeaders().add(HttpHeaders.SET_COOKIE, theCookie);
+            responseContext.getHeaders().add(HttpHeaders.SET_COOKIE, sessionCookie);
         } else {
             // not session => clear cookie if exists
             if (cookie != null) {
                 // Clear cookie by setting no value and max-age=0
-                NewCookie sessionCookie = new NewCookie(COOKIE_NAME, "",
-                    "/", null, null, 0, true, true);
+                NewCookie sessionCookie = new NewCookie.Builder(COOKIE_NAME)
+                    .path("/")
+                    .maxAge(0)
+                    .secure(true)
+                    .httpOnly(true)
+                    .build();
 
                 logger.trace("Request completed with session id {}", sessionCookie);
                 responseContext.getHeaders().add(HttpHeaders.SET_COOKIE, sessionCookie);
