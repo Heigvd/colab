@@ -30,14 +30,14 @@ const initialState: DocumentState = {
   statusByResource: {},
 };
 
-/** what to do when a document was updated / created */
+/** what to do when a document is updated or created */
 const updateDocument = (state: DocumentState, document: Document) => {
   if (document.id != null) {
     state.documents[document.id] = document;
   }
 };
 
-/** what to do when a document was deleted */
+/** what to do when a document is deleted */
 const removeDocument = (state: DocumentState, documentId: number) => {
   delete state.documents[documentId];
 };

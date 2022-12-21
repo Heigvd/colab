@@ -303,11 +303,23 @@ public class CardRestEndpoint {
     }
 
     /**
-     * @param cardId test
+     * @param cardId the card id
      */
     @POST
     @Path("createCardType/{cardId}")
     public void createCardType(@PathParam("cardId") Long cardId) {
         cardManager.createCardType(cardId);
+    }
+
+    /**
+     * Remove the card type of the card. For now, it can be done only if there is no resource in the
+     * card type.
+     *
+     * @param cardId the card id
+     */
+    @POST
+    @Path("removeCardType/{cardId}")
+    public void removeCardType(@PathParam("cardId") Long cardId) {
+        cardManager.removeCardType(cardId);
     }
 }

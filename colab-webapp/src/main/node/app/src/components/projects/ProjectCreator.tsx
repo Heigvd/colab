@@ -166,11 +166,25 @@ export default function ProjectCreator({
                   startLoading();
                   dispatch(
                     API.createProject({
+                      type: 'PROJECT',
                       name: data.name,
                       description: data.description,
                       illustration: data.illustration,
                       guestsEmail: data.guests,
-                      modelId: data.projectModel?.id || null,
+                      baseProjectId: data.projectModel?.id || null,
+                      duplicationParam: {
+                        '@class': 'DuplicationParam',
+                        withRoles: true,
+                        withTeamMembers: false,
+                        withCardTypes: true,
+                        withCardsStructure: true,
+                        withDeliverables: true,
+                        withResources: true,
+                        withStickyNotes: true,
+                        withActivityFlow: true,
+                        makeOnlyCardTypeReferences: false, // will need an option
+                        resetProgressionData: true,
+                      },
                     }),
                   ).then(payload => {
                     resetCb();

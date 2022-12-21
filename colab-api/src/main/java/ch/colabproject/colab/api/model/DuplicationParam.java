@@ -80,39 +80,18 @@ public class DuplicationParam implements WithJsonDiscriminator {
     // ---------------------------------------------------------------------------------------------
 
     /**
-     * @return Default instance for a project duplication
-     */
-    public static DuplicationParam buildDefaultForCopyOfProject() {
-        DuplicationParam defaultInstance = new DuplicationParam();
-
-        defaultInstance.setWithRoles(true);
-        defaultInstance.setWithTeamMembers(true);
-        defaultInstance.setWithCardTypes(true);
-        defaultInstance.setWithCardsStructure(true);
-        defaultInstance.setWithDeliverables(true);
-        defaultInstance.setWithResources(true);
-        defaultInstance.setWithStickyNotes(true);
-        defaultInstance.setWithActivityFlow(true);
-
-        defaultInstance.setMakeOnlyCardTypeReferences(false);
-
-        defaultInstance.setResetProgressionData(false);
-
-        return defaultInstance;
-    }
-
-    /**
      * @return Default instance for a resource duplication
      */
     public static DuplicationParam buildDefaultForCopyOfResource() {
         DuplicationParam defaultInstance = new DuplicationParam();
+
+        defaultInstance.setWithResources(true);
 
         defaultInstance.setWithRoles(false);
         defaultInstance.setWithTeamMembers(false);
         defaultInstance.setWithCardTypes(false);
         defaultInstance.setWithCardsStructure(false);
         defaultInstance.setWithDeliverables(false);
-        defaultInstance.setWithResources(true);
         defaultInstance.setWithStickyNotes(false);
         defaultInstance.setWithActivityFlow(false);
 
@@ -124,9 +103,9 @@ public class DuplicationParam implements WithJsonDiscriminator {
     }
 
     /**
-     * @return Default instance for a project created from a project model
+     * @return Default instance for a project duplication
      */
-    public static DuplicationParam buildForCreationFromModel() {
+    public static DuplicationParam buildDefaultForProjectDuplication() {
         DuplicationParam defaultInstance = new DuplicationParam();
 
         defaultInstance.setWithRoles(true);
@@ -136,11 +115,58 @@ public class DuplicationParam implements WithJsonDiscriminator {
         defaultInstance.setWithResources(true);
         defaultInstance.setWithStickyNotes(true);
         defaultInstance.setWithActivityFlow(true);
-        defaultInstance.setMakeOnlyCardTypeReferences(true);
 
         defaultInstance.setWithTeamMembers(false);
 
+        defaultInstance.setMakeOnlyCardTypeReferences(false);
+
+        defaultInstance.setResetProgressionData(false);
+
+        return defaultInstance;
+    }
+
+    /**
+     * @return Default instance for a project created from a model
+     */
+    public static DuplicationParam buildForProjectCreationFromModel() {
+        DuplicationParam defaultInstance = new DuplicationParam();
+
+        defaultInstance.setWithRoles(true);
+        defaultInstance.setWithCardTypes(true);
+        defaultInstance.setWithCardsStructure(true);
+        defaultInstance.setWithDeliverables(true);
+        defaultInstance.setWithResources(true);
+        defaultInstance.setWithStickyNotes(true);
+        defaultInstance.setWithActivityFlow(true);
+
+        defaultInstance.setMakeOnlyCardTypeReferences(true);
+
         defaultInstance.setResetProgressionData(true);
+
+        defaultInstance.setWithTeamMembers(false);
+
+        return defaultInstance;
+    }
+
+    /**
+     * @return Default instance for a model created from a project
+     */
+    public static DuplicationParam buildForModelCreationFromProject() {
+        DuplicationParam defaultInstance = new DuplicationParam();
+
+        defaultInstance.setWithRoles(true);
+        defaultInstance.setWithCardTypes(true);
+        defaultInstance.setWithCardsStructure(true);
+        defaultInstance.setWithDeliverables(true);
+        defaultInstance.setWithResources(true);
+        defaultInstance.setWithStickyNotes(true);
+        defaultInstance.setWithActivityFlow(true);
+
+        defaultInstance.setResetProgressionData(true);
+
+        defaultInstance.setWithTeamMembers(false);
+
+        defaultInstance.setMakeOnlyCardTypeReferences(false);
 
         return defaultInstance;
     }

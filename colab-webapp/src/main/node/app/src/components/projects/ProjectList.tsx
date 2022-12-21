@@ -23,14 +23,13 @@ import * as React from 'react';
 import { Route, Routes, useNavigate, useParams } from 'react-router-dom';
 import * as API from '../../API/api';
 import useTranslations from '../../i18n/I18nContext';
-import { useAndLoadProject } from '../../selectors/projectSelector';
+import { useAndLoadModelProjects, useAndLoadProject } from '../../selectors/projectSelector';
 import { useCurrentUser } from '../../selectors/userSelector';
 import { shallowEqual, useAppDispatch, useAppSelector, useLoadingState } from '../../store/hooks';
-import { StateStatus } from '../../store/slice/projectSlice';
+import { AvailabilityStatus } from '../../store/store';
 import ItemThumbnailsSelection from '../common/collection/ItemThumbnailsSelection';
 import IllustrationDisplay from '../common/element/IllustrationDisplay';
 import InlineLoading from '../common/element/InlineLoading';
-import { TipsCtx, WIPContainer } from '../common/element/Tips';
 import { ConfirmDeleteModal } from '../common/layout/ConfirmDeleteModal';
 import DropDownMenu from '../common/layout/DropDownMenu';
 import Flex from '../common/layout/Flex';
@@ -144,24 +143,16 @@ const projectListStyle = css({
 interface ProjectDisplayProps {
   project: Project;
   className?: string;
-  isModel?: boolean;
   isAdminModel?: boolean;
 }
 
 // Display one project and allow to edit it
-export const ProjectDisplay = ({
-  project,
-  className,
-  isModel,
-  isAdminModel,
-}: ProjectDisplayProps) => {
+export const ProjectDisplay = ({ project, className, isAdminModel }: ProjectDisplayProps) => {
   const dispatch = useAppDispatch();
   const i18n = useTranslations();
   const navigate = useNavigate();
 
   const { currentUser } = useCurrentUser();
-
-  const tipsConfig = React.useContext(TipsCtx);
 
   return (
     <Flex
@@ -181,7 +172,7 @@ export const ProjectDisplay = ({
           position: 'relative',
         })}
       >
-        {isModel && (
+        {project.type === 'MODEL' && (
           <Flex
             align="center"
             justify="center"
@@ -250,18 +241,19 @@ export const ProjectDisplay = ({
                     <FontAwesomeIcon icon={faCopy} /> {i18n.common.duplicate}
                   </>
                 ),
-                action: () => dispatch(API.duplicateProject(project)),
+                action: () => {
+                  const newName = i18n.modules.project.projectCopy(project.name || '');
+                  dispatch(API.duplicateProject({ project, newName }));
+                },
               },
-              ...(tipsConfig.WIP.value && project.type !== 'MODEL'
+              ...(project.type !== 'MODEL'
                 ? [
                     {
                       value: 'extractModel',
                       label: (
                         <>
-                          <WIPContainer>
-                            <FontAwesomeIcon icon={faStar} />{' '}
-                            {i18n.modules.project.actions.saveAsModel}
-                          </WIPContainer>
+                          <FontAwesomeIcon icon={faStar} />{' '}
+                          {i18n.modules.project.actions.saveAsModel}
                         </>
                       ),
                       action: () => navigate(`extractModel/${project.id}`),
@@ -352,7 +344,7 @@ export const ProjectDisplay = ({
 
 interface ProjectListProps {
   projects: Project[];
-  status: StateStatus;
+  status: AvailabilityStatus;
   // eslint-disable-next-line @typescript-eslint/ban-types
   reload: AsyncThunk<Project[], void, {}>;
 }
@@ -445,7 +437,7 @@ export const UserProjects = (): JSX.Element => {
     shallowEqual,
   );
 
-  const status = useAppSelector(state => state.projects.status);
+  const status = useAppSelector(state => state.projects.statusForCurrentUser);
 
   React.useEffect(() => {
     if (window && window.top && window.top.document) {
@@ -468,13 +460,13 @@ export const AllProjects = (): JSX.Element => {
       }),
     shallowEqual,
   );
-  const status = useAppSelector(state => state.projects.allStatus);
+  const status = useAppSelector(state => state.projects.statusForAll);
 
   return <ProjectList projects={projects} status={status} reload={API.getAllProjects} />;
 };
 
 export const UserModels = (): JSX.Element => {
-  const status = useAppSelector(state => state.projects.status);
+  const status = useAppSelector(state => state.projects.statusForCurrentUser);
 
   React.useEffect(() => {
     if (window && window.top && window.top.document) {
@@ -488,7 +480,7 @@ export const UserModels = (): JSX.Element => {
 };
 
 interface ModelListProps {
-  status: StateStatus;
+  status: AvailabilityStatus;
   // eslint-disable-next-line @typescript-eslint/ban-types
   reload: AsyncThunk<Project[], void, {}>;
 }
@@ -496,17 +488,8 @@ interface ModelListProps {
 function ModelsList({ status, reload }: ModelListProps) {
   const i18n = useTranslations();
   const dispatch = useAppDispatch();
-  const models = useAppSelector(
-    state =>
-      Object.values(state.projects.projects).flatMap(p => {
-        if (entityIs(p, 'Project') && p.type === 'MODEL') {
-          return [p];
-        } else {
-          return [];
-        }
-      }),
-    shallowEqual,
-  );
+  const { projects: models } = useAndLoadModelProjects();
+
   React.useEffect(() => {
     if (status === 'NOT_INITIALIZED') {
       dispatch(reload());
@@ -546,7 +529,6 @@ function ModelsList({ status, reload }: ModelListProps) {
               return (
                 <ProjectDisplay
                   project={item}
-                  isModel
                   className={css({
                     boxShadow: ` 0px -5px 0px 0px ${item.illustration?.iconBkgdColor} inset`,
                   })}

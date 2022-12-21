@@ -29,7 +29,6 @@ import java.util.stream.Collectors;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-import javax.ws.rs.PathParam;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -72,7 +71,6 @@ public class CardManager {
      */
     @Inject
     private ResourceReferenceSpreadingHelper resourceReferenceSpreadingHelper;
-
 
     // *********************************************************************************************
     // find cards
@@ -198,7 +196,6 @@ public class CardManager {
     private Card initNewCard(CardContent parent, AbstractCardType cardType) {
         Card card = initNewCard();
 
-
         List<Card> subcards = parent.getSubCards();
         // resolve any conflict in the current situation
         Grid grid = Grid.resolveConflicts(subcards);
@@ -300,20 +297,19 @@ public class CardManager {
     }
 
     /**
-     * Change the position of the card (stay in the same parent, just change positon within grid)
+     * Change the position of the card (stay in the same parent, just change position within grid)
      * <p>
      * Recompute the position of all the sister cards
      *
-     * @param cardId the id of the card
-     *
-     * @param position  the new position to set
+     * @param cardId   the id of the card
+     * @param position the new position to set
      */
     public void changeCardPosition(Long cardId, GridPosition position) {
         Card card = this.assertAndGetCard(cardId);
         CardContent parent = card.getParent();
-        if (parent != null){
+        if (parent != null) {
             List<Card> subCards = new ArrayList<>(parent.getSubCards());
-            // make sure thre is no conflict in the current situation
+            // make sure there is no conflict in the current situation
             Grid.resolveConflicts(subCards);
 
             // compute the grid without the cell to move
@@ -326,7 +322,7 @@ public class CardManager {
             grid.shift();
         }
 
-        //indexManager.changeItemPosition(card, index, card.getParent().getSubCards());
+        // indexManager.changeItemPosition(card, index, card.getParent().getSubCards());
     }
 
     /**
@@ -551,12 +547,12 @@ public class CardManager {
     //
     // *********************************************************************************************
 
-
     /**
+     * Create a card type for a card which has none
      *
-     * @param cardId test
+     * @param cardId the card id
      */
-    public void createCardType(@PathParam("cardId") Long cardId) {
+    public void createCardType(Long cardId) {
         Card card = assertAndGetCard(cardId);
         if (card.getCardType() != null) {
             throw HttpErrorMessage.dataIntegrityFailure();
@@ -574,4 +570,32 @@ public class CardManager {
 
         newCardType.getImplementingCards().add(card);
     }
+
+    /**
+     * Remove the card type of the card.
+     * <p>
+     * For now, it handles only card types that have no resource
+     *
+     * @param cardId the card id
+     */
+    public void removeCardType(Long cardId) {
+        Card card = assertAndGetCard(cardId);
+
+        if (card.getCardType() == null) {
+            // already ok
+            return;
+        }
+
+        AbstractCardType cardType = card.getCardType();
+
+        // Just a check to handle only simple cases.
+        // When ready to handle everything concerning resources, and also when it is useful, do it
+        if (cardType.getDirectAbstractResources().size() > 0) {
+            throw HttpErrorMessage.dataIntegrityFailure();
+        }
+
+        cardType.getImplementingCards().remove(card);
+        card.setCardType(null);
+    }
+
 }

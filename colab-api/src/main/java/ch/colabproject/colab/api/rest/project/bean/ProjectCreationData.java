@@ -6,6 +6,7 @@
  */
 package ch.colabproject.colab.api.rest.project.bean;
 
+import ch.colabproject.colab.api.model.DuplicationParam;
 import ch.colabproject.colab.api.model.common.Illustration;
 import ch.colabproject.colab.api.model.project.ProjectType;
 import ch.colabproject.colab.generator.model.annotations.ExtractJavaDoc;
@@ -32,7 +33,7 @@ public class ProjectCreationData implements Serializable {
     /**
      * The kind : project or model
      */
-    private ProjectType type = ProjectType.PROJECT;
+    private ProjectType type;
 
     /**
      * The name of the project
@@ -50,9 +51,14 @@ public class ProjectCreationData implements Serializable {
     private Illustration illustration;
 
     /**
-     * The model used to create the project (optional)
+     * The project used as a base to create a new project
      */
-    private Long modelId;
+    private Long baseProjectId;
+
+    /**
+     * Duplication parameters to fine tune what is taken from baseProjectId
+     */
+    private DuplicationParam duplicationParam;
 
     /**
      * The email address of the people we want to invite
@@ -120,17 +126,32 @@ public class ProjectCreationData implements Serializable {
     }
 
     /**
-     * @return the model used to create the project (optional)
+     * @return the project used as a base to create a new project
      */
-    public Long getModelId() {
-        return modelId;
+    public Long getBaseProjectId() {
+        return baseProjectId;
     }
 
     /**
-     * @param modelId the model used to create the project (optional)
+     * @param baseProjectId The project used as a base to create a new project
      */
-    public void setModelId(Long modelId) {
-        this.modelId = modelId;
+    public void setBaseProjectId(Long baseProjectId) {
+        this.baseProjectId = baseProjectId;
+    }
+
+    /**
+     * @return the duplication parameters to fine tune what is taken from baseProjectId
+     */
+    public DuplicationParam getDuplicationParam() {
+        return duplicationParam;
+    }
+
+    /**
+     * @param duplicationParam the duplication parameters to fine tune what is taken from
+     *                         baseProjectId
+     */
+    public void setDuplicationParam(DuplicationParam duplicationParam) {
+        this.duplicationParam = duplicationParam;
     }
 
     /**
@@ -158,7 +179,8 @@ public class ProjectCreationData implements Serializable {
             .append(this.name)
             .append(this.description)
             .append(this.illustration)
-            .append(this.modelId)
+            .append(this.baseProjectId)
+            .append(this.duplicationParam)
             .toHashCode();
     }
 
@@ -179,14 +201,16 @@ public class ProjectCreationData implements Serializable {
             .append(this.name, other.name)
             .append(this.description, other.description)
             .append(this.illustration, other.illustration)
-            .append(this.modelId, other.modelId)
+            .append(this.baseProjectId, other.baseProjectId)
+            .append(this.duplicationParam, other.duplicationParam)
             .isEquals();
     }
 
     @Override
     public String toString() {
         return "ProjectCreationData{" + " type=" + type.name() + ", name=" + name + ", description=" + description
-            + ", illustration=" + illustration + ", modelId=" + modelId
+            + ", illustration=" + illustration
+            + ", baseProjectId=" + baseProjectId + ", duplicationParam=" + duplicationParam
             + ", guestsEmail=" + guestsEmail + "}";
     }
 

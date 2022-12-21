@@ -30,6 +30,8 @@ import {
   disabledStyle,
   errorColor,
   labelStyle,
+  lightItalicText,
+  paddedContainerStyle,
   space_L,
   space_M,
   space_S,
@@ -135,50 +137,53 @@ export function ProjectSettings({ project }: ProjectSettingsProps): JSX.Element 
                   </OpenCloseModal>
                 </div>
               </Flex>
-              <WIPContainer>
-                <Flex
-                  direction="column"
-                  align="stretch"
-                  justify="flex-end"
-                  className={css({ width: '55%' })}
-                >
-                  <h2>{i18n.modules.project.labels.sharingParams}</h2>
-                  <Flex direction="column">
-                    <h3>{i18n.modules.project.labels.include}</h3>
-                    <Checkbox
-                      value={true} //{data.withRoles}
-                      label={i18n.modules.project.labels.roles}
-                      onChange={(_newValue: boolean) => {
-                        //setData({ ...data, withRoles: newValue });
-                      }}
-                    />
-                    <Checkbox
-                      value={true} //{data.withDeliverables}
-                      label={i18n.modules.project.labels.cardContents}
-                      onChange={(_newValue: boolean) => {
-                        // setData({ ...data, withDeliverables: newValue });
-                      }}
-                    />
-                    <Checkbox
-                      value={true} //{data.withResources}
-                      label={i18n.modules.project.labels.documentation}
-                      onChange={(_newValue: boolean) => {
-                        //setData({ ...data, withResources: newValue });
-                      }}
-                    />
-                  </Flex>
-                  <Flex direction="column">
-                    <h3>{i18n.modules.project.labels.connect}</h3>
-                    <Checkbox
-                      value={true} //{data.withResources}
-                      label={i18n.modules.project.labels.keepConnectionBetweenModelAndProject}
-                      onChange={(_newValue: boolean) => {
-                        //setData({ ...data, withResources: newValue });
-                      }}
-                    />
-                  </Flex>
+              <Flex
+                direction="column"
+                align="stretch"
+                justify="flex-end"
+                className={css({ width: '55%' })}
+              >
+                <h2>{i18n.modules.project.labels.sharingParams}</h2>
+                <Flex className={lightItalicText}>For now, the parameters cannot be changed</Flex>
+                <Flex direction="column" className={cx(disabledStyle, paddedContainerStyle)}>
+                  <h3>{i18n.modules.project.labels.include}</h3>
+                  <Checkbox
+                    value={true} //{data.withRoles}
+                    label={i18n.modules.project.labels.roles}
+                    readOnly
+                    onChange={(_newValue: boolean) => {
+                      //setData({ ...data, withRoles: newValue });
+                    }}
+                  />
+                  <Checkbox
+                    value={true} //{data.withDeliverables}
+                    label={i18n.modules.project.labels.cardContents}
+                    readOnly
+                    onChange={(_newValue: boolean) => {
+                      // setData({ ...data, withDeliverables: newValue });
+                    }}
+                  />
+                  <Checkbox
+                    value={true} //{data.withResources}
+                    label={i18n.modules.project.labels.documentation}
+                    readOnly
+                    onChange={(_newValue: boolean) => {
+                      //setData({ ...data, withResources: newValue });
+                    }}
+                  />
                 </Flex>
-              </WIPContainer>
+                <Flex direction="column" className={cx(disabledStyle, paddedContainerStyle)}>
+                  <h3>{i18n.modules.project.labels.connect}</h3>
+                  <Checkbox
+                    value={false} //{data.withResources}
+                    label={i18n.modules.project.labels.keepConnectionBetweenModelAndProject}
+                    readOnly
+                    onChange={(_newValue: boolean) => {
+                      //setData({ ...data, withResources: newValue });
+                    }}
+                  />
+                </Flex>
+              </Flex>
             </Flex>
           </Flex>
         </Tab>
