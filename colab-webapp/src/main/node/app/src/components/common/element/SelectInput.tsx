@@ -13,6 +13,7 @@ import Select, { MultiValue, OnChangeValue, SingleValue } from 'react-select';
 import Creatable from 'react-select/creatable';
 import useTranslations from '../../../i18n/I18nContext';
 import {
+  disabledStyle,
   errorStyle,
   labelStyle,
   selectCreatorStyle,
@@ -94,7 +95,7 @@ export default function SelectInput<T, IsMulti extends boolean>({
     <Flex
       direction="column"
       align="stretch"
-      className={cx(css({ padding: space_S + ' 0' }), className)}
+      className={cx(css({ padding: space_S + ' 0' }), className, {[disabledStyle]: readOnly})}
     >
       <Flex justify="space-between">
         <div>
