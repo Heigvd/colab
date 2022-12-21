@@ -141,7 +141,13 @@ public class ProjectRestEndpoint {
     public Long createProject(ProjectCreationData creationData) {
         logger.debug("Create a project with {}", creationData);
 
-        return projectManager.createProject(creationData).getId();
+        Project project = projectManager.createProject(creationData);
+
+        creationData.getGuestsEmail().stream().forEach(email -> {
+            teamManager.invite(project.getId(), email);
+        });
+
+        return project.getId();
     }
 
     /**

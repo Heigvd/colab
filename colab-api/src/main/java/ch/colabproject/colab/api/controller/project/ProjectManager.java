@@ -223,10 +223,6 @@ public class ProjectManager {
 
         createNewProject(project);
 
-        creationData.getGuestsEmail().stream().forEach(email -> {
-            teamManager.invite(project.getId(), email);
-        });
-
         return project;
     }
 
@@ -311,10 +307,6 @@ public class ProjectManager {
                 project.setName(creationData.getName());
                 project.setDescription(creationData.getDescription());
                 project.setIllustration(creationData.getIllustration());
-
-                creationData.getGuestsEmail().stream().forEach(email -> {
-                    teamManager.invite(project.getId(), email);
-                });
 
                 return project;
             });
