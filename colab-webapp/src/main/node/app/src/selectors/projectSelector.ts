@@ -203,9 +203,31 @@ export function useAndLoadInstanceableModels(): ProjectsAndStatus {
   return { projects, status };
 }
 
-function useMyAndInstanceableModels(): ProjectsAndStatus {
+export function useAndLoadMyAndInstanceableModels(): ProjectsAndStatus {
+  const dispatch = useAppDispatch();
+
   return useAppSelector(
     state => {
+      const statusIM = state.projects.statusForInstanceableModels;
+
+      if (statusIM === 'NOT_INITIALIZED') {
+        dispatch(API.getInstanceableModels());
+      }
+
+      if (statusIM !== 'READY') {
+        return {projects: [], status: statusIM};
+      }
+
+      const statusMine = state.projects.statusForCurrentUser;
+
+      if (statusMine === 'NOT_INITIALIZED') {
+        dispatch(API.getUserProjects());
+      }
+
+      if (statusMine !== 'READY') {
+        return {projects: [], status: statusMine};
+      }
+
       const projectsIM = state.projects.instanceableProjects.flatMap(projectId => {
         const p = state.projects.projects[projectId];
         if (entityIs(p, 'Project') && p.type === 'MODEL') {
@@ -224,33 +246,9 @@ function useMyAndInstanceableModels(): ProjectsAndStatus {
           .filter(proj => proj.type === 'MODEL'),
       );
 
-      const statusIM = state.projects.statusForInstanceableModels;
-      const statusMine = state.projects.statusForCurrentUser;
-      const status =
-        statusIM === 'NOT_INITIALIZED' || statusMine === 'NOT_INITIALIZED'
-          ? 'NOT_INITIALIZED'
-          : statusIM !== 'READY'
-          ? statusMine
-          : statusMine !== 'READY'
-          ? statusIM
-          : 'READY';
-
-      return { projects: projectsIM.concat(projectsMine), status: status };
+      return { projects: [...new Set([...projectsIM,...projectsMine])].flatMap(p => {return p;}), status: 'READY' };
     },
 
     shallowEqual,
   );
-}
-
-export function useAndLoadMyAndInstanceableModels(): ProjectsAndStatus {
-  const dispatch = useAppDispatch();
-
-  const { projects, status } = useMyAndInstanceableModels();
-
-  if (status === 'NOT_INITIALIZED') {
-    dispatch(API.getInstanceableModels());
-    dispatch(API.getUserProjects());
-  }
-
-  return { projects, status };
 }
