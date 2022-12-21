@@ -32,6 +32,13 @@
             <scope>provided</scope>
         </dependency>
 
+
+        <dependency>
+            <groupId>fish.payara.extras</groupId>
+            <artifactId>payara-embedded-web</artifactId>
+            <scope>provided</scope>
+        </dependency>
+
         <!--*****************************************************************-->
         <!-- DEPENDENCIES -->
 
@@ -45,6 +52,7 @@
             <groupId>${project.groupId}</groupId>
             <artifactId>client-generator-plugin</artifactId>
             <version>${project.version}</version>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
 
