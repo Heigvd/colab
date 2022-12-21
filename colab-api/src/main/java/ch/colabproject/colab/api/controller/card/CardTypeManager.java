@@ -26,11 +26,11 @@ import java.util.Set;
 import jakarta.ejb.LocalBean;
 import jakarta.ejb.Stateless;
 import jakarta.inject.Inject;
+import java.util.ArrayList;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.ListUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import com.google.common.collect.Lists;
 
 /**
  * Card type and reference specific logic
@@ -456,7 +456,7 @@ public class CardTypeManager {
      * @return the ids of the matching card types or references
      */
     public List<Long> findCurrentUserReadableProjectsCardTypesIds() {
-        List<Long> result = Lists.newArrayList();
+        List<Long> result = new ArrayList<>();
 
         List<Long> directInOwnProjects = findCurrentUserDirectProjectsCardTypesIds();
         List<Long> above = retrieveDirectAndTransitiveAboveCardTypesOrRefs(directInOwnProjects);
@@ -495,7 +495,7 @@ public class CardTypeManager {
     private List<Long> retrieveDirectAndTransitiveAboveCardTypesOrRefs(
         List<Long> cardTypeOrRefIds) {
         return retrieveDirectAndTransitiveAboveCardTypesOrRefs(cardTypeOrRefIds,
-            Lists.newArrayList());
+            new ArrayList<>());
     }
 
     /**
@@ -544,7 +544,7 @@ public class CardTypeManager {
     private List<Long> retrieveDirectAndTransitiveBelowCardTypesOrRefs(
         List<Long> cardTypeOrRefIds) {
         return retrieveDirectAndTransitiveBelowCardTypesOrRefs(cardTypeOrRefIds,
-            Lists.newArrayList());
+            new ArrayList());
     }
 
     /**

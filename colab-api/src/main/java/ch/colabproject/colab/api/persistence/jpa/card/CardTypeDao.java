@@ -16,10 +16,11 @@ import jakarta.ejb.Stateless;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.TypedQuery;
+import java.util.ArrayList;
 import org.apache.commons.collections4.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import com.google.common.collect.Lists;
+// import com.google.common.collect.Lists;
 
 /**
  * Card type persistence
@@ -148,7 +149,7 @@ public class CardTypeDao {
         logger.trace("find the target's ids");
 
         if (CollectionUtils.isEmpty(cardTypeOrRefIds)) {
-            return Lists.newArrayList();
+            return new ArrayList<>();
         }
 
         TypedQuery<Long> query = em.createNamedQuery("CardTypeRef.findTargetIds", Long.class);
@@ -171,7 +172,7 @@ public class CardTypeDao {
         logger.trace("find the refs' ids");
 
         if (CollectionUtils.isEmpty(cardTypeOrRefIds)) {
-            return Lists.newArrayList();
+            return new ArrayList<>();
         }
 
         TypedQuery<Long> query = em.createNamedQuery("CardTypeRef.findDirectReferencesIds",
@@ -196,7 +197,7 @@ public class CardTypeDao {
         logger.trace("find the project's id");
 
         if (CollectionUtils.isEmpty(cardTypeOrRefIds)) {
-            return Lists.newArrayList();
+            return new ArrayList<>();
         }
 
         TypedQuery<Long> query = em.createNamedQuery("AbstractCardType.findProjectId", Long.class);
