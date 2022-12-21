@@ -9,15 +9,9 @@ import { css, cx } from '@emotion/css';
 import { faCheckSquare, faSquare } from '@fortawesome/free-regular-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import * as React from 'react';
-import { errorStyle, space_S, textSmall, warningStyle } from '../../styling/style';
+import { disabledStyle, errorStyle, space_S, textSmall, warningStyle } from '../../styling/style';
 import Flex from '../layout/Flex';
 import Tips, { TipsProps } from './Tips';
-
-const disabledStyle = css({
-  color: 'var(--disabledFgColor)',
-});
-
-const enabledStyle = css({ cursor: 'pointer' });
 
 interface CheckboxProps {
   label?: React.ReactNode;
@@ -48,13 +42,12 @@ export default function Checkbox({
     <Flex
       direction="column"
       align="normal"
-      className={cx(css({ padding: space_S + ' 0' }), className)}
+      className={cx(css({ padding: space_S + ' 0' }), className, {[disabledStyle]: readOnly})}
     >
       <Flex align="center" justify="flex-start">
         <Flex
           align="center"
           onClick={readOnly ? undefined : () => onChange(!value)}
-          className={readOnly ? disabledStyle : enabledStyle}
         >
           <FontAwesomeIcon
             icon={value ? faCheckSquare : faSquare}

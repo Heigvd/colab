@@ -19,6 +19,7 @@ import {
   textareaStyle,
   textSmall,
   warningStyle,
+  disabledStyle,
 } from '../../styling/style';
 import Flex from '../layout/Flex';
 import IconButton from './IconButton';
@@ -237,7 +238,7 @@ function Input({
   return (
     <Flex
       direction="column"
-      className={containerClassName}
+      className={cx(containerClassName, {[disabledStyle]: readOnly})}
       style={{ maxWidth: maxWidth }}
       title={title}
     >
