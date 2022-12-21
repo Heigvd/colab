@@ -12,10 +12,10 @@ import { Illustration } from 'colab-rest-client';
 import * as React from 'react';
 import { emailFormat } from '../../helper';
 import useTranslations from '../../i18n/I18nContext';
-import Button from '../common/element/Button';
 import Checkbox from '../common/element/Checkbox';
 import { ConfirmIconButton } from '../common/element/ConfirmIconButton';
 import Form from '../common/element/Form';
+import IconButton from '../common/element/IconButton';
 import IllustrationDisplay from '../common/element/IllustrationDisplay';
 import { FormInput } from '../common/element/Input';
 import { TipsCtx, WIPContainer } from '../common/element/Tips';
@@ -99,17 +99,15 @@ export default function ProjectDataInitialization({
             iconContainerClassName={css({ marginBottom: space_S, maxHeight: '100px' })}
           />
           <Flex justify="flex-end" className={css({ gap: space_S })}>
-            <Button onClick={() => setEditIllustration(false)} invertedButton>
-              {i18n.common.cancel}
-            </Button>
-            <Button
+            <IconButton
+              title={'xmark'}
+              icon={'xmark'}
+              iconSize={'2x'}
               onClick={() => {
-                setIllustration(currentIllustration);
                 setEditIllustration(false);
+                setIllustration(currentIllustration);
               }}
-            >
-              {i18n.common.ok}
-            </Button>
+            />
           </Flex>
         </Flex>
       ) : (
