@@ -91,4 +91,19 @@ public class CopyParamDao {
         return managedCopyParam;
     }
 
+    /**
+     * Persist a brand new copy parameter to database
+     *
+     * @param copyParam the new copy parameter to persist
+     *
+     * @return the new persisted and managed copy parameter
+     */
+    public CopyParam persistCopyParam(CopyParam copyParam) {
+        logger.trace("persist copy param {}", copyParam);
+
+        em.persist(copyParam);
+
+        return copyParam;
+    }
+
 }

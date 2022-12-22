@@ -223,10 +223,6 @@ public class ProjectManager {
 
         createNewProject(project);
 
-        creationData.getGuestsEmail().stream().forEach(email -> {
-            teamManager.invite(project.getId(), email);
-        });
-
         return project;
     }
 
@@ -312,10 +308,6 @@ public class ProjectManager {
                 project.setDescription(creationData.getDescription());
                 project.setIllustration(creationData.getIllustration());
 
-                creationData.getGuestsEmail().stream().forEach(email -> {
-                    teamManager.invite(project.getId(), email);
-                });
-
                 return project;
             });
 
@@ -332,7 +324,16 @@ public class ProjectManager {
      * @return the related copy parameter
      */
     public CopyParam getCopyParam(Long projectId) {
-        return copyParamDao.findCopyParamByProject(projectId);
+        Project project = assertAndGetProject(projectId);
+
+        CopyParam copyParam = copyParamDao.findCopyParamByProject(projectId);
+
+        if (copyParam == null) {
+            copyParam = CopyParam.buildDefault(project);
+            copyParamDao.persistCopyParam(copyParam);
+        }
+
+        return copyParam;
     }
 
     /**

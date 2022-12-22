@@ -5,7 +5,7 @@
  * Licensed under the MIT License
  */
 
-import { entityIs, Project, TeamMember, TeamRole } from 'colab-rest-client';
+import { CopyParam, entityIs, Project, TeamMember, TeamRole } from 'colab-rest-client';
 import * as React from 'react';
 import * as API from '../API/api';
 import {
@@ -17,12 +17,12 @@ import {
 import { StateStatus } from '../store/slice/projectSlice';
 import { AvailabilityStatus } from '../store/store';
 
-export interface UsedProject {
-  project: Project | null | undefined;
+export interface ProjectAndStatus {
+  project: Project | null;
   status: AvailabilityStatus;
 }
 
-export const useProject = (id: number | undefined): UsedProject => {
+export const useProject = (id: number | undefined): ProjectAndStatus => {
   return useAppSelector(state => {
     if (id == null) {
       return {
@@ -38,22 +38,15 @@ export const useProject = (id: number | undefined): UsedProject => {
         status: 'READY',
       };
     } else {
-      if (project === 'ERROR') {
-        return {
-          project: null,
-          status: 'ERROR',
-        };
-      } else {
-        return {
-          project: null,
-          status: project || 'NOT_INITIALIZED',
-        };
-      }
+      return {
+        project: null,
+        status: project || 'NOT_INITIALIZED',
+      };
     }
   }, shallowEqual);
 };
 
-export function useAndLoadProject(id: number | undefined): UsedProject {
+export function useAndLoadProject(id: number | undefined): ProjectAndStatus {
   const dispatch = useAppDispatch();
 
   const { project, status } = useProject(id);
@@ -203,9 +196,31 @@ export function useAndLoadInstanceableModels(): ProjectsAndStatus {
   return { projects, status };
 }
 
-function useMyAndInstanceableModels(): ProjectsAndStatus {
+export function useAndLoadMyAndInstanceableModels(): ProjectsAndStatus {
+  const dispatch = useAppDispatch();
+
   return useAppSelector(
     state => {
+      const statusIM = state.projects.statusForInstanceableModels;
+
+      if (statusIM === 'NOT_INITIALIZED') {
+        dispatch(API.getInstanceableModels());
+      }
+
+      if (statusIM !== 'READY') {
+        return { projects: [], status: statusIM };
+      }
+
+      const statusMine = state.projects.statusForCurrentUser;
+
+      if (statusMine === 'NOT_INITIALIZED') {
+        dispatch(API.getUserProjects());
+      }
+
+      if (statusMine !== 'READY') {
+        return { projects: [], status: statusMine };
+      }
+
       const projectsIM = state.projects.instanceableProjects.flatMap(projectId => {
         const p = state.projects.projects[projectId];
         if (entityIs(p, 'Project') && p.type === 'MODEL') {
@@ -224,33 +239,54 @@ function useMyAndInstanceableModels(): ProjectsAndStatus {
           .filter(proj => proj.type === 'MODEL'),
       );
 
-      const statusIM = state.projects.statusForInstanceableModels;
-      const statusMine = state.projects.statusForCurrentUser;
-      const status =
-        statusIM === 'NOT_INITIALIZED' || statusMine === 'NOT_INITIALIZED'
-          ? 'NOT_INITIALIZED'
-          : statusIM !== 'READY'
-          ? statusMine
-          : statusMine !== 'READY'
-          ? statusIM
-          : 'READY';
-
-      return { projects: projectsIM.concat(projectsMine), status: status };
+      return {
+        projects: [...new Set([...projectsIM, ...projectsMine])].flatMap(p => {
+          return p;
+        }),
+        status: 'READY',
+      };
     },
 
     shallowEqual,
   );
 }
 
-export function useAndLoadMyAndInstanceableModels(): ProjectsAndStatus {
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// copy param
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+export interface CopyParamAndStatus {
+  copyParam: CopyParam | null;
+  status: AvailabilityStatus;
+}
+
+function useCopyParam(projectId: number): CopyParamAndStatus {
+  return useAppSelector(state => {
+    const copyParamOrStatus = state.projects.copyParams[projectId];
+
+    if (entityIs(copyParamOrStatus, 'CopyParam')) {
+      // copyparam is known
+      return {
+        copyParam: copyParamOrStatus,
+        status: 'READY',
+      };
+    } else {
+      return {
+        copyParam: null,
+        status: copyParamOrStatus || 'NOT_INITIALIZED',
+      };
+    }
+  }, shallowEqual);
+}
+
+export function useAndLoadCopyParam(projectId: number): CopyParamAndStatus {
   const dispatch = useAppDispatch();
 
-  const { projects, status } = useMyAndInstanceableModels();
+  const { copyParam, status } = useCopyParam(projectId);
 
-  if (status === 'NOT_INITIALIZED') {
-    dispatch(API.getInstanceableModels());
-    dispatch(API.getUserProjects());
+  if (status === 'NOT_INITIALIZED' && projectId != null) {
+    dispatch(API.getCopyParam(projectId));
   }
 
-  return { projects, status };
+  return { copyParam, status };
 }
