@@ -17,12 +17,12 @@ import {
 import { StateStatus } from '../store/slice/projectSlice';
 import { AvailabilityStatus } from '../store/store';
 
-export interface UsedProject {
-  project: Project | null | undefined;
+export interface ProjectAndStatus {
+  project: Project | null;
   status: AvailabilityStatus;
 }
 
-export const useProject = (id: number | undefined): UsedProject => {
+export const useProject = (id: number | undefined): ProjectAndStatus => {
   return useAppSelector(state => {
     if (id == null) {
       return {
@@ -53,7 +53,7 @@ export const useProject = (id: number | undefined): UsedProject => {
   }, shallowEqual);
 };
 
-export function useAndLoadProject(id: number | undefined): UsedProject {
+export function useAndLoadProject(id: number | undefined): ProjectAndStatus {
   const dispatch = useAppDispatch();
 
   const { project, status } = useProject(id);
