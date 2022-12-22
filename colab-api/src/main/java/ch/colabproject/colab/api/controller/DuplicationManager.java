@@ -172,6 +172,11 @@ public class DuplicationManager {
             }
 
             ////////////////////////////////////////////////////////////////////////////////////////
+            // Instance makers
+
+            // are never duplicated
+
+            ////////////////////////////////////////////////////////////////////////////////////////
             // Card types
             if (params.isWithCardTypes()) {
                 List<AbstractCardType> cardTypes = originalProject.getElementsToBeDefined();
