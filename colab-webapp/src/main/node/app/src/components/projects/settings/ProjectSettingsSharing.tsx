@@ -7,16 +7,16 @@
 
 import { css, cx } from '@emotion/css';
 import * as React from 'react';
+import * as API from '../../../API/api';
 import useTranslations from '../../../i18n/I18nContext';
-import { useProject } from '../../../selectors/projectSelector';
+import { useAndLoadCopyParam, useProject } from '../../../selectors/projectSelector';
+import { dispatch } from '../../../store/store';
 import AvailabilityStatusIndicator from '../../common/element/AvailabilityStatusIndicator';
 import Button from '../../common/element/Button';
 import Checkbox from '../../common/element/Checkbox';
 import Flex from '../../common/layout/Flex';
 import OpenCloseModal from '../../common/layout/OpenCloseModal';
 import {
-  disabledStyle,
-  lightItalicText,
   paddedContainerStyle,
   space_L,
   space_M,
@@ -67,63 +67,65 @@ export default function ProjectSettingsModelSharing({
           justify="flex-end"
           className={css({ width: '55%' })}
         >
-          <SharingParams />
+          <SharingParams projectId={projectId} />
         </Flex>
       </Flex>
     </Flex>
   );
 }
 
-// interface SharingParamsProps {
-//   projectId: number;
-// }
-// projectId={projectId}/>
-/*{projectId}:SharingParamsProps*/
-function SharingParams(): JSX.Element {
+interface SharingParamsProps {
+  projectId: number;
+}
+
+function SharingParams({ projectId }: SharingParamsProps): JSX.Element {
   const i18n = useTranslations();
+
+  const { copyParam, status } = useAndLoadCopyParam(projectId);
+
+  if (status !== 'READY' || copyParam == null) {
+    return <AvailabilityStatusIndicator status={status} />;
+  }
 
   return (
     <>
       <h2>{i18n.modules.project.labels.sharingParams}</h2>
-      <Flex className={lightItalicText}>For now, the parameters cannot be changed</Flex>
-      <Flex direction="column" className={cx(disabledStyle, paddedContainerStyle)}>
+      <Flex direction="column" className={cx(paddedContainerStyle)}>
         <h3>{i18n.modules.project.labels.include}</h3>
         <Checkbox
-          value={true} //{data.withRoles}
+          value={copyParam.withRoles || undefined}
           label={i18n.modules.project.labels.roles}
-          readOnly
-          onChange={(_newValue: boolean) => {
-            //setData({ ...data, withRoles: newValue });
+          onChange={(newValue: boolean) => {
+            dispatch(API.updateCopyParam({ ...copyParam, withRoles: newValue }));
           }}
         />
         <Checkbox
-          value={true} //{data.withDeliverables}
+          value={copyParam.withDeliverables || undefined}
           label={i18n.modules.project.labels.cardContents}
-          readOnly
-          onChange={(_newValue: boolean) => {
-            // setData({ ...data, withDeliverables: newValue });
+          onChange={(newValue: boolean) => {
+            dispatch(API.updateCopyParam({ ...copyParam, withDeliverables: newValue }));
           }}
         />
         <Checkbox
-          value={true} //{data.withResources}
+          value={copyParam.withResources || undefined}
           label={i18n.modules.project.labels.documentation}
-          readOnly
-          onChange={(_newValue: boolean) => {
-            //setData({ ...data, withResources: newValue });
+          onChange={(newValue: boolean) => {
+            dispatch(API.updateCopyParam({ ...copyParam, withResources: newValue }));
           }}
         />
       </Flex>
-      <Flex direction="column" className={cx(disabledStyle, paddedContainerStyle)}>
+
+      {/* <Flex direction="column" className={cx(disabledStyle, paddedContainerStyle)}>
         <h3>{i18n.modules.project.labels.connect}</h3>
         <Checkbox
           value={false} //{data.withResources}
           label={i18n.modules.project.labels.keepConnectionBetweenModelAndProject}
           readOnly
           onChange={(_newValue: boolean) => {
-            //setData({ ...data, withResources: newValue });
+            //setData({ ...data, keepConnection: newValue });
           }}
         />
-      </Flex>
+      </Flex> */}
     </>
   );
 }

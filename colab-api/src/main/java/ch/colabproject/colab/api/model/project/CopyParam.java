@@ -100,6 +100,27 @@ public class CopyParam implements ColabEntity, WithWebsocketChannels {
     private Long projectId;
 
     // ---------------------------------------------------------------------------------------------
+    // initializer
+    // ---------------------------------------------------------------------------------------------
+
+    /**
+     * @param project the related project
+     *
+     * @return Default instance for a copy param
+     */
+    public static CopyParam buildDefault(Project project) {
+        CopyParam defaultInstance = new CopyParam();
+
+        defaultInstance.setWithRoles(true);
+        defaultInstance.setWithDeliverables(true);
+        defaultInstance.setWithResources(true);
+
+        defaultInstance.setProject(project);
+
+        return defaultInstance;
+    }
+
+    // ---------------------------------------------------------------------------------------------
     // getters and setters
     // ---------------------------------------------------------------------------------------------
 

@@ -5,7 +5,7 @@
  * Licensed under the MIT License
  */
 import { createSlice } from '@reduxjs/toolkit';
-import { InstanceMaker, Project, TeamMember, TeamRole } from 'colab-rest-client';
+import { CopyParam, InstanceMaker, Project, TeamMember, TeamRole } from 'colab-rest-client';
 import * as API from '../../API/api';
 import { mapById } from '../../helper';
 import { processMessage } from '../../ws/wsThunkActions';
@@ -27,7 +27,7 @@ export interface TeamState {
 
 /** what we have in the store */
 export interface ProjectState {
-  /** all the projects we got so far */
+  /** all the projects we got so far, by id */
   projects: Record<number, Project | AvailabilityStatus>;
 
   /** did we load all the projects of the current user */
@@ -36,6 +36,9 @@ export interface ProjectState {
   statusForInstanceableModels: AvailabilityStatus;
   /** did we load all the projects */
   statusForAll: AvailabilityStatus;
+
+  /** all the copy param we got so far, by project id */
+  copyParams: Record<number, CopyParam | AvailabilityStatus>;
 
   currentUserId: number | undefined;
 
@@ -54,6 +57,8 @@ const initialState: ProjectState = {
   statusForCurrentUser: 'NOT_INITIALIZED',
   statusForInstanceableModels: 'NOT_INITIALIZED',
   statusForAll: 'NOT_INITIALIZED',
+
+  copyParams: {},
 
   currentUserId: undefined,
   mine: [],
@@ -172,6 +177,14 @@ const projectsSlice = createSlice({
           delete state.projects[entry.id];
         });
 
+        action.payload.copyParam.updated.forEach(copyParam => {
+          if (copyParam.projectId != null) {
+            state.copyParams[copyParam.projectId] = copyParam;
+          }
+        });
+        // For no way to fetch copy param deletion. as we deal with projectId as a key
+        // No use anyway
+
         action.payload.members.updated.forEach(item => {
           updateTeamMember(state, item);
         });
@@ -279,7 +292,15 @@ const projectsSlice = createSlice({
       //      .addCase(API.createProject.fulfilled, (state, action) => {
       //        state.mine.push(action.payload);
       //      })
-
+      .addCase(API.getCopyParam.pending, (state, action) => {
+        state.copyParams[action.meta.arg] = 'LOADING';
+      })
+      .addCase(API.getCopyParam.fulfilled, (state, action) => {
+        state.copyParams[action.meta.arg] = action.payload;
+      })
+      .addCase(API.getCopyParam.rejected, (state, action) => {
+        state.copyParams[action.meta.arg] = 'ERROR';
+      })
       .addCase(API.startProjectEdition.pending, state => {
         state.editingStatus = 'LOADING';
       })

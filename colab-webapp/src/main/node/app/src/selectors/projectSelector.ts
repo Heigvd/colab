@@ -5,7 +5,7 @@
  * Licensed under the MIT License
  */
 
-import { entityIs, Project, TeamMember, TeamRole } from 'colab-rest-client';
+import { CopyParam, entityIs, Project, TeamMember, TeamRole } from 'colab-rest-client';
 import * as React from 'react';
 import * as API from '../API/api';
 import {
@@ -38,17 +38,10 @@ export const useProject = (id: number | undefined): ProjectAndStatus => {
         status: 'READY',
       };
     } else {
-      if (project === 'ERROR') {
-        return {
-          project: null,
-          status: 'ERROR',
-        };
-      } else {
-        return {
-          project: null,
-          status: project || 'NOT_INITIALIZED',
-        };
-      }
+      return {
+        project: null,
+        status: project || 'NOT_INITIALIZED',
+      };
     }
   }, shallowEqual);
 };
@@ -215,7 +208,7 @@ export function useAndLoadMyAndInstanceableModels(): ProjectsAndStatus {
       }
 
       if (statusIM !== 'READY') {
-        return {projects: [], status: statusIM};
+        return { projects: [], status: statusIM };
       }
 
       const statusMine = state.projects.statusForCurrentUser;
@@ -225,7 +218,7 @@ export function useAndLoadMyAndInstanceableModels(): ProjectsAndStatus {
       }
 
       if (statusMine !== 'READY') {
-        return {projects: [], status: statusMine};
+        return { projects: [], status: statusMine };
       }
 
       const projectsIM = state.projects.instanceableProjects.flatMap(projectId => {
@@ -246,9 +239,54 @@ export function useAndLoadMyAndInstanceableModels(): ProjectsAndStatus {
           .filter(proj => proj.type === 'MODEL'),
       );
 
-      return { projects: [...new Set([...projectsIM,...projectsMine])].flatMap(p => {return p;}), status: 'READY' };
+      return {
+        projects: [...new Set([...projectsIM, ...projectsMine])].flatMap(p => {
+          return p;
+        }),
+        status: 'READY',
+      };
     },
 
     shallowEqual,
   );
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// copy param
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+export interface CopyParamAndStatus {
+  copyParam: CopyParam | null;
+  status: AvailabilityStatus;
+}
+
+function useCopyParam(projectId: number): CopyParamAndStatus {
+  return useAppSelector(state => {
+    const copyParamOrStatus = state.projects.copyParams[projectId];
+
+    if (entityIs(copyParamOrStatus, 'CopyParam')) {
+      // copyparam is known
+      return {
+        copyParam: copyParamOrStatus,
+        status: 'READY',
+      };
+    } else {
+      return {
+        copyParam: null,
+        status: copyParamOrStatus || 'NOT_INITIALIZED',
+      };
+    }
+  }, shallowEqual);
+}
+
+export function useAndLoadCopyParam(projectId: number): CopyParamAndStatus {
+  const dispatch = useAppDispatch();
+
+  const { copyParam, status } = useCopyParam(projectId);
+
+  if (status === 'NOT_INITIALIZED' && projectId != null) {
+    dispatch(API.getCopyParam(projectId));
+  }
+
+  return { copyParam, status };
 }
