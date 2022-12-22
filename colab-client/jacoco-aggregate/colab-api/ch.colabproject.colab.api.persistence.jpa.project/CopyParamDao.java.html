@@ -91,5 +91,20 @@ import org.slf4j.LoggerFactory;
 <span class="nc" id="L91">        return managedCopyParam;</span>
     }
 
+    /**
+     * Persist a brand new copy parameter to database
+     *
+     * @param copyParam the new copy parameter to persist
+     *
+     * @return the new persisted and managed copy parameter
+     */
+    public CopyParam persistCopyParam(CopyParam copyParam) {
+<span class="nc" id="L102">        logger.trace(&quot;persist copy param {}&quot;, copyParam);</span>
+
+<span class="nc" id="L104">        em.persist(copyParam);</span>
+
+<span class="nc" id="L106">        return copyParam;</span>
+    }
+
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>
