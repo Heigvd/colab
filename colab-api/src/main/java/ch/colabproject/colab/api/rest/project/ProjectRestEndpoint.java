@@ -14,10 +14,12 @@ import ch.colabproject.colab.api.model.card.AbstractCardType;
 import ch.colabproject.colab.api.model.card.Card;
 import ch.colabproject.colab.api.model.card.CardContent;
 import ch.colabproject.colab.api.model.link.ActivityFlowLink;
+import ch.colabproject.colab.api.model.project.CopyParam;
 import ch.colabproject.colab.api.model.project.InstanceMaker;
 import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.api.model.team.TeamMember;
 import ch.colabproject.colab.api.model.team.TeamRole;
+import ch.colabproject.colab.api.persistence.jpa.project.CopyParamDao;
 import ch.colabproject.colab.api.persistence.jpa.project.ProjectDao;
 import ch.colabproject.colab.api.rest.project.bean.ProjectCreationData;
 import ch.colabproject.colab.api.rest.project.bean.ProjectStructure;
@@ -52,9 +54,7 @@ public class ProjectRestEndpoint {
     /** logger */
     private static final Logger logger = LoggerFactory.getLogger(ProjectRestEndpoint.class);
 
-    /**
-     * The Project business logic
-     */
+    /** Project business logic */
     @Inject
     private ProjectManager projectManager;
 
@@ -62,11 +62,17 @@ public class ProjectRestEndpoint {
     @Inject
     private TeamManager teamManager;
 
-    /**
-     * The Project DAO
-     */
+    /** Project persistence */
     @Inject
     private ProjectDao projectDao;
+
+    /** Copy parameters persistence */
+    @Inject
+    private CopyParamDao copyParamDao;
+
+    // *********************************************************************************************
+    // get
+    // *********************************************************************************************
 
     /**
      * Get project identified by the given id.
@@ -76,14 +82,14 @@ public class ProjectRestEndpoint {
      * @return the project or null
      */
     @GET
-    @Path("/{id}")
+    @Path("/{id: [0-9]+}")
     public Project getProject(@PathParam("id") Long id) {
         logger.debug("Get project #{}", id);
         return projectDao.findProject(id);
     }
 
     /**
-     * Get all projects the current user is member of
+     * Get all projects the current user is a team member of
      *
      * @return list of projects
      */
@@ -92,6 +98,18 @@ public class ProjectRestEndpoint {
     public List<Project> getUserProjects() {
         logger.debug("Get user projects");
         return projectManager.findProjectsOfCurrentUser();
+    }
+
+    /**
+     * Get all projects the current user is an instance maker for
+     *
+     * @return list of matching projects
+     */
+    @GET
+    @Path("MyInstanceableModels")
+    public List<Project> getInstanceableModels() {
+        logger.debug("Get all models linked by a instancemaker to the current user");
+        return projectManager.findInstanceableModelsForCurrentUser();
     }
 
     /**
@@ -106,33 +124,24 @@ public class ProjectRestEndpoint {
         return projectDao.findAllProject();
     }
 
+    // *********************************************************************************************
+    // create
+    // *********************************************************************************************
+
     /**
-     * Create a new project with the provided data and register current user as a member.
+     * Create a new project from scratch with the provided data and register current user as a
+     * member.
      *
      * @param creationData the data needed to fill the project
      *
      * @return id of the persisted new project
      */
     @POST
-    @Path("createWithModel")
+    @Path("createProject")
     public Long createProject(ProjectCreationData creationData) {
         logger.debug("Create a project with {}", creationData);
 
-        Project project;
-
-        if (creationData.getModelId() == null) {
-            project = new Project();
-            project.setType(creationData.getType());
-            project.setName(creationData.getName());
-            project.setDescription(creationData.getDescription());
-            project.setIllustration(creationData.getIllustration());
-
-            projectManager.createProject(project);
-        } else {
-            project = projectManager.createProjectFromModel(creationData.getName(),
-                creationData.getDescription(), creationData.getIllustration(),
-                creationData.getModelId());
-        }
+        Project project = projectManager.createProject(creationData);
 
         creationData.getGuestsEmail().stream().forEach(email -> {
             teamManager.invite(project.getId(), email);
@@ -142,7 +151,47 @@ public class ProjectRestEndpoint {
     }
 
     /**
-     * Save changes to database. Only fields which are editable by users will be impacted.
+     * Duplicate the given project
+     *
+     * @param baseProjectId the id of the project we want to duplicate
+     * @param name          the name of the new project
+     * @param params        the parameters to fine tune the duplication
+     *
+     * @return the id of the duplicated project
+     *
+     * @throws ColabMergeException if the name cannot be updated
+     */
+    @POST
+    @Path("copyProject/{id: [0-9]+}/{name}")
+    public Long duplicateProject(@PathParam("id") Long baseProjectId,
+        @PathParam("name") String name, DuplicationParam params) throws ColabMergeException {
+        logger.debug("duplicate the project #{} with params {}", baseProjectId, params);
+
+        DuplicationParam effectiveParams = params;
+        if (effectiveParams == null) {
+            effectiveParams = DuplicationParam.buildDefaultForProjectDuplication();
+        }
+
+        // check forced parameters
+        if (effectiveParams.isMakeOnlyCardTypeReferences()) {
+            throw new IllegalArgumentException();
+        }
+
+        Project newProject = projectManager.duplicateProject(baseProjectId, effectiveParams);
+
+        newProject.setName(name);
+
+        projectDao.updateProject(newProject);
+
+        return newProject.getId();
+    }
+
+    // *********************************************************************************************
+    // update
+    // *********************************************************************************************
+
+    /**
+     * Save changes to database.
      *
      * @param project project to update
      *
@@ -150,10 +199,27 @@ public class ProjectRestEndpoint {
      */
     @PUT
     public void updateProject(Project project) throws ColabMergeException {
-        logger.debug("update project {}", project);
-
+        logger.debug("Update project {}", project);
         projectDao.updateProject(project);
     }
+
+    /**
+     * Save changes to database.
+     *
+     * @param copyParam the copy parameters to update
+     *
+     * @throws ColabMergeException if the merge is not possible
+     */
+    @PUT
+    @Path("copyParam")
+    public void updateCopyParam(CopyParam copyParam) throws ColabMergeException {
+        logger.debug("Update copy param {}", copyParam);
+        copyParamDao.updateCopyParam(copyParam);
+    }
+
+    // *********************************************************************************************
+    // delete
+    // *********************************************************************************************
 
     /**
      * Permanently delete a project.
@@ -161,32 +227,15 @@ public class ProjectRestEndpoint {
      * @param id id of the project to delete
      */
     @DELETE
-    @Path("/{id}")
+    @Path("/{id: [0-9]+}")
     public void deleteProject(@PathParam("id") Long id) {
         logger.debug("Delete project #{}", id);
         projectManager.deleteProject(id);
     }
 
-    /**
-     * Duplicate the given project
-     *
-     * @param projectId the id of the project we want to duplicate
-     * @param params    the parameters to fine tune
-     *
-     * @return the id of the duplicated project
-     */
-    @PUT
-    @Path("copyProject/{id}")
-    public Long duplicateProject(@PathParam("id") Long projectId, DuplicationParam params) {
-        logger.debug("duplicate the project #{} with params {}", projectId, params);
-
-        DuplicationParam effectiveParams = params;
-        if (effectiveParams == null) {
-            effectiveParams = DuplicationParam.buildDefaultForCopyOfProject();
-        }
-
-        return projectManager.duplicateProject(projectId, effectiveParams).getId();
-    }
+    // *********************************************************************************************
+    // share
+    // *********************************************************************************************
 
     /**
      * Share the model to someone
@@ -204,6 +253,10 @@ public class ProjectRestEndpoint {
         return projectManager.shareModel(modelId, email);
     }
 
+    // *********************************************************************************************
+    // get project content
+    // *********************************************************************************************
+
     /**
      * Get the root card of the project
      *
@@ -212,36 +265,36 @@ public class ProjectRestEndpoint {
      * @return the matching card
      */
     @GET
-    @Path("{projectId}/RootCard")
-    public Card getRootCardOfProject(@PathParam("projectId") Long projectId) {
+    @Path("{id: [0-9]+}/RootCard")
+    public Card getRootCardOfProject(@PathParam("id") Long projectId) {
         logger.debug("get the root card of the project #{}", projectId);
         return projectManager.getRootCard(projectId);
     }
 
     /**
-     * Get all members of the project teams.
+     * Get all members of the project team
      *
-     * @param id id of the project
+     * @param projectId id of the project
      *
      * @return list of members
      */
     @GET
-    @Path("{id}/Members")
-    public List<TeamMember> getMembers(@PathParam("id") Long id) {
-        logger.debug("Get project #{} members", id);
-        return teamManager.getTeamMembers(id);
+    @Path("{id: [0-9]+}/Members")
+    public List<TeamMember> getMembers(@PathParam("id") Long projectId) {
+        logger.debug("Get project #{} members", projectId);
+        return teamManager.getTeamMembers(projectId);
     }
 
     /**
      * Get all roles defined in a project
      *
-     * @param projectId projectId of the project
+     * @param projectId the id of the project
      *
      * @return list of roles
      */
     @GET
-    @Path("{projectId: [0-9]+}/roles")
-    public List<TeamRole> getRoles(@PathParam("projectId") Long projectId) {
+    @Path("{id: [0-9]+}/roles")
+    public List<TeamRole> getRoles(@PathParam("id") Long projectId) {
         logger.debug("Get project #{} members", projectId);
         return teamManager.getProjectRoles(projectId);
     }
@@ -249,85 +302,104 @@ public class ProjectRestEndpoint {
     /**
      * Get all card types belonging to a project
      *
-     * @param id ID of the project the card types belong to
+     * @param projectId the id of the project
      *
-     * @return the card types linked to the project
+     * @return list of card types
      */
     @GET
-    @Path("{id}/CardTypes")
-    public Set<AbstractCardType> getCardTypesOfProject(@PathParam("id") Long id) {
-        logger.debug("Get project #{} card types", id);
-        return projectManager.getCardTypes(id);
+    @Path("{id: [0-9]+}/CardTypes")
+    public Set<AbstractCardType> getCardTypesOfProject(@PathParam("id") Long projectId) {
+        logger.debug("Get project #{} card types", projectId);
+        return projectManager.getCardTypes(projectId);
     }
 
     /**
      * Get all cards belonging to a project
      *
-     * @param id ID of the project the cards belong to
+     * @param projectId the id of the project
      *
-     * @return the cards linked to the project
+     * @return list of cards
      */
     @GET
-    @Path("{id}/Cards")
-    public Set<Card> getCardsOfProject(@PathParam("id") Long id) {
-        logger.debug("Get project #{} cards", id);
-        return projectManager.getCards(id);
+    @Path("{id: [0-9]+}/Cards")
+    public Set<Card> getCardsOfProject(@PathParam("id") Long projectId) {
+        logger.debug("Get project #{} cards", projectId);
+        return projectManager.getCards(projectId);
     }
 
     /**
      * Get all cardContents belonging to a project
      *
-     * @param id ID of the project the cardContents belong to
+     * @param projectId the id of the project
      *
-     * @return the cardContents linked to the project
+     * @return list of cardContents
      */
     @GET
-    @Path("{id}/CardContents")
-    public Set<CardContent> getCardContentsOfProject(@PathParam("id") Long id) {
-        logger.debug("Get project #{} cardContents", id);
-        return projectManager.getCardContents(id);
+    @Path("{id: [0-9]+}/CardContents")
+    public Set<CardContent> getCardContentsOfProject(@PathParam("id") Long projectId) {
+        logger.debug("Get project #{} cardContents", projectId);
+        return projectManager.getCardContents(projectId);
     }
 
     /**
-     * Get all cards, cardContents and structure in one shot.
+     * Get all cards, cardContents and structure of a project in one shot.
      *
-     * @param id ID of the project data belong to
+     * @param projectId the id of the project
      *
      * @return full structure of the project
      */
     @GET
-    @Path("{id}/structure")
-    public ProjectStructure getStructureOfProject(@PathParam("id") Long id) {
-        logger.debug("Get project #{} cardContents", id);
-        return projectManager.getStructure(id);
+    @Path("{id: [0-9]+}/structure")
+    public ProjectStructure getStructureOfProject(@PathParam("id") Long projectId) {
+        logger.debug("Get project #{} cardContents", projectId);
+        return projectManager.getStructure(projectId);
     }
 
     /**
      * Get all activity flow links belonging to a project
      *
-     * @param id ID of the project activity flow links belong to
+     * @param projectId the id of the project
      *
-     * @return all activityFlowLinks linked to the project
+     * @return list of activity flow links
      */
     @GET
-    @Path("{id}/ActivityFlowLink")
-    public Set<ActivityFlowLink> getActivityFlowLinks(@PathParam("id") Long id) {
-        logger.debug("Get project #{} activityflowlinks", id);
-        return projectManager.getActivityFlowLinks(id);
+    @Path("{id: [0-9]+}/ActivityFlowLink")
+    public Set<ActivityFlowLink> getActivityFlowLinks(@PathParam("id") Long projectId) {
+        logger.debug("Get project #{} activityflowlinks", projectId);
+        return projectManager.getActivityFlowLinks(projectId);
     }
 
     /**
-     * Get all instance makers of the given project
+     * Get all instance makers linked to the project
      *
-     * @param id the id of the project
+     * @param projectId the id of the project
      *
-     * @return all instance makers linked to the project
+     * @return list of instance makers
      */
     @GET
-    @Path("{id}/instanceMakers")
-    public List<InstanceMaker> getInstanceMakers(@PathParam("id") Long id) {
-        logger.debug("Get project #{} instance makers", id);
-        return projectManager.getInstanceMakers(id);
+    @Path("{id: [0-9]+}/instanceMakers")
+    public List<InstanceMaker> getInstanceMakers(@PathParam("id") Long projectId) {
+        logger.debug("Get project #{} instance makers", projectId);
+        return projectManager.getInstanceMakers(projectId);
     }
+
+    /**
+     * Get the copy parameters of the project
+     *
+     * @param projectId the id of the project
+     *
+     * @return the related copy parameters
+     */
+    @GET
+    @Path("{id: [0-9]+}/copyParams")
+    public CopyParam getCopyParam(@PathParam("id") Long projectId) {
+        CopyParam copyParam = projectManager.getCopyParam(projectId);
+        logger.debug("Got project #{} copy param : {}", projectId, copyParam);
+        return copyParam;
+    }
+
+    // *********************************************************************************************
+    //
+    // *********************************************************************************************
 
 }

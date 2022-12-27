@@ -307,6 +307,7 @@ export const en = {
   // MODULES
   modules: {
     project: {
+      projectCopy: (name: string) => name + ' - copy',
       labels: {
         projectDisplaySettings: 'Project display settings',
         projectSettings: 'Project settings',
@@ -338,9 +339,8 @@ export const en = {
           `Create a project from ${'"' + templateTitle + '"'}`,
         editIllustration: 'Edit project illustration',
         newProject: 'New project',
-        saveAsModel: 'Configure as model',
-        saveProjectAsModelPart1: 'Configure project',
-        saveProjectAsModelPart2: 'as model',
+        saveAsModel: 'Create a model',
+        saveProjectAsModelPart: 'Create a model from project',
         extractModel: 'Extract model',
         extractAModel: 'Extract a model from a project',
         extractAModelFromProject: 'Extract a model from project ',
@@ -360,6 +360,7 @@ export const en = {
         isAModel: 'This is a project model',
         mailSentToShare: (recipientAddress: string): string =>
           `${recipientAddress} will get an email inviting to use the model`,
+        initialProjectNotFound: 'Initial project not found',
       },
       settings: {
         icon: 'Icon',
@@ -410,6 +411,8 @@ export const en = {
       editCompletion: 'Edit card completion',
       action: {
         chooseACardType: 'What theme is your card about?',
+        createAType: 'Create a theme',
+        removeTheType: 'Remove the theme',
       },
       editor: {
         toolbox: 'toolbox',

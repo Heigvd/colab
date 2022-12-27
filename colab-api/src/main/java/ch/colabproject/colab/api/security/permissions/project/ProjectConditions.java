@@ -81,4 +81,60 @@ public final class ProjectConditions {
         }
     }
 
+    /**
+     * Has the current user access to the copy parameters of a project ?
+     *
+     * @author sandra
+     */
+    public static class IsCopyParamReadable extends Condition {
+
+        /** the project id */
+        private final Long projectId;
+
+        /**
+         * Create a has project copy parameters read access statement
+         *
+         * @param projectId the project id
+         */
+        public IsCopyParamReadable(Long projectId) {
+            this.projectId = projectId;
+        }
+
+        @Override
+        protected boolean internalEval(RequestManager requestManager,
+            SecurityManager securityManager) {
+            return securityManager.isCopyParamReadableByCurrentUser(this.projectId);
+        }
+
+        @Override
+        public String toString() {
+            return "IsCopyParamReadable(" + projectId + ")";
+        }
+
+        @Override
+        public int hashCode() {
+            int hash = 3;
+            hash = 53 * hash + Objects.hashCode(this.projectId);
+            return hash;
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (this == obj) {
+                return true;
+            }
+            if (obj == null) {
+                return false;
+            }
+            if (getClass() != obj.getClass()) {
+                return false;
+            }
+            final IsCopyParamReadable other = (IsCopyParamReadable) obj;
+            if (!Objects.equals(this.projectId, other.projectId)) {
+                return false;
+            }
+            return true;
+        }
+    }
+
 }

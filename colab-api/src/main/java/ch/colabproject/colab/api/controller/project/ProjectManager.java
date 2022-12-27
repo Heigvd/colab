@@ -20,16 +20,17 @@ import ch.colabproject.colab.api.model.DuplicationParam;
 import ch.colabproject.colab.api.model.card.AbstractCardType;
 import ch.colabproject.colab.api.model.card.Card;
 import ch.colabproject.colab.api.model.card.CardContent;
-import ch.colabproject.colab.api.model.common.Illustration;
 import ch.colabproject.colab.api.model.link.ActivityFlowLink;
+import ch.colabproject.colab.api.model.project.CopyParam;
 import ch.colabproject.colab.api.model.project.InstanceMaker;
 import ch.colabproject.colab.api.model.project.Project;
-import ch.colabproject.colab.api.model.project.ProjectType;
 import ch.colabproject.colab.api.model.team.TeamMember;
 import ch.colabproject.colab.api.model.team.acl.HierarchicalPosition;
 import ch.colabproject.colab.api.model.user.User;
+import ch.colabproject.colab.api.persistence.jpa.project.CopyParamDao;
 import ch.colabproject.colab.api.persistence.jpa.project.InstanceMakerDao;
 import ch.colabproject.colab.api.persistence.jpa.project.ProjectDao;
+import ch.colabproject.colab.api.rest.project.bean.ProjectCreationData;
 import ch.colabproject.colab.api.rest.project.bean.ProjectStructure;
 import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
 import java.util.ArrayList;
@@ -77,6 +78,12 @@ public class ProjectManager {
      */
     @Inject
     private ProjectDao projectDao;
+
+    /**
+     * Copy parameter persistence handler
+     */
+    @Inject
+    private CopyParamDao copyParamDao;
 
     /**
      * Instance maker persistence handler
@@ -149,18 +156,31 @@ public class ProjectManager {
     }
 
     /**
-     * Retrieve all projects the current user is member of
+     * Retrieve all projects the current user is a team member of
      *
      * @return list of matching projects
      */
     public List<Project> findProjectsOfCurrentUser() {
         User user = securityManager.assertAndGetCurrentUser();
 
-        List<Project> projects = projectDao.findProjectsByMember(user.getId());
-
-        projects.addAll(projectDao.findProjectsByInstanceMaker(user.getId()));
+        List<Project> projects = projectDao.findProjectsByTeamMember(user.getId());
 
         logger.debug("found projects where the user {} is a team member : {}", user, projects);
+
+        return projects;
+    }
+
+    /**
+     * Retrieve all projects the current user is an instance maker for
+     *
+     * @return list of matching projects
+     */
+    public List<Project> findInstanceableModelsForCurrentUser() {
+        User user = securityManager.assertAndGetCurrentUser();
+
+        List<Project> projects = projectDao.findProjectsByInstanceMaker(user.getId());
+
+        logger.debug("found models where the user {} is an instance maker : {}", user, projects);
 
         return projects;
     }
@@ -170,16 +190,53 @@ public class ProjectManager {
     // *********************************************************************************************
 
     /**
+     * Create a new project with the provided data and register current user as a member.
+     *
+     * @param creationData the data needed to fill the project
+     *
+     * @return the persisted new project
+     */
+    public Project createProject(ProjectCreationData creationData) {
+        if (creationData.getBaseProjectId() == null) {
+            return createProjectFromScratch(creationData);
+        } else {
+            return createProjectFromModel(creationData);
+        }
+    }
+
+    /**
+     * Create a new project from scratch with the provided data and register current user as a
+     * member.
+     *
+     * @param creationData the data needed to fill the project
+     *
+     * @return the persisted new project
+     */
+    private Project createProjectFromScratch(ProjectCreationData creationData) {
+        logger.debug("Create a project with {}", creationData);
+
+        Project project = new Project();
+        project.setType(creationData.getType());
+        project.setName(creationData.getName());
+        project.setDescription(creationData.getDescription());
+        project.setIllustration(creationData.getIllustration());
+
+        createNewProject(project);
+
+        return project;
+    }
+
+    /**
      * Complete and persist the given project and add the current user to the project team
      *
      * @param project project to persist
      *
      * @return the new persisted project
      */
-    public Project createProject(Project project) {
+    private Project createNewProject(Project project) {
         try {
             return requestManager.sudo(() -> {
-                logger.debug("Create project: {}", project);
+                logger.debug("Create project {}", project);
 
                 initProject(project);
 
@@ -217,34 +274,66 @@ public class ProjectManager {
     }
 
     /**
-     * Create a new project based on a model
+     * Create a new project from a model with the provided data and register current user as a
+     * member.
      *
-     * @param name         the name of the new project
-     * @param description  the description of the new project
-     * @param illustration the illustration of the new project
-     * @param modelId      the id of the model the new project is based on
+     * @param creationData the data needed to fill the project
      *
-     * @return the new project
+     * @return id of the persisted new project
      */
-    public Project createProjectFromModel(String name, String description,
-        Illustration illustration, Long modelId) {
+    private Project createProjectFromModel(ProjectCreationData creationData) {
+        logger.debug("Create a project with {}", creationData);
+
         try {
             return requestManager.sudo(() -> {
-                Project project = duplicateProject(modelId,
-                    DuplicationParam.buildForCreationFromModel());
 
-                project.setType(ProjectType.PROJECT);
-                project.setName(name);
-                project.setDescription(description);
-                project.setIllustration(illustration);
+                DuplicationParam effectiveParams = creationData.getDuplicationParam();
+                if (effectiveParams == null) {
+                    effectiveParams = DuplicationParam.buildForProjectCreationFromModel();
+                }
+
+                // override by model copy parameters
+                CopyParam copyParam = getCopyParam(creationData.getBaseProjectId());
+                if (copyParam != null) {
+                    effectiveParams.setWithRoles(copyParam.isWithRoles());
+                    effectiveParams.setWithDeliverables(copyParam.isWithDeliverables());
+                    effectiveParams.setWithResources(copyParam.isWithResources());
+                }
+
+                Project project = duplicateProject(creationData.getBaseProjectId(),
+                    effectiveParams);
+
+                project.setType(creationData.getType());
+                project.setName(creationData.getName());
+                project.setDescription(creationData.getDescription());
+                project.setIllustration(creationData.getIllustration());
 
                 return project;
             });
+
         } catch (RuntimeException ex) {
             throw ex;
         } catch (Exception ex) {
             return null;
         }
+    }
+
+    /**
+     * @param projectId the id of the project
+     *
+     * @return the related copy parameter
+     */
+    public CopyParam getCopyParam(Long projectId) {
+        Project project = assertAndGetProject(projectId);
+
+        CopyParam copyParam = copyParamDao.findCopyParamByProject(projectId);
+
+        if (copyParam == null) {
+            copyParam = CopyParam.buildDefault(project);
+            copyParamDao.persistCopyParam(copyParam);
+        }
+
+        return copyParam;
     }
 
     /**
@@ -292,20 +381,30 @@ public class ProjectManager {
      * @return the new project
      */
     public Project duplicateProject(Long projectId, DuplicationParam params) {
-        Project originalProject = assertAndGetProject(projectId);
 
-        DuplicationManager duplicator = new DuplicationManager(params,
-            resourceReferenceSpreadingHelper, fileManager, cardContentManager);
+        try {
+            return requestManager.sudo(() -> { // TODO ! move sudo where really useful
+                Project originalProject = assertAndGetProject(projectId);
 
-        Project newProjectJavaObject = duplicator.duplicateProject(originalProject);
+                DuplicationManager duplicator = new DuplicationManager(params,
+                    resourceReferenceSpreadingHelper, fileManager, cardContentManager);
 
-        Project newProject = createProject(newProjectJavaObject);
+                Project newProjectJavaObject = duplicator.duplicateProject(originalProject);
 
-        duplicator.duplicateDataIntoJCR();
+                Project newProject = createNewProject(newProjectJavaObject);
 
-        duplicator.clear();
+                duplicator.duplicateDataIntoJCR();
 
-        return newProject;
+                duplicator.clear();
+
+                return newProject;
+            });
+
+        } catch (RuntimeException ex) {
+            throw ex;
+        } catch (Exception ex) {
+            return null;
+        }
     }
 
     // *********************************************************************************************
@@ -339,7 +438,9 @@ public class ProjectManager {
         logger.debug("Add and persist instance maker to user {} for model {}", user, model);
 
         InstanceMaker instanceMaker = addInstanceMaker(model, user);
-        return instanceMakerDao.persistInstanceMaker(instanceMaker);
+        instanceMakerDao.persistInstanceMaker(instanceMaker);
+
+        return instanceMaker;
     }
 
     /**
@@ -517,7 +618,7 @@ public class ProjectManager {
     public List<Long> findIdsOfProjectsCurrentUserIsMemberOf() {
         User user = securityManager.assertAndGetCurrentUser();
 
-        List<Long> projectsIds = projectDao.findProjectsIdsByMember(user.getId());
+        List<Long> projectsIds = projectDao.findProjectsIdsByTeamMember(user.getId());
 
         logger.debug("found projects' id where the user {} is a team member : {}", user,
             projectsIds);

@@ -12,10 +12,10 @@ import { useNavigate } from 'react-router-dom';
 import * as API from '../../API/api';
 import useTranslations from '../../i18n/I18nContext';
 import { useAndLoadProject } from '../../selectors/projectSelector';
-import { useAppDispatch } from '../../store/hooks';
+import { useAppDispatch, useLoadingState } from '../../store/hooks';
 import AvailabilityStatusIndicator from '../common/element/AvailabilityStatusIndicator';
 import Button from '../common/element/Button';
-import { AsyncButtonWithLoader } from '../common/element/ButtonWithLoader';
+import ButtonWithLoader from '../common/element/ButtonWithLoader';
 import Checkbox from '../common/element/Checkbox';
 import IllustrationDisplay from '../common/element/IllustrationDisplay';
 import { LabeledInput, LabeledTextArea } from '../common/element/Input';
@@ -24,10 +24,6 @@ import Modal from '../common/layout/Modal';
 import { space_L, space_M, space_S } from '../styling/style';
 import { defaultProjectIllustration } from './ProjectCommon';
 import { ProjectIllustrationMaker } from './ProjectIllustrationMaker';
-
-interface ProjectModelExtractorProps {
-  projectId: number | null | undefined;
-}
 
 const modalStyle = css({
   '&:hover': { textDecoration: 'none' },
@@ -62,12 +58,20 @@ type ProgressionStep = 'parameters' | 'fillBasisData';
 
 const initialProgressionStep = 'parameters';
 
+/* ---------------------------------------------------------------------------------------------- */
+
+interface ProjectModelExtractorProps {
+  projectId: number | null | undefined;
+}
+
 export function ProjectModelExtractor({ projectId }: ProjectModelExtractorProps): JSX.Element {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const i18n = useTranslations();
 
   const { status: projectStatus, project } = useAndLoadProject(projectId || undefined);
+
+  const { isLoading, startLoading, stopLoading } = useLoadingState();
 
   const [data, setData] = React.useState<ModelCreationData>({ ...defaultData });
 
@@ -123,8 +127,8 @@ export function ProjectModelExtractor({ projectId }: ProjectModelExtractorProps)
   const modalTitle = React.useMemo(() => {
     return (
       <span>
-        {i18n.modules.project.actions.saveProjectAsModelPart1} <b>{project?.name || ''}</b>{' '}
-        {i18n.modules.project.actions.saveProjectAsModelPart2}
+        {i18n.modules.project.actions.saveProjectAsModelPart}{' '}
+        <b>{project?.name ? ' ' + project.name : ''}</b>
       </span>
     );
   }, [i18n, project]);
@@ -145,7 +149,9 @@ export function ProjectModelExtractor({ projectId }: ProjectModelExtractorProps)
           return (
             <>
               <AvailabilityStatusIndicator status={projectStatus} />
-              {projectStatus === 'ERROR' && <div>Initial project not found</div>}
+              {projectStatus === 'ERROR' && (
+                <div>{i18n.modules.project.info.initialProjectNotFound}</div>
+              )}
             </>
           );
         }}
@@ -189,22 +195,46 @@ export function ProjectModelExtractor({ projectId }: ProjectModelExtractorProps)
           {showNextButton && <Button onClick={oneStepForward}>{i18n.common.next}</Button>}
 
           {showCreateButton && (
-            <AsyncButtonWithLoader
+            <ButtonWithLoader
               onClick={async () => {
                 if (!readOnly) {
                   setReadOnly(true);
-                  // TODO duplicate and
-                  dispatch(API.updateProject({ ...project, type: 'MODEL' })).then(() => {
+                  startLoading();
+                  dispatch(
+                    API.createProject({
+                      type: 'MODEL',
+                      name: data.name,
+                      description: data.description,
+                      illustration: data.illustration,
+                      guestsEmail: data.guests,
+                      baseProjectId: projectId || null,
+                      duplicationParam: {
+                        '@class': 'DuplicationParam',
+                        withRoles: data.withRoles,
+                        withTeamMembers: false,
+                        withCardTypes: true,
+                        withCardsStructure: true,
+                        withDeliverables: data.withDeliverables,
+                        withResources: data.withResources,
+                        withStickyNotes: true,
+                        withActivityFlow: true,
+                        makeOnlyCardTypeReferences: false, // will need an option
+                        resetProgressionData: true,
+                      },
+                    }),
+                  ).then(() => {
                     reset();
+                    stopLoading();
                     close();
                     // Dom choice : do not navigate to the model list when created
                     //navigate('/models');
                   });
                 }
               }}
+              isLoading={isLoading}
             >
               {i18n.common.save}
-            </AsyncButtonWithLoader>
+            </ButtonWithLoader>
           )}
         </Flex>
       )}
@@ -238,6 +268,8 @@ export function ProjectModelExtractor({ projectId }: ProjectModelExtractorProps)
     </Modal>
   );
 }
+
+/* ---------------------------------------------------------------------------------------------- */
 
 interface ProjectModelParametersProps {
   data: ModelCreationData;
@@ -288,6 +320,8 @@ function ProjectModelParameters({
     </>
   );
 }
+
+/* ---------------------------------------------------------------------------------------------- */
 
 interface ProjectModelDataInitializationProps {
   data: ModelCreationData;

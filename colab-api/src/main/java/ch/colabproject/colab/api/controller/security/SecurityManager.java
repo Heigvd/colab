@@ -98,10 +98,13 @@ public class SecurityManager {
      * @param condition the condition to check
      * @param message   message to log in case the assertion failed
      *
-     * @throws HttpErrorMessage <ul>
-     * <li>with authenticationRequired if assertion fails and current user is not authenticated;
-     * <li>with forbidden if the authenticated user does not have enough permission
-     * </ul>
+     * @throws HttpErrorMessage
+     *                          <ul>
+     *                          <li>with authenticationRequired if assertion fails and current user
+     *                          is not authenticated;
+     *                          <li>with forbidden if the authenticated user does not have enough
+     *                          permission
+     *                          </ul>
      */
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     public void assertConditionTx(Condition condition, String message) {
@@ -116,10 +119,13 @@ public class SecurityManager {
      * @param message   message to display if the assertion failed
      * @param o         related object to log, may be null
      *
-     * @throws HttpErrorMessage <ul>
-     * <li>with authenticationRequired if assertion fails and current user is not authenticated;
-     * <li>with forbidden if the authenticated user does not have enough permission
-     * </ul>
+     * @throws HttpErrorMessage
+     *                          <ul>
+     *                          <li>with authenticationRequired if assertion fails and current user
+     *                          is not authenticated;
+     *                          <li>with forbidden if the authenticated user does not have enough
+     *                          permission
+     *                          </ul>
      */
     private void assertCondition(Condition condition, String message, WithPermission o) {
         if (!requestManager.isAdmin()) {
@@ -276,8 +282,8 @@ public class SecurityManager {
         }
         TeamMember member = teamManager.findMemberByProjectAndUser(card.getProject(), currentUser);
         return member != null && (member.getPosition() == HierarchicalPosition.OWNER
-            || teamManager.getEffectiveInvolvementLevel(card, member)
-                != InvolvementLevel.OUT_OF_THE_LOOP);
+            || teamManager.getEffectiveInvolvementLevel(card,
+                member) != InvolvementLevel.OUT_OF_THE_LOOP);
     }
 
     /**
@@ -382,8 +388,8 @@ public class SecurityManager {
     /**
      * Has the current user the right to read the project ?
      * <p>
-     * A user can read any project he is a member of and any project which contains a card type or
-     * reference the current user has a read access.
+     * A user can read any project he is a member of, has instance maker for or any project which
+     * contains a card type or reference the current user has a read access.
      *
      * @param projectId the id of the project
      *
@@ -391,6 +397,7 @@ public class SecurityManager {
      */
     public boolean isProjectReadableByCurrentUser(Long projectId) {
         User currentUser = requestManager.getCurrentUser();
+
         if (projectId == null || currentUser == null) {
             return false;
         }
@@ -410,6 +417,37 @@ public class SecurityManager {
         List<Long> accessibleByCardTypes = projectManager
             .findIdsOfProjectsReadableThroughCardTypes();
         if (accessibleByCardTypes.contains(projectId)) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * Has the current user the right to read the project copy params ?
+     * <p>
+     * A user can read any project he is a member of or has instance maker for.
+     *
+     * @param projectId the id of the project
+     *
+     * @return True if the current user can read the project
+     */
+    public boolean isCopyParamReadableByCurrentUser(Long projectId) {
+        User currentUser = requestManager.getCurrentUser();
+
+        if (projectId == null || currentUser == null) {
+            return false;
+        }
+
+        List<Long> projectsWhereMemberOf = projectManager
+            .findIdsOfProjectsCurrentUserIsMemberOf();
+        if (projectsWhereMemberOf.contains(projectId)) {
+            return true;
+        }
+
+        List<Long> projectsWhereInstanceMakerFor = projectManager
+            .findIdsOfProjectsCurrentUserIsInstanceMakerFor();
+        if (projectsWhereInstanceMakerFor.contains(projectId)) {
             return true;
         }
 

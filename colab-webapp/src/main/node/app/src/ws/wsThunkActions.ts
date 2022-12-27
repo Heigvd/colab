@@ -15,6 +15,7 @@ import {
   Card,
   CardContent,
   Change,
+  CopyParam,
   Document,
   entityIs,
   HttpSession,
@@ -55,6 +56,7 @@ interface EntityBag {
   cardTypes: Updates<AbstractCardType>;
   changes: Updates<Change>;
   contents: Updates<CardContent>;
+  copyParam: Updates<CopyParam>;
   documents: Updates<Document>;
   httpSessions: Updates<HttpSession>;
   instanceMakers: Updates<InstanceMaker>;
@@ -77,6 +79,7 @@ function createBag(): EntityBag {
     cardTypes: { updated: [], deleted: [] },
     changes: { updated: [], deleted: [] },
     contents: { updated: [], deleted: [] },
+    copyParam: { updated: [], deleted: [] },
     documents: { updated: [], deleted: [] },
     httpSessions: { updated: [], deleted: [] },
     instanceMakers: { updated: [], deleted: [] },
@@ -113,6 +116,8 @@ export const processMessage = createAsyncThunk(
           bag.changes.deleted.push(item);
         } else if (indexEntryIs(item, 'CardContent')) {
           bag.contents.deleted.push(item);
+        } else if (indexEntryIs(item, 'CopyParam')) {
+          bag.copyParam.deleted.push(item);
         } else if (indexEntryIs(item, 'Document')) {
           bag.documents.deleted.push(item);
         } else if (indexEntryIs(item, 'HttpSession')) {
@@ -157,6 +162,8 @@ export const processMessage = createAsyncThunk(
           bag.changes.updated.push(item);
         } else if (entityIs(item, 'CardContent')) {
           bag.contents.updated.push(item);
+        } else if (entityIs(item, 'CopyParam')) {
+          bag.copyParam.updated.push(item);
         } else if (entityIs(item, 'Document')) {
           bag.documents.updated.push(item);
         } else if (entityIs(item, 'HttpSession')) {

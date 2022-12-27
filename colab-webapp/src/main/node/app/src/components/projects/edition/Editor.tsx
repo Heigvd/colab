@@ -71,7 +71,7 @@ import DocumentationTab from '../DocumentationTab';
 import Presence from '../presence/Presence';
 import { PresenceContext, usePresenceContext } from '../presence/PresenceContext';
 import { defaultProjectIllustration } from '../ProjectCommon';
-import { ProjectSettings } from '../ProjectSettings';
+import { ProjectSettingsTabs } from '../settings/ProjectSettingsTabs';
 import Team from '../team/Team';
 import ActivityFlowChart from './activityFlow/ActivityFlowChart';
 import Hierarchy from './hierarchy/Hierarchy';
@@ -609,7 +609,10 @@ export default function Editor(): JSX.Element {
 
             <Routes>
               <Route path="settings/*" element={<Settings />} />
-              <Route path="project-settings/*" element={<ProjectSettings project={project} />} />
+              <Route
+                path="project-settings/*"
+                element={<ProjectSettingsTabs projectId={project.id} />}
+              />
               <Route path="admin/*" element={<Admin />} />
               <Route path="team/*" element={<Team project={project} />} />
               <Route path="hierarchy" element={<Hierarchy rootId={root.id} />} />
