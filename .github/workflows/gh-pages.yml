@@ -47,7 +47,7 @@ jobs:
         with:
           distribution: "temurin"
           java-version: 11
-          # cache: 'maven' # did not work
+          cache: 'maven'
 
       - name: Maven package without tests
         run: mvn -Dreporting -B -DskipTests package
