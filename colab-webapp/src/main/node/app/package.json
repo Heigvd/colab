@@ -69,9 +69,9 @@
     ]
   },
   "devDependencies": {
-    "@babel/core": "^7.15.5",
+    "@babel/core": "^7.20.7",
     "@babel/plugin-proposal-class-properties": "^7.13.0",
-    "@babel/preset-env": "^7.15.6",
+    "@babel/preset-env": "^7.20.2",
     "@babel/preset-react": "^7.13.13",
     "@svgr/webpack": "6.5.1",
     "@types/diff": "^5.0.0",
@@ -83,7 +83,7 @@
     "@types/react-router-dom": "^5.3.0",
     "@typescript-eslint/eslint-plugin": "^5.47.1",
     "@typescript-eslint/parser": "^5.47.1",
-    "babel-loader": "^8.1.0",
+    "babel-loader": "^9.1.0",
     "css-loader": "^6.7.3",
     "eslint": "^8.30.0",
     "eslint-config-prettier": "^8.3.0",
