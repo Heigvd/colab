@@ -2719,45 +2719,45 @@
     "@jridgewell/resolve-uri" "^3.0.3"
     "@jridgewell/sourcemap-codec" "^1.4.10"
 
-"@jsplumb/browser-ui@^5.11.3":
-  version "5.11.3"
-  resolved "https://registry.yarnpkg.com/@jsplumb/browser-ui/-/browser-ui-5.11.3.tgz#9e4ac81c564ff458e6503c735bc893ea54c0601d"
-  integrity sha512-Q+4nltNYVMaErEbE7Tu4uVv4X5VkV+GiEsA9Yq/eqGYX8GhhK9gEl6WyW2WjwPZ/99K5pa846ciD1K6L7SxGBw==
+"@jsplumb/browser-ui@^5.13.2":
+  version "5.13.2"
+  resolved "https://registry.yarnpkg.com/@jsplumb/browser-ui/-/browser-ui-5.13.2.tgz#80f03d76975e74a4038ebec1f23ae7dc9be4337b"
+  integrity sha512-BZ76kPtxESMIdhcCtWXPdICMudJyBVzDxaKY4jlne93Zq1T2ErfpNQ3E6f3JZfvoyvlNbKgh0udYkZ7Yg7BmIQ==
   dependencies:
-    "@jsplumb/core" "5.11.3"
+    "@jsplumb/core" "5.13.2"
 
-"@jsplumb/common@5.11.3":
-  version "5.11.3"
-  resolved "https://registry.yarnpkg.com/@jsplumb/common/-/common-5.11.3.tgz#e5b9b231eebffca53a387d9563d55490677ca828"
-  integrity sha512-1/O5kZv68eJ9LzIP15leCnbCLFfd5X+7ic13tHU7S3bZGgTFPQ/uF4MsN5DusJSQc79KWDyu9mrXkp6V9iyxbQ==
+"@jsplumb/common@5.13.2":
+  version "5.13.2"
+  resolved "https://registry.yarnpkg.com/@jsplumb/common/-/common-5.13.2.tgz#fb93062cdcc741f8e131ee6a9336762ecc7ac96f"
+  integrity sha512-ZX/EvvYi4HBkRVtsuSSAa/AuAz4p2wr3RrRz6l+r8yeElzX3lrrBx/fkERY2qwZPkKcOoLCr5ezZ7sslVMnl0Q==
   dependencies:
-    "@jsplumb/util" "5.11.3"
+    "@jsplumb/util" "5.13.2"
 
-"@jsplumb/connector-bezier@^5.11.3":
-  version "5.11.3"
-  resolved "https://registry.yarnpkg.com/@jsplumb/connector-bezier/-/connector-bezier-5.11.3.tgz#b6052808b527da8ae7a8dade557daf03ccdca5dd"
-  integrity sha512-HP+jSxyhwcmeQSc3GU7O9p/XGoZFUuKBnIrUg2P/GkSdzsCSsjkqorPCZJe0QotPrDSw2WxnmSngA+xJBBCpTQ==
+"@jsplumb/connector-bezier@^5.13.2":
+  version "5.13.2"
+  resolved "https://registry.yarnpkg.com/@jsplumb/connector-bezier/-/connector-bezier-5.13.2.tgz#d6db9181ffe254d363492d311548e148f27392d5"
+  integrity sha512-AALmOvkiP3ouGag6TGkBcd7SbCewPNwsKu9gku9AZqIq+fFu321zJ2IpfoyCFgkoFFSQjJ9jo1sWBbD3gnEXrg==
   dependencies:
-    "@jsplumb/core" "5.11.3"
+    "@jsplumb/core" "5.13.2"
 
-"@jsplumb/connector-flowchart@^5.11.3":
-  version "5.11.3"
-  resolved "https://registry.yarnpkg.com/@jsplumb/connector-flowchart/-/connector-flowchart-5.11.3.tgz#e704b5d41b3f01ee48e46d1478bd090c1ce11ac7"
-  integrity sha512-nj6BoP6Rb2WcWAK3aezd9vt3dherz8PSeSwTIFV9283d9B3UgeSa4zzcDHYEei8P7/Gw9opS9YJVY7mo13Pl8w==
+"@jsplumb/connector-flowchart@^5.13.2":
+  version "5.13.2"
+  resolved "https://registry.yarnpkg.com/@jsplumb/connector-flowchart/-/connector-flowchart-5.13.2.tgz#d914f4b23456b81b20d5e0ce20781e3f552c6dd9"
+  integrity sha512-yxX4MDVoWqQagf5tpI4k3pFJpuhlU0kRH+usvsOxCOcF8qvkLnyXH9kYe8p4GXwmp8lq1LUx8aoi4/NkgXUdIQ==
   dependencies:
-    "@jsplumb/core" "5.11.3"
+    "@jsplumb/core" "5.13.2"
 
-"@jsplumb/core@5.11.3":
-  version "5.11.3"
-  resolved "https://registry.yarnpkg.com/@jsplumb/core/-/core-5.11.3.tgz#ff5065063ce88c34ea622e00efbb12f12662d388"
-  integrity sha512-hmr30R18R45DaWWhz/sKDl11iEL3er1n7+4uk9gpvOTE7LJki1looMsdedxwwFqn500LqKWEB51E5c/qVqO5Ag==
+"@jsplumb/core@5.13.2":
+  version "5.13.2"
+  resolved "https://registry.yarnpkg.com/@jsplumb/core/-/core-5.13.2.tgz#5a3d426801b52821a8b26f70505fcc88350b4552"
+  integrity sha512-IODXQzhpq9QEzGKhPir6+ea8m4KeU3gzJsYjIu8oqSQ4jDhvEYF7TvSfeaNgy9sUAMt3OoKCqxCS4ga9J7LS5A==
   dependencies:
-    "@jsplumb/common" "5.11.3"
+    "@jsplumb/common" "5.13.2"
 
-"@jsplumb/util@5.11.3":
-  version "5.11.3"
-  resolved "https://registry.yarnpkg.com/@jsplumb/util/-/util-5.11.3.tgz#d99fac120ea754cb3646f2c736589007dfd7c5eb"
-  integrity sha512-uoh6UQxChW49D1f4MwWvOPkCXJLQ8thZ2LYa9GN2yvpVUY/sMUqmAe+7EkkxGRyicyNc7ct9CWMvrPYFcXSJAg==
+"@jsplumb/util@5.13.2":
+  version "5.13.2"
+  resolved "https://registry.yarnpkg.com/@jsplumb/util/-/util-5.13.2.tgz#a7ab8a3541d398f424dd643970602bc094296452"
+  integrity sha512-POrqlZMOo821oa49Xbxb+pNmnxu0z2oS7FOeklRxKuYXR+7nsP0j9PpXjo8E8Ily4TaP+pdUnatb53vAaONO3g==
 
 "@leichtgewicht/ip-codec@^2.0.1":
   version "2.0.4"
