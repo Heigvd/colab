@@ -2916,7 +2916,7 @@
     deepmerge "^4.2.2"
     svgo "^2.8.0"
 
-"@svgr/webpack@6.5.1":
+"@svgr/webpack@^6.5.1":
   version "6.5.1"
   resolved "https://registry.yarnpkg.com/@svgr/webpack/-/webpack-6.5.1.tgz#ecf027814fc1cb2decc29dc92f39c3cf691e40e8"
   integrity sha512-cQ/AsnBkXPkEK8cLbv4Dm7JGXq2XrumKnL1dRpJD9rIO2fTIlJI9a1uCciYG1F2aUsox/hJQyNGbt3soDxSRkA==
@@ -8476,7 +8476,7 @@ webpack-merge@^5.7.3:
     clone-deep "^4.0.1"
     wildcard "^2.0.0"
 
-webpack-react-component-name@5.0.5:
+webpack-react-component-name@^5.0.5:
   version "5.0.5"
   resolved "https://registry.yarnpkg.com/webpack-react-component-name/-/webpack-react-component-name-5.0.5.tgz#17c9a2b43922c892eafcc1a521e1ea5e2908307d"
   integrity sha512-rGcXG0+71UMMH3imCowaZNHME4t0wd2OoLRHIGtItnUP7FvdS3rICU03kcIAAQD5vymHTOgZFKoQfhDpbChNGw==
