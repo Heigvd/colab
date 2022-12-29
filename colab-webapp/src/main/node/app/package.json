@@ -12,8 +12,8 @@
     "test": "jest",
     "lint": "eslint -c .eslintrc.js --ext .ts,.tsx ./src",
     "build": "webpack --mode=production",
-    "start": "webpack serve --hot --mode development",
-    "preprod": "webpack serve --hot --mode production",
+    "start": "webpack serve --hot --mode=development",
+    "preprod": "webpack serve --hot --mode=production",
     "format": "prettier --write src"
   },
   "jest": {
