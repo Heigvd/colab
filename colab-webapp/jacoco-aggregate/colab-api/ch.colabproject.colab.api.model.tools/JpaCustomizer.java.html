@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>JpaCustomizer.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">colab-webapp</a> &gt; <a href="../index.html" class="el_bundle">colab-api</a> &gt; <a href="index.source.html" class="el_package">ch.colabproject.colab.api.model.tools</a> &gt; <span class="el_source">JpaCustomizer.java</span></div><h1>JpaCustomizer.java</h1><pre class="source lang-java linenums">/*
- * The coLAB project Copyright (C) 2021 AlbaSim, MEI, HEIG-VD, HES-SO
+ * The coLAB project
+ * Copyright (C) 2021-2023 AlbaSim, MEI, HEIG-VD, HES-SO
  *
  * Licensed under the MIT License
  */
@@ -19,12 +20,12 @@ import org.eclipse.persistence.sessions.Session;
  *
  * @author maxence
  */
-<span class="nc" id="L22">public class JpaCustomizer implements SessionCustomizer {</span>
+<span class="nc" id="L23">public class JpaCustomizer implements SessionCustomizer {</span>
 
     @Override
     public void customize(Session session) throws Exception {
-<span class="nc" id="L26">        session.getDescriptors().values().forEach(this::updateFieldNameMapping);</span>
-<span class="nc" id="L27">    }</span>
+<span class="nc" id="L27">        session.getDescriptors().values().forEach(this::updateFieldNameMapping);</span>
+<span class="nc" id="L28">    }</span>
 
     /**
      * custom field names
@@ -32,18 +33,18 @@ import org.eclipse.persistence.sessions.Session;
      * @param desc mappings to override
      */
     private void updateFieldNameMapping(ClassDescriptor desc) {
-<span class="nc" id="L35">        desc.getMappings().stream()</span>
-<span class="nc" id="L36">            .filter(mapping -&gt; (mapping.isDirectToFieldMapping()))</span>
-<span class="nc" id="L37">            .map(mapping -&gt; (DirectToFieldMapping) mapping)</span>
-<span class="nc" id="L38">            .forEachOrdered(directMapping -&gt; {</span>
+<span class="nc" id="L36">        desc.getMappings().stream()</span>
+<span class="nc" id="L37">            .filter(mapping -&gt; (mapping.isDirectToFieldMapping()))</span>
+<span class="nc" id="L38">            .map(mapping -&gt; (DirectToFieldMapping) mapping)</span>
+<span class="nc" id="L39">            .forEachOrdered(directMapping -&gt; {</span>
                 // format: table_name.FIELD -&gt;[ tableNane, fieldName];
-<span class="nc" id="L40">                String[] names = directMapping.getFieldName().split(&quot;\\.&quot;);</span>
-<span class="nc bnc" id="L41" title="All 2 branches missed.">                if (names.length == 2) {</span>
-<span class="nc" id="L42">                    String newName = Helper.camelCaseToUnderscore(directMapping.getAttributeName());</span>
-<span class="nc" id="L43">                    directMapping.getField().setName(newName);</span>
+<span class="nc" id="L41">                String[] names = directMapping.getFieldName().split(&quot;\\.&quot;);</span>
+<span class="nc bnc" id="L42" title="All 2 branches missed.">                if (names.length == 2) {</span>
+<span class="nc" id="L43">                    String newName = Helper.camelCaseToUnderscore(directMapping.getAttributeName());</span>
+<span class="nc" id="L44">                    directMapping.getField().setName(newName);</span>
                 }
-<span class="nc" id="L45">            }</span>
+<span class="nc" id="L46">            }</span>
             );
-<span class="nc" id="L47">    }</span>
+<span class="nc" id="L48">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>
