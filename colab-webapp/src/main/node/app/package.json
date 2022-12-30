@@ -117,7 +117,7 @@
     "@jsplumb/browser-ui": "^5.13.2",
     "@jsplumb/connector-bezier": "^5.13.2",
     "@jsplumb/connector-flowchart": "^5.13.2",
-    "@reduxjs/toolkit": "^1.8.5",
+    "@reduxjs/toolkit": "^1.9.1",
     "colab-rest-client": "link:../../../../../colab-client/target/generated-sources/tsClient",
     "diff": "^5.0.0",
     "emotion": "^11.0.0",
