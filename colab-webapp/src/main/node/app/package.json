@@ -132,6 +132,6 @@
     "react-redux": "^8.0.2",
     "react-reflex": "^4.0.9",
     "react-router-dom": "^6.3.0",
-    "react-select": "^5.4.0"
+    "react-select": "^5.7.0"
   }
 }
