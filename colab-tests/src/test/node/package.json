@@ -1,7 +1,9 @@
 {
   "name": "colab-e2e-tests",
   "version": "1.0.0",
+  "description": "coLAB project tests",
   "license": "MIT",
+  "author": "Albasim <albasim@heig-vd.ch>",
   "private": true,
   "scripts": {
     "format": "prettier --write cypress",

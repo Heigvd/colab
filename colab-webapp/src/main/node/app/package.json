@@ -2,19 +2,20 @@
   "name": "colab-webapp-react",
   "version": "0.0.1",
   "description": "coLAB project client application",
-  "repository": "http://www.github.com/Heigvd/colab.git",
-  "author": "Albasim <albasim@heig-vd.ch>",
   "license": "MIT",
+  "homepage": "https://www.colab-project.ch",
+  "bugs": "https://github.com/Heigvd/colab/issues",
+  "repository": "git@github.com:heigvd/colab.git",
+  "author": "Albasim <albasim@heig-vd.ch>",
   "private": true,
   "main": "../../../../target/coLAB/dist/index.js",
   "scripts": {
     "clean": "rimraf ../../../../target/coLAB/dist && rimraf ../../../../target/ts-coverage && rimraf ../../../../target/ts-test-report",
+    "format": "prettier --write src",
     "test": "jest",
     "lint": "eslint -c .eslintrc.js --ext .ts,.tsx ./src",
     "build": "webpack --mode=production",
-    "start": "webpack serve --hot --mode=development",
-    "preprod": "webpack serve --hot --mode=production",
-    "format": "prettier --write src"
+    "start": "webpack serve --hot --mode=development"
   },
   "jest": {
     "collectCoverage": true,

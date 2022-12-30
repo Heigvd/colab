@@ -1,10 +1,12 @@
 {
   "name": "colab",
   "version": "0.0.1",
-  "description": "",
+  "description": "coLAB project client application",
+  "license": "MIT",
+  "homepage": "https://www.colab-project.ch",
+  "bugs": "https://github.com/Heigvd/colab/issues",
   "repository": "git@github.com:heigvd/colab.git",
   "author": "AlbaSim <albasim@heig-vd.ch>",
-  "license": "MIT",
   "private": true,
   "scripts": {},
   "workspaces": [

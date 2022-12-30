@@ -4,8 +4,9 @@
   "keywords": [
     "restClient"
   ],
-  "author": "albabot",
+  "license": "MIT",
   "main": "dist/index.js",
+  "author": "albabot",
   "private": true,
   "scripts": {
     "build": "rimraf dist && tsc",
