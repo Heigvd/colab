@@ -116,6 +116,11 @@ public class Project implements ColabEntity, WithWebsocketChannels {
      */
     @Size(max = 255)
     private String description;
+    
+    /**
+     * Global means accessible to everyone
+     */
+    private boolean globalProject;
 
     /**
      * The icon to illustrate the project
@@ -239,6 +244,22 @@ public class Project implements ColabEntity, WithWebsocketChannels {
     }
 
     /**
+     * 
+     * @return if project is global
+     */
+    public boolean isGlobalProject() {
+        return globalProject;
+    }
+    
+    /**
+     * 
+     * @param global if project is global
+     */
+    public void setGlobalProject(boolean global) {
+        this.globalProject = global;
+    }
+    
+    /**
      * @return the icon to illustrate the project
      */
     public Illustration getIllustration() {
@@ -358,6 +379,7 @@ public class Project implements ColabEntity, WithWebsocketChannels {
             this.setType(o.getType());
             this.setName(o.getName());
             this.setDescription(o.getDescription());
+            this.setGlobalProject(o.isGlobalProject());
             this.setIllustration(o.getIllustration());
         } else {
             throw new ColabMergeException(this, other);
@@ -407,7 +429,7 @@ public class Project implements ColabEntity, WithWebsocketChannels {
     @Override
     public String toString() {
         return "Project{" + "id=" + id + ", type=" + type.name() + ", name=" + name + ", descr="
-            + description + '}';
+            + description + ", global=" + globalProject + '}';
     }
 
 }
