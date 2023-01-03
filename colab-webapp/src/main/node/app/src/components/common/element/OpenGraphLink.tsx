@@ -10,6 +10,7 @@ import { faChainBroken, faExternalLinkAlt, faLink, faPen } from '@fortawesome/fr
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import * as React from 'react';
 import useTranslations from '../../../i18n/I18nContext';
+import { getLogger } from '../../../logger';
 import { useUrlMetadata } from '../../../selectors/externalDataSelector';
 import { lightIconButtonStyle, space_M, space_S } from '../../styling/style';
 import Flex from '../layout/Flex';
@@ -17,6 +18,9 @@ import { emptyLightTextStyle } from './FilePicker';
 import IconButton from './IconButton';
 import InlineLoading from './InlineLoading';
 import { BlockInput } from './Input';
+
+const logger = getLogger('OpenGraphLink');
+logger.setLevel(4);
 
 const cardStyle = css({
   flexWrap: 'nowrap',
@@ -132,6 +136,7 @@ export default function OpenGraphLink({
   );
 
   const setEditCb = React.useCallback(() => {
+    logger.debug('OpenGraphLink edit button clicked')
     setEditingState(true);
   }, [setEditingState]);
 
