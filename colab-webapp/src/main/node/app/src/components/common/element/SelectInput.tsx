@@ -95,7 +95,7 @@ export default function SelectInput<T, IsMulti extends boolean>({
     <Flex
       direction="column"
       align="stretch"
-      className={cx(css({ padding: space_S + ' 0' }), className, {[disabledStyle]: readOnly})}
+      className={cx(css({ padding: space_S + ' 0' }), className, { [disabledStyle]: readOnly })}
     >
       <Flex justify="space-between">
         <div>

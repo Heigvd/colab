@@ -16,11 +16,7 @@ import Button from '../../common/element/Button';
 import Checkbox from '../../common/element/Checkbox';
 import Flex from '../../common/layout/Flex';
 import OpenCloseModal from '../../common/layout/OpenCloseModal';
-import {
-  paddedContainerStyle,
-  space_L,
-  space_M,
-} from '../../styling/style';
+import { paddedContainerStyle, space_L, space_M } from '../../styling/style';
 import ProjectModelSharing from '../ProjectModelSharing';
 
 export interface ProjectSettingsModelSharingProps {
