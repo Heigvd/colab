@@ -6,7 +6,7 @@
  */
 import { createSlice } from '@reduxjs/toolkit';
 import { UrlMetadata } from 'colab-rest-client';
-import * as API from '../API/api';
+import * as API from '../../API/api';
 
 export interface ExternalDataState {
   urlMetadata: Record<string, UrlMetadata | 'LOADING'>;

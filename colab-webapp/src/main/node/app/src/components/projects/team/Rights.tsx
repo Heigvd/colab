@@ -17,7 +17,7 @@ import useTranslations from '../../../i18n/I18nContext';
 import { useAndLoadProjectTeam } from '../../../selectors/projectSelector';
 import { useCurrentUser } from '../../../selectors/userSelector';
 import { useAppDispatch, useAppSelector } from '../../../store/hooks';
-import { addNotification } from '../../../store/notification';
+import { addNotification } from '../../../store/slice/notificationSlice';
 import IconButton from '../../common/element/IconButton';
 import InlineLoading from '../../common/element/InlineLoading';
 import { DiscreetInput } from '../../common/element/Input';

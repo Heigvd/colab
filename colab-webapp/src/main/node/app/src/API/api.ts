@@ -43,7 +43,7 @@ import { PasswordScore } from '../components/common/element/Form';
 import { DocumentKind } from '../components/documents/documentCommonType';
 import { ResourceAndRef } from '../components/resources/resourcesCommonType';
 import { hashPassword } from '../SecurityHelper';
-import { addNotification } from '../store/notification';
+import { addNotification } from '../store/slice/notificationSlice';
 import { ColabState, getStore } from '../store/store';
 import { CardTypeAllInOne, CardTypeOnOneSOwn, CardTypeWithRef } from '../types/cardTypeDefinition';
 

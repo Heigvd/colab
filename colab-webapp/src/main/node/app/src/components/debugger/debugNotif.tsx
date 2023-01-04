@@ -8,7 +8,7 @@
 import { css, cx } from '@emotion/css';
 import * as React from 'react';
 import { useAppDispatch } from '../../store/hooks';
-import { addNotification } from '../../store/notification';
+import { addNotification } from '../../store/slice/notificationSlice';
 import Button from '../common/element/Button';
 import Flex from '../common/layout/Flex';
 import { textSmall } from '../styling/style';
