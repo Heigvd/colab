@@ -9,11 +9,13 @@ import { css, cx } from '@emotion/css';
 import { faGlobe, faStar } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import * as React from 'react';
+import * as API from '../../../API/api';
 //import { CSVLink } from 'react-csv';
 import useTranslations from '../../../i18n/I18nContext';
 import logger from '../../../logger';
 import { useProject } from '../../../selectors/projectSelector';
 import { useAppSelector } from '../../../store/hooks';
+import { dispatch } from '../../../store/store';
 import AvailabilityStatusIndicator from '../../common/element/AvailabilityStatusIndicator';
 import Button from '../../common/element/Button';
 import { WIPContainer } from '../../common/element/Tips';
@@ -40,9 +42,7 @@ export default function ProjectSettingsAdvanced({
   const state = useAppSelector(state => state);
 
   const { project, status } = useProject(projectId);
-
-  const [isProjectGlobal, setIsProjectGlobal] = React.useState<boolean>(false);
-
+  
   if (status !== 'READY' || project == null) {
     return <AvailabilityStatusIndicator status={status} />;
   }
@@ -79,13 +79,13 @@ export default function ProjectSettingsAdvanced({
               className={css({ backgroundColor: 'var(--fgColor)', width: '80px' })}
             >
               <FontAwesomeIcon
-                icon={isProjectGlobal ? faGlobe : faStar}
+                icon={project.globalProject ? faGlobe : faStar}
                 className={css({ color: 'var(--bgColor)' })}
                 size="2x"
               />
             </Flex>
             <Flex direction="column" align="stretch" className={css({ padding: space_M })}>
-              {isProjectGlobal ? (
+              {project.globalProject ? (
                 <>
                   <h3>This model is global</h3>
                   <p>Everyone with a co.LAB account can create a project base on this model.</p>
@@ -114,7 +114,7 @@ export default function ProjectSettingsAdvanced({
                         with.
                       </p>
                     }
-                    onConfirm={() => setIsProjectGlobal(e => !e)}
+                    onConfirm={() => dispatch(API.updateProject({ ...project!, globalProject: false }))}
                     confirmButtonLabel="Make private"
                   />
                 </>
@@ -146,7 +146,7 @@ export default function ProjectSettingsAdvanced({
                         a co.LAB account will be able to create a project base on this model.
                       </p>
                     }
-                    onConfirm={() => setIsProjectGlobal(e => !e)}
+                    onConfirm={() => dispatch(API.updateProject({ ...project!, globalProject: true }))}
                     confirmButtonLabel="Make global"
                   />
                 </>

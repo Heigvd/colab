@@ -355,6 +355,10 @@ export const getAllProjects = createAsyncThunk('project/all', async () => {
   return await restClient.ProjectRestEndpoint.getAllProjects();
 });
 
+export const getAllGlobalProjects = createAsyncThunk('project/allGlobal', async () => {
+  return await restClient.ProjectRestEndpoint.getAllGlobalProjects();
+});
+
 export const createProject = createAsyncThunk(
   'project/create',
   async (creationData: ProjectCreationData) => {

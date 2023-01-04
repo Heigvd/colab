@@ -133,11 +133,10 @@ const projectListStyle = css({
 interface ProjectDisplayProps {
   project: Project;
   className?: string;
-  isAdminModel?: boolean;
 }
 
 // Display one project and allow to edit it
-export const ProjectDisplay = ({ project, className, isAdminModel }: ProjectDisplayProps) => {
+export const ProjectDisplay = ({ project, className }: ProjectDisplayProps) => {
   const dispatch = useAppDispatch();
   const i18n = useTranslations();
   const navigate = useNavigate();
@@ -169,7 +168,7 @@ export const ProjectDisplay = ({ project, className, isAdminModel }: ProjectDisp
             className={modelChipStyle}
             title={i18n.modules.project.info.isAModel}
           >
-            {isAdminModel ? (
+            {project.globalProject ? (
               <FontAwesomeIcon icon={faGlobe} color="white" size="sm" />
             ) : (
               <FontAwesomeIcon icon={faStar} color="white" size="sm" />

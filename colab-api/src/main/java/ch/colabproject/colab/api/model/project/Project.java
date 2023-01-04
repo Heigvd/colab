@@ -57,6 +57,8 @@ import javax.validation.constraints.Size;
 )
 @NamedQuery(name = "Project.findAll",
     query = "SELECT p FROM Project p")
+@NamedQuery(name = "Project.findAllGlobal",
+    query = "SELECT p from Project p WHERE p.globalProject = true AND p.type = :model")
 @NamedQuery(name = "Project.findByTeamMemberUser",
     query = "SELECT p FROM Project p JOIN p.teamMembers members WHERE members.user.id = :userId")
 @NamedQuery(name = "Project.findIdsByTeamMemberUser",

@@ -99,6 +99,13 @@ public class ProjectRestEndpoint {
         logger.debug("Get user projects");
         return projectManager.findProjectsOfCurrentUser();
     }
+    
+    @GET
+    @Path("Global")
+    public List<Project> getAllGlobalProjects() {
+        logger.debug("Get all global projects");
+        return projectDao.findAllGlobalModels();
+    }
 
     /**
      * Get all projects the current user is an instance maker for
@@ -123,6 +130,7 @@ public class ProjectRestEndpoint {
         logger.debug("Get all projects");
         return projectDao.findAllProject();
     }
+    
 
     // *********************************************************************************************
     // create

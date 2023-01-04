@@ -201,6 +201,8 @@ export function useAndLoadMyAndInstanceableModels(): ProjectsAndStatus {
 
   return useAppSelector(
     state => {
+      // First fetch the statuses of everything we want
+      // 1. models where the user is an instance maker for
       const statusIM = state.projects.statusForInstanceableModels;
 
       if (statusIM === 'NOT_INITIALIZED') {
@@ -211,6 +213,7 @@ export function useAndLoadMyAndInstanceableModels(): ProjectsAndStatus {
         return { projects: [], status: statusIM };
       }
 
+      // 2. models where the user is a team member of
       const statusMine = state.projects.statusForCurrentUser;
 
       if (statusMine === 'NOT_INITIALIZED') {
@@ -221,6 +224,20 @@ export function useAndLoadMyAndInstanceableModels(): ProjectsAndStatus {
         return { projects: [], status: statusMine };
       }
 
+      // 3. models global = accessible by everyone
+      const statusGlobal = state.projects.statusForGlobalModels;
+
+      if (statusGlobal === 'NOT_INITIALIZED') {
+        dispatch(API.getAllGlobalProjects());
+      }
+
+      if (statusGlobal !== 'READY') {
+        return { projects: [], status: statusGlobal };
+      }
+
+      // Then if all statuses are READY, get the data
+
+      // 1. models where the user is an instance maker for
       const projectsIM = state.projects.instanceableProjects.flatMap(projectId => {
         const p = state.projects.projects[projectId];
         if (entityIs(p, 'Project') && p.type === 'MODEL') {
@@ -230,6 +247,7 @@ export function useAndLoadMyAndInstanceableModels(): ProjectsAndStatus {
         }
       });
 
+      // 2. models where the user is a team member of
       const projectsMine = Object.values(
         state.projects.mine
           .flatMap(id => {
@@ -239,8 +257,16 @@ export function useAndLoadMyAndInstanceableModels(): ProjectsAndStatus {
           .filter(proj => proj.type === 'MODEL'),
       );
 
+      // 3. models global = accessible by everyone
+      const projectsGlobal = Object.values(
+        state.projects.projects)
+          .flatMap(proj => {
+            return entityIs(proj, 'Project') && proj.type === 'MODEL' && proj.globalProject === true ? [proj] : []})
+
+  
+
       return {
-        projects: [...new Set([...projectsIM, ...projectsMine])].flatMap(p => {
+        projects: [...new Set([...projectsIM, ...projectsMine, ...projectsGlobal])].flatMap(p => {
           return p;
         }),
         status: 'READY',
