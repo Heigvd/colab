@@ -220,7 +220,8 @@ public class ResourceRestEndpoint {
 
         DuplicationParam effectiveParams = DuplicationParam.buildDefaultForCopyOfResource();
 
-        Resource newResource = resourceManager.copyResourceTo(resourceId, effectiveParams, parentType, parentId, false);
+        Resource newResource = resourceManager.copyResourceTo(resourceId, effectiveParams,
+            parentType, parentId, false);
 
         return newResource.getId();
     }

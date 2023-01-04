@@ -42,8 +42,7 @@ public class GridPosition implements GridCell {
     private Integer height;
 
     /**
-     * Build a default grid position,
-     * Cell size is 1x1 and position is (1,1).
+     * Build a default grid position, Cell size is 1x1 and position is (1,1).
      */
     public GridPosition() {
         this.x = 1;

@@ -15,7 +15,7 @@ import org.eclipse.persistence.sessions.Session;
 /**
  * Customize JPA session.
  * <ul>
- * <li> use lowercase with underscore database field names
+ * <li>use lowercase with underscore database field names
  * </ul>
  *
  * @author maxence

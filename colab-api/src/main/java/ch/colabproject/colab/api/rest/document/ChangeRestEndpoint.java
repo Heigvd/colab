@@ -85,7 +85,7 @@ public class ChangeRestEndpoint {
     @GET
     @Path("/Monitoring")
     @AdminResource
-    public List<BlockMonitoring> getMonitoringData(){
+    public List<BlockMonitoring> getMonitoringData() {
         return liveManager.getMonitoringData();
     }
 

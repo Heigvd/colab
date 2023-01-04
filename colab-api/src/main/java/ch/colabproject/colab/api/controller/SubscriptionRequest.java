@@ -65,7 +65,6 @@ public class SubscriptionRequest implements Serializable {
     private String wsSessionId;
 
     /**
-     *
      * HTTP session id which want to (un)subscribe
      */
     private Long colabSessionId;

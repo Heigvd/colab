@@ -327,7 +327,8 @@ public class RestClient {
      *
      * @return instance of T
      */
-    public <T> T put(String path, Map<String, FormField> fields, GenericType<T> type, String... accept) {
+    public <T> T put(String path, Map<String, FormField> fields, GenericType<T> type,
+        String... accept) {
         FormDataMultiPart multipart = getFormData(fields);
 
         return processResponse(webTarget.path(path).request()

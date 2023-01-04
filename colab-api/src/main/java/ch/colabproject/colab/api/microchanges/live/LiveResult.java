@@ -7,7 +7,6 @@
 package ch.colabproject.colab.api.microchanges.live;
 
 /**
- *
  * @author maxence
  */
 public class LiveResult {

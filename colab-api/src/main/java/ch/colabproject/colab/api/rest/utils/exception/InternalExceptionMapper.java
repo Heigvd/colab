@@ -20,7 +20,6 @@ public class InternalExceptionMapper extends AbstractExceptionMapper
     implements ExceptionMapper<Exception> {
 
     /**
-     *
      * @param exception exception to process
      *
      * @return a HTTP response which wrap the exception

@@ -38,7 +38,7 @@ public enum HierarchicalPosition {
      *
      * @param defaultLevel default level of involvements
      */
-    /*private */ HierarchicalPosition(InvolvementLevel defaultLevel) {
+    /* private */ HierarchicalPosition(InvolvementLevel defaultLevel) {
         this.defaultLevel = defaultLevel;
     }
 
