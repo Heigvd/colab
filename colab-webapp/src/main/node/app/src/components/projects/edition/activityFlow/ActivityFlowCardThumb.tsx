@@ -58,7 +58,7 @@ export function AFCard({ card, jsPlumb, plumbRefs }: CardProps): JSX.Element {
     [jsPlumb, plumbRefs, card.id],
   );
 
-/*   const navigateToEditPageCb = React.useCallback((card: Card) => {
+  /*   const navigateToEditPageCb = React.useCallback((card: Card) => {
     const path = `edit/${card.id}/`;
     if (location.pathname.match(/(edit|card)\/\d+\/v\/\d+/)) {
       navigate(`../${path}`);
@@ -115,8 +115,12 @@ export function AFCard({ card, jsPlumb, plumbRefs }: CardProps): JSX.Element {
                 </div>
               </div>
             </div>
-            <Flex direction='column' align='center' className={`CardSourceHandle ` + css({ minHeight: '1.5rem', flexGrow: 1 })}>
-              <FontAwesomeIcon icon={faProjectDiagram} className={css({margin: 'auto'})}/>
+            <Flex
+              direction="column"
+              align="center"
+              className={`CardSourceHandle ` + css({ minHeight: '1.5rem', flexGrow: 1 })}
+            >
+              <FontAwesomeIcon icon={faProjectDiagram} className={css({ margin: 'auto' })} />
             </Flex>
           </CardLayout>
         )}

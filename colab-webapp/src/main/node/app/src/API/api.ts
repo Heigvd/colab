@@ -886,7 +886,7 @@ export const removeCardCardType = createAsyncThunk(
   'card/removeCardType',
   async (cardId: number) => {
     await restClient.CardRestEndpoint.removeCardType(cardId);
-  }
+  },
 );
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
