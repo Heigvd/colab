@@ -59,10 +59,9 @@ import org.apache.commons.collections4.CollectionUtils;
 )
 @NamedQuery(
     name = "TeamMember.areUserTeammate",
-    // SELECT true FROM TeamMember a, TeamMember b WHERE ...
-    query = "SELECT true FROM TeamMember a "
-        + "JOIN TeamMember b ON a.project.id = b.project.id "
-        + "WHERE a.user.id = :aUserId AND b.user.id = :bUserId")
+    query = "SELECT true FROM TeamMember a, TeamMember b "
+        + "WHERE a.project.id = b.project.id "
+        + "AND a.user.id = :aUserId AND b.user.id = :bUserId")
 @NamedQuery(
     name = "TeamMember.findByProjectAndUser",
     query = "SELECT m FROM TeamMember m "
