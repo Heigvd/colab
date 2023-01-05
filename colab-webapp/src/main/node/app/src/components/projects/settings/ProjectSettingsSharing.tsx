@@ -1,6 +1,6 @@
 /*
  * The coLAB project
- * Copyright (C) 2021 AlbaSim, MEI, HEIG-VD, HES-SO
+ * Copyright (C) 2021-2023 AlbaSim, MEI, HEIG-VD, HES-SO
  *
  * Licensed under the MIT License
  */
@@ -16,11 +16,7 @@ import Button from '../../common/element/Button';
 import Checkbox from '../../common/element/Checkbox';
 import Flex from '../../common/layout/Flex';
 import OpenCloseModal from '../../common/layout/OpenCloseModal';
-import {
-  paddedContainerStyle,
-  space_L,
-  space_M,
-} from '../../styling/style';
+import { paddedContainerStyle, space_L, space_M } from '../../styling/style';
 import ProjectModelSharing from '../ProjectModelSharing';
 
 export interface ProjectSettingsModelSharingProps {

@@ -1,6 +1,6 @@
 /*
  * The coLAB project
- * Copyright (C) 2021 AlbaSim, MEI, HEIG-VD, HES-SO
+ * Copyright (C) 2021-2023 AlbaSim, MEI, HEIG-VD, HES-SO
  *
  * Licensed under the MIT License
  */
@@ -245,14 +245,17 @@ export default function Hierarchy({
   if (jsPlumb) {
     jsPlumb.setZoom(zoomRef.current);
   }
-   const navigateToEditPageCb = React.useCallback((card: Card) => {
-    const path = `edit/${card.id}/`;
-    if (location.pathname.match(/(edit|card)\/\d+\/v\/\d+/)) {
-      navigate(`../${path}`);
-    } else {
-      navigate(path);
-    }
-  }, [navigate]);
+  const navigateToEditPageCb = React.useCallback(
+    (card: Card) => {
+      const path = `edit/${card.id}/`;
+      if (location.pathname.match(/(edit|card)\/\d+\/v\/\d+/)) {
+        navigate(`../${path}`);
+      } else {
+        navigate(path);
+      }
+    },
+    [navigate],
+  );
   const cleanCb = React.useCallback(() => {
     if (jsPlumb) {
       Object.entries(plumbState.connections).forEach(([key, value]) => {

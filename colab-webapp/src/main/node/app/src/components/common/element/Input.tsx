@@ -1,6 +1,6 @@
 /*
  * The coLAB project
- * Copyright (C) 2021-2022 AlbaSim, MEI, HEIG-VD, HES-SO
+ * Copyright (C) 2021-2023 AlbaSim, MEI, HEIG-VD, HES-SO
  *
  * Licensed under the MIT License
  */
@@ -11,6 +11,7 @@ import * as React from 'react';
 import useTranslations from '../../../i18n/I18nContext';
 import {
   borderRadius,
+  disabledStyle,
   errorStyle,
   inputStyle,
   labelStyle,
@@ -19,7 +20,6 @@ import {
   textareaStyle,
   textSmall,
   warningStyle,
-  disabledStyle,
 } from '../../styling/style';
 import Flex from '../layout/Flex';
 import IconButton from './IconButton';
@@ -238,7 +238,7 @@ function Input({
   return (
     <Flex
       direction="column"
-      className={cx(containerClassName, {[disabledStyle]: readOnly})}
+      className={cx(containerClassName, { [disabledStyle]: readOnly })}
       style={{ maxWidth: maxWidth }}
       title={title}
     >
