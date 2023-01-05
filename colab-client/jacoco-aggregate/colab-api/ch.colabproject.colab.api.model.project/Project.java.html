@@ -57,6 +57,8 @@ import javax.validation.constraints.Size;
 )
 @NamedQuery(name = &quot;Project.findAll&quot;,
     query = &quot;SELECT p FROM Project p&quot;)
+@NamedQuery(name = &quot;Project.findAllGlobal&quot;,
+    query = &quot;SELECT p from Project p WHERE p.globalProject = true AND p.type = :model&quot;)
 @NamedQuery(name = &quot;Project.findByTeamMemberUser&quot;,
     query = &quot;SELECT p FROM Project p JOIN p.teamMembers members WHERE members.user.id = :userId&quot;)
 @NamedQuery(name = &quot;Project.findIdsByTeamMemberUser&quot;,
@@ -73,7 +75,7 @@ import javax.validation.constraints.Size;
         + &quot;   ( p.id IN ( SELECT tm.project.id FROM TeamMember tm WHERE tm.user.id = :bUserId ) &quot;
         + &quot;  OR p.id IN ( SELECT im.project.id FROM InstanceMaker im WHERE im.user.id = :bUserId ) ) &quot;
         + &quot;)&quot;)
-<span class="nc" id="L76">public class Project implements ColabEntity, WithWebsocketChannels {</span>
+<span class="nc" id="L78">public class Project implements ColabEntity, WithWebsocketChannels {</span>
 
     private static final long serialVersionUID = 1L;
 
@@ -101,7 +103,7 @@ import javax.validation.constraints.Size;
     /**
      * The kind : project or model
      */
-<span class="nc" id="L104">    @NotNull</span>
+<span class="nc" id="L106">    @NotNull</span>
     @Enumerated(EnumType.STRING)
     private ProjectType type = ProjectType.PROJECT;
 
@@ -116,6 +118,11 @@ import javax.validation.constraints.Size;
      */
     @Size(max = 255)
     private String description;
+    
+    /**
+     * Global means accessible to everyone
+     */
+    private boolean globalProject;
 
     /**
      * The icon to illustrate the project
@@ -137,21 +144,21 @@ import javax.validation.constraints.Size;
     /**
      * Roles
      */
-<span class="nc" id="L140">    @OneToMany(mappedBy = &quot;project&quot;, cascade = CascadeType.ALL)</span>
+<span class="nc" id="L147">    @OneToMany(mappedBy = &quot;project&quot;, cascade = CascadeType.ALL)</span>
     @JsonbTransient
     private List&lt;TeamRole&gt; roles = new ArrayList&lt;&gt;();
 
     /**
      * List of team members
      */
-<span class="nc" id="L147">    @OneToMany(mappedBy = &quot;project&quot;, cascade = CascadeType.ALL)</span>
+<span class="nc" id="L154">    @OneToMany(mappedBy = &quot;project&quot;, cascade = CascadeType.ALL)</span>
     @JsonbTransient
     private List&lt;TeamMember&gt; teamMembers = new ArrayList&lt;&gt;();
 
     /**
      * List of elements to be defined within the cards
      */
-<span class="nc" id="L154">    @OneToMany(mappedBy = &quot;project&quot;, cascade = CascadeType.ALL)</span>
+<span class="nc" id="L161">    @OneToMany(mappedBy = &quot;project&quot;, cascade = CascadeType.ALL)</span>
     @JsonbTransient
     private List&lt;AbstractCardType&gt; elementsToBeDefined = new ArrayList&lt;&gt;();
 
@@ -164,15 +171,15 @@ import javax.validation.constraints.Size;
      */
     @Override
     public Long getId() {
-<span class="nc" id="L167">        return id;</span>
+<span class="nc" id="L174">        return id;</span>
     }
 
     /**
      * @param id the project ID
      */
     public void setId(Long id) {
-<span class="nc" id="L174">        this.id = id;</span>
-<span class="nc" id="L175">    }</span>
+<span class="nc" id="L181">        this.id = id;</span>
+<span class="nc" id="L182">    }</span>
 
     /**
      * Get the tracking data
@@ -181,7 +188,7 @@ import javax.validation.constraints.Size;
      */
     @Override
     public Tracking getTrackingData() {
-<span class="nc" id="L184">        return trackingData;</span>
+<span class="nc" id="L191">        return trackingData;</span>
     }
 
     /**
@@ -191,28 +198,28 @@ import javax.validation.constraints.Size;
      */
     @Override
     public void setTrackingData(Tracking trackingData) {
-<span class="nc" id="L194">        this.trackingData = trackingData;</span>
-<span class="nc" id="L195">    }</span>
+<span class="nc" id="L201">        this.trackingData = trackingData;</span>
+<span class="nc" id="L202">    }</span>
 
     /**
      * @return the kind : project or model
      */
     public ProjectType getType() {
-<span class="nc" id="L201">        return type;</span>
+<span class="nc" id="L208">        return type;</span>
     }
 
     /**
      * @param type the kind : project or model
      */
     public void setType(ProjectType type) {
-<span class="nc" id="L208">        this.type = type;</span>
-<span class="nc" id="L209">    }</span>
+<span class="nc" id="L215">        this.type = type;</span>
+<span class="nc" id="L216">    }</span>
 
     /**
      * @return the project name
      */
     public String getName() {
-<span class="nc" id="L215">        return name;</span>
+<span class="nc" id="L222">        return name;</span>
     }
 
     /**
@@ -221,50 +228,66 @@ import javax.validation.constraints.Size;
      * @param name the project name
      */
     public void setName(String name) {
-<span class="nc" id="L224">        this.name = name;</span>
-<span class="nc" id="L225">    }</span>
+<span class="nc" id="L231">        this.name = name;</span>
+<span class="nc" id="L232">    }</span>
 
     /**
      * @return the description
      */
     public String getDescription() {
-<span class="nc" id="L231">        return description;</span>
+<span class="nc" id="L238">        return description;</span>
     }
 
     /**
      * @param description the description to set
      */
     public void setDescription(String description) {
-<span class="nc" id="L238">        this.description = description;</span>
-<span class="nc" id="L239">    }</span>
+<span class="nc" id="L245">        this.description = description;</span>
+<span class="nc" id="L246">    }</span>
 
+    /**
+     * 
+     * @return if project is global
+     */
+    public boolean isGlobalProject() {
+<span class="nc" id="L253">        return globalProject;</span>
+    }
+    
+    /**
+     * 
+     * @param global if project is global
+     */
+    public void setGlobalProject(boolean global) {
+<span class="nc" id="L261">        this.globalProject = global;</span>
+<span class="nc" id="L262">    }</span>
+    
     /**
      * @return the icon to illustrate the project
      */
     public Illustration getIllustration() {
-<span class="nc" id="L245">        return illustration;</span>
+<span class="nc" id="L268">        return illustration;</span>
     }
 
     /**
      * @param illustration the icon to illustrate the project
      */
     public void setIllustration(Illustration illustration) {
-<span class="nc" id="L252">        this.illustration = illustration;</span>
-<span class="nc" id="L253">    }</span>
+<span class="nc" id="L275">        this.illustration = illustration;</span>
+<span class="nc" id="L276">    }</span>
 
     /**
      * @return the root card of the project that contains every other cards
      */
     public Card getRootCard() {
-<span class="nc" id="L259">        return rootCard;</span>
+<span class="nc" id="L282">        return rootCard;</span>
     }
 
     /**
      * @param rootCard the root card of the project that contains every other cards
      */
     public void setRootCard(Card rootCard) {
-<span class="nc" id="L266">        this.rootCard = rootCard;</span>
-<span class="nc" id="L267">    }</span>
+<span class="nc" id="L289">        this.rootCard = rootCard;</span>
+<span class="nc" id="L290">    }</span>
 
     /**
      * Get the value of roles
@@ -272,7 +295,7 @@ import javax.validation.constraints.Size;
      * @return the value of roles
      */
     public List&lt;TeamRole&gt; getRoles() {
-<span class="nc" id="L275">        return roles;</span>
+<span class="nc" id="L298">        return roles;</span>
     }
 
     /**
@@ -283,14 +306,14 @@ import javax.validation.constraints.Size;
      * @return the role or null
      */
     public TeamRole getRoleByName(String name) {
-<span class="nc bnc" id="L286" title="All 2 branches missed.">        if (name != null) {</span>
-<span class="nc bnc" id="L287" title="All 2 branches missed.">            for (TeamRole r : this.roles) {</span>
-<span class="nc bnc" id="L288" title="All 2 branches missed.">                if (name.equals(r.getName())) {</span>
-<span class="nc" id="L289">                    return r;</span>
+<span class="nc bnc" id="L309" title="All 2 branches missed.">        if (name != null) {</span>
+<span class="nc bnc" id="L310" title="All 2 branches missed.">            for (TeamRole r : this.roles) {</span>
+<span class="nc bnc" id="L311" title="All 2 branches missed.">                if (name.equals(r.getName())) {</span>
+<span class="nc" id="L312">                    return r;</span>
                 }
-<span class="nc" id="L291">            }</span>
+<span class="nc" id="L314">            }</span>
         }
-<span class="nc" id="L293">        return null;</span>
+<span class="nc" id="L316">        return null;</span>
     }
 
     /**
@@ -299,8 +322,8 @@ import javax.validation.constraints.Size;
      * @param roles new value of roles
      */
     public void setRoles(List&lt;TeamRole&gt; roles) {
-<span class="nc" id="L302">        this.roles = roles;</span>
-<span class="nc" id="L303">    }</span>
+<span class="nc" id="L325">        this.roles = roles;</span>
+<span class="nc" id="L326">    }</span>
 
     /**
      * get team members
@@ -308,7 +331,7 @@ import javax.validation.constraints.Size;
      * @return members
      */
     public List&lt;TeamMember&gt; getTeamMembers() {
-<span class="nc" id="L311">        return teamMembers;</span>
+<span class="nc" id="L334">        return teamMembers;</span>
     }
 
     /**
@@ -319,9 +342,9 @@ import javax.validation.constraints.Size;
      * @return list of team member with the given position
      */
     public List&lt;TeamMember&gt; getTeamMembersByPosition(HierarchicalPosition position) {
-<span class="nc" id="L322">        return this.teamMembers.stream()</span>
-<span class="nc bnc" id="L323" title="All 2 branches missed.">            .filter(member -&gt; member.getPosition() == position)</span>
-<span class="nc" id="L324">            .collect(Collectors.toList());</span>
+<span class="nc" id="L345">        return this.teamMembers.stream()</span>
+<span class="nc bnc" id="L346" title="All 2 branches missed.">            .filter(member -&gt; member.getPosition() == position)</span>
+<span class="nc" id="L347">            .collect(Collectors.toList());</span>
     }
 
     /**
@@ -330,22 +353,22 @@ import javax.validation.constraints.Size;
      * @param teamMembers list of members
      */
     public void setTeamMembers(List&lt;TeamMember&gt; teamMembers) {
-<span class="nc" id="L333">        this.teamMembers = teamMembers;</span>
-<span class="nc" id="L334">    }</span>
+<span class="nc" id="L356">        this.teamMembers = teamMembers;</span>
+<span class="nc" id="L357">    }</span>
 
     /**
      * @return the elementsToDefine
      */
     public List&lt;AbstractCardType&gt; getElementsToBeDefined() {
-<span class="nc" id="L340">        return elementsToBeDefined;</span>
+<span class="nc" id="L363">        return elementsToBeDefined;</span>
     }
 
     /**
      * @param elements the elementsToDefine to set
      */
     public void setElementsToBeDefined(List&lt;AbstractCardType&gt; elements) {
-<span class="nc" id="L347">        this.elementsToBeDefined = elements;</span>
-<span class="nc" id="L348">    }</span>
+<span class="nc" id="L370">        this.elementsToBeDefined = elements;</span>
+<span class="nc" id="L371">    }</span>
 
     // ---------------------------------------------------------------------------------------------
     // concerning the whole class
@@ -353,16 +376,17 @@ import javax.validation.constraints.Size;
 
     @Override
     public void merge(ColabEntity other) throws ColabMergeException {
-<span class="nc bnc" id="L356" title="All 2 branches missed.">        if (other instanceof Project) {</span>
-<span class="nc" id="L357">            Project o = (Project) other;</span>
-<span class="nc" id="L358">            this.setType(o.getType());</span>
-<span class="nc" id="L359">            this.setName(o.getName());</span>
-<span class="nc" id="L360">            this.setDescription(o.getDescription());</span>
-<span class="nc" id="L361">            this.setIllustration(o.getIllustration());</span>
-<span class="nc" id="L362">        } else {</span>
-<span class="nc" id="L363">            throw new ColabMergeException(this, other);</span>
+<span class="nc bnc" id="L379" title="All 2 branches missed.">        if (other instanceof Project) {</span>
+<span class="nc" id="L380">            Project o = (Project) other;</span>
+<span class="nc" id="L381">            this.setType(o.getType());</span>
+<span class="nc" id="L382">            this.setName(o.getName());</span>
+<span class="nc" id="L383">            this.setDescription(o.getDescription());</span>
+<span class="nc" id="L384">            this.setGlobalProject(o.isGlobalProject());</span>
+<span class="nc" id="L385">            this.setIllustration(o.getIllustration());</span>
+<span class="nc" id="L386">        } else {</span>
+<span class="nc" id="L387">            throw new ColabMergeException(this, other);</span>
         }
-<span class="nc" id="L365">    }</span>
+<span class="nc" id="L389">    }</span>
 
     /**
      * Project if propagated through its own overview channel.
@@ -371,43 +395,43 @@ import javax.validation.constraints.Size;
      */
     @Override
     public ChannelsBuilder getChannelsBuilder() {
-<span class="nc" id="L374">        return new AboutProjectOverviewChannelsBuilder(this);</span>
+<span class="nc" id="L398">        return new AboutProjectOverviewChannelsBuilder(this);</span>
     }
 
     @Override
     @JsonbTransient
     public Conditions.Condition getReadCondition() {
-<span class="nc" id="L380">        return new ProjectConditions.IsProjectReadable(this.id);</span>
+<span class="nc" id="L404">        return new ProjectConditions.IsProjectReadable(this.id);</span>
     }
 
     @Override
     @JsonbTransient
     public Conditions.Condition getUpdateCondition() {
-<span class="nc" id="L386">        return new Conditions.IsCurrentUserInternalToProject(this);</span>
+<span class="nc" id="L410">        return new Conditions.IsCurrentUserInternalToProject(this);</span>
     }
 
     @Override
     @JsonbTransient
     public Conditions.Condition getCreateCondition() {
         // anybody can create a project
-<span class="nc" id="L393">        return Conditions.alwaysTrue;</span>
+<span class="nc" id="L417">        return Conditions.alwaysTrue;</span>
     }
 
     @Override
     public int hashCode() {
-<span class="nc" id="L398">        return EntityHelper.hashCode(this);</span>
+<span class="nc" id="L422">        return EntityHelper.hashCode(this);</span>
     }
 
     @Override
     @SuppressWarnings(&quot;EqualsWhichDoesntCheckParameterClass&quot;)
     public boolean equals(Object obj) {
-<span class="nc" id="L404">        return EntityHelper.equals(this, obj);</span>
+<span class="nc" id="L428">        return EntityHelper.equals(this, obj);</span>
     }
 
     @Override
     public String toString() {
-<span class="nc" id="L409">        return &quot;Project{&quot; + &quot;id=&quot; + id + &quot;, type=&quot; + type.name() + &quot;, name=&quot; + name + &quot;, descr=&quot;</span>
-            + description + '}';
+<span class="nc" id="L433">        return &quot;Project{&quot; + &quot;id=&quot; + id + &quot;, type=&quot; + type.name() + &quot;, name=&quot; + name + &quot;, descr=&quot;</span>
+            + description + &quot;, global=&quot; + globalProject + '}';
     }
 
 }

@@ -401,26 +401,32 @@ import org.slf4j.LoggerFactory;
 <span class="nc bnc" id="L401" title="All 4 branches missed.">        if (projectId == null || currentUser == null) {</span>
 <span class="nc" id="L402">            return false;</span>
         }
-
-<span class="nc" id="L405">        List&lt;Long&gt; projectsWhereMemberOf = projectManager</span>
-<span class="nc" id="L406">            .findIdsOfProjectsCurrentUserIsMemberOf();</span>
-<span class="nc bnc" id="L407" title="All 2 branches missed.">        if (projectsWhereMemberOf.contains(projectId)) {</span>
+        
+<span class="nc" id="L405">        Project currentProject = projectManager.assertAndGetProject(projectId);</span>
+        
+<span class="nc bnc" id="L407" title="All 2 branches missed.">        if (currentProject.isGlobalProject()) {</span>
 <span class="nc" id="L408">            return true;</span>
         }
 
-<span class="nc" id="L411">        List&lt;Long&gt; projectsWhereInstanceMakerFor = projectManager</span>
-<span class="nc" id="L412">            .findIdsOfProjectsCurrentUserIsInstanceMakerFor();</span>
-<span class="nc bnc" id="L413" title="All 2 branches missed.">        if (projectsWhereInstanceMakerFor.contains(projectId)) {</span>
+<span class="nc" id="L411">        List&lt;Long&gt; projectsWhereMemberOf = projectManager</span>
+<span class="nc" id="L412">            .findIdsOfProjectsCurrentUserIsMemberOf();</span>
+<span class="nc bnc" id="L413" title="All 2 branches missed.">        if (projectsWhereMemberOf.contains(projectId)) {</span>
 <span class="nc" id="L414">            return true;</span>
         }
 
-<span class="nc" id="L417">        List&lt;Long&gt; accessibleByCardTypes = projectManager</span>
-<span class="nc" id="L418">            .findIdsOfProjectsReadableThroughCardTypes();</span>
-<span class="nc bnc" id="L419" title="All 2 branches missed.">        if (accessibleByCardTypes.contains(projectId)) {</span>
+<span class="nc" id="L417">        List&lt;Long&gt; projectsWhereInstanceMakerFor = projectManager</span>
+<span class="nc" id="L418">            .findIdsOfProjectsCurrentUserIsInstanceMakerFor();</span>
+<span class="nc bnc" id="L419" title="All 2 branches missed.">        if (projectsWhereInstanceMakerFor.contains(projectId)) {</span>
 <span class="nc" id="L420">            return true;</span>
         }
 
-<span class="nc" id="L423">        return false;</span>
+<span class="nc" id="L423">        List&lt;Long&gt; accessibleByCardTypes = projectManager</span>
+<span class="nc" id="L424">            .findIdsOfProjectsReadableThroughCardTypes();</span>
+<span class="nc bnc" id="L425" title="All 2 branches missed.">        if (accessibleByCardTypes.contains(projectId)) {</span>
+<span class="nc" id="L426">            return true;</span>
+        }
+
+<span class="nc" id="L429">        return false;</span>
     }
 
     /**
@@ -433,25 +439,25 @@ import org.slf4j.LoggerFactory;
      * @return True if the current user can read the project
      */
     public boolean isCopyParamReadableByCurrentUser(Long projectId) {
-<span class="nc" id="L436">        User currentUser = requestManager.getCurrentUser();</span>
+<span class="nc" id="L442">        User currentUser = requestManager.getCurrentUser();</span>
 
-<span class="nc bnc" id="L438" title="All 4 branches missed.">        if (projectId == null || currentUser == null) {</span>
-<span class="nc" id="L439">            return false;</span>
+<span class="nc bnc" id="L444" title="All 4 branches missed.">        if (projectId == null || currentUser == null) {</span>
+<span class="nc" id="L445">            return false;</span>
         }
 
-<span class="nc" id="L442">        List&lt;Long&gt; projectsWhereMemberOf = projectManager</span>
-<span class="nc" id="L443">            .findIdsOfProjectsCurrentUserIsMemberOf();</span>
-<span class="nc bnc" id="L444" title="All 2 branches missed.">        if (projectsWhereMemberOf.contains(projectId)) {</span>
-<span class="nc" id="L445">            return true;</span>
-        }
-
-<span class="nc" id="L448">        List&lt;Long&gt; projectsWhereInstanceMakerFor = projectManager</span>
-<span class="nc" id="L449">            .findIdsOfProjectsCurrentUserIsInstanceMakerFor();</span>
-<span class="nc bnc" id="L450" title="All 2 branches missed.">        if (projectsWhereInstanceMakerFor.contains(projectId)) {</span>
+<span class="nc" id="L448">        List&lt;Long&gt; projectsWhereMemberOf = projectManager</span>
+<span class="nc" id="L449">            .findIdsOfProjectsCurrentUserIsMemberOf();</span>
+<span class="nc bnc" id="L450" title="All 2 branches missed.">        if (projectsWhereMemberOf.contains(projectId)) {</span>
 <span class="nc" id="L451">            return true;</span>
         }
 
-<span class="nc" id="L454">        return false;</span>
+<span class="nc" id="L454">        List&lt;Long&gt; projectsWhereInstanceMakerFor = projectManager</span>
+<span class="nc" id="L455">            .findIdsOfProjectsCurrentUserIsInstanceMakerFor();</span>
+<span class="nc bnc" id="L456" title="All 2 branches missed.">        if (projectsWhereInstanceMakerFor.contains(projectId)) {</span>
+<span class="nc" id="L457">            return true;</span>
+        }
+
+<span class="nc" id="L460">        return false;</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>
