@@ -1,6 +1,6 @@
 /*
  * The coLAB project
- * Copyright (C) 2021-2022 AlbaSim, MEI, HEIG-VD, HES-SO
+ * Copyright (C) 2021-2023 AlbaSim, MEI, HEIG-VD, HES-SO
  *
  * Licensed under the MIT License
  */
@@ -42,13 +42,10 @@ export default function Checkbox({
     <Flex
       direction="column"
       align="normal"
-      className={cx(css({ padding: space_S + ' 0' }), className, {[disabledStyle]: readOnly})}
+      className={cx(css({ padding: space_S + ' 0' }), className, { [disabledStyle]: readOnly })}
     >
       <Flex align="center" justify="flex-start">
-        <Flex
-          align="center"
-          onClick={readOnly ? undefined : () => onChange(!value)}
-        >
+        <Flex align="center" onClick={readOnly ? undefined : () => onChange(!value)}>
           <FontAwesomeIcon
             icon={value ? faCheckSquare : faSquare}
             className={css({ marginRight: space_S })}

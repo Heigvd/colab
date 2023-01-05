@@ -1,6 +1,6 @@
 /*
  * The coLAB project
- * Copyright (C) 2022 AlbaSim, MEI, HEIG-VD, HES-SO
+ * Copyright (C) 2022-2023 AlbaSim, MEI, HEIG-VD, HES-SO
  *
  * Licensed under the MIT License
  */
@@ -89,6 +89,21 @@ public class CopyParamDao {
         managedCopyParam.merge(param);
 
         return managedCopyParam;
+    }
+
+    /**
+     * Persist a brand new copy parameter to database
+     *
+     * @param copyParam the new copy parameter to persist
+     *
+     * @return the new persisted and managed copy parameter
+     */
+    public CopyParam persistCopyParam(CopyParam copyParam) {
+        logger.trace("persist copy param {}", copyParam);
+
+        em.persist(copyParam);
+
+        return copyParam;
     }
 
 }

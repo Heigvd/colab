@@ -1,6 +1,6 @@
 /*
  * The coLAB project
- * Copyright (C) 2021 AlbaSim, MEI, HEIG-VD, HES-SO
+ * Copyright (C) 2021-2023 AlbaSim, MEI, HEIG-VD, HES-SO
  *
  * Licensed under the MIT License
  */
@@ -10,6 +10,7 @@ import {
   faBookOpen,
   faChevronRight,
   faCog,
+  faGlobe,
   faGrip,
   faHouse,
   faNetworkWired,
@@ -71,7 +72,7 @@ import DocumentationTab from '../DocumentationTab';
 import Presence from '../presence/Presence';
 import { PresenceContext, usePresenceContext } from '../presence/PresenceContext';
 import { defaultProjectIllustration } from '../ProjectCommon';
-import { ProjectSettings } from '../ProjectSettings';
+import { ProjectSettingsTabs } from '../settings/ProjectSettingsTabs';
 import Team from '../team/Team';
 import ActivityFlowChart from './activityFlow/ActivityFlowChart';
 import Hierarchy from './hierarchy/Hierarchy';
@@ -600,16 +601,20 @@ export default function Editor(): JSX.Element {
                 className={cx(modelPictoCornerStyle, invertedThemeMode)}
                 title={i18n.modules.project.info.isAModel}
               >
-                {/*             {isAdminModel ? (
-              <FontAwesomeIcon icon={faGlobe} color="white" size="sm" />
-            ) : ( */}
-                <FontAwesomeIcon icon={faStar} size="xs" />
+                {project.globalProject ? (
+                  <FontAwesomeIcon icon={faGlobe} color="white" size="sm" />
+                ) : (
+                  <FontAwesomeIcon icon={faStar} color="white" size="sm" />
+                )}
               </Flex>
             )}
 
             <Routes>
               <Route path="settings/*" element={<Settings />} />
-              <Route path="project-settings/*" element={<ProjectSettings project={project} />} />
+              <Route
+                path="project-settings/*"
+                element={<ProjectSettingsTabs projectId={project.id} />}
+              />
               <Route path="admin/*" element={<Admin />} />
               <Route path="team/*" element={<Team project={project} />} />
               <Route path="hierarchy" element={<Hierarchy rootId={root.id} />} />

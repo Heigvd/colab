@@ -1,6 +1,6 @@
 /*
  * The coLAB project
- * Copyright (C) 2021-2022 AlbaSim, MEI, HEIG-VD, HES-SO
+ * Copyright (C) 2021-2023 AlbaSim, MEI, HEIG-VD, HES-SO
  *
  * Licensed under the MIT License
  */
@@ -156,11 +156,13 @@ public class ProjectRestEndpointTest extends AbstractArquillianTest {
         Assertions.assertEquals(ProjectType.PROJECT, project.getType());
         Assertions.assertNull(project.getName());
         Assertions.assertNull(project.getDescription());
+        Assertions.assertFalse(project.isGlobalProject());
         Assertions.assertNull(project.getIllustration());
 
         project.setType(ProjectType.MODEL);
         project.setName("The Hitchhiker's Guide to the Serious-Game");
         project.setDescription("So Long, and Thanks for All the Games");
+        project.setGlobalProject(true);
         Illustration illustration = new Illustration();
         illustration.setIconLibrary(IconLibrary.FONT_AWESOME_SOLID);
         illustration.setIconKey("faPaw");
@@ -173,6 +175,7 @@ public class ProjectRestEndpointTest extends AbstractArquillianTest {
         Assertions.assertEquals(project.getType(), project2.getType());
         Assertions.assertEquals(project.getName(), project2.getName());
         Assertions.assertEquals(project.getDescription(), project2.getDescription());
+        Assertions.assertTrue(project.isGlobalProject());
         Assertions.assertNotNull(project.getIllustration());
         Assertions.assertEquals(project.getIllustration().getIconLibrary(),
             project2.getIllustration().getIconLibrary());

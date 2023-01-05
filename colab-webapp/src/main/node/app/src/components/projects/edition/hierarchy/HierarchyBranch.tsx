@@ -1,3 +1,10 @@
+/*
+ * The coLAB project
+ * Copyright (C) 2021-2023 AlbaSim, MEI, HEIG-VD, HES-SO
+ *
+ * Licensed under the MIT License
+ */
+
 import { css } from '@emotion/css';
 import { BrowserJsPlumbInstance } from '@jsplumb/browser-ui';
 import { Card, entityIs } from 'colab-rest-client';
@@ -9,9 +16,9 @@ import { useProjectRootCard } from '../../../../selectors/cardSelector';
 import { useProjectBeingEdited } from '../../../../selectors/projectSelector';
 import { customColabStateEquals, useAppDispatch, useAppSelector } from '../../../../store/hooks';
 import InlineLoading from '../../../common/element/InlineLoading';
+import { AllSubsContainer, HierarchyCTX } from './Hierarchy';
 import { manageConnection } from './HierarchyCardCreator';
 import CardGroup from './HierarchyCardThumb';
-import { AllSubsContainer, HierarchyCTX } from './Hierarchy';
 
 interface HierarchyRootViewProps {
   rootId: number;

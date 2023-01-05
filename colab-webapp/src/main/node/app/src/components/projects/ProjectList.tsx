@@ -1,6 +1,6 @@
 /*
  * The coLAB project
- * Copyright (C) 2021-2022 AlbaSim, MEI, HEIG-VD, HES-SO
+ * Copyright (C) 2021-2023 AlbaSim, MEI, HEIG-VD, HES-SO
  *
  * Licensed under the MIT License
  */
@@ -28,12 +28,12 @@ import { useCurrentUser } from '../../selectors/userSelector';
 import { shallowEqual, useAppDispatch, useAppSelector, useLoadingState } from '../../store/hooks';
 import { AvailabilityStatus } from '../../store/store';
 import ItemThumbnailsSelection from '../common/collection/ItemThumbnailsSelection';
+import AvailabilityStatusIndicator from '../common/element/AvailabilityStatusIndicator';
 import IllustrationDisplay from '../common/element/IllustrationDisplay';
 import InlineLoading from '../common/element/InlineLoading';
 import { ConfirmDeleteModal } from '../common/layout/ConfirmDeleteModal';
 import DropDownMenu from '../common/layout/DropDownMenu';
 import Flex from '../common/layout/Flex';
-import Modal from '../common/layout/Modal';
 import {
   ellipsis,
   errorColor,
@@ -48,7 +48,7 @@ import {
 import { defaultProjectIllustration } from './ProjectCommon';
 import ProjectCreator from './ProjectCreator';
 import { ProjectModelExtractor } from './ProjectModelExtractor';
-import { ProjectSettings } from './ProjectSettings';
+import { ProjectSettingsGeneralInModal } from './settings/ProjectSettingsGeneral';
 
 const modelChipStyle = css({
   position: 'absolute',
@@ -59,35 +59,25 @@ const modelChipStyle = css({
   backgroundColor: 'var(--primaryColor)',
 });
 
-function ProjectSettingWrapper(): JSX.Element {
-  const { projectId } = useParams<'projectId'>();
-  const i18n = useTranslations();
-  const project = useAndLoadProject(projectId ? +projectId : undefined);
+function ProjectSettingsWrapper(): JSX.Element {
   const navigate = useNavigate();
 
-  return (
-    <Modal
-      title={i18n.modules.project.labels.projectDisplaySettings}
-      showCloseButton
-      onClose={() => {
-        navigate('..');
-      }}
-      className={css({
-        '&:hover': { textDecoration: 'none' },
-        display: 'flex',
-        width: '800px',
-        height: '580px',
-      })}
-    >
-      {() => {
-        if (project.project != null) {
-          return <ProjectSettings project={project.project} />;
-        } else {
-          return <InlineLoading />;
-        }
-      }}
-    </Modal>
-  );
+  const { projectId } = useParams<'projectId'>();
+
+  const projectIdAsNumber = projectId ? +projectId : undefined;
+
+  if (projectIdAsNumber != null) {
+    return (
+      <ProjectSettingsGeneralInModal
+        projectId={projectIdAsNumber}
+        onClose={() => {
+          navigate('..');
+        }}
+      />
+    );
+  }
+
+  return <AvailabilityStatusIndicator status="ERROR" />;
 }
 
 function ExtractModelWrapper(): JSX.Element {
@@ -143,11 +133,10 @@ const projectListStyle = css({
 interface ProjectDisplayProps {
   project: Project;
   className?: string;
-  isAdminModel?: boolean;
 }
 
 // Display one project and allow to edit it
-export const ProjectDisplay = ({ project, className, isAdminModel }: ProjectDisplayProps) => {
+export const ProjectDisplay = ({ project, className }: ProjectDisplayProps) => {
   const dispatch = useAppDispatch();
   const i18n = useTranslations();
   const navigate = useNavigate();
@@ -179,7 +168,7 @@ export const ProjectDisplay = ({ project, className, isAdminModel }: ProjectDisp
             className={modelChipStyle}
             title={i18n.modules.project.info.isAModel}
           >
-            {isAdminModel ? (
+            {project.globalProject ? (
               <FontAwesomeIcon icon={faGlobe} color="white" size="sm" />
             ) : (
               <FontAwesomeIcon icon={faStar} color="white" size="sm" />
@@ -414,7 +403,7 @@ function ProjectList({ projects, status, reload }: ProjectListProps) {
         {/* Note : any authenticated user can create a project */}
 
         <Routes>
-          <Route path="projectsettings/:projectId" element={<ProjectSettingWrapper />} />
+          <Route path="projectsettings/:projectId" element={<ProjectSettingsWrapper />} />
           <Route path="deleteproject/:projectId" element={<DeleteProjectWrapper />} />
           <Route path="extractModel/:projectId" element={<ExtractModelWrapper />} />
         </Routes>
@@ -540,7 +529,7 @@ function ModelsList({ status, reload }: ModelListProps) {
         {/* Note : any authenticated user can create a project */}
         {/* <ProjectCreator collapsedButtonClassName={fixedButtonStyle} /> */}
         <Routes>
-          <Route path="projectsettings/:projectId" element={<ProjectSettingWrapper />} />
+          <Route path="projectsettings/:projectId" element={<ProjectSettingsWrapper />} />
           <Route path="deleteproject/:projectId" element={<DeleteProjectWrapper />} />
         </Routes>
       </div>

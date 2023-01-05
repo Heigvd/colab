@@ -1,3 +1,9 @@
+/*
+ * The coLAB project
+ * Copyright (C) 2021-2023 AlbaSim, MEI, HEIG-VD, HES-SO
+ *
+ * Licensed under the MIT License
+ */
 import { customColabStateEquals, shallowEqual } from '../src/store/hooks';
 import {test, expect} from '@jest/globals';
 

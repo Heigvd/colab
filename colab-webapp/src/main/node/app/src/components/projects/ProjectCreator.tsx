@@ -1,6 +1,6 @@
 /*
  * The coLAB project
- * Copyright (C) 2021 AlbaSim, MEI, HEIG-VD, HES-SO
+ * Copyright (C) 2021-2023 AlbaSim, MEI, HEIG-VD, HES-SO
  *
  * Licensed under the MIT License
  */
@@ -202,50 +202,49 @@ export default function ProjectCreator({
         </Flex>
       )}
     >
-      {() => {
-        return (
-          <>
-            {status === 'chooseModel' ? (
-              <ProjectModelSelector
-                defaultSelection={data.projectModel}
-                onSelect={selectedModel =>
-                  setData({
-                    ...data,
-                    projectModel: selectedModel,
-                    illustration: {
-                      ...(selectedModel?.illustration || defaultData.illustration),
-                    },
-                  })
-                }
-                whenDone={oneStepForwardCb}
-              />
-            ) : (
-              <ProjectDataInitialization
-                data={data}
-                readOnly={readOnly}
-                setName={name => setData({ ...data, name: name })}
-                setDescription={description => setData({ ...data, description: description })}
-                setIllustration={illustration => setData({ ...data, illustration: illustration })}
-                addGuest={guestEmailAddress => {
-                  if (guestEmailAddress != null && guestEmailAddress.length > 0) {
-                    const guests = data.guests;
-                    guests.push(guestEmailAddress);
-                    setData({ ...data, guests: guests });
-                  }
-                }}
-                removeGuest={guestEmailAddress => {
+      {() => (
+        <>
+          {status === 'chooseModel' ? (
+            <ProjectModelSelector
+              defaultSelection={data.projectModel}
+              onSelect={selectedModel =>
+                setData({
+                  ...data,
+                  projectModel: selectedModel,
+                  illustration: {
+                    ...(selectedModel?.illustration || defaultData.illustration),
+                  },
+                })
+              }
+              whenDone={oneStepForwardCb}
+            />
+          ) : (
+            <ProjectDataInitialization
+              data={data}
+              readOnly={readOnly}
+              setName={name => setData({ ...data, name: name })}
+              setDescription={description => setData({ ...data, description: description })}
+              setIllustration={illustration => setData({ ...data, illustration: illustration })}
+              addGuest={guestEmailAddress => {
+                if (guestEmailAddress != null && guestEmailAddress.length > 0) {
                   const guests = data.guests;
-                  const index = guests.indexOf(guestEmailAddress);
-                  guests.splice(index, 1);
+                  guests.push(guestEmailAddress);
                   setData({ ...data, guests: guests });
-                }}
-                setKeepWiredToModel={keepWiredToModel =>
-                  setData({ ...data, keepWiredToModel: keepWiredToModel })
                 }
-              />
-            )}
-            {/* debug mode */}
-            {/* <Flex direction="column" className={workInProgressStyle}>
+              }}
+              removeGuest={guestEmailAddress => {
+                const guests = data.guests;
+                const index = guests.indexOf(guestEmailAddress);
+                guests.splice(index, 1);
+                setData({ ...data, guests: guests });
+              }}
+              setKeepWiredToModel={keepWiredToModel =>
+                setData({ ...data, keepWiredToModel: keepWiredToModel })
+              }
+            />
+          )}
+          {/* debug mode */}
+          {/* <Flex direction="column" className={workInProgressStyle}>
               <Flex>{data.name || 'no name'}</Flex>
               <Flex>{data.description || 'no description'}</Flex>
               <Flex>
@@ -254,9 +253,8 @@ export default function ProjectCreator({
               <Flex>{data.guests.length}</Flex>
               <Flex>{data.projectModel?.name || 'no project model'}</Flex>
             </Flex> */}
-          </>
-        );
-      }}
+        </>
+      )}
     </OpenCloseModal>
   );
 }

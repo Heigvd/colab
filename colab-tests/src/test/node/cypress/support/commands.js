@@ -35,18 +35,18 @@ Cypress.Commands.add("visitColab", () => {
 });
 
 Cypress.Commands.add("login", (identifier, password) => {
-    /* cypress react-selector fails with react 18...*/
-//  cy.react("Input").should("have.length", "2");
-//
-//  cy.react("Input")
-//    .get("input[type=text]")
-//    .should("have.length", "1")
-//    .type(identifier);
-//  cy.react("Input")
-//    .get("input[type=password]")
-//    .should("have.length", "1")
-//    .type(password);
-//  cy.react("ButtonWithLoader").should("have.length", "1").click();
+  /* cypress react-selector fails with react 18...*/
+  //  cy.react("Input").should("have.length", "2");
+  //
+  //  cy.react("Input")
+  //    .get("input[type=text]")
+  //    .should("have.length", "1")
+  //    .type(identifier);
+  //  cy.react("Input")
+  //    .get("input[type=password]")
+  //    .should("have.length", "1")
+  //    .type(password);
+  //  cy.react("ButtonWithLoader").should("have.length", "1").click();
 
   cy.get("input", { options: { timeout: 50000 } }).should("have.length", "2");
 
@@ -54,19 +54,13 @@ Cypress.Commands.add("login", (identifier, password) => {
   cy.get("input[type=password]").should("have.length", "1").type(password);
 
   cy.contains("Login").should("have.length", "1").click();
-
 });
 
 Cypress.Commands.add("logout", (identifier, password) => {
+  cy.get("svg.fa-circle-user").should("have.length", "1").click();
 
-    cy.get("svg.fa-circle-user")
-      .should("have.length", "1")
-      .click();
-
-    cy.get("svg.fa-right-from-bracket")
-      .should("have.length", "1")
-      .click();
-//  cy.react("IconButton", { props: { icon: { iconName: "sign-out-alt" } } })
-//    .should("have.length", "1")
-//    .click();
+  cy.get("svg.fa-right-from-bracket").should("have.length", "1").click();
+  //  cy.react("IconButton", { props: { icon: { iconName: "sign-out-alt" } } })
+  //    .should("have.length", "1")
+  //    .click();
 });

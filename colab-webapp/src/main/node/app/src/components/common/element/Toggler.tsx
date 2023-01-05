@@ -1,13 +1,20 @@
 /*
  * The coLAB project
- * Copyright (C) 2021 AlbaSim, MEI, HEIG-VD, HES-SO
+ * Copyright (C) 2021-2023 AlbaSim, MEI, HEIG-VD, HES-SO
  *
  * Licensed under the MIT License
  */
 
 import { css, cx } from '@emotion/css';
 import * as React from 'react';
-import { disabledStyle, errorStyle, space_S, successColor, textSmall, warningStyle } from '../../styling/style';
+import {
+  disabledStyle,
+  errorStyle,
+  space_S,
+  successColor,
+  textSmall,
+  warningStyle,
+} from '../../styling/style';
 import Flex from '../layout/Flex';
 import Tips, { TipsProps } from './Tips';
 
@@ -89,7 +96,7 @@ export default function Toggler({
     <Flex
       direction="column"
       align="normal"
-      className={cx(css({ padding: space_S + ' 0' }), className, {[disabledStyle]: readOnly})}
+      className={cx(css({ padding: space_S + ' 0' }), className, { [disabledStyle]: readOnly })}
     >
       <Flex align="center" justify="flex-start">
         <Flex onClick={readOnly ? undefined : onClickCb} className={toggleAndLabelStyle}>

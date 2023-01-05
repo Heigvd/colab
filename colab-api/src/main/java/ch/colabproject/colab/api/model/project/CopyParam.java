@@ -1,6 +1,6 @@
 /*
  * The coLAB project
- * Copyright (C) 2022 AlbaSim, MEI, HEIG-VD, HES-SO
+ * Copyright (C) 2022-2023 AlbaSim, MEI, HEIG-VD, HES-SO
  *
  * Licensed under the MIT License
  */
@@ -98,6 +98,27 @@ public class CopyParam implements ColabEntity, WithWebsocketChannels {
      */
     @Transient
     private Long projectId;
+
+    // ---------------------------------------------------------------------------------------------
+    // initializer
+    // ---------------------------------------------------------------------------------------------
+
+    /**
+     * @param project the related project
+     *
+     * @return Default instance for a copy param
+     */
+    public static CopyParam buildDefault(Project project) {
+        CopyParam defaultInstance = new CopyParam();
+
+        defaultInstance.setWithRoles(true);
+        defaultInstance.setWithDeliverables(true);
+        defaultInstance.setWithResources(true);
+
+        defaultInstance.setProject(project);
+
+        return defaultInstance;
+    }
 
     // ---------------------------------------------------------------------------------------------
     // getters and setters
