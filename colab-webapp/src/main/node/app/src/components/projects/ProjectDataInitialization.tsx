@@ -6,8 +6,7 @@
  */
 
 import { css, cx } from '@emotion/css';
-import { faPen, faTrash } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faTrash } from '@fortawesome/free-solid-svg-icons';
 import { Illustration } from 'colab-rest-client';
 import * as React from 'react';
 import { emailFormat } from '../../helper';
@@ -15,38 +14,19 @@ import useTranslations from '../../i18n/I18nContext';
 import Checkbox from '../common/element/Checkbox';
 import { ConfirmIconButton } from '../common/element/ConfirmIconButton';
 import Form from '../common/element/Form';
-import IconButton from '../common/element/IconButton';
 import IllustrationDisplay from '../common/element/IllustrationDisplay';
 import { FormInput } from '../common/element/Input';
 import { TipsCtx, WIPContainer } from '../common/element/Tips';
 import Flex from '../common/layout/Flex';
 import {
-  borderRadius,
   invertedButtonStyle,
-  labelStyle,
   lightIconButtonStyle,
   space_M,
   space_S,
   textSmall,
 } from '../styling/style';
-import { defaultProjectIllustration } from './ProjectCommon';
 import { ProjectCreationData } from './ProjectCreator';
 import { ProjectIllustrationMaker } from './ProjectIllustrationMaker';
-
-const projectIllustrationOverlay = css({
-  position: 'absolute',
-  top: 0,
-  left: 0,
-  bottom: 0,
-  right: 0,
-  opacity: 0,
-  padding: space_S,
-  '&:hover': {
-    backgroundColor: 'rgba(256, 256, 256, 0.4)',
-    opacity: 1,
-    cursor: 'pointer',
-  },
-});
 
 interface ProjectDataInitializationProps {
   data: ProjectCreationData;
@@ -72,65 +52,16 @@ export default function ProjectDataInitialization({
   const i18n = useTranslations();
   const tipsConfig = React.useContext(TipsCtx);
 
-  const [editIllustration, setEditIllustration] = React.useState<boolean>(false);
-  const [currentIllustration, setCurrentIllustration] = React.useState<Illustration>(
-    data.projectModel?.illustration || defaultProjectIllustration,
-  );
-
   return (
     <Flex align="stretch" className={css({ alignSelf: 'stretch' })} direction="column">
-      <div className={labelStyle}>{i18n.modules.project.settings.icon}</div>
-      {editIllustration ? (
-        <Flex
-          direction="column"
-          align="stretch"
-          className={css({
-            padding: space_M,
-            border: '1px solid var(--secondaryColor)',
-            borderRadius: borderRadius,
-            marginBottom: space_M,
-          })}
-        >
-          <ProjectIllustrationMaker
-            illustration={
-              currentIllustration || data.projectModel?.illustration || defaultProjectIllustration
-            }
-            setIllustration={setCurrentIllustration}
-            iconContainerClassName={css({ marginBottom: space_S, maxHeight: '100px' })}
-          />
-          <Flex justify="flex-end" className={css({ gap: space_S })}>
-            <IconButton
-              title={'xmark'}
-              icon={'xmark'}
-              iconSize={'2x'}
-              onClick={() => {
-                setEditIllustration(false);
-                setIllustration(currentIllustration);
-              }}
-            />
-          </Flex>
-        </Flex>
-      ) : (
-        <Flex
-          className={css({
-            minWidth: '100%',
-            height: '80px',
-            marginBottom: space_S,
-            position: 'relative',
-          })}
-          onClick={() => setEditIllustration(true)}
-        >
-          <IllustrationDisplay illustration={currentIllustration} />
-          <Flex
-            align="flex-end"
-            justify="flex-end"
-            className={projectIllustrationOverlay}
-            title={i18n.modules.project.actions.editIllustration}
-          >
-            <FontAwesomeIcon icon={faPen} color={'var(--bgColor)'} />
-          </Flex>
-        </Flex>
-      )}
+      <Flex direction="column" align="stretch">
+        <IllustrationDisplay illustration={data.illustration} />
+        <ProjectIllustrationMaker
+          illustration={data.illustration}
+          setIllustration={setIllustration}
+          iconContainerClassName={css({ marginBottom: space_S, maxHeight: '100px' })}
+        />
+      </Flex>
       <FormInput
         label={i18n.common.name}
         value={data.name}
@@ -146,8 +77,6 @@ export default function ProjectDataInitialization({
           setDescription(description);
         }}
       />
-
-      {/* <IllustrationPicker data={data.illustration} onChange={setIllustration} /> */}
 
       {tipsConfig.WIP.value && data.projectModel != null && (
         <WIPContainer>
