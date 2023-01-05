@@ -284,7 +284,6 @@ const projectsSlice = createSlice({
         state.statusForGlobalModels = 'ERROR';
       })
 
-
       .addCase(API.getProjectTeam.pending, (state, action) => {
         const projectId = action.meta.arg;
         if (projectId) {

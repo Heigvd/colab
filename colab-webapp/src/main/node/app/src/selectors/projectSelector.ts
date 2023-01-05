@@ -258,12 +258,11 @@ export function useAndLoadMyAndInstanceableModels(): ProjectsAndStatus {
       );
 
       // 3. models global = accessible by everyone
-      const projectsGlobal = Object.values(
-        state.projects.projects)
-          .flatMap(proj => {
-            return entityIs(proj, 'Project') && proj.type === 'MODEL' && proj.globalProject === true ? [proj] : []})
-
-  
+      const projectsGlobal = Object.values(state.projects.projects).flatMap(proj => {
+        return entityIs(proj, 'Project') && proj.type === 'MODEL' && proj.globalProject === true
+          ? [proj]
+          : [];
+      });
 
       return {
         projects: [...new Set([...projectsIM, ...projectsMine, ...projectsGlobal])].flatMap(p => {

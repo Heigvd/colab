@@ -102,7 +102,7 @@ public class ProjectRestEndpoint {
     
     @GET
     @Path("Global")
-    public List<Project> getAllGlobalProjects() {
+    public List<Project> getAllGlobalModels() {
         logger.debug("Get all global projects");
         return projectDao.findAllGlobalModels();
     }

@@ -10,7 +10,6 @@ import { Document, entityIs } from 'colab-rest-client';
 import * as React from 'react';
 import { updateDocument } from '../../API/api';
 import useTranslations from '../../i18n/I18nContext';
-import { getLogger } from '../../logger';
 import { useAppDispatch } from '../../store/hooks';
 import { BlockEditorWrapper } from '../blocks/BlockEditorWrapper';
 import OpenGraphLink from '../common/element/OpenGraphLink';
@@ -18,9 +17,6 @@ import Flex from '../common/layout/Flex';
 import { editableBlockStyle } from '../styling/style';
 import { DocEditorCtx } from './DocumentEditorToolbox';
 import DocumentFileEditor from './DocumentFileEditor';
-
-const logger = getLogger('DocumentEditor');
-logger.setLevel(4);
 
 const selectedStyle = css({
   border: '1px solid var(--darkGray)',
@@ -64,7 +60,6 @@ export default function DocumentEditor({
 
   const onSelect = React.useCallback(() => {
     if (doc.id != selectedDocId) {
-      logger.debug('onSelect');
       setEditMode(false);
     }
     if (doc.id != null) {
@@ -74,7 +69,6 @@ export default function DocumentEditor({
 
   React.useEffect(() => {
     if (lastCreatedId === doc.id) {
-      logger.debug('DocumentEditor useEffect rerender')
       setSelectedDocId(lastCreatedId);
       setEditMode(true);
       setLastCreatedId(null);

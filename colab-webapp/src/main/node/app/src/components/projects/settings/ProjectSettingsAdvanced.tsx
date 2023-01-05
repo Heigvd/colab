@@ -42,7 +42,7 @@ export default function ProjectSettingsAdvanced({
   const state = useAppSelector(state => state);
 
   const { project, status } = useProject(projectId);
-  
+
   if (status !== 'READY' || project == null) {
     return <AvailabilityStatusIndicator status={status} />;
   }
@@ -68,92 +68,93 @@ export default function ProjectSettingsAdvanced({
         </Flex>
       </WIPContainer>
       {project.type === 'MODEL' && (
-        <WIPContainer>
+        <Flex
+          align="stretch"
+          className={css({ border: '1px solid var(--fgColor)', borderRadius: borderRadius })}
+        >
           <Flex
-            align="stretch"
-            className={css({ border: '1px solid var(--fgColor)', borderRadius: borderRadius })}
+            justify="center"
+            align="center"
+            className={css({ backgroundColor: 'var(--fgColor)', width: '80px' })}
           >
-            <Flex
-              justify="center"
-              align="center"
-              className={css({ backgroundColor: 'var(--fgColor)', width: '80px' })}
-            >
-              <FontAwesomeIcon
-                icon={project.globalProject ? faGlobe : faStar}
-                className={css({ color: 'var(--bgColor)' })}
-                size="2x"
-              />
-            </Flex>
-            <Flex direction="column" align="stretch" className={css({ padding: space_M })}>
-              {project.globalProject ? (
-                <>
-                  <h3>This model is global</h3>
-                  <p>Everyone with a co.LAB account can create a project base on this model.</p>
-                  <p>Want to make it private?</p>
-                  <ConfirmDeleteOpenCloseModal
-                    title="Make private"
-                    buttonLabel={
-                      <Button
-                        invertedButton
-                        className={cx(css({ color: errorColor, borderColor: errorColor }))}
-                        clickable
-                      >
-                        <FontAwesomeIcon icon={faStar} /> Make private
-                      </Button>
-                    }
-                    className={css({
-                      '&:hover': { textDecoration: 'none' },
-                      display: 'flex',
-                      alignItems: 'center',
-                      alignSelf: 'flex-end',
-                    })}
-                    message={
-                      <p>
-                        Are you sure you want to make this model private? Once private, no one will
-                        be able to create a project from this model except the people you share it
-                        with.
-                      </p>
-                    }
-                    onConfirm={() => dispatch(API.updateProject({ ...project!, globalProject: false }))}
-                    confirmButtonLabel="Make private"
-                  />
-                </>
-              ) : (
-                <>
-                  <h3>This model is private</h3>
-                  <p>You can share it for edition or usage to create prjects based on it.</p>
-                  <p>Want to make it global?</p>
-                  <ConfirmDeleteOpenCloseModal
-                    title="Make global"
-                    buttonLabel={
-                      <Button
-                        invertedButton
-                        className={cx(css({ color: errorColor, borderColor: errorColor }))}
-                        clickable
-                      >
-                        <FontAwesomeIcon icon={faGlobe} /> Make global
-                      </Button>
-                    }
-                    className={css({
-                      '&:hover': { textDecoration: 'none' },
-                      display: 'flex',
-                      alignItems: 'center',
-                      alignSelf: 'flex-end',
-                    })}
-                    message={
-                      <p>
-                        Are you sure you want to make this model global? Once global, everyone with
-                        a co.LAB account will be able to create a project base on this model.
-                      </p>
-                    }
-                    onConfirm={() => dispatch(API.updateProject({ ...project!, globalProject: true }))}
-                    confirmButtonLabel="Make global"
-                  />
-                </>
-              )}
-            </Flex>
+            <FontAwesomeIcon
+              icon={project.globalProject ? faGlobe : faStar}
+              className={css({ color: 'var(--bgColor)' })}
+              size="2x"
+            />
           </Flex>
-        </WIPContainer>
+          <Flex direction="column" align="stretch" className={css({ padding: space_M })}>
+            {project.globalProject ? (
+              <>
+                <h3>This model is global</h3>
+                <p>Everyone with a co.LAB account can create a project base on this model.</p>
+                <p>Want to make it private?</p>
+                <ConfirmDeleteOpenCloseModal
+                  title="Make private"
+                  buttonLabel={
+                    <Button
+                      invertedButton
+                      className={cx(css({ color: errorColor, borderColor: errorColor }))}
+                      clickable
+                    >
+                      <FontAwesomeIcon icon={faStar} /> Make private
+                    </Button>
+                  }
+                  className={css({
+                    '&:hover': { textDecoration: 'none' },
+                    display: 'flex',
+                    alignItems: 'center',
+                    alignSelf: 'flex-end',
+                  })}
+                  message={
+                    <p>
+                      Are you sure you want to make this model private? Once private, no one will be
+                      able to create a project from this model except the people you share it with.
+                    </p>
+                  }
+                  onConfirm={() =>
+                    dispatch(API.updateProject({ ...project!, globalProject: false }))
+                  }
+                  confirmButtonLabel="Make private"
+                />
+              </>
+            ) : (
+              <>
+                <h3>This model is private</h3>
+                <p>You can share it for edition or usage to create prjects based on it.</p>
+                <p>Want to make it global?</p>
+                <ConfirmDeleteOpenCloseModal
+                  title="Make global"
+                  buttonLabel={
+                    <Button
+                      invertedButton
+                      className={cx(css({ color: errorColor, borderColor: errorColor }))}
+                      clickable
+                    >
+                      <FontAwesomeIcon icon={faGlobe} /> Make global
+                    </Button>
+                  }
+                  className={css({
+                    '&:hover': { textDecoration: 'none' },
+                    display: 'flex',
+                    alignItems: 'center',
+                    alignSelf: 'flex-end',
+                  })}
+                  message={
+                    <p>
+                      Are you sure you want to make this model global? Once global, everyone with a
+                      co.LAB account will be able to create a project base on this model.
+                    </p>
+                  }
+                  onConfirm={() =>
+                    dispatch(API.updateProject({ ...project!, globalProject: true }))
+                  }
+                  confirmButtonLabel="Make global"
+                />
+              </>
+            )}
+          </Flex>
+        </Flex>
       )}
     </>
   );
