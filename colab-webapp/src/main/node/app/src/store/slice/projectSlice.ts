@@ -277,7 +277,7 @@ const projectsSlice = createSlice({
         state.statusForGlobalModels = 'LOADING';
       })
       .addCase(API.getAllGlobalProjects.fulfilled, (state, action) => {
-        state.projects = mapById(action.payload);
+        state.projects = { ...state.projects, ...mapById(action.payload) };
         state.statusForGlobalModels = 'READY';
       })
       .addCase(API.getAllGlobalProjects.rejected, state => {

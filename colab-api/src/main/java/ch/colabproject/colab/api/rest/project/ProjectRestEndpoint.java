@@ -100,6 +100,10 @@ public class ProjectRestEndpoint {
         return projectManager.findProjectsOfCurrentUser();
     }
     
+    /**
+     * Get all global models
+     * @return  list of global models
+     */
     @GET
     @Path("Global")
     public List<Project> getAllGlobalModels() {
