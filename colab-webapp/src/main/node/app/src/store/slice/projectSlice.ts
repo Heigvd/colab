@@ -36,6 +36,8 @@ export interface ProjectState {
   statusForInstanceableModels: AvailabilityStatus;
   /** did we load all the projects */
   statusForAll: AvailabilityStatus;
+  /** did we load all the global models */
+  statusForGlobalModels: AvailabilityStatus;
 
   /** all the copy param we got so far, by project id */
   copyParams: Record<number, CopyParam | AvailabilityStatus>;
@@ -57,6 +59,7 @@ const initialState: ProjectState = {
   statusForCurrentUser: 'NOT_INITIALIZED',
   statusForInstanceableModels: 'NOT_INITIALIZED',
   statusForAll: 'NOT_INITIALIZED',
+  statusForGlobalModels: 'NOT_INITIALIZED',
 
   copyParams: {},
 
@@ -268,6 +271,17 @@ const projectsSlice = createSlice({
       })
       .addCase(API.getAllProjects.rejected, state => {
         state.statusForAll = 'ERROR';
+      })
+
+      .addCase(API.getAllGlobalProjects.pending, state => {
+        state.statusForGlobalModels = 'LOADING';
+      })
+      .addCase(API.getAllGlobalProjects.fulfilled, (state, action) => {
+        state.projects = { ...state.projects, ...mapById(action.payload) };
+        state.statusForGlobalModels = 'READY';
+      })
+      .addCase(API.getAllGlobalProjects.rejected, state => {
+        state.statusForGlobalModels = 'ERROR';
       })
 
       .addCase(API.getProjectTeam.pending, (state, action) => {

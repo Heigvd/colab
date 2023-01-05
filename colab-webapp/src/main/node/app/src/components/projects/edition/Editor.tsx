@@ -10,6 +10,7 @@ import {
   faBookOpen,
   faChevronRight,
   faCog,
+  faGlobe,
   faGrip,
   faHouse,
   faNetworkWired,
@@ -600,10 +601,11 @@ export default function Editor(): JSX.Element {
                 className={cx(modelPictoCornerStyle, invertedThemeMode)}
                 title={i18n.modules.project.info.isAModel}
               >
-                {/*             {isAdminModel ? (
-              <FontAwesomeIcon icon={faGlobe} color="white" size="sm" />
-            ) : ( */}
-                <FontAwesomeIcon icon={faStar} size="xs" />
+                {project.globalProject ? (
+                  <FontAwesomeIcon icon={faGlobe} color="white" size="sm" />
+                ) : (
+                  <FontAwesomeIcon icon={faStar} color="white" size="sm" />
+                )}
               </Flex>
             )}
 
