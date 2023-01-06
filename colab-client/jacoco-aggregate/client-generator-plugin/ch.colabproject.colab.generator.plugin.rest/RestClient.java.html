@@ -327,12 +327,13 @@ public class RestClient {
      *
      * @return instance of T
      */
-    public &lt;T&gt; T put(String path, Map&lt;String, FormField&gt; fields, GenericType&lt;T&gt; type, String... accept) {
-<span class="nc" id="L331">        FormDataMultiPart multipart = getFormData(fields);</span>
+    public &lt;T&gt; T put(String path, Map&lt;String, FormField&gt; fields, GenericType&lt;T&gt; type,
+        String... accept) {
+<span class="nc" id="L332">        FormDataMultiPart multipart = getFormData(fields);</span>
 
-<span class="nc" id="L333">        return processResponse(webTarget.path(path).request()</span>
-<span class="nc" id="L334">            .accept(accept)</span>
-<span class="nc" id="L335">            .put(Entity.entity(multipart, multipart.getMediaType())),</span>
+<span class="nc" id="L334">        return processResponse(webTarget.path(path).request()</span>
+<span class="nc" id="L335">            .accept(accept)</span>
+<span class="nc" id="L336">            .put(Entity.entity(multipart, multipart.getMediaType())),</span>
             type);
     }
 
@@ -347,7 +348,7 @@ public class RestClient {
      * @return instance of T
      */
     public &lt;T&gt; T put(String path, GenericType&lt;T&gt; type, String... accept) {
-<span class="nc" id="L350">        return this.put(path, &quot;&quot;, type, accept);</span>
+<span class="nc" id="L351">        return this.put(path, &quot;&quot;, type, accept);</span>
 
     }
 
@@ -372,10 +373,10 @@ public class RestClient {
          *
          * @param cookieName name of the cookie to manage
          */
-<span class="nc" id="L375">        public CookieFilter(String cookieName) {</span>
-<span class="nc" id="L376">            this.cookieName = cookieName;</span>
-<span class="nc" id="L377">            this.sessionId = null;</span>
-<span class="nc" id="L378">        }</span>
+<span class="nc" id="L376">        public CookieFilter(String cookieName) {</span>
+<span class="nc" id="L377">            this.cookieName = cookieName;</span>
+<span class="nc" id="L378">            this.sessionId = null;</span>
+<span class="nc" id="L379">        }</span>
 
         /**
          * If set, add Cookie header to the request.
@@ -384,13 +385,13 @@ public class RestClient {
          */
         @Override
         public void filter(ClientRequestContext requestContext) throws IOException {
-<span class="nc bnc" id="L387" title="All 2 branches missed.">            if (this.sessionId != null) {</span>
-<span class="nc" id="L388">                List&lt;Object&gt; cookies = new ArrayList&lt;&gt;();</span>
-<span class="nc" id="L389">                Cookie cookie = new Cookie(cookieName, sessionId);</span>
-<span class="nc" id="L390">                cookies.add(cookie);</span>
-<span class="nc" id="L391">                requestContext.getHeaders().put(&quot;Cookie&quot;, cookies);</span>
+<span class="nc bnc" id="L388" title="All 2 branches missed.">            if (this.sessionId != null) {</span>
+<span class="nc" id="L389">                List&lt;Object&gt; cookies = new ArrayList&lt;&gt;();</span>
+<span class="nc" id="L390">                Cookie cookie = new Cookie(cookieName, sessionId);</span>
+<span class="nc" id="L391">                cookies.add(cookie);</span>
+<span class="nc" id="L392">                requestContext.getHeaders().put(&quot;Cookie&quot;, cookies);</span>
             }
-<span class="nc" id="L393">        }</span>
+<span class="nc" id="L394">        }</span>
 
         /**
          * On request response, fetch set-cookie value
@@ -400,15 +401,15 @@ public class RestClient {
         @Override
         public void filter(ClientRequestContext requestContext,
             ClientResponseContext responseContext) throws IOException {
-<span class="nc" id="L403">            NewCookie get = responseContext.getCookies().get(cookieName);</span>
-<span class="nc bnc" id="L404" title="All 2 branches missed.">            if (get != null) {</span>
-<span class="nc bnc" id="L405" title="All 2 branches missed.">                if (get.getMaxAge() == 0) {</span>
-<span class="nc" id="L406">                    this.sessionId = null;</span>
+<span class="nc" id="L404">            NewCookie get = responseContext.getCookies().get(cookieName);</span>
+<span class="nc bnc" id="L405" title="All 2 branches missed.">            if (get != null) {</span>
+<span class="nc bnc" id="L406" title="All 2 branches missed.">                if (get.getMaxAge() == 0) {</span>
+<span class="nc" id="L407">                    this.sessionId = null;</span>
                 } else {
-<span class="nc" id="L408">                    this.sessionId = get.getValue();</span>
+<span class="nc" id="L409">                    this.sessionId = get.getValue();</span>
                 }
             }
-<span class="nc" id="L411">        }</span>
+<span class="nc" id="L412">        }</span>
 
     }
 }

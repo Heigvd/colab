@@ -61,11 +61,18 @@ import javax.ws.rs.core.MediaType;
      * @return the consumed token
      *
      * @throws ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage
-     *  &lt;ul&gt;
-     *      &lt;li&gt;notFound if the token does not exist;
-     *      &lt;li&gt;bad request if token does not match;
-     *      &lt;li&gt;authenticationRequired if token requires authentication but current user is not
-     *  &lt;/ul&gt;
+     *                                                                           &lt;ul&gt;
+     *                                                                           &lt;li&gt;notFound if the
+     *                                                                           token does not
+     *                                                                           exist;
+     *                                                                           &lt;li&gt;bad request if
+     *                                                                           token does not
+     *                                                                           match;
+     *                                                                           &lt;li&gt;authenticationRequired
+     *                                                                           if token requires
+     *                                                                           authentication but
+     *                                                                           current user is not
+     *                                                                           &lt;/ul&gt;
      */
     @PUT
     @Path(&quot;{id}/{token: [a-fA-F0-9]+}&quot;)
@@ -73,7 +80,7 @@ import javax.ws.rs.core.MediaType;
         @PathParam(&quot;id&quot;) Long id,
         @PathParam(&quot;token&quot;) String plainToken
     ) {
-<span class="nc" id="L76">        return tokenManager.consume(id, plainToken);</span>
+<span class="nc" id="L83">        return tokenManager.consume(id, plainToken);</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

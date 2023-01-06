@@ -38,20 +38,20 @@
 <a class="jxr_linenumber" name="L30" href="#L30">30</a>  <strong class="jxr_keyword">import</strong> java.util.Set;
 <a class="jxr_linenumber" name="L31" href="#L31">31</a>  <strong class="jxr_keyword">import</strong> java.util.concurrent.ExecutionException;
 <a class="jxr_linenumber" name="L32" href="#L32">32</a>  <strong class="jxr_keyword">import</strong> java.util.concurrent.Future;
-<a class="jxr_linenumber" name="L33" href="#L33">33</a>  <strong class="jxr_keyword">import</strong> javax.ejb.Lock;
-<a class="jxr_linenumber" name="L34" href="#L34">34</a>  <strong class="jxr_keyword">import</strong> javax.ejb.LockType;
-<a class="jxr_linenumber" name="L35" href="#L35">35</a>  <strong class="jxr_keyword">import</strong> javax.ejb.Singleton;
-<a class="jxr_linenumber" name="L36" href="#L36">36</a>  <strong class="jxr_keyword">import</strong> javax.ejb.TransactionAttribute;
-<a class="jxr_linenumber" name="L37" href="#L37">37</a>  <strong class="jxr_keyword">import</strong> javax.ejb.TransactionAttributeType;
-<a class="jxr_linenumber" name="L38" href="#L38">38</a>  <strong class="jxr_keyword">import</strong> javax.inject.Inject;
-<a class="jxr_linenumber" name="L39" href="#L39">39</a>  <strong class="jxr_keyword">import</strong> org.slf4j.Logger;
-<a class="jxr_linenumber" name="L40" href="#L40">40</a>  <strong class="jxr_keyword">import</strong> org.slf4j.LoggerFactory;
-<a class="jxr_linenumber" name="L41" href="#L41">41</a>  <strong class="jxr_keyword">import</strong> com.hazelcast.cluster.Member;
-<a class="jxr_linenumber" name="L42" href="#L42">42</a>  <strong class="jxr_keyword">import</strong> com.hazelcast.core.HazelcastInstance;
-<a class="jxr_linenumber" name="L43" href="#L43">43</a>  <strong class="jxr_keyword">import</strong> com.hazelcast.core.IExecutorService;
-<a class="jxr_linenumber" name="L44" href="#L44">44</a>  <strong class="jxr_keyword">import</strong> com.hazelcast.cp.lock.FencedLock;
-<a class="jxr_linenumber" name="L45" href="#L45">45</a>  <strong class="jxr_keyword">import</strong> com.hazelcast.map.IMap;
-<a class="jxr_linenumber" name="L46" href="#L46">46</a>  <strong class="jxr_keyword">import</strong> java.util.stream.Collectors;
+<a class="jxr_linenumber" name="L33" href="#L33">33</a>  <strong class="jxr_keyword">import</strong> java.util.stream.Collectors;
+<a class="jxr_linenumber" name="L34" href="#L34">34</a>  <strong class="jxr_keyword">import</strong> javax.ejb.Lock;
+<a class="jxr_linenumber" name="L35" href="#L35">35</a>  <strong class="jxr_keyword">import</strong> javax.ejb.LockType;
+<a class="jxr_linenumber" name="L36" href="#L36">36</a>  <strong class="jxr_keyword">import</strong> javax.ejb.Singleton;
+<a class="jxr_linenumber" name="L37" href="#L37">37</a>  <strong class="jxr_keyword">import</strong> javax.ejb.TransactionAttribute;
+<a class="jxr_linenumber" name="L38" href="#L38">38</a>  <strong class="jxr_keyword">import</strong> javax.ejb.TransactionAttributeType;
+<a class="jxr_linenumber" name="L39" href="#L39">39</a>  <strong class="jxr_keyword">import</strong> javax.inject.Inject;
+<a class="jxr_linenumber" name="L40" href="#L40">40</a>  <strong class="jxr_keyword">import</strong> org.slf4j.Logger;
+<a class="jxr_linenumber" name="L41" href="#L41">41</a>  <strong class="jxr_keyword">import</strong> org.slf4j.LoggerFactory;
+<a class="jxr_linenumber" name="L42" href="#L42">42</a>  <strong class="jxr_keyword">import</strong> com.hazelcast.cluster.Member;
+<a class="jxr_linenumber" name="L43" href="#L43">43</a>  <strong class="jxr_keyword">import</strong> com.hazelcast.core.HazelcastInstance;
+<a class="jxr_linenumber" name="L44" href="#L44">44</a>  <strong class="jxr_keyword">import</strong> com.hazelcast.core.IExecutorService;
+<a class="jxr_linenumber" name="L45" href="#L45">45</a>  <strong class="jxr_keyword">import</strong> com.hazelcast.cp.lock.FencedLock;
+<a class="jxr_linenumber" name="L46" href="#L46">46</a>  <strong class="jxr_keyword">import</strong> com.hazelcast.map.IMap;
 <a class="jxr_linenumber" name="L47" href="#L47">47</a>  
 <a class="jxr_linenumber" name="L48" href="#L48">48</a>  <em class="jxr_javadoccomment">/**</em>
 <a class="jxr_linenumber" name="L49" href="#L49">49</a>  <em class="jxr_javadoccomment"> * Micro Changes Management.</em>
@@ -177,8 +177,8 @@
 <a class="jxr_linenumber" name="L169" href="#L169">169</a>             <strong class="jxr_keyword">boolean</strong> parentExists = basedOn.contains(block.getRevision())
 <a class="jxr_linenumber" name="L170" href="#L170">170</a>                 || changes.stream()
 <a class="jxr_linenumber" name="L171" href="#L171">171</a>                     .filter(change -&gt; basedOn.stream()
-<a class="jxr_linenumber" name="L172" href="#L172">172</a>                     .filter(rev -&gt; change.getRevision().equals(rev))
-<a class="jxr_linenumber" name="L173" href="#L173">173</a>                     .findFirst().isPresent()
+<a class="jxr_linenumber" name="L172" href="#L172">172</a>                         .filter(rev -&gt; change.getRevision().equals(rev))
+<a class="jxr_linenumber" name="L173" href="#L173">173</a>                         .findFirst().isPresent()
 <a class="jxr_linenumber" name="L174" href="#L174">174</a>                     )
 <a class="jxr_linenumber" name="L175" href="#L175">175</a>                     .findFirst().isPresent();
 <a class="jxr_linenumber" name="L176" href="#L176">176</a> 
@@ -380,56 +380,63 @@
 <a class="jxr_linenumber" name="L372" href="#L372">372</a>                         <a name="Resourceable" href="../../../../../../ch/colabproject/colab/api/model/document/Resourceable.html#Resourceable">Resourceable</a> owner = r.getOwner();
 <a class="jxr_linenumber" name="L373" href="#L373">373</a>                         <strong class="jxr_keyword">if</strong> (owner instanceof CardType) {
 <a class="jxr_linenumber" name="L374" href="#L374">374</a>                             CardType ct = (CardType) owner;
-<a class="jxr_linenumber" name="L375" href="#L375">375</a>                             title.append(<span class="jxr_string">"Type: "</span>).append(ct.getTitle()).append(<span class="jxr_string">" #"</span>).append(ct.getId());
-<a class="jxr_linenumber" name="L376" href="#L376">376</a>                         } <strong class="jxr_keyword">else</strong> <strong class="jxr_keyword">if</strong> (owner instanceof CardTypeRef) {
-<a class="jxr_linenumber" name="L377" href="#L377">377</a>                             CardTypeRef ref = (CardTypeRef) owner;
-<a class="jxr_linenumber" name="L378" href="#L378">378</a>                             title.append(<span class="jxr_string">"TypeRef: "</span>).append(ref.resolve().getTitle()).append(<span class="jxr_string">" #"</span>).append(ref.getId());
-<a class="jxr_linenumber" name="L379" href="#L379">379</a>                         } <strong class="jxr_keyword">else</strong> <strong class="jxr_keyword">if</strong> (owner instanceof CardContent) {
-<a class="jxr_linenumber" name="L380" href="#L380">380</a>                             CardContent cc = (CardContent) owner;
-<a class="jxr_linenumber" name="L381" href="#L381">381</a>                             Card c = cc.getCard();
-<a class="jxr_linenumber" name="L382" href="#L382">382</a>                             title.append(<span class="jxr_string">"Card: "</span>).append(c.getTitle()).append(<span class="jxr_string">" #"</span>).append(c.getId());
-<a class="jxr_linenumber" name="L383" href="#L383">383</a>                             title.append(<span class="jxr_string">" / CardContent: "</span>).append(cc.getTitle()).append(<span class="jxr_string">" #"</span>).append(cc.getId());
-<a class="jxr_linenumber" name="L384" href="#L384">384</a>                         } <strong class="jxr_keyword">else</strong> <strong class="jxr_keyword">if</strong> (owner instanceof Card) {
-<a class="jxr_linenumber" name="L385" href="#L385">385</a>                             Card c = (Card) owner;
-<a class="jxr_linenumber" name="L386" href="#L386">386</a>                             title.append(<span class="jxr_string">"Card: "</span>).append(c.getTitle()).append(<span class="jxr_string">" #"</span>).append(c.getId());
-<a class="jxr_linenumber" name="L387" href="#L387">387</a>                         }
-<a class="jxr_linenumber" name="L388" href="#L388">388</a> 
-<a class="jxr_linenumber" name="L389" href="#L389">389</a>                         title.append(<span class="jxr_string">" / Resource "</span>).append(r.getTitle()).append(<span class="jxr_string">" # "</span>).append(r.getId());
-<a class="jxr_linenumber" name="L390" href="#L390">390</a>                     } <strong class="jxr_keyword">else</strong> <strong class="jxr_keyword">if</strong> (block.getOwningCardContent() != <strong class="jxr_keyword">null</strong>) {
-<a class="jxr_linenumber" name="L391" href="#L391">391</a>                         CardContent cc = block.getOwningCardContent();
-<a class="jxr_linenumber" name="L392" href="#L392">392</a>                         Card c = cc.getCard();
-<a class="jxr_linenumber" name="L393" href="#L393">393</a>                         title.append(<span class="jxr_string">"Card: "</span>).append(c.getTitle()).append(<span class="jxr_string">" #"</span>).append(c.getId()
-<a class="jxr_linenumber" name="L394" href="#L394">394</a>                         ).append(<span class="jxr_string">" / CardContent: "</span>).append(cc.getTitle()).append(<span class="jxr_string">" #"</span>).append(cc.getId());
-<a class="jxr_linenumber" name="L395" href="#L395">395</a>                     }
-<a class="jxr_linenumber" name="L396" href="#L396">396</a>                 } <strong class="jxr_keyword">catch</strong> (Throwable error) {
-<a class="jxr_linenumber" name="L397" href="#L397">397</a>                     <em class="jxr_javadoccomment">/** no-op */</em>
-<a class="jxr_linenumber" name="L398" href="#L398">398</a>                     logger.warn(<span class="jxr_string">"Fails to build block title {}"</span>, block);
-<a class="jxr_linenumber" name="L399" href="#L399">399</a>                 }
-<a class="jxr_linenumber" name="L400" href="#L400">400</a>                 bm.setTitle(title.toString());
-<a class="jxr_linenumber" name="L401" href="#L401">401</a>                 <strong class="jxr_keyword">try</strong> {
-<a class="jxr_linenumber" name="L402" href="#L402">402</a>                     <strong class="jxr_keyword">var</strong> data = cache.get(key);
-<a class="jxr_linenumber" name="L403" href="#L403">403</a>                     <strong class="jxr_keyword">if</strong> (data != <strong class="jxr_keyword">null</strong>) {
-<a class="jxr_linenumber" name="L404" href="#L404">404</a>                         <strong class="jxr_keyword">if</strong> (block.isHealthy()) {
-<a class="jxr_linenumber" name="L405" href="#L405">405</a>                             bm.setStatus(BlockMonitoring.BlockStatus.HEALTHY);
-<a class="jxr_linenumber" name="L406" href="#L406">406</a>                         } <strong class="jxr_keyword">else</strong> {
-<a class="jxr_linenumber" name="L407" href="#L407">407</a>                             bm.setStatus(BlockMonitoring.BlockStatus.UNHEALTHY);
-<a class="jxr_linenumber" name="L408" href="#L408">408</a>                         }
-<a class="jxr_linenumber" name="L409" href="#L409">409</a>                     } <strong class="jxr_keyword">else</strong> {
-<a class="jxr_linenumber" name="L410" href="#L410">410</a>                         bm.setStatus(BlockMonitoring.BlockStatus.PROCESSED);
-<a class="jxr_linenumber" name="L411" href="#L411">411</a>                     }
-<a class="jxr_linenumber" name="L412" href="#L412">412</a>                 } <strong class="jxr_keyword">catch</strong> (Throwable e) {
-<a class="jxr_linenumber" name="L413" href="#L413">413</a>                     <em class="jxr_javadoccomment">/** Catch everything ! */</em>
-<a class="jxr_linenumber" name="L414" href="#L414">414</a>                     bm.setStatus(BlockMonitoring.BlockStatus.DATA_ERROR);
-<a class="jxr_linenumber" name="L415" href="#L415">415</a>                 }
-<a class="jxr_linenumber" name="L416" href="#L416">416</a>             } <strong class="jxr_keyword">else</strong> {
-<a class="jxr_linenumber" name="L417" href="#L417">417</a>                 bm.setTitle(<span class="jxr_string">"Ghost block"</span>);
-<a class="jxr_linenumber" name="L418" href="#L418">418</a>                 bm.setStatus(BlockMonitoring.BlockStatus.DELETED);
-<a class="jxr_linenumber" name="L419" href="#L419">419</a>             }
-<a class="jxr_linenumber" name="L420" href="#L420">420</a> 
-<a class="jxr_linenumber" name="L421" href="#L421">421</a>             <strong class="jxr_keyword">return</strong> bm;
-<a class="jxr_linenumber" name="L422" href="#L422">422</a>         }).collect(Collectors.toList());
-<a class="jxr_linenumber" name="L423" href="#L423">423</a>     }
-<a class="jxr_linenumber" name="L424" href="#L424">424</a> }
+<a class="jxr_linenumber" name="L375" href="#L375">375</a>                             title.append(<span class="jxr_string">"Type: "</span>).append(ct.getTitle()).append(<span class="jxr_string">" #"</span>)
+<a class="jxr_linenumber" name="L376" href="#L376">376</a>                                 .append(ct.getId());
+<a class="jxr_linenumber" name="L377" href="#L377">377</a>                         } <strong class="jxr_keyword">else</strong> <strong class="jxr_keyword">if</strong> (owner instanceof CardTypeRef) {
+<a class="jxr_linenumber" name="L378" href="#L378">378</a>                             CardTypeRef ref = (CardTypeRef) owner;
+<a class="jxr_linenumber" name="L379" href="#L379">379</a>                             title.append(<span class="jxr_string">"TypeRef: "</span>).append(ref.resolve().getTitle()).append(<span class="jxr_string">" #"</span>)
+<a class="jxr_linenumber" name="L380" href="#L380">380</a>                                 .append(ref.getId());
+<a class="jxr_linenumber" name="L381" href="#L381">381</a>                         } <strong class="jxr_keyword">else</strong> <strong class="jxr_keyword">if</strong> (owner instanceof CardContent) {
+<a class="jxr_linenumber" name="L382" href="#L382">382</a>                             CardContent cc = (CardContent) owner;
+<a class="jxr_linenumber" name="L383" href="#L383">383</a>                             Card c = cc.getCard();
+<a class="jxr_linenumber" name="L384" href="#L384">384</a>                             title.append(<span class="jxr_string">"Card: "</span>).append(c.getTitle()).append(<span class="jxr_string">" #"</span>)
+<a class="jxr_linenumber" name="L385" href="#L385">385</a>                                 .append(c.getId());
+<a class="jxr_linenumber" name="L386" href="#L386">386</a>                             title.append(<span class="jxr_string">" / CardContent: "</span>).append(cc.getTitle()).append(<span class="jxr_string">" #"</span>)
+<a class="jxr_linenumber" name="L387" href="#L387">387</a>                                 .append(cc.getId());
+<a class="jxr_linenumber" name="L388" href="#L388">388</a>                         } <strong class="jxr_keyword">else</strong> <strong class="jxr_keyword">if</strong> (owner instanceof Card) {
+<a class="jxr_linenumber" name="L389" href="#L389">389</a>                             Card c = (Card) owner;
+<a class="jxr_linenumber" name="L390" href="#L390">390</a>                             title.append(<span class="jxr_string">"Card: "</span>).append(c.getTitle()).append(<span class="jxr_string">" #"</span>)
+<a class="jxr_linenumber" name="L391" href="#L391">391</a>                                 .append(c.getId());
+<a class="jxr_linenumber" name="L392" href="#L392">392</a>                         }
+<a class="jxr_linenumber" name="L393" href="#L393">393</a> 
+<a class="jxr_linenumber" name="L394" href="#L394">394</a>                         title.append(<span class="jxr_string">" / Resource "</span>).append(r.getTitle()).append(<span class="jxr_string">" # "</span>)
+<a class="jxr_linenumber" name="L395" href="#L395">395</a>                             .append(r.getId());
+<a class="jxr_linenumber" name="L396" href="#L396">396</a>                     } <strong class="jxr_keyword">else</strong> <strong class="jxr_keyword">if</strong> (block.getOwningCardContent() != <strong class="jxr_keyword">null</strong>) {
+<a class="jxr_linenumber" name="L397" href="#L397">397</a>                         CardContent cc = block.getOwningCardContent();
+<a class="jxr_linenumber" name="L398" href="#L398">398</a>                         Card c = cc.getCard();
+<a class="jxr_linenumber" name="L399" href="#L399">399</a>                         title.append(<span class="jxr_string">"Card: "</span>).append(c.getTitle()).append(<span class="jxr_string">" #"</span>).append(c.getId()
+<a class="jxr_linenumber" name="L400" href="#L400">400</a>                         ).append(<span class="jxr_string">" / CardContent: "</span>).append(cc.getTitle()).append(<span class="jxr_string">" #"</span>)
+<a class="jxr_linenumber" name="L401" href="#L401">401</a>                             .append(cc.getId());
+<a class="jxr_linenumber" name="L402" href="#L402">402</a>                     }
+<a class="jxr_linenumber" name="L403" href="#L403">403</a>                 } <strong class="jxr_keyword">catch</strong> (Throwable error) {
+<a class="jxr_linenumber" name="L404" href="#L404">404</a>                     <em class="jxr_javadoccomment">/** no-op */</em>
+<a class="jxr_linenumber" name="L405" href="#L405">405</a>                     logger.warn(<span class="jxr_string">"Fails to build block title {}"</span>, block);
+<a class="jxr_linenumber" name="L406" href="#L406">406</a>                 }
+<a class="jxr_linenumber" name="L407" href="#L407">407</a>                 bm.setTitle(title.toString());
+<a class="jxr_linenumber" name="L408" href="#L408">408</a>                 <strong class="jxr_keyword">try</strong> {
+<a class="jxr_linenumber" name="L409" href="#L409">409</a>                     <strong class="jxr_keyword">var</strong> data = cache.get(key);
+<a class="jxr_linenumber" name="L410" href="#L410">410</a>                     <strong class="jxr_keyword">if</strong> (data != <strong class="jxr_keyword">null</strong>) {
+<a class="jxr_linenumber" name="L411" href="#L411">411</a>                         <strong class="jxr_keyword">if</strong> (block.isHealthy()) {
+<a class="jxr_linenumber" name="L412" href="#L412">412</a>                             bm.setStatus(BlockMonitoring.BlockStatus.HEALTHY);
+<a class="jxr_linenumber" name="L413" href="#L413">413</a>                         } <strong class="jxr_keyword">else</strong> {
+<a class="jxr_linenumber" name="L414" href="#L414">414</a>                             bm.setStatus(BlockMonitoring.BlockStatus.UNHEALTHY);
+<a class="jxr_linenumber" name="L415" href="#L415">415</a>                         }
+<a class="jxr_linenumber" name="L416" href="#L416">416</a>                     } <strong class="jxr_keyword">else</strong> {
+<a class="jxr_linenumber" name="L417" href="#L417">417</a>                         bm.setStatus(BlockMonitoring.BlockStatus.PROCESSED);
+<a class="jxr_linenumber" name="L418" href="#L418">418</a>                     }
+<a class="jxr_linenumber" name="L419" href="#L419">419</a>                 } <strong class="jxr_keyword">catch</strong> (Throwable e) {
+<a class="jxr_linenumber" name="L420" href="#L420">420</a>                     <em class="jxr_javadoccomment">/** Catch everything ! */</em>
+<a class="jxr_linenumber" name="L421" href="#L421">421</a>                     bm.setStatus(BlockMonitoring.BlockStatus.DATA_ERROR);
+<a class="jxr_linenumber" name="L422" href="#L422">422</a>                 }
+<a class="jxr_linenumber" name="L423" href="#L423">423</a>             } <strong class="jxr_keyword">else</strong> {
+<a class="jxr_linenumber" name="L424" href="#L424">424</a>                 bm.setTitle(<span class="jxr_string">"Ghost block"</span>);
+<a class="jxr_linenumber" name="L425" href="#L425">425</a>                 bm.setStatus(BlockMonitoring.BlockStatus.DELETED);
+<a class="jxr_linenumber" name="L426" href="#L426">426</a>             }
+<a class="jxr_linenumber" name="L427" href="#L427">427</a> 
+<a class="jxr_linenumber" name="L428" href="#L428">428</a>             <strong class="jxr_keyword">return</strong> bm;
+<a class="jxr_linenumber" name="L429" href="#L429">429</a>         }).collect(Collectors.toList());
+<a class="jxr_linenumber" name="L430" href="#L430">430</a>     }
+<a class="jxr_linenumber" name="L431" href="#L431">431</a> }
 </pre>
 <hr/>
 <div id="footer">Copyright &#169; 2023 <a href="https://www.colab-project.ch">AlbaSim, MEI, HEIG-VD, HES-SO</a>. All rights reserved.</div>

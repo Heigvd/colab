@@ -62,7 +62,6 @@ import javax.ws.rs.core.MediaType;
      *
      * @param loggerName name of the logger to update
      * @param level      new level of the logger
-     *
      */
     @GET
     @Path(&quot;SetLoggerLevel/{loggerName}/{level}&quot;)
@@ -71,8 +70,8 @@ import javax.ws.rs.core.MediaType;
         @PathParam(&quot;loggerName&quot;) String loggerName,
         @PathParam(&quot;level&quot;) String level
     ) {
-<span class="nc" id="L74">        monitoringManager.changeLogerLevelClusterWide(loggerName, level);</span>
-<span class="nc" id="L75">    }</span>
+<span class="nc" id="L73">        monitoringManager.changeLogerLevelClusterWide(loggerName, level);</span>
+<span class="nc" id="L74">    }</span>
 
     /**
      * Get the description of all known co.LAB logger by providing their current level.
@@ -83,7 +82,7 @@ import javax.ws.rs.core.MediaType;
     @Path(&quot;GetLoggerLevels&quot;)
     @AdminResource
     public Map&lt;String, LevelDescriptor&gt; getLoggerLevels() {
-<span class="nc" id="L86">        return monitoringManager.getLoggerLevels();</span>
+<span class="nc" id="L85">        return monitoringManager.getLoggerLevels();</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

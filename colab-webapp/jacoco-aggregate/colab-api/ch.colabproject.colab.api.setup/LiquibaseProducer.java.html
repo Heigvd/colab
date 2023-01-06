@@ -6,13 +6,13 @@
  */
 package ch.colabproject.colab.api.setup;
 
-import javax.annotation.Resource;
-import javax.enterprise.inject.Produces;
-import javax.sql.DataSource;
 import liquibase.integration.cdi.CDILiquibaseConfig;
 import liquibase.integration.cdi.annotations.LiquibaseType;
 import liquibase.resource.ClassLoaderResourceAccessor;
 import liquibase.resource.ResourceAccessor;
+import javax.annotation.Resource;
+import javax.enterprise.inject.Produces;
+import javax.sql.DataSource;
 
 /**
  * LiquiBase Producer. To manage database migrations.
@@ -44,12 +44,11 @@ import liquibase.resource.ResourceAccessor;
      * Give liquibase access to the datasource
      *
      * @return the datasource
-     *
      */
     @Produces
     @LiquibaseType
     public DataSource createDataSource() {
-<span class="nc" id="L52">        return myDataSource;</span>
+<span class="nc" id="L51">        return myDataSource;</span>
     }
 
     /**
@@ -60,7 +59,7 @@ import liquibase.resource.ResourceAccessor;
     @Produces
     @LiquibaseType
     public ResourceAccessor create() {
-<span class="nc" id="L63">        return new ClassLoaderResourceAccessor(getClass().getClassLoader());</span>
+<span class="nc" id="L62">        return new ClassLoaderResourceAccessor(getClass().getClassLoader());</span>
     }
 
 }

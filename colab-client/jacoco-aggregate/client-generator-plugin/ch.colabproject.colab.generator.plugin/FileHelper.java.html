@@ -12,7 +12,6 @@ import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
 
 /**
- *
  * @author maxence
  */
 public class FileHelper {
@@ -20,8 +19,8 @@ public class FileHelper {
     /**
      * never-called private constructor
      */
-<span class="nc" id="L23">    private FileHelper() {</span>
-<span class="nc" id="L24">        throw new UnsupportedOperationException(</span>
+<span class="nc" id="L22">    private FileHelper() {</span>
+<span class="nc" id="L23">        throw new UnsupportedOperationException(</span>
             &quot;This is a utility class and cannot be instantiated&quot;);
     }
 
@@ -34,11 +33,11 @@ public class FileHelper {
      */
     public static String readFile(String path) {
         try {
-<span class="nc" id="L37">            InputStream stream = FileHelper.class.getClassLoader().getResourceAsStream(path);</span>
-<span class="nc" id="L38">            byte[] buffer = stream.readAllBytes();</span>
-<span class="nc" id="L39">            return Charset.defaultCharset().decode(ByteBuffer.wrap(buffer)).toString();</span>
-<span class="nc" id="L40">        } catch (IOException ex) {</span>
-<span class="nc" id="L41">            return null;</span>
+<span class="nc" id="L36">            InputStream stream = FileHelper.class.getClassLoader().getResourceAsStream(path);</span>
+<span class="nc" id="L37">            byte[] buffer = stream.readAllBytes();</span>
+<span class="nc" id="L38">            return Charset.defaultCharset().decode(ByteBuffer.wrap(buffer)).toString();</span>
+<span class="nc" id="L39">        } catch (IOException ex) {</span>
+<span class="nc" id="L40">            return null;</span>
         }
     }
 }

@@ -253,6 +253,7 @@ import org.slf4j.LoggerFactory;
     /**
      * Update password of a localAccount. The password MUST be hashed a first time by the client.
      * &lt;p&gt;
+     * 
      * @param authInfo identifier and new password
      *
      * @throws HttpErrorMessage if currentUser is not allowed to update the given account
@@ -260,22 +261,22 @@ import org.slf4j.LoggerFactory;
     @PUT
     @Path(&quot;/UpdatePassword&quot;)
     public void updateLocalAccountPassword(AuthInfo authInfo) {
-<span class="nc" id="L263">        logger.debug(&quot;Update local account \&quot;{}\&quot; password&quot;, authInfo.getIdentifier());</span>
-<span class="nc" id="L264">        userManager.updatePassword(authInfo);</span>
-<span class="nc" id="L265">    }</span>
+<span class="nc" id="L264">        logger.debug(&quot;Update local account \&quot;{}\&quot; password&quot;, authInfo.getIdentifier());</span>
+<span class="nc" id="L265">        userManager.updatePassword(authInfo);</span>
+<span class="nc" id="L266">    }</span>
 
     /**
      * Request a local account password reset. This method always returns 204 no content
      * &lt;p&gt;
+     * 
      * @param email email address of account
-     *
      */
     @PUT
     @Path(&quot;/RequestPasswordReset/{email}&quot;)
     public void requestPasswordReset(@PathParam(&quot;email&quot;) String email) {
-<span class="nc" id="L276">        logger.debug(&quot;Request password reset token {}&quot;, email);</span>
-<span class="nc" id="L277">        userManager.requestPasswordReset(email);</span>
-<span class="nc" id="L278">    }</span>
+<span class="nc" id="L277">        logger.debug(&quot;Request password reset token {}&quot;, email);</span>
+<span class="nc" id="L278">        userManager.requestPasswordReset(email);</span>
+<span class="nc" id="L279">    }</span>
 
     /**
      * Update local account
@@ -288,9 +289,9 @@ import org.slf4j.LoggerFactory;
     @Path(&quot;/ChangeEmail&quot;)
     @AuthenticationRequired
     public void updateLocalAccountEmailAddress(LocalAccount account) throws ColabMergeException {
-<span class="nc" id="L291">        logger.debug(&quot;Update local account email address: {}&quot;, account);</span>
-<span class="nc" id="L292">        userManager.updateLocalAccountEmailAddress(account);</span>
-<span class="nc" id="L293">    }</span>
+<span class="nc" id="L292">        logger.debug(&quot;Update local account email address: {}&quot;, account);</span>
+<span class="nc" id="L293">        userManager.updateLocalAccountEmailAddress(account);</span>
+<span class="nc" id="L294">    }</span>
 
     /**
      * ask the user to switch to new hash method on next sign-in.
@@ -301,9 +302,9 @@ import org.slf4j.LoggerFactory;
     @Path(&quot;{id : [1-9][0-9]*}/SwitchClientHashMethod&quot;)
     @AdminResource
     public void switchClientHashMethod(@PathParam(&quot;id&quot;) Long id) {
-<span class="nc" id="L304">        logger.debug(&quot;Switch client hash method for account #{}&quot;, id);</span>
-<span class="nc" id="L305">        userManager.switchClientHashMethod(id);</span>
-<span class="nc" id="L306">    }</span>
+<span class="nc" id="L305">        logger.debug(&quot;Switch client hash method for account #{}&quot;, id);</span>
+<span class="nc" id="L306">        userManager.switchClientHashMethod(id);</span>
+<span class="nc" id="L307">    }</span>
 
     /**
      * stage new server hash method.
@@ -314,9 +315,9 @@ import org.slf4j.LoggerFactory;
     @Path(&quot;{id : [1-9][0-9]*}/SwitchServerHashMethod&quot;)
     @AdminResource
     public void switchServerHashMethod(@PathParam(&quot;id&quot;) Long id) {
-<span class="nc" id="L317">        logger.debug(&quot;Switch server hash method for account #{}&quot;, id);</span>
-<span class="nc" id="L318">        userManager.switchServerHashMethod(id);</span>
-<span class="nc" id="L319">    }</span>
+<span class="nc" id="L318">        logger.debug(&quot;Switch server hash method for account #{}&quot;, id);</span>
+<span class="nc" id="L319">        userManager.switchServerHashMethod(id);</span>
+<span class="nc" id="L320">    }</span>
 
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

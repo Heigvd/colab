@@ -13,7 +13,8 @@ import java.util.Set;
 import javax.validation.constraints.NotNull;
 
 /**
- * Websocket update message. Contains a list of new or updated objects and a list of destroyed objects.
+ * Websocket update message. Contains a list of new or updated objects and a list of destroyed
+ * objects.
  *
  * @author maxence
  */
@@ -37,16 +38,16 @@ public class WsUpdateMessage extends WsMessage {
     /**
      * Default constructor
      */
-<span class="nc" id="L40">    public WsUpdateMessage() {</span>
-<span class="nc" id="L41">        this.updated = new HashSet&lt;&gt;();</span>
-<span class="nc" id="L42">        this.deleted = new HashSet&lt;&gt;();</span>
-<span class="nc" id="L43">    }</span>
+<span class="nc" id="L41">    public WsUpdateMessage() {</span>
+<span class="nc" id="L42">        this.updated = new HashSet&lt;&gt;();</span>
+<span class="nc" id="L43">        this.deleted = new HashSet&lt;&gt;();</span>
+<span class="nc" id="L44">    }</span>
 
     /**
      * @return the list of new or updated objects to send to clients
      */
     public Set&lt;WithWebsocketChannels&gt; getUpdated() {
-<span class="nc" id="L49">        return updated;</span>
+<span class="nc" id="L50">        return updated;</span>
     }
 
     /**
@@ -55,8 +56,8 @@ public class WsUpdateMessage extends WsMessage {
      * @param updated list of updated elements
      */
     public void setUpdated(Set&lt;WithWebsocketChannels&gt; updated) {
-<span class="nc" id="L58">        this.updated = updated;</span>
-<span class="nc" id="L59">    }</span>
+<span class="nc" id="L59">        this.updated = updated;</span>
+<span class="nc" id="L60">    }</span>
 
     /**
      * Get the list of deleted objects
@@ -64,7 +65,7 @@ public class WsUpdateMessage extends WsMessage {
      * @return all deleted objects
      */
     public Set&lt;IndexEntry&gt; getDeleted() {
-<span class="nc" id="L67">        return deleted;</span>
+<span class="nc" id="L68">        return deleted;</span>
     }
 
     /**
@@ -73,12 +74,12 @@ public class WsUpdateMessage extends WsMessage {
      * @param deleted index
      */
     public void setDeleted(Set&lt;IndexEntry&gt; deleted) {
-<span class="nc" id="L76">        this.deleted = deleted;</span>
-<span class="nc" id="L77">    }</span>
+<span class="nc" id="L77">        this.deleted = deleted;</span>
+<span class="nc" id="L78">    }</span>
 
     @Override
     public String toString() {
-<span class="nc" id="L81">        return &quot;WsUpdateMessage{&quot; + &quot;updated=&quot; + updated + &quot;, deleted=&quot; + deleted + '}';</span>
+<span class="nc" id="L82">        return &quot;WsUpdateMessage{&quot; + &quot;updated=&quot; + updated + &quot;, deleted=&quot; + deleted + '}';</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

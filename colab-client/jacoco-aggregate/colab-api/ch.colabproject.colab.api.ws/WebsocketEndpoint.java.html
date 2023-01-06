@@ -15,8 +15,6 @@ import ch.colabproject.colab.api.ws.message.WsSessionIdentifier;
 import ch.colabproject.colab.api.ws.utils.JsonDecoder;
 import ch.colabproject.colab.api.ws.utils.JsonEncoder;
 import ch.colabproject.colab.api.ws.utils.JsonWsMessageListDecoder;
-import com.hazelcast.core.HazelcastInstance;
-import com.hazelcast.flakeidgen.FlakeIdGenerator;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.HashMap;
@@ -35,6 +33,8 @@ import javax.websocket.Session;
 import javax.websocket.server.ServerEndpoint;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import com.hazelcast.core.HazelcastInstance;
+import com.hazelcast.flakeidgen.FlakeIdGenerator;
 
 /**
  * Websocket endpoint
@@ -42,8 +42,9 @@ import org.slf4j.LoggerFactory;
  * @author maxence
  */
 @ApplicationScoped
-@ServerEndpoint(value = &quot;/ws&quot;, encoders = JsonEncoder.class, decoders = {JsonDecoder.class, JsonWsMessageListDecoder.class})
-<span class="nc" id="L46">public class WebsocketEndpoint {</span>
+@ServerEndpoint(value = &quot;/ws&quot;, encoders = JsonEncoder.class,
+    decoders = { JsonDecoder.class, JsonWsMessageListDecoder.class })
+<span class="nc" id="L47">public class WebsocketEndpoint {</span>
 
     /**
      * To generate cluster-wide unique id
@@ -60,23 +61,23 @@ import org.slf4j.LoggerFactory;
     /**
      * Logger
      */
-<span class="nc" id="L63">    private static final Logger logger = LoggerFactory.getLogger(WebsocketEndpoint.class);</span>
+<span class="nc" id="L64">    private static final Logger logger = LoggerFactory.getLogger(WebsocketEndpoint.class);</span>
 
     /**
      * Map of active sessions
      */
-<span class="nc" id="L68">    private static Set&lt;Session&gt; sessions = Collections.synchronizedSet(new HashSet&lt;&gt;());</span>
+<span class="nc" id="L69">    private static Set&lt;Session&gt; sessions = Collections.synchronizedSet(new HashSet&lt;&gt;());</span>
 
     /**
      * Map session to session id
      */
-<span class="nc" id="L73">    private static Map&lt;Session, String&gt; sessionToIds = Collections.synchronizedMap(new HashMap&lt;&gt;());</span>
+<span class="nc" id="L74">    private static Map&lt;Session, String&gt; sessionToIds = Collections.synchronizedMap(new HashMap&lt;&gt;());</span>
 
     /**
      * Map session id to sessions
      */
-<span class="nc" id="L78">    private static Map&lt;String, Session&gt; idsToSessions</span>
-<span class="nc" id="L79">        = Collections.synchronizedMap(new HashMap&lt;&gt;());</span>
+<span class="nc" id="L79">    private static Map&lt;String, Session&gt; idsToSessions = Collections</span>
+<span class="nc" id="L80">        .synchronizedMap(new HashMap&lt;&gt;());</span>
 
     /**
      * Send a message to all clients
@@ -84,14 +85,14 @@ import org.slf4j.LoggerFactory;
      * @param message the message to send
      */
     public static void broadcastMessage(WsMessage message) {
-<span class="nc bnc" id="L87" title="All 2 branches missed.">        for (Session session : sessions) {</span>
+<span class="nc bnc" id="L88" title="All 2 branches missed.">        for (Session session : sessions) {</span>
             try {
-<span class="nc" id="L89">                session.getBasicRemote().sendObject(message);</span>
-<span class="nc" id="L90">            } catch (IOException | EncodeException e) {</span>
-<span class="nc" id="L91">                logger.error(&quot;Broadcast message exception: {}&quot;, e);</span>
-<span class="nc" id="L92">            }</span>
-<span class="nc" id="L93">        }</span>
-<span class="nc" id="L94">    }</span>
+<span class="nc" id="L90">                session.getBasicRemote().sendObject(message);</span>
+<span class="nc" id="L91">            } catch (IOException | EncodeException e) {</span>
+<span class="nc" id="L92">                logger.error(&quot;Broadcast message exception: {}&quot;, e);</span>
+<span class="nc" id="L93">            }</span>
+<span class="nc" id="L94">        }</span>
+<span class="nc" id="L95">    }</span>
 
     /**
      * On new connection. Send back a WsInitMessage to let the client known it's own sessionId
@@ -103,17 +104,17 @@ import org.slf4j.LoggerFactory;
      */
     @OnOpen
     public void onOpen(Session session) throws IOException, EncodeException {
-<span class="nc" id="L106">        logger.info(&quot;WebSocket opened: {}&quot;, session.getId());</span>
-<span class="nc" id="L107">        sessions.add(session);</span>
-<span class="nc" id="L108">        FlakeIdGenerator idGenerator = hzInstance.getFlakeIdGenerator(&quot;WS_SESSION_ID_GENERATOR&quot;);</span>
-<span class="nc" id="L109">        String sessionId = &quot;ws-&quot; + Helper.generateHexSalt(8) + idGenerator.newId();</span>
-<span class="nc" id="L110">        sessionToIds.put(session, sessionId);</span>
-<span class="nc" id="L111">        idsToSessions.put(sessionId, session);</span>
-<span class="nc" id="L112">        session.getBasicRemote().sendObject(new WsSessionIdentifier(sessionId));</span>
+<span class="nc" id="L107">        logger.info(&quot;WebSocket opened: {}&quot;, session.getId());</span>
+<span class="nc" id="L108">        sessions.add(session);</span>
+<span class="nc" id="L109">        FlakeIdGenerator idGenerator = hzInstance.getFlakeIdGenerator(&quot;WS_SESSION_ID_GENERATOR&quot;);</span>
+<span class="nc" id="L110">        String sessionId = &quot;ws-&quot; + Helper.generateHexSalt(8) + idGenerator.newId();</span>
+<span class="nc" id="L111">        sessionToIds.put(session, sessionId);</span>
+<span class="nc" id="L112">        idsToSessions.put(sessionId, session);</span>
+<span class="nc" id="L113">        session.getBasicRemote().sendObject(new WsSessionIdentifier(sessionId));</span>
 
-<span class="nc" id="L114">        long maxIdleTimeout = session.getMaxIdleTimeout();</span>
-<span class="nc" id="L115">        logger.trace(&quot;Session Timeout: {} ms&quot;, maxIdleTimeout);</span>
-<span class="nc" id="L116">    }</span>
+<span class="nc" id="L115">        long maxIdleTimeout = session.getMaxIdleTimeout();</span>
+<span class="nc" id="L116">        logger.trace(&quot;Session Timeout: {} ms&quot;, maxIdleTimeout);</span>
+<span class="nc" id="L117">    }</span>
 
     /**
      * called when client send messages
@@ -123,15 +124,15 @@ import org.slf4j.LoggerFactory;
      */
     @OnMessage
     public void onMessage(WsMessage message, Session session) {
-<span class="nc" id="L126">        logger.trace(&quot;Message received: {} from {}&quot;, message, session.getId());</span>
-<span class="nc bnc" id="L127" title="All 2 branches missed.">        if (message instanceof WsPing) {</span>
+<span class="nc" id="L127">        logger.trace(&quot;Message received: {} from {}&quot;, message, session.getId());</span>
+<span class="nc bnc" id="L128" title="All 2 branches missed.">        if (message instanceof WsPing) {</span>
             try {
-<span class="nc" id="L129">                session.getBasicRemote().sendObject(new WsPong());</span>
-<span class="nc" id="L130">            } catch (IOException | EncodeException ex) {</span>
-<span class="nc" id="L131">                logger.warn(&quot;Fail to reply to ping&quot;, ex);</span>
-<span class="nc" id="L132">            }</span>
+<span class="nc" id="L130">                session.getBasicRemote().sendObject(new WsPong());</span>
+<span class="nc" id="L131">            } catch (IOException | EncodeException ex) {</span>
+<span class="nc" id="L132">                logger.warn(&quot;Fail to reply to ping&quot;, ex);</span>
+<span class="nc" id="L133">            }</span>
         }
-<span class="nc" id="L134">    }</span>
+<span class="nc" id="L135">    }</span>
 
     /**
      * TO handle errors. TBD TODO
@@ -141,8 +142,8 @@ import org.slf4j.LoggerFactory;
      */
     @OnError
     public void onError(Session session, Throwable throwable) {
-<span class="nc" id="L144">        logger.info(&quot;WebSocket error for {} {}&quot;, session.getId(), throwable.getMessage());</span>
-<span class="nc" id="L145">    }</span>
+<span class="nc" id="L145">        logger.info(&quot;WebSocket error for {} {}&quot;, session.getId(), throwable.getMessage());</span>
+<span class="nc" id="L146">    }</span>
 
     /**
      * When a client is leaving
@@ -152,14 +153,14 @@ import org.slf4j.LoggerFactory;
      */
     @OnClose
     public void onClose(Session session, CloseReason closeReason) {
-<span class="nc" id="L155">        logger.info(&quot;WebSocket closed for {} with reason {}: {}&quot;,</span>
-<span class="nc" id="L156">            session.getId(), closeReason.getCloseCode(), closeReason.getReasonPhrase());</span>
-<span class="nc" id="L157">        sessions.remove(session);</span>
-<span class="nc" id="L158">        String id = sessionToIds.get(session);</span>
-<span class="nc" id="L159">        idsToSessions.remove(id);</span>
-<span class="nc" id="L160">        sessionToIds.remove(session);</span>
-<span class="nc" id="L161">        websocketManager.unsubscribeFromAll(session, id);</span>
-<span class="nc" id="L162">    }</span>
+<span class="nc" id="L156">        logger.info(&quot;WebSocket closed for {} with reason {}: {}&quot;,</span>
+<span class="nc" id="L157">            session.getId(), closeReason.getCloseCode(), closeReason.getReasonPhrase());</span>
+<span class="nc" id="L158">        sessions.remove(session);</span>
+<span class="nc" id="L159">        String id = sessionToIds.get(session);</span>
+<span class="nc" id="L160">        idsToSessions.remove(id);</span>
+<span class="nc" id="L161">        sessionToIds.remove(session);</span>
+<span class="nc" id="L162">        websocketManager.unsubscribeFromAll(session, id);</span>
+<span class="nc" id="L163">    }</span>
 
     /**
      * Get session by its id
@@ -169,7 +170,7 @@ import org.slf4j.LoggerFactory;
      * @return the session or null
      */
     public static Session getSession(String sessionId) {
-<span class="nc" id="L172">        return idsToSessions.get(sessionId);</span>
+<span class="nc" id="L173">        return idsToSessions.get(sessionId);</span>
     }
 
     /**
@@ -180,7 +181,7 @@ import org.slf4j.LoggerFactory;
      * @return sessionid or null
      */
     public static String getSessionId(Session session) {
-<span class="nc" id="L183">        return sessionToIds.get(session);</span>
+<span class="nc" id="L184">        return sessionToIds.get(session);</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

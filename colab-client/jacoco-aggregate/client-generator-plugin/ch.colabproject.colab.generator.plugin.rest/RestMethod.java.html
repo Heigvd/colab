@@ -390,8 +390,8 @@ import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
      * @param type           type of the parameter
      */
     public void addFormParameter(String name, String annotationName, String javadoc, Type type) {
-<span class="nc" id="L393">        Optional&lt;Param&gt; findFirst</span>
-<span class="nc" id="L394">            = this.formParameters.stream().filter(p -&gt; p.getInAnnotationName().equals(annotationName)).findFirst();</span>
+<span class="nc" id="L393">        Optional&lt;Param&gt; findFirst = this.formParameters.stream()</span>
+<span class="nc" id="L394">            .filter(p -&gt; p.getInAnnotationName().equals(annotationName)).findFirst();</span>
 <span class="nc bnc" id="L395" title="All 2 branches missed.">        if (findFirst.isEmpty()) {</span>
 //            Param param = findFirst.get();
 //            // hack: Files are injected with two disctinct parameter: one InputStream for bytes, one

@@ -25,33 +25,36 @@ import org.slf4j.LoggerFactory;
  *
  * @author maxence
  */
-@WebFilter(filterName = &quot;CacheControlFilter&quot;, urlPatterns = {&quot;/*&quot;}, dispatcherTypes = {DispatcherType.REQUEST})
-<span class="nc" id="L29">public class StaticContentCacheControlFilter implements Filter{</span>
+@WebFilter(filterName = &quot;CacheControlFilter&quot;, urlPatterns = { &quot;/*&quot; },
+    dispatcherTypes = { DispatcherType.REQUEST })
+<span class="nc" id="L30">public class StaticContentCacheControlFilter implements Filter {</span>
 
     /** logger */
-<span class="nc" id="L32">    private static final Logger logger = LoggerFactory.getLogger(StaticContentCacheControlFilter.class);</span>
+<span class="nc" id="L33">    private static final Logger logger = LoggerFactory</span>
+<span class="nc" id="L34">        .getLogger(StaticContentCacheControlFilter.class);</span>
 
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
         /** no-op */
-<span class="nc" id="L37">    }</span>
+<span class="nc" id="L39">    }</span>
 
     @Override
-    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
-<span class="nc bnc" id="L41" title="All 4 branches missed.">        if (request instanceof HttpServletRequest &amp;&amp; response instanceof HttpServletResponse) {</span>
-<span class="nc" id="L42">            HttpServletRequest req = (HttpServletRequest) request;</span>
-<span class="nc" id="L43">            HttpServletResponse resp = (HttpServletResponse) response;</span>
+    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
+        throws IOException, ServletException {
+<span class="nc bnc" id="L44" title="All 4 branches missed.">        if (request instanceof HttpServletRequest &amp;&amp; response instanceof HttpServletResponse) {</span>
+<span class="nc" id="L45">            HttpServletRequest req = (HttpServletRequest) request;</span>
+<span class="nc" id="L46">            HttpServletResponse resp = (HttpServletResponse) response;</span>
 
-<span class="nc" id="L45">            String url = req.getRequestURI().replaceFirst(&quot;^&quot; + req.getContextPath(), &quot;&quot;);</span>
-<span class="nc" id="L46">            resp.setHeader(&quot;Cache-Control&quot;, &quot;no-cache&quot;);</span>
-<span class="nc" id="L47">            logger.trace(&quot;CacheControl Filter: {} to no-cache&quot;, url);</span>
+<span class="nc" id="L48">            String url = req.getRequestURI().replaceFirst(&quot;^&quot; + req.getContextPath(), &quot;&quot;);</span>
+<span class="nc" id="L49">            resp.setHeader(&quot;Cache-Control&quot;, &quot;no-cache&quot;);</span>
+<span class="nc" id="L50">            logger.trace(&quot;CacheControl Filter: {} to no-cache&quot;, url);</span>
         }
-<span class="nc" id="L49">        chain.doFilter(request, response);</span>
-<span class="nc" id="L50">    }</span>
+<span class="nc" id="L52">        chain.doFilter(request, response);</span>
+<span class="nc" id="L53">    }</span>
 
     @Override
     public void destroy() {
         /** no-op */
-<span class="nc" id="L55">    }</span>
+<span class="nc" id="L58">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

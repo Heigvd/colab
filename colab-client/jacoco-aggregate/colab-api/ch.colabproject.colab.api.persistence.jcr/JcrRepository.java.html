@@ -6,6 +6,7 @@
  */
 package ch.colabproject.colab.api.persistence.jcr;
 
+import static org.apache.jackrabbit.oak.plugins.document.mongo.MongoDocumentNodeStoreBuilder.newMongoDocumentNodeStoreBuilder;
 import ch.colabproject.colab.api.setup.ColabConfiguration;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -17,12 +18,11 @@ import javax.ejb.Startup;
 import javax.jcr.Repository;
 import org.apache.jackrabbit.oak.Oak;
 import org.apache.jackrabbit.oak.jcr.Jcr;
+import org.apache.jackrabbit.oak.plugins.document.DocumentNodeStore;
 //import org.apache.jackrabbit.oak.segment.file.FileStore;
 import org.apache.jackrabbit.oak.plugins.document.LeaseCheckMode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.apache.jackrabbit.oak.plugins.document.DocumentNodeStore;
-import static org.apache.jackrabbit.oak.plugins.document.mongo.MongoDocumentNodeStoreBuilder.newMongoDocumentNodeStoreBuilder;
 
 /**
  * Access to the JCR repository
@@ -41,7 +41,7 @@ import static org.apache.jackrabbit.oak.plugins.document.mongo.MongoDocumentNode
 
     /** File store */
 //    private static FileStore fileStore;
-    
+
     private static DocumentNodeStore nodeStore;
 
     /**
@@ -53,10 +53,10 @@ import static org.apache.jackrabbit.oak.plugins.document.mongo.MongoDocumentNode
 <span class="nc" id="L53">            logger.trace(&quot;Init JCR Repository&quot;);</span>
 
 <span class="nc" id="L55">            var mongoUri = ColabConfiguration.getJcrMongoDbUri();</span>
-<span class="nc bnc" id="L56" title="All 4 branches missed.">            if(mongoUri == null || mongoUri.isBlank()){</span>
+<span class="nc bnc" id="L56" title="All 4 branches missed.">            if (mongoUri == null || mongoUri.isBlank()) {</span>
 <span class="nc" id="L57">                repository = new Jcr(new Oak()).createRepository();</span>
 <span class="nc" id="L58">                logger.debug(&quot;Using in memory JCR repository&quot;);</span>
-            }else{
+            } else {
                 try {
 <span class="nc" id="L61">                    final URI uri = new URI(mongoUri);</span>
 
@@ -70,19 +70,20 @@ import static org.apache.jackrabbit.oak.plugins.document.mongo.MongoDocumentNode
 
 <span class="nc" id="L71">                        nodeStore = newMongoDocumentNodeStoreBuilder()</span>
 <span class="nc" id="L72">                            .setLeaseCheckMode(LeaseCheckMode.DISABLED)</span>
-<span class="nc" id="L73">                            .setMongoDB(&quot;mongodb://&quot; + hostPort + &quot;/?readConcernLevel=majority&quot;, dbName, 0)</span>
-<span class="nc" id="L74">                            .build();</span>
+<span class="nc" id="L73">                            .setMongoDB(&quot;mongodb://&quot; + hostPort + &quot;/?readConcernLevel=majority&quot;,</span>
+                                dbName, 0)
+<span class="nc" id="L75">                            .build();</span>
 
-<span class="nc" id="L76">                        repository = new Jcr(new Oak(nodeStore)).createRepository();</span>
-<span class="nc" id="L77">                        logger.info(&quot;JCR repository initialized&quot;);</span>
+<span class="nc" id="L77">                        repository = new Jcr(new Oak(nodeStore)).createRepository();</span>
+<span class="nc" id="L78">                        logger.info(&quot;JCR repository initialized&quot;);</span>
 
                     }
-<span class="nc" id="L80">                } catch (URISyntaxException e) {</span>
-<span class="nc" id="L81">                    logger.error(&quot;Could not init JCR : {}&quot;, e.getMessage());</span>
-<span class="nc" id="L82">                }</span>
+<span class="nc" id="L81">                } catch (URISyntaxException e) {</span>
+<span class="nc" id="L82">                    logger.error(&quot;Could not init JCR : {}&quot;, e.getMessage());</span>
+<span class="nc" id="L83">                }</span>
             }
 //            if (inMemoryStorage) {
-                // in-memory is a very stupid backend
+            // in-memory is a very stupid backend
 //            } else {
 //                // TODO: use a real backend...
 //                // stupid filesystem backend
@@ -97,7 +98,7 @@ import static org.apache.jackrabbit.oak.plugins.document.mongo.MongoDocumentNode
 //               }
 //          }
         }
-<span class="nc" id="L100">    }</span>
+<span class="nc" id="L101">    }</span>
 
     /**
      * Get the JCR repository
@@ -106,10 +107,10 @@ import static org.apache.jackrabbit.oak.plugins.document.mongo.MongoDocumentNode
      */
     @Lock(LockType.READ)
     public Repository getRepository() {
-<span class="nc bnc" id="L109" title="All 2 branches missed.">        if (repository == null) {</span>
-<span class="nc" id="L110">            init();</span>
+<span class="nc bnc" id="L110" title="All 2 branches missed.">        if (repository == null) {</span>
+<span class="nc" id="L111">            init();</span>
         }
-<span class="nc" id="L112">        return repository;</span>
+<span class="nc" id="L113">        return repository;</span>
     }
 
     /**
@@ -117,18 +118,18 @@ import static org.apache.jackrabbit.oak.plugins.document.mongo.MongoDocumentNode
      */
     @PreDestroy
     public void preDestroy() {
-<span class="nc" id="L120">        logger.trace(&quot;Close JCR Repository&quot;);</span>
-        
-<span class="nc bnc" id="L122" title="All 2 branches missed.">        if (nodeStore != null) {</span>
-<span class="nc" id="L123">            nodeStore.dispose();</span>
-<span class="nc" id="L124">            nodeStore = null;</span>
+<span class="nc" id="L121">        logger.trace(&quot;Close JCR Repository&quot;);</span>
+
+<span class="nc bnc" id="L123" title="All 2 branches missed.">        if (nodeStore != null) {</span>
+<span class="nc" id="L124">            nodeStore.dispose();</span>
+<span class="nc" id="L125">            nodeStore = null;</span>
         }
 //        if (fileStore != null) {
 //            fileStore.close();
 //            fileStore = null;
 //        }
 
-<span class="nc" id="L131">        repository = null;</span>
-<span class="nc" id="L132">    }</span>
+<span class="nc" id="L132">        repository = null;</span>
+<span class="nc" id="L133">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

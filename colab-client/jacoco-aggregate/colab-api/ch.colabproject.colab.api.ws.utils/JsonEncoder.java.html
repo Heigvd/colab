@@ -21,7 +21,6 @@ import javax.websocket.EndpointConfig;
 <span class="nc" id="L21">public class JsonEncoder implements Encoder.Text&lt;Object&gt; {</span>
 
     /**
-     *
      * Serialize object using {@link #toJson(Object) toJson}
      *
      * @param object object to serialize
@@ -32,7 +31,7 @@ import javax.websocket.EndpointConfig;
      */
     @Override
     public String encode(Object object) throws EncodeException {
-<span class="nc" id="L35">        return toJson(object);</span>
+<span class="nc" id="L34">        return toJson(object);</span>
     }
 
     /**
@@ -41,7 +40,7 @@ import javax.websocket.EndpointConfig;
     @Override
     public void init(EndpointConfig config) {
         /* no-op */
-<span class="nc" id="L44">    }</span>
+<span class="nc" id="L43">    }</span>
 
     /**
      * {@inheritDoc }
@@ -49,7 +48,7 @@ import javax.websocket.EndpointConfig;
     @Override
     public void destroy() {
         /* no-op */
-<span class="nc" id="L52">    }</span>
+<span class="nc" id="L51">    }</span>
 
     /**
      * Serialize object using {@link JsonbProvider#getJsonb() }
@@ -62,10 +61,10 @@ import javax.websocket.EndpointConfig;
      */
     public static String toJson(Object object) throws EncodeException {
         try {
-<span class="nc" id="L65">            Jsonb jsonb = JsonbProvider.getJsonb();</span>
-<span class="nc" id="L66">            return jsonb.toJson(object);</span>
-<span class="nc" id="L67">        } catch (JsonbException ex) {</span>
-<span class="nc" id="L68">            throw new EncodeException(object, ex.getMessage());</span>
+<span class="nc" id="L64">            Jsonb jsonb = JsonbProvider.getJsonb();</span>
+<span class="nc" id="L65">            return jsonb.toJson(object);</span>
+<span class="nc" id="L66">        } catch (JsonbException ex) {</span>
+<span class="nc" id="L67">            throw new EncodeException(object, ex.getMessage());</span>
         }
     }
 }

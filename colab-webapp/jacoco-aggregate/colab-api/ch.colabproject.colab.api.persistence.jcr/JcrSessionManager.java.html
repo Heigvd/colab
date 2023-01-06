@@ -57,7 +57,7 @@ import org.slf4j.LoggerFactory;
      */
     public JcrSession getSession(Project project) throws RepositoryException {
 <span class="nc" id="L59">        Long id = -1l; // hack: id -1 means global data</span>
-<span class="nc bnc" id="L60" title="All 2 branches missed.">        if (project != null){</span>
+<span class="nc bnc" id="L60" title="All 2 branches missed.">        if (project != null) {</span>
 <span class="nc" id="L61">            id = project.getId();</span>
         }
 

@@ -22,12 +22,11 @@ import javax.inject.Inject;
 import org.slf4j.LoggerFactory;
 
 /**
- *
  * @author maxence
  */
 @Stateless
 @LocalBean
-<span class="nc" id="L30">public class MonitoringManager {</span>
+<span class="nc" id="L29">public class MonitoringManager {</span>
 
     /**
      * Cluster event name
@@ -49,28 +48,27 @@ import org.slf4j.LoggerFactory;
      * @param loggerLevel new level of the logger
      */
     public void changeLogerLevelClusterWide(String loggerName, String loggerLevel) {
-<span class="nc" id="L52">        LoggerLevelPayload ll = LoggerLevelPayload.build(loggerName, loggerLevel);</span>
+<span class="nc" id="L51">        LoggerLevelPayload ll = LoggerLevelPayload.build(loggerName, loggerLevel);</span>
         // send event to each instances of the cluster
-<span class="nc" id="L54">        this.events.fire(ll);</span>
-<span class="nc" id="L55">    }</span>
+<span class="nc" id="L53">        this.events.fire(ll);</span>
+<span class="nc" id="L54">    }</span>
 
     /**
      * Change level of a logger within this very payara instance.
      *
      * @param payload logger name and level to set
-     *
      */
     public void changeLoggerLevelInternal(
         @Observes @Inbound(eventName = SET_LOGGER_LEVEL_EVENT) LoggerLevelPayload payload
     ) {
-<span class="nc" id="L66">        Logger logger = (Logger) LoggerFactory.getLogger(payload.getLoggerName());</span>
-<span class="nc" id="L67">        Level newLevel = Level.valueOf(payload.getLoggerLevel());</span>
-<span class="nc bnc" id="L68" title="All 2 branches missed.">        if (newLevel != logger.getLevel()) {</span>
-<span class="nc" id="L69">            logger.setLevel(Level.valueOf(payload.getLoggerLevel()));</span>
+<span class="nc" id="L64">        Logger logger = (Logger) LoggerFactory.getLogger(payload.getLoggerName());</span>
+<span class="nc" id="L65">        Level newLevel = Level.valueOf(payload.getLoggerLevel());</span>
+<span class="nc bnc" id="L66" title="All 2 branches missed.">        if (newLevel != logger.getLevel()) {</span>
+<span class="nc" id="L67">            logger.setLevel(Level.valueOf(payload.getLoggerLevel()));</span>
         } else {
-<span class="nc" id="L71">            logger.setLevel(null);</span>
+<span class="nc" id="L69">            logger.setLevel(null);</span>
         }
-<span class="nc" id="L73">    }</span>
+<span class="nc" id="L71">    }</span>
 
     /**
      * Descriptor all known co.LAB logger by providing their current level.
@@ -78,17 +76,17 @@ import org.slf4j.LoggerFactory;
      * @return all known levelDescriptor mapped by the name of the logger
      */
     public Map&lt;String, LevelDescriptor&gt; getLoggerLevels() {
-<span class="nc" id="L81">        Map&lt;String, LevelDescriptor&gt; loggers = new HashMap&lt;&gt;();</span>
-<span class="nc" id="L82">        LoggerContext loggerContext = (LoggerContext) LoggerFactory.getILoggerFactory();</span>
+<span class="nc" id="L79">        Map&lt;String, LevelDescriptor&gt; loggers = new HashMap&lt;&gt;();</span>
+<span class="nc" id="L80">        LoggerContext loggerContext = (LoggerContext) LoggerFactory.getILoggerFactory();</span>
 
-<span class="nc" id="L84">        loggerContext.getLoggerList().stream()</span>
-<span class="nc" id="L85">            .filter(logger -&gt; logger.getName().startsWith(&quot;ch.colabproject&quot;))</span>
-<span class="nc" id="L86">            .forEach(logger -&gt; {</span>
-<span class="nc" id="L87">                loggers.put(logger.getName(),</span>
-<span class="nc" id="L88">                    LevelDescriptor.build(logger));</span>
-<span class="nc" id="L89">            });</span>
+<span class="nc" id="L82">        loggerContext.getLoggerList().stream()</span>
+<span class="nc" id="L83">            .filter(logger -&gt; logger.getName().startsWith(&quot;ch.colabproject&quot;))</span>
+<span class="nc" id="L84">            .forEach(logger -&gt; {</span>
+<span class="nc" id="L85">                loggers.put(logger.getName(),</span>
+<span class="nc" id="L86">                    LevelDescriptor.build(logger));</span>
+<span class="nc" id="L87">            });</span>
 
-<span class="nc" id="L91">        return loggers;</span>
+<span class="nc" id="L89">        return loggers;</span>
     }
 
     /**
@@ -97,11 +95,11 @@ import org.slf4j.LoggerFactory;
      * @return details about current version
      */
     public VersionDetails getVersionDetails() {
-<span class="nc" id="L100">        VersionDetails v = new VersionDetails();</span>
-<span class="nc" id="L101">        v.setBuildNumber(ColabConfiguration.getBuildNumber());</span>
-<span class="nc" id="L102">        v.setDockerImages(ColabConfiguration.getBuildImages());</span>
+<span class="nc" id="L98">        VersionDetails v = new VersionDetails();</span>
+<span class="nc" id="L99">        v.setBuildNumber(ColabConfiguration.getBuildNumber());</span>
+<span class="nc" id="L100">        v.setDockerImages(ColabConfiguration.getBuildImages());</span>
 
-<span class="nc" id="L104">        return v;</span>
+<span class="nc" id="L102">        return v;</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

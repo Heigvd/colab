@@ -114,17 +114,18 @@ public class WebsocketMessagePreparer {
     private static void addAsDeleted(Map&lt;WebsocketChannel, List&lt;WsMessage&gt;&gt; byChannels,
         WebsocketChannel channel,
         IndexEntry entry) {
-<span class="nc" id="L117">        Collection&lt;IndexEntry&gt; set = WebsocketMessagePreparer.getOrCreateWsUpdateMessage(byChannels, channel)</span>
-<span class="nc" id="L118">            .getDeleted();</span>
-<span class="nc" id="L119">        logger.trace(&quot;Add {} to deleted set {}&quot;, entry, set);</span>
-<span class="nc" id="L120">        set.add(entry);</span>
-<span class="nc" id="L121">    }</span>
+<span class="nc" id="L117">        Collection&lt;IndexEntry&gt; set = WebsocketMessagePreparer</span>
+<span class="nc" id="L118">            .getOrCreateWsUpdateMessage(byChannels, channel)</span>
+<span class="nc" id="L119">            .getDeleted();</span>
+<span class="nc" id="L120">        logger.trace(&quot;Add {} to deleted set {}&quot;, entry, set);</span>
+<span class="nc" id="L121">        set.add(entry);</span>
+<span class="nc" id="L122">    }</span>
 
     /**
      * Prepare all WsUpdateMessage.
      *
      * @param userDao     provide userDao to resolve nested channels
-     * @param teamDao        provide teamDao to resolve nested channels
+     * @param teamDao     provide teamDao to resolve nested channels
      * @param cardTypeDao provide cardTypeDao to resolve nested channels
      * @param updated     set of created/updated entities
      * @param deleted     set of just destroyed-entities index entry
@@ -140,27 +141,27 @@ public class WebsocketMessagePreparer {
         Set&lt;WithWebsocketChannels&gt; updated,
         Set&lt;IndexEntry&gt; deleted
     ) throws EncodeException {
-<span class="nc" id="L143">        Map&lt;WebsocketChannel, List&lt;WsMessage&gt;&gt; messagesByChannel = new HashMap&lt;&gt;();</span>
-<span class="nc" id="L144">        logger.debug(&quot;Prepare WsMessage. Update:{}; Deleted:{}&quot;, updated, deleted);</span>
+<span class="nc" id="L144">        Map&lt;WebsocketChannel, List&lt;WsMessage&gt;&gt; messagesByChannel = new HashMap&lt;&gt;();</span>
+<span class="nc" id="L145">        logger.debug(&quot;Prepare WsMessage. Update:{}; Deleted:{}&quot;, updated, deleted);</span>
 
-<span class="nc" id="L146">        updated.forEach(object -&gt; {</span>
-<span class="nc" id="L147">            logger.trace(&quot;Process updated entity {}&quot;, object);</span>
-<span class="nc" id="L148">            object.getChannelsBuilder().computeChannels(userDao, teamDao, cardTypeDao)</span>
-<span class="nc" id="L149">                .forEach(channel -&gt; {</span>
-<span class="nc" id="L150">                    addAsUpdated(messagesByChannel, channel, object);</span>
-<span class="nc" id="L151">                });</span>
-<span class="nc" id="L152">        });</span>
+<span class="nc" id="L147">        updated.forEach(object -&gt; {</span>
+<span class="nc" id="L148">            logger.trace(&quot;Process updated entity {}&quot;, object);</span>
+<span class="nc" id="L149">            object.getChannelsBuilder().computeChannels(userDao, teamDao, cardTypeDao)</span>
+<span class="nc" id="L150">                .forEach(channel -&gt; {</span>
+<span class="nc" id="L151">                    addAsUpdated(messagesByChannel, channel, object);</span>
+<span class="nc" id="L152">                });</span>
+<span class="nc" id="L153">        });</span>
 
-<span class="nc" id="L154">        deleted.forEach(object -&gt; {</span>
-<span class="nc" id="L155">            logger.trace(&quot;Process deleted entry {}&quot;, object);</span>
-<span class="nc" id="L156">            object.getChannelsBuilder().computeChannels(userDao, teamDao, cardTypeDao)</span>
-<span class="nc" id="L157">                .forEach(</span>
+<span class="nc" id="L155">        deleted.forEach(object -&gt; {</span>
+<span class="nc" id="L156">            logger.trace(&quot;Process deleted entry {}&quot;, object);</span>
+<span class="nc" id="L157">            object.getChannelsBuilder().computeChannels(userDao, teamDao, cardTypeDao)</span>
+<span class="nc" id="L158">                .forEach(</span>
                     channel -&gt; {
-<span class="nc" id="L159">                        addAsDeleted(messagesByChannel, channel, object);</span>
-<span class="nc" id="L160">                    });</span>
-<span class="nc" id="L161">        });</span>
+<span class="nc" id="L160">                        addAsDeleted(messagesByChannel, channel, object);</span>
+<span class="nc" id="L161">                    });</span>
+<span class="nc" id="L162">        });</span>
 
-<span class="nc" id="L163">        return PrecomputedWsMessages.build(messagesByChannel);</span>
+<span class="nc" id="L164">        return PrecomputedWsMessages.build(messagesByChannel);</span>
     }
 
     /**
@@ -177,7 +178,7 @@ public class WebsocketMessagePreparer {
         UserDao userDao,
         WsMessage message
     ) throws EncodeException {
-<span class="nc" id="L180">        return prepareWsMessage(userDao, null, null, new ForAdminChannelsBuilder(), message);</span>
+<span class="nc" id="L181">        return prepareWsMessage(userDao, null, null, new ForAdminChannelsBuilder(), message);</span>
     }
 
     /**
@@ -200,13 +201,13 @@ public class WebsocketMessagePreparer {
         ChannelsBuilder channelBuilder,
         WsMessage message
     ) throws EncodeException {
-<span class="nc" id="L203">        Map&lt;WebsocketChannel, List&lt;WsMessage&gt;&gt; messagesByChannel = new HashMap&lt;&gt;();</span>
+<span class="nc" id="L204">        Map&lt;WebsocketChannel, List&lt;WsMessage&gt;&gt; messagesByChannel = new HashMap&lt;&gt;();</span>
 
-<span class="nc" id="L205">        channelBuilder.computeChannels(userDao, teamDao, cardTypeDao).forEach(channel -&gt; {</span>
-<span class="nc" id="L206">            messagesByChannel.put(channel, List.of(message));</span>
-<span class="nc" id="L207">        });</span>
+<span class="nc" id="L206">        channelBuilder.computeChannels(userDao, teamDao, cardTypeDao).forEach(channel -&gt; {</span>
+<span class="nc" id="L207">            messagesByChannel.put(channel, List.of(message));</span>
+<span class="nc" id="L208">        });</span>
 
-<span class="nc" id="L209">        return PrecomputedWsMessages.build(messagesByChannel);</span>
+<span class="nc" id="L210">        return PrecomputedWsMessages.build(messagesByChannel);</span>
     }
 
 }

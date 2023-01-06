@@ -30,6 +30,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
+import java.util.stream.Collectors;
 import javax.ejb.Lock;
 import javax.ejb.LockType;
 import javax.ejb.Singleton;
@@ -43,7 +44,6 @@ import com.hazelcast.core.HazelcastInstance;
 import com.hazelcast.core.IExecutorService;
 import com.hazelcast.cp.lock.FencedLock;
 import com.hazelcast.map.IMap;
-import java.util.stream.Collectors;
 
 /**
  * Micro Changes Management.
@@ -169,8 +169,8 @@ import java.util.stream.Collectors;
 <span class="nc bnc" id="L169" title="All 2 branches missed.">            boolean parentExists = basedOn.contains(block.getRevision())</span>
 <span class="nc" id="L170">                || changes.stream()</span>
 <span class="nc" id="L171">                    .filter(change -&gt; basedOn.stream()</span>
-<span class="nc" id="L172">                    .filter(rev -&gt; change.getRevision().equals(rev))</span>
-<span class="nc" id="L173">                    .findFirst().isPresent()</span>
+<span class="nc" id="L172">                        .filter(rev -&gt; change.getRevision().equals(rev))</span>
+<span class="nc" id="L173">                        .findFirst().isPresent()</span>
                     )
 <span class="nc bnc" id="L175" title="All 2 branches missed.">                    .findFirst().isPresent();</span>
 
@@ -372,54 +372,61 @@ import java.util.stream.Collectors;
 <span class="nc" id="L372">                        Resourceable owner = r.getOwner();</span>
 <span class="nc bnc" id="L373" title="All 2 branches missed.">                        if (owner instanceof CardType) {</span>
 <span class="nc" id="L374">                            CardType ct = (CardType) owner;</span>
-<span class="nc" id="L375">                            title.append(&quot;Type: &quot;).append(ct.getTitle()).append(&quot; #&quot;).append(ct.getId());</span>
-<span class="nc bnc" id="L376" title="All 2 branches missed.">                        } else if (owner instanceof CardTypeRef) {</span>
-<span class="nc" id="L377">                            CardTypeRef ref = (CardTypeRef) owner;</span>
-<span class="nc" id="L378">                            title.append(&quot;TypeRef: &quot;).append(ref.resolve().getTitle()).append(&quot; #&quot;).append(ref.getId());</span>
-<span class="nc bnc" id="L379" title="All 2 branches missed.">                        } else if (owner instanceof CardContent) {</span>
-<span class="nc" id="L380">                            CardContent cc = (CardContent) owner;</span>
-<span class="nc" id="L381">                            Card c = cc.getCard();</span>
-<span class="nc" id="L382">                            title.append(&quot;Card: &quot;).append(c.getTitle()).append(&quot; #&quot;).append(c.getId());</span>
-<span class="nc" id="L383">                            title.append(&quot; / CardContent: &quot;).append(cc.getTitle()).append(&quot; #&quot;).append(cc.getId());</span>
-<span class="nc bnc" id="L384" title="All 2 branches missed.">                        } else if (owner instanceof Card) {</span>
-<span class="nc" id="L385">                            Card c = (Card) owner;</span>
-<span class="nc" id="L386">                            title.append(&quot;Card: &quot;).append(c.getTitle()).append(&quot; #&quot;).append(c.getId());</span>
+<span class="nc" id="L375">                            title.append(&quot;Type: &quot;).append(ct.getTitle()).append(&quot; #&quot;)</span>
+<span class="nc" id="L376">                                .append(ct.getId());</span>
+<span class="nc bnc" id="L377" title="All 2 branches missed.">                        } else if (owner instanceof CardTypeRef) {</span>
+<span class="nc" id="L378">                            CardTypeRef ref = (CardTypeRef) owner;</span>
+<span class="nc" id="L379">                            title.append(&quot;TypeRef: &quot;).append(ref.resolve().getTitle()).append(&quot; #&quot;)</span>
+<span class="nc" id="L380">                                .append(ref.getId());</span>
+<span class="nc bnc" id="L381" title="All 2 branches missed.">                        } else if (owner instanceof CardContent) {</span>
+<span class="nc" id="L382">                            CardContent cc = (CardContent) owner;</span>
+<span class="nc" id="L383">                            Card c = cc.getCard();</span>
+<span class="nc" id="L384">                            title.append(&quot;Card: &quot;).append(c.getTitle()).append(&quot; #&quot;)</span>
+<span class="nc" id="L385">                                .append(c.getId());</span>
+<span class="nc" id="L386">                            title.append(&quot; / CardContent: &quot;).append(cc.getTitle()).append(&quot; #&quot;)</span>
+<span class="nc" id="L387">                                .append(cc.getId());</span>
+<span class="nc bnc" id="L388" title="All 2 branches missed.">                        } else if (owner instanceof Card) {</span>
+<span class="nc" id="L389">                            Card c = (Card) owner;</span>
+<span class="nc" id="L390">                            title.append(&quot;Card: &quot;).append(c.getTitle()).append(&quot; #&quot;)</span>
+<span class="nc" id="L391">                                .append(c.getId());</span>
                         }
 
-<span class="nc" id="L389">                        title.append(&quot; / Resource &quot;).append(r.getTitle()).append(&quot; # &quot;).append(r.getId());</span>
-<span class="nc bnc" id="L390" title="All 2 branches missed.">                    } else if (block.getOwningCardContent() != null) {</span>
-<span class="nc" id="L391">                        CardContent cc = block.getOwningCardContent();</span>
-<span class="nc" id="L392">                        Card c = cc.getCard();</span>
-<span class="nc" id="L393">                        title.append(&quot;Card: &quot;).append(c.getTitle()).append(&quot; #&quot;).append(c.getId()</span>
-<span class="nc" id="L394">                        ).append(&quot; / CardContent: &quot;).append(cc.getTitle()).append(&quot; #&quot;).append(cc.getId());</span>
+<span class="nc" id="L394">                        title.append(&quot; / Resource &quot;).append(r.getTitle()).append(&quot; # &quot;)</span>
+<span class="nc" id="L395">                            .append(r.getId());</span>
+<span class="nc bnc" id="L396" title="All 2 branches missed.">                    } else if (block.getOwningCardContent() != null) {</span>
+<span class="nc" id="L397">                        CardContent cc = block.getOwningCardContent();</span>
+<span class="nc" id="L398">                        Card c = cc.getCard();</span>
+<span class="nc" id="L399">                        title.append(&quot;Card: &quot;).append(c.getTitle()).append(&quot; #&quot;).append(c.getId()</span>
+<span class="nc" id="L400">                        ).append(&quot; / CardContent: &quot;).append(cc.getTitle()).append(&quot; #&quot;)</span>
+<span class="nc" id="L401">                            .append(cc.getId());</span>
                     }
-<span class="nc" id="L396">                } catch (Throwable error) {</span>
+<span class="nc" id="L403">                } catch (Throwable error) {</span>
                     /** no-op */
-<span class="nc" id="L398">                    logger.warn(&quot;Fails to build block title {}&quot;, block);</span>
-<span class="nc" id="L399">                }</span>
-<span class="nc" id="L400">                bm.setTitle(title.toString());</span>
+<span class="nc" id="L405">                    logger.warn(&quot;Fails to build block title {}&quot;, block);</span>
+<span class="nc" id="L406">                }</span>
+<span class="nc" id="L407">                bm.setTitle(title.toString());</span>
                 try {
-<span class="nc" id="L402">                    var data = cache.get(key);</span>
-<span class="nc bnc" id="L403" title="All 2 branches missed.">                    if (data != null) {</span>
-<span class="nc bnc" id="L404" title="All 2 branches missed.">                        if (block.isHealthy()) {</span>
-<span class="nc" id="L405">                            bm.setStatus(BlockMonitoring.BlockStatus.HEALTHY);</span>
+<span class="nc" id="L409">                    var data = cache.get(key);</span>
+<span class="nc bnc" id="L410" title="All 2 branches missed.">                    if (data != null) {</span>
+<span class="nc bnc" id="L411" title="All 2 branches missed.">                        if (block.isHealthy()) {</span>
+<span class="nc" id="L412">                            bm.setStatus(BlockMonitoring.BlockStatus.HEALTHY);</span>
                         } else {
-<span class="nc" id="L407">                            bm.setStatus(BlockMonitoring.BlockStatus.UNHEALTHY);</span>
+<span class="nc" id="L414">                            bm.setStatus(BlockMonitoring.BlockStatus.UNHEALTHY);</span>
                         }
                     } else {
-<span class="nc" id="L410">                        bm.setStatus(BlockMonitoring.BlockStatus.PROCESSED);</span>
+<span class="nc" id="L417">                        bm.setStatus(BlockMonitoring.BlockStatus.PROCESSED);</span>
                     }
-<span class="nc" id="L412">                } catch (Throwable e) {</span>
+<span class="nc" id="L419">                } catch (Throwable e) {</span>
                     /** Catch everything ! */
-<span class="nc" id="L414">                    bm.setStatus(BlockMonitoring.BlockStatus.DATA_ERROR);</span>
-<span class="nc" id="L415">                }</span>
-<span class="nc" id="L416">            } else {</span>
-<span class="nc" id="L417">                bm.setTitle(&quot;Ghost block&quot;);</span>
-<span class="nc" id="L418">                bm.setStatus(BlockMonitoring.BlockStatus.DELETED);</span>
+<span class="nc" id="L421">                    bm.setStatus(BlockMonitoring.BlockStatus.DATA_ERROR);</span>
+<span class="nc" id="L422">                }</span>
+<span class="nc" id="L423">            } else {</span>
+<span class="nc" id="L424">                bm.setTitle(&quot;Ghost block&quot;);</span>
+<span class="nc" id="L425">                bm.setStatus(BlockMonitoring.BlockStatus.DELETED);</span>
             }
 
-<span class="nc" id="L421">            return bm;</span>
-<span class="nc" id="L422">        }).collect(Collectors.toList());</span>
+<span class="nc" id="L428">            return bm;</span>
+<span class="nc" id="L429">        }).collect(Collectors.toList());</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

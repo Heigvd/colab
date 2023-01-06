@@ -161,7 +161,8 @@ public class ColabConfiguration {
     public static final String JCR_REPOSITORY_PROJECT_QUOTA_MB_DEFAULT = &quot;2048&quot;;
 
     /**
-     * Mongo DB access for JCR file storage. Empty string means non-persistent, i.e. stored in memory during run
+     * Mongo DB access for JCR file storage. Empty string means non-persistent, i.e. stored in
+     * memory during run
      */
     public static final String JCR_MONGO_DB_URI = &quot;colab.jcr.mongodb.uri&quot;;
 
@@ -169,7 +170,6 @@ public class ColabConfiguration {
      * Default Mongo DB access for JCR file storage.
      */
     public static final String JCR_MONGO_DB_URI_DEFAULT = &quot;&quot;;
-
 
     /**
      * never-called private constructor
@@ -184,7 +184,7 @@ public class ColabConfiguration {
      *
      * @return build number
      */
-    public static String getBuildNumber(){
+    public static String getBuildNumber() {
 <span class="nc" id="L188">        return System.getProperty(BUILD_NUMBER_PROPERTY, DEFAULT_BUILD_NUMBER_VALUE);</span>
     }
 
@@ -193,7 +193,7 @@ public class ColabConfiguration {
      *
      * @return the running docker images or empty if running app is not a docker container
      */
-    public static String getBuildImages(){
+    public static String getBuildImages() {
 <span class="nc" id="L197">        return System.getProperty(BUILD_IMAGES_PROPERTY, DEFAULT_BUILD_IMAGES_VALUE);</span>
     }
 
@@ -291,50 +291,51 @@ public class ColabConfiguration {
     }
 
     /**
-     *
      * @return The per file maximum size expressed in bytes
      */
     public static Long getJcrRepositoryFileSizeLimit() {
-<span class="nc" id="L298">        var value = System.getProperty(JCR_REPOSITORY_MAX_FILE_SIZE_MB, JCR_REPOSITORY_MAX_FILE_SIZE_MB_DEFAULT);</span>
+<span class="nc" id="L297">        var value = System.getProperty(JCR_REPOSITORY_MAX_FILE_SIZE_MB,</span>
+            JCR_REPOSITORY_MAX_FILE_SIZE_MB_DEFAULT);
 <span class="nc" id="L299">        var parsed = tryParsePositive(value, JCR_REPOSITORY_MAX_FILE_SIZE_MB_DEFAULT);</span>
-<span class="nc" id="L300">        return parsed &lt;&lt; 20;//convert to bytes</span>
+<span class="nc" id="L300">        return parsed &lt;&lt; 20;// convert to bytes</span>
     }
 
     /**
-     *
      * @return The file storage quota per project expressed in bytes
      */
     public static Long getJcrRepositoryProjectQuota() {
-<span class="nc" id="L308">        var value = System.getProperty(JCR_REPOSITORY_PROJECT_QUOTA_MB, JCR_REPOSITORY_MAX_FILE_SIZE_MB_DEFAULT);</span>
+<span class="nc" id="L307">        var value = System.getProperty(JCR_REPOSITORY_PROJECT_QUOTA_MB,</span>
+            JCR_REPOSITORY_MAX_FILE_SIZE_MB_DEFAULT);
 <span class="nc" id="L309">        var parsed = tryParsePositive(value, JCR_REPOSITORY_MAX_FILE_SIZE_MB_DEFAULT);</span>
-<span class="nc" id="L310">        return parsed &lt;&lt; 20;//convert to bytes</span>
+<span class="nc" id="L310">        return parsed &lt;&lt; 20;// convert to bytes</span>
     }
 
     /**
      * @return The URI to access the MongoDB container. Used for file persistence with JCR
      */
-    public static String getJcrMongoDbUri(){
+    public static String getJcrMongoDbUri() {
 <span class="nc" id="L317">        return System.getProperty(JCR_MONGO_DB_URI, JCR_MONGO_DB_URI_DEFAULT);</span>
     }
 
     /**
      * Parses a long from a positive string value. Falls back on default value
+     * 
      * @param value
-     * @param dflt fallback value, used in case parsing fails or value is negative
+     * @param dflt  fallback value, used in case parsing fails or value is negative
+     * 
      * @return The parsed value or the default value
      */
     private static Long tryParsePositive(String value, String dflt) {
         Long result;
-        try{
-<span class="nc" id="L329">            result = Long.parseLong(value);</span>
-<span class="nc bnc" id="L330" title="All 2 branches missed.">            if(result &lt;= 0)</span>
-            {
-<span class="nc" id="L332">                result = Long.parseLong(dflt);</span>
+        try {
+<span class="nc" id="L331">            result = Long.parseLong(value);</span>
+<span class="nc bnc" id="L332" title="All 2 branches missed.">            if (result &lt;= 0) {</span>
+<span class="nc" id="L333">                result = Long.parseLong(dflt);</span>
             }
-<span class="nc" id="L334">        }catch(NumberFormatException nfe){</span>
-<span class="nc" id="L335">            result = Long.parseLong(dflt);</span>
-<span class="nc" id="L336">        }</span>
-<span class="nc" id="L337">        return result;</span>
+<span class="nc" id="L335">        } catch (NumberFormatException nfe) {</span>
+<span class="nc" id="L336">            result = Long.parseLong(dflt);</span>
+<span class="nc" id="L337">        }</span>
+<span class="nc" id="L338">        return result;</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

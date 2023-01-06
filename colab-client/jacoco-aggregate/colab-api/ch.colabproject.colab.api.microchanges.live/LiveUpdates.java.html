@@ -200,7 +200,7 @@ import org.slf4j.LoggerFactory;
 
 <span class="nc" id="L201">        List&lt;Change&gt; collect = changes.stream()</span>
 <span class="nc bnc" id="L202" title="All 2 branches missed.">            .filter(ch -&gt; ch.getBasedOn().contains(parent.getRevision())</span>
-<span class="nc bnc" id="L203" title="All 2 branches missed.">            &amp;&amp; ch.getLiveSession().equals(parent.getLiveSession()))</span>
+<span class="nc bnc" id="L203" title="All 2 branches missed.">                &amp;&amp; ch.getLiveSession().equals(parent.getLiveSession()))</span>
 <span class="nc" id="L204">            .collect(Collectors.toList());</span>
 <span class="nc" id="L205">        return new ArrayList&lt;&gt;(collect);</span>
     }
@@ -322,7 +322,7 @@ import org.slf4j.LoggerFactory;
 <span class="nc bnc" id="L322" title="All 2 branches missed.">        if (forward == false) {</span>
 <span class="nc" id="L323">            logger.warn(&quot;TODO: implement backward shift&quot;);</span>
         }
-        //int way = forward ? 1 : -1; // TODO
+        // int way = forward ? 1 : -1; // TODO
 
 <span class="nc" id="L327">        logger.trace(&quot;Shift offsets: {}&quot;, change);</span>
 <span class="nc" id="L328">        List&lt;MicroChange&gt; microchanges = change.getMicrochanges();</span>
@@ -486,29 +486,31 @@ import org.slf4j.LoggerFactory;
      *
      * @return conflict free propagation or not
      */
-    private boolean propagateOffsets(List&lt;Change&gt; changes, Change parent, Map&lt;Integer, Integer&gt; offsets, boolean forward, String offsetFromRev) {
-<span class="nc" id="L490">        boolean conflictFree = true;</span>
+    private boolean propagateOffsets(List&lt;Change&gt; changes, Change parent,
+        Map&lt;Integer, Integer&gt; offsets, boolean forward, String offsetFromRev) {
+<span class="nc" id="L491">        boolean conflictFree = true;</span>
 
-<span class="nc bnc" id="L492" title="All 2 branches missed.">        for (Change child : getByParent(changes, parent.getRevision())) {</span>
-<span class="nc" id="L493">            Set&lt;String&gt; childDeps = getAllDependencies(changes, child);</span>
-<span class="nc bnc" id="L494" title="All 2 branches missed.">            if (!childDeps.contains(offsetFromRev)) {</span>
-<span class="nc" id="L495">                logger.trace(&quot;PropagateOffset {}@{} to {}&quot;, offsets, offsetFromRev, child);</span>
+<span class="nc bnc" id="L493" title="All 2 branches missed.">        for (Change child : getByParent(changes, parent.getRevision())) {</span>
+<span class="nc" id="L494">            Set&lt;String&gt; childDeps = getAllDependencies(changes, child);</span>
+<span class="nc bnc" id="L495" title="All 2 branches missed.">            if (!childDeps.contains(offsetFromRev)) {</span>
+<span class="nc" id="L496">                logger.trace(&quot;PropagateOffset {}@{} to {}&quot;, offsets, offsetFromRev, child);</span>
                 // should propagate to children which are not based on the offsetsFromRev
-<span class="nc" id="L497">                boolean shiftFree = this.shift(child, offsets, forward);</span>
-<span class="nc" id="L498">                Map&lt;Integer, Integer&gt; shiftedOffsets = shiftOffsets(offsets, child);</span>
-<span class="nc" id="L499">                logger.trace(&quot;Shifted Offsets: {}&quot;, shiftedOffsets);</span>
-<span class="nc" id="L500">                boolean pFree = this.propagateOffsets(changes, child, shiftedOffsets, forward, offsetFromRev);</span>
-<span class="nc bnc" id="L501" title="All 6 branches missed.">                conflictFree = conflictFree &amp;&amp; shiftFree &amp;&amp; pFree;</span>
-<span class="nc" id="L502">            } else {</span>
-                //merge has been done
-<span class="nc" id="L504">                HashSet&lt;String&gt; newDeps = new HashSet&lt;&gt;(child.getBasedOn());</span>
-<span class="nc" id="L505">                newDeps.remove(offsetFromRev);</span>
-<span class="nc" id="L506">                logger.trace(&quot;Do not go deeper than {}, now based on {}&quot;, child, newDeps);</span>
-<span class="nc" id="L507">                child.setBasedOn(newDeps);</span>
-                //child.getBasedOn().remove(offsetFromRev);
+<span class="nc" id="L498">                boolean shiftFree = this.shift(child, offsets, forward);</span>
+<span class="nc" id="L499">                Map&lt;Integer, Integer&gt; shiftedOffsets = shiftOffsets(offsets, child);</span>
+<span class="nc" id="L500">                logger.trace(&quot;Shifted Offsets: {}&quot;, shiftedOffsets);</span>
+<span class="nc" id="L501">                boolean pFree = this.propagateOffsets(changes, child, shiftedOffsets, forward,</span>
+                    offsetFromRev);
+<span class="nc bnc" id="L503" title="All 6 branches missed.">                conflictFree = conflictFree &amp;&amp; shiftFree &amp;&amp; pFree;</span>
+<span class="nc" id="L504">            } else {</span>
+                // merge has been done
+<span class="nc" id="L506">                HashSet&lt;String&gt; newDeps = new HashSet&lt;&gt;(child.getBasedOn());</span>
+<span class="nc" id="L507">                newDeps.remove(offsetFromRev);</span>
+<span class="nc" id="L508">                logger.trace(&quot;Do not go deeper than {}, now based on {}&quot;, child, newDeps);</span>
+<span class="nc" id="L509">                child.setBasedOn(newDeps);</span>
+                // child.getBasedOn().remove(offsetFromRev);
             }
-<span class="nc" id="L510">        }</span>
-<span class="nc" id="L511">        return conflictFree;</span>
+<span class="nc" id="L512">        }</span>
+<span class="nc" id="L513">        return conflictFree;</span>
     }
 
     /**
@@ -520,25 +522,25 @@ import org.slf4j.LoggerFactory;
      * @return set of dependencies
      */
     private Set&lt;String&gt; getAllDependencies(List&lt;Change&gt; changes, Change change) {
-<span class="nc" id="L523">        Set&lt;String&gt; deps = new HashSet&lt;&gt;();</span>
+<span class="nc" id="L525">        Set&lt;String&gt; deps = new HashSet&lt;&gt;();</span>
 
-<span class="nc" id="L525">        List&lt;Change&gt; queue = new LinkedList&lt;&gt;();</span>
-<span class="nc" id="L526">        queue.add(change);</span>
+<span class="nc" id="L527">        List&lt;Change&gt; queue = new LinkedList&lt;&gt;();</span>
+<span class="nc" id="L528">        queue.add(change);</span>
 
-<span class="nc bnc" id="L528" title="All 2 branches missed.">        while (!queue.isEmpty()) {</span>
-<span class="nc" id="L529">            Change ch = queue.remove(0);</span>
-<span class="nc" id="L530">            ch.getBasedOn().forEach(dep -&gt; {</span>
-<span class="nc bnc" id="L531" title="All 2 branches missed.">                if (!deps.contains(dep)) {</span>
-<span class="nc" id="L532">                    deps.add(dep);</span>
-<span class="nc" id="L533">                    Change parent = getByRevision(changes, dep);</span>
-<span class="nc bnc" id="L534" title="All 4 branches missed.">                    if (parent != null &amp;&amp; !queue.contains(parent)) {</span>
-<span class="nc" id="L535">                        queue.add(parent);</span>
+<span class="nc bnc" id="L530" title="All 2 branches missed.">        while (!queue.isEmpty()) {</span>
+<span class="nc" id="L531">            Change ch = queue.remove(0);</span>
+<span class="nc" id="L532">            ch.getBasedOn().forEach(dep -&gt; {</span>
+<span class="nc bnc" id="L533" title="All 2 branches missed.">                if (!deps.contains(dep)) {</span>
+<span class="nc" id="L534">                    deps.add(dep);</span>
+<span class="nc" id="L535">                    Change parent = getByRevision(changes, dep);</span>
+<span class="nc bnc" id="L536" title="All 4 branches missed.">                    if (parent != null &amp;&amp; !queue.contains(parent)) {</span>
+<span class="nc" id="L537">                        queue.add(parent);</span>
                     }
                 }
-<span class="nc" id="L538">            });</span>
-<span class="nc" id="L539">        }</span>
+<span class="nc" id="L540">            });</span>
+<span class="nc" id="L541">        }</span>
 
-<span class="nc" id="L541">        return deps;</span>
+<span class="nc" id="L543">        return deps;</span>
     }
 
     /**
@@ -550,17 +552,17 @@ import org.slf4j.LoggerFactory;
      * @return true if sets equal
      */
     private boolean setsEqual(Set&lt;String&gt; a, Set&lt;String&gt; b) {
-<span class="nc bnc" id="L553" title="All 4 branches missed.">        if (a == null &amp;&amp; b == null) {</span>
+<span class="nc bnc" id="L555" title="All 4 branches missed.">        if (a == null &amp;&amp; b == null) {</span>
             // both null equals
-<span class="nc" id="L555">            return true;</span>
-<span class="nc bnc" id="L556" title="All 4 branches missed.">        } else if (a == null || b == null) {</span>
+<span class="nc" id="L557">            return true;</span>
+<span class="nc bnc" id="L558" title="All 4 branches missed.">        } else if (a == null || b == null) {</span>
             // only one is null
-<span class="nc" id="L558">            return false;</span>
+<span class="nc" id="L560">            return false;</span>
         } else {
-<span class="nc bnc" id="L560" title="All 2 branches missed.">            if (a.size() != b.size()) {</span>
-<span class="nc" id="L561">                return false;</span>
+<span class="nc bnc" id="L562" title="All 2 branches missed.">            if (a.size() != b.size()) {</span>
+<span class="nc" id="L563">                return false;</span>
             }
-<span class="nc" id="L563">            return a.containsAll(b);</span>
+<span class="nc" id="L565">            return a.containsAll(b);</span>
         }
     }
 
@@ -574,60 +576,62 @@ import org.slf4j.LoggerFactory;
      * @return true if rebase has been done without conflict
      */
     private boolean rebase(List&lt;Change&gt; changes, Change newBase, Change change) {
-<span class="nc" id="L577">        Set&lt;String&gt; baseDeps = getAllDependencies(changes, newBase);</span>
-<span class="nc" id="L578">        Set&lt;String&gt; changeDeps = getAllDependencies(changes, change);</span>
+<span class="nc" id="L579">        Set&lt;String&gt; baseDeps = getAllDependencies(changes, newBase);</span>
+<span class="nc" id="L580">        Set&lt;String&gt; changeDeps = getAllDependencies(changes, change);</span>
 
-<span class="nc bnc" id="L580" title="All 2 branches missed.">        if (setsEqual(baseDeps, changeDeps)) {</span>
+<span class="nc bnc" id="L582" title="All 2 branches missed.">        if (setsEqual(baseDeps, changeDeps)) {</span>
             try {
                 // exact same set of dependencies: changes are sieblings
-<span class="nc" id="L583">                Map&lt;Integer, Integer&gt; offsets = computeOffset(newBase);</span>
-<span class="nc" id="L584">                boolean conflictFree = true;</span>
-<span class="nc" id="L585">                String newBaseRev = newBase.getRevision();</span>
+<span class="nc" id="L585">                Map&lt;Integer, Integer&gt; offsets = computeOffset(newBase);</span>
+<span class="nc" id="L586">                boolean conflictFree = true;</span>
+<span class="nc" id="L587">                String newBaseRev = newBase.getRevision();</span>
 
-<span class="nc" id="L587">                logger.trace(&quot;Rebase Sieblings: &quot; + change + &quot; on &quot; + newBase</span>
+<span class="nc" id="L589">                logger.trace(&quot;Rebase Sieblings: &quot; + change + &quot; on &quot; + newBase</span>
                     + &quot; with offset &quot; + offsets);
 
-<span class="nc bnc" id="L590" title="All 4 branches missed.">                conflictFree = shift(change, offsets, true) &amp;&amp; conflictFree;</span>
-<span class="nc bnc" id="L591" title="All 4 branches missed.">                conflictFree = propagateOffsets(changes, change,</span>
+<span class="nc bnc" id="L592" title="All 4 branches missed.">                conflictFree = shift(change, offsets, true) &amp;&amp; conflictFree;</span>
+<span class="nc bnc" id="L593" title="All 4 branches missed.">                conflictFree = propagateOffsets(changes, change,</span>
                     offsets, true, newBaseRev) &amp;&amp; conflictFree;
 
                 // Update parents after rebase/propagation step
-<span class="nc" id="L595">                change.setBasedOn(Set.of(newBase.getRevision()));</span>
-<span class="nc" id="L596">                logger.trace(&quot; -&gt; &quot; + change);</span>
-<span class="nc" id="L597">                return conflictFree;</span>
-<span class="nc" id="L598">            } catch (StackOverflowError e) {</span>
-<span class="nc" id="L599">                logger.warn(&quot;Major issue: fail to propagate offset&quot;);</span>
-<span class="nc" id="L600">                printDebugData();</span>
-<span class="nc" id="L601">                throw e;</span>
+<span class="nc" id="L597">                change.setBasedOn(Set.of(newBase.getRevision()));</span>
+<span class="nc" id="L598">                logger.trace(&quot; -&gt; &quot; + change);</span>
+<span class="nc" id="L599">                return conflictFree;</span>
+<span class="nc" id="L600">            } catch (StackOverflowError e) {</span>
+<span class="nc" id="L601">                logger.warn(&quot;Major issue: fail to propagate offset&quot;);</span>
+<span class="nc" id="L602">                printDebugData();</span>
+<span class="nc" id="L603">                throw e;</span>
             }
-<span class="nc bnc" id="L603" title="All 2 branches missed.">        } else if (setsEqual(Set.of(change.getRevision()), newBase.getBasedOn())) {</span>
-<span class="nc" id="L604">            logger.trace(&quot;Inverse hierarchy : &quot; + change + &quot; on &quot; + newBase);</span>
+<span class="nc bnc" id="L605" title="All 2 branches missed.">        } else if (setsEqual(Set.of(change.getRevision()), newBase.getBasedOn())) {</span>
+<span class="nc" id="L606">            logger.trace(&quot;Inverse hierarchy : &quot; + change + &quot; on &quot; + newBase);</span>
             // [x] -&gt; change -&gt; newBase
-            // ==&gt;[x] -&gt;  newBase -&gt; change
+            // ==&gt;[x] -&gt; newBase -&gt; change
 
-<span class="nc" id="L608">            boolean conflictFree = true;</span>
+<span class="nc" id="L610">            boolean conflictFree = true;</span>
 
-<span class="nc" id="L610">            Map&lt;Integer, Integer&gt; changeOffsets = computeOffset(change);</span>
+<span class="nc" id="L612">            Map&lt;Integer, Integer&gt; changeOffsets = computeOffset(change);</span>
 
-<span class="nc" id="L612">            newBase.setBasedOn(change.getBasedOn());</span>
-<span class="nc" id="L613">            change.setBasedOn(Set.of(newBase.getRevision()));</span>
+<span class="nc" id="L614">            newBase.setBasedOn(change.getBasedOn());</span>
+<span class="nc" id="L615">            change.setBasedOn(Set.of(newBase.getRevision()));</span>
 
-<span class="nc bnc" id="L615" title="All 4 branches missed.">            conflictFree = shift(newBase, changeOffsets, false) &amp;&amp; conflictFree;</span>
+<span class="nc bnc" id="L617" title="All 4 branches missed.">            conflictFree = shift(newBase, changeOffsets, false) &amp;&amp; conflictFree;</span>
 
-<span class="nc" id="L617">            Map&lt;Integer, Integer&gt; newBaseOffsets = computeOffset(newBase);</span>
-<span class="nc bnc" id="L618" title="All 4 branches missed.">            conflictFree = shift(change, newBaseOffsets, true) &amp;&amp; conflictFree;</span>
+<span class="nc" id="L619">            Map&lt;Integer, Integer&gt; newBaseOffsets = computeOffset(newBase);</span>
+<span class="nc bnc" id="L620" title="All 4 branches missed.">            conflictFree = shift(change, newBaseOffsets, true) &amp;&amp; conflictFree;</span>
 
-<span class="nc" id="L620">            logger.trace(&quot; with offsets &quot; + changeOffsets + &quot; and &quot; + newBaseOffsets);</span>
-<span class="nc" id="L621">            logger.trace(&quot; -&gt; &quot; + change);</span>
+<span class="nc" id="L622">            logger.trace(&quot; with offsets &quot; + changeOffsets + &quot; and &quot; + newBaseOffsets);</span>
+<span class="nc" id="L623">            logger.trace(&quot; -&gt; &quot; + change);</span>
 
-<span class="nc" id="L623">            return conflictFree;</span>
-<span class="nc bnc" id="L624" title="All 2 branches missed.">        } else if (changeDeps.containsAll(baseDeps)) {</span>
+<span class="nc" id="L625">            return conflictFree;</span>
+<span class="nc bnc" id="L626" title="All 2 branches missed.">        } else if (changeDeps.containsAll(baseDeps)) {</span>
             // nothing to do as all deps are already known
-<span class="nc" id="L626">            logger.trace(&quot;Nothing to do: change includes all base parents&quot;);</span>
-<span class="nc" id="L627">            return true;</span>
+<span class="nc" id="L628">            logger.trace(&quot;Nothing to do: change includes all base parents&quot;);</span>
+<span class="nc" id="L629">            return true;</span>
         } else {
-<span class="nc" id="L629">            logger.error(&quot;Not yet implemented: Changes: {} Change: {} NewBase: {} BaseDeps: {} ChangeDeps: {}&quot;, changes, change.getRevision(), newBase.getRevision(), baseDeps, changeDeps);</span>
-<span class="nc" id="L630">            return false;</span>
+<span class="nc" id="L631">            logger.error(</span>
+                &quot;Not yet implemented: Changes: {} Change: {} NewBase: {} BaseDeps: {} ChangeDeps: {}&quot;,
+<span class="nc" id="L633">                changes, change.getRevision(), newBase.getRevision(), baseDeps, changeDeps);</span>
+<span class="nc" id="L634">            return false;</span>
         }
     }
 
@@ -640,14 +644,13 @@ import org.slf4j.LoggerFactory;
      * @return list of changes authored by the given author
      */
     public List&lt;Change&gt; filterByAuthor(List&lt;Change&gt; changes, String author) {
-<span class="nc" id="L643">        return changes.stream()</span>
-<span class="nc" id="L644">            .filter(child</span>
-<span class="nc" id="L645">                -&gt; child.getLiveSession().equals(author))</span>
-<span class="nc" id="L646">            .collect(Collectors.toList());</span>
+<span class="nc" id="L647">        return changes.stream()</span>
+<span class="nc" id="L648">            .filter(child -&gt; child.getLiveSession().equals(author))</span>
+<span class="nc" id="L649">            .collect(Collectors.toList());</span>
     }
 
     private List&lt;String&gt; mapChangesRevision(Collection&lt;Change&gt; changes) {
-<span class="nc" id="L650">        return changes.stream().map(Change::getRevision).collect(Collectors.toList());</span>
+<span class="nc" id="L653">        return changes.stream().map(Change::getRevision).collect(Collectors.toList());</span>
     }
 
     /**
@@ -658,87 +661,89 @@ import org.slf4j.LoggerFactory;
      * @return up-to date content
      */
     public LiveResult process(boolean strict) {
-<span class="nc" id="L661">        initDebugData();</span>
-<span class="nc" id="L662">        logger.debug(&quot;Debug Data {}&quot;, this.debugData);</span>
+<span class="nc" id="L664">        initDebugData();</span>
+<span class="nc" id="L665">        logger.debug(&quot;Debug Data {}&quot;, this.debugData);</span>
 
-<span class="nc" id="L664">        StringBuilder buffer = new StringBuilder();</span>
-<span class="nc bnc" id="L665" title="All 2 branches missed.">        if (this.content != null) {</span>
-<span class="nc" id="L666">            buffer.append(this.content);</span>
+<span class="nc" id="L667">        StringBuilder buffer = new StringBuilder();</span>
+<span class="nc bnc" id="L668" title="All 2 branches missed.">        if (this.content != null) {</span>
+<span class="nc" id="L669">            buffer.append(this.content);</span>
         }
 
-<span class="nc" id="L669">        logger.trace(&quot;Process: {}&quot;, this);</span>
+<span class="nc" id="L672">        logger.trace(&quot;Process: {}&quot;, this);</span>
 
-<span class="nc" id="L671">        String currentRevision = this.revision;</span>
+<span class="nc" id="L674">        String currentRevision = this.revision;</span>
 
-<span class="nc" id="L673">        List&lt;Change&gt; allChanges = this.getPendingChanges();</span>
-<span class="nc" id="L674">        List&lt;Change&gt; changes = new ArrayList&lt;&gt;(allChanges);</span>
+<span class="nc" id="L676">        List&lt;Change&gt; allChanges = this.getPendingChanges();</span>
+<span class="nc" id="L677">        List&lt;Change&gt; changes = new ArrayList&lt;&gt;(allChanges);</span>
 
-<span class="nc" id="L676">        Set&lt;String&gt; appliedChanges = new HashSet&lt;&gt;();</span>
+<span class="nc" id="L679">        Set&lt;String&gt; appliedChanges = new HashSet&lt;&gt;();</span>
 
-<span class="nc bnc" id="L678" title="All 2 branches missed.">        while (!changes.isEmpty()) {</span>
-<span class="nc" id="L679">            appliedChanges.add(currentRevision);</span>
+<span class="nc bnc" id="L681" title="All 2 branches missed.">        while (!changes.isEmpty()) {</span>
+<span class="nc" id="L682">            appliedChanges.add(currentRevision);</span>
             // fetch all changes based on the current revision
-<span class="nc" id="L681">            List&lt;Change&gt; children = getByParent(changes, currentRevision);</span>
-<span class="nc bnc" id="L682" title="All 2 branches missed.">            if (!children.isEmpty()) {</span>
-                //Map&lt;Integer, Integer&gt; offsets = new HashMap&lt;&gt;();
-                //logger.trace(&quot;new empty offsets &quot; + offsets);
-<span class="nc" id="L685">                logger.trace(&quot;All @{} children: {}&quot;, currentRevision, mapChangesRevision(children));</span>
+<span class="nc" id="L684">            List&lt;Change&gt; children = getByParent(changes, currentRevision);</span>
+<span class="nc bnc" id="L685" title="All 2 branches missed.">            if (!children.isEmpty()) {</span>
+                // Map&lt;Integer, Integer&gt; offsets = new HashMap&lt;&gt;();
+                // logger.trace(&quot;new empty offsets &quot; + offsets);
+<span class="nc" id="L688">                logger.trace(&quot;All @{} children: {}&quot;, currentRevision, mapChangesRevision(children));</span>
 
                 // find a child which depends only only already applied changes
                 // NB: as I understand the algorithm, I can't figure out a case
-                //     such a child-with-unapplied-parent may event exists...
-<span class="nc" id="L690">                Optional&lt;Change&gt; optChange = children.stream()</span>
-<span class="nc" id="L691">                    .filter(ch -&gt; appliedChanges.containsAll(ch.getBasedOn()))</span>
-<span class="nc" id="L692">                    .findFirst();</span>
-<span class="nc bnc" id="L693" title="All 2 branches missed.">                if (optChange.isPresent()) {</span>
-<span class="nc" id="L694">                    Change change = optChange.get();</span>
+                // such a child-with-unapplied-parent may event exists...
+<span class="nc" id="L693">                Optional&lt;Change&gt; optChange = children.stream()</span>
+<span class="nc" id="L694">                    .filter(ch -&gt; appliedChanges.containsAll(ch.getBasedOn()))</span>
+<span class="nc" id="L695">                    .findFirst();</span>
+<span class="nc bnc" id="L696" title="All 2 branches missed.">                if (optChange.isPresent()) {</span>
+<span class="nc" id="L697">                    Change change = optChange.get();</span>
                     // clean lists
-<span class="nc" id="L696">                    changes.remove(change);</span>
-<span class="nc" id="L697">                    children.remove(change);</span>
+<span class="nc" id="L699">                    changes.remove(change);</span>
+<span class="nc" id="L700">                    children.remove(change);</span>
 
-<span class="nc" id="L699">                    logger.trace(&quot;Process: {}&quot;, change);</span>
+<span class="nc" id="L702">                    logger.trace(&quot;Process: {}&quot;, change);</span>
 
-<span class="nc" id="L701">                    List&lt;MicroChange&gt; muChanges = change.getMicrochanges();</span>
-<span class="nc bnc" id="L702" title="All 2 branches missed.">                    for (int i = muChanges.size() - 1; i &gt;= 0; i--) {</span>
-<span class="nc" id="L703">                        applyChange(buffer, muChanges.get(i));</span>
-<span class="nc" id="L704">                        logger.trace(&quot;  &quot; + i + &quot;)&quot; + buffer);</span>
+<span class="nc" id="L704">                    List&lt;MicroChange&gt; muChanges = change.getMicrochanges();</span>
+<span class="nc bnc" id="L705" title="All 2 branches missed.">                    for (int i = muChanges.size() - 1; i &gt;= 0; i--) {</span>
+<span class="nc" id="L706">                        applyChange(buffer, muChanges.get(i));</span>
+<span class="nc" id="L707">                        logger.trace(&quot;  &quot; + i + &quot;)&quot; + buffer);</span>
                     }
 
-<span class="nc" id="L707">                    logger.trace(&quot; -&gt; {}&quot;, buffer);</span>
+<span class="nc" id="L710">                    logger.trace(&quot; -&gt; {}&quot;, buffer);</span>
                     // logger.trace(&quot;Offsets&quot; + offsets);
                     // rebase others children
 
-<span class="nc" id="L711">                    changes.removeAll(children);</span>
-<span class="nc bnc" id="L712" title="All 2 branches missed.">                    for (int i = children.size() - 1; i &gt;= 0; i--) {</span>
-<span class="nc" id="L713">                        Change child = children.remove(i);</span>
-<span class="nc bnc" id="L714" title="All 4 branches missed.">                        if (!rebase(allChanges, change, child) &amp;&amp; strict) {</span>
+<span class="nc" id="L714">                    changes.removeAll(children);</span>
+<span class="nc bnc" id="L715" title="All 2 branches missed.">                    for (int i = children.size() - 1; i &gt;= 0; i--) {</span>
+<span class="nc" id="L716">                        Change child = children.remove(i);</span>
+<span class="nc bnc" id="L717" title="All 4 branches missed.">                        if (!rebase(allChanges, change, child) &amp;&amp; strict) {</span>
                             // todo throw ?
-<span class="nc" id="L716">                            logger.warn(&quot;Conflict&quot;);</span>
+<span class="nc" id="L719">                            logger.warn(&quot;Conflict&quot;);</span>
                         }
-<span class="nc" id="L718">                        changes.add(0, child);</span>
+<span class="nc" id="L721">                        changes.add(0, child);</span>
                     }
-<span class="nc" id="L720">                    currentRevision = change.getRevision();</span>
-<span class="nc" id="L721">                } else {</span>
-                    //TODO add full tree JSON formated full tree
-<span class="nc" id="L723">                    logger.error(&quot;No child found in {}&quot;, children);</span>
-<span class="nc" id="L724">                    printDebugData();</span>
-<span class="nc" id="L725">                    break;</span>
+<span class="nc" id="L723">                    currentRevision = change.getRevision();</span>
+<span class="nc" id="L724">                } else {</span>
+                    // TODO add full tree JSON formated full tree
+<span class="nc" id="L726">                    logger.error(&quot;No child found in {}&quot;, children);</span>
+<span class="nc" id="L727">                    printDebugData();</span>
+<span class="nc" id="L728">                    break;</span>
                 }
 
-<span class="nc" id="L728">            } else {</span>
-                //TODO add full tree JSON formated full tree
-<span class="nc" id="L730">                logger.error(&quot;Some children without any parents left: {}&quot;, changes);</span>
-<span class="nc" id="L731">                printDebugData();</span>
-<span class="nc" id="L732">                break;</span>
+<span class="nc" id="L731">            } else {</span>
+                // TODO add full tree JSON formated full tree
+<span class="nc" id="L733">                logger.error(&quot;Some children without any parents left: {}&quot;, changes);</span>
+<span class="nc" id="L734">                printDebugData();</span>
+<span class="nc" id="L735">                break;</span>
             }
-<span class="nc" id="L734">        }</span>
+<span class="nc" id="L737">        }</span>
 
-<span class="nc" id="L736">        return LiveResult.build(buffer.toString(), currentRevision);</span>
+<span class="nc" id="L739">        return LiveResult.build(buffer.toString(), currentRevision);</span>
     }
 
     @Override
     public String toString() {
-<span class="nc" id="L741">        return &quot;LiveUpdates{&quot; + &quot;targetClass=&quot; + targetClass + &quot;, targetId=&quot; + targetId + &quot;, revision=&quot; + revision + &quot;, content=&quot; + content + &quot;, pendingChanges=&quot; + pendingChanges + '}';</span>
+<span class="nc" id="L744">        return &quot;LiveUpdates{&quot; + &quot;targetClass=&quot; + targetClass + &quot;, targetId=&quot; + targetId</span>
+            + &quot;, revision=&quot; + revision + &quot;, content=&quot; + content + &quot;, pendingChanges=&quot;
+            + pendingChanges + '}';
     }
 
     /**
@@ -746,38 +751,38 @@ import org.slf4j.LoggerFactory;
      */
     public void initDebugData() {
 
-<span class="nc" id="L749">        StringBuilder sb = new StringBuilder();</span>
-<span class="nc" id="L750">        sb.append(&quot;test('A Test', () =&gt; {&quot;)</span>
-<span class="nc" id="L751">            .append(System.lineSeparator())</span>
-<span class="nc" id="L752">            .append(&quot;const initialValue = \&quot;&quot;)</span>
-<span class="nc" id="L753">            .append(StringEscapeUtils.escapeEcmaScript(this.content))</span>
-<span class="nc" id="L754">            .append(&quot;\&quot;;&quot;).append(System.lineSeparator())</span>
-<span class="nc" id="L755">            .append(&quot;const initialRevision = \&quot;&quot;)</span>
-<span class="nc" id="L756">            .append(StringEscapeUtils.escapeEcmaScript(this.revision))</span>
-<span class="nc" id="L757">            .append(&quot;\&quot;;&quot;).append(System.lineSeparator())</span>
-<span class="nc" id="L758">            .append(System.lineSeparator())</span>
-<span class="nc" id="L759">            .append(System.lineSeparator())</span>
-<span class="nc" id="L760">            .append(&quot;const changes =[&quot;)</span>
-<span class="nc" id="L761">            .append(System.lineSeparator());</span>
+<span class="nc" id="L754">        StringBuilder sb = new StringBuilder();</span>
+<span class="nc" id="L755">        sb.append(&quot;test('A Test', () =&gt; {&quot;)</span>
+<span class="nc" id="L756">            .append(System.lineSeparator())</span>
+<span class="nc" id="L757">            .append(&quot;const initialValue = \&quot;&quot;)</span>
+<span class="nc" id="L758">            .append(StringEscapeUtils.escapeEcmaScript(this.content))</span>
+<span class="nc" id="L759">            .append(&quot;\&quot;;&quot;).append(System.lineSeparator())</span>
+<span class="nc" id="L760">            .append(&quot;const initialRevision = \&quot;&quot;)</span>
+<span class="nc" id="L761">            .append(StringEscapeUtils.escapeEcmaScript(this.revision))</span>
+<span class="nc" id="L762">            .append(&quot;\&quot;;&quot;).append(System.lineSeparator())</span>
+<span class="nc" id="L763">            .append(System.lineSeparator())</span>
+<span class="nc" id="L764">            .append(System.lineSeparator())</span>
+<span class="nc" id="L765">            .append(&quot;const changes =[&quot;)</span>
+<span class="nc" id="L766">            .append(System.lineSeparator());</span>
 
-<span class="nc" id="L763">        this.pendingChanges.forEach(change -&gt; {</span>
-<span class="nc" id="L764">            sb.append(change.toDebugStatement()).append(&quot;, &quot;).append(System.lineSeparator());</span>
-<span class="nc" id="L765">        });</span>
+<span class="nc" id="L768">        this.pendingChanges.forEach(change -&gt; {</span>
+<span class="nc" id="L769">            sb.append(change.toDebugStatement()).append(&quot;, &quot;).append(System.lineSeparator());</span>
+<span class="nc" id="L770">        });</span>
 
-<span class="nc" id="L767">        sb.append(&quot;];&quot;).append(System.lineSeparator())</span>
-<span class="nc" id="L768">            .append(System.lineSeparator())</span>
-<span class="nc" id="L769">            .append(&quot;const newValue = LiveHelper.process(initialValue, initialRevision, changes);&quot;)</span>
-<span class="nc" id="L770">            .append(System.lineSeparator())</span>
-<span class="nc" id="L771">            .append(&quot;});&quot;);</span>
+<span class="nc" id="L772">        sb.append(&quot;];&quot;).append(System.lineSeparator())</span>
+<span class="nc" id="L773">            .append(System.lineSeparator())</span>
+<span class="nc" id="L774">            .append(&quot;const newValue = LiveHelper.process(initialValue, initialRevision, changes);&quot;)</span>
+<span class="nc" id="L775">            .append(System.lineSeparator())</span>
+<span class="nc" id="L776">            .append(&quot;});&quot;);</span>
 
-<span class="nc" id="L773">        this.debugData = sb.toString();</span>
-<span class="nc" id="L774">    }</span>
+<span class="nc" id="L778">        this.debugData = sb.toString();</span>
+<span class="nc" id="L779">    }</span>
 
     /**
      * Print debug message
      */
     public void printDebugData() {
-<span class="nc" id="L780">        logger.warn(&quot;Debug Data {}&quot;, this.debugData);</span>
-<span class="nc" id="L781">    }</span>
+<span class="nc" id="L785">        logger.warn(&quot;Debug Data {}&quot;, this.debugData);</span>
+<span class="nc" id="L786">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

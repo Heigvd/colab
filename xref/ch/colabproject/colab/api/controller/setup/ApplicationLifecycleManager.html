@@ -34,62 +34,63 @@
 <a class="jxr_linenumber" name="L26" href="#L26">26</a>  <em class="jxr_javadoccomment"> * This beans shall only call methods with annotation {@link javax.ejb.TransactionAttribute} set to</em>
 <a class="jxr_linenumber" name="L27" href="#L27">27</a>  <em class="jxr_javadoccomment"> * {@link javax.ejb.TransactionAttributeType#REQUIRES_NEW}.</em>
 <a class="jxr_linenumber" name="L28" href="#L28">28</a>  <em class="jxr_javadoccomment"> * &lt;p&gt;</em>
-<a class="jxr_linenumber" name="L29" href="#L29">29</a>  <em class="jxr_javadoccomment"> * @author maxence</em>
-<a class="jxr_linenumber" name="L30" href="#L30">30</a>  <em class="jxr_javadoccomment"> */</em>
-<a class="jxr_linenumber" name="L31" href="#L31">31</a>  @Stateless
-<a class="jxr_linenumber" name="L32" href="#L32">32</a>  @LocalBean
-<a class="jxr_linenumber" name="L33" href="#L33">33</a>  <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">class</strong> <a name="ApplicationLifecycleManager" href="../../../../../../ch/colabproject/colab/api/controller/setup/ApplicationLifecycleManager.html#ApplicationLifecycleManager">ApplicationLifecycleManager</a> {
-<a class="jxr_linenumber" name="L34" href="#L34">34</a>  
-<a class="jxr_linenumber" name="L35" href="#L35">35</a>      <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L36" href="#L36">36</a>  <em class="jxr_javadoccomment">     * Logger. Default level, set in logback.xml, is INFO</em>
-<a class="jxr_linenumber" name="L37" href="#L37">37</a>  <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="L38" href="#L38">38</a>      <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">final</strong> Logger logger = LoggerFactory.getLogger(ApplicationLifecycleManager.<strong class="jxr_keyword">class</strong>);
-<a class="jxr_linenumber" name="L39" href="#L39">39</a>  
-<a class="jxr_linenumber" name="L40" href="#L40">40</a>      <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L41" href="#L41">41</a>  <em class="jxr_javadoccomment">     * User persistence</em>
-<a class="jxr_linenumber" name="L42" href="#L42">42</a>  <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="L43" href="#L43">43</a>      @Inject
-<a class="jxr_linenumber" name="L44" href="#L44">44</a>      <strong class="jxr_keyword">private</strong> <a name="UserDao" href="../../../../../../ch/colabproject/colab/api/persistence/jpa/user/UserDao.html#UserDao">UserDao</a> userDao;
-<a class="jxr_linenumber" name="L45" href="#L45">45</a>  
-<a class="jxr_linenumber" name="L46" href="#L46">46</a>      <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L47" href="#L47">47</a>  <em class="jxr_javadoccomment">     * User management</em>
-<a class="jxr_linenumber" name="L48" href="#L48">48</a>  <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="L49" href="#L49">49</a>      @Inject
-<a class="jxr_linenumber" name="L50" href="#L50">50</a>      <strong class="jxr_keyword">private</strong> <a name="UserManager" href="../../../../../../ch/colabproject/colab/api/controller/user/UserManager.html#UserManager">UserManager</a> userManager;
-<a class="jxr_linenumber" name="L51" href="#L51">51</a>  
-<a class="jxr_linenumber" name="L52" href="#L52">52</a>      <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L53" href="#L53">53</a>  <em class="jxr_javadoccomment">     * request manager</em>
-<a class="jxr_linenumber" name="L54" href="#L54">54</a>  <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="L55" href="#L55">55</a>      @Inject
-<a class="jxr_linenumber" name="L56" href="#L56">56</a>      <strong class="jxr_keyword">private</strong> <a name="RequestManager" href="../../../../../../ch/colabproject/colab/api/controller/RequestManager.html#RequestManager">RequestManager</a> requestManager;
-<a class="jxr_linenumber" name="L57" href="#L57">57</a>  
-<a class="jxr_linenumber" name="L58" href="#L58">58</a>      <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L59" href="#L59">59</a>  <em class="jxr_javadoccomment">     * Create a default admin user if there is no admin at all.</em>
-<a class="jxr_linenumber" name="L60" href="#L60">60</a>  <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="L61" href="#L61">61</a>      <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> createDefaultAdminIfNone() {
-<a class="jxr_linenumber" name="L62" href="#L62">62</a>          requestManager.sudo(() -&gt; {
-<a class="jxr_linenumber" name="L63" href="#L63">63</a>              <strong class="jxr_keyword">if</strong> (userDao.findAllAdmin().isEmpty()) {
-<a class="jxr_linenumber" name="L64" href="#L64">64</a>                  <strong class="jxr_keyword">try</strong> {
-<a class="jxr_linenumber" name="L65" href="#L65">65</a>                      logger.info(<span class="jxr_string">"No admin exists, create one"</span>);
-<a class="jxr_linenumber" name="L66" href="#L66">66</a>                      <em class="jxr_comment">//make sure to create the user within a brand new transaction</em>
-<a class="jxr_linenumber" name="L67" href="#L67">67</a>                      User admin = userManager.createAdminUserTx(
-<a class="jxr_linenumber" name="L68" href="#L68">68</a>                          ColabConfiguration.getDefaultAdminUsername(),
-<a class="jxr_linenumber" name="L69" href="#L69">69</a>                          ColabConfiguration.getDefaultAdminEmail(),
-<a class="jxr_linenumber" name="L70" href="#L70">70</a>                          ColabConfiguration.getDefaultAdminPassword()
-<a class="jxr_linenumber" name="L71" href="#L71">71</a>                      );
-<a class="jxr_linenumber" name="L72" href="#L72">72</a>                      logger.info(<span class="jxr_string">"New admin user: {}"</span>, admin);
-<a class="jxr_linenumber" name="L73" href="#L73">73</a>                  } <strong class="jxr_keyword">catch</strong> (<a name="HttpErrorMessage" href="../../../../../../ch/colabproject/colab/generator/model/exceptions/HttpErrorMessage.html#HttpErrorMessage">HttpErrorMessage</a> ex) {
-<a class="jxr_linenumber" name="L74" href="#L74">74</a>                      logger.error(
-<a class="jxr_linenumber" name="L75" href="#L75">75</a>                          <span class="jxr_string">"Fails to create default admin user. Does non-admin user exist with same username or email address"</span>);
-<a class="jxr_linenumber" name="L76" href="#L76">76</a>                  } <strong class="jxr_keyword">catch</strong> (RuntimeException ex) {
-<a class="jxr_linenumber" name="L77" href="#L77">77</a>                      logger.error(
-<a class="jxr_linenumber" name="L78" href="#L78">78</a>                          <span class="jxr_string">"Fails to create default amdin user for some unknown reason. Please check config"</span>,
-<a class="jxr_linenumber" name="L79" href="#L79">79</a>                          ex);
-<a class="jxr_linenumber" name="L80" href="#L80">80</a>                  }
-<a class="jxr_linenumber" name="L81" href="#L81">81</a>              }
-<a class="jxr_linenumber" name="L82" href="#L82">82</a>          });
-<a class="jxr_linenumber" name="L83" href="#L83">83</a>      }
-<a class="jxr_linenumber" name="L84" href="#L84">84</a>  }
+<a class="jxr_linenumber" name="L29" href="#L29">29</a>  <em class="jxr_javadoccomment"> * </em>
+<a class="jxr_linenumber" name="L30" href="#L30">30</a>  <em class="jxr_javadoccomment"> * @author maxence</em>
+<a class="jxr_linenumber" name="L31" href="#L31">31</a>  <em class="jxr_javadoccomment"> */</em>
+<a class="jxr_linenumber" name="L32" href="#L32">32</a>  @Stateless
+<a class="jxr_linenumber" name="L33" href="#L33">33</a>  @LocalBean
+<a class="jxr_linenumber" name="L34" href="#L34">34</a>  <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">class</strong> <a name="ApplicationLifecycleManager" href="../../../../../../ch/colabproject/colab/api/controller/setup/ApplicationLifecycleManager.html#ApplicationLifecycleManager">ApplicationLifecycleManager</a> {
+<a class="jxr_linenumber" name="L35" href="#L35">35</a>  
+<a class="jxr_linenumber" name="L36" href="#L36">36</a>      <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L37" href="#L37">37</a>  <em class="jxr_javadoccomment">     * Logger. Default level, set in logback.xml, is INFO</em>
+<a class="jxr_linenumber" name="L38" href="#L38">38</a>  <em class="jxr_javadoccomment">     */</em>
+<a class="jxr_linenumber" name="L39" href="#L39">39</a>      <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">final</strong> Logger logger = LoggerFactory.getLogger(ApplicationLifecycleManager.<strong class="jxr_keyword">class</strong>);
+<a class="jxr_linenumber" name="L40" href="#L40">40</a>  
+<a class="jxr_linenumber" name="L41" href="#L41">41</a>      <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L42" href="#L42">42</a>  <em class="jxr_javadoccomment">     * User persistence</em>
+<a class="jxr_linenumber" name="L43" href="#L43">43</a>  <em class="jxr_javadoccomment">     */</em>
+<a class="jxr_linenumber" name="L44" href="#L44">44</a>      @Inject
+<a class="jxr_linenumber" name="L45" href="#L45">45</a>      <strong class="jxr_keyword">private</strong> <a name="UserDao" href="../../../../../../ch/colabproject/colab/api/persistence/jpa/user/UserDao.html#UserDao">UserDao</a> userDao;
+<a class="jxr_linenumber" name="L46" href="#L46">46</a>  
+<a class="jxr_linenumber" name="L47" href="#L47">47</a>      <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L48" href="#L48">48</a>  <em class="jxr_javadoccomment">     * User management</em>
+<a class="jxr_linenumber" name="L49" href="#L49">49</a>  <em class="jxr_javadoccomment">     */</em>
+<a class="jxr_linenumber" name="L50" href="#L50">50</a>      @Inject
+<a class="jxr_linenumber" name="L51" href="#L51">51</a>      <strong class="jxr_keyword">private</strong> <a name="UserManager" href="../../../../../../ch/colabproject/colab/api/controller/user/UserManager.html#UserManager">UserManager</a> userManager;
+<a class="jxr_linenumber" name="L52" href="#L52">52</a>  
+<a class="jxr_linenumber" name="L53" href="#L53">53</a>      <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L54" href="#L54">54</a>  <em class="jxr_javadoccomment">     * request manager</em>
+<a class="jxr_linenumber" name="L55" href="#L55">55</a>  <em class="jxr_javadoccomment">     */</em>
+<a class="jxr_linenumber" name="L56" href="#L56">56</a>      @Inject
+<a class="jxr_linenumber" name="L57" href="#L57">57</a>      <strong class="jxr_keyword">private</strong> <a name="RequestManager" href="../../../../../../ch/colabproject/colab/api/controller/RequestManager.html#RequestManager">RequestManager</a> requestManager;
+<a class="jxr_linenumber" name="L58" href="#L58">58</a>  
+<a class="jxr_linenumber" name="L59" href="#L59">59</a>      <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L60" href="#L60">60</a>  <em class="jxr_javadoccomment">     * Create a default admin user if there is no admin at all.</em>
+<a class="jxr_linenumber" name="L61" href="#L61">61</a>  <em class="jxr_javadoccomment">     */</em>
+<a class="jxr_linenumber" name="L62" href="#L62">62</a>      <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> createDefaultAdminIfNone() {
+<a class="jxr_linenumber" name="L63" href="#L63">63</a>          requestManager.sudo(() -&gt; {
+<a class="jxr_linenumber" name="L64" href="#L64">64</a>              <strong class="jxr_keyword">if</strong> (userDao.findAllAdmin().isEmpty()) {
+<a class="jxr_linenumber" name="L65" href="#L65">65</a>                  <strong class="jxr_keyword">try</strong> {
+<a class="jxr_linenumber" name="L66" href="#L66">66</a>                      logger.info(<span class="jxr_string">"No admin exists, create one"</span>);
+<a class="jxr_linenumber" name="L67" href="#L67">67</a>                      <em class="jxr_comment">// make sure to create the user within a brand new transaction</em>
+<a class="jxr_linenumber" name="L68" href="#L68">68</a>                      User admin = userManager.createAdminUserTx(
+<a class="jxr_linenumber" name="L69" href="#L69">69</a>                          ColabConfiguration.getDefaultAdminUsername(),
+<a class="jxr_linenumber" name="L70" href="#L70">70</a>                          ColabConfiguration.getDefaultAdminEmail(),
+<a class="jxr_linenumber" name="L71" href="#L71">71</a>                          ColabConfiguration.getDefaultAdminPassword()
+<a class="jxr_linenumber" name="L72" href="#L72">72</a>                      );
+<a class="jxr_linenumber" name="L73" href="#L73">73</a>                      logger.info(<span class="jxr_string">"New admin user: {}"</span>, admin);
+<a class="jxr_linenumber" name="L74" href="#L74">74</a>                  } <strong class="jxr_keyword">catch</strong> (<a name="HttpErrorMessage" href="../../../../../../ch/colabproject/colab/generator/model/exceptions/HttpErrorMessage.html#HttpErrorMessage">HttpErrorMessage</a> ex) {
+<a class="jxr_linenumber" name="L75" href="#L75">75</a>                      logger.error(
+<a class="jxr_linenumber" name="L76" href="#L76">76</a>                          <span class="jxr_string">"Fails to create default admin user. Does non-admin user exist with same username or email address"</span>);
+<a class="jxr_linenumber" name="L77" href="#L77">77</a>                  } <strong class="jxr_keyword">catch</strong> (RuntimeException ex) {
+<a class="jxr_linenumber" name="L78" href="#L78">78</a>                      logger.error(
+<a class="jxr_linenumber" name="L79" href="#L79">79</a>                          <span class="jxr_string">"Fails to create default amdin user for some unknown reason. Please check config"</span>,
+<a class="jxr_linenumber" name="L80" href="#L80">80</a>                          ex);
+<a class="jxr_linenumber" name="L81" href="#L81">81</a>                  }
+<a class="jxr_linenumber" name="L82" href="#L82">82</a>              }
+<a class="jxr_linenumber" name="L83" href="#L83">83</a>          });
+<a class="jxr_linenumber" name="L84" href="#L84">84</a>      }
+<a class="jxr_linenumber" name="L85" href="#L85">85</a>  }
 </pre>
 <hr/>
 <div id="footer">Copyright &#169; 2023 <a href="https://www.colab-project.ch">AlbaSim, MEI, HEIG-VD, HES-SO</a>. All rights reserved.</div>

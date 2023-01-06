@@ -18,7 +18,7 @@ import javax.validation.constraints.NotNull;
  * @author maxence
  */
 @ExtractJavaDoc
-public class AuthMethod implements  WithJsonDiscriminator {
+public class AuthMethod implements WithJsonDiscriminator {
 
     private static final long serialVersionUID = 1L;
 
@@ -84,11 +84,10 @@ public class AuthMethod implements  WithJsonDiscriminator {
 <span class="nc" id="L84">    }</span>
 
     /**
-     *
      * @return the salt to use with mandatory method
      */
     public String getSalt() {
-<span class="nc" id="L91">        return salt;</span>
+<span class="nc" id="L90">        return salt;</span>
     }
 
     /**
@@ -97,15 +96,14 @@ public class AuthMethod implements  WithJsonDiscriminator {
      * @param salt the salt
      */
     public void setSalt(String salt) {
-<span class="nc" id="L100">        this.salt = salt;</span>
-<span class="nc" id="L101">    }</span>
+<span class="nc" id="L99">        this.salt = salt;</span>
+<span class="nc" id="L100">    }</span>
 
     /**
-     *
      * @return an optional method
      */
     public HashMethod getOptionalMethod() {
-<span class="nc" id="L108">        return optionalMethod;</span>
+<span class="nc" id="L106">        return optionalMethod;</span>
     }
 
     /**
@@ -114,15 +112,14 @@ public class AuthMethod implements  WithJsonDiscriminator {
      * @param optionalMethod next hash method to use
      */
     public void setOptionalMethod(HashMethod optionalMethod) {
-<span class="nc" id="L117">        this.optionalMethod = optionalMethod;</span>
-<span class="nc" id="L118">    }</span>
+<span class="nc" id="L115">        this.optionalMethod = optionalMethod;</span>
+<span class="nc" id="L116">    }</span>
 
     /**
-     *
      * @return the salt to use with optional method
      */
     public String getNewSalt() {
-<span class="nc" id="L125">        return newSalt;</span>
+<span class="nc" id="L122">        return newSalt;</span>
     }
 
     /**
@@ -132,8 +129,8 @@ public class AuthMethod implements  WithJsonDiscriminator {
      */
     public void setNewSalt(String newSalt) {
 
-<span class="nc" id="L135">        this.newSalt = newSalt;</span>
-<span class="nc" id="L136">    }</span>
+<span class="nc" id="L132">        this.newSalt = newSalt;</span>
+<span class="nc" id="L133">    }</span>
 
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

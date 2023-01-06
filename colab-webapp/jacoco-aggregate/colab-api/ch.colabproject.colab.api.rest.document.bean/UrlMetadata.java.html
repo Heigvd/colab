@@ -15,11 +15,10 @@ import javax.json.bind.annotation.JsonbTransient;
 import javax.validation.constraints.NotNull;
 
 /**
- *
  * @author maxence
  */
 @ExtractJavaDoc
-<span class="nc" id="L22">public class UrlMetadata implements Serializable {</span>
+<span class="nc" id="L21">public class UrlMetadata implements Serializable {</span>
 
     private static final long serialVersionUID = 1L;
 
@@ -43,7 +42,7 @@ import javax.validation.constraints.NotNull;
     /**
      * Metadata
      */
-<span class="nc" id="L46">    @NotNull</span>
+<span class="nc" id="L45">    @NotNull</span>
     private Map&lt;String, String&gt; metadata = new HashMap&lt;&gt;();
 
     /**
@@ -52,7 +51,7 @@ import javax.validation.constraints.NotNull;
      * @return the mime-type or null if unknown
      */
     public String getContentType() {
-<span class="nc" id="L55">        return contentType;</span>
+<span class="nc" id="L54">        return contentType;</span>
     }
 
     /**
@@ -61,8 +60,8 @@ import javax.validation.constraints.NotNull;
      * @param contentType the mime type. Null means unknown
      */
     public void setContentType(String contentType) {
-<span class="nc" id="L64">        this.contentType = contentType;</span>
-<span class="nc" id="L65">    }</span>
+<span class="nc" id="L63">        this.contentType = contentType;</span>
+<span class="nc" id="L64">    }</span>
 
     /**
      * Get the metadata
@@ -70,7 +69,7 @@ import javax.validation.constraints.NotNull;
      * @return metadata
      */
     public Map&lt;String, String&gt; getMetadata() {
-<span class="nc" id="L73">        return metadata;</span>
+<span class="nc" id="L72">        return metadata;</span>
     }
 
     /**
@@ -79,8 +78,8 @@ import javax.validation.constraints.NotNull;
      * @param metadata new metadata
      */
     public void setMetadata(Map&lt;String, String&gt; metadata) {
-<span class="nc" id="L82">        this.metadata = metadata;</span>
-<span class="nc" id="L83">    }</span>
+<span class="nc" id="L81">        this.metadata = metadata;</span>
+<span class="nc" id="L82">    }</span>
 
     /**
      * Is the url broken ? It means 404
@@ -88,7 +87,7 @@ import javax.validation.constraints.NotNull;
      * @return if the link is broken
      */
     public Boolean isBroken() {
-<span class="nc" id="L91">        return broken;</span>
+<span class="nc" id="L90">        return broken;</span>
     }
 
     /**
@@ -97,8 +96,8 @@ import javax.validation.constraints.NotNull;
      * @param broken new broken balue
      */
     public void setBroken(Boolean broken) {
-<span class="nc" id="L100">        this.broken = broken;</span>
-<span class="nc" id="L101">    }</span>
+<span class="nc" id="L99">        this.broken = broken;</span>
+<span class="nc" id="L100">    }</span>
 
     /**
      * Get the date
@@ -106,10 +105,11 @@ import javax.validation.constraints.NotNull;
      * @return the date
      */
     public OffsetDateTime getDate() {
-<span class="nc" id="L109">        return date;</span>
+<span class="nc" id="L108">        return date;</span>
     }
 
-    /** Set the date
+    /**
+     * Set the date
      *
      * @param date the date
      */

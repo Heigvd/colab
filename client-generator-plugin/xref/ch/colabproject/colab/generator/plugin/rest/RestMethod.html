@@ -398,8 +398,8 @@
 <a class="jxr_linenumber" name="L390" href="#L390">390</a> <em class="jxr_javadoccomment">     * @param type           type of the parameter</em>
 <a class="jxr_linenumber" name="L391" href="#L391">391</a> <em class="jxr_javadoccomment">     */</em>
 <a class="jxr_linenumber" name="L392" href="#L392">392</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> addFormParameter(String name, String annotationName, String javadoc, Type type) {
-<a class="jxr_linenumber" name="L393" href="#L393">393</a>         Optional&lt;Param&gt; findFirst
-<a class="jxr_linenumber" name="L394" href="#L394">394</a>             = <strong class="jxr_keyword">this</strong>.formParameters.stream().filter(p -&gt; p.getInAnnotationName().equals(annotationName)).findFirst();
+<a class="jxr_linenumber" name="L393" href="#L393">393</a>         Optional&lt;Param&gt; findFirst = <strong class="jxr_keyword">this</strong>.formParameters.stream()
+<a class="jxr_linenumber" name="L394" href="#L394">394</a>             .filter(p -&gt; p.getInAnnotationName().equals(annotationName)).findFirst();
 <a class="jxr_linenumber" name="L395" href="#L395">395</a>         <strong class="jxr_keyword">if</strong> (findFirst.isEmpty()) {
 <a class="jxr_linenumber" name="L396" href="#L396">396</a> <em class="jxr_comment">//            Param param = findFirst.get();</em>
 <a class="jxr_linenumber" name="L397" href="#L397">397</a> <em class="jxr_comment">//            // hack: Files are injected with two disctinct parameter: one InputStream for bytes, one</em>

@@ -26,16 +26,17 @@ import org.slf4j.LoggerFactory;
  * This beans shall only call methods with annotation {@link javax.ejb.TransactionAttribute} set to
  * {@link javax.ejb.TransactionAttributeType#REQUIRES_NEW}.
  * &lt;p&gt;
+ * 
  * @author maxence
  */
 @Stateless
 @LocalBean
-<span class="nc" id="L33">public class ApplicationLifecycleManager {</span>
+<span class="nc" id="L34">public class ApplicationLifecycleManager {</span>
 
     /**
      * Logger. Default level, set in logback.xml, is INFO
      */
-<span class="nc" id="L38">    private static final Logger logger = LoggerFactory.getLogger(ApplicationLifecycleManager.class);</span>
+<span class="nc" id="L39">    private static final Logger logger = LoggerFactory.getLogger(ApplicationLifecycleManager.class);</span>
 
     /**
      * User persistence
@@ -59,27 +60,27 @@ import org.slf4j.LoggerFactory;
      * Create a default admin user if there is no admin at all.
      */
     public void createDefaultAdminIfNone() {
-<span class="nc" id="L62">        requestManager.sudo(() -&gt; {</span>
-<span class="nc bnc" id="L63" title="All 2 branches missed.">            if (userDao.findAllAdmin().isEmpty()) {</span>
+<span class="nc" id="L63">        requestManager.sudo(() -&gt; {</span>
+<span class="nc bnc" id="L64" title="All 2 branches missed.">            if (userDao.findAllAdmin().isEmpty()) {</span>
                 try {
-<span class="nc" id="L65">                    logger.info(&quot;No admin exists, create one&quot;);</span>
-                    //make sure to create the user within a brand new transaction
-<span class="nc" id="L67">                    User admin = userManager.createAdminUserTx(</span>
-<span class="nc" id="L68">                        ColabConfiguration.getDefaultAdminUsername(),</span>
-<span class="nc" id="L69">                        ColabConfiguration.getDefaultAdminEmail(),</span>
-<span class="nc" id="L70">                        ColabConfiguration.getDefaultAdminPassword()</span>
+<span class="nc" id="L66">                    logger.info(&quot;No admin exists, create one&quot;);</span>
+                    // make sure to create the user within a brand new transaction
+<span class="nc" id="L68">                    User admin = userManager.createAdminUserTx(</span>
+<span class="nc" id="L69">                        ColabConfiguration.getDefaultAdminUsername(),</span>
+<span class="nc" id="L70">                        ColabConfiguration.getDefaultAdminEmail(),</span>
+<span class="nc" id="L71">                        ColabConfiguration.getDefaultAdminPassword()</span>
                     );
-<span class="nc" id="L72">                    logger.info(&quot;New admin user: {}&quot;, admin);</span>
-<span class="nc" id="L73">                } catch (HttpErrorMessage ex) {</span>
-<span class="nc" id="L74">                    logger.error(</span>
+<span class="nc" id="L73">                    logger.info(&quot;New admin user: {}&quot;, admin);</span>
+<span class="nc" id="L74">                } catch (HttpErrorMessage ex) {</span>
+<span class="nc" id="L75">                    logger.error(</span>
                         &quot;Fails to create default admin user. Does non-admin user exist with same username or email address&quot;);
-<span class="nc" id="L76">                } catch (RuntimeException ex) {</span>
-<span class="nc" id="L77">                    logger.error(</span>
+<span class="nc" id="L77">                } catch (RuntimeException ex) {</span>
+<span class="nc" id="L78">                    logger.error(</span>
                         &quot;Fails to create default amdin user for some unknown reason. Please check config&quot;,
                         ex);
-<span class="nc" id="L80">                }</span>
+<span class="nc" id="L81">                }</span>
             }
-<span class="nc" id="L82">        });</span>
-<span class="nc" id="L83">    }</span>
+<span class="nc" id="L83">        });</span>
+<span class="nc" id="L84">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

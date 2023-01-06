@@ -40,13 +40,14 @@ import javax.validation.constraints.Size;
 @Table(
     indexes = {
         @Index(columnList = &quot;account_id&quot;),
-        @Index(columnList = &quot;session_id&quot;, unique = true),}
+        @Index(columnList = &quot;session_id&quot;, unique = true), }
 )
 @NamedQuery(
     name = &quot;HttpSession.getOlderThan&quot;,
     query = &quot;SELECT session FROM HttpSession session WHERE session.lastSeen &lt; :time&quot;
 )
-<span class="nc" id="L49">public class HttpSession implements WithId, WithJsonDiscriminator, WithPermission, WithWebsocketChannels {</span>
+<span class="nc" id="L49">public class HttpSession</span>
+    implements WithId, WithJsonDiscriminator, WithPermission, WithWebsocketChannels {
 
     private static final long serialVersionUID = 1L;
 
@@ -112,7 +113,7 @@ import javax.validation.constraints.Size;
      */
     @Override
     public Long getId() {
-<span class="nc" id="L115">        return id;</span>
+<span class="nc" id="L116">        return id;</span>
     }
 
     /**
@@ -121,8 +122,8 @@ import javax.validation.constraints.Size;
      * @param id id
      */
     public void setId(Long id) {
-<span class="nc" id="L124">        this.id = id;</span>
-<span class="nc" id="L125">    }</span>
+<span class="nc" id="L125">        this.id = id;</span>
+<span class="nc" id="L126">    }</span>
 
     /**
      * Get the raw secret. This will almost always return null
@@ -130,7 +131,7 @@ import javax.validation.constraints.Size;
      * @return the raw secret or null
      */
     public String getRawSessionSecret() {
-<span class="nc" id="L133">        return rawSessionSecret;</span>
+<span class="nc" id="L134">        return rawSessionSecret;</span>
     }
 
     /**
@@ -139,14 +140,14 @@ import javax.validation.constraints.Size;
      * @param rawSessionSecret the raw secret
      */
     public void setRawSessionSecret(String rawSessionSecret) {
-<span class="nc" id="L142">        this.rawSessionSecret = rawSessionSecret;</span>
-<span class="nc" id="L143">    }</span>
+<span class="nc" id="L143">        this.rawSessionSecret = rawSessionSecret;</span>
+<span class="nc" id="L144">    }</span>
 
     /**
      * @return Get the session id
      */
     public byte[] getSessionSecret() {
-<span class="nc" id="L149">        return sessionSecret;</span>
+<span class="nc" id="L150">        return sessionSecret;</span>
     }
 
     /**
@@ -155,14 +156,14 @@ import javax.validation.constraints.Size;
      * @param sessionSecret id of the session
      */
     public void setSessionSecret(byte[] sessionSecret) {
-<span class="nc" id="L158">        this.sessionSecret = sessionSecret;</span>
-<span class="nc" id="L159">    }</span>
+<span class="nc" id="L159">        this.sessionSecret = sessionSecret;</span>
+<span class="nc" id="L160">    }</span>
 
     /**
      * @return Get last activity date
      */
     public OffsetDateTime getLastSeen() {
-<span class="nc" id="L165">        return lastSeen;</span>
+<span class="nc" id="L166">        return lastSeen;</span>
     }
 
     /**
@@ -171,8 +172,8 @@ import javax.validation.constraints.Size;
      * @param lastSeen lastSeen
      */
     public void setLastSeen(OffsetDateTime lastSeen) {
-<span class="nc" id="L174">        this.lastSeen = lastSeen;</span>
-<span class="nc" id="L175">    }</span>
+<span class="nc" id="L175">        this.lastSeen = lastSeen;</span>
+<span class="nc" id="L176">    }</span>
 
     /**
      * Get the value of userAgent
@@ -180,7 +181,7 @@ import javax.validation.constraints.Size;
      * @return the value of userAgent
      */
     public String getUserAgent() {
-<span class="nc" id="L183">        return userAgent;</span>
+<span class="nc" id="L184">        return userAgent;</span>
     }
 
     /**
@@ -189,8 +190,8 @@ import javax.validation.constraints.Size;
      * @param userAgent new value of userAgent
      */
     public void setUserAgent(String userAgent) {
-<span class="nc" id="L192">        this.userAgent = userAgent;</span>
-<span class="nc" id="L193">    }</span>
+<span class="nc" id="L193">        this.userAgent = userAgent;</span>
+<span class="nc" id="L194">    }</span>
 
     /**
      * Get the account linked to this session. The only case the account may be null is on logout or
@@ -199,7 +200,7 @@ import javax.validation.constraints.Size;
      * @return authenticated account
      */
     public Account getAccount() {
-<span class="nc" id="L202">        return account;</span>
+<span class="nc" id="L203">        return account;</span>
     }
 
     /**
@@ -208,17 +209,17 @@ import javax.validation.constraints.Size;
      * @param account authenticated account
      */
     public void setAccount(Account account) {
-<span class="nc" id="L211">        this.account = account;</span>
-<span class="nc" id="L212">    }</span>
+<span class="nc" id="L212">        this.account = account;</span>
+<span class="nc" id="L213">    }</span>
 
     /**
      * @return authenticated account, null if not authenticated
      */
     public Long getAccountId() {
-<span class="nc bnc" id="L218" title="All 2 branches missed.">        if (account != null) {</span>
-<span class="nc" id="L219">            return account.getId();</span>
+<span class="nc bnc" id="L219" title="All 2 branches missed.">        if (account != null) {</span>
+<span class="nc" id="L220">            return account.getId();</span>
         } else {
-<span class="nc" id="L221">            return accountId;</span>
+<span class="nc" id="L222">            return accountId;</span>
         }
     }
 
@@ -228,8 +229,8 @@ import javax.validation.constraints.Size;
      * @param accountId id of the account account
      */
     public void setAccountId(Long accountId) {
-<span class="nc" id="L231">        this.accountId = accountId;</span>
-<span class="nc" id="L232">    }</span>
+<span class="nc" id="L232">        this.accountId = accountId;</span>
+<span class="nc" id="L233">    }</span>
 
     // ---------------------------------------------------------------------------------------------
     // concerning the whole class
@@ -237,36 +238,36 @@ import javax.validation.constraints.Size;
 
     @Override
     public ChannelsBuilder getChannelsBuilder() {
-<span class="nc bnc" id="L240" title="All 2 branches missed.">        if (this.account != null) {</span>
-<span class="nc" id="L241">            return new AboutAccountChannelsBuilder(this.account);</span>
+<span class="nc bnc" id="L241" title="All 2 branches missed.">        if (this.account != null) {</span>
+<span class="nc" id="L242">            return new AboutAccountChannelsBuilder(this.account);</span>
         } else {
-<span class="nc" id="L243">            return new ForAdminChannelsBuilder();</span>
+<span class="nc" id="L244">            return new ForAdminChannelsBuilder();</span>
         }
     }
 
     @Override
     @JsonbTransient
     public Conditions.Condition getReadCondition() {
-<span class="nc bnc" id="L250" title="All 2 branches missed.">        if (this.account != null) {</span>
+<span class="nc bnc" id="L251" title="All 2 branches missed.">        if (this.account != null) {</span>
             // same
-<span class="nc" id="L252">            return this.account.getReadCondition();</span>
+<span class="nc" id="L253">            return this.account.getReadCondition();</span>
         } else {
             // not linked to any account, nothing to hide
             // This case may only exist when the session is about to be destroyed
-<span class="nc" id="L256">            return Conditions.alwaysTrue;</span>
+<span class="nc" id="L257">            return Conditions.alwaysTrue;</span>
         }
     }
 
     @Override
     @JsonbTransient
     public Conditions.Condition getUpdateCondition() {
-<span class="nc bnc" id="L263" title="All 2 branches missed.">        if (this.account != null) {</span>
+<span class="nc bnc" id="L264" title="All 2 branches missed.">        if (this.account != null) {</span>
             // same
-<span class="nc" id="L265">            return this.account.getUpdateCondition();</span>
+<span class="nc" id="L266">            return this.account.getUpdateCondition();</span>
         } else {
             // not linked to any account, nothing to hide
             // This case may only exist when the session is about to be destroyed
-<span class="nc" id="L269">            return Conditions.alwaysTrue;</span>
+<span class="nc" id="L270">            return Conditions.alwaysTrue;</span>
         }
     }
 
@@ -274,23 +275,24 @@ import javax.validation.constraints.Size;
     @JsonbTransient
     public Conditions.Condition getCreateCondition() {
         // anyone can create a session
-<span class="nc" id="L277">        return Conditions.alwaysTrue;</span>
+<span class="nc" id="L278">        return Conditions.alwaysTrue;</span>
     }
 
     @Override
     public int hashCode() {
-<span class="nc" id="L282">        return EntityHelper.hashCode(this);</span>
+<span class="nc" id="L283">        return EntityHelper.hashCode(this);</span>
     }
 
     @Override
     @SuppressWarnings(&quot;EqualsWhichDoesntCheckParameterClass&quot;)
     public boolean equals(Object obj) {
-<span class="nc" id="L288">        return EntityHelper.equals(this, obj);</span>
+<span class="nc" id="L289">        return EntityHelper.equals(this, obj);</span>
     }
 
     @Override
     public String toString() {
-<span class="nc" id="L293">        return &quot;HttpSession{&quot; + &quot;id=&quot; + id + &quot;, account=&quot; + account + &quot;, lastSeen=&quot; + lastSeen + '}';</span>
+<span class="nc" id="L294">        return &quot;HttpSession{&quot; + &quot;id=&quot; + id + &quot;, account=&quot; + account + &quot;, lastSeen=&quot; + lastSeen</span>
+            + '}';
     }
 
 }

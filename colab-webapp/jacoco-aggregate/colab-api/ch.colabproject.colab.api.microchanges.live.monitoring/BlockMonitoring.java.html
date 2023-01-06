@@ -29,9 +29,10 @@ import javax.validation.constraints.NotNull;
 <span class="nc" id="L29">        DATA_ERROR,</span>
         /** no pending changes */
 <span class="nc" id="L31">        PROCESSED,</span>
-        /** some
-         * pending changes exist but block has been deleted in the meantime */
-<span class="nc" id="L34">        DELETED;</span>
+        /**
+         * some pending changes exist but block has been deleted in the meantime
+         */
+<span class="nc" id="L35">        DELETED;</span>
     }
 
     /** Id of the block being live-edited */
@@ -52,7 +53,7 @@ import javax.validation.constraints.NotNull;
      * @return the id of the block
      */
     public Long getBlockId() {
-<span class="nc" id="L55">        return blockId;</span>
+<span class="nc" id="L56">        return blockId;</span>
     }
 
     /**
@@ -61,8 +62,8 @@ import javax.validation.constraints.NotNull;
      * @param blockId new block id
      */
     public void setBlockId(Long blockId) {
-<span class="nc" id="L64">        this.blockId = blockId;</span>
-<span class="nc" id="L65">    }</span>
+<span class="nc" id="L65">        this.blockId = blockId;</span>
+<span class="nc" id="L66">    }</span>
 
     /**
      * status of the live-edition
@@ -70,7 +71,7 @@ import javax.validation.constraints.NotNull;
      * @return the status
      */
     public BlockStatus getStatus() {
-<span class="nc" id="L73">        return status;</span>
+<span class="nc" id="L74">        return status;</span>
     }
 
     /**
@@ -79,8 +80,8 @@ import javax.validation.constraints.NotNull;
      * @param status the status
      */
     public void setStatus(BlockStatus status) {
-<span class="nc" id="L82">        this.status = status;</span>
-<span class="nc" id="L83">    }</span>
+<span class="nc" id="L83">        this.status = status;</span>
+<span class="nc" id="L84">    }</span>
 
     /**
      * Get human description
@@ -88,7 +89,7 @@ import javax.validation.constraints.NotNull;
      * @return the description
      */
     public String getTitle() {
-<span class="nc" id="L91">        return title;</span>
+<span class="nc" id="L92">        return title;</span>
     }
 
     /**
@@ -97,7 +98,7 @@ import javax.validation.constraints.NotNull;
      * @param title new text
      */
     public void setTitle(String title) {
-<span class="nc" id="L100">        this.title = title;</span>
-<span class="nc" id="L101">    }</span>
+<span class="nc" id="L101">        this.title = title;</span>
+<span class="nc" id="L102">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

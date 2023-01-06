@@ -30,13 +30,14 @@ public class Helper {
      * pattern to check if a string looks like an email address
      */
 <span class="nc" id="L32">    private static final Pattern EMAIL_PATTERN = Pattern</span>
-<span class="nc" id="L33">        .compile(&quot;(?:[a-z0-9!#$%&amp;'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&amp;'*+/=?^_`{|}~-]+)*|\&quot;(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21\\x23-\\x5b\\x5d-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])*\&quot;)@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21-\\x5a\\x53-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])+)\\])&quot;);</span>
+<span class="nc" id="L33">        .compile(</span>
+            &quot;(?:[a-z0-9!#$%&amp;'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&amp;'*+/=?^_`{|}~-]+)*|\&quot;(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21\\x23-\\x5b\\x5d-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])*\&quot;)@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21-\\x5a\\x53-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])+)\\])&quot;);
 
     /**
      * never-called private constructor
      */
-<span class="nc" id="L38">    private Helper() {</span>
-<span class="nc" id="L39">        throw new UnsupportedOperationException(</span>
+<span class="nc" id="L39">    private Helper() {</span>
+<span class="nc" id="L40">        throw new UnsupportedOperationException(</span>
             &quot;This is a utility class and cannot be instantiated&quot;);
     }
 
@@ -48,15 +49,15 @@ public class Helper {
      * @return hex string representation of the byte array
      */
     public static String bytesToHex(byte[] hash) {
-<span class="nc" id="L51">        StringBuilder hexString = new StringBuilder(2 * hash.length);</span>
-<span class="nc bnc" id="L52" title="All 2 branches missed.">        for (int i = 0; i &lt; hash.length; i++) {</span>
-<span class="nc" id="L53">            String hex = Integer.toHexString(0xff &amp; hash[i]);</span>
-<span class="nc bnc" id="L54" title="All 2 branches missed.">            if (hex.length() == 1) {</span>
-<span class="nc" id="L55">                hexString.append('0');</span>
+<span class="nc" id="L52">        StringBuilder hexString = new StringBuilder(2 * hash.length);</span>
+<span class="nc bnc" id="L53" title="All 2 branches missed.">        for (int i = 0; i &lt; hash.length; i++) {</span>
+<span class="nc" id="L54">            String hex = Integer.toHexString(0xff &amp; hash[i]);</span>
+<span class="nc bnc" id="L55" title="All 2 branches missed.">            if (hex.length() == 1) {</span>
+<span class="nc" id="L56">                hexString.append('0');</span>
             }
-<span class="nc" id="L57">            hexString.append(hex);</span>
+<span class="nc" id="L58">            hexString.append(hex);</span>
         }
-<span class="nc" id="L59">        return hexString.toString();</span>
+<span class="nc" id="L60">        return hexString.toString();</span>
     }
 
     /**
@@ -67,17 +68,17 @@ public class Helper {
      * @return byte array
      */
     public static byte[] hextToBytes(String hex) {
-<span class="nc bnc" id="L70" title="All 2 branches missed.">        if (hex != null) {</span>
-<span class="nc" id="L71">            byte[] bytes = new byte[hex.length() / 2];</span>
+<span class="nc bnc" id="L71" title="All 2 branches missed.">        if (hex != null) {</span>
+<span class="nc" id="L72">            byte[] bytes = new byte[hex.length() / 2];</span>
 
-<span class="nc" id="L73">            int j = 0;</span>
-<span class="nc bnc" id="L74" title="All 2 branches missed.">            for (int i = 0; i &lt; hex.length(); i += 2) {</span>
-<span class="nc" id="L75">                bytes[j] = (byte) Integer.parseInt(hex.substring(i, i + 2), 16);</span>
-<span class="nc" id="L76">                j++;</span>
+<span class="nc" id="L74">            int j = 0;</span>
+<span class="nc bnc" id="L75" title="All 2 branches missed.">            for (int i = 0; i &lt; hex.length(); i += 2) {</span>
+<span class="nc" id="L76">                bytes[j] = (byte) Integer.parseInt(hex.substring(i, i + 2), 16);</span>
+<span class="nc" id="L77">                j++;</span>
             }
-<span class="nc" id="L78">            return bytes;</span>
+<span class="nc" id="L79">            return bytes;</span>
         } else {
-<span class="nc" id="L80">            return new byte[0];</span>
+<span class="nc" id="L81">            return new byte[0];</span>
         }
     }
 
@@ -90,18 +91,18 @@ public class Helper {
      * @return array equals or not
      */
     public static boolean constantTimeArrayEquals(byte[] a, byte[] b) {
-<span class="nc" id="L93">        boolean result = true;</span>
-<span class="nc" id="L94">        int aSize = a.length;</span>
-<span class="nc" id="L95">        int bSize = b.length;</span>
-<span class="nc" id="L96">        int max = Math.max(aSize, bSize);</span>
-<span class="nc bnc" id="L97" title="All 2 branches missed.">        for (int i = 0; i &lt; max; i++) {</span>
-<span class="nc bnc" id="L98" title="All 4 branches missed.">            if (i &gt;= aSize || i &gt;= bSize) {</span>
-<span class="nc" id="L99">                result = false;</span>
+<span class="nc" id="L94">        boolean result = true;</span>
+<span class="nc" id="L95">        int aSize = a.length;</span>
+<span class="nc" id="L96">        int bSize = b.length;</span>
+<span class="nc" id="L97">        int max = Math.max(aSize, bSize);</span>
+<span class="nc bnc" id="L98" title="All 2 branches missed.">        for (int i = 0; i &lt; max; i++) {</span>
+<span class="nc bnc" id="L99" title="All 4 branches missed.">            if (i &gt;= aSize || i &gt;= bSize) {</span>
+<span class="nc" id="L100">                result = false;</span>
             } else {
-<span class="nc bnc" id="L101" title="All 4 branches missed.">                result = a[i] == b[i] &amp;&amp; result;</span>
+<span class="nc bnc" id="L102" title="All 4 branches missed.">                result = a[i] == b[i] &amp;&amp; result;</span>
             }
         }
-<span class="nc" id="L104">        return result;</span>
+<span class="nc" id="L105">        return result;</span>
     }
 
     /**
@@ -112,13 +113,13 @@ public class Helper {
      * @return the one string
      */
     public static String concat(String... args) {
-<span class="nc" id="L115">        StringBuilder sb = new StringBuilder();</span>
-<span class="nc bnc" id="L116" title="All 2 branches missed.">        for (String s : args) {</span>
-<span class="nc bnc" id="L117" title="All 2 branches missed.">            if (s != null) {</span>
-<span class="nc" id="L118">                sb.append(s);</span>
+<span class="nc" id="L116">        StringBuilder sb = new StringBuilder();</span>
+<span class="nc bnc" id="L117" title="All 2 branches missed.">        for (String s : args) {</span>
+<span class="nc bnc" id="L118" title="All 2 branches missed.">            if (s != null) {</span>
+<span class="nc" id="L119">                sb.append(s);</span>
             }
         }
-<span class="nc" id="L121">        return sb.toString();</span>
+<span class="nc" id="L122">        return sb.toString();</span>
     }
 
     /**
@@ -129,11 +130,11 @@ public class Helper {
      * @return true if address looks like an email address
      */
     public static boolean isEmailAddress(String address) {
-<span class="nc bnc" id="L132" title="All 2 branches missed.">        if (address != null) {</span>
-<span class="nc" id="L133">            Matcher matcher = EMAIL_PATTERN.matcher(address);</span>
-<span class="nc" id="L134">            return matcher.matches();</span>
+<span class="nc bnc" id="L133" title="All 2 branches missed.">        if (address != null) {</span>
+<span class="nc" id="L134">            Matcher matcher = EMAIL_PATTERN.matcher(address);</span>
+<span class="nc" id="L135">            return matcher.matches();</span>
         } else {
-<span class="nc" id="L136">            return false;</span>
+<span class="nc" id="L137">            return false;</span>
         }
     }
 
@@ -145,10 +146,10 @@ public class Helper {
      * @return byte array of request length filled with secured-random data
      */
     public static byte[] generateSalt(int length) {
-<span class="nc" id="L148">        SecureRandom random = new SecureRandom();</span>
-<span class="nc" id="L149">        byte[] salt = new byte[length];</span>
-<span class="nc" id="L150">        random.nextBytes(salt);</span>
-<span class="nc" id="L151">        return salt;</span>
+<span class="nc" id="L149">        SecureRandom random = new SecureRandom();</span>
+<span class="nc" id="L150">        byte[] salt = new byte[length];</span>
+<span class="nc" id="L151">        random.nextBytes(salt);</span>
+<span class="nc" id="L152">        return salt;</span>
     }
 
     /**
@@ -159,14 +160,14 @@ public class Helper {
      * @return hex-encoded byte array
      */
     public static String generateHexSalt(int length) {
-<span class="nc" id="L162">        return Helper.bytesToHex(Helper.generateSalt(length));</span>
+<span class="nc" id="L163">        return Helper.bytesToHex(Helper.generateSalt(length));</span>
     }
 
     /**
      * @return the hash method to use for new accounts
      */
     public static HashMethod getDefaultHashMethod() {
-<span class="nc" id="L169">        return HashMethod.PBKDF2WithHmacSHA512_65536_64;</span>
+<span class="nc" id="L170">        return HashMethod.PBKDF2WithHmacSHA512_65536_64;</span>
     }
 
     /**
@@ -177,11 +178,11 @@ public class Helper {
      * @return eg my_aswesome_identifier
      */
     public static String camelCaseToUnderscore(String camelCase) {
-<span class="nc" id="L180">        return camelCase</span>
-<span class="nc" id="L181">            .trim()</span>
+<span class="nc" id="L181">        return camelCase</span>
+<span class="nc" id="L182">            .trim()</span>
             // prefix all uppercase char preceded by something with an underscore
-<span class="nc" id="L183">            .replaceAll(&quot;(?&lt;!^)[A-Z](?!$)&quot;, &quot;_$0&quot;)</span>
-<span class="nc" id="L184">            .toLowerCase();</span>
+<span class="nc" id="L184">            .replaceAll(&quot;(?&lt;!^)[A-Z](?!$)&quot;, &quot;_$0&quot;)</span>
+<span class="nc" id="L185">            .toLowerCase();</span>
     }
 
     /**
@@ -192,7 +193,7 @@ public class Helper {
      * @return uniform resource name for the given channel
      */
     public static String getColabBaseUrn(WebsocketChannel channel) {
-<span class="nc" id="L195">        return COLAB_BASE_URN + &quot;WebsocketChannel/&quot; + channel.getJsonDiscriminator();</span>
+<span class="nc" id="L196">        return COLAB_BASE_URN + &quot;WebsocketChannel/&quot; + channel.getJsonDiscriminator();</span>
     }
 
     /**
@@ -204,16 +205,16 @@ public class Helper {
      * @return string to be logged
      */
     private static String prettyPrintColabStackTrace(StackTraceElement[] stackTrace, int skip) {
-<span class="nc" id="L207">        StringBuilder sb = new StringBuilder();</span>
+<span class="nc" id="L208">        StringBuilder sb = new StringBuilder();</span>
 
-<span class="nc bnc" id="L209" title="All 2 branches missed.">        for (int i = skip ; i &lt; stackTrace.length; i++) {</span>
-<span class="nc" id="L210">            StackTraceElement elem = stackTrace[i];</span>
-<span class="nc bnc" id="L211" title="All 2 branches missed.">            if (elem.getClassName().startsWith(&quot;ch.colab&quot;)) {</span>
-<span class="nc" id="L212">                sb.append(&quot;\n\tat &quot;);</span>
-<span class="nc" id="L213">                sb.append(elem);</span>
+<span class="nc bnc" id="L210" title="All 2 branches missed.">        for (int i = skip; i &lt; stackTrace.length; i++) {</span>
+<span class="nc" id="L211">            StackTraceElement elem = stackTrace[i];</span>
+<span class="nc bnc" id="L212" title="All 2 branches missed.">            if (elem.getClassName().startsWith(&quot;ch.colab&quot;)) {</span>
+<span class="nc" id="L213">                sb.append(&quot;\n\tat &quot;);</span>
+<span class="nc" id="L214">                sb.append(elem);</span>
             }
         }
-<span class="nc" id="L216">        return sb.toString();</span>
+<span class="nc" id="L217">        return sb.toString();</span>
     }
 
     /**
@@ -222,8 +223,8 @@ public class Helper {
      * @return string which represent the current stack trace
      */
     public static String getStringifiedColabStackTrace() {
-<span class="nc" id="L225">        StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();</span>
-<span class="nc" id="L226">        return prettyPrintColabStackTrace(stackTrace, 2);</span>
+<span class="nc" id="L226">        StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();</span>
+<span class="nc" id="L227">        return prettyPrintColabStackTrace(stackTrace, 2);</span>
     }
 
     /**
@@ -234,8 +235,8 @@ public class Helper {
      * @return string which represent the throwable stack trace
      */
     public static String getStringifiedColabStackTrace(Throwable t) {
-<span class="nc" id="L237">        StackTraceElement[] stackTrace = t.getStackTrace();</span>
-<span class="nc" id="L238">        return prettyPrintColabStackTrace(stackTrace, 0);</span>
+<span class="nc" id="L238">        StackTraceElement[] stackTrace = t.getStackTrace();</span>
+<span class="nc" id="L239">        return prettyPrintColabStackTrace(stackTrace, 0);</span>
     }
 
     /**
@@ -247,14 +248,14 @@ public class Helper {
      * @return string to be logged
      */
     private static String prettyPrintStackTrace(StackTraceElement[] stackTrace, int skip) {
-<span class="nc" id="L250">        StringBuilder sb = new StringBuilder();</span>
+<span class="nc" id="L251">        StringBuilder sb = new StringBuilder();</span>
 
-<span class="nc bnc" id="L252" title="All 2 branches missed.">        for (int i = skip ; i &lt; stackTrace.length; i++) {</span>
-<span class="nc" id="L253">            StackTraceElement elem = stackTrace[i];</span>
-<span class="nc" id="L254">            sb.append(&quot;\n\tat &quot;);</span>
-<span class="nc" id="L255">            sb.append(elem);</span>
+<span class="nc bnc" id="L253" title="All 2 branches missed.">        for (int i = skip; i &lt; stackTrace.length; i++) {</span>
+<span class="nc" id="L254">            StackTraceElement elem = stackTrace[i];</span>
+<span class="nc" id="L255">            sb.append(&quot;\n\tat &quot;);</span>
+<span class="nc" id="L256">            sb.append(elem);</span>
         }
-<span class="nc" id="L257">        return sb.toString();</span>
+<span class="nc" id="L258">        return sb.toString();</span>
     }
 
     /**
@@ -263,8 +264,8 @@ public class Helper {
      * @return string which represent the current stack trace
      */
     public static String getStringifiedStackTrace() {
-<span class="nc" id="L266">        StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();</span>
-<span class="nc" id="L267">        return prettyPrintStackTrace(stackTrace, 2);</span>
+<span class="nc" id="L267">        StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();</span>
+<span class="nc" id="L268">        return prettyPrintStackTrace(stackTrace, 2);</span>
     }
 
     /**
@@ -275,8 +276,8 @@ public class Helper {
      * @return string which represent the throwable stack trace
      */
     public static String getStringifiedStackTrace(Throwable t) {
-<span class="nc" id="L278">        StackTraceElement[] stackTrace = t.getStackTrace();</span>
-<span class="nc" id="L279">        return prettyPrintStackTrace(stackTrace, 0);</span>
+<span class="nc" id="L279">        StackTraceElement[] stackTrace = t.getStackTrace();</span>
+<span class="nc" id="L280">        return prettyPrintStackTrace(stackTrace, 0);</span>
     }
 
     /**
@@ -291,8 +292,8 @@ public class Helper {
      */
     @SuppressWarnings(&quot;unchecked&quot;)
     public static &lt;T&gt; T lookup(Class&lt;T&gt; klass) throws NamingException {
-<span class="nc" id="L294">        return (T) new InitialContext().lookup(</span>
-<span class="nc" id="L295">            &quot;java:global/coLAB/&quot; + klass.getSimpleName() + &quot;!&quot; + klass.getName());</span>
+<span class="nc" id="L295">        return (T) new InitialContext().lookup(</span>
+<span class="nc" id="L296">            &quot;java:global/coLAB/&quot; + klass.getSimpleName() + &quot;!&quot; + klass.getName());</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>
