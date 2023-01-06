@@ -44,6 +44,8 @@ public class ProjectCreationData implements Serializable {
      * The description of the project
      */
     private String description;
+    
+    // no globalProject boolean since projects can't be initialised as global
 
     /**
      * The icon to illustrate the project
