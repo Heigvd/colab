@@ -50,7 +50,6 @@ public class ProjectStructure {
         this.rootCardId = rootCardId;
     }
 
-
     /**
      * Get the value of cardContents
      *
@@ -68,7 +67,6 @@ public class ProjectStructure {
     public void setCardContents(Set<CardContent> cardContents) {
         this.cardContents = cardContents;
     }
-
 
     /**
      * Get the value of cards

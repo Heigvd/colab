@@ -21,7 +21,6 @@ public class EjbExceptionMapper extends AbstractExceptionMapper
     implements ExceptionMapper<EJBException> {
 
     /**
-     *
      * @param exception exception to process
      *
      * @return a HTTP response which wrap the exception

@@ -6,10 +6,10 @@
  */
 import { createSlice } from '@reduxjs/toolkit';
 import { Account, HttpSession, User } from 'colab-rest-client';
-import * as API from '../API/api';
-import { mapById } from '../helper';
-import { processMessage } from '../ws/wsThunkActions';
-import { LoadingStatus } from './store';
+import * as API from '../../API/api';
+import { mapById } from '../../helper';
+import { processMessage } from '../../ws/wsThunkActions';
+import { LoadingStatus } from '../store';
 
 export interface UserState {
   // null user means loading

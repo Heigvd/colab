@@ -7,10 +7,10 @@
 
 import { createSlice } from '@reduxjs/toolkit';
 import { Document } from 'colab-rest-client';
-import * as API from '../API/api';
-import { mapById } from '../helper';
-import { processMessage } from '../ws/wsThunkActions';
-import { AvailabilityStatus } from './store';
+import * as API from '../../API/api';
+import { mapById } from '../../helper';
+import { processMessage } from '../../ws/wsThunkActions';
+import { AvailabilityStatus } from '../store';
 
 /** what we have in the store */
 export interface DocumentState {

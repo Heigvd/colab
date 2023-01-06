@@ -39,7 +39,7 @@ public interface GridCell {
      *
      * @param y new y coordinate
      */
-     void setY(Integer y);
+    void setY(Integer y);
 
     /**
      * get cell width
@@ -60,12 +60,12 @@ public interface GridCell {
      *
      * @return the height
      */
-     Integer getHeight();
+    Integer getHeight();
 
     /**
      * set height
      *
      * @param height new height
      */
-     void setHeight(Integer height);
+    void setHeight(Integer height);
 }

@@ -200,7 +200,7 @@ public class LiveUpdates implements Serializable {
 
         List<Change> collect = changes.stream()
             .filter(ch -> ch.getBasedOn().contains(parent.getRevision())
-            && ch.getLiveSession().equals(parent.getLiveSession()))
+                && ch.getLiveSession().equals(parent.getLiveSession()))
             .collect(Collectors.toList());
         return new ArrayList<>(collect);
     }
@@ -322,7 +322,7 @@ public class LiveUpdates implements Serializable {
         if (forward == false) {
             logger.warn("TODO: implement backward shift");
         }
-        //int way = forward ? 1 : -1; // TODO
+        // int way = forward ? 1 : -1; // TODO
 
         logger.trace("Shift offsets: {}", change);
         List<MicroChange> microchanges = change.getMicrochanges();
@@ -486,7 +486,8 @@ public class LiveUpdates implements Serializable {
      *
      * @return conflict free propagation or not
      */
-    private boolean propagateOffsets(List<Change> changes, Change parent, Map<Integer, Integer> offsets, boolean forward, String offsetFromRev) {
+    private boolean propagateOffsets(List<Change> changes, Change parent,
+        Map<Integer, Integer> offsets, boolean forward, String offsetFromRev) {
         boolean conflictFree = true;
 
         for (Change child : getByParent(changes, parent.getRevision())) {
@@ -497,15 +498,16 @@ public class LiveUpdates implements Serializable {
                 boolean shiftFree = this.shift(child, offsets, forward);
                 Map<Integer, Integer> shiftedOffsets = shiftOffsets(offsets, child);
                 logger.trace("Shifted Offsets: {}", shiftedOffsets);
-                boolean pFree = this.propagateOffsets(changes, child, shiftedOffsets, forward, offsetFromRev);
+                boolean pFree = this.propagateOffsets(changes, child, shiftedOffsets, forward,
+                    offsetFromRev);
                 conflictFree = conflictFree && shiftFree && pFree;
             } else {
-                //merge has been done
+                // merge has been done
                 HashSet<String> newDeps = new HashSet<>(child.getBasedOn());
                 newDeps.remove(offsetFromRev);
                 logger.trace("Do not go deeper than {}, now based on {}", child, newDeps);
                 child.setBasedOn(newDeps);
-                //child.getBasedOn().remove(offsetFromRev);
+                // child.getBasedOn().remove(offsetFromRev);
             }
         }
         return conflictFree;
@@ -603,7 +605,7 @@ public class LiveUpdates implements Serializable {
         } else if (setsEqual(Set.of(change.getRevision()), newBase.getBasedOn())) {
             logger.trace("Inverse hierarchy : " + change + " on " + newBase);
             // [x] -> change -> newBase
-            // ==>[x] ->  newBase -> change
+            // ==>[x] -> newBase -> change
 
             boolean conflictFree = true;
 
@@ -626,7 +628,9 @@ public class LiveUpdates implements Serializable {
             logger.trace("Nothing to do: change includes all base parents");
             return true;
         } else {
-            logger.error("Not yet implemented: Changes: {} Change: {} NewBase: {} BaseDeps: {} ChangeDeps: {}", changes, change.getRevision(), newBase.getRevision(), baseDeps, changeDeps);
+            logger.error(
+                "Not yet implemented: Changes: {} Change: {} NewBase: {} BaseDeps: {} ChangeDeps: {}",
+                changes, change.getRevision(), newBase.getRevision(), baseDeps, changeDeps);
             return false;
         }
     }
@@ -641,8 +645,7 @@ public class LiveUpdates implements Serializable {
      */
     public List<Change> filterByAuthor(List<Change> changes, String author) {
         return changes.stream()
-            .filter(child
-                -> child.getLiveSession().equals(author))
+            .filter(child -> child.getLiveSession().equals(author))
             .collect(Collectors.toList());
     }
 
@@ -680,13 +683,13 @@ public class LiveUpdates implements Serializable {
             // fetch all changes based on the current revision
             List<Change> children = getByParent(changes, currentRevision);
             if (!children.isEmpty()) {
-                //Map<Integer, Integer> offsets = new HashMap<>();
-                //logger.trace("new empty offsets " + offsets);
+                // Map<Integer, Integer> offsets = new HashMap<>();
+                // logger.trace("new empty offsets " + offsets);
                 logger.trace("All @{} children: {}", currentRevision, mapChangesRevision(children));
 
                 // find a child which depends only only already applied changes
                 // NB: as I understand the algorithm, I can't figure out a case
-                //     such a child-with-unapplied-parent may event exists...
+                // such a child-with-unapplied-parent may event exists...
                 Optional<Change> optChange = children.stream()
                     .filter(ch -> appliedChanges.containsAll(ch.getBasedOn()))
                     .findFirst();
@@ -719,14 +722,14 @@ public class LiveUpdates implements Serializable {
                     }
                     currentRevision = change.getRevision();
                 } else {
-                    //TODO add full tree JSON formated full tree
+                    // TODO add full tree JSON formated full tree
                     logger.error("No child found in {}", children);
                     printDebugData();
                     break;
                 }
 
             } else {
-                //TODO add full tree JSON formated full tree
+                // TODO add full tree JSON formated full tree
                 logger.error("Some children without any parents left: {}", changes);
                 printDebugData();
                 break;
@@ -738,7 +741,9 @@ public class LiveUpdates implements Serializable {
 
     @Override
     public String toString() {
-        return "LiveUpdates{" + "targetClass=" + targetClass + ", targetId=" + targetId + ", revision=" + revision + ", content=" + content + ", pendingChanges=" + pendingChanges + '}';
+        return "LiveUpdates{" + "targetClass=" + targetClass + ", targetId=" + targetId
+            + ", revision=" + revision + ", content=" + content + ", pendingChanges="
+            + pendingChanges + '}';
     }
 
     /**

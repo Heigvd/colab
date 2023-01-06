@@ -12,7 +12,6 @@ import java.io.Serializable;
 import javax.validation.constraints.NotNull;
 
 /**
- *
  * @author maxence
  */
 @ExtractJavaDoc

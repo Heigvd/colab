@@ -59,7 +59,7 @@ public class TypeScriptHelper {
         if (WithJsonDiscriminator.class.isAssignableFrom(javaClass)) {
             return WithJsonDiscriminator.getJsonDiscriminator(javaClass);
         } else {
-            if (javaClass.getPackageName().startsWith("ch.colabproject")){
+            if (javaClass.getPackageName().startsWith("ch.colabproject")) {
                 Logger.info("Consider to implement WithJsonDiscriminator: "
                     + javaClass.getSimpleName());
             }
@@ -142,9 +142,8 @@ public class TypeScriptHelper {
                 // Type X = directSubCLass | otherdirectsubclass
 
                 List<String> allConcreteSubtypes = reflections.getSubTypesOf(javaClass).stream()
-                    .filter(subType
-                        -> !Modifier.isAbstract(subType.getModifiers())
-                    && !Modifier.isInterface(subType.getModifiers())
+                    .filter(subType -> !Modifier.isAbstract(subType.getModifiers())
+                        && !Modifier.isInterface(subType.getModifiers())
                     )
                     .map(subType -> getTsTypeName(subType))
                     .collect(Collectors.toList());
@@ -156,8 +155,8 @@ public class TypeScriptHelper {
                         return (Modifier.isAbstract(modifiers)
                             && javaClass.equals(subType.getSuperclass()))
                             || (Modifier.isInterface(modifiers)
-                            && Arrays.stream(subType.getInterfaces())
-                                .anyMatch(iface -> iface.equals(javaClass)));
+                                && Arrays.stream(subType.getInterfaces())
+                                    .anyMatch(iface -> iface.equals(javaClass)));
                     })
                     .map(subType -> {
                         String subTypeTsName = getTsTypeName(subType);
@@ -215,8 +214,7 @@ public class TypeScriptHelper {
                             Field field = getField(javaClass, key);
 
                             if (field != null) {
-                                optional
-                                    = (field.getAnnotation(NotNull.class) == null)
+                                optional = (field.getAnnotation(NotNull.class) == null)
                                     && (field.getAnnotation(NotEmpty.class) == null)
                                     && (field.getAnnotation(NotBlank.class) == null);
                                 propertyType = field.getGenericType();

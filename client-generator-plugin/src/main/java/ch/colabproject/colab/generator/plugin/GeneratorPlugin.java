@@ -113,7 +113,7 @@ public class GeneratorPlugin extends AbstractMojo {
         }
 
         // @TODO generate typescript client
-        //generator.generateTypescriptClient();
+        // generator.generateTypescriptClient();
     }
 
     /**
@@ -128,7 +128,7 @@ public class GeneratorPlugin extends AbstractMojo {
         GeneratorPlugin generator = new GeneratorPlugin(true);
         generator.packageName = "ch.colabproject.colab.generator";
         generator.clientName = "TestClient";
-        String[] p = {"ch.colabproject.colab.api"};
+        String[] p = { "ch.colabproject.colab.api" };
 
         generator.restPackages = p;
 

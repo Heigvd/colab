@@ -16,6 +16,7 @@ import javax.validation.constraints.NotNull;
  * Channel overview.
  *
  * @author maxence
+ * 
  * @deprecated not used any longer
  */
 @ExtractJavaDoc

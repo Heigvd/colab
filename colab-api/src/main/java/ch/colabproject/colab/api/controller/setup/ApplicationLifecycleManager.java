@@ -26,6 +26,7 @@ import org.slf4j.LoggerFactory;
  * This beans shall only call methods with annotation {@link javax.ejb.TransactionAttribute} set to
  * {@link javax.ejb.TransactionAttributeType#REQUIRES_NEW}.
  * <p>
+ * 
  * @author maxence
  */
 @Stateless
@@ -63,7 +64,7 @@ public class ApplicationLifecycleManager {
             if (userDao.findAllAdmin().isEmpty()) {
                 try {
                     logger.info("No admin exists, create one");
-                    //make sure to create the user within a brand new transaction
+                    // make sure to create the user within a brand new transaction
                     User admin = userManager.createAdminUserTx(
                         ColabConfiguration.getDefaultAdminUsername(),
                         ColabConfiguration.getDefaultAdminEmail(),

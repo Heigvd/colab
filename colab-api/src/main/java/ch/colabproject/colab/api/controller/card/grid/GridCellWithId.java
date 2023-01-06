@@ -8,6 +8,7 @@ package ch.colabproject.colab.api.controller.card.grid;
 
 /**
  * Effective grid cell must provide and id
+ * 
  * @author maxence
  */
 public interface GridCellWithId extends GridCell {

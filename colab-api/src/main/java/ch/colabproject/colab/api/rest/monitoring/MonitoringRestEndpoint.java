@@ -62,7 +62,6 @@ public class MonitoringRestEndpoint {
      *
      * @param loggerName name of the logger to update
      * @param level      new level of the logger
-     *
      */
     @GET
     @Path("SetLoggerLevel/{loggerName}/{level}")

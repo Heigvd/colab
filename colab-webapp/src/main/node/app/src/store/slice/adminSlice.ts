@@ -11,8 +11,8 @@ import {
   VersionDetails,
   WebsocketChannel,
 } from 'colab-rest-client';
-import * as API from '../API/api';
-import { InlineAvailabilityStatus, LoadingStatus } from './store';
+import * as API from '../../API/api';
+import { InlineAvailabilityStatus, LoadingStatus } from '../store';
 
 export interface AdminState {
   loggers: { [key: string]: LevelDescriptor } | undefined | null;

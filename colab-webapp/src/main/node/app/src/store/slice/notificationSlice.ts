@@ -7,7 +7,7 @@
 
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { HttpException } from 'colab-rest-client';
-import { processMessage } from '../ws/wsThunkActions';
+import { processMessage } from '../../ws/wsThunkActions';
 
 export interface ColabNotification {
   status: 'OPEN' | 'CLOSED';

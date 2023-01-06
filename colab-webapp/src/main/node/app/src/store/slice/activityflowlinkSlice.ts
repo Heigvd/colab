@@ -7,9 +7,9 @@
 
 import { createSlice } from '@reduxjs/toolkit';
 import { ActivityFlowLink } from 'colab-rest-client';
-import * as API from '../API/api';
-import { processMessage } from '../ws/wsThunkActions';
-import { LoadingStatus } from './store';
+import * as API from '../../API/api';
+import { processMessage } from '../../ws/wsThunkActions';
+import { LoadingStatus } from '../store';
 
 export interface ActivityFlowState {
   status: LoadingStatus;

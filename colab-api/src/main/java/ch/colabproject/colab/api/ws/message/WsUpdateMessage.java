@@ -13,7 +13,8 @@ import java.util.Set;
 import javax.validation.constraints.NotNull;
 
 /**
- * Websocket update message. Contains a list of new or updated objects and a list of destroyed objects.
+ * Websocket update message. Contains a list of new or updated objects and a list of destroyed
+ * objects.
  *
  * @author maxence
  */

@@ -29,8 +29,9 @@ public class BlockMonitoring {
         DATA_ERROR,
         /** no pending changes */
         PROCESSED,
-        /** some
-         * pending changes exist but block has been deleted in the meantime */
+        /**
+         * some pending changes exist but block has been deleted in the meantime
+         */
         DELETED;
     }
 

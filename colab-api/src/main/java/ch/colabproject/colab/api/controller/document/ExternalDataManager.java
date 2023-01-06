@@ -132,11 +132,10 @@ public class ExternalDataManager {
      * @param defaultProtocol default protocol to use. http is the default defaultProtocol
      *
      * @return url with protocol
-     *
      */
     private String sanitizeUrl(String rawUrl, String defaultProtocol) {
         if (!rawUrl.matches("[a-z-A-Z0-9]*://.*")) {
-            //There is no protocol, add default one
+            // There is no protocol, add default one
             if (StringUtils.isEmpty(defaultProtocol)) {
                 return "http://" + rawUrl;
             } else {
@@ -172,7 +171,7 @@ public class ExternalDataManager {
         } else {
 
             logger.trace("Raw URL {}", url);
-            try ( var client = HttpClients.createDefault()) {
+            try (var client = HttpClients.createDefault()) {
                 String sanitizedUrl = sanitizeUrl(url, null);
 
                 URIBuilder uriBuilder = new URIBuilder(sanitizedUrl, StandardCharsets.UTF_8);
@@ -191,7 +190,7 @@ public class ExternalDataManager {
                 }
 
                 var get = new HttpGet(uri);
-                try ( var response = client.execute(get)) {
+                try (var response = client.execute(get)) {
 
                     HttpEntity entity = response.getEntity();
                     int statusCode = response.getCode();

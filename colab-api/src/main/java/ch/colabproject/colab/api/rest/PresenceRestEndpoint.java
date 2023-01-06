@@ -6,9 +6,9 @@
  */
 package ch.colabproject.colab.api.rest;
 
+import ch.colabproject.colab.api.presence.PresenceManager;
 import ch.colabproject.colab.api.presence.model.TouchUserPresence;
 import ch.colabproject.colab.api.presence.model.UserPresence;
-import ch.colabproject.colab.api.presence.PresenceManager;
 import ch.colabproject.colab.generator.model.annotations.AdminResource;
 import ch.colabproject.colab.generator.model.annotations.AuthenticationRequired;
 import java.util.Collection;

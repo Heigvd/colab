@@ -30,7 +30,8 @@ public class Helper {
      * pattern to check if a string looks like an email address
      */
     private static final Pattern EMAIL_PATTERN = Pattern
-        .compile("(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|\"(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21\\x23-\\x5b\\x5d-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])*\")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21-\\x5a\\x53-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])+)\\])");
+        .compile(
+            "(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|\"(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21\\x23-\\x5b\\x5d-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])*\")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21-\\x5a\\x53-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])+)\\])");
 
     /**
      * never-called private constructor
@@ -206,7 +207,7 @@ public class Helper {
     private static String prettyPrintColabStackTrace(StackTraceElement[] stackTrace, int skip) {
         StringBuilder sb = new StringBuilder();
 
-        for (int i = skip ; i < stackTrace.length; i++) {
+        for (int i = skip; i < stackTrace.length; i++) {
             StackTraceElement elem = stackTrace[i];
             if (elem.getClassName().startsWith("ch.colab")) {
                 sb.append("\n\tat ");
@@ -249,7 +250,7 @@ public class Helper {
     private static String prettyPrintStackTrace(StackTraceElement[] stackTrace, int skip) {
         StringBuilder sb = new StringBuilder();
 
-        for (int i = skip ; i < stackTrace.length; i++) {
+        for (int i = skip; i < stackTrace.length; i++) {
             StackTraceElement elem = stackTrace[i];
             sb.append("\n\tat ");
             sb.append(elem);
