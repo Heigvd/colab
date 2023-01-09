@@ -10,7 +10,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- *
  * @author maxence
  */
 public class Message {

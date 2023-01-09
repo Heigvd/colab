@@ -32,7 +32,7 @@ import {
 } from 'colab-rest-client';
 import { checkUnreachable } from '../helper';
 import { getLogger } from '../logger';
-import { ColabNotification } from '../store/notification';
+import { ColabNotification } from '../store/slice/notificationSlice';
 
 const logger = getLogger('WebSockets');
 

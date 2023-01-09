@@ -57,7 +57,7 @@ public class JsonDecoder implements Decoder.Text<WsMessage> {
     }
 
     /**
-     * {@inheritDoc  }
+     * {@inheritDoc }
      */
     @Override
     public void init(EndpointConfig config) {
@@ -65,7 +65,7 @@ public class JsonDecoder implements Decoder.Text<WsMessage> {
     }
 
     /**
-     * {@inheritDoc  }
+     * {@inheritDoc }
      */
     @Override
     public void destroy() {

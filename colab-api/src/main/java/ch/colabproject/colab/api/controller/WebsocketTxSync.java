@@ -51,7 +51,6 @@ public class WebsocketTxSync implements Synchronization {
      * From this point, any committed changes will be available to other transactions, and any
      * rolled back changes will be definitely loosed.
      *
-     *
      * @param status status of the current transaction, either STATUS_COMMITTED or STATUS_ROLLEDBACK
      */
     @Override

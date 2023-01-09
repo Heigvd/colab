@@ -175,7 +175,7 @@ public class RestEndpoint {
         sb.append(System.lineSeparator());
     }
 
-/**
+    /**
      * add two new line
      *
      * @param sb sink
@@ -196,11 +196,11 @@ public class RestEndpoint {
     private Class<? extends Serializable> getClassFromSimpleName(
         String simpleName, Reflections reflections
     ) {
-        Optional<Class<? extends Serializable>> any
-            = reflections.getSubTypesOf(Serializable.class).stream()
-                .filter(type -> {
-                    return type.getSimpleName().equals(simpleName);
-                }).findAny();
+        Optional<Class<? extends Serializable>> any = reflections.getSubTypesOf(Serializable.class)
+            .stream()
+            .filter(type -> {
+                return type.getSimpleName().equals(simpleName);
+            }).findAny();
         if (any.isPresent()) {
             return any.get();
         } else {
@@ -250,8 +250,8 @@ public class RestEndpoint {
         Matcher throwsMatcher = throwsPattern.matcher(pCleaned);
 
         return throwsMatcher.replaceAll(match -> {
-            Class<? extends Serializable> klass
-                = this.getClassFromSimpleName(match.group(1), reflections);
+            Class<? extends Serializable> klass = this.getClassFromSimpleName(match.group(1),
+                reflections);
             if (klass != null && HttpException.class.isAssignableFrom(klass)) {
                 return "@throws " + klass.getName();
             } else {
@@ -361,7 +361,7 @@ public class RestEndpoint {
             if (template.contains(",") && template.contains("<")) {
                 // very complex template
                 // eg <java.lang.Long, java.lang.List<java.lang.String>>
-                // @TODO  not yet implemented
+                // @TODO not yet implemented
                 Logger.warn("Very Complex generic type " + template);
                 return leftPart + "<" + template + ">";
             } else if (template.contains(",")) {
@@ -396,7 +396,7 @@ public class RestEndpoint {
     private List<String> processParameters(List<Param> params, Map<String, String> imports) {
         return params.stream()
             .map(param -> resolveImport(param.getType().getTypeName(), imports)
-            + " " + param.getName())
+                + " " + param.getName())
             .collect(Collectors.toList());
     }
 
@@ -481,7 +481,7 @@ public class RestEndpoint {
             sb.append(" */");
             newLine(sb);
 
-            if (method.isDeprecated()){
+            if (method.isDeprecated()) {
                 sb.append("@Deprecated");
                 newLine(sb);
             }
@@ -489,8 +489,8 @@ public class RestEndpoint {
             ////////////////////////////////////////////////////////////////////////////////////////
             // SIGNATURE
             ////////////////////////////////////////////////////////////////////////////////////////
-            String resolvedReturnType
-                = resolveImport(method.getReturnType().getTypeName(), imports);
+            String resolvedReturnType = resolveImport(method.getReturnType().getTypeName(),
+                imports);
             sb.append("public ").append(resolvedReturnType)
                 .append(" ").append(method.getName()).append("(");
 
@@ -548,11 +548,10 @@ public class RestEndpoint {
                     imports.put("StandardCharsets;", "java.nio.charset.StandardCharsets");
                 }
                 method.getQueryParameters().stream()
-                    .map(queryParam
-                        -> "if (" + queryParam.getName() + " != null){ "
-                    + " qs.add(\"" + queryParam.getInAnnotationName()
-                    + "=\"+URLEncoder.encode("
-                    + queryParam.getName() + ".toString(), StandardCharsets.UTF_8)); }"
+                    .map(queryParam -> "if (" + queryParam.getName() + " != null){ "
+                        + " qs.add(\"" + queryParam.getInAnnotationName()
+                        + "=\"+URLEncoder.encode("
+                        + queryParam.getName() + ".toString(), StandardCharsets.UTF_8)); }"
                     )
                     .forEach(item -> {
                         sb.append(item);
@@ -627,7 +626,6 @@ public class RestEndpoint {
     }
 
     /**
-     *
      * @param sb
      * @param functionName
      * @param params
@@ -673,9 +671,9 @@ public class RestEndpoint {
             .append(": function(")
             .append(params.stream()
                 .map(param -> param.getName()
-                + (param.isOptional() ? "?" : "")
-                + ": "
-                + TypeScriptHelper.convertType(param.getType(), types))
+                    + (param.isOptional() ? "?" : "")
+                    + ": "
+                    + TypeScriptHelper.convertType(param.getType(), types))
                 .collect(Collectors.joining(", ")))
             .append(") {");
         indent++;
@@ -784,7 +782,7 @@ public class RestEndpoint {
                     if (!method.getFormParameters().isEmpty()) {
                         sb.append("const formData = new FormData();");
                         method.getFormParameters().forEach(formParam -> {
-                            //indent++;
+                            // indent++;
                             newLine(sb);
                             sb.append("if(")
                                 .append(formParam.getName())
@@ -798,7 +796,7 @@ public class RestEndpoint {
                                 .append("', ")
                                 .append(formParam.getName())
                                 .append(" as unknown as Blob);");
-                            //indent--;
+                            // indent--;
                             indent--;
                             newLine(sb);
                             sb.append("} else {");
@@ -819,12 +817,15 @@ public class RestEndpoint {
                         newLine(sb);
                     }
 
-                    boolean forDataRequest = method.getConsumes().contains(MediaType.MULTIPART_FORM_DATA);
+                    boolean forDataRequest = method.getConsumes()
+                        .contains(MediaType.MULTIPART_FORM_DATA);
 
-                    String fn = method.getReturnType() == Response.class ? "sendHttpRequest" : "sendJsonRequest";
-                    String fnTemplate = method.getReturnType() == Response.class ? "" : "<" +
+                    String fn = method.getReturnType() == Response.class ? "sendHttpRequest"
+                        : "sendJsonRequest";
+                    String fnTemplate = method.getReturnType() == Response.class ? ""
+                        : "<" +
                             TypeScriptHelper.convertType(method.getReturnType(), types)
-                        +">";
+                            + ">";
 
                     if (forDataRequest) {
                         sb.append("return ").append(fn).append(fnTemplate)
@@ -950,7 +951,7 @@ public class RestEndpoint {
         restEndpoint.className = klass.getName();
 
         Path classPath = klass.getAnnotation(Path.class);
-        // eg @Path("project/{pId: [regex]}/card/{}")   or "project"
+        // eg @Path("project/{pId: [regex]}/card/{}") or "project"
         Map<String, Class<?>> mainPathParam = splitPath(classPath);
 
         Logger.debug("Build RestEndpoint for " + klass);

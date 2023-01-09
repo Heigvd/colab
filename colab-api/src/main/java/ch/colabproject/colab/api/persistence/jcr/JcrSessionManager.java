@@ -57,7 +57,7 @@ public class JcrSessionManager implements Serializable {
      */
     public JcrSession getSession(Project project) throws RepositoryException {
         Long id = -1l; // hack: id -1 means global data
-        if (project != null){
+        if (project != null) {
             id = project.getId();
         }
 

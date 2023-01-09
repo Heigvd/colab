@@ -401,6 +401,12 @@ public class SecurityManager {
         if (projectId == null || currentUser == null) {
             return false;
         }
+        
+        Project currentProject = projectManager.assertAndGetProject(projectId);
+        
+        if (currentProject.isGlobalProject()) {
+            return true;
+        }
 
         List<Long> projectsWhereMemberOf = projectManager
             .findIdsOfProjectsCurrentUserIsMemberOf();

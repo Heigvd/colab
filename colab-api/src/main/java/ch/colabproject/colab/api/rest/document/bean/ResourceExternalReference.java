@@ -12,6 +12,7 @@ import javax.validation.constraints.NotNull;
 
 /**
  * Summary of project's use of a resource.
+ * 
  * @author maxence
  */
 @ExtractJavaDoc

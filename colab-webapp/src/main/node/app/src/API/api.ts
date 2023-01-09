@@ -43,7 +43,7 @@ import { PasswordScore } from '../components/common/element/Form';
 import { DocumentKind } from '../components/documents/documentCommonType';
 import { ResourceAndRef } from '../components/resources/resourcesCommonType';
 import { hashPassword } from '../SecurityHelper';
-import { addNotification } from '../store/notification';
+import { addNotification } from '../store/slice/notificationSlice';
 import { ColabState, getStore } from '../store/store';
 import { CardTypeAllInOne, CardTypeOnOneSOwn, CardTypeWithRef } from '../types/cardTypeDefinition';
 
@@ -353,6 +353,10 @@ export const getInstanceableModels = createAsyncThunk('project/baseModels', asyn
 
 export const getAllProjects = createAsyncThunk('project/all', async () => {
   return await restClient.ProjectRestEndpoint.getAllProjects();
+});
+
+export const getAllGlobalProjects = createAsyncThunk('project/allGlobal', async () => {
+  return await restClient.ProjectRestEndpoint.getAllGlobalModels();
 });
 
 export const createProject = createAsyncThunk(

@@ -15,8 +15,6 @@ import ch.colabproject.colab.api.ws.message.WsSessionIdentifier;
 import ch.colabproject.colab.api.ws.utils.JsonDecoder;
 import ch.colabproject.colab.api.ws.utils.JsonEncoder;
 import ch.colabproject.colab.api.ws.utils.JsonWsMessageListDecoder;
-import com.hazelcast.core.HazelcastInstance;
-import com.hazelcast.flakeidgen.FlakeIdGenerator;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.HashMap;
@@ -35,6 +33,8 @@ import javax.websocket.Session;
 import javax.websocket.server.ServerEndpoint;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import com.hazelcast.core.HazelcastInstance;
+import com.hazelcast.flakeidgen.FlakeIdGenerator;
 
 /**
  * Websocket endpoint
@@ -42,7 +42,8 @@ import org.slf4j.LoggerFactory;
  * @author maxence
  */
 @ApplicationScoped
-@ServerEndpoint(value = "/ws", encoders = JsonEncoder.class, decoders = {JsonDecoder.class, JsonWsMessageListDecoder.class})
+@ServerEndpoint(value = "/ws", encoders = JsonEncoder.class,
+    decoders = { JsonDecoder.class, JsonWsMessageListDecoder.class })
 public class WebsocketEndpoint {
 
     /**
@@ -75,8 +76,8 @@ public class WebsocketEndpoint {
     /**
      * Map session id to sessions
      */
-    private static Map<String, Session> idsToSessions
-        = Collections.synchronizedMap(new HashMap<>());
+    private static Map<String, Session> idsToSessions = Collections
+        .synchronizedMap(new HashMap<>());
 
     /**
      * Send a message to all clients

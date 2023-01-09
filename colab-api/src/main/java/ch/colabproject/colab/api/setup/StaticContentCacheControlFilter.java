@@ -25,11 +25,13 @@ import org.slf4j.LoggerFactory;
  *
  * @author maxence
  */
-@WebFilter(filterName = "CacheControlFilter", urlPatterns = {"/*"}, dispatcherTypes = {DispatcherType.REQUEST})
-public class StaticContentCacheControlFilter implements Filter{
+@WebFilter(filterName = "CacheControlFilter", urlPatterns = { "/*" },
+    dispatcherTypes = { DispatcherType.REQUEST })
+public class StaticContentCacheControlFilter implements Filter {
 
     /** logger */
-    private static final Logger logger = LoggerFactory.getLogger(StaticContentCacheControlFilter.class);
+    private static final Logger logger = LoggerFactory
+        .getLogger(StaticContentCacheControlFilter.class);
 
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
@@ -37,7 +39,8 @@ public class StaticContentCacheControlFilter implements Filter{
     }
 
     @Override
-    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
+    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
+        throws IOException, ServletException {
         if (request instanceof HttpServletRequest && response instanceof HttpServletResponse) {
             HttpServletRequest req = (HttpServletRequest) request;
             HttpServletResponse resp = (HttpServletResponse) response;

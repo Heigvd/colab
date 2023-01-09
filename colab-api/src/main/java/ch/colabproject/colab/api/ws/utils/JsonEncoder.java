@@ -21,7 +21,6 @@ import javax.websocket.EndpointConfig;
 public class JsonEncoder implements Encoder.Text<Object> {
 
     /**
-     *
      * Serialize object using {@link #toJson(Object) toJson}
      *
      * @param object object to serialize

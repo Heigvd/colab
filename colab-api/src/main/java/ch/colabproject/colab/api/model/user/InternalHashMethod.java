@@ -47,7 +47,6 @@ public enum InternalHashMethod {
      * @return digested value
      *
      * @throws java.security.NoSuchAlgorithmException if underlying algorithm does not exist
-     *
      */
     public abstract byte[] hash(String value) throws NoSuchAlgorithmException;
 
