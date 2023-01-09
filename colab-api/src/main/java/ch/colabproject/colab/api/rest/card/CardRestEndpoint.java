@@ -303,6 +303,8 @@ public class CardRestEndpoint {
     }
 
     /**
+     * Create a card type for a card which has none.
+     *
      * @param cardId the card id
      */
     @POST
