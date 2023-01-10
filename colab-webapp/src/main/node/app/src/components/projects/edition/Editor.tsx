@@ -82,7 +82,7 @@ const modelPictoCornerStyle = css({
   top: 0,
   left: 0,
   padding: '5px 7px 7px 5px',
-  borderRadius: '0 0 50% 0',
+  borderRadius: '0 0 10px 0',
 });
 
 const breadCrumbsStyle = css({
@@ -581,7 +581,7 @@ export default function Editor(): JSX.Element {
           direction="column"
           align="stretch"
           grow={1}
-          className={cx(fullPageStyle, { [modelBGColor]: project.type === 'MODEL' })}
+          className={cx(fullPageStyle, {[modelBGColor]: project.type === 'MODEL' })}
         >
           <EditorNav project={project} />
           <Flex
