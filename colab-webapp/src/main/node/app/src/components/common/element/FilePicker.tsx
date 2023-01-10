@@ -369,5 +369,4 @@ export default function FilePicker({
       </Flex>
     </Flex>
   );
-  return <input type="file" accept={accept} />;
 }
