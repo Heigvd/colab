@@ -1,6 +1,6 @@
 /*
  * The coLAB project
- * Copyright (C) 2021 AlbaSim, MEI, HEIG-VD, HES-SO
+ * Copyright (C) 2021-2023 AlbaSim, MEI, HEIG-VD, HES-SO
  *
  * Licensed under the MIT License
  */
@@ -40,13 +40,14 @@ import javax.validation.constraints.Size;
 @Table(
     indexes = {
         @Index(columnList = "account_id"),
-        @Index(columnList = "session_id", unique = true),}
+        @Index(columnList = "session_id", unique = true), }
 )
 @NamedQuery(
     name = "HttpSession.getOlderThan",
     query = "SELECT session FROM HttpSession session WHERE session.lastSeen < :time"
 )
-public class HttpSession implements WithId, WithJsonDiscriminator, WithPermission, WithWebsocketChannels {
+public class HttpSession
+    implements WithId, WithJsonDiscriminator, WithPermission, WithWebsocketChannels {
 
     private static final long serialVersionUID = 1L;
 
@@ -290,7 +291,8 @@ public class HttpSession implements WithId, WithJsonDiscriminator, WithPermissio
 
     @Override
     public String toString() {
-        return "HttpSession{" + "id=" + id + ", account=" + account + ", lastSeen=" + lastSeen + '}';
+        return "HttpSession{" + "id=" + id + ", account=" + account + ", lastSeen=" + lastSeen
+            + '}';
     }
 
 }

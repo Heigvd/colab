@@ -1,7 +1,9 @@
 {
   "name": "colab-e2e-tests",
   "version": "1.0.0",
+  "description": "coLAB project tests",
   "license": "MIT",
+  "author": "Albasim <albasim@heig-vd.ch>",
   "private": true,
   "scripts": {
     "format": "prettier --write cypress",
@@ -10,7 +12,7 @@
   },
   "devDependencies": {
     "cross-env": "^7.0.3",
-    "cypress": "^10.7.0",
+    "cypress": "^12.2.0",
     "cypress-react-selector": "^3.0.0",
     "eslint": "^8.23.0",
     "eslint-config-prettier": "^8.5.0",
@@ -19,6 +21,6 @@
     "prompt": "^1.3.0"
   },
   "dependencies": {
-    "typescript": "4.7.x"
+    "typescript": "^4.9.4"
   }
 }

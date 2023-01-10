@@ -1,6 +1,6 @@
 /*
  * The coLAB project
- * Copyright (C) 2021-2022 AlbaSim, MEI, HEIG-VD, HES-SO
+ * Copyright (C) 2021-2023 AlbaSim, MEI, HEIG-VD, HES-SO
  *
  * Licensed under the MIT License
  */
@@ -26,7 +26,7 @@ import useTranslations from '../../../i18n/I18nContext';
 import { useAndLoadProjectTeam } from '../../../selectors/projectSelector';
 import { useCurrentUser } from '../../../selectors/userSelector';
 import { useAppDispatch, useAppSelector, useLoadingState } from '../../../store/hooks';
-import { addNotification } from '../../../store/notification';
+import { addNotification } from '../../../store/slice/notificationSlice';
 import { Destroyer } from '../../common/Destroyer';
 import IconButton from '../../common/element/IconButton';
 import InlineLoading from '../../common/element/InlineLoading';

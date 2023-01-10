@@ -1,13 +1,13 @@
 /*
  * The coLAB project
- * Copyright (C) 2021 AlbaSim, MEI, HEIG-VD, HES-SO
+ * Copyright (C) 2021-2023 AlbaSim, MEI, HEIG-VD, HES-SO
  *
  * Licensed under the MIT License
  */
 package ch.colabproject.colab.api.security;
 
-import ch.colabproject.colab.api.model.user.HttpSession;
 import ch.colabproject.colab.api.controller.RequestManager;
+import ch.colabproject.colab.api.model.user.HttpSession;
 import java.io.IOException;
 import javax.annotation.Priority;
 import javax.inject.Inject;
@@ -118,7 +118,8 @@ public class CookieFilter implements ContainerRequestFilter, ContainerResponseFi
 
             ParsedCookie parsedCookie = new ParsedCookie(cookieValue);
             if (parsedCookie.id != null && parsedCookie.secret != null) {
-                HttpSession httpSession = sessionManager.getAndValidate(parsedCookie.id, parsedCookie.secret);
+                HttpSession httpSession = sessionManager.getAndValidate(parsedCookie.id,
+                    parsedCookie.secret);
                 if (httpSession != null) {
                     requestManager.setHttpSessionId(httpSession.getId());
                     return;
@@ -171,8 +172,8 @@ public class CookieFilter implements ContainerRequestFilter, ContainerResponseFi
             NewCookie sessionCookie = new NewCookie(COOKIE_NAME, cookieValue,
                 "/", null, null, COOKIE_MAX_AGE, true, true);
 
-            //hack: SameSite not handled yet by jakarta rs library
-            //inject SameSite=Lax by hand
+            // hack: SameSite not handled yet by jakarta rs library
+            // inject SameSite=Lax by hand
             String theCookie = sessionCookie.toString() + ";SameSite=Lax";
 
             logger.trace("Request completed with session id {}", session.getId());

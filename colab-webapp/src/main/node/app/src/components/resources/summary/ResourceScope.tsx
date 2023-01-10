@@ -1,6 +1,6 @@
 /*
  * The coLAB project
- * Copyright (C) 2022 maxence
+ * Copyright (C) 2022-2023 AlbaSim, MEI, HEIG-VD, HES-SO
  *
  * Licensed under the MIT License
  */
@@ -31,7 +31,7 @@ import useTranslations from '../../../i18n/I18nContext';
 import { useAndLoadCardType } from '../../../selectors/cardTypeSelector';
 import { useAndLoadProjectResourcesStatus } from '../../../selectors/resourceSelector';
 import { useAppDispatch, useAppSelector } from '../../../store/hooks';
-import { ResourceState } from '../../../store/resource';
+import { ResourceState } from '../../../store/slice/resourceSlice';
 import TargetCardTypeSummary from '../../cards/cardtypes/summary/TargetCardTypeSummary';
 import { defaultThumbnailStyle } from '../../common/collection/ItemThumbnailsSelection';
 import Button from '../../common/element/Button';

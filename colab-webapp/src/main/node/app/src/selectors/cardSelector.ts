@@ -1,6 +1,6 @@
 /*
  * The coLAB project
- * Copyright (C) 2021 AlbaSim, MEI, HEIG-VD, HES-SO
+ * Copyright (C) 2021-2023 AlbaSim, MEI, HEIG-VD, HES-SO
  *
  * Licensed under the MIT License
  */
@@ -12,13 +12,13 @@ import * as API from '../API/api';
 import { sortCardContents } from '../helper';
 import { useLanguage } from '../i18n/I18nContext';
 import logger from '../logger';
-import { CardContentDetail, CardDetail } from '../store/card';
 import {
   customColabStateEquals,
   shallowEqual,
   useAppDispatch,
   useAppSelector,
 } from '../store/hooks';
+import { CardContentDetail, CardDetail } from '../store/slice/cardSlice';
 import { LoadingStatus } from '../store/store';
 import { useMyMember, useProjectBeingEdited } from './projectSelector';
 import { useCurrentUser } from './userSelector';

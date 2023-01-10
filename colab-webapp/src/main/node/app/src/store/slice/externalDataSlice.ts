@@ -1,12 +1,12 @@
 /*
  * The coLAB project
- * Copyright (C) 2021 AlbaSim, MEI, HEIG-VD, HES-SO
+ * Copyright (C) 2021-2023 AlbaSim, MEI, HEIG-VD, HES-SO
  *
  * Licensed under the MIT License
  */
 import { createSlice } from '@reduxjs/toolkit';
 import { UrlMetadata } from 'colab-rest-client';
-import * as API from '../API/api';
+import * as API from '../../API/api';
 
 export interface ExternalDataState {
   urlMetadata: Record<string, UrlMetadata | 'LOADING'>;

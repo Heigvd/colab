@@ -1,13 +1,13 @@
 /*
  * The coLAB project
- * Copyright (C) 2021 AlbaSim, MEI, HEIG-VD, HES-SO
+ * Copyright (C) 2021-2023 AlbaSim, MEI, HEIG-VD, HES-SO
  *
  * Licensed under the MIT License
  */
 
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { HttpException } from 'colab-rest-client';
-import { processMessage } from '../ws/wsThunkActions';
+import { processMessage } from '../../ws/wsThunkActions';
 
 export interface ColabNotification {
   status: 'OPEN' | 'CLOSED';

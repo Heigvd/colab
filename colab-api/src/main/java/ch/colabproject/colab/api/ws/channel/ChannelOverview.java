@@ -1,6 +1,6 @@
 /*
  * The coLAB project
- * Copyright (C) 2021 AlbaSim, MEI, HEIG-VD, HES-SO
+ * Copyright (C) 2021-2023 AlbaSim, MEI, HEIG-VD, HES-SO
  *
  * Licensed under the MIT License
  */
@@ -16,6 +16,7 @@ import javax.validation.constraints.NotNull;
  * Channel overview.
  *
  * @author maxence
+ * 
  * @deprecated not used any longer
  */
 @ExtractJavaDoc

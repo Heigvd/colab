@@ -1,6 +1,6 @@
 /*
  * The coLAB project
- * Copyright (C) 2021 AlbaSim, MEI, HEIG-VD, HES-SO
+ * Copyright (C) 2021-2023 AlbaSim, MEI, HEIG-VD, HES-SO
  *
  * Licensed under the MIT License
  */
@@ -61,11 +61,18 @@ public class TokenRestEndpoint {
      * @return the consumed token
      *
      * @throws ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage
-     *  <ul>
-     *      <li>notFound if the token does not exist;
-     *      <li>bad request if token does not match;
-     *      <li>authenticationRequired if token requires authentication but current user is not
-     *  </ul>
+     *                                                                           <ul>
+     *                                                                           <li>notFound if the
+     *                                                                           token does not
+     *                                                                           exist;
+     *                                                                           <li>bad request if
+     *                                                                           token does not
+     *                                                                           match;
+     *                                                                           <li>authenticationRequired
+     *                                                                           if token requires
+     *                                                                           authentication but
+     *                                                                           current user is not
+     *                                                                           </ul>
      */
     @PUT
     @Path("{id}/{token: [a-fA-F0-9]+}")

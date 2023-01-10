@@ -1,6 +1,6 @@
 /*
  * The coLAB project
- * Copyright (C) 2022 AlbaSim, MEI, HEIG-VD, HES-SO
+ * Copyright (C) 2022-2023 AlbaSim, MEI, HEIG-VD, HES-SO
  *
  * Licensed under the MIT License
  */
@@ -346,6 +346,7 @@ public final class Grid {
 
         /**
          * simple constructor
+         * 
          * @param x x coordinate
          * @param y y coordinate
          */

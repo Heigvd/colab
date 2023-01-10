@@ -1,6 +1,6 @@
 /*
  * The coLAB project
- * Copyright (C) 2021 AlbaSim, MEI, HEIG-VD, HES-SO
+ * Copyright (C) 2021-2023 AlbaSim, MEI, HEIG-VD, HES-SO
  *
  * Licensed under the MIT License
  */
@@ -38,7 +38,7 @@ public enum HierarchicalPosition {
      *
      * @param defaultLevel default level of involvements
      */
-    /*private */ HierarchicalPosition(InvolvementLevel defaultLevel) {
+    /* private */ HierarchicalPosition(InvolvementLevel defaultLevel) {
         this.defaultLevel = defaultLevel;
     }
 

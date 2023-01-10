@@ -1,6 +1,6 @@
 /*
  * The coLAB project
- * Copyright (C) 2021 AlbaSim, MEI, HEIG-VD, HES-SO
+ * Copyright (C) 2021-2023 AlbaSim, MEI, HEIG-VD, HES-SO
  *
  * Licensed under the MIT License
  */
@@ -32,7 +32,6 @@ import org.apache.maven.plugin.MojoFailureException;
 import org.reflections.Reflections;
 
 /**
- *
  * @author maxence
  */
 public class Generator {
@@ -89,7 +88,6 @@ public class Generator {
     }
 
     /**
-     *
      * Initialize the client generator.
      *
      * @param pkgs packages to analyze
@@ -108,8 +106,8 @@ public class Generator {
     }
 
     /**
-     * Process all classes annotated with {@link Path}. Generate a {@link RestEndpoint} instance
-     * for each class and store them in {@link #restEndpoints}
+     * Process all classes annotated with {@link Path}. Generate a {@link RestEndpoint} instance for
+     * each class and store them in {@link #restEndpoints}
      */
     public void processPackages() {
         Set<Class<?>> appConfig = reflections.getTypesAnnotatedWith(ApplicationPath.class);
@@ -129,7 +127,8 @@ public class Generator {
         this.restEndpoints = restClasses.stream()
             .map(klass -> RestEndpoint.build(klass, applicationPath))
             .collect(Collectors.toSet());
-        /* .map(p -> p.generateJavaClient()) .innerClasses(Collectors.toList());
+        /*
+         * .map(p -> p.generateJavaClient()) .innerClasses(Collectors.toList());
          */
     }
 
@@ -153,7 +152,7 @@ public class Generator {
         imports.put("void", null); // null means no import statement
 
         String innerClasses = this.restEndpoints.stream().map(controller -> {
-        String javaCode = controller.generateJavaClient(
+            String javaCode = controller.generateJavaClient(
                 imports,
                 clientName,
                 javadoc,
@@ -234,8 +233,8 @@ public class Generator {
         extraTypes.put("WithJsonDiscriminator", WithJsonDiscriminator.class);
         extraTypes.put("WithId", WithId.class);
 
-        String modules = this.restEndpoints.stream().map(controller
-            -> controller.generateTypescriptClient(extraTypes, this.javadoc, reflections)
+        String modules = this.restEndpoints.stream().map(
+            controller -> controller.generateTypescriptClient(extraTypes, this.javadoc, reflections)
         ).collect(Collectors.joining(System.lineSeparator()));
 
         // TS interface name => list of @class values
@@ -269,18 +268,17 @@ public class Generator {
             + " */\n\n"
             + "export interface TypeMap {\n  ")
             .append(
-                inheritance.keySet().stream().map((key)
-                    -> key + ": " + key + ";")
+                inheritance.keySet().stream().map((key) -> key + ": " + key + ";")
                     .collect(Collectors.joining("\n  "))
             )
             .append("\n}\n\n")
             .append("const inheritance : {[key: string]: string[]} = {\n")
             .append(
-                inheritance.entrySet().stream().map((entry)
-                    -> entry.getKey() + ": [" + entry.getValue().stream()
-                .map(v -> "'" + v + "'")
-                .collect(Collectors.joining(", ")) + "]"
-                ).collect(Collectors.joining(",\n  ")))
+                inheritance.entrySet().stream()
+                    .map((entry) -> entry.getKey() + ": [" + entry.getValue().stream()
+                        .map(v -> "'" + v + "'")
+                        .collect(Collectors.joining(", ")) + "]"
+                    ).collect(Collectors.joining(",\n  ")))
             .append("\n}\n\n")
             .append("export const entityIs = <T extends keyof TypeMap>(entity: unknown, klass: T)\n"
                 + "    : entity is TypeMap[T] => {\n"
@@ -296,10 +294,13 @@ public class Generator {
                 + "    return false;\n"
                 + "}")
             .append("\n\n\n/**\n"
-                + "* The ").append(clientName).append(" REST client\n"
-            + " */\n"
-            + "export const ").append(clientName)
-            .append(" = function (baseUrl: string, defaultErrorHandler: (error: unknown) => void) {")
+                + "* The ")
+            .append(clientName).append(" REST client\n"
+                + " */\n"
+                + "export const ")
+            .append(clientName)
+            .append(
+                " = function (baseUrl: string, defaultErrorHandler: (error: unknown) => void) {")
             .append("\n    return {")
             .append(modules)
             .append("    }\n")

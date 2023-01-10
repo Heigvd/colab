@@ -1,6 +1,6 @@
 /*
  * The coLAB project
- * Copyright (C) 2021 AlbaSim, MEI, HEIG-VD, HES-SO
+ * Copyright (C) 2021-2023 AlbaSim, MEI, HEIG-VD, HES-SO
  *
  * Licensed under the MIT License
  */
@@ -131,7 +131,8 @@ public abstract class AbstractCardType implements ColabEntity, WithWebsocketChan
     private List<AbstractResource> directAbstractResources = new ArrayList<>();
 
     // Note : the List<CardTypeRef> of direct references must be retrieved with a DAO
-    // because the abstract card type must not be seen as changed when a reference is added or removed
+    // because the abstract card type must not be seen as changed when a reference is added or
+    // removed
 
     // ---------------------------------------------------------------------------------------------
     // getters and setters

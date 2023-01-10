@@ -1,6 +1,6 @@
 /*
  * The coLAB project
- * Copyright (C) 2021 AlbaSim, MEI, HEIG-VD, HES-SO
+ * Copyright (C) 2021-2023 AlbaSim, MEI, HEIG-VD, HES-SO
  *
  * Licensed under the MIT License
  */
@@ -30,6 +30,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
+import java.util.stream.Collectors;
 import javax.ejb.Lock;
 import javax.ejb.LockType;
 import javax.ejb.Singleton;
@@ -43,7 +44,6 @@ import com.hazelcast.core.HazelcastInstance;
 import com.hazelcast.core.IExecutorService;
 import com.hazelcast.cp.lock.FencedLock;
 import com.hazelcast.map.IMap;
-import java.util.stream.Collectors;
 
 /**
  * Micro Changes Management.
@@ -169,8 +169,8 @@ public class LiveManager implements Serializable {
             boolean parentExists = basedOn.contains(block.getRevision())
                 || changes.stream()
                     .filter(change -> basedOn.stream()
-                    .filter(rev -> change.getRevision().equals(rev))
-                    .findFirst().isPresent()
+                        .filter(rev -> change.getRevision().equals(rev))
+                        .findFirst().isPresent()
                     )
                     .findFirst().isPresent();
 
@@ -372,26 +372,33 @@ public class LiveManager implements Serializable {
                         Resourceable owner = r.getOwner();
                         if (owner instanceof CardType) {
                             CardType ct = (CardType) owner;
-                            title.append("Type: ").append(ct.getTitle()).append(" #").append(ct.getId());
+                            title.append("Type: ").append(ct.getTitle()).append(" #")
+                                .append(ct.getId());
                         } else if (owner instanceof CardTypeRef) {
                             CardTypeRef ref = (CardTypeRef) owner;
-                            title.append("TypeRef: ").append(ref.resolve().getTitle()).append(" #").append(ref.getId());
+                            title.append("TypeRef: ").append(ref.resolve().getTitle()).append(" #")
+                                .append(ref.getId());
                         } else if (owner instanceof CardContent) {
                             CardContent cc = (CardContent) owner;
                             Card c = cc.getCard();
-                            title.append("Card: ").append(c.getTitle()).append(" #").append(c.getId());
-                            title.append(" / CardContent: ").append(cc.getTitle()).append(" #").append(cc.getId());
+                            title.append("Card: ").append(c.getTitle()).append(" #")
+                                .append(c.getId());
+                            title.append(" / CardContent: ").append(cc.getTitle()).append(" #")
+                                .append(cc.getId());
                         } else if (owner instanceof Card) {
                             Card c = (Card) owner;
-                            title.append("Card: ").append(c.getTitle()).append(" #").append(c.getId());
+                            title.append("Card: ").append(c.getTitle()).append(" #")
+                                .append(c.getId());
                         }
 
-                        title.append(" / Resource ").append(r.getTitle()).append(" # ").append(r.getId());
+                        title.append(" / Resource ").append(r.getTitle()).append(" # ")
+                            .append(r.getId());
                     } else if (block.getOwningCardContent() != null) {
                         CardContent cc = block.getOwningCardContent();
                         Card c = cc.getCard();
                         title.append("Card: ").append(c.getTitle()).append(" #").append(c.getId()
-                        ).append(" / CardContent: ").append(cc.getTitle()).append(" #").append(cc.getId());
+                        ).append(" / CardContent: ").append(cc.getTitle()).append(" #")
+                            .append(cc.getId());
                     }
                 } catch (Throwable error) {
                     /** no-op */

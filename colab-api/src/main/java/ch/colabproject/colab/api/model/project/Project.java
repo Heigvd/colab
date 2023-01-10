@@ -1,6 +1,6 @@
 /*
  * The coLAB project
- * Copyright (C) 2021-2022 AlbaSim, MEI, HEIG-VD, HES-SO
+ * Copyright (C) 2021-2023 AlbaSim, MEI, HEIG-VD, HES-SO
  *
  * Licensed under the MIT License
  */
@@ -57,6 +57,8 @@ import javax.validation.constraints.Size;
 )
 @NamedQuery(name = "Project.findAll",
     query = "SELECT p FROM Project p")
+@NamedQuery(name = "Project.findAllGlobal",
+    query = "SELECT p from Project p WHERE p.globalProject = true AND p.type = :model")
 @NamedQuery(name = "Project.findByTeamMemberUser",
     query = "SELECT p FROM Project p JOIN p.teamMembers members WHERE members.user.id = :userId")
 @NamedQuery(name = "Project.findIdsByTeamMemberUser",
@@ -116,6 +118,11 @@ public class Project implements ColabEntity, WithWebsocketChannels {
      */
     @Size(max = 255)
     private String description;
+    
+    /**
+     * Global means accessible to everyone
+     */
+    private boolean globalProject;
 
     /**
      * The icon to illustrate the project
@@ -239,6 +246,22 @@ public class Project implements ColabEntity, WithWebsocketChannels {
     }
 
     /**
+     * 
+     * @return if project is global
+     */
+    public boolean isGlobalProject() {
+        return globalProject;
+    }
+    
+    /**
+     * 
+     * @param global if project is global
+     */
+    public void setGlobalProject(boolean global) {
+        this.globalProject = global;
+    }
+    
+    /**
      * @return the icon to illustrate the project
      */
     public Illustration getIllustration() {
@@ -358,6 +381,7 @@ public class Project implements ColabEntity, WithWebsocketChannels {
             this.setType(o.getType());
             this.setName(o.getName());
             this.setDescription(o.getDescription());
+            this.setGlobalProject(o.isGlobalProject());
             this.setIllustration(o.getIllustration());
         } else {
             throw new ColabMergeException(this, other);
@@ -407,7 +431,7 @@ public class Project implements ColabEntity, WithWebsocketChannels {
     @Override
     public String toString() {
         return "Project{" + "id=" + id + ", type=" + type.name() + ", name=" + name + ", descr="
-            + description + '}';
+            + description + ", global=" + globalProject + '}';
     }
 
 }

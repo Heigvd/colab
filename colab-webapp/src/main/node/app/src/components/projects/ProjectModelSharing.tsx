@@ -1,6 +1,6 @@
 /*
  * The coLAB project
- * Copyright (C) 2022 AlbaSim, MEI, HEIG-VD, HES-SO
+ * Copyright (C) 2022-2023 AlbaSim, MEI, HEIG-VD, HES-SO
  *
  * Licensed under the MIT License
  */
@@ -10,7 +10,7 @@ import * as API from '../../API/api';
 import { emailFormat } from '../../helper';
 import useTranslations from '../../i18n/I18nContext';
 import { useAppDispatch, useLoadingState } from '../../store/hooks';
-import { addNotification } from '../../store/notification';
+import { addNotification } from '../../store/slice/notificationSlice';
 import Form, { Field } from '../common/element/Form';
 
 export interface ProjectModelSharingProps {

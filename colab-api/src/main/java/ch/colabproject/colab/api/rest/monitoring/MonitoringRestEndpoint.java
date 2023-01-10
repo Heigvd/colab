@@ -1,6 +1,6 @@
 /*
  * The coLAB project
- * Copyright (C) 2021 AlbaSim, MEI, HEIG-VD, HES-SO
+ * Copyright (C) 2021-2023 AlbaSim, MEI, HEIG-VD, HES-SO
  *
  * Licensed under the MIT License
  */
@@ -62,7 +62,6 @@ public class MonitoringRestEndpoint {
      *
      * @param loggerName name of the logger to update
      * @param level      new level of the logger
-     *
      */
     @GET
     @Path("SetLoggerLevel/{loggerName}/{level}")

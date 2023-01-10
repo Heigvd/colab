@@ -1,6 +1,6 @@
 /*
  * The coLAB project
- * Copyright (C) 2021 AlbaSim, MEI, HEIG-VD, HES-SO
+ * Copyright (C) 2021-2023 AlbaSim, MEI, HEIG-VD, HES-SO
  *
  * Licensed under the MIT License
  */
@@ -41,7 +41,8 @@ public class JsonWsMessageListDecoder implements Decoder.Text<List<WsMessage>> {
     public List<WsMessage> decode(String s) throws DecodeException {
         Jsonb jsonb = JsonbProvider.getJsonb();
 
-        Type type = new GenericType<ArrayList<WsMessage>>() {}.getType();
+        Type type = new GenericType<ArrayList<WsMessage>>() {
+        }.getType();
         return jsonb.fromJson(s, type);
     }
 
@@ -63,7 +64,7 @@ public class JsonWsMessageListDecoder implements Decoder.Text<List<WsMessage>> {
     }
 
     /**
-     * {@inheritDoc  }
+     * {@inheritDoc }
      */
     @Override
     public void init(EndpointConfig config) {
@@ -71,7 +72,7 @@ public class JsonWsMessageListDecoder implements Decoder.Text<List<WsMessage>> {
     }
 
     /**
-     * {@inheritDoc  }
+     * {@inheritDoc }
      */
     @Override
     public void destroy() {

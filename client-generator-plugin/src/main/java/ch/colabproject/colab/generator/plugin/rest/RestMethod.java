@@ -1,6 +1,6 @@
 /*
  * The coLAB project
- * Copyright (C) 2021 AlbaSim, MEI, HEIG-VD, HES-SO
+ * Copyright (C) 2021-2023 AlbaSim, MEI, HEIG-VD, HES-SO
  *
  * Licensed under the MIT License
  */
@@ -390,8 +390,8 @@ public class RestMethod {
      * @param type           type of the parameter
      */
     public void addFormParameter(String name, String annotationName, String javadoc, Type type) {
-        Optional<Param> findFirst
-            = this.formParameters.stream().filter(p -> p.getInAnnotationName().equals(annotationName)).findFirst();
+        Optional<Param> findFirst = this.formParameters.stream()
+            .filter(p -> p.getInAnnotationName().equals(annotationName)).findFirst();
         if (findFirst.isEmpty()) {
 //            Param param = findFirst.get();
 //            // hack: Files are injected with two disctinct parameter: one InputStream for bytes, one

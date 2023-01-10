@@ -1,6 +1,6 @@
 /*
  * The coLAB project
- * Copyright (C) 2021 AlbaSim, MEI, HEIG-VD, HES-SO
+ * Copyright (C) 2021-2023 AlbaSim, MEI, HEIG-VD, HES-SO
  *
  * Licensed under the MIT License
  */
@@ -98,7 +98,6 @@ public class UserManager {
     /** Http session persistence handling */
     @Inject
     private HttpSessionDao httpSessionDao;
-
 
     // *********************************************************************************************
     // find user

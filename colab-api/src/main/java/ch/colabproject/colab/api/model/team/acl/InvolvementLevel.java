@@ -1,6 +1,6 @@
 /*
  * The coLAB project
- * Copyright (C) 2021 AlbaSim, MEI, HEIG-VD, HES-SO
+ * Copyright (C) 2021-2023 AlbaSim, MEI, HEIG-VD, HES-SO
  *
  * Licensed under the MIT License
  */
@@ -56,7 +56,7 @@ public enum InvolvementLevel {
      * @param order importance level
      * @param rw    give write access ?
      */
-    /*private*/ InvolvementLevel(int order, boolean rw) {
+    /* private */ InvolvementLevel(int order, boolean rw) {
         this.order = order;
         this.rw = rw;
     }

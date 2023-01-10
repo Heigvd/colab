@@ -1,12 +1,12 @@
 /*
  * The coLAB project
- * Copyright (C) 2021 AlbaSim, MEI, HEIG-VD, HES-SO
+ * Copyright (C) 2021-2023 AlbaSim, MEI, HEIG-VD, HES-SO
  *
  * Licensed under the MIT License
  */
 
 import { css, cx } from '@emotion/css';
-import { faGlobe } from '@fortawesome/free-solid-svg-icons';
+import { faGlobe, faStar } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Project } from 'colab-rest-client';
 import * as React from 'react';
@@ -119,15 +119,18 @@ export default function ProjectModelSelector({
                 </p>
               </div>
 
-              {item?.type === 'MODEL' && false && (
-                //item.type === 'GLOBAL' &&
+              {item?.type === 'MODEL' && (
                 <Flex
                   align="center"
                   justify="center"
                   className={cx(modelPictoCornerStyle, invertedThemeMode)}
                   title={i18n.modules.project.info.isAModel}
                 >
-                  <FontAwesomeIcon icon={faGlobe} size="2xs" />
+                  {item.globalProject ? (
+                    <FontAwesomeIcon icon={faGlobe} size="2xs" />
+                  ) : (
+                    <FontAwesomeIcon icon={faStar} size="2xs" />
+                  )}
                 </Flex>
               )}
             </>

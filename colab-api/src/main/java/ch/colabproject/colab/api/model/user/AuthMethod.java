@@ -1,6 +1,6 @@
 /*
  * The coLAB project
- * Copyright (C) 2021 AlbaSim, MEI, HEIG-VD, HES-SO
+ * Copyright (C) 2021-2023 AlbaSim, MEI, HEIG-VD, HES-SO
  *
  * Licensed under the MIT License
  */
@@ -18,7 +18,7 @@ import javax.validation.constraints.NotNull;
  * @author maxence
  */
 @ExtractJavaDoc
-public class AuthMethod implements  WithJsonDiscriminator {
+public class AuthMethod implements WithJsonDiscriminator {
 
     private static final long serialVersionUID = 1L;
 
@@ -84,7 +84,6 @@ public class AuthMethod implements  WithJsonDiscriminator {
     }
 
     /**
-     *
      * @return the salt to use with mandatory method
      */
     public String getSalt() {
@@ -101,7 +100,6 @@ public class AuthMethod implements  WithJsonDiscriminator {
     }
 
     /**
-     *
      * @return an optional method
      */
     public HashMethod getOptionalMethod() {
@@ -118,7 +116,6 @@ public class AuthMethod implements  WithJsonDiscriminator {
     }
 
     /**
-     *
      * @return the salt to use with optional method
      */
     public String getNewSalt() {

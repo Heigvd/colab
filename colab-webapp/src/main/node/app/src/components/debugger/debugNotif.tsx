@@ -1,6 +1,6 @@
 /*
  * The coLAB project
- * Copyright (C) 2021 AlbaSim, MEI, HEIG-VD, HES-SO
+ * Copyright (C) 2021-2023 AlbaSim, MEI, HEIG-VD, HES-SO
  *
  * Licensed under the MIT License
  */
@@ -8,7 +8,7 @@
 import { css, cx } from '@emotion/css';
 import * as React from 'react';
 import { useAppDispatch } from '../../store/hooks';
-import { addNotification } from '../../store/notification';
+import { addNotification } from '../../store/slice/notificationSlice';
 import Button from '../common/element/Button';
 import Flex from '../common/layout/Flex';
 import { textSmall } from '../styling/style';

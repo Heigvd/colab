@@ -1,6 +1,6 @@
 /*
  * The coLAB project
- * Copyright (C) 2021 AlbaSim, MEI, HEIG-VD, HES-SO
+ * Copyright (C) 2021-2023 AlbaSim, MEI, HEIG-VD, HES-SO
  *
  * Licensed under the MIT License
  */
@@ -16,8 +16,8 @@ import {
 import { getApplicationPath, initSocketId } from '../API/api';
 import { checkUnreachable } from '../helper';
 import { getLogger } from '../logger';
-import * as AdminActions from '../store/admin';
-import { addNotification } from '../store/notification';
+import * as AdminActions from '../store/slice/adminSlice';
+import { addNotification } from '../store/slice/notificationSlice';
 import { dispatch } from '../store/store';
 import { processMessage } from './wsThunkActions';
 

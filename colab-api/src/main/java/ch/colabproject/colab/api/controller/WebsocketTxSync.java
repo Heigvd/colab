@@ -1,6 +1,6 @@
 /*
  * The coLAB project
- * Copyright (C) 2021 AlbaSim, MEI, HEIG-VD, HES-SO
+ * Copyright (C) 2021-2023 AlbaSim, MEI, HEIG-VD, HES-SO
  *
  * Licensed under the MIT License
  */
@@ -50,7 +50,6 @@ public class WebsocketTxSync implements Synchronization {
      * <p>
      * From this point, any committed changes will be available to other transactions, and any
      * rolled back changes will be definitely loosed.
-     *
      *
      * @param status status of the current transaction, either STATUS_COMMITTED or STATUS_ROLLEDBACK
      */

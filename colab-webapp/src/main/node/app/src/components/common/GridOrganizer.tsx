@@ -1,6 +1,6 @@
 /*
  * The coLAB project
- * Copyright (C) 2021-2022 AlbaSim, MEI, HEIG-VD, HES-SO
+ * Copyright (C) 2021-2023 AlbaSim, MEI, HEIG-VD, HES-SO
  *
  * Licensed under the MIT License
  */
@@ -61,7 +61,6 @@ function getEmptyMatrix(nbColumn: number, nbRow: number): Matrix {
     matrix[i] = Array.from<number | undefined>({ length: nbRow }).fill(undefined);
   });
   return matrix;
-  return [];
 }
 
 interface Shift {

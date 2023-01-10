@@ -1,12 +1,12 @@
 /*
  * The coLAB project
- * Copyright (C) 2021 AlbaSim, MEI, HEIG-VD, HES-SO
+ * Copyright (C) 2021-2023 AlbaSim, MEI, HEIG-VD, HES-SO
  *
  * Licensed under the MIT License
  */
 
-import { ChangeState, getObjectState } from '../store/change';
 import { useAppSelector } from '../store/hooks';
+import { ChangeState, getObjectState } from '../store/slice/changeSlice';
 
 export const changesEquals = (s1: ChangeState['@'][0], s2: ChangeState['@'][0]): boolean => {
   if (s1.status !== s2.status) {

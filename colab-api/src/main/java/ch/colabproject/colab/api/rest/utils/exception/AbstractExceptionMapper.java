@@ -1,6 +1,6 @@
 /*
  * The coLAB project
- * Copyright (C) 2021 AlbaSim, MEI, HEIG-VD, HES-SO
+ * Copyright (C) 2021-2023 AlbaSim, MEI, HEIG-VD, HES-SO
  *
  * Licensed under the MIT License
  */
@@ -29,7 +29,6 @@ public class AbstractExceptionMapper {
     private static final Logger logger = LoggerFactory.getLogger(AbstractExceptionMapper.class);
 
     /**
-     *
      * @param exception exception to process
      *
      * @return a HTTP response which wrap the exception
@@ -46,14 +45,14 @@ public class AbstractExceptionMapper {
             return processException(HttpErrorMessage.notFound());
         } else if (exception instanceof EJBException) {
             return processException(((EJBException) exception).getCausedByException());
-        } else if (exception instanceof PersistenceException | exception instanceof RollbackException) {
+        } else if (exception instanceof PersistenceException
+            | exception instanceof RollbackException) {
             Throwable cause = exception.getCause();
             if (cause instanceof Exception) {
                 return processException((Exception) cause);
             }
         } else if (exception instanceof ConstraintViolationException) {
-            ConstraintViolationException constraintViolation
-                = (ConstraintViolationException) exception;
+            ConstraintViolationException constraintViolation = (ConstraintViolationException) exception;
             logger.error("Constraint Violation Error");
             constraintViolation.getConstraintViolations().forEach(violation -> {
                 logger.error(" Violation: {}", violation);

@@ -1,5 +1,6 @@
 /*
- * The coLAB project Copyright (C) 2021 AlbaSim, MEI, HEIG-VD, HES-SO
+ * The coLAB project
+ * Copyright (C) 2021-2023 AlbaSim, MEI, HEIG-VD, HES-SO
  *
  * Licensed under the MIT License
  */
@@ -14,7 +15,7 @@ import org.eclipse.persistence.sessions.Session;
 /**
  * Customize JPA session.
  * <ul>
- * <li> use lowercase with underscore database field names
+ * <li>use lowercase with underscore database field names
  * </ul>
  *
  * @author maxence

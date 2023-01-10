@@ -1,6 +1,6 @@
 /*
  * The coLAB project
- * Copyright (C) 2021-2022 AlbaSim, MEI, HEIG-VD, HES-SO
+ * Copyright (C) 2021-2023 AlbaSim, MEI, HEIG-VD, HES-SO
  *
  * Licensed under the MIT License
  */
@@ -220,7 +220,8 @@ public class ResourceRestEndpoint {
 
         DuplicationParam effectiveParams = DuplicationParam.buildDefaultForCopyOfResource();
 
-        Resource newResource = resourceManager.copyResourceTo(resourceId, effectiveParams, parentType, parentId, false);
+        Resource newResource = resourceManager.copyResourceTo(resourceId, effectiveParams,
+            parentType, parentId, false);
 
         return newResource.getId();
     }

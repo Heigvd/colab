@@ -1,6 +1,6 @@
 /*
  * The coLAB project
- * Copyright (C) 2021 AlbaSim, MEI, HEIG-VD, HES-SO
+ * Copyright (C) 2021-2023 AlbaSim, MEI, HEIG-VD, HES-SO
  *
  * Licensed under the MIT License
  */
@@ -27,7 +27,8 @@ public class ConfigurationManager {
      */
     public AccountConfig getAccountConfig() {
         AccountConfig accountConfig = new AccountConfig();
-        accountConfig.setDisplayCreateLocalAccountButton(ColabConfiguration.getDisplayLocalAccountButton());
+        accountConfig
+            .setDisplayCreateLocalAccountButton(ColabConfiguration.getDisplayLocalAccountButton());
 
         return accountConfig;
     }

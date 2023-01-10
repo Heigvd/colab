@@ -1,13 +1,13 @@
 /*
  * The coLAB project
- * Copyright (C) 2021 AlbaSim, MEI, HEIG-VD, HES-SO
+ * Copyright (C) 2021-2023 AlbaSim, MEI, HEIG-VD, HES-SO
  *
  * Licensed under the MIT License
  */
 import { createSlice } from '@reduxjs/toolkit';
 import { AccountConfig } from 'colab-rest-client';
-import * as API from '../API/api';
-import { LoadingStatus } from './store';
+import * as API from '../../API/api';
+import { LoadingStatus } from '../store';
 
 export interface ConfigState {
   accountConfigState: LoadingStatus;

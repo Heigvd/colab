@@ -1,6 +1,6 @@
 /*
  * The coLAB project
- * Copyright (C) 2021-2022 AlbaSim, MEI, HEIG-VD, HES-SO
+ * Copyright (C) 2021-2023 AlbaSim, MEI, HEIG-VD, HES-SO
  *
  * Licensed under the MIT License
  */
@@ -99,6 +99,17 @@ public class ProjectRestEndpoint {
         logger.debug("Get user projects");
         return projectManager.findProjectsOfCurrentUser();
     }
+    
+    /**
+     * Get all global models
+     * @return  list of global models
+     */
+    @GET
+    @Path("Global")
+    public List<Project> getAllGlobalModels() {
+        logger.debug("Get all global projects");
+        return projectDao.findAllGlobalModels();
+    }
 
     /**
      * Get all projects the current user is an instance maker for
@@ -123,6 +134,7 @@ public class ProjectRestEndpoint {
         logger.debug("Get all projects");
         return projectDao.findAllProject();
     }
+    
 
     // *********************************************************************************************
     // create

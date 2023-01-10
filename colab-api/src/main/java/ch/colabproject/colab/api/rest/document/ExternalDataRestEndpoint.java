@@ -1,6 +1,6 @@
 /*
  * The coLAB project
- * Copyright (C) 2022 AlbaSim, MEI, HEIG-VD, HES-SO
+ * Copyright (C) 2022-2023 AlbaSim, MEI, HEIG-VD, HES-SO
  *
  * Licensed under the MIT License
  */
@@ -18,7 +18,6 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 /**
- *
  * @author maxence
  */
 @Path("externaldata")

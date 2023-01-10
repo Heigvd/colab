@@ -1,11 +1,11 @@
 /*
  * The coLAB project
- * Copyright (C) 2021 AlbaSim, MEI, HEIG-VD, HES-SO
+ * Copyright (C) 2021-2023 AlbaSim, MEI, HEIG-VD, HES-SO
  *
  * Licensed under the MIT License
  */
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import * as API from '../API/api';
+import * as API from '../../API/api';
 
 export interface WebsocketState {
   sessionId?: string | null;

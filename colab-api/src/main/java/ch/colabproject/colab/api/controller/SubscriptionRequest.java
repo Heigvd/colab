@@ -1,6 +1,6 @@
 /*
  * The coLAB project
- * Copyright (C) 2021 AlbaSim, MEI, HEIG-VD, HES-SO
+ * Copyright (C) 2021-2023 AlbaSim, MEI, HEIG-VD, HES-SO
  *
  * Licensed under the MIT License
  */
@@ -65,7 +65,6 @@ public class SubscriptionRequest implements Serializable {
     private String wsSessionId;
 
     /**
-     *
      * HTTP session id which want to (un)subscribe
      */
     private Long colabSessionId;

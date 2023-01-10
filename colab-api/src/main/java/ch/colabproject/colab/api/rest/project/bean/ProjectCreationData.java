@@ -1,6 +1,6 @@
 /*
  * The coLAB project
- * Copyright (C) 2021 AlbaSim, MEI, HEIG-VD, HES-SO
+ * Copyright (C) 2021-2023 AlbaSim, MEI, HEIG-VD, HES-SO
  *
  * Licensed under the MIT License
  */
@@ -44,6 +44,8 @@ public class ProjectCreationData implements Serializable {
      * The description of the project
      */
     private String description;
+    
+    // no globalProject boolean since projects can't be initialised as global
 
     /**
      * The icon to illustrate the project
@@ -208,7 +210,8 @@ public class ProjectCreationData implements Serializable {
 
     @Override
     public String toString() {
-        return "ProjectCreationData{" + " type=" + type.name() + ", name=" + name + ", description=" + description
+        return "ProjectCreationData{" + " type=" + type.name() + ", name=" + name + ", description="
+            + description
             + ", illustration=" + illustration
             + ", baseProjectId=" + baseProjectId + ", duplicationParam=" + duplicationParam
             + ", guestsEmail=" + guestsEmail + "}";

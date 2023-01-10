@@ -20,6 +20,15 @@
         <developer>
             <name>Sandra Monnier</name>
         </developer>
+        <developer>
+            <name>Audrey Huguenin</name>
+        </developer>
+        <developer>
+            <name>Xavier Good</name>
+        </developer>
+        <developer>
+            <name>Mikkel Vestergaard</name>
+        </developer>
     </developers>
 
     <issueManagement>
@@ -58,7 +67,7 @@
     </modules>
 
     <properties>
-        <project.years>2020-2022</project.years>
+        <project.years>2020-2023</project.years>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
         <maven.compiler.source>11</maven.compiler.source>
@@ -456,6 +465,12 @@
                         <failOnMissingWebXml>false</failOnMissingWebXml>
                     </configuration>
                 </plugin>
+                <!-- Jar install -->
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-install-plugin</artifactId>
+                    <version>3.0.1</version>
+                </plugin>
                 <!-- Dependencies management -->
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
@@ -716,7 +731,7 @@
                     <header>colab/licenseheader.template</header>
                     <properties>
                         <license.owner>AlbaSim, MEI, HEIG-VD, HES-SO</license.owner>
-                        <license.years>2020-2022</license.years>
+                        <license.years>2020-2023</license.years>
                     </properties>
                     <includes>
                         <include>**/*.java</include>

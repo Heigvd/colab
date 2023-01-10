@@ -1,6 +1,6 @@
 /*
  * The coLAB project
- * Copyright (C) 2021 AlbaSim, MEI, HEIG-VD, HES-SO
+ * Copyright (C) 2021-2023 AlbaSim, MEI, HEIG-VD, HES-SO
  *
  * Licensed under the MIT License
  */
@@ -17,7 +17,7 @@ import { entityIs, HttpErrorMessage } from 'colab-rest-client';
 import * as React from 'react';
 import useTranslations, { ColabTranslations } from '../../../i18n/I18nContext';
 import { shallowEqual, useAppDispatch, useAppSelector } from '../../../store/hooks';
-import { closeNotification, ColabNotification } from '../../../store/notification';
+import { closeNotification, ColabNotification } from '../../../store/slice/notificationSlice';
 import { space_M, space_S } from '../../styling/style';
 import Flex from '../layout/Flex';
 

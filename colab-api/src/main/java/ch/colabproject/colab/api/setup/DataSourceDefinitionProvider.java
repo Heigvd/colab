@@ -1,6 +1,6 @@
 /*
  * The coLAB project
- * Copyright (C) 2021 AlbaSim, MEI, HEIG-VD, HES-SO
+ * Copyright (C) 2021-2023 AlbaSim, MEI, HEIG-VD, HES-SO
  *
  * Licensed under the MIT License
  */
@@ -19,9 +19,9 @@ import org.postgresql.xa.PGXADataSource;
 @DataSourceDefinition(
     name = "java:global/colabDS",
     className = "org.postgresql.xa.PGXADataSource",
-    //serverName = "${colab.database.host:-localhost}",
-    //portNumber = 5432,//how to interpolate variable properties to int ?
-    //databaseName = "${colab.database.name}",
+    // serverName = "${colab.database.host:-localhost}",
+    // portNumber = 5432,//how to interpolate variable properties to int ?
+    // databaseName = "${colab.database.name}",
     user = "${colab.database.user}",
     password = "${colab.database.password}",
     url = "jdbc:postgresql://${colab.database.host}:${colab.database.port}/${colab.database.name}"

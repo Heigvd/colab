@@ -1,6 +1,6 @@
 /*
  * The coLAB project
- * Copyright (C) 2021 AlbaSim, MEI, HEIG-VD, HES-SO
+ * Copyright (C) 2021-2023 AlbaSim, MEI, HEIG-VD, HES-SO
  *
  * Licensed under the MIT License
  */
@@ -32,7 +32,7 @@ import {
 } from 'colab-rest-client';
 import { checkUnreachable } from '../helper';
 import { getLogger } from '../logger';
-import { ColabNotification } from '../store/notification';
+import { ColabNotification } from '../store/slice/notificationSlice';
 
 const logger = getLogger('WebSockets');
 

@@ -1,6 +1,6 @@
 /*
  * The coLAB project
- * Copyright (C) 2021 AlbaSim, MEI, HEIG-VD, HES-SO
+ * Copyright (C) 2021-2023 AlbaSim, MEI, HEIG-VD, HES-SO
  *
  * Licensed under the MIT License
  */
@@ -47,7 +47,6 @@ public enum InternalHashMethod {
      * @return digested value
      *
      * @throws java.security.NoSuchAlgorithmException if underlying algorithm does not exist
-     *
      */
     public abstract byte[] hash(String value) throws NoSuchAlgorithmException;
 

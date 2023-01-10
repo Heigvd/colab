@@ -1,6 +1,6 @@
 /*
  * The coLAB project
- * Copyright (C) 2021 AlbaSim, MEI, HEIG-VD, HES-SO
+ * Copyright (C) 2021-2023 AlbaSim, MEI, HEIG-VD, HES-SO
  *
  * Licensed under the MIT License
  */
@@ -31,7 +31,7 @@ import org.slf4j.LoggerFactory;
  * Intercept all request to the API and check user has required permission.
  * <p>
  * This filter has a priority of 10, which means it is executed after {@link CookieFilter } and
- * {@link  ch.colabproject.colab.api.rest.utils.filter.RequestFilter RequestFilter}
+ * {@link ch.colabproject.colab.api.rest.utils.filter.RequestFilter RequestFilter}
  *
  * @author maxence
  */

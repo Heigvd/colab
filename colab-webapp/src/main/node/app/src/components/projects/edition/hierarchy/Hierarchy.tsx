@@ -1,6 +1,6 @@
 /*
  * The coLAB project
- * Copyright (C) 2021 AlbaSim, MEI, HEIG-VD, HES-SO
+ * Copyright (C) 2021-2023 AlbaSim, MEI, HEIG-VD, HES-SO
  *
  * Licensed under the MIT License
  */
@@ -19,8 +19,8 @@ import * as API from '../../../../API/api';
 import useTranslations from '../../../../i18n/I18nContext';
 import { getLogger } from '../../../../logger';
 import { useProjectBeingEdited } from '../../../../selectors/projectSelector';
-import { CardContentDetail } from '../../../../store/card';
 import { useAppDispatch, useAppSelector } from '../../../../store/hooks';
+import { CardContentDetail } from '../../../../store/slice/cardSlice';
 import InlineLoading from '../../../common/element/InlineLoading';
 import { BlockInput } from '../../../common/element/Input';
 import Flex from '../../../common/layout/Flex';
@@ -245,14 +245,17 @@ export default function Hierarchy({
   if (jsPlumb) {
     jsPlumb.setZoom(zoomRef.current);
   }
-   const navigateToEditPageCb = React.useCallback((card: Card) => {
-    const path = `edit/${card.id}/`;
-    if (location.pathname.match(/(edit|card)\/\d+\/v\/\d+/)) {
-      navigate(`../${path}`);
-    } else {
-      navigate(path);
-    }
-  }, [navigate]);
+  const navigateToEditPageCb = React.useCallback(
+    (card: Card) => {
+      const path = `edit/${card.id}/`;
+      if (location.pathname.match(/(edit|card)\/\d+\/v\/\d+/)) {
+        navigate(`../${path}`);
+      } else {
+        navigate(path);
+      }
+    },
+    [navigate],
+  );
   const cleanCb = React.useCallback(() => {
     if (jsPlumb) {
       Object.entries(plumbState.connections).forEach(([key, value]) => {

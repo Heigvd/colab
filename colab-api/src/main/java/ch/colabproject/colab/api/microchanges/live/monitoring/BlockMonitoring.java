@@ -1,6 +1,6 @@
 /*
  * The coLAB project
- * Copyright (C) 2022 AlbaSim, MEI, HEIG-VD, HES-SO
+ * Copyright (C) 2022-2023 AlbaSim, MEI, HEIG-VD, HES-SO
  *
  * Licensed under the MIT License
  */
@@ -29,8 +29,9 @@ public class BlockMonitoring {
         DATA_ERROR,
         /** no pending changes */
         PROCESSED,
-        /** some
-         * pending changes exist but block has been deleted in the meantime */
+        /**
+         * some pending changes exist but block has been deleted in the meantime
+         */
         DELETED;
     }
 

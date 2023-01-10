@@ -1,6 +1,6 @@
 /*
  * The coLAB project
- * Copyright (C) 2021 AlbaSim, MEI, HEIG-VD, HES-SO
+ * Copyright (C) 2021-2023 AlbaSim, MEI, HEIG-VD, HES-SO
  *
  * Licensed under the MIT License
  */
@@ -22,7 +22,6 @@ import javax.inject.Inject;
 import org.slf4j.LoggerFactory;
 
 /**
- *
  * @author maxence
  */
 @Stateless
@@ -58,7 +57,6 @@ public class MonitoringManager {
      * Change level of a logger within this very payara instance.
      *
      * @param payload logger name and level to set
-     *
      */
     public void changeLoggerLevelInternal(
         @Observes @Inbound(eventName = SET_LOGGER_LEVEL_EVENT) LoggerLevelPayload payload

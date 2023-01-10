@@ -1,14 +1,14 @@
 /*
  * The coLAB project
- * Copyright (C) 2021 AlbaSim, MEI, HEIG-VD, HES-SO
+ * Copyright (C) 2021-2023 AlbaSim, MEI, HEIG-VD, HES-SO
  *
  * Licensed under the MIT License
  */
 
 import { createSlice } from '@reduxjs/toolkit';
 import { Change, entityIs } from 'colab-rest-client';
-import * as API from '../API/api';
-import { processMessage } from '../ws/wsThunkActions';
+import * as API from '../../API/api';
+import { processMessage } from '../../ws/wsThunkActions';
 
 export type Status = 'UNSET' | 'LOADING' | 'READY' | 'ERROR';
 

@@ -1,6 +1,6 @@
 /*
  * The coLAB project
- * Copyright (C) 2021 AlbaSim, MEI, HEIG-VD, HES-SO
+ * Copyright (C) 2021-2023 AlbaSim, MEI, HEIG-VD, HES-SO
  *
  * Licensed under the MIT License
  */
@@ -8,6 +8,7 @@ package ch.colabproject.colab.api.persistence.jpa.project;
 
 import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.model.project.Project;
+import ch.colabproject.colab.api.model.project.ProjectType;
 import ch.colabproject.colab.api.model.user.User;
 import java.util.List;
 import javax.ejb.LocalBean;
@@ -61,6 +62,21 @@ public class ProjectDao {
 
         TypedQuery<Project> query = em.createNamedQuery("Project.findAll", Project.class);
 
+        return query.getResultList();
+    }
+    
+    /**
+     * Get the list of all global project
+     * 
+     * @return list of all global projects
+     */
+    public List<Project> findAllGlobalModels() {
+        logger.trace("find all global projects");
+        
+        TypedQuery<Project> query = em.createNamedQuery("Project.findAllGlobal", Project.class);
+        
+        query.setParameter("model", ProjectType.MODEL);
+        
         return query.getResultList();
     }
 

@@ -1,6 +1,6 @@
 /*
  * The coLAB project
- * Copyright (C) 2021 AlbaSim, MEI, HEIG-VD, HES-SO
+ * Copyright (C) 2021-2023 AlbaSim, MEI, HEIG-VD, HES-SO
  *
  * Licensed under the MIT License
  */
@@ -9,8 +9,6 @@ package ch.colabproject.colab.api.setup;
 import ch.colabproject.colab.api.controller.CdiBridgeSingleton;
 import ch.colabproject.colab.api.controller.setup.ApplicationLifecycleManager;
 import ch.colabproject.colab.generator.model.tools.PolymorphicDeserializer;
-import com.hazelcast.cluster.Member;
-import com.hazelcast.core.HazelcastInstance;
 import java.util.Set;
 import javax.inject.Inject;
 import javax.servlet.ServletConfig;
@@ -19,9 +17,10 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import com.hazelcast.cluster.Member;
+import com.hazelcast.core.HazelcastInstance;
 
 /**
- *
  * @author maxence
  */
 @WebServlet(loadOnStartup = 2)
@@ -89,7 +88,7 @@ public class ApplicationLifecycle extends HttpServlet {
     public void gracefullShutdown() {
         if (hzInstance != null) {
             Set<Member> members = hzInstance.getCluster().getMembers();
-            //TODO: sessionManager.writeActivityDatesToDatabase();
+            // TODO: sessionManager.writeActivityDatesToDatabase();
             logger.error("Members: {}", members);
         } else {
             logger.error("NO HAZELCAST INSTANCE: SHOULD BE UNREACHABLE");

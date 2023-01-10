@@ -1,6 +1,6 @@
 /*
  * The coLAB project
- * Copyright (C) 2021 AlbaSim, MEI, HEIG-VD, HES-SO
+ * Copyright (C) 2021-2023 AlbaSim, MEI, HEIG-VD, HES-SO
  *
  * Licensed under the MIT License
  */
@@ -99,7 +99,6 @@ public class SignUpInfo implements WithJsonDiscriminator {
     }
 
     /**
-     *
      * @return the salt the user use to salt its plain password
      */
     public String getSalt() {

@@ -1,6 +1,6 @@
 /*
  * The coLAB project
- * Copyright (C) 2021 AlbaSim, MEI, HEIG-VD, HES-SO
+ * Copyright (C) 2021-2023 AlbaSim, MEI, HEIG-VD, HES-SO
  *
  * Licensed under the MIT License
  */
@@ -327,7 +327,8 @@ public class RestClient {
      *
      * @return instance of T
      */
-    public <T> T put(String path, Map<String, FormField> fields, GenericType<T> type, String... accept) {
+    public <T> T put(String path, Map<String, FormField> fields, GenericType<T> type,
+        String... accept) {
         FormDataMultiPart multipart = getFormData(fields);
 
         return processResponse(webTarget.path(path).request()

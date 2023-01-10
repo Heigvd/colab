@@ -1,6 +1,6 @@
 /*
  * The coLAB project
- * Copyright (C) 2021 AlbaSim, MEI, HEIG-VD, HES-SO
+ * Copyright (C) 2021-2023 AlbaSim, MEI, HEIG-VD, HES-SO
  *
  * Licensed under the MIT License
  */
@@ -134,7 +134,6 @@ public class LocalAccount extends Account {
     // ---------------------------------------------------------------------------------------------
 
     /**
-     *
      * @return email associated with this account
      */
     public String getEmail() {
@@ -147,7 +146,8 @@ public class LocalAccount extends Account {
      * @param email new email to use.
      */
     public void setEmail(String email) {
-        if (Helper.isEmailAddress(email)) { // FIXME sandra see with Maxence if it is useful to do it here
+        if (Helper.isEmailAddress(email)) { // FIXME sandra see with Maxence if it is useful to do
+                                            // it here
 
             if (!email.equals(this.email)) {
                 this.verified = false;
@@ -209,7 +209,6 @@ public class LocalAccount extends Account {
     }
 
     /**
-     *
      * @return the current hashedPassword method to used to hashedPassword provided password
      */
     public HashMethod getCurrentDbHashMethod() {

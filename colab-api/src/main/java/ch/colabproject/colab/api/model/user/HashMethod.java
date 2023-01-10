@@ -1,6 +1,6 @@
 /*
  * The coLAB project
- * Copyright (C) 2021 AlbaSim, MEI, HEIG-VD, HES-SO
+ * Copyright (C) 2021-2023 AlbaSim, MEI, HEIG-VD, HES-SO
  *
  * Licensed under the MIT License
  */
@@ -47,12 +47,12 @@ public enum HashMethod {
      * @param salt  optional salt
      *
      * @return digested salted value
-     *
      */
     public abstract byte[] hash(String value, byte[] salt);
 
     /**
      * @see #hash(java.lang.String, byte[])
+     * 
      * @param value   value to hash
      * @param hexSalt hexEncoded salt
      *

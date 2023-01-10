@@ -1,6 +1,6 @@
 /*
  * The coLAB project
- * Copyright (C) 2021 AlbaSim, MEI, HEIG-VD, HES-SO
+ * Copyright (C) 2021-2023 AlbaSim, MEI, HEIG-VD, HES-SO
  *
  * Licensed under the MIT License
  */
@@ -253,6 +253,7 @@ public class UserRestEndpoint {
     /**
      * Update password of a localAccount. The password MUST be hashed a first time by the client.
      * <p>
+     * 
      * @param authInfo identifier and new password
      *
      * @throws HttpErrorMessage if currentUser is not allowed to update the given account
@@ -267,8 +268,8 @@ public class UserRestEndpoint {
     /**
      * Request a local account password reset. This method always returns 204 no content
      * <p>
+     * 
      * @param email email address of account
-     *
      */
     @PUT
     @Path("/RequestPasswordReset/{email}")

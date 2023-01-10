@@ -1,6 +1,6 @@
 /*
  * The coLAB project
- * Copyright (C) 2021-2022 AlbaSim, MEI, HEIG-VD, HES-SO
+ * Copyright (C) 2021-2023 AlbaSim, MEI, HEIG-VD, HES-SO
  *
  * Licensed under the MIT License
  */
@@ -13,7 +13,7 @@ import * as API from '../../../API/api';
 import { emailFormat } from '../../../helper';
 import useTranslations from '../../../i18n/I18nContext';
 import { useAppDispatch } from '../../../store/hooks';
-import { addNotification } from '../../../store/notification';
+import { addNotification } from '../../../store/slice/notificationSlice';
 import Button from '../../common/element/Button';
 import IconButtonWithLoader from '../../common/element/IconButtonWithLoader';
 import OpenCloseModal from '../../common/layout/OpenCloseModal';

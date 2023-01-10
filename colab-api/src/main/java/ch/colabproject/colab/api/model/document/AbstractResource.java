@@ -1,6 +1,6 @@
 /*
  * The coLAB project
- * Copyright (C) 2021 AlbaSim, MEI, HEIG-VD, HES-SO
+ * Copyright (C) 2021-2023 AlbaSim, MEI, HEIG-VD, HES-SO
  *
  * Licensed under the MIT License
  */
@@ -138,7 +138,8 @@ public abstract class AbstractResource
     private List<StickyNoteLink> stickyNoteLinksAsSrc = new ArrayList<>();
 
     // Note : the List<ResourceRef> of direct references must be retrieved with a DAO
-    // because the abstract resource must not be seen as changed when a reference is added or removed
+    // because the abstract resource must not be seen as changed when a reference is added or
+    // removed
 
     // ---------------------------------------------------------------------------------------------
     // getters and setters
@@ -417,7 +418,7 @@ public abstract class AbstractResource
 
     @Override
     public void merge(ColabEntity other) throws ColabMergeException {
-     // category cannot be changed alone manually. It is handled by ResourceCategoryHelper
+        // category cannot be changed alone manually. It is handled by ResourceCategoryHelper
         if (!(other instanceof AbstractResource)) {
             throw new ColabMergeException(this, other);
         }

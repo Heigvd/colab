@@ -1,6 +1,6 @@
 /*
  * The coLAB project
- * Copyright (C) 2021 AlbaSim, MEI, HEIG-VD, HES-SO
+ * Copyright (C) 2021-2023 AlbaSim, MEI, HEIG-VD, HES-SO
  *
  * Licensed under the MIT License
  */
@@ -114,7 +114,8 @@ public class WebsocketMessagePreparer {
     private static void addAsDeleted(Map<WebsocketChannel, List<WsMessage>> byChannels,
         WebsocketChannel channel,
         IndexEntry entry) {
-        Collection<IndexEntry> set = WebsocketMessagePreparer.getOrCreateWsUpdateMessage(byChannels, channel)
+        Collection<IndexEntry> set = WebsocketMessagePreparer
+            .getOrCreateWsUpdateMessage(byChannels, channel)
             .getDeleted();
         logger.trace("Add {} to deleted set {}", entry, set);
         set.add(entry);
@@ -124,7 +125,7 @@ public class WebsocketMessagePreparer {
      * Prepare all WsUpdateMessage.
      *
      * @param userDao     provide userDao to resolve nested channels
-     * @param teamDao        provide teamDao to resolve nested channels
+     * @param teamDao     provide teamDao to resolve nested channels
      * @param cardTypeDao provide cardTypeDao to resolve nested channels
      * @param updated     set of created/updated entities
      * @param deleted     set of just destroyed-entities index entry
