@@ -17,7 +17,7 @@ const logger = getLogger('GridOrganizer');
 
 const handles = ['N', 'S', 'E', 'W', 'NE', 'SE', 'NW', 'SW', 'M'] as const;
 
-type Handle = typeof handles[number];
+type Handle = (typeof handles)[number];
 
 export interface Cell<T> extends GridPosition {
   id: number;
