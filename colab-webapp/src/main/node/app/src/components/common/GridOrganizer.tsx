@@ -61,7 +61,6 @@ function getEmptyMatrix(nbColumn: number, nbRow: number): Matrix {
     matrix[i] = Array.from<number | undefined>({ length: nbRow }).fill(undefined);
   });
   return matrix;
-  return [];
 }
 
 interface Shift {

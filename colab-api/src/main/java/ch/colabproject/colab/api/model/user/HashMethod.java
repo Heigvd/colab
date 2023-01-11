@@ -47,12 +47,12 @@ public enum HashMethod {
      * @param salt  optional salt
      *
      * @return digested salted value
-     *
      */
     public abstract byte[] hash(String value, byte[] salt);
 
     /**
      * @see #hash(java.lang.String, byte[])
+     * 
      * @param value   value to hash
      * @param hexSalt hexEncoded salt
      *

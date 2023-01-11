@@ -56,7 +56,7 @@ public enum InvolvementLevel {
      * @param order importance level
      * @param rw    give write access ?
      */
-    /*private*/ InvolvementLevel(int order, boolean rw) {
+    /* private */ InvolvementLevel(int order, boolean rw) {
         this.order = order;
         this.rw = rw;
     }

@@ -15,7 +15,6 @@ import javax.json.bind.annotation.JsonbTransient;
 import javax.validation.constraints.NotNull;
 
 /**
- *
  * @author maxence
  */
 @ExtractJavaDoc
@@ -109,7 +108,8 @@ public class UrlMetadata implements Serializable {
         return date;
     }
 
-    /** Set the date
+    /**
+     * Set the date
      *
      * @param date the date
      */

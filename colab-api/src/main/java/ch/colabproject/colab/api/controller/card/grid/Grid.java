@@ -346,6 +346,7 @@ public final class Grid {
 
         /**
          * simple constructor
+         * 
          * @param x x coordinate
          * @param y y coordinate
          */

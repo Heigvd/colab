@@ -71,7 +71,7 @@ public class JcrSession implements Serializable {
         // TODO long term :
         this.session = repository.login(credentials);
 
-        if (project != null){
+        if (project != null) {
             this.workspace = "project_" + project.getId();
         } else {
             this.workspace = GLOBAL_WORKSPACE;

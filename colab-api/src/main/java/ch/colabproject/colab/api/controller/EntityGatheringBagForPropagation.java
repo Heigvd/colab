@@ -37,7 +37,8 @@ public class EntityGatheringBagForPropagation implements Serializable {
     private static final long serialVersionUID = 1L;
 
     /** logger */
-    private static final Logger logger = LoggerFactory.getLogger(EntityGatheringBagForPropagation.class);
+    private static final Logger logger = LoggerFactory
+        .getLogger(EntityGatheringBagForPropagation.class);
 
     /**
      * Synchronizer
@@ -203,7 +204,8 @@ public class EntityGatheringBagForPropagation implements Serializable {
 
             this.precomputed = true;
             requestManager.sudo(() -> {
-                return this.message = WebsocketMessagePreparer.prepareWsMessage(userDao, teamDao, cardTypeDao, filtered, deleted);
+                return this.message = WebsocketMessagePreparer.prepareWsMessage(userDao, teamDao,
+                    cardTypeDao, filtered, deleted);
             });
             logger.debug("Precomputed: {}", message);
         } catch (Exception ex) {
@@ -215,11 +217,11 @@ public class EntityGatheringBagForPropagation implements Serializable {
      * Prepare websocket messages
      */
     public void prepare() {
-        //make sure to flush everything to database: EDIT 20211118: seems useless
-        //em.flush();
+        // make sure to flush everything to database: EDIT 20211118: seems useless
+        // em.flush();
         requestManager.setTxDone(true);
-        //logger.info(
-        //    "Before transactionCompletion: This method is not called for each transaction, why ???");
+        // logger.info(
+        // "Before transactionCompletion: This method is not called for each transaction, why ???");
         this.precomputeMessage();
     }
 

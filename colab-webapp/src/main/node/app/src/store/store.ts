@@ -8,23 +8,23 @@
 import { configureStore } from '@reduxjs/toolkit';
 import { combineReducers } from 'redux';
 import thunk from 'redux-thunk';
-import aclReducer from './acl';
-import activityFlowLinkReducer from './activityflowlink';
-import adminReducer from './admin';
-import authReducer from './auth';
-import cardReducer from './card';
-import changeReducer from './change';
-import configReducer from './configuration';
-import documentReducer from './documentSlice';
-import externalDataReducer from './externalData';
-import notifReducer from './notification';
-import resourceReducer from './resource';
+import aclReducer from './slice/aclSlice';
+import activityFlowLinkReducer from './slice/activityflowlinkSlice';
+import adminReducer from './slice/adminSlice';
+import authReducer from './slice/authSlice';
+import cardReducer from './slice/cardSlice';
 import cardTypeReducer from './slice/cardTypeSlice';
+import changeReducer from './slice/changeSlice';
+import configReducer from './slice/configurationSlice';
+import documentReducer from './slice/documentSlice';
+import externalDataReducer from './slice/externalDataSlice';
+import notifReducer from './slice/notificationSlice';
 import presenceReducer from './slice/presenceSlice';
 import projectReducer from './slice/projectSlice';
-import stickyNoteLinkReducer from './stickynotelink';
-import userReducer from './user';
-import websocketReducer from './websocket';
+import resourceReducer from './slice/resourceSlice';
+import stickyNoteLinkReducer from './slice/stickynotelinkSlice';
+import userReducer from './slice/userSlice';
+import websocketReducer from './slice/websocketSlice';
 
 const rootReducer = combineReducers({
   acl: aclReducer,

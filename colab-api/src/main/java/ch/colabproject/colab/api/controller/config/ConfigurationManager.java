@@ -27,7 +27,8 @@ public class ConfigurationManager {
      */
     public AccountConfig getAccountConfig() {
         AccountConfig accountConfig = new AccountConfig();
-        accountConfig.setDisplayCreateLocalAccountButton(ColabConfiguration.getDisplayLocalAccountButton());
+        accountConfig
+            .setDisplayCreateLocalAccountButton(ColabConfiguration.getDisplayLocalAccountButton());
 
         return accountConfig;
     }

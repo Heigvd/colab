@@ -44,7 +44,7 @@ public class Sendmail {
      *
      * @param message the message to sent
      *
-     * @throws HttpErrorMessage             malformedMessage if supplied values are erroneous
+     * @throws HttpErrorMessage              malformedMessage if supplied values are erroneous
      * @throws javax.mail.MessagingException when something went wrong
      */
     public static void send(Message message) throws MessagingException {

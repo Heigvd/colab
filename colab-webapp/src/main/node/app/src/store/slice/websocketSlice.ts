@@ -5,7 +5,7 @@
  * Licensed under the MIT License
  */
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import * as API from '../API/api';
+import * as API from '../../API/api';
 
 export interface WebsocketState {
   sessionId?: string | null;

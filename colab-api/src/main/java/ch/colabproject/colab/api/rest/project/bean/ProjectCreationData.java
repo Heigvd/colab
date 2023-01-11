@@ -210,7 +210,8 @@ public class ProjectCreationData implements Serializable {
 
     @Override
     public String toString() {
-        return "ProjectCreationData{" + " type=" + type.name() + ", name=" + name + ", description=" + description
+        return "ProjectCreationData{" + " type=" + type.name() + ", name=" + name + ", description="
+            + description
             + ", illustration=" + illustration
             + ", baseProjectId=" + baseProjectId + ", duplicationParam=" + duplicationParam
             + ", guestsEmail=" + guestsEmail + "}";

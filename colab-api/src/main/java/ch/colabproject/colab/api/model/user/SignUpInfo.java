@@ -99,7 +99,6 @@ public class SignUpInfo implements WithJsonDiscriminator {
     }
 
     /**
-     *
      * @return the salt the user use to salt its plain password
      */
     public String getSalt() {
