@@ -219,8 +219,8 @@ colab-client/colab-api,ch.colabproject.colab.api.ws.channel.tool,ChannelsBuilder
 colab-client/colab-api,ch.colabproject.colab.api.ws.channel.tool,ChannelsBuilders.BlockChannelBuilder,11,0,0,0,4,0,2,0,2,0
 colab-client/colab-api,ch.colabproject.colab.api.ws.channel.tool,ChannelsBuilders.ChannelsBuilder,9,0,0,0,2,0,2,0,2,0
 colab-client/colab-api,ch.colabproject.colab.api.ws.channel.tool,ChannelsBuilders.AboutAccountChannelsBuilder,28,0,2,0,8,0,3,0,2,0
-colab-client/colab-api,ch.colabproject.colab.api.ws.channel.tool,ChannelsBuilders.AboutProjectOverviewChannelsBuilder,26,0,2,0,8,0,3,0,2,0
-colab-client/colab-api,ch.colabproject.colab.api.model.project,Project,809,0,80,0,64,0,127,0,87,0
+colab-client/colab-api,ch.colabproject.colab.api.ws.channel.tool,ChannelsBuilders.AboutProjectOverviewChannelsBuilder,35,0,4,0,10,0,4,0,2,0
+colab-client/colab-api,ch.colabproject.colab.api.model.project,Project,824,0,84,0,67,0,131,0,89,0
 colab-client/colab-api,ch.colabproject.colab.api.model.project,InstanceMaker,670,0,80,0,49,0,107,0,67,0
 colab-client/colab-api,ch.colabproject.colab.api.model.project,ProjectType,24,0,0,0,3,0,1,0,1,0
 colab-client/colab-api,ch.colabproject.colab.api.model.project,CopyParam,597,0,60,0,50,0,96,0,66,0
