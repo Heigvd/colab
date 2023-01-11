@@ -38,8 +38,10 @@ import javax.persistence.Index;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
+import javax.persistence.PostLoad;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
@@ -123,6 +125,12 @@ public class Project implements ColabEntity, WithWebsocketChannels {
      * Global means accessible to everyone
      */
     private boolean globalProject;
+    
+    /**
+     * global state on load
+     */
+    @Transient
+    private boolean initialGlobal;
 
     /**
      * The icon to illustrate the project
@@ -369,11 +377,33 @@ public class Project implements ColabEntity, WithWebsocketChannels {
     public void setElementsToBeDefined(List<AbstractCardType> elements) {
         this.elementsToBeDefined = elements;
     }
+    
+    // ---------------------------------------------------------------------------------------------
+    // helpers
+    // ---------------------------------------------------------------------------------------------
+
+    /**
+     * @return is now global or was just not global
+     */
+    @JsonbTransient
+    public boolean isOrWasGlobal() {
+        return this.isGlobalProject() || this.initialGlobal;
+    }
 
     // ---------------------------------------------------------------------------------------------
     // concerning the whole class
     // ---------------------------------------------------------------------------------------------
 
+    /**
+     * JPA post-load callback. Used to keep trace of the initial value of the <code>globalProject</code>
+     * field.
+     */
+    @PostLoad
+    public void postLoad() {
+        // keep trace of modification
+        this.initialGlobal = this.globalProject;
+    }
+    
     @Override
     public void merge(ColabEntity other) throws ColabMergeException {
         if (other instanceof Project) {
