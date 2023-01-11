@@ -110,18 +110,6 @@ function SharingParams({ projectId }: SharingParamsProps): JSX.Element {
           }}
         />
       </Flex>
-
-      {/* <Flex direction="column" className={cx(disabledStyle, paddedContainerStyle)}>
-        <h3>{i18n.modules.project.labels.connect}</h3>
-        <Checkbox
-          value={false} //{data.withResources}
-          label={i18n.modules.project.labels.keepConnectionBetweenModelAndProject}
-          readOnly
-          onChange={(_newValue: boolean) => {
-            //setData({ ...data, keepConnection: newValue });
-          }}
-        />
-      </Flex> */}
     </>
   );
 }

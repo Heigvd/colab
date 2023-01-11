@@ -121,7 +121,7 @@ export default function ProjectSettingsAdvanced({
             ) : (
               <>
                 <h3>This model is private</h3>
-                <p>You can share it for edition or usage to create prjects based on it.</p>
+                <p>You can share it for edition or usage to create projects based on it.</p>
                 <p>Want to make it global?</p>
                 <ConfirmDeleteOpenCloseModal
                   title="Make global"
@@ -143,7 +143,7 @@ export default function ProjectSettingsAdvanced({
                   message={
                     <p>
                       Are you sure you want to make this model global? Once global, everyone with a
-                      co.LAB account will be able to create a project base on this model.
+                      co.LAB account will be able to create a project based on this model.
                     </p>
                   }
                   onConfirm={() =>

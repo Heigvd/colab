@@ -331,7 +331,6 @@ export const fr: ColabTranslations = {
         cardContents: 'Contenu des cartes',
         documentation: 'Documentation',
         connect: 'Connecter',
-        keepConnectionBetweenModelAndProject: 'Garder les nouveaux projets connectés au modèle',
         sharing: 'Partage',
         sharingParams: 'Paramètres de partage',
       },
