@@ -31,7 +31,7 @@ export default function CompletionEditor({ variant }: CompletionEditorProps): JS
           completionLevel: value,
         }),
       );
-    }, 250);
+    }, 150);
   }, [dispatch, variant]);
 
   const onInternalChange = React.useCallback(
@@ -44,19 +44,25 @@ export default function CompletionEditor({ variant }: CompletionEditorProps): JS
     },
     [debouncedOnChange],
   );
+  const debouncedHandleMouseEnter = debounce(() => setShowTooltip(true), 300);
+
+  const handlOnMouseLeave = () => {
+    setShowTooltip(false);
+    debouncedHandleMouseEnter.cancel();
+  };
 
   return (
     <>
       <Slider
         id="slider"
-        value={variant.completionLevel}
+        value={value}
         style={{ display: 'none' }}
         min={0}
         max={100}
         step={10}
         onChange={onInternalChange}
-        onMouseEnter={() => setShowTooltip(true)}
-        onMouseLeave={() => setShowTooltip(false)}
+        onMouseEnter={debouncedHandleMouseEnter}
+        onMouseLeave={handlOnMouseLeave}
         cursor="pointer"
         className={css({ height: '20px', padding: '0px !important' })}
       >
