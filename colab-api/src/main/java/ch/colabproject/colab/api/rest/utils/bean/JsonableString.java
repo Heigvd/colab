@@ -6,6 +6,7 @@
  */
 package ch.colabproject.colab.api.rest.utils.bean;
 
+import ch.colabproject.colab.generator.model.annotations.ExtractJavaDoc;
 import ch.colabproject.colab.generator.model.interfaces.WithJsonDiscriminator;
 import java.io.Serializable;
 import org.apache.commons.lang3.builder.EqualsBuilder;
@@ -19,10 +20,12 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
  *
  * @author sandra
  */
+@ExtractJavaDoc
 public class JsonableString implements Serializable, WithJsonDiscriminator {
 
     private static final long serialVersionUID = 1L;
 
+    /** the string */
     private String string;
 
     /**
