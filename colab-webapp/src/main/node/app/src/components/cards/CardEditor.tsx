@@ -81,6 +81,7 @@ import { TinyCard } from './CardThumb';
 import CompletionEditor from './CompletionEditor';
 import ContentSubs from './ContentSubs';
 import { computeNav, VariantPager } from './VariantSelector';
+import { useSortSubcardsWithPos } from '../hooks/sortCards';
 
 interface CardEditorProps {
   card: Card;
@@ -584,6 +585,7 @@ export default function CardEditor({
 function SubcardsDisplay({ variant }: { variant: CardContent }): JSX.Element {
   const i18n = useTranslations();
   const subCards = useAndLoadSubCards(variant.id);
+  const sortedSubCards = useSortSubcardsWithPos(subCards);
   const [detailed, setDetailed] = React.useState<boolean>(false);
   return (
     <>
@@ -600,7 +602,7 @@ function SubcardsDisplay({ variant }: { variant: CardContent }): JSX.Element {
           className={cx(lightIconButtonStyle, { [css({ color: 'black' })]: detailed })}
         />
       </Flex>
-      {subCards != null && subCards.length > 0 && (
+      {sortedSubCards != null && sortedSubCards.length > 0 && (
         <>
           {detailed ? (
             <ContentSubs
@@ -620,9 +622,9 @@ function SubcardsDisplay({ variant }: { variant: CardContent }): JSX.Element {
           ) : (
             <Ellipsis
               containerClassName={
-                subCards.length > 0 ? css({ height: '20px', padding: space_S + ' 0' }) : undefined
+                sortedSubCards.length > 0 ? css({ height: '20px', padding: space_S + ' 0' }) : undefined
               }
-              items={subCards}
+              items={sortedSubCards}
               alignEllipsis="flex-end"
               itemComp={sub => <TinyCard key={sub.id} card={sub} width="50px" height="30px" />}
             />

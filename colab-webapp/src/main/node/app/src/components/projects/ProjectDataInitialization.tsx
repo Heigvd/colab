@@ -13,12 +13,10 @@ import * as React from 'react';
 import { emailFormat } from '../../helper';
 import useTranslations from '../../i18n/I18nContext';
 import Button from '../common/element/Button';
-import Checkbox from '../common/element/Checkbox';
 import { ConfirmIconButton } from '../common/element/ConfirmIconButton';
 import Form from '../common/element/Form';
 import IllustrationDisplay from '../common/element/IllustrationDisplay';
 import { FormInput } from '../common/element/Input';
-import { TipsCtx, WIPContainer } from '../common/element/Tips';
 import Flex from '../common/layout/Flex';
 import {
   borderRadius,
@@ -56,7 +54,6 @@ interface ProjectDataInitializationProps {
   setIllustration: (value: Illustration) => void;
   addGuest: (emailAddress: string) => void;
   removeGuest: (emailAddress: string) => void;
-  setKeepWiredToModel: (value: boolean) => void;
 }
 
 export default function ProjectDataInitialization({
@@ -67,10 +64,8 @@ export default function ProjectDataInitialization({
   setIllustration,
   addGuest,
   removeGuest,
-  setKeepWiredToModel,
 }: ProjectDataInitializationProps): JSX.Element {
   const i18n = useTranslations();
-  const tipsConfig = React.useContext(TipsCtx);
 
   const [editIllustration, setEditIllustration] = React.useState<boolean>(false);
   const [currentIllustration, setCurrentIllustration] = React.useState<Illustration>(
@@ -151,19 +146,6 @@ export default function ProjectDataInitialization({
 
       {/* <IllustrationPicker data={data.illustration} onChange={setIllustration} /> */}
 
-      {tipsConfig.WIP.value && data.projectModel != null && (
-        <WIPContainer>
-          <Flex>
-            <Checkbox
-              value={data.keepWiredToModel}
-              label="Keep resources from the model up to date"
-              readOnly={true}
-              footer={<span>This feature is not yet available</span>}
-              onChange={(newValue: boolean) => setKeepWiredToModel(newValue)}
-            />
-          </Flex>
-        </WIPContainer>
-      )}
       <Flex
         direction="column"
         className={css({

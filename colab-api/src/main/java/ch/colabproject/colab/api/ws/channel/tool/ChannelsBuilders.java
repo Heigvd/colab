@@ -156,8 +156,12 @@ public final class ChannelsBuilders {
 
             if (project != null) {
                 channels.addAll(buildTeammemberChannels(this.project));
-
-                channels.addAll(buildAdminChannels(userDao));
+                
+                if (project.isOrWasGlobal()) {
+                    channels.add(BroadcastChannel.build());
+                } else {
+                    channels.addAll(buildAdminChannels(userDao));
+                }
             }
 
             return channels;

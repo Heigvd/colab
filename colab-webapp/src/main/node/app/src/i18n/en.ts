@@ -215,7 +215,7 @@ export const en = {
       guest: 'Guest',
     },
     rolesHelper:
-      'Create and assign roles to the team members. Ex. Designer, teacher, developper. It can be used to fine-tune the involvement of each member, or to keep all prject members aware of the skills involved.',
+      'Create and assign roles to the team members. Ex. Designer, teacher, developper. It can be used to fine-tune the involvement of each member, or to keep all project members aware of the skills involved.',
     rightsHelper:
       'Guest: Read only on all contents. Member (default): Can edit contents and invite new members. Project leader: Can edit anything, invite new members and change rights and roles. Owner: Has full rights on the project',
     sureChangeOwnRights: 'Are you sure you want to change your own rights?',
@@ -328,7 +328,6 @@ export const en = {
         cardContents: 'Card contents',
         documentation: 'Documentation',
         connect: 'Connect',
-        keepConnectionBetweenModelAndProject: 'Keep new projects connected to the model',
         sharing: 'Sharing',
         sharingParams: 'Sharing parameters',
       },

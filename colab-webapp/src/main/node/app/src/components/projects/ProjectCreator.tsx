@@ -29,7 +29,6 @@ export interface ProjectCreationData {
   illustration: Illustration;
   guests: string[];
   projectModel: Project | null;
-  keepWiredToModel: boolean;
 }
 
 const defaultData: ProjectCreationData = {
@@ -38,7 +37,6 @@ const defaultData: ProjectCreationData = {
   illustration: { ...defaultProjectIllustration },
   guests: [],
   projectModel: null,
-  keepWiredToModel: false,
 };
 
 type ProgressionStatus = 'chooseModel' | 'fillBasisData';
@@ -238,9 +236,6 @@ export default function ProjectCreator({
                 guests.splice(index, 1);
                 setData({ ...data, guests: guests });
               }}
-              setKeepWiredToModel={keepWiredToModel =>
-                setData({ ...data, keepWiredToModel: keepWiredToModel })
-              }
             />
           )}
           {/* debug mode */}

@@ -17,6 +17,7 @@ import InlineLoading from '../common/element/InlineLoading';
 import GridOrganizer, { fixGrid } from '../common/GridOrganizer';
 import Ellipsis from '../common/layout/Ellipsis';
 import Flex from '../common/layout/Flex';
+import { useSortSubcardsWithPos } from '../hooks/sortCards';
 import { greyIconButtonChipStyle, lightIconButtonStyle, space_L, space_M } from '../styling/style';
 import CardCreator from './CardCreator';
 import { TinyCard } from './CardThumb';
@@ -113,6 +114,7 @@ export default function ContentSubs({
   const dispatch = useAppDispatch();
 
   const subCards = useAndLoadSubCards(cardContent.id);
+  const sortedSubCardsWithPos = useSortSubcardsWithPos(subCards);
   const nbSubDisplayed = cardSize
     ? cardSize?.width * cardSize.height * 6 + 3 * cardSize.width * (cardSize.height - 1)
     : undefined;
@@ -137,10 +139,10 @@ export default function ContentSubs({
     return { cells: [], nbColumns: 3, nbRows: 1 };
   }, [subCards]);
 
-  if (subCards == null) {
+  if (sortedSubCardsWithPos == null) {
     return <InlineLoading />;
   } else {
-    if (subCards.length === 0 && showEmptiness) {
+    if (sortedSubCardsWithPos.length === 0 && showEmptiness) {
       return (
         <Flex
           justify="center"
@@ -231,9 +233,9 @@ export default function ContentSubs({
                   hideEmptyGridStyle,
                 )}
               >
-                {depth === 1 && nbSubDisplayed && subCards.length > nbSubDisplayed ? (
+                {depth === 1 && nbSubDisplayed && sortedSubCardsWithPos.length > nbSubDisplayed ? (
                   <>
-                    {indexedSubCards.cells.slice(0, nbSubDisplayed - 1).map(({ payload }) => {
+                    {sortedSubCardsWithPos.slice(0, nbSubDisplayed - 1).map((payload) => {
                       return (
                         <CardThumbWithSelector
                           cardThumbClassName={css({ overflow: 'hidden' })}
@@ -253,28 +255,28 @@ export default function ContentSubs({
                         css({ border: '1px dashed var(--lightGray)' }),
                       )}
                     >
-                      <h3>+ {subCards.length - (nbSubDisplayed - 1)}</h3>
+                      <h3>+ {sortedSubCardsWithPos.length - (nbSubDisplayed - 1)}</h3>
                     </Flex>
                   </>
                 ) : (
                   <>
-                    {indexedSubCards.cells.map(({ payload, y, x, width, height }) => (
+                    {sortedSubCardsWithPos.map((card) => (
                       <CardThumbWithSelector
                         className={
                           depth === 1
                             ? undefined
                             : css({
-                                gridColumnStart: x,
-                                gridColumnEnd: x + width,
-                                gridRowStart: y,
-                                gridRowEnd: y + height,
-                                minWidth: `${width * minCardWidth}px`,
+                                gridColumnStart: card.x,
+                                gridColumnEnd: card.x + card.width,
+                                gridRowStart: card.y,
+                                gridRowEnd: card.y + card.height,
+                                minWidth: `${card.width * minCardWidth}px`,
                                 maxHeight: '100%',
                               })
                         }
                         depth={depth - 1}
-                        key={payload.id}
-                        card={payload}
+                        key={card.id}
+                        card={card}
                         showPreview={showPreview}
                       />
                     ))}
@@ -286,7 +288,7 @@ export default function ContentSubs({
         </div>
       ) : (
         <Ellipsis
-          items={subCards}
+          items={sortedSubCardsWithPos}
           alignEllipsis="flex-end"
           itemComp={sub => <TinyCard key={sub.id} card={sub} />}
           containerClassName={css({ height: '20px' })}
