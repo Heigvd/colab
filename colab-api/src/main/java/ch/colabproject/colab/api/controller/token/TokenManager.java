@@ -12,7 +12,6 @@ import ch.colabproject.colab.api.controller.project.ProjectManager;
 import ch.colabproject.colab.api.controller.security.SecurityManager;
 import ch.colabproject.colab.api.controller.team.TeamManager;
 import ch.colabproject.colab.api.controller.user.UserManager;
-import ch.colabproject.colab.api.model.project.InstanceMaker;
 import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.api.model.team.TeamMember;
 import ch.colabproject.colab.api.model.team.acl.HierarchicalPosition;
@@ -113,40 +112,52 @@ public class TokenManager {
     }
 
     /**
+     * Create the link to use to use the token
+     *
+     * @param token      the token
+     * @param plainToken the plain token string
+     *
+     * @return link to use the token
+     */
+    private String createLink(Token token, String plainToken) {
+        String baseUrl = requestManager.getBaseUrl();
+
+        return baseUrl + "/#/token/" + token.getId() + "/" + plainToken;
+    }
+
+    /**
      * Finalize initialization of the token and send it to the recipient.
      * <p>
      * As the plain token is not stored in the database, the token is regenerated in this method.
      *
-     * @param token     the token to send
-     * @param recipient recipient email address
-     *
-     * @throws javax.mail.MessagingException if sending the message fails
+     * @param token      the token to send
+     * @param plainToken the plain token to add to the url
+     * @param recipient  recipient email address
      */
-    public void sendTokenByEmail(Token token, String recipient) throws MessagingException {
+    public void sendTokenByEmail(Token token, String plainToken, String recipient) {
         logger.debug("Send token {} to {}", token, recipient);
-        String plainToken = Helper.generateHexSalt(64);
-        HashMethod hashMethod = Helper.getDefaultHashMethod();
-        byte[] hashedToken = hashMethod.hash(plainToken, Token.SALT);
 
-        token.setHashMethod(hashMethod);
-        token.setHashedToken(hashedToken);
+        String link = createLink(token, plainToken);
 
-        String baseUrl = requestManager.getBaseUrl();
+        String body = token.getEmailBody(link);
 
-        // todo generate URL
-        String body = token.getEmailBody(baseUrl + "/#/token/" + token.getId()
-            + "/" + plainToken);
-
-        // this log message contains sensitive information (body contains the plain-text token)
+        // Warning : this log message contains sensitive information (body contains the plain-text
+        // token)
         logger.trace("Send token {} to {} with body {}", token, recipient, body);
-        Sendmail.send(
-            Message.create()
-                .from("noreply@" + ColabConfiguration.getSmtpDomain())
-                .to(recipient)
-                .subject(token.getSubject())
-                .htmlBody(body)
-                .build()
-        );
+
+        try {
+            Sendmail.send(
+                Message.create()
+                    .from("noreply@" + ColabConfiguration.getSmtpDomain())
+                    .to(recipient)
+                    .subject(token.getSubject())
+                    .htmlBody(body)
+                    .build()
+            );
+        } catch (MessagingException ex) {
+            logger.error("Failed to send email for token " + token, ex);
+            throw HttpErrorMessage.smtpError();
+        }
     }
 
     /**
@@ -210,15 +221,19 @@ public class TokenManager {
      */
     private VerifyLocalAccountToken getOrCreateVerifyAccountToken(LocalAccount account) {
         logger.debug("getOrCreate VerifyToken for {}", account);
+
         VerifyLocalAccountToken token = tokenDao.findVerifyTokenByAccount(account);
 
         if (token == null) {
             logger.debug("no token, create one");
             token = new VerifyLocalAccountToken();
+
             token.setAuthenticationRequired(false);
             token.setLocalAccount(account);
+
             persistToken(token);
         }
+
         // token.setExpirationDate(OffsetDateTime.now().plus(1, ChronoUnit.WEEKS));
         token.setExpirationDate(null);
 
@@ -228,23 +243,18 @@ public class TokenManager {
     /**
      * Send a "Please verify your email address" message.
      *
-     * @param account      account to verify
-     * @param failsOnError if false, silent SMTP error
+     * @param account account to verify
      *
      * @throws HttpErrorMessage smtpError if there is a SMPT error AND failsOnError is set to true
      *                          messageError if the message contains errors (eg. malformed
      *                          addresses)
      */
-    public void requestEmailAddressVerification(LocalAccount account, boolean failsOnError) {
-        try {
-            VerifyLocalAccountToken token = this.getOrCreateVerifyAccountToken(account);
-            sendTokenByEmail(token, account.getEmail());
-        } catch (MessagingException ex) {
-            logger.error("Fails to send email address verification email", ex);
-            if (failsOnError) {
-                throw HttpErrorMessage.smtpError();
-            }
-        }
+    public void requestEmailAddressVerification(LocalAccount account) {
+        VerifyLocalAccountToken token = this.getOrCreateVerifyAccountToken(account);
+
+        String plainToken = initHashData(token);
+
+        sendTokenByEmail(token, plainToken, account.getEmail());
     }
 
     /**
@@ -273,15 +283,19 @@ public class TokenManager {
      */
     private ResetLocalAccountPasswordToken getOrCreateResetToken(LocalAccount account) {
         logger.debug("getOrCreate Reset for {}", account);
+
         ResetLocalAccountPasswordToken token = tokenDao.findResetTokenByAccount(account);
 
         if (token == null) {
-            token = new ResetLocalAccountPasswordToken();
             logger.debug("no token, create one");
+            token = new ResetLocalAccountPasswordToken();
+
             token.setAuthenticationRequired(false);
             token.setLocalAccount(account);
+
             persistToken(token);
         }
+
         token.setExpirationDate(OffsetDateTime.now().plus(1, ChronoUnit.HOURS));
 
         return token;
@@ -298,16 +312,13 @@ public class TokenManager {
      *                          addresses)
      */
     public void sendResetPasswordToken(LocalAccount account, boolean failsOnError) {
-        try {
-            logger.debug("Send reset password token to {}", account);
-            ResetLocalAccountPasswordToken token = this.getOrCreateResetToken(account);
-            sendTokenByEmail(token, account.getEmail());
-        } catch (MessagingException ex) {
-            logger.error("Failed to send password reset email", ex);
-            if (failsOnError) {
-                throw HttpErrorMessage.smtpError();
-            }
-        }
+        logger.debug("Send reset password token to {}", account);
+
+        ResetLocalAccountPasswordToken token = this.getOrCreateResetToken(account);
+
+        String plainToken = initHashData(token);
+
+        sendTokenByEmail(token, plainToken, account.getEmail());
     }
 
     /**
@@ -327,6 +338,35 @@ public class TokenManager {
     // Invite a new team member
     ////////////////////////////////////////////////////////////////////////////////////////////////
 
+    private InvitationToken getOrCreateInvitationToken(Project project, String recipient) {
+        User currentUser = securityManager.assertAndGetCurrentUser();
+
+        InvitationToken token = tokenDao.findInvitationByProjectAndRecipient(project, recipient);
+        if (token == null) {
+            // create a member and link it to the project, but do not link it to any user
+            // this link will be set during token consumption
+            TeamMember newMember = teamManager.addMember(project, null,
+                HierarchicalPosition.INTERNAL);
+
+            token = new InvitationToken();
+
+            token.setTeamMember(newMember);
+            token.setAuthenticationRequired(Boolean.TRUE);
+            token.setRecipient(recipient);
+
+            newMember.setDisplayName(recipient);
+
+            persistToken(token);
+        }
+
+        // never expire
+        token.setExpirationDate(null);
+
+        token.setSender(currentUser.getDisplayName());
+
+        return token;
+    }
+
     /**
      * Send invitation to join the project team to the recipient.
      *
@@ -336,35 +376,11 @@ public class TokenManager {
      * @return the pending teamMember of null if none was sent
      */
     public TeamMember sendMembershipInvitation(Project project, String recipient) {
-        User currentUser = securityManager.assertAndGetCurrentUser();
+        InvitationToken token = getOrCreateInvitationToken(project, recipient);
 
-        InvitationToken token = tokenDao.findInvitationByProjectAndRecipient(project, recipient);
-        if (token == null) {
-            // create a member and link it to the project, but do not link it to any user
-            // this link will be set during token consumption
-            TeamMember newMember = teamManager.addMember(project, null,
-                HierarchicalPosition.INTERNAL);
-            token = new InvitationToken();
+        String plainToken = initHashData(token);
 
-            token.setTeamMember(newMember);
-            // never expire
-            token.setExpirationDate(null);
-            token.setAuthenticationRequired(Boolean.TRUE);
-            token.setRecipient(recipient);
-
-            newMember.setDisplayName(recipient);
-
-            persistToken(token);
-        }
-
-        token.setSender(currentUser.getDisplayName());
-
-        try {
-            sendTokenByEmail(token, recipient);
-        } catch (MessagingException ex) {
-            logger.error("Failed to send membership invitation email", ex);
-            throw HttpErrorMessage.smtpError();
-        }
+        sendTokenByEmail(token, plainToken, recipient);
 
         return token.getTeamMember();
     }
@@ -411,48 +427,54 @@ public class TokenManager {
     // Share a model to someone
     ////////////////////////////////////////////////////////////////////////////////////////////////
 
+    private ModelSharingToken createModelSharingToken(Project model) {
+        User currentUser = securityManager.assertAndGetCurrentUser();
+
+        // Note : always send a new ModelSharingToken
+        // but set an expiration date
+
+        ModelSharingToken token = new ModelSharingToken();
+
+        token.setProject(model);
+        token.setExpirationDate(OffsetDateTime.now().plus(1, ChronoUnit.YEARS));
+        token.setAuthenticationRequired(Boolean.TRUE);
+
+        persistToken(token);
+
+        token.setSenderName(currentUser.getDisplayName());
+
+        return token;
+    }
+
     /**
      * Send a model sharing token to register the project as a model to use
      * <p>
-     * If the token does not exist yet, create it and link to it a new pending instance maker.
+     * If the token does not exist yet, create it.
      *
-     * @param model     the id of the model
+     * @param model     the model
      * @param recipient the address to send the sharing token to
-     *
-     * @return the pending instance maker
      */
-    public InstanceMaker sendModelSharingToken(Project model, String recipient) {
-        User currentUser = securityManager.assertAndGetCurrentUser();
+    public void sendModelSharingToken(Project model, String recipient) {
+        ModelSharingToken token = createModelSharingToken(model);
 
-        ModelSharingToken token = tokenDao.findModelSharingByProjectAndRecipient(model, recipient);
+        String plainToken = initHashData(token);
 
-        if (token == null) {
-            // create an instance maker and link it to the project, but do not link it to any user
-            // this link will be set during token consumption
-            InstanceMaker newInstanceMaker = projectManager.addAndPersistInstanceMaker(model, null);
+        sendTokenByEmail(token, plainToken, recipient);
+    }
 
-            token = new ModelSharingToken();
+    /**
+     * Create a new model sharing token and return the link to use it.
+     *
+     * @param model the model
+     *
+     * @return the link to use the token
+     */
+    public String createModelSharingTokenLink(Project model) {
+        ModelSharingToken token = createModelSharingToken(model);
 
-            token.setInstanceMaker(newInstanceMaker);
-            token.setExpirationDate(null);
-            token.setAuthenticationRequired(Boolean.TRUE);
-            token.setRecipient(recipient);
+        String plainToken = initHashData(token);
 
-            newInstanceMaker.setDisplayName(recipient);
-
-            persistToken(token);
-        }
-
-        token.setSender(currentUser.getDisplayName());
-
-        try {
-            sendTokenByEmail(token, recipient);
-        } catch (MessagingException ex) {
-            logger.error("Failed to send model sharing email", ex);
-            throw HttpErrorMessage.smtpError();
-        }
-
-        return token.getInstanceMaker();
+        return createLink(token, plainToken);
     }
 
 //    /**
@@ -466,30 +488,20 @@ public class TokenManager {
 //    }
 
     /**
-     * Consume the model sharing token
+     * Use the model sharing token
      *
-     * @param instanceMaker the instance maker related to the token
+     * @param model the project related to the token
      *
-     * @return true if the token can be consumed
+     * @return true if the token can be used
      */
-    public boolean consumeModelSharingToken(InstanceMaker instanceMaker) {
+    public boolean useModelSharingToken(Project model) {
         User user = requestManager.getCurrentUser();
 
         if (user == null) {
             throw HttpErrorMessage.authenticationRequired();
         }
 
-        Project model = instanceMaker.getProject();
-
-        InstanceMaker existingInstanceMaker = projectManager
-            .findInstanceMakerByProjectAndUser(model, user);
-        if (existingInstanceMaker != null) {
-            throw HttpErrorMessage.tokenProcessingFailure(
-                MessageI18nKey.CURRENT_USER_CAN_ALREADY_USE_MODEL);
-        }
-
-        instanceMaker.setUser(user);
-        instanceMaker.setDisplayName(null);
+        projectManager.findOrPersistInstanceMakerByProjectAndUser(model, user);
 
         return true;
     }
@@ -525,5 +537,23 @@ public class TokenManager {
         }
 
         return token;
+    }
+
+    /**
+     * Initialize the hash data of the token
+     *
+     * @param token the token
+     *
+     * @return related plain token
+     */
+    private String initHashData(Token token) {
+        String tokenSalt = Helper.generateHexSalt(64);
+        HashMethod hashMethod = Helper.getDefaultHashMethod();
+        byte[] hashedToken = hashMethod.hash(tokenSalt, Token.SALT);
+
+        token.setHashMethod(hashMethod);
+        token.setHashedToken(hashedToken);
+
+        return tokenSalt;
     }
 }

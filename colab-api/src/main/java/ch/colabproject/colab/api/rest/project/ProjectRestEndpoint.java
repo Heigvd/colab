@@ -23,6 +23,7 @@ import ch.colabproject.colab.api.persistence.jpa.project.CopyParamDao;
 import ch.colabproject.colab.api.persistence.jpa.project.ProjectDao;
 import ch.colabproject.colab.api.rest.project.bean.ProjectCreationData;
 import ch.colabproject.colab.api.rest.project.bean.ProjectStructure;
+import ch.colabproject.colab.api.rest.utils.bean.JsonableString;
 import ch.colabproject.colab.generator.model.annotations.AdminResource;
 import ch.colabproject.colab.generator.model.annotations.AuthenticationRequired;
 import java.util.List;
@@ -99,10 +100,11 @@ public class ProjectRestEndpoint {
         logger.debug("Get user projects");
         return projectManager.findProjectsOfCurrentUser();
     }
-    
+
     /**
      * Get all global models
-     * @return  list of global models
+     *
+     * @return list of global models
      */
     @GET
     @Path("Global")
@@ -134,7 +136,6 @@ public class ProjectRestEndpoint {
         logger.debug("Get all projects");
         return projectDao.findAllProject();
     }
-    
 
     // *********************************************************************************************
     // create
@@ -254,15 +255,30 @@ public class ProjectRestEndpoint {
      *
      * @param modelId the id of the model
      * @param email   the recipient address
-     *
-     * @return the pending potential instance maker
      */
     @POST
     @Path("shareModel/{id: [0-9]+}/{email}")
-    public InstanceMaker shareModel(@PathParam("id") Long modelId,
-        @PathParam("email") String email) {
+    public void shareModel(@PathParam("id") Long modelId, @PathParam("email") String email) {
         logger.debug("Share model #{} to {}", modelId, email);
-        return projectManager.shareModel(modelId, email);
+        projectManager.shareModel(modelId, email);
+    }
+
+    /**
+     * Create a link to share the model
+     *
+     * @param modelId the id of the model
+     *
+     * @return the link to send for sharing the model
+     */
+    @GET
+    @Path("createSharingLink/{id: [0-9]+}")
+    public JsonableString createSharingLink(@PathParam("id") Long modelId) {
+        logger.debug("create a link to share the model #{}", modelId);
+
+        JsonableString link = new JsonableString();
+        link.setString(projectManager.createSharingLink(modelId));
+
+        return link;
     }
 
     // *********************************************************************************************

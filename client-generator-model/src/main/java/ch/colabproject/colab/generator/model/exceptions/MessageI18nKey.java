@@ -18,6 +18,5 @@ public enum MessageI18nKey {
     IDENTIFIER_ALREADY_TAKEN,
     // token
     USER_IS_ALREADY_A_TEAM_MEMBER,
-    CURRENT_USER_CAN_ALREADY_USE_MODEL,
 
 }

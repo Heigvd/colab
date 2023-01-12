@@ -29,7 +29,6 @@ import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 
 /**
  * An instance maker is a user that can use a project model to initiate a new project
@@ -77,12 +76,6 @@ public class InstanceMaker implements ColabEntity, WithWebsocketChannels {
      */
     @Embedded
     private Tracking trackingData;
-
-    /**
-     * Optional display name. Such a name will hide user.commonName.
-     */
-    @Size(max = 255)
-    private String displayName;
 
     /**
      * The user
@@ -148,24 +141,6 @@ public class InstanceMaker implements ColabEntity, WithWebsocketChannels {
     @Override
     public void setTrackingData(Tracking trackingData) {
         this.trackingData = trackingData;
-    }
-
-    /**
-     * Get the display name
-     *
-     * @return the display name
-     */
-    public String getDisplayName() {
-        return displayName;
-    }
-
-    /**
-     * Set the display name
-     *
-     * @param displayName new display name
-     */
-    public void setDisplayName(String displayName) {
-        this.displayName = displayName;
     }
 
     /**
@@ -246,14 +221,11 @@ public class InstanceMaker implements ColabEntity, WithWebsocketChannels {
 
     @Override
     public void merge(ColabEntity other) throws ColabMergeException {
-        if (other instanceof InstanceMaker) {
-            InstanceMaker t = (InstanceMaker) other;
-            this.setDisplayName(t.getDisplayName());
-            // project cannot be changed as easily
-            // user cannot be changed as easily
-        } else {
+        if (!(other instanceof InstanceMaker)) {
             throw new ColabMergeException(this, other);
         }
+        // project cannot be changed
+        // user cannot be changed
     }
 
     @Override

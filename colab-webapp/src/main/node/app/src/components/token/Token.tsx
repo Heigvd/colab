@@ -31,7 +31,7 @@ interface TokenProps {
 type STATE_TYPE = 'LOADING' | 'AUTH_REQUIRED' | 'NO_TOKEN' | 'ERROR' | 'DONE';
 
 /** when user follows a link from a mail co.LAB sent */
-export default function Token(props: TokenProps): JSX.Element {
+export default function Token({ tokenId, token: tokenHash }: TokenProps): JSX.Element {
   const dispatch = useAppDispatch();
   const i18n = useTranslations();
   const navigate = useNavigate();
@@ -64,9 +64,7 @@ export default function Token(props: TokenProps): JSX.Element {
   }
 
   React.useEffect(() => {
-    if (props.tokenId && props.token) {
-      const tokenId = props.tokenId;
-      const tokenHash = props.token;
+    if (tokenId && tokenHash) {
       // hack: nest API calls within this hook to avoid setting full token slice
       if (user.status === 'NOT_INITIALIZED') {
         // authenticate state not initialized -> reload
@@ -95,9 +93,9 @@ export default function Token(props: TokenProps): JSX.Element {
                   tokenHash,
                   defaultErrorHandler,
                 );
-                setRedirectTo(processedToken.redirectTo || '');
                 // some token may change authentication status: force to reload current user/account
                 dispatch(reloadCurrentUser());
+                setRedirectTo(processedToken.redirectTo || '');
                 setState('DONE');
               }
             } else {
@@ -119,7 +117,7 @@ export default function Token(props: TokenProps): JSX.Element {
     }
     // it seems that there is a problem with getTokenErrorHandler
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [dispatch, user, props.tokenId, props.token]);
+  }, [dispatch, user, tokenId, tokenHash]);
 
   const errorMessage = React.useMemo(() => {
     if (error) {

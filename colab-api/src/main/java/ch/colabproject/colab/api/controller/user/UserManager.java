@@ -306,7 +306,7 @@ public class UserManager {
                 // TODO: build some AfterTXCommit executor
                 requestManager.flush();
                 // new user with a local account should verify their e-mail address
-                tokenManager.requestEmailAddressVerification(account, false);
+                tokenManager.requestEmailAddressVerification(account);
                 return persistedUser;
             } else {
                 // wait.... throwing something else here leaks account existence...
@@ -632,7 +632,7 @@ public class UserManager {
                 managedAccount.setEmail(newEmail);
                 // make sure to flush changes to database. It will check index uniqueness
                 requestManager.flush();
-                tokenManager.requestEmailAddressVerification(account, false);
+                tokenManager.requestEmailAddressVerification(account);
             } catch (Exception e) {
                 // address already used, do not send any email to this address
                 logger.error("Execption", e);

@@ -5,15 +5,19 @@
  * Licensed under the MIT License
  */
 
+import { css } from '@emotion/css';
 import * as React from 'react';
 import * as API from '../../API/api';
 import { emailFormat } from '../../helper';
 import useTranslations from '../../i18n/I18nContext';
 import { useAppDispatch, useLoadingState } from '../../store/hooks';
 import { addNotification } from '../../store/slice/notificationSlice';
+import Button from '../common/element/Button';
 import Form, { Field } from '../common/element/Form';
+import OpenCloseModal from '../common/layout/OpenCloseModal';
+import { space_M } from '../styling/style';
 
-export interface ProjectModelSharingProps {
+export interface ProjectModelSharingMailProps {
   projectId: number;
   onClose?: () => void;
 }
@@ -24,10 +28,10 @@ interface FormData {
 
 const defaultData: FormData = { email: '' };
 
-export default function ProjectModelSharing({
+export function ProjectModelSharingMail({
   projectId,
   onClose,
-}: ProjectModelSharingProps): JSX.Element {
+}: ProjectModelSharingMailProps): JSX.Element {
   const dispatch = useAppDispatch();
   const i18n = useTranslations();
 
@@ -79,6 +83,31 @@ export default function ProjectModelSharing({
         isSubmitInProcess={isLoading}
         submitLabel={i18n.common.share}
       />
+    </div>
+  );
+}
+
+export interface ProjectModelSharingMailModalProps {
+  projectId: number;
+}
+
+export default function ProjectModelSharingMailModal({
+  projectId,
+}: ProjectModelSharingMailModalProps): JSX.Element {
+  const i18n = useTranslations();
+
+  return (
+    <div>
+      <OpenCloseModal
+        title={i18n.modules.project.labels.shareTheProject}
+        collapsedChildren={<Button clickable>{i18n.modules.project.labels.byMail}</Button>}
+        modalBodyClassName={css({ padding: space_M })}
+        showCloseButton
+      >
+        {close => (
+          <>{projectId && <ProjectModelSharingMail projectId={projectId} onClose={close} />}</>
+        )}
+      </OpenCloseModal>
     </div>
   );
 }

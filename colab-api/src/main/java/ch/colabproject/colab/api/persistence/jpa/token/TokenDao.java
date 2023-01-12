@@ -135,21 +135,18 @@ public class TokenDao {
     }
 
     /**
-     * Find if a pending model sharing token has already be sent to recipient to join the project
+     * Find the sharing model token that matches the project
      *
-     * @param project   the project
-     * @param recipient recipient
+     * @param project the project
      *
-     * @return model sharing if there is a pending one, null otherwise
+     * @return the model sharing if there is one, null otherwise
      */
-    public ModelSharingToken findModelSharingByProjectAndRecipient(Project project,
-        String recipient) {
+    public ModelSharingToken findModelSharingByProject(Project project) {
         try {
-            return em.createNamedQuery("ModelSharingToken.findByProjectAndRecipient",
+            return em.createNamedQuery("ModelSharingToken.findByProject",
                 ModelSharingToken.class)
 
                 .setParameter("projectId", project.getId())
-                .setParameter("recipient", recipient)
 
                 .getSingleResult();
         } catch (NoResultException ex) {
@@ -157,10 +154,6 @@ public class TokenDao {
         }
     }
 
-//  public List<ModelSharingToken> findModelSharingByInstanceMaker(InstanceMaker instanceMaker) {
-//      // TODO Auto-generated method stub
-//      return null;
-//  }
 //
 //  public List<Token> findTokensByProject(Project project) {
 //      // TODO Auto-generated method stub

@@ -416,67 +416,52 @@ public class ProjectManager {
      *
      * @param modelId the id of the model
      * @param email   the address to send the sharing token to
-     *
-     * @return the pending potential instance maker
      */
-    public InstanceMaker shareModel(Long modelId, String email) {
+    public void shareModel(Long modelId, String email) {
         logger.debug("Share the model #{} to {}", modelId, email);
         Project model = assertAndGetProject(modelId);
 
-        return tokenManager.sendModelSharingToken(model, email);
+        tokenManager.sendModelSharingToken(model, email);
     }
 
     /**
-     * Create an instance maker for the model and the user and then persist it in database
+     * Create a link to grant access to use the model
      *
-     * @param user  the user
-     * @param model the model
+     * @param modelId the id of the model
      *
-     * @return the brand new potential instance maker
+     * @return the link to use
      */
-    public InstanceMaker addAndPersistInstanceMaker(Project model, User user) {
-        logger.debug("Add and persist instance maker to user {} for model {}", user, model);
+    public String createSharingLink(Long modelId) {
+        logger.debug("create a link to share the model #{}", modelId);
 
-        InstanceMaker instanceMaker = addInstanceMaker(model, user);
-        instanceMakerDao.persistInstanceMaker(instanceMaker);
+        Project model = assertAndGetProject(modelId);
 
-        return instanceMaker;
+        return tokenManager.createModelSharingTokenLink(model);
     }
 
     /**
-     * Create an instance maker for the model and the user
-     *
-     * @param user  the user
-     * @param model the model
-     *
-     * @return the brand new potential instance maker
-     */
-    public InstanceMaker addInstanceMaker(Project model, User user) {
-        logger.debug("Add instance maker to user {} for model {}", user, model);
-
-        if (model != null && user != null
-            && findInstanceMakerByProjectAndUser(model, user) != null) {
-            throw HttpErrorMessage.dataIntegrityFailure();
-        }
-
-        InstanceMaker instanceMaker = new InstanceMaker();
-
-        instanceMaker.setUser(user);
-        instanceMaker.setProject(model);
-
-        return instanceMaker;
-    }
-
-    /**
-     * Find the instance maker linked to the given project and the given user.
+     * Find the instance maker linked to the given project and the given user. If none exists,
+     * create it.
      *
      * @param project the project
      * @param user    the user
      *
      * @return the matching instance makers
      */
-    public InstanceMaker findInstanceMakerByProjectAndUser(Project project, User user) {
-        return instanceMakerDao.findInstanceMakerByProjectAndUser(project, user);
+    public InstanceMaker findOrPersistInstanceMakerByProjectAndUser(Project project, User user) {
+        InstanceMaker instanceMaker = instanceMakerDao.findInstanceMakerByProjectAndUser(project,
+            user);
+
+        if (instanceMaker == null) {
+            instanceMaker = new InstanceMaker();
+
+            instanceMaker.setUser(user);
+            instanceMaker.setProject(project);
+
+            instanceMakerDao.persistInstanceMaker(instanceMaker);
+        }
+
+        return instanceMaker;
     }
 
     // *********************************************************************************************

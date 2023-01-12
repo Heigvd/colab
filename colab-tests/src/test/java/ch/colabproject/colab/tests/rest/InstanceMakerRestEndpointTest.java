@@ -55,18 +55,13 @@ public class InstanceMakerRestEndpointTest extends AbstractArquillianTest {
 
         ////////////////////////////////////////////////////////////////////////////////////////////
         // MasterOfModel shares its project to Pietro
-        // A pending instance maker is created
         ////////////////////////////////////////////////////////////////////////////////////////////
         mailClient.deleteAllMessages();
         client.projectRestEndpoint.shareModel(projectModelId, mateAddress);
 
+        // still no instance maker for the moment
         instanceMakers = client.projectRestEndpoint.getInstanceMakers(projectModelId);
-        Assertions.assertEquals(1, instanceMakers.size());
-
-        InstanceMaker theInstanceMaker = instanceMakers.get(0);
-        Assertions.assertEquals(projectModelId, theInstanceMaker.getProjectId());
-        Assertions.assertNull(theInstanceMaker.getUserId());
-        Assertions.assertEquals(mateAddress, theInstanceMaker.getDisplayName());
+        Assertions.assertEquals(0, instanceMakers.size());
 
         ////////////////////////////////////////////////////////////////////////////////////////////
         // Fetch e-mail and extract the token
@@ -120,15 +115,11 @@ public class InstanceMakerRestEndpointTest extends AbstractArquillianTest {
         instanceMakers = pietroClient.projectRestEndpoint.getInstanceMakers(projectModelId);
         Assertions.assertEquals(1, instanceMakers.size());
 
-        theInstanceMaker = instanceMakers.get(0);
+        InstanceMaker theInstanceMaker = instanceMakers.get(0);
         Assertions.assertEquals(projectModelId, theInstanceMaker.getProjectId());
 
         User pietroUser = pietroClient.userRestEndpoint.getCurrentUser();
         Assertions.assertEquals(pietroUser.getId(), theInstanceMaker.getUserId());
-        Assertions.assertNull(theInstanceMaker.getDisplayName());
-
-        instanceMakers = client.projectRestEndpoint.getInstanceMakers(projectModelId);
-        Assertions.assertEquals(1, instanceMakers.size());
 
         Project modelProjectForPietro = pietroClient.projectRestEndpoint.getProject(projectModelId);
         Assertions.assertNotNull(modelProjectForPietro);

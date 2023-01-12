@@ -326,6 +326,8 @@ export const fr: ColabTranslations = {
         extractDocuments: 'Extraire les documents',
         keepTheSimpleProject: 'Garder le projet simple',
         shareTheProject: 'Partager le projet',
+        byMail: 'Par courriel',
+        withALink: 'Via un lien',
         include: 'Inclure',
         roles: 'Rôles',
         cardContents: 'Contenu des cartes',
@@ -735,8 +737,6 @@ export const fr: ColabTranslations = {
         return 'Veuillez choisir un autre identifiant';
       case 'USER_IS_ALREADY_A_TEAM_MEMBER':
         return "L'utilisateur actuel est déjà un membre de l'équipe";
-      case 'CURRENT_USER_CAN_ALREADY_USE_MODEL':
-        return "L'utilisateur actuel peut déjà utiliser le modèle";
     }
   },
 

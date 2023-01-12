@@ -321,6 +321,8 @@ export const en = {
         extractDocuments: 'Extract the documents',
         keepTheSimpleProject: 'Keep the simple project',
         shareTheProject: 'Share the project',
+        byMail: 'By mail',
+        withALink: 'With a link',
         include: 'Include',
         roles: 'Roles',
         cardContents: 'Card contents',
@@ -722,8 +724,6 @@ export const en = {
         return 'Please choose another identifier';
       case 'USER_IS_ALREADY_A_TEAM_MEMBER':
         return 'The current user is already a team member';
-      case 'CURRENT_USER_CAN_ALREADY_USE_MODEL':
-        return 'The current user can already use the model';
     }
   },
 

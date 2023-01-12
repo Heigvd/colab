@@ -68,15 +68,17 @@ export default function MemberCreator({ members, project }: MemberCreatorProps):
                     projectId: project.id!,
                     recipient: invite,
                   }),
-                ).then(() => {
-                  setInvite('');
-                  dispatch(
-                    addNotification({
-                      status: 'OPEN',
-                      type: 'INFO',
-                      message: `${invite} ${i18n.team.mailInvited}`,
-                    }),
-                  );
+                ).then(action => {
+                  if (action.meta.requestStatus === 'fulfilled') {
+                    setInvite('');
+                    dispatch(
+                      addNotification({
+                        status: 'OPEN',
+                        type: 'INFO',
+                        message: `${invite} ${i18n.team.mailInvited}`,
+                      }),
+                    );
+                  }
                 });
               } else if (!isNewMember(invite)) {
                 setError(i18n.team.memberAlreadyExist);

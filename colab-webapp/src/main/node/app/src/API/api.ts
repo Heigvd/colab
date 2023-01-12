@@ -479,6 +479,13 @@ export const shareModel = createAsyncThunk(
   },
 );
 
+export const createSharingLink = createAsyncThunk(
+  'model/createSharingLink',
+  async (payload: { projectId: number }) => {
+    return await restClient.ProjectRestEndpoint.createSharingLink(payload.projectId);
+  },
+);
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Project copy param
 ////////////////////////////////////////////////////////////////////////////////////////////////////

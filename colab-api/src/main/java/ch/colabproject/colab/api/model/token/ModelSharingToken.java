@@ -7,37 +7,33 @@
 package ch.colabproject.colab.api.model.token;
 
 import ch.colabproject.colab.api.controller.token.TokenManager;
-import ch.colabproject.colab.api.model.project.InstanceMaker;
 import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.api.model.token.tools.ModelSharingMessageBuilder;
 import ch.colabproject.colab.api.security.permissions.Conditions;
 import javax.json.bind.annotation.JsonbTransient;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Index;
+import javax.persistence.ManyToOne;
 import javax.persistence.NamedQuery;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 
 /**
- * A token to share a model to a user
+ * A token to share a model
  *
  * @author sandra
  */
 @Entity
 @Table(
     indexes = {
-        @Index(columnList = "instancemaker_id"),
+        @Index(columnList = "project_id"),
     }
 )
 @NamedQuery(
-    name = "ModelSharingToken.findByProjectAndRecipient",
-    query = "SELECT t from ModelSharingToken t "
-        + "WHERE t.instanceMaker.project.id = :projectId AND t.recipient = :recipient")
-//@NamedQuery(
-//    name = "ModelSharingToken.findByInstanceMaker",
-//    query = "SELECT t from ModelSharingToken t WHERE t.instanceMaker.id = :instanceMakerId")
+    name = "ModelSharingToken.findByProject",
+    query = "SELECT t from ModelSharingToken t WHERE t.project.id = :projectId")
 public class ModelSharingToken extends Token {
 
     private static final long serialVersionUID = 1L;
@@ -52,71 +48,50 @@ public class ModelSharingToken extends Token {
     // ---------------------------------------------------------------------------------------------
 
     /**
-     * The pending instance maker
+     * The model
      */
-    @OneToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @NotNull
     @JsonbTransient
-    private InstanceMaker instanceMaker;
+    private Project project;
 
     /**
      * The sender name
      */
-    @Size(max = 255)
+    @Transient
     @JsonbTransient
-    private String sender;
-
-    /**
-     * The email address to send the sharing to
-     */
-    @Size(max = 255)
-    @JsonbTransient
-    private String recipient;
+    private String senderName;
 
     // ---------------------------------------------------------------------------------------------
     // getters and setters
     // ---------------------------------------------------------------------------------------------
 
     /**
-     * @return the pending instance maker
+     * @return the project model
      */
-    public InstanceMaker getInstanceMaker() {
-        return instanceMaker;
+    public Project getProject() {
+        return project;
     }
 
     /**
-     * @param instanceMaker the pending instance maker
+     * @param project the project model
      */
-    public void setInstanceMaker(InstanceMaker instanceMaker) {
-        this.instanceMaker = instanceMaker;
+    public void setProject(Project project) {
+        this.project = project;
     }
 
     /**
      * @return the sender name
      */
-    public String getSender() {
-        return sender;
+    public String getSenderName() {
+        return senderName;
     }
 
     /**
-     * @param sender the sender name
+     * @param senderName the sender name
      */
-    public void setSender(String sender) {
-        this.sender = sender;
-    }
-
-    /**
-     * @return the email address to send the sharing to
-     */
-    public String getRecipient() {
-        return recipient;
-    }
-
-    /**
-     * @param recipient the email address to send the sharing to
-     */
-    public void setRecipient(String recipient) {
-        this.recipient = recipient;
+    public void setSenderName(String senderName) {
+        this.senderName = senderName;
     }
 
     // ---------------------------------------------------------------------------------------------
@@ -125,15 +100,13 @@ public class ModelSharingToken extends Token {
 
     @Override
     public String getRedirectTo() {
-        if (this.instanceMaker != null && this.instanceMaker.getUser() != null) {
-            // if link from user to project is not set, do not even try to read the project
-            // on the one hand it won't be useful
-            // and on the other hand it could lead to an access denied exception
-
-            Project project = getProject();
+        try {
             if (project != null && project.getId() != null) {
                 return "/newModelShared/" + project.getId();
             }
+        } catch (Exception e) {
+            // If the project cannot be fetched (because of permission rights), just do not redirect
+            return "";
         }
 
         return "";
@@ -141,12 +114,13 @@ public class ModelSharingToken extends Token {
 
     @Override
     public boolean consume(TokenManager tokenManager) {
-        return tokenManager.consumeModelSharingToken(instanceMaker);
+        return tokenManager.useModelSharingToken(project);
     }
 
     @Override
     public ExpirationPolicy getExpirationPolicy() {
-        return ExpirationPolicy.ONE_SHOT;
+        // a model sharing token can always be used several times
+        return ExpirationPolicy.NEVER;
     }
 
     // ---------------------------------------------------------------------------------------------
@@ -168,28 +142,15 @@ public class ModelSharingToken extends Token {
     // concerning the whole class
     // ---------------------------------------------------------------------------------------------
 
-    /**
-     * If instance maker is set, return the associated project
-     *
-     * @return the model project
-     */
-    @JsonbTransient
-    public Project getProject() {
-        if (instanceMaker != null) {
-            return instanceMaker.getProject();
-        }
-        return null;
-    }
-
     @Override
     @JsonbTransient
     public Conditions.Condition getCreateCondition() {
-        return new Conditions.IsCurrentUserMemberOfProject(getProject());
+        return new Conditions.IsCurrentUserInternalToProject(project);
     }
 
     @Override
     public String toString() {
-        return "ModelSharingToken{" + "id=" + getId() + ", sender=" + sender + '}';
+        return "ModelSharingToken{" + "id=" + getId() + ", senderName=" + senderName + '}';
     }
 
 }

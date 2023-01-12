@@ -149,8 +149,8 @@ public class ModelSharingMessageBuilder {
      */
     public static String build(ModelSharingToken token, String link) {
         String subHeading = MessageFormat.format(MESSAGE_SUBHEADING,
-            token.getSender() != null
-                ? token.getSender()
+            token.getSenderName() != null
+                ? token.getSenderName()
                 : "Someone",
             token.getProject() != null
                 ? "the model <i>" + token.getProject().getName() + "</i>"
