@@ -30,18 +30,18 @@ interface CaretRange {
  */
 const minorTags = ['STRONG', 'EM', 'STRIKE', 'U'] as const;
 //const minorTagSelector = minorTags.join(",");
-export type MinorTag = typeof minorTags[number];
+export type MinorTag = (typeof minorTags)[number];
 
 /**
  * Structure tags
  */
 const headingTags = ['H1', 'H2', 'H3', 'H4', 'H5'] as const;
-export type HeadingTag = typeof headingTags[number];
+export type HeadingTag = (typeof headingTags)[number];
 
 export const majorTags = [...headingTags, 'LI', 'P', 'DIV', 'PRE'] as const;
 
 const majorTagsSelector = majorTags.join(',');
-export type MajorTag = typeof majorTags[number];
+export type MajorTag = (typeof majorTags)[number];
 
 function isMajorTag(tagName: string): tagName is MajorTag {
   return (majorTags as Readonly<string[]>).includes(tagName);
