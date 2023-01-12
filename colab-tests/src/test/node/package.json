@@ -22,5 +22,8 @@
   },
   "dependencies": {
     "typescript": "^4.9.4"
-  }
+    },
+    "resolutions": {
+        "qs": "6.5.3"
+    }
 }
