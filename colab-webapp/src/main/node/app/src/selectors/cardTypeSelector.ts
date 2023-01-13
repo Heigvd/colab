@@ -312,13 +312,17 @@ export function useAndLoadAvailableCardTypes(): {
     [currentProjectCardTypes],
   );
 
-  if (statusPublished === 'NOT_INITIALIZED') {
-    dispatch(API.getAvailablePublishedCardTypes());
-  }
+  React.useEffect(() => {
+    if (statusPublished === 'NOT_INITIALIZED') {
+      dispatch(API.getAvailablePublishedCardTypes());
+    }
+  }, [dispatch, statusPublished]);
 
-  if (currentProject && statusCurrentProject === 'NOT_INITIALIZED') {
-    dispatch(API.getProjectCardTypes(currentProject));
-  }
+  React.useEffect(() => {
+    if (currentProject && statusCurrentProject === 'NOT_INITIALIZED') {
+      dispatch(API.getProjectCardTypes(currentProject));
+    }
+  }, [currentProject, dispatch, statusCurrentProject]);
 
   if (statusPublished === 'READY' && statusCurrentProject === 'READY') {
     return {
@@ -358,9 +362,11 @@ export function useAndLoadGlobalTypesForAdmin(): {
 
   // TODO see how we can pre load all purposes
 
-  if (status === 'NOT_INITIALIZED') {
-    dispatch(API.getAllGlobalCardTypes());
-  }
+  React.useEffect(() => {
+    if (status === 'NOT_INITIALIZED') {
+      dispatch(API.getAllGlobalCardTypes());
+    }
+  }, [dispatch, status]);
 
   if (status === 'READY') {
     return { cardTypes, status };
