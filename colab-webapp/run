@@ -97,7 +97,7 @@ while getopts "h?dg:m:p:w:j:i:c:n:y:" opt; do
 done
 
 echo
-echo "Options sumary"
+echo "Options summary"
 echo "  JAVA_HOME=${JAVA_HOME}"
 echo "  DEBUG=${DEBUG}"
 echo "  DEBUG_PORT=${DEBUG_PORT}"
