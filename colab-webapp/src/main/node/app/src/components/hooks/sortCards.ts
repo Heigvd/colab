@@ -1,6 +1,6 @@
 /*
  * The coLAB project
- * Copyright (C) 2022 maxence
+ * Copyright (C) 2021-2023 AlbaSim, MEI, HEIG-VD, HES-SO
  *
  * Licensed under the MIT License
  */
@@ -17,10 +17,9 @@ export const useSortSubcardsWithPos = (subCards: Card[] | undefined | null): Car
     return undefined;
   } else {
     return subCards.sort(function (a, b) {
-        if(a.y - b.y === 0) {
-            return a.x - b.x;
-        }
-        else return a.y - b.y;
+      if (a.y - b.y === 0) {
+        return a.x - b.x;
+      } else return a.y - b.y;
     });
   }
 };

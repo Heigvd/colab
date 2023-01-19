@@ -69,7 +69,7 @@ const EditorWrapper = () => {
     return (
       <div>
         <FontAwesomeIcon icon={faSkullCrossbones} />
-        <span>{i18n.modules.project.info.noProjectYet}</span>
+        <span> {i18n.modules.project.info.noProject}</span>
       </div>
     );
   } else {

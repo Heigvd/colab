@@ -338,13 +338,7 @@ function EditorNav({ project }: EditorNavProps): JSX.Element {
                 dispatch(API.closeCurrentProject());
               }}
             >
-              <FontAwesomeIcon
-                icon={faHouse}
-                size="lg"
-                onClick={() => {
-                  dispatch(API.closeCurrentProject());
-                }}
-              />
+              <FontAwesomeIcon icon={faHouse} size="lg" />
             </span>
           </MainMenuLink>
           <Flex
@@ -582,7 +576,7 @@ export default function Editor(): JSX.Element {
           direction="column"
           align="stretch"
           grow={1}
-          className={cx(fullPageStyle, {[modelBGColor]: project.type === 'MODEL' })}
+          className={cx(fullPageStyle, { [modelBGColor]: project.type === 'MODEL' })}
         >
           <EditorNav project={project} />
           <Flex

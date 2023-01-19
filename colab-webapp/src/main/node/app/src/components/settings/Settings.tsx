@@ -59,9 +59,9 @@ export default function Settings(): JSX.Element {
               {accounts.map(account => {
                 if (account.id != null && +account.id >= 0) {
                   return (
-                    <>
+                    <div key={account.id}>
                       <LocalAccount key={account.id} accountId={account.id} />
-                    </>
+                    </div>
                   );
                 }
               })}
