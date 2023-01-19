@@ -149,13 +149,15 @@ export function useAndLoadResources(contextData: ResourceCallContext): {
 
   const { resourcesAndRefs: resources, status } = useResources(contextData);
 
-  if (status === 'NOT_INITIALIZED') {
-    if (contextData.kind === 'CardOrCardContent' && contextData.cardContentId != null) {
-      dispatch(API.getResourceChainForCardContentId(contextData.cardContentId));
-    } else if (contextData.kind === 'CardType' && contextData.cardTypeId != null) {
-      dispatch(API.getResourceChainForAbstractCardTypeId(contextData.cardTypeId));
+  React.useEffect(() => {
+    if (status === 'NOT_INITIALIZED') {
+      if (contextData.kind === 'CardOrCardContent' && contextData.cardContentId != null) {
+        dispatch(API.getResourceChainForCardContentId(contextData.cardContentId));
+      } else if (contextData.kind === 'CardType' && contextData.cardTypeId != null) {
+        dispatch(API.getResourceChainForAbstractCardTypeId(contextData.cardTypeId));
+      }
     }
-  }
+  }, [contextData, dispatch, status]);
 
   const activeResources = resources.filter(resource => isActive1(resource));
   const ghostResources = difference(resources, activeResources);

@@ -123,7 +123,7 @@ function CardWithRACI({ members, rootContent, depth = 1 }: CardWithRACIProps): J
               </div>
               {members.map(member => (
                 <>
-                  <div>{member.position}</div>
+                  <div key={member.id}> {member.position}</div>
                 </>
               ))}
             </>

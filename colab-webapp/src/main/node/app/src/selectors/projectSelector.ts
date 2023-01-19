@@ -51,9 +51,11 @@ export function useAndLoadProject(id: number | undefined): ProjectAndStatus {
 
   const { project, status } = useProject(id);
 
-  if (status === 'NOT_INITIALIZED' && id != null) {
-    dispatch(API.getProject(id));
-  }
+  React.useEffect(() => {
+    if (status === 'NOT_INITIALIZED' && id != null) {
+      dispatch(API.getProject(id));
+    }
+  }, [dispatch, id, status]);
 
   return { project, status };
 }
@@ -159,9 +161,11 @@ export function useAndLoadModelProjects(): ProjectsAndStatus {
 
   const { projects, status } = useModelProjects();
 
-  if (status === 'NOT_INITIALIZED') {
-    dispatch(API.getUserProjects());
-  }
+  React.useEffect(() => {
+    if (status === 'NOT_INITIALIZED') {
+      dispatch(API.getUserProjects());
+    }
+  }, [dispatch, status]);
 
   return { projects, status };
 }
@@ -189,9 +193,11 @@ export function useAndLoadInstanceableModels(): ProjectsAndStatus {
 
   const { projects, status } = useInstanceableModels();
 
-  if (status === 'NOT_INITIALIZED') {
-    dispatch(API.getInstanceableModels());
-  }
+  React.useEffect(() => {
+    if (status === 'NOT_INITIALIZED') {
+      dispatch(API.getInstanceableModels());
+    }
+  }, [dispatch, status]);
 
   return { projects, status };
 }
@@ -309,9 +315,11 @@ export function useAndLoadCopyParam(projectId: number): CopyParamAndStatus {
 
   const { copyParam, status } = useCopyParam(projectId);
 
-  if (status === 'NOT_INITIALIZED' && projectId != null) {
-    dispatch(API.getCopyParam(projectId));
-  }
+  React.useEffect(() => {
+    if (status === 'NOT_INITIALIZED' && projectId != null) {
+      dispatch(API.getCopyParam(projectId));
+    }
+  }, [dispatch, projectId, status]);
 
   return { copyParam, status };
 }
