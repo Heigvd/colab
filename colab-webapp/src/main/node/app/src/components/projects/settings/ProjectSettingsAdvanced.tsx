@@ -14,8 +14,7 @@ import * as API from '../../../API/api';
 import useTranslations from '../../../i18n/I18nContext';
 import logger from '../../../logger';
 import { useProject } from '../../../selectors/projectSelector';
-import { useAppSelector } from '../../../store/hooks';
-import { dispatch } from '../../../store/store';
+import { useAppDispatch, useAppSelector } from '../../../store/hooks';
 import AvailabilityStatusIndicator from '../../common/element/AvailabilityStatusIndicator';
 import Button from '../../common/element/Button';
 import { WIPContainer } from '../../common/element/Tips';
@@ -38,6 +37,7 @@ export interface ProjectSettingsAdvancedProps {
 export default function ProjectSettingsAdvanced({
   projectId,
 }: ProjectSettingsAdvancedProps): JSX.Element {
+  const dispatch = useAppDispatch();
   const i18n = useTranslations();
   const state = useAppSelector(state => state);
 

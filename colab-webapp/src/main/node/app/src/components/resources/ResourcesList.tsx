@@ -22,7 +22,7 @@ import useTranslations, { useLanguage } from '../../i18n/I18nContext';
 import { useProjectRootCard } from '../../selectors/cardSelector';
 import { useAndLoadNbDocuments } from '../../selectors/documentSelector';
 import { useProjectBeingEdited } from '../../selectors/projectSelector';
-import { dispatch } from '../../store/store';
+import { useAppDispatch } from '../../store/hooks';
 import Tips from '../common/element/Tips';
 import Collapsible from '../common/layout/Collapsible';
 import DropDownMenu from '../common/layout/DropDownMenu';
@@ -587,6 +587,7 @@ function TocEntry({
   //showLocationIcon,
   readOnly,
 }: TocEntryProps): JSX.Element {
+  const dispatch = useAppDispatch();
   const i18n = useTranslations();
 
   const [showCategorySelector, setCategorySelector] = React.useState(false);

@@ -10,7 +10,7 @@ import * as React from 'react';
 import * as API from '../../../API/api';
 import useTranslations from '../../../i18n/I18nContext';
 import { useProject } from '../../../selectors/projectSelector';
-import { dispatch } from '../../../store/store';
+import { useAppDispatch } from '../../../store/hooks';
 import AvailabilityStatusIndicator from '../../common/element/AvailabilityStatusIndicator';
 import IllustrationDisplay from '../../common/element/IllustrationDisplay';
 import InlineLoading from '../../common/element/InlineLoading';
@@ -27,6 +27,7 @@ export interface ProjectSettingsGeneralProps {
 export default function ProjectSettingsGeneral({
   projectId,
 }: ProjectSettingsGeneralProps): JSX.Element {
+  const dispatch = useAppDispatch();
   const i18n = useTranslations();
 
   const { project, status } = useProject(projectId);

@@ -20,7 +20,7 @@ import {
   useGlobalCardTypeTags,
 } from '../../../selectors/cardTypeSelector';
 import { useProjectBeingEdited } from '../../../selectors/projectSelector';
-import { dispatch } from '../../../store/store';
+import { useAppDispatch } from '../../../store/hooks';
 import AvailabilityStatusIndicator from '../../common/element/AvailabilityStatusIndicator';
 import Button from '../../common/element/Button';
 import IconButton from '../../common/element/IconButton';
@@ -44,6 +44,7 @@ interface CardTypeEditorProps {
 }
 
 export default function CardTypeEditor({ className, usage }: CardTypeEditorProps): JSX.Element {
+  const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const i18n = useTranslations();
 

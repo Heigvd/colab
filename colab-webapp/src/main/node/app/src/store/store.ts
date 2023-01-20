@@ -46,7 +46,6 @@ const rootReducer = combineReducers({
   websockets: websocketReducer,
 });
 
-//const storeX = createStore(rootReducer, applyMiddleware(thunk));
 const store = configureStore({
   reducer: rootReducer,
   middleware: getDefaultMiddleware => getDefaultMiddleware().prepend(thunk),
@@ -54,7 +53,7 @@ const store = configureStore({
 
 export const getStore = (): typeof store => store;
 
-export const dispatch = store.dispatch;
+export const storeDispatch = store.dispatch;
 
 export type ColabState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;
