@@ -5,9 +5,7 @@
  * Licensed under the MIT License
  */
 
-import { configureStore } from '@reduxjs/toolkit';
-import { combineReducers } from 'redux';
-import thunk from 'redux-thunk';
+import { combineReducers, configureStore } from '@reduxjs/toolkit';
 import aclReducer from './slice/aclSlice';
 import activityFlowLinkReducer from './slice/activityflowlinkSlice';
 import adminReducer from './slice/adminSlice';
@@ -46,12 +44,9 @@ const rootReducer = combineReducers({
   websockets: websocketReducer,
 });
 
-const store = configureStore({
+export const store = configureStore({
   reducer: rootReducer,
-  middleware: getDefaultMiddleware => getDefaultMiddleware().prepend(thunk),
 });
-
-export const getStore = (): typeof store => store;
 
 export const storeDispatch = store.dispatch;
 

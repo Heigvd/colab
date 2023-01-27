@@ -44,7 +44,7 @@ import { DocumentKind } from '../components/documents/documentCommonType';
 import { ResourceAndRef } from '../components/resources/resourcesCommonType';
 import { hashPassword } from '../SecurityHelper';
 import { addNotification } from '../store/slice/notificationSlice';
-import { ColabState, getStore } from '../store/store';
+import { ColabState, store } from '../store/store';
 import { CardTypeAllInOne, CardTypeOnOneSOwn, CardTypeWithRef } from '../types/cardTypeDefinition';
 
 const winPath = window.location.pathname;
@@ -60,7 +60,7 @@ export const getApplicationPath = () => {
 const restClient = ColabClient(getApplicationPath(), error => {
   // TODO see how it could be auto generated as everything that is handled by ColabNotification.message
   if (entityIs(error, 'HttpException') || typeof error === 'string') {
-    getStore().dispatch(
+    store.dispatch(
       addNotification({
         status: 'OPEN',
         type: 'ERROR',
@@ -68,7 +68,7 @@ const restClient = ColabClient(getApplicationPath(), error => {
       }),
     );
   } else if (error instanceof Error) {
-    getStore().dispatch(
+    store.dispatch(
       addNotification({
         status: 'OPEN',
         type: 'ERROR',
@@ -76,7 +76,7 @@ const restClient = ColabClient(getApplicationPath(), error => {
       }),
     );
   } else {
-    getStore().dispatch(
+    store.dispatch(
       addNotification({
         status: 'OPEN',
         type: 'ERROR',
