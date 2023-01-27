@@ -11,7 +11,7 @@ import { TouchUserPresence } from 'colab-rest-client';
 import { throttle } from 'lodash';
 import * as API from '../../../API/api';
 import { getLogger } from '../../../logger';
-import { useProjectBeingEdited } from '../../../selectors/projectSelector';
+import { useCurrentProjectId } from '../../../selectors/projectSelector';
 import { useAppDispatch, useAppSelector } from '../../../store/hooks';
 
 type ShortTouchUserPresence = Omit<TouchUserPresence, 'wsSessionId' | 'projectId'>;
@@ -37,25 +37,28 @@ const logger = getLogger('presence');
 export function usePresenceContext(): PresenceContext {
   const dispatch = useAppDispatch();
 
-  const { project } = useProjectBeingEdited();
-  const projectId = project?.id;
+  const currentProjectId = useCurrentProjectId();
   const wsSessionId = useAppSelector(state => state.websockets.sessionId);
 
   const presenceRef = React.useRef<ShortTouchUserPresence>({});
 
   const touch: (presence: ShortTouchUserPresence) => void = React.useMemo(() => {
-    if (projectId != null && wsSessionId != null) {
+    if (currentProjectId != null && wsSessionId != null) {
       logger.debug('Rebuild Presence Throttle');
       return throttle((presence: ShortTouchUserPresence) => {
         dispatch(
-          API.makePresenceKnown({ ...presence, projectId: projectId, wsSessionId: wsSessionId }),
+          API.makePresenceKnown({
+            ...presence,
+            projectId: currentProjectId,
+            wsSessionId: wsSessionId,
+          }),
         );
         logger.info('Log touch', presence);
       }, 1000);
     } else {
       return () => {};
     }
-  }, [dispatch, projectId, wsSessionId]);
+  }, [dispatch, currentProjectId, wsSessionId]);
 
   const touchCb = React.useCallback(
     (presence: TouchFnParam) => {

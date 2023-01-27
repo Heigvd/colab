@@ -17,7 +17,7 @@ import {
 } from '../components/resources/resourcesCommonType';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
 import { AvailabilityStatus, ColabState, LoadingStatus } from '../store/store';
-import { useProjectBeingEdited } from './projectSelector';
+import { selectCurrentProjectId } from './projectSelector';
 
 interface ResourceAndChain {
   /**
@@ -294,6 +294,8 @@ export const useAndLoadNbActiveResources = (context: ResourceCallContext): NbAnd
  * Find list of all known categories
  */
 function useResourceCategories(): string[] {
+  const currentProjectId = useAppSelector(selectCurrentProjectId);
+
   return useAppSelector(state => {
     return uniq(
       Object.values(state.resources.resources).flatMap(res => {
@@ -308,7 +310,7 @@ function useResourceCategories(): string[] {
             const cardType = state.cardType.cardtypes[cardTypeOwnerOfRes];
 
             if (entityIs(cardType, 'AbstractCardType')) {
-              if (cardType.projectId === state.projects.editing) {
+              if (cardType.projectId === currentProjectId) {
                 return res.category;
               }
             }
@@ -329,13 +331,13 @@ export function useAndLoadResourceCategories(): {
 
   const categories = useResourceCategories();
   const status = useAppSelector(state => state.resources.allOfProjectStatus);
-  const { project } = useProjectBeingEdited();
+  const currentProjectId = useAppSelector(selectCurrentProjectId);
 
   React.useEffect(() => {
-    if (status === 'NOT_INITIALIZED' && project) {
-      dispatch(API.getDirectResourcesOfProject(project));
+    if (status === 'NOT_INITIALIZED' && currentProjectId) {
+      dispatch(API.getDirectResourcesOfProject(currentProjectId));
     }
-  }, [dispatch, project, status]);
+  }, [dispatch, currentProjectId, status]);
 
   if (status === 'READY') {
     return { categories, status };
@@ -350,12 +352,12 @@ export function useAndLoadProjectResourcesStatus(): {
   const dispatch = useAppDispatch();
 
   const status = useAppSelector(state => state.resources.allOfProjectStatus);
-  const { project } = useProjectBeingEdited();
+  const currentProjectId = useAppSelector(selectCurrentProjectId);
   React.useEffect(() => {
-    if (status === 'NOT_INITIALIZED' && project) {
-      dispatch(API.getDirectResourcesOfProject(project));
+    if (status === 'NOT_INITIALIZED' && currentProjectId) {
+      dispatch(API.getDirectResourcesOfProject(currentProjectId));
     }
-  }, [dispatch, project, status]);
+  }, [dispatch, currentProjectId, status]);
 
   if (status === 'READY') {
     return { status };

@@ -94,12 +94,12 @@ public class ProjectRestEndpoint {
      * @return list of projects
      */
     @GET
-    @Path("MyOwn")
-    public List<Project> getUserProjects() {
-        logger.debug("Get user projects");
-        return projectManager.findProjectsOfCurrentUser();
+    @Path("Mine")
+    public List<Project> getProjectsWhereTeamMember() {
+        logger.debug("Get projects where current user is a team member of");
+        return projectManager.findProjectsWhereTeamMember();
     }
-    
+
     /**
      * Get all global models
      * @return  list of global models
@@ -134,7 +134,7 @@ public class ProjectRestEndpoint {
         logger.debug("Get all projects");
         return projectDao.findAllProject();
     }
-    
+
 
     // *********************************************************************************************
     // create

@@ -5,8 +5,11 @@
  * Licensed under the MIT License
  */
 
+import { AsyncThunk } from '@reduxjs/toolkit';
+import { ColabEntity } from 'colab-rest-client';
 import React from 'react';
 import { shallowEqual, TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux';
+import { AvailabilityStatus, FetchingStatus } from '../store/store';
 import { AppDispatch, ColabState } from './store';
 
 export { shallowEqual } from 'react-redux';
@@ -14,6 +17,72 @@ export { shallowEqual } from 'react-redux';
 // Use throughout your app instead of plain `useDispatch` and `useSelector`
 export const useAppDispatch = () => useDispatch<AppDispatch>();
 export const useAppSelector: TypedUseSelectorHook<ColabState> = useSelector;
+
+interface DataAndStatus<T> {
+  status: AvailabilityStatus;
+  data?: T;
+}
+
+export function selectData<T extends ColabEntity>(
+  state: ColabState,
+  id: number,
+  selector: (state: ColabState) => Record<number, T | FetchingStatus>,
+): DataAndStatus<T> {
+  const dataInStore = selector(state)[id];
+
+  if (dataInStore == null) {
+    return { status: 'NOT_INITIALIZED' };
+  } else if (typeof dataInStore === 'string') {
+    return { status: dataInStore };
+  }
+
+  return { status: 'READY', data: dataInStore };
+}
+
+export function useFetchById<T extends ColabEntity>(
+  id: number,
+  selector: (state: ColabState) => Record<number, T | FetchingStatus>,
+  // eslint-disable-next-line @typescript-eslint/ban-types
+  fetcher: AsyncThunk<T, number, {}>,
+): DataAndStatus<T> {
+  const dispatch = useAppDispatch();
+
+  const { status, data }: DataAndStatus<T> = useAppSelector(
+    state => selectData<T>(state, id, selector),
+    shallowEqual,
+  );
+
+  if (status === 'NOT_INITIALIZED') {
+    dispatch(fetcher(id));
+  }
+
+  return { status, data };
+}
+
+export function useFetchList<T extends ColabEntity>(
+  statusSelector: (state: ColabState) => AvailabilityStatus,
+  dataSelector: (state: ColabState) => T[],
+  // eslint-disable-next-line @typescript-eslint/ban-types
+  fetcher: AsyncThunk<T[], void, {}>,
+): { status: AvailabilityStatus; data?: T[] } {
+  const dispatch = useAppDispatch();
+
+  const status = useAppSelector(statusSelector);
+
+  const data = useAppSelector(dataSelector, shallowEqual);
+
+  React.useEffect(() => {
+    if (status === 'NOT_INITIALIZED') {
+      dispatch(fetcher());
+    }
+  }, [status, dispatch, fetcher]);
+
+  if (status === 'READY') {
+    return { status, data };
+  }
+
+  return { status };
+}
 
 const hasOwn = Object.prototype.hasOwnProperty;
 

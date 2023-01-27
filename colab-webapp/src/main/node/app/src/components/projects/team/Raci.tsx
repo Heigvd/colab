@@ -10,7 +10,7 @@ import { CardContent, entityIs, Project, TeamMember } from 'colab-rest-client';
 import React from 'react';
 import useTranslations from '../../../i18n/I18nContext';
 import { useAndLoadSubCards, useProjectRootCard } from '../../../selectors/cardSelector';
-import { useAndLoadProjectTeam } from '../../../selectors/projectSelector';
+import { useAndLoadProjectTeam } from '../../../selectors/teamSelector';
 import { useAppSelector } from '../../../store/hooks';
 import InlineLoading from '../../common/element/InlineLoading';
 import { space_L, space_M, space_S, textSmall, voidStyle } from '../../styling/style';
@@ -20,7 +20,7 @@ export default function TeamRACI({ project }: { project: Project }): JSX.Element
   const i18n = useTranslations();
   const projectId = project.id;
   const { members } = useAndLoadProjectTeam(projectId);
-  const root = useProjectRootCard(project);
+  const root = useProjectRootCard(project.id);
   const rootContent = useAppSelector(state => {
     if (entityIs(root, 'Card') && root.id != null) {
       const card = state.cards.cards[root.id];

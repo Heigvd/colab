@@ -21,7 +21,7 @@ import * as API from '../../API/api';
 import useTranslations, { useLanguage } from '../../i18n/I18nContext';
 import { useProjectRootCard } from '../../selectors/cardSelector';
 import { useAndLoadNbDocuments } from '../../selectors/documentSelector';
-import { useProjectBeingEdited } from '../../selectors/projectSelector';
+import { useCurrentProjectId } from '../../selectors/projectSelector';
 import { useAppDispatch } from '../../store/hooks';
 import Tips from '../common/element/Tips';
 import Collapsible from '../common/layout/Collapsible';
@@ -216,8 +216,8 @@ ResourcesListProps): JSX.Element {
 
   const { resourceOwnership } = React.useContext(ResourcesCtx);
 
-  const { project: currentProject } = useProjectBeingEdited();
-  const root = useProjectRootCard(currentProject);
+  const currentProjectId = useCurrentProjectId();
+  const root = useProjectRootCard(currentProjectId);
 
   // function useIsInCurrentProject1(abstractCardTypeId: number) {
 

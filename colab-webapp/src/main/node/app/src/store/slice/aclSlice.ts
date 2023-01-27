@@ -9,12 +9,12 @@ import { AccessControl, IndexEntry } from 'colab-rest-client';
 import * as API from '../../API/api';
 import { mapById } from '../../helper';
 import { processMessage } from '../../ws/wsThunkActions';
-import { StateStatus } from './projectSlice';
+import { AvailabilityStatus } from '../store';
 
 export type ACLState = Record<
   number,
   {
-    status: StateStatus;
+    status: AvailabilityStatus;
     acl: {
       [id: number]: AccessControl;
     };
@@ -78,8 +78,13 @@ const aclSlice = createSlice({
       })
       .addCase(API.getACL.fulfilled, (state, action) => {
         const s = getOrCreateState(state, action.meta.arg);
-        s.status = 'INITIALIZED';
+        s.status = 'READY';
         s.acl = mapById(action.payload);
+      })
+      .addCase(API.getACL.rejected, (state, action) => {
+        const s = getOrCreateState(state, action.meta.arg);
+        s.status = 'ERROR';
+        s.acl = [];
       })
       .addCase(API.closeCurrentProject.fulfilled, () => {
         return initialState;

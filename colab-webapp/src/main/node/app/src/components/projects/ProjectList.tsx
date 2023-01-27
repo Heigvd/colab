@@ -18,14 +18,20 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { AsyncThunk } from '@reduxjs/toolkit';
-import { entityIs, Project } from 'colab-rest-client';
+import { Project } from 'colab-rest-client';
 import * as React from 'react';
 import { Route, Routes, useNavigate, useParams } from 'react-router-dom';
 import * as API from '../../API/api';
 import useTranslations from '../../i18n/I18nContext';
-import { useAndLoadModelProjects, useAndLoadProject } from '../../selectors/projectSelector';
+import {
+  selectStatusWhereTeamMember,
+  useAllProjects,
+  useAndLoadModelProjects,
+  useProject,
+  useUserProjects,
+} from '../../selectors/projectSelector';
 import { useCurrentUser } from '../../selectors/userSelector';
-import { shallowEqual, useAppDispatch, useAppSelector, useLoadingState } from '../../store/hooks';
+import { useAppDispatch, useAppSelector, useLoadingState } from '../../store/hooks';
 import { AvailabilityStatus } from '../../store/store';
 import ItemThumbnailsSelection from '../common/collection/ItemThumbnailsSelection';
 import AvailabilityStatusIndicator from '../common/element/AvailabilityStatusIndicator';
@@ -83,7 +89,7 @@ function ProjectSettingsWrapper(): JSX.Element {
 function ExtractModelWrapper(): JSX.Element {
   const { projectId } = useParams<'projectId'>();
 
-  return <ProjectModelExtractor projectId={projectId ? +projectId : undefined} />;
+  return <ProjectModelExtractor projectId={+projectId!} />;
 }
 
 function DeleteProjectWrapper(): JSX.Element {
@@ -92,7 +98,7 @@ function DeleteProjectWrapper(): JSX.Element {
 
   const { projectId } = useParams<'projectId'>();
   const i18n = useTranslations();
-  const { project } = useAndLoadProject(projectId ? +projectId : undefined);
+  const { project } = useProject(+projectId!);
 
   const { isLoading, startLoading, stopLoading } = useLoadingState();
 
@@ -333,45 +339,29 @@ export const ProjectDisplay = ({ project, className }: ProjectDisplayProps) => {
 
 interface ProjectListProps {
   projects: Project[];
-  status: AvailabilityStatus;
-  // eslint-disable-next-line @typescript-eslint/ban-types
-  reload: AsyncThunk<Project[], void, {}>;
 }
 
-function ProjectList({ projects, status, reload }: ProjectListProps) {
+function ProjectList({ projects }: ProjectListProps) {
   const i18n = useTranslations();
-  const dispatch = useAppDispatch();
+  return (
+    <Flex className={css({ padding: '.5rem 2rem 2rem 2rem' })} direction={'column'}>
+      {!projects || projects.length === 0 ? (
+        <Flex justify="center" align="center" direction="column">
+          <h2>{i18n.common.welcome}</h2>
+          <h3>{i18n.modules.project.info.noProjectYet}</h3>
+          <ProjectCreator
+            collapsedButtonClassName={cx(invertedButtonStyle, css({ marginTop: space_S }))}
+          />
+        </Flex>
+      ) : (
+        <Flex className={css({ alignSelf: 'flex-end', padding: space_S })}>
+          <ProjectCreator
+            collapsedButtonClassName={cx(invertedButtonStyle, css({ fontSize: '0.8em' }))}
+          />
+        </Flex>
+      )}
 
-  React.useEffect(() => {
-    if (status === 'NOT_INITIALIZED') {
-      dispatch(reload());
-    }
-  }, [status, reload, dispatch]);
-
-  if (status === 'NOT_INITIALIZED') {
-    return <InlineLoading />;
-  } else if (status === 'LOADING') {
-    return <InlineLoading />;
-  } else {
-    return (
-      <Flex className={css({ padding: '.5rem 2rem 2rem 2rem' })} direction={'column'}>
-        {!projects || projects.length === 0 ? (
-          <Flex justify="center" align="center" direction="column">
-            <h2>{i18n.common.welcome}</h2>
-            <h3>{i18n.modules.project.info.noProjectYet}</h3>
-            <ProjectCreator
-              collapsedButtonClassName={cx(invertedButtonStyle, css({ marginTop: space_S }))}
-            />
-          </Flex>
-        ) : (
-          <Flex className={css({ alignSelf: 'flex-end', padding: space_S })}>
-            <ProjectCreator
-              collapsedButtonClassName={cx(invertedButtonStyle, css({ fontSize: '0.8em' }))}
-            />
-          </Flex>
-        )}
-
-        {/* {projects
+      {/* {projects
             .sort((a, b) => (a.id || 0) - (b.id || 0))
             .map(project => {
               if (project != null) {
@@ -380,53 +370,39 @@ function ProjectList({ projects, status, reload }: ProjectListProps) {
                 return <InlineLoading />;
               }
             })} */}
-        <ItemThumbnailsSelection<Project>
-          items={projects.sort((a, b) => (a.id || 0) - (b.id || 0))}
-          className={projectListStyle}
-          thumbnailClassName={css({
-            padding: 0,
-            margin: '4px',
-            display: 'block',
-            backgroundColor: 'var(--bgColor)',
-          })}
-          onItemDblClick={item => {
-            if (item) {
-              window.open(`#/editor/${item.id}`, '_blank');
-            }
-          }}
-          fillThumbnail={item => {
-            if (item === null) return <></>;
-            else return <ProjectDisplay project={item} />;
-          }}
-          disableOnEnter
-        />
-        {/* Note : any authenticated user can create a project */}
+      <ItemThumbnailsSelection<Project>
+        items={projects.sort((a, b) => (a.id || 0) - (b.id || 0))}
+        className={projectListStyle}
+        thumbnailClassName={css({
+          padding: 0,
+          margin: '4px',
+          display: 'block',
+          backgroundColor: 'var(--bgColor)',
+        })}
+        onItemDblClick={item => {
+          if (item) {
+            window.open(`#/editor/${item.id}`, '_blank');
+          }
+        }}
+        fillThumbnail={item => {
+          if (item === null) return <></>;
+          else return <ProjectDisplay project={item} />;
+        }}
+        disableOnEnter
+      />
+      {/* Note : any authenticated user can create a project */}
 
-        <Routes>
-          <Route path="projectsettings/:projectId" element={<ProjectSettingsWrapper />} />
-          <Route path="deleteproject/:projectId" element={<DeleteProjectWrapper />} />
-          <Route path="extractModel/:projectId" element={<ExtractModelWrapper />} />
-        </Routes>
-      </Flex>
-    );
-  }
+      <Routes>
+        <Route path="projectsettings/:projectId" element={<ProjectSettingsWrapper />} />
+        <Route path="deleteproject/:projectId" element={<DeleteProjectWrapper />} />
+        <Route path="extractModel/:projectId" element={<ExtractModelWrapper />} />
+      </Routes>
+    </Flex>
+  );
 }
 
 export const UserProjects = (): JSX.Element => {
-  const projects = useAppSelector(
-    state =>
-      state.projects.mine.flatMap(projectId => {
-        const p = state.projects.projects[projectId];
-        if (entityIs(p, 'Project') && p.type !== 'MODEL') {
-          return [p];
-        } else {
-          return [];
-        }
-      }),
-    shallowEqual,
-  );
-
-  const status = useAppSelector(state => state.projects.statusForCurrentUser);
+  const { status, projects } = useUserProjects();
 
   React.useEffect(() => {
     if (window && window.top && window.top.document) {
@@ -434,28 +410,25 @@ export const UserProjects = (): JSX.Element => {
     }
   }, []);
 
-  return <ProjectList projects={projects} status={status} reload={API.getUserProjects} />;
+  if (status != 'READY' || projects == null) {
+    return <AvailabilityStatusIndicator status={status} />;
+  } else {
+    return <ProjectList projects={projects} />;
+  }
 };
 
 export const AllProjects = (): JSX.Element => {
-  const projects = useAppSelector(
-    state =>
-      Object.values(state.projects.projects).flatMap(p => {
-        if (entityIs(p, 'Project')) {
-          return [p];
-        } else {
-          return [];
-        }
-      }),
-    shallowEqual,
-  );
-  const status = useAppSelector(state => state.projects.statusForAll);
+  const { status, projects } = useAllProjects();
 
-  return <ProjectList projects={projects} status={status} reload={API.getAllProjects} />;
+  if (status != 'READY' || projects == null) {
+    return <AvailabilityStatusIndicator status={status} />;
+  } else {
+    return <ProjectList projects={projects} />;
+  }
 };
 
 export const UserModels = (): JSX.Element => {
-  const status = useAppSelector(state => state.projects.statusForCurrentUser);
+  const status = useAppSelector(selectStatusWhereTeamMember);
 
   React.useEffect(() => {
     if (window && window.top && window.top.document) {
@@ -492,40 +465,41 @@ function ModelsList({ status, reload }: ModelListProps) {
   } else {
     return (
       <div className={css({ padding: '2rem' })}>
-        {(!models || models.length === 0) && (
+        {!models || models.length === 0 ? (
           <div className={voidStyle}>
             <h2>{i18n.common.welcome}</h2>
             <h3>{i18n.modules.project.info.noProjectYet}</h3>
           </div>
+        ) : (
+          <ItemThumbnailsSelection<Project>
+            items={models.sort((a, b) => (a.id || 0) - (b.id || 0))}
+            className={projectListStyle}
+            thumbnailClassName={css({
+              padding: 0,
+              margin: '4px',
+              display: 'block',
+              backgroundColor: 'var(--bgColor)',
+            })}
+            onItemDblClick={item => {
+              if (item) {
+                window.open(`#/editor/${item.id}`, '_blank');
+              }
+            }}
+            fillThumbnail={item => {
+              if (item === null) return <></>;
+              else
+                return (
+                  <ProjectDisplay
+                    project={item}
+                    className={css({
+                      boxShadow: ` 0px -5px 0px 0px ${item.illustration?.iconBkgdColor} inset`,
+                    })}
+                  />
+                );
+            }}
+            disableOnEnter
+          />
         )}
-        <ItemThumbnailsSelection<Project>
-          items={models.sort((a, b) => (a.id || 0) - (b.id || 0))}
-          className={projectListStyle}
-          thumbnailClassName={css({
-            padding: 0,
-            margin: '4px',
-            display: 'block',
-            backgroundColor: 'var(--bgColor)',
-          })}
-          onItemDblClick={item => {
-            if (item) {
-              window.open(`#/editor/${item.id}`, '_blank');
-            }
-          }}
-          fillThumbnail={item => {
-            if (item === null) return <></>;
-            else
-              return (
-                <ProjectDisplay
-                  project={item}
-                  className={css({
-                    boxShadow: ` 0px -5px 0px 0px ${item.illustration?.iconBkgdColor} inset`,
-                  })}
-                />
-              );
-          }}
-          disableOnEnter
-        />
         {/* Note : any authenticated user can create a project */}
         {/* <ProjectCreator collapsedButtonClassName={fixedButtonStyle} /> */}
         <Routes>

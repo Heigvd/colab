@@ -13,7 +13,7 @@ import { shallowEqual } from 'react-redux';
 import * as API from '../../../../API/api';
 import logger from '../../../../logger';
 import { useProjectRootCard } from '../../../../selectors/cardSelector';
-import { useProjectBeingEdited } from '../../../../selectors/projectSelector';
+import { useCurrentProjectId } from '../../../../selectors/projectSelector';
 import { customColabStateEquals, useAppDispatch, useAppSelector } from '../../../../store/hooks';
 import InlineLoading from '../../../common/element/InlineLoading';
 import { AllSubsContainer, HierarchyCTX } from './Hierarchy';
@@ -31,9 +31,9 @@ export default function HierarchyRootView({
 }: HierarchyRootViewProps): JSX.Element {
   const dispatch = useAppDispatch();
 
-  const { project, status } = useProjectBeingEdited();
+  const currentProjectId = useCurrentProjectId();
 
-  const rootCard = useProjectRootCard(project);
+  const rootCard = useProjectRootCard(currentProjectId);
 
   const projectRootCardId = entityIs(rootCard, 'Card') ? rootCard.id : undefined;
 
@@ -129,13 +129,13 @@ export default function HierarchyRootView({
 
   if (contents == null) {
     return <InlineLoading />;
-  } else if (project == null) {
+  } else if (currentProjectId == null) {
     return (
       <div>
         <i>Error: no project selected</i>
       </div>
     );
-  } else if (status != 'READY' || root == null || root.card == null) {
+  } else if (root == null || root.card == null) {
     return <InlineLoading />;
   } else {
     return (

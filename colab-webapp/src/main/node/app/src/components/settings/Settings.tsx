@@ -11,6 +11,7 @@ import * as React from 'react';
 import { useNavigate } from 'react-router-dom';
 import * as API from '../../API/api';
 import useTranslations from '../../i18n/I18nContext';
+import { selectStatusForInstanceableModels } from '../../selectors/projectSelector';
 import { useCurrentUser, useCurrentUserAccounts } from '../../selectors/userSelector';
 import { useAppSelector } from '../../store/hooks';
 import IconButton from '../common/element/IconButton';
@@ -30,7 +31,7 @@ export default function Settings(): JSX.Element {
   const accounts = useCurrentUserAccounts();
   const { currentUser } = useCurrentUser();
   const navigate = useNavigate();
-  const status = useAppSelector(state => state.projects.statusForInstanceableModels);
+  const status = useAppSelector(selectStatusForInstanceableModels);
 
   const tipsConfig = React.useContext(TipsCtx);
 

@@ -11,7 +11,7 @@ import * as React from 'react';
 import { Navigate, Route, Routes, useLocation, useParams } from 'react-router-dom';
 import * as API from '../API/api';
 import useTranslations from '../i18n/I18nContext';
-import { useProject, useProjectBeingEdited } from '../selectors/projectSelector';
+import { useCurrentProject, useProject } from '../selectors/projectSelector';
 import { useCurrentUser } from '../selectors/userSelector';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
 import AboutColab from './AboutColab';
@@ -37,7 +37,7 @@ const EditorWrapper = () => {
   const i18n = useTranslations();
   const dispatch = useAppDispatch();
   const { project, status } = useProject(+id!);
-  const { project: editedProject, status: editingStatus } = useProjectBeingEdited();
+  const { project: editedProject, status: editingStatus } = useCurrentProject();
 
   const webSocketId = useAppSelector(state => state.websockets.sessionId);
   const socketIdRef = React.useRef<string | undefined>(undefined);
@@ -56,12 +56,6 @@ const EditorWrapper = () => {
       }
     }
   }, [dispatch, editingStatus, editedProject, project, id, webSocketId]);
-
-  React.useEffect(() => {
-    if (project == null && status === 'NOT_INITIALIZED') {
-      dispatch(API.getProject(id));
-    }
-  }, [project, status, dispatch, id]);
 
   if (status === 'NOT_INITIALIZED' || status === 'LOADING') {
     return <InlineLoading />;

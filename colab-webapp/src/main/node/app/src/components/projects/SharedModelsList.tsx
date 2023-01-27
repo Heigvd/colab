@@ -62,7 +62,7 @@ export default function SharedModelsList({
   const dispatch = useAppDispatch();
   const { projects, status } = useAndLoadInstanceableModels();
 
-  const sortedProjects = projects.sort(sortResources);
+  const sortedProjects = (projects || []).sort(sortResources);
 
   React.useEffect(() => {
     if (loadingStatus === 'NOT_INITIALIZED') {

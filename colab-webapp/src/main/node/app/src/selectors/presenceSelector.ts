@@ -12,6 +12,7 @@ import * as API from '../API/api';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
 import { InlineAvailabilityStatus } from '../store/store';
 import { useDeepMemo } from './hooks/useDeepMemo';
+import { selectCurrentProjectId } from './projectSelector';
 
 export function usePresence(projectId: number): InlineAvailabilityStatus<UserPresence[]> {
   const dispatch = useAppDispatch();
@@ -40,10 +41,11 @@ export function usePresence(projectId: number): InlineAvailabilityStatus<UserPre
 }
 
 export function usePresenceOnDocument(documentId?: number): UserPresence[] {
+  const currentProjectId = useAppSelector(selectCurrentProjectId);
+
   const result = useAppSelector(state => {
-    const projectId = state.projects.editing;
-    if (documentId != null && projectId != null) {
-      const presenceState = state.presences.projects[projectId];
+    if (documentId != null && currentProjectId != null) {
+      const presenceState = state.presences.projects[currentProjectId];
       if (presenceState != null) {
         const me = state.websockets.sessionId;
         return Object.values(presenceState.presence).filter(

@@ -15,7 +15,7 @@ import * as API from '../../../API/api';
 import { checkUnreachable } from '../../../helper';
 import useTranslations from '../../../i18n/I18nContext';
 import { useAllProjectCardTypes } from '../../../selectors/cardSelector';
-import { useProjectBeingEdited } from '../../../selectors/projectSelector';
+import { useCurrentProjectId } from '../../../selectors/projectSelector';
 import { useAppDispatch, useLoadingState } from '../../../store/hooks';
 import { CardTypeAllInOne as CardType } from '../../../types/cardTypeDefinition';
 import Button from '../../common/element/Button';
@@ -68,8 +68,7 @@ export default function CardTypeThumbnail({
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const i18n = useTranslations();
-  const editedProject = useProjectBeingEdited().project;
-  const editedProjectId = editedProject?.id;
+  const currentProjectId = useCurrentProjectId();
   const cardTypesId = useAllProjectCardTypes();
   const isUsedInProject = (cardTypeID?: number | null) => {
     if (cardTypeID) {
@@ -125,7 +124,7 @@ export default function CardTypeThumbnail({
                 valueComp={{ value: '', label: '' }}
                 buttonClassName={cx(lightIconButtonStyle)}
                 entries={[
-                  ...((usage === 'currentProject' && cardType.projectId === editedProjectId) ||
+                  ...((usage === 'currentProject' && cardType.projectId === currentProjectId) ||
                   usage === 'global'
                     ? [
                         {
@@ -140,8 +139,8 @@ export default function CardTypeThumbnail({
                       ]
                     : []),
                   ...(usage === 'available' &&
-                  editedProject &&
-                  cardType.projectId !== editedProjectId
+                  currentProjectId &&
+                  cardType.projectId !== currentProjectId
                     ? [
                         {
                           value: 'useInProject',
@@ -153,15 +152,15 @@ export default function CardTypeThumbnail({
                           ),
                           action: () =>
                             dispatch(
-                              API.addCardTypeToProject({ cardType, project: editedProject }),
+                              API.addCardTypeToProject({ cardType, projectId: currentProjectId }),
                             ),
                         },
                       ]
                     : []),
                   .../*!readOnly &&*/
                   (usage === 'currentProject' &&
-                  editedProject &&
-                  cardType.projectId === editedProjectId &&
+                  currentProjectId &&
+                  cardType.projectId === currentProjectId &&
                   cardType.kind === 'referenced'
                     ? [
                         {
@@ -180,7 +179,7 @@ export default function CardTypeThumbnail({
                                 dispatch(
                                   API.removeCardTypeRefFromProject({
                                     cardType,
-                                    project: editedProject,
+                                    projectId: currentProjectId,
                                   }),
                                 ),
                         },
@@ -188,7 +187,7 @@ export default function CardTypeThumbnail({
                     : []),
                   .../*!readOnly &&*/
                   (cardType.kind === 'own' &&
-                  ((usage === 'currentProject' && cardType.projectId === editedProjectId) ||
+                  ((usage === 'currentProject' && cardType.projectId === currentProjectId) ||
                     usage === 'global')
                     ? [
                         {

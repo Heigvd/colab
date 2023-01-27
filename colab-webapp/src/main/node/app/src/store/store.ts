@@ -21,6 +21,7 @@ import presenceReducer from './slice/presenceSlice';
 import projectReducer from './slice/projectSlice';
 import resourceReducer from './slice/resourceSlice';
 import stickyNoteLinkReducer from './slice/stickynotelinkSlice';
+import teamReducer from './slice/teamSlice';
 import userReducer from './slice/userSlice';
 import websocketReducer from './slice/websocketSlice';
 
@@ -37,9 +38,10 @@ const rootReducer = combineReducers({
   externalData: externalDataReducer,
   notifications: notifReducer,
   presences: presenceReducer,
-  projects: projectReducer,
+  project: projectReducer,
   resources: resourceReducer,
   stickynotelinks: stickyNoteLinkReducer,
+  team: teamReducer,
   users: userReducer,
   websockets: websocketReducer,
 });
@@ -55,6 +57,10 @@ export type AppDispatch = typeof store.dispatch;
 
 export type LoadingStatus = 'NOT_INITIALIZED' | 'LOADING' | 'READY';
 
-export type AvailabilityStatus = 'NOT_INITIALIZED' | 'LOADING' | 'READY' | 'ERROR';
+export type FetchingStatus = 'LOADING' | 'ERROR';
+
+export type AvailabilityStatus = 'NOT_INITIALIZED' | 'LOADING' | 'ERROR' | 'READY';
 
 export type InlineAvailabilityStatus<T> = 'NOT_INITIALIZED' | 'LOADING' | 'ERROR' | T;
+
+export type EditionStatus = 'NOT_EDITING' | 'LOADING' | 'READY';

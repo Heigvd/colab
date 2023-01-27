@@ -62,7 +62,7 @@ export default function ProjectModelSelector({
   const i18n = useTranslations();
   const { projects, status } = useAndLoadMyAndInstanceableModels();
 
-  const sortedProjects = projects.sort(sortResources);
+  const sortedProjects = (projects || []).sort(sortResources);
 
   if (status !== 'READY') {
     return <AvailabilityStatusIndicator status={status} />;

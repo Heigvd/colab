@@ -160,7 +160,7 @@ public class ProjectManager {
      *
      * @return list of matching projects
      */
-    public List<Project> findProjectsOfCurrentUser() {
+    public List<Project> findProjectsWhereTeamMember() {
         User user = securityManager.assertAndGetCurrentUser();
 
         List<Project> projects = projectDao.findProjectsByTeamMember(user.getId());

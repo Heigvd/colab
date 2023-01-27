@@ -12,7 +12,7 @@ import Select from 'react-select';
 import * as API from '../../API/api';
 import useTranslations from '../../i18n/I18nContext';
 import { useAllProjectCards } from '../../selectors/cardSelector';
-import { useProjectBeingEdited } from '../../selectors/projectSelector';
+import { useCurrentProjectId } from '../../selectors/projectSelector';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import InlineLoading from '../common/element/InlineLoading';
 
@@ -24,12 +24,10 @@ interface CardSelectorProps {
 
 export default function CardSelector({ value, onSelect }: CardSelectorProps): JSX.Element {
   const i18n = useTranslations();
-  const { project } = useProjectBeingEdited();
+  const projectId = useCurrentProjectId();
   const dispatch = useAppDispatch();
   const cards = useAllProjectCards();
   const cardStatus = useAppSelector(state => state.cards.status);
-
-  const projectId = project != null ? project.id : undefined;
 
   React.useEffect(() => {
     if (cardStatus == 'NOT_INITIALIZED' && projectId != null) {

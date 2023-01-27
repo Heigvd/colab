@@ -43,6 +43,7 @@ import { PasswordScore } from '../components/common/element/Form';
 import { DocumentKind } from '../components/documents/documentCommonType';
 import { ResourceAndRef } from '../components/resources/resourcesCommonType';
 import { hashPassword } from '../SecurityHelper';
+import { selectCurrentProjectId } from '../selectors/projectSelector';
 import { addNotification } from '../store/slice/notificationSlice';
 import { ColabState, store } from '../store/store';
 import { CardTypeAllInOne, CardTypeOnOneSOwn, CardTypeWithRef } from '../types/cardTypeDefinition';
@@ -343,8 +344,8 @@ export const getProject = createAsyncThunk('project/get', async (id: number) => 
   return await restClient.ProjectRestEndpoint.getProject(id);
 });
 
-export const getUserProjects = createAsyncThunk('project/users', async () => {
-  return await restClient.ProjectRestEndpoint.getUserProjects();
+export const getUserProjects = createAsyncThunk('project/list', async () => {
+  return await restClient.ProjectRestEndpoint.getProjectsWhereTeamMember();
 });
 
 export const getInstanceableModels = createAsyncThunk('project/baseModels', async () => {
@@ -425,12 +426,16 @@ export const reconnectToProjectChannel = createAsyncThunk(
   },
 );
 
+// TODO Sandra 01.2023 : review wisely
 export const startProjectEdition = createAsyncThunk(
   'project/startEditing',
   async (project: Project, thunkApi) => {
     const state = thunkApi.getState() as ColabState;
-    if (state.websockets.sessionId != null && project.id != null) {
-      if (state.projects.editing != null) {
+    const currentSessionId = state.websockets.sessionId;
+    const currentProjectId = selectCurrentProjectId(state);
+
+    if (currentSessionId != null && project.id != null) {
+      if (currentProjectId != null) {
         // close current project if there is one
         await thunkApi.dispatch(closeCurrentProject());
       }
@@ -438,7 +443,7 @@ export const startProjectEdition = createAsyncThunk(
       // Subscribe to new project channel
       await restClient.WebsocketRestEndpoint.subscribeToProjectChannel(project.id, {
         '@class': 'WsSessionIdentifier',
-        sessionId: state.websockets.sessionId,
+        sessionId: currentSessionId,
       });
 
       // initialized project content
@@ -449,18 +454,19 @@ export const startProjectEdition = createAsyncThunk(
   },
 );
 
+// TODO Sandra 01.2023 : review wisely
 export const closeCurrentProject = createAsyncThunk(
   'project/stopEditing',
   async (_action: void, thunkApi) => {
     const state = thunkApi.getState() as ColabState;
-    if (
-      state.projects.editing != null &&
-      state.websockets.sessionId &&
-      state.auth.status === 'AUTHENTICATED'
-    ) {
-      restClient.WebsocketRestEndpoint.unsubscribeFromProjectChannel(state.projects.editing, {
+    const currentSessionId = state.websockets.sessionId;
+    const authStatus = state.auth.status;
+    const currentProjectId = selectCurrentProjectId(state);
+
+    if (currentProjectId != null && currentSessionId && authStatus === 'AUTHENTICATED') {
+      restClient.WebsocketRestEndpoint.unsubscribeFromProjectChannel(currentProjectId, {
         '@class': 'WsSessionIdentifier',
-        sessionId: state.websockets.sessionId,
+        sessionId: currentSessionId,
       });
     }
   },
@@ -655,9 +661,9 @@ export const getExpandedCardType = createAsyncThunk('cardType/getExpanded', asyn
  */
 export const getProjectCardTypes = createAsyncThunk(
   'cardType/getProjectOnes',
-  async (project: Project) => {
-    if (project.id) {
-      return await restClient.ProjectRestEndpoint.getCardTypesOfProject(project.id);
+  async (projectId: number) => {
+    if (projectId) {
+      return await restClient.ProjectRestEndpoint.getCardTypesOfProject(projectId);
     } else {
       return [];
     }
@@ -759,9 +765,9 @@ export const updateCardTypePublished = createAsyncThunk(
  */
 export const addCardTypeToProject = createAsyncThunk(
   'cardType/addToProject',
-  async ({ cardType, project }: { cardType: CardTypeAllInOne; project: Project }) => {
-    if (cardType.ownId && project.id)
-      return await restClient.CardTypeRestEndpoint.useCardTypeInProject(cardType.ownId, project.id);
+  async ({ cardType, projectId }: { cardType: CardTypeAllInOne; projectId: number }) => {
+    if (cardType.ownId && projectId)
+      return await restClient.CardTypeRestEndpoint.useCardTypeInProject(cardType.ownId, projectId);
   },
 );
 
@@ -779,11 +785,11 @@ export const deleteCardType = createAsyncThunk(
  */
 export const removeCardTypeRefFromProject = createAsyncThunk(
   'cardType/removeFromProject',
-  async ({ cardType, project }: { cardType: CardTypeWithRef; project: Project }) => {
-    if (cardType.ownId && project.id) {
+  async ({ cardType, projectId }: { cardType: CardTypeWithRef; projectId: number }) => {
+    if (cardType.ownId && projectId) {
       return await restClient.CardTypeRestEndpoint.removeCardTypeRefFromProject(
         cardType.ownId,
-        project.id,
+        projectId,
       );
     }
   },
@@ -1048,9 +1054,9 @@ export const getResourceChainForCardContentId = createAsyncThunk(
 
 export const getDirectResourcesOfProject = createAsyncThunk(
   'resource/getAllOfProject',
-  async (project: Project) => {
-    if (project.id) {
-      return await restClient.ResourceRestEndpoint.getDirectAbstractResourcesOfProject(project.id);
+  async (projectId: number) => {
+    if (projectId) {
+      return await restClient.ResourceRestEndpoint.getDirectAbstractResourcesOfProject(projectId);
     } else {
       return []; // to avoid undefined, return an empty array
     }

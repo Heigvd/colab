@@ -33,7 +33,7 @@ export default function DocumentationTab({ project }: DocumentationTabProps): JS
 
   const tipsConfig = React.useContext(TipsCtx);
 
-  const root = useProjectRootCard(project);
+  const root = useProjectRootCard(project.id);
 
   const [selectedResource, selectResource] = React.useState<ResourceAndRef | null>(null);
   const [lastCreatedResourceId, setLastCreatedResourceId] = React.useState<number | null>(null);

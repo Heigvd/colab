@@ -29,6 +29,7 @@ import * as React from 'react';
 import { getRestClient, moveResource } from '../../../API/api';
 import useTranslations from '../../../i18n/I18nContext';
 import { useAndLoadCardType } from '../../../selectors/cardTypeSelector';
+import { useCurrentProjectId } from '../../../selectors/projectSelector';
 import { useAndLoadProjectResourcesStatus } from '../../../selectors/resourceSelector';
 import { useAppDispatch, useAppSelector } from '../../../store/hooks';
 import { ResourceState } from '../../../store/slice/resourceSlice';
@@ -351,6 +352,8 @@ function buildCardAndVariant(
 }
 
 function useStructure(resource: ResourceAndRef, owner: ResourceOwner, all: boolean): Structure {
+  const currentProjectId = useCurrentProjectId();
+
   return useAppSelector(state => {
     const theRef = getTheDirectResource(resource);
 
@@ -360,11 +363,10 @@ function useStructure(resource: ResourceAndRef, owner: ResourceOwner, all: boole
 
     if (all) {
       //harvest all card and all types
-      const projectId = state.projects.editing;
       cardTypes.push(
         ...Object.values(state.cardType.cardtypes).flatMap(cardType => {
           if (entityIs(cardType, 'AbstractCardType')) {
-            if (cardType.projectId === projectId) {
+            if (cardType.projectId === currentProjectId) {
               return cardType;
             }
           }

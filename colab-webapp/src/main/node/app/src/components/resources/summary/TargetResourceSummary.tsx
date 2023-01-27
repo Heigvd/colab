@@ -18,7 +18,7 @@ import * as React from 'react';
 import useTranslations from '../../../i18n/I18nContext';
 import { useCard, useCardContent } from '../../../selectors/cardSelector';
 import { useAndLoadCardType } from '../../../selectors/cardTypeSelector';
-import { useAndLoadProject, useProjectBeingEdited } from '../../../selectors/projectSelector';
+import { useCurrentProject, useProject } from '../../../selectors/projectSelector';
 import { useAppSelector } from '../../../store/hooks';
 import { referenceIcon } from '../../cards/cardtypes/summary/TargetCardTypeSummary';
 
@@ -52,9 +52,9 @@ export function ProvidedByCardType({
   const { cardType } = useAndLoadCardType(abstractCardTypeId);
   const projectId = cardType?.projectId;
 
-  const { project: currentProject } = useProjectBeingEdited();
+  const { project: currentProject } = useCurrentProject();
 
-  const { project } = useAndLoadProject(projectId || undefined);
+  const { project } = useProject(projectId || 0); // TODO Sandra 01.2023 : avoid || 0
 
   let icon = <FontAwesomeIcon icon={referenceIcon} />;
 
@@ -147,7 +147,7 @@ export function ProvidedByCard({
 
   const shortText = isRootCard ? 'Project' : cardName;
 
-  const { project } = useProjectBeingEdited();
+  const { project } = useCurrentProject();
 
   const icon = isRootCard ? (
     <FontAwesomeIcon

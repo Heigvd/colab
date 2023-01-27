@@ -10,7 +10,7 @@ import { faSync } from '@fortawesome/free-solid-svg-icons';
 import { entityIs, ProjectContentChannel, UserChannel } from 'colab-rest-client';
 import * as React from 'react';
 import { getAllUsers, getOccupiedChannels } from '../../API/api';
-import { useAndLoadProject } from '../../selectors/projectSelector';
+import { useProject } from '../../selectors/projectSelector';
 import { shallowEqual, useAppDispatch, useAppSelector } from '../../store/hooks';
 import { defaultThumbnailStyle } from '../common/collection/ItemThumbnailsSelection';
 import IconButton from '../common/element/IconButton';
@@ -26,7 +26,7 @@ interface ProjectDisplayProps {
 const projectThumbnailStyle = cx(defaultThumbnailStyle, css({ padding: 0 }));
 
 function ProjectDisplayWrapper({ projectId }: ProjectDisplayProps) {
-  const { project } = useAndLoadProject(projectId);
+  const { project } = useProject(projectId);
   if (entityIs(project, 'Project')) {
     return (
       <div className={projectThumbnailStyle}>

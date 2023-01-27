@@ -15,7 +15,7 @@ import {
   useCurrentProjectCardTypeTags,
   useGlobalCardTypeTags,
 } from '../../../selectors/cardTypeSelector';
-import { useProjectBeingEdited } from '../../../selectors/projectSelector';
+import { useCurrentProjectId } from '../../../selectors/projectSelector';
 import { useAppDispatch, useLoadingState } from '../../../store/hooks';
 import Button from '../../common/element/Button';
 import Form, { createSelectField, Field } from '../../common/element/Form';
@@ -39,7 +39,7 @@ export default function CardTypeCreator({ onCreated, usage }: CardTypeCreatorPro
 
   const { isLoading, startLoading, stopLoading } = useLoadingState();
 
-  const { project } = useProjectBeingEdited();
+  const currentProjectId = useCurrentProjectId();
 
   const allCurrentProjectTags = useCurrentProjectCardTypeTags();
   const allGlobalTags = useGlobalCardTypeTags();
@@ -79,7 +79,7 @@ export default function CardTypeCreator({ onCreated, usage }: CardTypeCreatorPro
 
       dispatch(
         API.createCardType({
-          projectId: usage === 'currentProject' && project ? project.id! : null,
+          projectId: usage === 'currentProject' && currentProjectId ? currentProjectId : null,
           title: typeToCreate.title,
           tags: typeToCreate.tags,
           purpose: {
@@ -104,10 +104,10 @@ export default function CardTypeCreator({ onCreated, usage }: CardTypeCreatorPro
         close();
       });
     },
-    [startLoading, dispatch, usage, project, onCreated, stopLoading],
+    [startLoading, dispatch, usage, currentProjectId, onCreated, stopLoading],
   );
 
-  if (project == null && usage === 'currentProject') {
+  if (currentProjectId == null && usage === 'currentProject') {
     return <i>{i18n.modules.project.info.noProjectSelected}</i>;
   }
 
