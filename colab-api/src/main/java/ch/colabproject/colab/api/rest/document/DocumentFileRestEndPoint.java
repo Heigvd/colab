@@ -9,6 +9,7 @@ package ch.colabproject.colab.api.rest.document;
 import ch.colabproject.colab.api.controller.document.FileManager;
 import ch.colabproject.colab.generator.model.annotations.AuthenticationRequired;
 import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
+import ch.colabproject.colab.generator.model.exceptions.MessageI18nKey;
 import java.io.BufferedInputStream;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -124,7 +125,7 @@ public class DocumentFileRestEndPoint {
             return response.build();
 
         } catch (PathNotFoundException pnfe) {
-            throw HttpErrorMessage.dataIntegrityFailure();
+            throw HttpErrorMessage.dataError(MessageI18nKey.DATA_INTEGRITY_FAILURE);
         } catch (RepositoryException ex) {
             logger.debug("Could not get file content {}", ex);
             throw HttpErrorMessage.internalServerError();

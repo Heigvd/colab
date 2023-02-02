@@ -11,6 +11,7 @@ import ch.colabproject.colab.api.model.document.TextDataBlock;
 import ch.colabproject.colab.api.model.link.StickyNoteLink;
 import ch.colabproject.colab.api.persistence.jpa.document.DocumentDao;
 import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
+import ch.colabproject.colab.generator.model.exceptions.MessageI18nKey;
 import java.util.List;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
@@ -64,7 +65,7 @@ public class DocumentManager {
 
         if (document == null) {
             logger.error("document #{} not found", documentId);
-            throw HttpErrorMessage.relatedObjectNotFoundError();
+            throw HttpErrorMessage.dataError(MessageI18nKey.DATA_NOT_FOUND);
         }
 
         return document;
@@ -84,7 +85,7 @@ public class DocumentManager {
 
         if (!(document instanceof TextDataBlock)) {
             logger.error("#{} is not a text data block", document);
-            throw HttpErrorMessage.relatedObjectNotFoundError();
+            throw HttpErrorMessage.dataError(MessageI18nKey.DATA_NOT_FOUND);
         }
 
         return (TextDataBlock) document;
@@ -108,7 +109,7 @@ public class DocumentManager {
             return document.getOwningResource().getDocuments();
         }
 
-        throw HttpErrorMessage.dataIntegrityFailure();
+        throw HttpErrorMessage.dataError(MessageI18nKey.DATA_INTEGRITY_FAILURE);
     }
 
     // *********************************************************************************************

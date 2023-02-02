@@ -17,6 +17,7 @@ import ch.colabproject.colab.api.model.link.StickyNoteLink;
 import ch.colabproject.colab.api.model.link.StickyNoteSourceable;
 import ch.colabproject.colab.api.persistence.jpa.link.StickyNoteLinkDao;
 import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
+import ch.colabproject.colab.generator.model.exceptions.MessageI18nKey;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -113,7 +114,7 @@ public class StickyNoteLinkManager {
 
         if (link == null) {
             logger.error("sticky note link #{} not found", linkId);
-            throw HttpErrorMessage.relatedObjectNotFoundError();
+            throw HttpErrorMessage.dataError(MessageI18nKey.DATA_NOT_FOUND);
         }
 
         return link;
@@ -166,12 +167,12 @@ public class StickyNoteLinkManager {
 
         StickyNoteSourceable sourceObject = link.getSrc();
         if (sourceObject == null) {
-            throw HttpErrorMessage.dataIntegrityFailure();
+            throw HttpErrorMessage.dataError(MessageI18nKey.DATA_INTEGRITY_FAILURE);
         }
 
         Card toCard = link.getDestinationCard();
         if (toCard == null) {
-            throw HttpErrorMessage.dataIntegrityFailure();
+            throw HttpErrorMessage.dataError(MessageI18nKey.DATA_INTEGRITY_FAILURE);
         }
 
         // secondly make the modifications
@@ -253,7 +254,7 @@ public class StickyNoteLinkManager {
                 sourceObject = documentManager.assertAndGetDocument(srcId);
                 break;
             default:
-                throw HttpErrorMessage.dataIntegrityFailure();
+                throw HttpErrorMessage.dataError(MessageI18nKey.DATA_INTEGRITY_FAILURE);
         }
 
         return sourceObject;
@@ -287,7 +288,7 @@ public class StickyNoteLinkManager {
                 sourceObject = documentManager.assertAndGetDocument(link.getSrcDocumentId());
                 break;
             default:
-                throw HttpErrorMessage.dataIntegrityFailure();
+                throw HttpErrorMessage.dataError(MessageI18nKey.DATA_INTEGRITY_FAILURE);
         }
 
         return sourceObject;
@@ -310,24 +311,24 @@ public class StickyNoteLinkManager {
         }
         if (link.isSrcCardContent()) {
             if (effectiveSrcType != null) { // it must match only one type
-                throw HttpErrorMessage.dataIntegrityFailure();
+                throw HttpErrorMessage.dataError(MessageI18nKey.DATA_INTEGRITY_FAILURE);
             }
             effectiveSrcType = SrcType.CARD_CONTENT;
         }
         if (link.isSrcResourceOrRef()) {
             if (effectiveSrcType != null) { // it must match only one type
-                throw HttpErrorMessage.dataIntegrityFailure();
+                throw HttpErrorMessage.dataError(MessageI18nKey.DATA_INTEGRITY_FAILURE);
             }
             effectiveSrcType = SrcType.RESOURCE_OR_REF;
         }
         if (link.isSrcDocument()) {
             if (effectiveSrcType != null) { // it must match only one type
-                throw HttpErrorMessage.dataIntegrityFailure();
+                throw HttpErrorMessage.dataError(MessageI18nKey.DATA_INTEGRITY_FAILURE);
             }
             effectiveSrcType = SrcType.DOCUMENT;
         }
         if (effectiveSrcType == null) { // it must match one type
-            throw HttpErrorMessage.dataIntegrityFailure();
+            throw HttpErrorMessage.dataError(MessageI18nKey.DATA_INTEGRITY_FAILURE);
         }
 
         return effectiveSrcType;

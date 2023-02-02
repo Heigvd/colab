@@ -29,6 +29,7 @@ import ch.colabproject.colab.api.persistence.jpa.document.DocumentDao;
 import ch.colabproject.colab.api.persistence.jpa.document.ResourceDao;
 import ch.colabproject.colab.api.rest.document.bean.ResourceExternalReference;
 import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
+import ch.colabproject.colab.generator.model.exceptions.MessageI18nKey;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -145,7 +146,7 @@ public class ResourceManager {
 
         if (resourceOrRef == null) {
             logger.error("resource or reference #{} not found", resourceOrRefId);
-            throw HttpErrorMessage.relatedObjectNotFoundError();
+            throw HttpErrorMessage.dataError(MessageI18nKey.DATA_NOT_FOUND);
         }
 
         return resourceOrRef;
@@ -164,7 +165,7 @@ public class ResourceManager {
         AbstractResource abstractResource = assertAndGetResourceOrRef(resourceId);
 
         if (!(abstractResource instanceof Resource)) {
-            throw HttpErrorMessage.relatedObjectNotFoundError();
+            throw HttpErrorMessage.dataError(MessageI18nKey.DATA_NOT_FOUND);
         }
 
         return (Resource) abstractResource;
@@ -183,7 +184,7 @@ public class ResourceManager {
         AbstractResource abstractResource = assertAndGetResourceOrRef(resourceRefId);
 
         if (!(abstractResource instanceof ResourceRef)) {
-            throw HttpErrorMessage.relatedObjectNotFoundError();
+            throw HttpErrorMessage.dataError(MessageI18nKey.DATA_NOT_FOUND);
         }
 
         return (ResourceRef) abstractResource;
@@ -400,7 +401,7 @@ public class ResourceManager {
             owner = cardContentManager.assertAndGetCardContent(resource.getCardContentId());
 
         } else {
-            throw HttpErrorMessage.dataIntegrityFailure();
+            throw HttpErrorMessage.dataError(MessageI18nKey.DATA_INTEGRITY_FAILURE);
         }
 
         resource.setOwner(owner);
@@ -422,7 +423,7 @@ public class ResourceManager {
         AbstractResource resource = assertAndGetResourceOrRef(resourceId);
 
         if (!checkDeletionAcceptability(resource)) {
-            throw HttpErrorMessage.dataIntegrityFailure();
+            throw HttpErrorMessage.dataError(MessageI18nKey.DATA_INTEGRITY_FAILURE);
         }
 
         deleteResourceAndRefs(resource);
@@ -503,7 +504,7 @@ public class ResourceManager {
         try {
             newResourceJavaObject = (Resource) duplicator.duplicateResource(originalResource);
         } catch (ColabMergeException e) {
-            throw HttpErrorMessage.dataIntegrityFailure();
+            throw HttpErrorMessage.dataError(MessageI18nKey.DATA_INTEGRITY_FAILURE);
         }
 
         Resourceable owner = null;
@@ -513,6 +514,8 @@ public class ResourceManager {
             owner = cardContentManager.assertAndGetCardContent(parentId);
         } else if ("CardType".equals(parentType)) {
             owner = cardTypeManager.assertAndGetCardTypeOrRef(parentId);
+        } else {
+            throw HttpErrorMessage.dataError(MessageI18nKey.DATA_INTEGRITY_FAILURE);
         }
         newResourceJavaObject.setOwner(owner);
         owner.getDirectAbstractResources().add(newResourceJavaObject);
@@ -628,7 +631,7 @@ public class ResourceManager {
         Resource resource = assertAndGetResource(resourceId);
 
         if (newOwner == null) {
-            throw HttpErrorMessage.relatedObjectNotFoundError();
+            throw HttpErrorMessage.dataError(MessageI18nKey.DATA_INTEGRITY_FAILURE);
         }
 
         Resourceable previousOwner = resource.getOwner();
@@ -730,15 +733,15 @@ public class ResourceManager {
         Resource resource = assertAndGetResource(resourceId);
 
         if (document == null) {
-            throw HttpErrorMessage.dataIntegrityFailure();
+            throw HttpErrorMessage.dataError(MessageI18nKey.DATA_INTEGRITY_FAILURE);
         }
 
         if (document.hasOwningResource() || document.hasOwningCardContent()) {
-            throw HttpErrorMessage.dataIntegrityFailure();
+            throw HttpErrorMessage.dataError(MessageI18nKey.DATA_INTEGRITY_FAILURE);
         }
 
         if (resource.getDocuments().contains(document)) {
-            throw HttpErrorMessage.dataIntegrityFailure();
+            throw HttpErrorMessage.dataError(MessageI18nKey.DATA_INTEGRITY_FAILURE);
         }
 
         switch (relatedPosition) {
@@ -781,7 +784,7 @@ public class ResourceManager {
         Document document = documentManager.assertAndGetDocument(documentId);
 
         if (!(resource.getDocuments().contains(document))) {
-            throw HttpErrorMessage.dataIntegrityFailure();
+            throw HttpErrorMessage.dataError(MessageI18nKey.DATA_INTEGRITY_FAILURE);
         }
 
         resource.getDocuments().remove(document);

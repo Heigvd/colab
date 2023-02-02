@@ -8,6 +8,7 @@ package ch.colabproject.colab.api.presence.model;
 
 import ch.colabproject.colab.generator.model.annotations.ExtractJavaDoc;
 import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
+import ch.colabproject.colab.generator.model.exceptions.MessageI18nKey;
 import java.io.Serializable;
 import javax.validation.constraints.NotNull;
 
@@ -177,7 +178,7 @@ public class TouchUserPresence implements Serializable {
      */
     public void setWsSessionId(String wsSessionId) {
         if (wsSessionId == null) {
-            throw HttpErrorMessage.dataIntegrityFailure();
+            throw HttpErrorMessage.dataError(MessageI18nKey.DATA_INTEGRITY_FAILURE);
         }
         this.wsSessionId = wsSessionId;
     }

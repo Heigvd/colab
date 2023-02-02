@@ -11,6 +11,7 @@ import ch.colabproject.colab.api.model.document.Document;
 import ch.colabproject.colab.api.model.document.TextDataBlock;
 import ch.colabproject.colab.api.persistence.jpa.document.DocumentDao;
 import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
+import ch.colabproject.colab.generator.model.exceptions.MessageI18nKey;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -69,7 +70,7 @@ public class BlockManager {
 
         if (!(doc instanceof TextDataBlock)) {
             logger.error("document {} is not a text data block", doc);
-            throw HttpErrorMessage.relatedObjectNotFoundError();
+            throw HttpErrorMessage.dataError(MessageI18nKey.DATA_NOT_FOUND);
         }
 
         return ((TextDataBlock) doc);
@@ -125,7 +126,7 @@ public class BlockManager {
         TextDataBlock block = assertAndGetTextDataBlock(blockId);
 
         if (!checkDeletionAcceptability(block)) {
-            throw HttpErrorMessage.dataIntegrityFailure();
+            throw HttpErrorMessage.dataError(MessageI18nKey.DATA_INTEGRITY_FAILURE);
         }
 
         documentDao.deleteDocument(block);

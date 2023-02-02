@@ -116,7 +116,7 @@ public class CardContentRestEndpointTest extends AbstractArquillianTest {
             client.cardContentRestEndpoint.deleteCardContent(initialCardContentId);
         } catch (HttpErrorMessage hem) {
 
-            if (HttpErrorMessage.MessageCode.DATA_INTEGRITY_FAILURE == hem.getMessageCode()) {
+            if (HttpErrorMessage.MessageCode.DATA_ERROR == hem.getMessageCode()) {
                 isErrorMessageThrown = true;
             }
         }

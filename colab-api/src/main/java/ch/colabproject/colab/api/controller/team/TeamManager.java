@@ -21,6 +21,7 @@ import ch.colabproject.colab.api.persistence.jpa.team.TeamMemberDao;
 import ch.colabproject.colab.api.persistence.jpa.team.TeamRoleDao;
 import ch.colabproject.colab.api.persistence.jpa.team.acl.AccessControlDao;
 import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
+import ch.colabproject.colab.generator.model.exceptions.MessageI18nKey;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -85,7 +86,7 @@ public class TeamManager {
 
         if (member == null) {
             logger.error("team member #{} not found", memberId);
-            throw HttpErrorMessage.relatedObjectNotFoundError();
+            throw HttpErrorMessage.dataError(MessageI18nKey.DATA_NOT_FOUND);
         }
 
         return member;
@@ -106,8 +107,12 @@ public class TeamManager {
     public TeamMember addMember(Project project, User user, HierarchicalPosition position) {
         logger.debug("Add member {} in {}", user, project);
 
-        if (project != null && user != null && findMemberByProjectAndUser(project, user) != null) {
-            throw HttpErrorMessage.dataIntegrityFailure();
+        if (project == null) {
+            throw HttpErrorMessage.dataError(MessageI18nKey.DATA_INTEGRITY_FAILURE);
+        }
+
+        if (user != null && findMemberByProjectAndUser(project, user) != null) {
+            throw HttpErrorMessage.dataError(MessageI18nKey.DATA_INTEGRITY_FAILURE);
         }
 
         TeamMember teamMember = new TeamMember();
@@ -166,7 +171,7 @@ public class TeamManager {
 
         if (role == null) {
             logger.error("team role #{} not found", roleId);
-            throw HttpErrorMessage.relatedObjectNotFoundError();
+            throw HttpErrorMessage.dataError(MessageI18nKey.DATA_NOT_FOUND);
         }
 
         return role;
@@ -200,7 +205,7 @@ public class TeamManager {
                 return role;
             }
         }
-        throw HttpErrorMessage.relatedObjectNotFoundError();
+        throw HttpErrorMessage.dataError(MessageI18nKey.DATA_INTEGRITY_FAILURE);
     }
 
     /**
@@ -322,7 +327,7 @@ public class TeamManager {
                 ac.setCairoLevel(level);
             }
         } else {
-            throw HttpErrorMessage.relatedObjectNotFoundError();
+            throw HttpErrorMessage.dataError(MessageI18nKey.DATA_INTEGRITY_FAILURE);
         }
     }
 
@@ -356,7 +361,7 @@ public class TeamManager {
                 ac.setCairoLevel(level);
             }
         } else {
-            throw HttpErrorMessage.relatedObjectNotFoundError();
+            throw HttpErrorMessage.dataError(MessageI18nKey.DATA_INTEGRITY_FAILURE);
         }
     }
 
@@ -480,7 +485,7 @@ public class TeamManager {
             member.setPosition(position);
             assertTeamIntegrity(member.getProject());
         } else {
-            throw HttpErrorMessage.relatedObjectNotFoundError();
+            throw HttpErrorMessage.dataError(MessageI18nKey.DATA_INTEGRITY_FAILURE);
         }
     }
 
@@ -497,7 +502,7 @@ public class TeamManager {
     public void assertTeamIntegrity(Project project) {
 
         if (project.getTeamMembersByPosition(HierarchicalPosition.OWNER).isEmpty()) {
-            throw HttpErrorMessage.dataIntegrityFailure();
+            throw HttpErrorMessage.dataError(MessageI18nKey.DATA_INTEGRITY_FAILURE);
         }
     }
 
@@ -510,7 +515,7 @@ public class TeamManager {
         TeamMember teamMember = assertAndGetMember(teamMemberId);
 
         if (!checkDeletionAcceptability(teamMember)) {
-            throw HttpErrorMessage.dataIntegrityFailure();
+            throw HttpErrorMessage.dataError(MessageI18nKey.DATA_INTEGRITY_FAILURE);
         }
 
         // acl deleted by cascade

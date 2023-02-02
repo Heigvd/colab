@@ -65,7 +65,7 @@ public class IndexGeneratorHelperTest {
 
         // no place and not enough space to reorder
         ObjWithIndex oE = new ObjWithIndex("E");
-        TestHelper.assertThrows(HttpErrorMessage.MessageCode.DATA_INTEGRITY_FAILURE,
+        TestHelper.assertThrows(HttpErrorMessage.MessageCode.DATA_ERROR,
             () -> {
                 indexGenerator.moveItemToEnd(oE, collection);
             });
@@ -105,7 +105,7 @@ public class IndexGeneratorHelperTest {
 
         // no place and not enough space to reorder
         ObjWithIndex oE = new ObjWithIndex("E");
-        TestHelper.assertThrows(HttpErrorMessage.MessageCode.DATA_INTEGRITY_FAILURE,
+        TestHelper.assertThrows(HttpErrorMessage.MessageCode.DATA_ERROR,
             () -> {
                 indexGenerator.moveItemToEnd(oE, collection);
             });
@@ -154,7 +154,7 @@ public class IndexGeneratorHelperTest {
 
         // no place and not enough space to reorder
         ObjWithIndex oE = new ObjWithIndex("E");
-        TestHelper.assertThrows(HttpErrorMessage.MessageCode.DATA_INTEGRITY_FAILURE,
+        TestHelper.assertThrows(HttpErrorMessage.MessageCode.DATA_ERROR,
             () -> {
                 indexGenerator.moveItemToEnd(oE, collection);
             });
@@ -214,7 +214,7 @@ public class IndexGeneratorHelperTest {
 
         // no place and not enough space to reorder
         ObjWithIndex oF = new ObjWithIndex("F");
-        TestHelper.assertThrows(HttpErrorMessage.MessageCode.DATA_INTEGRITY_FAILURE,
+        TestHelper.assertThrows(HttpErrorMessage.MessageCode.DATA_ERROR,
             () -> {
                 indexGenerator.moveItemToBeginning(oF, collection);
             });

@@ -736,6 +736,10 @@ export const fr: ColabTranslations = {
         return "L'utilisateur actuel est déjà un membre de l'équipe";
       case 'CURRENT_USER_CAN_ALREADY_USE_MODEL':
         return "L'utilisateur actuel peut déjà utiliser le modèle";
+      case 'DATA_NOT_FOUND':
+        return 'Donnée introuvable';
+      case 'DATA_INTEGRITY_FAILURE':
+        return "Problème d'intégrité des données";
     }
   },
 

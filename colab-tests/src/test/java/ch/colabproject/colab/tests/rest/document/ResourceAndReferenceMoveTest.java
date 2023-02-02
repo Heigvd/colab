@@ -396,7 +396,7 @@ public class ResourceAndReferenceMoveTest extends AbstractArquillianTest {
 
         ///////////////////////////////////////////
         // move under its sub card
-        TestHelper.assertThrows(MessageCode.DATA_INTEGRITY_FAILURE, () -> {
+        TestHelper.assertThrows(MessageCode.DATA_ERROR, () -> {
             client.cardRestEndpoint.moveCard(wanderingCard.getId(),
                 subWanderingCardContent.getId());
         });

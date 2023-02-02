@@ -22,6 +22,7 @@ import ch.colabproject.colab.api.security.permissions.Conditions;
 import ch.colabproject.colab.api.ws.channel.tool.ChannelsBuilders.ChannelsBuilder;
 import ch.colabproject.colab.api.ws.channel.tool.ChannelsBuilders.EmptyChannelBuilder;
 import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
+import ch.colabproject.colab.generator.model.exceptions.MessageI18nKey;
 import javax.json.bind.annotation.JsonbTransient;
 import javax.persistence.CascadeType;
 import javax.persistence.Embedded;
@@ -487,7 +488,7 @@ public class StickyNoteLink implements ColabEntity, WithWebsocketChannels {
         if (this.srcDocument != null) {
             return this.srcDocument;
         }
-        throw HttpErrorMessage.dataIntegrityFailure();
+        throw HttpErrorMessage.dataError(MessageI18nKey.DATA_INTEGRITY_FAILURE);
     }
 
     /**
@@ -509,7 +510,7 @@ public class StickyNoteLink implements ColabEntity, WithWebsocketChannels {
             resetSrc();
             setSrcDocument((Document) src);
         } else {
-            throw HttpErrorMessage.dataIntegrityFailure();
+            throw HttpErrorMessage.dataError(MessageI18nKey.DATA_INTEGRITY_FAILURE);
         }
     }
 

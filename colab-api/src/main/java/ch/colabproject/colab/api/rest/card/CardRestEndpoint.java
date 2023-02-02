@@ -19,6 +19,7 @@ import ch.colabproject.colab.api.model.team.acl.AccessControl;
 import ch.colabproject.colab.api.persistence.jpa.card.CardDao;
 import ch.colabproject.colab.generator.model.annotations.AuthenticationRequired;
 import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
+import ch.colabproject.colab.generator.model.exceptions.MessageI18nKey;
 import java.util.List;
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
@@ -130,7 +131,7 @@ public class CardRestEndpoint {
         if (variants != null && variants.size() == 1 && variants.get(0) != null) {
             cardContentManager.addDeliverable(variants.get(0).getId(), document);
         } else {
-            throw HttpErrorMessage.dataIntegrityFailure();
+            throw HttpErrorMessage.dataError(MessageI18nKey.DATA_INTEGRITY_FAILURE);
         }
 
         return card;
@@ -157,7 +158,7 @@ public class CardRestEndpoint {
         if (variants != null && variants.size() == 1 && variants.get(0) != null) {
             cardContentManager.addDeliverable(variants.get(0).getId(), document);
         } else {
-            throw HttpErrorMessage.dataIntegrityFailure();
+            throw HttpErrorMessage.dataError(MessageI18nKey.DATA_INTEGRITY_FAILURE);
         }
 
         return card;

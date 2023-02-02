@@ -18,6 +18,7 @@ import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.api.model.user.User;
 import ch.colabproject.colab.api.persistence.jpa.card.CardTypeDao;
 import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
+import ch.colabproject.colab.generator.model.exceptions.MessageI18nKey;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
@@ -97,7 +98,7 @@ public class CardTypeManager {
 
         if (cardTypeOrRef == null) {
             logger.error("card type or reference #{} not found", cardTypeOrRefId);
-            throw HttpErrorMessage.relatedObjectNotFoundError();
+            throw HttpErrorMessage.dataError(MessageI18nKey.DATA_NOT_FOUND);
         }
 
         return cardTypeOrRef;
@@ -117,7 +118,7 @@ public class CardTypeManager {
 
         if (!(cardTypeOrRef instanceof CardType)) {
             logger.error("#{} is not a card type", cardTypeId);
-            throw HttpErrorMessage.relatedObjectNotFoundError();
+            throw HttpErrorMessage.dataError(MessageI18nKey.DATA_NOT_FOUND);
         }
 
         return (CardType) cardTypeOrRef;
@@ -137,7 +138,7 @@ public class CardTypeManager {
 
         if (!(cardTypeOrRef instanceof CardTypeRef)) {
             logger.error("#{} is not a card type reference", cardTypeRefId);
-            throw HttpErrorMessage.relatedObjectNotFoundError();
+            throw HttpErrorMessage.dataError(MessageI18nKey.DATA_NOT_FOUND);
         }
 
         return (CardTypeRef) cardTypeOrRef;
@@ -285,7 +286,7 @@ public class CardTypeManager {
      */
     private void deleteCardTypeOrRef(AbstractCardType cardTypeOrRef) {
         if (!checkDeletionAcceptability(cardTypeOrRef)) {
-            throw HttpErrorMessage.dataIntegrityFailure();
+            throw HttpErrorMessage.dataError(MessageI18nKey.DATA_INTEGRITY_FAILURE);
         }
 
         if (cardTypeOrRef.getProject() != null) {
@@ -386,7 +387,7 @@ public class CardTypeManager {
      */
     private CardTypeRef createNewCardReference(AbstractCardType cardType, Project project) {
         if (cardType.getProjectId() == project.getId()) {
-            throw HttpErrorMessage.dataIntegrityFailure();
+            throw HttpErrorMessage.dataError(MessageI18nKey.DATA_INTEGRITY_FAILURE);
         }
 
         CardTypeRef ref = initNewCardTypeRef();

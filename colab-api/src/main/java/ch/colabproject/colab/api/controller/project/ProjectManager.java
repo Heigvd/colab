@@ -33,6 +33,7 @@ import ch.colabproject.colab.api.persistence.jpa.project.ProjectDao;
 import ch.colabproject.colab.api.rest.project.bean.ProjectCreationData;
 import ch.colabproject.colab.api.rest.project.bean.ProjectStructure;
 import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
+import ch.colabproject.colab.generator.model.exceptions.MessageI18nKey;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -149,10 +150,30 @@ public class ProjectManager {
 
         if (project == null) {
             logger.error("project #{} not found", projectId);
-            throw HttpErrorMessage.relatedObjectNotFoundError();
+            throw HttpErrorMessage.dataError(MessageI18nKey.DATA_NOT_FOUND);
         }
 
         return project;
+    }
+
+    /**
+     * Retrieve the copy parameter. If not found, throw a {@link HttpErrorMessage}.
+     *
+     * @param copyParamId the id of the copy parameter
+     *
+     * @return the copy parameter if found
+     *
+     * @throws HttpErrorMessage if the copy parameter was not found
+     */
+    public CopyParam assertAndGetCopyParam(Long copyParamId) {
+        CopyParam copyParam = copyParamDao.findCopyParamByProject(copyParamId);
+
+        if (copyParam == null) {
+            logger.error("copy param #{} not found", copyParamId);
+            throw HttpErrorMessage.dataError(MessageI18nKey.DATA_NOT_FOUND);
+        }
+
+        return copyParam;
     }
 
     /**
@@ -345,7 +366,7 @@ public class ProjectManager {
         Project project = assertAndGetProject(projectId);
 
 //        if (!checkDeletionAcceptability(project)) {
-//            throw HttpErrorMessage.dataIntegrityFailure();
+//            throw HttpErrorMessage.dataError(MessageI18nKey.DATA_INTEGRITY_FAILURE);
 //        }
 
 //      tokenManager.deleteTokensByProject(project);
@@ -456,7 +477,7 @@ public class ProjectManager {
 
         if (model != null && user != null
             && findInstanceMakerByProjectAndUser(model, user) != null) {
-            throw HttpErrorMessage.dataIntegrityFailure();
+            throw HttpErrorMessage.dataError(MessageI18nKey.DATA_INTEGRITY_FAILURE);
         }
 
         InstanceMaker instanceMaker = new InstanceMaker();

@@ -18,6 +18,7 @@ import ch.colabproject.colab.api.model.document.Resourceable;
 import ch.colabproject.colab.api.persistence.jpa.card.CardTypeDao;
 import ch.colabproject.colab.api.persistence.jpa.document.ResourceDao;
 import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
+import ch.colabproject.colab.generator.model.exceptions.MessageI18nKey;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -266,7 +267,7 @@ public class ResourceReferenceSpreadingHelper {
         }
 
         if (refsOfOwnerWithSameFinalTarget.size() > 1) {
-            throw HttpErrorMessage.dataIntegrityFailure();
+            throw HttpErrorMessage.dataError(MessageI18nKey.DATA_INTEGRITY_FAILURE);
         }
 
         return null;
@@ -287,7 +288,7 @@ public class ResourceReferenceSpreadingHelper {
     private ResourceRef reviveAndRetarget(ResourceRef resourceReference,
         AbstractResource newDirectTarget) {
         if (!Objects.equals(resourceReference.resolve(), newDirectTarget.resolve())) {
-            throw HttpErrorMessage.dataIntegrityFailure();
+            throw HttpErrorMessage.dataError(MessageI18nKey.DATA_INTEGRITY_FAILURE);
         }
 
         // revive
