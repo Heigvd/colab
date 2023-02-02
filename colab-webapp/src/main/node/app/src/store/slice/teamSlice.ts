@@ -175,7 +175,7 @@ const teamSlice = createSlice({
           : undefined;
       })
 
-      .addCase(API.getUserProjects.fulfilled, (state, action) => {
+      .addCase(API.getMyProjects.fulfilled, (state, action) => {
         state.mine = action.payload.flatMap(project => (project.id != null ? [project.id] : []));
       })
 

@@ -17,26 +17,22 @@ import {
   faTrash,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { AsyncThunk } from '@reduxjs/toolkit';
 import { Project } from 'colab-rest-client';
 import * as React from 'react';
 import { Route, Routes, useNavigate, useParams } from 'react-router-dom';
 import * as API from '../../API/api';
 import useTranslations from '../../i18n/I18nContext';
 import {
-  selectStatusWhereTeamMember,
-  useAllProjects,
-  useAndLoadModelProjects,
+  useAllProjectsAndModels,
+  useMyModels,
+  useMyProjects,
   useProject,
-  useUserProjects,
 } from '../../selectors/projectSelector';
 import { useCurrentUser } from '../../selectors/userSelector';
-import { useAppDispatch, useAppSelector, useLoadingState } from '../../store/hooks';
-import { AvailabilityStatus } from '../../store/store';
+import { useAppDispatch, useLoadingState } from '../../store/hooks';
 import ItemThumbnailsSelection from '../common/collection/ItemThumbnailsSelection';
 import AvailabilityStatusIndicator from '../common/element/AvailabilityStatusIndicator';
 import IllustrationDisplay from '../common/element/IllustrationDisplay';
-import InlineLoading from '../common/element/InlineLoading';
 import { ConfirmDeleteModal } from '../common/layout/ConfirmDeleteModal';
 import DropDownMenu from '../common/layout/DropDownMenu';
 import Flex from '../common/layout/Flex';
@@ -49,7 +45,6 @@ import {
   space_M,
   space_S,
   textSmall,
-  voidStyle,
 } from '../styling/style';
 import { defaultProjectIllustration } from './ProjectCommon';
 import ProjectCreator from './ProjectCreator';
@@ -159,7 +154,14 @@ export const ProjectDisplay = ({ project, className }: ProjectDisplayProps) => {
       }}
       direction="column"
       align="stretch"
-      className={className}
+      className={cx(
+        {
+          [css({
+            boxShadow: ` 0px -5px 0px 0px ${project.illustration?.iconBkgdColor} inset`,
+          })]: project.type === 'MODEL',
+        },
+        className,
+      )}
     >
       <Flex
         className={css({
@@ -339,26 +341,38 @@ export const ProjectDisplay = ({ project, className }: ProjectDisplayProps) => {
 
 interface ProjectListProps {
   projects: Project[];
+  hideCreationButton?: boolean;
 }
 
-function ProjectList({ projects }: ProjectListProps) {
+function ProjectList({ projects, hideCreationButton }: ProjectListProps) {
   const i18n = useTranslations();
+
   return (
-    <Flex className={css({ padding: '.5rem 2rem 2rem 2rem' })} direction={'column'}>
+    <Flex
+      className={css(
+        hideCreationButton ? { padding: '2rem' } : { padding: '.5rem 2rem 2rem 2rem' },
+      )}
+      direction={'column'}
+    >
+      {/* Note : any authenticated user can create a project */}
       {!projects || projects.length === 0 ? (
         <Flex justify="center" align="center" direction="column">
           <h2>{i18n.common.welcome}</h2>
           <h3>{i18n.modules.project.info.noProjectYet}</h3>
-          <ProjectCreator
-            collapsedButtonClassName={cx(invertedButtonStyle, css({ marginTop: space_S }))}
-          />
+          {!hideCreationButton && (
+            <ProjectCreator
+              collapsedButtonClassName={cx(invertedButtonStyle, css({ marginTop: space_S }))}
+            />
+          )}
         </Flex>
-      ) : (
+      ) : !hideCreationButton ? (
         <Flex className={css({ alignSelf: 'flex-end', padding: space_S })}>
           <ProjectCreator
             collapsedButtonClassName={cx(invertedButtonStyle, css({ fontSize: '0.8em' }))}
           />
         </Flex>
+      ) : (
+        <></>
       )}
 
       {/* {projects
@@ -390,7 +404,6 @@ function ProjectList({ projects }: ProjectListProps) {
         }}
         disableOnEnter
       />
-      {/* Note : any authenticated user can create a project */}
 
       <Routes>
         <Route path="projectsettings/:projectId" element={<ProjectSettingsWrapper />} />
@@ -401,8 +414,8 @@ function ProjectList({ projects }: ProjectListProps) {
   );
 }
 
-export const UserProjects = (): JSX.Element => {
-  const { status, projects } = useUserProjects();
+export const MyProjects = (): JSX.Element => {
+  const { status, projects } = useMyProjects();
 
   React.useEffect(() => {
     if (window && window.top && window.top.document) {
@@ -417,8 +430,8 @@ export const UserProjects = (): JSX.Element => {
   }
 };
 
-export const AllProjects = (): JSX.Element => {
-  const { status, projects } = useAllProjects();
+export const AllProjectsAndModels = (): JSX.Element => {
+  const { status, projects } = useAllProjectsAndModels();
 
   if (status != 'READY' || projects == null) {
     return <AvailabilityStatusIndicator status={status} />;
@@ -427,8 +440,8 @@ export const AllProjects = (): JSX.Element => {
   }
 };
 
-export const UserModels = (): JSX.Element => {
-  const status = useAppSelector(selectStatusWhereTeamMember);
+export const MyModels = (): JSX.Element => {
+  const { status, projects } = useMyModels();
 
   React.useEffect(() => {
     if (window && window.top && window.top.document) {
@@ -436,77 +449,9 @@ export const UserModels = (): JSX.Element => {
     }
   }, []);
 
-  return (
-    <ModelsList status={status} reload={API.getUserProjects} />
-  ); /* TODO see if another loader for models than projects */
-};
-
-interface ModelListProps {
-  status: AvailabilityStatus;
-  // eslint-disable-next-line @typescript-eslint/ban-types
-  reload: AsyncThunk<Project[], void, {}>;
-}
-
-function ModelsList({ status, reload }: ModelListProps) {
-  const i18n = useTranslations();
-  const dispatch = useAppDispatch();
-  const { projects: models } = useAndLoadModelProjects();
-
-  React.useEffect(() => {
-    if (status === 'NOT_INITIALIZED') {
-      dispatch(reload());
-    }
-  }, [status, reload, dispatch]);
-
-  if (status === 'NOT_INITIALIZED') {
-    return <InlineLoading />;
-  } else if (status === 'LOADING') {
-    return <InlineLoading />;
+  if (status != 'READY' || projects == null) {
+    return <AvailabilityStatusIndicator status={status} />;
   } else {
-    return (
-      <div className={css({ padding: '2rem' })}>
-        {!models || models.length === 0 ? (
-          <div className={voidStyle}>
-            <h2>{i18n.common.welcome}</h2>
-            <h3>{i18n.modules.project.info.noProjectYet}</h3>
-          </div>
-        ) : (
-          <ItemThumbnailsSelection<Project>
-            items={models.sort((a, b) => (a.id || 0) - (b.id || 0))}
-            className={projectListStyle}
-            thumbnailClassName={css({
-              padding: 0,
-              margin: '4px',
-              display: 'block',
-              backgroundColor: 'var(--bgColor)',
-            })}
-            onItemDblClick={item => {
-              if (item) {
-                window.open(`#/editor/${item.id}`, '_blank');
-              }
-            }}
-            fillThumbnail={item => {
-              if (item === null) return <></>;
-              else
-                return (
-                  <ProjectDisplay
-                    project={item}
-                    className={css({
-                      boxShadow: ` 0px -5px 0px 0px ${item.illustration?.iconBkgdColor} inset`,
-                    })}
-                  />
-                );
-            }}
-            disableOnEnter
-          />
-        )}
-        {/* Note : any authenticated user can create a project */}
-        {/* <ProjectCreator collapsedButtonClassName={fixedButtonStyle} /> */}
-        <Routes>
-          <Route path="projectsettings/:projectId" element={<ProjectSettingsWrapper />} />
-          <Route path="deleteproject/:projectId" element={<DeleteProjectWrapper />} />
-        </Routes>
-      </div>
-    );
+    return <ProjectList projects={projects} hideCreationButton />;
   }
-}
+};

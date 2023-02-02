@@ -61,7 +61,9 @@ const projectSlice = createSlice({
         });
 
         action.payload.projects.deleted.forEach(entry => {
-          delete state.projects[entry.id];
+          if (entry.id != null) {
+            delete state.projects[entry.id];
+          }
         });
 
         action.payload.copyParam.updated.forEach(copyParam => {
@@ -77,20 +79,24 @@ const projectSlice = createSlice({
         state.projects[action.meta.arg] = 'LOADING';
       })
       .addCase(API.getProject.fulfilled, (state, action) => {
-        state.projects[action.meta.arg] = action.payload;
+        if (action.payload != null) {
+          state.projects[action.meta.arg] = action.payload;
+        } else {
+          state.projects[action.meta.arg] = 'ERROR';
+        }
       })
       .addCase(API.getProject.rejected, (state, action) => {
         state.projects[action.meta.arg] = 'ERROR';
       })
 
-      .addCase(API.getUserProjects.pending, state => {
+      .addCase(API.getMyProjects.pending, state => {
         state.statusWhereTeamMember = 'LOADING';
       })
-      .addCase(API.getUserProjects.fulfilled, (state, action) => {
+      .addCase(API.getMyProjects.fulfilled, (state, action) => {
         state.projects = { ...state.projects, ...mapById(action.payload) };
         state.statusWhereTeamMember = 'READY';
       })
-      .addCase(API.getUserProjects.rejected, state => {
+      .addCase(API.getMyProjects.rejected, state => {
         state.statusWhereTeamMember = 'ERROR';
       })
 
@@ -105,14 +111,14 @@ const projectSlice = createSlice({
         state.statusForInstanceableModels = 'ERROR';
       })
 
-      .addCase(API.getAllProjects.pending, state => {
+      .addCase(API.getAllProjectsAndModels.pending, state => {
         state.statusForAll = 'LOADING';
       })
-      .addCase(API.getAllProjects.fulfilled, (state, action) => {
+      .addCase(API.getAllProjectsAndModels.fulfilled, (state, action) => {
         state.projects = mapById(action.payload);
         state.statusForAll = 'READY';
       })
-      .addCase(API.getAllProjects.rejected, state => {
+      .addCase(API.getAllProjectsAndModels.rejected, state => {
         state.statusForAll = 'ERROR';
       })
 

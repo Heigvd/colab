@@ -21,7 +21,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import * as API from '../API/api';
 import useTranslations from '../i18n/I18nContext';
 import LanguageSelector from '../i18n/LanguageSelector';
-import { useAndLoadModelProjects } from '../selectors/projectSelector';
+import { useHasModels } from '../selectors/projectSelector';
 import { useCurrentUser } from '../selectors/userSelector';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
 import InlineLoading from './common/element/InlineLoading';
@@ -39,7 +39,7 @@ export default function MainNav(): JSX.Element {
   const i18n = useTranslations();
   const navigate = useNavigate();
   const location = useLocation();
-  const { projects: userModels } = useAndLoadModelProjects();
+  const hasModels = useHasModels();
   const entries = [
     {
       value: '/',
@@ -66,7 +66,7 @@ export default function MainNav(): JSX.Element {
           )}
         />
       </MainMenuLink> */}
-      {userModels && userModels.length > 0 ? (
+      {hasModels ? (
         <nav className={flex}>
           <DropDownMenu
             value={value}

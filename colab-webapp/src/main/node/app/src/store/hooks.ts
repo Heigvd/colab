@@ -23,7 +23,7 @@ interface DataAndStatus<T> {
   data?: T;
 }
 
-export function selectData<T extends ColabEntity>(
+function selectData<T extends ColabEntity>(
   state: ColabState,
   id: number,
   selector: (state: ColabState) => Record<number, T | FetchingStatus>,
@@ -56,7 +56,11 @@ export function useFetchById<T extends ColabEntity>(
     dispatch(fetcher(id));
   }
 
-  return { status, data };
+  if (status === 'READY' && data != null) {
+    return { status, data };
+  }
+
+  return { status };
 }
 
 export function useFetchList<T extends ColabEntity>(
@@ -68,7 +72,6 @@ export function useFetchList<T extends ColabEntity>(
   const dispatch = useAppDispatch();
 
   const status = useAppSelector(statusSelector);
-
   const data = useAppSelector(dataSelector, shallowEqual);
 
   React.useEffect(() => {
@@ -77,7 +80,7 @@ export function useFetchList<T extends ColabEntity>(
     }
   }, [status, dispatch, fetcher]);
 
-  if (status === 'READY') {
+  if (status === 'READY' && data != null) {
     return { status, data };
   }
 

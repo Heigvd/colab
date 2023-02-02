@@ -14,7 +14,7 @@ import GlobalCardTypeList from '../cards/cardtypes/GlobalCardTypeList';
 import IconButton from '../common/element/IconButton';
 import Flex from '../common/layout/Flex';
 import Tabs, { Tab } from '../common/layout/Tabs';
-import { AllProjects } from '../projects/ProjectList';
+import { AllProjectsAndModels } from '../projects/ProjectList';
 import { lightIconButtonStyle, space_L } from '../styling/style';
 import AllUsers from './AllUsers';
 import LiveMonitor from './LiveMonitor';
@@ -52,7 +52,7 @@ export default function Admin(): JSX.Element {
             <AllUsers />
           </Tab>
           <Tab name="projects" label="Projects">
-            <AllProjects />
+            <AllProjectsAndModels />
           </Tab>
           <Tab name="loggers" label="Loggers">
             <LoggersConfig />
