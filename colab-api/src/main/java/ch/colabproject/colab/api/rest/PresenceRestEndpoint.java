@@ -52,7 +52,7 @@ public class PresenceRestEndpoint {
      * @return current presence list
      */
     @GET
-    @Path("{projectId: [0-9]*}")
+    @Path("{projectId: [0-9]+}")
     public Collection<UserPresence> getProjectPresence(
         @PathParam("projectId") Long projectId
     ) {
@@ -76,7 +76,7 @@ public class PresenceRestEndpoint {
      * @param projectId id of the project
      */
     @DELETE
-    @Path("{projectId: [0-9]*}")
+    @Path("{projectId: [0-9]+}")
     public void clearProjectPresenceList(@PathParam("projectId") Long projectId) {
         presenceManager.clearProjectPresenceList(projectId);
     }

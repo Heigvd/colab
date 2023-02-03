@@ -66,7 +66,7 @@ public class DocumentRestEndpoint {
      * @return the document or null
      */
     @GET
-    @Path("{id}")
+    @Path("{id: [0-9]+}")
     public Document getDocument(@PathParam("id") Long id) {
         logger.debug("get document #{}", id);
         return documentDao.findDocument(id);
@@ -95,7 +95,7 @@ public class DocumentRestEndpoint {
      * @param docId the id of the document to move
      */
     @PUT
-    @Path("{docId}/MoveUp")
+    @Path("{docId: [0-9]+}/MoveUp")
     public void moveDocumentUp(@PathParam("docId") Long docId) {
         logger.debug("move document #{} up", docId);
 
@@ -108,7 +108,7 @@ public class DocumentRestEndpoint {
      * @param docId the id of the document to move
      */
     @PUT
-    @Path("{docId}/MoveDown")
+    @Path("{docId: [0-9]+}/MoveDown")
     public void moveDocumentDown(@PathParam("docId") Long docId) {
         logger.debug("move document #{} down", docId);
 
@@ -122,7 +122,7 @@ public class DocumentRestEndpoint {
      * @param baseDocId the id of the document which will be below docId
      */
     @PUT
-    @Path("{docId}/MoveAbove/{baseDocId}")
+    @Path("{docId: [0-9]+}/MoveAbove/{baseDocId: [0-9]+}")
     public void moveDocumentAbove(@PathParam("docId") Long docId,
         @PathParam("baseDocId") Long baseDocId) {
         logger.debug("move document #{} above #{}", docId, baseDocId);
@@ -137,7 +137,7 @@ public class DocumentRestEndpoint {
      * @param baseDocId the id of the document which will be above docId
      */
     @PUT
-    @Path("{docId}/MoveBelow/{baseDocId}")
+    @Path("{docId: [0-9]+}/MoveBelow/{baseDocId: [0-9]+}")
     public void moveDocumentBelow(@PathParam("docId") Long docId,
         @PathParam("baseDocId") Long baseDocId) {
         logger.debug("move document #{} below #{}", docId, baseDocId);
@@ -151,7 +151,7 @@ public class DocumentRestEndpoint {
      * @param docId the id of the document to move
      */
     @PUT
-    @Path("{docId}/MoveToTop")
+    @Path("{docId: [0-9]+}/MoveToTop")
     public void moveDocumentToTop(@PathParam("docId") Long docId) {
         logger.debug("move document #{} to the top", docId);
 
@@ -164,7 +164,7 @@ public class DocumentRestEndpoint {
      * @param docId the id of the document to move
      */
     @PUT
-    @Path("{docId}/MoveToBottom")
+    @Path("{docId: [0-9]+}/MoveToBottom")
     public void moveDocumentToBottom(@PathParam("docId") Long docId) {
         logger.debug("move document #{} to the bottom", docId);
 
@@ -183,7 +183,7 @@ public class DocumentRestEndpoint {
      * @return list of links
      */
     @GET
-    @Path("{id}/StickyNoteLinks")
+    @Path("{id: [0-9]+}/StickyNoteLinks")
     public List<StickyNoteLink> getStickyNoteLinksAsSrc(@PathParam("id") Long documentId) {
         logger.debug("Get sticky note links where document #{} is the source", documentId);
         return documentManager.getStickyNoteLinkAsSrc(documentId);

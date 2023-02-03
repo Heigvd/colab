@@ -49,7 +49,7 @@ public class ChangeRestEndpoint {
      * @return list of changes.
      */
     @GET
-    @Path("/{id}/changes")
+    @Path("{id: [0-9]+}/changes")
     public List<Change> getChanges(@PathParam("id") Long id) {
         return liveManager.getPendingChanges(id);
     }
@@ -61,7 +61,7 @@ public class ChangeRestEndpoint {
      * @param change change
      */
     @PUT
-    @Path("/{id}")
+    @Path("{id: [0-9]+}")
     public void patchBlock(@PathParam("id") Long id, Change change) {
         liveManager.patchBlock(id, change);
     }
@@ -72,7 +72,7 @@ public class ChangeRestEndpoint {
      * @param id id of the block
      */
     @PUT
-    @Path("/{id}/dropChanges")
+    @Path("{id: [0-9]+}/dropChanges")
     public void deletePendingChanges(@PathParam("id") Long id) {
         liveManager.deletePendingChangesAndPropagate(id);
     }
@@ -83,7 +83,7 @@ public class ChangeRestEndpoint {
      * @return list of block being edited and their status
      */
     @GET
-    @Path("/Monitoring")
+    @Path("Monitoring")
     @AdminResource
     public List<BlockMonitoring> getMonitoringData() {
         return liveManager.getMonitoringData();

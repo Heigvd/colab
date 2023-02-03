@@ -84,7 +84,7 @@ public class DocumentFileRestEndPoint {
      * @param documentId document id
      */
     @DELETE
-    @Path("DeleteFile/{documentId}")
+    @Path("DeleteFile/{documentId: [0-9]+}")
     public void deleteFile(
         @PathParam("documentId") Long documentId) {
         try {
@@ -103,7 +103,7 @@ public class DocumentFileRestEndPoint {
      * @return file content, if no file has been set, return an empty stream (0 bytes)
      */
     @GET
-    @Path("GetFile/{documentId}")
+    @Path("GetFile/{documentId: [0-9]+}")
     public Response getFileContent(@PathParam("documentId") Long documentId) {
 
         try {
@@ -140,7 +140,7 @@ public class DocumentFileRestEndPoint {
      * @return a list of 2 elements, first is usage second is maximum quota expressed in bytes
      */
     @GET
-    @Path("GetProjectQuotaUsage/{projectId}")
+    @Path("GetProjectQuotaUsage/{projectId: [0-9]+}")
     public List<Long> getQuotaUsage(@PathParam("projectId") Long projectId) {
 
         try {

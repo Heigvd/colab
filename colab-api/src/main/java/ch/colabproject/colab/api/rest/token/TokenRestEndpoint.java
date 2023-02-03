@@ -47,7 +47,7 @@ public class TokenRestEndpoint {
      * @return the token
      */
     @GET
-    @Path("{id}")
+    @Path("{id: [0-9]+}")
     public Token getToken(@PathParam("id") Long id) {
         return tokenManager.getNotExpiredToken(id);
     }
@@ -75,7 +75,7 @@ public class TokenRestEndpoint {
      *                                                                           </ul>
      */
     @PUT
-    @Path("{id}/{token: [a-fA-F0-9]+}")
+    @Path("{id: [0-9]+}/{token: [a-fA-F0-9]+}")
     public Token consumeToken(
         @PathParam("id") Long id,
         @PathParam("token") String plainToken

@@ -63,7 +63,7 @@ public class CardContentRestEndpoint {
      * @return the card content or null
      */
     @GET
-    @Path("{id}")
+    @Path("{id: [0-9]+}")
     public CardContent getCardContent(@PathParam("id") Long id) {
         logger.debug("Get card #{}", id);
         return cardContentDao.findCardContent(id);
@@ -77,7 +77,7 @@ public class CardContentRestEndpoint {
      * @return the persisted new card content
      */
     @POST
-    @Path("create/{cardId}")
+    @Path("create/{cardId: [0-9]+}")
     public CardContent createNewCardContent(@PathParam("cardId") Long cardId) {
         logger.debug("create a new card content for the card #{}", cardId);
         return cardContentManager.createNewCardContent(cardId);
@@ -92,7 +92,7 @@ public class CardContentRestEndpoint {
      * @return the persisted new card content
      */
     @POST
-    @Path("createWithDeliverable/{cardId}")
+    @Path("createWithDeliverable/{cardId: [0-9]+}")
     public CardContent createNewCardContentWithDeliverable(@PathParam("cardId") Long cardId,
         Document document) {
         logger.debug("create a new card content for the card #{} and document {}", cardId,
@@ -124,7 +124,7 @@ public class CardContentRestEndpoint {
      * @param id id of the card content to delete
      */
     @DELETE
-    @Path("{id}")
+    @Path("{id: [0-9]+}")
     public void deleteCardContent(@PathParam("id") Long id) {
         logger.debug("Delete card #{}", id);
         cardContentManager.deleteCardContent(id);
@@ -139,7 +139,7 @@ public class CardContentRestEndpoint {
      * @return the document newly created
      */
     @POST
-    @Path("{id}/addDeliverableAtBeginning")
+    @Path("{id: [0-9]+}/addDeliverableAtBeginning")
     public Document addDeliverableAtBeginning(@PathParam("id") Long cardContentId,
         Document document) {
         logger.debug("add the deliverable {} at the beginning of the card content #{}", document,
@@ -157,7 +157,7 @@ public class CardContentRestEndpoint {
      * @return the document newly created
      */
     @POST
-    @Path("{id}/addDeliverableAtEnd")
+    @Path("{id: [0-9]+}/addDeliverableAtEnd")
     public Document addDeliverableAtEnd(@PathParam("id") Long cardContentId, Document document) {
         logger.debug("add the deliverable {} at the end of the card content #{}", document,
             cardContentId);
@@ -175,7 +175,7 @@ public class CardContentRestEndpoint {
      * @return the document newly created
      */
     @POST
-    @Path("{id}/addDeliverableBefore/{neighbourDocId}")
+    @Path("{id: [0-9]+}/addDeliverableBefore/{neighbourDocId: [0-9]+}")
     public Document addDeliverableBefore(@PathParam("id") Long cardContentId,
         @PathParam("neighbourDocId") Long neighbourDocId, Document document) {
         logger.debug("add the deliverable {} before #{} in the card content #{}", document,
@@ -194,7 +194,7 @@ public class CardContentRestEndpoint {
      * @return the document newly created
      */
     @POST
-    @Path("{id}/addDeliverableAfter/{neighbourDocId}")
+    @Path("{id: [0-9]+}/addDeliverableAfter/{neighbourDocId: [0-9]+}")
     public Document addDeliverableAfter(@PathParam("id") Long cardContentId,
         @PathParam("neighbourDocId") Long neighbourDocId, Document document) {
         logger.debug("add the deliverable {} after #{} in the card content #{}", document,
@@ -210,7 +210,7 @@ public class CardContentRestEndpoint {
      * @param documentId    the id of the document to remove from the card content
      */
     @POST
-    @Path("{id}/removeDeliverable")
+    @Path("{id: [0-9]+}/removeDeliverable")
     public void removeDeliverable(@PathParam("id") Long cardContentId, Long documentId) {
         logger.debug("remove the deliverable #{} from the card content #{}", documentId,
             cardContentId);
@@ -226,7 +226,7 @@ public class CardContentRestEndpoint {
      * @return list of links
      */
     @GET
-    @Path("{id}/StickyNoteLinks")
+    @Path("{id: [0-9]+}/StickyNoteLinks")
     public List<StickyNoteLink> getStickyNoteLinksAsSrc(@PathParam("id") Long cardContentId) {
         logger.debug("Get sticky note links where card #{} is the source", cardContentId);
         return cardContentManager.getStickyNoteLinkAsSrcCardContent(cardContentId);
@@ -240,7 +240,7 @@ public class CardContentRestEndpoint {
      * @return list of cards
      */
     @GET
-    @Path("{id}/Subcards")
+    @Path("{id: [0-9]+}/Subcards")
     public List<Card> getSubCards(@PathParam("id") Long parentId) {
         logger.debug("Get parent #{} sub cards", parentId);
         return cardContentManager.getSubCards(parentId);
@@ -254,7 +254,7 @@ public class CardContentRestEndpoint {
      * @return the deliverables linked to the card content
      */
     @GET
-    @Path("{id}/Deliverables")
+    @Path("{id: [0-9]+}/Deliverables")
     public List<Document> getDeliverablesOfCardContent(@PathParam("id") Long cardContentId) {
         logger.debug("Get deliverables of card content #{}", cardContentId);
         return cardContentManager.getDeliverablesOfCardContent(cardContentId);

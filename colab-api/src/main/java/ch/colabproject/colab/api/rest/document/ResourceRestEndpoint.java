@@ -82,7 +82,7 @@ public class ResourceRestEndpoint {
      * @return the resource or resource reference or null
      */
     @GET
-    @Path("{id}")
+    @Path("{id: [0-9]+}")
     public AbstractResource getAbstractResource(@PathParam("id") Long id) {
         logger.debug("get abstract resource #{}", id);
         return resourceDao.findResourceOrRef(id);
@@ -98,7 +98,7 @@ public class ResourceRestEndpoint {
      * @return The targeted resource and a list of the references to get it
      */
     @GET
-    @Path("fromCardType/{cardTypeOrRefId}")
+    @Path("fromCardType/{cardTypeOrRefId: [0-9]+}")
     public List<List<AbstractResource>> getResourceChainForAbstractCardType(
         @PathParam("cardTypeOrRefId") Long cardTypeOrRefId) {
         logger.debug("get resource chain for card content #{}", cardTypeOrRefId);
@@ -114,7 +114,7 @@ public class ResourceRestEndpoint {
      * @return The targeted resource and a list of the references to get it
      */
     @GET
-    @Path("fromCard/{cardId}")
+    @Path("fromCard/{cardId: [0-9]+}")
     public List<List<AbstractResource>> getResourceChainForCard(
         @PathParam("cardId") Long cardId) {
         logger.debug("get resource chain for card content #{}", cardId);
@@ -130,7 +130,7 @@ public class ResourceRestEndpoint {
      * @return The targeted resources and a list of the references to get them
      */
     @GET
-    @Path("fromCardContent/{cardContentId}")
+    @Path("fromCardContent/{cardContentId: [0-9]+}")
     public List<List<AbstractResource>> getResourceChainForCardContent(
         @PathParam("cardContentId") Long cardContentId) {
         logger.debug("get resource chain for card content #{}", cardContentId);
@@ -147,7 +147,7 @@ public class ResourceRestEndpoint {
      * @return resources directly linked to the given project
      */
     @GET
-    @Path("directOfProject/{projectId}")
+    @Path("directOfProject/{projectId: [0-9]+}")
     public List<AbstractResource> getDirectAbstractResourcesOfProject(
         @PathParam("projectId") Long projectId) {
         logger.debug("get all resources of the project #{}", projectId);
@@ -163,7 +163,7 @@ public class ResourceRestEndpoint {
      * @return list of externalReference
      */
     @GET
-    @Path("externalReference/{abstractResourceId}")
+    @Path("externalReference/{abstractResourceId: [0-9]+}")
     public List<ResourceExternalReference> getResourceExternalReferences(
         @PathParam("abstractResourceId") Long abstractResourceId) {
         return resourceManager.getResourceExternalReferences(abstractResourceId);
@@ -210,7 +210,7 @@ public class ResourceRestEndpoint {
      * @return the id of the duplicated resource
      */
     @PUT
-    @Path("copyResource1/{resourceId}/to/{parentType: (Card|CardContent|CardType)}/{parentId}")
+    @Path("copyResource1/{resourceId: [0-9]+}/to/{parentType: (Card|CardContent|CardType)}/{parentId: [0-9]+}")
     public Long damr1(
         @PathParam("resourceId") Long resourceId,
         @PathParam("parentType") String parentType,
@@ -297,7 +297,7 @@ public class ResourceRestEndpoint {
      * @param published  new publication status
      */
     @PUT
-    @Path("move/{resourceId}/to/{parentType: (Card|CardContent|CardType)}/{parentId}/{published}")
+    @Path("move/{resourceId: [0-9]+}/to/{parentType: (Card|CardContent|CardType)}/{parentId: [0-9]+}/{published}")
     public void moveResource(
         @PathParam("resourceId") Long resourceId,
         @PathParam("parentType") String parentType,
@@ -357,7 +357,7 @@ public class ResourceRestEndpoint {
      * @return the document newly created
      */
     @POST
-    @Path("{id}/addDocumentAtBeginning")
+    @Path("{id: [0-9]+}/addDocumentAtBeginning")
     public Document addDocumentAtBeginning(@PathParam("id") Long resourceId, Document document) {
         logger.debug("add the document {} at the beginning of the resource #{}", document,
             resourceId);
@@ -374,7 +374,7 @@ public class ResourceRestEndpoint {
      * @return the document newly created
      */
     @POST
-    @Path("{id}/addDocumentAtEnd")
+    @Path("{id: [0-9]+}/addDocumentAtEnd")
     public Document addDocumentAtEnd(@PathParam("id") Long resourceId, Document document) {
         logger.debug("add the document {} at the end of the resource #{}", document, resourceId);
         return resourceManager.addDocument(resourceId, document,
@@ -391,7 +391,7 @@ public class ResourceRestEndpoint {
      * @return the document newly created
      */
     @POST
-    @Path("{id}/addDocumentBefore/{neighbourDocId}")
+    @Path("{id: [0-9]+}/addDocumentBefore/{neighbourDocId: [0-9]+}")
     public Document addDocumentBefore(@PathParam("id") Long resourceId,
         @PathParam("neighbourDocId") Long neighbourDocId, Document document) {
         logger.debug("add the document {} before #{} in the resource #{}", document,
@@ -410,7 +410,7 @@ public class ResourceRestEndpoint {
      * @return the document newly created
      */
     @POST
-    @Path("{id}/addDocumentAfter/{neighbourDocId}")
+    @Path("{id: [0-9]+}/addDocumentAfter/{neighbourDocId: [0-9]+}")
     public Document addDocumentAfter(@PathParam("id") Long resourceId,
         @PathParam("neighbourDocId") Long neighbourDocId, Document document) {
         logger.debug("add the document {} after #{} in the resource #{}", document,
@@ -426,7 +426,7 @@ public class ResourceRestEndpoint {
      * @param documentId the id of the document to remove from the resource
      */
     @POST
-    @Path("{id}/removeDocument")
+    @Path("{id: [0-9]+}/removeDocument")
     public void removeDocument(@PathParam("id") Long resourceId, Long documentId) {
         logger.debug("add the document {} for the resource #{}", documentId, resourceId);
 
@@ -443,7 +443,7 @@ public class ResourceRestEndpoint {
      * @param id the id of the resource to delete
      */
     @DELETE
-    @Path("{id}")
+    @Path("{id: [0-9]+}")
     public void deleteResource(@PathParam("id") Long id) {
         logger.debug("delete resource #{}", id);
         resourceManager.deleteResource(id);
@@ -461,7 +461,7 @@ public class ResourceRestEndpoint {
      *                        reference
      */
     @PUT
-    @Path("changeCategory/{resourceOrRefId}/{category : .*}")
+    @Path("changeCategory/{resourceOrRefId: [0-9]+}/{category : .*}")
     public void changeCategory(@PathParam("resourceOrRefId") Long resourceOrRefId,
         @PathParam("category") String categoryName) {
         logger.debug("add resource/ref #{} to category {}", resourceOrRefId, categoryName);
@@ -489,7 +489,7 @@ public class ResourceRestEndpoint {
      * @param resourceOrRefId the id of the resource / resource reference
      */
     @PUT
-    @Path("removeCategory/{resourceOrRefId}")
+    @Path("removeCategory/{resourceOrRefId: [0-9]+}")
     public void removeCategory(@PathParam("resourceOrRefId") Long resourceOrRefId) {
         logger.debug("remove category from resource/ref #{}", resourceOrRefId);
         resourceCategoryHelper.changeCategory(resourceOrRefId, null);
@@ -515,7 +515,7 @@ public class ResourceRestEndpoint {
      * @param newName         the new name of the category
      */
     @PUT
-    @Path("renameCategory/cardType/{cardTypeId}/{oldName : .*}/{newName : .*}")
+    @Path("renameCategory/cardType/{cardTypeId: [0-9]+}/{oldName : .*}/{newName : .*}")
     public void renameCategoryForCardType(
         @PathParam("cardTypeId") Long cardTypeOrRefId, @PathParam("oldName") String oldName,
         @PathParam("newName") String newName) {
@@ -532,7 +532,7 @@ public class ResourceRestEndpoint {
      * @param newName the new name of the category
      */
     @PUT
-    @Path("renameCategory/card/{cardId}/{oldName : .*}/{newName : .*}")
+    @Path("renameCategory/card/{cardId: [0-9]+}/{oldName : .*}/{newName : .*}")
     public void renameCategoryForCard(@PathParam("cardId") Long cardId,
         @PathParam("oldName") String oldName, @PathParam("newName") String newName) {
         logger.debug("rename category {} to {} for card #{}", oldName, newName, cardId);
@@ -547,7 +547,7 @@ public class ResourceRestEndpoint {
      * @param newName       the new name of the category
      */
     @PUT
-    @Path("renameCategory/cardContent/{cardContentId}/{oldName : .*}/{newName : .*}")
+    @Path("renameCategory/cardContent/{cardContentId: [0-9]+}/{oldName : .*}/{newName : .*}")
     public void renameCategoryForCardContent(@PathParam("cardContentId") Long cardContentId,
         @PathParam("oldName") String oldName, @PathParam("newName") String newName) {
         logger.debug("rename category {} to {} for card content #{}", oldName, newName,
@@ -567,7 +567,7 @@ public class ResourceRestEndpoint {
      * @return the documents linked to the resource
      */
     @GET
-    @Path("{id}/Documents")
+    @Path("{id: [0-9]+}/Documents")
     public List<Document> getDocumentsOfResource(@PathParam("id") Long resourceId) {
         logger.debug("Get the documents of the resource #{}", resourceId);
         return resourceManager.getDocumentsOfResource(resourceId);
@@ -581,7 +581,7 @@ public class ResourceRestEndpoint {
      * @return list of links
      */
     @GET
-    @Path("{id}/StickyNoteLinks")
+    @Path("{id: [0-9]+}/StickyNoteLinks")
     public List<StickyNoteLink> getStickyNoteLinksAsSrc(@PathParam("id") Long resourceOrRefId) {
         logger.debug("Get sticky note links to abstract resource #{} as source", resourceOrRefId);
         return resourceManager.getStickyNoteLinkAsSrc(resourceOrRefId);

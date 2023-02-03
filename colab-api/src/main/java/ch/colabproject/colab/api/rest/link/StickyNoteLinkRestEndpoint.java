@@ -68,7 +68,7 @@ public class StickyNoteLinkRestEndpoint {
      * @return the link or null
      */
     @GET
-    @Path("{id}")
+    @Path("{id: [0-9]+}")
     public StickyNoteLink getLink(@PathParam("id") Long id) {
         logger.debug("get link #{}", id);
         return linkDao.findStickyNoteLink(id);
@@ -120,7 +120,7 @@ public class StickyNoteLinkRestEndpoint {
      * @param id id of the link to delete
      */
     @DELETE
-    @Path("{id}")
+    @Path("{id: [0-9]+}")
     public void deleteLink(@PathParam("id") Long id) {
         logger.debug("delete link #{}", id);
         linkManager.deleteStickyNoteLink(id);
@@ -133,7 +133,7 @@ public class StickyNoteLinkRestEndpoint {
      * @param cardId the id of the new source object
      */
     @PUT
-    @Path("changeSrc/{linkId}/Card")
+    @Path("changeSrc/{linkId: [0-9]+}/Card")
     public void changeSrcWithCard(@PathParam("linkId") Long linkId, Long cardId) {
         logger.debug("change link #{} with new card source #{}", linkId, cardId);
         linkManager.changeStickyNoteLinkSource(linkId, SrcType.CARD, cardId);
@@ -146,7 +146,7 @@ public class StickyNoteLinkRestEndpoint {
      * @param cardContentId the id of the new source object
      */
     @PUT
-    @Path("changeSrc/{linkId}/CardContent")
+    @Path("changeSrc/{linkId: [0-9]+}/CardContent")
     public void changeSrcWithCardContent(@PathParam("linkId") Long linkId, Long cardContentId) {
         logger.debug("change link #{} with new card content source #{}", linkId, cardContentId);
         linkManager.changeStickyNoteLinkSource(linkId, SrcType.CARD_CONTENT, cardContentId);
@@ -159,7 +159,7 @@ public class StickyNoteLinkRestEndpoint {
      * @param resourceOrRefId the id of the new source object
      */
     @PUT
-    @Path("changeSrc/{linkId}/ResourceOrRef")
+    @Path("changeSrc/{linkId: [0-9]+}/ResourceOrRef")
     public void changeSrcWithResourceOrRef(@PathParam("linkId") Long linkId, Long resourceOrRefId) {
         logger.debug("change link #{} with new abstract resource source #{}", linkId,
             resourceOrRefId);
@@ -173,7 +173,7 @@ public class StickyNoteLinkRestEndpoint {
      * @param documentId the id of the new source object
      */
     @PUT
-    @Path("changeSrc/{linkId}/Document")
+    @Path("changeSrc/{linkId: [0-9]+}/Document")
     public void changeSrcWithDocument(@PathParam("linkId") Long linkId, Long documentId) {
         logger.debug("change link #{} with new document source #{}", linkId, documentId);
         linkManager.changeStickyNoteLinkSource(linkId, SrcType.DOCUMENT, documentId);
@@ -186,7 +186,7 @@ public class StickyNoteLinkRestEndpoint {
      * @param cardId the id of the new destination card
      */
     @PUT
-    @Path("changeDest/{linkId}")
+    @Path("changeDest/{linkId: [0-9]+}")
     public void changeDestination(@PathParam("linkId") Long linkId, Long cardId) {
         logger.debug("change link #{} with new destination card #{}", linkId, cardId);
         linkManager.changeStickyNoteLinkDestination(linkId, cardId);

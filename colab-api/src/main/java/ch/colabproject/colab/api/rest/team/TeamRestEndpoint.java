@@ -124,7 +124,7 @@ public class TeamRestEndpoint {
      * @param memberId id of the member
      */
     @DELETE
-    @Path("member/{memberId}")
+    @Path("member/{memberId: [0-9]+}")
     public void deleteTeamMember(@PathParam("memberId") Long memberId) {
         logger.debug("Delete team member #{}", memberId);
         teamManager.deleteTeamMember(memberId);
@@ -198,7 +198,7 @@ public class TeamRestEndpoint {
      * @param memberId id of the team member
      */
     @PUT
-    @Path("role/{roleId: [0-9]+}/giveto/{memberId : [0-9]+}")
+    @Path("role/{roleId: [0-9]+}/giveto/{memberId: [0-9]+}")
     public void giveRoleTo(
         @PathParam("roleId") Long roleId,
         @PathParam("memberId") Long memberId
@@ -244,7 +244,7 @@ public class TeamRestEndpoint {
      * @param level    involvement level
      */
     @PUT
-    @Path("acl/{cardId: [0-9]+}/member/{memberId : [0-9]+}/{level}")
+    @Path("acl/{cardId: [0-9]+}/member/{memberId: [0-9]+}/{level}")
     public void setMemberInvolvement(
         @PathParam("cardId") Long cardId,
         @PathParam("memberId") Long memberId,
@@ -260,7 +260,7 @@ public class TeamRestEndpoint {
      * @param memberId id of the team member
      */
     @DELETE
-    @Path("acl/{cardId: [0-9]+}/member/{memberId : [0-9]+}")
+    @Path("acl/{cardId: [0-9]+}/member/{memberId: [0-9]+}")
     public void clearMemberInvolvement(
         @PathParam("cardId") Long cardId,
         @PathParam("memberId") Long memberId
@@ -276,7 +276,7 @@ public class TeamRestEndpoint {
      * @param level  involvement level
      */
     @PUT
-    @Path("acl/{cardId: [0-9]+}/role/{roleId : [0-9]+}/{level}")
+    @Path("acl/{cardId: [0-9]+}/role/{roleId: [0-9]+}/{level}")
     public void setRoleInvolvement(
         @PathParam("cardId") Long cardId,
         @PathParam("roleId") Long roleId,

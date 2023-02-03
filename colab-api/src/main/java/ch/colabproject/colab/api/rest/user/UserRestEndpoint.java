@@ -100,7 +100,7 @@ public class UserRestEndpoint {
      * @return user which match the given id or null
      */
     @GET
-    @Path("{id : [0-9]*}")
+    @Path("{id: [0-9]+}")
     @AuthenticationRequired
     public User getUserById(@PathParam("id") Long id) {
         logger.debug("get user #{}", id);
@@ -204,7 +204,7 @@ public class UserRestEndpoint {
      * @param sessionId if of the HTTP session to delete
      */
     @DELETE
-    @Path("Session/{id}")
+    @Path("Session/{id: [0-9]+}")
     @AuthenticationRequired
     public void forceLogout(@PathParam("id") Long sessionId) {
         userManager.forceLogout(sessionId);
@@ -253,7 +253,7 @@ public class UserRestEndpoint {
     /**
      * Update password of a localAccount. The password MUST be hashed a first time by the client.
      * <p>
-     * 
+     *
      * @param authInfo identifier and new password
      *
      * @throws HttpErrorMessage if currentUser is not allowed to update the given account
@@ -268,7 +268,7 @@ public class UserRestEndpoint {
     /**
      * Request a local account password reset. This method always returns 204 no content
      * <p>
-     * 
+     *
      * @param email email address of account
      */
     @PUT
