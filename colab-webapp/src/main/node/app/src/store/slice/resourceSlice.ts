@@ -114,7 +114,9 @@ const resourcesSlice = createSlice({
         state.resources[action.meta.arg] = 'LOADING';
       })
       .addCase(API.getAbstractResource.fulfilled, (state, action) => {
-        updateResource(state, action.payload);
+        if (action.payload?.id != null) {
+          updateResource(state, action.payload);
+        }
       })
       .addCase(API.getResourceChainForCardContentId.pending, (state, action) => {
         const cardContentId = action.meta.arg;

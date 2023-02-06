@@ -7,9 +7,13 @@
 
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import {
+  AbstractCardType,
   AbstractResource,
+  AccessControl,
+  AccountConfig,
   ActivityFlowLink,
   AuthInfo,
+  BlockMonitoring,
   Card,
   CardContent,
   CardTypeCreationData,
@@ -26,6 +30,7 @@ import {
   InvolvementLevel,
   Project,
   ProjectCreationData,
+  ProjectStructure,
   Resource,
   ResourceCreationData,
   ResourceRef,
@@ -37,6 +42,8 @@ import {
   TextDataBlock,
   TouchUserPresence,
   User,
+  UserPresence,
+  VersionDetails,
   WsSessionIdentifier,
 } from 'colab-rest-client';
 import { PasswordScore } from '../components/common/element/Form';
@@ -118,9 +125,12 @@ export const initSocketId = createAsyncThunk(
 // Configuration & Application Properties
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-export const getAccountConfig = createAsyncThunk('config/getAccountConfig', async () => {
-  return await restClient.ConfigRestEndpoint.getAccountConfig();
-});
+export const getAccountConfig = createAsyncThunk<AccountConfig, void>(
+  'config/getAccountConfig',
+  async () => {
+    return await restClient.ConfigRestEndpoint.getAccountConfig();
+  },
+);
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Admin & Monitoring
@@ -146,13 +156,19 @@ export const changeLoggerLevel = createAsyncThunk(
   },
 );
 
-export const getVersionDetails = createAsyncThunk('monitoring/getVersionDetails', async () => {
-  return await restClient.MonitoringRestEndpoint.getVersion();
-});
+export const getVersionDetails = createAsyncThunk<VersionDetails, void>(
+  'monitoring/getVersionDetails',
+  async () => {
+    return await restClient.MonitoringRestEndpoint.getVersion();
+  },
+);
 
-export const getLiveMonitoringData = createAsyncThunk('monitoring/getLive', async () => {
-  return await restClient.ChangeRestEndpoint.getMonitoringData();
-});
+export const getLiveMonitoringData = createAsyncThunk<BlockMonitoring[], void>(
+  'monitoring/getLive',
+  async () => {
+    return await restClient.ChangeRestEndpoint.getMonitoringData();
+  },
+);
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Authentication
@@ -315,20 +331,27 @@ export const revokeAdminRight = createAsyncThunk('user/revokeAdminRight', async 
   }
 });
 
-export const getCurrentUserActiveSessions = createAsyncThunk('user/getSessions', async () => {
-  return await restClient.UserRestEndpoint.getActiveSessions();
-});
+export const getCurrentUserActiveSessions = createAsyncThunk<HttpSession[], void>(
+  'user/getSessions',
+  async () => {
+    return await restClient.UserRestEndpoint.getActiveSessions();
+  },
+);
 
 export const updateUser = createAsyncThunk('user/update', async (user: User) => {
   await restClient.UserRestEndpoint.updateUser(user);
   return user;
 });
 
-export const getUser = createAsyncThunk('user/get', async (id: number) => {
-  return await restClient.UserRestEndpoint.getUserById(id);
+export const getUser = createAsyncThunk<User | null, number>('user/get', async (id: number) => {
+  if (id > 0) {
+    return await restClient.UserRestEndpoint.getUserById(id);
+  } else {
+    return null;
+  }
 });
 
-export const getAllUsers = createAsyncThunk('user/getAll', async () => {
+export const getAllUsers = createAsyncThunk<User[], void>('user/getAll', async () => {
   return await restClient.UserRestEndpoint.getAllUsers();
 });
 
@@ -340,29 +363,41 @@ export const forceLogout = createAsyncThunk('user/forceLogout', async (session: 
 // Projects
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-export const getProject = createAsyncThunk('project/get', async (id: number) => {
-  if (id > 0) {
-    return await restClient.ProjectRestEndpoint.getProject(id);
-  } else {
-    return null;
-  }
-});
+export const getProject = createAsyncThunk<Project | null, number>(
+  'project/get',
+  async (id: number) => {
+    if (id > 0) {
+      return await restClient.ProjectRestEndpoint.getProject(id);
+    } else {
+      return null;
+    }
+  },
+);
 
-export const getMyProjects = createAsyncThunk('project/list', async () => {
+export const getMyProjects = createAsyncThunk<Project[], void>('project/list', async () => {
   return await restClient.ProjectRestEndpoint.getProjectsWhereTeamMember();
 });
 
-export const getInstanceableModels = createAsyncThunk('project/baseModels', async () => {
-  return await restClient.ProjectRestEndpoint.getInstanceableModels();
-});
+export const getInstanceableModels = createAsyncThunk<Project[], void>(
+  'project/baseModels',
+  async () => {
+    return await restClient.ProjectRestEndpoint.getInstanceableModels();
+  },
+);
 
-export const getAllProjectsAndModels = createAsyncThunk('project/all', async () => {
-  return await restClient.ProjectRestEndpoint.getAllProjects();
-});
+export const getAllProjectsAndModels = createAsyncThunk<Project[], void>(
+  'project/all',
+  async () => {
+    return await restClient.ProjectRestEndpoint.getAllProjects();
+  },
+);
 
-export const getAllGlobalProjects = createAsyncThunk('project/allGlobal', async () => {
-  return await restClient.ProjectRestEndpoint.getAllGlobalModels();
-});
+export const getAllGlobalProjects = createAsyncThunk<Project[], void>(
+  'project/allGlobal',
+  async () => {
+    return await restClient.ProjectRestEndpoint.getAllGlobalModels();
+  },
+);
 
 export const createProject = createAsyncThunk(
   'project/create',
@@ -404,10 +439,14 @@ export const deleteProject = createAsyncThunk('project/delete', async (project: 
   }
 });
 
-export const getRootCardOfProject = createAsyncThunk<Card, number>(
+export const getRootCardOfProject = createAsyncThunk<Card | null, number>(
   'project/getRootCard',
   async (projectId: number) => {
-    return await restClient.ProjectRestEndpoint.getRootCardOfProject(projectId);
+    if (projectId > 0) {
+      return await restClient.ProjectRestEndpoint.getRootCardOfProject(projectId);
+    } else {
+      return null;
+    }
   },
 );
 
@@ -493,9 +532,16 @@ export const shareModel = createAsyncThunk(
 // Project copy param
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-export const getCopyParam = createAsyncThunk('copyParam/get', async (id: number) => {
-  return await restClient.ProjectRestEndpoint.getCopyParam(id);
-});
+export const getCopyParam = createAsyncThunk<CopyParam | null, number>(
+  'copyParam/get',
+  async (id: number) => {
+    if (id > 0) {
+      return await restClient.ProjectRestEndpoint.getCopyParam(id);
+    } else {
+      return null;
+    }
+  },
+);
 
 export const updateCopyParam = createAsyncThunk(
   'copyParam/update',
@@ -508,14 +554,21 @@ export const updateCopyParam = createAsyncThunk(
 // Project team
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-export const getProjectTeam = createAsyncThunk('project/team/get', async (projectId: number) => {
-  const waitMembers = restClient.ProjectRestEndpoint.getMembers(projectId);
-  const waitRoles = restClient.ProjectRestEndpoint.getRoles(projectId);
+export const getProjectTeam = createAsyncThunk<
+  { members: TeamMember[]; roles: TeamRole[] } | null,
+  number
+>('project/team/get', async (projectId: number) => {
+  if (projectId > 0) {
+    const waitMembers = restClient.ProjectRestEndpoint.getMembers(projectId);
+    const waitRoles = restClient.ProjectRestEndpoint.getRoles(projectId);
 
-  return {
-    members: await waitMembers,
-    roles: await waitRoles,
-  };
+    return {
+      members: await waitMembers,
+      roles: await waitRoles,
+    };
+  } else {
+    return null;
+  }
 });
 
 export const sendInvitation = createAsyncThunk(
@@ -629,9 +682,16 @@ export const clearRoleInvolvement = createAsyncThunk(
 // Presence
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-export const getPresenceList = createAsyncThunk('presence/getList', async (projectId: number) => {
-  return await restClient.PresenceRestEndpoint.getProjectPresence(projectId);
-});
+export const getPresenceList = createAsyncThunk<UserPresence[], number>(
+  'presence/getList',
+  async (projectId: number) => {
+    if (projectId > 0) {
+      return await restClient.PresenceRestEndpoint.getProjectPresence(projectId);
+    } else {
+      return [];
+    }
+  },
+);
 
 export const makePresenceKnown = createAsyncThunk(
   'presence/touch',
@@ -652,9 +712,16 @@ export const clearAllPresenceLists = createAsyncThunk('presence/clearAll', async
 // Card Types
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-export const getExpandedCardType = createAsyncThunk('cardType/getExpanded', async (id: number) => {
-  return await restClient.CardTypeRestEndpoint.getExpandedCardType(id);
-});
+export const getExpandedCardType = createAsyncThunk<AbstractCardType[], number>(
+  'cardType/getExpanded',
+  async (id: number) => {
+    if (id > 0) {
+      return await restClient.CardTypeRestEndpoint.getExpandedCardType(id);
+    } else {
+      return [];
+    }
+  },
+);
 
 /**
  * Get project own abstract card types:
@@ -663,10 +730,10 @@ export const getExpandedCardType = createAsyncThunk('cardType/getExpanded', asyn
  *  - defined by other projects and referenced by the current project
  *    - every link in the chain of CardTypeRef + target CardType
  */
-export const getProjectCardTypes = createAsyncThunk(
+export const getProjectCardTypes = createAsyncThunk<AbstractCardType[], number>(
   'cardType/getProjectOnes',
   async (projectId: number) => {
-    if (projectId) {
+    if (projectId > 0) {
       return await restClient.ProjectRestEndpoint.getCardTypesOfProject(projectId);
     } else {
       return [];
@@ -678,7 +745,7 @@ export const getProjectCardTypes = createAsyncThunk(
  * Get all published card types from all projects accessible to the current user
  * + all global published card types
  */
-export const getAvailablePublishedCardTypes = createAsyncThunk(
+export const getAvailablePublishedCardTypes = createAsyncThunk<AbstractCardType[], void>(
   'cardType/getPublished',
   async () => {
     const getFromProjects =
@@ -803,33 +870,55 @@ export const removeCardTypeRefFromProject = createAsyncThunk(
  * Get all global cardTypes.
  * Admin only !
  */
-export const getAllGlobalCardTypes = createAsyncThunk('cardType/getAllGlobals', async () => {
-  return await restClient.CardTypeRestEndpoint.getAllGlobalCardTypes();
-});
+export const getAllGlobalCardTypes = createAsyncThunk<AbstractCardType[], void>(
+  'cardType/getAllGlobals',
+  async () => {
+    return await restClient.CardTypeRestEndpoint.getAllGlobalCardTypes();
+  },
+);
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Cards
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-export const getCard = createAsyncThunk('card/get', async (id: number) => {
-  return await restClient.CardRestEndpoint.getCard(id);
+export const getCard = createAsyncThunk<Card | null, number>('card/get', async (id: number) => {
+  if (id > 0) {
+    return await restClient.CardRestEndpoint.getCard(id);
+  } else {
+    return null;
+  }
 });
 
-export const getProjectStructure = createAsyncThunk('project/getStructure', async (id: number) => {
-  return await restClient.ProjectRestEndpoint.getStructureOfProject(id);
-});
-
-export const getAllProjectCards = createAsyncThunk(
-  'card/getAllProjectCards',
+export const getProjectStructure = createAsyncThunk<ProjectStructure | null, number>(
+  'project/getStructure',
   async (id: number) => {
-    return await restClient.ProjectRestEndpoint.getCardsOfProject(id);
+    if (id > 0) {
+      return await restClient.ProjectRestEndpoint.getStructureOfProject(id);
+    } else {
+      return null;
+    }
   },
 );
 
-export const getAllProjectCardContents = createAsyncThunk(
+export const getAllProjectCards = createAsyncThunk<Card[], number>(
+  'card/getAllProjectCards',
+  async (id: number) => {
+    if (id > 0) {
+      return await restClient.ProjectRestEndpoint.getCardsOfProject(id);
+    } else {
+      return [];
+    }
+  },
+);
+
+export const getAllProjectCardContents = createAsyncThunk<CardContent[], number>(
   'card/getAllProjectCardContents',
   async (id: number) => {
-    return await restClient.ProjectRestEndpoint.getCardContentsOfProject(id);
+    if (id > 0) {
+      return await restClient.ProjectRestEndpoint.getCardContentsOfProject(id);
+    } else {
+      return [];
+    }
   },
 );
 
@@ -903,21 +992,42 @@ export const removeCardCardType = createAsyncThunk(
 // Access Control List
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-export const getACL = createAsyncThunk('acl/get', async (cardId: number) => {
-  return await restClient.CardRestEndpoint.getAcls(cardId);
-});
+export const getACL = createAsyncThunk<AccessControl[], number>(
+  'acl/get',
+  async (cardId: number) => {
+    if (cardId > 0) {
+      return await restClient.CardRestEndpoint.getAcls(cardId);
+    } else {
+      return [];
+    }
+  },
+);
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Card Contents
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-export const getCardContent = createAsyncThunk('cardcontent/get', async (id: number) => {
-  return await restClient.CardContentRestEndpoint.getCardContent(id);
-});
+export const getCardContent = createAsyncThunk<CardContent | null, number>(
+  'cardcontent/get',
+  async (id: number) => {
+    if (id > 0) {
+      return await restClient.CardContentRestEndpoint.getCardContent(id);
+    } else {
+      return null;
+    }
+  },
+);
 
-export const getCardContents = createAsyncThunk('cardcontent/getByCard', async (cardId: number) => {
-  return await restClient.CardRestEndpoint.getContentVariantsOfCard(cardId);
-});
+export const getCardContents = createAsyncThunk<CardContent[], number>(
+  'cardcontent/getByCard',
+  async (cardId: number) => {
+    if (cardId > 0) {
+      return await restClient.CardRestEndpoint.getContentVariantsOfCard(cardId);
+    } else {
+      return [];
+    }
+  },
+);
 
 export const createCardContentVariantWithBlockDoc = createAsyncThunk(
   'cardcontent/create',
@@ -951,17 +1061,25 @@ export const deleteCardContent = createAsyncThunk(
   },
 );
 
-export const getSubCards = createAsyncThunk(
+export const getSubCards = createAsyncThunk<Card[], number>(
   'cardcontent/getSubs',
   async (cardContentId: number) => {
-    return await restClient.CardContentRestEndpoint.getSubCards(cardContentId);
+    if (cardContentId > 0) {
+      return await restClient.CardContentRestEndpoint.getSubCards(cardContentId);
+    } else {
+      return [];
+    }
   },
 );
 
-export const getDeliverablesOfCardContent = createAsyncThunk(
+export const getDeliverablesOfCardContent = createAsyncThunk<Document[], number>(
   'cardcontent/getDeliverables',
   async (cardContentId: number) => {
-    return await restClient.CardContentRestEndpoint.getDeliverablesOfCardContent(cardContentId);
+    if (cardContentId > 0) {
+      return await restClient.CardContentRestEndpoint.getDeliverablesOfCardContent(cardContentId);
+    } else {
+      return [];
+    }
   },
 );
 
@@ -1035,31 +1153,43 @@ export const removeDeliverable = createAsyncThunk(
 // Resources
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-export const getAbstractResource = createAsyncThunk<AbstractResource, number>(
+export const getAbstractResource = createAsyncThunk<AbstractResource | null, number>(
   'resource/getAbstractResource',
   async (id: number) => {
-    return await restClient.ResourceRestEndpoint.getAbstractResource(id);
+    if (id > 0) {
+      return await restClient.ResourceRestEndpoint.getAbstractResource(id);
+    } else {
+      return null;
+    }
   },
 );
 
-export const getResourceChainForAbstractCardTypeId = createAsyncThunk(
+export const getResourceChainForAbstractCardTypeId = createAsyncThunk<AbstractResource[][], number>(
   'resource/getForCardTypeId',
   async (cardTypeId: number) => {
-    return await restClient.ResourceRestEndpoint.getResourceChainForAbstractCardType(cardTypeId);
+    if (cardTypeId > 0) {
+      return await restClient.ResourceRestEndpoint.getResourceChainForAbstractCardType(cardTypeId);
+    } else {
+      return [];
+    }
   },
 );
 
-export const getResourceChainForCardContentId = createAsyncThunk(
+export const getResourceChainForCardContentId = createAsyncThunk<AbstractResource[][], number>(
   'resource/getForCardContentId',
   async (cardContentId: number) => {
-    return await restClient.ResourceRestEndpoint.getResourceChainForCardContent(cardContentId);
+    if (cardContentId > 0) {
+      return await restClient.ResourceRestEndpoint.getResourceChainForCardContent(cardContentId);
+    } else {
+      return [];
+    }
   },
 );
 
-export const getDirectResourcesOfProject = createAsyncThunk(
+export const getDirectResourcesOfProject = createAsyncThunk<AbstractResource[], number>(
   'resource/getAllOfProject',
   async (projectId: number) => {
-    if (projectId) {
+    if (projectId > 0) {
       return await restClient.ResourceRestEndpoint.getDirectAbstractResourcesOfProject(projectId);
     } else {
       return []; // to avoid undefined, return an empty array
@@ -1202,10 +1332,14 @@ export const changeResourceCategory = createAsyncThunk(
   },
 );
 
-export const getDocumentsOfResource = createAsyncThunk(
+export const getDocumentsOfResource = createAsyncThunk<Document[], number>(
   'resource/getDocuments',
   async (resourceId: number) => {
-    return await restClient.ResourceRestEndpoint.getDocumentsOfResource(resourceId);
+    if (resourceId > 0) {
+      return await restClient.ResourceRestEndpoint.getDocumentsOfResource(resourceId);
+    } else {
+      return [];
+    }
   },
 );
 
@@ -1276,10 +1410,14 @@ export const removeDocumentOfResource = createAsyncThunk(
 // Documents
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-export const getDocument = createAsyncThunk<Document, number>(
+export const getDocument = createAsyncThunk<Document | null, number>(
   'document/get',
   async (id: number) => {
-    return await restClient.DocumentRestEndpoint.getDocument(id);
+    if (id > 0) {
+      return await restClient.DocumentRestEndpoint.getDocument(id);
+    } else {
+      return null;
+    }
   },
 );
 
@@ -1397,10 +1535,14 @@ export const deletePendingChanges = createAsyncThunk('block/deleteChanges', asyn
 //});
 
 // TODO see if it belongs to stickyNoteLinks or to cards. Make your choice !
-export const getStickyNoteLinkAsDest = createAsyncThunk(
+export const getStickyNoteLinkAsDest = createAsyncThunk<StickyNoteLink[], number>(
   'stickyNoteLinks/getAsDest',
   async (cardId: number) => {
-    return await restClient.CardRestEndpoint.getStickyNoteLinksAsDest(cardId);
+    if (cardId > 0) {
+      return await restClient.CardRestEndpoint.getStickyNoteLinksAsDest(cardId);
+    } else {
+      return [];
+    }
   },
 );
 
@@ -1431,24 +1573,36 @@ export const deleteStickyNote = createAsyncThunk(
 // Activity-Flow Links
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-export const getAllActivityFlowLinks = createAsyncThunk(
+export const getAllActivityFlowLinks = createAsyncThunk<ActivityFlowLink[], number>(
   'activityFlow/getAll',
   async (projectId: number) => {
-    return await restClient.ProjectRestEndpoint.getActivityFlowLinks(projectId);
+    if (projectId > 0) {
+      return await restClient.ProjectRestEndpoint.getActivityFlowLinks(projectId);
+    } else {
+      return [];
+    }
   },
 );
 
-export const getActivityFlowLinkFromCard = createAsyncThunk(
+export const getActivityFlowLinkFromCard = createAsyncThunk<ActivityFlowLink[], number>(
   'activityFlow/getFromCard',
   async (cardId: number) => {
-    return await restClient.CardRestEndpoint.getActivityFlowLinksAsPrevious(cardId);
+    if (cardId > 0) {
+      return await restClient.CardRestEndpoint.getActivityFlowLinksAsPrevious(cardId);
+    } else {
+      return [];
+    }
   },
 );
 
-export const getActivityFlowLinkToCard = createAsyncThunk(
+export const getActivityFlowLinkToCard = createAsyncThunk<ActivityFlowLink[], number>(
   'activityFlow/getToCard',
   async (cardId: number) => {
-    return await restClient.CardRestEndpoint.getActivityFlowLinksAsNext(cardId);
+    if (cardId > 0) {
+      return await restClient.CardRestEndpoint.getActivityFlowLinksAsNext(cardId);
+    } else {
+      return [];
+    }
   },
 );
 
@@ -1497,7 +1651,11 @@ export const uploadFile = createAsyncThunk(
 );
 
 // export const getFile = createAsyncThunk('files/GetFile', async (id: number) => {
-//   return await restClient.DocumentFileRestEndPoint.getFileContent(id);
+//   if (id > 0) {
+//     return await restClient.DocumentFileRestEndPoint.getFileContent(id);
+//   } else {
+//     return null;
+//   }
 // });
 
 // export const deleteFile = createAsyncThunk('files/DeleteFile', async (id: number) => {

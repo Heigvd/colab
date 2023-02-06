@@ -88,20 +88,17 @@ const userSlice = createSlice({
         }
       })
       .addCase(API.getUser.pending, (state, action) => {
-        const userId = action.meta.arg;
-        if (userId != null) {
-          state.users[userId] = 'LOADING';
-        }
+        state.users[action.meta.arg] = 'LOADING';
       })
       .addCase(API.getUser.fulfilled, (state, action) => {
-        const userId = action.payload.id;
-        if (userId != null) {
-          state.users[userId] = action.payload;
+        if (action.payload?.id != null) {
+          state.users[action.meta.arg] = action.payload;
+        } else {
+          state.users[action.meta.arg] = 'ERROR';
         }
       })
       .addCase(API.getUser.rejected, (state, action) => {
-        const userId = action.meta.arg;
-        state.users[userId] = 'ERROR';
+        state.users[action.meta.arg] = 'ERROR';
       })
       .addCase(API.getAllUsers.fulfilled, (state, action) => {
         state.users = mapById(action.payload);

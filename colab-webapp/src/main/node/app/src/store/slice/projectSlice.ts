@@ -79,7 +79,7 @@ const projectSlice = createSlice({
         state.projects[action.meta.arg] = 'LOADING';
       })
       .addCase(API.getProject.fulfilled, (state, action) => {
-        if (action.payload != null) {
+        if (action.payload?.id != null) {
           state.projects[action.meta.arg] = action.payload;
         } else {
           state.projects[action.meta.arg] = 'ERROR';
@@ -137,7 +137,11 @@ const projectSlice = createSlice({
         state.copyParams[action.meta.arg] = 'LOADING';
       })
       .addCase(API.getCopyParam.fulfilled, (state, action) => {
-        state.copyParams[action.meta.arg] = action.payload;
+        if (action.payload?.id != null) {
+          state.copyParams[action.meta.arg] = action.payload;
+        } else {
+          state.copyParams[action.meta.arg] = 'ERROR';
+        }
       })
       .addCase(API.getCopyParam.rejected, (state, action) => {
         state.copyParams[action.meta.arg] = 'ERROR';
@@ -147,7 +151,7 @@ const projectSlice = createSlice({
         state.editingStatus = 'LOADING';
       })
       .addCase(API.startProjectEdition.fulfilled, (state, action) => {
-        if (action.payload.id != null) {
+        if (action.payload?.id != null) {
           state.editing = action.payload.id;
         } else {
           state.editing = null;

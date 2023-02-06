@@ -43,7 +43,7 @@ export function useFetchById<T extends ColabEntity>(
   id: number,
   selector: (state: ColabState) => Record<number, T | FetchingStatus>,
   // eslint-disable-next-line @typescript-eslint/ban-types
-  fetcher: AsyncThunk<T, number, {}>,
+  fetcher: AsyncThunk<T | null, number, {}>,
 ): DataAndStatus<T> {
   const dispatch = useAppDispatch();
 
