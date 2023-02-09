@@ -7,6 +7,7 @@
 package ch.colabproject.colab.api.persistence.jcr;
 
 import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
+import ch.colabproject.colab.generator.model.exceptions.MessageI18nKey;
 import javax.jcr.RepositoryException;
 import javax.transaction.Status;
 import javax.transaction.Synchronization;
@@ -21,7 +22,7 @@ import org.slf4j.LoggerFactory;
 public class JcrSynchronizer implements Synchronization {
 
     /** Logger */
-<span class="nc" id="L24">    private static final Logger logger = LoggerFactory.getLogger(JcrSynchronizer.class);</span>
+<span class="nc" id="L25">    private static final Logger logger = LoggerFactory.getLogger(JcrSynchronizer.class);</span>
 
     /** The synchronized session */
     private final JcrSession session;
@@ -31,39 +32,39 @@ public class JcrSynchronizer implements Synchronization {
      *
      * @param session the session to synchronize
      */
-<span class="nc" id="L34">    public JcrSynchronizer(JcrSession session) {</span>
-<span class="nc" id="L35">        logger.trace(&quot;Create synchronizer for {}&quot;, session);</span>
-<span class="nc" id="L36">        this.session = session;</span>
-<span class="nc" id="L37">    }</span>
+<span class="nc" id="L35">    public JcrSynchronizer(JcrSession session) {</span>
+<span class="nc" id="L36">        logger.trace(&quot;Create synchronizer for {}&quot;, session);</span>
+<span class="nc" id="L37">        this.session = session;</span>
+<span class="nc" id="L38">    }</span>
 
     @Override
     public void beforeCompletion() {
         try {
-<span class="nc" id="L42">            logger.trace(&quot;Prepare commit for {}&quot;, session);</span>
-<span class="nc" id="L43">            session.prepareForCommit();</span>
-<span class="nc" id="L44">        } catch (RepositoryException ex) {</span>
+<span class="nc" id="L43">            logger.trace(&quot;Prepare commit for {}&quot;, session);</span>
+<span class="nc" id="L44">            session.prepareForCommit();</span>
+<span class="nc" id="L45">        } catch (RepositoryException ex) {</span>
             // please rollback
-<span class="nc" id="L46">            logger.trace(&quot;Prepare commit failed: rollback&quot;);</span>
-<span class="nc" id="L47">            throw HttpErrorMessage.dataIntegrityFailure();</span>
-<span class="nc" id="L48">        }</span>
-<span class="nc" id="L49">    }</span>
+<span class="nc" id="L47">            logger.trace(&quot;Prepare commit failed: rollback&quot;);</span>
+<span class="nc" id="L48">            throw HttpErrorMessage.dataError(MessageI18nKey.DATA_INTEGRITY_FAILURE);</span>
+<span class="nc" id="L49">        }</span>
+<span class="nc" id="L50">    }</span>
 
     @Override
     public void afterCompletion(int status) {
-<span class="nc bnc" id="L53" title="All 3 branches missed.">        switch (status) {</span>
+<span class="nc bnc" id="L54" title="All 3 branches missed.">        switch (status) {</span>
             case Status.STATUS_COMMITTED:
-<span class="nc" id="L55">                logger.trace(&quot;JCR Sync afterCompletion: {} =&gt; COMMITED&quot;, status);</span>
-<span class="nc" id="L56">                session.saveAndClose();</span>
-<span class="nc" id="L57">                break;</span>
+<span class="nc" id="L56">                logger.trace(&quot;JCR Sync afterCompletion: {} =&gt; COMMITED&quot;, status);</span>
+<span class="nc" id="L57">                session.saveAndClose();</span>
+<span class="nc" id="L58">                break;</span>
             case Status.STATUS_ROLLEDBACK:
-<span class="nc" id="L59">                logger.trace(&quot;JCR Sync afterCompletion: {} =&gt; ROLLED_BACK&quot;, status);</span>
-<span class="nc" id="L60">                session.rollback();</span>
-<span class="nc" id="L61">                break;</span>
+<span class="nc" id="L60">                logger.trace(&quot;JCR Sync afterCompletion: {} =&gt; ROLLED_BACK&quot;, status);</span>
+<span class="nc" id="L61">                session.rollback();</span>
+<span class="nc" id="L62">                break;</span>
             default:
-<span class="nc" id="L63">                logger.trace(&quot;JCR Sync afterCompletion: {} =&gt; UNKNOWN&quot;, status);</span>
+<span class="nc" id="L64">                logger.trace(&quot;JCR Sync afterCompletion: {} =&gt; UNKNOWN&quot;, status);</span>
                 break;
         }
 
-<span class="nc" id="L67">    }</span>
+<span class="nc" id="L68">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

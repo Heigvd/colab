@@ -14,9 +14,9 @@ colab-tests/colab-client,ch.colabproject.colab.client,ColabClient.WebsocketRestE
 colab-tests/colab-client,ch.colabproject.colab.client,ColabClient.ChangeRestEndpointClientImpl.new GenericType() {...},6,0,0,0,1,0,1,0,1,0
 colab-tests/colab-client,ch.colabproject.colab.client,ColabClient.UserRestEndpointClientImpl.new GenericType() {...},0,6,0,0,0,1,0,1,0,1
 colab-tests/colab-client,ch.colabproject.colab.client,ColabClient.ChangeRestEndpointClientImpl.new GenericType() {...},0,6,0,0,0,1,0,1,0,1
-colab-tests/colab-client,ch.colabproject.colab.client,ColabClient.UserRestEndpointClientImpl.new GenericType() {...},0,6,0,0,0,1,0,1,0,1
-colab-tests/colab-client,ch.colabproject.colab.client,ColabClient.ProjectRestEndpointClientImpl,280,377,0,0,28,39,9,13,9,13
 colab-tests/colab-client,ch.colabproject.colab.client,ColabClient.UserRestEndpointClientImpl.new GenericType() {...},6,0,0,0,1,0,1,0,1,0
+colab-tests/colab-client,ch.colabproject.colab.client,ColabClient.ProjectRestEndpointClientImpl,280,377,0,0,28,39,9,13,9,13
+colab-tests/colab-client,ch.colabproject.colab.client,ColabClient.UserRestEndpointClientImpl.new GenericType() {...},0,6,0,0,0,1,0,1,0,1
 colab-tests/colab-client,ch.colabproject.colab.client,ColabClient.ProjectRestEndpointClientImpl.new GenericType() {...},6,0,0,0,1,0,1,0,1,0
 colab-tests/colab-client,ch.colabproject.colab.client,ColabClient.ProjectRestEndpointClientImpl.new GenericType() {...},6,0,0,0,1,0,1,0,1,0
 colab-tests/colab-client,ch.colabproject.colab.client,ColabClient.ProjectRestEndpointClientImpl.new GenericType() {...},6,0,0,0,1,0,1,0,1,0
@@ -67,7 +67,7 @@ colab-tests/client-generator-model,ch.colabproject.colab.generator.model.tools,D
 colab-tests/client-generator-model,ch.colabproject.colab.generator.model.tools,JavaDocExtractor.new TypeLiteral() {...},0,3,0,0,0,1,0,1,0,1
 colab-tests/client-generator-model,ch.colabproject.colab.generator.model.tools,ClassDoc,21,33,0,0,6,13,6,6,6,6
 colab-tests/client-generator-model,ch.colabproject.colab.generator.model.interfaces,WithJsonDiscriminator,3,14,1,1,1,4,1,2,0,2
-colab-tests/client-generator-model,ch.colabproject.colab.generator.model.exceptions,HttpErrorMessage,54,76,0,0,11,23,9,15,9,15
+colab-tests/client-generator-model,ch.colabproject.colab.generator.model.exceptions,HttpErrorMessage,46,72,0,0,8,22,8,14,8,14
 colab-tests/client-generator-model,ch.colabproject.colab.generator.model.exceptions,HttpException,7,12,0,0,3,5,2,3,2,3
-colab-tests/client-generator-model,ch.colabproject.colab.generator.model.exceptions,MessageI18nKey,0,44,0,0,0,5,0,1,0,1
-colab-tests/client-generator-model,ch.colabproject.colab.generator.model.exceptions,HttpErrorMessage.MessageCode,0,154,0,0,0,16,0,1,0,1
+colab-tests/client-generator-model,ch.colabproject.colab.generator.model.exceptions,MessageI18nKey,0,64,0,0,0,7,0,1,0,1
+colab-tests/client-generator-model,ch.colabproject.colab.generator.model.exceptions,HttpErrorMessage.MessageCode,0,144,0,0,0,15,0,1,0,1

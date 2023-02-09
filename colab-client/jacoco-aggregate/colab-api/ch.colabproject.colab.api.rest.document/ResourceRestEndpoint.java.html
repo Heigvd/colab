@@ -82,7 +82,7 @@ import org.slf4j.LoggerFactory;
      * @return the resource or resource reference or null
      */
     @GET
-    @Path(&quot;{id}&quot;)
+    @Path(&quot;{id: [0-9]+}&quot;)
     public AbstractResource getAbstractResource(@PathParam(&quot;id&quot;) Long id) {
 <span class="nc" id="L87">        logger.debug(&quot;get abstract resource #{}&quot;, id);</span>
 <span class="nc" id="L88">        return resourceDao.findResourceOrRef(id);</span>
@@ -98,7 +98,7 @@ import org.slf4j.LoggerFactory;
      * @return The targeted resource and a list of the references to get it
      */
     @GET
-    @Path(&quot;fromCardType/{cardTypeOrRefId}&quot;)
+    @Path(&quot;fromCardType/{cardTypeOrRefId: [0-9]+}&quot;)
     public List&lt;List&lt;AbstractResource&gt;&gt; getResourceChainForAbstractCardType(
         @PathParam(&quot;cardTypeOrRefId&quot;) Long cardTypeOrRefId) {
 <span class="nc" id="L104">        logger.debug(&quot;get resource chain for card content #{}&quot;, cardTypeOrRefId);</span>
@@ -114,7 +114,7 @@ import org.slf4j.LoggerFactory;
      * @return The targeted resource and a list of the references to get it
      */
     @GET
-    @Path(&quot;fromCard/{cardId}&quot;)
+    @Path(&quot;fromCard/{cardId: [0-9]+}&quot;)
     public List&lt;List&lt;AbstractResource&gt;&gt; getResourceChainForCard(
         @PathParam(&quot;cardId&quot;) Long cardId) {
 <span class="nc" id="L120">        logger.debug(&quot;get resource chain for card content #{}&quot;, cardId);</span>
@@ -130,7 +130,7 @@ import org.slf4j.LoggerFactory;
      * @return The targeted resources and a list of the references to get them
      */
     @GET
-    @Path(&quot;fromCardContent/{cardContentId}&quot;)
+    @Path(&quot;fromCardContent/{cardContentId: [0-9]+}&quot;)
     public List&lt;List&lt;AbstractResource&gt;&gt; getResourceChainForCardContent(
         @PathParam(&quot;cardContentId&quot;) Long cardContentId) {
 <span class="nc" id="L136">        logger.debug(&quot;get resource chain for card content #{}&quot;, cardContentId);</span>
@@ -147,7 +147,7 @@ import org.slf4j.LoggerFactory;
      * @return resources directly linked to the given project
      */
     @GET
-    @Path(&quot;directOfProject/{projectId}&quot;)
+    @Path(&quot;directOfProject/{projectId: [0-9]+}&quot;)
     public List&lt;AbstractResource&gt; getDirectAbstractResourcesOfProject(
         @PathParam(&quot;projectId&quot;) Long projectId) {
 <span class="nc" id="L153">        logger.debug(&quot;get all resources of the project #{}&quot;, projectId);</span>
@@ -163,7 +163,7 @@ import org.slf4j.LoggerFactory;
      * @return list of externalReference
      */
     @GET
-    @Path(&quot;externalReference/{abstractResourceId}&quot;)
+    @Path(&quot;externalReference/{abstractResourceId: [0-9]+}&quot;)
     public List&lt;ResourceExternalReference&gt; getResourceExternalReferences(
         @PathParam(&quot;abstractResourceId&quot;) Long abstractResourceId) {
 <span class="nc" id="L169">        return resourceManager.getResourceExternalReferences(abstractResourceId);</span>
@@ -210,7 +210,7 @@ import org.slf4j.LoggerFactory;
      * @return the id of the duplicated resource
      */
     @PUT
-    @Path(&quot;copyResource1/{resourceId}/to/{parentType: (Card|CardContent|CardType)}/{parentId}&quot;)
+    @Path(&quot;copyResource1/{resourceId: [0-9]+}/to/{parentType: (Card|CardContent|CardType)}/{parentId: [0-9]+}&quot;)
     public Long damr1(
         @PathParam(&quot;resourceId&quot;) Long resourceId,
         @PathParam(&quot;parentType&quot;) String parentType,
@@ -297,7 +297,7 @@ import org.slf4j.LoggerFactory;
      * @param published  new publication status
      */
     @PUT
-    @Path(&quot;move/{resourceId}/to/{parentType: (Card|CardContent|CardType)}/{parentId}/{published}&quot;)
+    @Path(&quot;move/{resourceId: [0-9]+}/to/{parentType: (Card|CardContent|CardType)}/{parentId: [0-9]+}/{published}&quot;)
     public void moveResource(
         @PathParam(&quot;resourceId&quot;) Long resourceId,
         @PathParam(&quot;parentType&quot;) String parentType,
@@ -357,7 +357,7 @@ import org.slf4j.LoggerFactory;
      * @return the document newly created
      */
     @POST
-    @Path(&quot;{id}/addDocumentAtBeginning&quot;)
+    @Path(&quot;{id: [0-9]+}/addDocumentAtBeginning&quot;)
     public Document addDocumentAtBeginning(@PathParam(&quot;id&quot;) Long resourceId, Document document) {
 <span class="nc" id="L362">        logger.debug(&quot;add the document {} at the beginning of the resource #{}&quot;, document,</span>
             resourceId);
@@ -374,7 +374,7 @@ import org.slf4j.LoggerFactory;
      * @return the document newly created
      */
     @POST
-    @Path(&quot;{id}/addDocumentAtEnd&quot;)
+    @Path(&quot;{id: [0-9]+}/addDocumentAtEnd&quot;)
     public Document addDocumentAtEnd(@PathParam(&quot;id&quot;) Long resourceId, Document document) {
 <span class="nc" id="L379">        logger.debug(&quot;add the document {} at the end of the resource #{}&quot;, document, resourceId);</span>
 <span class="nc" id="L380">        return resourceManager.addDocument(resourceId, document,</span>
@@ -391,7 +391,7 @@ import org.slf4j.LoggerFactory;
      * @return the document newly created
      */
     @POST
-    @Path(&quot;{id}/addDocumentBefore/{neighbourDocId}&quot;)
+    @Path(&quot;{id: [0-9]+}/addDocumentBefore/{neighbourDocId: [0-9]+}&quot;)
     public Document addDocumentBefore(@PathParam(&quot;id&quot;) Long resourceId,
         @PathParam(&quot;neighbourDocId&quot;) Long neighbourDocId, Document document) {
 <span class="nc" id="L397">        logger.debug(&quot;add the document {} before #{} in the resource #{}&quot;, document,</span>
@@ -410,7 +410,7 @@ import org.slf4j.LoggerFactory;
      * @return the document newly created
      */
     @POST
-    @Path(&quot;{id}/addDocumentAfter/{neighbourDocId}&quot;)
+    @Path(&quot;{id: [0-9]+}/addDocumentAfter/{neighbourDocId: [0-9]+}&quot;)
     public Document addDocumentAfter(@PathParam(&quot;id&quot;) Long resourceId,
         @PathParam(&quot;neighbourDocId&quot;) Long neighbourDocId, Document document) {
 <span class="nc" id="L416">        logger.debug(&quot;add the document {} after #{} in the resource #{}&quot;, document,</span>
@@ -426,7 +426,7 @@ import org.slf4j.LoggerFactory;
      * @param documentId the id of the document to remove from the resource
      */
     @POST
-    @Path(&quot;{id}/removeDocument&quot;)
+    @Path(&quot;{id: [0-9]+}/removeDocument&quot;)
     public void removeDocument(@PathParam(&quot;id&quot;) Long resourceId, Long documentId) {
 <span class="nc" id="L431">        logger.debug(&quot;add the document {} for the resource #{}&quot;, documentId, resourceId);</span>
 
@@ -443,7 +443,7 @@ import org.slf4j.LoggerFactory;
      * @param id the id of the resource to delete
      */
     @DELETE
-    @Path(&quot;{id}&quot;)
+    @Path(&quot;{id: [0-9]+}&quot;)
     public void deleteResource(@PathParam(&quot;id&quot;) Long id) {
 <span class="nc" id="L448">        logger.debug(&quot;delete resource #{}&quot;, id);</span>
 <span class="nc" id="L449">        resourceManager.deleteResource(id);</span>
@@ -461,7 +461,7 @@ import org.slf4j.LoggerFactory;
      *                        reference
      */
     @PUT
-    @Path(&quot;changeCategory/{resourceOrRefId}/{category : .*}&quot;)
+    @Path(&quot;changeCategory/{resourceOrRefId: [0-9]+}/{category : .*}&quot;)
     public void changeCategory(@PathParam(&quot;resourceOrRefId&quot;) Long resourceOrRefId,
         @PathParam(&quot;category&quot;) String categoryName) {
 <span class="nc" id="L467">        logger.debug(&quot;add resource/ref #{} to category {}&quot;, resourceOrRefId, categoryName);</span>
@@ -489,7 +489,7 @@ import org.slf4j.LoggerFactory;
      * @param resourceOrRefId the id of the resource / resource reference
      */
     @PUT
-    @Path(&quot;removeCategory/{resourceOrRefId}&quot;)
+    @Path(&quot;removeCategory/{resourceOrRefId: [0-9]+}&quot;)
     public void removeCategory(@PathParam(&quot;resourceOrRefId&quot;) Long resourceOrRefId) {
 <span class="nc" id="L494">        logger.debug(&quot;remove category from resource/ref #{}&quot;, resourceOrRefId);</span>
 <span class="nc" id="L495">        resourceCategoryHelper.changeCategory(resourceOrRefId, null);</span>
@@ -515,7 +515,7 @@ import org.slf4j.LoggerFactory;
      * @param newName         the new name of the category
      */
     @PUT
-    @Path(&quot;renameCategory/cardType/{cardTypeId}/{oldName : .*}/{newName : .*}&quot;)
+    @Path(&quot;renameCategory/cardType/{cardTypeId: [0-9]+}/{oldName : .*}/{newName : .*}&quot;)
     public void renameCategoryForCardType(
         @PathParam(&quot;cardTypeId&quot;) Long cardTypeOrRefId, @PathParam(&quot;oldName&quot;) String oldName,
         @PathParam(&quot;newName&quot;) String newName) {
@@ -532,7 +532,7 @@ import org.slf4j.LoggerFactory;
      * @param newName the new name of the category
      */
     @PUT
-    @Path(&quot;renameCategory/card/{cardId}/{oldName : .*}/{newName : .*}&quot;)
+    @Path(&quot;renameCategory/card/{cardId: [0-9]+}/{oldName : .*}/{newName : .*}&quot;)
     public void renameCategoryForCard(@PathParam(&quot;cardId&quot;) Long cardId,
         @PathParam(&quot;oldName&quot;) String oldName, @PathParam(&quot;newName&quot;) String newName) {
 <span class="nc" id="L538">        logger.debug(&quot;rename category {} to {} for card #{}&quot;, oldName, newName, cardId);</span>
@@ -547,7 +547,7 @@ import org.slf4j.LoggerFactory;
      * @param newName       the new name of the category
      */
     @PUT
-    @Path(&quot;renameCategory/cardContent/{cardContentId}/{oldName : .*}/{newName : .*}&quot;)
+    @Path(&quot;renameCategory/cardContent/{cardContentId: [0-9]+}/{oldName : .*}/{newName : .*}&quot;)
     public void renameCategoryForCardContent(@PathParam(&quot;cardContentId&quot;) Long cardContentId,
         @PathParam(&quot;oldName&quot;) String oldName, @PathParam(&quot;newName&quot;) String newName) {
 <span class="nc" id="L553">        logger.debug(&quot;rename category {} to {} for card content #{}&quot;, oldName, newName,</span>
@@ -567,7 +567,7 @@ import org.slf4j.LoggerFactory;
      * @return the documents linked to the resource
      */
     @GET
-    @Path(&quot;{id}/Documents&quot;)
+    @Path(&quot;{id: [0-9]+}/Documents&quot;)
     public List&lt;Document&gt; getDocumentsOfResource(@PathParam(&quot;id&quot;) Long resourceId) {
 <span class="nc" id="L572">        logger.debug(&quot;Get the documents of the resource #{}&quot;, resourceId);</span>
 <span class="nc" id="L573">        return resourceManager.getDocumentsOfResource(resourceId);</span>
@@ -581,7 +581,7 @@ import org.slf4j.LoggerFactory;
      * @return list of links
      */
     @GET
-    @Path(&quot;{id}/StickyNoteLinks&quot;)
+    @Path(&quot;{id: [0-9]+}/StickyNoteLinks&quot;)
     public List&lt;StickyNoteLink&gt; getStickyNoteLinksAsSrc(@PathParam(&quot;id&quot;) Long resourceOrRefId) {
 <span class="nc" id="L586">        logger.debug(&quot;Get sticky note links to abstract resource #{} as source&quot;, resourceOrRefId);</span>
 <span class="nc" id="L587">        return resourceManager.getStickyNoteLinkAsSrc(resourceOrRefId);</span>

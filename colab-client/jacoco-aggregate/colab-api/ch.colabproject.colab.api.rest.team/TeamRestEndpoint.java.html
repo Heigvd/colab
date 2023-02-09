@@ -124,7 +124,7 @@ import org.slf4j.LoggerFactory;
      * @param memberId id of the member
      */
     @DELETE
-    @Path(&quot;member/{memberId}&quot;)
+    @Path(&quot;member/{memberId: [0-9]+}&quot;)
     public void deleteTeamMember(@PathParam(&quot;memberId&quot;) Long memberId) {
 <span class="nc" id="L129">        logger.debug(&quot;Delete team member #{}&quot;, memberId);</span>
 <span class="nc" id="L130">        teamManager.deleteTeamMember(memberId);</span>
@@ -198,7 +198,7 @@ import org.slf4j.LoggerFactory;
      * @param memberId id of the team member
      */
     @PUT
-    @Path(&quot;role/{roleId: [0-9]+}/giveto/{memberId : [0-9]+}&quot;)
+    @Path(&quot;role/{roleId: [0-9]+}/giveto/{memberId: [0-9]+}&quot;)
     public void giveRoleTo(
         @PathParam(&quot;roleId&quot;) Long roleId,
         @PathParam(&quot;memberId&quot;) Long memberId
@@ -244,7 +244,7 @@ import org.slf4j.LoggerFactory;
      * @param level    involvement level
      */
     @PUT
-    @Path(&quot;acl/{cardId: [0-9]+}/member/{memberId : [0-9]+}/{level}&quot;)
+    @Path(&quot;acl/{cardId: [0-9]+}/member/{memberId: [0-9]+}/{level}&quot;)
     public void setMemberInvolvement(
         @PathParam(&quot;cardId&quot;) Long cardId,
         @PathParam(&quot;memberId&quot;) Long memberId,
@@ -260,7 +260,7 @@ import org.slf4j.LoggerFactory;
      * @param memberId id of the team member
      */
     @DELETE
-    @Path(&quot;acl/{cardId: [0-9]+}/member/{memberId : [0-9]+}&quot;)
+    @Path(&quot;acl/{cardId: [0-9]+}/member/{memberId: [0-9]+}&quot;)
     public void clearMemberInvolvement(
         @PathParam(&quot;cardId&quot;) Long cardId,
         @PathParam(&quot;memberId&quot;) Long memberId
@@ -276,7 +276,7 @@ import org.slf4j.LoggerFactory;
      * @param level  involvement level
      */
     @PUT
-    @Path(&quot;acl/{cardId: [0-9]+}/role/{roleId : [0-9]+}/{level}&quot;)
+    @Path(&quot;acl/{cardId: [0-9]+}/role/{roleId: [0-9]+}/{level}&quot;)
     public void setRoleInvolvement(
         @PathParam(&quot;cardId&quot;) Long cardId,
         @PathParam(&quot;roleId&quot;) Long roleId,

@@ -66,7 +66,7 @@ import org.slf4j.LoggerFactory;
      * @return the link or null
      */
     @GET
-    @Path(&quot;{id}&quot;)
+    @Path(&quot;{id: [0-9]+}&quot;)
     public ActivityFlowLink getLink(@PathParam(&quot;id&quot;) Long id) {
 <span class="nc" id="L71">        logger.debug(&quot;get activity flow link #{}&quot;, id);</span>
 <span class="nc" id="L72">        return linkDao.findActivityFlowLink(id);</span>
@@ -104,7 +104,7 @@ import org.slf4j.LoggerFactory;
      * @param id id of the link to delete
      */
     @DELETE
-    @Path(&quot;{id}&quot;)
+    @Path(&quot;{id: [0-9]+}&quot;)
     public void deleteLink(@PathParam(&quot;id&quot;) Long id) {
 <span class="nc" id="L109">        logger.debug(&quot;delete activity flow link #{}&quot;, id);</span>
 <span class="nc" id="L110">        linkManager.deleteActivityFlowLink(id);</span>
@@ -117,7 +117,7 @@ import org.slf4j.LoggerFactory;
      * @param cardId the id of the new previous card
      */
     @PUT
-    @Path(&quot;changePrevious/{linkId}&quot;)
+    @Path(&quot;changePrevious/{linkId: [0-9]+}&quot;)
     public void changePreviousCard(@PathParam(&quot;linkId&quot;) Long linkId, Long cardId) {
 <span class="nc" id="L122">        logger.debug(&quot;change activity flow link #{} previous card to #{}&quot;, linkId, cardId);</span>
 <span class="nc" id="L123">        linkManager.changeActivityFlowLinkPrevious(linkId, cardId);</span>
@@ -130,7 +130,7 @@ import org.slf4j.LoggerFactory;
      * @param cardId the id of the new next card
      */
     @PUT
-    @Path(&quot;changeNext/{linkId}&quot;)
+    @Path(&quot;changeNext/{linkId: [0-9]+}&quot;)
     public void changeNextCard(@PathParam(&quot;linkId&quot;) Long linkId, Long cardId) {
 <span class="nc" id="L135">        logger.debug(&quot;change activity flow link #{} next card to #{}&quot;, linkId, cardId);</span>
 <span class="nc" id="L136">        linkManager.changeActivityFlowLinkNext(linkId, cardId);</span>

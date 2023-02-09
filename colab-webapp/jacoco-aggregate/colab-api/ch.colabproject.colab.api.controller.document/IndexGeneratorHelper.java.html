@@ -8,6 +8,7 @@ package ch.colabproject.colab.api.controller.document;
 
 import ch.colabproject.colab.api.model.WithIndex;
 import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
+import ch.colabproject.colab.generator.model.exceptions.MessageI18nKey;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
@@ -38,17 +39,17 @@ public class IndexGeneratorHelper&lt;T extends WithIndex&gt; {
     /**
      * The default value of the smallest index that is suitable
      */
-<span class="nc" id="L41">    private final int DEFAULT_MIN_INDEX = 0;</span>
+<span class="nc" id="L42">    private final int DEFAULT_MIN_INDEX = 0;</span>
 
     /**
      * The default value of the biggest index that is suitable
      */
-<span class="nc" id="L46">    private final int DEFAULT_MAX_INDEX = Integer.MAX_VALUE;</span>
+<span class="nc" id="L47">    private final int DEFAULT_MAX_INDEX = Integer.MAX_VALUE;</span>
 
     /**
      * Default room between two neighboring indexes
      */
-<span class="nc" id="L51">    private final int DEFAULT_INDEX_INC = 1000;</span>
+<span class="nc" id="L52">    private final int DEFAULT_INDEX_INC = 1000;</span>
 
     /**
      * Value of the smallest index that is suitable
@@ -73,13 +74,13 @@ public class IndexGeneratorHelper&lt;T extends WithIndex&gt; {
     /**
      * Default constructor
      */
-<span class="nc" id="L76">    public IndexGeneratorHelper() {</span>
-<span class="nc" id="L77">        minIndex = DEFAULT_MIN_INDEX;</span>
-<span class="nc" id="L78">        maxIndex = DEFAULT_MAX_INDEX;</span>
-<span class="nc" id="L79">        indexIncrement = DEFAULT_INDEX_INC;</span>
+<span class="nc" id="L77">    public IndexGeneratorHelper() {</span>
+<span class="nc" id="L78">        minIndex = DEFAULT_MIN_INDEX;</span>
+<span class="nc" id="L79">        maxIndex = DEFAULT_MAX_INDEX;</span>
+<span class="nc" id="L80">        indexIncrement = DEFAULT_INDEX_INC;</span>
 
-<span class="nc" id="L81">        soloIndex = minIndex + indexIncrement;</span>
-<span class="nc" id="L82">    }</span>
+<span class="nc" id="L82">        soloIndex = minIndex + indexIncrement;</span>
+<span class="nc" id="L83">    }</span>
 
     /**
      * Constructor with parameters
@@ -88,13 +89,13 @@ public class IndexGeneratorHelper&lt;T extends WithIndex&gt; {
      * @param maxIndex       The value of the biggest index that is suitable
      * @param indexIncrement The initial room between two neighboring indexes
      */
-<span class="nc" id="L91">    public IndexGeneratorHelper(int minIndex, int maxIndex, int indexIncrement) {</span>
-<span class="nc" id="L92">        this.minIndex = minIndex;</span>
-<span class="nc" id="L93">        this.maxIndex = maxIndex;</span>
-<span class="nc" id="L94">        this.indexIncrement = indexIncrement;</span>
+<span class="nc" id="L92">    public IndexGeneratorHelper(int minIndex, int maxIndex, int indexIncrement) {</span>
+<span class="nc" id="L93">        this.minIndex = minIndex;</span>
+<span class="nc" id="L94">        this.maxIndex = maxIndex;</span>
+<span class="nc" id="L95">        this.indexIncrement = indexIncrement;</span>
 
-<span class="nc" id="L96">        soloIndex = minIndex + indexIncrement;</span>
-<span class="nc" id="L97">    }</span>
+<span class="nc" id="L97">        soloIndex = minIndex + indexIncrement;</span>
+<span class="nc" id="L98">    }</span>
 
     // *********************************************************************************************
     //
@@ -111,24 +112,24 @@ public class IndexGeneratorHelper&lt;T extends WithIndex&gt; {
      * @throws HttpErrorMessage if the collection is too big
      */
     public void moveItemToBeginning(T item, Collection&lt;T&gt; collection) {
-<span class="nc bnc" id="L114" title="All 2 branches missed.">        if (collection.isEmpty()) {</span>
-<span class="nc" id="L115">            item.setIndex(soloIndex);</span>
+<span class="nc bnc" id="L115" title="All 2 branches missed.">        if (collection.isEmpty()) {</span>
+<span class="nc" id="L116">            item.setIndex(soloIndex);</span>
         } else {
-<span class="nc" id="L117">            List&lt;T&gt; sortedList = sortCollection(collection);</span>
+<span class="nc" id="L118">            List&lt;T&gt; sortedList = sortCollection(collection);</span>
 
-<span class="nc" id="L119">            T baseItem = sortedList.get(0);</span>
+<span class="nc" id="L120">            T baseItem = sortedList.get(0);</span>
 
-<span class="nc" id="L121">            int justTooLow = minIndex - 1;</span>
+<span class="nc" id="L122">            int justTooLow = minIndex - 1;</span>
 
-<span class="nc bnc" id="L123" title="All 2 branches missed.">            if (!hasEnoughSpaceBetween(justTooLow, baseItem.getIndex())) {</span>
-<span class="nc" id="L124">                reorderIndexes(sortedList);</span>
+<span class="nc bnc" id="L124" title="All 2 branches missed.">            if (!hasEnoughSpaceBetween(justTooLow, baseItem.getIndex())) {</span>
+<span class="nc" id="L125">                reorderIndexes(sortedList);</span>
             }
 
-<span class="nc" id="L127">            int wantedIndex = computeInBetweenIndex(justTooLow, baseItem.getIndex());</span>
+<span class="nc" id="L128">            int wantedIndex = computeInBetweenIndex(justTooLow, baseItem.getIndex());</span>
 
-<span class="nc" id="L129">            item.setIndex(wantedIndex);</span>
+<span class="nc" id="L130">            item.setIndex(wantedIndex);</span>
         }
-<span class="nc" id="L131">    }</span>
+<span class="nc" id="L132">    }</span>
 
     /**
      * Move the given item one step ahead from where it is now.
@@ -139,23 +140,23 @@ public class IndexGeneratorHelper&lt;T extends WithIndex&gt; {
      * @throws HttpErrorMessage if the item is not in the collection
      */
     public void moveOneStepAhead(T item, Collection&lt;T&gt; collection) {
-<span class="nc bnc" id="L142" title="All 2 branches missed.">        if (!collection.contains(item)) {</span>
-<span class="nc" id="L143">            throw HttpErrorMessage.dataIntegrityFailure();</span>
+<span class="nc bnc" id="L143" title="All 2 branches missed.">        if (!collection.contains(item)) {</span>
+<span class="nc" id="L144">            throw HttpErrorMessage.dataError(MessageI18nKey.DATA_INTEGRITY_FAILURE);</span>
         }
 
-<span class="nc" id="L146">        List&lt;T&gt; sortedList = sortCollection(collection);</span>
+<span class="nc" id="L147">        List&lt;T&gt; sortedList = sortCollection(collection);</span>
 
-<span class="nc" id="L148">        T item1 = getItemBefore(item, sortedList);</span>
+<span class="nc" id="L149">        T item1 = getItemBefore(item, sortedList);</span>
 
-<span class="nc bnc" id="L150" title="All 2 branches missed.">        if (item1 == null) {</span>
+<span class="nc bnc" id="L151" title="All 2 branches missed.">        if (item1 == null) {</span>
             // already at the beginning
-<span class="nc" id="L152">            return;</span>
+<span class="nc" id="L153">            return;</span>
         }
 
-<span class="nc" id="L155">        int itemIndex = item.getIndex();</span>
-<span class="nc" id="L156">        item.setIndex(item1.getIndex());</span>
-<span class="nc" id="L157">        item1.setIndex(itemIndex);</span>
-<span class="nc" id="L158">    }</span>
+<span class="nc" id="L156">        int itemIndex = item.getIndex();</span>
+<span class="nc" id="L157">        item.setIndex(item1.getIndex());</span>
+<span class="nc" id="L158">        item1.setIndex(itemIndex);</span>
+<span class="nc" id="L159">    }</span>
 
     /**
      * Move (or set) the given item before the baseItem.
@@ -168,30 +169,30 @@ public class IndexGeneratorHelper&lt;T extends WithIndex&gt; {
      *                          big
      */
     public void moveItemBefore(T item, T baseItem, Collection&lt;T&gt; collection) {
-<span class="nc bnc" id="L171" title="All 2 branches missed.">        if (!collection.contains(baseItem)) {</span>
-<span class="nc" id="L172">            throw HttpErrorMessage.dataIntegrityFailure();</span>
+<span class="nc bnc" id="L172" title="All 2 branches missed.">        if (!collection.contains(baseItem)) {</span>
+<span class="nc" id="L173">            throw HttpErrorMessage.dataError(MessageI18nKey.DATA_INTEGRITY_FAILURE);</span>
         }
 
-<span class="nc" id="L175">        List&lt;T&gt; sortedList = sortCollection(collection);</span>
+<span class="nc" id="L176">        List&lt;T&gt; sortedList = sortCollection(collection);</span>
 
-<span class="nc" id="L177">        T item1 = baseItem;</span>
-<span class="nc" id="L178">        T item2 = getItemBefore(baseItem, sortedList);</span>
+<span class="nc" id="L178">        T item1 = baseItem;</span>
+<span class="nc" id="L179">        T item2 = getItemBefore(baseItem, sortedList);</span>
 
-<span class="nc bnc" id="L180" title="All 2 branches missed.">        if (item2 == null) {</span>
+<span class="nc bnc" id="L181" title="All 2 branches missed.">        if (item2 == null) {</span>
             // set before item1 which is the first item
-<span class="nc" id="L182">            moveItemToBeginning(item, collection);</span>
+<span class="nc" id="L183">            moveItemToBeginning(item, collection);</span>
 
         } else {
             // between two items
-<span class="nc bnc" id="L186" title="All 2 branches missed.">            if (!hasEnoughSpaceBetween(item1.getIndex(), item2.getIndex())) {</span>
-<span class="nc" id="L187">                reorderIndexes(sortedList);</span>
+<span class="nc bnc" id="L187" title="All 2 branches missed.">            if (!hasEnoughSpaceBetween(item1.getIndex(), item2.getIndex())) {</span>
+<span class="nc" id="L188">                reorderIndexes(sortedList);</span>
             }
 
-<span class="nc" id="L190">            int wantedIndex = computeInBetweenIndex(item1.getIndex(), item2.getIndex());</span>
+<span class="nc" id="L191">            int wantedIndex = computeInBetweenIndex(item1.getIndex(), item2.getIndex());</span>
 
-<span class="nc" id="L192">            item.setIndex(wantedIndex);</span>
+<span class="nc" id="L193">            item.setIndex(wantedIndex);</span>
         }
-<span class="nc" id="L194">    }</span>
+<span class="nc" id="L195">    }</span>
 
     /**
      * Move an item one step behind from where it is now.
@@ -202,23 +203,23 @@ public class IndexGeneratorHelper&lt;T extends WithIndex&gt; {
      * @throws HttpErrorMessage if the item is not in the collection
      */
     public void moveOneStepBehind(T item, Collection&lt;T&gt; collection) {
-<span class="nc bnc" id="L205" title="All 2 branches missed.">        if (!collection.contains(item)) {</span>
-<span class="nc" id="L206">            throw HttpErrorMessage.dataIntegrityFailure();</span>
+<span class="nc bnc" id="L206" title="All 2 branches missed.">        if (!collection.contains(item)) {</span>
+<span class="nc" id="L207">            throw HttpErrorMessage.dataError(MessageI18nKey.DATA_INTEGRITY_FAILURE);</span>
         }
 
-<span class="nc" id="L209">        List&lt;T&gt; sortedList = sortCollection(collection);</span>
+<span class="nc" id="L210">        List&lt;T&gt; sortedList = sortCollection(collection);</span>
 
-<span class="nc" id="L211">        T item1 = getItemAfter(item, sortedList);</span>
+<span class="nc" id="L212">        T item1 = getItemAfter(item, sortedList);</span>
 
-<span class="nc bnc" id="L213" title="All 2 branches missed.">        if (item1 == null) {</span>
+<span class="nc bnc" id="L214" title="All 2 branches missed.">        if (item1 == null) {</span>
             // already at the end
-<span class="nc" id="L215">            return;</span>
+<span class="nc" id="L216">            return;</span>
         }
 
-<span class="nc" id="L218">        int itemIndex = item.getIndex();</span>
-<span class="nc" id="L219">        item.setIndex(item1.getIndex());</span>
-<span class="nc" id="L220">        item1.setIndex(itemIndex);</span>
-<span class="nc" id="L221">    }</span>
+<span class="nc" id="L219">        int itemIndex = item.getIndex();</span>
+<span class="nc" id="L220">        item.setIndex(item1.getIndex());</span>
+<span class="nc" id="L221">        item1.setIndex(itemIndex);</span>
+<span class="nc" id="L222">    }</span>
 
     /**
      * Move (or set) the given item after the baseItem.
@@ -231,29 +232,29 @@ public class IndexGeneratorHelper&lt;T extends WithIndex&gt; {
      *                          big
      */
     public void moveItemAfter(T item, T baseItem, Collection&lt;T&gt; collection) {
-<span class="nc bnc" id="L234" title="All 2 branches missed.">        if (!collection.contains(baseItem)) {</span>
-<span class="nc" id="L235">            throw HttpErrorMessage.dataIntegrityFailure();</span>
+<span class="nc bnc" id="L235" title="All 2 branches missed.">        if (!collection.contains(baseItem)) {</span>
+<span class="nc" id="L236">            throw HttpErrorMessage.dataError(MessageI18nKey.DATA_INTEGRITY_FAILURE);</span>
         }
 
-<span class="nc" id="L238">        List&lt;T&gt; sortedList = sortCollection(collection);</span>
+<span class="nc" id="L239">        List&lt;T&gt; sortedList = sortCollection(collection);</span>
 
-<span class="nc" id="L240">        T item1 = baseItem;</span>
-<span class="nc" id="L241">        T item2 = getItemAfter(baseItem, sortedList);</span>
+<span class="nc" id="L241">        T item1 = baseItem;</span>
+<span class="nc" id="L242">        T item2 = getItemAfter(baseItem, sortedList);</span>
 
-<span class="nc bnc" id="L243" title="All 2 branches missed.">        if (item2 == null) {</span>
+<span class="nc bnc" id="L244" title="All 2 branches missed.">        if (item2 == null) {</span>
             // set after item1 which is the last item
-<span class="nc" id="L245">            moveItemToEnd(item, collection);</span>
+<span class="nc" id="L246">            moveItemToEnd(item, collection);</span>
 
         } else {
-<span class="nc bnc" id="L248" title="All 2 branches missed.">            if (!hasEnoughSpaceBetween(item1.getIndex(), item2.getIndex())) {</span>
-<span class="nc" id="L249">                reorderIndexes(sortedList);</span>
+<span class="nc bnc" id="L249" title="All 2 branches missed.">            if (!hasEnoughSpaceBetween(item1.getIndex(), item2.getIndex())) {</span>
+<span class="nc" id="L250">                reorderIndexes(sortedList);</span>
             }
 
-<span class="nc" id="L252">            int wantedIndex = computeInBetweenIndex(item1.getIndex(), item2.getIndex());</span>
+<span class="nc" id="L253">            int wantedIndex = computeInBetweenIndex(item1.getIndex(), item2.getIndex());</span>
 
-<span class="nc" id="L254">            item.setIndex(wantedIndex);</span>
+<span class="nc" id="L255">            item.setIndex(wantedIndex);</span>
         }
-<span class="nc" id="L256">    }</span>
+<span class="nc" id="L257">    }</span>
 
     /**
      * Move (or set) the given item at the end of the collection.
@@ -266,29 +267,29 @@ public class IndexGeneratorHelper&lt;T extends WithIndex&gt; {
      * @throws HttpErrorMessage if the collection is too big
      */
     public void moveItemToEnd(T item, Collection&lt;T&gt; collection) {
-<span class="nc bnc" id="L269" title="All 2 branches missed.">        if (collection.isEmpty()) {</span>
-<span class="nc" id="L270">            item.setIndex(soloIndex);</span>
+<span class="nc bnc" id="L270" title="All 2 branches missed.">        if (collection.isEmpty()) {</span>
+<span class="nc" id="L271">            item.setIndex(soloIndex);</span>
         } else {
-<span class="nc" id="L272">            List&lt;T&gt; sortedList = sortCollection(collection);</span>
+<span class="nc" id="L273">            List&lt;T&gt; sortedList = sortCollection(collection);</span>
 
-<span class="nc" id="L274">            T baseItem = sortedList.get(sortedList.size() - 1);</span>
+<span class="nc" id="L275">            T baseItem = sortedList.get(sortedList.size() - 1);</span>
 
-<span class="nc" id="L276">            int justTooBigIndex = maxIndex + 1;</span>
+<span class="nc" id="L277">            int justTooBigIndex = maxIndex + 1;</span>
 
-<span class="nc bnc" id="L278" title="All 2 branches missed.">            if (!hasEnoughSpaceBetween(baseItem.getIndex(), justTooBigIndex)) {</span>
-<span class="nc" id="L279">                reorderIndexes(sortedList);</span>
+<span class="nc bnc" id="L279" title="All 2 branches missed.">            if (!hasEnoughSpaceBetween(baseItem.getIndex(), justTooBigIndex)) {</span>
+<span class="nc" id="L280">                reorderIndexes(sortedList);</span>
             }
 
             int wantedIndex;
-<span class="nc bnc" id="L283" title="All 2 branches missed.">            if ((justTooBigIndex - baseItem.getIndex()) &gt; indexIncrement) {</span>
-<span class="nc" id="L284">                wantedIndex = baseItem.getIndex() + indexIncrement;</span>
+<span class="nc bnc" id="L284" title="All 2 branches missed.">            if ((justTooBigIndex - baseItem.getIndex()) &gt; indexIncrement) {</span>
+<span class="nc" id="L285">                wantedIndex = baseItem.getIndex() + indexIncrement;</span>
             } else {
-<span class="nc" id="L286">                wantedIndex = computeInBetweenIndex(baseItem.getIndex(), justTooBigIndex);</span>
+<span class="nc" id="L287">                wantedIndex = computeInBetweenIndex(baseItem.getIndex(), justTooBigIndex);</span>
             }
 
-<span class="nc" id="L289">            item.setIndex(wantedIndex);</span>
+<span class="nc" id="L290">            item.setIndex(wantedIndex);</span>
         }
-<span class="nc" id="L291">    }</span>
+<span class="nc" id="L292">    }</span>
 
     // *********************************************************************************************
     //
@@ -305,17 +306,17 @@ public class IndexGeneratorHelper&lt;T extends WithIndex&gt; {
      * @throws HttpErrorMessage if the collection is too big to be reorder
      */
     private void reorderIndexes(List&lt;T&gt; sortedCollection) {
-<span class="nc bnc" id="L308" title="All 2 branches missed.">        if (!canBeReordered(sortedCollection)) {</span>
-<span class="nc" id="L309">            throw HttpErrorMessage.dataIntegrityFailure();</span>
+<span class="nc bnc" id="L309" title="All 2 branches missed.">        if (!canBeReordered(sortedCollection)) {</span>
+<span class="nc" id="L310">            throw HttpErrorMessage.dataError(MessageI18nKey.DATA_INTEGRITY_FAILURE);</span>
         }
 
-<span class="nc" id="L312">        int index = minIndex + indexIncrement;</span>
+<span class="nc" id="L313">        int index = minIndex + indexIncrement;</span>
 
-<span class="nc bnc" id="L314" title="All 2 branches missed.">        for (WithIndex obj : sortedCollection) {</span>
-<span class="nc" id="L315">            obj.setIndex(index);</span>
-<span class="nc" id="L316">            index += indexIncrement;</span>
-<span class="nc" id="L317">        }</span>
-<span class="nc" id="L318">    }</span>
+<span class="nc bnc" id="L315" title="All 2 branches missed.">        for (WithIndex obj : sortedCollection) {</span>
+<span class="nc" id="L316">            obj.setIndex(index);</span>
+<span class="nc" id="L317">            index += indexIncrement;</span>
+<span class="nc" id="L318">        }</span>
+<span class="nc" id="L319">    }</span>
 
     /**
      * Compute if the collection size fits into items indexes separated by {@link #indexIncrement}
@@ -326,8 +327,8 @@ public class IndexGeneratorHelper&lt;T extends WithIndex&gt; {
      * @return True if the collection size fits into
      */
     private boolean canBeReordered(Collection&lt;T&gt; collection) {
-<span class="nc" id="L329">        return Math.floor(((float) (maxIndex - minIndex)) / indexIncrement) - 1 &gt;= collection</span>
-<span class="nc bnc" id="L330" title="All 2 branches missed.">            .size();</span>
+<span class="nc" id="L330">        return Math.floor(((float) (maxIndex - minIndex)) / indexIncrement) - 1 &gt;= collection</span>
+<span class="nc bnc" id="L331" title="All 2 branches missed.">            .size();</span>
     }
 
     // *********************************************************************************************
@@ -342,9 +343,9 @@ public class IndexGeneratorHelper&lt;T extends WithIndex&gt; {
      * @return a list of sorted items by index
      */
     private List&lt;T&gt; sortCollection(Collection&lt;T&gt; collection) {
-<span class="nc" id="L345">        List&lt;T&gt; sortedList = new ArrayList&lt;&gt;(collection);</span>
+<span class="nc" id="L346">        List&lt;T&gt; sortedList = new ArrayList&lt;&gt;(collection);</span>
 
-<span class="nc" id="L347">        sortedList.sort(Comparator.comparingInt(obj -&gt; obj.getIndex()));</span>
+<span class="nc" id="L348">        sortedList.sort(Comparator.comparingInt(obj -&gt; obj.getIndex()));</span>
 
         // TODO sandra ask Maxence if the old way was more suitable
 //      sortedList.sort((a, b) -&gt; {
@@ -362,7 +363,7 @@ public class IndexGeneratorHelper&lt;T extends WithIndex&gt; {
 //      //both are null
 //      return 0;
 
-<span class="nc" id="L365">        return sortedList;</span>
+<span class="nc" id="L366">        return sortedList;</span>
     }
 
     // *********************************************************************************************
@@ -378,7 +379,7 @@ public class IndexGeneratorHelper&lt;T extends WithIndex&gt; {
      * @return True if there is at least 1 room left between the two indexes
      */
     private boolean hasEnoughSpaceBetween(int indexA, int indexB) {
-<span class="nc bnc" id="L381" title="All 2 branches missed.">        return Math.abs(indexB - indexA) &gt; 1;</span>
+<span class="nc bnc" id="L382" title="All 2 branches missed.">        return Math.abs(indexB - indexA) &gt; 1;</span>
     }
 
     /**
@@ -390,12 +391,12 @@ public class IndexGeneratorHelper&lt;T extends WithIndex&gt; {
      * @return An index that fits between the two given indexes
      */
     private int computeInBetweenIndex(int indexA, int indexB) {
-<span class="nc" id="L393">        int baseIndex = indexA;</span>
+<span class="nc" id="L394">        int baseIndex = indexA;</span>
 
-<span class="nc" id="L395">        int delta = indexB - baseIndex;</span>
-<span class="nc" id="L396">        int increment = (int) Math.floor(delta / 2.0);</span>
+<span class="nc" id="L396">        int delta = indexB - baseIndex;</span>
+<span class="nc" id="L397">        int increment = (int) Math.floor(delta / 2.0);</span>
 
-<span class="nc" id="L398">        return baseIndex + increment;</span>
+<span class="nc" id="L399">        return baseIndex + increment;</span>
     }
 
     /**
@@ -409,17 +410,17 @@ public class IndexGeneratorHelper&lt;T extends WithIndex&gt; {
      * @throws HttpErrorMessage if the sorted list does not contain the baseItem
      */
     private T getItemBefore(T baseItem, List&lt;T&gt; sortedList) {
-<span class="nc bnc" id="L412" title="All 2 branches missed.">        if (!sortedList.contains(baseItem)) {</span>
-<span class="nc" id="L413">            throw HttpErrorMessage.dataIntegrityFailure();</span>
+<span class="nc bnc" id="L413" title="All 2 branches missed.">        if (!sortedList.contains(baseItem)) {</span>
+<span class="nc" id="L414">            throw HttpErrorMessage.dataError(MessageI18nKey.DATA_INTEGRITY_FAILURE);</span>
         }
 
-<span class="nc" id="L416">        int baseIndexInList = sortedList.indexOf(baseItem);</span>
+<span class="nc" id="L417">        int baseIndexInList = sortedList.indexOf(baseItem);</span>
 
-<span class="nc bnc" id="L418" title="All 2 branches missed.">        if (baseIndexInList &gt; 0) {</span>
-<span class="nc" id="L419">            return sortedList.get(baseIndexInList - 1);</span>
+<span class="nc bnc" id="L419" title="All 2 branches missed.">        if (baseIndexInList &gt; 0) {</span>
+<span class="nc" id="L420">            return sortedList.get(baseIndexInList - 1);</span>
         } else {
             // nothing before baseItem
-<span class="nc" id="L422">            return null;</span>
+<span class="nc" id="L423">            return null;</span>
         }
     }
 
@@ -434,17 +435,17 @@ public class IndexGeneratorHelper&lt;T extends WithIndex&gt; {
      * @throws HttpErrorMessage if the sorted list does not contain the baseItem
      */
     private T getItemAfter(T baseItem, List&lt;T&gt; sortedList) {
-<span class="nc bnc" id="L437" title="All 2 branches missed.">        if (!sortedList.contains(baseItem)) {</span>
-<span class="nc" id="L438">            throw HttpErrorMessage.dataIntegrityFailure();</span>
+<span class="nc bnc" id="L438" title="All 2 branches missed.">        if (!sortedList.contains(baseItem)) {</span>
+<span class="nc" id="L439">            throw HttpErrorMessage.dataError(MessageI18nKey.DATA_INTEGRITY_FAILURE);</span>
         }
 
-<span class="nc" id="L441">        int baseIndexInList = sortedList.indexOf(baseItem);</span>
+<span class="nc" id="L442">        int baseIndexInList = sortedList.indexOf(baseItem);</span>
 
-<span class="nc bnc" id="L443" title="All 2 branches missed.">        if (baseIndexInList &lt; sortedList.size() - 1) {</span>
-<span class="nc" id="L444">            return sortedList.get(baseIndexInList + 1);</span>
+<span class="nc bnc" id="L444" title="All 2 branches missed.">        if (baseIndexInList &lt; sortedList.size() - 1) {</span>
+<span class="nc" id="L445">            return sortedList.get(baseIndexInList + 1);</span>
         } else {
             // nothing after baseItem
-<span class="nc" id="L447">            return null;</span>
+<span class="nc" id="L448">            return null;</span>
         }
     }
 }

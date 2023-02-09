@@ -26,14 +26,14 @@ public class HttpErrorMessage extends HttpException {
 <span class="fc" id="L26">        ACCESS_DENIED,</span>
 <span class="fc" id="L27">        AUTHENTICATION_REQUIRED,</span>
 <span class="fc" id="L28">        BAD_REQUEST,</span>
-<span class="fc" id="L29">        DATA_INTEGRITY_FAILURE,</span>
-<span class="fc" id="L30">        EMAIL_MESSAGE_ERROR,</span>
-<span class="fc" id="L31">        INTERNAL_SERVER_ERROR,</span>
-<span class="fc" id="L32">        PROJECT_QUOTA_EXCEEDED,</span>
-<span class="fc" id="L33">        FILE_TOO_BIG,</span>
-<span class="fc" id="L34">        RELATED_OBJECT_NOT_FOUND,</span>
-<span class="fc" id="L35">        NOT_FOUND,</span>
-<span class="fc" id="L36">        SMTP_ERROR,</span>
+<span class="fc" id="L29">        EMAIL_MESSAGE_ERROR,</span>
+<span class="fc" id="L30">        INTERNAL_SERVER_ERROR,</span>
+<span class="fc" id="L31">        PROJECT_QUOTA_EXCEEDED,</span>
+<span class="fc" id="L32">        FILE_TOO_BIG,</span>
+<span class="fc" id="L33">        NOT_FOUND,</span>
+<span class="fc" id="L34">        SMTP_ERROR,</span>
+        /** There is a problem with data */
+<span class="fc" id="L36">        DATA_ERROR,</span>
         /** Impossible to login */
 <span class="fc" id="L38">        AUTHENTICATION_FAILED,</span>
         /** Wait before trying again */
@@ -81,18 +81,18 @@ public class HttpErrorMessage extends HttpException {
 <span class="fc" id="L81">        this.messageCode = messageCode;</span>
 <span class="fc" id="L82">    }</span>
 
-    /**
-     * Create a new error message
-     *
-     * @param status         custom HTTP status
-     * @param messageCode    error message code
-     * @param messageI18nKey error message translation key
-     */
-    private HttpErrorMessage(Response.Status status, MessageCode messageCode,
-        MessageI18nKey messageI18nKey) {
-<span class="nc" id="L93">        this(status, messageCode);</span>
-<span class="nc" id="L94">        this.messageI18nKey = messageI18nKey;</span>
-<span class="nc" id="L95">    }</span>
+//    /**
+//     * Create a new error message
+//     *
+//     * @param status         custom HTTP status
+//     * @param messageCode    error message code
+//     * @param messageI18nKey error message translation key
+//     */
+//    private HttpErrorMessage(Response.Status status, MessageCode messageCode,
+//        MessageI18nKey messageI18nKey) {
+//        this(status, messageCode);
+//        this.messageI18nKey = messageI18nKey;
+//    }
 
     /**
      * Create a new error message
@@ -181,24 +181,19 @@ public class HttpErrorMessage extends HttpException {
     }
 
     /**
-     * @return 400 Related object not found
+     * @param i18nKey translation key of the message
+     *
+     * @return 400 Data problem
      */
-    public static HttpErrorMessage relatedObjectNotFoundError() {
-<span class="fc" id="L187">        return new HttpErrorMessage(HttpErrorMessage.MessageCode.RELATED_OBJECT_NOT_FOUND);</span>
-    }
-
-    /**
-     * @return 400 Data integrity problem
-     */
-    public static HttpErrorMessage dataIntegrityFailure() {
-<span class="fc" id="L194">        return new HttpErrorMessage(HttpErrorMessage.MessageCode.DATA_INTEGRITY_FAILURE);</span>
+    public static HttpErrorMessage dataError(MessageI18nKey i18nKey) {
+<span class="fc" id="L189">        return new HttpErrorMessage(HttpErrorMessage.MessageCode.DATA_ERROR, i18nKey);</span>
     }
 
     /**
      * @return 500 internal server error
      */
     public static HttpErrorMessage internalServerError() {
-<span class="nc" id="L201">        return new HttpErrorMessage(Response.Status.INTERNAL_SERVER_ERROR,</span>
+<span class="nc" id="L196">        return new HttpErrorMessage(Response.Status.INTERNAL_SERVER_ERROR,</span>
             HttpErrorMessage.MessageCode.INTERNAL_SERVER_ERROR);
     }
 
@@ -206,7 +201,7 @@ public class HttpErrorMessage extends HttpException {
      * @return 413 project quota exceeded
      */
     public static HttpErrorMessage projectQuotaExceededError() {
-<span class="nc" id="L209">        return new HttpErrorMessage(Response.Status.REQUEST_ENTITY_TOO_LARGE,</span>
+<span class="nc" id="L204">        return new HttpErrorMessage(Response.Status.REQUEST_ENTITY_TOO_LARGE,</span>
             HttpErrorMessage.MessageCode.PROJECT_QUOTA_EXCEEDED);
     }
 
@@ -214,7 +209,7 @@ public class HttpErrorMessage extends HttpException {
      * @return 413 file size limit exceeded
      */
     public static HttpErrorMessage fileSizeLimitExceededError() {
-<span class="nc" id="L217">        return new HttpErrorMessage(Response.Status.REQUEST_ENTITY_TOO_LARGE,</span>
+<span class="nc" id="L212">        return new HttpErrorMessage(Response.Status.REQUEST_ENTITY_TOO_LARGE,</span>
             HttpErrorMessage.MessageCode.FILE_TOO_BIG);
     }
 
@@ -224,14 +219,14 @@ public class HttpErrorMessage extends HttpException {
      * @return 400 authentication failed
      */
     public static HttpErrorMessage authenticationFailed() {
-<span class="fc" id="L227">        return new HttpErrorMessage(HttpErrorMessage.MessageCode.AUTHENTICATION_FAILED);</span>
+<span class="fc" id="L222">        return new HttpErrorMessage(HttpErrorMessage.MessageCode.AUTHENTICATION_FAILED);</span>
     }
 
     /**
      * @return 429 too many requests
      */
     public static HttpErrorMessage tooManyAttempts() {
-<span class="nc" id="L234">        return new HttpErrorMessage(Response.Status.TOO_MANY_REQUESTS,</span>
+<span class="nc" id="L229">        return new HttpErrorMessage(Response.Status.TOO_MANY_REQUESTS,</span>
             HttpErrorMessage.MessageCode.TOO_MANY_ATTEMPTS);
     }
 
@@ -241,7 +236,7 @@ public class HttpErrorMessage extends HttpException {
      * @return 400 signup failure
      */
     public static HttpErrorMessage signUpFailed(MessageI18nKey i18nKey) {
-<span class="fc" id="L244">        return new HttpErrorMessage(MessageCode.SIGNUP_FAILURE, i18nKey);</span>
+<span class="fc" id="L239">        return new HttpErrorMessage(MessageCode.SIGNUP_FAILURE, i18nKey);</span>
     }
 
     /**
@@ -250,7 +245,7 @@ public class HttpErrorMessage extends HttpException {
      * @return 400 token processing failure
      */
     public static HttpErrorMessage tokenProcessingFailure(MessageI18nKey i18nKey) {
-<span class="nc" id="L253">        return new HttpErrorMessage(MessageCode.TOKEN_PROCESSING_FAILURE, i18nKey);</span>
+<span class="nc" id="L248">        return new HttpErrorMessage(MessageCode.TOKEN_PROCESSING_FAILURE, i18nKey);</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

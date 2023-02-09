@@ -116,7 +116,7 @@
 <a class="jxr_linenumber" name="L108" href="#L108">108</a>         <strong class="jxr_keyword">try</strong> {
 <a class="jxr_linenumber" name="L109" href="#L109">109</a>             rootCard = client.projectRestEndpoint.getRootCardOfProject(projectId);
 <a class="jxr_linenumber" name="L110" href="#L110">110</a>         } <strong class="jxr_keyword">catch</strong> (HttpErrorMessage hem) {
-<a class="jxr_linenumber" name="L111" href="#L111">111</a>             Assertions.assertEquals(HttpErrorMessage.MessageCode.RELATED_OBJECT_NOT_FOUND,
+<a class="jxr_linenumber" name="L111" href="#L111">111</a>             Assertions.assertEquals(HttpErrorMessage.MessageCode.DATA_ERROR,
 <a class="jxr_linenumber" name="L112" href="#L112">112</a>                 hem.getMessageCode());
 <a class="jxr_linenumber" name="L113" href="#L113">113</a>             wasError = <strong class="jxr_keyword">true</strong>;
 <a class="jxr_linenumber" name="L114" href="#L114">114</a>         }
@@ -131,7 +131,7 @@
 <a class="jxr_linenumber" name="L123" href="#L123">123</a>         <strong class="jxr_keyword">try</strong> {
 <a class="jxr_linenumber" name="L124" href="#L124">124</a>             rootCardContents = client.cardRestEndpoint.getContentVariantsOfCard(rootCardId);
 <a class="jxr_linenumber" name="L125" href="#L125">125</a>         } <strong class="jxr_keyword">catch</strong> (HttpErrorMessage hem) {
-<a class="jxr_linenumber" name="L126" href="#L126">126</a>             Assertions.assertEquals(HttpErrorMessage.MessageCode.RELATED_OBJECT_NOT_FOUND,
+<a class="jxr_linenumber" name="L126" href="#L126">126</a>             Assertions.assertEquals(HttpErrorMessage.MessageCode.DATA_ERROR,
 <a class="jxr_linenumber" name="L127" href="#L127">127</a>                 hem.getMessageCode());
 <a class="jxr_linenumber" name="L128" href="#L128">128</a>             wasError = <strong class="jxr_keyword">true</strong>;
 <a class="jxr_linenumber" name="L129" href="#L129">129</a>         }
@@ -143,7 +143,7 @@
 <a class="jxr_linenumber" name="L135" href="#L135">135</a>         <strong class="jxr_keyword">try</strong> {
 <a class="jxr_linenumber" name="L136" href="#L136">136</a>             members = client.projectRestEndpoint.getMembers(projectId);
 <a class="jxr_linenumber" name="L137" href="#L137">137</a>         } <strong class="jxr_keyword">catch</strong> (HttpErrorMessage hem) {
-<a class="jxr_linenumber" name="L138" href="#L138">138</a>             Assertions.assertEquals(HttpErrorMessage.MessageCode.RELATED_OBJECT_NOT_FOUND,
+<a class="jxr_linenumber" name="L138" href="#L138">138</a>             Assertions.assertEquals(HttpErrorMessage.MessageCode.DATA_ERROR,
 <a class="jxr_linenumber" name="L139" href="#L139">139</a>                 hem.getMessageCode());
 <a class="jxr_linenumber" name="L140" href="#L140">140</a>             wasError = <strong class="jxr_keyword">true</strong>;
 <a class="jxr_linenumber" name="L141" href="#L141">141</a>         }

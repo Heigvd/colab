@@ -68,7 +68,7 @@ import org.slf4j.LoggerFactory;
      * @return the link or null
      */
     @GET
-    @Path(&quot;{id}&quot;)
+    @Path(&quot;{id: [0-9]+}&quot;)
     public StickyNoteLink getLink(@PathParam(&quot;id&quot;) Long id) {
 <span class="nc" id="L73">        logger.debug(&quot;get link #{}&quot;, id);</span>
 <span class="nc" id="L74">        return linkDao.findStickyNoteLink(id);</span>
@@ -120,7 +120,7 @@ import org.slf4j.LoggerFactory;
      * @param id id of the link to delete
      */
     @DELETE
-    @Path(&quot;{id}&quot;)
+    @Path(&quot;{id: [0-9]+}&quot;)
     public void deleteLink(@PathParam(&quot;id&quot;) Long id) {
 <span class="nc" id="L125">        logger.debug(&quot;delete link #{}&quot;, id);</span>
 <span class="nc" id="L126">        linkManager.deleteStickyNoteLink(id);</span>
@@ -133,7 +133,7 @@ import org.slf4j.LoggerFactory;
      * @param cardId the id of the new source object
      */
     @PUT
-    @Path(&quot;changeSrc/{linkId}/Card&quot;)
+    @Path(&quot;changeSrc/{linkId: [0-9]+}/Card&quot;)
     public void changeSrcWithCard(@PathParam(&quot;linkId&quot;) Long linkId, Long cardId) {
 <span class="nc" id="L138">        logger.debug(&quot;change link #{} with new card source #{}&quot;, linkId, cardId);</span>
 <span class="nc" id="L139">        linkManager.changeStickyNoteLinkSource(linkId, SrcType.CARD, cardId);</span>
@@ -146,7 +146,7 @@ import org.slf4j.LoggerFactory;
      * @param cardContentId the id of the new source object
      */
     @PUT
-    @Path(&quot;changeSrc/{linkId}/CardContent&quot;)
+    @Path(&quot;changeSrc/{linkId: [0-9]+}/CardContent&quot;)
     public void changeSrcWithCardContent(@PathParam(&quot;linkId&quot;) Long linkId, Long cardContentId) {
 <span class="nc" id="L151">        logger.debug(&quot;change link #{} with new card content source #{}&quot;, linkId, cardContentId);</span>
 <span class="nc" id="L152">        linkManager.changeStickyNoteLinkSource(linkId, SrcType.CARD_CONTENT, cardContentId);</span>
@@ -159,7 +159,7 @@ import org.slf4j.LoggerFactory;
      * @param resourceOrRefId the id of the new source object
      */
     @PUT
-    @Path(&quot;changeSrc/{linkId}/ResourceOrRef&quot;)
+    @Path(&quot;changeSrc/{linkId: [0-9]+}/ResourceOrRef&quot;)
     public void changeSrcWithResourceOrRef(@PathParam(&quot;linkId&quot;) Long linkId, Long resourceOrRefId) {
 <span class="nc" id="L164">        logger.debug(&quot;change link #{} with new abstract resource source #{}&quot;, linkId,</span>
             resourceOrRefId);
@@ -173,7 +173,7 @@ import org.slf4j.LoggerFactory;
      * @param documentId the id of the new source object
      */
     @PUT
-    @Path(&quot;changeSrc/{linkId}/Document&quot;)
+    @Path(&quot;changeSrc/{linkId: [0-9]+}/Document&quot;)
     public void changeSrcWithDocument(@PathParam(&quot;linkId&quot;) Long linkId, Long documentId) {
 <span class="nc" id="L178">        logger.debug(&quot;change link #{} with new document source #{}&quot;, linkId, documentId);</span>
 <span class="nc" id="L179">        linkManager.changeStickyNoteLinkSource(linkId, SrcType.DOCUMENT, documentId);</span>
@@ -186,7 +186,7 @@ import org.slf4j.LoggerFactory;
      * @param cardId the id of the new destination card
      */
     @PUT
-    @Path(&quot;changeDest/{linkId}&quot;)
+    @Path(&quot;changeDest/{linkId: [0-9]+}&quot;)
     public void changeDestination(@PathParam(&quot;linkId&quot;) Long linkId, Long cardId) {
 <span class="nc" id="L191">        logger.debug(&quot;change link #{} with new destination card #{}&quot;, linkId, cardId);</span>
 <span class="nc" id="L192">        linkManager.changeStickyNoteLinkDestination(linkId, cardId);</span>

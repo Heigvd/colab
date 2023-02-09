@@ -404,7 +404,7 @@
 <a class="jxr_linenumber" name="L396" href="#L396">396</a> 
 <a class="jxr_linenumber" name="L397" href="#L397">397</a>         <em class="jxr_comment">///////////////////////////////////////////</em>
 <a class="jxr_linenumber" name="L398" href="#L398">398</a>         <em class="jxr_comment">// move under its sub card</em>
-<a class="jxr_linenumber" name="L399" href="#L399">399</a>         TestHelper.assertThrows(MessageCode.DATA_INTEGRITY_FAILURE, () -&gt; {
+<a class="jxr_linenumber" name="L399" href="#L399">399</a>         TestHelper.assertThrows(MessageCode.DATA_ERROR, () -&gt; {
 <a class="jxr_linenumber" name="L400" href="#L400">400</a>             client.cardRestEndpoint.moveCard(wanderingCard.getId(),
 <a class="jxr_linenumber" name="L401" href="#L401">401</a>                 subWanderingCardContent.getId());
 <a class="jxr_linenumber" name="L402" href="#L402">402</a>         });

@@ -18,6 +18,7 @@ import ch.colabproject.colab.api.model.document.ResourceRef;
 import ch.colabproject.colab.api.persistence.jpa.card.CardTypeDao;
 import ch.colabproject.colab.api.persistence.jpa.document.ResourceDao;
 import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
+import ch.colabproject.colab.generator.model.exceptions.MessageI18nKey;
 import java.util.List;
 import java.util.Objects;
 import javax.ejb.LocalBean;
@@ -34,10 +35,10 @@ import org.slf4j.LoggerFactory;
  */
 @Stateless
 @LocalBean
-<span class="nc" id="L37">public class ResourceCategoryHelper {</span>
+<span class="nc" id="L38">public class ResourceCategoryHelper {</span>
 
     /** logger */
-<span class="nc" id="L40">    private static final Logger logger = LoggerFactory.getLogger(ResourceCategoryHelper.class);</span>
+<span class="nc" id="L41">    private static final Logger logger = LoggerFactory.getLogger(ResourceCategoryHelper.class);</span>
 
     // *********************************************************************************************
     // injections
@@ -97,27 +98,27 @@ import org.slf4j.LoggerFactory;
      *                        reference
      */
     public void changeCategory(Long resourceOrRefId, String categoryName) {
-<span class="nc" id="L100">        logger.debug(&quot;set category {} to abstract resource #{}&quot;, categoryName, resourceOrRefId);</span>
+<span class="nc" id="L101">        logger.debug(&quot;set category {} to abstract resource #{}&quot;, categoryName, resourceOrRefId);</span>
 
-<span class="nc" id="L102">        AbstractResource resourceOrRef = resourceManager.assertAndGetResourceOrRef(resourceOrRefId);</span>
+<span class="nc" id="L103">        AbstractResource resourceOrRef = resourceManager.assertAndGetResourceOrRef(resourceOrRefId);</span>
 
-<span class="nc" id="L104">        String oldCategoryName = resourceOrRef.getCategory();</span>
-<span class="nc" id="L105">        String newCategoryName = StringUtils.trimToNull(categoryName);</span>
+<span class="nc" id="L105">        String oldCategoryName = resourceOrRef.getCategory();</span>
+<span class="nc" id="L106">        String newCategoryName = StringUtils.trimToNull(categoryName);</span>
 
-<span class="nc" id="L107">        resourceOrRef.setCategory(newCategoryName);</span>
+<span class="nc" id="L108">        resourceOrRef.setCategory(newCategoryName);</span>
 
-<span class="nc" id="L109">        requestManager.sudo(() -&gt; {</span>
+<span class="nc" id="L110">        requestManager.sudo(() -&gt; {</span>
             // also change the resources based on the given one
             // but only if the category is still synchronized
-<span class="nc" id="L112">            List&lt;ResourceRef&gt; directRefs = resourceDao.findDirectReferences(resourceOrRef);</span>
-<span class="nc bnc" id="L113" title="All 2 branches missed.">            for (ResourceRef ref : directRefs) {</span>
-<span class="nc bnc" id="L114" title="All 2 branches missed.">                if (StringUtils.equals(ref.getCategory(), oldCategoryName)) {</span>
-<span class="nc" id="L115">                    changeCategory(ref.getId(), newCategoryName);</span>
+<span class="nc" id="L113">            List&lt;ResourceRef&gt; directRefs = resourceDao.findDirectReferences(resourceOrRef);</span>
+<span class="nc bnc" id="L114" title="All 2 branches missed.">            for (ResourceRef ref : directRefs) {</span>
+<span class="nc bnc" id="L115" title="All 2 branches missed.">                if (StringUtils.equals(ref.getCategory(), oldCategoryName)) {</span>
+<span class="nc" id="L116">                    changeCategory(ref.getId(), newCategoryName);</span>
                 }
 
-<span class="nc" id="L118">            }</span>
-<span class="nc" id="L119">        });</span>
-<span class="nc" id="L120">    }</span>
+<span class="nc" id="L119">            }</span>
+<span class="nc" id="L120">        });</span>
+<span class="nc" id="L121">    }</span>
 
     /**
      * Set the category of a list of resources
@@ -127,14 +128,14 @@ import org.slf4j.LoggerFactory;
      *                         reference
      */
     public void changeCategory(List&lt;Long&gt; resourceOrRefIds, String categoryName) {
-<span class="nc" id="L130">        logger.debug(&quot;set category {} to abstract resources #{}&quot;, categoryName, resourceOrRefIds);</span>
+<span class="nc" id="L131">        logger.debug(&quot;set category {} to abstract resources #{}&quot;, categoryName, resourceOrRefIds);</span>
 
-<span class="nc bnc" id="L132" title="All 2 branches missed.">        if (resourceOrRefIds == null) {</span>
-<span class="nc" id="L133">            throw HttpErrorMessage.relatedObjectNotFoundError();</span>
+<span class="nc bnc" id="L133" title="All 2 branches missed.">        if (resourceOrRefIds == null) {</span>
+<span class="nc" id="L134">            throw HttpErrorMessage.dataError(MessageI18nKey.DATA_INTEGRITY_FAILURE);</span>
         }
 
-<span class="nc" id="L136">        resourceOrRefIds.stream().forEach(resOrRefId -&gt; changeCategory(resOrRefId, categoryName));</span>
-<span class="nc" id="L137">    }</span>
+<span class="nc" id="L137">        resourceOrRefIds.stream().forEach(resOrRefId -&gt; changeCategory(resOrRefId, categoryName));</span>
+<span class="nc" id="L138">    }</span>
 
     /**
      * Rename the category in a card type / card type reference
@@ -145,15 +146,15 @@ import org.slf4j.LoggerFactory;
      */
     public void renameCategoryInCardType(Long cardTypeOrRefId, String oldName,
         String newName) {
-<span class="nc" id="L148">        logger.debug(&quot;rename category {} to {} in the abstract card type #{}&quot;, oldName, newName,</span>
+<span class="nc" id="L149">        logger.debug(&quot;rename category {} to {} in the abstract card type #{}&quot;, oldName, newName,</span>
             cardTypeOrRefId);
 
-<span class="nc" id="L151">        AbstractCardType cardTypeOrRef = cardTypeManager.assertAndGetCardTypeOrRef(cardTypeOrRefId);</span>
+<span class="nc" id="L152">        AbstractCardType cardTypeOrRef = cardTypeManager.assertAndGetCardTypeOrRef(cardTypeOrRefId);</span>
 
-<span class="nc" id="L153">        requestManager.sudo(() -&gt; {</span>
-<span class="nc" id="L154">            renameCategory(cardTypeOrRef, oldName, newName);</span>
-<span class="nc" id="L155">        });</span>
-<span class="nc" id="L156">    }</span>
+<span class="nc" id="L154">        requestManager.sudo(() -&gt; {</span>
+<span class="nc" id="L155">            renameCategory(cardTypeOrRef, oldName, newName);</span>
+<span class="nc" id="L156">        });</span>
+<span class="nc" id="L157">    }</span>
 
     /**
      * Rename the category in a card
@@ -163,14 +164,14 @@ import org.slf4j.LoggerFactory;
      * @param newName the new name of the category
      */
     public void renameCategoryInCard(Long cardId, String oldName, String newName) {
-<span class="nc" id="L166">        logger.debug(&quot;rename category {} to {} in the card #{}&quot;, oldName, newName, cardId);</span>
+<span class="nc" id="L167">        logger.debug(&quot;rename category {} to {} in the card #{}&quot;, oldName, newName, cardId);</span>
 
-<span class="nc" id="L168">        Card card = cardManager.assertAndGetCard(cardId);</span>
+<span class="nc" id="L169">        Card card = cardManager.assertAndGetCard(cardId);</span>
 
-<span class="nc" id="L170">        requestManager.sudo(() -&gt; {</span>
-<span class="nc" id="L171">            renameCategory(card, oldName, newName);</span>
-<span class="nc" id="L172">        });</span>
-<span class="nc" id="L173">    }</span>
+<span class="nc" id="L171">        requestManager.sudo(() -&gt; {</span>
+<span class="nc" id="L172">            renameCategory(card, oldName, newName);</span>
+<span class="nc" id="L173">        });</span>
+<span class="nc" id="L174">    }</span>
 
     /**
      * Rename the category in a card content
@@ -180,15 +181,15 @@ import org.slf4j.LoggerFactory;
      * @param newName       the new name of the category
      */
     public void renameCategoryInCardContent(Long cardContentId, String oldName, String newName) {
-<span class="nc" id="L183">        logger.debug(&quot;rename category {} to {} in the card content #{}&quot;, oldName, newName,</span>
+<span class="nc" id="L184">        logger.debug(&quot;rename category {} to {} in the card content #{}&quot;, oldName, newName,</span>
             cardContentId);
 
-<span class="nc" id="L186">        CardContent cardContent = cardContentManager.assertAndGetCardContent(cardContentId);</span>
+<span class="nc" id="L187">        CardContent cardContent = cardContentManager.assertAndGetCardContent(cardContentId);</span>
 
-<span class="nc" id="L188">        requestManager.sudo(() -&gt; {</span>
-<span class="nc" id="L189">            renameCategory(cardContent, oldName, newName);</span>
-<span class="nc" id="L190">        });</span>
-<span class="nc" id="L191">    }</span>
+<span class="nc" id="L189">        requestManager.sudo(() -&gt; {</span>
+<span class="nc" id="L190">            renameCategory(cardContent, oldName, newName);</span>
+<span class="nc" id="L191">        });</span>
+<span class="nc" id="L192">    }</span>
 
     /**
      * Rename the category in a card type / card type reference&lt;br&gt;
@@ -200,15 +201,15 @@ import org.slf4j.LoggerFactory;
      */
     private void renameCategory(AbstractCardType cardTypeOrRef,
         String oldName, String newName) {
-<span class="nc" id="L203">        cardTypeOrRef.getDirectAbstractResources().stream()</span>
-<span class="nc" id="L204">            .forEach(resourceOrRef -&gt; renameCategoryIfMatch(resourceOrRef, oldName, newName));</span>
+<span class="nc" id="L204">        cardTypeOrRef.getDirectAbstractResources().stream()</span>
+<span class="nc" id="L205">            .forEach(resourceOrRef -&gt; renameCategoryIfMatch(resourceOrRef, oldName, newName));</span>
 
-<span class="nc" id="L206">        cardTypeOrRef.getImplementingCards().stream()</span>
-<span class="nc" id="L207">            .forEach(card -&gt; renameCategory(card, oldName, newName));</span>
+<span class="nc" id="L207">        cardTypeOrRef.getImplementingCards().stream()</span>
+<span class="nc" id="L208">            .forEach(card -&gt; renameCategory(card, oldName, newName));</span>
 
-<span class="nc" id="L209">        cardTypeDao.findDirectReferences(cardTypeOrRef).stream()</span>
-<span class="nc" id="L210">            .forEach(cardRef -&gt; renameCategory(cardRef, oldName, newName));</span>
-<span class="nc" id="L211">    }</span>
+<span class="nc" id="L210">        cardTypeDao.findDirectReferences(cardTypeOrRef).stream()</span>
+<span class="nc" id="L211">            .forEach(cardRef -&gt; renameCategory(cardRef, oldName, newName));</span>
+<span class="nc" id="L212">    }</span>
 
     /**
      * Rename the category in a card&lt;br&gt;
@@ -219,12 +220,12 @@ import org.slf4j.LoggerFactory;
      * @param newName the new name of the category
      */
     private void renameCategory(Card card, String oldName, String newName) {
-<span class="nc" id="L222">        card.getDirectAbstractResources().stream()</span>
-<span class="nc" id="L223">            .forEach(resourceOrRef -&gt; renameCategoryIfMatch(resourceOrRef, oldName, newName));</span>
+<span class="nc" id="L223">        card.getDirectAbstractResources().stream()</span>
+<span class="nc" id="L224">            .forEach(resourceOrRef -&gt; renameCategoryIfMatch(resourceOrRef, oldName, newName));</span>
 
-<span class="nc" id="L225">        card.getContentVariants().stream()</span>
-<span class="nc" id="L226">            .forEach(cardContent -&gt; renameCategory(cardContent, oldName, newName));</span>
-<span class="nc" id="L227">    }</span>
+<span class="nc" id="L226">        card.getContentVariants().stream()</span>
+<span class="nc" id="L227">            .forEach(cardContent -&gt; renameCategory(cardContent, oldName, newName));</span>
+<span class="nc" id="L228">    }</span>
 
     /**
      * Rename the category in a card content&lt;br&gt;
@@ -235,11 +236,11 @@ import org.slf4j.LoggerFactory;
      * @param newName     the new name of the category
      */
     private void renameCategory(CardContent cardContent, String oldName, String newName) {
-<span class="nc" id="L238">        cardContent.getDirectAbstractResources().stream()</span>
-<span class="nc" id="L239">            .forEach(resourceOrRef -&gt; renameCategoryIfMatch(resourceOrRef, oldName, newName));</span>
+<span class="nc" id="L239">        cardContent.getDirectAbstractResources().stream()</span>
+<span class="nc" id="L240">            .forEach(resourceOrRef -&gt; renameCategoryIfMatch(resourceOrRef, oldName, newName));</span>
 
-<span class="nc" id="L241">        cardContent.getSubCards().stream().forEach(card -&gt; renameCategory(card, oldName, newName));</span>
-<span class="nc" id="L242">    }</span>
+<span class="nc" id="L242">        cardContent.getSubCards().stream().forEach(card -&gt; renameCategory(card, oldName, newName));</span>
+<span class="nc" id="L243">    }</span>
 
     /**
      * Replace the category of the resource if it matches the oldName
@@ -250,11 +251,11 @@ import org.slf4j.LoggerFactory;
      */
     private void renameCategoryIfMatch(AbstractResource resourceOrRef, String oldName,
         String newName) {
-<span class="nc bnc" id="L253" title="All 2 branches missed.">        if (Objects.equals(</span>
-<span class="nc" id="L254">            StringUtils.trimToNull(resourceOrRef.getCategory()),</span>
-<span class="nc" id="L255">            StringUtils.trimToNull(oldName))) {</span>
-<span class="nc" id="L256">            resourceOrRef.setCategory(StringUtils.trimToNull(newName));</span>
+<span class="nc bnc" id="L254" title="All 2 branches missed.">        if (Objects.equals(</span>
+<span class="nc" id="L255">            StringUtils.trimToNull(resourceOrRef.getCategory()),</span>
+<span class="nc" id="L256">            StringUtils.trimToNull(oldName))) {</span>
+<span class="nc" id="L257">            resourceOrRef.setCategory(StringUtils.trimToNull(newName));</span>
         }
-<span class="nc" id="L258">    }</span>
+<span class="nc" id="L259">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

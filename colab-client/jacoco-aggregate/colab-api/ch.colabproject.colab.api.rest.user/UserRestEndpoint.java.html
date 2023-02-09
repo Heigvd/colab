@@ -100,7 +100,7 @@ import org.slf4j.LoggerFactory;
      * @return user which match the given id or null
      */
     @GET
-    @Path(&quot;{id : [0-9]*}&quot;)
+    @Path(&quot;{id: [0-9]+}&quot;)
     @AuthenticationRequired
     public User getUserById(@PathParam(&quot;id&quot;) Long id) {
 <span class="nc" id="L106">        logger.debug(&quot;get user #{}&quot;, id);</span>
@@ -204,7 +204,7 @@ import org.slf4j.LoggerFactory;
      * @param sessionId if of the HTTP session to delete
      */
     @DELETE
-    @Path(&quot;Session/{id}&quot;)
+    @Path(&quot;Session/{id: [0-9]+}&quot;)
     @AuthenticationRequired
     public void forceLogout(@PathParam(&quot;id&quot;) Long sessionId) {
 <span class="nc" id="L210">        userManager.forceLogout(sessionId);</span>
@@ -253,7 +253,7 @@ import org.slf4j.LoggerFactory;
     /**
      * Update password of a localAccount. The password MUST be hashed a first time by the client.
      * &lt;p&gt;
-     * 
+     *
      * @param authInfo identifier and new password
      *
      * @throws HttpErrorMessage if currentUser is not allowed to update the given account
@@ -268,7 +268,7 @@ import org.slf4j.LoggerFactory;
     /**
      * Request a local account password reset. This method always returns 204 no content
      * &lt;p&gt;
-     * 
+     *
      * @param email email address of account
      */
     @PUT

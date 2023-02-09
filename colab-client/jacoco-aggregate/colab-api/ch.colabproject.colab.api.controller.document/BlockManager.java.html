@@ -11,6 +11,7 @@ import ch.colabproject.colab.api.model.document.Document;
 import ch.colabproject.colab.api.model.document.TextDataBlock;
 import ch.colabproject.colab.api.persistence.jpa.document.DocumentDao;
 import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
+import ch.colabproject.colab.generator.model.exceptions.MessageI18nKey;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -25,10 +26,10 @@ import org.slf4j.LoggerFactory;
  */
 @Stateless
 @LocalBean
-<span class="nc" id="L28">public class BlockManager {</span>
+<span class="nc" id="L29">public class BlockManager {</span>
 
     /** logger */
-<span class="nc" id="L31">    private static final Logger logger = LoggerFactory.getLogger(BlockManager.class);</span>
+<span class="nc" id="L32">    private static final Logger logger = LoggerFactory.getLogger(BlockManager.class);</span>
 
     /**
      * The mime type by default
@@ -65,14 +66,14 @@ import org.slf4j.LoggerFactory;
      * @throws HttpErrorMessage if the block was not found
      */
     public TextDataBlock assertAndGetTextDataBlock(Long blockId) {
-<span class="nc" id="L68">        Document doc = documentManager.assertAndGetDocument(blockId);</span>
+<span class="nc" id="L69">        Document doc = documentManager.assertAndGetDocument(blockId);</span>
 
-<span class="nc bnc" id="L70" title="All 2 branches missed.">        if (!(doc instanceof TextDataBlock)) {</span>
-<span class="nc" id="L71">            logger.error(&quot;document {} is not a text data block&quot;, doc);</span>
-<span class="nc" id="L72">            throw HttpErrorMessage.relatedObjectNotFoundError();</span>
+<span class="nc bnc" id="L71" title="All 2 branches missed.">        if (!(doc instanceof TextDataBlock)) {</span>
+<span class="nc" id="L72">            logger.error(&quot;document {} is not a text data block&quot;, doc);</span>
+<span class="nc" id="L73">            throw HttpErrorMessage.dataError(MessageI18nKey.DATA_NOT_FOUND);</span>
         }
 
-<span class="nc" id="L75">        return ((TextDataBlock) doc);</span>
+<span class="nc" id="L76">        return ((TextDataBlock) doc);</span>
     }
 
     // *********************************************************************************************
@@ -85,7 +86,7 @@ import org.slf4j.LoggerFactory;
      * @return the block with the given id or null if such a block does not exist
      */
     public TextDataBlock findBlock(Long id) {
-<span class="nc" id="L88">        return documentDao.findTextDataBlock(id);</span>
+<span class="nc" id="L89">        return documentDao.findTextDataBlock(id);</span>
     }
 
     /**
@@ -96,18 +97,18 @@ import org.slf4j.LoggerFactory;
      * @throws ColabMergeException if updating the block failed
      */
     public void updateBlock(TextDataBlock block) throws ColabMergeException {
-<span class="nc" id="L99">        TextDataBlock managedDocument = documentManager.assertAndGetTextDataBlock(block.getId());</span>
+<span class="nc" id="L100">        TextDataBlock managedDocument = documentManager.assertAndGetTextDataBlock(block.getId());</span>
 
-<span class="nc" id="L101">        managedDocument.merge(block);</span>
-<span class="nc" id="L102">    }</span>
+<span class="nc" id="L102">        managedDocument.merge(block);</span>
+<span class="nc" id="L103">    }</span>
 
     /**
      * @return a new initialized text data block
      */
     public TextDataBlock makeNewTextDataBlock() {
-<span class="nc" id="L108">        TextDataBlock newBlock = new TextDataBlock();</span>
-<span class="nc" id="L109">        newBlock.setMimeType(DEFAULT_MIME_TYPE);</span>
-<span class="nc" id="L110">        return newBlock;</span>
+<span class="nc" id="L109">        TextDataBlock newBlock = new TextDataBlock();</span>
+<span class="nc" id="L110">        newBlock.setMimeType(DEFAULT_MIME_TYPE);</span>
+<span class="nc" id="L111">        return newBlock;</span>
     }
 
     // *********************************************************************************************
@@ -120,16 +121,16 @@ import org.slf4j.LoggerFactory;
      * @param blockId the id of the block to delete
      */
     public void deleteTextDataBlock(Long blockId) {
-<span class="nc" id="L123">        logger.debug(&quot;delete the block #{}&quot;, blockId);</span>
+<span class="nc" id="L124">        logger.debug(&quot;delete the block #{}&quot;, blockId);</span>
 
-<span class="nc" id="L125">        TextDataBlock block = assertAndGetTextDataBlock(blockId);</span>
+<span class="nc" id="L126">        TextDataBlock block = assertAndGetTextDataBlock(blockId);</span>
 
-<span class="nc bnc" id="L127" title="All 2 branches missed.">        if (!checkDeletionAcceptability(block)) {</span>
-<span class="nc" id="L128">            throw HttpErrorMessage.dataIntegrityFailure();</span>
+<span class="nc bnc" id="L128" title="All 2 branches missed.">        if (!checkDeletionAcceptability(block)) {</span>
+<span class="nc" id="L129">            throw HttpErrorMessage.dataError(MessageI18nKey.DATA_INTEGRITY_FAILURE);</span>
         }
 
-<span class="nc" id="L131">        documentDao.deleteDocument(block);</span>
-<span class="nc" id="L132">    }</span>
+<span class="nc" id="L132">        documentDao.deleteDocument(block);</span>
+<span class="nc" id="L133">    }</span>
 
     /**
      * Ascertain that the block can be deleted.
@@ -139,19 +140,19 @@ import org.slf4j.LoggerFactory;
      * @return True iff it can be safely deleted
      */
     private boolean checkDeletionAcceptability(TextDataBlock block) {
-<span class="nc bnc" id="L142" title="All 2 branches missed.">        if (block.getPurposingCardType() != null) {</span>
-<span class="nc" id="L143">            return false;</span>
+<span class="nc bnc" id="L143" title="All 2 branches missed.">        if (block.getPurposingCardType() != null) {</span>
+<span class="nc" id="L144">            return false;</span>
         }
 
-<span class="nc bnc" id="L146" title="All 2 branches missed.">        if (block.getTeasingResource() != null) {</span>
-<span class="nc" id="L147">            return false;</span>
+<span class="nc bnc" id="L147" title="All 2 branches missed.">        if (block.getTeasingResource() != null) {</span>
+<span class="nc" id="L148">            return false;</span>
         }
 
-<span class="nc bnc" id="L150" title="All 2 branches missed.">        if (block.getExplainingStickyNoteLink() != null) {</span>
-<span class="nc" id="L151">            return false;</span>
+<span class="nc bnc" id="L151" title="All 2 branches missed.">        if (block.getExplainingStickyNoteLink() != null) {</span>
+<span class="nc" id="L152">            return false;</span>
         }
 
-<span class="nc" id="L154">        return true;</span>
+<span class="nc" id="L155">        return true;</span>
     }
 
     // *********************************************************************************************

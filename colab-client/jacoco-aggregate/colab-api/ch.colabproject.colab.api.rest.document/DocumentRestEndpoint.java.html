@@ -66,7 +66,7 @@ import org.slf4j.LoggerFactory;
      * @return the document or null
      */
     @GET
-    @Path(&quot;{id}&quot;)
+    @Path(&quot;{id: [0-9]+}&quot;)
     public Document getDocument(@PathParam(&quot;id&quot;) Long id) {
 <span class="nc" id="L71">        logger.debug(&quot;get document #{}&quot;, id);</span>
 <span class="nc" id="L72">        return documentDao.findDocument(id);</span>
@@ -95,7 +95,7 @@ import org.slf4j.LoggerFactory;
      * @param docId the id of the document to move
      */
     @PUT
-    @Path(&quot;{docId}/MoveUp&quot;)
+    @Path(&quot;{docId: [0-9]+}/MoveUp&quot;)
     public void moveDocumentUp(@PathParam(&quot;docId&quot;) Long docId) {
 <span class="nc" id="L100">        logger.debug(&quot;move document #{} up&quot;, docId);</span>
 
@@ -108,7 +108,7 @@ import org.slf4j.LoggerFactory;
      * @param docId the id of the document to move
      */
     @PUT
-    @Path(&quot;{docId}/MoveDown&quot;)
+    @Path(&quot;{docId: [0-9]+}/MoveDown&quot;)
     public void moveDocumentDown(@PathParam(&quot;docId&quot;) Long docId) {
 <span class="nc" id="L113">        logger.debug(&quot;move document #{} down&quot;, docId);</span>
 
@@ -122,7 +122,7 @@ import org.slf4j.LoggerFactory;
      * @param baseDocId the id of the document which will be below docId
      */
     @PUT
-    @Path(&quot;{docId}/MoveAbove/{baseDocId}&quot;)
+    @Path(&quot;{docId: [0-9]+}/MoveAbove/{baseDocId: [0-9]+}&quot;)
     public void moveDocumentAbove(@PathParam(&quot;docId&quot;) Long docId,
         @PathParam(&quot;baseDocId&quot;) Long baseDocId) {
 <span class="nc" id="L128">        logger.debug(&quot;move document #{} above #{}&quot;, docId, baseDocId);</span>
@@ -137,7 +137,7 @@ import org.slf4j.LoggerFactory;
      * @param baseDocId the id of the document which will be above docId
      */
     @PUT
-    @Path(&quot;{docId}/MoveBelow/{baseDocId}&quot;)
+    @Path(&quot;{docId: [0-9]+}/MoveBelow/{baseDocId: [0-9]+}&quot;)
     public void moveDocumentBelow(@PathParam(&quot;docId&quot;) Long docId,
         @PathParam(&quot;baseDocId&quot;) Long baseDocId) {
 <span class="nc" id="L143">        logger.debug(&quot;move document #{} below #{}&quot;, docId, baseDocId);</span>
@@ -151,7 +151,7 @@ import org.slf4j.LoggerFactory;
      * @param docId the id of the document to move
      */
     @PUT
-    @Path(&quot;{docId}/MoveToTop&quot;)
+    @Path(&quot;{docId: [0-9]+}/MoveToTop&quot;)
     public void moveDocumentToTop(@PathParam(&quot;docId&quot;) Long docId) {
 <span class="nc" id="L156">        logger.debug(&quot;move document #{} to the top&quot;, docId);</span>
 
@@ -164,7 +164,7 @@ import org.slf4j.LoggerFactory;
      * @param docId the id of the document to move
      */
     @PUT
-    @Path(&quot;{docId}/MoveToBottom&quot;)
+    @Path(&quot;{docId: [0-9]+}/MoveToBottom&quot;)
     public void moveDocumentToBottom(@PathParam(&quot;docId&quot;) Long docId) {
 <span class="nc" id="L169">        logger.debug(&quot;move document #{} to the bottom&quot;, docId);</span>
 
@@ -183,7 +183,7 @@ import org.slf4j.LoggerFactory;
      * @return list of links
      */
     @GET
-    @Path(&quot;{id}/StickyNoteLinks&quot;)
+    @Path(&quot;{id: [0-9]+}/StickyNoteLinks&quot;)
     public List&lt;StickyNoteLink&gt; getStickyNoteLinksAsSrc(@PathParam(&quot;id&quot;) Long documentId) {
 <span class="nc" id="L188">        logger.debug(&quot;Get sticky note links where document #{} is the source&quot;, documentId);</span>
 <span class="nc" id="L189">        return documentManager.getStickyNoteLinkAsSrc(documentId);</span>

@@ -49,7 +49,7 @@ import javax.ws.rs.core.MediaType;
      * @return list of changes.
      */
     @GET
-    @Path(&quot;/{id}/changes&quot;)
+    @Path(&quot;{id: [0-9]+}/changes&quot;)
     public List&lt;Change&gt; getChanges(@PathParam(&quot;id&quot;) Long id) {
 <span class="nc" id="L54">        return liveManager.getPendingChanges(id);</span>
     }
@@ -61,7 +61,7 @@ import javax.ws.rs.core.MediaType;
      * @param change change
      */
     @PUT
-    @Path(&quot;/{id}&quot;)
+    @Path(&quot;{id: [0-9]+}&quot;)
     public void patchBlock(@PathParam(&quot;id&quot;) Long id, Change change) {
 <span class="nc" id="L66">        liveManager.patchBlock(id, change);</span>
 <span class="nc" id="L67">    }</span>
@@ -72,7 +72,7 @@ import javax.ws.rs.core.MediaType;
      * @param id id of the block
      */
     @PUT
-    @Path(&quot;/{id}/dropChanges&quot;)
+    @Path(&quot;{id: [0-9]+}/dropChanges&quot;)
     public void deletePendingChanges(@PathParam(&quot;id&quot;) Long id) {
 <span class="nc" id="L77">        liveManager.deletePendingChangesAndPropagate(id);</span>
 <span class="nc" id="L78">    }</span>
@@ -83,7 +83,7 @@ import javax.ws.rs.core.MediaType;
      * @return list of block being edited and their status
      */
     @GET
-    @Path(&quot;/Monitoring&quot;)
+    @Path(&quot;Monitoring&quot;)
     @AdminResource
     public List&lt;BlockMonitoring&gt; getMonitoringData() {
 <span class="nc" id="L89">        return liveManager.getMonitoringData();</span>

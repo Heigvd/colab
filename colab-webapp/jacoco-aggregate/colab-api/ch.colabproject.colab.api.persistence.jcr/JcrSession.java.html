@@ -8,6 +8,7 @@ package ch.colabproject.colab.api.persistence.jcr;
 
 import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
+import ch.colabproject.colab.generator.model.exceptions.MessageI18nKey;
 import java.io.InputStream;
 import java.io.Serializable;
 import javax.jcr.Binary;
@@ -30,14 +31,14 @@ public class JcrSession implements Serializable {
     /**
      * logger
      */
-<span class="nc" id="L33">    private static final Logger logger = LoggerFactory.getLogger(JcrSession.class);</span>
+<span class="nc" id="L34">    private static final Logger logger = LoggerFactory.getLogger(JcrSession.class);</span>
 
     /**
      * Default credentials
      */
-<span class="nc" id="L38">    private static final Credentials credentials = new SimpleCredentials(</span>
+<span class="nc" id="L39">    private static final Credentials credentials = new SimpleCredentials(</span>
         &quot;admin&quot;,
-<span class="nc" id="L40">        &quot;admin&quot;.toCharArray());</span>
+<span class="nc" id="L41">        &quot;admin&quot;.toCharArray());</span>
 
     /** Global workspace name */
     private static final String GLOBAL_WORKSPACE = &quot;global_workspace&quot;;
@@ -65,24 +66,24 @@ public class JcrSession implements Serializable {
      *
      * @throws javax.jcr.RepositoryException in case of JCR issue
      */
-<span class="nc" id="L68">    public JcrSession(Repository repository, Project project) throws RepositoryException {</span>
-<span class="nc bnc" id="L69" title="All 2 branches missed.">        logger.trace(&quot;Create JCR Session for {}&quot;, project == null ? GLOBAL_WORKSPACE : project);</span>
+<span class="nc" id="L69">    public JcrSession(Repository repository, Project project) throws RepositoryException {</span>
+<span class="nc bnc" id="L70" title="All 2 branches missed.">        logger.trace(&quot;Create JCR Session for {}&quot;, project == null ? GLOBAL_WORKSPACE : project);</span>
         // TODO create user if not present in
         // TODO long term :
-<span class="nc" id="L72">        this.session = repository.login(credentials);</span>
+<span class="nc" id="L73">        this.session = repository.login(credentials);</span>
 
-<span class="nc bnc" id="L74" title="All 2 branches missed.">        if (project != null) {</span>
-<span class="nc" id="L75">            this.workspace = &quot;project_&quot; + project.getId();</span>
+<span class="nc bnc" id="L75" title="All 2 branches missed.">        if (project != null) {</span>
+<span class="nc" id="L76">            this.workspace = &quot;project_&quot; + project.getId();</span>
         } else {
-<span class="nc" id="L77">            this.workspace = GLOBAL_WORKSPACE;</span>
+<span class="nc" id="L78">            this.workspace = GLOBAL_WORKSPACE;</span>
         }
-<span class="nc" id="L79">        this.workspacePath = &quot;/&quot; + this.workspace;</span>
+<span class="nc" id="L80">        this.workspacePath = &quot;/&quot; + this.workspace;</span>
 
         // make sure root node exists
-<span class="nc bnc" id="L82" title="All 2 branches missed.">        if (!session.nodeExists(workspacePath)) {</span>
-<span class="nc" id="L83">            session.getNode(&quot;/&quot;).addNode(workspace);</span>
+<span class="nc bnc" id="L83" title="All 2 branches missed.">        if (!session.nodeExists(workspacePath)) {</span>
+<span class="nc" id="L84">            session.getNode(&quot;/&quot;).addNode(workspace);</span>
         }
-<span class="nc" id="L85">    }</span>
+<span class="nc" id="L86">    }</span>
 
     /**
      * Get the workspace root node
@@ -91,11 +92,11 @@ public class JcrSession implements Serializable {
      */
     public Node getWorkspaceRoot() {
         try {
-<span class="nc" id="L94">            return session.getNode(workspacePath);</span>
-<span class="nc" id="L95">        } catch (RepositoryException ex) {</span>
+<span class="nc" id="L95">            return session.getNode(workspacePath);</span>
+<span class="nc" id="L96">        } catch (RepositoryException ex) {</span>
             // silient
-<span class="nc" id="L97">            logger.warn(&quot;getWorkspaceRoot failed with &quot;, ex);</span>
-<span class="nc" id="L98">            return null;</span>
+<span class="nc" id="L98">            logger.warn(&quot;getWorkspaceRoot failed with &quot;, ex);</span>
+<span class="nc" id="L99">            return null;</span>
         }
     }
 
@@ -108,10 +109,10 @@ public class JcrSession implements Serializable {
      * @return absolute relativePath (i.e. &lt;code&gt;workspacePath&lt;/code&gt;/&lt;code&gt;relativePath&lt;/code&gt;)
      */
     public String getFullPath(String relativePath) {
-<span class="nc bnc" id="L111" title="All 2 branches missed.">        if (relativePath.charAt(0) == '/') {</span>
-<span class="nc" id="L112">            return this.workspacePath + relativePath;</span>
+<span class="nc bnc" id="L112" title="All 2 branches missed.">        if (relativePath.charAt(0) == '/') {</span>
+<span class="nc" id="L113">            return this.workspacePath + relativePath;</span>
         } else {
-<span class="nc" id="L114">            return this.workspacePath + '/' + relativePath;</span>
+<span class="nc" id="L115">            return this.workspacePath + '/' + relativePath;</span>
         }
     }
 
@@ -125,11 +126,11 @@ public class JcrSession implements Serializable {
      */
     public boolean nodeExists(String relativePath) {
         try {
-<span class="nc" id="L128">            return session.nodeExists(getFullPath(relativePath));</span>
-<span class="nc" id="L129">        } catch (RepositoryException ex) {</span>
+<span class="nc" id="L129">            return session.nodeExists(getFullPath(relativePath));</span>
+<span class="nc" id="L130">        } catch (RepositoryException ex) {</span>
             // TODO: silent or not ?
-<span class="nc" id="L131">            logger.warn(&quot;nodeExists({}) failed with &quot;, relativePath, ex);</span>
-<span class="nc" id="L132">            return false;</span>
+<span class="nc" id="L132">            logger.warn(&quot;nodeExists({}) failed with &quot;, relativePath, ex);</span>
+<span class="nc" id="L133">            return false;</span>
         }
     }
 
@@ -142,11 +143,11 @@ public class JcrSession implements Serializable {
      */
     public Node getNode(String relativePath) {
         try {
-<span class="nc" id="L145">            return session.getNode(getFullPath(relativePath));</span>
-<span class="nc" id="L146">        } catch (RepositoryException ex) {</span>
+<span class="nc" id="L146">            return session.getNode(getFullPath(relativePath));</span>
+<span class="nc" id="L147">        } catch (RepositoryException ex) {</span>
             // silent
-<span class="nc" id="L148">            logger.warn(&quot;getNode: node does not exist &quot;, ex);</span>
-<span class="nc" id="L149">            return null;</span>
+<span class="nc" id="L149">            logger.warn(&quot;getNode: node does not exist &quot;, ex);</span>
+<span class="nc" id="L150">            return null;</span>
         }
     }
 
@@ -155,12 +156,12 @@ public class JcrSession implements Serializable {
      */
     public void removeNode(String relativePath) {
         try {
-<span class="nc" id="L158">            session.removeItem(getFullPath(relativePath));</span>
-<span class="nc" id="L159">        } catch (RepositoryException ex) {</span>
-<span class="nc" id="L160">            logger.warn(&quot;removeNode: node could not be removed&quot;, ex);</span>
-<span class="nc" id="L161">        }</span>
+<span class="nc" id="L159">            session.removeItem(getFullPath(relativePath));</span>
+<span class="nc" id="L160">        } catch (RepositoryException ex) {</span>
+<span class="nc" id="L161">            logger.warn(&quot;removeNode: node could not be removed&quot;, ex);</span>
+<span class="nc" id="L162">        }</span>
 
-<span class="nc" id="L163">    }</span>
+<span class="nc" id="L164">    }</span>
 
     /**
      * Get JCR session
@@ -168,7 +169,7 @@ public class JcrSession implements Serializable {
      * @return the session
      */
     public Session getSession() {
-<span class="nc" id="L171">        return session;</span>
+<span class="nc" id="L172">        return session;</span>
     }
 
     /**
@@ -177,15 +178,15 @@ public class JcrSession implements Serializable {
      * @throws javax.jcr.RepositoryException something went wrong
      */
     public void prepareForCommit() throws RepositoryException {
-<span class="nc bnc" id="L180" title="All 4 branches missed.">        if (this.session != null &amp;&amp; this.session.isLive()) {</span>
-<span class="nc" id="L181">            session.getRootNode();</span>
+<span class="nc bnc" id="L181" title="All 4 branches missed.">        if (this.session != null &amp;&amp; this.session.isLive()) {</span>
+<span class="nc" id="L182">            session.getRootNode();</span>
         } else {
-<span class="nc" id="L183">            logger.warn(</span>
+<span class="nc" id="L184">            logger.warn(</span>
                 &quot;PrepareForCommit failed: session does not exists or has already been closed &quot;);
             // TODO throw something else, but what ?
-<span class="nc" id="L186">            throw HttpErrorMessage.dataIntegrityFailure();</span>
+<span class="nc" id="L187">            throw HttpErrorMessage.dataError(MessageI18nKey.DATA_INTEGRITY_FAILURE);</span>
         }
-<span class="nc" id="L188">    }</span>
+<span class="nc" id="L189">    }</span>
 
     /**
      * creates a new binary object to be stored
@@ -197,7 +198,7 @@ public class JcrSession implements Serializable {
      * @throws RepositoryException JCR issue
      */
     public Binary createBinary(InputStream content) throws RepositoryException {
-<span class="nc" id="L200">        return this.session.getValueFactory().createBinary(content);</span>
+<span class="nc" id="L201">        return this.session.getValueFactory().createBinary(content);</span>
     }
 
     /**
@@ -205,27 +206,27 @@ public class JcrSession implements Serializable {
      */
     public void saveAndClose() {
         try {
-<span class="nc" id="L208">            session.save();</span>
-<span class="nc" id="L209">        } catch (RepositoryException ex) {</span>
-<span class="nc" id="L210">            logger.error(</span>
+<span class="nc" id="L209">            session.save();</span>
+<span class="nc" id="L210">        } catch (RepositoryException ex) {</span>
+<span class="nc" id="L211">            logger.error(</span>
                 &quot;Error occured while saving changes despite prepareForCommit did not throw anything !&quot;,
                 ex);
             /* no-op */
-<span class="nc" id="L214">        }</span>
-<span class="nc" id="L215">        session.logout();</span>
-<span class="nc" id="L216">        this.session = null;</span>
-<span class="nc" id="L217">    }</span>
+<span class="nc" id="L215">        }</span>
+<span class="nc" id="L216">        session.logout();</span>
+<span class="nc" id="L217">        this.session = null;</span>
+<span class="nc" id="L218">    }</span>
 
     /**
      * Close the session without saving any changes
      */
     public void rollback() {
-<span class="nc" id="L223">        logger.trace(&quot;Rollback session&quot;);</span>
-<span class="nc bnc" id="L224" title="All 4 branches missed.">        if (session != null &amp;&amp; session.isLive()) {</span>
-<span class="nc" id="L225">            session.logout();</span>
+<span class="nc" id="L224">        logger.trace(&quot;Rollback session&quot;);</span>
+<span class="nc bnc" id="L225" title="All 4 branches missed.">        if (session != null &amp;&amp; session.isLive()) {</span>
+<span class="nc" id="L226">            session.logout();</span>
         }
-<span class="nc" id="L227">        this.session = null;</span>
-<span class="nc" id="L228">    }</span>
+<span class="nc" id="L228">        this.session = null;</span>
+<span class="nc" id="L229">    }</span>
 
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

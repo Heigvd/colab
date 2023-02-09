@@ -9,6 +9,7 @@ package ch.colabproject.colab.api.rest.document;
 import ch.colabproject.colab.api.controller.document.FileManager;
 import ch.colabproject.colab.generator.model.annotations.AuthenticationRequired;
 import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
+import ch.colabproject.colab.generator.model.exceptions.MessageI18nKey;
 import java.io.BufferedInputStream;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -40,12 +41,12 @@ import org.slf4j.LoggerFactory;
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
 @AuthenticationRequired
-<span class="nc" id="L43">public class DocumentFileRestEndPoint {</span>
+<span class="nc" id="L44">public class DocumentFileRestEndPoint {</span>
 
     /**
      * Logger
      */
-<span class="nc" id="L48">    private static final Logger logger = LoggerFactory.getLogger(DocumentFileRestEndPoint.class);</span>
+<span class="nc" id="L49">    private static final Logger logger = LoggerFactory.getLogger(DocumentFileRestEndPoint.class);</span>
 
     /**
      * File manager
@@ -70,12 +71,12 @@ import org.slf4j.LoggerFactory;
         @FormDataParam(&quot;file&quot;) FormDataBodyPart bodypart
     ) {
         try {
-<span class="nc" id="L73">            fileManager.updateOrCreateFile(docId, fileSize, file, bodypart);</span>
-<span class="nc" id="L74">        } catch (RepositoryException ex) {</span>
-<span class="nc" id="L75">            logger.debug(&quot;Could not update file with id {} : {}&quot;, docId, ex);</span>
-<span class="nc" id="L76">            throw HttpErrorMessage.internalServerError();</span>
-<span class="nc" id="L77">        }</span>
-<span class="nc" id="L78">    }</span>
+<span class="nc" id="L74">            fileManager.updateOrCreateFile(docId, fileSize, file, bodypart);</span>
+<span class="nc" id="L75">        } catch (RepositoryException ex) {</span>
+<span class="nc" id="L76">            logger.debug(&quot;Could not update file with id {} : {}&quot;, docId, ex);</span>
+<span class="nc" id="L77">            throw HttpErrorMessage.internalServerError();</span>
+<span class="nc" id="L78">        }</span>
+<span class="nc" id="L79">    }</span>
 
     /**
      * Deletes the file associated with the document Does nothing if no file was present
@@ -83,16 +84,16 @@ import org.slf4j.LoggerFactory;
      * @param documentId document id
      */
     @DELETE
-    @Path(&quot;DeleteFile/{documentId}&quot;)
+    @Path(&quot;DeleteFile/{documentId: [0-9]+}&quot;)
     public void deleteFile(
         @PathParam(&quot;documentId&quot;) Long documentId) {
         try {
-<span class="nc" id="L90">            fileManager.deleteFile(documentId);</span>
-<span class="nc" id="L91">        } catch (RepositoryException ex) {</span>
-<span class="nc" id="L92">            logger.debug(&quot;Could not delete file with id {} : {}&quot;, documentId, ex);</span>
-<span class="nc" id="L93">            throw HttpErrorMessage.internalServerError();</span>
-<span class="nc" id="L94">        }</span>
-<span class="nc" id="L95">    }</span>
+<span class="nc" id="L91">            fileManager.deleteFile(documentId);</span>
+<span class="nc" id="L92">        } catch (RepositoryException ex) {</span>
+<span class="nc" id="L93">            logger.debug(&quot;Could not delete file with id {} : {}&quot;, documentId, ex);</span>
+<span class="nc" id="L94">            throw HttpErrorMessage.internalServerError();</span>
+<span class="nc" id="L95">        }</span>
+<span class="nc" id="L96">    }</span>
 
     /**
      * Get the file's content and meta data
@@ -102,32 +103,32 @@ import org.slf4j.LoggerFactory;
      * @return file content, if no file has been set, return an empty stream (0 bytes)
      */
     @GET
-    @Path(&quot;GetFile/{documentId}&quot;)
+    @Path(&quot;GetFile/{documentId: [0-9]+}&quot;)
     public Response getFileContent(@PathParam(&quot;documentId&quot;) Long documentId) {
 
         try {
             ImmutableTriple&lt;BufferedInputStream, String, MediaType&gt; filedata;
-<span class="nc" id="L110">            filedata = fileManager.getDownloadFileInfo(documentId);</span>
+<span class="nc" id="L111">            filedata = fileManager.getDownloadFileInfo(documentId);</span>
 
-<span class="nc" id="L112">            var stream = filedata.left;</span>
-<span class="nc" id="L113">            var filename = filedata.middle;</span>
-<span class="nc" id="L114">            var mime = filedata.right;</span>
+<span class="nc" id="L113">            var stream = filedata.left;</span>
+<span class="nc" id="L114">            var filename = filedata.middle;</span>
+<span class="nc" id="L115">            var mime = filedata.right;</span>
 
-<span class="nc" id="L116">            Response.ResponseBuilder response = Response.ok(stream, mime);</span>
+<span class="nc" id="L117">            Response.ResponseBuilder response = Response.ok(stream, mime);</span>
 
             // set file name for browser download prompt
-<span class="nc" id="L119">            var attachment = &quot;attachment; filename=&quot; + filename;</span>
-<span class="nc" id="L120">            response.header(&quot;Content-Disposition&quot;, attachment);</span>
+<span class="nc" id="L120">            var attachment = &quot;attachment; filename=&quot; + filename;</span>
+<span class="nc" id="L121">            response.header(&quot;Content-Disposition&quot;, attachment);</span>
 
-<span class="nc" id="L122">            logger.debug(&quot;Generated response for file : {}, mime {}&quot;, filename, mime);</span>
+<span class="nc" id="L123">            logger.debug(&quot;Generated response for file : {}, mime {}&quot;, filename, mime);</span>
 
-<span class="nc" id="L124">            return response.build();</span>
+<span class="nc" id="L125">            return response.build();</span>
 
-<span class="nc" id="L126">        } catch (PathNotFoundException pnfe) {</span>
-<span class="nc" id="L127">            throw HttpErrorMessage.dataIntegrityFailure();</span>
-<span class="nc" id="L128">        } catch (RepositoryException ex) {</span>
-<span class="nc" id="L129">            logger.debug(&quot;Could not get file content {}&quot;, ex);</span>
-<span class="nc" id="L130">            throw HttpErrorMessage.internalServerError();</span>
+<span class="nc" id="L127">        } catch (PathNotFoundException pnfe) {</span>
+<span class="nc" id="L128">            throw HttpErrorMessage.dataError(MessageI18nKey.DATA_INTEGRITY_FAILURE);</span>
+<span class="nc" id="L129">        } catch (RepositoryException ex) {</span>
+<span class="nc" id="L130">            logger.debug(&quot;Could not get file content {}&quot;, ex);</span>
+<span class="nc" id="L131">            throw HttpErrorMessage.internalServerError();</span>
         }
     }
 
@@ -139,17 +140,17 @@ import org.slf4j.LoggerFactory;
      * @return a list of 2 elements, first is usage second is maximum quota expressed in bytes
      */
     @GET
-    @Path(&quot;GetProjectQuotaUsage/{projectId}&quot;)
+    @Path(&quot;GetProjectQuotaUsage/{projectId: [0-9]+}&quot;)
     public List&lt;Long&gt; getQuotaUsage(@PathParam(&quot;projectId&quot;) Long projectId) {
 
         try {
-<span class="nc" id="L146">            var result = new ArrayList&lt;Long&gt;();</span>
-<span class="nc" id="L147">            result.add(fileManager.getUsage(projectId));</span>
-<span class="nc" id="L148">            result.add(FileManager.getQuota());</span>
-<span class="nc" id="L149">            return result;</span>
-<span class="nc" id="L150">        } catch (RepositoryException re) {</span>
-<span class="nc" id="L151">            logger.debug(&quot;Could not get project quota usage {}&quot;, re);</span>
-<span class="nc" id="L152">            throw HttpErrorMessage.internalServerError();</span>
+<span class="nc" id="L147">            var result = new ArrayList&lt;Long&gt;();</span>
+<span class="nc" id="L148">            result.add(fileManager.getUsage(projectId));</span>
+<span class="nc" id="L149">            result.add(FileManager.getQuota());</span>
+<span class="nc" id="L150">            return result;</span>
+<span class="nc" id="L151">        } catch (RepositoryException re) {</span>
+<span class="nc" id="L152">            logger.debug(&quot;Could not get project quota usage {}&quot;, re);</span>
+<span class="nc" id="L153">            throw HttpErrorMessage.internalServerError();</span>
         }
     }
 

@@ -8,6 +8,7 @@ package ch.colabproject.colab.api.controller;
 
 import ch.colabproject.colab.api.model.ColabEntity;
 import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
+import ch.colabproject.colab.generator.model.exceptions.MessageI18nKey;
 import java.util.Set;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
@@ -25,15 +26,15 @@ import org.slf4j.LoggerFactory;
  */
 @Stateless
 @LocalBean
-<span class="nc" id="L28">public class ValidationManager {</span>
+<span class="nc" id="L29">public class ValidationManager {</span>
 
     /** logger */
-<span class="nc" id="L31">    private static final Logger logger = LoggerFactory.getLogger(ValidationManager.class);</span>
+<span class="nc" id="L32">    private static final Logger logger = LoggerFactory.getLogger(ValidationManager.class);</span>
 
     /**
      * the validator factory
      */
-<span class="nc" id="L36">    private ValidatorFactory factory = Validation.buildDefaultValidatorFactory();</span>
+<span class="nc" id="L37">    private ValidatorFactory factory = Validation.buildDefaultValidatorFactory();</span>
 
     /**
      * Ascertain that the given entity is valid according to its JPA constraints.
@@ -44,15 +45,15 @@ import org.slf4j.LoggerFactory;
      * @throws HttpErrorMessage if the given entity is not valid
      */
     public &lt;T extends ColabEntity&gt; void assertValid(T entity) {
-<span class="nc" id="L47">        Validator validator = factory.getValidator();</span>
+<span class="nc" id="L48">        Validator validator = factory.getValidator();</span>
 
-<span class="nc" id="L49">        Set&lt;ConstraintViolation&lt;T&gt;&gt; validationErrors = validator.validate(entity);</span>
+<span class="nc" id="L50">        Set&lt;ConstraintViolation&lt;T&gt;&gt; validationErrors = validator.validate(entity);</span>
 
-<span class="nc bnc" id="L51" title="All 2 branches missed.">        if (!validationErrors.isEmpty()) {</span>
-<span class="nc" id="L52">            logger.info(&quot;{} not valid : {}&quot;, entity, validationErrors);</span>
-<span class="nc" id="L53">            throw HttpErrorMessage.dataIntegrityFailure();</span>
+<span class="nc bnc" id="L52" title="All 2 branches missed.">        if (!validationErrors.isEmpty()) {</span>
+<span class="nc" id="L53">            logger.info(&quot;{} not valid : {}&quot;, entity, validationErrors);</span>
+<span class="nc" id="L54">            throw HttpErrorMessage.dataError(MessageI18nKey.DATA_INTEGRITY_FAILURE);</span>
         }
-<span class="nc" id="L55">    }</span>
+<span class="nc" id="L56">    }</span>
 
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

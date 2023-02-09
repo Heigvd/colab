@@ -33,6 +33,7 @@ import ch.colabproject.colab.api.persistence.jpa.project.ProjectDao;
 import ch.colabproject.colab.api.rest.project.bean.ProjectCreationData;
 import ch.colabproject.colab.api.rest.project.bean.ProjectStructure;
 import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
+import ch.colabproject.colab.generator.model.exceptions.MessageI18nKey;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -52,10 +53,10 @@ import org.slf4j.LoggerFactory;
  */
 @Stateless
 @LocalBean
-<span class="nc" id="L55">public class ProjectManager {</span>
+<span class="nc" id="L56">public class ProjectManager {</span>
 
     /** logger */
-<span class="nc" id="L58">    private static final Logger logger = LoggerFactory.getLogger(ProjectManager.class);</span>
+<span class="nc" id="L59">    private static final Logger logger = LoggerFactory.getLogger(ProjectManager.class);</span>
 
     // *********************************************************************************************
     // injections
@@ -145,14 +146,34 @@ import org.slf4j.LoggerFactory;
      * @throws HttpErrorMessage if the project was not found
      */
     public Project assertAndGetProject(Long projectId) {
-<span class="nc" id="L148">        Project project = projectDao.findProject(projectId);</span>
+<span class="nc" id="L149">        Project project = projectDao.findProject(projectId);</span>
 
-<span class="nc bnc" id="L150" title="All 2 branches missed.">        if (project == null) {</span>
-<span class="nc" id="L151">            logger.error(&quot;project #{} not found&quot;, projectId);</span>
-<span class="nc" id="L152">            throw HttpErrorMessage.relatedObjectNotFoundError();</span>
+<span class="nc bnc" id="L151" title="All 2 branches missed.">        if (project == null) {</span>
+<span class="nc" id="L152">            logger.error(&quot;project #{} not found&quot;, projectId);</span>
+<span class="nc" id="L153">            throw HttpErrorMessage.dataError(MessageI18nKey.DATA_NOT_FOUND);</span>
         }
 
-<span class="nc" id="L155">        return project;</span>
+<span class="nc" id="L156">        return project;</span>
+    }
+
+    /**
+     * Retrieve the copy parameter. If not found, throw a {@link HttpErrorMessage}.
+     *
+     * @param copyParamId the id of the copy parameter
+     *
+     * @return the copy parameter if found
+     *
+     * @throws HttpErrorMessage if the copy parameter was not found
+     */
+    public CopyParam assertAndGetCopyParam(Long copyParamId) {
+<span class="nc" id="L169">        CopyParam copyParam = copyParamDao.findCopyParamByProject(copyParamId);</span>
+
+<span class="nc bnc" id="L171" title="All 2 branches missed.">        if (copyParam == null) {</span>
+<span class="nc" id="L172">            logger.error(&quot;copy param #{} not found&quot;, copyParamId);</span>
+<span class="nc" id="L173">            throw HttpErrorMessage.dataError(MessageI18nKey.DATA_NOT_FOUND);</span>
+        }
+
+<span class="nc" id="L176">        return copyParam;</span>
     }
 
     /**
@@ -160,14 +181,14 @@ import org.slf4j.LoggerFactory;
      *
      * @return list of matching projects
      */
-    public List&lt;Project&gt; findProjectsOfCurrentUser() {
-<span class="nc" id="L164">        User user = securityManager.assertAndGetCurrentUser();</span>
+    public List&lt;Project&gt; findProjectsWhereTeamMember() {
+<span class="nc" id="L185">        User user = securityManager.assertAndGetCurrentUser();</span>
 
-<span class="nc" id="L166">        List&lt;Project&gt; projects = projectDao.findProjectsByTeamMember(user.getId());</span>
+<span class="nc" id="L187">        List&lt;Project&gt; projects = projectDao.findProjectsByTeamMember(user.getId());</span>
 
-<span class="nc" id="L168">        logger.debug(&quot;found projects where the user {} is a team member : {}&quot;, user, projects);</span>
+<span class="nc" id="L189">        logger.debug(&quot;found projects where the user {} is a team member : {}&quot;, user, projects);</span>
 
-<span class="nc" id="L170">        return projects;</span>
+<span class="nc" id="L191">        return projects;</span>
     }
 
     /**
@@ -176,13 +197,13 @@ import org.slf4j.LoggerFactory;
      * @return list of matching projects
      */
     public List&lt;Project&gt; findInstanceableModelsForCurrentUser() {
-<span class="nc" id="L179">        User user = securityManager.assertAndGetCurrentUser();</span>
+<span class="nc" id="L200">        User user = securityManager.assertAndGetCurrentUser();</span>
 
-<span class="nc" id="L181">        List&lt;Project&gt; projects = projectDao.findProjectsByInstanceMaker(user.getId());</span>
+<span class="nc" id="L202">        List&lt;Project&gt; projects = projectDao.findProjectsByInstanceMaker(user.getId());</span>
 
-<span class="nc" id="L183">        logger.debug(&quot;found models where the user {} is an instance maker : {}&quot;, user, projects);</span>
+<span class="nc" id="L204">        logger.debug(&quot;found models where the user {} is an instance maker : {}&quot;, user, projects);</span>
 
-<span class="nc" id="L185">        return projects;</span>
+<span class="nc" id="L206">        return projects;</span>
     }
 
     // *********************************************************************************************
@@ -197,10 +218,10 @@ import org.slf4j.LoggerFactory;
      * @return the persisted new project
      */
     public Project createProject(ProjectCreationData creationData) {
-<span class="nc bnc" id="L200" title="All 2 branches missed.">        if (creationData.getBaseProjectId() == null) {</span>
-<span class="nc" id="L201">            return createProjectFromScratch(creationData);</span>
+<span class="nc bnc" id="L221" title="All 2 branches missed.">        if (creationData.getBaseProjectId() == null) {</span>
+<span class="nc" id="L222">            return createProjectFromScratch(creationData);</span>
         } else {
-<span class="nc" id="L203">            return createProjectFromModel(creationData);</span>
+<span class="nc" id="L224">            return createProjectFromModel(creationData);</span>
         }
     }
 
@@ -213,17 +234,17 @@ import org.slf4j.LoggerFactory;
      * @return the persisted new project
      */
     private Project createProjectFromScratch(ProjectCreationData creationData) {
-<span class="nc" id="L216">        logger.debug(&quot;Create a project with {}&quot;, creationData);</span>
+<span class="nc" id="L237">        logger.debug(&quot;Create a project with {}&quot;, creationData);</span>
 
-<span class="nc" id="L218">        Project project = new Project();</span>
-<span class="nc" id="L219">        project.setType(creationData.getType());</span>
-<span class="nc" id="L220">        project.setName(creationData.getName());</span>
-<span class="nc" id="L221">        project.setDescription(creationData.getDescription());</span>
-<span class="nc" id="L222">        project.setIllustration(creationData.getIllustration());</span>
+<span class="nc" id="L239">        Project project = new Project();</span>
+<span class="nc" id="L240">        project.setType(creationData.getType());</span>
+<span class="nc" id="L241">        project.setName(creationData.getName());</span>
+<span class="nc" id="L242">        project.setDescription(creationData.getDescription());</span>
+<span class="nc" id="L243">        project.setIllustration(creationData.getIllustration());</span>
 
-<span class="nc" id="L224">        createNewProject(project);</span>
+<span class="nc" id="L245">        createNewProject(project);</span>
 
-<span class="nc" id="L226">        return project;</span>
+<span class="nc" id="L247">        return project;</span>
     }
 
     /**
@@ -235,17 +256,17 @@ import org.slf4j.LoggerFactory;
      */
     private Project createNewProject(Project project) {
         try {
-<span class="nc" id="L238">            return requestManager.sudo(() -&gt; {</span>
-<span class="nc" id="L239">                logger.debug(&quot;Create project {}&quot;, project);</span>
+<span class="nc" id="L259">            return requestManager.sudo(() -&gt; {</span>
+<span class="nc" id="L260">                logger.debug(&quot;Create project {}&quot;, project);</span>
 
-<span class="nc" id="L241">                initProject(project);</span>
+<span class="nc" id="L262">                initProject(project);</span>
 
-<span class="nc" id="L243">                return projectDao.persistProject(project);</span>
+<span class="nc" id="L264">                return projectDao.persistProject(project);</span>
             });
-<span class="nc" id="L245">        } catch (RuntimeException ex) {</span>
-<span class="nc" id="L246">            throw ex;</span>
-<span class="nc" id="L247">        } catch (Exception ex) {</span>
-<span class="nc" id="L248">            return null;</span>
+<span class="nc" id="L266">        } catch (RuntimeException ex) {</span>
+<span class="nc" id="L267">            throw ex;</span>
+<span class="nc" id="L268">        } catch (Exception ex) {</span>
+<span class="nc" id="L269">            return null;</span>
         }
     }
 
@@ -256,22 +277,22 @@ import org.slf4j.LoggerFactory;
      * @param project the project to fill
      */
     private void initProject(Project project) {
-<span class="nc bnc" id="L259" title="All 2 branches missed.">        if (project.getRootCard() == null) {</span>
-<span class="nc" id="L260">            Card rootCard = cardManager.initNewRootCard();</span>
+<span class="nc bnc" id="L280" title="All 2 branches missed.">        if (project.getRootCard() == null) {</span>
+<span class="nc" id="L281">            Card rootCard = cardManager.initNewRootCard();</span>
 
-<span class="nc" id="L262">            project.setRootCard(rootCard);</span>
-<span class="nc" id="L263">            rootCard.setRootCardProject(project);</span>
+<span class="nc" id="L283">            project.setRootCard(rootCard);</span>
+<span class="nc" id="L284">            rootCard.setRootCardProject(project);</span>
         }
 
-<span class="nc" id="L266">        User user = securityManager.assertAndGetCurrentUser();</span>
-<span class="nc" id="L267">        Optional&lt;TeamMember&gt; currentUserTeamMember = project.getTeamMembers().stream()</span>
-<span class="nc bnc" id="L268" title="All 2 branches missed.">            .filter(tm -&gt; tm.getUserId() == user.getId()).findFirst();</span>
-<span class="nc bnc" id="L269" title="All 2 branches missed.">        if (currentUserTeamMember.isPresent()) {</span>
-<span class="nc" id="L270">            currentUserTeamMember.get().setPosition(HierarchicalPosition.OWNER);</span>
+<span class="nc" id="L287">        User user = securityManager.assertAndGetCurrentUser();</span>
+<span class="nc" id="L288">        Optional&lt;TeamMember&gt; currentUserTeamMember = project.getTeamMembers().stream()</span>
+<span class="nc bnc" id="L289" title="All 2 branches missed.">            .filter(tm -&gt; tm.getUserId() == user.getId()).findFirst();</span>
+<span class="nc bnc" id="L290" title="All 2 branches missed.">        if (currentUserTeamMember.isPresent()) {</span>
+<span class="nc" id="L291">            currentUserTeamMember.get().setPosition(HierarchicalPosition.OWNER);</span>
         } else {
-<span class="nc" id="L272">            teamManager.addMember(project, user, HierarchicalPosition.OWNER);</span>
+<span class="nc" id="L293">            teamManager.addMember(project, user, HierarchicalPosition.OWNER);</span>
         }
-<span class="nc" id="L274">    }</span>
+<span class="nc" id="L295">    }</span>
 
     /**
      * Create a new project from a model with the provided data and register current user as a
@@ -282,39 +303,39 @@ import org.slf4j.LoggerFactory;
      * @return id of the persisted new project
      */
     private Project createProjectFromModel(ProjectCreationData creationData) {
-<span class="nc" id="L285">        logger.debug(&quot;Create a project with {}&quot;, creationData);</span>
+<span class="nc" id="L306">        logger.debug(&quot;Create a project with {}&quot;, creationData);</span>
 
         try {
-<span class="nc" id="L288">            return requestManager.sudo(() -&gt; {</span>
+<span class="nc" id="L309">            return requestManager.sudo(() -&gt; {</span>
 
-<span class="nc" id="L290">                DuplicationParam effectiveParams = creationData.getDuplicationParam();</span>
-<span class="nc bnc" id="L291" title="All 2 branches missed.">                if (effectiveParams == null) {</span>
-<span class="nc" id="L292">                    effectiveParams = DuplicationParam.buildForProjectCreationFromModel();</span>
+<span class="nc" id="L311">                DuplicationParam effectiveParams = creationData.getDuplicationParam();</span>
+<span class="nc bnc" id="L312" title="All 2 branches missed.">                if (effectiveParams == null) {</span>
+<span class="nc" id="L313">                    effectiveParams = DuplicationParam.buildForProjectCreationFromModel();</span>
                 }
 
                 // override by model copy parameters
-<span class="nc" id="L296">                CopyParam copyParam = getCopyParam(creationData.getBaseProjectId());</span>
-<span class="nc bnc" id="L297" title="All 2 branches missed.">                if (copyParam != null) {</span>
-<span class="nc" id="L298">                    effectiveParams.setWithRoles(copyParam.isWithRoles());</span>
-<span class="nc" id="L299">                    effectiveParams.setWithDeliverables(copyParam.isWithDeliverables());</span>
-<span class="nc" id="L300">                    effectiveParams.setWithResources(copyParam.isWithResources());</span>
+<span class="nc" id="L317">                CopyParam copyParam = getCopyParam(creationData.getBaseProjectId());</span>
+<span class="nc bnc" id="L318" title="All 2 branches missed.">                if (copyParam != null) {</span>
+<span class="nc" id="L319">                    effectiveParams.setWithRoles(copyParam.isWithRoles());</span>
+<span class="nc" id="L320">                    effectiveParams.setWithDeliverables(copyParam.isWithDeliverables());</span>
+<span class="nc" id="L321">                    effectiveParams.setWithResources(copyParam.isWithResources());</span>
                 }
 
-<span class="nc" id="L303">                Project project = duplicateProject(creationData.getBaseProjectId(),</span>
+<span class="nc" id="L324">                Project project = duplicateProject(creationData.getBaseProjectId(),</span>
                     effectiveParams);
 
-<span class="nc" id="L306">                project.setType(creationData.getType());</span>
-<span class="nc" id="L307">                project.setName(creationData.getName());</span>
-<span class="nc" id="L308">                project.setDescription(creationData.getDescription());</span>
-<span class="nc" id="L309">                project.setIllustration(creationData.getIllustration());</span>
+<span class="nc" id="L327">                project.setType(creationData.getType());</span>
+<span class="nc" id="L328">                project.setName(creationData.getName());</span>
+<span class="nc" id="L329">                project.setDescription(creationData.getDescription());</span>
+<span class="nc" id="L330">                project.setIllustration(creationData.getIllustration());</span>
 
-<span class="nc" id="L311">                return project;</span>
+<span class="nc" id="L332">                return project;</span>
             });
 
-<span class="nc" id="L314">        } catch (RuntimeException ex) {</span>
-<span class="nc" id="L315">            throw ex;</span>
-<span class="nc" id="L316">        } catch (Exception ex) {</span>
-<span class="nc" id="L317">            return null;</span>
+<span class="nc" id="L335">        } catch (RuntimeException ex) {</span>
+<span class="nc" id="L336">            throw ex;</span>
+<span class="nc" id="L337">        } catch (Exception ex) {</span>
+<span class="nc" id="L338">            return null;</span>
         }
     }
 
@@ -324,16 +345,16 @@ import org.slf4j.LoggerFactory;
      * @return the related copy parameter
      */
     public CopyParam getCopyParam(Long projectId) {
-<span class="nc" id="L327">        Project project = assertAndGetProject(projectId);</span>
+<span class="nc" id="L348">        Project project = assertAndGetProject(projectId);</span>
 
-<span class="nc" id="L329">        CopyParam copyParam = copyParamDao.findCopyParamByProject(projectId);</span>
+<span class="nc" id="L350">        CopyParam copyParam = copyParamDao.findCopyParamByProject(projectId);</span>
 
-<span class="nc bnc" id="L331" title="All 2 branches missed.">        if (copyParam == null) {</span>
-<span class="nc" id="L332">            copyParam = CopyParam.buildDefault(project);</span>
-<span class="nc" id="L333">            copyParamDao.persistCopyParam(copyParam);</span>
+<span class="nc bnc" id="L352" title="All 2 branches missed.">        if (copyParam == null) {</span>
+<span class="nc" id="L353">            copyParam = CopyParam.buildDefault(project);</span>
+<span class="nc" id="L354">            copyParamDao.persistCopyParam(copyParam);</span>
         }
 
-<span class="nc" id="L336">        return copyParam;</span>
+<span class="nc" id="L357">        return copyParam;</span>
     }
 
     /**
@@ -342,20 +363,20 @@ import org.slf4j.LoggerFactory;
      * @param projectId the id of the project to delete
      */
     public void deleteProject(Long projectId) {
-<span class="nc" id="L345">        Project project = assertAndGetProject(projectId);</span>
+<span class="nc" id="L366">        Project project = assertAndGetProject(projectId);</span>
 
 //        if (!checkDeletionAcceptability(project)) {
-//            throw HttpErrorMessage.dataIntegrityFailure();
+//            throw HttpErrorMessage.dataError(MessageI18nKey.DATA_INTEGRITY_FAILURE);
 //        }
 
 //      tokenManager.deleteTokensByProject(project);
-<span class="nc" id="L352">        project.getTeamMembers().stream()</span>
-<span class="nc" id="L353">            .forEach(member -&gt; tokenManager.deleteInvitationsByTeamMember(member));</span>
+<span class="nc" id="L373">        project.getTeamMembers().stream()</span>
+<span class="nc" id="L374">            .forEach(member -&gt; tokenManager.deleteInvitationsByTeamMember(member));</span>
 
         // everything else is deleted by cascade
 
-<span class="nc" id="L357">        projectDao.deleteProject(project);</span>
-<span class="nc" id="L358">    }</span>
+<span class="nc" id="L378">        projectDao.deleteProject(project);</span>
+<span class="nc" id="L379">    }</span>
 
 //    /**
 //     * Ascertain that the project can be deleted
@@ -383,27 +404,27 @@ import org.slf4j.LoggerFactory;
     public Project duplicateProject(Long projectId, DuplicationParam params) {
 
         try {
-<span class="nc" id="L386">            return requestManager.sudo(() -&gt; { // TODO ! move sudo where really useful</span>
-<span class="nc" id="L387">                Project originalProject = assertAndGetProject(projectId);</span>
+<span class="nc" id="L407">            return requestManager.sudo(() -&gt; { // TODO ! move sudo where really useful</span>
+<span class="nc" id="L408">                Project originalProject = assertAndGetProject(projectId);</span>
 
-<span class="nc" id="L389">                DuplicationManager duplicator = new DuplicationManager(params,</span>
+<span class="nc" id="L410">                DuplicationManager duplicator = new DuplicationManager(params,</span>
                     resourceReferenceSpreadingHelper, fileManager, cardContentManager);
 
-<span class="nc" id="L392">                Project newProjectJavaObject = duplicator.duplicateProject(originalProject);</span>
+<span class="nc" id="L413">                Project newProjectJavaObject = duplicator.duplicateProject(originalProject);</span>
 
-<span class="nc" id="L394">                Project newProject = createNewProject(newProjectJavaObject);</span>
+<span class="nc" id="L415">                Project newProject = createNewProject(newProjectJavaObject);</span>
 
-<span class="nc" id="L396">                duplicator.duplicateDataIntoJCR();</span>
+<span class="nc" id="L417">                duplicator.duplicateDataIntoJCR();</span>
 
-<span class="nc" id="L398">                duplicator.clear();</span>
+<span class="nc" id="L419">                duplicator.clear();</span>
 
-<span class="nc" id="L400">                return newProject;</span>
+<span class="nc" id="L421">                return newProject;</span>
             });
 
-<span class="nc" id="L403">        } catch (RuntimeException ex) {</span>
-<span class="nc" id="L404">            throw ex;</span>
-<span class="nc" id="L405">        } catch (Exception ex) {</span>
-<span class="nc" id="L406">            return null;</span>
+<span class="nc" id="L424">        } catch (RuntimeException ex) {</span>
+<span class="nc" id="L425">            throw ex;</span>
+<span class="nc" id="L426">        } catch (Exception ex) {</span>
+<span class="nc" id="L427">            return null;</span>
         }
     }
 
@@ -420,10 +441,10 @@ import org.slf4j.LoggerFactory;
      * @return the pending potential instance maker
      */
     public InstanceMaker shareModel(Long modelId, String email) {
-<span class="nc" id="L423">        logger.debug(&quot;Share the model #{} to {}&quot;, modelId, email);</span>
-<span class="nc" id="L424">        Project model = assertAndGetProject(modelId);</span>
+<span class="nc" id="L444">        logger.debug(&quot;Share the model #{} to {}&quot;, modelId, email);</span>
+<span class="nc" id="L445">        Project model = assertAndGetProject(modelId);</span>
 
-<span class="nc" id="L426">        return tokenManager.sendModelSharingToken(model, email);</span>
+<span class="nc" id="L447">        return tokenManager.sendModelSharingToken(model, email);</span>
     }
 
     /**
@@ -435,12 +456,12 @@ import org.slf4j.LoggerFactory;
      * @return the brand new potential instance maker
      */
     public InstanceMaker addAndPersistInstanceMaker(Project model, User user) {
-<span class="nc" id="L438">        logger.debug(&quot;Add and persist instance maker to user {} for model {}&quot;, user, model);</span>
+<span class="nc" id="L459">        logger.debug(&quot;Add and persist instance maker to user {} for model {}&quot;, user, model);</span>
 
-<span class="nc" id="L440">        InstanceMaker instanceMaker = addInstanceMaker(model, user);</span>
-<span class="nc" id="L441">        instanceMakerDao.persistInstanceMaker(instanceMaker);</span>
+<span class="nc" id="L461">        InstanceMaker instanceMaker = addInstanceMaker(model, user);</span>
+<span class="nc" id="L462">        instanceMakerDao.persistInstanceMaker(instanceMaker);</span>
 
-<span class="nc" id="L443">        return instanceMaker;</span>
+<span class="nc" id="L464">        return instanceMaker;</span>
     }
 
     /**
@@ -452,19 +473,19 @@ import org.slf4j.LoggerFactory;
      * @return the brand new potential instance maker
      */
     public InstanceMaker addInstanceMaker(Project model, User user) {
-<span class="nc" id="L455">        logger.debug(&quot;Add instance maker to user {} for model {}&quot;, user, model);</span>
+<span class="nc" id="L476">        logger.debug(&quot;Add instance maker to user {} for model {}&quot;, user, model);</span>
 
-<span class="nc bnc" id="L457" title="All 4 branches missed.">        if (model != null &amp;&amp; user != null</span>
-<span class="nc bnc" id="L458" title="All 2 branches missed.">            &amp;&amp; findInstanceMakerByProjectAndUser(model, user) != null) {</span>
-<span class="nc" id="L459">            throw HttpErrorMessage.dataIntegrityFailure();</span>
+<span class="nc bnc" id="L478" title="All 4 branches missed.">        if (model != null &amp;&amp; user != null</span>
+<span class="nc bnc" id="L479" title="All 2 branches missed.">            &amp;&amp; findInstanceMakerByProjectAndUser(model, user) != null) {</span>
+<span class="nc" id="L480">            throw HttpErrorMessage.dataError(MessageI18nKey.DATA_INTEGRITY_FAILURE);</span>
         }
 
-<span class="nc" id="L462">        InstanceMaker instanceMaker = new InstanceMaker();</span>
+<span class="nc" id="L483">        InstanceMaker instanceMaker = new InstanceMaker();</span>
 
-<span class="nc" id="L464">        instanceMaker.setUser(user);</span>
-<span class="nc" id="L465">        instanceMaker.setProject(model);</span>
+<span class="nc" id="L485">        instanceMaker.setUser(user);</span>
+<span class="nc" id="L486">        instanceMaker.setProject(model);</span>
 
-<span class="nc" id="L467">        return instanceMaker;</span>
+<span class="nc" id="L488">        return instanceMaker;</span>
     }
 
     /**
@@ -476,7 +497,7 @@ import org.slf4j.LoggerFactory;
      * @return the matching instance makers
      */
     public InstanceMaker findInstanceMakerByProjectAndUser(Project project, User user) {
-<span class="nc" id="L479">        return instanceMakerDao.findInstanceMakerByProjectAndUser(project, user);</span>
+<span class="nc" id="L500">        return instanceMakerDao.findInstanceMakerByProjectAndUser(project, user);</span>
     }
 
     // *********************************************************************************************
@@ -491,11 +512,11 @@ import org.slf4j.LoggerFactory;
      * @return The root card linked to the project
      */
     public Card getRootCard(Long projectId) {
-<span class="nc" id="L494">        logger.debug(&quot;get the root card of the project #{}&quot;, projectId);</span>
+<span class="nc" id="L515">        logger.debug(&quot;get the root card of the project #{}&quot;, projectId);</span>
 
-<span class="nc" id="L496">        Project project = assertAndGetProject(projectId);</span>
+<span class="nc" id="L517">        Project project = assertAndGetProject(projectId);</span>
 
-<span class="nc" id="L498">        return project.getRootCard();</span>
+<span class="nc" id="L519">        return project.getRootCard();</span>
     }
 
     /**
@@ -506,11 +527,11 @@ import org.slf4j.LoggerFactory;
      * @return all cards of the project
      */
     public Set&lt;Card&gt; getCards(Long projectId) {
-<span class="nc" id="L509">        logger.debug(&quot;get all card of project #{}&quot;, projectId);</span>
+<span class="nc" id="L530">        logger.debug(&quot;get all card of project #{}&quot;, projectId);</span>
 
-<span class="nc" id="L511">        Project project = assertAndGetProject(projectId);</span>
+<span class="nc" id="L532">        Project project = assertAndGetProject(projectId);</span>
 
-<span class="nc" id="L513">        return cardManager.getAllCards(project.getRootCard());</span>
+<span class="nc" id="L534">        return cardManager.getAllCards(project.getRootCard());</span>
     }
 
     /**
@@ -521,11 +542,11 @@ import org.slf4j.LoggerFactory;
      * @return all cards contents of the project
      */
     public Set&lt;CardContent&gt; getCardContents(Long projectId) {
-<span class="nc" id="L524">        logger.debug(&quot;get all card contents of project #{}&quot;, projectId);</span>
+<span class="nc" id="L545">        logger.debug(&quot;get all card contents of project #{}&quot;, projectId);</span>
 
-<span class="nc" id="L526">        Project project = assertAndGetProject(projectId);</span>
+<span class="nc" id="L547">        Project project = assertAndGetProject(projectId);</span>
 
-<span class="nc" id="L528">        return cardManager.getAllCardContents(project.getRootCard());</span>
+<span class="nc" id="L549">        return cardManager.getAllCardContents(project.getRootCard());</span>
     }
 
     /**
@@ -536,22 +557,22 @@ import org.slf4j.LoggerFactory;
      * @return project structure
      */
     public ProjectStructure getStructure(Long projectId) {
-<span class="nc" id="L539">        logger.debug(&quot;get all card contents of project #{}&quot;, projectId);</span>
+<span class="nc" id="L560">        logger.debug(&quot;get all card contents of project #{}&quot;, projectId);</span>
 
-<span class="nc" id="L541">        Project project = assertAndGetProject(projectId);</span>
+<span class="nc" id="L562">        Project project = assertAndGetProject(projectId);</span>
 
-<span class="nc" id="L543">        ProjectStructure structure = new ProjectStructure();</span>
-<span class="nc" id="L544">        Card rootCard = project.getRootCard();</span>
+<span class="nc" id="L564">        ProjectStructure structure = new ProjectStructure();</span>
+<span class="nc" id="L565">        Card rootCard = project.getRootCard();</span>
 
-<span class="nc bnc" id="L546" title="All 2 branches missed.">        if (rootCard != null) {</span>
-<span class="nc" id="L547">            structure.setRootCardId(rootCard.getId());</span>
+<span class="nc bnc" id="L567" title="All 2 branches missed.">        if (rootCard != null) {</span>
+<span class="nc" id="L568">            structure.setRootCardId(rootCard.getId());</span>
         }
 
-<span class="nc" id="L550">        structure.setCards(cardManager.getAllCards(rootCard));</span>
+<span class="nc" id="L571">        structure.setCards(cardManager.getAllCards(rootCard));</span>
 
-<span class="nc" id="L552">        structure.setCardContents(cardManager.getAllCardContents(rootCard));</span>
+<span class="nc" id="L573">        structure.setCardContents(cardManager.getAllCardContents(rootCard));</span>
 
-<span class="nc" id="L554">        return structure;</span>
+<span class="nc" id="L575">        return structure;</span>
     }
 
     /**
@@ -562,11 +583,11 @@ import org.slf4j.LoggerFactory;
      * @return all card types of the project
      */
     public Set&lt;AbstractCardType&gt; getCardTypes(Long projectId) {
-<span class="nc" id="L565">        logger.debug(&quot;get card types of project #{}&quot;, projectId);</span>
+<span class="nc" id="L586">        logger.debug(&quot;get card types of project #{}&quot;, projectId);</span>
 
-<span class="nc" id="L567">        Project project = assertAndGetProject(projectId);</span>
+<span class="nc" id="L588">        Project project = assertAndGetProject(projectId);</span>
 
-<span class="nc" id="L569">        return cardTypeManager.getExpandedProjectTypes(project);</span>
+<span class="nc" id="L590">        return cardTypeManager.getExpandedProjectTypes(project);</span>
     }
 
     /**
@@ -577,15 +598,15 @@ import org.slf4j.LoggerFactory;
      * @return all activityFlowLinks linked to the project
      */
     public Set&lt;ActivityFlowLink&gt; getActivityFlowLinks(Long projectId) {
-<span class="nc" id="L580">        logger.debug(&quot;Get activity flow links of project #{}&quot;, projectId);</span>
+<span class="nc" id="L601">        logger.debug(&quot;Get activity flow links of project #{}&quot;, projectId);</span>
 
-<span class="nc" id="L582">        Project project = assertAndGetProject(projectId);</span>
+<span class="nc" id="L603">        Project project = assertAndGetProject(projectId);</span>
 
-<span class="nc" id="L584">        return cardManager</span>
-<span class="nc" id="L585">            .getAllCards(project.getRootCard())</span>
-<span class="nc" id="L586">            .stream().flatMap(card -&gt; {</span>
-<span class="nc" id="L587">                return card.getActivityFlowLinksAsPrevious().stream();</span>
-<span class="nc" id="L588">            }).collect(Collectors.toSet());</span>
+<span class="nc" id="L605">        return cardManager</span>
+<span class="nc" id="L606">            .getAllCards(project.getRootCard())</span>
+<span class="nc" id="L607">            .stream().flatMap(card -&gt; {</span>
+<span class="nc" id="L608">                return card.getActivityFlowLinksAsPrevious().stream();</span>
+<span class="nc" id="L609">            }).collect(Collectors.toSet());</span>
     }
 
     /**
@@ -596,11 +617,11 @@ import org.slf4j.LoggerFactory;
      * @return all instance makers linked to the project
      */
     public List&lt;InstanceMaker&gt; getInstanceMakers(Long projectId) {
-<span class="nc" id="L599">        logger.debug(&quot;Get instance makers of project #{}&quot;, projectId);</span>
+<span class="nc" id="L620">        logger.debug(&quot;Get instance makers of project #{}&quot;, projectId);</span>
 
-<span class="nc" id="L601">        Project project = assertAndGetProject(projectId);</span>
+<span class="nc" id="L622">        Project project = assertAndGetProject(projectId);</span>
 
-<span class="nc" id="L603">        return instanceMakerDao.findInstanceMakersByProject(project);</span>
+<span class="nc" id="L624">        return instanceMakerDao.findInstanceMakersByProject(project);</span>
     }
 
     // *********************************************************************************************
@@ -616,14 +637,14 @@ import org.slf4j.LoggerFactory;
      * @return the ids of the matching projects
      */
     public List&lt;Long&gt; findIdsOfProjectsCurrentUserIsMemberOf() {
-<span class="nc" id="L619">        User user = securityManager.assertAndGetCurrentUser();</span>
+<span class="nc" id="L640">        User user = securityManager.assertAndGetCurrentUser();</span>
 
-<span class="nc" id="L621">        List&lt;Long&gt; projectsIds = projectDao.findProjectsIdsByTeamMember(user.getId());</span>
+<span class="nc" id="L642">        List&lt;Long&gt; projectsIds = projectDao.findProjectsIdsByTeamMember(user.getId());</span>
 
-<span class="nc" id="L623">        logger.debug(&quot;found projects' id where the user {} is a team member : {}&quot;, user,</span>
+<span class="nc" id="L644">        logger.debug(&quot;found projects' id where the user {} is a team member : {}&quot;, user,</span>
             projectsIds);
 
-<span class="nc" id="L626">        return projectsIds;</span>
+<span class="nc" id="L647">        return projectsIds;</span>
     }
 
     /**
@@ -635,14 +656,14 @@ import org.slf4j.LoggerFactory;
      * @return the ids of the matching projects
      */
     public List&lt;Long&gt; findIdsOfProjectsCurrentUserIsInstanceMakerFor() {
-<span class="nc" id="L638">        User user = securityManager.assertAndGetCurrentUser();</span>
+<span class="nc" id="L659">        User user = securityManager.assertAndGetCurrentUser();</span>
 
-<span class="nc" id="L640">        List&lt;Long&gt; projectsIds = projectDao.findProjectsIdsByInstanceMaker(user.getId());</span>
+<span class="nc" id="L661">        List&lt;Long&gt; projectsIds = projectDao.findProjectsIdsByInstanceMaker(user.getId());</span>
 
-<span class="nc" id="L642">        logger.debug(&quot;found projects' id for which the user {} is an instance maker : {}&quot;, user,</span>
+<span class="nc" id="L663">        logger.debug(&quot;found projects' id for which the user {} is an instance maker : {}&quot;, user,</span>
             projectsIds);
 
-<span class="nc" id="L645">        return projectsIds;</span>
+<span class="nc" id="L666">        return projectsIds;</span>
     }
 
     /**
@@ -655,14 +676,14 @@ import org.slf4j.LoggerFactory;
      * @return the ids of the matching projects
      */
     public List&lt;Long&gt; findIdsOfProjectsReadableThroughCardTypes() {
-<span class="nc" id="L658">        List&lt;Long&gt; cardTypeOrRefIds = cardTypeManager.findCurrentUserReadableProjectsCardTypesIds();</span>
+<span class="nc" id="L679">        List&lt;Long&gt; cardTypeOrRefIds = cardTypeManager.findCurrentUserReadableProjectsCardTypesIds();</span>
 
-<span class="nc" id="L660">        List&lt;Long&gt; projectsIds = cardTypeManager.findProjectIdsFromCardTypeIds(cardTypeOrRefIds);</span>
+<span class="nc" id="L681">        List&lt;Long&gt; projectsIds = cardTypeManager.findProjectIdsFromCardTypeIds(cardTypeOrRefIds);</span>
 
-<span class="nc" id="L662">        logger.debug(&quot;found projects from readable card types {} : {}&quot;, cardTypeOrRefIds,</span>
+<span class="nc" id="L683">        logger.debug(&quot;found projects from readable card types {} : {}&quot;, cardTypeOrRefIds,</span>
             projectsIds);
 
-<span class="nc" id="L665">        return projectsIds;</span>
+<span class="nc" id="L686">        return projectsIds;</span>
     }
 
     /**
@@ -674,7 +695,7 @@ import org.slf4j.LoggerFactory;
      * @return true if both users are related to the same project
      */
     public boolean doUsersHaveCommonProject(User a, User b) {
-<span class="nc" id="L677">        return projectDao.findIfUsersHaveCommonProject(a, b);</span>
+<span class="nc" id="L698">        return projectDao.findIfUsersHaveCommonProject(a, b);</span>
     }
 
     // *********************************************************************************************
@@ -689,20 +710,20 @@ import org.slf4j.LoggerFactory;
      * @return true iff the project is complete and safe
      */
     public boolean checkIntegrity(Project project) {
-<span class="nc bnc" id="L692" title="All 2 branches missed.">        if (project == null) {</span>
-<span class="nc" id="L693">            return false;</span>
+<span class="nc bnc" id="L713" title="All 2 branches missed.">        if (project == null) {</span>
+<span class="nc" id="L714">            return false;</span>
         }
 
-<span class="nc bnc" id="L696" title="All 2 branches missed.">        if (project.getRootCard() == null) {</span>
-<span class="nc" id="L697">            return false;</span>
+<span class="nc bnc" id="L717" title="All 2 branches missed.">        if (project.getRootCard() == null) {</span>
+<span class="nc" id="L718">            return false;</span>
         }
 
-<span class="nc" id="L700">        List&lt;TeamMember&gt; teamMembers = new ArrayList&lt;&gt;(project.getTeamMembers());</span>
-<span class="nc bnc" id="L701" title="All 4 branches missed.">        if (teamMembers.stream().noneMatch(m -&gt; m.getPosition() == HierarchicalPosition.OWNER)) {</span>
-<span class="nc" id="L702">            return false;</span>
+<span class="nc" id="L721">        List&lt;TeamMember&gt; teamMembers = new ArrayList&lt;&gt;(project.getTeamMembers());</span>
+<span class="nc bnc" id="L722" title="All 4 branches missed.">        if (teamMembers.stream().noneMatch(m -&gt; m.getPosition() == HierarchicalPosition.OWNER)) {</span>
+<span class="nc" id="L723">            return false;</span>
         }
 
-<span class="nc" id="L705">        return true;</span>
+<span class="nc" id="L726">        return true;</span>
     }
 
 }

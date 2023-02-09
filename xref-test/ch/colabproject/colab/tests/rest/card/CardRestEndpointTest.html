@@ -138,7 +138,7 @@
 <a class="jxr_linenumber" name="L130" href="#L130">130</a> 
 <a class="jxr_linenumber" name="L131" href="#L131">131</a> 
 <a class="jxr_linenumber" name="L132" href="#L132">132</a>         Card otherCard = ColabFactory.createNewCard(client, project);
-<a class="jxr_linenumber" name="L133" href="#L133">133</a>         Long otherCardId = card.getId();
+<a class="jxr_linenumber" name="L133" href="#L133">133</a>         <em class="jxr_comment">//Long otherCardId = card.getId();</em>
 <a class="jxr_linenumber" name="L134" href="#L134">134</a> 
 <a class="jxr_linenumber" name="L135" href="#L135">135</a>         Assertions.assertEquals(1, otherCard.getX());
 <a class="jxr_linenumber" name="L136" href="#L136">136</a>         Assertions.assertEquals(6, otherCard.getY());
@@ -260,7 +260,7 @@
 <a class="jxr_linenumber" name="L252" href="#L252">252</a>             client.cardRestEndpoint.deleteCard(rootCardId);
 <a class="jxr_linenumber" name="L253" href="#L253">253</a>         } <strong class="jxr_keyword">catch</strong> (HttpErrorMessage hem) {
 <a class="jxr_linenumber" name="L254" href="#L254">254</a>             <em class="jxr_comment">// expected way</em>
-<a class="jxr_linenumber" name="L255" href="#L255">255</a>             Assertions.assertEquals(HttpErrorMessage.MessageCode.DATA_INTEGRITY_FAILURE,
+<a class="jxr_linenumber" name="L255" href="#L255">255</a>             Assertions.assertEquals(HttpErrorMessage.MessageCode.DATA_ERROR,
 <a class="jxr_linenumber" name="L256" href="#L256">256</a>                 hem.getMessageCode());
 <a class="jxr_linenumber" name="L257" href="#L257">257</a>             <strong class="jxr_keyword">return</strong>;
 <a class="jxr_linenumber" name="L258" href="#L258">258</a>         }

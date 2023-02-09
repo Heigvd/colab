@@ -115,7 +115,7 @@ import org.slf4j.LoggerFactory;
      * @param sessionId websocket session id
      */
     @PUT
-    @Path(&quot;SubscribeToProjectChannel/{projectId: [0-9]*}&quot;)
+    @Path(&quot;SubscribeToProjectChannel/{projectId: [0-9]+}&quot;)
     public void subscribeToProjectChannel(
         @PathParam(&quot;projectId&quot;) Long projectId,
         WsSessionIdentifier sessionId
@@ -132,7 +132,7 @@ import org.slf4j.LoggerFactory;
      * @param sessionId websocket session id
      */
     @PUT
-    @Path(&quot;UnSubscribeFromProjectChannel/{projectId: [0-9]*}&quot;)
+    @Path(&quot;UnSubscribeFromProjectChannel/{projectId: [0-9]+}&quot;)
     public void unsubscribeFromProjectChannel(
         @PathParam(&quot;projectId&quot;) Long projectId,
         WsSessionIdentifier sessionId
@@ -149,7 +149,7 @@ import org.slf4j.LoggerFactory;
      * @param sessionId websocket session id
      */
     @PUT
-    @Path(&quot;SubscribeToBlockChannel/{blockId: [0-9]*}&quot;)
+    @Path(&quot;SubscribeToBlockChannel/{blockId: [0-9]+}&quot;)
     public void subscribeToBlockChannel(
         @PathParam(&quot;blockId&quot;) Long blockId,
         WsSessionIdentifier sessionId
@@ -165,7 +165,7 @@ import org.slf4j.LoggerFactory;
      * @param sessionId websocket session id
      */
     @PUT
-    @Path(&quot;UnSubscribeFromBlockChannel/{blockId: [0-9]*}&quot;)
+    @Path(&quot;UnSubscribeFromBlockChannel/{blockId: [0-9]+}&quot;)
     public void unsubscribeFromBlockChannel(
         @PathParam(&quot;blockId&quot;) Long blockId,
         WsSessionIdentifier sessionId

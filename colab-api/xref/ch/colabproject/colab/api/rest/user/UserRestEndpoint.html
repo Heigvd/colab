@@ -108,7 +108,7 @@
 <a class="jxr_linenumber" name="L100" href="#L100">100</a> <em class="jxr_javadoccomment">     * @return user which match the given id or null</em>
 <a class="jxr_linenumber" name="L101" href="#L101">101</a> <em class="jxr_javadoccomment">     */</em>
 <a class="jxr_linenumber" name="L102" href="#L102">102</a>     @GET
-<a class="jxr_linenumber" name="L103" href="#L103">103</a>     @Path(<span class="jxr_string">"{id : [0-9]*}"</span>)
+<a class="jxr_linenumber" name="L103" href="#L103">103</a>     @Path(<span class="jxr_string">"{id: [0-9]+}"</span>)
 <a class="jxr_linenumber" name="L104" href="#L104">104</a>     @AuthenticationRequired
 <a class="jxr_linenumber" name="L105" href="#L105">105</a>     <strong class="jxr_keyword">public</strong> User getUserById(@PathParam(<span class="jxr_string">"id"</span>) Long id) {
 <a class="jxr_linenumber" name="L106" href="#L106">106</a>         logger.debug(<span class="jxr_string">"get user #{}"</span>, id);
@@ -212,7 +212,7 @@
 <a class="jxr_linenumber" name="L204" href="#L204">204</a> <em class="jxr_javadoccomment">     * @param sessionId if of the HTTP session to delete</em>
 <a class="jxr_linenumber" name="L205" href="#L205">205</a> <em class="jxr_javadoccomment">     */</em>
 <a class="jxr_linenumber" name="L206" href="#L206">206</a>     @DELETE
-<a class="jxr_linenumber" name="L207" href="#L207">207</a>     @Path(<span class="jxr_string">"Session/{id}"</span>)
+<a class="jxr_linenumber" name="L207" href="#L207">207</a>     @Path(<span class="jxr_string">"Session/{id: [0-9]+}"</span>)
 <a class="jxr_linenumber" name="L208" href="#L208">208</a>     @AuthenticationRequired
 <a class="jxr_linenumber" name="L209" href="#L209">209</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> forceLogout(@PathParam(<span class="jxr_string">"id"</span>) Long sessionId) {
 <a class="jxr_linenumber" name="L210" href="#L210">210</a>         userManager.forceLogout(sessionId);
@@ -261,7 +261,7 @@
 <a class="jxr_linenumber" name="L253" href="#L253">253</a>     <em class="jxr_javadoccomment">/**</em>
 <a class="jxr_linenumber" name="L254" href="#L254">254</a> <em class="jxr_javadoccomment">     * Update password of a localAccount. The password MUST be hashed a first time by the client.</em>
 <a class="jxr_linenumber" name="L255" href="#L255">255</a> <em class="jxr_javadoccomment">     * &lt;p&gt;</em>
-<a class="jxr_linenumber" name="L256" href="#L256">256</a> <em class="jxr_javadoccomment">     * </em>
+<a class="jxr_linenumber" name="L256" href="#L256">256</a> <em class="jxr_javadoccomment">     *</em>
 <a class="jxr_linenumber" name="L257" href="#L257">257</a> <em class="jxr_javadoccomment">     * @param authInfo identifier and new password</em>
 <a class="jxr_linenumber" name="L258" href="#L258">258</a> <em class="jxr_javadoccomment">     *</em>
 <a class="jxr_linenumber" name="L259" href="#L259">259</a> <em class="jxr_javadoccomment">     * @throws HttpErrorMessage if currentUser is not allowed to update the given account</em>
@@ -276,7 +276,7 @@
 <a class="jxr_linenumber" name="L268" href="#L268">268</a>     <em class="jxr_javadoccomment">/**</em>
 <a class="jxr_linenumber" name="L269" href="#L269">269</a> <em class="jxr_javadoccomment">     * Request a local account password reset. This method always returns 204 no content</em>
 <a class="jxr_linenumber" name="L270" href="#L270">270</a> <em class="jxr_javadoccomment">     * &lt;p&gt;</em>
-<a class="jxr_linenumber" name="L271" href="#L271">271</a> <em class="jxr_javadoccomment">     * </em>
+<a class="jxr_linenumber" name="L271" href="#L271">271</a> <em class="jxr_javadoccomment">     *</em>
 <a class="jxr_linenumber" name="L272" href="#L272">272</a> <em class="jxr_javadoccomment">     * @param email email address of account</em>
 <a class="jxr_linenumber" name="L273" href="#L273">273</a> <em class="jxr_javadoccomment">     */</em>
 <a class="jxr_linenumber" name="L274" href="#L274">274</a>     @PUT

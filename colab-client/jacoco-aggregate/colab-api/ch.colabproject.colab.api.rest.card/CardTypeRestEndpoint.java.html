@@ -102,7 +102,7 @@ import org.slf4j.LoggerFactory;
      *         until the card type)
      */
     @GET
-    @Path(&quot;expanded/{id}&quot;)
+    @Path(&quot;expanded/{id: [0-9]+}&quot;)
     public List&lt;AbstractCardType&gt; getExpandedCardType(@PathParam(&quot;id&quot;) Long id) {
 <span class="nc" id="L107">        logger.debug(&quot;get abstract card type #{} and its target chain&quot;, id);</span>
 <span class="nc" id="L108">        return cardTypeManager.getExpandedCardType(id);</span>
@@ -117,7 +117,7 @@ import org.slf4j.LoggerFactory;
      * @return the card type or null
      */
     @GET
-    @Path(&quot;{id}&quot;)
+    @Path(&quot;{id: [0-9]+}&quot;)
     public AbstractCardType getCardType(@PathParam(&quot;id&quot;) Long id) {
 <span class="nc" id="L122">        logger.debug(&quot;get card type #{}&quot;, id);</span>
 <span class="nc" id="L123">        return cardTypeDao.findAbstractCardType(id);</span>
@@ -166,7 +166,7 @@ import org.slf4j.LoggerFactory;
      * @param id the id of the card type to delete
      */
     @DELETE
-    @Path(&quot;{id}&quot;)
+    @Path(&quot;{id: [0-9]+}&quot;)
     public void deleteCardType(@PathParam(&quot;id&quot;) Long id) {
 <span class="nc" id="L171">        logger.debug(&quot;delete card type #{}&quot;, id);</span>
 <span class="nc" id="L172">        cardTypeManager.deleteCardType(id);</span>
@@ -182,7 +182,7 @@ import org.slf4j.LoggerFactory;
      * @return The card type
      */
     @PUT
-    @Path(&quot;useCardTypeInProject/{cardTypeId}/{projectId}&quot;)
+    @Path(&quot;useCardTypeInProject/{cardTypeId: [0-9]+}/{projectId: [0-9]+}&quot;)
     public AbstractCardType useCardTypeInProject(@PathParam(&quot;cardTypeId&quot;) Long cardTypeId,
         @PathParam(&quot;projectId&quot;) Long projectId) {
 <span class="nc" id="L188">        logger.debug(&quot;use card type #{} in project #{}&quot;, cardTypeId, projectId);</span>
@@ -199,7 +199,7 @@ import org.slf4j.LoggerFactory;
      *                      anymore
      */
     @PUT
-    @Path(&quot;removeCardTypeFromProject/{cardTypeId}/{projectId}&quot;)
+    @Path(&quot;removeCardTypeFromProject/{cardTypeId: [0-9]+}/{projectId: [0-9]+}&quot;)
     public void removeCardTypeRefFromProject(@PathParam(&quot;cardTypeId&quot;) Long cardTypeRefId,
         @PathParam(&quot;projectId&quot;) Long projectId) {
 <span class="nc" id="L205">        logger.debug(&quot;remove card type reference #{} from project #{}&quot;, cardTypeRefId, projectId);</span>

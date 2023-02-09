@@ -19,6 +19,7 @@ import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.api.model.team.acl.AccessControl;
 import ch.colabproject.colab.api.persistence.jpa.card.CardDao;
 import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
+import ch.colabproject.colab.generator.model.exceptions.MessageI18nKey;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -39,10 +40,10 @@ import org.slf4j.LoggerFactory;
  */
 @Stateless
 @LocalBean
-<span class="nc" id="L42">public class CardManager {</span>
+<span class="nc" id="L43">public class CardManager {</span>
 
     /** logger */
-<span class="nc" id="L45">    private static final Logger logger = LoggerFactory.getLogger(CardManager.class);</span>
+<span class="nc" id="L46">    private static final Logger logger = LoggerFactory.getLogger(CardManager.class);</span>
 
     // *********************************************************************************************
     // injections
@@ -86,14 +87,14 @@ import org.slf4j.LoggerFactory;
      * @throws HttpErrorMessage if the card was not found
      */
     public Card assertAndGetCard(Long cardId) {
-<span class="nc" id="L89">        Card card = cardDao.findCard(cardId);</span>
+<span class="nc" id="L90">        Card card = cardDao.findCard(cardId);</span>
 
-<span class="nc bnc" id="L91" title="All 2 branches missed.">        if (card == null) {</span>
-<span class="nc" id="L92">            logger.error(&quot;card #{} not found&quot;, cardId);</span>
-<span class="nc" id="L93">            throw HttpErrorMessage.relatedObjectNotFoundError();</span>
+<span class="nc bnc" id="L92" title="All 2 branches missed.">        if (card == null) {</span>
+<span class="nc" id="L93">            logger.error(&quot;card #{} not found&quot;, cardId);</span>
+<span class="nc" id="L94">            throw HttpErrorMessage.dataError(MessageI18nKey.DATA_NOT_FOUND);</span>
         }
 
-<span class="nc" id="L96">        return card;</span>
+<span class="nc" id="L97">        return card;</span>
     }
 
     // *********************************************************************************************
@@ -108,19 +109,19 @@ import org.slf4j.LoggerFactory;
      * @return the rootCard + all cards within
      */
     public Set&lt;Card&gt; getAllCards(Card rootCard) {
-<span class="nc" id="L111">        Set&lt;Card&gt; cards = new HashSet&lt;&gt;();</span>
-<span class="nc" id="L112">        List&lt;Card&gt; queue = new LinkedList&lt;&gt;();</span>
-<span class="nc" id="L113">        queue.add(rootCard);</span>
+<span class="nc" id="L112">        Set&lt;Card&gt; cards = new HashSet&lt;&gt;();</span>
+<span class="nc" id="L113">        List&lt;Card&gt; queue = new LinkedList&lt;&gt;();</span>
+<span class="nc" id="L114">        queue.add(rootCard);</span>
 
-<span class="nc bnc" id="L115" title="All 2 branches missed.">        while (!queue.isEmpty()) {</span>
-<span class="nc" id="L116">            Card card = queue.remove(0);</span>
-<span class="nc bnc" id="L117" title="All 2 branches missed.">            if (!cards.contains(card)) { // prevent cycles</span>
-<span class="nc" id="L118">                cards.add(card);</span>
-<span class="nc" id="L119">                card.getContentVariants().forEach(content -&gt; queue.addAll(content.getSubCards()));</span>
+<span class="nc bnc" id="L116" title="All 2 branches missed.">        while (!queue.isEmpty()) {</span>
+<span class="nc" id="L117">            Card card = queue.remove(0);</span>
+<span class="nc bnc" id="L118" title="All 2 branches missed.">            if (!cards.contains(card)) { // prevent cycles</span>
+<span class="nc" id="L119">                cards.add(card);</span>
+<span class="nc" id="L120">                card.getContentVariants().forEach(content -&gt; queue.addAll(content.getSubCards()));</span>
             }
-<span class="nc" id="L121">        }</span>
+<span class="nc" id="L122">        }</span>
 
-<span class="nc" id="L123">        return cards;</span>
+<span class="nc" id="L124">        return cards;</span>
     }
 
     /**
@@ -131,9 +132,9 @@ import org.slf4j.LoggerFactory;
      * @return all cardContent in the card hierarchy
      */
     public Set&lt;CardContent&gt; getAllCardContents(Card rootCard) {
-<span class="nc" id="L134">        return this.getAllCards(rootCard).stream().flatMap(card -&gt; {</span>
-<span class="nc" id="L135">            return card.getContentVariants().stream();</span>
-<span class="nc" id="L136">        }).collect(Collectors.toSet());</span>
+<span class="nc" id="L135">        return this.getAllCards(rootCard).stream().flatMap(card -&gt; {</span>
+<span class="nc" id="L136">            return card.getContentVariants().stream();</span>
+<span class="nc" id="L137">        }).collect(Collectors.toSet());</span>
     }
 
     // *********************************************************************************************
@@ -146,7 +147,7 @@ import org.slf4j.LoggerFactory;
      * @return True if the card is the root card of a project
      */
     private boolean isARootCard(Card card) {
-<span class="nc" id="L149">        return card.hasRootCardProject();</span>
+<span class="nc" id="L150">        return card.hasRootCardProject();</span>
     }
 
     // *********************************************************************************************
@@ -164,23 +165,23 @@ import org.slf4j.LoggerFactory;
      * @return a new, initialized and persisted card
      */
     public Card createNewCard(Long parentId, Long cardTypeId) {
-<span class="nc" id="L167">        logger.debug(&quot;create a new sub card of #{} with the type of #{}&quot;, parentId,</span>
+<span class="nc" id="L168">        logger.debug(&quot;create a new sub card of #{} with the type of #{}&quot;, parentId,</span>
             cardTypeId);
 
-<span class="nc" id="L170">        CardContent parent = cardContentManager.assertAndGetCardContent(parentId);</span>
+<span class="nc" id="L171">        CardContent parent = cardContentManager.assertAndGetCardContent(parentId);</span>
 
         AbstractCardType cardType;
-<span class="nc bnc" id="L173" title="All 2 branches missed.">        if (cardTypeId == null) {</span>
-<span class="nc" id="L174">            cardType = null;</span>
+<span class="nc bnc" id="L174" title="All 2 branches missed.">        if (cardTypeId == null) {</span>
+<span class="nc" id="L175">            cardType = null;</span>
         } else {
-<span class="nc" id="L176">            cardType = cardTypeManager.assertAndGetCardTypeOrRef(cardTypeId);</span>
+<span class="nc" id="L177">            cardType = cardTypeManager.assertAndGetCardTypeOrRef(cardTypeId);</span>
         }
 
-<span class="nc" id="L179">        Card card = initNewCard(parent, cardType);</span>
+<span class="nc" id="L180">        Card card = initNewCard(parent, cardType);</span>
 
-<span class="nc" id="L181">        resourceReferenceSpreadingHelper.extractReferencesFromUp(card);</span>
+<span class="nc" id="L182">        resourceReferenceSpreadingHelper.extractReferencesFromUp(card);</span>
 
-<span class="nc" id="L183">        return cardDao.persistCard(card);</span>
+<span class="nc" id="L184">        return cardDao.persistCard(card);</span>
     }
 
     /**
@@ -194,41 +195,41 @@ import org.slf4j.LoggerFactory;
      * @return a new card containing a new card content with cardType
      */
     private Card initNewCard(CardContent parent, AbstractCardType cardType) {
-<span class="nc" id="L197">        Card card = initNewCard();</span>
+<span class="nc" id="L198">        Card card = initNewCard();</span>
 
-<span class="nc" id="L199">        List&lt;Card&gt; subcards = parent.getSubCards();</span>
+<span class="nc" id="L200">        List&lt;Card&gt; subcards = parent.getSubCards();</span>
         // resolve any conflict in the current situation
-<span class="nc" id="L201">        Grid grid = Grid.resolveConflicts(subcards);</span>
+<span class="nc" id="L202">        Grid grid = Grid.resolveConflicts(subcards);</span>
         // then add the card in the grid
-<span class="nc" id="L203">        grid.addCell(card);</span>
-<span class="nc" id="L204">        grid.shift();</span>
+<span class="nc" id="L204">        grid.addCell(card);</span>
+<span class="nc" id="L205">        grid.shift();</span>
 
-<span class="nc" id="L206">        card.setParent(parent);</span>
-<span class="nc" id="L207">        subcards.add(card);</span>
+<span class="nc" id="L207">        card.setParent(parent);</span>
+<span class="nc" id="L208">        subcards.add(card);</span>
 
-<span class="nc" id="L209">        Project project = parent.getProject();</span>
-<span class="nc bnc" id="L210" title="All 4 branches missed.">        if (project != null &amp;&amp; cardType != null) {</span>
-<span class="nc" id="L211">            AbstractCardType effectiveType = cardTypeManager.computeEffectiveCardTypeOrRef(cardType,</span>
+<span class="nc" id="L210">        Project project = parent.getProject();</span>
+<span class="nc bnc" id="L211" title="All 4 branches missed.">        if (project != null &amp;&amp; cardType != null) {</span>
+<span class="nc" id="L212">            AbstractCardType effectiveType = cardTypeManager.computeEffectiveCardTypeOrRef(cardType,</span>
                 project);
 
-<span class="nc bnc" id="L214" title="All 2 branches missed.">            if (effectiveType != null) {</span>
+<span class="nc bnc" id="L215" title="All 2 branches missed.">            if (effectiveType != null) {</span>
 
-<span class="nc" id="L216">                card.setCardType(effectiveType);</span>
-<span class="nc" id="L217">                effectiveType.getImplementingCards().add(card);</span>
+<span class="nc" id="L217">                card.setCardType(effectiveType);</span>
+<span class="nc" id="L218">                effectiveType.getImplementingCards().add(card);</span>
 
-<span class="nc" id="L219">                CardType resolved = effectiveType.resolve();</span>
-<span class="nc bnc" id="L220" title="All 2 branches missed.">                if (resolved != null) {</span>
-<span class="nc" id="L221">                    card.setTitle(resolved.getTitle());</span>
+<span class="nc" id="L220">                CardType resolved = effectiveType.resolve();</span>
+<span class="nc bnc" id="L221" title="All 2 branches missed.">                if (resolved != null) {</span>
+<span class="nc" id="L222">                    card.setTitle(resolved.getTitle());</span>
                 } else {
-<span class="nc" id="L223">                    logger.error(&quot;Unresolvable card type {}&quot;, effectiveType);</span>
+<span class="nc" id="L224">                    logger.error(&quot;Unresolvable card type {}&quot;, effectiveType);</span>
                 }
-<span class="nc" id="L225">            } else {</span>
-<span class="nc" id="L226">                logger.error(&quot;Unable to find effective type for {}&quot;, cardType);</span>
-<span class="nc" id="L227">                throw HttpErrorMessage.dataIntegrityFailure();</span>
+<span class="nc" id="L226">            } else {</span>
+<span class="nc" id="L227">                logger.error(&quot;Unable to find effective type for {}&quot;, cardType);</span>
+<span class="nc" id="L228">                throw HttpErrorMessage.dataError(MessageI18nKey.DATA_INTEGRITY_FAILURE);</span>
             }
         }
 
-<span class="nc" id="L231">        return card;</span>
+<span class="nc" id="L232">        return card;</span>
     }
 
     /**
@@ -239,11 +240,11 @@ import org.slf4j.LoggerFactory;
      * @return a new card dedicated to be the root card of a project
      */
     public Card initNewRootCard() {
-<span class="nc" id="L242">        logger.debug(&quot;initialize a new root card&quot;);</span>
+<span class="nc" id="L243">        logger.debug(&quot;initialize a new root card&quot;);</span>
 
-<span class="nc" id="L244">        Card rootCard = initNewCard();</span>
+<span class="nc" id="L245">        Card rootCard = initNewCard();</span>
 
-<span class="nc" id="L246">        return rootCard;</span>
+<span class="nc" id="L247">        return rootCard;</span>
     }
 
     /**
@@ -252,11 +253,11 @@ import org.slf4j.LoggerFactory;
      * @return a new card containing a new card content
      */
     private Card initNewCard() {
-<span class="nc" id="L255">        Card card = new Card();</span>
+<span class="nc" id="L256">        Card card = new Card();</span>
 
-<span class="nc" id="L257">        cardContentManager.initNewCardContentForCard(card);</span>
+<span class="nc" id="L258">        cardContentManager.initNewCardContentForCard(card);</span>
 
-<span class="nc" id="L259">        return card;</span>
+<span class="nc" id="L260">        return card;</span>
     }
 
     /**
@@ -265,20 +266,20 @@ import org.slf4j.LoggerFactory;
      * @param cardId the id of the card to delete
      */
     public void deleteCard(Long cardId) {
-<span class="nc" id="L268">        Card card = assertAndGetCard(cardId);</span>
+<span class="nc" id="L269">        Card card = assertAndGetCard(cardId);</span>
 
-<span class="nc bnc" id="L270" title="All 2 branches missed.">        if (!checkDeletionAcceptability(card)) {</span>
-<span class="nc" id="L271">            throw HttpErrorMessage.dataIntegrityFailure();</span>
+<span class="nc bnc" id="L271" title="All 2 branches missed.">        if (!checkDeletionAcceptability(card)) {</span>
+<span class="nc" id="L272">            throw HttpErrorMessage.dataError(MessageI18nKey.DATA_INTEGRITY_FAILURE);</span>
         }
 
-<span class="nc" id="L274">        card.getParent().getSubCards().remove(card);</span>
+<span class="nc" id="L275">        card.getParent().getSubCards().remove(card);</span>
 
-<span class="nc bnc" id="L276" title="All 2 branches missed.">        if (card.hasCardType()) {</span>
-<span class="nc" id="L277">            card.getCardType().getImplementingCards().remove(card);</span>
+<span class="nc bnc" id="L277" title="All 2 branches missed.">        if (card.hasCardType()) {</span>
+<span class="nc" id="L278">            card.getCardType().getImplementingCards().remove(card);</span>
         }
 
-<span class="nc" id="L280">        cardDao.deleteCard(card);</span>
-<span class="nc" id="L281">    }</span>
+<span class="nc" id="L281">        cardDao.deleteCard(card);</span>
+<span class="nc" id="L282">    }</span>
 
     /**
      * Ascertain that the card can be deleted
@@ -289,11 +290,11 @@ import org.slf4j.LoggerFactory;
      */
     private boolean checkDeletionAcceptability(Card card) {
         // no way to delete the root card
-<span class="nc bnc" id="L292" title="All 2 branches missed.">        if (card.getRootCardProject() != null) {</span>
-<span class="nc" id="L293">            return false;</span>
+<span class="nc bnc" id="L293" title="All 2 branches missed.">        if (card.getRootCardProject() != null) {</span>
+<span class="nc" id="L294">            return false;</span>
         }
 
-<span class="nc" id="L296">        return true;</span>
+<span class="nc" id="L297">        return true;</span>
     }
 
     /**
@@ -305,25 +306,25 @@ import org.slf4j.LoggerFactory;
      * @param position the new position to set
      */
     public void changeCardPosition(Long cardId, GridPosition position) {
-<span class="nc" id="L308">        Card card = this.assertAndGetCard(cardId);</span>
-<span class="nc" id="L309">        CardContent parent = card.getParent();</span>
-<span class="nc bnc" id="L310" title="All 2 branches missed.">        if (parent != null) {</span>
-<span class="nc" id="L311">            List&lt;Card&gt; subCards = new ArrayList&lt;&gt;(parent.getSubCards());</span>
+<span class="nc" id="L309">        Card card = this.assertAndGetCard(cardId);</span>
+<span class="nc" id="L310">        CardContent parent = card.getParent();</span>
+<span class="nc bnc" id="L311" title="All 2 branches missed.">        if (parent != null) {</span>
+<span class="nc" id="L312">            List&lt;Card&gt; subCards = new ArrayList&lt;&gt;(parent.getSubCards());</span>
             // make sure there is no conflict in the current situation
-<span class="nc" id="L313">            Grid.resolveConflicts(subCards);</span>
+<span class="nc" id="L314">            Grid.resolveConflicts(subCards);</span>
 
             // compute the grid without the cell to move
-<span class="nc" id="L316">            subCards.remove(card);</span>
-<span class="nc" id="L317">            Grid grid = Grid.resolveConflicts(subCards);</span>
+<span class="nc" id="L317">            subCards.remove(card);</span>
+<span class="nc" id="L318">            Grid grid = Grid.resolveConflicts(subCards);</span>
 
-<span class="nc" id="L319">            card.moveTo(position);</span>
-<span class="nc" id="L320">            grid.addCell(card);</span>
+<span class="nc" id="L320">            card.moveTo(position);</span>
+<span class="nc" id="L321">            grid.addCell(card);</span>
 
-<span class="nc" id="L322">            grid.shift();</span>
+<span class="nc" id="L323">            grid.shift();</span>
         }
 
         // indexManager.changeItemPosition(card, index, card.getParent().getSubCards());
-<span class="nc" id="L326">    }</span>
+<span class="nc" id="L327">    }</span>
 
     /**
      * Move a card to a new parent
@@ -334,10 +335,10 @@ import org.slf4j.LoggerFactory;
      * @throws HttpErrorMessage if card or parent does not exist or if parent if a child of the card
      */
     public void moveCard(Long cardId, Long newParentId) {
-<span class="nc" id="L337">        Card card = this.assertAndGetCard(cardId);</span>
-<span class="nc" id="L338">        CardContent parent = cardContentManager.assertAndGetCardContent(newParentId);</span>
-<span class="nc" id="L339">        this.moveCard(card, parent);</span>
-<span class="nc" id="L340">    }</span>
+<span class="nc" id="L338">        Card card = this.assertAndGetCard(cardId);</span>
+<span class="nc" id="L339">        CardContent parent = cardContentManager.assertAndGetCardContent(newParentId);</span>
+<span class="nc" id="L340">        this.moveCard(card, parent);</span>
+<span class="nc" id="L341">    }</span>
 
     /**
      * Move a card to a new parent.
@@ -352,32 +353,32 @@ import org.slf4j.LoggerFactory;
      * @throws HttpErrorMessage if card or parent does not exist or if parent if a child of the card
      */
     private void moveCard(Card card, CardContent newParent) {
-<span class="nc bnc" id="L355" title="All 2 branches missed.">        if (!checkMoveAcceptability(card, newParent)) {</span>
-<span class="nc" id="L356">            throw HttpErrorMessage.dataIntegrityFailure();</span>
+<span class="nc bnc" id="L356" title="All 2 branches missed.">        if (!checkMoveAcceptability(card, newParent)) {</span>
+<span class="nc" id="L357">            throw HttpErrorMessage.dataError(MessageI18nKey.DATA_INTEGRITY_FAILURE);</span>
         }
 
-<span class="nc bnc" id="L359" title="All 2 branches missed.">        if (!Objects.equals(card.getParent(), newParent)) {</span>
+<span class="nc bnc" id="L360" title="All 2 branches missed.">        if (!Objects.equals(card.getParent(), newParent)) {</span>
 
-<span class="nc" id="L361">            CardContent previousParent = card.getParent();</span>
-<span class="nc bnc" id="L362" title="All 2 branches missed.">            if (previousParent != null) {</span>
-<span class="nc" id="L363">                resourceReferenceSpreadingHelper.spreadDisableResourceDown(card, previousParent);</span>
+<span class="nc" id="L362">            CardContent previousParent = card.getParent();</span>
+<span class="nc bnc" id="L363" title="All 2 branches missed.">            if (previousParent != null) {</span>
+<span class="nc" id="L364">                resourceReferenceSpreadingHelper.spreadDisableResourceDown(card, previousParent);</span>
 
-<span class="nc" id="L365">                previousParent.getSubCards().remove(card);</span>
+<span class="nc" id="L366">                previousParent.getSubCards().remove(card);</span>
             }
 
-<span class="nc" id="L368">            List&lt;Card&gt; nweParentSubcards = newParent.getSubCards();</span>
+<span class="nc" id="L369">            List&lt;Card&gt; nweParentSubcards = newParent.getSubCards();</span>
             // resolve any conflict in the current situation
-<span class="nc" id="L370">            Grid grid = Grid.resolveConflicts(nweParentSubcards);</span>
+<span class="nc" id="L371">            Grid grid = Grid.resolveConflicts(nweParentSubcards);</span>
             // then add the card in the grid
-<span class="nc" id="L372">            grid.addCell(card);</span>
-<span class="nc" id="L373">            grid.shift();</span>
+<span class="nc" id="L373">            grid.addCell(card);</span>
+<span class="nc" id="L374">            grid.shift();</span>
 
-<span class="nc" id="L375">            card.setParent(newParent);</span>
-<span class="nc" id="L376">            newParent.getSubCards().add(card);</span>
+<span class="nc" id="L376">            card.setParent(newParent);</span>
+<span class="nc" id="L377">            newParent.getSubCards().add(card);</span>
 
-<span class="nc" id="L378">            resourceReferenceSpreadingHelper.extractReferencesFromUp(card);</span>
+<span class="nc" id="L379">            resourceReferenceSpreadingHelper.extractReferencesFromUp(card);</span>
         }
-<span class="nc" id="L380">    }</span>
+<span class="nc" id="L381">    }</span>
 
     /**
      * Ascertain that the given card can be moved to the given card content
@@ -388,34 +389,34 @@ import org.slf4j.LoggerFactory;
      * @return True iff it can be safely moved
      */
     private boolean checkMoveAcceptability(Card card, CardContent newParent) {
-<span class="nc bnc" id="L391" title="All 2 branches missed.">        if (card == null) {</span>
-<span class="nc" id="L392">            return false;</span>
+<span class="nc bnc" id="L392" title="All 2 branches missed.">        if (card == null) {</span>
+<span class="nc" id="L393">            return false;</span>
         }
 
-<span class="nc bnc" id="L395" title="All 2 branches missed.">        if (newParent == null) {</span>
-<span class="nc" id="L396">            return false;</span>
+<span class="nc bnc" id="L396" title="All 2 branches missed.">        if (newParent == null) {</span>
+<span class="nc" id="L397">            return false;</span>
         }
 
         // Do never move the root card
-<span class="nc bnc" id="L400" title="All 2 branches missed.">        if (isARootCard(card)) {</span>
-<span class="nc" id="L401">            return false;</span>
+<span class="nc bnc" id="L401" title="All 2 branches missed.">        if (isARootCard(card)) {</span>
+<span class="nc" id="L402">            return false;</span>
         }
 
         // check if newParent is a child of the card
-<span class="nc" id="L405">        Card ancestorOfParent = newParent.getCard();</span>
-<span class="nc bnc" id="L406" title="All 2 branches missed.">        while (ancestorOfParent != null) {</span>
-<span class="nc bnc" id="L407" title="All 2 branches missed.">            if (ancestorOfParent.equals(card)) {</span>
-<span class="nc" id="L408">                return false;</span>
+<span class="nc" id="L406">        Card ancestorOfParent = newParent.getCard();</span>
+<span class="nc bnc" id="L407" title="All 2 branches missed.">        while (ancestorOfParent != null) {</span>
+<span class="nc bnc" id="L408" title="All 2 branches missed.">            if (ancestorOfParent.equals(card)) {</span>
+<span class="nc" id="L409">                return false;</span>
             }
-<span class="nc" id="L410">            CardContent parent = ancestorOfParent.getParent();</span>
-<span class="nc bnc" id="L411" title="All 2 branches missed.">            if (parent != null) {</span>
-<span class="nc" id="L412">                ancestorOfParent = parent.getCard();</span>
+<span class="nc" id="L411">            CardContent parent = ancestorOfParent.getParent();</span>
+<span class="nc bnc" id="L412" title="All 2 branches missed.">            if (parent != null) {</span>
+<span class="nc" id="L413">                ancestorOfParent = parent.getCard();</span>
             } else {
-<span class="nc" id="L414">                ancestorOfParent = null;</span>
+<span class="nc" id="L415">                ancestorOfParent = null;</span>
             }
-<span class="nc" id="L416">        }</span>
+<span class="nc" id="L417">        }</span>
 
-<span class="nc" id="L418">        return true;</span>
+<span class="nc" id="L419">        return true;</span>
     }
 
     // *********************************************************************************************
@@ -430,11 +431,11 @@ import org.slf4j.LoggerFactory;
      * @return all card contents of the card
      */
     public List&lt;CardContent&gt; getContentVariants(Long cardId) {
-<span class="nc" id="L433">        logger.debug(&quot;Get card contents of card #{}&quot;, cardId);</span>
+<span class="nc" id="L434">        logger.debug(&quot;Get card contents of card #{}&quot;, cardId);</span>
 
-<span class="nc" id="L435">        Card card = assertAndGetCard(cardId);</span>
+<span class="nc" id="L436">        Card card = assertAndGetCard(cardId);</span>
 
-<span class="nc" id="L437">        return card.getContentVariants();</span>
+<span class="nc" id="L438">        return card.getContentVariants();</span>
     }
 
     /**
@@ -445,11 +446,11 @@ import org.slf4j.LoggerFactory;
      * @return all sticky note links linked from the card
      */
     public List&lt;StickyNoteLink&gt; getStickyNoteLinkAsDest(Long cardId) {
-<span class="nc" id="L448">        logger.debug(&quot;get sticky note links where the card #{} is the destination&quot;, cardId);</span>
+<span class="nc" id="L449">        logger.debug(&quot;get sticky note links where the card #{} is the destination&quot;, cardId);</span>
 
-<span class="nc" id="L450">        Card card = assertAndGetCard(cardId);</span>
+<span class="nc" id="L451">        Card card = assertAndGetCard(cardId);</span>
 
-<span class="nc" id="L452">        return card.getStickyNoteLinksAsDest();</span>
+<span class="nc" id="L453">        return card.getStickyNoteLinksAsDest();</span>
     }
 
     /**
@@ -460,11 +461,11 @@ import org.slf4j.LoggerFactory;
      * @return all sticky note links linked to the card
      */
     public List&lt;StickyNoteLink&gt; getStickyNoteLinkAsSrcCard(Long cardId) {
-<span class="nc" id="L463">        logger.debug(&quot;get sticky note links where the card #{} is the source&quot;, cardId);</span>
+<span class="nc" id="L464">        logger.debug(&quot;get sticky note links where the card #{} is the source&quot;, cardId);</span>
 
-<span class="nc" id="L465">        Card card = assertAndGetCard(cardId);</span>
+<span class="nc" id="L466">        Card card = assertAndGetCard(cardId);</span>
 
-<span class="nc" id="L467">        return card.getStickyNoteLinksAsSrc();</span>
+<span class="nc" id="L468">        return card.getStickyNoteLinksAsSrc();</span>
     }
 
     /**
@@ -475,11 +476,11 @@ import org.slf4j.LoggerFactory;
      * @return all activity flow links linked to the card
      */
     public List&lt;ActivityFlowLink&gt; getActivityFlowLinkAsPrevious(Long cardId) {
-<span class="nc" id="L478">        logger.debug(&quot;get activity flow links where the card #{} is the previous one&quot;, cardId);</span>
+<span class="nc" id="L479">        logger.debug(&quot;get activity flow links where the card #{} is the previous one&quot;, cardId);</span>
 
-<span class="nc" id="L480">        Card card = assertAndGetCard(cardId);</span>
+<span class="nc" id="L481">        Card card = assertAndGetCard(cardId);</span>
 
-<span class="nc" id="L482">        return card.getActivityFlowLinksAsPrevious();</span>
+<span class="nc" id="L483">        return card.getActivityFlowLinksAsPrevious();</span>
     }
 
     /**
@@ -490,11 +491,11 @@ import org.slf4j.LoggerFactory;
      * @return all activity flow links linked from the card
      */
     public List&lt;ActivityFlowLink&gt; getActivityFlowLinkAsNext(Long cardId) {
-<span class="nc" id="L493">        logger.debug(&quot;get activity flow links where the card #{} is the next one&quot;, cardId);</span>
+<span class="nc" id="L494">        logger.debug(&quot;get activity flow links where the card #{} is the next one&quot;, cardId);</span>
 
-<span class="nc" id="L495">        Card card = assertAndGetCard(cardId);</span>
+<span class="nc" id="L496">        Card card = assertAndGetCard(cardId);</span>
 
-<span class="nc" id="L497">        return card.getActivityFlowLinksAsNext();</span>
+<span class="nc" id="L498">        return card.getActivityFlowLinksAsNext();</span>
     }
 
     /**
@@ -505,11 +506,11 @@ import org.slf4j.LoggerFactory;
      * @return list of access-control
      */
     public List&lt;AccessControl&gt; getAcls(Long cardId) {
-<span class="nc" id="L508">        logger.debug(&quot;Get Card #{} access-control list&quot;, cardId);</span>
+<span class="nc" id="L509">        logger.debug(&quot;Get Card #{} access-control list&quot;, cardId);</span>
 
-<span class="nc" id="L510">        Card card = assertAndGetCard(cardId);</span>
+<span class="nc" id="L511">        Card card = assertAndGetCard(cardId);</span>
 
-<span class="nc" id="L512">        return card.getAccessControlList();</span>
+<span class="nc" id="L513">        return card.getAccessControlList();</span>
     }
 
     // *********************************************************************************************
@@ -528,15 +529,15 @@ import org.slf4j.LoggerFactory;
      * @return true iff the card is complete and safe
      */
     public boolean checkIntegrity(Card card) {
-<span class="nc bnc" id="L531" title="All 2 branches missed.">        if (card == null) {</span>
-<span class="nc" id="L532">            return false;</span>
+<span class="nc bnc" id="L532" title="All 2 branches missed.">        if (card == null) {</span>
+<span class="nc" id="L533">            return false;</span>
         }
 
-<span class="nc bnc" id="L535" title="All 2 branches missed.">        if (!isARootCard(card)) {</span>
-<span class="nc" id="L536">            return false;</span>
+<span class="nc bnc" id="L536" title="All 2 branches missed.">        if (!isARootCard(card)) {</span>
+<span class="nc" id="L537">            return false;</span>
         }
 
-<span class="nc" id="L539">        return true;</span>
+<span class="nc" id="L540">        return true;</span>
     }
 
     // *********************************************************************************************
@@ -553,23 +554,23 @@ import org.slf4j.LoggerFactory;
      * @param cardId the card id
      */
     public void createCardType(Long cardId) {
-<span class="nc" id="L556">        Card card = assertAndGetCard(cardId);</span>
-<span class="nc bnc" id="L557" title="All 2 branches missed.">        if (card.getCardType() != null) {</span>
-<span class="nc" id="L558">            throw HttpErrorMessage.dataIntegrityFailure();</span>
+<span class="nc" id="L557">        Card card = assertAndGetCard(cardId);</span>
+<span class="nc bnc" id="L558" title="All 2 branches missed.">        if (card.getCardType() != null) {</span>
+<span class="nc" id="L559">            throw HttpErrorMessage.dataError(MessageI18nKey.DATA_INTEGRITY_FAILURE);</span>
         }
 
-<span class="nc" id="L561">        CardType newCardType = new CardType();</span>
-<span class="nc" id="L562">        newCardType.setProject(card.getProject());</span>
-<span class="nc" id="L563">        newCardType.setTitle(card.getTitle());</span>
+<span class="nc" id="L562">        CardType newCardType = new CardType();</span>
+<span class="nc" id="L563">        newCardType.setProject(card.getProject());</span>
+<span class="nc" id="L564">        newCardType.setTitle(card.getTitle());</span>
 
-<span class="nc" id="L565">        cardTypeManager.createCardType(newCardType);</span>
+<span class="nc" id="L566">        cardTypeManager.createCardType(newCardType);</span>
 
-<span class="nc" id="L567">        card.getProject().getElementsToBeDefined().add(newCardType);</span>
+<span class="nc" id="L568">        card.getProject().getElementsToBeDefined().add(newCardType);</span>
 
-<span class="nc" id="L569">        card.setCardType(newCardType);</span>
+<span class="nc" id="L570">        card.setCardType(newCardType);</span>
 
-<span class="nc" id="L571">        newCardType.getImplementingCards().add(card);</span>
-<span class="nc" id="L572">    }</span>
+<span class="nc" id="L572">        newCardType.getImplementingCards().add(card);</span>
+<span class="nc" id="L573">    }</span>
 
     /**
      * Remove the card type of the card.
@@ -579,24 +580,24 @@ import org.slf4j.LoggerFactory;
      * @param cardId the card id
      */
     public void removeCardType(Long cardId) {
-<span class="nc" id="L582">        Card card = assertAndGetCard(cardId);</span>
+<span class="nc" id="L583">        Card card = assertAndGetCard(cardId);</span>
 
-<span class="nc bnc" id="L584" title="All 2 branches missed.">        if (card.getCardType() == null) {</span>
+<span class="nc bnc" id="L585" title="All 2 branches missed.">        if (card.getCardType() == null) {</span>
             // already ok
-<span class="nc" id="L586">            return;</span>
+<span class="nc" id="L587">            return;</span>
         }
 
-<span class="nc" id="L589">        AbstractCardType cardType = card.getCardType();</span>
+<span class="nc" id="L590">        AbstractCardType cardType = card.getCardType();</span>
 
         // Just a check to handle only simple cases.
         // When ready to handle everything concerning resources, and also when it is useful, do it
-<span class="nc bnc" id="L593" title="All 2 branches missed.">        if (cardType.getDirectAbstractResources().size() &gt; 0) {</span>
-<span class="nc" id="L594">            throw HttpErrorMessage.dataIntegrityFailure();</span>
+<span class="nc bnc" id="L594" title="All 2 branches missed.">        if (cardType.getDirectAbstractResources().size() &gt; 0) {</span>
+<span class="nc" id="L595">            throw HttpErrorMessage.dataError(MessageI18nKey.DATA_INTEGRITY_FAILURE);</span>
         }
 
-<span class="nc" id="L597">        cardType.getImplementingCards().remove(card);</span>
-<span class="nc" id="L598">        card.setCardType(null);</span>
-<span class="nc" id="L599">    }</span>
+<span class="nc" id="L598">        cardType.getImplementingCards().remove(card);</span>
+<span class="nc" id="L599">        card.setCardType(null);</span>
+<span class="nc" id="L600">    }</span>
 
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

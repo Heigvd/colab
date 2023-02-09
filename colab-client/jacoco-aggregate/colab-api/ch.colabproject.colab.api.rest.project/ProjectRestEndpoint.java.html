@@ -94,12 +94,12 @@ import org.slf4j.LoggerFactory;
      * @return list of projects
      */
     @GET
-    @Path(&quot;MyOwn&quot;)
-    public List&lt;Project&gt; getUserProjects() {
-<span class="nc" id="L99">        logger.debug(&quot;Get user projects&quot;);</span>
-<span class="nc" id="L100">        return projectManager.findProjectsOfCurrentUser();</span>
+    @Path(&quot;Mine&quot;)
+    public List&lt;Project&gt; getProjectsWhereTeamMember() {
+<span class="nc" id="L99">        logger.debug(&quot;Get projects where current user is a team member of&quot;);</span>
+<span class="nc" id="L100">        return projectManager.findProjectsWhereTeamMember();</span>
     }
-    
+
     /**
      * Get all global models
      * @return  list of global models
@@ -134,7 +134,7 @@ import org.slf4j.LoggerFactory;
 <span class="nc" id="L134">        logger.debug(&quot;Get all projects&quot;);</span>
 <span class="nc" id="L135">        return projectDao.findAllProject();</span>
     }
-    
+
 
     // *********************************************************************************************
     // create

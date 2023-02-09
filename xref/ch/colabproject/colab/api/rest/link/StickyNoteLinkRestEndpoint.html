@@ -76,7 +76,7 @@
 <a class="jxr_linenumber" name="L68" href="#L68">68</a>  <em class="jxr_javadoccomment">     * @return the link or null</em>
 <a class="jxr_linenumber" name="L69" href="#L69">69</a>  <em class="jxr_javadoccomment">     */</em>
 <a class="jxr_linenumber" name="L70" href="#L70">70</a>      @GET
-<a class="jxr_linenumber" name="L71" href="#L71">71</a>      @Path(<span class="jxr_string">"{id}"</span>)
+<a class="jxr_linenumber" name="L71" href="#L71">71</a>      @Path(<span class="jxr_string">"{id: [0-9]+}"</span>)
 <a class="jxr_linenumber" name="L72" href="#L72">72</a>      <strong class="jxr_keyword">public</strong> StickyNoteLink getLink(@PathParam(<span class="jxr_string">"id"</span>) Long id) {
 <a class="jxr_linenumber" name="L73" href="#L73">73</a>          logger.debug(<span class="jxr_string">"get link #{}"</span>, id);
 <a class="jxr_linenumber" name="L74" href="#L74">74</a>          <strong class="jxr_keyword">return</strong> linkDao.findStickyNoteLink(id);
@@ -128,7 +128,7 @@
 <a class="jxr_linenumber" name="L120" href="#L120">120</a> <em class="jxr_javadoccomment">     * @param id id of the link to delete</em>
 <a class="jxr_linenumber" name="L121" href="#L121">121</a> <em class="jxr_javadoccomment">     */</em>
 <a class="jxr_linenumber" name="L122" href="#L122">122</a>     @DELETE
-<a class="jxr_linenumber" name="L123" href="#L123">123</a>     @Path(<span class="jxr_string">"{id}"</span>)
+<a class="jxr_linenumber" name="L123" href="#L123">123</a>     @Path(<span class="jxr_string">"{id: [0-9]+}"</span>)
 <a class="jxr_linenumber" name="L124" href="#L124">124</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> deleteLink(@PathParam(<span class="jxr_string">"id"</span>) Long id) {
 <a class="jxr_linenumber" name="L125" href="#L125">125</a>         logger.debug(<span class="jxr_string">"delete link #{}"</span>, id);
 <a class="jxr_linenumber" name="L126" href="#L126">126</a>         linkManager.deleteStickyNoteLink(id);
@@ -141,7 +141,7 @@
 <a class="jxr_linenumber" name="L133" href="#L133">133</a> <em class="jxr_javadoccomment">     * @param cardId the id of the new source object</em>
 <a class="jxr_linenumber" name="L134" href="#L134">134</a> <em class="jxr_javadoccomment">     */</em>
 <a class="jxr_linenumber" name="L135" href="#L135">135</a>     @PUT
-<a class="jxr_linenumber" name="L136" href="#L136">136</a>     @Path(<span class="jxr_string">"changeSrc/{linkId}/Card"</span>)
+<a class="jxr_linenumber" name="L136" href="#L136">136</a>     @Path(<span class="jxr_string">"changeSrc/{linkId: [0-9]+}/Card"</span>)
 <a class="jxr_linenumber" name="L137" href="#L137">137</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> changeSrcWithCard(@PathParam(<span class="jxr_string">"linkId"</span>) Long linkId, Long cardId) {
 <a class="jxr_linenumber" name="L138" href="#L138">138</a>         logger.debug(<span class="jxr_string">"change link #{} with new card source #{}"</span>, linkId, cardId);
 <a class="jxr_linenumber" name="L139" href="#L139">139</a>         linkManager.changeStickyNoteLinkSource(linkId, SrcType.CARD, cardId);
@@ -154,7 +154,7 @@
 <a class="jxr_linenumber" name="L146" href="#L146">146</a> <em class="jxr_javadoccomment">     * @param cardContentId the id of the new source object</em>
 <a class="jxr_linenumber" name="L147" href="#L147">147</a> <em class="jxr_javadoccomment">     */</em>
 <a class="jxr_linenumber" name="L148" href="#L148">148</a>     @PUT
-<a class="jxr_linenumber" name="L149" href="#L149">149</a>     @Path(<span class="jxr_string">"changeSrc/{linkId}/CardContent"</span>)
+<a class="jxr_linenumber" name="L149" href="#L149">149</a>     @Path(<span class="jxr_string">"changeSrc/{linkId: [0-9]+}/CardContent"</span>)
 <a class="jxr_linenumber" name="L150" href="#L150">150</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> changeSrcWithCardContent(@PathParam(<span class="jxr_string">"linkId"</span>) Long linkId, Long cardContentId) {
 <a class="jxr_linenumber" name="L151" href="#L151">151</a>         logger.debug(<span class="jxr_string">"change link #{} with new card content source #{}"</span>, linkId, cardContentId);
 <a class="jxr_linenumber" name="L152" href="#L152">152</a>         linkManager.changeStickyNoteLinkSource(linkId, SrcType.CARD_CONTENT, cardContentId);
@@ -167,7 +167,7 @@
 <a class="jxr_linenumber" name="L159" href="#L159">159</a> <em class="jxr_javadoccomment">     * @param resourceOrRefId the id of the new source object</em>
 <a class="jxr_linenumber" name="L160" href="#L160">160</a> <em class="jxr_javadoccomment">     */</em>
 <a class="jxr_linenumber" name="L161" href="#L161">161</a>     @PUT
-<a class="jxr_linenumber" name="L162" href="#L162">162</a>     @Path(<span class="jxr_string">"changeSrc/{linkId}/ResourceOrRef"</span>)
+<a class="jxr_linenumber" name="L162" href="#L162">162</a>     @Path(<span class="jxr_string">"changeSrc/{linkId: [0-9]+}/ResourceOrRef"</span>)
 <a class="jxr_linenumber" name="L163" href="#L163">163</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> changeSrcWithResourceOrRef(@PathParam(<span class="jxr_string">"linkId"</span>) Long linkId, Long resourceOrRefId) {
 <a class="jxr_linenumber" name="L164" href="#L164">164</a>         logger.debug(<span class="jxr_string">"change link #{} with new abstract resource source #{}"</span>, linkId,
 <a class="jxr_linenumber" name="L165" href="#L165">165</a>             resourceOrRefId);
@@ -181,7 +181,7 @@
 <a class="jxr_linenumber" name="L173" href="#L173">173</a> <em class="jxr_javadoccomment">     * @param documentId the id of the new source object</em>
 <a class="jxr_linenumber" name="L174" href="#L174">174</a> <em class="jxr_javadoccomment">     */</em>
 <a class="jxr_linenumber" name="L175" href="#L175">175</a>     @PUT
-<a class="jxr_linenumber" name="L176" href="#L176">176</a>     @Path(<span class="jxr_string">"changeSrc/{linkId}/Document"</span>)
+<a class="jxr_linenumber" name="L176" href="#L176">176</a>     @Path(<span class="jxr_string">"changeSrc/{linkId: [0-9]+}/Document"</span>)
 <a class="jxr_linenumber" name="L177" href="#L177">177</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> changeSrcWithDocument(@PathParam(<span class="jxr_string">"linkId"</span>) Long linkId, Long documentId) {
 <a class="jxr_linenumber" name="L178" href="#L178">178</a>         logger.debug(<span class="jxr_string">"change link #{} with new document source #{}"</span>, linkId, documentId);
 <a class="jxr_linenumber" name="L179" href="#L179">179</a>         linkManager.changeStickyNoteLinkSource(linkId, SrcType.DOCUMENT, documentId);
@@ -194,7 +194,7 @@
 <a class="jxr_linenumber" name="L186" href="#L186">186</a> <em class="jxr_javadoccomment">     * @param cardId the id of the new destination card</em>
 <a class="jxr_linenumber" name="L187" href="#L187">187</a> <em class="jxr_javadoccomment">     */</em>
 <a class="jxr_linenumber" name="L188" href="#L188">188</a>     @PUT
-<a class="jxr_linenumber" name="L189" href="#L189">189</a>     @Path(<span class="jxr_string">"changeDest/{linkId}"</span>)
+<a class="jxr_linenumber" name="L189" href="#L189">189</a>     @Path(<span class="jxr_string">"changeDest/{linkId: [0-9]+}"</span>)
 <a class="jxr_linenumber" name="L190" href="#L190">190</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> changeDestination(@PathParam(<span class="jxr_string">"linkId"</span>) Long linkId, Long cardId) {
 <a class="jxr_linenumber" name="L191" href="#L191">191</a>         logger.debug(<span class="jxr_string">"change link #{} with new destination card #{}"</span>, linkId, cardId);
 <a class="jxr_linenumber" name="L192" href="#L192">192</a>         linkManager.changeStickyNoteLinkDestination(linkId, cardId);

@@ -21,6 +21,7 @@ import ch.colabproject.colab.api.persistence.jpa.team.TeamMemberDao;
 import ch.colabproject.colab.api.persistence.jpa.team.TeamRoleDao;
 import ch.colabproject.colab.api.persistence.jpa.team.acl.AccessControlDao;
 import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
+import ch.colabproject.colab.generator.model.exceptions.MessageI18nKey;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -38,10 +39,10 @@ import org.slf4j.LoggerFactory;
  */
 @Stateless
 @LocalBean
-<span class="nc" id="L41">public class TeamManager {</span>
+<span class="nc" id="L42">public class TeamManager {</span>
 
     /** logger */
-<span class="nc" id="L44">    private static final Logger logger = LoggerFactory.getLogger(TeamManager.class);</span>
+<span class="nc" id="L45">    private static final Logger logger = LoggerFactory.getLogger(TeamManager.class);</span>
 
     /** Team persistence */
     @Inject
@@ -81,14 +82,14 @@ import org.slf4j.LoggerFactory;
      * @throws HttpErrorMessage if the team member was not found
      */
     public TeamMember assertAndGetMember(Long memberId) {
-<span class="nc" id="L84">        TeamMember member = teamMemberDao.findTeamMember(memberId);</span>
+<span class="nc" id="L85">        TeamMember member = teamMemberDao.findTeamMember(memberId);</span>
 
-<span class="nc bnc" id="L86" title="All 2 branches missed.">        if (member == null) {</span>
-<span class="nc" id="L87">            logger.error(&quot;team member #{} not found&quot;, memberId);</span>
-<span class="nc" id="L88">            throw HttpErrorMessage.relatedObjectNotFoundError();</span>
+<span class="nc bnc" id="L87" title="All 2 branches missed.">        if (member == null) {</span>
+<span class="nc" id="L88">            logger.error(&quot;team member #{} not found&quot;, memberId);</span>
+<span class="nc" id="L89">            throw HttpErrorMessage.dataError(MessageI18nKey.DATA_NOT_FOUND);</span>
         }
 
-<span class="nc" id="L91">        return member;</span>
+<span class="nc" id="L92">        return member;</span>
     }
 
     // *********************************************************************************************
@@ -104,20 +105,24 @@ import org.slf4j.LoggerFactory;
      * @return the brand new member
      */
     public TeamMember addMember(Project project, User user, HierarchicalPosition position) {
-<span class="nc" id="L107">        logger.debug(&quot;Add member {} in {}&quot;, user, project);</span>
+<span class="nc" id="L108">        logger.debug(&quot;Add member {} in {}&quot;, user, project);</span>
 
-<span class="nc bnc" id="L109" title="All 6 branches missed.">        if (project != null &amp;&amp; user != null &amp;&amp; findMemberByProjectAndUser(project, user) != null) {</span>
-<span class="nc" id="L110">            throw HttpErrorMessage.dataIntegrityFailure();</span>
+<span class="nc bnc" id="L110" title="All 2 branches missed.">        if (project == null) {</span>
+<span class="nc" id="L111">            throw HttpErrorMessage.dataError(MessageI18nKey.DATA_INTEGRITY_FAILURE);</span>
         }
 
-<span class="nc" id="L113">        TeamMember teamMember = new TeamMember();</span>
+<span class="nc bnc" id="L114" title="All 4 branches missed.">        if (user != null &amp;&amp; findMemberByProjectAndUser(project, user) != null) {</span>
+<span class="nc" id="L115">            throw HttpErrorMessage.dataError(MessageI18nKey.DATA_INTEGRITY_FAILURE);</span>
+        }
 
-<span class="nc" id="L115">        teamMember.setUser(user);</span>
-<span class="nc" id="L116">        teamMember.setProject(project);</span>
-<span class="nc" id="L117">        teamMember.setPosition(position);</span>
-<span class="nc" id="L118">        project.getTeamMembers().add(teamMember);</span>
+<span class="nc" id="L118">        TeamMember teamMember = new TeamMember();</span>
 
-<span class="nc" id="L120">        return teamMember;</span>
+<span class="nc" id="L120">        teamMember.setUser(user);</span>
+<span class="nc" id="L121">        teamMember.setProject(project);</span>
+<span class="nc" id="L122">        teamMember.setPosition(position);</span>
+<span class="nc" id="L123">        project.getTeamMembers().add(teamMember);</span>
+
+<span class="nc" id="L125">        return teamMember;</span>
     }
 
     /**
@@ -128,10 +133,10 @@ import org.slf4j.LoggerFactory;
      * @return all members of the project team
      */
     public List&lt;TeamMember&gt; getTeamMembers(Long id) {
-<span class="nc" id="L131">        Project project = projectManager.assertAndGetProject(id);</span>
-<span class="nc" id="L132">        logger.debug(&quot;Get team members: {}&quot;, project);</span>
+<span class="nc" id="L136">        Project project = projectManager.assertAndGetProject(id);</span>
+<span class="nc" id="L137">        logger.debug(&quot;Get team members: {}&quot;, project);</span>
 
-<span class="nc" id="L134">        return project.getTeamMembers();</span>
+<span class="nc" id="L139">        return project.getTeamMembers();</span>
     }
 
     /**
@@ -143,9 +148,9 @@ import org.slf4j.LoggerFactory;
      * @return the pending new teamMember
      */
     public TeamMember invite(Long projectId, String email) {
-<span class="nc" id="L146">        Project project = projectManager.assertAndGetProject(projectId);</span>
-<span class="nc" id="L147">        logger.debug(&quot;Invite {} to join {}&quot;, email, project);</span>
-<span class="nc" id="L148">        return tokenManager.sendMembershipInvitation(project, email);</span>
+<span class="nc" id="L151">        Project project = projectManager.assertAndGetProject(projectId);</span>
+<span class="nc" id="L152">        logger.debug(&quot;Invite {} to join {}&quot;, email, project);</span>
+<span class="nc" id="L153">        return tokenManager.sendMembershipInvitation(project, email);</span>
     }
 
     // *********************************************************************************************
@@ -162,14 +167,14 @@ import org.slf4j.LoggerFactory;
      * @throws HttpErrorMessage if the role was not found
      */
     public TeamRole assertAndGetRole(Long roleId) {
-<span class="nc" id="L165">        TeamRole role = teamRoleDao.findRole(roleId);</span>
+<span class="nc" id="L170">        TeamRole role = teamRoleDao.findRole(roleId);</span>
 
-<span class="nc bnc" id="L167" title="All 2 branches missed.">        if (role == null) {</span>
-<span class="nc" id="L168">            logger.error(&quot;team role #{} not found&quot;, roleId);</span>
-<span class="nc" id="L169">            throw HttpErrorMessage.relatedObjectNotFoundError();</span>
+<span class="nc bnc" id="L172" title="All 2 branches missed.">        if (role == null) {</span>
+<span class="nc" id="L173">            logger.error(&quot;team role #{} not found&quot;, roleId);</span>
+<span class="nc" id="L174">            throw HttpErrorMessage.dataError(MessageI18nKey.DATA_NOT_FOUND);</span>
         }
 
-<span class="nc" id="L172">        return role;</span>
+<span class="nc" id="L177">        return role;</span>
     }
 
     /**
@@ -180,8 +185,8 @@ import org.slf4j.LoggerFactory;
      * @return list of roles
      */
     public List&lt;TeamRole&gt; getProjectRoles(Long id) {
-<span class="nc" id="L183">        Project project = projectManager.assertAndGetProject(id);</span>
-<span class="nc" id="L184">        return project.getRoles();</span>
+<span class="nc" id="L188">        Project project = projectManager.assertAndGetProject(id);</span>
+<span class="nc" id="L189">        return project.getRoles();</span>
     }
 
     /**
@@ -192,15 +197,15 @@ import org.slf4j.LoggerFactory;
      * @return the brand new persisted role
      */
     public TeamRole createRole(TeamRole role) {
-<span class="nc bnc" id="L195" title="All 2 branches missed.">        if (role.getProjectId() != null) {</span>
-<span class="nc" id="L196">            Project project = projectManager.assertAndGetProject(role.getProjectId());</span>
-<span class="nc bnc" id="L197" title="All 2 branches missed.">            if (project.getRoleByName(role.getName()) == null) {</span>
-<span class="nc" id="L198">                project.getRoles().add(role);</span>
-<span class="nc" id="L199">                role.setProject(project);</span>
-<span class="nc" id="L200">                return role;</span>
+<span class="nc bnc" id="L200" title="All 2 branches missed.">        if (role.getProjectId() != null) {</span>
+<span class="nc" id="L201">            Project project = projectManager.assertAndGetProject(role.getProjectId());</span>
+<span class="nc bnc" id="L202" title="All 2 branches missed.">            if (project.getRoleByName(role.getName()) == null) {</span>
+<span class="nc" id="L203">                project.getRoles().add(role);</span>
+<span class="nc" id="L204">                role.setProject(project);</span>
+<span class="nc" id="L205">                return role;</span>
             }
         }
-<span class="nc" id="L203">        throw HttpErrorMessage.relatedObjectNotFoundError();</span>
+<span class="nc" id="L208">        throw HttpErrorMessage.dataError(MessageI18nKey.DATA_INTEGRITY_FAILURE);</span>
     }
 
     /**
@@ -209,21 +214,21 @@ import org.slf4j.LoggerFactory;
      * @param roleId id of the role to delete
      */
     public void deleteRole(Long roleId) {
-<span class="nc" id="L212">        TeamRole role = teamRoleDao.findRole(roleId);</span>
-<span class="nc bnc" id="L213" title="All 2 branches missed.">        if (role != null) {</span>
-<span class="nc" id="L214">            Project project = role.getProject();</span>
-<span class="nc bnc" id="L215" title="All 2 branches missed.">            if (project != null) {</span>
-<span class="nc" id="L216">                project.getRoles().remove(role);</span>
+<span class="nc" id="L217">        TeamRole role = teamRoleDao.findRole(roleId);</span>
+<span class="nc bnc" id="L218" title="All 2 branches missed.">        if (role != null) {</span>
+<span class="nc" id="L219">            Project project = role.getProject();</span>
+<span class="nc bnc" id="L220" title="All 2 branches missed.">            if (project != null) {</span>
+<span class="nc" id="L221">                project.getRoles().remove(role);</span>
             }
-<span class="nc" id="L218">            role.getMembers().forEach(member -&gt; {</span>
-<span class="nc" id="L219">                List&lt;TeamRole&gt; roles = member.getRoles();</span>
-<span class="nc bnc" id="L220" title="All 2 branches missed.">                if (roles != null) {</span>
-<span class="nc" id="L221">                    roles.remove(role);</span>
+<span class="nc" id="L223">            role.getMembers().forEach(member -&gt; {</span>
+<span class="nc" id="L224">                List&lt;TeamRole&gt; roles = member.getRoles();</span>
+<span class="nc bnc" id="L225" title="All 2 branches missed.">                if (roles != null) {</span>
+<span class="nc" id="L226">                    roles.remove(role);</span>
                 }
-<span class="nc" id="L223">            });</span>
-<span class="nc" id="L224">            teamRoleDao.deleteRole(role);</span>
+<span class="nc" id="L228">            });</span>
+<span class="nc" id="L229">            teamRoleDao.deleteRole(role);</span>
         }
-<span class="nc" id="L226">    }</span>
+<span class="nc" id="L231">    }</span>
 
     /**
      * Give a role to someone. The role and the member must belong to the very same project.
@@ -232,23 +237,23 @@ import org.slf4j.LoggerFactory;
      * @param memberId id of the teamMember
      */
     public void giveRole(Long roleId, Long memberId) {
-<span class="nc" id="L235">        TeamRole role = teamRoleDao.findRole(roleId);</span>
-<span class="nc" id="L236">        TeamMember member = teamMemberDao.findTeamMember(memberId);</span>
-<span class="nc bnc" id="L237" title="All 4 branches missed.">        if (role != null &amp;&amp; member != null) {</span>
-<span class="nc bnc" id="L238" title="All 2 branches missed.">            if (Objects.equals(role.getProject(), member.getProject())) {</span>
-<span class="nc" id="L239">                List&lt;TeamMember&gt; members = role.getMembers();</span>
-<span class="nc" id="L240">                List&lt;TeamRole&gt; roles = member.getRoles();</span>
-<span class="nc bnc" id="L241" title="All 2 branches missed.">                if (!members.contains(member)) {</span>
-<span class="nc" id="L242">                    members.add(member);</span>
+<span class="nc" id="L240">        TeamRole role = teamRoleDao.findRole(roleId);</span>
+<span class="nc" id="L241">        TeamMember member = teamMemberDao.findTeamMember(memberId);</span>
+<span class="nc bnc" id="L242" title="All 4 branches missed.">        if (role != null &amp;&amp; member != null) {</span>
+<span class="nc bnc" id="L243" title="All 2 branches missed.">            if (Objects.equals(role.getProject(), member.getProject())) {</span>
+<span class="nc" id="L244">                List&lt;TeamMember&gt; members = role.getMembers();</span>
+<span class="nc" id="L245">                List&lt;TeamRole&gt; roles = member.getRoles();</span>
+<span class="nc bnc" id="L246" title="All 2 branches missed.">                if (!members.contains(member)) {</span>
+<span class="nc" id="L247">                    members.add(member);</span>
                 }
-<span class="nc bnc" id="L244" title="All 2 branches missed.">                if (!roles.contains(role)) {</span>
-<span class="nc" id="L245">                    roles.add(role);</span>
+<span class="nc bnc" id="L249" title="All 2 branches missed.">                if (!roles.contains(role)) {</span>
+<span class="nc" id="L250">                    roles.add(role);</span>
                 }
-<span class="nc" id="L247">            } else {</span>
-<span class="nc" id="L248">                throw HttpErrorMessage.badRequest();</span>
+<span class="nc" id="L252">            } else {</span>
+<span class="nc" id="L253">                throw HttpErrorMessage.badRequest();</span>
             }
         }
-<span class="nc" id="L251">    }</span>
+<span class="nc" id="L256">    }</span>
 
     /**
      * Remove a role from someone.
@@ -257,15 +262,15 @@ import org.slf4j.LoggerFactory;
      * @param memberId id of the member
      */
     public void removeRole(Long roleId, Long memberId) {
-<span class="nc" id="L260">        TeamRole role = teamRoleDao.findRole(roleId);</span>
-<span class="nc" id="L261">        TeamMember member = teamMemberDao.findTeamMember(memberId);</span>
-<span class="nc bnc" id="L262" title="All 4 branches missed.">        if (role != null &amp;&amp; member != null) {</span>
-<span class="nc" id="L263">            List&lt;TeamMember&gt; members = role.getMembers();</span>
-<span class="nc" id="L264">            List&lt;TeamRole&gt; roles = member.getRoles();</span>
-<span class="nc" id="L265">            members.remove(member);</span>
-<span class="nc" id="L266">            roles.remove(role);</span>
+<span class="nc" id="L265">        TeamRole role = teamRoleDao.findRole(roleId);</span>
+<span class="nc" id="L266">        TeamMember member = teamMemberDao.findTeamMember(memberId);</span>
+<span class="nc bnc" id="L267" title="All 4 branches missed.">        if (role != null &amp;&amp; member != null) {</span>
+<span class="nc" id="L268">            List&lt;TeamMember&gt; members = role.getMembers();</span>
+<span class="nc" id="L269">            List&lt;TeamRole&gt; roles = member.getRoles();</span>
+<span class="nc" id="L270">            members.remove(member);</span>
+<span class="nc" id="L271">            roles.remove(role);</span>
         }
-<span class="nc" id="L268">    }</span>
+<span class="nc" id="L273">    }</span>
 
     /**
      * Find the teamMember who match the given project and the given user.
@@ -276,7 +281,7 @@ import org.slf4j.LoggerFactory;
      * @return the teamMember or null
      */
     public TeamMember findMemberByProjectAndUser(Project project, User user) {
-<span class="nc" id="L279">        return teamMemberDao.findMemberByProjectAndUser(project, user);</span>
+<span class="nc" id="L284">        return teamMemberDao.findMemberByProjectAndUser(project, user);</span>
     }
 
     /**
@@ -288,7 +293,7 @@ import org.slf4j.LoggerFactory;
      * @return true if both user are both member of the same team
      */
     public boolean areUserTeammate(User a, User b) {
-<span class="nc" id="L291">        return teamMemberDao.findIfUserAreTeammate(a, b);</span>
+<span class="nc" id="L296">        return teamMemberDao.findIfUserAreTeammate(a, b);</span>
     }
 
     /**
@@ -301,30 +306,30 @@ import org.slf4j.LoggerFactory;
      * @param level    the level
      */
     public void setInvolvementLevelForMember(Long cardId, Long memberId, InvolvementLevel level) {
-<span class="nc" id="L304">        Card card = cardManager.assertAndGetCard(cardId);</span>
-<span class="nc" id="L305">        TeamMember member = teamMemberDao.findTeamMember(memberId);</span>
-<span class="nc bnc" id="L306" title="All 4 branches missed.">        if (card != null &amp;&amp; member != null) {</span>
-<span class="nc" id="L307">            AccessControl ac = card.getAcByMember(member);</span>
-<span class="nc bnc" id="L308" title="All 2 branches missed.">            if (level == null) {</span>
-<span class="nc bnc" id="L309" title="All 2 branches missed.">                if (ac != null) {</span>
-<span class="nc" id="L310">                    deleteAccessControl(ac);</span>
+<span class="nc" id="L309">        Card card = cardManager.assertAndGetCard(cardId);</span>
+<span class="nc" id="L310">        TeamMember member = teamMemberDao.findTeamMember(memberId);</span>
+<span class="nc bnc" id="L311" title="All 4 branches missed.">        if (card != null &amp;&amp; member != null) {</span>
+<span class="nc" id="L312">            AccessControl ac = card.getAcByMember(member);</span>
+<span class="nc bnc" id="L313" title="All 2 branches missed.">            if (level == null) {</span>
+<span class="nc bnc" id="L314" title="All 2 branches missed.">                if (ac != null) {</span>
+<span class="nc" id="L315">                    deleteAccessControl(ac);</span>
                 }
             } else {
-<span class="nc bnc" id="L313" title="All 2 branches missed.">                if (ac == null) {</span>
-<span class="nc" id="L314">                    ac = new AccessControl();</span>
+<span class="nc bnc" id="L318" title="All 2 branches missed.">                if (ac == null) {</span>
+<span class="nc" id="L319">                    ac = new AccessControl();</span>
                     // set card relationship
-<span class="nc" id="L316">                    ac.setCard(card);</span>
-<span class="nc" id="L317">                    card.getAccessControlList().add(ac);</span>
+<span class="nc" id="L321">                    ac.setCard(card);</span>
+<span class="nc" id="L322">                    card.getAccessControlList().add(ac);</span>
                     // set member relationship
-<span class="nc" id="L319">                    ac.setMember(member);</span>
-<span class="nc" id="L320">                    member.getAccessControlList().add(ac);</span>
+<span class="nc" id="L324">                    ac.setMember(member);</span>
+<span class="nc" id="L325">                    member.getAccessControlList().add(ac);</span>
                 }
-<span class="nc" id="L322">                ac.setCairoLevel(level);</span>
+<span class="nc" id="L327">                ac.setCairoLevel(level);</span>
             }
-<span class="nc" id="L324">        } else {</span>
-<span class="nc" id="L325">            throw HttpErrorMessage.relatedObjectNotFoundError();</span>
+<span class="nc" id="L329">        } else {</span>
+<span class="nc" id="L330">            throw HttpErrorMessage.dataError(MessageI18nKey.DATA_INTEGRITY_FAILURE);</span>
         }
-<span class="nc" id="L327">    }</span>
+<span class="nc" id="L332">    }</span>
 
     /**
      ** Change a role involvement level regarding to a card. If the given level is null, involvement
@@ -335,30 +340,30 @@ import org.slf4j.LoggerFactory;
      * @param level  the level
      */
     public void setInvolvementLevelForRole(Long cardId, Long roleId, InvolvementLevel level) {
-<span class="nc" id="L338">        Card card = cardManager.assertAndGetCard(cardId);</span>
-<span class="nc" id="L339">        TeamRole role = teamRoleDao.findRole(roleId);</span>
-<span class="nc bnc" id="L340" title="All 4 branches missed.">        if (card != null &amp;&amp; role != null) {</span>
-<span class="nc" id="L341">            AccessControl ac = card.getAcByRole(role);</span>
-<span class="nc bnc" id="L342" title="All 2 branches missed.">            if (level == null) {</span>
-<span class="nc bnc" id="L343" title="All 2 branches missed.">                if (ac != null) {</span>
-<span class="nc" id="L344">                    deleteAccessControl(ac);</span>
+<span class="nc" id="L343">        Card card = cardManager.assertAndGetCard(cardId);</span>
+<span class="nc" id="L344">        TeamRole role = teamRoleDao.findRole(roleId);</span>
+<span class="nc bnc" id="L345" title="All 4 branches missed.">        if (card != null &amp;&amp; role != null) {</span>
+<span class="nc" id="L346">            AccessControl ac = card.getAcByRole(role);</span>
+<span class="nc bnc" id="L347" title="All 2 branches missed.">            if (level == null) {</span>
+<span class="nc bnc" id="L348" title="All 2 branches missed.">                if (ac != null) {</span>
+<span class="nc" id="L349">                    deleteAccessControl(ac);</span>
                 }
             } else {
-<span class="nc bnc" id="L347" title="All 2 branches missed.">                if (ac == null) {</span>
-<span class="nc" id="L348">                    ac = new AccessControl();</span>
+<span class="nc bnc" id="L352" title="All 2 branches missed.">                if (ac == null) {</span>
+<span class="nc" id="L353">                    ac = new AccessControl();</span>
                     // set card relationship
-<span class="nc" id="L350">                    ac.setCard(card);</span>
-<span class="nc" id="L351">                    card.getAccessControlList().add(ac);</span>
+<span class="nc" id="L355">                    ac.setCard(card);</span>
+<span class="nc" id="L356">                    card.getAccessControlList().add(ac);</span>
                     // set role relationship
-<span class="nc" id="L353">                    ac.setRole(role);</span>
-<span class="nc" id="L354">                    role.getAccessControl().add(ac);</span>
+<span class="nc" id="L358">                    ac.setRole(role);</span>
+<span class="nc" id="L359">                    role.getAccessControl().add(ac);</span>
                 }
-<span class="nc" id="L356">                ac.setCairoLevel(level);</span>
+<span class="nc" id="L361">                ac.setCairoLevel(level);</span>
             }
-<span class="nc" id="L358">        } else {</span>
-<span class="nc" id="L359">            throw HttpErrorMessage.relatedObjectNotFoundError();</span>
+<span class="nc" id="L363">        } else {</span>
+<span class="nc" id="L364">            throw HttpErrorMessage.dataError(MessageI18nKey.DATA_INTEGRITY_FAILURE);</span>
         }
-<span class="nc" id="L361">    }</span>
+<span class="nc" id="L366">    }</span>
 
     /**
      * Delete an access control
@@ -366,23 +371,23 @@ import org.slf4j.LoggerFactory;
      * @param ac the access control to delete
      */
     private void deleteAccessControl(AccessControl ac) {
-<span class="nc" id="L369">        logger.trace(&quot;delete access control {}&quot;, ac);</span>
+<span class="nc" id="L374">        logger.trace(&quot;delete access control {}&quot;, ac);</span>
 
-<span class="nc bnc" id="L371" title="All 2 branches missed.">        if (ac.getMember() != null) {</span>
-<span class="nc" id="L372">            ac.getMember().getAccessControlList().remove(ac);</span>
+<span class="nc bnc" id="L376" title="All 2 branches missed.">        if (ac.getMember() != null) {</span>
+<span class="nc" id="L377">            ac.getMember().getAccessControlList().remove(ac);</span>
         }
 
-<span class="nc bnc" id="L375" title="All 2 branches missed.">        if (ac.getRole() != null) {</span>
-<span class="nc" id="L376">            ac.getRole().getAccessControl().remove(ac);</span>
+<span class="nc bnc" id="L380" title="All 2 branches missed.">        if (ac.getRole() != null) {</span>
+<span class="nc" id="L381">            ac.getRole().getAccessControl().remove(ac);</span>
         }
 
-<span class="nc bnc" id="L379" title="All 2 branches missed.">        if (ac.getCard() != null) {</span>
-<span class="nc" id="L380">            ac.getCard().getAccessControlList().remove(ac);</span>
+<span class="nc bnc" id="L384" title="All 2 branches missed.">        if (ac.getCard() != null) {</span>
+<span class="nc" id="L385">            ac.getCard().getAccessControlList().remove(ac);</span>
         }
 
-<span class="nc" id="L383">        accessControlDao.deleteAccessControl(ac);</span>
+<span class="nc" id="L388">        accessControlDao.deleteAccessControl(ac);</span>
 
-<span class="nc" id="L385">    }</span>
+<span class="nc" id="L390">    }</span>
 
     /**
      * Get the access-control linked to the given member and card
@@ -395,63 +400,63 @@ import org.slf4j.LoggerFactory;
     public InvolvementLevel getEffectiveInvolvementLevel(Card card, TeamMember member) {
 
         // First, try to fetch involvement level from the very card itself
-<span class="nc" id="L398">        AccessControl byMember = card.getAcByMember(member);</span>
-<span class="nc bnc" id="L399" title="All 2 branches missed.">        if (byMember != null) {</span>
+<span class="nc" id="L403">        AccessControl byMember = card.getAcByMember(member);</span>
+<span class="nc bnc" id="L404" title="All 2 branches missed.">        if (byMember != null) {</span>
             // There is one level for this member
-<span class="nc" id="L401">            return byMember.getCairoLevel();</span>
+<span class="nc" id="L406">            return byMember.getCairoLevel();</span>
         }
 
         // no direct AC defined for the member
         // find all AC defined for member's roles
-<span class="nc" id="L406">        Stream&lt;AccessControl&gt; roleStream = member.getRoles().stream()</span>
-<span class="nc" id="L407">            .map(role -&gt; card.getAcByRole(role))</span>
-<span class="nc bnc" id="L408" title="All 2 branches missed.">            .filter(role -&gt; role != null);</span>
+<span class="nc" id="L411">        Stream&lt;AccessControl&gt; roleStream = member.getRoles().stream()</span>
+<span class="nc" id="L412">            .map(role -&gt; card.getAcByRole(role))</span>
+<span class="nc bnc" id="L413" title="All 2 branches missed.">            .filter(role -&gt; role != null);</span>
 
         // As a team member may have several role, it may inherit various AC
         // sorting them give and fetch the first give the most important level
-<span class="nc" id="L412">        Optional&lt;AccessControl&gt; first = roleStream.sorted((a, b) -&gt; {</span>
-<span class="nc" id="L413">            return a.getCairoLevel().getOrder() - b.getCairoLevel().getOrder();</span>
-<span class="nc" id="L414">        }).findFirst();</span>
+<span class="nc" id="L417">        Optional&lt;AccessControl&gt; first = roleStream.sorted((a, b) -&gt; {</span>
+<span class="nc" id="L418">            return a.getCairoLevel().getOrder() - b.getCairoLevel().getOrder();</span>
+<span class="nc" id="L419">        }).findFirst();</span>
 
-<span class="nc bnc" id="L416" title="All 2 branches missed.">        if (first.isPresent()) {</span>
+<span class="nc bnc" id="L421" title="All 2 branches missed.">        if (first.isPresent()) {</span>
             // AC which give the greatest involvement is retained
-<span class="nc" id="L418">            AccessControl ac = first.get();</span>
+<span class="nc" id="L423">            AccessControl ac = first.get();</span>
             // The greatest involvement give readonly access
             // but there is a lower involvement which give readwrite access
-<span class="nc bnc" id="L421" title="All 2 branches missed.">            if (!ac.getCairoLevel().isRw()</span>
-<span class="nc bnc" id="L422" title="All 2 branches missed.">                &amp;&amp; roleStream.anyMatch(rac -&gt; rac.getCairoLevel().isRw())</span>
-<span class="nc bnc" id="L423" title="All 2 branches missed.">                &amp;&amp; ac.getCairoLevel() == InvolvementLevel.CONSULTED_READONLY) {</span>
+<span class="nc bnc" id="L426" title="All 2 branches missed.">            if (!ac.getCairoLevel().isRw()</span>
+<span class="nc bnc" id="L427" title="All 2 branches missed.">                &amp;&amp; roleStream.anyMatch(rac -&gt; rac.getCairoLevel().isRw())</span>
+<span class="nc bnc" id="L428" title="All 2 branches missed.">                &amp;&amp; ac.getCairoLevel() == InvolvementLevel.CONSULTED_READONLY) {</span>
                 // Actually, there is only one case: the member inherit
                 // CONSULTED_READONLY &amp; INFORMED_READWRITE from two different roles
                 // Effective involvement is CONSULTED_READWRITE
                 //
                 // There is no other special case (natural order of levels is fine)
-<span class="nc" id="L429">                return InvolvementLevel.CONSULTED_READWRITE;</span>
+<span class="nc" id="L434">                return InvolvementLevel.CONSULTED_READWRITE;</span>
             }
 
-<span class="nc" id="L432">            return ac.getCairoLevel();</span>
+<span class="nc" id="L437">            return ac.getCairoLevel();</span>
         }
 
         // no involvement found, neither for the member, nor for any of its roles
         // Is the a default one for the card?
-<span class="nc bnc" id="L437" title="All 2 branches missed.">        if (card.getDefaultInvolvementLevel() != null) {</span>
+<span class="nc bnc" id="L442" title="All 2 branches missed.">        if (card.getDefaultInvolvementLevel() != null) {</span>
             // got it, use it !
-<span class="nc" id="L439">            return card.getDefaultInvolvementLevel();</span>
+<span class="nc" id="L444">            return card.getDefaultInvolvementLevel();</span>
         }
 
         // No involvement found, neither for the member, nor its roles, nor a default one
-<span class="nc bnc" id="L443" title="All 2 branches missed.">        if (card.getParent() != null) {</span>
+<span class="nc bnc" id="L448" title="All 2 branches missed.">        if (card.getParent() != null) {</span>
             // the card is a sub-card, let's fetch inherit involvement from the card parent
-<span class="nc" id="L445">            Card parentCard = card.getParent().getCard();</span>
-<span class="nc bnc" id="L446" title="All 2 branches missed.">            if (parentCard != null) {</span>
-<span class="nc" id="L447">                return getEffectiveInvolvementLevel(parentCard, member);</span>
+<span class="nc" id="L450">            Card parentCard = card.getParent().getCard();</span>
+<span class="nc bnc" id="L451" title="All 2 branches missed.">            if (parentCard != null) {</span>
+<span class="nc" id="L452">                return getEffectiveInvolvementLevel(parentCard, member);</span>
             }
         }
 
         // No involvement at all
         // default level is driven by member hierarchical position
-<span class="nc" id="L453">        return member.getPosition()</span>
-<span class="nc" id="L454">            .getDefaultInvolvement();</span>
+<span class="nc" id="L458">        return member.getPosition()</span>
+<span class="nc" id="L459">            .getDefaultInvolvement();</span>
     }
 
     /**
@@ -464,8 +469,8 @@ import org.slf4j.LoggerFactory;
      * @throws HttpErrorMessage 404 if the card does not exist
      */
     public List&lt;AccessControl&gt; getAccessControlList(Long cardId) {
-<span class="nc" id="L467">        Card card = cardManager.assertAndGetCard(cardId);</span>
-<span class="nc" id="L468">        return card.getAccessControlList();</span>
+<span class="nc" id="L472">        Card card = cardManager.assertAndGetCard(cardId);</span>
+<span class="nc" id="L473">        return card.getAccessControlList();</span>
     }
 
     /**
@@ -475,14 +480,14 @@ import org.slf4j.LoggerFactory;
      * @param position new hierarchical position
      */
     public void updatePosition(Long memberId, HierarchicalPosition position) {
-<span class="nc" id="L478">        TeamMember member = teamMemberDao.findTeamMember(memberId);</span>
-<span class="nc bnc" id="L479" title="All 4 branches missed.">        if (member != null &amp;&amp; position != null) {</span>
-<span class="nc" id="L480">            member.setPosition(position);</span>
-<span class="nc" id="L481">            assertTeamIntegrity(member.getProject());</span>
+<span class="nc" id="L483">        TeamMember member = teamMemberDao.findTeamMember(memberId);</span>
+<span class="nc bnc" id="L484" title="All 4 branches missed.">        if (member != null &amp;&amp; position != null) {</span>
+<span class="nc" id="L485">            member.setPosition(position);</span>
+<span class="nc" id="L486">            assertTeamIntegrity(member.getProject());</span>
         } else {
-<span class="nc" id="L483">            throw HttpErrorMessage.relatedObjectNotFoundError();</span>
+<span class="nc" id="L488">            throw HttpErrorMessage.dataError(MessageI18nKey.DATA_INTEGRITY_FAILURE);</span>
         }
-<span class="nc" id="L485">    }</span>
+<span class="nc" id="L490">    }</span>
 
     /**
      * Make sure the team of a project make sense. It means:
@@ -496,10 +501,10 @@ import org.slf4j.LoggerFactory;
      */
     public void assertTeamIntegrity(Project project) {
 
-<span class="nc bnc" id="L499" title="All 2 branches missed.">        if (project.getTeamMembersByPosition(HierarchicalPosition.OWNER).isEmpty()) {</span>
-<span class="nc" id="L500">            throw HttpErrorMessage.dataIntegrityFailure();</span>
+<span class="nc bnc" id="L504" title="All 2 branches missed.">        if (project.getTeamMembersByPosition(HierarchicalPosition.OWNER).isEmpty()) {</span>
+<span class="nc" id="L505">            throw HttpErrorMessage.dataError(MessageI18nKey.DATA_INTEGRITY_FAILURE);</span>
         }
-<span class="nc" id="L502">    }</span>
+<span class="nc" id="L507">    }</span>
 
     /**
      * Delete the given team member
@@ -507,23 +512,23 @@ import org.slf4j.LoggerFactory;
      * @param teamMemberId the id of the team member
      */
     public void deleteTeamMember(Long teamMemberId) {
-<span class="nc" id="L510">        TeamMember teamMember = assertAndGetMember(teamMemberId);</span>
+<span class="nc" id="L515">        TeamMember teamMember = assertAndGetMember(teamMemberId);</span>
 
-<span class="nc bnc" id="L512" title="All 2 branches missed.">        if (!checkDeletionAcceptability(teamMember)) {</span>
-<span class="nc" id="L513">            throw HttpErrorMessage.dataIntegrityFailure();</span>
+<span class="nc bnc" id="L517" title="All 2 branches missed.">        if (!checkDeletionAcceptability(teamMember)) {</span>
+<span class="nc" id="L518">            throw HttpErrorMessage.dataError(MessageI18nKey.DATA_INTEGRITY_FAILURE);</span>
         }
 
         // acl deleted by cascade
 
         // delete invitation token
-<span class="nc" id="L519">        tokenManager.deleteInvitationsByTeamMember(teamMember);</span>
+<span class="nc" id="L524">        tokenManager.deleteInvitationsByTeamMember(teamMember);</span>
 
-<span class="nc bnc" id="L521" title="All 2 branches missed.">        if (teamMember.getProject() != null) {</span>
-<span class="nc" id="L522">            teamMember.getProject().getTeamMembers().remove(teamMember);</span>
+<span class="nc bnc" id="L526" title="All 2 branches missed.">        if (teamMember.getProject() != null) {</span>
+<span class="nc" id="L527">            teamMember.getProject().getTeamMembers().remove(teamMember);</span>
         }
 
-<span class="nc" id="L525">        teamMemberDao.deleteTeamMember(teamMember);</span>
-<span class="nc" id="L526">    }</span>
+<span class="nc" id="L530">        teamMemberDao.deleteTeamMember(teamMember);</span>
+<span class="nc" id="L531">    }</span>
 
     /**
      * Ascertain that the team member can be deleted
@@ -533,13 +538,13 @@ import org.slf4j.LoggerFactory;
      * @return True iff it can be safely deleted
      */
     public boolean checkDeletionAcceptability(TeamMember teamMember) {
-<span class="nc bnc" id="L536" title="All 2 branches missed.">        if (teamMember.getPosition() == HierarchicalPosition.OWNER &amp;&amp;</span>
-<span class="nc" id="L537">            teamMember.getProject().getTeamMembersByPosition(HierarchicalPosition.OWNER)</span>
-<span class="nc bnc" id="L538" title="All 2 branches missed.">                .size() &lt; 2) {</span>
-<span class="nc" id="L539">            return false;</span>
+<span class="nc bnc" id="L541" title="All 2 branches missed.">        if (teamMember.getPosition() == HierarchicalPosition.OWNER &amp;&amp;</span>
+<span class="nc" id="L542">            teamMember.getProject().getTeamMembersByPosition(HierarchicalPosition.OWNER)</span>
+<span class="nc bnc" id="L543" title="All 2 branches missed.">                .size() &lt; 2) {</span>
+<span class="nc" id="L544">            return false;</span>
         }
 
-<span class="nc" id="L542">        return true;</span>
+<span class="nc" id="L547">        return true;</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

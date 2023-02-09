@@ -63,7 +63,7 @@ import org.slf4j.LoggerFactory;
      * @return the card content or null
      */
     @GET
-    @Path(&quot;{id}&quot;)
+    @Path(&quot;{id: [0-9]+}&quot;)
     public CardContent getCardContent(@PathParam(&quot;id&quot;) Long id) {
 <span class="nc" id="L68">        logger.debug(&quot;Get card #{}&quot;, id);</span>
 <span class="nc" id="L69">        return cardContentDao.findCardContent(id);</span>
@@ -77,7 +77,7 @@ import org.slf4j.LoggerFactory;
      * @return the persisted new card content
      */
     @POST
-    @Path(&quot;create/{cardId}&quot;)
+    @Path(&quot;create/{cardId: [0-9]+}&quot;)
     public CardContent createNewCardContent(@PathParam(&quot;cardId&quot;) Long cardId) {
 <span class="nc" id="L82">        logger.debug(&quot;create a new card content for the card #{}&quot;, cardId);</span>
 <span class="nc" id="L83">        return cardContentManager.createNewCardContent(cardId);</span>
@@ -92,7 +92,7 @@ import org.slf4j.LoggerFactory;
      * @return the persisted new card content
      */
     @POST
-    @Path(&quot;createWithDeliverable/{cardId}&quot;)
+    @Path(&quot;createWithDeliverable/{cardId: [0-9]+}&quot;)
     public CardContent createNewCardContentWithDeliverable(@PathParam(&quot;cardId&quot;) Long cardId,
         Document document) {
 <span class="nc" id="L98">        logger.debug(&quot;create a new card content for the card #{} and document {}&quot;, cardId,</span>
@@ -124,7 +124,7 @@ import org.slf4j.LoggerFactory;
      * @param id id of the card content to delete
      */
     @DELETE
-    @Path(&quot;{id}&quot;)
+    @Path(&quot;{id: [0-9]+}&quot;)
     public void deleteCardContent(@PathParam(&quot;id&quot;) Long id) {
 <span class="nc" id="L129">        logger.debug(&quot;Delete card #{}&quot;, id);</span>
 <span class="nc" id="L130">        cardContentManager.deleteCardContent(id);</span>
@@ -139,7 +139,7 @@ import org.slf4j.LoggerFactory;
      * @return the document newly created
      */
     @POST
-    @Path(&quot;{id}/addDeliverableAtBeginning&quot;)
+    @Path(&quot;{id: [0-9]+}/addDeliverableAtBeginning&quot;)
     public Document addDeliverableAtBeginning(@PathParam(&quot;id&quot;) Long cardContentId,
         Document document) {
 <span class="nc" id="L145">        logger.debug(&quot;add the deliverable {} at the beginning of the card content #{}&quot;, document,</span>
@@ -157,7 +157,7 @@ import org.slf4j.LoggerFactory;
      * @return the document newly created
      */
     @POST
-    @Path(&quot;{id}/addDeliverableAtEnd&quot;)
+    @Path(&quot;{id: [0-9]+}/addDeliverableAtEnd&quot;)
     public Document addDeliverableAtEnd(@PathParam(&quot;id&quot;) Long cardContentId, Document document) {
 <span class="nc" id="L162">        logger.debug(&quot;add the deliverable {} at the end of the card content #{}&quot;, document,</span>
             cardContentId);
@@ -175,7 +175,7 @@ import org.slf4j.LoggerFactory;
      * @return the document newly created
      */
     @POST
-    @Path(&quot;{id}/addDeliverableBefore/{neighbourDocId}&quot;)
+    @Path(&quot;{id: [0-9]+}/addDeliverableBefore/{neighbourDocId: [0-9]+}&quot;)
     public Document addDeliverableBefore(@PathParam(&quot;id&quot;) Long cardContentId,
         @PathParam(&quot;neighbourDocId&quot;) Long neighbourDocId, Document document) {
 <span class="nc" id="L181">        logger.debug(&quot;add the deliverable {} before #{} in the card content #{}&quot;, document,</span>
@@ -194,7 +194,7 @@ import org.slf4j.LoggerFactory;
      * @return the document newly created
      */
     @POST
-    @Path(&quot;{id}/addDeliverableAfter/{neighbourDocId}&quot;)
+    @Path(&quot;{id: [0-9]+}/addDeliverableAfter/{neighbourDocId: [0-9]+}&quot;)
     public Document addDeliverableAfter(@PathParam(&quot;id&quot;) Long cardContentId,
         @PathParam(&quot;neighbourDocId&quot;) Long neighbourDocId, Document document) {
 <span class="nc" id="L200">        logger.debug(&quot;add the deliverable {} after #{} in the card content #{}&quot;, document,</span>
@@ -210,7 +210,7 @@ import org.slf4j.LoggerFactory;
      * @param documentId    the id of the document to remove from the card content
      */
     @POST
-    @Path(&quot;{id}/removeDeliverable&quot;)
+    @Path(&quot;{id: [0-9]+}/removeDeliverable&quot;)
     public void removeDeliverable(@PathParam(&quot;id&quot;) Long cardContentId, Long documentId) {
 <span class="nc" id="L215">        logger.debug(&quot;remove the deliverable #{} from the card content #{}&quot;, documentId,</span>
             cardContentId);
@@ -226,7 +226,7 @@ import org.slf4j.LoggerFactory;
      * @return list of links
      */
     @GET
-    @Path(&quot;{id}/StickyNoteLinks&quot;)
+    @Path(&quot;{id: [0-9]+}/StickyNoteLinks&quot;)
     public List&lt;StickyNoteLink&gt; getStickyNoteLinksAsSrc(@PathParam(&quot;id&quot;) Long cardContentId) {
 <span class="nc" id="L231">        logger.debug(&quot;Get sticky note links where card #{} is the source&quot;, cardContentId);</span>
 <span class="nc" id="L232">        return cardContentManager.getStickyNoteLinkAsSrcCardContent(cardContentId);</span>
@@ -240,7 +240,7 @@ import org.slf4j.LoggerFactory;
      * @return list of cards
      */
     @GET
-    @Path(&quot;{id}/Subcards&quot;)
+    @Path(&quot;{id: [0-9]+}/Subcards&quot;)
     public List&lt;Card&gt; getSubCards(@PathParam(&quot;id&quot;) Long parentId) {
 <span class="nc" id="L245">        logger.debug(&quot;Get parent #{} sub cards&quot;, parentId);</span>
 <span class="nc" id="L246">        return cardContentManager.getSubCards(parentId);</span>
@@ -254,7 +254,7 @@ import org.slf4j.LoggerFactory;
      * @return the deliverables linked to the card content
      */
     @GET
-    @Path(&quot;{id}/Deliverables&quot;)
+    @Path(&quot;{id: [0-9]+}/Deliverables&quot;)
     public List&lt;Document&gt; getDeliverablesOfCardContent(@PathParam(&quot;id&quot;) Long cardContentId) {
 <span class="nc" id="L259">        logger.debug(&quot;Get deliverables of card content #{}&quot;, cardContentId);</span>
 <span class="nc" id="L260">        return cardContentManager.getDeliverablesOfCardContent(cardContentId);</span>

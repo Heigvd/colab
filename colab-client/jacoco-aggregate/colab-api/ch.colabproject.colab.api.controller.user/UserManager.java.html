@@ -117,7 +117,7 @@ import org.slf4j.LoggerFactory;
 
 <span class="nc bnc" id="L118" title="All 2 branches missed.">        if (user == null) {</span>
 <span class="nc" id="L119">            logger.error(&quot;user #{} not found&quot;, userId);</span>
-<span class="nc" id="L120">            throw HttpErrorMessage.relatedObjectNotFoundError();</span>
+<span class="nc" id="L120">            throw HttpErrorMessage.dataError(MessageI18nKey.DATA_NOT_FOUND);</span>
         }
 
 <span class="nc" id="L123">        return user;</span>
@@ -624,7 +624,7 @@ import org.slf4j.LoggerFactory;
 
 <span class="nc bnc" id="L625" title="All 4 branches missed.">        if (newEmail != null &amp;&amp; !newEmail.equals(currentEmail)) {</span>
 <span class="nc bnc" id="L626" title="All 2 branches missed.">            if (!Helper.isEmailAddress(newEmail)) {</span>
-<span class="nc" id="L627">                throw HttpErrorMessage.dataIntegrityFailure();</span>
+<span class="nc" id="L627">                throw HttpErrorMessage.dataError(MessageI18nKey.DATA_INTEGRITY_FAILURE);</span>
             }
 
             try {

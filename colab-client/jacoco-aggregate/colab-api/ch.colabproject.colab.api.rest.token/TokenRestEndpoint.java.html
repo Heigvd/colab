@@ -47,7 +47,7 @@ import javax.ws.rs.core.MediaType;
      * @return the token
      */
     @GET
-    @Path(&quot;{id}&quot;)
+    @Path(&quot;{id: [0-9]+}&quot;)
     public Token getToken(@PathParam(&quot;id&quot;) Long id) {
 <span class="nc" id="L52">        return tokenManager.getNotExpiredToken(id);</span>
     }
@@ -75,7 +75,7 @@ import javax.ws.rs.core.MediaType;
      *                                                                           &lt;/ul&gt;
      */
     @PUT
-    @Path(&quot;{id}/{token: [a-fA-F0-9]+}&quot;)
+    @Path(&quot;{id: [0-9]+}/{token: [a-fA-F0-9]+}&quot;)
     public Token consumeToken(
         @PathParam(&quot;id&quot;) Long id,
         @PathParam(&quot;token&quot;) String plainToken

@@ -52,7 +52,7 @@ import org.slf4j.LoggerFactory;
      * @return current presence list
      */
     @GET
-    @Path(&quot;{projectId: [0-9]*}&quot;)
+    @Path(&quot;{projectId: [0-9]+}&quot;)
     public Collection&lt;UserPresence&gt; getProjectPresence(
         @PathParam(&quot;projectId&quot;) Long projectId
     ) {
@@ -76,7 +76,7 @@ import org.slf4j.LoggerFactory;
      * @param projectId id of the project
      */
     @DELETE
-    @Path(&quot;{projectId: [0-9]*}&quot;)
+    @Path(&quot;{projectId: [0-9]+}&quot;)
     public void clearProjectPresenceList(@PathParam(&quot;projectId&quot;) Long projectId) {
 <span class="nc" id="L81">        presenceManager.clearProjectPresenceList(projectId);</span>
 <span class="nc" id="L82">    }</span>

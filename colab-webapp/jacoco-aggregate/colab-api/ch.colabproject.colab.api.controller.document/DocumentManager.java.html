@@ -11,6 +11,7 @@ import ch.colabproject.colab.api.model.document.TextDataBlock;
 import ch.colabproject.colab.api.model.link.StickyNoteLink;
 import ch.colabproject.colab.api.persistence.jpa.document.DocumentDao;
 import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
+import ch.colabproject.colab.generator.model.exceptions.MessageI18nKey;
 import java.util.List;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
@@ -25,10 +26,10 @@ import org.slf4j.LoggerFactory;
  */
 @Stateless
 @LocalBean
-<span class="nc" id="L28">public class DocumentManager {</span>
+<span class="nc" id="L29">public class DocumentManager {</span>
 
     /** logger */
-<span class="nc" id="L31">    private static final Logger logger = LoggerFactory.getLogger(DocumentManager.class);</span>
+<span class="nc" id="L32">    private static final Logger logger = LoggerFactory.getLogger(DocumentManager.class);</span>
 
     // *********************************************************************************************
     // injections
@@ -60,14 +61,14 @@ import org.slf4j.LoggerFactory;
      * @throws HttpErrorMessage if the document was not found
      */
     public Document assertAndGetDocument(Long documentId) {
-<span class="nc" id="L63">        Document document = documentDao.findDocument(documentId);</span>
+<span class="nc" id="L64">        Document document = documentDao.findDocument(documentId);</span>
 
-<span class="nc bnc" id="L65" title="All 2 branches missed.">        if (document == null) {</span>
-<span class="nc" id="L66">            logger.error(&quot;document #{} not found&quot;, documentId);</span>
-<span class="nc" id="L67">            throw HttpErrorMessage.relatedObjectNotFoundError();</span>
+<span class="nc bnc" id="L66" title="All 2 branches missed.">        if (document == null) {</span>
+<span class="nc" id="L67">            logger.error(&quot;document #{} not found&quot;, documentId);</span>
+<span class="nc" id="L68">            throw HttpErrorMessage.dataError(MessageI18nKey.DATA_NOT_FOUND);</span>
         }
 
-<span class="nc" id="L70">        return document;</span>
+<span class="nc" id="L71">        return document;</span>
     }
 
     /**
@@ -80,14 +81,14 @@ import org.slf4j.LoggerFactory;
      * @throws HttpErrorMessage if the text data block was not found
      */
     public TextDataBlock assertAndGetTextDataBlock(Long textDataBlockId) {
-<span class="nc" id="L83">        Document document = documentDao.findDocument(textDataBlockId);</span>
+<span class="nc" id="L84">        Document document = documentDao.findDocument(textDataBlockId);</span>
 
-<span class="nc bnc" id="L85" title="All 2 branches missed.">        if (!(document instanceof TextDataBlock)) {</span>
-<span class="nc" id="L86">            logger.error(&quot;#{} is not a text data block&quot;, document);</span>
-<span class="nc" id="L87">            throw HttpErrorMessage.relatedObjectNotFoundError();</span>
+<span class="nc bnc" id="L86" title="All 2 branches missed.">        if (!(document instanceof TextDataBlock)) {</span>
+<span class="nc" id="L87">            logger.error(&quot;#{} is not a text data block&quot;, document);</span>
+<span class="nc" id="L88">            throw HttpErrorMessage.dataError(MessageI18nKey.DATA_NOT_FOUND);</span>
         }
 
-<span class="nc" id="L90">        return (TextDataBlock) document;</span>
+<span class="nc" id="L91">        return (TextDataBlock) document;</span>
 
     }
 
@@ -101,14 +102,14 @@ import org.slf4j.LoggerFactory;
      * @throws HttpErrorMessage If no collection could be found
      */
     public List&lt;Document&gt; getDocumentList(Document document) {
-<span class="nc bnc" id="L104" title="All 2 branches missed.">        if (document.hasOwningCardContent()) {</span>
-<span class="nc" id="L105">            return document.getOwningCardContent().getDeliverables();</span>
+<span class="nc bnc" id="L105" title="All 2 branches missed.">        if (document.hasOwningCardContent()) {</span>
+<span class="nc" id="L106">            return document.getOwningCardContent().getDeliverables();</span>
 
-<span class="nc bnc" id="L107" title="All 2 branches missed.">        } else if (document.hasOwningResource()) {</span>
-<span class="nc" id="L108">            return document.getOwningResource().getDocuments();</span>
+<span class="nc bnc" id="L108" title="All 2 branches missed.">        } else if (document.hasOwningResource()) {</span>
+<span class="nc" id="L109">            return document.getOwningResource().getDocuments();</span>
         }
 
-<span class="nc" id="L111">        throw HttpErrorMessage.dataIntegrityFailure();</span>
+<span class="nc" id="L112">        throw HttpErrorMessage.dataError(MessageI18nKey.DATA_INTEGRITY_FAILURE);</span>
     }
 
     // *********************************************************************************************
@@ -121,14 +122,14 @@ import org.slf4j.LoggerFactory;
      * @param documentId the id of the document to move
      */
     public void moveDocumentToTop(Long documentId) {
-<span class="nc" id="L124">        logger.debug(&quot;move document #{} at top&quot;, documentId);</span>
+<span class="nc" id="L125">        logger.debug(&quot;move document #{} at top&quot;, documentId);</span>
 
-<span class="nc" id="L126">        Document document = assertAndGetDocument(documentId);</span>
-<span class="nc" id="L127">        List&lt;Document&gt; docList = getDocumentList(document);</span>
+<span class="nc" id="L127">        Document document = assertAndGetDocument(documentId);</span>
+<span class="nc" id="L128">        List&lt;Document&gt; docList = getDocumentList(document);</span>
 
-<span class="nc" id="L129">        indexGenerator.moveItemToBeginning(document, docList);</span>
+<span class="nc" id="L130">        indexGenerator.moveItemToBeginning(document, docList);</span>
 
-<span class="nc" id="L131">    }</span>
+<span class="nc" id="L132">    }</span>
 
     /**
      * Move the given document one floor up
@@ -136,13 +137,13 @@ import org.slf4j.LoggerFactory;
      * @param documentId the id of the document to move
      */
     public void moveDocumentUp(Long documentId) {
-<span class="nc" id="L139">        logger.debug(&quot;move document #{} up&quot;, documentId);</span>
+<span class="nc" id="L140">        logger.debug(&quot;move document #{} up&quot;, documentId);</span>
 
-<span class="nc" id="L141">        Document document = assertAndGetDocument(documentId);</span>
-<span class="nc" id="L142">        List&lt;Document&gt; docList = getDocumentList(document);</span>
+<span class="nc" id="L142">        Document document = assertAndGetDocument(documentId);</span>
+<span class="nc" id="L143">        List&lt;Document&gt; docList = getDocumentList(document);</span>
 
-<span class="nc" id="L144">        indexGenerator.moveOneStepAhead(document, docList);</span>
-<span class="nc" id="L145">    }</span>
+<span class="nc" id="L145">        indexGenerator.moveOneStepAhead(document, docList);</span>
+<span class="nc" id="L146">    }</span>
 
     /**
      * Move the given document above the given reference item
@@ -151,16 +152,16 @@ import org.slf4j.LoggerFactory;
      * @param baseDocId  the id of the reference document
      */
     public void moveDocumentAbove(Long documentId, Long baseDocId) {
-<span class="nc" id="L154">        logger.debug(&quot;move document #{} above #{}&quot;, documentId, baseDocId);</span>
+<span class="nc" id="L155">        logger.debug(&quot;move document #{} above #{}&quot;, documentId, baseDocId);</span>
 
-<span class="nc" id="L156">        Document document = assertAndGetDocument(documentId);</span>
+<span class="nc" id="L157">        Document document = assertAndGetDocument(documentId);</span>
 
-<span class="nc" id="L158">        Document baseDocument = assertAndGetDocument(baseDocId);</span>
-<span class="nc" id="L159">        List&lt;Document&gt; docList = getDocumentList(baseDocument);</span>
+<span class="nc" id="L159">        Document baseDocument = assertAndGetDocument(baseDocId);</span>
+<span class="nc" id="L160">        List&lt;Document&gt; docList = getDocumentList(baseDocument);</span>
 
-<span class="nc" id="L161">        indexGenerator.moveItemBefore(document, baseDocument, docList);</span>
+<span class="nc" id="L162">        indexGenerator.moveItemBefore(document, baseDocument, docList);</span>
 
-<span class="nc" id="L163">    }</span>
+<span class="nc" id="L164">    }</span>
 
     /**
      * Move the given document one floor down
@@ -168,13 +169,13 @@ import org.slf4j.LoggerFactory;
      * @param documentId the id of the document to move
      */
     public void moveDocumentDown(Long documentId) {
-<span class="nc" id="L171">        logger.debug(&quot;move document #{} down&quot;, documentId);</span>
+<span class="nc" id="L172">        logger.debug(&quot;move document #{} down&quot;, documentId);</span>
 
-<span class="nc" id="L173">        Document document = assertAndGetDocument(documentId);</span>
-<span class="nc" id="L174">        List&lt;Document&gt; docList = getDocumentList(document);</span>
+<span class="nc" id="L174">        Document document = assertAndGetDocument(documentId);</span>
+<span class="nc" id="L175">        List&lt;Document&gt; docList = getDocumentList(document);</span>
 
-<span class="nc" id="L176">        indexGenerator.moveOneStepBehind(document, docList);</span>
-<span class="nc" id="L177">    }</span>
+<span class="nc" id="L177">        indexGenerator.moveOneStepBehind(document, docList);</span>
+<span class="nc" id="L178">    }</span>
 
     /**
      * Move the given document below the given reference item.
@@ -183,15 +184,15 @@ import org.slf4j.LoggerFactory;
      * @param baseDocId  the id of the reference document
      */
     public void moveDocumentBelow(Long documentId, Long baseDocId) {
-<span class="nc" id="L186">        logger.debug(&quot;move document #{} below #{}&quot;, documentId, baseDocId);</span>
+<span class="nc" id="L187">        logger.debug(&quot;move document #{} below #{}&quot;, documentId, baseDocId);</span>
 
-<span class="nc" id="L188">        Document document = assertAndGetDocument(documentId);</span>
+<span class="nc" id="L189">        Document document = assertAndGetDocument(documentId);</span>
 
-<span class="nc" id="L190">        Document baseDocument = assertAndGetDocument(baseDocId);</span>
-<span class="nc" id="L191">        List&lt;Document&gt; docList = getDocumentList(baseDocument);</span>
+<span class="nc" id="L191">        Document baseDocument = assertAndGetDocument(baseDocId);</span>
+<span class="nc" id="L192">        List&lt;Document&gt; docList = getDocumentList(baseDocument);</span>
 
-<span class="nc" id="L193">        indexGenerator.moveItemAfter(document, baseDocument, docList);</span>
-<span class="nc" id="L194">    }</span>
+<span class="nc" id="L194">        indexGenerator.moveItemAfter(document, baseDocument, docList);</span>
+<span class="nc" id="L195">    }</span>
 
     /**
      * Move the document to the bottom
@@ -199,13 +200,13 @@ import org.slf4j.LoggerFactory;
      * @param documentId the id of the document to move
      */
     public void moveDocumentToBottom(Long documentId) {
-<span class="nc" id="L202">        logger.debug(&quot;move document #{} at bottom&quot;, documentId);</span>
+<span class="nc" id="L203">        logger.debug(&quot;move document #{} at bottom&quot;, documentId);</span>
 
-<span class="nc" id="L204">        Document document = assertAndGetDocument(documentId);</span>
-<span class="nc" id="L205">        List&lt;Document&gt; docList = getDocumentList(document);</span>
+<span class="nc" id="L205">        Document document = assertAndGetDocument(documentId);</span>
+<span class="nc" id="L206">        List&lt;Document&gt; docList = getDocumentList(document);</span>
 
-<span class="nc" id="L207">        indexGenerator.moveItemToEnd(document, docList);</span>
-<span class="nc" id="L208">    }</span>
+<span class="nc" id="L208">        indexGenerator.moveItemToEnd(document, docList);</span>
+<span class="nc" id="L209">    }</span>
 
     // *********************************************************************************************
     // integrity check
@@ -219,15 +220,15 @@ import org.slf4j.LoggerFactory;
      * @return true iff the document is complete and safe
      */
     public boolean checkIntegrity(Document document) {
-<span class="nc bnc" id="L222" title="All 2 branches missed.">        if (document == null) {</span>
-<span class="nc" id="L223">            return false;</span>
+<span class="nc bnc" id="L223" title="All 2 branches missed.">        if (document == null) {</span>
+<span class="nc" id="L224">            return false;</span>
         }
 
-<span class="nc bnc" id="L226" title="All 2 branches missed.">        if (countOwners(document) != 1) {</span>
-<span class="nc" id="L227">            return false;</span>
+<span class="nc bnc" id="L227" title="All 2 branches missed.">        if (countOwners(document) != 1) {</span>
+<span class="nc" id="L228">            return false;</span>
         }
 
-<span class="nc" id="L230">        return true;</span>
+<span class="nc" id="L231">        return true;</span>
     }
 
     /**
@@ -238,33 +239,33 @@ import org.slf4j.LoggerFactory;
      * @return the number of owning entities
      */
     protected int countOwners(Document document) {
-<span class="nc" id="L241">        int result = 0;</span>
+<span class="nc" id="L242">        int result = 0;</span>
 
-<span class="nc bnc" id="L243" title="All 2 branches missed.">        if (document.hasOwningCardContent()) {</span>
-<span class="nc" id="L244">            result++;</span>
+<span class="nc bnc" id="L244" title="All 2 branches missed.">        if (document.hasOwningCardContent()) {</span>
+<span class="nc" id="L245">            result++;</span>
         }
 
-<span class="nc bnc" id="L247" title="All 2 branches missed.">        if (document.hasOwningResource()) {</span>
-<span class="nc" id="L248">            result++;</span>
+<span class="nc bnc" id="L248" title="All 2 branches missed.">        if (document.hasOwningResource()) {</span>
+<span class="nc" id="L249">            result++;</span>
         }
 
-<span class="nc bnc" id="L251" title="All 2 branches missed.">        if (document instanceof TextDataBlock) {</span>
-<span class="nc" id="L252">            TextDataBlock block = (TextDataBlock) document;</span>
+<span class="nc bnc" id="L252" title="All 2 branches missed.">        if (document instanceof TextDataBlock) {</span>
+<span class="nc" id="L253">            TextDataBlock block = (TextDataBlock) document;</span>
 
-<span class="nc bnc" id="L254" title="All 2 branches missed.">            if (block.getPurposingCardType() != null) {</span>
-<span class="nc" id="L255">                result++;</span>
+<span class="nc bnc" id="L255" title="All 2 branches missed.">            if (block.getPurposingCardType() != null) {</span>
+<span class="nc" id="L256">                result++;</span>
             }
 
-<span class="nc bnc" id="L258" title="All 2 branches missed.">            if (block.getTeasingResource() != null) {</span>
-<span class="nc" id="L259">                result++;</span>
+<span class="nc bnc" id="L259" title="All 2 branches missed.">            if (block.getTeasingResource() != null) {</span>
+<span class="nc" id="L260">                result++;</span>
             }
 
-<span class="nc bnc" id="L262" title="All 2 branches missed.">            if (block.getExplainingStickyNoteLink() != null) {</span>
-<span class="nc" id="L263">                result++;</span>
+<span class="nc bnc" id="L263" title="All 2 branches missed.">            if (block.getExplainingStickyNoteLink() != null) {</span>
+<span class="nc" id="L264">                result++;</span>
             }
         }
 
-<span class="nc" id="L267">        return result;</span>
+<span class="nc" id="L268">        return result;</span>
     }
 
     // *********************************************************************************************
@@ -279,11 +280,11 @@ import org.slf4j.LoggerFactory;
      * @return all sticky note links which has the given document as source
      */
     public List&lt;StickyNoteLink&gt; getStickyNoteLinkAsSrc(Long docId) {
-<span class="nc" id="L282">        logger.debug(&quot;get sticky note links where the document #{} is the source&quot;, docId);</span>
+<span class="nc" id="L283">        logger.debug(&quot;get sticky note links where the document #{} is the source&quot;, docId);</span>
 
-<span class="nc" id="L284">        Document document = assertAndGetDocument(docId);</span>
+<span class="nc" id="L285">        Document document = assertAndGetDocument(docId);</span>
 
-<span class="nc" id="L286">        return document.getStickyNoteLinksAsSrc();</span>
+<span class="nc" id="L287">        return document.getStickyNoteLinksAsSrc();</span>
     }
 
     // *********************************************************************************************
