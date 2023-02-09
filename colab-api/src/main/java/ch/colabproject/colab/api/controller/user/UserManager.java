@@ -117,7 +117,7 @@ public class UserManager {
 
         if (user == null) {
             logger.error("user #{} not found", userId);
-            throw HttpErrorMessage.relatedObjectNotFoundError();
+            throw HttpErrorMessage.dataError(MessageI18nKey.DATA_NOT_FOUND);
         }
 
         return user;
@@ -624,7 +624,7 @@ public class UserManager {
 
         if (newEmail != null && !newEmail.equals(currentEmail)) {
             if (!Helper.isEmailAddress(newEmail)) {
-                throw HttpErrorMessage.dataIntegrityFailure();
+                throw HttpErrorMessage.dataError(MessageI18nKey.DATA_INTEGRITY_FAILURE);
             }
 
             try {

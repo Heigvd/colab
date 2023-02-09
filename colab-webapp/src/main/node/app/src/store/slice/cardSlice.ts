@@ -226,8 +226,8 @@ const cardsSlice = createSlice({
         state.rootCardId = 'LOADING';
       })
       .addCase(API.getRootCardOfProject.fulfilled, (state, action) => {
-        const cardId = action.payload.id;
-        if (cardId != null) {
+        if (action.payload?.id != null) {
+          const cardId = action.payload.id;
           state.rootCardId = cardId;
           const cardState = getOrCreateCardState(state, cardId);
           cardState.card = action.payload;
@@ -238,7 +238,7 @@ const cardsSlice = createSlice({
         cardState.card = null;
       })
       .addCase(API.getCard.fulfilled, (state, action) => {
-        if (action.payload.id) {
+        if (action.payload?.id != null) {
           const cardState = getOrCreateCardState(state, action.meta.arg);
           cardState.card = action.payload;
         }
@@ -248,7 +248,7 @@ const cardsSlice = createSlice({
         cardState.content = null;
       })
       .addCase(API.getCardContent.fulfilled, (state, action) => {
-        if (action.payload.id) {
+        if (action.payload?.id != null) {
           const contentState = getOrCreateCardContentState(state, action.meta.arg);
           contentState.content = action.payload;
         }
@@ -309,10 +309,12 @@ const cardsSlice = createSlice({
         state.rootCardId = 'LOADING';
       })
       .addCase(API.getProjectStructure.fulfilled, (state, action) => {
-        processAllCards(state, action.payload.cards);
-        processAllCardContents(state, action.payload.cardContents);
-        rebuildSubs(state);
-        state.rootCardId = action.payload.rootCardId;
+        if (action.payload != null) {
+          processAllCards(state, action.payload.cards);
+          processAllCardContents(state, action.payload.cardContents);
+          rebuildSubs(state);
+          state.rootCardId = action.payload.rootCardId;
+        }
       })
 
       .addCase(API.signOut.fulfilled, () => {

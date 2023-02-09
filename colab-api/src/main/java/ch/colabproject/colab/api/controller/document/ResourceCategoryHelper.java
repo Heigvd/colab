@@ -18,6 +18,7 @@ import ch.colabproject.colab.api.model.document.ResourceRef;
 import ch.colabproject.colab.api.persistence.jpa.card.CardTypeDao;
 import ch.colabproject.colab.api.persistence.jpa.document.ResourceDao;
 import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
+import ch.colabproject.colab.generator.model.exceptions.MessageI18nKey;
 import java.util.List;
 import java.util.Objects;
 import javax.ejb.LocalBean;
@@ -130,7 +131,7 @@ public class ResourceCategoryHelper {
         logger.debug("set category {} to abstract resources #{}", categoryName, resourceOrRefIds);
 
         if (resourceOrRefIds == null) {
-            throw HttpErrorMessage.relatedObjectNotFoundError();
+            throw HttpErrorMessage.dataError(MessageI18nKey.DATA_INTEGRITY_FAILURE);
         }
 
         resourceOrRefIds.stream().forEach(resOrRefId -> changeCategory(resOrRefId, categoryName));

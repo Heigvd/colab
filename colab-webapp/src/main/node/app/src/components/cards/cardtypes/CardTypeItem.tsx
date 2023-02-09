@@ -18,7 +18,7 @@ import * as React from 'react';
 import { useNavigate } from 'react-router-dom';
 import * as API from '../../../API/api';
 import useTranslations from '../../../i18n/I18nContext';
-import { useProjectBeingEdited } from '../../../selectors/projectSelector';
+import { useCurrentProjectId } from '../../../selectors/projectSelector';
 import { useAppDispatch } from '../../../store/hooks';
 import { CardTypeAllInOne as CardType } from '../../../types/cardTypeDefinition';
 import { ConfirmDeleteModal } from '../../common/layout/ConfirmDeleteModal';
@@ -63,8 +63,7 @@ export default function CardTypeItem({ cardType, usage }: CardTypeItemProps): JS
   const navigate = useNavigate();
   const i18n = useTranslations();
 
-  const editedProject = useProjectBeingEdited().project;
-  const editedProjectId = editedProject?.id;
+  const currentProjectId = useCurrentProjectId();
 
   const [showDelete, setShowDelete] = React.useState(false);
 
@@ -77,7 +76,9 @@ export default function CardTypeItem({ cardType, usage }: CardTypeItemProps): JS
           valueComp={{ value: '', label: '' }}
           buttonClassName={cx(lightIconButtonStyle, css({ marginLeft: '40px' }))}
           entries={[
-            ...((usage === 'currentProject' && cardType.projectId === editedProjectId) ||
+            ...((usage === 'currentProject' &&
+              currentProjectId != null &&
+              cardType.projectId === currentProjectId) ||
             usage === 'global'
               ? [
                   {
@@ -91,7 +92,7 @@ export default function CardTypeItem({ cardType, usage }: CardTypeItemProps): JS
                   },
                 ]
               : []),
-            ...(usage === 'available' && editedProject && cardType.projectId !== editedProjectId
+            ...(usage === 'available' && currentProjectId && cardType.projectId !== currentProjectId
               ? [
                   {
                     value: 'useInProject',
@@ -102,14 +103,14 @@ export default function CardTypeItem({ cardType, usage }: CardTypeItemProps): JS
                       </>
                     ),
                     action: () =>
-                      dispatch(API.addCardTypeToProject({ cardType, project: editedProject })),
+                      dispatch(API.addCardTypeToProject({ cardType, projectId: currentProjectId })),
                   },
                 ]
               : []),
             .../*!readOnly &&*/
             (usage === 'currentProject' &&
-            editedProject &&
-            cardType.projectId === editedProjectId &&
+            currentProjectId != null &&
+            cardType.projectId === currentProjectId &&
             cardType.kind === 'referenced'
               ? [
                   {
@@ -122,14 +123,16 @@ export default function CardTypeItem({ cardType, usage }: CardTypeItemProps): JS
                     ),
                     action: () =>
                       dispatch(
-                        API.removeCardTypeRefFromProject({ cardType, project: editedProject }),
+                        API.removeCardTypeRefFromProject({ cardType, projectId: currentProjectId }),
                       ),
                   },
                 ]
               : []),
             .../*!readOnly &&*/
             (cardType.kind === 'own' &&
-            ((usage === 'currentProject' && cardType.projectId === editedProjectId) ||
+            ((usage === 'currentProject' &&
+              currentProjectId != null &&
+              cardType.projectId === currentProjectId) ||
               usage === 'global')
               ? [
                   {

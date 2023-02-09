@@ -102,7 +102,7 @@ public class CardTypeRestEndpoint {
      *         until the card type)
      */
     @GET
-    @Path("expanded/{id}")
+    @Path("expanded/{id: [0-9]+}")
     public List<AbstractCardType> getExpandedCardType(@PathParam("id") Long id) {
         logger.debug("get abstract card type #{} and its target chain", id);
         return cardTypeManager.getExpandedCardType(id);
@@ -117,7 +117,7 @@ public class CardTypeRestEndpoint {
      * @return the card type or null
      */
     @GET
-    @Path("{id}")
+    @Path("{id: [0-9]+}")
     public AbstractCardType getCardType(@PathParam("id") Long id) {
         logger.debug("get card type #{}", id);
         return cardTypeDao.findAbstractCardType(id);
@@ -166,7 +166,7 @@ public class CardTypeRestEndpoint {
      * @param id the id of the card type to delete
      */
     @DELETE
-    @Path("{id}")
+    @Path("{id: [0-9]+}")
     public void deleteCardType(@PathParam("id") Long id) {
         logger.debug("delete card type #{}", id);
         cardTypeManager.deleteCardType(id);
@@ -182,7 +182,7 @@ public class CardTypeRestEndpoint {
      * @return The card type
      */
     @PUT
-    @Path("useCardTypeInProject/{cardTypeId}/{projectId}")
+    @Path("useCardTypeInProject/{cardTypeId: [0-9]+}/{projectId: [0-9]+}")
     public AbstractCardType useCardTypeInProject(@PathParam("cardTypeId") Long cardTypeId,
         @PathParam("projectId") Long projectId) {
         logger.debug("use card type #{} in project #{}", cardTypeId, projectId);
@@ -199,7 +199,7 @@ public class CardTypeRestEndpoint {
      *                      anymore
      */
     @PUT
-    @Path("removeCardTypeFromProject/{cardTypeId}/{projectId}")
+    @Path("removeCardTypeFromProject/{cardTypeId: [0-9]+}/{projectId: [0-9]+}")
     public void removeCardTypeRefFromProject(@PathParam("cardTypeId") Long cardTypeRefId,
         @PathParam("projectId") Long projectId) {
         logger.debug("remove card type reference #{} from project #{}", cardTypeRefId, projectId);

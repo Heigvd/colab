@@ -8,6 +8,7 @@ package ch.colabproject.colab.api.controller.common;
 
 import ch.colabproject.colab.api.model.WithIndex;
 import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
+import ch.colabproject.colab.generator.model.exceptions.MessageI18nKey;
 import ch.colabproject.colab.generator.model.interfaces.WithId;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -64,11 +65,11 @@ public class IndexWithEmptySlotManager<T extends WithIndex & WithId> {
      */
     public void changeItemPosition(T itemToMove, int newIndex, Collection<T> collection) {
         if (CollectionUtils.isEmpty(collection)) {
-            throw HttpErrorMessage.dataIntegrityFailure();
+            throw HttpErrorMessage.dataError(MessageI18nKey.DATA_INTEGRITY_FAILURE);
         }
 
         if (!collection.contains(itemToMove)) {
-            throw HttpErrorMessage.dataIntegrityFailure();
+            throw HttpErrorMessage.dataError(MessageI18nKey.DATA_INTEGRITY_FAILURE);
         }
 
         List<T> sortedList = sort(collection);

@@ -7,6 +7,7 @@
 package ch.colabproject.colab.api.persistence.jcr;
 
 import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
+import ch.colabproject.colab.generator.model.exceptions.MessageI18nKey;
 import javax.jcr.RepositoryException;
 import javax.transaction.Status;
 import javax.transaction.Synchronization;
@@ -44,7 +45,7 @@ public class JcrSynchronizer implements Synchronization {
         } catch (RepositoryException ex) {
             // please rollback
             logger.trace("Prepare commit failed: rollback");
-            throw HttpErrorMessage.dataIntegrityFailure();
+            throw HttpErrorMessage.dataError(MessageI18nKey.DATA_INTEGRITY_FAILURE);
         }
     }
 

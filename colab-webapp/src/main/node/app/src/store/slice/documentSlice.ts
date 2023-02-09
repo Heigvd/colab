@@ -56,7 +56,11 @@ const documentSlice = createSlice({
         state.documents[action.meta.arg] = 'LOADING';
       })
       .addCase(API.getDocument.fulfilled, (state, action) => {
-        updateDocument(state, action.payload);
+        if (action.payload?.id != null) {
+          updateDocument(state, action.payload);
+        } else {
+          state.documents[action.meta.arg] = 'ERROR';
+        }
       })
       .addCase(API.getDocument.rejected, (state, action) => {
         state.documents[action.meta.arg] = 'ERROR';

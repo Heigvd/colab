@@ -19,6 +19,7 @@ import ch.colabproject.colab.api.model.team.acl.AccessControl;
 import ch.colabproject.colab.api.persistence.jpa.card.CardDao;
 import ch.colabproject.colab.generator.model.annotations.AuthenticationRequired;
 import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
+import ch.colabproject.colab.generator.model.exceptions.MessageI18nKey;
 import java.util.List;
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
@@ -73,7 +74,7 @@ public class CardRestEndpoint {
      * @return the card or null
      */
     @GET
-    @Path("{id}")
+    @Path("{id: [0-9]+}")
     public Card getCard(@PathParam("id") Long id) {
         logger.debug("get card #{}", id);
         return cardDao.findCard(id);
@@ -87,7 +88,7 @@ public class CardRestEndpoint {
      * @return the persisted new card
      */
     @POST
-    @Path("create/{parentId}")
+    @Path("create/{parentId: [0-9]+}")
     public Card createNewCardWithoutType(@PathParam("parentId") Long parentId) {
         logger.debug("create a new card for the parent #{} without type", parentId);
         return cardManager.createNewCard(parentId, null);
@@ -102,7 +103,7 @@ public class CardRestEndpoint {
      * @return the persisted new card
      */
     @POST
-    @Path("create/{parentId}/{cardTypeId}")
+    @Path("create/{parentId: [0-9]+}/{cardTypeId: [0-9]+}")
     public Card createNewCard(@PathParam("parentId") Long parentId,
         @PathParam("cardTypeId") Long cardTypeId) {
         logger.debug("create a new card for the parent #{} and the type #{}", parentId,
@@ -119,7 +120,7 @@ public class CardRestEndpoint {
      * @return the persisted new card
      */
     @POST
-    @Path("createWithDeliverable/{parentId}")
+    @Path("createWithDeliverable/{parentId: [0-9]+}")
     public Card createNewCardWithDeliverableWithoutType(@PathParam("parentId") Long parentId,
         Document document) {
         logger.debug("create a new card in the parent #{} without type with the deliverable {}",
@@ -130,7 +131,7 @@ public class CardRestEndpoint {
         if (variants != null && variants.size() == 1 && variants.get(0) != null) {
             cardContentManager.addDeliverable(variants.get(0).getId(), document);
         } else {
-            throw HttpErrorMessage.dataIntegrityFailure();
+            throw HttpErrorMessage.dataError(MessageI18nKey.DATA_INTEGRITY_FAILURE);
         }
 
         return card;
@@ -146,7 +147,7 @@ public class CardRestEndpoint {
      * @return the persisted new card
      */
     @POST
-    @Path("createWithDeliverable/{parentId}/{cardTypeId}")
+    @Path("createWithDeliverable/{parentId: [0-9]+}/{cardTypeId: [0-9]+}")
     public Card createNewCardWithDeliverable(@PathParam("parentId") Long parentId,
         @PathParam("cardTypeId") Long cardTypeId, Document document) {
         logger.debug("create a new card in the parent #{} for the type #{} with the deliverable {}",
@@ -157,7 +158,7 @@ public class CardRestEndpoint {
         if (variants != null && variants.size() == 1 && variants.get(0) != null) {
             cardContentManager.addDeliverable(variants.get(0).getId(), document);
         } else {
-            throw HttpErrorMessage.dataIntegrityFailure();
+            throw HttpErrorMessage.dataError(MessageI18nKey.DATA_INTEGRITY_FAILURE);
         }
 
         return card;
@@ -185,7 +186,7 @@ public class CardRestEndpoint {
      * @param position the new position of the card
      */
     @PUT
-    @Path("{cardId}/changePosition")
+    @Path("{cardId: [0-9]+}/changePosition")
     public void changeCardPosition(@PathParam("cardId") Long cardId, GridPosition position) {
         cardManager.changeCardPosition(cardId, position);
     }
@@ -199,7 +200,7 @@ public class CardRestEndpoint {
      * @throws HttpErrorMessage if card or parent does not exist or if parent if a child of the card
      */
     @PUT
-    @Path("{cardId}/MoveTo/{newParentId}")
+    @Path("{cardId: [0-9]+}/MoveTo/{newParentId: [0-9]+}")
     public void moveCard(
         @PathParam("cardId") Long cardId,
         @PathParam("newParentId") Long newParentId) {
@@ -212,7 +213,7 @@ public class CardRestEndpoint {
      * @param id id of the card to delete
      */
     @DELETE
-    @Path("{id}")
+    @Path("{id: [0-9]+}")
     public void deleteCard(@PathParam("id") Long id) {
         logger.debug("delete card #{}", id);
         cardManager.deleteCard(id);
@@ -226,7 +227,7 @@ public class CardRestEndpoint {
      * @return list of card contents
      */
     @GET
-    @Path("{id}/CardContents")
+    @Path("{id: [0-9]+}/CardContents")
     public List<CardContent> getContentVariantsOfCard(@PathParam("id") Long cardId) {
         logger.debug("Get card #{} content variants", cardId);
         return cardManager.getContentVariants(cardId);
@@ -240,7 +241,7 @@ public class CardRestEndpoint {
      * @return list of links
      */
     @GET
-    @Path("{id}/StickyNoteLinksDestinationCard")
+    @Path("{id: [0-9]+}/StickyNoteLinksDestinationCard")
     public List<StickyNoteLink> getStickyNoteLinksAsDest(@PathParam("id") Long cardId) {
         logger.debug("Get sticky note links to card #{} as destination", cardId);
         return cardManager.getStickyNoteLinkAsDest(cardId);
@@ -254,7 +255,7 @@ public class CardRestEndpoint {
      * @return list of links
      */
     @GET
-    @Path("{id}/StickyNoteLinksSrcCard")
+    @Path("{id: [0-9]+}/StickyNoteLinksSrcCard")
     public List<StickyNoteLink> getStickyNoteLinksAsSrc(@PathParam("id") Long cardId) {
         logger.debug("Get sticky note links to card #{} as source", cardId);
         return cardManager.getStickyNoteLinkAsSrcCard(cardId);
@@ -268,7 +269,7 @@ public class CardRestEndpoint {
      * @return list of links
      */
     @GET
-    @Path("{id}/ActivityFlowLinksPreviousCard")
+    @Path("{id: [0-9]+}/ActivityFlowLinksPreviousCard")
     public List<ActivityFlowLink> getActivityFlowLinksAsPrevious(@PathParam("id") Long cardId) {
         logger.debug("Get activity flow links to card #{} as previous", cardId);
         return cardManager.getActivityFlowLinkAsPrevious(cardId);
@@ -282,7 +283,7 @@ public class CardRestEndpoint {
      * @return list of links
      */
     @GET
-    @Path("{id}/ActivityFlowLinksNextCard")
+    @Path("{id: [0-9]+}/ActivityFlowLinksNextCard")
     public List<ActivityFlowLink> getActivityFlowLinksAsNext(@PathParam("id") Long cardId) {
         logger.debug("Get activity flow links to card #{} as next", cardId);
         return cardManager.getActivityFlowLinkAsNext(cardId);
@@ -296,7 +297,7 @@ public class CardRestEndpoint {
      * @return list of access-control
      */
     @GET
-    @Path("{cardId}/ACLs")
+    @Path("{cardId: [0-9]+}/ACLs")
     public List<AccessControl> getAcls(@PathParam("cardId") Long cardId) {
         logger.debug("Get Card #{} access-control list", cardId);
         return cardManager.getAcls(cardId);
@@ -306,7 +307,7 @@ public class CardRestEndpoint {
      * @param cardId the card id
      */
     @POST
-    @Path("createCardType/{cardId}")
+    @Path("createCardType/{cardId: [0-9]+}")
     public void createCardType(@PathParam("cardId") Long cardId) {
         cardManager.createCardType(cardId);
     }
@@ -318,7 +319,7 @@ public class CardRestEndpoint {
      * @param cardId the card id
      */
     @POST
-    @Path("removeCardType/{cardId}")
+    @Path("removeCardType/{cardId: [0-9]+}")
     public void removeCardType(@PathParam("cardId") Long cardId) {
         cardManager.removeCardType(cardId);
     }

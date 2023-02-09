@@ -11,7 +11,7 @@ import * as React from 'react';
 import { useNavigate } from 'react-router-dom';
 import * as API from '../../API/api';
 import useTranslations from '../../i18n/I18nContext';
-import { useAndLoadProject } from '../../selectors/projectSelector';
+import { useProject } from '../../selectors/projectSelector';
 import { useAppDispatch, useLoadingState } from '../../store/hooks';
 import AvailabilityStatusIndicator from '../common/element/AvailabilityStatusIndicator';
 import Button from '../common/element/Button';
@@ -61,7 +61,7 @@ const initialProgressionStep = 'parameters';
 /* ---------------------------------------------------------------------------------------------- */
 
 interface ProjectModelExtractorProps {
-  projectId: number | null | undefined;
+  projectId: number;
 }
 
 export function ProjectModelExtractor({ projectId }: ProjectModelExtractorProps): JSX.Element {
@@ -69,7 +69,7 @@ export function ProjectModelExtractor({ projectId }: ProjectModelExtractorProps)
   const navigate = useNavigate();
   const i18n = useTranslations();
 
-  const { status: projectStatus, project } = useAndLoadProject(projectId || undefined);
+  const { status: projectStatus, project } = useProject(projectId);
 
   const { isLoading, startLoading, stopLoading } = useLoadingState();
 

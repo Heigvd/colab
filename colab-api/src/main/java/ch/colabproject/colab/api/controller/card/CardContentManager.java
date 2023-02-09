@@ -18,6 +18,7 @@ import ch.colabproject.colab.api.model.link.StickyNoteLink;
 import ch.colabproject.colab.api.persistence.jpa.card.CardContentDao;
 import ch.colabproject.colab.api.persistence.jpa.document.DocumentDao;
 import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
+import ch.colabproject.colab.generator.model.exceptions.MessageI18nKey;
 import java.util.List;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
@@ -115,7 +116,7 @@ public class CardContentManager {
 
         if (cardContent == null) {
             logger.error("card content #{} not found", cardContentId);
-            throw HttpErrorMessage.relatedObjectNotFoundError();
+            throw HttpErrorMessage.dataError(MessageI18nKey.DATA_NOT_FOUND);
         }
 
         return cardContent;
@@ -184,7 +185,7 @@ public class CardContentManager {
         CardContent cardContent = assertAndGetCardContent(cardContentId);
 
         if (!checkDeletionAcceptability(cardContent)) {
-            throw HttpErrorMessage.dataIntegrityFailure();
+            throw HttpErrorMessage.dataError(MessageI18nKey.DATA_INTEGRITY_FAILURE);
         }
 
         cardContent.getCard().getContentVariants().remove(cardContent);
@@ -264,15 +265,15 @@ public class CardContentManager {
         CardContent cardContent = assertAndGetCardContent(cardContentId);
 
         if (document == null) {
-            throw HttpErrorMessage.dataIntegrityFailure();
+            throw HttpErrorMessage.dataError(MessageI18nKey.DATA_INTEGRITY_FAILURE);
         }
 
         if (document.hasOwningResource() || document.hasOwningCardContent()) {
-            throw HttpErrorMessage.dataIntegrityFailure();
+            throw HttpErrorMessage.dataError(MessageI18nKey.DATA_INTEGRITY_FAILURE);
         }
 
         if (cardContent.getDeliverables().contains(document)) {
-            throw HttpErrorMessage.dataIntegrityFailure();
+            throw HttpErrorMessage.dataError(MessageI18nKey.DATA_INTEGRITY_FAILURE);
         }
 
         switch (relatedPosition) {
@@ -315,7 +316,7 @@ public class CardContentManager {
         Document document = documentManager.assertAndGetDocument(documentId);
 
         if (!(cardContent.getDeliverables().contains(document))) {
-            throw HttpErrorMessage.dataIntegrityFailure();
+            throw HttpErrorMessage.dataError(MessageI18nKey.DATA_INTEGRITY_FAILURE);
         }
 
         cardContent.getDeliverables().remove(document);

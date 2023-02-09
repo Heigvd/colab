@@ -5,7 +5,7 @@
  * Licensed under the MIT License
  */
 
-import { Card, CardContent, InvolvementLevel, Project } from 'colab-rest-client';
+import { Card, CardContent, InvolvementLevel } from 'colab-rest-client';
 import { mapValues, uniq } from 'lodash';
 import * as React from 'react';
 import * as API from '../API/api';
@@ -20,14 +20,15 @@ import {
 } from '../store/hooks';
 import { CardContentDetail, CardDetail } from '../store/slice/cardSlice';
 import { LoadingStatus } from '../store/store';
-import { useMyMember, useProjectBeingEdited } from './projectSelector';
+import { selectCurrentProjectId } from './projectSelector';
+import { useMyMember } from './teamSelector';
 import { useCurrentUser } from './userSelector';
 
-export const useProjectRootCard = (project: Project | null | undefined): Card | LoadingStatus => {
+export const useProjectRootCard = (projectId: number | null | undefined): Card | LoadingStatus => {
   const dispatch = useAppDispatch();
 
   const rootCard = useAppSelector(state => {
-    if (project != null) {
+    if (projectId != null) {
       if (typeof state.cards.rootCardId === 'string') {
         if (state.cards.rootCardId === 'NOT_INITIALIZED') {
           return 'NOT_INITIALIZED';
@@ -50,8 +51,6 @@ export const useProjectRootCard = (project: Project | null | undefined): Card | 
     }
     return 'NOT_INITIALIZED';
   });
-
-  const projectId = project?.id;
 
   React.useEffect(() => {
     if (rootCard === 'NOT_INITIALIZED' && projectId != null) {
@@ -223,6 +222,8 @@ export type CardAcl = {
 };
 
 const useCardACL = (cardId: number | null | undefined): CardAcl => {
+  const currentProjectId = useAppSelector(selectCurrentProjectId);
+
   return useAppSelector(
     state => {
       const result: CardAcl = {
@@ -242,10 +243,8 @@ const useCardACL = (cardId: number | null | undefined): CardAcl => {
         },
       };
 
-      const projectId = state.projects.editing;
-
-      if (projectId != null) {
-        const team = state.projects.teams[projectId];
+      if (currentProjectId != null) {
+        const team = state.team.teams[currentProjectId];
 
         let nextCardId: number | null | undefined = cardId;
         while (nextCardId != null) {
@@ -261,9 +260,9 @@ const useCardACL = (cardId: number | null | undefined): CardAcl => {
 
           nextCardId = undefined;
 
-          if (team != null && team.status === 'INITIALIZED') {
+          if (team != null && team.status === 'READY') {
             if (cardDetail != null) {
-              if (aclState != null && aclState.status === 'INITIALIZED') {
+              if (aclState != null && aclState.status === 'READY') {
                 const cardAcl = Object.values(aclState.acl).reduce<ACL>(
                   (acc, cur) => {
                     if (cur.memberId != null) {
@@ -448,10 +447,10 @@ function resolveAcl(acl: InvolvementLevel[]): InvolvementLevel {
 
 export const useCardACLForCurrentUser = (cardId: number | null | undefined): MyCardAcl => {
   const acl = useAndLoadCardACL(cardId);
-  const { project } = useProjectBeingEdited();
+  const currentProjectId = useAppSelector(selectCurrentProjectId);
   const { currentUser } = useCurrentUser();
 
-  const member = useMyMember(project?.id, currentUser?.id);
+  const member = useMyMember(currentProjectId, currentUser?.id);
 
   if (currentUser?.admin) {
     return {

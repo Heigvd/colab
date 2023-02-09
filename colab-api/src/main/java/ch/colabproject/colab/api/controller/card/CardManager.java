@@ -19,6 +19,7 @@ import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.api.model.team.acl.AccessControl;
 import ch.colabproject.colab.api.persistence.jpa.card.CardDao;
 import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
+import ch.colabproject.colab.generator.model.exceptions.MessageI18nKey;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -90,7 +91,7 @@ public class CardManager {
 
         if (card == null) {
             logger.error("card #{} not found", cardId);
-            throw HttpErrorMessage.relatedObjectNotFoundError();
+            throw HttpErrorMessage.dataError(MessageI18nKey.DATA_NOT_FOUND);
         }
 
         return card;
@@ -224,7 +225,7 @@ public class CardManager {
                 }
             } else {
                 logger.error("Unable to find effective type for {}", cardType);
-                throw HttpErrorMessage.dataIntegrityFailure();
+                throw HttpErrorMessage.dataError(MessageI18nKey.DATA_INTEGRITY_FAILURE);
             }
         }
 
@@ -268,7 +269,7 @@ public class CardManager {
         Card card = assertAndGetCard(cardId);
 
         if (!checkDeletionAcceptability(card)) {
-            throw HttpErrorMessage.dataIntegrityFailure();
+            throw HttpErrorMessage.dataError(MessageI18nKey.DATA_INTEGRITY_FAILURE);
         }
 
         card.getParent().getSubCards().remove(card);
@@ -353,7 +354,7 @@ public class CardManager {
      */
     private void moveCard(Card card, CardContent newParent) {
         if (!checkMoveAcceptability(card, newParent)) {
-            throw HttpErrorMessage.dataIntegrityFailure();
+            throw HttpErrorMessage.dataError(MessageI18nKey.DATA_INTEGRITY_FAILURE);
         }
 
         if (!Objects.equals(card.getParent(), newParent)) {
@@ -555,7 +556,7 @@ public class CardManager {
     public void createCardType(Long cardId) {
         Card card = assertAndGetCard(cardId);
         if (card.getCardType() != null) {
-            throw HttpErrorMessage.dataIntegrityFailure();
+            throw HttpErrorMessage.dataError(MessageI18nKey.DATA_INTEGRITY_FAILURE);
         }
 
         CardType newCardType = new CardType();
@@ -591,7 +592,7 @@ public class CardManager {
         // Just a check to handle only simple cases.
         // When ready to handle everything concerning resources, and also when it is useful, do it
         if (cardType.getDirectAbstractResources().size() > 0) {
-            throw HttpErrorMessage.dataIntegrityFailure();
+            throw HttpErrorMessage.dataError(MessageI18nKey.DATA_INTEGRITY_FAILURE);
         }
 
         cardType.getImplementingCards().remove(card);

@@ -13,7 +13,7 @@ import { Provider } from 'react-redux';
 import { HashRouter, Route, Routes, useParams } from 'react-router-dom';
 import { I18nCtx, Language, languages } from '../i18n/I18nContext';
 import { useLocalStorage } from '../preferences';
-import { getStore } from '../store/store';
+import { store } from '../store/store';
 import { init } from '../ws/websocket';
 import { TipsConfig, TipsCtx } from './common/element/Tips';
 import Loading from './common/layout/Loading';
@@ -130,7 +130,7 @@ function App(): JSX.Element {
       <React.StrictMode>
         <ErrorBoundary>
           <Suspense fallback={<Loading />}>
-            <Provider store={getStore()}>
+            <Provider store={store}>
               <TocDisplayCtx.Provider value={{ mode: tocMode, setMode: setTocMode }}>
                 <I18nCtx.Provider value={{ lang: lang, setLang: setLang }}>
                   <TipsCtx.Provider

@@ -184,17 +184,17 @@ public class UserRestEndpointTest extends AbstractArquillianTest {
         String password = "SoSecuredPassword";
 
         // empty
-        TestHelper.assertThrows(MessageCode.DATA_INTEGRITY_FAILURE, () -> {
+        TestHelper.assertThrows(MessageCode.DATA_ERROR, () -> {
             this.signup("", email, password);
         });
 
         // accent
-        TestHelper.assertThrows(MessageCode.DATA_INTEGRITY_FAILURE, () -> {
+        TestHelper.assertThrows(MessageCode.DATA_ERROR, () -> {
             this.signup("Marie-Gaëlle.Marchand_test", email, password);
         });
 
         // weird character
-        TestHelper.assertThrows(MessageCode.DATA_INTEGRITY_FAILURE, () -> {
+        TestHelper.assertThrows(MessageCode.DATA_ERROR, () -> {
             this.signup("Marie-Gaelle.Marchand_test$", email, password);
         });
 

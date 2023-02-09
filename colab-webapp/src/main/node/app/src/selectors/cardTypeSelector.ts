@@ -13,7 +13,7 @@ import { useLanguage } from '../i18n/I18nContext';
 import { customColabStateEquals, useAppDispatch, useAppSelector } from '../store/hooks';
 import { AvailabilityStatus, ColabState } from '../store/store';
 import { CardTypeAllInOne, CardTypeAndStatus } from '../types/cardTypeDefinition';
-import { useProjectBeingEdited } from './projectSelector';
+import { selectCurrentProjectId } from './projectSelector';
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // useful stuff to make a convenient card type for the client side
@@ -226,11 +226,10 @@ export function useAndLoadCardType(id: number | null | undefined): CardTypeAndSt
 
 function useProjectCardTypes(): CardTypeAllInOne[] {
   const lang = useLanguage();
+  const currentProjectId = useAppSelector(selectCurrentProjectId);
 
   return useAppSelector(state => {
     const result: CardTypeAllInOne[] = [];
-
-    const currentProjectId = state.projects.editing;
 
     if (currentProjectId) {
       Object.values(state.cardType.cardtypes).forEach(act => {
@@ -265,12 +264,12 @@ export function useAndLoadProjectCardTypes(): {
 
   const cardTypes = useProjectCardTypes();
   const status = useAppSelector(state => state.cardType.currentProjectStatus);
-  const { project } = useProjectBeingEdited();
+  const currentProjectId = useAppSelector(selectCurrentProjectId);
   React.useEffect(() => {
-    if (status === 'NOT_INITIALIZED' && project) {
-      dispatch(API.getProjectCardTypes(project));
+    if (status === 'NOT_INITIALIZED' && currentProjectId) {
+      dispatch(API.getProjectCardTypes(currentProjectId));
     }
-  }, [dispatch, project, status]);
+  }, [dispatch, currentProjectId, status]);
 
   if (status === 'READY') {
     return { cardTypes, status: status };
@@ -297,7 +296,7 @@ export function useAndLoadAvailableCardTypes(): {
 } {
   const dispatch = useAppDispatch();
 
-  const { project: currentProject } = useProjectBeingEdited();
+  const currentProjectId = useAppSelector(selectCurrentProjectId);
 
   const statusPublished = useAppSelector(state => state.cardType.availablePublishedStatus);
   const statusCurrentProject = useAppSelector(state => state.cardType.currentProjectStatus);
@@ -319,10 +318,10 @@ export function useAndLoadAvailableCardTypes(): {
   }, [dispatch, statusPublished]);
 
   React.useEffect(() => {
-    if (currentProject && statusCurrentProject === 'NOT_INITIALIZED') {
-      dispatch(API.getProjectCardTypes(currentProject));
+    if (currentProjectId && statusCurrentProject === 'NOT_INITIALIZED') {
+      dispatch(API.getProjectCardTypes(currentProjectId));
     }
-  }, [currentProject, dispatch, statusCurrentProject]);
+  }, [currentProjectId, dispatch, statusCurrentProject]);
 
   if (statusPublished === 'READY' && statusCurrentProject === 'READY') {
     return {

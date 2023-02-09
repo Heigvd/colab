@@ -18,7 +18,7 @@ import { useNavigate } from 'react-router-dom';
 import * as API from '../../../../API/api';
 import useTranslations from '../../../../i18n/I18nContext';
 import { getLogger } from '../../../../logger';
-import { useProjectBeingEdited } from '../../../../selectors/projectSelector';
+import { useCurrentProjectId } from '../../../../selectors/projectSelector';
 import { useAppDispatch, useAppSelector } from '../../../../store/hooks';
 import { CardContentDetail } from '../../../../store/slice/cardSlice';
 import InlineLoading from '../../../common/element/InlineLoading';
@@ -209,22 +209,21 @@ export default function Hierarchy({
   // make sure to have all cards
   //const cards = useAllProjectCards();
   const cardStatus = useAppSelector(state => state.cards.status);
-  const { project } = useProjectBeingEdited();
-  const projectId = project != null ? project.id : undefined;
+  const currentProjectId = useCurrentProjectId();
 
   React.useEffect(() => {
-    if (cardStatus == 'NOT_INITIALIZED' && projectId != null) {
-      dispatch(API.getAllProjectCards(projectId));
+    if (cardStatus == 'NOT_INITIALIZED' && currentProjectId != null) {
+      dispatch(API.getAllProjectCards(currentProjectId));
     }
-  }, [cardStatus, dispatch, projectId]);
+  }, [cardStatus, dispatch, currentProjectId]);
 
   const contentStatus = useAppSelector(state => state.cards.contentStatus);
 
   React.useEffect(() => {
-    if (cardStatus === 'READY' && contentStatus == 'NOT_INITIALIZED' && projectId != null) {
-      dispatch(API.getAllProjectCardContents(projectId));
+    if (cardStatus === 'READY' && contentStatus == 'NOT_INITIALIZED' && currentProjectId != null) {
+      dispatch(API.getAllProjectCardContents(currentProjectId));
     }
-  }, [cardStatus, contentStatus, dispatch, projectId]);
+  }, [cardStatus, contentStatus, dispatch, currentProjectId]);
 
   //  const [, toggleIt] = React.useState(true);
 

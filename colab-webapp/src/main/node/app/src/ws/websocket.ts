@@ -18,7 +18,7 @@ import { checkUnreachable } from '../helper';
 import { getLogger } from '../logger';
 import * as AdminActions from '../store/slice/adminSlice';
 import { addNotification } from '../store/slice/notificationSlice';
-import { dispatch } from '../store/store';
+import { storeDispatch } from '../store/store';
 import { processMessage } from './wsThunkActions';
 
 const logger = getLogger('WebSockets');
@@ -111,7 +111,7 @@ function createConnection(onCloseCb: () => void) {
             checkUnreachable(message);
           }
         } else {
-          dispatch(
+          storeDispatch(
             addNotification({
               status: 'OPEN',
               type: 'ERROR',
@@ -130,18 +130,18 @@ function createConnection(onCloseCb: () => void) {
     );
 
     if (sorted.WsChannelUpdate.length > 0) {
-      dispatch(AdminActions.channelUpdate(sorted.WsChannelUpdate));
+      storeDispatch(AdminActions.channelUpdate(sorted.WsChannelUpdate));
     }
 
     if (sorted.WsUpdateMessage.length > 0) {
-      dispatch(processMessage(sorted.WsUpdateMessage));
+      storeDispatch(processMessage(sorted.WsUpdateMessage));
     }
 
     if (sorted.WsSessionIdentifier.length > 0) {
       if (sorted.WsSessionIdentifier.length === 1) {
-        dispatch(initSocketId(sorted.WsSessionIdentifier[0]!));
+        storeDispatch(initSocketId(sorted.WsSessionIdentifier[0]!));
       } else {
-        dispatch(
+        storeDispatch(
           addNotification({
             status: 'OPEN',
             type: 'ERROR',
@@ -160,7 +160,7 @@ export function init(): void {
   // re-init connection to server if the current connection closed
   // it occurs when server is restarting
   const reinit = () => {
-    dispatch(initSocketId(null));
+    storeDispatch(initSocketId(null));
     setTimeout(() => {
       createConnection(reinit);
     }, 200);

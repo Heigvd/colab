@@ -130,7 +130,7 @@ public class CardRestEndpointTest extends AbstractArquillianTest {
 
 
         Card otherCard = ColabFactory.createNewCard(client, project);
-        Long otherCardId = card.getId();
+        //Long otherCardId = card.getId();
 
         Assertions.assertEquals(1, otherCard.getX());
         Assertions.assertEquals(6, otherCard.getY());
@@ -252,7 +252,7 @@ public class CardRestEndpointTest extends AbstractArquillianTest {
             client.cardRestEndpoint.deleteCard(rootCardId);
         } catch (HttpErrorMessage hem) {
             // expected way
-            Assertions.assertEquals(HttpErrorMessage.MessageCode.DATA_INTEGRITY_FAILURE,
+            Assertions.assertEquals(HttpErrorMessage.MessageCode.DATA_ERROR,
                 hem.getMessageCode());
             return;
         }

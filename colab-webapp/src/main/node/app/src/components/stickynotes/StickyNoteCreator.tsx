@@ -12,7 +12,7 @@ import * as React from 'react';
 import * as API from '../../API/api';
 import useTranslations from '../../i18n/I18nContext';
 import { useAllProjectCards } from '../../selectors/cardSelector';
-import { useProjectBeingEdited } from '../../selectors/projectSelector';
+import { useCurrentProjectId } from '../../selectors/projectSelector';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import Button from '../common/element/Button';
 import Form, { Field } from '../common/element/Form';
@@ -53,17 +53,16 @@ export default function StickyNoteCreator({
   const dispatch = useAppDispatch();
   const i18n = useTranslations();
 
-  const { project } = useProjectBeingEdited();
+  const currentProjectId = useCurrentProjectId();
   const cards = useAllProjectCards();
   const cardStatus = useAppSelector(state => state.cards.status);
-  const projectId = project != null ? project.id : undefined;
 
   // make sure to know all cards
   React.useEffect(() => {
-    if (cardStatus == 'NOT_INITIALIZED' && projectId != null) {
-      dispatch(API.getAllProjectCards(projectId));
+    if (cardStatus == 'NOT_INITIALIZED' && currentProjectId != null) {
+      dispatch(API.getAllProjectCards(currentProjectId));
     }
-  }, [cardStatus, dispatch, projectId]);
+  }, [cardStatus, dispatch, currentProjectId]);
 
   const [state, setState] = React.useState<StickyNoteLinkType>(defaultStickyNode);
 

@@ -36,7 +36,7 @@ import {
   useProjectRootCard,
   useVariantsOrLoad,
 } from '../../../selectors/cardSelector';
-import { useProjectBeingEdited } from '../../../selectors/projectSelector';
+import { selectCurrentProject } from '../../../selectors/projectSelector';
 import { useAppDispatch, useAppSelector } from '../../../store/hooks';
 import Admin from '../../admin/Admin';
 import CardCreator from '../../cards/CardCreator';
@@ -227,7 +227,7 @@ const CardWrapper = ({
 
   const parentId = card != null && card != 'LOADING' ? card.parentId : undefined;
 
-  const { project } = useProjectBeingEdited();
+  const { project: currentProject } = useAppSelector(selectCurrentProject);
 
   const ancestors = useAncestors(parentId);
   const location = useLocation();
@@ -251,7 +251,7 @@ const CardWrapper = ({
   if (
     card == null ||
     card === 'LOADING' ||
-    project == null ||
+    currentProject == null ||
     content == null ||
     content === 'LOADING'
   ) {
@@ -267,7 +267,7 @@ const CardWrapper = ({
                 card={ancestor.card}
                 content={ancestor.content}
                 className={cx({
-                  [css({ color: 'var(--primaryColor)' })]: project.type === 'MODEL',
+                  [css({ color: 'var(--primaryColor)' })]: currentProject.type === 'MODEL',
                 })}
               />
             ))}
@@ -275,7 +275,9 @@ const CardWrapper = ({
               card={card}
               content={content}
               last
-              className={cx({ [css({ color: 'var(--primaryColor)' })]: project.type === 'MODEL' })}
+              className={cx({
+                [css({ color: 'var(--primaryColor)' })]: currentProject.type === 'MODEL',
+              })}
             />
           </Flex>
           <IconButton
@@ -515,9 +517,9 @@ export default function Editor(): JSX.Element {
   const dispatch = useAppDispatch();
   const i18n = useTranslations();
 
-  const { project, status } = useProjectBeingEdited();
+  const { project, status } = useAppSelector(selectCurrentProject);
 
-  const root = useProjectRootCard(project);
+  const root = useProjectRootCard(project?.id);
 
   const presenceContext = usePresenceContext();
 

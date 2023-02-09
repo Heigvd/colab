@@ -19,5 +19,8 @@ public enum MessageI18nKey {
     // token
     USER_IS_ALREADY_A_TEAM_MEMBER,
     CURRENT_USER_CAN_ALREADY_USE_MODEL,
+    // data
+    DATA_NOT_FOUND,
+    DATA_INTEGRITY_FAILURE,
 
 }

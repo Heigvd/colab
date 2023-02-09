@@ -108,7 +108,7 @@ public class ProjectRestEndpointTest extends AbstractArquillianTest {
         try {
             rootCard = client.projectRestEndpoint.getRootCardOfProject(projectId);
         } catch (HttpErrorMessage hem) {
-            Assertions.assertEquals(HttpErrorMessage.MessageCode.RELATED_OBJECT_NOT_FOUND,
+            Assertions.assertEquals(HttpErrorMessage.MessageCode.DATA_ERROR,
                 hem.getMessageCode());
             wasError = true;
         }
@@ -123,7 +123,7 @@ public class ProjectRestEndpointTest extends AbstractArquillianTest {
         try {
             rootCardContents = client.cardRestEndpoint.getContentVariantsOfCard(rootCardId);
         } catch (HttpErrorMessage hem) {
-            Assertions.assertEquals(HttpErrorMessage.MessageCode.RELATED_OBJECT_NOT_FOUND,
+            Assertions.assertEquals(HttpErrorMessage.MessageCode.DATA_ERROR,
                 hem.getMessageCode());
             wasError = true;
         }
@@ -135,7 +135,7 @@ public class ProjectRestEndpointTest extends AbstractArquillianTest {
         try {
             members = client.projectRestEndpoint.getMembers(projectId);
         } catch (HttpErrorMessage hem) {
-            Assertions.assertEquals(HttpErrorMessage.MessageCode.RELATED_OBJECT_NOT_FOUND,
+            Assertions.assertEquals(HttpErrorMessage.MessageCode.DATA_ERROR,
                 hem.getMessageCode());
             wasError = true;
         }

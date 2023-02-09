@@ -8,6 +8,7 @@ package ch.colabproject.colab.api.controller;
 
 import ch.colabproject.colab.api.model.ColabEntity;
 import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
+import ch.colabproject.colab.generator.model.exceptions.MessageI18nKey;
 import java.util.Set;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
@@ -50,7 +51,7 @@ public class ValidationManager {
 
         if (!validationErrors.isEmpty()) {
             logger.info("{} not valid : {}", entity, validationErrors);
-            throw HttpErrorMessage.dataIntegrityFailure();
+            throw HttpErrorMessage.dataError(MessageI18nKey.DATA_INTEGRITY_FAILURE);
         }
     }
 

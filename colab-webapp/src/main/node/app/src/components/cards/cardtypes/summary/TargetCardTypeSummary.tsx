@@ -12,7 +12,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { entityIs } from 'colab-rest-client';
 import * as React from 'react';
 import useTranslations from '../../../../i18n/I18nContext';
-import { useAndLoadProject } from '../../../../selectors/projectSelector';
+import { useProject } from '../../../../selectors/projectSelector';
 import { CardTypeAllInOne as CardType } from '../../../../types/cardTypeDefinition';
 import { space_S } from '../../../styling/style';
 
@@ -54,7 +54,7 @@ interface TargetProjectSummaryProps {
 }
 
 function TargetProjectSummary({ projectId }: TargetProjectSummaryProps): JSX.Element {
-  const { project } = useAndLoadProject(projectId);
+  const { project } = useProject(projectId);
   const i18n = useTranslations();
 
   return (

@@ -11,7 +11,7 @@ import * as React from 'react';
 import { Navigate, Route, Routes, useLocation, useParams } from 'react-router-dom';
 import * as API from '../API/api';
 import useTranslations from '../i18n/I18nContext';
-import { useProject, useProjectBeingEdited } from '../selectors/projectSelector';
+import { useCurrentProject, useProject } from '../selectors/projectSelector';
 import { useCurrentUser } from '../selectors/userSelector';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
 import AboutColab from './AboutColab';
@@ -26,7 +26,7 @@ import Overlay from './common/layout/Overlay';
 import MainNav from './MainNav';
 import Editor from './projects/edition/Editor';
 import NewModelShared from './projects/NewModelShared';
-import { UserModels, UserProjects } from './projects/ProjectList';
+import { MyModels, MyProjects } from './projects/ProjectList';
 import Settings from './settings/Settings';
 import { fullPageStyle, invertedThemeMode, space_M } from './styling/style';
 
@@ -37,7 +37,7 @@ const EditorWrapper = () => {
   const i18n = useTranslations();
   const dispatch = useAppDispatch();
   const { project, status } = useProject(+id!);
-  const { project: editedProject, status: editingStatus } = useProjectBeingEdited();
+  const { project: editedProject, status: editingStatus } = useCurrentProject();
 
   const webSocketId = useAppSelector(state => state.websockets.sessionId);
   const socketIdRef = React.useRef<string | undefined>(undefined);
@@ -56,12 +56,6 @@ const EditorWrapper = () => {
       }
     }
   }, [dispatch, editingStatus, editedProject, project, id, webSocketId]);
-
-  React.useEffect(() => {
-    if (project == null && status === 'NOT_INITIALIZED') {
-      dispatch(API.getProject(id));
-    }
-  }, [project, status, dispatch, id]);
 
   if (status === 'NOT_INITIALIZED' || status === 'LOADING') {
     return <InlineLoading />;
@@ -185,10 +179,10 @@ export default function MainApp(): JSX.Element {
                     })}
                   >
                     <Routes>
-                      <Route path="/*" element={<UserProjects />} />
+                      <Route path="/*" element={<MyProjects />} />
                       <Route path="/newModelShared" element={<NewModelShared />} />
-                      <Route path="/projects" element={<UserProjects />} />
-                      <Route path="/models/*" element={<UserModels />} />
+                      <Route path="/projects" element={<MyProjects />} />
+                      <Route path="/models/*" element={<MyModels />} />
                       <Route path="/settings/*" element={<Settings />} />
                       <Route path="/admin/*" element={<Admin />} />
                       <Route path="/editor/:id/*" element={<EditorWrapper />} />

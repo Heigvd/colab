@@ -26,14 +26,14 @@ public class HttpErrorMessage extends HttpException {
         ACCESS_DENIED,
         AUTHENTICATION_REQUIRED,
         BAD_REQUEST,
-        DATA_INTEGRITY_FAILURE,
         EMAIL_MESSAGE_ERROR,
         INTERNAL_SERVER_ERROR,
         PROJECT_QUOTA_EXCEEDED,
         FILE_TOO_BIG,
-        RELATED_OBJECT_NOT_FOUND,
         NOT_FOUND,
         SMTP_ERROR,
+        /** There is a problem with data */
+        DATA_ERROR,
         /** Impossible to login */
         AUTHENTICATION_FAILED,
         /** Wait before trying again */
@@ -81,18 +81,18 @@ public class HttpErrorMessage extends HttpException {
         this.messageCode = messageCode;
     }
 
-    /**
-     * Create a new error message
-     *
-     * @param status         custom HTTP status
-     * @param messageCode    error message code
-     * @param messageI18nKey error message translation key
-     */
-    private HttpErrorMessage(Response.Status status, MessageCode messageCode,
-        MessageI18nKey messageI18nKey) {
-        this(status, messageCode);
-        this.messageI18nKey = messageI18nKey;
-    }
+//    /**
+//     * Create a new error message
+//     *
+//     * @param status         custom HTTP status
+//     * @param messageCode    error message code
+//     * @param messageI18nKey error message translation key
+//     */
+//    private HttpErrorMessage(Response.Status status, MessageCode messageCode,
+//        MessageI18nKey messageI18nKey) {
+//        this(status, messageCode);
+//        this.messageI18nKey = messageI18nKey;
+//    }
 
     /**
      * Create a new error message
@@ -181,17 +181,12 @@ public class HttpErrorMessage extends HttpException {
     }
 
     /**
-     * @return 400 Related object not found
+     * @param i18nKey translation key of the message
+     *
+     * @return 400 Data problem
      */
-    public static HttpErrorMessage relatedObjectNotFoundError() {
-        return new HttpErrorMessage(HttpErrorMessage.MessageCode.RELATED_OBJECT_NOT_FOUND);
-    }
-
-    /**
-     * @return 400 Data integrity problem
-     */
-    public static HttpErrorMessage dataIntegrityFailure() {
-        return new HttpErrorMessage(HttpErrorMessage.MessageCode.DATA_INTEGRITY_FAILURE);
+    public static HttpErrorMessage dataError(MessageI18nKey i18nKey) {
+        return new HttpErrorMessage(HttpErrorMessage.MessageCode.DATA_ERROR, i18nKey);
     }
 
     /**

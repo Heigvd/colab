@@ -14,7 +14,7 @@ import React from 'react';
 import * as API from '../../../API/api';
 import { getDisplayName } from '../../../helper';
 import useTranslations from '../../../i18n/I18nContext';
-import { useAndLoadProjectTeam } from '../../../selectors/projectSelector';
+import { useAndLoadProjectTeam } from '../../../selectors/teamSelector';
 import { useCurrentUser } from '../../../selectors/userSelector';
 import { useAppDispatch, useAppSelector } from '../../../store/hooks';
 import { addNotification } from '../../../store/slice/notificationSlice';

@@ -5,9 +5,7 @@
  * Licensed under the MIT License
  */
 
-import { configureStore } from '@reduxjs/toolkit';
-import { combineReducers } from 'redux';
-import thunk from 'redux-thunk';
+import { combineReducers, configureStore } from '@reduxjs/toolkit';
 import aclReducer from './slice/aclSlice';
 import activityFlowLinkReducer from './slice/activityflowlinkSlice';
 import adminReducer from './slice/adminSlice';
@@ -23,6 +21,7 @@ import presenceReducer from './slice/presenceSlice';
 import projectReducer from './slice/projectSlice';
 import resourceReducer from './slice/resourceSlice';
 import stickyNoteLinkReducer from './slice/stickynotelinkSlice';
+import teamReducer from './slice/teamSlice';
 import userReducer from './slice/userSlice';
 import websocketReducer from './slice/websocketSlice';
 
@@ -39,28 +38,29 @@ const rootReducer = combineReducers({
   externalData: externalDataReducer,
   notifications: notifReducer,
   presences: presenceReducer,
-  projects: projectReducer,
+  project: projectReducer,
   resources: resourceReducer,
   stickynotelinks: stickyNoteLinkReducer,
+  team: teamReducer,
   users: userReducer,
   websockets: websocketReducer,
 });
 
-//const storeX = createStore(rootReducer, applyMiddleware(thunk));
-const store = configureStore({
+export const store = configureStore({
   reducer: rootReducer,
-  middleware: getDefaultMiddleware => getDefaultMiddleware().prepend(thunk),
 });
 
-export const getStore = (): typeof store => store;
-
-export const dispatch = store.dispatch;
+export const storeDispatch = store.dispatch;
 
 export type ColabState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;
 
 export type LoadingStatus = 'NOT_INITIALIZED' | 'LOADING' | 'READY';
 
-export type AvailabilityStatus = 'NOT_INITIALIZED' | 'LOADING' | 'READY' | 'ERROR';
+export type FetchingStatus = 'LOADING' | 'ERROR';
+
+export type AvailabilityStatus = 'NOT_INITIALIZED' | 'LOADING' | 'ERROR' | 'READY';
 
 export type InlineAvailabilityStatus<T> = 'NOT_INITIALIZED' | 'LOADING' | 'ERROR' | T;
+
+export type EditionStatus = 'NOT_EDITING' | 'LOADING' | 'READY';

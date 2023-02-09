@@ -135,7 +135,7 @@ public class ActivityFlowLinkRestEndpointTest extends AbstractArquillianTest {
         try {
             client.activityFlowLinkRestEndpoint.createLink(link);
         } catch (HttpErrorMessage hem) {
-            Assertions.assertEquals(HttpErrorMessage.MessageCode.DATA_INTEGRITY_FAILURE,
+            Assertions.assertEquals(HttpErrorMessage.MessageCode.DATA_ERROR,
                 hem.getMessageCode());
             return;
         }

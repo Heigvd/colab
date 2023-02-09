@@ -9,7 +9,7 @@ import { entityIs, Project } from 'colab-rest-client';
 import * as React from 'react';
 import useTranslations from '../../../i18n/I18nContext';
 import { useProjectRootCard } from '../../../selectors/cardSelector';
-import { useAndLoadProjectTeam } from '../../../selectors/projectSelector';
+import { useAndLoadProjectTeam } from '../../../selectors/teamSelector';
 import CardInvolvement from '../../cards/CardInvolvement';
 import InlineLoading from '../../common/element/InlineLoading';
 import Flex from '../../common/layout/Flex';
@@ -38,10 +38,10 @@ export interface TeamProps {
 export default function Team({ project }: TeamProps): JSX.Element {
   const i18n = useTranslations();
   const projectId = project.id;
-  const root = useProjectRootCard(project);
+  const root = useProjectRootCard(projectId);
   const { members, status } = useAndLoadProjectTeam(projectId);
 
-  if (status === 'INITIALIZED' && project.id != null) {
+  if (status === 'READY' && project.id != null) {
     return (
       <>
         <Flex justify="space-between" className={css({ padding: space_L })}>

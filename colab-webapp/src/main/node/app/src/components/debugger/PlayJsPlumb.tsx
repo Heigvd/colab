@@ -13,7 +13,7 @@ import { Card } from 'colab-rest-client';
 import * as React from 'react';
 import * as API from '../../API/api';
 import { useAllProjectCards } from '../../selectors/cardSelector';
-import { useProjectBeingEdited } from '../../selectors/projectSelector';
+import { useCurrentProjectId } from '../../selectors/projectSelector';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import InlineLoading from '../common/element/InlineLoading';
 
@@ -72,18 +72,17 @@ function PlumbedCard({ card, jsPlumb, divs }: PlumbedCardProps) {
 type Divs = Record<string, Element>;
 
 export default function PlayJsPlumb(): JSX.Element {
-  const { project } = useProjectBeingEdited();
+  const currentProjectId = useCurrentProjectId();
   const dispatch = useAppDispatch();
 
   const cards = useAllProjectCards();
   const cardStatus = useAppSelector(state => state.cards.status);
-  const projectId = project != null ? project.id : undefined;
 
   React.useEffect(() => {
-    if (cardStatus == 'NOT_INITIALIZED' && projectId != null) {
-      dispatch(API.getAllProjectCards(projectId));
+    if (cardStatus == 'NOT_INITIALIZED' && currentProjectId != null) {
+      dispatch(API.getAllProjectCards(currentProjectId));
     }
-  }, [cardStatus, dispatch, projectId]);
+  }, [cardStatus, dispatch, currentProjectId]);
 
   const [thisNode, setThisNode] = React.useState<HTMLDivElement | null>(null);
 

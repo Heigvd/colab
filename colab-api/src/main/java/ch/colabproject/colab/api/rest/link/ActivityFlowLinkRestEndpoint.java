@@ -66,7 +66,7 @@ public class ActivityFlowLinkRestEndpoint {
      * @return the link or null
      */
     @GET
-    @Path("{id}")
+    @Path("{id: [0-9]+}")
     public ActivityFlowLink getLink(@PathParam("id") Long id) {
         logger.debug("get activity flow link #{}", id);
         return linkDao.findActivityFlowLink(id);
@@ -104,7 +104,7 @@ public class ActivityFlowLinkRestEndpoint {
      * @param id id of the link to delete
      */
     @DELETE
-    @Path("{id}")
+    @Path("{id: [0-9]+}")
     public void deleteLink(@PathParam("id") Long id) {
         logger.debug("delete activity flow link #{}", id);
         linkManager.deleteActivityFlowLink(id);
@@ -117,7 +117,7 @@ public class ActivityFlowLinkRestEndpoint {
      * @param cardId the id of the new previous card
      */
     @PUT
-    @Path("changePrevious/{linkId}")
+    @Path("changePrevious/{linkId: [0-9]+}")
     public void changePreviousCard(@PathParam("linkId") Long linkId, Long cardId) {
         logger.debug("change activity flow link #{} previous card to #{}", linkId, cardId);
         linkManager.changeActivityFlowLinkPrevious(linkId, cardId);
@@ -130,7 +130,7 @@ public class ActivityFlowLinkRestEndpoint {
      * @param cardId the id of the new next card
      */
     @PUT
-    @Path("changeNext/{linkId}")
+    @Path("changeNext/{linkId: [0-9]+}")
     public void changeNextCard(@PathParam("linkId") Long linkId, Long cardId) {
         logger.debug("change activity flow link #{} next card to #{}", linkId, cardId);
         linkManager.changeActivityFlowLinkNext(linkId, cardId);

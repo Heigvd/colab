@@ -13,7 +13,7 @@ import { getUser } from '../../../API/api';
 import { getDisplayName } from '../../../helper';
 import useTranslations from '../../../i18n/I18nContext';
 import { usePresence } from '../../../selectors/presenceSelector';
-import { useAndLoadProjectTeam } from '../../../selectors/projectSelector';
+import { useAndLoadProjectTeam } from '../../../selectors/teamSelector';
 import { useAppDispatch, useAppSelector } from '../../../store/hooks';
 import Tooltip from '../../common/element/Tooltip';
 import Flex from '../../common/layout/Flex';

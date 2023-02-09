@@ -8,7 +8,8 @@
 import { entityIs, Resource, ResourceRef } from 'colab-rest-client';
 import { useCardACLForCurrentUser, useCardContent } from '../../selectors/cardSelector';
 import { useAndLoadCardType } from '../../selectors/cardTypeSelector';
-import { useMyMember, useProjectBeingEdited } from '../../selectors/projectSelector';
+import { useCurrentProjectId } from '../../selectors/projectSelector';
+import { useMyMember } from '../../selectors/teamSelector';
 import { useCurrentUser } from '../../selectors/userSelector';
 
 // ---------------------------------------------------------------------------------------------- //
@@ -112,9 +113,9 @@ export function isResourceRefActive(resourceRef: ResourceRef): boolean {
  */
 export function useResourceAccessLevelForCurrentUser(resource: Resource): AccessLevel {
   const { currentUser } = useCurrentUser();
-  const { project } = useProjectBeingEdited();
+  const currentProjectId = useCurrentProjectId();
 
-  const member = useMyMember(project?.id, currentUser?.id);
+  const member = useMyMember(currentProjectId, currentUser?.id);
 
   const cardContent = useCardContent(resource.cardContentId);
 
@@ -137,7 +138,7 @@ export function useResourceAccessLevelForCurrentUser(resource: Resource): Access
     }
   } else if (cardType != null) {
     // resource belongs to a cardType
-    if (cardType.projectId != null && cardType.projectId === project?.id) {
+    if (cardType.projectId != null && cardType.projectId === currentProjectId) {
       // cardType belongs to this very project
       // acces is based on user position
       if (member) {

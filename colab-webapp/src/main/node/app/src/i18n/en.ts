@@ -723,6 +723,10 @@ export const en = {
         return 'The current user is already a team member';
       case 'CURRENT_USER_CAN_ALREADY_USE_MODEL':
         return 'The current user can already use the model';
+      case 'DATA_NOT_FOUND':
+        return 'Data not found';
+      case 'DATA_INTEGRITY_FAILURE':
+        return 'Data integrity failure';
     }
   },
 

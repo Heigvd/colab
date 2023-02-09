@@ -8,6 +8,7 @@ package ch.colabproject.colab.api.persistence.jcr;
 
 import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
+import ch.colabproject.colab.generator.model.exceptions.MessageI18nKey;
 import java.io.InputStream;
 import java.io.Serializable;
 import javax.jcr.Binary;
@@ -183,7 +184,7 @@ public class JcrSession implements Serializable {
             logger.warn(
                 "PrepareForCommit failed: session does not exists or has already been closed ");
             // TODO throw something else, but what ?
-            throw HttpErrorMessage.dataIntegrityFailure();
+            throw HttpErrorMessage.dataError(MessageI18nKey.DATA_INTEGRITY_FAILURE);
         }
     }
 

@@ -22,6 +22,7 @@ import ch.colabproject.colab.api.security.permissions.Conditions;
 import ch.colabproject.colab.api.ws.channel.tool.ChannelsBuilders.ChannelsBuilder;
 import ch.colabproject.colab.api.ws.channel.tool.ChannelsBuilders.EmptyChannelBuilder;
 import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
+import ch.colabproject.colab.generator.model.exceptions.MessageI18nKey;
 import ch.colabproject.colab.generator.model.tools.PolymorphicDeserializer;
 import java.util.ArrayList;
 import java.util.List;
@@ -359,7 +360,7 @@ public abstract class AbstractResource
         if (this.abstractCardType != null) {
             return this.abstractCardType;
         }
-        throw HttpErrorMessage.dataIntegrityFailure();
+        throw HttpErrorMessage.dataError(MessageI18nKey.DATA_INTEGRITY_FAILURE);
     }
 
     /**
@@ -378,7 +379,7 @@ public abstract class AbstractResource
             resetOwner();
             setAbstractCardType((AbstractCardType) owner);
         } else {
-            throw HttpErrorMessage.dataIntegrityFailure();
+            throw HttpErrorMessage.dataError(MessageI18nKey.DATA_INTEGRITY_FAILURE);
         }
     }
 

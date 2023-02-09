@@ -115,7 +115,7 @@ public class WebsocketRestEndpoint {
      * @param sessionId websocket session id
      */
     @PUT
-    @Path("SubscribeToProjectChannel/{projectId: [0-9]*}")
+    @Path("SubscribeToProjectChannel/{projectId: [0-9]+}")
     public void subscribeToProjectChannel(
         @PathParam("projectId") Long projectId,
         WsSessionIdentifier sessionId
@@ -132,7 +132,7 @@ public class WebsocketRestEndpoint {
      * @param sessionId websocket session id
      */
     @PUT
-    @Path("UnSubscribeFromProjectChannel/{projectId: [0-9]*}")
+    @Path("UnSubscribeFromProjectChannel/{projectId: [0-9]+}")
     public void unsubscribeFromProjectChannel(
         @PathParam("projectId") Long projectId,
         WsSessionIdentifier sessionId
@@ -149,7 +149,7 @@ public class WebsocketRestEndpoint {
      * @param sessionId websocket session id
      */
     @PUT
-    @Path("SubscribeToBlockChannel/{blockId: [0-9]*}")
+    @Path("SubscribeToBlockChannel/{blockId: [0-9]+}")
     public void subscribeToBlockChannel(
         @PathParam("blockId") Long blockId,
         WsSessionIdentifier sessionId
@@ -165,7 +165,7 @@ public class WebsocketRestEndpoint {
      * @param sessionId websocket session id
      */
     @PUT
-    @Path("UnSubscribeFromBlockChannel/{blockId: [0-9]*}")
+    @Path("UnSubscribeFromBlockChannel/{blockId: [0-9]+}")
     public void unsubscribeFromBlockChannel(
         @PathParam("blockId") Long blockId,
         WsSessionIdentifier sessionId

@@ -11,6 +11,7 @@ import ch.colabproject.colab.api.model.card.Card;
 import ch.colabproject.colab.api.model.link.ActivityFlowLink;
 import ch.colabproject.colab.api.persistence.jpa.link.ActivityFlowLinkDao;
 import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
+import ch.colabproject.colab.generator.model.exceptions.MessageI18nKey;
 import java.util.Objects;
 import java.util.Optional;
 import javax.ejb.LocalBean;
@@ -49,6 +50,31 @@ public class ActivityFlowLinkManager {
     // *********************************************************************************************
     //
     // *********************************************************************************************
+
+    /**
+     * Retrieve the activity flow link. If not found, throw a {@link HttpErrorMessage}.
+     *
+     * @param linkId the id of the activity flow link
+     *
+     * @return the activity flow link if found
+     *
+     * @throws HttpErrorMessage if the activity flow link was not found
+     */
+    public ActivityFlowLink assertAndGetActivityFlowLink(Long linkId) {
+        ActivityFlowLink link = linkDao.findActivityFlowLink(linkId);
+
+        if (link == null) {
+            logger.error("activity flow link #{} not found", linkId);
+            throw HttpErrorMessage.dataError(MessageI18nKey.DATA_NOT_FOUND);
+        }
+
+        return link;
+    }
+
+    // *********************************************************************************************
+    //
+    // *********************************************************************************************
+
     /**
      * Create a link
      *
@@ -61,7 +87,7 @@ public class ActivityFlowLinkManager {
 
         // validation
         if (!isValid(link.getPreviousCardId(), link.getNextCardId())) {
-            throw HttpErrorMessage.dataIntegrityFailure();
+            throw HttpErrorMessage.dataError(MessageI18nKey.DATA_INTEGRITY_FAILURE);
         }
 
         // fetch all objects and so ensure that they exist
@@ -123,20 +149,16 @@ public class ActivityFlowLinkManager {
         logger.debug("delete activity flow link #{}", linkId);
 
         // fetch all objects and so ensure that they exist
-        ActivityFlowLink link = linkDao.findActivityFlowLink(linkId);
-        if (link == null) {
-            throw HttpErrorMessage.relatedObjectNotFoundError();
-            // or just return. see what is best
-        }
+        ActivityFlowLink link = assertAndGetActivityFlowLink(linkId);
 
         Card previousCard = link.getPreviousCard();
         if (previousCard == null) {
-            throw HttpErrorMessage.dataIntegrityFailure();
+            throw HttpErrorMessage.dataError(MessageI18nKey.DATA_INTEGRITY_FAILURE);
         }
 
         Card nextCard = link.getNextCard();
         if (nextCard == null) {
-            throw HttpErrorMessage.dataIntegrityFailure();
+            throw HttpErrorMessage.dataError(MessageI18nKey.DATA_INTEGRITY_FAILURE);
         }
 
         // then make the modifications
@@ -157,14 +179,11 @@ public class ActivityFlowLinkManager {
             newPreviousCardId);
 
         // fetch all objects and so ensure that they exist
-        ActivityFlowLink link = linkDao.findActivityFlowLink(linkId);
-        if (link == null) {
-            throw HttpErrorMessage.relatedObjectNotFoundError();
-        }
+        ActivityFlowLink link = assertAndGetActivityFlowLink(linkId);
 
         // validation
         if (!isValid(newPreviousCardId, link.getNextCardId())) {
-            throw HttpErrorMessage.dataIntegrityFailure();
+            throw HttpErrorMessage.dataError(MessageI18nKey.DATA_INTEGRITY_FAILURE);
         }
 
         Card oldPreviousCard = cardManager.assertAndGetCard(link.getPreviousCardId());
@@ -196,14 +215,11 @@ public class ActivityFlowLinkManager {
             newNextCardId);
 
         // fetch all objects and so ensure that they exist
-        ActivityFlowLink link = linkDao.findActivityFlowLink(linkId);
-        if (link == null) {
-            throw HttpErrorMessage.relatedObjectNotFoundError();
-        }
+        ActivityFlowLink link = assertAndGetActivityFlowLink(linkId);
 
         // validation
         if (!isValid(link.getPreviousCardId(), newNextCardId)) {
-            throw HttpErrorMessage.dataIntegrityFailure();
+            throw HttpErrorMessage.dataError(MessageI18nKey.DATA_INTEGRITY_FAILURE);
         }
 
         Card oldNext = cardManager.assertAndGetCard(link.getNextCardId());

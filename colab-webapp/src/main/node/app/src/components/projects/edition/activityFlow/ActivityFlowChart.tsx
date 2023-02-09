@@ -20,7 +20,7 @@ import * as React from 'react';
 import * as API from '../../../../API/api';
 import useTranslations from '../../../../i18n/I18nContext';
 import { getLogger } from '../../../../logger';
-import { useProjectBeingEdited } from '../../../../selectors/projectSelector';
+import { useCurrentProjectId } from '../../../../selectors/projectSelector';
 import { shallowEqual, useAppDispatch, useAppSelector } from '../../../../store/hooks';
 import InlineLoading from '../../../common/element/InlineLoading';
 import Flex from '../../../common/layout/Flex';
@@ -54,7 +54,7 @@ export interface AFPlumbRef {
 export default function ActivityFlowChart(): JSX.Element {
   const dispatch = useAppDispatch();
   const i18n = useTranslations();
-  const { project, status } = useProjectBeingEdited();
+  const currentProjectId = useCurrentProjectId();
 
   const plumbRefs = React.useRef<AFPlumbRef>({ divs: {}, connections: {} });
 
@@ -207,25 +207,27 @@ export default function ActivityFlowChart(): JSX.Element {
   const linksStatus = useAppSelector(state => state.activityFlowLinks.status);
   const links = useAppSelector(state => Object.values(state.activityFlowLinks.links), shallowEqual);
 
-  const projectId = project != null ? project.id : undefined;
+  React.useEffect(() => {
+    if (cardsStatus == 'NOT_INITIALIZED' && currentProjectId != null) {
+      dispatch(API.getAllProjectCards(currentProjectId));
+    }
+  }, [cardsStatus, dispatch, currentProjectId]);
 
   React.useEffect(() => {
-    if (cardsStatus == 'NOT_INITIALIZED' && projectId != null) {
-      dispatch(API.getAllProjectCards(projectId));
+    if (
+      cardsStatus === 'READY' &&
+      contentsStatus == 'NOT_INITIALIZED' &&
+      currentProjectId != null
+    ) {
+      dispatch(API.getAllProjectCardContents(currentProjectId));
     }
-  }, [cardsStatus, dispatch, projectId]);
+  }, [cardsStatus, contentsStatus, dispatch, currentProjectId]);
 
   React.useEffect(() => {
-    if (cardsStatus === 'READY' && contentsStatus == 'NOT_INITIALIZED' && projectId != null) {
-      dispatch(API.getAllProjectCardContents(projectId));
+    if (cardsStatus === 'READY' && linksStatus == 'NOT_INITIALIZED' && currentProjectId != null) {
+      dispatch(API.getAllActivityFlowLinks(currentProjectId));
     }
-  }, [cardsStatus, contentsStatus, dispatch, projectId]);
-
-  React.useEffect(() => {
-    if (cardsStatus === 'READY' && linksStatus == 'NOT_INITIALIZED' && projectId != null) {
-      dispatch(API.getAllActivityFlowLinks(projectId));
-    }
-  }, [cardsStatus, linksStatus, dispatch, projectId]);
+  }, [cardsStatus, linksStatus, dispatch, currentProjectId]);
 
   React.useEffect(() => {
     if (jsPlumb) {
@@ -330,7 +332,7 @@ export default function ActivityFlowChart(): JSX.Element {
     }
   }, [reflow, rootNode]);
 
-  if (status === 'READY' && project == null) {
+  if (currentProjectId == null) {
     return <i>Error: no project selected</i>;
   } else if (cardsStatus === 'READY' && contentsStatus === 'READY' && linksStatus === 'READY') {
     // cards with direction acivity flow link connection

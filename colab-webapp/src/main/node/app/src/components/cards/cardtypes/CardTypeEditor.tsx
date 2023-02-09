@@ -19,8 +19,8 @@ import {
   useCurrentProjectCardTypeTags,
   useGlobalCardTypeTags,
 } from '../../../selectors/cardTypeSelector';
-import { useProjectBeingEdited } from '../../../selectors/projectSelector';
-import { dispatch } from '../../../store/store';
+import { useCurrentProjectId } from '../../../selectors/projectSelector';
+import { useAppDispatch } from '../../../store/hooks';
 import AvailabilityStatusIndicator from '../../common/element/AvailabilityStatusIndicator';
 import Button from '../../common/element/Button';
 import IconButton from '../../common/element/IconButton';
@@ -44,6 +44,7 @@ interface CardTypeEditorProps {
 }
 
 export default function CardTypeEditor({ className, usage }: CardTypeEditorProps): JSX.Element {
+  const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const i18n = useTranslations();
 
@@ -54,7 +55,7 @@ export default function CardTypeEditor({ className, usage }: CardTypeEditorProps
   const [lastCreatedResourceId, setLastCreatedResourceId] = React.useState<number | null>(null);
 
   const { cardType, status } = useAndLoadCardType(typeId);
-  const { project } = useProjectBeingEdited();
+  const currentProjectId = useCurrentProjectId();
 
   const allCurrentProjectTags = useCurrentProjectCardTypeTags();
   const allGlobalTags = useGlobalCardTypeTags();
@@ -224,7 +225,7 @@ export default function CardTypeEditor({ className, usage }: CardTypeEditorProps
                   </p>
                 }
                 onConfirm={() => {
-                  if (project && cardType.kind === 'own') {
+                  if (currentProjectId && cardType.kind === 'own') {
                     dispatch(API.deleteCardType(cardType));
                     navigate('../');
                   }

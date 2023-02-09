@@ -5,183 +5,229 @@
  * Licensed under the MIT License
  */
 
-import { CopyParam, entityIs, Project, TeamMember, TeamRole } from 'colab-rest-client';
+import { CopyParam, entityIs, Project } from 'colab-rest-client';
 import * as React from 'react';
 import * as API from '../API/api';
 import {
-  customColabStateEquals,
   shallowEqual,
   useAppDispatch,
   useAppSelector,
+  useFetchById,
+  useFetchList,
 } from '../store/hooks';
-import { StateStatus } from '../store/slice/projectSlice';
-import { AvailabilityStatus } from '../store/store';
+import { AvailabilityStatus, ColabState } from '../store/store';
 
-export interface ProjectAndStatus {
-  project: Project | null;
+const selectProjects = (state: ColabState) => state.project.projects;
+
+const selectStatusWhereTeamMember = (state: ColabState) => state.project.statusWhereTeamMember;
+export const selectStatusForInstanceableModels = (state: ColabState) =>
+  state.project.statusForInstanceableModels;
+export const selectStatusForGlobalModels = (state: ColabState) =>
+  state.project.statusForGlobalModels;
+const selectStatusForAll = (state: ColabState) => state.project.statusForAll;
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// fetch 1 project / model
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+interface ProjectAndStatus {
   status: AvailabilityStatus;
+  project?: Project;
 }
 
-export const useProject = (id: number | undefined): ProjectAndStatus => {
-  return useAppSelector(state => {
-    if (id == null) {
-      return {
-        project: null,
-        status: 'ERROR',
-      };
-    }
-    const project = state.projects.projects[id];
-    if (entityIs(project, 'Project')) {
-      // project is known
-      return {
-        project: project,
-        status: 'READY',
-      };
-    } else {
-      return {
-        project: null,
-        status: project || 'NOT_INITIALIZED',
-      };
-    }
-  }, shallowEqual);
-};
-
-export function useAndLoadProject(id: number | undefined): ProjectAndStatus {
-  const dispatch = useAppDispatch();
-
-  const { project, status } = useProject(id);
-
-  React.useEffect(() => {
-    if (status === 'NOT_INITIALIZED' && id != null) {
-      dispatch(API.getProject(id));
-    }
-  }, [dispatch, id, status]);
-
-  return { project, status };
+export function useProject(id: number): ProjectAndStatus {
+  const { status, data } = useFetchById<Project>(id, selectProjects, API.getProject);
+  return { status, project: data };
 }
 
-export const useProjectBeingEdited = (): {
-  project: Project | null;
-  status: 'NOT_EDITING' | 'LOADING' | 'READY';
-} => {
-  return useAppSelector(state => {
-    if (state.projects.editing != null) {
-      const project = state.projects.projects[state.projects.editing];
-      return {
-        project: entityIs(project, 'Project') ? project : null,
-        status: state.projects.editingStatus,
-      };
-    } else {
-      return {
-        project: null,
-        status: state.projects.editingStatus,
-      };
-    }
-  }, shallowEqual);
-};
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// fetch current project
+////////////////////////////////////////////////////////////////////////////////////////////////////
 
-const useProjectTeam = (
-  projectId: number | undefined | null,
-): {
-  members: TeamMember[];
-  roles: TeamRole[];
-  status: StateStatus;
-} => {
-  return useAppSelector(state => {
-    const r: { members: TeamMember[]; roles: TeamRole[]; status: StateStatus } = {
-      members: [],
-      roles: [],
-      status: 'NOT_INITIALIZED',
-    };
-    if (projectId != null) {
-      const team = state.projects.teams[projectId];
-      if (team) {
-        r.status = team.status;
-        r.members = Object.values(team.members);
-        r.roles = Object.values(team.roles);
-      }
-    }
+export const selectEditingStatus = (state: ColabState) => state.project.editingStatus;
 
-    return r;
-  }, customColabStateEquals);
-};
+export const selectCurrentProjectId = (state: ColabState) => state.project.editing;
 
-export const useAndLoadProjectTeam = (
-  projectId: number | undefined | null,
-): {
-  members: TeamMember[];
-  roles: TeamRole[];
-  status: StateStatus;
-} => {
-  const dispatch = useAppDispatch();
-  const team = useProjectTeam(projectId);
+export function useCurrentProjectId(): number | null {
+  return useAppSelector(selectCurrentProjectId);
+}
 
-  React.useEffect(() => {
-    if (team.status == 'NOT_INITIALIZED' && projectId != null) {
-      dispatch(API.getProjectTeam(projectId));
-    }
-  }, [dispatch, team.status, projectId]);
+interface CurrentProjectAndStatus {
+  status: AvailabilityStatus | 'NOT_EDITING';
+  project?: Project;
+}
 
-  return team;
-};
+export function useCurrentProject(): CurrentProjectAndStatus {
+  const currentProjectId = useAppSelector(state => selectCurrentProjectId(state));
 
-export function useMyMember(
-  projectId: number | undefined | null,
-  userId: number | undefined | null,
-): TeamMember | undefined {
-  const team = useAndLoadProjectTeam(projectId);
-  if (projectId != null && userId != null) {
-    return Object.values(team.members || {}).find(m => m.userId === userId);
+  const { status, project } = useProject(currentProjectId || 0);
+  // TODO Sandra 01.2023 see how to avoid || 0
+
+  if (currentProjectId == null) {
+    return { status: 'NOT_EDITING' };
   }
-  return undefined;
+
+  return { status, project };
 }
+
+function selectProject(state: ColabState, id: number): ProjectAndStatus {
+  const dataInStore = state.project.projects[id];
+
+  if (dataInStore == null) {
+    return { status: 'NOT_INITIALIZED' };
+  } else if (typeof dataInStore === 'string') {
+    return { status: dataInStore };
+  }
+
+  return { status: 'READY', project: dataInStore };
+}
+
+export const selectCurrentProject = (state: ColabState): CurrentProjectAndStatus => {
+  const currentProjectId = selectCurrentProjectId(state);
+
+  if (currentProjectId == null) {
+    return { status: 'NOT_EDITING' };
+  }
+
+  return selectProject(state, currentProjectId);
+  //return selectData<Project>(state, currentProjectId, state => selectProjects(state));
+};
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// fetch my projects (excluding models)
+////////////////////////////////////////////////////////////////////////////////////////////////////
 
 interface ProjectsAndStatus {
-  projects: Project[];
   status: AvailabilityStatus;
+  projects?: Project[];
 }
 
-function useModelProjects(): ProjectsAndStatus {
-  const projects = useAppSelector(state => {
-    return Object.values(
-      state.projects.mine
-        .flatMap(id => {
-          const proj = state.projects.projects[id];
-          return entityIs(proj, 'Project') ? [proj] : [];
-        })
-        .filter(proj => proj.type === 'MODEL'),
-    );
-  }, shallowEqual);
-
-  return { projects, status: 'READY' };
+function fetchMyProjects(state: ColabState): Project[] {
+  return state.team.mine
+    .flatMap(id => {
+      const p = state.project.projects[id];
+      return entityIs(p, 'Project') ? [p] : [];
+    })
+    .filter(p => p.type !== 'MODEL');
 }
 
-export function useAndLoadModelProjects(): ProjectsAndStatus {
-  const dispatch = useAppDispatch();
-
-  const { projects, status } = useModelProjects();
-
-  React.useEffect(() => {
-    if (status === 'NOT_INITIALIZED') {
-      dispatch(API.getUserProjects());
-    }
-  }, [dispatch, status]);
-
-  return { projects, status };
+export function useMyProjects(): ProjectsAndStatus {
+  const { status, data } = useFetchList<Project>(
+    selectStatusWhereTeamMember,
+    fetchMyProjects,
+    API.getMyProjects,
+  );
+  return { status, projects: data };
 }
+
+// interface ProjectsIdsAndStatus {
+//   status: AvailabilityStatus;
+//   projectsIds?: number[];
+// }
+
+// function fetchUserProjectsIds(state: ColabState): number[] {
+//   return state.team.mine.flatMap(projectId => {
+//     const p = state.project.projects[projectId];
+//     if (entityIs(p, 'Project') && p.type !== 'MODEL' && p.id != null) {
+//       return [p.id];
+//     } else {
+//       return [];
+//     }
+//   });
+// }
+
+// export function useUserProjectsIds(): ProjectsIdsAndStatus {
+//   const { status, ids } = useFetchListIds(
+//     selectStatusWhereTeamMember,
+//     fetchUserProjectsIds,
+//     API.getUserProjects,
+//   );
+//   return { status, projectsIds: ids };
+// }
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// fetch all projects including models
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+function fetchAllProjectsAndModels(state: ColabState): Project[] {
+  return Object.values(state.project.projects).flatMap(p => {
+    return entityIs(p, 'Project') ? [p] : [];
+  });
+}
+
+export function useAllProjectsAndModels(): ProjectsAndStatus {
+  const { status, data } = useFetchList<Project>(
+    selectStatusForAll,
+    fetchAllProjectsAndModels,
+    API.getAllProjectsAndModels,
+  );
+  return { status, projects: data };
+}
+
+// function fetchAllProjectsIds(state: ColabState): number[] {
+//   return Object.values(state.project.projects).flatMap(p => {
+//     if (entityIs(p, 'Project') && p.id != null) {
+//       return [p.id];
+//     } else {
+//       return [];
+//     }
+//   });
+// }
+
+// export function useAllProjectsIds(): ProjectsIdsAndStatus {
+//   const { status, ids } = useFetchListIds(
+//     selectStatusForAll,
+//     fetchAllProjectsIds,
+//     API.getAllProjects,
+//   );
+
+//   return { status, projectsIds: ids };
+// }
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// fetch my models
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+function fetchMyModels(state: ColabState): Project[] {
+  return Object.values(
+    state.team.mine
+      .flatMap(id => {
+        const p = state.project.projects[id];
+        return entityIs(p, 'Project') ? [p] : [];
+      })
+      .filter(p => p.type === 'MODEL'),
+  );
+}
+
+export function useMyModels(): ProjectsAndStatus {
+  const { status, data } = useFetchList<Project>(
+    selectStatusWhereTeamMember,
+    fetchMyModels,
+    API.getMyProjects,
+  );
+
+  return { status, projects: data };
+}
+
+export function useHasModels(): boolean {
+  const { projects } = useMyModels();
+  return projects != null && projects.length > 0;
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// fetch my models
+////////////////////////////////////////////////////////////////////////////////////////////////////
 
 function useInstanceableModels(): ProjectsAndStatus {
   return useAppSelector(
     state => {
-      const projects = state.projects.instanceableProjects.flatMap(projectId => {
-        const p = state.projects.projects[projectId];
-        if (entityIs(p, 'Project') && p.type === 'MODEL') {
-          return [p];
-        } else {
-          return [];
-        }
-      });
-      return { projects, status: state.projects.statusForInstanceableModels };
+      const projects = state.team.instanceableProjects
+        .flatMap(projectId => {
+          const p = state.project.projects[projectId];
+          return entityIs(p, 'Project') ? [p] : [];
+        })
+        .filter(p => p.type === 'MODEL');
+      return { projects, status: state.project.statusForInstanceableModels };
     },
 
     shallowEqual,
@@ -209,7 +255,7 @@ export function useAndLoadMyAndInstanceableModels(): ProjectsAndStatus {
     state => {
       // First fetch the statuses of everything we want
       // 1. models where the user is an instance maker for
-      const statusIM = state.projects.statusForInstanceableModels;
+      const statusIM = state.project.statusForInstanceableModels;
 
       if (statusIM === 'NOT_INITIALIZED') {
         dispatch(API.getInstanceableModels());
@@ -220,10 +266,10 @@ export function useAndLoadMyAndInstanceableModels(): ProjectsAndStatus {
       }
 
       // 2. models where the user is a team member of
-      const statusMine = state.projects.statusForCurrentUser;
+      const statusMine = state.project.statusWhereTeamMember;
 
       if (statusMine === 'NOT_INITIALIZED') {
-        dispatch(API.getUserProjects());
+        dispatch(API.getMyProjects());
       }
 
       if (statusMine !== 'READY') {
@@ -231,7 +277,7 @@ export function useAndLoadMyAndInstanceableModels(): ProjectsAndStatus {
       }
 
       // 3. models global = accessible by everyone
-      const statusGlobal = state.projects.statusForGlobalModels;
+      const statusGlobal = state.project.statusForGlobalModels;
 
       if (statusGlobal === 'NOT_INITIALIZED') {
         dispatch(API.getAllGlobalProjects());
@@ -244,31 +290,29 @@ export function useAndLoadMyAndInstanceableModels(): ProjectsAndStatus {
       // Then if all statuses are READY, get the data
 
       // 1. models where the user is an instance maker for
-      const projectsIM = state.projects.instanceableProjects.flatMap(projectId => {
-        const p = state.projects.projects[projectId];
-        if (entityIs(p, 'Project') && p.type === 'MODEL') {
-          return [p];
-        } else {
-          return [];
-        }
-      });
+      const projectsIM = state.team.instanceableProjects
+        .flatMap(projectId => {
+          const p = state.project.projects[projectId];
+          return entityIs(p, 'Project') ? [p] : [];
+        })
+        .filter(p => p.type === 'MODEL');
 
       // 2. models where the user is a team member of
       const projectsMine = Object.values(
-        state.projects.mine
+        state.team.mine
           .flatMap(id => {
-            const proj = state.projects.projects[id];
-            return entityIs(proj, 'Project') ? [proj] : [];
+            const p = state.project.projects[id];
+            return entityIs(p, 'Project') ? [p] : [];
           })
           .filter(proj => proj.type === 'MODEL'),
       );
 
       // 3. models global = accessible by everyone
-      const projectsGlobal = Object.values(state.projects.projects).flatMap(proj => {
-        return entityIs(proj, 'Project') && proj.type === 'MODEL' && proj.globalProject === true
-          ? [proj]
-          : [];
-      });
+      const projectsGlobal = Object.values(state.project.projects)
+        .flatMap(p => {
+          return entityIs(p, 'Project') ? [p] : [];
+        })
+        .filter(p => p.type === 'MODEL' && p.globalProject === true);
 
       return {
         projects: [...new Set([...projectsIM, ...projectsMine, ...projectsGlobal])].flatMap(p => {
@@ -293,7 +337,7 @@ export interface CopyParamAndStatus {
 
 function useCopyParam(projectId: number): CopyParamAndStatus {
   return useAppSelector(state => {
-    const copyParamOrStatus = state.projects.copyParams[projectId];
+    const copyParamOrStatus = state.project.copyParams[projectId];
 
     if (entityIs(copyParamOrStatus, 'CopyParam')) {
       // copyparam is known

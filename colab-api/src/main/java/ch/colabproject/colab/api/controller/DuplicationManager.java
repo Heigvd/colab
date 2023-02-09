@@ -32,6 +32,7 @@ import ch.colabproject.colab.api.model.team.TeamRole;
 import ch.colabproject.colab.api.model.team.acl.AccessControl;
 import ch.colabproject.colab.api.model.user.User;
 import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
+import ch.colabproject.colab.generator.model.exceptions.MessageI18nKey;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -220,7 +221,7 @@ public class DuplicationManager {
 
             return newProject;
         } catch (ColabMergeException e) {
-            throw HttpErrorMessage.dataIntegrityFailure();
+            throw HttpErrorMessage.dataError(MessageI18nKey.DATA_INTEGRITY_FAILURE);
         }
         // TODO sandra work in progress : handle exceptions
     }
@@ -257,7 +258,7 @@ public class DuplicationManager {
                 TeamRole newRole = teamRoleMatching.get(linkedRole.getId());
 
                 if (newRole == null) {
-                    throw HttpErrorMessage.dataIntegrityFailure();
+                    throw HttpErrorMessage.dataError(MessageI18nKey.DATA_INTEGRITY_FAILURE);
                 }
 
                 newRole.getMembers().add(newTeamMember);
@@ -363,7 +364,7 @@ public class DuplicationManager {
             AbstractCardType newCardType = cardTypeMatching.get(originalCardType.getId());
 
             if (newCardType == null) {
-                throw HttpErrorMessage.dataIntegrityFailure();
+                throw HttpErrorMessage.dataError(MessageI18nKey.DATA_INTEGRITY_FAILURE);
             }
 
             newCard.setCardType(newCardType);
@@ -593,7 +594,7 @@ public class DuplicationManager {
             TeamMember member = teamMemberMatching.get(original.getMember().getId());
 
             if (member == null) {
-                throw HttpErrorMessage.dataIntegrityFailure();
+                throw HttpErrorMessage.dataError(MessageI18nKey.DATA_INTEGRITY_FAILURE);
             }
 
             member.getAccessControlList().add(newAccessControl);
@@ -604,7 +605,7 @@ public class DuplicationManager {
             TeamRole role = teamRoleMatching.get(original.getRole().getId());
 
             if (role == null) {
-                throw HttpErrorMessage.dataIntegrityFailure();
+                throw HttpErrorMessage.dataError(MessageI18nKey.DATA_INTEGRITY_FAILURE);
             }
 
             role.getAccessControl().add(newAccessControl);
@@ -630,7 +631,7 @@ public class DuplicationManager {
             Card destinationCard = cardMatching.get(original.getDestinationCard().getId());
 
             if (destinationCard == null) {
-                throw HttpErrorMessage.dataIntegrityFailure();
+                throw HttpErrorMessage.dataError(MessageI18nKey.DATA_INTEGRITY_FAILURE);
             }
 
             destinationCard.getStickyNoteLinksAsDest().add(newLink);
@@ -641,7 +642,7 @@ public class DuplicationManager {
             Card srcCard = cardMatching.get(original.getSrcCard().getId());
 
             if (srcCard == null) {
-                throw HttpErrorMessage.dataIntegrityFailure();
+                throw HttpErrorMessage.dataError(MessageI18nKey.DATA_INTEGRITY_FAILURE);
             }
 
             srcCard.getStickyNoteLinksAsSrc().add(newLink);
@@ -653,7 +654,7 @@ public class DuplicationManager {
                 .get(original.getSrcCardContent().getId());
 
             if (srcCardContent == null) {
-                throw HttpErrorMessage.dataIntegrityFailure();
+                throw HttpErrorMessage.dataError(MessageI18nKey.DATA_INTEGRITY_FAILURE);
             }
 
             srcCardContent.getStickyNoteLinksAsSrc().add(newLink);
@@ -665,7 +666,7 @@ public class DuplicationManager {
                 .get(original.getSrcResourceOrRef().getId());
 
             if (srcResourceOrRef == null) {
-                throw HttpErrorMessage.dataIntegrityFailure();
+                throw HttpErrorMessage.dataError(MessageI18nKey.DATA_INTEGRITY_FAILURE);
             }
 
             srcResourceOrRef.getStickyNoteLinksAsSrc().add(newLink);
@@ -676,7 +677,7 @@ public class DuplicationManager {
             Document srcDocument = documentMatching.get(original.getSrcDocument().getId());
 
             if (srcDocument == null) {
-                throw HttpErrorMessage.dataIntegrityFailure();
+                throw HttpErrorMessage.dataError(MessageI18nKey.DATA_INTEGRITY_FAILURE);
             }
 
             srcDocument.getStickyNoteLinksAsSrc().add(newLink);
@@ -695,7 +696,7 @@ public class DuplicationManager {
             Card previousCard = cardMatching.get(original.getPreviousCard().getId());
 
             if (previousCard == null) {
-                throw HttpErrorMessage.dataIntegrityFailure();
+                throw HttpErrorMessage.dataError(MessageI18nKey.DATA_INTEGRITY_FAILURE);
             }
 
             previousCard.getActivityFlowLinksAsPrevious().add(newLink);
@@ -706,7 +707,7 @@ public class DuplicationManager {
             Card nextCard = cardMatching.get(original.getNextCard().getId());
 
             if (nextCard == null) {
-                throw HttpErrorMessage.dataIntegrityFailure();
+                throw HttpErrorMessage.dataError(MessageI18nKey.DATA_INTEGRITY_FAILURE);
             }
 
             nextCard.getActivityFlowLinksAsNext().add(newLink);

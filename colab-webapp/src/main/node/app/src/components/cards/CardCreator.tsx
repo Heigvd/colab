@@ -14,7 +14,7 @@ import { useNavigate } from 'react-router-dom';
 import * as API from '../../API/api';
 import useTranslations from '../../i18n/I18nContext';
 import { useAndLoadProjectCardTypes } from '../../selectors/cardTypeSelector';
-import { useProjectBeingEdited } from '../../selectors/projectSelector';
+import { useCurrentProjectId } from '../../selectors/projectSelector';
 import { useAppDispatch } from '../../store/hooks';
 import CustomElementsList from '../common/collection/CustomElementsList';
 import AvailabilityStatusIndicator from '../common/element/AvailabilityStatusIndicator';
@@ -52,7 +52,7 @@ export default function CardCreator({
   const i18n = useTranslations();
 
   const { cardTypes, status } = useAndLoadProjectCardTypes();
-  const { project } = useProjectBeingEdited();
+  const currentProjectId = useCurrentProjectId();
 
   const [showCardTypeSelector, setShowCardTypeSelector] = React.useState(false);
 
@@ -112,8 +112,8 @@ export default function CardCreator({
           >
             <Button
               onClick={() => {
-                if (project?.id) {
-                  navigate(`/editor/${project.id}/docs/cardTypes`);
+                if (currentProjectId) {
+                  navigate(`/editor/${currentProjectId}/docs/cardTypes`);
                 }
               }}
               invertedButton

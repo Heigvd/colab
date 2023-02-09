@@ -10,7 +10,7 @@ import * as React from 'react';
 import * as API from '../../../API/api';
 import useTranslations from '../../../i18n/I18nContext';
 import { useAndLoadCopyParam, useProject } from '../../../selectors/projectSelector';
-import { dispatch } from '../../../store/store';
+import { useAppDispatch } from '../../../store/hooks';
 import AvailabilityStatusIndicator from '../../common/element/AvailabilityStatusIndicator';
 import Button from '../../common/element/Button';
 import Checkbox from '../../common/element/Checkbox';
@@ -75,6 +75,7 @@ interface SharingParamsProps {
 }
 
 function SharingParams({ projectId }: SharingParamsProps): JSX.Element {
+  const dispatch = useAppDispatch();
   const i18n = useTranslations();
 
   const { copyParam, status } = useAndLoadCopyParam(projectId);

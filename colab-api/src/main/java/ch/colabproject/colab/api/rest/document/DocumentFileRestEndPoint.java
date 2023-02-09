@@ -9,6 +9,7 @@ package ch.colabproject.colab.api.rest.document;
 import ch.colabproject.colab.api.controller.document.FileManager;
 import ch.colabproject.colab.generator.model.annotations.AuthenticationRequired;
 import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
+import ch.colabproject.colab.generator.model.exceptions.MessageI18nKey;
 import java.io.BufferedInputStream;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -83,7 +84,7 @@ public class DocumentFileRestEndPoint {
      * @param documentId document id
      */
     @DELETE
-    @Path("DeleteFile/{documentId}")
+    @Path("DeleteFile/{documentId: [0-9]+}")
     public void deleteFile(
         @PathParam("documentId") Long documentId) {
         try {
@@ -102,7 +103,7 @@ public class DocumentFileRestEndPoint {
      * @return file content, if no file has been set, return an empty stream (0 bytes)
      */
     @GET
-    @Path("GetFile/{documentId}")
+    @Path("GetFile/{documentId: [0-9]+}")
     public Response getFileContent(@PathParam("documentId") Long documentId) {
 
         try {
@@ -124,7 +125,7 @@ public class DocumentFileRestEndPoint {
             return response.build();
 
         } catch (PathNotFoundException pnfe) {
-            throw HttpErrorMessage.dataIntegrityFailure();
+            throw HttpErrorMessage.dataError(MessageI18nKey.DATA_INTEGRITY_FAILURE);
         } catch (RepositoryException ex) {
             logger.debug("Could not get file content {}", ex);
             throw HttpErrorMessage.internalServerError();
@@ -139,7 +140,7 @@ public class DocumentFileRestEndPoint {
      * @return a list of 2 elements, first is usage second is maximum quota expressed in bytes
      */
     @GET
-    @Path("GetProjectQuotaUsage/{projectId}")
+    @Path("GetProjectQuotaUsage/{projectId: [0-9]+}")
     public List<Long> getQuotaUsage(@PathParam("projectId") Long projectId) {
 
         try {

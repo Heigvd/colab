@@ -13,7 +13,7 @@ import { getDisplayName } from '../../helper';
 import useTranslations from '../../i18n/I18nContext';
 import logger from '../../logger';
 import { CardAcl, useAndLoadCardACL } from '../../selectors/cardSelector';
-import { useAndLoadProjectTeam, useProjectBeingEdited } from '../../selectors/projectSelector';
+import { useAndLoadCurrentProjectTeam } from '../../selectors/teamSelector';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import InlineLoading from '../common/element/InlineLoading';
 import Flex from '../common/layout/Flex';
@@ -126,12 +126,11 @@ interface CardACLProps {
 }
 
 export default function CardACL({ card }: CardACLProps): JSX.Element {
-  const { project } = useProjectBeingEdited();
-  const { members, roles, status: teamStatus } = useAndLoadProjectTeam(project?.id);
+  const { members, roles, status: teamStatus } = useAndLoadCurrentProjectTeam();
   const acl = useAndLoadCardACL(card.id);
   const i18n = useTranslations();
 
-  if (teamStatus === 'INITIALIZED') {
+  if (teamStatus === 'READY') {
     return (
       <>
         <div className={titleSeparationStyle}>

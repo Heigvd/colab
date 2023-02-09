@@ -8,6 +8,7 @@ package ch.colabproject.colab.api.controller.document;
 
 import ch.colabproject.colab.api.model.WithIndex;
 import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
+import ch.colabproject.colab.generator.model.exceptions.MessageI18nKey;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
@@ -140,7 +141,7 @@ public class IndexGeneratorHelper<T extends WithIndex> {
      */
     public void moveOneStepAhead(T item, Collection<T> collection) {
         if (!collection.contains(item)) {
-            throw HttpErrorMessage.dataIntegrityFailure();
+            throw HttpErrorMessage.dataError(MessageI18nKey.DATA_INTEGRITY_FAILURE);
         }
 
         List<T> sortedList = sortCollection(collection);
@@ -169,7 +170,7 @@ public class IndexGeneratorHelper<T extends WithIndex> {
      */
     public void moveItemBefore(T item, T baseItem, Collection<T> collection) {
         if (!collection.contains(baseItem)) {
-            throw HttpErrorMessage.dataIntegrityFailure();
+            throw HttpErrorMessage.dataError(MessageI18nKey.DATA_INTEGRITY_FAILURE);
         }
 
         List<T> sortedList = sortCollection(collection);
@@ -203,7 +204,7 @@ public class IndexGeneratorHelper<T extends WithIndex> {
      */
     public void moveOneStepBehind(T item, Collection<T> collection) {
         if (!collection.contains(item)) {
-            throw HttpErrorMessage.dataIntegrityFailure();
+            throw HttpErrorMessage.dataError(MessageI18nKey.DATA_INTEGRITY_FAILURE);
         }
 
         List<T> sortedList = sortCollection(collection);
@@ -232,7 +233,7 @@ public class IndexGeneratorHelper<T extends WithIndex> {
      */
     public void moveItemAfter(T item, T baseItem, Collection<T> collection) {
         if (!collection.contains(baseItem)) {
-            throw HttpErrorMessage.dataIntegrityFailure();
+            throw HttpErrorMessage.dataError(MessageI18nKey.DATA_INTEGRITY_FAILURE);
         }
 
         List<T> sortedList = sortCollection(collection);
@@ -306,7 +307,7 @@ public class IndexGeneratorHelper<T extends WithIndex> {
      */
     private void reorderIndexes(List<T> sortedCollection) {
         if (!canBeReordered(sortedCollection)) {
-            throw HttpErrorMessage.dataIntegrityFailure();
+            throw HttpErrorMessage.dataError(MessageI18nKey.DATA_INTEGRITY_FAILURE);
         }
 
         int index = minIndex + indexIncrement;
@@ -410,7 +411,7 @@ public class IndexGeneratorHelper<T extends WithIndex> {
      */
     private T getItemBefore(T baseItem, List<T> sortedList) {
         if (!sortedList.contains(baseItem)) {
-            throw HttpErrorMessage.dataIntegrityFailure();
+            throw HttpErrorMessage.dataError(MessageI18nKey.DATA_INTEGRITY_FAILURE);
         }
 
         int baseIndexInList = sortedList.indexOf(baseItem);
@@ -435,7 +436,7 @@ public class IndexGeneratorHelper<T extends WithIndex> {
      */
     private T getItemAfter(T baseItem, List<T> sortedList) {
         if (!sortedList.contains(baseItem)) {
-            throw HttpErrorMessage.dataIntegrityFailure();
+            throw HttpErrorMessage.dataError(MessageI18nKey.DATA_INTEGRITY_FAILURE);
         }
 
         int baseIndexInList = sortedList.indexOf(baseItem);
