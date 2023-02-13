@@ -13,13 +13,11 @@ import Flex from '../../../common/layout/Flex';
 import {
   borderRadius,
   lightLinkStyle,
-  lightTheme,
   noOutlineStyle,
   space_S,
 } from '../../../styling/style';
 
 const tagStyle = cx(
-  lightTheme,
   css({
     padding: '0 ' + space_S,
     color: 'var(--darkGray)',

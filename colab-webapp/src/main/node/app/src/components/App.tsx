@@ -20,10 +20,8 @@ import Loading from './common/layout/Loading';
 import ErrorBoundary from './common/toplevel/ErrorBoundary';
 import Notifier from './common/toplevel/Notifier';
 import MainApp from './MainApp';
-import { lightTheme, normalThemeMode } from './styling/style';
+import { colabTheme, fonts, lightMode } from './styling/style';
 import Token from './token/Token';
-
-import 'inter-ui/inter.css';
 import { TocDisplayCtx, TocMode } from './resources/ResourcesList';
 
 /**
@@ -123,7 +121,7 @@ function App(): JSX.Element {
 
   return (
     <div
-      className={cx(lightTheme, normalThemeMode)}
+      className={cx(colabTheme, lightMode, fonts)}
       onDrop={cancelDroppingFiles}
       onDragOver={cancelDroppingFiles}
     >

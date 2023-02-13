@@ -5,16 +5,8 @@
  * Licensed under the MIT License
  */
 import { css, cx, keyframes } from '@emotion/css';
-
-export const pictoColours = css({
-  '--pictoBlue': '#50BFD5', // main blue
-  '--pictoOrange': '#E36D28', // main orange
-  '--pictoYellow': '#FFE527', // main yellow
-  '--pictoLightBlue': '#8CE9FB', // blue-yellow intersection
-  '--pictoPeach': '#FCC08B', // yellow-orange intersection
-  '--pictoSteelBlue': '#50BFD5', // blue-orange intersection
-  '--pictoGrey': '#9AA4B1', // center colour
-});
+//import '../../fonts/MaterialSymbolsOutlined[FILL,GRAD,opsz,wght].woff2';
+//import '../../fonts/PublicSans[wght].ttf';
 
 export const errorColor = '#e51c23';
 export const warningColor = '#ff9800';
@@ -33,28 +25,6 @@ export const warningStyle = css({
 export const successStyle = css({
   color: 'var(--successColor)',
 });
-
-export const lightTheme = cx(
-  pictoColours,
-  css({
-    '--primaryColor': primaryColor,
-    '--primaryColorShade': '#494949',
-    '--primaryColorContrast': '#fff',
-    '--primaryColorContrastShade': '#FCF9F9',
-
-    '--secondaryColor': secondaryColor,
-    '--secondaryColorShade': 'var(--pictoBlue)',
-    '--secondaryColorContrast': '#FFF',
-    '--secondaryColorContrastShade': '#FFF',
-
-    '--superLightGray': 'rgb(240, 240, 240)',
-    '--lightDisabledGray': '#ddd',
-    '--darkDisabledGray': '#999',
-    '--themeSuccessColor': successColor,
-    '--themeWarningColor': warningColor,
-    '--themeErrorColor': errorColor,
-  }),
-);
 
 export const normalThemeMode = css({
   '--bgColor': 'var(--primaryColorContrast)',
@@ -583,3 +553,195 @@ export const disabledStyle = css({
   opacity: 0.5,
   pointerEvents: 'none',
 });
+
+
+// new UI
+const basics = css({
+  '--white': '#FFF', 
+  '--black': '#000', 
+  '--transparent': 'transparent', 
+});
+const primary = css({
+  '--primary-50': '#E6FFFA', 
+  '--primary-100': '#B2F5EA', 
+  '--primary-300': '#4FD1C5', 
+  '--primary-400': '#38B2AC', 
+  '--primary-500': '#2C7A7B', 
+  '--primary-700': '#285E61', 
+});
+const gray = css({
+  '--gray-50': '#F7FAFC', 
+  '--gray-100': '#EDF2F7', 
+  '--gray-200': '#DDE4EE', 
+  '--gray-300': '#C8CEDA', 
+  '--gray-400': '#A0A2AB', 
+  '--gray-500': '#787C87', 
+  '--gray-600': '#43444B', 
+  '--gray-700': '#28292D', 
+});
+const blackAlpha = css({
+  '--blackAlpha-50': '#000000a', 
+  '--blackAlpha-100': '#000000f', 
+  '--blackAlpha-200': '#00000014', 
+  '--blackAlpha-300': '#00000029', 
+  '--blackAlpha-400': '#0000003D', 
+  '--blackAlpha-500': '#0000005C', 
+  '--blackAlpha-600': '#0000007A', 
+  '--blackAlpha-700': '#000000A3', 
+  '--blackAlpha-800': '#000000CC', 
+  '--blackAlpha-900': '#000000EB', 
+});
+const whiteAlpha = css({
+  '--whiteAlpha-50': '#FFFFFFA', 
+  '--whiteAlpha-100': '#FFFFFFF', 
+  '--whiteAlpha-200': '#FFFFFF14', 
+  '--whiteAlpha-300': '#FFFFFF29', 
+  '--whiteAlpha-400': '#FFFFFF3D', 
+  '--whiteAlpha-500': '#FFFFFF5C', 
+  '--whiteAlpha-600': '#FFFFFF7A', 
+  '--whiteAlpha-700': '#FFFFFFA3', 
+  '--whiteAlpha-800': '#FFFFFFCC', 
+  '--whiteAlpha-900': '#FFFFFFEB', 
+});
+const green = css({
+  '--green-100': '#C2F0D8', 
+  '--green-200': '#99E6BD', 
+  '--green-400': '#47D189', 
+  '--green-500': '#2EB86F', 
+  '--green-600': '#238F56', 
+  '--green-700': '#19663E', 
+});
+const red = css({
+  '--red-100': '#FED7D7', 
+  '--red-400': '#EA6262', 
+  '--red-500': '#E53E3E', 
+  '--red-600': '#C53030', 
+  '--red-700': '#9B2C2C', 
+});
+const orange = css({
+  '--orange-100': '#FEEBC8', 
+  '--orange-400': '#E68D52', 
+  '--orange-500': '#DD6B20', 
+  '--orange-600': '#C05621', 
+  '--orange-700': '#9C4221', 
+});
+const blue = css({
+  '--blue-100': '#BEE3F8', 
+  '--blue-400': '#5F9ED9', 
+  '--blue-500': '#3182CE', 
+  '--blue-600': '#2B6CB0', 
+  '--blue-700': '#2C5282', 
+});
+const otherColors = css({
+  '--cyan-400': '#0BC5EA', 
+  '--purple-400': '#9F7AEA', 
+  '--pink-400': '#ED64A6', 
+  '--teal-400': '#38B2AC', 
+  '--yellow-400': '#ECC94B', 
+});
+
+export const colabTheme = cx(
+  basics,
+  primary,
+  gray,
+  blackAlpha,
+  whiteAlpha,
+  green,
+  red,
+  orange,
+  blue,
+  otherColors
+);
+
+export const lightMode = css({
+  //TEXT
+  '--text-primary': 'var(--gray-700)',
+  '--text-secondary': 'var(--gray-400)',
+  '--text-disabled': 'var(--gray-200)',
+//BACKGROUND
+  '--bg-primary': 'var(--white)',
+  '--bg-secondary': 'var(--gray-50)',
+  '--bg-tertiary': 'var(--bg-100)',
+//PRIMARY
+  '--primary-main': 'var(--primary-400)',
+  '--primary-fade': 'var(--primary-50)',
+  '--primary-dark': 'var(--primary-500)',
+  '--primary-darker': 'var(--primary-700)',
+  '--primary-contrast': 'var(--white)',
+//SECONDARY
+'--secondary-main': 'var(--gray-400)',
+'--secondary-fade': 'var(--gray-50)',
+'--secondary-dark': 'var(--gray-500)',
+'--secondary-darker': 'var(--gray-700)',
+'--secondary-contrast': 'var(--white)',
+//ERROR
+'--error-main': 'var(--red-500)',
+'--error-fade': 'var(--red-100)',
+'--error-dark': 'var(--red-600)',
+'--error-darker': 'var(--red-700)',
+'--error-contrast': 'var(--white)',
+//WARNING
+'--warning-main': 'var(--orange-500)',
+'--warning-fade': 'var(--orange-100)',
+'--warning-dark': 'var(--orange-600)',
+'--warning-darker': 'var(--orange-700)',
+'--warning-contrast': 'var(--white)',
+//SUCCESS
+'--success-main': 'var(--green-500)',
+'--success-fade': 'var(--green-100)',
+'--success-dark': 'var(--green-600)',
+'--success-darker': 'var(--green-700)',
+'--success-contrast': 'var(--white)',
+//DIVIDER
+'--divider-main': 'var(--gray-200)',
+'--divider-fade': 'var(--gray-50)',
+'--divider-dark': 'var(--gray-400)',
+})
+
+//SPACE
+export const space = {
+  0: '0',
+  '2xs': '2px',
+  xs: '4px',
+  sm: '8px',
+  md: '12px',
+  lg: '16px',
+  xl: '24px',
+  '2xl': '36px',
+  '3xl': '48px',
+  '4xl': '64px',
+};
+//BORDER RADIUS
+export const br = {
+  sm: css({borderRadius:'2px'}),
+  md: css({borderRadius:'6px'}),
+  lg: css({borderRadius:'8px'}),
+  xl: css({borderRadius:'12px'}),
+  full: css({borderRadius:'9999px'}),
+};
+
+/* @font-face {
+    font-family: 'Material Symbols Outlined';
+    font-style: normal;
+    src: url('../../fonts/MaterialSymbolsOutlined[FILL,GRAD,opsz,wght].woff2') format('woff2'),
+  } */
+
+/* export const fonts = css`
+  @font-face {
+    font-family: 'Public Sans';
+    font-style: normal;
+    src: url('../../fonts/PublicSans[wght].ttf') format('truetype'),
+  }
+
+  @font-face {
+    font-family: 'Public Sans Italic';
+    font-style: normal;
+    src: url('../../fonts/PublicSans-Italic[wght].ttf') format('truetype'),
+  }
+
+  font-family: 'Public Sans', 'serif';
+  `; */
+
+  export const fonts = css({
+    fontFamily: "'Public Sans', 'serif'",
+  })

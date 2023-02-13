@@ -9,6 +9,7 @@ import * as React from 'react';
 import logger from '../../logger';
 import { useAllProjectCards } from '../../selectors/cardSelector';
 import SearchSortList, { IWidget } from '../common/collection/SearchSortList';
+import Icon from '../common/layout/Icon';
 import Tabs, { Tab } from '../common/layout/Tabs';
 import { cardStyle, space_S } from '../styling/style';
 import DebugForm from './debugForm';
@@ -23,7 +24,7 @@ export default function Debugger(): JSX.Element {
     return { id: card.id?.toString() || '', title: card.title || '', color: card.color || '' }
   });
   return (
-    <Tabs defaultTab="sortingList">
+    <Tabs defaultTab="icons">
       <Tab name="input" label="input">
         <DebugInput />
       </Tab>
@@ -38,6 +39,9 @@ export default function Debugger(): JSX.Element {
       </Tab>
       <Tab name="sortingList" label="Search&sort">
          <SearchSortList itemComp={(item) => <><div className={cx(cardStyle, css({padding: space_S, width: '200px'}))}><h2>{item.title.length > 0 ? item.title : 'No title'}</h2><p>id:{item.id}</p><p>color:{item.color}</p></div></>}  widgets={cardsinfo}/>
+      </Tab>
+      <Tab name="icons" label="Icons">
+        <Icon icon='settings'/>
       </Tab>
     </Tabs>
   );

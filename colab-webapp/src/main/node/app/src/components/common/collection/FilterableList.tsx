@@ -14,7 +14,6 @@ import {
   borderRadius,
   lightIconButtonStyle,
   lightLinkStyle,
-  lightTheme,
   noOutlineStyle,
   space_S,
 } from '../../styling/style';
@@ -23,13 +22,12 @@ import Clickable from '../layout/Clickable';
 import Flex from '../layout/Flex';
 
 export const categoryTabStyle = cx(
-  lightTheme,
   css({
     padding: '0 ' + space_S,
-    color: 'var(--darkGray)',
+    color: 'var(--secondary-dark)',
     marginRight: space_S,
     borderRadius: borderRadius,
-    border: '1px solid var(--darkGray)',
+    border: '1px solid var(--secondary-dark)',
     userSelect: 'none',
     fontSize: '0.9em',
   }),
