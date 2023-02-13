@@ -72,7 +72,7 @@ export default function Collapsible({
         className={cx(defaultLabelStyle, labelClassName)}
       >
         {icon && (
-          <FontAwesomeIcon
+           <Icon
             icon={icon}
             title={tooltip}
             className={paddingAroundStyle([1, 3], space_S)}

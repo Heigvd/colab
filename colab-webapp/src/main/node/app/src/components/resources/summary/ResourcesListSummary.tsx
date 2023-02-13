@@ -29,7 +29,7 @@ export default function ResourcesListSummary({
 
   return (
     <>
-      <FontAwesomeIcon
+       <Icon
         icon={faPaperclip}
         title={
           !nb

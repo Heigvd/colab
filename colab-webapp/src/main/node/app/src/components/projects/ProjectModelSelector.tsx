@@ -6,8 +6,6 @@
  */
 
 import { css, cx } from '@emotion/css';
-import { faGlobe, faStar } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Project } from 'colab-rest-client';
 import * as React from 'react';
 import useTranslations from '../../i18n/I18nContext';
@@ -16,6 +14,7 @@ import ItemThumbnailsSelection from '../common/collection/ItemThumbnailsSelectio
 import AvailabilityStatusIndicator from '../common/element/AvailabilityStatusIndicator';
 import IllustrationDisplay from '../common/element/IllustrationDisplay';
 import Flex from '../common/layout/Flex';
+import Icon from '../common/layout/Icon';
 import {
   invertedThemeMode,
   lightText,
@@ -127,9 +126,9 @@ export default function ProjectModelSelector({
                   title={i18n.modules.project.info.isAModel}
                 >
                   {item.globalProject ? (
-                    <FontAwesomeIcon icon={faGlobe} size="2xs" />
+                     <Icon icon={'public'} opsz="xs" />
                   ) : (
-                    <FontAwesomeIcon icon={faStar} size="2xs" />
+                     <Icon icon={'star'} opsz="xs" />
                   )}
                 </Flex>
               )}

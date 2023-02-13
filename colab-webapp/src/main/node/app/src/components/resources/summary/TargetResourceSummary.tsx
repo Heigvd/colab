@@ -56,7 +56,7 @@ export function ProvidedByCardType({
 
   const { project } = useProject(projectId || 0); // TODO Sandra 01.2023 : avoid || 0
 
-  let icon = <FontAwesomeIcon icon={referenceIcon} />;
+  let icon =  <Icon icon={referenceIcon} />;
 
   const cardTypeName = (cardType && cardType.title) || '';
   let fullText = '';
@@ -67,7 +67,7 @@ export function ProvidedByCardType({
     fullText = i18n.modules.resource.info.providedByGlobalCardType(cardTypeName);
 
     icon = (
-      <FontAwesomeIcon
+       <Icon
         className={iconClassName}
         icon={faGlobe}
         color={'var(--secondaryColor)'}
@@ -81,7 +81,7 @@ export function ProvidedByCardType({
     shortText = `${projectName} / ${cardTypeName};`;
 
     icon = (
-      <FontAwesomeIcon
+       <Icon
         className={iconClassName}
         icon={
           project?.illustration
@@ -101,7 +101,7 @@ export function ProvidedByCardType({
       : i18n.modules.resource.info.providedByCardType(cardTypeName);
 
     icon = (
-      <FontAwesomeIcon
+       <Icon
         icon={faBook}
         className={iconClassName}
         title={showText !== 'full' ? fullText : undefined}
@@ -150,7 +150,7 @@ export function ProvidedByCard({
   const { project } = useCurrentProject();
 
   const icon = isRootCard ? (
-    <FontAwesomeIcon
+     <Icon
       className={iconClassName}
       icon={
         project?.illustration
@@ -164,7 +164,7 @@ export function ProvidedByCard({
       title={showText !== 'full' ? fullText : undefined}
     />
   ) : (
-    <FontAwesomeIcon
+     <Icon
       icon={direct ? faTableColumns : faSitemap}
       className={iconClassName}
       title={showText !== 'full' ? fullText : undefined}
@@ -210,7 +210,7 @@ export function ProvidedByCardContent({
     : i18n.modules.resource.info.providedByUpperCard(name);
   const shortText = name;
   const icon = (
-    <FontAwesomeIcon
+     <Icon
       icon={direct ? faTableColumns : faSitemap}
       title={showText !== 'full' ? fullText : undefined}
       className={iconClassName}

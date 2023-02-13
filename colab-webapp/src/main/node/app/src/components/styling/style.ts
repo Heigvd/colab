@@ -720,28 +720,6 @@ export const br = {
   full: css({borderRadius:'9999px'}),
 };
 
-/* @font-face {
-    font-family: 'Material Symbols Outlined';
-    font-style: normal;
-    src: url('../../fonts/MaterialSymbolsOutlined[FILL,GRAD,opsz,wght].woff2') format('woff2'),
-  } */
-
-/* export const fonts = css`
-  @font-face {
-    font-family: 'Public Sans';
-    font-style: normal;
-    src: url('../../fonts/PublicSans[wght].ttf') format('truetype'),
-  }
-
-  @font-face {
-    font-family: 'Public Sans Italic';
-    font-style: normal;
-    src: url('../../fonts/PublicSans-Italic[wght].ttf') format('truetype'),
-  }
-
-  font-family: 'Public Sans', 'serif';
-  `; */
-
   export const fonts = css({
     fontFamily: "'Public Sans', 'serif'",
   })

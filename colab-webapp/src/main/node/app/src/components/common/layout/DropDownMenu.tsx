@@ -6,9 +6,6 @@
  */
 
 import { css, cx } from '@emotion/css';
-import { IconProp, Transform } from '@fortawesome/fontawesome-svg-core';
-import { faCaretDown } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import * as React from 'react';
 import { useEffect, useRef } from 'react';
 import {
@@ -19,6 +16,7 @@ import {
   space_S,
 } from '../../styling/style';
 import Flex from './Flex';
+import Icon from './Icon';
 
 export const itemStyle = css({
   padding: '5px 8px',
@@ -315,8 +313,7 @@ export interface Entry<T> {
 }
 
 export interface DropDownMenuProps<T> {
-  icon?: IconProp;
-  layerForIcon?: { layerIcon: IconProp; transform: string | Transform };
+  icon?: string;
   title?: string;
   menuIcon?: 'BURGER' | 'CARET';
   idleHoverStyle?: 'BACKGROUND' | 'FOREGROUND';
@@ -331,7 +328,6 @@ export interface DropDownMenuProps<T> {
 }
 export default function DropDownMenu<T extends string | number | symbol>({
   icon,
-  layerForIcon,
   title,
   entries,
   value,
@@ -406,20 +402,11 @@ export default function DropDownMenu<T extends string | number | symbol>({
               <span className={open ? openButtonStyle : buttonStyle}></span>
             )}
             {icon &&
-              (layerForIcon ? (
-                <span className="fa-layers fa-fw">
-                  <FontAwesomeIcon
-                    icon={layerForIcon.layerIcon}
-                    transform={layerForIcon.transform}
-                  />
-                  <FontAwesomeIcon icon={icon} className={css({ fontSize: '16px' })} />
-                </span>
-              ) : (
-                <FontAwesomeIcon icon={icon} className={css({ fontSize: '16px' })} />
-              ))}
+                <Icon icon={icon} />
+              }
             {current.label && current.label}
             {menuIcon === 'CARET' && (
-              <FontAwesomeIcon icon={faCaretDown} className={css({ marginLeft: space_S })} />
+               <Icon icon={'expand_more'} className={css({ marginLeft: space_S })} />
             )}
           </Flex>
           {open && (

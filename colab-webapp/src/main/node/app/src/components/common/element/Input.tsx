@@ -6,7 +6,6 @@
  */
 
 import { css, cx } from '@emotion/css';
-import { faCheck, faTimes } from '@fortawesome/free-solid-svg-icons';
 import * as React from 'react';
 import useTranslations from '../../../i18n/I18nContext';
 import {
@@ -308,13 +307,13 @@ function Input({
       {saveMode === 'ON_CONFIRM' && (mode === 'EDIT' || updated) && (
         <Flex className={confirmButtonsStyle}>
           <IconButton
-            icon={faTimes}
+            icon={'close'}
             title={i18n.common.cancel}
             onClick={cancel}
             className={lightIconButtonStyle}
           />
           <IconButton
-            icon={faCheck}
+            icon={'check'}
             title={i18n.common.save}
             onClick={save}
             className={lightIconButtonStyle}

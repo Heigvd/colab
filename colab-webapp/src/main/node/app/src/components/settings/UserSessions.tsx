@@ -40,7 +40,7 @@ export default function UserProfile({ user }: UserProfileProps): JSX.Element {
                     #{s.id} ({i18n.common.datetime(s.lastSeen)})
                   </span>
                   {s.userAgent != navigator.userAgent ? (
-                    <Button icon={faTrash} onClick={() => dispatch(API.forceLogout(s))} />
+                    <Button icon={'delete'} onClick={() => dispatch(API.forceLogout(s))} />
                   ) : (
                     <div
                       className={cx(

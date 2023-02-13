@@ -6,15 +6,6 @@
  */
 
 import { css, cx } from '@emotion/css';
-import {
-  faBoxArchive,
-  faCog,
-  faEllipsisV,
-  faGlasses,
-  faInfoCircle,
-  faTurnDown,
-} from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import * as React from 'react';
 import * as API from '../../API/api';
 import { updateDocumentText } from '../../API/api';
@@ -25,6 +16,7 @@ import { DiscreetInput, DiscreetTextArea } from '../common/element/Input';
 import { FeaturePreview } from '../common/element/Tips';
 import DropDownMenu from '../common/layout/DropDownMenu';
 import Flex from '../common/layout/Flex';
+import Icon from '../common/layout/Icon';
 import Modal from '../common/layout/Modal';
 import OpenCloseModal from '../common/layout/OpenCloseModal';
 import { DocTextWrapper } from '../documents/DocTextItem';
@@ -118,12 +110,6 @@ export function ResourceDisplay({
           grow={1}
           className={css({ marginBottom: space_S })}
         >
-          {/* <IconButton
-            icon={faArrowLeft}
-            title={i18n.modules.resource.backList}
-            onClick={goBackToList}
-            className={lightIconButtonStyle}
-          /> */}
           <Flex wrap="nowrap" align="center" className={css({ maxWidth: '80%' })}>
             {/* <TargetResourceSummary resource={resource} showText="tooltip" /> */}
             {/* {category && (
@@ -144,10 +130,10 @@ export function ResourceDisplay({
               </>
             )} */}
             {resource.targetResource.published && resource.isDirectResource && (
-              <FontAwesomeIcon
-                icon={faTurnDown}
+               <Icon
+                icon={'subdirectory_arrow_right'}
                 title={i18n.common.published}
-                size="xs"
+                opsz="xs"
                 color="var(--darkGray)"
               />
             )}
@@ -199,7 +185,7 @@ export function ResourceDisplay({
                   alignItems: 'stretch',
                 })}
                 title=""
-                collapsedChildren={<FontAwesomeIcon icon={faGlasses} />}
+                collapsedChildren={ <Icon icon={'eyeglasses'} />}
               >
                 {close => <ResourceScope onCancel={close} resource={resource} />}
               </OpenCloseModal>
@@ -210,14 +196,14 @@ export function ResourceDisplay({
               (targetResource.cardId != null &&
                 entityIs(rootCard, 'Card') &&
                 targetResource.cardId === rootCard.id)) && (
-              <FontAwesomeIcon
+               <Icon
                 icon={faPersonDigging}
                 title={i18n.modules.resource.unpublishedInfoType}
               />
             )} */}
             {/* {canForce && !forceWrite && (
             <ConfirmIconButton
-              icon={faPen}
+              icon={'edit'}
               title={i18n.modules.resource.info.forceTooltip}
               onConfirm={toggleForceCb}
             />
@@ -231,7 +217,7 @@ export function ResourceDisplay({
               <div></div>
             ) : (
               <DropDownMenu
-                icon={faEllipsisV}
+                icon={'more_vert'}
                 valueComp={{ value: '', label: '' }}
                 buttonClassName={cx(lightIconButtonStyle, css({ marginLeft: space_S }))}
                 entries={[
@@ -241,7 +227,7 @@ export function ResourceDisplay({
                           value: 'categorySelector',
                           label: (
                             <>
-                              <FontAwesomeIcon icon={faCog} /> {i18n.modules.resource.category}
+                               <Icon icon={'settings'} /> {i18n.modules.resource.category}
                             </>
                           ),
                           action: () => setShowCategorySelector(true),
@@ -254,7 +240,7 @@ export function ResourceDisplay({
                           value: 'publishStatus',
                           label: (
                             <>
-                              <FontAwesomeIcon icon={faTurnDown} />
+                               <Icon icon={'subdirectory_arrow_right'} />
                               {resource.targetResource.published
                                 ? i18n.modules.resource.actions.makePrivate
                                 : i18n.modules.resource.actions.shareWithChildren}
@@ -278,7 +264,7 @@ export function ResourceDisplay({
                           value: 'teaser',
                           label: (
                             <>
-                              <FontAwesomeIcon icon={faInfoCircle} />{' '}
+                               <Icon icon={'info'} />
                               {`${
                                 showTeaser
                                   ? i18n.modules.resource.hideTeaser
@@ -297,7 +283,7 @@ export function ResourceDisplay({
                           value: 'remove',
                           label: (
                             <>
-                              <FontAwesomeIcon icon={faBoxArchive} /> {i18n.common.remove}
+                               <Icon icon={'inventory_2'} /> {i18n.common.remove}
                             </>
                           ),
                           action: () => {

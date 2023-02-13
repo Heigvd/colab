@@ -518,7 +518,7 @@ export default function Hierarchy({
             {forceZoom == null && (
               <BlockInput
                 type="range"
-                label={<FontAwesomeIcon icon={faMagnifyingGlass} title={i18n.common.zoom} />}
+                label={ <Icon icon={faMagnifyingGlass} title={i18n.common.zoom} />}
                 value={zoomRef.current}
                 placeholder="0"
                 max="2"

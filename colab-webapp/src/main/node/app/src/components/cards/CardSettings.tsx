@@ -6,8 +6,6 @@
  */
 
 import { css } from '@emotion/css';
-import { faLock } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Card, CardContent } from 'colab-rest-client';
 import * as React from 'react';
 import { TwitterPicker } from 'react-color';
@@ -19,6 +17,7 @@ import Checkbox from '../common/element/Checkbox';
 import SelectInput from '../common/element/SelectInput';
 import Tips, { WIPContainer } from '../common/element/Tips';
 import Flex from '../common/layout/Flex';
+import Icon from '../common/layout/Icon';
 import { iconStyle, lightItalicText, lightText, space_M } from '../styling/style';
 import ContentStatusSelector from './ContentStatusSelector';
 
@@ -44,7 +43,7 @@ export default function CardSettings({ card, variant }: CardSettingsProps): JSX.
         <Checkbox
           label={
             <>
-              <FontAwesomeIcon icon={faLock} className={iconStyle} />{' '}
+               <Icon icon={'lock'} className={iconStyle} />{' '}
               {i18n.modules.card.settings.locked}
             </>
           }

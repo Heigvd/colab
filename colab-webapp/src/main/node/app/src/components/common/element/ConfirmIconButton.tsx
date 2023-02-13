@@ -6,8 +6,6 @@
  */
 
 import { css } from '@emotion/css';
-import { IconProp } from '@fortawesome/fontawesome-svg-core';
-import { faCheck, faTimes } from '@fortawesome/free-solid-svg-icons';
 import * as React from 'react';
 import useTranslations from '../../../i18n/I18nContext';
 import Clickable from '../layout/Clickable';
@@ -15,7 +13,7 @@ import Button from './Button';
 import IconButton from './IconButton';
 
 export interface InlineConfirmIconButtonProps {
-  icon: IconProp;
+  icon: string;
   title: string;
   className?: string;
   onConfirm: () => void;
@@ -112,12 +110,12 @@ export function InlineConfirmIconButton({
         <Button className={className} icon={icon}>
           <IconButton
             title={`${i18n.common.cancel} ${title}`}
-            icon={faTimes}
+            icon={'close'}
             onClick={askConfirm}
           />
           <IconButton
             title={`${i18n.common.confirm} ${title}`}
-            icon={faCheck}
+            icon={'check'}
             onClick={confirmedCb}
           />
         </Button>
@@ -133,7 +131,7 @@ export function InlineConfirmIconButton({
 }
 
 export interface ConfirmIconButtonProps {
-  icon: IconProp;
+  icon: string;
   title: string;
   className?: string;
   onConfirm: () => void;
@@ -215,9 +213,3 @@ export function ConfirmIconButton({
     </div>
   );
 }
-
-//  WITH ICONS:
-//        <div className={bubbleStyle}>
-//          <IconButton title={`cancel ${title}`}  icon={faTimes} onClick={askConfirm} />
-//          <IconButton title={`confirm ${title}`}  icon={faCheck} onClick={confirmedCb} />
-//        </div>

@@ -6,7 +6,7 @@
  */
 
 import { css, cx } from '@emotion/css';
-import { faArrowLeft, faTrash } from '@fortawesome/free-solid-svg-icons';
+import { faTrash } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import * as React from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -80,7 +80,7 @@ export default function CardTypeEditor({ className, usage }: CardTypeEditorProps
         className={cx(css({ alignSelf: 'stretch' }), className)}
       >
         <IconButton
-          icon={faArrowLeft}
+          icon={'arrow_back'}
           title={i18n.modules.cardType.route.backToCardType}
           iconColor="var(--darkGray)"
           onClick={() => navigate('../')}
@@ -206,7 +206,7 @@ export default function CardTypeEditor({ className, usage }: CardTypeEditorProps
                     className={cx(css({ color: errorColor, borderColor: errorColor }))}
                     clickable
                   >
-                    <FontAwesomeIcon icon={faTrash} /> {i18n.common.delete}
+                     <Icon icon={'delete'} /> {i18n.common.delete}
                   </Button>
                 }
                 className={css({

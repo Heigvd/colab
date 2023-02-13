@@ -6,8 +6,6 @@
  */
 
 import { css, cx } from '@emotion/css';
-import { faPlus, faUndo } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import * as React from 'react';
 import * as API from '../../API/api';
 import useTranslations from '../../i18n/I18nContext';
@@ -18,6 +16,7 @@ import Button from '../common/element/Button';
 import Form, { Field } from '../common/element/Form';
 import IconButton from '../common/element/IconButton';
 import Flex from '../common/layout/Flex';
+import Icon from '../common/layout/Icon';
 import OpenCloseModal from '../common/layout/OpenCloseModal';
 import { space_M, space_S } from '../styling/style';
 
@@ -120,7 +119,7 @@ export default function StickyNoteCreator({
             className,
           )}
         >
-          <FontAwesomeIcon title="Create a sticky note" icon={faPlus} />
+           <Icon title="Create a sticky note" icon={'add'} />
         </Flex>
       }
     >
@@ -166,7 +165,7 @@ export default function StickyNoteCreator({
             >
               {i18n.common.cancel}
             </Button>
-            <IconButton icon={faUndo} title="reinit fields" onClick={() => resetInputs()} />
+            <IconButton icon={'undo'} title="reinit fields" onClick={() => resetInputs()} />
           </Form>
         </>
       )}

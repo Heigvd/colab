@@ -46,7 +46,7 @@ export default function Checkbox({
     >
       <Flex align="center" justify="flex-start">
         <Flex align="center" onClick={readOnly ? undefined : () => onChange(!value)}>
-          <FontAwesomeIcon
+           <Icon
             icon={value ? faCheckSquare : faSquare}
             className={css({ marginRight: space_S })}
           />

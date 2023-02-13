@@ -8,8 +8,6 @@
 //import { css } from '@emotion/css';
 //import { entityIs, Project } from 'colab-rest-client';
 import { css, cx } from '@emotion/css';
-import { faEllipsisV, faInfoCircle, faPen, faTrash } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { AsyncThunk } from '@reduxjs/toolkit';
 import { Project } from 'colab-rest-client';
 import * as React from 'react';
@@ -21,6 +19,7 @@ import IllustrationDisplay from '../common/element/IllustrationDisplay';
 import InlineLoading from '../common/element/InlineLoading';
 import DropDownMenu from '../common/layout/DropDownMenu';
 import Flex from '../common/layout/Flex';
+import Icon from '../common/layout/Icon';
 import {
   borderRadius,
   errorColor,
@@ -118,7 +117,7 @@ export default function SharedModelsList({
                       : i18n.modules.project.info.emptyProject}
                   </h3>
                   <DropDownMenu
-                    icon={faEllipsisV}
+                    icon={'more_vert'}
                     valueComp={{ value: '', label: '' }}
                     buttonClassName={cx(css({ marginLeft: '30px' }), lightIconButtonStyle)}
                     entries={[
@@ -126,7 +125,7 @@ export default function SharedModelsList({
                         value: 'show details',
                         label: (
                           <>
-                            <FontAwesomeIcon icon={faInfoCircle} /> Show details
+                             <Icon icon={'info'} /> Show details
                           </>
                         ),
                         //action: () => navigate(`projectsettings/${project.id}`),
@@ -135,7 +134,7 @@ export default function SharedModelsList({
                         value: 'Ask edition rights',
                         label: (
                           <>
-                            <FontAwesomeIcon icon={faPen} /> Ask for edition rights
+                            <Icon icon={'edit'} /> Ask for edition rights
                           </>
                         ),
                         //action: () => navigate(`projectsettings/${project.id}`),
@@ -144,7 +143,7 @@ export default function SharedModelsList({
                         value: 'delete',
                         label: (
                           <>
-                            <FontAwesomeIcon icon={faTrash} color={errorColor} />{' '}
+                             <Icon icon={'delete'} color={errorColor} />{' '}
                             {i18n.common.delete}
                           </>
                         ),

@@ -6,17 +6,6 @@
  */
 
 import { css, cx } from '@emotion/css';
-import {
-  faCog,
-  faCopy,
-  faEdit,
-  faEllipsisV,
-  faGlobe,
-  faSeedling,
-  faStar,
-  faTrash,
-} from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Project } from 'colab-rest-client';
 import * as React from 'react';
 import { Route, Routes, useNavigate, useParams } from 'react-router-dom';
@@ -36,6 +25,7 @@ import IllustrationDisplay from '../common/element/IllustrationDisplay';
 import { ConfirmDeleteModal } from '../common/layout/ConfirmDeleteModal';
 import DropDownMenu from '../common/layout/DropDownMenu';
 import Flex from '../common/layout/Flex';
+import Icon from '../common/layout/Icon';
 import {
   ellipsis,
   errorColor,
@@ -177,9 +167,9 @@ export const ProjectDisplay = ({ project, className }: ProjectDisplayProps) => {
             title={i18n.modules.project.info.isAModel}
           >
             {project.globalProject ? (
-              <FontAwesomeIcon icon={faGlobe} color="white" size="sm" />
+               <Icon icon={'globe'} color="white" opsz="sm" />
             ) : (
-              <FontAwesomeIcon icon={faStar} color="white" size="sm" />
+               <Icon icon={'star'} color="white" opsz="sm" />
             )}
           </Flex>
         )}
@@ -209,7 +199,7 @@ export const ProjectDisplay = ({ project, className }: ProjectDisplayProps) => {
             {project.name}
           </h3>
           <DropDownMenu
-            icon={faEllipsisV}
+            icon={'more_vert'}
             valueComp={{ value: '', label: '' }}
             buttonClassName={cx(css({ marginLeft: '40px' }), lightIconButtonStyle)}
             entries={[
@@ -217,7 +207,7 @@ export const ProjectDisplay = ({ project, className }: ProjectDisplayProps) => {
                 value: 'open',
                 label: (
                   <>
-                    <FontAwesomeIcon icon={faEdit} /> {i18n.common.open}
+                     <Icon icon={'edit'} /> {i18n.common.open}
                   </>
                 ),
                 action: () => window.open(`#/editor/${project.id}`, '_blank'),
@@ -226,7 +216,7 @@ export const ProjectDisplay = ({ project, className }: ProjectDisplayProps) => {
                 value: 'settings',
                 label: (
                   <>
-                    <FontAwesomeIcon icon={faCog} /> {i18n.common.settings}
+                     <Icon icon={'settings'} /> {i18n.common.settings}
                   </>
                 ),
                 action: () => navigate(`projectsettings/${project.id}`),
@@ -235,7 +225,7 @@ export const ProjectDisplay = ({ project, className }: ProjectDisplayProps) => {
                 value: 'duplicate',
                 label: (
                   <>
-                    <FontAwesomeIcon icon={faCopy} /> {i18n.common.duplicate}
+                     <Icon icon={'content-copy'} /> {i18n.common.duplicate}
                   </>
                 ),
                 action: () => {
@@ -249,7 +239,7 @@ export const ProjectDisplay = ({ project, className }: ProjectDisplayProps) => {
                       value: 'extractModel',
                       label: (
                         <>
-                          <FontAwesomeIcon icon={faStar} />{' '}
+                           <Icon icon={'star'} />{' '}
                           {i18n.modules.project.actions.saveAsModel}
                         </>
                       ),
@@ -263,7 +253,7 @@ export const ProjectDisplay = ({ project, className }: ProjectDisplayProps) => {
                       value: 'convertToModel',
                       label: (
                         <>
-                          <FontAwesomeIcon icon={faStar} />{' '}
+                           <Icon icon={'star'} />{' '}
                           {i18n.modules.project.actions.convertToModel}
                         </>
                       ),
@@ -281,7 +271,7 @@ export const ProjectDisplay = ({ project, className }: ProjectDisplayProps) => {
                       value: 'convertToProject',
                       label: (
                         <>
-                          <FontAwesomeIcon icon={faSeedling} />{' '}
+                           <Icon icon={'magic_exchange'} />
                           {i18n.modules.project.actions.convertToProject}
                         </>
                       ),
@@ -297,7 +287,7 @@ export const ProjectDisplay = ({ project, className }: ProjectDisplayProps) => {
                 value: 'delete',
                 label: (
                   <>
-                    <FontAwesomeIcon icon={faTrash} color={errorColor} /> {i18n.common.delete}
+                     <Icon icon={'delete'} color={errorColor} /> {i18n.common.delete}
                   </>
                 ),
                 action: () => navigate(`deleteproject/${project.id}`),

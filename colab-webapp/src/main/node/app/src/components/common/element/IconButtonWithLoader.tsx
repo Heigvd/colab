@@ -58,7 +58,7 @@ export default function IconButtonWithLoader({
         <>
           {loading ? (
             <>
-              <FontAwesomeIcon
+               <Icon
                 icon={faSpinner}
                 color={iconColor}
                 size={iconSize}
@@ -69,13 +69,13 @@ export default function IconButtonWithLoader({
             </>
           ) : (
             <span className="fa-layers fa-fw">
-              <FontAwesomeIcon
+               <Icon
                 icon={layer.layerIcon}
                 color={iconColor}
                 size={iconSize}
                 transform={layer.transform}
               />
-              <FontAwesomeIcon
+               <Icon
                 icon={icon}
                 color={iconColor}
                 size={iconSize}
@@ -86,7 +86,7 @@ export default function IconButtonWithLoader({
           )}
         </>
       ) : (
-        <FontAwesomeIcon
+         <Icon
           icon={loading ? faSpinner : icon}
           color={iconColor}
           size={iconSize}

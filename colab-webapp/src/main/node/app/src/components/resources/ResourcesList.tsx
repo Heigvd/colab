@@ -6,15 +6,6 @@
  */
 
 import { css, cx } from '@emotion/css';
-import {
-  faBoxArchive,
-  faCog,
-  faCopy,
-  faEllipsisV,
-  faEye,
-  faTurnDown,
-} from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { entityIs } from 'colab-rest-client';
 import * as React from 'react';
 import * as API from '../../API/api';
@@ -27,6 +18,7 @@ import Tips from '../common/element/Tips';
 import Collapsible from '../common/layout/Collapsible';
 import DropDownMenu from '../common/layout/DropDownMenu';
 import Flex from '../common/layout/Flex';
+import Icon from '../common/layout/Icon';
 import {
   lightIconButtonStyle,
   marginAroundStyle,
@@ -637,17 +629,17 @@ function TocEntry({
               )}
             >
               {effectiveReadOnly && (
-                <FontAwesomeIcon
-                  icon={faEye}
-                  size="xs"
+                 <Icon
+                  icon={'visibility'}
+                  opsz="xs"
                   className={css({ marginRight: '3px' })}
                   color="var(--lightGray)"
                 />
               )}
               {resource.targetResource.published && resource.isDirectResource && (
-                <FontAwesomeIcon
-                  icon={faTurnDown}
-                  size="xs"
+                 <Icon
+                  icon={'subdirectory_arrow_right'}
+                  opsz="xs"
                   className={css({ marginRight: '3px' })}
                   color="var(--lightGray)"
                 />
@@ -704,7 +696,7 @@ function TocEntry({
                 (resource.targetResource.cardId != null &&
                   entityIs(rootCard, 'Card') &&
                   resource.targetResource.cardId === rootCard.id)) && (
-                <FontAwesomeIcon
+                 <Icon
                   icon={faPersonDigging}
                   title={i18n.modules.resource.unpublishedInfoType}
                   className={iconStyle}
@@ -712,14 +704,14 @@ function TocEntry({
               )} */}
 
             {/* {nbDocs < 1 && (
-              <FontAwesomeIcon
-                icon={faMinus}
+               <Icon
+                icon={'remove'}
                 title={i18n.modules.resource.info.noContent}
                 className={iconStyle}
               />
             )} */}
             <DropDownMenu
-              icon={faEllipsisV}
+              icon={'more_vert'}
               valueComp={{ value: '', label: '' }}
               buttonClassName={cx(lightIconButtonStyle, css({ marginLeft: space_S }))}
               entries={[
@@ -729,7 +721,7 @@ function TocEntry({
                         value: 'categorySelector',
                         label: (
                           <>
-                            <FontAwesomeIcon icon={faCog} /> {i18n.modules.resource.category}
+                             <Icon icon={'settings'} /> {i18n.modules.resource.category}
                           </>
                         ),
                         action: () => setCategorySelector(true),
@@ -742,7 +734,7 @@ function TocEntry({
                         value: 'publishStatus',
                         label: (
                           <>
-                            <FontAwesomeIcon icon={faTurnDown} />
+                             <Icon icon={'subdirectory_arrow_right'} />
                             {resource.targetResource.published
                               ? i18n.modules.resource.actions.makePrivate
                               : i18n.modules.resource.actions.shareWithChildren}
@@ -766,7 +758,7 @@ function TocEntry({
                         value: 'ownCopy',
                         label: (
                           <>
-                            <FontAwesomeIcon icon={faCopy} />{' '}
+                             <Icon icon={'content-copy'} />{' '}
                             {i18n.modules.resource.actions.makeOwnCopy}
                           </>
                         ),
@@ -792,7 +784,7 @@ function TocEntry({
                         value: 'remove',
                         label: (
                           <>
-                            <FontAwesomeIcon icon={faBoxArchive} /> {i18n.common.remove}
+                             <Icon icon={'inventory_2'} /> {i18n.common.remove}
                           </>
                         ),
                         action: () => {

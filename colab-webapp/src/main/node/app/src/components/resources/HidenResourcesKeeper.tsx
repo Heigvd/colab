@@ -6,9 +6,6 @@
  */
 
 import { css, cx } from '@emotion/css';
-import { faEye } from '@fortawesome/free-regular-svg-icons';
-import { faArchive, faArrowUp, faBoxArchive, faTrash } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import * as React from 'react';
 import * as API from '../../API/api';
 import useTranslations from '../../i18n/I18nContext';
@@ -16,6 +13,7 @@ import { useAndLoadResources } from '../../selectors/resourceSelector';
 import { useAppDispatch } from '../../store/hooks';
 import IconButton from '../common/element/IconButton';
 import Flex from '../common/layout/Flex';
+import Icon from '../common/layout/Icon';
 import OpenCloseModal from '../common/layout/OpenCloseModal';
 import { errorColor, iconButton, lightIconButtonStyle, space_M, space_S } from '../styling/style';
 import { ResourceDisplay } from './ResourceDisplay';
@@ -52,18 +50,17 @@ export default function HidenResourcesKeeper({
         <Flex>
           <IconButton
             title={i18n.common.restore}
-            icon={faBoxArchive}
-            layer={{ layerIcon: faArrowUp, transform: 'shrink-6 up-10' }}
+            icon={'archive'}
             onClick={() => dispatch(API.giveAccessToResource(resource))}
             className={cx(lightIconButtonStyle)}
-            IconClassName={iconButton}
+            iconClassName={iconButton}
           />
           <OpenCloseModal
             title={i18n.modules.content.document}
             collapsedChildren={
-              <FontAwesomeIcon
+               <Icon
                 title={i18n.common.display}
-                icon={faEye}
+                icon={'eye'}
                 className={cx(iconButton, lightIconButtonStyle)}
               />
             }
@@ -86,11 +83,11 @@ export default function HidenResourcesKeeper({
             >
               <IconButton
                 title={i18n.common.finalDelete}
-                icon={faTrash}
+                icon={'delete'}
                 iconColor={errorColor}
                 onClick={() => dispatch(API.deleteResource(resource.targetResource))}
                 className={lightIconButtonStyle}
-                IconClassName={iconButton}
+                iconClassName={iconButton}
               />
             </Flex>
           ) : (
@@ -120,7 +117,7 @@ export default function HidenResourcesKeeper({
             {/* <span className={css({ marginRight: space_S, fontSize: '0.8em' })}>
               {resources.length}
             </span> */}
-            <FontAwesomeIcon title={i18n.modules.content.removedDocuments} icon={faArchive} />
+             <Icon title={i18n.modules.content.removedDocuments} icon={'inventory_2'} />
           </Flex>
         ) : (
           <></>

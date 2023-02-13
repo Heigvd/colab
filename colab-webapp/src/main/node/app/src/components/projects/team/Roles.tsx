@@ -5,19 +5,6 @@
  * Licensed under the MIT License
  */
 import { css, cx } from '@emotion/css';
-import {
-  faCheck,
-  faEllipsisV,
-  faEnvelope,
-  faHourglassHalf,
-  faMinus,
-  faPen,
-  faPlus,
-  faSkullCrossbones,
-  faTrash,
-  faUser,
-} from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Project, TeamMember, TeamRole } from 'colab-rest-client';
 import React from 'react';
 import * as API from '../../../API/api';
@@ -34,6 +21,7 @@ import { DiscreetInput, InlineInput } from '../../common/element/Input';
 import Tips from '../../common/element/Tips';
 import { ConfirmDeleteModal } from '../../common/layout/ConfirmDeleteModal';
 import DropDownMenu from '../../common/layout/DropDownMenu';
+import Icon from '../../common/layout/Icon';
 import OpenClose from '../../common/layout/OpenClose';
 import WithToolbar from '../../common/WithToolbar';
 import {
@@ -100,7 +88,7 @@ function CreateRole({ project }: { project: Project }): JSX.Element {
       collapsedChildren={
         <IconButton
           title={i18n.modules.team.actions.createRole}
-          icon={faPlus}
+          icon={'add'}
           className={lightIconButtonStyle}
         />
       }
@@ -195,7 +183,7 @@ const MemberWithProjectRole = ({ member, roles }: MemberWithProjectRoleProps) =>
     username = (
       <span>
         <div className={cx(textSmall, lightItalicText)}>
-          <FontAwesomeIcon icon={faHourglassHalf} className={css({ marginRight: space_S })} />
+           <Icon icon={'hourglass_top'} className={css({ marginRight: space_S })} />
           {i18n.authentication.info.pendingInvitation}...
         </div>
         {member.displayName}
@@ -206,14 +194,14 @@ const MemberWithProjectRole = ({ member, roles }: MemberWithProjectRoleProps) =>
   } else if (user == 'LOADING' || user == null) {
     username = <InlineLoading />;
   } else if (user == 'ERROR') {
-    username = <FontAwesomeIcon icon={faSkullCrossbones} />;
+    username =  <Icon icon={'skull'} />;
   } else {
     const cn = getDisplayName(user);
     username = (
       <>
         {cn}
         {user.affiliation ? ` (${user.affiliation})` : ''}
-        <IconButton icon={faPen} title={i18n.common.edit} onClick={() => updateDisplayName(cn)} />
+        <IconButton icon={'edit'} title={i18n.common.edit} onClick={() => updateDisplayName(cn)} />
       </>
     );
   }
@@ -241,7 +229,7 @@ const MemberWithProjectRole = ({ member, roles }: MemberWithProjectRoleProps) =>
       <div className={cx(gridNewLine, textSmall)}>{username}</div>
       {currentUser?.id != member.userId ? (
         <DropDownMenu
-          icon={faEllipsisV}
+          icon={'more_vert'}
           valueComp={{ value: '', label: '' }}
           buttonClassName={cx(lightIconButtonStyle, css({ marginLeft: space_S }))}
           onSelect={value => setShowModal(value.value)}
@@ -252,7 +240,7 @@ const MemberWithProjectRole = ({ member, roles }: MemberWithProjectRoleProps) =>
                     value: 'resend',
                     label: (
                       <>
-                        <FontAwesomeIcon icon={faEnvelope} />{' '}
+                         <Icon icon={'mail'} />{' '}
                         {i18n.modules.team.actions.resendInvitation}
                       </>
                     ),
@@ -281,21 +269,21 @@ const MemberWithProjectRole = ({ member, roles }: MemberWithProjectRoleProps) =>
               value: 'delete',
               label: (
                 <>
-                  <FontAwesomeIcon icon={faTrash} color={errorColor} /> {i18n.common.delete}
+                   <Icon icon={'delete'} color={errorColor} /> {i18n.common.delete}
                 </>
               ),
             },
           ]}
         />
       ) : (
-        <FontAwesomeIcon icon={faUser} title={i18n.team.me} />
+         <Icon icon={'person'} title={i18n.team.me} />
       )}
       {roles.map(role => {
         const hasRole = roleIds.indexOf(role.id || -1) >= 0;
         return (
           <IconButton
             key={role.id}
-            icon={hasRole ? faCheck : faMinus}
+            icon={hasRole ? 'check' : 'remove'}
             iconColor={hasRole ? successColor : 'var(--darkGray)'}
             title={hasRole ? i18n.team.removeRole : i18n.team.giveRole}
             onClick={() => {

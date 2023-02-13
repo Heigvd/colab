@@ -6,7 +6,6 @@
  */
 
 import { css } from '@emotion/css';
-import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import { Illustration, Project } from 'colab-rest-client';
 import * as React from 'react';
 import * as API from '../../API/api';
@@ -125,7 +124,7 @@ export default function ProjectCreator({
       widthMax
       heightMax
       collapsedChildren={
-        <Button className={collapsedButtonClassName} icon={faPlus} clickable={!disabled}>
+        <Button className={collapsedButtonClassName} icon={'add'} clickable={!disabled}>
           {i18n.modules.project.actions.createProject}
         </Button>
       }

@@ -7,7 +7,6 @@
 
 import { css } from '@emotion/css';
 import { faSave } from '@fortawesome/free-regular-svg-icons';
-import { faTimes } from '@fortawesome/free-solid-svg-icons';
 import * as React from 'react';
 import PasswordStrengthBar from 'react-password-strength-bar';
 import { updateLocalAccountPassword } from '../../API/api';
@@ -78,7 +77,7 @@ export default function LocalAccount(props: LocalAccountProps): JSX.Element {
               </label>
 
               <IconButton
-                icon={faTimes}
+                icon={'close'}
                 title={i18n.common.close}
                 onClick={() => {
                   setPwState('SET');
@@ -87,7 +86,7 @@ export default function LocalAccount(props: LocalAccountProps): JSX.Element {
               />
 
               <IconButton
-                icon={faSave}
+                icon={'save'}
                 onClick={() => {
                   dispatch(
                     updateLocalAccountPassword({

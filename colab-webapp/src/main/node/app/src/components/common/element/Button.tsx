@@ -6,8 +6,6 @@
  */
 
 import { css, cx } from '@emotion/css';
-import { IconProp, SizeProp } from '@fortawesome/fontawesome-svg-core';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import * as React from 'react';
 import {
   buttonStyle,
@@ -17,11 +15,12 @@ import {
   space_S,
 } from '../../styling/style';
 import Clickable, { ClickableProps } from '../layout/Clickable';
+import Icon, { IconSize } from '../layout/Icon';
 
 export interface ButtonProps extends Omit<ClickableProps, 'clickableClassName'> {
-  icon?: IconProp;
+  icon?: string;
   iconColor?: string;
-  iconSize?: SizeProp;
+  iconSize?: keyof typeof IconSize;
   reverseOrder?: boolean;
   invertedButton?: boolean;
 }
@@ -48,10 +47,10 @@ export default function Button({
     >
       {reverseOrder && children}
       {icon && (
-        <FontAwesomeIcon
+         <Icon
           icon={icon}
           color={iconColor}
-          size={iconSize}
+          opsz={iconSize}
           className={reverseOrder ? css({ marginLeft: space_S }) : css({ marginRight: space_S })}
         />
       )}

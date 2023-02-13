@@ -6,22 +6,6 @@
  */
 
 import { css, cx } from '@emotion/css';
-import {
-  faBookOpen,
-  faChevronRight,
-  faCog,
-  faGlobe,
-  faGrip,
-  faHouse,
-  faNetworkWired,
-  faPen,
-  faProjectDiagram,
-  faStar,
-  faTableCells,
-  faTableCellsLarge,
-  faUserGroup,
-} from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Card, CardContent, entityIs, Project } from 'colab-rest-client';
 import * as React from 'react';
 import { Navigate, Route, Routes, useLocation, useNavigate, useParams } from 'react-router-dom';
@@ -52,6 +36,7 @@ import { mainLinkActiveClass, mainMenuLink, MainMenuLink } from '../../common/el
 import Tips, { TipsCtx } from '../../common/element/Tips';
 import Clickable from '../../common/layout/Clickable';
 import Flex from '../../common/layout/Flex';
+import Icon from '../../common/layout/Icon';
 import Monkeys from '../../debugger/monkey/Monkeys';
 import { UserDropDown } from '../../MainNav';
 import Settings from '../../settings/Settings';
@@ -124,9 +109,9 @@ const Ancestor = ({ card, content, last, className }: Ancestor): JSX.Element => 
         >
           {i18n.common.project}
         </Clickable>
-        <FontAwesomeIcon
-          icon={faChevronRight}
-          size="xs"
+         <Icon
+          icon={'chevron_right'}
+          opsz="xs"
           className={cx(breadCrumbsStyle, className)}
         />
       </>
@@ -147,9 +132,9 @@ const Ancestor = ({ card, content, last, className }: Ancestor): JSX.Element => 
           {card.title ? card.title : i18n.modules.card.untitled}
         </Clickable>
         {!last && (
-          <FontAwesomeIcon
-            icon={faChevronRight}
-            size="xs"
+           <Icon
+            icon={'chevron_right'}
+            opsz="xs"
             className={cx(breadCrumbsStyle, className)}
           />
         )}
@@ -282,7 +267,7 @@ const CardWrapper = ({
           </Flex>
           <IconButton
             title="toggle view edit"
-            icon={location.pathname.includes('card') ? faPen : faTableCellsLarge}
+            icon={location.pathname.includes('card') ? 'edit' : 'view_quilt'}
             onClick={() => {
               // Note : functional but not so strong
               if (location.pathname.includes('/card/')) {
@@ -340,7 +325,7 @@ function EditorNav({ project }: EditorNavProps): JSX.Element {
                 dispatch(API.closeCurrentProject());
               }}
             >
-              <FontAwesomeIcon icon={faHouse} size="lg" />
+               <Icon icon={'home'} opsz="lg" />
             </span>
           </MainMenuLink>
           <Flex
@@ -359,20 +344,20 @@ function EditorNav({ project }: EditorNavProps): JSX.Element {
                   : mainMenuLink
               }
             >
-              <FontAwesomeIcon
-                icon={faGrip}
+               <Icon
+                icon={'drag_indicator'}
                 title={i18n.common.views.view + ' ' + i18n.common.views.board}
               />
             </MainMenuLink>
             <MainMenuLink to="./hierarchy">
-              <FontAwesomeIcon
-                icon={faNetworkWired}
+               <Icon
+                icon={'family_history'}
                 title={i18n.common.views.view + ' ' + i18n.common.views.hierarchy}
               />
             </MainMenuLink>
             <MainMenuLink to="./flow">
-              <FontAwesomeIcon
-                icon={faProjectDiagram}
+               <Icon
+                icon={'account_tree'}
                 title={i18n.common.views.view + ' ' + i18n.common.views.activityFlow}
               />
             </MainMenuLink>
@@ -385,8 +370,8 @@ function EditorNav({ project }: EditorNavProps): JSX.Element {
             wrap="nowrap"
           >
             <MainMenuLink to="./docs">
-              <FontAwesomeIcon
-                icon={faBookOpen}
+               <Icon
+                icon={'menu_book'}
                 title={i18n.modules.project.settings.resources.label}
               />
             </MainMenuLink>
@@ -406,7 +391,7 @@ function EditorNav({ project }: EditorNavProps): JSX.Element {
                   : mainMenuLink
               }
             >
-              <FontAwesomeIcon icon={faUserGroup} title={i18n.team.teamManagement} />
+               <Icon icon={'group'} title={i18n.team.teamManagement} />
             </MainMenuLink>
           </Flex>
           <Flex
@@ -417,7 +402,7 @@ function EditorNav({ project }: EditorNavProps): JSX.Element {
             wrap="nowrap"
           >
             <MainMenuLink to="./project-settings">
-              <FontAwesomeIcon title={i18n.modules.project.labels.projectSettings} icon={faCog} />
+               <Icon title={i18n.modules.project.labels.projectSettings} icon={'settings'} />
             </MainMenuLink>
           </Flex>
         </Flex>
@@ -598,9 +583,9 @@ export default function Editor(): JSX.Element {
                 title={i18n.modules.project.info.isAModel}
               >
                 {project.globalProject ? (
-                  <FontAwesomeIcon icon={faGlobe} color="white" size="sm" />
+                   <Icon icon={'public'} color="white" opsz="sm" />
                 ) : (
-                  <FontAwesomeIcon icon={faStar} color="white" size="sm" />
+                   <Icon icon={'star'} color="white" opsz="sm" />
                 )}
               </Flex>
             )}
@@ -728,7 +713,7 @@ function CardCreatorAndOrganize({ rootContent, organize }: CardCreatorAndOrganiz
                 }),
             )}
             title={i18n.modules.card.positioning.toggleText}
-            icon={faTableCells}
+            icon={'view-quilt'}
             onClick={() => organize.setOrganize(e => !e)}
           />
           <CardCreator parentCardContent={rootContent} className={greyIconButtonChipStyle} />

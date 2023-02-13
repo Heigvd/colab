@@ -6,8 +6,6 @@
  */
 
 import { css, cx } from '@emotion/css';
-import { faPlus } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { WithJsonDiscriminator } from 'colab-rest-client';
 import * as React from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -19,6 +17,7 @@ import { useAppDispatch, useLoadingState } from '../../store/hooks';
 import Form, { Field, PasswordScore } from '../common/element/Form';
 import { InlineLink } from '../common/element/Link';
 import Flex from '../common/layout/Flex';
+import Icon from '../common/layout/Icon';
 import { prettyPrint } from '../common/toplevel/Notifier';
 import { lightLinkStyle, space_M, space_S } from '../styling/style';
 import PublicEntranceContainer from './PublicEntranceContainer';
@@ -142,7 +141,7 @@ export default function SignInForm({
             to={buildLinkWithQueryParam('/SignUp', { redirectTo: redirectTo })}
             className={cx(lightLinkStyle, css({ padding: space_S }))}
           >
-            <FontAwesomeIcon icon={faPlus} /> {i18n.authentication.action.createAnAccount}
+             <Icon icon={'add'} /> {i18n.authentication.action.createAnAccount}
           </InlineLink>
         )}
       </Flex>

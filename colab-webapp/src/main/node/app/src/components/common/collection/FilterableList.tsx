@@ -6,8 +6,6 @@
  */
 
 import { css, cx } from '@emotion/css';
-import { faCaretDown, faCaretUp, faFilter } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React from 'react';
 import useTranslations from '../../../i18n/I18nContext';
 import {
@@ -20,6 +18,7 @@ import {
 import Checkbox from '../element/Checkbox';
 import Clickable from '../layout/Clickable';
 import Flex from '../layout/Flex';
+import Icon from '../layout/Icon';
 
 export const categoryTabStyle = cx(
   css({
@@ -71,9 +70,9 @@ export default function FilterableList({
         )}
         onClick={() => setFilterOpen(filterOpen => !filterOpen)}
       >
-        <FontAwesomeIcon icon={faFilter} size="sm" />
+         <Icon icon={'filter_alt'} opsz="sm" />
         {i18n.common.filter}
-        <FontAwesomeIcon icon={filterOpen ? faCaretUp : faCaretDown} />
+         <Icon icon={filterOpen ? 'expand_less' : 'expand_more'} />
       </Clickable>
 
       <Flex justify={filterOpen ? 'space-between' : 'flex-end'} align="center">

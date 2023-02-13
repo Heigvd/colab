@@ -6,7 +6,6 @@
  */
 
 import { css } from '@emotion/css';
-import { faRotateLeft, faSync, faTrash } from '@fortawesome/free-solid-svg-icons';
 import { BlockMonitoring } from 'colab-rest-client';
 import * as React from 'react';
 import { deletePendingChanges, getLiveMonitoringData } from '../../API/api';
@@ -49,7 +48,7 @@ function Grid({ data, sync }: { data: BlockMonitoring[]; sync: () => void }): JS
           {(entry.status === 'UNHEALTHY' || entry.status === 'DATA_ERROR') && (
             <Button
               title="Restore previous version"
-              icon={faRotateLeft}
+              icon={'history'}
               onClick={() => {
                 dispatch(deletePendingChanges(entry.blockId)).then(() => {
                   sync();
@@ -60,7 +59,7 @@ function Grid({ data, sync }: { data: BlockMonitoring[]; sync: () => void }): JS
           {entry.status === 'DELETED' && (
             <Button
               title="Clean"
-              icon={faTrash}
+              icon={'delete'}
               onClick={() => {
                 dispatch(deletePendingChanges(entry.blockId)).then(() => {
                   sync();
@@ -91,7 +90,7 @@ export default function LiveMonitor(): JSX.Element {
   return (
     <div>
       <h3>
-        Live Edition Monitoring <IconButton icon={faSync} onClick={sync} title="sync" />
+        Live Edition Monitoring <IconButton icon={'sync'} onClick={sync} title="sync" />
       </h3>
       <div>
         {typeof data === 'string' ? (

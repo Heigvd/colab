@@ -41,7 +41,7 @@ export default function Debugger(): JSX.Element {
          <SearchSortList itemComp={(item) => <><div className={cx(cardStyle, css({padding: space_S, width: '200px'}))}><h2>{item.title.length > 0 ? item.title : 'No title'}</h2><p>id:{item.id}</p><p>color:{item.color}</p></div></>}  widgets={cardsinfo}/>
       </Tab>
       <Tab name="icons" label="Icons">
-        <Icon icon='settings'/>
+        <Icon icon='eco'/>
       </Tab>
     </Tabs>
   );

@@ -6,7 +6,6 @@
  */
 
 import { css } from '@emotion/css';
-import { faRotateLeft } from '@fortawesome/free-solid-svg-icons';
 import { InvolvementLevel } from 'colab-rest-client';
 import * as React from 'react';
 import Select from 'react-select';
@@ -91,7 +90,7 @@ export default function InvolvementSelector({
   } else {
     const creator = (
       <IconButton
-        icon={faPen}
+        icon={'edit'}
         title="Edit inv. level"
         onClick={createCb}
         className={lightIconButtonStyle}
@@ -136,7 +135,7 @@ export default function InvolvementSelector({
             onChange={onChangeCb}
           />
           {self != null && (
-            <IconButton icon={faRotateLeft} title={i18n.team.resetInvolvement} onClick={clearCb} />
+            <IconButton icon={'history'} title={i18n.team.resetInvolvement} onClick={clearCb} />
           )}
         </>
       )}

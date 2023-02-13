@@ -6,24 +6,24 @@
  */
 
 import { cx } from '@emotion/css';
-import { IconProp, SizeProp, Transform } from '@fortawesome/fontawesome-svg-core';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { IconProp, Transform } from '@fortawesome/fontawesome-svg-core';
 import * as React from 'react';
 import { iconButton, linkStyle } from '../../styling/style';
 import Clickable from '../layout/Clickable';
+import Icon, { IconSize } from '../layout/Icon';
 
 export interface IconButtonProps {
   title: string;
-  icon: IconProp;
+  icon: string;
   iconColor?: string;
-  iconSize?: SizeProp;
+  iconSize?: keyof typeof IconSize;
   mask?: IconProp;
   transform?: string | Transform;
   layer?: { layerIcon: IconProp; transform: string | Transform };
   clickable?: boolean;
   onClick?: (e: React.MouseEvent<HTMLSpanElement> | React.KeyboardEvent<HTMLSpanElement>) => void;
   className?: string;
-  IconClassName?: string;
+  iconClassName?: string;
   stopPropagation?: boolean;
 }
 
@@ -32,12 +32,9 @@ export default function IconButton({
   icon,
   iconColor,
   iconSize,
-  mask,
-  transform,
-  layer,
   onClick,
   className,
-  IconClassName,
+  iconClassName,
   stopPropagation,
 }: IconButtonProps): JSX.Element {
   return (
@@ -49,15 +46,16 @@ export default function IconButton({
       clickable
       stopPropagation={stopPropagation}
     >
-      {layer ? (
+      <Icon icon={icon} className={iconClassName} opsz={iconSize} color={iconColor}/>
+      {/* {layer ? (
         <span className="fa-layers fa-fw">
-          <FontAwesomeIcon
+           <Icon
             icon={layer.layerIcon}
             color={iconColor}
             size={iconSize}
             transform={layer.transform}
           />
-          <FontAwesomeIcon
+           <Icon
             icon={icon}
             color={iconColor}
             size={iconSize}
@@ -66,14 +64,14 @@ export default function IconButton({
           />
         </span>
       ) : (
-        <FontAwesomeIcon
+         <Icon
           icon={icon}
           color={iconColor}
           size={iconSize}
           mask={mask}
           className={IconClassName}
         />
-      )}
+      )} */}
     </Clickable>
   );
 }

@@ -6,8 +6,6 @@
  */
 
 import { css, cx } from '@emotion/css';
-import { faPlus } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { CardContent } from 'colab-rest-client';
 import * as React from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -22,6 +20,7 @@ import Button from '../common/element/Button';
 import { AsyncButtonWithLoader } from '../common/element/ButtonWithLoader';
 import IconButton from '../common/element/IconButton';
 import Flex from '../common/layout/Flex';
+import Icon from '../common/layout/Icon';
 import Modal from '../common/layout/Modal';
 import { lightIconButtonStyle, marginAroundStyle, space_M, space_S } from '../styling/style';
 import CardTypeThumbnail from './cardtypes/CardTypeThumbnail';
@@ -166,12 +165,12 @@ export default function CardCreator({
 
   return display === 'dropdown' ? (
     <div onClick={onClickCb}>
-      <FontAwesomeIcon icon={faPlus} className={css({ marginRight: space_S })} />
+       <Icon icon={'add'} className={css({ marginRight: space_S })} />
       {customLabel ? customLabel : i18n.modules.card.createCard}
     </div>
   ) : (
     <IconButton
-      icon={faPlus}
+      icon={'add'}
       className={cx(lightIconButtonStyle, className)}
       title={customLabel ? customLabel : i18n.modules.card.createCard}
       onClick={onClickCb}

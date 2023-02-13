@@ -566,7 +566,7 @@ function TmpCellDisplay<T>({
       {realCell && <div className={backgroundStyle}>{background(realCell)}</div>}
       <div className={tmpOverlayStyle}>
         {invalid && (
-          <FontAwesomeIcon
+           <Icon
             className={invalidIconStyle}
             size="2x"
             icon={faBan}

@@ -6,15 +6,6 @@
  */
 
 import { css, cx } from '@emotion/css';
-import {
-  faCog,
-  faEllipsisV,
-  faPen,
-  faTableCells,
-  faTrash,
-  faUsers,
-} from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Card, CardContent } from 'colab-rest-client';
 import * as React from 'react';
 import { Route, Routes, useLocation, useNavigate } from 'react-router-dom';
@@ -28,6 +19,7 @@ import { FeaturePreview } from '../common/element/Tips';
 import { ConfirmDeleteModal } from '../common/layout/ConfirmDeleteModal';
 import DropDownMenu from '../common/layout/DropDownMenu';
 import Flex from '../common/layout/Flex';
+import Icon from '../common/layout/Icon';
 import Modal from '../common/layout/Modal';
 import DocumentPreview from '../documents/preview/DocumentPreview';
 import {
@@ -310,7 +302,7 @@ export default function CardThumb({
                 </Routes>
                 {depth === 1 && (
                   <DropDownMenu
-                    icon={faEllipsisV}
+                    icon={'more_vert'}
                     valueComp={{ value: '', label: '' }}
                     buttonClassName={cx(lightIconButtonStyle, css({ marginLeft: space_S }))}
                     entries={[
@@ -332,7 +324,7 @@ export default function CardThumb({
                         value: 'edit',
                         label: (
                           <>
-                            <FontAwesomeIcon icon={faPen} /> {i18n.common.edit}
+                            <Icon icon={'edit'} /> {i18n.common.edit}
                           </>
                         ),
                         action: navigateToEditPageCb,
@@ -341,7 +333,7 @@ export default function CardThumb({
                         value: 'settings',
                         label: (
                           <>
-                            <FontAwesomeIcon icon={faCog} /> {i18n.common.settings}
+                             <Icon icon={'settings'} /> {i18n.common.settings}
                           </>
                         ),
                         action: () => {
@@ -352,7 +344,7 @@ export default function CardThumb({
                         value: 'involvements',
                         label: (
                           <>
-                            <FontAwesomeIcon icon={faUsers} /> {i18n.modules.card.involvements}
+                             <Icon icon={'group'} /> {i18n.modules.card.involvements}
                           </>
                         ),
                         action: () => navigate(`${cardId}/involvements`),
@@ -361,7 +353,7 @@ export default function CardThumb({
                         value: 'delete',
                         label: (
                           <>
-                            <FontAwesomeIcon color={errorColor} icon={faTrash} />{' '}
+                             <Icon color={errorColor} icon={'delete'} />{' '}
                             {i18n.modules.card.deleteCardVariant(hasVariants)}
                           </>
                         ),
@@ -384,10 +376,10 @@ export default function CardThumb({
                 })}
               >
                 <div>
-                  <FontAwesomeIcon icon={faStickyNote} /> {nbStickyNotes}
+                   <Icon icon={faStickyNote} /> {nbStickyNotes}
                 </div>
                 <div>
-                  <FontAwesomeIcon icon={faFile} /> {nbResources}
+                   <Icon icon={faFile} /> {nbResources}
                 </div>
               </Flex> */}
             </div>
@@ -432,7 +424,7 @@ export default function CardThumb({
                       }),
                   )}
                   title={i18n.modules.card.positioning.toggleText}
-                  icon={faTableCells}
+                  icon={'view-quilt'}
                   //value={organize.organize}
                   onClick={e => {
                     e.stopPropagation();

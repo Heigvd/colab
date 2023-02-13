@@ -6,8 +6,6 @@
  */
 
 import { css, cx } from '@emotion/css';
-import { faPlus } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import * as React from 'react';
 import Select, { MultiValue, OnChangeValue, SingleValue } from 'react-select';
 import Creatable from 'react-select/creatable';
@@ -22,6 +20,7 @@ import {
   warningStyle,
 } from '../../styling/style';
 import Flex from '../layout/Flex';
+import Icon from '../layout/Icon';
 import Tips, { TipsProps } from './Tips';
 
 interface Opt<T> {
@@ -120,7 +119,7 @@ export default function SelectInput<T, IsMulti extends boolean>({
             }}
             formatCreateLabel={(inputValue: string) => (
               <div className={cx(selectCreatorStyle, textSmall)}>
-                <FontAwesomeIcon icon={faPlus} />{' '}
+                <Icon icon={'add'} />
                 {i18n.basicComponent.selectInput.create(inputValue)}
               </div>
             )}

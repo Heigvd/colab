@@ -5,46 +5,30 @@
  * Licensed under the MIT License
  */
 
-import { IconProp } from '@fortawesome/fontawesome-svg-core';
-import { faFile, faFrog, faLink, faParagraph, faPlus } from '@fortawesome/free-solid-svg-icons';
 import { entityIs } from 'colab-rest-client';
 import * as React from 'react';
 import * as API from '../../API/api';
 import useTranslations from '../../i18n/I18nContext';
 import { useAppDispatch } from '../../store/hooks';
-import IconButton, { IconButtonProps } from '../common/element/IconButton';
+import IconButton from '../common/element/IconButton';
 import DropDownMenu from '../common/layout/DropDownMenu';
 import { DocumentKind, DocumentOwnership } from './documentCommonType';
 import { DocEditorCtx } from './DocumentEditorToolbox';
 
-function iconByType(docKind: DocumentKind): IconProp {
+function iconByType(docKind: DocumentKind): string {
   if (docKind === 'DocumentFile') {
-    return faFile;
+    return 'file';
   }
 
   if (docKind === 'ExternalLink') {
-    return faLink;
+    return 'attach_file';
   }
 
   if (docKind === 'TextDataBlock') {
-    return faParagraph;
+    return 'paragraph';
   }
 
-  return faFrog;
-}
-
-function iconLayerByType(docKind: DocumentKind): IconButtonProps['layer'] {
-  if (docKind === 'DocumentFile') {
-    return { layerIcon: faPlus, transform: 'shrink-3 left-12 down-2' };
-  }
-
-  if (docKind === 'ExternalLink') {
-    return { layerIcon: faPlus, transform: 'shrink-3 left-14 down-3' };
-  }
-
-  if (docKind === 'TextDataBlock') {
-    return { layerIcon: faPlus, transform: 'shrink-3 left-9 down-5' };
-  }
+  return 'home';
 }
 
 export type DocumentCreatorButtonProps = {
@@ -217,7 +201,6 @@ export default function DocumentCreatorButton({
       {isAdditionAlwaysAtEnd ? (
         <IconButton
           icon={iconByType(docKind)}
-          layer={iconLayerByType(docKind)}
           title={title}
           onClick={() => createDoc('AFTER')}
           className={className}
@@ -225,7 +208,6 @@ export default function DocumentCreatorButton({
       ) : (
         <DropDownMenu
           icon={iconByType(docKind)}
-          layerForIcon={iconLayerByType(docKind)}
           title={title}
           valueComp={{ value: '', label: '' }}
           buttonClassName={className}

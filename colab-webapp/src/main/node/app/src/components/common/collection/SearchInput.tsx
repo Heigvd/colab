@@ -1,4 +1,3 @@
-import { faSearch } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import * as React from "react";
 import { useEffect, useState } from "react";
@@ -39,7 +38,7 @@ export default function SearchInput(props: ISearchProps) {
   
     return (
       <Flex>
-        <FontAwesomeIcon icon={faSearch}/>
+         <Icon icon={'search'}/>
         <input
           id="search"
           className="form-control full-width"

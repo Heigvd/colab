@@ -6,8 +6,6 @@
  */
 
 import { css, cx } from '@emotion/css';
-import { faGlobe, faStar } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import * as React from 'react';
 import * as API from '../../../API/api';
 //import { CSVLink } from 'react-csv';
@@ -20,6 +18,7 @@ import Button from '../../common/element/Button';
 import { WIPContainer } from '../../common/element/Tips';
 import ConfirmDeleteOpenCloseModal from '../../common/layout/ConfirmDeleteModal';
 import Flex from '../../common/layout/Flex';
+import Icon from '../../common/layout/Icon';
 import {
   borderRadius,
   disabledStyle,
@@ -77,10 +76,10 @@ export default function ProjectSettingsAdvanced({
             align="center"
             className={css({ backgroundColor: 'var(--fgColor)', width: '80px' })}
           >
-            <FontAwesomeIcon
-              icon={project.globalProject ? faGlobe : faStar}
+             <Icon
+              icon={project.globalProject ? 'public' : 'star'}
               className={css({ color: 'var(--bgColor)' })}
-              size="2x"
+              opsz="lg"
             />
           </Flex>
           <Flex direction="column" align="stretch" className={css({ padding: space_M })}>
@@ -97,7 +96,7 @@ export default function ProjectSettingsAdvanced({
                       className={cx(css({ color: errorColor, borderColor: errorColor }))}
                       clickable
                     >
-                      <FontAwesomeIcon icon={faStar} /> Make private
+                       <Icon icon={'star'} /> Make private
                     </Button>
                   }
                   className={css({
@@ -131,7 +130,7 @@ export default function ProjectSettingsAdvanced({
                       className={cx(css({ color: errorColor, borderColor: errorColor }))}
                       clickable
                     >
-                      <FontAwesomeIcon icon={faGlobe} /> Make global
+                       <Icon icon={'public'} /> Make global
                     </Button>
                   }
                   className={css({

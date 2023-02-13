@@ -6,7 +6,6 @@
  */
 
 import { css, cx } from '@emotion/css';
-import { faSync } from '@fortawesome/free-solid-svg-icons';
 import { entityIs, ProjectContentChannel, UserChannel } from 'colab-rest-client';
 import * as React from 'react';
 import { getAllUsers, getOccupiedChannels } from '../../API/api';
@@ -118,7 +117,7 @@ export default function Who(): JSX.Element {
           onClick={() => {
             dispatch(getOccupiedChannels());
           }}
-          icon={faSync}
+          icon={'sync'}
           title="Sync"
         />
 

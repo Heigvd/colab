@@ -6,7 +6,6 @@
  */
 
 import { css } from '@emotion/css';
-import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import * as React from 'react';
 import * as API from '../../API/api';
 import useTranslations from '../../i18n/I18nContext';
@@ -127,7 +126,7 @@ export default function ResourceCreator({ customButton }: ResourceCreatorProps):
           customButton
         ) : (
           <IconButton
-            icon={faPlus}
+            icon={'add'}
             title={i18n.modules.document.createDocument}
             className={lightIconButtonStyle}
           />

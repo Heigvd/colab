@@ -6,8 +6,6 @@
  */
 
 import { css, cx } from '@emotion/css';
-import { faPen, faTrash } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Illustration } from 'colab-rest-client';
 import * as React from 'react';
 import { emailFormat } from '../../helper';
@@ -18,6 +16,7 @@ import Form from '../common/element/Form';
 import IllustrationDisplay from '../common/element/IllustrationDisplay';
 import { FormInput } from '../common/element/Input';
 import Flex from '../common/layout/Flex';
+import Icon from '../common/layout/Icon';
 import {
   borderRadius,
   invertedButtonStyle,
@@ -124,7 +123,7 @@ export default function ProjectDataInitialization({
             className={projectIllustrationOverlay}
             title={i18n.modules.project.actions.editIllustration}
           >
-            <FontAwesomeIcon icon={faPen} color={'var(--bgColor)'} />
+            <Icon icon={'edit'} color={'var(--bgColor)'} />
           </Flex>
         </Flex>
       )}
@@ -186,7 +185,7 @@ export default function ProjectDataInitialization({
               <Flex className={textSmall}>{guest}</Flex>
               {!readOnly && (
                 <ConfirmIconButton
-                  icon={faTrash}
+                  icon={'delete'}
                   title={i18n.team.removeGuest}
                   onConfirm={() => removeGuest(guest)}
                   className={lightIconButtonStyle}

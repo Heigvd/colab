@@ -5,7 +5,6 @@
  * Licensed under the MIT License
  */
 
-import { faSync } from '@fortawesome/free-solid-svg-icons';
 import * as React from 'react';
 import { getVersionDetails } from '../../API/api';
 import { useVersionDetails } from '../../selectors/configSelector';
@@ -31,7 +30,7 @@ export default function MainPanel(): JSX.Element {
           <span>
             {version.dockerImages ? version.dockerImages : 'Dev'} (build #
             {version.buildNumber ? version.buildNumber : 'ninja'})
-            <Button icon={faSync} onClick={sync} />
+            <Button icon={'sync'} onClick={sync} />
           </span>
         )}
       </div>

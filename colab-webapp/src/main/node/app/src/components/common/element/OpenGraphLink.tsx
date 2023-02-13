@@ -6,13 +6,12 @@
  */
 
 import { css, cx } from '@emotion/css';
-import { faChainBroken, faExternalLinkAlt, faLink, faPen } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import * as React from 'react';
 import useTranslations from '../../../i18n/I18nContext';
 import { useUrlMetadata } from '../../../selectors/externalDataSelector';
 import { lightIconButtonStyle, space_M, space_S } from '../../styling/style';
 import Flex from '../layout/Flex';
+import Icon from '../layout/Icon';
 import { emptyLightTextStyle } from './FilePicker';
 import IconButton from './IconButton';
 import InlineLoading from './InlineLoading';
@@ -136,7 +135,7 @@ export default function OpenGraphLink({
   }, [setEditingState]);
 
   const editIcon = !readOnly && editCb && (
-    <IconButton className={lightIconButtonStyle} icon={faPen} onClick={setEditCb} title="" />
+    <IconButton className={lightIconButtonStyle} icon={'edit'} onClick={setEditCb} title="" />
   );
 
   if (metadata == 'LOADING') {
@@ -154,7 +153,7 @@ export default function OpenGraphLink({
   if (metadata == 'NO_URL') {
     return (
       <Flex className={cardStyle} title={decodedUrl} align="center">
-        <FontAwesomeIcon icon={faLink} size="lg" color="var(--lightGray)" />
+         <Icon icon={'link'} opsz="lg" color="var(--lightGray)" />
         <span className={cx(emptyLightTextStyle, css({ marginLeft: space_S }))}>Empty link</span>
         {editIcon}
       </Flex>
@@ -169,9 +168,9 @@ export default function OpenGraphLink({
       return (
         <Flex className={cardStyle} title={decodedUrl} align="center">
           <div title={decodedUrl} className={css({ padding: space_S })}>
-            <FontAwesomeIcon
-              icon={faChainBroken}
-              size="lg"
+             <Icon
+              icon={'link_off'}
+              opsz="lg"
               className={css({ marginRight: space_S })}
             />
             {decodedUrl}
@@ -183,7 +182,7 @@ export default function OpenGraphLink({
       const toolbar = (
         <Flex>
           <IconButton
-            icon={faExternalLinkAlt}
+            icon={'open_in_new'}
             title={i18n.modules.document.openInNewTab}
             className={cx(lightIconButtonStyle, css({ marginLeft: space_M, cursor: 'pointer' }))}
             onClick={openUrl}

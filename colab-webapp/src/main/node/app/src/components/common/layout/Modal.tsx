@@ -6,7 +6,6 @@
  */
 
 import { css, cx } from '@emotion/css';
-import { faTimes } from '@fortawesome/free-solid-svg-icons';
 import * as React from 'react';
 import useTranslations from '../../../i18n/I18nContext';
 import { cardStyle, lightIconButtonStyle, space_L, space_M, space_S } from '../../styling/style';
@@ -111,7 +110,7 @@ export default function Modal({
               </Flex>
               {showCloseButton && (
                 <IconButton
-                  icon={faTimes}
+                  icon={'close'}
                   title={i18n.common.close}
                   iconSize="lg"
                   onClick={onClose}

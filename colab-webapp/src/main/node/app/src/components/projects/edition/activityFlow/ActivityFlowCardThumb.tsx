@@ -120,7 +120,7 @@ export function AFCard({ card, jsPlumb, plumbRefs }: CardProps): JSX.Element {
               align="center"
               className={`CardSourceHandle ` + css({ minHeight: '1.5rem', flexGrow: 1 })}
             >
-              <FontAwesomeIcon icon={faProjectDiagram} className={css({ margin: 'auto' })} />
+               <Icon icon={faProjectDiagram} className={css({ margin: 'auto' })} />
             </Flex>
           </CardLayout>
         )}

@@ -6,7 +6,6 @@
  */
 
 import { css, cx } from '@emotion/css';
-import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import useTranslations from '../i18n/I18nContext';
@@ -25,7 +24,7 @@ export default function AboutColab(): JSX.Element {
   return (
     <Flex direction="column" className={cx(fullPageStyle, paddedContainerStyle)} align="stretch">
       <IconButton
-        icon={faArrowLeft}
+        icon={'arrow_back'}
         title={i18n.common.back}
         onClick={() => {
           navigate(-1);

@@ -71,7 +71,7 @@ export default function ButtonWithLoader({
       <Flex align="center" className={cx({ [css({ opacity: 0 })]: isLoading })}>
         {reverseOrder && children}
         {icon && (
-          <FontAwesomeIcon
+           <Icon
             icon={icon}
             color={iconColor}
             size={iconSize}
@@ -82,7 +82,7 @@ export default function ButtonWithLoader({
       </Flex>
       {isLoading && (
         <div className={cx({ [overlayIconStyle]: isLoading })}>
-          <FontAwesomeIcon icon={faSpinner} color={iconColor} size={iconSize} pulse />
+           <Icon icon={faSpinner} color={iconColor} size={iconSize} pulse />
         </div>
       )}
     </Clickable>

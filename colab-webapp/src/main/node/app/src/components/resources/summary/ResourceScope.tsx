@@ -108,26 +108,26 @@ const OwnerCtx = React.createContext<OwnerContext>({
 
 const color = 'var(--pictoBlue)';
 
-const ownerIcon = <FontAwesomeIcon className="fa-stack-1x" icon={faBook} color={color} />;
-const visibleIcon = <FontAwesomeIcon className="fa-stack-1x" icon={faBookReader} color={color} />;
+const ownerIcon =  <Icon className="fa-stack-1x" icon={faBook} color={color} />;
+const visibleIcon =  <Icon className="fa-stack-1x" icon={faBookReader} color={color} />;
 
 /** Indicates user do not use the resource, but did not explicitly reject it */
 const unusedIcon = (
-  <FontAwesomeIcon className="fa-stack-1x" icon={faBookReader} color={'lightgrey'} />
+   <Icon className="fa-stack-1x" icon={faBookReader} color={'lightgrey'} />
 );
 /** Indicates user explicitly reject the resource */
-const rejectedIcon = <FontAwesomeIcon className="fa-stack-1x" icon={faBan} color={color} />;
+const rejectedIcon =  <Icon className="fa-stack-1x" icon={faBan} color={color} />;
 
-const circleIcon = <></>; // <FontAwesomeIcon icon={faCircleDot} color={'var(--pictoBlue)'} />;
+const circleIcon = <></>; //  <Icon icon={faCircleDot} color={'var(--pictoBlue)'} />;
 
-const ownerIconStack = <FontAwesomeIcon className="fa-stack-1x" icon={faBook} color="grey" />;
+const ownerIconStack =  <Icon className="fa-stack-1x" icon={faBook} color="grey" />;
 const visibleIconStack = (
-  <FontAwesomeIcon className="fa-stack-1x" icon={faBookReader} color="grey" />
+   <Icon className="fa-stack-1x" icon={faBookReader} color="grey" />
 );
-const rejectedIconStack = <FontAwesomeIcon className="fa-stack-1x" icon={faBan} color="grey" />;
+const rejectedIconStack =  <Icon className="fa-stack-1x" icon={faBan} color="grey" />;
 
 const slashIcon = (
-  <FontAwesomeIcon className="fa-stack-1x" icon={faSlash} color={'var(--errorColor)'} />
+   <Icon className="fa-stack-1x" icon={faSlash} color={'var(--errorColor)'} />
 );
 
 const noIcon = <></>;
@@ -151,7 +151,7 @@ function Stack({ children }: { children: React.ReactNode }): JSX.Element {
 
 const youAreHereIcon = (
   <Stack>
-    <FontAwesomeIcon className="fa-stack-1x" icon={faLocationDot} color={'var(--errorColor)'} />
+     <Icon className="fa-stack-1x" icon={faLocationDot} color={'var(--errorColor)'} />
   </Stack>
 );
 

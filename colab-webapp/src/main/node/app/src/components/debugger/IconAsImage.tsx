@@ -8,7 +8,7 @@
 import * as React from 'react';
 
 import * as fas from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import Icon from '../common/layout/Icon';
 
 function isIconDef(icon: unknown): icon is fas.IconDefinition {
   if (icon != null && typeof icon === 'object' && 'icon' in icon) {
@@ -39,7 +39,7 @@ function convertToImageSource(iconName: string): string {
 }
 
 export default function IconAsImage(): JSX.Element {
-  const [iconName, setIconName] = React.useState('faUser');
+  const [iconName, setIconName] = React.useState('person');
   const imgSrc = convertToImageSource(iconName);
   const svg = convertToSvg(iconName);
 
@@ -49,7 +49,7 @@ export default function IconAsImage(): JSX.Element {
       {imgSrc ? (
         <img height="24" data-icon={iconName} src={imgSrc} />
       ) : (
-        <FontAwesomeIcon icon={fas.faSkull} color="red" />
+         <Icon icon={'skull'} color="red" />
       )}
       {imgSrc ? (
         <div
@@ -58,7 +58,7 @@ export default function IconAsImage(): JSX.Element {
           }}
         />
       ) : (
-        <FontAwesomeIcon icon={fas.faSkull} color="red" />
+         <Icon icon={'skull'} color="red" />
       )}
     </div>
   );

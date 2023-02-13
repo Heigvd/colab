@@ -6,7 +6,6 @@
  */
 
 import { css, cx } from '@emotion/css';
-import { faArrowLeft, faPlus } from '@fortawesome/free-solid-svg-icons';
 import * as React from 'react';
 import useTranslations from '../../i18n/I18nContext';
 import { useAndLoadResources } from '../../selectors/resourceSelector';
@@ -120,7 +119,7 @@ export function ResourcesMainViewHeader({
     <>
       {displayMode !== 'LIST' && (
         <IconButton
-          icon={faArrowLeft}
+          icon={'arrow_back'}
           title={i18n.modules.resource.backList}
           onClick={displayList}
           className={lightIconButtonStyle}
@@ -292,7 +291,7 @@ export function ResourcesMainViewPanel({
             <ResourceCreator
               collapsedClassName={lightIconButtonStyle}
               customButton={
-                <Button icon={faPlus} clickable className={invertedButtonStyle}>
+                <Button icon={'add'} clickable className={invertedButtonStyle}>
                   {i18n.modules.document.createDocument}
                 </Button>
               }

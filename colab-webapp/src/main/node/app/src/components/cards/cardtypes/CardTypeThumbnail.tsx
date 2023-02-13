@@ -6,9 +6,6 @@
  */
 
 import { css, cx } from '@emotion/css';
-import { faFile } from '@fortawesome/free-regular-svg-icons';
-import { faEllipsisV, faExchangeAlt, faMapPin, faPen } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import * as React from 'react';
 import { useNavigate } from 'react-router-dom';
 import * as API from '../../../API/api';
@@ -22,6 +19,7 @@ import Button from '../../common/element/Button';
 import { ConfirmDeleteModal } from '../../common/layout/ConfirmDeleteModal';
 import DropDownMenu from '../../common/layout/DropDownMenu';
 import Flex from '../../common/layout/Flex';
+import Icon from '../../common/layout/Icon';
 import Modal from '../../common/layout/Modal';
 import { DocTextDisplay } from '../../documents/DocTextItem';
 import {
@@ -83,7 +81,7 @@ export default function CardTypeThumbnail({
     <>
       {isEmpty ? (
         <Flex title={i18n.common.none} align="center" justify="center" grow={1}>
-          <FontAwesomeIcon icon={faFile} size="3x" />
+           <Icon icon={'draft'} opsz="lg" />
           <div className={css({ paddingLeft: space_M })}>
             <h3>{i18n.common.none}</h3>
           </div>
@@ -120,7 +118,7 @@ export default function CardTypeThumbnail({
             </Flex>
             {editable && (
               <DropDownMenu
-                icon={faEllipsisV}
+                icon={'more_vert'}
                 valueComp={{ value: '', label: '' }}
                 buttonClassName={cx(lightIconButtonStyle)}
                 entries={[
@@ -131,7 +129,7 @@ export default function CardTypeThumbnail({
                           value: 'edit',
                           label: (
                             <>
-                              <FontAwesomeIcon icon={faPen} /> {i18n.common.edit}
+                              <Icon icon={'edit'} /> {i18n.common.edit}
                             </>
                           ),
                           action: () => navigate(`./edit/${cardType.ownId}`),
@@ -146,7 +144,7 @@ export default function CardTypeThumbnail({
                           value: 'useInProject',
                           label: (
                             <>
-                              <FontAwesomeIcon icon={faMapPin} />{' '}
+                               <Icon icon={'location_on'} />{' '}
                               {i18n.modules.cardType.action.useInProject}
                             </>
                           ),
@@ -166,7 +164,7 @@ export default function CardTypeThumbnail({
                         {
                           label: (
                             <>
-                              <FontAwesomeIcon color={errorColor} icon={faExchangeAlt} />{' '}
+                               <Icon color={errorColor} icon={'remove'} />{' '}
                               {i18n.modules.cardType.action.removeFromProject}
                             </>
                           ),
@@ -193,7 +191,7 @@ export default function CardTypeThumbnail({
                         {
                           label: (
                             <>
-                              <FontAwesomeIcon color={errorColor} icon={faExchangeAlt} />{' '}
+                               <Icon color={errorColor} icon={'remove'} />{' '}
                               {i18n.common.delete}
                             </>
                           ),

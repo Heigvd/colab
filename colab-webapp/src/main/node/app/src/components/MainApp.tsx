@@ -5,8 +5,6 @@
  * Licensed under the MIT License
  */
 import { css, cx } from '@emotion/css';
-import { faSkullCrossbones } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import * as React from 'react';
 import { Navigate, Route, Routes, useLocation, useParams } from 'react-router-dom';
 import * as API from '../API/api';
@@ -21,6 +19,7 @@ import ResetPasswordSent from './authentication/ResetPasswordSent';
 import SignInForm from './authentication/SignIn';
 import SignUpForm from './authentication/SignUp';
 import InlineLoading from './common/element/InlineLoading';
+import Icon from './common/layout/Icon';
 import Loading from './common/layout/Loading';
 import Overlay from './common/layout/Overlay';
 import MainNav from './MainNav';
@@ -62,7 +61,7 @@ const EditorWrapper = () => {
   } else if (project == null || status === 'ERROR') {
     return (
       <div>
-        <FontAwesomeIcon icon={faSkullCrossbones} />
+         <Icon icon={'skull'} />
         <span> {i18n.modules.project.info.noProject}</span>
       </div>
     );

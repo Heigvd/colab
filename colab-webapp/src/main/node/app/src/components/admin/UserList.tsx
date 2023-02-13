@@ -6,14 +6,6 @@
  */
 
 import { css, cx } from '@emotion/css';
-import {
-  faCheck,
-  faSearch,
-  faSortAlphaDown,
-  faSortAlphaUp,
-  faTimes,
-} from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { User } from 'colab-rest-client';
 import * as React from 'react';
 import { grantAdminRight, revokeAdminRight } from '../../API/api';
@@ -22,6 +14,7 @@ import useTranslations from '../../i18n/I18nContext';
 import { useCurrentUser } from '../../selectors/userSelector';
 import { useAppDispatch } from '../../store/hooks';
 import { ConfirmIconButton } from '../common/element/ConfirmIconButton';
+import Icon from '../common/layout/Icon';
 
 const UserComp = ({ user }: { user: User }) => {
   const i18n = useTranslations();
@@ -40,7 +33,7 @@ const UserComp = ({ user }: { user: User }) => {
       <div>{i18n.common.ago(user.activityDate)}</div>
       <div>
         <ConfirmIconButton
-          icon={user.admin ? faCheck : faTimes}
+          icon={user.admin ? 'check' : 'close'}
           onConfirm={() => {
             dispatch(user.admin ? revokeAdminRight(user) : grantAdminRight(user));
           }}
@@ -95,11 +88,11 @@ const Header = ({ sortKey, text }: HeaderProps) => {
 
   if (sortKey) {
     const colour = sortKey === sortBy.key ? 'black' : 'lightgrey';
-    const icon = sortBy.direction > 0 || sortKey != sortBy.key ? faSortAlphaDown : faSortAlphaUp;
+    const icon = sortBy.direction > 0 || sortKey != sortBy.key ? 'sort_by_alpha' : 'sort_by_alpha';
     return (
       <div className={sortableHeaderStyle} onClick={onClickCk}>
         {text}
-        <FontAwesomeIcon icon={icon} color={colour} />
+         <Icon icon={icon} color={colour} />
       </div>
     );
   } else {
@@ -175,7 +168,7 @@ export default function UserList({ users }: UserListProps): JSX.Element {
     <>
       <div>
         <label>
-          <FontAwesomeIcon icon={faSearch} />
+           <Icon icon={'search'} />
           <input type="text" onChange={e => setSearch(e.target.value)} />
         </label>
       </div>

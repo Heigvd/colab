@@ -7,8 +7,6 @@
 
 import { Slider, SliderFilledTrack, SliderThumb, SliderTrack, Tooltip } from '@chakra-ui/react';
 import { css, cx } from '@emotion/css';
-import { faHourglassHalf, faPen, faSkullCrossbones } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { HierarchicalPosition, Project, TeamMember } from 'colab-rest-client';
 import React from 'react';
 import * as API from '../../../API/api';
@@ -22,6 +20,7 @@ import IconButton from '../../common/element/IconButton';
 import InlineLoading from '../../common/element/InlineLoading';
 import { DiscreetInput } from '../../common/element/Input';
 import Tips from '../../common/element/Tips';
+import Icon from '../../common/layout/Icon';
 import {
   borderRadius,
   lightItalicText,
@@ -161,7 +160,7 @@ const MemberWithProjectRights = ({ member, isTheOnlyOwner }: MemberWithProjectRi
     username = (
       <span>
         <div className={cx(textSmall, lightItalicText)}>
-          <FontAwesomeIcon icon={faHourglassHalf} className={css({ marginRight: space_S })} />
+           <Icon icon={'hourglass_top'} className={css({ marginRight: space_S })} />
           {i18n.authentication.info.pendingInvitation}...
         </div>
         {member.displayName}
@@ -172,14 +171,14 @@ const MemberWithProjectRights = ({ member, isTheOnlyOwner }: MemberWithProjectRi
   } else if (user == 'LOADING' || user == null) {
     username = <InlineLoading />;
   } else if (user == 'ERROR') {
-    username = <FontAwesomeIcon icon={faSkullCrossbones} />;
+    username =  <Icon icon={'skull'} />;
   } else {
     const cn = getDisplayName(user);
     username = (
       <>
         {cn}
         {user.affiliation ? ` (${user.affiliation})` : ''}
-        <IconButton icon={faPen} title={i18n.common.edit} onClick={() => updateDisplayName(cn)} />
+        <IconButton icon={'edit'} title={i18n.common.edit} onClick={() => updateDisplayName(cn)} />
       </>
     );
   }

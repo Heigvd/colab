@@ -6,7 +6,6 @@
  */
 
 import { css } from '@emotion/css';
-import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
 import * as React from 'react';
 import { useNavigate } from 'react-router-dom';
 import useTranslations from '../../i18n/I18nContext';
@@ -37,7 +36,7 @@ export default function Admin(): JSX.Element {
       <Flex>
         <IconButton
           title={i18n.common.back}
-          icon={faArrowLeft}
+          icon={'arrow_back'}
           onClick={() => navigate('..')}
           className={lightIconButtonStyle}
         ></IconButton>

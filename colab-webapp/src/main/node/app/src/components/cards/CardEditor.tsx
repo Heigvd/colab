@@ -6,21 +6,9 @@
  */
 
 import { css, cx } from '@emotion/css';
-import { faRectangleList, faWindowRestore } from '@fortawesome/free-regular-svg-icons';
 import {
-  faCog,
-  faCompressArrowsAlt,
-  faEllipsisV,
-  faExpandArrowsAlt,
-  faLeaf,
-  faLock,
   faPaperclip,
-  //faStickyNote,
-  faTrash,
-  faTree,
-  faUsers,
 } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Card, CardContent, entityIs } from 'colab-rest-client';
 import * as React from 'react';
 import { ReflexContainer, ReflexElement, ReflexSplitter } from 'react-reflex';
@@ -82,6 +70,7 @@ import CompletionEditor from './CompletionEditor';
 import ContentSubs from './ContentSubs';
 import { computeNav, VariantPager } from './VariantSelector';
 import { useSortSubcardsWithPos } from '../hooks/sortCards';
+import Icon from '../common/layout/Icon';
 
 interface CardEditorProps {
   card: Card;
@@ -251,9 +240,9 @@ export default function CardEditor({
             >
               <Flex align="center">
                 {variant.frozen && (
-                  <FontAwesomeIcon
+                   <Icon
                     className={css({ padding: `0 ${space_S}` })}
-                    icon={faLock}
+                    icon={'lock'}
                     title={i18n.modules.card.infos.cardLocked}
                     color={'var(--darkGray)'}
                   />
@@ -286,7 +275,7 @@ export default function CardEditor({
                 )}
                 {/* {hasCardType && (
                   <IconButton
-                    icon={faInfoCircle}
+                    icon={'info'}
                     title={i18n.modules.card.showCardType}
                     className={cx(lightIconButtonStyle)}
                     onClick={() => setShowTypeDetails(showTypeDetails => !showTypeDetails)}
@@ -353,12 +342,12 @@ export default function CardEditor({
                 </Routes>
                 <IconButton
                   title={i18n.modules.card.editor.fullScreen}
-                  icon={fullScreen ? faCompressArrowsAlt : faExpandArrowsAlt}
+                  icon={fullScreen ? 'close_fullscreen' : 'open_in_full'}
                   onClick={() => setFullScreen(fullScreen => !fullScreen)}
                   className={cx(lightIconButtonStyle, css({ padding: space_S }))}
                 />
                 <DropDownMenu
-                  icon={faEllipsisV}
+                  icon={'more_vert'}
                   valueComp={{ value: '', label: '' }}
                   buttonClassName={cx(
                     lightIconButtonStyle,
@@ -369,7 +358,7 @@ export default function CardEditor({
                       value: 'settings',
                       label: (
                         <>
-                          <FontAwesomeIcon icon={faCog} /> {i18n.common.settings}
+                          <Icon icon={'settings'} /> {i18n.common.settings}
                         </>
                       ),
                       action: () => navigate('settings'),
@@ -378,7 +367,7 @@ export default function CardEditor({
                       value: 'involvements',
                       label: (
                         <>
-                          <FontAwesomeIcon icon={faUsers} /> {i18n.modules.card.involvements}
+                           <Icon icon={'group'} /> {i18n.modules.card.involvements}
                         </>
                       ),
                       action: () => navigate('involvements'),
@@ -389,7 +378,7 @@ export default function CardEditor({
                             value: 'createType',
                             label: (
                               <>
-                                <FontAwesomeIcon icon={faTree} />{' '}
+                                 <Icon icon={'account_tree'} />
                                 {i18n.modules.card.action.createAType}
                               </>
                             ),
@@ -405,7 +394,7 @@ export default function CardEditor({
                             value: 'removeType',
                             label: (
                               <>
-                                <FontAwesomeIcon icon={faLeaf} />{' '}
+                                 <Icon icon={'eco'} />{' '}
                                 {i18n.modules.card.action.removeTheType}
                               </>
                             ),
@@ -419,7 +408,7 @@ export default function CardEditor({
                       value: 'createVariant',
                       label: (
                         <>
-                          <FontAwesomeIcon icon={faWindowRestore} />{' '}
+                          <Icon icon={'library_add'} />{' '}
                           {i18n.modules.card.createVariant}
                         </>
                       ),
@@ -437,7 +426,7 @@ export default function CardEditor({
                       value: 'delete',
                       label: (
                         <>
-                          <FontAwesomeIcon icon={faTrash} color={errorColor} />{' '}
+                           <Icon icon={'delete'} color={errorColor} />{' '}
                           {i18n.modules.card.deleteCardVariant(hasVariants)}
                         </>
                       ),
@@ -502,25 +491,6 @@ export default function CardEditor({
                                   }}
                                 />
                               )}
-                              {/* {cardType && (
-                                <div className={showTypeDetails ? openDetails : closeDetails}>
-                                  <div>
-                                    <p>
-                                      <b>{i18n.modules.cardType.cardType}</b>:{' '}
-                                      {cardType.title || ''}
-                                    </p>
-                                    <p>
-                                      <b>{i18n.modules.cardType.purpose}</b>:{' '}
-                                      <DocTextDisplay id={cardType.purposeId} />
-                                    </p>
-                                  </div>
-                                  <IconButton
-                                    icon={faTimes}
-                                    title={i18n.common.close}
-                                    onClick={() => setShowTypeDetails(false)}
-                                  />
-                                </div>
-                              )} */}
                             </Flex>
                             <Flex
                               direction="column"
@@ -593,7 +563,7 @@ function SubcardsDisplay({ variant }: { variant: CardContent }): JSX.Element {
         <h3>{i18n.modules.card.subcards}</h3>
         <CardCreator parentCardContent={variant} className={lightIconButtonStyle} />
         <IconButton
-          icon={faRectangleList}
+          icon={'grid_view'}
           onClick={() => {
             setDetailed(e => !e);
             //navigate(`../card/${card.id}/v/${variant.id}`);

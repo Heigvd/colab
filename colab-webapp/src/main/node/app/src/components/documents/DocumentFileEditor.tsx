@@ -5,14 +5,13 @@
  * Licensed under the MIT License
  */
 
-import { faCheck } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { DocumentFile } from 'colab-rest-client';
 import * as React from 'react';
 import * as API from '../../API/api';
 import { useAppDispatch } from '../../store/hooks';
 import FilePicker from '../common/element/FilePicker';
 import InlineLoading from '../common/element/InlineLoading';
+import Icon from '../common/layout/Icon';
 
 export interface DocumentFileProps {
   document: DocumentFile;
@@ -80,7 +79,7 @@ export default function DocumentFileEditor({
         state === 'LOADING' ? (
           <InlineLoading />
         ) : state === 'DONE' ? (
-          <FontAwesomeIcon icon={faCheck} />
+           <Icon icon={'check'} />
         ) : (
           document.fileName
         )

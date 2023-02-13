@@ -29,7 +29,7 @@ const itemsStyle = css({
   position: 'absolute',
 });
 
-const defaultEllipsis = <FontAwesomeIcon color={'var(--lightGray)'} icon={faEllipsis} />;
+const defaultEllipsis =  <Icon color={'var(--lightGray)'} icon={faEllipsis} />;
 
 /**
  * items comp: the must all be the same size

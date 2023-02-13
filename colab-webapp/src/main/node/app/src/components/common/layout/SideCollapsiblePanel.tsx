@@ -7,7 +7,6 @@
 
 import { css, cx } from '@emotion/css';
 import { IconProp } from '@fortawesome/fontawesome-svg-core';
-import { faTimes } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import * as React from 'react';
 import useTranslations from '../../../i18n/I18nContext';
@@ -70,7 +69,7 @@ export function SideCollapsiblePanelBody({
             {itemOpen.header ? itemOpen.header : <h2>{itemOpen.title}</h2>}
           </Flex>
           <IconButton
-            icon={faTimes}
+            icon={'close'}
             title={i18n.common.close}
             onClick={() => {
               if (setOpenKey) {
@@ -133,7 +132,7 @@ export function SideCollapsibleMenu({
             }
           }}
         >
-          <FontAwesomeIcon
+           <Icon
             icon={item.icon}
             title={item.title}
             size="lg"

@@ -6,13 +6,6 @@
  */
 
 import { css } from '@emotion/css';
-import {
-  faInfoCircle,
-  faTimes,
-  faWarning,
-  IconDefinition,
-} from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { entityIs, HttpErrorMessage } from 'colab-rest-client';
 import * as React from 'react';
 import useTranslations, { ColabTranslations } from '../../../i18n/I18nContext';
@@ -90,12 +83,12 @@ function getTitle(notification: ColabNotification, i18n: ColabTranslations): Rea
 function getIcon(notification: ColabNotification): IconDefinition {
   switch (notification.type) {
     case 'INFO':
-      return faInfoCircle;
+      return 'info';
     case 'WARN':
       return faWarning;
     case 'ERROR':
     default:
-      return faTimes;
+      return 'close';
   }
 }
 
@@ -151,7 +144,7 @@ function Notification({ notification, index }: NotificationProps) {
           padding: space_M,
         })}
       >
-        <FontAwesomeIcon icon={getIcon(notification)} size={'2x'} />
+         <Icon icon={getIcon(notification)} size={'2x'} />
       </Flex>
       <div className={css({ padding: space_M })}>
         <h3>{getTitle(notification, i18n)}</h3>
