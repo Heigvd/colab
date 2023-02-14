@@ -99,7 +99,7 @@ const OwnerCtx = React.createContext<OwnerContext>({
   highlightCardType: () => {},
 });
 
-const color = 'var(--pictoBlue)';
+const color = 'var(--warning-main)';
 
 const ownerIcon =  <Icon className="fa-stack-1x" icon={'menu_book'} color={color} />;
 const visibleIcon =  <Icon className="fa-stack-1x" icon={'auto_stories'} color={color} />;
@@ -111,7 +111,7 @@ const unusedIcon = (
 /** Indicates user explicitly reject the resource */
 const rejectedIcon =  <Icon className="fa-stack-1x" icon={'block'} color={color} />;
 
-const circleIcon = <></>; //  <Icon icon={faCircleDot} color={'var(--pictoBlue)'} />;
+const circleIcon = <></>; 
 
 const ownerIconStack =  <Icon className="fa-stack-1x" icon={'menu_book'} color="grey" />;
 const visibleIconStack = (
@@ -140,7 +140,7 @@ function Stack({ children }: { children: React.ReactNode }): JSX.Element {
 
 const youAreHereIcon = (
   <Stack>
-     <Icon className="fa-stack-1x" icon={'my_location'} color={'var(--errorColor)'} />
+     <Icon className="fa-stack-1x" icon={'my_location'} color={'var(--error-main)'} />
   </Stack>
 );
 

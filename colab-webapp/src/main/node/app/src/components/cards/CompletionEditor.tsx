@@ -68,7 +68,7 @@ export default function CompletionEditor({ variant }: CompletionEditorProps): JS
       >
         <SliderTrack height={'20px'} bg="#bbb">
           <SliderFilledTrack
-            className={css({ backgroundColor: 'var(--successColor)', height: '100%' })}
+            className={css({ backgroundColor: 'var(--green-200)', height: '100%' })}
           />
         </SliderTrack>
         <Tooltip
@@ -85,7 +85,7 @@ export default function CompletionEditor({ variant }: CompletionEditorProps): JS
             width="20px"
             borderRadius={'50%'}
             className={css({
-              backgroundColor: showTooltip ? 'var(--bgColor)' : 'transparent',
+              backgroundColor: showTooltip ? 'var(--bg-primary)' : 'transparent',
               '&:focus-visible': { outline: 'none' },
             })}
           />

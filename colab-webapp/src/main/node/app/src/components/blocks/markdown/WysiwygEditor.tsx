@@ -266,15 +266,15 @@ export const idleStyle = cx(
 export const toggledStyle = cx(
   idleStyle,
   css({
-    backgroundColor: 'var(--lightGray)',
-    color: 'var(--primaryColor)',
+    backgroundColor: 'var(--divider-main)',
+    color: 'var(--primary-main)',
   }),
 );
 
 export const toolbarSeparatorStyle = css({
   paddingLeft: space_sm,
   marginLeft: space_sm,
-  borderLeft: '1px solid var(--lightGray)',
+  borderLeft: '1px solid var(--divider-main)',
   height: '24px',
 });
 
@@ -282,9 +282,9 @@ const editorStyle = cx(
   colabFlavouredMarkdown,
   colabFlavouredMarkdownEditable,
   css({
-    backgroundColor: 'var(--bgColor)',
+    backgroundColor: 'var(--bg-primary)',
     padding: '5px',
-    border: '1px solid var(--lighterGray)',
+    border: '1px solid var(--divider-fade)',
     whiteSpace: 'pre-line',
     cursor: 'text',
     '& .some-cursor': {
@@ -293,10 +293,10 @@ const editorStyle = cx(
       userSelect: 'none',
     },
     '&:hover': {
-      border: '1px solid var(--lightGray)',
+      border: '1px solid var(--divider-main)',
     },
     ':focus, :focus-visible': {
-      border: '1px solid var(--darkGray)',
+      border: '1px solid var(--secondary-main)',
       outline: 'none',
     },
   }),
@@ -480,7 +480,7 @@ export function TXTFormatToolbar({ toolbarState, toolbarFormatFeatures }: TXTFor
       />
       <ToolbarSeparator />
       <ToolbarButton
-        icon={'format_list'}
+        icon={'format_list_bulleted'}
         toggled={toolbarState.list === 'UL'}
         onClick={toolbarFormatFeatures.toggleList}
       />

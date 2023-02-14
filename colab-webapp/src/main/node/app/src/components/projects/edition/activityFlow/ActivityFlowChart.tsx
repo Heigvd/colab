@@ -68,7 +68,7 @@ export default function ActivityFlowChart(): JSX.Element {
       const plumb = newInstance({
         container: rootNode,
         connector: { type: 'Straight', options: { stub: 15 } },
-        paintStyle: { strokeWidth: 1, stroke: 'var(--primaryColor)' },
+        paintStyle: { strokeWidth: 1, stroke: 'var(--primary-main)' },
         anchor: { type: 'Perimeter', options: { shape: 'Rectangle' } },
         anchors: ['Right', 'Left'],
         endpoints: [
@@ -397,7 +397,7 @@ export default function ActivityFlowChart(): JSX.Element {
               <Flex
                 className={css({
                   padding: space_lg,
-                  border: '2px solid var(--lightGray)',
+                  border: '2px solid var(--divider-main)',
                   alignSelf: 'stretch',
                 })}
                 direction="column"

@@ -21,7 +21,7 @@ export function overlayStyle(coord: [number, number]) {
     top: coord[1],
     padding: `${ttPadding}px`,
     border: '1px solid grey',
-    backgroundColor: 'var(--bgColor)',
+    backgroundColor: 'var(--bg-primary)',
     width: `${ttWidth}px`,
     zIndex: 10,
     whiteSpace: 'initial',

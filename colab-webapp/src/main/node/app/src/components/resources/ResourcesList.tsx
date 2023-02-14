@@ -189,7 +189,7 @@ function ResourcesListByCategory({
 
 const resourcesStackLabelStyle = css({
   fontWeight: 'bold',
-  backgroundColor: 'var(--hoverBgColor)',
+  backgroundColor: 'var(--bg-secondary)',
   marginTop: 0,
   paddingLeft: space_lg,
   fontSize: '0.8rem',
@@ -537,7 +537,7 @@ function TocHeader({ category }: TocHeaderProps): JSX.Element {
               marginTop: space_sm,
               marginLeft: space_lg,
               marginRight: space_lg,
-              borderBottom: '1px solid var(--lightGray)',
+              borderBottom: '1px solid var(--divider-main)',
               fontWeight: 'bold',
               fontSize: '0.75rem',
             }),
@@ -555,11 +555,10 @@ function TocHeader({ category }: TocHeaderProps): JSX.Element {
 
 const tocEntryStyle = css({
   cursor: 'pointer',
-  //padding: space_S + ' ' + space_M,
-  color: 'var(--pictoGrey)',
+  color: 'var(--text-secondary)',
   '&:hover': {
-    backgroundColor: 'var(--hoverBgColor)',
-    color: 'var(--fgColor)',
+    backgroundColor: 'var(--bg-secondary)',
+    color: 'var(--text-primary)',
   },
 });
 
@@ -614,8 +613,8 @@ function TocEntry({
             grow={1}
             className={cx(
               css({ padding: '3px ' + space_lg }),
-              { [css({ color: 'var(--darkGray)' })]: effectiveReadOnly },
-              { [css({ color: 'var(--darkGray)' })]: !effectiveReadOnly },
+              { [css({ color: 'var(--secondary-main)' })]: effectiveReadOnly },
+              { [css({ color: 'var(--secondary-main)' })]: !effectiveReadOnly },
             )}
           >
             <div
@@ -632,7 +631,7 @@ function TocEntry({
                   icon={'visibility'}
                   opsz="xs"
                   className={css({ marginRight: '3px' })}
-                  color="var(--lightGray)"
+                  color="var(--divider-main)"
                 />
               )}
               {resource.targetResource.published && resource.isDirectResource && (
@@ -640,7 +639,7 @@ function TocEntry({
                   icon={'subdirectory_arrow_right'}
                   opsz="xs"
                   className={css({ marginRight: '3px' })}
-                  color="var(--lightGray)"
+                  color="var(--divider-main)"
                 />
               )}
               {/* {showLocationIcon && (

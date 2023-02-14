@@ -19,19 +19,19 @@ import {
 const tagStyle = cx(
   css({
     padding: '0 ' + space_sm,
-    color: 'var(--darkGray)',
+    color: 'var(--secondary-main)',
     margin: space_sm,
-    border: '1px solid var(--darkGray)',
+    border: '1px solid var(--secondary-main)',
     userSelect: 'none',
     fontSize: '0.9em',
   }),
 );
 
 const checkedTagStyle = css({
-  backgroundColor: 'var(--darkGray)',
-  color: 'var(--primaryColorContrast)',
+  backgroundColor: 'var(--secondary-main)',
+  color: 'var(--primary-contrast)',
   '&:hover': {
-    color: 'var(--primaryColorContrast)',
+    color: 'var(--primary-contrast)',
   },
 });
 

@@ -19,7 +19,7 @@ export default function WhiteLogo({ className }: LogoProps): JSX.Element {
       className={cx(
         css({
           '#logo_svg__colabText > path': {
-            fill: 'var(--fgColor)',
+            fill: 'var(--text-primary)',
           },
         }),
         className,

@@ -61,7 +61,7 @@ export function SideCollapsiblePanelBody({
           align="center"
           className={css({
             padding: space_sm + ' ' + space_lg,
-            borderBottom: '1px solid var(--lightGray)',
+            borderBottom: '1px solid var(--divider-main)',
           })}
         >
           <Flex align="baseline">

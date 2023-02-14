@@ -40,7 +40,7 @@ export default function TargetCardTypeSummary({
         ) : (
            <Icon
             icon={'globe'}
-            color={'var(--secondaryColor)'}
+            color={'var(--primary-main)'}
             title={i18n.modules.cardType.info.isGlobalType}
             className={targetProjectIconStyle}
           />
@@ -68,7 +68,7 @@ function TargetProjectSummary({ projectId }: TargetProjectSummaryProps): JSX.Ele
           : referenceIcon
       }
       className={targetProjectIconStyle}
-      color={project?.illustration ? project.illustration.iconBkgdColor : 'var(--lightGray)'}
+      color={project?.illustration ? project.illustration.iconBkgdColor : 'var(--divider-main)'}
       title={
         entityIs(project, 'Project') && project?.name
           ? i18n.modules.cardType.info.fromProject(project.name)

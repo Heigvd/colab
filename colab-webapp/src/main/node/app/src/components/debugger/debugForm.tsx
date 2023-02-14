@@ -149,7 +149,7 @@ export default function DebugForm(): JSX.Element {
           alert('yo');
         }}
         submitLabel="Go"
-        childrenClassName={css({ backgroundColor: 'var(--lightGray)' })}
+        childrenClassName={css({ backgroundColor: 'var(--divider-main)' })}
       >
         <span>something to add after submit button</span>
       </Form>

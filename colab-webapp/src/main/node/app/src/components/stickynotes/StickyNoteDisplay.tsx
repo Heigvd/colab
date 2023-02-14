@@ -65,7 +65,7 @@ export default function StickyNoteDisplay({
     >
       <Flex
         justify="space-between"
-        className={css({ borderBottom: '1px solid var(--lightGray)', padding: space_sm })}
+        className={css({ borderBottom: '1px solid var(--divider-main)', padding: space_sm })}
       >
         {showModal === 'delete' && (
           <ConfirmDeleteModal

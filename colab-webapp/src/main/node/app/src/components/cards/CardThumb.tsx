@@ -79,7 +79,7 @@ export function TinyCard({ card, width = '15px', height = '10px' }: TinyCardProp
       className={css({
         width: width,
         height: height,
-        border: `2px solid var(--lightGray)`,
+        border: `2px solid var(--divider-main)`,
         borderRadius: '4px',
         margin: '3px',
       })}
@@ -89,7 +89,7 @@ export function TinyCard({ card, width = '15px', height = '10px' }: TinyCardProp
         className={css({
           height: '3px',
           width: '100%',
-          borderBottom: `2px solid ${card.color || 'var(--lightGray)'}`,
+          borderBottom: `2px solid ${card.color || 'var(--divider-main)'}`,
         })}
       ></div>
     </div>
@@ -204,8 +204,8 @@ export default function CardThumb({
                 borderTop:
                   card.color && card.color != '#ffffff'
                     ? '5px solid ' + card.color
-                    : '3px solid var(--bgColor)',
-                borderBottom: '1px solid var(--lighterGray)',
+                    : '3px solid var(--bg-primary)',
+                borderBottom: '1px solid var(--divider-fade)',
                 width: '100%',
                 cursor: 'pointer',
               }),
@@ -365,7 +365,7 @@ export default function CardThumb({
               // To discuss.
               <Flex
                 className={css({
-                  color: 'var(--lightGray)',
+                  color: 'var(--divider-main)',
                   gap: space_M,
                   fontSize: '0.85em',
                   paddingRight: space_S,
@@ -415,7 +415,7 @@ export default function CardThumb({
                     organize &&
                       css({
                         backgroundColor: 'var(--success-main)',
-                        color: 'var(--bgColor)',
+                        color: 'var(--bg-primary)',
                         border: 'var(--success-main)',
                       }),
                   )}

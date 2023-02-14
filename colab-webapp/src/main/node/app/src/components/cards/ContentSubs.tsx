@@ -252,7 +252,7 @@ export default function ContentSubs({
                       grow={1}
                       className={cx(
                         lightIconButtonStyle,
-                        css({ border: '1px dashed var(--lightGray)' }),
+                        css({ border: '1px dashed var(--divider-main)' }),
                       )}
                     >
                       <h3>+ {sortedSubCardsWithPos.length - (nbSubDisplayed - 1)}</h3>

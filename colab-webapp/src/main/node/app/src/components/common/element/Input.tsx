@@ -26,7 +26,7 @@ import Tips, { TipsProps } from './Tips';
 
 export const inputStyle = css({
   outline: 'none',
-  border: 'solid 1px var(--lightGray)',
+  border: 'solid 1px var(--divider-main)',
   color: 'var(--secFgColor)',
   backgroundColor: 'var(--secBgColor)',
   borderRadius: '6px',
@@ -36,8 +36,8 @@ export const inputStyle = css({
   lineHeight: '2.5em',
   fontFamily: 'inherit',
   fontSize: text_sm,
-  '&:focus': { border: 'solid 1px var(--darkGray)', outline: 'solid 1px var(--darkGray)' },
-  '&:hover': { border: 'solid 1px var(--darkGray)' },
+  '&:focus': { border: 'solid 1px var(--secondary-main)', outline: 'solid 1px var(--secondary-main)' },
+  '&:hover': { border: 'solid 1px var(--secondary-main)' },
 });
 
 const textareaStyle = css({
@@ -54,8 +54,8 @@ const textareaStyle = css({
   fontFamily: 'inherit',
   fontSize: text_sm,
   maxWidth: '100%',
-  '&:focus': { border: 'solid 1px var(--darkGray)', outline: 'solid 1px var(--darkGray)' },
-  '&:hover': { border: 'solid 1px var(--darkGray)' },
+  '&:focus': { border: 'solid 1px var(--secondary-main)', outline: 'solid 1px var(--secondary-main)' },
+  '&:hover': { border: 'solid 1px var(--secondary-main)' },
 });
 
 // TODO replace OnConfirmInput
@@ -312,7 +312,7 @@ function Input({
           }}
           className={cx(
             inputEditClassName && mode === 'EDIT' ? inputEditClassName : inputDisplayClassName,
-            css({ color: 'var(--fgColor)' }),
+            css({ color: 'var(--text-primary)' }),
           )}
         />
       ) : (
@@ -436,7 +436,7 @@ const inlineInputStyle = {
 
 const inlineInputEditingStyle = css({
   ...inlineInputStyle,
-  border: '1px solid var(--darkGray)',
+  border: '1px solid var(--secondary-main)',
 });
 
 const inlineInputDisplayStyle = css({
@@ -462,7 +462,7 @@ const inlineTextAreaStyle = {
 
 const inlineTextareaEditingStyle = css({
   ...inlineTextAreaStyle,
-  border: '1px solid var(--darkGray)',
+  border: '1px solid var(--secondary-main)',
 });
 
 const inlineTextareaDisplayStyle = css({
@@ -472,7 +472,7 @@ const inlineTextareaDisplayStyle = css({
 
 const inlineInputHoverStyle = css({
   '&:hover': {
-    borderColor: 'var(--lightGray)',
+    borderColor: 'var(--divider-main)',
   },
 });
 

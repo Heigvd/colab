@@ -131,7 +131,7 @@ export default function MarkdownViewer({
   return (
     <div className={cx(css({ p: { margin: space_sm + ' 0' } }), colabFlavouredMarkdown, className)}>
       {md === '' && showEmptiness ? (
-        <p className={css({ color: 'var(--lightGray)' })}>
+        <p className={css({ color: 'var(--divider-main)' })}>
           <i>{i18n.common.empty}</i>
         </p>
       ) : null}

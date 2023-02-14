@@ -200,7 +200,7 @@ const MemberWithProjectRights = ({ member, isTheOnlyOwner }: MemberWithProjectRi
       >
         <SliderTrack height={'17px'} bg="#bbb">
           <SliderFilledTrack
-            className={css({ backgroundColor: 'var(--secondaryColor)', height: '100%' })}
+            className={css({ backgroundColor: 'var(--primary-main)', height: '100%' })}
           />
         </SliderTrack>
         <Tooltip
@@ -217,8 +217,8 @@ const MemberWithProjectRights = ({ member, isTheOnlyOwner }: MemberWithProjectRi
             width="17px"
             borderRadius={'50%'}
             className={css({
-              backgroundColor: 'var(--bgColor)',
-              border: '1px solid var(--lightGray)',
+              backgroundColor: 'var(--bg-primary)',
+              border: '1px solid var(--divider-main)',
               marginTop: '-1px',
               '&:focus-visible': { outline: 'none' },
             })}
@@ -255,7 +255,7 @@ export default function TeamRights({ project }: { project: Project }): JSX.Eleme
           },
           marginBottom: space_xl,
           paddingBottom: space_lg,
-          borderBottom: '1px solid var(--lightGray)',
+          borderBottom: '1px solid var(--divider-main)',
           gap: space_sm,
         })}
       >

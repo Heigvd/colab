@@ -67,16 +67,16 @@ export default function ProjectSettingsAdvanced({
       {project.type === 'MODEL' && (
         <Flex
           align="stretch"
-          className={css({ border: '1px solid var(--fgColor)'})}
+          className={css({ border: '1px solid var(--text-primary)'})}
         >
           <Flex
             justify="center"
             align="center"
-            className={css({ backgroundColor: 'var(--fgColor)', width: '80px' })}
+            className={css({ backgroundColor: 'var(--primary-darker)', width: '80px' })}
           >
              <Icon
               icon={project.globalProject ? 'public' : 'star'}
-              className={css({ color: 'var(--bgColor)' })}
+              className={css({ color: 'var(--bg-primary)' })}
               opsz="lg"
             />
           </Flex>

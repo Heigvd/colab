@@ -17,7 +17,7 @@ import { DocEditorCtx } from './DocumentEditorToolbox';
 
 function iconByType(docKind: DocumentKind): string {
   if (docKind === 'DocumentFile') {
-    return 'file';
+    return 'draft';
   }
 
   if (docKind === 'ExternalLink') {
@@ -25,7 +25,7 @@ function iconByType(docKind: DocumentKind): string {
   }
 
   if (docKind === 'TextDataBlock') {
-    return 'paragraph';
+    return 'format_paragraph';
   }
 
   return 'home';

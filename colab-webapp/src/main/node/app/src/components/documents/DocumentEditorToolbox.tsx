@@ -30,7 +30,7 @@ const toolboxContainerStyle = css({
   overflow: 'hidden',
   padding: space_sm,
   transition: 'all .5s ease',
-  borderBottom: '2px solid var(--darkGray)',
+  borderBottom: '2px solid var(--secondary-main)',
 });
 
 const closedToolboxStyle = css({
@@ -43,7 +43,7 @@ const closedToolboxStyle = css({
 const borderRightStyle = css({
   paddingRight: space_sm,
   marginRight: space_sm,
-  borderRight: '1px solid var(--lightGray)',
+  borderRight: '1px solid var(--divider-main)',
 });
 
 const toolboxButtonStyle = cx(
@@ -166,7 +166,7 @@ DocEditorToolboxProps): JSX.Element {
                   css({
                     paddingLeft: space_lg,
                     marginLeft: space_lg,
-                    borderLeft: '1px solid var(--lightGray)',
+                    borderLeft: '1px solid var(--divider-main)',
                   }),
                 )}
                 entries={[
@@ -175,7 +175,7 @@ DocEditorToolboxProps): JSX.Element {
                     label: (
                       <>
                         {TXToptions?.markDownMode && (
-                           <Icon icon={'check'} opsz="xs" color="var(--lightGray)" />
+                           <Icon icon={'check'} opsz="xs" color="var(--divider-main)" />
                         )}{' '}
                         {i18n.modules.content.mdMode}
                       </>
@@ -187,7 +187,7 @@ DocEditorToolboxProps): JSX.Element {
                     label: (
                       <>
                         {showTree && (
-                           <Icon icon={'check'} opsz="xs" color="var(--lightGray)" />
+                           <Icon icon={'check'} opsz="xs" color="var(--divider-main)" />
                         )}{' '}
                         {i18n.modules.content.showTree}
                       </>
@@ -227,7 +227,7 @@ DocEditorToolboxProps): JSX.Element {
               css({
                 paddingLeft: space_M,
                 marginLeft: space_M,
-                borderLeft: '1px solid var(--lightGray)',
+                borderLeft: '1px solid var(--divider-main)',
               }),
             )}
             valueComp={{ value: '', label: '' }}
@@ -237,7 +237,7 @@ DocEditorToolboxProps): JSX.Element {
                 value: 'decision',
                 label: (
                   <>
-                     <Icon icon={'check'} size="xs" color="var(--lightGray)" />{' '}
+                     <Icon icon={'check'} size="xs" color="var(--divider-main)" />{' '}
                     Decision
                   </>
                 ),
@@ -247,7 +247,7 @@ DocEditorToolboxProps): JSX.Element {
                 value: 'validation',
                 label: (
                   <>
-                     <Icon icon={'check'} size="xs" color="var(--lightGray)" />{' '}
+                     <Icon icon={'check'} size="xs" color="var(--divider-main)" />{' '}
                     Validation
                   </>
                 ),
@@ -294,7 +294,7 @@ DocEditorToolboxProps): JSX.Element {
             className={css({
               marginLeft: space_sm,
               paddingLeft: space_sm,
-              borderLeft: '1px solid var(--lightGray)',
+              borderLeft: '1px solid var(--divider-main)',
             })}
           >
             <IconButton

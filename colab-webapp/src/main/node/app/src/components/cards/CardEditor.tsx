@@ -70,8 +70,8 @@ interface CardEditorProps {
   showSubcards?: boolean;
 }
 /* const descriptionStyle = {
-  backgroundColor: 'var(--lightGray)',
-  color: 'var(--darkGray)',
+  backgroundColor: 'var(--divider-main)',
+  color: 'var(--secondary-main)',
   transition: 'all 1s ease',
   overflow: 'hidden',
   fontSize: '0.9em',
@@ -222,11 +222,11 @@ export default function CardEditor({
               className={css({
                 alignItems: 'center',
                 padding: space_sm,
-                borderBottom: '1px solid var(--lightGray)',
+                borderBottom: '1px solid var(--divider-main)',
                 borderTop:
                   card.color && card.color != '#ffffff'
                     ? '6px solid ' + card.color
-                    : '1px solid var(--lightGray)',
+                    : '1px solid var(--divider-main)',
               })}
             >
               <Flex align="center">
@@ -235,7 +235,7 @@ export default function CardEditor({
                     className={css({ padding: `0 ${space_sm}` })}
                     icon={'lock'}
                     title={i18n.modules.card.infos.cardLocked}
-                    color={'var(--darkGray)'}
+                    color={'var(--secondary-main)'}
                   />
                 )}
                 <CardContentStatus mode="semi" status={variant.status} />
@@ -521,7 +521,7 @@ export default function CardEditor({
                   </ReflexContainer>
                   <SideCollapsibleMenu
                     defaultOpenKey="resources"
-                    className={css({ borderLeft: '1px solid var(--lightGray)' })}
+                    className={css({ borderLeft: '1px solid var(--divider-main)' })}
                   />
                 </Flex>
               </ResourcesCtx.Provider>
@@ -548,7 +548,7 @@ function SubcardsDisplay({ variant }: { variant: CardContent }): JSX.Element {
   const [detailed, setDetailed] = React.useState<boolean>(false);
   return (
     <>
-      <Flex align="center" className={css({ borderBottom: '1px solid var(--lightGray)' })}>
+      <Flex align="center" className={css({ borderBottom: '1px solid var(--divider-main)' })}>
         <h3>{i18n.modules.card.subcards}</h3>
         <CardCreator parentCardContent={variant} className={lightIconButtonStyle} />
         <IconButton

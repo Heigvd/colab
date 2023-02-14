@@ -29,14 +29,14 @@ import { TagsDisplay } from './tags/TagsDisplay';
 const style = css({
   width: '280px',
   padding: space_lg,
-  background: 'var(--bgColor)',
+  background: 'var(--bg-primary)',
 });
 
 const tagStyle = css({
   borderRadius: '13px',
   padding: space_sm + ' ' + space_lg,
   marginRight: space_sm,
-  backgroundColor: 'var(--lightGray)',
+  backgroundColor: 'var(--divider-main)',
   fontSize: '0.8em',
 });
 

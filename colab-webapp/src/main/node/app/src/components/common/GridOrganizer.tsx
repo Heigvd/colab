@@ -569,7 +569,7 @@ function TmpCellDisplay<T>({
             className={invalidIconStyle}
             opsz="lg"
             icon={'block'}
-            color={'var(--errorColor)'}
+            color={'var(--error-main)'}
           />
         )}
       </div>

@@ -42,7 +42,7 @@ const modalStyle = cx(
   }),
 );
 
-export const modalSeparatorBorder = 'solid 1px var(--lightGray)';
+export const modalSeparatorBorder = 'solid 1px var(--divider-main)';
 
 const modalHeader = css({
   display: 'flex',

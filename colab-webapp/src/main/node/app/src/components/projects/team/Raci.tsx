@@ -56,7 +56,7 @@ export default function TeamRACI({ project }: { project: Project }): JSX.Element
           },
           marginBottom: space_xl,
           paddingBottom: space_lg,
-          borderBottom: '1px solid var(--lightGray)',
+          borderBottom: '1px solid var(--divider-main)',
           gap: space_sm,
         })}
       >

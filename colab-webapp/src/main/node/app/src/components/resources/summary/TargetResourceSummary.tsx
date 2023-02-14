@@ -67,7 +67,7 @@ export function ProvidedByCardType({
        <Icon
         className={iconClassName}
         icon={'globe'}
-        color={'var(--secondaryColor)'}
+        color={'var(--primary-main)'}
         title={showText !== 'full' ? fullText : undefined}
       />
     );
@@ -88,7 +88,7 @@ export function ProvidedByCardType({
               }
             : referenceIcon
         }
-        color={project?.illustration ? project.illustration.iconBkgdColor : 'var(--lightGray)'}
+        color={project?.illustration ? project.illustration.iconBkgdColor : 'var(--divider-main)'}
         title={showText !== 'full' ? fullText : undefined}
       />
     );
@@ -157,7 +157,7 @@ export function ProvidedByCard({
             }
           : referenceIcon
       }
-      color={project?.illustration ? project.illustration.iconBkgdColor : 'var(--lightGray)'}
+      color={project?.illustration ? project.illustration.iconBkgdColor : 'var(--divider-main)'}
       title={showText !== 'full' ? fullText : undefined}
     />
   ) : (

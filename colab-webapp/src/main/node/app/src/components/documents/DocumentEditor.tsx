@@ -19,20 +19,20 @@ import { DocEditorCtx } from './DocumentEditorToolbox';
 import DocumentFileEditor from './DocumentFileEditor';
 
 export const editableBlockStyle = css({
-  border: '1px solid var(--superLightGray)',
+  border: '1px solid var(--secondary-fade)',
   margin: '3px 0',
   padding: space_sm,
   borderRadius: '6px',
   '&:hover': {
     cursor: 'pointer',
-    border: '1px solid var(--lightGray)',
+    border: '1px solid var(--divider-main)',
   },
 });
 
 const selectedStyle = css({
-  border: '1px solid var(--darkGray)',
+  border: '1px solid var(--secondary-main)',
   '&:hover': {
-    border: '1px solid var(--darkGray)',
+    border: '1px solid var(--secondary-main)',
   },
 });
 

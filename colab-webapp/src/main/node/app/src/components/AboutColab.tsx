@@ -83,7 +83,7 @@ export default function AboutColab(): JSX.Element {
           className={css({
             fontStyle: 'italic',
             alignSelf: 'center',
-            color: 'var(--darkDisabledGray)',
+            color: 'var(--text-secondary)',
           })}
         >
           {i18n.colabPage.version} {version.dockerImages ? version.dockerImages : 'dev'} (build #

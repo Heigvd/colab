@@ -509,7 +509,7 @@ export default function Hierarchy({
               width: '150px',
               padding: space_sm,
               margin: 'auto',
-              backgroundColor: 'var(--bgColor)',
+              backgroundColor: 'var(--bg-primary)',
             })}
           >
             {forceZoom == null && (

@@ -28,7 +28,7 @@ export const titleCellStyle = css({
   justifySelf: 'stretch',
   padding: space_sm + ' 0',
   fontWeight: 800,
-  borderBottom: '1px solid var(--lightGray)',
+  borderBottom: '1px solid var(--divider-main)',
 });
 
 export interface TeamProps {

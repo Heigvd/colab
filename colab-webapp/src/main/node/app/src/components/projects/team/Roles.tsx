@@ -280,7 +280,7 @@ const MemberWithProjectRole = ({ member, roles }: MemberWithProjectRoleProps) =>
           <IconButton
             key={role.id}
             icon={hasRole ? 'check' : 'remove'}
-            iconColor={hasRole ? 'var(--success-main)' : 'var(--darkGray)'}
+            iconColor={hasRole ? 'var(--success-main)' : 'var(--secondary-main)'}
             title={hasRole ? i18n.team.removeRole : i18n.team.giveRole}
             onClick={() => {
               if (hasRole) {
@@ -314,7 +314,7 @@ export default function TeamRoles({ project }: { project: Project }): JSX.Elemen
           },
           marginBottom: space_xl,
           paddingBottom: space_lg,
-          borderBottom: '1px solid var(--lightGray)',
+          borderBottom: '1px solid var(--divider-main)',
           gap: space_sm,
         })}
       >

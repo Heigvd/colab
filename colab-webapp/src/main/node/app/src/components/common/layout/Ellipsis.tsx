@@ -28,7 +28,7 @@ const itemsStyle = css({
   position: 'absolute',
 });
 
-const defaultEllipsis =  <Icon color={'var(--lightGray)'} icon={'more_horiz'} />;
+const defaultEllipsis =  <Icon color={'var(--divider-main)'} icon={'more_horiz'} />;
 
 /**
  * items comp: the must all be the same size

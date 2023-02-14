@@ -29,10 +29,10 @@ const defaultLabelStyle = cx(
   css({
     padding: space_sm,
     marginTop: space_sm,
-    borderBottom: '1px solid var(--lightGray)',
-    color: 'var(--fgColor)',
+    borderBottom: '1px solid var(--divider-main)',
+    color: 'var(--text-secondary)',
     '&:hover': {
-      color: 'var(--hoverfgColor)',
+      color: 'var(--text-primary)',
       backgroundColor: 'rgba(0, 0, 0, 0.05)',
       cursor: 'pointer',
     },

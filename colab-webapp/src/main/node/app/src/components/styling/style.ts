@@ -8,6 +8,7 @@ import { css, cx } from '@emotion/css';
 import { br, heading, space, text } from './theme';
 
 //SPACE VARS
+export const space_2xs = space['2xs'];
 export const space_xs = space.xs;
 export const space_sm = space.sm;
 export const space_md = space.md;
@@ -80,7 +81,7 @@ export const ellipsis = css({
 });
 
 // GENERAL
-export const forground = css({
+export const foreground = css({
   zIndex: 9999,
 });
 export const fullScreenOverlay = cx(
@@ -135,7 +136,7 @@ export const linkStyle = cx(
     cursor: 'pointer',
     color: 'inherit',
     ':hover': {
-      color: 'var(--hoverFgColor)',
+      color: 'var(--text-primary)',
       textDecoration: 'underline',
     },
   }),
@@ -144,7 +145,7 @@ export const linkStyle = cx(
 export const lightLinkStyle = cx(
   linkStyle,
   css({
-    color: 'var(--darkGray)',
+    color: 'var(--secondary-main)',
     textDecoration: 'none',
   }),
 );
@@ -155,15 +156,15 @@ export const iconButton = cx(
   css({
     cursor: 'pointer',
     ':hover': {
-      color: 'var(--darkGray)',
+      color: 'var(--secondary-main)',
     },
   }),
 );
 
 export const lightIconButtonStyle = css({
-  color: 'var(--darkGray)',
+  color: 'var(--secondary-main)',
   '&:hover': {
-    color: 'var(--hoverFgColor)',
+    color: 'var(--text-primary)',
   },
 });
 export const greyIconButtonChipStyle = cx(
@@ -176,9 +177,9 @@ export const greyIconButtonChipStyle = cx(
     justifyContent: 'center',
     alignItems: 'center',
     borderRadius: '50%',
-    border: '1px solid var(--darkGray)',
+    border: '1px solid var(--secondary-main)',
     '&:hover': {
-      border: '1px solid var(--hoverFgColor)',
+      border: '1px solid var(--text-primary)',
     },
   }),
 );
@@ -190,7 +191,7 @@ export const buttonStyle = cx(
     display: 'inline-block',
     padding: '8px 14px',
     ':hover': {
-      backgroundColor: 'var(--hoverBgColor)',
+      backgroundColor: 'var(--bg-secondary)',
       textDecoration: 'none',
     },
   }),
@@ -213,12 +214,12 @@ export const inactiveButtonStyle = cx(
 export const invertedButtonStyle = cx(
   css({
     backgroundColor: 'transparent',
-    border: '1px solid var(--primaryColor)',
-    color: 'var(--primaryColor)',
+    border: '1px solid var(--primary-main)',
+    color: 'var(--primary-main)',
     padding: '8px 14px',
     cursor: 'pointer',
     ':hover': {
-      backgroundColor: 'var(--hoverBgColor)',
+      backgroundColor: 'var(--bg-secondary)',
     },
     ':focus': {
       outline: 'none',
@@ -242,6 +243,7 @@ export const cardStyle = cx(
   br_md,
   css({
     border: '1px solid var(--divider-main)',
+    backgroundColor: 'var(--bg-primary)',
     '&:hover': {
       border: '1px solid var(--divider-dark)',
     },

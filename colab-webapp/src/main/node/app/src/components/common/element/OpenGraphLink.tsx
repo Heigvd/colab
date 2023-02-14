@@ -20,8 +20,8 @@ import { BlockInput } from './Input';
 const cardStyle = css({
   flexWrap: 'nowrap',
   flexGrow: 1,
-  boxShadow: '0px 0px 5px 2px var(--lightGray)',
-  backgroundColor: 'var(--bgColor)',
+  boxShadow: '0px 0px 5px 2px var(--divider-main)',
+  backgroundColor: 'var(--bg-primary)',
   padding: space_sm,
   margin: space_sm,
   cursor: 'initial',
@@ -30,7 +30,7 @@ const cardStyle = css({
 const urlStyle = css({
   fontStyle: 'italic',
   textDecoration: 'underline',
-  color: 'var(--darkGray)',
+  color: 'var(--secondary-main)',
   overflow: 'hidden',
   textOverflow: 'ellipsis',
 });
@@ -153,7 +153,7 @@ export default function OpenGraphLink({
   if (metadata == 'NO_URL') {
     return (
       <Flex className={cardStyle} title={decodedUrl} align="center">
-         <Icon icon={'link'} opsz="lg" color="var(--lightGray)" />
+         <Icon icon={'link'} opsz="lg" color="var(--divider-main)" />
         <span className={cx(emptyLightTextStyle, css({ marginLeft: space_sm }))}>Empty link</span>
         {editIcon}
       </Flex>

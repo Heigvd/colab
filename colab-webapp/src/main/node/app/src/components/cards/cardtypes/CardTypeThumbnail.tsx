@@ -37,8 +37,8 @@ import { TagsDisplay } from './tags/TagsDisplay';
 const tagStyle = css({
   padding: '3px ' + space_sm,
   marginRight: space_sm,
-  border: '1px solid var(--darkGray)',
-  color: 'var(--darkGray)',
+  border: '1px solid var(--secondary-main)',
+  color: 'var(--secondary-main)',
   fontSize: '0.8em',
   whiteSpace: 'nowrap',
 });

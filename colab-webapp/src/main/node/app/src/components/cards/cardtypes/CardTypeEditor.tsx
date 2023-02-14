@@ -81,7 +81,7 @@ export default function CardTypeEditor({ className, usage }: CardTypeEditorProps
         <IconButton
           icon={'arrow_back'}
           title={i18n.modules.cardType.route.backToCardType}
-          iconColor="var(--darkGray)"
+          iconColor="var(--secondary-main)"
           onClick={() => navigate('../')}
           className={css({ display: 'block', marginBottom: space_lg })}
         />
@@ -110,7 +110,7 @@ export default function CardTypeEditor({ className, usage }: CardTypeEditorProps
               justify="space-between"
               className={css({
                 paddingBottom: space_sm,
-                borderBottom: '1px solid var(--lightGray)',
+                borderBottom: '1px solid var(--divider-main)',
               })}
             >
               <DiscreetInput
@@ -236,7 +236,7 @@ export default function CardTypeEditor({ className, usage }: CardTypeEditorProps
             direction="column"
             align="stretch"
             className={css({
-              borderLeft: '1px solid var(--lightGray)',
+              borderLeft: '1px solid var(--divider-main)',
               width: '50%',
               padding: space_sm,
             })}

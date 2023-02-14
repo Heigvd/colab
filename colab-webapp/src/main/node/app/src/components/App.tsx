@@ -5,7 +5,7 @@
  * Licensed under the MIT License
  */
 
-import { cx, injectGlobal } from '@emotion/css';
+import { css, cx, injectGlobal } from '@emotion/css';
 import * as React from 'react';
 import { Suspense } from 'react';
 import { createRoot } from 'react-dom/client';
@@ -158,7 +158,7 @@ function App(): JSX.Element {
 
   return (
     <div
-      className={cx(lightMode, fonts)}
+      className={cx(lightMode, fonts, css({display: 'flex', flexDirection: 'column'}))}
       onDrop={cancelDroppingFiles}
       onDragOver={cancelDroppingFiles}
     >

@@ -35,7 +35,7 @@ export default function CardInvolvement({ card }: CardInvolvementProps): JSX.Ele
         align="center"
         className={css({
           marginBottom: space_lg,
-          borderBottom: '1px solid var(--lightGray)',
+          borderBottom: '1px solid var(--divider-main)',
           alignSelf: 'stretch',
         })}
       >

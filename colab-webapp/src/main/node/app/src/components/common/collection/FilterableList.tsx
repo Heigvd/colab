@@ -30,10 +30,10 @@ export const categoryTabStyle = cx(
   }),
 );
 const checkedCategoryTabStyle = css({
-  backgroundColor: 'var(--darkGray)',
-  color: 'var(--primaryColorContrast)',
+  backgroundColor: 'var(--secondary-main)',
+  color: 'var(--primary-contrast)',
   '&:hover': {
-    color: 'var(--primaryColorContrast)',
+    color: 'var(--primary-contrast)',
   },
 });
 

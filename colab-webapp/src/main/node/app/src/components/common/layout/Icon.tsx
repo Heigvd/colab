@@ -46,7 +46,7 @@ export default function Icon(props: IconProps): JSX.Element {
           fontVariationSettings: `'FILL' ${props.fill ? 1 : 0} , 'wght' ${
             props.wght || 300
           }, 'GRAD' 0, 'opsz' ${props.opsz || 40}`,
-          color: props.color || 'default',
+          color: props.color || 'inherit',
         }),
       )}
     >

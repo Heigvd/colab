@@ -167,9 +167,9 @@ export default function MainApp(): JSX.Element {
 
                   <div
                     className={css({
+                      display: 'flex',
                       flexGrow: 1,
                       overflowY: 'auto',
-                      display: 'flex',
                       flexDirection: 'column',
                       '& > *': {
                         flexGrow: 1,

@@ -21,10 +21,10 @@ const defaultTabStyle = css({
   textAlign: 'center',
   transition: '.2s',
   padding: space_lg,
-  backgroundColor: 'var(--bgColor)',
+  backgroundColor: 'var(--bg-primary)',
   cursor: 'pointer',
   borderRadius: '5px 5px 0 0',
-  border: '1px solid var(--lightGray)',
+  border: '1px solid var(--divider-main)',
   marginRight: space_sm,
   fontSize: '0.9em',
   zIndex: 1,
@@ -35,7 +35,7 @@ const defaultNotSelectedStyle = cx(
   defaultTabStyle,
   css({
     ':hover': {
-      backgroundColor: 'var(--lightGray)',
+      backgroundColor: 'var(--bg-secondary)',
     },
   }),
 );
@@ -51,8 +51,8 @@ const defaultSelectedStyle = cx(
 const defaultBodyStyle = css({
   padding: space_xl,
   borderRadius: '0 5px 5px 5px',
-  backgroundColor: 'var(--bgColor)',
-  border: '1px solid var(--lightGray)',
+  backgroundColor: 'var(--bg-primary)',
+  border: '1px solid var(--divider-main)',
   alignSelf: 'stretch',
 });
 

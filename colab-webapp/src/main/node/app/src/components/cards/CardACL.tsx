@@ -22,7 +22,7 @@ import InvolvementSelector from './InvolvementSelector';
 
 const titleSeparationStyle = css({
   margin: space_lg + ' 0',
-  borderBottom: '1px solid var(--lightGray)',
+  borderBottom: '1px solid var(--divider-main)',
   width: '100%',
 });
 

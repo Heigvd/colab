@@ -116,7 +116,7 @@ export function UserDropDown({ onlyLogout }: { onlyLogout?: boolean }): JSX.Elem
                 <>
                   <div
                     className={css({
-                      borderBottom: '1px solid var(--darkGray)',
+                      borderBottom: '1px solid var(--secondary-main)',
                       padding: space_sm,
                     })}
                   >

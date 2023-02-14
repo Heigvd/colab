@@ -23,7 +23,7 @@ import CardTypeEditor from './CardTypeEditor';
 import CardTypeThumbnail from './CardTypeThumbnail';
 
 const customThumbStyle = css({
-  backgroundColor: 'var(--bgColor)',
+  backgroundColor: 'var(--bg-primary)',
 });
 
 /**

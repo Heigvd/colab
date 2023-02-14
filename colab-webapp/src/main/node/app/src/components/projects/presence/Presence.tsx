@@ -131,7 +131,7 @@ interface PresenceIconProps {
 
 const tooltipStyle = cx(
   css({
-    background: 'var(--bgColor)',
+    background: 'var(--bg-primary)',
     zIndex: 6,
     padding: space_lg,
     border: '1px solid grey',

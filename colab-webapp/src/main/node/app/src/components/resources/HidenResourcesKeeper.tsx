@@ -76,7 +76,7 @@ export default function HidenResourcesKeeper({
           {resource.isDirectResource ? (
             <Flex
               className={css({
-                borderLeft: '1px solid var(--lightGray)',
+                borderLeft: '1px solid var(--divider-main)',
                 margin: '0 ' + space_sm,
               })}
               wrap="nowrap"

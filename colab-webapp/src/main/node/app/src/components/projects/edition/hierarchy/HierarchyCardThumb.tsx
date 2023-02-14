@@ -65,7 +65,7 @@ function CardContentThumb({
           css({
             cursor: onClick != null ? 'pointer' : 'default',
             flexGrow: 1,
-            border: '1px solid var(--lightGray)',
+            border: '1px solid var(--divider-main)',
             textAlign: 'center',
           }),
           className,

@@ -23,7 +23,7 @@ const clickableStyle = css({
 });
 
 const draggingStyle = css({
-  backgroundColor: 'var(--lightGray)',
+  backgroundColor: 'var(--divider-main)',
 });
 
 const layerPadding = css({
@@ -35,7 +35,7 @@ const inputStyle = css({
 });
 
 export const emptyLightTextStyle = css({
-  color: 'var(--lightGray)',
+  color: 'var(--divider-main)',
   fontStyle: 'italic',
 });
 
@@ -97,7 +97,7 @@ const getMimeTypeIcon = (mimeType: string | undefined | null, hasNoFile: boolean
       icon = 'draft';
     }
     return (
-       <Icon icon={icon} opsz="lg" color={hasNoFile ? 'var(--lightGray)' : undefined} />
+       <Icon icon={icon} opsz="lg" color={hasNoFile ? 'var(--divider-main)' : undefined} />
     );
   } else {
     return (
@@ -118,7 +118,7 @@ function overlayStyle(coord: [number, number]) {
     margin: 0,
     border: '1px solid  white',
     boxShadow: '0 0 5px 0 rgba(0, 0, 0, 0.5)',
-    backgroundColor: 'var(--bgColor)',
+    backgroundColor: 'var(--bg-primary)',
     zIndex: 1,
     display: 'flex',
   });

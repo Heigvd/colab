@@ -41,13 +41,14 @@ import Monkeys from '../../debugger/monkey/Monkeys';
 import { UserDropDown } from '../../MainNav';
 import Settings from '../../settings/Settings';
 import {
+  activeButtonStyle,
+  br_full,
+  buttonStyle,
   lightIconButtonStyle,
   linkStyle,
-  space_xl,
-  space_lg,
+  space_2xs,
   space_sm,
-  activeButtonStyle,
-  buttonStyle,
+  space_xl,
 } from '../../styling/style';
 import DocumentationTab from '../DocumentationTab';
 import Presence from '../presence/Presence';
@@ -69,7 +70,7 @@ const modelPictoCornerStyle = css({
 
 const breadCrumbsStyle = css({
   fontSize: '.8em',
-  color: 'var(--darkGray)',
+  color: 'var(--secondary-main)',
   margin: '0 ' + space_sm,
   alignSelf: 'center',
 });
@@ -105,11 +106,7 @@ const Ancestor = ({ card, content, last, className }: Ancestor): JSX.Element => 
         >
           {i18n.common.project}
         </Clickable>
-         <Icon
-          icon={'chevron_right'}
-          opsz="xs"
-          className={cx(breadCrumbsStyle, className)}
-        />
+        <Icon icon={'chevron_right'} opsz="xs" className={cx(breadCrumbsStyle, className)} />
       </>
     );
   } else if (entityIs(card, 'Card') && entityIs(content, 'CardContent')) {
@@ -128,11 +125,7 @@ const Ancestor = ({ card, content, last, className }: Ancestor): JSX.Element => 
           {card.title ? card.title : i18n.modules.card.untitled}
         </Clickable>
         {!last && (
-           <Icon
-            icon={'chevron_right'}
-            opsz="xs"
-            className={cx(breadCrumbsStyle, className)}
-          />
+          <Icon icon={'chevron_right'} opsz="xs" className={cx(breadCrumbsStyle, className)} />
         )}
       </>
     );
@@ -248,7 +241,7 @@ const CardWrapper = ({
                 card={ancestor.card}
                 content={ancestor.content}
                 className={cx({
-                  [css({ color: 'var(--primaryColor)' })]: currentProject.type === 'MODEL',
+                  [css({ color: 'var(--primary-main)' })]: currentProject.type === 'MODEL',
                 })}
               />
             ))}
@@ -257,7 +250,7 @@ const CardWrapper = ({
               content={content}
               last
               className={cx({
-                [css({ color: 'var(--primaryColor)' })]: currentProject.type === 'MODEL',
+                [css({ color: 'var(--primary-main)' })]: currentProject.type === 'MODEL',
               })}
             />
           </Flex>
@@ -307,27 +300,29 @@ function EditorNav({ project }: EditorNavProps): JSX.Element {
             display: 'inline-grid',
             gridTemplateColumns: '1fr 3fr 1fr',
             flexGrow: 0,
-            padding: `0 ${space_lg} 0 0`,
+            padding: `${space_2xs} 0`,
           }),
         )}
       >
         <Flex align="center">
           <MainMenuLink to={`/`}>
-            {/* TODO : close current project - check if it really works (local + send to server) */}
             <span
               title={i18n.common.action.backToProjects}
               onClickCapture={() => {
                 dispatch(API.closeCurrentProject());
               }}
             >
-               <Icon icon={'home'} opsz="lg" />
+              <Icon icon={'home'} />
             </span>
           </MainMenuLink>
           <Flex
-            className={css({
-              borderLeft: '1px solid var(--lightGray)',
-              padding: '0 ' + space_sm,
-            })}
+            className={cx(
+              br_full,
+              css({
+                border: '1px solid var(--divider-main)',
+                overflow: 'hidden',
+              }),
+            )}
             wrap="nowrap"
           >
             <MainMenuLink
@@ -339,65 +334,22 @@ function EditorNav({ project }: EditorNavProps): JSX.Element {
                   : buttonStyle
               }
             >
-               <Icon
+              <Icon
                 icon={'dashboard'}
                 title={i18n.common.views.view + ' ' + i18n.common.views.board}
               />
             </MainMenuLink>
-            <MainMenuLink to="./hierarchy">
-               <Icon
+            {/* <MainMenuLink to="./hierarchy">
+              <Icon
                 icon={'family_history'}
                 title={i18n.common.views.view + ' ' + i18n.common.views.hierarchy}
               />
-            </MainMenuLink>
+            </MainMenuLink> */}
             <MainMenuLink to="./flow">
-               <Icon
+              <Icon
                 icon={'account_tree'}
                 title={i18n.common.views.view + ' ' + i18n.common.views.activityFlow}
               />
-            </MainMenuLink>
-          </Flex>
-          <Flex
-            className={css({
-              borderLeft: '1px solid var(--lightGray)',
-              padding: '0 ' + space_sm,
-            })}
-            wrap="nowrap"
-          >
-            <MainMenuLink to="./docs">
-               <Icon
-                icon={'menu_book'}
-                title={i18n.modules.project.settings.resources.label}
-              />
-            </MainMenuLink>
-          </Flex>
-          <Flex
-            className={css({
-              borderLeft: '1px solid var(--lightGray)',
-              padding: '0 ' + space_sm,
-            })}
-            wrap="nowrap"
-          >
-            <MainMenuLink
-              to="./team"
-              className={active =>
-                active.isActive || location.pathname.match(/^\/editor\/\d+\/team/)
-                  ? activeButtonStyle
-                  : buttonStyle
-              }
-            >
-               <Icon icon={'group'} title={i18n.team.teamManagement} />
-            </MainMenuLink>
-          </Flex>
-          <Flex
-            className={css({
-              borderLeft: '1px solid var(--lightGray)',
-              padding: '0 ' + space_sm,
-            })}
-            wrap="nowrap"
-          >
-            <MainMenuLink to="./project-settings">
-               <Icon title={i18n.modules.project.labels.projectSettings} icon={'settings'} />
             </MainMenuLink>
           </Flex>
         </Flex>
@@ -446,6 +398,22 @@ function EditorNav({ project }: EditorNavProps): JSX.Element {
               />
             </Flex>
           </Tips>
+          <MainMenuLink to="./docs">
+            <Icon icon={'menu_book'} title={i18n.modules.project.settings.resources.label} />
+          </MainMenuLink>
+          <MainMenuLink
+            to="./team"
+            className={active =>
+              active.isActive || location.pathname.match(/^\/editor\/\d+\/team/)
+                ? activeButtonStyle
+                : buttonStyle
+            }
+          >
+            <Icon icon={'group'} title={i18n.team.teamManagement} />
+          </MainMenuLink>
+          <MainMenuLink to="./project-settings">
+            <Icon title={i18n.modules.project.labels.projectSettings} icon={'settings'} />
+          </MainMenuLink>
           <UserDropDown />
         </Flex>
       </div>
@@ -553,11 +521,7 @@ export default function Editor(): JSX.Element {
   } else {
     return (
       <PresenceContext.Provider value={presenceContext}>
-        <Flex
-          direction="column"
-          align="stretch"
-          grow={1}
-        >
+        <Flex direction="column" align="stretch" grow={1}>
           <EditorNav project={project} />
           <Flex
             direction="column"
@@ -576,9 +540,9 @@ export default function Editor(): JSX.Element {
                 title={i18n.modules.project.info.isAModel}
               >
                 {project.globalProject ? (
-                   <Icon icon={'public'} color="white" opsz="sm" />
+                  <Icon icon={'public'} color="white" opsz="sm" />
                 ) : (
-                   <Icon icon={'star'} color="white" opsz="sm" />
+                  <Icon icon={'star'} color="white" opsz="sm" />
                 )}
               </Flex>
             )}
@@ -605,13 +569,7 @@ export default function Editor(): JSX.Element {
                     backButtonTitle={i18n.common.action.backProjectRoot}
                     touchMode="zoom"
                   >
-                    {card => (
-                      <CardThumbWithSelector
-                        depth={2}
-                        card={card}
-                        mayOrganize
-                      />
-                    )}
+                    {card => <CardThumbWithSelector depth={2} card={card} mayOrganize />}
                   </CardWrapper>
                 }
               />
@@ -640,13 +598,7 @@ export default function Editor(): JSX.Element {
                     backButtonTitle={i18n.common.action.backProjectRoot}
                     touchMode="zoom"
                   >
-                    {card => (
-                      <CardThumbWithSelector
-                        depth={2}
-                        card={card}
-                        mayOrganize
-                      />
-                    )}
+                    {card => <CardThumbWithSelector depth={2} card={card} mayOrganize />}
                   </CardWrapper>
                 }
               />
@@ -685,18 +637,14 @@ function CardCreatorAndOrganize({ rootContent, organize }: CardCreatorAndOrganiz
   return (
     <>
       {subCards && subCards.length > 0 && (
-        <Flex
-          direction='column'
-          gap={space_sm}
-          align="center"
-        >
+        <Flex direction="column" gap={space_sm} align="center">
           <IconButton
             className={cx(
               css({ alignSelf: 'flex-end' }),
               organize.organize &&
                 css({
                   backgroundColor: 'var(--success-main)',
-                  color: 'var(--bgColor)',
+                  color: 'var(--bg-primary)',
                 }),
             )}
             title={i18n.modules.card.positioning.toggleText}

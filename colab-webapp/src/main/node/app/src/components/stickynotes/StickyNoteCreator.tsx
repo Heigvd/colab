@@ -112,9 +112,9 @@ export default function StickyNoteCreator({
           justify="center"
           className={cx(
             css({
-              borderTop: '1px solid var(--lightGray)',
+              borderTop: '1px solid var(--divider-main)',
               padding: space_sm,
-              '&:hover': { backgroundColor: 'var(--lightGray)', cursor: 'pointer' },
+              '&:hover': { backgroundColor: 'var(--divider-main)', cursor: 'pointer' },
             }),
             className,
           )}

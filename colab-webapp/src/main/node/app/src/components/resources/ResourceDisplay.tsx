@@ -131,7 +131,7 @@ export function ResourceDisplay({
                 icon={'subdirectory_arrow_right'}
                 title={i18n.common.published}
                 opsz="xs"
-                color="var(--darkGray)"
+                color="var(--secondary-main)"
               />
             )}
             <DiscreetInput
@@ -156,8 +156,8 @@ export function ResourceDisplay({
               <div
                 className={css({
                   fontSize: '0.7em',
-                  color: 'var(--lightGray)',
-                  border: '1px solid var(--lightGray)',
+                  color: 'var(--divider-main)',
+                  border: '1px solid var(--divider-main)',
                   borderRadius: '10px',
                   padding: '3px',
                 })}

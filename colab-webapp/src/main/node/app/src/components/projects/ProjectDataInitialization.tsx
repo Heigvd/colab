@@ -79,7 +79,7 @@ export default function ProjectDataInitialization({
           align="stretch"
           className={css({
             padding: space_lg,
-            border: '1px solid var(--secondaryColor)',
+            border: '1px solid var(--primary-main)',
             marginBottom: space_lg,
           })}
         >
@@ -121,7 +121,7 @@ export default function ProjectDataInitialization({
             className={projectIllustrationOverlay}
             title={i18n.modules.project.actions.editIllustration}
           >
-            <Icon icon={'edit'} color={'var(--bgColor)'} />
+            <Icon icon={'edit'} color={'var(--bg-primary)'} />
           </Flex>
         </Flex>
       )}
@@ -148,7 +148,7 @@ export default function ProjectDataInitialization({
         className={css({
           paddingTop: space_lg,
           marginTop: space_lg,
-          borderTop: '1px solid var(--lightGray)',
+          borderTop: '1px solid var(--divider-main)',
         })}
       >
         <Form

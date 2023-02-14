@@ -46,7 +46,7 @@ const modelChipStyle = css({
   right: 0,
   padding: '10px 10px 12px 12px',
   borderRadius: '0 0 0 50%',
-  backgroundColor: 'var(--primaryColor)',
+  backgroundColor: 'var(--primary-main)',
 });
 
 function ProjectSettingsWrapper(): JSX.Element {
@@ -380,7 +380,7 @@ function ProjectList({ projects, hideCreationButton }: ProjectListProps) {
           padding: 0,
           margin: '4px',
           display: 'block',
-          backgroundColor: 'var(--bgColor)',
+          backgroundColor: 'var(--bg-primary)',
         })}
         onItemDblClick={item => {
           if (item) {

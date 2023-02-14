@@ -10,8 +10,7 @@ import * as React from 'react';
 import { useEffect, useRef } from 'react';
 import {
   disabledStyle,
-  iconButton,
-  linkStyle,
+  foreground,
   space_sm,
 } from '../../styling/style';
 import Flex from './Flex';
@@ -26,13 +25,13 @@ const entryStyle = css({
   gap: space_sm,
   alignItems: 'center',
   textDecoration: 'none',
-  color: 'var(--fgColor)',
+  color: 'var(--text-primary)',
   ':focus': {
     outlineStyle: 'inset',
   },
   ':hover': {
-    backgroundColor: '#e6e6e6',
-    color: 'var(--fgColor)',
+    backgroundColor: 'var(--bg-secondary)',
+    color: 'var(--text-primary)',
   },
 });
 
@@ -41,11 +40,11 @@ const dropDownEntryPadding = css({
 });
 
 const commonStyle = cx(
+  foreground,
   css({
-    boxShadow: '0 1px 3px rgba(0,0,0,.12)',
+    backgroundColor: 'var(--bg-primary)',
     transition: 'all 0.3s',
     position: 'fixed',
-    zIndex: 100,
     overflow: 'auto',
     maxHeight: '500px',
     maxWidth: '500px',
@@ -364,22 +363,6 @@ export default function DropDownMenu<T extends string | number | symbol>({
     }
   }, []);
 
-  /* const selectedEntryStyle = cx(
-    invertedThemeMode,
-    css({
-      textDecoration: 'none',
-      color: 'var(--fgColor)',
-      padding: space_S,
-      ':focus': {
-        outlineStyle: 'inset',
-      },
-      ':hover': {
-        backgroundColor: '#e6e6e6',
-        color: 'var(--fgColor)',
-      },
-    }),
-  ); */
-
   if (entries.length > 0) {
     const current =
       valueComp != null ? valueComp : entries.find(entry => entry.value === value) || entries[0]!;
@@ -392,7 +375,7 @@ export default function DropDownMenu<T extends string | number | symbol>({
             title={title}
             onClick={toggle}
             className={
-              cx(idleHoverStyle === 'BACKGROUND' ? linkStyle : iconButton, buttonClassName || '') +
+              cx(buttonClassName) +
               ' dropDownButton'
             }
           >

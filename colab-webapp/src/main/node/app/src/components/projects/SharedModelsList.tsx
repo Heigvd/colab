@@ -40,7 +40,7 @@ const projectThumbnailStyle = css({
   minHeight: '80px',
   maxHeight: '80px',
   margin: space_sm,
-  border: '1px solid var(--lightGray)',
+  border: '1px solid var(--divider-main)',
   borderRadius: br_lg,
   overflow: 'hidden',
   minWidth: '250px',
