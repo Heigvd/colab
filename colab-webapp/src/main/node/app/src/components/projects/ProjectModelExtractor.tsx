@@ -21,7 +21,7 @@ import IllustrationDisplay from '../common/element/IllustrationDisplay';
 import { LabeledInput, LabeledTextArea } from '../common/element/Input';
 import Flex from '../common/layout/Flex';
 import Modal from '../common/layout/Modal';
-import { space_L, space_M, space_S } from '../styling/style';
+import { space_xl, space_lg, space_sm } from '../styling/style';
 import { defaultProjectIllustration } from './ProjectCommon';
 import { ProjectIllustrationMaker } from './ProjectIllustrationMaker';
 
@@ -172,7 +172,7 @@ export function ProjectModelExtractor({ projectId }: ProjectModelExtractorProps)
         <Flex
           justify={'flex-end'}
           grow={1}
-          className={css({ padding: space_M, columnGap: space_S })}
+          className={css({ padding: space_lg, columnGap: space_sm })}
         >
           <Button
             invertedButton
@@ -341,7 +341,7 @@ function ProjectModelDataInitialization({
       <Flex
         direction="column"
         align="stretch"
-        className={css({ width: '45%', minWidth: '45%', marginRight: space_L })}
+        className={css({ width: '45%', minWidth: '45%', marginRight: space_xl })}
       >
         <LabeledInput
           label={i18n.common.name}

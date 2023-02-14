@@ -11,7 +11,7 @@ import { useNavigate } from 'react-router-dom';
 import useTranslations from '../../i18n/I18nContext';
 import Button from '../common/element/Button';
 import Flex from '../common/layout/Flex';
-import { space_M } from '../styling/style';
+import { space_lg } from '../styling/style';
 import PublicEntranceContainer from './PublicEntranceContainer';
 
 export default function ResetPasswordSent(): JSX.Element {
@@ -23,7 +23,7 @@ export default function ResetPasswordSent(): JSX.Element {
       <Flex direction="column">
         <h3>{i18n.authentication.info.checkYourMailbox}</h3>
         <p className={css({ textAlign: 'left' })}>{i18n.authentication.info.resetPasswordSent}</p>
-        <Button onClick={() => navigate('/')} className={css({ marginTop: space_M })}>
+        <Button onClick={() => navigate('/')} className={css({ marginTop: space_lg })}>
           {i18n.common.action.backToHome}
         </Button>
       </Flex>

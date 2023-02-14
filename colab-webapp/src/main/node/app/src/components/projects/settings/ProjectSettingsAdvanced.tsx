@@ -20,13 +20,11 @@ import ConfirmDeleteOpenCloseModal from '../../common/layout/ConfirmDeleteModal'
 import Flex from '../../common/layout/Flex';
 import Icon from '../../common/layout/Icon';
 import {
-  borderRadius,
   disabledStyle,
-  errorColor,
   labelStyle,
-  space_M,
-  space_S,
-  textSmall,
+  space_lg,
+  space_sm,
+  text_sm,
 } from '../../styling/style';
 
 export interface ProjectSettingsAdvancedProps {
@@ -51,8 +49,8 @@ export default function ProjectSettingsAdvanced({
       <WIPContainer>
         <Flex direction="column">
           <div className={labelStyle}>{i18n.common.action.exportProjectData}</div>
-          <p className={textSmall}>{i18n.common.action.exportDataDescription}</p>
-          <Flex gap={space_S}>
+          <p className={text_sm}>{i18n.common.action.exportDataDescription}</p>
+          <Flex gap={space_sm}>
             {/* <Button className={invertedButtonStyle}>.json</Button> */}
             <Button
               className={disabledStyle}
@@ -69,7 +67,7 @@ export default function ProjectSettingsAdvanced({
       {project.type === 'MODEL' && (
         <Flex
           align="stretch"
-          className={css({ border: '1px solid var(--fgColor)', borderRadius: borderRadius })}
+          className={css({ border: '1px solid var(--fgColor)'})}
         >
           <Flex
             justify="center"
@@ -82,7 +80,7 @@ export default function ProjectSettingsAdvanced({
               opsz="lg"
             />
           </Flex>
-          <Flex direction="column" align="stretch" className={css({ padding: space_M })}>
+          <Flex direction="column" align="stretch" className={css({ padding: space_lg })}>
             {project.globalProject ? (
               <>
                 <h3>This model is global</h3>
@@ -93,7 +91,7 @@ export default function ProjectSettingsAdvanced({
                   buttonLabel={
                     <Button
                       invertedButton
-                      className={cx(css({ color: errorColor, borderColor: errorColor }))}
+                      className={cx(css({ color: 'var(--error-main)', borderColor: 'var(--error-main)' }))}
                       clickable
                     >
                        <Icon icon={'star'} /> Make private
@@ -127,7 +125,7 @@ export default function ProjectSettingsAdvanced({
                   buttonLabel={
                     <Button
                       invertedButton
-                      className={cx(css({ color: errorColor, borderColor: errorColor }))}
+                      className={cx(css({ color: 'var(--error-main)', borderColor: 'var(--error-main)' }))}
                       clickable
                     >
                        <Icon icon={'public'} /> Make global

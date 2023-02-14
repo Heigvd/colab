@@ -25,15 +25,13 @@ import Icon from '../../common/layout/Icon';
 import OpenClose from '../../common/layout/OpenClose';
 import WithToolbar from '../../common/WithToolbar';
 import {
-  errorColor,
   lightIconButtonStyle,
   lightItalicText,
   lightText,
-  space_L,
-  space_M,
-  space_S,
-  successColor,
-  textSmall,
+  space_xl,
+  space_lg,
+  space_sm,
+  text_sm,
 } from '../../styling/style';
 import { gridNewLine, titleCellStyle } from './Team';
 
@@ -182,8 +180,8 @@ const MemberWithProjectRole = ({ member, roles }: MemberWithProjectRoleProps) =>
   } else if (member.displayName && member.userId == null) {
     username = (
       <span>
-        <div className={cx(textSmall, lightItalicText)}>
-           <Icon icon={'hourglass_top'} className={css({ marginRight: space_S })} />
+        <div className={cx(text_sm, lightItalicText)}>
+           <Icon icon={'hourglass_top'} className={css({ marginRight: space_sm })} />
           {i18n.authentication.info.pendingInvitation}...
         </div>
         {member.displayName}
@@ -226,12 +224,12 @@ const MemberWithProjectRole = ({ member, roles }: MemberWithProjectRoleProps) =>
           isConfirmButtonLoading={isLoading}
         />
       )}
-      <div className={cx(gridNewLine, textSmall)}>{username}</div>
+      <div className={cx(gridNewLine, text_sm)}>{username}</div>
       {currentUser?.id != member.userId ? (
         <DropDownMenu
           icon={'more_vert'}
           valueComp={{ value: '', label: '' }}
-          buttonClassName={cx(lightIconButtonStyle, css({ marginLeft: space_S }))}
+          buttonClassName={cx(lightIconButtonStyle, css({ marginLeft: space_sm }))}
           onSelect={value => setShowModal(value.value)}
           entries={[
             ...(member.userId == null
@@ -269,7 +267,7 @@ const MemberWithProjectRole = ({ member, roles }: MemberWithProjectRoleProps) =>
               value: 'delete',
               label: (
                 <>
-                   <Icon icon={'delete'} color={errorColor} /> {i18n.common.delete}
+                   <Icon icon={'delete'} color={'var(--error-main)'} /> {i18n.common.delete}
                 </>
               ),
             },
@@ -284,7 +282,7 @@ const MemberWithProjectRole = ({ member, roles }: MemberWithProjectRoleProps) =>
           <IconButton
             key={role.id}
             icon={hasRole ? 'check' : 'remove'}
-            iconColor={hasRole ? successColor : 'var(--darkGray)'}
+            iconColor={hasRole ? 'var(--success-main)' : 'var(--darkGray)'}
             title={hasRole ? i18n.team.removeRole : i18n.team.giveRole}
             onClick={() => {
               if (hasRole) {
@@ -316,10 +314,10 @@ export default function TeamRoles({ project }: { project: Project }): JSX.Elemen
             marginLeft: '5px',
             marginRight: '5px',
           },
-          marginBottom: space_L,
-          paddingBottom: space_M,
+          marginBottom: space_xl,
+          paddingBottom: space_lg,
           borderBottom: '1px solid var(--lightGray)',
-          gap: space_S,
+          gap: space_sm,
         })}
       >
         <div className={cx(titleCellStyle, css({ gridColumnStart: 1, gridColumnEnd: 3 }))}>
@@ -328,8 +326,8 @@ export default function TeamRoles({ project }: { project: Project }): JSX.Elemen
         <div className={cx(titleCellStyle, css({ gridColumnStart: 3, gridColumnEnd: 'end' }))}>
           {i18n.team.roles}
           <Tips
-            iconClassName={cx(textSmall, lightText)}
-            className={cx(textSmall, css({ fontWeight: 'normal' }))}
+            iconClassName={cx(text_sm, lightText)}
+            className={cx(text_sm, css({ fontWeight: 'normal' }))}
           >
             {i18n.team.rolesHelper}
           </Tips>

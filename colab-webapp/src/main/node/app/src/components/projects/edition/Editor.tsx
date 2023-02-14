@@ -42,16 +42,12 @@ import { UserDropDown } from '../../MainNav';
 import Settings from '../../settings/Settings';
 import {
   fullPageStyle,
-  greyIconButtonChipStyle,
-  invertedThemeMode,
   lightIconButtonStyle,
   linkStyle,
   modelBGColor,
-  paddingAroundStyle,
-  space_L,
-  space_M,
-  space_S,
-  successColor,
+  space_xl,
+  space_lg,
+  space_sm,
 } from '../../styling/style';
 import DocumentationTab from '../DocumentationTab';
 import Presence from '../presence/Presence';
@@ -74,7 +70,7 @@ const modelPictoCornerStyle = css({
 const breadCrumbsStyle = css({
   fontSize: '.8em',
   color: 'var(--darkGray)',
-  margin: '0 ' + space_S,
+  margin: '0 ' + space_sm,
   alignSelf: 'center',
 });
 
@@ -244,7 +240,7 @@ const CardWrapper = ({
   } else {
     return (
       <>
-        <Flex className={css({ padding: space_S + ' ' + space_L })} justify="space-between">
+        <Flex className={css({ padding: space_sm + ' ' + space_xl })} justify="space-between">
           <Flex align="center">
             {ancestors.map((ancestor, x) => (
               <Ancestor
@@ -307,12 +303,11 @@ function EditorNav({ project }: EditorNavProps): JSX.Element {
     <>
       <div
         className={cx(
-          invertedThemeMode,
           css({
             display: 'inline-grid',
             gridTemplateColumns: '1fr 3fr 1fr',
             flexGrow: 0,
-            padding: `0 ${space_M} 0 0`,
+            padding: `0 ${space_lg} 0 0`,
           }),
         )}
       >
@@ -331,7 +326,7 @@ function EditorNav({ project }: EditorNavProps): JSX.Element {
           <Flex
             className={css({
               borderLeft: '1px solid var(--lightGray)',
-              padding: '0 ' + space_S,
+              padding: '0 ' + space_sm,
             })}
             wrap="nowrap"
           >
@@ -345,7 +340,7 @@ function EditorNav({ project }: EditorNavProps): JSX.Element {
               }
             >
                <Icon
-                icon={'drag_indicator'}
+                icon={'dashboard'}
                 title={i18n.common.views.view + ' ' + i18n.common.views.board}
               />
             </MainMenuLink>
@@ -365,7 +360,7 @@ function EditorNav({ project }: EditorNavProps): JSX.Element {
           <Flex
             className={css({
               borderLeft: '1px solid var(--lightGray)',
-              padding: '0 ' + space_S,
+              padding: '0 ' + space_sm,
             })}
             wrap="nowrap"
           >
@@ -379,7 +374,7 @@ function EditorNav({ project }: EditorNavProps): JSX.Element {
           <Flex
             className={css({
               borderLeft: '1px solid var(--lightGray)',
-              padding: '0 ' + space_S,
+              padding: '0 ' + space_sm,
             })}
             wrap="nowrap"
           >
@@ -397,7 +392,7 @@ function EditorNav({ project }: EditorNavProps): JSX.Element {
           <Flex
             className={css({
               borderLeft: '1px solid var(--lightGray)',
-              padding: '0 ' + space_S,
+              padding: '0 ' + space_sm,
             })}
             wrap="nowrap"
           >
@@ -414,7 +409,7 @@ function EditorNav({ project }: EditorNavProps): JSX.Element {
             alignItems: 'center',
           })}
         >
-          <Flex className={cx(css({ textTransform: 'initial', margin: `0 ${space_S}` }))}>
+          <Flex className={cx(css({ textTransform: 'initial', margin: `0 ${space_sm}` }))}>
             <Flex align="center">
               <Flex
                 className={css({
@@ -447,7 +442,7 @@ function EditorNav({ project }: EditorNavProps): JSX.Element {
                 label={i18n.tips.label.feature_preview}
                 value={tipsConfig.FEATURE_PREVIEW.value}
                 onChange={tipsConfig.FEATURE_PREVIEW.set}
-                className={css({ display: 'inline-block', marginRight: space_S })}
+                className={css({ display: 'inline-block', marginRight: space_sm })}
               />
             </Flex>
           </Tips>
@@ -473,11 +468,10 @@ function RootView({ rootContent }: { rootContent: CardContent | null | undefined
         flexGrow: '1',
         flexDirection: 'column',
         height: '100%',
-        padding: space_L,
       })}
     >
       {rootContent != null ? (
-        <>
+        <Flex>
           <CardCreatorAndOrganize
             rootContent={rootContent}
             organize={{ organize: organize, setOrganize: setOrganize }}
@@ -490,7 +484,7 @@ function RootView({ rootContent }: { rootContent: CardContent | null | undefined
             cardContent={rootContent}
             organize={organize}
           />
-        </>
+        </Flex>
       ) : (
         <InlineLoading />
       )}
@@ -579,7 +573,7 @@ export default function Editor(): JSX.Element {
               <Flex
                 align="center"
                 justify="center"
-                className={cx(modelPictoCornerStyle, invertedThemeMode)}
+                className={modelPictoCornerStyle}
                 title={i18n.modules.project.info.isAModel}
               >
                 {project.globalProject ? (
@@ -617,7 +611,6 @@ export default function Editor(): JSX.Element {
                         depth={2}
                         card={card}
                         mayOrganize
-                        className={paddingAroundStyle([2, 3, 4], space_L)}
                       />
                     )}
                   </CardWrapper>
@@ -653,7 +646,6 @@ export default function Editor(): JSX.Element {
                         depth={2}
                         card={card}
                         mayOrganize
-                        className={paddingAroundStyle([2, 3, 4], space_L)}
                       />
                     )}
                   </CardWrapper>
@@ -695,28 +687,24 @@ function CardCreatorAndOrganize({ rootContent, organize }: CardCreatorAndOrganiz
     <>
       {subCards && subCards.length > 0 && (
         <Flex
-          gap={space_S}
-          wrap="nowrap"
-          justify="flex-end"
+          direction='column'
+          gap={space_sm}
           align="center"
-          className={css({ marginTop: '-10px', paddingRight: space_S })}
         >
           <IconButton
             className={cx(
-              greyIconButtonChipStyle,
               css({ alignSelf: 'flex-end' }),
               organize.organize &&
                 css({
-                  backgroundColor: successColor,
+                  backgroundColor: 'var(--success-main)',
                   color: 'var(--bgColor)',
-                  border: successColor,
                 }),
             )}
             title={i18n.modules.card.positioning.toggleText}
             icon={'view_quilt'}
             onClick={() => organize.setOrganize(e => !e)}
           />
-          <CardCreator parentCardContent={rootContent} className={greyIconButtonChipStyle} />
+          <CardCreator parentCardContent={rootContent} />
         </Flex>
       )}
     </>

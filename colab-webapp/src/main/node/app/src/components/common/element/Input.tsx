@@ -9,16 +9,17 @@ import { css, cx } from '@emotion/css';
 import * as React from 'react';
 import useTranslations from '../../../i18n/I18nContext';
 import {
-  borderRadius,
+  br_full,
+  br_md,
   disabledStyle,
-  errorStyle,
+  errorTextStyle,
   inputStyle,
   labelStyle,
   lightIconButtonStyle,
-  space_S,
+  space_sm,
   textareaStyle,
-  textSmall,
-  warningStyle,
+  text_sm,
+  warningTextStyle,
 } from '../../styling/style';
 import Flex from '../layout/Flex';
 import IconButton from './IconButton';
@@ -331,11 +332,11 @@ function Input({
       </Flex> */}
       {(footer || warningMessage || errorMessage) && (
         <Flex direction="column" grow="1" align="flex-start" className={bottomClassName}>
-          {footer && <Flex className={cx(textSmall, footerClassName)}>{footer}</Flex>}
+          {footer && <Flex className={cx(text_sm, footerClassName)}>{footer}</Flex>}
           {(warningMessage || errorMessage) && (
-            <Flex direction="column" grow="1" className={cx(textSmall, validationClassName)}>
-              {warningMessage != null && <div className={warningStyle}>{warningMessage}</div>}
-              {errorMessage != null && <div className={errorStyle}>{errorMessage}</div>}
+            <Flex direction="column" grow="1" className={cx(text_sm, validationClassName)}>
+              {warningMessage != null && <div className={warningTextStyle}>{warningMessage}</div>}
+              {errorMessage != null && <div className={errorTextStyle}>{errorMessage}</div>}
             </Flex>
           )}
         </Flex>
@@ -354,7 +355,7 @@ export function BlockInput(props: InputProps): JSX.Element {
         css({
           flexDirection: 'column',
           alignItems: 'normal',
-          padding: space_S + ' 0',
+          padding: space_sm + ' 0',
         }),
         props.containerClassName,
       )}
@@ -389,8 +390,8 @@ const inlineTextareaContainerStyle = css({
 
 const inlineInputStyle = {
   maxWidth: '100%',
-  borderRadius: borderRadius,
-  padding: space_S,
+  borderRadius: br_full,
+  padding: space_sm,
   width: 'auto',
   minWidth: '1em',
   fontFamily: 'inherit',
@@ -415,8 +416,8 @@ const inlineInputDisplayStyle = css({
 });
 
 const inlineTextAreaStyle = {
-  borderRadius: borderRadius,
-  padding: space_S,
+  borderRadius: br_md,
+  padding: space_sm,
   width: '100%',
   maxWidth: '100%',
   fontFamily: 'inherit',

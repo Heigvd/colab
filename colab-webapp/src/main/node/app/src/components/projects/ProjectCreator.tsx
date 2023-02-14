@@ -15,7 +15,7 @@ import Button from '../common/element/Button';
 import ButtonWithLoader from '../common/element/ButtonWithLoader';
 import Flex from '../common/layout/Flex';
 import OpenCloseModal from '../common/layout/OpenCloseModal';
-import { space_M, space_S } from '../styling/style';
+import { space_lg, space_sm } from '../styling/style';
 import { defaultProjectIllustration } from './ProjectCommon';
 import ProjectDataInitialization from './ProjectDataInitialization';
 import ProjectModelSelector from './ProjectModelSelector';
@@ -133,7 +133,7 @@ export default function ProjectCreator({
         <Flex
           justify={'flex-end'}
           grow={1}
-          className={css({ padding: space_M, columnGap: space_S })}
+          className={css({ padding: space_lg, columnGap: space_sm })}
         >
           <Button
             invertedButton

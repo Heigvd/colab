@@ -23,24 +23,21 @@ import Icon from '../../common/layout/Icon';
 import Modal from '../../common/layout/Modal';
 import { DocTextDisplay } from '../../documents/DocTextItem';
 import {
-  borderRadius,
-  errorColor,
   lightIconButtonStyle,
   lightItalicText,
   multiLineEllipsis,
   oneLineEllipsis,
-  space_M,
-  space_S,
-  textSmall,
+  space_lg,
+  space_sm,
+  text_sm,
 } from '../../styling/style';
 import CardTypeRelativesSummary from './summary/CardTypeRelativesSummary';
 import TargetCardTypeSummary from './summary/TargetCardTypeSummary';
 import { TagsDisplay } from './tags/TagsDisplay';
 
 const tagStyle = css({
-  borderRadius: borderRadius,
-  padding: '3px ' + space_S,
-  marginRight: space_S,
+  padding: '3px ' + space_sm,
+  marginRight: space_sm,
   border: '1px solid var(--darkGray)',
   color: 'var(--darkGray)',
   fontSize: '0.8em',
@@ -82,7 +79,7 @@ export default function CardTypeThumbnail({
       {isEmpty ? (
         <Flex title={i18n.common.none} align="center" justify="center" grow={1}>
            <Icon icon={'draft'} opsz="lg" />
-          <div className={css({ paddingLeft: space_M })}>
+          <div className={css({ paddingLeft: space_lg })}>
             <h3>{i18n.common.none}</h3>
           </div>
         </Flex>
@@ -98,8 +95,8 @@ export default function CardTypeThumbnail({
                 <div
                   className={cx(
                     lightItalicText,
-                    textSmall,
-                    css({ whiteSpace: 'nowrap', marginLeft: space_M }),
+                    text_sm,
+                    css({ whiteSpace: 'nowrap', marginLeft: space_lg }),
                   )}
                 >
                   <CardTypeRelativesSummary cardType={cardType} />
@@ -108,7 +105,7 @@ export default function CardTypeThumbnail({
               <p
                 className={cx(
                   lightItalicText,
-                  textSmall,
+                  text_sm,
                   multiLineEllipsis,
                   css({ maxWidth: '100%' }),
                 )}
@@ -164,7 +161,7 @@ export default function CardTypeThumbnail({
                         {
                           label: (
                             <>
-                               <Icon color={errorColor} icon={'remove'} />{' '}
+                               <Icon color={'var(--error-main)'} icon={'remove'} />{' '}
                               {i18n.modules.cardType.action.removeFromProject}
                             </>
                           ),
@@ -191,7 +188,7 @@ export default function CardTypeThumbnail({
                         {
                           label: (
                             <>
-                               <Icon color={errorColor} icon={'remove'} />{' '}
+                               <Icon color={'var(--error-main)'} icon={'remove'} />{' '}
                               {i18n.common.delete}
                             </>
                           ),
@@ -222,7 +219,7 @@ export default function CardTypeThumbnail({
                         <Flex
                           justify={'center'}
                           grow={1}
-                          className={css({ padding: space_M, columnGap: space_S })}
+                          className={css({ padding: space_lg, columnGap: space_sm })}
                         >
                           <Button onClick={collapse}> {i18n.common.ok}</Button>
                         </Flex>
@@ -240,7 +237,7 @@ export default function CardTypeThumbnail({
                         <Flex
                           justify={'center'}
                           grow={1}
-                          className={css({ padding: space_M, columnGap: space_S })}
+                          className={css({ padding: space_lg, columnGap: space_sm })}
                         >
                           <Button onClick={collapse}> {i18n.common.ok}</Button>
                         </Flex>

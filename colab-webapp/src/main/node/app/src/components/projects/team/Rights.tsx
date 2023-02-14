@@ -22,14 +22,12 @@ import { DiscreetInput } from '../../common/element/Input';
 import Tips from '../../common/element/Tips';
 import Icon from '../../common/layout/Icon';
 import {
-  borderRadius,
   lightItalicText,
   lightText,
-  primaryColor,
-  space_L,
-  space_M,
-  space_S,
-  textSmall,
+  space_xl,
+  space_lg,
+  space_sm,
+  text_sm,
 } from '../../styling/style';
 import { gridNewLine, titleCellStyle } from './Team';
 
@@ -62,7 +60,7 @@ export function PositionColumns(): JSX.Element {
         <div
           key={buildOption(option).value}
           className={cx(
-            textSmall,
+            text_sm,
             css({ lineHeight: '2em', gridColumn: 'span 2', fontWeight: 'bold' }),
           )}
         >
@@ -159,8 +157,8 @@ const MemberWithProjectRights = ({ member, isTheOnlyOwner }: MemberWithProjectRi
   } else if (member.displayName && member.userId == null) {
     username = (
       <span>
-        <div className={cx(textSmall, lightItalicText)}>
-           <Icon icon={'hourglass_top'} className={css({ marginRight: space_S })} />
+        <div className={cx(text_sm, lightItalicText)}>
+           <Icon icon={'hourglass_top'} className={css({ marginRight: space_sm })} />
           {i18n.authentication.info.pendingInvitation}...
         </div>
         {member.displayName}
@@ -184,7 +182,7 @@ const MemberWithProjectRights = ({ member, isTheOnlyOwner }: MemberWithProjectRi
   }
   return (
     <>
-      <div className={cx(gridNewLine, textSmall, css({ gridColumn: '1 / 3', maxWidth: '300px' }))}>
+      <div className={cx(gridNewLine, text_sm, css({ gridColumn: '1 / 3', maxWidth: '300px' }))}>
         {username}
       </div>
       <Slider
@@ -210,10 +208,10 @@ const MemberWithProjectRights = ({ member, isTheOnlyOwner }: MemberWithProjectRi
           hasArrow
           placement="top"
           color="white"
-          bg={primaryColor}
+          bg={'var(--primary-main)'}
           isOpen={showTooltip}
           label={`${prettyPrint(member.position)}`}
-          className={css({ padding: space_S, borderRadius: borderRadius })}
+          className={css({ padding: space_sm })}
         >
           <SliderThumb
             height="17px"
@@ -256,10 +254,10 @@ export default function TeamRights({ project }: { project: Project }): JSX.Eleme
             marginLeft: '5px',
             marginRight: '5px',
           },
-          marginBottom: space_L,
-          paddingBottom: space_M,
+          marginBottom: space_xl,
+          paddingBottom: space_lg,
           borderBottom: '1px solid var(--lightGray)',
-          gap: space_S,
+          gap: space_sm,
         })}
       >
         <div className={cx(titleCellStyle, css({ gridColumnStart: 1, gridColumnEnd: 3 }))}>
@@ -268,8 +266,8 @@ export default function TeamRights({ project }: { project: Project }): JSX.Eleme
         <div className={cx(titleCellStyle, css({ gridColumnStart: 3, gridColumnEnd: 'end' }))}>
           {i18n.team.rights}
           <Tips
-            iconClassName={cx(textSmall, lightText)}
-            className={cx(textSmall, css({ fontWeight: 'normal' }))}
+            iconClassName={cx(text_sm, lightText)}
+            className={cx(text_sm, css({ fontWeight: 'normal' }))}
           >
             {i18n.team.rightsHelper}
           </Tips>

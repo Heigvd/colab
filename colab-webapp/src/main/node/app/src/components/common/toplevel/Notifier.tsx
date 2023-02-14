@@ -11,7 +11,7 @@ import * as React from 'react';
 import useTranslations, { ColabTranslations } from '../../../i18n/I18nContext';
 import { shallowEqual, useAppDispatch, useAppSelector } from '../../../store/hooks';
 import { closeNotification, ColabNotification } from '../../../store/slice/notificationSlice';
-import { space_M, space_S } from '../../styling/style';
+import { space_lg, space_sm } from '../../styling/style';
 import Flex from '../layout/Flex';
 import Icon from '../layout/Icon';
 
@@ -60,12 +60,12 @@ function translateHttpErrorMessage(
 function getBgColor(notification: ColabNotification): string {
   switch (notification.type) {
     case 'INFO':
-      return 'var(--successColor)';
+      return 'var(--success-main)';
     case 'WARN':
-      return 'var(--warningColor)';
+      return 'var(--warning-main)';
     case 'ERROR':
     default:
-      return 'var(--errorColor)';
+      return 'var(--error-main)';
   }
 }
 
@@ -124,7 +124,7 @@ function Notification({ notification, index }: NotificationProps) {
         backgroundColor: 'white',
         borderRadius: '5px',
         overflow: 'hidden',
-        margin: space_S,
+        margin: space_sm,
         minWidth: '30vw',
         maxWidth: '70vw',
         boxShadow: '0px 1px 3px rgba(0, 0, 0, 0.12)',
@@ -142,12 +142,12 @@ function Notification({ notification, index }: NotificationProps) {
         className={css({
           backgroundColor: getBgColor(notification),
           color: 'white',
-          padding: space_M,
+          padding: space_lg,
         })}
       >
          <Icon icon={getIcon(notification)} opsz={'lg'} />
       </Flex>
-      <div className={css({ padding: space_M })}>
+      <div className={css({ padding: space_lg })}>
         <h3>{getTitle(notification, i18n)}</h3>
         {prettyPrint(notification.message, i18n)}
       </div>

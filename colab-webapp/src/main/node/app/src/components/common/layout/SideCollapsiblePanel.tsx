@@ -8,7 +8,7 @@
 import { css, cx } from '@emotion/css';
 import * as React from 'react';
 import useTranslations from '../../../i18n/I18nContext';
-import { lightIconButtonStyle, marginAroundStyle, space_M, space_S } from '../../styling/style';
+import { lightIconButtonStyle, space_lg, space_sm } from '../../styling/style';
 import IconButton from '../element/IconButton';
 import Flex from './Flex';
 import Icon from './Icon';
@@ -60,7 +60,7 @@ export function SideCollapsiblePanelBody({
           justify="space-between"
           align="center"
           className={css({
-            padding: space_S + ' ' + space_M,
+            padding: space_sm + ' ' + space_lg,
             borderBottom: '1px solid var(--lightGray)',
           })}
         >
@@ -75,7 +75,7 @@ export function SideCollapsiblePanelBody({
                 setOpenKey(undefined);
               }
             }}
-            className={cx(lightIconButtonStyle, marginAroundStyle([4], space_M))}
+            className={cx(lightIconButtonStyle)}
           />
         </Flex>
         {itemOpen.children}
@@ -118,7 +118,7 @@ export function SideCollapsibleMenu({
           justify="center"
           align="center"
           className={cx(
-            css({ padding: space_M, '&:hover': { cursor: 'pointer' } }),
+            css({ padding: space_lg, '&:hover': { cursor: 'pointer' } }),
             {
               [bgActiveStyleRight]: openKey === key,
             },

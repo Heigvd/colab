@@ -29,10 +29,8 @@ import {
   lightIconButtonStyle,
   localTitleStyle,
   oneLineEllipsis,
-  paddingAroundStyle,
-  space_M,
-  space_S,
-  textSmall,
+  space_sm,
+  text_sm,
 } from '../styling/style';
 import ResourceCategorySelector from './ResourceCategorySelector';
 import {
@@ -103,12 +101,12 @@ export function ResourceDisplay({
 
   return (
     <Flex align="stretch" direction="column" grow={1} className={css({ overflow: 'auto' })}>
-      <Flex direction="column" align="normal" className={paddingAroundStyle([1, 2, 4], space_M)}>
+      <Flex direction="column" align="normal">
         <Flex
           justify="space-between"
           align="center"
           grow={1}
-          className={css({ marginBottom: space_S })}
+          className={css({ marginBottom: space_sm })}
         >
           <Flex wrap="nowrap" align="center" className={css({ maxWidth: '80%' })}>
             {/* <TargetResourceSummary resource={resource} showText="tooltip" /> */}
@@ -219,7 +217,7 @@ export function ResourceDisplay({
               <DropDownMenu
                 icon={'more_vert'}
                 valueComp={{ value: '', label: '' }}
-                buttonClassName={cx(lightIconButtonStyle, css({ marginLeft: space_S }))}
+                buttonClassName={cx(lightIconButtonStyle, css({ marginLeft: space_sm }))}
                 entries={[
                   ...(!effectiveReadOnly && resource.isDirectResource
                     ? [
@@ -326,7 +324,7 @@ export function ResourceDisplay({
                       );
                     }
                   }}
-                  inputDisplayClassName={cx(textSmall, css({ marginTop: space_S }))}
+                  inputDisplayClassName={cx(text_sm, css({ marginTop: space_sm }))}
                 />
               )}
             </DocTextWrapper>
@@ -354,7 +352,7 @@ export function ResourceDisplay({
               docOwnership={{ kind: 'PartOfResource', ownerId: targetResource.id }}
             />
           )}
-          <div className={cx(paddingAroundStyle([2, 4], space_M), css({ overflow: 'auto' }))}>
+          <div className={css({ overflow: 'auto' })}>
             <DocumentList
               docOwnership={{ kind: 'PartOfResource', ownerId: targetResource.id }}
               readOnly={effectiveReadOnly}

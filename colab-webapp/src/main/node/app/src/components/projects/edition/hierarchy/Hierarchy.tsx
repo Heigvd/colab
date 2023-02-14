@@ -23,7 +23,7 @@ import InlineLoading from '../../../common/element/InlineLoading';
 import { BlockInput } from '../../../common/element/Input';
 import Flex from '../../../common/layout/Flex';
 import Icon from '../../../common/layout/Icon';
-import { borderRadius, cardShadow, space_S } from '../../../styling/style';
+import { cardShadow, space_sm } from '../../../styling/style';
 import HierarchyBranch from './HierarchyBranch';
 import SubContainer from './HierarchySubContainer';
 
@@ -507,11 +507,10 @@ export default function Hierarchy({
           <div
             className={css({
               width: '150px',
-              padding: space_S,
+              padding: space_sm,
               margin: 'auto',
               backgroundColor: 'var(--bgColor)',
               boxShadow: cardShadow,
-              borderRadius: borderRadius,
             })}
           >
             {forceZoom == null && (

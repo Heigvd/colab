@@ -16,7 +16,7 @@ import { addNotification } from '../../../store/slice/notificationSlice';
 import Button from '../../common/element/Button';
 import IconButtonWithLoader from '../../common/element/IconButtonWithLoader';
 import OpenCloseModal from '../../common/layout/OpenCloseModal';
-import { inputStyle, linkStyle, space_M, textSmall, warningColor } from '../../styling/style';
+import { inputStyle, linkStyle, space_lg, text_sm } from '../../styling/style';
 
 interface MemberCreatorProps {
   members: TeamMember[];
@@ -42,7 +42,7 @@ export default function MemberCreator({ members, project }: MemberCreatorProps):
     <OpenCloseModal
       title={i18n.team.inviteNewMember}
       collapsedChildren={<Button clickable>+ {i18n.team.inviteNewMember}</Button>}
-      modalBodyClassName={css({ padding: space_M })}
+      modalBodyClassName={css({ padding: space_lg })}
       showCloseButton
     >
       {() => (
@@ -84,7 +84,7 @@ export default function MemberCreator({ members, project }: MemberCreatorProps):
               }
             }}
           />
-          {error && <div className={cx(css({ color: warningColor }), textSmall)}>{error}</div>}
+          {error && <div className={cx(css({ color: 'var(--warning-main)' }), text_sm)}>{error}</div>}
         </>
       )}
     </OpenCloseModal>

@@ -14,7 +14,7 @@ import IconButton from '../common/element/IconButton';
 import Flex from '../common/layout/Flex';
 import Tabs, { Tab } from '../common/layout/Tabs';
 import { AllProjectsAndModels } from '../projects/ProjectList';
-import { lightIconButtonStyle, space_L } from '../styling/style';
+import { lightIconButtonStyle, space_xl } from '../styling/style';
 import AllUsers from './AllUsers';
 import LiveMonitor from './LiveMonitor';
 import LoggersConfig from './LoggersConfig';
@@ -32,7 +32,7 @@ export default function Admin(): JSX.Element {
   }, []);
 
   return (
-    <div className={css({ padding: space_L })}>
+    <div className={css({ padding: space_xl })}>
       <Flex>
         <IconButton
           title={i18n.common.back}

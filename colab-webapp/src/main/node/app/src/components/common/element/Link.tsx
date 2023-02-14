@@ -8,7 +8,7 @@
 import { css, cx } from '@emotion/css';
 import * as React from 'react';
 import { NavLink, NavLinkProps } from 'react-router-dom';
-import { space_M } from '../../styling/style';
+import { space_lg } from '../../styling/style';
 
 const linkStyle = css({
   textDecoration: 'none',
@@ -24,7 +24,7 @@ export const mainMenuLink = css({
   color: 'var(--linkColor)',
   textTransform: 'uppercase',
   fontSize: '14px',
-  padding: space_M,
+  padding: space_lg,
   boxSizing: 'border-box',
   ':focus': {
     outline: 'none',

@@ -9,7 +9,7 @@ import { css, cx } from '@emotion/css';
 import * as React from 'react';
 import { checkUnreachable } from '../../../helper';
 import useTranslations from '../../../i18n/I18nContext';
-import { space_S } from '../../styling/style';
+import { space_sm } from '../../styling/style';
 import Icon from '../layout/Icon';
 import Checkbox from './Checkbox';
 import { overlayStyle } from './Tooltip';
@@ -86,7 +86,7 @@ function getStyle(t: TipsProps['interactionType']) {
   }
 }
 
-const iconStyle = css({ padding: space_S });
+const iconStyle = css({ padding: space_sm });
 
 export function TipsSettings(): JSX.Element {
   const i18n = useTranslations();
@@ -100,7 +100,7 @@ export function TipsSettings(): JSX.Element {
           label={i18n.tips.label.tips}
           value={config.TIPS.value}
           onChange={config.TIPS.set}
-          className={css({ display: 'inline-block', marginRight: space_S })}
+          className={css({ display: 'inline-block', marginRight: space_sm })}
         />
         <Tips tipsType="TIPS">
           <h4>{i18n.tips.example.tips.title}</h4>
@@ -112,7 +112,7 @@ export function TipsSettings(): JSX.Element {
           label={i18n.tips.label.news}
           value={config.NEWS.value}
           onChange={config.NEWS.set}
-          className={css({ display: 'inline-block', marginRight: space_S })}
+          className={css({ display: 'inline-block', marginRight: space_sm })}
         />
         <Tips tipsType="NEWS">
           <h4>{i18n.tips.example.news.title}</h4>
@@ -124,7 +124,7 @@ export function TipsSettings(): JSX.Element {
           label={i18n.tips.label.feature_preview}
           value={config.FEATURE_PREVIEW.value}
           onChange={config.FEATURE_PREVIEW.set}
-          className={css({ display: 'inline-block', marginRight: space_S })}
+          className={css({ display: 'inline-block', marginRight: space_sm })}
         />
         <Tips tipsType="FEATURE_PREVIEW">
           <h4>{i18n.tips.example.feature_preview.title}</h4>
@@ -136,7 +136,7 @@ export function TipsSettings(): JSX.Element {
           label={i18n.tips.label.wip}
           value={config.WIP.value}
           onChange={config.WIP.set}
-          className={css({ display: 'inline-block', marginRight: space_S })}
+          className={css({ display: 'inline-block', marginRight: space_sm })}
         />
         <Tips tipsType="WIP">
           <h4>{i18n.tips.example.wip.title}</h4>
@@ -148,7 +148,7 @@ export function TipsSettings(): JSX.Element {
           label={i18n.tips.label.todo}
           value={config.TODO.value}
           onChange={config.TODO.set}
-          className={css({ display: 'inline-block', marginRight: space_S })}
+          className={css({ display: 'inline-block', marginRight: space_sm })}
         />
         <Tips tipsType="TODO">
           <h4>{i18n.tips.example.todo.title}</h4>
@@ -160,7 +160,7 @@ export function TipsSettings(): JSX.Element {
           label={i18n.tips.label.debug}
           value={config.DEBUG.value}
           onChange={config.DEBUG.set}
-          className={css({ display: 'inline-block', marginRight: space_S })}
+          className={css({ display: 'inline-block', marginRight: space_sm })}
         />
         <Tips tipsType="DEBUG">
           <h4>{i18n.tips.example.debug.title}</h4>

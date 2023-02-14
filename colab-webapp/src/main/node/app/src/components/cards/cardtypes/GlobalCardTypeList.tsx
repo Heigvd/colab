@@ -13,7 +13,7 @@ import { useAndLoadGlobalTypesForAdmin } from '../../../selectors/cardTypeSelect
 import { CardTypeAllInOne } from '../../../types/cardTypeDefinition';
 import AvailabilityStatusIndicator from '../../common/element/AvailabilityStatusIndicator';
 import Flex from '../../common/layout/Flex';
-import { space_L, space_S, voidStyle } from '../../styling/style';
+import { space_xl, space_sm, voidStyle } from '../../styling/style';
 import CardTypeCreator from './CardTypeCreator';
 import CardTypeEditor from './CardTypeEditor';
 import CardTypeItem from './CardTypeItem';
@@ -23,8 +23,8 @@ const flexWrap = css({
   display: 'flex',
   flexDirecion: 'row',
   flexWrap: 'wrap',
-  gap: space_L,
-  marginBottom: space_L,
+  gap: space_xl,
+  marginBottom: space_xl,
 });
 
 export default function GlobalCardTypeList(): JSX.Element {
@@ -69,7 +69,7 @@ export default function GlobalCardTypeList(): JSX.Element {
             ) : cardTypes.length > 0 ? (
               <CardTypeListWithFilter
                 dataWithTags={cardTypes}
-                filterClassName={css({ paddingBottom: space_S })}
+                filterClassName={css({ paddingBottom: space_sm })}
               >
                 {filteredCardTypes => (
                   <div className={flexWrap}>

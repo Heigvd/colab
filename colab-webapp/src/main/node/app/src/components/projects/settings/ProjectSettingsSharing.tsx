@@ -16,7 +16,7 @@ import Button from '../../common/element/Button';
 import Checkbox from '../../common/element/Checkbox';
 import Flex from '../../common/layout/Flex';
 import OpenCloseModal from '../../common/layout/OpenCloseModal';
-import { paddedContainerStyle, space_L, space_M } from '../../styling/style';
+import { paddedContainerStyle, space_xl, space_lg } from '../../styling/style';
 import ProjectModelSharing from '../ProjectModelSharing';
 
 export interface ProjectSettingsModelSharingProps {
@@ -40,7 +40,7 @@ export default function ProjectSettingsModelSharing({
         <Flex
           direction="column"
           align="stretch"
-          className={css({ width: '45%', minWidth: '45%', marginRight: space_L })}
+          className={css({ width: '45%', minWidth: '45%', marginRight: space_xl })}
         >
           <div>
             <OpenCloseModal
@@ -48,7 +48,7 @@ export default function ProjectSettingsModelSharing({
               collapsedChildren={
                 <Button clickable>+ {i18n.modules.project.labels.shareTheProject}</Button>
               }
-              modalBodyClassName={css({ padding: space_M })}
+              modalBodyClassName={css({ padding: space_lg })}
               showCloseButton
             >
               {close => (

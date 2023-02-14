@@ -7,7 +7,7 @@
 import { css, cx } from '@emotion/css';
 import * as React from 'react';
 import useTranslations from '../../../i18n/I18nContext';
-import { errorColor, space_M } from '../../styling/style';
+import { space_lg } from '../../styling/style';
 import Button from '../element/Button';
 import ButtonWithLoader from '../element/ButtonWithLoader';
 import Flex from './Flex';
@@ -50,8 +50,8 @@ export function ConfirmDelete({
           title={confirmButtonLabel ? confirmButtonLabel : i18n.common.delete}
           onClick={onConfirm}
           className={css({
-            backgroundColor: errorColor,
-            marginLeft: space_M,
+            backgroundColor: 'var(--error-main)',
+            marginLeft: space_lg,
           })}
           isLoading={isConfirmButtonLoading}
         >

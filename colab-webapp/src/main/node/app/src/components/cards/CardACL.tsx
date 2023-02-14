@@ -17,23 +17,20 @@ import { useAndLoadCurrentProjectTeam } from '../../selectors/teamSelector';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import InlineLoading from '../common/element/InlineLoading';
 import Flex from '../common/layout/Flex';
-import { marginAroundStyle, paddingAroundStyle, space_M, space_S } from '../styling/style';
+import { space_lg } from '../styling/style';
 import InvolvementSelector from './InvolvementSelector';
 
 const titleSeparationStyle = css({
-  margin: space_M + ' 0',
+  margin: space_lg + ' 0',
   borderBottom: '1px solid var(--lightGray)',
   width: '100%',
 });
 
 const labelStyle = cx(
-  marginAroundStyle([1, 2, 3], space_S),
-  paddingAroundStyle([1, 2, 3], space_S),
   css({
     fontWeight: '500',
   }),
 );
-
 export function RoleACL({ role, acl }: { role: TeamRole; acl: CardAcl }): JSX.Element {
   const self = acl.self.roles[role.id || -1];
   const effective = acl.effective.roles[role.id || -1];

@@ -8,7 +8,7 @@
 import { css, cx } from '@emotion/css';
 import * as React from 'react';
 import useTranslations from '../../../i18n/I18nContext';
-import { cardStyle, lightIconButtonStyle, space_L, space_M, space_S } from '../../styling/style';
+import { cardStyle, lightIconButtonStyle, space_xl, space_lg, space_sm } from '../../styling/style';
 import IconButton from '../element/IconButton';
 import Flex from './Flex';
 import Overlay from './Overlay';
@@ -48,7 +48,7 @@ const modalHeader = css({
   display: 'flex',
   alignItems: 'center',
   borderBottom: modalSeparatorBorder,
-  padding: space_S + ' ' + space_M,
+  padding: space_sm + ' ' + space_lg,
 });
 
 const titleStyle = css({
@@ -63,7 +63,7 @@ const closeIconStyle = css({
 });
 
 export const modalBody = css({
-  padding: space_L,
+  padding: space_xl,
 });
 export const modalFooter = css({
   borderTop: modalSeparatorBorder,

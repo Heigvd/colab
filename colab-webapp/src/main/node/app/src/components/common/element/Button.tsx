@@ -12,7 +12,7 @@ import {
   inactiveButtonStyle,
   inactiveInvertedButtonStyle,
   invertedButtonStyle,
-  space_S,
+  space_sm,
 } from '../../styling/style';
 import Clickable, { ClickableProps } from '../layout/Clickable';
 import Icon, { IconSize } from '../layout/Icon';
@@ -51,7 +51,7 @@ export default function Button({
           icon={icon}
           color={iconColor}
           opsz={iconSize}
-          className={reverseOrder ? css({ marginLeft: space_S }) : css({ marginRight: space_S })}
+          className={reverseOrder ? css({ marginLeft: space_sm }) : css({ marginRight: space_sm })}
         />
       )}
       {!reverseOrder && children}

@@ -12,7 +12,7 @@ import { CardContent } from 'colab-rest-client';
 import React from 'react';
 import logger from '../../../../logger';
 import CardCreator from '../../../cards/CardCreator';
-import { greyIconButtonChipStyle, space_M } from '../../../styling/style';
+import { greyIconButtonChipStyle, space_lg } from '../../../styling/style';
 import { HierarchyCTX, PlumbRef } from './Hierarchy';
 
 export interface SubCardCreatorProps {
@@ -92,7 +92,7 @@ export default function SubCardCreator({ jsPlumb, parent }: SubCardCreatorProps)
           border: '1px grey dashed',
           alignSelf: 'flex-start',
           margin: '40px 20px 10px 20px',
-          padding: space_M,
+          padding: space_lg,
           borderRadius: '5px',
         }),
       )}

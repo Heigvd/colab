@@ -9,7 +9,7 @@ import { css, cx } from '@emotion/css';
 import * as React from 'react';
 import { PasswordFeedback } from 'react-password-strength-bar';
 import useTranslations from '../../../i18n/I18nContext';
-import { errorColor, space_M, textSmall } from '../../styling/style';
+import { space_lg, text_sm } from '../../styling/style';
 import Flex from '../layout/Flex';
 import ButtonWithLoader from './ButtonWithLoader';
 import Checkbox from './Checkbox';
@@ -320,8 +320,8 @@ export default function Form<T>({
       {globalErrorMessage != null && (
         <Flex
           className={cx(
-            css({ color: errorColor, textAlign: 'left', marginBottom: space_M }),
-            textSmall,
+            css({ color: 'var(--error-main)', textAlign: 'left', marginBottom: space_lg }),
+            text_sm,
           )}
         >
           {globalErrorMessage}
@@ -345,7 +345,7 @@ export default function Form<T>({
             onClick={submit}
             isLoading={isSubmitInProcess}
             className={cx(
-              css({ margin: space_M + ' 0', alignSelf: 'flex-start' }),
+              css({ margin: space_lg + ' 0', alignSelf: 'flex-start' }),
               buttonClassName,
             )}
           >

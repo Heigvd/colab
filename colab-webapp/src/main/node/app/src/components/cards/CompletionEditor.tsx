@@ -12,7 +12,7 @@ import { debounce } from 'lodash';
 import * as React from 'react';
 import * as API from '../../API/api';
 import { useAppDispatch } from '../../store/hooks';
-import { borderRadius, space_S, successColor } from '../styling/style';
+import { space_sm } from '../styling/style';
 
 interface CompletionEditorProps {
   variant: CardContent;
@@ -75,10 +75,10 @@ export default function CompletionEditor({ variant }: CompletionEditorProps): JS
           hasArrow
           placement="top"
           color="white"
-          bg={successColor}
+          bg={'var(--success-main)'}
           isOpen={showTooltip}
           label={`${value}%`}
-          className={css({ padding: space_S, borderRadius: borderRadius })}
+          className={css({ padding: space_sm })}
         >
           <SliderThumb
             height="20px"

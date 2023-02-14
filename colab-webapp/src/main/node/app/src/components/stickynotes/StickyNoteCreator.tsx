@@ -18,7 +18,7 @@ import IconButton from '../common/element/IconButton';
 import Flex from '../common/layout/Flex';
 import Icon from '../common/layout/Icon';
 import OpenCloseModal from '../common/layout/OpenCloseModal';
-import { space_M, space_S } from '../styling/style';
+import { space_lg, space_sm } from '../styling/style';
 
 interface StickyNoteCreatorProps {
   destCardId: number;
@@ -113,7 +113,7 @@ export default function StickyNoteCreator({
           className={cx(
             css({
               borderTop: '1px solid var(--lightGray)',
-              padding: space_S,
+              padding: space_sm,
               '&:hover': { backgroundColor: 'var(--lightGray)', cursor: 'pointer' },
             }),
             className,
@@ -161,7 +161,7 @@ export default function StickyNoteCreator({
                 collapse();
               }}
               invertedButton
-              className={css({ margin: space_M })}
+              className={css({ margin: space_lg })}
             >
               {i18n.common.cancel}
             </Button>

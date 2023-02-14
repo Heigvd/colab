@@ -18,7 +18,7 @@ import SelectInput from '../common/element/SelectInput';
 import Tips, { WIPContainer } from '../common/element/Tips';
 import Flex from '../common/layout/Flex';
 import Icon from '../common/layout/Icon';
-import { iconStyle, lightItalicText, lightText, space_M } from '../styling/style';
+import { iconStyle, lightItalicText, lightText, space_lg } from '../styling/style';
 import ContentStatusSelector from './ContentStatusSelector';
 
 const marginDownSmall = css({
@@ -38,7 +38,7 @@ export default function CardSettings({ card, variant }: CardSettingsProps): JSX.
   const { cardType } = useAndLoadCardType(card.cardTypeId);
 
   return (
-    <Flex className={css({ gap: space_M })} direction="column" shrink={1}>
+    <Flex className={css({ gap: space_lg })} direction="column" shrink={1}>
       <Flex align="center">
         <Checkbox
           label={

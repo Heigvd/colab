@@ -21,7 +21,7 @@ import { ConfirmDeleteModal } from '../common/layout/ConfirmDeleteModal';
 import DropDownMenu from '../common/layout/DropDownMenu';
 import Flex from '../common/layout/Flex';
 import Icon from '../common/layout/Icon';
-import { cardStyle, errorColor, lightIconButtonStyle, space_M, space_S } from '../styling/style';
+import { cardStyle, lightIconButtonStyle, space_lg, space_sm } from '../styling/style';
 
 // TODO replace <CardThumbWithSelector for something easy and without actions
 
@@ -61,11 +61,11 @@ export default function StickyNoteDisplay({
     <Flex
       align="stretch"
       direction="column"
-      className={cx(cardStyle, css({ margin: space_S, maxWidth: '300px' }))}
+      className={cx(cardStyle, css({ margin: space_sm, maxWidth: '300px' }))}
     >
       <Flex
         justify="space-between"
-        className={css({ borderBottom: '1px solid var(--lightGray)', padding: space_S })}
+        className={css({ borderBottom: '1px solid var(--lightGray)', padding: space_sm })}
       >
         {showModal === 'delete' && (
           <ConfirmDeleteModal
@@ -94,14 +94,14 @@ export default function StickyNoteDisplay({
         <DropDownMenu
           icon={'more_vert'}
           valueComp={{ value: '', label: '' }}
-          buttonClassName={cx(lightIconButtonStyle, css({ marginLeft: space_S }))}
+          buttonClassName={cx(lightIconButtonStyle, css({ marginLeft: space_sm }))}
           onSelect={value => setShowModal(value.value)}
           entries={[
             {
               value: 'delete',
               label: (
                 <>
-                   <Icon icon={'delete'} color={errorColor} /> {i18n.common.delete}
+                   <Icon icon={'delete'} color={'var(--error-main)'} /> {i18n.common.delete}
                 </>
               ),
             },
@@ -109,7 +109,7 @@ export default function StickyNoteDisplay({
         />
       </Flex>
       <Flex direction="column" align="stretch">
-        <div className={css({ margin: space_M, minWidth: '0' })}>
+        <div className={css({ margin: space_lg, minWidth: '0' })}>
           {stickyNote.explanationId && (
             <div>
               <p>

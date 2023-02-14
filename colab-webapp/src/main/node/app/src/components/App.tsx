@@ -20,9 +20,9 @@ import Loading from './common/layout/Loading';
 import ErrorBoundary from './common/toplevel/ErrorBoundary';
 import Notifier from './common/toplevel/Notifier';
 import MainApp from './MainApp';
-import { colabTheme, fonts, lightMode } from './styling/style';
 import Token from './token/Token';
 import { TocDisplayCtx, TocMode } from './resources/ResourcesList';
+import { fonts, lightMode } from './styling/theme';
 
 /**
  * To read parameters from hash
@@ -121,7 +121,7 @@ function App(): JSX.Element {
 
   return (
     <div
-      className={cx(colabTheme, lightMode, fonts)}
+      className={cx(lightMode, fonts)}
       onDrop={cancelDroppingFiles}
       onDragOver={cancelDroppingFiles}
     >

@@ -9,7 +9,7 @@ import { css } from '@emotion/css';
 import { StickyNoteLink } from 'colab-rest-client';
 import * as React from 'react';
 import Flex from '../common/layout/Flex';
-import { lightIconButtonStyle, space_M } from '../styling/style';
+import { lightIconButtonStyle, space_lg } from '../styling/style';
 import StickyNoteCreator from './StickyNoteCreator';
 import StickyNoteDisplay from './StickyNoteDisplay';
 
@@ -37,7 +37,7 @@ export default function StickyNoteList({
         grow={1}
         direction="column"
         align="stretch"
-        className={css({ overflow: 'auto', padding: space_M })}
+        className={css({ overflow: 'auto', padding: space_lg })}
       >
         {stickyNotes.sort(sortStickyNotes).map(stickyNote => (
           <div key={stickyNote.id}>

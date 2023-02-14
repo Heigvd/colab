@@ -12,11 +12,11 @@ import { CardTypeAllInOne as CardType } from '../../../../types/cardTypeDefiniti
 import Flex from '../../../common/layout/Flex';
 import Icon from '../../../common/layout/Icon';
 import ResourcesListSummary from '../../../resources/summary/ResourcesListSummary';
-import { space_M } from '../../../styling/style';
+import { space_lg } from '../../../styling/style';
 import TargetCardTypeSummary from './TargetCardTypeSummary';
 
 const itemStyle = css({
-  marginRight: space_M,
+  marginRight: space_lg,
 });
 
 interface CardTypeRelativesSummaryProps {

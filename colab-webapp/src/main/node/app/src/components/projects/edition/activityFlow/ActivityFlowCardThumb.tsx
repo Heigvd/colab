@@ -16,7 +16,7 @@ import CardLayout from '../../../cards/CardLayout';
 import VariantSelector from '../../../cards/VariantSelector';
 import Flex from '../../../common/layout/Flex';
 import Icon from '../../../common/layout/Icon';
-import { space_M, space_S, variantTitle } from '../../../styling/style';
+import { space_lg, space_sm, variantTitle } from '../../../styling/style';
 import { AFPlumbRef } from './ActivityFlowChart';
 
 const cardStyle = css({
@@ -70,7 +70,7 @@ export function AFCard({ card, jsPlumb, plumbRefs }: CardProps): JSX.Element {
     <div
       ref={refCb}
       data-cardid={card.id}
-      className={`CardSource CardTarget ${cardStyle} ` + css({ margin: space_M })}
+      className={`CardSource CardTarget ${cardStyle} ` + css({ margin: space_lg })}
     >
       <VariantSelector card={card}>
         {(variant, variants) => (
@@ -87,7 +87,7 @@ export function AFCard({ card, jsPlumb, plumbRefs }: CardProps): JSX.Element {
             >
               <div
                 className={css({
-                  padding: space_S + ' ' + space_M,
+                  padding: space_sm + ' ' + space_lg,
                 })}
               >
                 <div

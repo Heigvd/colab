@@ -18,7 +18,7 @@ import Icon from '../../common/layout/Icon';
 import { DocEditorCtx } from '../../documents/DocumentEditorToolbox';
 import { createCaret, getUserColor } from '../../projects/presence/Presence';
 import { PresenceContext } from '../../projects/presence/PresenceContext';
-import { borderRadius, lightIconButtonStyle, space_S } from '../../styling/style';
+import { lightIconButtonStyle, space_sm } from '../../styling/style';
 import {
   areAllLeafsWrappedByTag,
   boundedClosest,
@@ -255,7 +255,6 @@ function mergeMardown(md: MarkdownWithSelection, toInsert: string): MarkdownWith
 export const idleStyle = cx(
   lightIconButtonStyle,
   css({
-    borderRadius: borderRadius,
     padding: '5px',
     margin: '0 2px',
     '&:hover': {
@@ -273,8 +272,8 @@ export const toggledStyle = cx(
 );
 
 export const toolbarSeparatorStyle = css({
-  paddingLeft: space_S,
-  marginLeft: space_S,
+  paddingLeft: space_sm,
+  marginLeft: space_sm,
   borderLeft: '1px solid var(--lightGray)',
   height: '24px',
 });
@@ -286,7 +285,6 @@ const editorStyle = cx(
     backgroundColor: 'var(--bgColor)',
     padding: '5px',
     border: '1px solid var(--lighterGray)',
-    borderRadius: borderRadius,
     whiteSpace: 'pre-line',
     cursor: 'text',
     '& .some-cursor': {

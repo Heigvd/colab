@@ -10,7 +10,7 @@ import { CardContentStatus } from 'colab-rest-client';
 import * as React from 'react';
 import useTranslations from '../../i18n/I18nContext';
 import Icon from '../common/layout/Icon';
-import { borderRadius, errorColor, space_S, successColor } from '../styling/style';
+import { space_sm } from '../styling/style';
 
 const badgeStyle = (color: string) => {
   return css({
@@ -18,12 +18,11 @@ const badgeStyle = (color: string) => {
     alignItems: 'center',
     border: `1px solid ${color}`,
     color: `${color}`,
-    borderRadius: borderRadius,
     margin: '0 2px',
     padding: '3px',
     fontSize: '0.8em',
     textTransform: 'uppercase',
-    gap: space_S,
+    gap: space_sm,
   });
 };
 
@@ -40,17 +39,17 @@ type StatusIconAndColorType = {
 export function getStatusIconAndColor(status: CardContentStatus): StatusIconAndColorType {
   switch (status) {
     case 'ACTIVE':
-      return { icon: 'edit', color: successColor };
+      return { icon: 'edit', color: 'var(--success-main)' };
     case 'PREPARATION':
       return { icon: 'edit', color: '#B54BB2' };
     case 'VALIDATED':
-      return { icon: 'check', color: successColor };
+      return { icon: 'check', color: 'var(--success-main)' };
     case 'POSTPONED':
       return { icon: 'pause', color: 'orange' };
     case 'ARCHIVED':
       return { icon: 'inventory_2', color: '#9C9C9C' };
     case 'REJECTED':
-      return { icon: 'close', color: errorColor };
+      return { icon: 'close', color: 'var(--error-main)'};
   }
 }
 
@@ -69,7 +68,7 @@ export default function CardContentStatusDisplay({
     }
     return (
        <Icon
-        className={cx(css({ paddingRight: space_S }), className)}
+        className={cx(css({ paddingRight: space_sm }), className)}
         icon={getStatusIconAndColor(status).icon}
         color={getStatusIconAndColor(status).color}
         title={tooltip}
@@ -90,7 +89,7 @@ export default function CardContentStatusDisplay({
       <div title={tooltip}>
         {status != 'ACTIVE' && (
            <Icon
-            className={css({ paddingRight: space_S })}
+            className={css({ paddingRight: space_sm })}
             icon={getStatusIconAndColor(status).icon}
             color={getStatusIconAndColor(status).color}
           />

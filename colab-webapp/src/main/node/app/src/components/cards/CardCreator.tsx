@@ -22,15 +22,15 @@ import IconButton from '../common/element/IconButton';
 import Flex from '../common/layout/Flex';
 import Icon from '../common/layout/Icon';
 import Modal from '../common/layout/Modal';
-import { lightIconButtonStyle, marginAroundStyle, space_M, space_S } from '../styling/style';
+import { lightIconButtonStyle, space_lg, space_sm } from '../styling/style';
 import CardTypeThumbnail from './cardtypes/CardTypeThumbnail';
 
 export const cardTypeThumbnailStyle = css({
-  padding: space_M,
+  padding: space_lg,
   //width: `calc(50% - 8px - 4*${space_S} - ${space_M})`,
   minHeight: '85px',
   maxHeight: '85px',
-  margin: space_S,
+  margin: space_sm,
 });
 
 export interface CardCreatorProps {
@@ -97,7 +97,7 @@ export default function CardCreator({
       <Modal
         title={i18n.modules.card.createNew(parentCardContent.title)}
         className={cx(css({ height: '580px', width: '800px' }))}
-        modalBodyClassName={css({ paddingTop: space_S })}
+        modalBodyClassName={css({ paddingTop: space_sm })}
         onClose={() => {
           resetData();
           setShowCardTypeSelector(false);
@@ -107,7 +107,7 @@ export default function CardCreator({
             justify="space-between"
             align="center"
             grow={1}
-            className={css({ padding: space_M, alignSelf: 'stretch' })}
+            className={css({ padding: space_lg, alignSelf: 'stretch' })}
           >
             <Button
               onClick={() => {
@@ -116,12 +116,12 @@ export default function CardCreator({
                 }
               }}
               invertedButton
-              className={cx(marginAroundStyle([2], space_S), css({ justifySelf: 'flex-start' }))}
+              className={cx( css({ justifySelf: 'flex-start' }))}
             >
               {i18n.modules.cardType.route.manageTypes}
             </Button>
             <Flex>
-              <Button onClick={close} invertedButton className={marginAroundStyle([2], space_S)}>
+              <Button onClick={close} invertedButton>
                 {i18n.common.cancel}
               </Button>
 
@@ -139,7 +139,7 @@ export default function CardCreator({
           } else {
             return (
               <div className={css({ width: '100%', textAlign: 'left' })}>
-                <Flex grow={1} className={css({ paddingTop: space_S })}>
+                <Flex grow={1} className={css({ paddingTop: space_sm })}>
                   <h2>{i18n.modules.card.action.chooseACardType}</h2>
                 </Flex>
                 <CustomElementsList
@@ -165,7 +165,7 @@ export default function CardCreator({
 
   return display === 'dropdown' ? (
     <div onClick={onClickCb}>
-       <Icon icon={'add'} className={css({ marginRight: space_S })} />
+       <Icon icon={'add'} className={css({ marginRight: space_sm })} />
       {customLabel ? customLabel : i18n.modules.card.createCard}
     </div>
   ) : (

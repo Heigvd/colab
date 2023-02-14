@@ -11,7 +11,7 @@ import logger from '../../logger';
 import Button from '../common/element/Button';
 import { BlockInput, InlineInput } from '../common/element/Input';
 import Flex from '../common/layout/Flex';
-import { space_M, textSmall } from '../styling/style';
+import { space_lg, text_sm } from '../styling/style';
 
 export default function DebugInput(): JSX.Element {
   const [mandatory, setMandatory] = React.useState<boolean>(false);
@@ -29,7 +29,7 @@ export default function DebugInput(): JSX.Element {
     <Flex direction="row">
       <Flex direction="column">
         <Flex direction="row">
-          <Flex direction="column" className={css({ margin: space_M })}>
+          <Flex direction="column" className={css({ margin: space_lg })}>
             <h2>flowing block input</h2>
             <BlockInput
               label="input text"
@@ -99,7 +99,7 @@ export default function DebugInput(): JSX.Element {
               errorMessage={showError && 'oh an errorMessage'}
             />
           </Flex>
-          <Flex direction="column" className={css({ margin: space_M })}>
+          <Flex direction="column" className={css({ margin: space_lg })}>
             <h2>flowing inline input</h2>
             <InlineInput
               label="input text"
@@ -162,7 +162,7 @@ export default function DebugInput(): JSX.Element {
               errorMessage={showError && 'oh an errorMessage'}
             />
           </Flex>
-          <Flex direction="column" className={css({ margin: space_M })}>
+          <Flex direction="column" className={css({ margin: space_lg })}>
             <h2>flowing inline input</h2>
             <InlineInput
               value={val11}
@@ -224,7 +224,7 @@ export default function DebugInput(): JSX.Element {
           </Flex>
         </Flex>
         <Flex direction="row">
-          <Flex direction="column" className={css({ margin: space_M })}>
+          <Flex direction="column" className={css({ margin: space_lg })}>
             <h2>on blur block input</h2>
             <BlockInput
               value={val11}
@@ -285,7 +285,7 @@ export default function DebugInput(): JSX.Element {
               errorMessage={showError && 'oh an errorMessage'}
             />
           </Flex>
-          <Flex direction="column" className={css({ margin: space_M })}>
+          <Flex direction="column" className={css({ margin: space_lg })}>
             <h2>on blur inline input</h2>
             <InlineInput
               label="input text confirm"
@@ -354,7 +354,7 @@ export default function DebugInput(): JSX.Element {
               errorMessage={showError && 'oh an errorMessage'}
             />
           </Flex>
-          <Flex direction="column" className={css({ margin: space_M })}>
+          <Flex direction="column" className={css({ margin: space_lg })}>
             <h2>on blur inline input</h2>
             <InlineInput
               value={val11}
@@ -422,7 +422,7 @@ export default function DebugInput(): JSX.Element {
           </Flex>
         </Flex>
         <Flex direction="row">
-          <Flex direction="column" className={css({ margin: space_M })}>
+          <Flex direction="column" className={css({ margin: space_lg })}>
             <h2>on confirm block input</h2>
             <BlockInput
               value={val11}
@@ -483,7 +483,7 @@ export default function DebugInput(): JSX.Element {
               errorMessage={showError && 'oh an errorMessage'}
             />
           </Flex>
-          <Flex direction="column" className={css({ margin: space_M })}>
+          <Flex direction="column" className={css({ margin: space_lg })}>
             <h2>on confirm inline input</h2>
             <InlineInput
               label="input text confirm"
@@ -552,7 +552,7 @@ export default function DebugInput(): JSX.Element {
               errorMessage={showError && 'oh an errorMessage'}
             />
           </Flex>
-          <Flex direction="column" className={css({ margin: space_M })}>
+          <Flex direction="column" className={css({ margin: space_lg })}>
             <h2>on confirm inline input</h2>
             <InlineInput
               value={val11}
@@ -619,7 +619,7 @@ export default function DebugInput(): JSX.Element {
             />
           </Flex>
         </Flex>
-        <Flex className={css({ margin: space_M })} direction="column">
+        <Flex className={css({ margin: space_lg })} direction="column">
           <h1>results</h1>
           <Flex>{val11}</Flex>
           <Flex>{val12}</Flex>
@@ -627,13 +627,13 @@ export default function DebugInput(): JSX.Element {
         </Flex>
       </Flex>
       <Flex direction="row">
-        <Flex direction="column" className={css({ padding: space_M })}>
+        <Flex direction="column" className={css({ padding: space_lg })}>
           <Button
             title="mandatory"
             onClick={() => {
               setMandatory(!mandatory);
             }}
-            className={cx(textSmall, css({ margin: '5px' }))}
+            className={cx(text_sm, css({ margin: '5px' }))}
           >
             mandatory = {mandatory ? 'true' : 'false'}
           </Button>
@@ -642,7 +642,7 @@ export default function DebugInput(): JSX.Element {
             onClick={() => {
               setReadOnly(!readOnly);
             }}
-            className={cx(textSmall, css({ margin: '5px' }))}
+            className={cx(text_sm, css({ margin: '5px' }))}
           >
             readOnly = {readOnly ? 'true' : 'false'}
           </Button>
@@ -651,7 +651,7 @@ export default function DebugInput(): JSX.Element {
             onClick={() => {
               setShowTip(!showTip);
             }}
-            className={cx(textSmall, css({ margin: '5px' }))}
+            className={cx(text_sm, css({ margin: '5px' }))}
           >
             showTip = {showTip ? 'true' : 'false'}
           </Button>
@@ -660,7 +660,7 @@ export default function DebugInput(): JSX.Element {
             onClick={() => {
               setShowFooter(!showFooter);
             }}
-            className={cx(textSmall, css({ margin: '5px' }))}
+            className={cx(text_sm, css({ margin: '5px' }))}
           >
             showFooter = {showFooter ? 'true' : 'false'}
           </Button>
@@ -669,7 +669,7 @@ export default function DebugInput(): JSX.Element {
             onClick={() => {
               setShowWarning(!showWarning);
             }}
-            className={cx(textSmall, css({ margin: '5px' }))}
+            className={cx(text_sm, css({ margin: '5px' }))}
           >
             showWarning = {showWarning ? 'true' : 'false'}
           </Button>
@@ -678,7 +678,7 @@ export default function DebugInput(): JSX.Element {
             onClick={() => {
               setShowError(!showError);
             }}
-            className={cx(textSmall, css({ margin: '5px' }))}
+            className={cx(text_sm, css({ margin: '5px' }))}
           >
             showError = {showError ? 'true' : 'false'}
           </Button>

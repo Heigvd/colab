@@ -7,7 +7,7 @@
 
 import { css } from '@emotion/css';
 import React, { useState } from 'react';
-import { lightItalicText, space_S } from '../../styling/style';
+import { lightItalicText, space_sm } from '../../styling/style';
 import Flex from '../layout/Flex';
 import { Filters, genericFilter, IFilter } from './Filters';
 import SearchInput from './SearchInput';
@@ -101,7 +101,7 @@ export default function SearchSortList({ widgets, itemComp }: SearchSortListProp
         <SearchInput onChangeSearchQuery={(query: string) => setQuery(query)} />
       </Flex>
       {resultWidgets.length > 0 && (
-        <Flex gap={space_S} wrap="wrap">
+        <Flex gap={space_sm} wrap="wrap">
           {resultWidgets.map(widget => itemComp(widget))}
         </Flex>
       )}

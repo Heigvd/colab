@@ -8,7 +8,7 @@
 import { css, cx } from '@emotion/css';
 import * as React from 'react';
 import useTranslations from '../../../i18n/I18nContext';
-import { paddingAroundStyle, space_S } from '../../styling/style';
+import { space_sm } from '../../styling/style';
 import IconButton from '../element/IconButton';
 import Flex from './Flex';
 import Icon from './Icon';
@@ -27,8 +27,8 @@ const closeStyle = css({
 
 const defaultLabelStyle = cx(
   css({
-    padding: space_S,
-    marginTop: space_S,
+    padding: space_sm,
+    marginTop: space_sm,
     borderBottom: '1px solid var(--lightGray)',
     color: 'var(--fgColor)',
     '&:hover': {
@@ -73,7 +73,6 @@ export default function Collapsible({
            <Icon
             icon={icon}
             title={tooltip}
-            className={paddingAroundStyle([1, 3], space_S)}
           />
         )}
         {label}
@@ -88,7 +87,7 @@ export default function Collapsible({
               ? i18n.common.close
               : i18n.common.open
           }
-          className={css({ marginLeft: space_S })}
+          className={css({ marginLeft: space_sm })}
         />
       </Flex>
       <Flex className={cx(showContent ? openStyle : closeStyle, contentClassName)}>{children}</Flex>

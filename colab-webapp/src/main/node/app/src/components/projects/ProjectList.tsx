@@ -28,13 +28,12 @@ import Flex from '../common/layout/Flex';
 import Icon from '../common/layout/Icon';
 import {
   ellipsis,
-  errorColor,
   invertedButtonStyle,
   lightIconButtonStyle,
   multiLineEllipsis,
-  space_M,
-  space_S,
-  textSmall,
+  space_lg,
+  space_sm,
+  text_sm,
 } from '../styling/style';
 import { defaultProjectIllustration } from './ProjectCommon';
 import ProjectCreator from './ProjectCreator';
@@ -189,10 +188,10 @@ export const ProjectDisplay = ({ project, className }: ProjectDisplayProps) => {
             display: 'flex',
             flexDirection: 'row',
             justifyContent: 'space-between',
-            paddingLeft: space_M,
-            paddingRight: space_M,
-            paddingTop: space_M,
-            paddingBottom: space_S,
+            paddingLeft: space_lg,
+            paddingRight: space_lg,
+            paddingTop: space_lg,
+            paddingBottom: space_sm,
           })}
         >
           <h3 className={ellipsis} title={project.name ? project.name : 'Project name'}>
@@ -287,7 +286,7 @@ export const ProjectDisplay = ({ project, className }: ProjectDisplayProps) => {
                 value: 'delete',
                 label: (
                   <>
-                     <Icon icon={'delete'} color={errorColor} /> {i18n.common.delete}
+                     <Icon icon={'delete'} color={'var(--error-main)'} /> {i18n.common.delete}
                   </>
                 ),
                 action: () => navigate(`deleteproject/${project.id}`),
@@ -297,14 +296,14 @@ export const ProjectDisplay = ({ project, className }: ProjectDisplayProps) => {
         </div>
         <div
           className={css({
-            padding: space_M,
+            padding: space_lg,
             paddingTop: 0,
             display: 'flex',
             flexDirection: 'column',
             flexGrow: 1,
           })}
         >
-          <div title={project.description || ''} className={cx(multiLineEllipsis, textSmall)}>
+          <div title={project.description || ''} className={cx(multiLineEllipsis, text_sm)}>
             {project.description}
           </div>
           {/* 
@@ -351,12 +350,12 @@ function ProjectList({ projects, hideCreationButton }: ProjectListProps) {
           <h3>{i18n.modules.project.info.noProjectYet}</h3>
           {!hideCreationButton && (
             <ProjectCreator
-              collapsedButtonClassName={cx(invertedButtonStyle, css({ marginTop: space_S }))}
+              collapsedButtonClassName={cx(invertedButtonStyle, css({ marginTop: space_sm }))}
             />
           )}
         </Flex>
       ) : !hideCreationButton ? (
-        <Flex className={css({ alignSelf: 'flex-end', padding: space_S })}>
+        <Flex className={css({ alignSelf: 'flex-end', padding: space_sm })}>
           <ProjectCreator
             collapsedButtonClassName={cx(invertedButtonStyle, css({ fontSize: '0.8em' }))}
           />

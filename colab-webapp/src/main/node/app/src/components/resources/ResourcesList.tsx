@@ -21,10 +21,9 @@ import Flex from '../common/layout/Flex';
 import Icon from '../common/layout/Icon';
 import {
   lightIconButtonStyle,
-  marginAroundStyle,
   oneLineEllipsis,
-  space_M,
-  space_S,
+  space_lg,
+  space_sm,
 } from '../styling/style';
 import { ResourceCategoryModal } from './ResourceDisplay';
 import {
@@ -167,7 +166,7 @@ function ResourcesListByCategory({
       {Object.keys(listsByCategories)
         .sort()
         .map(category => (
-          <div key={category} className={marginAroundStyle([3], space_S)}>
+          <div key={category}>
             <TocHeader category={category} />
 
             <Flex direction="column" align="stretch">
@@ -192,7 +191,7 @@ const resourcesStackLabelStyle = css({
   fontWeight: 'bold',
   backgroundColor: 'var(--hoverBgColor)',
   marginTop: 0,
-  paddingLeft: space_M,
+  paddingLeft: space_lg,
   fontSize: '0.8rem',
   textTransform: 'uppercase',
 });
@@ -311,7 +310,7 @@ ResourcesListProps): JSX.Element {
         <></>
       )}
       {bySources['INHERITED'] ? (
-        <div className={marginAroundStyle([3], space_S)}>
+        <div>
           <Collapsible
             label={i18n.modules.resource.info.source.inherited}
             open
@@ -329,7 +328,7 @@ ResourcesListProps): JSX.Element {
         <></>
       )}
       {bySources['PROJECT'] ? (
-        <div className={marginAroundStyle([3], space_S)}>
+        <div>
           <Collapsible
             label={i18n.modules.resource.info.source.project}
             open
@@ -464,11 +463,11 @@ export function ResourcesListBySource({
       {Object.keys(bySources)
         .sort()
         .map(source => (
-          <div key={source} className={marginAroundStyle([3], space_S)}>
+          <div key={source}>
             <Collapsible
               open
               label={
-                <div className={marginAroundStyle([1, 2, 4], space_M)}>
+                <div>
                   <h3
                     className={cx(
                       css({
@@ -535,9 +534,9 @@ function TocHeader({ category }: TocHeaderProps): JSX.Element {
               flexGrow: 1,
               textTransform: 'uppercase',
               marginBottom: 0,
-              marginTop: space_S,
-              marginLeft: space_M,
-              marginRight: space_M,
+              marginTop: space_sm,
+              marginLeft: space_lg,
+              marginRight: space_lg,
               borderBottom: '1px solid var(--lightGray)',
               fontWeight: 'bold',
               fontSize: '0.75rem',
@@ -614,7 +613,7 @@ function TocEntry({
             }}
             grow={1}
             className={cx(
-              css({ padding: '3px ' + space_M }),
+              css({ padding: '3px ' + space_lg }),
               { [css({ color: 'var(--darkGray)' })]: effectiveReadOnly },
               { [css({ color: 'var(--darkGray)' })]: !effectiveReadOnly },
             )}
@@ -713,7 +712,7 @@ function TocEntry({
             <DropDownMenu
               icon={'more_vert'}
               valueComp={{ value: '', label: '' }}
-              buttonClassName={cx(lightIconButtonStyle, css({ marginLeft: space_S }))}
+              buttonClassName={cx(lightIconButtonStyle, css({ marginLeft: space_sm }))}
               entries={[
                 ...(!effectiveReadOnly && resource.isDirectResource
                   ? [

@@ -23,14 +23,12 @@ import Icon from '../common/layout/Icon';
 import Modal from '../common/layout/Modal';
 import DocumentPreview from '../documents/preview/DocumentPreview';
 import {
-  errorColor,
   greyIconButtonChipStyle,
   lightIconButtonStyle,
   oneLineEllipsis,
   //linkStyle,
-  space_M,
-  space_S,
-  successColor,
+  space_lg,
+  space_sm,
   variantTitle,
 } from '../styling/style';
 import CardContentStatus from './CardContentStatus';
@@ -217,7 +215,7 @@ export default function CardThumb({
           >
             <div
               className={css({
-                padding: space_S + ' ' + space_S + ' ' + space_S + ' ' + space_M,
+                padding: space_sm + ' ' + space_sm + ' ' + space_sm + ' ' + space_lg,
               })}
             >
               <div
@@ -304,7 +302,7 @@ export default function CardThumb({
                   <DropDownMenu
                     icon={'more_vert'}
                     valueComp={{ value: '', label: '' }}
-                    buttonClassName={cx(lightIconButtonStyle, css({ marginLeft: space_S }))}
+                    buttonClassName={cx(lightIconButtonStyle, css({ marginLeft: space_sm }))}
                     entries={[
                       {
                         value: 'newSubcard',
@@ -353,7 +351,7 @@ export default function CardThumb({
                         value: 'delete',
                         label: (
                           <>
-                             <Icon color={errorColor} icon={'delete'} />{' '}
+                             <Icon color={'var(--error-main)'} icon={'delete'} />{' '}
                             {i18n.modules.card.deleteCardVariant(hasVariants)}
                           </>
                         ),
@@ -397,7 +395,7 @@ export default function CardThumb({
                   cursor: shouldZoomOnClick ? 'zoom-in' : 'pointer',
                 })]: true,
                 [css({
-                  padding: space_M,
+                  padding: space_lg,
                 })]: depth > 0,
               },
               css({ overflow: 'auto' }),
@@ -406,11 +404,11 @@ export default function CardThumb({
           >
             {mayOrganize && variant && (
               <Flex
-                gap={space_S}
+                gap={space_sm}
                 wrap="nowrap"
                 justify="flex-end"
                 align="center"
-                className={css({ marginTop: '-10px', paddingRight: space_S })}
+                className={css({ marginTop: '-10px', paddingRight: space_sm })}
               >
                 <IconButton
                   className={cx(
@@ -418,9 +416,9 @@ export default function CardThumb({
                     css({ alignSelf: 'flex-end' }),
                     organize &&
                       css({
-                        backgroundColor: successColor,
+                        backgroundColor: 'var(--success-main)',
                         color: 'var(--bgColor)',
-                        border: successColor,
+                        border: 'var(--success-main)',
                       }),
                   )}
                   title={i18n.modules.card.positioning.toggleText}

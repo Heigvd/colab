@@ -5,131 +5,57 @@
  * Licensed under the MIT License
  */
 import { css, cx, keyframes } from '@emotion/css';
-//import '../../fonts/MaterialSymbolsOutlined[FILL,GRAD,opsz,wght].woff2';
-//import '../../fonts/PublicSans[wght].ttf';
+import { br, heading, space, text } from './theme';
 
-export const errorColor = '#e51c23';
-export const warningColor = '#ff9800';
-export const successColor = '#4caf50';
-export const primaryColor = '#333';
-export const secondaryColor = '#50BFD5';
+//SPACE VARS
+export const space_xs = space.xs;
+export const space_sm = space.sm;
+export const space_md = space.md;
+export const space_lg = space.lg;
+export const space_xl = space.xl;
+export const space_2xl = space['2xl'];
+export const space_3xl = space['3xl'];
+export const space_4xl = space['4xl'];
 
-export const errorStyle = css({
-  color: 'var(--warningColor)',
+//BORDER RADIUS
+export const br_sm = css({ borderRadius: br.sm});
+export const br_md = css({ borderRadius: br.md});
+export const br_lg = css({ borderRadius: br.lg});
+export const br_xl = css({ borderRadius: br.xl});
+export const br_full = css({ borderRadius: br.full});
+
+//TEXT VARS
+export const text_xs = css({ fontSize: text.xs});
+export const text_sm = css({ fontSize: text.sm });
+export const text_md = css({ fontSize: text.md});
+export const text_lg = css({ fontSize: text.lg});
+export const text_xl = css({ fontSize: text.xl});
+export const text_regular = css({ fontSize: text.regular});
+export const text_semibold = css({ fontSize: text.semibold});
+export const text_lineHeight = css({ fontSize: text.lineHeight});
+
+export const heading_xs = css({ fontSize: heading.xs});
+export const heading_sm = css({ fontSize: heading.sm});
+export const heading_md = css({ fontSize: heading.md});
+export const heading_lg = css({ fontSize: heading.lg});
+export const heading_xl = css({ fontSize: heading.xl});
+export const heading_weight = css({ fontSize: heading.weight});
+export const heading_lineHeight = css({ fontSize: heading.lineHeight});
+
+//MODES
+export const errorTextStyle = css({
+  color: 'var(--error-main)',
+});
+export const warningTextStyle = css({
+  color: 'var(--warning-main)',
+});
+export const successTextStyle = css({
+  color: 'var(--success-main)',
 });
 
-export const warningStyle = css({
-  color: 'var(--warningColor)',
-});
-
-export const successStyle = css({
-  color: 'var(--successColor)',
-});
-
-export const normalThemeMode = css({
-  '--bgColor': 'var(--primaryColorContrast)',
-  '--hoverBgColor': 'var(--primaryColorContrastShade)',
-  '--fgColor': 'var(--primaryColor)',
-  '--hoverFgColor': 'var(--primaryColorShade)',
-
-  '--linkColor': 'var(--secondaryColor)',
-  '--linkHoverColor': 'var(--secondaryColorShade)',
-  '--linkBgColor': 'var(--secondaryColorContrast)',
-  '--linkHoverBgColor': 'var(--secondaryColorContrastShade)',
-
-  '--lighterGray': 'var(--superLightGray)',
-  '--darkGray': 'var(--darkDisabledGray)',
-  '--lightGray': 'var(--lightDisabledGray)',
-  '--focusColor': 'var(--secondaryColor)',
-  '--successColor': 'var(--themeSuccessColor)',
-  '--warningColor': 'var(--themeWarningColor)',
-  '--errorColor': 'var(--themeErrorColor)',
-
-  backgroundColor: 'var(--bgColor)',
-  color: 'var(--fgColor)',
-  p: {
-    margin: '0 0 5px 0',
-  },
-  'h1, h2, h3, h4': {
-    margin: '0 0 0 0',
-  },
-  h1: {
-    fontSize: '1.5rem',
-  },
-  h2: {
-    fontSize: '1.2rem',
-  },
-  'h3, h4': {
-    fontSize: '1rem',
-  },
-});
-
-export const invertedThemeMode = cx(
-  normalThemeMode,
-  css({
-    '--bgColor': 'var(--primaryColor)',
-    '--hoverBgColor': 'var(--primaryColorShade)',
-    '--fgColor': 'var(--primaryColorContrast)',
-    '--hoverFgColor': 'var(--primaryColorContrastShade)',
-
-    '--linkBgColor': 'var(--primaryColor)',
-    '--linkHoverBgColor': 'var(--primaryColorShade)',
-    '--linkColor': 'var(--primaryColorContrast)',
-    '--linkHoverColor': 'var(--primaryColorContrastShade)',
-
-    '--superLightGray': 'rgb(15, 15, 15)',
-    '--darkGray': 'var(--lightDisabledGray)',
-    '--lightGray': 'var(--darkDisabledGray)',
-  }),
-);
-
-export const shadedThemeMode = cx(
-  normalThemeMode,
-  css({
-    '--bgColor': 'var(--primaryColorShade)',
-    '--hoverBgColor': 'var(--primaryColor)',
-    '--fgColor': 'var(--primaryColorContrastShade)',
-    '--hoverFgColor': 'var(--primaryColorContrast)',
-  }),
-);
-
-export const borderRadius = '5px';
-export const boxShadow = '0px 0px 20px 0px rgba(0,0,0,0.3)';
-export const space_S = '5px';
-export const space_M = '15px';
-export const space_L = '1.5rem';
-export const flex = css({ display: 'flex' });
-export const smallFontSize = '0.85rem';
-export const textSmall = css({ fontSize: smallFontSize });
-
-type blockSide = 1 | 2 | 3 | 4;
-const blockMargin = {
-  1: 'margin-top',
-  2: 'margin-right',
-  3: 'margin-bottom',
-  4: 'margin-left',
-};
-
-export function marginAroundStyle(marginPos: blockSide[], marginSize: string) {
-  return css`
-    ${marginPos.map(pos => `${blockMargin[pos]}: ${marginSize};`).join('\n')}
-  `;
-}
-
-const blockPadding = {
-  1: 'padding-top',
-  2: 'padding-right',
-  3: 'padding-bottom',
-  4: 'padding-left',
-};
-export function paddingAroundStyle(paddingPos: blockSide[], paddingSize: string) {
-  return css`
-    ${paddingPos.map(pos => `${blockPadding[pos]}: ${paddingSize};`).join('\n')}
-  `;
-}
+// APP VARIABLES
 
 export const fullPageStyle = cx(
-  normalThemeMode,
   css({
     backgroundColor: 'var(--primaryColorContrastShade)',
     display: 'flex',
@@ -237,11 +163,9 @@ export const iconButton = cx(
 
 export const buttonStyle = cx(
   linkStyle,
-  invertedThemeMode,
   css({
     display: 'inline-block',
     padding: '8px 14px',
-    borderRadius: borderRadius,
     ':hover': {
       backgroundColor: 'var(--hoverBgColor)',
       textDecoration: 'none',
@@ -263,7 +187,6 @@ export const invertedButtonStyle = cx(
     border: '1px solid var(--primaryColor)',
     color: 'var(--primaryColor)',
     padding: '8px 14px',
-    borderRadius: borderRadius,
     cursor: 'pointer',
     ':hover': {
       backgroundColor: 'var(--hoverBgColor)',
@@ -306,7 +229,7 @@ export const lightIconButtonStyle = css({
 export const greyIconButtonChipStyle = cx(
   lightIconButtonStyle,
   css({
-    padding: space_S,
+    padding: space_sm,
     height: '20px',
     width: '20px',
     display: 'inline-flex',
@@ -324,7 +247,6 @@ export const cardShadow = '0px 0px 7px rgba(0, 0, 0, 0.2)';
 export const cardShadowHover = '0px 0px 9px rgba(0, 0, 0, 0.2)';
 
 export const cardStyle = cx(
-  normalThemeMode,
   css({
     boxShadow: cardShadow,
     borderRadius: '5px',
@@ -368,7 +290,7 @@ export function rootViewCardsStyle(depth: number, inRootView: boolean) {
 }
 
 export const paddedContainerStyle = css({
-  padding: space_M,
+  padding: space_lg,
 });
 
 const defaultContainerStyle = cx(
@@ -421,11 +343,11 @@ export const textareaStyle = css({
   borderRadius: '6px',
   boxSizing: 'border-box',
   transition: '.8s',
-  padding: space_S + ' ' + space_M,
+  padding: space_sm + ' ' + space_lg,
   lineHeight: '1.6em',
   height: '100px',
   fontFamily: 'inherit',
-  fontSize: smallFontSize,
+  fontSize: text_sm,
   maxWidth: '100%',
   '&:focus': { border: 'solid 1px var(--darkGray)', outline: 'solid 1px var(--darkGray)' },
   '&:hover': { border: 'solid 1px var(--darkGray)' },
@@ -449,10 +371,10 @@ export const inputStyle = css({
   borderRadius: '6px',
   boxSizing: 'border-box',
   transition: '.2s',
-  padding: '0 ' + space_M,
+  padding: '0 ' + space_lg,
   lineHeight: '2.5em',
   fontFamily: 'inherit',
-  fontSize: smallFontSize,
+  fontSize: text_sm,
   '&:focus': { border: 'solid 1px var(--darkGray)', outline: 'solid 1px var(--darkGray)' },
   '&:hover': { border: 'solid 1px var(--darkGray)' },
 });
@@ -497,8 +419,8 @@ export const workInProgressStyle = cx(
 export const editableBlockStyle = css({
   border: '1px solid var(--superLightGray)',
   margin: '3px 0',
-  padding: space_S,
-  borderRadius: borderRadius,
+  padding: space_sm,
+  borderRadius: '6px',
   '&:hover': {
     cursor: 'pointer',
     border: '1px solid var(--lightGray)',
@@ -539,11 +461,11 @@ export const voidStyle = css({
   flexDirection: 'column',
   alignItems: 'center',
   justifyContent: 'center',
-  padding: space_L,
+  padding: space_xl,
 });
 
 export const selectCreatorStyle = css({
-  paddingTop: space_M,
+  paddingTop: space_lg,
   borderTopWidth: '1px',
   borderTopStyle: 'solid',
   borderTopColor: 'var(--darkGray)',
@@ -553,173 +475,3 @@ export const disabledStyle = css({
   opacity: 0.5,
   pointerEvents: 'none',
 });
-
-
-// new UI
-const basics = css({
-  '--white': '#FFF', 
-  '--black': '#000', 
-  '--transparent': 'transparent', 
-});
-const primary = css({
-  '--primary-50': '#E6FFFA', 
-  '--primary-100': '#B2F5EA', 
-  '--primary-300': '#4FD1C5', 
-  '--primary-400': '#38B2AC', 
-  '--primary-500': '#2C7A7B', 
-  '--primary-700': '#285E61', 
-});
-const gray = css({
-  '--gray-50': '#F7FAFC', 
-  '--gray-100': '#EDF2F7', 
-  '--gray-200': '#DDE4EE', 
-  '--gray-300': '#C8CEDA', 
-  '--gray-400': '#A0A2AB', 
-  '--gray-500': '#787C87', 
-  '--gray-600': '#43444B', 
-  '--gray-700': '#28292D', 
-});
-const blackAlpha = css({
-  '--blackAlpha-50': '#000000a', 
-  '--blackAlpha-100': '#000000f', 
-  '--blackAlpha-200': '#00000014', 
-  '--blackAlpha-300': '#00000029', 
-  '--blackAlpha-400': '#0000003D', 
-  '--blackAlpha-500': '#0000005C', 
-  '--blackAlpha-600': '#0000007A', 
-  '--blackAlpha-700': '#000000A3', 
-  '--blackAlpha-800': '#000000CC', 
-  '--blackAlpha-900': '#000000EB', 
-});
-const whiteAlpha = css({
-  '--whiteAlpha-50': '#FFFFFFA', 
-  '--whiteAlpha-100': '#FFFFFFF', 
-  '--whiteAlpha-200': '#FFFFFF14', 
-  '--whiteAlpha-300': '#FFFFFF29', 
-  '--whiteAlpha-400': '#FFFFFF3D', 
-  '--whiteAlpha-500': '#FFFFFF5C', 
-  '--whiteAlpha-600': '#FFFFFF7A', 
-  '--whiteAlpha-700': '#FFFFFFA3', 
-  '--whiteAlpha-800': '#FFFFFFCC', 
-  '--whiteAlpha-900': '#FFFFFFEB', 
-});
-const green = css({
-  '--green-100': '#C2F0D8', 
-  '--green-200': '#99E6BD', 
-  '--green-400': '#47D189', 
-  '--green-500': '#2EB86F', 
-  '--green-600': '#238F56', 
-  '--green-700': '#19663E', 
-});
-const red = css({
-  '--red-100': '#FED7D7', 
-  '--red-400': '#EA6262', 
-  '--red-500': '#E53E3E', 
-  '--red-600': '#C53030', 
-  '--red-700': '#9B2C2C', 
-});
-const orange = css({
-  '--orange-100': '#FEEBC8', 
-  '--orange-400': '#E68D52', 
-  '--orange-500': '#DD6B20', 
-  '--orange-600': '#C05621', 
-  '--orange-700': '#9C4221', 
-});
-const blue = css({
-  '--blue-100': '#BEE3F8', 
-  '--blue-400': '#5F9ED9', 
-  '--blue-500': '#3182CE', 
-  '--blue-600': '#2B6CB0', 
-  '--blue-700': '#2C5282', 
-});
-const otherColors = css({
-  '--cyan-400': '#0BC5EA', 
-  '--purple-400': '#9F7AEA', 
-  '--pink-400': '#ED64A6', 
-  '--teal-400': '#38B2AC', 
-  '--yellow-400': '#ECC94B', 
-});
-
-export const colabTheme = cx(
-  basics,
-  primary,
-  gray,
-  blackAlpha,
-  whiteAlpha,
-  green,
-  red,
-  orange,
-  blue,
-  otherColors
-);
-
-export const lightMode = css({
-  //TEXT
-  '--text-primary': 'var(--gray-700)',
-  '--text-secondary': 'var(--gray-400)',
-  '--text-disabled': 'var(--gray-200)',
-//BACKGROUND
-  '--bg-primary': 'var(--white)',
-  '--bg-secondary': 'var(--gray-50)',
-  '--bg-tertiary': 'var(--bg-100)',
-//PRIMARY
-  '--primary-main': 'var(--primary-400)',
-  '--primary-fade': 'var(--primary-50)',
-  '--primary-dark': 'var(--primary-500)',
-  '--primary-darker': 'var(--primary-700)',
-  '--primary-contrast': 'var(--white)',
-//SECONDARY
-'--secondary-main': 'var(--gray-400)',
-'--secondary-fade': 'var(--gray-50)',
-'--secondary-dark': 'var(--gray-500)',
-'--secondary-darker': 'var(--gray-700)',
-'--secondary-contrast': 'var(--white)',
-//ERROR
-'--error-main': 'var(--red-500)',
-'--error-fade': 'var(--red-100)',
-'--error-dark': 'var(--red-600)',
-'--error-darker': 'var(--red-700)',
-'--error-contrast': 'var(--white)',
-//WARNING
-'--warning-main': 'var(--orange-500)',
-'--warning-fade': 'var(--orange-100)',
-'--warning-dark': 'var(--orange-600)',
-'--warning-darker': 'var(--orange-700)',
-'--warning-contrast': 'var(--white)',
-//SUCCESS
-'--success-main': 'var(--green-500)',
-'--success-fade': 'var(--green-100)',
-'--success-dark': 'var(--green-600)',
-'--success-darker': 'var(--green-700)',
-'--success-contrast': 'var(--white)',
-//DIVIDER
-'--divider-main': 'var(--gray-200)',
-'--divider-fade': 'var(--gray-50)',
-'--divider-dark': 'var(--gray-400)',
-})
-
-//SPACE
-export const space = {
-  0: '0',
-  '2xs': '2px',
-  xs: '4px',
-  sm: '8px',
-  md: '12px',
-  lg: '16px',
-  xl: '24px',
-  '2xl': '36px',
-  '3xl': '48px',
-  '4xl': '64px',
-};
-//BORDER RADIUS
-export const br = {
-  sm: css({borderRadius:'2px'}),
-  md: css({borderRadius:'6px'}),
-  lg: css({borderRadius:'8px'}),
-  xl: css({borderRadius:'12px'}),
-  full: css({borderRadius:'9999px'}),
-};
-
-  export const fonts = css({
-    fontFamily: "'Public Sans', 'serif'",
-  })

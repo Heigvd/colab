@@ -16,7 +16,7 @@ import PasswordFeedbackDisplay from '../authentication/PasswordFeedbackDisplay';
 import Button from '../common/element/Button';
 import { PasswordScore } from '../common/element/Form';
 import IconButton from '../common/element/IconButton';
-import { space_S } from '../styling/style';
+import { space_sm } from '../styling/style';
 
 export interface LocalAccountProps {
   accountId: number;
@@ -47,7 +47,7 @@ export default function LocalAccount(props: LocalAccountProps): JSX.Element {
           {pwState === 'SET' ? (
             <Button
               invertedButton
-              className={css({ display: 'block', marginTop: space_S })}
+              className={css({ display: 'block', marginTop: space_sm })}
               onClick={() => {
                 setPwState('CHANGE_PASSWORD');
               }}

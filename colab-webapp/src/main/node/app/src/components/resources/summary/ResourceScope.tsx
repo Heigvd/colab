@@ -35,7 +35,7 @@ import Flex from '../../common/layout/Flex';
 import Icon from '../../common/layout/Icon';
 import { modalBody, modalFooter } from '../../common/layout/Modal';
 import Hierarchy from '../../projects/edition/hierarchy/Hierarchy';
-import { space_M, textSmall } from '../../styling/style';
+import { space_lg, text_sm } from '../../styling/style';
 import { getTheDirectResource, ResourceAndRef } from '../resourcesCommonType';
 import TargetResourceSummary from './TargetResourceSummary';
 
@@ -739,15 +739,15 @@ export default function ResourceScope({ onCancel, resource }: ResourceScopeProps
           className={modalBody}
           grow={1}
           direction="row"
-          gap={space_M}
+          gap={space_lg}
           align="stretch"
         >
-          <Flex direction="column" gap={space_M}>
+          <Flex direction="column" gap={space_lg}>
             {/* body */}
             {structure.root && (
               <>
                 <h3>{i18n.modules.project.settings.resources.label}</h3>
-                <div className={textSmall}>{i18n.modules.resource.scope.projectDocDesc}</div>
+                <div className={text_sm}>{i18n.modules.resource.scope.projectDocDesc}</div>
                 <Flex gap="5px">
                   <ProjectDisplay
                     root={structure.root}
@@ -764,7 +764,7 @@ export default function ResourceScope({ onCancel, resource }: ResourceScopeProps
             {structure.types.length > 0 && (
               <>
                 <h3>{i18n.modules.cardType.cardTypesLongWay}</h3>
-                <div className={textSmall}>{i18n.modules.resource.scope.thematicDesc}</div>
+                <div className={text_sm}>{i18n.modules.resource.scope.thematicDesc}</div>
                 <Flex direction="column" gap="5px" align="stretch">
                   {structure.types.map(cardType => (
                     <CardTypeDisplay
@@ -786,7 +786,7 @@ export default function ResourceScope({ onCancel, resource }: ResourceScopeProps
             {structure.root && (
               <>
                 <h3>{i18n.modules.resource.scope.mainViewTitle}</h3>
-                <div className={textSmall}>{i18n.modules.resource.scope.mainViewDesc}</div>
+                <div className={text_sm}>{i18n.modules.resource.scope.mainViewDesc}</div>
                 <Hierarchy
                   rootId={structure.root.card.id!}
                   enableDragAndDrop={false}
@@ -889,7 +889,7 @@ export default function ResourceScope({ onCancel, resource }: ResourceScopeProps
             )}
           </Flex>
           {externalRef.length > 0 && (
-            <Flex direction="column" gap={space_M}>
+            <Flex direction="column" gap={space_lg}>
               <h3>{i18n.modules.resource.scope.alsoUsedByExternalProject}</h3>
               {externalRef.map(ref => {
                 return <ExternalProjectDisplay key={ref.project.id} externalProject={ref} />;
@@ -901,7 +901,7 @@ export default function ResourceScope({ onCancel, resource }: ResourceScopeProps
         <Flex className={cx(modalFooter, modalBody)} justify="space-between" align="stretch">
           {' '}
           {/* footer */}
-          <Flex gap={space_M} align="center">
+          <Flex gap={space_lg} align="center">
             <Toggler
               value={showAll}
               onChange={setShowAll}
@@ -919,14 +919,14 @@ export default function ResourceScope({ onCancel, resource }: ResourceScopeProps
               saveMode="SILLY_FLOWING"
             />
           </Flex>
-          <Flex gap={space_M}>
+          <Flex gap={space_lg}>
             <Flex direction="column" align="flex-end">
               <Toggler
                 label={i18n.common.published}
                 value={owner.published}
                 onChange={x => setOwner(owner => ({ ...owner, published: x }))}
               />
-              <div className={textSmall}>
+              <div className={text_sm}>
                 {(() => {
                   if (owner.abstractCardTypeId != null) {
                     // shared documentation

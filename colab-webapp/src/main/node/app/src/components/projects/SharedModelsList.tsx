@@ -21,14 +21,13 @@ import DropDownMenu from '../common/layout/DropDownMenu';
 import Flex from '../common/layout/Flex';
 import Icon from '../common/layout/Icon';
 import {
-  borderRadius,
-  errorColor,
+  br_lg,
   lightIconButtonStyle,
   lightText,
   multiLineEllipsis,
   oneLineEllipsis,
-  space_S,
-  textSmall,
+  space_sm,
+  text_sm,
 } from '../styling/style';
 import { defaultProjectIllustration } from './ProjectCommon';
 
@@ -40,9 +39,9 @@ const projectThumbnailStyle = css({
   padding: 0,
   minHeight: '80px',
   maxHeight: '80px',
-  margin: space_S,
+  margin: space_sm,
   border: '1px solid var(--lightGray)',
-  borderRadius: borderRadius,
+  borderRadius: br_lg,
   overflow: 'hidden',
   minWidth: '250px',
   maxWidth: '250px',
@@ -109,7 +108,7 @@ export default function SharedModelsList({
                 className={css({ padding: '10px' })}
               >
                 <Flex justify="space-between">
-                  <h3 className={cx(css({ marginTop: space_S }), oneLineEllipsis)}>
+                  <h3 className={cx(css({ marginTop: space_sm }), oneLineEllipsis)}>
                     {!isEmptyProject
                       ? project.name
                         ? project.name
@@ -143,7 +142,7 @@ export default function SharedModelsList({
                         value: 'delete',
                         label: (
                           <>
-                             <Icon icon={'delete'} color={errorColor} />{' '}
+                             <Icon icon={'delete'} color={'var(--error-main)'} />{' '}
                             {i18n.common.delete}
                           </>
                         ),
@@ -152,7 +151,7 @@ export default function SharedModelsList({
                     ]}
                   />
                 </Flex>
-                <p className={cx(textSmall, lightText, multiLineEllipsis)}>
+                <p className={cx(text_sm, lightText, multiLineEllipsis)}>
                   {!isEmptyProject
                     ? project.description
                       ? project.description

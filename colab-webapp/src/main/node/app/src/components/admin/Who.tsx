@@ -16,7 +16,7 @@ import IconButton from '../common/element/IconButton';
 import InlineLoading from '../common/element/InlineLoading';
 import Flex from '../common/layout/Flex';
 import { ProjectDisplay } from '../projects/ProjectList';
-import { space_M } from '../styling/style';
+import { space_lg } from '../styling/style';
 import UserList from './UserList';
 
 interface ProjectDisplayProps {
@@ -125,7 +125,7 @@ export default function Who(): JSX.Element {
           <UserList users={onlineUsers} />
         </div>
         <h3>Opened Projects</h3>
-        <Flex gap={space_M} wrap="wrap">
+        <Flex gap={space_lg} wrap="wrap">
           {projectChannels.map(overview => (
             <ProjectDisplayWrapper
               key={`channel-project-${overview.channel.projectId}`}

@@ -17,7 +17,7 @@ import CleverTextarea from '../common/element/CleverTextarea';
 import InlineLoading from '../common/element/InlineLoading';
 import Flex from '../common/layout/Flex';
 import ErrorBoundary from '../common/toplevel/ErrorBoundary';
-import { space_S } from '../styling/style';
+import { space_sm } from '../styling/style';
 import ChangeTree from './ChangeTree';
 import { useLiveBlock } from './LiveTextEditor';
 
@@ -167,14 +167,14 @@ export default function LiveEditor({
                     minHeight: '50px',
                     flexGrow: 1,
                     flexBasis: '1px',
-                    padding: space_S,
+                    padding: space_sm,
                   })}
                   value={currentValue}
                   onChange={onChange}
                 />
                 <ErrorBoundary fallback={<Disclaimer md={currentValue} />}>
                   <MarkdownViewer
-                    className={css({ padding: space_S, flexGrow: 1, flexBasis: '1px' })}
+                    className={css({ padding: space_sm, flexGrow: 1, flexBasis: '1px' })}
                     md={currentValue}
                   />
                 </ErrorBoundary>

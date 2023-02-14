@@ -19,11 +19,11 @@ import { MainMenuLink, mainMenuLink } from './common/element/Link';
 import DropDownMenu from './common/layout/DropDownMenu';
 import Icon from './common/layout/Icon';
 import Monkeys from './debugger/monkey/Monkeys';
-import { flex, invertedThemeMode, space_M, space_S } from './styling/style';
+import {space_lg, space_sm } from './styling/style';
 const dropLabelsStyle = css({
   //width: '100%',
   textTransform: 'uppercase',
-  padding: space_M,
+  padding: space_lg,
 });
 
 export default function MainNav(): JSX.Element {
@@ -58,13 +58,13 @@ export default function MainNav(): JSX.Element {
         />
       </MainMenuLink> */}
       {hasModels ? (
-        <nav className={flex}>
+        <nav>
           <DropDownMenu
             value={value}
             entries={entries}
             onSelect={e => navigate(e.value)}
             menuIcon="BURGER"
-            buttonClassName={cx(mainMenuLink, css({ padding: '0 0 0 ' + space_M }))}
+            buttonClassName={cx(mainMenuLink, css({ padding: '0 0 0 ' + space_lg }))}
           />
         </nav>
       ) : (
@@ -117,7 +117,7 @@ export function UserDropDown({ onlyLogout }: { onlyLogout?: boolean }): JSX.Elem
                   <div
                     className={css({
                       borderBottom: '1px solid var(--darkGray)',
-                      padding: space_S,
+                      padding: space_sm,
                     })}
                   >
                      <Icon icon={'person'} />{' '}
@@ -178,7 +178,7 @@ export function UserDropDown({ onlyLogout }: { onlyLogout?: boolean }): JSX.Elem
               action: logout,
             },
           ]}
-          buttonClassName={cx(invertedThemeMode, css({ marginLeft: space_S }))}
+          buttonClassName={css({ marginLeft: space_sm })}
         />
         {passwordScore != null && passwordScore.score < 2 && (
            <Icon

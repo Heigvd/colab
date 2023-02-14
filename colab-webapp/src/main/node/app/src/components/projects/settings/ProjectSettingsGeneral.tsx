@@ -17,7 +17,7 @@ import InlineLoading from '../../common/element/InlineLoading';
 import { LabeledInput, LabeledTextArea } from '../../common/element/Input';
 import Flex from '../../common/layout/Flex';
 import Modal from '../../common/layout/Modal';
-import { space_L } from '../../styling/style';
+import { space_xl } from '../../styling/style';
 import { ProjectIllustrationMaker } from '../ProjectIllustrationMaker';
 
 export interface ProjectSettingsGeneralProps {
@@ -42,7 +42,7 @@ export default function ProjectSettingsGeneral({
         <Flex
           direction="column"
           align="stretch"
-          className={css({ width: '45%', minWidth: '45%', marginRight: space_L })}
+          className={css({ width: '45%', minWidth: '45%', marginRight: space_xl })}
         >
           <LabeledInput
             label={i18n.common.name}

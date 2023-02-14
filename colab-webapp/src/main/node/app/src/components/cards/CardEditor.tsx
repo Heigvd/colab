@@ -49,13 +49,10 @@ import {
 } from '../common/layout/SideCollapsiblePanel';
 import {
   cardStyle,
-  errorColor,
   lightIconButtonStyle,
   localTitleStyle,
-  paddingAroundStyle,
-  space_L,
-  space_S,
-  textSmall,
+  space_sm,
+  text_sm,
   variantTitle,
 } from '../styling/style';
 import CardContentStatus from './CardContentStatus';
@@ -156,7 +153,7 @@ export default function CardEditor({
     resources: {
       icon: 'attach_file',
       nextToIconElement: (
-        <div className={textSmall}>
+        <div className={text_sm}>
           {' '}
           (<ResourcesListNb resourcesOwnership={resourceOwnership} />)
         </div>
@@ -202,13 +199,12 @@ export default function CardEditor({
         direction="column"
         grow={1}
         align="stretch"
-        className={paddingAroundStyle([2, 3, 4], space_L)}
       >
         <Flex
           grow={1}
           direction="row"
           align="stretch"
-          className={css({ paddingBottom: space_S, height: '50vh' })}
+          className={css({ paddingBottom: space_sm, height: '50vh' })}
         >
           <Flex
             grow={1}
@@ -227,7 +223,7 @@ export default function CardEditor({
               justify="space-between"
               className={css({
                 alignItems: 'center',
-                padding: space_S,
+                padding: space_sm,
                 borderBottom: '1px solid var(--lightGray)',
                 borderTop:
                   card.color && card.color != '#ffffff'
@@ -238,7 +234,7 @@ export default function CardEditor({
               <Flex align="center">
                 {variant.frozen && (
                    <Icon
-                    className={css({ padding: `0 ${space_S}` })}
+                    className={css({ padding: `0 ${space_sm}` })}
                     icon={'lock'}
                     title={i18n.modules.card.infos.cardLocked}
                     color={'var(--darkGray)'}
@@ -341,14 +337,14 @@ export default function CardEditor({
                   title={i18n.modules.card.editor.fullScreen}
                   icon={fullScreen ? 'close_fullscreen' : 'open_in_full'}
                   onClick={() => setFullScreen(fullScreen => !fullScreen)}
-                  className={cx(lightIconButtonStyle, css({ padding: space_S }))}
+                  className={cx(lightIconButtonStyle, css({ padding: space_sm }))}
                 />
                 <DropDownMenu
                   icon={'more_vert'}
                   valueComp={{ value: '', label: '' }}
                   buttonClassName={cx(
                     lightIconButtonStyle,
-                    css({ marginLeft: space_S, padding: space_S }),
+                    css({ marginLeft: space_sm, padding: space_sm }),
                   )}
                   entries={[
                     {
@@ -423,7 +419,7 @@ export default function CardEditor({
                       value: 'delete',
                       label: (
                         <>
-                           <Icon icon={'delete'} color={errorColor} />{' '}
+                           <Icon icon={'delete'} color={'var(--error-main)'} />{' '}
                           {i18n.modules.card.deleteCardVariant(hasVariants)}
                         </>
                       ),
@@ -493,7 +489,7 @@ export default function CardEditor({
                               direction="column"
                               grow={1}
                               align="stretch"
-                              className={css({ overflow: 'auto', padding: space_S })}
+                              className={css({ overflow: 'auto', padding: space_sm })}
                             >
                               {canRead != undefined &&
                                 (canRead ? (
@@ -589,7 +585,7 @@ function SubcardsDisplay({ variant }: { variant: CardContent }): JSX.Element {
           ) : (
             <Ellipsis
               containerClassName={
-                sortedSubCards.length > 0 ? css({ height: '20px', padding: space_S + ' 0' }) : undefined
+                sortedSubCards.length > 0 ? css({ height: '20px', padding: space_sm + ' 0' }) : undefined
               }
               items={sortedSubCards}
               alignEllipsis="flex-end"

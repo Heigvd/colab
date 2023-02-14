@@ -9,11 +9,10 @@ import { css, cx } from '@emotion/css';
 import React from 'react';
 import useTranslations from '../../../i18n/I18nContext';
 import {
-  borderRadius,
   lightIconButtonStyle,
   lightLinkStyle,
   noOutlineStyle,
-  space_S,
+  space_sm,
 } from '../../styling/style';
 import Checkbox from '../element/Checkbox';
 import Clickable from '../layout/Clickable';
@@ -22,10 +21,9 @@ import Icon from '../layout/Icon';
 
 export const categoryTabStyle = cx(
   css({
-    padding: '0 ' + space_S,
+    padding: '0 ' + space_sm,
     color: 'var(--secondary-dark)',
-    marginRight: space_S,
-    borderRadius: borderRadius,
+    marginRight: space_sm,
     border: '1px solid var(--secondary-dark)',
     userSelect: 'none',
     fontSize: '0.9em',

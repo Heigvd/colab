@@ -17,11 +17,10 @@ import { useAndLoadProjectTeam } from '../../../selectors/teamSelector';
 import { useAppDispatch, useAppSelector } from '../../../store/hooks';
 import Tooltip from '../../common/element/Tooltip';
 import Flex from '../../common/layout/Flex';
-import { normalThemeMode, space_M } from '../../styling/style';
+import { space_lg } from '../../styling/style';
 
 const presenceIconStyle = (color: string) =>
   cx(
-    normalThemeMode,
     css({
       borderRadius: '50%',
       border: `2px solid ${color}`,
@@ -131,11 +130,10 @@ interface PresenceIconProps {
 }
 
 const tooltipStyle = cx(
-  normalThemeMode,
   css({
     background: 'var(--bgColor)',
     zIndex: 6,
-    padding: space_M,
+    padding: space_lg,
     border: '1px solid grey',
     //top: hover[1],
     //left: hover[0],

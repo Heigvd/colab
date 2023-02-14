@@ -16,7 +16,7 @@ import { useAppDispatch, useLoadingState } from '../../store/hooks';
 import Form, { Field, PasswordScore } from '../common/element/Form';
 import { InlineLink } from '../common/element/Link';
 import { prettyPrint } from '../common/toplevel/Notifier';
-import { lightLinkStyle, space_M } from '../styling/style';
+import { lightLinkStyle, space_lg } from '../styling/style';
 import PasswordFeedbackDisplay from './PasswordFeedbackDisplay';
 import PublicEntranceContainer from './PublicEntranceContainer';
 
@@ -144,7 +144,7 @@ export default function SignUpForm({ redirectTo }: SignUpFormProps): JSX.Element
         onSubmit={signUp}
         globalErrorMessage={errorMessage}
         submitLabel={i18n.authentication.action.createAnAccount}
-        buttonClassName={css({ margin: space_M + ' auto' })}
+        buttonClassName={css({ margin: space_lg + ' auto' })}
         isSubmitInProcess={isLoading}
       >
         <InlineLink

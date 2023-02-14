@@ -7,7 +7,7 @@
 
 import { css, cx } from '@emotion/css';
 import * as React from 'react';
-import { disabledStyle, errorStyle, space_S, textSmall, warningStyle } from '../../styling/style';
+import { disabledStyle, errorTextStyle, space_sm, text_sm, warningTextStyle } from '../../styling/style';
 import Flex from '../layout/Flex';
 import Icon from '../layout/Icon';
 import Tips, { TipsProps } from './Tips';
@@ -41,22 +41,22 @@ export default function Checkbox({
     <Flex
       direction="column"
       align="normal"
-      className={cx(css({ padding: space_S + ' 0' }), className, { [disabledStyle]: readOnly })}
+      className={cx(css({ padding: space_sm + ' 0' }), className, { [disabledStyle]: readOnly })}
     >
       <Flex align="center" justify="flex-start">
         <Flex align="center" onClick={readOnly ? undefined : () => onChange(!value)}>
            <Icon
             icon={value ? 'check_box' : 'check_box_outline_blank'}
-            className={css({ marginRight: space_S })}
+            className={css({ marginRight: space_sm })}
           />
           {label}
         </Flex>
         {tip != null && <Tips>{tip}</Tips>}
       </Flex>
-      {footer != null && <div className={textSmall}>{footer}</div>}
-      <Flex direction="column" align="center" className={cx(textSmall, bottomClassName)}>
-        {warningMessage != null && <div className={warningStyle}>{warningMessage}</div>}
-        {errorMessage != null && <div className={errorStyle}>{errorMessage}</div>}
+      {footer != null && <div className={text_sm}>{footer}</div>}
+      <Flex direction="column" align="center" className={cx(text_sm, bottomClassName)}>
+        {warningMessage != null && <div className={warningTextStyle}>{warningMessage}</div>}
+        {errorMessage != null && <div className={errorTextStyle}>{errorMessage}</div>}
       </Flex>
     </Flex>
   );

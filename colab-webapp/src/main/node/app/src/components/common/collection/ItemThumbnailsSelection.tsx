@@ -7,15 +7,14 @@
 
 import { css, cx } from '@emotion/css';
 import * as React from 'react';
-import { borderRadius, space_S } from '../../styling/style';
+import { space_sm } from '../../styling/style';
 import Thumbnail from './Thumbnail';
 
 export const defaultThumbnailStyle = css({
   display: 'flex',
   border: '1px solid var(--lightGray)',
-  borderRadius: borderRadius,
-  padding: space_S,
-  columnGap: space_S,
+  padding: space_sm,
+  columnGap: space_sm,
   overflow: 'hidden',
 });
 

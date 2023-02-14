@@ -9,7 +9,7 @@ import { css, cx } from '@emotion/css';
 import * as React from 'react';
 import useTranslations from '../../../i18n/I18nContext';
 import { useUrlMetadata } from '../../../selectors/externalDataSelector';
-import { lightIconButtonStyle, space_M, space_S } from '../../styling/style';
+import { lightIconButtonStyle, space_lg, space_sm } from '../../styling/style';
 import Flex from '../layout/Flex';
 import Icon from '../layout/Icon';
 import { emptyLightTextStyle } from './FilePicker';
@@ -22,8 +22,8 @@ const cardStyle = css({
   flexGrow: 1,
   boxShadow: '0px 0px 5px 2px var(--lightGray)',
   backgroundColor: 'var(--bgColor)',
-  padding: space_S,
-  margin: space_S,
+  padding: space_sm,
+  margin: space_sm,
   cursor: 'initial',
 });
 
@@ -36,7 +36,7 @@ const urlStyle = css({
 });
 
 const legendStyle = css({
-  padding: space_M,
+  padding: space_lg,
   fontSize: '0.8em',
   minWidth: 0,
 });
@@ -154,7 +154,7 @@ export default function OpenGraphLink({
     return (
       <Flex className={cardStyle} title={decodedUrl} align="center">
          <Icon icon={'link'} opsz="lg" color="var(--lightGray)" />
-        <span className={cx(emptyLightTextStyle, css({ marginLeft: space_S }))}>Empty link</span>
+        <span className={cx(emptyLightTextStyle, css({ marginLeft: space_sm }))}>Empty link</span>
         {editIcon}
       </Flex>
     );
@@ -167,11 +167,11 @@ export default function OpenGraphLink({
     if (metadata.broken) {
       return (
         <Flex className={cardStyle} title={decodedUrl} align="center">
-          <div title={decodedUrl} className={css({ padding: space_S })}>
+          <div title={decodedUrl} className={css({ padding: space_sm })}>
              <Icon
               icon={'link_off'}
               opsz="lg"
-              className={css({ marginRight: space_S })}
+              className={css({ marginRight: space_sm })}
             />
             {decodedUrl}
             {editIcon}
@@ -184,7 +184,7 @@ export default function OpenGraphLink({
           <IconButton
             icon={'open_in_new'}
             title={i18n.modules.document.openInNewTab}
-            className={cx(lightIconButtonStyle, css({ marginLeft: space_M, cursor: 'pointer' }))}
+            className={cx(lightIconButtonStyle, css({ marginLeft: space_lg, cursor: 'pointer' }))}
             onClick={openUrl}
           />
           {editIcon}

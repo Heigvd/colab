@@ -11,7 +11,7 @@ import { useAppDispatch } from '../../store/hooks';
 import { addNotification } from '../../store/slice/notificationSlice';
 import Button from '../common/element/Button';
 import Flex from '../common/layout/Flex';
-import { textSmall } from '../styling/style';
+import { text_sm } from '../styling/style';
 
 export default function DebugNotif(): JSX.Element {
   const dispatch = useAppDispatch();
@@ -28,7 +28,7 @@ export default function DebugNotif(): JSX.Element {
             }),
           )
         }
-        className={cx(textSmall, css({ margin: '5px' }))}
+        className={cx(text_sm, css({ margin: '5px' }))}
       >
         show error
       </Button>
@@ -42,7 +42,7 @@ export default function DebugNotif(): JSX.Element {
             }),
           )
         }
-        className={cx(textSmall, css({ margin: '5px' }))}
+        className={cx(text_sm, css({ margin: '5px' }))}
       >
         show warning
       </Button>
@@ -56,7 +56,7 @@ export default function DebugNotif(): JSX.Element {
             }),
           )
         }
-        className={cx(textSmall, css({ margin: '5px' }))}
+        className={cx(text_sm, css({ margin: '5px' }))}
       >
         show info
       </Button>

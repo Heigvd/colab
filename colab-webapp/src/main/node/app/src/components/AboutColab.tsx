@@ -13,7 +13,7 @@ import { useVersionDetails } from '../selectors/configSelector';
 import IconButton from './common/element/IconButton';
 import Flex from './common/layout/Flex';
 import Logo from './styling/Logo';
-import { fullPageStyle, paddedContainerStyle, space_M } from './styling/style';
+import { fullPageStyle, paddedContainerStyle, space_lg } from './styling/style';
 
 export default function AboutColab(): JSX.Element {
   const i18n = useTranslations();
@@ -35,12 +35,12 @@ export default function AboutColab(): JSX.Element {
           className={css({
             width: '25vw',
             minWidth: '200px',
-            padding: space_M,
+            padding: space_lg,
             alignSelf: 'center',
-            marginBottom: space_M,
+            marginBottom: space_lg,
           })}
         />
-        <Flex direction="column" gap={space_M} className={css({ maxWidth: '800px' })}>
+        <Flex direction="column" gap={space_lg} className={css({ maxWidth: '800px' })}>
           <div>
             <h2>{i18n.colabPage.whatColab}</h2>
             <p>{i18n.colabPage.colabDescription}</p>

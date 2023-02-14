@@ -15,7 +15,7 @@ import IconButton from '../common/element/IconButton';
 import Flex from '../common/layout/Flex';
 import Icon from '../common/layout/Icon';
 import OpenCloseModal from '../common/layout/OpenCloseModal';
-import { errorColor, iconButton, lightIconButtonStyle, space_M, space_S } from '../styling/style';
+import {iconButton, lightIconButtonStyle, space_lg, space_sm } from '../styling/style';
 import { ResourceDisplay } from './ResourceDisplay';
 import { ResourceAndRef } from './resourcesCommonType';
 import ResourcesList from './ResourcesList';
@@ -42,7 +42,7 @@ export default function HidenResourcesKeeper({
         justify="space-between"
         className={css({
           flexGrow: 1,
-          padding: space_S + ' ' + space_M,
+          padding: space_sm + ' ' + space_lg,
           '&:hover': { cursor: 'default' },
         })}
       >
@@ -64,7 +64,7 @@ export default function HidenResourcesKeeper({
                 className={cx(iconButton, lightIconButtonStyle)}
               />
             }
-            className={css({ padding: '0 ' + space_S })}
+            className={css({ padding: '0 ' + space_sm })}
             modalBodyClassName={css({ alignItems: 'stretch' })}
             widthMax
             heightMax
@@ -77,14 +77,14 @@ export default function HidenResourcesKeeper({
             <Flex
               className={css({
                 borderLeft: '1px solid var(--lightGray)',
-                margin: '0 ' + space_S,
+                margin: '0 ' + space_sm,
               })}
               wrap="nowrap"
             >
               <IconButton
                 title={i18n.common.finalDelete}
                 icon={'delete'}
-                iconColor={errorColor}
+                iconColor={'var(--error-main)'}
                 onClick={() => dispatch(API.deleteResource(resource.targetResource))}
                 className={lightIconButtonStyle}
                 iconClassName={iconButton}

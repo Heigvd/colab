@@ -19,29 +19,26 @@ import Flex from '../../common/layout/Flex';
 import Icon from '../../common/layout/Icon';
 import { DocTextDisplay } from '../../documents/DocTextItem';
 import {
-  borderRadius,
   cardShadow,
-  errorColor,
   lightIconButtonStyle,
   lightItalicText,
-  space_M,
-  space_S,
+  space_lg,
+  space_sm,
 } from '../../styling/style';
 import CardTypeRelativesSummary from './summary/CardTypeRelativesSummary';
 import { TagsDisplay } from './tags/TagsDisplay';
 
 const style = css({
   width: '280px',
-  borderRadius: borderRadius,
-  padding: space_M,
+  padding: space_lg,
   background: 'var(--bgColor)',
   boxShadow: cardShadow,
 });
 
 const tagStyle = css({
   borderRadius: '13px',
-  padding: space_S + ' ' + space_M,
-  marginRight: space_S,
+  padding: space_sm + ' ' + space_lg,
+  marginRight: space_sm,
   backgroundColor: 'var(--lightGray)',
   fontSize: '0.8em',
 });
@@ -132,7 +129,7 @@ export default function CardTypeItem({ cardType, usage }: CardTypeItemProps): JS
                     value: 'delete',
                     label: (
                       <>
-                         <Icon icon={'delete'} color={errorColor} /> {i18n.common.delete}
+                         <Icon icon={'delete'} color={'var(--error-main)'} /> {i18n.common.delete}
                       </>
                     ),
                     action: () => setShowDelete(true),

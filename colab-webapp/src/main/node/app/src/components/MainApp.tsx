@@ -27,7 +27,7 @@ import Editor from './projects/edition/Editor';
 import NewModelShared from './projects/NewModelShared';
 import { MyModels, MyProjects } from './projects/ProjectList';
 import Settings from './settings/Settings';
-import { fullPageStyle, invertedThemeMode, space_M } from './styling/style';
+import { fullPageStyle, space_lg } from './styling/style';
 
 const EditorWrapper = () => {
   const { id: sId } = useParams<'id'>();
@@ -153,13 +153,12 @@ export default function MainApp(): JSX.Element {
                 <div className={fullPageStyle}>
                   <div
                     className={cx(
-                      invertedThemeMode,
                       css({
                         display: 'flex',
                         flexDirection: 'row',
                         alignItems: 'center',
                         boxSizing: 'border-box',
-                        padding: '0 ' + space_M,
+                        padding: '0 ' + space_lg,
                       }),
                     )}
                   >

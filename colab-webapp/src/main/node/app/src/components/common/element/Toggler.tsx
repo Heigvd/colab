@@ -9,11 +9,10 @@ import { css, cx } from '@emotion/css';
 import * as React from 'react';
 import {
   disabledStyle,
-  errorStyle,
-  space_S,
-  successColor,
-  textSmall,
-  warningStyle,
+  errorTextStyle,
+  space_sm,
+  text_sm,
+  warningTextStyle,
 } from '../../styling/style';
 import Flex from '../layout/Flex';
 import Tips, { TipsProps } from './Tips';
@@ -43,7 +42,7 @@ const offStyle = css({
   border: 'none',
   background: '#666',
   borderRadius: '8px',
-  successColor,
+  color: 'var(--success-main)',
   boxSizing: 'border-box',
   transition: '.3s',
 });
@@ -52,7 +51,7 @@ const onStyle = cx(
   offStyle,
   css({
     left: '12px',
-    background: successColor,
+    background: 'var(--success-main)',
   }),
 );
 
@@ -96,7 +95,7 @@ export default function Toggler({
     <Flex
       direction="column"
       align="normal"
-      className={cx(css({ padding: space_S + ' 0' }), className, { [disabledStyle]: readOnly })}
+      className={cx(css({ padding: space_sm + ' 0' }), className, { [disabledStyle]: readOnly })}
     >
       <Flex align="center" justify="flex-start">
         <Flex onClick={readOnly ? undefined : onClickCb} className={toggleAndLabelStyle}>
@@ -107,10 +106,10 @@ export default function Toggler({
         </Flex>
         {tip != null && <Tips interactionType="CLICK">{tip}</Tips>}
       </Flex>
-      {footer != null && <div className={textSmall}>{footer}</div>}
-      <Flex direction="column" align="center" className={cx(textSmall, bottomClassName)}>
-        {warningMessage != null && <div className={warningStyle}>{warningMessage}</div>}
-        {errorMessage != null && <div className={errorStyle}>{errorMessage}</div>}
+      {footer != null && <div className={text_sm}>{footer}</div>}
+      <Flex direction="column" align="center" className={cx(text_sm, bottomClassName)}>
+        {warningMessage != null && <div className={warningTextStyle}>{warningMessage}</div>}
+        {errorMessage != null && <div className={errorTextStyle}>{errorMessage}</div>}
       </Flex>
     </Flex>
   );

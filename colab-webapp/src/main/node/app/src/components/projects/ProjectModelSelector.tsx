@@ -16,11 +16,10 @@ import IllustrationDisplay from '../common/element/IllustrationDisplay';
 import Flex from '../common/layout/Flex';
 import Icon from '../common/layout/Icon';
 import {
-  invertedThemeMode,
   lightText,
   multiLineEllipsis,
-  space_S,
-  textSmall,
+  space_sm,
+  text_sm,
 } from '../styling/style';
 import { defaultProjectIllustration } from './ProjectCommon';
 
@@ -37,7 +36,7 @@ const projectThumbnailStyle = css({
   //width: `calc(50% - 8px - 2*${space_S})`,
   minHeight: '80px',
   maxHeight: '80px',
-  margin: space_S,
+  margin: space_sm,
   position: 'relative',
 });
 
@@ -102,14 +101,14 @@ export default function ProjectModelSelector({
               </Flex>
 
               <div className={css({ padding: '10px' })}>
-                <h3 className={css({ marginTop: space_S })}>
+                <h3 className={css({ marginTop: space_sm })}>
                   {!isEmptyProject
                     ? item.name
                       ? item.name
                       : i18n.modules.project.actions.newProject
                     : i18n.modules.project.info.emptyProject}
                 </h3>
-                <p className={cx(textSmall, lightText, multiLineEllipsis)}>
+                <p className={cx(text_sm, lightText, multiLineEllipsis)}>
                   {!isEmptyProject
                     ? item.description
                       ? item.description
@@ -122,7 +121,7 @@ export default function ProjectModelSelector({
                 <Flex
                   align="center"
                   justify="center"
-                  className={cx(modelPictoCornerStyle, invertedThemeMode)}
+                  className={cx(modelPictoCornerStyle)}
                   title={i18n.modules.project.info.isAModel}
                 >
                   {item.globalProject ? (

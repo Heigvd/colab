@@ -15,7 +15,7 @@ import IconButton from '../common/element/IconButton';
 import InlineLoading from '../common/element/InlineLoading';
 import Flex from '../common/layout/Flex';
 import { useDefaultVariant } from '../projects/edition/Editor';
-import { paddingAroundStyle, space_S } from '../styling/style';
+import { space_sm } from '../styling/style';
 
 interface VariantSelectorProps {
   card: Card;
@@ -54,7 +54,7 @@ const arrowStyle = cx(
     top: '50%',
     transform: 'translateY(-50%)',
     alignItems: 'center',
-    padding: space_S,
+    padding: space_sm,
     zIndex: 10,
   }),
 );
@@ -70,7 +70,7 @@ const variantSelectorStyle = (depth?: number) => {
   switch (depth) {
     case 0:
       return css({
-        margin: space_S,
+        margin: space_sm,
       });
     case 1:
       return css({
@@ -146,12 +146,6 @@ export default function VariantSelector({
           }}
         >
           <IconButton
-            className={paddingAroundStyle([2, 4], '3px')}
-            /* className={
-            variantPager != null && variantPager.previous != variantPager.current
-              ? arrowStyle
-              : invisible
-          } */
             icon={'chevron_left'}
             iconColor="transparent"
             title={variantPager?.previous.title || ''}
@@ -176,14 +170,7 @@ export default function VariantSelector({
           }}
         >
           <IconButton
-            /* className={
-            variantPager != null && variantPager.next != variantPager.current
-              ? arrowStyle
-              : invisible
-          } */
-            className={paddingAroundStyle([2, 4], '3px')}
             icon={'chevron_right'}
-            iconColor="transparent"
             title={variantPager?.next.title || ''}
           />
         </Flex>
@@ -218,7 +205,7 @@ export function VariantPager({ card, current }: PagerProps): JSX.Element {
     return <i>{i18n.modules.card.error.withoutId}</i>;
   } else {
     return (
-      <Flex justify="center" className={css({ marginTop: space_S })}>
+      <Flex justify="center" className={css({ marginTop: space_sm })}>
         <Flex basis="1px" grow={1} justify="center" className={css({ fontSize: '0.9em' })}>
           {variantPager != null && variantPager.previous != variantPager.current ? (
             <IconButton

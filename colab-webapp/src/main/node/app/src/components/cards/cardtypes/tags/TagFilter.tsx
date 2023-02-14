@@ -11,18 +11,16 @@ import useTranslations from '../../../../i18n/I18nContext';
 import Checkbox from '../../../common/element/Checkbox';
 import Flex from '../../../common/layout/Flex';
 import {
-  borderRadius,
   lightLinkStyle,
   noOutlineStyle,
-  space_S,
+  space_sm,
 } from '../../../styling/style';
 
 const tagStyle = cx(
   css({
-    padding: '0 ' + space_S,
+    padding: '0 ' + space_sm,
     color: 'var(--darkGray)',
-    margin: space_S,
-    borderRadius: borderRadius,
+    margin: space_sm,
     border: '1px solid var(--darkGray)',
     userSelect: 'none',
     fontSize: '0.9em',

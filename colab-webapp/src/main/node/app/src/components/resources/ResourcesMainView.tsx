@@ -19,9 +19,9 @@ import {
   invertedButtonStyle,
   lightIconButtonStyle,
   lightText,
-  space_L,
-  space_S,
-  textSmall,
+  space_xl,
+  space_sm,
+  text_sm,
 } from '../styling/style';
 import HidenResourcesKeeper from './HidenResourcesKeeper';
 import ResourceCreator from './ResourceCreator';
@@ -128,7 +128,7 @@ export function ResourcesMainViewHeader({
 
       {title}
 
-      {helpTip && <Tips iconClassName={cx(textSmall, lightText)}>{helpTip}</Tips>}
+      {helpTip && <Tips iconClassName={cx(text_sm, lightText)}>{helpTip}</Tips>}
 
       {displayMode === 'LIST' && (
         <>
@@ -138,7 +138,7 @@ export function ResourcesMainViewHeader({
           <HidenResourcesKeeper
             collapsedClassName={cx(
               css({
-                padding: space_S,
+                padding: space_sm,
                 '&:hover': { cursor: 'pointer' },
               }),
               lightIconButtonStyle,
@@ -284,7 +284,7 @@ export function ResourcesMainViewPanel({
           justify="center"
           direction="column"
           align="center"
-          className={css({ padding: space_L })}
+          className={css({ padding: space_xl })}
         >
           <h3>{i18n.modules.resource.noDocumentationYet}</h3>
           {!isReadOnly(accessLevel) && (

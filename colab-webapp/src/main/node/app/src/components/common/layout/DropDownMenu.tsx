@@ -12,8 +12,7 @@ import {
   disabledStyle,
   iconButton,
   linkStyle,
-  normalThemeMode,
-  space_S,
+  space_sm,
 } from '../../styling/style';
 import Flex from './Flex';
 import Icon from './Icon';
@@ -24,7 +23,7 @@ export const itemStyle = css({
 
 const entryStyle = css({
   display: 'flex',
-  gap: space_S,
+  gap: space_sm,
   alignItems: 'center',
   textDecoration: 'none',
   color: 'var(--fgColor)',
@@ -38,11 +37,10 @@ const entryStyle = css({
 });
 
 const dropDownEntryPadding = css({
-  padding: space_S,
+  padding: space_sm,
 });
 
 const commonStyle = cx(
-  normalThemeMode,
   css({
     boxShadow: '0 1px 3px rgba(0,0,0,.12)',
     transition: 'all 0.3s',
@@ -406,7 +404,7 @@ export default function DropDownMenu<T extends string | number | symbol>({
               }
             {current.label && current.label}
             {menuIcon === 'CARET' && (
-               <Icon icon={'expand_more'} className={css({ marginLeft: space_S })} />
+               <Icon icon={'expand_more'} className={css({ marginLeft: space_sm })} />
             )}
           </Flex>
           {open && (

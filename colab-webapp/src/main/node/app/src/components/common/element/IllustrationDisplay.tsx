@@ -14,7 +14,7 @@ import { Illustration } from 'colab-rest-client';
 import React from 'react';
 import useTranslations from '../../../i18n/I18nContext';
 import { defaultProjectIllustration } from '../../projects/ProjectCommon';
-import { space_S } from '../../styling/style';
+import { space_sm } from '../../styling/style';
 import Flex, { FlexProps } from '../layout/Flex';
 
 interface IllustrationDisplayProps {
@@ -46,9 +46,9 @@ export default function IllustrationDisplay({
           backgroundColor: `${
             currentIllustration.iconBkgdColor ? currentIllustration.iconBkgdColor : '#50BFD5'
           }`,
-          height: `calc(100% - 2*${space_S})`,
-          width: `calc(100% - 2*${space_S})`,
-          padding: space_S,
+          height: `calc(100% - 2*${space_sm})`,
+          width: `calc(100% - 2*${space_sm})`,
+          padding: space_sm,
         }),
         className,
       )}

@@ -19,7 +19,7 @@ import ConfirmDeleteOpenCloseModal from '../common/layout/ConfirmDeleteModal';
 import DropDownMenu from '../common/layout/DropDownMenu';
 import Flex from '../common/layout/Flex';
 import Icon from '../common/layout/Icon';
-import { lightIconButtonStyle, space_M, space_S } from '../styling/style';
+import { lightIconButtonStyle, space_lg, space_sm } from '../styling/style';
 import { DocumentOwnership } from './documentCommonType';
 import DocumentCreatorButton from './DocumentCreatorButton';
 
@@ -28,7 +28,7 @@ const toolboxContainerStyle = css({
   maxHeight: '400px',
   minHeight: '30px',
   overflow: 'hidden',
-  padding: space_S,
+  padding: space_sm,
   transition: 'all .5s ease',
   borderBottom: '2px solid var(--darkGray)',
 });
@@ -41,16 +41,16 @@ const closedToolboxStyle = css({
 });
 
 const borderRightStyle = css({
-  paddingRight: space_S,
-  marginRight: space_S,
+  paddingRight: space_sm,
+  marginRight: space_sm,
   borderRight: '1px solid var(--lightGray)',
 });
 
 const toolboxButtonStyle = cx(
   lightIconButtonStyle,
   css({
-    paddingRight: space_S,
-    margin: space_S,
+    paddingRight: space_sm,
+    margin: space_sm,
   }),
 );
 
@@ -164,8 +164,8 @@ DocEditorToolboxProps): JSX.Element {
                 buttonClassName={cx(
                   lightIconButtonStyle,
                   css({
-                    paddingLeft: space_M,
-                    marginLeft: space_M,
+                    paddingLeft: space_lg,
+                    marginLeft: space_lg,
                     borderLeft: '1px solid var(--lightGray)',
                   }),
                 )}
@@ -292,8 +292,8 @@ DocEditorToolboxProps): JSX.Element {
           />
           <div
             className={css({
-              marginLeft: space_S,
-              paddingLeft: space_S,
+              marginLeft: space_sm,
+              paddingLeft: space_sm,
               borderLeft: '1px solid var(--lightGray)',
             })}
           >

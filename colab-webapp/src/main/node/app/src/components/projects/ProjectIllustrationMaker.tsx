@@ -13,7 +13,7 @@ import { CirclePicker } from 'react-color';
 import useTranslations from '../../i18n/I18nContext';
 import IconButton from '../common/element/IconButton';
 import Flex from '../common/layout/Flex';
-import { borderRadius, labelStyle, space_M, space_S } from '../styling/style';
+import { labelStyle, space_lg, space_sm } from '../styling/style';
 
 const defaultProjectIllustration: Illustration = {
   '@class': 'Illustration',
@@ -85,17 +85,17 @@ export function ProjectIllustrationMaker({
   const illustrationCurrent = illustration ? illustration : defaultProjectIllustration;
   return (
     <Flex direction="column" align="stretch" className={className}>
-      <div className={cx(css({ marginTop: space_S }), colorContainerClassName)}>
+      <div className={cx(css({ marginTop: space_sm }), colorContainerClassName)}>
         <label className={labelStyle}>{i18n.modules.card.settings.color}</label>
         <CirclePicker
           colors={projectColors}
           onChangeComplete={c => setIllustration({ ...illustrationCurrent, iconBkgdColor: c.hex })}
           color={illustrationCurrent.iconBkgdColor}
           width={'auto'}
-          className={css({ marginTop: space_S, padding: space_S })}
+          className={css({ marginTop: space_sm, padding: space_sm })}
         />
       </div>
-      <div className={cx(css({ marginTop: space_S }))}>
+      <div className={cx(css({ marginTop: space_sm }))}>
         <label className={labelStyle}>{i18n.modules.project.settings.icon}</label>
         <ProjectIconPicker
           bgColor={illustrationCurrent.iconBkgdColor}
@@ -126,17 +126,16 @@ function ProjectIconPicker({
         className={cx(
           css({
             display: 'grid',
-            gridGap: space_M,
+            gridGap: space_lg,
             gridTemplateColumns: 'repeat(auto-fit, 50px)',
-            gap: space_M,
+            gap: space_lg,
             flexWrap: 'wrap',
             backgroundColor: bgColor,
-            padding: space_M,
+            padding: space_lg,
             maxHeight: '140px',
             overflow: 'auto',
             cursor: 'default',
-            marginTop: space_S,
-            borderRadius: borderRadius,
+            marginTop: space_sm,
             minWidth: '200px',
           }),
           className,

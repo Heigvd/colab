@@ -19,7 +19,7 @@ import { InlineLink } from '../common/element/Link';
 import Flex from '../common/layout/Flex';
 import Icon from '../common/layout/Icon';
 import { prettyPrint } from '../common/toplevel/Notifier';
-import { lightLinkStyle, space_M, space_S } from '../styling/style';
+import { lightLinkStyle, space_lg, space_sm } from '../styling/style';
 import PublicEntranceContainer from './PublicEntranceContainer';
 
 interface SignInFormProps {
@@ -119,27 +119,27 @@ export default function SignInForm({
 
   return (
     <PublicEntranceContainer>
-      {message && <Flex className={css({ marginBottom: space_M })}>{message}</Flex>}
+      {message && <Flex className={css({ marginBottom: space_lg })}>{message}</Flex>}
       <Form
         fields={formFields}
         value={defaultCredentials}
         onSubmit={signIn}
         globalErrorMessage={errorMessage}
         submitLabel={i18n.authentication.action.login}
-        buttonClassName={css({ margin: space_M + ' auto' })}
+        buttonClassName={css({ margin: space_lg + ' auto' })}
         isSubmitInProcess={isLoading}
       />
       <Flex direction="column" justify="center" align="center">
         <InlineLink
           to={buildLinkWithQueryParam('/ForgotPassword', { redirectTo: redirectTo })}
-          className={cx(lightLinkStyle, css({ padding: space_S }))}
+          className={cx(lightLinkStyle, css({ padding: space_sm }))}
         >
           {i18n.authentication.action.resetPassword}
         </InlineLink>
         {(forceShowCreateAccountButton || accountConfig.showCreateAccountButton) && (
           <InlineLink
             to={buildLinkWithQueryParam('/SignUp', { redirectTo: redirectTo })}
-            className={cx(lightLinkStyle, css({ padding: space_S }))}
+            className={cx(lightLinkStyle, css({ padding: space_sm }))}
           >
              <Icon icon={'add'} /> {i18n.authentication.action.createAnAccount}
           </InlineLink>

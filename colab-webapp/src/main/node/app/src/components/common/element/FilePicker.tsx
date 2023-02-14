@@ -7,7 +7,7 @@
 import { css, cx } from '@emotion/css';
 import * as React from 'react';
 import useTranslations from '../../../i18n/I18nContext';
-import { invertedButtonStyle, lightIconButtonStyle, space_M, space_S } from '../../styling/style';
+import { invertedButtonStyle, lightIconButtonStyle, space_lg, space_sm } from '../../styling/style';
 import Flex from '../layout/Flex';
 import Icon from '../layout/Icon';
 import Overlay from '../layout/Overlay';
@@ -278,7 +278,7 @@ export default function FilePicker({
   }, []);
 
   return (
-    <Flex className={css({ padding: space_S })} align="center">
+    <Flex className={css({ padding: space_sm })} align="center">
       <Flex
         className={cx({
           [clickableStyle]: !!onDownload,
@@ -307,7 +307,7 @@ export default function FilePicker({
           <>
             {getMimeTypeIcon(currentMimetype, hasNoFile)}
             <div
-              className={cx(css({ paddingLeft: space_S, userSelect: 'none' }), {
+              className={cx(css({ paddingLeft: space_sm, userSelect: 'none' }), {
                 [emptyLightTextStyle]: hasNoFile,
               })}
             >
@@ -325,7 +325,7 @@ export default function FilePicker({
           />
         )}
         {!readOnly && onChange && editingStatus && (
-          <div className={css({ paddingLeft: space_M })} onClick={e => e.stopPropagation()}>
+          <div className={css({ paddingLeft: space_lg })} onClick={e => e.stopPropagation()}>
             <label>
               <Button onClick={() => {}}>
                  <Icon icon={'upload'} />{' '}
@@ -335,7 +335,7 @@ export default function FilePicker({
             </label>
             <Button
               onClick={() => setEditingState(false)}
-              className={cx(invertedButtonStyle, css({ marginLeft: space_S }))}
+              className={cx(invertedButtonStyle, css({ marginLeft: space_sm }))}
             >
               {i18n.common.ok}
             </Button>
