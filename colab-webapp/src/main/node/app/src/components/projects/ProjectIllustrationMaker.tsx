@@ -146,8 +146,8 @@ function ProjectIconPicker({
           <IconButton
             key={i}
             title={i}
-            icon={{ prefix: 'fas', iconName: i }}
-            iconSize={'2x'}
+            icon={'star'}
+            iconSize={'lg'}
             onClick={() => onChange(i)}
             className={css({
               color: 'var(--bgColor)',

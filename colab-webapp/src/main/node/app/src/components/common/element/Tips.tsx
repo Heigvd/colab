@@ -6,20 +6,11 @@
  */
 
 import { css, cx } from '@emotion/css';
-import { IconProp } from '@fortawesome/fontawesome-svg-core';
-import { faNewspaper, faQuestionCircle } from '@fortawesome/free-regular-svg-icons';
-import {
-  faDizzy,
-  faGhost,
-  faRocket,
-  faStethoscope,
-  faTools,
-} from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import * as React from 'react';
 import { checkUnreachable } from '../../../helper';
 import useTranslations from '../../../i18n/I18nContext';
 import { space_S } from '../../styling/style';
+import Icon from '../layout/Icon';
 import Checkbox from './Checkbox';
 import { overlayStyle } from './Tooltip';
 
@@ -66,24 +57,24 @@ export interface TipsProps {
   iconClassName?: string;
 }
 
-function getIconProp(tipsType: TipsProps['tipsType']): IconProp {
+function getIconProp(tipsType: TipsProps['tipsType']): string {
   switch (tipsType) {
     case 'TODO':
-      return faTools;
+      return 'construction';
     case 'NEWS':
-      return faNewspaper;
+      return 'newspaper';
     case 'WIP':
-      return faGhost;
+      return 'engineering';
     case 'DEBUG':
-      return faStethoscope;
+      return 'build';
     case 'FEATURE_PREVIEW':
-      return faRocket;
+      return 'new_releases';
     case 'TIPS':
     case undefined:
-      return faQuestionCircle;
+      return 'help';
     default:
       checkUnreachable(tipsType);
-      return faDizzy;
+      return 'bug_report';
   }
 }
 

@@ -6,12 +6,11 @@
  */
 
 import { css } from '@emotion/css';
-import { faBullhorn, faTriangleExclamation } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import * as React from 'react';
 import useTranslations from '../../../../i18n/I18nContext';
 import { CardTypeAllInOne as CardType } from '../../../../types/cardTypeDefinition';
 import Flex from '../../../common/layout/Flex';
+import Icon from '../../../common/layout/Icon';
 import ResourcesListSummary from '../../../resources/summary/ResourcesListSummary';
 import { space_M } from '../../../styling/style';
 import TargetCardTypeSummary from './TargetCardTypeSummary';
@@ -57,7 +56,7 @@ export default function CardTypeRelativesSummary({
       {/* is published */}
       {displayChoices.showPublished && cardType.published && (
         <Flex className={itemStyle}>
-           <Icon icon={faBullhorn} title={i18n.modules.cardType.info.referencedByOther} />
+           <Icon icon={'feed'} title={i18n.modules.cardType.info.referencedByOther} />
         </Flex>
       )}
 
@@ -65,7 +64,7 @@ export default function CardTypeRelativesSummary({
       {displayChoices.showDeprecated && cardType.deprecated && (
         <Flex className={itemStyle}>
            <Icon
-            icon={faTriangleExclamation}
+            icon={'warning'}
             title={i18n.modules.cardType.info.shouldNotBeUsed}
           />
         </Flex>

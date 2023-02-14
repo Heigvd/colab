@@ -6,11 +6,10 @@
  */
 
 import { css, cx } from '@emotion/css';
-import { faCheckSquare, faSquare } from '@fortawesome/free-regular-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import * as React from 'react';
 import { disabledStyle, errorStyle, space_S, textSmall, warningStyle } from '../../styling/style';
 import Flex from '../layout/Flex';
+import Icon from '../layout/Icon';
 import Tips, { TipsProps } from './Tips';
 
 interface CheckboxProps {
@@ -47,7 +46,7 @@ export default function Checkbox({
       <Flex align="center" justify="flex-start">
         <Flex align="center" onClick={readOnly ? undefined : () => onChange(!value)}>
            <Icon
-            icon={value ? faCheckSquare : faSquare}
+            icon={value ? 'check_box' : 'check_box_outline_blank'}
             className={css({ marginRight: space_S })}
           />
           {label}

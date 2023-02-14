@@ -55,7 +55,7 @@ export default function IllustrationDisplay({
     >
       {currentIllustration.iconLibrary === 'FONT_AWESOME_SOLID' ||
       currentIllustration.iconLibrary === 'FONT_AWESOME_REGULAR' ? (
-         <Icon
+         <FontAwesomeIcon
           icon={{
             prefix: currentIllustration.iconLibrary === 'FONT_AWESOME_REGULAR' ? 'far' : 'fas',
             iconName: currentIllustration.iconKey as IconName,
@@ -86,7 +86,7 @@ export function IllustrationIconDisplay({
     <>
       {currentIllustration.iconLibrary === 'FONT_AWESOME_SOLID' ||
       currentIllustration.iconLibrary === 'FONT_AWESOME_REGULAR' ? (
-         <Icon
+         <FontAwesomeIcon
           icon={{
             prefix: currentIllustration.iconLibrary === 'FONT_AWESOME_REGULAR' ? 'far' : 'fas',
             iconName: currentIllustration.iconKey as IconName,

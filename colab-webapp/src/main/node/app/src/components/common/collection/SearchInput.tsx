@@ -1,7 +1,7 @@
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import * as React from "react";
 import { useEffect, useState } from "react";
 import Flex from "../layout/Flex";
+import Icon from "../layout/Icon";
 
 function useDebounce(value: string | undefined, delay: number) {
 

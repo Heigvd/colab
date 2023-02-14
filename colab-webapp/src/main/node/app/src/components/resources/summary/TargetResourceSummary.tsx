@@ -6,10 +6,6 @@
  */
 
 import {
-  faBook,
-  faGlobe,
-  faSitemap,
-  faTableColumns,
   IconName,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -21,6 +17,7 @@ import { useAndLoadCardType } from '../../../selectors/cardTypeSelector';
 import { useCurrentProject, useProject } from '../../../selectors/projectSelector';
 import { useAppSelector } from '../../../store/hooks';
 import { referenceIcon } from '../../cards/cardtypes/summary/TargetCardTypeSummary';
+import Icon from '../../common/layout/Icon';
 
 import { ResourceAndRef } from '../resourcesCommonType';
 
@@ -69,7 +66,7 @@ export function ProvidedByCardType({
     icon = (
        <Icon
         className={iconClassName}
-        icon={faGlobe}
+        icon={'globe'}
         color={'var(--secondaryColor)'}
         title={showText !== 'full' ? fullText : undefined}
       />
@@ -81,7 +78,7 @@ export function ProvidedByCardType({
     shortText = `${projectName} / ${cardTypeName};`;
 
     icon = (
-       <Icon
+       <FontAwesomeIcon
         className={iconClassName}
         icon={
           project?.illustration
@@ -102,7 +99,7 @@ export function ProvidedByCardType({
 
     icon = (
        <Icon
-        icon={faBook}
+        icon={'menu_book'}
         className={iconClassName}
         title={showText !== 'full' ? fullText : undefined}
       />
@@ -150,7 +147,7 @@ export function ProvidedByCard({
   const { project } = useCurrentProject();
 
   const icon = isRootCard ? (
-     <Icon
+     <FontAwesomeIcon
       className={iconClassName}
       icon={
         project?.illustration
@@ -165,7 +162,7 @@ export function ProvidedByCard({
     />
   ) : (
      <Icon
-      icon={direct ? faTableColumns : faSitemap}
+      icon={direct ? 'table_rows' : 'my_location'}
       className={iconClassName}
       title={showText !== 'full' ? fullText : undefined}
     />
@@ -211,7 +208,7 @@ export function ProvidedByCardContent({
   const shortText = name;
   const icon = (
      <Icon
-      icon={direct ? faTableColumns : faSitemap}
+      icon={direct ? 'table_rows' : 'my_location'}
       title={showText !== 'full' ? fullText : undefined}
       className={iconClassName}
     />

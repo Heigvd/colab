@@ -6,17 +6,6 @@
  */
 
 import { css, cx } from '@emotion/css';
-import { IconProp } from '@fortawesome/fontawesome-svg-core';
-import {
-  faBold,
-  faItalic,
-  faList,
-  faListOl,
-  faStrikethrough,
-  faTasks,
-  faUnderline,
-} from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { uniq } from 'lodash';
 import * as React from 'react';
 import * as LiveHelper from '../../../LiveHelper';
@@ -25,6 +14,7 @@ import { usePresenceOnDocument } from '../../../selectors/presenceSelector';
 import OpenGraphLink from '../../common/element/OpenGraphLink';
 import DropDownMenu, { Entry } from '../../common/layout/DropDownMenu';
 import Flex from '../../common/layout/Flex';
+import Icon from '../../common/layout/Icon';
 import { DocEditorCtx } from '../../documents/DocumentEditorToolbox';
 import { createCaret, getUserColor } from '../../projects/presence/Presence';
 import { PresenceContext } from '../../projects/presence/PresenceContext';
@@ -347,7 +337,7 @@ export interface ToolbarFeatures {
 interface ToolbarButtonProps {
   toggled: boolean;
   onClick: (event: React.MouseEvent) => void;
-  icon: IconProp;
+  icon: string;
 }
 
 export interface TXTFormatToolbarProps {
@@ -471,38 +461,38 @@ export function TXTFormatToolbar({ toolbarState, toolbarFormatFeatures }: TXTFor
       />
       <ToolbarSeparator />
       <ToolbarButton
-        icon={faBold}
+        icon={'format_bold'}
         toggled={toolbarState.bold}
         onClick={toolbarFormatFeatures.toggleBold}
       />
       <ToolbarButton
-        icon={faItalic}
+        icon={'format_italic'}
         toggled={toolbarState.italic}
         onClick={toolbarFormatFeatures.toggleItalic}
       />
       <ToolbarButton
-        icon={faUnderline}
+        icon={'format_underlined'}
         toggled={toolbarState.underline}
         onClick={toolbarFormatFeatures.toggleUnderline}
       />
       <ToolbarButton
-        icon={faStrikethrough}
+        icon={'strikethrough_s'}
         toggled={toolbarState.strike}
         onClick={toolbarFormatFeatures.toggleStrike}
       />
       <ToolbarSeparator />
       <ToolbarButton
-        icon={faList}
+        icon={'format_list'}
         toggled={toolbarState.list === 'UL'}
         onClick={toolbarFormatFeatures.toggleList}
       />
       <ToolbarButton
-        icon={faListOl}
+        icon={'format_list_numbered'}
         toggled={toolbarState.list === 'OL'}
         onClick={toolbarFormatFeatures.toggleOrderedList}
       />
       <ToolbarButton
-        icon={faTasks}
+        icon={'checklist'}
         toggled={toolbarState.list === 'TL'}
         onClick={toolbarFormatFeatures.toggleTodoList}
       />

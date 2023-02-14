@@ -6,8 +6,6 @@
  */
 
 import { css, cx } from '@emotion/css';
-import { faTrash } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import * as React from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import Creatable from 'react-select/creatable';
@@ -29,6 +27,7 @@ import Tips from '../../common/element/Tips';
 import Toggler from '../../common/element/Toggler';
 import ConfirmDeleteOpenCloseModal from '../../common/layout/ConfirmDeleteModal';
 import Flex from '../../common/layout/Flex';
+import Icon from '../../common/layout/Icon';
 import { DocTextWrapper } from '../../documents/DocTextItem';
 import { ResourceAndRef, ResourceOwnership } from '../../resources/resourcesCommonType';
 import {

@@ -6,7 +6,6 @@
  */
 
 import { css, cx } from '@emotion/css';
-import { faCaretLeft, faCaretRight } from '@fortawesome/free-solid-svg-icons';
 import { Card, CardContent } from 'colab-rest-client';
 import * as React from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -153,8 +152,7 @@ export default function VariantSelector({
               ? arrowStyle
               : invisible
           } */
-            icon={faCaretLeft}
-            iconSize="1x"
+            icon={'chevron_left'}
             iconColor="transparent"
             title={variantPager?.previous.title || ''}
           />
@@ -184,8 +182,7 @@ export default function VariantSelector({
               : invisible
           } */
             className={paddingAroundStyle([2, 4], '3px')}
-            icon={faCaretRight}
-            iconSize="1x"
+            icon={'chevron_right'}
             iconColor="transparent"
             title={variantPager?.next.title || ''}
           />
@@ -225,7 +222,7 @@ export function VariantPager({ card, current }: PagerProps): JSX.Element {
         <Flex basis="1px" grow={1} justify="center" className={css({ fontSize: '0.9em' })}>
           {variantPager != null && variantPager.previous != variantPager.current ? (
             <IconButton
-              icon={faCaretLeft}
+              icon={'chevron_left'}
               iconSize="lg"
               title={variantPager.previous.title || ''}
               onClick={() => {
@@ -242,7 +239,7 @@ export function VariantPager({ card, current }: PagerProps): JSX.Element {
 
           {variantPager != null && variantPager.next != variantPager.current ? (
             <IconButton
-              icon={faCaretRight}
+              icon={'chevron_right'}
               iconSize="lg"
               title={variantPager.next.title || ''}
               onClick={() => {

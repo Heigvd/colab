@@ -6,7 +6,6 @@
  */
 
 import { css } from '@emotion/css';
-import { faRotateLeft } from '@fortawesome/free-solid-svg-icons';
 import * as React from 'react';
 import * as API from '../../API/api';
 import useTranslations from '../../i18n/I18nContext';
@@ -115,7 +114,7 @@ export default function LiveEditor({
         </Disclaimer>
         <Button
           title={i18n.modules.content.liveEditor.restorePrevVersion}
-          icon={faRotateLeft}
+          icon={'history'}
           onClick={() => {
             dispatch(API.deletePendingChanges(atId));
           }}
@@ -136,7 +135,7 @@ export default function LiveEditor({
         </Disclaimer>
         <Button
           title={i18n.modules.content.liveEditor.restorePrevVersion}
-          icon={faRotateLeft}
+          icon={'history'}
           onClick={() => {
             dispatch(API.deletePendingChanges(atId));
           }}

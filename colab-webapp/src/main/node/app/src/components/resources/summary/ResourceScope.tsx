@@ -7,14 +7,6 @@
 
 import { css, cx } from '@emotion/css';
 import {
-  faBan,
-  faBook,
-  faBookReader,
-  faLocationDot,
-  faSlash,
-} from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import {
   AbstractCardType,
   AbstractResource,
   Card,
@@ -40,6 +32,7 @@ import { AsyncButtonWithLoader } from '../../common/element/ButtonWithLoader';
 import { BlockInput } from '../../common/element/Input';
 import Toggler from '../../common/element/Toggler';
 import Flex from '../../common/layout/Flex';
+import Icon from '../../common/layout/Icon';
 import { modalBody, modalFooter } from '../../common/layout/Modal';
 import Hierarchy from '../../projects/edition/hierarchy/Hierarchy';
 import { space_M, textSmall } from '../../styling/style';
@@ -108,27 +101,23 @@ const OwnerCtx = React.createContext<OwnerContext>({
 
 const color = 'var(--pictoBlue)';
 
-const ownerIcon =  <Icon className="fa-stack-1x" icon={faBook} color={color} />;
-const visibleIcon =  <Icon className="fa-stack-1x" icon={faBookReader} color={color} />;
+const ownerIcon =  <Icon className="fa-stack-1x" icon={'menu_book'} color={color} />;
+const visibleIcon =  <Icon className="fa-stack-1x" icon={'auto_stories'} color={color} />;
 
 /** Indicates user do not use the resource, but did not explicitly reject it */
 const unusedIcon = (
-   <Icon className="fa-stack-1x" icon={faBookReader} color={'lightgrey'} />
+   <Icon className="fa-stack-1x" icon={'auto_stories'} color={'lightgrey'} />
 );
 /** Indicates user explicitly reject the resource */
-const rejectedIcon =  <Icon className="fa-stack-1x" icon={faBan} color={color} />;
+const rejectedIcon =  <Icon className="fa-stack-1x" icon={'block'} color={color} />;
 
 const circleIcon = <></>; //  <Icon icon={faCircleDot} color={'var(--pictoBlue)'} />;
 
-const ownerIconStack =  <Icon className="fa-stack-1x" icon={faBook} color="grey" />;
+const ownerIconStack =  <Icon className="fa-stack-1x" icon={'menu_book'} color="grey" />;
 const visibleIconStack = (
-   <Icon className="fa-stack-1x" icon={faBookReader} color="grey" />
+   <Icon className="fa-stack-1x" icon={'auto_stories'} color="grey" />
 );
-const rejectedIconStack =  <Icon className="fa-stack-1x" icon={faBan} color="grey" />;
-
-const slashIcon = (
-   <Icon className="fa-stack-1x" icon={faSlash} color={'var(--errorColor)'} />
-);
+const rejectedIconStack =  <Icon className="fa-stack-1x" icon={'block'} color="grey" />;
 
 const noIcon = <></>;
 
@@ -151,7 +140,7 @@ function Stack({ children }: { children: React.ReactNode }): JSX.Element {
 
 const youAreHereIcon = (
   <Stack>
-     <Icon className="fa-stack-1x" icon={faLocationDot} color={'var(--errorColor)'} />
+     <Icon className="fa-stack-1x" icon={'my_location'} color={'var(--errorColor)'} />
   </Stack>
 );
 
@@ -191,7 +180,6 @@ function getIcon(node: WithResource): JSX.Element {
       return (
         <Stack>
           {getSingleIcon(node.persisted, true)}
-          {slashIcon}
         </Stack>
       );
     }

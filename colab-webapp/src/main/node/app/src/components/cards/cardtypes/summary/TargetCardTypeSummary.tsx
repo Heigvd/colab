@@ -7,16 +7,16 @@
 
 import { css } from '@emotion/css';
 import { IconName } from '@fortawesome/fontawesome-svg-core';
-import { faCircleDot, faGlobe } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { entityIs } from 'colab-rest-client';
 import * as React from 'react';
 import useTranslations from '../../../../i18n/I18nContext';
 import { useProject } from '../../../../selectors/projectSelector';
 import { CardTypeAllInOne as CardType } from '../../../../types/cardTypeDefinition';
+import Icon from '../../../common/layout/Icon';
 import { space_S } from '../../../styling/style';
 
-export const referenceIcon = faCircleDot;
+export const referenceIcon = 'star';
 
 export const targetProjectIconStyle = css({
   fontSize: '.8rem',
@@ -39,7 +39,7 @@ export default function TargetCardTypeSummary({
           <TargetProjectSummary projectId={cardType.projectIdCT} />
         ) : (
            <Icon
-            icon={faGlobe}
+            icon={'globe'}
             color={'var(--secondaryColor)'}
             title={i18n.modules.cardType.info.isGlobalType}
             className={targetProjectIconStyle}
@@ -58,7 +58,7 @@ function TargetProjectSummary({ projectId }: TargetProjectSummaryProps): JSX.Ele
   const i18n = useTranslations();
 
   return (
-     <Icon
+     <FontAwesomeIcon
       icon={
         project?.illustration
           ? {

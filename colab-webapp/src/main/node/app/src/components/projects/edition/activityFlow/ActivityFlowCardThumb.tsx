@@ -6,8 +6,6 @@
  */
 
 import { css } from '@emotion/css';
-import { faProjectDiagram } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { BrowserJsPlumbInstance } from '@jsplumb/browser-ui';
 import { Card } from 'colab-rest-client';
 import React from 'react';
@@ -17,6 +15,7 @@ import CardContentStatus from '../../../cards/CardContentStatus';
 import CardLayout from '../../../cards/CardLayout';
 import VariantSelector from '../../../cards/VariantSelector';
 import Flex from '../../../common/layout/Flex';
+import Icon from '../../../common/layout/Icon';
 import { space_M, space_S, variantTitle } from '../../../styling/style';
 import { AFPlumbRef } from './ActivityFlowChart';
 
@@ -120,7 +119,7 @@ export function AFCard({ card, jsPlumb, plumbRefs }: CardProps): JSX.Element {
               align="center"
               className={`CardSourceHandle ` + css({ minHeight: '1.5rem', flexGrow: 1 })}
             >
-               <Icon icon={faProjectDiagram} className={css({ margin: 'auto' })} />
+               <Icon icon={'account_tree'} className={css({ margin: 'auto' })} />
             </Flex>
           </CardLayout>
         )}

@@ -6,14 +6,12 @@
  */
 
 import { css, cx } from '@emotion/css';
-import { IconProp } from '@fortawesome/fontawesome-svg-core';
-import { faChevronDown, faChevronUp } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import * as React from 'react';
 import useTranslations from '../../../i18n/I18nContext';
 import { paddingAroundStyle, space_S } from '../../styling/style';
 import IconButton from '../element/IconButton';
 import Flex from './Flex';
+import Icon from './Icon';
 
 const openStyle = css({
   maxHeight: '40000px',
@@ -42,7 +40,7 @@ const defaultLabelStyle = cx(
 );
 
 export interface CollapsibleProps {
-  icon?: IconProp;
+  icon?: string;
   label: string | React.ReactNode;
   open?: boolean;
   tooltip?: string;
@@ -80,7 +78,7 @@ export default function Collapsible({
         )}
         {label}
         <IconButton
-          icon={showContent ? faChevronUp : faChevronDown}
+          icon={showContent ? 'chevron_up' : 'chevron_down'}
           title={
             tooltip
               ? showContent

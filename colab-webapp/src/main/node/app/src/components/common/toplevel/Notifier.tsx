@@ -13,6 +13,7 @@ import { shallowEqual, useAppDispatch, useAppSelector } from '../../../store/hoo
 import { closeNotification, ColabNotification } from '../../../store/slice/notificationSlice';
 import { space_M, space_S } from '../../styling/style';
 import Flex from '../layout/Flex';
+import Icon from '../layout/Icon';
 
 export function prettyPrint(error: unknown, i18n: ColabTranslations): string {
   if (entityIs<'HttpErrorMessage'>(error, 'HttpErrorMessage') || entityIs(error, 'HttpException')) {
@@ -80,12 +81,12 @@ function getTitle(notification: ColabNotification, i18n: ColabTranslations): Rea
   }
 }
 
-function getIcon(notification: ColabNotification): IconDefinition {
+function getIcon(notification: ColabNotification): string {
   switch (notification.type) {
     case 'INFO':
       return 'info';
     case 'WARN':
-      return faWarning;
+      return 'warning';
     case 'ERROR':
     default:
       return 'close';
@@ -144,7 +145,7 @@ function Notification({ notification, index }: NotificationProps) {
           padding: space_M,
         })}
       >
-         <Icon icon={getIcon(notification)} size={'2x'} />
+         <Icon icon={getIcon(notification)} opsz={'lg'} />
       </Flex>
       <div className={css({ padding: space_M })}>
         <h3>{getTitle(notification, i18n)}</h3>

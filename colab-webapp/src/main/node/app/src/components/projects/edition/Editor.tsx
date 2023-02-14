@@ -267,7 +267,7 @@ const CardWrapper = ({
           </Flex>
           <IconButton
             title="toggle view edit"
-            icon={location.pathname.includes('card') ? 'edit' : 'view_quilt'}
+            icon={location.pathname.includes('card') ? 'edit' : 'view_comfy'}
             onClick={() => {
               // Note : functional but not so strong
               if (location.pathname.includes('/card/')) {
@@ -713,7 +713,7 @@ function CardCreatorAndOrganize({ rootContent, organize }: CardCreatorAndOrganiz
                 }),
             )}
             title={i18n.modules.card.positioning.toggleText}
-            icon={'view-quilt'}
+            icon={'view_quilt'}
             onClick={() => organize.setOrganize(e => !e)}
           />
           <CardCreator parentCardContent={rootContent} className={greyIconButtonChipStyle} />

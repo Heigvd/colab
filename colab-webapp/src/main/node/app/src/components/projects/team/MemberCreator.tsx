@@ -6,7 +6,6 @@
  */
 
 import { css, cx } from '@emotion/css';
-import { faPaperPlane } from '@fortawesome/free-solid-svg-icons';
 import { Project, TeamMember } from 'colab-rest-client';
 import React from 'react';
 import * as API from '../../../API/api';
@@ -57,7 +56,7 @@ export default function MemberCreator({ members, project }: MemberCreatorProps):
           />
           <IconButtonWithLoader
             className={linkStyle}
-            icon={faPaperPlane}
+            icon={'send'}
             title={i18n.common.send}
             isLoading={isValidNewMember}
             onClick={() => {

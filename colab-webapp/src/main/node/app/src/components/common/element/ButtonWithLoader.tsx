@@ -6,8 +6,6 @@
  */
 
 import { css, cx } from '@emotion/css';
-import { faSpinner } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import * as React from 'react';
 import {
   buttonStyle,
@@ -18,6 +16,7 @@ import {
 } from '../../styling/style';
 import Clickable from '../layout/Clickable';
 import Flex from '../layout/Flex';
+import Icon from '../layout/Icon';
 import { ButtonProps } from './Button';
 
 const relative = css({
@@ -74,7 +73,7 @@ export default function ButtonWithLoader({
            <Icon
             icon={icon}
             color={iconColor}
-            size={iconSize}
+            opsz={iconSize}
             className={reverseOrder ? css({ marginLeft: space_S }) : css({ marginRight: space_S })}
           />
         )}
@@ -82,7 +81,7 @@ export default function ButtonWithLoader({
       </Flex>
       {isLoading && (
         <div className={cx({ [overlayIconStyle]: isLoading })}>
-           <Icon icon={faSpinner} color={iconColor} size={iconSize} pulse />
+           <Icon icon={'sync'} color={iconColor} opsz={iconSize} />
         </div>
       )}
     </Clickable>

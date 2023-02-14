@@ -6,22 +6,16 @@
  */
 
 import { cx } from '@emotion/css';
-import { IconProp, SizeProp, Transform } from '@fortawesome/fontawesome-svg-core';
-import { faSpinner } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import * as React from 'react';
 import { iconButton, linkStyle } from '../../styling/style';
 import Clickable from '../layout/Clickable';
+import Icon, { IconSize } from '../layout/Icon';
 
 export interface IconButtonWithLoaderProps {
   title: string;
-  icon: IconProp;
+  icon: string;
   iconColor?: string;
-  iconSize?: SizeProp;
-  mask?: IconProp;
-  transform?: string | Transform;
-  layer?: { layerIcon: IconProp; transform: string | Transform };
-  //clickable?: boolean;
+  iconSize?: keyof typeof IconSize;
   isLoading?: boolean;
   onClick?: (e: React.MouseEvent<HTMLSpanElement> | React.KeyboardEvent<HTMLSpanElement>) => void;
   className?: string;
@@ -33,9 +27,6 @@ export default function IconButtonWithLoader({
   icon,
   iconColor,
   iconSize,
-  mask,
-  transform,
-  layer,
   isLoading = true,
   onClick,
   className,
@@ -54,47 +45,12 @@ export default function IconButtonWithLoader({
       className={className}
       clickableClassName={cx(linkStyle, iconButton, className)}
     >
-      {layer ? (
-        <>
-          {loading ? (
-            <>
-               <Icon
-                icon={faSpinner}
-                color={iconColor}
-                size={iconSize}
-                mask={mask}
-                pulse
-                className={IconClassName}
-              />
-            </>
-          ) : (
-            <span className="fa-layers fa-fw">
-               <Icon
-                icon={layer.layerIcon}
-                color={iconColor}
-                size={iconSize}
-                transform={layer.transform}
-              />
-               <Icon
-                icon={icon}
-                color={iconColor}
-                size={iconSize}
-                transform={transform}
-                mask={mask}
-              />
-            </span>
-          )}
-        </>
-      ) : (
          <Icon
-          icon={loading ? faSpinner : icon}
+          icon={loading ? 'sync' : icon}
           color={iconColor}
-          size={iconSize}
-          mask={mask}
-          pulse={loading}
+          opsz={iconSize}
           className={IconClassName}
         />
-      )}
     </Clickable>
   );
 }

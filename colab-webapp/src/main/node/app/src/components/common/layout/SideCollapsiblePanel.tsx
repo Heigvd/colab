@@ -6,20 +6,19 @@
  */
 
 import { css, cx } from '@emotion/css';
-import { IconProp } from '@fortawesome/fontawesome-svg-core';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import * as React from 'react';
 import useTranslations from '../../../i18n/I18nContext';
 import { lightIconButtonStyle, marginAroundStyle, space_M, space_S } from '../../styling/style';
 import IconButton from '../element/IconButton';
 import Flex from './Flex';
+import Icon from './Icon';
 
 const bgActiveStyleRight = css({
   backgroundImage: 'linear-gradient( to right, transparent 90%, #444 91%, #444 100%)',
 });
 
 export interface Item {
-  icon: IconProp;
+  icon: string;
   nextToIconElement?: React.ReactNode;
   title: string;
   header?: React.ReactNode;
@@ -135,7 +134,7 @@ export function SideCollapsibleMenu({
            <Icon
             icon={item.icon}
             title={item.title}
-            size="lg"
+            opsz="lg"
             className={css({ paddingLeft: 0, paddingRight: '1px' })}
           />
           {item.nextToIconElement}

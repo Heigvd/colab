@@ -6,8 +6,6 @@
  */
 
 import { css } from '@emotion/css';
-import { faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { BrowserJsPlumbInstance, newInstance } from '@jsplumb/browser-ui';
 import '@jsplumb/connector-flowchart';
 import { Connection } from '@jsplumb/core';
@@ -24,6 +22,7 @@ import { CardContentDetail } from '../../../../store/slice/cardSlice';
 import InlineLoading from '../../../common/element/InlineLoading';
 import { BlockInput } from '../../../common/element/Input';
 import Flex from '../../../common/layout/Flex';
+import Icon from '../../../common/layout/Icon';
 import { borderRadius, cardShadow, space_S } from '../../../styling/style';
 import HierarchyBranch from './HierarchyBranch';
 import SubContainer from './HierarchySubContainer';
@@ -518,7 +517,7 @@ export default function Hierarchy({
             {forceZoom == null && (
               <BlockInput
                 type="range"
-                label={ <Icon icon={faMagnifyingGlass} title={i18n.common.zoom} />}
+                label={ <Icon icon={'zoom_in'} title={i18n.common.zoom} />}
                 value={zoomRef.current}
                 placeholder="0"
                 max="2"

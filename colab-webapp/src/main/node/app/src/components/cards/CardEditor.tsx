@@ -6,9 +6,6 @@
  */
 
 import { css, cx } from '@emotion/css';
-import {
-  faPaperclip,
-} from '@fortawesome/free-solid-svg-icons';
 import { Card, CardContent, entityIs } from 'colab-rest-client';
 import * as React from 'react';
 import { ReflexContainer, ReflexElement, ReflexSplitter } from 'react-reflex';
@@ -157,7 +154,7 @@ export default function CardEditor({
 
   const sideBarItems: Record<string, Item> = {
     resources: {
-      icon: faPaperclip,
+      icon: 'attach_file',
       nextToIconElement: (
         <div className={textSmall}>
           {' '}
