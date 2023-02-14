@@ -14,7 +14,6 @@ import {
   disabledStyle,
   errorTextStyle,
   labelStyle,
-  selectCreatorStyle,
   space_sm,
   text_sm,
   warningTextStyle,
@@ -118,7 +117,7 @@ export default function SelectInput<T, IsMulti extends boolean>({
               return i18n.basicComponent.selectInput.noItemTypeToCreate;
             }}
             formatCreateLabel={(inputValue: string) => (
-              <div className={cx(selectCreatorStyle, text_sm)}>
+              <div className={cx(text_sm)}>
                 <Icon icon={'add'} />
                 {i18n.basicComponent.selectInput.create(inputValue)}
               </div>

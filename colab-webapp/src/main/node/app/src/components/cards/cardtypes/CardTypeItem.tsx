@@ -19,9 +19,7 @@ import Flex from '../../common/layout/Flex';
 import Icon from '../../common/layout/Icon';
 import { DocTextDisplay } from '../../documents/DocTextItem';
 import {
-  cardShadow,
   lightIconButtonStyle,
-  lightItalicText,
   space_lg,
   space_sm,
 } from '../../styling/style';
@@ -32,7 +30,6 @@ const style = css({
   width: '280px',
   padding: space_lg,
   background: 'var(--bgColor)',
-  boxShadow: cardShadow,
 });
 
 const tagStyle = css({
@@ -151,7 +148,7 @@ export default function CardTypeItem({ cardType, usage }: CardTypeItemProps): JS
         </>
       )}
       <Flex grow={1}>
-        <p className={lightItalicText}>
+        <p>
           <DocTextDisplay id={cardType.purposeId} />
         </p>
       </Flex>

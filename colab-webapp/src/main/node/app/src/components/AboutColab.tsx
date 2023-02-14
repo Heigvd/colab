@@ -5,7 +5,7 @@
  * Licensed under the MIT License
  */
 
-import { css, cx } from '@emotion/css';
+import { css } from '@emotion/css';
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import useTranslations from '../i18n/I18nContext';
@@ -13,7 +13,7 @@ import { useVersionDetails } from '../selectors/configSelector';
 import IconButton from './common/element/IconButton';
 import Flex from './common/layout/Flex';
 import Logo from './styling/Logo';
-import { fullPageStyle, paddedContainerStyle, space_lg } from './styling/style';
+import { space_lg } from './styling/style';
 
 export default function AboutColab(): JSX.Element {
   const i18n = useTranslations();
@@ -22,7 +22,7 @@ export default function AboutColab(): JSX.Element {
   const version = useVersionDetails();
 
   return (
-    <Flex direction="column" className={cx(fullPageStyle, paddedContainerStyle)} align="stretch">
+    <Flex direction="column" align="stretch">
       <IconButton
         icon={'arrow_back'}
         title={i18n.common.back}

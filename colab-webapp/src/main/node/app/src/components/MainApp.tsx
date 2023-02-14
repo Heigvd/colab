@@ -27,7 +27,7 @@ import Editor from './projects/edition/Editor';
 import NewModelShared from './projects/NewModelShared';
 import { MyModels, MyProjects } from './projects/ProjectList';
 import Settings from './settings/Settings';
-import { fullPageStyle, space_lg } from './styling/style';
+import { space_lg } from './styling/style';
 
 const EditorWrapper = () => {
   const { id: sId } = useParams<'id'>();
@@ -150,7 +150,7 @@ export default function MainApp(): JSX.Element {
             path="*"
             element={
               <>
-                <div className={fullPageStyle}>
+                <div>
                   <div
                     className={cx(
                       css({

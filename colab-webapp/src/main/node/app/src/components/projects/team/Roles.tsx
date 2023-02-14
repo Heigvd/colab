@@ -26,11 +26,10 @@ import OpenClose from '../../common/layout/OpenClose';
 import WithToolbar from '../../common/WithToolbar';
 import {
   lightIconButtonStyle,
-  lightItalicText,
-  lightText,
-  space_xl,
+  lightTextStyle,
   space_lg,
   space_sm,
+  space_xl,
   text_sm,
 } from '../../styling/style';
 import { gridNewLine, titleCellStyle } from './Team';
@@ -180,8 +179,8 @@ const MemberWithProjectRole = ({ member, roles }: MemberWithProjectRoleProps) =>
   } else if (member.displayName && member.userId == null) {
     username = (
       <span>
-        <div className={cx(text_sm, lightItalicText)}>
-           <Icon icon={'hourglass_top'} className={css({ marginRight: space_sm })} />
+        <div className={cx(text_sm, lightTextStyle)}>
+          <Icon icon={'hourglass_top'} className={css({ marginRight: space_sm })} />
           {i18n.authentication.info.pendingInvitation}...
         </div>
         {member.displayName}
@@ -192,7 +191,7 @@ const MemberWithProjectRole = ({ member, roles }: MemberWithProjectRoleProps) =>
   } else if (user == 'LOADING' || user == null) {
     username = <InlineLoading />;
   } else if (user == 'ERROR') {
-    username =  <Icon icon={'skull'} />;
+    username = <Icon icon={'skull'} />;
   } else {
     const cn = getDisplayName(user);
     username = (
@@ -238,8 +237,7 @@ const MemberWithProjectRole = ({ member, roles }: MemberWithProjectRoleProps) =>
                     value: 'resend',
                     label: (
                       <>
-                         <Icon icon={'mail'} />{' '}
-                        {i18n.modules.team.actions.resendInvitation}
+                        <Icon icon={'mail'} /> {i18n.modules.team.actions.resendInvitation}
                       </>
                     ),
                     action: () => {
@@ -267,14 +265,14 @@ const MemberWithProjectRole = ({ member, roles }: MemberWithProjectRoleProps) =>
               value: 'delete',
               label: (
                 <>
-                   <Icon icon={'delete'} color={'var(--error-main)'} /> {i18n.common.delete}
+                  <Icon icon={'delete'} color={'var(--error-main)'} /> {i18n.common.delete}
                 </>
               ),
             },
           ]}
         />
       ) : (
-         <Icon icon={'person'} title={i18n.team.me} />
+        <Icon icon={'person'} title={i18n.team.me} />
       )}
       {roles.map(role => {
         const hasRole = roleIds.indexOf(role.id || -1) >= 0;
@@ -326,7 +324,7 @@ export default function TeamRoles({ project }: { project: Project }): JSX.Elemen
         <div className={cx(titleCellStyle, css({ gridColumnStart: 3, gridColumnEnd: 'end' }))}>
           {i18n.team.roles}
           <Tips
-            iconClassName={cx(text_sm, lightText)}
+            iconClassName={cx(text_sm, lightTextStyle)}
             className={cx(text_sm, css({ fontWeight: 'normal' }))}
           >
             {i18n.team.rolesHelper}

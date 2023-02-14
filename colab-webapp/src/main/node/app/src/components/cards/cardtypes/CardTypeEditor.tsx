@@ -35,7 +35,7 @@ import {
   ResourcesMainViewHeader,
   ResourcesMainViewPanel,
 } from '../../resources/ResourcesMainView';
-import { cardStyle, localTitleStyle, space_lg, space_sm } from '../../styling/style';
+import { cardStyle, space_lg, space_sm } from '../../styling/style';
 
 interface CardTypeEditorProps {
   className?: string;
@@ -119,7 +119,6 @@ export default function CardTypeEditor({ className, usage }: CardTypeEditorProps
                 onChange={newValue =>
                   dispatch(API.updateCardTypeTitle({ ...cardType, title: newValue }))
                 }
-                inputDisplayClassName={localTitleStyle}
               />
             </Flex>
             <Flex direction="column" grow={1} align="stretch">

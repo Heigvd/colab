@@ -13,7 +13,7 @@ import { useAndLoadSubCards, useProjectRootCard } from '../../../selectors/cardS
 import { useAndLoadProjectTeam } from '../../../selectors/teamSelector';
 import { useAppSelector } from '../../../store/hooks';
 import InlineLoading from '../../common/element/InlineLoading';
-import { space_xl, space_lg, space_sm, text_sm, voidStyle } from '../../styling/style';
+import { space_xl, space_lg, space_sm, text_sm } from '../../styling/style';
 import { gridNewLine, titleCellStyle } from './Team';
 
 export default function TeamRACI({ project }: { project: Project }): JSX.Element {
@@ -105,7 +105,7 @@ function CardWithRACI({ members, rootContent, depth = 1 }: CardWithRACIProps): J
   } else {
     if (subCards.length === 0) {
       return (
-        <div className={voidStyle}>
+        <div>
           <p>{i18n.modules.card.infos.noCardYetPleaseCreate}</p>
         </div>
       );

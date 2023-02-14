@@ -15,8 +15,9 @@ import { useAppDispatch } from '../../../store/hooks';
 import { addNotification } from '../../../store/slice/notificationSlice';
 import Button from '../../common/element/Button';
 import IconButtonWithLoader from '../../common/element/IconButtonWithLoader';
+import { inputStyle } from '../../common/element/Input';
 import OpenCloseModal from '../../common/layout/OpenCloseModal';
-import { inputStyle, linkStyle, space_lg, text_sm } from '../../styling/style';
+import { linkStyle, space_lg, text_sm } from '../../styling/style';
 
 interface MemberCreatorProps {
   members: TeamMember[];

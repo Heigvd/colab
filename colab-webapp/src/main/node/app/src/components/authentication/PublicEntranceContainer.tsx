@@ -10,7 +10,6 @@ import * as React from 'react';
 import Flex from '../common/layout/Flex';
 import Monkeys from '../debugger/monkey/Monkeys';
 import Logo from '../styling/Logo';
-import { fullPageStyle } from '../styling/style';
 
 interface PublicEntranceContainerProps {
   children: React.ReactNode;
@@ -20,7 +19,7 @@ export default function PublicEntranceContainer({
   children,
 }: PublicEntranceContainerProps): JSX.Element {
   return (
-    <div className={fullPageStyle}>
+    <div>
       <div
         className={cx(
           css({

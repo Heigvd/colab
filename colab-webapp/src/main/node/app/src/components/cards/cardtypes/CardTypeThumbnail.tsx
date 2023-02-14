@@ -24,7 +24,6 @@ import Modal from '../../common/layout/Modal';
 import { DocTextDisplay } from '../../documents/DocTextItem';
 import {
   lightIconButtonStyle,
-  lightItalicText,
   multiLineEllipsis,
   oneLineEllipsis,
   space_lg,
@@ -94,7 +93,6 @@ export default function CardTypeThumbnail({
                 </h3>
                 <div
                   className={cx(
-                    lightItalicText,
                     text_sm,
                     css({ whiteSpace: 'nowrap', marginLeft: space_lg }),
                   )}
@@ -104,7 +102,6 @@ export default function CardTypeThumbnail({
               </Flex>
               <p
                 className={cx(
-                  lightItalicText,
                   text_sm,
                   multiLineEllipsis,
                   css({ maxWidth: '100%' }),

@@ -14,9 +14,20 @@ import { useAppDispatch } from '../../store/hooks';
 import { BlockEditorWrapper } from '../blocks/BlockEditorWrapper';
 import OpenGraphLink from '../common/element/OpenGraphLink';
 import Flex from '../common/layout/Flex';
-import { editableBlockStyle } from '../styling/style';
+import { space_sm } from '../styling/style';
 import { DocEditorCtx } from './DocumentEditorToolbox';
 import DocumentFileEditor from './DocumentFileEditor';
+
+export const editableBlockStyle = css({
+  border: '1px solid var(--superLightGray)',
+  margin: '3px 0',
+  padding: space_sm,
+  borderRadius: '6px',
+  '&:hover': {
+    cursor: 'pointer',
+    border: '1px solid var(--lightGray)',
+  },
+});
 
 const selectedStyle = css({
   border: '1px solid var(--darkGray)',

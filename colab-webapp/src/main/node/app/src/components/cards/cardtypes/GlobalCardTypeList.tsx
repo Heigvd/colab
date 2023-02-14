@@ -13,7 +13,7 @@ import { useAndLoadGlobalTypesForAdmin } from '../../../selectors/cardTypeSelect
 import { CardTypeAllInOne } from '../../../types/cardTypeDefinition';
 import AvailabilityStatusIndicator from '../../common/element/AvailabilityStatusIndicator';
 import Flex from '../../common/layout/Flex';
-import { space_xl, space_sm, voidStyle } from '../../styling/style';
+import { space_xl, space_sm } from '../../styling/style';
 import CardTypeCreator from './CardTypeCreator';
 import CardTypeEditor from './CardTypeEditor';
 import CardTypeItem from './CardTypeItem';
@@ -80,7 +80,7 @@ export default function GlobalCardTypeList(): JSX.Element {
                 )}
               </CardTypeListWithFilter>
             ) : (
-              <div className={voidStyle}>
+              <div>
                 <p>{i18n.modules.cardType.info.createFirstGlobalType}</p>
               </div>
             )}

@@ -23,7 +23,7 @@ import Icon from '../common/layout/Icon';
 import {
   br_lg,
   lightIconButtonStyle,
-  lightText,
+  lightTextStyle,
   multiLineEllipsis,
   oneLineEllipsis,
   space_sm,
@@ -151,7 +151,7 @@ export default function SharedModelsList({
                     ]}
                   />
                 </Flex>
-                <p className={cx(text_sm, lightText, multiLineEllipsis)}>
+                <p className={cx(text_sm, lightTextStyle, multiLineEllipsis)}>
                   {!isEmptyProject
                     ? project.description
                       ? project.description

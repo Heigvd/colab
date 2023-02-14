@@ -6,12 +6,11 @@
  */
 import { css } from '@emotion/css';
 import * as React from 'react';
-import { fullPageStyle } from '../../styling/style';
 import InlineLoading from '../element/InlineLoading';
 
 export default function Loading(): JSX.Element {
   return (
-    <div className={fullPageStyle}>
+    <div>
       <div
         className={css({
           margin: 'auto',

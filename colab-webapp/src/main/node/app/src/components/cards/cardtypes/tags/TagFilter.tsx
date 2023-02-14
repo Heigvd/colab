@@ -12,7 +12,7 @@ import Checkbox from '../../../common/element/Checkbox';
 import Flex from '../../../common/layout/Flex';
 import {
   lightLinkStyle,
-  noOutlineStyle,
+  removeOutlineStyle,
   space_sm,
 } from '../../../styling/style';
 
@@ -85,7 +85,7 @@ export default function TagsFilter({
                       label={tag}
                       value={tagsState[tag]}
                       onChange={value => onChange(tag, value)}
-                      className={cx(noOutlineStyle, {
+                      className={cx(removeOutlineStyle, {
                         [checkedTagStyle]: tagsState[tag],
                       })}
                     />

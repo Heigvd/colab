@@ -15,11 +15,11 @@ import { useHasModels } from '../selectors/projectSelector';
 import { useCurrentUser } from '../selectors/userSelector';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
 import InlineLoading from './common/element/InlineLoading';
-import { MainMenuLink, mainMenuLink } from './common/element/Link';
+import { MainMenuLink, } from './common/element/Link';
 import DropDownMenu from './common/layout/DropDownMenu';
 import Icon from './common/layout/Icon';
 import Monkeys from './debugger/monkey/Monkeys';
-import {space_lg, space_sm } from './styling/style';
+import {buttonStyle, space_lg, space_sm } from './styling/style';
 const dropLabelsStyle = css({
   //width: '100%',
   textTransform: 'uppercase',
@@ -64,7 +64,7 @@ export default function MainNav(): JSX.Element {
             entries={entries}
             onSelect={e => navigate(e.value)}
             menuIcon="BURGER"
-            buttonClassName={cx(mainMenuLink, css({ padding: '0 0 0 ' + space_lg }))}
+            buttonClassName={cx(buttonStyle, css({ padding: '0 0 0 ' + space_lg }))}
           />
         </nav>
       ) : (

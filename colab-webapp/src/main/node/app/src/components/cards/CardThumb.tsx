@@ -26,10 +26,8 @@ import {
   greyIconButtonChipStyle,
   lightIconButtonStyle,
   oneLineEllipsis,
-  //linkStyle,
   space_lg,
   space_sm,
-  variantTitle,
 } from '../styling/style';
 import CardContentStatus from './CardContentStatus';
 import CardCreator from './CardCreator';
@@ -233,7 +231,7 @@ export default function CardThumb({
                     {card.title || i18n.modules.card.untitled}
                   </span>
                   {hasVariants && (
-                    <span className={cx(variantTitle, oneLineEllipsis, css({ minWidth: '50px' }))}>
+                    <span className={cx(oneLineEllipsis, css({ minWidth: '50px' }))}>
                       &#xFE58;
                       {variant?.title && variant.title.length > 0
                         ? variant.title

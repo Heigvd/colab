@@ -5,7 +5,7 @@
  * Licensed under the MIT License
  */
 
-import { cx } from '@emotion/css';
+import { cx, injectGlobal } from '@emotion/css';
 import * as React from 'react';
 import { Suspense } from 'react';
 import { createRoot } from 'react-dom/client';
@@ -22,8 +22,44 @@ import Notifier from './common/toplevel/Notifier';
 import MainApp from './MainApp';
 import Token from './token/Token';
 import { TocDisplayCtx, TocMode } from './resources/ResourcesList';
-import { fonts, lightMode } from './styling/theme';
+import { fonts, heading, lightMode, text } from './styling/theme';
 
+injectGlobal`
+    * {
+        box-sizing: border-box;
+        font-size: ${text.sm};
+        line-height: ${text.lineHeight};
+        font-weight: ${text.regular};
+        color: var(--text-primary);
+        margin: 0;
+        padding: 0;
+    }
+
+    h1, h2, h3, h4, h5, h6 {
+        font-weight: ${heading.weight};
+        line-height: ${heading.lineHeight};
+    }
+
+    h1 {
+        font-size: ${heading.xl};
+    }
+    
+    h2 {
+        font-size: ${heading.lg};
+    }
+
+    h3 {
+        font-size: ${heading.md};
+    }
+
+    h4 {
+        font-size: ${heading.sm};
+    }
+
+    h5 {
+        font-size: ${heading.xs};
+    }
+`;
 /**
  * To read parameters from hash
  */
@@ -109,6 +145,7 @@ function App(): JSX.Element {
       })),
     [setTipsConfig],
   );
+
 
   /**
    * prevent application quit on file drop

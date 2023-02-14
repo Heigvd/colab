@@ -5,7 +5,7 @@
  * Licensed under the MIT License
  */
 
-import { css, cx } from '@emotion/css';
+import { css } from '@emotion/css';
 import * as React from 'react';
 import * as API from '../../../API/api';
 import useTranslations from '../../../i18n/I18nContext';
@@ -16,7 +16,7 @@ import Button from '../../common/element/Button';
 import Checkbox from '../../common/element/Checkbox';
 import Flex from '../../common/layout/Flex';
 import OpenCloseModal from '../../common/layout/OpenCloseModal';
-import { paddedContainerStyle, space_xl, space_lg } from '../../styling/style';
+import { space_xl, space_lg } from '../../styling/style';
 import ProjectModelSharing from '../ProjectModelSharing';
 
 export interface ProjectSettingsModelSharingProps {
@@ -87,7 +87,7 @@ function SharingParams({ projectId }: SharingParamsProps): JSX.Element {
   return (
     <>
       <h2>{i18n.modules.project.labels.sharingParams}</h2>
-      <Flex direction="column" className={cx(paddedContainerStyle)}>
+      <Flex direction="column">
         <h3>{i18n.modules.project.labels.include}</h3>
         <Checkbox
           value={copyParam.withRoles || undefined}

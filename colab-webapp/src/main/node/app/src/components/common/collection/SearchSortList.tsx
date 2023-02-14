@@ -7,7 +7,7 @@
 
 import { css } from '@emotion/css';
 import React, { useState } from 'react';
-import { lightItalicText, space_sm } from '../../styling/style';
+import { lightTextStyle, space_sm } from '../../styling/style';
 import Flex from '../layout/Flex';
 import { Filters, genericFilter, IFilter } from './Filters';
 import SearchInput from './SearchInput';
@@ -106,7 +106,7 @@ export default function SearchSortList({ widgets, itemComp }: SearchSortListProp
         </Flex>
       )}
 
-      {resultWidgets.length === 0 && <p className={lightItalicText}>No results found!</p>}
+      {resultWidgets.length === 0 && <p className={lightTextStyle}>No results found!</p>}
     </Flex>
   );
 }

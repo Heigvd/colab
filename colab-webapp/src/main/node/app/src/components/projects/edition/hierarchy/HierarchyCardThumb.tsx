@@ -15,7 +15,7 @@ import { useAppDispatch, useAppSelector } from '../../../../store/hooks';
 import { ProgressBar } from '../../../cards/CardLayout';
 import InlineLoading from '../../../common/element/InlineLoading';
 import Flex from '../../../common/layout/Flex';
-import { cardStyle, lightText, space_lg, space_sm, text_sm } from '../../../styling/style';
+import { cardStyle, lightTextStyle, space_lg, space_sm, text_sm } from '../../../styling/style';
 import { HierarchyCTX } from './Hierarchy';
 
 const showAddVariantStyle = css({
@@ -61,7 +61,7 @@ function CardContentThumb({
         }}
         className={cx(
           text_sm,
-          lightText,
+          lightTextStyle,
           css({
             cursor: onClick != null ? 'pointer' : 'default',
             flexGrow: 1,

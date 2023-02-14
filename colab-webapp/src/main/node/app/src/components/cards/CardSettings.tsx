@@ -18,7 +18,7 @@ import SelectInput from '../common/element/SelectInput';
 import Tips, { WIPContainer } from '../common/element/Tips';
 import Flex from '../common/layout/Flex';
 import Icon from '../common/layout/Icon';
-import { iconStyle, lightItalicText, lightText, space_lg } from '../styling/style';
+import { iconStyle, lightTextStyle, space_lg } from '../styling/style';
 import ContentStatusSelector from './ContentStatusSelector';
 
 const marginDownSmall = css({
@@ -78,9 +78,9 @@ export default function CardSettings({ card, variant }: CardSettingsProps): JSX.
           <h3>{i18n.modules.cardType.cardType}</h3>
         </Flex>
         {cardType == null ? (
-          <span className={lightItalicText}>{i18n.modules.cardType.noCardType}</span>
+          <span>{i18n.modules.cardType.noCardType}</span>
         ) : (
-          <span className={lightText}>{cardType.title}</span>
+          <span className={lightTextStyle}>{cardType.title}</span>
         )}
       </WIPContainer>
       <WIPContainer>

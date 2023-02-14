@@ -50,10 +50,8 @@ import {
 import {
   cardStyle,
   lightIconButtonStyle,
-  localTitleStyle,
   space_sm,
   text_sm,
-  variantTitle,
 } from '../styling/style';
 import CardContentStatus from './CardContentStatus';
 import CardCreator from './CardCreator';
@@ -246,11 +244,10 @@ export default function CardEditor({
                   placeholder={i18n.modules.card.untitled}
                   readOnly={readOnly}
                   onChange={newValue => dispatch(API.updateCard({ ...card, title: newValue }))}
-                  inputDisplayClassName={localTitleStyle}
                 />
                 {hasVariants && (
                   <>
-                    <span className={variantTitle}>&#xFE58;</span>
+                    <span>&#xFE58;</span>
                     <DiscreetInput
                       value={
                         variant.title && variant.title.length > 0
@@ -262,7 +259,6 @@ export default function CardEditor({
                       onChange={newValue =>
                         dispatch(API.updateCardContent({ ...variant, title: newValue }))
                       }
-                      inputDisplayClassName={variantTitle}
                     />
                   </>
                 )}

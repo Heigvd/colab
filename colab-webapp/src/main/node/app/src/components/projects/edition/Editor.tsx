@@ -32,7 +32,7 @@ import IconButton from '../../common/element/IconButton';
 import { IllustrationIconDisplay } from '../../common/element/IllustrationDisplay';
 import InlineLoading from '../../common/element/InlineLoading';
 import { DiscreetInput } from '../../common/element/Input';
-import { mainLinkActiveClass, mainMenuLink, MainMenuLink } from '../../common/element/Link';
+import { MainMenuLink } from '../../common/element/Link';
 import Tips, { TipsCtx } from '../../common/element/Tips';
 import Clickable from '../../common/layout/Clickable';
 import Flex from '../../common/layout/Flex';
@@ -41,13 +41,13 @@ import Monkeys from '../../debugger/monkey/Monkeys';
 import { UserDropDown } from '../../MainNav';
 import Settings from '../../settings/Settings';
 import {
-  fullPageStyle,
   lightIconButtonStyle,
   linkStyle,
-  modelBGColor,
   space_xl,
   space_lg,
   space_sm,
+  activeButtonStyle,
+  buttonStyle,
 } from '../../styling/style';
 import DocumentationTab from '../DocumentationTab';
 import Presence from '../presence/Presence';
@@ -312,7 +312,7 @@ function EditorNav({ project }: EditorNavProps): JSX.Element {
         )}
       >
         <Flex align="center">
-          <MainMenuLink to={`/`} className={mainMenuLink}>
+          <MainMenuLink to={`/`}>
             {/* TODO : close current project - check if it really works (local + send to server) */}
             <span
               title={i18n.common.action.backToProjects}
@@ -335,8 +335,8 @@ function EditorNav({ project }: EditorNavProps): JSX.Element {
               to={`/editor/${project.id}`}
               className={active =>
                 active.isActive || location.pathname.match(/^\/editor\/\d+\/(edit|card)/)
-                  ? mainLinkActiveClass
-                  : mainMenuLink
+                  ? activeButtonStyle
+                  : buttonStyle
               }
             >
                <Icon
@@ -382,8 +382,8 @@ function EditorNav({ project }: EditorNavProps): JSX.Element {
               to="./team"
               className={active =>
                 active.isActive || location.pathname.match(/^\/editor\/\d+\/team/)
-                  ? mainLinkActiveClass
-                  : mainMenuLink
+                  ? activeButtonStyle
+                  : buttonStyle
               }
             >
                <Icon icon={'group'} title={i18n.team.teamManagement} />
@@ -557,7 +557,6 @@ export default function Editor(): JSX.Element {
           direction="column"
           align="stretch"
           grow={1}
-          className={cx(fullPageStyle, { [modelBGColor]: project.type === 'MODEL' })}
         >
           <EditorNav project={project} />
           <Flex

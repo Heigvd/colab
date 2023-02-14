@@ -10,7 +10,7 @@ import * as React from 'react';
 import useTranslations from '../../i18n/I18nContext';
 import { useAndLoadDocuments } from '../../selectors/documentSelector';
 import AvailabilityStatusIndicator from '../common/element/AvailabilityStatusIndicator';
-import { lightText, space_lg, space_sm, text_sm } from '../styling/style';
+import { lightTextStyle, space_lg, space_sm, text_sm } from '../styling/style';
 import { DocumentOwnership } from './documentCommonType';
 import DocumentEditor from './DocumentEditor';
 
@@ -34,7 +34,7 @@ export default function DocumentList({ docOwnership, readOnly }: DocumentListPro
         <div
           className={cx(
             text_sm,
-            lightText,
+            lightTextStyle,
             css({
               fontStyle: 'italic',
               marginTop: space_lg,

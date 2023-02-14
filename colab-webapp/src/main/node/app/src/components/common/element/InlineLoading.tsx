@@ -4,11 +4,24 @@
  *
  * Licensed under the MIT License
  */
-import { css, cx } from '@emotion/css';
+import { css, cx, keyframes } from '@emotion/css';
 import * as React from 'react';
 import Picto from '../../styling/Picto';
 import PictoBw from '../../styling/PictoBw';
-import { pulseEase } from '../../styling/style';
+
+const spinning = keyframes({
+  from: {
+    transform: 'rotate(0deg)',
+  },
+  to: {
+    transform: 'rotate(360deg)',
+  },
+});
+
+export const spinningStyle = css({
+  animation: `${spinning} 1s linear 0s infinite`,
+});
+
 
 interface InlineLoadingProps {
   size?: string;
@@ -33,7 +46,7 @@ export default function InlineLoading({
     >
       <EffectivePicto
         className={cx(
-          pulseEase,
+          spinningStyle,
           css({
             width: size,
             height: size,

@@ -18,7 +18,7 @@ import Flex from '../common/layout/Flex';
 import {
   invertedButtonStyle,
   lightIconButtonStyle,
-  lightText,
+  lightTextStyle,
   space_xl,
   space_sm,
   text_sm,
@@ -128,7 +128,7 @@ export function ResourcesMainViewHeader({
 
       {title}
 
-      {helpTip && <Tips iconClassName={cx(text_sm, lightText)}>{helpTip}</Tips>}
+      {helpTip && <Tips iconClassName={cx(text_sm, lightTextStyle)}>{helpTip}</Tips>}
 
       {displayMode === 'LIST' && (
         <>

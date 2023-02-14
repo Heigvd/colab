@@ -11,7 +11,7 @@ import useTranslations from '../../../i18n/I18nContext';
 import {
   lightIconButtonStyle,
   lightLinkStyle,
-  noOutlineStyle,
+  removeOutlineStyle,
   space_sm,
 } from '../../styling/style';
 import Checkbox from '../element/Checkbox';
@@ -94,7 +94,7 @@ export default function FilterableList({
                       label={cat}
                       value={tagState && tagState[cat]}
                       onChange={t => onChange(t, cat)}
-                      className={cx(noOutlineStyle, {
+                      className={cx(removeOutlineStyle, {
                         [checkedCategoryTabStyle]: tagState && tagState[cat],
                       })}
                     />

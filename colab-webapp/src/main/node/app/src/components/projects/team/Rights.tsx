@@ -22,8 +22,7 @@ import { DiscreetInput } from '../../common/element/Input';
 import Tips from '../../common/element/Tips';
 import Icon from '../../common/layout/Icon';
 import {
-  lightItalicText,
-  lightText,
+  lightTextStyle,
   space_xl,
   space_lg,
   space_sm,
@@ -157,7 +156,7 @@ const MemberWithProjectRights = ({ member, isTheOnlyOwner }: MemberWithProjectRi
   } else if (member.displayName && member.userId == null) {
     username = (
       <span>
-        <div className={cx(text_sm, lightItalicText)}>
+        <div className={cx(text_sm, lightTextStyle)}>
            <Icon icon={'hourglass_top'} className={css({ marginRight: space_sm })} />
           {i18n.authentication.info.pendingInvitation}...
         </div>
@@ -266,7 +265,7 @@ export default function TeamRights({ project }: { project: Project }): JSX.Eleme
         <div className={cx(titleCellStyle, css({ gridColumnStart: 3, gridColumnEnd: 'end' }))}>
           {i18n.team.rights}
           <Tips
-            iconClassName={cx(text_sm, lightText)}
+            iconClassName={cx(text_sm, lightTextStyle)}
             className={cx(text_sm, css({ fontWeight: 'normal' }))}
           >
             {i18n.team.rightsHelper}

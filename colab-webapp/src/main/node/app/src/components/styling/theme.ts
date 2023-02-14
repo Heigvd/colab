@@ -114,7 +114,7 @@ export const lightMode = cx(
     //BACKGROUND
     '--bg-primary': 'var(--white)',
     '--bg-secondary': 'var(--gray-50)',
-    '--bg-tertiary': 'var(--bg-100)',
+    '--bg-tertiary': 'var(--gray-100)',
     //PRIMARY
     '--primary-main': 'var(--primary-400)',
     '--primary-fade': 'var(--primary-50)',

@@ -13,17 +13,50 @@ import {
   br_md,
   disabledStyle,
   errorTextStyle,
-  inputStyle,
   labelStyle,
   lightIconButtonStyle,
+  space_lg,
   space_sm,
-  textareaStyle,
   text_sm,
   warningTextStyle,
 } from '../../styling/style';
 import Flex from '../layout/Flex';
 import IconButton from './IconButton';
 import Tips, { TipsProps } from './Tips';
+
+export const inputStyle = css({
+  outline: 'none',
+  border: 'solid 1px var(--lightGray)',
+  color: 'var(--secFgColor)',
+  backgroundColor: 'var(--secBgColor)',
+  borderRadius: '6px',
+  boxSizing: 'border-box',
+  transition: '.2s',
+  padding: '0 ' + space_lg,
+  lineHeight: '2.5em',
+  fontFamily: 'inherit',
+  fontSize: text_sm,
+  '&:focus': { border: 'solid 1px var(--darkGray)', outline: 'solid 1px var(--darkGray)' },
+  '&:hover': { border: 'solid 1px var(--darkGray)' },
+});
+
+const textareaStyle = css({
+  outline: 'none',
+  border: 'solid 1px #d7d7d7',
+  color: 'var(--secFgColor)',
+  backgroundColor: 'var(--secBgColor)',
+  borderRadius: '6px',
+  boxSizing: 'border-box',
+  transition: '.8s',
+  padding: space_sm + ' ' + space_lg,
+  lineHeight: '1.6em',
+  height: '100px',
+  fontFamily: 'inherit',
+  fontSize: text_sm,
+  maxWidth: '100%',
+  '&:focus': { border: 'solid 1px var(--darkGray)', outline: 'solid 1px var(--darkGray)' },
+  '&:hover': { border: 'solid 1px var(--darkGray)' },
+});
 
 // TODO replace OnConfirmInput
 // TODO replace input in invite member in Team.tsx
