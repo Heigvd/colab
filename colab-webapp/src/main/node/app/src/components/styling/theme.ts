@@ -184,7 +184,7 @@ export const textOther = {
     sm: '14px',
     md: '16px',
     lg: '18px',
-    textDecoration: 'underline',
+    underline: 'underline',
     weight: 600,
   },
   tag: {

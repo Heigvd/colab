@@ -39,7 +39,7 @@ export default function TargetCardTypeSummary({
           <TargetProjectSummary projectId={cardType.projectIdCT} />
         ) : (
            <Icon
-            icon={'globe'}
+            icon={'language'}
             color={'var(--primary-main)'}
             title={i18n.modules.cardType.info.isGlobalType}
             className={targetProjectIconStyle}

@@ -12,7 +12,7 @@ import { CardContent } from 'colab-rest-client';
 import React from 'react';
 import logger from '../../../../logger';
 import CardCreator from '../../../cards/CardCreator';
-import { greyIconButtonChipStyle, space_lg } from '../../../styling/style';
+import { lightIconButtonStyle, space_lg } from '../../../styling/style';
 import { HierarchyCTX, PlumbRef } from './Hierarchy';
 
 export interface SubCardCreatorProps {
@@ -101,7 +101,7 @@ export default function SubCardCreator({ jsPlumb, parent }: SubCardCreatorProps)
         setThisNode(ref || undefined);
       }}
     >
-      <CardCreator parentCardContent={parent} className={greyIconButtonChipStyle} />
+      <CardCreator parentCardContent={parent} className={lightIconButtonStyle} />
     </div>
   );
 }

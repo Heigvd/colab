@@ -11,16 +11,16 @@ import { useEffect, useRef } from 'react';
 import {
   disabledStyle,
   foregroundStyle,
+  p_0,
+  p_sm,
   space_sm,
 } from '../../styling/style';
 import Flex from './Flex';
 import Icon from './Icon';
 
-export const itemStyle = css({
-  padding: '5px 8px',
-});
-
-const entryStyle = css({
+export const entryStyle = cx(
+  p_sm,
+  css({
   display: 'flex',
   gap: space_sm,
   alignItems: 'center',
@@ -33,11 +33,14 @@ const entryStyle = css({
     backgroundColor: 'var(--bg-secondary)',
     color: 'var(--text-primary)',
   },
-});
+}));
 
-const dropDownEntryPadding = css({
-  padding: space_sm,
-});
+const subDropDownEntryStyle = cx(
+  p_0,
+  css({
+  flexDirection: 'column',
+  alignItems: 'stretch',
+}));
 
 const commonStyle = cx(
   foregroundStyle,
@@ -55,7 +58,7 @@ const commonStyle = cx(
 const dashStyle = css({
   width: '26px',
   height: '2px',
-  background: '#666',
+  background: 'var(--text-primary)',
   display: 'block',
   position: 'relative',
   transition: 'all .3s ease-in-out',
@@ -307,12 +310,15 @@ export interface Entry<T> {
   label: React.ReactNode;
   action?: () => void;
   disabled?: boolean;
+  subDropDownButton?: boolean;
 }
 
 export interface DropDownMenuProps<T> {
   icon?: string;
+  buttonLabel?: React.ReactNode;
   title?: string;
   menuIcon?: 'BURGER' | 'CARET';
+  showSelectedLabel?: boolean;
   idleHoverStyle?: 'BACKGROUND' | 'FOREGROUND';
   entries: Entry<T>[];
   value?: T;
@@ -320,11 +326,14 @@ export interface DropDownMenuProps<T> {
   height?: string;
   valueComp?: Entry<T>;
   onSelect?: (value: Entry<T>) => void;
+  className?: string,
   buttonClassName?: string;
   dropClassName?: string;
 }
 export default function DropDownMenu<T extends string | number | symbol>({
   icon,
+  buttonLabel,
+  showSelectedLabel,
   title,
   entries,
   value,
@@ -332,6 +341,7 @@ export default function DropDownMenu<T extends string | number | symbol>({
   onSelect,
   direction = 'down',
   menuIcon,
+  className,
   buttonClassName,
   dropClassName,
 }: DropDownMenuProps<T>): JSX.Element {
@@ -368,7 +378,7 @@ export default function DropDownMenu<T extends string | number | symbol>({
 
     return (
       <div ref={dropRef} onClick={clickIn} className={css({ cursor: 'pointer' })}>
-        <Flex direction="column" className={css({ overflow: 'visible' })}>
+        <Flex direction="column" className={cx(css({ overflow: 'visible' }), className)}>
           <Flex
             align="center"
             title={title}
@@ -379,12 +389,13 @@ export default function DropDownMenu<T extends string | number | symbol>({
             }
           >
             {menuIcon === 'BURGER' && (
-              <span className={open ? openButtonStyle : buttonStyle}></span>
+                <span className={open ? openButtonStyle : buttonStyle}></span>
             )}
             {icon &&
                 <Icon icon={icon} />
               }
-            {current.label && current.label}
+            {buttonLabel && buttonLabel}
+            {(showSelectedLabel && current.label) && current.label}
             {menuIcon === 'CARET' && (
                <Icon icon={'expand_more'} className={css({ marginLeft: space_sm })} />
             )}
@@ -403,7 +414,9 @@ export default function DropDownMenu<T extends string | number | symbol>({
                     {
                       [disabledStyle]: entry.disabled,
                     },
-                    dropDownEntryPadding,
+                    {
+                      [subDropDownEntryStyle]: entry.subDropDownButton
+                    },
                   )}
                   key={String(entry.value)}
                   onClick={() => {

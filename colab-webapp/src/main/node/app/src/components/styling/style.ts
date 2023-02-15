@@ -18,26 +18,28 @@ export const space_2xl = space['2xl'];
 export const space_3xl = space['3xl'];
 export const space_4xl = space['4xl'];
 // PADDING
-export const p_2xs = css({ padding: space['2xs']});
-export const p_xs = css({ padding: space.xs});
-export const p_sm = css({ padding: space.sm});
-export const p_md = css({ padding: space.md});
-export const p_lg = css({ padding: space.lg});
-export const p_xl = css({ padding: space.xl});
-export const p_2xl = css({ padding: space['2xl']});
-export const p_3xl = css({ padding: space['3xl']});
-export const p_4xl = css({ padding: space['4xl']});
+export const p_0 = css({ padding: space['0'] });
+export const p_2xs = css({ padding: space['2xs'] });
+export const p_xs = css({ padding: space.xs });
+export const p_sm = css({ padding: space.sm });
+export const p_md = css({ padding: space.md });
+export const p_lg = css({ padding: space.lg });
+export const p_xl = css({ padding: space.xl });
+export const p_2xl = css({ padding: space['2xl'] });
+export const p_3xl = css({ padding: space['3xl'] });
+export const p_4xl = css({ padding: space['4xl'] });
 
 // MARGIN
-export const m_2xs = css({ margin: space['2xs']});
-export const m_xs = css({ margin: space.xs});
-export const m_sm = css({ margin: space.sm});
-export const m_md = css({ margin: space.md});
-export const m_lg = css({ margin: space.lg});
-export const m_xl = css({ margin: space.xl});
-export const m_2xl = css({ margin: space['2xl']});
-export const m_3xl = css({ margin: space['3xl']});
-export const m_4xl = css({ margin: space['4xl']});
+export const m_0 = css({ margin: space['0'] });
+export const m_2xs = css({ margin: space['2xs'] });
+export const m_xs = css({ margin: space.xs });
+export const m_sm = css({ margin: space.sm });
+export const m_md = css({ margin: space.md });
+export const m_lg = css({ margin: space.lg });
+export const m_xl = css({ margin: space.xl });
+export const m_2xl = css({ margin: space['2xl'] });
+export const m_3xl = css({ margin: space['3xl'] });
+export const m_4xl = css({ margin: space['4xl'] });
 
 //BORDER RADIUS
 export const br_sm = css({ borderRadius: br.sm });
@@ -69,6 +71,11 @@ export const heading_lineHeight = css({ fontSize: heading.lineHeight });
 export const lightTextStyle = css({
   color: 'var(--text-secondary)',
 });
+
+export const underlineTextStyle = css({
+  textDecoration: 'underline',
+});
+
 
 //TEXT MODES
 export const errorTextStyle = css({
@@ -105,6 +112,7 @@ export const ellipsisStyle = css({
 export const foregroundStyle = css({
   zIndex: 9999,
 });
+
 export const fullScreenOverlayStyle = cx(
   css({
     display: 'flex',
@@ -128,9 +136,13 @@ export const WIPStyle = cx(
   }),
 );
 
+const disabled = {
+  opacity: 0.5,
+  pointerEvent: 'none',
+};
+
 export const disabledStyle = css({
-  opacity: 0.4,
-  pointerEvents: 'none',
+  ...disabled,
 });
 
 //INPUTS
@@ -168,10 +180,28 @@ export const lightLinkStyle = cx(
 
 //ICON BUTTONS STYLES
 export const iconButtonStyle = cx(
+  p_xs,
   css({
+    display: 'flex',
+    alignItems: 'stretch',
+    color: 'var(--text-secondary)',
     cursor: 'pointer',
     ':hover': {
-      color: 'var(--secondary-main)',
+      color: 'var(--text-primary)',
+    },
+    ':disabled': {
+      ...disabled,
+    },
+  }),
+);
+
+export const activeIconButtonStyle = cx(
+  iconButtonStyle,
+  css({
+    backgroundColor: 'var(--gray-200)',
+    color: 'var(--text-primary)',
+    ':hover': {
+      backgroundColor: 'var(--gray-200)',
     },
   }),
 );
@@ -182,29 +212,13 @@ export const lightIconButtonStyle = css({
     color: 'var(--text-primary)',
   },
 });
-export const greyIconButtonChipStyle = cx(
-  lightIconButtonStyle,
-  css({
-    padding: space_sm,
-    height: '20px',
-    width: '20px',
-    display: 'inline-flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderRadius: '50%',
-    border: '1px solid var(--secondary-main)',
-    '&:hover': {
-      border: '1px solid var(--text-primary)',
-    },
-  }),
-);
 
 // BUTTON STYLES
 export const buttonStyle = cx(
   linkStyle,
   css({
     display: 'inline-block',
-    padding: '8px 14px',
+    padding: `0 ${space_md}`,
     ':hover': {
       backgroundColor: 'var(--bg-secondary)',
       textDecoration: 'none',
@@ -273,7 +287,6 @@ export const mainHeaderHeight = '50px';
 export const labelStyle = css({
   fontWeight: 500,
 });
-
 
 /* export function rootViewCardsStyle(depth: number, inRootView: boolean) {
   if (inRootView) {

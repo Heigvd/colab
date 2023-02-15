@@ -28,7 +28,6 @@ import Flex from '../common/layout/Flex';
 import Icon from '../common/layout/Icon';
 import {
   ellipsisStyle,
-  invertedButtonStyle,
   lightIconButtonStyle,
   multiLineEllipsisStyle,
   space_lg,
@@ -166,7 +165,7 @@ export const ProjectDisplay = ({ project, className }: ProjectDisplayProps) => {
             title={i18n.modules.project.info.isAModel}
           >
             {project.globalProject ? (
-               <Icon icon={'globe'} color="white" opsz="sm" />
+               <Icon icon={'language'} color="white" opsz="sm" />
             ) : (
                <Icon icon={'star'} color="white" opsz="sm" />
             )}
@@ -224,7 +223,7 @@ export const ProjectDisplay = ({ project, className }: ProjectDisplayProps) => {
                 value: 'duplicate',
                 label: (
                   <>
-                     <Icon icon={'content-copy'} /> {i18n.common.duplicate}
+                     <Icon icon={'content_copy'} /> {i18n.common.duplicate}
                   </>
                 ),
                 action: () => {
@@ -349,16 +348,12 @@ function ProjectList({ projects, hideCreationButton }: ProjectListProps) {
           <h2>{i18n.common.welcome}</h2>
           <h3>{i18n.modules.project.info.noProjectYet}</h3>
           {!hideCreationButton && (
-            <ProjectCreator
-              collapsedButtonClassName={cx(invertedButtonStyle, css({ marginTop: space_sm }))}
-            />
+            <ProjectCreator />
           )}
         </Flex>
       ) : !hideCreationButton ? (
         <Flex className={css({ alignSelf: 'flex-end', padding: space_sm })}>
-          <ProjectCreator
-            collapsedButtonClassName={cx(invertedButtonStyle, css({ fontSize: '0.8em' }))}
-          />
+          <ProjectCreator />
         </Flex>
       ) : (
         <></>

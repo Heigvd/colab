@@ -66,7 +66,7 @@ export function ProvidedByCardType({
     icon = (
        <Icon
         className={iconClassName}
-        icon={'globe'}
+        icon={'language'}
         color={'var(--primary-main)'}
         title={showText !== 'full' ? fullText : undefined}
       />

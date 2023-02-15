@@ -14,6 +14,7 @@ import { useAppDispatch, useLoadingState } from '../../store/hooks';
 import Button from '../common/element/Button';
 import ButtonWithLoader from '../common/element/ButtonWithLoader';
 import Flex from '../common/layout/Flex';
+import Icon from '../common/layout/Icon';
 import OpenCloseModal from '../common/layout/OpenCloseModal';
 import { space_lg, space_sm } from '../styling/style';
 import { defaultProjectIllustration } from './ProjectCommon';
@@ -42,12 +43,10 @@ type ProgressionStatus = 'chooseModel' | 'fillBasisData';
 
 interface ProjectCreatorProps {
   collapsedButtonClassName?: string;
-  disabled?: boolean;
 }
 
 export default function ProjectCreator({
   collapsedButtonClassName,
-  disabled,
 }: ProjectCreatorProps): JSX.Element {
   const dispatch = useAppDispatch();
   const i18n = useTranslations();
@@ -124,9 +123,10 @@ export default function ProjectCreator({
       widthMax
       heightMax
       collapsedChildren={
-        <Button className={collapsedButtonClassName} icon={'add'} disabled={disabled}>
+        <Flex className={collapsedButtonClassName}>
+          <Icon icon="add" />
           {i18n.modules.project.actions.createProject}
-        </Button>
+        </Flex>
       }
       modalBodyClassName={css({ alignItems: 'stretch' })}
       footer={close => (

@@ -23,7 +23,6 @@ import Icon from '../common/layout/Icon';
 import Modal from '../common/layout/Modal';
 import DocumentPreview from '../documents/preview/DocumentPreview';
 import {
-  greyIconButtonChipStyle,
   lightIconButtonStyle,
   oneLineEllipsisStyle,
   space_lg,
@@ -410,7 +409,7 @@ export default function CardThumb({
               >
                 <IconButton
                   className={cx(
-                    greyIconButtonChipStyle,
+                    lightIconButtonStyle,
                     css({ alignSelf: 'flex-end' }),
                     organize &&
                       css({
@@ -427,7 +426,7 @@ export default function CardThumb({
                     setOrganize(v => !v);
                   }}
                 />
-                <CardCreator parentCardContent={variant} className={greyIconButtonChipStyle} />
+                <CardCreator parentCardContent={variant} className={lightIconButtonStyle} />
               </Flex>
             )}
 

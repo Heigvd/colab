@@ -41,9 +41,9 @@ import Monkeys from '../../debugger/monkey/Monkeys';
 import { UserDropDown } from '../../MainNav';
 import Settings from '../../settings/Settings';
 import {
-  activeButtonStyle,
+  activeIconButtonStyle,
   br_full,
-  buttonStyle,
+  iconButtonStyle,
   lightIconButtonStyle,
   linkStyle,
   space_2xs,
@@ -321,6 +321,7 @@ function EditorNav({ project }: EditorNavProps): JSX.Element {
               css({
                 border: '1px solid var(--divider-main)',
                 overflow: 'hidden',
+                alignItems: 'center',
               }),
             )}
             wrap="nowrap"
@@ -330,8 +331,8 @@ function EditorNav({ project }: EditorNavProps): JSX.Element {
               to={`/editor/${project.id}`}
               className={active =>
                 active.isActive || location.pathname.match(/^\/editor\/\d+\/(edit|card)/)
-                  ? activeButtonStyle
-                  : buttonStyle
+                  ? activeIconButtonStyle
+                  : iconButtonStyle
               }
             >
               <Icon
@@ -405,8 +406,8 @@ function EditorNav({ project }: EditorNavProps): JSX.Element {
             to="./team"
             className={active =>
               active.isActive || location.pathname.match(/^\/editor\/\d+\/team/)
-                ? activeButtonStyle
-                : buttonStyle
+                ? activeIconButtonStyle
+                : iconButtonStyle
             }
           >
             <Icon icon={'group'} title={i18n.team.teamManagement} />

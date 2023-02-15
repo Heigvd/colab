@@ -19,7 +19,7 @@ import { MainMenuLink, } from './common/element/Link';
 import DropDownMenu from './common/layout/DropDownMenu';
 import Icon from './common/layout/Icon';
 import Monkeys from './debugger/monkey/Monkeys';
-import {buttonStyle, space_lg, space_sm } from './styling/style';
+import { iconButtonStyle, space_lg, space_sm } from './styling/style';
 const dropLabelsStyle = css({
   //width: '100%',
   textTransform: 'uppercase',
@@ -64,7 +64,8 @@ export default function MainNav(): JSX.Element {
             entries={entries}
             onSelect={e => navigate(e.value)}
             menuIcon="BURGER"
-            buttonClassName={cx(buttonStyle, css({ padding: '0 0 0 ' + space_lg }))}
+            buttonClassName={cx(iconButtonStyle, css({alignItems: 'center'}))}
+            showSelectedLabel
           />
         </nav>
       ) : (
@@ -104,11 +105,11 @@ export function UserDropDown({ onlyLogout }: { onlyLogout?: boolean }): JSX.Elem
   if (currentUser != null) {
     return (
       <>
-        <LanguageSelector />
         <DropDownMenu
           icon={'account_circle'}
           title={currentUser.username}
           valueComp={{ value: '', label: '' }}
+          buttonClassName={iconButtonStyle}
           entries={[
             {
               value: 'username',
@@ -177,8 +178,16 @@ export function UserDropDown({ onlyLogout }: { onlyLogout?: boolean }): JSX.Elem
               ),
               action: logout,
             },
+            {
+              value: 'language',
+              label: (
+                <>
+                   <LanguageSelector />
+                </>
+              ),
+              subDropDownButton: true
+            },
           ]}
-          buttonClassName={css({ marginLeft: space_sm })}
         />
         {passwordScore != null && passwordScore.score < 2 && (
            <Icon

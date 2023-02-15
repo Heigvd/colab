@@ -5,9 +5,10 @@
  * Licensed under the MIT License
  */
 
+import { cx } from '@emotion/css';
 import * as React from 'react';
 import { NavLink, NavLinkProps } from 'react-router-dom';
-import { activeButtonStyle, buttonStyle } from '../../styling/style';
+import { activeIconButtonStyle, iconButtonStyle } from '../../styling/style';
 
 interface LinkProps {
   to: string;
@@ -17,7 +18,7 @@ interface LinkProps {
 }
 
 function defaultClassName({ isActive }: { isActive: boolean }): string {
-  return isActive ? activeButtonStyle : buttonStyle;
+  return isActive ? cx(activeIconButtonStyle) : cx(iconButtonStyle);
 }
 
 export const MainMenuLink = ({ to, children, end, className }: LinkProps): JSX.Element => {

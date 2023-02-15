@@ -756,7 +756,7 @@ function TocEntry({
                         value: 'ownCopy',
                         label: (
                           <>
-                             <Icon icon={'content-copy'} />{' '}
+                             <Icon icon={'content_copy'} />{' '}
                             {i18n.modules.resource.actions.makeOwnCopy}
                           </>
                         ),

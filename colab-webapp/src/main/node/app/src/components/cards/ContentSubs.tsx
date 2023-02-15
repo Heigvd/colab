@@ -18,7 +18,7 @@ import GridOrganizer, { fixGrid } from '../common/GridOrganizer';
 import Ellipsis from '../common/layout/Ellipsis';
 import Flex from '../common/layout/Flex';
 import { useSortSubcardsWithPos } from '../hooks/sortCards';
-import { greyIconButtonChipStyle, lightIconButtonStyle, space_xl, space_lg } from '../styling/style';
+import { lightIconButtonStyle, space_xl, m_lg } from '../styling/style';
 import CardCreator from './CardCreator';
 import { TinyCard } from './CardThumb';
 import CardThumbWithSelector from './CardThumbWithSelector';
@@ -156,7 +156,7 @@ export default function ContentSubs({
           <CardCreator
             parentCardContent={cardContent}
             customLabel={i18n.modules.card.infos.createFirstCard}
-            className={cx(greyIconButtonChipStyle, css({ margin: space_lg }))}
+            className={cx(lightIconButtonStyle, m_lg)}
           />
         </Flex>
       );
