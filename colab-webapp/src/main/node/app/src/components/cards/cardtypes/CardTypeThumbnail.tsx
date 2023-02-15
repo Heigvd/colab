@@ -24,8 +24,8 @@ import Modal from '../../common/layout/Modal';
 import { DocTextDisplay } from '../../documents/DocTextItem';
 import {
   lightIconButtonStyle,
-  multiLineEllipsis,
-  oneLineEllipsis,
+  multiLineEllipsisStyle,
+  oneLineEllipsisStyle,
   space_lg,
   space_sm,
   text_sm,
@@ -88,7 +88,7 @@ export default function CardTypeThumbnail({
             <Flex direction="column" grow={1} align="stretch">
               <Flex justify={editable ? 'flex-start' : 'space-between'} align="center">
                 <TargetCardTypeSummary cardType={cardType} />
-                <h3 className={oneLineEllipsis}>
+                <h3 className={oneLineEllipsisStyle}>
                   {cardType.title || i18n.modules.cardType.titlePlaceholder}
                 </h3>
                 <div
@@ -103,7 +103,7 @@ export default function CardTypeThumbnail({
               <p
                 className={cx(
                   text_sm,
-                  multiLineEllipsis,
+                  multiLineEllipsisStyle,
                   css({ maxWidth: '100%' }),
                 )}
               >

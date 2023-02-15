@@ -291,7 +291,7 @@ export function ResourcesMainViewPanel({
             <ResourceCreator
               collapsedClassName={lightIconButtonStyle}
               customButton={
-                <Button icon={'add'} clickable className={invertedButtonStyle}>
+                <Button icon={'add'} className={invertedButtonStyle}>
                   {i18n.modules.document.createDocument}
                 </Button>
               }

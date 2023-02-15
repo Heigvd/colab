@@ -59,6 +59,10 @@ injectGlobal`
     h5 {
         font-size: ${heading.xs};
     }
+    button {
+      background-color: transparent;
+      border: 1px solid transparent;
+    }
 `;
 /**
  * To read parameters from hash

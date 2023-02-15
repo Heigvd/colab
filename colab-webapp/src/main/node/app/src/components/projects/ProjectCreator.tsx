@@ -124,7 +124,7 @@ export default function ProjectCreator({
       widthMax
       heightMax
       collapsedChildren={
-        <Button className={collapsedButtonClassName} icon={'add'} clickable={!disabled}>
+        <Button className={collapsedButtonClassName} icon={'add'} disabled={disabled}>
           {i18n.modules.project.actions.createProject}
         </Button>
       }

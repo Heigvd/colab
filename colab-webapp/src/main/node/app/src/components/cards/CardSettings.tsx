@@ -18,7 +18,7 @@ import SelectInput from '../common/element/SelectInput';
 import Tips, { WIPContainer } from '../common/element/Tips';
 import Flex from '../common/layout/Flex';
 import Icon from '../common/layout/Icon';
-import { iconStyle, lightTextStyle, space_lg } from '../styling/style';
+import { lightTextStyle, space_lg } from '../styling/style';
 import ContentStatusSelector from './ContentStatusSelector';
 
 const marginDownSmall = css({
@@ -43,7 +43,7 @@ export default function CardSettings({ card, variant }: CardSettingsProps): JSX.
         <Checkbox
           label={
             <>
-               <Icon icon={'lock'} className={iconStyle} />{' '}
+               <Icon icon={'lock'} />{' '}
               {i18n.modules.card.settings.locked}
             </>
           }

@@ -102,7 +102,7 @@ const Ancestor = ({ card, content, last, className }: Ancestor): JSX.Element => 
           onClick={() => {
             navigate(`../${location.pathname.includes('hierarchy') ? 'hierarchy' : ''}`);
           }}
-          clickableClassName={cx(linkStyle, breadCrumbsStyle, className)}
+          className={cx(linkStyle, breadCrumbsStyle, className)}
         >
           {i18n.common.project}
         </Clickable>
@@ -120,7 +120,7 @@ const Ancestor = ({ card, content, last, className }: Ancestor): JSX.Element => 
           onClick={() => {
             navigate(`../${t}/${content.cardId}/v/${content.id}`);
           }}
-          clickableClassName={cx(linkStyle, breadCrumbsStyle, className)}
+          className={cx(linkStyle, breadCrumbsStyle, className)}
         >
           {card.title ? card.title : i18n.modules.card.untitled}
         </Clickable>

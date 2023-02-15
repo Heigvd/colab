@@ -62,7 +62,7 @@ export default function FilterableList({
   return (
     <Flex className={className} direction="column" align="stretch">
       <Clickable
-        clickableClassName={cx(
+        className={cx(
           lightIconButtonStyle,
           css({ alignSelf: 'flex-end', '&:hover': { cursor: 'pointer' } }),
         )}

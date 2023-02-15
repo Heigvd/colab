@@ -10,7 +10,7 @@ import * as React from 'react';
 import { useEffect, useRef } from 'react';
 import {
   disabledStyle,
-  foreground,
+  foregroundStyle,
   space_sm,
 } from '../../styling/style';
 import Flex from './Flex';
@@ -40,7 +40,7 @@ const dropDownEntryPadding = css({
 });
 
 const commonStyle = cx(
-  foreground,
+  foregroundStyle,
   css({
     backgroundColor: 'var(--bg-primary)',
     transition: 'all 0.3s',
@@ -334,7 +334,6 @@ export default function DropDownMenu<T extends string | number | symbol>({
   menuIcon,
   buttonClassName,
   dropClassName,
-  idleHoverStyle = 'FOREGROUND',
 }: DropDownMenuProps<T>): JSX.Element {
   const [open, setOpen] = React.useState<boolean>(false);
 

@@ -7,7 +7,7 @@
 
 import { cx } from '@emotion/css';
 import * as React from 'react';
-import { iconButton, linkStyle } from '../../styling/style';
+import { iconButtonStyle, linkStyle } from '../../styling/style';
 import Clickable from '../layout/Clickable';
 import Icon, { IconSize } from '../layout/Icon';
 
@@ -42,8 +42,7 @@ export default function IconButtonWithLoader({
         }
       }}
       title={title}
-      className={className}
-      clickableClassName={cx(linkStyle, iconButton, className)}
+      className={cx(linkStyle, iconButtonStyle, className)}
     >
          <Icon
           icon={loading ? 'sync' : icon}

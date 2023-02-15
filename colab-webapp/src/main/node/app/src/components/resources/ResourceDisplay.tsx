@@ -27,7 +27,7 @@ import DocEditorToolbox, {
 import DocumentList from '../documents/DocumentList';
 import {
   lightIconButtonStyle,
-  oneLineEllipsis,
+  oneLineEllipsisStyle,
   space_sm,
   text_sm,
 } from '../styling/style';
@@ -142,7 +142,7 @@ export function ResourceDisplay({
                 dispatch(API.updateResource({ ...targetResource, title: newValue }))
               }
               inputDisplayClassName={cx(
-                oneLineEllipsis,
+                oneLineEllipsisStyle,
                 css({ textOverflow: 'ellipsis' }),
               )}
               title={targetResource.title || ''}

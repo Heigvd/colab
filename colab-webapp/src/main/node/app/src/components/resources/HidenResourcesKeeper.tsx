@@ -15,7 +15,7 @@ import IconButton from '../common/element/IconButton';
 import Flex from '../common/layout/Flex';
 import Icon from '../common/layout/Icon';
 import OpenCloseModal from '../common/layout/OpenCloseModal';
-import {iconButton, lightIconButtonStyle, space_lg, space_sm } from '../styling/style';
+import {iconButtonStyle, lightIconButtonStyle, space_lg, space_sm } from '../styling/style';
 import { ResourceDisplay } from './ResourceDisplay';
 import { ResourceAndRef } from './resourcesCommonType';
 import ResourcesList from './ResourcesList';
@@ -53,7 +53,7 @@ export default function HidenResourcesKeeper({
             icon={'archive'}
             onClick={() => dispatch(API.giveAccessToResource(resource))}
             className={cx(lightIconButtonStyle)}
-            iconClassName={iconButton}
+            iconClassName={iconButtonStyle}
           />
           <OpenCloseModal
             title={i18n.modules.content.document}
@@ -61,7 +61,7 @@ export default function HidenResourcesKeeper({
                <Icon
                 title={i18n.common.display}
                 icon={'eye'}
-                className={cx(iconButton, lightIconButtonStyle)}
+                className={cx(iconButtonStyle, lightIconButtonStyle)}
               />
             }
             className={css({ padding: '0 ' + space_sm })}
@@ -87,7 +87,7 @@ export default function HidenResourcesKeeper({
                 iconColor={'var(--error-main)'}
                 onClick={() => dispatch(API.deleteResource(resource.targetResource))}
                 className={lightIconButtonStyle}
-                iconClassName={iconButton}
+                iconClassName={iconButtonStyle}
               />
             </Flex>
           ) : (

@@ -17,7 +17,7 @@ import Flex from '../common/layout/Flex';
 import Icon from '../common/layout/Icon';
 import {
   lightTextStyle,
-  multiLineEllipsis,
+  multiLineEllipsisStyle,
   space_sm,
   text_sm,
 } from '../styling/style';
@@ -108,7 +108,7 @@ export default function ProjectModelSelector({
                       : i18n.modules.project.actions.newProject
                     : i18n.modules.project.info.emptyProject}
                 </h3>
-                <p className={cx(text_sm, lightTextStyle, multiLineEllipsis)}>
+                <p className={cx(text_sm, lightTextStyle, multiLineEllipsisStyle)}>
                   {!isEmptyProject
                     ? item.description
                       ? item.description

@@ -9,15 +9,13 @@ import { css, cx } from '@emotion/css';
 import * as React from 'react';
 import {
   buttonStyle,
-  inactiveButtonStyle,
-  inactiveInvertedButtonStyle,
   invertedButtonStyle,
   space_sm,
 } from '../../styling/style';
 import Clickable, { ClickableProps } from '../layout/Clickable';
 import Icon, { IconSize } from '../layout/Icon';
 
-export interface ButtonProps extends Omit<ClickableProps, 'clickableClassName'> {
+export interface ButtonProps extends ClickableProps {
   icon?: string;
   iconColor?: string;
   iconSize?: keyof typeof IconSize;
@@ -31,7 +29,6 @@ export default function Button({
   iconColor,
   iconSize,
   reverseOrder,
-  clickable,
   onClick,
   children,
   invertedButton,
@@ -40,10 +37,8 @@ export default function Button({
   return (
     <Clickable
       title={title}
-      clickable={clickable}
       onClick={onClick}
-      className={cx(invertedButton ? inactiveInvertedButtonStyle : inactiveButtonStyle, className)}
-      clickableClassName={cx(invertedButton ? invertedButtonStyle : buttonStyle, className)}
+      className={cx(invertedButton ? invertedButtonStyle : buttonStyle, className)}
     >
       {reverseOrder && children}
       {icon && (

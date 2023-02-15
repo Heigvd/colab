@@ -21,7 +21,7 @@ import Flex from '../common/layout/Flex';
 import Icon from '../common/layout/Icon';
 import {
   lightIconButtonStyle,
-  oneLineEllipsis,
+  oneLineEllipsisStyle,
   space_lg,
   space_sm,
 } from '../styling/style';
@@ -474,7 +474,7 @@ export function ResourcesListBySource({
                         minWidth: '50px',
                         flexGrow: 1,
                       }),
-                      oneLineEllipsis,
+                      oneLineEllipsisStyle,
                     )}
                   >
                     <TargetResourceSummary resource={bySources[source]![0]!} showText="short" />
@@ -541,7 +541,7 @@ function TocHeader({ category }: TocHeaderProps): JSX.Element {
               fontWeight: 'bold',
               fontSize: '0.75rem',
             }),
-            oneLineEllipsis,
+            oneLineEllipsisStyle,
           )}
         >
           {category}
@@ -623,7 +623,7 @@ function TocEntry({
                   minWidth: '50px',
                   flexGrow: 1,
                 }),
-                oneLineEllipsis,
+                oneLineEllipsisStyle,
               )}
             >
               {effectiveReadOnly && (

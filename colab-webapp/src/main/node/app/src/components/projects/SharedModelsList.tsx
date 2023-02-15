@@ -24,8 +24,8 @@ import {
   br_lg,
   lightIconButtonStyle,
   lightTextStyle,
-  multiLineEllipsis,
-  oneLineEllipsis,
+  multiLineEllipsisStyle,
+  oneLineEllipsisStyle,
   space_sm,
   text_sm,
 } from '../styling/style';
@@ -108,7 +108,7 @@ export default function SharedModelsList({
                 className={css({ padding: '10px' })}
               >
                 <Flex justify="space-between">
-                  <h3 className={cx(css({ marginTop: space_sm }), oneLineEllipsis)}>
+                  <h3 className={cx(css({ marginTop: space_sm }), oneLineEllipsisStyle)}>
                     {!isEmptyProject
                       ? project.name
                         ? project.name
@@ -151,7 +151,7 @@ export default function SharedModelsList({
                     ]}
                   />
                 </Flex>
-                <p className={cx(text_sm, lightTextStyle, multiLineEllipsis)}>
+                <p className={cx(text_sm, lightTextStyle, multiLineEllipsisStyle)}>
                   {!isEmptyProject
                     ? project.description
                       ? project.description

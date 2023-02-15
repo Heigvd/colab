@@ -25,7 +25,7 @@ import DocumentPreview from '../documents/preview/DocumentPreview';
 import {
   greyIconButtonChipStyle,
   lightIconButtonStyle,
-  oneLineEllipsis,
+  oneLineEllipsisStyle,
   space_lg,
   space_sm,
 } from '../styling/style';
@@ -226,12 +226,12 @@ export default function CardThumb({
                 <Flex className={cx(cardThumbTitleStyle(depth), css({ flexGrow: 1 }))}>
                   <CardContentStatus mode="icon" status={variant?.status || 'ACTIVE'} />
                   <span
-                    className={cx(css({ fontWeight: 'bold', minWidth: '50px' }), oneLineEllipsis)}
+                    className={cx(css({ fontWeight: 'bold', minWidth: '50px' }), oneLineEllipsisStyle)}
                   >
                     {card.title || i18n.modules.card.untitled}
                   </span>
                   {hasVariants && (
-                    <span className={cx(oneLineEllipsis, css({ minWidth: '50px' }))}>
+                    <span className={cx(oneLineEllipsisStyle, css({ minWidth: '50px' }))}>
                       &#xFE58;
                       {variant?.title && variant.title.length > 0
                         ? variant.title

@@ -92,7 +92,6 @@ export default function ProjectSettingsAdvanced({
                     <Button
                       invertedButton
                       className={cx(css({ color: 'var(--error-main)', borderColor: 'var(--error-main)' }))}
-                      clickable
                     >
                        <Icon icon={'star'} /> Make private
                     </Button>
@@ -126,7 +125,6 @@ export default function ProjectSettingsAdvanced({
                     <Button
                       invertedButton
                       className={cx(css({ color: 'var(--error-main)', borderColor: 'var(--error-main)' }))}
-                      clickable
                     >
                        <Icon icon={'public'} /> Make global
                     </Button>

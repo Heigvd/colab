@@ -27,10 +27,10 @@ import DropDownMenu from '../common/layout/DropDownMenu';
 import Flex from '../common/layout/Flex';
 import Icon from '../common/layout/Icon';
 import {
-  ellipsis,
+  ellipsisStyle,
   invertedButtonStyle,
   lightIconButtonStyle,
-  multiLineEllipsis,
+  multiLineEllipsisStyle,
   space_lg,
   space_sm,
   text_sm,
@@ -194,7 +194,7 @@ export const ProjectDisplay = ({ project, className }: ProjectDisplayProps) => {
             paddingBottom: space_sm,
           })}
         >
-          <h3 className={ellipsis} title={project.name ? project.name : 'Project name'}>
+          <h3 className={ellipsisStyle} title={project.name ? project.name : 'Project name'}>
             {project.name}
           </h3>
           <DropDownMenu
@@ -303,7 +303,7 @@ export const ProjectDisplay = ({ project, className }: ProjectDisplayProps) => {
             flexGrow: 1,
           })}
         >
-          <div title={project.description || ''} className={cx(multiLineEllipsis, text_sm)}>
+          <div title={project.description || ''} className={cx(multiLineEllipsisStyle, text_sm)}>
             {project.description}
           </div>
           {/* 

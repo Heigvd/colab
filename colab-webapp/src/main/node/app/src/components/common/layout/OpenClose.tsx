@@ -53,7 +53,7 @@ export default function OpenClose({
   if (state === 'COLLAPSED') {
     return (
       <Clickable
-        clickableClassName={className}
+        className={className}
         onClick={e => {
           e.stopPropagation();
           setState('EXPANDED');

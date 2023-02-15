@@ -17,6 +17,27 @@ export const space_xl = space.xl;
 export const space_2xl = space['2xl'];
 export const space_3xl = space['3xl'];
 export const space_4xl = space['4xl'];
+// PADDING
+export const p_2xs = css({ padding: space['2xs']});
+export const p_xs = css({ padding: space.xs});
+export const p_sm = css({ padding: space.sm});
+export const p_md = css({ padding: space.md});
+export const p_lg = css({ padding: space.lg});
+export const p_xl = css({ padding: space.xl});
+export const p_2xl = css({ padding: space['2xl']});
+export const p_3xl = css({ padding: space['3xl']});
+export const p_4xl = css({ padding: space['4xl']});
+
+// MARGIN
+export const m_2xs = css({ margin: space['2xs']});
+export const m_xs = css({ margin: space.xs});
+export const m_sm = css({ margin: space.sm});
+export const m_md = css({ margin: space.md});
+export const m_lg = css({ margin: space.lg});
+export const m_xl = css({ margin: space.xl});
+export const m_2xl = css({ margin: space['2xl']});
+export const m_3xl = css({ margin: space['3xl']});
+export const m_4xl = css({ margin: space['4xl']});
 
 //BORDER RADIUS
 export const br_sm = css({ borderRadius: br.sm });
@@ -62,29 +83,29 @@ export const successTextStyle = css({
 
 // TEXT ELLIPSIS
 
-export const multiLineEllipsis = css({
+export const multiLineEllipsisStyle = css({
   display: '-webkit-box',
   WebkitLineClamp: '2',
   WebkitBoxOrient: 'vertical',
   overflow: 'hidden',
 });
-export const oneLineEllipsis = css({
+export const oneLineEllipsisStyle = css({
   display: '-webkit-box',
   WebkitLineClamp: '1',
   WebkitBoxOrient: 'vertical',
   overflow: 'hidden',
 });
-export const ellipsis = css({
+export const ellipsisStyle = css({
   overflow: 'hidden',
   textOverflow: 'ellipsis',
   whiteSpace: 'nowrap',
 });
 
 // GENERAL
-export const foreground = css({
+export const foregroundStyle = css({
   zIndex: 9999,
 });
-export const fullScreenOverlay = cx(
+export const fullScreenOverlayStyle = cx(
   css({
     display: 'flex',
     flexDirection: 'column',
@@ -96,11 +117,6 @@ export const fullScreenOverlay = cx(
     backgroundColor: 'var(--blackAlpha-700)',
   }),
 );
-
-export const iconStyle = css({
-  paddingLeft: space_xs,
-  paddingRight: space_xs,
-});
 
 export const fullHeightStyle = css({
   height: '100%',
@@ -151,8 +167,7 @@ export const lightLinkStyle = cx(
 );
 
 //ICON BUTTONS STYLES
-export const iconButton = cx(
-  iconStyle,
+export const iconButtonStyle = cx(
   css({
     cursor: 'pointer',
     ':hover': {
@@ -251,8 +266,8 @@ export const cardStyle = cx(
 );
 
 //HEADER
+//To remove??
 export const mainHeaderHeight = '50px';
-
 
 //TAG
 export const labelStyle = css({

@@ -8,7 +8,7 @@
 import { cx } from '@emotion/css';
 import { IconProp, Transform } from '@fortawesome/fontawesome-svg-core';
 import * as React from 'react';
-import { iconButton, linkStyle } from '../../styling/style';
+import { iconButtonStyle, linkStyle } from '../../styling/style';
 import Clickable from '../layout/Clickable';
 import Icon, { IconSize } from '../layout/Icon';
 
@@ -20,7 +20,6 @@ export interface IconButtonProps {
   mask?: IconProp;
   transform?: string | Transform;
   layer?: { layerIcon: IconProp; transform: string | Transform };
-  clickable?: boolean;
   onClick?: (e: React.MouseEvent<HTMLSpanElement> | React.KeyboardEvent<HTMLSpanElement>) => void;
   className?: string;
   iconClassName?: string;
@@ -41,37 +40,10 @@ export default function IconButton({
     <Clickable
       title={title}
       onClick={onClick}
-      className={className}
-      clickableClassName={cx(linkStyle, iconButton, className)}
-      clickable
+      className={cx(linkStyle, iconButtonStyle, className)}
       stopPropagation={stopPropagation}
     >
       <Icon icon={icon} className={iconClassName} opsz={iconSize} color={iconColor}/>
-      {/* {layer ? (
-        <span className="fa-layers fa-fw">
-           <Icon
-            icon={layer.layerIcon}
-            color={iconColor}
-            size={iconSize}
-            transform={layer.transform}
-          />
-           <Icon
-            icon={icon}
-            color={iconColor}
-            size={iconSize}
-            transform={transform}
-            mask={mask}
-          />
-        </span>
-      ) : (
-         <Icon
-          icon={icon}
-          color={iconColor}
-          size={iconSize}
-          mask={mask}
-          className={IconClassName}
-        />
-      )} */}
     </Clickable>
   );
 }

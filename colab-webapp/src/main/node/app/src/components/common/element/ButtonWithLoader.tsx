@@ -9,8 +9,6 @@ import { css, cx } from '@emotion/css';
 import * as React from 'react';
 import {
   buttonStyle,
-  inactiveButtonStyle,
-  inactiveInvertedButtonStyle,
   invertedButtonStyle,
   space_sm,
 } from '../../styling/style';
@@ -44,7 +42,6 @@ export default function ButtonWithLoader({
   iconColor,
   iconSize,
   reverseOrder,
-  clickable,
   isLoading = false,
   onClick,
   children,
@@ -54,14 +51,8 @@ export default function ButtonWithLoader({
   return (
     <Clickable
       title={title}
-      clickable={clickable}
       onClick={onClick}
       className={cx(
-        invertedButton ? inactiveInvertedButtonStyle : inactiveButtonStyle,
-        relative,
-        className,
-      )}
-      clickableClassName={cx(
         invertedButton ? invertedButtonStyle : buttonStyle,
         relative,
         className,

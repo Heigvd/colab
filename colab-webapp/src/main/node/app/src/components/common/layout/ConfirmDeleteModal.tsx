@@ -33,7 +33,7 @@ export function ConfirmDelete({
 }: ConfirmDeleteProps): JSX.Element {
   const i18n = useTranslations();
 
-  const mainButtonRef = React.useRef<HTMLSpanElement>(null);
+  const mainButtonRef = React.useRef<HTMLButtonElement>(null);
   React.useEffect(() => {
     mainButtonRef.current?.focus();
   }, []);

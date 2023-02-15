@@ -14,12 +14,11 @@ export interface ClickableProps {
     e: React.MouseEvent<HTMLSpanElement> | React.KeyboardEvent<HTMLSpanElement>,
   ) => void;
   enterKeyBehaviour?: 'CLICK' | 'DBL_CLICK' | 'NONE';
-  clickable?: boolean;
+  disabled?: boolean;
   title?: string;
   children?: React.ReactNode;
   className?: string;
-  clickableClassName?: string;
-  ref?: React.RefObject<HTMLSpanElement>;
+  ref?: React.RefObject<HTMLButtonElement>;
   stopPropagation?: boolean;
 }
 
@@ -27,11 +26,10 @@ export default function Clickable({
   onClick,
   onDoubleClick,
   enterKeyBehaviour = 'CLICK',
-  clickable,
+  disabled,
   title,
   children,
-  className = '',
-  clickableClassName = linkStyle,
+  className = linkStyle,
   ref,
   stopPropagation,
 }: ClickableProps): JSX.Element {
@@ -44,11 +42,12 @@ export default function Clickable({
       if (stopPropagation) {
         event.stopPropagation();
       }
-      if (event.code === 'Space') {
+      /* if (event.code === 'Space') {
         if (onClick != null) {
           onClick(event);
         }
-      } else if (event.key === 'Enter') {
+      } else  */
+      if (event.key === 'Enter') {
         if (enterKeyBehaviour === 'CLICK') {
           if (onClick != null) {
             onClick(event);
@@ -88,16 +87,17 @@ export default function Clickable({
   );
 
   return (
-    <span
+    <button
       tabIndex={0}
-      className={onClick != null || clickable ? clickableClassName : className}
+      className={className}
       onClick={onClickCb}
       onDoubleClick={onDoubleClickCb}
       onKeyDown={keyDownCb}
       title={title}
       ref={ref}
+      disabled={disabled || onClick === null}
     >
       {children}
-    </span>
+    </button>
   );
 }

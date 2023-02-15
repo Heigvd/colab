@@ -46,7 +46,7 @@ export default function ProjectSettingsModelSharing({
             <OpenCloseModal
               title={i18n.modules.project.labels.shareTheProject}
               collapsedChildren={
-                <Button clickable>+ {i18n.modules.project.labels.shareTheProject}</Button>
+                <Button>+ {i18n.modules.project.labels.shareTheProject}</Button>
               }
               modalBodyClassName={css({ padding: space_lg })}
               showCloseButton

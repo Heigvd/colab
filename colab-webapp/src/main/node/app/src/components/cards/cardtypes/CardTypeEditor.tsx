@@ -202,7 +202,6 @@ export default function CardTypeEditor({ className, usage }: CardTypeEditorProps
                   <Button
                     invertedButton
                     className={cx(css({ color: 'var(--error-main)', borderColor: 'var(--error-main)' }))}
-                    clickable
                   >
                      <Icon icon={'delete'} /> {i18n.common.delete}
                   </Button>

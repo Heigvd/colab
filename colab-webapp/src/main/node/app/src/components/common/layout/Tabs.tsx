@@ -172,7 +172,7 @@ export default function Tabs({
             return (
               <Clickable
                 key={name}
-                clickableClassName={
+                className={
                   name === selectedTab
                     ? cx(defaultSelectedStyle, tabsClassName, selectedLabelClassName)
                     : cx(defaultNotSelectedStyle, tabsClassName, notselectedLabelClassName)
