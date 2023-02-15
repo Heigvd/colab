@@ -6,9 +6,6 @@
  */
 
 import { css, cx } from '@emotion/css';
-import { library } from '@fortawesome/fontawesome-svg-core';
-import { far } from '@fortawesome/free-regular-svg-icons';
-import { fas } from '@fortawesome/free-solid-svg-icons';
 import { Illustration } from 'colab-rest-client';
 import React from 'react';
 import { defaultProjectIllustration } from '../../projects/ProjectCommon';
@@ -31,7 +28,6 @@ export default function IllustrationDisplay({
   justify,
   className,
 }: IllustrationDisplayProps): JSX.Element {
-  library.add(fas, far);
   const currentIllustration = illustration || defaultProjectIllustration;
   return (
     <Flex
@@ -49,7 +45,7 @@ export default function IllustrationDisplay({
         className,
       )}
     >
-      <Icon icon={currentIllustration.iconKey} color={iconColor || 'var(--white)'} />
+      <Icon icon={currentIllustration.iconKey} color={iconColor || 'var(--white)'} opsz={'md'} />
     </Flex>
   );
 }
@@ -59,7 +55,6 @@ export function IllustrationIconDisplay({
   iconColor,
   className,
 }: IllustrationDisplayProps): JSX.Element {
-  library.add(fas, far);
   const currentIllustration = illustration || defaultProjectIllustration;
   return (
     <>

@@ -35,7 +35,7 @@ injectGlobal`
         padding: 0;
     }
 
-    a {
+    a, button {
         text-decoration: none;
     }
 

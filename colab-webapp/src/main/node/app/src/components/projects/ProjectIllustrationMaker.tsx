@@ -138,10 +138,10 @@ function ProjectIconPicker({
             onClick={() => onChange(i)}
             className={css({
               color: 'var(--bg-primary)',
-              opacity: iconActive === i ? 0.5 : 1,
+              opacity: iconActive === i ? 1 : 0.6,
               ':hover': {
                 color: 'var(--bg-primary)',
-                opacity: 0.5,
+                opacity: 1,
               },
             })}
           />

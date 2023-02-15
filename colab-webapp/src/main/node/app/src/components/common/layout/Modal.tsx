@@ -112,7 +112,6 @@ export default function Modal({
                 <IconButton
                   icon={'close'}
                   title={i18n.common.close}
-                  iconSize="lg"
                   onClick={onClose}
                   className={cx(closeIconStyle, lightIconButtonStyle)}
                 />

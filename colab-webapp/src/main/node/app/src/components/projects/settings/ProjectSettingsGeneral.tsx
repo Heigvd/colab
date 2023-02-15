@@ -12,7 +12,6 @@ import useTranslations from '../../../i18n/I18nContext';
 import { useProject } from '../../../selectors/projectSelector';
 import { useAppDispatch } from '../../../store/hooks';
 import AvailabilityStatusIndicator from '../../common/element/AvailabilityStatusIndicator';
-import IllustrationDisplay from '../../common/element/IllustrationDisplay';
 import InlineLoading from '../../common/element/InlineLoading';
 import { LabeledInput, LabeledTextArea } from '../../common/element/Input';
 import Flex from '../../common/layout/Flex';
@@ -65,7 +64,6 @@ export default function ProjectSettingsGeneral({
           justify="flex-end"
           className={css({ width: '55%' })}
         >
-          <IllustrationDisplay illustration={project.illustration} />
           <ProjectIllustrationMaker
             illustration={project.illustration}
             setIllustration={i =>

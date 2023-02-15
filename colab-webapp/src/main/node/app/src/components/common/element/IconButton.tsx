@@ -40,7 +40,7 @@ export default function IconButton({
     <Clickable
       title={title}
       onClick={onClick}
-      className={cx(linkStyle, iconButtonStyle, className)}
+      className={cx(iconButtonStyle, className)}
       stopPropagation={stopPropagation}
     >
       <Icon icon={icon} className={iconClassName} opsz={iconSize} color={iconColor}/>
