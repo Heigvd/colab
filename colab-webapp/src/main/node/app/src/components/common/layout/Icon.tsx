@@ -47,6 +47,7 @@ export default function Icon(props: IconProps): JSX.Element {
             props.wght || 300
           }, 'GRAD' 0, 'opsz' ${props.opsz || 40}`,
           color: props.color || 'inherit',
+          fontSize: props.opsz ? `${IconSize[props.opsz]}px` : undefined
         }),
       )}
     >

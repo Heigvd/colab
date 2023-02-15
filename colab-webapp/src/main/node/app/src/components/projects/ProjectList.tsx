@@ -165,9 +165,9 @@ export const ProjectDisplay = ({ project, className }: ProjectDisplayProps) => {
             title={i18n.modules.project.info.isAModel}
           >
             {project.globalProject ? (
-               <Icon icon={'language'} color="white" opsz="sm" />
+               <Icon icon={'language'} color="white" />
             ) : (
-               <Icon icon={'star'} color="white" opsz="sm" />
+               <Icon icon={'star'} color="white"/>
             )}
           </Flex>
         )}

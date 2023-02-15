@@ -88,7 +88,6 @@ export default function SharedModelsList({
             >
               <Flex className={css({ minWidth: '70px' })}>
                 <IllustrationDisplay
-                  iconSize="2x"
                   illustration={
                     isEmptyProject
                       ? {

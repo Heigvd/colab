@@ -86,7 +86,6 @@ export default function ProjectModelSelector({
             <>
               <Flex className={css({ minWidth: '70px' })}>
                 <IllustrationDisplay
-                  iconSize="2x"
                   illustration={
                     isEmptyProject
                       ? {

@@ -25,7 +25,7 @@ import { TocDisplayCtx, TocMode } from './resources/ResourcesList';
 import { fonts, heading, lightMode, text } from './styling/theme';
 
 injectGlobal`
-    * {
+    html {
         box-sizing: border-box;
         font-size: ${text.sm};
         line-height: ${text.lineHeight};
@@ -33,6 +33,9 @@ injectGlobal`
         color: var(--text-primary);
         margin: 0;
         padding: 0;
+    }
+
+    a {
         text-decoration: none;
     }
 

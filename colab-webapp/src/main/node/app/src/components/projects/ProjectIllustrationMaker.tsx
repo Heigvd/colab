@@ -14,6 +14,7 @@ import useTranslations from '../../i18n/I18nContext';
 import IconButton from '../common/element/IconButton';
 import Flex from '../common/layout/Flex';
 import { labelStyle, space_lg, space_sm } from '../styling/style';
+import { projectColors } from '../styling/theme';
 
 const defaultProjectIllustration: Illustration = {
   '@class': 'Illustration',
@@ -30,48 +31,37 @@ interface ProjectIllustrationMakerProps {
   className?: string;
 }
 
-const projectIconsSolid: IconName[] = [
+const projectIcons: string[] = [
   'gamepad',
-  'dice',
-  'chess-board',
-  'chess',
-  'puzzle-piece',
-  'book',
-  'book-open',
-  'graduation-cap',
-  'music',
-  'masks-theater',
-  'dungeon',
-  'wand-sparkles',
-  'ghost',
-  'cat',
-  'dog',
-  'paw',
-  'frog',
-  'fish-fins',
-  'hippo',
-  'kiwi-bird',
-  'dragon',
-  'crow',
-  'feather',
-  'heart',
-  'cloud',
-  'sun',
-  'rainbow',
+  'casino',
+  'extension',
+  'bug_report',
+  'robot',
+  'school',
+  'music_note',
+  'smart_toy',
+  'stadia_controller',
+  'clear_day',
+  'menu_book',
+  'water_drop',
+  'history_edu',
   'bolt',
-  'snowflake',
-  'moon',
-  'meteor',
-  'user-astronaut',
-];
-const projectColors = [
-  '#50BFD5', // main blue
-  '#E36D28', // main orange
-  '#e0c600', // main yellow
-  '#573CB9', // main violet
-  '#57B279', // green
-  '#DE4D86', // pink
-  '#685044', // brown
+  'language',
+  'recycling',
+  'public',
+  'forest',
+  'coronavirus',
+  'medication',
+  'skeleton',
+  'nutrition',
+  'stethoscope',
+  'accessible_forward',
+  'palette',
+  'landscape',
+  'savings',
+  'domain',
+  'trolley',
+  'fire_truck',
 ];
 
 export function ProjectIllustrationMaker({
@@ -88,7 +78,7 @@ export function ProjectIllustrationMaker({
       <div className={cx(css({ marginTop: space_sm }), colorContainerClassName)}>
         <label className={labelStyle}>{i18n.modules.card.settings.color}</label>
         <CirclePicker
-          colors={projectColors}
+          colors={Object.values(projectColors)}
           onChangeComplete={c => setIllustration({ ...illustrationCurrent, iconBkgdColor: c.hex })}
           color={illustrationCurrent.iconBkgdColor}
           width={'auto'}
@@ -111,7 +101,7 @@ export function ProjectIllustrationMaker({
 interface ProjectIconPickerProps {
   bgColor: string;
   iconActive: string;
-  onChange: (icon: IconName) => void;
+  onChange: (icon: string) => void;
   className?: string;
 }
 function ProjectIconPicker({
@@ -125,32 +115,29 @@ function ProjectIconPicker({
       <div
         className={cx(
           css({
-            display: 'grid',
-            gridGap: space_lg,
-            gridTemplateColumns: 'repeat(auto-fit, 50px)',
-            gap: space_lg,
+            display: 'flex',
+/*             gridGap: space_md,
+            gridTemplateColumns: 'repeat(auto-fit, 50px)', */
             flexWrap: 'wrap',
             backgroundColor: bgColor,
             padding: space_lg,
             maxHeight: '140px',
             overflow: 'auto',
             cursor: 'default',
-            marginTop: space_sm,
             minWidth: '200px',
           }),
           className,
         )}
       >
-        {projectIconsSolid.map(i => (
+        {projectIcons.map(i => (
           <IconButton
             key={i}
             title={i}
-            icon={'star'}
-            iconSize={'lg'}
+            icon={i}
+            iconSize={'md'}
             onClick={() => onChange(i)}
             className={css({
               color: 'var(--bg-primary)',
-              textAlign: 'center',
               opacity: iconActive === i ? 0.5 : 1,
               ':hover': {
                 color: 'var(--bg-primary)',

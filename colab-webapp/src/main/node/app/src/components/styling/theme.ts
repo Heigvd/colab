@@ -83,12 +83,23 @@ const blue = css({
   '--blue-600': '#2B6CB0',
   '--blue-700': '#2C5282',
 });
+
+export const projectColors = {
+  yellow: '#ECC94B',
+  orange: '#E68D52',
+  red: '#EA6262',
+  pink:'#ED64A6',
+  purple: '#9F7AEA',
+  blue: '#5F9ED9',
+  teal: '#38B2AC',
+  green: '#47D189',
+}
+
 const otherColors = css({
-  '--cyan-400': '#0BC5EA',
-  '--purple-400': '#9F7AEA',
-  '--pink-400': '#ED64A6',
-  '--teal-400': '#38B2AC',
-  '--yellow-400': '#ECC94B',
+  '--purple-400': projectColors.purple,
+  '--pink-400': projectColors.pink,
+  '--teal-400': projectColors.teal,
+  '--yellow-400': projectColors.yellow,
 });
 
 const colabTheme = cx(
