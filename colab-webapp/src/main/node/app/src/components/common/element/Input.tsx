@@ -9,8 +9,6 @@ import { css, cx } from '@emotion/css';
 import * as React from 'react';
 import useTranslations from '../../../i18n/I18nContext';
 import {
-  br_full,
-  br_md,
   disabledStyle,
   errorTextStyle,
   labelStyle,
@@ -20,6 +18,7 @@ import {
   text_sm,
   warningTextStyle,
 } from '../../styling/style';
+import { br } from '../../styling/theme';
 import Flex from '../layout/Flex';
 import IconButton from './IconButton';
 import Tips, { TipsProps } from './Tips';
@@ -29,7 +28,7 @@ export const inputStyle = css({
   border: 'solid 1px var(--divider-main)',
   color: 'var(--secFgColor)',
   backgroundColor: 'var(--secBgColor)',
-  borderRadius: '6px',
+  borderRadius: br.sm,
   boxSizing: 'border-box',
   transition: '.2s',
   padding: '0 ' + space_lg,
@@ -45,7 +44,7 @@ const textareaStyle = css({
   border: 'solid 1px #d7d7d7',
   color: 'var(--secFgColor)',
   backgroundColor: 'var(--secBgColor)',
-  borderRadius: '6px',
+  borderRadius: br.sm,
   boxSizing: 'border-box',
   transition: '.8s',
   padding: space_sm + ' ' + space_lg,
@@ -423,7 +422,7 @@ const inlineTextareaContainerStyle = css({
 
 const inlineInputStyle = {
   maxWidth: '100%',
-  borderRadius: br_full,
+  borderRadius: br.full,
   padding: space_sm,
   width: 'auto',
   minWidth: '1em',
@@ -449,7 +448,7 @@ const inlineInputDisplayStyle = css({
 });
 
 const inlineTextAreaStyle = {
-  borderRadius: br_md,
+  borderRadius: br.sm,
   padding: space_sm,
   width: '100%',
   maxWidth: '100%',
@@ -485,6 +484,7 @@ export function InlineInput(props: InputProps): JSX.Element {
         {
           [inlineTextareaContainerStyle]: props.inputType === 'textarea',
         },
+        
         props.containerClassName,
       )}
       inputDisplayClassName={cx(

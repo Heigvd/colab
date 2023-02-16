@@ -58,13 +58,13 @@ export const text_regular = css({ fontSize: text.regular });
 export const text_semibold = css({ fontSize: text.semibold });
 export const text_lineHeight = css({ fontSize: text.lineHeight });
 
-export const heading_xs = css({ fontSize: heading.xs });
-export const heading_sm = css({ fontSize: heading.sm });
-export const heading_md = css({ fontSize: heading.md });
-export const heading_lg = css({ fontSize: heading.lg });
-export const heading_xl = css({ fontSize: heading.xl });
-export const heading_weight = css({ fontSize: heading.weight });
-export const heading_lineHeight = css({ fontSize: heading.lineHeight });
+export const heading_xs = css({ fontSize: heading.xs, fontWeight: heading.weight });
+export const heading_sm = css({ fontSize: heading.sm, fontWeight: heading.weight });
+export const heading_md = css({ fontSize: heading.md, fontWeight: heading.weight });
+export const heading_lg = css({ fontSize: heading.lg, fontWeight: heading.weight });
+export const heading_xl = css({ fontSize: heading.xl, fontWeight: heading.weight });
+export const heading_weight = css({ fontWeight: heading.weight });
+export const heading_lineHeight = css({ lineHeight: heading.lineHeight });
 
 //TEXT
 

@@ -91,7 +91,7 @@ export default function CardLayout({
         className={cx(
           cardStyle,
           css({
-            backgroundColor: 'white',
+            backgroundColor: 'var(--bg-primary)',
             flexDirection: 'column',
             justifyContent: 'space-between',
             display: 'flex',

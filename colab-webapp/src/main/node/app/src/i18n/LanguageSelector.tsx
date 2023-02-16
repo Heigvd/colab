@@ -8,7 +8,6 @@
 import { css } from '@emotion/css';
 import * as React from 'react';
 import DropDownMenu, { entryStyle } from '../components/common/layout/DropDownMenu';
-import { mainHeaderHeight } from '../components/styling/style';
 import { I18nCtx, Language } from './I18nContext';
 
 export default function LanguageSelector(): JSX.Element {
@@ -25,7 +24,6 @@ export default function LanguageSelector(): JSX.Element {
     <DropDownMenu
       icon='language'
       menuIcon='CARET'
-      height={mainHeaderHeight}
       value={lang}
       valueComp={valueComp}
       entries={entries}

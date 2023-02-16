@@ -37,16 +37,15 @@ import Tips, { TipsCtx } from '../../common/element/Tips';
 import Clickable from '../../common/layout/Clickable';
 import Flex from '../../common/layout/Flex';
 import Icon from '../../common/layout/Icon';
+import Modal from '../../common/layout/Modal';
 import Monkeys from '../../debugger/monkey/Monkeys';
 import { UserDropDown } from '../../MainNav';
 import Settings from '../../settings/Settings';
 import {
   activeIconButtonStyle,
-  br_full,
   iconButtonStyle,
-  lightIconButtonStyle,
   linkStyle,
-  p_sm,
+  p_md,
   space_2xs,
   space_sm,
 } from '../../styling/style';
@@ -74,10 +73,6 @@ const breadCrumbsStyle = css({
   margin: '0 ' + space_sm,
   alignSelf: 'center',
 });
-
-function parentPathFn() {
-  return '../';
-}
 
 const Ancestor = ({ card, content, last, className }: Ancestor): JSX.Element => {
   const i18n = useTranslations();
@@ -176,8 +171,6 @@ const DefaultVariantDetector = (): JSX.Element => {
 
 interface CardWrapperProps {
   children: (card: Card, variant: CardContent) => JSX.Element;
-  backButtonPath: (card: Card, variant: CardContent) => string;
-  backButtonTitle: string;
   touchMode: 'zoom' | 'edit';
   grow?: number;
   align?: 'center' | 'normal';
@@ -194,7 +187,6 @@ const CardWrapper = ({
   const cardContentId = +vId!;
 
   const dispatch = useAppDispatch();
-  const navigate = useNavigate();
 
   const card = useCard(cardId);
   const content = useCardContent(cardContentId);
@@ -204,7 +196,6 @@ const CardWrapper = ({
   const { project: currentProject } = useAppSelector(selectCurrentProject);
 
   const ancestors = useAncestors(parentId);
-  const location = useLocation();
 
   const { touch } = React.useContext(PresenceContext);
 
@@ -233,7 +224,6 @@ const CardWrapper = ({
   } else {
     return (
       <>
-        <Flex align='center' className={p_sm} justify="space-between">
           <Flex align="center">
             {ancestors.map((ancestor, x) => (
               <Ancestor
@@ -254,7 +244,7 @@ const CardWrapper = ({
               })}
             />
           </Flex>
-          <IconButton
+          {/* <IconButton
             title="toggle view edit"
             icon={location.pathname.includes('card') ? 'edit' : 'view_comfy'}
             onClick={() => {
@@ -266,16 +256,128 @@ const CardWrapper = ({
               }
             }}
             className={lightIconButtonStyle}
-          />
-        </Flex>
+          /> */}
         <Flex
           direction="column"
           grow={grow}
           align={align}
-          className={css({ width: '100%', alignItems: 'stretch' })}
+          className={cx(p_md, css({ alignItems: 'stretch', overflow: 'auto' }))}
         >
           {children(card, content)}
         </Flex>
+      </>
+    );
+  }
+};
+
+const CardEditWrapper = ({
+  children,
+  grow = 1,
+  align = 'normal',
+  touchMode,
+}: CardWrapperProps): JSX.Element => {
+  const { id, vId } = useParams<'id' | 'vId'>();
+  const cardId = +id!;
+  const cardContentId = +vId!;
+
+  const dispatch = useAppDispatch();
+  const navigate = useNavigate();
+
+  const card = useCard(cardId);
+  const content = useCardContent(cardContentId);
+
+  const parentId = card != null && card != 'LOADING' ? card.parentId : undefined;
+
+  const { project: currentProject } = useAppSelector(selectCurrentProject);
+
+  const ancestors = useAncestors(parentId);
+
+  const { touch } = React.useContext(PresenceContext);
+
+  React.useEffect(() => {
+    touch({
+      cardId: cardId,
+      cardContentId: cardContentId,
+      context: touchMode,
+    });
+  }, [touch, cardContentId, cardId, touchMode]);
+
+  React.useEffect(() => {
+    if (card === undefined && cardId) {
+      dispatch(API.getCard(cardId));
+    }
+  }, [card, cardId, dispatch]);
+
+  if (
+    card == null ||
+    card === 'LOADING' ||
+    currentProject == null ||
+    content == null ||
+    content === 'LOADING'
+  ) {
+    return <InlineLoading />;
+  } else {
+    return (
+      <>
+        <Modal
+          title={
+            <Flex align="center">
+              {ancestors.map((ancestor, x) => (
+                <Ancestor
+                  key={x}
+                  card={ancestor.card}
+                  content={ancestor.content}
+                  className={cx({
+                    [css({ color: 'var(--primary-main)' })]: currentProject.type === 'MODEL',
+                  })}
+                />
+              ))}
+              <Ancestor
+                card={card}
+                content={content}
+                last
+                className={cx({
+                  [css({ color: 'var(--primary-main)' })]: currentProject.type === 'MODEL',
+                })}
+              />
+            </Flex>
+          }
+          size="full"
+          onClose={() => {
+            // to test when connectiing directly to a card
+            navigate(-1);
+          }}
+          showCloseButton
+        >
+          {() => (
+            <>
+              {/* <Flex align="center" className={p_sm} justify="space-between">
+                
+                <IconButton
+                  title="toggle view edit"
+                  icon={location.pathname.includes('card') ? 'edit' : 'view_comfy'}
+                  onClick={() => {
+                    // Note : functional but not so strong
+                    if (location.pathname.includes('/card/')) {
+                      navigate(`${location.pathname.replace('/card/', '/edit/')}`);
+                    } else {
+                      navigate(`${location.pathname.replace('/edit/', '/card/')}`);
+                    }
+                  }}
+                  className={lightIconButtonStyle}
+                />
+              </Flex> */}
+              <Flex
+                direction="column"
+                grow={grow}
+                align={align}
+                className={css({ width: '100%', alignItems: 'stretch', overflow: 'auto' })}
+              >
+                {children(card, content)}
+              </Flex>
+            </>
+          )}
+        </Modal>
       </>
     );
   }
@@ -316,14 +418,10 @@ function EditorNav({ project }: EditorNavProps): JSX.Element {
             </span>
           </MainMenuLink>
           <Flex
-            className={cx(
-              br_full,
-              css({
-                border: '1px solid var(--divider-main)',
-                overflow: 'hidden',
-                alignItems: 'center',
-              }),
-            )}
+            className={css({
+              alignItems: 'center',
+              border: '1px solid var(--divider-main)',
+            })}
             wrap="nowrap"
           >
             <MainMenuLink
@@ -440,18 +538,18 @@ function RootView({ rootContent }: { rootContent: CardContent | null | undefined
       })}
     >
       {rootContent != null ? (
-        <Flex>
+        <Flex className={css({overflow: 'hidden'})}>
           <CardCreatorAndOrganize
             rootContent={rootContent}
             organize={{ organize: organize, setOrganize: setOrganize }}
           />
-
           <ContentSubs
             minCardWidth={150}
             showEmptiness={true}
             depth={depthMax}
             cardContent={rootContent}
             organize={organize}
+            className={css({height: '100%', overflow: 'auto'})}
           />
         </Flex>
       ) : (
@@ -522,7 +620,7 @@ export default function Editor(): JSX.Element {
   } else {
     return (
       <PresenceContext.Provider value={presenceContext}>
-        <Flex direction="column" align="stretch" grow={1}>
+        <Flex direction="column" align="stretch" grow={1} className={css({height: '100vh'})}>
           <EditorNav project={project} />
           <Flex
             direction="column"
@@ -564,12 +662,7 @@ export default function Editor(): JSX.Element {
               <Route
                 path="card/:id/v/:vId/*"
                 element={
-                  <CardWrapper
-                    grow={1}
-                    backButtonPath={parentPathFn}
-                    backButtonTitle={i18n.common.action.backProjectRoot}
-                    touchMode="zoom"
-                  >
+                  <CardWrapper grow={1} touchMode="zoom">
                     {card => <CardThumbWithSelector depth={2} card={card} mayOrganize />}
                   </CardWrapper>
                 }
@@ -581,24 +674,15 @@ export default function Editor(): JSX.Element {
               <Route
                 path={`/edit/:id/v/:vId/*`}
                 element={
-                  <CardWrapper
-                    backButtonPath={(card, variant) => `../card/${card.id}/v/${variant.id}`}
-                    backButtonTitle={i18n.common.action.backCardView}
-                    touchMode="edit"
-                  >
-                    {(card, variant) => <CardEditor card={card} variant={variant} showSubcards />}
-                  </CardWrapper>
+                  <CardEditWrapper touchMode="edit">
+                    {(card, variant) => <CardEditor card={card} variant={variant} />}
+                  </CardEditWrapper>
                 }
               />
               <Route
                 path="hierarchy/card/:id/v/:vId/*"
                 element={
-                  <CardWrapper
-                    grow={1}
-                    backButtonPath={parentPathFn}
-                    backButtonTitle={i18n.common.action.backProjectRoot}
-                    touchMode="zoom"
-                  >
+                  <CardWrapper grow={1} touchMode="zoom">
                     {card => <CardThumbWithSelector depth={2} card={card} mayOrganize />}
                   </CardWrapper>
                 }
@@ -607,13 +691,9 @@ export default function Editor(): JSX.Element {
               <Route
                 path="hierarchy/edit/:id/v/:vId/*"
                 element={
-                  <CardWrapper
-                    backButtonPath={(card, variant) => `../card/${card.id}/v/${variant.id}`}
-                    backButtonTitle={i18n.common.action.backCardView}
-                    touchMode="edit"
-                  >
-                    {(card, variant) => <CardEditor card={card} variant={variant} showSubcards />}
-                  </CardWrapper>
+                  <CardEditWrapper touchMode="edit">
+                    {(card, variant) => <CardEditor card={card} variant={variant} />}
+                  </CardEditWrapper>
                 }
               />
               {/* All cards. Root route */}

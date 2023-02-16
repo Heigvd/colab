@@ -66,7 +66,7 @@ export default function CompletionEditor({ variant }: CompletionEditorProps): JS
         cursor="pointer"
         className={css({ height: '20px', padding: '0px !important' })}
       >
-        <SliderTrack height={'20px'} bg="#bbb">
+        <SliderTrack height={'20px'} bg="var(--bg-secondary)">
           <SliderFilledTrack
             className={css({ backgroundColor: 'var(--green-200)', height: '100%' })}
           />

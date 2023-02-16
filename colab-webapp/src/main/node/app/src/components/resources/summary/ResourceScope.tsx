@@ -33,9 +33,9 @@ import { BlockInput } from '../../common/element/Input';
 import Toggler from '../../common/element/Toggler';
 import Flex from '../../common/layout/Flex';
 import Icon from '../../common/layout/Icon';
-import { modalBody, modalFooter } from '../../common/layout/Modal';
+import { modalFooter } from '../../common/layout/Modal';
 import Hierarchy from '../../projects/edition/hierarchy/Hierarchy';
-import { space_lg, text_sm } from '../../styling/style';
+import { p_lg, space_lg, text_sm } from '../../styling/style';
 import { getTheDirectResource, ResourceAndRef } from '../resourcesCommonType';
 import TargetResourceSummary from './TargetResourceSummary';
 
@@ -724,7 +724,7 @@ export default function ResourceScope({ onCancel, resource }: ResourceScopeProps
       }}
     >
       <Flex className={highlightStyle} overflow="auto" direction="column" align="stretch" grow={1}>
-        <Flex className={modalBody} direction="column" align="stretch">
+        <Flex className={p_lg} direction="column" align="stretch">
           {/* header */}
           <h2>{resource.targetResource.title || i18n.modules.resource.untitled} </h2>
           <Flex>
@@ -736,7 +736,7 @@ export default function ResourceScope({ onCancel, resource }: ResourceScopeProps
         </Flex>
         <Flex
           overflow="auto"
-          className={modalBody}
+          className={p_lg}
           grow={1}
           direction="row"
           gap={space_lg}
@@ -898,7 +898,7 @@ export default function ResourceScope({ onCancel, resource }: ResourceScopeProps
           )}
         </Flex>{' '}
         {/* end of body */}
-        <Flex className={cx(modalFooter, modalBody)} justify="space-between" align="stretch">
+        <Flex className={cx(modalFooter, p_lg)} justify="space-between" align="stretch">
           {' '}
           {/* footer */}
           <Flex gap={space_lg} align="center">

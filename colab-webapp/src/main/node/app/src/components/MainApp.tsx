@@ -150,7 +150,7 @@ export default function MainApp(): JSX.Element {
             path="*"
             element={
               <>
-                <Flex direction="column" align='stretch' className={css({ minHeight: '100vh' })}>
+                <Flex direction="column" align='stretch' className={css({ height: '100vh' })}>
                   <MainNav />
                   <Flex
                     direction='column'
