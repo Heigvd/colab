@@ -14,6 +14,7 @@ import LanguageSelector from '../i18n/LanguageSelector';
 import { useHasModels } from '../selectors/projectSelector';
 import { useCurrentUser } from '../selectors/userSelector';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
+import Avatar from './common/element/Avatar';
 import InlineLoading from './common/element/InlineLoading';
 import { MainMenuLink, } from './common/element/Link';
 import DropDownMenu from './common/layout/DropDownMenu';
@@ -107,7 +108,7 @@ export function UserDropDown({ onlyLogout }: { onlyLogout?: boolean }): JSX.Elem
     return (
       <>
         <DropDownMenu
-          icon={'account_circle'}
+        buttonLabel={<Avatar currentUser={currentUser} />}
           title={currentUser.username}
           valueComp={{ value: '', label: '' }}
           buttonClassName={iconButtonStyle}

@@ -7,7 +7,7 @@
 import * as React from 'react';
 import { AvailabilityStatus } from '../../../store/store';
 import Icon from '../layout/Icon';
-import InlineLoading from './InlineLoading';
+import Loading from '../layout/Loading';
 
 interface AvailabilityStatusIndicatorProps {
   status: AvailabilityStatus;
@@ -20,7 +20,7 @@ export default function AvailabilityStatusIndicator({
     case 'NOT_INITIALIZED':
       return  <Icon icon={'notifications'} />;
     case 'LOADING':
-      return <InlineLoading />;
+      return <Loading />;
     case 'ERROR':
       return  <Icon icon={'skull'} />;
     case 'READY':

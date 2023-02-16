@@ -57,7 +57,7 @@ const EditorWrapper = () => {
   }, [dispatch, editingStatus, editedProject, project, id, webSocketId]);
 
   if (status === 'NOT_INITIALIZED' || status === 'LOADING') {
-    return <InlineLoading />;
+    return <Loading />;
   } else if (project == null || status === 'ERROR') {
     return (
       <div>
@@ -67,7 +67,7 @@ const EditorWrapper = () => {
     );
   } else {
     if (editingStatus === 'NOT_EDITING' || (editedProject != null && editedProject.id !== +id)) {
-      return <InlineLoading />;
+      return <Loading />;
     } else {
       return <Editor />;
     }
@@ -100,7 +100,7 @@ export default function MainApp(): JSX.Element {
   const reconnecting = socketId == null && (
     <Overlay
       backgroundStyle={css({
-        backgroundColor: '#dfdfdfC0',
+        backgroundColor: 'var(--blackWhite-700)',
         userSelect: 'none',
       })}
     >
@@ -109,9 +109,10 @@ export default function MainApp(): JSX.Element {
           display: 'flex',
           alignItems: 'center',
           flexDirection: 'column',
+          justifyContent: 'center',
         })}
       >
-        <InlineLoading colour={true} size="50px" />{' '}
+        <InlineLoading size="50px" />{' '}
         <span>{i18n.authentication.info.reconnecting}</span>
       </div>
     </Overlay>

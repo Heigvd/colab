@@ -14,7 +14,7 @@ import useTranslations from '../../../i18n/I18nContext';
 import { useAppDispatch } from '../../../store/hooks';
 import { addNotification } from '../../../store/slice/notificationSlice';
 import Button from '../../common/element/Button';
-import IconButtonWithLoader from '../../common/element/IconButtonWithLoader';
+import IconButton from '../../common/element/IconButton';
 import { inputStyle } from '../../common/element/Input';
 import OpenCloseModal from '../../common/layout/OpenCloseModal';
 import { linkStyle, space_lg, text_sm } from '../../styling/style';
@@ -55,11 +55,12 @@ export default function MemberCreator({ members, project }: MemberCreatorProps):
             value={invite}
             className={inputStyle}
           />
-          <IconButtonWithLoader
+          <IconButton
             className={linkStyle}
             icon={'send'}
             title={i18n.common.send}
             isLoading={isValidNewMember}
+            withLoader
             onClick={() => {
               if (isValidNewMember) {
                 setError(false);

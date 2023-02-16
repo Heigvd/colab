@@ -9,9 +9,10 @@ import * as React from 'react';
 import logger from '../../logger';
 import { useAllProjectCards } from '../../selectors/cardSelector';
 import SearchSortList, { IWidget } from '../common/collection/SearchSortList';
+import InlineLoading from '../common/element/InlineLoading';
 import Icon from '../common/layout/Icon';
 import Tabs, { Tab } from '../common/layout/Tabs';
-import { cardStyle, heading_sm, heading_xl, heading_xs, space_sm } from '../styling/style';
+import { cardStyle, space_sm } from '../styling/style';
 import DebugForm from './debugForm';
 import DebugInput from './DebugInput';
 import IconAsImage from './IconAsImage';
@@ -42,14 +43,7 @@ export default function Debugger(): JSX.Element {
       </Tab>
       <Tab name="icons" label="Icons">
         <Icon icon='eco'/>
-        <div>
-          <h1>Hola</h1>
-          <h2>Hola2</h2>
-          <h3>Hola3</h3>
-          <h1 className={heading_xs}>Hola</h1>
-          <h2 className={heading_sm}>Hola2</h2>
-          <h3 className={heading_xl}>Hola3</h3>
-        </div>
+        <InlineLoading />
       </Tab>
     </Tabs>
   );

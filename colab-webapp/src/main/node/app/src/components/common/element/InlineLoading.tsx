@@ -4,10 +4,8 @@
  *
  * Licensed under the MIT License
  */
-import { css, cx, keyframes } from '@emotion/css';
+import { css, keyframes } from '@emotion/css';
 import * as React from 'react';
-import Picto from '../../styling/Picto';
-import PictoBw from '../../styling/PictoBw';
 
 const spinning = keyframes({
   from: {
@@ -18,25 +16,22 @@ const spinning = keyframes({
   },
 });
 
-export const spinningStyle = css({
-  animation: `${spinning} 1s linear 0s infinite`,
-});
-
-
+const animationDimensions = '40px';
+const shapesDimensions = '20px';
 interface InlineLoadingProps {
   size?: string;
   maxWidth?: string;
   margin?: string;
-  colour?: boolean;
+  //colour?: boolean;
 }
 
 export default function InlineLoading({
-  size = '24px',
-  maxWidth = '',
+  //size = '24px',
+  //maxWidth = '',
   margin = '',
-  colour = false,
+  //colour = false,
 }: InlineLoadingProps): JSX.Element {
-  const EffectivePicto = colour ? Picto : PictoBw;
+  //const EffectivePicto = colour ? Picto : PictoBw;
   return (
     <div
       className={css({
@@ -44,7 +39,49 @@ export default function InlineLoading({
         margin: margin,
       })}
     >
-      <EffectivePicto
+      <div
+        className={css({
+          width: '100px',
+          height: '100px',
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+        })}
+      >
+        <div
+          className={css({
+            width: animationDimensions,
+            height: animationDimensions,
+            position: 'relative',
+            animation: `${spinning} 2s infinite`,
+            '.shape': {
+              position: 'absolute',
+              borderRadius: shapesDimensions,
+              width: shapesDimensions,
+              height: shapesDimensions,
+            },
+            '.shape1': {
+              left: 0,
+              backgroundColor: 'var(--primary-main)',
+            },
+            '.shape2': {
+              right: 0,
+              backgroundColor: 'var(--primary-fade)',
+            },
+            '.shape3': {
+              bottom: 0,
+              left: '50%',
+              transform: 'translateX(-50%)',
+              backgroundColor: 'var(--primary-dark)',
+            },
+          })}
+        >
+          <div className="shape shape1"></div>
+          <div className="shape shape2"></div>
+          <div className="shape shape3"></div>
+        </div>
+      </div>
+      {/* <EffectivePicto
         className={cx(
           spinningStyle,
           css({
@@ -53,7 +90,7 @@ export default function InlineLoading({
             maxWidth: maxWidth,
           }),
         )}
-      />
+      /> */}
     </div>
   );
 }

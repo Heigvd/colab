@@ -6,7 +6,6 @@
  */
 
 import { cx } from '@emotion/css';
-import { IconProp, Transform } from '@fortawesome/fontawesome-svg-core';
 import * as React from 'react';
 import { iconButtonStyle } from '../../styling/style';
 import Clickable from '../layout/Clickable';
@@ -17,13 +16,12 @@ export interface IconButtonProps {
   icon: string;
   iconColor?: string;
   iconSize?: keyof typeof IconSize;
-  mask?: IconProp;
-  transform?: string | Transform;
-  layer?: { layerIcon: IconProp; transform: string | Transform };
   onClick?: (e: React.MouseEvent<HTMLSpanElement> | React.KeyboardEvent<HTMLSpanElement>) => void;
   className?: string;
   iconClassName?: string;
   stopPropagation?: boolean;
+  withLoader?: boolean;
+  isLoading?: boolean;
 }
 
 export default function IconButton({
@@ -31,19 +29,34 @@ export default function IconButton({
   icon,
   iconColor,
   iconSize,
+  withLoader,
+  isLoading = true,
   onClick,
   className,
   iconClassName,
   stopPropagation,
 }: IconButtonProps): JSX.Element {
+  const [loading, setLoading] = React.useState<boolean>(false);
   return (
     <Clickable
       title={title}
-      onClick={onClick}
+      onClick={e => {
+        if (withLoader && onClick) {
+          setLoading(isLoading);
+          onClick(e);
+        } else if (onClick) {
+          onClick(e);
+        }
+      }}
       className={cx(iconButtonStyle, className)}
       stopPropagation={stopPropagation}
     >
-      <Icon icon={icon} className={iconClassName} opsz={iconSize} color={iconColor}/>
+      <Icon
+        icon={loading ? 'sync' : icon}
+        className={iconClassName}
+        opsz={iconSize}
+        color={iconColor}
+      />
     </Clickable>
   );
 }

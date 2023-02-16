@@ -50,7 +50,6 @@ import {
   space_sm,
 } from '../../styling/style';
 import DocumentationTab from '../DocumentationTab';
-import Presence from '../presence/Presence';
 import { PresenceContext, usePresenceContext } from '../presence/PresenceContext';
 import { defaultProjectIllustration } from '../ProjectCommon';
 import { ProjectSettingsTabs } from '../settings/ProjectSettingsTabs';
@@ -485,7 +484,7 @@ function EditorNav({ project }: EditorNavProps): JSX.Element {
           </Flex>
         </div>
         <Flex align="center" justify="flex-end">
-          <Presence projectId={project.id!} />
+          {/* <Presence projectId={project.id!} /> */}
           <Monkeys />
           <Tips tipsType="FEATURE_PREVIEW">
             <Flex>
