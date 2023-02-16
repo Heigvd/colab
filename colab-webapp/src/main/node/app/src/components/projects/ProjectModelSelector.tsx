@@ -15,13 +15,8 @@ import AvailabilityStatusIndicator from '../common/element/AvailabilityStatusInd
 import IllustrationDisplay from '../common/element/IllustrationDisplay';
 import Flex from '../common/layout/Flex';
 import Icon from '../common/layout/Icon';
-import {
-  lightTextStyle,
-  multiLineEllipsisStyle,
-  space_sm,
-  text_sm,
-} from '../styling/style';
-import { defaultProjectIllustration } from './ProjectCommon';
+import { lightTextStyle, multiLineEllipsisStyle, space_sm, text_sm } from '../styling/style';
+import { defaultProjectIllustration, noModelIllustration } from './ProjectCommon';
 
 const modelPictoCornerStyle = css({
   position: 'absolute',
@@ -88,12 +83,7 @@ export default function ProjectModelSelector({
                 <IllustrationDisplay
                   illustration={
                     isEmptyProject
-                      ? {
-                          '@class': 'Illustration',
-                          iconLibrary: 'FONT_AWESOME_REGULAR',
-                          iconKey: 'file',
-                          iconBkgdColor: '#50BFD5',
-                        }
+                      ? noModelIllustration
                       : item.illustration || { ...defaultProjectIllustration }
                   }
                 />
@@ -124,9 +114,9 @@ export default function ProjectModelSelector({
                   title={i18n.modules.project.info.isAModel}
                 >
                   {item.globalProject ? (
-                     <Icon icon={'public'} opsz="xs" />
+                    <Icon icon={'public'} opsz="xs" />
                   ) : (
-                     <Icon icon={'star'} opsz="xs" />
+                    <Icon icon={'star'} opsz="xs" />
                   )}
                 </Flex>
               )}

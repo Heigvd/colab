@@ -29,7 +29,7 @@ import {
   space_sm,
   text_sm,
 } from '../styling/style';
-import { defaultProjectIllustration } from './ProjectCommon';
+import { defaultProjectIllustration, noModelIllustration } from './ProjectCommon';
 
 function sortResources(a: Project, b: Project): number {
   return (a.id || 0) - (b.id || 0);
@@ -90,12 +90,7 @@ export default function SharedModelsList({
                 <IllustrationDisplay
                   illustration={
                     isEmptyProject
-                      ? {
-                          '@class': 'Illustration',
-                          iconLibrary: 'FONT_AWESOME_REGULAR',
-                          iconKey: 'file',
-                          iconBkgdColor: '#50BFD5',
-                        }
+                      ? noModelIllustration
                       : project.illustration || { ...defaultProjectIllustration }
                   }
                 />
@@ -123,7 +118,7 @@ export default function SharedModelsList({
                         value: 'show details',
                         label: (
                           <>
-                             <Icon icon={'info'} /> Show details
+                            <Icon icon={'info'} /> Show details
                           </>
                         ),
                         //action: () => navigate(`projectsettings/${project.id}`),
@@ -141,7 +136,7 @@ export default function SharedModelsList({
                         value: 'delete',
                         label: (
                           <>
-                             <Icon icon={'delete'} color={'var(--error-main)'} />{' '}
+                            <Icon icon={'delete'} color={'var(--error-main)'} />{' '}
                             {i18n.common.delete}
                           </>
                         ),

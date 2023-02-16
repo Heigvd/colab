@@ -7,10 +7,18 @@
 
 import { IconName } from '@fortawesome/fontawesome-svg-core';
 import { Illustration } from 'colab-rest-client';
+import { projectColors } from '../styling/theme';
 
 export const defaultProjectIllustration: Illustration = {
   '@class': 'Illustration',
   iconLibrary: 'FONT_AWESOME_SOLID',
   iconKey: 'gamepad' as IconName,
-  iconBkgdColor: '#50BFD5',
+  iconBkgdColor: projectColors.blue,
+};
+
+export const noModelIllustration: Illustration = {
+  '@class': 'Illustration',
+  iconLibrary: 'FONT_AWESOME_REGULAR',
+  iconKey: 'file',
+  iconBkgdColor: projectColors.blue,
 };

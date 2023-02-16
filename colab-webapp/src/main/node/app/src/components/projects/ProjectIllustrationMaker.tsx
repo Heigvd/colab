@@ -6,7 +6,6 @@
  */
 
 import { css, cx } from '@emotion/css';
-import { IconName } from '@fortawesome/free-solid-svg-icons';
 import { Illustration } from 'colab-rest-client';
 import * as React from 'react';
 import { CirclePicker } from 'react-color';
@@ -15,13 +14,7 @@ import IconButton from '../common/element/IconButton';
 import Flex from '../common/layout/Flex';
 import { labelStyle, space_lg, space_sm } from '../styling/style';
 import { projectColors } from '../styling/theme';
-
-const defaultProjectIllustration: Illustration = {
-  '@class': 'Illustration',
-  iconLibrary: 'FONT_AWESOME_SOLID',
-  iconKey: 'gamepad' as IconName,
-  iconBkgdColor: '#50BFD5',
-};
+import { defaultProjectIllustration } from './ProjectCommon';
 
 interface ProjectIllustrationMakerProps {
   illustration: Illustration | undefined | null;
@@ -116,7 +109,7 @@ function ProjectIconPicker({
         className={cx(
           css({
             display: 'flex',
-/*             gridGap: space_md,
+            /*             gridGap: space_md,
             gridTemplateColumns: 'repeat(auto-fit, 50px)', */
             flexWrap: 'wrap',
             backgroundColor: bgColor,
