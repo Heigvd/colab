@@ -6,7 +6,6 @@
  */
 
 import { css } from '@emotion/css';
-import { faSave } from '@fortawesome/free-regular-svg-icons';
 import * as React from 'react';
 import PasswordStrengthBar from 'react-password-strength-bar';
 import { updateLocalAccountPassword } from '../../API/api';

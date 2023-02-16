@@ -6,9 +6,8 @@
  */
 
 import { cx } from '@emotion/css';
-import { IconProp, Transform } from '@fortawesome/fontawesome-svg-core';
 import * as React from 'react';
-import { iconButtonStyle, linkStyle } from '../../styling/style';
+import { iconButtonStyle } from '../../styling/style';
 import Clickable from '../layout/Clickable';
 import Icon, { IconSize } from '../layout/Icon';
 
@@ -17,9 +16,6 @@ export interface IconButtonProps {
   icon: string;
   iconColor?: string;
   iconSize?: keyof typeof IconSize;
-  mask?: IconProp;
-  transform?: string | Transform;
-  layer?: { layerIcon: IconProp; transform: string | Transform };
   onClick?: (e: React.MouseEvent<HTMLSpanElement> | React.KeyboardEvent<HTMLSpanElement>) => void;
   className?: string;
   iconClassName?: string;
@@ -43,7 +39,7 @@ export default function IconButton({
       className={cx(iconButtonStyle, className)}
       stopPropagation={stopPropagation}
     >
-      <Icon icon={icon} className={iconClassName} opsz={iconSize} color={iconColor}/>
+      <Icon icon={icon} className={iconClassName} opsz={iconSize} color={iconColor} />
     </Clickable>
   );
 }

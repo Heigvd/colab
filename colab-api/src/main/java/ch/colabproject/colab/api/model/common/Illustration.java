@@ -40,7 +40,7 @@ public class Illustration implements WithJsonDiscriminator {
     @Column(length = 128)
     @Enumerated(value = EnumType.STRING)
     @NotNull
-    private IconLibrary iconLibrary = IconLibrary.FONT_AWESOME_SOLID;
+    private IconLibrary iconLibrary = IconLibrary.MATERIAL_SYMBOLS_OUTLINED;
 
     /**
      * The key of the icon within the library of icons
