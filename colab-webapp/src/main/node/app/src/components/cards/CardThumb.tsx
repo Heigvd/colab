@@ -419,7 +419,7 @@ export default function CardThumb({
                       }),
                   )}
                   title={i18n.modules.card.positioning.toggleText}
-                  icon={'view-quilt'}
+                  icon={'view_quilt'}
                   //value={organize.organize}
                   onClick={e => {
                     e.stopPropagation();

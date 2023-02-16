@@ -14,7 +14,6 @@ import { useAppDispatch, useLoadingState } from '../../store/hooks';
 import Button from '../common/element/Button';
 import ButtonWithLoader from '../common/element/ButtonWithLoader';
 import Flex from '../common/layout/Flex';
-import Icon from '../common/layout/Icon';
 import OpenCloseModal from '../common/layout/OpenCloseModal';
 import { space_lg, space_sm } from '../styling/style';
 import { defaultProjectIllustration } from './ProjectCommon';
@@ -123,10 +122,9 @@ export default function ProjectCreator({
       widthMax
       heightMax
       collapsedChildren={
-        <Flex className={collapsedButtonClassName}>
-          <Icon icon="add" />
+        <Button className={collapsedButtonClassName} icon='add'>
           {i18n.modules.project.actions.createProject}
-        </Flex>
+        </Button>
       }
       modalBodyClassName={css({ alignItems: 'stretch' })}
       footer={close => (

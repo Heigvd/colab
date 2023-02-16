@@ -6,7 +6,7 @@
  */
 
 import * as React from 'react';
-import { linkStyle } from '../../styling/style';
+import { buttonStyle } from '../../styling/style';
 
 export interface ClickableProps {
   onClick?: (e: React.MouseEvent<HTMLSpanElement> | React.KeyboardEvent<HTMLSpanElement>) => void;
@@ -29,7 +29,7 @@ export default function Clickable({
   disabled,
   title,
   children,
-  className = linkStyle,
+  className=buttonStyle,
   ref,
   stopPropagation,
 }: ClickableProps): JSX.Element {

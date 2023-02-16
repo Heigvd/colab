@@ -77,7 +77,7 @@ export default function Collapsible({
         )}
         {label}
         <IconButton
-          icon={showContent ? 'chevron_up' : 'chevron_down'}
+          icon={showContent ? 'expand_less' : 'expand_more'}
           title={
             tooltip
               ? showContent

@@ -9,7 +9,6 @@ import { css, cx } from '@emotion/css';
 import * as React from 'react';
 import useTranslations from '../../../i18n/I18nContext';
 import IconButton from '../element/IconButton';
-import Clickable from './Clickable';
 
 const relative = css({
   position: 'relative',
@@ -52,7 +51,7 @@ export default function OpenClose({
 
   if (state === 'COLLAPSED') {
     return (
-      <Clickable
+      <div
         className={className}
         onClick={e => {
           e.stopPropagation();
@@ -60,7 +59,7 @@ export default function OpenClose({
         }}
       >
         {collapsedChildren}
-      </Clickable>
+      </div>
     );
   } else {
     return (

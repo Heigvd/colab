@@ -4,7 +4,7 @@
  *
  * Licensed under the MIT License
  */
-import { css, cx } from '@emotion/css';
+import { css } from '@emotion/css';
 import * as React from 'react';
 import { Navigate, Route, Routes, useLocation, useParams } from 'react-router-dom';
 import * as API from '../API/api';
@@ -19,6 +19,7 @@ import ResetPasswordSent from './authentication/ResetPasswordSent';
 import SignInForm from './authentication/SignIn';
 import SignUpForm from './authentication/SignUp';
 import InlineLoading from './common/element/InlineLoading';
+import Flex from './common/layout/Flex';
 import Icon from './common/layout/Icon';
 import Loading from './common/layout/Loading';
 import Overlay from './common/layout/Overlay';
@@ -27,7 +28,6 @@ import Editor from './projects/edition/Editor';
 import NewModelShared from './projects/NewModelShared';
 import { MyModels, MyProjects } from './projects/ProjectList';
 import Settings from './settings/Settings';
-import { space_lg } from './styling/style';
 
 const EditorWrapper = () => {
   const { id: sId } = useParams<'id'>();
@@ -61,7 +61,7 @@ const EditorWrapper = () => {
   } else if (project == null || status === 'ERROR') {
     return (
       <div>
-         <Icon icon={'skull'} />
+        <Icon icon={'skull'} />
         <span> {i18n.modules.project.info.noProject}</span>
       </div>
     );
@@ -150,27 +150,14 @@ export default function MainApp(): JSX.Element {
             path="*"
             element={
               <>
-                <div>
-                  <div
-                    className={cx(
-                      css({
-                        display: 'flex',
-                        flexDirection: 'row',
-                        alignItems: 'center',
-                        boxSizing: 'border-box',
-                        padding: '0 ' + space_lg,
-                      }),
-                    )}
-                  >
-                    <MainNav />
-                  </div>
-
-                  <div
+                <Flex direction="column" align='stretch' className={css({ minHeight: '100vh' })}>
+                  <MainNav />
+                  <Flex
+                    direction='column'
+                    align='stretch'
                     className={css({
-                      display: 'flex',
                       flexGrow: 1,
                       overflowY: 'auto',
-                      flexDirection: 'column',
                       '& > *': {
                         flexGrow: 1,
                       },
@@ -183,7 +170,7 @@ export default function MainApp(): JSX.Element {
                       <Route path="/models/*" element={<MyModels />} />
                       <Route path="/settings/*" element={<Settings />} />
                       <Route path="/admin/*" element={<Admin />} />
-                      <Route path="/editor/:id/*" element={<EditorWrapper />} />
+                      {/* <Route path="/editor/:id/*" element={<EditorWrapper />} /> */}
                       <Route
                         element={
                           /* no matching route, redirect to projects */
@@ -191,8 +178,8 @@ export default function MainApp(): JSX.Element {
                         }
                       />
                     </Routes>
-                  </div>
-                </div>
+                  </Flex>
+                </Flex>
               </>
             }
           />

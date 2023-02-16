@@ -46,9 +46,9 @@ import {
   iconButtonStyle,
   lightIconButtonStyle,
   linkStyle,
+  p_sm,
   space_2xs,
   space_sm,
-  space_xl,
 } from '../../styling/style';
 import DocumentationTab from '../DocumentationTab';
 import Presence from '../presence/Presence';
@@ -233,7 +233,7 @@ const CardWrapper = ({
   } else {
     return (
       <>
-        <Flex className={css({ padding: space_sm + ' ' + space_xl })} justify="space-between">
+        <Flex align='center' className={p_sm} justify="space-between">
           <Flex align="center">
             {ancestors.map((ancestor, x) => (
               <Ancestor

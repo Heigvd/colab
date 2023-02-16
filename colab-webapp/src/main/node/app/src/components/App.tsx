@@ -23,6 +23,7 @@ import MainApp from './MainApp';
 import Token from './token/Token';
 import { TocDisplayCtx, TocMode } from './resources/ResourcesList';
 import { fonts, heading, lightMode, text } from './styling/theme';
+import Flex from './common/layout/Flex';
 
 injectGlobal`
     html {
@@ -34,35 +35,37 @@ injectGlobal`
         margin: 0;
         padding: 0;
     }
+    * {
+      font-family: 'Public Sans', 'serif';
+    }
 
-    a, button {
+    a, button, a:hover, button:hover {
         text-decoration: none;
     }
 
     h1, h2, h3, h4, h5, h6 {
         font-weight: ${heading.weight};
         line-height: ${heading.lineHeight};
+        margin: 0;
+        padding: 0;
     }
 
     h1 {
-        font-size: ${heading.xl};
+        font-size: ${heading.lg};
     }
     
     h2 {
-        font-size: ${heading.lg};
-    }
-
-    h3 {
         font-size: ${heading.md};
     }
 
-    h4 {
+    h3 {
         font-size: ${heading.sm};
     }
 
-    h5 {
+    h4 {
         font-size: ${heading.xs};
     }
+
     button {
       background-color: transparent;
       border: 1px solid transparent;
@@ -209,7 +212,7 @@ function App(): JSX.Element {
                       <Routes>
                         <Route path="/token/:id/:token" element={<TokenWrapper />} />
                         <Route path="/token/*" element={<TokenWrapper />} />
-                        <Route path="*" element={<MainApp />} />
+                        <Route path="*" element={<Flex direction='column' align='stretch' className={css({minHeight: '100vh'})}><MainApp /></Flex>} />
                       </Routes>
                     </HashRouter>
                   </TipsCtx.Provider>

@@ -27,11 +27,17 @@ import DropDownMenu from '../common/layout/DropDownMenu';
 import Flex from '../common/layout/Flex';
 import Icon from '../common/layout/Icon';
 import {
+  br_xl,
   ellipsisStyle,
   lightIconButtonStyle,
+  lightTextStyle,
   multiLineEllipsisStyle,
-  space_lg,
+  p_0,
+  p_lg,
+  p_md,
+  p_sm,
   space_sm,
+  space_xl,
   text_sm,
 } from '../styling/style';
 import { defaultProjectIllustration } from './ProjectCommon';
@@ -39,13 +45,31 @@ import ProjectCreator from './ProjectCreator';
 import { ProjectModelExtractor } from './ProjectModelExtractor';
 import { ProjectSettingsGeneralInModal } from './settings/ProjectSettingsGeneral';
 
-const modelChipStyle = css({
-  position: 'absolute',
-  top: 0,
-  right: 0,
-  padding: '10px 10px 12px 12px',
-  borderRadius: '0 0 0 50%',
-  backgroundColor: 'var(--primary-main)',
+const modelChipStyle = cx(
+  p_sm,
+  css({
+    position: 'absolute',
+    top: 0,
+    right: 0,
+    borderRadius: '0 0 0 50%',
+    backgroundColor: 'var(--text-primary)',
+  }),
+);
+
+const projectCardStyle = cx(
+  br_xl,
+  p_0,
+  css({
+    flexDirection: 'column',
+    backgroundColor: 'var(--bg-primary)',
+  }),
+);
+
+const projectListStyle = css({
+  display: 'inline-grid',
+  gridTemplateColumns: 'repeat(auto-fill, minmax(270px, 1fr))',
+  gridColumnGap: space_xl,
+  gridRowGap: space_xl,
 });
 
 function ProjectSettingsWrapper(): JSX.Element {
@@ -111,13 +135,7 @@ function DeleteProjectWrapper(): JSX.Element {
   );
 }
 
-const projectListStyle = css({
-  width: '100%',
-  display: 'inline-grid',
-  gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))',
-  gridColumnGap: '30px',
-  gridRowGap: '30px',
-});
+
 
 interface ProjectDisplayProps {
   project: Project;
@@ -142,18 +160,11 @@ export const ProjectDisplay = ({ project, className }: ProjectDisplayProps) => {
       }}
       direction="column"
       align="stretch"
-      className={cx(
-        {
-          [css({
-            boxShadow: ` 0px -5px 0px 0px ${project.illustration?.iconBkgdColor} inset`,
-          })]: project.type === 'MODEL',
-        },
-        className,
-      )}
+      className={cx(className)}
     >
       <Flex
         className={css({
-          height: '80px',
+          height: '70px',
           position: 'relative',
         })}
       >
@@ -165,34 +176,16 @@ export const ProjectDisplay = ({ project, className }: ProjectDisplayProps) => {
             title={i18n.modules.project.info.isAModel}
           >
             {project.globalProject ? (
-               <Icon icon={'language'} color="white" />
+              <Icon icon={'language'} color="white" />
             ) : (
-               <Icon icon={'star'} color="white"/>
+              <Icon icon={'star'} color="white" />
             )}
           </Flex>
         )}
         <IllustrationDisplay illustration={project.illustration || defaultProjectIllustration} />
       </Flex>
-      <div
-        className={cx(
-          css({
-            display: 'flex',
-            flexDirection: 'column',
-            height: '100px',
-          }),
-        )}
-      >
-        <div
-          className={css({
-            display: 'flex',
-            flexDirection: 'row',
-            justifyContent: 'space-between',
-            paddingLeft: space_lg,
-            paddingRight: space_lg,
-            paddingTop: space_lg,
-            paddingBottom: space_sm,
-          })}
-        >
+      <Flex direction='column' align='stretch' gap={space_sm} className={cx(p_md, css({ height: '80px', textAlign: 'left' }))}>
+        <Flex justify="space-between" align="center" className={cx()}>
           <h3 className={ellipsisStyle} title={project.name ? project.name : 'Project name'}>
             {project.name}
           </h3>
@@ -205,7 +198,7 @@ export const ProjectDisplay = ({ project, className }: ProjectDisplayProps) => {
                 value: 'open',
                 label: (
                   <>
-                     <Icon icon={'edit'} /> {i18n.common.open}
+                    <Icon icon={'edit'} /> {i18n.common.open}
                   </>
                 ),
                 action: () => window.open(`#/editor/${project.id}`, '_blank'),
@@ -214,7 +207,7 @@ export const ProjectDisplay = ({ project, className }: ProjectDisplayProps) => {
                 value: 'settings',
                 label: (
                   <>
-                     <Icon icon={'settings'} /> {i18n.common.settings}
+                    <Icon icon={'settings'} /> {i18n.common.settings}
                   </>
                 ),
                 action: () => navigate(`projectsettings/${project.id}`),
@@ -223,7 +216,7 @@ export const ProjectDisplay = ({ project, className }: ProjectDisplayProps) => {
                 value: 'duplicate',
                 label: (
                   <>
-                     <Icon icon={'content_copy'} /> {i18n.common.duplicate}
+                    <Icon icon={'content_copy'} /> {i18n.common.duplicate}
                   </>
                 ),
                 action: () => {
@@ -237,8 +230,7 @@ export const ProjectDisplay = ({ project, className }: ProjectDisplayProps) => {
                       value: 'extractModel',
                       label: (
                         <>
-                           <Icon icon={'star'} />{' '}
-                          {i18n.modules.project.actions.saveAsModel}
+                          <Icon icon={'star'} /> {i18n.modules.project.actions.saveAsModel}
                         </>
                       ),
                       action: () => navigate(`extractModel/${project.id}`),
@@ -251,8 +243,7 @@ export const ProjectDisplay = ({ project, className }: ProjectDisplayProps) => {
                       value: 'convertToModel',
                       label: (
                         <>
-                           <Icon icon={'star'} />{' '}
-                          {i18n.modules.project.actions.convertToModel}
+                          <Icon icon={'star'} /> {i18n.modules.project.actions.convertToModel}
                         </>
                       ),
                       action: () => {
@@ -269,7 +260,7 @@ export const ProjectDisplay = ({ project, className }: ProjectDisplayProps) => {
                       value: 'convertToProject',
                       label: (
                         <>
-                           <Icon icon={'magic_exchange'} />
+                          <Icon icon={'flip_camera_android'} />
                           {i18n.modules.project.actions.convertToProject}
                         </>
                       ),
@@ -285,44 +276,21 @@ export const ProjectDisplay = ({ project, className }: ProjectDisplayProps) => {
                 value: 'delete',
                 label: (
                   <>
-                     <Icon icon={'delete'} color={'var(--error-main)'} /> {i18n.common.delete}
+                    <Icon icon={'delete'} color={'var(--error-main)'} /> {i18n.common.delete}
                   </>
                 ),
                 action: () => navigate(`deleteproject/${project.id}`),
               },
             ]}
           />
-        </div>
-        <div
-          className={css({
-            padding: space_lg,
-            paddingTop: 0,
-            display: 'flex',
-            flexDirection: 'column',
-            flexGrow: 1,
-          })}
+        </Flex>
+        <p
+          title={project.description || ''}
+          className={cx(multiLineEllipsisStyle, text_sm, lightTextStyle)}
         >
-          <div title={project.description || ''} className={cx(multiLineEllipsisStyle, text_sm)}>
-            {project.description}
-          </div>
-          {/* 
-        //FUTURE block of infos on the project
-        <div
-          className={css({
-            fontSize: '0.8em',
-            opacity: 0.4,
-            display: 'grid',
-            gridTemplateColumns: '1fr 1fr',
-            marginTop: space_M,
-          })}
-        >
-          <p className={cardInfoStyle}>Number of Cards?</p>
-          <p className={cardInfoStyle}>Created by: {project.trackingData?.createdBy} </p>
-          <p className={cardInfoStyle}>Number of people involved?</p>
-          <p className={cardInfoStyle}>Last update: {project.trackingData?.modificationDate}</p>
-        </div> */}
-        </div>
-      </div>
+          {project.description}
+        </p>
+      </Flex>
     </Flex>
   );
 };
@@ -337,19 +305,16 @@ function ProjectList({ projects, hideCreationButton }: ProjectListProps) {
 
   return (
     <Flex
-      className={css(
-        hideCreationButton ? { padding: '2rem' } : { padding: '.5rem 2rem 2rem 2rem' },
-      )}
+      className={p_lg}
       direction={'column'}
+      align='stretch'
     >
       {/* Note : any authenticated user can create a project */}
       {!projects || projects.length === 0 ? (
         <Flex justify="center" align="center" direction="column">
           <h2>{i18n.common.welcome}</h2>
           <h3>{i18n.modules.project.info.noProjectYet}</h3>
-          {!hideCreationButton && (
-            <ProjectCreator />
-          )}
+          {!hideCreationButton && <ProjectCreator />}
         </Flex>
       ) : !hideCreationButton ? (
         <Flex className={css({ alignSelf: 'flex-end', padding: space_sm })}>
@@ -371,12 +336,7 @@ function ProjectList({ projects, hideCreationButton }: ProjectListProps) {
       <ItemThumbnailsSelection<Project>
         items={projects.sort((a, b) => (a.id || 0) - (b.id || 0))}
         className={projectListStyle}
-        thumbnailClassName={css({
-          padding: 0,
-          margin: '4px',
-          display: 'block',
-          backgroundColor: 'var(--bg-primary)',
-        })}
+        thumbnailClassName={projectCardStyle}
         onItemDblClick={item => {
           if (item) {
             window.open(`#/editor/${item.id}`, '_blank');

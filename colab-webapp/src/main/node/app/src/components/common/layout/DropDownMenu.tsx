@@ -42,16 +42,16 @@ const subDropDownEntryStyle = cx(
   alignItems: 'stretch',
 }));
 
-const commonStyle = cx(
+const ddOptionsBodyStyle = cx(
   foregroundStyle,
   css({
     backgroundColor: 'var(--bg-primary)',
-    transition: 'all 0.3s',
     position: 'fixed',
     overflow: 'auto',
     maxHeight: '500px',
     maxWidth: '500px',
     whiteSpace: 'nowrap',
+    border:'1px solid var(--divider-main)'
   }),
 );
 
@@ -402,7 +402,7 @@ export default function DropDownMenu<T extends string | number | symbol>({
           </Flex>
           {open && (
             <div
-              className={commonStyle + (dropClassName || '')}
+              className={ddOptionsBodyStyle + (dropClassName || '')}
               ref={n => {
                 justifyDropMenu(n, n?.parentElement?.querySelector('.dropDownButton'), direction);
               }}

@@ -17,6 +17,7 @@ import { useAppDispatch, useAppSelector } from '../store/hooks';
 import InlineLoading from './common/element/InlineLoading';
 import { MainMenuLink, } from './common/element/Link';
 import DropDownMenu from './common/layout/DropDownMenu';
+import Flex from './common/layout/Flex';
 import Icon from './common/layout/Icon';
 import Monkeys from './debugger/monkey/Monkeys';
 import { iconButtonStyle, space_lg, space_sm } from './styling/style';
@@ -43,7 +44,7 @@ export default function MainNav(): JSX.Element {
   ];
   const value = location.pathname;
   return (
-    <>
+    <Flex>
       {/* <MainMenuLink to={`/`} className={mainMenuLink}>
          <Icon icon={faHouse} size='lg'/>
       <Picto
@@ -78,7 +79,7 @@ export default function MainNav(): JSX.Element {
       ></div>
       <Monkeys />
       <UserDropDown />
-    </>
+    </Flex>
   );
 }
 

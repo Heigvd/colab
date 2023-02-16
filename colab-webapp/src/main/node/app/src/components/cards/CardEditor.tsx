@@ -50,6 +50,7 @@ import {
 import {
   cardStyle,
   lightIconButtonStyle,
+  p_md,
   space_sm,
   text_sm,
 } from '../styling/style';
@@ -197,12 +198,12 @@ export default function CardEditor({
         direction="column"
         grow={1}
         align="stretch"
+        className={p_md}
       >
         <Flex
           grow={1}
           direction="row"
           align="stretch"
-          className={css({ paddingBottom: space_sm, height: '50vh' })}
         >
           <Flex
             grow={1}

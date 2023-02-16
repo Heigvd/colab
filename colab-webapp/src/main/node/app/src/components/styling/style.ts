@@ -215,9 +215,10 @@ export const lightIconButtonStyle = css({
 
 // BUTTON STYLES
 export const buttonStyle = cx(
-  linkStyle,
   css({
-    display: 'inline-block',
+    display: 'flex',
+    flexWrap: 'nowrap',
+    alignItems: 'center',
     padding: `0 ${space_md}`,
     ':hover': {
       backgroundColor: 'var(--bg-secondary)',
