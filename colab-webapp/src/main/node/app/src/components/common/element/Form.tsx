@@ -11,7 +11,7 @@ import { PasswordFeedback } from 'react-password-strength-bar';
 import useTranslations from '../../../i18n/I18nContext';
 import { space_lg, text_sm } from '../../styling/style';
 import Flex from '../layout/Flex';
-import ButtonWithLoader from './ButtonWithLoader';
+import Button from './Button';
 import Checkbox from './Checkbox';
 import InlineLoading from './InlineLoading';
 import { FormInput } from './Input';
@@ -340,7 +340,7 @@ export default function Form<T>({
       >
         {fieldComps}
         <Flex direction="column" justify="center" align="center" className={childrenClassName}>
-          <ButtonWithLoader
+          <Button
             key="submit"
             onClick={submit}
             isLoading={isSubmitInProcess}
@@ -350,7 +350,7 @@ export default function Form<T>({
             )}
           >
             {submitLabel}
-          </ButtonWithLoader>
+          </Button>
           {children}
         </Flex>
       </div>

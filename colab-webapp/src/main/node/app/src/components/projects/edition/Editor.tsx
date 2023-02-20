@@ -8,7 +8,7 @@
 import { css, cx } from '@emotion/css';
 import { Card, CardContent, entityIs, Project } from 'colab-rest-client';
 import * as React from 'react';
-import { Navigate, Route, Routes, useLocation, useNavigate, useParams } from 'react-router-dom';
+import { Navigate, Route, Routes, useLocation, useNavigate, useNavigation, useParams } from 'react-router-dom';
 import * as API from '../../../API/api';
 import useTranslations from '../../../i18n/I18nContext';
 import {
@@ -173,6 +173,7 @@ interface CardWrapperProps {
   touchMode: 'zoom' | 'edit';
   grow?: number;
   align?: 'center' | 'normal';
+  backButtonPath: string;
 }
 
 const CardWrapper = ({
@@ -274,6 +275,7 @@ const CardEditWrapper = ({
   grow = 1,
   align = 'normal',
   touchMode,
+  backButtonPath
 }: CardWrapperProps): JSX.Element => {
   const { id, vId } = useParams<'id' | 'vId'>();
   const cardId = +id!;
@@ -342,10 +344,8 @@ const CardEditWrapper = ({
             </Flex>
           }
           size="full"
-          onClose={() => {
-            // to test when connectiing directly to a card
-            navigate(-1);
-          }}
+          //TO IMPROVE
+          onClose={()=>navigate(backButtonPath)}
           showCloseButton
         >
           {() => (
@@ -568,6 +568,8 @@ export default function Editor(): JSX.Element {
 
   const presenceContext = usePresenceContext();
 
+  const navigation = useNavigation();
+
   const rootContent = useAppSelector(state => {
     if (entityIs(root, 'Card') && root.id != null) {
       const card = state.cards.cards[root.id];
@@ -606,7 +608,7 @@ export default function Editor(): JSX.Element {
     }
   }, [dispatch, root, rootContent]);
 
-  if (status == 'LOADING') {
+  if (status == 'LOADING' || navigation.state === "loading") {
     return <InlineLoading />;
   } else if (project == null || project.id == null) {
     return (
@@ -661,7 +663,7 @@ export default function Editor(): JSX.Element {
               <Route
                 path="card/:id/v/:vId/*"
                 element={
-                  <CardWrapper grow={1} touchMode="zoom">
+                  <CardWrapper grow={1} touchMode="zoom" backButtonPath={'../.'}>
                     {card => <CardThumbWithSelector depth={2} card={card} mayOrganize />}
                   </CardWrapper>
                 }
@@ -673,7 +675,7 @@ export default function Editor(): JSX.Element {
               <Route
                 path={`/edit/:id/v/:vId/*`}
                 element={
-                  <CardEditWrapper touchMode="edit">
+                  <CardEditWrapper touchMode="edit" backButtonPath={'../.'}>
                     {(card, variant) => <CardEditor card={card} variant={variant} />}
                   </CardEditWrapper>
                 }
@@ -681,7 +683,7 @@ export default function Editor(): JSX.Element {
               <Route
                 path="hierarchy/card/:id/v/:vId/*"
                 element={
-                  <CardWrapper grow={1} touchMode="zoom">
+                  <CardWrapper grow={1} touchMode="zoom" backButtonPath={'../.'}>
                     {card => <CardThumbWithSelector depth={2} card={card} mayOrganize />}
                   </CardWrapper>
                 }
@@ -690,7 +692,7 @@ export default function Editor(): JSX.Element {
               <Route
                 path="hierarchy/edit/:id/v/:vId/*"
                 element={
-                  <CardEditWrapper touchMode="edit">
+                  <CardEditWrapper touchMode="edit" backButtonPath={'../.'}>
                     {(card, variant) => <CardEditor card={card} variant={variant} />}
                   </CardEditWrapper>
                 }

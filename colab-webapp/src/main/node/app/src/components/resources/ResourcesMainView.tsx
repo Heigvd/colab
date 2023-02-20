@@ -16,7 +16,6 @@ import Tips, { WIPContainer } from '../common/element/Tips';
 import DropDownMenu from '../common/layout/DropDownMenu';
 import Flex from '../common/layout/Flex';
 import {
-  invertedButtonStyle,
   lightIconButtonStyle,
   lightTextStyle,
   space_xl,
@@ -291,7 +290,7 @@ export function ResourcesMainViewPanel({
             <ResourceCreator
               collapsedClassName={lightIconButtonStyle}
               customButton={
-                <Button icon={'add'} className={invertedButtonStyle}>
+                <Button icon={'add'} variant='outline'>
                   {i18n.modules.document.createDocument}
                 </Button>
               }

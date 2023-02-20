@@ -9,6 +9,8 @@ import { css, cx } from '@emotion/css';
 import { CardContentStatus } from 'colab-rest-client';
 import * as React from 'react';
 import useTranslations from '../../i18n/I18nContext';
+import Badge from '../common/element/Badge';
+import Flex from '../common/layout/Flex';
 import Icon from '../common/layout/Icon';
 import { space_sm } from '../styling/style';
 
@@ -49,7 +51,7 @@ export function getStatusIconAndColor(status: CardContentStatus): StatusIconAndC
     case 'ARCHIVED':
       return { icon: 'inventory_2', color: '#9C9C9C' };
     case 'REJECTED':
-      return { icon: 'close', color: 'var(--error-main)'};
+      return { icon: 'close', color: 'var(--error-main)' };
   }
 }
 
@@ -67,11 +69,12 @@ export default function CardContentStatusDisplay({
       return <></>;
     }
     return (
-       <Icon
+      <Icon
         className={cx(css({ paddingRight: space_sm }), className)}
         icon={getStatusIconAndColor(status).icon}
         color={getStatusIconAndColor(status).color}
         title={tooltip}
+        opsz='xs'
       />
     );
   } else if (mode === 'semi') {
@@ -79,23 +82,23 @@ export default function CardContentStatusDisplay({
       return <></>;
     }
     return (
-      <div className={cx(badgeStyle(getStatusIconAndColor(status).color), className)}>
-         <Icon icon={getStatusIconAndColor(status).icon} opsz={'sm'} title={tooltip} />
+      // Maybe improve theming of Badge comp for more colors?
+      <Badge
+        variant="outline"
+        title={tooltip}
+        icon={getStatusIconAndColor(status).icon}
+        className={cx(badgeStyle(getStatusIconAndColor(status).color), className)}
+      >
         {i18n.modules.card.settings.statuses[status]}
-      </div>
+      </Badge>
     );
   } else {
     return (
-      <div title={tooltip}>
-        {status != 'ACTIVE' && (
-           <Icon
-            className={css({ paddingRight: space_sm })}
-            icon={getStatusIconAndColor(status).icon}
-            color={getStatusIconAndColor(status).color}
-          />
-        )}
-        <span>{i18n.modules.card.settings.statuses[status]}</span>
-      </div>
+      <Flex align='center'
+      >
+        {status != 'ACTIVE' && <Icon icon= {getStatusIconAndColor(status).icon} opsz='xs' /> }
+        {i18n.modules.card.settings.statuses[status]}
+      </Flex>
     );
   }
 }

@@ -139,7 +139,7 @@ export default function CardTypeCreator({ onCreated, usage }: CardTypeCreatorPro
             })}
             buttonClassName={buttonStyle}
           >
-            <Button onClick={close} invertedButton className={css({ margin: space_lg })}>
+            <Button onClick={close} variant='outline' className={css({ margin: space_lg })}>
               {i18n.common.cancel}
             </Button>
           </Form>

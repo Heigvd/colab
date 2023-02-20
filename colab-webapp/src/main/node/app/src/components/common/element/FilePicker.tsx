@@ -7,7 +7,7 @@
 import { css, cx } from '@emotion/css';
 import * as React from 'react';
 import useTranslations from '../../../i18n/I18nContext';
-import { invertedButtonStyle, lightIconButtonStyle, space_lg, space_sm } from '../../styling/style';
+import { lightIconButtonStyle, space_lg, space_sm } from '../../styling/style';
 import Flex from '../layout/Flex';
 import Icon from '../layout/Icon';
 import Overlay from '../layout/Overlay';
@@ -335,7 +335,8 @@ export default function FilePicker({
             </label>
             <Button
               onClick={() => setEditingState(false)}
-              className={cx(invertedButtonStyle, css({ marginLeft: space_sm }))}
+              className={css({ marginLeft: space_sm })}
+              variant='outline'
             >
               {i18n.common.ok}
             </Button>

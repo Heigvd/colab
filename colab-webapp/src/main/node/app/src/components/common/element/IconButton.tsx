@@ -5,13 +5,42 @@
  * Licensed under the MIT License
  */
 
-import { cx } from '@emotion/css';
+import { css, cx } from '@emotion/css';
 import * as React from 'react';
-import { iconButtonStyle } from '../../styling/style';
-import Clickable from '../layout/Clickable';
+import { iconButtonStyle, text_lg, text_md, text_sm, text_xs } from '../../styling/style';
+import { GeneralSizeType } from '../../styling/theme';
+import Clickable, { ClickableProps } from '../layout/Clickable';
 import Icon, { IconSize } from '../layout/Icon';
 
-export interface IconButtonProps {
+type IconButtonVariantType = 'ghost' | 'initial';
+
+const ghostIconButtonStyle = css({
+    backgroundColor: `var(--bg-primary)`,
+    color: 'var(--text-secondary)',
+    ':hover': {
+      backgroundColor: `var(--gray-100)`,
+    },
+    ':active': {
+      backgroundColor: `var(--gray-200)`,
+    },
+  });
+
+function IconButtonSize(size: GeneralSizeType): string {
+  switch (size) {
+    case 'xs':
+      return text_xs;
+    case 'sm':
+      return text_sm;
+    case 'md':
+      return text_md;
+    case 'lg':
+      return text_lg;
+    default:
+      return text_md;
+  }
+}
+
+export interface IconButtonProps extends ClickableProps {
   title: string;
   icon: string;
   iconColor?: string;
@@ -22,6 +51,8 @@ export interface IconButtonProps {
   stopPropagation?: boolean;
   withLoader?: boolean;
   isLoading?: boolean;
+  variant?: IconButtonVariantType;
+  size?: GeneralSizeType;
 }
 
 export default function IconButton({
@@ -35,6 +66,9 @@ export default function IconButton({
   className,
   iconClassName,
   stopPropagation,
+  variant = 'initial',
+  size = 'md',
+  disabled,
 }: IconButtonProps): JSX.Element {
   const [loading, setLoading] = React.useState<boolean>(false);
   return (
@@ -48,8 +82,9 @@ export default function IconButton({
           onClick(e);
         }
       }}
-      className={cx(iconButtonStyle, className)}
+      className={cx(iconButtonStyle, IconButtonSize(size), {[ghostIconButtonStyle]: variant === 'ghost'}, className)}
       stopPropagation={stopPropagation}
+      disabled={disabled}
     >
       <Icon
         icon={loading ? 'sync' : icon}

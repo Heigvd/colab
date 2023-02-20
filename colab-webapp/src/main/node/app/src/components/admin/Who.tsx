@@ -15,7 +15,7 @@ import { defaultThumbnailStyle } from '../common/collection/ItemThumbnailsSelect
 import IconButton from '../common/element/IconButton';
 import InlineLoading from '../common/element/InlineLoading';
 import Flex from '../common/layout/Flex';
-import { ProjectDisplay } from '../projects/ProjectList';
+import ProjectDisplay from '../projects/ProjectCard';
 import { space_lg } from '../styling/style';
 import UserList from './UserList';
 

@@ -100,8 +100,8 @@ export function ProjectSettingsGeneralInModal({
       className={css({
         '&:hover': { textDecoration: 'none' },
         display: 'flex',
-        width: '800px',
       })}
+      size='full'
     >
       {() => {
         if (projectId != null) {

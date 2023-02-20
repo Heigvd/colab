@@ -93,7 +93,7 @@ export default function SharedModelsList({
                       ? {
                           '@class': 'Illustration',
                           iconLibrary: 'FONT_AWESOME_REGULAR',
-                          iconKey: 'file',
+                          iconKey: 'draft',
                           iconBkgdColor: '#50BFD5',
                         }
                       : project.illustration || { ...defaultProjectIllustration }

@@ -9,7 +9,6 @@ import { css, cx } from '@emotion/css';
 import * as React from 'react';
 import useTranslations from '../../../i18n/I18nContext';
 import { space_sm } from '../../styling/style';
-import IconButton from '../element/IconButton';
 import Flex from './Flex';
 import Icon from './Icon';
 
@@ -76,7 +75,7 @@ export default function Collapsible({
           />
         )}
         {label}
-        <IconButton
+        <Icon
           icon={showContent ? 'expand_less' : 'expand_more'}
           title={
             tooltip

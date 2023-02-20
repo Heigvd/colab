@@ -114,13 +114,13 @@ export default function CardCreator({
                   navigate(`/editor/${currentProjectId}/docs/cardTypes`);
                 }
               }}
-              invertedButton
+              variant='outline'
               className={cx( css({ justifySelf: 'flex-start' }))}
             >
               {i18n.modules.cardType.route.manageTypes}
             </Button>
             <Flex>
-              <Button onClick={close} invertedButton>
+              <Button onClick={close} variant='outline'>
                 {i18n.common.cancel}
               </Button>
 

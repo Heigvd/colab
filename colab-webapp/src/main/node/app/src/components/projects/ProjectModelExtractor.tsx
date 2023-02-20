@@ -15,7 +15,6 @@ import { useProject } from '../../selectors/projectSelector';
 import { useAppDispatch, useLoadingState } from '../../store/hooks';
 import AvailabilityStatusIndicator from '../common/element/AvailabilityStatusIndicator';
 import Button from '../common/element/Button';
-import ButtonWithLoader from '../common/element/ButtonWithLoader';
 import Checkbox from '../common/element/Checkbox';
 import IllustrationDisplay from '../common/element/IllustrationDisplay';
 import { LabeledInput, LabeledTextArea } from '../common/element/Input';
@@ -175,19 +174,19 @@ export function ProjectModelExtractor({ projectId }: ProjectModelExtractorProps)
           className={css({ padding: space_lg, columnGap: space_sm })}
         >
           <Button
-            invertedButton
             onClick={() => {
               if (!readOnly) {
                 reset();
                 close();
               }
             }}
+            variant='outline'
           >
             {i18n.common.cancel}
           </Button>
 
           {showBackButton && (
-            <Button invertedButton onClick={oneStepBack}>
+            <Button variant='outline' onClick={oneStepBack}>
               {i18n.common.back}
             </Button>
           )}
@@ -195,7 +194,7 @@ export function ProjectModelExtractor({ projectId }: ProjectModelExtractorProps)
           {showNextButton && <Button onClick={oneStepForward}>{i18n.common.next}</Button>}
 
           {showCreateButton && (
-            <ButtonWithLoader
+            <Button
               onClick={async () => {
                 if (!readOnly) {
                   setReadOnly(true);
@@ -234,7 +233,7 @@ export function ProjectModelExtractor({ projectId }: ProjectModelExtractorProps)
               isLoading={isLoading}
             >
               {i18n.common.save}
-            </ButtonWithLoader>
+            </Button>
           )}
         </Flex>
       )}

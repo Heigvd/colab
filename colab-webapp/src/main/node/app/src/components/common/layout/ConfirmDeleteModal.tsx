@@ -9,7 +9,6 @@ import * as React from 'react';
 import useTranslations from '../../../i18n/I18nContext';
 import { space_lg } from '../../styling/style';
 import Button from '../element/Button';
-import ButtonWithLoader from '../element/ButtonWithLoader';
 import Flex from './Flex';
 import Modal from './Modal';
 import OpenCloseModal from './OpenCloseModal';
@@ -42,10 +41,10 @@ export function ConfirmDelete({
     <Flex direction="column" align="stretch" grow={1}>
       {message}
       <Flex justify="flex-end">
-        <Button onClick={() => onCancel()} invertedButton>
+        <Button onClick={() => onCancel()} variant='outline'>
           {cancelButtonLabel ? cancelButtonLabel : i18n.common.cancel}
         </Button>
-        <ButtonWithLoader
+        <Button
           ref={mainButtonRef}
           title={confirmButtonLabel ? confirmButtonLabel : i18n.common.delete}
           onClick={onConfirm}
@@ -56,7 +55,7 @@ export function ConfirmDelete({
           isLoading={isConfirmButtonLoading}
         >
           {confirmButtonLabel ? confirmButtonLabel : i18n.common.delete}
-        </ButtonWithLoader>
+        </Button>
       </Flex>
     </Flex>
   );

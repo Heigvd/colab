@@ -5,7 +5,8 @@
  * Licensed under the MIT License
  */
 import { css, cx } from '@emotion/css';
-
+export type GeneralSizeType = 'xs' | 'sm' | 'md' | 'lg';
+export type ThemeType = 'primary' |'success' | 'warning' | 'error';
 // new UI
 const basics = css({
   '--white': '#FFF',

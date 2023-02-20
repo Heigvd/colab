@@ -5,7 +5,7 @@
  * Licensed under the MIT License
  */
 import { css, cx } from '@emotion/css';
-import { br, heading, space, text } from './theme';
+import { br, heading, space, text, ThemeType } from './theme';
 
 //SPACE VARS
 export const space_2xs = space['2xs'];
@@ -86,6 +86,16 @@ export const warningTextStyle = css({
 });
 export const successTextStyle = css({
   color: 'var(--success-main)',
+});
+
+export const errorborderStyle = css({
+  border: '1px solid var(--error-main)',
+});
+export const warningborderStyle = css({
+  border: '1px solid var(--warning-main)',
+});
+export const successborderStyle = css({
+  border: '1px solid var(--success-main)',
 });
 
 // TEXT ELLIPSIS
@@ -180,10 +190,11 @@ export const lightLinkStyle = cx(
 
 //ICON BUTTONS STYLES
 export const iconButtonStyle = cx(
-  p_xs,
+  p_sm,
   css({
     display: 'flex',
-    alignItems: 'stretch',
+    alignItems: 'center',
+    justifyContent: 'center',
     color: 'var(--text-secondary)',
     cursor: 'pointer',
     ':hover': {
@@ -215,17 +226,25 @@ export const lightIconButtonStyle = css({
 
 // BUTTON STYLES
 export const buttonStyle = cx(
+  br_full,
   css({
     display: 'flex',
     flexWrap: 'nowrap',
     alignItems: 'center',
     padding: `0 ${space_md}`,
     ':hover': {
-      backgroundColor: 'var(--bg-secondary)',
       textDecoration: 'none',
+      backgroundColor: 'var(--bg-secondary)',
+    },
+    ':focus': {
+      outline: 'none',
+    },
+    ':focus-visible': {
+      outline: '1px solid var(--text-primary)',
     },
   }),
 );
+
 export const activeButtonStyle = cx(
   buttonStyle,
   css({
@@ -233,6 +252,7 @@ export const activeButtonStyle = cx(
     textDecoration: 'none',
   }),
 );
+
 export const inactiveButtonStyle = cx(
   buttonStyle,
   css({
@@ -241,32 +261,36 @@ export const inactiveButtonStyle = cx(
   }),
 );
 
-export const invertedButtonStyle = cx(
+export function SolidButtonStyle(theme: ThemeType){
+  return css({
+    backgroundColor: `var(--${theme}-main)`,
+    border: '1px solid transparent',
+    color: 'var(--primary-contrast)',
+    ':hover': {
+      backgroundColor: `var(--${theme}-dark)`,
+    },
+    ':active': {
+      backgroundColor: `var(--${theme}-darker)`,
+    },
+  
+  })
+} ;
+
+export function OutlineButtonStyle(theme: ThemeType): string { 
+  return cx(
   css({
     backgroundColor: 'transparent',
-    border: '1px solid var(--primary-main)',
-    color: 'var(--primary-main)',
-    padding: '8px 14px',
+    border: `1px solid var(--${theme}-main)`,
+    color: `var(--primary-main)`,
     cursor: 'pointer',
     ':hover': {
-      backgroundColor: 'var(--bg-secondary)',
+      backgroundColor: `var(--${theme}-fade)`,
     },
-    ':focus': {
-      outline: 'none',
-    },
-    ':focus-visible': {
-      outline: '1px solid blue',
+    ':active': {
+      backgroundColor: `var(--${theme != 'primary' ? theme + '-fade' : theme + '-100'})`,
     },
   }),
-);
-
-export const inactiveInvertedButtonStyle = cx(
-  invertedButtonStyle,
-  css({
-    opacity: '0.5',
-    cursor: 'default',
-  }),
-);
+)};
 
 // CARD
 export const cardStyle = cx(
