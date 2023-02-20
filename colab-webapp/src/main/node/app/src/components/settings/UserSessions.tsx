@@ -6,7 +6,6 @@
  */
 
 import { css, cx } from '@emotion/css';
-import { faTrash } from '@fortawesome/free-solid-svg-icons';
 import { User } from 'colab-rest-client';
 import * as React from 'react';
 import * as API from '../../API/api';

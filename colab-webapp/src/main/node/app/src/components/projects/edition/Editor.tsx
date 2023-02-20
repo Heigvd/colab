@@ -8,7 +8,7 @@
 import { css, cx } from '@emotion/css';
 import { Card, CardContent, entityIs, Project } from 'colab-rest-client';
 import * as React from 'react';
-import { Navigate, Route, Routes, useLocation, useNavigate, useNavigation, useParams } from 'react-router-dom';
+import { Navigate, Route, Routes, useLocation, useNavigate, useParams } from 'react-router-dom';
 import * as API from '../../../API/api';
 import useTranslations from '../../../i18n/I18nContext';
 import {
@@ -568,8 +568,6 @@ export default function Editor(): JSX.Element {
 
   const presenceContext = usePresenceContext();
 
-  const navigation = useNavigation();
-
   const rootContent = useAppSelector(state => {
     if (entityIs(root, 'Card') && root.id != null) {
       const card = state.cards.cards[root.id];
@@ -608,7 +606,7 @@ export default function Editor(): JSX.Element {
     }
   }, [dispatch, root, rootContent]);
 
-  if (status == 'LOADING' || navigation.state === "loading") {
+  if (status == 'LOADING') {
     return <InlineLoading />;
   } else if (project == null || project.id == null) {
     return (

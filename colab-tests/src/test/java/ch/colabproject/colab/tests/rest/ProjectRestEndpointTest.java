@@ -47,8 +47,8 @@ public class ProjectRestEndpointTest extends AbstractArquillianTest {
         ProjectType type = ProjectType.PROJECT;
         String name = "my first new project";
         String description = "everything is awesome";
-        IconLibrary iconLibrary = IconLibrary.FONT_AWESOME_SOLID;
-        String iconKey = "otter";
+        IconLibrary iconLibrary = IconLibrary.MATERIAL_SYMBOLS_OUTLINED;
+        String iconKey = "cruelty_free";
         String iconBkgdColor = "#936";
 
         TestUser user = this.signup("goulashsensei", "goulash@test.local", "SoSecure");
@@ -164,8 +164,8 @@ public class ProjectRestEndpointTest extends AbstractArquillianTest {
         project.setDescription("So Long, and Thanks for All the Games");
         project.setGlobalProject(true);
         Illustration illustration = new Illustration();
-        illustration.setIconLibrary(IconLibrary.FONT_AWESOME_SOLID);
-        illustration.setIconKey("faPaw");
+        illustration.setIconLibrary(IconLibrary.MATERIAL_SYMBOLS_OUTLINED);
+        illustration.setIconKey("emoji_nature");
         illustration.setIconBkgdColor("purple");
         project.setIllustration(illustration);
 

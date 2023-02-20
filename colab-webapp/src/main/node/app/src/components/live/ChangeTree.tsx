@@ -6,7 +6,6 @@
  */
 
 import { css } from '@emotion/css';
-import { faTrash } from '@fortawesome/free-solid-svg-icons';
 import { BrowserJsPlumbInstance, newInstance } from '@jsplumb/browser-ui';
 import '@jsplumb/connector-bezier';
 import '@jsplumb/connector-flowchart';

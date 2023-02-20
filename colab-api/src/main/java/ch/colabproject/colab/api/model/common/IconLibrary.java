@@ -22,7 +22,12 @@ public enum IconLibrary {
     /**
      * Font Awesome regular
      */
-    FONT_AWESOME_REGULAR;
+    FONT_AWESOME_REGULAR,
+
+    /**
+     * Material symbols outlined
+     */
+    MATERIAL_SYMBOLS_OUTLINED;
 
     // WARNING ! DO NOT CHANGE THE ENUM NAMES, THEY ARE USED AS KEYS IN DB !!
 }

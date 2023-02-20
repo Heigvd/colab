@@ -36,7 +36,9 @@ export default function IllustrationDisplay({
       className={cx(
         css({
           backgroundColor: `${
-            currentIllustration.iconBkgdColor ? currentIllustration.iconBkgdColor : '#50BFD5'
+            currentIllustration.iconBkgdColor
+              ? currentIllustration.iconBkgdColor
+              : defaultProjectIllustration.iconBkgdColor
           }`,
           height: `calc(100% - 2*${space_sm})`,
           width: `calc(100% - 2*${space_sm})`,

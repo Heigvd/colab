@@ -1,0 +1,135 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:pro="http://www.liquibase.org/xml/ns/pro" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-latest.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+    <changeSet author="sandra" id="1676544198150-1">
+       <update tableName="project"> 
+           <column name="iconbkgdcolor" value="#47d189" />
+           <where>UPPER(iconbkgdcolor) = '#57B279'</where>
+       </update>
+    </changeSet>
+    <changeSet author="sandra" id="1676544198150-2">
+       <update tableName="project"> 
+           <column name="iconbkgdcolor" value="#ea6262" />
+           <where>UPPER(iconbkgdcolor) = '#685044'</where>
+       </update>
+    </changeSet>
+    <changeSet author="sandra" id="1676544198150-3">
+       <update tableName="project"> 
+           <column name="iconbkgdcolor" value="#9f7aea" />
+           <where>UPPER(iconbkgdcolor) = '#573CB9'</where>
+       </update>
+    </changeSet>
+    <changeSet author="sandra" id="1676544198150-4">
+       <update tableName="project"> 
+           <column name="iconbkgdcolor" value="#ecc94b" />
+           <where>UPPER(iconbkgdcolor) = '#E0C600'</where>
+       </update>
+    </changeSet>
+    <changeSet author="sandra" id="1676544198150-5">
+       <update tableName="project"> 
+           <column name="iconbkgdcolor" value="#ed64a6" />
+           <where>UPPER(iconbkgdcolor) = '#DE4D86'</where>
+       </update>
+    </changeSet>
+    <changeSet author="sandra" id="1676544198150-6">
+       <update tableName="project"> 
+           <column name="iconbkgdcolor" value="#e68d52" />
+           <where>UPPER(iconbkgdcolor) = '#E36D28'</where>
+       </update>
+    </changeSet>
+    <changeSet author="sandra" id="1676544198150-7">
+       <update tableName="project"> 
+           <column name="iconbkgdcolor" value="#5f9ed9" />
+           <where>UPPER(iconbkgdcolor) = '#50BFD5'</where>
+       </update>
+    </changeSet>
+    <changeSet author="sandra" id="1676544198150-8">
+       <update tableName="project"> 
+           <column name="iconkey" value="casino" />
+           <where>iconkey = 'chess-board'</where>
+       </update>
+    </changeSet>
+    <changeSet author="sandra" id="1676544198150-9">
+       <update tableName="project"> 
+           <column name="iconkey" value="bug_report" />
+           <where>iconkey = 'dragon'</where>
+       </update>
+    </changeSet>
+    <changeSet author="sandra" id="1676544198150-10">
+       <update tableName="project"> 
+           <column name="iconkey" value="robot" />
+           <where>iconkey = 'bolt'</where>
+       </update>
+    </changeSet>
+    <changeSet author="sandra" id="1676544198150-11">
+       <update tableName="project"> 
+           <column name="iconkey" value="smart_toy" />
+           <where>iconkey = 'ghost'</where>
+       </update>
+    </changeSet>
+    <changeSet author="sandra" id="1676544198150-12">
+       <update tableName="project"> 
+           <column name="iconkey" value="stadia_controller" />
+           <where>iconkey = 'gamepad'</where>
+       </update>
+    </changeSet>
+    <changeSet author="sandra" id="1676544198150-13">
+       <update tableName="project"> 
+           <column name="iconkey" value="school" />
+           <where>iconkey = 'graduation-cap'</where>
+       </update>
+    </changeSet>
+    <changeSet author="sandra" id="1676544198150-14">
+       <update tableName="project"> 
+           <column name="iconkey" value="extension" />
+           <where>iconkey = 'puzzle-piece'</where>
+       </update>
+    </changeSet>
+    <changeSet author="sandra" id="1676544198150-15">
+       <update tableName="project"> 
+           <column name="iconkey" value="clear_day" />
+           <where>iconkey = 'kiwi-bird'</where>
+       </update>
+    </changeSet>
+    <changeSet author="sandra" id="1676544198150-16">
+       <update tableName="project"> 
+           <column name="iconkey" value="menu_book" />
+           <where>iconkey = 'book-open'</where>
+       </update>
+    </changeSet>
+    <changeSet author="sandra" id="1676544198150-17">
+       <update tableName="project"> 
+           <column name="iconkey" value="water_drop" />
+           <where>iconkey = 'feather'</where>
+       </update>
+    </changeSet>
+    <changeSet author="sandra" id="1676544198150-18">
+       <update tableName="project"> 
+           <column name="iconkey" value="casino" />
+           <where>iconkey = 'user-astronaut'</where>
+       </update>
+    </changeSet>
+    <changeSet author="sandra" id="1676544198150-19">
+       <update tableName="project"> 
+           <column name="iconkey" value="casino" />
+           <where>iconkey = 'dice'</where>
+       </update>
+    </changeSet>
+    <changeSet author="sandra" id="1676544198150-20">
+       <update tableName="project"> 
+           <column name="iconkey" value="clear_day" />
+           <where>iconkey = 'meteor'</where>
+       </update>
+    </changeSet>
+    <changeSet author="sandra" id="1676544198150-21">
+       <update tableName="project"> 
+           <column name="iconkey" value="history_edu" />
+           <where>iconkey = 'masks-theater'</where>
+       </update>
+    </changeSet>
+    <changeSet author="sandra" id="1676544198150-22">
+       <update tableName="project"> 
+           <column name="iconkey" value="music_note" />
+           <where>iconkey = 'music'</where>
+       </update>
+    </changeSet>
+</databaseChangeLog>
