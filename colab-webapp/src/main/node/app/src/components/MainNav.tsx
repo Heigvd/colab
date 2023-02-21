@@ -16,7 +16,7 @@ import { useCurrentUser } from '../selectors/userSelector';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
 import Avatar from './common/element/Avatar';
 import InlineLoading from './common/element/InlineLoading';
-import { MainMenuLink, } from './common/element/Link';
+import { MainMenuLink } from './common/element/Link';
 import DropDownMenu from './common/layout/DropDownMenu';
 import Flex from './common/layout/Flex';
 import Icon from './common/layout/Icon';
@@ -66,7 +66,7 @@ export default function MainNav(): JSX.Element {
             entries={entries}
             onSelect={e => navigate(e.value)}
             menuIcon="BURGER"
-            buttonClassName={cx(iconButtonStyle, css({alignItems: 'center'}))}
+            buttonClassName={cx(iconButtonStyle, css({ alignItems: 'center' }))}
             showSelectedLabel
           />
         </nav>
@@ -108,7 +108,7 @@ export function UserDropDown({ onlyLogout }: { onlyLogout?: boolean }): JSX.Elem
     return (
       <>
         <DropDownMenu
-        buttonLabel={<Avatar currentUser={currentUser} />}
+          buttonLabel={<Avatar currentUser={currentUser} />}
           title={currentUser.username}
           valueComp={{ value: '', label: '' }}
           buttonClassName={iconButtonStyle}
@@ -123,7 +123,7 @@ export function UserDropDown({ onlyLogout }: { onlyLogout?: boolean }): JSX.Elem
                       padding: space_sm,
                     })}
                   >
-                     <Icon icon={'person'} />{' '}
+                    <Icon icon={'person'} />{' '}
                     {currentUser.firstname && currentUser.lastname
                       ? currentUser.firstname + ' ' + currentUser.lastname
                       : currentUser.username}
@@ -138,7 +138,7 @@ export function UserDropDown({ onlyLogout }: { onlyLogout?: boolean }): JSX.Elem
                     value: 'settings',
                     label: (
                       <>
-                         <Icon icon={'settings'} /> {i18n.user.settings}
+                        <Icon icon={'settings'} /> {i18n.user.settings}
                       </>
                     ),
                     action: () => navigate('./settings'),
@@ -151,7 +151,7 @@ export function UserDropDown({ onlyLogout }: { onlyLogout?: boolean }): JSX.Elem
                     value: 'admin',
                     label: (
                       <>
-                         <Icon icon={'admin_panel_settings'} /> {i18n.admin.admin}
+                        <Icon icon={'admin_panel_settings'} /> {i18n.admin.admin}
                       </>
                     ),
                     action: () => navigate('./admin'),
@@ -164,7 +164,7 @@ export function UserDropDown({ onlyLogout }: { onlyLogout?: boolean }): JSX.Elem
                     value: 'about',
                     label: (
                       <>
-                         <Icon icon={'info'} /> {i18n.common.about}
+                        <Icon icon={'info'} /> {i18n.common.about}
                       </>
                     ),
                     action: () => navigate('/about-colab'),
@@ -172,30 +172,27 @@ export function UserDropDown({ onlyLogout }: { onlyLogout?: boolean }): JSX.Elem
                 ]
               : []),
             {
+              value: 'language',
+              label: (
+                <>
+                  <LanguageSelector />
+                </>
+              ),
+              subDropDownButton: true,
+            },
+            {
               value: 'logout',
               label: (
                 <>
-                   <Icon icon={'logout'} /> {i18n.common.logout}
+                  <Icon icon={'logout'} /> {i18n.common.logout}
                 </>
               ),
               action: logout,
             },
-            {
-              value: 'language',
-              label: (
-                <>
-                   <LanguageSelector />
-                </>
-              ),
-              subDropDownButton: true
-            },
           ]}
         />
         {passwordScore != null && passwordScore.score < 2 && (
-           <Icon
-            title={i18n.authentication.error.yourPasswordIsWeak}
-            icon={'warning'}
-          />
+          <Icon title={i18n.authentication.error.yourPasswordIsWeak} icon={'warning'} />
         )}
       </>
     );

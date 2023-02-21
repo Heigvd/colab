@@ -60,7 +60,7 @@ export default function HidenResourcesKeeper({
             collapsedChildren={
                <Icon
                 title={i18n.common.display}
-                icon={'eye'}
+                icon={'visibility'}
                 className={cx(iconButtonStyle, lightIconButtonStyle)}
               />
             }

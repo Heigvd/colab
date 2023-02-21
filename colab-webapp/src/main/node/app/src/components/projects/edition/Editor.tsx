@@ -27,6 +27,7 @@ import CardCreator from '../../cards/CardCreator';
 import CardEditor from '../../cards/CardEditor';
 import CardThumbWithSelector from '../../cards/CardThumbWithSelector';
 import ContentSubs from '../../cards/ContentSubs';
+import Badge from '../../common/element/Badge';
 import Checkbox from '../../common/element/Checkbox';
 import IconButton from '../../common/element/IconButton';
 import { IllustrationIconDisplay } from '../../common/element/IllustrationDisplay';
@@ -58,13 +59,6 @@ import ActivityFlowChart from './activityFlow/ActivityFlowChart';
 import Hierarchy from './hierarchy/Hierarchy';
 
 export const depthMax = 2;
-const modelPictoCornerStyle = css({
-  position: 'absolute',
-  top: 0,
-  left: 0,
-  padding: '5px 7px 7px 5px',
-  borderRadius: '0 0 10px 0',
-});
 
 const breadCrumbsStyle = css({
   fontSize: '.8em',
@@ -224,27 +218,27 @@ const CardWrapper = ({
   } else {
     return (
       <>
-          <Flex align="center">
-            {ancestors.map((ancestor, x) => (
-              <Ancestor
-                key={x}
-                card={ancestor.card}
-                content={ancestor.content}
-                className={cx({
-                  [css({ color: 'var(--primary-main)' })]: currentProject.type === 'MODEL',
-                })}
-              />
-            ))}
+        <Flex align="center">
+          {ancestors.map((ancestor, x) => (
             <Ancestor
-              card={card}
-              content={content}
-              last
+              key={x}
+              card={ancestor.card}
+              content={ancestor.content}
               className={cx({
                 [css({ color: 'var(--primary-main)' })]: currentProject.type === 'MODEL',
               })}
             />
-          </Flex>
-          {/* <IconButton
+          ))}
+          <Ancestor
+            card={card}
+            content={content}
+            last
+            className={cx({
+              [css({ color: 'var(--primary-main)' })]: currentProject.type === 'MODEL',
+            })}
+          />
+        </Flex>
+        {/* <IconButton
             title="toggle view edit"
             icon={location.pathname.includes('card') ? 'edit' : 'view_comfy'}
             onClick={() => {
@@ -275,7 +269,7 @@ const CardEditWrapper = ({
   grow = 1,
   align = 'normal',
   touchMode,
-  backButtonPath
+  backButtonPath,
 }: CardWrapperProps): JSX.Element => {
   const { id, vId } = useParams<'id' | 'vId'>();
   const cardId = +id!;
@@ -345,7 +339,7 @@ const CardEditWrapper = ({
           }
           size="full"
           //TO IMPROVE
-          onClose={()=>navigate(backButtonPath)}
+          onClose={() => navigate(backButtonPath)}
           showCloseButton
         >
           {() => (
@@ -460,7 +454,16 @@ function EditorNav({ project }: EditorNavProps): JSX.Element {
           })}
         >
           <Flex className={cx(css({ textTransform: 'initial', margin: `0 ${space_sm}` }))}>
-            <Flex align="center">
+            <Flex align="center" gap={space_sm}>
+              {project.type === 'MODEL' && (
+                <>
+                  {project.globalProject ? (
+                    <Badge variant='outline' icon='public' theme='warning'> Global</Badge>
+                  ) : (
+                    <Badge variant='outline' icon='star' theme='warning'> Model</Badge>
+                  )}
+                </>
+              )}
               <Flex
                 className={css({
                   backgroundColor: project.illustration?.iconBkgdColor,
@@ -537,7 +540,7 @@ function RootView({ rootContent }: { rootContent: CardContent | null | undefined
       })}
     >
       {rootContent != null ? (
-        <Flex className={css({overflow: 'hidden'})}>
+        <Flex className={css({ overflow: 'hidden' })}>
           <CardCreatorAndOrganize
             rootContent={rootContent}
             organize={{ organize: organize, setOrganize: setOrganize }}
@@ -548,7 +551,7 @@ function RootView({ rootContent }: { rootContent: CardContent | null | undefined
             depth={depthMax}
             cardContent={rootContent}
             organize={organize}
-            className={css({height: '100%', overflow: 'auto'})}
+            className={css({ height: '100%', overflow: 'auto' })}
           />
         </Flex>
       ) : (
@@ -619,7 +622,7 @@ export default function Editor(): JSX.Element {
   } else {
     return (
       <PresenceContext.Provider value={presenceContext}>
-        <Flex direction="column" align="stretch" grow={1} className={css({height: '100vh'})}>
+        <Flex direction="column" align="stretch" grow={1} className={css({ height: '100vh' })}>
           <EditorNav project={project} />
           <Flex
             direction="column"
@@ -630,21 +633,6 @@ export default function Editor(): JSX.Element {
               position: 'relative',
             })}
           >
-            {project.type === 'MODEL' && (
-              <Flex
-                align="center"
-                justify="center"
-                className={modelPictoCornerStyle}
-                title={i18n.modules.project.info.isAModel}
-              >
-                {project.globalProject ? (
-                  <Icon icon={'public'} color="white" opsz="sm" />
-                ) : (
-                  <Icon icon={'star'} color="white" opsz="sm" />
-                )}
-              </Flex>
-            )}
-
             <Routes>
               <Route path="settings/*" element={<Settings />} />
               <Route

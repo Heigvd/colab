@@ -23,7 +23,6 @@ export default function LanguageSelector(): JSX.Element {
   return (
     <DropDownMenu
       icon='language'
-      menuIcon='CARET'
       value={lang}
       valueComp={valueComp}
       entries={entries}
@@ -32,6 +31,7 @@ export default function LanguageSelector(): JSX.Element {
       className={css({ alignItems: 'stretch'})}
       buttonClassName={entryStyle}
       showSelectedLabel
+      direction='left'
     />
   );
 }

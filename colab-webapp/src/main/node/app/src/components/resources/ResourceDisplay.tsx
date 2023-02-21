@@ -181,7 +181,7 @@ export function ResourceDisplay({
                   alignItems: 'stretch',
                 })}
                 title=""
-                collapsedChildren={ <Icon icon={'eyeglasses'} />}
+                collapsedChildren={ <Icon icon={'trolley'} />}
               >
                 {close => <ResourceScope onCancel={close} resource={resource} />}
               </OpenCloseModal>
