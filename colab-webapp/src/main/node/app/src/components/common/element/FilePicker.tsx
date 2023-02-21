@@ -96,14 +96,12 @@ const getMimeTypeIcon = (mimeType: string | undefined | null, hasNoFile: boolean
     } else {
       icon = 'draft';
     }
-    return (
-       <Icon icon={icon} opsz="lg" color={hasNoFile ? 'var(--divider-main)' : undefined} />
-    );
+    return <Icon icon={icon} opsz="lg" color={hasNoFile ? 'var(--divider-main)' : undefined} />;
   } else {
     return (
       <span className={'fa-layers fa-fw ' + layerPadding}>
-         <Icon icon={'draft'} opsz="lg" />
-         <Icon icon={'skull'} />
+        <Icon icon={'draft'} opsz="lg" />
+        <Icon icon={'skull'} />
       </span>
     );
   }
@@ -163,6 +161,8 @@ export default function FilePicker({
   readOnly,
 }: FilePickerProps): JSX.Element {
   const i18n = useTranslations();
+
+  const fileInputRef = React.useRef<HTMLInputElement>(null);
 
   const [dragging, setDragging] = React.useState(false);
 
@@ -326,17 +326,27 @@ export default function FilePicker({
         )}
         {!readOnly && onChange && editingStatus && (
           <div className={css({ paddingLeft: space_lg })} onClick={e => e.stopPropagation()}>
-            <label>
-              <Button onClick={() => {}}>
-                 <Icon icon={'upload'} />{' '}
-                {hasNoFile ? i18n.modules.content.uploadFile : i18n.modules.content.replaceFile}
-              </Button>
-              <input className={inputStyle} type="file" accept={accept} onChange={onInputCb} />
-            </label>
+            <Button
+              onClick={() => {
+                if (fileInputRef.current) {
+                  fileInputRef.current.click();
+                }
+              }}
+            >
+              <Icon icon={'upload'} />{' '}
+              {hasNoFile ? i18n.modules.content.uploadFile : i18n.modules.content.replaceFile}
+            </Button>
+            <input
+              ref={fileInputRef}
+              className={inputStyle}
+              type="file"
+              accept={accept}
+              onChange={onInputCb}
+            />
             <Button
               onClick={() => setEditingState(false)}
               className={css({ marginLeft: space_sm })}
-              variant='outline'
+              variant="outline"
             >
               {i18n.common.ok}
             </Button>
