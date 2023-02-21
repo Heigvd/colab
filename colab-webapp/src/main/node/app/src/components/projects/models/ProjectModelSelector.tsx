@@ -8,15 +8,15 @@
 import { css, cx } from '@emotion/css';
 import { Project } from 'colab-rest-client';
 import * as React from 'react';
-import useTranslations from '../../i18n/I18nContext';
-import { useAndLoadMyAndInstanceableModels } from '../../selectors/projectSelector';
-import ItemThumbnailsSelection from '../common/collection/ItemThumbnailsSelection';
-import AvailabilityStatusIndicator from '../common/element/AvailabilityStatusIndicator';
-import IllustrationDisplay from '../common/element/IllustrationDisplay';
-import Flex from '../common/layout/Flex';
-import Icon from '../common/layout/Icon';
-import { lightTextStyle, multiLineEllipsisStyle, space_sm, text_sm } from '../styling/style';
-import { defaultProjectIllustration, noModelIllustration } from './ProjectCommon';
+import useTranslations from '../../../i18n/I18nContext';
+import { useAndLoadMyAndInstanceableModels } from '../../../selectors/projectSelector';
+import ItemThumbnailsSelection from '../../common/collection/ItemThumbnailsSelection';
+import AvailabilityStatusIndicator from '../../common/element/AvailabilityStatusIndicator';
+import IllustrationDisplay from '../../common/element/IllustrationDisplay';
+import Flex from '../../common/layout/Flex';
+import Icon from '../../common/layout/Icon';
+import { space_sm, text_sm, lightTextStyle, multiLineEllipsisStyle } from '../../styling/style';
+import { noModelIllustration, defaultProjectIllustration } from '../ProjectCommon';
 
 const modelPictoCornerStyle = css({
   position: 'absolute',

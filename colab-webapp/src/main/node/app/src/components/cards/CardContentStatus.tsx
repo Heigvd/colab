@@ -9,22 +9,15 @@ import { css, cx } from '@emotion/css';
 import { CardContentStatus } from 'colab-rest-client';
 import * as React from 'react';
 import useTranslations from '../../i18n/I18nContext';
-import Badge from '../common/element/Badge';
+import Badge, { BadgeSizeType } from '../common/element/Badge';
 import Flex from '../common/layout/Flex';
 import Icon from '../common/layout/Icon';
 import { space_sm } from '../styling/style';
 
 const badgeStyle = (color: string) => {
   return css({
-    display: 'flex',
-    alignItems: 'center',
     border: `1px solid ${color}`,
     color: `${color}`,
-    margin: '0 2px',
-    padding: '3px',
-    fontSize: '0.8em',
-    textTransform: 'uppercase',
-    gap: space_sm,
   });
 };
 
@@ -32,6 +25,8 @@ export interface CardContentStatusProps {
   status: CardContentStatus;
   mode: 'icon' | 'semi' | 'full';
   className?: string;
+  showActive?: boolean;
+  size?: BadgeSizeType;
 }
 type StatusIconAndColorType = {
   icon: string;
@@ -58,6 +53,8 @@ export function getStatusIconAndColor(status: CardContentStatus): StatusIconAndC
 export default function CardContentStatusDisplay({
   status,
   mode,
+  showActive,
+  size,
   className,
 }: CardContentStatusProps): JSX.Element {
   const i18n = useTranslations();
@@ -65,7 +62,7 @@ export default function CardContentStatusDisplay({
   const tooltip = i18n.modules.card.settings.statusTooltip(status);
 
   if (mode === 'icon') {
-    if (status === 'ACTIVE') {
+    if (status === 'ACTIVE' && !showActive) {
       return <></>;
     }
     return (
@@ -74,11 +71,11 @@ export default function CardContentStatusDisplay({
         icon={getStatusIconAndColor(status).icon}
         color={getStatusIconAndColor(status).color}
         title={tooltip}
-        opsz='xs'
+        opsz={size || "xs"}
       />
     );
   } else if (mode === 'semi') {
-    if (status === 'ACTIVE') {
+    if (status === 'ACTIVE' && !showActive) {
       return <></>;
     }
     return (
@@ -88,15 +85,15 @@ export default function CardContentStatusDisplay({
         title={tooltip}
         icon={getStatusIconAndColor(status).icon}
         className={cx(badgeStyle(getStatusIconAndColor(status).color), className)}
+        size={size}
       >
         {i18n.modules.card.settings.statuses[status]}
       </Badge>
     );
   } else {
     return (
-      <Flex align='center'
-      >
-        {status != 'ACTIVE' && <Icon icon= {getStatusIconAndColor(status).icon} opsz='xs' /> }
+      <Flex align="center">
+        {(status != 'ACTIVE' || showActive) && <Icon icon={getStatusIconAndColor(status).icon} opsz="xs" />}
         {i18n.modules.card.settings.statuses[status]}
       </Flex>
     );

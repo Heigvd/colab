@@ -11,25 +11,17 @@ import { css, cx } from '@emotion/css';
 import { AsyncThunk } from '@reduxjs/toolkit';
 import { Project } from 'colab-rest-client';
 import * as React from 'react';
-import useTranslations from '../../i18n/I18nContext';
-import { useAndLoadInstanceableModels } from '../../selectors/projectSelector';
-import { useAppDispatch } from '../../store/hooks';
-import { AvailabilityStatus } from '../../store/store';
-import IllustrationDisplay from '../common/element/IllustrationDisplay';
-import InlineLoading from '../common/element/InlineLoading';
-import DropDownMenu from '../common/layout/DropDownMenu';
-import Flex from '../common/layout/Flex';
-import Icon from '../common/layout/Icon';
-import {
-  br_lg,
-  lightIconButtonStyle,
-  lightTextStyle,
-  multiLineEllipsisStyle,
-  oneLineEllipsisStyle,
-  space_sm,
-  text_sm,
-} from '../styling/style';
-import { defaultProjectIllustration, noModelIllustration } from './ProjectCommon';
+import useTranslations from '../../../i18n/I18nContext';
+import { useAndLoadInstanceableModels } from '../../../selectors/projectSelector';
+import { useAppDispatch } from '../../../store/hooks';
+import { AvailabilityStatus } from '../../../store/store';
+import IllustrationDisplay from '../../common/element/IllustrationDisplay';
+import InlineLoading from '../../common/element/InlineLoading';
+import DropDownMenu from '../../common/layout/DropDownMenu';
+import Flex from '../../common/layout/Flex';
+import Icon from '../../common/layout/Icon';
+import { space_sm, br_lg, oneLineEllipsisStyle, lightIconButtonStyle, text_sm, lightTextStyle, multiLineEllipsisStyle } from '../../styling/style';
+import { noModelIllustration, defaultProjectIllustration } from '../ProjectCommon';
 
 function sortResources(a: Project, b: Project): number {
   return (a.id || 0) - (b.id || 0);

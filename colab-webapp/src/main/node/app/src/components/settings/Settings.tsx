@@ -18,7 +18,7 @@ import { TipsCtx, WIPContainer } from '../common/element/Tips';
 import Flex from '../common/layout/Flex';
 import Tabs, { Tab } from '../common/layout/Tabs';
 import Debugger from '../debugger/debugger';
-import SharedModelsList from '../projects/SharedModelsList';
+import SharedModelsList from '../projects/models/SharedModelsList';
 import { lightIconButtonStyle, space_xl } from '../styling/style';
 import DisplaySettings from './DisplaySettings';
 import LocalAccount from './LocalAccount';

@@ -9,20 +9,20 @@ import { css } from '@emotion/css';
 import { Illustration, Project } from 'colab-rest-client';
 import * as React from 'react';
 import { useNavigate } from 'react-router-dom';
-import * as API from '../../API/api';
-import useTranslations from '../../i18n/I18nContext';
-import { useProject } from '../../selectors/projectSelector';
-import { useAppDispatch, useLoadingState } from '../../store/hooks';
-import AvailabilityStatusIndicator from '../common/element/AvailabilityStatusIndicator';
-import Button from '../common/element/Button';
-import Checkbox from '../common/element/Checkbox';
-import IllustrationDisplay from '../common/element/IllustrationDisplay';
-import { LabeledInput, LabeledTextArea } from '../common/element/Input';
-import Flex from '../common/layout/Flex';
-import Modal from '../common/layout/Modal';
-import { space_xl, space_lg, space_sm } from '../styling/style';
-import { defaultProjectIllustration } from './ProjectCommon';
-import { ProjectIllustrationMaker } from './ProjectIllustrationMaker';
+import * as API from '../../../API/api';
+import useTranslations from '../../../i18n/I18nContext';
+import { useProject } from '../../../selectors/projectSelector';
+import { useAppDispatch, useLoadingState } from '../../../store/hooks';
+import AvailabilityStatusIndicator from '../../common/element/AvailabilityStatusIndicator';
+import Button from '../../common/element/Button';
+import Checkbox from '../../common/element/Checkbox';
+import IllustrationDisplay from '../../common/element/IllustrationDisplay';
+import { LabeledInput, LabeledTextArea } from '../../common/element/Input';
+import Flex from '../../common/layout/Flex';
+import Modal from '../../common/layout/Modal';
+import { space_xl, space_lg, space_sm } from '../../styling/style';
+import { defaultProjectIllustration } from '../ProjectCommon';
+import { ProjectIllustrationMaker } from '../ProjectIllustrationMaker';
 
 const modalStyle = css({
   '&:hover': { textDecoration: 'none' },

@@ -15,9 +15,9 @@ import Button from '../common/element/Button';
 import Flex from '../common/layout/Flex';
 import OpenCloseModal from '../common/layout/OpenCloseModal';
 import { space_lg, space_sm } from '../styling/style';
+import ProjectModelSelector from './models/ProjectModelSelector';
 import { defaultProjectIllustration } from './ProjectCommon';
 import ProjectDataInitialization from './ProjectDataInitialization';
-import ProjectModelSelector from './ProjectModelSelector';
 
 // Note : when we click outside the modal, the data are kept
 

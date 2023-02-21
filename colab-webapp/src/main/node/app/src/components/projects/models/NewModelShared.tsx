@@ -6,8 +6,8 @@
  */
 
 import * as React from 'react';
-import PublicEntranceContainer from '../authentication/PublicEntranceContainer';
-import Flex from '../common/layout/Flex';
+import PublicEntranceContainer from '../../authentication/PublicEntranceContainer';
+import Flex from '../../common/layout/Flex';
 
 export default function NewModelShared(): JSX.Element {
   // const i18n = useTranslations();

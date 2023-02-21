@@ -193,7 +193,6 @@ export const en = {
     team: 'Team',
     roles: 'Roles',
     rights: 'Rights',
-    raci: 'RACI',
     members: 'Members',
     teamManagement: 'Team management',
     generalInvolvement: 'General involvement',
@@ -213,6 +212,13 @@ export const en = {
       projectLeader: 'Project leader',
       member: 'Member',
       guest: 'Guest',
+    },
+    raci: {
+      raci: 'RACI',
+      responsible: 'Responsible',
+      approver: 'Approver',
+      support: 'Support',
+      accessDenied: 'Access Denied',
     },
     rolesHelper:
       'Create and assign roles to the team members. Ex. Designer, teacher, developper. It can be used to fine-tune the involvement of each member, or to keep all project members aware of the skills involved.',

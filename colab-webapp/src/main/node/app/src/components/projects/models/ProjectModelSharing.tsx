@@ -6,12 +6,12 @@
  */
 
 import * as React from 'react';
-import * as API from '../../API/api';
-import { emailFormat } from '../../helper';
-import useTranslations from '../../i18n/I18nContext';
-import { useAppDispatch, useLoadingState } from '../../store/hooks';
-import { addNotification } from '../../store/slice/notificationSlice';
-import Form, { Field } from '../common/element/Form';
+import * as API from '../../../API/api';
+import { emailFormat } from '../../../helper';
+import useTranslations from '../../../i18n/I18nContext';
+import { useAppDispatch, useLoadingState } from '../../../store/hooks';
+import { addNotification } from '../../../store/slice/notificationSlice';
+import Form, { Field } from '../../common/element/Form';
 
 export interface ProjectModelSharingProps {
   projectId: number;

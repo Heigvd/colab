@@ -17,7 +17,7 @@ import Checkbox from '../../common/element/Checkbox';
 import Flex from '../../common/layout/Flex';
 import OpenCloseModal from '../../common/layout/OpenCloseModal';
 import { space_xl, space_lg } from '../../styling/style';
-import ProjectModelSharing from '../ProjectModelSharing';
+import ProjectModelSharing from '../models/ProjectModelSharing';
 
 export interface ProjectSettingsModelSharingProps {
   projectId: number;

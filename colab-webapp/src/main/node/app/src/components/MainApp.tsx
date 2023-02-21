@@ -25,7 +25,7 @@ import Loading from './common/layout/Loading';
 import Overlay from './common/layout/Overlay';
 import MainNav from './MainNav';
 import Editor from './projects/edition/Editor';
-import NewModelShared from './projects/NewModelShared';
+import NewModelShared from './projects/models/NewModelShared';
 import { MyModels, MyProjects } from './projects/ProjectList';
 import Settings from './settings/Settings';
 

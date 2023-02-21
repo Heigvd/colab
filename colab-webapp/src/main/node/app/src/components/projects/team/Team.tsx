@@ -55,7 +55,7 @@ export default function Team({ project }: TeamProps): JSX.Element {
           <Tab name="rights" label={i18n.team.rights}>
             <TeamRights project={project} />
           </Tab>
-          <Tab name="projectACL" label={i18n.team.raci} invisible>
+          <Tab name="projectACL" label={i18n.team.raci.raci} invisible>
             <TeamRACI project={project} />
           </Tab>
           <Tab name="projectACL" label={i18n.modules.project.settings.involvements.label}>

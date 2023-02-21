@@ -31,7 +31,7 @@ import {
 } from '../styling/style';
 import ProjectDisplay from './ProjectCard';
 import ProjectCreator from './ProjectCreator';
-import { ProjectModelExtractor } from './ProjectModelExtractor';
+import { ProjectModelExtractor } from './models/ProjectModelExtractor';
 import { ProjectSettingsGeneralInModal } from './settings/ProjectSettingsGeneral';
 
 

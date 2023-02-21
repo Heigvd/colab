@@ -7,13 +7,13 @@
 
 import { css, cx } from '@emotion/css';
 import React from 'react';
-import { br_md, text_lg, text_md, text_sm } from '../../styling/style';
+import { br_md, ellipsisStyle, p_xs, text_lg, text_md, text_sm, text_xs } from '../../styling/style';
 import { ThemeType } from '../../styling/theme';
 import Flex from '../layout/Flex';
 import Icon from '../layout/Icon';
 
 type BadgeVariantType = 'solid' | 'outline' | 'ghost';
-type BadgeSizeType = 'sm' | 'md' | 'lg';
+export type BadgeSizeType = 'sm' | 'md' | 'lg';
 
 function SolidBadgeStyle(theme: ThemeType) {
   return css({
@@ -74,16 +74,16 @@ interface BadgeProps extends React.HTMLAttributes<HTMLSpanElement> {
 
 export default function Badge({
   children,
-  size = 'md',
+  size = 'sm',
   icon,
   variant = 'solid',
   theme = 'primary',
   className,
 }: BadgeProps): JSX.Element {
   return (
-    <Flex className={cx(br_md, BadgeStyle(variant, size, theme), className)}>
+    <Flex align='center' className={cx(br_md, p_xs, text_xs, ellipsisStyle, BadgeStyle(variant, size, theme), className)}>
       {icon && <Icon icon={icon} opsz='xs' />}
-      {children}
+      <div className={ellipsisStyle}>{children}</div>
     </Flex>
   );
 }
