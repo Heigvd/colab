@@ -250,7 +250,7 @@ export default function Tips({
         onMouseMove={onMoveCb}
         onClick={onClickCb}
       >
-         <Icon icon={getIconProp(tipsType)} className={iconClassName} />
+        <Icon icon={getIconProp(tipsType)} className={iconClassName} />
         {coord && displayed && <div className={overlayStyle(coord)}>{children}</div>}
       </span>
     );

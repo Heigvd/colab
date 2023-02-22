@@ -38,7 +38,7 @@ export default function TargetCardTypeSummary({
         (cardType.projectIdCT ? (
           <TargetProjectSummary projectId={cardType.projectIdCT} />
         ) : (
-           <Icon
+          <Icon
             icon={'language'}
             color={'var(--primary-main)'}
             title={i18n.modules.cardType.info.isGlobalType}
@@ -58,7 +58,7 @@ function TargetProjectSummary({ projectId }: TargetProjectSummaryProps): JSX.Ele
   const i18n = useTranslations();
 
   return (
-     <FontAwesomeIcon
+    <FontAwesomeIcon
       icon={
         project?.illustration
           ? {

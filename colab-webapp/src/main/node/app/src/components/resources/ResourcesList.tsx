@@ -19,12 +19,7 @@ import Collapsible from '../common/layout/Collapsible';
 import DropDownMenu from '../common/layout/DropDownMenu';
 import Flex from '../common/layout/Flex';
 import Icon from '../common/layout/Icon';
-import {
-  lightIconButtonStyle,
-  oneLineEllipsisStyle,
-  space_lg,
-  space_sm,
-} from '../styling/style';
+import { lightIconButtonStyle, oneLineEllipsisStyle, space_lg, space_sm } from '../styling/style';
 import { ResourceCategoryModal } from './ResourceDisplay';
 import {
   getKey,
@@ -627,7 +622,7 @@ function TocEntry({
               )}
             >
               {effectiveReadOnly && (
-                 <Icon
+                <Icon
                   icon={'visibility'}
                   opsz="xs"
                   className={css({ marginRight: '3px' })}
@@ -635,7 +630,7 @@ function TocEntry({
                 />
               )}
               {resource.targetResource.published && resource.isDirectResource && (
-                 <Icon
+                <Icon
                   icon={'subdirectory_arrow_right'}
                   opsz="xs"
                   className={css({ marginRight: '3px' })}
@@ -719,7 +714,7 @@ function TocEntry({
                         value: 'categorySelector',
                         label: (
                           <>
-                             <Icon icon={'settings'} /> {i18n.modules.resource.category}
+                            <Icon icon={'settings'} /> {i18n.modules.resource.category}
                           </>
                         ),
                         action: () => setCategorySelector(true),
@@ -732,7 +727,7 @@ function TocEntry({
                         value: 'publishStatus',
                         label: (
                           <>
-                             <Icon icon={'subdirectory_arrow_right'} />
+                            <Icon icon={'subdirectory_arrow_right'} />
                             {resource.targetResource.published
                               ? i18n.modules.resource.actions.makePrivate
                               : i18n.modules.resource.actions.shareWithChildren}
@@ -756,7 +751,7 @@ function TocEntry({
                         value: 'ownCopy',
                         label: (
                           <>
-                             <Icon icon={'content_copy'} />{' '}
+                            <Icon icon={'content_copy'} />{' '}
                             {i18n.modules.resource.actions.makeOwnCopy}
                           </>
                         ),
@@ -782,7 +777,7 @@ function TocEntry({
                         value: 'remove',
                         label: (
                           <>
-                             <Icon icon={'inventory_2'} /> {i18n.common.remove}
+                            <Icon icon={'inventory_2'} /> {i18n.common.remove}
                           </>
                         ),
                         action: () => {

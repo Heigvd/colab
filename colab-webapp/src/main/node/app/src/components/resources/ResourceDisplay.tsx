@@ -25,12 +25,7 @@ import DocEditorToolbox, {
   DocEditorCtx,
 } from '../documents/DocumentEditorToolbox';
 import DocumentList from '../documents/DocumentList';
-import {
-  lightIconButtonStyle,
-  oneLineEllipsisStyle,
-  space_sm,
-  text_sm,
-} from '../styling/style';
+import { lightIconButtonStyle, oneLineEllipsisStyle, space_sm, text_sm } from '../styling/style';
 import ResourceCategorySelector from './ResourceCategorySelector';
 import {
   //getTheDirectResource,
@@ -127,7 +122,7 @@ export function ResourceDisplay({
               </>
             )} */}
             {resource.targetResource.published && resource.isDirectResource && (
-               <Icon
+              <Icon
                 icon={'subdirectory_arrow_right'}
                 title={i18n.common.published}
                 opsz="xs"
@@ -141,10 +136,7 @@ export function ResourceDisplay({
               onChange={newValue =>
                 dispatch(API.updateResource({ ...targetResource, title: newValue }))
               }
-              inputDisplayClassName={cx(
-                oneLineEllipsisStyle,
-                css({ textOverflow: 'ellipsis' }),
-              )}
+              inputDisplayClassName={cx(oneLineEllipsisStyle, css({ textOverflow: 'ellipsis' }))}
               title={targetResource.title || ''}
             />
             {(!(
@@ -181,7 +173,7 @@ export function ResourceDisplay({
                   alignItems: 'stretch',
                 })}
                 title=""
-                collapsedChildren={ <Icon icon={'trolley'} />}
+                collapsedChildren={<Icon icon={'trolley'} />}
               >
                 {close => <ResourceScope onCancel={close} resource={resource} />}
               </OpenCloseModal>
@@ -223,7 +215,7 @@ export function ResourceDisplay({
                           value: 'categorySelector',
                           label: (
                             <>
-                               <Icon icon={'settings'} /> {i18n.modules.resource.category}
+                              <Icon icon={'settings'} /> {i18n.modules.resource.category}
                             </>
                           ),
                           action: () => setShowCategorySelector(true),
@@ -236,7 +228,7 @@ export function ResourceDisplay({
                           value: 'publishStatus',
                           label: (
                             <>
-                               <Icon icon={'subdirectory_arrow_right'} />
+                              <Icon icon={'subdirectory_arrow_right'} />
                               {resource.targetResource.published
                                 ? i18n.modules.resource.actions.makePrivate
                                 : i18n.modules.resource.actions.shareWithChildren}
@@ -260,7 +252,7 @@ export function ResourceDisplay({
                           value: 'teaser',
                           label: (
                             <>
-                               <Icon icon={'info'} />
+                              <Icon icon={'info'} />
                               {`${
                                 showTeaser
                                   ? i18n.modules.resource.hideTeaser
@@ -279,7 +271,7 @@ export function ResourceDisplay({
                           value: 'remove',
                           label: (
                             <>
-                               <Icon icon={'inventory_2'} /> {i18n.common.remove}
+                              <Icon icon={'inventory_2'} /> {i18n.common.remove}
                             </>
                           ),
                           action: () => {

@@ -77,7 +77,7 @@ export default function CardTypeThumbnail({
     <>
       {isEmpty ? (
         <Flex title={i18n.common.none} align="center" justify="center" grow={1}>
-           <Icon icon={'draft'} opsz="lg" />
+          <Icon icon={'draft'} opsz="lg" />
           <div className={css({ paddingLeft: space_lg })}>
             <h3>{i18n.common.none}</h3>
           </div>
@@ -91,22 +91,11 @@ export default function CardTypeThumbnail({
                 <h3 className={oneLineEllipsisStyle}>
                   {cardType.title || i18n.modules.cardType.titlePlaceholder}
                 </h3>
-                <div
-                  className={cx(
-                    text_sm,
-                    css({ whiteSpace: 'nowrap', marginLeft: space_lg }),
-                  )}
-                >
+                <div className={cx(text_sm, css({ whiteSpace: 'nowrap', marginLeft: space_lg }))}>
                   <CardTypeRelativesSummary cardType={cardType} />
                 </div>
               </Flex>
-              <p
-                className={cx(
-                  text_sm,
-                  multiLineEllipsisStyle,
-                  css({ maxWidth: '100%' }),
-                )}
-              >
+              <p className={cx(text_sm, multiLineEllipsisStyle, css({ maxWidth: '100%' }))}>
                 <DocTextDisplay id={cardType.purposeId} />
               </p>
             </Flex>
@@ -138,7 +127,7 @@ export default function CardTypeThumbnail({
                           value: 'useInProject',
                           label: (
                             <>
-                               <Icon icon={'location_on'} />{' '}
+                              <Icon icon={'location_on'} />{' '}
                               {i18n.modules.cardType.action.useInProject}
                             </>
                           ),
@@ -158,7 +147,7 @@ export default function CardTypeThumbnail({
                         {
                           label: (
                             <>
-                               <Icon color={'var(--error-main)'} icon={'remove'} />{' '}
+                              <Icon color={'var(--error-main)'} icon={'remove'} />{' '}
                               {i18n.modules.cardType.action.removeFromProject}
                             </>
                           ),
@@ -185,7 +174,7 @@ export default function CardTypeThumbnail({
                         {
                           label: (
                             <>
-                               <Icon color={'var(--error-main)'} icon={'remove'} />{' '}
+                              <Icon color={'var(--error-main)'} icon={'remove'} />{' '}
                               {i18n.common.delete}
                             </>
                           ),

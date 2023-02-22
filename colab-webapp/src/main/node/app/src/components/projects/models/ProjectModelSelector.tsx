@@ -15,8 +15,8 @@ import AvailabilityStatusIndicator from '../../common/element/AvailabilityStatus
 import IllustrationDisplay from '../../common/element/IllustrationDisplay';
 import Flex from '../../common/layout/Flex';
 import Icon from '../../common/layout/Icon';
-import { space_sm, text_sm, lightTextStyle, multiLineEllipsisStyle } from '../../styling/style';
-import { noModelIllustration, defaultProjectIllustration } from '../ProjectCommon';
+import { lightTextStyle, multiLineEllipsisStyle, space_sm, text_sm } from '../../styling/style';
+import { defaultProjectIllustration, noModelIllustration } from '../ProjectCommon';
 
 const modelPictoCornerStyle = css({
   position: 'absolute',

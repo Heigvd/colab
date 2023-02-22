@@ -8,39 +8,35 @@
 import { css, cx } from '@emotion/css';
 import * as React from 'react';
 import { useEffect, useRef } from 'react';
-import {
-  disabledStyle,
-  foregroundStyle,
-  p_0,
-  p_sm,
-  space_sm,
-} from '../../styling/style';
+import { disabledStyle, foregroundStyle, p_0, p_sm, space_sm } from '../../styling/style';
 import Flex from './Flex';
 import Icon from './Icon';
 
 export const entryStyle = cx(
   p_sm,
   css({
-  display: 'flex',
-  gap: space_sm,
-  alignItems: 'center',
-  textDecoration: 'none',
-  color: 'var(--text-primary)',
-  ':focus': {
-    outlineStyle: 'inset',
-  },
-  ':hover': {
-    backgroundColor: 'var(--bg-secondary)',
+    display: 'flex',
+    gap: space_sm,
+    alignItems: 'center',
+    textDecoration: 'none',
     color: 'var(--text-primary)',
-  },
-}));
+    ':focus': {
+      outlineStyle: 'inset',
+    },
+    ':hover': {
+      backgroundColor: 'var(--bg-secondary)',
+      color: 'var(--text-primary)',
+    },
+  }),
+);
 
 const subDropDownEntryStyle = cx(
   p_0,
   css({
-  flexDirection: 'column',
-  alignItems: 'stretch',
-}));
+    flexDirection: 'column',
+    alignItems: 'stretch',
+  }),
+);
 
 const ddOptionsBodyStyle = cx(
   foregroundStyle,
@@ -51,7 +47,7 @@ const ddOptionsBodyStyle = cx(
     maxHeight: '500px',
     maxWidth: '500px',
     whiteSpace: 'nowrap',
-    border:'1px solid var(--divider-main)'
+    border: '1px solid var(--divider-main)',
   }),
 );
 
@@ -326,7 +322,7 @@ export interface DropDownMenuProps<T> {
   height?: string;
   valueComp?: Entry<T>;
   onSelect?: (value: Entry<T>) => void;
-  className?: string,
+  className?: string;
   buttonClassName?: string;
   dropClassName?: string;
 }
@@ -383,21 +379,16 @@ export default function DropDownMenu<T extends string | number | symbol>({
             align="center"
             title={title}
             onClick={toggle}
-            className={
-              cx(buttonClassName) +
-              ' dropDownButton'
-            }
+            className={cx(buttonClassName) + ' dropDownButton'}
           >
             {menuIcon === 'BURGER' && (
-                <span className={open ? openButtonStyle : buttonStyle}></span>
+              <span className={open ? openButtonStyle : buttonStyle}></span>
             )}
-            {icon &&
-                <Icon icon={icon} />
-              }
+            {icon && <Icon icon={icon} />}
             {buttonLabel && buttonLabel}
-            {(showSelectedLabel && current.label) && current.label}
+            {showSelectedLabel && current.label && current.label}
             {menuIcon === 'CARET' && (
-               <Icon icon={'expand_more'} className={css({ marginLeft: space_sm })} />
+              <Icon icon={'expand_more'} className={css({ marginLeft: space_sm })} />
             )}
           </Flex>
           {open && (
@@ -415,7 +406,7 @@ export default function DropDownMenu<T extends string | number | symbol>({
                       [disabledStyle]: entry.disabled,
                     },
                     {
-                      [subDropDownEntryStyle]: entry.subDropDownButton
+                      [subDropDownEntryStyle]: entry.subDropDownButton,
                     },
                   )}
                   key={String(entry.value)}

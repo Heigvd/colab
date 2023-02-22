@@ -35,7 +35,10 @@ export const inputStyle = css({
   lineHeight: '2.5em',
   fontFamily: 'inherit',
   fontSize: text_sm,
-  '&:focus': { border: 'solid 1px var(--secondary-main)', outline: 'solid 1px var(--secondary-main)' },
+  '&:focus': {
+    border: 'solid 1px var(--secondary-main)',
+    outline: 'solid 1px var(--secondary-main)',
+  },
   '&:hover': { border: 'solid 1px var(--secondary-main)' },
 });
 
@@ -53,7 +56,10 @@ const textareaStyle = css({
   fontFamily: 'inherit',
   fontSize: text_sm,
   maxWidth: '100%',
-  '&:focus': { border: 'solid 1px var(--secondary-main)', outline: 'solid 1px var(--secondary-main)' },
+  '&:focus': {
+    border: 'solid 1px var(--secondary-main)',
+    outline: 'solid 1px var(--secondary-main)',
+  },
   '&:hover': { border: 'solid 1px var(--secondary-main)' },
 });
 
@@ -484,7 +490,7 @@ export function InlineInput(props: InputProps): JSX.Element {
         {
           [inlineTextareaContainerStyle]: props.inputType === 'textarea',
         },
-        
+
         props.containerClassName,
       )}
       inputDisplayClassName={cx(

@@ -9,9 +9,7 @@ export interface ISortersProps<T> {
 export default function Sorters<T>({ object, onChangeSorter }: ISortersProps<T>) {
   return (
     <Flex>
-      <span>
-        Sort:
-      </span>
+      <span>Sort:</span>
       <select
         id="sorters"
         className="custom-select"
@@ -42,6 +40,6 @@ export default function Sorters<T>({ object, onChangeSorter }: ISortersProps<T>)
             );
           })}
       </select>
-    </ Flex>
+    </Flex>
   );
 }

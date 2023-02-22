@@ -515,7 +515,7 @@ export default function Hierarchy({
             {forceZoom == null && (
               <BlockInput
                 type="range"
-                label={ <Icon icon={'zoom_in'} title={i18n.common.zoom} />}
+                label={<Icon icon={'zoom_in'} title={i18n.common.zoom} />}
                 value={zoomRef.current}
                 placeholder="0"
                 max="2"

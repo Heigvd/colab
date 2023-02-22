@@ -20,9 +20,9 @@ import PlayWithGridOrganizer from './PlayWithGridOrganizer';
 
 export default function Debugger(): JSX.Element {
   const cards = useAllProjectCards();
-      logger.info(cards);
-  const cardsinfo : IWidget[] = cards.map((card) => {
-    return { id: card.id?.toString() || '', title: card.title || '', color: card.color || '' }
+  logger.info(cards);
+  const cardsinfo: IWidget[] = cards.map(card => {
+    return { id: card.id?.toString() || '', title: card.title || '', color: card.color || '' };
   });
   return (
     <Tabs defaultTab="tasks">
@@ -39,14 +39,25 @@ export default function Debugger(): JSX.Element {
         <IconAsImage />
       </Tab>
       <Tab name="sortingList" label="Search&sort">
-         <SearchSortList itemComp={(item) => <><div className={cx(cardStyle, css({padding: space_sm, width: '200px'}))}><h2>{item.title.length > 0 ? item.title : 'No title'}</h2><p>id:{item.id}</p><p>color:{item.color}</p></div></>}  widgets={cardsinfo}/>
+        <SearchSortList
+          itemComp={item => (
+            <>
+              <div className={cx(cardStyle, css({ padding: space_sm, width: '200px' }))}>
+                <h2>{item.title.length > 0 ? item.title : 'No title'}</h2>
+                <p>id:{item.id}</p>
+                <p>color:{item.color}</p>
+              </div>
+            </>
+          )}
+          widgets={cardsinfo}
+        />
       </Tab>
       <Tab name="loading" label="Loading">
         <InlineLoading />
       </Tab>
       <Tab name="tasks" label="Tasks">
-        <div className={css({backgroundColor: 'var(--bg-secondary)'})}>
-        <ProjectTaskList />
+        <div className={css({ backgroundColor: 'var(--bg-secondary)' })}>
+          <ProjectTaskList />
         </div>
       </Tab>
     </Tabs>

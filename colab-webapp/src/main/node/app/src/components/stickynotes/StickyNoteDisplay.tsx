@@ -101,7 +101,7 @@ export default function StickyNoteDisplay({
               value: 'delete',
               label: (
                 <>
-                   <Icon icon={'delete'} color={'var(--error-main)'} /> {i18n.common.delete}
+                  <Icon icon={'delete'} color={'var(--error-main)'} /> {i18n.common.delete}
                 </>
               ),
             },

@@ -29,7 +29,7 @@ export default function Clickable({
   disabled,
   title,
   children,
-  className=buttonStyle,
+  className = buttonStyle,
   ref,
   stopPropagation,
 }: ClickableProps): JSX.Element {

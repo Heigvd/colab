@@ -8,7 +8,7 @@
 import { css, cx } from '@emotion/css';
 import * as React from 'react';
 import useTranslations from '../../../i18n/I18nContext';
-import { cardStyle, space_3xl, space_xs, p_lg } from '../../styling/style';
+import { cardStyle, p_lg, space_3xl, space_xs } from '../../styling/style';
 import IconButton from '../element/IconButton';
 import Flex from './Flex';
 import Overlay from './Overlay';
@@ -34,7 +34,7 @@ const modalStyle = cx(
     display: 'flex',
     flexDirection: 'column',
     justifyContent: 'space-between',
-/*     maxWidth: '800px',
+    /*     maxWidth: '800px',
     maxHeight: '580px',
     minWidth: '400px',
     minHeight: '200px', */
@@ -71,7 +71,7 @@ export default function Modal({
   className,
   modalBodyClassName,
   onEnter,
-  size
+  size,
 }: ModalProps): JSX.Element {
   const i18n = useTranslations();
 
@@ -95,7 +95,7 @@ export default function Modal({
   });
   return (
     <Overlay backgroundStyle={backgroundStyle} onClickOutside={onClose}>
-      <div className={cx(modalStyle, {[fullScreenStyle]: size === 'full'}, className || '')}>
+      <div className={cx(modalStyle, { [fullScreenStyle]: size === 'full' }, className || '')}>
         {(title || showCloseButton) && (
           <>
             <div className={modalHeader}>
@@ -103,11 +103,7 @@ export default function Modal({
                 {title}
               </Flex>
               {showCloseButton && (
-                <IconButton
-                  icon={'close'}
-                  title={i18n.common.close}
-                  onClick={onClose}
-                />
+                <IconButton icon={'close'} title={i18n.common.close} onClick={onClose} />
               )}
             </div>
           </>
@@ -116,7 +112,7 @@ export default function Modal({
           grow={1}
           direction="column"
           overflow="auto"
-          className={cx({[p_lg]: size != 'full'}, modalBodyClassName)}
+          className={cx({ [p_lg]: size != 'full' }, modalBodyClassName)}
         >
           {children(onClose)}
         </Flex>

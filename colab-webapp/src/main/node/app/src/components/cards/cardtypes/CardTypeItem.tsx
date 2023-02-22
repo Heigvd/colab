@@ -18,11 +18,7 @@ import DropDownMenu from '../../common/layout/DropDownMenu';
 import Flex from '../../common/layout/Flex';
 import Icon from '../../common/layout/Icon';
 import { DocTextDisplay } from '../../documents/DocTextItem';
-import {
-  lightIconButtonStyle,
-  space_lg,
-  space_sm,
-} from '../../styling/style';
+import { lightIconButtonStyle, space_lg, space_sm } from '../../styling/style';
 import CardTypeRelativesSummary from './summary/CardTypeRelativesSummary';
 import { TagsDisplay } from './tags/TagsDisplay';
 
@@ -85,7 +81,7 @@ export default function CardTypeItem({ cardType, usage }: CardTypeItemProps): JS
                     value: 'useInProject',
                     label: (
                       <>
-                         <Icon icon={'location_on'} />
+                        <Icon icon={'location_on'} />
                         {i18n.modules.cardType.action.useInProject}
                       </>
                     ),
@@ -104,8 +100,7 @@ export default function CardTypeItem({ cardType, usage }: CardTypeItemProps): JS
                     value: 'removeFromProject',
                     label: (
                       <>
-                         <Icon icon={'remove'} />{' '}
-                        {i18n.modules.cardType.action.removeFromProject}
+                        <Icon icon={'remove'} /> {i18n.modules.cardType.action.removeFromProject}
                       </>
                     ),
                     action: () =>
@@ -126,7 +121,7 @@ export default function CardTypeItem({ cardType, usage }: CardTypeItemProps): JS
                     value: 'delete',
                     label: (
                       <>
-                         <Icon icon={'delete'} color={'var(--error-main)'} /> {i18n.common.delete}
+                        <Icon icon={'delete'} color={'var(--error-main)'} /> {i18n.common.delete}
                       </>
                     ),
                     action: () => setShowDelete(true),

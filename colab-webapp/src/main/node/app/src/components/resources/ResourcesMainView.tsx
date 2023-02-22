@@ -18,8 +18,8 @@ import Flex from '../common/layout/Flex';
 import {
   lightIconButtonStyle,
   lightTextStyle,
-  space_xl,
   space_sm,
+  space_xl,
   text_sm,
 } from '../styling/style';
 import HidenResourcesKeeper from './HidenResourcesKeeper';
@@ -290,7 +290,7 @@ export function ResourcesMainViewPanel({
             <ResourceCreator
               collapsedClassName={lightIconButtonStyle}
               customButton={
-                <Button icon={'add'} variant='outline'>
+                <Button icon={'add'} variant="outline">
                   {i18n.modules.document.createDocument}
                 </Button>
               }

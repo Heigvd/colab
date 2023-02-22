@@ -10,11 +10,7 @@ import * as React from 'react';
 import useTranslations from '../../../../i18n/I18nContext';
 import Checkbox from '../../../common/element/Checkbox';
 import Flex from '../../../common/layout/Flex';
-import {
-  lightLinkStyle,
-  removeOutlineStyle,
-  space_sm,
-} from '../../../styling/style';
+import { lightLinkStyle, removeOutlineStyle, space_sm } from '../../../styling/style';
 
 const tagStyle = cx(
   css({

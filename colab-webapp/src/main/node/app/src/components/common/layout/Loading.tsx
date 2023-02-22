@@ -13,8 +13,8 @@ export default function Loading(): JSX.Element {
   return (
     <>
       <Flex
-      justify='center'
-      align='center'
+        justify="center"
+        align="center"
         className={css({
           margin: 'auto',
           height: '100%',

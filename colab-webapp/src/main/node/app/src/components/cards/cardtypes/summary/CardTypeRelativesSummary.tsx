@@ -56,17 +56,14 @@ export default function CardTypeRelativesSummary({
       {/* is published */}
       {displayChoices.showPublished && cardType.published && (
         <Flex className={itemStyle}>
-           <Icon icon={'feed'} title={i18n.modules.cardType.info.referencedByOther} />
+          <Icon icon={'feed'} title={i18n.modules.cardType.info.referencedByOther} />
         </Flex>
       )}
 
       {/* is deprecated */}
       {displayChoices.showDeprecated && cardType.deprecated && (
         <Flex className={itemStyle}>
-           <Icon
-            icon={'warning'}
-            title={i18n.modules.cardType.info.shouldNotBeUsed}
-          />
+          <Icon icon={'warning'} title={i18n.modules.cardType.info.shouldNotBeUsed} />
         </Flex>
       )}
 

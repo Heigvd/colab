@@ -6,7 +6,7 @@
  */
 import { css, cx } from '@emotion/css';
 export type GeneralSizeType = 'xs' | 'sm' | 'md' | 'lg';
-export type ThemeType = 'primary' |'success' | 'warning' | 'error';
+export type ThemeType = 'primary' | 'success' | 'warning' | 'error';
 // new UI
 const basics = css({
   '--white': '#FFF',
@@ -89,12 +89,12 @@ export const projectColors = {
   yellow: '#ECC94B',
   orange: '#E68D52',
   red: '#EA6262',
-  pink:'#ED64A6',
+  pink: '#ED64A6',
   purple: '#9F7AEA',
   blue: '#5F9ED9',
   teal: '#38B2AC',
   green: '#47D189',
-}
+};
 
 const otherColors = css({
   '--purple-400': projectColors.purple,

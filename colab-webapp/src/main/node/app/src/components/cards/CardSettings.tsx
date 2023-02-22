@@ -43,8 +43,7 @@ export default function CardSettings({ card, variant }: CardSettingsProps): JSX.
         <Checkbox
           label={
             <>
-               <Icon icon={'lock'} />{' '}
-              {i18n.modules.card.settings.locked}
+              <Icon icon={'lock'} /> {i18n.modules.card.settings.locked}
             </>
           }
           value={variant.frozen}

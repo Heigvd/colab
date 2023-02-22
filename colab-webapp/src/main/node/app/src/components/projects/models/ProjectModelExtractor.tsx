@@ -20,7 +20,7 @@ import IllustrationDisplay from '../../common/element/IllustrationDisplay';
 import { LabeledInput, LabeledTextArea } from '../../common/element/Input';
 import Flex from '../../common/layout/Flex';
 import Modal from '../../common/layout/Modal';
-import { space_xl, space_lg, space_sm } from '../../styling/style';
+import { space_lg, space_sm, space_xl } from '../../styling/style';
 import { defaultProjectIllustration } from '../ProjectCommon';
 import { ProjectIllustrationMaker } from '../ProjectIllustrationMaker';
 
@@ -180,13 +180,13 @@ export function ProjectModelExtractor({ projectId }: ProjectModelExtractorProps)
                 close();
               }
             }}
-            variant='outline'
+            variant="outline"
           >
             {i18n.common.cancel}
           </Button>
 
           {showBackButton && (
-            <Button variant='outline' onClick={oneStepBack}>
+            <Button variant="outline" onClick={oneStepBack}>
               {i18n.common.back}
             </Button>
           )}

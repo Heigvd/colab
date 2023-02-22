@@ -64,7 +64,7 @@ const arrowStyle = cx(
 const invisible = cx(
   arrowStyle,
   css({
-    visibility: 'hidden',    
+    visibility: 'hidden',
   }),
 );
 

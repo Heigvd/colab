@@ -18,12 +18,12 @@ export default function AvailabilityStatusIndicator({
 }: AvailabilityStatusIndicatorProps): JSX.Element {
   switch (status) {
     case 'NOT_INITIALIZED':
-      return  <Icon icon={'notifications'} />;
+      return <Icon icon={'notifications'} />;
     case 'LOADING':
       return <Loading />;
     case 'ERROR':
-      return  <Icon icon={'skull'} />;
+      return <Icon icon={'skull'} />;
     case 'READY':
-      return  <Icon icon={'room_service'} />;
+      return <Icon icon={'room_service'} />;
   }
 }

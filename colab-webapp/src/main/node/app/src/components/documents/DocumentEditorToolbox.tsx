@@ -175,7 +175,7 @@ DocEditorToolboxProps): JSX.Element {
                     label: (
                       <>
                         {TXToptions?.markDownMode && (
-                           <Icon icon={'check'} opsz="xs" color="var(--divider-main)" />
+                          <Icon icon={'check'} opsz="xs" color="var(--divider-main)" />
                         )}{' '}
                         {i18n.modules.content.mdMode}
                       </>
@@ -186,9 +186,7 @@ DocEditorToolboxProps): JSX.Element {
                     value: 'showTree',
                     label: (
                       <>
-                        {showTree && (
-                           <Icon icon={'check'} opsz="xs" color="var(--divider-main)" />
-                        )}{' '}
+                        {showTree && <Icon icon={'check'} opsz="xs" color="var(--divider-main)" />}{' '}
                         {i18n.modules.content.showTree}
                       </>
                     ),

@@ -200,10 +200,12 @@ export default function CardTypeEditor({ className, usage }: CardTypeEditorProps
                 title={i18n.modules.cardType.action.deleteType}
                 buttonLabel={
                   <Button
-                    variant='outline'
-                    className={cx(css({ color: 'var(--error-main)', borderColor: 'var(--error-main)' }))}
+                    variant="outline"
+                    className={cx(
+                      css({ color: 'var(--error-main)', borderColor: 'var(--error-main)' }),
+                    )}
                   >
-                     <Icon icon={'delete'} /> {i18n.common.delete}
+                    <Icon icon={'delete'} /> {i18n.common.delete}
                   </Button>
                 }
                 className={css({

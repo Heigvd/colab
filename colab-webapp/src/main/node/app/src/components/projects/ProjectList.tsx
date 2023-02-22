@@ -22,19 +22,11 @@ import ItemThumbnailsSelection from '../common/collection/ItemThumbnailsSelectio
 import AvailabilityStatusIndicator from '../common/element/AvailabilityStatusIndicator';
 import { ConfirmDeleteModal } from '../common/layout/ConfirmDeleteModal';
 import Flex from '../common/layout/Flex';
-import {
-  br_xl,
-  p_0,
-  p_lg,
-  space_sm,
-  space_xl,
-} from '../styling/style';
+import { br_xl, p_0, p_lg, space_sm, space_xl } from '../styling/style';
+import { ProjectModelExtractor } from './models/ProjectModelExtractor';
 import ProjectDisplay from './ProjectCard';
 import ProjectCreator from './ProjectCreator';
-import { ProjectModelExtractor } from './models/ProjectModelExtractor';
 import { ProjectSettingsGeneralInModal } from './settings/ProjectSettingsGeneral';
-
-
 
 const projectCardStyle = cx(
   br_xl,
@@ -125,11 +117,7 @@ function ProjectList({ projects, hideCreationButton }: ProjectListProps) {
   const i18n = useTranslations();
 
   return (
-    <Flex
-      className={p_lg}
-      direction={'column'}
-      align='stretch'
-    >
+    <Flex className={p_lg} direction={'column'} align="stretch">
       {/* Note : any authenticated user can create a project */}
       {!projects || projects.length === 0 ? (
         <Flex justify="center" align="center" direction="column">

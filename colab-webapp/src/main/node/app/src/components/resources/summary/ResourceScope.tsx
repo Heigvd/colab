@@ -100,23 +100,19 @@ const OwnerCtx = React.createContext<OwnerContext>({
 
 const color = 'var(--warning-main)';
 
-const ownerIcon =  <Icon className="fa-stack-1x" icon={'menu_book'} color={color} />;
-const visibleIcon =  <Icon className="fa-stack-1x" icon={'auto_stories'} color={color} />;
+const ownerIcon = <Icon className="fa-stack-1x" icon={'menu_book'} color={color} />;
+const visibleIcon = <Icon className="fa-stack-1x" icon={'auto_stories'} color={color} />;
 
 /** Indicates user do not use the resource, but did not explicitly reject it */
-const unusedIcon = (
-   <Icon className="fa-stack-1x" icon={'auto_stories'} color={'lightgrey'} />
-);
+const unusedIcon = <Icon className="fa-stack-1x" icon={'auto_stories'} color={'lightgrey'} />;
 /** Indicates user explicitly reject the resource */
-const rejectedIcon =  <Icon className="fa-stack-1x" icon={'block'} color={color} />;
+const rejectedIcon = <Icon className="fa-stack-1x" icon={'block'} color={color} />;
 
-const circleIcon = <></>; 
+const circleIcon = <></>;
 
-const ownerIconStack =  <Icon className="fa-stack-1x" icon={'menu_book'} color="grey" />;
-const visibleIconStack = (
-   <Icon className="fa-stack-1x" icon={'auto_stories'} color="grey" />
-);
-const rejectedIconStack =  <Icon className="fa-stack-1x" icon={'block'} color="grey" />;
+const ownerIconStack = <Icon className="fa-stack-1x" icon={'menu_book'} color="grey" />;
+const visibleIconStack = <Icon className="fa-stack-1x" icon={'auto_stories'} color="grey" />;
+const rejectedIconStack = <Icon className="fa-stack-1x" icon={'block'} color="grey" />;
 
 const noIcon = <></>;
 
@@ -139,7 +135,7 @@ function Stack({ children }: { children: React.ReactNode }): JSX.Element {
 
 const youAreHereIcon = (
   <Stack>
-     <Icon className="fa-stack-1x" icon={'my_location'} color={'var(--error-main)'} />
+    <Icon className="fa-stack-1x" icon={'my_location'} color={'var(--error-main)'} />
   </Stack>
 );
 
@@ -176,11 +172,7 @@ function getIcon(node: WithResource): JSX.Element {
     if (node.persisted === 'rejected') {
       return <Stack>{rejectedIcon}</Stack>;
     } else {
-      return (
-        <Stack>
-          {getSingleIcon(node.persisted, true)}
-        </Stack>
-      );
+      return <Stack>{getSingleIcon(node.persisted, true)}</Stack>;
     }
   }
 }
@@ -946,10 +938,10 @@ export default function ResourceScope({ onCancel, resource }: ResourceScopeProps
               </div>
             </Flex>
 
-            <Button variant='outline' onClick={onCancel}>
+            <Button variant="outline" onClick={onCancel}>
               {i18n.modules.resource.scope.cancel}
             </Button>
-            <Button variant='outline' onClick={resetCb}>
+            <Button variant="outline" onClick={resetCb}>
               {i18n.modules.resource.scope.reset}
             </Button>
             <AsyncButtonWithLoader onClick={moveCb}>

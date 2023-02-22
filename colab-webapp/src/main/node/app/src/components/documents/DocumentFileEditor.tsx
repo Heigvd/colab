@@ -79,7 +79,7 @@ export default function DocumentFileEditor({
         state === 'LOADING' ? (
           <InlineLoading />
         ) : state === 'DONE' ? (
-           <Icon icon={'check'} />
+          <Icon icon={'check'} />
         ) : (
           document.fileName
         )

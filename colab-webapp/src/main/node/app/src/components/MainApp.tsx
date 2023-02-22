@@ -112,8 +112,7 @@ export default function MainApp(): JSX.Element {
           justifyContent: 'center',
         })}
       >
-        <InlineLoading size="50px" />{' '}
-        <span>{i18n.authentication.info.reconnecting}</span>
+        <InlineLoading size="50px" /> <span>{i18n.authentication.info.reconnecting}</span>
       </div>
     </Overlay>
   );
@@ -151,11 +150,11 @@ export default function MainApp(): JSX.Element {
             path="*"
             element={
               <>
-                <Flex direction="column" align='stretch' className={css({ height: '100vh' })}>
+                <Flex direction="column" align="stretch" className={css({ height: '100vh' })}>
                   <MainNav />
                   <Flex
-                    direction='column'
-                    align='stretch'
+                    direction="column"
+                    align="stretch"
                     className={css({
                       flexGrow: 1,
                       overflowY: 'auto',

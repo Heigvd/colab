@@ -14,7 +14,7 @@ import CardInvolvement from '../../cards/CardInvolvement';
 import InlineLoading from '../../common/element/InlineLoading';
 import Flex from '../../common/layout/Flex';
 import Tabs, { Tab } from '../../common/layout/Tabs';
-import { space_xl, space_sm } from '../../styling/style';
+import { space_sm, space_xl } from '../../styling/style';
 import MemberCreator from './MemberCreator';
 import TeamRACI from './Raci';
 import TeamRights from './Rights';

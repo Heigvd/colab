@@ -24,7 +24,7 @@ import { useCurrentProjectId } from '../../../../selectors/projectSelector';
 import { shallowEqual, useAppDispatch, useAppSelector } from '../../../../store/hooks';
 import InlineLoading from '../../../common/element/InlineLoading';
 import Flex from '../../../common/layout/Flex';
-import { space_xl, space_lg, space_sm } from '../../../styling/style';
+import { space_lg, space_sm, space_xl } from '../../../styling/style';
 import { AFCard } from './ActivityFlowCardThumb';
 
 const logger = getLogger('ActivityFlow');

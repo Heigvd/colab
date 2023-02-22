@@ -9,11 +9,11 @@ import { css, cx } from '@emotion/css';
 import * as React from 'react';
 
 export enum IconSize {
-  xs= '20',
-  sm= '24',
-  md= '40',
-  lg= '48',
-};
+  xs = '20',
+  sm = '24',
+  md = '40',
+  lg = '48',
+}
 const materialBaseStyle = css({
   fontFamily: 'Material Symbols Outlined',
   fontWeight: 'normal',
@@ -47,7 +47,7 @@ export default function Icon(props: IconProps): JSX.Element {
             props.wght || 300
           }, 'GRAD' 0, 'opsz' ${props.opsz || 40}`,
           color: props.color || 'inherit',
-          fontSize: props.opsz ? `${IconSize[props.opsz]}px` : undefined
+          fontSize: props.opsz ? `${IconSize[props.opsz]}px` : undefined,
         }),
       )}
     >

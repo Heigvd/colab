@@ -68,9 +68,9 @@ export default function FilterableList({
         )}
         onClick={() => setFilterOpen(filterOpen => !filterOpen)}
       >
-         <Icon icon={'filter_alt'} opsz="sm" />
+        <Icon icon={'filter_alt'} opsz="sm" />
         {i18n.common.filter}
-         <Icon icon={filterOpen ? 'expand_less' : 'expand_more'} />
+        <Icon icon={filterOpen ? 'expand_less' : 'expand_more'} />
       </Clickable>
 
       <Flex justify={filterOpen ? 'space-between' : 'flex-end'} align="center">

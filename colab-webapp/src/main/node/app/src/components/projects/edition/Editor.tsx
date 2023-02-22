@@ -458,9 +458,15 @@ function EditorNav({ project }: EditorNavProps): JSX.Element {
               {project.type === 'MODEL' && (
                 <>
                   {project.globalProject ? (
-                    <Badge variant='outline' icon='public' theme='warning'> Global</Badge>
+                    <Badge variant="outline" icon="public" theme="warning">
+                      {' '}
+                      Global
+                    </Badge>
                   ) : (
-                    <Badge variant='outline' icon='star' theme='warning'> Model</Badge>
+                    <Badge variant="outline" icon="star" theme="warning">
+                      {' '}
+                      Model
+                    </Badge>
                   )}
                 </>
               )}

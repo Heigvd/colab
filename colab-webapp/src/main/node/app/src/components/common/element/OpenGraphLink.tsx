@@ -153,7 +153,7 @@ export default function OpenGraphLink({
   if (metadata == 'NO_URL') {
     return (
       <Flex className={cardStyle} title={decodedUrl} align="center">
-         <Icon icon={'link'} opsz="lg" color="var(--divider-main)" />
+        <Icon icon={'link'} opsz="lg" color="var(--divider-main)" />
         <span className={cx(emptyLightTextStyle, css({ marginLeft: space_sm }))}>Empty link</span>
         {editIcon}
       </Flex>
@@ -168,11 +168,7 @@ export default function OpenGraphLink({
       return (
         <Flex className={cardStyle} title={decodedUrl} align="center">
           <div title={decodedUrl} className={css({ padding: space_sm })}>
-             <Icon
-              icon={'link_off'}
-              opsz="lg"
-              className={css({ marginRight: space_sm })}
-            />
+            <Icon icon={'link_off'} opsz="lg" className={css({ marginRight: space_sm })} />
             {decodedUrl}
             {editIcon}
           </div>

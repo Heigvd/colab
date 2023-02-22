@@ -86,7 +86,9 @@ export default function MemberCreator({ members, project }: MemberCreatorProps):
               }
             }}
           />
-          {error && <div className={cx(css({ color: 'var(--warning-main)' }), text_sm)}>{error}</div>}
+          {error && (
+            <div className={cx(css({ color: 'var(--warning-main)' }), text_sm)}>{error}</div>
+          )}
         </>
       )}
     </OpenCloseModal>

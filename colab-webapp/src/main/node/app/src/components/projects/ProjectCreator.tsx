@@ -121,7 +121,7 @@ export default function ProjectCreator({
       widthMax
       heightMax
       collapsedChildren={
-        <Button className={collapsedButtonClassName} icon='add'>
+        <Button className={collapsedButtonClassName} icon="add">
           {i18n.modules.project.actions.createProject}
         </Button>
       }
@@ -133,7 +133,7 @@ export default function ProjectCreator({
           className={css({ padding: space_lg, columnGap: space_sm })}
         >
           <Button
-            variant='outline'
+            variant="outline"
             onClick={() => {
               if (!readOnly) {
                 resetCb();
@@ -145,7 +145,7 @@ export default function ProjectCreator({
           </Button>
 
           {showBackButton && (
-            <Button variant='outline' onClick={oneStepBackCb}>
+            <Button variant="outline" onClick={oneStepBackCb}>
               {i18n.common.back}
             </Button>
           )}

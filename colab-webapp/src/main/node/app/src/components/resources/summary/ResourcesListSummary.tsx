@@ -28,7 +28,7 @@ export default function ResourcesListSummary({
 
   return (
     <>
-       <Icon
+      <Icon
         icon={'attach_file'}
         title={
           !nb

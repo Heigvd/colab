@@ -76,7 +76,6 @@ export const underlineTextStyle = css({
   textDecoration: 'underline',
 });
 
-
 //TEXT MODES
 export const errorTextStyle = css({
   color: 'var(--error-main)',
@@ -261,7 +260,7 @@ export const inactiveButtonStyle = cx(
   }),
 );
 
-export function SolidButtonStyle(theme: ThemeType){
+export function SolidButtonStyle(theme: ThemeType) {
   return css({
     backgroundColor: `var(--${theme}-main)`,
     border: '1px solid transparent',
@@ -272,25 +271,25 @@ export function SolidButtonStyle(theme: ThemeType){
     ':active': {
       backgroundColor: `var(--${theme}-darker)`,
     },
-  
-  })
-} ;
+  });
+}
 
-export function OutlineButtonStyle(theme: ThemeType): string { 
+export function OutlineButtonStyle(theme: ThemeType): string {
   return cx(
-  css({
-    backgroundColor: 'transparent',
-    border: `1px solid var(--${theme}-main)`,
-    color: `var(--primary-main)`,
-    cursor: 'pointer',
-    ':hover': {
-      backgroundColor: `var(--${theme}-fade)`,
-    },
-    ':active': {
-      backgroundColor: `var(--${theme != 'primary' ? theme + '-fade' : theme + '-100'})`,
-    },
-  }),
-)};
+    css({
+      backgroundColor: 'transparent',
+      border: `1px solid var(--${theme}-main)`,
+      color: `var(--primary-main)`,
+      cursor: 'pointer',
+      ':hover': {
+        backgroundColor: `var(--${theme}-fade)`,
+      },
+      ':active': {
+        backgroundColor: `var(--${theme != 'primary' ? theme + '-fade' : theme + '-100'})`,
+      },
+    }),
+  );
+}
 
 // CARD
 export const cardStyle = cx(

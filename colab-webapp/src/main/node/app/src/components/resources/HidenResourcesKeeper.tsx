@@ -15,7 +15,7 @@ import IconButton from '../common/element/IconButton';
 import Flex from '../common/layout/Flex';
 import Icon from '../common/layout/Icon';
 import OpenCloseModal from '../common/layout/OpenCloseModal';
-import {iconButtonStyle, lightIconButtonStyle, space_lg, space_sm } from '../styling/style';
+import { iconButtonStyle, lightIconButtonStyle, space_lg, space_sm } from '../styling/style';
 import { ResourceDisplay } from './ResourceDisplay';
 import { ResourceAndRef } from './resourcesCommonType';
 import ResourcesList from './ResourcesList';
@@ -58,7 +58,7 @@ export default function HidenResourcesKeeper({
           <OpenCloseModal
             title={i18n.modules.content.document}
             collapsedChildren={
-               <Icon
+              <Icon
                 title={i18n.common.display}
                 icon={'visibility'}
                 className={cx(iconButtonStyle, lightIconButtonStyle)}
@@ -117,7 +117,7 @@ export default function HidenResourcesKeeper({
             {/* <span className={css({ marginRight: space_S, fontSize: '0.8em' })}>
               {resources.length}
             </span> */}
-             <Icon title={i18n.modules.content.removedDocuments} icon={'inventory_2'} />
+            <Icon title={i18n.modules.content.removedDocuments} icon={'inventory_2'} />
           </Flex>
         ) : (
           <></>

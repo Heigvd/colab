@@ -18,20 +18,22 @@ export default function LanguageSelector(): JSX.Element {
     { value: 'FR', label: <div>Français</div> },
   ];
   const valueComp: { value: Language; label: React.ReactNode } =
-    lang == 'EN' ? { value: 'EN', label: <div>English</div> } : { value: 'FR', label: <div>Français</div> };
+    lang == 'EN'
+      ? { value: 'EN', label: <div>English</div> }
+      : { value: 'FR', label: <div>Français</div> };
 
   return (
     <DropDownMenu
-      icon='language'
+      icon="language"
       value={lang}
       valueComp={valueComp}
       entries={entries}
       onSelect={entry => setLang(entry.value)}
       idleHoverStyle="BACKGROUND"
-      className={css({ alignItems: 'stretch'})}
+      className={css({ alignItems: 'stretch' })}
       buttonClassName={entryStyle}
       showSelectedLabel
-      direction='left'
+      direction="left"
     />
   );
 }

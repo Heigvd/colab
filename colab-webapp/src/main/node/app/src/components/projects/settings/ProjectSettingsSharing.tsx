@@ -16,7 +16,7 @@ import Button from '../../common/element/Button';
 import Checkbox from '../../common/element/Checkbox';
 import Flex from '../../common/layout/Flex';
 import OpenCloseModal from '../../common/layout/OpenCloseModal';
-import { space_xl, space_lg } from '../../styling/style';
+import { space_lg, space_xl } from '../../styling/style';
 import ProjectModelSharing from '../models/ProjectModelSharing';
 
 export interface ProjectSettingsModelSharingProps {
@@ -45,9 +45,7 @@ export default function ProjectSettingsModelSharing({
           <div>
             <OpenCloseModal
               title={i18n.modules.project.labels.shareTheProject}
-              collapsedChildren={
-                <Button>+ {i18n.modules.project.labels.shareTheProject}</Button>
-              }
+              collapsedChildren={<Button>+ {i18n.modules.project.labels.shareTheProject}</Button>}
               modalBodyClassName={css({ padding: space_lg })}
               showCloseButton
             >

@@ -29,8 +29,8 @@ export default function InlineLoading({
   //size = '24px',
   //maxWidth = '',
   margin = '',
-  //colour = false,
-}: InlineLoadingProps): JSX.Element {
+}: //colour = false,
+InlineLoadingProps): JSX.Element {
   //const EffectivePicto = colour ? Picto : PictoBw;
   return (
     <div

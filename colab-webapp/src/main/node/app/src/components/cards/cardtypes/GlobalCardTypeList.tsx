@@ -13,7 +13,7 @@ import { useAndLoadGlobalTypesForAdmin } from '../../../selectors/cardTypeSelect
 import { CardTypeAllInOne } from '../../../types/cardTypeDefinition';
 import AvailabilityStatusIndicator from '../../common/element/AvailabilityStatusIndicator';
 import Flex from '../../common/layout/Flex';
-import { space_xl, space_sm } from '../../styling/style';
+import { space_sm, space_xl } from '../../styling/style';
 import CardTypeCreator from './CardTypeCreator';
 import CardTypeEditor from './CardTypeEditor';
 import CardTypeItem from './CardTypeItem';

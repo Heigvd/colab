@@ -7,7 +7,13 @@
 
 import { css, cx } from '@emotion/css';
 import * as React from 'react';
-import { disabledStyle, errorTextStyle, space_sm, text_sm, warningTextStyle } from '../../styling/style';
+import {
+  disabledStyle,
+  errorTextStyle,
+  space_sm,
+  text_sm,
+  warningTextStyle,
+} from '../../styling/style';
 import Flex from '../layout/Flex';
 import Icon from '../layout/Icon';
 import Tips, { TipsProps } from './Tips';
@@ -45,7 +51,7 @@ export default function Checkbox({
     >
       <Flex align="center" justify="flex-start">
         <Flex align="center" onClick={readOnly ? undefined : () => onChange(!value)}>
-           <Icon
+          <Icon
             icon={value ? 'check_box' : 'check_box_outline_blank'}
             className={css({ marginRight: space_sm })}
           />

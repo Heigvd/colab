@@ -398,7 +398,7 @@ function ToolbarButton({ toggled, onClick, icon }: ToolbarButtonProps) {
       className={cx('fa-layers', toggled ? toggledStyle : idleStyle)}
       onMouseDownCapture={onClick}
     >
-       <Icon icon={icon} />
+      <Icon icon={icon} />
     </span>
   );
 }

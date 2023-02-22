@@ -71,7 +71,7 @@ export default function CardContentStatusDisplay({
         icon={getStatusIconAndColor(status).icon}
         color={getStatusIconAndColor(status).color}
         title={tooltip}
-        opsz={size || "xs"}
+        opsz={size || 'xs'}
       />
     );
   } else if (mode === 'semi') {
@@ -93,7 +93,9 @@ export default function CardContentStatusDisplay({
   } else {
     return (
       <Flex align="center">
-        {(status != 'ACTIVE' || showActive) && <Icon icon={getStatusIconAndColor(status).icon} opsz="xs" />}
+        {(status != 'ACTIVE' || showActive) && (
+          <Icon icon={getStatusIconAndColor(status).icon} opsz="xs" />
+        )}
         {i18n.modules.card.settings.statuses[status]}
       </Flex>
     );

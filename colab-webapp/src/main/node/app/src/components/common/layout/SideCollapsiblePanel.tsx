@@ -131,7 +131,7 @@ export function SideCollapsibleMenu({
             }
           }}
         >
-           <Icon
+          <Icon
             icon={item.icon}
             title={item.title}
             opsz="lg"

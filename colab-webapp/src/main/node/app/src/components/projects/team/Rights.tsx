@@ -21,13 +21,7 @@ import InlineLoading from '../../common/element/InlineLoading';
 import { DiscreetInput } from '../../common/element/Input';
 import Tips from '../../common/element/Tips';
 import Icon from '../../common/layout/Icon';
-import {
-  lightTextStyle,
-  space_xl,
-  space_lg,
-  space_sm,
-  text_sm,
-} from '../../styling/style';
+import { lightTextStyle, space_lg, space_sm, space_xl, text_sm } from '../../styling/style';
 import { gridNewLine, titleCellStyle } from './Team';
 
 const options: HierarchicalPosition[] = ['GUEST', 'INTERNAL', 'LEADER', 'OWNER'];
@@ -157,7 +151,7 @@ const MemberWithProjectRights = ({ member, isTheOnlyOwner }: MemberWithProjectRi
     username = (
       <span>
         <div className={cx(text_sm, lightTextStyle)}>
-           <Icon icon={'hourglass_top'} className={css({ marginRight: space_sm })} />
+          <Icon icon={'hourglass_top'} className={css({ marginRight: space_sm })} />
           {i18n.authentication.info.pendingInvitation}...
         </div>
         {member.displayName}
@@ -168,7 +162,7 @@ const MemberWithProjectRights = ({ member, isTheOnlyOwner }: MemberWithProjectRi
   } else if (user == 'LOADING' || user == null) {
     username = <InlineLoading />;
   } else if (user == 'ERROR') {
-    username =  <Icon icon={'skull'} />;
+    username = <Icon icon={'skull'} />;
   } else {
     const cn = getDisplayName(user);
     username = (

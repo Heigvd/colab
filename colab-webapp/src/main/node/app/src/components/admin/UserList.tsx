@@ -92,7 +92,7 @@ const Header = ({ sortKey, text }: HeaderProps) => {
     return (
       <div className={sortableHeaderStyle} onClick={onClickCk}>
         {text}
-         <Icon icon={icon} color={colour} />
+        <Icon icon={icon} color={colour} />
       </div>
     );
   } else {
@@ -168,7 +168,7 @@ export default function UserList({ users }: UserListProps): JSX.Element {
     <>
       <div>
         <label>
-           <Icon icon={'search'} />
+          <Icon icon={'search'} />
           <input type="text" onChange={e => setSearch(e.target.value)} />
         </label>
       </div>

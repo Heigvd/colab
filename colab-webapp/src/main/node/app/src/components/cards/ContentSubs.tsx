@@ -18,7 +18,7 @@ import GridOrganizer, { fixGrid } from '../common/GridOrganizer';
 import Ellipsis from '../common/layout/Ellipsis';
 import Flex from '../common/layout/Flex';
 import { useSortSubcardsWithPos } from '../hooks/sortCards';
-import { lightIconButtonStyle, space_xl, m_lg } from '../styling/style';
+import { lightIconButtonStyle, m_lg, space_xl } from '../styling/style';
 import CardCreator from './CardCreator';
 import { TinyCard } from './CardThumb';
 import CardThumbWithSelector from './CardThumbWithSelector';
@@ -235,7 +235,7 @@ export default function ContentSubs({
               >
                 {depth === 1 && nbSubDisplayed && sortedSubCardsWithPos.length > nbSubDisplayed ? (
                   <>
-                    {sortedSubCardsWithPos.slice(0, nbSubDisplayed - 1).map((payload) => {
+                    {sortedSubCardsWithPos.slice(0, nbSubDisplayed - 1).map(payload => {
                       return (
                         <CardThumbWithSelector
                           cardThumbClassName={css({ overflow: 'hidden' })}
@@ -260,7 +260,7 @@ export default function ContentSubs({
                   </>
                 ) : (
                   <>
-                    {sortedSubCardsWithPos.map((card) => (
+                    {sortedSubCardsWithPos.map(card => (
                       <CardThumbWithSelector
                         className={
                           depth === 1

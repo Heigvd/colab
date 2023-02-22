@@ -91,7 +91,7 @@ export default function ProjectDataInitialization({
             iconContainerClassName={css({ marginBottom: space_sm, maxHeight: '100px' })}
           />
           <Flex justify="flex-end" className={css({ gap: space_sm })}>
-            <Button onClick={() => setEditIllustration(false)} variant='outline'>
+            <Button onClick={() => setEditIllustration(false)} variant="outline">
               {i18n.common.cancel}
             </Button>
             <Button
@@ -174,7 +174,10 @@ export default function ProjectDataInitialization({
           }}
           submitLabel={i18n.common.add}
           className={css({ flexDirection: 'row', alignItems: 'flex-end' })}
-          buttonClassName={cx(css({ alignSelf: 'flex-end', margin: space_sm }), OutlineButtonStyle('primary'))}
+          buttonClassName={cx(
+            css({ alignSelf: 'flex-end', margin: space_sm }),
+            OutlineButtonStyle('primary'),
+          )}
         />
 
         <Flex direction="column">

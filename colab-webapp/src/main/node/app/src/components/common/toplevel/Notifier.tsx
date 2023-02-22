@@ -145,7 +145,7 @@ function Notification({ notification, index }: NotificationProps) {
           padding: space_lg,
         })}
       >
-         <Icon icon={getIcon(notification)} opsz={'lg'} />
+        <Icon icon={getIcon(notification)} opsz={'lg'} />
       </Flex>
       <div className={css({ padding: space_lg })}>
         <h3>{getTitle(notification, i18n)}</h3>

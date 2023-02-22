@@ -41,7 +41,7 @@ export function ConfirmDelete({
     <Flex direction="column" align="stretch" grow={1}>
       {message}
       <Flex justify="flex-end">
-        <Button onClick={() => onCancel()} variant='outline'>
+        <Button onClick={() => onCancel()} variant="outline">
           {cancelButtonLabel ? cancelButtonLabel : i18n.common.cancel}
         </Button>
         <Button

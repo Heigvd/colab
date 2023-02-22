@@ -19,9 +19,9 @@ const avatarStyle = cx(
     border: '1px solid var(--text-secondary)',
     color: 'var(--text-secondary)',
     '&:hover': {
-        border: '1px solid var(--text-primary)',
-    color: 'var(--text-primary)',
-    }
+      border: '1px solid var(--text-primary)',
+      color: 'var(--text-primary)',
+    },
   }),
 );
 
@@ -30,13 +30,10 @@ interface AvatarProps {
 }
 
 export default function Avatar({ currentUser }: AvatarProps): JSX.Element {
-
-
   //const displayName = (entityIs(currentUser, 'User') ? getDisplayName(currentUser) : '') || 'Anonymous';
-const firstName = currentUser.firstname || 'A';
-const lastName = currentUser.lastname || 'A';
-const letters = `${firstName[0]}${lastName[0]}`;
-
+  const firstName = currentUser.firstname || 'A';
+  const lastName = currentUser.lastname || 'A';
+  const letters = `${firstName[0]}${lastName[0]}`;
 
   return (
     <Flex className={avatarStyle} title={firstName + ' ' + lastName}>

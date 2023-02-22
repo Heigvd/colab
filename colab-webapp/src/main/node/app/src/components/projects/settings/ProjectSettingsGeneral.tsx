@@ -101,7 +101,7 @@ export function ProjectSettingsGeneralInModal({
         '&:hover': { textDecoration: 'none' },
         display: 'flex',
       })}
-      size='full'
+      size="full"
     >
       {() => {
         if (projectId != null) {

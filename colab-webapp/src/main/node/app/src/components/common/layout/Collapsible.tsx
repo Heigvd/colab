@@ -68,12 +68,7 @@ export default function Collapsible({
         onClick={() => setShowContent(showContent => !showContent)}
         className={cx(defaultLabelStyle, labelClassName)}
       >
-        {icon && (
-           <Icon
-            icon={icon}
-            title={tooltip}
-          />
-        )}
+        {icon && <Icon icon={icon} title={tooltip} />}
         {label}
         <Icon
           icon={showContent ? 'expand_less' : 'expand_more'}

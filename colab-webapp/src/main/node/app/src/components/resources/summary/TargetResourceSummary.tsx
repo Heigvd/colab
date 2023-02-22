@@ -5,9 +5,7 @@
  * Licensed under the MIT License
  */
 
-import {
-  IconName,
-} from '@fortawesome/free-solid-svg-icons';
+import { IconName } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { entityIs } from 'colab-rest-client';
 import * as React from 'react';
@@ -53,7 +51,7 @@ export function ProvidedByCardType({
 
   const { project } = useProject(projectId || 0); // TODO Sandra 01.2023 : avoid || 0
 
-  let icon =  <Icon icon={referenceIcon} />;
+  let icon = <Icon icon={referenceIcon} />;
 
   const cardTypeName = (cardType && cardType.title) || '';
   let fullText = '';
@@ -64,7 +62,7 @@ export function ProvidedByCardType({
     fullText = i18n.modules.resource.info.providedByGlobalCardType(cardTypeName);
 
     icon = (
-       <Icon
+      <Icon
         className={iconClassName}
         icon={'language'}
         color={'var(--primary-main)'}
@@ -78,7 +76,7 @@ export function ProvidedByCardType({
     shortText = `${projectName} / ${cardTypeName};`;
 
     icon = (
-       <FontAwesomeIcon
+      <FontAwesomeIcon
         className={iconClassName}
         icon={
           project?.illustration
@@ -98,7 +96,7 @@ export function ProvidedByCardType({
       : i18n.modules.resource.info.providedByCardType(cardTypeName);
 
     icon = (
-       <Icon
+      <Icon
         icon={'menu_book'}
         className={iconClassName}
         title={showText !== 'full' ? fullText : undefined}
@@ -147,7 +145,7 @@ export function ProvidedByCard({
   const { project } = useCurrentProject();
 
   const icon = isRootCard ? (
-     <FontAwesomeIcon
+    <FontAwesomeIcon
       className={iconClassName}
       icon={
         project?.illustration
@@ -161,7 +159,7 @@ export function ProvidedByCard({
       title={showText !== 'full' ? fullText : undefined}
     />
   ) : (
-     <Icon
+    <Icon
       icon={direct ? 'table_rows' : 'my_location'}
       className={iconClassName}
       title={showText !== 'full' ? fullText : undefined}
@@ -207,7 +205,7 @@ export function ProvidedByCardContent({
     : i18n.modules.resource.info.providedByUpperCard(name);
   const shortText = name;
   const icon = (
-     <Icon
+    <Icon
       icon={direct ? 'table_rows' : 'my_location'}
       title={showText !== 'full' ? fullText : undefined}
       className={iconClassName}

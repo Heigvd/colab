@@ -49,7 +49,7 @@ export default function IconAsImage(): JSX.Element {
       {imgSrc ? (
         <img height="24" data-icon={iconName} src={imgSrc} />
       ) : (
-         <Icon icon={'skull'} color="red" />
+        <Icon icon={'skull'} color="red" />
       )}
       {imgSrc ? (
         <div
@@ -58,7 +58,7 @@ export default function IconAsImage(): JSX.Element {
           }}
         />
       ) : (
-         <Icon icon={'skull'} color="red" />
+        <Icon icon={'skull'} color="red" />
       )}
     </div>
   );

@@ -7,7 +7,15 @@
 
 import { css, cx } from '@emotion/css';
 import React from 'react';
-import { br_md, ellipsisStyle, p_xs, text_lg, text_md, text_sm, text_xs } from '../../styling/style';
+import {
+  br_md,
+  ellipsisStyle,
+  p_xs,
+  text_lg,
+  text_md,
+  text_sm,
+  text_xs,
+} from '../../styling/style';
 import { ThemeType } from '../../styling/theme';
 import Flex from '../layout/Flex';
 import Icon from '../layout/Icon';
@@ -81,8 +89,18 @@ export default function Badge({
   className,
 }: BadgeProps): JSX.Element {
   return (
-    <Flex align='center' className={cx(br_md, p_xs, text_xs, ellipsisStyle, BadgeStyle(variant, size, theme), className)}>
-      {icon && <Icon icon={icon} opsz='xs' />}
+    <Flex
+      align="center"
+      className={cx(
+        br_md,
+        p_xs,
+        text_xs,
+        ellipsisStyle,
+        BadgeStyle(variant, size, theme),
+        className,
+      )}
+    >
+      {icon && <Icon icon={icon} opsz="xs" />}
       <div className={ellipsisStyle}>{children}</div>
     </Flex>
   );

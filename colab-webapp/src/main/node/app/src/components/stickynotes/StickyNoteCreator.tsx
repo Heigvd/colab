@@ -119,7 +119,7 @@ export default function StickyNoteCreator({
             className,
           )}
         >
-           <Icon title="Create a sticky note" icon={'add'} />
+          <Icon title="Create a sticky note" icon={'add'} />
         </Flex>
       }
     >
@@ -160,7 +160,7 @@ export default function StickyNoteCreator({
                 // see if it is better to reset the values or not
                 collapse();
               }}
-              variant='outline'
+              variant="outline"
               className={css({ margin: space_lg })}
             >
               {i18n.common.cancel}

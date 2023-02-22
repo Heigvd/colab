@@ -565,12 +565,7 @@ function TmpCellDisplay<T>({
       {realCell && <div className={backgroundStyle}>{background(realCell)}</div>}
       <div className={tmpOverlayStyle}>
         {invalid && (
-           <Icon
-            className={invalidIconStyle}
-            opsz="lg"
-            icon={'block'}
-            color={'var(--error-main)'}
-          />
+          <Icon className={invalidIconStyle} opsz="lg" icon={'block'} color={'var(--error-main)'} />
         )}
       </div>
     </div>

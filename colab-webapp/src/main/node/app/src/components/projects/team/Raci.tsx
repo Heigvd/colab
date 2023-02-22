@@ -13,7 +13,7 @@ import { useAndLoadSubCards, useProjectRootCard } from '../../../selectors/cardS
 import { useAndLoadProjectTeam } from '../../../selectors/teamSelector';
 import { useAppSelector } from '../../../store/hooks';
 import InlineLoading from '../../common/element/InlineLoading';
-import { space_xl, space_lg, space_sm, text_sm } from '../../styling/style';
+import { space_lg, space_sm, space_xl, text_sm } from '../../styling/style';
 import { gridNewLine, titleCellStyle } from './Team';
 
 export default function TeamRACI({ project }: { project: Project }): JSX.Element {

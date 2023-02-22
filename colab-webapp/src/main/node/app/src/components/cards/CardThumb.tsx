@@ -22,7 +22,13 @@ import Flex from '../common/layout/Flex';
 import Icon from '../common/layout/Icon';
 import Modal from '../common/layout/Modal';
 import DocumentPreview from '../documents/preview/DocumentPreview';
-import { lightIconButtonStyle, oneLineEllipsisStyle, p_xs, space_md, space_sm } from '../styling/style';
+import {
+  lightIconButtonStyle,
+  oneLineEllipsisStyle,
+  p_xs,
+  space_md,
+  space_sm,
+} from '../styling/style';
 import CardContentStatus from './CardContentStatus';
 import CardCreator from './CardCreator';
 import CardInvolvement from './CardInvolvement';
@@ -187,14 +193,9 @@ export default function CardThumb({
   } else {
     return (
       <CardLayout card={card} variant={variant} variants={variants} className={className}>
-        <Flex align='stretch' className={css({overflow: 'hidden'})}>
+        <Flex align="stretch" className={css({ overflow: 'hidden' })}>
           {mayOrganize && variant && (
-            <Flex
-              direction="column"
-              gap={space_sm}
-              wrap="nowrap"
-              align="center"
-            >
+            <Flex direction="column" gap={space_sm} wrap="nowrap" align="center">
               <IconButton
                 className={cx(
                   lightIconButtonStyle,
@@ -217,7 +218,7 @@ export default function CardThumb({
               <CardCreator parentCardContent={variant} className={lightIconButtonStyle} />
             </Flex>
           )}
-          <Flex direction="column" grow={1} align='stretch'>
+          <Flex direction="column" grow={1} align="stretch">
             <div
               onClick={clickOnCardTitleCb}
               className={cx(
@@ -235,9 +236,7 @@ export default function CardThumb({
                 }),
               )}
             >
-              <div
-                className={p_xs}
-              >
+              <div className={p_xs}>
                 <div
                   className={css({
                     display: 'flex',

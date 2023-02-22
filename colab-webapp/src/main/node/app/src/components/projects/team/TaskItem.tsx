@@ -11,7 +11,13 @@ import * as React from 'react';
 import { useNavigate } from 'react-router-dom';
 import CardContentStatusDisplay from '../../cards/CardContentStatus';
 import Flex from '../../common/layout/Flex';
-import { lightTextStyle, multiLineEllipsisStyle, p_md, space_lg, text_sm } from '../../styling/style';
+import {
+  lightTextStyle,
+  multiLineEllipsisStyle,
+  p_md,
+  space_lg,
+  text_sm,
+} from '../../styling/style';
 
 const taskItemStyle = cx(
   p_md,
@@ -26,11 +32,11 @@ const taskItemStyle = cx(
     border: '1px solid transparent',
     cursor: 'pointer',
     '&:hover': {
-        border: '1px solid var(--primary-main)'
+      border: '1px solid var(--primary-main)',
     },
     '&:active': {
-        backgroundColor: 'var(--primary-fade)',
-    }
+      backgroundColor: 'var(--primary-fade)',
+    },
   }),
 );
 
@@ -42,9 +48,12 @@ interface TaskProps {
 }
 
 export default function Task({ variant, className, card }: TaskProps): JSX.Element {
-    const navigate = useNavigate();
+  const navigate = useNavigate();
   return (
-    <div className={cx(taskItemStyle, className)} onClick={() => navigate(`./../../edit/${card.id}`)}>
+    <div
+      className={cx(taskItemStyle, className)}
+      onClick={() => navigate(`./../../edit/${card.id}`)}
+    >
       <div className={multiLineEllipsisStyle}>
         {card.title ? card.title : 'Card title'}
         {variant?.title}

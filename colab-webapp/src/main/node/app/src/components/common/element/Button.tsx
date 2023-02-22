@@ -8,7 +8,16 @@
 import { space } from '@chakra-ui/react';
 import { css, cx } from '@emotion/css';
 import * as React from 'react';
-import { buttonStyle, OutlineButtonStyle, space_sm, text_xs, text_sm, text_md, text_lg, SolidButtonStyle } from '../../styling/style';
+import {
+  buttonStyle,
+  OutlineButtonStyle,
+  SolidButtonStyle,
+  space_sm,
+  text_lg,
+  text_md,
+  text_sm,
+  text_xs,
+} from '../../styling/style';
 import { GeneralSizeType, ThemeType } from '../../styling/theme';
 import Clickable, { ClickableProps } from '../layout/Clickable';
 import Flex from '../layout/Flex';

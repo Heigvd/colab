@@ -20,8 +20,16 @@ import InlineLoading from '../../common/element/InlineLoading';
 import DropDownMenu from '../../common/layout/DropDownMenu';
 import Flex from '../../common/layout/Flex';
 import Icon from '../../common/layout/Icon';
-import { space_sm, br_lg, oneLineEllipsisStyle, lightIconButtonStyle, text_sm, lightTextStyle, multiLineEllipsisStyle } from '../../styling/style';
-import { noModelIllustration, defaultProjectIllustration } from '../ProjectCommon';
+import {
+  br_lg,
+  lightIconButtonStyle,
+  lightTextStyle,
+  multiLineEllipsisStyle,
+  oneLineEllipsisStyle,
+  space_sm,
+  text_sm,
+} from '../../styling/style';
+import { defaultProjectIllustration, noModelIllustration } from '../ProjectCommon';
 
 function sortResources(a: Project, b: Project): number {
   return (a.id || 0) - (b.id || 0);

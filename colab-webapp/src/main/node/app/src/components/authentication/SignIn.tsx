@@ -141,7 +141,7 @@ export default function SignInForm({
             to={buildLinkWithQueryParam('/SignUp', { redirectTo: redirectTo })}
             className={cx(lightLinkStyle, css({ padding: space_sm }))}
           >
-             <Icon icon={'add'} /> {i18n.authentication.action.createAnAccount}
+            <Icon icon={'add'} /> {i18n.authentication.action.createAnAccount}
           </InlineLink>
         )}
       </Flex>

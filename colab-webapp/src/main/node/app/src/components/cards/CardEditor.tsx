@@ -92,7 +92,7 @@ const fullScreenStyle = css({
   width: '100vw',
   height: '100vh',
   borderRadius: 0,
-  backgroundColor: 'var(--bg-primary)'
+  backgroundColor: 'var(--bg-primary)',
 });
 
 export default function CardEditor({ card, variant, showSubcards }: CardEditorProps): JSX.Element {
@@ -185,12 +185,12 @@ export default function CardEditor({ card, variant, showSubcards }: CardEditorPr
   } else {
     const cardId = card.id;
     return (
-      <Flex direction="column" grow={1} align="stretch" className={css({overflow: 'auto'})}>
+      <Flex direction="column" grow={1} align="stretch" className={css({ overflow: 'auto' })}>
         <Flex
           grow={1}
           direction="column"
           align="stretch"
-          className={cx({ [fullScreenStyle]: fullScreen === true }, css({overflow: 'auto'}))}
+          className={cx({ [fullScreenStyle]: fullScreen === true }, css({ overflow: 'auto' }))}
         >
           <Flex
             justify="space-between"
@@ -239,7 +239,7 @@ export default function CardEditor({ card, variant, showSubcards }: CardEditorPr
                 </>
               )}
             </Flex>
-            <Flex align='center'>
+            <Flex align="center">
               {/* handle modal routes*/}
               <Routes>
                 <Route

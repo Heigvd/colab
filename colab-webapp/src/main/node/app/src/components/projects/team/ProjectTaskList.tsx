@@ -17,12 +17,12 @@ import Loading from '../../common/layout/Loading';
 import { heading_xs, lightTextStyle, p_md, space_sm } from '../../styling/style';
 import Task from './TaskItem';
 
-const sectionTitleStyle = cx(heading_xs, lightTextStyle)
+const sectionTitleStyle = cx(heading_xs, lightTextStyle);
 interface ProjectTaskListProps {
   className?: string;
 }
 
-export default function ProjectTaskList({className}: ProjectTaskListProps): JSX.Element {
+export default function ProjectTaskList({ className }: ProjectTaskListProps): JSX.Element {
   const dispatch = useAppDispatch();
   const i18n = useTranslations();
   const cards = useAllProjectCards();
@@ -44,14 +44,26 @@ export default function ProjectTaskList({className}: ProjectTaskListProps): JSX.
     return <Loading />;
   } else {
     return (
-      <Flex align="stretch" direction='column' gap={space_sm} className={cx(p_md, className)}>
+      <Flex align="stretch" direction="column" gap={space_sm} className={cx(p_md, className)}>
         {currentUser?.affiliation}
         <p className={sectionTitleStyle}>{i18n.team.raci.responsible}</p>
-        {cards.filter(card => card.defaultInvolvementLevel === 'RESPONSIBLE').map(card => (<Task key={card.id} card={card} />))}
+        {cards
+          .filter(card => card.defaultInvolvementLevel === 'RESPONSIBLE')
+          .map(card => (
+            <Task key={card.id} card={card} />
+          ))}
         <p className={sectionTitleStyle}>{i18n.team.raci.approver}</p>
-        {cards.filter(card => card.defaultInvolvementLevel === 'ACCOUNTABLE').map(card => (<Task key={card.id} card={card} />))}
+        {cards
+          .filter(card => card.defaultInvolvementLevel === 'ACCOUNTABLE')
+          .map(card => (
+            <Task key={card.id} card={card} />
+          ))}
         <p className={sectionTitleStyle}>{i18n.team.raci.support}</p>
-        {cards.filter(card => card.defaultInvolvementLevel === 'INFORMED_READWRITE').map(card => (<Task key={card.id} card={card} />))}
+        {cards
+          .filter(card => card.defaultInvolvementLevel === 'INFORMED_READWRITE')
+          .map(card => (
+            <Task key={card.id} card={card} />
+          ))}
       </Flex>
     );
   }

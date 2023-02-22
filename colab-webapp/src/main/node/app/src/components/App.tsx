@@ -16,14 +16,14 @@ import { useLocalStorage } from '../preferences';
 import { store } from '../store/store';
 import { init } from '../ws/websocket';
 import { TipsConfig, TipsCtx } from './common/element/Tips';
+import Flex from './common/layout/Flex';
 import Loading from './common/layout/Loading';
 import ErrorBoundary from './common/toplevel/ErrorBoundary';
 import Notifier from './common/toplevel/Notifier';
 import MainApp from './MainApp';
-import Token from './token/Token';
 import { TocDisplayCtx, TocMode } from './resources/ResourcesList';
 import { fonts, heading, lightMode, text } from './styling/theme';
-import Flex from './common/layout/Flex';
+import Token from './token/Token';
 
 injectGlobal`
     html {
@@ -157,7 +157,6 @@ function App(): JSX.Element {
     [setTipsConfig],
   );
 
-
   /**
    * prevent application quit on file drop
    */
@@ -169,7 +168,7 @@ function App(): JSX.Element {
 
   return (
     <div
-      className={cx(lightMode, fonts, css({display: 'flex', flexDirection: 'column'}))}
+      className={cx(lightMode, fonts, css({ display: 'flex', flexDirection: 'column' }))}
       onDrop={cancelDroppingFiles}
       onDragOver={cancelDroppingFiles}
     >
@@ -212,7 +211,18 @@ function App(): JSX.Element {
                       <Routes>
                         <Route path="/token/:id/:token" element={<TokenWrapper />} />
                         <Route path="/token/*" element={<TokenWrapper />} />
-                        <Route path="*" element={<Flex direction='column' align='stretch' className={css({minHeight: '100vh'})}><MainApp /></Flex>} />
+                        <Route
+                          path="*"
+                          element={
+                            <Flex
+                              direction="column"
+                              align="stretch"
+                              className={css({ minHeight: '100vh' })}
+                            >
+                              <MainApp />
+                            </Flex>
+                          }
+                        />
                       </Routes>
                     </HashRouter>
                   </TipsCtx.Provider>

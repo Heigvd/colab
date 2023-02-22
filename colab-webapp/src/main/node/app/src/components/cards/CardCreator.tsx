@@ -114,13 +114,13 @@ export default function CardCreator({
                   navigate(`/editor/${currentProjectId}/docs/cardTypes`);
                 }
               }}
-              variant='outline'
-              className={cx( css({ justifySelf: 'flex-start' }))}
+              variant="outline"
+              className={cx(css({ justifySelf: 'flex-start' }))}
             >
               {i18n.modules.cardType.route.manageTypes}
             </Button>
             <Flex>
-              <Button onClick={close} variant='outline'>
+              <Button onClick={close} variant="outline">
                 {i18n.common.cancel}
               </Button>
 
@@ -164,7 +164,7 @@ export default function CardCreator({
 
   return display === 'dropdown' ? (
     <div onClick={onClickCb}>
-       <Icon icon={'add'} className={css({ marginRight: space_sm })} />
+      <Icon icon={'add'} className={css({ marginRight: space_sm })} />
       {customLabel ? customLabel : i18n.modules.card.createCard}
     </div>
   ) : (

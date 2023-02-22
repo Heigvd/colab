@@ -15,15 +15,15 @@ import Icon, { IconSize } from '../layout/Icon';
 type IconButtonVariantType = 'ghost' | 'initial';
 
 const ghostIconButtonStyle = css({
-    backgroundColor: `var(--bg-primary)`,
-    color: 'var(--text-secondary)',
-    ':hover': {
-      backgroundColor: `var(--gray-100)`,
-    },
-    ':active': {
-      backgroundColor: `var(--gray-200)`,
-    },
-  });
+  backgroundColor: `var(--bg-primary)`,
+  color: 'var(--text-secondary)',
+  ':hover': {
+    backgroundColor: `var(--gray-100)`,
+  },
+  ':active': {
+    backgroundColor: `var(--gray-200)`,
+  },
+});
 
 function IconButtonSize(size: GeneralSizeType): string {
   switch (size) {
@@ -82,7 +82,12 @@ export default function IconButton({
           onClick(e);
         }
       }}
-      className={cx(iconButtonStyle, IconButtonSize(size), {[ghostIconButtonStyle]: variant === 'ghost'}, className)}
+      className={cx(
+        iconButtonStyle,
+        IconButtonSize(size),
+        { [ghostIconButtonStyle]: variant === 'ghost' },
+        className,
+      )}
       stopPropagation={stopPropagation}
       disabled={disabled}
     >
