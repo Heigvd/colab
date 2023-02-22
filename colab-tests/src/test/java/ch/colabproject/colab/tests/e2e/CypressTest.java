@@ -40,6 +40,7 @@ public class CypressTest extends AbstractArquillianTest {
             env.put("ADMIN_USERNAME", ADMIN_USERNAME);
             env.put("ADMIN_EMAIL", ADMIN_EMAIL);
             env.put("ADMIN_PASSWORD", ADMIN_PASSWORD);
+            env.put("ADMIN_INITIALS", ADMIN_INITIALS);
 
             String envOpt = env.entrySet().stream()
                 .map(entry -> entry.getKey()+ "=" +entry.getValue())

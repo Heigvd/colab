@@ -6,7 +6,7 @@ describe("ch.colabproject.colab.tests.e2e.Login", () => {
   it("LoginAsAdminAndLogout", () => {
     cy.login(Cypress.env("ADMIN_USERNAME"), Cypress.env("ADMIN_PASSWORD"));
 
-    cy.logout();
+    cy.logout(Cypress.env("ADMIN_INITIALS"));
     cy.get("input[type=password]").should("have.length", "1");
 
     //
