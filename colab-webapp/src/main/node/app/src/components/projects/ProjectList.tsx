@@ -6,17 +6,6 @@
  */
 
 import { css, cx } from '@emotion/css';
-import {
-  faCog,
-  faCopy,
-  faEdit,
-  faEllipsisV,
-  faGlobe,
-  faSeedling,
-  faStar,
-  faTrash,
-} from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Project } from 'colab-rest-client';
 import * as React from 'react';
 import { Route, Routes, useNavigate, useParams } from 'react-router-dom';
@@ -28,36 +17,32 @@ import {
   useMyProjects,
   useProject,
 } from '../../selectors/projectSelector';
-import { useCurrentUser } from '../../selectors/userSelector';
 import { useAppDispatch, useLoadingState } from '../../store/hooks';
 import ItemThumbnailsSelection from '../common/collection/ItemThumbnailsSelection';
 import AvailabilityStatusIndicator from '../common/element/AvailabilityStatusIndicator';
-import IllustrationDisplay from '../common/element/IllustrationDisplay';
 import { ConfirmDeleteModal } from '../common/layout/ConfirmDeleteModal';
-import DropDownMenu from '../common/layout/DropDownMenu';
 import Flex from '../common/layout/Flex';
-import {
-  ellipsis,
-  errorColor,
-  invertedButtonStyle,
-  lightIconButtonStyle,
-  multiLineEllipsis,
-  space_M,
-  space_S,
-  textSmall,
-} from '../styling/style';
-import { defaultProjectIllustration } from './ProjectCommon';
+import { br_xl, p_0, p_lg, space_sm, space_xl } from '../styling/style';
+import { ProjectModelExtractor } from './models/ProjectModelExtractor';
+import ProjectDisplay from './ProjectCard';
 import ProjectCreator from './ProjectCreator';
-import { ProjectModelExtractor } from './ProjectModelExtractor';
 import { ProjectSettingsGeneralInModal } from './settings/ProjectSettingsGeneral';
 
-const modelChipStyle = css({
-  position: 'absolute',
-  top: 0,
-  right: 0,
-  padding: '10px 10px 12px 12px',
-  borderRadius: '0 0 0 50%',
-  backgroundColor: 'var(--primaryColor)',
+const projectCardStyle = cx(
+  br_xl,
+  p_0,
+  css({
+    flexDirection: 'column',
+    backgroundColor: 'var(--bg-primary)',
+    alignItems: 'stretch',
+  }),
+);
+
+const projectListStyle = css({
+  display: 'inline-grid',
+  gridTemplateColumns: 'repeat(auto-fill, minmax(270px, 1fr))',
+  gridColumnGap: space_xl,
+  gridRowGap: space_xl,
 });
 
 function ProjectSettingsWrapper(): JSX.Element {
@@ -123,222 +108,6 @@ function DeleteProjectWrapper(): JSX.Element {
   );
 }
 
-const projectListStyle = css({
-  width: '100%',
-  display: 'inline-grid',
-  gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))',
-  gridColumnGap: '30px',
-  gridRowGap: '30px',
-});
-
-interface ProjectDisplayProps {
-  project: Project;
-  className?: string;
-}
-
-// Display one project and allow to edit it
-export const ProjectDisplay = ({ project, className }: ProjectDisplayProps) => {
-  const dispatch = useAppDispatch();
-  const i18n = useTranslations();
-  const navigate = useNavigate();
-
-  const { currentUser } = useCurrentUser();
-
-  return (
-    <Flex
-      onMouseDown={e => {
-        // ultimate hack to open a project in the very same tab: use middle mouse button
-        if (e.button === 1) {
-          navigate(`/editor/${project.id}`);
-        }
-      }}
-      direction="column"
-      align="stretch"
-      className={cx(
-        {
-          [css({
-            boxShadow: ` 0px -5px 0px 0px ${project.illustration?.iconBkgdColor} inset`,
-          })]: project.type === 'MODEL',
-        },
-        className,
-      )}
-    >
-      <Flex
-        className={css({
-          height: '80px',
-          position: 'relative',
-        })}
-      >
-        {project.type === 'MODEL' && (
-          <Flex
-            align="center"
-            justify="center"
-            className={modelChipStyle}
-            title={i18n.modules.project.info.isAModel}
-          >
-            {project.globalProject ? (
-              <FontAwesomeIcon icon={faGlobe} color="white" size="sm" />
-            ) : (
-              <FontAwesomeIcon icon={faStar} color="white" size="sm" />
-            )}
-          </Flex>
-        )}
-        <IllustrationDisplay illustration={project.illustration || defaultProjectIllustration} />
-      </Flex>
-      <div
-        className={cx(
-          css({
-            display: 'flex',
-            flexDirection: 'column',
-            height: '100px',
-          }),
-        )}
-      >
-        <div
-          className={css({
-            display: 'flex',
-            flexDirection: 'row',
-            justifyContent: 'space-between',
-            paddingLeft: space_M,
-            paddingRight: space_M,
-            paddingTop: space_M,
-            paddingBottom: space_S,
-          })}
-        >
-          <h3 className={ellipsis} title={project.name ? project.name : 'Project name'}>
-            {project.name}
-          </h3>
-          <DropDownMenu
-            icon={faEllipsisV}
-            valueComp={{ value: '', label: '' }}
-            buttonClassName={cx(css({ marginLeft: '40px' }), lightIconButtonStyle)}
-            entries={[
-              {
-                value: 'open',
-                label: (
-                  <>
-                    <FontAwesomeIcon icon={faEdit} /> {i18n.common.open}
-                  </>
-                ),
-                action: () => window.open(`#/editor/${project.id}`, '_blank'),
-              },
-              {
-                value: 'settings',
-                label: (
-                  <>
-                    <FontAwesomeIcon icon={faCog} /> {i18n.common.settings}
-                  </>
-                ),
-                action: () => navigate(`projectsettings/${project.id}`),
-              },
-              {
-                value: 'duplicate',
-                label: (
-                  <>
-                    <FontAwesomeIcon icon={faCopy} /> {i18n.common.duplicate}
-                  </>
-                ),
-                action: () => {
-                  const newName = i18n.modules.project.projectCopy(project.name || '');
-                  dispatch(API.duplicateProject({ project, newName }));
-                },
-              },
-              ...(project.type !== 'MODEL'
-                ? [
-                    {
-                      value: 'extractModel',
-                      label: (
-                        <>
-                          <FontAwesomeIcon icon={faStar} />{' '}
-                          {i18n.modules.project.actions.saveAsModel}
-                        </>
-                      ),
-                      action: () => navigate(`extractModel/${project.id}`),
-                    },
-                  ]
-                : []),
-              ...(currentUser?.admin && project.type !== 'MODEL'
-                ? [
-                    {
-                      value: 'convertToModel',
-                      label: (
-                        <>
-                          <FontAwesomeIcon icon={faStar} />{' '}
-                          {i18n.modules.project.actions.convertToModel}
-                        </>
-                      ),
-                      action: () => {
-                        dispatch(API.updateProject({ ...project, type: 'MODEL' })).then(() => {
-                          navigate('/models');
-                        });
-                      },
-                    },
-                  ]
-                : []),
-              ...(currentUser?.admin && project.type === 'MODEL'
-                ? [
-                    {
-                      value: 'convertToProject',
-                      label: (
-                        <>
-                          <FontAwesomeIcon icon={faSeedling} />{' '}
-                          {i18n.modules.project.actions.convertToProject}
-                        </>
-                      ),
-                      action: () => {
-                        dispatch(API.updateProject({ ...project, type: 'PROJECT' })).then(() => {
-                          navigate('/');
-                        });
-                      },
-                    },
-                  ]
-                : []),
-              {
-                value: 'delete',
-                label: (
-                  <>
-                    <FontAwesomeIcon icon={faTrash} color={errorColor} /> {i18n.common.delete}
-                  </>
-                ),
-                action: () => navigate(`deleteproject/${project.id}`),
-              },
-            ]}
-          />
-        </div>
-        <div
-          className={css({
-            padding: space_M,
-            paddingTop: 0,
-            display: 'flex',
-            flexDirection: 'column',
-            flexGrow: 1,
-          })}
-        >
-          <div title={project.description || ''} className={cx(multiLineEllipsis, textSmall)}>
-            {project.description}
-          </div>
-          {/* 
-        //FUTURE block of infos on the project
-        <div
-          className={css({
-            fontSize: '0.8em',
-            opacity: 0.4,
-            display: 'grid',
-            gridTemplateColumns: '1fr 1fr',
-            marginTop: space_M,
-          })}
-        >
-          <p className={cardInfoStyle}>Number of Cards?</p>
-          <p className={cardInfoStyle}>Created by: {project.trackingData?.createdBy} </p>
-          <p className={cardInfoStyle}>Number of people involved?</p>
-          <p className={cardInfoStyle}>Last update: {project.trackingData?.modificationDate}</p>
-        </div> */}
-        </div>
-      </div>
-    </Flex>
-  );
-};
-
 interface ProjectListProps {
   projects: Project[];
   hideCreationButton?: boolean;
@@ -348,28 +117,17 @@ function ProjectList({ projects, hideCreationButton }: ProjectListProps) {
   const i18n = useTranslations();
 
   return (
-    <Flex
-      className={css(
-        hideCreationButton ? { padding: '2rem' } : { padding: '.5rem 2rem 2rem 2rem' },
-      )}
-      direction={'column'}
-    >
+    <Flex className={p_lg} direction={'column'} align="stretch">
       {/* Note : any authenticated user can create a project */}
       {!projects || projects.length === 0 ? (
         <Flex justify="center" align="center" direction="column">
           <h2>{i18n.common.welcome}</h2>
           <h3>{i18n.modules.project.info.noProjectYet}</h3>
-          {!hideCreationButton && (
-            <ProjectCreator
-              collapsedButtonClassName={cx(invertedButtonStyle, css({ marginTop: space_S }))}
-            />
-          )}
+          {!hideCreationButton && <ProjectCreator />}
         </Flex>
       ) : !hideCreationButton ? (
-        <Flex className={css({ alignSelf: 'flex-end', padding: space_S })}>
-          <ProjectCreator
-            collapsedButtonClassName={cx(invertedButtonStyle, css({ fontSize: '0.8em' }))}
-          />
+        <Flex className={css({ alignSelf: 'flex-end', padding: space_sm })}>
+          <ProjectCreator />
         </Flex>
       ) : (
         <></>
@@ -387,12 +145,7 @@ function ProjectList({ projects, hideCreationButton }: ProjectListProps) {
       <ItemThumbnailsSelection<Project>
         items={projects.sort((a, b) => (a.id || 0) - (b.id || 0))}
         className={projectListStyle}
-        thumbnailClassName={css({
-          padding: 0,
-          margin: '4px',
-          display: 'block',
-          backgroundColor: 'var(--bgColor)',
-        })}
+        thumbnailClassName={projectCardStyle}
         onItemDblClick={item => {
           if (item) {
             window.open(`#/editor/${item.id}`, '_blank');

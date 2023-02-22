@@ -9,9 +9,9 @@ import { css, cx } from '@emotion/css';
 import * as React from 'react';
 import { PasswordFeedback } from 'react-password-strength-bar';
 import useTranslations from '../../../i18n/I18nContext';
-import { errorColor, space_M, textSmall } from '../../styling/style';
+import { space_lg, text_sm } from '../../styling/style';
 import Flex from '../layout/Flex';
-import ButtonWithLoader from './ButtonWithLoader';
+import Button from './Button';
 import Checkbox from './Checkbox';
 import InlineLoading from './InlineLoading';
 import { FormInput } from './Input';
@@ -235,7 +235,7 @@ export default function Form<T>({
               <React.Suspense fallback={<InlineLoading />}>
                 <PasswordStrengthBar
                   barColors={['#ddd', '#ef4836', 'rgb(118, 176, 232)', '#2b90ef', '#01f590']}
-                  scoreWordStyle={{ color: 'var(--fgColor)' }}
+                  scoreWordStyle={{ color: 'var(--text-primary)' }}
                   onChangeScore={(value, feedback) => {
                     if (field.strengthProp != null) {
                       setFormValue(field.strengthProp, { score: value, feedback: feedback });
@@ -320,8 +320,8 @@ export default function Form<T>({
       {globalErrorMessage != null && (
         <Flex
           className={cx(
-            css({ color: errorColor, textAlign: 'left', marginBottom: space_M }),
-            textSmall,
+            css({ color: 'var(--error-main)', textAlign: 'left', marginBottom: space_lg }),
+            text_sm,
           )}
         >
           {globalErrorMessage}
@@ -340,17 +340,17 @@ export default function Form<T>({
       >
         {fieldComps}
         <Flex direction="column" justify="center" align="center" className={childrenClassName}>
-          <ButtonWithLoader
+          <Button
             key="submit"
             onClick={submit}
             isLoading={isSubmitInProcess}
             className={cx(
-              css({ margin: space_M + ' 0', alignSelf: 'flex-start' }),
+              css({ margin: space_lg + ' 0', alignSelf: 'flex-start' }),
               buttonClassName,
             )}
           >
             {submitLabel}
-          </ButtonWithLoader>
+          </Button>
           {children}
         </Flex>
       </div>

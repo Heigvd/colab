@@ -6,7 +6,6 @@
  */
 
 import { css } from '@emotion/css';
-import { faTrash } from '@fortawesome/free-solid-svg-icons';
 import { BrowserJsPlumbInstance, newInstance } from '@jsplumb/browser-ui';
 import '@jsplumb/connector-bezier';
 import '@jsplumb/connector-flowchart';
@@ -201,7 +200,7 @@ export function ChangeTreeRaw({
     <div>
       <h4>{i18n.modules.content.tree}</h4>
       {onDelete ? (
-        <IconButton icon={faTrash} title={i18n.common.delete} onClick={onDelete} />
+        <IconButton icon={'delete'} title={i18n.common.delete} onClick={onDelete} />
       ) : null}
       <div
         ref={ref => {

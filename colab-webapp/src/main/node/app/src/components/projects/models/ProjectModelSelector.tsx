@@ -6,24 +6,17 @@
  */
 
 import { css, cx } from '@emotion/css';
-import { faGlobe, faStar } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Project } from 'colab-rest-client';
 import * as React from 'react';
-import useTranslations from '../../i18n/I18nContext';
-import { useAndLoadMyAndInstanceableModels } from '../../selectors/projectSelector';
-import ItemThumbnailsSelection from '../common/collection/ItemThumbnailsSelection';
-import AvailabilityStatusIndicator from '../common/element/AvailabilityStatusIndicator';
-import IllustrationDisplay from '../common/element/IllustrationDisplay';
-import Flex from '../common/layout/Flex';
-import {
-  invertedThemeMode,
-  lightText,
-  multiLineEllipsis,
-  space_S,
-  textSmall,
-} from '../styling/style';
-import { defaultProjectIllustration } from './ProjectCommon';
+import useTranslations from '../../../i18n/I18nContext';
+import { useAndLoadMyAndInstanceableModels } from '../../../selectors/projectSelector';
+import ItemThumbnailsSelection from '../../common/collection/ItemThumbnailsSelection';
+import AvailabilityStatusIndicator from '../../common/element/AvailabilityStatusIndicator';
+import IllustrationDisplay from '../../common/element/IllustrationDisplay';
+import Flex from '../../common/layout/Flex';
+import Icon from '../../common/layout/Icon';
+import { lightTextStyle, multiLineEllipsisStyle, space_sm, text_sm } from '../../styling/style';
+import { defaultProjectIllustration, noModelIllustration } from '../ProjectCommon';
 
 const modelPictoCornerStyle = css({
   position: 'absolute',
@@ -38,7 +31,7 @@ const projectThumbnailStyle = css({
   //width: `calc(50% - 8px - 2*${space_S})`,
   minHeight: '80px',
   maxHeight: '80px',
-  margin: space_S,
+  margin: space_sm,
   position: 'relative',
 });
 
@@ -88,29 +81,23 @@ export default function ProjectModelSelector({
             <>
               <Flex className={css({ minWidth: '70px' })}>
                 <IllustrationDisplay
-                  iconSize="2x"
                   illustration={
                     isEmptyProject
-                      ? {
-                          '@class': 'Illustration',
-                          iconLibrary: 'FONT_AWESOME_REGULAR',
-                          iconKey: 'file',
-                          iconBkgdColor: '#50BFD5',
-                        }
+                      ? noModelIllustration
                       : item.illustration || { ...defaultProjectIllustration }
                   }
                 />
               </Flex>
 
               <div className={css({ padding: '10px' })}>
-                <h3 className={css({ marginTop: space_S })}>
+                <h3 className={css({ marginTop: space_sm })}>
                   {!isEmptyProject
                     ? item.name
                       ? item.name
                       : i18n.modules.project.actions.newProject
                     : i18n.modules.project.info.emptyProject}
                 </h3>
-                <p className={cx(textSmall, lightText, multiLineEllipsis)}>
+                <p className={cx(text_sm, lightTextStyle, multiLineEllipsisStyle)}>
                   {!isEmptyProject
                     ? item.description
                       ? item.description
@@ -123,13 +110,13 @@ export default function ProjectModelSelector({
                 <Flex
                   align="center"
                   justify="center"
-                  className={cx(modelPictoCornerStyle, invertedThemeMode)}
+                  className={cx(modelPictoCornerStyle)}
                   title={i18n.modules.project.info.isAModel}
                 >
                   {item.globalProject ? (
-                    <FontAwesomeIcon icon={faGlobe} size="2xs" />
+                    <Icon icon={'public'} opsz="xs" />
                   ) : (
-                    <FontAwesomeIcon icon={faStar} size="2xs" />
+                    <Icon icon={'star'} opsz="xs" />
                   )}
                 </Flex>
               )}

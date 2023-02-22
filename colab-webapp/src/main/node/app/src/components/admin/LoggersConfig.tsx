@@ -6,7 +6,6 @@
  */
 
 import { css, cx } from '@emotion/css';
-import { faSearch, faSync } from '@fortawesome/free-solid-svg-icons';
 import { LevelDescriptor } from 'colab-rest-client';
 import * as React from 'react';
 import { changeLoggerLevel, getLoggerLevels } from '../../API/api';
@@ -52,7 +51,7 @@ function LoggerGrid({ title, levels, changeLevel }: LoggerGridProps) {
       <h3>{title}</h3>
       <div>
         <label>
-          <IconButton icon={faSearch} title="Search" />
+          <IconButton icon={'search'} title="Search" />
           <input type="text" onChange={e => setSearch(e.target.value)} />
         </label>
       </div>
@@ -74,7 +73,7 @@ function LoggerGrid({ title, levels, changeLevel }: LoggerGridProps) {
                 className={css({
                   display: 'contents',
                   ':hover': {
-                    color: 'var(--hoverFgColor)',
+                    color: 'var(--text-primary)',
                     '& > div:first-child': {
                       textDecoration: 'underline',
                     },
@@ -182,7 +181,7 @@ export default function (): JSX.Element {
       <div>
         <h3>Loggers Config</h3>
         <IconButton
-          icon={faSync}
+          icon={'sync'}
           title="Sync"
           onClick={() => {
             dispatch(getLoggerLevels());

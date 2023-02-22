@@ -7,21 +7,21 @@
 
 import { css } from '@emotion/css';
 import { IconName } from '@fortawesome/fontawesome-svg-core';
-import { faCircleDot, faGlobe } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { entityIs } from 'colab-rest-client';
 import * as React from 'react';
 import useTranslations from '../../../../i18n/I18nContext';
 import { useProject } from '../../../../selectors/projectSelector';
 import { CardTypeAllInOne as CardType } from '../../../../types/cardTypeDefinition';
-import { space_S } from '../../../styling/style';
+import Icon from '../../../common/layout/Icon';
+import { space_sm } from '../../../styling/style';
 
-export const referenceIcon = faCircleDot;
+export const referenceIcon = 'star';
 
 export const targetProjectIconStyle = css({
   fontSize: '.8rem',
-  marginRight: space_S,
-  marginBottom: space_S,
+  marginRight: space_sm,
+  marginBottom: space_sm,
 });
 
 interface TargetCardTypeSummaryProps {
@@ -38,9 +38,9 @@ export default function TargetCardTypeSummary({
         (cardType.projectIdCT ? (
           <TargetProjectSummary projectId={cardType.projectIdCT} />
         ) : (
-          <FontAwesomeIcon
-            icon={faGlobe}
-            color={'var(--secondaryColor)'}
+          <Icon
+            icon={'language'}
+            color={'var(--primary-main)'}
             title={i18n.modules.cardType.info.isGlobalType}
             className={targetProjectIconStyle}
           />
@@ -68,7 +68,7 @@ function TargetProjectSummary({ projectId }: TargetProjectSummaryProps): JSX.Ele
           : referenceIcon
       }
       className={targetProjectIconStyle}
-      color={project?.illustration ? project.illustration.iconBkgdColor : 'var(--lightGray)'}
+      color={project?.illustration ? project.illustration.iconBkgdColor : 'var(--divider-main)'}
       title={
         entityIs(project, 'Project') && project?.name
           ? i18n.modules.cardType.info.fromProject(project.name)

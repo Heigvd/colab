@@ -6,7 +6,6 @@
  */
 
 import { css, cx } from '@emotion/css';
-import { faSync } from '@fortawesome/free-solid-svg-icons';
 import { entityIs, ProjectContentChannel, UserChannel } from 'colab-rest-client';
 import * as React from 'react';
 import { getAllUsers, getOccupiedChannels } from '../../API/api';
@@ -16,8 +15,8 @@ import { defaultThumbnailStyle } from '../common/collection/ItemThumbnailsSelect
 import IconButton from '../common/element/IconButton';
 import InlineLoading from '../common/element/InlineLoading';
 import Flex from '../common/layout/Flex';
-import { ProjectDisplay } from '../projects/ProjectList';
-import { space_M } from '../styling/style';
+import ProjectDisplay from '../projects/ProjectCard';
+import { space_lg } from '../styling/style';
 import UserList from './UserList';
 
 interface ProjectDisplayProps {
@@ -118,7 +117,7 @@ export default function Who(): JSX.Element {
           onClick={() => {
             dispatch(getOccupiedChannels());
           }}
-          icon={faSync}
+          icon={'sync'}
           title="Sync"
         />
 
@@ -126,7 +125,7 @@ export default function Who(): JSX.Element {
           <UserList users={onlineUsers} />
         </div>
         <h3>Opened Projects</h3>
-        <Flex gap={space_M} wrap="wrap">
+        <Flex gap={space_lg} wrap="wrap">
           {projectChannels.map(overview => (
             <ProjectDisplayWrapper
               key={`channel-project-${overview.channel.projectId}`}

@@ -6,9 +6,6 @@
  */
 
 import { css, cx } from '@emotion/css';
-import { faEye } from '@fortawesome/free-regular-svg-icons';
-import { faArchive, faArrowUp, faBoxArchive, faTrash } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import * as React from 'react';
 import * as API from '../../API/api';
 import useTranslations from '../../i18n/I18nContext';
@@ -16,8 +13,9 @@ import { useAndLoadResources } from '../../selectors/resourceSelector';
 import { useAppDispatch } from '../../store/hooks';
 import IconButton from '../common/element/IconButton';
 import Flex from '../common/layout/Flex';
+import Icon from '../common/layout/Icon';
 import OpenCloseModal from '../common/layout/OpenCloseModal';
-import { errorColor, iconButton, lightIconButtonStyle, space_M, space_S } from '../styling/style';
+import { iconButtonStyle, lightIconButtonStyle, space_lg, space_sm } from '../styling/style';
 import { ResourceDisplay } from './ResourceDisplay';
 import { ResourceAndRef } from './resourcesCommonType';
 import ResourcesList from './ResourcesList';
@@ -44,7 +42,7 @@ export default function HidenResourcesKeeper({
         justify="space-between"
         className={css({
           flexGrow: 1,
-          padding: space_S + ' ' + space_M,
+          padding: space_sm + ' ' + space_lg,
           '&:hover': { cursor: 'default' },
         })}
       >
@@ -52,22 +50,21 @@ export default function HidenResourcesKeeper({
         <Flex>
           <IconButton
             title={i18n.common.restore}
-            icon={faBoxArchive}
-            layer={{ layerIcon: faArrowUp, transform: 'shrink-6 up-10' }}
+            icon={'archive'}
             onClick={() => dispatch(API.giveAccessToResource(resource))}
             className={cx(lightIconButtonStyle)}
-            IconClassName={iconButton}
+            iconClassName={iconButtonStyle}
           />
           <OpenCloseModal
             title={i18n.modules.content.document}
             collapsedChildren={
-              <FontAwesomeIcon
+              <Icon
                 title={i18n.common.display}
-                icon={faEye}
-                className={cx(iconButton, lightIconButtonStyle)}
+                icon={'visibility'}
+                className={cx(iconButtonStyle, lightIconButtonStyle)}
               />
             }
-            className={css({ padding: '0 ' + space_S })}
+            className={css({ padding: '0 ' + space_sm })}
             modalBodyClassName={css({ alignItems: 'stretch' })}
             widthMax
             heightMax
@@ -79,18 +76,18 @@ export default function HidenResourcesKeeper({
           {resource.isDirectResource ? (
             <Flex
               className={css({
-                borderLeft: '1px solid var(--lightGray)',
-                margin: '0 ' + space_S,
+                borderLeft: '1px solid var(--divider-main)',
+                margin: '0 ' + space_sm,
               })}
               wrap="nowrap"
             >
               <IconButton
                 title={i18n.common.finalDelete}
-                icon={faTrash}
-                iconColor={errorColor}
+                icon={'delete'}
+                iconColor={'var(--error-main)'}
                 onClick={() => dispatch(API.deleteResource(resource.targetResource))}
                 className={lightIconButtonStyle}
-                IconClassName={iconButton}
+                iconClassName={iconButtonStyle}
               />
             </Flex>
           ) : (
@@ -120,7 +117,7 @@ export default function HidenResourcesKeeper({
             {/* <span className={css({ marginRight: space_S, fontSize: '0.8em' })}>
               {resources.length}
             </span> */}
-            <FontAwesomeIcon title={i18n.modules.content.removedDocuments} icon={faArchive} />
+            <Icon title={i18n.modules.content.removedDocuments} icon={'inventory_2'} />
           </Flex>
         ) : (
           <></>

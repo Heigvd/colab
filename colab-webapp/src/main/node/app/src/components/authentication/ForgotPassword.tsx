@@ -14,7 +14,7 @@ import useTranslations from '../../i18n/I18nContext';
 import { useAppDispatch, useLoadingState } from '../../store/hooks';
 import Form, { Field } from '../common/element/Form';
 import { InlineLink } from '../common/element/Link';
-import { lightLinkStyle, space_M } from '../styling/style';
+import { lightLinkStyle, space_lg } from '../styling/style';
 import PublicEntranceContainer from './PublicEntranceContainer';
 
 interface ResetPasswordFormProps {
@@ -67,7 +67,7 @@ export default function ResetPasswordForm({ redirectTo }: ResetPasswordFormProps
         onSubmit={requestPasswordReset}
         submitLabel={i18n.authentication.action.sendMePassword}
         isSubmitInProcess={isLoading}
-        buttonClassName={css({ margin: space_M + ' auto' })}
+        buttonClassName={css({ margin: space_lg + ' auto' })}
       >
         <InlineLink
           className={cx(lightLinkStyle)}

@@ -56,10 +56,10 @@ Cypress.Commands.add("login", (identifier, password) => {
   cy.contains("Login").should("have.length", "1").click();
 });
 
-Cypress.Commands.add("logout", (identifier, password) => {
-  cy.get("svg.fa-circle-user").should("have.length", "1").click();
+Cypress.Commands.add("logout", (initials) => {
+  cy.get("div").contains(initials).should("have.length", "1").click();
 
-  cy.get("svg.fa-right-from-bracket").should("have.length", "1").click();
+  cy.get("span").contains("logout").should("have.length", "1").click();
   //  cy.react("IconButton", { props: { icon: { iconName: "sign-out-alt" } } })
   //    .should("have.length", "1")
   //    .click();

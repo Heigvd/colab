@@ -6,8 +6,6 @@
  */
 
 import { css } from '@emotion/css';
-import { IconProp } from '@fortawesome/fontawesome-svg-core';
-import { faCheck, faTimes } from '@fortawesome/free-solid-svg-icons';
 import * as React from 'react';
 import useTranslations from '../../../i18n/I18nContext';
 import Clickable from '../layout/Clickable';
@@ -15,7 +13,7 @@ import Button from './Button';
 import IconButton from './IconButton';
 
 export interface InlineConfirmIconButtonProps {
-  icon: IconProp;
+  icon: string;
   title: string;
   className?: string;
   onConfirm: () => void;
@@ -40,12 +38,12 @@ const bubbleStyle = (position: 'LEFT' | 'RIGHT' | 'CENTER') => {
 
   return css({
     position: 'absolute',
-    '--fgColor': '#FEFEFE',
-    '--hoverFgColor': '#FEFEFE',
-    '--hoverBgColor': '#06b7e8',
+    '--fgColor': 'var(--text-primary)',
+    '--hoverFgColor': 'var(--text-primary)',
+    '--hoverBgColor': 'var(bg-secondary)',
     '--linkColor': '#fefefe',
-    '--bgColor': 'var(--pictoSteelBlue)',
-    backgroundColor: 'var(--bgColor)',
+    '--bg-primary': 'var(--main-primary)',
+    backgroundColor: 'var(--bg-primary)',
     color: 'var(--fgColor)',
     display: 'flex',
     borderRadius: '3px',
@@ -87,53 +85,8 @@ const bubbleItem = css({
   fontSize: '0.8em',
 });
 
-export function InlineConfirmIconButton({
-  children,
-  className,
-  icon,
-  onConfirm,
-  title,
-}: InlineConfirmIconButtonProps): JSX.Element {
-  const [waitConfirm, setConfirm] = React.useState(false);
-  const i18n = useTranslations();
-
-  const askConfirm = React.useCallback(() => {
-    setConfirm(false);
-  }, []);
-
-  const confirmedCb = React.useCallback(() => {
-    setConfirm(false);
-    onConfirm();
-  }, [onConfirm]);
-
-  return (
-    <div title={title || i18n.common.confirm}>
-      {waitConfirm ? (
-        <Button className={className} icon={icon}>
-          <IconButton
-            title={`${i18n.common.cancel} ${title}`}
-            icon={faTimes}
-            onClick={askConfirm}
-          />
-          <IconButton
-            title={`${i18n.common.confirm} ${title}`}
-            icon={faCheck}
-            onClick={confirmedCb}
-          />
-        </Button>
-      ) : (
-        <div>
-          <Button className={className} icon={icon} onClick={() => setConfirm(true)}>
-            {children}
-          </Button>
-        </div>
-      )}
-    </div>
-  );
-}
-
 export interface ConfirmIconButtonProps {
-  icon: IconProp;
+  icon: string;
   title: string;
   className?: string;
   onConfirm: () => void;
@@ -216,8 +169,47 @@ export function ConfirmIconButton({
   );
 }
 
-//  WITH ICONS:
-//        <div className={bubbleStyle}>
-//          <IconButton title={`cancel ${title}`}  icon={faTimes} onClick={askConfirm} />
-//          <IconButton title={`confirm ${title}`}  icon={faCheck} onClick={confirmedCb} />
-//        </div>
+/* export function InlineConfirmIconButton({
+  children,
+  className,
+  icon,
+  onConfirm,
+  title,
+}: InlineConfirmIconButtonProps): JSX.Element {
+  const [waitConfirm, setConfirm] = React.useState(false);
+  const i18n = useTranslations();
+
+  const askConfirm = React.useCallback(() => {
+    setConfirm(false);
+  }, []);
+
+  const confirmedCb = React.useCallback(() => {
+    setConfirm(false);
+    onConfirm();
+  }, [onConfirm]);
+
+  return (
+    <div title={title || i18n.common.confirm}>
+      {waitConfirm ? (
+        <Button className={className} icon={icon}>
+          <IconButton
+            title={`${i18n.common.cancel} ${title}`}
+            icon={'close'}
+            onClick={askConfirm}
+          />
+          <IconButton
+            title={`${i18n.common.confirm} ${title}`}
+            icon={'check'}
+            onClick={confirmedCb}
+          />
+        </Button>
+      ) : (
+        <div>
+          <Button className={className} icon={icon} onClick={() => setConfirm(true)}>
+            {children}
+          </Button>
+        </div>
+      )}
+    </div>
+  );
+} */

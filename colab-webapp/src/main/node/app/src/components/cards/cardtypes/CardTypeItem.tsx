@@ -6,14 +6,6 @@
  */
 
 import { css, cx } from '@emotion/css';
-import {
-  faEllipsisV,
-  faExchangeAlt,
-  faMapPin,
-  faPen,
-  faTrash,
-} from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import * as React from 'react';
 import { useNavigate } from 'react-router-dom';
 import * as API from '../../../API/api';
@@ -24,32 +16,23 @@ import { CardTypeAllInOne as CardType } from '../../../types/cardTypeDefinition'
 import { ConfirmDeleteModal } from '../../common/layout/ConfirmDeleteModal';
 import DropDownMenu from '../../common/layout/DropDownMenu';
 import Flex from '../../common/layout/Flex';
+import Icon from '../../common/layout/Icon';
 import { DocTextDisplay } from '../../documents/DocTextItem';
-import {
-  borderRadius,
-  cardShadow,
-  errorColor,
-  lightIconButtonStyle,
-  lightItalicText,
-  space_M,
-  space_S,
-} from '../../styling/style';
+import { lightIconButtonStyle, space_lg, space_sm } from '../../styling/style';
 import CardTypeRelativesSummary from './summary/CardTypeRelativesSummary';
 import { TagsDisplay } from './tags/TagsDisplay';
 
 const style = css({
   width: '280px',
-  borderRadius: borderRadius,
-  padding: space_M,
-  background: 'var(--bgColor)',
-  boxShadow: cardShadow,
+  padding: space_lg,
+  background: 'var(--bg-primary)',
 });
 
 const tagStyle = css({
   borderRadius: '13px',
-  padding: space_S + ' ' + space_M,
-  marginRight: space_S,
-  backgroundColor: 'var(--lightGray)',
+  padding: space_sm + ' ' + space_lg,
+  marginRight: space_sm,
+  backgroundColor: 'var(--divider-main)',
   fontSize: '0.8em',
 });
 
@@ -72,7 +55,7 @@ export default function CardTypeItem({ cardType, usage }: CardTypeItemProps): JS
       <Flex justify="space-between">
         <h3>{cardType.title || i18n.modules.cardType.titlePlaceholder}</h3>
         <DropDownMenu
-          icon={faEllipsisV}
+          icon={'more_vert'}
           valueComp={{ value: '', label: '' }}
           buttonClassName={cx(lightIconButtonStyle, css({ marginLeft: '40px' }))}
           entries={[
@@ -85,7 +68,7 @@ export default function CardTypeItem({ cardType, usage }: CardTypeItemProps): JS
                     value: 'edit',
                     label: (
                       <>
-                        <FontAwesomeIcon icon={faPen} /> {i18n.common.edit}
+                        <Icon icon={'edit'} /> {i18n.common.edit}
                       </>
                     ),
                     action: () => navigate(`./edit/${cardType.ownId}`),
@@ -98,7 +81,7 @@ export default function CardTypeItem({ cardType, usage }: CardTypeItemProps): JS
                     value: 'useInProject',
                     label: (
                       <>
-                        <FontAwesomeIcon icon={faMapPin} />{' '}
+                        <Icon icon={'location_on'} />
                         {i18n.modules.cardType.action.useInProject}
                       </>
                     ),
@@ -117,8 +100,7 @@ export default function CardTypeItem({ cardType, usage }: CardTypeItemProps): JS
                     value: 'removeFromProject',
                     label: (
                       <>
-                        <FontAwesomeIcon icon={faExchangeAlt} />{' '}
-                        {i18n.modules.cardType.action.removeFromProject}
+                        <Icon icon={'remove'} /> {i18n.modules.cardType.action.removeFromProject}
                       </>
                     ),
                     action: () =>
@@ -139,7 +121,7 @@ export default function CardTypeItem({ cardType, usage }: CardTypeItemProps): JS
                     value: 'delete',
                     label: (
                       <>
-                        <FontAwesomeIcon icon={faTrash} color={errorColor} /> {i18n.common.delete}
+                        <Icon icon={'delete'} color={'var(--error-main)'} /> {i18n.common.delete}
                       </>
                     ),
                     action: () => setShowDelete(true),
@@ -161,7 +143,7 @@ export default function CardTypeItem({ cardType, usage }: CardTypeItemProps): JS
         </>
       )}
       <Flex grow={1}>
-        <p className={lightItalicText}>
+        <p>
           <DocTextDisplay id={cardType.purposeId} />
         </p>
       </Flex>

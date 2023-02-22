@@ -6,24 +6,62 @@
  */
 
 import { css, cx } from '@emotion/css';
-import { faCheck, faTimes } from '@fortawesome/free-solid-svg-icons';
 import * as React from 'react';
 import useTranslations from '../../../i18n/I18nContext';
 import {
-  borderRadius,
   disabledStyle,
-  errorStyle,
-  inputStyle,
+  errorTextStyle,
   labelStyle,
   lightIconButtonStyle,
-  space_S,
-  textareaStyle,
-  textSmall,
-  warningStyle,
+  space_lg,
+  space_sm,
+  text_sm,
+  warningTextStyle,
 } from '../../styling/style';
+import { br } from '../../styling/theme';
 import Flex from '../layout/Flex';
 import IconButton from './IconButton';
 import Tips, { TipsProps } from './Tips';
+
+export const inputStyle = css({
+  outline: 'none',
+  border: 'solid 1px var(--divider-main)',
+  color: 'var(--secFgColor)',
+  backgroundColor: 'var(--secBgColor)',
+  borderRadius: br.sm,
+  boxSizing: 'border-box',
+  transition: '.2s',
+  padding: '0 ' + space_lg,
+  lineHeight: '2.5em',
+  fontFamily: 'inherit',
+  fontSize: text_sm,
+  '&:focus': {
+    border: 'solid 1px var(--secondary-main)',
+    outline: 'solid 1px var(--secondary-main)',
+  },
+  '&:hover': { border: 'solid 1px var(--secondary-main)' },
+});
+
+const textareaStyle = css({
+  outline: 'none',
+  border: 'solid 1px #d7d7d7',
+  color: 'var(--secFgColor)',
+  backgroundColor: 'var(--secBgColor)',
+  borderRadius: br.sm,
+  boxSizing: 'border-box',
+  transition: '.8s',
+  padding: space_sm + ' ' + space_lg,
+  lineHeight: '1.6em',
+  height: '100px',
+  fontFamily: 'inherit',
+  fontSize: text_sm,
+  maxWidth: '100%',
+  '&:focus': {
+    border: 'solid 1px var(--secondary-main)',
+    outline: 'solid 1px var(--secondary-main)',
+  },
+  '&:hover': { border: 'solid 1px var(--secondary-main)' },
+});
 
 // TODO replace OnConfirmInput
 // TODO replace input in invite member in Team.tsx
@@ -279,7 +317,7 @@ function Input({
           }}
           className={cx(
             inputEditClassName && mode === 'EDIT' ? inputEditClassName : inputDisplayClassName,
-            css({ color: 'var(--fgColor)' }),
+            css({ color: 'var(--text-primary)' }),
           )}
         />
       ) : (
@@ -308,13 +346,13 @@ function Input({
       {saveMode === 'ON_CONFIRM' && (mode === 'EDIT' || updated) && (
         <Flex className={confirmButtonsStyle}>
           <IconButton
-            icon={faTimes}
+            icon={'close'}
             title={i18n.common.cancel}
             onClick={cancel}
             className={lightIconButtonStyle}
           />
           <IconButton
-            icon={faCheck}
+            icon={'check'}
             title={i18n.common.save}
             onClick={save}
             className={lightIconButtonStyle}
@@ -332,11 +370,11 @@ function Input({
       </Flex> */}
       {(footer || warningMessage || errorMessage) && (
         <Flex direction="column" grow="1" align="flex-start" className={bottomClassName}>
-          {footer && <Flex className={cx(textSmall, footerClassName)}>{footer}</Flex>}
+          {footer && <Flex className={cx(text_sm, footerClassName)}>{footer}</Flex>}
           {(warningMessage || errorMessage) && (
-            <Flex direction="column" grow="1" className={cx(textSmall, validationClassName)}>
-              {warningMessage != null && <div className={warningStyle}>{warningMessage}</div>}
-              {errorMessage != null && <div className={errorStyle}>{errorMessage}</div>}
+            <Flex direction="column" grow="1" className={cx(text_sm, validationClassName)}>
+              {warningMessage != null && <div className={warningTextStyle}>{warningMessage}</div>}
+              {errorMessage != null && <div className={errorTextStyle}>{errorMessage}</div>}
             </Flex>
           )}
         </Flex>
@@ -355,7 +393,7 @@ export function BlockInput(props: InputProps): JSX.Element {
         css({
           flexDirection: 'column',
           alignItems: 'normal',
-          padding: space_S + ' 0',
+          padding: space_sm + ' 0',
         }),
         props.containerClassName,
       )}
@@ -390,8 +428,8 @@ const inlineTextareaContainerStyle = css({
 
 const inlineInputStyle = {
   maxWidth: '100%',
-  borderRadius: borderRadius,
-  padding: space_S,
+  borderRadius: br.full,
+  padding: space_sm,
   width: 'auto',
   minWidth: '1em',
   fontFamily: 'inherit',
@@ -403,7 +441,7 @@ const inlineInputStyle = {
 
 const inlineInputEditingStyle = css({
   ...inlineInputStyle,
-  border: '1px solid var(--darkGray)',
+  border: '1px solid var(--secondary-main)',
 });
 
 const inlineInputDisplayStyle = css({
@@ -416,8 +454,8 @@ const inlineInputDisplayStyle = css({
 });
 
 const inlineTextAreaStyle = {
-  borderRadius: borderRadius,
-  padding: space_S,
+  borderRadius: br.sm,
+  padding: space_sm,
   width: '100%',
   maxWidth: '100%',
   fontFamily: 'inherit',
@@ -429,7 +467,7 @@ const inlineTextAreaStyle = {
 
 const inlineTextareaEditingStyle = css({
   ...inlineTextAreaStyle,
-  border: '1px solid var(--darkGray)',
+  border: '1px solid var(--secondary-main)',
 });
 
 const inlineTextareaDisplayStyle = css({
@@ -439,7 +477,7 @@ const inlineTextareaDisplayStyle = css({
 
 const inlineInputHoverStyle = css({
   '&:hover': {
-    borderColor: 'var(--lightGray)',
+    borderColor: 'var(--divider-main)',
   },
 });
 
@@ -452,6 +490,7 @@ export function InlineInput(props: InputProps): JSX.Element {
         {
           [inlineTextareaContainerStyle]: props.inputType === 'textarea',
         },
+
         props.containerClassName,
       )}
       inputDisplayClassName={cx(

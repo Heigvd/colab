@@ -6,8 +6,6 @@
  */
 
 import { css, cx } from '@emotion/css';
-import { faPen, faTrash } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Illustration } from 'colab-rest-client';
 import * as React from 'react';
 import { emailFormat } from '../../helper';
@@ -18,14 +16,14 @@ import Form from '../common/element/Form';
 import IllustrationDisplay from '../common/element/IllustrationDisplay';
 import { FormInput } from '../common/element/Input';
 import Flex from '../common/layout/Flex';
+import Icon from '../common/layout/Icon';
 import {
-  borderRadius,
-  invertedButtonStyle,
   labelStyle,
   lightIconButtonStyle,
-  space_M,
-  space_S,
-  textSmall,
+  OutlineButtonStyle,
+  space_lg,
+  space_sm,
+  text_sm,
 } from '../styling/style';
 import { defaultProjectIllustration } from './ProjectCommon';
 import { ProjectCreationData } from './ProjectCreator';
@@ -38,7 +36,7 @@ const projectIllustrationOverlay = css({
   bottom: 0,
   right: 0,
   opacity: 0,
-  padding: space_S,
+  padding: space_sm,
   '&:hover': {
     backgroundColor: 'rgba(256, 256, 256, 0.4)',
     opacity: 1,
@@ -80,10 +78,9 @@ export default function ProjectDataInitialization({
           direction="column"
           align="stretch"
           className={css({
-            padding: space_M,
-            border: '1px solid var(--secondaryColor)',
-            borderRadius: borderRadius,
-            marginBottom: space_M,
+            padding: space_lg,
+            border: '1px solid var(--primary-main)',
+            marginBottom: space_lg,
           })}
         >
           <ProjectIllustrationMaker
@@ -91,10 +88,10 @@ export default function ProjectDataInitialization({
               currentIllustration || data.projectModel?.illustration || defaultProjectIllustration
             }
             setIllustration={setCurrentIllustration}
-            iconContainerClassName={css({ marginBottom: space_S, maxHeight: '100px' })}
+            iconContainerClassName={css({ marginBottom: space_sm, maxHeight: '100px' })}
           />
-          <Flex justify="flex-end" className={css({ gap: space_S })}>
-            <Button onClick={() => setEditIllustration(false)} invertedButton>
+          <Flex justify="flex-end" className={css({ gap: space_sm })}>
+            <Button onClick={() => setEditIllustration(false)} variant="outline">
               {i18n.common.cancel}
             </Button>
             <Button
@@ -112,7 +109,7 @@ export default function ProjectDataInitialization({
           className={css({
             minWidth: '100%',
             height: '80px',
-            marginBottom: space_S,
+            marginBottom: space_sm,
             position: 'relative',
           })}
           onClick={() => setEditIllustration(true)}
@@ -124,7 +121,7 @@ export default function ProjectDataInitialization({
             className={projectIllustrationOverlay}
             title={i18n.modules.project.actions.editIllustration}
           >
-            <FontAwesomeIcon icon={faPen} color={'var(--bgColor)'} />
+            <Icon icon={'edit'} color={'var(--bg-primary)'} />
           </Flex>
         </Flex>
       )}
@@ -149,9 +146,9 @@ export default function ProjectDataInitialization({
       <Flex
         direction="column"
         className={css({
-          paddingTop: space_M,
-          marginTop: space_M,
-          borderTop: '1px solid var(--lightGray)',
+          paddingTop: space_lg,
+          marginTop: space_lg,
+          borderTop: '1px solid var(--divider-main)',
         })}
       >
         <Form
@@ -177,16 +174,19 @@ export default function ProjectDataInitialization({
           }}
           submitLabel={i18n.common.add}
           className={css({ flexDirection: 'row', alignItems: 'flex-end' })}
-          buttonClassName={cx(css({ alignSelf: 'flex-end', margin: space_S }), invertedButtonStyle)}
+          buttonClassName={cx(
+            css({ alignSelf: 'flex-end', margin: space_sm }),
+            OutlineButtonStyle('primary'),
+          )}
         />
 
         <Flex direction="column">
           {data.guests.map(guest => (
-            <Flex align="center" key={guest} className={css({ marginTop: space_S })}>
-              <Flex className={textSmall}>{guest}</Flex>
+            <Flex align="center" key={guest} className={css({ marginTop: space_sm })}>
+              <Flex className={text_sm}>{guest}</Flex>
               {!readOnly && (
                 <ConfirmIconButton
-                  icon={faTrash}
+                  icon={'delete'}
                   title={i18n.team.removeGuest}
                   onConfirm={() => removeGuest(guest)}
                   className={lightIconButtonStyle}

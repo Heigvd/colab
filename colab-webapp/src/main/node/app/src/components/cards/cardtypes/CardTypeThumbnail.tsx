@@ -6,9 +6,6 @@
  */
 
 import { css, cx } from '@emotion/css';
-import { faFile } from '@fortawesome/free-regular-svg-icons';
-import { faEllipsisV, faExchangeAlt, faMapPin, faPen } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import * as React from 'react';
 import { useNavigate } from 'react-router-dom';
 import * as API from '../../../API/api';
@@ -22,29 +19,26 @@ import Button from '../../common/element/Button';
 import { ConfirmDeleteModal } from '../../common/layout/ConfirmDeleteModal';
 import DropDownMenu from '../../common/layout/DropDownMenu';
 import Flex from '../../common/layout/Flex';
+import Icon from '../../common/layout/Icon';
 import Modal from '../../common/layout/Modal';
 import { DocTextDisplay } from '../../documents/DocTextItem';
 import {
-  borderRadius,
-  errorColor,
   lightIconButtonStyle,
-  lightItalicText,
-  multiLineEllipsis,
-  oneLineEllipsis,
-  space_M,
-  space_S,
-  textSmall,
+  multiLineEllipsisStyle,
+  oneLineEllipsisStyle,
+  space_lg,
+  space_sm,
+  text_sm,
 } from '../../styling/style';
 import CardTypeRelativesSummary from './summary/CardTypeRelativesSummary';
 import TargetCardTypeSummary from './summary/TargetCardTypeSummary';
 import { TagsDisplay } from './tags/TagsDisplay';
 
 const tagStyle = css({
-  borderRadius: borderRadius,
-  padding: '3px ' + space_S,
-  marginRight: space_S,
-  border: '1px solid var(--darkGray)',
-  color: 'var(--darkGray)',
+  padding: '3px ' + space_sm,
+  marginRight: space_sm,
+  border: '1px solid var(--secondary-main)',
+  color: 'var(--secondary-main)',
   fontSize: '0.8em',
   whiteSpace: 'nowrap',
 });
@@ -83,8 +77,8 @@ export default function CardTypeThumbnail({
     <>
       {isEmpty ? (
         <Flex title={i18n.common.none} align="center" justify="center" grow={1}>
-          <FontAwesomeIcon icon={faFile} size="3x" />
-          <div className={css({ paddingLeft: space_M })}>
+          <Icon icon={'draft'} opsz="lg" />
+          <div className={css({ paddingLeft: space_lg })}>
             <h3>{i18n.common.none}</h3>
           </div>
         </Flex>
@@ -94,33 +88,20 @@ export default function CardTypeThumbnail({
             <Flex direction="column" grow={1} align="stretch">
               <Flex justify={editable ? 'flex-start' : 'space-between'} align="center">
                 <TargetCardTypeSummary cardType={cardType} />
-                <h3 className={oneLineEllipsis}>
+                <h3 className={oneLineEllipsisStyle}>
                   {cardType.title || i18n.modules.cardType.titlePlaceholder}
                 </h3>
-                <div
-                  className={cx(
-                    lightItalicText,
-                    textSmall,
-                    css({ whiteSpace: 'nowrap', marginLeft: space_M }),
-                  )}
-                >
+                <div className={cx(text_sm, css({ whiteSpace: 'nowrap', marginLeft: space_lg }))}>
                   <CardTypeRelativesSummary cardType={cardType} />
                 </div>
               </Flex>
-              <p
-                className={cx(
-                  lightItalicText,
-                  textSmall,
-                  multiLineEllipsis,
-                  css({ maxWidth: '100%' }),
-                )}
-              >
+              <p className={cx(text_sm, multiLineEllipsisStyle, css({ maxWidth: '100%' }))}>
                 <DocTextDisplay id={cardType.purposeId} />
               </p>
             </Flex>
             {editable && (
               <DropDownMenu
-                icon={faEllipsisV}
+                icon={'more_vert'}
                 valueComp={{ value: '', label: '' }}
                 buttonClassName={cx(lightIconButtonStyle)}
                 entries={[
@@ -131,7 +112,7 @@ export default function CardTypeThumbnail({
                           value: 'edit',
                           label: (
                             <>
-                              <FontAwesomeIcon icon={faPen} /> {i18n.common.edit}
+                              <Icon icon={'edit'} /> {i18n.common.edit}
                             </>
                           ),
                           action: () => navigate(`./edit/${cardType.ownId}`),
@@ -146,7 +127,7 @@ export default function CardTypeThumbnail({
                           value: 'useInProject',
                           label: (
                             <>
-                              <FontAwesomeIcon icon={faMapPin} />{' '}
+                              <Icon icon={'location_on'} />{' '}
                               {i18n.modules.cardType.action.useInProject}
                             </>
                           ),
@@ -166,7 +147,7 @@ export default function CardTypeThumbnail({
                         {
                           label: (
                             <>
-                              <FontAwesomeIcon color={errorColor} icon={faExchangeAlt} />{' '}
+                              <Icon color={'var(--error-main)'} icon={'remove'} />{' '}
                               {i18n.modules.cardType.action.removeFromProject}
                             </>
                           ),
@@ -193,7 +174,7 @@ export default function CardTypeThumbnail({
                         {
                           label: (
                             <>
-                              <FontAwesomeIcon color={errorColor} icon={faExchangeAlt} />{' '}
+                              <Icon color={'var(--error-main)'} icon={'remove'} />{' '}
                               {i18n.common.delete}
                             </>
                           ),
@@ -224,7 +205,7 @@ export default function CardTypeThumbnail({
                         <Flex
                           justify={'center'}
                           grow={1}
-                          className={css({ padding: space_M, columnGap: space_S })}
+                          className={css({ padding: space_lg, columnGap: space_sm })}
                         >
                           <Button onClick={collapse}> {i18n.common.ok}</Button>
                         </Flex>
@@ -242,7 +223,7 @@ export default function CardTypeThumbnail({
                         <Flex
                           justify={'center'}
                           grow={1}
-                          className={css({ padding: space_M, columnGap: space_S })}
+                          className={css({ padding: space_lg, columnGap: space_sm })}
                         >
                           <Button onClick={collapse}> {i18n.common.ok}</Button>
                         </Flex>

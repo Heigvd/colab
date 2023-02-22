@@ -6,22 +6,6 @@
  */
 
 import { css, cx } from '@emotion/css';
-import {
-  faBookOpen,
-  faChevronRight,
-  faCog,
-  faGlobe,
-  faGrip,
-  faHouse,
-  faNetworkWired,
-  faPen,
-  faProjectDiagram,
-  faStar,
-  faTableCells,
-  faTableCellsLarge,
-  faUserGroup,
-} from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Card, CardContent, entityIs, Project } from 'colab-rest-client';
 import * as React from 'react';
 import { Navigate, Route, Routes, useLocation, useNavigate, useParams } from 'react-router-dom';
@@ -43,33 +27,30 @@ import CardCreator from '../../cards/CardCreator';
 import CardEditor from '../../cards/CardEditor';
 import CardThumbWithSelector from '../../cards/CardThumbWithSelector';
 import ContentSubs from '../../cards/ContentSubs';
+import Badge from '../../common/element/Badge';
 import Checkbox from '../../common/element/Checkbox';
 import IconButton from '../../common/element/IconButton';
 import { IllustrationIconDisplay } from '../../common/element/IllustrationDisplay';
 import InlineLoading from '../../common/element/InlineLoading';
 import { DiscreetInput } from '../../common/element/Input';
-import { mainLinkActiveClass, mainMenuLink, MainMenuLink } from '../../common/element/Link';
+import { MainMenuLink } from '../../common/element/Link';
 import Tips, { TipsCtx } from '../../common/element/Tips';
 import Clickable from '../../common/layout/Clickable';
 import Flex from '../../common/layout/Flex';
+import Icon from '../../common/layout/Icon';
+import Modal from '../../common/layout/Modal';
 import Monkeys from '../../debugger/monkey/Monkeys';
 import { UserDropDown } from '../../MainNav';
 import Settings from '../../settings/Settings';
 import {
-  fullPageStyle,
-  greyIconButtonChipStyle,
-  invertedThemeMode,
-  lightIconButtonStyle,
+  activeIconButtonStyle,
+  iconButtonStyle,
   linkStyle,
-  modelBGColor,
-  paddingAroundStyle,
-  space_L,
-  space_M,
-  space_S,
-  successColor,
+  p_md,
+  space_2xs,
+  space_sm,
 } from '../../styling/style';
 import DocumentationTab from '../DocumentationTab';
-import Presence from '../presence/Presence';
 import { PresenceContext, usePresenceContext } from '../presence/PresenceContext';
 import { defaultProjectIllustration } from '../ProjectCommon';
 import { ProjectSettingsTabs } from '../settings/ProjectSettingsTabs';
@@ -78,24 +59,13 @@ import ActivityFlowChart from './activityFlow/ActivityFlowChart';
 import Hierarchy from './hierarchy/Hierarchy';
 
 export const depthMax = 2;
-const modelPictoCornerStyle = css({
-  position: 'absolute',
-  top: 0,
-  left: 0,
-  padding: '5px 7px 7px 5px',
-  borderRadius: '0 0 10px 0',
-});
 
 const breadCrumbsStyle = css({
   fontSize: '.8em',
-  color: 'var(--darkGray)',
-  margin: '0 ' + space_S,
+  color: 'var(--secondary-main)',
+  margin: '0 ' + space_sm,
   alignSelf: 'center',
 });
-
-function parentPathFn() {
-  return '../';
-}
 
 const Ancestor = ({ card, content, last, className }: Ancestor): JSX.Element => {
   const i18n = useTranslations();
@@ -120,15 +90,11 @@ const Ancestor = ({ card, content, last, className }: Ancestor): JSX.Element => 
           onClick={() => {
             navigate(`../${location.pathname.includes('hierarchy') ? 'hierarchy' : ''}`);
           }}
-          clickableClassName={cx(linkStyle, breadCrumbsStyle, className)}
+          className={cx(linkStyle, breadCrumbsStyle, className)}
         >
           {i18n.common.project}
         </Clickable>
-        <FontAwesomeIcon
-          icon={faChevronRight}
-          size="xs"
-          className={cx(breadCrumbsStyle, className)}
-        />
+        <Icon icon={'chevron_right'} opsz="xs" className={cx(breadCrumbsStyle, className)} />
       </>
     );
   } else if (entityIs(card, 'Card') && entityIs(content, 'CardContent')) {
@@ -142,16 +108,12 @@ const Ancestor = ({ card, content, last, className }: Ancestor): JSX.Element => 
           onClick={() => {
             navigate(`../${t}/${content.cardId}/v/${content.id}`);
           }}
-          clickableClassName={cx(linkStyle, breadCrumbsStyle, className)}
+          className={cx(linkStyle, breadCrumbsStyle, className)}
         >
           {card.title ? card.title : i18n.modules.card.untitled}
         </Clickable>
         {!last && (
-          <FontAwesomeIcon
-            icon={faChevronRight}
-            size="xs"
-            className={cx(breadCrumbsStyle, className)}
-          />
+          <Icon icon={'chevron_right'} opsz="xs" className={cx(breadCrumbsStyle, className)} />
         )}
       </>
     );
@@ -202,11 +164,10 @@ const DefaultVariantDetector = (): JSX.Element => {
 
 interface CardWrapperProps {
   children: (card: Card, variant: CardContent) => JSX.Element;
-  backButtonPath: (card: Card, variant: CardContent) => string;
-  backButtonTitle: string;
   touchMode: 'zoom' | 'edit';
   grow?: number;
   align?: 'center' | 'normal';
+  backButtonPath: string;
 }
 
 const CardWrapper = ({
@@ -220,7 +181,6 @@ const CardWrapper = ({
   const cardContentId = +vId!;
 
   const dispatch = useAppDispatch();
-  const navigate = useNavigate();
 
   const card = useCard(cardId);
   const content = useCardContent(cardContentId);
@@ -230,7 +190,6 @@ const CardWrapper = ({
   const { project: currentProject } = useAppSelector(selectCurrentProject);
 
   const ancestors = useAncestors(parentId);
-  const location = useLocation();
 
   const { touch } = React.useContext(PresenceContext);
 
@@ -259,30 +218,29 @@ const CardWrapper = ({
   } else {
     return (
       <>
-        <Flex className={css({ padding: space_S + ' ' + space_L })} justify="space-between">
-          <Flex align="center">
-            {ancestors.map((ancestor, x) => (
-              <Ancestor
-                key={x}
-                card={ancestor.card}
-                content={ancestor.content}
-                className={cx({
-                  [css({ color: 'var(--primaryColor)' })]: currentProject.type === 'MODEL',
-                })}
-              />
-            ))}
+        <Flex align="center">
+          {ancestors.map((ancestor, x) => (
             <Ancestor
-              card={card}
-              content={content}
-              last
+              key={x}
+              card={ancestor.card}
+              content={ancestor.content}
               className={cx({
-                [css({ color: 'var(--primaryColor)' })]: currentProject.type === 'MODEL',
+                [css({ color: 'var(--primary-main)' })]: currentProject.type === 'MODEL',
               })}
             />
-          </Flex>
-          <IconButton
+          ))}
+          <Ancestor
+            card={card}
+            content={content}
+            last
+            className={cx({
+              [css({ color: 'var(--primary-main)' })]: currentProject.type === 'MODEL',
+            })}
+          />
+        </Flex>
+        {/* <IconButton
             title="toggle view edit"
-            icon={location.pathname.includes('card') ? faPen : faTableCellsLarge}
+            icon={location.pathname.includes('card') ? 'edit' : 'view_comfy'}
             onClick={() => {
               // Note : functional but not so strong
               if (location.pathname.includes('/card/')) {
@@ -292,16 +250,127 @@ const CardWrapper = ({
               }
             }}
             className={lightIconButtonStyle}
-          />
-        </Flex>
+          /> */}
         <Flex
           direction="column"
           grow={grow}
           align={align}
-          className={css({ width: '100%', alignItems: 'stretch' })}
+          className={cx(p_md, css({ alignItems: 'stretch', overflow: 'auto' }))}
         >
           {children(card, content)}
         </Flex>
+      </>
+    );
+  }
+};
+
+const CardEditWrapper = ({
+  children,
+  grow = 1,
+  align = 'normal',
+  touchMode,
+  backButtonPath,
+}: CardWrapperProps): JSX.Element => {
+  const { id, vId } = useParams<'id' | 'vId'>();
+  const cardId = +id!;
+  const cardContentId = +vId!;
+
+  const dispatch = useAppDispatch();
+  const navigate = useNavigate();
+
+  const card = useCard(cardId);
+  const content = useCardContent(cardContentId);
+
+  const parentId = card != null && card != 'LOADING' ? card.parentId : undefined;
+
+  const { project: currentProject } = useAppSelector(selectCurrentProject);
+
+  const ancestors = useAncestors(parentId);
+
+  const { touch } = React.useContext(PresenceContext);
+
+  React.useEffect(() => {
+    touch({
+      cardId: cardId,
+      cardContentId: cardContentId,
+      context: touchMode,
+    });
+  }, [touch, cardContentId, cardId, touchMode]);
+
+  React.useEffect(() => {
+    if (card === undefined && cardId) {
+      dispatch(API.getCard(cardId));
+    }
+  }, [card, cardId, dispatch]);
+
+  if (
+    card == null ||
+    card === 'LOADING' ||
+    currentProject == null ||
+    content == null ||
+    content === 'LOADING'
+  ) {
+    return <InlineLoading />;
+  } else {
+    return (
+      <>
+        <Modal
+          title={
+            <Flex align="center">
+              {ancestors.map((ancestor, x) => (
+                <Ancestor
+                  key={x}
+                  card={ancestor.card}
+                  content={ancestor.content}
+                  className={cx({
+                    [css({ color: 'var(--primary-main)' })]: currentProject.type === 'MODEL',
+                  })}
+                />
+              ))}
+              <Ancestor
+                card={card}
+                content={content}
+                last
+                className={cx({
+                  [css({ color: 'var(--primary-main)' })]: currentProject.type === 'MODEL',
+                })}
+              />
+            </Flex>
+          }
+          size="full"
+          //TO IMPROVE
+          onClose={() => navigate(backButtonPath)}
+          showCloseButton
+        >
+          {() => (
+            <>
+              {/* <Flex align="center" className={p_sm} justify="space-between">
+                
+                <IconButton
+                  title="toggle view edit"
+                  icon={location.pathname.includes('card') ? 'edit' : 'view_comfy'}
+                  onClick={() => {
+                    // Note : functional but not so strong
+                    if (location.pathname.includes('/card/')) {
+                      navigate(`${location.pathname.replace('/card/', '/edit/')}`);
+                    } else {
+                      navigate(`${location.pathname.replace('/edit/', '/card/')}`);
+                    }
+                  }}
+                  className={lightIconButtonStyle}
+                />
+              </Flex> */}
+              <Flex
+                direction="column"
+                grow={grow}
+                align={align}
+                className={css({ width: '100%', alignItems: 'stretch', overflow: 'auto' })}
+              >
+                {children(card, content)}
+              </Flex>
+            </>
+          )}
+        </Modal>
       </>
     );
   }
@@ -322,31 +391,29 @@ function EditorNav({ project }: EditorNavProps): JSX.Element {
     <>
       <div
         className={cx(
-          invertedThemeMode,
           css({
             display: 'inline-grid',
             gridTemplateColumns: '1fr 3fr 1fr',
             flexGrow: 0,
-            padding: `0 ${space_M} 0 0`,
+            padding: `${space_2xs} 0`,
           }),
         )}
       >
         <Flex align="center">
-          <MainMenuLink to={`/`} className={mainMenuLink}>
-            {/* TODO : close current project - check if it really works (local + send to server) */}
+          <MainMenuLink to={`/`}>
             <span
               title={i18n.common.action.backToProjects}
               onClickCapture={() => {
                 dispatch(API.closeCurrentProject());
               }}
             >
-              <FontAwesomeIcon icon={faHouse} size="lg" />
+              <Icon icon={'home'} />
             </span>
           </MainMenuLink>
           <Flex
             className={css({
-              borderLeft: '1px solid var(--lightGray)',
-              padding: '0 ' + space_S,
+              alignItems: 'center',
+              border: '1px solid var(--divider-main)',
             })}
             wrap="nowrap"
           >
@@ -355,69 +422,26 @@ function EditorNav({ project }: EditorNavProps): JSX.Element {
               to={`/editor/${project.id}`}
               className={active =>
                 active.isActive || location.pathname.match(/^\/editor\/\d+\/(edit|card)/)
-                  ? mainLinkActiveClass
-                  : mainMenuLink
+                  ? activeIconButtonStyle
+                  : iconButtonStyle
               }
             >
-              <FontAwesomeIcon
-                icon={faGrip}
+              <Icon
+                icon={'dashboard'}
                 title={i18n.common.views.view + ' ' + i18n.common.views.board}
               />
             </MainMenuLink>
-            <MainMenuLink to="./hierarchy">
-              <FontAwesomeIcon
-                icon={faNetworkWired}
+            {/* <MainMenuLink to="./hierarchy">
+              <Icon
+                icon={'family_history'}
                 title={i18n.common.views.view + ' ' + i18n.common.views.hierarchy}
               />
-            </MainMenuLink>
+            </MainMenuLink> */}
             <MainMenuLink to="./flow">
-              <FontAwesomeIcon
-                icon={faProjectDiagram}
+              <Icon
+                icon={'account_tree'}
                 title={i18n.common.views.view + ' ' + i18n.common.views.activityFlow}
               />
-            </MainMenuLink>
-          </Flex>
-          <Flex
-            className={css({
-              borderLeft: '1px solid var(--lightGray)',
-              padding: '0 ' + space_S,
-            })}
-            wrap="nowrap"
-          >
-            <MainMenuLink to="./docs">
-              <FontAwesomeIcon
-                icon={faBookOpen}
-                title={i18n.modules.project.settings.resources.label}
-              />
-            </MainMenuLink>
-          </Flex>
-          <Flex
-            className={css({
-              borderLeft: '1px solid var(--lightGray)',
-              padding: '0 ' + space_S,
-            })}
-            wrap="nowrap"
-          >
-            <MainMenuLink
-              to="./team"
-              className={active =>
-                active.isActive || location.pathname.match(/^\/editor\/\d+\/team/)
-                  ? mainLinkActiveClass
-                  : mainMenuLink
-              }
-            >
-              <FontAwesomeIcon icon={faUserGroup} title={i18n.team.teamManagement} />
-            </MainMenuLink>
-          </Flex>
-          <Flex
-            className={css({
-              borderLeft: '1px solid var(--lightGray)',
-              padding: '0 ' + space_S,
-            })}
-            wrap="nowrap"
-          >
-            <MainMenuLink to="./project-settings">
-              <FontAwesomeIcon title={i18n.modules.project.labels.projectSettings} icon={faCog} />
             </MainMenuLink>
           </Flex>
         </Flex>
@@ -429,8 +453,23 @@ function EditorNav({ project }: EditorNavProps): JSX.Element {
             alignItems: 'center',
           })}
         >
-          <Flex className={cx(css({ textTransform: 'initial', margin: `0 ${space_S}` }))}>
-            <Flex align="center">
+          <Flex className={cx(css({ textTransform: 'initial', margin: `0 ${space_sm}` }))}>
+            <Flex align="center" gap={space_sm}>
+              {project.type === 'MODEL' && (
+                <>
+                  {project.globalProject ? (
+                    <Badge variant="outline" icon="public" theme="warning">
+                      {' '}
+                      Global
+                    </Badge>
+                  ) : (
+                    <Badge variant="outline" icon="star" theme="warning">
+                      {' '}
+                      Model
+                    </Badge>
+                  )}
+                </>
+              )}
               <Flex
                 className={css({
                   backgroundColor: project.illustration?.iconBkgdColor,
@@ -454,7 +493,7 @@ function EditorNav({ project }: EditorNavProps): JSX.Element {
           </Flex>
         </div>
         <Flex align="center" justify="flex-end">
-          <Presence projectId={project.id!} />
+          {/* <Presence projectId={project.id!} /> */}
           <Monkeys />
           <Tips tipsType="FEATURE_PREVIEW">
             <Flex>
@@ -462,10 +501,26 @@ function EditorNav({ project }: EditorNavProps): JSX.Element {
                 label={i18n.tips.label.feature_preview}
                 value={tipsConfig.FEATURE_PREVIEW.value}
                 onChange={tipsConfig.FEATURE_PREVIEW.set}
-                className={css({ display: 'inline-block', marginRight: space_S })}
+                className={css({ display: 'inline-block', marginRight: space_sm })}
               />
             </Flex>
           </Tips>
+          <MainMenuLink to="./docs">
+            <Icon icon={'menu_book'} title={i18n.modules.project.settings.resources.label} />
+          </MainMenuLink>
+          <MainMenuLink
+            to="./team"
+            className={active =>
+              active.isActive || location.pathname.match(/^\/editor\/\d+\/team/)
+                ? activeIconButtonStyle
+                : iconButtonStyle
+            }
+          >
+            <Icon icon={'group'} title={i18n.team.teamManagement} />
+          </MainMenuLink>
+          <MainMenuLink to="./project-settings">
+            <Icon title={i18n.modules.project.labels.projectSettings} icon={'settings'} />
+          </MainMenuLink>
           <UserDropDown />
         </Flex>
       </div>
@@ -488,24 +543,23 @@ function RootView({ rootContent }: { rootContent: CardContent | null | undefined
         flexGrow: '1',
         flexDirection: 'column',
         height: '100%',
-        padding: space_L,
       })}
     >
       {rootContent != null ? (
-        <>
+        <Flex className={css({ overflow: 'hidden' })}>
           <CardCreatorAndOrganize
             rootContent={rootContent}
             organize={{ organize: organize, setOrganize: setOrganize }}
           />
-
           <ContentSubs
             minCardWidth={150}
             showEmptiness={true}
             depth={depthMax}
             cardContent={rootContent}
             organize={organize}
+            className={css({ height: '100%', overflow: 'auto' })}
           />
-        </>
+        </Flex>
       ) : (
         <InlineLoading />
       )}
@@ -574,12 +628,7 @@ export default function Editor(): JSX.Element {
   } else {
     return (
       <PresenceContext.Provider value={presenceContext}>
-        <Flex
-          direction="column"
-          align="stretch"
-          grow={1}
-          className={cx(fullPageStyle, { [modelBGColor]: project.type === 'MODEL' })}
-        >
+        <Flex direction="column" align="stretch" grow={1} className={css({ height: '100vh' })}>
           <EditorNav project={project} />
           <Flex
             direction="column"
@@ -590,21 +639,6 @@ export default function Editor(): JSX.Element {
               position: 'relative',
             })}
           >
-            {project.type === 'MODEL' && (
-              <Flex
-                align="center"
-                justify="center"
-                className={cx(modelPictoCornerStyle, invertedThemeMode)}
-                title={i18n.modules.project.info.isAModel}
-              >
-                {project.globalProject ? (
-                  <FontAwesomeIcon icon={faGlobe} color="white" size="sm" />
-                ) : (
-                  <FontAwesomeIcon icon={faStar} color="white" size="sm" />
-                )}
-              </Flex>
-            )}
-
             <Routes>
               <Route path="settings/*" element={<Settings />} />
               <Route
@@ -621,20 +655,8 @@ export default function Editor(): JSX.Element {
               <Route
                 path="card/:id/v/:vId/*"
                 element={
-                  <CardWrapper
-                    grow={1}
-                    backButtonPath={parentPathFn}
-                    backButtonTitle={i18n.common.action.backProjectRoot}
-                    touchMode="zoom"
-                  >
-                    {card => (
-                      <CardThumbWithSelector
-                        depth={2}
-                        card={card}
-                        mayOrganize
-                        className={paddingAroundStyle([2, 3, 4], space_L)}
-                      />
-                    )}
+                  <CardWrapper grow={1} touchMode="zoom" backButtonPath={'../.'}>
+                    {card => <CardThumbWithSelector depth={2} card={card} mayOrganize />}
                   </CardWrapper>
                 }
               />
@@ -645,32 +667,16 @@ export default function Editor(): JSX.Element {
               <Route
                 path={`/edit/:id/v/:vId/*`}
                 element={
-                  <CardWrapper
-                    backButtonPath={(card, variant) => `../card/${card.id}/v/${variant.id}`}
-                    backButtonTitle={i18n.common.action.backCardView}
-                    touchMode="edit"
-                  >
-                    {(card, variant) => <CardEditor card={card} variant={variant} showSubcards />}
-                  </CardWrapper>
+                  <CardEditWrapper touchMode="edit" backButtonPath={'../.'}>
+                    {(card, variant) => <CardEditor card={card} variant={variant} />}
+                  </CardEditWrapper>
                 }
               />
               <Route
                 path="hierarchy/card/:id/v/:vId/*"
                 element={
-                  <CardWrapper
-                    grow={1}
-                    backButtonPath={parentPathFn}
-                    backButtonTitle={i18n.common.action.backProjectRoot}
-                    touchMode="zoom"
-                  >
-                    {card => (
-                      <CardThumbWithSelector
-                        depth={2}
-                        card={card}
-                        mayOrganize
-                        className={paddingAroundStyle([2, 3, 4], space_L)}
-                      />
-                    )}
+                  <CardWrapper grow={1} touchMode="zoom" backButtonPath={'../.'}>
+                    {card => <CardThumbWithSelector depth={2} card={card} mayOrganize />}
                   </CardWrapper>
                 }
               />
@@ -678,13 +684,9 @@ export default function Editor(): JSX.Element {
               <Route
                 path="hierarchy/edit/:id/v/:vId/*"
                 element={
-                  <CardWrapper
-                    backButtonPath={(card, variant) => `../card/${card.id}/v/${variant.id}`}
-                    backButtonTitle={i18n.common.action.backCardView}
-                    touchMode="edit"
-                  >
-                    {(card, variant) => <CardEditor card={card} variant={variant} showSubcards />}
-                  </CardWrapper>
+                  <CardEditWrapper touchMode="edit" backButtonPath={'../.'}>
+                    {(card, variant) => <CardEditor card={card} variant={variant} />}
+                  </CardEditWrapper>
                 }
               />
               {/* All cards. Root route */}
@@ -709,29 +711,21 @@ function CardCreatorAndOrganize({ rootContent, organize }: CardCreatorAndOrganiz
   return (
     <>
       {subCards && subCards.length > 0 && (
-        <Flex
-          gap={space_S}
-          wrap="nowrap"
-          justify="flex-end"
-          align="center"
-          className={css({ marginTop: '-10px', paddingRight: space_S })}
-        >
+        <Flex direction="column" gap={space_sm} align="center">
           <IconButton
             className={cx(
-              greyIconButtonChipStyle,
               css({ alignSelf: 'flex-end' }),
               organize.organize &&
                 css({
-                  backgroundColor: successColor,
-                  color: 'var(--bgColor)',
-                  border: successColor,
+                  backgroundColor: 'var(--success-main)',
+                  color: 'var(--bg-primary)',
                 }),
             )}
             title={i18n.modules.card.positioning.toggleText}
-            icon={faTableCells}
+            icon={'view_quilt'}
             onClick={() => organize.setOrganize(e => !e)}
           />
-          <CardCreator parentCardContent={rootContent} className={greyIconButtonChipStyle} />
+          <CardCreator parentCardContent={rootContent} />
         </Flex>
       )}
     </>

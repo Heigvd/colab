@@ -6,7 +6,6 @@
  */
 
 import { css, cx } from '@emotion/css';
-import { faPaperPlane } from '@fortawesome/free-solid-svg-icons';
 import { Project, TeamMember } from 'colab-rest-client';
 import React from 'react';
 import * as API from '../../../API/api';
@@ -15,9 +14,10 @@ import useTranslations from '../../../i18n/I18nContext';
 import { useAppDispatch } from '../../../store/hooks';
 import { addNotification } from '../../../store/slice/notificationSlice';
 import Button from '../../common/element/Button';
-import IconButtonWithLoader from '../../common/element/IconButtonWithLoader';
+import IconButton from '../../common/element/IconButton';
+import { inputStyle } from '../../common/element/Input';
 import OpenCloseModal from '../../common/layout/OpenCloseModal';
-import { inputStyle, linkStyle, space_M, textSmall, warningColor } from '../../styling/style';
+import { linkStyle, space_lg, text_sm } from '../../styling/style';
 
 interface MemberCreatorProps {
   members: TeamMember[];
@@ -42,8 +42,8 @@ export default function MemberCreator({ members, project }: MemberCreatorProps):
   return (
     <OpenCloseModal
       title={i18n.team.inviteNewMember}
-      collapsedChildren={<Button clickable>+ {i18n.team.inviteNewMember}</Button>}
-      modalBodyClassName={css({ padding: space_M })}
+      collapsedChildren={<Button>+ {i18n.team.inviteNewMember}</Button>}
+      modalBodyClassName={css({ padding: space_lg })}
       showCloseButton
     >
       {() => (
@@ -55,11 +55,12 @@ export default function MemberCreator({ members, project }: MemberCreatorProps):
             value={invite}
             className={inputStyle}
           />
-          <IconButtonWithLoader
+          <IconButton
             className={linkStyle}
-            icon={faPaperPlane}
+            icon={'send'}
             title={i18n.common.send}
             isLoading={isValidNewMember}
+            withLoader
             onClick={() => {
               if (isValidNewMember) {
                 setError(false);
@@ -85,7 +86,9 @@ export default function MemberCreator({ members, project }: MemberCreatorProps):
               }
             }}
           />
-          {error && <div className={cx(css({ color: warningColor }), textSmall)}>{error}</div>}
+          {error && (
+            <div className={cx(css({ color: 'var(--warning-main)' }), text_sm)}>{error}</div>
+          )}
         </>
       )}
     </OpenCloseModal>

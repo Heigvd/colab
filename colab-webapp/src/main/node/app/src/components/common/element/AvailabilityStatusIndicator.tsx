@@ -4,11 +4,10 @@
  *
  * Licensed under the MIT License
  */
-import { faConciergeBell, faKiwiBird, faSkullCrossbones } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import * as React from 'react';
 import { AvailabilityStatus } from '../../../store/store';
-import InlineLoading from './InlineLoading';
+import Icon from '../layout/Icon';
+import Loading from '../layout/Loading';
 
 interface AvailabilityStatusIndicatorProps {
   status: AvailabilityStatus;
@@ -19,12 +18,12 @@ export default function AvailabilityStatusIndicator({
 }: AvailabilityStatusIndicatorProps): JSX.Element {
   switch (status) {
     case 'NOT_INITIALIZED':
-      return <FontAwesomeIcon icon={faConciergeBell} />;
+      return <Icon icon={'notifications'} />;
     case 'LOADING':
-      return <InlineLoading />;
+      return <Loading />;
     case 'ERROR':
-      return <FontAwesomeIcon icon={faSkullCrossbones} />;
+      return <Icon icon={'skull'} />;
     case 'READY':
-      return <FontAwesomeIcon icon={faKiwiBird} />;
+      return <Icon icon={'room_service'} />;
   }
 }

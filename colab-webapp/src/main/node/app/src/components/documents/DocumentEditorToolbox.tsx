@@ -6,18 +6,6 @@
  */
 
 import { css, cx } from '@emotion/css';
-import {
-  faArrowDown,
-  faArrowUp,
-  faCheck,
-  faCode,
-  faCog,
-  faDownload,
-  faExternalLinkAlt,
-  faPen,
-  faTrash,
-} from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { entityIs } from 'colab-rest-client';
 import * as React from 'react';
 import * as API from '../../API/api';
@@ -30,7 +18,8 @@ import IconButton from '../common/element/IconButton';
 import ConfirmDeleteOpenCloseModal from '../common/layout/ConfirmDeleteModal';
 import DropDownMenu from '../common/layout/DropDownMenu';
 import Flex from '../common/layout/Flex';
-import { lightIconButtonStyle, space_M, space_S } from '../styling/style';
+import Icon from '../common/layout/Icon';
+import { lightIconButtonStyle, space_lg, space_sm } from '../styling/style';
 import { DocumentOwnership } from './documentCommonType';
 import DocumentCreatorButton from './DocumentCreatorButton';
 
@@ -39,9 +28,9 @@ const toolboxContainerStyle = css({
   maxHeight: '400px',
   minHeight: '30px',
   overflow: 'hidden',
-  padding: space_S,
+  padding: space_sm,
   transition: 'all .5s ease',
-  borderBottom: '2px solid var(--darkGray)',
+  borderBottom: '2px solid var(--secondary-main)',
 });
 
 const closedToolboxStyle = css({
@@ -52,16 +41,16 @@ const closedToolboxStyle = css({
 });
 
 const borderRightStyle = css({
-  paddingRight: space_S,
-  marginRight: space_S,
-  borderRight: '1px solid var(--lightGray)',
+  paddingRight: space_sm,
+  marginRight: space_sm,
+  borderRight: '1px solid var(--divider-main)',
 });
 
 const toolboxButtonStyle = cx(
   lightIconButtonStyle,
   css({
-    paddingRight: space_S,
-    margin: space_S,
+    paddingRight: space_sm,
+    margin: space_sm,
   }),
 );
 
@@ -164,20 +153,20 @@ DocEditorToolboxProps): JSX.Element {
             <>
               {!TXToptions?.markDownMode && editToolbar}
               <IconButton
-                icon={faCode}
+                icon={'code'}
                 title={i18n.modules.content.mdMode}
                 className={TXToptions?.markDownMode ? toggledStyle : idleStyle}
                 onClick={() => TXToptions?.setMarkDownMode(markDownMode => !markDownMode)}
               />
               <DropDownMenu
-                icon={faCog}
+                icon={'settings'}
                 valueComp={{ value: '', label: '' }}
                 buttonClassName={cx(
                   lightIconButtonStyle,
                   css({
-                    paddingLeft: space_M,
-                    marginLeft: space_M,
-                    borderLeft: '1px solid var(--lightGray)',
+                    paddingLeft: space_lg,
+                    marginLeft: space_lg,
+                    borderLeft: '1px solid var(--divider-main)',
                   }),
                 )}
                 entries={[
@@ -186,7 +175,7 @@ DocEditorToolboxProps): JSX.Element {
                     label: (
                       <>
                         {TXToptions?.markDownMode && (
-                          <FontAwesomeIcon icon={faCheck} size="xs" color="var(--lightGray)" />
+                          <Icon icon={'check'} opsz="xs" color="var(--divider-main)" />
                         )}{' '}
                         {i18n.modules.content.mdMode}
                       </>
@@ -197,9 +186,7 @@ DocEditorToolboxProps): JSX.Element {
                     value: 'showTree',
                     label: (
                       <>
-                        {showTree && (
-                          <FontAwesomeIcon icon={faCheck} size="xs" color="var(--lightGray)" />
-                        )}{' '}
+                        {showTree && <Icon icon={'check'} opsz="xs" color="var(--divider-main)" />}{' '}
                         {i18n.modules.content.showTree}
                       </>
                     ),
@@ -211,7 +198,7 @@ DocEditorToolboxProps): JSX.Element {
           )}
           {isDoc && selectedDocument.fileName && (
             <IconButton
-              icon={faDownload}
+              icon={'download'}
               title={i18n.modules.content.dlFile}
               className={lightIconButtonStyle}
               onClick={() => downloadCb()}
@@ -225,7 +212,7 @@ DocEditorToolboxProps): JSX.Element {
           )}
           {!isText && (
             <IconButton
-              icon={faPen}
+              icon={'edit'}
               title={i18n.modules.content.editBlock}
               className={toolboxButtonStyle}
               onClick={() => setEditMode(true)}
@@ -238,7 +225,7 @@ DocEditorToolboxProps): JSX.Element {
               css({
                 paddingLeft: space_M,
                 marginLeft: space_M,
-                borderLeft: '1px solid var(--lightGray)',
+                borderLeft: '1px solid var(--divider-main)',
               }),
             )}
             valueComp={{ value: '', label: '' }}
@@ -248,7 +235,7 @@ DocEditorToolboxProps): JSX.Element {
                 value: 'decision',
                 label: (
                   <>
-                    <FontAwesomeIcon icon={faCheck} size="xs" color="var(--lightGray)" />{' '}
+                     <Icon icon={'check'} size="xs" color="var(--divider-main)" />{' '}
                     Decision
                   </>
                 ),
@@ -258,7 +245,7 @@ DocEditorToolboxProps): JSX.Element {
                 value: 'validation',
                 label: (
                   <>
-                    <FontAwesomeIcon icon={faCheck} size="xs" color="var(--lightGray)" />{' '}
+                     <Icon icon={'check'} size="xs" color="var(--divider-main)" />{' '}
                     Validation
                   </>
                 ),
@@ -272,7 +259,7 @@ DocEditorToolboxProps): JSX.Element {
             buttonLabel={
               <>
                 <IconButton
-                  icon={faTrash}
+                  icon={'delete'}
                   title={i18n.modules.content.deleteBlock}
                   onClick={() => {}}
                   className={toolboxButtonStyle}
@@ -303,13 +290,13 @@ DocEditorToolboxProps): JSX.Element {
           />
           <div
             className={css({
-              marginLeft: space_S,
-              paddingLeft: space_S,
-              borderLeft: '1px solid var(--lightGray)',
+              marginLeft: space_sm,
+              paddingLeft: space_sm,
+              borderLeft: '1px solid var(--divider-main)',
             })}
           >
             <IconButton
-              icon={faArrowUp}
+              icon={'arrow_upward'}
               title={i18n.modules.content.moveBlockUpDown('up')}
               className={lightIconButtonStyle}
               onClick={() => {
@@ -317,7 +304,7 @@ DocEditorToolboxProps): JSX.Element {
               }}
             />
             <IconButton
-              icon={faArrowDown}
+              icon={'arrow_downward'}
               title={i18n.modules.content.moveBlockUpDown('down')}
               className={lightIconButtonStyle}
               onClick={() => {
@@ -390,7 +377,7 @@ function OpenLinkButton({ url, openUrl }: OpenLinkButtonProps): JSX.Element {
     <>
       {metadata != 'LOADING' && metadata != 'NO_URL' && !metadata.broken && (
         <IconButton
-          icon={faExternalLinkAlt}
+          icon={'open_in_new'}
           title={i18n.modules.document.openInNewTab}
           className={lightIconButtonStyle}
           onClick={openUrl}

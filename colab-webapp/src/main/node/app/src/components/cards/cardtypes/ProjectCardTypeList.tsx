@@ -17,14 +17,13 @@ import CustomElementsList from '../../common/collection/CustomElementsList';
 import AvailabilityStatusIndicator from '../../common/element/AvailabilityStatusIndicator';
 import Collapsible from '../../common/layout/Collapsible';
 import Flex from '../../common/layout/Flex';
-import { voidStyle } from '../../styling/style';
 import { cardTypeThumbnailStyle } from '../CardCreator';
 import CardTypeCreator from './CardTypeCreator';
 import CardTypeEditor from './CardTypeEditor';
 import CardTypeThumbnail from './CardTypeThumbnail';
 
 const customThumbStyle = css({
-  backgroundColor: 'var(--bgColor)',
+  backgroundColor: 'var(--bg-primary)',
 });
 
 /**
@@ -95,7 +94,7 @@ export default function ProjectCardTypeList(): JSX.Element {
                 selectionnable={false}
               />
             ) : (
-              <div className={voidStyle}>
+              <div>
                 <p>
                   {i18n.modules.cardType.info.createFirstProjectType}
                   <br />
@@ -122,7 +121,7 @@ export default function ProjectCardTypeList(): JSX.Element {
                   selectionnable={false}
                 />
               ) : (
-                <div className={voidStyle}>
+                <div>
                   <p>{i18n.modules.cardType.info.noExternalType}</p>
                 </div>
               )}

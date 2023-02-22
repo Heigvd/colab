@@ -6,22 +6,20 @@
  */
 
 import { css, cx } from '@emotion/css';
-import { faPlus } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import * as React from 'react';
 import Select, { MultiValue, OnChangeValue, SingleValue } from 'react-select';
 import Creatable from 'react-select/creatable';
 import useTranslations from '../../../i18n/I18nContext';
 import {
   disabledStyle,
-  errorStyle,
+  errorTextStyle,
   labelStyle,
-  selectCreatorStyle,
-  space_S,
-  textSmall,
-  warningStyle,
+  space_sm,
+  text_sm,
+  warningTextStyle,
 } from '../../styling/style';
 import Flex from '../layout/Flex';
+import Icon from '../layout/Icon';
 import Tips, { TipsProps } from './Tips';
 
 interface Opt<T> {
@@ -95,7 +93,7 @@ export default function SelectInput<T, IsMulti extends boolean>({
     <Flex
       direction="column"
       align="stretch"
-      className={cx(css({ padding: space_S + ' 0' }), className, { [disabledStyle]: readOnly })}
+      className={cx(css({ padding: space_sm + ' 0' }), className, { [disabledStyle]: readOnly })}
     >
       <Flex justify="space-between">
         <div>
@@ -104,7 +102,7 @@ export default function SelectInput<T, IsMulti extends boolean>({
           {mandatory && ' * '}
         </div>
       </Flex>
-      <Flex direction="column" className={textSmall} align="stretch">
+      <Flex direction="column" className={text_sm} align="stretch">
         {canCreateOption ? (
           <Creatable
             value={currentValue}
@@ -119,8 +117,8 @@ export default function SelectInput<T, IsMulti extends boolean>({
               return i18n.basicComponent.selectInput.noItemTypeToCreate;
             }}
             formatCreateLabel={(inputValue: string) => (
-              <div className={cx(selectCreatorStyle, textSmall)}>
-                <FontAwesomeIcon icon={faPlus} />{' '}
+              <div className={cx(text_sm)}>
+                <Icon icon={'add'} />
                 {i18n.basicComponent.selectInput.create(inputValue)}
               </div>
             )}
@@ -153,10 +151,10 @@ export default function SelectInput<T, IsMulti extends boolean>({
           />
         )}
       </Flex>
-      {footer != null && <div className={textSmall}>{footer}</div>}
-      <Flex direction="column" align="center" className={cx(textSmall, bottomClassName)}>
-        {warningMessage != null && <div className={warningStyle}>{warningMessage}</div>}
-        {errorMessage != null && <div className={errorStyle}>{errorMessage}</div>}
+      {footer != null && <div className={text_sm}>{footer}</div>}
+      <Flex direction="column" align="center" className={cx(text_sm, bottomClassName)}>
+        {warningMessage != null && <div className={warningTextStyle}>{warningMessage}</div>}
+        {errorMessage != null && <div className={errorTextStyle}>{errorMessage}</div>}
       </Flex>
     </Flex>
   );

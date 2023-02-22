@@ -6,14 +6,11 @@
  */
 
 import { css, cx } from '@emotion/css';
-import { IconProp } from '@fortawesome/fontawesome-svg-core';
-import { faChevronDown, faChevronUp } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import * as React from 'react';
 import useTranslations from '../../../i18n/I18nContext';
-import { paddingAroundStyle, space_S } from '../../styling/style';
-import IconButton from '../element/IconButton';
+import { space_sm } from '../../styling/style';
 import Flex from './Flex';
+import Icon from './Icon';
 
 const openStyle = css({
   maxHeight: '40000px',
@@ -29,12 +26,12 @@ const closeStyle = css({
 
 const defaultLabelStyle = cx(
   css({
-    padding: space_S,
-    marginTop: space_S,
-    borderBottom: '1px solid var(--lightGray)',
-    color: 'var(--fgColor)',
+    padding: space_sm,
+    marginTop: space_sm,
+    borderBottom: '1px solid var(--divider-main)',
+    color: 'var(--text-secondary)',
     '&:hover': {
-      color: 'var(--hoverfgColor)',
+      color: 'var(--text-primary)',
       backgroundColor: 'rgba(0, 0, 0, 0.05)',
       cursor: 'pointer',
     },
@@ -42,7 +39,7 @@ const defaultLabelStyle = cx(
 );
 
 export interface CollapsibleProps {
-  icon?: IconProp;
+  icon?: string;
   label: string | React.ReactNode;
   open?: boolean;
   tooltip?: string;
@@ -71,16 +68,10 @@ export default function Collapsible({
         onClick={() => setShowContent(showContent => !showContent)}
         className={cx(defaultLabelStyle, labelClassName)}
       >
-        {icon && (
-          <FontAwesomeIcon
-            icon={icon}
-            title={tooltip}
-            className={paddingAroundStyle([1, 3], space_S)}
-          />
-        )}
+        {icon && <Icon icon={icon} title={tooltip} />}
         {label}
-        <IconButton
-          icon={showContent ? faChevronUp : faChevronDown}
+        <Icon
+          icon={showContent ? 'expand_less' : 'expand_more'}
           title={
             tooltip
               ? showContent
@@ -90,7 +81,7 @@ export default function Collapsible({
               ? i18n.common.close
               : i18n.common.open
           }
-          className={css({ marginLeft: space_S })}
+          className={css({ marginLeft: space_sm })}
         />
       </Flex>
       <Flex className={cx(showContent ? openStyle : closeStyle, contentClassName)}>{children}</Flex>

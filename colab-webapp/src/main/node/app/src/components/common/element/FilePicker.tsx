@@ -5,31 +5,11 @@
  * Licensed under the MIT License
  */
 import { css, cx } from '@emotion/css';
-import { IconProp } from '@fortawesome/fontawesome-svg-core';
-import {
-  faFile,
-  faFileArchive,
-  faFileAudio,
-  faFileCode,
-  faFileExcel,
-  faFileImage,
-  faFilePdf,
-  faFilePowerpoint,
-  faFileVideo,
-  faFileWord,
-} from '@fortawesome/free-regular-svg-icons';
-import {
-  faDownload,
-  faFileCsv,
-  faMagnifyingGlassPlus,
-  faSkullCrossbones,
-  faUpload,
-} from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import * as React from 'react';
 import useTranslations from '../../../i18n/I18nContext';
-import { invertedButtonStyle, lightIconButtonStyle, space_M, space_S } from '../../styling/style';
+import { lightIconButtonStyle, space_lg, space_sm } from '../../styling/style';
 import Flex from '../layout/Flex';
+import Icon from '../layout/Icon';
 import Overlay from '../layout/Overlay';
 import Button from './Button';
 import IconButton from './IconButton';
@@ -43,7 +23,7 @@ const clickableStyle = css({
 });
 
 const draggingStyle = css({
-  backgroundColor: 'var(--lightGray)',
+  backgroundColor: 'var(--divider-main)',
 });
 
 const layerPadding = css({
@@ -55,24 +35,24 @@ const inputStyle = css({
 });
 
 export const emptyLightTextStyle = css({
-  color: 'var(--lightGray)',
+  color: 'var(--divider-main)',
   fontStyle: 'italic',
 });
 
 const getMimeTypeIcon = (mimeType: string | undefined | null, hasNoFile: boolean): JSX.Element => {
-  let icon: IconProp | undefined = undefined;
+  let icon: string | undefined = undefined;
 
   if (mimeType) {
     if (mimeType.startsWith('image/')) {
-      icon = faFileImage;
+      icon = 'image';
     } else if (mimeType.startsWith('video/')) {
-      icon = faFileVideo;
+      icon = 'video';
     } else if (mimeType.startsWith('audio/')) {
-      icon = faFileAudio;
+      icon = 'audio';
     } else if (mimeType.startsWith('text/csv')) {
-      icon = faFileCsv;
+      icon = 'draft';
     } else if (mimeType.startsWith('application/pdf')) {
-      icon = faFilePdf;
+      icon = 'pdf';
     } else if (
       contains(
         mimeType,
@@ -82,9 +62,9 @@ const getMimeTypeIcon = (mimeType: string | undefined | null, hasNoFile: boolean
         'application/gzip',
       )
     ) {
-      icon = faFileArchive;
+      icon = 'inventory_2';
     } else if (contains(mimeType, 'application/msword', 'officedocument.wordprocessingml')) {
-      icon = faFileWord;
+      icon = 'draft';
     } else if (
       contains(
         mimeType,
@@ -93,11 +73,11 @@ const getMimeTypeIcon = (mimeType: string | undefined | null, hasNoFile: boolean
         'officedocument.spreadsheetml',
       )
     ) {
-      icon = faFileExcel;
+      icon = 'draft';
     } else if (
       contains(mimeType, 'application/vnd.ms-powerpoint', 'officedocument.presentationml')
     ) {
-      icon = faFilePowerpoint;
+      icon = 'draft';
     } else if (
       contains(
         mimeType,
@@ -112,18 +92,16 @@ const getMimeTypeIcon = (mimeType: string | undefined | null, hasNoFile: boolean
         'x-sh',
       )
     ) {
-      icon = faFileCode;
+      icon = 'draft';
     } else {
-      icon = faFile;
+      icon = 'draft';
     }
-    return (
-      <FontAwesomeIcon icon={icon} size="lg" color={hasNoFile ? 'var(--lightGray)' : undefined} />
-    );
+    return <Icon icon={icon} opsz="lg" color={hasNoFile ? 'var(--divider-main)' : undefined} />;
   } else {
     return (
       <span className={'fa-layers fa-fw ' + layerPadding}>
-        <FontAwesomeIcon icon={faFile} size="lg" />
-        <FontAwesomeIcon icon={faSkullCrossbones} transform="right-2 down-4" />
+        <Icon icon={'draft'} opsz="lg" />
+        <Icon icon={'skull'} />
       </span>
     );
   }
@@ -138,7 +116,7 @@ function overlayStyle(coord: [number, number]) {
     margin: 0,
     border: '1px solid  white',
     boxShadow: '0 0 5px 0 rgba(0, 0, 0, 0.5)',
-    backgroundColor: 'var(--bgColor)',
+    backgroundColor: 'var(--bg-primary)',
     zIndex: 1,
     display: 'flex',
   });
@@ -183,6 +161,8 @@ export default function FilePicker({
   readOnly,
 }: FilePickerProps): JSX.Element {
   const i18n = useTranslations();
+
+  const fileInputRef = React.useRef<HTMLInputElement>(null);
 
   const [dragging, setDragging] = React.useState(false);
 
@@ -298,7 +278,7 @@ export default function FilePicker({
   }, []);
 
   return (
-    <Flex className={css({ padding: space_S })} align="center">
+    <Flex className={css({ padding: space_sm })} align="center">
       <Flex
         className={cx({
           [clickableStyle]: !!onDownload,
@@ -321,13 +301,13 @@ export default function FilePicker({
             ) : (
               <img className={displayImageStyle} src={currentPreviewImgUrl} />
             )}
-            <IconButton onClick={zoomCb} icon={faMagnifyingGlassPlus} title="" stopPropagation />
+            <IconButton onClick={zoomCb} icon={'zoom_in'} title="" stopPropagation />
           </>
         ) : (
           <>
             {getMimeTypeIcon(currentMimetype, hasNoFile)}
             <div
-              className={cx(css({ paddingLeft: space_S, userSelect: 'none' }), {
+              className={cx(css({ paddingLeft: space_sm, userSelect: 'none' }), {
                 [emptyLightTextStyle]: hasNoFile,
               })}
             >
@@ -337,7 +317,7 @@ export default function FilePicker({
         )}
         {!hasNoFile && !editingStatus && (
           <IconButton
-            icon={faDownload}
+            icon={'download'}
             title={i18n.modules.content.noFileUploaded}
             className={lightIconButtonStyle}
             onClick={onDownload}
@@ -345,17 +325,28 @@ export default function FilePicker({
           />
         )}
         {!readOnly && onChange && editingStatus && (
-          <div className={css({ paddingLeft: space_M })} onClick={e => e.stopPropagation()}>
-            <label>
-              <Button onClick={() => {}}>
-                <FontAwesomeIcon icon={faUpload} />{' '}
-                {hasNoFile ? i18n.modules.content.uploadFile : i18n.modules.content.replaceFile}
-              </Button>
-              <input className={inputStyle} type="file" accept={accept} onChange={onInputCb} />
-            </label>
+          <div className={css({ paddingLeft: space_lg })} onClick={e => e.stopPropagation()}>
+            <Button
+              onClick={() => {
+                if (fileInputRef.current) {
+                  fileInputRef.current.click();
+                }
+              }}
+            >
+              <Icon icon={'upload'} />{' '}
+              {hasNoFile ? i18n.modules.content.uploadFile : i18n.modules.content.replaceFile}
+            </Button>
+            <input
+              ref={fileInputRef}
+              className={inputStyle}
+              type="file"
+              accept={accept}
+              onChange={onInputCb}
+            />
             <Button
               onClick={() => setEditingState(false)}
-              className={cx(invertedButtonStyle, css({ marginLeft: space_S }))}
+              className={css({ marginLeft: space_sm })}
+              variant="outline"
             >
               {i18n.common.ok}
             </Button>

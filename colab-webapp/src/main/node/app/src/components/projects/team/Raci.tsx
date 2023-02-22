@@ -13,7 +13,7 @@ import { useAndLoadSubCards, useProjectRootCard } from '../../../selectors/cardS
 import { useAndLoadProjectTeam } from '../../../selectors/teamSelector';
 import { useAppSelector } from '../../../store/hooks';
 import InlineLoading from '../../common/element/InlineLoading';
-import { space_L, space_M, space_S, textSmall, voidStyle } from '../../styling/style';
+import { space_lg, space_sm, space_xl, text_sm } from '../../styling/style';
 import { gridNewLine, titleCellStyle } from './Team';
 
 export default function TeamRACI({ project }: { project: Project }): JSX.Element {
@@ -54,10 +54,10 @@ export default function TeamRACI({ project }: { project: Project }): JSX.Element
             marginLeft: '5px',
             marginRight: '5px',
           },
-          marginBottom: space_L,
-          paddingBottom: space_M,
-          borderBottom: '1px solid var(--lightGray)',
-          gap: space_S,
+          marginBottom: space_xl,
+          paddingBottom: space_lg,
+          borderBottom: '1px solid var(--divider-main)',
+          gap: space_sm,
         })}
       >
         <div className={cx(titleCellStyle, css({ gridColumnStart: 1, gridColumnEnd: 2 }))}>
@@ -81,7 +81,7 @@ export function Columns({ members }: { members: TeamMember[] }): JSX.Element {
       {members.map(member => (
         <div
           key={member.id}
-          className={cx(textSmall, css({ maxWidth: '130px' }))}
+          className={cx(text_sm, css({ maxWidth: '130px' }))}
           title={member.displayName || undefined}
         >
           <p className={css({ textAlign: 'left', textOverflow: 'ellipsis', overflow: 'hidden' })}>
@@ -105,7 +105,7 @@ function CardWithRACI({ members, rootContent, depth = 1 }: CardWithRACIProps): J
   } else {
     if (subCards.length === 0) {
       return (
-        <div className={voidStyle}>
+        <div>
           <p>{i18n.modules.card.infos.noCardYetPleaseCreate}</p>
         </div>
       );

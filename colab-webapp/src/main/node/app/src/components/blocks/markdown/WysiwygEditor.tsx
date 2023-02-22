@@ -6,17 +6,6 @@
  */
 
 import { css, cx } from '@emotion/css';
-import { IconProp } from '@fortawesome/fontawesome-svg-core';
-import {
-  faBold,
-  faItalic,
-  faList,
-  faListOl,
-  faStrikethrough,
-  faTasks,
-  faUnderline,
-} from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { uniq } from 'lodash';
 import * as React from 'react';
 import * as LiveHelper from '../../../LiveHelper';
@@ -25,10 +14,11 @@ import { usePresenceOnDocument } from '../../../selectors/presenceSelector';
 import OpenGraphLink from '../../common/element/OpenGraphLink';
 import DropDownMenu, { Entry } from '../../common/layout/DropDownMenu';
 import Flex from '../../common/layout/Flex';
+import Icon from '../../common/layout/Icon';
 import { DocEditorCtx } from '../../documents/DocumentEditorToolbox';
 import { createCaret, getUserColor } from '../../projects/presence/Presence';
 import { PresenceContext } from '../../projects/presence/PresenceContext';
-import { borderRadius, lightIconButtonStyle, space_S } from '../../styling/style';
+import { lightIconButtonStyle, space_sm } from '../../styling/style';
 import {
   areAllLeafsWrappedByTag,
   boundedClosest,
@@ -265,7 +255,6 @@ function mergeMardown(md: MarkdownWithSelection, toInsert: string): MarkdownWith
 export const idleStyle = cx(
   lightIconButtonStyle,
   css({
-    borderRadius: borderRadius,
     padding: '5px',
     margin: '0 2px',
     '&:hover': {
@@ -277,15 +266,15 @@ export const idleStyle = cx(
 export const toggledStyle = cx(
   idleStyle,
   css({
-    backgroundColor: 'var(--lightGray)',
-    color: 'var(--primaryColor)',
+    backgroundColor: 'var(--divider-main)',
+    color: 'var(--primary-main)',
   }),
 );
 
 export const toolbarSeparatorStyle = css({
-  paddingLeft: space_S,
-  marginLeft: space_S,
-  borderLeft: '1px solid var(--lightGray)',
+  paddingLeft: space_sm,
+  marginLeft: space_sm,
+  borderLeft: '1px solid var(--divider-main)',
   height: '24px',
 });
 
@@ -293,10 +282,9 @@ const editorStyle = cx(
   colabFlavouredMarkdown,
   colabFlavouredMarkdownEditable,
   css({
-    backgroundColor: 'var(--bgColor)',
+    backgroundColor: 'var(--bg-primary)',
     padding: '5px',
-    border: '1px solid var(--lighterGray)',
-    borderRadius: borderRadius,
+    border: '1px solid var(--divider-fade)',
     whiteSpace: 'pre-line',
     cursor: 'text',
     '& .some-cursor': {
@@ -305,10 +293,10 @@ const editorStyle = cx(
       userSelect: 'none',
     },
     '&:hover': {
-      border: '1px solid var(--lightGray)',
+      border: '1px solid var(--divider-main)',
     },
     ':focus, :focus-visible': {
-      border: '1px solid var(--darkGray)',
+      border: '1px solid var(--secondary-main)',
       outline: 'none',
     },
   }),
@@ -347,7 +335,7 @@ export interface ToolbarFeatures {
 interface ToolbarButtonProps {
   toggled: boolean;
   onClick: (event: React.MouseEvent) => void;
-  icon: IconProp;
+  icon: string;
 }
 
 export interface TXTFormatToolbarProps {
@@ -410,7 +398,7 @@ function ToolbarButton({ toggled, onClick, icon }: ToolbarButtonProps) {
       className={cx('fa-layers', toggled ? toggledStyle : idleStyle)}
       onMouseDownCapture={onClick}
     >
-      <FontAwesomeIcon icon={icon} />
+      <Icon icon={icon} />
     </span>
   );
 }
@@ -471,38 +459,38 @@ export function TXTFormatToolbar({ toolbarState, toolbarFormatFeatures }: TXTFor
       />
       <ToolbarSeparator />
       <ToolbarButton
-        icon={faBold}
+        icon={'format_bold'}
         toggled={toolbarState.bold}
         onClick={toolbarFormatFeatures.toggleBold}
       />
       <ToolbarButton
-        icon={faItalic}
+        icon={'format_italic'}
         toggled={toolbarState.italic}
         onClick={toolbarFormatFeatures.toggleItalic}
       />
       <ToolbarButton
-        icon={faUnderline}
+        icon={'format_underlined'}
         toggled={toolbarState.underline}
         onClick={toolbarFormatFeatures.toggleUnderline}
       />
       <ToolbarButton
-        icon={faStrikethrough}
+        icon={'strikethrough_s'}
         toggled={toolbarState.strike}
         onClick={toolbarFormatFeatures.toggleStrike}
       />
       <ToolbarSeparator />
       <ToolbarButton
-        icon={faList}
+        icon={'format_list_bulleted'}
         toggled={toolbarState.list === 'UL'}
         onClick={toolbarFormatFeatures.toggleList}
       />
       <ToolbarButton
-        icon={faListOl}
+        icon={'format_list_numbered'}
         toggled={toolbarState.list === 'OL'}
         onClick={toolbarFormatFeatures.toggleOrderedList}
       />
       <ToolbarButton
-        icon={faTasks}
+        icon={'checklist'}
         toggled={toolbarState.list === 'TL'}
         onClick={toolbarFormatFeatures.toggleTodoList}
       />

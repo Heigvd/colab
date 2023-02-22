@@ -24,7 +24,7 @@ import { useCurrentProjectId } from '../../../../selectors/projectSelector';
 import { shallowEqual, useAppDispatch, useAppSelector } from '../../../../store/hooks';
 import InlineLoading from '../../../common/element/InlineLoading';
 import Flex from '../../../common/layout/Flex';
-import { borderRadius, space_L, space_M, space_S } from '../../../styling/style';
+import { space_lg, space_sm, space_xl } from '../../../styling/style';
 import { AFCard } from './ActivityFlowCardThumb';
 
 const logger = getLogger('ActivityFlow');
@@ -68,7 +68,7 @@ export default function ActivityFlowChart(): JSX.Element {
       const plumb = newInstance({
         container: rootNode,
         connector: { type: 'Straight', options: { stub: 15 } },
-        paintStyle: { strokeWidth: 1, stroke: 'var(--primaryColor)' },
+        paintStyle: { strokeWidth: 1, stroke: 'var(--primary-main)' },
         anchor: { type: 'Perimeter', options: { shape: 'Rectangle' } },
         anchors: ['Right', 'Left'],
         endpoints: [
@@ -378,7 +378,7 @@ export default function ActivityFlowChart(): JSX.Element {
     }
 
     return (
-      <Flex align="stretch" direction="column" className={css({ padding: space_L })}>
+      <Flex align="stretch" direction="column" className={css({ padding: space_xl })}>
         <Flex
           direction="column"
           theRef={ref => setRootNode(ref)}
@@ -396,15 +396,14 @@ export default function ActivityFlowChart(): JSX.Element {
             <>
               <Flex
                 className={css({
-                  padding: space_M,
-                  border: '2px solid var(--lightGray)',
-                  borderRadius: borderRadius,
+                  padding: space_lg,
+                  border: '2px solid var(--divider-main)',
                   alignSelf: 'stretch',
                 })}
                 direction="column"
                 align="stretch"
               >
-                <h3 className={css({ margin: space_S + ' 0' })}>Not in flow</h3>
+                <h3 className={css({ margin: space_sm + ' 0' })}>Not in flow</h3>
                 <Flex direction="row" wrap="wrap">
                   {notInFlow.map(card => (
                     <AFCard

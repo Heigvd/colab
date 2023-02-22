@@ -6,7 +6,7 @@
  */
 import { css, cx } from '@emotion/css';
 import * as React from 'react';
-import { fullPageOverlayStyle } from '../../styling/style';
+import { fullScreenOverlayStyle } from '../../styling/style';
 
 interface OverlayProps {
   children: React.ReactNode;
@@ -54,7 +54,7 @@ export default function Overlay({
       onClick={clickOut}
       tabIndex={0}
       //      onKeyDown={keyDownCb}
-      className={cx(fullPageOverlayStyle, css({ zIndex: 999 }), backgroundStyle)}
+      className={cx(fullScreenOverlayStyle, css({ zIndex: 999 }), backgroundStyle)}
     >
       <div
         onClick={clickIn}

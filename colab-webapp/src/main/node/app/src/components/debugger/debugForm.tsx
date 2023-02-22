@@ -10,7 +10,7 @@ import * as React from 'react';
 import Button from '../common/element/Button';
 import Form from '../common/element/Form';
 import Flex from '../common/layout/Flex';
-import { space_M, textSmall } from '../styling/style';
+import { space_lg, text_sm } from '../styling/style';
 
 export default function DebugForm(): JSX.Element {
   const [mandatory, setMandatory] = React.useState<boolean>(false);
@@ -149,18 +149,18 @@ export default function DebugForm(): JSX.Element {
           alert('yo');
         }}
         submitLabel="Go"
-        childrenClassName={css({ backgroundColor: 'var(--lightGray)' })}
+        childrenClassName={css({ backgroundColor: 'var(--divider-main)' })}
       >
         <span>something to add after submit button</span>
       </Form>
-      <Flex direction="column" className={css({ padding: space_M })}>
+      <Flex direction="column" className={css({ padding: space_lg })}>
         <h4>each field</h4>
         <Button
           title="mandatory"
           onClick={() => {
             setMandatory(!mandatory);
           }}
-          className={cx(textSmall, css({ margin: '5px' }))}
+          className={cx(text_sm, css({ margin: '5px' }))}
         >
           mandatory = {mandatory ? 'true' : 'false'}
         </Button>
@@ -169,7 +169,7 @@ export default function DebugForm(): JSX.Element {
           onClick={() => {
             setReadOnly(!readOnly);
           }}
-          className={cx(textSmall, css({ margin: '5px' }))}
+          className={cx(text_sm, css({ margin: '5px' }))}
         >
           readOnly = {readOnly ? 'true' : 'false'}
         </Button>
@@ -178,7 +178,7 @@ export default function DebugForm(): JSX.Element {
           onClick={() => {
             setAllInvalid(!allInvalid);
           }}
-          className={cx(textSmall, css({ margin: '5px' }))}
+          className={cx(text_sm, css({ margin: '5px' }))}
         >
           allInvalid = {allInvalid ? 'true' : 'false'}
         </Button>
@@ -188,7 +188,7 @@ export default function DebugForm(): JSX.Element {
           onClick={() => {
             setShowStrengthBar(!showStrengthBar);
           }}
-          className={cx(textSmall, css({ margin: '5px' }))}
+          className={cx(text_sm, css({ margin: '5px' }))}
         >
           showStrengthBar = {showStrengthBar ? 'true' : 'false'}
         </Button>
@@ -198,7 +198,7 @@ export default function DebugForm(): JSX.Element {
           onClick={() => {
             setMultiSelect(!multiSelect);
           }}
-          className={cx(textSmall, css({ margin: '5px' }))}
+          className={cx(text_sm, css({ margin: '5px' }))}
         >
           multiSelect = {multiSelect ? 'true' : 'false'}
         </Button>
@@ -207,7 +207,7 @@ export default function DebugForm(): JSX.Element {
           onClick={() => {
             setCanCreate(!canCreate);
           }}
-          className={cx(textSmall, css({ margin: '5px' }))}
+          className={cx(text_sm, css({ margin: '5px' }))}
         >
           canCreate = {canCreate ? 'true' : 'false'}
         </Button>

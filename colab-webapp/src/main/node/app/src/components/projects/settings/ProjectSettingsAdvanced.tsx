@@ -6,8 +6,6 @@
  */
 
 import { css, cx } from '@emotion/css';
-import { faGlobe, faStar } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import * as React from 'react';
 import * as API from '../../../API/api';
 //import { CSVLink } from 'react-csv';
@@ -20,15 +18,8 @@ import Button from '../../common/element/Button';
 import { WIPContainer } from '../../common/element/Tips';
 import ConfirmDeleteOpenCloseModal from '../../common/layout/ConfirmDeleteModal';
 import Flex from '../../common/layout/Flex';
-import {
-  borderRadius,
-  disabledStyle,
-  errorColor,
-  labelStyle,
-  space_M,
-  space_S,
-  textSmall,
-} from '../../styling/style';
+import Icon from '../../common/layout/Icon';
+import { disabledStyle, labelStyle, space_lg, space_sm, text_sm } from '../../styling/style';
 
 export interface ProjectSettingsAdvancedProps {
   projectId: number;
@@ -52,9 +43,8 @@ export default function ProjectSettingsAdvanced({
       <WIPContainer>
         <Flex direction="column">
           <div className={labelStyle}>{i18n.common.action.exportProjectData}</div>
-          <p className={textSmall}>{i18n.common.action.exportDataDescription}</p>
-          <Flex gap={space_S}>
-            {/* <Button className={invertedButtonStyle}>.json</Button> */}
+          <p className={text_sm}>{i18n.common.action.exportDataDescription}</p>
+          <Flex gap={space_sm}>
             <Button
               className={disabledStyle}
               onClick={() => {
@@ -68,22 +58,19 @@ export default function ProjectSettingsAdvanced({
         </Flex>
       </WIPContainer>
       {project.type === 'MODEL' && (
-        <Flex
-          align="stretch"
-          className={css({ border: '1px solid var(--fgColor)', borderRadius: borderRadius })}
-        >
+        <Flex align="stretch" className={css({ border: '1px solid var(--text-primary)' })}>
           <Flex
             justify="center"
             align="center"
-            className={css({ backgroundColor: 'var(--fgColor)', width: '80px' })}
+            className={css({ backgroundColor: 'var(--primary-darker)', width: '80px' })}
           >
-            <FontAwesomeIcon
-              icon={project.globalProject ? faGlobe : faStar}
-              className={css({ color: 'var(--bgColor)' })}
-              size="2x"
+            <Icon
+              icon={project.globalProject ? 'public' : 'star'}
+              className={css({ color: 'var(--bg-primary)' })}
+              opsz="lg"
             />
           </Flex>
-          <Flex direction="column" align="stretch" className={css({ padding: space_M })}>
+          <Flex direction="column" align="stretch" className={css({ padding: space_lg })}>
             {project.globalProject ? (
               <>
                 <h3>This model is global</h3>
@@ -93,11 +80,12 @@ export default function ProjectSettingsAdvanced({
                   title="Make private"
                   buttonLabel={
                     <Button
-                      invertedButton
-                      className={cx(css({ color: errorColor, borderColor: errorColor }))}
-                      clickable
+                      variant="outline"
+                      className={cx(
+                        css({ color: 'var(--error-main)', borderColor: 'var(--error-main)' }),
+                      )}
                     >
-                      <FontAwesomeIcon icon={faStar} /> Make private
+                      <Icon icon={'star'} /> Make private
                     </Button>
                   }
                   className={css({
@@ -127,11 +115,12 @@ export default function ProjectSettingsAdvanced({
                   title="Make global"
                   buttonLabel={
                     <Button
-                      invertedButton
-                      className={cx(css({ color: errorColor, borderColor: errorColor }))}
-                      clickable
+                      variant="outline"
+                      className={cx(
+                        css({ color: 'var(--error-main)', borderColor: 'var(--error-main)' }),
+                      )}
                     >
-                      <FontAwesomeIcon icon={faGlobe} /> Make global
+                      <Icon icon={'public'} /> Make global
                     </Button>
                   }
                   className={css({

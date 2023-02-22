@@ -7,7 +7,7 @@
 
 import { css, cx } from '@emotion/css';
 import * as React from 'react';
-import { space_M } from '../../styling/style';
+import { space_lg } from '../../styling/style';
 import Clickable from '../layout/Clickable';
 
 interface ThumbnailProps {
@@ -20,7 +20,7 @@ interface ThumbnailProps {
 
 const thumbStyle = css({
   cursor: 'pointer',
-  padding: space_M,
+  padding: space_lg,
 });
 
 export default function Thumbnail({
@@ -35,7 +35,7 @@ export default function Thumbnail({
       onClick={onClick}
       onDoubleClick={onDoubleClick}
       enterKeyBehaviour={disableOnEnter ? 'NONE' : 'DBL_CLICK'}
-      clickableClassName={cx(thumbStyle, className)}
+      className={cx(thumbStyle, className)}
     >
       {children}
     </Clickable>

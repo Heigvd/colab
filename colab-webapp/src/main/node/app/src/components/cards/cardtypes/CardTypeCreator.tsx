@@ -6,8 +6,6 @@
  */
 
 import { css, cx } from '@emotion/css';
-import { faPlus } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import * as React from 'react';
 import * as API from '../../../API/api';
 import useTranslations from '../../../i18n/I18nContext';
@@ -19,8 +17,9 @@ import { useCurrentProjectId } from '../../../selectors/projectSelector';
 import { useAppDispatch, useLoadingState } from '../../../store/hooks';
 import Button from '../../common/element/Button';
 import Form, { createSelectField, Field } from '../../common/element/Form';
+import Icon from '../../common/layout/Icon';
 import OpenCloseModal from '../../common/layout/OpenCloseModal';
-import { buttonStyle, marginAroundStyle, space_M } from '../../styling/style';
+import { buttonStyle, space_lg } from '../../styling/style';
 
 interface CardTypeCreatorProps {
   onCreated?: (id: number) => void;
@@ -116,10 +115,10 @@ export default function CardTypeCreator({ onCreated, usage }: CardTypeCreatorPro
       title={i18n.modules.cardType.action.createAType}
       collapsedChildren={
         <>
-          <FontAwesomeIcon icon={faPlus} /> {i18n.modules.cardType.action.createType}
+          <Icon icon={'add'} /> {i18n.modules.cardType.action.createType}
         </>
       }
-      className={cx(buttonStyle, css({ marginBottom: space_M }))}
+      className={cx(buttonStyle, css({ marginBottom: space_lg }))}
       showCloseButton
     >
       {close => {
@@ -138,9 +137,9 @@ export default function CardTypeCreator({ onCreated, usage }: CardTypeCreatorPro
               alignItems: 'center',
               justifyContent: 'end',
             })}
-            buttonClassName={cx(buttonStyle, marginAroundStyle([1], space_M))}
+            buttonClassName={buttonStyle}
           >
-            <Button onClick={close} invertedButton className={css({ margin: space_M })}>
+            <Button onClick={close} variant="outline" className={css({ margin: space_lg })}>
               {i18n.common.cancel}
             </Button>
           </Form>

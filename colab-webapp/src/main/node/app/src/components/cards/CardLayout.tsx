@@ -13,7 +13,7 @@ import { cardStyle } from '../styling/style';
 
 const progressBarContainer = css({
   height: '8px',
-  backgroundColor: '#bbb',
+  backgroundColor: 'var(--bg-secondary)',
   width: '100%',
 });
 
@@ -21,7 +21,7 @@ export const progressBarStyle = (width: number) =>
   css({
     width: `${width}%`,
     height: 'inherit',
-    backgroundColor: 'var(--successColor)',
+    backgroundColor: 'var(--green-200)',
   });
 
 export function ProgressBar({ variant }: { variant: CardContent | undefined }): JSX.Element {
@@ -91,7 +91,7 @@ export default function CardLayout({
         className={cx(
           cardStyle,
           css({
-            backgroundColor: 'white',
+            backgroundColor: 'var(--bg-primary)',
             flexDirection: 'column',
             justifyContent: 'space-between',
             display: 'flex',

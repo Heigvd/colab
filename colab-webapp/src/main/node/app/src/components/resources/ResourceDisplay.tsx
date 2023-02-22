@@ -6,15 +6,6 @@
  */
 
 import { css, cx } from '@emotion/css';
-import {
-  faBoxArchive,
-  faCog,
-  faEllipsisV,
-  faGlasses,
-  faInfoCircle,
-  faTurnDown,
-} from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import * as React from 'react';
 import * as API from '../../API/api';
 import { updateDocumentText } from '../../API/api';
@@ -25,6 +16,7 @@ import { DiscreetInput, DiscreetTextArea } from '../common/element/Input';
 import { FeaturePreview } from '../common/element/Tips';
 import DropDownMenu from '../common/layout/DropDownMenu';
 import Flex from '../common/layout/Flex';
+import Icon from '../common/layout/Icon';
 import Modal from '../common/layout/Modal';
 import OpenCloseModal from '../common/layout/OpenCloseModal';
 import { DocTextWrapper } from '../documents/DocTextItem';
@@ -33,15 +25,7 @@ import DocEditorToolbox, {
   DocEditorCtx,
 } from '../documents/DocumentEditorToolbox';
 import DocumentList from '../documents/DocumentList';
-import {
-  lightIconButtonStyle,
-  localTitleStyle,
-  oneLineEllipsis,
-  paddingAroundStyle,
-  space_M,
-  space_S,
-  textSmall,
-} from '../styling/style';
+import { lightIconButtonStyle, oneLineEllipsisStyle, space_sm, text_sm } from '../styling/style';
 import ResourceCategorySelector from './ResourceCategorySelector';
 import {
   //getTheDirectResource,
@@ -111,19 +95,13 @@ export function ResourceDisplay({
 
   return (
     <Flex align="stretch" direction="column" grow={1} className={css({ overflow: 'auto' })}>
-      <Flex direction="column" align="normal" className={paddingAroundStyle([1, 2, 4], space_M)}>
+      <Flex direction="column" align="normal">
         <Flex
           justify="space-between"
           align="center"
           grow={1}
-          className={css({ marginBottom: space_S })}
+          className={css({ marginBottom: space_sm })}
         >
-          {/* <IconButton
-            icon={faArrowLeft}
-            title={i18n.modules.resource.backList}
-            onClick={goBackToList}
-            className={lightIconButtonStyle}
-          /> */}
           <Flex wrap="nowrap" align="center" className={css({ maxWidth: '80%' })}>
             {/* <TargetResourceSummary resource={resource} showText="tooltip" /> */}
             {/* {category && (
@@ -144,11 +122,11 @@ export function ResourceDisplay({
               </>
             )} */}
             {resource.targetResource.published && resource.isDirectResource && (
-              <FontAwesomeIcon
-                icon={faTurnDown}
+              <Icon
+                icon={'subdirectory_arrow_right'}
                 title={i18n.common.published}
-                size="xs"
-                color="var(--darkGray)"
+                opsz="xs"
+                color="var(--secondary-main)"
               />
             )}
             <DiscreetInput
@@ -158,11 +136,7 @@ export function ResourceDisplay({
               onChange={newValue =>
                 dispatch(API.updateResource({ ...targetResource, title: newValue }))
               }
-              inputDisplayClassName={cx(
-                localTitleStyle,
-                oneLineEllipsis,
-                css({ textOverflow: 'ellipsis' }),
-              )}
+              inputDisplayClassName={cx(oneLineEllipsisStyle, css({ textOverflow: 'ellipsis' }))}
               title={targetResource.title || ''}
             />
             {(!(
@@ -174,8 +148,8 @@ export function ResourceDisplay({
               <div
                 className={css({
                   fontSize: '0.7em',
-                  color: 'var(--lightGray)',
-                  border: '1px solid var(--lightGray)',
+                  color: 'var(--divider-main)',
+                  border: '1px solid var(--divider-main)',
                   borderRadius: '10px',
                   padding: '3px',
                 })}
@@ -199,7 +173,7 @@ export function ResourceDisplay({
                   alignItems: 'stretch',
                 })}
                 title=""
-                collapsedChildren={<FontAwesomeIcon icon={faGlasses} />}
+                collapsedChildren={<Icon icon={'trolley'} />}
               >
                 {close => <ResourceScope onCancel={close} resource={resource} />}
               </OpenCloseModal>
@@ -210,14 +184,14 @@ export function ResourceDisplay({
               (targetResource.cardId != null &&
                 entityIs(rootCard, 'Card') &&
                 targetResource.cardId === rootCard.id)) && (
-              <FontAwesomeIcon
+               <Icon
                 icon={faPersonDigging}
                 title={i18n.modules.resource.unpublishedInfoType}
               />
             )} */}
             {/* {canForce && !forceWrite && (
             <ConfirmIconButton
-              icon={faPen}
+              icon={'edit'}
               title={i18n.modules.resource.info.forceTooltip}
               onConfirm={toggleForceCb}
             />
@@ -231,9 +205,9 @@ export function ResourceDisplay({
               <div></div>
             ) : (
               <DropDownMenu
-                icon={faEllipsisV}
+                icon={'more_vert'}
                 valueComp={{ value: '', label: '' }}
-                buttonClassName={cx(lightIconButtonStyle, css({ marginLeft: space_S }))}
+                buttonClassName={cx(lightIconButtonStyle, css({ marginLeft: space_sm }))}
                 entries={[
                   ...(!effectiveReadOnly && resource.isDirectResource
                     ? [
@@ -241,7 +215,7 @@ export function ResourceDisplay({
                           value: 'categorySelector',
                           label: (
                             <>
-                              <FontAwesomeIcon icon={faCog} /> {i18n.modules.resource.category}
+                              <Icon icon={'settings'} /> {i18n.modules.resource.category}
                             </>
                           ),
                           action: () => setShowCategorySelector(true),
@@ -254,7 +228,7 @@ export function ResourceDisplay({
                           value: 'publishStatus',
                           label: (
                             <>
-                              <FontAwesomeIcon icon={faTurnDown} />
+                              <Icon icon={'subdirectory_arrow_right'} />
                               {resource.targetResource.published
                                 ? i18n.modules.resource.actions.makePrivate
                                 : i18n.modules.resource.actions.shareWithChildren}
@@ -278,7 +252,7 @@ export function ResourceDisplay({
                           value: 'teaser',
                           label: (
                             <>
-                              <FontAwesomeIcon icon={faInfoCircle} />{' '}
+                              <Icon icon={'info'} />
                               {`${
                                 showTeaser
                                   ? i18n.modules.resource.hideTeaser
@@ -297,7 +271,7 @@ export function ResourceDisplay({
                           value: 'remove',
                           label: (
                             <>
-                              <FontAwesomeIcon icon={faBoxArchive} /> {i18n.common.remove}
+                              <Icon icon={'inventory_2'} /> {i18n.common.remove}
                             </>
                           ),
                           action: () => {
@@ -340,7 +314,7 @@ export function ResourceDisplay({
                       );
                     }
                   }}
-                  inputDisplayClassName={cx(textSmall, css({ marginTop: space_S }))}
+                  inputDisplayClassName={cx(text_sm, css({ marginTop: space_sm }))}
                 />
               )}
             </DocTextWrapper>
@@ -368,7 +342,7 @@ export function ResourceDisplay({
               docOwnership={{ kind: 'PartOfResource', ownerId: targetResource.id }}
             />
           )}
-          <div className={cx(paddingAroundStyle([2, 4], space_M), css({ overflow: 'auto' }))}>
+          <div className={css({ overflow: 'auto' })}>
             <DocumentList
               docOwnership={{ kind: 'PartOfResource', ownerId: targetResource.id }}
               readOnly={effectiveReadOnly}

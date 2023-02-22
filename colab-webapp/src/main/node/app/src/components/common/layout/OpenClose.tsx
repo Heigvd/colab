@@ -6,11 +6,9 @@
  */
 
 import { css, cx } from '@emotion/css';
-import { faTimes } from '@fortawesome/free-solid-svg-icons';
 import * as React from 'react';
 import useTranslations from '../../../i18n/I18nContext';
 import IconButton from '../element/IconButton';
-import Clickable from './Clickable';
 
 const relative = css({
   position: 'relative',
@@ -53,15 +51,15 @@ export default function OpenClose({
 
   if (state === 'COLLAPSED') {
     return (
-      <Clickable
-        clickableClassName={className}
+      <div
+        className={className}
         onClick={e => {
           e.stopPropagation();
           setState('EXPANDED');
         }}
       >
         {collapsedChildren}
-      </Clickable>
+      </div>
     );
   } else {
     return (
@@ -70,7 +68,7 @@ export default function OpenClose({
         {children(collapse)}
         {showCloseIcon && (
           <IconButton
-            icon={faTimes}
+            icon={'close'}
             title={i18n.common.close}
             className={topRightAbs}
             onClick={() => {

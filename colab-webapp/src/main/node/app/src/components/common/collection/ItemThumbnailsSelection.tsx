@@ -7,15 +7,14 @@
 
 import { css, cx } from '@emotion/css';
 import * as React from 'react';
-import { borderRadius, space_S } from '../../styling/style';
+import { space_sm } from '../../styling/style';
 import Thumbnail from './Thumbnail';
 
 export const defaultThumbnailStyle = css({
   display: 'flex',
-  border: '1px solid var(--lightGray)',
-  borderRadius: borderRadius,
-  padding: space_S,
-  columnGap: space_S,
+  border: '1px solid var(--divider-main)',
+  padding: space_sm,
+  columnGap: space_sm,
   overflow: 'hidden',
 });
 
@@ -26,13 +25,13 @@ export const selecatableThumbnailStyle = cx(
     outlineOffset: '-1px',
     transition: 'outline .3s ease',
     '&:hover': {
-      border: '1px solid var(--darkGray)',
+      border: '1px solid var(--secondary-main)',
     },
   }),
 );
 
 const selectedStyle = css({
-  outline: '4px solid var(--primaryColor)',
+  outline: '4px solid var(--primary-main)',
 });
 
 interface ItemThumbnailsSelectionProps<T> {

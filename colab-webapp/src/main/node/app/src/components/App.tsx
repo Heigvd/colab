@@ -5,7 +5,7 @@
  * Licensed under the MIT License
  */
 
-import { cx } from '@emotion/css';
+import { css, cx, injectGlobal } from '@emotion/css';
 import * as React from 'react';
 import { Suspense } from 'react';
 import { createRoot } from 'react-dom/client';
@@ -16,16 +16,61 @@ import { useLocalStorage } from '../preferences';
 import { store } from '../store/store';
 import { init } from '../ws/websocket';
 import { TipsConfig, TipsCtx } from './common/element/Tips';
+import Flex from './common/layout/Flex';
 import Loading from './common/layout/Loading';
 import ErrorBoundary from './common/toplevel/ErrorBoundary';
 import Notifier from './common/toplevel/Notifier';
 import MainApp from './MainApp';
-import { lightTheme, normalThemeMode } from './styling/style';
+import { TocDisplayCtx, TocMode } from './resources/ResourcesList';
+import { fonts, heading, lightMode, text } from './styling/theme';
 import Token from './token/Token';
 
-import 'inter-ui/inter.css';
-import { TocDisplayCtx, TocMode } from './resources/ResourcesList';
+injectGlobal`
+    html {
+        box-sizing: border-box;
+        font-size: ${text.sm};
+        line-height: ${text.lineHeight};
+        font-weight: ${text.regular};
+        color: var(--text-primary);
+        margin: 0;
+        padding: 0;
+    }
+    * {
+      font-family: 'Public Sans', 'serif';
+    }
 
+    a, button, a:hover, button:hover {
+        text-decoration: none;
+    }
+
+    h1, h2, h3, h4, h5, h6 {
+        font-weight: ${heading.weight};
+        line-height: ${heading.lineHeight};
+        margin: 0;
+        padding: 0;
+    }
+
+    h1 {
+        font-size: ${heading.lg};
+    }
+    
+    h2 {
+        font-size: ${heading.md};
+    }
+
+    h3 {
+        font-size: ${heading.sm};
+    }
+
+    h4 {
+        font-size: ${heading.xs};
+    }
+
+    button {
+      background-color: transparent;
+      border: 1px solid transparent;
+    }
+`;
 /**
  * To read parameters from hash
  */
@@ -123,7 +168,7 @@ function App(): JSX.Element {
 
   return (
     <div
-      className={cx(lightTheme, normalThemeMode)}
+      className={cx(lightMode, fonts, css({ display: 'flex', flexDirection: 'column' }))}
       onDrop={cancelDroppingFiles}
       onDragOver={cancelDroppingFiles}
     >
@@ -166,7 +211,18 @@ function App(): JSX.Element {
                       <Routes>
                         <Route path="/token/:id/:token" element={<TokenWrapper />} />
                         <Route path="/token/*" element={<TokenWrapper />} />
-                        <Route path="*" element={<MainApp />} />
+                        <Route
+                          path="*"
+                          element={
+                            <Flex
+                              direction="column"
+                              align="stretch"
+                              className={css({ minHeight: '100vh' })}
+                            >
+                              <MainApp />
+                            </Flex>
+                          }
+                        />
                       </Routes>
                     </HashRouter>
                   </TipsCtx.Provider>

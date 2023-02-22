@@ -6,21 +6,19 @@
  */
 
 import { css, cx } from '@emotion/css';
-import { IconProp } from '@fortawesome/fontawesome-svg-core';
-import { faTimes } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import * as React from 'react';
 import useTranslations from '../../../i18n/I18nContext';
-import { lightIconButtonStyle, marginAroundStyle, space_M, space_S } from '../../styling/style';
+import { lightIconButtonStyle, space_lg, space_sm } from '../../styling/style';
 import IconButton from '../element/IconButton';
 import Flex from './Flex';
+import Icon from './Icon';
 
 const bgActiveStyleRight = css({
   backgroundImage: 'linear-gradient( to right, transparent 90%, #444 91%, #444 100%)',
 });
 
 export interface Item {
-  icon: IconProp;
+  icon: string;
   nextToIconElement?: React.ReactNode;
   title: string;
   header?: React.ReactNode;
@@ -62,22 +60,22 @@ export function SideCollapsiblePanelBody({
           justify="space-between"
           align="center"
           className={css({
-            padding: space_S + ' ' + space_M,
-            borderBottom: '1px solid var(--lightGray)',
+            padding: space_sm + ' ' + space_lg,
+            borderBottom: '1px solid var(--divider-main)',
           })}
         >
           <Flex align="baseline">
             {itemOpen.header ? itemOpen.header : <h2>{itemOpen.title}</h2>}
           </Flex>
           <IconButton
-            icon={faTimes}
+            icon={'close'}
             title={i18n.common.close}
             onClick={() => {
               if (setOpenKey) {
                 setOpenKey(undefined);
               }
             }}
-            className={cx(lightIconButtonStyle, marginAroundStyle([4], space_M))}
+            className={cx(lightIconButtonStyle)}
           />
         </Flex>
         {itemOpen.children}
@@ -120,7 +118,7 @@ export function SideCollapsibleMenu({
           justify="center"
           align="center"
           className={cx(
-            css({ padding: space_M, '&:hover': { cursor: 'pointer' } }),
+            css({ padding: space_lg, '&:hover': { cursor: 'pointer' } }),
             {
               [bgActiveStyleRight]: openKey === key,
             },
@@ -133,10 +131,10 @@ export function SideCollapsibleMenu({
             }
           }}
         >
-          <FontAwesomeIcon
+          <Icon
             icon={item.icon}
             title={item.title}
-            size="lg"
+            opsz="lg"
             className={css({ paddingLeft: 0, paddingRight: '1px' })}
           />
           {item.nextToIconElement}

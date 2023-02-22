@@ -5,19 +5,6 @@
  * Licensed under the MIT License
  */
 import { css, cx } from '@emotion/css';
-import {
-  faCheck,
-  faEllipsisV,
-  faEnvelope,
-  faHourglassHalf,
-  faMinus,
-  faPen,
-  faPlus,
-  faSkullCrossbones,
-  faTrash,
-  faUser,
-} from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Project, TeamMember, TeamRole } from 'colab-rest-client';
 import React from 'react';
 import * as API from '../../../API/api';
@@ -34,18 +21,16 @@ import { DiscreetInput, InlineInput } from '../../common/element/Input';
 import Tips from '../../common/element/Tips';
 import { ConfirmDeleteModal } from '../../common/layout/ConfirmDeleteModal';
 import DropDownMenu from '../../common/layout/DropDownMenu';
+import Icon from '../../common/layout/Icon';
 import OpenClose from '../../common/layout/OpenClose';
 import WithToolbar from '../../common/WithToolbar';
 import {
-  errorColor,
   lightIconButtonStyle,
-  lightItalicText,
-  lightText,
-  space_L,
-  space_M,
-  space_S,
-  successColor,
-  textSmall,
+  lightTextStyle,
+  space_lg,
+  space_sm,
+  space_xl,
+  text_sm,
 } from '../../styling/style';
 import { gridNewLine, titleCellStyle } from './Team';
 
@@ -100,7 +85,7 @@ function CreateRole({ project }: { project: Project }): JSX.Element {
       collapsedChildren={
         <IconButton
           title={i18n.modules.team.actions.createRole}
-          icon={faPlus}
+          icon={'add'}
           className={lightIconButtonStyle}
         />
       }
@@ -194,8 +179,8 @@ const MemberWithProjectRole = ({ member, roles }: MemberWithProjectRoleProps) =>
   } else if (member.displayName && member.userId == null) {
     username = (
       <span>
-        <div className={cx(textSmall, lightItalicText)}>
-          <FontAwesomeIcon icon={faHourglassHalf} className={css({ marginRight: space_S })} />
+        <div className={cx(text_sm, lightTextStyle)}>
+          <Icon icon={'hourglass_top'} className={css({ marginRight: space_sm })} />
           {i18n.authentication.info.pendingInvitation}...
         </div>
         {member.displayName}
@@ -206,14 +191,14 @@ const MemberWithProjectRole = ({ member, roles }: MemberWithProjectRoleProps) =>
   } else if (user == 'LOADING' || user == null) {
     username = <InlineLoading />;
   } else if (user == 'ERROR') {
-    username = <FontAwesomeIcon icon={faSkullCrossbones} />;
+    username = <Icon icon={'skull'} />;
   } else {
     const cn = getDisplayName(user);
     username = (
       <>
         {cn}
         {user.affiliation ? ` (${user.affiliation})` : ''}
-        <IconButton icon={faPen} title={i18n.common.edit} onClick={() => updateDisplayName(cn)} />
+        <IconButton icon={'edit'} title={i18n.common.edit} onClick={() => updateDisplayName(cn)} />
       </>
     );
   }
@@ -238,12 +223,12 @@ const MemberWithProjectRole = ({ member, roles }: MemberWithProjectRoleProps) =>
           isConfirmButtonLoading={isLoading}
         />
       )}
-      <div className={cx(gridNewLine, textSmall)}>{username}</div>
+      <div className={cx(gridNewLine, text_sm)}>{username}</div>
       {currentUser?.id != member.userId ? (
         <DropDownMenu
-          icon={faEllipsisV}
+          icon={'more_vert'}
           valueComp={{ value: '', label: '' }}
-          buttonClassName={cx(lightIconButtonStyle, css({ marginLeft: space_S }))}
+          buttonClassName={cx(lightIconButtonStyle, css({ marginLeft: space_sm }))}
           onSelect={value => setShowModal(value.value)}
           entries={[
             ...(member.userId == null
@@ -252,8 +237,7 @@ const MemberWithProjectRole = ({ member, roles }: MemberWithProjectRoleProps) =>
                     value: 'resend',
                     label: (
                       <>
-                        <FontAwesomeIcon icon={faEnvelope} />{' '}
-                        {i18n.modules.team.actions.resendInvitation}
+                        <Icon icon={'mail'} /> {i18n.modules.team.actions.resendInvitation}
                       </>
                     ),
                     action: () => {
@@ -281,22 +265,22 @@ const MemberWithProjectRole = ({ member, roles }: MemberWithProjectRoleProps) =>
               value: 'delete',
               label: (
                 <>
-                  <FontAwesomeIcon icon={faTrash} color={errorColor} /> {i18n.common.delete}
+                  <Icon icon={'delete'} color={'var(--error-main)'} /> {i18n.common.delete}
                 </>
               ),
             },
           ]}
         />
       ) : (
-        <FontAwesomeIcon icon={faUser} title={i18n.team.me} />
+        <Icon icon={'person'} title={i18n.team.me} />
       )}
       {roles.map(role => {
         const hasRole = roleIds.indexOf(role.id || -1) >= 0;
         return (
           <IconButton
             key={role.id}
-            icon={hasRole ? faCheck : faMinus}
-            iconColor={hasRole ? successColor : 'var(--darkGray)'}
+            icon={hasRole ? 'check' : 'remove'}
+            iconColor={hasRole ? 'var(--success-main)' : 'var(--secondary-main)'}
             title={hasRole ? i18n.team.removeRole : i18n.team.giveRole}
             onClick={() => {
               if (hasRole) {
@@ -328,10 +312,10 @@ export default function TeamRoles({ project }: { project: Project }): JSX.Elemen
             marginLeft: '5px',
             marginRight: '5px',
           },
-          marginBottom: space_L,
-          paddingBottom: space_M,
-          borderBottom: '1px solid var(--lightGray)',
-          gap: space_S,
+          marginBottom: space_xl,
+          paddingBottom: space_lg,
+          borderBottom: '1px solid var(--divider-main)',
+          gap: space_sm,
         })}
       >
         <div className={cx(titleCellStyle, css({ gridColumnStart: 1, gridColumnEnd: 3 }))}>
@@ -340,8 +324,8 @@ export default function TeamRoles({ project }: { project: Project }): JSX.Elemen
         <div className={cx(titleCellStyle, css({ gridColumnStart: 3, gridColumnEnd: 'end' }))}>
           {i18n.team.roles}
           <Tips
-            iconClassName={cx(textSmall, lightText)}
-            className={cx(textSmall, css({ fontWeight: 'normal' }))}
+            iconClassName={cx(text_sm, lightTextStyle)}
+            className={cx(text_sm, css({ fontWeight: 'normal' }))}
           >
             {i18n.team.rolesHelper}
           </Tips>

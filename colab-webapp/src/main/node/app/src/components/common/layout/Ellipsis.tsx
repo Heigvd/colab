@@ -6,10 +6,9 @@
  */
 
 import { css } from '@emotion/css';
-import { faEllipsis } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import * as React from 'react';
 import { FlexProps } from './Flex';
+import Icon from './Icon';
 
 interface EllipsisProps<T> {
   items: T[];
@@ -29,7 +28,7 @@ const itemsStyle = css({
   position: 'absolute',
 });
 
-const defaultEllipsis = <FontAwesomeIcon color={'var(--lightGray)'} icon={faEllipsis} />;
+const defaultEllipsis = <Icon color={'var(--divider-main)'} icon={'more_horiz'} />;
 
 /**
  * items comp: the must all be the same size

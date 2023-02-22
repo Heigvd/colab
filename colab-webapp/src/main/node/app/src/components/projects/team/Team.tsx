@@ -14,7 +14,7 @@ import CardInvolvement from '../../cards/CardInvolvement';
 import InlineLoading from '../../common/element/InlineLoading';
 import Flex from '../../common/layout/Flex';
 import Tabs, { Tab } from '../../common/layout/Tabs';
-import { space_L, space_S } from '../../styling/style';
+import { space_sm, space_xl } from '../../styling/style';
 import MemberCreator from './MemberCreator';
 import TeamRACI from './Raci';
 import TeamRights from './Rights';
@@ -26,9 +26,9 @@ export const gridNewLine = css({
 });
 export const titleCellStyle = css({
   justifySelf: 'stretch',
-  padding: space_S + ' 0',
+  padding: space_sm + ' 0',
   fontWeight: 800,
-  borderBottom: '1px solid var(--lightGray)',
+  borderBottom: '1px solid var(--divider-main)',
 });
 
 export interface TeamProps {
@@ -44,7 +44,7 @@ export default function Team({ project }: TeamProps): JSX.Element {
   if (status === 'READY' && project.id != null) {
     return (
       <>
-        <Flex justify="space-between" className={css({ padding: space_L })}>
+        <Flex justify="space-between" className={css({ padding: space_xl })}>
           <h2>{i18n.team.team}</h2>
           <MemberCreator members={members} project={project} />
         </Flex>
@@ -55,7 +55,7 @@ export default function Team({ project }: TeamProps): JSX.Element {
           <Tab name="rights" label={i18n.team.rights}>
             <TeamRights project={project} />
           </Tab>
-          <Tab name="projectACL" label={i18n.team.raci} invisible>
+          <Tab name="projectACL" label={i18n.team.raci.raci} invisible>
             <TeamRACI project={project} />
           </Tab>
           <Tab name="projectACL" label={i18n.modules.project.settings.involvements.label}>

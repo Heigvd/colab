@@ -7,8 +7,6 @@
 
 import { Slider, SliderFilledTrack, SliderThumb, SliderTrack, Tooltip } from '@chakra-ui/react';
 import { css, cx } from '@emotion/css';
-import { faHourglassHalf, faPen, faSkullCrossbones } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { HierarchicalPosition, Project, TeamMember } from 'colab-rest-client';
 import React from 'react';
 import * as API from '../../../API/api';
@@ -22,16 +20,8 @@ import IconButton from '../../common/element/IconButton';
 import InlineLoading from '../../common/element/InlineLoading';
 import { DiscreetInput } from '../../common/element/Input';
 import Tips from '../../common/element/Tips';
-import {
-  borderRadius,
-  lightItalicText,
-  lightText,
-  primaryColor,
-  space_L,
-  space_M,
-  space_S,
-  textSmall,
-} from '../../styling/style';
+import Icon from '../../common/layout/Icon';
+import { lightTextStyle, space_lg, space_sm, space_xl, text_sm } from '../../styling/style';
 import { gridNewLine, titleCellStyle } from './Team';
 
 const options: HierarchicalPosition[] = ['GUEST', 'INTERNAL', 'LEADER', 'OWNER'];
@@ -63,7 +53,7 @@ export function PositionColumns(): JSX.Element {
         <div
           key={buildOption(option).value}
           className={cx(
-            textSmall,
+            text_sm,
             css({ lineHeight: '2em', gridColumn: 'span 2', fontWeight: 'bold' }),
           )}
         >
@@ -160,8 +150,8 @@ const MemberWithProjectRights = ({ member, isTheOnlyOwner }: MemberWithProjectRi
   } else if (member.displayName && member.userId == null) {
     username = (
       <span>
-        <div className={cx(textSmall, lightItalicText)}>
-          <FontAwesomeIcon icon={faHourglassHalf} className={css({ marginRight: space_S })} />
+        <div className={cx(text_sm, lightTextStyle)}>
+          <Icon icon={'hourglass_top'} className={css({ marginRight: space_sm })} />
           {i18n.authentication.info.pendingInvitation}...
         </div>
         {member.displayName}
@@ -172,20 +162,20 @@ const MemberWithProjectRights = ({ member, isTheOnlyOwner }: MemberWithProjectRi
   } else if (user == 'LOADING' || user == null) {
     username = <InlineLoading />;
   } else if (user == 'ERROR') {
-    username = <FontAwesomeIcon icon={faSkullCrossbones} />;
+    username = <Icon icon={'skull'} />;
   } else {
     const cn = getDisplayName(user);
     username = (
       <>
         {cn}
         {user.affiliation ? ` (${user.affiliation})` : ''}
-        <IconButton icon={faPen} title={i18n.common.edit} onClick={() => updateDisplayName(cn)} />
+        <IconButton icon={'edit'} title={i18n.common.edit} onClick={() => updateDisplayName(cn)} />
       </>
     );
   }
   return (
     <>
-      <div className={cx(gridNewLine, textSmall, css({ gridColumn: '1 / 3', maxWidth: '300px' }))}>
+      <div className={cx(gridNewLine, text_sm, css({ gridColumn: '1 / 3', maxWidth: '300px' }))}>
         {username}
       </div>
       <Slider
@@ -204,25 +194,25 @@ const MemberWithProjectRights = ({ member, isTheOnlyOwner }: MemberWithProjectRi
       >
         <SliderTrack height={'17px'} bg="#bbb">
           <SliderFilledTrack
-            className={css({ backgroundColor: 'var(--secondaryColor)', height: '100%' })}
+            className={css({ backgroundColor: 'var(--primary-main)', height: '100%' })}
           />
         </SliderTrack>
         <Tooltip
           hasArrow
           placement="top"
           color="white"
-          bg={primaryColor}
+          bg={'var(--primary-main)'}
           isOpen={showTooltip}
           label={`${prettyPrint(member.position)}`}
-          className={css({ padding: space_S, borderRadius: borderRadius })}
+          className={css({ padding: space_sm })}
         >
           <SliderThumb
             height="17px"
             width="17px"
             borderRadius={'50%'}
             className={css({
-              backgroundColor: 'var(--bgColor)',
-              border: '1px solid var(--lightGray)',
+              backgroundColor: 'var(--bg-primary)',
+              border: '1px solid var(--divider-main)',
               marginTop: '-1px',
               '&:focus-visible': { outline: 'none' },
             })}
@@ -257,10 +247,10 @@ export default function TeamRights({ project }: { project: Project }): JSX.Eleme
             marginLeft: '5px',
             marginRight: '5px',
           },
-          marginBottom: space_L,
-          paddingBottom: space_M,
-          borderBottom: '1px solid var(--lightGray)',
-          gap: space_S,
+          marginBottom: space_xl,
+          paddingBottom: space_lg,
+          borderBottom: '1px solid var(--divider-main)',
+          gap: space_sm,
         })}
       >
         <div className={cx(titleCellStyle, css({ gridColumnStart: 1, gridColumnEnd: 3 }))}>
@@ -269,8 +259,8 @@ export default function TeamRights({ project }: { project: Project }): JSX.Eleme
         <div className={cx(titleCellStyle, css({ gridColumnStart: 3, gridColumnEnd: 'end' }))}>
           {i18n.team.rights}
           <Tips
-            iconClassName={cx(textSmall, lightText)}
-            className={cx(textSmall, css({ fontWeight: 'normal' }))}
+            iconClassName={cx(text_sm, lightTextStyle)}
+            className={cx(text_sm, css({ fontWeight: 'normal' }))}
           >
             {i18n.team.rightsHelper}
           </Tips>

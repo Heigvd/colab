@@ -6,7 +6,6 @@
  */
 
 import { css } from '@emotion/css';
-import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
 import * as React from 'react';
 import { useNavigate } from 'react-router-dom';
 import * as API from '../../API/api';
@@ -19,8 +18,8 @@ import { TipsCtx, WIPContainer } from '../common/element/Tips';
 import Flex from '../common/layout/Flex';
 import Tabs, { Tab } from '../common/layout/Tabs';
 import Debugger from '../debugger/debugger';
-import SharedModelsList from '../projects/SharedModelsList';
-import { lightIconButtonStyle, space_L } from '../styling/style';
+import SharedModelsList from '../projects/models/SharedModelsList';
+import { lightIconButtonStyle, space_xl } from '../styling/style';
 import DisplaySettings from './DisplaySettings';
 import LocalAccount from './LocalAccount';
 import UserProfile from './UserProfile';
@@ -43,11 +42,11 @@ export default function Settings(): JSX.Element {
 
   if (currentUser && accounts != 'LOADING') {
     return (
-      <div className={css({ padding: space_L })}>
+      <div className={css({ padding: space_xl })}>
         <Flex>
           <IconButton
             title={i18n.common.back}
-            icon={faArrowLeft}
+            icon={'arrow_back'}
             onClick={() => navigate('..')}
             className={lightIconButtonStyle}
           ></IconButton>
@@ -55,7 +54,7 @@ export default function Settings(): JSX.Element {
         </Flex>
         <Tabs routed>
           <Tab name="user" label={i18n.user.profile}>
-            <Flex direction="row" className={css({ gap: space_L })}>
+            <Flex direction="row" className={css({ gap: space_xl })}>
               <UserProfile user={currentUser} />
               {accounts.map(account => {
                 if (account.id != null && +account.id >= 0) {
@@ -91,7 +90,7 @@ export default function Settings(): JSX.Element {
     );
   } else {
     return (
-      <div className={css({ padding: space_L })}>
+      <div className={css({ padding: space_xl })}>
         <i>{i18n.authentication.error.mustBeAuthenticated}</i>
       </div>
     );

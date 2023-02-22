@@ -7,14 +7,6 @@
 
 import { css, cx } from '@emotion/css';
 import {
-  faBan,
-  faBook,
-  faBookReader,
-  faLocationDot,
-  faSlash,
-} from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import {
   AbstractCardType,
   AbstractResource,
   Card,
@@ -35,14 +27,14 @@ import { useAppDispatch, useAppSelector } from '../../../store/hooks';
 import { ResourceState } from '../../../store/slice/resourceSlice';
 import TargetCardTypeSummary from '../../cards/cardtypes/summary/TargetCardTypeSummary';
 import { defaultThumbnailStyle } from '../../common/collection/ItemThumbnailsSelection';
-import Button from '../../common/element/Button';
-import { AsyncButtonWithLoader } from '../../common/element/ButtonWithLoader';
+import Button, { AsyncButtonWithLoader } from '../../common/element/Button';
 import { BlockInput } from '../../common/element/Input';
 import Toggler from '../../common/element/Toggler';
 import Flex from '../../common/layout/Flex';
-import { modalBody, modalFooter } from '../../common/layout/Modal';
+import Icon from '../../common/layout/Icon';
+import { modalFooter } from '../../common/layout/Modal';
 import Hierarchy from '../../projects/edition/hierarchy/Hierarchy';
-import { space_M, textSmall } from '../../styling/style';
+import { p_lg, space_lg, text_sm } from '../../styling/style';
 import { getTheDirectResource, ResourceAndRef } from '../resourcesCommonType';
 import TargetResourceSummary from './TargetResourceSummary';
 
@@ -106,29 +98,21 @@ const OwnerCtx = React.createContext<OwnerContext>({
   highlightCardType: () => {},
 });
 
-const color = 'var(--pictoBlue)';
+const color = 'var(--warning-main)';
 
-const ownerIcon = <FontAwesomeIcon className="fa-stack-1x" icon={faBook} color={color} />;
-const visibleIcon = <FontAwesomeIcon className="fa-stack-1x" icon={faBookReader} color={color} />;
+const ownerIcon = <Icon className="fa-stack-1x" icon={'menu_book'} color={color} />;
+const visibleIcon = <Icon className="fa-stack-1x" icon={'auto_stories'} color={color} />;
 
 /** Indicates user do not use the resource, but did not explicitly reject it */
-const unusedIcon = (
-  <FontAwesomeIcon className="fa-stack-1x" icon={faBookReader} color={'lightgrey'} />
-);
+const unusedIcon = <Icon className="fa-stack-1x" icon={'auto_stories'} color={'lightgrey'} />;
 /** Indicates user explicitly reject the resource */
-const rejectedIcon = <FontAwesomeIcon className="fa-stack-1x" icon={faBan} color={color} />;
+const rejectedIcon = <Icon className="fa-stack-1x" icon={'block'} color={color} />;
 
-const circleIcon = <></>; // <FontAwesomeIcon icon={faCircleDot} color={'var(--pictoBlue)'} />;
+const circleIcon = <></>;
 
-const ownerIconStack = <FontAwesomeIcon className="fa-stack-1x" icon={faBook} color="grey" />;
-const visibleIconStack = (
-  <FontAwesomeIcon className="fa-stack-1x" icon={faBookReader} color="grey" />
-);
-const rejectedIconStack = <FontAwesomeIcon className="fa-stack-1x" icon={faBan} color="grey" />;
-
-const slashIcon = (
-  <FontAwesomeIcon className="fa-stack-1x" icon={faSlash} color={'var(--errorColor)'} />
-);
+const ownerIconStack = <Icon className="fa-stack-1x" icon={'menu_book'} color="grey" />;
+const visibleIconStack = <Icon className="fa-stack-1x" icon={'auto_stories'} color="grey" />;
+const rejectedIconStack = <Icon className="fa-stack-1x" icon={'block'} color="grey" />;
 
 const noIcon = <></>;
 
@@ -151,7 +135,7 @@ function Stack({ children }: { children: React.ReactNode }): JSX.Element {
 
 const youAreHereIcon = (
   <Stack>
-    <FontAwesomeIcon className="fa-stack-1x" icon={faLocationDot} color={'var(--errorColor)'} />
+    <Icon className="fa-stack-1x" icon={'my_location'} color={'var(--error-main)'} />
   </Stack>
 );
 
@@ -188,12 +172,7 @@ function getIcon(node: WithResource): JSX.Element {
     if (node.persisted === 'rejected') {
       return <Stack>{rejectedIcon}</Stack>;
     } else {
-      return (
-        <Stack>
-          {getSingleIcon(node.persisted, true)}
-          {slashIcon}
-        </Stack>
-      );
+      return <Stack>{getSingleIcon(node.persisted, true)}</Stack>;
     }
   }
 }
@@ -736,7 +715,7 @@ export default function ResourceScope({ onCancel, resource }: ResourceScopeProps
       }}
     >
       <Flex className={highlightStyle} overflow="auto" direction="column" align="stretch" grow={1}>
-        <Flex className={modalBody} direction="column" align="stretch">
+        <Flex className={p_lg} direction="column" align="stretch">
           {/* header */}
           <h2>{resource.targetResource.title || i18n.modules.resource.untitled} </h2>
           <Flex>
@@ -748,18 +727,18 @@ export default function ResourceScope({ onCancel, resource }: ResourceScopeProps
         </Flex>
         <Flex
           overflow="auto"
-          className={modalBody}
+          className={p_lg}
           grow={1}
           direction="row"
-          gap={space_M}
+          gap={space_lg}
           align="stretch"
         >
-          <Flex direction="column" gap={space_M}>
+          <Flex direction="column" gap={space_lg}>
             {/* body */}
             {structure.root && (
               <>
                 <h3>{i18n.modules.project.settings.resources.label}</h3>
-                <div className={textSmall}>{i18n.modules.resource.scope.projectDocDesc}</div>
+                <div className={text_sm}>{i18n.modules.resource.scope.projectDocDesc}</div>
                 <Flex gap="5px">
                   <ProjectDisplay
                     root={structure.root}
@@ -776,7 +755,7 @@ export default function ResourceScope({ onCancel, resource }: ResourceScopeProps
             {structure.types.length > 0 && (
               <>
                 <h3>{i18n.modules.cardType.cardTypesLongWay}</h3>
-                <div className={textSmall}>{i18n.modules.resource.scope.thematicDesc}</div>
+                <div className={text_sm}>{i18n.modules.resource.scope.thematicDesc}</div>
                 <Flex direction="column" gap="5px" align="stretch">
                   {structure.types.map(cardType => (
                     <CardTypeDisplay
@@ -798,7 +777,7 @@ export default function ResourceScope({ onCancel, resource }: ResourceScopeProps
             {structure.root && (
               <>
                 <h3>{i18n.modules.resource.scope.mainViewTitle}</h3>
-                <div className={textSmall}>{i18n.modules.resource.scope.mainViewDesc}</div>
+                <div className={text_sm}>{i18n.modules.resource.scope.mainViewDesc}</div>
                 <Hierarchy
                   rootId={structure.root.card.id!}
                   enableDragAndDrop={false}
@@ -901,7 +880,7 @@ export default function ResourceScope({ onCancel, resource }: ResourceScopeProps
             )}
           </Flex>
           {externalRef.length > 0 && (
-            <Flex direction="column" gap={space_M}>
+            <Flex direction="column" gap={space_lg}>
               <h3>{i18n.modules.resource.scope.alsoUsedByExternalProject}</h3>
               {externalRef.map(ref => {
                 return <ExternalProjectDisplay key={ref.project.id} externalProject={ref} />;
@@ -910,10 +889,10 @@ export default function ResourceScope({ onCancel, resource }: ResourceScopeProps
           )}
         </Flex>{' '}
         {/* end of body */}
-        <Flex className={cx(modalFooter, modalBody)} justify="space-between" align="stretch">
+        <Flex className={cx(modalFooter, p_lg)} justify="space-between" align="stretch">
           {' '}
           {/* footer */}
-          <Flex gap={space_M} align="center">
+          <Flex gap={space_lg} align="center">
             <Toggler
               value={showAll}
               onChange={setShowAll}
@@ -931,14 +910,14 @@ export default function ResourceScope({ onCancel, resource }: ResourceScopeProps
               saveMode="SILLY_FLOWING"
             />
           </Flex>
-          <Flex gap={space_M}>
+          <Flex gap={space_lg}>
             <Flex direction="column" align="flex-end">
               <Toggler
                 label={i18n.common.published}
                 value={owner.published}
                 onChange={x => setOwner(owner => ({ ...owner, published: x }))}
               />
-              <div className={textSmall}>
+              <div className={text_sm}>
                 {(() => {
                   if (owner.abstractCardTypeId != null) {
                     // shared documentation
@@ -959,10 +938,10 @@ export default function ResourceScope({ onCancel, resource }: ResourceScopeProps
               </div>
             </Flex>
 
-            <Button invertedButton onClick={onCancel}>
+            <Button variant="outline" onClick={onCancel}>
               {i18n.modules.resource.scope.cancel}
             </Button>
-            <Button invertedButton onClick={resetCb}>
+            <Button variant="outline" onClick={resetCb}>
               {i18n.modules.resource.scope.reset}
             </Button>
             <AsyncButtonWithLoader onClick={moveCb}>

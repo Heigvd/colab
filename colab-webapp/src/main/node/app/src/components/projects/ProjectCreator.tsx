@@ -6,20 +6,18 @@
  */
 
 import { css } from '@emotion/css';
-import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import { Illustration, Project } from 'colab-rest-client';
 import * as React from 'react';
 import * as API from '../../API/api';
 import useTranslations from '../../i18n/I18nContext';
 import { useAppDispatch, useLoadingState } from '../../store/hooks';
 import Button from '../common/element/Button';
-import ButtonWithLoader from '../common/element/ButtonWithLoader';
 import Flex from '../common/layout/Flex';
 import OpenCloseModal from '../common/layout/OpenCloseModal';
-import { space_M, space_S } from '../styling/style';
+import { space_lg, space_sm } from '../styling/style';
+import ProjectModelSelector from './models/ProjectModelSelector';
 import { defaultProjectIllustration } from './ProjectCommon';
 import ProjectDataInitialization from './ProjectDataInitialization';
-import ProjectModelSelector from './ProjectModelSelector';
 
 // Note : when we click outside the modal, the data are kept
 
@@ -43,12 +41,10 @@ type ProgressionStatus = 'chooseModel' | 'fillBasisData';
 
 interface ProjectCreatorProps {
   collapsedButtonClassName?: string;
-  disabled?: boolean;
 }
 
 export default function ProjectCreator({
   collapsedButtonClassName,
-  disabled,
 }: ProjectCreatorProps): JSX.Element {
   const dispatch = useAppDispatch();
   const i18n = useTranslations();
@@ -125,7 +121,7 @@ export default function ProjectCreator({
       widthMax
       heightMax
       collapsedChildren={
-        <Button className={collapsedButtonClassName} icon={faPlus} clickable={!disabled}>
+        <Button className={collapsedButtonClassName} icon="add">
           {i18n.modules.project.actions.createProject}
         </Button>
       }
@@ -134,10 +130,10 @@ export default function ProjectCreator({
         <Flex
           justify={'flex-end'}
           grow={1}
-          className={css({ padding: space_M, columnGap: space_S })}
+          className={css({ padding: space_lg, columnGap: space_sm })}
         >
           <Button
-            invertedButton
+            variant="outline"
             onClick={() => {
               if (!readOnly) {
                 resetCb();
@@ -149,7 +145,7 @@ export default function ProjectCreator({
           </Button>
 
           {showBackButton && (
-            <Button invertedButton onClick={oneStepBackCb}>
+            <Button variant="outline" onClick={oneStepBackCb}>
               {i18n.common.back}
             </Button>
           )}
@@ -157,7 +153,7 @@ export default function ProjectCreator({
           {showNextButton && <Button onClick={oneStepForwardCb}>{i18n.common.next}</Button>}
 
           {showCreateButton && (
-            <ButtonWithLoader
+            <Button
               onClick={() => {
                 if (!readOnly) {
                   setReadOnly(true);
@@ -195,7 +191,7 @@ export default function ProjectCreator({
               isLoading={isLoading}
             >
               {i18n.modules.project.actions.createProject}
-            </ButtonWithLoader>
+            </Button>
           )}
         </Flex>
       )}

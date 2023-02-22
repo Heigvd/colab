@@ -6,20 +6,14 @@
  */
 
 import { css } from '@emotion/css';
-import {
-  faInfoCircle,
-  faTimes,
-  faWarning,
-  IconDefinition,
-} from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { entityIs, HttpErrorMessage } from 'colab-rest-client';
 import * as React from 'react';
 import useTranslations, { ColabTranslations } from '../../../i18n/I18nContext';
 import { shallowEqual, useAppDispatch, useAppSelector } from '../../../store/hooks';
 import { closeNotification, ColabNotification } from '../../../store/slice/notificationSlice';
-import { space_M, space_S } from '../../styling/style';
+import { space_lg, space_sm } from '../../styling/style';
 import Flex from '../layout/Flex';
+import Icon from '../layout/Icon';
 
 export function prettyPrint(error: unknown, i18n: ColabTranslations): string {
   if (entityIs<'HttpErrorMessage'>(error, 'HttpErrorMessage') || entityIs(error, 'HttpException')) {
@@ -66,12 +60,12 @@ function translateHttpErrorMessage(
 function getBgColor(notification: ColabNotification): string {
   switch (notification.type) {
     case 'INFO':
-      return 'var(--successColor)';
+      return 'var(--success-main)';
     case 'WARN':
-      return 'var(--warningColor)';
+      return 'var(--warning-main)';
     case 'ERROR':
     default:
-      return 'var(--errorColor)';
+      return 'var(--error-main)';
   }
 }
 
@@ -87,15 +81,15 @@ function getTitle(notification: ColabNotification, i18n: ColabTranslations): Rea
   }
 }
 
-function getIcon(notification: ColabNotification): IconDefinition {
+function getIcon(notification: ColabNotification): string {
   switch (notification.type) {
     case 'INFO':
-      return faInfoCircle;
+      return 'info';
     case 'WARN':
-      return faWarning;
+      return 'warning';
     case 'ERROR':
     default:
-      return faTimes;
+      return 'close';
   }
 }
 
@@ -130,7 +124,7 @@ function Notification({ notification, index }: NotificationProps) {
         backgroundColor: 'white',
         borderRadius: '5px',
         overflow: 'hidden',
-        margin: space_S,
+        margin: space_sm,
         minWidth: '30vw',
         maxWidth: '70vw',
         boxShadow: '0px 1px 3px rgba(0, 0, 0, 0.12)',
@@ -148,12 +142,12 @@ function Notification({ notification, index }: NotificationProps) {
         className={css({
           backgroundColor: getBgColor(notification),
           color: 'white',
-          padding: space_M,
+          padding: space_lg,
         })}
       >
-        <FontAwesomeIcon icon={getIcon(notification)} size={'2x'} />
+        <Icon icon={getIcon(notification)} opsz={'lg'} />
       </Flex>
-      <div className={css({ padding: space_M })}>
+      <div className={css({ padding: space_lg })}>
         <h3>{getTitle(notification, i18n)}</h3>
         {prettyPrint(notification.message, i18n)}
       </div>

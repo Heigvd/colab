@@ -9,7 +9,7 @@ import * as React from 'react';
 import useTranslations from '../../../i18n/I18nContext';
 import logger from '../../../logger';
 import OpenGraphLink from '../../common/element/OpenGraphLink';
-import { space_S } from '../../styling/style';
+import { space_sm } from '../../styling/style';
 import markdownToDom from './parser/markdownToDom';
 
 export const colabFlavouredMarkdown = css({
@@ -129,9 +129,9 @@ export default function MarkdownViewer({
   }
 
   return (
-    <div className={cx(css({ p: { margin: space_S + ' 0' } }), colabFlavouredMarkdown, className)}>
+    <div className={cx(css({ p: { margin: space_sm + ' 0' } }), colabFlavouredMarkdown, className)}>
       {md === '' && showEmptiness ? (
-        <p className={css({ color: 'var(--lightGray)' })}>
+        <p className={css({ color: 'var(--divider-main)' })}>
           <i>{i18n.common.empty}</i>
         </p>
       ) : null}

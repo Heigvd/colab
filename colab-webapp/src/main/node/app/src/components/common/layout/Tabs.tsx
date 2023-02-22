@@ -8,7 +8,7 @@ import { css, cx } from '@emotion/css';
 import * as React from 'react';
 import { Route, Routes, useLocation, useNavigate } from 'react-router-dom';
 import useTranslations from '../../../i18n/I18nContext';
-import { space_L, space_M, space_S } from '../../styling/style';
+import { space_lg, space_sm, space_xl } from '../../styling/style';
 import Clickable from './Clickable';
 import Flex from './Flex';
 
@@ -20,12 +20,12 @@ const defaultTabStyle = css({
   flexGrow: 1,
   textAlign: 'center',
   transition: '.2s',
-  padding: space_M,
-  backgroundColor: 'var(--bgColor)',
+  padding: space_lg,
+  backgroundColor: 'var(--bg-primary)',
   cursor: 'pointer',
   borderRadius: '5px 5px 0 0',
-  border: '1px solid var(--lightGray)',
-  marginRight: space_S,
+  border: '1px solid var(--divider-main)',
+  marginRight: space_sm,
   fontSize: '0.9em',
   zIndex: 1,
   marginBottom: '-2px',
@@ -35,7 +35,7 @@ const defaultNotSelectedStyle = cx(
   defaultTabStyle,
   css({
     ':hover': {
-      backgroundColor: 'var(--lightGray)',
+      backgroundColor: 'var(--bg-secondary)',
     },
   }),
 );
@@ -49,10 +49,10 @@ const defaultSelectedStyle = cx(
 );
 
 const defaultBodyStyle = css({
-  padding: space_L,
+  padding: space_xl,
   borderRadius: '0 5px 5px 5px',
-  backgroundColor: 'var(--bgColor)',
-  border: '1px solid var(--lightGray)',
+  backgroundColor: 'var(--bg-primary)',
+  border: '1px solid var(--divider-main)',
   alignSelf: 'stretch',
 });
 
@@ -172,7 +172,7 @@ export default function Tabs({
             return (
               <Clickable
                 key={name}
-                clickableClassName={
+                className={
                   name === selectedTab
                     ? cx(defaultSelectedStyle, tabsClassName, selectedLabelClassName)
                     : cx(defaultNotSelectedStyle, tabsClassName, notselectedLabelClassName)

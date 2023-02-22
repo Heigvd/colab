@@ -6,61 +6,55 @@
  */
 
 import { css, cx } from '@emotion/css';
-import { IconProp, Transform } from '@fortawesome/fontawesome-svg-core';
-import { faCaretDown } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import * as React from 'react';
 import { useEffect, useRef } from 'react';
-import {
-  disabledStyle,
-  iconButton,
-  linkStyle,
-  normalThemeMode,
-  space_S,
-} from '../../styling/style';
+import { disabledStyle, foregroundStyle, p_0, p_sm, space_sm } from '../../styling/style';
 import Flex from './Flex';
+import Icon from './Icon';
 
-export const itemStyle = css({
-  padding: '5px 8px',
-});
-
-const entryStyle = css({
-  display: 'flex',
-  gap: space_S,
-  alignItems: 'center',
-  textDecoration: 'none',
-  color: 'var(--fgColor)',
-  ':focus': {
-    outlineStyle: 'inset',
-  },
-  ':hover': {
-    backgroundColor: '#e6e6e6',
-    color: 'var(--fgColor)',
-  },
-});
-
-const dropDownEntryPadding = css({
-  padding: space_S,
-});
-
-const commonStyle = cx(
-  normalThemeMode,
+export const entryStyle = cx(
+  p_sm,
   css({
-    boxShadow: '0 1px 3px rgba(0,0,0,.12)',
-    transition: 'all 0.3s',
+    display: 'flex',
+    gap: space_sm,
+    alignItems: 'center',
+    textDecoration: 'none',
+    color: 'var(--text-primary)',
+    ':focus': {
+      outlineStyle: 'inset',
+    },
+    ':hover': {
+      backgroundColor: 'var(--bg-secondary)',
+      color: 'var(--text-primary)',
+    },
+  }),
+);
+
+const subDropDownEntryStyle = cx(
+  p_0,
+  css({
+    flexDirection: 'column',
+    alignItems: 'stretch',
+  }),
+);
+
+const ddOptionsBodyStyle = cx(
+  foregroundStyle,
+  css({
+    backgroundColor: 'var(--bg-primary)',
     position: 'fixed',
-    zIndex: 100,
     overflow: 'auto',
     maxHeight: '500px',
     maxWidth: '500px',
     whiteSpace: 'nowrap',
+    border: '1px solid var(--divider-main)',
   }),
 );
 
 const dashStyle = css({
   width: '26px',
   height: '2px',
-  background: '#666',
+  background: 'var(--text-primary)',
   display: 'block',
   position: 'relative',
   transition: 'all .3s ease-in-out',
@@ -312,13 +306,15 @@ export interface Entry<T> {
   label: React.ReactNode;
   action?: () => void;
   disabled?: boolean;
+  subDropDownButton?: boolean;
 }
 
 export interface DropDownMenuProps<T> {
-  icon?: IconProp;
-  layerForIcon?: { layerIcon: IconProp; transform: string | Transform };
+  icon?: string;
+  buttonLabel?: React.ReactNode;
   title?: string;
   menuIcon?: 'BURGER' | 'CARET';
+  showSelectedLabel?: boolean;
   idleHoverStyle?: 'BACKGROUND' | 'FOREGROUND';
   entries: Entry<T>[];
   value?: T;
@@ -326,12 +322,14 @@ export interface DropDownMenuProps<T> {
   height?: string;
   valueComp?: Entry<T>;
   onSelect?: (value: Entry<T>) => void;
+  className?: string;
   buttonClassName?: string;
   dropClassName?: string;
 }
 export default function DropDownMenu<T extends string | number | symbol>({
   icon,
-  layerForIcon,
+  buttonLabel,
+  showSelectedLabel,
   title,
   entries,
   value,
@@ -339,9 +337,9 @@ export default function DropDownMenu<T extends string | number | symbol>({
   onSelect,
   direction = 'down',
   menuIcon,
+  className,
   buttonClassName,
   dropClassName,
-  idleHoverStyle = 'FOREGROUND',
 }: DropDownMenuProps<T>): JSX.Element {
   const [open, setOpen] = React.useState<boolean>(false);
 
@@ -370,61 +368,32 @@ export default function DropDownMenu<T extends string | number | symbol>({
     }
   }, []);
 
-  /* const selectedEntryStyle = cx(
-    invertedThemeMode,
-    css({
-      textDecoration: 'none',
-      color: 'var(--fgColor)',
-      padding: space_S,
-      ':focus': {
-        outlineStyle: 'inset',
-      },
-      ':hover': {
-        backgroundColor: '#e6e6e6',
-        color: 'var(--fgColor)',
-      },
-    }),
-  ); */
-
   if (entries.length > 0) {
     const current =
       valueComp != null ? valueComp : entries.find(entry => entry.value === value) || entries[0]!;
 
     return (
       <div ref={dropRef} onClick={clickIn} className={css({ cursor: 'pointer' })}>
-        <Flex direction="column" className={css({ overflow: 'visible' })}>
+        <Flex direction="column" className={cx(css({ overflow: 'visible' }), className)}>
           <Flex
             align="center"
             title={title}
             onClick={toggle}
-            className={
-              cx(idleHoverStyle === 'BACKGROUND' ? linkStyle : iconButton, buttonClassName || '') +
-              ' dropDownButton'
-            }
+            className={cx(buttonClassName) + ' dropDownButton'}
           >
             {menuIcon === 'BURGER' && (
               <span className={open ? openButtonStyle : buttonStyle}></span>
             )}
-            {icon &&
-              (layerForIcon ? (
-                <span className="fa-layers fa-fw">
-                  <FontAwesomeIcon
-                    icon={layerForIcon.layerIcon}
-                    transform={layerForIcon.transform}
-                  />
-                  <FontAwesomeIcon icon={icon} className={css({ fontSize: '16px' })} />
-                </span>
-              ) : (
-                <FontAwesomeIcon icon={icon} className={css({ fontSize: '16px' })} />
-              ))}
-            {current.label && current.label}
+            {icon && <Icon icon={icon} />}
+            {buttonLabel && buttonLabel}
+            {showSelectedLabel && current.label && current.label}
             {menuIcon === 'CARET' && (
-              <FontAwesomeIcon icon={faCaretDown} className={css({ marginLeft: space_S })} />
+              <Icon icon={'expand_more'} className={css({ marginLeft: space_sm })} />
             )}
           </Flex>
           {open && (
             <div
-              className={commonStyle + (dropClassName || '')}
+              className={ddOptionsBodyStyle + (dropClassName || '')}
               ref={n => {
                 justifyDropMenu(n, n?.parentElement?.querySelector('.dropDownButton'), direction);
               }}
@@ -436,7 +405,9 @@ export default function DropDownMenu<T extends string | number | symbol>({
                     {
                       [disabledStyle]: entry.disabled,
                     },
-                    dropDownEntryPadding,
+                    {
+                      [subDropDownEntryStyle]: entry.subDropDownButton,
+                    },
                   )}
                   key={String(entry.value)}
                   onClick={() => {

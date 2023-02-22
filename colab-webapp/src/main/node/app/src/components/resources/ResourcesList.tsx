@@ -6,15 +6,6 @@
  */
 
 import { css, cx } from '@emotion/css';
-import {
-  faBoxArchive,
-  faCog,
-  faCopy,
-  faEllipsisV,
-  faEye,
-  faTurnDown,
-} from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { entityIs } from 'colab-rest-client';
 import * as React from 'react';
 import * as API from '../../API/api';
@@ -27,13 +18,8 @@ import Tips from '../common/element/Tips';
 import Collapsible from '../common/layout/Collapsible';
 import DropDownMenu from '../common/layout/DropDownMenu';
 import Flex from '../common/layout/Flex';
-import {
-  lightIconButtonStyle,
-  marginAroundStyle,
-  oneLineEllipsis,
-  space_M,
-  space_S,
-} from '../styling/style';
+import Icon from '../common/layout/Icon';
+import { lightIconButtonStyle, oneLineEllipsisStyle, space_lg, space_sm } from '../styling/style';
 import { ResourceCategoryModal } from './ResourceDisplay';
 import {
   getKey,
@@ -175,7 +161,7 @@ function ResourcesListByCategory({
       {Object.keys(listsByCategories)
         .sort()
         .map(category => (
-          <div key={category} className={marginAroundStyle([3], space_S)}>
+          <div key={category}>
             <TocHeader category={category} />
 
             <Flex direction="column" align="stretch">
@@ -198,9 +184,9 @@ function ResourcesListByCategory({
 
 const resourcesStackLabelStyle = css({
   fontWeight: 'bold',
-  backgroundColor: 'var(--hoverBgColor)',
+  backgroundColor: 'var(--bg-secondary)',
   marginTop: 0,
-  paddingLeft: space_M,
+  paddingLeft: space_lg,
   fontSize: '0.8rem',
   textTransform: 'uppercase',
 });
@@ -319,7 +305,7 @@ ResourcesListProps): JSX.Element {
         <></>
       )}
       {bySources['INHERITED'] ? (
-        <div className={marginAroundStyle([3], space_S)}>
+        <div>
           <Collapsible
             label={i18n.modules.resource.info.source.inherited}
             open
@@ -337,7 +323,7 @@ ResourcesListProps): JSX.Element {
         <></>
       )}
       {bySources['PROJECT'] ? (
-        <div className={marginAroundStyle([3], space_S)}>
+        <div>
           <Collapsible
             label={i18n.modules.resource.info.source.project}
             open
@@ -472,18 +458,18 @@ export function ResourcesListBySource({
       {Object.keys(bySources)
         .sort()
         .map(source => (
-          <div key={source} className={marginAroundStyle([3], space_S)}>
+          <div key={source}>
             <Collapsible
               open
               label={
-                <div className={marginAroundStyle([1, 2, 4], space_M)}>
+                <div>
                   <h3
                     className={cx(
                       css({
                         minWidth: '50px',
                         flexGrow: 1,
                       }),
-                      oneLineEllipsis,
+                      oneLineEllipsisStyle,
                     )}
                   >
                     <TargetResourceSummary resource={bySources[source]![0]!} showText="short" />
@@ -543,14 +529,14 @@ function TocHeader({ category }: TocHeaderProps): JSX.Element {
               flexGrow: 1,
               textTransform: 'uppercase',
               marginBottom: 0,
-              marginTop: space_S,
-              marginLeft: space_M,
-              marginRight: space_M,
-              borderBottom: '1px solid var(--lightGray)',
+              marginTop: space_sm,
+              marginLeft: space_lg,
+              marginRight: space_lg,
+              borderBottom: '1px solid var(--divider-main)',
               fontWeight: 'bold',
               fontSize: '0.75rem',
             }),
-            oneLineEllipsis,
+            oneLineEllipsisStyle,
           )}
         >
           {category}
@@ -564,11 +550,10 @@ function TocHeader({ category }: TocHeaderProps): JSX.Element {
 
 const tocEntryStyle = css({
   cursor: 'pointer',
-  //padding: space_S + ' ' + space_M,
-  color: 'var(--pictoGrey)',
+  color: 'var(--text-secondary)',
   '&:hover': {
-    backgroundColor: 'var(--hoverBgColor)',
-    color: 'var(--fgColor)',
+    backgroundColor: 'var(--bg-secondary)',
+    color: 'var(--text-primary)',
   },
 });
 
@@ -622,9 +607,9 @@ function TocEntry({
             }}
             grow={1}
             className={cx(
-              css({ padding: '3px ' + space_M }),
-              { [css({ color: 'var(--darkGray)' })]: effectiveReadOnly },
-              { [css({ color: 'var(--darkGray)' })]: !effectiveReadOnly },
+              css({ padding: '3px ' + space_lg }),
+              { [css({ color: 'var(--secondary-main)' })]: effectiveReadOnly },
+              { [css({ color: 'var(--secondary-main)' })]: !effectiveReadOnly },
             )}
           >
             <div
@@ -633,23 +618,23 @@ function TocEntry({
                   minWidth: '50px',
                   flexGrow: 1,
                 }),
-                oneLineEllipsis,
+                oneLineEllipsisStyle,
               )}
             >
               {effectiveReadOnly && (
-                <FontAwesomeIcon
-                  icon={faEye}
-                  size="xs"
+                <Icon
+                  icon={'visibility'}
+                  opsz="xs"
                   className={css({ marginRight: '3px' })}
-                  color="var(--lightGray)"
+                  color="var(--divider-main)"
                 />
               )}
               {resource.targetResource.published && resource.isDirectResource && (
-                <FontAwesomeIcon
-                  icon={faTurnDown}
-                  size="xs"
+                <Icon
+                  icon={'subdirectory_arrow_right'}
+                  opsz="xs"
                   className={css({ marginRight: '3px' })}
-                  color="var(--lightGray)"
+                  color="var(--divider-main)"
                 />
               )}
               {/* {showLocationIcon && (
@@ -704,7 +689,7 @@ function TocEntry({
                 (resource.targetResource.cardId != null &&
                   entityIs(rootCard, 'Card') &&
                   resource.targetResource.cardId === rootCard.id)) && (
-                <FontAwesomeIcon
+                 <Icon
                   icon={faPersonDigging}
                   title={i18n.modules.resource.unpublishedInfoType}
                   className={iconStyle}
@@ -712,16 +697,16 @@ function TocEntry({
               )} */}
 
             {/* {nbDocs < 1 && (
-              <FontAwesomeIcon
-                icon={faMinus}
+               <Icon
+                icon={'remove'}
                 title={i18n.modules.resource.info.noContent}
                 className={iconStyle}
               />
             )} */}
             <DropDownMenu
-              icon={faEllipsisV}
+              icon={'more_vert'}
               valueComp={{ value: '', label: '' }}
-              buttonClassName={cx(lightIconButtonStyle, css({ marginLeft: space_S }))}
+              buttonClassName={cx(lightIconButtonStyle, css({ marginLeft: space_sm }))}
               entries={[
                 ...(!effectiveReadOnly && resource.isDirectResource
                   ? [
@@ -729,7 +714,7 @@ function TocEntry({
                         value: 'categorySelector',
                         label: (
                           <>
-                            <FontAwesomeIcon icon={faCog} /> {i18n.modules.resource.category}
+                            <Icon icon={'settings'} /> {i18n.modules.resource.category}
                           </>
                         ),
                         action: () => setCategorySelector(true),
@@ -742,7 +727,7 @@ function TocEntry({
                         value: 'publishStatus',
                         label: (
                           <>
-                            <FontAwesomeIcon icon={faTurnDown} />
+                            <Icon icon={'subdirectory_arrow_right'} />
                             {resource.targetResource.published
                               ? i18n.modules.resource.actions.makePrivate
                               : i18n.modules.resource.actions.shareWithChildren}
@@ -766,7 +751,7 @@ function TocEntry({
                         value: 'ownCopy',
                         label: (
                           <>
-                            <FontAwesomeIcon icon={faCopy} />{' '}
+                            <Icon icon={'content_copy'} />{' '}
                             {i18n.modules.resource.actions.makeOwnCopy}
                           </>
                         ),
@@ -792,7 +777,7 @@ function TocEntry({
                         value: 'remove',
                         label: (
                           <>
-                            <FontAwesomeIcon icon={faBoxArchive} /> {i18n.common.remove}
+                            <Icon icon={'inventory_2'} /> {i18n.common.remove}
                           </>
                         ),
                         action: () => {

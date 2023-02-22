@@ -6,7 +6,6 @@
  */
 
 import { css } from '@emotion/css';
-import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import * as React from 'react';
 import * as API from '../../API/api';
 import useTranslations from '../../i18n/I18nContext';
@@ -15,7 +14,7 @@ import Button from '../common/element/Button';
 import Form, { Field } from '../common/element/Form';
 import IconButton from '../common/element/IconButton';
 import OpenCloseModal from '../common/layout/OpenCloseModal';
-import { lightIconButtonStyle, space_M } from '../styling/style';
+import { lightIconButtonStyle, space_lg } from '../styling/style';
 import { ResourcesCtx } from './ResourcesMainView';
 
 interface ResourceCreationType {
@@ -127,7 +126,7 @@ export default function ResourceCreator({ customButton }: ResourceCreatorProps):
           customButton
         ) : (
           <IconButton
-            icon={faPlus}
+            icon={'add'}
             title={i18n.modules.document.createDocument}
             className={lightIconButtonStyle}
           />
@@ -149,7 +148,7 @@ export default function ResourceCreator({ customButton }: ResourceCreatorProps):
             justifyContent: 'end',
           })}
         >
-          <Button onClick={close} invertedButton className={css({ margin: space_M })}>
+          <Button onClick={close} variant="outline" className={css({ margin: space_lg })}>
             {i18n.common.cancel}
           </Button>
         </Form>

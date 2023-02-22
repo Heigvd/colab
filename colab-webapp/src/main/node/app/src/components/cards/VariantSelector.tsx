@@ -6,7 +6,6 @@
  */
 
 import { css, cx } from '@emotion/css';
-import { faCaretLeft, faCaretRight } from '@fortawesome/free-solid-svg-icons';
 import { Card, CardContent } from 'colab-rest-client';
 import * as React from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -15,8 +14,9 @@ import { useVariantsOrLoad } from '../../selectors/cardSelector';
 import IconButton from '../common/element/IconButton';
 import InlineLoading from '../common/element/InlineLoading';
 import Flex from '../common/layout/Flex';
+import Icon from '../common/layout/Icon';
 import { useDefaultVariant } from '../projects/edition/Editor';
-import { paddingAroundStyle, space_S } from '../styling/style';
+import { p_xs, space_sm } from '../styling/style';
 
 interface VariantSelectorProps {
   card: Card;
@@ -49,14 +49,15 @@ export const computeNav = (
 
 const arrowStyle = cx(
   'VariantPagerArrow',
+  p_xs,
   css({
     alignSelf: 'center',
     position: 'absolute',
     top: '50%',
     transform: 'translateY(-50%)',
     alignItems: 'center',
-    padding: space_S,
     zIndex: 10,
+    color: 'var(--transparent)',
   }),
 );
 
@@ -71,7 +72,7 @@ const variantSelectorStyle = (depth?: number) => {
   switch (depth) {
     case 0:
       return css({
-        margin: space_S,
+        margin: space_sm,
       });
     case 1:
       return css({
@@ -99,31 +100,27 @@ export default function VariantSelector({
   } else if (defaultVariant === 'LOADING') {
     return <InlineLoading />;
   } else {
-    //    const cardId = card.id;
     const variantPager = computeNav(contents, displayedVariantId || defaultVariant.id);
 
     return (
       <div
         className={cx(
           css({
-            //margin: space_M,
             display: 'flex',
             flexGrow: 1,
             position: 'relative',
-            //minWidth: '120px',
             '& > div': {
               flexGrow: 1,
             },
             '&:hover > .VariantPagerArrow': {
               backgroundColor: 'rgba(0, 0, 0, 0.08)',
               cursor: 'pointer',
+              color: 'var(--text-primary)',
             },
             '&:hover > .VariantPagerArrow:active': {
               backgroundColor: 'rgba(0, 0, 0, 0.15)',
             },
-            '&:hover > .VariantPagerArrow path': {
-              color: 'grey',
-            },
+            overflow: 'hidden',
           }),
           variantSelectorStyle(depth),
           className,
@@ -146,18 +143,7 @@ export default function VariantSelector({
             }
           }}
         >
-          <IconButton
-            className={paddingAroundStyle([2, 4], '3px')}
-            /* className={
-            variantPager != null && variantPager.previous != variantPager.current
-              ? arrowStyle
-              : invisible
-          } */
-            icon={faCaretLeft}
-            iconSize="1x"
-            iconColor="transparent"
-            title={variantPager?.previous.title || ''}
-          />
+          <Icon icon={'chevron_left'} title={variantPager?.previous.title || ''} />
         </Flex>
         {children(variantPager?.current, contents || [])}
         <Flex
@@ -177,18 +163,7 @@ export default function VariantSelector({
             }
           }}
         >
-          <IconButton
-            /* className={
-            variantPager != null && variantPager.next != variantPager.current
-              ? arrowStyle
-              : invisible
-          } */
-            className={paddingAroundStyle([2, 4], '3px')}
-            icon={faCaretRight}
-            iconSize="1x"
-            iconColor="transparent"
-            title={variantPager?.next.title || ''}
-          />
+          <Icon icon={'chevron_right'} title={variantPager?.next.title || ''} />
         </Flex>
       </div>
     );
@@ -219,13 +194,16 @@ export function VariantPager({ card, current }: PagerProps): JSX.Element {
 
   if (card.id == null) {
     return <i>{i18n.modules.card.error.withoutId}</i>;
-  } else {
+  } else if (variantPager === null || variantPager.length === 1) {
+    return <></>;
+  }
+  {
     return (
-      <Flex justify="center" className={css({ marginTop: space_S })}>
+      <Flex justify="center" className={css({ marginTop: space_sm })}>
         <Flex basis="1px" grow={1} justify="center" className={css({ fontSize: '0.9em' })}>
           {variantPager != null && variantPager.previous != variantPager.current ? (
             <IconButton
-              icon={faCaretLeft}
+              icon={'chevron_left'}
               iconSize="lg"
               title={variantPager.previous.title || ''}
               onClick={() => {
@@ -242,7 +220,7 @@ export function VariantPager({ card, current }: PagerProps): JSX.Element {
 
           {variantPager != null && variantPager.next != variantPager.current ? (
             <IconButton
-              icon={faCaretRight}
+              icon={'chevron_right'}
               iconSize="lg"
               title={variantPager.next.title || ''}
               onClick={() => {

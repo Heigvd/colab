@@ -10,32 +10,24 @@ import * as React from 'react';
 import useTranslations from '../../../../i18n/I18nContext';
 import Checkbox from '../../../common/element/Checkbox';
 import Flex from '../../../common/layout/Flex';
-import {
-  borderRadius,
-  lightLinkStyle,
-  lightTheme,
-  noOutlineStyle,
-  space_S,
-} from '../../../styling/style';
+import { lightLinkStyle, removeOutlineStyle, space_sm } from '../../../styling/style';
 
 const tagStyle = cx(
-  lightTheme,
   css({
-    padding: '0 ' + space_S,
-    color: 'var(--darkGray)',
-    margin: space_S,
-    borderRadius: borderRadius,
-    border: '1px solid var(--darkGray)',
+    padding: '0 ' + space_sm,
+    color: 'var(--secondary-main)',
+    margin: space_sm,
+    border: '1px solid var(--secondary-main)',
     userSelect: 'none',
     fontSize: '0.9em',
   }),
 );
 
 const checkedTagStyle = css({
-  backgroundColor: 'var(--darkGray)',
-  color: 'var(--primaryColorContrast)',
+  backgroundColor: 'var(--secondary-main)',
+  color: 'var(--primary-contrast)',
   '&:hover': {
-    color: 'var(--primaryColorContrast)',
+    color: 'var(--primary-contrast)',
   },
 });
 
@@ -89,7 +81,7 @@ export default function TagsFilter({
                       label={tag}
                       value={tagsState[tag]}
                       onChange={value => onChange(tag, value)}
-                      className={cx(noOutlineStyle, {
+                      className={cx(removeOutlineStyle, {
                         [checkedTagStyle]: tagsState[tag],
                       })}
                     />

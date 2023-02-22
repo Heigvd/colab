@@ -12,7 +12,7 @@ import { debounce } from 'lodash';
 import * as React from 'react';
 import * as API from '../../API/api';
 import { useAppDispatch } from '../../store/hooks';
-import { borderRadius, space_S, successColor } from '../styling/style';
+import { space_sm } from '../styling/style';
 
 interface CompletionEditorProps {
   variant: CardContent;
@@ -66,26 +66,26 @@ export default function CompletionEditor({ variant }: CompletionEditorProps): JS
         cursor="pointer"
         className={css({ height: '20px', padding: '0px !important' })}
       >
-        <SliderTrack height={'20px'} bg="#bbb">
+        <SliderTrack height={'20px'} bg="var(--bg-secondary)">
           <SliderFilledTrack
-            className={css({ backgroundColor: 'var(--successColor)', height: '100%' })}
+            className={css({ backgroundColor: 'var(--green-200)', height: '100%' })}
           />
         </SliderTrack>
         <Tooltip
           hasArrow
           placement="top"
           color="white"
-          bg={successColor}
+          bg={'var(--success-main)'}
           isOpen={showTooltip}
           label={`${value}%`}
-          className={css({ padding: space_S, borderRadius: borderRadius })}
+          className={css({ padding: space_sm })}
         >
           <SliderThumb
             height="20px"
             width="20px"
             borderRadius={'50%'}
             className={css({
-              backgroundColor: showTooltip ? 'var(--bgColor)' : 'transparent',
+              backgroundColor: showTooltip ? 'var(--bg-primary)' : 'transparent',
               '&:focus-visible': { outline: 'none' },
             })}
           />

@@ -6,12 +6,11 @@
  */
 
 import { ClassNamesArg, css, cx } from '@emotion/css';
-import { faBan } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { GridPosition } from 'colab-rest-client';
 import { isEqual } from 'lodash';
 import * as React from 'react';
 import { getLogger } from '../../logger';
+import Icon from './layout/Icon';
 
 const logger = getLogger('GridOrganizer');
 
@@ -566,12 +565,7 @@ function TmpCellDisplay<T>({
       {realCell && <div className={backgroundStyle}>{background(realCell)}</div>}
       <div className={tmpOverlayStyle}>
         {invalid && (
-          <FontAwesomeIcon
-            className={invalidIconStyle}
-            size="2x"
-            icon={faBan}
-            color={'var(--errorColor)'}
-          />
+          <Icon className={invalidIconStyle} opsz="lg" icon={'block'} color={'var(--error-main)'} />
         )}
       </div>
     </div>

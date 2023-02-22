@@ -5,13 +5,7 @@
  * Licensed under the MIT License
  */
 
-import {
-  faBook,
-  faGlobe,
-  faSitemap,
-  faTableColumns,
-  IconName,
-} from '@fortawesome/free-solid-svg-icons';
+import { IconName } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { entityIs } from 'colab-rest-client';
 import * as React from 'react';
@@ -21,6 +15,7 @@ import { useAndLoadCardType } from '../../../selectors/cardTypeSelector';
 import { useCurrentProject, useProject } from '../../../selectors/projectSelector';
 import { useAppSelector } from '../../../store/hooks';
 import { referenceIcon } from '../../cards/cardtypes/summary/TargetCardTypeSummary';
+import Icon from '../../common/layout/Icon';
 
 import { ResourceAndRef } from '../resourcesCommonType';
 
@@ -56,7 +51,7 @@ export function ProvidedByCardType({
 
   const { project } = useProject(projectId || 0); // TODO Sandra 01.2023 : avoid || 0
 
-  let icon = <FontAwesomeIcon icon={referenceIcon} />;
+  let icon = <Icon icon={referenceIcon} />;
 
   const cardTypeName = (cardType && cardType.title) || '';
   let fullText = '';
@@ -67,10 +62,10 @@ export function ProvidedByCardType({
     fullText = i18n.modules.resource.info.providedByGlobalCardType(cardTypeName);
 
     icon = (
-      <FontAwesomeIcon
+      <Icon
         className={iconClassName}
-        icon={faGlobe}
-        color={'var(--secondaryColor)'}
+        icon={'language'}
+        color={'var(--primary-main)'}
         title={showText !== 'full' ? fullText : undefined}
       />
     );
@@ -91,7 +86,7 @@ export function ProvidedByCardType({
               }
             : referenceIcon
         }
-        color={project?.illustration ? project.illustration.iconBkgdColor : 'var(--lightGray)'}
+        color={project?.illustration ? project.illustration.iconBkgdColor : 'var(--divider-main)'}
         title={showText !== 'full' ? fullText : undefined}
       />
     );
@@ -101,8 +96,8 @@ export function ProvidedByCardType({
       : i18n.modules.resource.info.providedByCardType(cardTypeName);
 
     icon = (
-      <FontAwesomeIcon
-        icon={faBook}
+      <Icon
+        icon={'menu_book'}
         className={iconClassName}
         title={showText !== 'full' ? fullText : undefined}
       />
@@ -160,12 +155,12 @@ export function ProvidedByCard({
             }
           : referenceIcon
       }
-      color={project?.illustration ? project.illustration.iconBkgdColor : 'var(--lightGray)'}
+      color={project?.illustration ? project.illustration.iconBkgdColor : 'var(--divider-main)'}
       title={showText !== 'full' ? fullText : undefined}
     />
   ) : (
-    <FontAwesomeIcon
-      icon={direct ? faTableColumns : faSitemap}
+    <Icon
+      icon={direct ? 'table_rows' : 'my_location'}
       className={iconClassName}
       title={showText !== 'full' ? fullText : undefined}
     />
@@ -210,8 +205,8 @@ export function ProvidedByCardContent({
     : i18n.modules.resource.info.providedByUpperCard(name);
   const shortText = name;
   const icon = (
-    <FontAwesomeIcon
-      icon={direct ? faTableColumns : faSitemap}
+    <Icon
+      icon={direct ? 'table_rows' : 'my_location'}
       title={showText !== 'full' ? fullText : undefined}
       className={iconClassName}
     />

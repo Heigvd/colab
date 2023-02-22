@@ -21,7 +21,7 @@ import Flex from '../common/layout/Flex';
 import Loading from '../common/layout/Loading';
 import Overlay from '../common/layout/Overlay';
 import { prettyPrint } from '../common/toplevel/Notifier';
-import { space_M } from '../styling/style';
+import { space_lg } from '../styling/style';
 
 interface TokenProps {
   tokenId: string | undefined;
@@ -162,7 +162,7 @@ export default function Token(props: TokenProps): JSX.Element {
         <Flex direction="column">
           <h3>{i18n.authentication.error.invalidLink}</h3>
           <p>{i18n.authentication.error.pleaseRefresh}</p>
-          <Button onClick={() => navigate('../')} className={css({ marginTop: space_M })}>
+          <Button onClick={() => navigate('../')} className={css({ marginTop: space_lg })}>
             {i18n.common.action.backToHome}
           </Button>
         </Flex>
@@ -178,7 +178,7 @@ export default function Token(props: TokenProps): JSX.Element {
           ) : (
             <p>{i18n.authentication.error.pleaseRefresh}</p>
           )}
-          <Button onClick={() => navigate('../')} className={css({ marginTop: space_M })}>
+          <Button onClick={() => navigate('../')} className={css({ marginTop: space_lg })}>
             {i18n.common.action.backToHome}
           </Button>
         </Flex>

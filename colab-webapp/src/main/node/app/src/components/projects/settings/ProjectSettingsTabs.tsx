@@ -14,7 +14,7 @@ import { useCurrentUser } from '../../../selectors/userSelector';
 import AvailabilityStatusIndicator from '../../common/element/AvailabilityStatusIndicator';
 import Flex from '../../common/layout/Flex';
 import Tabs, { Tab } from '../../common/layout/Tabs';
-import { space_L } from '../../styling/style';
+import { space_xl } from '../../styling/style';
 import ProjectSettingsAdvanced from './ProjectSettingsAdvanced';
 import ProjectSettingsGeneral from './ProjectSettingsGeneral';
 import ProjectSettingsModelSharing from './ProjectSettingsSharing';
@@ -39,7 +39,7 @@ export function ProjectSettingsTabs({ projectId }: ProjectSettingsTabsProps): JS
       align="stretch"
       direction="column"
       grow={1}
-      className={css({ alignSelf: 'stretch', padding: space_L })}
+      className={css({ alignSelf: 'stretch', padding: space_xl })}
     >
       <Tabs routed>
         <Tab name="general" label={i18n.common.general}>

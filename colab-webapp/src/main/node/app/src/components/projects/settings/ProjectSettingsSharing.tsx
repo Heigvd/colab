@@ -5,7 +5,7 @@
  * Licensed under the MIT License
  */
 
-import { css, cx } from '@emotion/css';
+import { css } from '@emotion/css';
 import * as React from 'react';
 import * as API from '../../../API/api';
 import useTranslations from '../../../i18n/I18nContext';
@@ -16,8 +16,8 @@ import Button from '../../common/element/Button';
 import Checkbox from '../../common/element/Checkbox';
 import Flex from '../../common/layout/Flex';
 import OpenCloseModal from '../../common/layout/OpenCloseModal';
-import { paddedContainerStyle, space_L, space_M } from '../../styling/style';
-import ProjectModelSharing from '../ProjectModelSharing';
+import { space_lg, space_xl } from '../../styling/style';
+import ProjectModelSharing from '../models/ProjectModelSharing';
 
 export interface ProjectSettingsModelSharingProps {
   projectId: number;
@@ -40,15 +40,13 @@ export default function ProjectSettingsModelSharing({
         <Flex
           direction="column"
           align="stretch"
-          className={css({ width: '45%', minWidth: '45%', marginRight: space_L })}
+          className={css({ width: '45%', minWidth: '45%', marginRight: space_xl })}
         >
           <div>
             <OpenCloseModal
               title={i18n.modules.project.labels.shareTheProject}
-              collapsedChildren={
-                <Button clickable>+ {i18n.modules.project.labels.shareTheProject}</Button>
-              }
-              modalBodyClassName={css({ padding: space_M })}
+              collapsedChildren={<Button>+ {i18n.modules.project.labels.shareTheProject}</Button>}
+              modalBodyClassName={css({ padding: space_lg })}
               showCloseButton
             >
               {close => (
@@ -87,7 +85,7 @@ function SharingParams({ projectId }: SharingParamsProps): JSX.Element {
   return (
     <>
       <h2>{i18n.modules.project.labels.sharingParams}</h2>
-      <Flex direction="column" className={cx(paddedContainerStyle)}>
+      <Flex direction="column">
         <h3>{i18n.modules.project.labels.include}</h3>
         <Checkbox
           value={copyParam.withRoles || undefined}

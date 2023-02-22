@@ -4,9 +4,7 @@
  *
  * Licensed under the MIT License
  */
-import { css, cx } from '@emotion/css';
-import { faSkullCrossbones } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { css } from '@emotion/css';
 import * as React from 'react';
 import { Navigate, Route, Routes, useLocation, useParams } from 'react-router-dom';
 import * as API from '../API/api';
@@ -21,14 +19,15 @@ import ResetPasswordSent from './authentication/ResetPasswordSent';
 import SignInForm from './authentication/SignIn';
 import SignUpForm from './authentication/SignUp';
 import InlineLoading from './common/element/InlineLoading';
+import Flex from './common/layout/Flex';
+import Icon from './common/layout/Icon';
 import Loading from './common/layout/Loading';
 import Overlay from './common/layout/Overlay';
 import MainNav from './MainNav';
 import Editor from './projects/edition/Editor';
-import NewModelShared from './projects/NewModelShared';
+import NewModelShared from './projects/models/NewModelShared';
 import { MyModels, MyProjects } from './projects/ProjectList';
 import Settings from './settings/Settings';
-import { fullPageStyle, invertedThemeMode, space_M } from './styling/style';
 
 const EditorWrapper = () => {
   const { id: sId } = useParams<'id'>();
@@ -58,17 +57,17 @@ const EditorWrapper = () => {
   }, [dispatch, editingStatus, editedProject, project, id, webSocketId]);
 
   if (status === 'NOT_INITIALIZED' || status === 'LOADING') {
-    return <InlineLoading />;
+    return <Loading />;
   } else if (project == null || status === 'ERROR') {
     return (
       <div>
-        <FontAwesomeIcon icon={faSkullCrossbones} />
+        <Icon icon={'skull'} />
         <span> {i18n.modules.project.info.noProject}</span>
       </div>
     );
   } else {
     if (editingStatus === 'NOT_EDITING' || (editedProject != null && editedProject.id !== +id)) {
-      return <InlineLoading />;
+      return <Loading />;
     } else {
       return <Editor />;
     }
@@ -101,7 +100,7 @@ export default function MainApp(): JSX.Element {
   const reconnecting = socketId == null && (
     <Overlay
       backgroundStyle={css({
-        backgroundColor: '#dfdfdfC0',
+        backgroundColor: 'var(--blackWhite-700)',
         userSelect: 'none',
       })}
     >
@@ -110,10 +109,10 @@ export default function MainApp(): JSX.Element {
           display: 'flex',
           alignItems: 'center',
           flexDirection: 'column',
+          justifyContent: 'center',
         })}
       >
-        <InlineLoading colour={true} size="50px" />{' '}
-        <span>{i18n.authentication.info.reconnecting}</span>
+        <InlineLoading size="50px" /> <span>{i18n.authentication.info.reconnecting}</span>
       </div>
     </Overlay>
   );
@@ -151,28 +150,14 @@ export default function MainApp(): JSX.Element {
             path="*"
             element={
               <>
-                <div className={fullPageStyle}>
-                  <div
-                    className={cx(
-                      invertedThemeMode,
-                      css({
-                        display: 'flex',
-                        flexDirection: 'row',
-                        alignItems: 'center',
-                        boxSizing: 'border-box',
-                        padding: '0 ' + space_M,
-                      }),
-                    )}
-                  >
-                    <MainNav />
-                  </div>
-
-                  <div
+                <Flex direction="column" align="stretch" className={css({ height: '100vh' })}>
+                  <MainNav />
+                  <Flex
+                    direction="column"
+                    align="stretch"
                     className={css({
                       flexGrow: 1,
                       overflowY: 'auto',
-                      display: 'flex',
-                      flexDirection: 'column',
                       '& > *': {
                         flexGrow: 1,
                       },
@@ -185,7 +170,7 @@ export default function MainApp(): JSX.Element {
                       <Route path="/models/*" element={<MyModels />} />
                       <Route path="/settings/*" element={<Settings />} />
                       <Route path="/admin/*" element={<Admin />} />
-                      <Route path="/editor/:id/*" element={<EditorWrapper />} />
+                      {/* <Route path="/editor/:id/*" element={<EditorWrapper />} /> */}
                       <Route
                         element={
                           /* no matching route, redirect to projects */
@@ -193,8 +178,8 @@ export default function MainApp(): JSX.Element {
                         }
                       />
                     </Routes>
-                  </div>
-                </div>
+                  </Flex>
+                </Flex>
               </>
             }
           />

@@ -7,9 +7,8 @@
 import { css, cx } from '@emotion/css';
 import * as React from 'react';
 import useTranslations from '../../../i18n/I18nContext';
-import { errorColor, space_M } from '../../styling/style';
+import { space_lg } from '../../styling/style';
 import Button from '../element/Button';
-import ButtonWithLoader from '../element/ButtonWithLoader';
 import Flex from './Flex';
 import Modal from './Modal';
 import OpenCloseModal from './OpenCloseModal';
@@ -33,7 +32,7 @@ export function ConfirmDelete({
 }: ConfirmDeleteProps): JSX.Element {
   const i18n = useTranslations();
 
-  const mainButtonRef = React.useRef<HTMLSpanElement>(null);
+  const mainButtonRef = React.useRef<HTMLButtonElement>(null);
   React.useEffect(() => {
     mainButtonRef.current?.focus();
   }, []);
@@ -42,21 +41,21 @@ export function ConfirmDelete({
     <Flex direction="column" align="stretch" grow={1}>
       {message}
       <Flex justify="flex-end">
-        <Button onClick={() => onCancel()} invertedButton>
+        <Button onClick={() => onCancel()} variant="outline">
           {cancelButtonLabel ? cancelButtonLabel : i18n.common.cancel}
         </Button>
-        <ButtonWithLoader
+        <Button
           ref={mainButtonRef}
           title={confirmButtonLabel ? confirmButtonLabel : i18n.common.delete}
           onClick={onConfirm}
           className={css({
-            backgroundColor: errorColor,
-            marginLeft: space_M,
+            backgroundColor: 'var(--error-main)',
+            marginLeft: space_lg,
           })}
           isLoading={isConfirmButtonLoading}
         >
           {confirmButtonLabel ? confirmButtonLabel : i18n.common.delete}
-        </ButtonWithLoader>
+        </Button>
       </Flex>
     </Flex>
   );

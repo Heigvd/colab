@@ -6,7 +6,6 @@
  */
 
 import { css, cx } from '@emotion/css';
-import { faTrash } from '@fortawesome/free-solid-svg-icons';
 import { User } from 'colab-rest-client';
 import * as React from 'react';
 import * as API from '../../API/api';
@@ -16,7 +15,7 @@ import { useAppDispatch } from '../../store/hooks';
 import { categoryTabStyle } from '../common/collection/FilterableList';
 import Button from '../common/element/Button';
 import InlineLoading from '../common/element/InlineLoading';
-import { space_S } from '../styling/style';
+import { space_sm } from '../styling/style';
 
 interface UserProfileProps {
   user: User;
@@ -40,12 +39,12 @@ export default function UserProfile({ user }: UserProfileProps): JSX.Element {
                     #{s.id} ({i18n.common.datetime(s.lastSeen)})
                   </span>
                   {s.userAgent != navigator.userAgent ? (
-                    <Button icon={faTrash} onClick={() => dispatch(API.forceLogout(s))} />
+                    <Button icon={'delete'} onClick={() => dispatch(API.forceLogout(s))} />
                   ) : (
                     <div
                       className={cx(
                         categoryTabStyle,
-                        css({ display: 'inline-block', marginLeft: space_S }),
+                        css({ display: 'inline-block', marginLeft: space_sm }),
                       )}
                     >
                       {i18n.user.current}

@@ -6,8 +6,6 @@
  */
 
 import { css } from '@emotion/css';
-import { faSave } from '@fortawesome/free-regular-svg-icons';
-import { faTimes } from '@fortawesome/free-solid-svg-icons';
 import * as React from 'react';
 import PasswordStrengthBar from 'react-password-strength-bar';
 import { updateLocalAccountPassword } from '../../API/api';
@@ -17,7 +15,7 @@ import PasswordFeedbackDisplay from '../authentication/PasswordFeedbackDisplay';
 import Button from '../common/element/Button';
 import { PasswordScore } from '../common/element/Form';
 import IconButton from '../common/element/IconButton';
-import { space_S } from '../styling/style';
+import { space_sm } from '../styling/style';
 
 export interface LocalAccountProps {
   accountId: number;
@@ -47,8 +45,8 @@ export default function LocalAccount(props: LocalAccountProps): JSX.Element {
         <div>
           {pwState === 'SET' ? (
             <Button
-              invertedButton
-              className={css({ display: 'block', marginTop: space_S })}
+              variant="outline"
+              className={css({ display: 'block', marginTop: space_sm })}
               onClick={() => {
                 setPwState('CHANGE_PASSWORD');
               }}
@@ -78,7 +76,7 @@ export default function LocalAccount(props: LocalAccountProps): JSX.Element {
               </label>
 
               <IconButton
-                icon={faTimes}
+                icon={'close'}
                 title={i18n.common.close}
                 onClick={() => {
                   setPwState('SET');
@@ -87,7 +85,7 @@ export default function LocalAccount(props: LocalAccountProps): JSX.Element {
               />
 
               <IconButton
-                icon={faSave}
+                icon={'save'}
                 onClick={() => {
                   dispatch(
                     updateLocalAccountPassword({

@@ -6,8 +6,6 @@
  */
 
 import { css, cx } from '@emotion/css';
-import { faArrowLeft, faTrash } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import * as React from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import Creatable from 'react-select/creatable';
@@ -29,6 +27,7 @@ import Tips from '../../common/element/Tips';
 import Toggler from '../../common/element/Toggler';
 import ConfirmDeleteOpenCloseModal from '../../common/layout/ConfirmDeleteModal';
 import Flex from '../../common/layout/Flex';
+import Icon from '../../common/layout/Icon';
 import { DocTextWrapper } from '../../documents/DocTextItem';
 import { ResourceAndRef, ResourceOwnership } from '../../resources/resourcesCommonType';
 import {
@@ -36,7 +35,7 @@ import {
   ResourcesMainViewHeader,
   ResourcesMainViewPanel,
 } from '../../resources/ResourcesMainView';
-import { cardStyle, errorColor, localTitleStyle, space_M, space_S } from '../../styling/style';
+import { cardStyle, space_lg, space_sm } from '../../styling/style';
 
 interface CardTypeEditorProps {
   className?: string;
@@ -80,11 +79,11 @@ export default function CardTypeEditor({ className, usage }: CardTypeEditorProps
         className={cx(css({ alignSelf: 'stretch' }), className)}
       >
         <IconButton
-          icon={faArrowLeft}
+          icon={'arrow_back'}
           title={i18n.modules.cardType.route.backToCardType}
-          iconColor="var(--darkGray)"
+          iconColor="var(--secondary-main)"
           onClick={() => navigate('../')}
-          className={css({ display: 'block', marginBottom: space_M })}
+          className={css({ display: 'block', marginBottom: space_lg })}
         />
         <Flex
           grow={1}
@@ -110,8 +109,8 @@ export default function CardTypeEditor({ className, usage }: CardTypeEditorProps
             <Flex
               justify="space-between"
               className={css({
-                paddingBottom: space_S,
-                borderBottom: '1px solid var(--lightGray)',
+                paddingBottom: space_sm,
+                borderBottom: '1px solid var(--divider-main)',
               })}
             >
               <DiscreetInput
@@ -120,11 +119,10 @@ export default function CardTypeEditor({ className, usage }: CardTypeEditorProps
                 onChange={newValue =>
                   dispatch(API.updateCardTypeTitle({ ...cardType, title: newValue }))
                 }
-                inputDisplayClassName={localTitleStyle}
               />
             </Flex>
             <Flex direction="column" grow={1} align="stretch">
-              <Flex className={css({ margin: space_M + ' 0' })} direction="column" align="stretch">
+              <Flex className={css({ margin: space_lg + ' 0' })} direction="column" align="stretch">
                 <DocTextWrapper id={cardType.purposeId}>
                   {text => (
                     <LabeledTextArea
@@ -153,7 +151,7 @@ export default function CardTypeEditor({ className, usage }: CardTypeEditorProps
                 className={css({
                   alignSelf: 'flex-start',
                   minWidth: '40%',
-                  margin: space_S + ' 0',
+                  margin: space_sm + ' 0',
                 })}
               >
                 <Creatable
@@ -202,11 +200,12 @@ export default function CardTypeEditor({ className, usage }: CardTypeEditorProps
                 title={i18n.modules.cardType.action.deleteType}
                 buttonLabel={
                   <Button
-                    invertedButton
-                    className={cx(css({ color: errorColor, borderColor: errorColor }))}
-                    clickable
+                    variant="outline"
+                    className={cx(
+                      css({ color: 'var(--error-main)', borderColor: 'var(--error-main)' }),
+                    )}
                   >
-                    <FontAwesomeIcon icon={faTrash} /> {i18n.common.delete}
+                    <Icon icon={'delete'} /> {i18n.common.delete}
                   </Button>
                 }
                 className={css({
@@ -238,9 +237,9 @@ export default function CardTypeEditor({ className, usage }: CardTypeEditorProps
             direction="column"
             align="stretch"
             className={css({
-              borderLeft: '1px solid var(--lightGray)',
+              borderLeft: '1px solid var(--divider-main)',
               width: '50%',
-              padding: space_S,
+              padding: space_sm,
             })}
           >
             <ResourcesCtx.Provider

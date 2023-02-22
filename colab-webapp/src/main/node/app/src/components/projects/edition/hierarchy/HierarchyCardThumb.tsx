@@ -15,7 +15,7 @@ import { useAppDispatch, useAppSelector } from '../../../../store/hooks';
 import { ProgressBar } from '../../../cards/CardLayout';
 import InlineLoading from '../../../common/element/InlineLoading';
 import Flex from '../../../common/layout/Flex';
-import { cardStyle, lightText, space_M, space_S, textSmall } from '../../../styling/style';
+import { cardStyle, lightTextStyle, space_lg, space_sm, text_sm } from '../../../styling/style';
 import { HierarchyCTX } from './Hierarchy';
 
 const showAddVariantStyle = css({
@@ -60,12 +60,12 @@ function CardContentThumb({
           assignDiv(r, `CardContent-${id}`);
         }}
         className={cx(
-          textSmall,
-          lightText,
+          text_sm,
+          lightTextStyle,
           css({
             cursor: onClick != null ? 'pointer' : 'default',
             flexGrow: 1,
-            border: '1px solid var(--lightGray)',
+            border: '1px solid var(--divider-main)',
             textAlign: 'center',
           }),
           className,
@@ -153,7 +153,7 @@ export default function CardGroup({ card }: CardGroupProps) {
       >
         <div
           className={css({
-            padding: space_M,
+            padding: space_lg,
           })}
         >
           {cardDecorator ? (
@@ -181,7 +181,7 @@ export default function CardGroup({ card }: CardGroupProps) {
                 name={v.content.title || ''}
                 //card={card}
                 cardContent={v.content}
-                className={css({ padding: contents.length === 1 ? undefined : space_S })}
+                className={css({ padding: contents.length === 1 ? undefined : space_sm })}
                 onClick={
                   onContentClick
                     ? e => {

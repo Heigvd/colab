@@ -6,8 +6,6 @@
  */
 
 import { css, cx } from '@emotion/css';
-import { faPlus, faUndo } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import * as React from 'react';
 import * as API from '../../API/api';
 import useTranslations from '../../i18n/I18nContext';
@@ -18,8 +16,9 @@ import Button from '../common/element/Button';
 import Form, { Field } from '../common/element/Form';
 import IconButton from '../common/element/IconButton';
 import Flex from '../common/layout/Flex';
+import Icon from '../common/layout/Icon';
 import OpenCloseModal from '../common/layout/OpenCloseModal';
-import { space_M, space_S } from '../styling/style';
+import { space_lg, space_sm } from '../styling/style';
 
 interface StickyNoteCreatorProps {
   destCardId: number;
@@ -113,14 +112,14 @@ export default function StickyNoteCreator({
           justify="center"
           className={cx(
             css({
-              borderTop: '1px solid var(--lightGray)',
-              padding: space_S,
-              '&:hover': { backgroundColor: 'var(--lightGray)', cursor: 'pointer' },
+              borderTop: '1px solid var(--divider-main)',
+              padding: space_sm,
+              '&:hover': { backgroundColor: 'var(--divider-main)', cursor: 'pointer' },
             }),
             className,
           )}
         >
-          <FontAwesomeIcon title="Create a sticky note" icon={faPlus} />
+          <Icon title="Create a sticky note" icon={'add'} />
         </Flex>
       }
     >
@@ -161,12 +160,12 @@ export default function StickyNoteCreator({
                 // see if it is better to reset the values or not
                 collapse();
               }}
-              invertedButton
-              className={css({ margin: space_M })}
+              variant="outline"
+              className={css({ margin: space_lg })}
             >
               {i18n.common.cancel}
             </Button>
-            <IconButton icon={faUndo} title="reinit fields" onClick={() => resetInputs()} />
+            <IconButton icon={'undo'} title="reinit fields" onClick={() => resetInputs()} />
           </Form>
         </>
       )}

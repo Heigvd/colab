@@ -6,18 +6,17 @@
  */
 
 import { css } from '@emotion/css';
-import { faBullhorn, faTriangleExclamation } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import * as React from 'react';
 import useTranslations from '../../../../i18n/I18nContext';
 import { CardTypeAllInOne as CardType } from '../../../../types/cardTypeDefinition';
 import Flex from '../../../common/layout/Flex';
+import Icon from '../../../common/layout/Icon';
 import ResourcesListSummary from '../../../resources/summary/ResourcesListSummary';
-import { space_M } from '../../../styling/style';
+import { space_lg } from '../../../styling/style';
 import TargetCardTypeSummary from './TargetCardTypeSummary';
 
 const itemStyle = css({
-  marginRight: space_M,
+  marginRight: space_lg,
 });
 
 interface CardTypeRelativesSummaryProps {
@@ -57,17 +56,14 @@ export default function CardTypeRelativesSummary({
       {/* is published */}
       {displayChoices.showPublished && cardType.published && (
         <Flex className={itemStyle}>
-          <FontAwesomeIcon icon={faBullhorn} title={i18n.modules.cardType.info.referencedByOther} />
+          <Icon icon={'feed'} title={i18n.modules.cardType.info.referencedByOther} />
         </Flex>
       )}
 
       {/* is deprecated */}
       {displayChoices.showDeprecated && cardType.deprecated && (
         <Flex className={itemStyle}>
-          <FontAwesomeIcon
-            icon={faTriangleExclamation}
-            title={i18n.modules.cardType.info.shouldNotBeUsed}
-          />
+          <Icon icon={'warning'} title={i18n.modules.cardType.info.shouldNotBeUsed} />
         </Flex>
       )}
 

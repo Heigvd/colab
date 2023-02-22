@@ -6,19 +6,23 @@
  */
 import { css } from '@emotion/css';
 import * as React from 'react';
-import { fullPageStyle } from '../../styling/style';
 import InlineLoading from '../element/InlineLoading';
+import Flex from './Flex';
 
 export default function Loading(): JSX.Element {
   return (
-    <div className={fullPageStyle}>
-      <div
+    <>
+      <Flex
+        justify="center"
+        align="center"
         className={css({
           margin: 'auto',
+          height: '100%',
+          width: '100%',
         })}
       >
         <InlineLoading size="200px" />
-      </div>
-    </div>
+      </Flex>
+    </>
   );
 }

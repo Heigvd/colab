@@ -6,8 +6,6 @@
  */
 
 import { css } from '@emotion/css';
-import { faLock } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Card, CardContent } from 'colab-rest-client';
 import * as React from 'react';
 import { TwitterPicker } from 'react-color';
@@ -19,7 +17,8 @@ import Checkbox from '../common/element/Checkbox';
 import SelectInput from '../common/element/SelectInput';
 import Tips, { WIPContainer } from '../common/element/Tips';
 import Flex from '../common/layout/Flex';
-import { iconStyle, lightItalicText, lightText, space_M } from '../styling/style';
+import Icon from '../common/layout/Icon';
+import { lightTextStyle, space_lg } from '../styling/style';
 import ContentStatusSelector from './ContentStatusSelector';
 
 const marginDownSmall = css({
@@ -39,13 +38,12 @@ export default function CardSettings({ card, variant }: CardSettingsProps): JSX.
   const { cardType } = useAndLoadCardType(card.cardTypeId);
 
   return (
-    <Flex className={css({ gap: space_M })} direction="column" shrink={1}>
+    <Flex className={css({ gap: space_lg })} direction="column" shrink={1}>
       <Flex align="center">
         <Checkbox
           label={
             <>
-              <FontAwesomeIcon icon={faLock} className={iconStyle} />{' '}
-              {i18n.modules.card.settings.locked}
+              <Icon icon={'lock'} /> {i18n.modules.card.settings.locked}
             </>
           }
           value={variant.frozen}
@@ -79,9 +77,9 @@ export default function CardSettings({ card, variant }: CardSettingsProps): JSX.
           <h3>{i18n.modules.cardType.cardType}</h3>
         </Flex>
         {cardType == null ? (
-          <span className={lightItalicText}>{i18n.modules.cardType.noCardType}</span>
+          <span>{i18n.modules.cardType.noCardType}</span>
         ) : (
-          <span className={lightText}>{cardType.title}</span>
+          <span className={lightTextStyle}>{cardType.title}</span>
         )}
       </WIPContainer>
       <WIPContainer>

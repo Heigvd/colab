@@ -9,21 +9,20 @@ import { css } from '@emotion/css';
 import { Illustration, Project } from 'colab-rest-client';
 import * as React from 'react';
 import { useNavigate } from 'react-router-dom';
-import * as API from '../../API/api';
-import useTranslations from '../../i18n/I18nContext';
-import { useProject } from '../../selectors/projectSelector';
-import { useAppDispatch, useLoadingState } from '../../store/hooks';
-import AvailabilityStatusIndicator from '../common/element/AvailabilityStatusIndicator';
-import Button from '../common/element/Button';
-import ButtonWithLoader from '../common/element/ButtonWithLoader';
-import Checkbox from '../common/element/Checkbox';
-import IllustrationDisplay from '../common/element/IllustrationDisplay';
-import { LabeledInput, LabeledTextArea } from '../common/element/Input';
-import Flex from '../common/layout/Flex';
-import Modal from '../common/layout/Modal';
-import { space_L, space_M, space_S } from '../styling/style';
-import { defaultProjectIllustration } from './ProjectCommon';
-import { ProjectIllustrationMaker } from './ProjectIllustrationMaker';
+import * as API from '../../../API/api';
+import useTranslations from '../../../i18n/I18nContext';
+import { useProject } from '../../../selectors/projectSelector';
+import { useAppDispatch, useLoadingState } from '../../../store/hooks';
+import AvailabilityStatusIndicator from '../../common/element/AvailabilityStatusIndicator';
+import Button from '../../common/element/Button';
+import Checkbox from '../../common/element/Checkbox';
+import IllustrationDisplay from '../../common/element/IllustrationDisplay';
+import { LabeledInput, LabeledTextArea } from '../../common/element/Input';
+import Flex from '../../common/layout/Flex';
+import Modal from '../../common/layout/Modal';
+import { space_lg, space_sm, space_xl } from '../../styling/style';
+import { defaultProjectIllustration } from '../ProjectCommon';
+import { ProjectIllustrationMaker } from '../ProjectIllustrationMaker';
 
 const modalStyle = css({
   '&:hover': { textDecoration: 'none' },
@@ -172,22 +171,22 @@ export function ProjectModelExtractor({ projectId }: ProjectModelExtractorProps)
         <Flex
           justify={'flex-end'}
           grow={1}
-          className={css({ padding: space_M, columnGap: space_S })}
+          className={css({ padding: space_lg, columnGap: space_sm })}
         >
           <Button
-            invertedButton
             onClick={() => {
               if (!readOnly) {
                 reset();
                 close();
               }
             }}
+            variant="outline"
           >
             {i18n.common.cancel}
           </Button>
 
           {showBackButton && (
-            <Button invertedButton onClick={oneStepBack}>
+            <Button variant="outline" onClick={oneStepBack}>
               {i18n.common.back}
             </Button>
           )}
@@ -195,7 +194,7 @@ export function ProjectModelExtractor({ projectId }: ProjectModelExtractorProps)
           {showNextButton && <Button onClick={oneStepForward}>{i18n.common.next}</Button>}
 
           {showCreateButton && (
-            <ButtonWithLoader
+            <Button
               onClick={async () => {
                 if (!readOnly) {
                   setReadOnly(true);
@@ -234,7 +233,7 @@ export function ProjectModelExtractor({ projectId }: ProjectModelExtractorProps)
               isLoading={isLoading}
             >
               {i18n.common.save}
-            </ButtonWithLoader>
+            </Button>
           )}
         </Flex>
       )}
@@ -341,7 +340,7 @@ function ProjectModelDataInitialization({
       <Flex
         direction="column"
         align="stretch"
-        className={css({ width: '45%', minWidth: '45%', marginRight: space_L })}
+        className={css({ width: '45%', minWidth: '45%', marginRight: space_xl })}
       >
         <LabeledInput
           label={i18n.common.name}

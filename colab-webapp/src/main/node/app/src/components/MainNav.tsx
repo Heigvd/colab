@@ -6,16 +6,6 @@
  */
 
 import { css, cx } from '@emotion/css';
-import {
-  faCircleInfo,
-  faCog,
-  faExclamationTriangle,
-  faMeteor,
-  faSignOutAlt,
-  faUser,
-  faUserCircle,
-} from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import * as API from '../API/api';
@@ -24,15 +14,18 @@ import LanguageSelector from '../i18n/LanguageSelector';
 import { useHasModels } from '../selectors/projectSelector';
 import { useCurrentUser } from '../selectors/userSelector';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
+import Avatar from './common/element/Avatar';
 import InlineLoading from './common/element/InlineLoading';
-import { MainMenuLink, mainMenuLink } from './common/element/Link';
+import { MainMenuLink } from './common/element/Link';
 import DropDownMenu from './common/layout/DropDownMenu';
+import Flex from './common/layout/Flex';
+import Icon from './common/layout/Icon';
 import Monkeys from './debugger/monkey/Monkeys';
-import { flex, invertedThemeMode, space_M, space_S } from './styling/style';
+import { iconButtonStyle, space_lg, space_sm } from './styling/style';
 const dropLabelsStyle = css({
   //width: '100%',
   textTransform: 'uppercase',
-  padding: space_M,
+  padding: space_lg,
 });
 
 export default function MainNav(): JSX.Element {
@@ -52,9 +45,9 @@ export default function MainNav(): JSX.Element {
   ];
   const value = location.pathname;
   return (
-    <>
+    <Flex>
       {/* <MainMenuLink to={`/`} className={mainMenuLink}>
-        <FontAwesomeIcon icon={faHouse} size='lg'/>
+         <Icon icon={faHouse} size='lg'/>
       <Picto
           className={cx(
             css({
@@ -67,13 +60,14 @@ export default function MainNav(): JSX.Element {
         />
       </MainMenuLink> */}
       {hasModels ? (
-        <nav className={flex}>
+        <nav>
           <DropDownMenu
             value={value}
             entries={entries}
             onSelect={e => navigate(e.value)}
             menuIcon="BURGER"
-            buttonClassName={cx(mainMenuLink, css({ padding: '0 0 0 ' + space_M }))}
+            buttonClassName={cx(iconButtonStyle, css({ alignItems: 'center' }))}
+            showSelectedLabel
           />
         </nav>
       ) : (
@@ -86,7 +80,7 @@ export default function MainNav(): JSX.Element {
       ></div>
       <Monkeys />
       <UserDropDown />
-    </>
+    </Flex>
   );
 }
 
@@ -113,11 +107,11 @@ export function UserDropDown({ onlyLogout }: { onlyLogout?: boolean }): JSX.Elem
   if (currentUser != null) {
     return (
       <>
-        <LanguageSelector />
         <DropDownMenu
-          icon={faUserCircle}
+          buttonLabel={<Avatar currentUser={currentUser} />}
           title={currentUser.username}
           valueComp={{ value: '', label: '' }}
+          buttonClassName={iconButtonStyle}
           entries={[
             {
               value: 'username',
@@ -125,11 +119,11 @@ export function UserDropDown({ onlyLogout }: { onlyLogout?: boolean }): JSX.Elem
                 <>
                   <div
                     className={css({
-                      borderBottom: '1px solid var(--darkGray)',
-                      padding: space_S,
+                      borderBottom: '1px solid var(--secondary-main)',
+                      padding: space_sm,
                     })}
                   >
-                    <FontAwesomeIcon icon={faUser} />{' '}
+                    <Icon icon={'person'} />{' '}
                     {currentUser.firstname && currentUser.lastname
                       ? currentUser.firstname + ' ' + currentUser.lastname
                       : currentUser.username}
@@ -144,7 +138,7 @@ export function UserDropDown({ onlyLogout }: { onlyLogout?: boolean }): JSX.Elem
                     value: 'settings',
                     label: (
                       <>
-                        <FontAwesomeIcon icon={faCog} /> {i18n.user.settings}
+                        <Icon icon={'settings'} /> {i18n.user.settings}
                       </>
                     ),
                     action: () => navigate('./settings'),
@@ -157,7 +151,7 @@ export function UserDropDown({ onlyLogout }: { onlyLogout?: boolean }): JSX.Elem
                     value: 'admin',
                     label: (
                       <>
-                        <FontAwesomeIcon icon={faMeteor} /> {i18n.admin.admin}
+                        <Icon icon={'admin_panel_settings'} /> {i18n.admin.admin}
                       </>
                     ),
                     action: () => navigate('./admin'),
@@ -170,7 +164,7 @@ export function UserDropDown({ onlyLogout }: { onlyLogout?: boolean }): JSX.Elem
                     value: 'about',
                     label: (
                       <>
-                        <FontAwesomeIcon icon={faCircleInfo} /> {i18n.common.about}
+                        <Icon icon={'info'} /> {i18n.common.about}
                       </>
                     ),
                     action: () => navigate('/about-colab'),
@@ -178,22 +172,27 @@ export function UserDropDown({ onlyLogout }: { onlyLogout?: boolean }): JSX.Elem
                 ]
               : []),
             {
+              value: 'language',
+              label: (
+                <>
+                  <LanguageSelector />
+                </>
+              ),
+              subDropDownButton: true,
+            },
+            {
               value: 'logout',
               label: (
                 <>
-                  <FontAwesomeIcon icon={faSignOutAlt} /> {i18n.common.logout}
+                  <Icon icon={'logout'} /> {i18n.common.logout}
                 </>
               ),
               action: logout,
             },
           ]}
-          buttonClassName={cx(invertedThemeMode, css({ marginLeft: space_S }))}
         />
         {passwordScore != null && passwordScore.score < 2 && (
-          <FontAwesomeIcon
-            title={i18n.authentication.error.yourPasswordIsWeak}
-            icon={faExclamationTriangle}
-          />
+          <Icon title={i18n.authentication.error.yourPasswordIsWeak} icon={'warning'} />
         )}
       </>
     );

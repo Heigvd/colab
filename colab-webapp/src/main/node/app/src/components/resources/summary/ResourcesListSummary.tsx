@@ -5,11 +5,10 @@
  * Licensed under the MIT License
  */
 
-import { faPaperclip } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import * as React from 'react';
 import useTranslations from '../../../i18n/I18nContext';
 import { useAndLoadNbActiveResources } from '../../../selectors/resourceSelector';
+import Icon from '../../common/layout/Icon';
 import { ResourceOwnership } from '../resourcesCommonType';
 
 interface ResourcesListSummaryProps {
@@ -29,8 +28,8 @@ export default function ResourcesListSummary({
 
   return (
     <>
-      <FontAwesomeIcon
-        icon={faPaperclip}
+      <Icon
+        icon={'attach_file'}
         title={
           !nb
             ? i18n.modules.resource.noResource

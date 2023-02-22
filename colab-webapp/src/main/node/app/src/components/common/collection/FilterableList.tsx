@@ -6,39 +6,34 @@
  */
 
 import { css, cx } from '@emotion/css';
-import { faCaretDown, faCaretUp, faFilter } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React from 'react';
 import useTranslations from '../../../i18n/I18nContext';
 import {
-  borderRadius,
   lightIconButtonStyle,
   lightLinkStyle,
-  lightTheme,
-  noOutlineStyle,
-  space_S,
+  removeOutlineStyle,
+  space_sm,
 } from '../../styling/style';
 import Checkbox from '../element/Checkbox';
 import Clickable from '../layout/Clickable';
 import Flex from '../layout/Flex';
+import Icon from '../layout/Icon';
 
 export const categoryTabStyle = cx(
-  lightTheme,
   css({
-    padding: '0 ' + space_S,
-    color: 'var(--darkGray)',
-    marginRight: space_S,
-    borderRadius: borderRadius,
-    border: '1px solid var(--darkGray)',
+    padding: '0 ' + space_sm,
+    color: 'var(--secondary-dark)',
+    marginRight: space_sm,
+    border: '1px solid var(--secondary-dark)',
     userSelect: 'none',
     fontSize: '0.9em',
   }),
 );
 const checkedCategoryTabStyle = css({
-  backgroundColor: 'var(--darkGray)',
-  color: 'var(--primaryColorContrast)',
+  backgroundColor: 'var(--secondary-main)',
+  color: 'var(--primary-contrast)',
   '&:hover': {
-    color: 'var(--primaryColorContrast)',
+    color: 'var(--primary-contrast)',
   },
 });
 
@@ -67,15 +62,15 @@ export default function FilterableList({
   return (
     <Flex className={className} direction="column" align="stretch">
       <Clickable
-        clickableClassName={cx(
+        className={cx(
           lightIconButtonStyle,
           css({ alignSelf: 'flex-end', '&:hover': { cursor: 'pointer' } }),
         )}
         onClick={() => setFilterOpen(filterOpen => !filterOpen)}
       >
-        <FontAwesomeIcon icon={faFilter} size="sm" />
+        <Icon icon={'filter_alt'} opsz="sm" />
         {i18n.common.filter}
-        <FontAwesomeIcon icon={filterOpen ? faCaretUp : faCaretDown} />
+        <Icon icon={filterOpen ? 'expand_less' : 'expand_more'} />
       </Clickable>
 
       <Flex justify={filterOpen ? 'space-between' : 'flex-end'} align="center">
@@ -99,7 +94,7 @@ export default function FilterableList({
                       label={cat}
                       value={tagState && tagState[cat]}
                       onChange={t => onChange(t, cat)}
-                      className={cx(noOutlineStyle, {
+                      className={cx(removeOutlineStyle, {
                         [checkedCategoryTabStyle]: tagState && tagState[cat],
                       })}
                     />

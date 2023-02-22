@@ -18,7 +18,7 @@ import GridOrganizer, { fixGrid } from '../common/GridOrganizer';
 import Ellipsis from '../common/layout/Ellipsis';
 import Flex from '../common/layout/Flex';
 import { useSortSubcardsWithPos } from '../hooks/sortCards';
-import { greyIconButtonChipStyle, lightIconButtonStyle, space_L, space_M } from '../styling/style';
+import { lightIconButtonStyle, m_lg, space_xl } from '../styling/style';
 import CardCreator from './CardCreator';
 import { TinyCard } from './CardThumb';
 import CardThumbWithSelector from './CardThumbWithSelector';
@@ -149,14 +149,14 @@ export default function ContentSubs({
           align="center"
           direction="column"
           className={css({
-            padding: space_L,
+            padding: space_xl,
           })}
         >
           <h3>{i18n.modules.card.infos.noCardYetPleaseCreate}</h3>
           <CardCreator
             parentCardContent={cardContent}
             customLabel={i18n.modules.card.infos.createFirstCard}
-            className={cx(greyIconButtonChipStyle, css({ margin: space_M }))}
+            className={cx(lightIconButtonStyle, m_lg)}
           />
         </Flex>
       );
@@ -184,7 +184,7 @@ export default function ContentSubs({
                   height: '100%',
                   //width: '100%',
                   alignSelf: 'stretch',
-                  padding: '0 ' + space_L,
+                  padding: '0 ' + space_xl,
                 })}
                 //nbColumns={{nbColumns, setNbColumns}}
                 cells={indexedSubCards.cells}
@@ -235,7 +235,7 @@ export default function ContentSubs({
               >
                 {depth === 1 && nbSubDisplayed && sortedSubCardsWithPos.length > nbSubDisplayed ? (
                   <>
-                    {sortedSubCardsWithPos.slice(0, nbSubDisplayed - 1).map((payload) => {
+                    {sortedSubCardsWithPos.slice(0, nbSubDisplayed - 1).map(payload => {
                       return (
                         <CardThumbWithSelector
                           cardThumbClassName={css({ overflow: 'hidden' })}
@@ -252,7 +252,7 @@ export default function ContentSubs({
                       grow={1}
                       className={cx(
                         lightIconButtonStyle,
-                        css({ border: '1px dashed var(--lightGray)' }),
+                        css({ border: '1px dashed var(--divider-main)' }),
                       )}
                     >
                       <h3>+ {sortedSubCardsWithPos.length - (nbSubDisplayed - 1)}</h3>
@@ -260,7 +260,7 @@ export default function ContentSubs({
                   </>
                 ) : (
                   <>
-                    {sortedSubCardsWithPos.map((card) => (
+                    {sortedSubCardsWithPos.map(card => (
                       <CardThumbWithSelector
                         className={
                           depth === 1

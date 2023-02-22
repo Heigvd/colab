@@ -12,7 +12,7 @@ import useTranslations from '../../i18n/I18nContext';
 import { useAppDispatch } from '../../store/hooks';
 import Tips from '../common/element/Tips';
 import Flex from '../common/layout/Flex';
-import { space_M } from '../styling/style';
+import { space_lg } from '../styling/style';
 import CardACL from './CardACL';
 import InvolvementSelector from './InvolvementSelector';
 
@@ -34,8 +34,8 @@ export default function CardInvolvement({ card }: CardInvolvementProps): JSX.Ele
       <Flex
         align="center"
         className={css({
-          marginBottom: space_M,
-          borderBottom: '1px solid var(--lightGray)',
+          marginBottom: space_lg,
+          borderBottom: '1px solid var(--divider-main)',
           alignSelf: 'stretch',
         })}
       >

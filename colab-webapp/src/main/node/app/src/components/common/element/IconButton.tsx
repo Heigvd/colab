@@ -5,26 +5,54 @@
  * Licensed under the MIT License
  */
 
-import { cx } from '@emotion/css';
-import { IconProp, SizeProp, Transform } from '@fortawesome/fontawesome-svg-core';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { css, cx } from '@emotion/css';
 import * as React from 'react';
-import { iconButton, linkStyle } from '../../styling/style';
-import Clickable from '../layout/Clickable';
+import { iconButtonStyle, text_lg, text_md, text_sm, text_xs } from '../../styling/style';
+import { GeneralSizeType } from '../../styling/theme';
+import Clickable, { ClickableProps } from '../layout/Clickable';
+import Icon, { IconSize } from '../layout/Icon';
 
-export interface IconButtonProps {
+type IconButtonVariantType = 'ghost' | 'initial';
+
+const ghostIconButtonStyle = css({
+  backgroundColor: `var(--bg-primary)`,
+  color: 'var(--text-secondary)',
+  ':hover': {
+    backgroundColor: `var(--gray-100)`,
+  },
+  ':active': {
+    backgroundColor: `var(--gray-200)`,
+  },
+});
+
+function IconButtonSize(size: GeneralSizeType): string {
+  switch (size) {
+    case 'xs':
+      return text_xs;
+    case 'sm':
+      return text_sm;
+    case 'md':
+      return text_md;
+    case 'lg':
+      return text_lg;
+    default:
+      return text_md;
+  }
+}
+
+export interface IconButtonProps extends ClickableProps {
   title: string;
-  icon: IconProp;
+  icon: string;
   iconColor?: string;
-  iconSize?: SizeProp;
-  mask?: IconProp;
-  transform?: string | Transform;
-  layer?: { layerIcon: IconProp; transform: string | Transform };
-  clickable?: boolean;
+  iconSize?: keyof typeof IconSize;
   onClick?: (e: React.MouseEvent<HTMLSpanElement> | React.KeyboardEvent<HTMLSpanElement>) => void;
   className?: string;
-  IconClassName?: string;
+  iconClassName?: string;
   stopPropagation?: boolean;
+  withLoader?: boolean;
+  isLoading?: boolean;
+  variant?: IconButtonVariantType;
+  size?: GeneralSizeType;
 }
 
 export default function IconButton({
@@ -32,48 +60,43 @@ export default function IconButton({
   icon,
   iconColor,
   iconSize,
-  mask,
-  transform,
-  layer,
+  withLoader,
+  isLoading = true,
   onClick,
   className,
-  IconClassName,
+  iconClassName,
   stopPropagation,
+  variant = 'initial',
+  size = 'md',
+  disabled,
 }: IconButtonProps): JSX.Element {
+  const [loading, setLoading] = React.useState<boolean>(false);
   return (
     <Clickable
       title={title}
-      onClick={onClick}
-      className={className}
-      clickableClassName={cx(linkStyle, iconButton, className)}
-      clickable
-      stopPropagation={stopPropagation}
-    >
-      {layer ? (
-        <span className="fa-layers fa-fw">
-          <FontAwesomeIcon
-            icon={layer.layerIcon}
-            color={iconColor}
-            size={iconSize}
-            transform={layer.transform}
-          />
-          <FontAwesomeIcon
-            icon={icon}
-            color={iconColor}
-            size={iconSize}
-            transform={transform}
-            mask={mask}
-          />
-        </span>
-      ) : (
-        <FontAwesomeIcon
-          icon={icon}
-          color={iconColor}
-          size={iconSize}
-          mask={mask}
-          className={IconClassName}
-        />
+      onClick={e => {
+        if (withLoader && onClick) {
+          setLoading(isLoading);
+          onClick(e);
+        } else if (onClick) {
+          onClick(e);
+        }
+      }}
+      className={cx(
+        iconButtonStyle,
+        IconButtonSize(size),
+        { [ghostIconButtonStyle]: variant === 'ghost' },
+        className,
       )}
+      stopPropagation={stopPropagation}
+      disabled={disabled}
+    >
+      <Icon
+        icon={loading ? 'sync' : icon}
+        className={iconClassName}
+        opsz={iconSize}
+        color={iconColor}
+      />
     </Clickable>
   );
 }

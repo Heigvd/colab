@@ -6,7 +6,6 @@
  */
 
 import { css, cx } from '@emotion/css';
-import { faArrowLeft, faPlus } from '@fortawesome/free-solid-svg-icons';
 import * as React from 'react';
 import useTranslations from '../../i18n/I18nContext';
 import { useAndLoadResources } from '../../selectors/resourceSelector';
@@ -17,12 +16,11 @@ import Tips, { WIPContainer } from '../common/element/Tips';
 import DropDownMenu from '../common/layout/DropDownMenu';
 import Flex from '../common/layout/Flex';
 import {
-  invertedButtonStyle,
   lightIconButtonStyle,
-  lightText,
-  space_L,
-  space_S,
-  textSmall,
+  lightTextStyle,
+  space_sm,
+  space_xl,
+  text_sm,
 } from '../styling/style';
 import HidenResourcesKeeper from './HidenResourcesKeeper';
 import ResourceCreator from './ResourceCreator';
@@ -120,7 +118,7 @@ export function ResourcesMainViewHeader({
     <>
       {displayMode !== 'LIST' && (
         <IconButton
-          icon={faArrowLeft}
+          icon={'arrow_back'}
           title={i18n.modules.resource.backList}
           onClick={displayList}
           className={lightIconButtonStyle}
@@ -129,7 +127,7 @@ export function ResourcesMainViewHeader({
 
       {title}
 
-      {helpTip && <Tips iconClassName={cx(textSmall, lightText)}>{helpTip}</Tips>}
+      {helpTip && <Tips iconClassName={cx(text_sm, lightTextStyle)}>{helpTip}</Tips>}
 
       {displayMode === 'LIST' && (
         <>
@@ -139,7 +137,7 @@ export function ResourcesMainViewHeader({
           <HidenResourcesKeeper
             collapsedClassName={cx(
               css({
-                padding: space_S,
+                padding: space_sm,
                 '&:hover': { cursor: 'pointer' },
               }),
               lightIconButtonStyle,
@@ -285,14 +283,14 @@ export function ResourcesMainViewPanel({
           justify="center"
           direction="column"
           align="center"
-          className={css({ padding: space_L })}
+          className={css({ padding: space_xl })}
         >
           <h3>{i18n.modules.resource.noDocumentationYet}</h3>
           {!isReadOnly(accessLevel) && (
             <ResourceCreator
               collapsedClassName={lightIconButtonStyle}
               customButton={
-                <Button icon={faPlus} clickable className={invertedButtonStyle}>
+                <Button icon={'add'} variant="outline">
                   {i18n.modules.document.createDocument}
                 </Button>
               }

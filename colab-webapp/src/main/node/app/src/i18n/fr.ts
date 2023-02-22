@@ -196,7 +196,6 @@ export const fr: ColabTranslations = {
     team: 'Équipe',
     roles: 'Rôles',
     rights: 'Droits',
-    raci: 'RACI',
     members: 'Membres',
     teamManagement: "Gestion de l'équipe",
     generalInvolvement: 'Implication générale',
@@ -216,6 +215,13 @@ export const fr: ColabTranslations = {
       projectLeader: 'Responsable de projet',
       member: 'Membre',
       guest: 'Invité',
+    },
+    raci: {
+      raci: 'RACI',
+      responsible: 'Réalise',
+      approver: 'Approuve',
+      support: 'Supporte',
+      accessDenied: 'Accès refusé',
     },
     rolesHelper:
       "Créez et assignez un ou plusieurs rôles aux membres de l'équipe.Ex. Designer, professeur, développeur-euse. Cela peut être utile pour affiner l'implication de chacun-e, ou simplement pour informer l'ensemble de l'équipe des compétences engagées dans le projet.",
