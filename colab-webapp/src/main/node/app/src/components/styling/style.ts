@@ -303,10 +303,6 @@ export const cardStyle = cx(
   }),
 );
 
-//HEADER
-//To remove??
-export const mainHeaderHeight = '50px';
-
 //TAG
 export const labelStyle = css({
   fontWeight: 500,

@@ -16,6 +16,7 @@ import Flex from '../../common/layout/Flex';
 import Tabs, { Tab } from '../../common/layout/Tabs';
 import { space_md, space_sm, } from '../../styling/style';
 import MemberCreator from './MemberCreator';
+import MembersList from './MembersList';
 import TeamRACI from './Raci';
 import TeamRights from './Rights';
 import TeamRoles from './Roles';
@@ -48,7 +49,10 @@ export default function Team({ project }: TeamProps): JSX.Element {
           <MemberCreator members={members} project={project} />
         </Flex>
         <Tabs routed>
-          <Tab name="roles" label={i18n.team.members}>
+          <Tab name="members" label={i18n.team.members}>
+            <MembersList project={project}/>
+          </Tab>
+          <Tab name="roles" label={i18n.team.roles}>
             <TeamRoles project={project} />
           </Tab>
           <Tab name="rights" label={i18n.team.rights}>
