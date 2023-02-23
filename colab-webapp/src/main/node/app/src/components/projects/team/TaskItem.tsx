@@ -24,13 +24,15 @@ const taskItemStyle = cx(
   text_sm,
   css({
     display: 'grid',
-    gridTemplateColumns: 'minmax(170px, min-content) max-content 130px',
+    gridTemplateColumns: 'minmax(140px, max-content) max-content 1fr',
     gap: space_lg,
     alignItems: 'center',
     justifyContent: 'stretch',
+    justifyItems: 'stretch',
     backgroundColor: 'var(--bg-primary)',
     border: '1px solid transparent',
     cursor: 'pointer',
+    minWidth: 'fit-content',
     '&:hover': {
       border: '1px solid var(--primary-main)',
     },

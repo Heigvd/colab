@@ -54,6 +54,8 @@ import DocumentationTab from '../DocumentationTab';
 import { PresenceContext, usePresenceContext } from '../presence/PresenceContext';
 import { defaultProjectIllustration } from '../ProjectCommon';
 import { ProjectSettingsTabs } from '../settings/ProjectSettingsTabs';
+import ProjectSidePanelWrapper from '../SidePanelWrapper';
+import ProjectTaskList from '../team/ProjectTaskList';
 import Team from '../team/Team';
 import ActivityFlowChart from './activityFlow/ActivityFlowChart';
 import Hierarchy from './hierarchy/Hierarchy';
@@ -505,16 +507,19 @@ function EditorNav({ project }: EditorNavProps): JSX.Element {
               />
             </Flex>
           </Tips>
+          <MainMenuLink to="./tasks">
+            <Icon icon={'checklist'} title={i18n.modules.project.settings.resources.label} />
+          </MainMenuLink>
           <MainMenuLink to="./docs">
             <Icon icon={'menu_book'} title={i18n.modules.project.settings.resources.label} />
           </MainMenuLink>
           <MainMenuLink
             to="./team"
-            className={active =>
+/*             className={active =>
               active.isActive || location.pathname.match(/^\/editor\/\d+\/team/)
                 ? activeIconButtonStyle
                 : iconButtonStyle
-            }
+            } */
           >
             <Icon icon={'group'} title={i18n.team.teamManagement} />
           </MainMenuLink>
@@ -543,6 +548,7 @@ function RootView({ rootContent }: { rootContent: CardContent | null | undefined
         flexGrow: '1',
         flexDirection: 'column',
         height: '100%',
+        position: 'relative',
       })}
     >
       {rootContent != null ? (
@@ -637,61 +643,73 @@ export default function Editor(): JSX.Element {
             className={css({
               overflow: 'auto',
               position: 'relative',
+              userSelect: 'none',
             })}
           >
             <Routes>
-              <Route path="settings/*" element={<Settings />} />
+              <Route
+                path="team/*"
+                element={
+                  <ProjectSidePanelWrapper title={i18n.team.team}>
+                    <Team project={project} />
+                  </ProjectSidePanelWrapper>
+                }
+              />
               <Route
                 path="project-settings/*"
-                element={<ProjectSettingsTabs projectId={project.id} />}
+                element={<ProjectSidePanelWrapper title={i18n.modules.project.labels.projectSettings} ><ProjectSettingsTabs projectId={project.id} /></ProjectSidePanelWrapper>}
               />
-              <Route path="admin/*" element={<Admin />} />
-              <Route path="team/*" element={<Team project={project} />} />
-              <Route path="hierarchy" element={<Hierarchy rootId={root.id} />} />
-              <Route path="flow" element={<ActivityFlowChart />} />
-              <Route path="docs/*" element={<DocumentationTab project={project} />} />
-              <Route path="card/:id" element={<DefaultVariantDetector />} />
-              {/* Zooom on a card */}
-              <Route
-                path="card/:id/v/:vId/*"
-                element={
-                  <CardWrapper grow={1} touchMode="zoom" backButtonPath={'../.'}>
-                    {card => <CardThumbWithSelector depth={2} card={card} mayOrganize />}
-                  </CardWrapper>
-                }
-              />
-              {/* Edit cart, send to default variant */}
-              <Route path="edit/:id" element={<DefaultVariantDetector />} />
-
-              {/* Edit card */}
-              <Route
-                path={`/edit/:id/v/:vId/*`}
-                element={
-                  <CardEditWrapper touchMode="edit" backButtonPath={'../.'}>
-                    {(card, variant) => <CardEditor card={card} variant={variant} />}
-                  </CardEditWrapper>
-                }
-              />
-              <Route
-                path="hierarchy/card/:id/v/:vId/*"
-                element={
-                  <CardWrapper grow={1} touchMode="zoom" backButtonPath={'../.'}>
-                    {card => <CardThumbWithSelector depth={2} card={card} mayOrganize />}
-                  </CardWrapper>
-                }
-              />
-              <Route path="hierarchy/edit/:id" element={<DefaultVariantDetector />} />
-              <Route
-                path="hierarchy/edit/:id/v/:vId/*"
-                element={
-                  <CardEditWrapper touchMode="edit" backButtonPath={'../.'}>
-                    {(card, variant) => <CardEditor card={card} variant={variant} />}
-                  </CardEditWrapper>
-                }
-              />
-              {/* All cards. Root route */}
-              <Route path="*" element={<RootView rootContent={rootContent} />} />
+              <Route path="docs/*" element={<ProjectSidePanelWrapper title={i18n.modules.project.settings.resources.label} ><DocumentationTab project={project} /></ProjectSidePanelWrapper>} />
+              <Route path="tasks/*" element={<ProjectSidePanelWrapper title={i18n.team.myTasks} ><ProjectTaskList /></ProjectSidePanelWrapper>} />
             </Routes>
+              <Routes>
+                <Route path="admin/*" element={<Admin />} />
+                <Route path="settings/*" element={<Settings />} />
+                <Route path="hierarchy" element={<Hierarchy rootId={root.id} />} />
+                <Route path="flow" element={<ActivityFlowChart />} />
+                
+                <Route path="card/:id" element={<DefaultVariantDetector />} />
+                {/* Zooom on a card */}
+                <Route
+                  path="card/:id/v/:vId/*"
+                  element={
+                    <CardWrapper grow={1} touchMode="zoom" backButtonPath={'../.'}>
+                      {card => <CardThumbWithSelector depth={2} card={card} mayOrganize />}
+                    </CardWrapper>
+                  }
+                />
+                {/* Edit cart, send to default variant */}
+                <Route path="edit/:id" element={<DefaultVariantDetector />} />
+
+                {/* Edit card */}
+                <Route
+                  path={`/edit/:id/v/:vId/*`}
+                  element={
+                    <CardEditWrapper touchMode="edit" backButtonPath={'../.'}>
+                      {(card, variant) => <CardEditor card={card} variant={variant} />}
+                    </CardEditWrapper>
+                  }
+                />
+                <Route
+                  path="hierarchy/card/:id/v/:vId/*"
+                  element={
+                    <CardWrapper grow={1} touchMode="zoom" backButtonPath={'../.'}>
+                      {card => <CardThumbWithSelector depth={2} card={card} mayOrganize />}
+                    </CardWrapper>
+                  }
+                />
+                <Route path="hierarchy/edit/:id" element={<DefaultVariantDetector />} />
+                <Route
+                  path="hierarchy/edit/:id/v/:vId/*"
+                  element={
+                    <CardEditWrapper touchMode="edit" backButtonPath={'../.'}>
+                      {(card, variant) => <CardEditor card={card} variant={variant} />}
+                    </CardEditWrapper>
+                  }
+                />
+                {/* All cards. Root route */}
+                <Route path="*" element={<RootView rootContent={rootContent} />} />
+              </Routes>
           </Flex>
         </Flex>
       </PresenceContext.Provider>

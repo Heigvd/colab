@@ -210,6 +210,8 @@ export const fr: ColabTranslations = {
     giveRole: 'Donner un rôle',
     fillRoleName: 'Entrez le nom du rôle',
     me: 'moi',
+    myTasks: 'Mes tâches',
+    tasks: 'Tâches',
     rolesNames: {
       owner: 'Propriétaire',
       projectLeader: 'Responsable de projet',

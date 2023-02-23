@@ -207,6 +207,8 @@ export const en = {
     giveRole: 'Give role',
     fillRoleName: 'Fill the role name',
     me: 'me',
+    myTasks: 'My tasks',
+    tasks: 'Tasks',
     rolesNames: {
       owner: 'Owner',
       projectLeader: 'Project leader',
