@@ -15,13 +15,14 @@ export default function Loading(): JSX.Element {
       <Flex
         justify="center"
         align="center"
+        grow={1}
         className={css({
           margin: 'auto',
           height: '100%',
           width: '100%',
         })}
       >
-        <InlineLoading size="200px" />
+        <InlineLoading />
       </Flex>
     </>
   );

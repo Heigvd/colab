@@ -117,7 +117,7 @@ function ProjectList({ projects, hideCreationButton }: ProjectListProps) {
   const i18n = useTranslations();
 
   return (
-    <Flex className={p_lg} direction={'column'} align="stretch">
+    <Flex className={cx(p_lg, css({paddingTop: 0}))} direction={'column'} align="stretch">
       {/* Note : any authenticated user can create a project */}
       {!projects || projects.length === 0 ? (
         <Flex justify="center" align="center" direction="column">

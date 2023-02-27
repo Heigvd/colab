@@ -25,6 +25,7 @@ const containerStyle = css({
 
 const itemsStyle = css({
   display: 'flex',
+  alignItems: 'center',
   position: 'absolute',
 });
 

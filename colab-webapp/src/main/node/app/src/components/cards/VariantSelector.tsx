@@ -76,7 +76,7 @@ const variantSelectorStyle = (depth?: number) => {
       });
     case 1:
       return css({
-        margin: '10px',
+        margin: space_sm,
       });
     default:
       return undefined;

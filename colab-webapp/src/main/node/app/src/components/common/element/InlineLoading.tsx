@@ -56,7 +56,6 @@ InlineLoadingProps): JSX.Element {
     align='center'
     justify='center'
       className={css({
-        display: 'inline-block',
         margin: margin,
         alignSelf: 'stretch',
         justifySelf: 'stretch'
@@ -101,21 +100,11 @@ InlineLoadingProps): JSX.Element {
             },
           })}
         >
+          <div className="shape shape3"></div>
           <div className="shape shape1"></div>
           <div className="shape shape2"></div>
-          <div className="shape shape3"></div>
         </div>
       </div>
-      {/* <EffectivePicto
-        className={cx(
-          spinningStyle,
-          css({
-            width: size,
-            height: size,
-            maxWidth: maxWidth,
-          }),
-        )}
-      /> */}
     </Flex>
   );
 }

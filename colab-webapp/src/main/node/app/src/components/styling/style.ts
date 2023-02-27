@@ -193,6 +193,7 @@ export const lightLinkStyle = cx(
 //ICON BUTTONS STYLES
 export const iconButtonStyle = cx(
   p_sm,
+  br_md,
   css({
     display: 'flex',
     alignItems: 'center',
@@ -227,6 +228,17 @@ export const lightIconButtonStyle = css({
   },
 });
 
+export const ghostIconButtonStyle = css({
+  backgroundColor: `var(--bg-primary)`,
+  color: 'var(--text-secondary)',
+  ':hover': {
+    backgroundColor: `var(--gray-100)`,
+  },
+  ':active': {
+    backgroundColor: `var(--gray-200)`,
+  },
+});
+
 // BUTTON STYLES
 export const buttonStyle = cx(
   br_full,
@@ -235,7 +247,7 @@ export const buttonStyle = cx(
     flexWrap: 'nowrap',
     alignItems: 'center',
     padding: `0 ${space_md}`,
-    ':hover': {
+    '&:not(:disabled):hover': {
       textDecoration: 'none',
       backgroundColor: 'var(--bg-secondary)',
     },
@@ -268,12 +280,14 @@ export function SolidButtonStyle(theme: ThemeType) {
   return css({
     backgroundColor: `var(--${theme}-main)`,
     border: '1px solid transparent',
-    color: 'var(--primary-contrast)',
-    ':hover': {
+    color: `var(--${theme}-contrast)`,
+    '&:not(:disabled):hover': {
       backgroundColor: `var(--${theme}-dark)`,
+      color: `var(--${theme}-contrast)`,
     },
     ':active': {
       backgroundColor: `var(--${theme}-darker)`,
+      color: `var(--${theme}-contrast)`,
     },
   });
 }
@@ -285,10 +299,10 @@ export function OutlineButtonStyle(theme: ThemeType): string {
       border: `1px solid var(--${theme}-main)`,
       color: `var(--primary-main)`,
       cursor: 'pointer',
-      ':hover': {
+      '&:not(:disabled):hover': {
         backgroundColor: `var(--${theme}-fade)`,
       },
-      ':active': {
+      '&:active': {
         backgroundColor: `var(--${theme != 'primary' ? theme + '-fade' : theme + '-100'})`,
       },
     }),

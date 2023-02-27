@@ -54,7 +54,7 @@ export default function Task({ variant, className, card }: TaskProps): JSX.Eleme
   return (
     <div
       className={cx(taskItemStyle, className)}
-      onClick={() => navigate(`./../../edit/${card.id}`)}
+      onClick={() => navigate(`./../edit/${card.id}`)}
     >
       <div className={multiLineEllipsisStyle}>
         {card.title ? card.title : 'Card title'}

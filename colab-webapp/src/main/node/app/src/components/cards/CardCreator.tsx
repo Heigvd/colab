@@ -21,7 +21,7 @@ import IconButton from '../common/element/IconButton';
 import Flex from '../common/layout/Flex';
 import Icon from '../common/layout/Icon';
 import Modal from '../common/layout/Modal';
-import { lightIconButtonStyle, space_lg, space_sm } from '../styling/style';
+import { space_lg, space_sm } from '../styling/style';
 import CardTypeThumbnail from './cardtypes/CardTypeThumbnail';
 
 export const cardTypeThumbnailStyle = css({
@@ -169,8 +169,9 @@ export default function CardCreator({
     </div>
   ) : (
     <IconButton
+      variant="ghost"
       icon={'add'}
-      className={cx(lightIconButtonStyle, className)}
+      className={className}
       title={customLabel ? customLabel : i18n.modules.card.createCard}
       onClick={onClickCb}
     />

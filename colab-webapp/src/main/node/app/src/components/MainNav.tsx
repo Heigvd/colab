@@ -21,12 +21,13 @@ import DropDownMenu from './common/layout/DropDownMenu';
 import Flex from './common/layout/Flex';
 import Icon from './common/layout/Icon';
 import Monkeys from './debugger/monkey/Monkeys';
-import { iconButtonStyle, space_lg, space_sm } from './styling/style';
-const dropLabelsStyle = css({
-  //width: '100%',
-  textTransform: 'uppercase',
-  padding: space_lg,
-});
+import { ghostIconButtonStyle, iconButtonStyle, p_sm, space_sm } from './styling/style';
+const dropLabelsStyle = cx(
+  p_sm,
+  css({
+    textTransform: 'uppercase',
+  }),
+);
 
 export default function MainNav(): JSX.Element {
   const i18n = useTranslations();
@@ -45,7 +46,7 @@ export default function MainNav(): JSX.Element {
   ];
   const value = location.pathname;
   return (
-    <Flex>
+    <Flex className={p_sm} justify={'space-between'}>
       {/* <MainMenuLink to={`/`} className={mainMenuLink}>
          <Icon icon={faHouse} size='lg'/>
       <Picto
@@ -66,18 +67,17 @@ export default function MainNav(): JSX.Element {
             entries={entries}
             onSelect={e => navigate(e.value)}
             menuIcon="BURGER"
-            buttonClassName={cx(iconButtonStyle, css({ alignItems: 'center' }))}
+            buttonClassName={cx(
+              iconButtonStyle,
+              ghostIconButtonStyle,
+              css({ alignItems: 'center', paddingRight: 0 }),
+            )}
             showSelectedLabel
           />
         </nav>
       ) : (
         <MainMenuLink to="/">{i18n.modules.project.labels.projects}</MainMenuLink>
       )}
-      <div
-        className={css({
-          flexGrow: 1,
-        })}
-      ></div>
       <Monkeys />
       <UserDropDown />
     </Flex>

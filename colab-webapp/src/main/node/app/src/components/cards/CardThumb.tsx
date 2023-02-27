@@ -13,7 +13,6 @@ import * as API from '../../API/api';
 import useTranslations from '../../i18n/I18nContext';
 import { useAndLoadSubCards } from '../../selectors/cardSelector';
 import { useAppDispatch, useLoadingState } from '../../store/hooks';
-import IconButton from '../common/element/IconButton';
 import InlineLoading from '../common/element/InlineLoading';
 import { FeaturePreview } from '../common/element/Tips';
 import { ConfirmDeleteModal } from '../common/layout/ConfirmDeleteModal';
@@ -22,7 +21,9 @@ import Flex from '../common/layout/Flex';
 import Icon from '../common/layout/Icon';
 import Modal from '../common/layout/Modal';
 import DocumentPreview from '../documents/preview/DocumentPreview';
+import { CardCreatorAndOrganize } from '../projects/edition/Editor';
 import {
+  heading_xs,
   lightIconButtonStyle,
   oneLineEllipsisStyle,
   p_xs,
@@ -55,7 +56,7 @@ const cardThumbContentStyle = (depth?: number) => {
   switch (depth) {
     case 0:
       return css({
-        //height: '20px'
+        height: '28px'
       });
     case 1:
       return css({
@@ -195,10 +196,18 @@ export default function CardThumb({
       <CardLayout card={card} variant={variant} variants={variants} className={className}>
         <Flex align="stretch" className={css({ overflow: 'hidden' })}>
           {mayOrganize && variant && (
-            <Flex direction="column" gap={space_sm} wrap="nowrap" align="center">
+            <CardCreatorAndOrganize
+              organize={{
+                organize: organize,
+                setOrganize: setOrganize,
+              }}
+              rootContent={variant}
+            />
+          )}
+          {/* <Flex direction="column" gap={space_sm} wrap="nowrap" align="center">
               <IconButton
+                variant='ghost'
                 className={cx(
-                  lightIconButtonStyle,
                   css({ alignSelf: 'flex-end' }),
                   organize &&
                     css({
@@ -216,8 +225,7 @@ export default function CardThumb({
                 }}
               />
               <CardCreator parentCardContent={variant} className={lightIconButtonStyle} />
-            </Flex>
-          )}
+            </Flex> */}
           <Flex direction="column" grow={1} align="stretch">
             <div
               onClick={clickOnCardTitleCb}
@@ -244,11 +252,12 @@ export default function CardThumb({
                     justifyContent: 'space-between',
                   })}
                 >
-                  <Flex className={cx(cardThumbTitleStyle(depth), css({ flexGrow: 1 }))}>
+                  <Flex align='center' className={cx(cardThumbTitleStyle(depth), css({ flexGrow: 1 }))}>
                     <CardContentStatus mode="icon" status={variant?.status || 'ACTIVE'} />
                     <span
                       className={cx(
-                        css({ fontWeight: 'bold', minWidth: '50px' }),
+                        heading_xs,
+                        css({ minWidth: '50px' }),
                         oneLineEllipsisStyle,
                       )}
                     >
@@ -417,7 +426,7 @@ export default function CardThumb({
                     cursor: shouldZoomOnClick ? 'zoom-in' : 'pointer',
                   })]: true,
                   [css({
-                    padding: space_md,
+                    padding: space_sm,
                   })]: depth > 0,
                 },
                 css({ overflow: 'auto' }),

@@ -5,25 +5,14 @@
  * Licensed under the MIT License
  */
 
-import { css, cx } from '@emotion/css';
+import { cx } from '@emotion/css';
 import * as React from 'react';
-import { iconButtonStyle, text_lg, text_md, text_sm, text_xs } from '../../styling/style';
+import { ghostIconButtonStyle, iconButtonStyle, text_lg, text_md, text_sm, text_xs } from '../../styling/style';
 import { GeneralSizeType } from '../../styling/theme';
 import Clickable, { ClickableProps } from '../layout/Clickable';
 import Icon, { IconSize } from '../layout/Icon';
 
 type IconButtonVariantType = 'ghost' | 'initial';
-
-const ghostIconButtonStyle = css({
-  backgroundColor: `var(--bg-primary)`,
-  color: 'var(--text-secondary)',
-  ':hover': {
-    backgroundColor: `var(--gray-100)`,
-  },
-  ':active': {
-    backgroundColor: `var(--gray-200)`,
-  },
-});
 
 function IconButtonSize(size: GeneralSizeType): string {
   switch (size) {

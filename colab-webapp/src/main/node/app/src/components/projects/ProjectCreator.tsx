@@ -121,7 +121,7 @@ export default function ProjectCreator({
       widthMax
       heightMax
       collapsedChildren={
-        <Button className={collapsedButtonClassName} icon="add">
+        <Button variant='outline' size='sm' className={collapsedButtonClassName} icon="add">
           {i18n.modules.project.actions.createProject}
         </Button>
       }
