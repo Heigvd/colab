@@ -6,7 +6,11 @@
  */
 import { css, keyframes } from '@emotion/css';
 import * as React from 'react';
-
+import Flex from '../layout/Flex';
+const animationHeight = '37px';
+const animationWidth = '40px';
+const shapesDimensions = '25px';
+const shapesDimensionsEnd = '10px';
 const spinning = keyframes({
   from: {
     transform: 'rotate(0deg)',
@@ -16,8 +20,22 @@ const spinning = keyframes({
   },
 });
 
-const animationDimensions = '40px';
-const shapesDimensions = '20px';
+const sizing = keyframes({
+  '0%': {
+    width: shapesDimensions,
+    height: shapesDimensions,
+  },
+  '50%': {
+    width: shapesDimensionsEnd,
+    height: shapesDimensionsEnd,
+  },
+  '100%': {
+    width: shapesDimensions,
+    height: shapesDimensions,
+  },
+});
+
+
 interface InlineLoadingProps {
   size?: string;
   maxWidth?: string;
@@ -33,10 +51,15 @@ export default function InlineLoading({
 InlineLoadingProps): JSX.Element {
   //const EffectivePicto = colour ? Picto : PictoBw;
   return (
-    <div
+    <Flex
+    grow={1}
+    align='center'
+    justify='center'
       className={css({
         display: 'inline-block',
         margin: margin,
+        alignSelf: 'stretch',
+        justifySelf: 'stretch'
       })}
     >
       <div
@@ -50,29 +73,31 @@ InlineLoadingProps): JSX.Element {
       >
         <div
           className={css({
-            width: animationDimensions,
-            height: animationDimensions,
+            width: animationWidth,
+            height: animationHeight,
             position: 'relative',
-            animation: `${spinning} 2s infinite`,
+            animation: `ease-in-out ${spinning} 2.5s infinite`,
             '.shape': {
               position: 'absolute',
               borderRadius: shapesDimensions,
-              width: shapesDimensions,
-              height: shapesDimensions,
+              animation: `ease-in-out ${sizing} 2.5s infinite`,
             },
             '.shape1': {
               left: 0,
-              backgroundColor: 'var(--primary-main)',
+              backgroundColor: 'var(--primary-100)',
+              opacity: 0.8,
             },
             '.shape2': {
               right: 0,
-              backgroundColor: 'var(--primary-fade)',
+              backgroundColor: 'var(--primary-300)',
+              opacity: 0.8
             },
             '.shape3': {
               bottom: 0,
               left: '50%',
               transform: 'translateX(-50%)',
-              backgroundColor: 'var(--primary-dark)',
+              backgroundColor: 'var(--primary-500)',
+              opacity: 0.7
             },
           })}
         >
@@ -91,6 +116,6 @@ InlineLoadingProps): JSX.Element {
           }),
         )}
       /> */}
-    </div>
+    </Flex>
   );
 }
