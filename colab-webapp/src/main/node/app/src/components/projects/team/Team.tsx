@@ -14,7 +14,7 @@ import CardInvolvement from '../../cards/CardInvolvement';
 import InlineLoading from '../../common/element/InlineLoading';
 import Flex from '../../common/layout/Flex';
 import Tabs, { Tab } from '../../common/layout/Tabs';
-import { space_md, space_sm, } from '../../styling/style';
+import { space_md } from '../../styling/style';
 import MemberCreator from './MemberCreator';
 import MembersList from './MembersList';
 import TeamRACI from './Raci';
@@ -24,12 +24,6 @@ import TeamRoles from './Roles';
 export const gridNewLine = css({
   gridColumnStart: 1,
   justifySelf: 'start',
-});
-export const titleCellStyle = css({
-  justifySelf: 'stretch',
-  padding: space_sm + ' 0',
-  fontWeight: 800,
-  borderBottom: '1px solid var(--divider-main)',
 });
 
 export interface TeamProps {
@@ -52,11 +46,11 @@ export default function Team({ project }: TeamProps): JSX.Element {
           <Tab name="members" label={i18n.team.members}>
             <MembersList project={project}/>
           </Tab>
-          <Tab name="roles" label={i18n.team.roles}>
-            <TeamRoles project={project} />
-          </Tab>
           <Tab name="rights" label={i18n.team.rights}>
             <TeamRights project={project} />
+          </Tab>
+          <Tab name="roles" label={i18n.team.roles}>
+            <TeamRoles project={project} />
           </Tab>
           <Tab name="projectACL" label={i18n.team.raci.raci} invisible>
             <TeamRACI project={project} />

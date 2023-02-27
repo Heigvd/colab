@@ -15,43 +15,17 @@ import { useAppDispatch, useAppSelector, useLoadingState } from '../../../store/
 import { addNotification } from '../../../store/slice/notificationSlice';
 import IconButton from '../../common/element/IconButton';
 import InlineLoading from '../../common/element/InlineLoading';
-import { DiscreetInput } from '../../common/element/Input';
 import { ConfirmDeleteModal } from '../../common/layout/ConfirmDeleteModal';
-import Flex from '../../common/layout/Flex';
 import Icon from '../../common/layout/Icon';
-import { lightTextStyle, space_sm, space_xs, text_sm, text_xs } from '../../styling/style';
-import { gridNewLine } from './Team';
-
-export interface UserNameProps {
-  user: User;
-  me?: boolean;
-}
-
-const UserName = ({ user, me }: UserNameProps) => {
-  const dispatch = useAppDispatch();
-  const i18n = useTranslations();
-  const updateDisplayName = React.useCallback(
-    (displayName: string) => {
-      dispatch(API.updateUser({ ...user, commonname: displayName }));
-    },
-    [dispatch, user],
-  );
-  return (
-    <Flex>
-      {me ? (
-        <DiscreetInput
-          value={user.commonname || undefined}
-          placeholder={i18n.authentication.field.username}
-          onChange={updateDisplayName}
-        />
-      ) : (
-        <>
-          {user.commonname} || <p className={cx(text_xs, lightTextStyle)}>No username</p>
-        </>
-      )}
-    </Flex>
-  );
-};
+import {
+  lightTextStyle,
+  space_sm,
+  space_xs,
+  text_semibold,
+  text_xs,
+  th_sm,
+} from '../../styling/style';
+import UserName from './UserName';
 
 export interface UserMailProps {
   user: User;
@@ -59,12 +33,17 @@ export interface UserMailProps {
 
 const UserMail = ({ user }: UserMailProps) => {
   const usermails = useUserAccounts(user.id);
-  if(usermails === 'LOADING') {
-    return (<InlineLoading />)
-  } else {return (
-    <>{usermails.map((account)=><p key={account.id}>{account.email}</p>)}</>
-  );}
-  
+  if (usermails === 'LOADING') {
+    return <InlineLoading />;
+  } else {
+    return (
+      <>
+        {usermails.map(account => (
+          <p key={account.id}>{account.email}</p>
+        ))}
+      </>
+    );
+  }
 };
 
 export interface MemberRowProps {
@@ -77,14 +56,6 @@ const MemberRow = ({ member }: MemberRowProps) => {
   const { currentUser } = useCurrentUser();
   const { isLoading, startLoading, stopLoading } = useLoadingState();
   const [showModal, setShowModal] = React.useState('');
-
-  /*  React.useEffect(() => {
-    if (currentUserStatus == 'NOT_INITIALIZED') {
-      // user is not known. Reload state from API
-      dispatch(API.reloadCurrentUser());
-    }
-  }, [currentUserStatus, dispatch]); */
-
   const user = useAppSelector(state => {
     if (member.userId != null) {
       return state.users.users[member.userId];
@@ -106,9 +77,9 @@ const MemberRow = ({ member }: MemberRowProps) => {
     return <InlineLoading />;
   } else if (user == 'ERROR') {
     return <Icon icon={'skull'} />;
-  } else if (user == null) {
+  } else {
     return (
-      <tr>
+      <tr className={cx({ [text_semibold]: currentUser?.id === member?.userId })}>
         {showModal === 'delete' && (
           <ConfirmDeleteModal
             title={i18n.team.deleteMember}
@@ -125,87 +96,60 @@ const MemberRow = ({ member }: MemberRowProps) => {
           />
         )}
         <td className={cx(text_xs, lightTextStyle)}>
-          <Flex align="center">
-            <Icon
-              icon={'hourglass_top'}
-              opsz="xs"
-              className={css({ marginRight: space_sm })}
-              title={i18n.authentication.info.pendingInvitation + '...'}
-            />
-            {member.displayName}
-          </Flex>
+          <UserName user={user} member={member} currentUser={currentUser} />
         </td>
-        <td />
-        <td />
-        <td />
-        <td />
-        <td>
-          <Flex align='center'>
-          <IconButton
-            icon="send"
-            title={i18n.modules.team.actions.resendInvitation}
-            onClick={() => {
-              if (member.projectId && member.displayName) {
-                dispatch(
-                  API.sendInvitation({
-                    projectId: member.projectId,
-                    recipient: member.displayName,
-                  }),
-                ).then(() =>
-                  dispatch(
-                    addNotification({
-                      status: 'OPEN',
-                      type: 'INFO',
-                      message: i18n.modules.team.actions.invitationResent,
-                    }),
-                  ),
-                );
-              }
-            }}
-            className={'hoverButton ' + css({ visibility: 'hidden', padding: space_xs })}
-          />
-          <IconButton
-            icon="delete"
-            title={'Delete member'}
-            onClick={() => setShowModal('delete')}
-            className={'hoverButton ' + css({ pointerEvents: 'none', opacity: 0, padding: space_xs })}
-          />
-          </Flex>
-        </td>
-      </tr>
-    );
-  } else {
-    return (
-      <tr>
-        {showModal === 'delete' && (
-          <ConfirmDeleteModal
-            title={i18n.team.deleteMember}
-            message={<p>{i18n.team.sureDeleteMember}</p>}
-            onCancel={() => {
-              setShowModal('');
-            }}
-            onConfirm={() => {
-              startLoading();
-              dispatch(API.deleteMember(member)).then(stopLoading);
-            }}
-            confirmButtonLabel={i18n.team.deleteMember}
-            isConfirmButtonLoading={isLoading}
-          />
+        {user ? (
+          <>
+            <td>{user.firstname}</td>
+            <td>{user.lastname}</td>
+            <td>
+              <UserMail user={user} />
+            </td>
+            <td>{user.affiliation}</td>
+          </>
+        ) : (
+          <>
+            <td />
+            <td />
+            <td />
+            <td />
+          </>
         )}
-        <td className={cx(gridNewLine, text_sm)}>
-          <UserName user={user} me={currentUser?.id === member.userId} />
-        </td>
-        <td>{user.firstname}</td>
-        <td>{user.lastname}</td>
-        <td><UserMail user={user} /></td>
-        <td>{user.affiliation}</td>
-        <td className={css({display: 'flex', justifyContent: 'flex-end'})}>
-          <IconButton
-            icon="delete"
-            title={'Delete member'}
-            onClick={() => setShowModal('delete')}
-            className={'hoverButton ' + css({ pointerEvents: 'none', opacity: 0, padding: space_xs })}
-          />
+
+        <td className={css({ display: 'flex', alignItems: 'center', justifyContent: 'flex-end' })}>
+          {user == null && (
+            <IconButton
+              icon="send"
+              title={i18n.modules.team.actions.resendInvitation}
+              onClick={() => {
+                if (member.projectId && member.displayName) {
+                  dispatch(
+                    API.sendInvitation({
+                      projectId: member.projectId,
+                      recipient: member.displayName,
+                    }),
+                  ).then(() =>
+                    dispatch(
+                      addNotification({
+                        status: 'OPEN',
+                        type: 'INFO',
+                        message: i18n.modules.team.actions.invitationResent,
+                      }),
+                    ),
+                  );
+                }
+              }}
+              className={'hoverButton ' + css({ visibility: 'hidden', padding: space_xs })}
+            />
+          )}
+          {currentUser?.id != member?.userId && (
+            <IconButton
+              icon="delete"
+              title={'Delete member'}
+              onClick={() => setShowModal('delete')}
+              className={'hoverButton ' + css({ visibility: 'hidden', padding: space_xs })}
+            />
+          )}
         </td>
       </tr>
     );
@@ -221,20 +165,17 @@ export default function MembersList({ project }: { project: Project }): JSX.Elem
       className={cx(
         text_xs,
         css({
-          borderBottom: '1px solid var(--divider-main)',
           textAlign: 'left',
           borderCollapse: 'collapse',
-          borderColor: 'transparent',
           'tr:not(:first-child):hover': {
             backgroundColor: 'var(--bg-secondary)',
           },
           'tr:hover .hoverButton': {
-            opacity: 1,
             pointerEvents: 'auto',
             visibility: 'visible',
           },
           td: {
-            padding: space_xs,
+            padding: space_sm,
             overflow: 'hidden',
             textOverflow: 'ellipsis',
             whiteSpace: 'nowrap',
@@ -243,11 +184,11 @@ export default function MembersList({ project }: { project: Project }): JSX.Elem
       )}
     >
       <tr>
-        <th>{i18n.user.model.commonName}</th>
-        <th>{i18n.user.model.firstname}</th>
-        <th>{i18n.user.model.lastname}</th>
-        <th>{i18n.authentication.field.emailAddress}</th>
-        <th>{i18n.user.model.affiliation}</th>
+        <th className={th_sm}>{i18n.user.model.commonName}</th>
+        <th className={th_sm}>{i18n.user.model.firstname}</th>
+        <th className={th_sm}>{i18n.user.model.lastname}</th>
+        <th className={th_sm}>{i18n.authentication.field.emailAddress}</th>
+        <th className={th_sm}>{i18n.user.model.affiliation}</th>
         <th></th>
       </tr>
       {members.map(member => {

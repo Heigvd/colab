@@ -10,19 +10,15 @@ import { css, cx } from '@emotion/css';
 import { HierarchicalPosition, Project, TeamMember } from 'colab-rest-client';
 import React from 'react';
 import * as API from '../../../API/api';
-import { getDisplayName } from '../../../helper';
 import useTranslations from '../../../i18n/I18nContext';
 import { useAndLoadProjectTeam } from '../../../selectors/teamSelector';
 import { useCurrentUser } from '../../../selectors/userSelector';
 import { useAppDispatch, useAppSelector } from '../../../store/hooks';
 import { addNotification } from '../../../store/slice/notificationSlice';
-import IconButton from '../../common/element/IconButton';
-import InlineLoading from '../../common/element/InlineLoading';
-import { DiscreetInput } from '../../common/element/Input';
 import Tips from '../../common/element/Tips';
-import Icon from '../../common/layout/Icon';
-import { lightTextStyle, space_lg, space_sm, space_xl, text_sm } from '../../styling/style';
-import { gridNewLine, titleCellStyle } from './Team';
+import { lightTextStyle, space_lg, space_sm, space_xl, text_sm, th_sm } from '../../styling/style';
+import { gridNewLine } from './Team';
+import UserName from './UserName';
 
 const options: HierarchicalPosition[] = ['GUEST', 'INTERNAL', 'LEADER', 'OWNER'];
 
@@ -72,7 +68,7 @@ export interface MemberWithProjectRightsProps {
 const MemberWithProjectRights = ({ member, isTheOnlyOwner }: MemberWithProjectRightsProps) => {
   const dispatch = useAppDispatch();
   const i18n = useTranslations();
-  const { status: currentUserStatus } = useCurrentUser();
+  const { currentUser, status: currentUserStatus } = useCurrentUser();
   const [showTooltip, setShowTooltip] = React.useState(false);
   function prettyPrint(position: HierarchicalPosition) {
     switch (position) {
@@ -128,55 +124,10 @@ const MemberWithProjectRights = ({ member, isTheOnlyOwner }: MemberWithProjectRi
     }
   }, [member.userId, user, dispatch]);
 
-  const updateDisplayName = React.useCallback(
-    (displayName: string) => {
-      dispatch(API.updateMember({ ...member, displayName: displayName }));
-    },
-    [dispatch, member],
-  );
-
-  let username = <>"n/a"</>;
-
-  if (member.displayName && member.userId != null) {
-    username = (
-      <>
-        <DiscreetInput
-          value={member.displayName || ''}
-          placeholder={i18n.authentication.field.username}
-          onChange={updateDisplayName}
-        />
-      </>
-    );
-  } else if (member.displayName && member.userId == null) {
-    username = (
-      <span>
-        <div className={cx(text_sm, lightTextStyle)}>
-          <Icon icon={'hourglass_top'} className={css({ marginRight: space_sm })} />
-          {i18n.authentication.info.pendingInvitation}...
-        </div>
-        {member.displayName}
-      </span>
-    );
-  } else if (member.userId == null) {
-    username = <span>{i18n.authentication.info.pendingInvitation}</span>;
-  } else if (user == 'LOADING' || user == null) {
-    username = <InlineLoading />;
-  } else if (user == 'ERROR') {
-    username = <Icon icon={'skull'} />;
-  } else {
-    const cn = getDisplayName(user);
-    username = (
-      <>
-        {cn}
-        {user.affiliation ? ` (${user.affiliation})` : ''}
-        <IconButton icon={'edit'} title={i18n.common.edit} onClick={() => updateDisplayName(cn)} />
-      </>
-    );
-  }
   return (
     <>
       <div className={cx(gridNewLine, text_sm, css({ gridColumn: '1 / 3', maxWidth: '300px' }))}>
-        {username}
+        <UserName user={user} member={member} currentUser={currentUser} />
       </div>
       <Slider
         id="slider"
@@ -253,10 +204,10 @@ export default function TeamRights({ project }: { project: Project }): JSX.Eleme
           gap: space_sm,
         })}
       >
-        <div className={cx(titleCellStyle, css({ gridColumnStart: 1, gridColumnEnd: 3 }))}>
+        <div className={cx(th_sm, css({ gridColumnStart: 1, gridColumnEnd: 3 }))}>
           {i18n.team.members}
         </div>
-        <div className={cx(titleCellStyle, css({ gridColumnStart: 3, gridColumnEnd: 'end' }))}>
+        <div className={cx(th_sm, css({ gridColumnStart: 3, gridColumnEnd: 'end' }))}>
           {i18n.team.rights}
           <Tips
             iconClassName={cx(text_sm, lightTextStyle)}

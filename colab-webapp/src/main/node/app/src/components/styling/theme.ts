@@ -206,8 +206,8 @@ export const textOther = {
     weight: 600,
   },
   th: {
-    sm: '12px',
-    lg: '14px',
+    sm: text.xs,
+    lg: text.sm,
     weight: 700,
   },
   avatar: {

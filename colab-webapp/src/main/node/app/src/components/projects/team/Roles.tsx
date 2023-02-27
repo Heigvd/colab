@@ -8,20 +8,15 @@ import { css, cx } from '@emotion/css';
 import { Project, TeamMember, TeamRole } from 'colab-rest-client';
 import React from 'react';
 import * as API from '../../../API/api';
-import { getDisplayName } from '../../../helper';
 import useTranslations from '../../../i18n/I18nContext';
 import { useAndLoadProjectTeam } from '../../../selectors/teamSelector';
 import { useCurrentUser } from '../../../selectors/userSelector';
 import { useAppDispatch, useAppSelector, useLoadingState } from '../../../store/hooks';
-import { addNotification } from '../../../store/slice/notificationSlice';
 import { Destroyer } from '../../common/Destroyer';
 import IconButton from '../../common/element/IconButton';
-import InlineLoading from '../../common/element/InlineLoading';
 import { DiscreetInput, InlineInput } from '../../common/element/Input';
 import Tips from '../../common/element/Tips';
 import { ConfirmDeleteModal } from '../../common/layout/ConfirmDeleteModal';
-import DropDownMenu from '../../common/layout/DropDownMenu';
-import Icon from '../../common/layout/Icon';
 import OpenClose from '../../common/layout/OpenClose';
 import WithToolbar from '../../common/WithToolbar';
 import {
@@ -31,8 +26,10 @@ import {
   space_sm,
   space_xl,
   text_sm,
+  th_sm,
 } from '../../styling/style';
-import { gridNewLine, titleCellStyle } from './Team';
+import { gridNewLine } from './Team';
+import UserName from './UserName';
 
 export interface RoleProps {
   role: TeamRole;
@@ -157,52 +154,6 @@ const MemberWithProjectRole = ({ member, roles }: MemberWithProjectRoleProps) =>
     }
   }, [member.userId, user, dispatch]);
 
-  const updateDisplayName = React.useCallback(
-    (displayName: string) => {
-      dispatch(API.updateMember({ ...member, displayName: displayName }));
-    },
-    [dispatch, member],
-  );
-
-  let username = <>"n/a"</>;
-
-  if (member.displayName && member.userId != null) {
-    username = (
-      <>
-        <DiscreetInput
-          value={member.displayName || ''}
-          placeholder={i18n.authentication.field.username}
-          onChange={updateDisplayName}
-        />
-      </>
-    );
-  } else if (member.displayName && member.userId == null) {
-    username = (
-      <span>
-        <div className={cx(text_sm, lightTextStyle)}>
-          <Icon icon={'hourglass_top'} className={css({ marginRight: space_sm })} />
-          {i18n.authentication.info.pendingInvitation}...
-        </div>
-        {member.displayName}
-      </span>
-    );
-  } else if (member.userId == null) {
-    username = <span>{i18n.authentication.info.pendingInvitation}</span>;
-  } else if (user == 'LOADING' || user == null) {
-    username = <InlineLoading />;
-  } else if (user == 'ERROR') {
-    username = <Icon icon={'skull'} />;
-  } else {
-    const cn = getDisplayName(user);
-    username = (
-      <>
-        {cn}
-        {user.affiliation ? ` (${user.affiliation})` : ''}
-        <IconButton icon={'edit'} title={i18n.common.edit} onClick={() => updateDisplayName(cn)} />
-      </>
-    );
-  }
-
   const [showModal, setShowModal] = React.useState('');
 
   const roleIds = member.roleIds || [];
@@ -223,8 +174,8 @@ const MemberWithProjectRole = ({ member, roles }: MemberWithProjectRoleProps) =>
           isConfirmButtonLoading={isLoading}
         />
       )}
-      <div className={cx(gridNewLine, text_sm)}>{username}</div>
-      {currentUser?.id != member.userId ? (
+      <div className={cx(gridNewLine, text_sm)}><UserName user={user} member={member} currentUser={currentUser} /></div>
+      {/* {currentUser?.id != member.userId ? (
         <DropDownMenu
           icon={'more_vert'}
           valueComp={{ value: '', label: '' }}
@@ -271,9 +222,7 @@ const MemberWithProjectRole = ({ member, roles }: MemberWithProjectRoleProps) =>
             },
           ]}
         />
-      ) : (
-        <Icon icon={'person'} title={i18n.team.me} />
-      )}
+      ) : <div />} */}
       {roles.map(role => {
         const hasRole = roleIds.indexOf(role.id || -1) >= 0;
         return (
@@ -318,10 +267,10 @@ export default function TeamRoles({ project }: { project: Project }): JSX.Elemen
           gap: space_sm,
         })}
       >
-        <div className={cx(titleCellStyle, css({ gridColumnStart: 1, gridColumnEnd: 3 }))}>
+        <div className={cx(th_sm, css({ gridColumnStart: 1, gridColumnEnd: 2 }))}>
           {i18n.team.members}
         </div>
-        <div className={cx(titleCellStyle, css({ gridColumnStart: 3, gridColumnEnd: 'end' }))}>
+        <div className={cx(th_sm, css({ gridColumnStart: 2, gridColumnEnd: 'end' }))}>
           {i18n.team.roles}
           <Tips
             iconClassName={cx(text_sm, lightTextStyle)}
@@ -330,8 +279,6 @@ export default function TeamRoles({ project }: { project: Project }): JSX.Elemen
             {i18n.team.rolesHelper}
           </Tips>
         </div>
-        <div />
-        {/* <div /> */}
         <div />
 
         {roles.map(role => (

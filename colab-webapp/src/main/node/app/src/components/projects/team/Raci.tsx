@@ -13,8 +13,8 @@ import { useAndLoadSubCards, useProjectRootCard } from '../../../selectors/cardS
 import { useAndLoadProjectTeam } from '../../../selectors/teamSelector';
 import { useAppSelector } from '../../../store/hooks';
 import InlineLoading from '../../common/element/InlineLoading';
-import { space_lg, space_sm, space_xl, text_sm } from '../../styling/style';
-import { gridNewLine, titleCellStyle } from './Team';
+import { space_lg, space_sm, space_xl, text_sm, th_sm } from '../../styling/style';
+import { gridNewLine } from './Team';
 
 export default function TeamRACI({ project }: { project: Project }): JSX.Element {
   const i18n = useTranslations();
@@ -60,10 +60,10 @@ export default function TeamRACI({ project }: { project: Project }): JSX.Element
           gap: space_sm,
         })}
       >
-        <div className={cx(titleCellStyle, css({ gridColumnStart: 1, gridColumnEnd: 2 }))}>
+        <div className={cx(th_sm, css({ gridColumnStart: 1, gridColumnEnd: 2 }))}>
           {i18n.modules.card.card}
         </div>
-        <div className={cx(titleCellStyle, css({ gridColumnStart: 2, gridColumnEnd: 'end' }))}>
+        <div className={cx(th_sm, css({ gridColumnStart: 2, gridColumnEnd: 'end' }))}>
           {i18n.team.members}
         </div>
         <div />

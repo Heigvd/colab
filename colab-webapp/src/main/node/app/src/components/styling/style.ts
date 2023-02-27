@@ -5,7 +5,7 @@
  * Licensed under the MIT License
  */
 import { css, cx } from '@emotion/css';
-import { br, heading, space, text, ThemeType } from './theme';
+import { br, heading, space, text, textOther, ThemeType } from './theme';
 
 //SPACE VARS
 export const space_2xs = space['2xs'];
@@ -55,8 +55,8 @@ export const text_md = css({ fontSize: text.md });
 export const text_lg = css({ fontSize: text.lg });
 export const text_xl = css({ fontSize: text.xl });
 export const text_regular = css({ fontSize: text.regular });
-export const text_semibold = css({ fontSize: text.semibold });
-export const text_lineHeight = css({ fontSize: text.lineHeight });
+export const text_semibold = css({ fontWeight: text.semibold });
+export const text_lineHeight = css({ lineHeight: text.lineHeight });
 
 export const heading_xs = css({ fontSize: heading.xs, fontWeight: heading.weight });
 export const heading_sm = css({ fontSize: heading.sm, fontWeight: heading.weight });
@@ -85,6 +85,9 @@ export const warningTextStyle = css({
 });
 export const successTextStyle = css({
   color: 'var(--success-main)',
+});
+export const disabledTextStyle = css({
+  color: 'var(--text-disabled)',
 });
 
 export const errorborderStyle = css({
@@ -147,7 +150,7 @@ export const WIPStyle = cx(
 
 const disabled = {
   opacity: 0.5,
-  pointerEvent: 'none',
+  cursor: 'default',
 };
 
 export const disabledStyle = css({
@@ -165,14 +168,14 @@ export const removeOutlineStyle = css({
   },
 });
 
-/**LINKS */
+//LINKS
 
 export const linkStyle = cx(
   removeOutlineStyle,
   css({
     cursor: 'pointer',
     color: 'inherit',
-    ':hover': {
+    '&:hover': {
       color: 'var(--text-primary)',
       textDecoration: 'underline',
     },
@@ -196,11 +199,12 @@ export const iconButtonStyle = cx(
     justifyContent: 'center',
     color: 'var(--text-secondary)',
     cursor: 'pointer',
-    ':hover': {
+    '&:not(:disabled):hover': {
       color: 'var(--text-primary)',
     },
-    ':disabled': {
+    '&:disabled': {
       ...disabled,
+      pointerEvents: 'none',
     },
   }),
 );
@@ -218,7 +222,7 @@ export const activeIconButtonStyle = cx(
 
 export const lightIconButtonStyle = css({
   color: 'var(--secondary-main)',
-  '&:hover': {
+  '&:not(:disabled):hover': {
     color: 'var(--text-primary)',
   },
 });
@@ -307,6 +311,18 @@ export const cardStyle = cx(
 export const labelStyle = css({
   fontWeight: 500,
 });
+
+//TABLES
+const titleCellStyle = css({
+  fontSize: textOther.th.sm,
+  fontWeight: textOther.th.weight,
+  textTransform: 'uppercase',
+  padding: space_xs,
+  borderBottom: '1px solid var(--divider-main)',
+  justifySelf: 'stretch',
+});
+export const th_sm = cx(titleCellStyle, text_xs);
+export const th_lg = cx(titleCellStyle, text_sm);
 
 /* export function rootViewCardsStyle(depth: number, inRootView: boolean) {
   if (inRootView) {

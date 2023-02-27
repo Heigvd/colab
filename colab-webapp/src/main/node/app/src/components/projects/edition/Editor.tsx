@@ -563,7 +563,7 @@ function RootView({ rootContent }: { rootContent: CardContent | null | undefined
             depth={depthMax}
             cardContent={rootContent}
             organize={organize}
-            className={css({ height: '100%', overflow: 'auto' })}
+            className={css({ height: '100%', overflow: 'auto', flexGrow: 1 })}
           />
         </Flex>
       ) : (
