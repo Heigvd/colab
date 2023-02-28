@@ -7,7 +7,15 @@
 
 import { cx } from '@emotion/css';
 import * as React from 'react';
-import { ghostIconButtonStyle, iconButtonStyle, p_xs, text_lg, text_md, text_sm, text_xs } from '../../styling/style';
+import {
+  ghostIconButtonStyle,
+  iconButtonStyle,
+  p_xs,
+  text_lg,
+  text_md,
+  text_sm,
+  text_xs,
+} from '../../styling/style';
 import { GeneralSizeType } from '../../styling/theme';
 import Clickable, { ClickableProps } from '../layout/Clickable';
 import Icon, { IconSize } from '../layout/Icon';

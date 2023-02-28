@@ -117,7 +117,7 @@ export default function HidenResourcesKeeper({
             {/* <span className={css({ marginRight: space_S, fontSize: '0.8em' })}>
               {resources.length}
             </span> */}
-            <Icon title={i18n.modules.content.removedDocuments} icon={'inventory_2'} opsz='xs' />
+            <Icon title={i18n.modules.content.removedDocuments} icon={'inventory_2'} opsz="xs" />
           </Flex>
         ) : (
           <></>

@@ -40,7 +40,7 @@ export default function Ellipsis<T>({
   items,
   itemComp,
   alignEllipsis = 'center',
-  mode='ELLIPSIS',
+  mode = 'ELLIPSIS',
   ellipsis = defaultEllipsis,
   containerClassName,
 }: EllipsisProps<T>): JSX.Element {
@@ -112,7 +112,13 @@ export default function Ellipsis<T>({
             alignSelf: alignEllipsis,
           })}
         >
-          {mode === 'ELLIPSIS' ? <>{ellipsis}</> : <span className={cx(text_xs, p_xs, css({color:'var(--divider-main)'}))}>+{hiddenItems}</span>}
+          {mode === 'ELLIPSIS' ? (
+            <>{ellipsis}</>
+          ) : (
+            <span className={cx(text_xs, p_xs, css({ color: 'var(--divider-main)' }))}>
+              +{hiddenItems}
+            </span>
+          )}
         </div>
       </div>
     </div>

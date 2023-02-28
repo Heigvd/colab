@@ -14,7 +14,7 @@ import { space_md, space_sm } from '../styling/style';
 
 interface ProjectSidePanelWrapperProps {
   children: React.ReactNode;
-  title?: string | React.ReactNode; 
+  title?: string | React.ReactNode;
 }
 
 export default function ProjectSidePanelWrapper({
@@ -62,13 +62,27 @@ export default function ProjectSidePanelWrapper({
             resizeHeight={false}
             minSize={150}
           >
-            <Flex direction="column" align="stretch" grow={1} className={css({overflow: 'hidden'})}>
-              <Flex justify="space-between" align='center' className={css({padding: space_sm + ' ' + space_md})}>
+            <Flex
+              direction="column"
+              align="stretch"
+              grow={1}
+              className={css({ overflow: 'hidden' })}
+            >
+              <Flex
+                justify="space-between"
+                align="center"
+                className={css({ padding: space_sm + ' ' + space_md })}
+              >
                 {typeof title === 'string' ? <h3>{title}</h3> : <>{title}</>}
                 <IconButton icon="close" title="Close panel" onClick={() => navigate('../.')} />
               </Flex>
-              <Flex direction="column" align="stretch" grow={1} className={css({overflow: 'auto'})}>
-              {children}
+              <Flex
+                direction="column"
+                align="stretch"
+                grow={1}
+                className={css({ overflow: 'auto' })}
+              >
+                {children}
               </Flex>
             </Flex>
           </ReflexElement>

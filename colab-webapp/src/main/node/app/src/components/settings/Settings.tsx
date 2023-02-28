@@ -43,7 +43,7 @@ export default function Settings(): JSX.Element {
   if (currentUser && accounts != 'LOADING') {
     return (
       <div className={css({ padding: space_xl })}>
-        <Flex align='center'>
+        <Flex align="center">
           <IconButton
             title={i18n.common.back}
             icon={'arrow_back'}

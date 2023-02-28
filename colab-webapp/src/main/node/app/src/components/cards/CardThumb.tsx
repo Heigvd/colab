@@ -27,7 +27,6 @@ import {
   lightIconButtonStyle,
   oneLineEllipsisStyle,
   p_xs,
-  space_md,
   space_sm,
 } from '../styling/style';
 import CardContentStatus from './CardContentStatus';
@@ -56,7 +55,7 @@ const cardThumbContentStyle = (depth?: number) => {
   switch (depth) {
     case 0:
       return css({
-        height: '28px'
+        height: '28px',
       });
     case 1:
       return css({
@@ -252,14 +251,13 @@ export default function CardThumb({
                     justifyContent: 'space-between',
                   })}
                 >
-                  <Flex align='center' className={cx(cardThumbTitleStyle(depth), css({ flexGrow: 1 }))}>
+                  <Flex
+                    align="center"
+                    className={cx(cardThumbTitleStyle(depth), css({ flexGrow: 1 }))}
+                  >
                     <CardContentStatus mode="icon" status={variant?.status || 'ACTIVE'} />
                     <span
-                      className={cx(
-                        heading_xs,
-                        css({ minWidth: '50px' }),
-                        oneLineEllipsisStyle,
-                      )}
+                      className={cx(heading_xs, css({ minWidth: '50px' }), oneLineEllipsisStyle)}
                     >
                       {card.title || i18n.modules.card.untitled}
                     </span>

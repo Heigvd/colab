@@ -19,7 +19,17 @@ import Collapsible from '../common/layout/Collapsible';
 import DropDownMenu from '../common/layout/DropDownMenu';
 import Flex from '../common/layout/Flex';
 import Icon from '../common/layout/Icon';
-import { ellipsisStyle, lightIconButtonStyle, oneLineEllipsisStyle, space_lg, space_md, space_sm, space_xs, text_semibold, text_xs } from '../styling/style';
+import {
+  ellipsisStyle,
+  lightIconButtonStyle,
+  oneLineEllipsisStyle,
+  space_lg,
+  space_md,
+  space_sm,
+  space_xs,
+  text_semibold,
+  text_xs,
+} from '../styling/style';
 import { ResourceCategoryModal } from './ResourceDisplay';
 import {
   getKey,
@@ -537,9 +547,9 @@ const tocEntryStyle = css({
     backgroundColor: 'var(--bg-secondary)',
     color: 'var(--text-primary)',
     '.visibleOnHover': {
-      visibility: 'visible'
-    }
-  }
+      visibility: 'visible',
+    },
+  },
 });
 
 interface TocEntryProps {
@@ -603,7 +613,7 @@ function TocEntry({
                 css({
                   minWidth: '50px',
                   flexGrow: 1,
-                })
+                }),
               )}
             >
               {effectiveReadOnly && (
@@ -664,7 +674,9 @@ function TocEntry({
                   </Flex>
                 }
               > */}
-              <span className={ellipsisStyle}>{resource.targetResource.title || i18n.modules.resource.untitled}</span>
+              <span className={ellipsisStyle}>
+                {resource.targetResource.title || i18n.modules.resource.untitled}
+              </span>
               {nbDocs < 1 && <i className={css({ fontWeight: 200 })}> - {i18n.common.empty}</i>}
               {/* </Tooltip> */}
             </Flex>
@@ -691,7 +703,10 @@ function TocEntry({
             <DropDownMenu
               icon={'more_vert'}
               valueComp={{ value: '', label: '' }}
-              buttonClassName={'visibleOnHover ' + cx(lightIconButtonStyle, css({ marginLeft: space_sm, visibility: 'hidden' }))}
+              buttonClassName={
+                'visibleOnHover ' +
+                cx(lightIconButtonStyle, css({ marginLeft: space_sm, visibility: 'hidden' }))
+              }
               entries={[
                 ...(!effectiveReadOnly && resource.isDirectResource
                   ? [

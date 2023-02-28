@@ -173,7 +173,9 @@ export function ResourceDisplay({
                   alignItems: 'stretch',
                 })}
                 title=""
-                collapsedChildren={<IconButton icon={'trolley'} title="manage ressource occurences" iconSize='xs' />}
+                collapsedChildren={
+                  <IconButton icon={'trolley'} title="manage ressource occurences" iconSize="xs" />
+                }
               >
                 {close => <ResourceScope onCancel={close} resource={resource} />}
               </OpenCloseModal>

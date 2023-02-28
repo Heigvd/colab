@@ -342,7 +342,7 @@ const CardEditWrapper = ({
           size="full"
           //TO IMPROVE
           onClose={() => navigate(backButtonPath)}
-          showCloseButton 
+          showCloseButton
         >
           {() => (
             <>
@@ -410,7 +410,7 @@ function EditorNav({ project }: EditorNavProps): JSX.Element {
             onClickCapture={() => {
               dispatch(API.closeCurrentProject());
             }}
-            className={css({margin: '0 ' + space_sm})}
+            className={css({ margin: '0 ' + space_sm })}
           />
           {/*           <MainMenuLink to={`/`}>
             <span
@@ -467,41 +467,45 @@ function EditorNav({ project }: EditorNavProps): JSX.Element {
             alignItems: 'center',
           })}
         >
-            <Flex align="center" gap={space_xs}>
-              {project.type === 'MODEL' && (
-                <>
-                  {project.globalProject ? (
-                    <Badge variant="outline" icon="public" theme="warning">
-                      {' '}
-                      Global
-                    </Badge>
-                  ) : (
-                    <Badge variant="outline" icon="star" theme="warning">
-                      {' '}
-                      Model
-                    </Badge>
-                  )}
-                </>
-              )}
-              <Flex
-                className={cx(br_md, p_xs, css({
+          <Flex align="center" gap={space_xs}>
+            {project.type === 'MODEL' && (
+              <>
+                {project.globalProject ? (
+                  <Badge variant="outline" icon="public" theme="warning">
+                    {' '}
+                    Global
+                  </Badge>
+                ) : (
+                  <Badge variant="outline" icon="star" theme="warning">
+                    {' '}
+                    Model
+                  </Badge>
+                )}
+              </>
+            )}
+            <Flex
+              className={cx(
+                br_md,
+                p_xs,
+                css({
                   backgroundColor: project.illustration?.iconBkgdColor,
-                }))}
-              >
-                <IllustrationIconDisplay
-                  illustration={
-                    project.illustration ? project.illustration : defaultProjectIllustration
-                  }
-                  iconColor="#fff"
-                  iconSize='xs'
-                />
-              </Flex>
-              <DiscreetInput
-                value={project.name || i18n.modules.project.actions.newProject}
-                placeholder={i18n.modules.project.actions.newProject}
-                onChange={newValue => dispatch(API.updateProject({ ...project, name: newValue }))}
+                }),
+              )}
+            >
+              <IllustrationIconDisplay
+                illustration={
+                  project.illustration ? project.illustration : defaultProjectIllustration
+                }
+                iconColor="#fff"
+                iconSize="xs"
               />
             </Flex>
+            <DiscreetInput
+              value={project.name || i18n.modules.project.actions.newProject}
+              placeholder={i18n.modules.project.actions.newProject}
+              onChange={newValue => dispatch(API.updateProject({ ...project, name: newValue }))}
+            />
+          </Flex>
         </div>
         <Flex align="center" justify="flex-end">
           {/* <Presence projectId={project.id!} /> */}
@@ -561,8 +565,8 @@ function RootView({ rootContent }: { rootContent: CardContent | null | undefined
           <CardCreatorAndOrganize
             rootContent={rootContent}
             organize={{ organize: organize, setOrganize: setOrganize }}
-            cardCreatorClassName={css({marginLeft: space_sm})}
-            organizeButtonClassName={css({margin: space_sm + ' 0 0 ' + space_sm})}
+            cardCreatorClassName={css({ marginLeft: space_sm })}
+            organizeButtonClassName={css({ margin: space_sm + ' 0 0 ' + space_sm })}
           />
           <ContentSubs
             minCardWidth={150}
@@ -751,7 +755,13 @@ interface CardCreatorAndOrganizeProps {
   organizeButtonClassName?: string;
   cardCreatorClassName?: string;
 }
-export function CardCreatorAndOrganize({ rootContent, organize, className, cardCreatorClassName, organizeButtonClassName }: CardCreatorAndOrganizeProps) {
+export function CardCreatorAndOrganize({
+  rootContent,
+  organize,
+  className,
+  cardCreatorClassName,
+  organizeButtonClassName,
+}: CardCreatorAndOrganizeProps) {
   const i18n = useTranslations();
   const subCards = useAndLoadSubCards(rootContent.id);
   return (
@@ -761,8 +771,8 @@ export function CardCreatorAndOrganize({ rootContent, organize, className, cardC
           <IconButton
             variant="ghost"
             className={cx(
-              css({ alignSelf: 'flex-end'}),
-              {[SolidButtonStyle('primary')]: organize.organize },
+              css({ alignSelf: 'flex-end' }),
+              { [SolidButtonStyle('primary')]: organize.organize },
               organizeButtonClassName,
               /* css({
                   backgroundColor: 'var(--primary-main)',

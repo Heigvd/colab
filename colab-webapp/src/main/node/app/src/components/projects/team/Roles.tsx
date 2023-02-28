@@ -174,7 +174,9 @@ const MemberWithProjectRole = ({ member, roles }: MemberWithProjectRoleProps) =>
           isConfirmButtonLoading={isLoading}
         />
       )}
-      <div className={cx(gridNewLine, text_sm)}><UserName user={user} member={member} currentUser={currentUser} /></div>
+      <div className={cx(gridNewLine, text_sm)}>
+        <UserName user={user} member={member} currentUser={currentUser} />
+      </div>
       {/* {currentUser?.id != member.userId ? (
         <DropDownMenu
           icon={'more_vert'}

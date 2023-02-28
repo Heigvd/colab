@@ -103,7 +103,12 @@ export default function Modal({
                 {title}
               </Flex>
               {showCloseButton && (
-                <IconButton icon={'close'} title={i18n.common.close} onClick={onClose} className={p_xs} />
+                <IconButton
+                  icon={'close'}
+                  title={i18n.common.close}
+                  onClick={onClose}
+                  className={p_xs}
+                />
               )}
             </div>
           </>

@@ -42,7 +42,11 @@ export default function MemberCreator({ members, project }: MemberCreatorProps):
   return (
     <OpenCloseModal
       title={i18n.team.inviteNewMember}
-      collapsedChildren={<Button variant='outline' icon='add' size='sm'>{i18n.team.inviteNewMember}</Button>}
+      collapsedChildren={
+        <Button variant="outline" icon="add" size="sm">
+          {i18n.team.inviteNewMember}
+        </Button>
+      }
       modalBodyClassName={css({ padding: space_lg })}
       showCloseButton
     >

@@ -52,10 +52,7 @@ interface TaskProps {
 export default function Task({ variant, className, card }: TaskProps): JSX.Element {
   const navigate = useNavigate();
   return (
-    <div
-      className={cx(taskItemStyle, className)}
-      onClick={() => navigate(`./../edit/${card.id}`)}
-    >
+    <div className={cx(taskItemStyle, className)} onClick={() => navigate(`./../edit/${card.id}`)}>
       <div className={multiLineEllipsisStyle}>
         {card.title ? card.title : 'Card title'}
         {variant?.title}

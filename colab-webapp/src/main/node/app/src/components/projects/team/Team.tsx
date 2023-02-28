@@ -39,12 +39,12 @@ export default function Team({ project }: TeamProps): JSX.Element {
   if (status === 'READY' && project.id != null) {
     return (
       <>
-        <Flex justify="flex-end" className={css({paddingRight: space_md})}>
+        <Flex justify="flex-end" className={css({ paddingRight: space_md })}>
           <MemberCreator members={members} project={project} />
         </Flex>
         <Tabs routed>
           <Tab name="members" label={i18n.team.members}>
-            <MembersList project={project}/>
+            <MembersList project={project} />
           </Tab>
           <Tab name="rights" label={i18n.team.rights}>
             <TeamRights project={project} />

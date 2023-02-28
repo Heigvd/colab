@@ -35,7 +35,6 @@ const sizing = keyframes({
   },
 });
 
-
 interface InlineLoadingProps {
   size?: string;
   maxWidth?: string;
@@ -52,13 +51,13 @@ InlineLoadingProps): JSX.Element {
   //const EffectivePicto = colour ? Picto : PictoBw;
   return (
     <Flex
-    grow={1}
-    align='center'
-    justify='center'
+      grow={1}
+      align="center"
+      justify="center"
       className={css({
         margin: margin,
         alignSelf: 'stretch',
-        justifySelf: 'stretch'
+        justifySelf: 'stretch',
       })}
     >
       <div
@@ -89,14 +88,14 @@ InlineLoadingProps): JSX.Element {
             '.shape2': {
               right: 0,
               backgroundColor: 'var(--primary-300)',
-              opacity: 0.8
+              opacity: 0.8,
             },
             '.shape3': {
               bottom: 0,
               left: '50%',
               transform: 'translateX(-50%)',
               backgroundColor: 'var(--primary-500)',
-              opacity: 0.7
+              opacity: 0.7,
             },
           })}
         >
