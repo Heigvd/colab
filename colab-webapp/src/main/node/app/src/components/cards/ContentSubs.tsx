@@ -292,6 +292,7 @@ export default function ContentSubs({
           alignEllipsis="flex-end"
           itemComp={sub => <TinyCard key={sub.id} card={sub} />}
           containerClassName={css({ height: '20px' })}
+          mode={'NUMBER'}
         />
       );
     }

@@ -7,7 +7,7 @@
 
 import { cx } from '@emotion/css';
 import * as React from 'react';
-import { ghostIconButtonStyle, iconButtonStyle, text_lg, text_md, text_sm, text_xs } from '../../styling/style';
+import { ghostIconButtonStyle, iconButtonStyle, p_xs, text_lg, text_md, text_sm, text_xs } from '../../styling/style';
 import { GeneralSizeType } from '../../styling/theme';
 import Clickable, { ClickableProps } from '../layout/Clickable';
 import Icon, { IconSize } from '../layout/Icon';
@@ -17,7 +17,7 @@ type IconButtonVariantType = 'ghost' | 'initial';
 function IconButtonSize(size: GeneralSizeType): string {
   switch (size) {
     case 'xs':
-      return text_xs;
+      return cx(text_xs, p_xs);
     case 'sm':
       return text_sm;
     case 'md':
@@ -41,14 +41,13 @@ export interface IconButtonProps extends ClickableProps {
   withLoader?: boolean;
   isLoading?: boolean;
   variant?: IconButtonVariantType;
-  size?: GeneralSizeType;
 }
 
 export default function IconButton({
   title,
   icon,
   iconColor,
-  iconSize,
+  iconSize = 'sm',
   withLoader,
   isLoading = true,
   onClick,
@@ -56,7 +55,6 @@ export default function IconButton({
   iconClassName,
   stopPropagation,
   variant = 'initial',
-  size = 'md',
   disabled,
 }: IconButtonProps): JSX.Element {
   const [loading, setLoading] = React.useState<boolean>(false);
@@ -73,7 +71,7 @@ export default function IconButton({
       }}
       className={cx(
         iconButtonStyle,
-        IconButtonSize(size),
+        IconButtonSize(iconSize),
         { [ghostIconButtonStyle]: variant === 'ghost' },
         className,
       )}

@@ -33,7 +33,7 @@ export default function Admin(): JSX.Element {
 
   return (
     <div className={css({ padding: space_xl })}>
-      <Flex>
+      <Flex align='center'>
         <IconButton
           title={i18n.common.back}
           icon={'arrow_back'}

@@ -17,9 +17,8 @@ import { useAppDispatch, useLoadingState } from '../../store/hooks';
 import Form, { Field, PasswordScore } from '../common/element/Form';
 import { InlineLink } from '../common/element/Link';
 import Flex from '../common/layout/Flex';
-import Icon from '../common/layout/Icon';
 import { prettyPrint } from '../common/toplevel/Notifier';
-import { lightLinkStyle, space_lg, space_sm } from '../styling/style';
+import { lightLinkStyle, p_sm, space_lg, text_xs } from '../styling/style';
 import PublicEntranceContainer from './PublicEntranceContainer';
 
 interface SignInFormProps {
@@ -132,16 +131,16 @@ export default function SignInForm({
       <Flex direction="column" justify="center" align="center">
         <InlineLink
           to={buildLinkWithQueryParam('/ForgotPassword', { redirectTo: redirectTo })}
-          className={cx(lightLinkStyle, css({ padding: space_sm }))}
+          className={cx(lightLinkStyle, p_sm, text_xs)}
         >
           {i18n.authentication.action.resetPassword}
         </InlineLink>
         {(forceShowCreateAccountButton || accountConfig.showCreateAccountButton) && (
           <InlineLink
             to={buildLinkWithQueryParam('/SignUp', { redirectTo: redirectTo })}
-            className={cx(lightLinkStyle, css({ padding: space_sm }))}
+            className={cx(lightLinkStyle, p_sm, text_xs)}
           >
-            <Icon icon={'add'} /> {i18n.authentication.action.createAnAccount}
+            {i18n.authentication.action.createAnAccount}
           </InlineLink>
         )}
       </Flex>

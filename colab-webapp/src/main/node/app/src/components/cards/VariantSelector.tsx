@@ -16,7 +16,7 @@ import InlineLoading from '../common/element/InlineLoading';
 import Flex from '../common/layout/Flex';
 import Icon from '../common/layout/Icon';
 import { useDefaultVariant } from '../projects/edition/Editor';
-import { p_xs, space_sm } from '../styling/style';
+import { disabledStyle, p_xs, space_sm, text_xs } from '../styling/style';
 
 interface VariantSelectorProps {
   card: Card;
@@ -199,35 +199,39 @@ export function VariantPager({ card, current }: PagerProps): JSX.Element {
   }
   {
     return (
-      <Flex justify="center" className={css({ marginTop: space_sm })}>
-        <Flex basis="1px" grow={1} justify="center" className={css({ fontSize: '0.9em' })}>
+      <Flex justify="center">
+        <Flex grow={1} justify="center" align="center" className={cx(text_xs, disabledStyle)}>
           {variantPager != null && variantPager.previous != variantPager.current ? (
             <IconButton
               icon={'chevron_left'}
-              iconSize="lg"
+              iconSize="xs"
               title={variantPager.previous.title || ''}
               onClick={() => {
                 if (variantPager.previous.id) {
                   goto(card, variantPager.previous);
                 }
               }}
+              className={p_xs}
             />
           ) : null}
 
-          {variantPager != null && variantPager.length > 1
-            ? `${variantPager.index + 1} / ${contents?.length || 0}`
-            : null}
+          <p>
+            {variantPager != null && variantPager.length > 1
+              ? `${variantPager.index + 1} / ${contents?.length || 0}`
+              : null}
+          </p>
 
           {variantPager != null && variantPager.next != variantPager.current ? (
             <IconButton
               icon={'chevron_right'}
-              iconSize="lg"
+              iconSize="xs"
               title={variantPager.next.title || ''}
               onClick={() => {
                 if (variantPager.next.id) {
                   goto(card, variantPager.next);
                 }
               }}
+              className={p_xs}
             />
           ) : null}
         </Flex>

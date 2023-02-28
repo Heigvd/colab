@@ -64,26 +64,6 @@ interface CardEditorProps {
   variant: CardContent;
   showSubcards?: boolean;
 }
-/* const descriptionStyle = {
-  backgroundColor: 'var(--divider-main)',
-  color: 'var(--secondary-main)',
-  transition: 'all 1s ease',
-  overflow: 'hidden',
-  fontSize: '0.9em',
-  flexGrow: 0,
-  display: 'flex',
-  justifyContent: 'space-between',
-}; */
-/* const openDetails = css({
-  ...descriptionStyle,
-  maxHeight: '600px',
-  padding: space_M,
-});
-const closeDetails = css({
-  ...descriptionStyle,
-  maxHeight: '0px',
-  padding: '0 ' + space_M,
-}); */
 
 const fullScreenStyle = css({
   position: 'absolute',
@@ -196,7 +176,7 @@ export default function CardEditor({ card, variant, showSubcards }: CardEditorPr
             justify="space-between"
             className={css({
               alignItems: 'center',
-              padding: space_sm,
+              padding: '0 ' + space_sm,
               borderBottom: '1px solid var(--divider-main)',
               borderTop:
                 card.color && card.color != '#ffffff'
@@ -205,15 +185,6 @@ export default function CardEditor({ card, variant, showSubcards }: CardEditorPr
             })}
           >
             <Flex align="center">
-              {variant.frozen && (
-                <Icon
-                  className={css({ padding: `0 ${space_sm}` })}
-                  icon={'lock'}
-                  title={i18n.modules.card.infos.cardLocked}
-                  color={'var(--secondary-main)'}
-                />
-              )}
-              <CardContentStatus mode="semi" status={variant.status} />
               <DiscreetInput
                 value={card.title || ''}
                 placeholder={i18n.modules.card.untitled}
@@ -236,8 +207,18 @@ export default function CardEditor({ card, variant, showSubcards }: CardEditorPr
                       dispatch(API.updateCardContent({ ...variant, title: newValue }))
                     }
                   />
+                  <VariantPager allowCreation={!!canWrite} card={card} current={variant} />
                 </>
               )}
+              {variant.frozen && (
+                <Icon
+                  className={css({ padding: `0 ${space_sm}` })}
+                  icon={'lock'}
+                  title={i18n.modules.card.infos.cardLocked}
+                  color={'var(--secondary-main)'}
+                />
+              )}
+              <CardContentStatus mode="semi" status={variant.status} />
             </Flex>
             <Flex align="center">
               {/* handle modal routes*/}
@@ -493,7 +474,6 @@ export default function CardEditor({ card, variant, showSubcards }: CardEditorPr
             <CompletionEditor variant={variant} />
           </Flex>
         </Flex>
-        <VariantPager allowCreation={!!canWrite} card={card} current={variant} />
         {showSubcards ? (
           <Flex direction="column" align="stretch">
             <SubcardsDisplay variant={variant} />

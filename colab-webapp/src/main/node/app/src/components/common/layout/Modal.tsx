@@ -8,7 +8,7 @@
 import { css, cx } from '@emotion/css';
 import * as React from 'react';
 import useTranslations from '../../../i18n/I18nContext';
-import { cardStyle, p_lg, space_3xl, space_xs } from '../../styling/style';
+import { cardStyle, p_lg, p_xs, space_3xl, space_xs } from '../../styling/style';
 import IconButton from '../element/IconButton';
 import Flex from './Flex';
 import Overlay from './Overlay';
@@ -103,7 +103,7 @@ export default function Modal({
                 {title}
               </Flex>
               {showCloseButton && (
-                <IconButton icon={'close'} title={i18n.common.close} onClick={onClose} />
+                <IconButton icon={'close'} title={i18n.common.close} onClick={onClose} className={p_xs} />
               )}
             </div>
           </>

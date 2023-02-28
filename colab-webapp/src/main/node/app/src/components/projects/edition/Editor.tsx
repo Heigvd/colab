@@ -342,7 +342,7 @@ const CardEditWrapper = ({
           size="full"
           //TO IMPROVE
           onClose={() => navigate(backButtonPath)}
-          showCloseButton
+          showCloseButton 
         >
           {() => (
             <>

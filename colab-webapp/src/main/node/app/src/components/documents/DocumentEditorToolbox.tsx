@@ -19,7 +19,7 @@ import ConfirmDeleteOpenCloseModal from '../common/layout/ConfirmDeleteModal';
 import DropDownMenu from '../common/layout/DropDownMenu';
 import Flex from '../common/layout/Flex';
 import Icon from '../common/layout/Icon';
-import { lightIconButtonStyle, space_lg, space_sm } from '../styling/style';
+import { lightIconButtonStyle, space_lg, space_sm, space_xs } from '../styling/style';
 import { DocumentOwnership } from './documentCommonType';
 import DocumentCreatorButton from './DocumentCreatorButton';
 
@@ -28,9 +28,9 @@ const toolboxContainerStyle = css({
   maxHeight: '400px',
   minHeight: '30px',
   overflow: 'hidden',
-  padding: space_sm,
+  padding: space_xs,
   transition: 'all .5s ease',
-  borderBottom: '2px solid var(--secondary-main)',
+  borderBottom: '1px solid var(--divider-main)',
 });
 
 const closedToolboxStyle = css({
