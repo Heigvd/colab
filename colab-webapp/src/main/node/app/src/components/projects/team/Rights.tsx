@@ -7,10 +7,11 @@
 
 import { Slider, SliderFilledTrack, SliderThumb, SliderTrack, Tooltip } from '@chakra-ui/react';
 import { css, cx } from '@emotion/css';
-import { HierarchicalPosition, Project, TeamMember } from 'colab-rest-client';
+import { HierarchicalPosition, TeamMember } from 'colab-rest-client';
 import React from 'react';
 import * as API from '../../../API/api';
 import useTranslations from '../../../i18n/I18nContext';
+import { useCurrentProjectId } from '../../../selectors/projectSelector';
 import { useAndLoadProjectTeam } from '../../../selectors/teamSelector';
 import { useCurrentUser } from '../../../selectors/userSelector';
 import { useAppDispatch, useAppSelector } from '../../../store/hooks';
@@ -181,10 +182,12 @@ const MemberWithProjectRights = ({ member, isTheOnlyOwner }: MemberWithProjectRi
   );
 };
 
-export default function TeamRights({ project }: { project: Project }): JSX.Element {
+export default function TeamRights(): JSX.Element {
   const i18n = useTranslations();
-  const projectId = project.id;
+
+  const projectId = useCurrentProjectId();
   const { members } = useAndLoadProjectTeam(projectId);
+
   const projectOwners = members.filter(m => m.position === 'OWNER');
   return (
     <>

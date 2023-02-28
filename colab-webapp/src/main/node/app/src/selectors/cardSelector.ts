@@ -61,6 +61,12 @@ export const useProjectRootCard = (projectId: number | null | undefined): Card |
   return rootCard;
 };
 
+export const useCurrentProjectRootCard = (): Card | LoadingStatus => {
+  const projectId = useAppSelector(selectCurrentProjectId);
+
+  return useProjectRootCard(projectId);
+};
+
 export const useAllProjectCards = (): Card[] => {
   return useAppSelector(state => {
     const cards = Object.values(state.cards.cards)

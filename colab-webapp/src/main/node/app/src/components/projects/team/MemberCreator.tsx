@@ -6,11 +6,12 @@
  */
 
 import { css, cx } from '@emotion/css';
-import { Project, TeamMember } from 'colab-rest-client';
 import React from 'react';
 import * as API from '../../../API/api';
 import { emailFormat } from '../../../helper';
 import useTranslations from '../../../i18n/I18nContext';
+import { useCurrentProjectId } from '../../../selectors/projectSelector';
+import { useAndLoadCurrentProjectTeam } from '../../../selectors/teamSelector';
 import { useAppDispatch } from '../../../store/hooks';
 import { addNotification } from '../../../store/slice/notificationSlice';
 import Button from '../../common/element/Button';
@@ -19,15 +20,17 @@ import { inputStyle } from '../../common/element/Input';
 import OpenCloseModal from '../../common/layout/OpenCloseModal';
 import { linkStyle, space_lg, text_sm } from '../../styling/style';
 
-interface MemberCreatorProps {
-  members: TeamMember[];
-  project: Project;
-}
-export default function MemberCreator({ members, project }: MemberCreatorProps): JSX.Element {
+export default function MemberCreator(): JSX.Element {
   const i18n = useTranslations();
   const dispatch = useAppDispatch();
+
+  const projectId = useCurrentProjectId();
+
+  const { members } = useAndLoadCurrentProjectTeam();
+
   const [invite, setInvite] = React.useState('');
   const [error, setError] = React.useState<boolean | string>(false);
+
   const isNewMember = (newMail: string) => {
     let isNew = true;
     members.forEach(m => {
@@ -70,7 +73,7 @@ export default function MemberCreator({ members, project }: MemberCreatorProps):
                 setError(false);
                 dispatch(
                   API.sendInvitation({
-                    projectId: project.id!,
+                    projectId: projectId!,
                     recipient: invite,
                   }),
                 ).then(() => {

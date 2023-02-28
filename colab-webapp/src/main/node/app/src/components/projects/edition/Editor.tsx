@@ -662,7 +662,7 @@ export default function Editor(): JSX.Element {
                 path="team/*"
                 element={
                   <ProjectSidePanelWrapper title={i18n.team.team}>
-                    <Team project={project} />
+                    <Team />
                   </ProjectSidePanelWrapper>
                 }
               />

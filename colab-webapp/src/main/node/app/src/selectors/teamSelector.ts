@@ -66,6 +66,14 @@ export const useAndLoadCurrentProjectTeam = (): {
   return useAndLoadProjectTeam(projectId);
 };
 
+export function useLoadCurrentProjectTeam(): AvailabilityStatus {
+  const currentProjectId = useAppSelector(selectCurrentProjectId);
+
+  const teamData = useAndLoadProjectTeam(currentProjectId);
+
+  return teamData.status;
+}
+
 export function useMyMember(
   projectId: number | undefined | null,
   userId: number | undefined | null,

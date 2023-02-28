@@ -4,11 +4,13 @@
  *
  * Licensed under the MIT License
  */
+
 import { css, cx } from '@emotion/css';
-import { Project, TeamMember, User } from 'colab-rest-client';
+import { TeamMember, User } from 'colab-rest-client';
 import React from 'react';
 import * as API from '../../../API/api';
 import useTranslations from '../../../i18n/I18nContext';
+import { useCurrentProjectId } from '../../../selectors/projectSelector';
 import { useAndLoadProjectTeam } from '../../../selectors/teamSelector';
 import { useCurrentUser, useUserAccounts } from '../../../selectors/userSelector';
 import { useAppDispatch, useAppSelector, useLoadingState } from '../../../store/hooks';
@@ -156,10 +158,12 @@ const MemberRow = ({ member }: MemberRowProps) => {
   }
 };
 
-export default function MembersList({ project }: { project: Project }): JSX.Element {
+export default function MembersList(): JSX.Element {
   const i18n = useTranslations();
-  const projectId = project.id;
+
+  const projectId = useCurrentProjectId();
   const { members } = useAndLoadProjectTeam(projectId);
+
   return (
     <table
       className={cx(

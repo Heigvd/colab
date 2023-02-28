@@ -5,14 +5,16 @@
  * Licensed under the MIT License
  */
 import { css, cx } from '@emotion/css';
-import { Project, TeamMember, TeamRole } from 'colab-rest-client';
+import { TeamMember, TeamRole } from 'colab-rest-client';
 import React from 'react';
 import * as API from '../../../API/api';
 import useTranslations from '../../../i18n/I18nContext';
+import { selectCurrentProjectId, useCurrentProject } from '../../../selectors/projectSelector';
 import { useAndLoadProjectTeam } from '../../../selectors/teamSelector';
 import { useCurrentUser } from '../../../selectors/userSelector';
 import { useAppDispatch, useAppSelector, useLoadingState } from '../../../store/hooks';
 import { Destroyer } from '../../common/Destroyer';
+import AvailabilityStatusIndicator from '../../common/element/AvailabilityStatusIndicator';
 import IconButton from '../../common/element/IconButton';
 import { DiscreetInput, InlineInput } from '../../common/element/Input';
 import Tips from '../../common/element/Tips';
@@ -71,9 +73,11 @@ const RoleDisplay = ({ role }: RoleProps) => {
   );
 };
 
-function CreateRole({ project }: { project: Project }): JSX.Element {
+function CreateRole(): JSX.Element {
   const dispatch = useAppDispatch();
   const i18n = useTranslations();
+
+  const { project } = useCurrentProject();
 
   const [name, setName] = React.useState('');
 
@@ -87,33 +91,37 @@ function CreateRole({ project }: { project: Project }): JSX.Element {
         />
       }
     >
-      {collapse => (
-        <>
-          <InlineInput
-            value={name}
-            placeholder={i18n.team.fillRoleName}
-            autoWidth
-            saveMode="ON_CONFIRM"
-            onChange={newValue =>
-              dispatch(
-                API.createRole({
-                  project: project,
-                  role: {
-                    '@class': 'TeamRole',
-                    projectId: project.id,
-                    memberIds: [],
-                    name: newValue,
-                  },
-                }),
-              ).then(() => {
-                setName('');
-                collapse();
-              })
-            }
-            onCancel={collapse}
-          />
-        </>
-      )}
+      {collapse =>
+        project == null ? (
+          <AvailabilityStatusIndicator status="ERROR" />
+        ) : (
+          <>
+            <InlineInput
+              value={name}
+              placeholder={i18n.team.fillRoleName}
+              autoWidth
+              saveMode="ON_CONFIRM"
+              onChange={newValue =>
+                dispatch(
+                  API.createRole({
+                    project: project,
+                    role: {
+                      '@class': 'TeamRole',
+                      projectId: project.id,
+                      memberIds: [],
+                      name: newValue,
+                    },
+                  }),
+                ).then(() => {
+                  setName('');
+                  collapse();
+                })
+              }
+              onCancel={collapse}
+            />
+          </>
+        )
+      }
     </OpenClose>
   );
 }
@@ -247,10 +255,12 @@ const MemberWithProjectRole = ({ member, roles }: MemberWithProjectRoleProps) =>
   );
 };
 
-export default function TeamRoles({ project }: { project: Project }): JSX.Element {
+export default function TeamRoles(): JSX.Element {
   const i18n = useTranslations();
-  const projectId = project.id;
+
+  const projectId = useAppSelector(selectCurrentProjectId);
   const { members, roles } = useAndLoadProjectTeam(projectId);
+
   return (
     <>
       <div
@@ -289,7 +299,7 @@ export default function TeamRoles({ project }: { project: Project }): JSX.Elemen
           </div>
         ))}
         <div>
-          <CreateRole project={project} />
+          <CreateRole />
         </div>
         {members.map(member => {
           return <MemberWithProjectRole key={member.id} member={member} roles={roles} />;
